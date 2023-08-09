@@ -37,6 +37,7 @@ public final class CheckAliveUtil {
             log.error(feilmelding, ex);
             return feilmelding;
         } catch (Exception e) {
+            log.error("Feilet under sjekk av status for {}", url, e);
             return e.getMessage();
         }
         return null;

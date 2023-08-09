@@ -9,12 +9,13 @@ import java.util.concurrent.ConcurrentHashMap;
 public interface ConsumerStatus {
 
     String serviceUrl();
+
     String consumerName();
 
     default Map<String, Object> checkStatus(WebClient webClient) {
         final String TEAM_DOLLY = "Team Dolly";
 
-        var consumerStatus =  CheckAliveUtil.checkConsumerStatus(
+        var consumerStatus = CheckAliveUtil.checkConsumerStatus(
                 serviceUrl() + "/internal/isAlive",
                 serviceUrl() + "/internal/isReady",
                 webClient);

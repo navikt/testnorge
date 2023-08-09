@@ -17,14 +17,11 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/v1/status", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/v1/status", produces = MediaType.APPLICATION_JSON_VALUE)
 @CrossOrigin
 public class StatusController {
-    private final List<ConsumerStatus> consumerRegister;
-
-    private final WebClient webClient;
-
     private static final Map<String, String> consumerNavnMapping = new HashMap<>();
+    private static final List<String> excludeConsumers = List.of("PdlPersonConsumer");
 
     static {
         consumerNavnMapping.put("DokarkivConsumer", "Dokumentarkiv (JOARK)");
@@ -48,20 +45,8 @@ public class StatusController {
         consumerNavnMapping.put("ArenaForvalterConsumer", "Arena fagsystem");
     }
 
-    private static final List<String> excludeConsumers = List.of("PdlPersonConsumer");
-
-    private static String getConsumerNavn(String classNavn) {
-        var consumerNavn = classNavn.split("\\$\\$")[0];
-        if (consumerNavnMapping.containsKey(consumerNavn)) {
-            return consumerNavnMapping.get(consumerNavn);
-        }
-        return consumerNavn.replace("Consumer", "");
-    }
-
-    public static boolean isNotExcluded(ConsumerStatus consumer) {
-        var consumerNavn = consumer.getClass().getSimpleName().split("\\$\\$")[0];
-        return !excludeConsumers.contains(consumerNavn);
-    }
+    private final List<ConsumerStatus> consumerRegister;
+    private final WebClient webClient;
 
     @GetMapping()
     @Operation(description = "Hent status for Dolly forbrukere")
@@ -71,6 +56,19 @@ public class StatusController {
                 .filter(StatusController::isNotExcluded)
                 .map(client -> List.of(getConsumerNavn(client.getClass().getSimpleName()), client.checkStatus(webClient)))
                 .collect(Collectors.toMap(key -> key.get(0), value -> value.get(1)));
+    }
+
+    public static boolean isNotExcluded(ConsumerStatus consumer) {
+        var consumerNavn = consumer.getClass().getSimpleName().split("\\$\\$")[0];
+        return !excludeConsumers.contains(consumerNavn);
+    }
+
+    private static String getConsumerNavn(String classNavn) {
+        var consumerNavn = classNavn.split("\\$\\$")[0];
+        if (consumerNavnMapping.containsKey(consumerNavn)) {
+            return consumerNavnMapping.get(consumerNavn);
+        }
+        return consumerNavn.replace("Consumer", "");
     }
 
 }
