@@ -38,6 +38,8 @@ public class SykemeldingPostCommand implements Callable<Mono<SykemeldingResponse
                 .toBodilessEntity()
                 .map(response -> SykemeldingResponse.builder()
                         .status(HttpStatus.valueOf(response.getStatusCode().value()))
+                        .ident(request.getPasient().getIdent())
+                        .detaljertSykemeldingRequest(request)
                         .build())
                 .doOnError(WebClientFilter::logErrorMessage)
                 .onErrorResume(error -> Mono.just(SykemeldingResponse.builder()
