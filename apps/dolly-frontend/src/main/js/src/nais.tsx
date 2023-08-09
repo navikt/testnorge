@@ -7,9 +7,9 @@ export default {
 			? 'metrics-disabled'
 			: hostname.includes('idporten')
 			? 'dolly-idporten'
-			: hostname.includes('dev')
-			? 'dolly-frontend-dev'
-			: 'dolly-frontend',
+			: hostname.includes('ekstern')
+			? 'dolly-frontend'
+			: 'dolly-frontend-dev',
 		version: 'dev',
 	},
 }
