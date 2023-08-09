@@ -36,7 +36,7 @@ import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
 @RequiredArgsConstructor
 public class ArenaForvalterClient implements ClientRegister {
 
-    private static final String MILJOE_FMT = "%s$%s";
+    private static final String MILJOE_FMT = "%s$BRUKER= %s";
     private static final String SYSTEM = "Arena";
 
     private final ArenaForvalterConsumer arenaForvalterConsumer;

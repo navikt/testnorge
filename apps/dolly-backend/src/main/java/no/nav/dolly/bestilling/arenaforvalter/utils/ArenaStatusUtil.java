@@ -3,6 +3,7 @@ package no.nav.dolly.bestilling.arenaforvalter.utils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.arenaforvalter.ArenaUtils;
 import no.nav.dolly.bestilling.arenaforvalter.dto.AapResponse;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeDagpengerResponse;
@@ -17,6 +18,7 @@ import static java.util.Objects.nonNull;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
+@Slf4j
 @UtilityClass
 public class ArenaStatusUtil {
 
@@ -87,7 +89,8 @@ public class ArenaStatusUtil {
             return status.containsKey("message") ? (String) status.get("message") : jsonFeilmelding;
 
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            log.warn("Feilet å dekode json status fra Arena: {}", jsonFeilmelding);
+            return jsonFeilmelding;
         }
     }
 }
