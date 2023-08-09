@@ -2,7 +2,6 @@ package no.nav.registre.testnorge.helsepersonellservice.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 import no.nav.testnav.libs.dto.helsepersonell.v1.HelsepersonellDTO;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
@@ -10,11 +9,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -24,11 +20,11 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 @RequiredArgsConstructor
 public class HelsepersonellService {
 
-    private static final String fileUrl = "helsepersonell/helsepersonell.csv";
+    private static final String FILE_URL = "helsepersonell/helsepersonell.csv";
 
     public List<HelsepersonellDTO> getHelsepersonell() {
 
-        var resource = new ClassPathResource(fileUrl);
+        var resource = new ClassPathResource(FILE_URL);
         try {
             return new BufferedReader(new InputStreamReader(resource.getInputStream(), UTF_8))
                     .lines()
@@ -44,7 +40,7 @@ public class HelsepersonellService {
                     .toList();
 
         } catch (IOException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, fileUrl);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, FILE_URL);
         }
     }
 }
