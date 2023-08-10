@@ -19,6 +19,9 @@ import static java.util.Objects.isNull;
 public class Arenadata {
 
     @Schema
+    private LocalDateTime aktiveringDato;
+
+    @Schema
     private ArenaBrukertype arenaBrukertype;
 
     @Schema

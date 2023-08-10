@@ -113,7 +113,7 @@ public class ArenaMappingStrategy implements MappingStrategy {
 
     private void mapMedServicebehov(Arenadata arenadata, ArenaNyBruker arenaNyBruker) {
         arenaNyBruker.setAktiveringsDato(
-                Stream.of(
+                Stream.of(Stream.of(arenadata.getAktiveringDato()),
                                 arenadata.getAap().stream()
                                         .filter(Objects::nonNull)
                                         .map(RsArenaAap::getFraDato),
