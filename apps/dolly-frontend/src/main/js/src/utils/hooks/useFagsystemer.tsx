@@ -34,7 +34,7 @@ const instUrl = (ident, miljoer) =>
 		miljo: miljo,
 	}))
 
-const arenaUrl = (ident, miljoer) =>
+const arenaUrl = (miljoer) =>
 	miljoer?.map((miljoe) => ({
 		url: `/testnav-arena-forvalteren-proxy/${miljoe}/arena/syntetiser/brukeroppfolging/personstatusytelse`,
 		miljo: miljoe,
@@ -172,11 +172,11 @@ export const useArenaData = (ident: string, harArenaBestilling: boolean) => {
 	const { arenaEnvironments } = useArenaEnvironments()
 
 	const { data, isLoading, error } = useSWR<any, Error>(
-		[harArenaBestilling ? arenaUrl(ident, arenaEnvironments) : null, { fodselsnr: ident }],
+		[harArenaBestilling ? arenaUrl(arenaEnvironments) : null, { fodselsnr: ident }],
 		([url, headers]) => multiFetcherArena(url, headers),
 	)
 
-	// console.log('data: ', data) //TODO - SLETT MEG
+	console.log('data: ', data) //TODO - SLETT MEG
 
 	return {
 		arenaData: data?.sort((a, b) => a.miljo?.localeCompare(b.miljo)),
