@@ -1,8 +1,5 @@
 # Helsepersonell-service
-API for helsepersonell. Finner helsepersonell via Dolly og Samhandlerregisteret. 
-
-Originalt så lå all helsepersonell i en gruppe i TPS-forvalteren (avspillergruppeId 100001163), men har nå blitt 
-importert til Dolly gruppe i stedet.
+API for helsepersonell. Gir oversikt på helsepersonell som finnes både i felles kontaktregister og TSS. 
 
 ## Swagger
 Swagger finnes under [/swagger](https://testnav-helsepersonell-service.intern.dev.nav.no/swagger) -endepunktet til applikasjonen.
@@ -12,11 +9,4 @@ Ha naisdevice kjørende og kjør HelsepersonellApiApplicationStarter med følgen
 ```
 -Dspring.cloud.vault.token=[Copy token fra Vault]
 -Dspring.profiles.active=dev
-```
-
-### Utviklerimage
-I utviklerimage brukes ikke naisdevice og du må legge til følgende ekstra argumenter:
-```
--Djavax.net.ssl.trustStore=[path til lokal truststore]
--Djavax.net.ssl.trustStorePassword=[passord til lokal truststore]
 ```

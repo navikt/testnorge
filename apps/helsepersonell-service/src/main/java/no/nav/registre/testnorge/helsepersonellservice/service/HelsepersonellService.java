@@ -1,66 +1,46 @@
 package no.nav.registre.testnorge.helsepersonellservice.service;
 
-import java.util.*;
-
-import no.nav.registre.testnorge.helsepersonellservice.consumer.DollyBackendConsumer;
-import no.nav.registre.testnorge.helsepersonellservice.consumer.PdlProxyConsumer;
-import no.nav.registre.testnorge.helsepersonellservice.domain.HelsepersonellListe;
-import no.nav.registre.testnorge.helsepersonellservice.domain.Helsepersonell;
-import no.nav.registre.testnorge.helsepersonellservice.domain.PdlPersonBolk;
-import no.nav.registre.testnorge.helsepersonellservice.domain.Persondata;
-import no.nav.registre.testnorge.helsepersonellservice.domain.Samhandler;
-import no.nav.registre.testnorge.helsepersonellservice.exception.SamhandlerException;
-import org.springframework.stereotype.Component;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.libs.dto.helsepersonell.v1.HelsepersonellDTO;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
+import org.springframework.web.server.ResponseStatusException;
 
-import no.nav.registre.testnorge.helsepersonellservice.consumer.SamhandlerregisteretConsumer;
-import reactor.core.publisher.Flux;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.List;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class HelsepersonellService {
-    private final SamhandlerregisteretConsumer samhandlerregisteretConsumer;
-    private final DollyBackendConsumer dollyBackendConsumer;
-    private final PdlProxyConsumer pdlProxyConsumer;
 
-    private List<Samhandler> getSamhandlere(List<String> identer) {
-        return samhandlerregisteretConsumer.getToken()
-                .flatMapMany(accessToken -> Flux.fromIterable(identer)
-                        .flatMap(ident -> samhandlerregisteretConsumer.getSamhandler(ident, accessToken))
-                        .filter(Objects::nonNull)
-                ).collectList()
-                .block();
-    }
+    private static final String FILE_URL = "helsepersonell/helsepersonell.csv";
 
-    public HelsepersonellListe getHelsepersonell() {
-        var helsepersonell = dollyBackendConsumer.getHelsepersonell();
-        var pdlInfo = pdlProxyConsumer.getPdlPersoner(helsepersonell);
+    public List<HelsepersonellDTO> getHelsepersonell() {
 
-        var samhandlere = Optional.ofNullable(getSamhandlere(helsepersonell))
-                .orElse(Collections.emptyList())
-                .stream()
-                .filter(Samhandler::isMulighetForAaLageSykemelding)
-                .toList();
-        if (samhandlere.isEmpty()) {
-            throw new SamhandlerException("Fant ingen samhandlere");
+        var resource = new ClassPathResource(FILE_URL);
+        try {
+            return new BufferedReader(new InputStreamReader(resource.getInputStream(), UTF_8))
+                    .lines()
+                    .filter(line -> !line.contains("FNR"))
+                    .map(line -> line.split(";"))
+                    .map(words -> HelsepersonellDTO.builder()
+                            .fornavn(words[0].split(" ")[0])
+                            .etternavn(words[0].split(" ")[1])
+                            .fnr(words[1].trim())
+                            .hprId(words[2].trim())
+                            .samhandlerType(words[3].trim())
+                            .build())
+                    .toList();
+
+        } catch (IOException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, FILE_URL);
         }
-        return new HelsepersonellListe(samhandlere.stream()
-                .map(samhandler -> new Helsepersonell(
-                        samhandler,
-                        getPersondata(pdlInfo, samhandler.getIdent())))
-                .distinct().toList()
-        );
-    }
-
-    private Persondata getPersondata(PdlPersonBolk pdlBolk, String ident) {
-        var pdlPerson = pdlBolk.getData().getHentPersonBolk().stream()
-                .filter(personBolk -> personBolk.getIdent().equals(ident))
-                .findFirst()
-                .orElse(null);
-
-        return new Persondata(pdlPerson);
     }
 }
