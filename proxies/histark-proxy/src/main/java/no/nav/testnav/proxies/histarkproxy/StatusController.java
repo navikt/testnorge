@@ -20,7 +20,7 @@ public class StatusController {
         var statusWebClient = WebClient.builder().build();
 
         var histarkStatus = checkConsumerStatus(
-                "https://histarkimport.dev.intern.nav.no/internal/health/liveness",
+                "https://histarkimport.dev.intern.nav.no/internal/isAlive",
                 "https://histarkimport.dev.intern.nav.no/internal/isReady",
                 statusWebClient);
         histarkStatus.put("team", TEAM);
