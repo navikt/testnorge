@@ -67,6 +67,14 @@ public class ArenaForvalterConsumer implements ConsumerStatus {
                                         token.getTokenValue()).call())));
     }
 
+    @Timed(name = "providers", tags = {"operation", "arena_deleteIdent"})
+    public Mono<ArenaResponse> inaktiverBruker(String ident, String miljoe) {
+
+        return tokenService.exchange(serviceProperties)
+                .flatMap(token -> new ArenaForvalterDeleteCommand(webClient, ident, miljoe, token.getTokenValue()).call()
+                .doOnNext(response -> log.info("Inaktivert bruker {} mot Arenaforvalter {}", ident, response)));
+    }
+
     @Timed(name = "providers", tags = {"operation", "arena_postBruker"})
     public Flux<ArenaNyeBrukereResponse> postArenaBruker(ArenaNyeBrukere arenaNyeBrukere) {
 

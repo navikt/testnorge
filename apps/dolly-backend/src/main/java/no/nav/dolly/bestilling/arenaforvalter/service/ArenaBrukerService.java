@@ -50,17 +50,27 @@ public class ArenaBrukerService {
                 })
                 .flatMap(arenaNyeBrukere -> {
 
-                    arenaNyeBrukere.getNyeBrukere().stream()
-                            .findFirst()
-                            .ifPresent(nyBruker -> {
-                                if (nyBruker.hasServicebehov() && !nyBruker.hasKvalifiseringsgruppe()) {
-                                    nyBruker.setKvalifiseringsgruppe(arbeidssoker.getKvalifiseringsgruppe());
-                                }
-                            });
+                    if (arenaNyeBrukere.getNyeBrukere().stream().anyMatch(ArenaNyBruker::hasServicebehov)) {
 
-                    return arenaForvalterConsumer.postArenaBruker(arenaNyeBrukere)
-                            .flatMap(this::getBrukerStatus)
-                            .map(response -> ArenaUtils.OPPRETTET + response);
+                        arenaNyeBrukere.getNyeBrukere().stream()
+                                .findFirst()
+                                .ifPresent(nyBruker -> {
+                                    if (!nyBruker.hasKvalifiseringsgruppe()) {
+                                        nyBruker.setKvalifiseringsgruppe(arbeidssoker.getKvalifiseringsgruppe());
+                                    }
+                                });
+
+                        return arenaForvalterConsumer.postArenaBruker(arenaNyeBrukere)
+                                .flatMap(this::getBrukerStatus)
+                                .map(response -> ArenaUtils.OPPRETTET + response);
+
+                    } else {
+
+                        return Flux.from(arenaForvalterConsumer.inaktiverBruker(ident, miljoe)
+                                        .map(respons -> respons.getStatus().is2xxSuccessful() ?
+                                                "OK" : errorStatusDecoder.getErrorText(respons.getStatus(), respons.getFeilmelding())))
+                                .map(response -> ArenaUtils.INAKTIVERT + response);
+                    }
                 });
     }
 
@@ -89,8 +99,8 @@ public class ArenaBrukerService {
                                     if (decoded.contains("404 Not Found")) {
                                         return "404 Not Found";
                                     } else if (decoded.contains("FINNES_ALLEREDE_PAA_VALGT_MILJO") ||
-                                                decoded.contains("kan ikke reaktiveres siden denne er under behandling for " +
-                                            "aktivering eller har status som aktivert ved forsøk på aktivering")) {
+                                            decoded.contains("kan ikke reaktiveres siden denne er under behandling for " +
+                                                    "aktivering eller har status som aktivert ved forsøk på aktivering")) {
                                         return "OK";
                                     } else {
                                         return decoded;
