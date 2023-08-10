@@ -15,6 +15,8 @@ import no.nav.dolly.bestilling.skjermingsregister.SkjermingsRegisterConsumer;
 import no.nav.dolly.bestilling.skjermingsregister.domain.SkjermingDataResponse;
 import no.nav.dolly.bestilling.udistub.UdiStubConsumer;
 import no.nav.dolly.bestilling.udistub.domain.UdiPersonResponse;
+import no.nav.dolly.consumer.fastedatasett.DatasettType;
+import no.nav.dolly.consumer.fastedatasett.FasteDatasettConsumer;
 import no.nav.dolly.consumer.generernavn.GenererNavnConsumer;
 import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
 import no.nav.dolly.consumer.kodeverk.KodeverkMapper;
@@ -64,6 +66,7 @@ public class OppslagController {
     private final KodeverkConsumer kodeverkConsumer;
     private final PdlPersonConsumer pdlPersonConsumer;
     private final InntektstubConsumer inntektstubConsumer;
+    private final FasteDatasettConsumer fasteDatasettConsumer;
     private final PensjonforvalterConsumer pensjonforvalterConsumer;
     private final GenererNavnConsumer genererNavnConsumer;
     private final InntektsmeldingEnumService inntektsmeldingEnumService;
