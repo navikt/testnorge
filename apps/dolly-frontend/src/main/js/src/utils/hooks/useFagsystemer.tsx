@@ -176,7 +176,7 @@ export const useArenaData = (ident: string, harArenaBestilling: boolean) => {
 		([url, headers]) => multiFetcherArena(url, headers),
 	)
 
-	console.log('data: ', data) //TODO - SLETT MEG
+	// console.log('data: ', data) //TODO - SLETT MEG
 
 	return {
 		arenaData: data?.sort((a, b) => a.miljo?.localeCompare(b.miljo)),

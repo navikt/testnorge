@@ -51,7 +51,7 @@ export const MedServicebehov = ({ formikBag, path }) => {
 				name={`${path}.kvalifiseringsgruppe`}
 				label="Servicebehov"
 				options={Options('kvalifiseringsgruppe')}
-				size="large"
+				size="xlarge"
 			/>
 			{arenaforvalter.aap115 && (
 				<Kategori title="11-5-vedtak">
