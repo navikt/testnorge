@@ -3,6 +3,8 @@ package no.nav.dolly.provider.api;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.ConsumerStatus;
+import no.nav.dolly.domain.resultset.NavStatus;
+import no.nav.dolly.domain.resultset.SystemStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -56,6 +58,22 @@ public class StatusController {
                 .filter(StatusController::isNotExcluded)
                 .map(client -> List.of(getConsumerNavn(client.getClass().getSimpleName()), client.checkStatus(webClient)))
                 .collect(Collectors.toMap(key -> key.get(0), value -> value.get(1)));
+    }
+
+    @GetMapping("/oppsummert")
+    @Operation(description = "Hent oppsummert status for Dolly forbrukere")
+    public NavStatus clientsStatusSummary() {
+        var status = consumerRegister
+                .parallelStream()
+                .filter(StatusController::isNotExcluded)
+                .map(client -> List.of(getConsumerNavn(client.getClass().getSimpleName()), client.checkStatus(webClient)))
+                .collect(Collectors.toMap(key -> key.get(0), value -> value.get(1)));
+
+        return NavStatus.builder()
+                .status(status.values().stream().allMatch((String value) -> value.matches("OK")) ? SystemStatus.OK : SystemStatus.ISSUE)
+                .description("temp") //TODO: Legg til description og sjekke om linje over fungerer
+                .logLink("temp")  //TODO: Legg til loglink
+                .build();
     }
 
     public static boolean isNotExcluded(ConsumerStatus consumer) {
