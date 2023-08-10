@@ -19,6 +19,7 @@ import static no.nav.dolly.bestilling.arenaforvalter.utils.ArenaStatusUtil.AAP;
 import static no.nav.dolly.bestilling.arenaforvalter.utils.ArenaStatusUtil.DAGPENGER;
 import static no.nav.dolly.bestilling.arenaforvalter.utils.ArenaStatusUtil.fmtResponse;
 import static no.nav.dolly.bestilling.arenaforvalter.utils.ArenaStatusUtil.getDagpengerStatus;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
 @RequiredArgsConstructor
@@ -69,7 +70,7 @@ public class ArenaStansYtelseService {
                                                 .build()))
                                         .build())
                                 .flatMap(response -> getDagpengerStatus(response, errorStatusDecoder))
-                                .map(response -> ArenaUtils.STANSET + response)
+                                .map(response -> ArenaUtils.STANSET + (isNotBlank(response) ? response : "OK"))
                                 .map(dagpStatus -> fmtResponse(miljoe, DAGPENGER, dagpStatus))));
     }
 }

@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @UtilityClass
@@ -79,7 +78,7 @@ public class ArenaStatusUtil {
 
     public static String fmtResponse(String miljoe, String system, String status) {
 
-        return encodeStatus(String.format(MILJOE_FMT, miljoe, system, isNotBlank(status) ? status : "OK"));
+        return encodeStatus(String.format(MILJOE_FMT, miljoe, system, status));
     }
 
     public static String getMessage(String jsonFeilmelding) {

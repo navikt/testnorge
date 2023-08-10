@@ -17,7 +17,7 @@ public enum SystemTyper {
     ARENA("Arena fagsystem"),
     ARENA_BRUKER("Arenabruker"),
     ARENA_AAP("Arena AAP ytelse"),
-    ARENA_AAP115("Arena AAP15"),
+    ARENA_AAP115("Arena AAP15 rettighet"),
     ARENA_DAGP("Arena dagpenger"),
     UDISTUB("Utlendingsdirektoratet (UDI)"),
     INNTK("Inntektskomponenten (INNTK)"),
