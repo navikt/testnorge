@@ -17,20 +17,20 @@ export default ({ path, formikBag }: InntektsinformasjonForm) => {
 	const [date, setDate] = useState(
 		_.get(formikBag.values, `${path}.sisteAarMaaned`) !== ''
 			? Date.parse(_.get(formikBag.values, `${path}.sisteAarMaaned`))
-			: null
+			: null,
 	)
 
 	const [rapporteringsdate, setRapporteringsdato] = useState(
 		_.get(formikBag.values, `${path}.rapporteringsdato`) !== ''
 			? Date.parse(_.get(formikBag.values, `${path}.rapporteringsdato`))
-			: null
+			: null,
 	)
 
 	const handleDateChange = (selectedDate: Date) => {
 		setDate(selectedDate)
 		formikBag.setFieldValue(
 			`${path}.sisteAarMaaned`,
-			selectedDate ? selectedDate.toISOString().substr(0, 7) : ''
+			selectedDate ? selectedDate.toISOString().substr(0, 7) : '',
 		)
 	}
 
@@ -38,7 +38,7 @@ export default ({ path, formikBag }: InntektsinformasjonForm) => {
 		setRapporteringsdato(selectedDate)
 		formikBag.setFieldValue(
 			`${path}.rapporteringsdato`,
-			selectedDate ? selectedDate.toISOString() : null
+			selectedDate ? selectedDate.toISOString().substring(0, 19) : null,
 		)
 	}
 

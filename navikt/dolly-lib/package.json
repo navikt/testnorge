@@ -1,7 +1,7 @@
 {
   "name": "@navikt/dolly-lib",
-  "version": "1.2.11",
-  "description": "Bibliotek for dolly funksjoner.",
+  "version": "1.2.14",
+  "description": "Bibliotek for diverse dolly funksjoner.",
   "main": "lib/index.js",
   "scripts": {
     "build": "tsc -p ."
@@ -14,7 +14,7 @@
   "license": "MIT",
   "devDependencies": {
     "typescript": "^5.0.2",
-    "prettier": "^2.7.1"
+    "prettier": "^3.0.1"
   },
   "repository": "https://github.com/navikt/testnorge.git",
   "prettier": {

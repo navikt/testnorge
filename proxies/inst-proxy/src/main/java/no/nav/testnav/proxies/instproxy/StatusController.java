@@ -32,8 +32,18 @@ public class StatusController {
         ConcurrentHashMap<String, String> status = new ConcurrentHashMap<>();
 
         Thread blockingThread = new Thread(() -> {
-            status.put("alive", checkStatus(webClient, aliveUrl).block());
-            status.put("ready", checkStatus(webClient, readyUrl).block());
+            status.put(
+                    "alive",
+                    checkStatus(webClient, aliveUrl)
+                            .blockOptional()
+                            .orElse("Error: Empty response")
+            );
+            status.put(
+                    "ready",
+                    checkStatus(webClient, readyUrl)
+                            .blockOptional()
+                            .orElse("Error: Empty response")
+            );
         });
         blockingThread.start();
         try {
@@ -46,11 +56,11 @@ public class StatusController {
     }
 
     private Mono<String> checkStatus(WebClient webClient, String url) {
-            return webClient.get().uri(url)
-                    .retrieve()
-                    .bodyToMono(String.class)
-                    .defaultIfEmpty("OK")
-                    .onErrorResume(Exception.class, error -> Mono.just("Error: " + error.getMessage()))
-                    .map(result -> result.startsWith("Error:") ? result : "OK");
+        return webClient.get().uri(url)
+                .retrieve()
+                .bodyToMono(String.class)
+                .defaultIfEmpty("OK")
+                .onErrorResume(Exception.class, error -> Mono.just("Error: " + error.getMessage()))
+                .map(result -> result.startsWith("Error:") ? result : "OK");
     }
 }

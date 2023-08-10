@@ -152,7 +152,7 @@ consumers:
     cluster: dev-gcp
     namespace: dolly
     name: testnav-person-organisasjon-tilgang-service
-    url: https://testnav-person-organisasjon-tilgang-service.intern.dev.nav.no
+    url: http://testnav-person-organisasjon-tilgang-service.dolly.svc.cluster.local
   testnav-bruker-service:
     cluster: dev-gcp
     namespace: dolly
@@ -163,6 +163,11 @@ consumers:
     namespace: dolly
     name: testnav-pdl-forvalter
     url: http://testnav-pdl-forvalter.dolly.svc.cluster.local
+  testnav-helsepersonell-service:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-helsepersonell-service
+    url: http://testnav-helsepersonell-service.dolly.svc.cluster.local
   testnav-kontoregister-person-proxy:
     name: testnav-kontoregister-person-proxy
     namespace: dolly

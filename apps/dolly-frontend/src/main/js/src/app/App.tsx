@@ -17,6 +17,7 @@ import {
 } from '@/utils/hooks/useMaler'
 import { runningCypressE2E } from '@/service/services/Request'
 import { navigateToLogin } from '@/components/utlogging/navigateToLogin'
+import { FaroErrorBoundary } from '@grafana/faro-react'
 
 const logout = (feilmelding: string) => {
 	if (!runningCypressE2E()) {
@@ -52,7 +53,7 @@ export const App = () => {
 	}
 
 	return (
-		<React.Fragment>
+		<FaroErrorBoundary>
 			<VarslingerModal />
 			<Header />
 			<Breadcrumbs />
@@ -65,13 +66,13 @@ export const App = () => {
 								<Route key={idx} path={route.path} element={<route.element />} />
 							) : (
 								<React.Fragment key={idx} />
-							)
+							),
 						)}
 					</Routes>
 				</Suspense>
 			</main>
 			<Forbedring />
 			<ToastConnector />
-		</React.Fragment>
+		</FaroErrorBoundary>
 	)
 }

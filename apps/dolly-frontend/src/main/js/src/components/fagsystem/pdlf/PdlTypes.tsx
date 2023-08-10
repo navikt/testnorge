@@ -128,7 +128,7 @@ export type ForeldreBarnRelasjon = {
 	typeForelderBarn?: string
 }
 
-export type DoedfoedtBarn = {
+export type DoedfoedtBarnData = {
 	id?: number
 	dato: Date
 }

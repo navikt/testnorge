@@ -121,12 +121,12 @@ export const validation = {
 				Yup.array().of(statsborgerskap)
 			),
 			doedsfall: ifPresent('$pdldata.person.doedsfall', Yup.array().of(doedsfall)),
-			doedfoedtBarn: ifPresent('$pdldata.person.doedfoedtBarn', doedfoedtBarn),
+			doedfoedtBarn: ifPresent('$pdldata.person.doedfoedtBarn', Yup.array().of(doedfoedtBarn)),
 			innflytting: ifPresent('$pdldata.person.innflytting', Yup.array().of(innflytting)),
 			utflytting: ifPresent('$pdldata.person.utflytting', Yup.array().of(utflytting)),
 			utenlandskIdentifikasjonsnummer: ifPresent(
 				'$pdldata.person.utenlandskIdentifikasjonsnummer',
-				utenlandskId
+				Yup.array().of(utenlandskId)
 			),
 			kontaktinformasjonForDoedsbo: ifPresent(
 				'$pdldata.person.kontaktinformasjonForDoedsbo',
