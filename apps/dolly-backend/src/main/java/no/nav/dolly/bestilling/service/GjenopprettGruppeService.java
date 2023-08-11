@@ -9,6 +9,7 @@ import no.nav.dolly.bestilling.pdldata.dto.PdlResponse;
 import no.nav.dolly.bestilling.personservice.PersonServiceClient;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.repository.IdentRepository.GruppeBestillingIdent;
@@ -24,14 +25,14 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Hooks;
 import reactor.core.publisher.Operators;
 
-import java.time.Duration;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
+import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 
 @Slf4j
 @Service
@@ -78,9 +79,8 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                     .sorted(Comparator.comparing(GruppeBestillingIdent::getBestillingid))
                     .toList();
 
-            var counter = new AtomicInteger(0);
+            var emptyBestillingFlag = new ConcurrentHashMap<String, Boolean>();
             Flux.fromIterable(bestilling.getGruppe().getTestidenter())
-                    .delayElements(Duration.ofSeconds(counter.incrementAndGet() % 20 == 0 ? 30 : 0))
                     .flatMap(testident -> opprettProgress(bestilling, testident.getMaster(), testident.getIdent())
                             .flatMap(progress -> sendOrdrePerson(progress, PdlResponse.builder()
                                     .ident(testident.getIdent())
@@ -99,6 +99,8 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                                                                     .concatMap(bestilling1 -> Flux.just(bestilling1)
                                                                             .filter(cobestilling -> ident.equals(cobestilling.getIdent()))
                                                                             .flatMap(cobestilling -> createBestilling(bestilling, cobestilling)
+                                                                                    .filter(bestillingRequest -> isNotTrue(emptyBestillingFlag.putIfAbsent(ident, true)) ||
+                                                                                            RsDollyBestilling.isNonEmpty(bestillingRequest))
                                                                                     .doOnNext(request -> log.info("Startet gjenopprett bestilling {} for ident: {}",
                                                                                             request.getId(), testident.getIdent()))
                                                                                     .flatMap(bestillingRequest -> Flux.concat(
