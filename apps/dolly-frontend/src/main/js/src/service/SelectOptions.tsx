@@ -453,7 +453,6 @@ const selectOptions = {
 	sakstype: [
 		{ value: 'GENERELL_SAK', label: 'Generell sak' },
 		{ value: 'FAGSAK', label: 'Fagsak' },
-		{ value: null, label: 'Ingen' },
 	],
 
 	fagsaksystem: [
