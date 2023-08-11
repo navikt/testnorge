@@ -177,7 +177,7 @@ const validFradato = (vedtakType) => {
 			'AAP- og Dagpenger-vedtak kan ikke overlappe hverandre',
 			function validVedtak() {
 				const values = this.options.context
-
+				console.log('values: ', values) //TODO - SLETT MEG
 				const naavaerendeVerdier = {}
 				for (let key of ikkeOverlappendeVedtak) {
 					naavaerendeVerdier[key] = {
@@ -185,7 +185,7 @@ const validFradato = (vedtakType) => {
 						tilDato: values.arenaforvalter[key]?.[0]?.tilDato,
 					}
 				}
-
+				console.log('naavaerendeVerdier: ', naavaerendeVerdier) //TODO - SLETT MEG
 				// Hvis det bare er en type vedtak trengs det ikke å sjekkes videre
 				if (!naavaerendeVerdier.dagpenger?.fraDato && !naavaerendeVerdier.aap?.fraDato) return true
 				if (values.tidligereBestillinger) {
@@ -299,6 +299,19 @@ export const validation = Yup.object({
 		}),
 	),
 	arenaBrukertype: requiredString,
+	aktiveringDato: Yup.mixed()
+		.test('er-paakrevd', 'Feltet er påkrevd', function isRequired(dato) {
+			const values = this.options.context
+			if (values.personFoerLeggTil && values.personFoerLeggTil.arenaforvalteren) return true
+			const { arenaforvalter } = values
+			const ingenYtelser =
+				arenaforvalter?.arenaBrukertype === 'MED_SERVICEBEHOV' &&
+				!arenaforvalter?.aap115 &&
+				!arenaforvalter?.aap &&
+				!arenaforvalter?.dagpenger
+			return !(ingenYtelser && !dato)
+		})
+		.nullable(),
 	inaktiveringDato: Yup.mixed()
 		.nullable()
 		.when('arenaBrukertype', {

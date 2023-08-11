@@ -88,6 +88,8 @@ ArenaPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 		sisteBestillingServicebehov || null,
 	]
 
+	const AKTIVERINGDATO = ['arenaforvalter.aktiveringDato', null]
+
 	return {
 		aap115: {
 			label: '11.5-vedtak',
@@ -104,6 +106,7 @@ ArenaPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 					MED_SERVICEBEHOV,
 					AUTOMATISK_INNSENDING_MELDEKORT,
 					KVALIFISERINGSGRUPPE,
+					AKTIVERINGDATO,
 				)
 			},
 			remove() {
@@ -127,6 +130,7 @@ ArenaPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 					MED_SERVICEBEHOV,
 					AUTOMATISK_INNSENDING_MELDEKORT,
 					KVALIFISERINGSGRUPPE,
+					AKTIVERINGDATO,
 				)
 			},
 			remove() {
@@ -153,6 +157,7 @@ ArenaPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 					MED_SERVICEBEHOV,
 					AUTOMATISK_INNSENDING_MELDEKORT,
 					KVALIFISERINGSGRUPPE,
+					AKTIVERINGDATO,
 				)
 			},
 			remove() {
@@ -185,7 +190,12 @@ ArenaPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 				!has('arenaforvalter.dagpenger') &&
 				!has('arenaforvalter.inaktiveringDato'),
 			add() {
-				setMulti(MED_SERVICEBEHOV, AUTOMATISK_INNSENDING_MELDEKORT, KVALIFISERINGSGRUPPE)
+				setMulti(
+					MED_SERVICEBEHOV,
+					AUTOMATISK_INNSENDING_MELDEKORT,
+					KVALIFISERINGSGRUPPE,
+					AKTIVERINGDATO,
+				)
 			},
 			remove() {
 				del('arenaforvalter')

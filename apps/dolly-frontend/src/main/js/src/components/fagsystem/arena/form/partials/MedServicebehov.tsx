@@ -47,12 +47,21 @@ export const MedServicebehov = ({ formikBag, path }) => {
 					{feilmelding}
 				</Alert>
 			)}
-			<FormikSelect
-				name={`${path}.kvalifiseringsgruppe`}
-				label="Servicebehov"
-				options={Options('kvalifiseringsgruppe')}
-				size="xlarge"
-			/>
+			<div className="flexbox--flex-wrap">
+				<FormikSelect
+					name={`${path}.kvalifiseringsgruppe`}
+					label="Servicebehov"
+					options={Options('kvalifiseringsgruppe')}
+					size="xlarge"
+				/>
+				{!opts.personFoerLeggTil?.arenaforvalteren && (
+					<FormikDatepicker
+						name={`${path}.aktiveringDato`}
+						label="Aktiveringsdato"
+						minDate={new Date('2002-12-30')}
+					/>
+				)}
+			</div>
 			{arenaforvalter.aap115 && (
 				<Kategori title="11-5-vedtak">
 					<FormikDatepicker name={`${path}.aap115[0].fraDato`} label="Fra dato" />
