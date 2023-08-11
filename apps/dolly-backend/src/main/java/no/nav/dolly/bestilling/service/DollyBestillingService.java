@@ -91,6 +91,7 @@ public class DollyBestillingService {
         try {
             RsDollyBestillingRequest bestKriterier = objectMapper.readValue(bestilling.getBestKriterier(), RsDollyBestillingRequest.class);
 
+            bestKriterier.setId(bestilling.getId());
             bestKriterier.setNavSyntetiskIdent(bestilling.getNavSyntetiskIdent());
             bestKriterier.setEnvironments(getEnvironments(bestilling.getMiljoer()));
             bestKriterier.setBeskrivelse(bestilling.getBeskrivelse());
@@ -228,6 +229,7 @@ public class DollyBestillingService {
 
         return Flux.just(getDollyBestillingRequest(
                 Bestilling.builder()
+                        .id(coBestilling.getBestillingid())
                         .bestKriterier(coBestilling.getBestkriterier())
                         .miljoer(StringUtils.isNotBlank(bestilling.getMiljoer()) ?
                                 bestilling.getMiljoer() :

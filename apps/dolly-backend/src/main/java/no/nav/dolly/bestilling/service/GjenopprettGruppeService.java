@@ -74,7 +74,9 @@ public class GjenopprettGruppeService extends DollyBestillingService {
         if (nonNull(bestKriterier)) {
             bestKriterier.setEkskluderEksternePersoner(true);
 
-            var coBestillinger = identService.getBestillingerFromGruppe(bestilling.getGruppe());
+            var coBestillinger = identService.getBestillingerFromGruppe(bestilling.getGruppe()).stream()
+                    .sorted(Comparator.comparing(GruppeBestillingIdent::getBestillingid))
+                    .toList();
 
             var counter = new AtomicInteger(0);
             Flux.fromIterable(bestilling.getGruppe().getTestidenter())
@@ -94,16 +96,18 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                                                             .map(ClientFuture::get)
                                                             .filter(BestillingProgress::isPdlSync)
                                                             .flatMap(pdlSync -> Flux.fromIterable(coBestillinger)
-                                                                    .sort(Comparator.comparing(GruppeBestillingIdent::getBestillingid))
-                                                                    .filter(cobestilling -> ident.equals(cobestilling.getIdent()))
-                                                                    .flatMap(cobestilling -> createBestilling(bestilling, cobestilling)
-                                                                            .flatMap(bestillingRequest -> Flux.concat(
-                                                                                    gjenopprettKlienter(dollyPerson, bestillingRequest,
-                                                                                            fase2Klienter(),
-                                                                                            progress, false),
-                                                                                    gjenopprettKlienter(dollyPerson, bestillingRequest,
-                                                                                            fase3Klienter(),
-                                                                                            progress, false)))))))
+                                                                    .concatMap(bestilling1 -> Flux.just(bestilling1)
+                                                                            .filter(cobestilling -> ident.equals(cobestilling.getIdent()))
+                                                                            .flatMap(cobestilling -> createBestilling(bestilling, cobestilling)
+                                                                                    .doOnNext(request -> log.info("Startet gjenopprett bestilling {} for ident: {}",
+                                                                                            request.getId(), testident.getIdent()))
+                                                                                    .flatMap(bestillingRequest -> Flux.concat(
+                                                                                            gjenopprettKlienter(dollyPerson, bestillingRequest,
+                                                                                                    fase2Klienter(),
+                                                                                                    progress, false),
+                                                                                            gjenopprettKlienter(dollyPerson, bestillingRequest,
+                                                                                                    fase3Klienter(),
+                                                                                                    progress, false))))))))
                                             .onErrorResume(throwable -> {
                                                 var error = errorStatusDecoder.getErrorText(
                                                         WebClientFilter.getStatus(throwable), WebClientFilter.getMessage(throwable));

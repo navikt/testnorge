@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
 @UtilityClass
@@ -82,6 +83,10 @@ public class ArenaStatusUtil {
     }
 
     public static String getMessage(String jsonFeilmelding) {
+
+        if (isBlank(jsonFeilmelding)) {
+            return jsonFeilmelding;
+        }
 
         try {
             var status = new ObjectMapper().readValue(jsonFeilmelding, Map.class);
