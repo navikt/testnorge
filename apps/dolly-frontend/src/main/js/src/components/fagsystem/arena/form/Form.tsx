@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext } from 'react'
 import * as _ from 'lodash-es'
 import { ifPresent } from '@/utils/YupValidations'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
@@ -9,7 +9,6 @@ import { MedServicebehov } from './partials/MedServicebehov'
 import { AlertInntektskomponentenRequired } from '@/components/ui/brukerAlert/AlertInntektskomponentenRequired'
 import { validation } from '@/components/fagsystem/arena/form/validation'
 import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
-import { Alert } from '@navikt/ds-react'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 export const arenaPath = 'arenaforvalter'
@@ -21,15 +20,6 @@ export const ArenaForm = ({ formikBag }) => {
 	const servicebehovAktiv =
 		_.get(formikBag.values, `${arenaPath}.arenaBrukertype`) === 'MED_SERVICEBEHOV'
 	const dagpengerAktiv = _.get(formikBag.values, `${arenaPath}.dagpenger[0]`)
-
-	useEffect(() => {
-		servicebehovAktiv &&
-			!_.get(formikBag.values, `${arenaPath}.kvalifiseringsgruppe`) &&
-			formikBag.setFieldValue(`${arenaPath}.kvalifiseringsgruppe`, null)
-
-		servicebehovAktiv &&
-			formikBag.setFieldValue(`${arenaPath}.automatiskInnsendingAvMeldekort`, null)
-	}, [])
 
 	return (
 		<Vis attributt={arenaPath}>

@@ -62,9 +62,6 @@ export const ArenaPanel = ({ stateModifier, formikBag }) => {
 
 ArenaPanel.heading = 'Arbeidsytelser'
 
-const MED_SERVICEBEHOV = ['arenaforvalter.arenaBrukertype', 'MED_SERVICEBEHOV']
-const AUTOMATISK_INNSENDING_MELDEKORT = ['arenaforvalter.automatiskInnsendingAvMeldekort', true]
-
 ArenaPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 	const getServiceBehov = () => {
 		const okArenaBestillinger = opts?.tidligereBestillinger?.filter((bestilling) => {
@@ -83,6 +80,8 @@ ArenaPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 
 	const sisteBestillingServicebehov = getServiceBehov()
 
+	const MED_SERVICEBEHOV = ['arenaforvalter.arenaBrukertype', 'MED_SERVICEBEHOV']
+	const AUTOMATISK_INNSENDING_MELDEKORT = ['arenaforvalter.automatiskInnsendingAvMeldekort', true]
 	const KVALIFISERINGSGRUPPE = [
 		'arenaforvalter.kvalifiseringsgruppe',
 		sisteBestillingServicebehov || null,

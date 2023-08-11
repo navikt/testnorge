@@ -37,7 +37,7 @@ const Visning = ({ data }) => {
 
 	return (
 		<div className="person-visning_content">
-			<TitleValue title="Registrert" value={formatDate(arenaData.registrertDato)} />
+			<TitleValue title="Aktiveringsdato" value={formatDate(arenaData.registrertDato)} />
 			<TitleValue title="Sist inaktiv" value={formatDate(arenaData.sistInaktivDato)} />
 			<TitleValue title="Hovedmål" value={arenaData.hovedmaal} />
 			<TitleValue title="Formidlingsgruppe" value={arenaData.formidlingsgruppe?.navn} />
@@ -112,7 +112,7 @@ export const ArenaVisning = ({ data, ident, bestillinger, loading, tilgjengeligM
 	}
 
 	const arenaBestillinger = bestillinger.filter((bestilling) =>
-		bestilling.data.hasOwnProperty('arenaforvalter')
+		bestilling.data.hasOwnProperty('arenaforvalter'),
 	)
 	const bestilteMiljoer = getBestilteMiljoer(arenaBestillinger, arenaEnvironments)
 	const miljoerMedData = data?.map((arb) => arb.miljo)
