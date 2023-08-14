@@ -1,7 +1,6 @@
 import useSWR from 'swr'
 import {
 	fetcher,
-	multiFetcherAll,
 	multiFetcherArena,
 	multiFetcherDokarkiv,
 	multiFetcherInst,

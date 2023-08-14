@@ -2,12 +2,9 @@ import Panel from '@/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
 import { harValgtAttributt } from '@/components/ui/form/formUtils'
 import { arenaPath } from '@/components/fagsystem/arena/form/Form'
-import { useContext } from 'react'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 export const ArenaPanel = ({ stateModifier, formikBag }) => {
 	const sm = stateModifier(ArenaPanel.initialValues)
-	// const opts = useContext(BestillingsveilederContext)
 
 	return (
 		<Panel
@@ -86,7 +83,6 @@ ArenaPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 		'arenaforvalter.kvalifiseringsgruppe',
 		sisteBestillingServicebehov || null,
 	]
-
 	const AKTIVERINGDATO = ['arenaforvalter.aktiveringDato', null]
 
 	return {
