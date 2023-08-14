@@ -21,6 +21,8 @@ export const ArenaForm = ({ formikBag }) => {
 		_.get(formikBag.values, `${arenaPath}.arenaBrukertype`) === 'MED_SERVICEBEHOV'
 	const dagpengerAktiv = _.get(formikBag.values, `${arenaPath}.dagpenger[0]`)
 
+	const personFoerLeggTilInntektstub = _.get(opts.personFoerLeggTil, 'inntektstub')
+
 	return (
 		<Vis attributt={arenaPath}>
 			<Panel
@@ -29,9 +31,12 @@ export const ArenaForm = ({ formikBag }) => {
 				iconType="arena"
 				startOpen={erForsteEllerTest(formikBag.values, [arenaPath])}
 			>
-				{!leggTilPaaGruppe && dagpengerAktiv && !formikBag.values.hasOwnProperty('inntektstub') && (
-					<AlertInntektskomponentenRequired vedtak={'dagpengevedtak'} />
-				)}
+				{!leggTilPaaGruppe &&
+					dagpengerAktiv &&
+					!personFoerLeggTilInntektstub &&
+					!formikBag.values.hasOwnProperty('inntektstub') && (
+						<AlertInntektskomponentenRequired vedtak={'dagpengevedtak'} />
+					)}
 				{!servicebehovAktiv && (
 					<FormikDatepicker
 						name={`${arenaPath}.inaktiveringDato`}
