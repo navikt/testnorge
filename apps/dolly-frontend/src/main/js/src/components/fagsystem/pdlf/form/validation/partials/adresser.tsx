@@ -1,18 +1,18 @@
 import * as Yup from 'yup'
-import { messages, requiredString } from '@/utils/YupValidations'
+import { requiredString } from '@/utils/YupValidations'
 import { testDatoFom, testDatoTom } from '@/components/fagsystem/utils'
 import { isAfter, isBefore } from 'date-fns'
 
 const gyldigDatoFom = Yup.lazy((val) =>
 	val instanceof Date
 		? testDatoFom(Yup.date().nullable(), 'gyldigTilOgMed')
-		: testDatoFom(Yup.string().nullable(), 'gyldigTilOgMed')
+		: testDatoFom(Yup.string().nullable(), 'gyldigTilOgMed'),
 )
 
 const gyldigDatoTom = Yup.lazy((val) =>
 	val instanceof Date
 		? testDatoTom(Yup.date().nullable(), 'gyldigFraOgMed')
-		: testDatoTom(Yup.string().nullable(), 'gyldigFraOgMed')
+		: testDatoTom(Yup.string().nullable(), 'gyldigFraOgMed'),
 )
 
 const datoOverlapper = (nyDatoFra, gjeldendeDatoFra, gjeldendeDatoTil) => {
@@ -76,7 +76,7 @@ const validFradato = () => {
 				for (let i = 0; i < nyeAdresser.length; i++) {
 					if (nyeAdresser[i]?.gyldigFraOgMed + '' === val) {
 						tildato = nyeAdresser[i].gyldigTilOgMed
-							? new Date(nyeAdresser[i].gyldigTilOgMed).toISOString()
+							? new Date(nyeAdresser[i].gyldigTilOgMed).toISOString().substring(0, 19)
 							: null
 						adresseIndex = i
 						break
@@ -91,7 +91,7 @@ const validFradato = () => {
 					overlapperMedAdresse(val, tildato, nyeAdresser, true) ||
 					overlapperMedAdresse(val, tildato, tidligereAdresser, false)
 				)
-			}
+			},
 		)
 		.nullable()
 }
@@ -103,7 +103,7 @@ export const vegadresse = Yup.object({
 	bruksenhetsnummer: Yup.string().nullable(),
 	husbokstav: Yup.string().nullable(),
 	husnummer: Yup.lazy((val) =>
-		typeof val === 'string' ? Yup.string().nullable() : Yup.number().nullable()
+		typeof val === 'string' ? Yup.string().nullable() : Yup.number().nullable(),
 	),
 	kommunenummer: Yup.string().nullable(),
 	postnummer: Yup.string().nullable(),
@@ -114,18 +114,18 @@ export const matrikkeladresse = Yup.object({
 	gaardsnummer: Yup.lazy((val) =>
 		typeof val === 'string'
 			? Yup.string().max(5, 'Gårdsnummeret må være under 99999').nullable()
-			: Yup.number().max(99999, 'Gårdsnummeret må være under 99999').nullable()
+			: Yup.number().max(99999, 'Gårdsnummeret må være under 99999').nullable(),
 	),
 	bruksnummer: Yup.lazy((val) =>
 		typeof val === 'string'
 			? Yup.string().max(4, 'Bruksnummeret må være under 9999').nullable()
-			: Yup.number().max(9999, 'Bruksnummeret må være under 9999').nullable()
+			: Yup.number().max(9999, 'Bruksnummeret må være under 9999').nullable(),
 	),
 	postnummer: Yup.string().nullable(),
 	bruksenhetsnummer: Yup.string()
 		.matches(
 			/^[HULK]\d{4}$/,
-			'Bruksenhetsnummer består av bokstaven H, L, U eller K etterfulgt av 4 sifre'
+			'Bruksenhetsnummer består av bokstaven H, L, U eller K etterfulgt av 4 sifre',
 		)
 		.transform((i, j) => (j === '' ? null : i))
 		.nullable(),
@@ -155,7 +155,7 @@ const ukjentBosted = Yup.object({
 export const bostedsadresse = Yup.object({
 	adressetype: Yup.string().nullable(),
 	angittFlyttedato: Yup.lazy((val) =>
-		val instanceof Date ? Yup.date().nullable() : Yup.string().nullable()
+		val instanceof Date ? Yup.date().nullable() : Yup.string().nullable(),
 	),
 	gyldigFraOgMed: validFradato(),
 	gyldigTilOgMed: gyldigDatoTom,

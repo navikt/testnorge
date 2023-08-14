@@ -11,8 +11,6 @@ import no.nav.dolly.bestilling.inntektstub.domain.ValiderInntekt;
 import no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterConsumer;
 import no.nav.dolly.bestilling.skjermingsregister.SkjermingsRegisterConsumer;
 import no.nav.dolly.bestilling.skjermingsregister.domain.SkjermingDataResponse;
-import no.nav.dolly.bestilling.sykemelding.HelsepersonellConsumer;
-import no.nav.dolly.bestilling.sykemelding.domain.dto.HelsepersonellListeDTO;
 import no.nav.dolly.bestilling.udistub.UdiStubConsumer;
 import no.nav.dolly.bestilling.udistub.domain.UdiPersonResponse;
 import no.nav.dolly.consumer.fastedatasett.DatasettType;
@@ -55,7 +53,6 @@ import java.util.Map;
 import java.util.Set;
 
 import static java.lang.String.format;
-import static no.nav.dolly.config.CachingConfig.CACHE_HELSEPERSONELL;
 import static no.nav.dolly.config.CachingConfig.CACHE_KODEVERK;
 
 @RestController
@@ -73,7 +70,6 @@ public class OppslagController {
     private final InntektsmeldingEnumService inntektsmeldingEnumService;
     private final ProfilApiConsumer profilApiConsumer;
     private final TransaksjonMappingService transaksjonMappingService;
-    private final HelsepersonellConsumer helsepersonellConsumer;
     private final SkjermingsRegisterConsumer skjermingsRegisterConsumer;
     private final UdiStubConsumer udiStubConsumer;
 
@@ -169,13 +165,6 @@ public class OppslagController {
     @Operation(description = "Hent udistub ident")
     public UdiPersonResponse getUdistubIdent(@PathVariable String ident) {
         return udiStubConsumer.getUdiPerson(ident).block();
-    }
-
-    @Cacheable(CACHE_HELSEPERSONELL)
-    @GetMapping("/helsepersonell")
-    @Operation(description = "Hent liste med helsepersonell")
-    public Mono<HelsepersonellListeDTO> getHelsepersonell() {
-        return helsepersonellConsumer.getHelsepersonell();
     }
 
     @GetMapping("/fastedatasett/{datasettype}")

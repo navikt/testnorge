@@ -40,7 +40,7 @@ export default ({ formikBag, path }: InntektendringForm) => {
 	const handleRapporteringDateChange = (selectedDate: Date, listePath: string) => {
 		formikBag.setFieldValue(
 			`${listePath}.rapporteringsdato`,
-			selectedDate && selectedDate.toISOString()
+			selectedDate && selectedDate.toISOString().substring(0, 19),
 		)
 	}
 

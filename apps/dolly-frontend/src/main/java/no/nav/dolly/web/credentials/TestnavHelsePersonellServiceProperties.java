@@ -1,10 +1,10 @@
-package no.nav.registre.testnorge.helsepersonellservice.config.credentials;
+package no.nav.dolly.web.credentials;
 
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConfigurationProperties(prefix = "consumers.dolly-backend")
-public class DollyBackendProperties extends ServerProperties {
+@ConfigurationProperties(prefix = "consumers.testnav-helsepersonell-service")
+public class TestnavHelsePersonellServiceProperties extends ServerProperties {
 }

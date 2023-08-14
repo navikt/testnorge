@@ -203,5 +203,10 @@
     "target": "http://localhost:8020",
     "changeOrigin": true,
     "secure": false
+  },
+  "/testnav-helsepersonell-service": {
+    "target": "http://localhost:8020",
+    "changeOrigin": true,
+    "secure": false
   }
 }

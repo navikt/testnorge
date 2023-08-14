@@ -88,12 +88,16 @@ const overlapp25aarsdag = (fradato, tildato, values) => {
 	} else {
 		foedtEtter.setFullYear(foedtEtter.getFullYear() + 25)
 		foedtFoer.setFullYear(foedtFoer.getFullYear() + 25)
-		return overlapperMedliste(fradato.toISOString(), tildato.toISOString(), [
-			{
-				fraDato: foedtEtter.toISOString(),
-				tilDato: foedtFoer.toISOString(),
-			},
-		])
+		return overlapperMedliste(
+			fradato.toISOString().substring(0, 19),
+			tildato.toISOString().substring(0, 19),
+			[
+				{
+					fraDato: foedtEtter.toISOString().substring(0, 19),
+					tilDato: foedtFoer.toISOString().substring(0, 19),
+				},
+			],
+		)
 	}
 }
 

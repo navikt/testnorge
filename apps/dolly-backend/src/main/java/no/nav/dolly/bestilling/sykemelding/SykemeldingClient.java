@@ -153,12 +153,7 @@ public class SykemeldingClient implements ClientRegister {
                                     detaljertSykemeldingRequest.setPasient(mapperFacade.map(persondata,
                                             DetaljertSykemeldingRequest.Pasient.class, context));
 
-                                    return sykemeldingConsumer.postDetaljertSykemelding(detaljertSykemeldingRequest)
-                                            .map(status -> {
-                                                status.setDetaljertSykemeldingRequest(detaljertSykemeldingRequest);
-                                                status.setIdent(detaljertSykemeldingRequest.getPasient().getIdent());
-                                                return status;
-                                            });
+                                    return sykemeldingConsumer.postDetaljertSykemelding(detaljertSykemeldingRequest);
                                 }));
     }
 
@@ -174,12 +169,7 @@ public class SykemeldingClient implements ClientRegister {
                     var syntSykemeldingRequest =
                             mapperFacade.map(syntmelding, SyntSykemeldingRequest.class, context);
 
-                    return syntSykemeldingConsumer.postSyntSykemelding(syntSykemeldingRequest)
-                            .map(status -> {
-                                status.setSyntSykemeldingRequest(syntSykemeldingRequest);
-                                status.setIdent(syntSykemeldingRequest.getIdent());
-                                return status;
-                            });
+                    return syntSykemeldingConsumer.postSyntSykemelding(syntSykemeldingRequest);
                 });
     }
 
