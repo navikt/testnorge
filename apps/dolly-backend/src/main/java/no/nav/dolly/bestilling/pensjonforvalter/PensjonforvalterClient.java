@@ -118,7 +118,7 @@ public class PensjonforvalterClient implements ClientRegister {
                             .collect(Collectors.toSet()));
 
                     return Flux.just(bestilling)
-                            .filter(bestilling1 -> isOppdateringRequired(bestilling1, tilgjengeligeMiljoer, progress))
+//                            .filter(bestilling1 -> isOppdateringRequired(bestilling1, tilgjengeligeMiljoer, progress))
                             .doOnNext(bestilling1 -> {
                                 if (!dollyPerson.isOrdre()) {
                                     transactionHelperService.persister(progress, BestillingProgress::setPensjonforvalterStatus,
