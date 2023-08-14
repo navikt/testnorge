@@ -45,9 +45,6 @@ class PensjonforvalterConsumerTest {
     @MockBean
     private TokenExchange tokenService;
 
-    @MockBean
-    private AccessToken accessToken;
-
     @Autowired
     private PensjonforvalterConsumer pensjonforvalterConsumer;
 
@@ -156,7 +153,7 @@ class PensjonforvalterConsumerTest {
         stubPostOpprettPerson(false);
 
         StepVerifier.create(pensjonforvalterConsumer
-                        .opprettPerson(new PensjonPersonRequest(), Set.of("tx"), accessToken))
+                        .opprettPerson(new PensjonPersonRequest(), Set.of("tx")))
                 .expectNext(PensjonforvalterResponse.builder()
                         .status(List.of(PensjonforvalterResponse.ResponseEnvironment.builder()
                                 .miljo("tx")
@@ -178,7 +175,7 @@ class PensjonforvalterConsumerTest {
 
         stubPostOpprettPerson(true);
 
-        StepVerifier.create(pensjonforvalterConsumer.opprettPerson(new PensjonPersonRequest(), Set.of("q1"), accessToken))
+        StepVerifier.create(pensjonforvalterConsumer.opprettPerson(new PensjonPersonRequest(), Set.of("q1")))
                 .expectNext(PensjonforvalterResponse.builder()
                         .status(List.of(PensjonforvalterResponse.ResponseEnvironment.builder()
                                 .miljo("tx")
@@ -201,7 +198,7 @@ class PensjonforvalterConsumerTest {
 
         stubPostLagreInntekt(false);
 
-        StepVerifier.create(pensjonforvalterConsumer.lagreInntekter(new PensjonPoppInntektRequest(), Set.of("tx"), accessToken))
+        StepVerifier.create(pensjonforvalterConsumer.lagreInntekter(new PensjonPoppInntektRequest(), Set.of("tx")))
                 .expectNext(PensjonforvalterResponse.builder()
                         .status(List.of(PensjonforvalterResponse.ResponseEnvironment.builder()
                                 .miljo("tx")
@@ -222,7 +219,7 @@ class PensjonforvalterConsumerTest {
 
         stubPostLagreInntekt(true);
 
-        StepVerifier.create(pensjonforvalterConsumer.lagreInntekter(new PensjonPoppInntektRequest(), Set.of("tx"), accessToken))
+        StepVerifier.create(pensjonforvalterConsumer.lagreInntekter(new PensjonPoppInntektRequest(), Set.of("tx")))
                 .expectNext(PensjonforvalterResponse.builder()
                         .status(List.of(PensjonforvalterResponse.ResponseEnvironment.builder()
                                 .miljo("tx")
@@ -259,7 +256,7 @@ class PensjonforvalterConsumerTest {
 
         stubPostLagreTpForhold(false);
 
-        StepVerifier.create(pensjonforvalterConsumer.lagreTpForhold(new PensjonTpForholdRequest(), accessToken))
+        StepVerifier.create(pensjonforvalterConsumer.lagreTpForhold(new PensjonTpForholdRequest()))
                 .expectNext(PensjonforvalterResponse.builder()
                         .status(List.of(PensjonforvalterResponse.ResponseEnvironment.builder()
                                 .miljo("tx")
@@ -281,7 +278,7 @@ class PensjonforvalterConsumerTest {
 
         stubPostLagreTpForhold(true);
 
-        StepVerifier.create(pensjonforvalterConsumer.lagreTpForhold(new PensjonTpForholdRequest(), accessToken))
+        StepVerifier.create(pensjonforvalterConsumer.lagreTpForhold(new PensjonTpForholdRequest()))
                 .expectNext(PensjonforvalterResponse.builder()
                         .status(List.of(PensjonforvalterResponse.ResponseEnvironment.builder()
                                 .miljo("tx")
@@ -318,7 +315,7 @@ class PensjonforvalterConsumerTest {
 
         stubPostLagreTpYtelse(false);
 
-        StepVerifier.create(pensjonforvalterConsumer.lagreTpYtelse(new PensjonTpYtelseRequest(), accessToken))
+        StepVerifier.create(pensjonforvalterConsumer.lagreTpYtelse(new PensjonTpYtelseRequest()))
                 .expectNext(PensjonforvalterResponse.builder()
                         .status(List.of(PensjonforvalterResponse.ResponseEnvironment.builder()
                                 .miljo("tx")
@@ -340,7 +337,7 @@ class PensjonforvalterConsumerTest {
 
         stubPostLagreTpYtelse(true);
 
-        StepVerifier.create(pensjonforvalterConsumer.lagreTpYtelse(new PensjonTpYtelseRequest(), accessToken))
+        StepVerifier.create(pensjonforvalterConsumer.lagreTpYtelse(new PensjonTpYtelseRequest()))
                 .expectNext(PensjonforvalterResponse.builder()
                         .status(List.of(PensjonforvalterResponse.ResponseEnvironment.builder()
                                 .miljo("tx")
