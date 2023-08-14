@@ -74,7 +74,7 @@ export const ArenaVisning = ({ data, ident, bestillinger, loading, tilgjengeligM
 	const [harArenasyntTag, setHarArenasyntTag] = useState(false)
 	const [tagsloading, setTagsLoading] = useState(false)
 	const mountedRef = useRef(true)
-	console.log('data: ', data) //TODO - SLETT MEG
+
 	const execute = useCallback(() => {
 		const getTags = async () => {
 			setTagsLoading(true)
@@ -110,7 +110,7 @@ export const ArenaVisning = ({ data, ident, bestillinger, loading, tilgjengeligM
 	if (!data && !harArenasyntTag) {
 		return null
 	}
-	console.log('bestillinger xxx: ', bestillinger) //TODO - SLETT MEG
+
 	const arenaBestillinger = bestillinger.filter((bestilling) =>
 		bestilling.data.hasOwnProperty('arenaforvalter'),
 	)
@@ -127,7 +127,7 @@ export const ArenaVisning = ({ data, ident, bestillinger, loading, tilgjengeligM
 		tilgjengeligMiljoe && data.filter((item) => item.miljo === tilgjengeligMiljoe)
 
 	const forsteMiljo = data.find((miljoData) => miljoData?.data)?.miljo
-	console.log('bestilteMiljoer: ', bestilteMiljoer) //TODO - SLETT MEG
+
 	return (
 		<div>
 			<SubOverskrift label="Arbeidsytelser" iconKind="arena" />
@@ -145,9 +145,8 @@ export const ArenaVisning = ({ data, ident, bestillinger, loading, tilgjengeligM
 
 const getBestilteMiljoer = (bestillinger, arenaMiljoer) => {
 	const bestilteMiljoer = []
-	console.log('bestillinger: ', bestillinger) //TODO - SLETT MEG
+
 	const getMiljoe = (bestilling) => {
-		// console.log('bestilling: ', bestilling) //TODO - SLETT MEG
 		return bestilling?.status
 			?.filter((status) => status.id === 'ARENA_BRUKER' || status.id === 'ARENA')?.[0]
 			?.statuser?.filter((status) => status.melding === 'OK')?.[0]
@@ -157,7 +156,6 @@ const getBestilteMiljoer = (bestillinger, arenaMiljoer) => {
 	arenaMiljoer.forEach((miljoe) => {
 		bestillinger.forEach((bestilling) => {
 			const bestMiljoe = getMiljoe(bestilling)
-			// console.log('bestMiljoe: ', bestMiljoe) //TODO - SLETT MEG
 			if (bestMiljoe?.includes(miljoe)) {
 				bestilteMiljoer.push(miljoe)
 			}
