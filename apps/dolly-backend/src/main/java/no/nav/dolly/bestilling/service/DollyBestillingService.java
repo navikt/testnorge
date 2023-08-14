@@ -129,13 +129,12 @@ public class DollyBestillingService {
                                                            GjenopprettSteg steg,
                                                            BestillingProgress progress, boolean isOpprettEndre) {
 
-        return Flux.from(Flux.fromIterable(clientRegisters)
-                .parallel()
+        return Flux.fromIterable(clientRegisters)
                 .filter(steg::apply)
                 .flatMap(clientRegister ->
                         clientRegister.gjenopprett(bestKriterier, dollyPerson, progress, isOpprettEndre))
                 .filter(Objects::nonNull)
-                .map(ClientFuture::get));
+                .map(ClientFuture::get);
     }
 
     protected void leggIdentTilGruppe(String ident, BestillingProgress progress, String beskrivelse) {
