@@ -83,9 +83,8 @@ public class TransactionHelperService {
 
         var status = new AtomicReference<String>(null);
         bestillingProgressRepository.findById(bestillingProgress.getId())
-                    .ifPresent(progress -> {
-                        status.set(getter.apply(progress));
-                    });
+                    .ifPresent(progress ->
+                        status.set(getter.apply(progress)));
 
         return status.get();
     }
