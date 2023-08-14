@@ -52,7 +52,6 @@ import java.util.stream.Stream;
 import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.PEN_AP;
-import static org.apache.poi.util.StringUtil.isBlank;
 
 @Slf4j
 @Service
@@ -118,7 +117,6 @@ public class PensjonforvalterClient implements ClientRegister {
                             .collect(Collectors.toSet()));
 
                     return Flux.just(bestilling)
-                            .filter(bestilling1 -> isOppdateringRequired(bestilling1, tilgjengeligeMiljoer, progress))
                             .doOnNext(bestilling1 -> {
                                 if (!dollyPerson.isOrdre()) {
                                     transactionHelperService.persister(progress, BestillingProgress::setPensjonforvalterStatus,
@@ -152,12 +150,6 @@ public class PensjonforvalterClient implements ClientRegister {
                             .collect(Collectors.joining("$"));
                 })
                 .map(status -> futurePersist(dollyPerson, progress, status));
-    }
-
-    private boolean isOppdateringRequired(RsDollyUtvidetBestilling bestilling, Set<String> miljoer, BestillingProgress progress) {
-
-        var status = transactionHelperService.getProgress(progress, BestillingProgress::getPensjonforvalterStatus);
-        return isBlank(status) || !miljoer.stream().allMatch(status::contains) || nonNull(bestilling.getPensjonforvalter());
     }
 
     private String prepInitStatus(Set<String> miljoer) {
