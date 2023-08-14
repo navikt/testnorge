@@ -66,7 +66,7 @@ ArenaPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 	const getServiceBehov = () => {
 		const okArenaBestillinger = opts?.tidligereBestillinger?.filter((bestilling) => {
 			const arenaStatus = bestilling?.status?.find(
-				(bestStatus) => bestStatus?.id === 'ARENA_BRUKER',
+				(bestStatus) => bestStatus?.id === 'ARENA_BRUKER' || bestStatus?.id === 'ARENA',
 			)
 			const okArena = arenaStatus?.statuser?.some((bestStatus) => {
 				return bestStatus?.melding === 'OK'
