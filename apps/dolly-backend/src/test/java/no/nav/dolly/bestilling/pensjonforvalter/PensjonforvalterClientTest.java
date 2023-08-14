@@ -99,9 +99,8 @@ class PensjonforvalterClientTest {
     void setup() {
         statusCaptor = ArgumentCaptor.forClass(String.class);
         when(mapperFacade.map(any(PdlPersonBolk.PersonBolk.class), eq(PensjonPersonRequest.class))).thenReturn(new PensjonPersonRequest());
-        when(pensjonforvalterConsumer.getAccessToken()).thenReturn(Mono.just(accessToken));
         when(accessToken.getTokenValue()).thenReturn("123");
-        when(pensjonforvalterConsumer.opprettPerson(any(PensjonPersonRequest.class), anySet(), eq(accessToken)))
+        when(pensjonforvalterConsumer.opprettPerson(any(PensjonPersonRequest.class), anySet()))
                 .thenReturn(Flux.just(new PensjonforvalterResponse()));
 
         var pdlPersonBolk = PdlPersonBolk.builder()
@@ -271,7 +270,7 @@ class PensjonforvalterClientTest {
 
         when(pensjonforvalterConsumer.getMiljoer()).thenReturn(Mono.just(Set.of("TEST1", "TEST2")));
 
-        when(pensjonforvalterConsumer.opprettPerson(any(PensjonPersonRequest.class), anySet(), any(AccessToken.class)))
+        when(pensjonforvalterConsumer.opprettPerson(any(PensjonPersonRequest.class), anySet()))
                 .thenReturn(Flux.just(PensjonforvalterResponse.builder()
                         .status(List.of(ResponseEnvironment.builder()
                                 .miljo("TEST1")
@@ -283,7 +282,7 @@ class PensjonforvalterClientTest {
                                 .build()))
                         .build()));
 
-        when(pensjonforvalterConsumer.lagreTpForhold(any(PensjonTpForholdRequest.class), eq(accessToken)))
+        when(pensjonforvalterConsumer.lagreTpForhold(any(PensjonTpForholdRequest.class)))
                 .thenReturn(Flux.just(PensjonforvalterResponse.builder()
                         .status(List.of(
                                 new ResponseEnvironment("TEST1", PensjonforvalterResponse.Response.builder()
@@ -294,7 +293,7 @@ class PensjonforvalterClientTest {
                                         .build())))
                         .build()));
 
-        when(pensjonforvalterConsumer.lagreTpYtelse(any(PensjonTpYtelseRequest.class), eq(accessToken)))
+        when(pensjonforvalterConsumer.lagreTpYtelse(any(PensjonTpYtelseRequest.class)))
                 .thenReturn(Flux.just(PensjonforvalterResponse.builder()
                         .status(List.of(
                                 new ResponseEnvironment("TEST1", PensjonforvalterResponse.Response.builder()
@@ -351,7 +350,7 @@ class PensjonforvalterClientTest {
 
         when(pensjonforvalterConsumer.getMiljoer()).thenReturn(Mono.just(Set.of("TEST1", "TEST2")));
 
-        when(pensjonforvalterConsumer.opprettPerson(any(PensjonPersonRequest.class), anySet(), any(AccessToken.class)))
+        when(pensjonforvalterConsumer.opprettPerson(any(PensjonPersonRequest.class), anySet()))
                 .thenReturn(Flux.just(PensjonforvalterResponse.builder()
                         .status(List.of(ResponseEnvironment.builder()
                                         .miljo("TEST1")
@@ -371,7 +370,7 @@ class PensjonforvalterClientTest {
                                         .build()))
                         .build()));
 
-        when(pensjonforvalterConsumer.lagreTpForhold(any(PensjonTpForholdRequest.class), eq(accessToken)))
+        when(pensjonforvalterConsumer.lagreTpForhold(any(PensjonTpForholdRequest.class)))
                 .thenReturn(Flux.just(PensjonforvalterResponse.builder()
                         .status(List.of(
                                 new ResponseEnvironment("TEST1", PensjonforvalterResponse.Response.builder()
@@ -382,7 +381,7 @@ class PensjonforvalterClientTest {
                                         .build())))
                         .build()));
 
-        when(pensjonforvalterConsumer.lagreTpYtelse(any(PensjonTpYtelseRequest.class), eq(accessToken)))
+        when(pensjonforvalterConsumer.lagreTpYtelse(any(PensjonTpYtelseRequest.class)))
                 .thenReturn(Flux.just(PensjonforvalterResponse.builder()
                         .status(List.of(
                                 new ResponseEnvironment("TEST1", PensjonforvalterResponse.Response.builder()
@@ -439,7 +438,7 @@ class PensjonforvalterClientTest {
 
         when(pensjonforvalterConsumer.getMiljoer()).thenReturn(Mono.just(Set.of("TEST1", "TEST2")));
 
-        when(pensjonforvalterConsumer.opprettPerson(any(PensjonPersonRequest.class), anySet(), any(AccessToken.class)))
+        when(pensjonforvalterConsumer.opprettPerson(any(PensjonPersonRequest.class), anySet()))
                 .thenReturn(Flux.just(PensjonforvalterResponse.builder()
                         .status(List.of(ResponseEnvironment.builder()
                                         .miljo("TEST1")
@@ -459,7 +458,7 @@ class PensjonforvalterClientTest {
                                         .build()))
                         .build()));
 
-        when(pensjonforvalterConsumer.lagreTpForhold(any(PensjonTpForholdRequest.class), eq(accessToken)))
+        when(pensjonforvalterConsumer.lagreTpForhold(any(PensjonTpForholdRequest.class)))
                 .thenReturn(Flux.just(PensjonforvalterResponse.builder()
                         .status(List.of(
                                 new ResponseEnvironment("TEST1", PensjonforvalterResponse.Response.builder()
@@ -471,7 +470,7 @@ class PensjonforvalterClientTest {
                         ))
                         .build()));
 
-        when(pensjonforvalterConsumer.lagreTpYtelse(any(PensjonTpYtelseRequest.class), eq(accessToken)))
+        when(pensjonforvalterConsumer.lagreTpYtelse(any(PensjonTpYtelseRequest.class)))
                 .thenReturn(Flux.just(PensjonforvalterResponse.builder()
                         .status(List.of(
                                 new ResponseEnvironment("TEST1", PensjonforvalterResponse.Response.builder()
