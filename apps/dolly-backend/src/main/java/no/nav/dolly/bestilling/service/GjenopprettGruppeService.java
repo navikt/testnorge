@@ -98,10 +98,10 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                                                             .flatMap(pdlSync -> Flux.fromIterable(coBestillinger)
                                                                     .concatMap(bestilling1 -> Flux.just(bestilling1)
                                                                             .filter(cobestilling -> ident.equals(cobestilling.getIdent()))
-                                                                            .flatMap(cobestilling -> createBestilling(bestilling, cobestilling)
+                                                                            .flatMapSequential(cobestilling -> createBestilling(bestilling, cobestilling)
                                                                                     .doOnNext(request -> log.info("Startet gjenopprett bestilling {} for ident: {}",
                                                                                             request.getId(), testident.getIdent()))
-                                                                                    .flatMap(bestillingRequest -> Flux.concat(
+                                                                                    .flatMapSequential(bestillingRequest -> Flux.concat(
                                                                                             gjenopprettKlienter(dollyPerson, bestillingRequest,
                                                                                                     fase2Klienter(),
                                                                                                     progress, false),
