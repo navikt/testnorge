@@ -104,6 +104,8 @@ export default ({
 	}
 	const bestillingListe = getBestillingsListe(bestillinger, bestillingIdListe)
 	const bestilling = bestillinger?.[bestillingIdListe?.[0]]
+	console.log('ident: ', ident) //TODO - SLETT MEG
+	console.log('bestillingListe: ', bestillingListe) //TODO - SLETT MEG
 
 	useEffect(() => {
 		fetchDataFraFagsystemer(bestillinger)
@@ -113,17 +115,17 @@ export default ({
 
 	const { loading: loadingAareg, arbeidsforhold } = useArbeidsforhold(
 		ident.ident,
-		harAaregBestilling(bestillingerFagsystemer) || ident?.master === 'PDL'
+		harAaregBestilling(bestillingerFagsystemer) || ident?.master === 'PDL',
 	)
 
 	const { loading: loadingAmelding, ameldinger } = useAmeldinger(
 		ident.ident,
-		harAaregBestilling(bestillingerFagsystemer) || ident?.master === 'PDL'
+		harAaregBestilling(bestillingerFagsystemer) || ident?.master === 'PDL',
 	)
 
 	const { loading: loadingMedl, medl } = useMedlPerson(
 		ident.ident,
-		harMedlBestilling(bestillingerFagsystemer) || ident?.master === 'PDL'
+		harMedlBestilling(bestillingerFagsystemer) || ident?.master === 'PDL',
 	)
 
 	const visArbeidsforhold =
@@ -131,32 +133,32 @@ export default ({
 
 	const { loading: loadingTpData, tpData } = useTpData(
 		ident.ident,
-		harTpBestilling(bestillingerFagsystemer)
+		harTpBestilling(bestillingerFagsystemer),
 	)
 
 	const { loading: loadingPoppData, poppData } = usePoppData(
 		ident.ident,
-		harPoppBestilling(bestillingerFagsystemer)
+		harPoppBestilling(bestillingerFagsystemer),
 	)
 
 	const { loading: loadingDokarkivData, dokarkivData } = useDokarkivData(
 		ident.ident,
-		harDokarkivBestilling(bestillingerFagsystemer)
+		harDokarkivBestilling(bestillingerFagsystemer),
 	)
 
 	const { loading: loadingHistarkData, histarkData } = useHistarkData(
 		ident.ident,
-		harHistarkBestilling(bestillingerFagsystemer)
+		harHistarkBestilling(bestillingerFagsystemer),
 	)
 
 	const { loading: loadingInstData, instData } = useInstData(
 		ident.ident,
-		harInstBestilling(bestillingerFagsystemer)
+		harInstBestilling(bestillingerFagsystemer),
 	)
 
 	const { loading: loadingArbeidsplassencvData, arbeidsplassencvData } = useArbeidsplassencvData(
 		ident.ident,
-		harArbeidsplassenBestilling(bestillingerFagsystemer)
+		harArbeidsplassenBestilling(bestillingerFagsystemer),
 	)
 
 	const getGruppeIdenter = () => {
@@ -176,7 +178,7 @@ export default ({
 	const manglerFagsystemdata = () => {
 		if (
 			[sigrunstub, inntektstub, krrstub].some(
-				(fagsystem) => Array.isArray(fagsystem) && !fagsystem.length
+				(fagsystem) => Array.isArray(fagsystem) && !fagsystem.length,
 			)
 		) {
 			return true
@@ -210,7 +212,7 @@ export default ({
 			?.filter(
 				(siv) =>
 					!siv?.metadata?.historisk &&
-					['GIFT', 'REGISTRERT_PARTNER', 'SEPARERT', 'SEPARERT_PARTNER'].includes(siv?.type)
+					['GIFT', 'REGISTRERT_PARTNER', 'SEPARERT', 'SEPARERT_PARTNER'].includes(siv?.type),
 			)
 			?.forEach((person) => {
 				relatertePersoner.push({
@@ -232,7 +234,7 @@ export default ({
 			?.filter(
 				(forelderBarn) =>
 					!forelderBarn?.metadata?.historisk &&
-					['BARN', 'MOR', 'MEDMOR', 'FAR'].includes(forelderBarn?.relatertPersonsRolle)
+					['BARN', 'MOR', 'MEDMOR', 'FAR'].includes(forelderBarn?.relatertPersonsRolle),
 			)
 			?.forEach((person) => {
 				relatertePersoner.push({
@@ -255,14 +257,14 @@ export default ({
 
 	const relatertePersoner = pdlRelatertPerson()?.filter((ident) => ident.id)
 	const harPdlRelatertPerson = relatertePersoner?.length > 0
-	const importerteRelatertePersoner = relatertePersoner?.filter((ident) =>
-		gruppeIdenter?.includes(ident.id)
+	const importerteRelatertePersoner = relatertePersoner?.filter(
+		(ident) => gruppeIdenter?.includes(ident.id),
 	)
 
 	const getArbeidsplassencvHjemmel = () => {
 		if (!harArbeidsplassenBestilling(bestillingerFagsystemer)) return null
 		const arbeidsplassenBestillinger = bestillingListe.filter((bestilling) =>
-			_has(bestilling.data, 'arbeidsplassenCV')
+			_has(bestilling.data, 'arbeidsplassenCV'),
 		)
 		return arbeidsplassenBestillinger?.[0]?.data?.arbeidsplassenCV?.harHjemmel
 	}
@@ -293,7 +295,7 @@ export default ({
 									ident.master,
 									getIdenttype(ident.ident),
 									gruppeId,
-									navigate
+									navigate,
 								)
 							}}
 							kind="add-circle"
