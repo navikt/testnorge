@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.arenaforvalter;
 
 import no.nav.dolly.config.credentials.ArenaforvalterProxyProperties;
+import no.nav.dolly.domain.resultset.arenaforvalter.ArenaBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukere;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
@@ -79,11 +80,11 @@ class ArenaForvalterConsumerTest {
         var response =
                 arenaForvalterConsumer.postArenaBruker(ArenaNyeBrukere.builder()
                                 .nyeBrukere(singletonList(ArenaNyBruker.builder().personident(IDENT).build()))
-                                .build(), accessToken)
+                                .build())
                         .collectList()
                         .block();
 
-        assertThat(response.get(0).getArbeidsokerList().get(0).getStatus(), is(CoreMatchers.equalTo("OK")));
+        assertThat(response.get(0).getArbeidsokerList().get(0).getStatus(), is(CoreMatchers.equalTo(ArenaBruker.BrukerStatus.OK)));
         assertThat(response.get(0).getNyBrukerFeilList(), is(emptyList()));
     }
 
@@ -92,7 +93,7 @@ class ArenaForvalterConsumerTest {
 
         stubGetArenaForvalterBruker();
 
-        var response = arenaForvalterConsumer.getBruker(IDENT, ENV, accessToken).blockFirst();
+        var response = arenaForvalterConsumer.getArenaBruker(IDENT, ENV).block();
 
         assertThat("Response should be 200 successful", response.getStatus().is2xxSuccessful());
     }
@@ -121,11 +122,9 @@ class ArenaForvalterConsumerTest {
 
     private void stubGetArenaForvalterBruker() {
 
-        stubFor(get(urlPathMatching("(.*)/arenaforvalter/api/v1/bruker"))
-                .withQueryParam("filter-personident", equalTo(IDENT))
-                .withQueryParam("filter-miljoe", equalTo(ENV))
+        stubFor(get(urlPathMatching("(.*)/arenaforvalter/" + ENV + "/arena/syntetiser/brukeroppfolging/personstatusytelse"))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
-                        .withBody("{\"arbeidsokerList\":[{\"status\":\"OK\"}]}")));
+                        .withBody("{\"status\":\"OK\"}")));
     }
 }

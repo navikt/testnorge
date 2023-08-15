@@ -14,6 +14,7 @@ import org.springframework.web.reactive.function.client.ClientRequestObservation
 import org.springframework.web.reactive.function.client.DefaultClientRequestObservationConvention;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.netty.http.client.HttpClient;
+import reactor.netty.resources.ConnectionProvider;
 
 import java.time.Duration;
 
@@ -39,7 +40,10 @@ public class WebClientConfig {
                     .clientConnector(
                             new ReactorClientHttpConnector(
                                     HttpClient
-                                            .create()
+                                            .create(ConnectionProvider.builder("Testnorge connection pool")
+                                                    .maxConnections(1500)
+                                                    .pendingAcquireMaxCount(3000)
+                                                    .build())
                                             .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 60000)
                                             .option(ChannelOption.SO_KEEPALIVE, true)
                                             .option(EpollChannelOption.TCP_KEEPIDLE, 300)

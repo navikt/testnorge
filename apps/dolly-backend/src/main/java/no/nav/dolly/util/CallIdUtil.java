@@ -11,6 +11,6 @@ import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 public final class CallIdUtil {
 
     public static String generateCallId() {
-        return format("%s-%s", CONSUMER, UUID.randomUUID().toString());
+        return format("%s-%s", CONSUMER, UUID.randomUUID());
     }
 }

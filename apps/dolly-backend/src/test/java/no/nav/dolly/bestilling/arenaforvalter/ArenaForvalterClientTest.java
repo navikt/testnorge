@@ -1,18 +1,17 @@
 package no.nav.dolly.bestilling.arenaforvalter;
 
-import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientFuture;
+import no.nav.dolly.bestilling.arenaforvalter.dto.ArenaStatusResponse;
+import no.nav.dolly.bestilling.arenaforvalter.service.ArenaAap115Service;
+import no.nav.dolly.bestilling.arenaforvalter.service.ArenaAapService;
+import no.nav.dolly.bestilling.arenaforvalter.service.ArenaBrukerService;
+import no.nav.dolly.bestilling.arenaforvalter.service.ArenaDagpengerService;
+import no.nav.dolly.bestilling.arenaforvalter.service.ArenaStansYtelseService;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
-import no.nav.dolly.domain.resultset.arenaforvalter.ArenaArbeidssokerBruker;
-import no.nav.dolly.domain.resultset.arenaforvalter.ArenaKvalifiseringsgruppe;
-import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyBruker;
-import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukere;
-import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukereResponse;
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.util.TransactionHelperService;
-import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,15 +28,12 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import static java.util.Collections.singleton;
-import static java.util.Collections.singletonList;
-import static no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukereResponse.BrukerFeilstatus.DUPLIKAT;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -55,14 +51,23 @@ class ArenaForvalterClientTest {
     @Mock
     private TransactionHelperService transactionHelperService;
 
+    @Mock
+    private ArenaBrukerService arenaBrukerService;
+
+    @Mock
+    private ArenaAap115Service arenaAap115Service;
+
+    @Mock
+    private ArenaAapService arenaAapService;
+
+    @Mock
+    private ArenaDagpengerService arenaDagpengerService;
+
+    @Mock
+    private ArenaStansYtelseService arenaStansYtelseService;
+
     @InjectMocks
     private ArenaForvalterClient arenaForvalterClient;
-
-    @Mock
-    private MapperFacade mapperFacade;
-
-    @Mock
-    private AccessToken accessToken;
 
     @Captor
     ArgumentCaptor<String> statusCaptor;
@@ -76,25 +81,17 @@ class ArenaForvalterClientTest {
     void gjenopprett_Ok() {
 
         BestillingProgress progress = new BestillingProgress();
-        when(arenaForvalterConsumer.getEnvironments(accessToken)).thenReturn(Flux.just(ENV));
-        when(mapperFacade.map(any(Arenadata.class), eq(ArenaNyBruker.class))).thenReturn(ArenaNyBruker.builder()
-                .kvalifiseringsgruppe(ArenaKvalifiseringsgruppe.IKVAL)
-                .build());
-        when(arenaForvalterConsumer.postArenaBruker(any(ArenaNyeBrukere.class), eq(accessToken)))
-                .thenReturn(Flux.just(
-                        ArenaNyeBrukereResponse.builder()
-                                .status(HttpStatus.OK)
-                                .arbeidsokerList(singletonList(ArenaNyeBrukereResponse.Bruker.builder()
-                                        .miljoe(ENV)
-                                        .status("OK")
-                                        .build()))
-                                .build()));
-        when(arenaForvalterConsumer.getToken()).thenReturn(Mono.just(accessToken));
-        when(arenaForvalterConsumer.getEnvironments(accessToken)).thenReturn(Flux.just(ENV));
-        when(arenaForvalterConsumer.getBruker(anyString(), anyString(), eq(accessToken)))
-                .thenReturn(Flux.just(ArenaArbeidssokerBruker.builder()
+        when(arenaForvalterConsumer.getEnvironments()).thenReturn(Flux.just(ENV));
+        when(arenaForvalterConsumer.getArenaBruker(anyString(), anyString()))
+                .thenReturn(Mono.just(ArenaStatusResponse.builder()
                         .status(HttpStatus.OK)
                         .build()));
+        when(arenaBrukerService.sendBruker(any(), any(), any(), any()))
+                .thenReturn(Flux.just("Oppretting: OK"));
+        when(arenaAap115Service.sendAap115(any(), any(), any(), any())).thenReturn(Flux.empty());
+        when(arenaAapService.sendAap(any(), any(), any(), any())).thenReturn(Flux.empty());
+        when(arenaDagpengerService.sendDagpenger(any(), any(), any(), any())).thenReturn(Flux.empty());
+        when(arenaStansYtelseService.stopYtelse(any(), any(), any())).thenReturn(Flux.empty());
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setArenaforvalter(Arenadata.builder().build());
@@ -105,42 +102,32 @@ class ArenaForvalterClientTest {
                 .assertNext(status -> {
                     verify(transactionHelperService, times(2))
                             .persister(any(BestillingProgress.class), any(), statusCaptor.capture());
-                    assertThat(statusCaptor.getAllValues().get(0), Matchers.is(equalTo("q2$Info= Oppretting startet mot Arena ...")));
-                    assertThat(statusCaptor.getAllValues().get(1), Matchers.is(equalTo("q2$OK")));
+                    assertThat(statusCaptor.getAllValues().get(0), Matchers.is(equalTo("q2$BRUKER= Info= Oppretting startet mot Arena ...")));
+                    assertThat(statusCaptor.getAllValues().get(1), Matchers.is(equalTo("q2$BRUKER Oppretting= OK")));
                 })
                 .verifyComplete();
-
-        verify(arenaForvalterConsumer).getEnvironments(accessToken);
-        verify(arenaForvalterConsumer).postArenaBruker(any(ArenaNyeBrukere.class), eq(accessToken));
     }
 
     @Test
     void gjenopprett_FunksjonellFeil() {
 
         var progress = new BestillingProgress();
-        when(arenaForvalterConsumer.getEnvironments(accessToken)).thenReturn(Flux.just(ENV));
-        when(mapperFacade.map(any(Arenadata.class), eq(ArenaNyBruker.class))).thenReturn(ArenaNyBruker.builder()
-                .kvalifiseringsgruppe(ArenaKvalifiseringsgruppe.IKVAL)
-                .build());
-        when(arenaForvalterConsumer.postArenaBruker(any(ArenaNyeBrukere.class), eq(accessToken)))
-                .thenReturn(Flux.just(
-                        ArenaNyeBrukereResponse.builder()
-                                .status(HttpStatus.OK)
-                                .nyBrukerFeilList(singletonList(ArenaNyeBrukereResponse.NyBrukerFeilV1.builder()
-                                        .miljoe(ENV)
-                                        .nyBrukerFeilstatus(DUPLIKAT)
-                                        .melding("message: 555 User Defined Resource Error")
-                                        .build()))
-                                .build()));
-        when(arenaForvalterConsumer.getToken()).thenReturn(Mono.just(accessToken));
+        when(arenaForvalterConsumer.getEnvironments()).thenReturn(Flux.just(ENV));
 
         var request = new RsDollyBestillingRequest();
         request.setArenaforvalter(Arenadata.builder().build());
         request.setEnvironments(singleton(ENV));
-        when(arenaForvalterConsumer.getBruker(anyString(), anyString(), eq(accessToken)))
-                .thenReturn(Flux.just(ArenaArbeidssokerBruker.builder()
+        when(arenaForvalterConsumer.getArenaBruker(anyString(), anyString()))
+                .thenReturn(Mono.just(ArenaStatusResponse.builder()
                         .status(HttpStatus.OK)
                         .build()));
+
+        when(arenaBrukerService.sendBruker(any(), any(), any(), any()))
+                .thenReturn(Flux.just("Oppretting: DUPLIKAT:message: 555 User Defined Resource Error"));
+        when(arenaAap115Service.sendAap115(any(), any(), any(), any())).thenReturn(Flux.empty());
+        when(arenaAapService.sendAap(any(), any(), any(), any())).thenReturn(Flux.empty());
+        when(arenaDagpengerService.sendDagpenger(any(), any(), any(), any())).thenReturn(Flux.empty());
+        when(arenaStansYtelseService.stopYtelse(any(), any(), any())).thenReturn(Flux.empty());
 
         StepVerifier.create(arenaForvalterClient.gjenopprett(request, DollyPerson.builder().ident(IDENT)
                                 .build(), progress, false)
@@ -148,13 +135,10 @@ class ArenaForvalterClientTest {
                 .assertNext(status -> {
                     verify(transactionHelperService, times(2))
                             .persister(any(BestillingProgress.class), any(), statusCaptor.capture());
-                    assertThat(statusCaptor.getAllValues().get(0), Matchers.is(equalTo("q2$Info= Oppretting startet mot Arena ...")));
-                    assertThat(statusCaptor.getAllValues().get(1), Matchers.is(equalTo("q2$DUPLIKAT: message= 555 User Defined Resource Error")));
+                    assertThat(statusCaptor.getAllValues().get(0), Matchers.is(equalTo("q2$BRUKER= Info= Oppretting startet mot Arena ...")));
+                    assertThat(statusCaptor.getAllValues().get(1), Matchers.is(equalTo("q2$BRUKER Oppretting= DUPLIKAT=message= 555 User Defined Resource Error")));
                 })
                 .verifyComplete();
-
-        verify(arenaForvalterConsumer).getEnvironments(accessToken);
-        verify(arenaForvalterConsumer).postArenaBruker(any(ArenaNyeBrukere.class), eq(accessToken));
     }
 
     @Test
@@ -165,8 +149,7 @@ class ArenaForvalterClientTest {
         var request = new RsDollyBestillingRequest();
         request.setArenaforvalter(Arenadata.builder().build());
         request.setEnvironments(singleton(ENV));
-        when(arenaForvalterConsumer.getToken()).thenReturn(Mono.just(accessToken));
-        when(arenaForvalterConsumer.getEnvironments(accessToken)).thenReturn(Flux.just(ENV));
+        when(arenaForvalterConsumer.getEnvironments()).thenReturn(Flux.just(ENV));
 
         var gjenopprett = arenaForvalterClient.gjenopprett(request, DollyPerson.builder().ident(IDENT)
                 .build(), progress, false);
@@ -182,8 +165,7 @@ class ArenaForvalterClientTest {
         var request = new RsDollyBestillingRequest();
         request.setArenaforvalter(Arenadata.builder().build());
         request.setEnvironments(singleton("t3"));
-        when(arenaForvalterConsumer.getToken()).thenReturn(Mono.just(accessToken));
-        when(arenaForvalterConsumer.getEnvironments(accessToken)).thenReturn(Flux.just(ENV));
+        when(arenaForvalterConsumer.getEnvironments()).thenReturn(Flux.just(ENV));
 
         StepVerifier.create(arenaForvalterClient.gjenopprett(request, DollyPerson.builder().ident(IDENT).build(),
                                 progress, false)
