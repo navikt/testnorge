@@ -19,6 +19,7 @@ export const ArenaForm = ({ formikBag }) => {
 
 	const servicebehovAktiv =
 		_.get(formikBag.values, `${arenaPath}.arenaBrukertype`) === 'MED_SERVICEBEHOV'
+
 	const dagpengerAktiv = _.get(formikBag.values, `${arenaPath}.dagpenger[0]`)
 
 	const personFoerLeggTilInntektstub = _.get(opts.personFoerLeggTil, 'inntektstub')
