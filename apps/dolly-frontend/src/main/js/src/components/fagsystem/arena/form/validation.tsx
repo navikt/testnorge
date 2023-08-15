@@ -181,7 +181,6 @@ const validFradato = (vedtakType) => {
 			'AAP- og Dagpenger-vedtak kan ikke overlappe hverandre',
 			function validVedtak() {
 				const values = this.options.context
-
 				const naavaerendeVerdier = {}
 				for (let key of ikkeOverlappendeVedtak) {
 					naavaerendeVerdier[key] = {
@@ -189,54 +188,18 @@ const validFradato = (vedtakType) => {
 						tilDato: values.arenaforvalter[key]?.[0]?.tilDato,
 					}
 				}
-
 				// Hvis det bare er en type vedtak trengs det ikke å sjekkes videre
-				if (!naavaerendeVerdier.dagpenger?.fraDato && !naavaerendeVerdier.aap?.fraDato) return true
-				if (values.tidligereBestillinger) {
-					return datoOverlapperIkkeAndreVedtak(
-						vedtakType,
-						naavaerendeVerdier,
-						values.tidligereBestillinger,
-					)
-				} else {
-					let annenVedtakType = vedtakType === 'aap' ? 'dagpenger' : 'aap'
-
-					return datoIkkeMellom(
-						naavaerendeVerdier[vedtakType]?.fraDato,
-						naavaerendeVerdier[annenVedtakType]?.fraDato,
-						naavaerendeVerdier[annenVedtakType]?.tilDato,
-					)
-				}
+				if (!naavaerendeVerdier.dagpenger?.fraDato || !naavaerendeVerdier.aap?.fraDato) return true
+				let annenVedtakType = vedtakType === 'aap' ? 'dagpenger' : 'aap'
+				return datoIkkeMellom(
+					naavaerendeVerdier[vedtakType]?.fraDato,
+					naavaerendeVerdier[annenVedtakType]?.fraDato,
+					naavaerendeVerdier[annenVedtakType]?.tilDato,
+				)
 			},
 		)
 		.nullable()
 		.required(messages.required)
-}
-
-const datoOverlapperIkkeAndreVedtak = (vedtaktype, naeverendeVerdier, tidligereBestillinger) => {
-	const nyDatoFra = naeverendeVerdier[vedtaktype]?.fraDato
-	const nyDatoTil = naeverendeVerdier[vedtaktype]?.tilDato
-
-	const arenaBestillinger = tidligereBestillinger.filter((bestilling) =>
-		bestilling.data.hasOwnProperty('arenaforvalter'),
-	)
-
-	for (const [key, value] of Object.entries(naeverendeVerdier)) {
-		if (key !== vedtaktype && !datoIkkeMellom(nyDatoFra, value?.fraDato, value?.tilDato)) {
-			return false
-		}
-
-		for (let bestilling of arenaBestillinger) {
-			let arenaInfo = bestilling.data.arenaforvalter
-			if (
-				key in arenaInfo &&
-				arenaInfo[key].length > 0 &&
-				overlapperMedliste(nyDatoFra, nyDatoTil, arenaInfo[key])
-			)
-				return false
-		}
-	}
-	return true
 }
 
 const overlapperMedliste = (originalFradato, orginialTildato, vedtakListe) => {
@@ -303,6 +266,19 @@ export const validation = Yup.object({
 		}),
 	),
 	arenaBrukertype: requiredString,
+	aktiveringDato: Yup.mixed()
+		.test('er-paakrevd', 'Feltet er påkrevd', function isRequired(dato) {
+			const values = this.options.context
+			if (values.personFoerLeggTil && values.personFoerLeggTil.arenaforvalteren) return true
+			const { arenaforvalter } = values
+			const ingenYtelser =
+				arenaforvalter?.arenaBrukertype === 'MED_SERVICEBEHOV' &&
+				!arenaforvalter?.aap115 &&
+				!arenaforvalter?.aap &&
+				!arenaforvalter?.dagpenger
+			return !(ingenYtelser && !dato)
+		})
+		.nullable(),
 	inaktiveringDato: Yup.mixed()
 		.nullable()
 		.when('arenaBrukertype', {
