@@ -99,10 +99,12 @@ public class PensjonforvalterClient implements ClientRegister {
     @Override
     public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
+        log.info("Pensjonoppretting for ident {} steg 1", dollyPerson.getIdent());
         if (IdentTypeUtil.getIdentType(dollyPerson.getIdent()) == IdentType.NPID) {
             return Flux.empty();
         }
 
+        log.info("Pensjonoppretting for ident {} steg 2", dollyPerson.getIdent());
         var bestilteMiljoer = new AtomicReference<>(bestilling.getEnvironments().stream()
                 .map(miljoe -> miljoe.equals("q4") ? "q1" : miljoe)
                 .collect(Collectors.toSet()));
@@ -111,7 +113,7 @@ public class PensjonforvalterClient implements ClientRegister {
 
         return Flux.from(pensjonforvalterConsumer.getMiljoer())
                 .flatMap(tilgjengeligeMiljoer -> {
-
+                    log.info("Pensjonoppretting for ident {} steg 3", dollyPerson.getIdent());
                     bestilteMiljoer.set(bestilteMiljoer.get().stream()
                             .filter(tilgjengeligeMiljoer::contains)
                             .collect(Collectors.toSet()));
