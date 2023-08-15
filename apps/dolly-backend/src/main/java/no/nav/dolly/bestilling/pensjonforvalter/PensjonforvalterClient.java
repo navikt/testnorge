@@ -111,7 +111,6 @@ public class PensjonforvalterClient implements ClientRegister {
 
         return Flux.from(pensjonforvalterConsumer.getMiljoer())
                 .flatMap(tilgjengeligeMiljoer -> {
-
                     bestilteMiljoer.set(bestilteMiljoer.get().stream()
                             .filter(tilgjengeligeMiljoer::contains)
                             .collect(Collectors.toSet()));

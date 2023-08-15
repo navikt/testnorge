@@ -1,7 +1,8 @@
 package no.nav.dolly.bestilling.arenaforvalter.command;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.dolly.domain.resultset.arenaforvalter.ArenaArbeidssokerBruker;
+import no.nav.dolly.bestilling.arenaforvalter.dto.AapRequest;
+import no.nav.dolly.bestilling.arenaforvalter.dto.AapResponse;
 import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
@@ -20,41 +21,40 @@ import static no.nav.dolly.util.CallIdUtil.generateCallId;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
-public class ArenaForvalterGetBrukerCommand implements Callable<Flux<ArenaArbeidssokerBruker>> {
+public class ArenaforvalterPostAap implements Callable<Flux<AapResponse>> {
 
-    private static final String ARENAFORVALTER_BRUKER = "/api/v1/bruker";
+    private static final String ARENAFORVALTER_AAP = "/api/v1/aap";
+
     private final WebClient webClient;
-    private final String ident;
-
-    private final String miljoe;
+    private final AapRequest aapRequest;
     private final String token;
 
     @Override
-    public Flux<ArenaArbeidssokerBruker> call() {
+    public Flux<AapResponse> call() {
 
-        return webClient.get()
-                .uri(uriBuilder -> uriBuilder
-                        .path(ARENAFORVALTER_BRUKER)
-                        .queryParam("filter-personident", ident)
-                        .queryParam("filter-miljoe", miljoe)
-                        .build())
+        return webClient.post().uri(
+                        uriBuilder -> uriBuilder
+                                .path(ARENAFORVALTER_AAP)
+                                .build())
                 .header(HEADER_NAV_CALL_ID, generateCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
+                .bodyValue(aapRequest)
                 .retrieve()
-                .bodyToFlux(ArenaArbeidssokerBruker.class)
+                .bodyToFlux(AapResponse.class)
                 .map(response -> {
                     response.setStatus(HttpStatus.OK);
-                    response.setMiljoe(miljoe);
+                    response.setMiljoe(aapRequest.getMiljoe());
                     return response;
                 })
                 .doOnError(WebClientFilter::logErrorMessage)
-                .doOnError(throwable -> ArenaArbeidssokerBruker.builder()
-                        .status(WebClientFilter.getStatus(throwable))
-                        .feilmelding(WebClientFilter.getMessage(throwable))
-                        .miljoe(miljoe)
-                        .build())
+                .onErrorResume(error ->
+                        Flux.just(AapResponse.builder()
+                                .status(WebClientFilter.getStatus(error))
+                                .feilmelding(WebClientFilter.getMessage(error))
+                                .miljoe(aapRequest.getMiljoe())
+                                .build()))
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException));
     }

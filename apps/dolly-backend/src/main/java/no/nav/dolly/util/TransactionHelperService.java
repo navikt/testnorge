@@ -67,14 +67,16 @@ public class TransactionHelperService {
 
         return transactionTemplate.execute(status1 -> {
 
+            var akkumulert = new AtomicReference<>(bestillingProgress);
+
             bestillingProgressRepository.findByIdAndLock(bestillingProgress.getId())
                     .ifPresent(progress -> {
                         this.setField(progress, status, setter);
-                        bestillingProgressRepository.save(progress);
+                        akkumulert.set(bestillingProgressRepository.save(progress));
                         clearCache();
                     });
 
-            return bestillingProgress;
+            return akkumulert.get();
         });
     }
 
@@ -94,12 +96,14 @@ public class TransactionHelperService {
 
         return transactionTemplate.execute(status -> {
 
+            var akkumulert = new AtomicReference<Bestilling>(null);
             bestillingRepository.findByIdAndLock(bestillingId)
                     .ifPresent(best -> {
                         best.setBestKriterier(bestillingService.getBestKriterier(bestilling));
-                        bestillingRepository.save(best);
+                        akkumulert.set(bestillingRepository.save(best));
                     });
-            return null;
+
+            return akkumulert.get();
         });
     }
 
@@ -107,15 +111,19 @@ public class TransactionHelperService {
     public Bestilling oppdaterBestillingFerdig(Long id, Consumer<Bestilling> bestillingFunksjon) {
 
         return transactionTemplate.execute(status -> {
+
+            var akkumulert = new AtomicReference<Bestilling>(null);
+
             bestillingRepository.findByIdAndLock(id)
                     .ifPresent(bestilling -> {
                         bestilling.setSistOppdatert(now());
                         bestilling.setFerdig(true);
                         bestillingFunksjon.accept(bestilling);
-                        bestillingRepository.save(bestilling);
+                        akkumulert.set(bestillingRepository.save(bestilling));
                         clearCache();
                     });
-            return null;
+
+            return akkumulert.get();
         });
     }
 

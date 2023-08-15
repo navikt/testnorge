@@ -12,7 +12,6 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
-import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.repository.IdentRepository.GruppeBestillingIdent;
 import no.nav.dolly.service.BestillingService;
@@ -32,8 +31,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static java.lang.String.format;
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
 
@@ -78,12 +75,11 @@ public class GjenopprettIdentService extends DollyBestillingService {
         if (nonNull(bestKriterier)) {
             bestKriterier.setEkskluderEksternePersoner(true);
 
-            var coBestillinger = identService.getBestillingerFromIdent(bestilling.getIdent());
             var tIdent = identService.getTestIdent(bestilling.getIdent());
 
-            if (isNull(tIdent)) {
-                throw new NotFoundException(format("Fant ikke testident: %s i gruppe med id: %d", bestilling.getIdent(), bestilling.getGruppe().getId()));
-            }
+            var coBestillinger = identService.getBestillingerFromIdent(bestilling.getIdent()).stream()
+                    .sorted(Comparator.comparing(GruppeBestillingIdent::getBestillingid))
+                    .toList();
 
             var countEmptyBestillinger = new AtomicInteger(0);
             Flux.just(tIdent)
@@ -103,18 +99,21 @@ public class GjenopprettIdentService extends DollyBestillingService {
                                                             .filter(BestillingProgress::isPdlSync)
                                                             .flatMap(pdlSync ->
                                                                     Flux.fromIterable(coBestillinger)
-                                                                            .filter(cobestilling -> ident.equals(cobestilling.getIdent()))
-                                                                            .sort(Comparator.comparing(GruppeBestillingIdent::getBestillingid))
-                                                                            .flatMap(cobestilling -> createBestilling(bestilling, cobestilling)
-                                                                                    .filter(bestillingRequest -> countEmptyBestillinger.getAndIncrement() == 0 ||
-                                                                                            RsDollyBestilling.isNonEmpty(bestillingRequest))
-                                                                                    .flatMap(bestillingRequest -> Flux.concat(
-                                                                                            gjenopprettKlienter(dollyPerson, bestillingRequest,
-                                                                                                    fase2Klienter(),
-                                                                                                    progress, false),
-                                                                                            gjenopprettKlienter(dollyPerson, bestillingRequest,
-                                                                                                    fase3Klienter(),
-                                                                                                    progress, false)))))))
+                                                                            .concatMap(bestilling1 -> Flux.just(bestilling1)
+                                                                                    .filter(cobestilling -> ident.equals(cobestilling.getIdent()))
+                                                                                    .flatMap(cobestilling -> createBestilling(bestilling, cobestilling)
+                                                                                            .filter(bestillingRequest -> countEmptyBestillinger.getAndIncrement() == 0 ||
+                                                                                                    RsDollyBestilling.isNonEmpty(bestillingRequest))
+                                                                                            .doOnNext(request ->
+                                                                                                    log.info("Startet gjenopprett bestilling {} for ident: {}",
+                                                                                                            request.getId(), testident.getIdent()))
+                                                                                            .flatMap(bestillingRequest -> Flux.concat(
+                                                                                                    gjenopprettKlienter(dollyPerson, bestillingRequest,
+                                                                                                            fase2Klienter(),
+                                                                                                            progress, false),
+                                                                                                    gjenopprettKlienter(dollyPerson, bestillingRequest,
+                                                                                                            fase3Klienter(),
+                                                                                                            progress, false))))))))
                                             .onErrorResume(throwable -> {
                                                 var error = errorStatusDecoder.getErrorText(
                                                         WebClientFilter.getStatus(throwable), WebClientFilter.getMessage(throwable));

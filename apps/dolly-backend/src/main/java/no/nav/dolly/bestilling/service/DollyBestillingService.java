@@ -91,6 +91,7 @@ public class DollyBestillingService {
         try {
             RsDollyBestillingRequest bestKriterier = objectMapper.readValue(bestilling.getBestKriterier(), RsDollyBestillingRequest.class);
 
+            bestKriterier.setId(bestilling.getId());
             bestKriterier.setNavSyntetiskIdent(bestilling.getNavSyntetiskIdent());
             bestKriterier.setEnvironments(getEnvironments(bestilling.getMiljoer()));
             bestKriterier.setBeskrivelse(bestilling.getBeskrivelse());
@@ -128,13 +129,12 @@ public class DollyBestillingService {
                                                            GjenopprettSteg steg,
                                                            BestillingProgress progress, boolean isOpprettEndre) {
 
-        return Flux.from(Flux.fromIterable(clientRegisters)
-                .parallel()
+        return Flux.fromIterable(clientRegisters)
                 .filter(steg::apply)
                 .flatMap(clientRegister ->
                         clientRegister.gjenopprett(bestKriterier, dollyPerson, progress, isOpprettEndre))
                 .filter(Objects::nonNull)
-                .map(ClientFuture::get));
+                .map(ClientFuture::get);
     }
 
     protected void leggIdentTilGruppe(String ident, BestillingProgress progress, String beskrivelse) {
@@ -228,6 +228,7 @@ public class DollyBestillingService {
 
         return Flux.just(getDollyBestillingRequest(
                 Bestilling.builder()
+                        .id(coBestilling.getBestillingid())
                         .bestKriterier(coBestilling.getBestkriterier())
                         .miljoer(StringUtils.isNotBlank(bestilling.getMiljoer()) ?
                                 bestilling.getMiljoer() :
