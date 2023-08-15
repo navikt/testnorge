@@ -161,6 +161,7 @@ public class PensjonforvalterClient implements ClientRegister {
     private boolean isOppdateringRequired(RsDollyUtvidetBestilling bestilling, BestillingProgress progress) {
 
         var status = transactionHelperService.getProgress(progress, BestillingProgress::getPensjonforvalterStatus);
+        log.info("Status: {} , isBlank(status): {}, nonNull(pensjon): {}", status, isBlank(status), nonNull(bestilling.getPensjonforvalter()));
         return isBlank(status) || nonNull(bestilling.getPensjonforvalter());
     }
 
