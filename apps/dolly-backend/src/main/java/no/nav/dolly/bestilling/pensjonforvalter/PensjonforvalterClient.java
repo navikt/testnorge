@@ -52,7 +52,6 @@ import java.util.stream.Stream;
 import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.PEN_AP;
-import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
 @Service
@@ -100,12 +99,10 @@ public class PensjonforvalterClient implements ClientRegister {
     @Override
     public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        log.info("Pensjon 1/ {}", dollyPerson.getIdent());
         if (IdentTypeUtil.getIdentType(dollyPerson.getIdent()) == IdentType.NPID) {
             return Flux.empty();
         }
 
-        log.info("Pensjon 2/ {}", dollyPerson.getIdent());
         var bestilteMiljoer = new AtomicReference<>(bestilling.getEnvironments().stream()
                 .map(miljoe -> miljoe.equals("q4") ? "q1" : miljoe)
                 .collect(Collectors.toSet()));
@@ -114,15 +111,11 @@ public class PensjonforvalterClient implements ClientRegister {
 
         return Flux.from(pensjonforvalterConsumer.getMiljoer())
                 .flatMap(tilgjengeligeMiljoer -> {
-                    log.info("Pensjon 3/ {}", dollyPerson.getIdent());
                     bestilteMiljoer.set(bestilteMiljoer.get().stream()
                             .filter(tilgjengeligeMiljoer::contains)
                             .collect(Collectors.toSet()));
 
                     return Flux.just(bestilling)
-                            .doOnNext(bestilling1 -> log.info("Pensjon 4/ {}", dollyPerson.getIdent()))
-                            .filter(bestilling1 -> isOppdateringRequired(bestilling1, progress))
-                            .doOnNext(bestilling1 -> log.info("Pensjon 5/ {}", dollyPerson.getIdent()))
                             .doOnNext(bestilling1 -> {
                                 if (!dollyPerson.isOrdre()) {
                                     transactionHelperService.persister(progress, BestillingProgress::setPensjonforvalterStatus,
@@ -156,13 +149,6 @@ public class PensjonforvalterClient implements ClientRegister {
                             .collect(Collectors.joining("$"));
                 })
                 .map(status -> futurePersist(dollyPerson, progress, status));
-    }
-
-    private boolean isOppdateringRequired(RsDollyUtvidetBestilling bestilling, BestillingProgress progress) {
-
-        var status = transactionHelperService.getProgress(progress, BestillingProgress::getPensjonforvalterStatus);
-        log.info("Status: {} , isBlank(status): {}, nonNull(pensjon): {}", status, isBlank(status), nonNull(bestilling.getPensjonforvalter()));
-        return isBlank(status) || nonNull(bestilling.getPensjonforvalter());
     }
 
     private String prepInitStatus(Set<String> miljoer) {
