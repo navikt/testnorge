@@ -14,6 +14,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -71,4 +73,35 @@ public class OrganisasjonBestilling {
     @OneToMany(mappedBy = "bestilling", fetch = FetchType.LAZY)
     @Builder.Default
     private List<OrganisasjonBestillingProgress> progresser = new ArrayList<>();
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        OrganisasjonBestilling that = (OrganisasjonBestilling) o;
+
+        return new EqualsBuilder().append(id, that.id).append(miljoer, that.miljoer).append(antall, that.antall).append(sistOppdatert, that.sistOppdatert).append(feil, that.feil).append(ferdig, that.ferdig).append(opprettetFraId, that.opprettetFraId).append(bestKriterier, that.bestKriterier).append(bruker, that.bruker).append(progresser, that.progresser).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37).append(id).append(miljoer).append(antall).append(sistOppdatert).append(feil).append(ferdig).append(opprettetFraId).append(bestKriterier).append(bruker).append(progresser).toHashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "OrganisasjonBestilling{" +
+                "id=" + id +
+                ", miljoer='" + miljoer + '\'' +
+                ", antall=" + antall +
+                ", sistOppdatert=" + sistOppdatert +
+                ", feil='" + feil + '\'' +
+                ", ferdig=" + ferdig +
+                ", opprettetFraId=" + opprettetFraId +
+                ", bestKriterier='" + bestKriterier + '\'' +
+                ", bruker=" + bruker +
+                '}';
+    }
 }

@@ -79,32 +79,33 @@ public class Bruker implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
+        if (this == o) return true;
 
-        if (!(o instanceof Bruker bruker))
-            return false;
+        if (o == null || getClass() != o.getClass()) return false;
 
-        return new EqualsBuilder()
-                .append(getId(), bruker.getId())
-                .append(getBrukerId(), bruker.getBrukerId())
-                .append(getBrukernavn(), bruker.getBrukernavn())
-                .append(getEpost(), bruker.getEpost())
-                .append(getNavIdent(), bruker.getNavIdent())
-                .append(getMigrert(), bruker.getMigrert())
-                .isEquals();
+        Bruker bruker = (Bruker) o;
+
+        return new EqualsBuilder().append(id, bruker.id).append(versjon, bruker.versjon).append(brukerId, bruker.brukerId).append(brukernavn, bruker.brukernavn).append(epost, bruker.epost).append(navIdent, bruker.navIdent).append(migrert, bruker.migrert).append(brukertype, bruker.brukertype).append(eidAv, bruker.eidAv).append(testgrupper, bruker.testgrupper).append(favoritter, bruker.favoritter).isEquals();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37)
-                .append(getId())
-                .append(getBrukerId())
-                .append(getBrukernavn())
-                .append(getEpost())
-                .append(getNavIdent())
-                .append(getMigrert())
-                .toHashCode();
+        return new HashCodeBuilder(17, 37).append(id).append(versjon).append(brukerId).append(brukernavn).append(epost).append(navIdent).append(migrert).append(brukertype).append(eidAv).append(testgrupper).append(favoritter).toHashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "Bruker{" +
+                "id=" + id +
+                ", versjon=" + versjon +
+                ", brukerId='" + brukerId + '\'' +
+                ", brukernavn='" + brukernavn + '\'' +
+                ", epost='" + epost + '\'' +
+                ", navIdent='" + navIdent + '\'' +
+                ", migrert=" + migrert +
+                ", brukertype=" + brukertype +
+                ", eidAv=" + eidAv +
+                '}';
     }
 
     public enum Brukertype {AZURE, BANKID, BASIC}

@@ -10,6 +10,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
@@ -40,4 +42,29 @@ public class BestillingKontroll implements Serializable {
 
     @Column(name = "STOPPET", nullable = false)
     private boolean stoppet;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        BestillingKontroll that = (BestillingKontroll) o;
+
+        return new EqualsBuilder().append(stoppet, that.stoppet).append(id, that.id).append(bestillingId, that.bestillingId).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37).append(id).append(bestillingId).append(stoppet).toHashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "BestillingKontroll{" +
+                "id=" + id +
+                ", bestillingId=" + bestillingId +
+                ", stoppet=" + stoppet +
+                '}';
+    }
 }

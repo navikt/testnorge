@@ -15,17 +15,21 @@ import jakarta.persistence.Transient;
 import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import no.nav.dolly.domain.jpa.Testident.Master;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.io.Serializable;
 
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "BESTILLING_PROGRESS")
@@ -149,5 +153,57 @@ public class BestillingProgress implements Serializable {
 
     public void setDokarkivStatus(String dokarkivStatus) {
         this.dokarkivStatus = StringUtils.left(dokarkivStatus, MAX_DOKARKIV_STATUS_LENGTH);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        BestillingProgress that = (BestillingProgress) o;
+
+        return new EqualsBuilder().append(id, that.id).append(versjon, that.versjon).append(bestilling, that.bestilling).append(ident, that.ident).append(sigrunstubStatus, that.sigrunstubStatus).append(krrstubStatus, that.krrstubStatus).append(medlStatus, that.medlStatus).append(udistubStatus, that.udistubStatus).append(aaregStatus, that.aaregStatus).append(arenaforvalterStatus, that.arenaforvalterStatus).append(instdataStatus, that.instdataStatus).append(inntektstubStatus, that.inntektstubStatus).append(pensjonforvalterStatus, that.pensjonforvalterStatus).append(inntektsmeldingStatus, that.inntektsmeldingStatus).append(brregstubStatus, that.brregstubStatus).append(dokarkivStatus, that.dokarkivStatus).append(histarkStatus, that.histarkStatus).append(sykemeldingStatus, that.sykemeldingStatus).append(skjermingsregisterStatus, that.skjermingsregisterStatus).append(tpsMessagingStatus, that.tpsMessagingStatus).append(pdlImportStatus, that.pdlImportStatus).append(pdlForvalterStatus, that.pdlForvalterStatus).append(pdlOrdreStatus, that.pdlOrdreStatus).append(kontoregisterStatus, that.kontoregisterStatus).append(pdlPersonStatus, that.pdlPersonStatus).append(arbeidsplassenCVStatus, that.arbeidsplassenCVStatus).append(master, that.master).append(feil, that.feil).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37).append(id).append(versjon).append(bestilling).append(ident).append(sigrunstubStatus).append(krrstubStatus).append(medlStatus).append(udistubStatus).append(aaregStatus).append(arenaforvalterStatus).append(instdataStatus).append(inntektstubStatus).append(pensjonforvalterStatus).append(inntektsmeldingStatus).append(brregstubStatus).append(dokarkivStatus).append(histarkStatus).append(sykemeldingStatus).append(skjermingsregisterStatus).append(tpsMessagingStatus).append(pdlImportStatus).append(pdlForvalterStatus).append(pdlOrdreStatus).append(kontoregisterStatus).append(pdlPersonStatus).append(arbeidsplassenCVStatus).append(master).append(feil).toHashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "BestillingProgress{" +
+                "id=" + id +
+                ", versjon=" + versjon +
+                ", bestilling=" + bestilling.getId() +
+                ", gruppe=" + bestilling.getGruppe().getId() +
+                ", ident='" + ident + '\'' +
+                ", sigrunstubStatus='" + sigrunstubStatus + '\'' +
+                ", krrstubStatus='" + krrstubStatus + '\'' +
+                ", medlStatus='" + medlStatus + '\'' +
+                ", udistubStatus='" + udistubStatus + '\'' +
+                ", aaregStatus='" + aaregStatus + '\'' +
+                ", arenaforvalterStatus='" + arenaforvalterStatus + '\'' +
+                ", instdataStatus='" + instdataStatus + '\'' +
+                ", inntektstubStatus='" + inntektstubStatus + '\'' +
+                ", pensjonforvalterStatus='" + pensjonforvalterStatus + '\'' +
+                ", inntektsmeldingStatus='" + inntektsmeldingStatus + '\'' +
+                ", brregstubStatus='" + brregstubStatus + '\'' +
+                ", dokarkivStatus='" + dokarkivStatus + '\'' +
+                ", histarkStatus='" + histarkStatus + '\'' +
+                ", sykemeldingStatus='" + sykemeldingStatus + '\'' +
+                ", skjermingsregisterStatus='" + skjermingsregisterStatus + '\'' +
+                ", tpsMessagingStatus='" + tpsMessagingStatus + '\'' +
+                ", pdlImportStatus='" + pdlImportStatus + '\'' +
+                ", pdlForvalterStatus='" + pdlForvalterStatus + '\'' +
+                ", pdlOrdreStatus='" + pdlOrdreStatus + '\'' +
+                ", kontoregisterStatus='" + kontoregisterStatus + '\'' +
+                ", pdlPersonStatus='" + pdlPersonStatus + '\'' +
+                ", arbeidsplassenCVStatus='" + arbeidsplassenCVStatus + '\'' +
+                ", master=" + master +
+                ", isPdlSync=" + isPdlSync +
+                ", feil='" + feil + '\'' +
+                '}';
     }
 }
