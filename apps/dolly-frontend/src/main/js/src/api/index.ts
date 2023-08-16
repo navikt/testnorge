@@ -17,8 +17,8 @@ export const multiFetcherAny = (urlListe, headers) => {
 					throw new Error('Returnerte ingen verdi, prøver neste promise..')
 				}
 				return [result]
-			})
-		)
+			}),
+		),
 	)
 }
 
@@ -27,8 +27,8 @@ export const multiFetcherAll = (urlListe, headers = null) => {
 		urlListe.map((url) =>
 			fetcher(url, headers).then((result) => {
 				return result
-			})
-		)
+			}),
+		),
 	)
 }
 
@@ -37,8 +37,8 @@ export const multiFetcherBatchData = (url, dataListe) => {
 		dataListe.map((data) =>
 			fetchJson(url, { method: 'POST' }, data).then((result) => {
 				return result
-			})
-		)
+			}),
+		),
 	)
 }
 
@@ -47,8 +47,8 @@ export const multiFetcherInst = (miljoUrlListe, headers = null, path = null) => 
 		miljoUrlListe.map((obj) =>
 			fetcher(obj.url, headers).then((result) => {
 				return { miljo: obj.miljo, data: path ? result[path] : result?.[obj.miljo] }
-			})
-		)
+			}),
+		),
 	)
 }
 
@@ -59,8 +59,8 @@ export const multiFetcherArena = (miljoUrlListe, headers = null) => {
 				const filteredResult =
 					result?.status === 'NO_CONTENT' || result?.status === 'NOT_FOUND' ? null : result
 				return { miljo: obj.miljo, data: filteredResult, status: result?.status }
-			})
-		)
+			}),
+		),
 	)
 }
 
@@ -73,8 +73,8 @@ export const multiFetcherAareg = (miljoUrlListe, headers = null, path = null) =>
 				})
 				.catch((feil) => {
 					return { miljo: obj.miljo, feil: feil }
-				})
-		)
+				}),
+		),
 	).then((liste) => liste?.map((item) => item?.value))
 }
 
@@ -85,8 +85,8 @@ export const multiFetcherAmelding = (miljoUrlListe, headers = null, path = null)
 				.then((result) => ({ miljo: obj.miljo, data: path ? result[path] : result }))
 				.catch((feil) => {
 					return { miljo: obj.miljo, feil: feil }
-				})
-		)
+				}),
+		),
 	).then((liste) => liste?.map((item) => item?.value))
 }
 
@@ -95,8 +95,8 @@ export const multiFetcherPensjon = (miljoUrlListe, headers = null as any) => {
 		miljoUrlListe.map((obj) =>
 			fetcher(obj.url, { miljo: obj.miljo, ...headers }).then((result) => {
 				return { miljo: obj.miljo, data: result }
-			})
-		)
+			}),
+		),
 	)
 }
 
@@ -108,8 +108,8 @@ export const multiFetcherDokarkiv = (miljoUrlListe) =>
 						miljo: obj.miljo,
 						data: result,
 				  }))
-				: { miljo: obj.miljo, data: null }
-		)
+				: { miljo: obj.miljo, data: null },
+		),
 	)
 
 export const fetcher = (url, headers) =>
@@ -119,7 +119,10 @@ export const fetcher = (url, headers) =>
 			return res.data
 		})
 		.catch((reason) => {
-			if (reason?.response?.status === 401 || reason?.response?.status === 403) {
+			if (
+				(reason?.response?.status === 401 || reason?.response?.status === 403) &&
+				url.includes('dolly-backend')
+			) {
 				console.error('Auth feilet, navigerer til login')
 				navigateToLogin()
 			}
@@ -134,7 +137,7 @@ export const fetcher = (url, headers) =>
 
 export const imageFetcher = (...args: Argument[]) =>
 	originalFetch(...args).then((res: Response) =>
-		res.ok ? res.blob().then((blob: Blob) => URL.createObjectURL(blob)) : null
+		res.ok ? res.blob().then((blob: Blob) => URL.createObjectURL(blob)) : null,
 	)
 
 type Method = 'POST' | 'GET' | 'PUT' | 'DELETE'
@@ -149,7 +152,7 @@ const _fetch = (url: string, config: Config, body?: object): Promise<Response> =
 	fetchRetry(url, {
 		retryOn: (attempt, _error, response) => {
 			if (!response.ok && !runningCypressE2E()) {
-				if (response.status === 401) {
+				if (response.status === 401 && url.includes('dolly-backend')) {
 					console.error('Auth feilet, navigerer til login')
 					navigateToLogin()
 				}
@@ -172,7 +175,7 @@ const _fetch = (url: string, config: Config, body?: object): Promise<Response> =
 			window.location.href = response.url
 		}
 		if (!response.ok && !runningCypressE2E()) {
-			if (response.status === 401) {
+			if (response.status === 401 && url.includes('dolly-backend')) {
 				console.error('Auth feilet, navigerer til login')
 				navigateToLogin()
 			}
@@ -191,7 +194,7 @@ const fetchJson = (url: string, config: Config, body?: object): Promise =>
 			method: config.method,
 			headers: { ...config.headers, 'Content-Type': 'application/json' },
 		},
-		body
+		body,
 	)
 		.then((response) => {
 			return response?.text()
