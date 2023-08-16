@@ -99,8 +99,6 @@ public class PensjonforvalterClient implements ClientRegister {
     @Override
     public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        log.info("Pensjon mottatt {} for oppretting", dollyPerson.getIdent());
-
         if (IdentTypeUtil.getIdentType(dollyPerson.getIdent()) == IdentType.NPID) {
             return Flux.empty();
         }
@@ -128,8 +126,13 @@ public class PensjonforvalterClient implements ClientRegister {
                                     .collectList()
                                     .map(this::getPersonData)
                                     .flatMapMany(Flux::collectList)
-                                    .map(relasjoner -> Flux.concat(
-                                            opprettPersoner(dollyPerson.getIdent(), tilgjengeligeMiljoer, relasjoner)
+                                    .doOnNext(persondata -> {
+                                        if (persondata.isEmpty()) {
+                                            log.warn("Persondata for {} gir tom response fra PDL", dollyPerson.getIdent());
+                                        }
+                                    })
+                                    .map(persondata -> Flux.concat(
+                                            opprettPersoner(dollyPerson.getIdent(), tilgjengeligeMiljoer, persondata)
                                                     .map(response -> PENSJON_FORVALTER + decodeStatus(response, dollyPerson.getIdent())),
 
                                             lagreTpForhold(bestilling.getPensjonforvalter(), dollyPerson, bestilteMiljoer.get())
@@ -137,7 +140,7 @@ public class PensjonforvalterClient implements ClientRegister {
 
                                             lagreAlderspensjon(
                                                     bestilling1.getPensjonforvalter(),
-                                                    relasjoner,
+                                                    persondata,
                                                     dollyPerson.getIdent(),
                                                     bestilteMiljoer.get(),
                                                     isOpprettEndre,
@@ -196,6 +199,7 @@ public class PensjonforvalterClient implements ClientRegister {
     private Flux<PdlPersonBolk.PersonBolk> getPersonData(List<String> identer) {
 
         return pdlPersonConsumer.getPdlPersoner(identer)
+                .doOnNext(personBolk -> log.info("PersonBolk mottatt for {}, response: {}", String.join(", ", identer), personBolk))
                 .filter(pdlPersonBolk -> nonNull(pdlPersonBolk.getData()))
                 .map(PdlPersonBolk::getData)
                 .map(PdlPersonBolk.Data::getHentPersonBolk)
@@ -212,9 +216,9 @@ public class PensjonforvalterClient implements ClientRegister {
     }
 
     private Flux<PensjonforvalterResponse> opprettPersoner(String hovedperson, Set<String> miljoer,
-                                                           List<PdlPersonBolk.PersonBolk> relasjoner) {
+                                                           List<PdlPersonBolk.PersonBolk> personer) {
 
-        return Flux.fromIterable(relasjoner)
+        return Flux.fromIterable(personer)
                 .map(person -> mapperFacade.map(person, PensjonPersonRequest.class))
                 .flatMap(request -> pensjonforvalterConsumer.opprettPerson(request, miljoer)
                         .filter(response -> hovedperson.equals(request.getFnr())));

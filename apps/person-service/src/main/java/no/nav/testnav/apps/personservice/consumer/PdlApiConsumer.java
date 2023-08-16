@@ -81,10 +81,13 @@ public class PdlApiConsumer {
         return isNotBlank(ident.getIdent()) && !ident.getHistorisk() && gruppe.equals(ident.getGruppe());
     }
 
-    private boolean isPresent(PdlAktoer pdlAktoer) {
+    private boolean isPresent(String miljoe, PdlAktoer pdlAktoer) {
+
+        log.info("Miljoe: {}, GetPdlAktoer: {}", miljoe, pdlAktoer);
 
         List<PdlAktoer.AktoerIdent> identer = nonNull(pdlAktoer) && nonNull(pdlAktoer.getData()) && nonNull(pdlAktoer.getData().getHentIdenter()) ?
                 pdlAktoer.getData().getHentIdenter().getIdenter() : emptyList();
+
 
         return nonNull(pdlAktoer) &&
                 pdlAktoer.getErrors().stream().noneMatch(value -> value.getMessage().equals("Fant ikke person")) &&
@@ -116,6 +119,6 @@ public class PdlApiConsumer {
                 .exchange(serviceProperties)
                 .flatMap(token -> Mono.zip(new GetPdlAktoerCommand(webClient, PDL_URL, ident, token.getTokenValue()).call(),
                                 new GetPdlAktoerCommand(webClient, PDL_Q1_URL, ident, token.getTokenValue()).call())
-                        .map(tuple -> isPresent(tuple.getT1()) && isPresent(tuple.getT2())));
+                        .map(tuple -> isPresent("q2", tuple.getT1()) && isPresent("q1", tuple.getT2())));
     }
 }

@@ -46,6 +46,7 @@ public class GetMiljoerCommand implements Callable<Mono<Set<String>>> {
                 .doOnError(WebClientFilter::logErrorMessage)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException))
-                .onErrorResume(throwable -> Mono.just(emptySet()));
+                .onErrorResume(throwable -> Mono.just(emptySet()))
+                .cache(Duration.ofHours(1));
     }
 }
