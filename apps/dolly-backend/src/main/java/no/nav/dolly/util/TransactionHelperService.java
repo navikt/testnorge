@@ -16,7 +16,6 @@ import org.springframework.transaction.support.TransactionTemplate;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 import static java.time.LocalDateTime.now;
 import static java.util.Objects.nonNull;
@@ -78,17 +77,6 @@ public class TransactionHelperService {
 
             return akkumulert.get();
         });
-    }
-
-    @Retryable
-    public String getProgress(BestillingProgress bestillingProgress, Function<BestillingProgress, String> getter) {
-
-        var status = new AtomicReference<String>(null);
-        bestillingProgressRepository.findById(bestillingProgress.getId())
-                    .ifPresent(progress ->
-                            status.set(getter.apply(progress)));
-
-        return status.get();
     }
 
     @Retryable

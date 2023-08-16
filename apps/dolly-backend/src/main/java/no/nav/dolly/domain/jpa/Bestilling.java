@@ -124,12 +124,12 @@ public class Bestilling implements Serializable {
 
         Bestilling that = (Bestilling) o;
 
-        return new EqualsBuilder().append(ferdig, that.ferdig).append(stoppet, that.stoppet).append(id, that.id).append(versjon, that.versjon).append(gruppe, that.gruppe).append(miljoer, that.miljoer).append(antallIdenter, that.antallIdenter).append(sistOppdatert, that.sistOppdatert).append(feil, that.feil).append(opprettetFraId, that.opprettetFraId).append(bestKriterier, that.bestKriterier).append(opprettFraIdenter, that.opprettFraIdenter).append(ident, that.ident).append(opprettetFraGruppeId, that.opprettetFraGruppeId).append(gjenopprettetFraIdent, that.gjenopprettetFraIdent).append(bruker, that.bruker).append(pdlImport, that.pdlImport).append(kildeMiljoe, that.kildeMiljoe).append(navSyntetiskIdent, that.navSyntetiskIdent).append(progresser, that.progresser).append(kontroller, that.kontroller).append(transaksjonmapping, that.transaksjonmapping).append(beskrivelse, that.beskrivelse).isEquals();
+        return new EqualsBuilder().append(ferdig, that.ferdig).append(stoppet, that.stoppet).append(id, that.id).append(versjon, that.versjon).append(gruppe, that.gruppe).append(miljoer, that.miljoer).append(antallIdenter, that.antallIdenter).append(sistOppdatert, that.sistOppdatert).append(feil, that.feil).append(opprettetFraId, that.opprettetFraId).append(bestKriterier, that.bestKriterier).append(opprettFraIdenter, that.opprettFraIdenter).append(ident, that.ident).append(opprettetFraGruppeId, that.opprettetFraGruppeId).append(gjenopprettetFraIdent, that.gjenopprettetFraIdent).append(bruker, that.bruker).append(pdlImport, that.pdlImport).append(kildeMiljoe, that.kildeMiljoe).append(navSyntetiskIdent, that.navSyntetiskIdent).append(beskrivelse, that.beskrivelse).isEquals();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37).append(id).append(versjon).append(gruppe).append(ferdig).append(miljoer).append(antallIdenter).append(sistOppdatert).append(stoppet).append(feil).append(opprettetFraId).append(bestKriterier).append(opprettFraIdenter).append(ident).append(opprettetFraGruppeId).append(gjenopprettetFraIdent).append(bruker).append(pdlImport).append(kildeMiljoe).append(navSyntetiskIdent).append(progresser).append(kontroller).append(transaksjonmapping).append(beskrivelse).toHashCode();
+        return new HashCodeBuilder(17, 37).append(id).append(versjon).append(gruppe).append(ferdig).append(miljoer).append(antallIdenter).append(sistOppdatert).append(stoppet).append(feil).append(opprettetFraId).append(bestKriterier).append(opprettFraIdenter).append(ident).append(opprettetFraGruppeId).append(gjenopprettetFraIdent).append(bruker).append(pdlImport).append(kildeMiljoe).append(navSyntetiskIdent).append(beskrivelse).toHashCode();
     }
 
     @Override

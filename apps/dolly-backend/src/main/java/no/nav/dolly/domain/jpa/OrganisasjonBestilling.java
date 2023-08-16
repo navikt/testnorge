@@ -82,12 +82,12 @@ public class OrganisasjonBestilling {
 
         OrganisasjonBestilling that = (OrganisasjonBestilling) o;
 
-        return new EqualsBuilder().append(id, that.id).append(miljoer, that.miljoer).append(antall, that.antall).append(sistOppdatert, that.sistOppdatert).append(feil, that.feil).append(ferdig, that.ferdig).append(opprettetFraId, that.opprettetFraId).append(bestKriterier, that.bestKriterier).append(bruker, that.bruker).append(progresser, that.progresser).isEquals();
+        return new EqualsBuilder().append(id, that.id).append(miljoer, that.miljoer).append(antall, that.antall).append(sistOppdatert, that.sistOppdatert).append(feil, that.feil).append(ferdig, that.ferdig).append(opprettetFraId, that.opprettetFraId).append(bestKriterier, that.bestKriterier).append(bruker, that.bruker).isEquals();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37).append(id).append(miljoer).append(antall).append(sistOppdatert).append(feil).append(ferdig).append(opprettetFraId).append(bestKriterier).append(bruker).append(progresser).toHashCode();
+        return new HashCodeBuilder(17, 37).append(id).append(miljoer).append(antall).append(sistOppdatert).append(feil).append(ferdig).append(opprettetFraId).append(bestKriterier).append(bruker).toHashCode();
     }
 
     @Override
