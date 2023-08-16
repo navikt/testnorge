@@ -2,12 +2,12 @@ package no.nav.dolly.util;
 
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.libs.dto.status.v1.DollyStatusResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.util.HashMap;
-import java.util.Map;
 
 import static java.util.Objects.nonNull;
 
@@ -15,16 +15,21 @@ import static java.util.Objects.nonNull;
 @Slf4j
 public final class CheckAliveUtil {
 
+    final String TEAM_DOLLY = "Team Dolly";
     private static final String PATTERN = "%s, URL: %s";
 
-    public static Map<String, Object> checkConsumerStatus(String aliveUrl, String readyUrl, WebClient webClient) {
-        var map = new HashMap<String, Object>();
-        map.put("alive", checkIsAlive(webClient, aliveUrl));
-        map.put("ready", checkIsAlive(webClient, readyUrl));
-        return map;
+    public static DollyStatusResponse checkConsumerStatus(String aliveUrl, String readyUrl, WebClient webClient) {
+        var map = new HashMap<String, String>();
+        map.put("alive", checkInternal(webClient, aliveUrl));
+        map.put("ready", checkInternal(webClient, readyUrl));
+        return DollyStatusResponse.builder()
+                .alive(checkInternal(webClient, aliveUrl))
+                .ready(checkInternal(webClient, readyUrl))
+                .team(TEAM_DOLLY)
+                .build();
     }
 
-    private String checkIsAlive(WebClient webClient, String url) {
+    private String checkInternal(WebClient webClient, String url) {
         try {
             ResponseEntity<Void> response = webClient.get().uri(url)
                     .retrieve().toBodilessEntity()
