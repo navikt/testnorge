@@ -60,12 +60,26 @@ public class OrganisasjonBestillingMal implements Serializable {
 
         OrganisasjonBestillingMal that = (OrganisasjonBestillingMal) o;
 
-        return new EqualsBuilder().append(id, that.id).append(bestKriterier, that.bestKriterier).append(miljoer, that.miljoer).append(malNavn, that.malNavn).append(bruker, that.bruker).append(sistOppdatert, that.sistOppdatert).isEquals();
+        return new EqualsBuilder()
+                .append(id, that.id)
+                .append(bestKriterier, that.bestKriterier)
+                .append(miljoer, that.miljoer)
+                .append(malNavn, that.malNavn)
+                .append(bruker, that.bruker)
+                .append(sistOppdatert, that.sistOppdatert)
+                .isEquals();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37).append(id).append(bestKriterier).append(miljoer).append(malNavn).append(bruker).append(sistOppdatert).toHashCode();
+        return new HashCodeBuilder(17, 37)
+                .append(id)
+                .append(bestKriterier)
+                .append(miljoer)
+                .append(malNavn)
+                .append(bruker)
+                .append(sistOppdatert)
+                .toHashCode();
     }
 
     @Override

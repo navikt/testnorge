@@ -93,12 +93,32 @@ public class Bruker implements Serializable {
 
         Bruker bruker = (Bruker) o;
 
-        return new EqualsBuilder().append(id, bruker.id).append(versjon, bruker.versjon).append(brukerId, bruker.brukerId).append(brukernavn, bruker.brukernavn).append(epost, bruker.epost).append(navIdent, bruker.navIdent).append(migrert, bruker.migrert).append(brukertype, bruker.brukertype).append(eidAv, bruker.eidAv).isEquals();
+        return new EqualsBuilder()
+                .append(id, bruker.id)
+                .append(versjon, bruker.versjon)
+                .append(brukerId, bruker.brukerId)
+                .append(brukernavn, bruker.brukernavn)
+                .append(epost, bruker.epost)
+                .append(navIdent, bruker.navIdent)
+                .append(migrert, bruker.migrert)
+                .append(brukertype, bruker.brukertype)
+                .append(eidAv, bruker.eidAv)
+                .isEquals();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37).append(id).append(versjon).append(brukerId).append(brukernavn).append(epost).append(navIdent).append(migrert).append(brukertype).append(eidAv).toHashCode();
+        return new HashCodeBuilder(17, 37)
+                .append(id)
+                .append(versjon)
+                .append(brukerId)
+                .append(brukernavn)
+                .append(epost)
+                .append(navIdent)
+                .append(migrert)
+                .append(brukertype)
+                .append(eidAv)
+                .toHashCode();
     }
 
     @Override

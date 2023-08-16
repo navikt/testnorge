@@ -99,6 +99,8 @@ public class PensjonforvalterClient implements ClientRegister {
     @Override
     public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
+        log.info("Pensjon mottatt {} for oppretting", dollyPerson.getIdent());
+
         if (IdentTypeUtil.getIdentType(dollyPerson.getIdent()) == IdentType.NPID) {
             return Flux.empty();
         }

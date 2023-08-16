@@ -94,12 +94,28 @@ public class Testident implements Serializable {
 
         Testident testident = (Testident) o;
 
-        return new EqualsBuilder().append(id, testident.id).append(versjon, testident.versjon).append(ident, testident.ident).append(iBruk, testident.iBruk).append(beskrivelse, testident.beskrivelse).append(testgruppe, testident.testgruppe).append(master, testident.master).isEquals();
+        return new EqualsBuilder()
+                .append(id, testident.id)
+                .append(versjon, testident.versjon)
+                .append(ident, testident.ident)
+                .append(iBruk, testident.iBruk)
+                .append(beskrivelse, testident.beskrivelse)
+                .append(testgruppe, testident.testgruppe)
+                .append(master, testident.master)
+                .isEquals();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37).append(id).append(versjon).append(ident).append(iBruk).append(beskrivelse).append(testgruppe).append(master).toHashCode();
+        return new HashCodeBuilder(17, 37)
+                .append(id)
+                .append(versjon)
+                .append(ident)
+                .append(iBruk)
+                .append(beskrivelse)
+                .append(testgruppe)
+                .append(master)
+                .toHashCode();
     }
 
     @Override

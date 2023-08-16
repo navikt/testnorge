@@ -50,12 +50,16 @@ public class BrukerFavoritter {
 
         BrukerFavoritter that = (BrukerFavoritter) o;
 
-        return new EqualsBuilder().append(id, that.id).isEquals();
+        return new EqualsBuilder()
+                .append(id, that.id)
+                .isEquals();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37).append(id).toHashCode();
+        return new HashCodeBuilder(17, 37)
+                .append(id)
+                .toHashCode();
     }
 
     @Override

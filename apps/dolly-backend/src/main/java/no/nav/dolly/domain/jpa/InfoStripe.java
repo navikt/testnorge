@@ -58,12 +58,24 @@ public class InfoStripe implements Serializable {
 
         InfoStripe that = (InfoStripe) o;
 
-        return new EqualsBuilder().append(id, that.id).append(type, that.type).append(message, that.message).append(start, that.start).append(expires, that.expires).isEquals();
+        return new EqualsBuilder()
+                .append(id, that.id)
+                .append(type, that.type)
+                .append(message, that.message)
+                .append(start, that.start)
+                .append(expires, that.expires)
+                .isEquals();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37).append(id).append(type).append(message).append(start).append(expires).toHashCode();
+        return new HashCodeBuilder(17, 37)
+                .append(id)
+                .append(type)
+                .append(message)
+                .append(start)
+                .append(expires)
+                .toHashCode();
     }
 
     @Override

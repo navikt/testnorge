@@ -51,12 +51,20 @@ public class BestillingKontroll implements Serializable {
 
         BestillingKontroll that = (BestillingKontroll) o;
 
-        return new EqualsBuilder().append(stoppet, that.stoppet).append(id, that.id).append(bestillingId, that.bestillingId).isEquals();
+        return new EqualsBuilder()
+                .append(stoppet, that.stoppet)
+                .append(id, that.id)
+                .append(bestillingId, that.bestillingId)
+                .isEquals();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37).append(id).append(bestillingId).append(stoppet).toHashCode();
+        return new HashCodeBuilder(17, 37)
+                .append(id)
+                .append(bestillingId)
+                .append(stoppet)
+                .toHashCode();
     }
 
     @Override

@@ -55,12 +55,22 @@ public class OrganisasjonBestillingProgress {
 
         OrganisasjonBestillingProgress that = (OrganisasjonBestillingProgress) o;
 
-        return new EqualsBuilder().append(id, that.id).append(organisasjonsnummer, that.organisasjonsnummer).append(organisasjonsforvalterStatus, that.organisasjonsforvalterStatus).append(bestilling, that.bestilling).isEquals();
+        return new EqualsBuilder()
+                .append(id, that.id)
+                .append(organisasjonsnummer, that.organisasjonsnummer)
+                .append(organisasjonsforvalterStatus, that.organisasjonsforvalterStatus)
+                .append(bestilling, that.bestilling)
+                .isEquals();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37).append(id).append(organisasjonsnummer).append(organisasjonsforvalterStatus).append(bestilling).toHashCode();
+        return new HashCodeBuilder(17, 37)
+                .append(id)
+                .append(organisasjonsnummer)
+                .append(organisasjonsforvalterStatus)
+                .append(bestilling)
+                .toHashCode();
     }
 
     @Override

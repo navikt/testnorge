@@ -64,12 +64,28 @@ public class TransaksjonMapping implements Serializable {
 
         TransaksjonMapping that = (TransaksjonMapping) o;
 
-        return new EqualsBuilder().append(id, that.id).append(bestillingId, that.bestillingId).append(ident, that.ident).append(system, that.system).append(miljoe, that.miljoe).append(transaksjonId, that.transaksjonId).append(datoEndret, that.datoEndret).isEquals();
+        return new EqualsBuilder()
+                .append(id, that.id)
+                .append(bestillingId, that.bestillingId)
+                .append(ident, that.ident)
+                .append(system, that.system)
+                .append(miljoe, that.miljoe)
+                .append(transaksjonId, that.transaksjonId)
+                .append(datoEndret, that.datoEndret)
+                .isEquals();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37).append(id).append(bestillingId).append(ident).append(system).append(miljoe).append(transaksjonId).append(datoEndret).toHashCode();
+        return new HashCodeBuilder(17, 37)
+                .append(id)
+                .append(bestillingId)
+                .append(ident)
+                .append(system)
+                .append(miljoe)
+                .append(transaksjonId)
+                .append(datoEndret)
+                .toHashCode();
     }
 
     @Override

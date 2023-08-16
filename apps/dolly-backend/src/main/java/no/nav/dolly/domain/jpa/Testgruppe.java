@@ -114,12 +114,34 @@ public class Testgruppe implements Serializable {
 
         Testgruppe that = (Testgruppe) o;
 
-        return new EqualsBuilder().append(id, that.id).append(versjon, that.versjon).append(navn, that.navn).append(hensikt, that.hensikt).append(opprettetAv, that.opprettetAv).append(sistEndretAv, that.sistEndretAv).append(datoEndret, that.datoEndret).append(erLaast, that.erLaast).append(laastBeskrivelse, that.laastBeskrivelse).append(tags, that.tags).isEquals();
+        return new EqualsBuilder()
+                .append(id, that.id)
+                .append(versjon, that.versjon)
+                .append(navn, that.navn)
+                .append(hensikt, that.hensikt)
+                .append(opprettetAv, that.opprettetAv)
+                .append(sistEndretAv, that.sistEndretAv)
+                .append(datoEndret, that.datoEndret)
+                .append(erLaast, that.erLaast)
+                .append(laastBeskrivelse, that.laastBeskrivelse)
+                .append(tags, that.tags)
+                .isEquals();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37).append(id).append(versjon).append(navn).append(hensikt).append(opprettetAv).append(sistEndretAv).append(datoEndret).append(erLaast).append(laastBeskrivelse).append(tags).toHashCode();
+        return new HashCodeBuilder(17, 37)
+                .append(id)
+                .append(versjon)
+                .append(navn)
+                .append(hensikt)
+                .append(opprettetAv)
+                .append(sistEndretAv)
+                .append(datoEndret)
+                .append(erLaast)
+                .append(laastBeskrivelse)
+                .append(tags)
+                .toHashCode();
     }
 
     @Override
