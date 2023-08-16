@@ -19,6 +19,8 @@ import static java.util.Objects.isNull;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ArenaDagpenger {
 
+    public enum VedtaksType {O, S, E, G}
+
     public static final List<Vilkaar> DAGPENGER_VILKAAR =
             List.of(
                     new ArenaDagpenger.Vilkaar("GEOMOB", "J"),
@@ -43,6 +45,30 @@ public class ArenaDagpenger {
                     new ArenaDagpenger.Vilkaar("MOTTATTDOK", "J")
             );
 
+    public static final List<Vilkaar> DAGPENGER_VILKAAR_STANS=
+            List.of(
+                    new ArenaDagpenger.Vilkaar("GEOMOB", "N"),
+                    new ArenaDagpenger.Vilkaar("HELDELT", "N"),
+                    new ArenaDagpenger.Vilkaar("IFAFP", "N"),
+                    new ArenaDagpenger.Vilkaar("IFFODSP", "N"),
+                    new ArenaDagpenger.Vilkaar("IFGAFISK", "N"),
+                    new ArenaDagpenger.Vilkaar("IFSYKEP", "N"),
+                    new ArenaDagpenger.Vilkaar("OATVIST", "N"),
+                    new ArenaDagpenger.Vilkaar("PATVIST", "N"),
+                    new ArenaDagpenger.Vilkaar("MEDLFOLKT", "N"),
+                    new ArenaDagpenger.Vilkaar("MELDMØT", "N"),
+                    new ArenaDagpenger.Vilkaar("ARBFØR", "N"),
+                    new ArenaDagpenger.Vilkaar("ARBVILL", "N"),
+                    new ArenaDagpenger.Vilkaar("INORGE", "N"),
+                    new ArenaDagpenger.Vilkaar("TILTDELT", "N"),
+                    new ArenaDagpenger.Vilkaar("UNDER67", "N"),
+                    new ArenaDagpenger.Vilkaar("UNDERUTD", "N"),
+                    new ArenaDagpenger.Vilkaar("UTESTENG", "N"),
+                    new ArenaDagpenger.Vilkaar("IFUFTRY", "N"),
+                    new ArenaDagpenger.Vilkaar("TAPTINNT", "N"),
+                    new ArenaDagpenger.Vilkaar("MOTTATTDOK", "N")
+            );
+
     private String personident;
     private String miljoe;
     private List<NyeDagp> nyeDagp;
@@ -60,8 +86,13 @@ public class ArenaDagpenger {
         private GodkjenningerReellArbeidssoker godkjenningerReellArbeidssoker;
         private TaptArbeidstid taptArbeidstid;
         private Vedtaksperiode vedtaksperiode;
-        private String vedtaktype;
+        private VedtaksType vedtaktype;
         private String utfall;
+        private LocalDate stansFomDato;
+        private String harVedtaksbrev;
+        private String harRedigerbartBrev;
+        private String saksbehandlersTilleggsbegrunnelseForVedtaket;
+        private String saksbehandler;
 
         public List<Vilkaar> getVilkaar() {
             if (isNull(vilkaar)) {

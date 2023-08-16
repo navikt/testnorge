@@ -43,12 +43,8 @@ public class ArenaMappingStrategy implements MappingStrategy {
                         } else if (!arenadata.getAap().isEmpty() || !arenadata.getAap115().isEmpty() || !arenadata.getDagpenger().isEmpty()) {
                             mapMedServicebehov(arenadata, arenaNyBruker);
                         }
-                        if (arenadata.getAap().isEmpty()) {
-                            arenaNyBruker.setAap(null);
-                        }
-                        if (arenadata.getAap115().isEmpty()) {
-                            arenaNyBruker.setAap115(null);
-                        }
+                        arenaNyBruker.setAap(null);
+                        arenaNyBruker.setAap115(null);
                     }
                 })
                 .byDefault()
@@ -99,7 +95,7 @@ public class ArenaMappingStrategy implements MappingStrategy {
 
                         dagpenger.setUtfall("JA");
 
-                        dagpenger.setVedtaktype("O");
+                        dagpenger.setVedtaktype(ArenaDagpenger.VedtaksType.O);
 
                         dagpenger.setVilkaar(DAGPENGER_VILKAAR);
 
@@ -117,7 +113,8 @@ public class ArenaMappingStrategy implements MappingStrategy {
 
     private void mapMedServicebehov(Arenadata arenadata, ArenaNyBruker arenaNyBruker) {
         arenaNyBruker.setAktiveringsDato(
-                Stream.of(
+                Stream.of(Stream.of(arenadata.getAktiveringDato())
+                                        .filter(Objects::nonNull),
                                 arenadata.getAap().stream()
                                         .filter(Objects::nonNull)
                                         .map(RsArenaAap::getFraDato),

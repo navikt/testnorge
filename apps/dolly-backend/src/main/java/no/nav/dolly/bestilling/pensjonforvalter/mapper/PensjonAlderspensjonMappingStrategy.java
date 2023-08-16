@@ -74,6 +74,7 @@ public class PensjonAlderspensjonMappingStrategy implements MappingStrategy {
                         relasjoner.stream()
                                 .filter(person -> person.getIdent().equals(hovedperson))
                                 .forEach(personBolk -> personBolk.getPerson().getSivilstand().stream()
+                                        .filter(PdlPerson.Sivilstand::isGift)
                                         .findFirst()
                                         .ifPresent(sivilstand -> {
                                             request.setSivilstand(mapSivilstand(sivilstand.getType()));

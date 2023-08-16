@@ -71,6 +71,7 @@ public class DollyFrontendApplicationStarter {
     private final TestnavDokarkivProxyProperties testnavDokarkivProxyProperties;
     private final TestnavHistarkProxyProperties testnavHistarkProxyProperties;
     private final TestnavArbeidsplassenCvProxyProperties testnavArbeidsplassenCvProxyProperties;
+    private final TestnavHelsePersonellServiceProperties testnavHelsePersonellServiceProperties;
 
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
@@ -108,6 +109,7 @@ public class DollyFrontendApplicationStarter {
                 .route(createRoute(skjermingsregisterProxyProperties))
                 .route(createRoute(testnavDokarkivProxyProperties))
                 .route(createRoute(testnavArbeidsplassenCvProxyProperties))
+                .route(createRoute(testnavHelsePersonellServiceProperties))
                 .build();
     }
 
