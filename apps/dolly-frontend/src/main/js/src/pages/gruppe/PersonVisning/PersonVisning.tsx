@@ -106,8 +106,6 @@ export default ({
 	}
 	const bestillingListe = getBestillingsListe(bestillinger, bestillingIdListe)
 	const bestilling = bestillinger?.[bestillingIdListe?.[0]]
-	console.log('ident: ', ident) //TODO - SLETT MEG
-	console.log('bestillingListe: ', bestillingListe) //TODO - SLETT MEG
 
 	useEffect(() => {
 		fetchDataFraFagsystemer(bestillinger)
@@ -165,7 +163,7 @@ export default ({
 
 	const { loading: loadingArenaData, arenaData } = useArenaData(
 		ident.ident,
-		harArenaBestilling(bestillingerFagsystemer)
+		harArenaBestilling(bestillingerFagsystemer),
 	)
 
 	const getGruppeIdenter = () => {
@@ -310,7 +308,7 @@ export default ({
 							LEGG TIL/ENDRE
 						</Button>
 					)}
-					<GjenopprettPerson ident={ident?.ident} />
+					<GjenopprettPerson ident={ident} />
 					{!iLaastGruppe && harPdlRelatertPerson && (
 						<RelatertPersonImportButton
 							gruppeId={gruppeId}

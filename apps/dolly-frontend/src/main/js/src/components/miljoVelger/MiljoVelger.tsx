@@ -82,7 +82,7 @@ export const MiljoVelger = ({
 			T: miljoer.T.filter((env) => env.id !== 't13'),
 		}
 	}
-
+	console.log('bestillingsdata: ', bestillingsdata) //TODO - SLETT MEG
 	const disableAllEnvironments = erMiljouavhengig(bestillingsdata)
 	const filteredEnvironments = filterEnvironments(dollyEnvironments, bankIdBruker)
 	const order = ['T', 'Q']
@@ -157,6 +157,6 @@ MiljoVelger.validation = {
 			const miljoeNotRequired = erMiljouavhengig(values)
 			const hasEnvironments = values.environments.length > 0
 			return miljoeNotRequired || hasEnvironments
-		})
+		}),
 	),
 }

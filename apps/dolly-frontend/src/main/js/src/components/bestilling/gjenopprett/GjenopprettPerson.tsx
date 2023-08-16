@@ -1,7 +1,6 @@
 import DollyService from '@/service/services/dolly/DollyService'
 import Button from '@/components/ui/button/Button'
 import useBoolean from '@/utils/hooks/useBoolean'
-import Loading from '@/components/ui/loading/Loading'
 import {
 	REGEX_BACKEND_BESTILLINGER,
 	REGEX_BACKEND_GRUPPER,
@@ -10,30 +9,69 @@ import {
 import { GjenopprettModal } from '@/components/bestilling/gjenopprett/GjenopprettModal'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { arrayToString } from '@/utils/DataFormatter'
+import { useBestillingById } from '@/utils/hooks/useBestilling'
 
-export const GjenopprettPerson = ({ ident }: { ident: number }) => {
-	const [loading, setLoading] = useBoolean(false)
+type GjenopprettProps = {
+	ident: {
+		bestillingId: Array<number>
+		ident: string
+	}
+}
+
+type Values = {
+	environments: Array<string>
+}
+
+export const GjenopprettPerson = ({ ident }: GjenopprettProps) => {
 	const [isGjenopprettModalOpen, openGjenopprettModal, closeGjenoprettModal] = useBoolean(false)
 	const mutate = useMatchMutate()
 
-	const handleClick = async () => {
-		setLoading(true)
-		await DollyService.gjenopprettPerson(ident)
-			.then(() => {
-				mutate(REGEX_BACKEND_BESTILLINGER)
-				setLoading(false)
+	if (!ident) {
+		return null
+	}
+
+	const getBestilteMiljoer = () => {
+		const miljoer: Array<string> = []
+		ident.bestillingId.forEach((id) => {
+			const { bestilling } = useBestillingById(id.toString())
+			bestilling?.environments?.forEach((miljo) => {
+				if (!miljoer.includes(miljo)) {
+					miljoer.push(miljo)
+				}
 			})
-			.catch(() => {
-				setLoading(false)
-			})
+		})
+		return miljoer
+	}
+
+	const bestilteMiljoer = getBestilteMiljoer()
+
+	const handleSubmit = async (values: Values) => {
+		const filteredEnvs = values.environments?.filter((env: string) => env !== 'q5')
+
+		let miljoerString = ''
+		filteredEnvs.forEach((env: string, i: number) => {
+			if (i === 0) {
+				miljoerString += `?miljoer=${env}`
+			} else {
+				miljoerString += `&miljoer=${env}`
+			}
+		})
+
+		await DollyService.gjenopprettPerson(ident.ident, miljoerString).then(() => {
+			mutate(REGEX_BACKEND_BESTILLINGER)
+		})
 	}
 
 	const gjenopprettHeader = (
 		<div style={{ paddingLeft: 20, paddingRight: 20 }}>
-			<h1>Gjenopprett person {ident}</h1>
-			{/*<br />*/}
-			{/*<TitleValue title="Bestilt miljø" value={arrayToString(environments)} />*/}
-			{/*<hr />*/}
+			<h1>Gjenopprett person {ident.ident}</h1>
+			{bestilteMiljoer?.length > 0 && (
+				<>
+					<br />
+					<TitleValue title="Bestilt miljø" value={arrayToString(bestilteMiljoer)?.toUpperCase()} />
+					<hr />
+				</>
+			)}
 		</div>
 	)
 
@@ -45,22 +83,14 @@ export const GjenopprettPerson = ({ ident }: { ident: number }) => {
 			{isGjenopprettModalOpen && (
 				<GjenopprettModal
 					gjenopprettHeader={gjenopprettHeader}
-					submitFormik={handleClick}
+					environments={bestilteMiljoer}
+					submitFormik={handleSubmit}
 					closeModal={() => {
 						closeGjenoprettModal()
-						// mutate(REGEX_BACKEND_BESTILLINGER)
 						mutate(REGEX_BACKEND_GRUPPER)
 					}}
 				/>
 			)}
 		</>
 	)
-
-	// return loading ? (
-	// 	<Loading label="Gjenoppretter..." />
-	// ) : (
-	// 	<Button onClick={() => handleClick()} kind="synchronize">
-	// 		GJENOPPRETT PERSON
-	// 	</Button>
-	// )
 }

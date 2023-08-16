@@ -31,9 +31,13 @@ export default function GjenopprettBestilling(props) {
 	const gjenopprettHeader = (
 		<div style={{ paddingLeft: 20, paddingRight: 20 }}>
 			<h1>Gjenopprett bestilling #{bestilling.id}</h1>
-			<br />
-			<TitleValue title="Bestilt miljø" value={arrayToString(environments)} />
-			<hr />
+			{environments?.length > 0 && (
+				<>
+					<br />
+					<TitleValue title="Bestilt miljø" value={arrayToString(environments)?.toUpperCase()} />
+					<hr />
+				</>
+			)}
 		</div>
 	)
 
