@@ -17,6 +17,14 @@ function addHours(date, amount) {
 	return date
 }
 
+const fixTimezone = (date: Date) => {
+	if (!date) {
+		return null
+	}
+	const tzoffset = new Date().getTimezoneOffset() * 60000 //offset in milliseconds
+	return new Date(date.getTime() - tzoffset)
+}
+
 export const Datepicker = ({
 	name,
 	value,
@@ -69,7 +77,7 @@ const P_FormikDatepicker = ({ fastfield, addHour = false, ...props }) => (
 				form.setFieldTouched(props.name) // Need to trigger touched manually for Datepicker
 
 				if (props.afterChange) props.afterChange(date)
-				let val = date
+				let val = fixTimezone(date).toISOString().substring(0, 19)
 				if (addHour) {
 					val = addHours(new Date(date), 1).toISOString().substring(0, 19)
 				}
