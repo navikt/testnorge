@@ -1,7 +1,6 @@
 package no.nav.dolly.consumer.pdlperson.command;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.consumer.pdlperson.GraphQLRequest;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.util.CallIdUtil;
@@ -25,7 +24,6 @@ import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
-@Slf4j
 @RequiredArgsConstructor
 public class PdlBolkPersonGetCommand implements Callable<Flux<PdlPersonBolk>> {
 
@@ -41,7 +39,6 @@ public class PdlBolkPersonGetCommand implements Callable<Flux<PdlPersonBolk>> {
     @Override
     public Flux<PdlPersonBolk> call() {
 
-        log.info("Request sendt til PDL for {}", String.join(", ", identer));
         return webClient
                 .post()
                 .uri(uriBuilder -> uriBuilder
