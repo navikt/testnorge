@@ -53,7 +53,7 @@ public class PersonServiceClient {
         var startTime = System.currentTimeMillis();
 
         return Flux.from(getIdentWithRelasjoner(dollyPerson)
-                        .delayElements(Duration.ofMillis(300)) // Hensikten er å vente til PDL oppdateringer i det minste har utført sletting
+                        .delayElements(Duration.ofMillis(1000)) // Hensikten er å vente til PDL oppdateringer i det minste har utført sletting
                         .flatMap(ident -> getPersonService(LocalTime.now().plusSeconds(MAX_SEKUNDER), LocalTime.now(),
                                 new PersonServiceResponse(), ident))
                         .doOnNext(status -> logStatus(status, startTime))
