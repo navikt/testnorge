@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
-import no.nav.testnav.libs.dto.status.v1.DollyStatusResponse;
+import no.nav.testnav.libs.dto.status.v1.TestnavStatusResponse;
 import no.nav.dolly.domain.resultset.NavStatus;
 import no.nav.dolly.domain.resultset.SystemStatus;
 import org.springframework.http.MediaType;
@@ -55,12 +55,12 @@ public class StatusController {
 
     @GetMapping()
     @Operation(description = "Hent status for Dolly forbrukere")
-    public Map<Object, Map<String, DollyStatusResponse>> clientsStatus() {
+    public Map<Object, Map<String, TestnavStatusResponse>> clientsStatus() {
         return consumerRegister
                 .parallelStream()
                 .filter(StatusController::isNotExcluded)
                 .map(client -> List.of(getConsumerNavn(client.getClass().getSimpleName()), client.checkStatus(webClient)))
-                .collect(Collectors.toMap(key -> key.get(0), value -> (Map<String, DollyStatusResponse>) value.get(1)));
+                .collect(Collectors.toMap(key -> key.get(0), value -> (Map<String, TestnavStatusResponse>) value.get(1)));
     }
 
     @GetMapping("/oppsummert")
@@ -70,7 +70,7 @@ public class StatusController {
                 .parallelStream()
                 .filter(StatusController::isNotExcluded)
                 .map(client -> List.of(getConsumerNavn(client.getClass().getSimpleName()), client.checkStatus(webClient)))
-                .collect(Collectors.toMap(key -> (String) key.get(0), value -> (Map<String, DollyStatusResponse>) value.get(1)));
+                .collect(Collectors.toMap(key -> (String) key.get(0), value -> (Map<String, TestnavStatusResponse>) value.get(1)));
 
         status.values().forEach(temp -> {
             log.info(temp.toString());

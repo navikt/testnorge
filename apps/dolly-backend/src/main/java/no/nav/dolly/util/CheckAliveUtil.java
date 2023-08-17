@@ -2,7 +2,7 @@ package no.nav.dolly.util;
 
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.libs.dto.status.v1.DollyStatusResponse;
+import no.nav.testnav.libs.dto.status.v1.TestnavStatusResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -18,11 +18,11 @@ public final class CheckAliveUtil {
     final String TEAM_DOLLY = "Team Dolly";
     private static final String PATTERN = "%s, URL: %s";
 
-    public static DollyStatusResponse checkConsumerStatus(String aliveUrl, String readyUrl, WebClient webClient) {
+    public static TestnavStatusResponse checkConsumerStatus(String aliveUrl, String readyUrl, WebClient webClient) {
         var map = new HashMap<String, String>();
         map.put("alive", checkInternal(webClient, aliveUrl));
         map.put("ready", checkInternal(webClient, readyUrl));
-        return DollyStatusResponse.builder()
+        return TestnavStatusResponse.builder()
                 .alive(checkInternal(webClient, aliveUrl))
                 .ready(checkInternal(webClient, readyUrl))
                 .team(TEAM_DOLLY)

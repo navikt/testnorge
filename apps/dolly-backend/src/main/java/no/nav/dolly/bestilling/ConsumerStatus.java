@@ -1,7 +1,7 @@
 package no.nav.dolly.bestilling;
 
 import no.nav.dolly.util.CheckAliveUtil;
-import no.nav.testnav.libs.dto.status.v1.DollyStatusResponse;
+import no.nav.testnav.libs.dto.status.v1.TestnavStatusResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Map;
@@ -13,14 +13,14 @@ public interface ConsumerStatus {
 
     String consumerName();
 
-    default Map<String, DollyStatusResponse> checkStatus(WebClient webClient) {
+    default Map<String, TestnavStatusResponse> checkStatus(WebClient webClient) {
 
         var consumerStatus = CheckAliveUtil.checkConsumerStatus(
                 serviceUrl() + "/internal/isAlive",
                 serviceUrl() + "/internal/isReady",
                 webClient);
 
-        var statusMap = new ConcurrentHashMap<String, DollyStatusResponse>();
+        var statusMap = new ConcurrentHashMap<String, TestnavStatusResponse>();
         statusMap.put(consumerName(), consumerStatus);
 
         try {

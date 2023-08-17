@@ -1,6 +1,6 @@
 package no.nav.registre.testnav.inntektsmeldingservice.controller;
 
-import no.nav.testnav.libs.dto.status.v1.DollyStatusResponse;
+import no.nav.testnav.libs.dto.status.v1.TestnavStatusResponse;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,7 +14,7 @@ public class StatusController {
     private static final String TEAM = "Team Dolly";
 
     @GetMapping(value = "/internal/status", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, DollyStatusResponse> getStatus() {
+    public Map<String, TestnavStatusResponse> getStatus() {
         var statusWebClient = WebClient.builder().build();
 
         var status = checkConsumerStatus(
@@ -27,8 +27,8 @@ public class StatusController {
         );
     }
 
-    public DollyStatusResponse checkConsumerStatus(String aliveUrl, String readyUrl, WebClient webClient) {
-        var dollyStatus = DollyStatusResponse.builder().team(TEAM).build();
+    public TestnavStatusResponse checkConsumerStatus(String aliveUrl, String readyUrl, WebClient webClient) {
+        var dollyStatus = TestnavStatusResponse.builder().team(TEAM).build();
 
         Thread blockingThread = new Thread(() -> {
             dollyStatus.setAlive(checkStatus(webClient, aliveUrl).block());

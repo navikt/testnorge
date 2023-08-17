@@ -1,6 +1,6 @@
 package no.nav.testnav.proxies.safproxy;
 
-import no.nav.testnav.libs.dto.status.v1.DollyStatusResponse;
+import no.nav.testnav.libs.dto.status.v1.TestnavStatusResponse;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,7 +16,7 @@ public class StatusController {
     private static final String TEAM = "teamdokumenthandtering";
 
     @GetMapping(value = "/internal/status", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, DollyStatusResponse> getStatus() {
+    public Map<String, TestnavStatusResponse> getStatus() {
         var statusWebClient = WebClient.builder().build();
 
         return Stream.of("q1", "q2", "q4", "q5", "t3")
@@ -34,8 +34,8 @@ public class StatusController {
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
-    public DollyStatusResponse checkConsumerStatus(String aliveUrl, String readyUrl, WebClient webClient) {
-        DollyStatusResponse status = DollyStatusResponse.builder().team(TEAM).build();
+    public TestnavStatusResponse checkConsumerStatus(String aliveUrl, String readyUrl, WebClient webClient) {
+        TestnavStatusResponse status = TestnavStatusResponse.builder().team(TEAM).build();
 
         Thread blockingThread = new Thread(() -> {
             status.setAlive(checkStatus(webClient, aliveUrl).block());

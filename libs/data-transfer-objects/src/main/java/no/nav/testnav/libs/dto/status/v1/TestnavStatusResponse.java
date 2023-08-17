@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class DollyStatusResponse {
+public class TestnavStatusResponse {
 
     private String alive;
     private String ready;

@@ -1,5 +1,6 @@
 package no.nav.testnav.proxies.instproxy;
 
+import no.nav.testnav.libs.dto.status.v1.TestnavStatusResponse;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -7,39 +8,35 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 @RestController
 public class StatusController {
     private static final String TEAM_ROCKET = "Team Rocket";
 
     @GetMapping(value = "/internal/status", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Map<String, String>> getStatus() {
+    public Map<String, TestnavStatusResponse> getStatus() {
         var statusWebClient = WebClient.builder().build();
 
         var serviceStatus = checkConsumerStatus(
                 "https://institusjon-opphold-testdata.dev.intern.nav.no/internal/health/liveness",
                 "https://institusjon-opphold-testdata.dev.intern.nav.no/internal/health/readiness",
                 statusWebClient);
-        serviceStatus.put("team", TEAM_ROCKET);
 
         return Map.of(
                 "inst-testdata", serviceStatus
         );
     }
 
-    public Map<String, String> checkConsumerStatus(String aliveUrl, String readyUrl, WebClient webClient) {
-        ConcurrentHashMap<String, String> status = new ConcurrentHashMap<>();
+    public TestnavStatusResponse checkConsumerStatus(String aliveUrl, String readyUrl, WebClient webClient) {
+        TestnavStatusResponse status = TestnavStatusResponse.builder().team(TEAM_ROCKET).build();
 
         Thread blockingThread = new Thread(() -> {
-            status.put(
-                    "alive",
+            status.setAlive(
                     checkStatus(webClient, aliveUrl)
                             .blockOptional()
                             .orElse("Error: Empty response")
             );
-            status.put(
-                    "ready",
+            status.setReady(
                     checkStatus(webClient, readyUrl)
                             .blockOptional()
                             .orElse("Error: Empty response")
