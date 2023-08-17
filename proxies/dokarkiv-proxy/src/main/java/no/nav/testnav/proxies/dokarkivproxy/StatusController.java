@@ -1,5 +1,6 @@
 package no.nav.testnav.proxies.dokarkivproxy;
 
+import no.nav.testnav.libs.dto.status.v1.TestnavStatusResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,9 +10,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @RestController
 public class StatusController {
@@ -21,7 +20,7 @@ public class StatusController {
     private String environments;
 
     @GetMapping(value = "/internal/status", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Map<String, String>> getStatus() {
+    public Map<String, TestnavStatusResponse> getStatus() {
         var statusWebClient = WebClient.builder().build();
 
         return Arrays.asList(environments.split(",")).stream()
@@ -31,7 +30,6 @@ public class StatusController {
                             "https://dokarkiv-" + miljo + ".dev.adeo.no/actuator/health/liveness",
                             "https://dokarkiv-" + miljo + ".dev.adeo.no/actuator/health/readiness",
                             statusWebClient);
-                    miljoStatus.put("team", TEAM_DOKARKIV);
                     return Map.of(
                             "dokarkiv-" + miljo, miljoStatus
                     );
@@ -40,12 +38,12 @@ public class StatusController {
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
-    public Map<String, String> checkConsumerStatus(String aliveUrl, String readyUrl, WebClient webClient) {
-        ConcurrentHashMap<String, String> status = new ConcurrentHashMap<>();
+    public TestnavStatusResponse checkConsumerStatus(String aliveUrl, String readyUrl, WebClient webClient) {
+        TestnavStatusResponse status = TestnavStatusResponse.builder().team(TEAM_DOKARKIV).build();
 
         Thread blockingThread = new Thread(() -> {
-            status.put("alive", checkStatus(webClient, aliveUrl).block());
-            status.put("ready", checkStatus(webClient, readyUrl).block());
+            status.setAlive(checkStatus(webClient, aliveUrl).block());
+            status.setReady(checkStatus(webClient, readyUrl).block());
         });
         blockingThread.start();
         try {

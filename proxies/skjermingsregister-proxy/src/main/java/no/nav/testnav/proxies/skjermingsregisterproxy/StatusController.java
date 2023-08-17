@@ -1,5 +1,6 @@
 package no.nav.testnav.proxies.skjermingsregisterproxy;
 
+import no.nav.testnav.libs.dto.status.v1.TestnavStatusResponse;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -7,33 +8,39 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 @RestController
 public class StatusController {
     private static final String TEAM = "Team Org (NOM)";
 
     @GetMapping(value = "/internal/status", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Map<String, String>> getStatus() {
+    public Map<String, TestnavStatusResponse> getStatus() {
         var statusWebClient = WebClient.builder().build();
 
         var status = checkConsumerStatus(
                 "http://skjermede-personer.nom.svc.nais.local" + "/internal/isAlive",
                 "http://skjermede-personer.nom.svc.nais.local" + "/internal/isReady",
                 statusWebClient);
-        status.put("team", TEAM);
 
         return Map.of(
                 "skjermede-personer", status
         );
     }
 
-    public Map<String, String> checkConsumerStatus(String aliveUrl, String readyUrl, WebClient webClient) {
-        ConcurrentHashMap<String, String> status = new ConcurrentHashMap<>();
+    public TestnavStatusResponse checkConsumerStatus(String aliveUrl, String readyUrl, WebClient webClient) {
+        TestnavStatusResponse status = TestnavStatusResponse.builder().team(TEAM).build();
 
         Thread blockingThread = new Thread(() -> {
-            status.put("alive", checkStatus(webClient, aliveUrl).block());
-            status.put("ready", checkStatus(webClient, readyUrl).block());
+            status.setAlive(
+                    checkStatus(webClient, aliveUrl)
+                            .blockOptional()
+                            .orElse("Error: Empty response")
+            );
+            status.setReady(
+                    checkStatus(webClient, readyUrl)
+                            .blockOptional()
+                            .orElse("Error: Empty response")
+            );
         });
         blockingThread.start();
         try {
