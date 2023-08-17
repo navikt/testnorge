@@ -6,18 +6,10 @@ import { TextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { Label } from '@/components/ui/form/inputs/label/Label'
 import { InputWrapper } from '@/components/ui/form/inputWrapper/InputWrapper'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
-import { fieldError, SyntEvent } from '@/components/ui/form/formUtils'
+import { fieldError, fixTimezone, SyntEvent } from '@/components/ui/form/formUtils'
 import 'react-datepicker/dist/react-datepicker.css'
 
 registerLocale('nb', locale_nb)
-
-const fixTimezone = (date: Date) => {
-	if (!date) {
-		return null
-	}
-	const tzoffset = new Date().getTimezoneOffset() * 60000 //offset in milliseconds
-	return new Date(date.getTime() - tzoffset)
-}
 
 const displayTimeZone = (date: Date) => {
 	if (!date) {

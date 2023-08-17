@@ -6,7 +6,7 @@ import { TextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { Label } from '@/components/ui/form/inputs/label/Label'
 import { InputWrapper } from '@/components/ui/form/inputWrapper/InputWrapper'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
-import { fieldError, SyntEvent } from '@/components/ui/form/formUtils'
+import { fieldError, fixTimezone, SyntEvent } from '@/components/ui/form/formUtils'
 import 'react-datepicker/dist/react-datepicker.css'
 import './Datepicker.less'
 
@@ -15,14 +15,6 @@ registerLocale('nb', locale_nb)
 function addHours(date, amount) {
 	date.setHours(amount, 0, 0)
 	return date
-}
-
-const fixTimezone = (date: Date) => {
-	if (!date) {
-		return null
-	}
-	const tzoffset = new Date().getTimezoneOffset() * 60000 //offset in milliseconds
-	return new Date(date.getTime() - tzoffset)
 }
 
 export const Datepicker = ({
@@ -77,7 +69,7 @@ const P_FormikDatepicker = ({ fastfield, addHour = false, ...props }) => (
 				form.setFieldTouched(props.name) // Need to trigger touched manually for Datepicker
 
 				if (props.afterChange) props.afterChange(date)
-				let val = fixTimezone(date).toISOString().substring(0, 19)
+				let val = fixTimezone(date)?.toISOString().substring(0, 19)
 				if (addHour) {
 					val = addHours(new Date(date), 1).toISOString().substring(0, 19)
 				}
