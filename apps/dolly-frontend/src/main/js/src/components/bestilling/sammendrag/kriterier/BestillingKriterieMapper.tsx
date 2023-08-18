@@ -438,7 +438,7 @@ const mapBostedsadresse = (bostedsadresse, data) => {
 					return [
 						{ numberHeader: `Bostedsadresse ${idx + 1}: Ukjent bosted` },
 						obj('Ukjent bosted', adresseVerdi(adresseData)),
-						obj('Bostedskommune', adresseData.bostedskommune),
+						obj('Bostedskommune', adresseData.bostedskommune, AdresseKodeverk.Kommunenummer),
 						...datoer(item),
 						...coAdresse(item.opprettCoAdresseNavn),
 					]
@@ -643,7 +643,11 @@ const deltBosted = (personData, path) => {
 		return [
 			expandable('DELT BOSTED', !isEmpty(deltBostedData), [
 				...fellesVerdier,
-				obj('Bostedskommune', deltBostedData.ukjentBosted.bostedskommune),
+				obj(
+					'Bostedskommune',
+					deltBostedData.ukjentBosted.bostedskommune,
+					AdresseKodeverk.Kommunenummer,
+				),
 			]),
 		]
 	} else {

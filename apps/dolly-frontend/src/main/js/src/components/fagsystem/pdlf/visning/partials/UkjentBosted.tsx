@@ -1,5 +1,6 @@
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { formatDate } from '@/utils/DataFormatter'
+import { AdresseKodeverk } from '@/config/kodeverk'
 
 type AdresseData = {
 	adresse: {
@@ -24,7 +25,7 @@ export const UkjentBosted = ({ adresse, idx }: AdresseData) => {
 		startdatoForKontrakt,
 		sluttdatoForKontrakt,
 		coAdressenavn,
-		metadata
+		metadata,
 	} = adresse
 
 	const master = metadata?.master
@@ -36,6 +37,7 @@ export const UkjentBosted = ({ adresse, idx }: AdresseData) => {
 				<TitleValue
 					title="Bostedskommune"
 					value={adresse.ukjentBosted.bostedskommune || 'Ikke oppgitt'}
+					kodeverk={AdresseKodeverk.Kommunenummer}
 				/>
 				<TitleValue title="Angitt flyttedato" value={formatDate(angittFlyttedato)} />
 				<TitleValue title="Gyldig fra og med" value={formatDate(gyldigFraOgMed)} />
