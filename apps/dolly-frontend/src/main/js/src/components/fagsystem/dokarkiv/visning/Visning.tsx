@@ -27,7 +27,7 @@ const Dokarkiv = ({ data, miljo }: DokarkivTypes) => {
 }
 
 export default ({ data, bestillingIdListe, loading, tilgjengeligMiljoe }: Form) => {
-	const { bestilteMiljoer } = useBestilteMiljoer(bestillingIdListe, 'dokarkiv')
+	const { bestilteMiljoer } = useBestilteMiljoer(bestillingIdListe, 'DOKARKIV')
 
 	if (loading) {
 		return <Loading label="Laster dokument-data" />

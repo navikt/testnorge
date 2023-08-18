@@ -269,7 +269,7 @@ export const AaregVisning = ({
 	bestillingIdListe,
 	tilgjengeligMiljoe,
 }: AaregVisningProps) => {
-	const { bestilteMiljoer } = useBestilteMiljoer(bestillingIdListe, 'aareg')
+	const { bestilteMiljoer } = useBestilteMiljoer(bestillingIdListe, 'AAREG')
 
 	if (loading) {
 		return <Loading label="Laster Aareg-data" />

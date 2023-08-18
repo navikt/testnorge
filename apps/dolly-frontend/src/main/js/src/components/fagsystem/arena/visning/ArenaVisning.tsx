@@ -8,6 +8,7 @@ import { DollyApi } from '@/service/Api'
 import { MiljoTabs } from '@/components/ui/miljoTabs/MiljoTabs'
 import { useArenaEnvironments } from '@/utils/hooks/useEnvironments'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
+import { useBestilteMiljoer } from '@/utils/hooks/useBestilling'
 
 const Visning = ({ data }) => {
 	if (!data) {
@@ -112,6 +113,8 @@ export const ArenaVisning = ({ data, ident, bestillinger, loading, tilgjengeligM
 	}
 
 	const bestilteMiljoer = getBestilteMiljoer(bestillinger, arenaEnvironments)
+	// const { bestilteMiljoer } = useBestilteMiljoer(bestillinger, 'ARENA_BRUKER')
+
 	const miljoerMedData = data?.map((arb) => arb.miljo)
 	const errorMiljoer = bestilteMiljoer.filter((m) => !miljoerMedData?.includes(m))
 

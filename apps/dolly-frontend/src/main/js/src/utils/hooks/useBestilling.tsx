@@ -165,7 +165,7 @@ export const useBestilteMiljoer = (bestillingIdListe: Array<string>, fagsystem: 
 	const miljoer = []
 	data?.map((bestilling) => {
 		bestilling?.environments?.forEach((miljo) => {
-			if (!miljoer.includes(miljo) && _.has(bestilling, `bestilling.${fagsystem}`)) {
+			if (!miljoer.includes(miljo) && bestilling.status?.find((s) => s.id === fagsystem)) {
 				miljoer.push(miljo)
 			}
 		})
