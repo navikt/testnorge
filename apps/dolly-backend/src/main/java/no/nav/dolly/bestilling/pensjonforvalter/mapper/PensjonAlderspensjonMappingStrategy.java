@@ -11,7 +11,9 @@ import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static java.util.Objects.isNull;
@@ -68,10 +70,30 @@ public class PensjonAlderspensjonMappingStrategy implements MappingStrategy {
                         request.setMiljoer((List<String>) context.getProperty("miljoer"));
                         request.setStatsborgerskap("NOR");
 
-                        var relasjoner = (List<PdlPersonBolk.PersonBolk>) context.getProperty("relasjoner");
+                        var personer = (List<PdlPersonBolk.PersonBolk>) context.getProperty("relasjoner");
+                        request.setSivilstand(personer.stream()
+                                .filter(person -> hovedperson.equals(person.getIdent()))
+                                .map(PdlPersonBolk.PersonBolk::getPerson)
+                                .map(PdlPerson.Person::getSivilstand)
+                                .flatMap(Collection::stream)
+                                .map(PdlPerson.Sivilstand::getType)
+                                .map(PensjonAlderspensjonMappingStrategy::mapSivilstand)
+                                .filter(Objects::nonNull)
+                                .findFirst()
+                                .orElse(null));
+
+                        request.setSivilstandDatoFom(personer.stream()
+                                .filter(person -> hovedperson.equals(person.getIdent()))
+                                .map(PdlPersonBolk.PersonBolk::getPerson)
+                                .map(PdlPerson.Person::getSivilstand)
+                                .flatMap(Collection::stream)
+                                .map(PdlPerson.Sivilstand::getGyldigFraOgMed)
+                                .filter(Objects::nonNull)
+                                .findFirst()
+                                .orElse(null));
 
                         var partner = new AtomicReference<String>();
-                        relasjoner.stream()
+                        personer.stream()
                                 .filter(person -> person.getIdent().equals(hovedperson))
                                 .forEach(personBolk -> personBolk.getPerson().getSivilstand().stream()
                                         .filter(PdlPerson.Sivilstand::isGift)
@@ -82,11 +104,11 @@ public class PensjonAlderspensjonMappingStrategy implements MappingStrategy {
                                             partner.set(sivilstand.getRelatertVedSivilstand());
                                         }));
 
-                        if (relasjoner.stream().anyMatch(person -> person.getIdent().equals(partner.get())) &&
+                        if (personer.stream().anyMatch(person -> person.getIdent().equals(partner.get())) &&
                                 !alderspensjon.getRelasjoner().isEmpty()) {
 
                             request.setRelasjonListe(mapperFacade.mapAsList(alderspensjon.getRelasjoner(), AlderspensjonRequest.SkjemaRelasjon.class));
-                            relasjoner.stream()
+                            personer.stream()
                                     .filter(personBolk -> personBolk.getIdent().equals(partner.get()))
                                     .forEach(partnerPerson -> {
                                         request.getRelasjonListe().get(0).setFnr(partnerPerson.getIdent());
@@ -111,7 +133,7 @@ public class PensjonAlderspensjonMappingStrategy implements MappingStrategy {
                                                 partnerPerson.getPerson().getForelderBarnRelasjon().stream()
                                                         .filter(PdlPerson.ForelderBarnRelasjon::isBarn)
                                                         .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent)
-                                                        .anyMatch(barnAvPartner -> relasjoner.stream()
+                                                        .anyMatch(barnAvPartner -> personer.stream()
                                                                 .filter(person -> hovedperson.equals(person.getIdent()))
                                                                 .map(PdlPersonBolk.PersonBolk::getPerson)
                                                                 .anyMatch(person -> person.getForelderBarnRelasjon().stream()
