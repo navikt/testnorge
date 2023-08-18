@@ -15,6 +15,7 @@ type GjenopprettProps = {
 	ident: {
 		bestillingId: Array<number>
 		ident: string
+		bestillinger: Array<any>
 	}
 }
 
@@ -75,6 +76,17 @@ export const GjenopprettPerson = ({ ident }: GjenopprettProps) => {
 		</div>
 	)
 
+	const getBestillingerSamlet = () => {
+		const samlet = {
+			bestilling: {},
+		}
+		ident.bestillinger?.map((best) => {
+			Object.assign(samlet.bestilling, best?.bestilling)
+		})
+		return samlet
+	}
+	const bestillingerSamlet = getBestillingerSamlet()
+
 	return (
 		<>
 			<Button onClick={openGjenopprettModal} kind="synchronize">
@@ -89,6 +101,7 @@ export const GjenopprettPerson = ({ ident }: GjenopprettProps) => {
 						closeGjenoprettModal()
 						mutate(REGEX_BACKEND_GRUPPER)
 					}}
+					bestilling={bestillingerSamlet}
 				/>
 			)}
 		</>

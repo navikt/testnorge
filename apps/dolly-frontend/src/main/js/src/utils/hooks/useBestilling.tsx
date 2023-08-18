@@ -47,7 +47,7 @@ export const useBestilteMiljoerForGruppe = (gruppeId: string | number) => {
 
 	const { data, isLoading, error } = useSWR<string[], Error>(
 		getMiljoerForGruppeUrl(gruppeId),
-		fetcher
+		fetcher,
 	)
 
 	return {
@@ -67,7 +67,7 @@ export const useBestillingerGruppe = (gruppeId: string | number) => {
 
 	const { data, isLoading, error } = useSWR<Bestilling[], Error>(
 		getBestillingerGruppeUrl(gruppeId),
-		fetcher
+		fetcher,
 	)
 
 	const bestillingerSorted = data
@@ -87,7 +87,7 @@ export const useIkkeFerdigBestillingerGruppe = (
 	visning,
 	sidetall: number,
 	sideStoerrelse: number,
-	update: string
+	update: string,
 ) => {
 	if (!gruppeId) {
 		return {
@@ -119,7 +119,7 @@ export const useIkkeFerdigBestillingerGruppe = (
 export const useBestillingById = (
 	bestillingId: string,
 	erOrganisasjon = false,
-	autoRefresh = false
+	autoRefresh = false,
 ) => {
 	if (!bestillingId) {
 		return {
@@ -139,7 +139,7 @@ export const useBestillingById = (
 		{
 			refreshInterval: autoRefresh ? 1000 : null,
 			dedupingInterval: autoRefresh ? 1000 : null,
-		}
+		},
 	)
 
 	return {
@@ -159,9 +159,9 @@ export const useBestilteMiljoer = (bestillingIdListe: Array<string>, fagsystem: 
 
 	const { data, isLoading, error } = useSWR<Array<Bestilling>, Error>(
 		getMultipleBestillingByIdUrl(bestillingIdListe),
-		multiFetcherAll
+		multiFetcherAll,
 	)
-
+	console.log('data: ', data) //TODO - SLETT MEG
 	const miljoer = []
 	data?.map((bestilling) => {
 		bestilling?.environments?.forEach((miljo) => {

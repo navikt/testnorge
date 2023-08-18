@@ -111,10 +111,7 @@ export const ArenaVisning = ({ data, ident, bestillinger, loading, tilgjengeligM
 		return null
 	}
 
-	const arenaBestillinger = bestillinger.filter((bestilling) =>
-		bestilling.data.hasOwnProperty('arenaforvalter'),
-	)
-	const bestilteMiljoer = getBestilteMiljoer(arenaBestillinger, arenaEnvironments)
+	const bestilteMiljoer = getBestilteMiljoer(bestillinger, arenaEnvironments)
 	const miljoerMedData = data?.map((arb) => arb.miljo)
 	const errorMiljoer = bestilteMiljoer.filter((m) => !miljoerMedData?.includes(m))
 

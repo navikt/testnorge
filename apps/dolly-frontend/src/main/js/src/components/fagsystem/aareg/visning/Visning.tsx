@@ -122,7 +122,7 @@ const AmeldingUnderenhet = ({ data, ident }: any) => {
 		<DollyFieldArray data={data?.virksomheter} nested>
 			{(underenhet: AmeldingUnderenhet, idx: number) => {
 				const gjeldendePerson = underenhet.personer?.find(
-					(person) => person.ident === ident.toString()
+					(person) => person.ident === ident.toString(),
 				)
 				const arbeidsforhold = gjeldendePerson?.arbeidsforhold?.[0]
 				return (
@@ -285,10 +285,10 @@ export const AaregVisning = ({
 	const errorMiljoer = bestilteMiljoer?.filter((miljo) => !miljoerMedData?.includes(miljo))
 
 	const miljoerMedDataAmeldinger = ameldinger?.map(
-		(miljoData) => miljoData?.data?.length > 0 && miljoData?.miljo
+		(miljoData) => miljoData?.data?.length > 0 && miljoData?.miljo,
 	)
 	const errorMiljoerAmeldinger = bestilteMiljoer?.filter(
-		(miljo) => !miljoerMedDataAmeldinger?.includes(miljo)
+		(miljo) => !miljoerMedDataAmeldinger?.includes(miljo),
 	)
 
 	const forsteMiljo =
@@ -299,18 +299,16 @@ export const AaregVisning = ({
 
 	const harAmeldingBestilling = ameldinger?.some((amelding) => amelding?.data?.length > 0)
 
-	const arbeidsforhold = liste
-		?.map((item) => {
-			return {
-				...item,
-				data: item?.data
-					?.map((data) => {
-						return data?.sporingsinformasjon?.opprettetAv?.includes('testnav') ? data : null
-					})
-					?.filter((data) => data),
-			}
-		})
-		?.filter((item) => item.data?.length > 0)
+	const arbeidsforhold = liste?.map((item) => {
+		return {
+			...item,
+			data: item?.data
+				?.map((data) => {
+					return data?.sporingsinformasjon?.opprettetAv?.includes('testnav') ? data : null
+				})
+				?.filter((data) => data),
+		}
+	})
 
 	const filteredData =
 		tilgjengeligMiljoe && arbeidsforhold?.filter((item) => item.miljo === tilgjengeligMiljoe)
