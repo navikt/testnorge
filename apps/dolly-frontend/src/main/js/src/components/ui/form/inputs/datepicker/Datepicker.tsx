@@ -71,7 +71,9 @@ const P_FormikDatepicker = ({ fastfield, addHour = false, ...props }) => (
 				if (props.afterChange) props.afterChange(date)
 				let val = fixTimezone(date)?.toISOString().substring(0, 19)
 				if (addHour) {
-					val = addHours(new Date(date), 1).toISOString().substring(0, 19)
+					val = addHours(new Date(fixTimezone(date)), 3)
+						.toISOString()
+						.substring(0, 19)
 				}
 				return field.onChange(SyntEvent(field.name, val))
 			}
