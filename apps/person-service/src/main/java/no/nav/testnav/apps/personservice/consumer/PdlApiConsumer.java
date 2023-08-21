@@ -97,7 +97,7 @@ public class PdlApiConsumer {
                 .findFirst()
                 .ifPresent(ident -> {
                     var person = pdlAktoer.getData().getHentPerson();
-                    log.info("Sjekker ident {}, har hendelser {}, mottatte hendelser {}", ident,
+                    log.info("Person {} med PDL opplysningId {}, sjekkes for mottatt opplysningId {}", ident,
                             nonNull(person) ?
                                     Stream.of(person.getNavn(), person.getFoedsel(), person.getFolkeregisteridentifikator(), person.getFolkeregisterpersonstatus(), person.getBostedsadresse())
                                             .flatMap(Collection::stream)
