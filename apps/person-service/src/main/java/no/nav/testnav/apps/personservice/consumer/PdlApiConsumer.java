@@ -91,11 +91,13 @@ public class PdlApiConsumer {
         if (nonNull(opplysningId)) {
 
             var person = pdlAktoer.getData().getHentPerson();
-            return Stream.of(person.getNavn(), person.getFoedsel(), person.getFolkeregisteridentifikator(), person.getFolkeregisterpersonstatus(), person.getBostedsadresse())
+            return nonNull(person) &&
+                    Stream.of(person.getNavn(), person.getFoedsel(), person.getFolkeregisteridentifikator(), person.getFolkeregisterpersonstatus(), person.getBostedsadresse())
                     .flatMap(Collection::stream)
                     .map(MetadataDTO::getMetadata)
                     .map(MetadataDTO.Metadata::getOpplysningsId)
                     .anyMatch(opplysningId::contains);
+
         } else {
 
             List<PdlAktoer.AktoerIdent> identer = nonNull(pdlAktoer) && nonNull(pdlAktoer.getData()) && nonNull(pdlAktoer.getData().getHentIdenter()) ?

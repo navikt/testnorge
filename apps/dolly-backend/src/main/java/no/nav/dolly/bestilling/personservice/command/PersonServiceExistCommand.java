@@ -11,6 +11,8 @@ import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
+import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.Callable;
 
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
@@ -20,6 +22,7 @@ public class PersonServiceExistCommand implements Callable<Mono<PersonServiceRes
 
    private final WebClient webClient;
    private final String ident;
+   private final Optional<Set<String>> hendelseId;
    private final String token;
 
     private static final String PERSON_URL = "/api/v1/personer/{ident}/exists";
@@ -29,6 +32,7 @@ public class PersonServiceExistCommand implements Callable<Mono<PersonServiceRes
 
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder.path(PERSON_URL)
+                        .queryParamIfPresent("hendelseId", hendelseId)
                         .build(ident))
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
