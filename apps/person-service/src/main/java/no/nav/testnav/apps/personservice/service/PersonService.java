@@ -32,8 +32,8 @@ public class PersonService {
         return pdlApiConsumer.getAktoer(ident);
     }
 
-    public Mono<Boolean> isPerson(String ident, Set<String> hendelseId) {
+    public Mono<Boolean> isPerson(String ident, Set<String> opplysningId) {
 
-        return pdlApiConsumer.isPerson(ident, hendelseId);
+        return pdlApiConsumer.isPerson(ident, opplysningId);
     }
 }

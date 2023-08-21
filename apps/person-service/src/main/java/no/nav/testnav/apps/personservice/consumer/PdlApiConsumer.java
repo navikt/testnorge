@@ -10,6 +10,7 @@ import no.nav.testnav.apps.personservice.consumer.dto.pdl.graphql.MetadataDTO;
 import no.nav.testnav.apps.personservice.consumer.dto.pdl.graphql.PdlAktoer;
 import no.nav.testnav.apps.personservice.domain.Person;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
@@ -22,10 +23,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.BooleanUtils.isFalse;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -88,15 +91,31 @@ public class PdlApiConsumer {
 
     private boolean isPresent(PdlAktoer pdlAktoer, Set<String> opplysningId) {
 
+        pdlAktoer.getData().getHentIdenter().getIdenter().stream()
+                .filter(ident -> "FOLKEREGISTERIDENT" .equals(ident.getGruppe()))
+                .filter(ident -> isFalse(ident.getHistorisk()))
+                .findFirst()
+                .ifPresent(ident -> {
+                    var person = pdlAktoer.getData().getHentPerson();
+                    log.info("Sjekker ident {}, har hendelser {}, mottatte hendelser {}", ident,
+                            nonNull(person) ?
+                                    Stream.of(person.getNavn(), person.getFoedsel(), person.getFolkeregisteridentifikator(), person.getFolkeregisterpersonstatus(), person.getBostedsadresse())
+                                            .flatMap(Collection::stream)
+                                            .map(MetadataDTO::getMetadata)
+                                            .map(MetadataDTO.Metadata::getOpplysningsId)
+                                            .collect(Collectors.joining(", ")) : null,
+                            String.join(", ", opplysningId));
+                });
+
         if (nonNull(opplysningId)) {
 
             var person = pdlAktoer.getData().getHentPerson();
             return nonNull(person) &&
                     Stream.of(person.getNavn(), person.getFoedsel(), person.getFolkeregisteridentifikator(), person.getFolkeregisterpersonstatus(), person.getBostedsadresse())
-                    .flatMap(Collection::stream)
-                    .map(MetadataDTO::getMetadata)
-                    .map(MetadataDTO.Metadata::getOpplysningsId)
-                    .anyMatch(opplysningId::contains);
+                            .flatMap(Collection::stream)
+                            .map(MetadataDTO::getMetadata)
+                            .map(MetadataDTO.Metadata::getOpplysningsId)
+                            .anyMatch(opplysningId::contains);
 
         } else {
 
@@ -127,13 +146,13 @@ public class PdlApiConsumer {
                         }));
     }
 
-    public Mono<Boolean> isPerson(String ident, Set<String> hendelseId) {
+    public Mono<Boolean> isPerson(String ident, Set<String> opplysningId) {
 
         log.info("Henter ident {} fra PDL", ident);
         return tokenExchange
                 .exchange(serviceProperties)
                 .flatMap(token -> Mono.zip(new GetPdlAktoerCommand(webClient, PDL_URL, ident, token.getTokenValue()).call(),
                                 new GetPdlAktoerCommand(webClient, PDL_Q1_URL, ident, token.getTokenValue()).call())
-                        .map(tuple -> isPresent(tuple.getT1(), hendelseId) && isPresent(tuple.getT2(), hendelseId)));
+                        .map(tuple -> isPresent(tuple.getT1(), opplysningId) && isPresent(tuple.getT2(), opplysningId)));
     }
 }

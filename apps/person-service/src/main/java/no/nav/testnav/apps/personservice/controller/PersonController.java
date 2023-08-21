@@ -63,9 +63,9 @@ public class PersonController {
     @GetMapping("/{ident}/exists")
     public Mono<Boolean> isPerson(
             @PathVariable("ident") @Size(min = 11, max = 11, message = "Ident må ha 11 siffer") String ident,
-            @RequestParam(value = "hendelseId", required = false) Set<String> hendelseId) {
+            @RequestParam(value = "opplysningId", required = false) Set<String> opplysningId) {
 
-        return personService.isPerson(ident, hendelseId);
+        return personService.isPerson(ident, opplysningId);
     }
 
     @GetMapping("/{ident}/aktoerId")
