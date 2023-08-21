@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -37,8 +36,7 @@ public class PersonServiceConsumer implements ConsumerStatus {
     public Mono<PersonServiceResponse> isPerson(String ident, Set<String> hendelseId) {
 
         return tokenService.exchange(serviceProperties)
-                .flatMap(token -> new PersonServiceExistCommand(webClient, ident,
-                        Optional.ofNullable(hendelseId.isEmpty() ? null : hendelseId), token.getTokenValue()).call());
+                .flatMap(token -> new PersonServiceExistCommand(webClient, ident, hendelseId, token.getTokenValue()).call());
     }
 
     @Override
