@@ -100,9 +100,10 @@ public class PdlApiConsumer {
                         String.join(", ", opplysningId) :
                         null);
 
+        boolean resultat;
         if (nonNull(opplysningId)) {
 
-            return nonNull(person) &&
+            resultat = nonNull(person) &&
                     Stream.of(person.getNavn(), person.getFoedsel(), person.getFolkeregisteridentifikator(), person.getFolkeregisterpersonstatus(), person.getBostedsadresse())
                             .flatMap(Collection::stream)
                             .map(MetadataDTO::getMetadata)
@@ -114,13 +115,16 @@ public class PdlApiConsumer {
             List<PdlAktoer.AktoerIdent> identer = nonNull(pdlAktoer) && nonNull(pdlAktoer.getData()) && nonNull(pdlAktoer.getData().getHentIdenter()) ?
                     pdlAktoer.getData().getHentIdenter().getIdenter() : emptyList();
 
-            return nonNull(pdlAktoer) &&
+            resultat = nonNull(pdlAktoer) &&
                     pdlAktoer.getErrors().stream().noneMatch(value -> value.getMessage().equals("Fant ikke person")) &&
                     identer.stream()
                             .filter(ident1 -> identer.stream().anyMatch(ident2 -> isGruppe(ident2, "AKTORID")))
                             .anyMatch(ident1 -> identer.stream().anyMatch(ident2 -> isGruppe(ident2, "FOLKEREGISTERIDENT")) ||
                                     identer.stream().anyMatch(ident2 -> isGruppe(ident2, "NPID")));
         }
+
+        log.info("Ident {}, isPresent() {}", resultat);
+        return resultat;
     }
 
     public Mono<Optional<PdlAktoer.AktoerIdent>> getAktoer(String ident) {
