@@ -29,7 +29,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -191,7 +190,7 @@ public class PersonServiceClient {
         } else {
             return Flux.just(1)
                     .delayElements(Duration.ofMillis(TIMEOUT))
-                    .flatMap(delayed -> personServiceConsumer.isPerson(ident.getKey(), Optional.of(ident.getValue()))
+                    .flatMap(delayed -> personServiceConsumer.isPerson(ident.getKey(), ident.getValue())
                             .flatMapMany(resultat -> getPersonService(tidSlutt, LocalTime.now(), resultat, ident)));
         }
     }
