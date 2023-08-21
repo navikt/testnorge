@@ -123,7 +123,7 @@ public class PdlApiConsumer {
                                     identer.stream().anyMatch(ident2 -> isGruppe(ident2, "NPID")));
         }
 
-        log.info("Ident {}, isPresent() {}", resultat);
+        log.info("Ident {}, isPresent() {}", ident, resultat);
         return resultat;
     }
 

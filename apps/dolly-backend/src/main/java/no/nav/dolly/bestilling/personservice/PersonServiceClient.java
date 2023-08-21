@@ -46,7 +46,7 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 public class PersonServiceClient {
 
     private static final String PDL_SYNC_START = "Info: Synkronisering mot PDL startet ...";
-    private static final int TIMEOUT = 100;
+    private static final int TIMEOUT = 500;
     private static final int MAX_SEKUNDER = 30;
     private final PersonServiceConsumer personServiceConsumer;
     private final ErrorStatusDecoder errorStatusDecoder;
