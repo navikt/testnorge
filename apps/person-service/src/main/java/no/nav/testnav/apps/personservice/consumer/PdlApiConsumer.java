@@ -97,14 +97,16 @@ public class PdlApiConsumer {
                 .findFirst()
                 .ifPresent(ident -> {
                     var person = pdlAktoer.getData().getHentPerson();
-                    log.info("Person {} med PDL opplysningId {}, sjekkes for mottatt opplysningId {}", ident,
+                    log.info("Sjekker ident {} med PDL opplysningId {}, sjekkes for mottatt opplysningId {}", ident,
                             nonNull(person) ?
                                     Stream.of(person.getNavn(), person.getFoedsel(), person.getFolkeregisteridentifikator(), person.getFolkeregisterpersonstatus(), person.getBostedsadresse())
                                             .flatMap(Collection::stream)
                                             .map(MetadataDTO::getMetadata)
                                             .map(MetadataDTO.Metadata::getOpplysningsId)
                                             .collect(Collectors.joining(", ")) : null,
-                            String.join(", ", opplysningId));
+                            nonNull(opplysningId) ?
+                                    String.join(", ", opplysningId) :
+                                    null);
                 });
 
         if (nonNull(opplysningId)) {
