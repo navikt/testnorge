@@ -5,7 +5,6 @@ import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.personservice.consumer.dto.pdl.graphql.PdlAktoer.AktoerIdent;
 import no.nav.testnav.apps.personservice.domain.Person;
-import no.nav.testnav.apps.personservice.service.PdlSyncService;
 import no.nav.testnav.apps.personservice.service.PersonService;
 import no.nav.testnav.libs.dto.personservice.v1.PersonDTO;
 import org.springframework.http.ResponseEntity;
@@ -15,12 +14,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.webjars.NotFoundException;
 import reactor.core.publisher.Mono;
 
 import java.util.Optional;
+import java.util.Set;
 
 import static java.lang.String.format;
 
@@ -30,7 +31,6 @@ import static java.lang.String.format;
 public class PersonController {
 
     private final PersonService personService;
-    private final PdlSyncService pdlSyncService;
 
     @PostMapping
     public ResponseEntity<Object> createPerson(
@@ -62,16 +62,10 @@ public class PersonController {
 
     @GetMapping("/{ident}/exists")
     public Mono<Boolean> isPerson(
-            @PathVariable("ident") @Size(min = 11, max = 11, message = "Ident må ha 11 siffer") String ident) {
+            @PathVariable("ident") @Size(min = 11, max = 11, message = "Ident må ha 11 siffer") String ident,
+            @RequestParam(value = "hendelseId", required = false) Set<String> hendelseId) {
 
-        return personService.isPerson(ident);
-    }
-
-    @GetMapping("/{ident}/sync")
-    public Boolean syncPdlPersonReady(
-            @PathVariable("ident") @Size(min = 11, max = 11, message = "Ident må ha 11 siffer") String ident) {
-
-        return pdlSyncService.syncPdlPersonReady(ident);
+        return personService.isPerson(ident, hendelseId);
     }
 
     @GetMapping("/{ident}/aktoerId")

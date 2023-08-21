@@ -23,6 +23,7 @@ public class PdlAktoer {
     @NoArgsConstructor(force = true)
     public static class Data {
         HentIdenter hentIdenter;
+        HentPerson hentPerson;
     }
 
     @lombok.Data

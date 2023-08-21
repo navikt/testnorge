@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +32,8 @@ public class PersonService {
         return pdlApiConsumer.getAktoer(ident);
     }
 
-    public Mono<Boolean> isPerson(String ident) {
-        return pdlApiConsumer.isPerson(ident);
+    public Mono<Boolean> isPerson(String ident, Set<String> hendelseId) {
+
+        return pdlApiConsumer.isPerson(ident, hendelseId);
     }
 }
