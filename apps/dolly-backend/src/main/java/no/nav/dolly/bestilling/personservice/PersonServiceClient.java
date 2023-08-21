@@ -14,6 +14,7 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
+import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
 import org.apache.commons.lang3.StringUtils;
@@ -99,7 +100,8 @@ public class PersonServiceClient {
                     .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+
+            throw new DollyFunctionalException("Feilet å hente hendelseId fra opprettinng.", e);
         }
     }
 
