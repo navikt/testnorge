@@ -22,7 +22,7 @@ public class PersonServiceExistCommand implements Callable<Mono<PersonServiceRes
 
    private final WebClient webClient;
    private final String ident;
-   private final Set<String> hendelseId;
+   private final Set<String> opplysningId;
    private final String token;
 
     private static final String PERSON_URL = "/api/v1/personer/{ident}/exists";
@@ -32,7 +32,7 @@ public class PersonServiceExistCommand implements Callable<Mono<PersonServiceRes
 
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder.path(PERSON_URL)
-                        .queryParamIfPresent("hendelseId", Optional.ofNullable(hendelseId.isEmpty() ? null : hendelseId))
+                        .queryParamIfPresent("opplysningId", Optional.ofNullable(opplysningId.isEmpty() ? null : opplysningId))
                         .build(ident))
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())

@@ -33,10 +33,10 @@ public class PersonServiceConsumer implements ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = {"operation", "personService_isPerson"})
-    public Mono<PersonServiceResponse> isPerson(String ident, Set<String> hendelseId) {
+    public Mono<PersonServiceResponse> isPerson(String ident, Set<String> opplysningId) {
 
         return tokenService.exchange(serviceProperties)
-                .flatMap(token -> new PersonServiceExistCommand(webClient, ident, hendelseId, token.getTokenValue()).call());
+                .flatMap(token -> new PersonServiceExistCommand(webClient, ident, opplysningId, token.getTokenValue()).call());
     }
 
     @Override
