@@ -91,24 +91,6 @@ public class PdlApiConsumer {
 
     private boolean isPresent(PdlAktoer pdlAktoer, Set<String> opplysningId) {
 
-        pdlAktoer.getData().getHentIdenter().getIdenter().stream()
-                .filter(ident -> "FOLKEREGISTERIDENT" .equals(ident.getGruppe()))
-                .filter(ident -> isFalse(ident.getHistorisk()))
-                .findFirst()
-                .ifPresent(ident -> {
-                    var person = pdlAktoer.getData().getHentPerson();
-                    log.info("Sjekker ident {} med PDL opplysningId {}, sjekkes for mottatt opplysningId {}", ident,
-                            nonNull(person) ?
-                                    Stream.of(person.getNavn(), person.getFoedsel(), person.getFolkeregisteridentifikator(), person.getFolkeregisterpersonstatus(), person.getBostedsadresse())
-                                            .flatMap(Collection::stream)
-                                            .map(MetadataDTO::getMetadata)
-                                            .map(MetadataDTO.Metadata::getOpplysningsId)
-                                            .collect(Collectors.joining(", ")) : null,
-                            nonNull(opplysningId) ?
-                                    String.join(", ", opplysningId) :
-                                    null);
-                });
-
         if (nonNull(opplysningId)) {
 
             var person = pdlAktoer.getData().getHentPerson();
