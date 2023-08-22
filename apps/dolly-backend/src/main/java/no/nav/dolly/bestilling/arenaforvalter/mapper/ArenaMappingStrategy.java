@@ -38,6 +38,13 @@ public class ArenaMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(Arenadata arenadata, ArenaNyBruker arenaNyBruker, MappingContext context) {
 
+                        if (isNull(arenaNyBruker.getKvalifiseringsgruppe())) {
+                            arenaNyBruker.setKvalifiseringsgruppe(IKVAL);
+                        }
+                        if (isNull(arenaNyBruker.getAutomatiskInnsendingAvMeldekort())) {
+                            arenaNyBruker.setAutomatiskInnsendingAvMeldekort(true);
+                        }
+
                         if (UTEN_SERVICEBEHOV.equals(arenadata.getArenaBrukertype())) {
                             mapUtenServicebehov(arenadata, arenaNyBruker);
                         } else if (!arenadata.getAap().isEmpty() || !arenadata.getAap115().isEmpty() || !arenadata.getDagpenger().isEmpty()) {
@@ -131,15 +138,11 @@ public class ArenaMappingStrategy implements MappingStrategy {
     }
 
     private void mapUtenServicebehov(Arenadata arenadata, ArenaNyBruker arenaNyBruker) {
-        arenaNyBruker.setUtenServicebehov(new ArenaBrukerUtenServicebehov());
 
-        arenaNyBruker.setKvalifiseringsgruppe(IKVAL);
-        if (isNull(arenadata.getAutomatiskInnsendingAvMeldekort())) {
-            arenaNyBruker.setAutomatiskInnsendingAvMeldekort(true);
-        }
-
-        if (nonNull(arenadata.getInaktiveringDato())) {
-            arenaNyBruker.getUtenServicebehov().setStansDato(arenadata.getInaktiveringDato().toLocalDate());
-        }
+        arenaNyBruker.setUtenServicebehov(ArenaBrukerUtenServicebehov.builder()
+                .stansDato(nonNull(arenadata.getInaktiveringDato()) ?
+                        arenadata.getInaktiveringDato().toLocalDate() :
+                        LocalDate.now())
+                .build());
     }
 }

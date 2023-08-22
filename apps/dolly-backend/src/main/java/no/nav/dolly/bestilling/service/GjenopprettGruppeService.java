@@ -9,6 +9,7 @@ import no.nav.dolly.bestilling.pdldata.dto.PdlResponse;
 import no.nav.dolly.bestilling.personservice.PersonServiceClient;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.repository.IdentRepository.GruppeBestillingIdent;
@@ -99,6 +100,9 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                                                                     .concatMap(bestilling1 -> Flux.just(bestilling1)
                                                                             .filter(cobestilling -> ident.equals(cobestilling.getIdent()))
                                                                             .flatMapSequential(cobestilling -> createBestilling(bestilling, cobestilling)
+                                                                                    .filter(bestillingRequest -> bestillingRequest.getId() ==
+                                                                                            isFirstBestilling(coBestillinger, cobestilling.getIdent()) ||
+                                                                                            RsDollyBestilling.isNonEmpty(bestillingRequest))
                                                                                     .doOnNext(request -> log.info("Startet gjenopprett bestilling {} for ident: {}",
                                                                                             request.getId(), testident.getIdent()))
                                                                                     .flatMapSequential(bestillingRequest -> Flux.concat(
@@ -121,5 +125,14 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                     .doFinally(done -> doFerdig(bestilling))
                     .subscribe();
         }
+    }
+
+    private long isFirstBestilling(List<GruppeBestillingIdent> coBestillinger, String ident) {
+
+        return coBestillinger.stream()
+                .filter(bestilling -> ident.equals(bestilling.getIdent()))
+                .min(Comparator.comparing(GruppeBestillingIdent::getBestillingid))
+                .map(GruppeBestillingIdent::getBestillingid)
+                .orElse(0L);
     }
 }

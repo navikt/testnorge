@@ -2,10 +2,11 @@ package no.nav.testnav.apps.personservice.consumer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.apps.personservice.config.credentials.PdlServiceProperties;
 import no.nav.testnav.apps.personservice.consumer.command.GetPdlAktoerCommand;
 import no.nav.testnav.apps.personservice.consumer.command.GetPdlPersonCommand;
+import no.nav.testnav.apps.personservice.consumer.dto.pdl.graphql.MetadataDTO;
 import no.nav.testnav.apps.personservice.consumer.dto.pdl.graphql.PdlAktoer;
-import no.nav.testnav.apps.personservice.config.credentials.PdlServiceProperties;
 import no.nav.testnav.apps.personservice.domain.Person;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.MediaType;
@@ -16,8 +17,12 @@ import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
@@ -81,17 +86,45 @@ public class PdlApiConsumer {
         return isNotBlank(ident.getIdent()) && !ident.getHistorisk() && gruppe.equals(ident.getGruppe());
     }
 
-    private boolean isPresent(PdlAktoer pdlAktoer) {
+    private boolean isPresent(String ident, PdlAktoer pdlAktoer, Set<String> opplysningId) {
 
-        List<PdlAktoer.AktoerIdent> identer = nonNull(pdlAktoer) && nonNull(pdlAktoer.getData()) && nonNull(pdlAktoer.getData().getHentIdenter()) ?
-                pdlAktoer.getData().getHentIdenter().getIdenter() : emptyList();
+        var person = pdlAktoer.getData().getHentPerson();
+        log.info("Sjekker ident {} med PDL opplysningId {}, sjekkes for mottatt opplysningId {}", ident,
+                nonNull(person) ?
+                        Stream.of(person.getNavn(), person.getFoedsel(), person.getFolkeregisteridentifikator(), person.getFolkeregisterpersonstatus(), person.getBostedsadresse())
+                                .flatMap(Collection::stream)
+                                .map(MetadataDTO::getMetadata)
+                                .map(MetadataDTO.Metadata::getOpplysningsId)
+                                .collect(Collectors.joining(", ")) : null,
+                nonNull(opplysningId) ?
+                        String.join(", ", opplysningId) :
+                        null);
 
-        return nonNull(pdlAktoer) &&
-                pdlAktoer.getErrors().stream().noneMatch(value -> value.getMessage().equals("Fant ikke person")) &&
-                identer.stream()
-                        .filter(ident -> identer.stream().anyMatch(ident2 -> isGruppe(ident2, "AKTORID")))
-                        .anyMatch(ident -> identer.stream().anyMatch(ident2 -> isGruppe(ident2, "FOLKEREGISTERIDENT")) ||
-                                identer.stream().anyMatch(ident2 -> isGruppe(ident2, "NPID")));
+        boolean resultat;
+        if (nonNull(opplysningId)) {
+
+            resultat = nonNull(person) &&
+                    Stream.of(person.getNavn(), person.getFoedsel(), person.getFolkeregisteridentifikator(), person.getFolkeregisterpersonstatus(), person.getBostedsadresse())
+                            .flatMap(Collection::stream)
+                            .map(MetadataDTO::getMetadata)
+                            .map(MetadataDTO.Metadata::getOpplysningsId)
+                            .anyMatch(opplysningId::contains);
+
+        } else {
+
+            List<PdlAktoer.AktoerIdent> identer = nonNull(pdlAktoer) && nonNull(pdlAktoer.getData()) && nonNull(pdlAktoer.getData().getHentIdenter()) ?
+                    pdlAktoer.getData().getHentIdenter().getIdenter() : emptyList();
+
+            resultat = nonNull(pdlAktoer) &&
+                    pdlAktoer.getErrors().stream().noneMatch(value -> value.getMessage().equals("Fant ikke person")) &&
+                    identer.stream()
+                            .filter(ident1 -> identer.stream().anyMatch(ident2 -> isGruppe(ident2, "AKTORID")))
+                            .anyMatch(ident1 -> identer.stream().anyMatch(ident2 -> isGruppe(ident2, "FOLKEREGISTERIDENT")) ||
+                                    identer.stream().anyMatch(ident2 -> isGruppe(ident2, "NPID")));
+        }
+
+        log.info("Ident {}, isPresent() {}", ident, resultat);
+        return resultat;
     }
 
     public Mono<Optional<PdlAktoer.AktoerIdent>> getAktoer(String ident) {
@@ -109,13 +142,13 @@ public class PdlApiConsumer {
                         }));
     }
 
-    public Mono<Boolean> isPerson(String ident) {
+    public Mono<Boolean> isPerson(String ident, Set<String> opplysningId) {
 
         log.info("Henter ident {} fra PDL", ident);
         return tokenExchange
                 .exchange(serviceProperties)
                 .flatMap(token -> Mono.zip(new GetPdlAktoerCommand(webClient, PDL_URL, ident, token.getTokenValue()).call(),
                                 new GetPdlAktoerCommand(webClient, PDL_Q1_URL, ident, token.getTokenValue()).call())
-                        .map(tuple -> isPresent(tuple.getT1()) && isPresent(tuple.getT2())));
+                        .map(tuple -> isPresent(ident, tuple.getT1(), opplysningId) && isPresent(ident, tuple.getT2(), opplysningId)));
     }
 }

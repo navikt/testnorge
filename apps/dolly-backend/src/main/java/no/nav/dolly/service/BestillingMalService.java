@@ -110,15 +110,25 @@ public class BestillingMalService {
                 .build();
     }
 
-
     public void saveBestillingMal(Bestilling bestilling, String malNavn, Bruker bruker) {
 
-        bestillingMalRepository.save(BestillingMal.builder()
-                .bestKriterier(bestilling.getBestKriterier())
-                .bruker(bruker)
-                .malNavn(malNavn)
-                .miljoer(bestilling.getMiljoer())
-                .build());
+        var eksisterende = bestillingMalRepository.findByBrukerAndMalNavn(bruker, malNavn);
+        if (eksisterende.isEmpty()) {
+            bestillingMalRepository.save(BestillingMal.builder()
+
+                    .bestKriterier(bestilling.getBestKriterier())
+                    .bruker(bruker)
+                    .malNavn(malNavn)
+                    .miljoer(bestilling.getMiljoer())
+                    .build());
+        } else {
+            eksisterende.stream()
+                    .findFirst()
+                    .ifPresent(malbestilling -> {
+                        malbestilling.setBestKriterier(bestilling.getBestKriterier());
+                        malbestilling.setMiljoer(bestilling.getMiljoer());
+                    });
+        }
     }
 
     public void saveBestillingMalFromBestillingId(Long bestillingId, String malNavn) {

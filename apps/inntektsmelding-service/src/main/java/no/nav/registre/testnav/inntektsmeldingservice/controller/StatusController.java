@@ -1,5 +1,6 @@
 package no.nav.registre.testnav.inntektsmeldingservice.controller;
 
+import no.nav.testnav.libs.dto.status.v1.TestnavStatusResponse;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -7,33 +8,31 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 @RestController
 public class StatusController {
     private static final String TEAM = "Team Dolly";
 
     @GetMapping(value = "/internal/status", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, Map<String, String>> getStatus() {
+    public Map<String, TestnavStatusResponse> getStatus() {
         var statusWebClient = WebClient.builder().build();
 
         var status = checkConsumerStatus(
-                "https://testnav-inntektsmelding-generator-service.dev.intern.nav.no/internal/isAlive",
-                "https://testnav-inntektsmelding-generator-service.dev.intern.nav.no/internal/isReady",
+                "https://testnav-inntektsmelding-generator-service.intern.dev.nav.no/internal/isAlive",
+                "https://testnav-inntektsmelding-generator-service.intern.dev.nav.no/internal/isReady",
                 statusWebClient);
-        status.put("team", TEAM);
 
         return Map.of(
                 "testnav-inntektsmelding-generator-service", status
         );
     }
 
-    public Map<String, String> checkConsumerStatus(String aliveUrl, String readyUrl, WebClient webClient) {
-        ConcurrentHashMap<String, String> status = new ConcurrentHashMap<>();
+    public TestnavStatusResponse checkConsumerStatus(String aliveUrl, String readyUrl, WebClient webClient) {
+        var dollyStatus = TestnavStatusResponse.builder().team(TEAM).build();
 
         Thread blockingThread = new Thread(() -> {
-            status.put("alive", checkStatus(webClient, aliveUrl).block());
-            status.put("ready", checkStatus(webClient, readyUrl).block());
+            dollyStatus.setAlive(checkStatus(webClient, aliveUrl).block());
+            dollyStatus.setReady(checkStatus(webClient, readyUrl).block());
         });
         blockingThread.start();
         try {
@@ -42,7 +41,7 @@ public class StatusController {
             throw new RuntimeException(e);
         }
 
-        return status;
+        return dollyStatus;
     }
 
     private Mono<String> checkStatus(WebClient webClient, String url) {

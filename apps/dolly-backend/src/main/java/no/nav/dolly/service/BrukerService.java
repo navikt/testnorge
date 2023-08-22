@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
@@ -98,12 +97,19 @@ public class BrukerService {
 
     public List<Bruker> fetchBrukere() {
 
-        List<Bruker> brukere = brukerRepository.findAllByOrderById();
-        Map<Long, Bruker> brukereMap = brukere.stream().collect(Collectors.toMap(Bruker::getId, bruker -> bruker));
+        var brukere = brukerRepository.findAllByOrderById();
+        var brukereMap = brukere.stream()
+                .collect(Collectors.toMap(Bruker::getId, bruker -> bruker));
+
         brukereMap.values().stream()
                 .filter(bruker -> nonNull(bruker.getEidAv()))
-                .forEach(bruker -> brukereMap.get(bruker.getEidAv().getId()).getFavoritter().addAll(bruker.getFavoritter()));
-        return brukereMap.values().stream().filter(bruker -> isNull(bruker.getEidAv())).toList();
+                .forEach(bruker -> brukereMap.get(bruker.getEidAv().getId())
+                        .getFavoritter()
+                        .addAll(bruker.getFavoritter()));
+
+        return brukereMap.values().stream()
+                .filter(bruker -> isNull(bruker.getEidAv()))
+                .toList();
     }
 
     public int sletteBrukerFavoritterByGroupId(Long groupId) {

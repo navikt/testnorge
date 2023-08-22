@@ -1,5 +1,6 @@
 package no.nav.testnav.apps.personservice.consumer.command;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.personservice.consumer.dto.pdl.graphql.PdlAktoer;
@@ -40,12 +41,12 @@ public class GetPdlAktoerCommand implements Callable<Mono<PdlAktoer>> {
     public Mono<PdlAktoer> call() {
 
         Map<String, Object> variables = new HashMap<>();
-        variables.put("ident", ident);
+        variables.put("ident1", ident);
 
         String query = null;
         InputStream queryStream = Thread.currentThread()
                 .getContextClassLoader()
-                .getResourceAsStream("pdl/pdlHentIdent.graphql");
+                .getResourceAsStream("pdl/pdlPersonQuery.graphql");
         try {
             query = new BufferedReader(new InputStreamReader(queryStream, StandardCharsets.UTF_8))
                     .lines().collect(Collectors.joining("\n"));

@@ -9,6 +9,7 @@ import KodeverkConnector from '@/components/kodeverk/KodeverkConnector'
 import './Select.less'
 import MenuList from '@/components/ui/form/inputs/select/MenuList'
 import Option from '@/components/ui/form/inputs/select/Option'
+import * as _ from 'lodash-es'
 
 type SelectProps = {
 	id?: string
@@ -83,13 +84,30 @@ export const Select = ({
 	)
 }
 
-export const SelectMedKodeverk = ({ kodeverk, isLoading, ...rest }: SelectProps) => (
-	<KodeverkConnector navn={kodeverk}>
-		{(kodeverkVerdier) => (
-			<Select {...rest} isLoading={!kodeverkVerdier || isLoading} options={kodeverkVerdier} />
-		)}
-	</KodeverkConnector>
-)
+export const SelectMedKodeverk = ({ kodeverk, label, isLoading, ...rest }: SelectProps) => {
+	const getSortedKodeverk = (kodeverkVerdier) => {
+		if (label === 'Bostedskommune') {
+			const kodeverkClone = _.cloneDeep(kodeverkVerdier)
+			const ukjentIndex = kodeverkClone?.findIndex((kode) => kode.value === '9999')
+			const ukjentBosted = kodeverkClone?.splice(ukjentIndex, 1)[0]
+			kodeverkClone?.splice(0, 0, ukjentBosted)
+			return kodeverkClone
+		}
+		return kodeverkVerdier
+	}
+
+	return (
+		<KodeverkConnector navn={kodeverk}>
+			{(kodeverkVerdier) => (
+				<Select
+					{...rest}
+					isLoading={!kodeverkVerdier || isLoading}
+					options={getSortedKodeverk(kodeverkVerdier)}
+				/>
+			)}
+		</KodeverkConnector>
+	)
+}
 
 export const DollySelect = (props: SelectProps) => (
 	<InputWrapper {...props}>

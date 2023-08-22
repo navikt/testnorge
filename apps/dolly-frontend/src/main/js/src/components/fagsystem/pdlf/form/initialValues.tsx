@@ -1,5 +1,3 @@
-import { startOfToday } from 'date-fns'
-
 const navn = {
 	fornavn: undefined as unknown as string,
 	mellomnavn: undefined as unknown as string,
@@ -121,7 +119,7 @@ export const initialSikkerhetstiltak = {
 		personident: '',
 		enhet: '',
 	},
-	gyldigFraOgMed: startOfToday(),
+	gyldigFraOgMed: new Date(),
 	gyldigTilOgMed: null as unknown as string,
 	kilde: 'Dolly',
 	master: 'PDL',
@@ -176,7 +174,7 @@ export const initialMedlAvgangssystem = {
 export const initialTpsSikkerhetstiltak = {
 	tiltakstype: '',
 	beskrivelse: '',
-	gyldigFraOgMed: startOfToday(),
+	gyldigFraOgMed: new Date(),
 	gyldigTilOgMed: null as unknown as string,
 }
 
