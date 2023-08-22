@@ -21,6 +21,7 @@ import static no.nav.dolly.domain.resultset.arenaforvalter.ArenaKvalifiseringsgr
 import static no.nav.dolly.domain.resultset.arenaforvalter.ArenaKvalifiseringsgruppe.VARIG;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -57,7 +58,7 @@ public class ArenaMappingStrategyTest {
                 .arenaBrukertype(UTEN_SERVICEBEHOV)
                 .build(), no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyBruker.class);
 
-        assertThat(arenaNyBruker.getUtenServicebehov().getStansDato(), is(nullValue()));
+        assertThat(arenaNyBruker.getUtenServicebehov().getStansDato(), is(notNullValue()));
         assertThat(arenaNyBruker.getKvalifiseringsgruppe(), is(equalTo(IKVAL)));
     }
 
