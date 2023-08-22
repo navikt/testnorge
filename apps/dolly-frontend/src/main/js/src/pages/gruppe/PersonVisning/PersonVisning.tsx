@@ -386,7 +386,7 @@ export default ({
 				)}
 				<ArenaVisning
 					data={arenaData}
-					bestillinger={bestillingListe}
+					bestillingIdListe={bestillingIdListe}
 					loading={loadingArenaData}
 					ident={ident}
 					tilgjengeligMiljoe={tilgjengeligMiljoe}

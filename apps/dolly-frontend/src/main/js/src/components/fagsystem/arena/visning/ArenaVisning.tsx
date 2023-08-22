@@ -71,10 +71,17 @@ const ARENASYNT = 'ARENASYNT'
 const SYNT_MILJOE = 'q2'
 const SYNT_INFO = 'Denne identen kan allerede være registrert i Arena Q2 med eller uten ytelser'
 
-export const ArenaVisning = ({ data, ident, bestillinger, loading, tilgjengeligMiljoe }) => {
+export const ArenaVisning = ({ data, ident, bestillingIdListe, loading, tilgjengeligMiljoe }) => {
 	const [harArenasyntTag, setHarArenasyntTag] = useState(false)
 	const [tagsloading, setTagsLoading] = useState(false)
 	const mountedRef = useRef(true)
+
+	const { bestilteMiljoer: bestilteMiljoerNye } = useBestilteMiljoer(
+		bestillingIdListe,
+		'ARENA_BRUKER',
+	)
+	const { bestilteMiljoer: bestilteMiljoerGamle } = useBestilteMiljoer(bestillingIdListe, 'ARENA')
+	const bestilteMiljoer = bestilteMiljoerNye?.concat(bestilteMiljoerGamle)
 
 	const execute = useCallback(() => {
 		const getTags = async () => {
@@ -112,10 +119,8 @@ export const ArenaVisning = ({ data, ident, bestillinger, loading, tilgjengeligM
 		return null
 	}
 
-	const bestilteMiljoer = getBestilteMiljoer(bestillinger, arenaEnvironments)
-	// const { bestilteMiljoer } = useBestilteMiljoer(bestillinger, 'ARENA_BRUKER')
+	const miljoerMedData = data?.filter((arb) => arb.data && arb.data)?.map((arb) => arb.miljo)
 
-	const miljoerMedData = data?.map((arb) => arb.miljo)
 	const errorMiljoer = bestilteMiljoer.filter((m) => !miljoerMedData?.includes(m))
 
 	const visningData = data?.map((miljoData) => {
@@ -130,36 +135,25 @@ export const ArenaVisning = ({ data, ident, bestillinger, loading, tilgjengeligM
 
 	return (
 		<div>
-			<SubOverskrift label="Arbeidsytelser" iconKind="arena" />
-			<MiljoTabs
-				bestilteMiljoer={bestilteMiljoer}
-				forsteMiljo={forsteMiljo ? forsteMiljo : SYNT_MILJOE}
-				errorMiljoer={errorMiljoer}
-				data={filteredData || visningData}
-			>
-				<Visning />
-			</MiljoTabs>
+			<SubOverskrift
+				label="Arbeidsytelser"
+				iconKind="arena"
+				isWarning={!miljoerMedData || miljoerMedData?.length < 1}
+			/>
+			{!miljoerMedData || miljoerMedData?.length < 1 ? (
+				<StyledAlert variant={'warning'} size={'small'} inline>
+					Fant ikke Arena-data på person
+				</StyledAlert>
+			) : (
+				<MiljoTabs
+					bestilteMiljoer={bestilteMiljoer}
+					forsteMiljo={forsteMiljo ? forsteMiljo : SYNT_MILJOE}
+					errorMiljoer={errorMiljoer}
+					data={filteredData || visningData}
+				>
+					<Visning />
+				</MiljoTabs>
+			)}
 		</div>
 	)
-}
-
-const getBestilteMiljoer = (bestillinger, arenaMiljoer) => {
-	const bestilteMiljoer = []
-
-	const getMiljoe = (bestilling) => {
-		return bestilling?.status
-			?.filter((status) => status.id === 'ARENA_BRUKER' || status.id === 'ARENA')?.[0]
-			?.statuser?.filter((status) => status.melding === 'OK')?.[0]
-			?.detaljert?.map((detalj) => detalj.miljo)
-	}
-
-	arenaMiljoer.forEach((miljoe) => {
-		bestillinger.forEach((bestilling) => {
-			const bestMiljoe = getMiljoe(bestilling)
-			if (bestMiljoe?.includes(miljoe)) {
-				bestilteMiljoer.push(miljoe)
-			}
-		})
-	})
-	return bestilteMiljoer
 }
