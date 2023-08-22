@@ -6,6 +6,7 @@ import no.nav.dolly.bestilling.arenaforvalter.ArenaForvalterConsumer;
 import no.nav.dolly.bestilling.arenaforvalter.ArenaUtils;
 import no.nav.dolly.bestilling.arenaforvalter.dto.ArenaVedtakOperasjoner;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaBruker;
+import no.nav.dolly.domain.resultset.arenaforvalter.ArenaBrukerUtenServicebehov;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukere;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukereResponse;
@@ -16,11 +17,14 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.arenaforvalter.utils.ArenaStatusUtil.getMessage;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 
@@ -50,13 +54,19 @@ public class ArenaBrukerService {
                 })
                 .flatMap(arenaNyeBrukere -> {
 
-                    if (arenaNyeBrukere.getNyeBrukere().stream().anyMatch(ArenaNyBruker::hasServicebehov)) {
+                    if (arenaNyeBrukere.getNyeBrukere().stream().anyMatch(ArenaNyBruker::hasServicebehov) ||
+                            isNull(arbeidssoker.getRegistrertDato())) {
 
                         arenaNyeBrukere.getNyeBrukere().stream()
                                 .findFirst()
                                 .ifPresent(nyBruker -> {
                                     if (!nyBruker.hasKvalifiseringsgruppe()) {
                                         nyBruker.setKvalifiseringsgruppe(arbeidssoker.getKvalifiseringsgruppe());
+                                    }
+                                    if (nonNull(arenadata.getInaktiveringDato())) {
+                                        nyBruker.setUtenServicebehov(ArenaBrukerUtenServicebehov.builder()
+                                                .stansDato(toLocalDate(arenadata.getInaktiveringDato()))
+                                                .build());
                                     }
                                 });
 
@@ -109,5 +119,10 @@ public class ArenaBrukerService {
                                 .collect(Collectors.joining()))
 
                 .collect(Collectors.joining());
+    }
+
+    private static LocalDate toLocalDate(LocalDateTime localDateTime) {
+
+        return nonNull(localDateTime) ? localDateTime.toLocalDate() : null;
     }
 }
