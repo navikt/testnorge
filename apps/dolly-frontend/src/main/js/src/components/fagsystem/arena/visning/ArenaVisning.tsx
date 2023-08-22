@@ -6,7 +6,6 @@ import Loading from '@/components/ui/loading/Loading'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { DollyApi } from '@/service/Api'
 import { MiljoTabs } from '@/components/ui/miljoTabs/MiljoTabs'
-import { useArenaEnvironments } from '@/utils/hooks/useEnvironments'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
 import { useBestilteMiljoer } from '@/utils/hooks/useBestilling'
 
@@ -110,16 +109,14 @@ export const ArenaVisning = ({ data, ident, bestillingIdListe, loading, tilgjeng
 		}
 	}, [])
 
-	const { arenaEnvironments, loading: loadingArena } = useArenaEnvironments()
-
-	if (loading || tagsloading || loadingArena) {
+	if (loading || tagsloading) {
 		return <Loading label="Laster arena-data" />
 	}
 	if (!data && !harArenasyntTag) {
 		return null
 	}
 
-	const miljoerMedData = data?.filter((arb) => arb.data && arb.data)?.map((arb) => arb.miljo)
+	const miljoerMedData = data?.filter((arb) => arb.data)?.map((arb) => arb.miljo)
 
 	const errorMiljoer = bestilteMiljoer.filter((m) => !miljoerMedData?.includes(m))
 
