@@ -131,6 +131,7 @@ public class ArenaMappingStrategy implements MappingStrategy {
     }
 
     private void mapUtenServicebehov(Arenadata arenadata, ArenaNyBruker arenaNyBruker) {
+
         arenaNyBruker.setUtenServicebehov(new ArenaBrukerUtenServicebehov());
 
         arenaNyBruker.setKvalifiseringsgruppe(IKVAL);
