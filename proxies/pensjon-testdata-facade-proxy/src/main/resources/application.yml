@@ -28,3 +28,8 @@ consumers:
     namespace: pensjonopptjening
     url: https://popp-testdata.intern.dev.nav.no
     cluster: dev-gcp
+  samboer-testdata:
+    name: pensjon-samboerforhold-backend-{env}
+    namespace: pensjon-person
+    url:  https://pensjon-samboerforhold-backend-{env}.intern.dev.nav.no
+    cluster: dev-gcp
