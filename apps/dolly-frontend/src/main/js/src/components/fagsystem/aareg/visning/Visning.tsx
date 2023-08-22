@@ -274,7 +274,7 @@ export const AaregVisning = ({
 	if (loading) {
 		return <Loading label="Laster Aareg-data" />
 	}
-	if (!liste) {
+	if (!liste && !ameldinger) {
 		return null
 	}
 
