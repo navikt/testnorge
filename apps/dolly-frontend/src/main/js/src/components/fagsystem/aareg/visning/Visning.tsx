@@ -10,12 +10,12 @@ import { AntallTimerForTimeloennet } from './partials/AntallTimerForTimeloennet'
 import { Utenlandsopphold } from './partials/Utenlandsopphold'
 import { ArbeidKodeverk } from '@/config/kodeverk'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import { Alert } from '@navikt/ds-react'
 import { MiljoTabs } from '@/components/ui/miljoTabs/MiljoTabs'
 import { useBestilteMiljoer } from '@/utils/hooks/useBestilling'
 import { arrayToString, formatDate } from '@/utils/DataFormatter'
 import * as _ from 'lodash-es'
 import React from 'react'
+import StyledAlert from '@/components/ui/alert/StyledAlert'
 
 type AaregVisningProps = {
 	ident?: string
@@ -33,10 +33,6 @@ type MiljoDataListe = {
 
 type ArbeidsforholdArray = {
 	data?: Array<Arbeidsforhold>
-}
-
-type AmeldingArray = {
-	data?: Array<Amelding>
 }
 
 type Amelding = {
@@ -104,7 +100,10 @@ type Periode = {
 }
 
 export const sjekkManglerAaregData = (aaregData) => {
-	return aaregData?.length < 1 || aaregData?.every((miljoData) => miljoData?.data?.length < 1)
+	return (
+		aaregData?.length < 1 ||
+		aaregData?.every((miljoData) => !miljoData?.data || miljoData?.data?.length < 1)
+	)
 }
 
 const getHeader = (data: Arbeidsforhold | Amelding) => {
@@ -267,6 +266,7 @@ export const AaregVisning = ({
 	ameldinger,
 	loading,
 	bestillingIdListe,
+	bestillinger,
 	tilgjengeligMiljoe,
 }: AaregVisningProps) => {
 	const { bestilteMiljoer } = useBestilteMiljoer(bestillingIdListe, 'AAREG')
@@ -277,8 +277,6 @@ export const AaregVisning = ({
 	if (!liste) {
 		return null
 	}
-
-	const manglerFagsystemdata = sjekkManglerAaregData(liste)
 
 	const miljoerMedData = liste?.map((miljoData) => miljoData?.data?.length > 0 && miljoData?.miljo)
 
@@ -297,7 +295,14 @@ export const AaregVisning = ({
 	const forsteMiljoAmelding =
 		ameldinger?.find((miljoData) => miljoData?.data?.length > 0)?.miljo || liste?.[0]?.miljo
 
-	const harAmeldingBestilling = ameldinger?.some((amelding) => amelding?.data?.length > 0)
+	const aaregBestillinger = []
+	bestillinger?.forEach((best) => {
+		best?.bestilling?.aareg?.forEach((arbforh) => aaregBestillinger.push(arbforh))
+	})
+	const harArbeidsforholdBestilling = aaregBestillinger?.some((best) => best?.arbeidsgiver)
+	const harAmeldingBestilling = aaregBestillinger?.some(
+		(best) => best?.amelding && best?.amelding?.length > 0,
+	)
 
 	const arbeidsforhold = liste?.map((item) => {
 		return {
@@ -313,17 +318,29 @@ export const AaregVisning = ({
 	const filteredData =
 		tilgjengeligMiljoe && arbeidsforhold?.filter((item) => item.miljo === tilgjengeligMiljoe)
 
+	const manglerArbeidsforholdData = sjekkManglerAaregData(arbeidsforhold)
+	const arbeidsforholdFeil =
+		harArbeidsforholdBestilling && arbeidsforhold?.find((arbforh) => arbforh?.feil)
+
+	const manglerAmeldingData = sjekkManglerAaregData(ameldinger)
+	const ameldingFeil = harAmeldingBestilling && ameldinger?.find((amelding) => amelding?.feil)
+
 	const getArbeidsforhold = () => {
-		if ((manglerFagsystemdata && harAmeldingBestilling) || arbeidsforhold?.length === 0) {
-			return null
-		}
 		return (
 			<div>
-				<SubOverskrift label="Arbeidsforhold" iconKind="arbeid" isWarning={manglerFagsystemdata} />
-				{manglerFagsystemdata ? (
-					<Alert variant={'warning'} size={'small'} inline style={{ margin: '7px' }}>
+				<SubOverskrift
+					label="Arbeidsforhold"
+					iconKind="arbeid"
+					isWarning={manglerArbeidsforholdData}
+				/>
+				{arbeidsforholdFeil?.feil && manglerArbeidsforholdData ? (
+					<StyledAlert variant={'warning'} size={'small'} inline>
+						{arbeidsforholdFeil?.feil?.message}
+					</StyledAlert>
+				) : manglerArbeidsforholdData ? (
+					<StyledAlert variant={'warning'} size={'small'} inline>
 						Fant ikke arbeidsforhold-data på person
-					</Alert>
+					</StyledAlert>
 				) : (
 					<ErrorBoundary>
 						<MiljoTabs
@@ -341,30 +358,37 @@ export const AaregVisning = ({
 	}
 
 	const getAmelding = (ident) => {
-		if (manglerFagsystemdata || !harAmeldingBestilling) {
-			return null
-		}
 		return (
 			<div>
-				<SubOverskrift label="A-melding" iconKind="arbeid" />
-				<ErrorBoundary>
-					<MiljoTabs
-						bestilteMiljoer={bestilteMiljoer}
-						errorMiljoer={errorMiljoerAmeldinger}
-						forsteMiljo={forsteMiljoAmelding}
-						data={ameldinger}
-					>
-						<Amelding data={ameldinger} ident={ident} />
-					</MiljoTabs>
-				</ErrorBoundary>
+				<SubOverskrift label="A-melding" iconKind="arbeid" isWarning={manglerAmeldingData} />
+				{ameldingFeil?.feil && manglerAmeldingData ? (
+					<StyledAlert variant={'warning'} size={'small'} inline>
+						{ameldingFeil?.feil?.message}
+					</StyledAlert>
+				) : manglerAmeldingData ? (
+					<StyledAlert variant={'warning'} size={'small'} inline>
+						Fant ikke amelding-data på person
+					</StyledAlert>
+				) : (
+					<ErrorBoundary>
+						<MiljoTabs
+							bestilteMiljoer={bestilteMiljoer}
+							errorMiljoer={errorMiljoerAmeldinger}
+							forsteMiljo={forsteMiljoAmelding}
+							data={ameldinger}
+						>
+							<Amelding data={ameldinger} ident={ident} />
+						</MiljoTabs>
+					</ErrorBoundary>
+				)}
 			</div>
 		)
 	}
 
 	return (
 		<>
-			{getArbeidsforhold()}
-			{getAmelding(ident)}
+			{harArbeidsforholdBestilling && getArbeidsforhold()}
+			{harAmeldingBestilling && getAmelding(ident)}
 		</>
 	)
 }

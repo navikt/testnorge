@@ -352,6 +352,7 @@ export default ({
 						ameldinger={ameldinger}
 						loading={loadingAareg || loadingAmelding}
 						bestillingIdListe={bestillingIdListe}
+						bestillinger={ident.bestillinger}
 						tilgjengeligMiljoe={tilgjengeligMiljoe}
 					/>
 				)}

@@ -161,7 +161,7 @@ export const useBestilteMiljoer = (bestillingIdListe: Array<string>, fagsystem: 
 		getMultipleBestillingByIdUrl(bestillingIdListe),
 		multiFetcherAll,
 	)
-	console.log('data: ', data) //TODO - SLETT MEG
+
 	const miljoer = []
 	data?.map((bestilling) => {
 		bestilling?.environments?.forEach((miljo) => {
