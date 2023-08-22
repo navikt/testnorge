@@ -126,7 +126,7 @@ public class Testident implements Serializable {
                 ", ident='" + ident + '\'' +
                 ", iBruk=" + iBruk +
                 ", beskrivelse='" + beskrivelse + '\'' +
-                ", testgruppe=" + testgruppe +
+                ", testgruppe=" + testgruppe.getId() +
                 ", master=" + master +
                 '}';
     }
