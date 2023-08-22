@@ -2,6 +2,7 @@ package no.nav.testnav.apps.personservice.consumer.dto.pdl.graphql;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.Value;
 
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ public class PdlAktoer {
     @NoArgsConstructor(force = true)
     public static class Data {
         HentIdenter hentIdenter;
+        HentPerson hentPerson;
     }
 
     @lombok.Data
@@ -39,6 +41,7 @@ public class PdlAktoer {
     }
 
     @Value
+    @ToString
     @AllArgsConstructor
     @NoArgsConstructor(force = true)
     public static class AktoerIdent {

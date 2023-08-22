@@ -7,8 +7,8 @@ import lombok.Value;
 @Value
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class Navn extends MetadataDTO {
-    String fornavn;
-    String mellomnavn;
-    String etternavn;
+public class Folkeregisterpersonstatus extends MetadataDTO {
+    String identifikasjonsnummer;
+    String status;
+    String type;
 }

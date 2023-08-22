@@ -14,13 +14,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.hibernate.proxy.HibernateProxy;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 @Entity
 @Getter
@@ -28,7 +27,6 @@ import java.util.Objects;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Table(name = "BESTILLING_MAL")
 public class BestillingMal implements Serializable {
 
@@ -55,18 +53,44 @@ public class BestillingMal implements Serializable {
     private LocalDateTime sistOppdatert;
 
     @Override
-    public final boolean equals(Object o) {
+    public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null) return false;
-        Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
-        Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
-        if (thisEffectiveClass != oEffectiveClass) return false;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
         BestillingMal that = (BestillingMal) o;
-        return getId() != null && Objects.equals(getId(), that.getId());
+
+        return new EqualsBuilder()
+                .append(id, that.id)
+                .append(bestKriterier, that.bestKriterier)
+                .append(miljoer, that.miljoer)
+                .append(malNavn, that.malNavn)
+                .append(bruker, that.bruker)
+                .append(sistOppdatert, that.sistOppdatert)
+                .isEquals();
     }
 
     @Override
-    public final int hashCode() {
-        return getClass().hashCode();
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(id)
+                .append(bestKriterier)
+                .append(miljoer)
+                .append(malNavn)
+                .append(bruker)
+                .append(sistOppdatert)
+                .toHashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "BestillingMal{" +
+                "id=" + id +
+                ", bestKriterier='" + bestKriterier + '\'' +
+                ", miljoer='" + miljoer + '\'' +
+                ", malNavn='" + malNavn + '\'' +
+                ", bruker=" + bruker +
+                ", sistOppdatert=" + sistOppdatert +
+                '}';
     }
 }

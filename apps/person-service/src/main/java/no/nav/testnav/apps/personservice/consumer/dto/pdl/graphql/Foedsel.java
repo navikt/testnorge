@@ -9,6 +9,7 @@ import java.time.LocalDate;
 @Value
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class Foedsel {
+public class Foedsel extends MetadataDTO {
+
     LocalDate foedselsdato;
 }

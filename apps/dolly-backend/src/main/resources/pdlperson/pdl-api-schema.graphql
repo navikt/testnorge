@@ -105,6 +105,8 @@ type FalskIdentitetIdentifiserendeInformasjon {
     statsborgerskap: [String!]!
 }
 
+type Foedested
+
 type Foedsel {
     foedekommune: String
     foedeland: String
@@ -807,8 +809,11 @@ input CompletionParameters {
 }
 
 input Criterion {
-    " Feltnavn ikludert sti til ønsket felt (Eksempel: person.navn.fornavn)"
-    fieldName: String!
+    and: [Criterion]
+    " Feltnavn inkludert sti til ønsket felt (Eksempel: person.navn.fornavn)"
+    fieldName: String
+    not: [Criterion]
+    or: [Criterion]
     """
 
     Søk i historiske data
@@ -817,7 +822,7 @@ input Criterion {
     null = søke i både historiske og gjeldende data.
     """
     searchHistorical: Boolean
-    searchRule: SearchRule!
+    searchRule: SearchRule
 }
 
 input Paging {
