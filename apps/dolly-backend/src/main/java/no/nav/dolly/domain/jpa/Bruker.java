@@ -121,22 +121,5 @@ public class Bruker implements Serializable {
                 .toHashCode();
     }
 
-    @Override
-    public String toString() {
-        return "Bruker{" +
-                "id=" + id +
-                ", versjon=" + versjon +
-                ", brukerId='" + brukerId + '\'' +
-                ", brukernavn='" + brukernavn + '\'' +
-                ", epost='" + epost + '\'' +
-                ", navIdent='" + navIdent + '\'' +
-                ", migrert=" + migrert +
-                ", brukertype=" + brukertype +
-                ", eidAv=" + eidAv +
-                ", testgrupper=" + testgrupper +
-                ", favoritter=" + favoritter +
-                '}';
-    }
-
     public enum Brukertype {AZURE, BANKID, BASIC}
 }

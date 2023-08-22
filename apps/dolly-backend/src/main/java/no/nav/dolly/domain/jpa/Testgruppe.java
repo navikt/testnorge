@@ -143,21 +143,5 @@ public class Testgruppe implements Serializable {
                 .append(tags)
                 .toHashCode();
     }
-
-    @Override
-    public String toString() {
-        return "Testgruppe{" +
-                "id=" + id +
-                ", versjon=" + versjon +
-                ", navn='" + navn + '\'' +
-                ", hensikt='" + hensikt + '\'' +
-                ", opprettetAv=" + opprettetAv +
-                ", sistEndretAv=" + sistEndretAv +
-                ", datoEndret=" + datoEndret +
-                ", erLaast=" + erLaast +
-                ", laastBeskrivelse='" + laastBeskrivelse + '\'' +
-                ", tags='" + tags + '\'' +
-                '}';
-    }
 }
 
