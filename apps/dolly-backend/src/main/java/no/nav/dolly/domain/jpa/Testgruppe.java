@@ -154,9 +154,6 @@ public class Testgruppe implements Serializable {
                 ", opprettetAv=" + opprettetAv +
                 ", sistEndretAv=" + sistEndretAv +
                 ", datoEndret=" + datoEndret +
-                ", testidenter=" + testidenter +
-                ", favorisertAv=" + favorisertAv +
-                ", bestillinger=" + bestillinger +
                 ", erLaast=" + erLaast +
                 ", laastBeskrivelse='" + laastBeskrivelse + '\'' +
                 ", tags='" + tags + '\'' +

@@ -133,6 +133,8 @@ public class Bruker implements Serializable {
                 ", migrert=" + migrert +
                 ", brukertype=" + brukertype +
                 ", eidAv=" + eidAv +
+                ", testgrupper=" + testgrupper +
+                ", favoritter=" + favoritter +
                 '}';
     }
 
