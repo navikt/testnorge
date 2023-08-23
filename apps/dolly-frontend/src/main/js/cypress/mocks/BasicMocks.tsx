@@ -313,91 +313,247 @@ export const sigrunstubMock = {
 
 export const aaregMock = [
 	{
-		amelding: [
-			{
-				maaned: '2023-01',
-				arbeidsforhold: [
-					{
-						ansettelsesPeriode: {
-							fom: '2003-04-26T00:00:00',
-						},
-						antallTimerForTimeloennet: [],
-						arbeidsavtale: {
-							yrke: '0030320',
-						},
-						permisjon: [],
-						permittering: [],
-						utenlandsopphold: [],
-						arbeidsgiver: {
-							aktoertype: 'ORG',
-							orgnummer: '961475457',
-						},
-					},
-				],
+		navArbeidsforholdId: 3095857,
+		arbeidsforholdId: '1',
+		arbeidstaker: {
+			type: 'Person',
+			offentligIdent: '12345678912',
+			aktoerId: '2853757016775',
+		},
+		arbeidsgiver: {
+			type: 'Organisasjon',
+			organisasjonsnummer: '941559069',
+		},
+		opplysningspliktig: {
+			type: 'Organisasjon',
+			organisasjonsnummer: '965059946',
+		},
+		type: 'ordinaertArbeidsforhold',
+		ansettelsesperiode: {
+			periode: {
+				fom: '2003-08-23',
 			},
-			{
-				maaned: '2023-02',
-				arbeidsforhold: [
-					{
-						ansettelsesPeriode: {
-							fom: '2003-04-26T00:00:00',
-						},
-						antallTimerForTimeloennet: [],
-						arbeidsavtale: {
-							yrke: '0030320',
-						},
-						permisjon: [],
-						permittering: [],
-						utenlandsopphold: [],
-						arbeidsgiver: {
-							aktoertype: 'ORG',
-							orgnummer: '961475457',
-						},
-					},
-				],
+			bruksperiode: {
+				fom: '2023-08-23T10:18:21.814',
 			},
+			sporingsinformasjon: {
+				opprettetTidspunkt: '2023-08-23T10:18:21.814',
+				opprettetAv: 'testnav',
+				opprettetKilde: 'EDAG',
+				opprettetKildereferanse: '7a76e365-5108-49bc-b454-6f0818e7fc27',
+				endretTidspunkt: '2023-08-23T10:18:21.814',
+				endretAv: 'testnav',
+				endretKilde: 'EDAG',
+				endretKildereferanse: '7a76e365-5108-49bc-b454-6f0818e7fc27',
+			},
+		},
+		arbeidsavtaler: [
 			{
-				maaned: '2023-03',
-				arbeidsforhold: [
+				type: 'Ordinaer',
+				arbeidstidsordning: 'ikkeSkift',
+				yrke: '3229105',
+				stillingsprosent: 100,
+				antallTimerPrUke: 37.5,
+				beregnetAntallTimerPrUke: 37.5,
+				bruksperiode: {
+					fom: '2023-08-23T10:18:37.032',
+				},
+				gyldighetsperiode: {
+					fom: '2023-01-01',
+				},
+				sporingsinformasjon: {
+					opprettetTidspunkt: '2023-08-23T10:18:37.033',
+					opprettetAv: 'testnav',
+					opprettetKilde: 'EDAG',
+					opprettetKildereferanse: 'de7ff548-a9c6-4ca1-af78-45ddcd0757ec',
+					endretTidspunkt: '2023-08-23T10:18:37.033',
+					endretAv: 'testnav',
+					endretKilde: 'EDAG',
+					endretKildereferanse: 'de7ff548-a9c6-4ca1-af78-45ddcd0757ec',
+				},
+			},
+		],
+		innrapportertEtterAOrdningen: true,
+		registrert: '2023-08-23T10:18:17.563',
+		sistBekreftet: '2023-08-23T10:18:17',
+		sporingsinformasjon: {
+			opprettetTidspunkt: '2023-08-23T10:18:21.814',
+			opprettetAv: 'testnav',
+			opprettetKilde: 'EDAG',
+			opprettetKildereferanse: '7a76e365-5108-49bc-b454-6f0818e7fc27',
+			endretTidspunkt: '2023-08-23T10:18:52.268',
+			endretAv: 'testnav',
+			endretKilde: 'EDAG',
+			endretKildereferanse: '666bfffc-6e0c-449e-9d76-1305cc140c92',
+		},
+	},
+]
+export const ameldingMock = [
+	{
+		kalendermaaned: '2023-05-01',
+		opplysningspliktigOrganisajonsnummer: '965059946',
+		virksomheter: [
+			{
+				organisajonsnummer: '941559069',
+				personer: [
 					{
-						ansettelsesPeriode: {
-							fom: '2003-04-26T00:00:00',
-						},
-						antallTimerForTimeloennet: [],
-						arbeidsavtale: {
-							yrke: '0030320',
-						},
-						permisjon: [],
-						permittering: [],
-						utenlandsopphold: [],
-						arbeidsgiver: {
-							aktoertype: 'ORG',
-							orgnummer: '961475457',
-						},
+						ident: '12345678912',
+						arbeidsforhold: [
+							{
+								arbeidsforholdId: '1',
+								typeArbeidsforhold: 'ordinaertArbeidsforhold',
+								startdato: '2003-08-23',
+								sluttdato: null,
+								antallTimerPerUke: 37.5,
+								yrke: '3229105',
+								arbeidstidsordning: 'ikkeSkift',
+								stillingsprosent: 100,
+								sisteLoennsendringsdato: null,
+								permisjoner: [],
+								fartoey: null,
+								inntekter: [],
+								avvik: [],
+								historikk: null,
+							},
+						],
 					},
 				],
 			},
 		],
-		ansettelsesperiode: {
-			periode: {
-				fom: '2002-10-03',
+		version: 1,
+	},
+	{
+		kalendermaaned: '2023-04-01',
+		opplysningspliktigOrganisajonsnummer: '965059946',
+		virksomheter: [
+			{
+				organisajonsnummer: '941559069',
+				personer: [
+					{
+						ident: '12345678912',
+						arbeidsforhold: [
+							{
+								arbeidsforholdId: '1',
+								typeArbeidsforhold: 'ordinaertArbeidsforhold',
+								startdato: '2003-08-23',
+								sluttdato: null,
+								antallTimerPerUke: 37.5,
+								yrke: '3229105',
+								arbeidstidsordning: 'ikkeSkift',
+								stillingsprosent: 100,
+								sisteLoennsendringsdato: null,
+								permisjoner: [],
+								fartoey: null,
+								inntekter: [],
+								avvik: [],
+								historikk: null,
+							},
+						],
+					},
+				],
 			},
-		},
-		arbeidsavtaler: [{}],
-		arbeidsforholdId: '1',
-		arbeidsgiver: {
-			type: 'ORGANISASJON',
-			organisasjonsnummer: '221322132',
-		},
-		arbeidstaker: {
-			type: 'PERSON',
-			offentligIdent: '12345678912',
-		},
-		innrapportertEtterAOrdningen: false,
-		permisjonPermitteringer: [],
-		type: 'forenkletOppgjoersordning',
+		],
+		version: 1,
+	},
+	{
+		kalendermaaned: '2023-06-01',
+		opplysningspliktigOrganisajonsnummer: '965059946',
+		virksomheter: [
+			{
+				organisajonsnummer: '941559069',
+				personer: [
+					{
+						ident: '12345678912',
+						arbeidsforhold: [
+							{
+								arbeidsforholdId: '1',
+								typeArbeidsforhold: 'ordinaertArbeidsforhold',
+								startdato: '2003-08-23',
+								sluttdato: null,
+								antallTimerPerUke: 37.5,
+								yrke: '3229105',
+								arbeidstidsordning: 'ikkeSkift',
+								stillingsprosent: 100,
+								sisteLoennsendringsdato: null,
+								permisjoner: [],
+								fartoey: null,
+								inntekter: [],
+								avvik: [],
+								historikk: null,
+							},
+						],
+					},
+				],
+			},
+		],
+		version: 1,
 	},
 ]
+// 	[
+// 	{
+// 		maaned: '2023-01',
+// 		arbeidsforhold: [
+// 			{
+// 				ansettelsesPeriode: {
+// 					fom: '2003-04-26T00:00:00',
+// 				},
+// 				antallTimerForTimeloennet: [],
+// 				arbeidsavtale: {
+// 					yrke: '0030320',
+// 				},
+// 				permisjon: [],
+// 				permittering: [],
+// 				utenlandsopphold: [],
+// 				arbeidsgiver: {
+// 					aktoertype: 'ORG',
+// 					orgnummer: '961475457',
+// 				},
+// 			},
+// 		],
+// 	},
+// 	{
+// 		maaned: '2023-02',
+// 		arbeidsforhold: [
+// 			{
+// 				ansettelsesPeriode: {
+// 					fom: '2003-04-26T00:00:00',
+// 				},
+// 				antallTimerForTimeloennet: [],
+// 				arbeidsavtale: {
+// 					yrke: '0030320',
+// 				},
+// 				permisjon: [],
+// 				permittering: [],
+// 				utenlandsopphold: [],
+// 				arbeidsgiver: {
+// 					aktoertype: 'ORG',
+// 					orgnummer: '961475457',
+// 				},
+// 			},
+// 		],
+// 	},
+// 	{
+// 		maaned: '2023-03',
+// 		arbeidsforhold: [
+// 			{
+// 				ansettelsesPeriode: {
+// 					fom: '2003-04-26T00:00:00',
+// 				},
+// 				antallTimerForTimeloennet: [],
+// 				arbeidsavtale: {
+// 					yrke: '0030320',
+// 				},
+// 				permisjon: [],
+// 				permittering: [],
+// 				utenlandsopphold: [],
+// 				arbeidsgiver: {
+// 					aktoertype: 'ORG',
+// 					orgnummer: '961475457',
+// 				},
+// 			},
+// 		],
+// 	},
+// ],
 
 export const tpsMessagingMock = [
 	{
@@ -1097,6 +1253,7 @@ export const backendBestillingerMock = [
 			],
 			aareg: [
 				{
+					amelding: [{ temp: '' }],
 					arbeidsforholdstype: 'forenkletOppgjoersordning',
 					ansettelsesPeriode: {
 						fom: '2002-10-03T00:00:00',
