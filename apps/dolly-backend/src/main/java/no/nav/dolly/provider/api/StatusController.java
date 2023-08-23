@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -78,8 +79,9 @@ public class StatusController {
                                 .allMatch(dollyStatusResponse -> dollyStatusResponse.getReady()
                                         .matches("OK"))) ? SystemStatus.OK : SystemStatus.ISSUE)
                 .description(status.values().stream()
-                        .filter(stringTestnavStatusResponseMap -> !stringTestnavStatusResponseMap.values().stream().allMatch(dollyStatusResponse -> dollyStatusResponse.getReady().matches("OK")))
-                        .map(Map::entrySet).map(entries -> entries.stream().map(Map.Entry::getKey).collect(Collectors.joining(", "))).collect(Collectors.joining(","))) //TODO: Denne gir match på alle keys, skal bare gi på de som har error
+                        .map(Map::entrySet)
+                        .flatMap(Collection::stream).filter(entry -> !entry.getValue().getReady().matches("OK"))
+                        .map(entry -> "%s - alive:%s, ready:%s".formatted(entry.getKey(), entry.getValue().getAlive(), entry.getValue().getReady())).collect(Collectors.joining(", ")))
                 .logLink("")
                 .build();
     }
