@@ -29,7 +29,9 @@ public class PensjonSamboerMappingStrategy implements MappingStrategy {
                         var hovedperson = PensjonSamboerRequest.builder()
                                 .pidBruker(ident)
                                 .pidSamboer(sivilstandDTO.getRelatertVedSivilstand())
-                                .datoFom(toLocalDate(sivilstandDTO.getSivilstandsdato()))
+                                .datoFom(toLocalDate(nonNull(sivilstandDTO.getSivilstandsdato()) ?
+                                        sivilstandDTO.getSivilstandsdato() :
+                                        sivilstandDTO.getBekreftelsesdato()))
                                 .registrertAv(CONSUMER)
                                 .build();
 
@@ -37,8 +39,7 @@ public class PensjonSamboerMappingStrategy implements MappingStrategy {
                         samboer.setPidBruker(hovedperson.getPidSamboer());
                         samboer.setPidSamboer(hovedperson.getPidBruker());
 
-                        list.add(hovedperson);
-                        list.add(samboer);
+                        list.addAll(List.of(hovedperson, samboer));
                     }
                 })
                 .register();

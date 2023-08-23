@@ -60,6 +60,7 @@ import static no.nav.dolly.domain.resultset.SystemTyper.PEN_AP;
 @RequiredArgsConstructor
 public class PensjonforvalterClient implements ClientRegister {
 
+    private static final String IDENT = "ident";
     private static final String SYSTEM = "PESYS";
     private static final String PENSJON_FORVALTER = "PensjonForvalter#";
     private static final String SAMBOER_REGISTER = "Samboer#";
@@ -171,7 +172,7 @@ public class PensjonforvalterClient implements ClientRegister {
                 .filter(sivilstand1 -> SivilstandDTO.Sivilstand.SAMBOER == sivilstand1.getType())
                 .map(sivilstand1 -> {
                     var context = new MappingContext.Factory().getContext();
-                    context.setProperty("ident", ident);
+                    context.setProperty(IDENT, ident);
                     return (List<PensjonSamboerRequest>) mapperFacade.map(sivilstand1, List.class, context);
                 })
                 .flatMap(Flux::fromIterable)
@@ -260,7 +261,7 @@ public class PensjonforvalterClient implements ClientRegister {
             if (!opprettIMiljoer.isEmpty()) {
                 var context = new MappingContext.Factory().getContext();
 
-                context.setProperty("ident", ident);
+                context.setProperty(IDENT, ident);
                 context.setProperty("miljoer", opprettIMiljoer);
                 context.setProperty("relasjoner", relasjoner);
                 var alderspensjonRequest = mapperFacade.map(pensjonData.getAlderspensjon(),
@@ -320,7 +321,7 @@ public class PensjonforvalterClient implements ClientRegister {
                         .map(tp -> {
 
                             var context = new MappingContext.Factory().getContext();
-                            context.setProperty("ident", dollyPerson.getIdent());
+                            context.setProperty(IDENT, dollyPerson.getIdent());
                             context.setProperty("miljoer", miljoer);
 
                             var tpForholdRequest = mapperFacade.map(tp, PensjonTpForholdRequest.class, context);
