@@ -58,7 +58,7 @@ public class LagreSamboerCommand implements Callable<Mono<PensjonforvalterRespon
                                 .status(status.value())
                                 .reasonPhrase(status.getReasonPhrase())
                                 .build())
-                        .path(PEN_SAMBOER_URL)
+                        .path(PEN_SAMBOER_URL.replace("{miljoe}", miljoe))
                         .build())
                 .build();
 
@@ -77,7 +77,7 @@ public class LagreSamboerCommand implements Callable<Mono<PensjonforvalterRespon
                                 .reasonPhrase(WebClientFilter.getStatus(error).getReasonPhrase())
                                 .build())
                         .message(WebClientFilter.getMessage(error))
-                        .path(PEN_SAMBOER_URL)
+                        .path(PEN_SAMBOER_URL.replace("{miljoe}", miljoe))
                         .build())
                 .build();
 

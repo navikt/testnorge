@@ -25,7 +25,7 @@ public enum SystemTyper {
     PEN_INNTEKT("Pensjonsopptjening (POPP)"),
     TP_FORVALTER("Tjenestepensjon (TP)"),
     PEN_AP("Alderspensjon (AP)"),
-    PEN_SAMBOER("Pensjon samboer"),
+    PEN_SAMBOER("Pensjon samboerregister"),
     INNTKMELD("Inntektsmelding (ALTINN/JOARK)"),
     BRREGSTUB("Brønnøysundregistrene (BRREGSTUB)"),
     DOKARKIV("Dokumentarkiv (JOARK)"),

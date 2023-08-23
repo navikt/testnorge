@@ -177,7 +177,8 @@ public class PensjonforvalterClient implements ClientRegister {
                 })
                 .flatMap(Flux::fromIterable)
                 .flatMap(request -> Flux.fromIterable(tilgjengeligeMiljoer)
-                        .flatMap(miljoe -> pensjonforvalterConsumer.lagreSamboer(request, miljoe)));
+                        .flatMap(miljoe -> pensjonforvalterConsumer.lagreSamboer(request, miljoe)
+                                .filter(response -> request.getPidBruker().equals(ident))));
     }
 
     private String prepInitStatus(Set<String> miljoer) {
