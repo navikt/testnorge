@@ -19,9 +19,6 @@ public final class CheckAliveUtil {
     private static final String PATTERN = "%s, URL: %s";
 
     public static TestnavStatusResponse checkConsumerStatus(String aliveUrl, String readyUrl, WebClient webClient) {
-        var map = new HashMap<String, String>();
-        map.put("alive", checkInternal(webClient, aliveUrl));
-        map.put("ready", checkInternal(webClient, readyUrl));
         return TestnavStatusResponse.builder()
                 .alive(checkInternal(webClient, aliveUrl))
                 .ready(checkInternal(webClient, readyUrl))
