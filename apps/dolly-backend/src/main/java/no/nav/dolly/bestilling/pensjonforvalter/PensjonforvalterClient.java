@@ -12,6 +12,7 @@ import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPersonRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPoppInntektRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonSamboerRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpForholdRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpYtelseRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
@@ -32,6 +33,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -60,6 +62,7 @@ public class PensjonforvalterClient implements ClientRegister {
 
     private static final String SYSTEM = "PESYS";
     private static final String PENSJON_FORVALTER = "PensjonForvalter#";
+    private static final String SAMBOER_REGISTER = "Samboer#";
     private static final String POPP_INNTEKTSREGISTER = "PoppInntekt#";
     private static final String TP_FORHOLD = "TpForhold#";
     private static final String PEN_ALDERSPENSJON = "AP#";
@@ -135,6 +138,9 @@ public class PensjonforvalterClient implements ClientRegister {
                                             opprettPersoner(dollyPerson.getIdent(), tilgjengeligeMiljoer, persondata)
                                                     .map(response -> PENSJON_FORVALTER + decodeStatus(response, dollyPerson.getIdent())),
 
+                                            lagreSamboer(dollyPerson.getIdent(), tilgjengeligeMiljoer)
+                                                    .map(response -> SAMBOER_REGISTER + decodeStatus(response, dollyPerson.getIdent())),
+
                                             lagreTpForhold(bestilling.getPensjonforvalter(), dollyPerson, bestilteMiljoer.get())
                                                     .map(response -> TP_FORHOLD + decodeStatus(response, dollyPerson.getIdent())),
 
@@ -154,6 +160,23 @@ public class PensjonforvalterClient implements ClientRegister {
                             .collect(Collectors.joining("$"));
                 })
                 .map(status -> futurePersist(dollyPerson, progress, status));
+    }
+
+    private Flux<PensjonforvalterResponse> lagreSamboer(String ident, Set<String> tilgjengeligeMiljoer) {
+
+        return pdlDataConsumer.getPersoner(List.of(ident))
+                .map(FullPersonDTO::getPerson)
+                .map(PersonDTO::getSivilstand)
+                .flatMap(sivilstand -> Flux.fromStream(sivilstand.stream()))
+                .filter(sivilstand1 -> SivilstandDTO.Sivilstand.SAMBOER == sivilstand1.getType())
+                .map(sivilstand1 -> {
+                    var context = new MappingContext.Factory().getContext();
+                    context.setProperty("ident", ident);
+                    return (List<PensjonSamboerRequest>) mapperFacade.map(sivilstand1, List.class, context);
+                })
+                .flatMap(Flux::fromIterable)
+                .flatMap(request -> Flux.fromIterable(tilgjengeligeMiljoer)
+                        .flatMap(miljoe -> pensjonforvalterConsumer.lagreSamboer(request, miljoe)));
     }
 
     private String prepInitStatus(Set<String> miljoer) {

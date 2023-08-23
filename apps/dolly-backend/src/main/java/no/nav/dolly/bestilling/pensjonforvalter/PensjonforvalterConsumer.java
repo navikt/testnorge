@@ -9,6 +9,7 @@ import no.nav.dolly.bestilling.pensjonforvalter.command.GetPoppInntekterCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.GetTpForholdCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.LagreAlderspensjonCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.LagrePoppInntektCommand;
+import no.nav.dolly.bestilling.pensjonforvalter.command.LagreSamboerCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.LagreTpForholdCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.LagreTpYtelseCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.OpprettPersonCommand;
@@ -16,6 +17,7 @@ import no.nav.dolly.bestilling.pensjonforvalter.command.SletteTpForholdCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPersonRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPoppInntektRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonSamboerRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpForholdRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpYtelseRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
@@ -80,7 +82,16 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
         pensjonPersonRequest.setMiljoer(miljoer);
         log.info("Pensjon opprett person {}", pensjonPersonRequest);
         return tokenService.exchange(serviceProperties)
-                .flatMapMany(token -> new OpprettPersonCommand(webClient, token.getTokenValue(), pensjonPersonRequest).call());
+                .flatMapMany(token -> new OpprettPersonCommand(webClient, pensjonPersonRequest, token.getTokenValue()).call());
+    }
+
+    @Timed(name = "providers", tags = {"operation", "pen_opprettPerson"})
+    public Flux<PensjonforvalterResponse> lagreSamboer(PensjonSamboerRequest pensjonSamboerRequest,
+                                                       String miljoe) {
+
+        log.info("Pensjon samboer opprett {}", pensjonSamboerRequest);
+        return tokenService.exchange(serviceProperties)
+                .flatMapMany(token -> new LagreSamboerCommand(webClient, pensjonSamboerRequest, miljoe, token.getTokenValue()).call());
     }
 
     @Timed(name = "providers", tags = {"operation", "pen_lagreAlderspensjon"})
