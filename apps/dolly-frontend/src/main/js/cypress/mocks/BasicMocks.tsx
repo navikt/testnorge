@@ -489,71 +489,121 @@ export const ameldingMock = [
 		version: 1,
 	},
 ]
-// 	[
-// 	{
-// 		maaned: '2023-01',
-// 		arbeidsforhold: [
-// 			{
-// 				ansettelsesPeriode: {
-// 					fom: '2003-04-26T00:00:00',
-// 				},
-// 				antallTimerForTimeloennet: [],
-// 				arbeidsavtale: {
-// 					yrke: '0030320',
-// 				},
-// 				permisjon: [],
-// 				permittering: [],
-// 				utenlandsopphold: [],
-// 				arbeidsgiver: {
-// 					aktoertype: 'ORG',
-// 					orgnummer: '961475457',
-// 				},
-// 			},
-// 		],
-// 	},
-// 	{
-// 		maaned: '2023-02',
-// 		arbeidsforhold: [
-// 			{
-// 				ansettelsesPeriode: {
-// 					fom: '2003-04-26T00:00:00',
-// 				},
-// 				antallTimerForTimeloennet: [],
-// 				arbeidsavtale: {
-// 					yrke: '0030320',
-// 				},
-// 				permisjon: [],
-// 				permittering: [],
-// 				utenlandsopphold: [],
-// 				arbeidsgiver: {
-// 					aktoertype: 'ORG',
-// 					orgnummer: '961475457',
-// 				},
-// 			},
-// 		],
-// 	},
-// 	{
-// 		maaned: '2023-03',
-// 		arbeidsforhold: [
-// 			{
-// 				ansettelsesPeriode: {
-// 					fom: '2003-04-26T00:00:00',
-// 				},
-// 				antallTimerForTimeloennet: [],
-// 				arbeidsavtale: {
-// 					yrke: '0030320',
-// 				},
-// 				permisjon: [],
-// 				permittering: [],
-// 				utenlandsopphold: [],
-// 				arbeidsgiver: {
-// 					aktoertype: 'ORG',
-// 					orgnummer: '961475457',
-// 				},
-// 			},
-// 		],
-// 	},
-// ],
+
+export const arenaMock = {
+	fodselsnr: '12345678912',
+	registrertDato: '2023-08-06',
+	sistInaktivDato: null,
+	maalform: 'Bokmål',
+	statsborgerLand: 'Norge',
+	bosattStatus: 'Bosatt',
+	lokalkontor: {
+		enhetNr: '4154',
+		enhetNavn: 'Nasjonal oppfølgingsenhet',
+	},
+	hovedmaal: 'Skaffe arbeid',
+	formidlingsgruppe: {
+		kode: 'ARBS',
+		navn: 'Arbeidssøker',
+	},
+	servicegruppe: {
+		kode: 'IKVAL',
+		navn: 'Standardinnsats',
+	},
+	rettighetsgruppe: {
+		kode: 'IYT',
+		navn: 'Ingen livsoppholdsytelse i Arena',
+	},
+	meldeplikt: true,
+	meldeform: 'Elektronisk',
+	meldegruppe: 'Ingen ytelser',
+	vedtakListe: [
+		{
+			sak: {
+				kode: 'AA',
+				navn: 'Arbeidsavklaringspenger',
+				status: 'Aktiv',
+				sakNr: '20230264670',
+			},
+			vedtakNr: 2,
+			rettighet: {
+				kode: 'AAP',
+				navn: 'Arbeidsavklaringspenger',
+			},
+			aktivitetfase: {
+				kode: 'UA',
+				navn: 'Under arbeidsavklaring',
+			},
+			type: {
+				kode: 'O',
+				navn: 'Ny rettighet',
+			},
+			status: {
+				kode: 'MOTAT',
+				navn: 'Mottatt',
+			},
+			utfall: null,
+			fraDato: null,
+			tilDato: null,
+		},
+		{
+			sak: {
+				kode: 'AA',
+				navn: 'Arbeidsavklaringspenger',
+				status: 'Aktiv',
+				sakNr: '20230264670',
+			},
+			vedtakNr: 1,
+			rettighet: {
+				kode: 'AA115',
+				navn: '§11-5 nedsatt arbeidsevne',
+			},
+			aktivitetfase: {
+				kode: 'IKKE',
+				navn: 'Ikke spesif. aktivitetsfase',
+			},
+			type: {
+				kode: 'O',
+				navn: 'Ny rettighet',
+			},
+			status: {
+				kode: 'IVERK',
+				navn: 'Iverksatt',
+			},
+			utfall: 'Ja',
+			fraDato: '2023-08-06',
+			tilDato: null,
+		},
+		{
+			sak: {
+				kode: 'ARBEID',
+				navn: 'Oppfølgingssak',
+				status: 'Aktiv',
+				sakNr: '20230264669',
+			},
+			vedtakNr: 1,
+			rettighet: {
+				kode: 'BIST14A',
+				navn: 'Bistandsbehov §14a',
+			},
+			aktivitetfase: {
+				kode: 'IKVAL',
+				navn: 'Standardinnsats',
+			},
+			type: {
+				kode: 'O',
+				navn: 'Ny rettighet',
+			},
+			status: {
+				kode: 'IVERK',
+				navn: 'Iverksatt',
+			},
+			utfall: 'Ja',
+			fraDato: '2023-08-06',
+			tilDato: null,
+		},
+	],
+}
 
 export const tpsMessagingMock = [
 	{
