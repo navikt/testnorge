@@ -16,6 +16,7 @@ import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.PEN_AP;
 import static no.nav.dolly.domain.resultset.SystemTyper.PEN_FORVALTER;
 import static no.nav.dolly.domain.resultset.SystemTyper.PEN_INNTEKT;
+import static no.nav.dolly.domain.resultset.SystemTyper.PEN_SAMBOER;
 import static no.nav.dolly.domain.resultset.SystemTyper.TP_FORVALTER;
 import static no.nav.dolly.mapper.AbstractRsStatusMiljoeIdentForhold.decodeMsg;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -27,6 +28,7 @@ public final class BestillingPensjonforvalterStatusMapper {
     private static final String POPP_INNTEKTSREGISTER = "PoppInntekt";
     private static final String TP_FORHOLD = "TpForhold";
     private static final String ALDERSPENSJON = "AP";
+    private static final String SAMBOER = "Samboer";
 
     public static List<RsStatusRapport> buildPensjonforvalterStatusMap(List<BestillingProgress> progressList) {
 
@@ -52,11 +54,12 @@ public final class BestillingPensjonforvalterStatusMapper {
             }
         });
 
-        List<RsStatusRapport> statusRapporter = new ArrayList<>();
+        var statusRapporter = new ArrayList<RsStatusRapport>();
         statusRapporter.addAll(extractStatus(meldStatusMiljoeIdents, POPP_INNTEKTSREGISTER, PEN_INNTEKT));
         statusRapporter.addAll(extractStatus(meldStatusMiljoeIdents, TP_FORHOLD, TP_FORVALTER));
         statusRapporter.addAll(extractStatus(meldStatusMiljoeIdents, PENSJON_FORVALTER, PEN_FORVALTER));
         statusRapporter.addAll(extractStatus(meldStatusMiljoeIdents, ALDERSPENSJON, PEN_AP));
+        statusRapporter.addAll(extractStatus(meldStatusMiljoeIdents, SAMBOER, PEN_SAMBOER));
 
         return statusRapporter;
     }
