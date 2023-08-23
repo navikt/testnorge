@@ -55,8 +55,7 @@ public class PensjonTestdataFacadeProxyApplicationStarter {
                         routes.route(spec -> spec
                                 .path("/" + miljoe + "/api/samboer/**")
                                 .filters(filterSPec -> filterSPec.filter(getAuthenticationFilter(tokenService, samboerProperties, miljoe))
-                                        .rewritePath("/" + miljoe + "/(?<segment>.*)", "/${segment}")
-                                        .addRequestHeader(HttpHeaders.AUTHORIZATION, "dolly"))
+                                        .rewritePath("/" + miljoe + "/(?<segment>.*)", "/${segment}"))
                                 .uri(samboerProperties.forEnvironment(miljoe).getUrl())));
 
         routes.route(spec -> spec
