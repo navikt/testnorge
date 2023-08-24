@@ -52,7 +52,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.PEN_AP;
 
@@ -237,11 +236,8 @@ public class PensjonforvalterClient implements ClientRegister {
     private Flux<PdlPersonBolk.PersonBolk> getPersonData(List<String> identer) {
 
         return pdlPersonConsumer.getPdlPersoner(identer)
-                .doOnNext(bolk -> {
-                    if (isNull(bolk.getData())) {
-                        log.warn("PDL henter for {}, bolkPersoner: {}, ", String.join(", ", identer), bolk);
-                    }
-                })
+                .doOnNext(bolk ->
+                        log.warn("PDL henter for {}, bolkPersoner: {}, ", String.join(", ", identer), bolk))
                 .filter(pdlPersonBolk -> nonNull(pdlPersonBolk.getData()))
                 .map(PdlPersonBolk::getData)
                 .map(PdlPersonBolk.Data::getHentPersonBolk)
