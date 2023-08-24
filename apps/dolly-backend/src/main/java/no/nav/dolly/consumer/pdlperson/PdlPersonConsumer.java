@@ -68,7 +68,8 @@ public class PdlPersonConsumer implements ConsumerStatus {
                         .flatMap(index -> new PdlBolkPersonGetCommand(webClient,
                                 identer.subList(index * BLOCK_SIZE, Math.min((index + 1) * BLOCK_SIZE, identer.size())),
                                 token.getTokenValue()
-                        ).call()));
+                        ).call()))
+                .doOnNext(bolk -> log.info("PDL henter for {}, bolkPersoner: {}, ", String.join(", ", identer), bolk));
     }
 
     @Timed(name = "providers", tags = { "operation", "pdl_getPersoner" })

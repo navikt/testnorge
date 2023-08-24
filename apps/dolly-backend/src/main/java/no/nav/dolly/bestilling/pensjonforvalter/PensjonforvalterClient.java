@@ -236,8 +236,6 @@ public class PensjonforvalterClient implements ClientRegister {
     private Flux<PdlPersonBolk.PersonBolk> getPersonData(List<String> identer) {
 
         return pdlPersonConsumer.getPdlPersoner(identer)
-                .doOnNext(bolk ->
-                        log.warn("PDL henter for {}, bolkPersoner: {}, ", String.join(", ", identer), bolk))
                 .filter(pdlPersonBolk -> nonNull(pdlPersonBolk.getData()))
                 .map(PdlPersonBolk::getData)
                 .map(PdlPersonBolk.Data::getHentPersonBolk)
