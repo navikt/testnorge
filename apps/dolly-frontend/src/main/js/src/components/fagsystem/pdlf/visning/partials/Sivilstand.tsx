@@ -44,7 +44,7 @@ const SivilstandLes = ({
 	const relatertPersonIdent = sivilstandData.relatertVedSivilstand
 	const relasjon = relasjoner?.find((item) => item.relatertPerson?.ident === relatertPersonIdent)
 	const relasjonRedigert = redigertRelatertePersoner?.find(
-		(item) => item.relatertPerson?.ident === relatertPersonIdent
+		(item) => item.relatertPerson?.ident === relatertPersonIdent,
 	)
 
 	return (
@@ -94,7 +94,7 @@ const SivilstandVisning = ({
 	initialValues.sivilstand.nyRelatertPerson = initialPdlPerson
 
 	const redigertSivilstandPdlf = _.get(tmpPersoner, `${ident}.person.sivilstand`)?.find(
-		(a) => a.id === sivilstandData.id
+		(a) => a.id === sivilstandData.id,
 	)
 	const redigertRelatertePersoner = _.get(tmpPersoner, `${ident}.relasjoner`)
 
@@ -122,7 +122,7 @@ const SivilstandVisning = ({
 		  ])
 
 	const erIGruppe = gruppeIdenter?.some(
-		(person) => person.ident === initialValues?.sivilstand?.relatertVedSivilstand
+		(person) => person.ident === initialValues?.sivilstand?.relatertVedSivilstand,
 	)
 	const relatertPersonInfo = erIGruppe
 		? {
@@ -158,18 +158,20 @@ export const Sivilstand = ({ data, relasjoner, tmpPersoner, ident }: SivilstandT
 	return (
 		<div>
 			<SubOverskrift label="Sivilstand (partner)" iconKind="partner" />
-			<DollyFieldArray data={data} nested>
-				{(sivilstand: SivilstandData, idx: number) => (
-					<SivilstandVisning
-						sivilstandData={sivilstand}
-						idx={idx}
-						data={data}
-						relasjoner={relasjoner}
-						tmpPersoner={tmpPersoner}
-						ident={ident}
-					/>
-				)}
-			</DollyFieldArray>
+			<div className="person-visning_content">
+				<DollyFieldArray data={data} nested>
+					{(sivilstand: SivilstandData, idx: number) => (
+						<SivilstandVisning
+							sivilstandData={sivilstand}
+							idx={idx}
+							data={data}
+							relasjoner={relasjoner}
+							tmpPersoner={tmpPersoner}
+							ident={ident}
+						/>
+					)}
+				</DollyFieldArray>
+			</div>
 		</div>
 	)
 }
