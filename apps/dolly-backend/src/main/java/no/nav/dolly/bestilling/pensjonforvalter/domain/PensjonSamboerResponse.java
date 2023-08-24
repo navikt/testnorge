@@ -23,6 +23,7 @@ public class PensjonSamboerResponse extends PensjonforvalterResponse {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
+    @SuppressWarnings("java:S1700")
     public static class Samboerforhold {
         private String pidBruker;
         private String pidSamboer;
@@ -37,17 +38,17 @@ public class PensjonSamboerResponse extends PensjonforvalterResponse {
         @AllArgsConstructor
         public static class Lenker {
 
-            private Href self;
-            private Href avslutt;
-            private Href annuller;
-            private Href endre;
+            private Lenke self;
+            private Lenke avslutt;
+            private Lenke annuller;
+            private Lenke endre;
         }
 
         @Data
         @Builder
         @NoArgsConstructor
         @AllArgsConstructor
-        public static class Href {
+        public static class Lenke {
 
             private String href;
             private Boolean templated;
