@@ -1,52 +1,50 @@
 package no.nav.dolly.bestilling.pensjonforvalter.command;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.util.WebClientFilter;
-import no.nav.testnav.libs.securitycore.config.UserConstant;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
-import java.util.Set;
 import java.util.concurrent.Callable;
 
-import static java.util.Collections.emptySet;
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 import static no.nav.dolly.util.CallIdUtil.generateCallId;
-import static no.nav.dolly.util.TokenXUtil.getUserJwt;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Slf4j
 @RequiredArgsConstructor
-public class GetMiljoerCommand implements Callable<Mono<Set<String>>> {
+public class HentPoppInntekterCommand implements Callable<Mono<JsonNode>> {
 
-    private static final String MILJOER_HENT_TILGJENGELIGE_URL = "/api/v1/miljo";
+    private static final String FNR_PARAM = "fnr";
+    private static final String MILJO_HEADER = "miljo";
+    private static final String POPP_INNTEKT_URL = "/api/v1/inntekt";
 
     private final WebClient webClient;
     private final String token;
+    private final String ident;
+    private final String miljoe;
 
-    public Mono<Set<String>> call() {
-
+    public Mono<JsonNode> call() {
         return webClient
                 .get()
-                .uri(uriBuilder -> uriBuilder.path(MILJOER_HENT_TILGJENGELIGE_URL)
+                .uri(uriBuilder -> uriBuilder
+                        .path(POPP_INNTEKT_URL)
+                        .queryParam(FNR_PARAM, ident)
                         .build())
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
+                .header(AUTHORIZATION, "Bearer " + token)
                 .header(HEADER_NAV_CALL_ID, generateCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
+                .header(MILJO_HEADER, miljoe)
                 .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<Set<String>>() {
-                })
+                .bodyToMono(JsonNode.class)
                 .doOnError(WebClientFilter::logErrorMessage)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
-                .onErrorResume(throwable -> Mono.just(emptySet()))
-                .cache(Duration.ofHours(1));
+                        .filter(WebClientFilter::is5xxException));
     }
 }

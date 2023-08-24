@@ -52,8 +52,16 @@ spec:
         - application: testnav-synt-vedtakshistorikk-service
           cluster: dev-gcp
     outbound:
-      external:
-        - host: popp-testdata.intern.dev.nav.no
+      rules:
+        - application: pensjon-samboerforhold-backend-q1
+          namespace: pensjon-person
+          cluster: dev-gcp
+        - application: pensjon-samboerforhold-backend-q2
+          namespace: pensjon-person
+          cluster: dev-gcp
+        - application: popp-testdata
+          namespace: pensjonopptjening
+          cluster: dev-gcp
   liveness:
     path: /internal/isAlive
     initialDelay: 4
