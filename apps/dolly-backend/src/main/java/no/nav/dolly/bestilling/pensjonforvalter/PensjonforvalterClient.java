@@ -67,6 +67,7 @@ public class PensjonforvalterClient implements ClientRegister {
     private static final String POPP_INNTEKTSREGISTER = "PoppInntekt#";
     private static final String TP_FORHOLD = "TpForhold#";
     private static final String PEN_ALDERSPENSJON = "AP#";
+    private static final String PERIODE = "/periode/";
 
     private final PensjonforvalterConsumer pensjonforvalterConsumer;
     private final MapperFacade mapperFacade;
@@ -177,8 +178,19 @@ public class PensjonforvalterClient implements ClientRegister {
                 })
                 .flatMap(Flux::fromIterable)
                 .flatMap(request -> Flux.fromIterable(tilgjengeligeMiljoer)
-                        .flatMap(miljoe -> pensjonforvalterConsumer.lagreSamboer(request, miljoe)
-                                .filter(response -> request.getPidBruker().equals(ident))));
+                        .flatMap(miljoe -> Flux.concat(pensjonforvalterConsumer.hentSamboer(request.getPidBruker(), miljoe)
+                                        .filter(response -> !response.getSamboerforhold().isEmpty())
+                                        .flatMap(response -> Flux.fromStream(response.getSamboerforhold().stream())
+                                                .map(samboer -> samboer.get_links().getAnnuller().getHref())
+                                                .map(lenke -> lenke.substring(lenke.indexOf(PERIODE) + PERIODE.length())
+                                                        .replace("/annuller", ""))
+                                                .flatMap(periodeId -> pensjonforvalterConsumer.annullerSamboer(request.getPidBruker(),
+                                                                periodeId, miljoe)
+                                                        .filter(response1 -> request.getPidBruker().equals(ident) &&
+                                                                response1.getStatus().stream()
+                                                                        .noneMatch(status -> status.getResponse().getHttpStatus().getStatus() == 200)))),
+                                pensjonforvalterConsumer.lagreSamboer(request, miljoe)
+                                        .filter(response -> request.getPidBruker().equals(ident)))));
     }
 
     private String prepInitStatus(Set<String> miljoer) {
