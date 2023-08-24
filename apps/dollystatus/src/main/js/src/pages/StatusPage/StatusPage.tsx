@@ -15,7 +15,12 @@ export default () => {
 	useEffect(() => {
 		const endpoint = 'https://dolly-backend.intern.dev.nav.no/api/v1/status'
 
-		fetch(endpoint)
+		fetch(endpoint, {
+			headers: {
+				'Content-Type': 'application/json',
+				'Access-Control-Allow-Origin': '*',
+			},
+		})
 			.then((response) => response.json())
 			.then((json) => {
 				setStatuses(json)
