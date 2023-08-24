@@ -8,6 +8,7 @@ import no.nav.dolly.domain.resultset.NavStatus;
 import no.nav.dolly.domain.resultset.SystemStatus;
 import no.nav.testnav.libs.dto.status.v1.TestnavStatusResponse;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping(value = "/api/v1/status", produces = MediaType.APPLICATION_JSON_VALUE)
+@CrossOrigin
 public class StatusController {
     private static final Map<String, String> consumerNavnMapping = new HashMap<>();
     private static final List<String> excludeConsumers = List.of("PdlPersonConsumer");
