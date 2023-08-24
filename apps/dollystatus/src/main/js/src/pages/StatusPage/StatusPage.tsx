@@ -18,7 +18,7 @@ export default () => {
 		fetch(endpoint, {
 			headers: {
 				'Content-Type': 'application/json',
-				'Access-Control-Allow-Origin': '*',
+				'Access-Control-Allow-Origin': 'https://dolly-backend-dev.intern.dev.nav.no',
 			},
 		})
 			.then((response) => response.json())
