@@ -31,6 +31,7 @@ spec:
         - application: testnav-inntektsmelding-generator-service
       external:
         - host: https://testnav-dokarkiv-proxy.dev-fss-pub.nais.io
+        - host: testnav-inntektsmelding-generator-service.intern.dev.nav.no
   gcp:
     sqlInstances:
       - type: POSTGRES_12
