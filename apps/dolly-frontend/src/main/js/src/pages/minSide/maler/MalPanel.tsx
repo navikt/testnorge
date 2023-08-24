@@ -10,6 +10,7 @@ import Icon from '@/components/ui/icon/Icon'
 import { DollyApi } from '@/service/Api'
 import { EndreMalnavn } from './EndreMalnavn'
 import { CypressSelector } from '../../../../cypress/mocks/Selectors'
+import Bestillingskriterier from '@/components/bestilling/sammendrag/kriterier/Bestillingskriterier'
 
 type Props = {
 	antallEgneMaler: any
@@ -39,7 +40,7 @@ export const MalPanel = ({
 	setUnderRedigering,
 }: Props) => {
 	const [searchActive, setSearchActive] = useState(false)
-
+	console.log('malListe: ', malListe) //TODO - SLETT MEG
 	useEffect(() => {
 		setSearchActive(searchText?.length > 0)
 	}, [searchText])
@@ -54,7 +55,7 @@ export const MalPanel = ({
 
 	const avsluttRedigering = (id: number) => {
 		setUnderRedigering((erUnderRedigering: any[]) =>
-			erUnderRedigering.filter((number) => number !== id)
+			erUnderRedigering.filter((number) => number !== id),
 		)
 	}
 
@@ -70,11 +71,12 @@ export const MalPanel = ({
 			{antallEgneMaler > 0 &&
 				(malerFiltrert(malListe, searchText).length > 0 ? (
 					<ErrorBoundary>
-						<Table size="small" zebraStripes style={{ marginBottom: '20px' }}>
+						<Table style={{ marginBottom: '20px' }}>
 							<Table.Header>
 								<Table.Row>
+									<Table.HeaderCell />
 									<Table.HeaderCell scope="col">Malnavn</Table.HeaderCell>
-									<Table.HeaderCell align={'center'} scope="col">
+									<Table.HeaderCell scope="col" align={'center'}>
 										Endre navn
 									</Table.HeaderCell>
 									<Table.HeaderCell scope="col">Slett</Table.HeaderCell>
@@ -82,9 +84,18 @@ export const MalPanel = ({
 							</Table.Header>
 							<Table.Body>
 								{maler.map(({ malNavn, id, bestilling }, idx) => {
+									console.log('bestilling: ', bestilling) //TODO - SLETT MEG
 									return (
-										<Table.Row key={idx}>
-											<Table.HeaderCell scope="row" style={{ width: '720px' }}>
+										<Table.ExpandableRow
+											key={idx}
+											content={
+												<Bestillingskriterier
+													bestilling={bestilling}
+													// header={'Malbestilling'}
+												/>
+											}
+										>
+											<Table.HeaderCell scope="row" style={{ width: '620px' }}>
 												{erUnderRedigering(id) ? (
 													<EndreMalnavn
 														malNavn={malNavn}
@@ -123,7 +134,7 @@ export const MalPanel = ({
 													<Icon kind={'trashcan'} />
 												</Button>
 											</Table.HeaderCell>
-										</Table.Row>
+										</Table.ExpandableRow>
 									)
 								})}
 							</Table.Body>
