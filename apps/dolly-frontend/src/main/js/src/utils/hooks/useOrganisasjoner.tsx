@@ -105,7 +105,7 @@ export const useOrganisasjoner = (brukerId: string) => {
 
 	const { data, isLoading, error } = useSWR<Organisasjon[], Error>(
 		getOrganisasjonerUrl(brukerId),
-		fetcher
+		fetcher,
 	)
 
 	return {
@@ -119,7 +119,7 @@ export const useDollyFasteDataOrganisasjoner = (kanHaArbeidsforhold?: boolean) =
 	const { data, isLoading, error } = useSWR<OrganisasjonFasteData[], Error>(
 		getDollyFasteDataOrganisasjoner(kanHaArbeidsforhold),
 		fetcher,
-		{ fallbackData: fasteDataFallback }
+		{ fallbackData: fasteDataFallback },
 	)
 
 	return {
@@ -132,7 +132,7 @@ export const useDollyFasteDataOrganisasjoner = (kanHaArbeidsforhold?: boolean) =
 export const useFasteDataOrganisasjon = (orgnummer: string) => {
 	const { data, isLoading, error } = useSWR<OrganisasjonFasteData, Error>(
 		getFasteDataOrganisasjon(orgnummer),
-		fetcher
+		fetcher,
 	)
 
 	if (!orgnummer) {
@@ -162,7 +162,7 @@ export const useOrganisasjonBestilling = (brukerId: string, autoRefresh = false)
 		{
 			refreshInterval: autoRefresh ? 4000 : 0,
 			dedupingInterval: autoRefresh ? 4000 : 0,
-		}
+		},
 	)
 
 	const bestillingerSorted = data
@@ -180,7 +180,7 @@ export const useOrganisasjonBestilling = (brukerId: string, autoRefresh = false)
 export const useOrganisasjonBestillingStatus = (
 	bestillingId: number | string,
 	erOrganisasjon: boolean,
-	autoRefresh = false
+	autoRefresh = false,
 ) => {
 	if (!erOrganisasjon) {
 		return {
@@ -200,7 +200,7 @@ export const useOrganisasjonBestillingStatus = (
 		{
 			refreshInterval: autoRefresh ? 3000 : 0,
 			dedupingInterval: autoRefresh ? 3000 : 0,
-		}
+		},
 	)
 
 	return {
@@ -235,7 +235,6 @@ export const useArbeidsforhold = (ident: string, harAaregBestilling: boolean, mi
 	const { data, isLoading, error } = useSWR<Array<MiljoDataListe>, Error>(
 		[getArbeidsforholdUrl(miljoer), { 'Nav-Personident': ident }],
 		([url, headers]) => multiFetcherAareg(url, headers),
-		{ dedupingInterval: 30000 }
 	)
 
 	return {
@@ -270,7 +269,6 @@ export const useAmeldinger = (ident: string, harAaregBestilling: boolean, miljoe
 	const { data, isLoading, error } = useSWR<Array<MiljoDataListe>, Error>(
 		[getAmeldingerUrl(ident, miljoer)],
 		([url, headers]) => multiFetcherAmelding(url, headers),
-		{ dedupingInterval: 30000 }
 	)
 
 	return {

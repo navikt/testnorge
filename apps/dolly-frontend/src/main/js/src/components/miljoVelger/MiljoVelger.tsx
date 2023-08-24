@@ -157,6 +157,6 @@ MiljoVelger.validation = {
 			const miljoeNotRequired = erMiljouavhengig(values)
 			const hasEnvironments = values.environments.length > 0
 			return miljoeNotRequired || hasEnvironments
-		})
+		}),
 	),
 }

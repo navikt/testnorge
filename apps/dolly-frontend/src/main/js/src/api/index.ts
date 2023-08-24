@@ -54,12 +54,16 @@ export const multiFetcherInst = (miljoUrlListe, headers = null, path = null) => 
 
 export const multiFetcherArena = (miljoUrlListe, headers = null) => {
 	return Promise.all(
-		miljoUrlListe.map((obj) =>
-			fetcher(obj.url, headers).then((result) => {
-				const filteredResult =
-					result?.status === 'NO_CONTENT' || result?.status === 'NOT_FOUND' ? null : result
-				return { miljo: obj.miljo, data: filteredResult, status: result?.status }
-			}),
+		miljoUrlListe?.map((obj) =>
+			fetcher(obj.url, headers)
+				.then((result) => {
+					const filteredResult =
+						result?.status === 'NO_CONTENT' || result?.status === 'NOT_FOUND' ? null : result
+					return { miljo: obj.miljo, data: filteredResult, status: result?.status }
+				})
+				.catch((feil) => {
+					return { miljo: obj.miljo, feil: feil }
+				}),
 		),
 	)
 }

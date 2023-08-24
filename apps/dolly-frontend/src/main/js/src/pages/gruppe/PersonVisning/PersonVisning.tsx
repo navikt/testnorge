@@ -159,8 +159,10 @@ export default ({
 	const {
 		loading: loadingArbeidsplassencvData,
 		arbeidsplassencvData,
-		error: arbeidsplassencvError,
-	} = useArbeidsplassencvData(ident.ident, harArbeidsplassenBestilling(bestillingerFagsystemer))
+		error: arbeidsplassencvError,} = useArbeidsplassencvData(
+		ident.ident,
+		harArbeidsplassenBestilling(bestillingerFagsystemer),
+	)
 
 	const { loading: loadingArenaData, arenaData } = useArenaData(
 		ident.ident,
@@ -309,7 +311,7 @@ export default ({
 							LEGG TIL/ENDRE
 						</Button>
 					)}
-					<GjenopprettPerson ident={ident?.ident} />
+					<GjenopprettPerson ident={ident} />
 					{!iLaastGruppe && harPdlRelatertPerson && (
 						<RelatertPersonImportButton
 							gruppeId={gruppeId}
@@ -353,6 +355,7 @@ export default ({
 						ameldinger={ameldinger}
 						loading={loadingAareg || loadingAmelding}
 						bestillingIdListe={bestillingIdListe}
+						bestillinger={ident.bestillinger}
 						tilgjengeligMiljoe={tilgjengeligMiljoe}
 					/>
 				)}
@@ -387,7 +390,7 @@ export default ({
 				)}
 				<ArenaVisning
 					data={arenaData}
-					bestillinger={bestillingListe}
+					bestillingIdListe={bestillingIdListe}
 					loading={loadingArenaData}
 					ident={ident}
 					tilgjengeligMiljoe={tilgjengeligMiljoe}
