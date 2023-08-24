@@ -4,11 +4,14 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
-import no.nav.dolly.bestilling.pensjonforvalter.command.GetMiljoerCommand;
-import no.nav.dolly.bestilling.pensjonforvalter.command.GetPoppInntekterCommand;
-import no.nav.dolly.bestilling.pensjonforvalter.command.GetTpForholdCommand;
+import no.nav.dolly.bestilling.pensjonforvalter.command.AnnullerSamboerCommand;
+import no.nav.dolly.bestilling.pensjonforvalter.command.HentMiljoerCommand;
+import no.nav.dolly.bestilling.pensjonforvalter.command.HentPoppInntekterCommand;
+import no.nav.dolly.bestilling.pensjonforvalter.command.HentSamboerCommand;
+import no.nav.dolly.bestilling.pensjonforvalter.command.HentTpForholdCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.LagreAlderspensjonCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.LagrePoppInntektCommand;
+import no.nav.dolly.bestilling.pensjonforvalter.command.LagreSamboerCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.LagreTpForholdCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.LagreTpYtelseCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.OpprettPersonCommand;
@@ -16,6 +19,8 @@ import no.nav.dolly.bestilling.pensjonforvalter.command.SletteTpForholdCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPersonRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPoppInntektRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonSamboerRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonSamboerResponse;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpForholdRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpYtelseRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
@@ -59,7 +64,7 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
     public Mono<Set<String>> getMiljoer() {
 
         return tokenService.exchange(serviceProperties)
-                .flatMap(token -> new GetMiljoerCommand(webClient, token.getTokenValue()).call());
+                .flatMap(token -> new HentMiljoerCommand(webClient, token.getTokenValue()).call());
     }
 
     @Timed(name = "providers", tags = {"operation", "popp_lagreInntekt"})
@@ -80,7 +85,32 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
         pensjonPersonRequest.setMiljoer(miljoer);
         log.info("Pensjon opprett person {}", pensjonPersonRequest);
         return tokenService.exchange(serviceProperties)
-                .flatMapMany(token -> new OpprettPersonCommand(webClient, token.getTokenValue(), pensjonPersonRequest).call());
+                .flatMapMany(token -> new OpprettPersonCommand(webClient, pensjonPersonRequest, token.getTokenValue()).call());
+    }
+
+    @Timed(name = "providers", tags = {"operation", "pen_hentSamboer"})
+    public Flux<PensjonSamboerResponse> hentSamboer(String ident, String miljoe) {
+
+        return tokenService.exchange(serviceProperties)
+                .flatMapMany(token -> new HentSamboerCommand(webClient, ident, miljoe, token.getTokenValue()).call())
+                .doOnNext(response -> log.info("Pensjon samboer hentet {}", response));
+    }
+
+    @Timed(name = "providers", tags = {"operation", "pen_opprettSamboer"})
+    public Flux<PensjonforvalterResponse> lagreSamboer(PensjonSamboerRequest pensjonSamboerRequest,
+                                                       String miljoe) {
+
+        log.info("Pensjon samboer opprett {}", pensjonSamboerRequest);
+        return tokenService.exchange(serviceProperties)
+                .flatMapMany(token -> new LagreSamboerCommand(webClient, pensjonSamboerRequest, miljoe, token.getTokenValue()).call());
+    }
+
+    @Timed(name = "providers", tags = {"operation", "pen_opprettSamboer"})
+    public Flux<PensjonforvalterResponse> annullerSamboer(String ident, String periodeId, String miljoe) {
+
+        log.info("Pensjon samboer annuller {} periodeId {}", ident, periodeId);
+        return tokenService.exchange(serviceProperties)
+                .flatMapMany(token -> new AnnullerSamboerCommand(webClient, periodeId, miljoe, token.getTokenValue()).call());
     }
 
     @Timed(name = "providers", tags = {"operation", "pen_lagreAlderspensjon"})
@@ -95,7 +125,7 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
     public JsonNode getInntekter(String ident, String miljoe) {
 
         return tokenService.exchange(serviceProperties)
-                .flatMap(token -> new GetPoppInntekterCommand(webClient, token.getTokenValue(), ident, miljoe).call())
+                .flatMap(token -> new HentPoppInntekterCommand(webClient, token.getTokenValue(), ident, miljoe).call())
                 .block();
     }
 
@@ -111,7 +141,7 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
     public void sletteTpForhold(List<String> identer) {
 
         tokenService.exchange(serviceProperties)
-                .flatMapMany(token -> new GetMiljoerCommand(webClient, token.getTokenValue()).call()
+                .flatMapMany(token -> new HentMiljoerCommand(webClient, token.getTokenValue()).call()
                         .flatMapMany(miljoer -> Flux.range(0, identer.size())
                                 .map(index -> new SletteTpForholdCommand(webClient, identer.get(index), miljoer, token.getTokenValue()).call())))
                 .flatMap((Flux::from))
@@ -123,7 +153,7 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
     public JsonNode getTpForhold(String ident, String miljoe) {
 
         return tokenService.exchange(serviceProperties)
-                .flatMap(token -> new GetTpForholdCommand(webClient, token.getTokenValue(), ident, miljoe).call())
+                .flatMap(token -> new HentTpForholdCommand(webClient, token.getTokenValue(), ident, miljoe).call())
                 .block();
     }
 

@@ -156,7 +156,10 @@ export default ({
 		harInstBestilling(bestillingerFagsystemer),
 	)
 
-	const { loading: loadingArbeidsplassencvData, arbeidsplassencvData } = useArbeidsplassencvData(
+	const {
+		loading: loadingArbeidsplassencvData,
+		arbeidsplassencvData,
+		error: arbeidsplassencvError,} = useArbeidsplassencvData(
 		ident.ident,
 		harArbeidsplassenBestilling(bestillingerFagsystemer),
 	)
@@ -365,6 +368,7 @@ export default ({
 				<ArbeidsplassenVisning
 					data={arbeidsplassencvData}
 					loading={loadingArbeidsplassencvData}
+					error={arbeidsplassencvError}
 					hjemmel={getArbeidsplassencvHjemmel()}
 				/>
 				<PensjonVisning

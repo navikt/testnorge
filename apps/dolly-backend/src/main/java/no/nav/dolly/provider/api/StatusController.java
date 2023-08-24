@@ -4,9 +4,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
-import no.nav.testnav.libs.dto.status.v1.TestnavStatusResponse;
 import no.nav.dolly.domain.resultset.NavStatus;
 import no.nav.dolly.domain.resultset.SystemStatus;
+import no.nav.testnav.libs.dto.status.v1.TestnavStatusResponse;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -72,22 +73,16 @@ public class StatusController {
                 .map(client -> List.of(getConsumerNavn(client.getClass().getSimpleName()), client.checkStatus(webClient)))
                 .collect(Collectors.toMap(key -> (String) key.get(0), value -> (Map<String, TestnavStatusResponse>) value.get(1)));
 
-        status.values().forEach(temp -> {
-            log.info(temp.toString());
-            temp.values().forEach(dollyStatusResponse -> {
-                log.info(dollyStatusResponse.toString());
-            });
-        });
-
         return NavStatus.builder()
                 .status(status.values().stream()
                         .allMatch(statusResponseMap -> statusResponseMap.values().stream()
                                 .allMatch(dollyStatusResponse -> dollyStatusResponse.getReady()
                                         .matches("OK"))) ? SystemStatus.OK : SystemStatus.ISSUE)
-                .description(status.entrySet().stream()
-                        .filter(entry -> !entry.getValue().values().stream().allMatch(dollyStatusResponse -> dollyStatusResponse.getReady().matches("OK")))
-                        .map(Map.Entry::getKey).collect(Collectors.joining(", "))) //TODO: Legg til description og sjekke om linje over fungerer
-                .logLink("")  //TODO: Legg til loglink
+                .description(status.values().stream()
+                        .map(Map::entrySet)
+                        .flatMap(Collection::stream).filter(entry -> !entry.getValue().getReady().matches("OK"))
+                        .map(entry -> "%s - alive:%s, ready:%s".formatted(entry.getKey(), entry.getValue().getAlive(), entry.getValue().getReady())).collect(Collectors.joining(", ")))
+                .logLink("")
                 .build();
     }
 
