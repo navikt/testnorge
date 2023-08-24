@@ -92,6 +92,7 @@ public class PdlPersonBolk {
 
         private String ident;
         private PdlPerson.Person person;
+        private String code;
     }
 
     @lombok.Data
