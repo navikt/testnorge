@@ -1,5 +1,6 @@
 import useSWR from 'swr'
 import {
+	cvFetcher,
 	fetcher,
 	multiFetcherArena,
 	multiFetcherDokarkiv,
@@ -144,7 +145,7 @@ export const useHistarkData = (ident, harHistarkbestilling) => {
 export const useArbeidsplassencvData = (ident: string, harArbeidsplassenBestilling: boolean) => {
 	const { data, isLoading, error } = useSWR<any, Error>(
 		[harArbeidsplassenBestilling ? arbeidsforholdcvUrl : null, { fnr: ident }],
-		([url, headers]) => fetcher(url, headers),
+		([url, headers]) => cvFetcher(url, headers),
 	)
 
 	return {
