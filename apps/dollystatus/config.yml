@@ -12,9 +12,7 @@ spec:
     outbound:
       rules:
         - application: dolly-backend
-          cluster: dev-gcp
-      external:
-        - host: dolly-backend.intern.dev.nav.no
+        - application: dolly-backend-dev
   liveness:
     path: /internal/isAlive
     initialDelay: 4
