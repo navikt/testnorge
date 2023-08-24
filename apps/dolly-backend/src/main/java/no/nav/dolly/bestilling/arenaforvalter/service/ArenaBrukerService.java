@@ -76,7 +76,7 @@ public class ArenaBrukerService {
 
                     } else {
 
-                        return Flux.from(arenaForvalterConsumer.inaktiverBruker(ident, miljoe)
+                        return Flux.from(arenaForvalterConsumer.inaktiverBruker(ident, toLocalDate(arenadata.getInaktiveringDato()), miljoe)
                                         .map(respons -> respons.getStatus().is2xxSuccessful() ?
                                                 "OK" : errorStatusDecoder.getErrorText(respons.getStatus(), respons.getFeilmelding())))
                                 .map(response -> ArenaUtils.INAKTIVERT + response);
