@@ -5,7 +5,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static java.util.Objects.isNull;
 
 @Data
 @Builder
@@ -14,6 +17,8 @@ import java.util.List;
 public class PdlPersonBolk {
 
     private Data data;
+    private Extensions extensions;
+    private List<Error> errors;
 
     @lombok.Data
     @Builder
@@ -24,6 +29,59 @@ public class PdlPersonBolk {
         private List<PersonBolk> hentPersonBolk;
         private List<GeografiskTilknytningBolk> hentGeografiskTilknytningBolk;
         private List<IdenterBolk> hentIdenterBolk;
+    }
+
+    @lombok.Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Error {
+
+        private String message;
+        private String locations;
+        private String path;
+        private Utvidelser extensions;
+    }
+
+    @lombok.Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Utvidelser {
+
+        private String code;
+        private String details;
+        private String classification;
+    }
+
+    @lombok.Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Extensions {
+
+        private List<Warning> warnings;
+
+        public List<Warning> getWarnings() {
+
+            if (isNull(warnings)) {
+                warnings = new ArrayList<>();
+            }
+            return warnings;
+        }
+    }
+
+    @lombok.Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Warning {
+
+        private String code;
+        private String details;
+        private String id;
+        private String message;
+        private String query;
     }
 
     @lombok.Data
