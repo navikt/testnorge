@@ -98,5 +98,4 @@ public class StatusController {
         }
         return consumerNavn.replace("Consumer", "");
     }
-
 }
