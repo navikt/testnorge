@@ -30,6 +30,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.util.List;
 
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
@@ -63,15 +64,15 @@ public class ArenaForvalterConsumer implements ConsumerStatus {
                 .flatMapMany(token -> new ArenaForvalterGetMiljoeCommand(webClient, token.getTokenValue()).call()
                         .flatMap(miljoe -> Flux.fromIterable(identer)
                                 .delayElements(Duration.ofMillis(100))
-                                .flatMap(ident -> new ArenaForvalterDeleteCommand(webClient, ident, miljoe,
+                                .flatMap(ident -> new ArenaForvalterDeleteCommand(webClient, ident, null, miljoe,
                                         token.getTokenValue()).call())));
     }
 
     @Timed(name = "providers", tags = {"operation", "arena_deleteIdent"})
-    public Mono<ArenaResponse> inaktiverBruker(String ident, String miljoe) {
+    public Mono<ArenaResponse> inaktiverBruker(String ident, LocalDate stansdato, String miljoe) {
 
         return tokenService.exchange(serviceProperties)
-                .flatMap(token -> new ArenaForvalterDeleteCommand(webClient, ident, miljoe, token.getTokenValue()).call()
+                .flatMap(token -> new ArenaForvalterDeleteCommand(webClient, ident, stansdato, miljoe, token.getTokenValue()).call()
                 .doOnNext(response -> log.info("Inaktivert bruker {} mot Arenaforvalter {}", ident, response)));
     }
 
