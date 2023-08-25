@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from 'react'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import Panel from '@/components/ui/panel/Panel'
+import { Panel } from '@navikt/ds-react'
 import Button from '@/components/ui/button/Button'
-
-import { Alert, Table } from '@navikt/ds-react'
-import styled from 'styled-components'
+import { Table } from '@navikt/ds-react'
 import { Mal } from '@/utils/hooks/useMaler'
 import Icon from '@/components/ui/icon/Icon'
 import { DollyApi } from '@/service/Api'
 import { EndreMalnavn } from './EndreMalnavn'
 import { CypressSelector } from '../../../../cypress/mocks/Selectors'
 import Bestillingskriterier from '@/components/bestilling/sammendrag/kriterier/Bestillingskriterier'
+import StyledAlert from '@/components/ui/alert/StyledAlert'
 
 type Props = {
 	antallEgneMaler: any
 	malListe: any
 	searchText: string
+	type: string
 	heading: string
 	startOpen: boolean
 	iconType: string
@@ -24,23 +24,17 @@ type Props = {
 	setUnderRedigering: any
 }
 
-const StyledAlert = styled(Alert)`
-	margin-bottom: 10px;
-`
-
 export const MalPanel = ({
 	antallEgneMaler,
 	malListe,
 	searchText,
-	heading,
-	startOpen,
-	iconType,
+	type,
 	mutate,
 	underRedigering,
 	setUnderRedigering,
 }: Props) => {
 	const [searchActive, setSearchActive] = useState(false)
-	console.log('malListe: ', malListe) //TODO - SLETT MEG
+
 	useEffect(() => {
 		setSearchActive(searchText?.length > 0)
 	}, [searchText])
@@ -62,14 +56,9 @@ export const MalPanel = ({
 	const maler = malerFiltrert(malListe, searchText)
 
 	return (
-		<Panel
-			heading={heading}
-			startOpen={searchActive || startOpen}
-			iconType={iconType}
-			forceOpen={searchActive}
-		>
-			{antallEgneMaler > 0 &&
-				(malerFiltrert(malListe, searchText).length > 0 ? (
+		<Panel>
+			{antallEgneMaler > 0 ? (
+				malerFiltrert(malListe, searchText).length > 0 ? (
 					<ErrorBoundary>
 						<Table style={{ marginBottom: '20px' }}>
 							<Table.Header>
@@ -84,16 +73,10 @@ export const MalPanel = ({
 							</Table.Header>
 							<Table.Body>
 								{maler.map(({ malNavn, id, bestilling }, idx) => {
-									console.log('bestilling: ', bestilling) //TODO - SLETT MEG
 									return (
 										<Table.ExpandableRow
 											key={idx}
-											content={
-												<Bestillingskriterier
-													bestilling={bestilling}
-													// header={'Malbestilling'}
-												/>
-											}
+											content={<Bestillingskriterier bestilling={bestilling} />}
 										>
 											<Table.HeaderCell scope="row" style={{ width: '620px' }}>
 												{erUnderRedigering(id) ? (
@@ -142,7 +125,13 @@ export const MalPanel = ({
 					</ErrorBoundary>
 				) : (
 					<StyledAlert variant={'info'}>Ingen maler samsvarte med søket ditt</StyledAlert>
-				))}
+				)
+			) : (
+				<StyledAlert variant={'info'}>
+					{`Du har ingen maler for ${type} enda. Neste gang du oppretter en ny ${type} kan du lagre bestillingen
+						som en mal på siste side av bestillingsveilederen.`}
+				</StyledAlert>
+			)}
 		</Panel>
 	)
 }

@@ -30,11 +30,16 @@ export const useDollyMaler = () => {
 export const useDollyMalerBrukerOgMalnavn = (brukerId: string, malNavn?: string) => {
 	const { data, isLoading, error, mutate } = useSWR<MalResponse, Error>(
 		brukerId && `${getMalerUrl}?brukerId=${brukerId}${malNavn ? `&malNavn=${malNavn}` : ''}`,
-		fetcher
+		fetcher,
 	)
 
+	const maler =
+		data?.malbestillinger && Object.values(data.malbestillinger)?.length > 0
+			? Object.values(data.malbestillinger)?.[0]
+			: []
+
 	return {
-		maler: data?.malbestillinger && Object.values(data.malbestillinger)?.[0],
+		maler: maler,
 		loading: isLoading,
 		error: error,
 		mutate: mutate,
@@ -47,7 +52,7 @@ export const useDollyOrganisasjonMaler = () => {
 		fetcher,
 		{
 			fallbackData: { malbestillinger: ['TEMP', []] },
-		}
+		},
 	)
 
 	return {
@@ -62,11 +67,16 @@ export const useDollyOrganisasjonMalerBrukerOgMalnavn = (brukerId: string, malNa
 	const { data, isLoading, error, mutate } = useSWR<MalResponse, Error>(
 		brukerId &&
 			`${getOrganisasjonMalerUrl}?brukerId=${brukerId}${malNavn ? `&malNavn=${malNavn}` : ''}`,
-		fetcher
+		fetcher,
 	)
 
+	const maler =
+		data?.malbestillinger && Object.values(data.malbestillinger)?.length > 0
+			? Object.values(data.malbestillinger)?.[0]
+			: []
+
 	return {
-		maler: data?.malbestillinger && Object.values(data.malbestillinger)?.[0],
+		maler: maler,
 		loading: isLoading,
 		error: error,
 		mutate: mutate,
