@@ -60,7 +60,17 @@ const AccessTokenTextArea = styled.textarea`
 `
 
 const StyledCheckbox = styled(Checkbox)`
-	padding: 5px 0px;
+	label {
+		span.navds-checkbox__icon {
+			visibility: hidden;
+		}
+
+		span.navds-checkbox__content {
+			margin-left: -20px;
+		}
+	}
+
+	padding: 5px 0;
 	margin-left: 172px;
 `
 
@@ -82,7 +92,7 @@ export default ({ labels = {}, scope }: Props) => {
 				namespace: parts[1],
 				name: parts[2],
 			},
-			clientCredentials
+			clientCredentials,
 		)
 			.then((response: any) => {
 				setAccessToken(response.token)
