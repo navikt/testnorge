@@ -118,7 +118,7 @@ export const ArenaVisning = ({ data, ident, bestillingIdListe, loading, tilgjeng
 
 	const miljoerMedData = data?.filter((arb) => arb.data)?.map((arb) => arb.miljo)
 
-	const errorMiljoer = bestilteMiljoer.filter((m) => !miljoerMedData?.includes(m))
+	const errorMiljoer = bestilteMiljoer?.filter((m) => !miljoerMedData?.includes(m))
 
 	const visningData = data?.map((miljoData) => {
 		const info = miljoData.miljo === SYNT_MILJOE && harArenasyntTag ? SYNT_INFO : null
@@ -126,9 +126,9 @@ export const ArenaVisning = ({ data, ident, bestillingIdListe, loading, tilgjeng
 	})
 
 	const filteredData =
-		tilgjengeligMiljoe && data.filter((item) => item.miljo === tilgjengeligMiljoe)
+		tilgjengeligMiljoe && data?.filter((item) => item.miljo === tilgjengeligMiljoe)
 
-	const forsteMiljo = data.find((miljoData) => miljoData?.data)?.miljo
+	const forsteMiljo = data?.find((miljoData) => miljoData?.data)?.miljo
 
 	return (
 		<div>
