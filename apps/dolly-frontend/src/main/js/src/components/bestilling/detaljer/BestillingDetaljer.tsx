@@ -6,6 +6,8 @@ import GjenopprettConnector from '@/components/bestilling/gjenopprett/Gjenoppret
 import './BestillingDetaljer.less'
 import { MalModal } from '@/pages/minSide/maler/MalModal'
 import * as _ from 'lodash-es'
+import { SlettButton } from '@/components/ui/button/SlettButton/SlettButton'
+import React from 'react'
 
 export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId, brukertype }) {
 	const [isGjenopprettModalOpen, openGjenopprettModal, closeGjenoprettModal] = useBoolean(false)
@@ -56,6 +58,14 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId,
 								OPPRETT NY MAL
 							</Button>
 						)}
+					<SlettButton
+						bestillingId={bestilling.id}
+						action={deleteBestilling}
+						loading={isDeletingBestilling}
+						navigateHome={false}
+					>
+						Er du sikker på at du vil slette denne gruppen?
+					</SlettButton>
 				</div>
 			)}
 

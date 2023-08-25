@@ -57,6 +57,13 @@ public class BestillingController {
         return mapperFacade.map(bestillingService.fetchBestillingById(bestillingId), RsBestillingStatus.class);
     }
 
+    @CacheEvict(value = CACHE_BESTILLING)
+    @DeleteMapping("/{bestillingId}")
+    @Operation(description = "Slett Bestilling med bestillingsId")
+    public void deleteBestillingById(@PathVariable("bestillingId") Long bestillingId) {
+        bestillingService.slettBestillingByBestillingId(bestillingId);
+    }
+
     @GetMapping("/soekBestilling")
     @Operation(description = "Hent Bestillinger basert på fragment")
     public List<RsBestillingFragment> getBestillingerByFragment(@RequestParam(value = "fragment") String fragment) {

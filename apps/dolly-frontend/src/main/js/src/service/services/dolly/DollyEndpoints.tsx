@@ -142,6 +142,10 @@ export default class DollyEndpoints {
 		return `${identBase}/${ident}`
 	}
 
+	static slettBestilling(bestillingId) {
+		return `${identBase}/${bestillingId}`
+	}
+
 	static gjenopprettPerson(ident, miljoer) {
 		return `${identBase}/gjenopprett/${ident}${miljoer}`
 	}

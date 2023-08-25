@@ -20,6 +20,9 @@ public interface BestillingProgressRepository extends CrudRepository<BestillingP
     @Modifying
     int deleteByIdent(String ident);
 
+    @Modifying
+    int deleteByBestilling_Id(Long bestillingId);
+
     List<BestillingProgress> findByIdent(String ident);
 
     @Modifying
