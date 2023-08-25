@@ -93,14 +93,14 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
 
         return tokenService.exchange(serviceProperties)
                 .flatMapMany(token -> new HentSamboerCommand(webClient, ident, miljoe, token.getTokenValue()).call())
-                .doOnNext(response -> log.info("Pensjon samboer hentet {}", response));
+                .doOnNext(response -> log.info("Pensjon samboer for {} i {} hentet {}", ident, miljoe, response));
     }
 
     @Timed(name = "providers", tags = {"operation", "pen_opprettSamboer"})
     public Flux<PensjonforvalterResponse> lagreSamboer(PensjonSamboerRequest pensjonSamboerRequest,
                                                        String miljoe) {
 
-        log.info("Pensjon samboer opprett {}", pensjonSamboerRequest);
+        log.info("Pensjon samboer opprett i {} {}", miljoe, pensjonSamboerRequest);
         return tokenService.exchange(serviceProperties)
                 .flatMapMany(token -> new LagreSamboerCommand(webClient, pensjonSamboerRequest, miljoe, token.getTokenValue()).call());
     }

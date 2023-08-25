@@ -170,28 +170,37 @@ public class PensjonforvalterClient implements ClientRegister {
         return pdlDataConsumer.getPersoner(List.of(ident))
                 .map(FullPersonDTO::getPerson)
                 .map(PersonDTO::getSivilstand)
-                .flatMap(sivilstand -> Flux.fromStream(sivilstand.stream()))
-                .filter(sivilstand1 -> SivilstandDTO.Sivilstand.SAMBOER == sivilstand1.getType())
-                .map(sivilstand1 -> {
-                    var context = new MappingContext.Factory().getContext();
-                    context.setProperty(IDENT, ident);
-                    return (List<PensjonSamboerRequest>) mapperFacade.map(sivilstand1, List.class, context);
-                })
-                .flatMap(Flux::fromIterable)
-                .flatMap(request -> Flux.fromIterable(tilgjengeligeMiljoer)
-                        .flatMap(miljoe -> Flux.concat(pensjonforvalterConsumer.hentSamboer(request.getPidBruker(), miljoe)
-                                        .filter(response -> !response.getSamboerforhold().isEmpty())
-                                        .flatMap(response -> Flux.fromStream(response.getSamboerforhold().stream())
-                                                .map(samboer -> samboer.get_links().getAnnuller().getHref())
-                                                .map(lenke -> lenke.substring(lenke.indexOf(PERIODE) + PERIODE.length())
-                                                        .replace("/annuller", ""))
-                                                .flatMap(periodeId -> pensjonforvalterConsumer.annullerSamboer(request.getPidBruker(),
-                                                                periodeId, miljoe)
-                                                        .filter(response1 -> request.getPidBruker().equals(ident) &&
-                                                                response1.getStatus().stream()
-                                                                        .noneMatch(status -> status.getResponse().getHttpStatus().getStatus() == 200)))),
-                                pensjonforvalterConsumer.lagreSamboer(request, miljoe)
-                                        .filter(response -> request.getPidBruker().equals(ident)))));
+                .flatMap(sivilstander -> Flux.concat(annulerAlleSamboere(ident, sivilstander, tilgjengeligeMiljoer),
+                        Flux.fromIterable(sivilstander)
+                                .filter(SivilstandDTO::isSamboer)
+                                .map(sivilstand -> {
+                                    var context = new MappingContext.Factory().getContext();
+                                    context.setProperty(IDENT, ident);
+                                    return (List<PensjonSamboerRequest>) mapperFacade.map(sivilstand, List.class, context);
+                                })
+                                .flatMap(Flux::fromIterable)
+                                .flatMap(request -> Flux.fromIterable(tilgjengeligeMiljoer)
+                                        .flatMap(miljoe -> pensjonforvalterConsumer.lagreSamboer(request, miljoe)
+                                                .filter(response -> request.getPidBruker().equals(ident))))));
+    }
+
+    private Flux<PensjonforvalterResponse> annulerAlleSamboere(String ident, List<SivilstandDTO> sivilstandDTO, Set<String> tilgjengeligeMiljoer) {
+
+        return Flux.concat(Flux.just(ident), Flux.fromIterable(sivilstandDTO)
+                        .filter(sivilstand -> nonNull(sivilstand.getRelatertVedSivilstand()))
+                        .map(SivilstandDTO::getRelatertVedSivilstand))
+                .flatMap(ident1 -> Flux.fromIterable(tilgjengeligeMiljoer)
+                        .flatMap(miljoe -> pensjonforvalterConsumer.hentSamboer(ident1, miljoe)
+                                .filter(response -> !response.getSamboerforhold().isEmpty())
+                                .flatMap(response -> Flux.fromStream(response.getSamboerforhold().stream())
+                                        .map(samboer -> samboer.get_links().getAnnuller().getHref())
+                                        .map(lenke -> lenke.substring(lenke.indexOf(PERIODE) + PERIODE.length())
+                                                .replace("/annuller", ""))
+                                        .flatMap(periodeId -> pensjonforvalterConsumer.annullerSamboer(ident1,
+                                                        periodeId, miljoe)
+                                                .filter(response1 -> ident1.equals(ident) &&
+                                                        response1.getStatus().stream()
+                                                                .noneMatch(status -> status.getResponse().getHttpStatus().getStatus() == 200))))));
     }
 
     private String prepInitStatus(Set<String> miljoer) {
