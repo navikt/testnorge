@@ -40,10 +40,6 @@ public interface ConsumerStatus {
                 })
                 .onErrorReturn(new ConcurrentHashMap<>())
                 .block();
-        if (isNull(response) || response.isEmpty()) {
-            log.warn("Mottok ikke noe status response for url: {}", serviceUrl());
-            return statusMap;
-        }
         response.forEach((key, value) -> statusMap.put(key, TestnavStatusResponse.builder()
                 .team(value.get("team"))
                 .alive(value.get("alive"))
