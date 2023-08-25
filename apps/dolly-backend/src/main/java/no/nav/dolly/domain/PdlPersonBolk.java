@@ -18,7 +18,6 @@ public class PdlPersonBolk {
 
     private Data data;
     private Extensions extensions;
-    private List<Error> errors;
 
     @lombok.Data
     @Builder
@@ -29,29 +28,6 @@ public class PdlPersonBolk {
         private List<PersonBolk> hentPersonBolk;
         private List<GeografiskTilknytningBolk> hentGeografiskTilknytningBolk;
         private List<IdenterBolk> hentIdenterBolk;
-    }
-
-    @lombok.Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class Error {
-
-        private String message;
-        private String locations;
-        private String path;
-        private Utvidelser extensions;
-    }
-
-    @lombok.Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class Utvidelser {
-
-        private String code;
-        private String details;
-        private String classification;
     }
 
     @lombok.Data
