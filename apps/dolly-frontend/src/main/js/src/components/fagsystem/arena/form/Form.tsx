@@ -16,7 +16,7 @@ export const arenaPath = 'arenaforvalter'
 export const ArenaForm = ({ formikBag }) => {
 	const opts = useContext(BestillingsveilederContext)
 	const { leggTilPaaGruppe } = opts?.is
-	console.log('opts: ', opts) //TODO - SLETT MEG
+
 	const servicebehovAktiv =
 		_.get(formikBag.values, `${arenaPath}.arenaBrukertype`) === 'MED_SERVICEBEHOV'
 
@@ -24,12 +24,10 @@ export const ArenaForm = ({ formikBag }) => {
 
 	const personFoerLeggTilInntektstub = _.get(opts.personFoerLeggTil, 'inntektstub')
 
-	const registrertDato =
-		_.get(formikBag.values, `${arenaPath}.aktiveringDato`) ||
-		opts?.personFoerLeggTil?.arenaforvalteren
-			?.map((miljo) => miljo?.data?.registrertDato)
-			?.find((dato) => dato)
-	console.log('registrertDato: ', registrertDato) //TODO - SLETT MEG
+	const registrertDato = opts?.personFoerLeggTil?.arenaforvalteren
+		?.map((miljo) => miljo?.data?.registrertDato)
+		?.find((dato) => dato)
+
 	return (
 		<Vis attributt={arenaPath}>
 			<Panel
