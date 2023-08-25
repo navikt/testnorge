@@ -22,6 +22,7 @@ import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.bestilling.arenaforvalter.ArenaUtils.toLocalDate;
 import static no.nav.dolly.domain.resultset.arenaforvalter.ArenaBrukertype.UTEN_SERVICEBEHOV;
 import static no.nav.dolly.domain.resultset.arenaforvalter.ArenaDagpenger.DAGPENGER_VILKAAR;
 import static no.nav.dolly.domain.resultset.arenaforvalter.ArenaKvalifiseringsgruppe.IKVAL;
@@ -38,6 +39,7 @@ public class ArenaMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(Arenadata arenadata, ArenaNyBruker arenaNyBruker, MappingContext context) {
 
+                        arenaNyBruker.setAktiveringsDato(toLocalDate(arenadata.getAktiveringDato()));
                         if (isNull(arenaNyBruker.getKvalifiseringsgruppe())) {
                             arenaNyBruker.setKvalifiseringsgruppe(IKVAL);
                         }
