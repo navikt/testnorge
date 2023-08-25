@@ -13,12 +13,12 @@ export default () => {
 	const [dataLoading, setDataLoading] = useBoolean(true)
 
 	useEffect(() => {
-		const endpoint = 'https://dolly-backend-dev.intern.dev.nav.no/internal/status' //TODO: ENDRE TILBAKE TIL PREPROD
+		const endpoint = 'https://dolly-backend.intern.dev.nav.no/internal/status'
 
 		fetch(endpoint, {
 			headers: {
 				'Content-Type': 'application/json',
-				'Access-Control-Allow-Origin': 'https://dolly-backend-dev.intern.dev.nav.no',
+				'Access-Control-Allow-Origin': 'https://dolly-backend.intern.dev.nav.no',
 			},
 		})
 			.then((response) => response.json())
