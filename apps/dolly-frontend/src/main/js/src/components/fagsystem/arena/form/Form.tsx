@@ -16,7 +16,7 @@ export const arenaPath = 'arenaforvalter'
 export const ArenaForm = ({ formikBag }) => {
 	const opts = useContext(BestillingsveilederContext)
 	const { leggTilPaaGruppe } = opts?.is
-
+	console.log('opts: ', opts) //TODO - SLETT MEG
 	const servicebehovAktiv =
 		_.get(formikBag.values, `${arenaPath}.arenaBrukertype`) === 'MED_SERVICEBEHOV'
 
@@ -24,6 +24,12 @@ export const ArenaForm = ({ formikBag }) => {
 
 	const personFoerLeggTilInntektstub = _.get(opts.personFoerLeggTil, 'inntektstub')
 
+	const registrertDato =
+		_.get(formikBag.values, `${arenaPath}.aktiveringDato`) ||
+		opts?.personFoerLeggTil?.arenaforvalteren
+			?.map((miljo) => miljo?.data?.registrertDato)
+			?.find((dato) => dato)
+	console.log('registrertDato: ', registrertDato) //TODO - SLETT MEG
 	return (
 		<Vis attributt={arenaPath}>
 			<Panel
@@ -39,11 +45,21 @@ export const ArenaForm = ({ formikBag }) => {
 						<AlertInntektskomponentenRequired vedtak={'dagpengevedtak'} />
 					)}
 				{!servicebehovAktiv && (
-					<FormikDatepicker
-						name={`${arenaPath}.inaktiveringDato`}
-						label="Inaktiv fra dato"
-						disabled={servicebehovAktiv}
-					/>
+					<div className={'flexbox--flex-wrap'}>
+						<FormikDatepicker
+							name={`${arenaPath}.inaktiveringDato`}
+							label="Inaktiv fra dato"
+							disabled={servicebehovAktiv}
+							minDate={registrertDato ? new Date(registrertDato) : null}
+						/>
+						{!opts.personFoerLeggTil?.arenaforvalteren && (
+							<FormikDatepicker
+								name={`${arenaPath}.aktiveringDato`}
+								label="Aktiveringsdato"
+								minDate={new Date('2002-12-30')}
+							/>
+						)}
+					</div>
 				)}
 				{servicebehovAktiv && <MedServicebehov formikBag={formikBag} path={arenaPath} />}
 				<FormikCheckbox
