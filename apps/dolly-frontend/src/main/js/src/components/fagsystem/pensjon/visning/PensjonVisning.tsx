@@ -42,7 +42,7 @@ const PensjonInntekt = ({ data, isPanelOpen, setPanelOpen }) => {
 }
 
 export const PensjonVisning = ({ data, loading, bestillingIdListe, tilgjengeligMiljoe }) => {
-	const { bestilteMiljoer } = useBestilteMiljoer(bestillingIdListe, 'pensjonforvalter.inntekt')
+	const { bestilteMiljoer } = useBestilteMiljoer(bestillingIdListe, 'PEN_INNTEKT')
 
 	if (loading) {
 		return <Loading label="Laster pensjonforvalter-data" />

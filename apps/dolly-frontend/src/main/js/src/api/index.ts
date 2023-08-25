@@ -54,12 +54,16 @@ export const multiFetcherInst = (miljoUrlListe, headers = null, path = null) => 
 
 export const multiFetcherArena = (miljoUrlListe, headers = null) => {
 	return Promise.all(
-		miljoUrlListe.map((obj) =>
-			fetcher(obj.url, headers).then((result) => {
-				const filteredResult =
-					result?.status === 'NO_CONTENT' || result?.status === 'NOT_FOUND' ? null : result
-				return { miljo: obj.miljo, data: filteredResult, status: result?.status }
-			}),
+		miljoUrlListe?.map((obj) =>
+			fetcher(obj.url, headers)
+				.then((result) => {
+					const filteredResult =
+						result?.status === 'NO_CONTENT' || result?.status === 'NOT_FOUND' ? null : result
+					return { miljo: obj.miljo, data: filteredResult, status: result?.status }
+				})
+				.catch((feil) => {
+					return { miljo: obj.miljo, feil: feil }
+				}),
 		),
 	)
 }
@@ -111,6 +115,28 @@ export const multiFetcherDokarkiv = (miljoUrlListe) =>
 				: { miljo: obj.miljo, data: null },
 		),
 	)
+
+export const cvFetcher = (url, headers) =>
+	axios
+		.get(url, { headers: headers })
+		.then((res) => {
+			return res.data
+		})
+		.catch((reason) => {
+			if (reason?.response?.status === 403) {
+				throw {
+					message: `Mangler tilgang for å hente CV fra ${url}`,
+					status: reason?.response?.status,
+				}
+			}
+			if (reason.status === 404 || reason.response?.status === 404) {
+				if (reason.response?.data?.error) {
+					throw new Error(reason.response?.data?.error)
+				}
+				throw new NotFoundError()
+			}
+			throw new Error(`Henting av data fra ${url} feilet.`)
+		})
 
 export const fetcher = (url, headers) =>
 	axios

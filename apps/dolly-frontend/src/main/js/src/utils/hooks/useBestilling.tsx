@@ -1,7 +1,6 @@
 import useSWR from 'swr'
 import { fetcher, multiFetcherAll } from '@/api'
 import { System } from '@/ducks/bestillingStatus/bestillingStatusMapper'
-import * as _ from 'lodash-es'
 
 const getBestillingerGruppeUrl = (gruppeId: string | number) =>
 	`/dolly-backend/api/v1/bestilling/gruppe/${gruppeId}`
@@ -47,7 +46,7 @@ export const useBestilteMiljoerForGruppe = (gruppeId: string | number) => {
 
 	const { data, isLoading, error } = useSWR<string[], Error>(
 		getMiljoerForGruppeUrl(gruppeId),
-		fetcher
+		fetcher,
 	)
 
 	return {
@@ -67,7 +66,7 @@ export const useBestillingerGruppe = (gruppeId: string | number) => {
 
 	const { data, isLoading, error } = useSWR<Bestilling[], Error>(
 		getBestillingerGruppeUrl(gruppeId),
-		fetcher
+		fetcher,
 	)
 
 	const bestillingerSorted = data
@@ -87,7 +86,7 @@ export const useIkkeFerdigBestillingerGruppe = (
 	visning,
 	sidetall: number,
 	sideStoerrelse: number,
-	update: string
+	update: string,
 ) => {
 	if (!gruppeId) {
 		return {
@@ -119,7 +118,7 @@ export const useIkkeFerdigBestillingerGruppe = (
 export const useBestillingById = (
 	bestillingId: string,
 	erOrganisasjon = false,
-	autoRefresh = false
+	autoRefresh = false,
 ) => {
 	if (!bestillingId) {
 		return {
@@ -139,7 +138,7 @@ export const useBestillingById = (
 		{
 			refreshInterval: autoRefresh ? 1000 : null,
 			dedupingInterval: autoRefresh ? 1000 : null,
-		}
+		},
 	)
 
 	return {
@@ -159,13 +158,13 @@ export const useBestilteMiljoer = (bestillingIdListe: Array<string>, fagsystem: 
 
 	const { data, isLoading, error } = useSWR<Array<Bestilling>, Error>(
 		getMultipleBestillingByIdUrl(bestillingIdListe),
-		multiFetcherAll
+		multiFetcherAll,
 	)
 
 	const miljoer = []
 	data?.map((bestilling) => {
 		bestilling?.environments?.forEach((miljo) => {
-			if (!miljoer.includes(miljo) && _.has(bestilling, `bestilling.${fagsystem}`)) {
+			if (!miljoer.includes(miljo) && bestilling.status?.find((s) => s.id === fagsystem)) {
 				miljoer.push(miljo)
 			}
 		})

@@ -12,6 +12,7 @@ import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPersonRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPoppInntektRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonSamboerRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpForholdRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpYtelseRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
@@ -32,6 +33,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -50,6 +52,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.PEN_AP;
 
@@ -58,11 +61,14 @@ import static no.nav.dolly.domain.resultset.SystemTyper.PEN_AP;
 @RequiredArgsConstructor
 public class PensjonforvalterClient implements ClientRegister {
 
+    private static final String IDENT = "ident";
     private static final String SYSTEM = "PESYS";
     private static final String PENSJON_FORVALTER = "PensjonForvalter#";
+    private static final String SAMBOER_REGISTER = "Samboer#";
     private static final String POPP_INNTEKTSREGISTER = "PoppInntekt#";
     private static final String TP_FORHOLD = "TpForhold#";
     private static final String PEN_ALDERSPENSJON = "AP#";
+    private static final String PERIODE = "/periode/";
 
     private final PensjonforvalterConsumer pensjonforvalterConsumer;
     private final MapperFacade mapperFacade;
@@ -135,6 +141,9 @@ public class PensjonforvalterClient implements ClientRegister {
                                             opprettPersoner(dollyPerson.getIdent(), tilgjengeligeMiljoer, persondata)
                                                     .map(response -> PENSJON_FORVALTER + decodeStatus(response, dollyPerson.getIdent())),
 
+                                            lagreSamboer(dollyPerson.getIdent(), tilgjengeligeMiljoer)
+                                                    .map(response -> SAMBOER_REGISTER + decodeStatus(response, dollyPerson.getIdent())),
+
                                             lagreTpForhold(bestilling.getPensjonforvalter(), dollyPerson, bestilteMiljoer.get())
                                                     .map(response -> TP_FORHOLD + decodeStatus(response, dollyPerson.getIdent())),
 
@@ -154,6 +163,35 @@ public class PensjonforvalterClient implements ClientRegister {
                             .collect(Collectors.joining("$"));
                 })
                 .map(status -> futurePersist(dollyPerson, progress, status));
+    }
+
+    private Flux<PensjonforvalterResponse> lagreSamboer(String ident, Set<String> tilgjengeligeMiljoer) {
+
+        return pdlDataConsumer.getPersoner(List.of(ident))
+                .map(FullPersonDTO::getPerson)
+                .map(PersonDTO::getSivilstand)
+                .flatMap(sivilstand -> Flux.fromStream(sivilstand.stream()))
+                .filter(sivilstand1 -> SivilstandDTO.Sivilstand.SAMBOER == sivilstand1.getType())
+                .map(sivilstand1 -> {
+                    var context = new MappingContext.Factory().getContext();
+                    context.setProperty(IDENT, ident);
+                    return (List<PensjonSamboerRequest>) mapperFacade.map(sivilstand1, List.class, context);
+                })
+                .flatMap(Flux::fromIterable)
+                .flatMap(request -> Flux.fromIterable(tilgjengeligeMiljoer)
+                        .flatMap(miljoe -> Flux.concat(pensjonforvalterConsumer.hentSamboer(request.getPidBruker(), miljoe)
+                                        .filter(response -> !response.getSamboerforhold().isEmpty())
+                                        .flatMap(response -> Flux.fromStream(response.getSamboerforhold().stream())
+                                                .map(samboer -> samboer.get_links().getAnnuller().getHref())
+                                                .map(lenke -> lenke.substring(lenke.indexOf(PERIODE) + PERIODE.length())
+                                                        .replace("/annuller", ""))
+                                                .flatMap(periodeId -> pensjonforvalterConsumer.annullerSamboer(request.getPidBruker(),
+                                                                periodeId, miljoe)
+                                                        .filter(response1 -> request.getPidBruker().equals(ident) &&
+                                                                response1.getStatus().stream()
+                                                                        .noneMatch(status -> status.getResponse().getHttpStatus().getStatus() == 200)))),
+                                pensjonforvalterConsumer.lagreSamboer(request, miljoe)
+                                        .filter(response -> request.getPidBruker().equals(ident)))));
     }
 
     private String prepInitStatus(Set<String> miljoer) {
@@ -199,6 +237,12 @@ public class PensjonforvalterClient implements ClientRegister {
     private Flux<PdlPersonBolk.PersonBolk> getPersonData(List<String> identer) {
 
         return pdlPersonConsumer.getPdlPersoner(identer)
+                .doOnNext(bolk -> {
+                    if (isNull(bolk.getData()) || bolk.getData().getHentPersonBolk().stream()
+                            .anyMatch(personBolk -> isNull(personBolk.getPerson()))) {
+                        log.warn("PDL-data mangler for {}, bolkPersoner: {}, ", String.join(", ", identer), bolk);
+                    }
+                })
                 .filter(pdlPersonBolk -> nonNull(pdlPersonBolk.getData()))
                 .map(PdlPersonBolk::getData)
                 .map(PdlPersonBolk.Data::getHentPersonBolk)
@@ -237,7 +281,7 @@ public class PensjonforvalterClient implements ClientRegister {
             if (!opprettIMiljoer.isEmpty()) {
                 var context = new MappingContext.Factory().getContext();
 
-                context.setProperty("ident", ident);
+                context.setProperty(IDENT, ident);
                 context.setProperty("miljoer", opprettIMiljoer);
                 context.setProperty("relasjoner", relasjoner);
                 var alderspensjonRequest = mapperFacade.map(pensjonData.getAlderspensjon(),
@@ -297,7 +341,7 @@ public class PensjonforvalterClient implements ClientRegister {
                         .map(tp -> {
 
                             var context = new MappingContext.Factory().getContext();
-                            context.setProperty("ident", dollyPerson.getIdent());
+                            context.setProperty(IDENT, dollyPerson.getIdent());
                             context.setProperty("miljoer", miljoer);
 
                             var tpForholdRequest = mapperFacade.map(tp, PensjonTpForholdRequest.class, context);

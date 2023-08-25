@@ -2,6 +2,8 @@ import 'cypress-react-selector'
 import './commands'
 import {
 	aaregMock,
+	ameldingMock,
+	arenaMock,
 	backendBestillingerMock,
 	backendTransaksjonMock,
 	brregstubMock,
@@ -37,6 +39,7 @@ import {
 import { pdlBulkpersonerMock, pdlForvalterMock, pdlPersonEnkeltMock } from '../mocks/PdlMocks'
 
 const miljoer = new RegExp(/\/miljoer/)
+const arenaMiljoer = new RegExp(/testnav-arena-forvalteren-proxy\/api\/v1\/miljoe/)
 const current = new RegExp(/current/)
 const bilde = new RegExp(/testnorge-profil-api\/api\/v1\/profil\/bilde$/)
 const profil = new RegExp(/\/profil\/bilde/)
@@ -57,6 +60,8 @@ const tags = new RegExp(/\/tags$/)
 const kodeverk = new RegExp(/\/v1\/kodeverk\//)
 const dokarkivMiljoer = new RegExp(/testnav-dokarkiv-proxy\/rest\/miljoe/)
 const aareg = new RegExp(/testnav-aareg-proxy\/q1\/api\/v1\/arbeidstaker/)
+const amelding = new RegExp(/oppsummeringsdokument-service\/api\/v1\/oppsummeringsdokumenter/)
+const arena = new RegExp(/testnav-arena-forvalteren-proxy\/q1\/arena/)
 const inst = new RegExp(/testnav-inst-proxy\/api\/v1\/ident/)
 const skjerming = new RegExp(/dolly-backend\/api\/v1\/skjerming/)
 const pensjon = new RegExp(/testnav-pensjon-testdata-facade-proxy\/api\/v1\/inntekt/)
@@ -70,15 +75,15 @@ const sigrunstub = new RegExp(/testnav-sigrunstub-proxy\/api\/v1\/lignetinntekt/
 const alleMaler = new RegExp(/dolly-backend\/api\/v1\/bestilling\/malbestilling$/)
 const brukerMaler = new RegExp(/dolly-backend\/api\/v1\/bestilling\/malbestilling\?brukerId/)
 const oppsummeringsdokService = new RegExp(
-	/oppsummeringsdokument-service\/api\/v1\/oppsummeringsdokumenter/
+	/oppsummeringsdokument-service\/api\/v1\/oppsummeringsdokumenter/,
 )
 const brukerOrganisasjonMaler = new RegExp(
-	/dolly-backend\/api\/v1\/organisasjon\/bestilling\/malbestilling\?/
+	/dolly-backend\/api\/v1\/organisasjon\/bestilling\/malbestilling\?/,
 )
 const joarkDokJournalpost = new RegExp(/testnav-joark-dokument-service\/api\/v2\/journalpost/)
 const joarkDokDokument = new RegExp(/dokumentType=ORIGINAL/)
 const organisasjonFraMiljoe = new RegExp(
-	/testnav-organisasjon-forvalter\/api\/v2\/organisasjoner\/framiljoe/
+	/testnav-organisasjon-forvalter\/api\/v2\/organisasjoner\/framiljoe/,
 )
 const organisasjonerForBruker = new RegExp(/dolly-backend\/api\/v1\/organisasjon\?brukerId/)
 
@@ -116,6 +121,8 @@ beforeEach(() => {
 	cy.intercept({ method: 'GET', url: joarkDokDokument }, joarkDokumentMock)
 	cy.intercept({ method: 'GET', url: krrstub }, krrstubMock)
 	cy.intercept({ method: 'GET', url: aareg }, aaregMock)
+	cy.intercept({ method: 'GET', url: amelding }, ameldingMock)
+	cy.intercept({ method: 'GET', url: arena }, arenaMock)
 	cy.intercept({ method: 'GET', url: tpsMessaging }, tpsMessagingMock)
 	cy.intercept({ method: 'GET', url: skjerming }, skjermingMock)
 	cy.intercept({ method: 'GET', url: inst }, instMock)
@@ -126,6 +133,7 @@ beforeEach(() => {
 	cy.intercept({ method: 'GET', url: udistub }, udistubMock)
 	cy.intercept({ method: 'GET', url: kodeverk }, kodeverkMock)
 	cy.intercept({ method: 'GET', url: dokarkivMiljoer }, ['q1', 'q2'])
+	cy.intercept({ method: 'GET', url: arenaMiljoer }, ['q1', 'q2', 'q4'])
 	cy.intercept({ method: 'GET', url: organisasjonFraMiljoe }, organisasjonFraMiljoeMock)
 	cy.intercept({ method: 'GET', url: organisasjonerForBruker }, organisasjonerForBrukerMock)
 })
