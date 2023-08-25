@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping(value = "/api/v1/status", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/internal/status", produces = MediaType.APPLICATION_JSON_VALUE)
 @CrossOrigin
 public class StatusController {
     private static final Map<String, String> consumerNavnMapping = new HashMap<>();
@@ -98,5 +98,4 @@ public class StatusController {
         }
         return consumerNavn.replace("Consumer", "");
     }
-
 }
