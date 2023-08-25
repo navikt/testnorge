@@ -18,7 +18,7 @@ public class ArenaUtils {
     public static final String MILJOE = "miljoe";
     public static final String STANSET = "Stanset forrige vedtak: ";
 
-    public static LocalDate toDate(LocalDateTime localDateTime) {
+    public static LocalDate toLocalDate(LocalDateTime localDateTime) {
 
         return nonNull(localDateTime) ? localDateTime.toLocalDate() : null;
     }
