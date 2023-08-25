@@ -69,7 +69,7 @@ const P_FormikDatepicker = ({ fastfield, addHour = false, ...props }) => (
 				form.setFieldTouched(props.name) // Need to trigger touched manually for Datepicker
 
 				if (props.afterChange) props.afterChange(date)
-				let val = fixTimezone(date)?.toISOString().substring(0, 19)
+				let val = fixTimezone(date)?.toISOString().substring(0, 19) || null
 				if (addHour) {
 					val = addHours(new Date(fixTimezone(date)), 3)
 						.toISOString()
