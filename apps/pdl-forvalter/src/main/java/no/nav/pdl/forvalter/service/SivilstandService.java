@@ -86,7 +86,7 @@ public class SivilstandService implements Validation<SivilstandDTO> {
             sivilstand.setType(UGIFT);
         }
 
-        if (sivilstand.isGift() || sivilstand.isSeparert() || sivilstand.getType() == SAMBOER) {
+        if (sivilstand.isGift() || sivilstand.isSeparert() || sivilstand.isSamboer()) {
 
             sivilstand.setEksisterendePerson(isNotBlank(sivilstand.getRelatertVedSivilstand()));
             if (isBlank(sivilstand.getRelatertVedSivilstand())) {

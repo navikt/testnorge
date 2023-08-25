@@ -67,6 +67,12 @@ public class SivilstandDTO extends DbVersjonDTO {
     }
 
     @JsonIgnore
+    public boolean isNotSamboer() {
+
+        return Sivilstand.SAMBOER != type;
+    }
+
+    @JsonIgnore
     public boolean isSeparert() {
 
         return Sivilstand.SEPARERT == type || Sivilstand.SEPARERT_PARTNER == type;
