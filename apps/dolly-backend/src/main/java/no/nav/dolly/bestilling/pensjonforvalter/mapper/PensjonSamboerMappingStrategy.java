@@ -12,6 +12,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 
@@ -34,6 +35,10 @@ public class PensjonSamboerMappingStrategy implements MappingStrategy {
                                         sivilstandDTO.getBekreftelsesdato()))
                                 .registrertAv(CONSUMER)
                                 .build();
+
+                        if (isNull(hovedperson.getDatoFom())) {
+                            hovedperson.setDatoFom(LocalDate.now());
+                        }
 
                         var samboer = mapperFacade.map(hovedperson, PensjonSamboerRequest.class);
                         samboer.setPidBruker(hovedperson.getPidSamboer());
