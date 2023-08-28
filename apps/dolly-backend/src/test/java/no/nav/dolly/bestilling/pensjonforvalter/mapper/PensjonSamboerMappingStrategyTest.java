@@ -17,7 +17,6 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasProperty;
@@ -90,11 +89,11 @@ class PensjonSamboerMappingStrategyTest {
         assertThat(resultat, containsInAnyOrder(
                 allOf(hasProperty("pidBruker", is(equalTo(IDENT_1))),
                         hasProperty("pidSamboer", is(equalTo(IDENT_2))),
-                        hasProperty("datoFom", is(nullValue())),
+                        hasProperty("datoFom", is(equalTo(SIVILSTAND_DATO.toLocalDate()))),
                         hasProperty("registrertAv", is(equalTo("Dolly")))),
                 allOf(hasProperty("pidBruker", is(equalTo(IDENT_2))),
                         hasProperty("pidSamboer", is(equalTo(IDENT_1))),
-                        hasProperty("datoFom", is(nullValue())),
+                        hasProperty("datoFom", is(equalTo(SIVILSTAND_DATO.toLocalDate()))),
                         hasProperty("registrertAv", is(equalTo("Dolly"))))));
     }
 
