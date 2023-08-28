@@ -40,6 +40,9 @@ export const SivilstandForm = ({
 			formikBag.setFieldValue(`${path}.relatertVedSivilstand`, null)
 			formikBag.setFieldValue(`${path}.nyRelatertPerson`, initialPdlPerson)
 		}
+		if (selected.value === 'SAMBOER') {
+			formikBag.setFieldValue(`${path}.bekreftelsesdato`, null)
+		}
 	}
 
 	const kanHaRelatertPerson = gyldigeSivilstander.includes(_.get(formikBag.values, `${path}.type`))
@@ -73,7 +76,8 @@ export const SivilstandForm = ({
 					label="Bekreftelsesdato"
 					disabled={
 						_.get(formikBag.values, `${path}.sivilstandsdato`) != null ||
-						_.get(formikBag.values, `${path}.master`) !== 'PDL'
+						_.get(formikBag.values, `${path}.master`) !== 'PDL' ||
+						_.get(formikBag.values, `${path}.type`) === 'SAMBOER'
 					}
 					fastfield={false}
 				/>

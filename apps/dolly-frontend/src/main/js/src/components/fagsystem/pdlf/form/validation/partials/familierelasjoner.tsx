@@ -13,7 +13,7 @@ const testForeldreansvar = (val) => {
 		const foreldrerelasjoner = []
 			.concat(
 				_.get(values, 'pdldata.person.forelderBarnRelasjon'),
-				_.get(values, 'personFoerLeggTil.pdl.hentPerson.forelderBarnRelasjon')
+				_.get(values, 'personFoerLeggTil.pdl.hentPerson.forelderBarnRelasjon'),
 			)
 			?.map((a) => a?.minRolleForPerson)
 			?.filter((a) => a)
@@ -21,7 +21,7 @@ const testForeldreansvar = (val) => {
 		const sivilstander = []
 			.concat(
 				_.get(values, 'pdldata.person.sivilstand'),
-				_.get(values, 'personFoerLeggTil.pdl.hentPerson.sivilstand')
+				_.get(values, 'personFoerLeggTil.pdl.hentPerson.sivilstand'),
 			)
 			?.map((a) => a?.type)
 			?.filter((a) => a)
@@ -29,14 +29,14 @@ const testForeldreansvar = (val) => {
 		const barn = []
 			.concat(
 				_.get(values, 'pdldata.person.forelderBarnRelasjon'),
-				_.get(values, 'personFoerLeggTil.pdl.hentPerson.forelderBarnRelasjon')
+				_.get(values, 'personFoerLeggTil.pdl.hentPerson.forelderBarnRelasjon'),
 			)
 			?.filter((a) => a?.relatertPersonsRolle === 'BARN')
 
 		const kjoennListe = []
 			.concat(
 				_.get(values, 'pdldata.person.kjoenn'),
-				_.get(values, 'pdldata.person.personFoerLeggTil.pdl.hentPerson.kjoenn')
+				_.get(values, 'pdldata.person.personFoerLeggTil.pdl.hentPerson.kjoenn'),
 			)
 			?.filter((a) => a)
 
@@ -118,7 +118,7 @@ const testForeldreansvarForBarn = (val) => {
 			}
 
 			return feilmelding ? this.createError({ message: feilmelding }) : true
-		}
+		},
 	)
 }
 
@@ -135,7 +135,7 @@ const testDeltBostedAdressetype = (value) => {
 				fantPartner = nyePartnere.find((partner) => partner.borIkkeSammen)
 			} else if (personFoerLeggTil?.pdlforvalter?.relasjoner) {
 				const partnere = personFoerLeggTil.pdlforvalter.relasjoner.filter(
-					(relasjon) => relasjon.relasjonType === 'EKTEFELLE_PARTNER'
+					(relasjon) => relasjon.relasjonType === 'EKTEFELLE_PARTNER',
 				)
 				if (partnere.length > 0) {
 					const partnerAdresseId =
@@ -163,7 +163,7 @@ export const nyPerson = Yup.object({
 	foedtFoer: testDatoTom(
 		Yup.mixed().nullable(),
 		'foedtEtter',
-		'Dato må være etter født etter-dato'
+		'Dato må være etter født etter-dato',
 	),
 	nyttNavn: Yup.object({
 		hasMellomnavn: Yup.boolean().nullable(),
@@ -178,7 +178,11 @@ export const doedfoedtBarn = Yup.object({
 
 export const sivilstand = Yup.object({
 	type: requiredString,
-	sivilstandsdato: Yup.mixed().nullable(),
+	sivilstandsdato: Yup.mixed().when('type', {
+		is: (type) => type === 'SAMBOER',
+		then: () => requiredDate,
+		otherwise: () => Yup.mixed().notRequired(),
+	}),
 	relatertVedSivilstand: Yup.string().nullable(),
 	bekreftelsesdato: Yup.mixed().nullable(),
 	borIkkeSammen: Yup.boolean().nullable(),
@@ -191,12 +195,12 @@ export const deltBosted = Yup.object().shape(
 		startdatoForKontrakt: testDatoFom(
 			Yup.mixed().optional().nullable(),
 			'sluttdatoForKontrakt',
-			'Dato må være før sluttdato'
+			'Dato må være før sluttdato',
 		),
 		sluttdatoForKontrakt: testDatoTom(
 			Yup.mixed().optional().nullable(),
 			'startdatoForKontrakt',
-			'Dato må være etter startdato'
+			'Dato må være etter startdato',
 		),
 		vegadresse: vegadresse.nullable(),
 		matrikkeladresse: matrikkeladresse.nullable(),
@@ -210,7 +214,7 @@ export const deltBosted = Yup.object().shape(
 			})
 			.nullable(),
 	},
-	[['adressetype', 'adressetype']]
+	[['adressetype', 'adressetype']],
 )
 
 export const forelderBarnRelasjon = Yup.object().shape(
@@ -230,7 +234,7 @@ export const forelderBarnRelasjon = Yup.object().shape(
 			otherwise: () => Yup.mixed().notRequired(),
 		}),
 	},
-	[['deltBosted', 'deltBosted']]
+	[['deltBosted', 'deltBosted']],
 )
 
 export const foreldreansvar = Yup.object({
