@@ -10,13 +10,11 @@ import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.dto.FolkeregisterPersonstatus;
 import no.nav.pdl.forvalter.dto.OpprettIdent;
 import no.nav.pdl.forvalter.dto.OpprettRequest;
-import no.nav.pdl.forvalter.dto.OpprettRequestComparator;
 import no.nav.pdl.forvalter.dto.Ordre;
 import no.nav.pdl.forvalter.dto.OrdreRequest;
 import no.nav.pdl.forvalter.dto.PdlDelete;
 import no.nav.pdl.forvalter.dto.PdlFalskIdentitet;
 import no.nav.pdl.forvalter.dto.PdlKontaktadresse;
-import no.nav.pdl.forvalter.dto.PdlSivilstand;
 import no.nav.pdl.forvalter.dto.PdlTilrettelagtKommunikasjon;
 import no.nav.pdl.forvalter.dto.PdlVergemaal;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
@@ -91,7 +89,6 @@ public class PdlOrdreService {
     private final PersonRepository personRepository;
     private final AliasRepository aliasRepository;
     private final MapperFacade mapperFacade;
-    private final OpprettRequestComparator opprettRequestComparator;
 
     private Set<String> getEksternePersoner(DbPerson dbPerson) {
 
@@ -231,7 +228,7 @@ public class PdlOrdreService {
                                 .map(oppretting -> deployService.createOrdre(PDL_SLETTING, oppretting.getPerson().getIdent(), List.of(new PdlDelete())))
                                 .toList())
                         .oppretting(opprettinger.stream()
-                                .sorted(opprettRequestComparator)
+                                .filter(OpprettRequest::noneAlias)
                                 .map(oppretting ->
                                         deployService.createOrdre(PDL_OPPRETT_PERSON, oppretting.getPerson().getIdent(),
                                                 List.of(OpprettIdent.builder()
@@ -265,7 +262,9 @@ public class PdlOrdreService {
                         deployService.createOrdre(PDL_DELTBOSTED, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getDeltBosted()),
                         deployService.createOrdre(PDL_FORELDREANSVAR, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getForeldreansvar()),
                         deployService.createOrdre(PDL_FORELDRE_BARN_RELASJON, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getForelderBarnRelasjon()),
-                        deployService.createOrdre(PDL_SIVILSTAND, oppretting.getPerson().getIdent(), mapperFacade.mapAsList(oppretting.getPerson().getPerson().getSivilstand(), PdlSivilstand.class)),
+                        deployService.createOrdre(PDL_SIVILSTAND, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getSivilstand().stream()
+                                .filter(SivilstandDTO::isNotSamboer)
+                                .toList()),
                         deployService.createOrdre(PDL_VERGEMAAL, oppretting.getPerson().getIdent(), mapperFacade.mapAsList(oppretting.getPerson().getPerson().getVergemaal(), PdlVergemaal.class)),
                         deployService.createOrdre(PDL_FULLMAKT, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getFullmakt()),
                         deployService.createOrdre(PDL_TELEFONUMMER, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getTelefonnummer()),

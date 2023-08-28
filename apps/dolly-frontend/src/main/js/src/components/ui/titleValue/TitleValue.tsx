@@ -25,7 +25,7 @@ const P_TitleValue = ({
 	return (
 		<div className={className + ' ' + css}>
 			{React.createElement(titleType, null, [title])}
-			<div>{value ? displayValue(value, visKopier) : children}</div>
+			<div style={{ hyphens: 'auto' }}>{value ? displayValue(value, visKopier) : children}</div>
 		</div>
 	)
 }

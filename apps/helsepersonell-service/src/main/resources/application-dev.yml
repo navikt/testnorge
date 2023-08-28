@@ -1,9 +1,0 @@
-
-dolly.helsepersonell.gruppeId: 255
-
-helsepersonell.controller.cache.hours: 0
-
-consumers:
-  dolly-backend:
-    name: dolly-backend-dev
-    url: https://dolly-backend-dev.intern.dev.nav.no

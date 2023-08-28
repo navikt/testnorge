@@ -1,7 +1,6 @@
 import DollyService from '@/service/services/dolly/DollyService'
 import SigrunService from '@/service/services/sigrun/SigrunService'
 import KrrService from '@/service/services/krr/KrrService'
-import ArenaService from '@/service/services/arena/ArenaService'
 import PensjonService from '@/service/services/pensjon/PensjonService'
 import InntektstubService from '@/service/services/inntektstub/InntektstubService'
 import BrregstubService from '@/service/services/brregstub/BrregstubService'
@@ -20,7 +19,6 @@ export const DollyApi = DollyService
 export const TpsMessagingApi = TpsMessagingService
 export const SigrunApi = SigrunService
 export const KrrApi = KrrService
-export const ArenaApi = ArenaService
 export const PensjonApi = PensjonService
 export const InntektstubApi = InntektstubService
 export const BrregstubApi = BrregstubService
@@ -38,7 +36,6 @@ export default {
 	DollyApi: DollyService,
 	SigrunApi: SigrunService,
 	KrrApi: KrrService,
-	ArenaApi: ArenaService,
 	PensjonApi: PensjonService,
 	InntektstubApi: InntektstubService,
 	BrregstubApi: BrregstubService,

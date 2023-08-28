@@ -7,6 +7,6 @@ import lombok.Value;
 @Value
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class Bostedsadresse {
+public class Bostedsadresse extends MetadataDTO {
     Vegadresse vegadresse;
 }

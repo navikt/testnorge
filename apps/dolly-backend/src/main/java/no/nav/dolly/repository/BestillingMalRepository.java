@@ -14,8 +14,6 @@ public interface BestillingMalRepository extends CrudRepository<BestillingMal, L
     @Query("update BestillingMal b set b.malNavn = :malNavn where b.id = :id")
     void updateMalNavnById(@Param("id") Long id, @Param("malNavn") String malNavn);
 
-    List<BestillingMal> findByIdContaining(String id);
-
     List<BestillingMal> findByBrukerAndMalNavn(Bruker bruker, String navn);
 
     List<BestillingMal> findByBruker(Bruker bruker);

@@ -29,12 +29,10 @@ import java.time.Duration;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
-import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 
 @Slf4j
 @Service
@@ -77,10 +75,11 @@ public class GjenopprettGruppeService extends DollyBestillingService {
         if (nonNull(bestKriterier)) {
             bestKriterier.setEkskluderEksternePersoner(true);
 
-            var coBestillinger = identService.getBestillingerFromGruppe(bestilling.getGruppe());
+            var coBestillinger = identService.getBestillingerFromGruppe(bestilling.getGruppe()).stream()
+                    .sorted(Comparator.comparing(GruppeBestillingIdent::getBestillingid))
+                    .toList();
 
             var counter = new AtomicInteger(0);
-            var emptyBestillingFlag = new ConcurrentHashMap<String, Boolean>();
             Flux.fromIterable(bestilling.getGruppe().getTestidenter())
                     .delayElements(Duration.ofSeconds(counter.incrementAndGet() % 20 == 0 ? 30 : 0))
                     .flatMap(testident -> opprettProgress(bestilling, testident.getMaster(), testident.getIdent())
@@ -98,18 +97,21 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                                                             .map(ClientFuture::get)
                                                             .filter(BestillingProgress::isPdlSync)
                                                             .flatMap(pdlSync -> Flux.fromIterable(coBestillinger)
-                                                                    .sort(Comparator.comparing(GruppeBestillingIdent::getBestillingid))
-                                                                    .filter(cobestilling -> ident.equals(cobestilling.getIdent()))
-                                                                    .flatMap(cobestilling -> createBestilling(bestilling, cobestilling)
-                                                                            .filter(bestillingRequest -> isNotTrue(emptyBestillingFlag.putIfAbsent(ident, true)) ||
-                                                                                    RsDollyBestilling.isNonEmpty(bestillingRequest))
-                                                                            .flatMap(bestillingRequest -> Flux.concat(
-                                                                                    gjenopprettKlienter(dollyPerson, bestillingRequest,
-                                                                                            fase2Klienter(),
-                                                                                            progress, false),
-                                                                                    gjenopprettKlienter(dollyPerson, bestillingRequest,
-                                                                                            fase3Klienter(),
-                                                                                            progress, false)))))))
+                                                                    .concatMap(bestilling1 -> Flux.just(bestilling1)
+                                                                            .filter(cobestilling -> ident.equals(cobestilling.getIdent()))
+                                                                            .flatMapSequential(cobestilling -> createBestilling(bestilling, cobestilling)
+                                                                                    .filter(bestillingRequest -> bestillingRequest.getId() ==
+                                                                                            isFirstBestilling(coBestillinger, cobestilling.getIdent()) ||
+                                                                                            RsDollyBestilling.isNonEmpty(bestillingRequest))
+                                                                                    .doOnNext(request -> log.info("Startet gjenopprett bestilling {} for ident: {}",
+                                                                                            request.getId(), testident.getIdent()))
+                                                                                    .flatMapSequential(bestillingRequest -> Flux.concat(
+                                                                                            gjenopprettKlienter(dollyPerson, bestillingRequest,
+                                                                                                    fase2Klienter(),
+                                                                                                    progress, false),
+                                                                                            gjenopprettKlienter(dollyPerson, bestillingRequest,
+                                                                                                    fase3Klienter(),
+                                                                                                    progress, false))))))))
                                             .onErrorResume(throwable -> {
                                                 var error = errorStatusDecoder.getErrorText(
                                                         WebClientFilter.getStatus(throwable), WebClientFilter.getMessage(throwable));
@@ -123,5 +125,14 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                     .doFinally(done -> doFerdig(bestilling))
                     .subscribe();
         }
+    }
+
+    private long isFirstBestilling(List<GruppeBestillingIdent> coBestillinger, String ident) {
+
+        return coBestillinger.stream()
+                .filter(bestilling -> ident.equals(bestilling.getIdent()))
+                .min(Comparator.comparing(GruppeBestillingIdent::getBestillingid))
+                .map(GruppeBestillingIdent::getBestillingid)
+                .orElse(0L);
     }
 }

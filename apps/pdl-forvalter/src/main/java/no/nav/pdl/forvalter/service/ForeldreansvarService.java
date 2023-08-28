@@ -53,6 +53,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @RequiredArgsConstructor
 public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, PersonDTO> {
 
+    private static final int MYNDIG_ALDER = 18;
     private static final String INVALID_EMPTY_ANSVAR_EXCEPTION = "Forelderansvar: hvem som har ansvar må oppgis";
     private static final String INVALID_AMBIGUOUS_ANSVARLIG_EXCEPTION = "Forelderansvar: kun et av feltene 'ansvarlig' " +
             "og 'ansvarligUtenIdentifikator' kan benyttes";
@@ -85,11 +86,18 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
 
                 type.setKilde(isNotBlank(type.getKilde()) ? type.getKilde() : "Dolly");
                 type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : Master.FREG);
-                handle(type, person);
+                if (person.getFoedsel().stream()
+                        .anyMatch(alder -> alder.getFoedselsdato().isBefore(LocalDateTime.now().minusYears(MYNDIG_ALDER)))) {
+                    // hovedperson er voksen
+                    handle(type, person);
+                } else {
+                    // hovedperson er barn
+                    handleBarn(type, person);
+                }
             }
         }
-        // Foreldreanvar settes kun på barn ikke på foreldre
-        return emptyList();
+
+        return person.getForeldreansvar();
     }
 
     @Override
@@ -298,6 +306,9 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
         }
 
         foreldreansvar.setNyAnsvarlig(null);
+
+        // Foreldreanvar settes kun på barn ikke på foreldre
+        hovedperson.setForeldreansvar(emptyList());
     }
 
     private List<BarnRelasjon> getBarnRelasjoner(ForeldreansvarDTO foreldreansvar, PersonDTO hovedperson) {

@@ -22,7 +22,7 @@ const FagsystemText = styled.div`
 	flex-wrap: wrap;
 
 	h5 {
-		font-size: 0.9em;
+		font-size: 1em;
 	}
 
 	p {
@@ -53,7 +53,7 @@ export const BestillingStatus = ({ bestilling, erOrganisasjon = false }: Miljost
 				(status) =>
 					status?.melding?.includes('TIDSAVBRUDD') ||
 					status?.melding?.includes('Tidsavbrudd') ||
-					status?.melding?.includes('tidsavbrudd')
+					status?.melding?.includes('tidsavbrudd'),
 			)
 		) {
 			return IconTypes.avvik
@@ -69,17 +69,17 @@ export const BestillingStatus = ({ bestilling, erOrganisasjon = false }: Miljost
 
 				const infoString = ['Info', 'INFO', 'info']
 				const infoListe = fagsystem?.statuser?.filter((s) =>
-					infoString.some((i) => s?.melding?.includes(i))
+					infoString.some((i) => s?.melding?.includes(i)),
 				)
 
 				const advarselString = ['Advarsel', 'ADVARSEL', 'advarsel']
 				const advarselListe = fagsystem?.statuser?.filter((s) =>
-					advarselString.some((i) => s?.melding?.includes(i))
+					advarselString.some((i) => s?.melding?.includes(i)),
 				)
 
 				const feilString = ['Feil', 'FEIL', 'feil']
 				const feilListe = fagsystem?.statuser?.filter((s) =>
-					feilString.some((i) => s?.melding?.includes(i))
+					feilString.some((i) => s?.melding?.includes(i)),
 				)
 
 				const getMelding = () => {
@@ -103,7 +103,7 @@ export const BestillingStatus = ({ bestilling, erOrganisasjon = false }: Miljost
 					}
 					if (miljoavhengig) {
 						return [...new Set(miljoavhengig.flatMap((miljo) => miljo?.identer))]?.filter(
-							(ident) => ident
+							(ident) => ident,
 						)
 					}
 					return []

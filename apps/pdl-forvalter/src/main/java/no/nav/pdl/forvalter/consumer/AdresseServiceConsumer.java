@@ -9,9 +9,9 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
-
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.Arrays;
 import java.util.stream.Stream;
 
 import static java.lang.System.currentTimeMillis;
@@ -20,6 +20,7 @@ import static java.lang.System.currentTimeMillis;
 @Service
 public class AdresseServiceConsumer {
 
+    private static final String UOPPGITT = "9999";
     private final WebClient webClient;
     private final TokenExchange tokenExchange;
     private final ServerProperties properties;
@@ -38,6 +39,21 @@ public class AdresseServiceConsumer {
     public no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO getVegadresse(VegadresseDTO vegadresse, String matrikkelId) {
 
         var startTime = currentTimeMillis();
+
+        if (UOPPGITT.equals(vegadresse.getKommunenummer())) {
+            var adresser = tokenExchange.exchange(properties)
+                    .flatMap(token -> new VegadresseServiceCommand(webClient, new VegadresseDTO(), null, token.getTokenValue()).call())
+                    .block();
+
+            return no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO.builder()
+                    .postnummer(Arrays.stream(adresser)
+                            .findFirst()
+                            .orElse(no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO.builder()
+                                    .postnummer("9999")
+                                    .build())
+                            .getPostnummer())
+                    .build();
+        }
 
         var adresser = tokenExchange.exchange(properties).flatMap(
                         token -> new VegadresseServiceCommand(webClient, vegadresse, matrikkelId, token.getTokenValue()).call())

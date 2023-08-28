@@ -38,11 +38,7 @@ public class InntektsmeldingConsumer implements ConsumerStatus {
                 .build();
     }
 
-    private static String getNavCallId() {
-        return format("%s %s", CONSUMER, UUID.randomUUID());
-    }
-
-    @Timed(name = "providers", tags = {"operation", "inntektsmelding_opprett"})
+    @Timed(name = "providers", tags = { "operation", "inntektsmelding_opprett" })
     public Flux<InntektsmeldingResponse> postInntektsmelding(InntektsmeldingRequest inntekstsmelding) {
 
         var callId = getNavCallId();
@@ -61,6 +57,10 @@ public class InntektsmeldingConsumer implements ConsumerStatus {
     @Override
     public String consumerName() {
         return "testnav-inntektsmelding-service";
+    }
+
+    private static String getNavCallId() {
+        return format("%s %s", CONSUMER, UUID.randomUUID());
     }
 
 }

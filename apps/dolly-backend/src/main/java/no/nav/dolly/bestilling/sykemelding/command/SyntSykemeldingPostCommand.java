@@ -37,6 +37,8 @@ public class SyntSykemeldingPostCommand {
                 .toBodilessEntity()
                 .map(response -> SykemeldingResponse.builder()
                         .status(HttpStatus.valueOf(response.getStatusCode().value()))
+                        .ident(sykemeldingRequest.getIdent())
+                        .syntSykemeldingRequest(sykemeldingRequest)
                         .build())
                 .doOnError(WebClientFilter::logErrorMessage)
                 .onErrorResume(error -> Mono.just(SykemeldingResponse.builder()

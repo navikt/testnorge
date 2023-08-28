@@ -2,7 +2,11 @@ package no.nav.dolly.provider.api;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
+import no.nav.dolly.domain.resultset.NavStatus;
+import no.nav.dolly.domain.resultset.SystemStatus;
+import no.nav.testnav.libs.dto.status.v1.TestnavStatusResponse;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,21 +14,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
+@Slf4j
 @RequiredArgsConstructor
-@RequestMapping(value = "/v1/status", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/internal/status", produces = MediaType.APPLICATION_JSON_VALUE)
 @CrossOrigin
 public class StatusController {
-    private final List<ConsumerStatus> consumerRegister;
-
-    private final WebClient webClient;
-
     private static final Map<String, String> consumerNavnMapping = new HashMap<>();
+    private static final List<String> excludeConsumers = List.of("PdlPersonConsumer");
 
     static {
         consumerNavnMapping.put("DokarkivConsumer", "Dokumentarkiv (JOARK)");
@@ -48,7 +51,45 @@ public class StatusController {
         consumerNavnMapping.put("ArenaForvalterConsumer", "Arena fagsystem");
     }
 
-    private static final List<String> excludeConsumers = List.of("PdlPersonConsumer");
+    private final List<ConsumerStatus> consumerRegister;
+    private final WebClient webClient;
+
+    @GetMapping()
+    @Operation(description = "Hent status for Dolly forbrukere")
+    public Map<Object, Map<String, TestnavStatusResponse>> clientsStatus() {
+        return consumerRegister
+                .parallelStream()
+                .filter(StatusController::isNotExcluded)
+                .map(client -> List.of(getConsumerNavn(client.getClass().getSimpleName()), client.checkStatus(webClient)))
+                .collect(Collectors.toMap(key -> key.get(0), value -> (Map<String, TestnavStatusResponse>) value.get(1)));
+    }
+
+    @GetMapping("/oppsummert")
+    @Operation(description = "Hent oppsummert status for Dolly forbrukere")
+    public NavStatus clientsStatusSummary() {
+        var status = consumerRegister
+                .parallelStream()
+                .filter(StatusController::isNotExcluded)
+                .map(client -> List.of(getConsumerNavn(client.getClass().getSimpleName()), client.checkStatus(webClient)))
+                .collect(Collectors.toMap(key -> (String) key.get(0), value -> (Map<String, TestnavStatusResponse>) value.get(1)));
+
+        return NavStatus.builder()
+                .status(status.values().stream()
+                        .allMatch(statusResponseMap -> statusResponseMap.values().stream()
+                                .allMatch(dollyStatusResponse -> dollyStatusResponse.getReady()
+                                        .matches("OK"))) ? SystemStatus.OK : SystemStatus.ISSUE)
+                .description(status.values().stream()
+                        .map(Map::entrySet)
+                        .flatMap(Collection::stream).filter(entry -> !entry.getValue().getReady().matches("OK"))
+                        .map(entry -> "%s - alive:%s, ready:%s".formatted(entry.getKey(), entry.getValue().getAlive(), entry.getValue().getReady())).collect(Collectors.joining(", ")))
+                .logLink("")
+                .build();
+    }
+
+    public static boolean isNotExcluded(ConsumerStatus consumer) {
+        var consumerNavn = consumer.getClass().getSimpleName().split("\\$\\$")[0];
+        return !excludeConsumers.contains(consumerNavn);
+    }
 
     private static String getConsumerNavn(String classNavn) {
         var consumerNavn = classNavn.split("\\$\\$")[0];
@@ -57,20 +98,4 @@ public class StatusController {
         }
         return consumerNavn.replace("Consumer", "");
     }
-
-    public static boolean isNotExcluded(ConsumerStatus consumer) {
-        var consumerNavn = consumer.getClass().getSimpleName().split("\\$\\$")[0];
-        return !excludeConsumers.contains(consumerNavn);
-    }
-
-    @GetMapping()
-    @Operation(description = "Hent status for Dolly forbrukere")
-    public Object clientsStatus() {
-        return consumerRegister
-                .parallelStream()
-                .filter(StatusController::isNotExcluded)
-                .map(client -> List.of(getConsumerNavn(client.getClass().getSimpleName()), client.checkStatus(webClient)))
-                .collect(Collectors.toMap(key -> key.get(0), value -> value.get(1)));
-    }
-
 }

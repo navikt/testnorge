@@ -28,6 +28,7 @@ query($identer: [ID!]!) {
             gruppe,
             historisk
         },
+        code
     }
     hentGeografiskTilknytningBolk(identer: $identer) {
         ident,
@@ -38,6 +39,7 @@ query($identer: [ID!]!) {
             gtBydel,
             regel
         }
+        code
     },
     hentPersonBolk(identer: $identer) {
         ident,
@@ -588,5 +590,6 @@ query($identer: [ID!]!) {
                 }
             }
         }
+        code
     }
 }

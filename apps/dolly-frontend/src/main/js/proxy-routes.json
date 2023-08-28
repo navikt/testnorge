@@ -89,7 +89,7 @@
     "changeOrigin": true,
     "secure": false
   },
-  "/testnav-arena-forvalteren-proxy/api": {
+  "/testnav-arena-forvalteren-proxy": {
     "target": "http://localhost:8020",
     "changeOrigin": true,
     "secure": false
@@ -200,6 +200,11 @@
     "secure": false
   },
   "/testnav-arbeidsplassencv-proxy": {
+    "target": "http://localhost:8020",
+    "changeOrigin": true,
+    "secure": false
+  },
+  "/testnav-helsepersonell-service": {
     "target": "http://localhost:8020",
     "changeOrigin": true,
     "secure": false

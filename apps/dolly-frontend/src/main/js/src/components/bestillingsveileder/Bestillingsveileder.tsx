@@ -12,7 +12,7 @@ export const Bestillingsveileder = ({ error, sendBestilling }) => {
 	const location = useLocation()
 	const navigate = useNavigate()
 	const [navigateRoot, setNavigateRoot] = useState(false)
-	const { gruppeId } = useParams()
+	const { gruppeId, personId } = useParams()
 
 	useEffect(() => {
 		if (navigateRoot) {
@@ -26,7 +26,7 @@ export const Bestillingsveileder = ({ error, sendBestilling }) => {
 		return null
 	}
 
-	const options = BVOptions(location.state, gruppeId)
+	const options = BVOptions(location.state, gruppeId, personId)
 	const handleSubmit = (values) => {
 		sendBestilling(values, options, gruppeId, navigate)
 	}

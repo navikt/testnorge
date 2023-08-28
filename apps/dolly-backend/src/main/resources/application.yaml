@@ -79,11 +79,6 @@ logging:
             jdbc: ERROR
 
 consumers:
-  testnav-helsepersonell-service:
-    name: testnav-helsepersonell-service
-    namespace: dolly
-    url: http://testnav-helsepersonell-service.dolly.svc.cluster.local
-    cluster: dev-gcp
   testnav-organisasjon-forvalter:
     name: testnav-organisasjon-forvalter
     namespace: dolly

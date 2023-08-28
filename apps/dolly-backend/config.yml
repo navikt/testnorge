@@ -36,12 +36,13 @@ spec:
           namespace: aap
         - application: testnav-helsepersonell-service
           cluster: dev-gcp
+        - application: statuspoll
+          namespace: navdig
     outbound:
       rules:
         - application: generer-navn-service
         - application: testnav-amelding-service
         - application: testnav-arbeidsforhold-service
-        - application: testnav-helsepersonell-service
         - application: testnav-inntektsmelding-service
         - application: testnav-miljoer-service
         - application: testnav-organisasjon-forvalter

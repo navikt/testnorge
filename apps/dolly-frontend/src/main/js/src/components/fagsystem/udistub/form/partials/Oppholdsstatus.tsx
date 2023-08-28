@@ -6,6 +6,7 @@ import { OppholdSammeVilkaar } from '@/components/fagsystem/udistub/form/partial
 import { IkkeOppholdSammeVilkaar } from '@/components/fagsystem/udistub/form/partials/IkkeOppholdSammeVilkaar'
 import { Option } from '@/service/SelectOptionsOppslag'
 import { FormikProps } from 'formik'
+import { fixTimezone } from '@/components/ui/form/formUtils'
 
 const basePath = 'udistub.oppholdStatus'
 const pdlBasePath = 'pdldata.person.opphold'
@@ -14,7 +15,7 @@ const harOppholdsTillatelsePath = 'udistub.harOppholdsTillatelse'
 const findInitialStatus = (formikBag: FormikProps<any>) => {
 	const oppholdsstatusObj = formikBag.values.udistub.oppholdStatus
 	const eosEllerEFTAOpphold = Object.keys(oppholdsstatusObj).some((key) =>
-		key.includes('eosEllerEFTA')
+		key.includes('eosEllerEFTA'),
 	)
 	if (eosEllerEFTAOpphold) {
 		if (oppholdsstatusObj.eosEllerEFTABeslutningOmOppholdsrettPeriode) {
@@ -137,14 +138,14 @@ export const Oppholdsstatus = ({ formikBag }: { formikBag: FormikProps<any> }) =
 					<FormikDatepicker
 						name={`udistub.oppholdStatus.${eosEllerEFTAtypeOpphold}Periode.fra`}
 						afterChange={(dato: Date) =>
-							formikBag.setFieldValue(`${pdlBasePath}[0].oppholdFra`, dato)
+							formikBag.setFieldValue(`${pdlBasePath}[0].oppholdFra`, fixTimezone(dato))
 						}
 						label="Oppholdstillatelse fra dato"
 					/>
 					<FormikDatepicker
 						name={`udistub.oppholdStatus.${eosEllerEFTAtypeOpphold}Periode.til`}
 						afterChange={(dato: Date) =>
-							formikBag.setFieldValue(`${pdlBasePath}[0].oppholdTil`, dato)
+							formikBag.setFieldValue(`${pdlBasePath}[0].oppholdTil`, fixTimezone(dato))
 						}
 						label="Oppholdstillatelse til dato"
 					/>

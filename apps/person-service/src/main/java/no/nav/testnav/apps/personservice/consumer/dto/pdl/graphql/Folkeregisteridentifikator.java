@@ -7,7 +7,7 @@ import lombok.Value;
 @Value
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class Folkeregisteridentifikator {
+public class Folkeregisteridentifikator extends MetadataDTO {
     String identifikasjonsnummer;
     String status;
     String type;

@@ -129,13 +129,13 @@ export default {
 					Request.delete(Endpoints.slettPerson(person.id)).catch((error) => {
 						console.error(error)
 					})
-				})
+				}),
 			)
 		})
 	},
 
-	gjenopprettPerson(ident) {
-		return Request.post(Endpoints.gjenopprettPerson(ident))
+	gjenopprettPerson(ident, miljoer) {
+		return Request.post(Endpoints.gjenopprettPerson(ident, miljoer))
 	},
 
 	importerPersonerFraPdl: (gruppeId, request) => {

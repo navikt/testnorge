@@ -5,14 +5,14 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.arbeidsplassencv.ArbeidsplassenCVConsumer;
+import no.nav.dolly.bestilling.arenaforvalter.ArenaForvalterConsumer;
+import no.nav.dolly.bestilling.arenaforvalter.dto.ArenaStatusResponse;
 import no.nav.dolly.bestilling.inntektstub.InntektstubConsumer;
 import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon;
 import no.nav.dolly.bestilling.inntektstub.domain.ValiderInntekt;
 import no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterConsumer;
 import no.nav.dolly.bestilling.skjermingsregister.SkjermingsRegisterConsumer;
 import no.nav.dolly.bestilling.skjermingsregister.domain.SkjermingDataResponse;
-import no.nav.dolly.bestilling.sykemelding.HelsepersonellConsumer;
-import no.nav.dolly.bestilling.sykemelding.domain.dto.HelsepersonellListeDTO;
 import no.nav.dolly.bestilling.udistub.UdiStubConsumer;
 import no.nav.dolly.bestilling.udistub.domain.UdiPersonResponse;
 import no.nav.dolly.consumer.fastedatasett.DatasettType;
@@ -55,7 +55,6 @@ import java.util.Map;
 import java.util.Set;
 
 import static java.lang.String.format;
-import static no.nav.dolly.config.CachingConfig.CACHE_HELSEPERSONELL;
 import static no.nav.dolly.config.CachingConfig.CACHE_KODEVERK;
 
 @RestController
@@ -73,12 +72,18 @@ public class OppslagController {
     private final InntektsmeldingEnumService inntektsmeldingEnumService;
     private final ProfilApiConsumer profilApiConsumer;
     private final TransaksjonMappingService transaksjonMappingService;
-    private final HelsepersonellConsumer helsepersonellConsumer;
     private final SkjermingsRegisterConsumer skjermingsRegisterConsumer;
     private final UdiStubConsumer udiStubConsumer;
 
     private final ArbeidsplassenCVConsumer arbeidsplassenCVConsumer;
     private final OrganisasjonTilgangConsumer organisasjonTilgangConsumer;
+    private final ArenaForvalterConsumer arenaForvalterConsumer;
+
+    @GetMapping("/arena/ident/{ident}/miljoe/{miljoe}")
+    public Mono<ArenaStatusResponse> getArenaBruker(@PathVariable("ident") String ident, @PathVariable("miljoe") String miljoe) {
+
+        return arenaForvalterConsumer.getArenaBruker(ident, miljoe);
+    }
 
     @GetMapping("/organisasjoner/tilgang")
     public Flux<OrganisasjonTilgang> getOrganisasjonerTilgang() {
@@ -169,13 +174,6 @@ public class OppslagController {
     @Operation(description = "Hent udistub ident")
     public UdiPersonResponse getUdistubIdent(@PathVariable String ident) {
         return udiStubConsumer.getUdiPerson(ident).block();
-    }
-
-    @Cacheable(CACHE_HELSEPERSONELL)
-    @GetMapping("/helsepersonell")
-    @Operation(description = "Hent liste med helsepersonell")
-    public Mono<HelsepersonellListeDTO> getHelsepersonell() {
-        return helsepersonellConsumer.getHelsepersonell();
     }
 
     @GetMapping("/fastedatasett/{datasettype}")

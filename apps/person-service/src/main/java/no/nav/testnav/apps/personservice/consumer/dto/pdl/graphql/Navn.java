@@ -7,7 +7,7 @@ import lombok.Value;
 @Value
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class Navn {
+public class Navn extends MetadataDTO {
     String fornavn;
     String mellomnavn;
     String etternavn;
