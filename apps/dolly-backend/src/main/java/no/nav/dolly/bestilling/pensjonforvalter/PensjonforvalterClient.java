@@ -35,7 +35,6 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -171,22 +170,17 @@ public class PensjonforvalterClient implements ClientRegister {
 
         return Flux.concat(annulerAlleSamboere(ident, tilgjengeligeMiljoer),
                 pdlDataConsumer.getPersoner(List.of(ident))
-                        .map(FullPersonDTO::getPerson)
-                        .map(PersonDTO::getSivilstand)
-                        .flatMap(sivilstander -> Flux.just(sivilstander)
-                                .filter(sivilstander1 -> sivilstander1.stream()
-                                        .anyMatch(SivilstandDTO::isSamboer))
-                                .map(sivilstander1 -> {
-                                    var context = new MappingContext.Factory().getContext();
-                                    context.setProperty(IDENT, ident);
-                                    return (List<PensjonSamboerRequest>) mapperFacade.map(PensjonSivilstandWrapper.builder()
-                                            .sivilstander(sivilstander1)
-                                            .build(), List.class, context);
-                                })
-                                .flatMap(Flux::fromIterable)
-                                .flatMap(request -> Flux.fromIterable(tilgjengeligeMiljoer)
-                                        .flatMap(miljoe -> pensjonforvalterConsumer.lagreSamboer(request, miljoe))
-                                        .filter(response -> request.getPidBruker().equals(ident)))));
+                        .map(hovedperson -> {
+                            var context = new MappingContext.Factory().getContext();
+                            context.setProperty(IDENT, ident);
+                            return (List<PensjonSamboerRequest>) mapperFacade.map(PensjonSivilstandWrapper.builder()
+                                    .sivilstander(hovedperson.getPerson().getSivilstand())
+                                    .build(), List.class, context);
+                        })
+                        .flatMap(Flux::fromIterable)
+                        .flatMap(request -> Flux.fromIterable(tilgjengeligeMiljoer)
+                                .flatMap(miljoe -> pensjonforvalterConsumer.lagreSamboer(request, miljoe))
+                                .filter(response -> request.getPidBruker().equals(ident))));
     }
 
     private Flux<PensjonforvalterResponse> annulerAlleSamboere(String ident, Set<String> tilgjengeligeMiljoer) {
