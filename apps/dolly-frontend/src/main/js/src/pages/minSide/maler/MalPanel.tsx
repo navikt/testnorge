@@ -76,7 +76,7 @@ export const MalPanel = ({
 									return (
 										<Table.ExpandableRow
 											key={idx}
-											content={<Bestillingskriterier bestilling={bestilling} />}
+											content={<Bestillingskriterier bestilling={bestilling} erMalVisning />}
 										>
 											<Table.HeaderCell scope="row" style={{ width: '620px' }}>
 												{erUnderRedigering(id) ? (

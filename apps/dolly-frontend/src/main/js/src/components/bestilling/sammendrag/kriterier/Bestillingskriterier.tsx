@@ -7,6 +7,7 @@ import { OrganisasjonKriterier } from './OrganisasjonKriterier'
 import DollyKjede from '@/components/dollyKjede/DollyKjede'
 import Button from '@/components/ui/button/Button'
 import useBoolean from '@/utils/hooks/useBoolean'
+import StyledAlert from '@/components/ui/alert/StyledAlert'
 
 const _renderBestillingsDetaljer = (data) => {
 	const [selectedIndex, setSelectedIndex] = useState(0)
@@ -114,7 +115,7 @@ const RenderExpandablePanel = ({ attributt }) => {
 	)
 }
 
-export default ({ bestilling, bestillingsinformasjon, header }) => {
+export default ({ bestilling, bestillingsinformasjon, header, erMalVisning = false }) => {
 	if (bestilling.organisasjon || bestilling.enhetstype) {
 		return (
 			<div className="bestilling-detaljer">
@@ -129,7 +130,16 @@ export default ({ bestilling, bestillingsinformasjon, header }) => {
 
 	const data = mapBestillingData(bestilling, bestillingsinformasjon)
 
-	if (!data) return <p>Kunne ikke hente bestillingsdata</p>
+	if (!data || data?.length < 1) {
+		if (erMalVisning) {
+			return (
+				<StyledAlert variant={'warning'} size={'small'} inline>
+					Denne malen inneholder ingen bestillingsdata
+				</StyledAlert>
+			)
+		}
+		return <p>Kunne ikke hente bestillingsdata</p>
+	}
 
 	return (
 		<div className="bestilling-detaljer">
