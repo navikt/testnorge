@@ -64,7 +64,7 @@ spec:
         - application: testnav-arbeidsforhold-service
         - application: testnav-helsepersonell-service
       external:
-        - host: https://testnav-sykemelding-api-proxy.dev-fss-pub.nais.io
-        - host: https://testnav-pdl-proxy.dev-fss-pub.nais.io
+        - host: testnav-sykemelding-api-proxy.dev-fss-pub.nais.io
+        - host: testnav-pdl-proxy.dev-fss-pub.nais.io
   ingresses:
     - "https://testnav-synt-sykemelding-api.intern.dev.nav.no"
