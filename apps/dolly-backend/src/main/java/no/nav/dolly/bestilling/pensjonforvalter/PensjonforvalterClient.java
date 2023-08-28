@@ -13,6 +13,7 @@ import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPersonRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPoppInntektRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonSamboerRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonSamboerResponse;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonSivilstandWrapper;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpForholdRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpYtelseRequest;
@@ -171,7 +172,7 @@ public class PensjonforvalterClient implements ClientRegister {
         return pdlDataConsumer.getPersoner(List.of(ident))
                 .map(FullPersonDTO::getPerson)
                 .map(PersonDTO::getSivilstand)
-                .flatMap(sivilstander -> Flux.concat(annulerAlleSamboere(ident, sivilstander, tilgjengeligeMiljoer),
+                .flatMap(sivilstander -> Flux.concat(annulerAlleSamboere(ident, tilgjengeligeMiljoer),
                         Flux.fromIterable(sivilstander)
                                 .filter(SivilstandDTO::isSamboer)
                                 .map(sivilstand -> {
@@ -187,23 +188,24 @@ public class PensjonforvalterClient implements ClientRegister {
                                                 .filter(response -> request.getPidBruker().equals(ident))))));
     }
 
-    private Flux<PensjonforvalterResponse> annulerAlleSamboere(String ident, List<SivilstandDTO> sivilstandDTO, Set<String> tilgjengeligeMiljoer) {
+    private Flux<PensjonforvalterResponse> annulerAlleSamboere(String ident, Set<String> tilgjengeligeMiljoer) {
 
-        return Flux.concat(Flux.just(ident), Flux.fromIterable(sivilstandDTO)
-                        .filter(sivilstand -> nonNull(sivilstand.getRelatertVedSivilstand()))
-                        .map(SivilstandDTO::getRelatertVedSivilstand))
-                .flatMap(ident1 -> Flux.fromIterable(tilgjengeligeMiljoer)
-                        .flatMap(miljoe -> pensjonforvalterConsumer.hentSamboer(ident1, miljoe)
-                                .filter(response -> !response.getSamboerforhold().isEmpty())
-                                .flatMap(response -> Flux.fromStream(response.getSamboerforhold().stream())
-                                        .map(samboer -> samboer.get_links().getAnnuller().getHref())
-                                        .map(lenke -> lenke.substring(lenke.indexOf(PERIODE) + PERIODE.length())
-                                                .replace("/annuller", ""))
-                                        .flatMap(periodeId -> pensjonforvalterConsumer.annullerSamboer(ident1,
-                                                        periodeId, miljoe)
-                                                .filter(response1 -> ident1.equals(ident) &&
+        return Flux.fromIterable(tilgjengeligeMiljoer)
+                .flatMap(miljoe -> pensjonforvalterConsumer.hentSamboer(ident, miljoe)
+                        .flatMap(response -> Flux.merge(Flux.just(response), Flux.fromIterable(response.getSamboerforhold())
+                                        .map(PensjonSamboerResponse.Samboerforhold::getPidSamboer)
+                                        .flatMap(identSamboer -> pensjonforvalterConsumer.hentSamboer(identSamboer, miljoe)))
+                                .flatMap(samboerResponse -> Flux.fromIterable(samboerResponse.getSamboerforhold())
+                                        .flatMap(samboer -> pensjonforvalterConsumer.annullerSamboer(samboer.getPidBruker(),
+                                                        getPeriodeId(samboer.get_links().getAnnuller().getHref()), miljoe)
+                                                .filter(response1 -> samboer.getPidBruker().equals(ident) &&
                                                         response1.getStatus().stream()
                                                                 .noneMatch(status -> status.getResponse().getHttpStatus().getStatus() == 200))))));
+    }
+
+    private static String getPeriodeId(String lenke) {
+        return lenke.substring(lenke.indexOf(PERIODE) + PERIODE.length())
+                .replace("/annuller", "");
     }
 
     private String prepInitStatus(Set<String> miljoer) {

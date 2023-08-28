@@ -8,7 +8,10 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+
+import static java.util.Objects.isNull;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -18,6 +21,14 @@ import java.util.List;
 public class PensjonSamboerResponse extends PensjonforvalterResponse {
 
     private List<Samboerforhold> samboerforhold;
+
+    public List<Samboerforhold> getSamboerforhold() {
+
+        if (isNull(samboerforhold)) {
+            samboerforhold = new ArrayList<>();
+        }
+        return samboerforhold;
+    }
 
     @Data
     @Builder
