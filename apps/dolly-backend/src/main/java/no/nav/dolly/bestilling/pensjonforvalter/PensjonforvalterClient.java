@@ -13,6 +13,7 @@ import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPersonRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPoppInntektRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonSamboerRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonSivilstandWrapper;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpForholdRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpYtelseRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
@@ -176,7 +177,9 @@ public class PensjonforvalterClient implements ClientRegister {
                                 .map(sivilstand -> {
                                     var context = new MappingContext.Factory().getContext();
                                     context.setProperty(IDENT, ident);
-                                    return (List<PensjonSamboerRequest>) mapperFacade.map(sivilstand, List.class, context);
+                                    return (List<PensjonSamboerRequest>) mapperFacade.map(PensjonSivilstandWrapper.builder()
+                                            .sivilstander(sivilstander)
+                                            .build(), List.class, context);
                                 })
                                 .flatMap(Flux::fromIterable)
                                 .flatMap(request -> Flux.fromIterable(tilgjengeligeMiljoer)
