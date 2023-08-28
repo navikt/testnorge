@@ -313,6 +313,7 @@ class PensjonforvalterClientTest {
         when(mapperFacade.map(any(PensjonData.TpYtelse.class), eq(PensjonTpYtelseRequest.class), any(MappingContext.class)))
                 .thenReturn(new PensjonTpYtelseRequest());
         when(pdlDataConsumer.getPersoner(anyList())).thenReturn(Flux.empty());
+        when(pensjonforvalterConsumer.hentSamboer(anyString(), anyString())).thenReturn(Flux.empty());
 
         StepVerifier.create(pensjonforvalterClient.gjenopprett(bestilling, dollyPerson, progress, false)
                         .map(ClientFuture::get))
@@ -404,6 +405,7 @@ class PensjonforvalterClientTest {
         when(errorStatusDecoder.getErrorText(HttpStatus.INTERNAL_SERVER_ERROR, "ytelse2 feil on TEST2"))
                 .thenReturn("Feil= ytelse2 feil on TEST2");
         when(pdlDataConsumer.getPersoner(anyList())).thenReturn(Flux.empty());
+        when(pensjonforvalterConsumer.hentSamboer(anyString(), anyString())).thenReturn(Flux.empty());
 
         StepVerifier.create(pensjonforvalterClient.gjenopprett(bestilling, dollyPerson, progress, false)
                         .map(ClientFuture::get))
@@ -493,6 +495,7 @@ class PensjonforvalterClientTest {
         when(errorStatusDecoder.getErrorText(eq(HttpStatus.INTERNAL_SERVER_ERROR), anyString()))
                 .thenReturn("Feil= Klarte ikke å få TP-ytelse respons for 12345 i PESYS (pensjon)");
         when(pdlDataConsumer.getPersoner(anyList())).thenReturn(Flux.empty());
+        when(pensjonforvalterConsumer.hentSamboer(anyString(), anyString())).thenReturn(Flux.empty());
 
         StepVerifier.create(pensjonforvalterClient.gjenopprett(bestilling, dollyPerson, progress, false)
                         .map(ClientFuture::get))
