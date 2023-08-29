@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.InfoStripe;
+import no.nav.dolly.domain.resultset.entity.infostripe.InfostripeMelding;
 import no.nav.dolly.domain.resultset.entity.infostripe.RsInfostripeMelding;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.InformasjonsmeldingRepository;
@@ -34,28 +35,28 @@ public class InfostripeController {
     private final MapperFacade mapperFacade;
 
     @GetMapping()
-    @Operation(description = "Hent alle gyldige informasjons meldinger")
-    public Collection<RsInfostripeMelding> hentAlle() {
+    @Operation(description = "Hent alle gyldige informasjonsmeldinger")
+    public Collection<InfostripeMelding> hentAlle() {
         return informasjonsmeldingRepository.findGyldigMeldinger().stream()
-                .map(melding -> mapperFacade.map(melding, RsInfostripeMelding.class))
+                .map(melding -> mapperFacade.map(melding, InfostripeMelding.class))
                 .toList();
     }
 
     @PostMapping(produces = MediaType.TEXT_PLAIN_VALUE)
-    @Operation(description = "Oppret ny informasjons melding")
+    @Operation(description = "Opprett ny informasjonsmelding")
     @ResponseStatus(HttpStatus.CREATED)
     @Transactional
-    public String oppretNyMelding(@RequestBody RsInfostripeMelding melding) {
+    public String opprettNyMelding(@RequestBody RsInfostripeMelding melding) {
         var infostripeMelding = mapperFacade.map(melding, InfoStripe.class);
         informasjonsmeldingRepository.save(infostripeMelding);
         return infostripeMelding.getId().toString();
     }
 
     @PutMapping("{id}")
-    @Operation(description = "Oppdater informasjons melding")
+    @Operation(description = "Oppdater informasjonsmelding")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Transactional
-    public void oppdaterMeldig(@PathVariable("id") Long id, @RequestBody RsInfostripeMelding melding) {
+    public void oppdaterMeldig(@PathVariable("id") Long id, @RequestBody InfostripeMelding melding) {
         var infostripeMelding = informasjonsmeldingRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(id + " finnes ikke"));
 
@@ -67,7 +68,7 @@ public class InfostripeController {
     }
 
     @DeleteMapping("{id}")
-    @Operation(description = "Slett informasjons melding")
+    @Operation(description = "Slett informasjonsmelding")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Transactional
     public void slettMelding(@PathVariable("id") Long id) {
