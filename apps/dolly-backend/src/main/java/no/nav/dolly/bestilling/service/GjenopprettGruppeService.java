@@ -29,10 +29,12 @@ import java.time.Duration;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
+import static no.nav.dolly.util.MdcUtil.MDC_KEY_CORRELATION_ID;
 
 @Slf4j
 @Service
@@ -69,6 +71,7 @@ public class GjenopprettGruppeService extends DollyBestillingService {
 
         log.info("Bestilling med id=#{} og type={} er startet ...", bestilling.getId(), getBestillingType(bestilling));
         MDC.put(MDC_KEY_BESTILLING, bestilling.getId().toString());
+        MDC.put(MDC_KEY_CORRELATION_ID, UUID.randomUUID().toString());
         Hooks.onEachOperator(Operators.lift(new ThreadLocalContextLifter<>()));
 
         var bestKriterier = getDollyBestillingRequest(bestilling);
