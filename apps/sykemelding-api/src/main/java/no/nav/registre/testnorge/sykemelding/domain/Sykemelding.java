@@ -26,7 +26,10 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
+
+import static java.util.Objects.nonNull;
 
 @ToString
 public class Sykemelding {
@@ -104,9 +107,9 @@ public class Sykemelding {
     }
 
     private void updateOrganisation(XMLOrganisation organisation, OrganisasjonDTO dto, HelsepersonellDTO helsepersonellDTO) {
-        organisation.setOrganisationName(dto.getNavn());
+        organisation.setOrganisationName(nonNull(dto) ? dto.getNavn() : null);
 
-        if (helsepersonellDTO != null) {
+        if (nonNull(helsepersonellDTO)) {
             XMLHealthcareProfessional healthcareProfessional = organisation.getHealthcareProfessional();
             healthcareProfessional.setFamilyName(helsepersonellDTO.getEtternavn());
             healthcareProfessional.setGivenName(helsepersonellDTO.getFornavn());
@@ -123,12 +126,12 @@ public class Sykemelding {
         adresseType.setDN("Postadresse");
         adresseType.setV("PST");
         xmlAddress.setType(adresseType);
-        xmlAddress.setCity(dto.getAdresse().getBy());
-        xmlAddress.setPostalCode(dto.getAdresse().getPostnummer());
-        xmlAddress.setStreetAdr(dto.getAdresse().getGate());
+        xmlAddress.setCity(nonNull(dto) ? dto.getAdresse().getBy() : null);
+        xmlAddress.setPostalCode(nonNull(dto) ? dto.getAdresse().getPostnummer() : null);
+        xmlAddress.setStreetAdr(nonNull(dto) ? dto.getAdresse().getGate() : null);
         organisation.setAddress(xmlAddress);
         XMLIdent enhIdent = getXMLIdent(organisation.getIdent(), "ENH");
-        enhIdent.setId(dto.getOrgNr());
+        enhIdent.setId(nonNull(dto) ? dto.getOrgNr() : null);
     }
 
     private void updateOrganisation(XMLOrganisation organisation, OrganisasjonDTO dto) {
