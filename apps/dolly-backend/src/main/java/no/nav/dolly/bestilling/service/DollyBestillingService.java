@@ -41,6 +41,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.jpa.Testident.Master.PDL;
 import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
+import static no.nav.dolly.util.MdcUtil.MDC_KEY_CORRELATION_ID;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
 @Slf4j
@@ -162,6 +163,7 @@ public class DollyBestillingService {
         transactionHelperService.clearCache();
 
         MDC.remove(MDC_KEY_BESTILLING);
+        MDC.remove(MDC_KEY_CORRELATION_ID);
         log.info("Bestilling med id=#{} er ferdig", bestilling.getId());
     }
 
