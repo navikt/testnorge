@@ -1,16 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import { Panel } from '@navikt/ds-react'
-import { Table } from '@navikt/ds-react'
+import { Panel, Button, Table } from '@navikt/ds-react'
 import { Mal } from '@/utils/hooks/useMaler'
-import { DollyApi } from '@/service/Api'
 import { EndreMalnavn } from './EndreMalnavn'
 import { CypressSelector } from '../../../../cypress/mocks/Selectors'
 import Bestillingskriterier from '@/components/bestilling/sammendrag/kriterier/Bestillingskriterier'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
-import { Button } from '@navikt/ds-react'
 import { PencilWritingIcon } from '@navikt/aksel-icons'
-import { TrashIcon } from '@navikt/aksel-icons'
+import { SlettMal } from '@/pages/minSide/maler/SlettMal'
 
 type Props = {
 	antallEgneMaler: any
@@ -40,12 +37,6 @@ export const MalPanel = ({
 		setSearchActive(searchText?.length > 0)
 	}, [searchText])
 
-	const slettMal = (malId: number, erOrganisasjon: boolean) => {
-		erOrganisasjon
-			? DollyApi.slettMalOrganisasjon(malId).then(() => mutate())
-			: DollyApi.slettMal(malId).then(() => mutate())
-	}
-
 	const erUnderRedigering = (id: number) => underRedigering.includes(id)
 
 	const avsluttRedigering = (id: number) => {
@@ -73,10 +64,10 @@ export const MalPanel = ({
 								</Table.Row>
 							</Table.Header>
 							<Table.Body>
-								{maler.map(({ malNavn, id, bestilling }, idx) => {
+								{maler.map(({ malNavn, id, bestilling }) => {
 									return (
 										<Table.ExpandableRow
-											key={idx}
+											key={id}
 											content={<Bestillingskriterier bestilling={bestilling} erMalVisning />}
 										>
 											<Table.DataCell scope="row">
@@ -116,13 +107,7 @@ export const MalPanel = ({
 												)}
 											</Table.DataCell>
 											<Table.DataCell>
-												<Button
-													data-cy={CypressSelector.BUTTON_MALER_SLETT}
-													onClick={() => slettMal(id, bestilling?.organisasjon)}
-													variant={'tertiary'}
-													icon={<TrashIcon />}
-													size={'small'}
-												/>
+												<SlettMal id={id} organisasjon={bestilling?.organisasjon} mutate={mutate} />
 											</Table.DataCell>
 										</Table.ExpandableRow>
 									)
