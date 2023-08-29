@@ -16,13 +16,6 @@
                     <exclude>org\.apache\.tomcat\..*</exclude>
                 </throwableConverter>
                 <includeMdcKeyName>bestillingId</includeMdcKeyName>
-                <provider class="net.logstash.logback.composite.loggingevent.LoggingEventPatternJsonProvider">
-                    <pattern>
-                        {
-                        "message": "%mdc{bestillingId} %message"
-                        }
-                    </pattern>
-                </provider>
             </encoder>
         </appender>
         <root level="INFO">
