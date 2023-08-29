@@ -14,8 +14,8 @@ public class Arbeidsgiver {
                 .withHarArbeidsgiver(new XMLCS()
                         .withDN("En arbeidsgiver")
                         .withV("1"))
-                .withNavnArbeidsgiver(dto.getNavn())
-                .withYrkesbetegnelse(dto.getYrkesbetegnelse())
+                .withNavnArbeidsgiver(nonNull(dto) ? dto.getNavn() : null)
+                .withYrkesbetegnelse(nonNull(dto) ? dto.getYrkesbetegnelse() : null)
                 .withStillingsprosent(nonNull(dto.getStillingsprosent()) ? dto.getStillingsprosent().intValue() : 100);
     }
 

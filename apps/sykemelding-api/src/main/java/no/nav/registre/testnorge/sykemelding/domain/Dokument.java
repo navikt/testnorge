@@ -4,6 +4,7 @@ import no.nav.registre.testnorge.sykemelding.external.xmlstds.helseopplysningera
 import no.nav.testnav.libs.dto.sykemelding.v1.SykemeldingDTO;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 class Dokument {
     private final XMLHelseOpplysningerArbeidsuforhet xmlHelseOpplysningerArbeidsuforhet;
@@ -15,7 +16,7 @@ class Dokument {
         var fomIArbeid = Aktivitet.getFomIArbeid(aktivitet.getXmlObject());
 
         var pasient = new Pasient(dto.getPasient(), dto.getHelsepersonell());
-        var arbeidsgiver = new Arbeidsgiver(dto.getArbeidsgiver());
+        var arbeidsgiver = Objects.nonNull(dto.getArbeidsgiver()) ? new Arbeidsgiver(dto.getArbeidsgiver()) : null;
         var medisinskVurdering = new MedisinskVurdering(fom, dto.getHovedDiagnose(), dto.getBiDiagnoser());
 
         var prognose = new Prognose(fomIArbeid, dto.getDetaljer());
