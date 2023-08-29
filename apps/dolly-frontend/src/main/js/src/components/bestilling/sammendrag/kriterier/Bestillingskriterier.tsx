@@ -116,9 +116,11 @@ const RenderExpandablePanel = ({ attributt }) => {
 }
 
 export default ({ bestilling, bestillingsinformasjon, header, erMalVisning = false }) => {
+	const cn = erMalVisning ? 'bestilling-detaljer malbestilling' : 'bestilling-detaljer'
+
 	if (bestilling.organisasjon || bestilling.enhetstype) {
 		return (
-			<div className="bestilling-detaljer">
+			<div className={cn}>
 				{header && <SubOverskrift label={header} />}
 				<OrganisasjonKriterier
 					data={bestilling.organisasjon || bestilling}
@@ -142,7 +144,7 @@ export default ({ bestilling, bestillingsinformasjon, header, erMalVisning = fal
 	}
 
 	return (
-		<div className="bestilling-detaljer">
+		<div className={cn}>
 			{header && <SubOverskrift label={header} />}
 			{_renderBestillingsDetaljer(data)}
 		</div>

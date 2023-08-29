@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { Panel } from '@navikt/ds-react'
-import Button from '@/components/ui/button/Button'
 import { Table } from '@navikt/ds-react'
 import { Mal } from '@/utils/hooks/useMaler'
-import Icon from '@/components/ui/icon/Icon'
 import { DollyApi } from '@/service/Api'
 import { EndreMalnavn } from './EndreMalnavn'
 import { CypressSelector } from '../../../../cypress/mocks/Selectors'
 import Bestillingskriterier from '@/components/bestilling/sammendrag/kriterier/Bestillingskriterier'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
+import { Button } from '@navikt/ds-react'
+import { PencilWritingIcon } from '@navikt/aksel-icons'
+import { TrashIcon } from '@navikt/aksel-icons'
 
 type Props = {
 	antallEgneMaler: any
@@ -60,7 +61,7 @@ export const MalPanel = ({
 			{antallEgneMaler > 0 ? (
 				malerFiltrert(malListe, searchText).length > 0 ? (
 					<ErrorBoundary>
-						<Table style={{ marginBottom: '20px' }}>
+						<Table>
 							<Table.Header>
 								<Table.Row>
 									<Table.HeaderCell />
@@ -78,7 +79,7 @@ export const MalPanel = ({
 											key={idx}
 											content={<Bestillingskriterier bestilling={bestilling} erMalVisning />}
 										>
-											<Table.HeaderCell scope="row" style={{ width: '620px' }}>
+											<Table.DataCell scope="row">
 												{erUnderRedigering(id) ? (
 													<EndreMalnavn
 														malNavn={malNavn}
@@ -92,10 +93,14 @@ export const MalPanel = ({
 												) : (
 													<span style={{ fontWeight: 'normal' }}>{malNavn}</span>
 												)}
-											</Table.HeaderCell>
-											<Table.HeaderCell align={'center'}>
+											</Table.DataCell>
+											<Table.DataCell align={'center'}>
 												{erUnderRedigering(id) ? (
-													<Button className={'avbryt'} onClick={() => avsluttRedigering(id)}>
+													<Button
+														variant={'secondary'}
+														size={'small'}
+														onClick={() => avsluttRedigering(id)}
+													>
 														Avbryt
 													</Button>
 												) : (
@@ -104,19 +109,21 @@ export const MalPanel = ({
 														onClick={() => {
 															setUnderRedigering(underRedigering.concat([id]))
 														}}
-													>
-														<Icon kind={'edit'} />
-													</Button>
+														variant={'tertiary'}
+														icon={<PencilWritingIcon />}
+														size={'small'}
+													/>
 												)}
-											</Table.HeaderCell>
-											<Table.HeaderCell>
+											</Table.DataCell>
+											<Table.DataCell>
 												<Button
 													data-cy={CypressSelector.BUTTON_MALER_SLETT}
 													onClick={() => slettMal(id, bestilling?.organisasjon)}
-												>
-													<Icon kind={'trashcan'} />
-												</Button>
-											</Table.HeaderCell>
+													variant={'tertiary'}
+													icon={<TrashIcon />}
+													size={'small'}
+												/>
+											</Table.DataCell>
 										</Table.ExpandableRow>
 									)
 								})}

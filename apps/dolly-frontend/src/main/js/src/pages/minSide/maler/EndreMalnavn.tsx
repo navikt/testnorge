@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
-import Button from '@/components/ui/button/Button'
-import { TextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { DollyApi } from '@/service/Api'
 import { CypressSelector } from '../../../../cypress/mocks/Selectors'
+import { TextField } from '@navikt/ds-react'
+import { Button } from '@navikt/ds-react'
 
 export const EndreMalnavn = ({ malNavn, id, bestilling, avsluttRedigering }) => {
 	const [nyttMalnavn, setMalnavn] = useState(malNavn)
@@ -19,16 +19,19 @@ export const EndreMalnavn = ({ malNavn, id, bestilling, avsluttRedigering }) => 
 	return (
 		<ErrorBoundary>
 			<div className="endreMalnavn">
-				<TextInput
+				<TextField
 					data-cy={CypressSelector.INPUT_MINSIDE_ENDRE_MALNAVN}
-					name="malnavn"
+					size={'small'}
+					label={'Skriv inn nytt malnavn'}
+					hideLabel
 					value={nyttMalnavn}
 					onChange={(e) => setMalnavn(e.target.value)}
 					className="navnInput"
 				/>
 				<Button
 					data-cy={CypressSelector.BUTTON_MINSIDE_LAGRE_MALNAVN}
-					className="lagre"
+					variant={'primary'}
+					size={'small'}
 					onClick={() => lagreEndring(nyttMalnavn, id)}
 				>
 					Lagre
