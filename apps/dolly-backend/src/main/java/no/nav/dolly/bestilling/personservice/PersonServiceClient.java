@@ -69,9 +69,12 @@ public class PersonServiceClient {
                 .map(status -> futurePersist(dollyPerson, progress, status)));
     }
 
-    private Map<String, Set<String>> getHendelseIder(BestillingProgress progress) {
+    private Map<String, Set<String>> getHendelseIder(boolean isOrdre, BestillingProgress progress) {
 
-        var json = transactionHelperService.getProgress(progress, BestillingProgress::getPdlOrdreStatus);
+        var json = isOrdre ?
+                progress.getPdlOrdreStatus() :
+                transactionHelperService.getProgress(progress, BestillingProgress::getPdlOrdreStatus);
+
         try {
             var tree = objectMapper.readTree(json);
 
@@ -119,7 +122,7 @@ public class PersonServiceClient {
 
         if (dollyPerson.getMaster() == Testident.Master.PDLF) {
 
-            return Flux.fromIterable(getHendelseIder(progress).entrySet());
+            return Flux.fromIterable(getHendelseIder(dollyPerson.isOrdre(), progress).entrySet());
 
         } else {
 

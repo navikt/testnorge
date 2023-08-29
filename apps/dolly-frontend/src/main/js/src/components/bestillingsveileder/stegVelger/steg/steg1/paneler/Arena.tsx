@@ -169,6 +169,7 @@ ArenaPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 					inaktiveringDato: null,
 					automatiskInnsendingAvMeldekort: true,
 					arenaBrukertype: 'UTEN_SERVICEBEHOV',
+					aktiveringDato: null,
 				})
 			},
 			remove() {

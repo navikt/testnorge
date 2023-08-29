@@ -1,6 +1,6 @@
 import * as Yup from 'yup'
 import { messages, requiredDate, requiredString } from '@/utils/YupValidations'
-import { isAfter, isBefore } from 'date-fns'
+import { isAfter, isBefore, isEqual } from 'date-fns'
 import * as _ from 'lodash-es'
 
 const ikkeOverlappendeVedtak = ['aap', 'dagpenger']
@@ -280,11 +280,27 @@ export const validation = Yup.object({
 		})
 		.nullable(),
 	inaktiveringDato: Yup.mixed()
-		.nullable()
-		.when('arenaBrukertype', {
-			is: 'UTEN_SERVICEBEHOV',
-			then: () => requiredDate,
-		}),
+		.test(
+			'er-etter-aktiveringsdato',
+			'Dato må være etter aktiveringsdato',
+			function isAfterAktivering(dato) {
+				const arenaValues = this.options.context?.arenaforvalter
+				if (arenaValues.inaktiveringDato === undefined) {
+					return true
+				}
+				if (arenaValues?.arenaBrukertype === 'UTEN_SERVICEBEHOV' && !dato) {
+					return this.createError({
+						message: 'Feltet er påkrevd',
+					})
+				}
+				return (
+					!arenaValues?.aktiveringDato ||
+					isEqual(new Date(dato), new Date(arenaValues.aktiveringDato)) ||
+					isAfter(new Date(dato), new Date(arenaValues.aktiveringDato))
+				)
+			},
+		)
+		.nullable(),
 	automatiskInnsendingAvMeldekort: Yup.boolean().nullable(),
 	kvalifiseringsgruppe: Yup.string()
 		.test('har-verdi', messages.required, function validKvalifiseringsgruppe(gruppe) {

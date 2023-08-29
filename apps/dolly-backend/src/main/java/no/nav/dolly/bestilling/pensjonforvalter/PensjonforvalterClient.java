@@ -13,6 +13,8 @@ import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPersonRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPoppInntektRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonSamboerRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonSamboerResponse;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonSivilstandWrapper;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpForholdRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpYtelseRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
@@ -33,7 +35,6 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -167,31 +168,39 @@ public class PensjonforvalterClient implements ClientRegister {
 
     private Flux<PensjonforvalterResponse> lagreSamboer(String ident, Set<String> tilgjengeligeMiljoer) {
 
-        return pdlDataConsumer.getPersoner(List.of(ident))
-                .map(FullPersonDTO::getPerson)
-                .map(PersonDTO::getSivilstand)
-                .flatMap(sivilstand -> Flux.fromStream(sivilstand.stream()))
-                .filter(sivilstand1 -> SivilstandDTO.Sivilstand.SAMBOER == sivilstand1.getType())
-                .map(sivilstand1 -> {
-                    var context = new MappingContext.Factory().getContext();
-                    context.setProperty(IDENT, ident);
-                    return (List<PensjonSamboerRequest>) mapperFacade.map(sivilstand1, List.class, context);
-                })
-                .flatMap(Flux::fromIterable)
-                .flatMap(request -> Flux.fromIterable(tilgjengeligeMiljoer)
-                        .flatMap(miljoe -> Flux.concat(pensjonforvalterConsumer.hentSamboer(request.getPidBruker(), miljoe)
-                                        .filter(response -> !response.getSamboerforhold().isEmpty())
-                                        .flatMap(response -> Flux.fromStream(response.getSamboerforhold().stream())
-                                                .map(samboer -> samboer.get_links().getAnnuller().getHref())
-                                                .map(lenke -> lenke.substring(lenke.indexOf(PERIODE) + PERIODE.length())
-                                                        .replace("/annuller", ""))
-                                                .flatMap(periodeId -> pensjonforvalterConsumer.annullerSamboer(request.getPidBruker(),
-                                                                periodeId, miljoe)
-                                                        .filter(response1 -> request.getPidBruker().equals(ident) &&
-                                                                response1.getStatus().stream()
-                                                                        .noneMatch(status -> status.getResponse().getHttpStatus().getStatus() == 200)))),
-                                pensjonforvalterConsumer.lagreSamboer(request, miljoe)
-                                        .filter(response -> request.getPidBruker().equals(ident)))));
+        return Flux.concat(annulerAlleSamboere(ident, tilgjengeligeMiljoer),
+                pdlDataConsumer.getPersoner(List.of(ident))
+                        .map(hovedperson -> {
+                            var context = new MappingContext.Factory().getContext();
+                            context.setProperty(IDENT, ident);
+                            return (List<PensjonSamboerRequest>) mapperFacade.map(PensjonSivilstandWrapper.builder()
+                                    .sivilstander(hovedperson.getPerson().getSivilstand())
+                                    .build(), List.class, context);
+                        })
+                        .flatMap(Flux::fromIterable)
+                        .flatMap(request -> Flux.fromIterable(tilgjengeligeMiljoer)
+                                .flatMap(miljoe -> pensjonforvalterConsumer.lagreSamboer(request, miljoe))
+                                .filter(response -> request.getPidBruker().equals(ident))));
+    }
+
+    private Flux<PensjonforvalterResponse> annulerAlleSamboere(String ident, Set<String> tilgjengeligeMiljoer) {
+
+        return Flux.fromIterable(tilgjengeligeMiljoer)
+                .flatMap(miljoe -> pensjonforvalterConsumer.hentSamboer(ident, miljoe)
+                        .flatMap(response -> Flux.merge(Flux.just(response), Flux.fromIterable(response.getSamboerforhold())
+                                        .map(PensjonSamboerResponse.Samboerforhold::getPidSamboer)
+                                        .flatMap(identSamboer -> pensjonforvalterConsumer.hentSamboer(identSamboer, miljoe)))
+                                .flatMap(samboerResponse -> Flux.fromIterable(samboerResponse.getSamboerforhold())
+                                        .flatMap(samboer -> pensjonforvalterConsumer.annullerSamboer(samboer.getPidBruker(),
+                                                        getPeriodeId(samboer.get_links().getAnnuller().getHref()), miljoe)
+                                                .filter(response1 -> samboer.getPidBruker().equals(ident) &&
+                                                        response1.getStatus().stream()
+                                                                .noneMatch(status -> status.getResponse().getHttpStatus().getStatus() == 200))))));
+    }
+
+    private static String getPeriodeId(String lenke) {
+        return lenke.substring(lenke.indexOf(PERIODE) + PERIODE.length())
+                .replace("/annuller", "");
     }
 
     private String prepInitStatus(Set<String> miljoer) {

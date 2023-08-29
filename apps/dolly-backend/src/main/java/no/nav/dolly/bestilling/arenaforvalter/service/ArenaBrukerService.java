@@ -17,7 +17,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -25,6 +24,7 @@ import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.bestilling.arenaforvalter.ArenaUtils.toLocalDate;
 import static no.nav.dolly.bestilling.arenaforvalter.utils.ArenaStatusUtil.getMessage;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 
@@ -119,10 +119,5 @@ public class ArenaBrukerService {
                                 .collect(Collectors.joining()))
 
                 .collect(Collectors.joining());
-    }
-
-    private static LocalDate toLocalDate(LocalDateTime localDateTime) {
-
-        return nonNull(localDateTime) ? localDateTime.toLocalDate() : null;
     }
 }
