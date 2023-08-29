@@ -10,6 +10,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import no.nav.dolly.domain.resultset.entity.infostripe.InfoStripeType;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.hibernate.annotations.GenericGenerator;
@@ -39,7 +40,7 @@ public class InfoStripe implements Serializable {
     private Long id;
 
     @Column(nullable = false)
-    private String type;
+    private InfoStripeType type = InfoStripeType.INFO;
 
     @Column(nullable = false)
     private String message;

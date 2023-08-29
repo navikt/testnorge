@@ -27,7 +27,7 @@ const saveHiddenAlerts = (alerts: string[]) => {
 type InfoStripeType = {
 	id: number
 	message: string
-	type: string
+	type: 'info' | 'warning' | 'error' | 'success'
 	start: Date
 	expires: Date
 }
