@@ -16,7 +16,7 @@ class Dokument {
         var fomIArbeid = Aktivitet.getFomIArbeid(aktivitet.getXmlObject());
 
         var pasient = new Pasient(dto.getPasient(), dto.getHelsepersonell());
-        var arbeidsgiver = Objects.nonNull(dto.getArbeidsgiver()) ? new Arbeidsgiver(dto.getArbeidsgiver()) : null;
+        var arbeidsgiver = new Arbeidsgiver(dto.getArbeidsgiver());
         var medisinskVurdering = new MedisinskVurdering(fom, dto.getHovedDiagnose(), dto.getBiDiagnoser());
 
         var prognose = new Prognose(fomIArbeid, dto.getDetaljer());
