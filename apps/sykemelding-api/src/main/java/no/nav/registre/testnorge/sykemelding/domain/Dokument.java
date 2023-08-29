@@ -4,7 +4,6 @@ import no.nav.registre.testnorge.sykemelding.external.xmlstds.helseopplysningera
 import no.nav.testnav.libs.dto.sykemelding.v1.SykemeldingDTO;
 
 import java.time.LocalDate;
-import java.util.Objects;
 
 class Dokument {
     private final XMLHelseOpplysningerArbeidsuforhet xmlHelseOpplysningerArbeidsuforhet;
