@@ -143,7 +143,7 @@ export default class DollyEndpoints {
 	}
 
 	static slettBestilling(bestillingId) {
-		return `${identBase}/${bestillingId}`
+		return `${bestillingBase}/${bestillingId}`
 	}
 
 	static gjenopprettPerson(ident, miljoer) {
