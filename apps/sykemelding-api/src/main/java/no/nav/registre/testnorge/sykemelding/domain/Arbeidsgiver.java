@@ -14,13 +14,16 @@ public class Arbeidsgiver {
                 .withHarArbeidsgiver(new XMLCS()
                         .withDN("En arbeidsgiver")
                         .withV("1"))
-                .withNavnArbeidsgiver(dto.getNavn())
-                .withYrkesbetegnelse(dto.getYrkesbetegnelse())
-                .withStillingsprosent(nonNull(dto.getStillingsprosent()) ? dto.getStillingsprosent().intValue() : 100);
+                .withNavnArbeidsgiver(nonNull(dto) ? dto.getNavn() : null)
+                .withYrkesbetegnelse(nonNull(dto) ? dto.getYrkesbetegnelse() : null)
+                .withStillingsprosent(nonNull(dto) ? getStillingsprosent(dto) : null);
+    }
+
+    private static int getStillingsprosent(ArbeidsgiverDTO dto) {
+        return nonNull(dto.getStillingsprosent()) ? dto.getStillingsprosent().intValue() : 100;
     }
 
     XMLHelseOpplysningerArbeidsuforhet.Arbeidsgiver getXmlObject() {
         return xmlArbeidsgiver;
     }
-
 }
