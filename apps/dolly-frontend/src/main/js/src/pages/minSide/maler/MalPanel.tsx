@@ -38,6 +38,46 @@ export const MalPanel = ({
 
 	const maler = malerFiltrert(malListe, searchText)
 
+	const DataCells = ({ id, malNavn, bestilling }) => (
+		<>
+			<Table.DataCell scope="row">
+				{erUnderRedigering(id) ? (
+					<EndreMalnavn
+						malNavn={malNavn}
+						id={id}
+						bestilling={bestilling}
+						avsluttRedigering={(id: number) => {
+							avsluttRedigering(id)
+							mutate()
+						}}
+					/>
+				) : (
+					<span style={{ fontWeight: 'normal' }}>{malNavn}</span>
+				)}
+			</Table.DataCell>
+			<Table.DataCell align={'center'}>
+				{erUnderRedigering(id) ? (
+					<Button variant={'secondary'} size={'small'} onClick={() => avsluttRedigering(id)}>
+						Avbryt
+					</Button>
+				) : (
+					<Button
+						data-cy={CypressSelector.BUTTON_MINSIDE_ENDRE_MALNAVN}
+						onClick={() => {
+							setUnderRedigering(underRedigering.concat([id]))
+						}}
+						variant={'tertiary'}
+						icon={<PencilWritingIcon />}
+						size={'small'}
+					/>
+				)}
+			</Table.DataCell>
+			<Table.DataCell>
+				<SlettMal id={id} organisasjon={bestilling?.organisasjon} mutate={mutate} />
+			</Table.DataCell>
+		</>
+	)
+
 	return (
 		<Panel>
 			{antallEgneMaler > 0 ? (
@@ -61,45 +101,7 @@ export const MalPanel = ({
 											key={id}
 											content={<Bestillingskriterier bestilling={bestilling} erMalVisning />}
 										>
-											<Table.DataCell scope="row">
-												{erUnderRedigering(id) ? (
-													<EndreMalnavn
-														malNavn={malNavn}
-														id={id}
-														bestilling={bestilling}
-														avsluttRedigering={(id: number) => {
-															avsluttRedigering(id)
-															mutate()
-														}}
-													/>
-												) : (
-													<span style={{ fontWeight: 'normal' }}>{malNavn}</span>
-												)}
-											</Table.DataCell>
-											<Table.DataCell align={'center'}>
-												{erUnderRedigering(id) ? (
-													<Button
-														variant={'secondary'}
-														size={'small'}
-														onClick={() => avsluttRedigering(id)}
-													>
-														Avbryt
-													</Button>
-												) : (
-													<Button
-														data-cy={CypressSelector.BUTTON_MINSIDE_ENDRE_MALNAVN}
-														onClick={() => {
-															setUnderRedigering(underRedigering.concat([id]))
-														}}
-														variant={'tertiary'}
-														icon={<PencilWritingIcon />}
-														size={'small'}
-													/>
-												)}
-											</Table.DataCell>
-											<Table.DataCell>
-												<SlettMal id={id} organisasjon={bestilling?.organisasjon} mutate={mutate} />
-											</Table.DataCell>
+											<DataCells id={id} bestilling={bestilling} malNavn={malNavn} />
 										</Table.ExpandableRow>
 									)
 								})}
