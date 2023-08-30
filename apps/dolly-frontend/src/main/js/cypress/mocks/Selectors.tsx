@@ -40,6 +40,7 @@ export enum CypressSelector {
 	BUTTON_FLYTT_PERSONER_AVBRYT = 'button-flytt-personer-avbryt',
 	BUTTON_VARSLING_LUKK = 'button-varsling-lukk',
 	BUTTON_MALER_SLETT = 'button-maler-slett',
+	BUTTON_MALER_SLETT_BEKREFT = 'button-maler-slett-bekreft',
 	BUTTON_NAVIGER_PERSON = 'button-naviger-person',
 	BUTTON_HEADER_PERSONER = 'button-header-personer',
 	BUTTON_HEADER_ORGANISASJONER = 'button-header-organisasjoner',

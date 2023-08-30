@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { Panel, Button, Table } from '@navikt/ds-react'
 import { Mal } from '@/utils/hooks/useMaler'
@@ -14,9 +14,6 @@ type Props = {
 	malListe: any
 	searchText: string
 	type: string
-	heading: string
-	startOpen: boolean
-	iconType: string
 	mutate: () => void
 	underRedigering: any
 	setUnderRedigering: any
@@ -31,12 +28,6 @@ export const MalPanel = ({
 	underRedigering,
 	setUnderRedigering,
 }: Props) => {
-	const [searchActive, setSearchActive] = useState(false)
-
-	useEffect(() => {
-		setSearchActive(searchText?.length > 0)
-	}, [searchText])
-
 	const erUnderRedigering = (id: number) => underRedigering.includes(id)
 
 	const avsluttRedigering = (id: number) => {
