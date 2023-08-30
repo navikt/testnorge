@@ -359,6 +359,13 @@ public class BestillingService {
         bestillingRepository.updateBestillingNullifyGruppe(gruppeId);
     }
 
+    public void slettBestillingByBestillingId(Long bestillingId) {
+
+        bestillingProgressRepository.deleteByBestilling_Id(bestillingId);
+        bestillingKontrollRepository.deleteByBestillingWithNoChildren(bestillingId);
+        bestillingRepository.deleteById(bestillingId);
+    }
+
     public void slettBestillingByTestIdent(String ident) {
 
         var bestillingProgresses = bestillingProgressRepository.findByIdent(ident);

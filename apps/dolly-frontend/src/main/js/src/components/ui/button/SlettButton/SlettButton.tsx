@@ -7,12 +7,17 @@ import Loading from '@/components/ui/loading/Loading'
 
 import './SlettModal.less'
 import { useNavigate } from 'react-router-dom'
-import { REGEX_BACKEND_GRUPPER, useMatchMutate } from '@/utils/hooks/useMutate'
+import {
+	REGEX_BACKEND_BESTILLINGER,
+	REGEX_BACKEND_GRUPPER,
+	useMatchMutate,
+} from '@/utils/hooks/useMutate'
 import React from 'react'
 
 type Props = {
 	action: Function
 	gruppeId?: string | number
+	bestillingId?: string | number
 	loading: boolean
 	children: any
 	disabled?: boolean
@@ -23,6 +28,7 @@ type Props = {
 export const SlettButton = ({
 	action,
 	gruppeId,
+	bestillingId,
 	loading,
 	children,
 	disabled = false,
@@ -32,6 +38,7 @@ export const SlettButton = ({
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 	const navigate = useNavigate()
 	const mutate = useMatchMutate()
+	const slettMedId = bestillingId || gruppeId
 
 	if (loading) {
 		return <Loading label="sletter..." />
@@ -63,9 +70,12 @@ export const SlettButton = ({
 						<NavButton
 							onClick={() => {
 								closeModal()
-								gruppeId
-									? action(gruppeId).then(() => mutate(REGEX_BACKEND_GRUPPER))
-									: action().then(() => mutate(REGEX_BACKEND_GRUPPER))
+								slettMedId
+									? action(slettMedId)?.then(() => {
+											mutate(REGEX_BACKEND_BESTILLINGER)
+											return mutate(REGEX_BACKEND_GRUPPER)
+									  })
+									: action()?.then(() => mutate(REGEX_BACKEND_GRUPPER))
 								navigateHome && navigate('/')
 							}}
 							variant={'primary'}
