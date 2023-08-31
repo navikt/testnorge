@@ -17,6 +17,7 @@ import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonSamboerResponse;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonSivilstandWrapper;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpForholdRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpYtelseRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonUforetrygdRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.PdlPerson;
@@ -25,6 +26,7 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.TransaksjonMapping;
 import no.nav.dolly.domain.resultset.IdentType;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
+import no.nav.dolly.domain.resultset.SystemTyper;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
@@ -44,7 +46,6 @@ import reactor.core.publisher.Mono;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
@@ -52,10 +53,10 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.PEN_AP;
+import static no.nav.dolly.domain.resultset.SystemTyper.PEN_UT;
 
 @Slf4j
 @Service
@@ -69,6 +70,7 @@ public class PensjonforvalterClient implements ClientRegister {
     private static final String POPP_INNTEKTSREGISTER = "PoppInntekt#";
     private static final String TP_FORHOLD = "TpForhold#";
     private static final String PEN_ALDERSPENSJON = "AP#";
+    private static final String PEN_UFORETRYGD = "Ufoer#";
     private static final String PERIODE = "/periode/";
 
     private final PensjonforvalterConsumer pensjonforvalterConsumer;
@@ -156,6 +158,13 @@ public class PensjonforvalterClient implements ClientRegister {
                                                     isOpprettEndre,
                                                     bestillingId)
                                                     .map(response -> PEN_ALDERSPENSJON + decodeStatus(response, dollyPerson.getIdent())),
+
+                                            lagreUforetrygd(bestilling1.getPensjonforvalter(),
+                                                    dollyPerson.getIdent(),
+                                                    bestilteMiljoer.get(),
+                                                    isOpprettEndre,
+                                                    bestillingId)
+                                                    .map(response -> PEN_UFORETRYGD + decodeStatus(response, dollyPerson.getIdent())),
 
                                             lagreInntekt(bestilling1.getPensjonforvalter(), dollyPerson, bestilteMiljoer.get())
                                                     .map(response -> POPP_INNTEKTSREGISTER + decodeStatus(response, dollyPerson.getIdent())))))
@@ -300,7 +309,8 @@ public class PensjonforvalterClient implements ClientRegister {
                         .map(response -> {
                             response.getStatus().forEach(status -> {
                                 if (status.getResponse().isResponse2xx()) {
-                                    saveAPTransaksjonId(ident, status.getMiljo(), bestillingId, pensjonData.getAlderspensjon());
+                                    saveAPTransaksjonId(ident, status.getMiljo(), bestillingId,
+                                            PEN_AP, pensjonData.getAlderspensjon());
                                 }
                             });
                             return response;
@@ -310,22 +320,46 @@ public class PensjonforvalterClient implements ClientRegister {
         return Flux.empty();
     }
 
-    private void saveAPTransaksjonId(String ident, String miljoe, Long bestillingId, PensjonData.Alderspensjon alderspensjon) {
-        log.info("lagrer transaksjon for {} i {} ", ident, miljoe);
+    private Flux<PensjonforvalterResponse> lagreUforetrygd(PensjonData pensjonforvalter, String ident, Set<String> miljoer, boolean isOpprettEndre, Long bestillingId) {
 
-        var jsonData = Map.of(
-                "iverksettelsesdato", alderspensjon.getIverksettelsesdato().format(ISO_LOCAL_DATE),
-                "uttaksgrad", alderspensjon.getUttaksgrad()
-        );
+        return Flux.just(pensjonforvalter)
+                .filter(pensjon -> nonNull(pensjon.getUforetrygd()))
+                .map(PensjonData::getUforetrygd)
+                .flatMap(uforetrygd -> Flux.fromIterable(miljoer)
+                        .filter(miljoe -> isOpprettEndre ||
+                                !transaksjonMappingService.existAlready(PEN_UT, ident, miljoe))
+                        .collectList()
+                        .map(nyeMiljoer -> {
+                            var context = new MappingContext.Factory().getContext();
+                            context.setProperty("ident", ident);
+                            context.setProperty("miljoer", nyeMiljoer);
+                            return mapperFacade.map(uforetrygd, PensjonUforetrygdRequest.class, context);
+                        })
+                        .map(request -> pensjonforvalterConsumer.lagreUforetrygd(request)
+                                .map(response -> {
+                                    response.getStatus().forEach(status -> {
+                                        if (status.getResponse().isResponse2xx()) {
+                                            saveAPTransaksjonId(ident, status.getMiljo(), bestillingId,
+                                                    PEN_UT, uforetrygd);
+                                        }
+                                    });
+                                    return response;
+                                })))
+                .flatMap(Flux::from);
+    }
+
+    private void saveAPTransaksjonId(String ident, String miljoe, Long bestillingId, SystemTyper type, Object vedtak) {
+
+        log.info("lagrer transaksjon for {} i {} ", ident, miljoe);
 
         transaksjonMappingService.save(
                 TransaksjonMapping.builder()
                         .ident(ident)
                         .bestillingId(bestillingId)
-                        .transaksjonId(toJson(jsonData))
+                        .transaksjonId(toJson(vedtak))
                         .datoEndret(LocalDateTime.now())
                         .miljoe(miljoe)
-                        .system(PEN_AP.name())
+                        .system(type.name())
                         .build());
     }
 

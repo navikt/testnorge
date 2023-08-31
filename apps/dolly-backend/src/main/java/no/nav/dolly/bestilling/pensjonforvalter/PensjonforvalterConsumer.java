@@ -14,6 +14,7 @@ import no.nav.dolly.bestilling.pensjonforvalter.command.LagrePoppInntektCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.LagreSamboerCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.LagreTpForholdCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.LagreTpYtelseCommand;
+import no.nav.dolly.bestilling.pensjonforvalter.command.LagreUforetrygdCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.OpprettPersonCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.SletteTpForholdCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonRequest;
@@ -23,6 +24,7 @@ import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonSamboerRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonSamboerResponse;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpForholdRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpYtelseRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonUforetrygdRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.dolly.config.credentials.PensjonforvalterProxyProperties;
 import no.nav.dolly.metrics.Timed;
@@ -119,6 +121,14 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
         log.info("Pensjon lagre alderspensjon {}", request);
         return tokenService.exchange(serviceProperties)
                 .flatMapMany(token -> new LagreAlderspensjonCommand(webClient, token.getTokenValue(), request).call());
+    }
+
+    @Timed(name = "providers", tags = {"operation", "pen_lagreUforetrygd"})
+    public Flux<PensjonforvalterResponse> lagreUforetrygd(PensjonUforetrygdRequest request) {
+
+        log.info("Pensjon lagre uforetrygd {}", request);
+        return tokenService.exchange(serviceProperties)
+                .flatMapMany(token -> new LagreUforetrygdCommand(webClient, token.getTokenValue(), request).call());
     }
 
     @Timed(name = "providers", tags = {"operation", "pen_getInntekter"})
