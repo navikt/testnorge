@@ -17,6 +17,7 @@ import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput
 
 const StyledAlert = styled(Alert)`
 	margin-bottom: 20px;
+
 	&&& {
 		.navds-alert__wrapper {
 			max-width: 60rem;
@@ -40,10 +41,10 @@ export const AlderspensjonForm = ({ formikBag }) => {
 		(isDate(foedtFoer) && add(foedtFoer, { years: 62 }) > new Date())
 
 	const alderLeggTilPerson = getAlder(
-		_get(opts, 'personFoerLeggTil.pdl.hentPerson.foedsel[0].foedselsdato')
+		_get(opts, 'personFoerLeggTil.pdl.hentPerson.foedsel[0].foedselsdato'),
 	)
 	const alderImportertPerson = opts?.importPersoner?.map((person) =>
-		getAlder(_get(person, 'data.hentPerson.foedsel[0].foedselsdato'))
+		getAlder(_get(person, 'data.hentPerson.foedsel[0].foedselsdato')),
 	)
 
 	const harUgyldigFoedselsaar = () => {
@@ -55,14 +56,14 @@ export const AlderspensjonForm = ({ formikBag }) => {
 		} else if (leggTil) {
 			if (
 				opts?.personFoerLeggTil?.pdl?.foedsel?.some(
-					(f) => f.foedselsaar < 1944 && !f.metadata?.historisk
+					(f) => f.foedselsaar < 1944 && !f.metadata?.historisk,
 				)
 			) {
 				ugyldigFoedselsaar = true
 			}
 		} else if (importTestnorge) {
 			const foedselListe = opts?.importPersoner?.flatMap(
-				(person) => person?.data?.hentPerson?.foedsel
+				(person) => person?.data?.hentPerson?.foedsel,
 			)
 			if (foedselListe?.some((f) => f.foedselsaar < 1944 && !f.metadata?.historisk)) {
 				ugyldigFoedselsaar = true
@@ -94,16 +95,16 @@ export const AlderspensjonForm = ({ formikBag }) => {
 
 	const harPartner =
 		_get(formikBag.values, 'pdldata.person.sivilstand')?.some((siv) =>
-			gyldigSivilstand.includes(siv?.type)
+			gyldigSivilstand.includes(siv?.type),
 		) ||
 		_get(opts, 'personFoerLeggTil.pdl.hentPerson.sivilstand')?.some((siv) =>
-			gyldigSivilstand.includes(siv?.type)
+			gyldigSivilstand.includes(siv?.type),
 		)
 
 	const harPartnerImportertPerson = () => {
 		const personerMedPartner = opts?.importPersoner?.filter((person) => {
 			return person?.data?.hentPerson?.sivilstand?.some((siv) =>
-				gyldigSivilstand.includes(siv?.type)
+				gyldigSivilstand.includes(siv?.type),
 			)
 		})
 		return personerMedPartner?.length > 0
@@ -115,7 +116,7 @@ export const AlderspensjonForm = ({ formikBag }) => {
 	}
 	const valgtAdresseType = () => {
 		const adresseUtenTilDato = _get(formikBag.values, 'pdldata.person.bostedsadresse')?.find(
-			(adresse) => adresse.gyldigFraOgMed && !adresse.gyldigTilOgMed
+			(adresse) => adresse.gyldigFraOgMed && !adresse.gyldigTilOgMed,
 		)
 		const gjeldendeAdresse =
 			adresseUtenTilDato ||
@@ -141,7 +142,7 @@ export const AlderspensjonForm = ({ formikBag }) => {
 		if (opts?.importPersoner) {
 			const personerMedNorskAdresse = opts?.importPersoner.filter((person) => {
 				return person.data?.hentPerson?.bostedsadresse?.some(
-					(adresse) => adresse.vegadresse && !adresse.metadata?.historisk
+					(adresse) => adresse.vegadresse && !adresse.metadata?.historisk,
 				)
 			})
 			return personerMedNorskAdresse?.length > 0
@@ -155,7 +156,7 @@ export const AlderspensjonForm = ({ formikBag }) => {
 			<Panel
 				heading="Alderspensjon"
 				hasErrors={panelError(formikBag, alderspensjonPath)}
-				iconType="pensjon"
+				iconType="designsystem-pensjon"
 				startOpen={erForsteEllerTest(formikBag.values, [alderspensjonPath])}
 			>
 				{nyBestilling && (!harAlder || harUgyldigAlder) && (

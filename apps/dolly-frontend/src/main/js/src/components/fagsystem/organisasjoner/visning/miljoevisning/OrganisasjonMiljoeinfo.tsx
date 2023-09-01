@@ -17,7 +17,7 @@ export const OrganisasjonMiljoeinfo = (props: { orgnummer: string }) => {
 
 	return (
 		<div>
-			<SubOverskrift label="Opprettet i miljøer" iconKind="visOrgData" />
+			<SubOverskrift label="Opprettet i miljøer" iconKind="designsystem-vis-org-data" />
 			{state.loading && <Loading label="Laster miljøer" />}
 			{/* @ts-ignore */}
 			{state.value && <OrganisasjonDataVisning data={state.value.data} />}

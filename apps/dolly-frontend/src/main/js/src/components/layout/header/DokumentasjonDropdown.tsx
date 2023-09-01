@@ -49,11 +49,11 @@ export const DokumentasjonDropdown = () => {
 								window.open(
 									'https://navikt.github.io/testnorge/applications/dolly/',
 									'_blank',
-									'noopener'
+									'noopener',
 								)
 							}
 						>
-							<Icon kind="fileNew2" size={16} />
+							<Icon kind="designsystem-file-new" size={16} />
 							<StyledA>Brukerdokumentasjon</StyledA>
 						</Dropdown.Menu.List.Item>
 						{currentBruker?.brukertype === 'AZURE' && (
@@ -64,11 +64,11 @@ export const DokumentasjonDropdown = () => {
 											? 'https://dolly-backend-dev.intern.dev.nav.no/swagger'
 											: 'https://dolly-backend.intern.dev.nav.no/swagger',
 										'_blank',
-										'noopener'
+										'noopener',
 									)
 								}
 							>
-								<Icon kind="fileCode" size={16} />
+								<Icon kind="designsystem-file-code" size={16} />
 								<StyledA>API-dokumentasjon</StyledA>
 							</Dropdown.Menu.List.Item>
 						)}

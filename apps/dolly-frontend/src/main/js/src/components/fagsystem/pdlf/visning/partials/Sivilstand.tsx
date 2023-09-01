@@ -157,7 +157,7 @@ export const Sivilstand = ({ data, relasjoner, tmpPersoner, ident }: SivilstandT
 
 	return (
 		<div>
-			<SubOverskrift label="Sivilstand (partner)" iconKind="partner" />
+			<SubOverskrift label="Sivilstand (partner)" iconKind="designsystem-partner" />
 			<div className="person-visning_content">
 				<DollyFieldArray data={data} nested>
 					{(sivilstand: SivilstandData, idx: number) => (

@@ -159,10 +159,8 @@ export default ({
 	const {
 		loading: loadingArbeidsplassencvData,
 		arbeidsplassencvData,
-		error: arbeidsplassencvError,} = useArbeidsplassencvData(
-		ident.ident,
-		harArbeidsplassenBestilling(bestillingerFagsystemer),
-	)
+		error: arbeidsplassencvError,
+	} = useArbeidsplassencvData(ident.ident, harArbeidsplassenBestilling(bestillingerFagsystemer))
 
 	const { loading: loadingArenaData, arenaData } = useArenaData(
 		ident.ident,
@@ -306,7 +304,7 @@ export default ({
 									navigate,
 								)
 							}}
-							kind="add-circle"
+							kind="designsystem-add-circle"
 						>
 							LEGG TIL/ENDRE
 						</Button>

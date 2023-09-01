@@ -22,7 +22,7 @@ export const OrganisasjonForm = ({ formikBag }: OrganisasjonFormProps) => {
 				<Panel
 					heading="Detaljer"
 					hasErrors={panelError(formikBag, detaljerPaths)}
-					iconType={'personinformasjon'}
+					iconType={'designsystem-personinformasjon'}
 					startOpen={erForsteEllerTest(formikBag.values, detaljerPaths)}
 				>
 					<Detaljer formikBag={formikBag} path="organisasjon" level={0} />
@@ -43,7 +43,7 @@ const testSektorkode = (schema: any) => {
 			return this.createError({
 				message: 'Feltet er påkrevd',
 			})
-		}
+		},
 	)
 }
 
@@ -71,7 +71,7 @@ const organisasjon: any = Yup.object().shape({
 		'$organisasjon.underenheter',
 		Yup.array()
 			.transform((value) => Object.values(value))
-			.of(Yup.lazy(() => organisasjon.default(undefined)))
+			.of(Yup.lazy(() => organisasjon.default(undefined))),
 	),
 })
 

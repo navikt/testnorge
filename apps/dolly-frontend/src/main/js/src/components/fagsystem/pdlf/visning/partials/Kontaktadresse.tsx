@@ -171,12 +171,12 @@ const KontaktadresseVisning = ({
 }: KontaktadresseVisningTypes) => {
 	const initKontaktadresse = Object.assign(
 		_.cloneDeep(initialKontaktadresse),
-		data?.[idx] || tmpData?.[idx]
+		data?.[idx] || tmpData?.[idx],
 	)
 	const initialValues = { kontaktadresse: initKontaktadresse }
 
 	const redigertKontaktadressePdlf = _.get(tmpPersoner, `${ident}.person.kontaktadresse`)?.find(
-		(a: KontaktadresseData) => a.id === kontaktadresseData.id
+		(a: KontaktadresseData) => a.id === kontaktadresseData.id,
 	)
 	const slettetKontaktadressePdlf =
 		tmpPersoner?.hasOwnProperty(ident) && !redigertKontaktadressePdlf
@@ -191,7 +191,7 @@ const KontaktadresseVisning = ({
 		? {
 				kontaktadresse: Object.assign(
 					_.cloneDeep(initialKontaktadresse),
-					redigertKontaktadressePdlf
+					redigertKontaktadressePdlf,
 				),
 		  }
 		: null
@@ -225,7 +225,7 @@ export const Kontaktadresse = ({
 
 	return (
 		<>
-			<SubOverskrift label="Kontaktadresse" iconKind="postadresse" />
+			<SubOverskrift label="Kontaktadresse" iconKind="designsystem-postadresse" />
 			<div className="person-visning_content">
 				<ErrorBoundary>
 					<DollyFieldArray data={data || tmpData} header="" nested>

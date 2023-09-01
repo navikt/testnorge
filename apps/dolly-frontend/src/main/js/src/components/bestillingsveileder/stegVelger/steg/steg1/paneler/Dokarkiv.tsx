@@ -18,7 +18,7 @@ export const DokarkivPanel = ({ stateModifier, formikBag }: any) => {
 			heading={DokarkivPanel.heading}
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
-			iconType="dokarkiv"
+			iconType="designsystem-dokarkiv"
 			startOpen={harValgtAttributt(formikBag.values, [dokarkivAttributt, histarkAttributt])}
 		>
 			<AttributtKategori title="Oppretting av dokument" attr={sm.attrs}>

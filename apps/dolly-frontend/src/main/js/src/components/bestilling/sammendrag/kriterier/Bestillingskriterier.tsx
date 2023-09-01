@@ -100,7 +100,7 @@ const RenderExpandablePanel = ({ attributt }) => {
 		<div className="flexbox--full-width">
 			<Button
 				onClick={visPersonValg ? setSkjulPersonValg : setVisPersonValg}
-				kind={visPersonValg ? 'collapse' : 'expand'}
+				kind={visPersonValg ? 'designsystem-chevron-up' : 'designsystem-chevron-down'}
 				style={visPersonValg ? { margin: '10px 0 10px 0' } : { margin: '10px 0 0 0' }}
 			>
 				{attributt.expandableHeader}

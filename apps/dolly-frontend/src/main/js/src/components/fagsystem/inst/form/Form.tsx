@@ -35,7 +35,7 @@ export const InstForm = ({ formikBag }) => {
 			<Panel
 				heading="Institusjonsopphold"
 				hasErrors={panelError(formikBag, instAttributt)}
-				iconType="institusjon"
+				iconType="designsystem-institusjon"
 				startOpen={erForsteEllerTest(formikBag.values, [instAttributt])}
 			>
 				{/*// @ts-ignore*/}

@@ -35,7 +35,7 @@ type ResponsBestilling = {
 		{
 			navn: string
 			id: number
-		}
+		},
 	]
 }
 
@@ -209,7 +209,7 @@ const FinnPersonBestilling = ({
 				? soekBestillinger(tekst).catch((err: Error) => setError(err.message))
 				: soekPersoner(tekst).catch((err: Error) => setError(err.message))
 		},
-		[soekType]
+		[soekType],
 	)
 
 	const handleChange = (tekst: string) => {
@@ -236,7 +236,7 @@ const FinnPersonBestilling = ({
 		return (
 			// @ts-ignore
 			<components.DropdownIndicator {...props}>
-				<Icon data-cy={CypressSelector.INPUT_PERSON_SOEK} kind={'search'} size={20} />
+				<Icon data-cy={CypressSelector.INPUT_PERSON_SOEK} kind={'designsystem-search'} size={20} />
 			</components.DropdownIndicator>
 		)
 	}

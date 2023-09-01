@@ -32,7 +32,7 @@ export const TagsButton = ({ action, loading, gruppeId, eksisterendeTags }: Prop
 
 	return (
 		<React.Fragment>
-			<Button onClick={openModal} kind="link" className="svg-icon-blue">
+			<Button onClick={openModal} kind="designsystem-link" className="svg-icon-blue">
 				TILKNYTT TAGS
 			</Button>
 			<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="60%" overflow="auto">

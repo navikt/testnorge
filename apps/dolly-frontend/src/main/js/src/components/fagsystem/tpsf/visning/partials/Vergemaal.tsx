@@ -69,7 +69,7 @@ export const TpsfVergemaal = ({ data }: DataListe) => {
 	}
 	return (
 		<div>
-			<SubOverskrift label="Vergemål" iconKind="vergemaal" />
+			<SubOverskrift label="Vergemål" iconKind="designsystem-vergemaal" />
 
 			<DollyFieldArray data={data} nested>
 				{(vergemaal: VergemaalData) => <Visning key={vergemaal.id} data={vergemaal} />}

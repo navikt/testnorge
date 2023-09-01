@@ -124,7 +124,11 @@ export default ({ search, sidetall }: OrganisasjonerProps) => {
 						<ToggleGroup.Item value={VISNING_BESTILLINGER}>
 							<Icon
 								size={13}
-								kind={visning === VISNING_BESTILLINGER ? 'bestillingLight' : 'bestilling'}
+								kind={
+									visning === VISNING_BESTILLINGER
+										? 'designsystem-bestilling-light'
+										: 'designsystem-bestilling'
+								}
 							/>
 							{`Bestillinger (${antallBest ? antallBest : 0})`}
 						</ToggleGroup.Item>

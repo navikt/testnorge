@@ -18,7 +18,7 @@ export const BrregstubForm = ({ formikBag }) => {
 			<Panel
 				heading="Brønnøysundregistrene"
 				hasErrors={panelError(formikBag, brregAttributt)}
-				iconType="brreg"
+				iconType="designsystem-brreg"
 				startOpen={erForsteEllerTest(formikBag.values, [brregAttributt])}
 			>
 				<div className="flexbox--flex-wrap">
@@ -54,10 +54,10 @@ BrregstubForm.validation = {
 							egenskap: requiredString,
 							fratraadt: Yup.boolean(),
 							registreringsdato: Yup.date(),
-						})
+						}),
 					),
-				})
+				}),
 			),
-		})
+		}),
 	),
 }

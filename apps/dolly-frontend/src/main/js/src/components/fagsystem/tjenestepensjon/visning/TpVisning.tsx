@@ -69,7 +69,7 @@ export const TpVisning = ({ data, loading, bestillingIdListe, tilgjengeligMiljoe
 		<ErrorBoundary>
 			<SubOverskrift
 				label="Tjenestepensjon (TP)"
-				iconKind="pensjon"
+				iconKind="designsystem-pensjon"
 				isWarning={manglerFagsystemdata}
 			/>
 			{manglerFagsystemdata ? (

@@ -47,7 +47,7 @@ export default ({ data, bestillingIdListe, loading, tilgjengeligMiljoe }: Form) 
 
 	return (
 		<>
-			<SubOverskrift label="Dokumenter" iconKind="dokarkiv" />
+			<SubOverskrift label="Dokumenter" iconKind="designsystem-dokarkiv" />
 			<MiljoTabs
 				bestilteMiljoer={bestilteMiljoer}
 				errorMiljoer={errorMiljoer}

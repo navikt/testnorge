@@ -131,7 +131,7 @@ export const NyIdent = ({ brukernavn, onAvbryt, onSubmit }: NyBestillingProps) =
 								</Alert>
 							)}
 							<div className="mal-admin">
-								<Button kind="maler">
+								<Button kind="designsystem-maler">
 									<NavLink to="/minside">Administrer maler</NavLink>
 								</Button>
 							</div>

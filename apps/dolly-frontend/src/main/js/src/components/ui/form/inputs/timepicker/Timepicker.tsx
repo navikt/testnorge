@@ -50,7 +50,7 @@ export const TimePicker = ({
 			name={name}
 			id={name}
 			autoComplete="off"
-			customInput={<TextInput icon="calendar" feil={feil} />}
+			customInput={<TextInput icon="designsystem-calendar" feil={feil} />}
 			excludeDates={excludeDates}
 		/>
 	)

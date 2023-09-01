@@ -1,9 +1,8 @@
 import Icon from '@/components/ui/icon/Icon'
 
 import './appError.less'
-import { CopyToClipboard } from 'react-copy-to-clipboard'
 import 'rc-tooltip/assets/bootstrap.css'
-import DollyTooltip from '@/components/ui/button/DollyTooltip'
+import { DollyCopyButton } from '@/components/ui/button/CopyButton/DollyCopyButton'
 
 export const AppError = ({ error, stackTrace, style }) => (
 	<div className="application-error" style={style}>
@@ -17,21 +16,12 @@ export const AppError = ({ error, stackTrace, style }) => (
 		</pre>
 		{error && (
 			<div className={'flexbox--align-start flexbox--wrap'}>
-				<CopyToClipboard text={error.toString() + '\n' + stackTrace}>
-					<DollyTooltip overlay={'Kopier'} mouseEnterDelay={0}>
-						<div
-							className="icon"
-							style={{ paddingTop: '8px' }}
-							onClick={(event) => {
-								event.stopPropagation()
-							}}
-						>
-							<Icon kind="copy" size={20} />
-						</div>
-					</DollyTooltip>
-				</CopyToClipboard>
+				<DollyCopyButton
+					copyText={error.toString() + '\n' + stackTrace}
+					tooltipText={'Kopier feilmelding'}
+				/>
 
-				<details style={{ whiteSpace: 'pre-wrap', padding: '10px' }}>
+				<details style={{ whiteSpace: 'pre-wrap', padding: '10px', cursor: 'pointer' }}>
 					<summary>Detaljert Feilbeskrivelse</summary>
 					<p>
 						<br />

@@ -42,7 +42,7 @@ export const RadioGroupOptions = ({
 				<div className="options-title">{name}</div>
 				{selected != null && (
 					<IconContainer onClick={() => setSelected('')}>
-						<Icon size={14} kind={'trashcan'} />
+						<Icon size={14} kind={'designsystem-trashcan'} />
 					</IconContainer>
 				)}
 			</div>

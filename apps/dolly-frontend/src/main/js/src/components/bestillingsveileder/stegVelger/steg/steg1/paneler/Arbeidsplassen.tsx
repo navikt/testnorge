@@ -30,7 +30,7 @@ export const ArbeidsplassenPanel = ({ stateModifier, formikBag }) => {
 			heading={ArbeidsplassenPanel.heading}
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
-			iconType="cv"
+			iconType="designsystem-cv"
 			startOpen={harValgtAttributt(formikBag.values, ['arbeidsplassenCV'])}
 		>
 			<AttributtKategori title={null} attr={sm.attrs}>
@@ -85,7 +85,7 @@ ArbeidsplassenPanel.initialValues = ({ setMulti, del, has, initial, opts }) => {
 			add() {
 				setMulti(
 					['arbeidsplassenCV.jobboensker', initialJobboenskerVerdier],
-					['arbeidsplassenCV.harHjemmel', hjemmel()]
+					['arbeidsplassenCV.harHjemmel', hjemmel()],
 				)
 			},
 			remove() {
@@ -98,7 +98,7 @@ ArbeidsplassenPanel.initialValues = ({ setMulti, del, has, initial, opts }) => {
 			add() {
 				setMulti(
 					['arbeidsplassenCV.utdanning', [initialUtdanningVerdier]],
-					['arbeidsplassenCV.harHjemmel', hjemmel()]
+					['arbeidsplassenCV.harHjemmel', hjemmel()],
 				)
 			},
 			remove() {
@@ -111,7 +111,7 @@ ArbeidsplassenPanel.initialValues = ({ setMulti, del, has, initial, opts }) => {
 			add() {
 				setMulti(
 					['arbeidsplassenCV.fagbrev', [initialFagbrevVerdier]],
-					['arbeidsplassenCV.harHjemmel', hjemmel()]
+					['arbeidsplassenCV.harHjemmel', hjemmel()],
 				)
 			},
 			remove() {
@@ -124,7 +124,7 @@ ArbeidsplassenPanel.initialValues = ({ setMulti, del, has, initial, opts }) => {
 			add() {
 				setMulti(
 					['arbeidsplassenCV.arbeidserfaring', [initialArbeidserfaringVerdier]],
-					['arbeidsplassenCV.harHjemmel', hjemmel()]
+					['arbeidsplassenCV.harHjemmel', hjemmel()],
 				)
 			},
 			remove() {
@@ -137,7 +137,7 @@ ArbeidsplassenPanel.initialValues = ({ setMulti, del, has, initial, opts }) => {
 			add() {
 				setMulti(
 					['arbeidsplassenCV.annenErfaring', [initialAnnenErfaringVerdier]],
-					['arbeidsplassenCV.harHjemmel', hjemmel()]
+					['arbeidsplassenCV.harHjemmel', hjemmel()],
 				)
 			},
 			remove() {
@@ -150,7 +150,7 @@ ArbeidsplassenPanel.initialValues = ({ setMulti, del, has, initial, opts }) => {
 			add() {
 				setMulti(
 					['arbeidsplassenCV.kompetanser', [initialKompetanserVerdier]],
-					['arbeidsplassenCV.harHjemmel', hjemmel()]
+					['arbeidsplassenCV.harHjemmel', hjemmel()],
 				)
 			},
 			remove() {
@@ -163,7 +163,7 @@ ArbeidsplassenPanel.initialValues = ({ setMulti, del, has, initial, opts }) => {
 			add() {
 				setMulti(
 					['arbeidsplassenCV.offentligeGodkjenninger', [initialOffentligeGodkjenningerVerdier]],
-					['arbeidsplassenCV.harHjemmel', hjemmel()]
+					['arbeidsplassenCV.harHjemmel', hjemmel()],
 				)
 			},
 			remove() {
@@ -176,7 +176,7 @@ ArbeidsplassenPanel.initialValues = ({ setMulti, del, has, initial, opts }) => {
 			add() {
 				setMulti(
 					['arbeidsplassenCV.andreGodkjenninger', [initialAndreGodkjenningerVerdier]],
-					['arbeidsplassenCV.harHjemmel', hjemmel()]
+					['arbeidsplassenCV.harHjemmel', hjemmel()],
 				)
 			},
 			remove() {
@@ -189,7 +189,7 @@ ArbeidsplassenPanel.initialValues = ({ setMulti, del, has, initial, opts }) => {
 			add() {
 				setMulti(
 					['arbeidsplassenCV.spraak', [initialSpraakVerdier]],
-					['arbeidsplassenCV.harHjemmel', hjemmel()]
+					['arbeidsplassenCV.harHjemmel', hjemmel()],
 				)
 			},
 			remove() {
@@ -202,7 +202,7 @@ ArbeidsplassenPanel.initialValues = ({ setMulti, del, has, initial, opts }) => {
 			add() {
 				setMulti(
 					['arbeidsplassenCV.foererkort', [initialFoererkortVerdier]],
-					['arbeidsplassenCV.harHjemmel', hjemmel()]
+					['arbeidsplassenCV.harHjemmel', hjemmel()],
 				)
 			},
 			remove() {
@@ -215,7 +215,7 @@ ArbeidsplassenPanel.initialValues = ({ setMulti, del, has, initial, opts }) => {
 			add() {
 				setMulti(
 					['arbeidsplassenCV.kurs', [initialKursVerdier]],
-					['arbeidsplassenCV.harHjemmel', hjemmel()]
+					['arbeidsplassenCV.harHjemmel', hjemmel()],
 				)
 			},
 			remove() {
@@ -228,7 +228,7 @@ ArbeidsplassenPanel.initialValues = ({ setMulti, del, has, initial, opts }) => {
 			add() {
 				setMulti(
 					['arbeidsplassenCV.sammendrag', initialSammendragVerdi],
-					['arbeidsplassenCV.harHjemmel', hjemmel()]
+					['arbeidsplassenCV.harHjemmel', hjemmel()],
 				)
 			},
 			remove() {

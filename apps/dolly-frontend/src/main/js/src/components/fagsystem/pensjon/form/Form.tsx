@@ -20,7 +20,7 @@ export const PensjonForm = ({ formikBag }) => (
 		<Panel
 			heading="Pensjonsgivende inntekt (POPP)"
 			hasErrors={panelError(formikBag, pensjonPath)}
-			iconType="pensjon"
+			iconType="designsystem-pensjon"
 			startOpen={erForsteEllerTest(formikBag.values, [pensjonPath])}
 			informasjonstekst={hjelpetekst}
 		>

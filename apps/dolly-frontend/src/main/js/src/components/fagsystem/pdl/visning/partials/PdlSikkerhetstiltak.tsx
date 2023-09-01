@@ -36,7 +36,7 @@ export const PdlSikkerhetstiltak = ({ data }: DataListe) => {
 	}
 	return (
 		<div>
-			<SubOverskrift label="Sikkerhetstiltak" iconKind="sikkerhetstiltak" />
+			<SubOverskrift label="Sikkerhetstiltak" iconKind="designsystem-sikkerhetstiltak" />
 			{/* @ts-ignore */}
 			<DollyFieldArray data={data} nested>
 				{(sikkerhetstiltak: SikkerhetstiltakData) => <Visning data={sikkerhetstiltak} />}

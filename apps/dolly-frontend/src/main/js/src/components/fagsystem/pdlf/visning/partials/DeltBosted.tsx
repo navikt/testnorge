@@ -50,7 +50,7 @@ export const DeltBostedVisning = ({
 	_.set(initialValues, 'deltBosted.adresseIdentifikatorFraMatrikkelen', undefined)
 
 	const redigertBostedPdlf = _.get(tmpPersoner, `${ident}.person.deltBosted`)?.find(
-		(a: DeltBostedValues) => a.id === adresseData.id
+		(a: DeltBostedValues) => a.id === adresseData.id,
 	)
 	const redigertRelatertePersoner = _.get(tmpPersoner, `${ident}.relasjoner`)
 
@@ -100,7 +100,7 @@ export const DeltBosted = ({ data, tmpPersoner, ident, personValues, relasjoner 
 
 	return (
 		<>
-			<SubOverskrift label="Delt bosted" iconKind="adresse" />
+			<SubOverskrift label="Delt bosted" iconKind="designsystem-adresse" />
 			<div className="person-visning_content">
 				<ErrorBoundary>
 					<DollyFieldArray data={data} header="" nested>

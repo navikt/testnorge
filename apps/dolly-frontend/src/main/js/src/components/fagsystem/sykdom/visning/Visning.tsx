@@ -13,7 +13,7 @@ export const SykemeldingVisning = ({ data }: Sykemelding) => {
 
 	return (
 		<div>
-			<SubOverskrift label="Sykemelding" iconKind="sykdom" />
+			<SubOverskrift label="Sykemelding" iconKind="designsystem-sykdom" />
 			{data.map((bestilling: SykemeldingSynt | SykemeldingDetaljert, idx: number) => {
 				if (!bestilling.erGjenopprettet) {
 					const syntSykemelding = _.get(bestilling, 'data.sykemelding.syntSykemelding')
@@ -36,6 +36,6 @@ SykemeldingVisning.filterValues = (bestillinger: Array<Sykemelding>, ident: stri
 	}
 	return bestillinger.filter(
 		(bestilling: any) =>
-			bestilling.data.sykemelding && erGyldig(bestilling.id, 'SYKEMELDING', ident)
+			bestilling.data.sykemelding && erGyldig(bestilling.id, 'SYKEMELDING', ident),
 	)
 }

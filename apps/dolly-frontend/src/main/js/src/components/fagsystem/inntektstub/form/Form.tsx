@@ -43,7 +43,7 @@ export const InntektstubForm = ({ formikBag }: InntektstubFormProps) => (
 		<Panel
 			heading="A-ordningen (Inntektstub)"
 			hasErrors={panelError(formikBag, inntektstubAttributt)}
-			iconType="inntektstub"
+			iconType="designsystem-inntektstub"
 			startOpen={erForsteEllerTest(formikBag.values, [inntektstubAttributt])}
 		>
 			<div className="flexbox--flex-wrap">

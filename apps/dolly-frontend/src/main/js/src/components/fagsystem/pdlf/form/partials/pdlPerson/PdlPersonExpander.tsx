@@ -37,11 +37,11 @@ export const PdlPersonExpander = ({
 	return (
 		<div className="flexbox--full-width">
 			{visPersonValg ? (
-				<Button onClick={setSkjulPersonValg} kind={'collapse'}>
+				<Button onClick={setSkjulPersonValg} kind={'designsystem-chevron-up'}>
 					SKJUL VALG FOR {label}
 				</Button>
 			) : (
-				<Button onClick={setVisPersonValg} kind={'expand'}>
+				<Button onClick={setVisPersonValg} kind={'designsystem-chevron-down'}>
 					VIS VALG FOR {label}
 				</Button>
 			)}

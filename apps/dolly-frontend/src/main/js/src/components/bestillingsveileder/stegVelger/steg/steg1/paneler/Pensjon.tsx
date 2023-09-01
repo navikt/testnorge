@@ -15,10 +15,11 @@ export const PensjonPanel = ({ stateModifier, formikBag }: any) => {
 	const sm = stateModifier(PensjonPanel.initialValues)
 	const opts = useContext(BestillingsveilederContext)
 
-	const harGyldigApBestilling = opts?.tidligereBestillinger?.some((bestilling) =>
-		bestilling.status?.some(
-			(status) => status.id === 'PEN_AP' && status.statuser?.[0]?.melding === 'OK'
-		)
+	const harGyldigApBestilling = opts?.tidligereBestillinger?.some(
+		(bestilling) =>
+			bestilling.status?.some(
+				(status) => status.id === 'PEN_AP' && status.statuser?.[0]?.melding === 'OK',
+			),
 	)
 
 	const infoTekst =
@@ -32,7 +33,7 @@ export const PensjonPanel = ({ stateModifier, formikBag }: any) => {
 			informasjonstekst={infoTekst}
 			checkAttributeArray={() => sm.batchAdd(harGyldigApBestilling ? ['alderspensjon'] : [])}
 			uncheckAttributeArray={sm.batchRemove}
-			iconType="pensjon"
+			iconType="designsystem-pensjon"
 			startOpen={harValgtAttributt(formikBag.values, [pensjonPath, tpPath])}
 		>
 			<AttributtKategori title="Pensjonsgivende inntekt (POPP)" attr={sm.attrs}>

@@ -21,7 +21,7 @@ export const PdlNasjonalitet = ({ data, visTittel = true }: NasjonalitetProps) =
 
 	return (
 		<div>
-			{visTittel && <SubOverskrift label="Nasjonalitet" iconKind="nasjonalitet" />}
+			{visTittel && <SubOverskrift label="Nasjonalitet" iconKind="designsystem-nasjonalitet" />}
 			<PdlStatsborgerskap statsborgerskapListe={statsborgerskap} />
 			<PdlInnflytting innflytting={innflyttingTilNorge} />
 			<PdlUtflytting utflytting={utflyttingFraNorge} />

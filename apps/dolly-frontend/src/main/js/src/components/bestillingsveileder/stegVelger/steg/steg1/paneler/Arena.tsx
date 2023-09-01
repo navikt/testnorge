@@ -15,7 +15,7 @@ export const ArenaPanel = ({ stateModifier, formikBag }) => {
 				}
 			}}
 			uncheckAttributeArray={sm.batchRemove}
-			iconType="arena"
+			iconType="designsystem-arena"
 			startOpen={harValgtAttributt(formikBag.values, [arenaPath])}
 		>
 			<AttributtKategori title={'Aktiv bruker'} attr={sm.attrs}>

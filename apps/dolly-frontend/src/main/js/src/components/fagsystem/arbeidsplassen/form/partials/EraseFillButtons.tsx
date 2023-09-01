@@ -6,14 +6,14 @@ export const EraseFillButtons = ({ formikBag, path, initialErase, initialFill })
 		<div className="flexbox--full-width">
 			<div className="flexbox--flex-wrap">
 				<Button
-					kind="eraser"
+					kind="designsystem-eraser"
 					onClick={() => formikBag.setFieldValue(path, initialErase)}
 					style={{ position: 'initial' }}
 				>
 					TØM SKJEMA
 				</Button>
 				<Button
-					kind="edit"
+					kind="designsystem-edit"
 					onClick={() => formikBag.setFieldValue(path, initialFill)}
 					style={{ position: 'initial', marginLeft: '7px' }}
 				>

@@ -44,7 +44,7 @@ export const PdlPartner = ({ data }: PdlPartnerProps) => {
 
 	return (
 		<div>
-			<SubOverskrift label="Sivilstand (partner)" iconKind="partner" />
+			<SubOverskrift label="Sivilstand (partner)" iconKind="designsystem-partner" />
 			<ArrayHistorikk
 				component={Visning}
 				data={gjeldendePartnere}

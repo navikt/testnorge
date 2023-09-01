@@ -9,7 +9,9 @@ export const GeografiskTilknytning = ({ data, visTittel = true }) => {
 	return (
 		<ErrorBoundary>
 			<div>
-				{visTittel && <SubOverskrift label="Geografisk tilknyting" iconKind="nasjonalitet" />}
+				{visTittel && (
+					<SubOverskrift label="Geografisk tilknyting" iconKind="designsystem-nasjonalitet" />
+				)}
 				<div className="person-visning_content">
 					<TitleValue title="Bydel" value={data.gtBydel} />
 					<TitleValue title="Kommunenummer" value={data.gtKommune} />

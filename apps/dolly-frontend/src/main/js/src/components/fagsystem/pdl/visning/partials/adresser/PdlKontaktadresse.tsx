@@ -27,12 +27,12 @@ export const PdlKontaktadresse = ({ data }: PdlKontaktadresseProps) => {
 
 	const gyldigeAdresser = data.filter((adresse: KontaktadresseData) => !adresse.metadata?.historisk)
 	const historiskeAdresser = data.filter(
-		(adresse: KontaktadresseData) => adresse.metadata?.historisk
+		(adresse: KontaktadresseData) => adresse.metadata?.historisk,
 	)
 
 	return (
 		<>
-			<SubOverskrift label="Kontaktadresse" iconKind="postadresse" />
+			<SubOverskrift label="Kontaktadresse" iconKind="designsystem-postadresse" />
 			<ArrayHistorikk
 				component={AdresseVisning}
 				data={gyldigeAdresser}

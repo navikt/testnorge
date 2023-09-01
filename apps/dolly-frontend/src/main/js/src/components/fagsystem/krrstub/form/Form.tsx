@@ -51,7 +51,7 @@ export const KrrstubForm = ({ formikBag }: KrrstubFormProps) => {
 			<Panel
 				heading="Kontakt- og reservasjonsregisteret"
 				hasErrors={panelError(formikBag, krrAttributt)}
-				iconType="krr"
+				iconType="designsystem-krr"
 				startOpen={erForsteEllerTest(formikBag.values, [krrAttributt])}
 			>
 				<div className="flexbox--flex-wrap">

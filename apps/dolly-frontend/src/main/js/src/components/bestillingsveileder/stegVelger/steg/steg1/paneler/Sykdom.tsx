@@ -11,7 +11,7 @@ export const SykdomPanel = ({ stateModifier, formikBag }: any) => {
 			heading={SykdomPanel.heading}
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
-			iconType="sykdom"
+			iconType="designsystem-sykdom"
 			startOpen={harValgtAttributt(formikBag.values, [sykdomAttributt])}
 		>
 			<AttributtKategori title={null} attr={sm.attrs}>

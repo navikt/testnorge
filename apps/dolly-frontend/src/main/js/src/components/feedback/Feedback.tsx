@@ -17,6 +17,7 @@ enum Rating {
 	Positive = 'POSITIVE',
 	Negative = 'NEGATIVE',
 }
+
 interface FeedbackProps {
 	label: string
 	feedbackFor: string
@@ -45,7 +46,7 @@ export const Feedback = ({ label, feedbackFor }: FeedbackProps) => {
 				<form className="feedback-form">
 					<div className="feedback-wrapper">
 						{isAnonym ? (
-							<Icon kind="user" size={40} className="bruker-ikon" />
+							<Icon kind="designsystem-user" fontSize={'2rem'} className="bruker-ikon" />
 						) : (
 							<img alt="Profilbilde" src={brukerBilde || dolly} />
 						)}

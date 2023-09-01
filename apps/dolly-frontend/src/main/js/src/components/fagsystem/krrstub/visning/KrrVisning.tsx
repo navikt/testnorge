@@ -100,7 +100,7 @@ export const Visning = ({ data }: VisningProps) => {
 
 							<EditDeleteKnapper>
 								<Button
-									kind="trashcan"
+									kind="designsystem-trashcan"
 									onClick={() => openModal()}
 									title="Slett"
 									disabled={disableSlett}
@@ -157,7 +157,7 @@ export const KrrVisning = ({ data, loading }: KrrVisningProps) => {
 
 	const antallKrr = sortedData?.length
 	const antallFremtidige = sortedData?.filter(
-		(krr) => krr.gyldigFra && new Date(krr.gyldigFra) > new Date()
+		(krr) => krr.gyldigFra && new Date(krr.gyldigFra) > new Date(),
 	).length
 
 	const gyldigeData =
@@ -172,7 +172,7 @@ export const KrrVisning = ({ data, loading }: KrrVisningProps) => {
 			<div>
 				<SubOverskrift
 					label="Kontaktinformasjon og reservasjon"
-					iconKind="krr"
+					iconKind="designsystem-krr"
 					isWarning={manglerFagsystemdata}
 				/>
 				{manglerFagsystemdata ? (

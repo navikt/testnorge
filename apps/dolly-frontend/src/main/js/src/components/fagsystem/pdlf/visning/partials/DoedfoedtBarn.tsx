@@ -50,7 +50,7 @@ export const DoedfoedtBarnVisning = ({
 	let initialValues = { doedfoedtBarn: initDoedfoedtBarn }
 
 	const redigertDoedfoedtBarnPdlf = _.get(tmpPersoner, `${ident}.person.doedfoedtBarn`)?.find(
-		(a: DoedfoedtBarnData) => a.id === doedfoedtBarnData.id
+		(a: DoedfoedtBarnData) => a.id === doedfoedtBarnData.id,
 	)
 
 	const slettetDoedfoedtBarnPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertDoedfoedtBarnPdlf
@@ -84,7 +84,7 @@ export const DoedfoedtBarn = ({ data, tmpPersoner, ident }: DataListe) => {
 
 	return (
 		<div>
-			<SubOverskrift label="Dødfødt barn" iconKind="doedfoedt" />
+			<SubOverskrift label="Dødfødt barn" iconKind="designsystem-doedfoedt" />
 			<DollyFieldArray data={data} nested>
 				{(doedfoedtBarn: DoedfoedtBarnData, idx: number) => (
 					<DoedfoedtBarnVisning

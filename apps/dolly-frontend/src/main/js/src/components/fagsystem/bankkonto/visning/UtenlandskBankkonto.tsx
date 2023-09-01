@@ -90,7 +90,7 @@ export const Visning = ({ data, extraButtons, ident }: Data) => {
 			</div>
 			{extraButtons && (
 				<EditDeleteKnapper>
-					<Button kind="trashcan" onClick={() => openModal()} title="Slett" />
+					<Button kind="designsystem-trashcan" onClick={() => openModal()} title="Slett" />
 					<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="40%" overflow="auto">
 						<div className="slettModal">
 							<div className="slettModal slettModal-content">
@@ -126,7 +126,7 @@ export const UtenlandskBankkonto = ({ data, ident, extraButtons = null }: Data) 
 	}
 	return (
 		<div>
-			<SubOverskrift label="Utenlandsk bankkonto" iconKind="bankkonto" />
+			<SubOverskrift label="Utenlandsk bankkonto" iconKind="designsystem-bankkonto" />
 			<Visning data={data} extraButtons={extraButtons} ident={ident} />
 		</div>
 	)

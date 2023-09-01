@@ -53,7 +53,7 @@ export const InstVisning = ({ data, loading, bestillingIdListe, tilgjengeligMilj
 		<ErrorBoundary>
 			<SubOverskrift
 				label="Institusjonsopphold"
-				iconKind="institusjon"
+				iconKind="designsystem-institusjon"
 				isWarning={manglerFagsystemdata}
 			/>
 			{manglerFagsystemdata ? (

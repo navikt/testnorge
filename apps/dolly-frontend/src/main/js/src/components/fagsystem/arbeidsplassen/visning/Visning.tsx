@@ -26,6 +26,7 @@ const StyledCVVisning = styled.div`
 const ForbiddenVisning = styled.div`
 	align-items: center;
 	margin-bottom: 20px;
+
 	&& {
 		p {
 			margin-left: 10px;
@@ -39,7 +40,7 @@ export const ArbeidsplassenVisning = ({ data, loading, error, hjemmel }) => {
 	if (error?.status === 403)
 		return (
 			<>
-				<SubOverskrift label="Arbeidsplassen (CV)" iconKind="cv" isWarning />
+				<SubOverskrift label="Arbeidsplassen (CV)" iconKind="designsystem-cv" isWarning />
 				<ForbiddenVisning className="flexbox">
 					<PadlockLockedFillIcon color={'#C77300'} fontSize={'2rem'} />
 					<BodyLong size={'small'}>{error?.message}</BodyLong>
@@ -53,7 +54,7 @@ export const ArbeidsplassenVisning = ({ data, loading, error, hjemmel }) => {
 
 	return (
 		<StyledCVVisning>
-			<SubOverskrift label="Arbeidsplassen (CV)" iconKind="cv" />
+			<SubOverskrift label="Arbeidsplassen (CV)" iconKind="designsystem-cv" />
 			<Panel heading="CV-opplysninger">
 				<JobboenskerVisning data={data.jobboensker} />
 				<UtdanningVisning data={data.utdanning} />

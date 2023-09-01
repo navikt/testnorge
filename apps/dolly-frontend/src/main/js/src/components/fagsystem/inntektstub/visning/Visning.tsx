@@ -94,7 +94,7 @@ export const InntektstubVisning = ({ liste, loading }: InntekstubVisning) => {
 		<div>
 			<SubOverskrift
 				label="A-ordningen (Inntektstub)"
-				iconKind="inntektstub"
+				iconKind="designsystem-inntektstub"
 				isWarning={manglerFagsystemdata}
 			/>
 			{manglerFagsystemdata ? (

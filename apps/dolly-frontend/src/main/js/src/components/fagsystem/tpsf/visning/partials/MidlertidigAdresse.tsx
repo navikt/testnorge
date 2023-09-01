@@ -117,7 +117,7 @@ export const MidlertidigAdresse = ({ midlertidigAdresse }: AlleMidlertidigeAdres
 	return (
 		<ErrorBoundary>
 			<>
-				<SubOverskrift label="Midlertidig adresse" iconKind="midlertidigAdresse" />
+				<SubOverskrift label="Midlertidig adresse" iconKind="designsystem-midlertidig-adresse" />
 				<div className="person-visning_content">
 					{_.isArray(midlertidigAdresse) ? (
 						<Historikk

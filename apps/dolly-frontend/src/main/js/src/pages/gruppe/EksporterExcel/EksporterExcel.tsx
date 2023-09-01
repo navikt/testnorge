@@ -28,7 +28,7 @@ export const EksporterExcel = ({ exportId, filPrefix, action, loading }) => {
 	return (
 		<Button
 			className="flexbox--align-center csv-eksport-btn"
-			kind="file-new-table"
+			kind="designsystem-file-new-table"
 			onClick={download}
 		>
 			EKSPORTER TIL EXCEL

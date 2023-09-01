@@ -86,7 +86,8 @@ export default function Liste({
 			text: 'Låst',
 			width: '10',
 			dataField: 'erLaast',
-			formatter: (_cell, row) => row.erLaast && <Icon kind={'lock'} />,
+			formatter: (_cell, row) =>
+				row.erLaast && <Icon kind={'designsystem-lock'} fontSize={'1.5rem'} />,
 		},
 		{
 			text: 'Tags',

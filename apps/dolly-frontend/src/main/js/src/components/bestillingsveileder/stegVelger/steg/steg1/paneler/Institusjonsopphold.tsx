@@ -11,7 +11,7 @@ export const InstitusjonsoppholdPanel = ({ stateModifier, formikBag }) => {
 			heading={InstitusjonsoppholdPanel.heading}
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
-			iconType="institusjon"
+			iconType="designsystem-institusjon"
 			startOpen={harValgtAttributt(formikBag.values, [instAttributt])}
 		>
 			<AttributtKategori attr={sm.attrs}>

@@ -53,15 +53,15 @@ export const PdlForeldreansvar = ({ data }: PdlForeldreansvarProps) => {
 	}
 
 	const gyldigeForeldreansvar = data.filter(
-		(foreldreansvar: Foreldreansvar) => !foreldreansvar.metadata?.historisk
+		(foreldreansvar: Foreldreansvar) => !foreldreansvar.metadata?.historisk,
 	)
 	const historiskeForeldreansvar = data.filter(
-		(foreldreansvar: Foreldreansvar) => foreldreansvar.metadata?.historisk
+		(foreldreansvar: Foreldreansvar) => foreldreansvar.metadata?.historisk,
 	)
 
 	return (
 		<div>
-			<SubOverskrift label="Foreldreansvar" iconKind="foreldreansvar" />
+			<SubOverskrift label="Foreldreansvar" iconKind="designsystem-foreldreansvar" />
 			<ArrayHistorikk
 				component={PdlForeldreansvarVisning}
 				data={gyldigeForeldreansvar}

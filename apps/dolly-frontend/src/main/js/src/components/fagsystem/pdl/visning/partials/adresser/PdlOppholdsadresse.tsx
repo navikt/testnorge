@@ -26,15 +26,15 @@ export const PdlOppholdsadresse = ({ data }: PdlOppholdsadresseProps) => {
 	}
 
 	const gyldigeAdresser = data.filter(
-		(adresse: OppholdsadresseData) => !adresse.metadata?.historisk
+		(adresse: OppholdsadresseData) => !adresse.metadata?.historisk,
 	)
 	const historiskeAdresser = data.filter(
-		(adresse: OppholdsadresseData) => adresse.metadata?.historisk
+		(adresse: OppholdsadresseData) => adresse.metadata?.historisk,
 	)
 
 	return (
 		<>
-			<SubOverskrift label="Oppholdsadresse" iconKind="adresse" />
+			<SubOverskrift label="Oppholdsadresse" iconKind="designsystem-adresse" />
 			<ArrayHistorikk
 				component={AdresseVisning}
 				data={gyldigeAdresser}

@@ -25,7 +25,7 @@ interface MedlFormProps {
 
 export const MedlForm = ({ formikBag }: MedlFormProps) => {
 	const [aktivKilde, setAktivKilde] = useState(
-		_.get(formikBag.values, 'medl.kilde') || MEDL_KILDER.SRVMELOSYS
+		_.get(formikBag.values, 'medl.kilde') || MEDL_KILDER.SRVMELOSYS,
 	)
 
 	if (!_.has(formikBag.values, MedlAttributt)) {
@@ -51,7 +51,7 @@ export const MedlForm = ({ formikBag }: MedlFormProps) => {
 			<Panel
 				heading="Medlemskap (MEDL)"
 				hasErrors={panelError(formikBag, MedlAttributt)}
-				iconType="calendar-days"
+				iconType="designsystem-calendar"
 				// @ts-ignore
 				startOpen={erForsteEllerTest(formikBag.values, [MedlAttributt])}
 			>

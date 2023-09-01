@@ -44,10 +44,10 @@ const FullmaktLes = ({ fullmaktData, relasjoner, redigertRelatertePersoner = nul
 
 	const fullmektigIdent = fullmaktData.motpartsPersonident
 	const fullmektig = relasjoner?.find(
-		(relasjon) => relasjon.relatertPerson?.ident === fullmektigIdent
+		(relasjon) => relasjon.relatertPerson?.ident === fullmektigIdent,
 	)
 	const fullmektigRedigert = redigertRelatertePersoner?.find(
-		(item) => item.relatertPerson?.ident === fullmektigIdent
+		(item) => item.relatertPerson?.ident === fullmektigIdent,
 	)
 
 	const omraader = fullmaktData.omraader
@@ -94,7 +94,7 @@ export const FullmaktVisning = ({
 	let initialValues = { fullmakt: initFullmakt }
 
 	const redigertFullmaktPdlf = _.get(tmpPersoner, `${ident}.person.fullmakt`)?.find(
-		(a: FullmaktValues) => a.id === fullmaktData.id
+		(a: FullmaktValues) => a.id === fullmaktData.id,
 	)
 	const redigertRelatertePersoner = _.get(tmpPersoner, `${ident}.relasjoner`)
 
@@ -148,12 +148,12 @@ export const Fullmakt = ({ data, tmpPersoner, ident, relasjoner }: DataListe) =>
 		return null
 	}
 	const fullmaktRelasjoner = relasjoner?.filter(
-		(relasjon) => relasjon.relasjonType === 'FULLMEKTIG'
+		(relasjon) => relasjon.relasjonType === 'FULLMEKTIG',
 	)
 
 	return (
 		<div>
-			<SubOverskrift label="Fullmakt" iconKind="fullmakt" />
+			<SubOverskrift label="Fullmakt" iconKind="designsystem-fullmakt" />
 			<div className="person-visning_content">
 				<ErrorBoundary>
 					<DollyFieldArray data={data} nested>

@@ -89,7 +89,7 @@ export const NyOrganisasjon = ({ onAvbryt, onSubmit, brukernavn }: NyBestillingP
 								/>
 							</InputDiv>
 							<div className="mal-admin">
-								<Button kind="maler">
+								<Button kind="designsystem-maler">
 									<NavLink to="/minside">Administrer maler</NavLink>
 								</Button>
 							</div>

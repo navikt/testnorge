@@ -21,7 +21,7 @@ export const Familierelasjoner = ({ formikBag }: { formikBag: FormikProps<any> }
 			<Panel
 				heading="Familierelasjoner"
 				hasErrors={panelError(formikBag, relasjonerAttributter)}
-				iconType={'relasjoner'}
+				iconType={'designsystem-relasjoner'}
 				startOpen={erForsteEllerTest(formikBag.values, relasjonerAttributter)}
 				checkAttributeArray={undefined}
 				uncheckAttributeArray={undefined}

@@ -9,7 +9,9 @@ export const TpsfIdenthistorikk = ({ identhistorikk, visTittel = true }) => {
 	return (
 		<ErrorBoundary>
 			<div>
-				{visTittel && <SubOverskrift label="Identhistorikk" iconKind="identhistorikk" />}
+				{visTittel && (
+					<SubOverskrift label="Identhistorikk" iconKind="designsystem-identhistorikk" />
+				)}
 				{identhistorikk.map(({ aliasPerson, regdato }, idx) => (
 					<div key={idx} className="person-visning_content">
 						<TitleValue title="" value={`#${idx + 1}`} size="x-small" />

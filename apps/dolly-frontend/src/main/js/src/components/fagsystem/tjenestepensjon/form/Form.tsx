@@ -46,7 +46,7 @@ export const TjenestepensjonForm = ({ formikBag }) => {
 			<Panel
 				heading="Tjenestepensjon"
 				hasErrors={panelError(formikBag, tpPath)}
-				iconType="pensjon"
+				iconType="designsystem-pensjon"
 				startOpen={erForsteEllerTest(formikBag.values, [tpPath])}
 				informasjonstekst={hjelpetekst}
 			>

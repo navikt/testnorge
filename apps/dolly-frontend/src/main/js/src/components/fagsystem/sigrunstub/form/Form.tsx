@@ -11,7 +11,7 @@ export const SigrunstubForm = ({ formikBag }) => (
 		<Panel
 			heading="Skatteoppgjør (Sigrun)"
 			hasErrors={panelError(formikBag, sigrunAttributt)}
-			iconType="sigrun"
+			iconType="designsystem-sigrun"
 			startOpen={erForsteEllerTest(formikBag.values, [sigrunAttributt])}
 		>
 			<InntektsaarForm formikBag={formikBag} />
@@ -41,7 +41,7 @@ SigrunstubForm.validation = {
 										.min(0, 'Tast inn en gyldig verdi')
 										.typeError('Tast inn en gyldig verdi'),
 							}),
-						})
+						}),
 					)
 					.test('is-required', 'Legg til minst én inntekt', function checkTjenesteGrunnlag(_val) {
 						const values = this.options.context
@@ -91,7 +91,7 @@ SigrunstubForm.validation = {
 								return grunnlag ? grunnlag.concat(svalbard ? svalbard : []) : svalbard
 							})?.[0]
 							return !nyeAarstall?.includes(val) && !tidligereAarstall?.includes(val + '')
-						}
+						},
 					)
 					.required('Tast inn et gyldig år'),
 				svalbardGrunnlag: Yup.array().of(
@@ -100,10 +100,10 @@ SigrunstubForm.validation = {
 						verdi: Yup.number()
 							.min(0, 'Tast inn en gyldig verdi')
 							.typeError('Tast inn en gyldig verdi'),
-					})
+					}),
 				),
 				tjeneste: Yup.string().required('Velg en type tjeneste'),
-			})
-		)
+			}),
+		),
 	),
 }

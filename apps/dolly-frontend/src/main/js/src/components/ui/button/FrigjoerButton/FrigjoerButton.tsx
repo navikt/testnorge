@@ -57,7 +57,7 @@ export const FrigjoerButton = ({
 				onClick={openModal}
 				disabled={disabled}
 				title={disabled ? 'Frigjøring/sletting er midlertidig utilgjengelig' : ''}
-				kind="trashcan"
+				kind="designsystem-trashcan"
 			>
 				FRIGJØR/SLETT
 			</Button>
@@ -77,7 +77,7 @@ export const FrigjoerButton = ({
 								closeModal()
 								if (importerteRelatertePersoner) {
 									slettPersonOgRelatertePersoner(importerteRelatertePersoner).then(() =>
-										mutate(REGEX_BACKEND_GRUPPER)
+										mutate(REGEX_BACKEND_GRUPPER),
 									)
 								} else {
 									slettPerson().then(() => mutate(REGEX_BACKEND_GRUPPER))

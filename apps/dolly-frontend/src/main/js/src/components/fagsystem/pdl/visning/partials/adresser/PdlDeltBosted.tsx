@@ -30,7 +30,7 @@ export const PdlDeltBosted = ({ data }: PdlDeltBostedProps) => {
 
 	return (
 		<>
-			<SubOverskrift label="Delt bosted" iconKind="adresse" />
+			<SubOverskrift label="Delt bosted" iconKind="designsystem-adresse" />
 			<ArrayHistorikk
 				component={AdresseVisning}
 				data={gyldigeAdresser}

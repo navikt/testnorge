@@ -82,7 +82,7 @@ export const Personinformasjon = ({ formikBag }) => {
 			<Panel
 				heading="Personinformasjon"
 				hasErrors={panelError(formikBag, panelPaths)}
-				iconType={'personinformasjon'}
+				iconType={'designsystem-personinformasjon'}
 				startOpen={erForsteEllerTest(formikBag.values, panelPaths)}
 			>
 				{!personFoerLeggTil && (

@@ -20,7 +20,7 @@ export const LeggTilPaaGruppe = ({ antallPersoner, gruppeId }: LeggTilProps) => 
 					},
 				})
 			}
-			kind="add-circle"
+			kind="designsystem-add-circle"
 			disabled={antallPersoner < 1}
 			title={antallPersoner < 1 ? 'Gruppen inneholder ingen personer å endre på' : undefined}
 		>

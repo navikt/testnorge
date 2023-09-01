@@ -60,7 +60,7 @@ const AdressebeskyttelseVisning = ({
 
 	const redigertAdressebeskyttelsePdlf = _.get(
 		tmpPersoner,
-		`${ident}.person.adressebeskyttelse`
+		`${ident}.person.adressebeskyttelse`,
 	)?.find((a: Person) => a.id === adressebeskyttelse.id)
 	const slettetAdressebeskyttelsePdlf =
 		tmpPersoner?.hasOwnProperty(ident) && !redigertAdressebeskyttelsePdlf
@@ -75,7 +75,7 @@ const AdressebeskyttelseVisning = ({
 		? {
 				adressebeskyttelse: Object.assign(
 					_.cloneDeep(initialAdressebeskyttelse),
-					redigertAdressebeskyttelsePdlf
+					redigertAdressebeskyttelsePdlf,
 				),
 		  }
 		: null
@@ -109,7 +109,7 @@ export const Adressebeskyttelse = ({
 
 	return (
 		<>
-			<SubOverskrift label="Adressebeskyttelse" iconKind="adresse" />
+			<SubOverskrift label="Adressebeskyttelse" iconKind="designsystem-adresse" />
 			<div className="person-visning_content">
 				<ErrorBoundary>
 					<DollyFieldArray data={data} header="" nested>

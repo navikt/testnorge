@@ -39,7 +39,9 @@ export const Yearpicker = ({
 					onChange={handleDateChange}
 					placeholderText={'Ikke spesifisert'}
 					showYearPicker
-					customInput={<TextInput icon="calendar" feil={getFeilmelding(formikBag, name)} />}
+					customInput={
+						<TextInput icon="designsystem-calendar" feil={getFeilmelding(formikBag, name)} />
+					}
 					maxDate={maxDate}
 					disabled={disabled}
 				/>

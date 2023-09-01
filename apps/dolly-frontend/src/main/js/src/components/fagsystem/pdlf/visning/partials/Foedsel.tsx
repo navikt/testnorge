@@ -73,7 +73,7 @@ const FoedselVisning = ({
 	const initialValues = { foedsel: initFoedsel }
 
 	const redigertFoedselPdlf = _.get(tmpPersoner, `${ident}.person.foedsel`)?.find(
-		(a: Person) => a.id === foedsel.id
+		(a: Person) => a.id === foedsel.id,
 	)
 	const slettetFoedselPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertFoedselPdlf
 	if (slettetFoedselPdlf) {
@@ -105,7 +105,7 @@ export const Foedsel = ({ data, tmpPersoner, ident, erPdlVisning = false }: Foed
 
 	return (
 		<div>
-			<SubOverskrift label="Fødsel" iconKind="foedsel" />
+			<SubOverskrift label="Fødsel" iconKind="designsystem-foedsel" />
 			<div className="person-visning_content">
 				<ErrorBoundary>
 					<DollyFieldArray data={data} header="" nested>

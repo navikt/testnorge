@@ -24,7 +24,7 @@ export const Adresser = ({ formikBag }: AdresserValues) => {
 			<Panel
 				heading="Adresser"
 				hasErrors={panelError(formikBag, adresseAttributter)}
-				iconType="adresse"
+				iconType="designsystem-adresse"
 				startOpen={erForsteEllerTest(formikBag.values, adresseAttributter)}
 			>
 				<Vis attributt={'pdldata.person.bostedsadresse'}>

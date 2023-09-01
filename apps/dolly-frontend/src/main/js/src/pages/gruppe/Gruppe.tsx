@@ -52,7 +52,7 @@ export default ({
 		'personer',
 		sidetall,
 		sideStoerrelse,
-		update
+		update,
 	)
 
 	const { bestillingerById, loading: loadingBestillinger } = useIkkeFerdigBestillingerGruppe(
@@ -60,7 +60,7 @@ export default ({
 		visning,
 		sidetall,
 		sideStoerrelse,
-		update
+		update,
 	)
 
 	const {
@@ -154,7 +154,11 @@ export default ({
 							<Icon
 								key={VisningType.VISNING_PERSONER}
 								size={13}
-								kind={visning === VisningType.VISNING_PERSONER ? 'manLight' : 'man'}
+								kind={
+									visning === VisningType.VISNING_PERSONER
+										? 'designsystem-man-light'
+										: 'designsystem-man'
+								}
 							/>
 							{`Personer (${gruppe.antallIdenter || 0})`}
 						</ToggleGroup.Item>
@@ -166,7 +170,11 @@ export default ({
 							<Icon
 								key={VisningType.VISNING_BESTILLING}
 								size={13}
-								kind={visning === VisningType.VISNING_BESTILLING ? 'bestillingLight' : 'bestilling'}
+								kind={
+									visning === VisningType.VISNING_BESTILLING
+										? 'designsystem-bestilling-light'
+										: 'designsystem-bestilling'
+								}
 							/>
 							{`Bestillinger (${gruppe.antallBestillinger || 0})`}
 						</ToggleGroup.Item>

@@ -171,7 +171,7 @@ export const FlyttPersonModal = ({ gruppeId, modalIsOpen, closeModal }: FlyttPer
 		identer.forEach((ident: string) => {
 			const funnetIdent = gruppeOptions?.find(
 				(gruppeIdent: Option) =>
-					gruppeIdent?.value === ident && !relatertePersonerHentet.includes(ident)
+					gruppeIdent?.value === ident && !relatertePersonerHentet.includes(ident),
 			)
 			if (funnetIdent) {
 				relatertePersonerHentet.push(funnetIdent.value)
@@ -222,7 +222,7 @@ export const FlyttPersonModal = ({ gruppeId, modalIsOpen, closeModal }: FlyttPer
 			mountedRef.current = false
 			return submit()
 		},
-		[gruppeOptions]
+		[gruppeOptions],
 	)
 
 	const handleClose = () => {
@@ -276,7 +276,7 @@ export const FlyttPersonModal = ({ gruppeId, modalIsOpen, closeModal }: FlyttPer
 											size="grow"
 											placeholder="Søk etter person"
 										/>
-										<Icon kind="search" size={20} />
+										<Icon kind="designsystem-search" size={20} />
 									</PersonSoek>
 									{!gruppeOptions ||
 									gruppeOptions?.length < 1 ||

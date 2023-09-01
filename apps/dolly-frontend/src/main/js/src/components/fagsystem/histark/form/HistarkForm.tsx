@@ -19,7 +19,7 @@ import { Yearpicker } from '@/components/ui/form/inputs/yearpicker/Yearpicker'
 import { testDatoFom } from '@/components/fagsystem/utils'
 
 const DokumentInfoListe = React.lazy(
-	() => import('@/components/fagsystem/dokarkiv/modal/DokumentInfoListe')
+	() => import('@/components/fagsystem/dokarkiv/modal/DokumentInfoListe'),
 )
 const FileUploader = React.lazy(() => import('@/utils/FileUploader/FileUploader'))
 
@@ -50,7 +50,7 @@ export const HistarkForm = ({ formikBag }: HistarkFormProps) => {
 	const [startAar, setStartAar] = useState(new Date())
 	const [sluttAar, setSluttAar] = useState(new Date())
 	const [selectedNavEnhet, setSelectedNavEnhet] = useState(
-		_.get(formikBag.values, 'histark.dokumenter.0.enhetsnummer')
+		_.get(formikBag.values, 'histark.dokumenter.0.enhetsnummer'),
 	)
 
 	const { navEnheter = [] } = useNavEnheter()
@@ -78,7 +78,7 @@ export const HistarkForm = ({ formikBag }: HistarkFormProps) => {
 			<Panel
 				heading="Dokumenter (Histark)"
 				hasErrors={panelError(formikBag, histarkAttributt)}
-				iconType="dokarkiv"
+				iconType="designsystem-dokarkiv"
 				// @ts-ignore
 				startOpen={erForsteEllerTest(formikBag.values, [histarkAttributt])}
 			>
@@ -208,8 +208,8 @@ HistarkForm.validation = {
 					skanningsTidspunkt: requiredDate.nullable(),
 					startAar: testDatoFom(requiredDate.nullable(), 'sluttAar', 'Startår må være før sluttår'),
 					sluttAar: requiredDate.nullable(),
-				})
+				}),
 			),
-		})
+		}),
 	),
 }

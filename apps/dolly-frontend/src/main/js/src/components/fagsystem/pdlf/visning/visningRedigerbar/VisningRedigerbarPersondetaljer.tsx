@@ -18,8 +18,8 @@ import { ifPresent } from '@/utils/YupValidations'
 import { PersondetaljerSamlet } from '@/components/fagsystem/pdlf/form/partials/persondetaljerSamlet/PersondetaljerSamlet'
 import { Checkbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import {
-	RedigerLoading,
 	Modus,
+	RedigerLoading,
 } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/RedigerLoading'
 import { Alert } from '@navikt/ds-react'
 
@@ -108,7 +108,7 @@ export const VisningRedigerbarPersondetaljer = ({
 	const skjermingError = (error: any) => {
 		error &&
 			setErrorMessageSkjerming(
-				`Feil ved sletting i skjermingsregisteret: ${error.message || error.toString()}`
+				`Feil ved sletting i skjermingsregisteret: ${error.message || error.toString()}`,
 			)
 		setVisningModus(Modus.Les)
 	}
@@ -131,7 +131,7 @@ export const VisningRedigerbarPersondetaljer = ({
 							(error) => {
 								pdlfError(error)
 								harFeil = true
-							}
+							},
 						)
 					}
 				}
@@ -234,7 +234,7 @@ export const VisningRedigerbarPersondetaljer = ({
 		{
 			folkeregisterpersonstatus: ifPresent(
 				'folkeregisterpersonstatus',
-				Yup.array().of(folkeregisterpersonstatus)
+				Yup.array().of(folkeregisterpersonstatus),
 			),
 			kjoenn: ifPresent('kjoenn', Yup.array().of(kjoenn)),
 			navn: ifPresent('navn', Yup.array().of(navn)),
@@ -243,7 +243,7 @@ export const VisningRedigerbarPersondetaljer = ({
 			['folkeregisterpersonstatus', 'folkeregisterpersonstatus'],
 			['kjoenn', 'kjoenn'],
 			['navn', 'navn'],
-		]
+		],
 	)
 
 	const harNavn = redigertAttributt?.pdlf
@@ -374,9 +374,13 @@ export const VisningRedigerbarPersondetaljer = ({
 				<PersondetaljerVisning>
 					{dataVisning}
 					<EditDeleteKnapper>
-						<Button kind="edit" onClick={() => setVisningModus(Modus.Skriv)} title="Endre" />
+						<Button
+							kind="designsystem-edit"
+							onClick={() => setVisningModus(Modus.Skriv)}
+							title="Endre"
+						/>
 						{(harNavn || harKjoenn || harPersonstatus || harSkjerming) && (
-							<Button kind="trashcan" onClick={() => openModal()} title="Slett" />
+							<Button kind="designsystem-trashcan" onClick={() => openModal()} title="Slett" />
 						)}
 						<SlettModal />
 					</EditDeleteKnapper>

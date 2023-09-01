@@ -54,7 +54,7 @@ export const MalPanel = ({
 
 	const avsluttRedigering = (id: number) => {
 		setUnderRedigering((erUnderRedigering: any[]) =>
-			erUnderRedigering.filter((number) => number !== id)
+			erUnderRedigering.filter((number) => number !== id),
 		)
 	}
 
@@ -111,7 +111,7 @@ export const MalPanel = ({
 															setUnderRedigering(underRedigering.concat([id]))
 														}}
 													>
-														<Icon kind={'edit'} />
+														<Icon kind={'designsystem-edit'} />
 													</Button>
 												)}
 											</Table.HeaderCell>
@@ -120,7 +120,7 @@ export const MalPanel = ({
 													data-cy={CypressSelector.BUTTON_MALER_SLETT}
 													onClick={() => slettMal(id, bestilling?.organisasjon)}
 												>
-													<Icon kind={'trashcan'} />
+													<Icon kind={'designsystem-trashcan'} />
 												</Button>
 											</Table.HeaderCell>
 										</Table.Row>

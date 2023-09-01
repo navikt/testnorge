@@ -17,7 +17,7 @@ export const KontaktReservasjonsPanel = ({ stateModifier, formikBag }) => {
 			informasjonstekst={infoTekst}
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
-			iconType="krr"
+			iconType="designsystem-krr"
 			startOpen={harValgtAttributt(formikBag.values, [krrAttributt])}
 		>
 			<AttributtKategori attr={sm.attrs}>

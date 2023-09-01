@@ -51,7 +51,7 @@ const DoedsfallVisning = ({
 	const initialValues = { doedsfall: initDoedsfall }
 
 	const redigertDoedsfallPdlf = _.get(tmpPersoner, `${ident}.person.doedsfall`)?.find(
-		(a: Person) => a.id === doedsfall.id
+		(a: Person) => a.id === doedsfall.id,
 	)
 	const slettetDoedsfallPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertDoedsfallPdlf
 	if (slettetDoedsfallPdlf) {
@@ -83,7 +83,7 @@ export const Doedsfall = ({ data, tmpPersoner, ident, erPdlVisning = false }: Do
 
 	return (
 		<div>
-			<SubOverskrift label="Dødsfall" iconKind="grav" />
+			<SubOverskrift label="Dødsfall" iconKind="designsystem-grav" />
 			<div className="person-visning_content">
 				<ErrorBoundary>
 					<DollyFieldArray data={data} header="" nested>

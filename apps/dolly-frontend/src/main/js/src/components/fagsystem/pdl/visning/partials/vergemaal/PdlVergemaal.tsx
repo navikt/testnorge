@@ -52,12 +52,12 @@ export const PdlVergemaal = ({ data }: VergemaalProps) => {
 
 	const gyldigeVergemaal = data.filter((vergemaal: VergemaalData) => !vergemaal.metadata?.historisk)
 	const historiskeVergemaal = data.filter(
-		(vergemaal: VergemaalData) => vergemaal.metadata?.historisk
+		(vergemaal: VergemaalData) => vergemaal.metadata?.historisk,
 	)
 
 	return (
 		<div>
-			<SubOverskrift label="Vergemål" iconKind="vergemaal" />
+			<SubOverskrift label="Vergemål" iconKind="designsystem-vergemaal" />
 			<ArrayHistorikk
 				component={Visning}
 				data={gyldigeVergemaal}

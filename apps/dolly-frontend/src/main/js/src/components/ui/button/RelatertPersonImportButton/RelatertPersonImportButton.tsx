@@ -63,7 +63,7 @@ export const RelatertPersonImportButton = ({
 						setFullfoert(false)
 						setLoading(false)
 					})
-			})
+			}),
 		)
 	}
 
@@ -148,7 +148,7 @@ export const RelatertPersonImportButton = ({
 				onClick={openModal}
 				disabled={disabled}
 				title={disabled ? 'Relaterte personer er allerede i gruppen' : ''}
-				kind="relasjoner"
+				kind="designsystem-relasjoner"
 				className="svg-icon-blue"
 			>
 				{relatertPersonIdenter.length > 1
@@ -162,7 +162,7 @@ export const RelatertPersonImportButton = ({
 			)}
 			<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="40%" overflow="auto">
 				<div className="relatertPersonImportModal">
-					<Icon size={50} kind="personinformasjon" />
+					<Icon size={50} kind="designsystem-personinformasjon" />
 					{relatertPersonIdenter.length > 1 ? (
 						<>
 							<h1>Importer relaterte personer</h1>

@@ -32,7 +32,7 @@ export const Nasjonalitet = ({
 
 	return (
 		<div>
-			{visTittel && <SubOverskrift label="Nasjonalitet" iconKind="nasjonalitet" />}
+			{visTittel && <SubOverskrift label="Nasjonalitet" iconKind="designsystem-nasjonalitet" />}
 			{statsborgerskap?.length > 0 && (
 				<Statsborgerskap
 					data={statsborgerskap}

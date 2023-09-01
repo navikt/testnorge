@@ -11,7 +11,7 @@ export const OrganisasjonDetaljerPanel = ({ stateModifier }: any) => {
 			startOpen
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={() => sm.batchRemove('enhetstype')}
-			iconType="personinformasjon"
+			iconType="designsystem-personinformasjon"
 		>
 			<AttributtKategori title="Organisasjon" attr={sm.attrs}>
 				<Attributt

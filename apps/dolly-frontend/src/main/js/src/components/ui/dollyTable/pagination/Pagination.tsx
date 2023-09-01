@@ -89,8 +89,8 @@ export const Pagination = ({
 						pageRangeDisplayed={2}
 						marginPagesDisplayed={1}
 						onPageChange={pageChangeHandler}
-						previousLabel={<Icon size={11} kind="arrow-left" />}
-						nextLabel={<Icon size={11} kind="arrow-right" />}
+						previousLabel={<Icon size={11} kind="designsystem-arrow-left" />}
+						nextLabel={<Icon size={11} kind="designsystem-arrow-right" />}
 					/>
 				</Fragment>
 			)}

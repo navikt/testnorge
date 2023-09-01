@@ -36,7 +36,7 @@ export const AlderspensjonVisning = ({ data }) => {
 
 	return (
 		<>
-			<SubOverskrift label="Alderspensjon" iconKind="pensjon" />
+			<SubOverskrift label="Alderspensjon" iconKind="designsystem-pensjon" />
 			{bestillingerFiltrert?.length === 1 ? (
 				<DataVisning
 					apBestilling={bestillingerFiltrert[0]?.data?.pensjonforvalter?.alderspensjon}
@@ -58,6 +58,6 @@ AlderspensjonVisning.filterValues = (bestillinger, ident) => {
 	}
 	return bestillinger.filter(
 		(bestilling: any) =>
-			bestilling.data.pensjonforvalter?.alderspensjon && erGyldig(bestilling.id, 'PEN_AP', ident)
+			bestilling.data.pensjonforvalter?.alderspensjon && erGyldig(bestilling.id, 'PEN_AP', ident),
 	)
 }

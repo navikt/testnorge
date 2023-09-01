@@ -14,7 +14,7 @@ const getOrganisasjonInfo = (organisasjon, selectedId, setSelectedId) => {
 	const orgTree = new OrgTree(organisasjon[1], '0')
 	return (
 		<div className="boks">
-			<SubOverskrift label="Organisasjonsoversikt" iconKind="organisasjon" />
+			<SubOverskrift label="Organisasjonsoversikt" iconKind="designsystem-organisasjon" />
 			<Enhetstre enheter={[orgTree]} selectedEnhet={selectedId} onNodeClick={setSelectedId} />
 			<Detaljer data={[orgTree.find(selectedId)]} />
 		</div>

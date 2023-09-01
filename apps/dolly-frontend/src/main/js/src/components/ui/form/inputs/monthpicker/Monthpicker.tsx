@@ -45,7 +45,9 @@ export const Monthpicker = ({
 					onChange={onChange ? onChange : handleDateChange}
 					placeholderText={'yyyy-mm'}
 					showMonthYearPicker
-					customInput={<TextInput icon="calendar" feil={getFeilmelding(formikBag, name)} />}
+					customInput={
+						<TextInput icon="designsystem-calendar" feil={getFeilmelding(formikBag, name)} />
+					}
 					dropdownMode="select"
 					autoComplete="off"
 					minDate={minDate}

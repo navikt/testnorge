@@ -22,7 +22,7 @@ export const Beskrivelse = ({
 
 	if (isUpdatingBeskrivelse) {
 		closeModal && closeModal()
-		return <Loading label="oppdaterer beskrivelse" />
+		return <Loading label="oppdaterer kommentar" />
 	}
 
 	const handleSubmit = (value: string) => {
@@ -32,11 +32,11 @@ export const Beskrivelse = ({
 
 	return (
 		<React.Fragment>
-			{beskrivelse && <SubOverskrift label="Kommentarer" iconKind="kommentar" />}
+			{beskrivelse && <SubOverskrift label="Kommentarer" iconKind="designsystem-kommentar" />}
 			<TextEditor
 				text={beskrivelse}
 				handleSubmit={handleSubmit}
-				placeholder="Skriv inn kommentar"
+				placeholder="Skriv inn kommentar (notat)"
 			/>
 		</React.Fragment>
 	)
