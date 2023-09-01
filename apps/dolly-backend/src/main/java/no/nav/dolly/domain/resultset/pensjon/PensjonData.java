@@ -140,6 +140,7 @@ public class PensjonData {
     }
 
     @Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Uforetrygd {

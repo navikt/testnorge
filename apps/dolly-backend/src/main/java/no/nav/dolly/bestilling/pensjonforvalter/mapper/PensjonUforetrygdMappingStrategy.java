@@ -34,7 +34,7 @@ public class PensjonUforetrygdMappingStrategy implements MappingStrategy {
                         var miljoer = (List<String>) context.getProperty("miljoer");
                         var persondata = (List<PdlPersonBolk.PersonBolk>) context.getProperty("persondata");
                         var hovedperson = persondata.stream()
-                                .filter(personBolk -> ident.equals(personBolk.getIdent()))
+                                .filter(personBolk -> personBolk.getIdent().equals(ident))
                                 .map(PdlPersonBolk.PersonBolk::getPerson)
                                 .findFirst();
 
@@ -56,7 +56,6 @@ public class PensjonUforetrygdMappingStrategy implements MappingStrategy {
                                 nullcheckSetDefaultValue(uforetrygd.getOnsketVirkningsDato(), fraDato));
 
                         if (isNull(uforetrygd.getMinimumInntektForUforhetType())) {
-
                             hovedperson
                                     .flatMap(person -> person.getSivilstand().stream()
                                             .max(Comparator.comparing(PdlPerson.Sivilstand::getId)))
@@ -70,15 +69,19 @@ public class PensjonUforetrygdMappingStrategy implements MappingStrategy {
                                                             .max(Comparator.comparing(PdlPerson.Foedsel::getId)))
                                                     .ifPresent(foedsel -> pensjonUforetrygdRequest.setMinimumInntektForUforhetType(
 
-                                                            ChronoUnit.YEARS.between(fraDato, getFoedselsdato(foedsel)) > 23 ?
+                                                            ChronoUnit.YEARS.between(getFoedselsdato(foedsel), fraDato) > 23 ?
                                                                     UforeType.ENSLIG :
                                                                     UforeType.UNGUFOR));
                                         }
                                     });
                         }
 
-
-
+                        var ansatt = Stream.of(uforetrygd.getAttesterer(), uforetrygd.getSaksbehandler())
+                                .filter(Objects::nonNull)
+                                .findFirst()
+                                .orElse("Dolly");
+                        pensjonUforetrygdRequest.setSaksbehandler(nullcheckSetDefaultValue(uforetrygd.getSaksbehandler(), ansatt));
+                        pensjonUforetrygdRequest.setAttesterer(nullcheckSetDefaultValue(uforetrygd.getAttesterer(), ansatt));
                     }
                 })
                 .byDefault()

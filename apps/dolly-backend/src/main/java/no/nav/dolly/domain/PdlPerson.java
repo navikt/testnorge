@@ -350,6 +350,7 @@ public class PdlPerson {
     }
 
     @lombok.Data
+    @SuperBuilder
     @EqualsAndHashCode(callSuper = true)
     @NoArgsConstructor
     @AllArgsConstructor
