@@ -24,7 +24,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @RequiredArgsConstructor
 public class LagreUforetrygdCommand implements Callable<Flux<PensjonforvalterResponse>> {
 
-    private static final String PENSJON_AP_URL = "/api/v1/vedtak/ut";
+    private static final String PENSJON_UT_URL = "/api/v1/vedtak/ut";
 
     private final WebClient webClient;
 
@@ -36,7 +36,7 @@ public class LagreUforetrygdCommand implements Callable<Flux<PensjonforvalterRes
         return webClient
                 .post()
                 .uri(uriBuilder -> uriBuilder
-                        .path(PENSJON_AP_URL)
+                        .path(PENSJON_UT_URL)
                         .build())
                 .header(AUTHORIZATION, "Bearer " + token)
                 .header(HEADER_NAV_CALL_ID, generateCallId())
@@ -59,7 +59,7 @@ public class LagreUforetrygdCommand implements Callable<Flux<PensjonforvalterRes
                                                                 .build())
                                                         .message(WebClientFilter.getMessage(error))
                                                         .timestamp(LocalDateTime.now())
-                                                        .path(PENSJON_AP_URL)
+                                                        .path(PENSJON_UT_URL)
                                                         .build())
                                                 .build())
                                         .toList())

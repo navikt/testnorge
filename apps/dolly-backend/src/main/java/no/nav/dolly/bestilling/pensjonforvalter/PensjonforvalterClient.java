@@ -160,6 +160,7 @@ public class PensjonforvalterClient implements ClientRegister {
                                                     .map(response -> PEN_ALDERSPENSJON + decodeStatus(response, dollyPerson.getIdent())),
 
                                             lagreUforetrygd(bestilling1.getPensjonforvalter(),
+                                                    persondata,
                                                     dollyPerson.getIdent(),
                                                     bestilteMiljoer.get(),
                                                     isOpprettEndre,
@@ -320,7 +321,8 @@ public class PensjonforvalterClient implements ClientRegister {
         return Flux.empty();
     }
 
-    private Flux<PensjonforvalterResponse> lagreUforetrygd(PensjonData pensjonforvalter, String ident, Set<String> miljoer, boolean isOpprettEndre, Long bestillingId) {
+    private Flux<PensjonforvalterResponse> lagreUforetrygd(PensjonData pensjonforvalter, List<PdlPersonBolk.PersonBolk> persondata,
+                                                           String ident, Set<String> miljoer, boolean isOpprettEndre, Long bestillingId) {
 
         return Flux.just(pensjonforvalter)
                 .filter(pensjon -> nonNull(pensjon.getUforetrygd()))
@@ -333,6 +335,7 @@ public class PensjonforvalterClient implements ClientRegister {
                             var context = new MappingContext.Factory().getContext();
                             context.setProperty("ident", ident);
                             context.setProperty("miljoer", nyeMiljoer);
+                            context.setProperty("persondata", persondata);
                             return mapperFacade.map(uforetrygd, PensjonUforetrygdRequest.class, context);
                         })
                         .map(request -> pensjonforvalterConsumer.lagreUforetrygd(request)
