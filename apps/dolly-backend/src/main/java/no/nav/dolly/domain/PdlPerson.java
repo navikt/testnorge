@@ -324,7 +324,7 @@ public class PdlPerson {
         private String status;
 
         public boolean isOpphoert() {
-            return "OPPHOERT" .equals(status);
+            return "OPPHOERT".equals(status);
         }
     }
 

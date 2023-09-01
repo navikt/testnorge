@@ -290,65 +290,79 @@ public class PensjonforvalterClient implements ClientRegister {
                                                               String ident, Set<String> miljoer,
                                                               boolean isOpprettEndre, Long bestillingId) {
 
-        if (nonNull(pensjonData) && nonNull(pensjonData.getAlderspensjon())) {
+        return Flux.just(true)
+                .filter(pensjon -> nonNull(pensjonData) && nonNull(pensjonData.getAlderspensjon()))
+                .map(pensjon -> pensjonData.getAlderspensjon())
+                .flatMap(alderspensjon -> Flux.fromIterable(miljoer)
+                        .flatMap(miljoe -> {
 
-            var opprettIMiljoer = miljoer.stream()
-                    .filter(miljoe -> isOpprettEndre ||
-                            !transaksjonMappingService.existAlready(PEN_AP, ident, miljoe))
-                    .toList();
+                            if (isOpprettEndre && !transaksjonMappingService.existAlready(PEN_AP, ident, miljoe)) {
 
-            if (!opprettIMiljoer.isEmpty()) {
-                var context = new MappingContext.Factory().getContext();
-
-                context.setProperty(IDENT, ident);
-                context.setProperty("miljoer", opprettIMiljoer);
-                context.setProperty("relasjoner", relasjoner);
-                var alderspensjonRequest = mapperFacade.map(pensjonData.getAlderspensjon(),
-                        AlderspensjonRequest.class, context);
-
-                return pensjonforvalterConsumer.lagreAlderspensjon(alderspensjonRequest)
-                        .map(response -> {
-                            response.getStatus().forEach(status -> {
-                                if (status.getResponse().isResponse2xx()) {
-                                    saveAPTransaksjonId(ident, status.getMiljo(), bestillingId,
-                                            PEN_AP, pensjonData.getAlderspensjon());
-                                }
-                            });
-                            return response;
-                        });
-            }
-        }
-        return Flux.empty();
+                                var context = new MappingContext.Factory().getContext();
+                                context.setProperty(IDENT, ident);
+                                context.setProperty("miljoer", List.of(miljoe));
+                                context.setProperty("relasjoner", relasjoner);
+                                return Flux.just(mapperFacade.map(alderspensjon, AlderspensjonRequest.class, context))
+                                        .flatMap(alderspensjonRequest -> pensjonforvalterConsumer.lagreAlderspensjon(alderspensjonRequest)
+                                                .map(response -> {
+                                                    response.getStatus().forEach(status -> {
+                                                        if (status.getResponse().isResponse2xx()) {
+                                                            saveAPTransaksjonId(ident, status.getMiljo(), bestillingId,
+                                                                    PEN_AP, pensjonData.getAlderspensjon());
+                                                        }
+                                                    });
+                                                    return response;
+                                                }));
+                            } else {
+                                return getOkStatus(miljoe);
+                            }
+                        }));
     }
 
     private Flux<PensjonforvalterResponse> lagreUforetrygd(PensjonData pensjonforvalter, List<PdlPersonBolk.PersonBolk> persondata,
                                                            String ident, Set<String> miljoer, boolean isOpprettEndre, Long bestillingId) {
 
-        return Flux.just(pensjonforvalter)
-                .filter(pensjon -> nonNull(pensjon.getUforetrygd()))
-                .map(PensjonData::getUforetrygd)
+        return Flux.just(true)
+                .filter(pensjon -> nonNull(pensjonforvalter) && nonNull(pensjonforvalter.getUforetrygd()))
+                .map(pensjon -> pensjonforvalter.getUforetrygd())
                 .flatMap(uforetrygd -> Flux.fromIterable(miljoer)
-                        .filter(miljoe -> isOpprettEndre ||
-                                !transaksjonMappingService.existAlready(PEN_UT, ident, miljoe))
-                        .collectList()
-                        .map(nyeMiljoer -> {
-                            var context = new MappingContext.Factory().getContext();
-                            context.setProperty("ident", ident);
-                            context.setProperty("miljoer", nyeMiljoer);
-                            context.setProperty("persondata", persondata);
-                            return mapperFacade.map(uforetrygd, PensjonUforetrygdRequest.class, context);
-                        })
-                        .map(request -> pensjonforvalterConsumer.lagreUforetrygd(request)
-                                .map(response -> {
-                                    response.getStatus().forEach(status -> {
-                                        if (status.getResponse().isResponse2xx()) {
-                                            saveAPTransaksjonId(ident, status.getMiljo(), bestillingId,
-                                                    PEN_UT, uforetrygd);
-                                        }
-                                    });
-                                    return response;
-                                })))
-                .flatMap(Flux::from);
+                        .flatMap(miljoe -> {
+
+                            if (isOpprettEndre && !transaksjonMappingService.existAlready(PEN_UT, ident, miljoe)) {
+
+                                var context = new MappingContext.Factory().getContext();
+                                context.setProperty("ident", ident);
+                                context.setProperty("miljoer", List.of(miljoe));
+                                context.setProperty("persondata", persondata);
+                                return Flux.just(mapperFacade.map(uforetrygd, PensjonUforetrygdRequest.class, context))
+                                        .flatMap(request -> pensjonforvalterConsumer.lagreUforetrygd(request)
+                                                .map(response -> {
+                                                    response.getStatus().stream()
+                                                            .filter(status -> status.getResponse().isResponse2xx())
+                                                            .forEach(status ->
+                                                                    saveAPTransaksjonId(ident, status.getMiljo(), bestillingId,
+                                                                            PEN_UT, uforetrygd));
+                                                    return response;
+                                                }));
+                            } else {
+                                return getOkStatus(miljoe);
+                            }
+                        }));
+    }
+
+    private static Flux<PensjonforvalterResponse> getOkStatus(String miljoe) {
+
+        return Flux.just(PensjonforvalterResponse.builder()
+                .status(List.of(PensjonforvalterResponse.ResponseEnvironment.builder()
+                        .miljo(miljoe)
+                        .response(PensjonforvalterResponse.Response.builder()
+                                .httpStatus(PensjonforvalterResponse.HttpStatus.builder()
+                                        .status(200)
+                                        .reasonPhrase("OK")
+                                        .build())
+                                .build())
+                        .build()))
+                .build());
     }
 
     private void saveAPTransaksjonId(String ident, String miljoe, Long bestillingId, SystemTyper type, Object vedtak) {
