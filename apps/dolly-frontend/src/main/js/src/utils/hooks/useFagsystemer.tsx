@@ -94,6 +94,23 @@ export const useTpData = (ident, harTpBestilling) => {
 	}
 }
 
+export const useApData = (ident, harApBestilling) => {
+	const { data, isLoading, error } = useSWR<any, Error>(
+		harApBestilling ? `/dolly-backend/api/v1/transaksjonid?ident=${ident}&system=PEN_AP` : null,
+		fetcher,
+	)
+
+	const miljoData = data?.map((m) => {
+		return { data: m.transaksjonId, miljo: m.miljoe }
+	})
+
+	return {
+		apData: miljoData?.sort((a, b) => a.miljo?.localeCompare(b.miljo)),
+		loading: isLoading,
+		error: error,
+	}
+}
+
 export const useInstData = (ident, harInstBestilling) => {
 	const { instEnvironments } = useInstEnvironments()
 
