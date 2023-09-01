@@ -10,6 +10,7 @@ import { Alert } from '@navikt/ds-react'
 import { MiljoTabs } from '@/components/ui/miljoTabs/MiljoTabs'
 
 export const sjekkManglerApData = (apData) => {
+	console.log('apData: ', apData) //TODO - SLETT MEG
 	return apData?.length < 1 || apData?.every((miljoData) => !miljoData.data)
 }
 const DataVisning = ({ data }) => {
@@ -34,7 +35,7 @@ export const AlderspensjonVisning = ({ data, loading, bestillingIdListe, tilgjen
 		return <Loading label="Laster alderspensjon-data" />
 	}
 
-	if (!data || data?.length < 1) {
+	if (!data) {
 		return null
 	}
 
