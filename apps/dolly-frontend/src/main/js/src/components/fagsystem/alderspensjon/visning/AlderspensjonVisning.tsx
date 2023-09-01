@@ -10,7 +10,6 @@ import { Alert } from '@navikt/ds-react'
 import { MiljoTabs } from '@/components/ui/miljoTabs/MiljoTabs'
 
 export const sjekkManglerApData = (apData) => {
-	console.log('apData: ', apData) //TODO - SLETT MEG
 	return apData?.length < 1 || apData?.every((miljoData) => !miljoData.data)
 }
 const DataVisning = ({ data }) => {
