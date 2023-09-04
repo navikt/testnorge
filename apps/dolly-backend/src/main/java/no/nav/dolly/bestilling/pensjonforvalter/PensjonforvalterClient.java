@@ -9,16 +9,7 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
-import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonRequest;
-import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPersonRequest;
-import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPoppInntektRequest;
-import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonSamboerRequest;
-import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonSamboerResponse;
-import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonSivilstandWrapper;
-import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpForholdRequest;
-import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpYtelseRequest;
-import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonUforetrygdRequest;
-import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.*;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
@@ -308,7 +299,7 @@ public class PensjonforvalterClient implements ClientRegister {
                                                     response.getStatus().forEach(status -> {
                                                         if (status.getResponse().isResponse2xx()) {
                                                             saveAPTransaksjonId(ident, status.getMiljo(), bestillingId,
-                                                                    PEN_AP, pensjonData.getAlderspensjon());
+                                                                    PEN_AP, alderspensjonRequest);
                                                         }
                                                     });
                                                     return response;
@@ -341,7 +332,7 @@ public class PensjonforvalterClient implements ClientRegister {
                                                             .filter(status -> status.getResponse().isResponse2xx())
                                                             .forEach(status ->
                                                                     saveAPTransaksjonId(ident, status.getMiljo(), bestillingId,
-                                                                            PEN_UT, uforetrygd));
+                                                                            PEN_UT, request));
                                                     return response;
                                                 }));
                             } else {

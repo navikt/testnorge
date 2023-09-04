@@ -11,18 +11,20 @@ import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
 
+import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Stream;
+import java.util.Random;
 
 import static java.util.Objects.isNull;
 import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
 
 @Component
 public class PensjonUforetrygdMappingStrategy implements MappingStrategy {
+
+    private static Random ansatt = new SecureRandom();
     @Override
     public void register(MapperFactory factory) {
         factory.classMap(PensjonData.Uforetrygd.class, PensjonUforetrygdRequest.class)
@@ -41,19 +43,12 @@ public class PensjonUforetrygdMappingStrategy implements MappingStrategy {
                         pensjonUforetrygdRequest.setFnr(ident);
                         pensjonUforetrygdRequest.setMiljoer(miljoer);
 
-                        var fraDato = Stream.of(uforetrygd.getUforetidspunkt(),
-                                        uforetrygd.getKravFremsattDato(),
-                                        uforetrygd.getOnsketVirkningsDato())
-                                .filter(Objects::nonNull)
-                                .min(LocalDate::compareTo)
-                                .orElse(LocalDate.now());
-
                         pensjonUforetrygdRequest.setUforetidspunkt(
-                                nullcheckSetDefaultValue(uforetrygd.getUforetidspunkt(), fraDato));
+                                nullcheckSetDefaultValue(uforetrygd.getUforetidspunkt(), getForrigeMaaned()));
                         pensjonUforetrygdRequest.setKravFremsattDato(
-                                nullcheckSetDefaultValue(uforetrygd.getKravFremsattDato(), fraDato));
+                                nullcheckSetDefaultValue(uforetrygd.getKravFremsattDato(), LocalDate.now()));
                         pensjonUforetrygdRequest.setOnsketVirkningsDato(
-                                nullcheckSetDefaultValue(uforetrygd.getOnsketVirkningsDato(), fraDato));
+                                nullcheckSetDefaultValue(uforetrygd.getOnsketVirkningsDato(), getNesteMaaned()));
 
                         if (isNull(uforetrygd.getMinimumInntektForUforhetType())) {
                             hovedperson
@@ -69,23 +64,37 @@ public class PensjonUforetrygdMappingStrategy implements MappingStrategy {
                                                             .max(Comparator.comparing(PdlPerson.Foedsel::getId)))
                                                     .ifPresent(foedsel -> pensjonUforetrygdRequest.setMinimumInntektForUforhetType(
 
-                                                            ChronoUnit.YEARS.between(getFoedselsdato(foedsel), fraDato) > 23 ?
+                                                            ChronoUnit.YEARS.between(getFoedselsdato(foedsel),
+                                                                    pensjonUforetrygdRequest.getUforetidspunkt()) > 23 ?
                                                                     UforeType.ENSLIG :
                                                                     UforeType.UNGUFOR));
                                         }
                                     });
                         }
 
-                        var ansatt = Stream.of(uforetrygd.getAttesterer(), uforetrygd.getSaksbehandler())
-                                .filter(Objects::nonNull)
-                                .findFirst()
-                                .orElse("Dolly");
-                        pensjonUforetrygdRequest.setSaksbehandler(nullcheckSetDefaultValue(uforetrygd.getSaksbehandler(), ansatt));
-                        pensjonUforetrygdRequest.setAttesterer(nullcheckSetDefaultValue(uforetrygd.getAttesterer(), ansatt));
+                        pensjonUforetrygdRequest.setSaksbehandler(nullcheckSetDefaultValue(uforetrygd.getSaksbehandler(), getRandomAnsatt()));
+                        pensjonUforetrygdRequest.setAttesterer(nullcheckSetDefaultValue(uforetrygd.getAttesterer(), getRandomAnsatt()));
                     }
                 })
                 .byDefault()
                 .register();
+    }
+
+    private static LocalDate getForrigeMaaned() {
+
+        var forrigeMaaned = LocalDate.now().minusMonths(1);
+        return LocalDate.of(forrigeMaaned.getYear(), forrigeMaaned.getMonth(), 1);
+    }
+
+    private static LocalDate getNesteMaaned() {
+
+        var nesteMaaned = LocalDate.now().plusMonths(1);
+        return LocalDate.of(nesteMaaned.getYear(), nesteMaaned.getMonth(), 1);
+    }
+
+    private static String getRandomAnsatt() {
+
+        return String.format("Z9%5d", ansatt.nextInt(99999));
     }
 
     private static LocalDate getFoedselsdato(PdlPerson.Foedsel foedsel) {
