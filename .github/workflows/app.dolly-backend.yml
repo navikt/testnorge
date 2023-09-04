@@ -22,7 +22,7 @@ jobs:
       deploy-tag-test: "#deploy-test-dolly-backend"
     permissions:
       contents: read
-      packages: write
+      id-token: write
     secrets:
       NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
       NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
