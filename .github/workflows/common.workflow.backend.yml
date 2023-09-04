@@ -82,10 +82,6 @@ jobs:
   build:
     needs: start
     if: github.actor != 'dependabot[bot]'
-    permissions:
-      contents: "read"
-      id-token: "write"
-      packages: "write"
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout"
