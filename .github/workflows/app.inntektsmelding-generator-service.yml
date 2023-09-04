@@ -15,6 +15,9 @@ jobs:
     with:
       working-directory: "apps/inntektsmelding-generator-service/"
       deploy-tag: "#deploy-inntektsmelding-generator-service"
+    permissions:
+      contents: read
+      id-token: write
     secrets:
       NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
       NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}

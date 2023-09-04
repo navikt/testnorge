@@ -17,6 +17,9 @@ jobs:
       working-directory: "apps/person-organisasjon-tilgang-service"
       deploy-tag: "#deploy-person-organisasjon-tilgang-service"
       deploy-tag-test: "#deploy-test-person-organisasjon-tilgang-service"
+    permissions:
+      contents: read
+      id-token: write
     secrets:
       NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
       NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
