@@ -10,6 +10,7 @@ import { harValgtAttributt } from '@/components/ui/form/formUtils'
 import { pensjonPath } from '@/components/fagsystem/pensjon/form/Form'
 import { initialAlderspensjon } from '@/components/fagsystem/alderspensjon/form/initialValues'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import { initialUforetrygd } from '@/components/fagsystem/uforetrygd/initialValues'
 
 export const PensjonPanel = ({ stateModifier, formikBag }: any) => {
 	const sm = stateModifier(PensjonPanel.initialValues)
@@ -47,6 +48,9 @@ export const PensjonPanel = ({ stateModifier, formikBag }: any) => {
 					<Attributt attr={sm.attrs.alderspensjon} />
 				</AttributtKategori>
 			)}
+			<AttributtKategori title="Uføretrygd" attr={sm.attrs}>
+				<Attributt attr={sm.attrs.uforetrygd} />
+			</AttributtKategori>
 		</Panel>
 	)
 }
@@ -94,8 +98,9 @@ PensjonPanel.initialValues = ({ set, del, has }: any) => {
 			label: 'Har uføretrygdvedtak',
 			checked: has(paths.uforetrygd),
 			add: () => {
-				set(paths.uforetrygd)
+				set(paths.uforetrygd, initialUforetrygd)
 			},
+			remove: () => del(paths.uforetrygd),
 		},
 	}
 }
