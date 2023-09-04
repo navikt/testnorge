@@ -15,10 +15,11 @@ export const PensjonPanel = ({ stateModifier, formikBag }: any) => {
 	const sm = stateModifier(PensjonPanel.initialValues)
 	const opts = useContext(BestillingsveilederContext)
 
-	const harGyldigApBestilling = opts?.tidligereBestillinger?.some((bestilling) =>
-		bestilling.status?.some(
-			(status) => status.id === 'PEN_AP' && status.statuser?.[0]?.melding === 'OK'
-		)
+	const harGyldigApBestilling = opts?.tidligereBestillinger?.some(
+		(bestilling) =>
+			bestilling.status?.some(
+				(status) => status.id === 'PEN_AP' && status.statuser?.[0]?.melding === 'OK',
+			),
 	)
 
 	const infoTekst =
@@ -57,6 +58,7 @@ PensjonPanel.initialValues = ({ set, del, has }: any) => {
 		inntekt: 'pensjonforvalter.inntekt',
 		tp: 'pensjonforvalter.tp',
 		alderspensjon: 'pensjonforvalter.alderspensjon',
+		uforetrygd: 'pensjonforvalter.uforetrygd',
 	}
 	return {
 		inntekt: {
@@ -87,6 +89,13 @@ PensjonPanel.initialValues = ({ set, del, has }: any) => {
 				set(paths.alderspensjon, initialAlderspensjon)
 			},
 			remove: () => del(paths.alderspensjon),
+		},
+		uforetrygd: {
+			label: 'Har uføretrygdvedtak',
+			checked: has(paths.uforetrygd),
+			add: () => {
+				set(paths.uforetrygd)
+			},
 		},
 	}
 }
