@@ -5,14 +5,11 @@ import {
 	useDollyMalerBrukerOgMalnavn,
 	useDollyOrganisasjonMalerBrukerOgMalnavn,
 } from '@/utils/hooks/useMaler'
-import { Alert } from '@navikt/ds-react'
-import styled from 'styled-components'
+import { Tabs } from '@navikt/ds-react'
 import { MalPanel } from '@/pages/minSide/maler/MalPanel'
 import { CypressSelector } from '../../../../cypress/mocks/Selectors'
-
-const StyledAlert = styled(Alert)`
-	margin-bottom: 5px;
-`
+import { PersonGroupIcon, Buldings3Icon } from '@navikt/aksel-icons'
+import StyledAlert from '@/components/ui/alert/StyledAlert'
 
 export default ({ brukerId }: { brukerId: string }) => {
 	const [searchText, setSearchText] = useState('')
@@ -43,39 +40,46 @@ export default ({ brukerId }: { brukerId: string }) => {
 					setText={setSearchText}
 				/>
 			</div>
-			<MalPanel
-				antallEgneMaler={antallEgneMaler}
-				malListe={egneMaler}
-				searchText={searchText}
-				heading={'Personer'}
-				iconType={'identifikasjon'}
-				startOpen={true}
-				mutate={() => {
-					mutate()
-					orgMutate()
-				}}
-				underRedigering={underRedigering}
-				setUnderRedigering={setUnderRedigering}
-			/>
-			<MalPanel
-				antallEgneMaler={antallEgneOrgMaler}
-				malListe={egneOrgMaler}
-				searchText={searchText}
-				heading={'Organisasjoner'}
-				iconType={'organisasjon'}
-				startOpen={false}
-				mutate={() => {
-					mutate()
-					orgMutate()
-				}}
-				underRedigering={underRedigering}
-				setUnderRedigering={setUnderRedigering}
-			/>
-			{antallEgneMaler === 0 && antallEgneOrgMaler === 0 && (
+			{antallEgneMaler === 0 && antallEgneOrgMaler === 0 ? (
 				<StyledAlert variant={'info'}>
 					Du har ingen maler enda. Neste gang du oppretter en ny person kan du lagre bestillingen
 					som en mal på siste side av bestillingsveilederen.
 				</StyledAlert>
+			) : (
+				<Tabs defaultValue={'personer'}>
+					<Tabs.List>
+						<Tabs.Tab value={'personer'} label={'Personer'} icon={<PersonGroupIcon />} />
+						<Tabs.Tab value={'organisasjoner'} label={'Organisasjoner'} icon={<Buldings3Icon />} />
+					</Tabs.List>
+					<Tabs.Panel value={'personer'}>
+						<MalPanel
+							antallEgneMaler={antallEgneMaler}
+							malListe={egneMaler}
+							searchText={searchText}
+							type={'person'}
+							mutate={() => {
+								mutate()
+								orgMutate()
+							}}
+							underRedigering={underRedigering}
+							setUnderRedigering={setUnderRedigering}
+						/>
+					</Tabs.Panel>
+					<Tabs.Panel value={'organisasjoner'}>
+						<MalPanel
+							antallEgneMaler={antallEgneOrgMaler}
+							malListe={egneOrgMaler}
+							searchText={searchText}
+							type={'organisasjon'}
+							mutate={() => {
+								mutate()
+								orgMutate()
+							}}
+							underRedigering={underRedigering}
+							setUnderRedigering={setUnderRedigering}
+						/>
+					</Tabs.Panel>
+				</Tabs>
 			)}
 		</div>
 	)
