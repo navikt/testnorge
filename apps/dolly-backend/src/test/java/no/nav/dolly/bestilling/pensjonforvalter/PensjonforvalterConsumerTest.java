@@ -1,10 +1,6 @@
 package no.nav.dolly.bestilling.pensjonforvalter;
 
-import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPersonRequest;
-import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPoppInntektRequest;
-import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpForholdRequest;
-import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpYtelseRequest;
-import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.*;
 import no.nav.dolly.config.credentials.PensjonforvalterProxyProperties;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
@@ -22,16 +18,10 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.badRequest;
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.ok;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.mockito.Mockito.when;
 import static wiremock.org.hamcrest.MatcherAssert.assertThat;
 
@@ -67,12 +57,12 @@ class PensjonforvalterConsumerTest {
         if (!withError) {
             stubFor(post(urlPathMatching("(.*)/api/v1/person"))
                     .willReturn(ok()
-                            .withBody("{\"status\":[{\"miljo\":\"tx\",\"response\":{\"httpStatus\":{\"status\":200,\"reasonPhrase\":\"OK\"},\"message\":null,\"path\":\"/person\",\"timestamp\":\"2022-06-29T00:00:00.311057793Z\"}}]}")
+                            .withBody("{\"status\":[{\"miljo\":\"tx\",\"response\":{\"httpStatus\":{\"status\":200,\"reasonPhrase\":\"OK\"},\"message\":null,\"path\":\"/person\"}}]}")
                             .withHeader("Content-Type", "application/json")));
         } else {
             stubFor(post(urlPathMatching("(.*)/api/v1/person"))
                     .willReturn(ok()
-                            .withBody("{\"status\":[{\"miljo\":\"tx\",\"response\":{\"httpStatus\":{\"status\":500,\"reasonPhrase\":\"Internal Server Error\"},\"message\":\"POST Request failed with msg: 400 Bad Request: [{\\\"message\\\":\\\"error message\\\"}]\",\"path\":\"/person\",\"timestamp\":\"2022-06-29T13:00:00.838672829Z\"}}]}")
+                            .withBody("{\"status\":[{\"miljo\":\"tx\",\"response\":{\"httpStatus\":{\"status\":500,\"reasonPhrase\":\"Internal Server Error\"},\"message\":\"POST Request failed with msg: 400 Bad Request: [{\\\"message\\\":\\\"error message\\\"}]\",\"path\":\"/person\"}}]}")
                             .withHeader("Content-Type", "application/json")));
         }
     }
@@ -97,12 +87,12 @@ class PensjonforvalterConsumerTest {
         if (!withError) {
             stubFor(post(urlPathMatching("(.*)/api/v1/tp/forhold"))
                     .willReturn(ok()
-                            .withBody("{\"status\":[{\"miljo\":\"tx\",\"response\":{\"httpStatus\":{\"status\":200,\"reasonPhrase\":\"OK\"},\"message\":null,\"path\":\"/api/v1/tp/forhold\",\"timestamp\":\"2022-06-30T09:16:00\"}}]}")
+                            .withBody("{\"status\":[{\"miljo\":\"tx\",\"response\":{\"httpStatus\":{\"status\":200,\"reasonPhrase\":\"OK\"},\"message\":null,\"path\":\"/api/v1/tp/forhold\"}}]}")
                             .withHeader("Content-Type", "application/json")));
         } else {
             stubFor(post(urlPathMatching("(.*)/api/v1/tp/forhold"))
                     .willReturn(ok()
-                            .withBody("{\"status\":[{\"miljo\":\"tx\",\"response\":{\"httpStatus\":{\"status\":500,\"reasonPhrase\":\"Internal Server Error\"},\"message\":\"POST Request failed with msg: 400 Bad Request\",\"path\":\"/api/v1/tp/forhold\",\"timestamp\":\"2022-06-29T13:00:00.838672829Z\"}}]}")
+                            .withBody("{\"status\":[{\"miljo\":\"tx\",\"response\":{\"httpStatus\":{\"status\":500,\"reasonPhrase\":\"Internal Server Error\"},\"message\":\"POST Request failed with msg: 400 Bad Request\",\"path\":\"/api/v1/tp/forhold\"}}]}")
                             .withHeader("Content-Type", "application/json")));
         }
     }
@@ -127,12 +117,12 @@ class PensjonforvalterConsumerTest {
         if (!withError) {
             stubFor(post(urlPathMatching("(.*)/api/v1/tp/ytelse"))
                     .willReturn(ok()
-                            .withBody("{\"status\":[{\"miljo\":\"tx\",\"response\":{\"httpStatus\":{\"status\":200,\"reasonPhrase\":\"OK\"},\"message\":null,\"path\":\"/api/v1/tp/ytelse\",\"timestamp\":\"2022-06-30T09:46:00\"}}]}")
+                            .withBody("{\"status\":[{\"miljo\":\"tx\",\"response\":{\"httpStatus\":{\"status\":200,\"reasonPhrase\":\"OK\"},\"message\":null,\"path\":\"/api/v1/tp/ytelse\"}}]}")
                             .withHeader("Content-Type", "application/json")));
         } else {
             stubFor(post(urlPathMatching("(.*)/api/v1/tp/ytelse"))
                     .willReturn(ok()
-                            .withBody("{\"status\":[{\"miljo\":\"tx\",\"response\":{\"httpStatus\":{\"status\":500,\"reasonPhrase\":\"Internal Server Error\"},\"message\":\"404 Not Found from POST https://tp-q4.dev.intern.nav.no/api/tjenestepensjon/08525803725/forhold/3200/ytelse\",\"path\":\"/api/v1/tp/ytelse\",\"timestamp\":\"2022-06-30T09:47:00\"}}]}")
+                            .withBody("{\"status\":[{\"miljo\":\"tx\",\"response\":{\"httpStatus\":{\"status\":500,\"reasonPhrase\":\"Internal Server Error\"},\"message\":\"404 Not Found from POST https://tp-q4.dev.intern.nav.no/api/tjenestepensjon/08525803725/forhold/3200/ytelse\",\"path\":\"/api/v1/tp/ytelse\"}}]}")
                             .withHeader("Content-Type", "application/json")));
         }
     }
@@ -163,7 +153,6 @@ class PensjonforvalterConsumerTest {
                                                 .reasonPhrase("OK")
                                                 .build())
                                         .path("/person")
-                                        .timestamp(LocalDateTime.of(2022, 6, 29, 00, 00))
                                         .build())
                                 .build()))
                         .build())
@@ -186,7 +175,6 @@ class PensjonforvalterConsumerTest {
                                                 .build())
                                         .path("/person")
                                         .message("POST Request failed with msg: 400 Bad Request: [{\"message\":\"error message\"}]")
-                                        .timestamp(LocalDateTime.of(2022, 6, 29, 13, 00))
                                         .build())
                                 .build()))
                         .build())
@@ -198,7 +186,7 @@ class PensjonforvalterConsumerTest {
 
         stubPostLagreInntekt(false);
 
-        StepVerifier.create(pensjonforvalterConsumer.lagreInntekter(new PensjonPoppInntektRequest(), Set.of("tx")))
+        StepVerifier.create(pensjonforvalterConsumer.lagreInntekter(new PensjonPoppInntektRequest()))
                 .expectNext(PensjonforvalterResponse.builder()
                         .status(List.of(PensjonforvalterResponse.ResponseEnvironment.builder()
                                 .miljo("tx")
@@ -219,7 +207,9 @@ class PensjonforvalterConsumerTest {
 
         stubPostLagreInntekt(true);
 
-        StepVerifier.create(pensjonforvalterConsumer.lagreInntekter(new PensjonPoppInntektRequest(), Set.of("tx")))
+        StepVerifier.create(pensjonforvalterConsumer.lagreInntekter(PensjonPoppInntektRequest.builder()
+                        .miljoer(List.of("tx"))
+                        .build()))
                 .expectNext(PensjonforvalterResponse.builder()
                         .status(List.of(PensjonforvalterResponse.ResponseEnvironment.builder()
                                 .miljo("tx")
@@ -266,7 +256,6 @@ class PensjonforvalterConsumerTest {
                                                 .reasonPhrase("OK")
                                                 .build())
                                         .path("/api/v1/tp/forhold")
-                                        .timestamp(LocalDateTime.of(2022,6,30,9,16))
                                         .build())
                                 .build()))
                         .build())
@@ -289,7 +278,6 @@ class PensjonforvalterConsumerTest {
                                                 .build())
                                         .path("/api/v1/tp/forhold")
                                         .message("POST Request failed with msg: 400 Bad Request")
-                                        .timestamp(LocalDateTime.of(2022,6,29,13, 0))
                                         .build())
                                 .build()))
                         .build())
@@ -325,7 +313,6 @@ class PensjonforvalterConsumerTest {
                                                 .reasonPhrase("OK")
                                                 .build())
                                         .path("/api/v1/tp/ytelse")
-                                        .timestamp(LocalDateTime.of(2022,6,30,9,46))
                                         .build())
                                 .build()))
                         .build())
@@ -348,7 +335,6 @@ class PensjonforvalterConsumerTest {
                                                 .build())
                                         .path("/api/v1/tp/ytelse")
                                         .message("404 Not Found from POST https://tp-q4.dev.intern.nav.no/api/tjenestepensjon/08525803725/forhold/3200/ytelse")
-                                        .timestamp(LocalDateTime.of(2022,6,30,9,47))
                                         .build())
                                 .build()))
                         .build())
