@@ -29,9 +29,6 @@ public class PensjonData {
     @Schema(description = "Data for alderspensjon (AP)")
     private Alderspensjon alderspensjon;
 
-    @Schema(description = "Data for uføretrygd (UT)")
-    private Uforetrygd uforetrygd;
-
     public List<TpOrdning> getTp() {
         if (isNull(tp)) {
             tp = new ArrayList<>();
@@ -138,48 +135,4 @@ public class PensjonData {
         @Schema
         private Integer sumAvForvArbKapPenInntekt;
     }
-
-    @Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class Uforetrygd {
-
-        private LocalDate kravFremsattDato;
-        private LocalDate onsketVirkningsDato;
-        private LocalDate uforetidspunkt;
-        private Integer inntektForUforhet;
-        private Integer uforegrad;
-        private UforeType minimumInntektForUforhetType;
-        private String saksbehandler;
-        private String attesterer;
-        private Integer navEnhetId;
-        private Barnetillegg barnetilleggDetaljer;
-    }
-
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class Barnetillegg {
-        private BarnetilleggType barnetilleggType;
-
-        private List<ForventetInntekt> forventedeInntekterSoker;
-        private List<ForventetInntekt> forventedeInntekterEP;
-    }
-
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class ForventetInntekt {
-        private LocalDate datoFom;
-        private LocalDate datoTom;
-        private InntektType inntektType;
-        private Integer belop;
-    }
-
-    public enum UforeType {UNGUFOR, GIFT, ENSLIG}
-
-    public enum BarnetilleggType {FELLESBARN, SAERKULLSBARN}
-
-    public enum InntektType {ARBEIDSINNTEKT, NAERINGSINNTEKT, PENSJON_FRA_UTLANDET, UTENLANDS_INNTEKT, ANDRE_PENSJONER_OG_YTELSER}
 }

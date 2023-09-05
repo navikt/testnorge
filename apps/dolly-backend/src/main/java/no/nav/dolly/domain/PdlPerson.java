@@ -350,7 +350,6 @@ public class PdlPerson {
     }
 
     @lombok.Data
-    @SuperBuilder
     @EqualsAndHashCode(callSuper = true)
     @NoArgsConstructor
     @AllArgsConstructor
@@ -398,10 +397,9 @@ public class PdlPerson {
         private String relatertVedSivilstand;
 
         public boolean isGift() {
-            return type == SivilstandType.GIFT ||
-                    type == SivilstandType.SEPARERT ||
-                    type == SivilstandType.REGISTRERT_PARTNER ||
-                    type == SivilstandType.SEPARERT_PARTNER;
+            return nonNull(type) &&
+                    type != SivilstandType.UOPPGITT &&
+                    type != SivilstandType.UGIFT;
         }
     }
 
@@ -450,7 +448,7 @@ public class PdlPerson {
     @EqualsAndHashCode(callSuper = true)
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class VergeEllerFullmektig extends DbVersjonDTO {
+    public static class VergeEllerFullmektig extends DbVersjonDTO{
 
         private NavnDTO navn;
         private String motpartsPersonident;
