@@ -19,7 +19,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 
 import java.util.Arrays;
-import java.util.UUID;
 
 @Import({
         CoreConfig.class,
@@ -43,12 +42,12 @@ public class PensjonTestdataFacadeProxyApplicationStarter {
 
         var routes = builder.routes();
 
-        routes.route(spec -> spec
-                .path("/api/v1/inntekt")
-                .filters(filterSpec -> filterSpec.filter(addAuthenticationHeaderDevFilter)
-                        .setRequestHeader("Nav-Call-Id", "Dolly " + UUID.randomUUID())
-                        .setRequestHeader("Nav-Consumer-Id", "Dolly"))
-                .uri(poppProperties.getUrl()));
+//        routes.route(spec -> spec
+//                .path("/api/v1/inntekt")
+//                .filters(filterSpec -> filterSpec.filter(addAuthenticationHeaderDevFilter)
+//                        .setRequestHeader("Nav-Call-Id", "Dolly " + UUID.randomUUID())
+//                        .setRequestHeader("Nav-Consumer-Id", "Dolly"))
+//                .uri(poppProperties.getUrl()));
 
         Arrays.stream(MILJOER)
                 .forEach(miljoe ->
