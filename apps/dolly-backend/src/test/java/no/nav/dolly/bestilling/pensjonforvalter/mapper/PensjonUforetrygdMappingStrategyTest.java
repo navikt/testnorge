@@ -23,9 +23,11 @@ import static org.hamcrest.Matchers.*;
 @ExtendWith(MockitoExtension.class)
 class PensjonUforetrygdMappingStrategyTest {
 
-    private static String IDENT = "12345678901";
-    private static LocalDate UFORE_TIDSPUNKT = LocalDate.of(2015, 1, 1);
-    private static String ANSATT = "Z991234";
+    private static final String IDENT = "ident";
+    private static final String FNR_1 = "12345678901";
+    private static final String PERSONDATA = "persondata";
+    private static final LocalDate UFORE_TIDSPUNKT = LocalDate.of(2015, 1, 1);
+    private static final String ANSATT = "Z991234";
     private MapperFacade mapperFacade;
 
     @BeforeEach
@@ -38,7 +40,7 @@ class PensjonUforetrygdMappingStrategyTest {
     void uforetrygdDatoIkkeSatt_setterDagensDato() {
 
         var context = new MappingContext.Factory().getContext();
-        context.setProperty("persondata", Collections.emptyList());
+        context.setProperty(PERSONDATA, Collections.emptyList());
         var resultat = mapperFacade.map(new PensjonData.Uforetrygd(), PensjonUforetrygdRequest.class, context);
 
         assertThat(resultat.getOnsketVirkningsDato(), is(equalTo(getNesteMaaned())));
@@ -50,7 +52,7 @@ class PensjonUforetrygdMappingStrategyTest {
     void uforetrygdDatoSattPaaEtAvFeltene_setterOverigeDatoer() {
 
         var context = new MappingContext.Factory().getContext();
-        context.setProperty("persondata", Collections.emptyList());
+        context.setProperty(PERSONDATA, Collections.emptyList());
         var resultat = mapperFacade.map(PensjonData.Uforetrygd.builder()
                 .onsketVirkningsDato(UFORE_TIDSPUNKT)
                 .build(), PensjonUforetrygdRequest.class, context);
@@ -64,7 +66,7 @@ class PensjonUforetrygdMappingStrategyTest {
     void saksbekandlerOgAttestererIkkeSatt_setterDolly() {
 
         var context = new MappingContext.Factory().getContext();
-        context.setProperty("persondata", Collections.emptyList());
+        context.setProperty(PERSONDATA, Collections.emptyList());
         var resultat = mapperFacade.map(new PensjonData.Uforetrygd(), PensjonUforetrygdRequest.class, context);
 
         assertThat(resultat.getSaksbehandler(), stringContainsInOrder("Z", "9"));
@@ -75,7 +77,7 @@ class PensjonUforetrygdMappingStrategyTest {
     void saksbehandlerEllerAttestertHarVerdi_setterDenAndreAnsatte() {
 
         var context = new MappingContext.Factory().getContext();
-        context.setProperty("persondata", Collections.emptyList());
+        context.setProperty(PERSONDATA, Collections.emptyList());
         var resultat = mapperFacade.map(PensjonData.Uforetrygd.builder()
                 .saksbehandler(ANSATT)
                 .build(), PensjonUforetrygdRequest.class, context);
@@ -88,9 +90,9 @@ class PensjonUforetrygdMappingStrategyTest {
     void brukerErGift_setterUforeTypeGift() {
 
         var context = new MappingContext.Factory().getContext();
-        context.setProperty("ident", IDENT);
-        context.setProperty("persondata", List.of(PdlPersonBolk.PersonBolk.builder()
-                .ident(IDENT)
+        context.setProperty(IDENT, FNR_1);
+        context.setProperty(PERSONDATA, List.of(PdlPersonBolk.PersonBolk.builder()
+                .ident(FNR_1)
                 .person(PdlPerson.Person.builder()
                         .sivilstand(List.of(PdlPerson.Sivilstand.builder()
                                 .type(PdlPerson.SivilstandType.GIFT)
@@ -108,9 +110,9 @@ class PensjonUforetrygdMappingStrategyTest {
     void brukerEnslig_setterUforeTypeEnslig() {
 
         var context = new MappingContext.Factory().getContext();
-        context.setProperty("ident", IDENT);
-        context.setProperty("persondata", List.of(PdlPersonBolk.PersonBolk.builder()
-                .ident(IDENT)
+        context.setProperty(IDENT, FNR_1);
+        context.setProperty(PERSONDATA, List.of(PdlPersonBolk.PersonBolk.builder()
+                .ident(FNR_1)
                 .person(PdlPerson.Person.builder()
                         .sivilstand(List.of(PdlPerson.Sivilstand.builder()
                                 .type(PdlPerson.SivilstandType.UGIFT)
@@ -135,9 +137,9 @@ class PensjonUforetrygdMappingStrategyTest {
     void brukerErUngUfoer_setterUforeTypeUngUfoer() {
 
         var context = new MappingContext.Factory().getContext();
-        context.setProperty("ident", IDENT);
-        context.setProperty("persondata", List.of(PdlPersonBolk.PersonBolk.builder()
-                .ident(IDENT)
+        context.setProperty(IDENT, FNR_1);
+        context.setProperty(PERSONDATA, List.of(PdlPersonBolk.PersonBolk.builder()
+                .ident(FNR_1)
                 .person(PdlPerson.Person.builder()
                         .sivilstand(List.of(PdlPerson.Sivilstand.builder()
                                 .type(PdlPerson.SivilstandType.UGIFT)
