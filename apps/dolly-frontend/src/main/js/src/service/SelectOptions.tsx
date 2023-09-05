@@ -539,6 +539,19 @@ const selectOptions = {
 		{ value: 'ENSLIG', label: 'Minimum IFU fastsatt til sats for enslig' },
 	],
 
+	barnetilleggType: [
+		{ value: 'FELLESBARN', label: 'Fellesbarn' },
+		{ value: 'SAERKULLSBARN', label: 'Særkullsbarn' },
+	],
+
+	inntektType: [
+		{ value: 'ARBEIDSINNTEKT', label: 'Forventet arbeidsinntekt' },
+		{ value: 'NAERINGSINNTEKT', label: 'Forventet næringsinntekt' },
+		{ value: 'PENSJON_FRA_UTLANDET', label: 'Forventet pensjon fra utlandet' },
+		{ value: 'UTENLANDS_INNTEKT', label: 'Forventet utenlandsinntekt' },
+		{ value: 'ANDRE_PENSJONER_OG_YTELSER', label: 'Forventet andre pensjoner og ytelser' },
+	],
+
 	// Arbeidsplassen:
 	nusKoder: [
 		{ value: '2', label: 'Grunnskole' },

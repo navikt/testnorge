@@ -4,12 +4,12 @@ import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import Panel from '@/components/ui/panel/Panel'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { genererTilfeldigeNavPersonidenter } from '@/utils/GenererTilfeldigeNavPersonidenter'
 import * as _ from 'lodash-es'
 import { useNavEnheter } from '@/utils/hooks/useNorg2'
+import { BarnetilleggForm } from '@/components/fagsystem/uforetrygd/form/partials/BarnetilleggForm'
 
 const uforetrygdPath = 'pensjonforvalter.uforetrygd'
 
@@ -50,12 +50,8 @@ export const UforetrygdForm = ({ formikBag }) => {
 						type="number"
 						fastfield="false"
 					/>
-					<FormikCheckbox
-						name={`${uforetrygdPath}.barnetilleggDetaljer`}
-						label="Har barnetillegg"
-						size="small"
-					/>
 				</div>
+				<BarnetilleggForm formikBag={formikBag} />
 				<div className="flexbox--flex-wrap">
 					<FormikSelect
 						name={`${uforetrygdPath}.minimumInntektForUforhetType`}
@@ -63,7 +59,7 @@ export const UforetrygdForm = ({ formikBag }) => {
 						size="xlarge"
 						options={Options('minimumInntektForUforhetType')}
 					/>
-					{/*	TODO: må ha annet navn*/}
+
 					<FormikTextInput
 						name={`${uforetrygdPath}.uforegrad`}
 						label="Uføregrad"
