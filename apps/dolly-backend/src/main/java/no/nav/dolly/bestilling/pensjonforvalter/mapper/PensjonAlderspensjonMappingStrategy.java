@@ -11,15 +11,12 @@ import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.util.Comparator;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static java.util.Objects.isNull;
-import static no.nav.dolly.domain.PdlPerson.SivilstandType.ENKE_ELLER_ENKEMANN;
-import static no.nav.dolly.domain.PdlPerson.SivilstandType.GJENLEVENDE_PARTNER;
-import static no.nav.dolly.domain.PdlPerson.SivilstandType.SKILT;
-import static no.nav.dolly.domain.PdlPerson.SivilstandType.SKILT_PARTNER;
+import static no.nav.dolly.domain.PdlPerson.SivilstandType.*;
 
 @Component
 public class PensjonAlderspensjonMappingStrategy implements MappingStrategy {
@@ -79,11 +76,21 @@ public class PensjonAlderspensjonMappingStrategy implements MappingStrategy {
                                 .forEach(personBolk -> personBolk.getPerson().getSivilstand().stream()
                                         .filter(PdlPerson.Sivilstand::isGift)
                                         .findFirst()
-                                        .ifPresent(sivilstand -> {
-                                            request.setSivilstand(mapSivilstand(sivilstand.getType()));
-                                            request.setSivilstandDatoFom(sivilstand.getGyldigFraOgMed());
-                                            partner.set(sivilstand.getRelatertVedSivilstand());
-                                        }));
+                                        .ifPresentOrElse(sivilstand -> {
+                                                    request.setSivilstand(mapSivilstand(sivilstand.getType()));
+                                                    request.setSivilstandDatoFom(sivilstand.getGyldigFraOgMed());
+                                                    partner.set(sivilstand.getRelatertVedSivilstand());
+                                                },
+                                                () -> personer.stream()
+                                                        .filter(person -> hovedperson.equals(person.getIdent()))
+                                                        .map(PdlPersonBolk.PersonBolk::getPerson)
+                                                        .map(PdlPerson.Person::getSivilstand)
+                                                        .flatMap(Collection::stream)
+                                                        .findFirst()
+                                                        .ifPresent(sivilstand -> {
+                                                            request.setSivilstand(mapSivilstand(sivilstand.getType()));
+                                                            request.setSivilstandDatoFom(sivilstand.getGyldigFraOgMed());
+                                                        })));
 
                         if (personer.stream().anyMatch(person -> person.getIdent().equals(partner.get())) &&
                                 !alderspensjon.getRelasjoner().isEmpty()) {
@@ -94,7 +101,8 @@ public class PensjonAlderspensjonMappingStrategy implements MappingStrategy {
                                     .forEach(partnerPerson -> {
                                         request.getRelasjonListe().get(0).setFnr(partnerPerson.getIdent());
                                         partnerPerson.getPerson().getSivilstand().stream()
-                                                .max(Comparator.comparing(PdlPerson.Sivilstand::getId))
+                                                .filter(PdlPerson.Sivilstand::isGift)
+                                                .findFirst()
                                                 .ifPresent(sivilstand -> {
                                                     request.getRelasjonListe().get(0).setRelasjonType(getRelasjonType(sivilstand.getType()));
                                                     request.getRelasjonListe().get(0).setRelasjonFraDato(sivilstand.getGyldigFraOgMed());
