@@ -1,9 +1,13 @@
 package no.nav.dolly.web.config;
 
+import com.nimbusds.jose.jwk.JWK;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.web.config.authentication.DollyAuthenticationSuccessHandler;
 import no.nav.testnav.libs.reactivesessionsecurity.handler.LogoutSuccessHandler;
+import no.nav.testnav.libs.reactivesessionsecurity.manager.AuthorizationCodeReactiveAuthenticationManger;
+import no.nav.testnav.libs.reactivesessionsecurity.resolver.logut.IdportenOcidLogoutUrlResolver;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -16,18 +20,33 @@ import org.springframework.security.web.server.util.matcher.ServerWebExchangeMat
 
 @Slf4j
 @Configuration
-@Profile("local")
+@Profile("idporten")
 @EnableWebFluxSecurity
-public class LocalSecurityConfig {
+public class IdportenSecurityConfig {
 
     private static final String LOGOUT = "/logout";
     private static final String LOGIN = "/login";
+    private final String jwk;
+    private final String wellKnownUrl;
+    private final String postLogoutRedirectUri;
+
+    public IdportenSecurityConfig(
+            @Value("${spring.security.oauth2.client.provider.idporten.issuer-uri}.well-known/openid-configuration") String wellKnownUrl,
+            @Value("${spring.security.oauth2.client.registration.idporten.post-logout-redirect-uri}") String postLogoutRedirectUri,
+            @Value("${IDPORTEN_CLIENT_JWK}") String jwk
+    ) {
+        this.jwk = jwk;
+        this.wellKnownUrl = wellKnownUrl;
+        this.postLogoutRedirectUri = postLogoutRedirectUri;
+    }
 
     @SneakyThrows
     @Bean
     public SecurityWebFilterChain configure(ServerHttpSecurity http) {
         var authenticationSuccessHandler = new DollyAuthenticationSuccessHandler();
+        var authenticationManger = new AuthorizationCodeReactiveAuthenticationManger(JWK.parse(jwk));
         var logoutSuccessHandler = new LogoutSuccessHandler();
+        logoutSuccessHandler.applyOn("idporten", new IdportenOcidLogoutUrlResolver(wellKnownUrl, postLogoutRedirectUri));
 
         return http.cors()
                 .and().csrf().disable()
@@ -49,6 +68,7 @@ public class LocalSecurityConfig {
                 ).permitAll()
                 .anyExchange().authenticated()
                 .and().oauth2Login(oAuth2LoginSpec -> oAuth2LoginSpec
+                        .authenticationManager(authenticationManger)
                         .authenticationSuccessHandler(authenticationSuccessHandler))
                 .formLogin().loginPage(LOGIN)
                 .and().logout(logoutSpec -> logoutSpec
@@ -57,4 +77,5 @@ public class LocalSecurityConfig {
                         .logoutSuccessHandler(logoutSuccessHandler))
                 .build();
     }
+
 }
