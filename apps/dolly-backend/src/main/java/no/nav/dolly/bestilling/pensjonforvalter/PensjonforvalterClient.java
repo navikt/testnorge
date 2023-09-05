@@ -55,6 +55,7 @@ import static no.nav.dolly.domain.resultset.SystemTyper.PEN_UT;
 public class PensjonforvalterClient implements ClientRegister {
 
     private static final String IDENT = "ident";
+    private static final String MILJOER = "miljoer";
     private static final String SYSTEM = "PESYS";
     private static final String PENSJON_FORVALTER = "PensjonForvalter#";
     private static final String SAMBOER_REGISTER = "Samboer#";
@@ -291,7 +292,7 @@ public class PensjonforvalterClient implements ClientRegister {
 
                                 var context = new MappingContext.Factory().getContext();
                                 context.setProperty(IDENT, ident);
-                                context.setProperty("miljoer", List.of(miljoe));
+                                context.setProperty(MILJOER, List.of(miljoe));
                                 context.setProperty("relasjoner", relasjoner);
                                 return Flux.just(mapperFacade.map(alderspensjon, AlderspensjonRequest.class, context))
                                         .flatMap(alderspensjonRequest -> pensjonforvalterConsumer.lagreAlderspensjon(alderspensjonRequest)
@@ -322,8 +323,8 @@ public class PensjonforvalterClient implements ClientRegister {
                             if (isOpprettEndre && !transaksjonMappingService.existAlready(PEN_UT, ident, miljoe)) {
 
                                 var context = new MappingContext.Factory().getContext();
-                                context.setProperty("ident", ident);
-                                context.setProperty("miljoer", List.of(miljoe));
+                                context.setProperty(IDENT, ident);
+                                context.setProperty(MILJOER, List.of(miljoe));
                                 context.setProperty("persondata", persondata);
                                 return Flux.just(mapperFacade.map(uforetrygd, PensjonUforetrygdRequest.class, context))
                                         .flatMap(request -> pensjonforvalterConsumer.lagreUforetrygd(request)
@@ -393,7 +394,7 @@ public class PensjonforvalterClient implements ClientRegister {
 
                             var context = new MappingContext.Factory().getContext();
                             context.setProperty(IDENT, dollyPerson.getIdent());
-                            context.setProperty("miljoer", miljoer);
+                            context.setProperty(MILJOER, miljoer);
 
                             var tpForholdRequest = mapperFacade.map(tp, PensjonTpForholdRequest.class, context);
                             return pensjonforvalterConsumer.lagreTpForhold(tpForholdRequest)
