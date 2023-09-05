@@ -22,14 +22,15 @@ const getTittel = (data) => {
 
 const PensjonInntekt = ({ data, isPanelOpen, setPanelOpen }) => {
 	if (!data) return null
+	const inntekter = data?.inntekter
 
 	return (
 		<Panel
 			startOpen={isPanelOpen || runningCypressE2E()}
-			heading={getTittel(data)}
+			heading={getTittel(inntekter)}
 			setPanelOpen={setPanelOpen}
 		>
-			<DollyFieldArray data={data} nested>
+			<DollyFieldArray data={inntekter} nested>
 				{(inntekt, idx) => (
 					<div className="person-visning_content" key={idx}>
 						<TitleValue title="Inntektsår" value={inntekt?.inntektAar} />
@@ -53,10 +54,12 @@ export const PensjonVisning = ({ data, loading, bestillingIdListe, tilgjengeligM
 
 	const manglerFagsystemdata = sjekkManglerPensjonData(data)
 
-	const miljoerMedData = data?.map((miljoData) => miljoData.data?.length > 0 && miljoData.miljo)
+	const miljoerMedData = data?.map(
+		(miljoData) => miljoData.data?.inntekter?.length > 0 && miljoData.miljo,
+	)
 	const errorMiljoer = bestilteMiljoer.filter((miljo) => !miljoerMedData?.includes(miljo))
 
-	const forsteMiljo = data.find((miljoData) => miljoData?.data?.length > 0)?.miljo
+	const forsteMiljo = data.find((miljoData) => miljoData?.data?.inntekter?.length > 0)?.miljo
 
 	const filteredData =
 		tilgjengeligMiljoe && data.filter((item) => item.miljo === tilgjengeligMiljoe)

@@ -39,6 +39,7 @@ import { sjekkManglerPensjonData } from '@/components/fagsystem/pensjon/visning/
 import { sjekkManglerAaregData } from '@/components/fagsystem/aareg/visning/Visning'
 import { useAmeldinger, useArbeidsforhold } from '@/utils/hooks/useOrganisasjoner'
 import {
+	useApData,
 	useArbeidsplassencvData,
 	useArenaData,
 	useDokarkivData,
@@ -61,7 +62,10 @@ import {
 	harPoppBestilling,
 	harTpBestilling,
 } from '@/utils/SjekkBestillingFagsystem'
-import { AlderspensjonVisning } from '@/components/fagsystem/alderspensjon/visning/AlderspensjonVisning'
+import {
+	AlderspensjonVisning,
+	sjekkManglerApData,
+} from '@/components/fagsystem/alderspensjon/visning/AlderspensjonVisning'
 import { useOrganisasjonTilgang } from '@/utils/hooks/useBruker'
 import { ArbeidsplassenVisning } from '@/components/fagsystem/arbeidsplassen/visning/Visning'
 import _has from 'lodash/has'
@@ -167,6 +171,11 @@ export default ({
 		harArenaBestilling(bestillingerFagsystemer),
 	)
 
+	const { loading: loadingApData, apData } = useApData(
+		ident.ident,
+		harApBestilling(bestillingerFagsystemer),
+	)
+
 	const getGruppeIdenter = () => {
 		return useAsync(async () => DollyApi.getGruppeById(gruppeId), [DollyApi.getGruppeById])
 	}
@@ -196,6 +205,9 @@ export default ({
 			return true
 		}
 		if (tpData && sjekkManglerTpData(tpData)) {
+			return true
+		}
+		if (apData && sjekkManglerApData(apData)) {
 			return true
 		}
 		if (brregstub && sjekkManglerBrregData(brregstub)) {
@@ -381,11 +393,12 @@ export default ({
 					bestillingIdListe={bestillingIdListe}
 					tilgjengeligMiljoe={tilgjengeligMiljoe}
 				/>
-				{harApBestilling(bestillingerFagsystemer) && (
-					<AlderspensjonVisning
-						data={AlderspensjonVisning.filterValues(bestillingListe, ident.ident)}
-					/>
-				)}
+				<AlderspensjonVisning
+					data={apData}
+					loading={loadingApData}
+					bestillingIdListe={bestillingIdListe}
+					tilgjengeligMiljoe={tilgjengeligMiljoe}
+				/>
 				<ArenaVisning
 					data={arenaData}
 					bestillingIdListe={bestillingIdListe}

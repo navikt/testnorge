@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,7 +46,6 @@ public class PensjonforvalterResponse {
         private HttpStatus httpStatus;
         private String message;
         private String path;
-        private LocalDateTime timestamp;
 
         public boolean isResponse2xx() {
             return httpStatus.getStatus()>= 200 && httpStatus.getStatus() < 300;
