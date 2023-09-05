@@ -378,8 +378,9 @@ public class PensjonforvalterClient implements ClientRegister {
         if (nonNull(pensjonData) && nonNull(pensjonData.getInntekt())) {
             var poppInntektRequest = mapperFacade.map(pensjonData.getInntekt(), PensjonPoppInntektRequest.class);
             poppInntektRequest.setFnr(dollyPerson.getIdent());
+            poppInntektRequest.setMiljoer(miljoer.stream().toList());
 
-            return pensjonforvalterConsumer.lagreInntekter(poppInntektRequest, miljoer);
+            return pensjonforvalterConsumer.lagreInntekter(poppInntektRequest);
 
         } else {
             return Flux.empty();
