@@ -11,19 +11,15 @@ import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.PdlPerson.SivilstandType.ENKE_ELLER_ENKEMANN;
 import static no.nav.dolly.domain.PdlPerson.SivilstandType.GJENLEVENDE_PARTNER;
 import static no.nav.dolly.domain.PdlPerson.SivilstandType.SKILT;
 import static no.nav.dolly.domain.PdlPerson.SivilstandType.SKILT_PARTNER;
-import static no.nav.dolly.domain.PdlPerson.SivilstandType.UGIFT;
-import static no.nav.dolly.domain.PdlPerson.SivilstandType.UOPPGITT;
 
 @Component
 public class PensjonAlderspensjonMappingStrategy implements MappingStrategy {
@@ -43,18 +39,23 @@ public class PensjonAlderspensjonMappingStrategy implements MappingStrategy {
 
     private static boolean isHarVaertGift(PdlPerson.SivilstandType sivilstandType) {
 
-        return nonNull(sivilstandType) && sivilstandType != UOPPGITT && sivilstandType != UGIFT;
+        return sivilstandType == SKILT ||
+                sivilstandType == ENKE_ELLER_ENKEMANN ||
+                sivilstandType == SKILT_PARTNER ||
+                sivilstandType != GJENLEVENDE_PARTNER;
     }
 
     private static boolean isVarigAdskilt(PdlPerson.SivilstandType sivilstandType) {
 
-        return nonNull(sivilstandType) && (sivilstandType == SKILT || sivilstandType == ENKE_ELLER_ENKEMANN ||
-                sivilstandType == SKILT_PARTNER || sivilstandType == GJENLEVENDE_PARTNER);
+        return sivilstandType == ENKE_ELLER_ENKEMANN ||
+                sivilstandType == GJENLEVENDE_PARTNER ||
+                sivilstandType == SKILT ||
+                sivilstandType == SKILT_PARTNER;
     }
 
     private static LocalDate getSamlovsbruddDato(PdlPerson.SivilstandType sivilstandType, LocalDate sivilstandFomDato) {
 
-        return nonNull(sivilstandType) && (sivilstandType == SKILT || sivilstandType == SKILT_PARTNER) ?
+        return sivilstandType == SKILT || sivilstandType == SKILT_PARTNER ?
                 sivilstandFomDato : null;
     }
 
@@ -71,26 +72,6 @@ public class PensjonAlderspensjonMappingStrategy implements MappingStrategy {
                         request.setStatsborgerskap("NOR");
 
                         var personer = (List<PdlPersonBolk.PersonBolk>) context.getProperty("relasjoner");
-                        request.setSivilstand(personer.stream()
-                                .filter(person -> hovedperson.equals(person.getIdent()))
-                                .map(PdlPersonBolk.PersonBolk::getPerson)
-                                .map(PdlPerson.Person::getSivilstand)
-                                .flatMap(Collection::stream)
-                                .map(PdlPerson.Sivilstand::getType)
-                                .map(PensjonAlderspensjonMappingStrategy::mapSivilstand)
-                                .filter(Objects::nonNull)
-                                .findFirst()
-                                .orElse(null));
-
-                        request.setSivilstandDatoFom(personer.stream()
-                                .filter(person -> hovedperson.equals(person.getIdent()))
-                                .map(PdlPersonBolk.PersonBolk::getPerson)
-                                .map(PdlPerson.Person::getSivilstand)
-                                .flatMap(Collection::stream)
-                                .map(PdlPerson.Sivilstand::getGyldigFraOgMed)
-                                .filter(Objects::nonNull)
-                                .findFirst()
-                                .orElse(null));
 
                         var partner = new AtomicReference<String>();
                         personer.stream()
@@ -113,8 +94,7 @@ public class PensjonAlderspensjonMappingStrategy implements MappingStrategy {
                                     .forEach(partnerPerson -> {
                                         request.getRelasjonListe().get(0).setFnr(partnerPerson.getIdent());
                                         partnerPerson.getPerson().getSivilstand().stream()
-                                                .filter(PdlPerson.Sivilstand::isGift)
-                                                .findFirst()
+                                                .max(Comparator.comparing(PdlPerson.Sivilstand::getId))
                                                 .ifPresent(sivilstand -> {
                                                     request.getRelasjonListe().get(0).setRelasjonType(getRelasjonType(sivilstand.getType()));
                                                     request.getRelasjonListe().get(0).setRelasjonFraDato(sivilstand.getGyldigFraOgMed());
