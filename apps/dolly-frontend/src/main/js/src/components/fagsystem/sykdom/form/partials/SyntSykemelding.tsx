@@ -24,6 +24,7 @@ export const SyntSykemelding = () => {
 			<OrganisasjonMedArbeidsforholdSelect
 				path="sykemelding.syntSykemelding.orgnummer"
 				label="Organisasjonsnummer"
+				isClearable={true}
 			/>
 		</div>
 	)

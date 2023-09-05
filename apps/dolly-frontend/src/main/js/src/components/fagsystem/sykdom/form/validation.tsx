@@ -2,6 +2,30 @@ import * as Yup from 'yup'
 import { ifPresent, requiredDate, requiredNumber, requiredString } from '@/utils/YupValidations'
 import { testDatoFom, testDatoTom } from '@/components/fagsystem/utils'
 
+const testHarArbeidsforhold = (val) => {
+	return val.test('har-arbeidsforhold', function harArbeidsforhold(selected) {
+		if (!selected) {
+			return true
+		}
+		const values = this?.options?.context
+		const detaljertSykemelding = values?.sykemelding?.detaljertSykemelding
+
+		const valgtArbeidsgiver = detaljertSykemelding
+			? detaljertSykemelding?.mottaker?.orgNr
+			: selected
+
+		const arbeidsgivere = values?.aareg?.map((arbforh) => arbforh?.arbeidsgiver?.orgnummer)
+
+		if (!arbeidsgivere?.includes(valgtArbeidsgiver?.toString())) {
+			return this.createError({
+				message: 'Personen må ha et arbeidsforhold i valgt organisasjon',
+			})
+		}
+
+		return true
+	})
+}
+
 export const validation = {
 	sykemelding: ifPresent(
 		'$sykemelding',
@@ -10,8 +34,8 @@ export const validation = {
 				'$sykemelding.syntSykemelding',
 				Yup.object({
 					startDato: requiredDate,
-					orgnummer: requiredString,
-				})
+					orgnummer: testHarArbeidsforhold(Yup.string().nullable()),
+				}),
 			),
 			detaljertSykemelding: ifPresent(
 				'$sykemelding.detaljertSykemelding',
@@ -27,8 +51,8 @@ export const validation = {
 							Yup.object({
 								diagnose: requiredString,
 								diagnosekode: requiredString,
-							})
-						)
+							}),
+						),
 					),
 					helsepersonell: Yup.object({
 						etternavn: requiredString,
@@ -37,7 +61,7 @@ export const validation = {
 						hprId: requiredString,
 					}),
 					arbeidsgiver: Yup.object({
-						navn: requiredString,
+						navn: testHarArbeidsforhold(Yup.string().nullable()),
 						stillingsprosent: requiredNumber.transform((num) => (isNaN(num) ? undefined : num)),
 						yrkesbetegnelse: requiredString,
 					}),
@@ -46,10 +70,10 @@ export const validation = {
 							aktivitet: Yup.object({}),
 							fom: testDatoFom(requiredDate, 'tom'),
 							tom: testDatoTom(requiredDate, 'fom'),
-						})
+						}),
 					),
-				})
+				}),
 			),
-		})
+		}),
 	),
 }

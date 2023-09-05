@@ -12,12 +12,9 @@ import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.concurrent.Callable;
 
-import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
-import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
-import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
+import static no.nav.dolly.domain.CommonKeysAndUtils.*;
 import static no.nav.dolly.util.CallIdUtil.generateCallId;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -61,7 +58,6 @@ public class LagreTpForholdCommand implements Callable<Flux<PensjonforvalterResp
                                                                 .reasonPhrase(WebClientFilter.getStatus(error).getReasonPhrase())
                                                                 .build())
                                                         .message(WebClientFilter.getMessage(error))
-                                                        .timestamp(LocalDateTime.now())
                                                         .path(PENSJON_TP_FORHOLD_URL)
                                                         .build())
                                                 .build())

@@ -9,8 +9,9 @@ type OrganisasjonMedArbeidsforholdSelectProps = {
 	feil?: { feilmelding: string }
 	isDisabled?: boolean
 	defaultValue?: string
+	isClearable?: boolean
 }
 
 export const OrganisasjonMedArbeidsforholdSelect = (
-	props: OrganisasjonMedArbeidsforholdSelectProps
+	props: OrganisasjonMedArbeidsforholdSelectProps,
 ) => <OrganisasjonSelect {...props} kanHaArbeidsforhold={true} />
