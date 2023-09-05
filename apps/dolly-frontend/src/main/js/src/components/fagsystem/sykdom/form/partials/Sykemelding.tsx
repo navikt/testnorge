@@ -77,7 +77,7 @@ export const Sykemelding = ({ formikBag }: SykemeldingForm) => {
 	const [typeSykemelding, setTypeSykemelding] = useState(
 		_.get(formikBag.values, 'sykemelding').hasOwnProperty('detaljertSykemelding')
 			? SykemeldingTyper.detaljert
-			: SykemeldingTyper.synt
+			: SykemeldingTyper.synt,
 	)
 
 	const handleToggleChange = (value: SykemeldingTyper) => {
@@ -105,7 +105,7 @@ export const Sykemelding = ({ formikBag }: SykemeldingForm) => {
 			<ToggleGroup
 				size={'small'}
 				onChange={handleToggleChange}
-				defaultValue={SykemeldingTyper.synt}
+				defaultValue={typeSykemelding}
 				style={{ marginBottom: '5px', backgroundColor: '#ffffff' }}
 			>
 				{toggleValues.map((val) => (
