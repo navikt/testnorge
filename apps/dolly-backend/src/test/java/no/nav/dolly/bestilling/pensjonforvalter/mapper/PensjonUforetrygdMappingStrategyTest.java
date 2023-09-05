@@ -18,8 +18,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 
 @ExtendWith(MockitoExtension.class)
 class PensjonUforetrygdMappingStrategyTest {
@@ -42,9 +41,9 @@ class PensjonUforetrygdMappingStrategyTest {
         context.setProperty("persondata", Collections.emptyList());
         var resultat = mapperFacade.map(new PensjonData.Uforetrygd(), PensjonUforetrygdRequest.class, context);
 
-        assertThat(resultat.getOnsketVirkningsDato(), is(equalTo(LocalDate.now())));
+        assertThat(resultat.getOnsketVirkningsDato(), is(equalTo(getNesteMaaned())));
         assertThat(resultat.getKravFremsattDato(), is(equalTo(LocalDate.now())));
-        assertThat(resultat.getUforetidspunkt(), is(equalTo(LocalDate.now())));
+        assertThat(resultat.getUforetidspunkt(), is(equalTo(getForrigeMaaned())));
     }
 
     @Test
@@ -57,8 +56,8 @@ class PensjonUforetrygdMappingStrategyTest {
                 .build(), PensjonUforetrygdRequest.class, context);
 
         assertThat(resultat.getOnsketVirkningsDato(), is(equalTo(UFORE_TIDSPUNKT)));
-        assertThat(resultat.getKravFremsattDato(), is(equalTo(UFORE_TIDSPUNKT)));
-        assertThat(resultat.getUforetidspunkt(), is(equalTo(UFORE_TIDSPUNKT)));
+        assertThat(resultat.getKravFremsattDato(), is(equalTo(LocalDate.now())));
+        assertThat(resultat.getUforetidspunkt(), is(equalTo(getForrigeMaaned())));
     }
 
     @Test
@@ -68,8 +67,8 @@ class PensjonUforetrygdMappingStrategyTest {
         context.setProperty("persondata", Collections.emptyList());
         var resultat = mapperFacade.map(new PensjonData.Uforetrygd(), PensjonUforetrygdRequest.class, context);
 
-        assertThat(resultat.getSaksbehandler(), is(equalTo("Dolly")));
-        assertThat(resultat.getAttesterer(), is(equalTo("Dolly")));
+        assertThat(resultat.getSaksbehandler(), stringContainsInOrder("Z", "9"));
+        assertThat(resultat.getAttesterer(),  stringContainsInOrder("Z", "9"));
     }
 
     @Test
@@ -82,7 +81,7 @@ class PensjonUforetrygdMappingStrategyTest {
                 .build(), PensjonUforetrygdRequest.class, context);
 
         assertThat(resultat.getSaksbehandler(), is(equalTo(ANSATT)));
-        assertThat(resultat.getAttesterer(), is(equalTo(ANSATT)));
+        assertThat(resultat.getAttesterer(),  stringContainsInOrder("Z", "9"));
     }
 
     @Test
@@ -156,5 +155,17 @@ class PensjonUforetrygdMappingStrategyTest {
                 .build(), PensjonUforetrygdRequest.class, context);
 
         assertThat(resultat.getMinimumInntektForUforhetType(), is(equalTo(PensjonUforetrygdRequest.UforeType.UNGUFOR)));
+    }
+
+    private static LocalDate getForrigeMaaned() {
+
+        var forrigeMaaned = LocalDate.now().minusMonths(1);
+        return LocalDate.of(forrigeMaaned.getYear(), forrigeMaaned.getMonth(), 1);
+    }
+
+    private static LocalDate getNesteMaaned() {
+
+        var nesteMaaned = LocalDate.now().plusMonths(1);
+        return LocalDate.of(nesteMaaned.getYear(), nesteMaaned.getMonth(), 1);
     }
 }
