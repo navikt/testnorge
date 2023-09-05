@@ -28,7 +28,7 @@ export const VelgSoekTypeToggle = ({ soekValg, setValgtSoekType }: Props) => {
 				<ToggleGroup.Item key={SoekTypeValg.PERSON} value={SoekTypeValg.PERSON}>
 					<Icon
 						kind={soekValg === SoekTypeValg.PERSON ? 'designsystem-man-light' : 'designsystem-man'}
-						size={ICONSIZE}
+						fontSize={'1.8rem'}
 					/>
 				</ToggleGroup.Item>
 				<ToggleGroup.Item key={SoekTypeValg.BESTILLING} value={SoekTypeValg.BESTILLING}>
@@ -38,7 +38,7 @@ export const VelgSoekTypeToggle = ({ soekValg, setValgtSoekType }: Props) => {
 								? 'designsystem-bestilling-light'
 								: 'designsystem-bestilling'
 						}
-						size={ICONSIZE}
+						fontSize={'1.8rem'}
 					/>
 				</ToggleGroup.Item>
 			</ToggleGroup>

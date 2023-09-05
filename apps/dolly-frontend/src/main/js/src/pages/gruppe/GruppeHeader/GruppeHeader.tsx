@@ -74,7 +74,7 @@ const GruppeHeader = ({
 				<div className="content-header_content">
 					<div className="flexbox">
 						<div className={`content-header_icon ${headerClass}`}>
-							<Icon kind={iconType} size={38} />
+							<Icon kind={iconType} fontSize={'2.5rem'} />
 						</div>
 						<Header.TitleValue
 							title="Eier"

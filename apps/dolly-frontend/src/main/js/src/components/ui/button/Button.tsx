@@ -11,6 +11,7 @@ interface Button extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 	kind?: string
 	onClick?: () => void
 	iconSize?: number
+	fontSize?: string
 	loading?: boolean
 }
 
@@ -20,6 +21,7 @@ const Button = ({
 	children,
 	className,
 	iconSize = 16,
+	fontSize = '1rem',
 	loading = false,
 	disabled,
 	...rest
@@ -34,7 +36,7 @@ const Button = ({
 	const renderIcon = loading ? (
 		<Loading onlySpinner size={iconSize} />
 	) : kind ? (
-		<Icon size={iconSize} kind={kind} />
+		<Icon size={iconSize} kind={kind} fontSize={fontSize} />
 	) : null
 
 	return (

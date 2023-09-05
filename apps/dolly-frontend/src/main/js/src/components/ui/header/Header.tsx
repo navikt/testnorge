@@ -5,7 +5,7 @@ import './header.less'
 
 type HeaderProps = {
 	icon?: string
-	iconSize?: number
+	iconSize?: string
 	className?: string
 	iconClassName?: string
 	children: any
@@ -14,14 +14,14 @@ type HeaderProps = {
 export const Header = ({
 	children,
 	className,
-	icon = 'man',
+	icon = 'designsystem-man',
 	iconClassName,
-	iconSize = 36,
+	iconSize = '2.5rem',
 }: HeaderProps) => {
 	return (
 		<header className={cn('content-header', className)}>
 			<div className={`content-header_icon ${iconClassName}`}>
-				<Icon kind={icon} size={iconSize} />
+				<Icon kind={icon} fontSize={iconSize} />
 			</div>
 			<div className="content-header_content">{children}</div>
 		</header>

@@ -44,7 +44,7 @@ export default function Panel({
 					toggleOpen()
 				}}
 			>
-				{iconType && <Icon size={45} kind={iconType} className="header-icon" />}
+				{iconType && <Icon fontSize={'2.8rem'} kind={iconType} className="header-icon" />}
 				<h2>{heading}</h2>
 
 				{informasjonstekst && <Hjelpetekst>{informasjonstekst}</Hjelpetekst>}

@@ -115,10 +115,7 @@ export default ({ search, sidetall }: OrganisasjonerProps) => {
 						style={{ backgroundColor: '#ffffff' }}
 					>
 						<ToggleGroup.Item value={VISNING_ORGANISASJONER}>
-							<Icon
-								size={13}
-								kind={visning === VISNING_ORGANISASJONER ? 'organisasjonLight' : 'organisasjon'}
-							/>
+							<Icon size={13} kind={'designsystem-organisasjon'} />
 							{`Organisasjoner (${antallOrg ? antallOrg : 0})`}
 						</ToggleGroup.Item>
 						<ToggleGroup.Item value={VISNING_BESTILLINGER}>
