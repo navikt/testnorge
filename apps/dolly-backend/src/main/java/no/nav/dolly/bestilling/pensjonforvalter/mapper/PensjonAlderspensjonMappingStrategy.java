@@ -101,7 +101,7 @@ public class PensjonAlderspensjonMappingStrategy implements MappingStrategy {
                                     .forEach(partnerPerson -> {
                                         request.getRelasjonListe().get(0).setFnr(partnerPerson.getIdent());
                                         partnerPerson.getPerson().getSivilstand().stream()
-                                                .filter(PdlPerson.Sivilstand::isGift)
+                                                .filter(PdlPerson.Sivilstand::isGiftEllerHarVaertGift)
                                                 .findFirst()
                                                 .ifPresent(sivilstand -> {
                                                     request.getRelasjonListe().get(0).setRelasjonType(getRelasjonType(sivilstand.getType()));

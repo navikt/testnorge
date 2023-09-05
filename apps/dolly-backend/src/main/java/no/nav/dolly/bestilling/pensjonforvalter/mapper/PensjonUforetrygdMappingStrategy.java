@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 
@@ -53,23 +52,20 @@ public class PensjonUforetrygdMappingStrategy implements MappingStrategy {
                         if (isNull(uforetrygd.getMinimumInntektForUforhetType())) {
                             hovedperson
                                     .flatMap(person -> person.getSivilstand().stream()
-                                            .max(Comparator.comparing(PdlPerson.Sivilstand::getId)))
-                                    .ifPresent(sivilstatus -> {
-                                        if (sivilstatus.isGift()) {
-                                            pensjonUforetrygdRequest.setMinimumInntektForUforhetType(UforeType.GIFT);
-
-                                        } else {
-                                            hovedperson
+                                            .filter(PdlPerson.Sivilstand::isGift)
+                                            .findFirst())
+                                    .ifPresentOrElse(statusGift ->
+                                            pensjonUforetrygdRequest.setMinimumInntektForUforhetType(UforeType.GIFT),
+                                            () -> hovedperson
                                                     .flatMap(person1 -> person1.getFoedsel().stream()
-                                                            .max(Comparator.comparing(PdlPerson.Foedsel::getId)))
+                                                            .findFirst())
                                                     .ifPresent(foedsel -> pensjonUforetrygdRequest.setMinimumInntektForUforhetType(
 
                                                             ChronoUnit.YEARS.between(getFoedselsdato(foedsel),
                                                                     pensjonUforetrygdRequest.getUforetidspunkt()) > 23 ?
                                                                     UforeType.ENSLIG :
-                                                                    UforeType.UNGUFOR));
-                                        }
-                                    });
+                                                                    UforeType.UNGUFOR))
+                                    );
                         }
 
                         pensjonUforetrygdRequest.setSaksbehandler(nullcheckSetDefaultValue(uforetrygd.getSaksbehandler(), getRandomAnsatt()));
