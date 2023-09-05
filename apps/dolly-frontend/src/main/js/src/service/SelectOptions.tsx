@@ -532,6 +532,13 @@ const selectOptions = {
 		{ value: 20, label: '20%' },
 	],
 
+	// Uføretrygd:
+	minimumInntektForUforhetType: [
+		{ value: 'UNGUFOR', label: 'Minimum IFU fastsatt til sats for ung ufør' },
+		{ value: 'GIFT', label: 'Minimum IFU fastsatt til sats for gift' },
+		{ value: 'ENSLIG', label: 'Minimum IFU fastsatt til sats for enslig' },
+	],
+
 	// Arbeidsplassen:
 	nusKoder: [
 		{ value: '2', label: 'Grunnskole' },
