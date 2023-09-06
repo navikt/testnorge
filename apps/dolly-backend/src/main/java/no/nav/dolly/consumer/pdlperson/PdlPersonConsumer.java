@@ -91,8 +91,9 @@ public class PdlPersonConsumer implements ConsumerStatus {
 
                 .flatMap(resultat -> {
 
-                    if (isNull(resultat.getData()) || resultat.getData().getHentPersonBolk().stream()
-                            .anyMatch(data -> isNull(data.getPerson())) && retry.get() < MAX_RETRIES) {
+                    if (retry.get() < MAX_RETRIES &&
+                            (isNull(resultat.getData()) || resultat.getData().getHentPersonBolk().stream()
+                            .anyMatch(data -> isNull(data.getPerson())))) {
 
                         return Flux.just(true)
                                 .doOnNext(melding ->
