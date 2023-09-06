@@ -429,10 +429,20 @@ public class PensjonforvalterClient implements ClientRegister {
         return response.getStatus().stream()
                 .map(entry -> String.format("%s:%s", entry.getMiljo(),
                         entry.getResponse().isResponse2xx() ? "OK" :
-                                ErrorStatusDecoder.encodeStatus(errorStatusDecoder.getErrorText(
-                                        HttpStatus.valueOf(entry.getResponse().getHttpStatus().getStatus()),
-                                        entry.getResponse().getMessage()))))
+                                getError(entry)))
                 .collect(Collectors.joining(","));
+    }
+
+    private String getError(PensjonforvalterResponse.ResponseEnvironment entry) {
+
+        return ErrorStatusDecoder.encodeStatus(
+                entry.getResponse().getMessage().contains("{") ?
+                        "Feil: " + entry.getResponse().getMessage().split("\\{")[1].split("}")[0]
+                                .replace("message\":", "") :
+                        errorStatusDecoder.getErrorText(
+                                HttpStatus.valueOf(entry.getResponse().getHttpStatus().getStatus()),
+                                entry.getResponse().getMessage())
+        );
     }
 
     private String toJson(Object object) {
