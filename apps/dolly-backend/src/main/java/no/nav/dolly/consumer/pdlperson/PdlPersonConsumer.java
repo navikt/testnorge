@@ -23,10 +23,13 @@ import reactor.core.publisher.Mono;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.time.Duration;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Objects.isNull;
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
 @Slf4j
@@ -52,7 +55,7 @@ public class PdlPersonConsumer implements ConsumerStatus {
                 .build();
     }
 
-    @Timed(name = "providers", tags = { "operation", "pdl_getPerson" })
+    @Timed(name = "providers", tags = {"operation", "pdl_getPerson"})
     public JsonNode getPdlPerson(String ident, PDL_MILJOER pdlMiljoe) {
 
         return tokenService.exchange(serviceProperties)
@@ -60,18 +63,40 @@ public class PdlPersonConsumer implements ConsumerStatus {
                         .call()).block();
     }
 
-    @Timed(name = "providers", tags = { "operation", "pdl_getPersoner" })
+    @Timed(name = "providers", tags = {"operation", "pdl_getPersoner"})
     public Flux<PdlPersonBolk> getPdlPersoner(List<String> identer) {
+
+        return getPdlPersoner(identer, new AtomicInteger(0));
+    }
+
+    @Timed(name = "providers", tags = {"operation", "pdl_getPersoner"})
+    public Flux<PdlPersonBolk> getPdlPersoner(List<String> identer, AtomicInteger retry) {
 
         return tokenService.exchange(serviceProperties)
                 .flatMapMany(token -> Flux.range(0, identer.size() / BLOCK_SIZE + 1)
                         .flatMap(index -> new PdlBolkPersonGetCommand(webClient,
                                 identer.subList(index * BLOCK_SIZE, Math.min((index + 1) * BLOCK_SIZE, identer.size())),
                                 token.getTokenValue()
-                        ).call()));
+                        ).call()))
+
+                .flatMap(resultat -> {
+
+                    if (resultat.getData().getHentPersonBolk().stream()
+                            .anyMatch(data -> isNull(data.getPerson())) && retry.get() < 10) {
+
+                        return Flux.just(true)
+                                .doOnNext(melding ->
+                                        log.info("PDL har tomt resultat for {}, retry #{}", String.join(", ", identer),
+                                                retry.incrementAndGet()))
+                                .delayElements(Duration.ofMillis(200))
+                                .flatMap(delay -> getPdlPersoner(identer, new AtomicInteger(retry.get())));
+                    } else {
+                        return Flux.just(resultat);
+                    }
+                });
     }
 
-    @Timed(name = "providers", tags = { "operation", "pdl_getPersoner" })
+    @Timed(name = "providers", tags = {"operation", "pdl_getPersoner"})
     public Mono<JsonNode> getPdlPersonerJson(List<String> identer) {
 
         return tokenService.exchange(serviceProperties)
