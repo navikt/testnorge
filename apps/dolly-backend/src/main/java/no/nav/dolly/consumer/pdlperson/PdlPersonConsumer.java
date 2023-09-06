@@ -15,10 +15,13 @@ import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.netty.http.client.HttpClient;
+import reactor.netty.resources.ConnectionProvider;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -37,6 +40,7 @@ import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 public class PdlPersonConsumer implements ConsumerStatus {
 
     private static final int BLOCK_SIZE = 50;
+    private static final int MAX_RETRIES = 3;
     private final TokenExchange tokenService;
     private final ServerProperties serviceProperties;
     private final WebClient webClient;
@@ -52,6 +56,12 @@ public class PdlPersonConsumer implements ConsumerStatus {
         webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
+                .clientConnector(new ReactorClientHttpConnector(
+                        HttpClient.create(ConnectionProvider.builder("custom")
+                                .maxConnections(10)
+                                .pendingAcquireMaxCount(5000)
+                                .pendingAcquireTimeout(Duration.ofMinutes(15))
+                                .build())))
                 .build();
     }
 
@@ -82,7 +92,7 @@ public class PdlPersonConsumer implements ConsumerStatus {
                 .flatMap(resultat -> {
 
                     if (isNull(resultat.getData()) || resultat.getData().getHentPersonBolk().stream()
-                            .anyMatch(data -> isNull(data.getPerson())) && retry.get() < 10) {
+                            .anyMatch(data -> isNull(data.getPerson())) && retry.get() < MAX_RETRIES) {
 
                         return Flux.just(true)
                                 .doOnNext(melding ->
