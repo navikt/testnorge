@@ -49,8 +49,8 @@ spec:
           cluster: dev-gcp
     outbound:
       external:
-        - host: https://tps-forvalteren-proxy.dev-fss-pub.nais.io
-        - host: https://testnav-kodeverk-proxy.dev-fss-pub.nais.io
+        - host: tps-forvalteren-proxy.dev-fss-pub.nais.io
+        - host: testnav-kodeverk-proxy.dev-fss-pub.nais.io
         - host: slack.com
   envFrom:
     - secret: testnav-person-export-api-slack-secret
