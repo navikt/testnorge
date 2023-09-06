@@ -10,18 +10,15 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
+import static java.util.Objects.nonNull;
 import static no.nav.dolly.consumer.pdlperson.PdlPersonConsumer.hentQueryResource;
 import static no.nav.dolly.consumer.pdlperson.TemaGrunnlag.GEN;
-import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
-import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
-import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
+import static no.nav.dolly.domain.CommonKeysAndUtils.*;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @RequiredArgsConstructor
@@ -54,9 +51,10 @@ public class PdlBolkPersonGetCommand implements Callable<Flux<PdlPersonBolk>> {
                                 Map.of("identer", identer))))
                 .retrieve()
                 .bodyToFlux(PdlPersonBolk.class)
+                .retry()
+                .filter(data -> data.getData().getHentPersonBolk().stream()
+                        .allMatch(personBolk -> nonNull(personBolk.getPerson())))
                 .doOnError(WebClientFilter::logErrorMessage)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
                 .onErrorResume(throwable -> throwable instanceof WebClientResponseException.NotFound,
                         throwable -> Mono.empty());
     }
