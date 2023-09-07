@@ -6,7 +6,6 @@ import no.nav.dolly.bestilling.kontoregisterservice.KontoregisterConsumer;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.testnav.libs.dto.kontoregisterservice.v1.BankkontonrUtlandDTO;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.KontoDTO;
 import org.apache.poi.ss.usermodel.IgnoredErrorType;
 import org.apache.poi.ss.util.CellRangeAddress;
@@ -59,22 +58,10 @@ public class BankkontoExcelService {
                 konto.getUtenlandskKontoInfo().getSwiftBicKode() : "";
     }
 
-    private static String getSwift(BankkontonrUtlandDTO bankkontonrUtland) {
-
-        return nonNull(bankkontonrUtland) && isNotBlank(bankkontonrUtland.getSwift()) ?
-                bankkontonrUtland.getSwift().trim() : "";
-    }
-
     private static String getIban(KontoDTO konto) {
 
         return nonNull(konto) && nonNull(konto.getUtenlandskKontoInfo()) && isNotBlank(konto.getKontonummer()) ?
                 konto.getKontonummer() : "";
-    }
-
-    private static String getIban(BankkontonrUtlandDTO bankkontonrUtland) {
-
-        return nonNull(bankkontonrUtland) && isNotBlank(bankkontonrUtland.getIban()) ?
-                bankkontonrUtland.getIban().trim() : "";
     }
 
     private static String getBanknavn(KontoDTO konto) {
@@ -143,7 +130,7 @@ public class BankkontoExcelService {
                         .filter(response -> HttpStatus.OK.equals(response.getStatus()))
                         .map(response -> unpackBankkonto(response.getAktivKonto())))
                 .collectList()
-                .doOnNext(bankkonti -> log.info("Hentet {} antall bankkonti, tid {} secunder", bankkonti.size(),
+                .doOnNext(bankkonti -> log.info("Excel: hentet {} antall bankkonti, tid {} sekunder", bankkonti.size(),
                         (System.currentTimeMillis() - start) / 1000));
     }
 
