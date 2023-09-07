@@ -5,12 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
-import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.io.File;
@@ -20,18 +20,20 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static no.nav.dolly.service.excel.ExcelUtil.BANKKONTO_FANE;
+import static no.nav.dolly.service.excel.ExcelUtil.PERSON_FANE;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class ExcelService {
 
     private final TestgruppeRepository testgruppeRepository;
-    private final IdentRepository identRepository;
     private final PersonExcelService personExcelService;
     private final BankkontoExcelService bankkontoExcelService;
     private final OrganisasjonExcelService organisasjonExcelService;
 
-    protected static void appendRows(XSSFWorkbook workbook, String fane, List<Object[]> rows) {
+    protected static Mono<Void> appendRows(XSSFWorkbook workbook, String fane, List<Object[]> rows) {
 
         var wrapStyle = workbook.createCellStyle();
         wrapStyle.setWrapText(true);
@@ -55,6 +57,7 @@ public class ExcelService {
                                 }
                             });
                 });
+        return Mono.empty();
     }
 
     public Resource getExcelWorkbook(Long gruppeId) {
@@ -63,13 +66,12 @@ public class ExcelService {
         var testgruppe = testgruppeRepository.findById(gruppeId)
                 .orElseThrow(() -> new NotFoundException("Testgruppe ikke funnet for id " + gruppeId));
 
-        var testidenter = identRepository.findByTestgruppe(testgruppe.getId());
-
         var workbook = new XSSFWorkbook();
 
-        Mono.zip(
-                        personExcelService.preparePersonSheet(workbook, testidenter),
-                        bankkontoExcelService.prepareBankkontoSheet(workbook, testgruppe))
+        Flux.merge(
+                        personExcelService.preparePersonSheet(workbook, workbook.createSheet(PERSON_FANE), testgruppe),
+                        bankkontoExcelService.prepareBankkontoSheet(workbook, workbook.createSheet(BANKKONTO_FANE), testgruppe))
+                .collectList()
                 .block();
 
         BankkontoToPersonHelper.appendData(workbook);
