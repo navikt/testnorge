@@ -20,9 +20,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static no.nav.dolly.service.excel.ExcelUtil.BANKKONTO_FANE;
-import static no.nav.dolly.service.excel.ExcelUtil.PERSON_FANE;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -33,7 +30,7 @@ public class ExcelService {
     private final BankkontoExcelService bankkontoExcelService;
     private final OrganisasjonExcelService organisasjonExcelService;
 
-    protected static Mono<Void> appendRows(XSSFWorkbook workbook, String fane, List<Object[]> rows) {
+    protected static void appendRows(XSSFWorkbook workbook, String fane, List<Object[]> rows) {
 
         var wrapStyle = workbook.createCellStyle();
         wrapStyle.setWrapText(true);
@@ -57,26 +54,21 @@ public class ExcelService {
                                 }
                             });
                 });
-        return Mono.empty();
     }
 
-    public Resource getExcelWorkbook(Long gruppeId) {
+    public Mono<Resource> getExcelWorkbook(Long gruppeId) {
 
         long timestamp = System.currentTimeMillis();
         var testgruppe = testgruppeRepository.findById(gruppeId)
                 .orElseThrow(() -> new NotFoundException("Testgruppe ikke funnet for id " + gruppeId));
 
-        var workbook = new XSSFWorkbook();
-
-        Flux.merge(
-                        personExcelService.preparePersonSheet(workbook, workbook.createSheet(PERSON_FANE), testgruppe),
-                        bankkontoExcelService.prepareBankkontoSheet(workbook, workbook.createSheet(BANKKONTO_FANE), testgruppe))
-                .collectList()
-                .block();
-
-        BankkontoToPersonHelper.appendData(workbook);
-
-        return convertToResource(timestamp, workbook);
+        return Mono.just(new XSSFWorkbook())
+                .flatMap(workbook -> Flux.merge(
+                                personExcelService.preparePersonSheet(workbook, testgruppe),
+                                bankkontoExcelService.prepareBankkontoSheet(workbook, testgruppe))
+                        .collectList()
+                        .doOnNext(resultat -> BankkontoToPersonHelper.appendData(workbook))
+                        .then(Mono.fromCallable(() -> convertToResource(timestamp, workbook))));
     }
 
     public Resource getExcelOrganisasjonerWorkbook(Bruker bruker) {

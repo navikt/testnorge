@@ -10,7 +10,6 @@ import no.nav.testnav.libs.dto.kontoregisterservice.v1.BankkontonrUtlandDTO;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.KontoDTO;
 import org.apache.poi.ss.usermodel.IgnoredErrorType;
 import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -108,12 +107,13 @@ public class BankkontoExcelService {
                 konto.getUtenlandskKontoInfo().getValutakode() : "";
     }
 
-    public Mono<Void> prepareBankkontoSheet(XSSFWorkbook workbook, XSSFSheet sheet, Testgruppe testgruppe) {
+    public Mono<Void> prepareBankkontoSheet(XSSFWorkbook workbook, Testgruppe testgruppe) {
 
         return getBankkontoDetaljer(testgruppe)
                 .filter(rows -> !rows.isEmpty())
                 .flatMap(rows -> {
 
+                    var sheet = workbook.createSheet(BANKKONTO_FANE);
                     sheet.addIgnoredErrors(new CellRangeAddress(0, rows.size(), 0, BANKKONTO_HEADER.length),
                             IgnoredErrorType.NUMBER_STORED_AS_TEXT);
 
@@ -144,7 +144,7 @@ public class BankkontoExcelService {
                         .map(response -> unpackBankkonto(response.getAktivKonto())))
                 .collectList()
                 .doOnNext(bankkonti -> log.info("Hentet {} antall bankkonti, tid {} secunder", bankkonti.size(),
-                        (System.currentTimeMillis() - start)/1000));
+                        (System.currentTimeMillis() - start) / 1000));
     }
 
     private Object[] unpackBankkonto(KontoDTO konto) {

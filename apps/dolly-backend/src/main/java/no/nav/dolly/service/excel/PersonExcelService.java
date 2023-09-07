@@ -15,7 +15,6 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.IgnoredErrorType;
 import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -44,7 +43,7 @@ import static org.apache.commons.lang3.StringUtils.trimToEmpty;
 @RequiredArgsConstructor
 public class PersonExcelService {
 
-    public static final Object[] PERSONDATA_HEADER = {"Ident", "Identtype", "Fornavn", "Etternavn", "Alder", "Kjønn", "Foedselsdato",
+    private static final Object[] PERSONDATA_HEADER = {"Ident", "Identtype", "Fornavn", "Etternavn", "Alder", "Kjønn", "Foedselsdato",
             "Dødsdato", "Personstatus", "Statsborgerskap", "Adressebeskyttelse", "Bostedsadresse", "Kontaktadresse",
             "Oppholdsadresse", "Sivilstand", "Partner", "Barn", "Foreldre", "Verge", "Fullmektig", "Sikkerhetstiltak", "Brukt", "Beskrivelse"};
     private static final Integer[] COL_WIDTHS = {14, 10, 20, 20, 6, 8, 12, 12, 18, 20, 20, 25, 25, 25, 25, 14, 14, 14, 14, 14, 14, 14, 20};
@@ -316,12 +315,12 @@ public class PersonExcelService {
     }
 
     public Mono<Void> preparePersonSheet(XSSFWorkbook workbook,
-                                         XSSFSheet sheet,
                                          Testgruppe testgruppe) {
 
         return getPersondataRowContents(testgruppe)
                 .flatMap(rows -> {
 
+                    var sheet = workbook.createSheet(PERSON_FANE);
                     sheet.addIgnoredErrors(new CellRangeAddress(0, rows.size(), 0, PERSONDATA_HEADER.length),
                             IgnoredErrorType.NUMBER_STORED_AS_TEXT);
 
@@ -350,7 +349,9 @@ public class PersonExcelService {
                 .collectList()
                 .flatMap(testidenter -> getPersoner(testidenter)
                         .doOnNext(personer ->
-                                log.info("Excel: hentet alle hovedpersoner, medgått tid er {} sekunder", (System.currentTimeMillis() - start.get()) / 1000))
+                                log.info("Excel: hentet alle hovedpersoner antall {}, medgått tid er {} sekunder",
+                                        personer.size(),
+                                        (System.currentTimeMillis() - start.get()) / 1000))
                         .doOnNext(personer -> start.set(System.currentTimeMillis()))
                         .flatMap(personer -> Flux.concat(Mono.just(personer),
                                         getPersoner(Stream.of(
@@ -369,7 +370,8 @@ public class PersonExcelService {
                                 .flatMap(Flux::fromIterable)
                                 .collectList()
                                 .doOnNext(allePersoner ->
-                                        log.info("Excel: hentet alle relasjoner, medgått tid er {} sekunder",
+                                        log.info("Excel: hentet alle relasjoner, totalt antall {}, medgått tid er {} sekunder",
+                                                allePersoner.size(),
                                                 (System.currentTimeMillis() - start.get()) / 1000))));
     }
 
@@ -396,7 +398,7 @@ public class PersonExcelService {
                                         kodeverkConsumer.getKodeverkByName(KOMMUNENR),
                                         kodeverkConsumer.getKodeverkByName(POSTNUMMER))
 
-                                .flatMap(kodeverk -> pdlPersonConsumer.getPdlPersoner(identer)
+                                .flatMap(kodeverk -> pdlPersonConsumer.getPdlPersonerNoRetries(identer)
                                         .filter(personbolk -> nonNull(personbolk.getData()))
                                         .map(PdlPersonBolk::getData)
                                         .map(PdlPersonBolk.Data::getHentPersonBolk)
