@@ -30,7 +30,7 @@ const ForventedeInntekterForm = ({ path, header, initialValues }) => {
 						fastfield="false"
 					/>
 					<FormikDatepicker name={`${path}.datoFom`} label="Dato f.o.m." />
-					<FormikDatepicker name={`${path}.datoFom`} label="Dato t.o.m." />
+					<FormikDatepicker name={`${path}.datoTom`} label="Dato t.o.m." />
 				</>
 			)}
 		</FormikDollyFieldArray>
@@ -44,9 +44,10 @@ export const BarnetilleggForm = ({ formikBag }) => {
 		_.get(formikBag.values, barnetilleggPath) !== null,
 	)
 
-	const handleBarnetilleggChange = () => {
-		setHarBarnetillegg(!harBarnetillegg)
-		if (harBarnetillegg) {
+	const handleBarnetilleggChange = (value) => {
+		const checked = value?.target?.checked
+		setHarBarnetillegg(checked)
+		if (checked) {
 			formikBag.setFieldValue(barnetilleggPath, barnetilleggDetaljer)
 		} else {
 			formikBag.setFieldValue(barnetilleggPath, null)
@@ -59,11 +60,11 @@ export const BarnetilleggForm = ({ formikBag }) => {
 				label="Har barnetillegg"
 				id={barnetilleggPath}
 				checked={harBarnetillegg}
-				onChange={handleBarnetilleggChange}
+				onChange={(v) => handleBarnetilleggChange(v)}
 				size="small"
 			/>
 			{harBarnetillegg && (
-				<div className="flexbox--flex-wrap">
+				<div className="flexbox--flex-wrap" style={{ marginBottom: '15px' }}>
 					<FormikSelect
 						name={`${barnetilleggPath}.barnetilleggType`}
 						label="Type barnetillegg"
