@@ -5,12 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
-import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.io.File;
@@ -26,7 +26,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class ExcelService {
 
     private final TestgruppeRepository testgruppeRepository;
-    private final IdentRepository identRepository;
     private final PersonExcelService personExcelService;
     private final BankkontoExcelService bankkontoExcelService;
     private final OrganisasjonExcelService organisasjonExcelService;
@@ -57,24 +56,19 @@ public class ExcelService {
                 });
     }
 
-    public Resource getExcelWorkbook(Long gruppeId) {
+    public Mono<Resource> getExcelWorkbook(Long gruppeId) {
 
         long timestamp = System.currentTimeMillis();
         var testgruppe = testgruppeRepository.findById(gruppeId)
                 .orElseThrow(() -> new NotFoundException("Testgruppe ikke funnet for id " + gruppeId));
 
-        var testidenter = identRepository.findByTestgruppe(testgruppe.getId());
-
-        var workbook = new XSSFWorkbook();
-
-        Mono.zip(
-                        personExcelService.preparePersonSheet(workbook, testidenter),
-                        bankkontoExcelService.prepareBankkontoSheet(workbook, testgruppe))
-                .block();
-
-        BankkontoToPersonHelper.appendData(workbook);
-
-        return convertToResource(timestamp, workbook);
+        return Mono.just(new XSSFWorkbook())
+                .flatMap(workbook -> Flux.merge(
+                                personExcelService.preparePersonSheet(workbook, testgruppe),
+                                bankkontoExcelService.prepareBankkontoSheet(workbook, testgruppe))
+                        .collectList()
+                        .doOnNext(resultat -> BankkontoToPersonHelper.appendData(workbook))
+                        .then(Mono.fromCallable(() -> convertToResource(timestamp, workbook))));
     }
 
     public Resource getExcelOrganisasjonerWorkbook(Bruker bruker) {

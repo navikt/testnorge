@@ -1,17 +1,12 @@
 package no.nav.dolly.service.excel;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.kontoregisterservice.KontoregisterConsumer;
-import no.nav.dolly.bestilling.tpsmessagingservice.TpsMessagingConsumer;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.repository.BestillingRepository;
-import no.nav.testnav.libs.dto.kontoregisterservice.v1.BankkontonrNorskDTO;
-import no.nav.testnav.libs.dto.kontoregisterservice.v1.BankkontonrUtlandDTO;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.KontoDTO;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PersonDTO;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PersonMiljoeDTO;
 import org.apache.poi.ss.usermodel.IgnoredErrorType;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -20,43 +15,29 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static no.nav.dolly.service.excel.ExcelUtil.BANKKONTO_COL_WIDTHS;
-import static no.nav.dolly.service.excel.ExcelUtil.BANKKONTO_FANE;
-import static no.nav.dolly.service.excel.ExcelUtil.BANKKONTO_HEADER;
+import static no.nav.dolly.service.excel.ExcelUtil.*;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BankkontoExcelService {
 
-    private static final LocalDateTime NYTT_KONTOREGISTER_FRA_DATO = LocalDateTime.of(2022, 8, 30, 0, 0);
-    private final TpsMessagingConsumer tpsMessagingConsumer;
     private final KontoregisterConsumer kontoregisterConsumer;
-
-    private final BestillingRepository bestillingRepository;
 
     private static String getAdresse1(KontoDTO konto) {
 
         return nonNull(konto) && nonNull(konto.getUtenlandskKontoInfo()) && isNotBlank(konto.getUtenlandskKontoInfo().getBankadresse1()) ?
                 konto.getUtenlandskKontoInfo().getBankadresse1() : "";
-    }
-
-    private static String getAdresse1(BankkontonrUtlandDTO bankkontonrUtland) {
-
-        return nonNull(bankkontonrUtland) && isNotBlank(bankkontonrUtland.getBankAdresse1()) ?
-                bankkontonrUtland.getBankAdresse1().trim() : "";
     }
 
     private static String getAdresse2(KontoDTO konto) {
@@ -65,22 +46,10 @@ public class BankkontoExcelService {
                 konto.getUtenlandskKontoInfo().getBankadresse2() : "";
     }
 
-    private static String getAdresse2(BankkontonrUtlandDTO bankkontonrUtland) {
-
-        return nonNull(bankkontonrUtland) && isNotBlank(bankkontonrUtland.getBankAdresse2()) ?
-                bankkontonrUtland.getBankAdresse2().trim() : "";
-    }
-
     private static String getAdresse3(KontoDTO konto) {
 
         return nonNull(konto) && nonNull(konto.getUtenlandskKontoInfo()) && isNotBlank(konto.getUtenlandskKontoInfo().getBankadresse3()) ?
                 konto.getUtenlandskKontoInfo().getBankadresse3() : "";
-    }
-
-    private static String getAdresse3(BankkontonrUtlandDTO bankkontonrUtland) {
-
-        return nonNull(bankkontonrUtland) && isNotBlank(bankkontonrUtland.getBankAdresse3()) ?
-                bankkontonrUtland.getBankAdresse3().trim() : "";
     }
 
     private static String getSwift(KontoDTO konto) {
@@ -89,22 +58,10 @@ public class BankkontoExcelService {
                 konto.getUtenlandskKontoInfo().getSwiftBicKode() : "";
     }
 
-    private static String getSwift(BankkontonrUtlandDTO bankkontonrUtland) {
-
-        return nonNull(bankkontonrUtland) && isNotBlank(bankkontonrUtland.getSwift()) ?
-                bankkontonrUtland.getSwift().trim() : "";
-    }
-
     private static String getIban(KontoDTO konto) {
 
         return nonNull(konto) && nonNull(konto.getUtenlandskKontoInfo()) && isNotBlank(konto.getKontonummer()) ?
                 konto.getKontonummer() : "";
-    }
-
-    private static String getIban(BankkontonrUtlandDTO bankkontonrUtland) {
-
-        return nonNull(bankkontonrUtland) && isNotBlank(bankkontonrUtland.getIban()) ?
-                bankkontonrUtland.getIban().trim() : "";
     }
 
     private static String getBanknavn(KontoDTO konto) {
@@ -113,22 +70,10 @@ public class BankkontoExcelService {
                 konto.getUtenlandskKontoInfo().getBanknavn() : "";
     }
 
-    private static String getBanknavn(BankkontonrUtlandDTO bankkontonrUtland) {
-
-        return nonNull(bankkontonrUtland) && isNotBlank(bankkontonrUtland.getBanknavn()) ?
-                bankkontonrUtland.getBanknavn().trim() : "";
-    }
-
     private static String getBankkontonrNorge(KontoDTO konto) {
 
         return nonNull(konto) && isNull(konto.getUtenlandskKontoInfo()) ?
                 konto.getKontonummer() : "";
-    }
-
-    private static String getBankkontonrNorge(BankkontonrNorskDTO bankkontonrNorsk) {
-
-        return nonNull(bankkontonrNorsk) && isNotBlank(bankkontonrNorsk.getKontonummer()) ?
-                bankkontonrNorsk.getKontonummer().replace(".", "") : "";
     }
 
     private static String getBankkontonrUtland(KontoDTO konto) {
@@ -137,22 +82,10 @@ public class BankkontoExcelService {
                 konto.getKontonummer() : "";
     }
 
-    private static String getBankkontonrUtland(BankkontonrUtlandDTO bankkontonrUtland) {
-
-        return nonNull(bankkontonrUtland) && isNotBlank(bankkontonrUtland.getKontonummer()) ?
-                bankkontonrUtland.getKontonummer().trim() : "";
-    }
-
     private static String getLandkode(KontoDTO konto) {
 
         return nonNull(konto) && nonNull(konto.getUtenlandskKontoInfo()) && isNotBlank(konto.getUtenlandskKontoInfo().getBankLandkode()) ?
                 konto.getUtenlandskKontoInfo().getBankLandkode() : "";
-    }
-
-    private static String getLandkode(BankkontonrUtlandDTO bankkontonrUtland) {
-
-        return nonNull(bankkontonrUtland) && isNotBlank(bankkontonrUtland.getLandkode()) ?
-                bankkontonrUtland.getLandkode() : "";
     }
 
     private static String getValuta(KontoDTO konto) {
@@ -161,104 +94,44 @@ public class BankkontoExcelService {
                 konto.getUtenlandskKontoInfo().getValutakode() : "";
     }
 
-    private static String getValuta(BankkontonrUtlandDTO bankkontonrUtland) {
-
-        return nonNull(bankkontonrUtland) && isNotBlank(bankkontonrUtland.getValuta()) ?
-                bankkontonrUtland.getValuta() : "";
-    }
-
     public Mono<Void> prepareBankkontoSheet(XSSFWorkbook workbook, Testgruppe testgruppe) {
 
-        var rows = getBankkontoDetaljer(testgruppe);
+        return getBankkontoDetaljer(testgruppe)
+                .filter(rows -> !rows.isEmpty())
+                .flatMap(rows -> {
 
-        if (!rows.isEmpty()) {
-            var sheet = workbook.createSheet(BANKKONTO_FANE);
+                    var sheet = workbook.createSheet(BANKKONTO_FANE);
+                    sheet.addIgnoredErrors(new CellRangeAddress(0, rows.size(), 0, BANKKONTO_HEADER.length),
+                            IgnoredErrorType.NUMBER_STORED_AS_TEXT);
 
-            sheet.addIgnoredErrors(new CellRangeAddress(0, rows.size(), 0, BANKKONTO_HEADER.length),
-                    IgnoredErrorType.NUMBER_STORED_AS_TEXT);
+                    var columnNo = new AtomicInteger(0);
+                    Arrays.stream(BANKKONTO_COL_WIDTHS)
+                            .forEach(colWidth -> sheet.setColumnWidth(columnNo.getAndIncrement(), colWidth * 256));
 
-            var columnNo = new AtomicInteger(0);
-            Arrays.stream(BANKKONTO_COL_WIDTHS)
-                    .forEach(colWidth -> sheet.setColumnWidth(columnNo.getAndIncrement(), colWidth * 256));
+                    ExcelService.appendRows(workbook, BANKKONTO_FANE,
+                            Stream.of(Collections.singletonList(BANKKONTO_HEADER), rows)
+                                    .flatMap(Collection::stream)
+                                    .toList());
 
-            ExcelService.appendRows(workbook, BANKKONTO_FANE,
-                    Stream.of(Collections.singletonList(BANKKONTO_HEADER), rows)
-                            .flatMap(Collection::stream)
-                            .toList());
-        }
-
-        return Mono.empty();
+                    return Mono.empty();
+                });
     }
 
-    private Mono<List<Object[]>> tpsBankkonto(List<String> identer) {
-        return Flux.range(0, identer.size())
-                .flatMap(index -> tpsMessagingConsumer.getPersoner(List.of(identer.get(index)), List.of("q1")))
-                .filter(PersonMiljoeDTO::isOk)
-                .map(PersonMiljoeDTO::getPerson)
-                .map(person -> unpackBankkonto(person))
-                .collectList();
-    }
+    private Mono<List<Object[]>> getBankkontoDetaljer(Testgruppe testgruppe) {
 
-    private Mono<List<Object[]>> kontoregisterBankkonto(List<String> identer) {
-
-        return Flux.fromIterable(identer)
+        var start = System.currentTimeMillis();
+        return Flux.fromIterable(testgruppe.getBestillinger())
+                .map(Bestilling::getProgresser)
+                .flatMap(Flux::fromIterable)
+                .filter(progress -> isNotBlank(progress.getKontoregisterStatus()))
+                .map(BestillingProgress::getIdent)
+                .distinct()
                 .flatMap(ident -> kontoregisterConsumer.getKontonummer(ident)
                         .filter(response -> HttpStatus.OK.equals(response.getStatus()))
                         .map(response -> unpackBankkonto(response.getAktivKonto())))
-                .collectList();
-    }
-
-    private List<Object[]> getBankkontoDetaljer(Testgruppe testgruppe) {
-
-        var bankKontoIdenter = testgruppe.getBestillinger().stream()
-                .filter(bestilling -> nonNull(bestilling.getBestKriterier()))
-                .filter(bestilling -> bestilling.getBestKriterier().contains("Bankkonto"))
-                .map(Bestilling::getProgresser)
-                .flatMap(Collection::stream)
-                .collect(Collectors.teeing(
-                        Collectors.filtering(
-                                p -> !p.getBestilling().getSistOppdatert().isAfter(NYTT_KONTOREGISTER_FRA_DATO),
-                                Collectors.toList()
-                        ),
-                        Collectors.filtering(
-                                p -> p.getBestilling().getSistOppdatert().isAfter(NYTT_KONTOREGISTER_FRA_DATO) &&
-                                        nonNull(p.getKontoregisterStatus()) &&
-                                        !p.getKontoregisterStatus().contains("Feil"),
-                                Collectors.toList()
-                        ),
-                        (tps, kontoregister) -> {
-                            var result = new ConcurrentHashMap<String, List<String>>();
-                            result.put("tps", tps.stream().map(BestillingProgress::getIdent).distinct().toList());
-                            result.put("kontoregister", kontoregister.stream().map(BestillingProgress::getIdent).distinct().toList());
-                            return result;
-                        }
-                ));
-
-        return List.of(
-                        tpsBankkonto(bankKontoIdenter.get("tps")),
-                        kontoregisterBankkonto(bankKontoIdenter.get("kontoregister"))
-                )
-                .parallelStream()
-                .map(Mono::block)
-                .flatMap(Collection::stream)
-                .toList();
-    }
-
-    private Object[] unpackBankkonto(PersonDTO person) {
-
-        return new Object[]{
-                person.getIdent(),
-                getBankkontonrNorge(person.getBankkontonrNorsk()),
-                getBankkontonrUtland(person.getBankkontonrUtland()),
-                getBanknavn(person.getBankkontonrUtland()),
-                getIban(person.getBankkontonrUtland()),
-                getLandkode(person.getBankkontonrUtland()),
-                getValuta(person.getBankkontonrUtland()),
-                getSwift(person.getBankkontonrUtland()),
-                getAdresse1(person.getBankkontonrUtland()),
-                getAdresse2(person.getBankkontonrUtland()),
-                getAdresse3(person.getBankkontonrUtland())
-        };
+                .collectList()
+                .doOnNext(bankkonti -> log.info("Excel: hentet {} antall bankkonti, tid {} sekunder", bankkonti.size(),
+                        (System.currentTimeMillis() - start) / 1000));
     }
 
     private Object[] unpackBankkonto(KontoDTO konto) {
