@@ -1850,6 +1850,38 @@ const mapPensjon = (bestillingData, data) => {
 			}
 			data.push(pensjonforvalterAlderspensjon)
 		}
+
+		if (pensjonKriterier.uforetrygd) {
+			const uforetrygd = pensjonKriterier.uforetrygd
+			const pensjonforvalterUforetrygd = {
+				header: 'Uføretrygd',
+				items: [
+					obj('Krav fremsatt dato', formatDate(uforetrygd.kravFremsattDato)),
+					obj('Ønsket virkningsdato', formatDate(uforetrygd.onsketVirkningsDato)),
+					obj('Uføretidspunkt', formatDate(uforetrygd.uforetidspunkt)),
+					obj('Inntekt før uførhet', uforetrygd.inntektForUforhet),
+					obj('Har barnetillegg', oversettBoolean(uforetrygd.barnetilleggDetaljer !== null)),
+					obj('Type barnetillegg', showLabel('barnetilleggType', uforetrygd.barnetilleggType)),
+					obj(
+						'Antall forventede inntekter for søker',
+						uforetrygd.barnetilleggDetaljer?.forventedeInntekterSoker?.length,
+					),
+					obj(
+						'Antall forventede inntekter for partner',
+						uforetrygd.barnetilleggDetaljer?.forventedeInntekterEP?.length,
+					),
+					obj(
+						'Sats for minimum IFU',
+						showLabel('minimumInntektForUforhetType', uforetrygd.minimumInntektForUforhetType),
+					),
+					obj('Uføregrad', uforetrygd.uforegrad),
+					obj('Saksbehandler', uforetrygd.saksbehandler),
+					obj('Attesterer', uforetrygd.attesterer),
+					obj('NAV-enhet', uforetrygd.navEnhetId),
+				],
+			}
+			data.push(pensjonforvalterUforetrygd)
+		}
 	}
 }
 
