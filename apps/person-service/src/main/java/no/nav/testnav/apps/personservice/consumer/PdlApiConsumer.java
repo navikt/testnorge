@@ -86,7 +86,7 @@ public class PdlApiConsumer {
         return isNotBlank(ident.getIdent()) && !ident.getHistorisk() && gruppe.equals(ident.getGruppe());
     }
 
-    private boolean isPresent(String ident, PdlAktoer pdlAktoer, Set<String> opplysningId) {
+    private boolean isPresent(String ident, PdlAktoer pdlAktoer, String miljoe, Set<String> opplysningId) {
 
         var person = pdlAktoer.getData().getHentPerson();
         log.info("Sjekker ident {} med PDL opplysningId {}, sjekkes for mottatt opplysningId {}", ident,
@@ -123,7 +123,7 @@ public class PdlApiConsumer {
                                     identer.stream().anyMatch(ident2 -> isGruppe(ident2, "NPID")));
         }
 
-        log.info("Ident {}, isPresent() {}", ident, resultat);
+        log.info("Ident {}, isPresent() {}, (miljo {})", ident, resultat, miljoe);
         return resultat;
     }
 
@@ -149,6 +149,7 @@ public class PdlApiConsumer {
                 .exchange(serviceProperties)
                 .flatMap(token -> Mono.zip(new GetPdlAktoerCommand(webClient, PDL_URL, ident, token.getTokenValue()).call(),
                                 new GetPdlAktoerCommand(webClient, PDL_Q1_URL, ident, token.getTokenValue()).call())
-                        .map(tuple -> isPresent(ident, tuple.getT1(), opplysningId) && isPresent(ident, tuple.getT2(), opplysningId)));
+                        .map(tuple -> isPresent(ident, tuple.getT1(), "q2", opplysningId) &&
+                                isPresent(ident, tuple.getT2(), "q1", opplysningId)));
     }
 }
