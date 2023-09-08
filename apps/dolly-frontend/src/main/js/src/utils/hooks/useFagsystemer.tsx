@@ -18,7 +18,7 @@ import { useTransaksjonsid } from '@/utils/hooks/useTransaksjonsid'
 
 const poppUrl = (ident, miljoer) =>
 	miljoer?.map((miljo) => ({
-		url: `/testnav-pensjon-testdata-facade-proxy/api/v1/inntekt?fnr=${ident}`,
+		url: `/testnav-pensjon-testdata-facade-proxy/api/v1/inntekt?fnr=${ident}&miljo=${miljo}`,
 		miljo: miljo,
 	}))
 
@@ -89,6 +89,23 @@ export const useTpData = (ident, harTpBestilling) => {
 
 	return {
 		tpData: data?.sort((a, b) => a.miljo.localeCompare(b.miljo)),
+		loading: isLoading,
+		error: error,
+	}
+}
+
+export const useApData = (ident, harApBestilling) => {
+	const { data, isLoading, error } = useSWR<any, Error>(
+		harApBestilling ? `/dolly-backend/api/v1/transaksjonid?ident=${ident}&system=PEN_AP` : null,
+		fetcher,
+	)
+
+	const miljoData = data?.map((m) => {
+		return { data: m.transaksjonId, miljo: m.miljoe }
+	})
+
+	return {
+		apData: miljoData?.sort((a, b) => a.miljo?.localeCompare(b.miljo)),
 		loading: isLoading,
 		error: error,
 	}

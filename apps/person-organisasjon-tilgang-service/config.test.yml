@@ -79,4 +79,4 @@ spec:
     - name: ALTINN_URL
       value: https://tt02.altinn.no
     - name: TOKENDINGS_URL
-      value: https://tokendings.dev-gcp.nais.io
+      value: https://tokenx.dev-gcp.nav.cloud.nais.io 
