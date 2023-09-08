@@ -10,7 +10,10 @@ import { MiljoTabs } from '@/components/ui/miljoTabs/MiljoTabs'
 import { useBestilteMiljoer } from '@/utils/hooks/useBestilling'
 
 export const sjekkManglerPensjonData = (pensjonData) => {
-	return pensjonData?.length < 1 || pensjonData?.every((miljoData) => miljoData?.data?.length < 1)
+	return (
+		pensjonData?.length < 1 ||
+		pensjonData?.every((miljoData) => miljoData?.data?.inntekter?.length < 1)
+	)
 }
 
 const getTittel = (data) => {
