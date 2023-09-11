@@ -1861,7 +1861,10 @@ const mapPensjon = (bestillingData, data) => {
 					obj('Uføretidspunkt', formatDate(uforetrygd.uforetidspunkt)),
 					obj('Inntekt før uførhet', uforetrygd.inntektForUforhet),
 					obj('Har barnetillegg', oversettBoolean(uforetrygd.barnetilleggDetaljer !== null)),
-					obj('Type barnetillegg', showLabel('barnetilleggType', uforetrygd.barnetilleggType)),
+					obj(
+						'Type barnetillegg',
+						showLabel('barnetilleggType', uforetrygd.barnetilleggDetaljer?.barnetilleggType),
+					),
 					obj(
 						'Antall forventede inntekter for søker',
 						uforetrygd.barnetilleggDetaljer?.forventedeInntekterSoker?.length,
@@ -1874,7 +1877,7 @@ const mapPensjon = (bestillingData, data) => {
 						'Sats for minimum IFU',
 						showLabel('minimumInntektForUforhetType', uforetrygd.minimumInntektForUforhetType),
 					),
-					obj('Uføregrad', uforetrygd.uforegrad),
+					obj('Uføregrad', uforetrygd.uforegrad ? `${uforetrygd.uforegrad}%` : null),
 					obj('Saksbehandler', uforetrygd.saksbehandler),
 					obj('Attesterer', uforetrygd.attesterer),
 					obj('NAV-enhet', uforetrygd.navEnhetId),

@@ -39,7 +39,6 @@ import { sjekkManglerPensjonData } from '@/components/fagsystem/pensjon/visning/
 import { sjekkManglerAaregData } from '@/components/fagsystem/aareg/visning/Visning'
 import { useAmeldinger, useArbeidsforhold } from '@/utils/hooks/useOrganisasjoner'
 import {
-	useApData,
 	useArbeidsplassencvData,
 	useArenaData,
 	useDokarkivData,
@@ -47,6 +46,7 @@ import {
 	useInstData,
 	usePoppData,
 	useTpData,
+	useTransaksjonidData,
 } from '@/utils/hooks/useFagsystemer'
 import { sjekkManglerTpData } from '@/components/fagsystem/tjenestepensjon/visning/TpVisning'
 import { sjekkManglerInstData } from '@/components/fagsystem/inst/visning/InstVisning'
@@ -61,6 +61,7 @@ import {
 	harMedlBestilling,
 	harPoppBestilling,
 	harTpBestilling,
+	harUforetrygdBestilling,
 } from '@/utils/SjekkBestillingFagsystem'
 import {
 	AlderspensjonVisning,
@@ -72,6 +73,11 @@ import _has from 'lodash/has'
 import { MedlVisning } from '@/components/fagsystem/medl/visning'
 import { useMedlPerson } from '@/utils/hooks/useMedl'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
+import {
+	sjekkManglerUforetrygdData,
+	UforetrygdVisning,
+} from '@/components/fagsystem/uforetrygd/visning/UforetrygdVisning'
+import { usePensjonEnvironments } from '@/utils/hooks/useEnvironments'
 
 const getIdenttype = (ident) => {
 	if (parseInt(ident.charAt(0)) > 3) {
@@ -171,9 +177,22 @@ export default ({
 		harArenaBestilling(bestillingerFagsystemer),
 	)
 
-	const { loading: loadingApData, apData } = useApData(
+	const { pensjonEnvironments, loading: loadingPensjonEnvironments } = usePensjonEnvironments()
+
+	const { loading: loadingApData, data: apData } = useTransaksjonidData(
 		ident.ident,
+		'PEN_AP',
 		harApBestilling(bestillingerFagsystemer),
+		pensjonEnvironments,
+		loadingPensjonEnvironments,
+	)
+
+	const { loading: loadingUforetrygdData, data: uforetrygdData } = useTransaksjonidData(
+		ident.ident,
+		'PEN_UT',
+		harUforetrygdBestilling(bestillingerFagsystemer),
+		pensjonEnvironments,
+		loadingPensjonEnvironments,
 	)
 
 	const getGruppeIdenter = () => {
@@ -208,6 +227,9 @@ export default ({
 			return true
 		}
 		if (apData && sjekkManglerApData(apData)) {
+			return true
+		}
+		if (uforetrygdData && sjekkManglerUforetrygdData(uforetrygdData)) {
 			return true
 		}
 		if (brregstub && sjekkManglerBrregData(brregstub)) {
@@ -396,6 +418,12 @@ export default ({
 				<AlderspensjonVisning
 					data={apData}
 					loading={loadingApData}
+					bestillingIdListe={bestillingIdListe}
+					tilgjengeligMiljoe={tilgjengeligMiljoe}
+				/>
+				<UforetrygdVisning
+					data={uforetrygdData}
+					loading={loadingUforetrygdData}
 					bestillingIdListe={bestillingIdListe}
 					tilgjengeligMiljoe={tilgjengeligMiljoe}
 				/>

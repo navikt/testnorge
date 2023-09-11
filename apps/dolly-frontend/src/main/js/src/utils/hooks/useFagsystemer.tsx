@@ -94,19 +94,40 @@ export const useTpData = (ident, harTpBestilling) => {
 	}
 }
 
-export const useApData = (ident, harApBestilling) => {
+export const useTransaksjonidData = (
+	ident,
+	system,
+	harBestilling,
+	fagsystemMiljoer = null,
+	fagsystemLoading = false,
+) => {
 	const { data, isLoading, error } = useSWR<any, Error>(
-		harApBestilling ? `/dolly-backend/api/v1/transaksjonid?ident=${ident}&system=PEN_AP` : null,
+		harBestilling ? `/dolly-backend/api/v1/transaksjonid?ident=${ident}&system=${system}` : null,
 		fetcher,
 	)
 
-	const miljoData = data?.map((m) => {
-		return { data: m.transaksjonId, miljo: m.miljoe }
-	})
+	const getMiljoData = () => {
+		if (!harBestilling) {
+			return null
+		}
+		const miljoData = []
+		if (fagsystemMiljoer && fagsystemMiljoer.length > 0) {
+			fagsystemMiljoer.map((miljo) => {
+				const fagsystemData = data?.find((d) => d?.miljoe === miljo)?.transaksjonId
+				miljoData.push({ data: fagsystemData, miljo: miljo })
+			})
+		} else {
+			data?.map((m) => {
+				miljoData.push({ data: m.transaksjonId, miljo: m.miljoe })
+			})
+		}
+		return miljoData
+	}
+	const miljoData = getMiljoData()
 
 	return {
-		apData: miljoData?.sort((a, b) => a.miljo?.localeCompare(b.miljo)),
-		loading: isLoading,
+		data: miljoData?.sort((a, b) => a.miljo?.localeCompare(b.miljo)),
+		loading: fagsystemLoading || isLoading,
 		error: error,
 	}
 }

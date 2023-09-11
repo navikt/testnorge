@@ -69,6 +69,7 @@ export const BarnetilleggForm = ({ formikBag }) => {
 						name={`${barnetilleggPath}.barnetilleggType`}
 						label="Type barnetillegg"
 						options={Options('barnetilleggType')}
+						isClearable={false}
 					/>
 					<ForventedeInntekterForm
 						header="Forventede inntekter for søker"
