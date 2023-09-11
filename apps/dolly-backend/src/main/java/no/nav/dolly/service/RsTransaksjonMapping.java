@@ -1,11 +1,10 @@
 package no.nav.dolly.service;
 
-import java.time.LocalDateTime;
-import java.time.LocalDate;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
-
+import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Data;
+
+import java.time.LocalDateTime;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -16,19 +15,7 @@ public class RsTransaksjonMapping {
     private String ident;
     private String system;
     private String miljoe;
-    private TransaksjonId transaksjonId;
+    private JsonNode transaksjonId;
     private LocalDateTime datoEndret;
     private String status;
-
-    @Data
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class TransaksjonId {
-
-        private String journalpostId;
-        private String dokumentInfoId;
-        private String orgnummer;
-        private String arbeidsforholdId;
-        private LocalDate iverksettelsesdato;
-        private Integer uttaksgrad;
-    }
 }

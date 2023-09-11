@@ -165,6 +165,22 @@ public class PensjonData {
 
         private List<ForventetInntekt> forventedeInntekterSoker;
         private List<ForventetInntekt> forventedeInntekterEP;
+
+        public List<ForventetInntekt> getForventedeInntekterSoker() {
+
+            if (isNull(forventedeInntekterSoker)) {
+                forventedeInntekterSoker = new ArrayList<>();
+            }
+            return forventedeInntekterSoker;
+        }
+
+        public List<ForventetInntekt> getForventedeInntekterEP() {
+
+            if (isNull(forventedeInntekterEP)) {
+                forventedeInntekterEP = new ArrayList<>();
+            }
+            return forventedeInntekterEP;
+        }
     }
 
     @Data
