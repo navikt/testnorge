@@ -52,7 +52,7 @@ export const validation = {
 				.nullable(), // Historisk
 			inntektForUforhet: requiredNumber.transform((i, j) => (j === '' ? null : i)), // Required
 			uforegrad: requiredNumber.transform((i, j) => (j === '' ? null : i)), // Required
-			minimumInntektForUforhetType: Yup.string().nullable(), // Not required
+			minimumInntektForUforhetType: Yup.string().nullable(),
 			saksbehandler: erIkkeLik().nullable(), // Kan ikke være lik attesterer
 			attesterer: erIkkeLik().nullable(), // Kan ikke være lik saksbehandler
 			navEnhetId: requiredString, // Required
