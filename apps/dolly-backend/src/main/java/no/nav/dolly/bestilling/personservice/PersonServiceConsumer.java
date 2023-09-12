@@ -1,5 +1,6 @@
 package no.nav.dolly.bestilling.personservice;
 
+import io.netty.channel.ChannelOption;
 import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.personservice.command.PersonServiceExistCommand;
 import no.nav.dolly.bestilling.personservice.dto.PersonServiceResponse;
@@ -7,9 +8,11 @@ import no.nav.dolly.config.credentials.PersonServiceProperties;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import reactor.netty.http.client.HttpClient;
 
 import java.util.Set;
 
@@ -28,6 +31,8 @@ public class PersonServiceConsumer implements ConsumerStatus {
         this.tokenService = tokenService;
         this.serviceProperties = serverProperties;
         this.webClient = webClientBuilder
+                .clientConnector(new ReactorClientHttpConnector(HttpClient.create()
+                        .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000)))
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }
