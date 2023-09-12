@@ -108,6 +108,7 @@ Steg2.validation = Yup.object({
 			...PensjonForm.validation,
 			...TjenestepensjonForm.validation,
 			...AlderspensjonForm.validation,
+			...UforetrygdForm.validation,
 		}),
 	),
 })

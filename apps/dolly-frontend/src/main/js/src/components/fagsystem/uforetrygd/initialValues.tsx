@@ -11,7 +11,7 @@ export const initialUforetrygd = {
 	minimumInntektForUforhetType: null,
 	saksbehandler: null,
 	attesterer: null,
-	navEnhetId: null,
+	navEnhetId: '4403',
 	barnetilleggDetaljer: null,
 }
 

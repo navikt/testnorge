@@ -10,6 +10,7 @@ import { genererTilfeldigeNavPersonidenter } from '@/utils/GenererTilfeldigeNavP
 import * as _ from 'lodash-es'
 import { useNavEnheter } from '@/utils/hooks/useNorg2'
 import { BarnetilleggForm } from '@/components/fagsystem/uforetrygd/form/partials/BarnetilleggForm'
+import { validation } from '@/components/fagsystem/uforetrygd/form/validation'
 
 const uforetrygdPath = 'pensjonforvalter.uforetrygd'
 
@@ -83,9 +84,12 @@ export const UforetrygdForm = ({ formikBag }) => {
 						label={'NAV-enhet'}
 						size={'xxxlarge'}
 						options={navEnheter}
+						isClearable={false}
 					/>
 				</div>
 			</Panel>
 		</Vis>
 	)
 }
+
+UforetrygdForm.validation = validation
