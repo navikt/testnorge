@@ -37,7 +37,7 @@ public class KodeverkMapper {
                         kor24Adjustment.getKoder()
                                 .forEach(kode -> {
                                     if (Kor2024NyeKommuner.isNewKommune(kode.getValue())) {
-                                        kode.setLabel(kode.getLabel() + " <--- nytt");
+                                        kode.setLabel(kode.getLabel() + " (NY)");
                                     }
                                 });
                     }
