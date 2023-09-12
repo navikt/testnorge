@@ -23,6 +23,7 @@ import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import _get from 'lodash/get'
 import _has from 'lodash/has'
 import { MedlKodeverk } from '@/components/fagsystem/medl/MedlConstants'
+import { useNavEnheter } from '@/utils/hooks/useNorg2'
 
 // TODO: Flytte til selector?
 // - Denne kan forminskes ved bruk av hjelpefunksjoner
@@ -1853,6 +1854,12 @@ const mapPensjon = (bestillingData, data) => {
 
 		if (pensjonKriterier.uforetrygd) {
 			const uforetrygd = pensjonKriterier.uforetrygd
+
+			const { navEnheter } = useNavEnheter()
+			const navEnhetLabel = navEnheter?.find(
+				(enhet) => enhet.value === uforetrygd.navEnhetId?.toString(),
+			)?.label
+
 			const pensjonforvalterUforetrygd = {
 				header: 'Uføretrygd',
 				items: [
@@ -1880,7 +1887,7 @@ const mapPensjon = (bestillingData, data) => {
 					obj('Uføregrad', uforetrygd.uforegrad ? `${uforetrygd.uforegrad}%` : null),
 					obj('Saksbehandler', uforetrygd.saksbehandler),
 					obj('Attesterer', uforetrygd.attesterer),
-					obj('NAV-enhet', uforetrygd.navEnhetId),
+					obj('NAV-enhet', navEnhetLabel || uforetrygd.navEnhetId),
 				],
 			}
 			data.push(pensjonforvalterUforetrygd)

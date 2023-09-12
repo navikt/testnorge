@@ -9,6 +9,7 @@ import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { formatDate, showLabel } from '@/utils/DataFormatter'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import styled from 'styled-components'
+import { useNavEnheter } from '@/utils/hooks/useNorg2'
 
 const BarnetilleggSamlet = styled.div`
 	margin: 0 0 15px 0;
@@ -49,6 +50,10 @@ const BarnetilleggInntektVisning = ({ data, tittel }) => {
 }
 
 const DataVisning = ({ data }) => {
+	const { navEnheter } = useNavEnheter()
+	const navEnhetLabel = navEnheter?.find((enhet) => enhet.value === data?.navEnhetId?.toString())
+		?.label
+
 	return (
 		<>
 			<div className="person-visning_content">
@@ -77,7 +82,7 @@ const DataVisning = ({ data }) => {
 				<TitleValue title="Uføregrad" value={data?.uforegrad ? `${data?.uforegrad}%` : null} />
 				<TitleValue title="Saksbehandler" value={data?.saksbehandler} />
 				<TitleValue title="Attesterer" value={data?.attesterer} />
-				<TitleValue title="NAV-enhet" value={data?.navEnhetId} />
+				<TitleValue title="NAV-enhet" value={navEnhetLabel || data?.navEnhetId} />
 			</div>
 		</>
 	)
