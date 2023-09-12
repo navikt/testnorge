@@ -112,7 +112,7 @@ public class KontaktAdresseService extends AdresseService<KontaktadresseDTO, Per
         if (nonNull(kontaktadresse.getVegadresse())) {
             var vegadresse =
                     adresseServiceConsumer.getVegadresse(kontaktadresse.getVegadresse(), kontaktadresse.getAdresseIdentifikatorFraMatrikkelen());
-            kontaktadresse.setAdresseIdentifikatorFraMatrikkelen(kontaktadresse.getMaster() == Master.FREG ? vegadresse.getMatrikkelId() : null);
+            kontaktadresse.setAdresseIdentifikatorFraMatrikkelen(vegadresse.getMatrikkelId());
             mapperFacade.map(vegadresse, kontaktadresse.getVegadresse());
             kontaktadresse.getVegadresse().setKommunenummer(null);
 
