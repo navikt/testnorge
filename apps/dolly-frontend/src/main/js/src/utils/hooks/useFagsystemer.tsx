@@ -107,7 +107,7 @@ export const useTransaksjonidData = (
 	)
 
 	const getMiljoData = () => {
-		if (!harBestilling) {
+		if (!harBestilling || !data) {
 			return null
 		}
 		const miljoData = []
