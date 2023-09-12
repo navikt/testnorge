@@ -153,7 +153,7 @@ public class PensjonData {
         private UforeType minimumInntektForUforhetType;
         private String saksbehandler;
         private String attesterer;
-        private Integer navEnhetId;
+        private String navEnhetId;
         private Barnetillegg barnetilleggDetaljer;
     }
 
