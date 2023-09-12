@@ -10,6 +10,7 @@ import { formatDate, showLabel } from '@/utils/DataFormatter'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import styled from 'styled-components'
 import { useNavEnheter } from '@/utils/hooks/useNorg2'
+import { usePensjonVedtak } from '@/utils/hooks/usePensjon'
 
 const BarnetilleggSamlet = styled.div`
 	margin: 0 0 15px 0;
@@ -49,14 +50,17 @@ const BarnetilleggInntektVisning = ({ data, tittel }) => {
 	)
 }
 
-const DataVisning = ({ data }) => {
+const DataVisning = ({ data, miljo }) => {
 	const { navEnheter } = useNavEnheter()
 	const navEnhetLabel = navEnheter?.find((enhet) => enhet.value === data?.navEnhetId?.toString())
 		?.label
 
+	const { vedtakData } = usePensjonVedtak(data?.fnr, miljo)
+
 	return (
 		<>
 			<div className="person-visning_content">
+				<TitleValue title="Vedtaksstatus" value={vedtakData?.[0]?.vedtakStatus} />
 				<TitleValue title="Krav fremsatt dato" value={formatDate(data?.kravFremsattDato)} />
 				<TitleValue title="Ønsket virkningsdato" value={formatDate(data?.onsketVirkningsDato)} />
 				<TitleValue title="Uføretidspunkt" value={formatDate(data?.uforetidspunkt)} />
