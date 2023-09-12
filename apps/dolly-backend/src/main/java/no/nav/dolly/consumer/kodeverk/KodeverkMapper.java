@@ -32,6 +32,16 @@ public class KodeverkMapper {
                         .name(kodeverkNavn)
                         .koder(extractKoderFromBetydninger(betydning))
                         .build())
+                .doOnNext(kor24Adjustment -> {
+                    if ("Kommuner".equals(kodeverkNavn)) {
+                        kor24Adjustment.getKoder()
+                                .forEach(kode -> {
+                                    if (Kor2024NyeKommuner.isNewKommune(kode.getValue())) {
+                                        kode.setLabel(kode.getLabel() + " <--- nytt");
+                                    }
+                                });
+                    }
+                })
                 .cache(Duration.ofHours(9));
     }
 
