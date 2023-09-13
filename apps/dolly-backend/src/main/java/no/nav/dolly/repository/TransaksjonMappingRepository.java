@@ -13,11 +13,11 @@ public interface TransaksjonMappingRepository extends CrudRepository<Transaksjon
 
     Optional<List<TransaksjonMapping>> findAllBySystemAndIdent(String system, String ident);
 
-    @Query(value = "from TransaksjonMapping t where (:bestillingId is null or " +
-            "t.bestillingId is null or " +
-            "(t.bestillingId is not null and t.bestillingId=:bestillingId)) and " +
-            "t.ident=:ident")
-    Optional<List<TransaksjonMapping>> findAllByBestillingIdAndIdent(@Param("bestillingId") Long bestillingId, @Param("ident") String ident);
+    @Query(value = "from TransaksjonMapping t " +
+            " where t.ident=:ident" +
+            " and (:bestillingId is null " +
+            " or (t.bestillingId is not null and t.bestillingId=:bestillingId))")
+    List<TransaksjonMapping> findAllByBestillingIdAndIdent(@Param("bestillingId") Long bestillingId, @Param("ident") String ident);
 
     @Modifying
     int deleteAllByIdent(String ident);
