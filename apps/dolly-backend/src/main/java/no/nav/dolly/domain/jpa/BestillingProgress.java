@@ -115,6 +115,9 @@ public class BestillingProgress implements Serializable {
     @Column(name = "PDL_PERSON_STATUS")
     private String pdlPersonStatus;
 
+    @Column(name = "TPS_SYNC_STATUS")
+    private String tpsSyncStatus;
+
     @Column(name = "ARBEIDSPLASSENCV_STATUS")
     private String arbeidsplassenCVStatus;
 
@@ -124,6 +127,9 @@ public class BestillingProgress implements Serializable {
 
     @Transient
     private boolean isPdlSync;
+
+    @Transient
+    private boolean isTpsSync;
 
     private String feil;
 
