@@ -7,6 +7,7 @@ import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.personservice.PersonServiceClient;
+import no.nav.dolly.bestilling.tpsmessagingservice.service.TpsPersonService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
@@ -37,6 +38,8 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
     private final PersonServiceClient personServiceClient;
     private final MapperFacade mapperFacade;
 
+    private final TpsPersonService tpsPersonService;
+
     public OpprettPersonerByKriterierService(
             IdentService identService,
             BestillingService bestillingService,
@@ -47,7 +50,8 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
             ErrorStatusDecoder errorStatusDecoder,
             PdlDataConsumer pdlDataConsumer,
             TransactionHelperService transactionHelperService,
-            PersonServiceClient personServiceClient) {
+            PersonServiceClient personServiceClient,
+            TpsPersonService tpsPersonService) {
         super(
                 identService,
                 bestillingService,
@@ -60,6 +64,7 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
         );
         this.personServiceClient = personServiceClient;
         this.mapperFacade = mapperFacade;
+        this.tpsPersonService = tpsPersonService;
     }
 
     @Async
@@ -91,12 +96,14 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                                                                     .map(ClientFuture::get)
                                                                     .filter(BestillingProgress::isPdlSync)
                                                                     .flatMap(pdlSync -> Flux.concat(
-                                                                                    gjenopprettKlienter(dollyPerson, bestKriterier,
-                                                                                            fase2Klienter(),
-                                                                                            progress, true),
-                                                                                    gjenopprettKlienter(dollyPerson, bestKriterier,
-                                                                                            fase3Klienter(),
-                                                                                            progress, true))))))
+                                                                            tpsPersonService.syncPerson(dollyPerson, bestKriterier, progress)
+                                                                                    .map(ClientFuture::get),
+                                                                            gjenopprettKlienter(dollyPerson, bestKriterier,
+                                                                                    fase2Klienter(),
+                                                                                    progress, true),
+                                                                            gjenopprettKlienter(dollyPerson, bestKriterier,
+                                                                                    fase3Klienter(),
+                                                                                    progress, true))))))
                                             .onErrorResume(throwable -> {
                                                 var error = errorStatusDecoder.getErrorText(
                                                         WebClientFilter.getStatus(throwable), WebClientFilter.getMessage(throwable));

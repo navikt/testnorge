@@ -27,8 +27,8 @@ public final class BestillingTpsPersonStatusMapper {
         Map<String, Map<String, Set<String>>> statusEnvIdents = new HashMap<>();
 
         progressList.forEach(progress -> {
-            if (isNotBlank(progress.getInstdataStatus())) {
-                List.of(progress.getInstdataStatus().split(",")).forEach(status -> {
+            if (isNotBlank(progress.getTpsSyncStatus())) {
+                List.of(progress.getTpsSyncStatus().split(",")).forEach(status -> {
                     var environErrMsg = status.split(":", 2);
                     var environ = environErrMsg[0];
                     if (environErrMsg.length > 1 && isNotBlank(environErrMsg[1]) && isNotBlank(progress.getIdent())) {

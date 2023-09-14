@@ -128,9 +128,6 @@ public class BestillingProgress implements Serializable {
     @Transient
     private boolean isPdlSync;
 
-    @Transient
-    private boolean isTpsSync;
-
     private String feil;
 
     public BestillingProgress(Bestilling bestilling, String ident, Master master) {
