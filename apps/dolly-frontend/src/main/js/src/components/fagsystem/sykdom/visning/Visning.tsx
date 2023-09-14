@@ -6,6 +6,9 @@ import { Sykemelding, SykemeldingDetaljert, SykemeldingSynt } from '../Sykemeldi
 import { erGyldig } from '@/components/transaksjonid/GyldigeBestillinger'
 import { Alert } from '@navikt/ds-react'
 import React from 'react'
+import { MiljoTabs } from '@/components/ui/miljoTabs/MiljoTabs'
+import { useBestilteMiljoer } from '@/utils/hooks/useBestilling'
+import Loading from '@/components/ui/loading/Loading'
 
 export const sjekkManglerSykemeldingData = (sykemeldingData) => {
 	return (
@@ -19,6 +22,36 @@ export const sjekkManglerSykemeldingBestilling = (sykemeldingBestilling) => {
 	return !sykemeldingBestilling || sykemeldingBestilling?.length < 1
 }
 
+const VisningAvBestilling = ({ bestillinger }) => {
+	return bestillinger.map((bestilling: SykemeldingSynt | SykemeldingDetaljert, idx: number) => {
+		if (!bestilling.erGjenopprettet) {
+			const syntSykemelding = _.get(bestilling, 'data.sykemelding.syntSykemelding')
+			const detaljertSykemelding = _.get(bestilling, 'data.sykemelding.detaljertSykemelding')
+
+			return syntSykemelding ? (
+				<SyntSykemelding sykemelding={syntSykemelding} idx={idx} key={idx} />
+			) : detaljertSykemelding ? (
+				<DetaljertSykemelding sykemelding={detaljertSykemelding} idx={idx} key={idx} />
+			) : null
+		}
+	})
+}
+
+const VisningAvTransaksjonsId = ({ data }) => {
+	if (!data) {
+		return null
+	}
+
+	const syntSykemelding = _.get(data, 'syntSykemeldingRequest')
+	const detaljertSykemelding = _.get(data, 'detaljertSykemeldingRequest')
+
+	return syntSykemelding ? (
+		<SyntSykemelding sykemelding={syntSykemelding} />
+	) : detaljertSykemelding ? (
+		<DetaljertSykemelding sykemelding={detaljertSykemelding} />
+	) : null
+}
+
 export const SykemeldingVisning = ({
 	data,
 	loading,
@@ -26,18 +59,29 @@ export const SykemeldingVisning = ({
 	tilgjengeligMiljoe,
 	bestillinger,
 }: Sykemelding) => {
-	// Viser foreløpig bestillingsdata
-	// if ((!data || data.length < 1) && (!bestillinger || bestillinger.length < 1)) {
-	// 	return null
-	// }
-	console.log('data: ', data) //TODO - SLETT MEG
-	console.log('bestillinger: ', bestillinger) //TODO - SLETT MEG
+	const { bestilteMiljoer } = useBestilteMiljoer(bestillingIdListe, 'SYKEMELDING')
+
+	if (loading) {
+		return <Loading label="Laster sykemelding-data" />
+	}
+
 	if (!data && !bestillinger) {
 		return null
 	}
 
 	const manglerFagsystemData =
 		sjekkManglerSykemeldingData(data) && sjekkManglerSykemeldingBestilling(bestillinger)
+
+	const miljoerMedData = data?.map((miljoData) => miljoData.data && miljoData.miljo)
+	const errorMiljoer = bestilteMiljoer?.filter((miljo) => !miljoerMedData?.includes(miljo))
+
+	const forsteMiljo = data?.find((miljoData) => miljoData?.data)?.miljo
+
+	const filteredData =
+		tilgjengeligMiljoe && data?.filter((item) => item.miljo === tilgjengeligMiljoe)
+
+	console.log('data: ', data) //TODO - SLETT MEG
+	console.log('bestillinger: ', bestillinger) //TODO - SLETT MEG
 
 	return (
 		<div>
@@ -46,18 +90,17 @@ export const SykemeldingVisning = ({
 				<Alert variant={'warning'} size={'small'} inline style={{ marginBottom: '20px' }}>
 					Fant ikke sykemelding-data på person
 				</Alert>
+			) : sjekkManglerSykemeldingData(data) ? (
+				<VisningAvBestilling bestillinger={bestillinger} />
 			) : (
-				// TODO: Fortsett her - sjekk manglerSykemeldingData og vis evt på gammel måte, ellers miljøvisning
-				data.map((item: SykemeldingSynt | SykemeldingDetaljert, idx: number) => {
-					const syntSykemelding = _.get(item, 'data.syntSykemeldingRequest')
-					const detaljertSykemelding = _.get(item, 'data.detaljertSykemeldingRequest')
-
-					return syntSykemelding ? (
-						<SyntSykemelding sykemelding={syntSykemelding} idx={idx} key={idx} />
-					) : detaljertSykemelding ? (
-						<DetaljertSykemelding sykemelding={detaljertSykemelding} idx={idx} key={idx} />
-					) : null
-				})
+				<MiljoTabs
+					bestilteMiljoer={bestilteMiljoer}
+					errorMiljoer={errorMiljoer}
+					forsteMiljo={forsteMiljo}
+					data={filteredData ? filteredData : data}
+				>
+					<VisningAvTransaksjonsId />
+				</MiljoTabs>
 			)}
 		</div>
 	)
@@ -67,7 +110,7 @@ SykemeldingVisning.filterValues = (bestillinger: Array<Sykemelding>, ident: stri
 	if (!bestillinger) {
 		return null
 	}
-	console.log('bestillinger: ', bestillinger) //TODO - SLETT MEG
+
 	return bestillinger.filter(
 		(bestilling: any) =>
 			bestilling.data.sykemelding && erGyldig(bestilling.id, 'SYKEMELDING', ident),

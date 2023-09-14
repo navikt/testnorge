@@ -14,10 +14,6 @@ export const erGyldig = (bestillingId: number, system: string, ident: string) =>
 		const response: Bestilling = await DollyApi.getTransaksjonid(system, ident, bestillingId)
 		return response.data
 	}, [])
-	console.log('finnBestilling: ', finnBestilling) //TODO - SLETT MEG
-	return (
-		finnBestilling.value && finnBestilling.value.length > 0
-		// &&
-		// finnBestilling.value[0].status === 'OK'
-	)
+
+	return finnBestilling.value && finnBestilling.value.length > 0
 }

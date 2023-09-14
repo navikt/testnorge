@@ -231,15 +231,16 @@ export default ({
 		if (instData && sjekkManglerInstData(instData)) {
 			return true
 		}
-		if (
-			(sykemeldingData && sjekkManglerSykemeldingData(sykemeldingData)) ||
-			(harSykemeldingBestilling(bestillingerFagsystemer) &&
-				sjekkManglerSykemeldingBestilling(
-					SykemeldingVisning.filterValues(bestillingListe, ident.ident),
-				))
-		) {
-			return true
-		}
+		//TODO: Denne får visningen til å feile :sadpanda:
+		// if (
+		// 	(sykemeldingData && sjekkManglerSykemeldingData(sykemeldingData)) ||
+		// 	(harSykemeldingBestilling(bestillingerFagsystemer) &&
+		// 		sjekkManglerSykemeldingBestilling(
+		// 			SykemeldingVisning.filterValues(bestillingListe, ident.ident),
+		// 		))
+		// ) {
+		// 	return true
+		// }
 
 		return false
 	}
