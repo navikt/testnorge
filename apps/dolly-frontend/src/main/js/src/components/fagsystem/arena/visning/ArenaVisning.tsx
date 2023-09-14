@@ -112,7 +112,7 @@ export const ArenaVisning = ({ data, ident, bestillingIdListe, loading, tilgjeng
 	if (loading || tagsloading) {
 		return <Loading label="Laster arena-data" />
 	}
-	if (!data && !harArenasyntTag) {
+	if (!data) {
 		return null
 	}
 
