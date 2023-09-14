@@ -111,6 +111,44 @@ export const useApData = (ident, harApBestilling) => {
 	}
 }
 
+export const useTransaksjonidData = (
+	ident,
+	system,
+	harBestilling,
+	fagsystemMiljoer = null,
+	fagsystemLoading = false,
+) => {
+	const { data, isLoading, error } = useSWR<any, Error>(
+		harBestilling ? `/dolly-backend/api/v1/transaksjonid?ident=${ident}&system=${system}` : null,
+		fetcher,
+	)
+
+	const getMiljoData = () => {
+		if (!harBestilling || !data) {
+			return null
+		}
+		const miljoData = []
+		if (fagsystemMiljoer && fagsystemMiljoer.length > 0) {
+			fagsystemMiljoer.map((miljo) => {
+				const fagsystemData = data?.find((d) => d?.miljoe === miljo)?.transaksjonId
+				miljoData.push({ data: fagsystemData, miljo: miljo })
+			})
+		} else {
+			data?.map((m) => {
+				miljoData.push({ data: m.transaksjonId, miljo: m.miljoe })
+			})
+		}
+		return miljoData
+	}
+	const miljoData = getMiljoData()
+
+	return {
+		data: miljoData?.sort((a, b) => a.miljo?.localeCompare(b.miljo)),
+		loading: fagsystemLoading || isLoading,
+		error: error,
+	}
+}
+
 export const useInstData = (ident, harInstBestilling) => {
 	const { instEnvironments } = useInstEnvironments()
 

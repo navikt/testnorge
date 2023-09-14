@@ -52,7 +52,7 @@ export default ({
 		'personer',
 		sidetall,
 		sideStoerrelse,
-		update
+		update,
 	)
 
 	const { bestillingerById, loading: loadingBestillinger } = useIkkeFerdigBestillingerGruppe(
@@ -60,9 +60,9 @@ export default ({
 		visning,
 		sidetall,
 		sideStoerrelse,
-		update
+		update,
 	)
-
+	// console.log('bestillingerById: ', bestillingerById) //TODO - SLETT MEG
 	const {
 		gruppe,
 		identer,
@@ -70,7 +70,7 @@ export default ({
 		// @ts-ignore
 	} = useGruppeById(gruppeId, sidetall, sideStoerrelse, false, sorting?.kolonne, sorting?.retning)
 	const [startBestillingAktiv, visStartBestilling, skjulStartBestilling] = useBoolean(false)
-
+	// console.log('gruppe: ', gruppe) //TODO - SLETT MEG
 	const dispatch = useDispatch()
 	const navigate = useNavigate()
 

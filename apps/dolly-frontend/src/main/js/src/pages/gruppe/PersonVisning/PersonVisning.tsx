@@ -47,6 +47,7 @@ import {
 	useInstData,
 	usePoppData,
 	useTpData,
+	useTransaksjonidData,
 } from '@/utils/hooks/useFagsystemer'
 import { sjekkManglerTpData } from '@/components/fagsystem/tjenestepensjon/visning/TpVisning'
 import { sjekkManglerInstData } from '@/components/fagsystem/inst/visning/InstVisning'
@@ -60,6 +61,7 @@ import {
 	harInstBestilling,
 	harMedlBestilling,
 	harPoppBestilling,
+	harSykemeldingBestilling,
 	harTpBestilling,
 } from '@/utils/SjekkBestillingFagsystem'
 import {
@@ -72,6 +74,10 @@ import _has from 'lodash/has'
 import { MedlVisning } from '@/components/fagsystem/medl/visning'
 import { useMedlPerson } from '@/utils/hooks/useMedl'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
+import {
+	sjekkManglerSykemeldingBestilling,
+	sjekkManglerSykemeldingData,
+} from '@/components/fagsystem/sykdom/visning/Visning'
 
 const getIdenttype = (ident) => {
 	if (parseInt(ident.charAt(0)) > 3) {
@@ -176,6 +182,12 @@ export default ({
 		harApBestilling(bestillingerFagsystemer),
 	)
 
+	const { loading: loadingSykemeldingData, data: sykemeldingData } = useTransaksjonidData(
+		ident.ident,
+		'SYKEMELDING',
+		harSykemeldingBestilling(bestillingerFagsystemer),
+	)
+
 	const getGruppeIdenter = () => {
 		return useAsync(async () => DollyApi.getGruppeById(gruppeId), [DollyApi.getGruppeById])
 	}
@@ -217,6 +229,15 @@ export default ({
 			return true
 		}
 		if (instData && sjekkManglerInstData(instData)) {
+			return true
+		}
+		if (
+			(sykemeldingData && sjekkManglerSykemeldingData(sykemeldingData)) ||
+			(harSykemeldingBestilling(bestillingerFagsystemer) &&
+				sjekkManglerSykemeldingBestilling(
+					SykemeldingVisning.filterValues(bestillingListe, ident.ident),
+				))
+		) {
 			return true
 		}
 
@@ -406,7 +427,18 @@ export default ({
 					ident={ident}
 					tilgjengeligMiljoe={tilgjengeligMiljoe}
 				/>
-				<SykemeldingVisning data={SykemeldingVisning.filterValues(bestillingListe, ident.ident)} />
+				{/*<SykemeldingVisning data={SykemeldingVisning.filterValues(bestillingListe, ident.ident)} />*/}
+				<SykemeldingVisning
+					data={sykemeldingData}
+					loading={loadingSykemeldingData}
+					bestillingIdListe={bestillingIdListe}
+					tilgjengeligMiljoe={tilgjengeligMiljoe}
+					bestillinger={
+						harSykemeldingBestilling(bestillingerFagsystemer)
+							? SykemeldingVisning.filterValues(bestillingListe, ident.ident)
+							: null
+					}
+				/>
 				<BrregVisning data={brregstub} loading={loading.brregstub} />
 				<InstVisning
 					data={instData}

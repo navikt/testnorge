@@ -20,7 +20,7 @@ import { CypressSelector } from '../../../../cypress/mocks/Selectors'
 import PersonVisningConnector from '@/pages/gruppe/PersonVisning/PersonVisningConnector'
 
 const PersonIBrukButtonConnector = React.lazy(
-	() => import('@/components/ui/button/PersonIBrukButton/PersonIBrukButtonConnector')
+	() => import('@/components/ui/button/PersonIBrukButton/PersonIBrukButtonConnector'),
 )
 
 const ikonTypeMap = {
@@ -52,10 +52,11 @@ export default function PersonListe({
 	const [identListe, setIdentListe] = useState([])
 	const dispatch = useDispatch()
 	const { bestillingerById: bestillingStatuser } = useBestillingerGruppe(gruppeInfo.id)
+	// console.log('bestillingerById: ', bestillingerById) //TODO - SLETT MEG
 
 	const personListe = useMemo(
 		() => sokSelector(selectPersonListe(identer, bestillingStatuser, fagsystem), search),
-		[identer, search, fagsystem, bestillingStatuser, visPerson]
+		[identer, search, fagsystem, bestillingStatuser, visPerson],
 	)
 
 	useEffect(() => {
@@ -245,7 +246,7 @@ export default function PersonListe({
 
 	const onHeaderClick = (value) => {
 		const activeColumn = columns.filter(
-			(column) => column.headerCssClass !== undefined && column.text === value
+			(column) => column.headerCssClass !== undefined && column.text === value,
 		)
 
 		if (!activeColumn || !activeColumn.length) {

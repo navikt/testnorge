@@ -177,17 +177,17 @@ export const DetaljertSykemelding = ({ formikBag }: SykemeldingForm) => {
 					<FormikTextInput
 						name="sykemelding.detaljertSykemelding.detaljer.tiltakNav"
 						label="Tiltak fra Nav"
-						size="large"
+						size="xlarge"
 					/>
 					<FormikTextInput
 						name="sykemelding.detaljertSykemelding.detaljer.tiltakArbeidsplass"
 						label="Tiltak på arbeidsplass"
-						size="large"
+						size="xlarge"
 					/>
 					<FormikTextInput
 						name="sykemelding.detaljertSykemelding.detaljer.beskrivHensynArbeidsplassen"
 						label="Hensyn på arbeidsplass"
-						size="large"
+						size="xlarge"
 					/>
 					<FormikCheckbox
 						name="sykemelding.detaljertSykemelding.detaljer.arbeidsforEtterEndtPeriode"
