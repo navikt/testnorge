@@ -39,7 +39,7 @@ import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 @Service
 public class PdlPersonConsumer implements ConsumerStatus {
 
-    private static final int BLOCK_SIZE = 50;
+    private static final int BLOCK_SIZE = 100;
     private static final int MAX_RETRIES = 3;
     private final TokenExchange tokenService;
     private final ServerProperties serviceProperties;
@@ -77,6 +77,12 @@ public class PdlPersonConsumer implements ConsumerStatus {
     public Flux<PdlPersonBolk> getPdlPersoner(List<String> identer) {
 
         return getPdlPersoner(identer, new AtomicInteger(0));
+    }
+
+    @Timed(name = "providers", tags = {"operation", "pdl_getPersoner"})
+    public Flux<PdlPersonBolk> getPdlPersonerNoRetries(List<String> identer) {
+
+        return getPdlPersoner(identer, new AtomicInteger(MAX_RETRIES));
     }
 
     @Timed(name = "providers", tags = {"operation", "pdl_getPersoner"})

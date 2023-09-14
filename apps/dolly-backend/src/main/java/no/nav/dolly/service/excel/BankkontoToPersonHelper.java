@@ -10,10 +10,8 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import static java.util.Objects.isNull;
-import static no.nav.dolly.service.excel.ExcelUtil.BANKKONTO_COL_WIDTHS;
-import static no.nav.dolly.service.excel.ExcelUtil.BANKKONTO_FANE;
-import static no.nav.dolly.service.excel.ExcelUtil.BANKKONTO_HEADER;
-import static no.nav.dolly.service.excel.ExcelUtil.PERSON_FANE;
+import static java.util.Objects.nonNull;
+import static no.nav.dolly.service.excel.ExcelUtil.*;
 
 @UtilityClass
 public class BankkontoToPersonHelper {
@@ -64,14 +62,16 @@ public class BankkontoToPersonHelper {
             var ident = formatter.formatCellValue(bankDataRow.getCell(0));
             var personDataMatchRow = getPersonDataRow(personData, ident);
 
-            for (int j = 1; j < relativeEndColumn; j++) {
+            if (nonNull(personDataMatchRow)) {
+                for (int j = 1; j < relativeEndColumn; j++) {
 
-                var dataCell = personDataMatchRow.createCell(startColumn + j);
-                var dataValue = formatter.formatCellValue(bankDataRow.getCell(j));
+                    var dataCell = personDataMatchRow.createCell(startColumn + j);
+                    var dataValue = formatter.formatCellValue(bankDataRow.getCell(j));
 
-                dataCell.setCellValue(dataValue);
-                if (dataValue.contains(",") || dataValue.length() > 25) {
-                    dataCell.setCellStyle(wrapStyle);
+                    dataCell.setCellValue(dataValue);
+                    if (dataValue.contains(",") || dataValue.length() > 25) {
+                        dataCell.setCellStyle(wrapStyle);
+                    }
                 }
             }
         }

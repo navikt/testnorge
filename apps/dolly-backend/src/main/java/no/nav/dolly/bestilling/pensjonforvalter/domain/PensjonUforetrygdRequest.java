@@ -24,7 +24,7 @@ public class PensjonUforetrygdRequest {
     private UforeType minimumInntektForUforhetType;
     private String saksbehandler;
     private String attesterer;
-    private Integer navEnhetId;
+    private String navEnhetId;
     private Barnetillegg barnetilleggDetaljer;
     private List<String> miljoer;
 

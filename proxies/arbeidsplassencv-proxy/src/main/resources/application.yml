@@ -31,5 +31,5 @@ consumer:
   fakedings-token-provider:
     name: fakedings
     namespace: plattformsikkerhet
-    url: https://fakedings.dev-gcp.nais.io
+    url: https://fakedings.intern.dev.nav.no
     cluster: dev-fss

@@ -8,6 +8,7 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.inntektsmelding.domain.InntektsmeldingRequest;
+import no.nav.dolly.bestilling.inntektsmelding.domain.TransaksjonMappingDTO;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.TransaksjonMapping;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
@@ -96,7 +97,10 @@ public class InntektsmeldingClient implements ClientRegister {
                                             .map(dokument -> TransaksjonMapping.builder()
                                                     .ident(inntektsmeldingRequest.getArbeidstakerFnr())
                                                     .bestillingId(bestillingid)
-                                                    .transaksjonId(toJson(dokument))
+                                                    .transaksjonId(toJson(TransaksjonMappingDTO.builder()
+                                                            .request(inntektsmeldingRequest)
+                                                            .dokument(dokument)
+                                                            .build()))
                                                     .datoEndret(LocalDateTime.now())
                                                     .miljoe(inntektsmeldingRequest.getMiljoe())
                                                     .system(INNTKMELD.name())

@@ -9,7 +9,6 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.domain.jpa.TransaksjonMapping;
 import no.nav.dolly.mapper.MappingStrategy;
-import no.nav.dolly.service.RsTransaksjonMapping.TransaksjonId;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -21,17 +20,18 @@ public class TransaksjonIdMappingStrategy implements MappingStrategy {
 
     @Override
     public void register(MapperFactory factory) {
-        factory.classMap(TransaksjonMapping.class, RsTransaksjonMapping.class).customize(new CustomMapper<TransaksjonMapping, RsTransaksjonMapping>() {
-            @Override
-            public void mapAtoB(TransaksjonMapping transaksjonMapping, RsTransaksjonMapping rsTransaksjonMapping, MappingContext context) {
+        factory.classMap(TransaksjonMapping.class, RsTransaksjonMapping.class).customize(new CustomMapper<>() {
+                    @Override
+                    public void mapAtoB(TransaksjonMapping kilde, RsTransaksjonMapping destinasjon, MappingContext context) {
 
-                try {
-                    rsTransaksjonMapping.setTransaksjonId(objectMapper.readValue(transaksjonMapping.getTransaksjonId(), TransaksjonId.class));
-                } catch (JsonProcessingException e) {
-                    log.error("TransaksjonMapping feilet: ", e);
-                }
-            }
-        })
+                        try {
+                            destinasjon.setTransaksjonId(objectMapper.readTree(kilde.getTransaksjonId()));
+                        } catch (JsonProcessingException e) {
+                            log.error("Feilet å konvertere {} til JsonNode", kilde.getTransaksjonId());
+                        }
+                    }
+                })
+                .exclude("transaksjonId")
                 .byDefault()
                 .register();
     }

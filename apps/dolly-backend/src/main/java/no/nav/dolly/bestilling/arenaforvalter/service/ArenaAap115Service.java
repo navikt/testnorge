@@ -63,9 +63,9 @@ public class ArenaAap115Service {
                                         "OK" :
                                         encodeStatus(ArenaUtils.AVSLAG + nyAap115.getBegrunnelse()))
                                 .collect(Collectors.joining()),
-                        Flux.fromIterable(response.getNyeAapFeilList())
+                        Flux.fromIterable(response.getNyeAap115FeilList())
                                 .map(aap115Feil ->
-                                        encodeStatus(String.format(ArenaUtils.STATUS_FMT, aap115Feil.getNyAapFeilstatus(), aap115Feil.getMelding())))
+                                        encodeStatus(String.format(ArenaUtils.STATUS_FMT, aap115Feil.getNyAap115Feilstatus(), aap115Feil.getMelding())))
                                 .collect(Collectors.joining()))
 
                 .collect(Collectors.joining());

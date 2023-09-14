@@ -2,6 +2,7 @@ package no.nav.pdl.forvalter.consumer.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.pdl.forvalter.utils.Kor2024KommuneEndringer;
 import no.nav.pdl.forvalter.utils.WebClientFilter;
 import no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO;
 import org.springframework.http.HttpHeaders;
@@ -15,6 +16,7 @@ import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,6 +55,7 @@ public class VegadresseServiceCommand implements Callable<Mono<VegadresseDTO[]>>
     @Override
     public Mono<VegadresseDTO[]> call() {
 
+
         return webClient
                 .get()
                 .uri(builder -> builder.path(ADRESSER_VEG_URL).queryParams(getQuery()).build())
@@ -61,6 +64,13 @@ public class VegadresseServiceCommand implements Callable<Mono<VegadresseDTO[]>>
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToMono(VegadresseDTO[].class)
+                .doOnNext(vegadresser -> Arrays.stream(vegadresser)
+                        .forEach(vegadresse -> {
+                            vegadresse.setKommunenummer(isNotBlank(query.getKommunenummer()) ?
+                                    query.getKommunenummer() : vegadresse.getKommunenummer());
+                            vegadresse.setMatrikkelId(Kor2024KommuneEndringer.isGmlKommune(query, vegadresse) ?
+                                    vegadresse.getMatrikkelId() : null);
+                        }))
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException))
                 .onErrorResume(throwable -> throwable instanceof WebClientResponseException.NotFound ||
@@ -77,7 +87,8 @@ public class VegadresseServiceCommand implements Callable<Mono<VegadresseDTO[]>>
                                 "husnummer", filterArtifact(query.getHusnummer()),
                                 "husbokstav", filterArtifact(query.getHusbokstav()),
                                 "postnummer", filterArtifact(query.getPostnummer()),
-                                "kommunenummer", filterArtifact(query.getKommunenummer()),
+                                "kommunenummer", filterArtifact(isNotBlank(query.getKommunenummer()) ?
+                                        Kor2024KommuneEndringer.getKommuneNummer(query.getKommunenummer()) : null),
                                 "bydelsnummer", filterArtifact(query.getBydelsnummer()),
                                 "tilleggsnavn", filterArtifact(query.getTilleggsnavn()))
                         .entrySet().stream()

@@ -21,6 +21,7 @@ import no.nav.dolly.domain.resultset.SystemTyper;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
+import no.nav.dolly.mapper.MappingContextUtils;
 import no.nav.dolly.service.TransaksjonMappingService;
 import no.nav.dolly.util.IdentTypeUtil;
 import no.nav.dolly.util.TransactionHelperService;
@@ -322,7 +323,7 @@ public class PensjonforvalterClient implements ClientRegister {
 
                             if (isOpprettEndre || !transaksjonMappingService.existAlready(PEN_UT, ident, miljoe)) {
 
-                                var context = new MappingContext.Factory().getContext();
+                                var context = MappingContextUtils.getMappingContext();
                                 context.setProperty(IDENT, ident);
                                 context.setProperty(MILJOER, List.of(miljoe));
                                 context.setProperty("persondata", persondata);
@@ -359,7 +360,7 @@ public class PensjonforvalterClient implements ClientRegister {
 
     private void saveAPTransaksjonId(String ident, String miljoe, Long bestillingId, SystemTyper type, Object vedtak) {
 
-        log.info("lagrer transaksjon for {} i {} ", ident, miljoe);
+        log.info("Lagrer transaksjon for {} i {} ", ident, miljoe);
 
         transaksjonMappingService.save(
                 TransaksjonMapping.builder()
