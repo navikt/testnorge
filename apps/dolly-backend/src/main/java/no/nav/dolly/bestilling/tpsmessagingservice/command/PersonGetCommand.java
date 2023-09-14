@@ -7,9 +7,8 @@ import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PersonMiljoeDTO;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
-import reactor.util.retry.Retry;
+import reactor.core.publisher.Mono;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -36,8 +35,10 @@ public class PersonGetCommand implements Callable<Flux<PersonMiljoeDTO>> {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToFlux(PersonMiljoeDTO.class)
-                .doOnError(WebClientFilter::logErrorMessage)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
+                .onErrorResume(throwable -> Mono.just(PersonMiljoeDTO.builder()
+                        .status("FEIL")
+                        .melding(WebClientFilter.getStatus(throwable).getReasonPhrase())
+                        .utfyllendeMelding(WebClientFilter.getMessage(throwable))
+                        .build()));
     }
 }

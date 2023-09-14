@@ -37,7 +37,6 @@ public class GjenopprettBestillingService extends DollyBestillingService {
 
     private final BestillingProgressService bestillingProgressService;
     private final PersonServiceClient personServiceClient;
-    private final TpsPersonService tpsPersonService;
 
     public GjenopprettBestillingService(
             IdentService identService,
@@ -59,11 +58,11 @@ public class GjenopprettBestillingService extends DollyBestillingService {
                 counterCustomRegistry,
                 pdlDataConsumer,
                 errorStatusDecoder,
-                transactionHelperService
+                transactionHelperService,
+                tpsPersonService
         );
         this.bestillingProgressService = bestillingProgressService;
         this.personServiceClient = personServiceClient;
-        this.tpsPersonService = tpsPersonService;
     }
 
     @Async
@@ -94,7 +93,7 @@ public class GjenopprettBestillingService extends DollyBestillingService {
                                                             .map(ClientFuture::get)
                                                             .filter(BestillingProgress::isPdlSync)
                                                             .flatMap(pdlSync -> Flux.concat(
-                                                                    tpsPersonService.syncPerson(dollyPerson, bestKriterier, progress)
+                                                                    tpsPersonService.syncPerson(bestKriterier, progress, false)
                                                                             .map(ClientFuture::get),
                                                                     gjenopprettKlienter(dollyPerson, bestKriterier,
                                                                             fase2Klienter(),

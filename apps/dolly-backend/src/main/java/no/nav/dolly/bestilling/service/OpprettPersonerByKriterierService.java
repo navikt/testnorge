@@ -38,8 +38,6 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
     private final PersonServiceClient personServiceClient;
     private final MapperFacade mapperFacade;
 
-    private final TpsPersonService tpsPersonService;
-
     public OpprettPersonerByKriterierService(
             IdentService identService,
             BestillingService bestillingService,
@@ -60,11 +58,11 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                 counterCustomRegistry,
                 pdlDataConsumer,
                 errorStatusDecoder,
-                transactionHelperService
+                transactionHelperService,
+                tpsPersonService
         );
         this.personServiceClient = personServiceClient;
         this.mapperFacade = mapperFacade;
-        this.tpsPersonService = tpsPersonService;
     }
 
     @Async
@@ -96,7 +94,7 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                                                                     .map(ClientFuture::get)
                                                                     .filter(BestillingProgress::isPdlSync)
                                                                     .flatMap(pdlSync -> Flux.concat(
-                                                                            tpsPersonService.syncPerson(dollyPerson, bestKriterier, progress)
+                                                                            tpsPersonService.syncPerson(bestKriterier, progress, true)
                                                                                     .map(ClientFuture::get),
                                                                             gjenopprettKlienter(dollyPerson, bestKriterier,
                                                                                     fase2Klienter(),

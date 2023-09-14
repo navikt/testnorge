@@ -30,6 +30,14 @@ public class TransaksjonMappingService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
+    public List<RsTransaksjonMapping> getTransaksjonMapping(String ident) {
+
+        return transaksjonMappingRepository.findAllByBestillingIdAndIdent(null, ident).stream()
+                .map(transasjon -> mapperFacade.map(transasjon, RsTransaksjonMapping.class))
+                .toList();
+    }
+
     public boolean existAlready(SystemTyper system, String ident, String miljoe) {
 
         return transaksjonMappingRepository.findAllBySystemAndIdent(system.name(), ident)
