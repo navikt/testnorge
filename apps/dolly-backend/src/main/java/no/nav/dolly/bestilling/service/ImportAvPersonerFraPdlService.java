@@ -85,7 +85,8 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
                                                     .filter(BestillingProgress::isPdlSync)
                                                     .flatMap(pdlSync ->
                                                             Flux.concat(
-                                                                    tpsPersonService.syncPerson(bestKriterier, progress, true)
+                                                                    tpsPersonService.syncPerson(dollyPerson, bestKriterier,
+                                                                                    progress, true)
                                                                             .map(ClientFuture::get),
                                                                     gjenopprettKlienter(dollyPerson, bestKriterier,
                                                                             fase2Klienter(),

@@ -24,6 +24,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.io.Serializable;
+import java.util.List;
 
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
@@ -127,6 +128,9 @@ public class BestillingProgress implements Serializable {
 
     @Transient
     private boolean isPdlSync;
+
+    @Transient
+    private List<String> isTpsSyncEnv;
 
     private String feil;
 

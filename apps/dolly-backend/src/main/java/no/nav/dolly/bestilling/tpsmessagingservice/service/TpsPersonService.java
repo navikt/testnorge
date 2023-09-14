@@ -7,6 +7,7 @@ import no.nav.dolly.bestilling.tpsmessagingservice.TpsMessagingConsumer;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.SystemTyper;
+import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.service.TransaksjonMappingService;
 import no.nav.dolly.util.TransactionHelperService;
@@ -18,11 +19,11 @@ import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 import java.time.LocalTime;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -43,19 +44,19 @@ public class TpsPersonService {
     private final TransactionHelperService transactionHelperService;
     private final TransaksjonMappingService transaksjonMappingService;
 
-    public Flux<ClientFuture> syncPerson(RsDollyUtvidetBestilling bestilling, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<ClientFuture> syncPerson(DollyPerson dollyPerson, RsDollyUtvidetBestilling bestilling, BestillingProgress progress, boolean isOpprettEndre) {
 
         long startTime = System.currentTimeMillis();
 
         return Flux.from(Flux.fromIterable(bestilling.getEnvironments())
                 .filter(PENSJON_MILJOER::contains)
                 .filter(penMiljoe -> isRelevantBestilling(bestilling) &&
-                        (isOpprettEndre || !isTransaksjonMapping(progress.getIdent(), bestilling, bestilling.getEnvironments())))
+                        (isOpprettEndre || !isTransaksjonMapping(dollyPerson.getIdent(), bestilling, bestilling.getEnvironments())))
                 .collectList()
                 .filter(penMiljoer -> !penMiljoer.isEmpty())
-                .flatMap(penMiljoer -> getTpsPerson(LocalTime.now().plusSeconds(MAX_SEKUNDER), LocalTime.now(), progress.getIdent(),
+                .flatMap(penMiljoer -> getTpsPerson(LocalTime.now().plusSeconds(MAX_SEKUNDER), LocalTime.now(), dollyPerson.getIdent(),
                         penMiljoer, Collections.emptyList(), progress, new AtomicInteger(0))
-                        .map(status -> prepareResult(progress.getIdent(), status, bestilling.getEnvironments(), startTime))
+                        .map(status -> prepareResult(dollyPerson.getIdent(), status, bestilling.getEnvironments(), startTime))
                         .map(status -> futurePersist(progress, status))));
     }
 
@@ -93,10 +94,6 @@ public class TpsPersonService {
 
         } else {
 
-            log.info(status.stream()
-                    .map(sts1 -> sts1.getStatus() + ": " + sts1.getMelding() + " " + sts1.getUtfyllendeMelding())
-                    .collect(Collectors.joining(", ")));
-
             transactionHelperService.persister(progress, BestillingProgress::setTpsSyncStatus,
                     miljoer.stream()
                             .map(miljoe -> String.format("%s:%s", miljoe, String.format(TPS_SYNC_START, counter.get() * TIMEOUT_MILLIES)))
@@ -120,21 +117,27 @@ public class TpsPersonService {
             log.warn("Synkronisering mot TPS for {} gitt opp etter {} ms.", ident, System.currentTimeMillis() - startTime);
         }
 
-        return Stream.of(status, miljoer.stream()
-                        .filter(miljoe -> status.stream().noneMatch(status1 -> miljoe.equals(status1.getMiljoe())))
-                        .map(miljoe -> PersonMiljoeDTO.builder()
-                                .miljoe(miljoe)
-                                .status("NOK")
-                                .melding(String.format("Feil: Synkronisering mot TPS gitt opp etter %d sekunder.", MAX_SEKUNDER))
-                                .build())
-                        .toList())
-                .flatMap(Collection::stream)
+        return Stream.of(status.stream()
+                                .filter(status1 -> StringUtils.isNotBlank(status1.getMiljoe())),
+                        miljoer.stream()
+                                .filter(miljoe -> status.stream().noneMatch(status1 -> miljoe.equals(status1.getMiljoe())))
+                                .map(miljoe -> PersonMiljoeDTO.builder()
+                                        .miljoe(miljoe)
+                                        .status("NOK")
+                                        .utfyllendeMelding(String.format("Feil: Synkronisering mot TPS gitt opp etter %d sekunder.", MAX_SEKUNDER))
+                                        .build()))
+                .flatMap(Function.identity())
                 .toList();
     }
 
     private ClientFuture futurePersist(BestillingProgress progress, List<PersonMiljoeDTO> status) {
 
         return () -> {
+
+            progress.setIsTpsSyncEnv(status.stream()
+                    .filter(PersonMiljoeDTO::isOk)
+                    .map(PersonMiljoeDTO::getMiljoe)
+                    .toList());
 
             transactionHelperService.persister(progress, BestillingProgress::setTpsSyncStatus,
                     status.stream()

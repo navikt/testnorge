@@ -96,7 +96,8 @@ public class OppdaterPersonService extends DollyBestillingService {
                                                                 .filter(BestillingProgress::isPdlSync)
                                                                 .flatMap(pdlSync ->
                                                                         Flux.concat(
-                                                                                tpsPersonService.syncPerson(request, progress, true)
+                                                                                tpsPersonService.syncPerson(dollyPerson, request,
+                                                                                                progress, true)
                                                                                         .map(ClientFuture::get),
                                                                                 gjenopprettKlienter(dollyPerson, request,
                                                                                         fase2Klienter(),
