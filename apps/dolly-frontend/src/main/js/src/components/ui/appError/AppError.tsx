@@ -3,8 +3,14 @@ import Icon from '@/components/ui/icon/Icon'
 import './appError.less'
 import 'rc-tooltip/assets/bootstrap.css'
 import { DollyCopyButton } from '@/components/ui/button/CopyButton/DollyCopyButton'
+import { CSSProperties } from 'react'
 
-export const AppError = ({ error, stackTrace, style }) => (
+type Props = {
+	style?: CSSProperties | undefined
+	error: Error | string
+	stackTrace: string
+}
+export const AppError = ({ error, stackTrace, style }: Props) => (
 	<div className="application-error" style={style}>
 		<h1>
 			<Icon kind="report-problem-triangle" />
@@ -18,6 +24,7 @@ export const AppError = ({ error, stackTrace, style }) => (
 			<div className={'flexbox--align-start flexbox--wrap'}>
 				<DollyCopyButton
 					copyText={error.toString() + '\n' + stackTrace}
+					style={{ width: '100%' }}
 					tooltipText={'Kopier feilmelding'}
 				/>
 

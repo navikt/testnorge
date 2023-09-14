@@ -185,7 +185,12 @@ const Icon = ({
 	const styleObj = Object.assign({ width: px(size), height: px(size) }, style)
 
 	return DesignSystemIcon ? (
-		<DesignSystemIcon title={kind} fontSize={fontSize} className={className} />
+		<DesignSystemIcon
+			title={kind}
+			fontSize={fontSize}
+			className={className}
+			data-cy={props['data-cy']}
+		/>
 	) : (
 		<ErrorBoundary>
 			<SVG src={icon} className={cssClass} style={styleObj} title={title} role={'img'} {...props}>

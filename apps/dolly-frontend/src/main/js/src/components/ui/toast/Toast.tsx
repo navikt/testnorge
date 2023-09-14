@@ -1,23 +1,14 @@
 import { toast, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import styled from 'styled-components'
-
-const StyledToastContainer = styled(ToastContainer)`
-	.Toastify__toast {
-		background: #ba3a26;
-	}
-`
 
 type Props = {
 	applicationError: string
 }
 
 export const Toast = ({ applicationError }: Props) => {
-	if (!applicationError) {
-		return null
-	}
+	const feilmelding = applicationError?.replace?.(/\?\S*/, '') || 'En ukjent feil oppstod'
 
-	toast.error(applicationError.replace(/\?\S*/, ''), {
+	toast.error(feilmelding, {
 		position: 'bottom-right',
 		autoClose: 10000,
 		closeOnClick: true,
@@ -25,5 +16,5 @@ export const Toast = ({ applicationError }: Props) => {
 		draggable: true,
 	})
 
-	return <StyledToastContainer theme={'colored'} />
+	return <ToastContainer theme={'light'} />
 }
