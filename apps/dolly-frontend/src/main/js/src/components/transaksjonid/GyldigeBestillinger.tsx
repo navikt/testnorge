@@ -15,9 +15,5 @@ export const erGyldig = (bestillingId: number, system: string, ident: string) =>
 		return response.data
 	}, [])
 
-	return (
-		finnBestilling.value &&
-		finnBestilling.value.length > 0 &&
-		finnBestilling.value[0].status === 'OK'
-	)
+	return finnBestilling.value && finnBestilling.value.length > 0
 }
