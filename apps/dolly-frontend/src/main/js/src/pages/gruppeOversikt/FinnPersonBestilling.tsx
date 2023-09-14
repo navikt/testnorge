@@ -236,7 +236,11 @@ const FinnPersonBestilling = ({
 		return (
 			// @ts-ignore
 			<components.DropdownIndicator {...props}>
-				<Icon data-cy={CypressSelector.INPUT_PERSON_SOEK} kind={'designsystem-search'} />
+				<Icon
+					fontSize={'1.5rem'}
+					data-cy={CypressSelector.INPUT_PERSON_SOEK}
+					kind={'designsystem-search'}
+				/>
 			</components.DropdownIndicator>
 		)
 	}

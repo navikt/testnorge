@@ -6,7 +6,7 @@ type Props = {
 }
 
 export const Toast = ({ applicationError }: Props) => {
-	const feilmelding = applicationError?.replace?.(/\?\S*/, '') || 'En ukjent feil oppstod'
+	const feilmelding = applicationError?.replace?.(/\?\S*/, '')
 
 	toast.error(feilmelding, {
 		position: 'bottom-right',
