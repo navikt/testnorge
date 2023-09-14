@@ -14,7 +14,16 @@ const testHarArbeidsforhold = (val) => {
 			? detaljertSykemelding?.mottaker?.orgNr
 			: selected
 
-		const arbeidsgivere = values?.aareg?.map((arbforh) => arbforh?.arbeidsgiver?.orgnummer)
+		const arbeidsgivere = values?.aareg?.map((arbforh) => arbforh?.arbeidsgiver?.orgnummer) || []
+
+		values?.personFoerLeggTil?.aareg?.forEach((miljo) => {
+			miljo?.data?.forEach((arbforh) => {
+				const orgnr = arbforh?.arbeidsgiver?.organisasjonsnummer
+				if (orgnr && !arbeidsgivere?.includes(orgnr?.toString())) {
+					arbeidsgivere.push(orgnr)
+				}
+			})
+		})
 
 		if (!arbeidsgivere?.includes(valgtArbeidsgiver?.toString())) {
 			return this.createError({
