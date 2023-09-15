@@ -50,10 +50,10 @@ public class TpsPersonService {
 
         return Flux.from(Flux.fromIterable(bestilling.getEnvironments())
                 .filter(PENSJON_MILJOER::contains)
-                .filter(penMiljoe -> isRelevantBestilling(bestilling) &&
-                        (isOpprettEndre || !isTransaksjonMapping(dollyPerson.getIdent(), bestilling, bestilling.getEnvironments())))
                 .collectList()
                 .filter(penMiljoer -> !penMiljoer.isEmpty())
+                .filter(penMiljoer -> isRelevantBestilling(bestilling) &&
+                        (isOpprettEndre || !isTransaksjonMapping(dollyPerson.getIdent(), bestilling, penMiljoer)))
                 .flatMap(penMiljoer -> getTpsPerson(LocalTime.now().plusSeconds(MAX_SEKUNDER), LocalTime.now(), dollyPerson.getIdent(),
                         penMiljoer, Collections.emptyList(), progress, new AtomicInteger(0))
                         .map(status -> prepareResult(dollyPerson.getIdent(), status, bestilling.getEnvironments(), startTime))
@@ -67,20 +67,20 @@ public class TpsPersonService {
                         nonNull(bestilling.getPensjonforvalter().getUforetrygd()));
     }
 
-    private boolean isTransaksjonMapping(String ident, RsDollyUtvidetBestilling bestilling, Set<String> miljoer) {
+    private boolean isTransaksjonMapping(String ident, RsDollyUtvidetBestilling bestilling, List<String> miljoer) {
 
         var transaksjoner = transaksjonMappingService.getTransaksjonMapping(ident);
 
         return (isNull(bestilling.getPensjonforvalter().getAlderspensjon()) ||
                 transaksjoner.stream()
                         .anyMatch(transaksjon -> miljoer.stream()
-                                .anyMatch(miljoe -> SystemTyper.PEN_AP.name().equals(transaksjon.getSystem()) &&
+                                .allMatch(miljoe -> SystemTyper.PEN_AP.name().equals(transaksjon.getSystem()) &&
                                         miljoe.equals(transaksjon.getMiljoe())))) &&
 
                 (isNull(bestilling.getPensjonforvalter().getUforetrygd()) ||
                         transaksjoner.stream()
                                 .anyMatch(transaksjon2 -> miljoer.stream()
-                                        .anyMatch(miljoe -> SystemTyper.PEN_UT.name().equals(transaksjon2.getSystem()) &&
+                                        .allMatch(miljoe -> SystemTyper.PEN_UT.name().equals(transaksjon2.getSystem()) &&
                                                 miljoe.equals(transaksjon2.getMiljoe()))));
     }
 
