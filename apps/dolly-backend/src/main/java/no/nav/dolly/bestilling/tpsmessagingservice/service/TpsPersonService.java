@@ -70,16 +70,16 @@ public class TpsPersonService {
         var transaksjoner = transaksjonMappingService.getTransaksjonMapping(ident);
 
         return (isNull(bestilling.getPensjonforvalter().getAlderspensjon()) ||
-                transaksjoner.stream()
-                        .anyMatch(transaksjon -> miljoer.stream()
-                                .allMatch(miljoe -> SystemTyper.PEN_AP.name().equals(transaksjon.getSystem()) &&
-                                        miljoe.equals(transaksjon.getMiljoe())))) &&
+                miljoer.stream()
+                        .allMatch(miljoe -> transaksjoner.stream()
+                                .anyMatch(transaksjon -> miljoe.equals(transaksjon.getMiljoe()) &&
+                                        SystemTyper.PEN_AP.name().equals(transaksjon.getSystem())))) &&
 
                 (isNull(bestilling.getPensjonforvalter().getUforetrygd()) ||
-                        transaksjoner.stream()
-                                .anyMatch(transaksjon2 -> miljoer.stream()
-                                        .allMatch(miljoe -> SystemTyper.PEN_UT.name().equals(transaksjon2.getSystem()) &&
-                                                miljoe.equals(transaksjon2.getMiljoe()))));
+                        miljoer.stream()
+                                .allMatch(miljoe -> transaksjoner.stream()
+                                        .anyMatch(transaksjon -> miljoe.equals(transaksjon.getMiljoe()) &&
+                                                SystemTyper.PEN_UT.name().equals(transaksjon.getSystem()))));
     }
 
     private Mono<List<PersonMiljoeDTO>> getTpsPerson(Long starttid, String ident, List<String> miljoer,
@@ -122,7 +122,7 @@ public class TpsPersonService {
                                 .map(miljoe -> PersonMiljoeDTO.builder()
                                         .miljoe(miljoe)
                                         .status("NOK")
-                                        .utfyllendeMelding(String.format("Feil: Synkronisering mot TPS gitt opp etter %d sekunder.", MAX_MILLIES/1000))
+                                        .utfyllendeMelding(String.format("Feil: Synkronisering mot TPS gitt opp etter %d sekunder.", MAX_MILLIES / 1000))
                                         .build()))
                 .flatMap(Function.identity())
                 .toList();
