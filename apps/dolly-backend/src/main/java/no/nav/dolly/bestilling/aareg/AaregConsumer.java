@@ -13,10 +13,15 @@ import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.netty.http.client.HttpClient;
+import reactor.netty.resources.ConnectionProvider;
+
+import java.time.Duration;
 
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
@@ -39,6 +44,12 @@ public class AaregConsumer implements ConsumerStatus {
         this.webClient = webClientBuilder
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .baseUrl(serverProperties.getUrl())
+                .clientConnector(new ReactorClientHttpConnector(
+                        HttpClient.create(ConnectionProvider.builder("custom")
+                                .maxConnections(5)
+                                .pendingAcquireMaxCount(500)
+                                .pendingAcquireTimeout(Duration.ofMinutes(15))
+                                .build())))
                 .build();
     }
 
