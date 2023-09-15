@@ -24,8 +24,10 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.Objects.isNull;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
 @Entity
@@ -131,6 +133,14 @@ public class BestillingProgress implements Serializable {
 
     @Transient
     private List<String> isTpsSyncEnv;
+
+    public List<String> getIsTpsSyncEnv() {
+
+        if (isNull(isTpsSyncEnv)) {
+            isTpsSyncEnv = new ArrayList<>();
+        }
+        return isTpsSyncEnv;
+    }
 
     private String feil;
 
