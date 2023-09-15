@@ -1,5 +1,6 @@
 package no.nav.dolly.bestilling.sykemelding.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,7 +17,17 @@ public class SykemeldingResponse {
 
     private HttpStatus status;
     private String avvik;
-    private SyntSykemeldingRequest syntSykemeldingRequest;
-    private DetaljertSykemeldingRequest detaljertSykemeldingRequest;
+    private SykemeldingRequest sykemeldingRequest;
     private String ident;
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    public static class SykemeldingRequest {
+
+        private SyntSykemeldingRequest syntSykemeldingRequest;
+        private DetaljertSykemeldingRequest detaljertSykemeldingRequest;
+    }
 }

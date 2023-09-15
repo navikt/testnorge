@@ -16,11 +16,6 @@ query($ident1: ID!) {
                 opplysningsId
             }
         }
-        folkeregisteridentifikator {
-            metadata {
-                opplysningsId
-            }
-        }
         folkeregisterpersonstatus {
             metadata {
                 opplysningsId
