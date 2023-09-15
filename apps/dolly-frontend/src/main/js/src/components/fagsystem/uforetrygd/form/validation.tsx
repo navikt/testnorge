@@ -28,8 +28,8 @@ const datoErFremtidig = () => {
 }
 
 const forventetInntekt = Yup.object({
-	datoFom: testDatoFom(datoErFremtidig().nullable(), 'datoTom', 'Dato må være før dato t.o.m.'), // Før datoTom, frem i tid???
-	datoTom: testDatoTom(datoErFremtidig().nullable(), 'datoFom', 'Dato må være etter dato f.o.m.'), // Etter datoFom, frem i tid???
+	datoFom: testDatoFom(datoErFremtidig().nullable(), 'datoTom', 'Dato må være før dato t.o.m.'),
+	datoTom: testDatoTom(datoErFremtidig().nullable(), 'datoFom', 'Dato må være etter dato f.o.m.'),
 	inntektType: Yup.string().nullable(),
 	belop: Yup.number()
 		.nullable()
@@ -41,7 +41,7 @@ export const validation = {
 		'$pensjonforvalter.uforetrygd',
 		Yup.object({
 			kravFremsattDato: Yup.date().nullable(),
-			onsketVirkningsDato: datoErFremtidig().nullable(), // Frem i tid
+			onsketVirkningsDato: datoErFremtidig().nullable(),
 			uforetidspunkt: Yup.date()
 				.test('er-historisk', 'Dato må være historisk', function validDate(dato) {
 					if (!dato) {
@@ -49,13 +49,13 @@ export const validation = {
 					}
 					return isPast(dato)
 				})
-				.nullable(), // Historisk
-			inntektForUforhet: requiredNumber.transform((i, j) => (j === '' ? null : i)), // Required
-			uforegrad: requiredNumber.transform((i, j) => (j === '' ? null : i)), // Required
+				.nullable(),
+			inntektForUforhet: requiredNumber.transform((i, j) => (j === '' ? null : i)),
+			uforegrad: requiredNumber.transform((i, j) => (j === '' ? null : i)),
 			minimumInntektForUforhetType: Yup.string().nullable(),
-			saksbehandler: erIkkeLik().nullable(), // Kan ikke være lik attesterer
-			attesterer: erIkkeLik().nullable(), // Kan ikke være lik saksbehandler
-			navEnhetId: requiredString, // Required
+			saksbehandler: erIkkeLik().nullable(),
+			attesterer: erIkkeLik().nullable(),
+			navEnhetId: requiredString,
 			barnetilleggDetaljer: Yup.object({
 				barnetilleggType: requiredString,
 				forventedeInntekterSoker: Yup.array().of(forventetInntekt),

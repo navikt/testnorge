@@ -94,13 +94,7 @@ export const useTpData = (ident, harTpBestilling) => {
 	}
 }
 
-export const useTransaksjonidData = (
-	ident,
-	system,
-	harBestilling,
-	fagsystemMiljoer = null,
-	fagsystemLoading = false,
-) => {
+export const useTransaksjonidData = (ident, system, harBestilling, fagsystemMiljoer = null) => {
 	const { data, isLoading, error } = useSWR<any, Error>(
 		harBestilling ? `/dolly-backend/api/v1/transaksjonid?ident=${ident}&system=${system}` : null,
 		fetcher,
@@ -127,7 +121,7 @@ export const useTransaksjonidData = (
 
 	return {
 		data: miljoData?.sort((a, b) => a.miljo?.localeCompare(b.miljo)),
-		loading: fagsystemLoading || isLoading,
+		loading: isLoading,
 		error: error,
 	}
 }

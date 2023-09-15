@@ -177,14 +177,13 @@ export default ({
 		harArenaBestilling(bestillingerFagsystemer),
 	)
 
-	const { pensjonEnvironments, loading: loadingPensjonEnvironments } = usePensjonEnvironments()
+	const { pensjonEnvironments } = usePensjonEnvironments()
 
 	const { loading: loadingApData, data: apData } = useTransaksjonidData(
 		ident.ident,
 		'PEN_AP',
 		harApBestilling(bestillingerFagsystemer),
 		pensjonEnvironments,
-		loadingPensjonEnvironments,
 	)
 
 	const { loading: loadingUforetrygdData, data: uforetrygdData } = useTransaksjonidData(
@@ -192,7 +191,6 @@ export default ({
 		'PEN_UT',
 		harUforetrygdBestilling(bestillingerFagsystemer),
 		pensjonEnvironments,
-		loadingPensjonEnvironments,
 	)
 
 	const getGruppeIdenter = () => {
