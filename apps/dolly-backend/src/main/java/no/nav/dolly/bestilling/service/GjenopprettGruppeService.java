@@ -7,6 +7,7 @@ import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.pdldata.dto.PdlResponse;
 import no.nav.dolly.bestilling.personservice.PersonServiceClient;
+import no.nav.dolly.bestilling.tpsmessagingservice.service.TpsPersonService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
@@ -49,7 +50,8 @@ public class GjenopprettGruppeService extends DollyBestillingService {
             ErrorStatusDecoder errorStatusDecoder,
             PdlDataConsumer pdlDataConsumer,
             TransactionHelperService transactionHelperService,
-            PersonServiceClient personServiceClient
+            PersonServiceClient personServiceClient,
+            TpsPersonService tpsPersonService
     ) {
         super(
                 identService,
@@ -59,7 +61,8 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                 counterCustomRegistry,
                 pdlDataConsumer,
                 errorStatusDecoder,
-                transactionHelperService
+                transactionHelperService,
+                tpsPersonService
         );
         this.personServiceClient = personServiceClient;
     }
@@ -106,6 +109,9 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                                                                                     .doOnNext(request -> log.info("Startet gjenopprett bestilling {} for ident: {}",
                                                                                             request.getId(), testident.getIdent()))
                                                                                     .flatMapSequential(bestillingRequest -> Flux.concat(
+                                                                                            tpsPersonService.syncPerson(dollyPerson, bestillingRequest,
+                                                                                                            progress, false)
+                                                                                                    .map(ClientFuture::get),
                                                                                             gjenopprettKlienter(dollyPerson, bestillingRequest,
                                                                                                     fase2Klienter(),
                                                                                                     progress, false),
