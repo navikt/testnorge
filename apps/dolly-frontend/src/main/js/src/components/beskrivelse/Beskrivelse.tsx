@@ -32,7 +32,7 @@ export const Beskrivelse = ({
 
 	return (
 		<React.Fragment>
-			{beskrivelse && <SubOverskrift label="Kommentarer" iconKind="designsystem-kommentar" />}
+			{beskrivelse && <SubOverskrift label="Kommentarer" iconKind="kommentar" />}
 			<TextEditor
 				text={beskrivelse}
 				handleSubmit={handleSubmit}

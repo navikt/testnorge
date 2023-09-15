@@ -18,7 +18,7 @@ export const Adresse = ({ formikBag, path }) => {
 					SKJUL ADRESSE-VALG
 				</Button>
 			) : (
-				<Button onClick={setVisAdresse} kind="designsystem-chevron-down">
+				<Button onClick={setVisAdresse} kind="chevron-down">
 					VIS ADRESSE-VALG
 				</Button>
 			)}

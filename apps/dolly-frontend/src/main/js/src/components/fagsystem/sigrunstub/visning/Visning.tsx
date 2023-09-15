@@ -66,7 +66,7 @@ export const SigrunstubVisning = ({ data, loading, visTittel = true }) => {
 			{visTittel && (
 				<SubOverskrift
 					label="Skatteoppgjør (Sigrun)"
-					iconKind="designsystem-sigrun"
+					iconKind="sigrun"
 					isWarning={manglerFagsystemdata}
 				/>
 			)}

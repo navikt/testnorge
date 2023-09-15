@@ -51,7 +51,7 @@ export const MedlForm = ({ formikBag }: MedlFormProps) => {
 			<Panel
 				heading="Medlemskap (MEDL)"
 				hasErrors={panelError(formikBag, MedlAttributt)}
-				iconType="designsystem-calendar"
+				iconType="calendar"
 				// @ts-ignore
 				startOpen={erForsteEllerTest(formikBag.values, [MedlAttributt])}
 			>

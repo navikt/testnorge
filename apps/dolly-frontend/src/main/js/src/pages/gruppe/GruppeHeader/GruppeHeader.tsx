@@ -55,7 +55,7 @@ const GruppeHeader = ({
 
 	const headerClass = erLaast ? 'gruppe-header-laast' : 'gruppe-header'
 	const gruppeNavn = erLaast ? `${gruppe.navn} (låst)` : gruppe.navn
-	const iconType = erLaast ? 'designsystem-locked-group' : 'designsystem-group'
+	const iconType = erLaast ? 'locked-group' : 'group'
 	const antallPersoner = gruppe.antallIdenter
 
 	return (
@@ -97,13 +97,13 @@ const GruppeHeader = ({
 						{!erLaast && <LeggTilPaaGruppe antallPersoner={antallPersoner} gruppeId={gruppe.id} />}
 						{!erLaast && <FlyttPersonButton gruppeId={gruppe?.id} disabled={antallPersoner < 1} />}
 						{gruppe.erEierAvGruppe && !erLaast && (
-							<Button kind="designsystem-edit" onClick={visRediger}>
+							<Button kind="edit" onClick={visRediger}>
 								REDIGER
 							</Button>
 						)}
 						<Button
 							onClick={visGjenopprettModal}
-							kind="designsystem-synchronize"
+							kind="synchronize"
 							disabled={antallPersoner < 1}
 							title={antallPersoner < 1 ? 'Kan ikke gjenopprette en tom gruppe' : null}
 						>

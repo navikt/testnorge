@@ -57,7 +57,7 @@ export const FrigjoerButton = ({
 				onClick={openModal}
 				disabled={disabled}
 				title={disabled ? 'Frigjøring/sletting er midlertidig utilgjengelig' : ''}
-				kind="designsystem-trashcan"
+				kind="trashcan"
 			>
 				FRIGJØR/SLETT
 			</Button>

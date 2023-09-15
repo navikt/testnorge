@@ -316,7 +316,7 @@ export default ({
 									navigate,
 								)
 							}}
-							kind="designsystem-add-circle"
+							kind="add-circle"
 						>
 							LEGG TIL/ENDRE
 						</Button>

@@ -89,7 +89,7 @@ export const GjenopprettPerson = ({ ident }: GjenopprettProps) => {
 
 	return (
 		<>
-			<Button onClick={openGjenopprettModal} kind="designsystem-synchronize">
+			<Button onClick={openGjenopprettModal} kind="synchronize">
 				GJENOPPRETT PERSON
 			</Button>
 			{isGjenopprettModalOpen && (

@@ -14,7 +14,7 @@ export const AaregForm = () => {
 			<Panel
 				heading="Arbeidsforhold (Aareg)"
 				hasErrors={panelError(formikBag, aaregAttributt)}
-				iconType="designsystem-arbeid"
+				iconType="arbeid"
 				startOpen={erForsteEllerTest(formikBag.values, [aaregAttributt])}
 			>
 				<ArbeidsforholdToggle />

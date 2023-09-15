@@ -12,7 +12,7 @@ export const KontaktDoedsboPanel = ({ stateModifier, formikBag }) => {
 			heading={KontaktDoedsboPanel.heading}
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
-			iconType="designsystem-doedsbo"
+			iconType="doedsbo"
 			startOpen={harValgtAttributt(formikBag.values, [doedsboAttributt])}
 		>
 			<AttributtKategori attr={sm.attrs}>

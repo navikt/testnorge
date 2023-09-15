@@ -43,7 +43,7 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId,
 					{!iLaastGruppe && (
 						<Button
 							onClick={openGjenopprettModal}
-							kind="designsystem-synchronize"
+							kind="synchronize"
 							disabled={!harLevertPersoner}
 							title={gjenopprettTitle}
 						>
@@ -55,7 +55,7 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId,
 						!harEksisterendeNyIdent &&
 						!harRelatertPersonBarn &&
 						!gjenopprettingsId && (
-							<Button onClick={openMalModal} kind={'designsystem-maler'} className="svg-icon-blue">
+							<Button onClick={openMalModal} kind={'maler'} className="svg-icon-blue">
 								OPPRETT NY MAL
 							</Button>
 						)}
@@ -74,7 +74,7 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId,
 				<div className="flexbox--align-center--justify-end info-block">
 					<Button
 						onClick={openGjenopprettModal}
-						kind="designsystem-synchronize"
+						kind="synchronize"
 						disabled={!bestilling.ferdig}
 						title={
 							!bestilling.ferdig
@@ -84,7 +84,7 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId,
 					>
 						GJENOPPRETT
 					</Button>
-					<Button onClick={openMalModal} kind={'designsystem-maler'} className="svg-icon-blue">
+					<Button onClick={openMalModal} kind={'maler'} className="svg-icon-blue">
 						OPPRETT NY MAL
 					</Button>
 				</div>

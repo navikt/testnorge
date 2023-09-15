@@ -20,7 +20,7 @@ export const AdressePanel = ({ stateModifier, formikBag }: any) => {
 			heading={AdressePanel.heading}
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
-			iconType="designsystem-adresse"
+			iconType="adresse"
 			startOpen={harValgtAttributt(formikBag.values, adresseAttributter)}
 		>
 			<AttributtKategori title="Adresser" attr={sm.attrs}>

@@ -330,7 +330,7 @@ export const AaregVisning = ({
 			<div>
 				<SubOverskrift
 					label="Arbeidsforhold"
-					iconKind="designsystem-arbeid"
+					iconKind="arbeid"
 					isWarning={manglerArbeidsforholdData}
 				/>
 				{arbeidsforholdFeil?.feil && manglerArbeidsforholdData ? (
@@ -360,11 +360,7 @@ export const AaregVisning = ({
 	const getAmelding = (ident) => {
 		return (
 			<div>
-				<SubOverskrift
-					label="A-melding"
-					iconKind="designsystem-arbeid"
-					isWarning={manglerAmeldingData}
-				/>
+				<SubOverskrift label="A-melding" iconKind="arbeid" isWarning={manglerAmeldingData} />
 				{ameldingFeil?.feil && manglerAmeldingData ? (
 					<StyledAlert variant={'warning'} size={'small'} inline>
 						{ameldingFeil?.feil?.message}

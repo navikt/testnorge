@@ -73,7 +73,7 @@ export const Relasjoner = ({ relasjoner }: RelasjonerProps) => {
 
 	return (
 		<React.Fragment>
-			<SubOverskrift label="Familierelasjoner" iconKind="designsystem-relasjoner" />
+			<SubOverskrift label="Familierelasjoner" iconKind="relasjoner" />
 			<ErrorBoundary>
 				<DollyFieldArray
 					data={partnere}

@@ -67,9 +67,7 @@ export const PdlPersonInfo = ({
 	return (
 		<ErrorBoundary>
 			<div>
-				{visTittel && (
-					<SubOverskrift label="Persondetaljer" iconKind="designsystem-personinformasjon" />
-				)}
+				{visTittel && <SubOverskrift label="Persondetaljer" iconKind="personinformasjon" />}
 				<div className="person-visning_content">
 					<TitleValue title="Ident" value={data?.ident} />
 					{gyldigeNavn?.length === 1 && (!historiskeNavn || historiskeNavn.length < 1) && (

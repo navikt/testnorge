@@ -276,7 +276,7 @@ export const AmeldingForm = ({ warningMessage }: AmeldingFormProps): JSX.Element
 							</KjedeContainer>
 							{arbeidsforholdstype === 'frilanserOppdragstakerHonorarPersonerMm' &&
 								periode?.length > 1 && (
-									<Slettknapp kind="designsystem-trashcan" onClick={handleFjernMaaned}>
+									<Slettknapp kind="trashcan" onClick={handleFjernMaaned}>
 										Fjern måned
 									</Slettknapp>
 								)}

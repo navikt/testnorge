@@ -11,7 +11,7 @@ export const BrregPanel = ({ stateModifier, formikBag }) => {
 			heading={BrregPanel.heading}
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
-			iconType="designsystem-brreg"
+			iconType="brreg"
 			startOpen={harValgtAttributt(formikBag.values, [brregAttributt])}
 		>
 			<AttributtKategori attr={sm.attrs}>

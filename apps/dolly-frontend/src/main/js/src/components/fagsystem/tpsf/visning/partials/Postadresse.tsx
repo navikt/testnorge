@@ -24,7 +24,7 @@ export const Postadresse = ({ postadresse }) => {
 
 	return (
 		<div>
-			<SubOverskrift label="Postadresse" iconKind="designsystem-postadresse" />
+			<SubOverskrift label="Postadresse" iconKind="postadresse" />
 			<div className="person-visning_content">
 				{_.isArray(postadresse) ? (
 					<Historikk component={PostadresseVisning} propName="postadresse" data={postadresse} />

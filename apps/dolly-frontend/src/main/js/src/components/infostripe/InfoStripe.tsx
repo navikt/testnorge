@@ -121,7 +121,7 @@ export const InfoStripe = () => {
 					<div className="expand-alle-meldinger">
 						<Button
 							onClick={invertVisAlleMeldinger}
-							kind={showAll === false ? 'designsystem-chevron-down' : 'designsystem-chevron-up'}
+							kind={showAll === false ? 'chevron-down' : 'chevron-up'}
 						>
 							{expandButtonText}
 						</Button>
@@ -130,7 +130,7 @@ export const InfoStripe = () => {
 					<div className="lukk-alle-meldinger">
 						<Icon
 							size={16}
-							kind="designsystem-kryss"
+							kind="kryss"
 							onClick={hideAllAlerts}
 							title="Lukk alle meldinger"
 							style={{ cursor: 'pointer' }}

@@ -401,13 +401,9 @@ export const VisningRedigerbar = ({
 				<>
 					{dataVisning}
 					<EditDeleteKnapper>
+						<Button kind="edit" onClick={() => setVisningModus(Modus.Skriv)} title="Endre" />
 						<Button
-							kind="designsystem-edit"
-							onClick={() => setVisningModus(Modus.Skriv)}
-							title="Endre"
-						/>
-						<Button
-							kind="designsystem-trashcan"
+							kind="trashcan"
 							onClick={() => openModal()}
 							title="Slett"
 							disabled={disableSlett}

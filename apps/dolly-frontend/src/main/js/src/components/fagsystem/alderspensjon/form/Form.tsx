@@ -156,7 +156,7 @@ export const AlderspensjonForm = ({ formikBag }) => {
 			<Panel
 				heading="Alderspensjon"
 				hasErrors={panelError(formikBag, alderspensjonPath)}
-				iconType="designsystem-pensjon"
+				iconType="pensjon"
 				startOpen={erForsteEllerTest(formikBag.values, [alderspensjonPath])}
 			>
 				{nyBestilling && (!harAlder || harUgyldigAlder) && (

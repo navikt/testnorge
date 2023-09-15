@@ -38,7 +38,7 @@ export const TilrettelagtKommunikasjon = ({ data }: DataListe) => {
 
 	return (
 		<div>
-			<SubOverskrift label="Tilrettelagt kommunikasjon" iconKind="designsystem-kommentar" />
+			<SubOverskrift label="Tilrettelagt kommunikasjon" iconKind="kommentar" />
 			<div className="person-visning_content">
 				<ErrorBoundary>
 					<DollyFieldArray data={data} header="Tolk">

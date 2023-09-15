@@ -27,7 +27,7 @@ const OrganisasjonHeader = ({
 				<div className="content-header_content">
 					<div className="flexbox">
 						<div className="content-header_icon organisasjon-header">
-							<Icon kind="designsystem-organisasjon" fontSize={'2.8rem'} />
+							<Icon kind="organisasjon" fontSize={'2.8rem'} />
 						</div>
 						<Header.TitleValue title="Eier" value={brukernavn} />
 						<Header.TitleValue title="Antall hovedorganisasjoner" value={antallOrganisasjoner} />

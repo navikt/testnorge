@@ -30,7 +30,7 @@ export const ArbeidsplassenPanel = ({ stateModifier, formikBag }) => {
 			heading={ArbeidsplassenPanel.heading}
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
-			iconType="designsystem-cv"
+			iconType="cv"
 			startOpen={harValgtAttributt(formikBag.values, ['arbeidsplassenCV'])}
 		>
 			<AttributtKategori title={null} attr={sm.attrs}>

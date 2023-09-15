@@ -100,7 +100,7 @@ export const Visning = ({ data }: VisningProps) => {
 
 							<EditDeleteKnapper>
 								<Button
-									kind="designsystem-trashcan"
+									kind="trashcan"
 									onClick={() => openModal()}
 									title="Slett"
 									disabled={disableSlett}
@@ -172,7 +172,7 @@ export const KrrVisning = ({ data, loading }: KrrVisningProps) => {
 			<div>
 				<SubOverskrift
 					label="Kontaktinformasjon og reservasjon"
-					iconKind="designsystem-krr"
+					iconKind="krr"
 					isWarning={manglerFagsystemdata}
 				/>
 				{manglerFagsystemdata ? (

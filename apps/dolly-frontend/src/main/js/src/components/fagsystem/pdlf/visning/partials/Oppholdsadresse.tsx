@@ -116,7 +116,7 @@ export const Oppholdsadresse = ({
 
 	return (
 		<>
-			<SubOverskrift label="Oppholdsadresse" iconKind="designsystem-adresse" />
+			<SubOverskrift label="Oppholdsadresse" iconKind="adresse" />
 			<div className="person-visning_content">
 				<ErrorBoundary>
 					<DollyFieldArray data={data} header="" nested>

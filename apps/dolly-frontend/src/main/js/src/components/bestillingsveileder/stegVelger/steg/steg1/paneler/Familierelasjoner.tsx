@@ -17,7 +17,7 @@ export const FamilierelasjonPanel = ({ stateModifier, formikBag }) => {
 			heading={FamilierelasjonPanel.heading}
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
-			iconType={'designsystem-relasjoner'}
+			iconType={'relasjoner'}
 			startOpen={harValgtAttributt(formikBag.values, relasjonerAttributter)}
 		>
 			<AttributtKategori title="Sivilstand" attr={sm.attrs}>

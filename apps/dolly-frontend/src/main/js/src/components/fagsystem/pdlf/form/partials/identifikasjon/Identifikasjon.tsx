@@ -26,7 +26,7 @@ export const Identifikasjon = ({ formikBag }: IdentifikasjonValues) => {
 			<Panel
 				heading="Identifikasjon"
 				hasErrors={panelError(formikBag, identifikasjonAttributter)}
-				iconType="designsystem-identifikasjon"
+				iconType="identifikasjon"
 				startOpen={erForsteEllerTest(formikBag.values, identifikasjonAttributter)}
 			>
 				<Kategori title="Falsk identitet" vis="pdldata.person.falskIdentitet">

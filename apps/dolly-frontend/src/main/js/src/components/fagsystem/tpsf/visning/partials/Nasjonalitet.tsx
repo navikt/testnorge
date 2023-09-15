@@ -61,7 +61,7 @@ export const TpsfNasjonalitet = ({ data, visTittel = true }) => {
 
 	return (
 		<div>
-			{visTittel && <SubOverskrift label="Nasjonalitet" iconKind="designsystem-nasjonalitet" />}
+			{visTittel && <SubOverskrift label="Nasjonalitet" iconKind="nasjonalitet" />}
 			<div className="person-visning_content">
 				{statsborgerskap.length > 1 ? (
 					<ErrorBoundary>

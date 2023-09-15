@@ -109,7 +109,7 @@ export const Adressebeskyttelse = ({
 
 	return (
 		<>
-			<SubOverskrift label="Adressebeskyttelse" iconKind="designsystem-adresse" />
+			<SubOverskrift label="Adressebeskyttelse" iconKind="adresse" />
 			<div className="person-visning_content">
 				<ErrorBoundary>
 					<DollyFieldArray data={data} header="" nested>

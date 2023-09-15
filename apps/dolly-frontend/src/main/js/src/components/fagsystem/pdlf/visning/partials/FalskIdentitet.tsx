@@ -53,7 +53,7 @@ export const FalskIdentitet = ({ data }) => {
 
 	return (
 		<div>
-			<SubOverskrift label="Falsk identitet" iconKind="designsystem-identifikasjon" />
+			<SubOverskrift label="Falsk identitet" iconKind="identifikasjon" />
 			<div className="person-visning_content">
 				<ErrorBoundary>
 					{erListe ? (

@@ -225,7 +225,7 @@ export const Kontaktadresse = ({
 
 	return (
 		<>
-			<SubOverskrift label="Kontaktadresse" iconKind="designsystem-postadresse" />
+			<SubOverskrift label="Kontaktadresse" iconKind="postadresse" />
 			<div className="person-visning_content">
 				<ErrorBoundary>
 					<DollyFieldArray data={data || tmpData} header="" nested>

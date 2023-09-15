@@ -14,7 +14,7 @@ export const BestillingsveilederHeader = () => {
 	if (opts.is.nyOrganisasjon || opts.is.nyStandardOrganisasjon || opts.is.nyOrganisasjonFraMal) {
 		const titleValue = opts.is.nyStandardOrganisasjon ? 'Standard organisasjon' : 'Organisasjon'
 		return (
-			<Header icon="designsystem-organisasjon" iconClassName="org">
+			<Header icon="organisasjon" iconClassName="org">
 				<div className="flexbox">
 					<Header.TitleValue title="Opprett ny" value={titleValue} />
 					{opts.is.nyOrganisasjonFraMal && (

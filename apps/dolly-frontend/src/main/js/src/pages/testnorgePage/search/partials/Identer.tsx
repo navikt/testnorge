@@ -45,17 +45,13 @@ export const Identer: React.FC<IdentSearchProps> = ({ formikBag }: IdentSearchPr
 									{values.length > 1 && (
 										<Button
 											onClick={() => remove(index)}
-											kind="designsystem-trashcan"
+											kind="trashcan"
 											style={{ margin: '5px 0 0 10px' }}
 										/>
 									)}
 								</div>
 							))}
-						<Button
-							onClick={() => push('')}
-							kind="designsystem-add-circle"
-							style={{ margin: '0 0 10px 5px' }}
-						>
+						<Button onClick={() => push('')} kind="add-circle" style={{ margin: '0 0 10px 5px' }}>
 							Legg til flere
 						</Button>
 					</div>

@@ -17,7 +17,7 @@ export const Forbedring = () => {
 				className="btn-modal"
 				onClick={openForbedringModal}
 			>
-				<Icon kind="designsystem-krr" fontSize={'2rem'} />
+				<Icon kind="krr" fontSize={'2rem'} />
 			</button>
 			{isForbedringModalOpen && <ForbedringModal closeModal={closeForbedringModal} />}
 		</ErrorBoundary>

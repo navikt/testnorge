@@ -22,7 +22,7 @@ export const IdentifikasjonPanel = ({ stateModifier, formikBag }) => {
 			heading={IdentifikasjonPanel.heading}
 			checkAttributeArray={() => sm.batchAdd(harNpid && 'nyident')}
 			uncheckAttributeArray={sm.batchRemove}
-			iconType="designsystem-identifikasjon"
+			iconType="identifikasjon"
 			startOpen={harValgtAttributt(formikBag.values, identifikasjonAttributter)}
 		>
 			<AttributtKategori attr={sm.attrs}>

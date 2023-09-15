@@ -20,7 +20,7 @@ export const ArbeidInntektPanel = ({ stateModifier, formikBag }) => {
 			informasjonstekst={infoTekst}
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
-			iconType="designsystem-arbeid"
+			iconType="arbeid"
 			startOpen={harValgtAttributt(formikBag.values, [
 				aaregAttributt,
 				sigrunAttributt,

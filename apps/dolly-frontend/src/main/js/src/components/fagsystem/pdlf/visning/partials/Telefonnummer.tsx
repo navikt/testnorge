@@ -61,7 +61,7 @@ export const Telefonnummer = ({ data, tmpPersoner, ident, erPdlVisning = false }
 
 	return (
 		<div>
-			<SubOverskrift label="Telefonnummer" iconKind="designsystem-telephone" />
+			<SubOverskrift label="Telefonnummer" iconKind="telephone" />
 			<div className="person-visning_content">
 				{erPdlVisning ? (
 					<ErrorBoundary>

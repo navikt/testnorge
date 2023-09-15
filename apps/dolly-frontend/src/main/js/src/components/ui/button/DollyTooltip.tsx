@@ -1,26 +1,20 @@
 import * as React from 'react'
-import Tooltip from 'rc-tooltip'
-import { TooltipProps } from 'rc-tooltip/es/Tooltip'
 import { CypressSelector } from '../../../../cypress/mocks/Selectors'
+import { Tooltip, TooltipProps } from '@navikt/ds-react'
 
 const DollyTooltip = ({
-	overlay,
+	content,
 	children,
+	// @ts-ignore
 	dataCy = null as unknown as CypressSelector,
 	...rest
 }: TooltipProps) => {
-	if (!overlay) {
+	if (!content) {
 		return <>{children}</>
 	}
 	return (
 		<span data-cy={dataCy}>
-			<Tooltip
-				overlay={overlay}
-				placement="top"
-				mouseEnterDelay={0.1}
-				mouseLeaveDelay={0.1}
-				{...rest}
-			>
+			<Tooltip content={content} placement="top" delay={0.1} {...rest}>
 				{children}
 			</Tooltip>
 		</span>

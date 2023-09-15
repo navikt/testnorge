@@ -44,26 +44,22 @@ export const PdlDataVisning = ({ ident, bankIdBruker, miljoe }: PdlDataVisningPr
 		<div className="flexbox--flex-wrap">
 			<DollyTooltip
 				dataCy={CypressSelector.HOVER_MILJOE}
-				overlay={<PdlPersonInfo ident={ident} />}
+				content={<PdlPersonInfo ident={ident} />}
 				align={{
 					offset: [0, -10],
 				}}
-				arrowContent={<div className="rc-tooltip-arrow-inner" />}
 				overlayStyle={{ opacity: 1 }}
-				destroyTooltipOnHide={{ keepParent: false }}
 			>
 				<div className="miljoe-knapp">PDL</div>
 			</DollyTooltip>
 			{(!bankIdBruker || miljoe === 'q1') && (
 				<DollyTooltip
 					dataCy={CypressSelector.HOVER_MILJOE}
-					overlay={<PdlPersonInfo ident={ident} hentQ1={true} />}
+					content={<PdlPersonInfo ident={ident} hentQ1={true} />}
 					align={{
 						offset: [0, -10],
 					}}
-					arrowContent={<div className="rc-tooltip-arrow-inner" />}
 					overlayStyle={{ opacity: 1 }}
-					destroyTooltipOnHide={{ keepParent: false }}
 				>
 					<div className="miljoe-knapp">Q1</div>
 				</DollyTooltip>

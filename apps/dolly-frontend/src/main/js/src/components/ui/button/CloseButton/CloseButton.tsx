@@ -8,7 +8,7 @@ const CloseButton = ({ ...props }) => (
 		style={{ position: 'absolute', top: 2, right: 2 }}
 		{...props}
 	>
-		<Icon kind={'designsystem-kryss'} />
+		<Icon kind={'kryss'} />
 	</Button>
 )
 

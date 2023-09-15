@@ -23,7 +23,7 @@ export const InputWarning = ({
 			{visWarning && (
 				<div className={css}>
 					<div className="flexbox">
-						<Icon kind="designsystem-personinformasjon" className="warning-ikon" />
+						<Icon kind="personinformasjon" className="warning-ikon" />
 						<div className="warning-text">{warningText}</div>
 					</div>
 				</div>

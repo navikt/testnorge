@@ -30,7 +30,7 @@ export const OrganisasjonVisning = ({ data, bestillinger }: OrganisasjonVisningP
 
 	return (
 		<div>
-			<SubOverskrift label="Organisasjonsoversikt" iconKind="designsystem-organisasjon" />
+			<SubOverskrift label="Organisasjonsoversikt" iconKind="organisasjon" />
 			<Enhetstre enheter={[orgTree]} selectedEnhet={selectedId} onNodeClick={setSelectedId} />
 			<Detaljer data={[orgTree.find(selectedId)]} />
 			{/* @ts-ignore */}

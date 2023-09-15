@@ -14,7 +14,7 @@ type HeaderProps = {
 export const Header = ({
 	children,
 	className,
-	icon = 'designsystem-man',
+	icon = 'man',
 	iconClassName,
 	iconSize = '2.5rem',
 }: HeaderProps) => {

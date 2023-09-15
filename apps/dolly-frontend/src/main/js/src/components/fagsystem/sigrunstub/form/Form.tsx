@@ -11,7 +11,7 @@ export const SigrunstubForm = ({ formikBag }) => (
 		<Panel
 			heading="Skatteoppgjør (Sigrun)"
 			hasErrors={panelError(formikBag, sigrunAttributt)}
-			iconType="designsystem-sigrun"
+			iconType="sigrun"
 			startOpen={erForsteEllerTest(formikBag.values, [sigrunAttributt])}
 		>
 			<InntektsaarForm formikBag={formikBag} />

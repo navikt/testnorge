@@ -53,12 +53,7 @@ export const SlettButton = ({
 
 	return (
 		<React.Fragment>
-			<Button
-				onClick={openModal}
-				disabled={disabled}
-				title={getTitle()}
-				kind="designsystem-trashcan"
-			>
+			<Button onClick={openModal} disabled={disabled} title={getTitle()} kind="trashcan">
 				SLETT
 			</Button>
 			<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="40%" overflow="auto">

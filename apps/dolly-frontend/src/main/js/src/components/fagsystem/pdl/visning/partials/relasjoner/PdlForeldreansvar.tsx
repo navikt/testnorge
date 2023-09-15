@@ -61,7 +61,7 @@ export const PdlForeldreansvar = ({ data }: PdlForeldreansvarProps) => {
 
 	return (
 		<div>
-			<SubOverskrift label="Foreldreansvar" iconKind="designsystem-foreldreansvar" />
+			<SubOverskrift label="Foreldreansvar" iconKind="foreldreansvar" />
 			<ArrayHistorikk
 				component={PdlForeldreansvarVisning}
 				data={gyldigeForeldreansvar}

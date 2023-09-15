@@ -53,7 +53,6 @@ export const TpsDataVisning = ({ data }: TpsData) => {
 						align={{
 							offset: [0, -10],
 						}}
-						arrowContent={<div className="rc-tooltip-arrow-inner" />}
 						key={idx}
 						overlayStyle={{ opacity: 1 }}
 					>

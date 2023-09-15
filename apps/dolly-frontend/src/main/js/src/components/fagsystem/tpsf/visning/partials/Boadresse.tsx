@@ -66,7 +66,7 @@ export const TpsfBoadresse = ({ boadresse }) => {
 	if (!boadresse || (boadresse instanceof Array && boadresse.length < 1)) return false
 	return (
 		<>
-			<SubOverskrift label="Boadresse" iconKind="designsystem-adresse" />
+			<SubOverskrift label="Boadresse" iconKind="adresse" />
 			<div className="person-visning_content">
 				<Historikk
 					component={Adressevisning}

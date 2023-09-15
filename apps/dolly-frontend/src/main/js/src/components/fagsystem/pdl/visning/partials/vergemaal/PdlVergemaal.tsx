@@ -57,7 +57,7 @@ export const PdlVergemaal = ({ data }: VergemaalProps) => {
 
 	return (
 		<div>
-			<SubOverskrift label="Vergemål" iconKind="designsystem-vergemaal" />
+			<SubOverskrift label="Vergemål" iconKind="vergemaal" />
 			<ArrayHistorikk
 				component={Visning}
 				data={gyldigeVergemaal}

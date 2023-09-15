@@ -51,7 +51,7 @@ export const PdlForeldreBarn = ({ data }: PdlForeldreBarnProps) => {
 
 	return (
 		<div>
-			<SubOverskrift label="Barn/foreldre" iconKind="designsystem-relasjoner" />
+			<SubOverskrift label="Barn/foreldre" iconKind="relasjoner" />
 			<ErrorBoundary>
 				<DollyFieldArray data={data} nested>
 					{(relasjon: ForeldreBarnRelasjon, idx: number) => (

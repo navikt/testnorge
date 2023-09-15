@@ -47,7 +47,7 @@ export const PdlFullmakt = ({ data }: DataListe) => {
 	}
 	return (
 		<div>
-			<SubOverskrift label="Fullmakt" iconKind="designsystem-fullmakt" />
+			<SubOverskrift label="Fullmakt" iconKind="fullmakt" />
 			{/* @ts-ignore */}
 			<DollyFieldArray data={data} nested>
 				{(fullmakt: FullmaktData) => <Visning data={fullmakt} />}

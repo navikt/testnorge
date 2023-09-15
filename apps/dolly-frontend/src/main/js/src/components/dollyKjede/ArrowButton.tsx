@@ -19,7 +19,7 @@ export default ({ left, disabled, onClick }: Props) => {
 
 	return (
 		<ArrowButton disabled={disabled} onClick={() => onClick(paginationValue)}>
-			<Icon size={14} kind={left ? 'designsystem-arrow-left' : 'designsystem-arrow-right'} />
+			<Icon size={14} kind={left ? 'arrow-left' : 'arrow-right'} />
 		</ArrowButton>
 	)
 }

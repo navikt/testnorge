@@ -17,7 +17,7 @@ export const IdenthistorikkVisning = ({ relasjoner }: IdenthistorikkData) => {
 
 	return (
 		<div>
-			<SubOverskrift label="Identhistorikk" iconKind="designsystem-identhistorikk" />
+			<SubOverskrift label="Identhistorikk" iconKind="identhistorikk" />
 			<DollyFieldArray data={historiskeIdenter} nested>
 				{(ident: Relasjon) => (
 					<RelatertPerson data={ident?.relatertPerson} tittel={'Gammel ident'} />

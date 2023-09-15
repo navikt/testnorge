@@ -16,7 +16,7 @@ export const BestillingSammendragModal = ({ bestilling }) => {
 			<Button
 				data-cy={CypressSelector.BUTTON_OPEN_BESTILLINGSDETALJER}
 				onClick={openModal}
-				kind="designsystem-details"
+				kind="details"
 			>
 				BESTILLINGSDETALJER
 			</Button>

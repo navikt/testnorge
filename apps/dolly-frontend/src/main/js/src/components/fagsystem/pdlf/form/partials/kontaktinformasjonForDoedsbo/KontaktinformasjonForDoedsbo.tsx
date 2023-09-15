@@ -46,7 +46,7 @@ export const KontaktinformasjonForDoedsbo = ({ formikBag }) => {
 			<Panel
 				heading="Kontaktinformasjon for dødsbo"
 				hasErrors={panelError(formikBag, doedsboAttributt)}
-				iconType="designsystem-doedsbo"
+				iconType="doedsbo"
 				startOpen={erForsteEllerTest(formikBag.values, [doedsboAttributt])}
 			>
 				<FormikDollyFieldArray

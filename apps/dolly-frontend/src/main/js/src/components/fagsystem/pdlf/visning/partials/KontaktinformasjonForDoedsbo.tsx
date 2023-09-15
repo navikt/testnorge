@@ -220,7 +220,7 @@ export const KontaktinformasjonForDoedsbo = ({
 
 	return (
 		<div>
-			<SubOverskrift label="Kontaktinformasjon for dødsbo" iconKind="designsystem-doedsbo" />
+			<SubOverskrift label="Kontaktinformasjon for dødsbo" iconKind="doedsbo" />
 			<div className="person-visning_content">
 				<ErrorBoundary>
 					<DollyFieldArray data={data} nested>

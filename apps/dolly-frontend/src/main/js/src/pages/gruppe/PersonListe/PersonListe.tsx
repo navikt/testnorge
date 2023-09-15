@@ -117,11 +117,7 @@ export default function PersonListe({
 			dataField: 'navn',
 			formatter: (_cell, row) => {
 				return (
-					<DollyTooltip
-						overlay={row.navn?.length > 23 ? row.navn : null}
-						destroyTooltipOnHide={true}
-						mouseEnterDelay={0}
-					>
+					<DollyTooltip content={row.navn?.length > 23 ? row.navn : null} mouseEnterDelay={0}>
 						{getNavnLimited(row.navn)}
 					</DollyTooltip>
 				)
@@ -184,21 +180,21 @@ export default function PersonListe({
 				if (row.ident.beskrivelse) {
 					return (
 						<DollyTooltip
-							overlay={getKommentarTekst(row.ident.beskrivelse)}
-							destroyTooltipOnHide={true}
-							mouseEnterDelay={0}
-							onClick={(event) => {
-								setSelectedIdent(row.ident)
-								openKommentarModal()
-								event.stopPropagation()
-							}}
-							arrowContent={<div className="rc-tooltip-arrow-inner" />}
+							content={getKommentarTekst(row.ident.beskrivelse)}
 							align={{
 								offset: [0, -10],
 							}}
 						>
 							<div style={{ textAlign: 'center' }}>
-								<Icon kind="designsystem-kommentar" size={20} />
+								<Icon
+									kind="kommentar"
+									size={20}
+									onClick={(event) => {
+										setSelectedIdent(row.ident)
+										openKommentarModal()
+										event.stopPropagation()
+									}}
+								/>
 							</div>
 						</DollyTooltip>
 					)

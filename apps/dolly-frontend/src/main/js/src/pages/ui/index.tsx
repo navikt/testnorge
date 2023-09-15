@@ -44,8 +44,8 @@ export default function () {
 			<h2>Knapper</h2>
 			<h3>Standard knapper</h3>
 			<Button>Standard knapp</Button>
-			<Button kind="designsystem-edit">REDIGER</Button>
-			<Button kind="designsystem-edit" loading>
+			<Button kind="edit">REDIGER</Button>
+			<Button kind="edit" loading>
 				REDIGER
 			</Button>
 
@@ -70,9 +70,9 @@ export default function () {
 			<PersonIBrukButton ident={{ ibruk: true }} />
 
 			<h2>Icons</h2>
-			<Icon kind="designsystem-edit" />
-			<Icon kind="designsystem-edit" size={34} />
-			<Icon kind="designsystem-edit" size={44} />
+			<Icon kind="edit" />
+			<Icon kind="edit" size={34} />
+			<Icon kind="edit" size={44} />
 
 			<h2>Header</h2>
 			<Header>
@@ -81,7 +81,7 @@ export default function () {
 
 			<h2>Sub overskrift</h2>
 			<SubOverskrift label="Undertittel" />
-			<SubOverskrift iconKind="designsystem-woman" label="Undertittel med ikon" />
+			<SubOverskrift iconKind="woman" label="Undertittel med ikon" />
 
 			<h2>Panel</h2>
 			<Panel heading="Standard panel">Dette er panelets innhold</Panel>
@@ -97,7 +97,7 @@ export default function () {
 			<Panel heading="Har errors" hasErrors>
 				Dette er panelets innhold
 			</Panel>
-			<Panel heading="Har ikon" iconType="designsystem-man">
+			<Panel heading="Har ikon" iconType="man">
 				Dette er panelets innhold
 			</Panel>
 

@@ -134,7 +134,7 @@ export const ArenaVisning = ({ data, ident, bestillingIdListe, loading, tilgjeng
 		<div>
 			<SubOverskrift
 				label="Arbeidsytelser"
-				iconKind="designsystem-arena"
+				iconKind="arena"
 				isWarning={!miljoerMedData || miljoerMedData?.length < 1}
 			/>
 			{!miljoerMedData || miljoerMedData?.length < 1 ? (

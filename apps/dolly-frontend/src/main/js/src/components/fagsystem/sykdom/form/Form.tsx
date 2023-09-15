@@ -19,7 +19,7 @@ export const SykdomForm = ({ formikBag }: SykdomFormProps) => (
 		<Panel
 			heading="Sykemelding"
 			hasErrors={panelError(formikBag, sykdomAttributt)}
-			iconType="designsystem-sykdom"
+			iconType="sykdom"
 			startOpen={erForsteEllerTest(formikBag.values, [sykdomAttributt])}
 			informasjonstekst="Om du velger å generere en sykemelding automatisk, vil du få en syntetisk sykemelding hvor alle verdier blir satt for deg."
 		>

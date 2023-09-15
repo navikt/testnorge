@@ -24,7 +24,7 @@ export const ArbeidsplassenForm = ({ formikBag }) => {
 			<Panel
 				heading="Arbeidsplassen (CV)"
 				hasErrors={panelError(formikBag, arbeidsplassenAttributt)}
-				iconType="designsystem-cv"
+				iconType="cv"
 				startOpen={erForsteEllerTest(formikBag.values, [arbeidsplassenAttributt])}
 			>
 				<div className="flexbox--flex-wrap">

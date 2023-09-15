@@ -113,7 +113,7 @@ export const DokarkivForm = ({ formikBag }: DokarkivFormProps) => {
 			<Panel
 				heading="Dokumenter (Joark)"
 				hasErrors={panelError(formikBag, dokarkivAttributt)}
-				iconType="designsystem-dokarkiv"
+				iconType="dokarkiv"
 				// @ts-ignore
 				startOpen={erForsteEllerTest(formikBag.values, [dokarkivAttributt])}
 			>

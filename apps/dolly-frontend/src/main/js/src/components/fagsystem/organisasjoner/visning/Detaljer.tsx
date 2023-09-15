@@ -14,7 +14,7 @@ type DetaljerProps = {
 export const Detaljer = ({ data }: DetaljerProps) => {
 	return (
 		<section className="person-visning">
-			<SubOverskrift label="Detaljer" iconKind="designsystem-personinformasjon" />
+			<SubOverskrift label="Detaljer" iconKind="personinformasjon" />
 			<div className="person-visning_content">
 				<TitleValue title="Orgnr." value={data[0].organisasjonsnummer} />
 				<TitleValue title="Navn" value={data[0].organisasjonsnavn} />

@@ -34,7 +34,7 @@ export const PdlOppholdsadresse = ({ data }: PdlOppholdsadresseProps) => {
 
 	return (
 		<>
-			<SubOverskrift label="Oppholdsadresse" iconKind="designsystem-adresse" />
+			<SubOverskrift label="Oppholdsadresse" iconKind="adresse" />
 			<ArrayHistorikk
 				component={AdresseVisning}
 				data={gyldigeAdresser}

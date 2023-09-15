@@ -14,7 +14,7 @@ const getOrganisasjonInfo = (organisasjon, selectedId, setSelectedId) => {
 	const orgTree = new OrgTree(organisasjon[1], '0')
 	return (
 		<div className="boks">
-			<SubOverskrift label="Organisasjonsoversikt" iconKind="designsystem-organisasjon" />
+			<SubOverskrift label="Organisasjonsoversikt" iconKind="organisasjon" />
 			<Enhetstre enheter={[orgTree]} selectedEnhet={selectedId} onNodeClick={setSelectedId} />
 			<Detaljer data={[orgTree.find(selectedId)]} />
 		</div>
@@ -41,11 +41,10 @@ export const OrganisasjonDataVisning = ({ data }) => {
 				if (tilgjengeligMiljoe && tilgjengeligMiljoe !== miljoe) return null
 				return (
 					<DollyTooltip
-						overlay={getOrganisasjonInfo(organisasjoner, selectedId, setSelectedId)}
+						content={getOrganisasjonInfo(organisasjoner, selectedId, setSelectedId)}
 						align={{
 							offset: [0, -10],
 						}}
-						arrowContent={<div className="rc-tooltip-arrow-inner"></div>}
 						key={idx}
 						overlayStyle={{ opacity: 1 }}
 					>

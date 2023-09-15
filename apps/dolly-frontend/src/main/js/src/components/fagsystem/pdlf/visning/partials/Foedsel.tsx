@@ -105,7 +105,7 @@ export const Foedsel = ({ data, tmpPersoner, ident, erPdlVisning = false }: Foed
 
 	return (
 		<div>
-			<SubOverskrift label="Fødsel" iconKind="designsystem-foedsel" />
+			<SubOverskrift label="Fødsel" iconKind="foedsel" />
 			<div className="person-visning_content">
 				<ErrorBoundary>
 					<DollyFieldArray data={data} header="" nested>

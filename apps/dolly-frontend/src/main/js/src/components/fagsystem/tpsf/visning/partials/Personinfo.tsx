@@ -83,9 +83,7 @@ export const TpsfPersoninfo = ({ data, fagsystemData = {}, visTittel = true, pdl
 
 	return (
 		<div>
-			{visTittel && (
-				<SubOverskrift label="Persondetaljer" iconKind="designsystem-personinformasjon" />
-			)}
+			{visTittel && <SubOverskrift label="Persondetaljer" iconKind="personinformasjon" />}
 			<div className="person-visning_content">
 				<TitleValue title={data.identtype} value={data.ident} visKopier />
 				<TitleValue title="Fornavn" value={data.fornavn} />

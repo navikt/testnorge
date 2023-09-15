@@ -194,7 +194,7 @@ export const ForeldreansvarVisning = ({ data, tmpPersoner, ident, relasjoner, pe
 
 	return (
 		<div>
-			<SubOverskrift label="Foreldreansvar" iconKind="designsystem-foreldreansvar" />
+			<SubOverskrift label="Foreldreansvar" iconKind="foreldreansvar" />
 			<DollyFieldArray data={foreldreansvarData} nested>
 				{(foreldreansvar, idx) => (
 					<ForeldreansvarEnkeltvisning

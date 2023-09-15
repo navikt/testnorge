@@ -50,7 +50,7 @@ export const AlderspensjonVisning = ({ data, loading, bestillingIdListe, tilgjen
 
 	return (
 		<ErrorBoundary>
-			<SubOverskrift label="Alderspensjon" iconKind="designsystem-pensjon" isWarning={manglerFagsystemdata} />
+			<SubOverskrift label="Alderspensjon" iconKind="pensjon" isWarning={manglerFagsystemdata} />
 			{manglerFagsystemdata ? (
 				<Alert variant={'warning'} size={'small'} inline style={{ marginBottom: '20px' }}>
 					Fant ikke alderspensjon-data på person

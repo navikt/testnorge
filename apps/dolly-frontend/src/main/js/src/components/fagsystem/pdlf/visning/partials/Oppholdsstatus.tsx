@@ -37,7 +37,7 @@ export const PdlOppholdsstatus = ({ data }: DataListe) => {
 	}
 	return (
 		<div>
-			<SubOverskrift label="Oppholdsstatus" iconKind="designsystem-udi" />
+			<SubOverskrift label="Oppholdsstatus" iconKind="udi" />
 			<DollyFieldArray data={data} nested>
 				{(opphold: OppholdData) => <Visning data={opphold} />}
 			</DollyFieldArray>

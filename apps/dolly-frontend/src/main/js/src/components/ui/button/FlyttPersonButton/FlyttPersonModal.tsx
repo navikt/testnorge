@@ -276,7 +276,7 @@ export const FlyttPersonModal = ({ gruppeId, modalIsOpen, closeModal }: FlyttPer
 											size="grow"
 											placeholder="Søk etter person"
 										/>
-										<Icon kind="designsystem-search" size={20} />
+										<Icon kind="search" size={20} />
 									</PersonSoek>
 									{!gruppeOptions ||
 									gruppeOptions?.length < 1 ||

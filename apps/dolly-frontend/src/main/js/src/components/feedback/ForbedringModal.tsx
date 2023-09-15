@@ -40,7 +40,7 @@ export const ForbedringModal = ({ closeModal }) => {
 				<div className="modal-content">
 					{isAnonym ? (
 						<div>
-							<Icon kind="designsystem-user" fontSize={'2rem'} className="bruker-ikon" />
+							<Icon kind="user" fontSize={'2rem'} className="bruker-ikon" />
 						</div>
 					) : (
 						<img alt="Profilbilde" src={brukerBilde || dolly} />

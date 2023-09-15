@@ -31,7 +31,7 @@ export default ({ data, loading }: Form) => {
 
 	return (
 		<>
-			<SubOverskrift label="Dokumenter (Histark)" iconKind="designsystem-dokarkiv" />
+			<SubOverskrift label="Dokumenter (Histark)" iconKind="dokarkiv" />
 			<Histark data={data} />
 		</>
 	)

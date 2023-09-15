@@ -69,10 +69,7 @@ export default ({ filer, handleChange, isMultiple = true }: Data) => {
 								onBlur={(event: BaseSyntheticEvent) => handleBlur(index, event.target.value)}
 								label={`Tittel på dokument #${index + 1}`}
 							/>
-							<StyledSlettKnapp
-								kind="designsystem-trashcan"
-								onClick={() => handleDeleteByIndex(index)}
-							/>
+							<StyledSlettKnapp kind="trashcan" onClick={() => handleDeleteByIndex(index)} />
 						</div>
 					)}
 				</DollyFieldArray>
@@ -95,7 +92,7 @@ export default ({ filer, handleChange, isMultiple = true }: Data) => {
 						onBlur={(event: BaseSyntheticEvent) => handleBlur(0, event.target.value)}
 						label={`Tittel på dokument`}
 					/>
-					<StyledSlettKnapp kind="designsystem-trashcan" onClick={() => handleDeleteByIndex(0)} />
+					<StyledSlettKnapp kind="trashcan" onClick={() => handleDeleteByIndex(0)} />
 				</div>
 			)}
 		</ErrorBoundary>

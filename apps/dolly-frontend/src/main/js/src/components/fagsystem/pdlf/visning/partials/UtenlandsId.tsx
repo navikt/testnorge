@@ -68,10 +68,7 @@ export const UtenlandsId = ({ data, tmpPersoner, ident }) => {
 
 	return (
 		<div>
-			<SubOverskrift
-				label="Utenlandsk identifikasjonsnummer"
-				iconKind="designsystem-identifikasjon"
-			/>
+			<SubOverskrift label="Utenlandsk identifikasjonsnummer" iconKind="identifikasjon" />
 			<ErrorBoundary>
 				<DollyFieldArray data={data} nested>
 					{(id, idx) => (

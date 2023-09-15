@@ -30,7 +30,7 @@ export const PdlDoedfoedtBarn = ({ data }: DataProps) => {
 
 	return (
 		<div>
-			<SubOverskrift label="Dødfødt barn" iconKind="designsystem-doedfoedt" />
+			<SubOverskrift label="Dødfødt barn" iconKind="doedfoedt" />
 			<ErrorBoundary>
 				<DollyFieldArray data={data} nested>
 					{(data: DoedfoedtBarnData, idx: number) => (

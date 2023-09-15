@@ -66,7 +66,7 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 				startOpen
 				checkAttributeArray={() => sm.batchAdd(getIgnoreKeys())}
 				uncheckAttributeArray={sm.batchRemove}
-				iconType={'designsystem-personinformasjon'}
+				iconType={'personinformasjon'}
 			>
 				<AttributtKategori title="Diverse" attr={sm.attrs}>
 					<Attributt attr={sm.attrs.sprakKode} />
@@ -91,7 +91,7 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 			startOpen
 			checkAttributeArray={() => sm.batchAdd(getIgnoreKeys())}
 			uncheckAttributeArray={sm.batchRemove}
-			iconType={'designsystem-personinformasjon'}
+			iconType={'personinformasjon'}
 		>
 			<AttributtKategori title="Alder" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.alder} vis={!opprettFraEksisterende && !leggTil} />

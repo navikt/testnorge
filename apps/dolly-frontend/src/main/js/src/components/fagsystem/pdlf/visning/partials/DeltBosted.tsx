@@ -100,7 +100,7 @@ export const DeltBosted = ({ data, tmpPersoner, ident, personValues, relasjoner 
 
 	return (
 		<>
-			<SubOverskrift label="Delt bosted" iconKind="designsystem-adresse" />
+			<SubOverskrift label="Delt bosted" iconKind="adresse" />
 			<div className="person-visning_content">
 				<ErrorBoundary>
 					<DollyFieldArray data={data} header="" nested>

@@ -80,88 +80,88 @@ export const icons = {
 	dollyPanic: DollyPanic,
 	cypress: Cypress,
 
-	'designsystem-trashcan': TrashIcon,
-	'designsystem-add-circle': PlusCircleIcon,
-	'designsystem-remove-circle': MinusCircleIcon,
-	'designsystem-edit': PencilIcon,
-	'designsystem-star': StarIcon,
-	'designsystem-star-dark': StarFillIcon,
-	'designsystem-star-light': StarIcon,
-	'designsystem-star-filled': StarFillIcon,
-	'designsystem-eraser': EraserIcon,
-	'designsystem-user': PersonCircleIcon,
-	'designsystem-search': MagnifyingGlassIcon,
-	'designsystem-calendar': CalendarIcon,
-	'designsystem-file-new-table': FilePlusIcon,
-	'designsystem-arrow-left': ArrowLeftIcon,
-	'designsystem-arrow-right': ArrowRightIcon,
-	'designsystem-details': InformationSquareIcon,
-	'designsystem-synchronize': ArrowsCirclepathIcon,
-	'designsystem-kryss': XMarkIcon,
-	'designsystem-chevron-down': ChevronDownIcon,
-	'designsystem-chevron-up': ChevronUpIcon,
-	'designsystem-thumbs-up': ThumbUpFillIcon,
-	'designsystem-thumbs-down': ThumbDownFillIcon,
-	'designsystem-lock': PadlockLockedIcon,
-	'designsystem-logout': LeaveIcon,
+	trashcan: TrashIcon,
+	'add-circle': PlusCircleIcon,
+	'remove-circle': MinusCircleIcon,
+	edit: PencilIcon,
+	star: StarIcon,
+	'star-dark': StarFillIcon,
+	'star-light': StarIcon,
+	'star-filled': StarFillIcon,
+	eraser: EraserIcon,
+	user: PersonCircleIcon,
+	search: MagnifyingGlassIcon,
+	calendar: CalendarIcon,
+	'file-new-table': FilePlusIcon,
+	'arrow-left': ArrowLeftIcon,
+	'arrow-right': ArrowRightIcon,
+	details: InformationSquareIcon,
+	synchronize: ArrowsCirclepathIcon,
+	kryss: XMarkIcon,
+	'chevron-down': ChevronDownIcon,
+	'chevron-up': ChevronUpIcon,
+	'thumbs-up': ThumbUpFillIcon,
+	'thumbs-down': ThumbDownFillIcon,
+	lock: PadlockLockedIcon,
+	logout: LeaveIcon,
 
-	'designsystem-man': FigureInwardIcon,
-	'designsystem-man-light': FigureInwardIcon,
-	'designsystem-man-silhouette': SilhouetteIcon,
-	'designsystem-woman': FigureOutwardIcon,
-	'designsystem-person': PersonIcon,
-	'designsystem-group': PersonGroupIcon,
-	'designsystem-group-light': PersonGroupIcon,
-	'designsystem-group-dark': PersonGroupFillIcon,
-	'designsystem-locked-group': PadlockLockedIcon,
-	'designsystem-sikkerhetstiltak': PadlockLockedIcon,
-	'designsystem-bestilling': FileCheckmarkIcon,
-	'designsystem-bestilling-light': FileCheckmarkIcon,
-	'designsystem-new-file': FilePlusIcon,
-	'designsystem-maler': FileLoadingIcon,
+	man: FigureInwardIcon,
+	'man-light': FigureInwardIcon,
+	'man-silhouette': SilhouetteIcon,
+	woman: FigureOutwardIcon,
+	person: PersonIcon,
+	group: PersonGroupIcon,
+	'group-light': PersonGroupIcon,
+	'group-dark': PersonGroupFillIcon,
+	'locked-group': PadlockLockedIcon,
+	sikkerhetstiltak: PadlockLockedIcon,
+	bestilling: FileCheckmarkIcon,
+	'bestilling-light': FileCheckmarkIcon,
+	'new-file': FilePlusIcon,
+	maler: FileLoadingIcon,
 
-	'designsystem-personinformasjon': InformationSquareIcon,
-	'designsystem-nasjonalitet': EarthIcon,
-	'designsystem-relasjoner': PersonTallShortIcon,
-	'designsystem-identhistorikk': BagdeIcon,
-	'designsystem-identifikasjon': PersonGroupIcon,
-	'designsystem-adresse': HouseIcon,
-	'designsystem-postadresse': InboxDownIcon,
-	'designsystem-midlertidig-adresse': HourglassIcon,
-	'designsystem-doedsbo': CandleIcon,
-	'designsystem-krr': EnvelopeClosedIcon,
-	'designsystem-arena': CheckmarkCircleIcon,
-	'designsystem-institusjon': Buldings3Icon,
-	'designsystem-arbeid': WrenchIcon,
-	'designsystem-sigrun': BankNoteIcon,
-	'designsystem-bankkonto': BankNoteIcon,
-	'designsystem-inntektstub': SackKronerIcon,
-	'designsystem-inntektsmelding': BankNoteIcon,
-	'designsystem-udi': EarthIcon,
-	'designsystem-kommentar': ChatElipsisIcon,
-	'designsystem-partner': HeartIcon,
-	'designsystem-barn': BabyWrappedIcon,
-	'designsystem-doedfoedt': FlowerPetalFallingIcon,
-	'designsystem-pensjon': PiggybankIcon,
-	'designsystem-brreg': Buldings2Icon,
-	'designsystem-dokarkiv': FileTextIcon,
-	'designsystem-copy': FilesIcon,
-	'designsystem-sykdom': BandageIcon,
-	'designsystem-vergemaal': PersonGroupIcon,
-	'designsystem-vis-tps-data': MagnifyingGlassIcon,
-	'designsystem-vis-org-data': MagnifyingGlassIcon,
-	'designsystem-organisasjon': TenancyIcon,
-	'designsystem-fullmakt': PersonGroupIcon,
-	'designsystem-link': LinkIcon,
-	'designsystem-link-broken': LinkBrokenIcon,
-	'designsystem-telephone': PhoneIcon,
-	'designsystem-foedsel': BabyWrappedIcon,
-	'designsystem-foreldreansvar': PersonGroupIcon,
-	'designsystem-grav': FlowerPetalFallingIcon,
-	'designsystem-flytt': LeaveIcon,
-	'designsystem-file-new': FileTextIcon,
-	'designsystem-file-code': FileCodeIcon,
-	'designsystem-cv': FileTextIcon,
+	personinformasjon: InformationSquareIcon,
+	nasjonalitet: EarthIcon,
+	relasjoner: PersonTallShortIcon,
+	identhistorikk: BagdeIcon,
+	identifikasjon: PersonGroupIcon,
+	adresse: HouseIcon,
+	postadresse: InboxDownIcon,
+	'midlertidig-adresse': HourglassIcon,
+	doedsbo: CandleIcon,
+	krr: EnvelopeClosedIcon,
+	arena: CheckmarkCircleIcon,
+	institusjon: Buldings3Icon,
+	arbeid: WrenchIcon,
+	sigrun: BankNoteIcon,
+	bankkonto: BankNoteIcon,
+	inntektstub: SackKronerIcon,
+	inntektsmelding: BankNoteIcon,
+	udi: EarthIcon,
+	kommentar: ChatElipsisIcon,
+	partner: HeartIcon,
+	barn: BabyWrappedIcon,
+	doedfoedt: FlowerPetalFallingIcon,
+	pensjon: PiggybankIcon,
+	brreg: Buldings2Icon,
+	dokarkiv: FileTextIcon,
+	copy: FilesIcon,
+	sykdom: BandageIcon,
+	vergemaal: PersonGroupIcon,
+	'vis-tps-data': MagnifyingGlassIcon,
+	'vis-org-data': MagnifyingGlassIcon,
+	organisasjon: TenancyIcon,
+	fullmakt: PersonGroupIcon,
+	link: LinkIcon,
+	'link-broken': LinkBrokenIcon,
+	telephone: PhoneIcon,
+	foedsel: BabyWrappedIcon,
+	foreldreansvar: PersonGroupIcon,
+	grav: FlowerPetalFallingIcon,
+	flytt: LeaveIcon,
+	'file-new': FileTextIcon,
+	'file-code': FileCodeIcon,
+	cv: FileTextIcon,
 }
 
 const px = (v: number) => `${v}px`
@@ -173,13 +173,30 @@ const Icon = ({
 	fontSize = '1rem',
 	style = undefined,
 	className = undefined as unknown as string,
+	onClick = null as unknown as any,
 	...props
 }) => {
 	const icon = icons?.[kind]
 	if (!icon) {
 		return null
 	}
-	const DesignSystemIcon = kind.includes('designsystem') && icon
+
+	const halvannenRemIkoner = ['chevron-up', 'chevron-down', 'kommentar']
+
+	const egneIkon = [
+		'report-problem-circle',
+		'feedback-check-circle',
+		'report-problem-triangle',
+		'dolly',
+		'dollyPanic',
+		'cypress',
+	]
+
+	if (halvannenRemIkoner.includes(kind)) {
+		fontSize = '1.5rem'
+	}
+
+	const DesignSystemIcon = !egneIkon.includes(kind) && icon
 
 	const cssClass = cn('svg-icon', `svg-icon-${kind}`, className)
 	const styleObj = Object.assign({ width: px(size), height: px(size) }, style)
@@ -190,10 +207,19 @@ const Icon = ({
 			fontSize={fontSize}
 			className={className}
 			data-cy={props['data-cy']}
+			onClick={onClick}
 		/>
 	) : (
 		<ErrorBoundary>
-			<SVG src={icon} className={cssClass} style={styleObj} title={title} role={'img'} {...props}>
+			<SVG
+				src={icon}
+				className={cssClass}
+				style={styleObj}
+				title={title}
+				role={'img'}
+				onClick={onClick}
+				{...props}
+			>
 				<img
 					src="../assets/icons/nav-ikoner/filled/SVG/01-edition/link-broken-1.svg"
 					alt="fallback"

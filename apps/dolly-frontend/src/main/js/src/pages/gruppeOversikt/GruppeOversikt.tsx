@@ -102,18 +102,18 @@ const GruppeOversikt = ({ searchActive, sideStoerrelse, sidetall }: GruppeOversi
 						style={{ backgroundColor: '#ffffff' }}
 					>
 						<StyledToggleItem data-cy={CypressSelector.TOGGLE_MINE} value={VisningType.MINE}>
-							<Icon kind={'designsystem-man-silhouette'} />
+							<Icon kind={'man-silhouette'} />
 							Mine
 						</StyledToggleItem>
 						<StyledToggleItem
 							data-cy={CypressSelector.TOGGLE_FAVORITTER}
 							value={VisningType.FAVORITTER}
 						>
-							<Icon kind={'designsystem-star-light'} />
+							<Icon kind={'star-light'} />
 							Favoritter
 						</StyledToggleItem>
 						<StyledToggleItem data-cy={CypressSelector.TOGGLE_ALLE} value={VisningType.ALLE}>
-							<Icon kind={'designsystem-group-light'} />
+							<Icon kind={'group-light'} />
 							Alle
 						</StyledToggleItem>
 					</ToggleGroup>

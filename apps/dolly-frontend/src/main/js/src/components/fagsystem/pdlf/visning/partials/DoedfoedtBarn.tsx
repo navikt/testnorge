@@ -84,7 +84,7 @@ export const DoedfoedtBarn = ({ data, tmpPersoner, ident }: DataListe) => {
 
 	return (
 		<div>
-			<SubOverskrift label="Dødfødt barn" iconKind="designsystem-doedfoedt" />
+			<SubOverskrift label="Dødfødt barn" iconKind="doedfoedt" />
 			<DollyFieldArray data={data} nested>
 				{(doedfoedtBarn: DoedfoedtBarnData, idx: number) => (
 					<DoedfoedtBarnVisning

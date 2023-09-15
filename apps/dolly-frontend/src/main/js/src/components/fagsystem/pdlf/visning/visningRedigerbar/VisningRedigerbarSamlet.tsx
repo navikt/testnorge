@@ -219,12 +219,12 @@ export const VisningRedigerbarSamlet = ({
 										{!slettetItem && !alleSlettet && (
 											<EditDeleteKnapper>
 												<Button
-													kind="designsystem-edit"
+													kind="edit"
 													onClick={() => setVisningModus(Modus.Skriv)}
 													title="Endre"
 												/>
 												<Button
-													kind="designsystem-trashcan"
+													kind="trashcan"
 													onClick={() => openDeleteModal(idx)}
 													title="Slett"
 													disabled={disableIdx === idx}

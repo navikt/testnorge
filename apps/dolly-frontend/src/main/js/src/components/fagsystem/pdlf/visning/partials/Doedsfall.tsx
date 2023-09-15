@@ -83,7 +83,7 @@ export const Doedsfall = ({ data, tmpPersoner, ident, erPdlVisning = false }: Do
 
 	return (
 		<div>
-			<SubOverskrift label="Dødsfall" iconKind="designsystem-grav" />
+			<SubOverskrift label="Dødsfall" iconKind="grav" />
 			<div className="person-visning_content">
 				<ErrorBoundary>
 					<DollyFieldArray data={data} header="" nested>

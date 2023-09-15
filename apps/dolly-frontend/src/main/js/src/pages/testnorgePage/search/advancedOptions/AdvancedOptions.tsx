@@ -15,11 +15,11 @@ export const AdvancedOptions = ({ startOpen = false, content, children }: Props)
 	return (
 		<div style={{ marginBottom: '10px' }}>
 			{visAvansert ? (
-				<Button onClick={setSkjulAvansert} kind={'designsystem-chevron-up'}>
+				<Button onClick={setSkjulAvansert} kind={'chevron-up'}>
 					SKJUL AVANSERTE VALG
 				</Button>
 			) : (
-				<Button onClick={setVisAvansert} kind={'designsystem-chevron-down'}>
+				<Button onClick={setVisAvansert} kind={'chevron-down'}>
 					VIS AVANSERTE VALG
 				</Button>
 			)}

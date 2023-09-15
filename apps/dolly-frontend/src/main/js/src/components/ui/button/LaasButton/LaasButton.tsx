@@ -23,7 +23,7 @@ export const LaasButton = ({ action, gruppeId, loading, children }: LaasButtonPr
 
 	return (
 		<React.Fragment>
-			<Button onClick={openModal} kind="designsystem-lock" className="svg-icon-blue-line">
+			<Button onClick={openModal} kind="lock" className="svg-icon-blue-line">
 				LÅS
 			</Button>
 			<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="40%" overflow="auto">

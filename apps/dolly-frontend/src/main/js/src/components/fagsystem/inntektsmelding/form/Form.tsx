@@ -114,7 +114,7 @@ export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingFormProps) => 
 			<Panel
 				heading="Inntektsmelding (fra Altinn)"
 				hasErrors={panelError(formikBag, inntektsmeldingAttributt)}
-				iconType="designsystem-inntektsmelding"
+				iconType="inntektsmelding"
 				informasjonstekst={informasjonstekst}
 				startOpen={erForsteEllerTest(formikBag.values, [inntektsmeldingAttributt])}
 			>

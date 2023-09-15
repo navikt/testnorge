@@ -39,7 +39,7 @@ export default function BestillingResultat({
 					<div className="status-header_button-wrap">
 						<Button
 							data-cy={CypressSelector.BUTTON_LUKK_BESTILLING_RESULTAT}
-							kind="designsystem-remove-circle"
+							kind="remove-circle"
 							onClick={() => {
 								lukkBestilling(bestilling.id)
 							}}
@@ -58,7 +58,7 @@ export default function BestillingResultat({
 				<div className="flexbox--all-center">
 					<BestillingSammendragModal bestilling={bestilling} />
 					{harIdenterOpprettet && (
-						<Button onClick={openGjenopprettModal} kind="designsystem-synchronize">
+						<Button onClick={openGjenopprettModal} kind="synchronize">
 							GJENOPPRETT
 						</Button>
 					)}

@@ -41,21 +41,11 @@ interface IconButton {
 
 const ThumpsUp = ({ className }: IconButton) => (
 	// @ts-ignore
-	<Icon
-		className={className}
-		kind="designsystem-thumbs-up"
-		title="tommel opp"
-		fontSize={'1.6rem'}
-	/>
+	<Icon className={className} kind="thumbs-up" title="tommel opp" fontSize={'1.6rem'} />
 )
 const ThumpsDown = ({ className }: IconButton) => (
 	// @ts-ignore
-	<Icon
-		className={className}
-		kind="designsystem-thumbs-down"
-		title="tommel ned"
-		fontSize={'1.6rem'}
-	/>
+	<Icon className={className} kind="thumbs-down" title="tommel ned" fontSize={'1.6rem'} />
 )
 
 export const ThumbsRating = ({ label, ratingFor, onClick, uuid, children }: ThumbsRatingProps) => {

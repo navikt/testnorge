@@ -33,7 +33,7 @@ export const ArenaForm = ({ formikBag }) => {
 			<Panel
 				heading="Arbeidsytelser"
 				hasErrors={panelError(formikBag, arenaPath)}
-				iconType="designsystem-arena"
+				iconType="arena"
 				startOpen={erForsteEllerTest(formikBag.values, [arenaPath])}
 			>
 				{!leggTilPaaGruppe &&

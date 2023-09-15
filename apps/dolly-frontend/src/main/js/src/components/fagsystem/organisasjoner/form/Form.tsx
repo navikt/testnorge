@@ -22,7 +22,7 @@ export const OrganisasjonForm = ({ formikBag }: OrganisasjonFormProps) => {
 				<Panel
 					heading="Detaljer"
 					hasErrors={panelError(formikBag, detaljerPaths)}
-					iconType={'designsystem-personinformasjon'}
+					iconType={'personinformasjon'}
 					startOpen={erForsteEllerTest(formikBag.values, detaljerPaths)}
 				>
 					<Detaljer formikBag={formikBag} path="organisasjon" level={0} />

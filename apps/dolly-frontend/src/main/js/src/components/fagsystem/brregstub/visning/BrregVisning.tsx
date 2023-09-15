@@ -27,7 +27,7 @@ export const BrregVisning = ({ data, loading }) => {
 		<div>
 			<SubOverskrift
 				label="Brønnøysundregistrene"
-				iconKind="designsystem-brreg"
+				iconKind="brreg"
 				isWarning={manglerFagsystemdata}
 			/>
 			{manglerFagsystemdata ? (

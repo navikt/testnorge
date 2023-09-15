@@ -33,7 +33,7 @@ export const PensjonPanel = ({ stateModifier, formikBag }: any) => {
 			informasjonstekst={infoTekst}
 			checkAttributeArray={() => sm.batchAdd(harGyldigApBestilling ? ['alderspensjon'] : [])}
 			uncheckAttributeArray={sm.batchRemove}
-			iconType="designsystem-pensjon"
+			iconType="pensjon"
 			startOpen={harValgtAttributt(formikBag.values, [pensjonPath, tpPath])}
 		>
 			<AttributtKategori title="Pensjonsgivende inntekt (POPP)" attr={sm.attrs}>

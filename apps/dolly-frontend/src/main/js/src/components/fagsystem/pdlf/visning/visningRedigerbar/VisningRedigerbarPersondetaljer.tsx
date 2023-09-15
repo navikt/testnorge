@@ -374,13 +374,9 @@ export const VisningRedigerbarPersondetaljer = ({
 				<PersondetaljerVisning>
 					{dataVisning}
 					<EditDeleteKnapper>
-						<Button
-							kind="designsystem-edit"
-							onClick={() => setVisningModus(Modus.Skriv)}
-							title="Endre"
-						/>
+						<Button kind="edit" onClick={() => setVisningModus(Modus.Skriv)} title="Endre" />
 						{(harNavn || harKjoenn || harPersonstatus || harSkjerming) && (
-							<Button kind="designsystem-trashcan" onClick={() => openModal()} title="Slett" />
+							<Button kind="trashcan" onClick={() => openModal()} title="Slett" />
 						)}
 						<SlettModal />
 					</EditDeleteKnapper>

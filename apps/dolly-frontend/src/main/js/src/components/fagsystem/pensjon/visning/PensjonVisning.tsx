@@ -71,7 +71,7 @@ export const PensjonVisning = ({ data, loading, bestillingIdListe, tilgjengeligM
 		<ErrorBoundary>
 			<SubOverskrift
 				label="Pensjonsgivende inntekt (POPP)"
-				iconKind="designsystem-pensjon"
+				iconKind="pensjon"
 				isWarning={manglerFagsystemdata}
 			/>
 			{manglerFagsystemdata ? (

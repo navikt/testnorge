@@ -14,7 +14,7 @@ export default function ExpandButton({
 	onClick,
 	...props
 }: ExpandButtonProps): JSX.Element {
-	const iconType = expanded ? 'designsystem-chevron-up' : 'designsystem-chevron-down'
+	const iconType = expanded ? 'chevron-up' : 'chevron-down'
 	const label: string = expanded ? 'Lukk' : 'Åpne'
 	return (
 		<Button

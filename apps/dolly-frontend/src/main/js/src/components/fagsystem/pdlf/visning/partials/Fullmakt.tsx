@@ -153,7 +153,7 @@ export const Fullmakt = ({ data, tmpPersoner, ident, relasjoner }: DataListe) =>
 
 	return (
 		<div>
-			<SubOverskrift label="Fullmakt" iconKind="designsystem-fullmakt" />
+			<SubOverskrift label="Fullmakt" iconKind="fullmakt" />
 			<div className="person-visning_content">
 				<ErrorBoundary>
 					<DollyFieldArray data={data} nested>

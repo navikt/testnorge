@@ -29,7 +29,7 @@ export const PdlBoadresse = ({ data }: PdlBoadresseProps) => {
 
 	return (
 		<>
-			<SubOverskrift label="Boadresse" iconKind="designsystem-adresse" />
+			<SubOverskrift label="Boadresse" iconKind="adresse" />
 			<ArrayHistorikk
 				component={AdresseVisning}
 				data={gyldigeAdresser}

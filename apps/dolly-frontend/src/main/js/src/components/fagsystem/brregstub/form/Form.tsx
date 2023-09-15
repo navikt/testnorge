@@ -18,7 +18,7 @@ export const BrregstubForm = ({ formikBag }) => {
 			<Panel
 				heading="Brønnøysundregistrene"
 				hasErrors={panelError(formikBag, brregAttributt)}
-				iconType="designsystem-brreg"
+				iconType="brreg"
 				startOpen={erForsteEllerTest(formikBag.values, [brregAttributt])}
 			>
 				<div className="flexbox--flex-wrap">

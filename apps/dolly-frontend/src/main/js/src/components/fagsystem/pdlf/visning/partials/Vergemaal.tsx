@@ -182,7 +182,7 @@ export const Vergemaal = ({
 
 	return (
 		<div>
-			<SubOverskrift label="Vergemål" iconKind="designsystem-vergemaal" />
+			<SubOverskrift label="Vergemål" iconKind="vergemaal" />
 			<div className="person-visning_content">
 				<ErrorBoundary>
 					<DollyFieldArray data={data} nested>

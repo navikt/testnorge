@@ -13,7 +13,7 @@ export const SykemeldingVisning = ({ data }: Sykemelding) => {
 
 	return (
 		<div>
-			<SubOverskrift label="Sykemelding" iconKind="designsystem-sykdom" />
+			<SubOverskrift label="Sykemelding" iconKind="sykdom" />
 			{data.map((bestilling: SykemeldingSynt | SykemeldingDetaljert, idx: number) => {
 				if (!bestilling.erGjenopprettet) {
 					const syntSykemelding = _.get(bestilling, 'data.sykemelding.syntSykemelding')

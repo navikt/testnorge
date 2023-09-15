@@ -113,7 +113,7 @@ export const Boadresse = ({
 
 	return (
 		<>
-			<SubOverskrift label="Boadresse" iconKind="designsystem-adresse" />
+			<SubOverskrift label="Boadresse" iconKind="adresse" />
 			<div className="person-visning_content">
 				<ErrorBoundary>
 					<DollyFieldArray data={data} header="" nested>

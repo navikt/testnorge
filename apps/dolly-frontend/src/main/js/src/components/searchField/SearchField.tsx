@@ -20,7 +20,7 @@ export const SearchField = ({ placeholder = 'Hva leter du etter?', setText, ...r
 				placeholder={placeholder}
 				onChange={handleChange}
 				aria-label="Search"
-				icon="designsystem-search"
+				icon="search"
 				{...rest}
 			/>
 		</div>

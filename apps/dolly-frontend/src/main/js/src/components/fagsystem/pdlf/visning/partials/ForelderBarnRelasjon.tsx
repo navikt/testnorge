@@ -205,7 +205,7 @@ export const ForelderBarnRelasjon = ({
 
 	return (
 		<div>
-			<SubOverskrift label="Barn/foreldre" iconKind="designsystem-relasjoner" />
+			<SubOverskrift label="Barn/foreldre" iconKind="relasjoner" />
 			<DollyFieldArray data={forelderBarnData} nested>
 				{(forelderBarnRelasjon: ForeldreBarnRelasjon, idx: number) => (
 					<ForelderBarnRelasjonVisning

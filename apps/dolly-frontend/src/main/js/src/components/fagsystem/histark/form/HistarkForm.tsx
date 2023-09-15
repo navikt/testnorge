@@ -78,7 +78,7 @@ export const HistarkForm = ({ formikBag }: HistarkFormProps) => {
 			<Panel
 				heading="Dokumenter (Histark)"
 				hasErrors={panelError(formikBag, histarkAttributt)}
-				iconType="designsystem-dokarkiv"
+				iconType="dokarkiv"
 				// @ts-ignore
 				startOpen={erForsteEllerTest(formikBag.values, [histarkAttributt])}
 			>

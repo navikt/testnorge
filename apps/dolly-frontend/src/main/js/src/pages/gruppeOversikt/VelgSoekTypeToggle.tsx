@@ -30,18 +30,10 @@ export const VelgSoekTypeToggle = ({ soekValg, setValgtSoekType }: Props) => {
 				style={{ backgroundColor: '#ffffff' }}
 			>
 				<StyledItem key={SoekTypeValg.PERSON} value={SoekTypeValg.PERSON}>
-					<Icon
-						kind={soekValg === SoekTypeValg.PERSON ? 'designsystem-man-light' : 'designsystem-man'}
-					/>
+					<Icon kind={soekValg === SoekTypeValg.PERSON ? 'man-light' : 'man'} />
 				</StyledItem>
 				<StyledItem key={SoekTypeValg.BESTILLING} value={SoekTypeValg.BESTILLING}>
-					<Icon
-						kind={
-							soekValg === SoekTypeValg.BESTILLING
-								? 'designsystem-bestilling-light'
-								: 'designsystem-bestilling'
-						}
-					/>
+					<Icon kind={soekValg === SoekTypeValg.BESTILLING ? 'bestilling-light' : 'bestilling'} />
 				</StyledItem>
 			</ToggleGroup>
 		</div>

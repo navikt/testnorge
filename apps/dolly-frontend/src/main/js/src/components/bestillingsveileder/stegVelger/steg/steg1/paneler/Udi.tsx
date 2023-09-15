@@ -16,7 +16,7 @@ export const UdiPanel = ({ stateModifier, testnorgeIdent, formikBag }) => {
 			informasjonstekst={infoTekst}
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
-			iconType="designsystem-udi"
+			iconType="udi"
 			startOpen={harValgtAttributt(formikBag.values, [udiAttributt])}
 		>
 			<AttributtKategori title="Gjeldende oppholdstatus" attr={sm.attrs}>

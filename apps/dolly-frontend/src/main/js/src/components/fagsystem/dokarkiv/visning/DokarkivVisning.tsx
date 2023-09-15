@@ -48,7 +48,7 @@ export default ({ journalpost, miljoe }: Props) => (
 						<TitleValue title="Dokumentinfo-ID" value={dokument.dokumentInfoId} />
 						<Button
 							className="flexbox--align-center csv-eksport-btn"
-							kind="designsystem-file-new-table"
+							kind="file-new-table"
 							onClick={() =>
 								JoarkDokumentService.hentPDF(
 									journalpost.journalpostId,

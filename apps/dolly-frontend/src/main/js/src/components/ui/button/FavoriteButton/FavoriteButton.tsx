@@ -28,7 +28,7 @@ export default function FavoriteButton({ hideLabel, addFavorite, removeFavorite,
 		<Button
 			title={isFavorite ? 'Fjern fra favoritter' : 'Legg til som favoritt'}
 			iconSize={hideLabel && 18}
-			kind={isFavorite ? 'designsystem-star-filled' : 'designsystem-star'}
+			kind={isFavorite ? 'star-filled' : 'star'}
 			onClick={handleClick}
 		>
 			{!hideLabel && (isFavorite ? 'FJERN FAVORITT' : 'FAVORISER')}

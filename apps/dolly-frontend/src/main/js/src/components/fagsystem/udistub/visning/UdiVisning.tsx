@@ -33,7 +33,7 @@ export const UdiVisning = ({ data, loading }) => {
 	return (
 		<div>
 			<ErrorBoundary>
-				<SubOverskrift label="UDI" iconKind="designsystem-udi" isWarning={manglerFagsystemdata} />
+				<SubOverskrift label="UDI" iconKind="udi" isWarning={manglerFagsystemdata} />
 				{manglerFagsystemdata ? (
 					<Alert variant={'warning'} size={'small'} inline style={{ marginBottom: '20px' }}>
 						Fant ikke UDI-data på person

@@ -83,10 +83,7 @@ export const InntektsmeldingVisning = ({ liste, ident }: InntektsmeldingVisningP
 					if (gyldigeBestillinger && gyldigeBestillinger.length > 0) {
 						return (
 							<>
-								<SubOverskrift
-									label="Inntektsmelding (fra Altinn)"
-									iconKind="designsystem-inntektsmelding"
-								/>
+								<SubOverskrift label="Inntektsmelding (fra Altinn)" iconKind="inntektsmelding" />
 								{data.length > 5 ? (
 									// @ts-ignore
 									<Panel heading={`Inntektsmeldinger`}>

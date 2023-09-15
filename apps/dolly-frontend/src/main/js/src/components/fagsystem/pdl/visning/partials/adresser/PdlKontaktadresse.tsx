@@ -32,7 +32,7 @@ export const PdlKontaktadresse = ({ data }: PdlKontaktadresseProps) => {
 
 	return (
 		<>
-			<SubOverskrift label="Kontaktadresse" iconKind="designsystem-postadresse" />
+			<SubOverskrift label="Kontaktadresse" iconKind="postadresse" />
 			<ArrayHistorikk
 				component={AdresseVisning}
 				data={gyldigeAdresser}

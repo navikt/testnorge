@@ -15,11 +15,11 @@ export const AvansertForm = ({ path, kanVelgeMaster = true }: AvansertFormValues
 	return (
 		<div className="flexbox--full-width">
 			{visAvansert ? (
-				<Button onClick={setSkjulAvansert} kind={'designsystem-chevron-up'}>
+				<Button onClick={setSkjulAvansert} kind={'chevron-up'}>
 					SKJUL AVANSERTE VALG
 				</Button>
 			) : (
-				<Button onClick={setVisAvansert} kind={'designsystem-chevron-down'}>
+				<Button onClick={setVisAvansert} kind={'chevron-down'}>
 					VIS AVANSERTE VALG
 				</Button>
 			)}
