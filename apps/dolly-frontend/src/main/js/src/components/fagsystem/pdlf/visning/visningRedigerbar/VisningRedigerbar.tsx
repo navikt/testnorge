@@ -404,6 +404,7 @@ export const VisningRedigerbar = ({
 						<Button kind="edit" onClick={() => setVisningModus(Modus.Skriv)} title="Endre" />
 						<Button
 							kind="trashcan"
+							fontSize={'1.4rem'}
 							onClick={() => openModal()}
 							title="Slett"
 							disabled={disableSlett}

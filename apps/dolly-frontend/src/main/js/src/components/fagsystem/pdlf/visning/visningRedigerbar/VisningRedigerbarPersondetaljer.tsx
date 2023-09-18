@@ -55,6 +55,7 @@ const EditDeleteKnapper = styled.div`
 	right: 0;
 	top: 0;
 	margin: -5px 10px 0 0;
+
 	&&& {
 		button {
 			position: relative;
@@ -376,7 +377,12 @@ export const VisningRedigerbarPersondetaljer = ({
 					<EditDeleteKnapper>
 						<Button kind="edit" onClick={() => setVisningModus(Modus.Skriv)} title="Endre" />
 						{(harNavn || harKjoenn || harPersonstatus || harSkjerming) && (
-							<Button kind="trashcan" onClick={() => openModal()} title="Slett" />
+							<Button
+								kind="trashcan"
+								fontSize={'1.4rem'}
+								onClick={() => openModal()}
+								title="Slett"
+							/>
 						)}
 						<SlettModal />
 					</EditDeleteKnapper>
