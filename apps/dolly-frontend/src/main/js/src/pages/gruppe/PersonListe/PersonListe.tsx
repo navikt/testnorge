@@ -185,15 +185,17 @@ export default function PersonListe({
 								offset: [0, -10],
 							}}
 						>
-							<Icon
-								kind="kommentar"
-								size={20}
-								onClick={(event) => {
-									setSelectedIdent(row.ident)
-									openKommentarModal()
-									event.stopPropagation()
-								}}
-							/>
+							<div>
+								<Icon
+									kind="kommentar"
+									size={20}
+									onClick={(event) => {
+										setSelectedIdent(row.ident)
+										openKommentarModal()
+										event.stopPropagation()
+									}}
+								/>
+							</div>
 						</DollyTooltip>
 					)
 				}
