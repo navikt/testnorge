@@ -79,6 +79,12 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 							<span>{getMiljoer(pensjonEnvironments, loadingPensjon, errorPensjon)}</span>
 						</li>
 					)}
+					{pensjonforvalter?.uforetrygd && (
+						<li>
+							Uføretrygd:&nbsp;
+							<span>{getMiljoer(pensjonEnvironments, loadingPensjon, errorPensjon)}</span>
+						</li>
+					)}
 
 					{sykemelding && <li>Sykemelding: Q1 må velges</li>}
 

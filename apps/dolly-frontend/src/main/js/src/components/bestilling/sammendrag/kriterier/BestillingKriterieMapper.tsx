@@ -23,6 +23,7 @@ import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import _get from 'lodash/get'
 import _has from 'lodash/has'
 import { MedlKodeverk } from '@/components/fagsystem/medl/MedlConstants'
+import { useNavEnheter } from '@/utils/hooks/useNorg2'
 
 // TODO: Flytte til selector?
 // - Denne kan forminskes ved bruk av hjelpefunksjoner
@@ -1849,6 +1850,47 @@ const mapPensjon = (bestillingData, data) => {
 				],
 			}
 			data.push(pensjonforvalterAlderspensjon)
+		}
+
+		if (pensjonKriterier.uforetrygd) {
+			const uforetrygd = pensjonKriterier.uforetrygd
+
+			const { navEnheter } = useNavEnheter()
+			const navEnhetLabel = navEnheter?.find(
+				(enhet) => enhet.value === uforetrygd.navEnhetId?.toString(),
+			)?.label
+
+			const pensjonforvalterUforetrygd = {
+				header: 'Uføretrygd',
+				items: [
+					obj('Krav fremsatt dato', formatDate(uforetrygd.kravFremsattDato)),
+					obj('Ønsket virkningsdato', formatDate(uforetrygd.onsketVirkningsDato)),
+					obj('Uføretidspunkt', formatDate(uforetrygd.uforetidspunkt)),
+					obj('Inntekt før uførhet', uforetrygd.inntektForUforhet),
+					obj('Har barnetillegg', oversettBoolean(uforetrygd.barnetilleggDetaljer !== null)),
+					obj(
+						'Type barnetillegg',
+						showLabel('barnetilleggType', uforetrygd.barnetilleggDetaljer?.barnetilleggType),
+					),
+					obj(
+						'Antall forventede inntekter for søker',
+						uforetrygd.barnetilleggDetaljer?.forventedeInntekterSoker?.length,
+					),
+					obj(
+						'Antall forventede inntekter for partner',
+						uforetrygd.barnetilleggDetaljer?.forventedeInntekterEP?.length,
+					),
+					obj(
+						'Sats for minimum IFU',
+						showLabel('minimumInntektForUforhetType', uforetrygd.minimumInntektForUforhetType),
+					),
+					obj('Uføregrad', uforetrygd.uforegrad ? `${uforetrygd.uforegrad}%` : null),
+					obj('Saksbehandler', uforetrygd.saksbehandler),
+					obj('Attesterer', uforetrygd.attesterer),
+					obj('NAV-enhet', navEnhetLabel || uforetrygd.navEnhetId),
+				],
+			}
+			data.push(pensjonforvalterUforetrygd)
 		}
 	}
 }

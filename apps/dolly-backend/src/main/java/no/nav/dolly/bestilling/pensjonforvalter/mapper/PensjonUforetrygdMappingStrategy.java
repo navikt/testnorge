@@ -90,7 +90,7 @@ public class PensjonUforetrygdMappingStrategy implements MappingStrategy {
 
     private static String getRandomAnsatt() {
 
-        return String.format("Z9%5d", ansatt.nextInt(99999));
+        return String.format("Z9%05d", ansatt.nextInt(99999));
     }
 
     private static LocalDate getFoedselsdato(PdlPerson.Foedsel foedsel) {
