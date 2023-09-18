@@ -42,6 +42,7 @@ public enum SystemTyper {
     PDL_ORDRE("Ordre til PDL"),
     KONTOREGISTER("Bankkontoregister"),
     PDL_PERSONSTATUS("Person finnes i PDL"),
+    TPS_STATUS("Person finnes i TPS"),
     ANNEN_FEIL("Annen Feil"),
     ARBEIDSPLASSENCV("Arbeidsplassen CV");
 

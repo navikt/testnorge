@@ -46,7 +46,16 @@ public class Sykemelding {
         head.getMsgInfo().setMsgId(UUID.randomUUID().toString());
 
         updateOrganisation(head.getMsgInfo().getSender().getOrganisation(), dto.getSender(), dto.getHelsepersonell());
-        updateOrganisation(head.getMsgInfo().getReceiver().getOrganisation(), dto.getMottaker());
+        updateOrganisation(head.getMsgInfo().getReceiver().getOrganisation(), OrganisasjonDTO.builder()
+                .adresse(AdresseDTO.builder()
+                        .postnummer("0557")
+                        .land("NOR")
+                        .gate("Sannergata 2")
+                        .by("Oslo")
+                        .build())
+                .navn("NAV IKT")
+                .orgNr("907670201")
+                .build());
         updatePatient(head.getMsgInfo().getPatient(), dto.getPasient());
         var dokument = new Dokument(dto, applicationInfo);
         head.getDocument().get(0).getRefDoc().getContent().getAny().set(0, dokument.getXmlObject());

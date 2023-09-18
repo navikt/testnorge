@@ -39,7 +39,6 @@ import { sjekkManglerPensjonData } from '@/components/fagsystem/pensjon/visning/
 import { sjekkManglerAaregData } from '@/components/fagsystem/aareg/visning/Visning'
 import { useAmeldinger, useArbeidsforhold } from '@/utils/hooks/useOrganisasjoner'
 import {
-	useApData,
 	useArbeidsplassencvData,
 	useArenaData,
 	useDokarkivData,
@@ -47,7 +46,7 @@ import {
 	useInstData,
 	usePoppData,
 	useTpData,
-	useTransaksjonidData,
+	useTransaksjonIdData,
 } from '@/utils/hooks/useFagsystemer'
 import { sjekkManglerTpData } from '@/components/fagsystem/tjenestepensjon/visning/TpVisning'
 import { sjekkManglerInstData } from '@/components/fagsystem/inst/visning/InstVisning'
@@ -63,6 +62,7 @@ import {
 	harPoppBestilling,
 	harSykemeldingBestilling,
 	harTpBestilling,
+	harUforetrygdBestilling,
 } from '@/utils/SjekkBestillingFagsystem'
 import {
 	AlderspensjonVisning,
@@ -78,6 +78,11 @@ import {
 	sjekkManglerSykemeldingBestilling,
 	sjekkManglerSykemeldingData,
 } from '@/components/fagsystem/sykdom/visning/Visning'
+import {
+	sjekkManglerUforetrygdData,
+	UforetrygdVisning,
+} from '@/components/fagsystem/uforetrygd/visning/UforetrygdVisning'
+import { usePensjonEnvironments } from '@/utils/hooks/useEnvironments'
 
 const getIdenttype = (ident) => {
 	if (parseInt(ident.charAt(0)) > 3) {
@@ -177,9 +182,20 @@ export default ({
 		harArenaBestilling(bestillingerFagsystemer),
 	)
 
-	const { loading: loadingApData, apData } = useApData(
+	const { pensjonEnvironments } = usePensjonEnvironments()
+
+	const { loading: loadingApData, data: apData } = useTransaksjonIdData(
 		ident.ident,
+		'PEN_AP',
 		harApBestilling(bestillingerFagsystemer),
+		pensjonEnvironments,
+	)
+
+	const { loading: loadingUforetrygdData, data: uforetrygdData } = useTransaksjonIdData(
+		ident.ident,
+		'PEN_UT',
+		harUforetrygdBestilling(bestillingerFagsystemer),
+		pensjonEnvironments,
 	)
 
 	const { loading: loadingSykemeldingData, data: sykemeldingData } = useTransaksjonidData(
@@ -220,6 +236,9 @@ export default ({
 			return true
 		}
 		if (apData && sjekkManglerApData(apData)) {
+			return true
+		}
+		if (uforetrygdData && sjekkManglerUforetrygdData(uforetrygdData)) {
 			return true
 		}
 		if (brregstub && sjekkManglerBrregData(brregstub)) {
@@ -418,6 +437,12 @@ export default ({
 				<AlderspensjonVisning
 					data={apData}
 					loading={loadingApData}
+					bestillingIdListe={bestillingIdListe}
+					tilgjengeligMiljoe={tilgjengeligMiljoe}
+				/>
+				<UforetrygdVisning
+					data={uforetrygdData}
+					loading={loadingUforetrygdData}
 					bestillingIdListe={bestillingIdListe}
 					tilgjengeligMiljoe={tilgjengeligMiljoe}
 				/>

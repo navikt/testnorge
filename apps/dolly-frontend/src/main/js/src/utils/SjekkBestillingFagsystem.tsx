@@ -48,6 +48,16 @@ export const harApBestilling = (bestillingerFagsystemer) => {
 	return alderspensjon
 }
 
+export const harUforetrygdBestilling = (bestillingerFagsystemer) => {
+	let uforetrygd = false
+	bestillingerFagsystemer?.forEach((i) => {
+		if (i.pensjonforvalter?.uforetrygd) {
+			uforetrygd = true
+		}
+	})
+	return uforetrygd
+}
+
 export const harInstBestilling = (bestillingerFagsystemer) => {
 	let inst = false
 	bestillingerFagsystemer?.forEach((i) => {
