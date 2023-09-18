@@ -94,7 +94,7 @@ export const useTpData = (ident, harTpBestilling) => {
 	}
 }
 
-export const useTransaksjonidData = (ident, system, harBestilling, fagsystemMiljoer = null) => {
+export const useTransaksjonIdData = (ident, system, harBestilling, fagsystemMiljoer = null) => {
 	const { data, isLoading, error } = useSWR<any, Error>(
 		harBestilling ? `/dolly-backend/api/v1/transaksjonid?ident=${ident}&system=${system}` : null,
 		fetcher,

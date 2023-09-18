@@ -46,7 +46,7 @@ import {
 	useInstData,
 	usePoppData,
 	useTpData,
-	useTransaksjonidData,
+	useTransaksjonIdData,
 } from '@/utils/hooks/useFagsystemer'
 import { sjekkManglerTpData } from '@/components/fagsystem/tjenestepensjon/visning/TpVisning'
 import { sjekkManglerInstData } from '@/components/fagsystem/inst/visning/InstVisning'
@@ -179,14 +179,14 @@ export default ({
 
 	const { pensjonEnvironments } = usePensjonEnvironments()
 
-	const { loading: loadingApData, data: apData } = useTransaksjonidData(
+	const { loading: loadingApData, data: apData } = useTransaksjonIdData(
 		ident.ident,
 		'PEN_AP',
 		harApBestilling(bestillingerFagsystemer),
 		pensjonEnvironments,
 	)
 
-	const { loading: loadingUforetrygdData, data: uforetrygdData } = useTransaksjonidData(
+	const { loading: loadingUforetrygdData, data: uforetrygdData } = useTransaksjonIdData(
 		ident.ident,
 		'PEN_UT',
 		harUforetrygdBestilling(bestillingerFagsystemer),
