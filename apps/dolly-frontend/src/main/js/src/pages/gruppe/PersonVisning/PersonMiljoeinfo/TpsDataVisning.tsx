@@ -48,8 +48,9 @@ export const TpsDataVisning = ({ data }: TpsData) => {
 			{data.map((miljoe, idx) => {
 				return (
 					<DollyTooltip
+						useExternalTooltip={true}
 						dataCy={CypressSelector.HOVER_MILJOE}
-						overlay={getPersonInfo(miljoe)}
+						content={getPersonInfo(miljoe)}
 						align={{
 							offset: [0, -10],
 						}}

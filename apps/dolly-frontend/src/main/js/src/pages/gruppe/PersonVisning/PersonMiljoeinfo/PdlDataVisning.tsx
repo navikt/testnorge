@@ -43,6 +43,7 @@ export const PdlDataVisning = ({ ident, bankIdBruker, miljoe }: PdlDataVisningPr
 	return (
 		<div className="flexbox--flex-wrap">
 			<DollyTooltip
+				useExternalTooltip={true}
 				dataCy={CypressSelector.HOVER_MILJOE}
 				content={<PdlPersonInfo ident={ident} />}
 				align={{
@@ -54,6 +55,7 @@ export const PdlDataVisning = ({ ident, bankIdBruker, miljoe }: PdlDataVisningPr
 			</DollyTooltip>
 			{(!bankIdBruker || miljoe === 'q1') && (
 				<DollyTooltip
+					useExternalTooltip={true}
 					dataCy={CypressSelector.HOVER_MILJOE}
 					content={<PdlPersonInfo ident={ident} hentQ1={true} />}
 					align={{

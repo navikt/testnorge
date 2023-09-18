@@ -41,6 +41,7 @@ export const OrganisasjonDataVisning = ({ data }) => {
 				if (tilgjengeligMiljoe && tilgjengeligMiljoe !== miljoe) return null
 				return (
 					<DollyTooltip
+						useExternalTooltip={true}
 						content={getOrganisasjonInfo(organisasjoner, selectedId, setSelectedId)}
 						align={{
 							offset: [0, -10],
