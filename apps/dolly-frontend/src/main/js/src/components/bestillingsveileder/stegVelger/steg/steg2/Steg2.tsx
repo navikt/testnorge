@@ -25,6 +25,7 @@ import { AlderspensjonForm } from '@/components/fagsystem/alderspensjon/form/For
 import { SkjermingForm } from '@/components/fagsystem/skjermingsregister/form/SkjermingForm'
 import { ArbeidsplassenForm } from '@/components/fagsystem/arbeidsplassen/form/Form'
 import { HistarkForm } from '@/components/fagsystem/histark/form/HistarkForm'
+import { UforetrygdForm } from '@/components/fagsystem/uforetrygd/form/Form'
 
 const gruppeNavn = (gruppe) => <span style={{ fontWeight: 'bold' }}>{gruppe.navn}</span>
 
@@ -66,6 +67,7 @@ export const Steg2 = () => {
 			<PensjonForm formikBag={formikBag} />
 			<TjenestepensjonForm formikBag={formikBag} />
 			<AlderspensjonForm formikBag={formikBag} />
+			<UforetrygdForm formikBag={formikBag} />
 			<ArenaForm formikBag={formikBag} />
 			<SykdomForm formikBag={formikBag} />
 			<BrregstubForm formikBag={formikBag} />
@@ -106,6 +108,7 @@ Steg2.validation = Yup.object({
 			...PensjonForm.validation,
 			...TjenestepensjonForm.validation,
 			...AlderspensjonForm.validation,
-		})
+			...UforetrygdForm.validation,
+		}),
 	),
 })
