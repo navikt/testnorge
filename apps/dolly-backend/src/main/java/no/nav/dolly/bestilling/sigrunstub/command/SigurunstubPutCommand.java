@@ -1,8 +1,8 @@
 package no.nav.dolly.bestilling.sigrunstub.command;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.dolly.bestilling.sigrunstub.dto.PensjonsgivendeForFolketrygden;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubResponse;
-import no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag;
 import no.nav.dolly.util.RequestHeaderUtil;
 import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
@@ -22,13 +22,13 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RequiredArgsConstructor
-public class SigurunstubPostCommand implements Callable<Mono<SigrunstubResponse>> {
+public class SigurunstubPutCommand implements Callable<Mono<SigrunstubResponse>> {
 
     private static final String CONSUMER = "Dolly";
-    private static final String SIGRUN_STUB_OPPRETT_GRUNNLAG = "/api/v1/lignetinntekt";
+    private static final String SIGRUN_STUB_OPPRETT_GRUNNLAG = "/api/v1/pensjonsgivendeInntektforfolketrygden";
 
     private final WebClient webClient;
-    private final List<OpprettSkattegrunnlag> request;
+    private final List<PensjonsgivendeForFolketrygden> request;
     private final String token;
 
     @Override
@@ -42,6 +42,7 @@ public class SigurunstubPostCommand implements Callable<Mono<SigrunstubResponse>
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .header(AUTHORIZATION, "Bearer " + token)
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
+                .bodyValue(request)
                 .retrieve()
                 .bodyToMono(SigrunstubResponse.class)
                 .doOnError(WebClientFilter::logErrorMessage)

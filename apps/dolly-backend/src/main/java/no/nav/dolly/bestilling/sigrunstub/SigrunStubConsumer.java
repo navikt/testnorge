@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.sigrunstub.command.SigrunstubDeleteCommand;
 import no.nav.dolly.bestilling.sigrunstub.command.SigurunstubPostCommand;
+import no.nav.dolly.bestilling.sigrunstub.command.SigurunstubPutCommand;
+import no.nav.dolly.bestilling.sigrunstub.dto.PensjonsgivendeForFolketrygden;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubResponse;
 import no.nav.dolly.config.credentials.SigrunstubProxyProperties;
 import no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag;
@@ -67,6 +69,15 @@ public class SigrunStubConsumer implements ConsumerStatus {
 
         return tokenService.exchange(serviceProperties)
                 .flatMap(token -> new SigurunstubPostCommand(webClient, request, token.getTokenValue()).call());
+    }
+
+    @Timed(name = "providers", tags = { "operation", "sigrun_createPensjonsgivendeInntekt" })
+    public Mono<SigrunstubResponse> updatePensjonsgivendeInntekt(List<PensjonsgivendeForFolketrygden> request) {
+
+        log.info("Put til Sigrunstub med data {}", request);
+
+        return tokenService.exchange(serviceProperties)
+                .flatMap(token -> new SigurunstubPutCommand(webClient, request, token.getTokenValue()).call());
     }
 
     @Override

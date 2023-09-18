@@ -77,7 +77,7 @@ class SigrunStubClientTest {
 
         var progress = new BestillingProgress();
         when(sigrunStubConsumer.createSkattegrunnlag(anyList())).thenReturn(Mono.just(SigrunstubResponse.builder()
-                .status(HttpStatus.BAD_REQUEST)
+                .errorStatus(HttpStatus.BAD_REQUEST)
                 .melding("Feil ...")
                 .build()));
         when(errorStatusDecoder.getErrorText(eq(HttpStatus.BAD_REQUEST), anyString())).thenReturn("Feil:");
@@ -106,7 +106,7 @@ class SigrunStubClientTest {
                 .thenReturn(request.getSigrunstub());
 
         when(sigrunStubConsumer.createSkattegrunnlag(anyList())).thenReturn(Mono.just(SigrunstubResponse.builder()
-                .status(HttpStatus.OK)
+                .errorStatus(HttpStatus.OK)
                 .build()));
 
         when(sigrunStubConsumer.deleteSkattegrunnlag(IDENT)).thenReturn(Mono.just(new SigrunstubResponse()));

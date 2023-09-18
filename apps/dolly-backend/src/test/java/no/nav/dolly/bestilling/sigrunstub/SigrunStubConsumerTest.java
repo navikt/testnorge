@@ -79,7 +79,7 @@ class SigrunStubConsumerTest {
 
         StepVerifier.create(sigrunStubConsumer.createSkattegrunnlag(singletonList(this.skattegrunnlag)))
                         .expectNext(SigrunstubResponse.builder()
-                                .status(HttpStatus.OK)
+                                .errorStatus(HttpStatus.OK)
                                 .build())
                                 .verifyComplete();
     }
@@ -91,7 +91,7 @@ class SigrunStubConsumerTest {
 
         StepVerifier.create(sigrunStubConsumer.createSkattegrunnlag(singletonList(skattegrunnlag)))
                 .expectNext(SigrunstubResponse.builder()
-                        .status(HttpStatus.BAD_REQUEST)
+                        .errorStatus(HttpStatus.BAD_REQUEST)
                         .melding("[{\"grunnlag\":[],\"inntektsaar\":\"1978\",\"svalbardGrunnlag\":[]}]")
                         .build())
                 .verifyComplete();
@@ -104,7 +104,7 @@ class SigrunStubConsumerTest {
 
         StepVerifier.create(sigrunStubConsumer.deleteSkattegrunnlag(List.of(IDENT)))
                 .expectNext(SigrunstubResponse.builder()
-                        .status(HttpStatus.OK)
+                        .errorStatus(HttpStatus.OK)
                         .ident(IDENT)
                         .build())
                 .verifyComplete();

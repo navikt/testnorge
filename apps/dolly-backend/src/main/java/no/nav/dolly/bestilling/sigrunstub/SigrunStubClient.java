@@ -5,6 +5,7 @@ import lombok.extern.log4j.Log4j2;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
+import no.nav.dolly.bestilling.sigrunstub.dto.PensjonsgivendeForFolketrygden;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubResponse;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
@@ -18,11 +19,17 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static java.util.Objects.isNull;
 
 @Log4j2
 @Service
 @RequiredArgsConstructor
 public class SigrunStubClient implements ClientRegister {
+
+    private static final String LIGNET_INNTEKT = "SIGRUN_LIGNET:";
+    private static final String PENSJONSGIVENDE_INNTEKT = "SIGRUN_PENSJONSGIVENDE:";
 
     private final SigrunStubConsumer sigrunStubConsumer;
     private final ErrorStatusDecoder errorStatusDecoder;
@@ -32,20 +39,40 @@ public class SigrunStubClient implements ClientRegister {
     @Override
     public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        if (!bestilling.getSigrunstub().isEmpty()) {
+        return Flux.from(Flux.merge(
+                        Flux.just(bestilling)
+                                .filter(bestilling1 -> !bestilling1.getSigrunstub().isEmpty())
+                                .map(RsDollyUtvidetBestilling::getSigrunstub)
+                                .flatMap(lignetInntekt -> {
 
-            var context = MappingContextUtils.getMappingContext();
-            context.setProperty("ident", dollyPerson.getIdent());
+                                    var context = MappingContextUtils.getMappingContext();
+                                    context.setProperty("ident", dollyPerson.getIdent());
 
-            var skattegrunnlag =
-                    mapperFacade.mapAsList(bestilling.getSigrunstub(), OpprettSkattegrunnlag.class, context);
+                                    var skattegrunnlag =
+                                            mapperFacade.mapAsList(lignetInntekt, OpprettSkattegrunnlag.class, context);
 
-            return Flux.from(deleteSkattegrunnlag(dollyPerson.getIdent(), isOpprettEndre)
-                    .flatMap(deletedStatus -> sigrunStubConsumer.createSkattegrunnlag(skattegrunnlag))
-                    .map(this::getStatus)
-                    .map(resultat -> futurePersist(progress, resultat)));
-        }
-        return Flux.empty();
+                                    return Flux.from(deleteSkattegrunnlag(dollyPerson.getIdent(), isOpprettEndre)
+                                                    .flatMap(deletedStatus -> sigrunStubConsumer.createSkattegrunnlag(skattegrunnlag))
+                                                    .map(this::getStatus))
+                                            .map(status -> LIGNET_INNTEKT + status);
+                                }),
+                        Flux.just(bestilling)
+                                .filter(bestilling2 -> !bestilling2.getSigrunstubPensjonsgivende().isEmpty())
+                                .map(RsDollyUtvidetBestilling::getSigrunstubPensjonsgivende)
+                                .flatMap(pensjonsgivende -> {
+
+                                    var context = MappingContextUtils.getMappingContext();
+                                    context.setProperty("ident", dollyPerson.getIdent());
+
+                                    var skattegrunnlag =
+                                            mapperFacade.mapAsList(pensjonsgivende, PensjonsgivendeForFolketrygden.class, context);
+
+                                    return sigrunStubConsumer.updatePensjonsgivendeInntekt(skattegrunnlag)
+                                            .map(this::getStatus)
+                                            .map(status -> PENSJONSGIVENDE_INNTEKT + status);
+                                }))
+                .collect(Collectors.joining(","))
+                .map(resultat -> futurePersist(progress, resultat)));
     }
 
     private ClientFuture futurePersist(BestillingProgress progress, String status) {
@@ -72,7 +99,20 @@ public class SigrunStubClient implements ClientRegister {
 
     private String getStatus(SigrunstubResponse response) {
 
-        return response.getStatus().is2xxSuccessful() ? "OK" :
-                errorStatusDecoder.getErrorText(response.getStatus(), response.getMelding());
+        return isNull(response.getErrorStatus()) ?
+                getStatus(response.getOpprettelseTilbakemeldingsListe()) :
+                ErrorStatusDecoder.encodeStatus(errorStatusDecoder.getErrorText(response.getErrorStatus(), response.getMelding()));
+    }
+
+    private static String getStatus(List<SigrunstubResponse.OpprettelseTilbakemelding> tilbakemeldinger) {
+
+        return tilbakemeldinger.stream()
+                .allMatch(SigrunstubResponse.OpprettelseTilbakemelding::isOK) ? "OK" :
+                String.format("Feil: %s", ErrorStatusDecoder.encodeStatus(
+                        tilbakemeldinger.stream()
+                                .filter(SigrunstubResponse.OpprettelseTilbakemelding::isError)
+                                .map(SigrunstubResponse.OpprettelseTilbakemelding::getMessage)
+                                .distinct()
+                                .collect(Collectors.joining(", "))));
     }
 }

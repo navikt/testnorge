@@ -14,6 +14,8 @@ public enum SystemTyper {
     INST2("Institusjonsopphold (INST2)"),
     KRRSTUB("Digital kontaktinformasjon (DKIF)"),
     SIGRUNSTUB("Skatteinntekt grunnlag (SIGRUN)"),
+    SIGRUN_LIGNET("Lignet skatteinntekt (Sigrunstub)"),
+    SIGRUN_PENSJONSGIVENDE("Pensjonsgivende inntekt (Sigrunstub)"),
     ARENA("Arena fagsystem"),
     ARENA_BRUKER("Arena bruker"),
     ARENA_AAP("Arena AAP ytelse"),
