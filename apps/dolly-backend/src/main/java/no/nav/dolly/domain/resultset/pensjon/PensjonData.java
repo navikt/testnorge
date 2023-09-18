@@ -153,7 +153,7 @@ public class PensjonData {
         private UforeType minimumInntektForUforhetType;
         private String saksbehandler;
         private String attesterer;
-        private Integer navEnhetId;
+        private String navEnhetId;
         private Barnetillegg barnetilleggDetaljer;
     }
 
@@ -165,6 +165,22 @@ public class PensjonData {
 
         private List<ForventetInntekt> forventedeInntekterSoker;
         private List<ForventetInntekt> forventedeInntekterEP;
+
+        public List<ForventetInntekt> getForventedeInntekterSoker() {
+
+            if (isNull(forventedeInntekterSoker)) {
+                forventedeInntekterSoker = new ArrayList<>();
+            }
+            return forventedeInntekterSoker;
+        }
+
+        public List<ForventetInntekt> getForventedeInntekterEP() {
+
+            if (isNull(forventedeInntekterEP)) {
+                forventedeInntekterEP = new ArrayList<>();
+            }
+            return forventedeInntekterEP;
+        }
     }
 
     @Data

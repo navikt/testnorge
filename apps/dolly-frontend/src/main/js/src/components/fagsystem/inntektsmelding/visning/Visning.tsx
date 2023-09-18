@@ -31,7 +31,7 @@ export const InntektsmeldingVisning = ({ liste, ident }: InntektsmeldingVisningP
 	const getDokumenter = (bestilling: TransaksjonId): Promise<Dokument[]> => {
 		return JoarkDokumentService.hentJournalpost(
 			bestilling.transaksjonId.journalpostId,
-			bestilling.miljoe
+			bestilling.miljoe,
 		).then((journalpost: Journalpost) => {
 			return Promise.all(
 				journalpost.dokumenter.map((document: Dokument) =>
@@ -39,13 +39,13 @@ export const InntektsmeldingVisning = ({ liste, ident }: InntektsmeldingVisningP
 						bestilling.transaksjonId.journalpostId,
 						document.dokumentInfoId,
 						bestilling.miljoe,
-						'ORIGINAL'
+						'ORIGINAL',
 					).then((dokument: string) => ({
 						journalpostId: bestilling.transaksjonId.journalpostId,
 						dokumentInfoId: document.dokumentInfoId,
 						dokument,
-					}))
-				)
+					})),
+				),
 			)
 		})
 	}
@@ -77,7 +77,7 @@ export const InntektsmeldingVisning = ({ liste, ident }: InntektsmeldingVisningP
 			render={(data: Array<Journalpost>) => {
 				if (data && data.length > 0) {
 					const gyldigeBestillinger = liste.filter((bestilling) =>
-						data.find((x) => (x && x.bestillingId ? x.bestillingId === bestilling.id : x))
+						data.find((x) => (x && x.bestillingId ? x.bestillingId === bestilling.id : x)),
 					)
 
 					if (gyldigeBestillinger && gyldigeBestillinger.length > 0) {
@@ -129,7 +129,7 @@ InntektsmeldingVisning.filterValues = (bestillinger: Array<Bestilling>, ident: s
 		(bestilling: any) =>
 			bestilling.data.inntektsmelding &&
 			!tomBestilling(bestilling.data.inntektsmelding.inntekter) &&
-			erGyldig(bestilling.id, 'INNTKMELD', ident)
+			erGyldig(bestilling.id, 'INNTKMELD', ident),
 	)
 }
 

@@ -9,7 +9,6 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.sykemelding.domain.DetaljertSykemeldingRequest;
-import no.nav.dolly.bestilling.sykemelding.domain.SykemeldingTransaksjon;
 import no.nav.dolly.bestilling.sykemelding.domain.SyntSykemeldingRequest;
 import no.nav.dolly.bestilling.sykemelding.dto.Norg2EnhetResponse;
 import no.nav.dolly.bestilling.sykemelding.dto.SykemeldingResponse;
@@ -31,7 +30,6 @@ import reactor.core.publisher.Mono;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
@@ -74,7 +72,7 @@ public class SykemeldingClient implements ClientRegister {
                                 .flatMap(persondata -> Flux.concat(postSyntSykemelding(sykemelding, persondata),
                                                 postDetaljertSykemelding(sykemelding, persondata))
                                         .filter(Objects::nonNull)
-                                        .map(status -> saveTransaksjonId(status, bestillingId))
+                                        .doOnNext(status -> saveTransaksjonId(status, bestillingId))
                                         .map(this::getStatus)
                                         .collect(Collectors.joining()))
                                 .collect(Collectors.joining())
@@ -173,38 +171,21 @@ public class SykemeldingClient implements ClientRegister {
                 });
     }
 
-    private SykemeldingResponse saveTransaksjonId(SykemeldingResponse sykemelding, Long bestillingId) {
+    private void saveTransaksjonId(SykemeldingResponse sykemelding, Long bestillingId) {
 
         if (sykemelding.getStatus().is2xxSuccessful()) {
-            if (nonNull(sykemelding.getSyntSykemeldingRequest())) {
 
-                transaksjonMappingService.save(TransaksjonMapping.builder()
-                        .ident(sykemelding.getSyntSykemeldingRequest().getIdent())
-                        .bestillingId(bestillingId)
-                        .transaksjonId(toJson(SykemeldingTransaksjon.builder()
-                                .orgnummer(Optional.of(sykemelding.getSyntSykemeldingRequest().getOrgnummer())
-                                        .orElse("NA"))
-                                .arbeidsforholdId(Optional.of(sykemelding.getSyntSykemeldingRequest().getArbeidsforholdId())
-                                        .orElse("1"))
-                                .build()))
-                        .datoEndret(LocalDateTime.now())
-                        .system(SYKEMELDING.name())
-                        .build());
-            } else {
-                transaksjonMappingService.save(TransaksjonMapping.builder()
-                        .ident(sykemelding.getDetaljertSykemeldingRequest().getPasient().getIdent())
-                        .bestillingId(bestillingId)
-                        .transaksjonId(toJson(Optional.of(sykemelding.getDetaljertSykemeldingRequest().getMottaker())
-                                .orElse(DetaljertSykemeldingRequest.Organisasjon.builder()
-                                        .orgNr("NA")
-                                        .build())
-                                .getOrgNr()))
-                        .datoEndret(LocalDateTime.now())
-                        .system(SYKEMELDING.name())
-                        .build());
-            }
+            log.info("Lagrer transaksjon for {} i q1 ", sykemelding.getIdent());
+
+            transaksjonMappingService.save(TransaksjonMapping.builder()
+                    .ident(sykemelding.getIdent())
+                    .bestillingId(bestillingId)
+                    .transaksjonId(toJson(sykemelding.getSykemeldingRequest()))
+                    .datoEndret(LocalDateTime.now())
+                    .system(SYKEMELDING.name())
+                    .miljoe("q1")
+                    .build());
         }
-        return sykemelding;
     }
 
     private String toJson(Object object) {

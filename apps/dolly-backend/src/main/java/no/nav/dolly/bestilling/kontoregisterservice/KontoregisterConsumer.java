@@ -14,10 +14,13 @@ import no.nav.testnav.libs.dto.kontoregisterservice.v1.KontoregisterResponseDTO;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.OppdaterKontoRequestDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.netty.http.client.HttpClient;
+import reactor.netty.resources.ConnectionProvider;
 
 import java.time.Duration;
 import java.util.List;
@@ -44,6 +47,12 @@ public class KontoregisterConsumer implements ConsumerStatus {
         this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
+                .clientConnector(new ReactorClientHttpConnector(
+                        HttpClient.create(ConnectionProvider.builder("custom")
+                                .maxConnections(10)
+                                .pendingAcquireMaxCount(10000)
+                                .pendingAcquireTimeout(Duration.ofMinutes(15))
+                                .build())))
                 .build();
     }
 
@@ -88,5 +97,4 @@ public class KontoregisterConsumer implements ConsumerStatus {
     public String consumerName() {
         return "testnav-kontoregister-person-proxy";
     }
-
 }

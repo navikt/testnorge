@@ -9,11 +9,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 
@@ -30,7 +27,7 @@ public class ExcelController {
 
     @SneakyThrows
     @GetMapping(value = "/gruppe/{gruppeId}")
-    public ResponseEntity<Resource> getExcelsheet(@PathVariable Long gruppeId){
+    public Mono<ResponseEntity<Resource>> getExcelsheet(@PathVariable Long gruppeId) {
 
         var resource = excelService.getExcelWorkbook(gruppeId);
 
@@ -39,7 +36,7 @@ public class ExcelController {
 
     @SneakyThrows
     @GetMapping(value = "/organisasjoner")
-    public ResponseEntity<Resource> getOrganisasjonExcelsheet(@RequestParam(required = false) String brukerId){
+    public ResponseEntity<Resource> getOrganisasjonExcelsheet(@RequestParam(required = false) String brukerId) {
 
         var bruker = brukerService.fetchOrCreateBruker(StringUtils.isNotBlank(brukerId) ? brukerId : getUserId(getUserInfo));
         var resource = excelService.getExcelOrganisasjonerWorkbook(bruker);
@@ -54,5 +51,21 @@ public class ExcelController {
                 .contentLength(resource.contentLength())
                 .contentType(MediaType.parseMediaType("application/vnd.ms-excel"))
                 .body(resource);
+    }
+
+    private Mono<ResponseEntity<Resource>> wrapContents(Mono<Resource> resource) {
+
+        return resource
+                .handle((resource1, sink) -> {
+                    try {
+                        sink.next(ResponseEntity.ok()
+                                .header("Content-Disposition", "attachment; filename=" + resource1.getFilename())
+                                .contentLength(resource1.contentLength())
+                                .contentType(MediaType.parseMediaType("application/vnd.ms-excel"))
+                                .body(resource1));
+                    } catch (IOException e) {
+                        sink.error(new RuntimeException(e));
+                    }
+                });
     }
 }
