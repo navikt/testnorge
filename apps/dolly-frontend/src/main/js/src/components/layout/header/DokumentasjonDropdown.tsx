@@ -53,7 +53,7 @@ export const DokumentasjonDropdown = () => {
 								)
 							}
 						>
-							<Icon kind="file-new" size={16} />
+							<Icon kind="file-new" fontSize={'1.5rem'} style={{ color: 'black' }} />
 							<StyledA>Brukerdokumentasjon</StyledA>
 						</Dropdown.Menu.List.Item>
 						{currentBruker?.brukertype === 'AZURE' && (
@@ -68,7 +68,7 @@ export const DokumentasjonDropdown = () => {
 									)
 								}
 							>
-								<Icon kind="file-code" size={16} />
+								<Icon kind="file-code" fontSize={'1.5rem'} style={{ color: 'black' }} />
 								<StyledA>API-dokumentasjon</StyledA>
 							</Dropdown.Menu.List.Item>
 						)}

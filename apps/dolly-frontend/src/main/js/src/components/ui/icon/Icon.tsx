@@ -171,7 +171,7 @@ const Icon = ({
 	title = undefined,
 	size = 24,
 	fontSize = '1rem',
-	style = undefined,
+	style = undefined as unknown as React.CSSProperties,
 	className = undefined as unknown as string,
 	onClick = null as unknown as any,
 	...props
@@ -208,6 +208,7 @@ const Icon = ({
 			className={className}
 			data-cy={props['data-cy']}
 			onClick={onClick}
+			style={style}
 		/>
 	) : (
 		<ErrorBoundary>
@@ -220,10 +221,7 @@ const Icon = ({
 				onClick={onClick}
 				{...props}
 			>
-				<img
-					src="../assets/icons/nav-ikoner/filled/SVG/01-edition/link-broken-1.svg"
-					alt="fallback"
-				/>
+				<img src={LinkBrokenIcon} alt="fallback" />
 			</SVG>
 		</ErrorBoundary>
 	)

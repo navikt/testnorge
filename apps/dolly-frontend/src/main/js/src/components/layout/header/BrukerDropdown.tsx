@@ -60,11 +60,11 @@ export const BrukerDropdown = () => {
 							style={{ color: '#212529' }}
 							data-cy={CypressSelector.BUTTON_PROFIL_MINSIDE}
 						>
-							<StyledIcon kind="person" size={16} />
+							<StyledIcon kind="person" fontSize={'1.5rem'} />
 							Min side
 						</Dropdown.Menu.List.Item>
 						<Dropdown.Menu.List.Item onClick={() => logoutBruker()} style={{ color: '#212529' }}>
-							<Icon kind="logout" size={16} />
+							<Icon kind="logout" fontSize={'1.5rem'} />
 							Logg ut
 						</Dropdown.Menu.List.Item>
 					</Dropdown.Menu.List>

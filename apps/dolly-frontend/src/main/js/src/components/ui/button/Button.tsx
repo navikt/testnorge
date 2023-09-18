@@ -21,7 +21,7 @@ const Button = ({
 	children,
 	className,
 	iconSize = 16,
-	fontSize = '1rem',
+	fontSize = '1.15rem',
 	loading = false,
 	disabled,
 	...rest

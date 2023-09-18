@@ -19,7 +19,11 @@ const KjedeIcon = styled.div`
 export default ({ locked, onClick }: KjedeIconProps) => {
 	return (
 		<KjedeIcon onClick={() => onClick()} className={'background-color-lightblue'}>
-			<Icon size={24} kind={locked ? 'link' : 'link-broken'} />
+			<Icon
+				style={{ stroke: 'white', strokeWidth: '1.5px' }}
+				fontSize={'1.6rem'}
+				kind={locked ? 'link' : 'link-broken'}
+			/>
 		</KjedeIcon>
 	)
 }
