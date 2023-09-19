@@ -17,7 +17,7 @@ class BudproController {
 
     @GetMapping("/random")
     List<BudproRecord> getRandomizedBudproData(
-            @RequestParam(required = false, defaultValue = "0") int seed,
+            @RequestParam(required = false) Long seed,
             @RequestParam(required = false, defaultValue = "100") int limit
     ) {
         return service.randomize(seed, limit);

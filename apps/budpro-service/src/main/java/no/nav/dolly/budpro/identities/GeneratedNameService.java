@@ -27,7 +27,7 @@ public class GeneratedNameService {
                 .build();
     }
 
-    NavnDTO[] getNames(Long seed, int number) {
+    public NavnDTO[] getNames(Long seed, int number) {
         var accessToken = tokenExchange
                 .exchange(properties)
                 .blockOptional()

@@ -2,6 +2,7 @@ package no.nav.dolly.budpro.generate;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.budpro.ansettelsestype.AnsettelsestypeService;
+import no.nav.dolly.budpro.identities.GeneratedNameService;
 import no.nav.dolly.budpro.koststed.KoststedService;
 import org.springframework.stereotype.Service;
 
@@ -17,9 +18,11 @@ class BudProService {
 
     private final AnsettelsestypeService ansettelsestypeService;
     private final KoststedService koststedService;
+    private final GeneratedNameService generatedNameService;
 
-    List<BudproRecord> randomize(int seed, int limit) {
-        var random = new Random(seed);
+    List<BudproRecord> randomize(Long seed, int limit) {
+        var employeeNames = generatedNameService.getNames(seed, limit);
+        var random = seed == null ? new Random() : new Random(seed);
         var list = new ArrayList<BudproRecord>(limit);
         for (int i = 0; i < limit; i++) {
             var aga = 1;
@@ -36,7 +39,7 @@ class BudProService {
             String lederUtlaantFra = null;
             String ledersNavn = null;
             String ledersRessursnummer = null;
-            String navn = null;
+            String navn = employeeNames[i].toString();
             String oppgave = null;
             String oppgaveBeskrivelse = null;
             String oppgaveUtlaantFra = null;
@@ -51,9 +54,9 @@ class BudProService {
             String ressursnummer = null;
             String sluttetDato = null;
             String skattekommune = null;
-            String statskonto = null;
-            String statskontoKapittel = null;
-            String statskontoPost = null;
+            String statskonto = "060501000000";
+            String statskontoKapittel = "0605";
+            String statskontoPost = "01";
             String stillingsnummer = null;
             String stillingsprosent = null;
             String tilDato = null;
