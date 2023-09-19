@@ -80,9 +80,6 @@ export const SykemeldingVisning = ({
 	const filteredData =
 		tilgjengeligMiljoe && data?.filter((item) => item.miljo === tilgjengeligMiljoe)
 
-	console.log('data: ', data) //TODO - SLETT MEG
-	console.log('bestillinger: ', bestillinger) //TODO - SLETT MEG
-
 	return (
 		<div>
 			<SubOverskrift label="Sykemelding" iconKind="sykdom" isWarning={manglerFagsystemData} />

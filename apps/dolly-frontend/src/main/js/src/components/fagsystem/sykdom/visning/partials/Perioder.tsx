@@ -3,6 +3,7 @@ import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { formatStringDates, oversettBoolean } from '@/utils/DataFormatter'
 import { Periode } from '@/components/fagsystem/sykdom/SykemeldingTypes'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import { SykemeldingKategori } from '@/components/fagsystem/sykdom/visning/partials/DetaljertSykemelding'
 
 type PerioderProps = {
 	data: Array<Periode>
@@ -14,7 +15,9 @@ export const Perioder = ({ data }: PerioderProps) => {
 	}
 	return (
 		<>
-			<h4>Perioder</h4>
+			<SykemeldingKategori>
+				<h4>Perioder</h4>
+			</SykemeldingKategori>
 			<ErrorBoundary>
 				<DollyFieldArray data={data} nested>
 					{(periode: Periode, idx: string) => (

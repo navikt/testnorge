@@ -46,6 +46,7 @@ import {
 	useInstData,
 	usePoppData,
 	useTpData,
+	useTransaksjonidData,
 	useTransaksjonIdData,
 } from '@/utils/hooks/useFagsystemer'
 import { sjekkManglerTpData } from '@/components/fagsystem/tjenestepensjon/visning/TpVisning'
@@ -204,6 +205,8 @@ export default ({
 		harSykemeldingBestilling(bestillingerFagsystemer),
 	)
 
+	const sykemeldingBestilling = SykemeldingVisning.filterValues(bestillingListe, ident.ident)
+
 	const getGruppeIdenter = () => {
 		return useAsync(async () => DollyApi.getGruppeById(gruppeId), [DollyApi.getGruppeById])
 	}
@@ -250,17 +253,14 @@ export default ({
 		if (instData && sjekkManglerInstData(instData)) {
 			return true
 		}
-		//TODO: Denne får visningen til å feile :sadpanda:
-		// if (
-		// 	(sykemeldingData && sjekkManglerSykemeldingData(sykemeldingData)) ||
-		// 	(harSykemeldingBestilling(bestillingerFagsystemer) &&
-		// 		sjekkManglerSykemeldingBestilling(
-		// 			SykemeldingVisning.filterValues(bestillingListe, ident.ident),
-		// 		))
-		// ) {
-		// 	return true
-		// }
-
+		if (
+			sykemeldingData &&
+			sjekkManglerSykemeldingData(sykemeldingData) &&
+			harSykemeldingBestilling(bestillingerFagsystemer) &&
+			sjekkManglerSykemeldingBestilling(sykemeldingBestilling)
+		) {
+			return true
+		}
 		return false
 	}
 
@@ -460,9 +460,7 @@ export default ({
 					bestillingIdListe={bestillingIdListe}
 					tilgjengeligMiljoe={tilgjengeligMiljoe}
 					bestillinger={
-						harSykemeldingBestilling(bestillingerFagsystemer)
-							? SykemeldingVisning.filterValues(bestillingListe, ident.ident)
-							: null
+						harSykemeldingBestilling(bestillingerFagsystemer) ? sykemeldingBestilling : null
 					}
 				/>
 				<BrregVisning data={brregstub} loading={loading.brregstub} />

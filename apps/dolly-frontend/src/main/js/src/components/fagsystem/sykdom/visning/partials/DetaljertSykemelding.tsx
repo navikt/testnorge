@@ -5,9 +5,17 @@ import { Bidiagnoser } from './Bidiagnoser'
 import { Perioder } from './Perioder'
 import { ArbeidKodeverk } from '@/config/kodeverk'
 import { SykemeldingDetaljert } from '@/components/fagsystem/sykdom/SykemeldingTypes'
+import styled from 'styled-components'
+
+export const SykemeldingKategori = styled.div`
+	width: 100%;
+	h4 {
+		margin-top: 5px;
+		margin-bottom: 15px;
+	}
+`
 
 export const DetaljertSykemelding = ({ sykemelding, idx }: SykemeldingDetaljert) => {
-	console.log('sykemelding: ', sykemelding) //TODO - SLETT MEG
 	return (
 		<div key={idx} className="person-visning_content">
 			<React.Fragment key={idx}>
@@ -23,7 +31,9 @@ export const DetaljertSykemelding = ({ sykemelding, idx }: SykemeldingDetaljert)
 					/>
 				</div>
 				<>
-					<h4>Diagnose</h4>
+					<SykemeldingKategori>
+						<h4>Diagnose</h4>
+					</SykemeldingKategori>
 					<div className="person-visning_content">
 						<TitleValue title="Diagnose" value={sykemelding.hovedDiagnose.diagnose} />
 						<TitleValue title="Diagnosekode" value={sykemelding.hovedDiagnose.diagnosekode} />
@@ -31,7 +41,9 @@ export const DetaljertSykemelding = ({ sykemelding, idx }: SykemeldingDetaljert)
 				</>
 				<Bidiagnoser data={sykemelding.biDiagnoser} />
 				<>
-					<h4>Helsepersonell</h4>
+					<SykemeldingKategori>
+						<h4>Helsepersonell</h4>
+					</SykemeldingKategori>
 					<div className="person-visning_content">
 						<TitleValue
 							title="Navn"
@@ -45,7 +57,9 @@ export const DetaljertSykemelding = ({ sykemelding, idx }: SykemeldingDetaljert)
 					</div>
 				</>
 				<>
-					<h4>Arbeidsgiver</h4>
+					<SykemeldingKategori>
+						<h4>Arbeidsgiver</h4>
+					</SykemeldingKategori>
 					<div className="person-visning_content">
 						<TitleValue title="Navn" value={sykemelding.arbeidsgiver.navn} />
 						<TitleValue
@@ -61,7 +75,9 @@ export const DetaljertSykemelding = ({ sykemelding, idx }: SykemeldingDetaljert)
 				</>
 				<Perioder data={sykemelding.perioder} />
 				<>
-					<h4>Detaljer</h4>
+					<SykemeldingKategori>
+						<h4>Detaljer</h4>
+					</SykemeldingKategori>
 					<div className="person-visning_content">
 						<TitleValue title="Tiltak fra nav" value={sykemelding.detaljer.tiltakNav} />
 						<TitleValue
