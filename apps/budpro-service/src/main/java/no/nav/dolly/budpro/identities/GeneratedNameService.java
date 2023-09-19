@@ -1,6 +1,5 @@
 package no.nav.dolly.budpro.identities;
 
-import lombok.RequiredArgsConstructor;
 import no.nav.testnav.libs.commands.generernavnservice.v1.GenererNavnCommand;
 import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
 import no.nav.testnav.libs.reactivecore.config.WebClientConfig;
@@ -28,13 +27,13 @@ public class GeneratedNameService {
                 .build();
     }
 
-    NavnDTO[] getNames(int number) {
+    NavnDTO[] getNames(Long seed, int number) {
         var accessToken = tokenExchange
                 .exchange(properties)
                 .blockOptional()
                 .orElseThrow(() -> new IllegalStateException("Failed to get token for %s".formatted(properties.getName())))
                 .getTokenValue();
-        return new GenererNavnCommand(webClient, accessToken, 1)
+        return new GenererNavnCommand(webClient, accessToken, seed, number)
                 .call();
     }
 
