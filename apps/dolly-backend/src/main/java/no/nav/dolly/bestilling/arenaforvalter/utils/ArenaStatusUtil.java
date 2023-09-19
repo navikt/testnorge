@@ -79,7 +79,7 @@ public class ArenaStatusUtil {
 
     public static String fmtResponse(String miljoe, String system, String status) {
 
-        return encodeStatus(String.format(MILJOE_FMT, miljoe, system, status));
+        return String.format(MILJOE_FMT, miljoe, system, encodeStatus(status));
     }
 
     public static String getMessage(String jsonFeilmelding) {

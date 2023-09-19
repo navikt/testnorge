@@ -4,6 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.tpsmessagingservice.TpsMessagingConsumer;
+import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
+import no.nav.dolly.domain.PdlPerson;
+import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.SystemTyper;
@@ -20,6 +23,7 @@ import reactor.core.publisher.Mono;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -41,21 +45,46 @@ public class TpsPersonService {
     private final TpsMessagingConsumer tpsMessagingConsumer;
     private final TransactionHelperService transactionHelperService;
     private final TransaksjonMappingService transaksjonMappingService;
+    private final PdlPersonConsumer pdlPersonConsumer;
 
     public Flux<ClientFuture> syncPerson(DollyPerson dollyPerson, RsDollyUtvidetBestilling bestilling, BestillingProgress progress, boolean isOpprettEndre) {
 
         long startTime = System.currentTimeMillis();
 
-        return Flux.from(Flux.fromIterable(bestilling.getEnvironments())
+        return Flux.fromIterable(bestilling.getEnvironments())
                 .filter(PENSJON_MILJOER::contains)
                 .collectList()
                 .filter(penMiljoer -> !penMiljoer.isEmpty())
                 .filter(penMiljoer -> isRelevantBestilling(bestilling) &&
                         (isOpprettEndre || !isTransaksjonMapping(dollyPerson.getIdent(), bestilling, penMiljoer)))
-                .flatMap(penMiljoer -> getTpsPerson(startTime, dollyPerson.getIdent(),
-                        penMiljoer, Collections.emptyList(), progress))
-                .map(status -> prepareResult(dollyPerson.getIdent(), status, bestilling.getEnvironments(), startTime))
-                .map(status -> futurePersist(progress, status)));
+                .flatMapMany(penMiljoer ->
+                        getRelasjoner(dollyPerson.getIdent())
+                                .flatMap(relasjon -> Flux.from(getTpsPerson(startTime, dollyPerson.getIdent(),
+                                        penMiljoer, Collections.emptyList(), progress)
+                                        .map(status -> prepareResult(relasjon, status, bestilling.getEnvironments(), startTime)))))
+                .collectList()
+                .flatMapIterable(list -> list)
+                .map(status -> futurePersist(progress, dollyPerson.getIdent(), status));
+    }
+
+    private Flux<String> getRelasjoner(String ident) {
+
+        return pdlPersonConsumer.getPdlPersoner(List.of(ident))
+                .filter(pdlPersonBolk -> nonNull(pdlPersonBolk.getData()))
+                .map(PdlPersonBolk::getData)
+                .map(PdlPersonBolk.Data::getHentPersonBolk)
+                .flatMap(Flux::fromIterable)
+                .filter(personBolk -> nonNull(personBolk.getPerson()))
+                .flatMap(person -> Flux.fromStream(Stream.of(
+                                Stream.of(ident),
+                                person.getPerson().getSivilstand().stream()
+                                        .map(PdlPerson.Sivilstand::getRelatertVedSivilstand)
+                                        .filter(Objects::nonNull),
+                                person.getPerson().getForelderBarnRelasjon().stream()
+                                        .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent)
+                                        .filter(Objects::nonNull))
+                        .flatMap(Function.identity())))
+                .distinct();
     }
 
     private boolean isRelevantBestilling(RsDollyUtvidetBestilling bestilling) {
@@ -120,6 +149,7 @@ public class TpsPersonService {
                         miljoer.stream()
                                 .filter(miljoe -> status.stream().noneMatch(status1 -> miljoe.equals(status1.getMiljoe())))
                                 .map(miljoe -> PersonMiljoeDTO.builder()
+                                        .ident(ident)
                                         .miljoe(miljoe)
                                         .status("NOK")
                                         .utfyllendeMelding(String.format("Feil: Synkronisering mot TPS gitt opp etter %d sekunder.", MAX_MILLIES / 1000))
@@ -128,17 +158,19 @@ public class TpsPersonService {
                 .toList();
     }
 
-    private ClientFuture futurePersist(BestillingProgress progress, List<PersonMiljoeDTO> status) {
+    private ClientFuture futurePersist(BestillingProgress progress, String ident, List<PersonMiljoeDTO> status) {
 
         return () -> {
 
             progress.setIsTpsSyncEnv(status.stream()
+                    .filter(status1 -> ident.equals(status1.getIdent()))
                     .filter(PersonMiljoeDTO::isOk)
                     .map(PersonMiljoeDTO::getMiljoe)
                     .toList());
 
             transactionHelperService.persister(progress, BestillingProgress::setTpsSyncStatus,
                     status.stream()
+                            .filter(detalj -> ident.equals(detalj.getIdent()))
                             .map(detalj -> String.format("%s:%s", detalj.getMiljoe(),
                                     ErrorStatusDecoder.encodeStatus(detalj.isOk() ? detalj.getStatus() :
                                             StringUtils.trimToEmpty(String.format("FEIL: %s", detalj.getUtfyllendeMelding())))))
