@@ -4,12 +4,12 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
-public class GenerateNavnServiceTest {
+class GenerateNavnServiceTest {
 
     private final GenerateNavnService service = new GenerateNavnService();
 
     @Test
-    public void noSeedShouldGiveDifferentListsOfNames() {
+    void noSeedShouldGiveDifferentListsOfNames() {
         var names1 = service.getRandomNavn(null, 100);
         var names2 = service.getRandomNavn(null, 100);
         assertThat(names1)
@@ -17,7 +17,7 @@ public class GenerateNavnServiceTest {
     }
 
     @Test
-    public void sameSeedShouldGiveSameListOfNames() {
+    void sameSeedShouldGiveSameListOfNames() {
         var names1 = service.getRandomNavn(1000L, 100);
         var names2 = service.getRandomNavn(1000L, 100);
         assertThat(names1)
