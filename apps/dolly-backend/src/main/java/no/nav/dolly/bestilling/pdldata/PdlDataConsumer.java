@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.pdldata;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.netty.channel.ChannelOption;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.pdldata.command.PdlDataCheckIdentCommand;
@@ -57,7 +58,8 @@ public class PdlDataConsumer implements ConsumerStatus {
                                 .maxConnections(5)
                                 .pendingAcquireMaxCount(500)
                                 .pendingAcquireTimeout(Duration.ofMinutes(15))
-                                .build())))
+                                .build())
+                                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000)))
                 .build();
     }
 

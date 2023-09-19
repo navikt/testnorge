@@ -38,9 +38,11 @@ public class SigrunstubResponse {
     @AllArgsConstructor
     public static class OpprettelseTilbakemelding {
 
-        private String message;
+        private String inntektsaar;
         private String personident;
         private Integer status;
+
+        private String message;
 
         public boolean isOK() {
             return nonNull(status) && status == 200;

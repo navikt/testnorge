@@ -44,6 +44,13 @@ public class SigurunstubPostCommand implements Callable<Mono<SigrunstubResponse>
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .retrieve()
                 .bodyToMono(SigrunstubResponse.class)
+                .map(response -> {
+                    for (int i = 0; i < response.getOpprettelseTilbakemeldingsListe().size(); i++) {
+                        response.getOpprettelseTilbakemeldingsListe().get(i).setInntektsaar(
+                                request.get(i).getInntektsaar());
+                    }
+                    return response;
+                })
                 .doOnError(WebClientFilter::logErrorMessage)
                 .onErrorResume(error -> Mono.just(SigrunstubResponse.builder()
                         .errorStatus(WebClientFilter.getStatus(error))

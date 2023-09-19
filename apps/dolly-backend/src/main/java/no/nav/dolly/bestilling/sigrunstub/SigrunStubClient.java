@@ -111,8 +111,7 @@ public class SigrunStubClient implements ClientRegister {
                 String.format("Feil: %s", ErrorStatusDecoder.encodeStatus(
                         tilbakemeldinger.stream()
                                 .filter(SigrunstubResponse.OpprettelseTilbakemelding::isError)
-                                .map(SigrunstubResponse.OpprettelseTilbakemelding::getMessage)
-                                .distinct()
+                                .map(status -> String.format("Inntektsår: ‰s, feilmelding: %s", status.getInntektsaar(), status.getMessage()))
                                 .collect(Collectors.joining(", "))));
     }
 }
