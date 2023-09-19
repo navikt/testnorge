@@ -25,6 +25,7 @@ public enum SystemTyper {
     PEN_INNTEKT("Pensjonsopptjening (POPP)"),
     TP_FORVALTER("Tjenestepensjon (TP)"),
     PEN_AP("Alderspensjon (AP)"),
+    PEN_UT("Uføretrygd (UT)"),
     PEN_SAMBOER("Pensjon samboerregister"),
     INNTKMELD("Inntektsmelding (ALTINN/JOARK)"),
     BRREGSTUB("Brønnøysundregistrene (BRREGSTUB)"),
@@ -41,6 +42,7 @@ public enum SystemTyper {
     PDL_ORDRE("Ordre til PDL"),
     KONTOREGISTER("Bankkontoregister"),
     PDL_PERSONSTATUS("Person finnes i PDL"),
+    TPS_STATUS("Person finnes i TPS"),
     ANNEN_FEIL("Annen Feil"),
     ARBEIDSPLASSENCV("Arbeidsplassen CV");
 

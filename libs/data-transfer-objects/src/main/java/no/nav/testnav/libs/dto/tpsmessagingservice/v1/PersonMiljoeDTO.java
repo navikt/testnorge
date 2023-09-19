@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 public class PersonMiljoeDTO {
 
     private String miljoe;
+    private String ident;
 
     private PersonDTO person;
 

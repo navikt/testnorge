@@ -114,6 +114,10 @@ export default {
 		return Request.post(Endpoints.gjenopprettBestilling(bestillingId, envs))
 	},
 
+	slettBestilling(bestillingId) {
+		return Request.delete(Endpoints.slettBestilling(bestillingId))
+	},
+
 	cancelBestilling(bestillingId, erOrganisasjon) {
 		return Request.delete(Endpoints.removeBestilling(bestillingId, erOrganisasjon))
 	},

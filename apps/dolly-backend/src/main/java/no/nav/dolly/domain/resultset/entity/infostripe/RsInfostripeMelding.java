@@ -11,8 +11,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class RsInfostripeMelding {
 
-    private Long id;
-    private String type;
+    private InfoStripeType type;
     private String message;
     private LocalDateTime start;
     private LocalDateTime expires;

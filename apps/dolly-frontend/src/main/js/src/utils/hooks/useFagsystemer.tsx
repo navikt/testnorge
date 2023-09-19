@@ -18,7 +18,7 @@ import { useTransaksjonsid } from '@/utils/hooks/useTransaksjonsid'
 
 const poppUrl = (ident, miljoer) =>
 	miljoer?.map((miljo) => ({
-		url: `/testnav-pensjon-testdata-facade-proxy/api/v1/inntekt?fnr=${ident}`,
+		url: `/testnav-pensjon-testdata-facade-proxy/api/v1/inntekt?fnr=${ident}&miljo=${miljo}`,
 		miljo: miljo,
 	}))
 
@@ -89,6 +89,38 @@ export const useTpData = (ident, harTpBestilling) => {
 
 	return {
 		tpData: data?.sort((a, b) => a.miljo.localeCompare(b.miljo)),
+		loading: isLoading,
+		error: error,
+	}
+}
+
+export const useTransaksjonIdData = (ident, system, harBestilling, fagsystemMiljoer = null) => {
+	const { data, isLoading, error } = useSWR<any, Error>(
+		harBestilling ? `/dolly-backend/api/v1/transaksjonid?ident=${ident}&system=${system}` : null,
+		fetcher,
+	)
+
+	const getMiljoData = () => {
+		if (!harBestilling || !data) {
+			return null
+		}
+		const miljoData = []
+		if (fagsystemMiljoer && fagsystemMiljoer.length > 0) {
+			fagsystemMiljoer.map((miljo) => {
+				const fagsystemData = data?.find((d) => d?.miljoe === miljo)?.transaksjonId
+				miljoData.push({ data: fagsystemData, miljo: miljo })
+			})
+		} else {
+			data?.map((m) => {
+				miljoData.push({ data: m.transaksjonId, miljo: m.miljoe })
+			})
+		}
+		return miljoData
+	}
+	const miljoData = getMiljoData()
+
+	return {
+		data: miljoData?.sort((a, b) => a.miljo?.localeCompare(b.miljo)),
 		loading: isLoading,
 		error: error,
 	}

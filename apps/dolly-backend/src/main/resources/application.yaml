@@ -28,6 +28,9 @@ spring:
     enabled: true # Disabled by default as you should probably think twice before running Flyway-migrations
     locations: classpath:db/migration
     baseline-on-migrate: true
+  mvc:
+    async:
+      request-timeout: -1
   jpa:
     properties:
       hibernate:
@@ -44,8 +47,8 @@ spring:
           #The client_id of this application
           accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
         tokenx:
-          issuer-uri: https://tokendings.dev-gcp.nais.io
-          jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
+          issuer-uri: https://tokenx.dev-gcp.nav.cloud.nais.io
+          jwk-set-uri: https://tokenx.dev-gcp.nav.cloud.nais.io/jwks
           accepted-audience: ${TOKEN_X_CLIENT_ID}
 
 springdoc:

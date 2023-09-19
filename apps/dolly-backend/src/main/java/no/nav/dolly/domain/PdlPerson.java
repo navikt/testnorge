@@ -3,35 +3,10 @@ package no.nav.dolly.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import no.nav.dolly.domain.deserialization.PersonStatusEnumDeserializer;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.AdresseDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.DeltBostedDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.DoedfoedtBarnDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.FalskIdentitetDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.ForeldreansvarDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.InnflyttingDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.OppholdDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.OppholdsadresseDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.RelatertBiPersonDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.SikkerhetstiltakDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.TelefonnummerDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.TilrettelagtKommunikasjonDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskAdresseDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskIdentifikasjonsnummerDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.*;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -41,10 +16,7 @@ import java.util.List;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static no.nav.dolly.domain.PdlPerson.Rolle.BARN;
-import static no.nav.dolly.domain.PdlPerson.Rolle.FAR;
-import static no.nav.dolly.domain.PdlPerson.Rolle.MEDMOR;
-import static no.nav.dolly.domain.PdlPerson.Rolle.MOR;
+import static no.nav.dolly.domain.PdlPerson.Rolle.*;
 
 @Data
 @NoArgsConstructor
@@ -350,6 +322,7 @@ public class PdlPerson {
     }
 
     @lombok.Data
+    @SuperBuilder
     @EqualsAndHashCode(callSuper = true)
     @NoArgsConstructor
     @AllArgsConstructor
@@ -397,9 +370,16 @@ public class PdlPerson {
         private String relatertVedSivilstand;
 
         public boolean isGift() {
-            return nonNull(type) &&
-                    type != SivilstandType.UOPPGITT &&
-                    type != SivilstandType.UGIFT;
+            return type == SivilstandType.GIFT ||
+                    type == SivilstandType.SEPARERT ||
+                    type == SivilstandType.REGISTRERT_PARTNER ||
+                    type == SivilstandType.SEPARERT_PARTNER;
+        }
+
+        public boolean isGiftEllerHarVaertGift() {
+            return isGift() ||
+                    type == SivilstandType.SKILT ||
+                    type == SivilstandType.SKILT_PARTNER;
         }
     }
 
@@ -448,7 +428,7 @@ public class PdlPerson {
     @EqualsAndHashCode(callSuper = true)
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class VergeEllerFullmektig extends DbVersjonDTO{
+    public static class VergeEllerFullmektig extends DbVersjonDTO {
 
         private NavnDTO navn;
         private String motpartsPersonident;

@@ -1,6 +1,6 @@
 {
   "name": "dolly",
-  "version": "2.5.15",
+  "version": "2.5.16",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -94,7 +94,7 @@
     "babel-plugin-styled-components": "^2.1.1",
     "cpx2": "^5.0.0",
     "cross-env": "^7.0.3",
-    "cypress": "^12.1.0",
+    "cypress": "^13.1.0",
     "cypress-react-selector": "^3.0.0",
     "dot-prop": "^8.0.0",
     "eslint": "^8.29.0",

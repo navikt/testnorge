@@ -25,14 +25,14 @@ public class Aap115Response extends ArenaResponse{
 
         super(status, miljoe, feilmelding);
         this.nyeAap115 = nyeAap115;
-        this.nyeAapFeilList = nyeAapFeilList;
+        this.nyeAap115FeilList = nyeAapFeilList;
     }
 
     @Schema(description = "Liste over opprettede AAP-115")
     private List<Aap115> nyeAap115;
 
     @Schema(description = "Liste over AAP-115 hvor oppretting feilet")
-    private List<Aap115Feil> nyeAapFeilList;
+    private List<Aap115Feil> nyeAap115FeilList;
 
     public List<Aap115> getNyeAap115() {
 
@@ -42,12 +42,12 @@ public class Aap115Response extends ArenaResponse{
         return nyeAap115;
     }
 
-    public List<Aap115Feil> getNyeAapFeilList() {
+    public List<Aap115Feil> getNyeAap115FeilList() {
 
-        if (isNull(nyeAapFeilList)) {
-            nyeAapFeilList = new ArrayList<>();
+        if (isNull(nyeAap115FeilList)) {
+            nyeAap115FeilList = new ArrayList<>();
         }
-        return nyeAapFeilList;
+        return nyeAap115FeilList;
     }
 
     @Data
@@ -58,7 +58,7 @@ public class Aap115Response extends ArenaResponse{
 
         private String personident;
         private String miljoe;
-        private String nyAapFeilstatus;
+        private String nyAap115Feilstatus;
         private String melding;
     }
 }

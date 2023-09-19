@@ -25,7 +25,7 @@ export const initialValuesBasedOnMal = (mal: any) => {
 	}
 	if (initialValuesMal.inntektsmelding) {
 		initialValuesMal.inntektsmelding.inntekter = getUpdatedInntektsmeldingData(
-			initialValuesMal.inntektsmelding.inntekter
+			initialValuesMal.inntektsmelding.inntekter,
 		)
 	}
 	if (initialValuesMal.inntektstub) {
@@ -51,7 +51,7 @@ export const initialValuesBasedOnMal = (mal: any) => {
 	}
 	if (initialValuesMal.arbeidsplassenCV) {
 		initialValuesMal.arbeidsplassenCV = getUpdatedArbeidsplassenData(
-			initialValuesMal.arbeidsplassenCV
+			initialValuesMal.arbeidsplassenCV,
 		)
 	}
 	if (initialValuesMal.arenaforvalter) {
@@ -83,14 +83,14 @@ const getUpdatedArbeidsplassenData = (arbeidsplassenData) => {
 	return Object.fromEntries(
 		Object.entries(arbeidsplassenData)?.filter((kategori) => {
 			return (kategori?.[0] === 'jobboensker' && kategori?.[1]) || kategori?.[1]?.length > 0
-		})
+		}),
 	)
 }
 
 const getUpdatedInntektstubData = (inntektstubData: any) => {
 	const newInntektstubData = Object.assign({}, inntektstubData)
 	newInntektstubData.inntektsinformasjon = newInntektstubData.inntektsinformasjon?.map(
-		(inntekt: any) => updateData(inntekt, initialValues.inntektstub)
+		(inntekt: any) => updateData(inntekt, initialValues.inntektstub),
 	)
 	return newInntektstubData
 }
@@ -99,10 +99,10 @@ const getUpdatedAaregData = (aaregData: any) => {
 	return aaregData.map((data: any) => {
 		data = updateData(data, initialValues.aareg[0])
 		data.permisjon = data.permisjon?.map((permisjon: any) =>
-			updateData(permisjon, initialValues.permisjon)
+			updateData(permisjon, initialValues.permisjon),
 		)
 		data.utenlandsopphold = data.utenlandsopphold?.map((opphold: any) =>
-			updateData(opphold, initialValues.utenlandsopphold)
+			updateData(opphold, initialValues.utenlandsopphold),
 		)
 		return data
 	})
@@ -118,7 +118,7 @@ const getUpdatedPdlfData = (pdlfData: any) => {
 	if (pdlfData.kontaktinformasjonForDoedsbo) {
 		newPdlfData.kontaktinformasjonForDoedsbo = updateData(
 			newPdlfData.kontaktinformasjonForDoedsbo,
-			initialValues.kontaktinformasjonForDoedsbo
+			initialValues.kontaktinformasjonForDoedsbo,
 		)
 	}
 	return newPdlfData
@@ -131,29 +131,29 @@ const getUpdatedUdistubData = (udistubData: any) => {
 		if (oppholdStatus.eosEllerEFTABeslutningOmOppholdsrett) {
 			newUdistubData.oppholdStatus = updateData(
 				newUdistubData.oppholdStatus,
-				initialValues.udistub[0]
+				initialValues.udistub[0],
 			)
 		} else if (oppholdStatus.eosEllerEFTAVedtakOmVarigOppholdsrett) {
 			newUdistubData.oppholdStatus = updateData(
 				newUdistubData.oppholdStatus,
-				initialValues.udistub[1]
+				initialValues.udistub[1],
 			)
 		} else if (oppholdStatus.eosEllerEFTAOppholdstillatelse) {
 			newUdistubData.oppholdStatus = updateData(
 				newUdistubData.oppholdStatus,
-				initialValues.udistub[2]
+				initialValues.udistub[2],
 			)
 		} else if (oppholdStatus.oppholdSammeVilkaar) {
 			newUdistubData.oppholdStatus = updateData(
 				newUdistubData.oppholdStatus,
-				initialValues.udistub[3]
+				initialValues.udistub[3],
 			)
 		}
 	}
 	if (udistubData.arbeidsadgang && udistubData.arbeidsadgang.harArbeidsAdgang === 'JA') {
 		newUdistubData.arbeidsadgang = updateData(
 			newUdistubData.arbeidsadgang,
-			initialValues.arbeidsadgang
+			initialValues.arbeidsadgang,
 		)
 	}
 
@@ -164,6 +164,7 @@ const getUpdatedPdldata = (pdldata: any) => {
 	const newPdldata = Object.assign({}, pdldata)
 	const nyPerson = newPdldata?.opprettNyPerson
 	if (nyPerson) {
+		newPdldata.opprettNyPerson.syntetisk = true
 		if (nyPerson.alder === null && nyPerson.foedtFoer === null && nyPerson.foedtEtter === null) {
 			newPdldata.opprettNyPerson = {
 				identtype: nyPerson.identtype,
@@ -183,7 +184,7 @@ const getUpdatedPdldata = (pdldata: any) => {
 		newPdldata.person.oppholdsadresse = person.oppholdsadresse.map(
 			(adresse: OppholdsadresseData) => {
 				return updateAdressetyper(adresse, false)
-			}
+			},
 		)
 	}
 	if (person?.kontaktadresse) {
@@ -202,7 +203,7 @@ const getUpdatedPdldata = (pdldata: any) => {
 					relasjon.nyRelatertPerson.syntetisk = true
 				}
 				return relasjon
-			}
+			},
 		)
 	}
 
@@ -250,7 +251,7 @@ const getUpdatedPdldata = (pdldata: any) => {
 					kontaktinfo.personSomKontakt.nyKontaktperson.syntetisk = true
 				}
 				return kontaktinfo
-			}
+			},
 		)
 	}
 

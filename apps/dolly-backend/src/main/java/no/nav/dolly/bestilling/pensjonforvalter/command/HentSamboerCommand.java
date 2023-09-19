@@ -34,7 +34,7 @@ public class HentSamboerCommand implements Callable<Mono<PensjonSamboerResponse>
                 .get()
                 .uri(uriBuilder -> uriBuilder
                         .path(PEN_SAMBOER_URL)
-                        .queryParam("historikk", false)
+                        .queryParam("historikk", true)
                         .build(miljoe, ident))
                 .header(AUTHORIZATION, "Bearer " + token)
                 .header(HEADER_NAV_CALL_ID, generateCallId())

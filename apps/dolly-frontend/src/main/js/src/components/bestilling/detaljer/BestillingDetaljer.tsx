@@ -6,6 +6,9 @@ import GjenopprettConnector from '@/components/bestilling/gjenopprett/Gjenoppret
 import './BestillingDetaljer.less'
 import { MalModal } from '@/pages/minSide/maler/MalModal'
 import * as _ from 'lodash-es'
+import { SlettButton } from '@/components/ui/button/SlettButton/SlettButton'
+import React from 'react'
+import { DollyApi } from '@/service/Api'
 
 export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId, brukertype }) {
 	const [isGjenopprettModalOpen, openGjenopprettModal, closeGjenoprettModal] = useBoolean(false)
@@ -56,6 +59,14 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId,
 								OPPRETT NY MAL
 							</Button>
 						)}
+					<SlettButton
+						bestillingId={bestilling.id}
+						action={DollyApi.slettBestilling}
+						loading={false}
+						navigateHome={false}
+					>
+						Er du sikker på at du vil slette denne bestillingen?
+					</SlettButton>
 				</div>
 			)}
 
@@ -66,7 +77,9 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId,
 						kind="synchronize"
 						disabled={!bestilling.ferdig}
 						title={
-							!bestilling.ferdig ? 'Bestillingen kan ikke gjenopprettes før den er ferdig' : null
+							!bestilling.ferdig
+								? 'Bestillingen kan ikke gjenopprettes før den er ferdig'
+								: undefined
 						}
 					>
 						GJENOPPRETT
