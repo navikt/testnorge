@@ -25,3 +25,10 @@ management:
     metrics:
       export:
         enabled: true
+
+consumers:
+  generer-navn-service:
+    name: generer-navn-service
+    cluster: dev-gcp
+    namespace: dolly
+    url: https://generer-navn-service.intern.dev.nav.no
