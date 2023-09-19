@@ -23,77 +23,79 @@ class BudProService {
         var list = new ArrayList<BudproRecord>(limit);
         for (int i = 0; i < limit; i++) {
             var aga = 1;
-            String ansattnavn = null;
+            String agaBeskrivelse = null;
             var ansettelsestype = ansettelsestypeService.getRandom(random);
-            var aarsloenn = aarsloenn(random);
-            String beredskap = null;
-            String kode = null;
-            String datoFraStilling = null;
-            String datoFraStillingUtlaan = null;
-            String datoTilStilling = null;
-            String datoTilStillingUtlaan = null;
+            String arbeidsstedKommune = null;
             String felles = null;
             String fellesBeskrivelse = null;
+            String fraDato = null;
             var foedselsdato = foedselsdato(random);
             var koststed = koststedService.getRandom(random);
-            String lederT = null;
+            String koststedUtlaantFra = null;
+            String koststedUtlaantFraBeskrivelse = null;
+            String lederUtlaantFra = null;
             String ledersNavn = null;
             String ledersRessursnummer = null;
-            String midlertidigLoennstilskudd = null;
+            String navn = null;
             String oppgave = null;
             String oppgaveBeskrivelse = null;
+            String oppgaveUtlaantFra = null;
+            String oppgaveUtlaantFraBeskrivelse = null;
             String orgenhet = null;
-            String orgenhetT = null;
-            String permisjon = null;
+            String orgenhetNavn = null;
+            String permisjonskode = null;
             String produkt = null;
             String produktBeskrivelse = null;
-            String refusjoner = null;
-            String ressurs = null;
+            String produktUtlaantFra = null;
+            String produktUtlaantFraBeskrivelse = null;
             String ressursnummer = null;
             String sluttetDato = null;
+            String skattekommune = null;
             String statskonto = null;
+            String statskontoKapittel = null;
+            String statskontoPost = null;
             String stillingsnummer = null;
             String stillingsprosent = null;
-            String utlaansprosent = null;
-            String utlaantTilKoststed = null;
-            String utlaantOppgave = null;
+            String tilDato = null;
+            String aarsloennInklFasteTillegg = aarsloenn(random);
             list.add(new BudproRecord(
                     aga,
-                    ansattnavn,
+                    agaBeskrivelse,
                     ansettelsestype,
-                    aarsloenn,
-                    beredskap,
-                    kode,
-                    datoFraStilling,
-                    datoFraStillingUtlaan,
-                    datoTilStilling,
-                    datoTilStillingUtlaan,
+                    arbeidsstedKommune,
                     felles,
                     fellesBeskrivelse,
+                    fraDato,
                     foedselsdato,
                     koststed.getId(),
-                    koststed.getNavn(),
-                    lederT,
+                    koststed.getBeskrivelse(),
+                    koststedUtlaantFra,
+                    koststedUtlaantFraBeskrivelse,
+                    lederUtlaantFra,
                     ledersNavn,
                     ledersRessursnummer,
-                    midlertidigLoennstilskudd,
+                    navn,
                     oppgave,
                     oppgaveBeskrivelse,
+                    oppgaveUtlaantFra,
+                    oppgaveUtlaantFraBeskrivelse,
                     orgenhet,
-                    orgenhetT,
-                    permisjon,
+                    orgenhetNavn,
+                    permisjonskode,
                     produkt,
                     produktBeskrivelse,
-                    refusjoner,
-                    ressurs,
+                    produktUtlaantFra,
+                    produktUtlaantFraBeskrivelse,
                     ressursnummer,
                     sluttetDato,
+                    skattekommune,
                     statskonto,
+                    statskontoKapittel,
+                    statskontoPost,
                     stillingsnummer,
                     stillingsprosent,
-                    utlaansprosent,
-                    utlaantTilKoststed,
-                    utlaantOppgave
+                    tilDato,
+                    aarsloennInklFasteTillegg
             ));
         }
         return list;

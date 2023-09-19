@@ -10,7 +10,7 @@ import java.util.Optional;
 public class Koststed {
 
     private final String id;
-    private final String navn;
+    private final String beskrivelse;
 
     static Optional<Koststed> of(String[] line) {
         if (lineIsTooShort(line) || lineContainsHeaders(line) || lineIsInactive(line)) {
