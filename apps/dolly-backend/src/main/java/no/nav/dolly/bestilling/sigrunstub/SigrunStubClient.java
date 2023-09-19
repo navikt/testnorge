@@ -99,6 +99,7 @@ public class SigrunStubClient implements ClientRegister {
 
     private String getStatus(SigrunstubResponse response) {
 
+        log.info("Response fra Sigrunstub med data {} ", response);
         return isNull(response.getErrorStatus()) ?
                 getStatus(response.getOpprettelseTilbakemeldingsListe()) :
                 ErrorStatusDecoder.encodeStatus(errorStatusDecoder.getErrorText(response.getErrorStatus(), response.getMelding()));

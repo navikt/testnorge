@@ -22,6 +22,8 @@ import org.springframework.http.HttpStatus;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import java.util.List;
+
 import static java.util.Collections.singletonList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -91,7 +93,7 @@ class SigrunStubClientTest {
                 .assertNext(status -> {
                     verify(transactionHelperService, times(1))
                             .persister(any(BestillingProgress.class), any(), statusCaptor.capture());
-                    assertThat(statusCaptor.getValue(), Matchers.is(equalTo("Feil:")));
+                    assertThat(statusCaptor.getValue(), Matchers.is(equalTo("SIGRUN_LIGNET:Feil=")));
                 })
                 .verifyComplete();
     }
@@ -106,7 +108,9 @@ class SigrunStubClientTest {
                 .thenReturn(request.getSigrunstub());
 
         when(sigrunStubConsumer.createSkattegrunnlag(anyList())).thenReturn(Mono.just(SigrunstubResponse.builder()
-                .errorStatus(HttpStatus.OK)
+                .opprettelseTilbakemeldingsListe(List.of(SigrunstubResponse.OpprettelseTilbakemelding.builder()
+                        .status(200)
+                        .build()))
                 .build()));
 
         when(sigrunStubConsumer.deleteSkattegrunnlag(IDENT)).thenReturn(Mono.just(new SigrunstubResponse()));
@@ -117,7 +121,7 @@ class SigrunStubClientTest {
                 .assertNext(status -> {
                     verify(transactionHelperService, times(1))
                             .persister(any(BestillingProgress.class), any(), statusCaptor.capture());
-                    assertThat(statusCaptor.getValue(), Matchers.is(equalTo("OK")));
+                    assertThat(statusCaptor.getValue(), Matchers.is(equalTo("SIGRUN_LIGNET:OK")));
                 })
                 .verifyComplete();
 

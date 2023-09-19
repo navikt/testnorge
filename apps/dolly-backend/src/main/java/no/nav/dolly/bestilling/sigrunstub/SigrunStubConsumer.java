@@ -45,7 +45,7 @@ public class SigrunStubConsumer implements ConsumerStatus {
                 .build();
     }
 
-    @Timed(name = "providers", tags = { "operation", "sigrun_deleteGrunnlag" })
+    @Timed(name = "providers", tags = {"operation", "sigrun_deleteGrunnlag"})
     public Flux<SigrunstubResponse> deleteSkattegrunnlag(List<String> identer) {
 
         return tokenService.exchange(serviceProperties)
@@ -55,14 +55,14 @@ public class SigrunStubConsumer implements ConsumerStatus {
                         .flatMap(Flux::from));
     }
 
-    @Timed(name = "providers", tags = { "operation", "sigrun_deleteGrunnlag" })
+    @Timed(name = "providers", tags = {"operation", "sigrun_deleteGrunnlag"})
     public Mono<SigrunstubResponse> deleteSkattegrunnlag(String ident) {
 
         return tokenService.exchange(serviceProperties)
                 .flatMap(token -> new SigrunstubDeleteCommand(webClient, ident, token.getTokenValue()).call());
     }
 
-    @Timed(name = "providers", tags = { "operation", "sigrun_createGrunnlag" })
+    @Timed(name = "providers", tags = {"operation", "sigrun_createGrunnlag"})
     public Mono<SigrunstubResponse> createSkattegrunnlag(List<OpprettSkattegrunnlag> request) {
 
         log.info("Post til Sigrunstub med data {}", request);
@@ -71,7 +71,7 @@ public class SigrunStubConsumer implements ConsumerStatus {
                 .flatMap(token -> new SigurunstubPostCommand(webClient, request, token.getTokenValue()).call());
     }
 
-    @Timed(name = "providers", tags = { "operation", "sigrun_createPensjonsgivendeInntekt" })
+    @Timed(name = "providers", tags = {"operation", "sigrun_createPensjonsgivendeInntekt"})
     public Mono<SigrunstubResponse> updatePensjonsgivendeInntekt(List<PensjonsgivendeForFolketrygden> request) {
 
         log.info("Put til Sigrunstub med data {}", request);

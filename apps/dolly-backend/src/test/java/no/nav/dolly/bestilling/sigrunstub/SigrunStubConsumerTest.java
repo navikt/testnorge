@@ -3,10 +3,10 @@ package no.nav.dolly.bestilling.sigrunstub;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
+import no.nav.dolly.bestilling.sigrunstub.dto.PensjonsgivendeForFolketrygden;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubResponse;
 import no.nav.dolly.config.credentials.SigrunstubProxyProperties;
 import no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag;
-import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,6 +31,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.delete;
 import static com.github.tomakehurst.wiremock.client.WireMock.matching;
 import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.put;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static java.util.Collections.singletonList;
@@ -48,13 +49,12 @@ class SigrunStubConsumerTest {
     @MockBean
     private TokenExchange tokenService;
 
-    @MockBean
-    private ErrorStatusDecoder errorStatusDecoder;
-
     @Autowired
     private SigrunStubConsumer sigrunStubConsumer;
 
     private OpprettSkattegrunnlag skattegrunnlag;
+
+    private PensjonsgivendeForFolketrygden pensjonsgivendeForFolketrygden;
 
     private static String asJsonString(final Object object) throws JsonProcessingException {
         return new ObjectMapper().writeValueAsString(object);
@@ -70,6 +70,10 @@ class SigrunStubConsumerTest {
         skattegrunnlag = OpprettSkattegrunnlag.builder()
                 .inntektsaar("1978")
                 .build();
+
+        pensjonsgivendeForFolketrygden = PensjonsgivendeForFolketrygden.builder()
+                .inntektsaar("1978")
+                .build();
     }
 
     @Test
@@ -77,11 +81,29 @@ class SigrunStubConsumerTest {
 
         stubOpprettSkattegrunnlagOK();
 
-        StepVerifier.create(sigrunStubConsumer.createSkattegrunnlag(singletonList(this.skattegrunnlag)))
+        StepVerifier.create(sigrunStubConsumer.createSkattegrunnlag(singletonList(skattegrunnlag)))
                         .expectNext(SigrunstubResponse.builder()
-                                .errorStatus(HttpStatus.OK)
+                                .opprettelseTilbakemeldingsListe(List.of(SigrunstubResponse.OpprettelseTilbakemelding.builder()
+                                                .inntektsaar("1978")
+                                                .status(200)
+                                        .build()))
                                 .build())
                                 .verifyComplete();
+    }
+
+    @Test
+    void createPensjonsgivendeOK() {
+
+        stubOpprettPensjongivendeOK();
+
+        StepVerifier.create(sigrunStubConsumer.updatePensjonsgivendeInntekt(singletonList(pensjonsgivendeForFolketrygden)))
+                .expectNext(SigrunstubResponse.builder()
+                        .opprettelseTilbakemeldingsListe(List.of(SigrunstubResponse.OpprettelseTilbakemelding.builder()
+                                .inntektsaar("1978")
+                                .status(200)
+                                .build()))
+                        .build())
+                .verifyComplete();
     }
 
     @Test
@@ -114,7 +136,15 @@ class SigrunStubConsumerTest {
 
         stubFor(post(urlPathMatching("(.*)/sigrunstub/api/v1/lignetinntekt"))
                 .willReturn(ok()
-                        .withBody("{}")
+                        .withBody("{\"opprettelseTilbakemeldingsListe\":[{\"status\":200}]}")
+                        .withHeader("Content-Type", "application/json")));
+    }
+
+    private void stubOpprettPensjongivendeOK() {
+
+        stubFor(put(urlPathMatching("(.*)/sigrunstub/api/v1/pensjonsgivendeinntektforfolketrygden"))
+                .willReturn(ok()
+                        .withBody("{\"opprettelseTilbakemeldingsListe\":[{\"status\":200}]}")
                         .withHeader("Content-Type", "application/json")));
     }
 

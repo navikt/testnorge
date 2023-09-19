@@ -25,7 +25,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class SigurunstubPutCommand implements Callable<Mono<SigrunstubResponse>> {
 
     private static final String CONSUMER = "Dolly";
-    private static final String SIGRUN_STUB_OPPRETT_GRUNNLAG = "/api/v1/pensjonsgivendeInntektforfolketrygden";
+    private static final String SIGRUN_STUB_OPPRETT_GRUNNLAG = "/api/v1/pensjonsgivendeinntektforfolketrygden";
 
     private final WebClient webClient;
     private final List<PensjonsgivendeForFolketrygden> request;
@@ -34,7 +34,7 @@ public class SigurunstubPutCommand implements Callable<Mono<SigrunstubResponse>>
     @Override
     public Mono<SigrunstubResponse> call() {
 
-        return webClient.post().uri(uriBuilder -> uriBuilder
+        return webClient.put().uri(uriBuilder -> uriBuilder
                         .path(SIGRUN_STUB_OPPRETT_GRUNNLAG)
                         .build())
                 .header(ACCEPT, APPLICATION_JSON_VALUE)
