@@ -1,0 +1,26 @@
+name: budpro-service
+
+on:
+  push:
+    paths:
+      - libs/commands
+      - libs/data-transfer-objects
+      - libs/reactive-core
+      - libs/security-core
+      - libs/servlet-core
+      - libs/servlet-insecure-security
+      - libs/servlet-security
+      - apps/budpro-service/**
+      - .github/workflows/app.budpro-service.yml
+
+jobs:
+  workflow:
+    uses: ./.github/workflows/common.workflow.backend.yml
+    with:
+      working-directory: "apps/budpro-service"
+      deploy-tag: "#deploy-budpro-service"
+    secrets:
+      NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
+      NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
+      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
