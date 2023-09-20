@@ -42,6 +42,7 @@ public class SigurunstubPostCommand implements Callable<Mono<SigrunstubResponse>
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .header(AUTHORIZATION, "Bearer " + token)
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
+                .bodyValue(request)
                 .retrieve()
                 .bodyToMono(SigrunstubResponse.class)
                 .map(response -> {

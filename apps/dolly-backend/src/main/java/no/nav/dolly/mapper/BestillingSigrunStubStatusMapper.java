@@ -47,7 +47,7 @@ public final class BestillingSigrunStubStatusMapper {
 
         var meldingStatus = entry.split(":");
         var melding = meldingStatus.length > 1 ? meldingStatus[0] : SIGRUNSTUB;
-        var status = meldingStatus.length > 1 ? meldingStatus[1] : meldingStatus[0];
+        var status = (meldingStatus.length > 1 ? meldingStatus[1] : meldingStatus[0]).replace("=", ":");
 
         if (msgStatusIdents.containsKey(melding)) {
             if (msgStatusIdents.get(melding).containsKey(status)) {
