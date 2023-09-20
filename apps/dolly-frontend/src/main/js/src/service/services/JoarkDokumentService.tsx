@@ -42,7 +42,7 @@ const hentDokument = (
 	journalpostId: number,
 	dokumentInfoId: number,
 	miljo: string,
-	dokumentType: DokumentType
+	dokumentType: DokumentType,
 ): Promise<string> =>
 	api
 		.fetch(
@@ -50,7 +50,7 @@ const hentDokument = (
 			{
 				method: 'GET',
 				headers: { miljo: miljo },
-			}
+			},
 		)
 		.then((response) => response.text())
 
@@ -65,7 +65,7 @@ const hentPDF = (journalpostId: number, dokumentInfoId: number, miljo: string): 
 					Accept: 'application/pdf',
 					'Content-Type': 'application/pdf',
 				},
-			}
+			},
 		)
 		.then((response) => {
 			return response.blob()
