@@ -62,7 +62,7 @@ const BoadresseVisning = ({
 	const initialValues = { bostedsadresse: initBoadresse }
 
 	const redigertBoadressePdlf = _.get(tmpPersoner, `${ident}.person.bostedsadresse`)?.find(
-		(a: BostedData) => a.id === boadresseData.id
+		(a: BostedData) => a.id === boadresseData.id,
 	)
 	const slettetBoadressePdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertBoadressePdlf
 	if (slettetBoadressePdlf) {

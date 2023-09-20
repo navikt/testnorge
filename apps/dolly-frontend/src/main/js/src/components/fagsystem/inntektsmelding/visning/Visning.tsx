@@ -29,25 +29,26 @@ export const InntektsmeldingVisning = ({ liste, ident }: InntektsmeldingVisningP
 	}
 
 	const getDokumenter = (bestilling: TransaksjonId): Promise<Dokument[]> => {
-		return JoarkDokumentService.hentJournalpost(
-			bestilling.transaksjonId.dokument.journalpostId,
-			bestilling.miljoe,
-		).then((journalpost: Journalpost) => {
-			return Promise.all(
-				journalpost.dokumenter.map((document: Dokument) =>
-					JoarkDokumentService.hentDokument(
-						bestilling.transaksjonId.dokument.journalpostId,
-						document.dokumentInfoId,
-						bestilling.miljoe,
-						'ORIGINAL',
-					).then((dokument: string) => ({
-						journalpostId: bestilling.transaksjonId.dokument.journalpostId,
-						dokumentInfoId: document.dokumentInfoId,
-						dokument,
-					})),
-				),
-			)
-		})
+		const journalpostId =
+			bestilling.transaksjonId.dokument?.journalpostId || bestilling.transaksjonId.journalpostId
+		return JoarkDokumentService.hentJournalpost(journalpostId, bestilling.miljoe).then(
+			(journalpost: Journalpost) => {
+				return Promise.all(
+					journalpost.dokumenter.map((document: Dokument) =>
+						JoarkDokumentService.hentDokument(
+							journalpostId,
+							document.dokumentInfoId,
+							bestilling.miljoe,
+							'ORIGINAL',
+						).then((dokument: string) => ({
+							journalpostId,
+							dokumentInfoId: document.dokumentInfoId,
+							dokument,
+						})),
+					),
+				)
+			},
+		)
 	}
 
 	return (

@@ -6,7 +6,7 @@ import { OrganisasjonItem } from '@/components/ui/icon/IconItem'
 import Icon from '@/components/ui/icon/Icon'
 import { OrganisasjonVisning } from '@/components/fagsystem/organisasjoner/visning/Visning'
 import { EnhetBestilling, EnhetData } from '@/components/fagsystem/organisasjoner/types'
-import { CopyButton } from '@/components/ui/button/CopyButton/CopyButton'
+import { DollyCopyButton } from '@/components/ui/button/CopyButton/DollyCopyButton'
 import { DollyTable } from '@/components/ui/dollyTable/DollyTable'
 import { useOrganisasjoner } from '@/utils/hooks/useOrganisasjoner'
 import Loading from '@/components/ui/loading/Loading'
@@ -47,7 +47,7 @@ export default function OrganisasjonListe({
 			organisasjonsnummer: string
 			status: string
 		}[],
-		searchStr: string
+		searchStr: string,
 	) => {
 		if (!items) {
 			return []
@@ -58,13 +58,13 @@ export default function OrganisasjonListe({
 
 		const query = searchStr.toLowerCase()
 		return items.filter((item) =>
-			Object.values(item).some((v) => (v || '').toString().toLowerCase().includes(query))
+			Object.values(item).some((v) => (v || '').toString().toLowerCase().includes(query)),
 		)
 	}
 
 	const hentOrgStatus = (
 		bestillingArray: Array<EnhetBestilling>,
-		bestillingId: string | number
+		bestillingId: string | number,
 	) => {
 		if (!bestillingArray) {
 			return null
@@ -86,7 +86,7 @@ export default function OrganisasjonListe({
 
 	const getBestillingIdFromOrgnummer = (
 		bestillingListe: Array<EnhetBestilling>,
-		organisasjonsnummer: string
+		organisasjonsnummer: string,
 	) =>
 		bestillingListe
 			.filter((org) => org?.organisasjonNummer === organisasjonsnummer)
@@ -103,7 +103,7 @@ export default function OrganisasjonListe({
 		return orgListe.map((orgInfo) => {
 			const bestillingId = getBestillingIdFromOrgnummer(
 				bestillingListe,
-				orgInfo.organisasjonsnummer
+				orgInfo.organisasjonsnummer,
 			)
 			return {
 				orgInfo,
@@ -137,7 +137,13 @@ export default function OrganisasjonListe({
 			dataField: 'organisasjonsnummer',
 			unique: true,
 
-			formatter: (_cell: string, row: EnhetData) => <CopyButton value={row.organisasjonsnummer} />,
+			formatter: (_cell: string, row: EnhetData) => (
+				<DollyCopyButton
+					displayText={row.organisasjonsnummer}
+					copyText={row.organisasjonsnummer}
+					tooltipText={'Kopier organisasjonsnummer'}
+				/>
+			),
 		},
 		{
 			text: 'Navn',

@@ -9,14 +9,14 @@ import {
 	omraaderArrayToString,
 	oversettBoolean,
 	showLabel,
-	uppercaseAndUnderscoreToCapitalized,
+	uppercaseAndUnderscoreToCapitalized
 } from '@/utils/DataFormatter'
 import {
 	AdresseKodeverk,
 	ArbeidKodeverk,
 	PersoninformasjonKodeverk,
 	SigrunKodeverk,
-	VergemaalKodeverk,
+	VergemaalKodeverk
 } from '@/config/kodeverk'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
@@ -1073,11 +1073,11 @@ const mapAareg = (bestillingData, data) => {
 				obj('F.o.m. kalendermåned', formatDate(aaregKriterier[0]?.genererPeriode?.fom)),
 				obj('T.o.m. kalendermåned', formatDate(aaregKriterier[0]?.genererPeriode?.tom)),
 			)
-			aaregKriterier[0]?.amelding.forEach((maaned) => {
+			aaregKriterier[0]?.amelding?.forEach((maaned) => {
 				const maanedData = {
 					itemRows: [],
 				}
-				maaned.arbeidsforhold.forEach((arbeidsforhold, i) => {
+				maaned.arbeidsforhold?.forEach((arbeidsforhold, i) => {
 					maanedData.itemRows.push(
 						arbeidsforholdVisning(arbeidsforhold, i, harAmelding, aaregKriterier),
 					)
@@ -1086,7 +1086,7 @@ const mapAareg = (bestillingData, data) => {
 				aareg.paginering.push(maanedData)
 			})
 		} else if (aaregKriterier[0]?.arbeidsgiver) {
-			aaregKriterier.forEach((arbeidsforhold, i) => {
+			aaregKriterier?.forEach((arbeidsforhold, i) => {
 				aareg.itemRows.push(arbeidsforholdVisning(arbeidsforhold, i, harAmelding, aaregKriterier))
 			})
 		}

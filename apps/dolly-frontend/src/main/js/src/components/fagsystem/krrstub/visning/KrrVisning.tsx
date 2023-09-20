@@ -157,7 +157,7 @@ export const KrrVisning = ({ data, loading }: KrrVisningProps) => {
 
 	const antallKrr = sortedData?.length
 	const antallFremtidige = sortedData?.filter(
-		(krr) => krr.gyldigFra && new Date(krr.gyldigFra) > new Date()
+		(krr) => krr.gyldigFra && new Date(krr.gyldigFra) > new Date(),
 	).length
 
 	const gyldigeData =

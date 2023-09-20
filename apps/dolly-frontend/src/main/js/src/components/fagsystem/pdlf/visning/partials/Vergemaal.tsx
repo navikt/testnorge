@@ -67,7 +67,7 @@ const VergemaalLes = ({
 	const relatertPersonIdent = vergemaalData.vergeIdent
 	const relasjon = relasjoner?.find((item) => item.relatertPerson?.ident === relatertPersonIdent)
 	const relasjonRedigert = redigertRelatertePersoner?.find(
-		(item) => item.relatertPerson?.ident === relatertPersonIdent
+		(item) => item.relatertPerson?.ident === relatertPersonIdent,
 	)
 
 	const harFullmektig = vergemaalData.sakType === 'FRE'
@@ -125,7 +125,7 @@ const VergemaalVisning = ({
 	initialValues.vergemaal.nyVergeIdent = initialPdlPerson
 
 	const redigertVergemaalPdlf = _.get(tmpPersoner, `${ident}.person.vergemaal`)?.find(
-		(a: VergemaalValues) => a.id === vergemaalData.id
+		(a: VergemaalValues) => a.id === vergemaalData.id,
 	)
 	const redigertRelatertePersoner = _.get(tmpPersoner, `${ident}.relasjoner`)
 

@@ -50,7 +50,7 @@ export const DeltBostedVisning = ({
 	_.set(initialValues, 'deltBosted.adresseIdentifikatorFraMatrikkelen', undefined)
 
 	const redigertBostedPdlf = _.get(tmpPersoner, `${ident}.person.deltBosted`)?.find(
-		(a: DeltBostedValues) => a.id === adresseData.id
+		(a: DeltBostedValues) => a.id === adresseData.id,
 	)
 	const redigertRelatertePersoner = _.get(tmpPersoner, `${ident}.relasjoner`)
 

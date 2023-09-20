@@ -35,6 +35,10 @@ public class PersonGetCommand implements Callable<Flux<PersonMiljoeDTO>> {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToFlux(PersonMiljoeDTO.class)
+                .map(resultat -> {
+                    resultat.setIdent(ident);
+                    return resultat;
+                })
                 .onErrorResume(throwable -> Mono.just(PersonMiljoeDTO.builder()
                         .status("FEIL")
                         .melding(WebClientFilter.getStatus(throwable).getReasonPhrase())

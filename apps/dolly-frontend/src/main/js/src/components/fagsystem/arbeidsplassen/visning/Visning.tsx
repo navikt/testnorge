@@ -26,6 +26,7 @@ const StyledCVVisning = styled.div`
 const ForbiddenVisning = styled.div`
 	align-items: center;
 	margin-bottom: 20px;
+
 	&& {
 		p {
 			margin-left: 10px;

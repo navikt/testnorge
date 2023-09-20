@@ -4,11 +4,15 @@ import KodeverkConnector from '@/components/kodeverk/KodeverkConnector'
 import Loading from '@/components/ui/loading/Loading'
 
 import './TitleValue.less'
-import { CopyButton } from '@/components/ui/button/CopyButton/CopyButton'
 import React from 'react'
+import { DollyCopyButton } from '@/components/ui/button/CopyButton/DollyCopyButton'
 
 const displayValue = (value, visKopier) => {
-	return visKopier ? <CopyButton value={value} /> : value
+	return visKopier ? (
+		<DollyCopyButton displayText={value} copyText={value} tooltipText={'Kopier ' + value} />
+	) : (
+		value
+	)
 }
 
 const P_TitleValue = ({

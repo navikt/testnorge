@@ -72,7 +72,7 @@ const OppholdsadresseVisning = ({
 	const initialValues = { oppholdsadresse: initOppholdsadresse }
 
 	const redigertOppholdsadressePdlf = _.get(tmpPersoner, `${ident}.person.oppholdsadresse`)?.find(
-		(a: OppholdsadresseData) => a.id === oppholdsadresseData.id
+		(a: OppholdsadresseData) => a.id === oppholdsadresseData.id,
 	)
 	const slettetOppholdsadressePdlf =
 		tmpPersoner?.hasOwnProperty(ident) && !redigertOppholdsadressePdlf
@@ -87,7 +87,7 @@ const OppholdsadresseVisning = ({
 		? {
 				oppholdsadresse: Object.assign(
 					_.cloneDeep(initialOppholdsadresse),
-					redigertOppholdsadressePdlf
+					redigertOppholdsadressePdlf,
 				),
 		  }
 		: null
