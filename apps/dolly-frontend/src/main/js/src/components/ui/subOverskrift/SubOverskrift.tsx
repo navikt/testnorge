@@ -14,7 +14,7 @@ export default function SubOverskrift({ iconKind, label, isWarning = false, styl
 	}
 	return (
 		<div className={`sub-overskrift${isWarning ? ' warning' : ''}`} style={style}>
-			{iconKind && <Icon size={18} kind={iconKind} />}
+			{iconKind && <Icon fontSize={'1.5rem'} kind={iconKind} />}
 			<h3>{label}</h3>
 		</div>
 	)
