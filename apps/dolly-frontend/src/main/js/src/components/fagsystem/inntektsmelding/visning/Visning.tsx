@@ -30,18 +30,18 @@ export const InntektsmeldingVisning = ({ liste, ident }: InntektsmeldingVisningP
 
 	const getDokumenter = (bestilling: TransaksjonId): Promise<Dokument[]> => {
 		return JoarkDokumentService.hentJournalpost(
-			bestilling.transaksjonId.journalpostId,
+			bestilling.transaksjonId.dokument.journalpostId,
 			bestilling.miljoe,
 		).then((journalpost: Journalpost) => {
 			return Promise.all(
 				journalpost.dokumenter.map((document: Dokument) =>
 					JoarkDokumentService.hentDokument(
-						bestilling.transaksjonId.journalpostId,
+						bestilling.transaksjonId.dokument.journalpostId,
 						document.dokumentInfoId,
 						bestilling.miljoe,
 						'ORIGINAL',
 					).then((dokument: string) => ({
-						journalpostId: bestilling.transaksjonId.journalpostId,
+						journalpostId: bestilling.transaksjonId.dokument.journalpostId,
 						dokumentInfoId: document.dokumentInfoId,
 						dokument,
 					})),

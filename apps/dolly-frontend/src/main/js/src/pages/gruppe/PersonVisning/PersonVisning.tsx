@@ -180,7 +180,9 @@ export default ({
 
 	const { loading: loadingArenaData, arenaData } = useArenaData(
 		ident.ident,
-		harArenaBestilling(bestillingerFagsystemer),
+		harArenaBestilling(bestillingerFagsystemer) ||
+			(harAaregBestilling(bestillingerFagsystemer) &&
+				harSykemeldingBestilling(bestillingerFagsystemer)),
 	)
 
 	const { pensjonEnvironments } = usePensjonEnvironments()
