@@ -121,7 +121,7 @@ export const InfoStripe = () => {
 					<div className="expand-alle-meldinger">
 						<Button
 							onClick={invertVisAlleMeldinger}
-							kind={showAll === false ? 'expand' : 'collapse'}
+							kind={showAll === false ? 'chevron-down' : 'chevron-up'}
 						>
 							{expandButtonText}
 						</Button>

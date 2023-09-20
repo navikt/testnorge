@@ -45,5 +45,5 @@ export default {
 		}
 		const endpoint = `${getPdlUrl()}/identiteter/${ident}/standalone/${standalone}`
 		return Request.putWithoutResponse(endpoint)
-	}
+	},
 }

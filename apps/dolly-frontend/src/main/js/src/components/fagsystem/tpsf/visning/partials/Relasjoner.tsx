@@ -60,15 +60,15 @@ export const Relasjoner = ({ relasjoner }: RelasjonerProps) => {
 
 	const barn = relasjoner.filter(
 		({ relasjonTypeNavn }) =>
-			relasjonTypeNavn === RelasjonType.BARN || relasjonTypeNavn === RelasjonType.FOEDSEL
+			relasjonTypeNavn === RelasjonType.BARN || relasjonTypeNavn === RelasjonType.FOEDSEL,
 	)
 	const partnere = relasjoner.filter(
 		({ relasjonTypeNavn }) =>
-			relasjonTypeNavn === RelasjonType.EKTEFELLE || relasjonTypeNavn === RelasjonType.PARTNER
+			relasjonTypeNavn === RelasjonType.EKTEFELLE || relasjonTypeNavn === RelasjonType.PARTNER,
 	)
 	const foreldre = relasjoner.filter(
 		({ relasjonTypeNavn }) =>
-			relasjonTypeNavn === RelasjonType.MOR || relasjonTypeNavn === RelasjonType.FAR
+			relasjonTypeNavn === RelasjonType.MOR || relasjonTypeNavn === RelasjonType.FAR,
 	)
 
 	return (

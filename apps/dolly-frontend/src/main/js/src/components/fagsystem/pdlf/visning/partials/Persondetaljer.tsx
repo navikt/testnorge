@@ -16,7 +16,7 @@ import { SkjermingVisning } from '@/components/fagsystem/skjermingsregister/visn
 import { Skjerming } from '@/components/fagsystem/skjermingsregister/SkjermingTypes'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
-import {OpplysningSlettet} from "@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet";
+import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
 
 type PersondetaljerTypes = {
 	data: any
@@ -175,7 +175,7 @@ export const Persondetaljer = ({
 									{(navn) => {
 										const redigertNavn = _.get(
 											tmpPersoner?.pdlforvalter,
-											`${ident}.person.navn`
+											`${ident}.person.navn`,
 										)?.find((a) => a.id === navn.id)
 
 										const slettetNavn =

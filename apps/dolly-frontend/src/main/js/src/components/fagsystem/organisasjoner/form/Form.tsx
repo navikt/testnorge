@@ -43,7 +43,7 @@ const testSektorkode = (schema: any) => {
 			return this.createError({
 				message: 'Feltet er påkrevd',
 			})
-		}
+		},
 	)
 }
 
@@ -71,7 +71,7 @@ const organisasjon: any = Yup.object().shape({
 		'$organisasjon.underenheter',
 		Yup.array()
 			.transform((value) => Object.values(value))
-			.of(Yup.lazy(() => organisasjon.default(undefined)))
+			.of(Yup.lazy(() => organisasjon.default(undefined))),
 	),
 })
 

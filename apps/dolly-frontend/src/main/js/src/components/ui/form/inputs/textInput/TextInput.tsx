@@ -8,6 +8,7 @@ import styled from 'styled-components'
 import React from 'react'
 
 const StyledIcon = styled(Icon)`
+	pointer-events: none;
 	position: absolute;
 	top: 7px;
 	right: 7px;
@@ -29,7 +30,7 @@ export const TextInput = React.forwardRef(
 			feil?: any
 			isDisabled?: boolean
 		},
-		ref
+		ref,
 	) => {
 		const css = cn('skjemaelement__input', className, {
 			'skjemaelement__input--harFeil': props.feil,
@@ -37,7 +38,6 @@ export const TextInput = React.forwardRef(
 
 		return (
 			<>
-				{/*@ts-ignore*/}
 				<input
 					ref={ref}
 					disabled={isDisabled}
@@ -46,10 +46,10 @@ export const TextInput = React.forwardRef(
 					placeholder={placeholder}
 					{...props}
 				/>
-				{icon && <StyledIcon size={20} kind={icon} />}
+				{icon && <StyledIcon fontSize={'1.5rem'} kind={icon} />}
 			</>
 		)
-	}
+	},
 )
 
 export const DollyTextInput = (props: {

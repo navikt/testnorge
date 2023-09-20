@@ -54,10 +54,10 @@ BrregstubForm.validation = {
 							egenskap: requiredString,
 							fratraadt: Yup.boolean(),
 							registreringsdato: Yup.date(),
-						})
+						}),
 					),
-				})
+				}),
 			),
-		})
+		}),
 	),
 }

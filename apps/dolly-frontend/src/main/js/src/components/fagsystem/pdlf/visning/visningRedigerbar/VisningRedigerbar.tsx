@@ -26,25 +26,25 @@ import {
 } from '@/components/fagsystem/pdlf/form/partials/adresser/adressebeskyttelse/Adressebeskyttelse'
 import { doedsfall, navn } from '@/components/fagsystem/pdlf/form/validation/validation'
 import {
-	innflytting,
-	statsborgerskap,
-	utflytting,
 	adressebeskyttelse,
 	bostedsadresse,
-	kontaktadresse,
-	oppholdsadresse,
-	vergemaal,
-	fullmakt,
-	sivilstand,
-	kontaktDoedsbo,
-	forelderBarnRelasjon,
 	doedfoedtBarn,
+	forelderBarnRelasjon,
+	fullmakt,
+	innflytting,
+	kontaktadresse,
+	kontaktDoedsbo,
+	oppholdsadresse,
+	sivilstand,
+	statsborgerskap,
 	utenlandskId,
+	utflytting,
+	vergemaal,
 } from '@/components/fagsystem/pdlf/form/validation/partials'
 import { ifPresent, validate } from '@/utils/YupValidations'
 import {
-	RedigerLoading,
 	Modus,
+	RedigerLoading,
 } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/RedigerLoading'
 import { Option } from '@/service/SelectOptionsOppslag'
 import { KontaktinformasjonForDoedsboForm } from '@/components/fagsystem/pdlf/form/partials/kontaktinformasjonForDoedsbo/KontaktinformasjonForDoedsbo'
@@ -357,7 +357,7 @@ export const VisningRedigerbar = ({
 					is: (foreldreansvar) => Array.isArray(foreldreansvar),
 					then: () => Yup.array().of(foreldreansvarForBarn),
 					otherwise: () => foreldreansvarForBarn,
-				})
+				}),
 			),
 			doedfoedtBarn: ifPresent('doedfoedtBarn', doedfoedtBarn),
 			utenlandskIdentifikasjonsnummer: ifPresent('utenlandskIdentifikasjonsnummer', utenlandskId),
@@ -381,7 +381,7 @@ export const VisningRedigerbar = ({
 			['foreldreansvar', 'foreldreansvar'],
 			['doedfoedtBarn', 'doedfoedtBarn'],
 			['utenlandskIdentifikasjonsnummer', 'utenlandskIdentifikasjonsnummer'],
-		]
+		],
 	)
 
 	const _validate = (values: any) =>
@@ -391,7 +391,7 @@ export const VisningRedigerbar = ({
 				personFoerLeggTil: personFoerLeggTil,
 				personValues: personValues,
 			},
-			validationSchema
+			validationSchema,
 		)
 
 	return (
@@ -404,6 +404,7 @@ export const VisningRedigerbar = ({
 						<Button kind="edit" onClick={() => setVisningModus(Modus.Skriv)} title="Endre" />
 						<Button
 							kind="trashcan"
+							fontSize={'1.4rem'}
 							onClick={() => openModal()}
 							title="Slett"
 							disabled={disableSlett}

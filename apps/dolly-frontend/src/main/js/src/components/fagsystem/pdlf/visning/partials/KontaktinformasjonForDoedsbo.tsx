@@ -25,10 +25,10 @@ const KontaktinformasjonForDoedsboLes = ({
 
 	const kontaktpersonIdent = data.personSomKontakt?.identifikasjonsnummer
 	const kontaktperson = relasjoner?.find(
-		(relasjon) => relasjon.relatertPerson?.ident === kontaktpersonIdent
+		(relasjon) => relasjon.relatertPerson?.ident === kontaktpersonIdent,
 	)
 	const kontaktpersonRedigert = redigertRelatertePersoner?.find(
-		(item) => item.relatertPerson?.ident === kontaktpersonIdent
+		(item) => item.relatertPerson?.ident === kontaktpersonIdent,
 	)
 
 	const {
@@ -130,7 +130,7 @@ export const KontaktinformasjonForDoedsboVisning = ({
 
 	const redigertKontaktinfoPdlf = _.get(
 		tmpPersoner,
-		`${ident}.person.kontaktinformasjonForDoedsbo`
+		`${ident}.person.kontaktinformasjonForDoedsbo`,
 	)?.find((a) => a.id === kontaktinfoData.id)
 	const redigertRelatertePersoner = _.get(tmpPersoner, `${ident}.relasjoner`)
 
@@ -144,7 +144,7 @@ export const KontaktinformasjonForDoedsboVisning = ({
 		? {
 				kontaktinformasjonForDoedsbo: Object.assign(
 					_.cloneDeep(initialKontaktinfoForDoedebo),
-					redigertKontaktinfoPdlf
+					redigertKontaktinfoPdlf,
 				),
 		  }
 		: null
@@ -153,19 +153,19 @@ export const KontaktinformasjonForDoedsboVisning = ({
 		? getEksisterendeNyPerson(
 				redigertRelatertePersoner,
 				kontaktinfoValues?.personSomKontakt?.identifikasjonsnummer,
-				['KONTAKT_FOR_DOEDSBO']
+				['KONTAKT_FOR_DOEDSBO'],
 		  )
 		: getEksisterendeNyPerson(
 				relasjoner,
 				kontaktinfoValues?.personSomKontakt?.identifikasjonsnummer,
-				['KONTAKT_FOR_DOEDSBO']
+				['KONTAKT_FOR_DOEDSBO'],
 		  )
 
 	if (eksisterendeNyPerson && initialValues?.kontaktinformasjonForDoedsbo?.personSomKontakt) {
 		const filteredPerson = Object.fromEntries(
 			Object.entries(initialValues?.kontaktinformasjonForDoedsbo?.personSomKontakt).filter(
-				(item) => item[0] !== 'nyKontaktperson'
-			)
+				(item) => item[0] !== 'nyKontaktperson',
+			),
 		)
 		initialValues.kontaktinformasjonForDoedsbo.personSomKontakt = filteredPerson
 	}
@@ -176,8 +176,8 @@ export const KontaktinformasjonForDoedsboVisning = ({
 	) {
 		const filteredPerson = Object.fromEntries(
 			Object.entries(
-				redigertKontaktinfoValues?.kontaktinformasjonForDoedsbo?.personSomKontakt
-			).filter((item) => item[0] !== 'nyKontaktperson')
+				redigertKontaktinfoValues?.kontaktinformasjonForDoedsbo?.personSomKontakt,
+			).filter((item) => item[0] !== 'nyKontaktperson'),
 		)
 		redigertKontaktinfoValues.kontaktinformasjonForDoedsbo.personSomKontakt = filteredPerson
 	}
@@ -215,7 +215,7 @@ export const KontaktinformasjonForDoedsbo = ({
 	}
 
 	const kontaktpersonRelasjoner = relasjoner?.filter(
-		(relasjon) => relasjon.relasjonType === 'KONTAKT_FOR_DOEDSBO'
+		(relasjon) => relasjon.relasjonType === 'KONTAKT_FOR_DOEDSBO',
 	)
 
 	return (

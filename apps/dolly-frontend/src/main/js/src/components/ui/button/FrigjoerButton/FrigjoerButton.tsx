@@ -77,7 +77,7 @@ export const FrigjoerButton = ({
 								closeModal()
 								if (importerteRelatertePersoner) {
 									slettPersonOgRelatertePersoner(importerteRelatertePersoner).then(() =>
-										mutate(REGEX_BACKEND_GRUPPER)
+										mutate(REGEX_BACKEND_GRUPPER),
 									)
 								} else {
 									slettPerson().then(() => mutate(REGEX_BACKEND_GRUPPER))

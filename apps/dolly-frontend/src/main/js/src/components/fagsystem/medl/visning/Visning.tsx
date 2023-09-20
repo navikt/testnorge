@@ -32,7 +32,7 @@ export default ({ data }: MedlTypes) => {
 		<>
 			<StyledSuboverskrift
 				label="Medlemskap"
-				iconKind="calendar-days"
+				iconKind="calendar"
 				style={{ marginBottom: '-2px' }}
 			/>
 			<DollyFieldArray

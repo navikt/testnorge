@@ -53,7 +53,7 @@ export default ({ journalpost, miljoe }: Props) => (
 								JoarkDokumentService.hentPDF(
 									journalpost.journalpostId,
 									dokument.dokumentInfoId,
-									miljoe
+									miljoe,
 								)
 							}
 						>

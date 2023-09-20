@@ -56,7 +56,7 @@ const GruppeOversikt = ({ searchActive, sideStoerrelse, sidetall }: GruppeOversi
 	const { grupper, loading } = useGrupper(
 		sidetall,
 		sideStoerrelse,
-		visning === VisningType.ALLE ? null : brukerId
+		visning === VisningType.ALLE ? null : brukerId,
 	)
 	const dispatch = useDispatch()
 
@@ -102,21 +102,18 @@ const GruppeOversikt = ({ searchActive, sideStoerrelse, sidetall }: GruppeOversi
 						style={{ backgroundColor: '#ffffff' }}
 					>
 						<StyledToggleItem data-cy={CypressSelector.TOGGLE_MINE} value={VisningType.MINE}>
-							<Icon size={16} kind={visning === VisningType.MINE ? 'man2Light' : 'man2'} />
+							<Icon kind={'man-silhouette'} />
 							Mine
 						</StyledToggleItem>
 						<StyledToggleItem
 							data-cy={CypressSelector.TOGGLE_FAVORITTER}
 							value={VisningType.FAVORITTER}
 						>
-							<Icon
-								size={16}
-								kind={visning === VisningType.FAVORITTER ? 'starLight' : 'starDark'}
-							/>
+							<Icon kind={'star-light'} />
 							Favoritter
 						</StyledToggleItem>
 						<StyledToggleItem data-cy={CypressSelector.TOGGLE_ALLE} value={VisningType.ALLE}>
-							<Icon size={16} kind={visning === VisningType.ALLE ? 'groupLight' : 'groupDark'} />
+							<Icon kind={'group-light'} />
 							Alle
 						</StyledToggleItem>
 					</ToggleGroup>

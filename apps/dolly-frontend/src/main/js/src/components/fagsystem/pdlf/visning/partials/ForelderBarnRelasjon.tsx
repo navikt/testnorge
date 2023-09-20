@@ -43,7 +43,7 @@ const ForelderBarnRelasjonLes = ({
 		forelderBarnData.relatertPerson || forelderBarnData.relatertPersonsIdent
 	const relasjon = relasjoner?.find((item) => item.relatertPerson?.ident === relatertPersonIdent)
 	const relasjonRedigert = redigertRelatertePersoner?.find(
-		(item) => item.relatertPerson?.ident === relatertPersonIdent
+		(item) => item.relatertPerson?.ident === relatertPersonIdent,
 	)
 	const relatertPersonUtenId = forelderBarnData.relatertPersonUtenFolkeregisteridentifikator
 
@@ -87,12 +87,12 @@ export const ForelderBarnRelasjonVisning = ({
 
 	const initForelderBarn = Object.assign(
 		_.cloneDeep(data[idx]?.relatertPersonsRolle === 'BARN' ? initialBarn : initialForelder),
-		data[idx]
+		data[idx],
 	)
 	let initialValues = { forelderBarnRelasjon: initForelderBarn }
 
 	const redigertForelderBarnPdlf = _.get(tmpPersoner, `${ident}.person.forelderBarnRelasjon`)?.find(
-		(a: ForeldreBarnRelasjon) => a.id === forelderBarnRelasjonData.id
+		(a: ForeldreBarnRelasjon) => a.id === forelderBarnRelasjonData.id,
 	)
 	const redigertRelatertePersoner = _.get(tmpPersoner, `${ident}.relasjoner`)
 
@@ -109,9 +109,11 @@ export const ForelderBarnRelasjonVisning = ({
 		? {
 				forelderBarnRelasjon: Object.assign(
 					_.cloneDeep(
-						redigertForelderBarnPdlf.relatertPersonsRolle === 'BARN' ? initialBarn : initialForelder
+						redigertForelderBarnPdlf.relatertPersonsRolle === 'BARN'
+							? initialBarn
+							: initialForelder,
 					),
-					redigertForelderBarnPdlf
+					redigertForelderBarnPdlf,
 				),
 		  }
 		: null
@@ -138,7 +140,7 @@ export const ForelderBarnRelasjonVisning = ({
 		const relasjon = relasjoner?.find(
 			(relasjon) =>
 				relasjon?.relatertPerson?.ident === forelderBarnValues?.relatertPerson &&
-				relasjon?.relasjonType === 'FAMILIERELASJON_BARN'
+				relasjon?.relasjonType === 'FAMILIERELASJON_BARN',
 		)
 		return relasjon?.relatertPerson?.foreldreansvar
 	}
@@ -156,7 +158,7 @@ export const ForelderBarnRelasjonVisning = ({
 	}
 
 	const erIGruppe = gruppeIdenter?.some(
-		(person) => person.ident === initialValues?.forelderBarnRelasjon?.relatertPerson
+		(person) => person.ident === initialValues?.forelderBarnRelasjon?.relatertPerson,
 	)
 	const relatertPersonInfo = erIGruppe
 		? {
