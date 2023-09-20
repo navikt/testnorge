@@ -23,7 +23,11 @@ export const sjekkManglerSykemeldingBestilling = (sykemeldingBestilling) => {
 }
 
 const VisningAvBestilling = ({ bestillinger }) => {
-	return bestillinger.map((bestilling: SykemeldingSynt | SykemeldingDetaljert, idx: number) => {
+	if (!bestillinger) {
+		return null
+	}
+
+	return bestillinger?.map((bestilling: SykemeldingSynt | SykemeldingDetaljert, idx: number) => {
 		if (!bestilling.erGjenopprettet) {
 			const syntSykemelding = _.get(bestilling, 'data.sykemelding.syntSykemelding')
 			const detaljertSykemelding = _.get(bestilling, 'data.sykemelding.detaljertSykemelding')

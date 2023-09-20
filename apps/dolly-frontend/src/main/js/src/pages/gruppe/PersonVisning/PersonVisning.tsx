@@ -46,7 +46,6 @@ import {
 	useInstData,
 	usePoppData,
 	useTpData,
-	useTransaksjonidData,
 	useTransaksjonIdData,
 } from '@/utils/hooks/useFagsystemer'
 import { sjekkManglerTpData } from '@/components/fagsystem/tjenestepensjon/visning/TpVisning'
@@ -201,7 +200,7 @@ export default ({
 		pensjonEnvironments,
 	)
 
-	const { loading: loadingSykemeldingData, data: sykemeldingData } = useTransaksjonidData(
+	const { loading: loadingSykemeldingData, data: sykemeldingData } = useTransaksjonIdData(
 		ident.ident,
 		'SYKEMELDING',
 		harSykemeldingBestilling(bestillingerFagsystemer),

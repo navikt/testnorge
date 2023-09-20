@@ -68,17 +68,6 @@ export const useBestillingerGruppe = (gruppeId: string | number) => {
 		getBestillingerGruppeUrl(gruppeId),
 		fetcher,
 	)
-	// console.log('data sfsfsfsafasfs: ', data) //TODO - SLETT MEG
-	const getSykemeldingBestilling = () => {
-		const sykemeldingId = []
-		data?.forEach((i) => {
-			if (i.bestilling.sykemelding) {
-				sykemeldingId.push(i.id)
-			}
-		})
-		return sykemeldingId
-	}
-	console.log('getSykemeldingBestilling(): ', getSykemeldingBestilling()) //TODO - SLETT MEG
 
 	const bestillingerSorted = data
 		?.sort((bestilling, bestilling2) => (bestilling.id < bestilling2.id ? 1 : -1))
