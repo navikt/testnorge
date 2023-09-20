@@ -77,7 +77,7 @@ class SigrunStubClientTest {
     }
 
     @Test
-    void gjenopprett_sigrunstub_feiler() {
+    void gjenopprett_sigrunstubLignetInntekt_feiler() {
 
         var progress = new BestillingProgress();
         when(sigrunStubConsumer.createSkattegrunnlag(anyList())).thenReturn(Mono.just(SigrunstubResponse.builder()
@@ -96,6 +96,37 @@ class SigrunStubClientTest {
                     verify(transactionHelperService, times(1))
                             .persister(any(BestillingProgress.class), any(), statusCaptor.capture());
                     assertThat(statusCaptor.getValue(), Matchers.is(equalTo("SIGRUN_LIGNET:Feil=")));
+                })
+                .verifyComplete();
+    }
+
+    @Test
+    void gjenopprett_sigrunstubPensjonsgivendeInntekt_feiler() {
+
+        var progress = new BestillingProgress();
+        when(sigrunStubConsumer.updatePensjonsgivendeInntekt(anyList()))
+                .thenReturn(Mono.just(SigrunstubResponse.builder()
+                        .opprettelseTilbakemeldingsListe(List.of(SigrunstubResponse.OpprettelseTilbakemelding.builder()
+                                .inntektsaar("1978")
+                                .message("En feil har oppstått")
+                                .status(400)
+                                .build()))
+                        .build()));
+
+        when(mapperFacade.mapAsList(anyList(), eq(PensjonsgivendeForFolketrygden.class), any(MappingContext.class)))
+                .thenReturn(List.of(new PensjonsgivendeForFolketrygden()));
+
+        var request = new RsDollyBestillingRequest();
+        request.setSigrunstubPensjonsgivende(List.of(new RsPensjonsgivendeForFolketrygden()));
+
+        StepVerifier.create(sigrunStubClient.gjenopprett(request,
+                                DollyPerson.builder().ident(IDENT).build(), progress, false)
+                        .map(ClientFuture::get))
+                .assertNext(status -> {
+                    verify(transactionHelperService, times(1))
+                            .persister(any(BestillingProgress.class), any(), statusCaptor.capture());
+                    assertThat(statusCaptor.getValue(), Matchers.is(equalTo("SIGRUN_PENSJONSGIVENDE:Feil= " +
+                            "Inntektsår= 1978; feilmelding= En feil har oppstått")));
                 })
                 .verifyComplete();
     }

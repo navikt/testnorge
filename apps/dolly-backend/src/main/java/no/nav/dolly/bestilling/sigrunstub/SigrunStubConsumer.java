@@ -1,7 +1,6 @@
 package no.nav.dolly.bestilling.sigrunstub;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.swagger.v3.core.util.Json;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.sigrunstub.command.SigrunstubDeleteCommand;
@@ -66,7 +65,7 @@ public class SigrunStubConsumer implements ConsumerStatus {
     @Timed(name = "providers", tags = {"operation", "sigrun_createGrunnlag"})
     public Mono<SigrunstubResponse> createSkattegrunnlag(List<OpprettSkattegrunnlag> request) {
 
-        log.info("Post til Sigrunstub med data {}", Json.pretty(request));
+        log.info("Post til Sigrunstub med data {}", request);
 
         return tokenService.exchange(serviceProperties)
                 .flatMap(token -> new SigurunstubPostCommand(webClient, request, token.getTokenValue()).call());
