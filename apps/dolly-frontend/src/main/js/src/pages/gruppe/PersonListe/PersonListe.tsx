@@ -52,7 +52,6 @@ export default function PersonListe({
 	const [identListe, setIdentListe] = useState([])
 	const dispatch = useDispatch()
 	const { bestillingerById: bestillingStatuser } = useBestillingerGruppe(gruppeInfo.id)
-	// console.log('bestillingerById: ', bestillingerById) //TODO - SLETT MEG
 
 	const personListe = useMemo(
 		() => sokSelector(selectPersonListe(identer, bestillingStatuser, fagsystem), search),

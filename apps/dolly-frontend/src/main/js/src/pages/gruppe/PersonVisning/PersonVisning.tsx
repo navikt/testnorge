@@ -454,7 +454,6 @@ export default ({
 					ident={ident}
 					tilgjengeligMiljoe={tilgjengeligMiljoe}
 				/>
-				{/*<SykemeldingVisning data={SykemeldingVisning.filterValues(bestillingListe, ident.ident)} />*/}
 				<SykemeldingVisning
 					data={sykemeldingData}
 					loading={loadingSykemeldingData}

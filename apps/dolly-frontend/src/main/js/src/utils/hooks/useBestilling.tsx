@@ -102,7 +102,7 @@ export const useIkkeFerdigBestillingerGruppe = (
 			? getIkkeFerdigBestillingerGruppeUrl(gruppeId) + updateParam
 			: getBestillingerGruppeUrl(gruppeId) + `?page=${sidetall}&pageSize=${sideStoerrelse}`
 	const { data, isLoading, error } = useSWR<Bestilling[], Error>(url, fetcher)
-	// console.log('data xxxx: ', data) //TODO - SLETT MEG
+
 	const bestillingerSorted = data
 		?.sort((bestilling, bestilling2) => (bestilling.id < bestilling2.id ? 1 : -1))
 		.reduce((acc: { [key: string]: Bestilling }, curr) => ((acc[curr.id] = curr), acc), {})
@@ -140,7 +140,7 @@ export const useBestillingById = (
 			dedupingInterval: autoRefresh ? 1000 : null,
 		},
 	)
-	// console.log('data xxx: ', data) //TODO - SLETT MEG
+
 	return {
 		bestilling: data,
 		loading: isLoading,

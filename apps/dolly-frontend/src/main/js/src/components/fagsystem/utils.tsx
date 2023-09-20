@@ -44,6 +44,6 @@ export const getRandomValue = (liste: Array<any>) => {
 	if (!liste || liste?.length < 1) {
 		return null
 	}
-	const random = Math.floor(Math.random() * liste.length)
+	const random = Math.floor(Math.random() * liste.length) //NOSONAR not used in secure contexts
 	return liste[random]
 }
