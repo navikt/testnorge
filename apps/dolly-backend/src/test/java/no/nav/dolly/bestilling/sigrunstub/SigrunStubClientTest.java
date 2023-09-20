@@ -3,11 +3,13 @@ package no.nav.dolly.bestilling.sigrunstub;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.ClientFuture;
+import no.nav.dolly.bestilling.sigrunstub.dto.PensjonsgivendeForFolketrygden;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubResponse;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag;
+import no.nav.dolly.domain.resultset.sigrunstub.RsPensjonsgivendeForFolketrygden;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.util.TransactionHelperService;
 import org.hamcrest.Matchers;
@@ -99,7 +101,7 @@ class SigrunStubClientTest {
     }
 
     @Test
-    void gjenopprett_sigrunstub_ok() {
+    void gjenopprett_sigrunstubLignetInntekt_ok() {
 
         var request = new RsDollyBestillingRequest();
         request.setSigrunstub(singletonList(new OpprettSkattegrunnlag()));
@@ -126,5 +128,33 @@ class SigrunStubClientTest {
                 .verifyComplete();
 
         verify(sigrunStubConsumer).createSkattegrunnlag(anyList());
+    }
+
+    @Test
+    void gjenopprett_sigrunstubPensjonsgivendeInntekt_ok() {
+
+        var request = new RsDollyBestillingRequest();
+        request.setSigrunstubPensjonsgivende(singletonList(new RsPensjonsgivendeForFolketrygden()));
+
+        when(mapperFacade.mapAsList(anyList(), eq(PensjonsgivendeForFolketrygden.class), any(MappingContext.class)))
+                .thenReturn(List.of(new PensjonsgivendeForFolketrygden()));
+
+        when(sigrunStubConsumer.updatePensjonsgivendeInntekt(anyList())).thenReturn(Mono.just(SigrunstubResponse.builder()
+                .opprettelseTilbakemeldingsListe(List.of(SigrunstubResponse.OpprettelseTilbakemelding.builder()
+                        .status(200)
+                        .build()))
+                .build()));
+
+        StepVerifier.create(sigrunStubClient.gjenopprett(request, DollyPerson.builder().ident(IDENT).build(),
+                                new BestillingProgress(), true)
+                        .map(ClientFuture::get))
+                .assertNext(status -> {
+                    verify(transactionHelperService, times(1))
+                            .persister(any(BestillingProgress.class), any(), statusCaptor.capture());
+                    assertThat(statusCaptor.getValue(), Matchers.is(equalTo("SIGRUN_PENSJONSGIVENDE:OK")));
+                })
+                .verifyComplete();
+
+        verify(sigrunStubConsumer).updatePensjonsgivendeInntekt(anyList());
     }
 }

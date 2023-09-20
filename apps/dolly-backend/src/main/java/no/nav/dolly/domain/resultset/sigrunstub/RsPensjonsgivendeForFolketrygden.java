@@ -17,7 +17,7 @@ import java.util.Map;
 public class RsPensjonsgivendeForFolketrygden {
 
     private String inntektsaar;
-    @Schema(description = "Liste av map som beskrevet i /api/v1/pensjonsgivendeinntektforfolketrygden/kodeverk")
+    @Schema(description = "Liste av map i hht {sigrunstub}/api/v1/pensjonsgivendeinntektforfolketrygden/kodeverk")
     private List<Map<String, Object>> pensjonsgivendeInntekt;
     private String testdataEier;
 }
