@@ -18,7 +18,6 @@ const StyledIcon = styled(Icon)`
 				stroke-width: 2;
 			}
 		}
-		margin-right: 10px;
 	}
 `
 
