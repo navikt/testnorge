@@ -6,7 +6,6 @@ import { Person, PersonData } from '@/components/fagsystem/pdlf/PdlTypes'
 import { getAlder } from '@/ducks/fagsystem'
 
 const uri = `/dolly-backend/api/v1`
-const helse_uri = `/testnav-helsepersonell-service/api/v1`
 
 export type Option = {
 	value: any
@@ -79,8 +78,6 @@ export const SelectOptionsOppslag = {
 		return options || Promise.resolve()
 	},
 
-	hentHelsepersonell: () => Api.fetchJson(`${helse_uri}/helsepersonell`, { method: 'GET' }),
-
 	hentKrrLeverandoerer: () => {
 		return useAsync(async () => KrrApi.getSdpLeverandoerListe(), [KrrApi.getSdpLeverandoerListe])
 	},
@@ -95,7 +92,7 @@ export const SelectOptionsOppslag = {
 	hentArbeidsforholdstyperInntektstub: () => {
 		return useAsync(
 			async () => DollyApi.getKodeverkByNavn('Arbeidsforholdstyper'),
-			[DollyApi.getKodeverkByNavn]
+			[DollyApi.getKodeverkByNavn],
 		)
 	},
 
@@ -156,7 +153,7 @@ export const SelectOptionsOppslag = {
 								personInfo.fnr
 							options.push({ value: personInfo.fnr, label: navnOgFnr })
 						}
-					}
+					},
 				)
 			return options
 		} else if (type === 'arbeidsforholdstyper') {
