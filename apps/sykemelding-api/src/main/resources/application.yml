@@ -1,0 +1,49 @@
+syfo:
+  queue:
+    name: "QA.Q1_SYFOSMMOTTAK.INPUT"
+
+spring:
+  application:
+    version: application.version.todo
+    name: testnav-sykemelding-api
+    description: Api for opprettelse av detaljerte sykemeldinger
+  cloud:
+    vault:
+      enabled: false
+
+springdoc:
+  swagger-ui:
+    disable-swagger-default-url: true
+    url: /v3/api-docs
+
+consumers:
+  elsam:
+    url: http://synthdata-elsam-gcp.dolly.svc.cluster.local
+    name: synthdata-elsam-gcp
+    cluster: dev-gcp
+    namespace: dolly
+
+management:
+  endpoints:
+    enabled-by-default: true
+    web:
+      base-path: /internal
+      exposure.include: prometheus,heapdump,health
+      path-mapping:
+        prometheus: metrics
+  endpoint:
+    prometheus.enabled: true
+    heapdump.enabled: true
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
+ibm:
+  mq:
+    use-authentication-m-q-c-s-p: false
+    channel: ${CHANNEL_NAME}
+    conn-name: ${ibm.mq.hostname}(${ibm.mq.port})
