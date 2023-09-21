@@ -302,7 +302,7 @@ public class PensjonforvalterClient implements ClientRegister {
                 .flatMap(alderspensjon -> Flux.fromIterable(miljoer)
                         .flatMap(miljoe -> {
 
-                            if (isOpprettEndre || !transaksjonMappingService.existAlready(PEN_AP, ident, miljoe)) {
+                            if (isOpprettEndre || !transaksjonMappingService.existAlready(PEN_AP, ident, miljoe, null)) {
 
                                 if (isTpsSyncEnv.contains(miljoe)) {
 
@@ -343,7 +343,7 @@ public class PensjonforvalterClient implements ClientRegister {
                 .flatMap(uforetrygd -> Flux.fromIterable(miljoer)
                         .flatMap(miljoe -> {
 
-                            if (isOpprettEndre || !transaksjonMappingService.existAlready(PEN_UT, ident, miljoe)) {
+                            if (isOpprettEndre || !transaksjonMappingService.existAlready(PEN_UT, ident, miljoe, null)) {
 
                                 if (isTpsSyncEnv.contains(miljoe)) {
 

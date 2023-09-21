@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collection;
 import java.util.List;
 
-import static java.util.Collections.emptyList;
 import static java.util.Objects.isNull;
 
 @Service
@@ -38,12 +37,12 @@ public class TransaksjonMappingService {
                 .toList();
     }
 
-    public boolean existAlready(SystemTyper system, String ident, String miljoe) {
+    public boolean existAlready(SystemTyper system, String ident, String miljoe, Long bestillingId) {
 
         return transaksjonMappingRepository.findAllBySystemAndIdent(system.name(), ident)
-                .orElse(emptyList())
                 .stream()
-                .anyMatch(mapping -> isNull(miljoe) || miljoe.equals(mapping.getMiljoe()));
+                .anyMatch(mapping -> (isNull(miljoe) || miljoe.equals(mapping.getMiljoe())) &&
+                        (isNull(bestillingId) || bestillingId.equals(mapping.getBestillingId())));
     }
 
     public void saveAll(Collection<TransaksjonMapping> entries) {
