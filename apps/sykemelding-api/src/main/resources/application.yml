@@ -18,7 +18,7 @@ springdoc:
 
 consumers:
   elsam:
-    url: http://synthdata-elsam-gcp.dolly.svc.cluster.local
+    url: https://synthdata-elsam-gcp.intern.dev.nav.no
     name: synthdata-elsam-gcp
     cluster: dev-gcp
     namespace: dolly
