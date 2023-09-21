@@ -1,3 +1,20 @@
+plugins {
+    id "com.gradle.enterprise" version "3.15"
+}
+
 rootProject.name = 'budpro-service'
 
+includeBuild '../../libs/commands'
+includeBuild '../../libs/data-transfer-objects'
+includeBuild '../../libs/reactive-core'
+includeBuild '../../libs/security-core'
 includeBuild '../../libs/servlet-core'
+includeBuild '../../libs/servlet-insecure-security'
+includeBuild '../../libs/servlet-security'
+
+gradleEnterprise {
+    buildScan {
+        termsOfServiceUrl = "https://gradle.com/terms-of-service"
+        termsOfServiceAgree = "yes"
+    }
+}
