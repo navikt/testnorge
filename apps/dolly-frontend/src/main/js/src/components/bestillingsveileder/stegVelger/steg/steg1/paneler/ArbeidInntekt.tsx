@@ -6,6 +6,10 @@ import { aaregAttributt } from '@/components/fagsystem/aareg/form/Form'
 import { sigrunAttributt } from '@/components/fagsystem/sigrunstub/form/Form'
 import { inntektstubAttributt } from '@/components/fagsystem/inntektstub/form/Form'
 import { inntektsmeldingAttributt } from '@/components/fagsystem/inntektsmelding/form/Form'
+import {
+	initialSigrunstubPensjonsgivende,
+	sigrunstubPensjonsgivendeAttributt,
+} from '@/components/fagsystem/sigrunstubPensjonsgivende/form/Form'
 
 export const ArbeidInntektPanel = ({ stateModifier, formikBag }) => {
 	const sm = stateModifier(ArbeidInntektPanel.initialValues)
@@ -26,6 +30,7 @@ export const ArbeidInntektPanel = ({ stateModifier, formikBag }) => {
 				sigrunAttributt,
 				inntektstubAttributt,
 				inntektsmeldingAttributt,
+				sigrunstubPensjonsgivendeAttributt,
 			])}
 		>
 			<AttributtKategori title="Arbeidsforhold (Aareg)" attr={sm.attrs}>
@@ -33,6 +38,9 @@ export const ArbeidInntektPanel = ({ stateModifier, formikBag }) => {
 			</AttributtKategori>
 			<AttributtKategori title="Skatteoppgjør (Sigrun)" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.sigrunstub} />
+			</AttributtKategori>
+			<AttributtKategori title="Pensjonsgivende inntekt (Sigrun)" attr={sm.attrs}>
+				<Attributt attr={sm.attrs.sigrunstubPensjonsgivende} />
 			</AttributtKategori>
 			<AttributtKategori title="A-ordningen (Inntektstub)" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.inntektstub} />
@@ -70,6 +78,12 @@ ArbeidInntektPanel.initialValues = ({ set, del, has }) => ({
 				},
 			]),
 		remove: () => del('sigrunstub'),
+	},
+	sigrunstubPensjonsgivende: {
+		label: 'Har pensjonsgivende inntekt for folketrygden',
+		checked: has('sigrunstubPensjonsgivende'),
+		add: () => set('sigrunstubPensjonsgivende', [initialSigrunstubPensjonsgivende]),
+		remove: () => del('sigrunstubPensjonsgivende'),
 	},
 	inntektsmelding: {
 		label: 'Har inntektsmelding',
