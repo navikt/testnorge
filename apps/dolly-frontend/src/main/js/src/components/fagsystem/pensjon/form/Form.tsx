@@ -7,9 +7,10 @@ import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { getYearRangeOptions } from '@/utils/DataFormatter'
 import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
-import React from 'react'
+import React, { useContext } from 'react'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
 import * as _ from 'lodash-es'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 export const pensjonPath = 'pensjonforvalter.inntekt'
 
@@ -18,6 +19,9 @@ const hjelpetekst =
 	'og vil nedjusteres basert på snitt grunnbeløp i inntektsåret.'
 
 export const PensjonForm = ({ formikBag }) => {
+	const opts = useContext(BestillingsveilederContext)
+	const { nyBestilling, nyBestillingFraMal } = opts?.is
+
 	const minAar = new Date().getFullYear() - 17
 	const valgtAar = _.get(formikBag.values, `${pensjonPath}.fomAar`)
 
@@ -31,12 +35,14 @@ export const PensjonForm = ({ formikBag }) => {
 				informasjonstekst={hjelpetekst}
 			>
 				{/*// @ts-ignore*/}
-				{!_.has(formikBag.values, 'pdldata.opprettNyPerson.alder') && valgtAar < minAar && (
-					<StyledAlert variant={'info'} size={'small'}>
-						Pensjonsgivende inntekt kan settes fra året personen fyller 13 år. For å sikre at
-						personen får gyldig alder kan denne settes ved å huke av for "Alder" på forrige side.
-					</StyledAlert>
-				)}
+				{!_.has(formikBag.values, 'pdldata.opprettNyPerson.alder') &&
+					valgtAar < minAar &&
+					(nyBestilling || nyBestillingFraMal) && (
+						<StyledAlert variant={'info'} size={'small'}>
+							Pensjonsgivende inntekt kan settes fra året personen fyller 13 år. For å sikre at
+							personen får gyldig alder kan denne settes ved å huke av for "Alder" på forrige side.
+						</StyledAlert>
+					)}
 				<Kategori title="Pensjonsgivende inntekt" vis={pensjonPath}>
 					<div className="flexbox--flex-wrap">
 						<FormikSelect
