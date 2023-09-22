@@ -61,7 +61,7 @@ public class InntektsmeldingClient implements ClientRegister {
                                 request.setMiljoe(environment);
                                 return postInntektsmelding(isOpprettEndre ||
                                                 !transaksjonMappingService.existAlready(INNTKMELD, dollyPerson.getIdent(), environment, bestilling.getId()),
-                                        request, progress.getBestilling().getId());
+                                        request, bestilling.getId());
                             })
                             .filter(StringUtils::isNotBlank)
                             .collect(Collectors.joining(","))

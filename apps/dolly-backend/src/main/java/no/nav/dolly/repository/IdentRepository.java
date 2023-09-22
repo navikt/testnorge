@@ -68,7 +68,7 @@ public interface IdentRepository extends JpaRepository<Testident, Long> {
 
         String getIdent();
 
-        Long getBestillingid();
+        Long getBestillingId();
 
         String getBestkriterier();
 
