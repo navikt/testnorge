@@ -41,6 +41,10 @@ spec:
     limits:
       memory: 5000Mi
   accessPolicy:
+    inbound:
+      rules:
+        - application: testnav-sykemelding-api-proxy
+          cluster: dev-fss
     outbound:
       rules:
         - application: synthdata-elsam-gcp
