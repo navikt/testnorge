@@ -6,6 +6,7 @@ spring:
   cloud:
     vault:
       enabled: false
+      token: dummy
 
 azure:
   app:
