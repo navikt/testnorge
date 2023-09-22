@@ -40,5 +40,9 @@ spec:
       memory: 4000Mi
     limits:
       memory: 5000Mi
+  accessPolicy:
+    outbound:
+      rules:
+        - application: synthdata-elsam-gcp
   ingresses:
     - "https://testnorge-sykemelding-api.dev.intern.nav.no" # dev-fss
