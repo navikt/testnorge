@@ -119,7 +119,7 @@ public class PensjonforvalterClient implements ClientRegister {
                 .map(miljoe -> miljoe.equals("q4") ? "q1" : miljoe)
                 .collect(Collectors.toSet()));
 
-        var bestillingId = progress.getBestilling().getId();
+        var bestillingId = bestilling.getId();
 
         return Flux.from(pensjonforvalterConsumer.getMiljoer())
                 .flatMap(tilgjengeligeMiljoer -> {

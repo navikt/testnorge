@@ -47,7 +47,7 @@ public class RsDollyBestilling {
     private static final Set<String> EXCLUDE_METHODS = Set.of("getClass", "getMalBestillingNavn", "getEnvironments", "getPdldata");
 
     @JsonIgnore
-    private long id;
+    private long id; // Ved gjenopprett vil denne ID kan ha verdi fra bestillingen som gjenopprettes
 
     @Schema(description = "Sett av miljøer bestillingen skal deployes til")
     private Set<String> environments;
