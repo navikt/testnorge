@@ -43,7 +43,7 @@ public class SyntElsamConsumer {
 
     @SneakyThrows
     public SyntSykemeldingHistorikkDTO genererSykemeldinger(String ident, LocalDate startDato) {
-        log.info("Genererer sykemelding for {} fom {}", ident, startDato.toString());
+        log.info("Generererer sykemelding for {} fom {}", ident, startDato.toString());
 
         var request = Map.of(ident, startDato.toString());
 

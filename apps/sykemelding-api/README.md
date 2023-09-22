@@ -1,4 +1,4 @@
-# Testnav-Sykemelding-api
+# Testnorge-Sykemelding-api
 
 API for sykemeldinger.
 
