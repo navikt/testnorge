@@ -241,7 +241,7 @@ export const fetchDataFraFagsystemer = (person, bestillingerById) => (dispatch) 
 		success.PDL = 'PDL'
 		success.PDL_FORVALTER = 'PDL_FORVALTER'
 	}
-
+	console.log('success: ', success) //TODO - SLETT MEG
 	Object.keys(success).forEach((system) => {
 		switch (system) {
 			case 'KRRSTUB':
@@ -249,6 +249,9 @@ export const fetchDataFraFagsystemer = (person, bestillingerById) => (dispatch) 
 			case 'SIGRUNSTUB':
 				dispatch(actions.getSigrun(personId))
 				return dispatch(actions.getSigrunSekvensnr(personId))
+			// case 'SIGRUN_PENSJONSGIVENDE':
+			// 	dispatch(actions.getSigrun(personId))
+			// 	return dispatch(actions.getSigrunSekvensnr(personId))
 			case 'INNTK':
 				return dispatch(actions.getInntektstub(personId))
 			case 'TPS_MESSAGING':
