@@ -16,7 +16,7 @@ import static java.util.Objects.isNull;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class OpprettSkattegrunnlag {
+public class RsLignetInntekt {
 
     public enum Tjeneste {BEREGNET_SKATT, SUMMERT_SKATTEGRUNNLAG}
 

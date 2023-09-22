@@ -10,7 +10,7 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubLignetInntektRequest;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubPensjonsgivendeInntektRequest;
 import no.nav.dolly.domain.resultset.sigrunstub.KodeverknavnGrunnlag;
-import no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag;
+import no.nav.dolly.domain.resultset.sigrunstub.RsLignetInntekt;
 import no.nav.dolly.domain.resultset.sigrunstub.RsPensjonsgivendeForFolketrygden;
 import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 import static java.lang.String.format;
-import static no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag.Tjeneste.BEREGNET_SKATT;
+import static no.nav.dolly.domain.resultset.sigrunstub.RsLignetInntekt.Tjeneste.BEREGNET_SKATT;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -34,10 +34,10 @@ public class SigrunstubDataMapper implements MappingStrategy {
     @Override
     public void register(MapperFactory factory) {
 
-        factory.classMap(OpprettSkattegrunnlag.class, SigrunstubLignetInntektRequest.class)
+        factory.classMap(RsLignetInntekt.class, SigrunstubLignetInntektRequest.class)
                 .customize(new CustomMapper<>() {
                     @Override
-                    public void mapAtoB(OpprettSkattegrunnlag kilde, SigrunstubLignetInntektRequest destinasjon, MappingContext context) {
+                    public void mapAtoB(RsLignetInntekt kilde, SigrunstubLignetInntektRequest destinasjon, MappingContext context) {
 
                         destinasjon.setPersonidentifikator((String) context.getProperty("ident"));
 
@@ -70,6 +70,7 @@ public class SigrunstubDataMapper implements MappingStrategy {
                         destinasjon.setPersonidentifikator((String) context.getProperty("ident"));
 
                         destinasjon.setTestdataEier(isNotBlank(kilde.getTestdataEier()) ? kilde.getTestdataEier() : "Dolly");
+                        destinasjon.setInntektsaar(kilde.getInntektsaar());
 
                         try {
                             destinasjon.setPensjonsgivendeInntekt(
@@ -80,8 +81,6 @@ public class SigrunstubDataMapper implements MappingStrategy {
                         }
                     }
                 })
-                .exclude("pensjonsgivendeInntekt")
-                .byDefault()
                 .register();
     }
 }

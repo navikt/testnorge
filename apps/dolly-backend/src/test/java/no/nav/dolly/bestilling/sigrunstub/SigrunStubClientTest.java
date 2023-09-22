@@ -9,7 +9,7 @@ import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubResponse;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
-import no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag;
+import no.nav.dolly.domain.resultset.sigrunstub.RsLignetInntekt;
 import no.nav.dolly.domain.resultset.sigrunstub.RsPensjonsgivendeForFolketrygden;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.util.TransactionHelperService;
@@ -88,7 +88,7 @@ class SigrunStubClientTest {
         when(errorStatusDecoder.getErrorText(eq(HttpStatus.BAD_REQUEST), anyString())).thenReturn("Feil:");
 
         var request = new RsDollyBestillingRequest();
-        request.setSigrunstub(singletonList(new OpprettSkattegrunnlag()));
+        request.setSigrunstub(singletonList(new RsLignetInntekt()));
 
         StepVerifier.create(sigrunStubClient.gjenopprett(request,
                                 DollyPerson.builder().ident(IDENT).build(), progress, false)
@@ -136,7 +136,7 @@ class SigrunStubClientTest {
     void gjenopprett_sigrunstubLignetInntekt_ok() {
 
         var request = new RsDollyBestillingRequest();
-        request.setSigrunstub(singletonList(new OpprettSkattegrunnlag()));
+        request.setSigrunstub(singletonList(new RsLignetInntekt()));
 
         when(mapperFacade.mapAsList(anyList(), eq(SigrunstubLignetInntektRequest.class), any(MappingContext.class)))
                 .thenReturn(List.of(new SigrunstubLignetInntektRequest()));
