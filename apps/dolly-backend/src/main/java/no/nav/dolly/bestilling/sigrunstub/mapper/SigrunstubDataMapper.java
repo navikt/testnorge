@@ -7,7 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
-import no.nav.dolly.bestilling.sigrunstub.dto.PensjonsgivendeForFolketrygden;
+import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubLignetInntektRequest;
+import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubPensjonsgivendeInntektRequest;
 import no.nav.dolly.domain.resultset.sigrunstub.KodeverknavnGrunnlag;
 import no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag;
 import no.nav.dolly.domain.resultset.sigrunstub.RsPensjonsgivendeForFolketrygden;
@@ -33,14 +34,14 @@ public class SigrunstubDataMapper implements MappingStrategy {
     @Override
     public void register(MapperFactory factory) {
 
-        factory.classMap(OpprettSkattegrunnlag.class, OpprettSkattegrunnlag.class)
+        factory.classMap(OpprettSkattegrunnlag.class, SigrunstubLignetInntektRequest.class)
                 .customize(new CustomMapper<>() {
                     @Override
-                    public void mapAtoB(OpprettSkattegrunnlag kilde, OpprettSkattegrunnlag destinasjon, MappingContext context) {
+                    public void mapAtoB(OpprettSkattegrunnlag kilde, SigrunstubLignetInntektRequest destinasjon, MappingContext context) {
 
                         destinasjon.setPersonidentifikator((String) context.getProperty("ident"));
 
-                        if (destinasjon.getTjeneste() == BEREGNET_SKATT) {
+                        if (kilde.getTjeneste() == BEREGNET_SKATT) {
                             addOppgjoersdato(destinasjon.getGrunnlag(), Integer.parseInt(destinasjon.getInntektsaar()) + 1);
                             addOppgjoersdato(destinasjon.getSvalbardGrunnlag(), Integer.parseInt(destinasjon.getInntektsaar()) + 1);
                         }
@@ -61,10 +62,10 @@ public class SigrunstubDataMapper implements MappingStrategy {
                 .byDefault()
                 .register();
 
-        factory.classMap(RsPensjonsgivendeForFolketrygden.class, PensjonsgivendeForFolketrygden.class)
+        factory.classMap(RsPensjonsgivendeForFolketrygden.class, SigrunstubPensjonsgivendeInntektRequest.class)
                 .customize(new CustomMapper<>() {
                     @Override
-                    public void mapAtoB(RsPensjonsgivendeForFolketrygden kilde, PensjonsgivendeForFolketrygden destinasjon, MappingContext context) {
+                    public void mapAtoB(RsPensjonsgivendeForFolketrygden kilde, SigrunstubPensjonsgivendeInntektRequest destinasjon, MappingContext context) {
 
                         destinasjon.setPersonidentifikator((String) context.getProperty("ident"));
 

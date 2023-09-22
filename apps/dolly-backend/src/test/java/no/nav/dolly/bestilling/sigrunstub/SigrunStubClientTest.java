@@ -3,7 +3,8 @@ package no.nav.dolly.bestilling.sigrunstub;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.ClientFuture;
-import no.nav.dolly.bestilling.sigrunstub.dto.PensjonsgivendeForFolketrygden;
+import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubLignetInntektRequest;
+import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubPensjonsgivendeInntektRequest;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubResponse;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
@@ -80,8 +81,8 @@ class SigrunStubClientTest {
     void gjenopprett_sigrunstubLignetInntekt_feiler() {
 
         var progress = new BestillingProgress();
-        when(sigrunStubConsumer.createSkattegrunnlag(anyList())).thenReturn(Mono.just(SigrunstubResponse.builder()
-                .errorStatus(HttpStatus.BAD_REQUEST)
+        when(sigrunStubConsumer.updateLignetInntekt(anyList())).thenReturn(Mono.just(SigrunstubResponse.builder()
+                .status(HttpStatus.BAD_REQUEST)
                 .melding("Feil ...")
                 .build()));
         when(errorStatusDecoder.getErrorText(eq(HttpStatus.BAD_REQUEST), anyString())).thenReturn("Feil:");
@@ -113,8 +114,8 @@ class SigrunStubClientTest {
                                 .build()))
                         .build()));
 
-        when(mapperFacade.mapAsList(anyList(), eq(PensjonsgivendeForFolketrygden.class), any(MappingContext.class)))
-                .thenReturn(List.of(new PensjonsgivendeForFolketrygden()));
+        when(mapperFacade.mapAsList(anyList(), eq(SigrunstubPensjonsgivendeInntektRequest.class), any(MappingContext.class)))
+                .thenReturn(List.of(new SigrunstubPensjonsgivendeInntektRequest()));
 
         var request = new RsDollyBestillingRequest();
         request.setSigrunstubPensjonsgivende(List.of(new RsPensjonsgivendeForFolketrygden()));
@@ -137,16 +138,14 @@ class SigrunStubClientTest {
         var request = new RsDollyBestillingRequest();
         request.setSigrunstub(singletonList(new OpprettSkattegrunnlag()));
 
-        when(mapperFacade.mapAsList(anyList(), eq(OpprettSkattegrunnlag.class), any(MappingContext.class)))
-                .thenReturn(request.getSigrunstub());
+        when(mapperFacade.mapAsList(anyList(), eq(SigrunstubLignetInntektRequest.class), any(MappingContext.class)))
+                .thenReturn(List.of(new SigrunstubLignetInntektRequest()));
 
-        when(sigrunStubConsumer.createSkattegrunnlag(anyList())).thenReturn(Mono.just(SigrunstubResponse.builder()
+        when(sigrunStubConsumer.updateLignetInntekt(anyList())).thenReturn(Mono.just(SigrunstubResponse.builder()
                 .opprettelseTilbakemeldingsListe(List.of(SigrunstubResponse.OpprettelseTilbakemelding.builder()
                         .status(200)
                         .build()))
                 .build()));
-
-        when(sigrunStubConsumer.deleteSkattegrunnlag(IDENT)).thenReturn(Mono.just(new SigrunstubResponse()));
 
         StepVerifier.create(sigrunStubClient.gjenopprett(request, DollyPerson.builder().ident(IDENT).build(),
                                 new BestillingProgress(), true)
@@ -158,7 +157,7 @@ class SigrunStubClientTest {
                 })
                 .verifyComplete();
 
-        verify(sigrunStubConsumer).createSkattegrunnlag(anyList());
+        verify(sigrunStubConsumer).updateLignetInntekt(anyList());
     }
 
     @Test
@@ -167,8 +166,8 @@ class SigrunStubClientTest {
         var request = new RsDollyBestillingRequest();
         request.setSigrunstubPensjonsgivende(singletonList(new RsPensjonsgivendeForFolketrygden()));
 
-        when(mapperFacade.mapAsList(anyList(), eq(PensjonsgivendeForFolketrygden.class), any(MappingContext.class)))
-                .thenReturn(List.of(new PensjonsgivendeForFolketrygden()));
+        when(mapperFacade.mapAsList(anyList(), eq(SigrunstubPensjonsgivendeInntektRequest.class), any(MappingContext.class)))
+                .thenReturn(List.of(new SigrunstubPensjonsgivendeInntektRequest()));
 
         when(sigrunStubConsumer.updatePensjonsgivendeInntekt(anyList())).thenReturn(Mono.just(SigrunstubResponse.builder()
                 .opprettelseTilbakemeldingsListe(List.of(SigrunstubResponse.OpprettelseTilbakemelding.builder()

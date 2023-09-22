@@ -1,7 +1,7 @@
 package no.nav.dolly.bestilling.sigrunstub.command;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.dolly.bestilling.sigrunstub.dto.PensjonsgivendeForFolketrygden;
+import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubRequest;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubResponse;
 import no.nav.dolly.util.RequestHeaderUtil;
 import no.nav.dolly.util.WebClientFilter;
@@ -25,17 +25,17 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class SigurunstubPutCommand implements Callable<Mono<SigrunstubResponse>> {
 
     private static final String CONSUMER = "Dolly";
-    private static final String SIGRUN_STUB_OPPRETT_GRUNNLAG = "/api/v1/pensjonsgivendeinntektforfolketrygden";
 
     private final WebClient webClient;
-    private final List<PensjonsgivendeForFolketrygden> request;
+    private final String url;
+    private final List<? extends SigrunstubRequest> request;
     private final String token;
 
     @Override
     public Mono<SigrunstubResponse> call() {
 
         return webClient.put().uri(uriBuilder -> uriBuilder
-                        .path(SIGRUN_STUB_OPPRETT_GRUNNLAG)
+                        .path(url)
                         .build())
                 .header(ACCEPT, APPLICATION_JSON_VALUE)
                 .header(HEADER_NAV_CALL_ID, RequestHeaderUtil.getNavCallId())
@@ -54,7 +54,7 @@ public class SigurunstubPutCommand implements Callable<Mono<SigrunstubResponse>>
                 })
                 .doOnError(WebClientFilter::logErrorMessage)
                 .onErrorResume(error -> Mono.just(SigrunstubResponse.builder()
-                        .errorStatus(WebClientFilter.getStatus(error))
+                        .status(WebClientFilter.getStatus(error))
                         .melding(WebClientFilter.getMessage(error))
                         .build()))
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))

@@ -16,15 +16,16 @@ import java.util.concurrent.Callable;
 
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_PERSON_IDENT;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Slf4j
 @RequiredArgsConstructor
-public class SigrunstubDeleteCommand implements Callable<Mono<SigrunstubResponse>> {
+public class SigrunstubPensjonsgivendeDeleteCommand implements Callable<Mono<SigrunstubResponse>> {
 
     private static final String CONSUMER = "Dolly";
-    private static final String SIGRUNSTUB_DELETE_URL = "/api/v1/slett";
+    private static final String SIGRUNSTUB_DELETE_URL = "/api/v1/pensjonsgivendeinntektforfolketrygden";
 
     private final WebClient webClient;
     private final String ident;
@@ -37,20 +38,20 @@ public class SigrunstubDeleteCommand implements Callable<Mono<SigrunstubResponse
                         .build())
                 .header(HEADER_NAV_CALL_ID, CallIdUtil.generateCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
+                .header(HEADER_NAV_PERSON_IDENT, ident)
                 .header(AUTHORIZATION, "Bearer " + token)
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
-                .header("personidentifikator", ident)
                 .retrieve()
                 .toBodilessEntity()
                 .map(resultat -> SigrunstubResponse.builder()
                         .ident(ident)
-                        .errorStatus(HttpStatus.valueOf(resultat.getStatusCode().value()))
+                        .status(HttpStatus.valueOf(resultat.getStatusCode().value()))
                         .build())
                 .doOnError(WebClientFilter::logErrorMessage)
                 .onErrorResume(error -> Mono.just(SigrunstubResponse.builder()
-                                .ident(ident)
-                                .errorStatus(WebClientFilter.getStatus(error))
-                                .melding(WebClientFilter.getMessage(error))
+                        .ident(ident)
+                        .status(WebClientFilter.getStatus(error))
+                        .melding(WebClientFilter.getMessage(error))
                         .build()))
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException));

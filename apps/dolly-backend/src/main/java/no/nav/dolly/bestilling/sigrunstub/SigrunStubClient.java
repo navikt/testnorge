@@ -5,18 +5,17 @@ import lombok.extern.log4j.Log4j2;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
-import no.nav.dolly.bestilling.sigrunstub.dto.PensjonsgivendeForFolketrygden;
+import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubLignetInntektRequest;
+import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubPensjonsgivendeInntektRequest;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubResponse;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
-import no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.mapper.MappingContextUtils;
 import no.nav.dolly.util.TransactionHelperService;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -49,11 +48,10 @@ public class SigrunStubClient implements ClientRegister {
                                     context.setProperty("ident", dollyPerson.getIdent());
 
                                     var skattegrunnlag =
-                                            mapperFacade.mapAsList(lignetInntekt, OpprettSkattegrunnlag.class, context);
+                                            mapperFacade.mapAsList(lignetInntekt, SigrunstubLignetInntektRequest.class, context);
 
-                                    return Flux.from(deleteSkattegrunnlag(dollyPerson.getIdent(), isOpprettEndre)
-                                                    .flatMap(deletedStatus -> sigrunStubConsumer.createSkattegrunnlag(skattegrunnlag))
-                                                    .map(this::getStatus))
+                                    return sigrunStubConsumer.updateLignetInntekt(skattegrunnlag)
+                                            .map(this::getStatus)
                                             .map(status -> LIGNET_INNTEKT + status);
                                 }),
                         Flux.just(bestilling)
@@ -65,7 +63,7 @@ public class SigrunStubClient implements ClientRegister {
                                     context.setProperty("ident", dollyPerson.getIdent());
 
                                     var skattegrunnlag =
-                                            mapperFacade.mapAsList(pensjonsgivende, PensjonsgivendeForFolketrygden.class, context);
+                                            mapperFacade.mapAsList(pensjonsgivende, SigrunstubPensjonsgivendeInntektRequest.class, context);
 
                                     return sigrunStubConsumer.updatePensjonsgivendeInntekt(skattegrunnlag)
                                             .map(this::getStatus)
@@ -86,23 +84,24 @@ public class SigrunStubClient implements ClientRegister {
     @Override
     public void release(List<String> identer) {
 
-        sigrunStubConsumer.deleteSkattegrunnlag(identer)
-                .collectList()
-                .subscribe(response -> log.info("Slettet antall {} identer fra Sigrunstub", response.size()));
-    }
-
-    private Mono<SigrunstubResponse> deleteSkattegrunnlag(String ident, boolean opprettEndre) {
-
-        return opprettEndre ? sigrunStubConsumer.deleteSkattegrunnlag(ident) :
-                Mono.just(new SigrunstubResponse());
+        Flux.merge(sigrunStubConsumer.deleteLignetInntekt(identer)
+                                .filter(SigrunstubResponse::isOK)
+                                .count()
+                                .map(antall -> "lignet inntekt: " + antall),
+                        sigrunStubConsumer.deletePensjonsgivendeInntekt(identer)
+                                .filter(SigrunstubResponse::isOK)
+                                .count()
+                                .map(antall -> "pensjonsgivende inntekt: " + antall))
+                .collect(Collectors.joining(", "))
+                .subscribe(response -> log.info("Slettet antall {} fra Sigrunstub", response));
     }
 
     private String getStatus(SigrunstubResponse response) {
 
         log.info("Response fra Sigrunstub med data {} ", response);
-        return isNull(response.getErrorStatus()) ?
+        return isNull(response.getStatus()) ?
                 getStatus(response.getOpprettelseTilbakemeldingsListe()) :
-                ErrorStatusDecoder.encodeStatus(errorStatusDecoder.getErrorText(response.getErrorStatus(), response.getMelding()));
+                ErrorStatusDecoder.encodeStatus(errorStatusDecoder.getErrorText(response.getStatus(), response.getMelding()));
     }
 
     private static String getStatus(List<SigrunstubResponse.OpprettelseTilbakemelding> tilbakemeldinger) {

@@ -2,18 +2,17 @@ package no.nav.dolly.bestilling.sigrunstub.dto;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PensjonsgivendeForFolketrygden {
+public class SigrunstubPensjonsgivendeInntektRequest extends SigrunstubRequest {
 
-    private String inntektsaar;
     private JsonNode pensjonsgivendeInntekt;
-    private String personidentifikator;
-    private String testdataEier;
 }

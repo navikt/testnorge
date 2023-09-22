@@ -18,7 +18,7 @@ import static java.util.Objects.nonNull;
 @AllArgsConstructor
 public class SigrunstubResponse {
 
-    private HttpStatus errorStatus;
+    private HttpStatus status;
     private String melding;
     private String ident;
 
@@ -30,6 +30,11 @@ public class SigrunstubResponse {
             opprettelseTilbakemeldingsListe = new ArrayList<>();
         }
         return opprettelseTilbakemeldingsListe;
+    }
+
+    public boolean isOK() {
+
+        return status.is2xxSuccessful();
     }
 
     @Data
