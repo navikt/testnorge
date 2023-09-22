@@ -14,7 +14,7 @@ const getSkatteordningOptions = (skatteordning) => {
 	return skatteordning?.map((item) => ({ value: item, label: _.capitalize(item) }))
 }
 
-const getInitialInntekt = (kodeverk) => {
+const getInitialInntekt = (kodeverk, skatteordning) => {
 	if (!kodeverk) {
 		return null
 		//TODO evt. lag fallback-data
@@ -23,8 +23,12 @@ const getInitialInntekt = (kodeverk) => {
 	const initialInntekt = {}
 
 	for (const [key, value] of Object.entries(kodeverk)) {
-		if (value === 'String') {
+		if (key === 'skatteordning') {
+			initialInntekt[key] = skatteordning?.[0] || ''
+		} else if (value === 'String') {
 			initialInntekt[key] = ''
+		} else if (value === 'Date') {
+			initialInntekt[key] = new Date()
 		} else initialInntekt[key] = null
 	}
 
@@ -67,7 +71,7 @@ export const PensjonsgivendeInntektForm = ({ path, formikBag }) => {
 	const { kodeverk } = usePensjonsgivendeInntektKodeverk()
 	const { skatteordning } = usePensjonsgivendeInntektSkatteordning()
 
-	const newEntry = getInitialInntekt(kodeverk)
+	const newEntry = getInitialInntekt(kodeverk, skatteordning)
 
 	return (
 		<FormikDollyFieldArray name={path} header="Inntekter" newEntry={newEntry} nested>

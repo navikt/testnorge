@@ -9,14 +9,14 @@ import {
 	omraaderArrayToString,
 	oversettBoolean,
 	showLabel,
-	uppercaseAndUnderscoreToCapitalized
+	uppercaseAndUnderscoreToCapitalized,
 } from '@/utils/DataFormatter'
 import {
 	AdresseKodeverk,
 	ArbeidKodeverk,
 	PersoninformasjonKodeverk,
 	SigrunKodeverk,
-	VergemaalKodeverk
+	VergemaalKodeverk,
 } from '@/config/kodeverk'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
@@ -1124,7 +1124,7 @@ const mapSigrunStub = (bestillingData, data) => {
 		})
 
 		const sigrunStub = {
-			header: 'Skatteoppgjør (Sigrun)',
+			header: 'Lignet inntekt (Sigrun)',
 			itemRows: [],
 		}
 

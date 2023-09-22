@@ -36,10 +36,8 @@ export const ArbeidInntektPanel = ({ stateModifier, formikBag }) => {
 			<AttributtKategori title="Arbeidsforhold (Aareg)" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.aareg} />
 			</AttributtKategori>
-			<AttributtKategori title="Skatteoppgjør (Sigrun)" attr={sm.attrs}>
+			<AttributtKategori title="Inntekt (Sigrun)" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.sigrunstub} />
-			</AttributtKategori>
-			<AttributtKategori title="Pensjonsgivende inntekt (Sigrun)" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.sigrunstubPensjonsgivende} />
 			</AttributtKategori>
 			<AttributtKategori title="A-ordningen (Inntektstub)" attr={sm.attrs}>
@@ -66,7 +64,7 @@ ArbeidInntektPanel.initialValues = ({ set, del, has }) => ({
 		},
 	},
 	sigrunstub: {
-		label: 'Har skattbar inntekt',
+		label: 'Har lignet inntekt',
 		checked: has('sigrunstub'),
 		add: () =>
 			set('sigrunstub', [
@@ -80,7 +78,7 @@ ArbeidInntektPanel.initialValues = ({ set, del, has }) => ({
 		remove: () => del('sigrunstub'),
 	},
 	sigrunstubPensjonsgivende: {
-		label: 'Har pensjonsgivende inntekt for folketrygden',
+		label: 'Har pensjonsgivende inntekt',
 		checked: has('sigrunstubPensjonsgivende'),
 		add: () => set('sigrunstubPensjonsgivende', [initialSigrunstubPensjonsgivende]),
 		remove: () => del('sigrunstubPensjonsgivende'),
