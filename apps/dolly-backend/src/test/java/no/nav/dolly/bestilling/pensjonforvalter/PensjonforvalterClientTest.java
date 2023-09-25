@@ -22,7 +22,6 @@ import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -53,6 +52,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
@@ -100,6 +100,8 @@ class PensjonforvalterClientTest {
         statusCaptor = ArgumentCaptor.forClass(String.class);
         when(mapperFacade.map(any(PdlPersonBolk.PersonBolk.class), eq(PensjonPersonRequest.class))).thenReturn(new PensjonPersonRequest());
         when(accessToken.getTokenValue()).thenReturn("123");
+        when(pensjonforvalterConsumer.opprettPerson(any(PensjonPersonRequest.class), anySet()))
+                .thenReturn(Flux.just(new PensjonforvalterResponse()));
 
         var pdlPersonBolk = PdlPersonBolk.builder()
                 .data(PdlPersonBolk.Data.builder()
@@ -268,6 +270,18 @@ class PensjonforvalterClientTest {
 
         when(pensjonforvalterConsumer.getMiljoer()).thenReturn(Mono.just(Set.of("TEST1", "TEST2")));
 
+        when(pensjonforvalterConsumer.opprettPerson(any(PensjonPersonRequest.class), anySet()))
+                .thenReturn(Flux.just(PensjonforvalterResponse.builder()
+                        .status(List.of(ResponseEnvironment.builder()
+                                .miljo("TEST1")
+                                .response(PensjonforvalterResponse.Response.builder()
+                                        .httpStatus(PensjonforvalterResponse.HttpStatus.builder()
+                                                .status(200)
+                                                .build())
+                                        .build())
+                                .build()))
+                        .build()));
+
         when(pensjonforvalterConsumer.lagreTpForhold(any(PensjonTpForholdRequest.class)))
                 .thenReturn(Flux.just(PensjonforvalterResponse.builder()
                         .status(List.of(
@@ -309,13 +323,12 @@ class PensjonforvalterClientTest {
                     assertThat(statusCaptor.getAllValues().get(0).split("#")[0], is(equalTo("PensjonForvalter")));
                     assertThat(Arrays.asList(statusCaptor.getAllValues().get(0).split("#")[1].split(",")),
                             containsInAnyOrder("TEST1:Info= Oppretting startet mot PESYS ...","TEST2:Info= Oppretting startet mot PESYS ..."));
-                    assertThat(statusCaptor.getAllValues().get(1), is(CoreMatchers.equalTo("TpForhold#TEST2:OK,TEST1:OK")));
+                    assertThat(statusCaptor.getAllValues().get(1), is(CoreMatchers.equalTo("PensjonForvalter#TEST1:OK$TpForhold#TEST2:OK,TEST1:OK")));
                 })
                 .verifyComplete();
     }
 
     @Test
-    @Disabled
     void testLagreTpForhold_withOneFailedResult() {
 
         var tp1 = PensjonforvalterClientTestUtil.getTpOrdningWithYtelser("1111", List.of(new PensjonData.TpYtelse(), new PensjonData.TpYtelse()));
@@ -337,6 +350,26 @@ class PensjonforvalterClientTest {
         progress.setBestilling(dbBestilling);
 
         when(pensjonforvalterConsumer.getMiljoer()).thenReturn(Mono.just(Set.of("TEST1", "TEST2")));
+
+        when(pensjonforvalterConsumer.opprettPerson(any(PensjonPersonRequest.class), anySet()))
+                .thenReturn(Flux.just(PensjonforvalterResponse.builder()
+                        .status(List.of(ResponseEnvironment.builder()
+                                        .miljo("TEST1")
+                                        .response(PensjonforvalterResponse.Response.builder()
+                                                .httpStatus(PensjonforvalterResponse.HttpStatus.builder()
+                                                        .status(200)
+                                                        .build())
+                                                .build())
+                                        .build(),
+                                ResponseEnvironment.builder()
+                                        .miljo("TEST2")
+                                        .response(PensjonforvalterResponse.Response.builder()
+                                                .httpStatus(PensjonforvalterResponse.HttpStatus.builder()
+                                                        .status(200)
+                                                        .build())
+                                                .build())
+                                        .build()))
+                        .build()));
 
         when(pensjonforvalterConsumer.lagreTpForhold(any(PensjonTpForholdRequest.class)))
                 .thenReturn(Flux.just(PensjonforvalterResponse.builder()
@@ -387,7 +420,6 @@ class PensjonforvalterClientTest {
     }
 
     @Test
-    @Disabled
     void testLagreTpForhold_withException() {
 
         var bestilling = new RsDollyUtvidetBestilling();
@@ -407,6 +439,26 @@ class PensjonforvalterClientTest {
                 .build();
 
         when(pensjonforvalterConsumer.getMiljoer()).thenReturn(Mono.just(Set.of("TEST1", "TEST2")));
+
+        when(pensjonforvalterConsumer.opprettPerson(any(PensjonPersonRequest.class), anySet()))
+                .thenReturn(Flux.just(PensjonforvalterResponse.builder()
+                        .status(List.of(ResponseEnvironment.builder()
+                                        .miljo("TEST1")
+                                        .response(PensjonforvalterResponse.Response.builder()
+                                                .httpStatus(PensjonforvalterResponse.HttpStatus.builder()
+                                                        .status(200)
+                                                        .build())
+                                                .build())
+                                        .build(),
+                                ResponseEnvironment.builder()
+                                        .miljo("TEST2")
+                                        .response(PensjonforvalterResponse.Response.builder()
+                                                .httpStatus(PensjonforvalterResponse.HttpStatus.builder()
+                                                        .status(200)
+                                                        .build())
+                                                .build())
+                                        .build()))
+                        .build()));
 
         when(pensjonforvalterConsumer.lagreTpForhold(any(PensjonTpForholdRequest.class)))
                 .thenReturn(Flux.just(PensjonforvalterResponse.builder()

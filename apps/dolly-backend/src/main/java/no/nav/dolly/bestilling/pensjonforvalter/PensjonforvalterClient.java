@@ -10,6 +10,7 @@ import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPersonRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPoppInntektRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonSamboerRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonSamboerResponse;
@@ -128,7 +129,7 @@ public class PensjonforvalterClient implements ClientRegister {
 
                     return Flux.just(bestilling)
                             .doOnNext(bestilling1 -> {
-                                if (!dollyPerson.isOrdre() && nonNull(bestilling.getPensjonforvalter())) {
+                                if (!dollyPerson.isOrdre()) {
                                     transactionHelperService.persister(progress, BestillingProgress::setPensjonforvalterStatus,
                                             prepInitStatus(tilgjengeligeMiljoer));
                                 }
@@ -143,6 +144,9 @@ public class PensjonforvalterClient implements ClientRegister {
                                         }
                                     })
                                     .map(persondata -> Flux.concat(
+                                            opprettPersoner(dollyPerson.getIdent(), tilgjengeligeMiljoer, persondata)
+                                                    .map(response -> PENSJON_FORVALTER + decodeStatus(response, dollyPerson.getIdent())),
+
                                             lagreSamboer(dollyPerson.getIdent(), tilgjengeligeMiljoer)
                                                     .map(response -> SAMBOER_REGISTER + decodeStatus(response, dollyPerson.getIdent())),
 
@@ -283,6 +287,15 @@ public class PensjonforvalterClient implements ClientRegister {
         // Pensjonforvalter / POPP støtter pt ikke sletting
 
         pensjonforvalterConsumer.sletteTpForhold(identer);
+    }
+
+    private Flux<PensjonforvalterResponse> opprettPersoner(String hovedperson, Set<String> miljoer,
+                                                           List<PdlPersonBolk.PersonBolk> personer) {
+
+        return Flux.fromIterable(personer)
+                .map(person -> mapperFacade.map(person, PensjonPersonRequest.class))
+                .flatMap(request -> pensjonforvalterConsumer.opprettPerson(request, miljoer)
+                        .filter(response -> hovedperson.equals(request.getFnr())));
     }
 
     private Flux<PensjonforvalterResponse> lagreAlderspensjon(PensjonData pensjonData, List<PdlPersonBolk.PersonBolk> relasjoner,
