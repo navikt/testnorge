@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 @Data
 @Builder
@@ -32,7 +33,24 @@ public class PensjonData {
     @Schema(description = "Data for uføretrygd (UT)")
     private Uforetrygd uforetrygd;
 
+    public boolean hasInntekt() {
+        return nonNull(inntekt);
+    }
+
+    public boolean hasTp() {
+        return !tp.isEmpty();
+    }
+
+    public boolean hasAlderspensjon() {
+        return nonNull(alderspensjon);
+    }
+
+    public boolean hasUforetrygd() {
+        return nonNull(uforetrygd);
+    }
+
     public List<TpOrdning> getTp() {
+
         if (isNull(tp)) {
             tp = new ArrayList<>();
         }

@@ -95,8 +95,7 @@ public class GjenopprettBestillingService extends DollyBestillingService {
                                                             .filter(BestillingProgress::isPdlSync)
                                                             .flatMap(pdlSync -> createBestilling(bestilling, gmlProgress.getBestilling()))
                                                             .flatMap(cobestilling -> Flux.concat(
-                                                                    tpsPersonService.syncPerson(dollyPerson, cobestilling,
-                                                                                    progress, false)
+                                                                    tpsPersonService.syncPerson(dollyPerson, cobestilling, progress)
                                                                             .map(ClientFuture::get),
                                                                     gjenopprettKlienter(dollyPerson, cobestilling,
                                                                             fase2Klienter(),

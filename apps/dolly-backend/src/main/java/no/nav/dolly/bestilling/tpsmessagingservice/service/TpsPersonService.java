@@ -47,7 +47,7 @@ public class TpsPersonService {
     private final TransaksjonMappingService transaksjonMappingService;
     private final PdlPersonConsumer pdlPersonConsumer;
 
-    public Flux<ClientFuture> syncPerson(DollyPerson dollyPerson, RsDollyUtvidetBestilling bestilling, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<ClientFuture> syncPerson(DollyPerson dollyPerson, RsDollyUtvidetBestilling bestilling, BestillingProgress progress) {
 
         long startTime = System.currentTimeMillis();
 
@@ -56,7 +56,8 @@ public class TpsPersonService {
                 .collectList()
                 .filter(penMiljoer -> !penMiljoer.isEmpty())
                 .filter(penMiljoer -> isRelevantBestilling(bestilling) &&
-                        (isOpprettEndre || !isTransaksjonMapping(dollyPerson.getIdent(), bestilling, penMiljoer)))
+                        (nonNull(bestilling.getPensjonforvalter().getInntekt()) ||
+                                !isTransaksjonMapping(dollyPerson.getIdent(), bestilling, penMiljoer)))
                 .flatMapMany(penMiljoer ->
                         getRelasjoner(dollyPerson.getIdent())
                                 .flatMap(relasjon -> Flux.from(getTpsPerson(startTime, dollyPerson.getIdent(),
@@ -90,7 +91,8 @@ public class TpsPersonService {
     private boolean isRelevantBestilling(RsDollyUtvidetBestilling bestilling) {
 
         return nonNull(bestilling.getPensjonforvalter()) &&
-                (nonNull(bestilling.getPensjonforvalter().getAlderspensjon()) ||
+                (nonNull(bestilling.getPensjonforvalter().getInntekt()) ||
+                        nonNull(bestilling.getPensjonforvalter().getAlderspensjon()) ||
                         nonNull(bestilling.getPensjonforvalter().getUforetrygd()));
     }
 

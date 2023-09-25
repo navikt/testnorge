@@ -1,6 +1,9 @@
 package no.nav.dolly.bestilling.pensjonforvalter;
 
-import no.nav.dolly.bestilling.pensjonforvalter.domain.*;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPoppInntektRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpForholdRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpYtelseRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.dolly.config.credentials.PensjonforvalterProxyProperties;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
@@ -21,7 +24,12 @@ import reactor.test.StepVerifier;
 import java.util.List;
 import java.util.Set;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.badRequest;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.ok;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static org.mockito.Mockito.when;
 import static wiremock.org.hamcrest.MatcherAssert.assertThat;
 
@@ -134,50 +142,6 @@ class PensjonforvalterConsumerTest {
 
         StepVerifier.create(pensjonforvalterConsumer.getMiljoer())
                 .expectNext(Set.of("q1", "q2"))
-                .verifyComplete();
-    }
-
-    @Test
-    void testOpprettPerson_ok() {
-
-        stubPostOpprettPerson(false);
-
-        StepVerifier.create(pensjonforvalterConsumer
-                        .opprettPerson(new PensjonPersonRequest(), Set.of("tx")))
-                .expectNext(PensjonforvalterResponse.builder()
-                        .status(List.of(PensjonforvalterResponse.ResponseEnvironment.builder()
-                                .miljo("tx")
-                                .response(PensjonforvalterResponse.Response.builder()
-                                        .httpStatus(PensjonforvalterResponse.HttpStatus.builder()
-                                                .status(200)
-                                                .reasonPhrase("OK")
-                                                .build())
-                                        .path("/person")
-                                        .build())
-                                .build()))
-                        .build())
-                .verifyComplete();
-    }
-
-    @Test
-    void testOpprettPerson_error() {
-
-        stubPostOpprettPerson(true);
-
-        StepVerifier.create(pensjonforvalterConsumer.opprettPerson(new PensjonPersonRequest(), Set.of("q1")))
-                .expectNext(PensjonforvalterResponse.builder()
-                        .status(List.of(PensjonforvalterResponse.ResponseEnvironment.builder()
-                                .miljo("tx")
-                                .response(PensjonforvalterResponse.Response.builder()
-                                        .httpStatus(PensjonforvalterResponse.HttpStatus.builder()
-                                                .status(500)
-                                                .reasonPhrase("Internal Server Error")
-                                                .build())
-                                        .path("/person")
-                                        .message("POST Request failed with msg: 400 Bad Request: [{\"message\":\"error message\"}]")
-                                        .build())
-                                .build()))
-                        .build())
                 .verifyComplete();
     }
 

@@ -16,10 +16,8 @@ import no.nav.dolly.bestilling.pensjonforvalter.command.LagreSamboerCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.LagreTpForholdCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.LagreTpYtelseCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.LagreUforetrygdCommand;
-import no.nav.dolly.bestilling.pensjonforvalter.command.OpprettPersonCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.SletteTpForholdCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonRequest;
-import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPersonRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPoppInntektRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonSamboerRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonSamboerResponse;
@@ -66,7 +64,7 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .clientConnector(new ReactorClientHttpConnector(
                         HttpClient.create(ConnectionProvider.builder("custom")
-                                .maxConnections(5)
+                                .maxConnections(10)
                                 .pendingAcquireMaxCount(500)
                                 .pendingAcquireTimeout(Duration.ofMinutes(15))
                                 .build())
@@ -88,16 +86,6 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
         return tokenService.exchange(serviceProperties)
                 .flatMapMany(token -> new LagrePoppInntektCommand(webClient, token.getTokenValue(),
                                 pensjonPoppInntektRequest).call());
-    }
-
-    @Timed(name = "providers", tags = {"operation", "pen_opprettPerson"})
-    public Flux<PensjonforvalterResponse> opprettPerson(PensjonPersonRequest pensjonPersonRequest,
-                                                        Set<String> miljoer) {
-
-        pensjonPersonRequest.setMiljoer(miljoer);
-        log.info("Pensjon opprett person {}", pensjonPersonRequest);
-        return tokenService.exchange(serviceProperties)
-                .flatMapMany(token -> new OpprettPersonCommand(webClient, pensjonPersonRequest, token.getTokenValue()).call());
     }
 
     @Timed(name = "providers", tags = {"operation", "pen_hentSamboer"})
