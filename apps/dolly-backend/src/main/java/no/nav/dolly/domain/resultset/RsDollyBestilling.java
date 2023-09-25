@@ -1,5 +1,6 @@
 package no.nav.dolly.domain.resultset;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -45,6 +46,9 @@ import static java.util.Objects.nonNull;
 public class RsDollyBestilling {
 
     private static final Set<String> EXCLUDE_METHODS = Set.of("getClass", "getMalBestillingNavn", "getEnvironments", "getPdldata");
+
+    @JsonIgnore
+    private long id; // Ved gjenopprett vil denne ID kan ha verdi fra bestillingen som gjenopprettes
 
     @Schema(description = "Sett av miljøer bestillingen skal deployes til")
     private Set<String> environments;
