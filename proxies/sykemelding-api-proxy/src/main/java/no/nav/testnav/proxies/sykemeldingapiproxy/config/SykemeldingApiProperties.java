@@ -5,6 +5,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConfigurationProperties(prefix = "consumer.sykemelding-api")
+@ConfigurationProperties(prefix = "consumers.sykemelding-api")
 public class SykemeldingApiProperties extends ServerProperties {
 }

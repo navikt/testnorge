@@ -16,9 +16,11 @@ spring:
           jwk-set-uri: https://tokenx.dev-gcp.nav.cloud.nais.io/jwks
           accepted-audience: ${TOKEN_X_CLIENT_ID}
   cloud:
+    vault:
+      enabled: false
     gateway:
       httpclient:
-        response-timeout: 1200s
+        response-timeout: 180s
 
 consumers:
   sykemelding-api:
