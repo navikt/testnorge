@@ -5,7 +5,7 @@ import no.nav.testnav.libs.reactiveproxy.config.DevConfig;
 import no.nav.testnav.libs.reactiveproxy.config.SecurityConfig;
 import no.nav.testnav.libs.reactiveproxy.filter.AddAuthenticationRequestGatewayFilterFactory;
 import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2ServerToServerConfiguration;
-import no.nav.testnav.libs.reactivesecurity.exchange.azuread.NavAzureAdTokenService;
+import no.nav.testnav.libs.reactivesecurity.exchange.azuread.AzureAdTokenService;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.proxies.sykemeldingapiproxy.config.SykemeldingApiProperties;
 import org.springframework.boot.SpringApplication;
@@ -24,7 +24,7 @@ import org.springframework.context.annotation.Import;
 @SpringBootApplication
 public class SykemeldingApiProxyApplicationStarter {
     @Bean
-    public RouteLocator customRouteLocator(RouteLocatorBuilder builder, NavAzureAdTokenService tokenService, SykemeldingApiProperties properties) {
+    public RouteLocator customRouteLocator(RouteLocatorBuilder builder, AzureAdTokenService tokenService, SykemeldingApiProperties properties) {
         var addAuthenticationHeaderDevFilter = AddAuthenticationRequestGatewayFilterFactory
                 .bearerAuthenticationHeaderFilter(() -> tokenService.exchange(properties).map(AccessToken::getTokenValue));
 
