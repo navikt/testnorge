@@ -23,7 +23,7 @@ spring:
       enabled: false
 
 consumer:
-  arbeidsplassencv-proxy:
+  arbeidsplassencv:
     name: pam-cv-api
     namespace: teampam
     url: http://pam-cv-api.teampam.svc.nais.local

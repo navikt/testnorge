@@ -19,3 +19,10 @@ spring:
     gateway:
       httpclient:
         response-timeout: 1200s
+
+consumers:
+  sykemelding-api:
+    name: testnorge-sykemelding-api
+    namespace: dolly
+    url: https://testnorge-sykemelding-api.dev.intern.nav.no
+    cluster: dev-fss

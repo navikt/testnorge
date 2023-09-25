@@ -44,6 +44,7 @@ public class SyntSykemeldingPostCommand {
                         .build())
                 .doOnError(WebClientFilter::logErrorMessage)
                 .onErrorResume(error -> Mono.just(SykemeldingResponse.builder()
+                        .ident(sykemeldingRequest.getIdent())
                         .status(WebClientFilter.getStatus(error))
                         .avvik(WebClientFilter.getMessage(error))
                         .build()))

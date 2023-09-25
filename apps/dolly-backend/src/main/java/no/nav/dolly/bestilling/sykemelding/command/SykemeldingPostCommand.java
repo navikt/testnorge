@@ -45,6 +45,7 @@ public class SykemeldingPostCommand implements Callable<Mono<SykemeldingResponse
                         .build())
                 .doOnError(WebClientFilter::logErrorMessage)
                 .onErrorResume(error -> Mono.just(SykemeldingResponse.builder()
+                        .ident(request.getPasient().getIdent())
                         .status(WebClientFilter.getStatus(error))
                         .avvik(WebClientFilter.getMessage(error))
                         .build()))
