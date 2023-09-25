@@ -26,5 +26,5 @@ consumers:
   sykemelding-api:
     name: testnorge-sykemelding-api
     namespace: dolly
-    url: https://testnorge-sykemelding-api.dolly.svc.cluster.local
+    url: http://testnorge-sykemelding-api.dolly.svc.cluster.local
     cluster: dev-fss
