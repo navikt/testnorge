@@ -19,7 +19,7 @@ import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 @RequiredArgsConstructor
 public class SykemeldingPostCommand implements Callable<Mono<SykemeldingResponse>> {
 
-    private static final String DETALJERT_SYKEMELDING_URL = "/sykemelding/api/v1/sykemeldinger";
+    private static final String DETALJERT_SYKEMELDING_URL = "/api/v1/sykemeldinger";
 
     private final WebClient webClient;
     private final DetaljertSykemeldingRequest request;
