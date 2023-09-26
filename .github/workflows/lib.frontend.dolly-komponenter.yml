@@ -16,6 +16,8 @@ jobs:
       READER_TOKEN: ${{ secrets.READER_TOKEN }}
   publish:
     name: Publish
+    permissions:
+      contents: write
     uses: ./.github/workflows/common.js.publish.yml
     if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, '#publish-libs') }}
     with:
