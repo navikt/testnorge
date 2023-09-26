@@ -11,6 +11,7 @@ jobs:
     name: Build
     permissions:
       contents: write
+      id-token: write
     uses: ./.github/workflows/common.js.build.yml
     with:
       working-directory: 'navikt/dolly-komponenter/'
@@ -20,6 +21,7 @@ jobs:
     name: Publish
     permissions:
       contents: write
+      id-token: write
     uses: ./.github/workflows/common.js.publish.yml
     if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, '#publish-libs') }}
     with:
