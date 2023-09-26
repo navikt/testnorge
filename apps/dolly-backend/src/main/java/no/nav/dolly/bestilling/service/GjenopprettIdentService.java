@@ -81,7 +81,7 @@ public class GjenopprettIdentService extends DollyBestillingService {
             var tIdent = identService.getTestIdent(bestilling.getIdent());
 
             var coBestillinger = identService.getBestillingerFromIdent(bestilling.getIdent()).stream()
-                    .sorted(Comparator.comparing(GruppeBestillingIdent::getBestillingId))
+                    .sorted(Comparator.comparing(GruppeBestillingIdent::getBestillingid))
                     .toList();
 
             var countEmptyBestillinger = new AtomicInteger(0);

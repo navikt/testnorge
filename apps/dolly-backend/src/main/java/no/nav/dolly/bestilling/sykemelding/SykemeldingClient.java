@@ -60,7 +60,7 @@ public class SykemeldingClient implements ClientRegister {
                 .map(RsDollyUtvidetBestilling::getSykemelding)
                 .flatMap(sykemelding -> {
 
-                    if (transaksjonMappingService.existAlready(SYKEMELDING, dollyPerson.getIdent(), null, bestilling.getId()) && !isOpprettEndre) {
+                    if (transaksjonMappingService.existAlready(SYKEMELDING, dollyPerson.getIdent(), null) && !isOpprettEndre) {
                         setProgress(progress, "OK");
                         return Mono.empty();
 

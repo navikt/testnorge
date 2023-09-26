@@ -264,7 +264,7 @@ public class BestillingService {
                         .sistOppdatert(now())
                         .miljoer(isNull(miljoer) || miljoer.isEmpty() ? bestilling.getMiljoer() : join(",", miljoer))
                         .opprettetFraId(bestillingId)
-                        .bestKriterier("{}")
+                        .bestKriterier(bestilling.getBestKriterier())
                         .bruker(fetchOrCreateBruker())
                         .build());
     }

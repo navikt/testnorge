@@ -60,8 +60,8 @@ public class InntektsmeldingClient implements ClientRegister {
                                 var request = mapperFacade.map(inntektsmeldingRequest, InntektsmeldingRequest.class);
                                 request.setMiljoe(environment);
                                 return postInntektsmelding(isOpprettEndre ||
-                                                !transaksjonMappingService.existAlready(INNTKMELD, dollyPerson.getIdent(), environment, bestilling.getId()),
-                                        request, bestilling.getId());
+                                                !transaksjonMappingService.existAlready(INNTKMELD, dollyPerson.getIdent(), environment),
+                                        request, progress.getBestilling().getId());
                             })
                             .filter(StringUtils::isNotBlank)
                             .collect(Collectors.joining(","))
