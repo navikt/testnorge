@@ -79,7 +79,7 @@ public class GjenopprettGruppeService extends DollyBestillingService {
             bestKriterier.setEkskluderEksternePersoner(true);
 
             var coBestillinger = identService.getBestillingerFromGruppe(bestilling.getGruppe()).stream()
-                    .sorted(Comparator.comparing(GruppeBestillingIdent::getBestillingId))
+                    .sorted(Comparator.comparing(GruppeBestillingIdent::getBestillingid))
                     .toList();
 
             var counter = new AtomicInteger(0);
@@ -136,8 +136,8 @@ public class GjenopprettGruppeService extends DollyBestillingService {
 
         return coBestillinger.stream()
                 .filter(bestilling -> ident.equals(bestilling.getIdent()))
-                .min(Comparator.comparing(GruppeBestillingIdent::getBestillingId))
-                .map(GruppeBestillingIdent::getBestillingId)
+                .min(Comparator.comparing(GruppeBestillingIdent::getBestillingid))
+                .map(GruppeBestillingIdent::getBestillingid)
                 .orElse(0L);
     }
 }

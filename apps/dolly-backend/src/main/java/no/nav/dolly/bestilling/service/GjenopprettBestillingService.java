@@ -74,7 +74,6 @@ public class GjenopprettBestillingService extends DollyBestillingService {
         var bestKriterier = getDollyBestillingRequest(bestilling);
         if (nonNull(bestKriterier)) {
             bestKriterier.setEkskluderEksternePersoner(true);
-            bestKriterier.setId(bestilling.getOpprettetFraId());
 
             var gamleProgresser = bestillingProgressService.fetchBestillingProgressByBestillingId(bestilling.getOpprettetFraId());
 
@@ -93,14 +92,13 @@ public class GjenopprettBestillingService extends DollyBestillingService {
                                                     personServiceClient.syncPerson(dollyPerson, progress)
                                                             .map(ClientFuture::get)
                                                             .filter(BestillingProgress::isPdlSync)
-                                                            .flatMap(pdlSync -> createBestilling(bestilling, gmlProgress.getBestilling()))
-                                                            .flatMap(cobestilling -> Flux.concat(
-                                                                    tpsPersonService.syncPerson(dollyPerson, cobestilling, progress)
+                                                            .flatMap(pdlSync -> Flux.concat(
+                                                                    tpsPersonService.syncPerson(dollyPerson, bestKriterier, progress)
                                                                             .map(ClientFuture::get),
-                                                                    gjenopprettKlienter(dollyPerson, cobestilling,
+                                                                    gjenopprettKlienter(dollyPerson, bestKriterier,
                                                                             fase2Klienter(),
                                                                             progress, false),
-                                                                    gjenopprettKlienter(dollyPerson, cobestilling,
+                                                                    gjenopprettKlienter(dollyPerson, bestKriterier,
                                                                             fase3Klienter(),
                                                                             progress, false)))))
                                             .onErrorResume(throwable -> {
