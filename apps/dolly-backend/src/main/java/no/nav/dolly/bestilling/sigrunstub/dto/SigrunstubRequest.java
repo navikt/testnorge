@@ -12,6 +12,5 @@ import lombok.experimental.SuperBuilder;
 public class SigrunstubRequest {
 
     private String inntektsaar;
-    private String personidentifikator;
     private String testdataEier;
 }

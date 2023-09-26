@@ -25,6 +25,7 @@ public class SigrunstubLignetInntektRequest extends SigrunstubRequest{
 
     private List<KodeverknavnGrunnlag> grunnlag;
 
+    private String personidentifikator;
     private Boolean skjermet;
     private List<KodeverknavnGrunnlag> svalbardGrunnlag;
 
