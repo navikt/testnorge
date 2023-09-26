@@ -9,6 +9,8 @@ on:
 jobs:
   build:
     name: Build
+    permissions:
+      contents: write
     uses: ./.github/workflows/common.js.build.yml
     with:
       working-directory: 'navikt/dolly-komponenter/'
