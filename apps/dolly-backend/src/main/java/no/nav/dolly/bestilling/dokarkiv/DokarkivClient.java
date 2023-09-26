@@ -59,7 +59,7 @@ public class DokarkivClient implements ClientRegister {
                                         .flatMapIterable(env -> env)
                                         .filter(env -> bestilling.getEnvironments().contains(env))
                                         .filter(env -> !transaksjonMappingService.existAlready(DOKARKIV,
-                                                dollyPerson.getIdent(), env, bestilling.getId()) || isOpprettEndre)
+                                                dollyPerson.getIdent(), env) || isOpprettEndre)
                                         .flatMap(env -> dokarkivConsumer.postDokarkiv(env, request)
                                                 .map(status ->
                                                         getStatus(dollyPerson.getIdent(), progress.getBestilling().getId(), status))))

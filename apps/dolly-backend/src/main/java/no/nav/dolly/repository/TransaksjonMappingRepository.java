@@ -7,10 +7,11 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface TransaksjonMappingRepository extends CrudRepository<TransaksjonMapping, Long> {
 
-    List<TransaksjonMapping> findAllBySystemAndIdent(String system, String ident);
+    Optional<List<TransaksjonMapping>> findAllBySystemAndIdent(String system, String ident);
 
     @Query(value = "from TransaksjonMapping t " +
             " where t.ident=:ident" +
