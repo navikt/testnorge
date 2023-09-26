@@ -112,7 +112,7 @@ public class GjenopprettIdentService extends DollyBestillingService {
                                                                                                             request.getId(), testident.getIdent()))
                                                                                             .flatMap(bestillingRequest -> Flux.concat(
                                                                                                     tpsPersonService.syncPerson(dollyPerson, bestillingRequest,
-                                                                                                                    progress, false)
+                                                                                                                    progress)
                                                                                                             .map(ClientFuture::get),
                                                                                                     gjenopprettKlienter(dollyPerson, bestillingRequest,
                                                                                                             fase2Klienter(),
