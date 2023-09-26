@@ -67,7 +67,7 @@ public class SigrunstubDataMapper implements MappingStrategy {
                     @Override
                     public void mapAtoB(RsPensjonsgivendeForFolketrygden kilde, SigrunstubPensjonsgivendeInntektRequest destinasjon, MappingContext context) {
 
-                        destinasjon.setPersonidentifikator((String) context.getProperty("ident"));
+                        destinasjon.setNorskident((String) context.getProperty("ident"));
 
                         destinasjon.setTestdataEier(isNotBlank(kilde.getTestdataEier()) ? kilde.getTestdataEier() : "Dolly");
                         destinasjon.setInntektsaar(kilde.getInntektsaar());

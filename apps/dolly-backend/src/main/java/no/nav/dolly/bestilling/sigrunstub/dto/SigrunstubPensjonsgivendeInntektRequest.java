@@ -14,5 +14,6 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class SigrunstubPensjonsgivendeInntektRequest extends SigrunstubRequest {
 
+    private String norskident;
     private JsonNode pensjonsgivendeInntekt;
 }

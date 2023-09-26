@@ -109,8 +109,7 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                                                                                     .doOnNext(request -> log.info("Startet gjenopprett bestilling {} for ident: {}",
                                                                                             request.getId(), testident.getIdent()))
                                                                                     .flatMapSequential(bestillingRequest -> Flux.concat(
-                                                                                            tpsPersonService.syncPerson(dollyPerson, bestillingRequest,
-                                                                                                            progress, false)
+                                                                                            tpsPersonService.syncPerson(dollyPerson, bestillingRequest, progress)
                                                                                                     .map(ClientFuture::get),
                                                                                             gjenopprettKlienter(dollyPerson, bestillingRequest,
                                                                                                     fase2Klienter(),

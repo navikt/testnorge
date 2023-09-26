@@ -249,6 +249,9 @@ export const fetchDataFraFagsystemer = (person, bestillingerById) => (dispatch) 
 			case 'SIGRUNSTUB':
 				dispatch(actions.getSigrun(personId))
 				return dispatch(actions.getSigrunSekvensnr(personId))
+			case 'SIGRUN_LIGNET':
+				dispatch(actions.getSigrun(personId))
+				return dispatch(actions.getSigrunSekvensnr(personId))
 			case 'INNTK':
 				return dispatch(actions.getInntektstub(personId))
 			case 'TPS_MESSAGING':

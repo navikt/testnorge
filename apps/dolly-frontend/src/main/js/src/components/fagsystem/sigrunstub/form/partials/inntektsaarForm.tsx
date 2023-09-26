@@ -58,6 +58,7 @@ export const InntektsaarForm = ({ formikBag }) => {
 									header="Grunnlag fra Fastlands-Norge"
 									initialGrunnlag={initialGrunnlag}
 									tjeneste={_.get(formikBag.values, `${path}.tjeneste`)}
+									inntektsaar={_.get(formikBag.values, `${path}.inntektsaar`)}
 									formikBag={formikBag}
 								/>
 							)}
@@ -67,6 +68,7 @@ export const InntektsaarForm = ({ formikBag }) => {
 									header="Grunnlag fra Svalbard"
 									initialGrunnlag={initialGrunnlag}
 									tjeneste={_.get(formikBag.values, `${path}.tjeneste`)}
+									inntektsaar={_.get(formikBag.values, `${path}.inntektsaar`)}
 									formikBag={formikBag}
 								/>
 							)}
