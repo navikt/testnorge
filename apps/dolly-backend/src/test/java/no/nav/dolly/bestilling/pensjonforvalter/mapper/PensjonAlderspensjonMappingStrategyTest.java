@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDate;
 import java.util.List;
 
+import static java.util.Collections.emptyList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
@@ -49,7 +50,7 @@ class PensjonAlderspensjonMappingStrategyTest {
                 .person(PdlPerson.Person.builder()
                         .sivilstand(List.of(PdlPerson.Sivilstand.builder()
                                 .gyldigFraOgMed(LocalDate.of(1988, 1, 2))
-                                .type(PdlPerson.SivilstandType.GIFT)
+                                .type(PdlPerson.SivilstandType.SKILT_PARTNER)
                                 .build()))
                         .build())
                 .build()));
@@ -57,7 +58,7 @@ class PensjonAlderspensjonMappingStrategyTest {
         var target = mapperFacade.map(pensjon, AlderspensjonRequest.class, context);
 
         assertThat(target.getIverksettelsesdato(), is(equalTo(LocalDate.of(2023, 1, 11))));
-        assertThat(target.getSivilstand(), is(equalTo("GIFT")));
+        assertThat(target.getSivilstand(), is(equalTo("SKPA")));
         assertThat(target.getSivilstandDatoFom(), is(equalTo(LocalDate.of(1988, 1, 2))));
         assertThat(target.getUttaksgrad(), is(equalTo(100)));
 
@@ -120,7 +121,7 @@ class PensjonAlderspensjonMappingStrategyTest {
     }
 
     @Test
-    void mapAlderspensjonMedSkiltPartner_OK() {
+    void mapAlderspensjonSkiltUtenPartner_OK() {
 
         var pensjon = PensjonData.Alderspensjon.builder()
                 .iverksettelsesdato(LocalDate.of(2023, 1, 11))
@@ -136,10 +137,13 @@ class PensjonAlderspensjonMappingStrategyTest {
                         .ident("123")
                         .person(PdlPerson.Person.builder()
                                 .sivilstand(List.of(PdlPerson.Sivilstand.builder()
-                                        .gyldigFraOgMed(LocalDate.of(1988, 1, 2))
-                                        .type(PdlPerson.SivilstandType.GIFT)
-                                        .relatertVedSivilstand("456")
-                                        .build()))
+                                                .gyldigFraOgMed(LocalDate.of(1988, 1, 2))
+                                                .type(PdlPerson.SivilstandType.GIFT)
+                                                .relatertVedSivilstand("456")
+                                                .build(),
+                                        PdlPerson.Sivilstand.builder()
+                                                .type(PdlPerson.SivilstandType.SKILT)
+                                                .build()))
                                 .build())
                         .build(),
                 PdlPersonBolk.PersonBolk.builder()
@@ -147,7 +151,7 @@ class PensjonAlderspensjonMappingStrategyTest {
                         .person(PdlPerson.Person.builder()
                                 .sivilstand(List.of(PdlPerson.Sivilstand.builder()
                                         .gyldigFraOgMed(LocalDate.of(2016, 1, 1))
-                                        .type(PdlPerson.SivilstandType.SKILT)
+                                        .type(PdlPerson.SivilstandType.GIFT)
                                         .relatertVedSivilstand("123")
                                         .build()))
                                 .build())
@@ -156,21 +160,14 @@ class PensjonAlderspensjonMappingStrategyTest {
         var target = mapperFacade.map(pensjon, AlderspensjonRequest.class, context);
 
         assertThat(target.getIverksettelsesdato(), is(equalTo(LocalDate.of(2023, 1, 11))));
-        assertThat(target.getSivilstand(), is(equalTo("GIFT")));
-        assertThat(target.getSivilstandDatoFom(), is(equalTo(LocalDate.of(1988, 1, 2))));
+        assertThat(target.getSivilstand(), is(equalTo("SKIL")));
+        assertThat(target.getSivilstandDatoFom(), is(nullValue()));
         assertThat(target.getUttaksgrad(), is(equalTo(100)));
 
         assertThat(target.getFnr(), is(equalTo("123")));
         assertThat(target.getMiljoer(), hasItem("q2"));
 
-        assertThat(target.getRelasjonListe().get(0).getFnr(), is(equalTo("456")));
-        assertThat(target.getRelasjonListe().get(0).getSumAvForventetArbeidKapitalPensjonInntekt(), is(equalTo(100000)));
-        assertThat(target.getRelasjonListe().get(0).getRelasjonType(), is(equalTo(PensjonAlderspensjonMappingStrategy.RelasjonType.EKTEF.name())));
-        assertThat(target.getRelasjonListe().get(0).getRelasjonFraDato(), is(equalTo(LocalDate.of(2016, 1, 1))));
-        assertThat(target.getRelasjonListe().get(0).getHarVaertGift(), is(equalTo(true)));
-        assertThat(target.getRelasjonListe().get(0).getVarigAdskilt(), is(equalTo(true)));
-        assertThat(target.getRelasjonListe().get(0).getSamlivsbruddDato(), is(equalTo(LocalDate.of(2016, 1, 1))));
-        assertThat(target.getRelasjonListe().get(0).getHarFellesBarn(), is(equalTo(false)));
+        assertThat(target.getRelasjonListe(), is(emptyList()));
     }
 
     @Test

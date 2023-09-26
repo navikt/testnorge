@@ -12,11 +12,16 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static java.util.Objects.isNull;
-import static no.nav.dolly.domain.PdlPerson.SivilstandType.*;
+import static java.util.Objects.nonNull;
+import static no.nav.dolly.domain.PdlPerson.SivilstandType.ENKE_ELLER_ENKEMANN;
+import static no.nav.dolly.domain.PdlPerson.SivilstandType.GJENLEVENDE_PARTNER;
+import static no.nav.dolly.domain.PdlPerson.SivilstandType.SKILT;
+import static no.nav.dolly.domain.PdlPerson.SivilstandType.SKILT_PARTNER;
 
 @Component
 public class PensjonAlderspensjonMappingStrategy implements MappingStrategy {
@@ -74,8 +79,7 @@ public class PensjonAlderspensjonMappingStrategy implements MappingStrategy {
                         personer.stream()
                                 .filter(person -> person.getIdent().equals(hovedperson))
                                 .forEach(personBolk -> personBolk.getPerson().getSivilstand().stream()
-                                        .filter(PdlPerson.Sivilstand::isGift)
-                                        .findFirst()
+                                        .max(new SivilstandSort())
                                         .ifPresentOrElse(sivilstand -> {
                                                     request.setSivilstand(mapSivilstand(sivilstand.getType()));
                                                     request.setSivilstandDatoFom(sivilstand.getGyldigFraOgMed());
@@ -101,8 +105,7 @@ public class PensjonAlderspensjonMappingStrategy implements MappingStrategy {
                                     .forEach(partnerPerson -> {
                                         request.getRelasjonListe().get(0).setFnr(partnerPerson.getIdent());
                                         partnerPerson.getPerson().getSivilstand().stream()
-                                                .filter(PdlPerson.Sivilstand::isGiftEllerHarVaertGift)
-                                                .findFirst()
+                                                .max(new SivilstandSort())
                                                 .ifPresent(sivilstand -> {
                                                     request.getRelasjonListe().get(0).setRelasjonType(getRelasjonType(sivilstand.getType()));
                                                     request.getRelasjonListe().get(0).setRelasjonFraDato(sivilstand.getGyldigFraOgMed());
@@ -166,5 +169,25 @@ public class PensjonAlderspensjonMappingStrategy implements MappingStrategy {
             case SKILT_PARTNER -> SivilstandRelasjoner.SKPA.name();
             case GJENLEVENDE_PARTNER -> SivilstandRelasjoner.GJPA.name();
         };
+    }
+
+    public class SivilstandSort implements Comparator<PdlPerson.Sivilstand> {
+
+        @Override
+        public int compare(PdlPerson.Sivilstand sivilstand1, PdlPerson.Sivilstand sivilstand2) {
+
+            if (nonNull(sivilstand1.getGyldigFraOgMed()) && nonNull(sivilstand2.getGyldigFraOgMed())) {
+                return sivilstand1.getGyldigFraOgMed().compareTo(sivilstand2.getGyldigFraOgMed());
+
+            } else if  (sivilstand1.getType() == sivilstand2.getType()) {
+                return 0;
+
+            } else if (sivilstand1.isUgift() || sivilstand2.isTidligereGift()) {
+                return -1;
+
+            } else if (sivilstand2){
+                return 1;
+            }
+        }
     }
 }
