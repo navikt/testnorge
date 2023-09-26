@@ -1,5 +1,6 @@
 package no.nav.dolly.bestilling.pensjonforvalter;
 
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPersonRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPoppInntektRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpForholdRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpYtelseRequest;
@@ -142,6 +143,50 @@ class PensjonforvalterConsumerTest {
 
         StepVerifier.create(pensjonforvalterConsumer.getMiljoer())
                 .expectNext(Set.of("q1", "q2"))
+                .verifyComplete();
+    }
+
+    @Test
+    void testOpprettPerson_ok() {
+
+        stubPostOpprettPerson(false);
+
+        StepVerifier.create(pensjonforvalterConsumer
+                        .opprettPerson(new PensjonPersonRequest(), Set.of("tx")))
+                .expectNext(PensjonforvalterResponse.builder()
+                        .status(List.of(PensjonforvalterResponse.ResponseEnvironment.builder()
+                                .miljo("tx")
+                                .response(PensjonforvalterResponse.Response.builder()
+                                        .httpStatus(PensjonforvalterResponse.HttpStatus.builder()
+                                                .status(200)
+                                                .reasonPhrase("OK")
+                                                .build())
+                                        .path("/person")
+                                        .build())
+                                .build()))
+                        .build())
+                .verifyComplete();
+    }
+
+    @Test
+    void testOpprettPerson_error() {
+
+        stubPostOpprettPerson(true);
+
+        StepVerifier.create(pensjonforvalterConsumer.opprettPerson(new PensjonPersonRequest(), Set.of("q1")))
+                .expectNext(PensjonforvalterResponse.builder()
+                        .status(List.of(PensjonforvalterResponse.ResponseEnvironment.builder()
+                                .miljo("tx")
+                                .response(PensjonforvalterResponse.Response.builder()
+                                        .httpStatus(PensjonforvalterResponse.HttpStatus.builder()
+                                                .status(500)
+                                                .reasonPhrase("Internal Server Error")
+                                                .build())
+                                        .path("/person")
+                                        .message("POST Request failed with msg: 400 Bad Request: [{\"message\":\"error message\"}]")
+                                        .build())
+                                .build()))
+                        .build())
                 .verifyComplete();
     }
 
