@@ -30,7 +30,9 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId,
 
 	const gjenopprettingsId = bestilling.opprettetFraGruppeId || bestilling.opprettetFraId
 
-	const gjenopprettTitle = harLevertPersoner
+	const gjenopprettTitle = gjenopprettingsId
+		? 'Kan ikke gjenopprette bestilling som allerede er gjenopprettet'
+		: harLevertPersoner
 		? 'Gjenopprett bestilling'
 		: 'Kan ikke gjenopprette bestilling fordi den har ingen leverte identer'
 
@@ -44,7 +46,7 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId,
 						<Button
 							onClick={openGjenopprettModal}
 							kind="synchronize"
-							disabled={!harLevertPersoner}
+							disabled={!harLevertPersoner || gjenopprettingsId}
 							title={gjenopprettTitle}
 						>
 							GJENOPPRETT
