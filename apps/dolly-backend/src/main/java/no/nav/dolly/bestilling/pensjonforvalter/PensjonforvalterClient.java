@@ -119,7 +119,7 @@ public class PensjonforvalterClient implements ClientRegister {
                 .map(miljoe -> miljoe.equals("q4") ? "q1" : miljoe)
                 .collect(Collectors.toSet()));
 
-        var bestillingId = progress.getBestilling().getId();
+        var bestillingId = bestilling.getId();
 
         return Flux.from(pensjonforvalterConsumer.getMiljoer())
                 .flatMap(tilgjengeligeMiljoer -> {
@@ -309,7 +309,7 @@ public class PensjonforvalterClient implements ClientRegister {
                 .flatMap(alderspensjon -> Flux.fromIterable(miljoer)
                         .flatMap(miljoe -> {
 
-                            if (isOpprettEndre || !transaksjonMappingService.existAlready(PEN_AP, ident, miljoe)) {
+                            if (isOpprettEndre || !transaksjonMappingService.existAlready(PEN_AP, ident, miljoe, bestillingId)) {
 
                                 if (isTpsSyncEnv.contains(miljoe)) {
 
@@ -350,7 +350,7 @@ public class PensjonforvalterClient implements ClientRegister {
                 .flatMap(uforetrygd -> Flux.fromIterable(miljoer)
                         .flatMap(miljoe -> {
 
-                            if (isOpprettEndre || !transaksjonMappingService.existAlready(PEN_UT, ident, miljoe)) {
+                            if (isOpprettEndre || !transaksjonMappingService.existAlready(PEN_UT, ident, miljoe, bestillingId)) {
 
                                 if (isTpsSyncEnv.contains(miljoe)) {
 

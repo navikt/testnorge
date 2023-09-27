@@ -48,7 +48,7 @@ public class PensjonforvalterResponse {
         private String path;
 
         public boolean isResponse2xx() {
-            return httpStatus.getStatus()>= 200 && httpStatus.getStatus() < 300;
+            return httpStatus.getStatus() >= 200 && httpStatus.getStatus() < 300;
         }
     }
 
