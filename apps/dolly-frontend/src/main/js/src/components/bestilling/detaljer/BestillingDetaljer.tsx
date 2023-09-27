@@ -31,7 +31,7 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId,
 	const gjenopprettingsId = bestilling.opprettetFraGruppeId || bestilling.opprettetFraId
 
 	const gjenopprettTitle = gjenopprettingsId
-		? 'Kan ikke gjenopprette en gjenopprettbestilling'
+		? 'Kan ikke gjenopprette gjenoppretting av bestilling'
 		: harLevertPersoner
 		? 'Gjenopprett bestilling'
 		: 'Kan ikke gjenopprette bestilling fordi den har ingen leverte identer'
