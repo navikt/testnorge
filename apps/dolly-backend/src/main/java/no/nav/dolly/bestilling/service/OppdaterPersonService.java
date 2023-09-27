@@ -74,6 +74,7 @@ public class OppdaterPersonService extends DollyBestillingService {
 
         log.info("Bestilling med id=#{} med type={} er startet ...", bestilling.getId(), getBestillingType(bestilling));
         MDC.put(MDC_KEY_BESTILLING, bestilling.getId().toString());
+        request.setId(bestilling.getId());
 
         var testident = identService.getTestIdent(bestilling.getIdent());
         Flux.just(OriginatorUtility.prepOriginator(request, testident, mapperFacade))

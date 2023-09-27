@@ -74,7 +74,6 @@ public class GjenopprettBestillingService extends DollyBestillingService {
         var bestKriterier = getDollyBestillingRequest(bestilling);
         if (nonNull(bestKriterier)) {
             bestKriterier.setEkskluderEksternePersoner(true);
-            bestKriterier.setId(bestilling.getOpprettetFraId());
 
             var gamleProgresser = bestillingProgressService.fetchBestillingProgressByBestillingId(bestilling.getOpprettetFraId());
 
