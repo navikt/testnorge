@@ -38,7 +38,7 @@ public class PensjonData {
     }
 
     public boolean hasTp() {
-        return !tp.isEmpty();
+        return !getTp().isEmpty();
     }
 
     public boolean hasAlderspensjon() {
