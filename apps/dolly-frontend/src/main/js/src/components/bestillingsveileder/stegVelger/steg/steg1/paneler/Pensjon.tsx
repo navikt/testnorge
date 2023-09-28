@@ -11,6 +11,7 @@ import { pensjonPath } from '@/components/fagsystem/pensjon/form/Form'
 import { initialAlderspensjon } from '@/components/fagsystem/alderspensjon/form/initialValues'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { initialUforetrygd } from '@/components/fagsystem/uforetrygd/initialValues'
+import { runningCypressE2E } from '@/service/services/Request'
 
 export const PensjonPanel = ({ stateModifier, formikBag }: any) => {
 	const sm = stateModifier(PensjonPanel.initialValues)
@@ -99,8 +100,8 @@ PensjonPanel.initialValues = ({ set, del, has }: any) => {
 			add: () =>
 				set(paths.inntekt, {
 					fomAar: new Date().getFullYear() - 10,
-					tomAar: null,
-					belop: '',
+					tomAar: runningCypressE2E() ? new Date().getFullYear() : null,
+					belop: runningCypressE2E() ? '12345' : '',
 					redusertMedGrunnbelop: true,
 				}),
 			remove: () => del(paths.inntekt),

@@ -6,7 +6,7 @@ const WomanIconItem = () => (
 )
 const ManIconItem = () => <IconItem className={'icon-item--man'} icon={'man'} fontSize={'2rem'} />
 const UnknownIconItem = () => (
-	<IconItem className={'icon-item--unknown'} icon={'person'} fontSize={'2rem'} />
+	<IconItem className={'icon-item--unknown'} icon={'ukjent'} fontSize={'2rem'} />
 )
 const BestillingIconItem = () => (
 	<IconItem className={'icon-item--bestilling'} icon={'bestilling'} fontSize={'1.5rem'} />
