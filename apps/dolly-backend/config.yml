@@ -71,6 +71,7 @@ spec:
         - host: testnav-norg2-proxy.dev-fss-pub.nais.io
         - host: testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
         - host: testnav-pdl-proxy.dev-fss-pub.nais.io
+        - host: testnorge-sykemelding-api.dev.intern.nav.no
         - host: testnav-sigrunstub-proxy.dev-fss-pub.nais.io
         - host: testnav-skjermingsregister-proxy.dev-fss-pub.nais.io
         - host: testnav-statisk-data-forvalter-proxy.dev-fss-pub.nais.io
