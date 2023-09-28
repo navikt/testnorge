@@ -67,5 +67,6 @@ spec:
           cluster: dev-fss
       external:
         - host: testnav-pdl-proxy.dev-fss-pub.nais.io
+        - host: testnorge-sykemelding-api.dev.intern.nav.no
   ingresses:
     - "https://testnav-synt-sykemelding-api.intern.dev.nav.no"
