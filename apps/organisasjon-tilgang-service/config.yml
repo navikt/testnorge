@@ -41,7 +41,7 @@ spec:
           cluster: dev-gcp
     outbound:
       external:
-        - host: tt02.altinn.no
+        - host: altinn.no
   liveness:
     path: /internal/isAlive
     initialDelay: 10
@@ -56,7 +56,7 @@ spec:
     enabled: true
     path: /internal/metrics
   envFrom:
-    - secret: altinn-dev
+    - secret: altinn-prod
     - secret: google-sql-testnav-organisasjon-tilgang-service
   replicas:
     min: 1
