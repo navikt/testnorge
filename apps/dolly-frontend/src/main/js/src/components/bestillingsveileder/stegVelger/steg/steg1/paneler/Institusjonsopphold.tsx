@@ -2,6 +2,7 @@ import Panel from '@/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
 import { harValgtAttributt } from '@/components/ui/form/formUtils'
 import { instAttributt } from '@/components/fagsystem/inst/form/Form'
+import { runningCypressE2E } from '@/service/services/Request'
 
 export const InstitusjonsoppholdPanel = ({ stateModifier, formikBag }) => {
 	const sm = stateModifier(InstitusjonsoppholdPanel.initialValues)
@@ -30,8 +31,8 @@ InstitusjonsoppholdPanel.initialValues = ({ set, del, has }) => ({
 		add() {
 			set('instdata', [
 				{
-					institusjonstype: '',
-					startdato: '',
+					institusjonstype: runningCypressE2E() ? 'AS' : '',
+					startdato: runningCypressE2E() ? new Date() : '',
 					sluttdato: '',
 				},
 			])
