@@ -212,10 +212,10 @@ consumers:
     namespace: dolly
     url: http://testnav-amelding-service.dolly.svc.cluster.local
     cluster: dev-gcp
-  testnav-sykemelding-api-proxy:
-    name: testnav-sykemelding-api-proxy
+  testnorge-sykemelding-api:
+    name: testnorge-sykemelding-api
     namespace: dolly
-    url: https://testnav-sykemelding-api-proxy.dev-fss-pub.nais.io
+    url: https://testnorge-sykemelding-api.dev.intern.nav.no
     cluster: dev-fss
   testnav-synt-sykemelding-api:
     name: testnav-synt-sykemelding-api

@@ -32,8 +32,8 @@ consumers:
     cluster: dev-gcp
     namespace: dolly
   sykemelding-api:
-    url: https://testnav-sykemelding-api-proxy.dev-fss-pub.nais.io
-    name: testnav-sykemelding-api-proxy
+    url: https://testnorge-sykemelding-api.dev.intern.nav.no
+    name: testnorge-sykemelding-api
     cluster: dev-fss
     namespace: dolly
   testnav-organisasjon-service:
