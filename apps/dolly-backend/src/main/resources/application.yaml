@@ -120,7 +120,7 @@ consumers:
   testnav-person-service:
     name: testnav-person-service
     namespace: dolly
-    url:  http://testnav-person-service.dolly.svc.cluster.local
+    url: http://testnav-person-service.dolly.svc.cluster.local
     cluster: dev-gcp
   testnav-kodeverk-proxy:
     name: testnav-kodeverk-proxy
