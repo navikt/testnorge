@@ -71,15 +71,15 @@ spec:
     - "https://testnav-organisasjon-tilgang-service.intern.dev.nav.no"
   env:
     - name: SPRING_PROFILES_ACTIVE
-      value: dev
+      value: prod
     - name: ACCEPTED_AUDIENCE
       value: dev-gcp:dolly:testnav-organisasjon-tilgang-service
     - name: TOKENDINGS_URL
       value: https://tokenx.dev-gcp.nav.cloud.nais.io 
   gcp:
     sqlInstances:
-      - type: POSTGRES_14
-        name: testnav-organisasjon-tilgang
+      - type: POSTGRES_15
+        name: testnav-organisasjon-tilganger
         databases:
-          - name: testnav-organisasjon-tilgang
+          - name: testnav-organisasjon-tilganger
         autoBackupTime: "02:00"
