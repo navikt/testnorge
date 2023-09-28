@@ -50,6 +50,7 @@ const createInntektForm = (kodeverk, skatteordning, path) => {
 			return (
 				<FormikSelect
 					name={`${path}.${key}`}
+					key={`${path}.${key}`}
 					label={label}
 					options={skatteordningOptions}
 					isClearable={false}
@@ -57,12 +58,19 @@ const createInntektForm = (kodeverk, skatteordning, path) => {
 			)
 		}
 		if (value === 'Long') {
-			return <FormikTextInput name={`${path}.${key}`} label={label} type="number" />
+			return (
+				<FormikTextInput
+					name={`${path}.${key}`}
+					key={`${path}.${key}`}
+					label={label}
+					type="number"
+				/>
+			)
 		}
 		if (value === 'Date') {
-			return <FormikDatepicker name={`${path}.${key}`} label={label} />
+			return <FormikDatepicker name={`${path}.${key}`} key={`${path}.${key}`} label={label} />
 		}
-		return <FormikTextInput name={`${path}.${key}`} label={label} />
+		return <FormikTextInput name={`${path}.${key}`} key={`${path}.${key}`} label={label} />
 		//TODO size utifra label length? :)
 	})
 }
@@ -77,11 +85,9 @@ export const PensjonsgivendeInntektForm = ({ path, formikBag }) => {
 		<FormikDollyFieldArray name={path} header="Inntekter" newEntry={newEntry} nested>
 			{(path, idx) => {
 				return (
-					<React.Fragment key={idx}>
-						<div className="flexbox--flex-wrap">
-							{createInntektForm(kodeverk, skatteordning, path)}
-						</div>
-					</React.Fragment>
+					<div className="flexbox--flex-wrap" key={idx}>
+						{createInntektForm(kodeverk, skatteordning, path)}
+					</div>
 				)
 			}}
 		</FormikDollyFieldArray>

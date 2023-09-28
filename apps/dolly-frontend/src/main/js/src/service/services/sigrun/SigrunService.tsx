@@ -7,6 +7,11 @@ export default {
 		const endpoint = getSigrunBaseUrl() + '/lignetinntekt'
 		return Request.get(endpoint, { personidentifikator: ident })
 	},
+	//TODO: endepunkt boer ha valgfritt inntektsaar, fjern den naar ok
+	getPensjonsgivendeInntekt(ident, inntektsaar = '2023') {
+		const endpoint = getSigrunBaseUrl() + '/pensjonsgivendeinntektforfolketrygden'
+		return Request.get(endpoint, { norskident: ident, inntektsaar: inntektsaar })
+	},
 	getSekvensnummer(ident) {
 		const endpoint = getSigrunBaseUrl() + '/sekvensnummer/' + ident
 		return Request.get(endpoint)

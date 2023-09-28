@@ -1097,6 +1097,7 @@ const mapAareg = (bestillingData, data) => {
 
 const mapSigrunStub = (bestillingData, data) => {
 	const sigrunStubKriterier = bestillingData.sigrunstub
+	console.log('sigrunStubKriterier: ', sigrunStubKriterier) //TODO - SLETT MEG
 
 	if (sigrunStubKriterier) {
 		// Flatter ut sigrunKriterier for å gjøre det lettere å mappe
@@ -1152,6 +1153,36 @@ const mapSigrunStub = (bestillingData, data) => {
 		})
 
 		data.push(sigrunStub)
+	}
+}
+
+const mapSigrunstubPensjonsgivende = (bestillingData, data) => {
+	const sigrunstubPensjonsgivendeKriterier = bestillingData.sigrunstubPensjonsgivende
+	console.log('sigrunstubPensjonsgivendeKriterier: ', sigrunstubPensjonsgivendeKriterier) //TODO - SLETT MEG
+
+	const sigrunstubPensjonsgivende = {
+		header: 'Pensjonsgivende inntekt (Sigrun)',
+		itemRows: [],
+	}
+
+	if (sigrunstubPensjonsgivendeKriterier) {
+		sigrunstubPensjonsgivendeKriterier.forEach((inntekt, i) => {
+			sigrunstubPensjonsgivende.itemRows.push([
+				{ numberHeader: `Pensjonsgivende inntekt ${i + 1}` },
+				obj('Inntektsår', inntekt.inntektsaar),
+				obj('Testdataeier', inntekt.testdataEier),
+				{ nestedItemRows: [] },
+			])
+			console.log('sigrunstubPensjonsgivende.itemRows: ', sigrunstubPensjonsgivende.itemRows) //TODO - SLETT MEG
+			inntekt.pensjonsgivendeInntekt.forEach((test, y) =>
+				sigrunstubPensjonsgivende.itemRows[0][3].nestedItemRows.push([
+					{ numberHeader: `Inntekt ${y + 1}` },
+					obj('Skatteordning', test.skatteordning),
+				]),
+			)
+		})
+		console.log('sigrunstubPensjonsgivende: ', sigrunstubPensjonsgivende) //TODO - SLETT MEG
+		data.push(sigrunstubPensjonsgivende)
 	}
 }
 
@@ -2176,6 +2207,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 	mapTpsMessaging(bestillingData, data)
 	mapAareg(bestillingData, data)
 	mapSigrunStub(bestillingData, data)
+	mapSigrunstubPensjonsgivende(bestillingData, data)
 	mapInntektStub(bestillingData, data)
 	mapArbeidsplassenCV(bestillingData, data)
 	mapSykemelding(bestillingData, data)
