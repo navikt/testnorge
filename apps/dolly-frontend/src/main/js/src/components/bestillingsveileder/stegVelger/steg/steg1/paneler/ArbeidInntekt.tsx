@@ -7,7 +7,7 @@ import { sigrunAttributt } from '@/components/fagsystem/sigrunstub/form/Form'
 import { inntektstubAttributt } from '@/components/fagsystem/inntektstub/form/Form'
 import { inntektsmeldingAttributt } from '@/components/fagsystem/inntektsmelding/form/Form'
 import {
-	initialSigrunstubPensjonsgivende,
+	getInitialSigrunstubPensjonsgivende,
 	sigrunstubPensjonsgivendeAttributt,
 } from '@/components/fagsystem/sigrunstubPensjonsgivende/form/Form'
 
@@ -80,7 +80,7 @@ ArbeidInntektPanel.initialValues = ({ set, del, has }) => ({
 	sigrunstubPensjonsgivende: {
 		label: 'Har pensjonsgivende inntekt',
 		checked: has('sigrunstubPensjonsgivende'),
-		add: () => set('sigrunstubPensjonsgivende', [initialSigrunstubPensjonsgivende]),
+		add: () => set('sigrunstubPensjonsgivende', [getInitialSigrunstubPensjonsgivende()]),
 		remove: () => del('sigrunstubPensjonsgivende'),
 	},
 	inntektsmelding: {

@@ -16,7 +16,7 @@ const InntektVisning = ({ pensjonsgivendeInntekt, id }) => {
 	return Object.entries(pensjonsgivendeInntekt)?.map(([key, value]) => {
 		const label = kodeverkKeyToLabel(key)
 		const erDato = !isNaN(Date.parse(value))
-		console.log('key + id: ', key + id) //TODO - SLETT MEG
+
 		if (erDato && (key.includes('Dato') || key.includes('dato'))) {
 			return <TitleValue title={label} value={formatDate(value)} key={key + id} />
 		}

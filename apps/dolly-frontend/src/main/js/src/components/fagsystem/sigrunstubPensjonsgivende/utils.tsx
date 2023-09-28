@@ -23,3 +23,24 @@ export const kodeverkKeyToLabel = (key) => {
 			return defaultLabel
 	}
 }
+
+export const getInitialInntekt = (kodeverk, skatteordning) => {
+	if (!kodeverk) {
+		return null
+		//TODO evt. lag fallback-data
+	}
+
+	const initialInntekt = {}
+
+	for (const [key, value] of Object.entries(kodeverk)) {
+		if (key === 'skatteordning') {
+			initialInntekt[key] = skatteordning?.[0] || ''
+		} else if (value === 'String') {
+			initialInntekt[key] = ''
+		} else if (value === 'Date') {
+			initialInntekt[key] = new Date()
+		} else initialInntekt[key] = null
+	}
+
+	return initialInntekt
+}

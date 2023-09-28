@@ -1,42 +1,19 @@
 import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import React from 'react'
-import {
-	usePensjonsgivendeInntektKodeverk,
-	usePensjonsgivendeInntektSkatteordning,
-} from '@/utils/hooks/useSigrunstub'
 import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
-import { kodeverkKeyToLabel } from '@/components/fagsystem/sigrunstubPensjonsgivende/utils'
+import {
+	getInitialInntekt,
+	kodeverkKeyToLabel,
+} from '@/components/fagsystem/sigrunstubPensjonsgivende/utils'
 import * as _ from 'lodash-es'
 
 const getSkatteordningOptions = (skatteordning) => {
 	return skatteordning?.map((item) => ({ value: item, label: _.capitalize(item) }))
 }
 
-const getInitialInntekt = (kodeverk, skatteordning) => {
-	if (!kodeverk) {
-		return null
-		//TODO evt. lag fallback-data
-	}
-
-	const initialInntekt = {}
-
-	for (const [key, value] of Object.entries(kodeverk)) {
-		if (key === 'skatteordning') {
-			initialInntekt[key] = skatteordning?.[0] || ''
-		} else if (value === 'String') {
-			initialInntekt[key] = ''
-		} else if (value === 'Date') {
-			initialInntekt[key] = new Date()
-		} else initialInntekt[key] = null
-	}
-
-	return initialInntekt
-}
-
 const createInntektForm = (kodeverk, skatteordning, path) => {
-	console.log('kodeverk: ', kodeverk) //TODO - SLETT MEG
 	if (!kodeverk) {
 		return null
 		//TODO evt. lag fallback-data eller returner en feilmelding med kontakt dolly
@@ -75,14 +52,17 @@ const createInntektForm = (kodeverk, skatteordning, path) => {
 	})
 }
 
-export const PensjonsgivendeInntektForm = ({ path, formikBag }) => {
-	const { kodeverk } = usePensjonsgivendeInntektKodeverk()
-	const { skatteordning } = usePensjonsgivendeInntektSkatteordning()
-
+export const PensjonsgivendeInntektForm = ({ path, formikBag, kodeverk, skatteordning }) => {
 	const newEntry = getInitialInntekt(kodeverk, skatteordning)
 
 	return (
-		<FormikDollyFieldArray name={path} header="Inntekter" newEntry={newEntry} nested>
+		<FormikDollyFieldArray
+			name={path}
+			header="Inntekter"
+			newEntry={newEntry}
+			canBeEmpty={false}
+			nested
+		>
 			{(path, idx) => {
 				return (
 					<div className="flexbox--flex-wrap" key={idx}>

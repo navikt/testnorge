@@ -2,23 +2,49 @@ import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import Panel from '@/components/ui/panel/Panel'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
 import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { getYearRangeOptions } from '@/utils/DataFormatter'
 import { subYears } from 'date-fns'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { PensjonsgivendeInntektForm } from '@/components/fagsystem/sigrunstubPensjonsgivende/form/PensjonsgivendeInntektForm'
+import {
+	usePensjonsgivendeInntektKodeverk,
+	usePensjonsgivendeInntektSkatteordning,
+} from '@/utils/hooks/useSigrunstub'
+import { getInitialInntekt } from '@/components/fagsystem/sigrunstubPensjonsgivende/utils'
+import * as _ from 'lodash-es'
 
-export const initialSigrunstubPensjonsgivende = {
-	inntektsaar: new Date().getFullYear(),
-	pensjonsgivendeInntekt: [],
-	testdataEier: '',
+export const getInitialSigrunstubPensjonsgivende = (kodeverk = null, skatteordning = null) => {
+	return {
+		inntektsaar: new Date().getFullYear(),
+		pensjonsgivendeInntekt:
+			kodeverk && skatteordning ? [getInitialInntekt(kodeverk, skatteordning)] : [],
+		testdataEier: '',
+	}
 }
 
 export const sigrunstubPensjonsgivendeAttributt = 'sigrunstubPensjonsgivende'
 
 export const SigrunstubPensjonsgivendeForm = ({ formikBag }) => {
+	const { kodeverk } = usePensjonsgivendeInntektKodeverk()
+	const { skatteordning } = usePensjonsgivendeInntektSkatteordning()
+
+	useEffect(() => {
+		const pensjonsgivendeInntektPath = 'sigrunstubPensjonsgivende[0].pensjonsgivendeInntekt'
+		const forstePensjonsgivendeInntekt = _.get(formikBag.values, pensjonsgivendeInntektPath)
+		if (
+			kodeverk &&
+			skatteordning &&
+			(!forstePensjonsgivendeInntekt || forstePensjonsgivendeInntekt.length < 1)
+		) {
+			formikBag.setFieldValue(pensjonsgivendeInntektPath, [
+				getInitialInntekt(kodeverk, skatteordning),
+			])
+		}
+	}, [kodeverk, skatteordning])
+
 	return (
 		<Vis attributt={sigrunstubPensjonsgivendeAttributt}>
 			<Panel
@@ -31,7 +57,7 @@ export const SigrunstubPensjonsgivendeForm = ({ formikBag }) => {
 					<FormikDollyFieldArray
 						name="sigrunstubPensjonsgivende"
 						header="Pensjonsgivende inntekt"
-						newEntry={initialSigrunstubPensjonsgivende}
+						newEntry={getInitialSigrunstubPensjonsgivende(kodeverk, skatteordning)}
 						canBeEmpty={false}
 					>
 						{(path) => (
@@ -48,6 +74,8 @@ export const SigrunstubPensjonsgivendeForm = ({ formikBag }) => {
 								<PensjonsgivendeInntektForm
 									path={`${path}.pensjonsgivendeInntekt`}
 									formikBag={formikBag}
+									kodeverk={kodeverk}
+									skatteordning={skatteordning}
 								/>
 							</>
 						)}

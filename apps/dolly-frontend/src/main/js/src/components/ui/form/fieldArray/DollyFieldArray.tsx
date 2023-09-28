@@ -120,13 +120,19 @@ export const DollyFaBlokkOrg = ({
 	)
 }
 
-export const DollyFaBlokkNested = ({ idx, handleRemove, children, whiteBackground }) => (
+export const DollyFaBlokkNested = ({
+	idx,
+	handleRemove,
+	children,
+	whiteBackground,
+	showDeleteButton = true,
+}) => (
 	<div className="dfa-blokk-nested">
 		<div className="dfa-blokk_header">
 			<Numbering idx={idx + 1} />
 		</div>
 		<div className={whiteBackground ? 'dfa-blokk_content_white' : 'dfa-blokk_content'}>
-			<DeleteButton onClick={handleRemove} />
+			{showDeleteButton && <DeleteButton onClick={handleRemove} />}
 			{children}
 		</div>
 	</div>
@@ -224,7 +230,12 @@ export const FormikDollyFieldArray = ({
 
 							if (nested) {
 								return (
-									<DollyFaBlokkNested key={idx} idx={idx} handleRemove={handleRemove}>
+									<DollyFaBlokkNested
+										key={idx}
+										idx={idx}
+										handleRemove={handleRemove}
+										showDeleteButton={showDeleteButton}
+									>
 										{children(path, idx, curr)}
 									</DollyFaBlokkNested>
 								)
