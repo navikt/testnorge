@@ -6,20 +6,9 @@ import { aaregAttributt } from '@/components/fagsystem/aareg/form/Form'
 import { sigrunAttributt } from '@/components/fagsystem/sigrunstub/form/Form'
 import { inntektstubAttributt } from '@/components/fagsystem/inntektstub/form/Form'
 import { inntektsmeldingAttributt } from '@/components/fagsystem/inntektsmelding/form/Form'
-import { useContext } from 'react'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 export const ArbeidInntektPanel = ({ stateModifier, formikBag }) => {
 	const sm = stateModifier(ArbeidInntektPanel.initialValues)
-	const opts = useContext(BestillingsveilederContext)
-
-	const harGyldigInntektsmeldingBestilling = opts?.tidligereBestillinger?.some(
-		(bestilling) =>
-			bestilling.status?.some(
-				(status) =>
-					status.id === 'INNTKMELD' && status.statuser?.some((item) => item?.melding === 'OK'),
-			),
-	)
 
 	const infoTekst =
 		'Arbeidsforhold: \nDataene her blir lagt til AAREG. \n\nInntekt: \nSkatte- og inntektsgrunnlag. Inntektene blir lagt i Sigrun-stub.' +
@@ -29,9 +18,7 @@ export const ArbeidInntektPanel = ({ stateModifier, formikBag }) => {
 		<Panel
 			heading={ArbeidInntektPanel.heading}
 			informasjonstekst={infoTekst}
-			checkAttributeArray={() =>
-				sm.batchAdd(harGyldigInntektsmeldingBestilling ? ['inntektsmelding'] : [])
-			}
+			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType="arbeid"
 			startOpen={harValgtAttributt(formikBag.values, [
@@ -51,14 +38,7 @@ export const ArbeidInntektPanel = ({ stateModifier, formikBag }) => {
 				<Attributt attr={sm.attrs.inntektstub} />
 			</AttributtKategori>
 			<AttributtKategori title="Inntektsmelding (fra Altinn)" attr={sm.attrs}>
-				<Attributt
-					attr={sm.attrs.inntektsmelding}
-					id="inntekt_inntektstub"
-					disabled={harGyldigInntektsmeldingBestilling}
-					title={
-						harGyldigInntektsmeldingBestilling ? 'Personen har allerede inntektsmelding' : null
-					}
-				/>
+				<Attributt attr={sm.attrs.inntektsmelding} id="inntekt_inntektstub" />
 			</AttributtKategori>
 		</Panel>
 	)

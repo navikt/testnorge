@@ -264,7 +264,7 @@ public class BestillingService {
                         .sistOppdatert(now())
                         .miljoer(isNull(miljoer) || miljoer.isEmpty() ? bestilling.getMiljoer() : join(",", miljoer))
                         .opprettetFraId(bestillingId)
-                        .bestKriterier(bestilling.getBestKriterier())
+                        .bestKriterier("{}")
                         .bruker(fetchOrCreateBruker())
                         .build());
     }
@@ -383,13 +383,6 @@ public class BestillingService {
         });
     }
 
-    public List<Long> fetchBestillingerByTestident(String ident) {
-
-        var bestillinger = bestillingRepository.findBestillingerByIdent(ident);
-        return bestillinger.stream().map(Bestilling::getId).toList();
-    }
-
-
     @Transactional
     public void swapIdent(String oldIdent, String newIdent) {
         bestillingRepository.swapIdent(oldIdent, newIdent);
@@ -401,6 +394,7 @@ public class BestillingService {
                 .krrstub(request.getKrrstub())
                 .udistub(request.getUdistub())
                 .sigrunstub(request.getSigrunstub())
+                .sigrunstubPensjonsgivende(request.getSigrunstubPensjonsgivende())
                 .arenaforvalter(request.getArenaforvalter())
                 .pdldata(request.getPdldata())
                 .instdata(request.getInstdata())

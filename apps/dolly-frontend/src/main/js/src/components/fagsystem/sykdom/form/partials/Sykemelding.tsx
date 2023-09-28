@@ -4,6 +4,11 @@ import { SyntSykemelding } from './SyntSykemelding'
 import { DetaljertSykemelding } from './DetaljertSykemelding'
 import { Diagnose, SykemeldingForm } from '@/components/fagsystem/sykdom/SykemeldingTypes'
 import { ToggleGroup } from '@navikt/ds-react'
+import { addDays } from 'date-fns'
+import { getRandomValue } from '@/components/fagsystem/utils'
+import { SelectOptionsDiagnoser } from '@/components/fagsystem/sykdom/form/partials/SelectOptionsDiagnoser'
+
+const randomDiagnose = getRandomValue(SelectOptionsDiagnoser())
 
 const initialValuesSyntSykemelding = {
 	syntSykemelding: {
@@ -28,9 +33,9 @@ const initialValuesDetaljertSykemelding = {
 			tiltakNav: '',
 		},
 		hovedDiagnose: {
-			diagnose: '',
-			diagnosekode: '',
-			system: '',
+			diagnose: randomDiagnose?.diagnoseNavn || '',
+			diagnosekode: randomDiagnose?.value || '',
+			system: randomDiagnose ? '2.16.578.1.12.4.1.1.7170' : '',
 		},
 		helsepersonell: {
 			etternavn: '',
@@ -59,8 +64,8 @@ const initialValuesDetaljertSykemelding = {
 					grad: 0,
 					reisetilskudd: false,
 				},
-				fom: '',
-				tom: '',
+				fom: addDays(new Date(), -7),
+				tom: addDays(new Date(), -1),
 			},
 		],
 		startDato: new Date(),

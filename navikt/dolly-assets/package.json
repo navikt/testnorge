@@ -1,6 +1,6 @@
 {
   "name": "@navikt/dolly-assets",
-  "version": "1.2.5",
+  "version": "1.2.8",
   "description": "Dolly assets",
   "main": "lib/index.js",
   "scripts": {
@@ -13,11 +13,11 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@vitejs/plugin-react": "^4.0.0",
-    "prettier": "^3.0.1",
-    "vite": "^4.3.5",
-    "vite-plugin-svgr": "^3.2.0",
-    "vite-tsconfig-paths": "^4.2.0"
+    "@vitejs/plugin-react": "^4.1.0",
+    "prettier": "^3.0.3",
+    "vite": "^4.4.9",
+    "vite-plugin-svgr": "^4.0.0",
+    "vite-tsconfig-paths": "^4.2.1"
   },
   "repository": "https://github.com/navikt/testnorge.git",
   "prettier": {

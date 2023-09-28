@@ -108,6 +108,7 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                                 .instdata(bestillingRequest.getInstdata())
                                 .inntektstub(bestillingRequest.getInntektstub())
                                 .sigrunstub(bestillingRequest.getSigrunstub())
+                                .sigrunstubPensjonsgivende(bestillingRequest.getSigrunstubPensjonsgivende())
                                 .udistub(bestillingRequest.getUdistub())
                                 .pensjonforvalter(bestillingRequest.getPensjonforvalter())
                                 .inntektsmelding(bestillingRequest.getInntektsmelding())

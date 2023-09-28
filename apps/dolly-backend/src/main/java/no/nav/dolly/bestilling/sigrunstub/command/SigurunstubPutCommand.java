@@ -1,12 +1,11 @@
 package no.nav.dolly.bestilling.sigrunstub.command;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubRequest;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubResponse;
-import no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag;
 import no.nav.dolly.util.RequestHeaderUtil;
 import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
@@ -23,20 +22,20 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RequiredArgsConstructor
-public class SigurunstubPostCommand implements Callable<Mono<SigrunstubResponse>> {
+public class SigurunstubPutCommand implements Callable<Mono<SigrunstubResponse>> {
 
     private static final String CONSUMER = "Dolly";
-    private static final String SIGRUN_STUB_OPPRETT_GRUNNLAG = "/api/v1/lignetinntekt";
 
     private final WebClient webClient;
-    private final List<OpprettSkattegrunnlag> request;
+    private final String url;
+    private final List<? extends SigrunstubRequest> request;
     private final String token;
 
     @Override
     public Mono<SigrunstubResponse> call() {
 
-        return webClient.post().uri(uriBuilder -> uriBuilder
-                        .path(SIGRUN_STUB_OPPRETT_GRUNNLAG)
+        return webClient.put().uri(uriBuilder -> uriBuilder
+                        .path(url)
                         .build())
                 .header(ACCEPT, APPLICATION_JSON_VALUE)
                 .header(HEADER_NAV_CALL_ID, RequestHeaderUtil.getNavCallId())
@@ -45,10 +44,14 @@ public class SigurunstubPostCommand implements Callable<Mono<SigrunstubResponse>
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .bodyValue(request)
                 .retrieve()
-                .toBodilessEntity()
-                .map(resultat -> SigrunstubResponse.builder()
-                        .status(HttpStatus.valueOf(resultat.getStatusCode().value()))
-                        .build())
+                .bodyToMono(SigrunstubResponse.class)
+                .map(response -> {
+                    for (int i = 0; i < response.getOpprettelseTilbakemeldingsListe().size(); i++) {
+                        response.getOpprettelseTilbakemeldingsListe().get(i).setInntektsaar(
+                                request.get(i).getInntektsaar());
+                    }
+                    return response;
+                })
                 .doOnError(WebClientFilter::logErrorMessage)
                 .onErrorResume(error -> Mono.just(SigrunstubResponse.builder()
                         .status(WebClientFilter.getStatus(error))
