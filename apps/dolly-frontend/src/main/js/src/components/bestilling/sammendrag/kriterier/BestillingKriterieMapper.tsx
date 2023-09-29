@@ -24,6 +24,7 @@ import _get from 'lodash/get'
 import _has from 'lodash/has'
 import { MedlKodeverk } from '@/components/fagsystem/medl/MedlConstants'
 import { useNavEnheter } from '@/utils/hooks/useNorg2'
+import { kodeverkKeyToLabel } from '@/components/fagsystem/sigrunstubPensjonsgivende/utils'
 
 // TODO: Flytte til selector?
 // - Denne kan forminskes ved bruk av hjelpefunksjoner
@@ -1174,12 +1175,28 @@ const mapSigrunstubPensjonsgivende = (bestillingData, data) => {
 				{ nestedItemRows: [] },
 			])
 			console.log('sigrunstubPensjonsgivende.itemRows: ', sigrunstubPensjonsgivende.itemRows) //TODO - SLETT MEG
-			inntekt.pensjonsgivendeInntekt.forEach((test, y) =>
-				sigrunstubPensjonsgivende.itemRows[0][3].nestedItemRows.push([
-					{ numberHeader: `Inntekt ${y + 1}` },
-					obj('Skatteordning', test.skatteordning),
-				]),
-			)
+			inntekt.pensjonsgivendeInntekt.forEach((test, y) => {
+				// console.log('test: ', test) //TODO - SLETT MEG
+				// console.log('y: ', y) //TODO - SLETT MEG
+
+				const dynamicObjects = Object.entries(test)?.map(([key, value]) => {
+					console.log('key: ', key) //TODO - SLETT MEG
+					console.log('value: ', value) //TODO - SLETT MEG
+					// sigrunstubPensjonsgivende.itemRows[i][3].nestedItemRows[y].push(
+					return obj(kodeverkKeyToLabel(key), value?.toString())
+					// )
+				})
+				console.log('dynamicObjects: ', dynamicObjects) //TODO - SLETT MEG
+				sigrunstubPensjonsgivende.itemRows[i][3].nestedItemRows.push([
+					{
+						numberHeader: `Inntekt ${y + 1}`,
+					},
+					dynamicObjects,
+				])
+				// return sigrunstubPensjonsgivende.itemRows[0][3].nestedItemRows.push([
+				// 	{ numberHeader: `Inntekt ${y + 1}` },
+				// ])
+			})
 		})
 		console.log('sigrunstubPensjonsgivende: ', sigrunstubPensjonsgivende) //TODO - SLETT MEG
 		data.push(sigrunstubPensjonsgivende)

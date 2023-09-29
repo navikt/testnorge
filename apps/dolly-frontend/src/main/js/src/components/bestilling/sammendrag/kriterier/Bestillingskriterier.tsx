@@ -57,6 +57,28 @@ const _renderBestillingsDetaljer = (data) => {
 										{row?.[0].numberHeader && <h4>{row[0].numberHeader}</h4>}
 										<div className={'flexbox--align-start flexbox--wrap'} key={idx}>
 											{row?.map((attributt, idy) => {
+												console.log('attributt: ', attributt) //TODO - SLETT MEG
+												// return (
+												if (attributt?.nestedItemRows) {
+													return (
+														<>
+															{attributt.nestedItemRows.map((x, y) => {
+																console.log('x: ', x) //TODO - SLETT MEG
+																return (
+																	<div className="dfa-blokk" key={y}>
+																		{x?.[0].numberHeader && <h4>{x?.[0].numberHeader}</h4>}
+																		<div className={'flexbox--align-start flexbox--wrap'}>
+																			{x?.[1].map((s, t) => {
+																				return _renderStaticValue(s, t)
+																			})}
+																		</div>
+																	</div>
+																)
+															})}
+														</>
+													)
+												}
+
 												return attributt.expandableHeader ? (
 													<RenderExpandablePanel attributt={attributt} key={idy} />
 												) : (
