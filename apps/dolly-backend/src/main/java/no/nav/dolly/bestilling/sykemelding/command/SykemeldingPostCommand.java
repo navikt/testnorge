@@ -36,6 +36,7 @@ public class SykemeldingPostCommand implements Callable<Mono<SykemeldingResponse
                 .bodyValue(request)
                 .retrieve()
                 .toBodilessEntity()
+                .timeout(Duration.ofMinutes(4))
                 .map(response -> SykemeldingResponse.builder()
                         .status(HttpStatus.valueOf(response.getStatusCode().value()))
                         .ident(request.getPasient().getIdent())

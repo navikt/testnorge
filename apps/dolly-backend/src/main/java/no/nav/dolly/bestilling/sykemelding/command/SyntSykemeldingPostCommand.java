@@ -35,7 +35,7 @@ public class SyntSykemeldingPostCommand {
                 .bodyValue(sykemeldingRequest)
                 .retrieve()
                 .toBodilessEntity()
-                .timeout(Duration.ofMinutes(3))
+                .timeout(Duration.ofMinutes(4))
                 .map(response -> SykemeldingResponse.builder()
                         .status(HttpStatus.valueOf(response.getStatusCode().value()))
                         .ident(sykemeldingRequest.getIdent())
