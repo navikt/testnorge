@@ -35,15 +35,9 @@ public class GetRightsCommand implements Callable<Flux<RightDTO>> {
                 .bodyToFlux(RightDTO.class)
                 .doOnError(
                         throwable -> throwable instanceof WebClientResponseException,
-                        throwable -> {
-                            var response = (WebClientResponseException) throwable;
-                            log.error(
-                                    "Feil ved henting av rettigheter i Altinn. {} {} {} {}\n",
-                                    response.getResponseBodyAsString(),
-                                    response.getHeaders(),
-                                    response.getStatusCode(),
-                                    response.getStatusText());
-                        }
-                );
+                        throwable -> log.error(
+                                "Feil ved henting av rettigheter i Altinn. {} {}",
+                                ((WebClientResponseException) throwable).getResponseBodyAsString()))
+                ;
     }
 }
