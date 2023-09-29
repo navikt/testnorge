@@ -2,10 +2,7 @@
 ALTINN_URL: https://tt02.altinn.no
 TOKENDINGS_URL: https://tokenx.dev-gcp.nav.cloud.nais.io 
 
-altinn.api.url: dummy
 altinn.api.key: dummy
-altinn.service.code: dummy
-altinn.service.edition: dummy
 
 MASKINPORTEN_CLIENT_ID: dummy
 MASKINPORTEN_CLIENT_JWK: dummy

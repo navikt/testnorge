@@ -42,6 +42,7 @@ spec:
     outbound:
       external:
         - host: altinn.no
+        - host: maskinporten.no
   liveness:
     path: /internal/isAlive
     initialDelay: 10
@@ -71,7 +72,7 @@ spec:
     - "https://testnav-organisasjon-tilgang-service.intern.dev.nav.no"
   env:
     - name: SPRING_PROFILES_ACTIVE
-      value: dev
+      value: prod
     - name: ACCEPTED_AUDIENCE
       value: dev-gcp:dolly:testnav-organisasjon-tilgang-service
     - name: TOKENDINGS_URL
