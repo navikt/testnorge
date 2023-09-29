@@ -68,3 +68,4 @@ spec:
           cluster: dev-gcp
   ingresses:
     - "https://testnorge-sykemelding-api.dev.intern.nav.no" # dev-fss
+    - "https://testnorge-sykemelding-api.dev-fss-pub.nais.io" # dev-fss

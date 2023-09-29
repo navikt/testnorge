@@ -215,7 +215,7 @@ consumers:
   testnorge-sykemelding-api:
     name: testnorge-sykemelding-api
     namespace: dolly
-    url: https://testnorge-sykemelding-api.dev.intern.nav.no
+    url: https://testnorge-sykemelding-api.dev-fss-pub.nais.io
     cluster: dev-fss
   testnav-synt-sykemelding-api:
     name: testnav-synt-sykemelding-api
