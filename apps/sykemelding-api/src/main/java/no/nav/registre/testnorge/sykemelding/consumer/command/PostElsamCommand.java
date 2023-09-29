@@ -35,6 +35,7 @@ public class PostElsamCommand implements Callable<Mono<HashMap<String, SyntSykem
                 .bodyValue(request)
                 .retrieve()
                 .bodyToMono(RESPONSE_TYPE)
+                .timeout(Duration.ofMinutes(3))
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException))
                 .onErrorResume(throwable -> {
