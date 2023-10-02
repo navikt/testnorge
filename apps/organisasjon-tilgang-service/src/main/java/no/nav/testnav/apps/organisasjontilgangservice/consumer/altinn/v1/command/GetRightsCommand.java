@@ -27,6 +27,7 @@ public class GetRightsCommand implements Callable<Flux<RightDTO>> {
                 .uri(builder -> builder.path("/api/serviceowner/Srr")
                         .queryParam("serviceCode", serviceCode)
                         .queryParam("serviceEditionCode", serviceEdition)
+                        .queryParam("reportee", "NAVIKT")
                         .build()
                 )
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
