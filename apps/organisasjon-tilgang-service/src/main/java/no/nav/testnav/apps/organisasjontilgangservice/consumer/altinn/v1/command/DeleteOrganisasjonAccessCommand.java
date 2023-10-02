@@ -38,7 +38,7 @@ public class DeleteOrganisasjonAccessCommand implements Callable<Mono<DeleteStat
                         .build())
                 .doOnSuccess(value -> log.info("Organiasjon tilgang {} slettet.", id))
                 .doOnError(
-                        throwable -> throwable instanceof WebClientResponseException,
+                        WebClientResponseException.class::isInstance,
                         throwable -> log.error(
                                 "Feil ved henting av rettigheter i Altinn. {}",
                                 ((WebClientResponseException) throwable).getResponseBodyAsString()));

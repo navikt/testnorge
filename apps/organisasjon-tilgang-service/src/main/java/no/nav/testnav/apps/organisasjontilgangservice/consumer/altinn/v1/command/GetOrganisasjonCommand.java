@@ -30,7 +30,7 @@ public class GetOrganisasjonCommand implements Callable<Mono<OrganisasjonDTO>> {
                 .retrieve()
                 .bodyToMono(OrganisasjonDTO.class)
                 .doOnError(
-                        throwable -> throwable instanceof WebClientResponseException,
+                        WebClientResponseException.class::isInstance,
                         throwable -> log.error(
                                 "Feil ved henting av rettigheter i Altinn. {}",
                                 ((WebClientResponseException) throwable).getResponseBodyAsString()));
