@@ -74,8 +74,9 @@ dependencies {
     testImplementation 'org.testcontainers:postgresql'
 }
 
-tasks.named('test') {
+test {
     useJUnitPlatform()
+    jvmArgs '--add-opens', 'java.base/java.lang=ALL-UNNAMED'
 }
 
 jacocoTestReport {
