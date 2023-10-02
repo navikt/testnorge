@@ -66,5 +66,12 @@ spec:
         - application: app-1
           namespace: plattformsikkerhet
           cluster: dev-gcp
+    outbound:
+      external:
+        - host: b27apvl171.preprod.local
+          ports:
+            - name: mq
+              port: 1413
+              protocol: TCP
   ingresses:
     - "https://testnav-sykemelding-api.intern.dev.nav.no"
