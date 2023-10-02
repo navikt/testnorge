@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record BudproRecord(
-        int aga,
+        String aga,
         String agaBeskrivelse, // Ny.
         //String ansattnavn,
         String ansettelsestype,

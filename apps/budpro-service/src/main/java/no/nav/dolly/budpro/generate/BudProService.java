@@ -3,6 +3,7 @@ package no.nav.dolly.budpro.generate;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.budpro.ansettelsestype.AnsettelsestypeService;
 import no.nav.dolly.budpro.identities.GeneratedNameService;
+import no.nav.dolly.budpro.kommune.KommuneService;
 import no.nav.dolly.budpro.koststed.KoststedService;
 import no.nav.dolly.budpro.ressursnummer.LeaderGenerator;
 import no.nav.dolly.budpro.ressursnummer.ResourceNumberGenerator;
@@ -19,6 +20,7 @@ class BudProService {
     private final AnsettelsestypeService ansettelsestypeService;
     private final KoststedService koststedService;
     private final GeneratedNameService nameService;
+    private final KommuneService kommuneService;
 
 
     List<BudproRecord> randomize(Long seed, int numberOfEmployees) {
@@ -38,13 +40,14 @@ class BudProService {
         for (int i = 0; i < numberOfEmployees; i++) {
 
             var leader = leaderGenerator.getRandom(random);
+            var kommune = kommuneService.getRandom(random);
 
-            var aga = 1;
-            String agaBeskrivelse = null;
+            var aga = "060501180000";
+            String agaBeskrivelse = "NAV Trygder, pensjon";
             var ansettelsestype = ansettelsestypeService.getRandom(random);
-            String arbeidsstedKommune = null;
-            String felles = null;
-            String fellesBeskrivelse = null;
+            String arbeidsstedKommune = kommune.getId();
+            String felles = "000000";
+            String fellesBeskrivelse = "USPESIFISERT";
             String fraDato = null;
             var foedselsdato = foedselsdato(random);
             var koststed = koststedService.getRandom(random);
@@ -66,8 +69,8 @@ class BudProService {
             String produktUtlaantFra = null;
             String produktUtlaantFraBeskrivelse = null;
             String ressursnummer = resourceNumberGenerator.next();
-            String sluttetDato = null;
-            String skattekommune = null;
+            String sluttetDato = LocalDate.of(2099, 12, 31).format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+            String skattekommune = kommune.getId();
             String statskonto = "060501000000";
             String statskontoKapittel = "0605";
             String statskontoPost = "01";
@@ -104,8 +107,8 @@ class BudProService {
                     produktUtlaantFra,
                     produktUtlaantFraBeskrivelse,
                     ressursnummer,
-                    sluttetDato,
                     skattekommune,
+                    sluttetDato,
                     statskonto,
                     statskontoKapittel,
                     statskontoPost,
