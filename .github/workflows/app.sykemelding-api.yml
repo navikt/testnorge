@@ -13,7 +13,7 @@ jobs:
   workflow:
     uses: ./.github/workflows/common.workflow.backend.yml
     with:
-      cluster: "dev-fss"
+      cluster: "dev-gcp"
       working-directory: "apps/sykemelding-api"
       deploy-tag: "#deploy-sykemelding-api"
     permissions:
