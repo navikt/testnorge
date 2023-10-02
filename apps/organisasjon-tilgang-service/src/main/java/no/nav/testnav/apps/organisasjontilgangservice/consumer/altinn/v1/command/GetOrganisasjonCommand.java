@@ -1,14 +1,16 @@
 package no.nav.testnav.apps.organisasjontilgangservice.consumer.altinn.v1.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.organisasjontilgangservice.consumer.altinn.v1.dto.OrganisasjonDTO;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
 
-
+@Slf4j
 @RequiredArgsConstructor
 public class GetOrganisasjonCommand implements Callable<Mono<OrganisasjonDTO>> {
     private final WebClient webClient;
@@ -26,6 +28,11 @@ public class GetOrganisasjonCommand implements Callable<Mono<OrganisasjonDTO>> {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header("ApiKey", apiKey)
                 .retrieve()
-                .bodyToMono(OrganisasjonDTO.class);
+                .bodyToMono(OrganisasjonDTO.class)
+                .doOnError(
+                        throwable -> throwable instanceof WebClientResponseException,
+                        throwable -> log.error(
+                                "Feil ved henting av rettigheter i Altinn. {}",
+                                ((WebClientResponseException) throwable).getResponseBodyAsString()));
     }
 }
