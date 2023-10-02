@@ -9,8 +9,6 @@ import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static java.util.Objects.isNull;
-
 public interface ConsumerStatus {
 
     org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(ConsumerStatus.class);
@@ -35,9 +33,7 @@ public interface ConsumerStatus {
                 .bodyToMono(new ParameterizedTypeReference<Map<String, Map<String, String>>>() {
                 })
                 .timeout(Duration.ofSeconds(5))
-                .doOnError(throwable -> {
-                    log.error("Klarte ikke å hente status for {}", serviceUrl(), throwable);
-                })
+                .doOnError(throwable -> log.error("Klarte ikke å hente status for {}", serviceUrl(), throwable))
                 .onErrorReturn(new ConcurrentHashMap<>())
                 .block();
         response.forEach((key, value) -> statusMap.put(key, TestnavStatusResponse.builder()

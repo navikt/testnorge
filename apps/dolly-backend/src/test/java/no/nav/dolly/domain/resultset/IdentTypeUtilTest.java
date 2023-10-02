@@ -10,26 +10,26 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
 @ExtendWith(MockitoExtension.class)
-public class IdentTypeUtilTest {
+class IdentTypeUtilTest {
 
     private static final String FNR_IDENT = "10101020312";
     private static final String DNR_IDENT = "40101020312";
     private static final String NPID_IDENT = "10301020312";
 
     @Test
-    public void getIdentTypeFNR_OK() {
+    void getIdentTypeFNR_OK() {
 
         assertThat(IdentTypeUtil.getIdentType(FNR_IDENT), is(equalTo(IdentType.FNR)));
     }
 
     @Test
-    public void getIdentTypeDNR_OK() {
+    void getIdentTypeDNR_OK() {
 
         assertThat(IdentTypeUtil.getIdentType(DNR_IDENT), is(equalTo(IdentType.DNR)));
     }
 
     @Test
-    public void getIdentTypeBOST_OK() {
+    void getIdentTypeBOST_OK() {
 
         assertThat(IdentTypeUtil.getIdentType(NPID_IDENT), is(equalTo(IdentType.NPID)));
     }

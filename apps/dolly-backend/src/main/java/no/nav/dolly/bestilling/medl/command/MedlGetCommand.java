@@ -17,7 +17,7 @@ import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @Slf4j
 @RequiredArgsConstructor
-public class getMedldataCommand implements Callable<Flux<MedlDataResponse>> {
+public class MedlGetCommand implements Callable<Flux<MedlDataResponse>> {
 
     private static final String MEDL_URL = "/rest/v1/person/{ident}";
 

@@ -30,15 +30,15 @@ public class RsInntektsinformasjon {
     @Schema(description = "Siste år-måned for gjeldene inntektsinformasjon",
             example = "yyyy-MM",
             type = "String",
-            required = true)
+            requiredMode = Schema.RequiredMode.REQUIRED)
     private String sisteAarMaaned;
 
     @Schema(description = "Organisasjonsnummer/norskIdent",
-            required = true)
+            requiredMode = Schema.RequiredMode.REQUIRED)
     private String opplysningspliktig;
 
     @Schema(description = "Organisasjonsnummer/norskIdent",
-            required = true)
+            requiredMode = Schema.RequiredMode.REQUIRED)
     private String virksomhet;
 
     private List<Inntekt> inntektsliste;

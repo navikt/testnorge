@@ -15,7 +15,7 @@ import lombok.Setter;
 public class RsOrganisasjon extends RsAktoer {
 
     @Schema(description = "Organisasjonsnummer, må finnes i EREG",
-            required = true)
+            requiredMode = Schema.RequiredMode.REQUIRED)
     private String orgnummer;
 
     @Override

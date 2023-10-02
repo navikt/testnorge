@@ -37,5 +37,5 @@ public class ArenaNyBruker {
     @JsonIgnore
     public boolean hasServicebehov() {
         return isNull(utenServicebehov);
-    };
+    }
 }
