@@ -1,4 +1,4 @@
-FROM cgr.dev/chainguard/jre/openjdk-17
+FROM ghcr.io/navikt/baseimages/temurin:17
 
 WORKDIR /app
 
