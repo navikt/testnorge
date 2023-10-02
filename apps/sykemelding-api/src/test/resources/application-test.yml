@@ -1,0 +1,35 @@
+wiremock:
+  server:
+    port: 0
+
+channel:
+  channelName: dummy
+  queueManager: dummy
+
+application:
+  name: test
+  version: v1
+
+SERVICEUSER_USERNAME: dummy
+SERVICEUSER_PASSWORD: dummy
+
+TOKEN_X_CLIENT_ID: test
+azure:
+  app:
+    client:
+      id: dummy
+      secret: dummy
+spring:
+  cloud:
+    vault:
+      enabled: false
+ibm:
+  mq:
+    queue-manager: dummy
+    hostname: dummy
+    port: dummy
+    channel: dummy
+    conn-name: dummy
+    use-authentication-m-q-c-s-p: false
+    user: dummy
+    password: dummy
