@@ -1,9 +1,8 @@
 FROM ghcr.io/navikt/baseimages/temurin:17
+LABEL maintainer="Team Dolly"
 
-WORKDIR /app
-
-COPY build/libs/app.jar .
+ADD build/libs/app.jar /app/app.jar
 
 ENV JAVA_OPTS="--add-opens java.base/java.lang=ALL-UNNAMED"
 
-CMD ["-jar", "app.jar"]
+EXPOSE 8080
