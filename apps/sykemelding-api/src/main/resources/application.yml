@@ -50,7 +50,10 @@ server:
       charset: UTF-8
 ibm:
   mq:
-    use-authentication-m-q-c-s-p: false
+    queueManager: ${IBM_MQ_QUEUE_MANAGER}
     channel: ${CHANNEL_NAME}
-    connName: ${ibm.mq.hostname}(${ibm.mq.port})
-    hostname: ${ibm.mq.hostname}
+    connName: ${IBM_MQ_HOSTNAME}(${IBM_MQ_PORT})
+    user: ${IBM_MQ_USERNAME}
+    password: ${IBM_MQ_PASSWORD}
+    application-name: testnav-sykemelding-api
+    use-authentication-m-q-c-s-p: true
