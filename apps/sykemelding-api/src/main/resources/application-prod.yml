@@ -5,7 +5,7 @@ ibm:
     hostname: ${IBM_MQ_HOSTNAME}
     port: ${IBM_MQ_PORT}
     user: ${IBM_MQ_USERNAME}
-    password: ${IBM_MQ_PASSWORD}default
+    password: ${IBM_MQ_PASSWORD}
 
 spring:
   main:
