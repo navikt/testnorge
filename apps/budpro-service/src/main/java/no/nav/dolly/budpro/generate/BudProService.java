@@ -4,13 +4,13 @@ import lombok.RequiredArgsConstructor;
 import no.nav.dolly.budpro.ansettelsestype.AnsettelsestypeService;
 import no.nav.dolly.budpro.identities.GeneratedNameService;
 import no.nav.dolly.budpro.koststed.KoststedService;
+import no.nav.dolly.budpro.ressursnummer.LeaderGenerator;
+import no.nav.dolly.budpro.ressursnummer.ResourceNumberGenerator;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -18,13 +18,27 @@ class BudProService {
 
     private final AnsettelsestypeService ansettelsestypeService;
     private final KoststedService koststedService;
-    private final GeneratedNameService generatedNameService;
+    private final GeneratedNameService nameService;
 
-    List<BudproRecord> randomize(Long seed, int limit) {
-        var employeeNames = generatedNameService.getNames(seed, limit);
+
+    List<BudproRecord> randomize(Long seed, int numberOfEmployees) {
+
         var random = seed == null ? new Random() : new Random(seed);
-        var list = new ArrayList<BudproRecord>(limit);
-        for (int i = 0; i < limit; i++) {
+
+        var numberOfLeaders = (int) Math.ceil((double) numberOfEmployees / 10);
+        var allNames = nameService.getNames(seed, numberOfEmployees + numberOfLeaders);
+        var employeeNames = Arrays.copyOfRange(allNames, numberOfLeaders, numberOfEmployees + numberOfLeaders);
+
+        var leaderNames = Arrays.copyOfRange(allNames, 0, numberOfLeaders);
+        var resourceNumberGenerator = new ResourceNumberGenerator(random);
+        var leaderResourceNumbers = resourceNumberGenerator.get(numberOfLeaders);
+        var leaderGenerator = new LeaderGenerator(leaderNames, leaderResourceNumbers);
+
+        var list = new ArrayList<BudproRecord>(numberOfEmployees);
+        for (int i = 0; i < numberOfEmployees; i++) {
+
+            var leader = leaderGenerator.getRandom(random);
+
             var aga = 1;
             String agaBeskrivelse = null;
             var ansettelsestype = ansettelsestypeService.getRandom(random);
@@ -36,10 +50,10 @@ class BudProService {
             var koststed = koststedService.getRandom(random);
             String koststedUtlaantFra = null;
             String koststedUtlaantFraBeskrivelse = null;
-            String lederUtlaantFra = null;
-            String ledersNavn = null;
-            String ledersRessursnummer = null;
-            String navn = employeeNames[i].toString();
+            String lederUtlaantFra = leader.utlaantFra();
+            String ledersNavn = leader.navn();
+            String ledersRessursnummer = leader.ressursnummer();
+            String navn = employeeNames[i];
             String oppgave = null;
             String oppgaveBeskrivelse = null;
             String oppgaveUtlaantFra = null;
@@ -51,7 +65,7 @@ class BudProService {
             String produktBeskrivelse = null;
             String produktUtlaantFra = null;
             String produktUtlaantFraBeskrivelse = null;
-            String ressursnummer = null;
+            String ressursnummer = resourceNumberGenerator.next();
             String sluttetDato = null;
             String skattekommune = null;
             String statskonto = "060501000000";
