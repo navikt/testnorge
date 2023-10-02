@@ -24,7 +24,7 @@ consumers:
     namespace: dummy
   sykemelding-api:
     url: http://localhost:${wiremock.server.port}/sykemelding
-    name: testnorge-sykemelding-api
+    name: testnav-sykemelding-api
     cluster: dummy
     namespace: dummy
   testnav-organisasjon-service:

@@ -1,7 +1,7 @@
 ﻿apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: testnorge-sykemelding-api
+  name: testnav-sykemelding-api
   namespace: dolly
   labels:
     team: dolly
@@ -66,10 +66,5 @@ spec:
         - application: app-1
           namespace: plattformsikkerhet
           cluster: dev-gcp
-    outbound:
-      rules:
-        - application: synthdata-elsam-gcp
-          cluster: dev-gcp
   ingresses:
-    - "https://testnorge-sykemelding-api.dev.intern.nav.no" # dev-fss
-    - "https://testnorge-sykemelding-api.dev-fss-pub.nais.io" # dev-fss
+    - "https://testnav-sykemelding-api.intern.dev.nav.no"

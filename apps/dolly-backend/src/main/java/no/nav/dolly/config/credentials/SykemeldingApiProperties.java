@@ -6,6 +6,6 @@ import org.springframework.context.annotation.Configuration;
 
 
 @Configuration
-@ConfigurationProperties(prefix = "consumers.testnorge-sykemelding-api")
+@ConfigurationProperties(prefix = "consumers.testnav-sykemelding-api")
 public class SykemeldingApiProperties extends ServerProperties {
 }

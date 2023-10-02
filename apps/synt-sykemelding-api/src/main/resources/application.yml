@@ -32,9 +32,9 @@ consumers:
     cluster: dev-gcp
     namespace: dolly
   sykemelding-api:
-    url: https://testnorge-sykemelding-api.dev-fss-pub.nais.io
-    name: testnorge-sykemelding-api
-    cluster: dev-fss
+    url: http://testnav-sykemelding-api.dolly.svc.cluster.local
+    name: testnav-sykemelding-api
+    cluster: dev-gcp
     namespace: dolly
   testnav-organisasjon-service:
     url: http://testnav-organisasjon-service.dolly.svc.cluster.local

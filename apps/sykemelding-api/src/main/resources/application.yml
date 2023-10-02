@@ -29,13 +29,6 @@ springdoc:
     disable-swagger-default-url: true
     url: /v3/api-docs
 
-consumers:
-  elsam:
-    url: https://synthdata-elsam-gcp.intern.dev.nav.no
-    name: synthdata-elsam-gcp
-    cluster: dev-gcp
-    namespace: dolly
-
 management:
   endpoints:
     enabled-by-default: true

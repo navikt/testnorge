@@ -44,8 +44,7 @@ spec:
         - application: testnav-pdl-forvalter-dev
         - application: testnav-person-service
         - application: testnav-synt-sykemelding-api
-        - application: testnorge-sykemelding-api
-          cluster: dev-fss
+        - application: testnav-sykemelding-api
         - application: testnav-tps-messaging-service
         - application: testnorge-profil-api-dev
       external:
@@ -65,7 +64,6 @@ spec:
         - host: testnav-pdl-proxy.dev-fss-pub.nais.io
         - host: testnav-sigrunstub-proxy.dev-fss-pub.nais.io
         - host: testnav-skjermingsregister-proxy.dev-fss-pub.nais.io
-        - host: testnorge-sykemelding-api.dev-fss-pub.nais.io
         - host: testnav-statisk-data-forvalter-proxy.dev-fss-pub.nais.io
         - host: testnav-udistub-proxy.dev-fss-pub.nais.io
         - host: tps-forvalteren-dev-proxy.dev-fss-pub.nais.io

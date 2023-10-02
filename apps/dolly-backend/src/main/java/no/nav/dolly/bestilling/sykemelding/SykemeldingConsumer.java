@@ -55,6 +55,6 @@ public class SykemeldingConsumer implements ConsumerStatus {
 
     @Override
     public String consumerName() {
-        return "testnorge-sykemelding-api";
+        return "testnav-sykemelding-api";
     }
 }
