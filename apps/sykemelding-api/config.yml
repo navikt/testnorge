@@ -68,7 +68,7 @@ spec:
           cluster: dev-gcp
     outbound:
       external:
-        - host: b27apvl171.preprod.local
+        - host: mqls04.preprod.local
           ports:
             - name: mq
               port: 1413
