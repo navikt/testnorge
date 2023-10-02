@@ -52,4 +52,5 @@ ibm:
   mq:
     use-authentication-m-q-c-s-p: false
     channel: ${CHANNEL_NAME}
-    conn-name: ${ibm.mq.hostname}(${ibm.mq.port})
+    connName: ${ibm.mq.hostname}(${ibm.mq.port})
+    hostname: ${ibm.mq.hostname}
