@@ -38,15 +38,12 @@ spec:
     inbound:
       rules:
         - application: team-dolly-lokal-app
-          cluster: dev-gcp
         - application: testnav-oversikt-frontend
-          cluster: dev-gcp
     outbound:
       rules:
         - application: synthdata-arena-vedtakshistorikk
-          cluster: dev-gcp
         - application: testnav-person-search-service
-          cluster: dev-gcp
+        - application: testnav-organisasjon-faste-data-service
       external:
         - host: https://testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
         - host: https://testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io
