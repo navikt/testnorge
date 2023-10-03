@@ -35,6 +35,7 @@ export const SigrunstubPensjonsgivendeForm = ({ formikBag }) => {
 		const pensjonsgivendeInntektPath = 'sigrunstubPensjonsgivende[0].pensjonsgivendeInntekt'
 		const forstePensjonsgivendeInntekt = _.get(formikBag.values, pensjonsgivendeInntektPath)
 		if (
+			_.has(formikBag.values, 'sigrunstubPensjonsgivende') &&
 			kodeverk &&
 			skatteordning &&
 			(!forstePensjonsgivendeInntekt || forstePensjonsgivendeInntekt.length < 1)

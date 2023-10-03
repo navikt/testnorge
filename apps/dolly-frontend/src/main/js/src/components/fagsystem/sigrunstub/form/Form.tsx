@@ -58,42 +58,7 @@ SigrunstubForm.validation = {
 							return true
 						}
 					}),
-				inntektsaar: Yup.number()
-					.integer('Ugyldig årstall')
-					.test(
-						'eneste-aarstall',
-						'Max en inntekt per år for hver tjeneste',
-						function checkAarstall(val) {
-							const values = this.options.context
-							const path = this.path.substring(0, this.path.lastIndexOf('.'))
-							const index = path.substring(path.length - 2, path.length - 1)
-
-							const inntekter = values?.sigrunstub ? [...values.sigrunstub] : []
-							const tjeneste = inntekter?.[index]?.tjeneste
-							if (tjeneste === '') {
-								return true
-							}
-
-							inntekter.splice(index, 1)
-
-							const nyeAarstall = inntekter
-								.filter((inn) => inn.tjeneste === tjeneste)
-								.map((inntekt) => inntekt.inntektsaar)
-
-							const dataFoer = values?.personFoerLeggTil?.sigrunstub
-							const tidligereAarstall = dataFoer?.map((inntekt) => {
-								const grunnlag = inntekt.grunnlag
-									?.filter((i) => mapTjeneste(i.tjeneste) === tjeneste)
-									.map((g) => g.inntektsaar)
-								const svalbard = inntekt.svalbardGrunnlag
-									?.filter((i) => mapTjeneste(i.tjeneste) === tjeneste)
-									.map((g) => g.inntektsaar)
-								return grunnlag ? grunnlag.concat(svalbard ? svalbard : []) : svalbard
-							})?.[0]
-							return !nyeAarstall?.includes(val) && !tidligereAarstall?.includes(val + '')
-						},
-					)
-					.required('Tast inn et gyldig år'),
+				inntektsaar: Yup.number().integer('Ugyldig årstall').required('Tast inn et gyldig år'),
 				svalbardGrunnlag: Yup.array().of(
 					Yup.object({
 						tekniskNavn: Yup.string().required('Velg en type inntekt'),
