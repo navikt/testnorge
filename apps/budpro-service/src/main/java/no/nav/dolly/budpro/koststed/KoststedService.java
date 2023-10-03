@@ -41,4 +41,12 @@ public class KoststedService {
         return data.get(random.nextInt(data.size()));
     }
 
+    public Koststed getRandomExcept(Random random, Koststed exception) {
+        Koststed result = null;
+        while (result == null || result.equals(exception)) {
+            result = getRandom(random);
+        }
+        return result;
+    }
+
 }

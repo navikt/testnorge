@@ -57,6 +57,6 @@ public record BudproRecord(
         //String utlaansprosent,
         //String utlaantTilKoststed,
         //String utlaantOppgave,
-        String aarsloennInklFasteTilleg // Ny.
+        String aarsloennInklFasteTillegg // Ny.
 ) {
 }

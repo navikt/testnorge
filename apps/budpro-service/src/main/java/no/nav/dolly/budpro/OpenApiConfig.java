@@ -4,7 +4,6 @@ import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
-import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
@@ -18,8 +17,6 @@ class OpenApiConfig implements WebMvcConfigurer {
     @Bean
     OpenAPI openAPI() {
         final String authBearer = "Authorization: Bearer";
-        final String userJwt = "user-jwt";
-
         return new OpenAPI()
                 .addSecurityItem(
                         new SecurityRequirement()
@@ -28,7 +25,7 @@ class OpenApiConfig implements WebMvcConfigurer {
                         new Components()
                                 .addSecuritySchemes(authBearer,
                                         new SecurityScheme()
-                                                .description("Token from https://testnav-oversikt.intern.dev.nav.no/magic-token")
+                                                .description("If running locally, use https://testnav-oversikt.intern.dev.nav.no/magic-token")
                                                 .name(authBearer)
                                                 .type(SecurityScheme.Type.HTTP)
                                                 .scheme("bearer")

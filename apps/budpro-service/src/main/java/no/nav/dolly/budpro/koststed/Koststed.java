@@ -9,8 +9,10 @@ import java.util.Optional;
 @Getter
 public class Koststed {
 
+    public static final Koststed EMPTY = new Koststed(null, null);
+
     private final String id;
-    private final String beskrivelse;
+    private final String description;
 
     static Optional<Koststed> of(String[] line) {
         if (lineIsTooShort(line) || lineContainsHeaders(line) || lineIsInactive(line)) {
@@ -24,7 +26,7 @@ public class Koststed {
     }
 
     private static boolean lineContainsHeaders(String[] line) {
-        return line[10].equals("Nivå 5");
+        return line[0].contains("Nivå 0");
     }
 
     private static boolean lineIsInactive(String[] line) {
