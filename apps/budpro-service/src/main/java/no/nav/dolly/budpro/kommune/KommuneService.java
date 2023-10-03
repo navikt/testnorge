@@ -33,6 +33,10 @@ public class KommuneService {
         log.info("Read {} lines into memory", data.size());
     }
 
+    List<Kommune> getAll() {
+        return data;
+    }
+
     public Kommune getRandom(Random random) {
         return data.get(random.nextInt(data.size()));
     }

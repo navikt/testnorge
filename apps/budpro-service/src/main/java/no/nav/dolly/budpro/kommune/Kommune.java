@@ -10,20 +10,21 @@ import java.util.Optional;
 public class Kommune {
 
     private final String id;
+    private final String navn;
 
     static Optional<Kommune> of(String[] line) {
         if (lineIsTooShort(line) || lineContainsHeaders(line)) {
             return Optional.empty();
         }
-        return Optional.of(new Kommune(line[0].substring(1, line[0].length() - 1)));
+        return Optional.of(new Kommune(line[0], line[3]));
     }
 
     private static boolean lineIsTooShort(String[] line) {
-        return line.length < 1;
+        return line.length < 4;
     }
 
     private static boolean lineContainsHeaders(String[] line) {
-        return line[0].equals("code");
+        return line[0].contains("code");
     }
 
 }
