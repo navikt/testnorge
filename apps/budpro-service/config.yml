@@ -8,11 +8,11 @@ metadata:
 spec:
   image: {{image}}
   liveness:
-    initialDelay: 30
+    initialDelay: 120
     path: "/internal/health/liveness"
     timeout: 10
   readiness:
-    initialDelay: 30
+    initialDelay: 120
     path: "/internal/health/readiness"
     timeout: 10
   replicas:
