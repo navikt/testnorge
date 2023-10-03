@@ -57,19 +57,22 @@ const _renderBestillingsDetaljer = (data) => {
 										{row?.[0].numberHeader && <h4>{row[0].numberHeader}</h4>}
 										<div className={'flexbox--align-start flexbox--wrap'} key={idx}>
 											{row?.map((attributt, idy) => {
-												// console.log('attributt: ', attributt) //TODO - SLETT MEG
-												// return (
 												if (attributt?.nestedItemRows) {
 													return (
 														<>
-															{attributt.nestedItemRows.map((x, y) => {
-																// console.log('x: ', x) //TODO - SLETT MEG
+															{attributt.nestedItemRows.map((nestedItem, y) => {
 																return (
-																	<div className="dfa-blokk" key={y}>
-																		{x?.[0].numberHeader && <h4>{x?.[0].numberHeader}</h4>}
+																	<div
+																		className="dfa-blokk"
+																		key={y}
+																		style={{ backgroundColor: 'unset' }}
+																	>
+																		{nestedItem?.[0].numberHeader && (
+																			<h4>{nestedItem?.[0].numberHeader}</h4>
+																		)}
 																		<div className={'flexbox--align-start flexbox--wrap'}>
-																			{x?.[1].map((s, t) => {
-																				return _renderStaticValue(s, t)
+																			{nestedItem?.[1].map((item, z) => {
+																				return _renderStaticValue(item, z)
 																			})}
 																		</div>
 																	</div>
@@ -78,7 +81,6 @@ const _renderBestillingsDetaljer = (data) => {
 														</>
 													)
 												}
-
 												return attributt.expandableHeader ? (
 													<RenderExpandablePanel attributt={attributt} key={idy} />
 												) : (
