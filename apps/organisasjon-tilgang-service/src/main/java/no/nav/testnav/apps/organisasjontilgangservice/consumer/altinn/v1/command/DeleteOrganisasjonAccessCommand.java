@@ -6,7 +6,6 @@ import no.nav.testnav.apps.organisasjontilgangservice.consumer.altinn.v1.dto.Del
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
@@ -36,11 +35,6 @@ public class DeleteOrganisasjonAccessCommand implements Callable<Mono<DeleteStat
                 .map(resultat -> DeleteStatus.builder()
                         .status(HttpStatus.valueOf(resultat.getStatusCode().value()))
                         .build())
-                .doOnSuccess(value -> log.info("Organiasjon tilgang {} slettet.", id))
-                .doOnError(
-                        WebClientResponseException.class::isInstance,
-                        throwable -> log.error(
-                                "Feil ved henting av rettigheter i Altinn. {}",
-                                ((WebClientResponseException) throwable).getResponseBodyAsString()));
+                .doOnSuccess(value -> log.info("Organiasjon tilgang {} slettet.", id));
     }
 }

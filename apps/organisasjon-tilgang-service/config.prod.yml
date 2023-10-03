@@ -24,9 +24,9 @@ spec:
   accessPolicy:
     inbound:
       rules:
-        - application: dolly-frontend-dev
+        - application: dolly-frontend
           cluster: dev-gcp
-        - application: dolly-backend-dev
+        - application: dolly-backend
           cluster: dev-gcp
         - application: team-dolly-lokal-app
           cluster: dev-gcp
@@ -35,13 +35,13 @@ spec:
         - application: dolly-idporten
           cluster: dev-gcp
         - application: testnav-organisasjon-tilgang-frontend
-          cluster: dev-gcp
+          cluster: prod-gcp
         - application: app-1
           namespace: plattformsikkerhet
           cluster: dev-gcp
     outbound:
       external:
-        - host: tt02.altinn.no
+        - host: altinn.no
   liveness:
     path: /internal/isAlive
     initialDelay: 10
@@ -56,7 +56,7 @@ spec:
     enabled: true
     path: /internal/metrics
   envFrom:
-    - secret: altinn-dev
+    - secret: altinn-prod
     - secret: google-sql-testnav-organisasjon-tilgang-service
   replicas:
     min: 1
@@ -68,14 +68,14 @@ spec:
     limits:
       memory: 2048Mi
   ingresses:
-    - "https://testnav-organisasjon-tilgang-service.intern.dev.nav.no"
+    - "https://testnav-organisasjon-tilgang-service.intern.nav.no"
   env:
     - name: SPRING_PROFILES_ACTIVE
-      value: dev
+      value: prod
     - name: ACCEPTED_AUDIENCE
-      value: dev-gcp:dolly:testnav-organisasjon-tilgang-service
+      value: prod-gcp:dolly:testnav-organisasjon-tilgang-service
     - name: TOKENDINGS_URL
-      value: https://tokenx.dev-gcp.nav.cloud.nais.io 
+      value: https://tokendings.prod-gcp.nais.io
   gcp:
     sqlInstances:
       - type: POSTGRES_14

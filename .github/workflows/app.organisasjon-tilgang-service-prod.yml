@@ -1,4 +1,4 @@
-name: organisasjon-tilgang-service
+name: organisasjon-tilgang-service-prod
 
 on:
   push:
@@ -6,14 +6,16 @@ on:
       - libs/reactive-core
       - libs/reactive-security
       - apps/organisasjon-tilgang-service/**
-      - .github/workflows/app.organisasjon-tilgang-service.yml
+      - .github/workflows/app.organisasjon-tilgang-service-prod.yml
 
 jobs:
   workflow:
     uses: ./.github/workflows/common.workflow.backend.yml
     with:
+      cluster: "prod-gcp"
+      nais-manifest: "config.prod.yml"
       working-directory: "apps/organisasjon-tilgang-service"
-      deploy-tag: "#deploy-test-organisasjon-tilgang-service"
+      deploy-tag: "#deploy-organisasjon-tilgang-service"
     permissions:
       contents: read
       id-token: write
