@@ -132,7 +132,7 @@ export default handleActions(
 			state.sigrunstub[action.meta.ident] = action.payload.data.responseList
 		},
 		[onSuccess(actions.getSigrunPensjonsgivendeInntekt)](state, action) {
-			state.sigrunstubPensjonsgivende[action.meta.ident] = [action.payload.data]
+			state.sigrunstubPensjonsgivende[action.meta.ident] = action.payload.data
 		},
 		[onSuccess(actions.getTpsMessaging)](state, action) {
 			state.tpsMessaging[action.meta.ident] = action?.payload.data?.[0]?.person
