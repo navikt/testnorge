@@ -24,7 +24,7 @@ public class PdlPersonController {
     private final PdlPersonConsumer pdlPersonConsumer;
 
     @GetMapping("/ident/{ident}")
-    @Operation(description = "Henter PDL-person for tilhørende ident fra PDL-API / PDL-API-Q1")
+    @Operation(description = "Henter PDL-person angitt ved ident fra PDL-API / PDL-API-Q1")
     public Mono<JsonNode> pdlPerson(@PathVariable("ident") String ident,
                               @RequestParam(value = "pdlMiljoe", required = false, defaultValue = "Q2") PdlMiljoer
                                       pdlMiljoe) {
@@ -32,7 +32,7 @@ public class PdlPersonController {
     }
 
     @GetMapping("/identer")
-    @Operation(description = "Henter flere PDL-personer angitt ved liste av identer")
+    @Operation(description = "Henter flere PDL-personer i hht liste av identer fra PDL-API")
     public Mono<JsonNode> pdlPerson(@RequestParam("identer") List<String> identer) {
 
         return pdlPersonConsumer.getPdlPersoner(identer);
