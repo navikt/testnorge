@@ -7,6 +7,7 @@ import no.nav.testnav.apps.personservice.consumer.v1.pdl.graphql.PdlAktoer.Aktoe
 import no.nav.testnav.apps.personservice.domain.Person;
 import no.nav.testnav.apps.personservice.service.PersonService;
 import no.nav.testnav.libs.dto.personservice.v1.PersonDTO;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,8 +17,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
-import org.webjars.NotFoundException;
 import reactor.core.publisher.Mono;
 
 import java.util.Optional;
@@ -56,7 +57,7 @@ public class PersonController {
                 .getPerson(ident)
                 .map(value -> value
                         .map(Person::toDTO)
-                        .orElseThrow(() -> new NotFoundException(format("Ident %s ikke funnet", ident)))
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, format("Ident %s ikke funnet", ident)))
                 );
     }
 

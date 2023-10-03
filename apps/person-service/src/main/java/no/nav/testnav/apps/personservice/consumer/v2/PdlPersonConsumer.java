@@ -64,7 +64,7 @@ public class PdlPersonConsumer {
                         .call());
     }
 
-    public Mono<JsonNode> getPdlPersonerJson(List<String> identer) {
+    public Mono<JsonNode> getPdlPersoner(List<String> identer) {
 
         return tokenService.exchange(serviceProperties)
                 .flatMap(token -> new PdlBolkPersonCommand(webClient, identer, token.getTokenValue()).call());
