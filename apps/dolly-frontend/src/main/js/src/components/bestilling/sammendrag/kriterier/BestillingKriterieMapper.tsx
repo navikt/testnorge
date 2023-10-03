@@ -1159,7 +1159,7 @@ const mapSigrunStub = (bestillingData, data) => {
 
 const mapSigrunstubPensjonsgivende = (bestillingData, data) => {
 	const sigrunstubPensjonsgivendeKriterier = bestillingData.sigrunstubPensjonsgivende
-	console.log('sigrunstubPensjonsgivendeKriterier: ', sigrunstubPensjonsgivendeKriterier) //TODO - SLETT MEG
+	// console.log('sigrunstubPensjonsgivendeKriterier: ', sigrunstubPensjonsgivendeKriterier) //TODO - SLETT MEG
 
 	const sigrunstubPensjonsgivende = {
 		header: 'Pensjonsgivende inntekt (Sigrun)',
@@ -1174,19 +1174,19 @@ const mapSigrunstubPensjonsgivende = (bestillingData, data) => {
 				obj('Testdataeier', inntekt.testdataEier),
 				{ nestedItemRows: [] },
 			])
-			console.log('sigrunstubPensjonsgivende.itemRows: ', sigrunstubPensjonsgivende.itemRows) //TODO - SLETT MEG
+			// console.log('sigrunstubPensjonsgivende.itemRows: ', sigrunstubPensjonsgivende.itemRows) //TODO - SLETT MEG
 			inntekt.pensjonsgivendeInntekt.forEach((test, y) => {
 				// console.log('test: ', test) //TODO - SLETT MEG
 				// console.log('y: ', y) //TODO - SLETT MEG
 
 				const dynamicObjects = Object.entries(test)?.map(([key, value]) => {
-					console.log('key: ', key) //TODO - SLETT MEG
-					console.log('value: ', value) //TODO - SLETT MEG
+					// console.log('key: ', key) //TODO - SLETT MEG
+					// console.log('value: ', value) //TODO - SLETT MEG
 					// sigrunstubPensjonsgivende.itemRows[i][3].nestedItemRows[y].push(
 					return obj(kodeverkKeyToLabel(key), value?.toString())
 					// )
 				})
-				console.log('dynamicObjects: ', dynamicObjects) //TODO - SLETT MEG
+				// console.log('dynamicObjects: ', dynamicObjects) //TODO - SLETT MEG
 				sigrunstubPensjonsgivende.itemRows[i][3].nestedItemRows.push([
 					{
 						numberHeader: `Inntekt ${y + 1}`,
@@ -1198,7 +1198,7 @@ const mapSigrunstubPensjonsgivende = (bestillingData, data) => {
 				// ])
 			})
 		})
-		console.log('sigrunstubPensjonsgivende: ', sigrunstubPensjonsgivende) //TODO - SLETT MEG
+		// console.log('sigrunstubPensjonsgivende: ', sigrunstubPensjonsgivende) //TODO - SLETT MEG
 		data.push(sigrunstubPensjonsgivende)
 	}
 }

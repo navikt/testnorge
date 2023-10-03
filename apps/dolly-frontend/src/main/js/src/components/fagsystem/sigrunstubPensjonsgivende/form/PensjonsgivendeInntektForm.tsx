@@ -4,6 +4,7 @@ import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import {
+	getFieldSize,
 	getInitialInntekt,
 	kodeverkKeyToLabel,
 } from '@/components/fagsystem/sigrunstubPensjonsgivende/utils'
@@ -23,6 +24,7 @@ const createInntektForm = (kodeverk, skatteordning, path) => {
 
 	return Object.entries(kodeverk).map(([key, value]) => {
 		const label = kodeverkKeyToLabel(key)
+		const size = getFieldSize(label)
 		if (key === 'skatteordning') {
 			return (
 				<FormikSelect
@@ -31,6 +33,7 @@ const createInntektForm = (kodeverk, skatteordning, path) => {
 					label={label}
 					options={skatteordningOptions}
 					isClearable={false}
+					size={size}
 				/>
 			)
 		}
@@ -41,13 +44,23 @@ const createInntektForm = (kodeverk, skatteordning, path) => {
 					key={`${path}.${key}`}
 					label={label}
 					type="number"
+					size={size}
 				/>
 			)
 		}
 		if (value === 'Date') {
-			return <FormikDatepicker name={`${path}.${key}`} key={`${path}.${key}`} label={label} />
+			return (
+				<FormikDatepicker
+					name={`${path}.${key}`}
+					key={`${path}.${key}`}
+					label={label}
+					size={size}
+				/>
+			)
 		}
-		return <FormikTextInput name={`${path}.${key}`} key={`${path}.${key}`} label={label} />
+		return (
+			<FormikTextInput name={`${path}.${key}`} key={`${path}.${key}`} label={label} size={size} />
+		)
 		//TODO size utifra label length? :)
 	})
 }

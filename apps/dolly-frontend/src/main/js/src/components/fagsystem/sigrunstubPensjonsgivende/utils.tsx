@@ -44,3 +44,16 @@ export const getInitialInntekt = (kodeverk, skatteordning) => {
 
 	return initialInntekt
 }
+
+export const getFieldSize = (label) => {
+	if (!label || label.length < 30) {
+		return 'medium'
+	}
+	if (label.length < 40) {
+		return 'large'
+	}
+	if (label.length < 50) {
+		return 'xlarge'
+	}
+	return 'xxlarge'
+}
