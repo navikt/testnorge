@@ -8,6 +8,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
 
+
 @RequiredArgsConstructor
 public class GetOrganisasjonCommand implements Callable<Mono<OrganisasjonDTO>> {
     private final WebClient webClient;
