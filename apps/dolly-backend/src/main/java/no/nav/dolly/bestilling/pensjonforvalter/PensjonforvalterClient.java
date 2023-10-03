@@ -416,16 +416,16 @@ public class PensjonforvalterClient implements ClientRegister {
         return Flux.just(pensjonData)
                 .filter(PensjonData::hasInntekt)
                 .map(PensjonData::getInntekt)
-                .map(inntekt -> {
-                    var request = mapperFacade.map(inntekt, PensjonPoppInntektRequest.class);
-                    request.setFnr(ident);
-                    return request;
-                })
-                .flatMap(request -> Flux.fromIterable(miljoer)
+                .flatMap(inntekt -> Flux.fromIterable(miljoer)
                         .flatMap(miljoe -> {
+
                             if (isTpsSyncEnv.stream().anyMatch(sync -> sync.equals(miljoe))) {
+
+                                var request = mapperFacade.map(inntekt, PensjonPoppInntektRequest.class);
+                                request.setFnr(ident);
                                 request.setMiljoer(List.of(miljoe));
                                 return pensjonforvalterConsumer.lagreInntekter(request);
+
                             } else {
                                 return getStatus(miljoe, 503, TPS_NOT_READY);
                             }

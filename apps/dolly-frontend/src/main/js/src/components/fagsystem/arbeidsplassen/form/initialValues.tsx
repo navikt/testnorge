@@ -1,3 +1,5 @@
+import { runningCypressE2E } from '@/service/services/Request'
+
 export const initialJobboensker = {
 	startOption: null,
 	occupations: [],
@@ -253,8 +255,8 @@ export const initialDigitalInnsending = {
 }
 
 export const initialDokarkiv = {
-	tittel: '',
-	tema: '',
+	tittel: runningCypressE2E() ? 'test' : '',
+	tema: runningCypressE2E() ? 'test ' : '',
 	sak: {
 		sakstype: 'GENERELL_SAK',
 		fagsaksystem: '',
@@ -265,8 +267,8 @@ export const initialDokarkiv = {
 	journalfoerendeEnhet: undefined,
 	dokumenter: [
 		{
-			tittel: '',
-			brevkode: '',
+			tittel: runningCypressE2E() ? 'test' : '',
+			brevkode: runningCypressE2E() ? 'test' : '',
 		},
 	],
 }

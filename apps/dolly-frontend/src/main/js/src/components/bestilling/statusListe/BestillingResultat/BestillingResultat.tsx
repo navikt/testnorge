@@ -58,7 +58,16 @@ export default function BestillingResultat({
 				<div className="flexbox--all-center">
 					<BestillingSammendragModal bestilling={bestilling} />
 					{harIdenterOpprettet && (
-						<Button onClick={openGjenopprettModal} kind="synchronize">
+						<Button
+							disabled={bestilling?.opprettetFraId}
+							title={
+								bestilling?.opprettetFraId
+									? 'Kan ikke gjenopprette gjenoppretting av bestilling'
+									: 'Gjenopprett'
+							}
+							onClick={openGjenopprettModal}
+							kind="synchronize"
+						>
 							GJENOPPRETT
 						</Button>
 					)}

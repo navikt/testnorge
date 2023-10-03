@@ -16,7 +16,7 @@ export const DokarkivPanel = ({ stateModifier, formikBag }: any) => {
 		// @ts-ignore
 		<Panel
 			heading={DokarkivPanel.heading}
-			checkAttributeArray={sm.batchAdd}
+			checkAttributeArray={() => sm.batchAdd(['digitalInnsending', 'histark'])}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType="dokarkiv"
 			startOpen={harValgtAttributt(formikBag.values, [dokarkivAttributt, histarkAttributt])}

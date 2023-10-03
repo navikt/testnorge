@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.sykemelding.config.dev;
+package no.nav.registre.testnorge.sykemelding.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -10,8 +10,8 @@ import org.springframework.vault.config.AbstractVaultConfiguration;
 
 @Configuration
 @Profile("dev")
-@VaultPropertySource(value = "kv/preprod/fss/testnorge-sykemelding-api/local", ignoreSecretNotFound = false)
-public class VaultConfig  extends AbstractVaultConfiguration {
+@VaultPropertySource(value = "secret/dolly/lokal", ignoreSecretNotFound = false)
+public class DevConfig extends AbstractVaultConfiguration {
 
     @Override
     public VaultEndpoint vaultEndpoint() {
@@ -25,7 +25,7 @@ public class VaultConfig  extends AbstractVaultConfiguration {
         }
         var token = System.getProperty("spring.cloud.vault.token");
         if (token == null) {
-            throw new IllegalArgumentException("Påkreved property 'spring.cloud.vault.token' er ikke satt.");
+            throw new IllegalArgumentException("Påkrevd property 'spring.cloud.vault.token' er ikke satt.");
         }
         return new TokenAuthentication(System.getProperty("spring.cloud.vault.token"));
     }

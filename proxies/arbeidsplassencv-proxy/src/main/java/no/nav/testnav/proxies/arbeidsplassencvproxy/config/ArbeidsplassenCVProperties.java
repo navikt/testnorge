@@ -5,6 +5,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConfigurationProperties(prefix = "consumer.arbeidsplassencv-proxy")
+@ConfigurationProperties(prefix = "consumer.arbeidsplassencv")
 public class ArbeidsplassenCVProperties extends ServerProperties {
 }
