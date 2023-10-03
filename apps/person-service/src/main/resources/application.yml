@@ -28,7 +28,7 @@ springdoc:
     url: /v3/api-docs
 
 consumers:
-  pdl-service:
+  pdl-proxy:
     url: https://testnav-pdl-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
     namespace: dolly
