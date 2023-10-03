@@ -21,6 +21,9 @@ management:
         enabled: true
     prometheus:
       enabled: true
+  health:
+    vault:
+      enabled: false
   prometheus:
     metrics:
       export:

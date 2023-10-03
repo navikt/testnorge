@@ -8,3 +8,9 @@ spring:
       resourceserver:
         aad:
           accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
