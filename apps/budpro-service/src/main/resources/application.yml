@@ -35,3 +35,7 @@ consumers:
     cluster: dev-gcp
     namespace: dolly
     url: https://generer-navn-service.intern.dev.nav.no
+
+app:
+  security:
+    allow-api: true

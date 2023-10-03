@@ -2,6 +2,7 @@ package no.nav.dolly.budpro;
 
 import no.nav.testnav.libs.servletsecurity.config.SecureOAuth2ServerToServerConfiguration;
 import no.nav.testnav.libs.standalone.servletsecurity.config.InsecureJwtServerToServerConfiguration;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -20,6 +21,9 @@ import org.springframework.security.web.SecurityFilterChain;
 })
 public class SecurityConfig {
 
+    @Value("${app.security.allow-api:false}")
+    private boolean allowApi;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
@@ -37,9 +41,15 @@ public class SecurityConfig {
                                             "/error",
                                             "/swagger-ui.html")
                                     .permitAll();
-                            authorize
-                                    .requestMatchers("/api/**")
-                                    .fullyAuthenticated();
+                            if (allowApi) {
+                                authorize
+                                        .requestMatchers("/api/**")
+                                        .permitAll();
+                            } else {
+                                authorize
+                                        .requestMatchers("/api/**")
+                                        .fullyAuthenticated();
+                            }
                         }
                 )
                 .oauth2ResourceServer(server -> server.jwt(Customizer.withDefaults()))
