@@ -22,8 +22,6 @@ import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
 import no.nav.dolly.consumer.kodeverk.KodeverkMapper;
 import no.nav.dolly.consumer.organisasjon.tilgang.OrganisasjonTilgangConsumer;
 import no.nav.dolly.consumer.organisasjon.tilgang.dto.OrganisasjonTilgang;
-import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
-import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer.PDL_MILJOER;
 import no.nav.dolly.consumer.profil.ProfilApiConsumer;
 import no.nav.dolly.domain.PdlPerson.Navn;
 import no.nav.dolly.domain.resultset.SystemTyper;
@@ -64,7 +62,6 @@ public class OppslagController {
 
     private final KodeverkMapper kodeverkMapper;
     private final KodeverkConsumer kodeverkConsumer;
-    private final PdlPersonConsumer pdlPersonConsumer;
     private final InntektstubConsumer inntektstubConsumer;
     private final FasteDatasettConsumer fasteDatasettConsumer;
     private final PensjonforvalterConsumer pensjonforvalterConsumer;
@@ -119,21 +116,6 @@ public class OppslagController {
     public Mono<Map<String, String>> fetchKodeverk(@RequestParam String kodeverk) {
 
         return kodeverkConsumer.getKodeverkByName(kodeverk);
-    }
-
-    @GetMapping("/pdlperson/ident/{ident}")
-    @Operation(description = "Hent person tilhørende ident fra pdlperson")
-    public JsonNode pdlPerson(@PathVariable("ident") String ident,
-                              @RequestParam(value = "pdlMiljoe", required = false, defaultValue = "Q2") PDL_MILJOER
-                                      pdlMiljoe) {
-        return pdlPersonConsumer.getPdlPerson(ident, pdlMiljoe);
-    }
-
-    @GetMapping("/pdlperson/identer")
-    @Operation(description = "Hent flere personer angitt ved identer fra PDL, maks BLOCK_SIZE = 50 identer")
-    public Mono<JsonNode> pdlPerson(@RequestParam("identer") List<String> identer) {
-
-        return pdlPersonConsumer.getPdlPersonerJson(identer);
     }
 
     @GetMapping("/inntektstub/{ident}")

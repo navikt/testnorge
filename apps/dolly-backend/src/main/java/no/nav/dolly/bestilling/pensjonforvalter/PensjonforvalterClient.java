@@ -19,7 +19,7 @@ import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpForholdRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpYtelseRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonUforetrygdRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
-import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
+import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.BestillingProgress;
@@ -80,7 +80,7 @@ public class PensjonforvalterClient implements ClientRegister {
     private final MapperFacade mapperFacade;
     private final ErrorStatusDecoder errorStatusDecoder;
     private final TransactionHelperService transactionHelperService;
-    private final PdlPersonConsumer pdlPersonConsumer;
+    private final PersonServiceConsumer personServiceConsumer;
     private final PdlDataConsumer pdlDataConsumer;
     private final TransaksjonMappingService transaksjonMappingService;
     private final ObjectMapper objectMapper;
@@ -267,7 +267,7 @@ public class PensjonforvalterClient implements ClientRegister {
 
     private Flux<PdlPersonBolk.PersonBolk> getPersonData(List<String> identer) {
 
-        return pdlPersonConsumer.getPdlPersoner(identer)
+        return personServiceConsumer.getPdlPersoner(identer)
                 .doOnNext(bolk -> {
                     if (isNull(bolk.getData()) || bolk.getData().getHentPersonBolk().stream()
                             .anyMatch(personBolk -> isNull(personBolk.getPerson()))) {
