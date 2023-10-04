@@ -112,11 +112,6 @@ consumers:
     namespace: dolly
     url: http://generer-navn-service.dolly.svc.cluster.local
     cluster: dev-gcp
-  testnav-profil-api:
-    name: testnorge-profil-api
-    namespace: dolly
-    url: http://testnorge-profil-api.dolly.svc.cluster.local
-    cluster: dev-gcp
   testnav-person-service:
     name: testnav-person-service
     namespace: dolly

@@ -41,9 +41,6 @@ management:
         prometheus: "prometheus"
 
 consumers:
-  testnav-profil-api:
-    name: testnorge-profil-api-dev
-    url: https://testnorge-profil-api-dev.intern.dev.nav.no
   testnav-pdl-forvalter:
     name: testnav-pdl-forvalter-dev
     url: https://testnav-pdl-forvalter-dev.intern.dev.nav.no
