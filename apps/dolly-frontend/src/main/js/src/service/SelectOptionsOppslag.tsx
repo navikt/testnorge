@@ -1,5 +1,6 @@
 import { useAsync } from 'react-use'
 import { BrregstubApi, DollyApi, KrrApi, PdlforvalterApi } from '@/service/Api'
+import { getGenererNavn } from '@/utils/hooks/useGenererNavn'
 import Api from '@/api'
 import * as _ from 'lodash-es'
 import { Person, PersonData } from '@/components/fagsystem/pdlf/PdlTypes'
@@ -80,10 +81,6 @@ export const SelectOptionsOppslag = {
 
 	hentKrrLeverandoerer: () => {
 		return useAsync(async () => KrrApi.getSdpLeverandoerListe(), [KrrApi.getSdpLeverandoerListe])
-	},
-
-	hentPersonnavn: () => {
-		return useAsync(async () => DollyApi.getPersonnavn(), [DollyApi.getPersonnavn])
 	},
 
 	hentInntektsmeldingOptions: (enumtype: string) =>
@@ -213,5 +210,5 @@ export const SelectOptionsOppslag = {
 				})
 			return options
 		}
-	},
+	}
 }

@@ -14,6 +14,8 @@ import { Button } from '@navikt/ds-react'
 import styled from 'styled-components'
 import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import {mutate} from "swr";
+import {useGenererNavn} from "@/utils/hooks/useGenererNavn";
 
 type NavnTypes = {
 	formikBag: FormikProps<{}>
@@ -58,15 +60,12 @@ export const NavnForm = ({ formikBag, path }: NavnTypes) => {
 	const [fornavnOptions, setFornavnOptions] = useState([])
 	const [mellomnavnOptions, setMellomnavnOptions] = useState([])
 	const [etternavnOptions, setetternavnOptions] = useState([])
-	const [navnInfo, setNavnInfo] = useState(null)
+	const {navnInfo, mutate} = useGenererNavn()
 
+	console.log(navnInfo)
 	function refreshNavn() {
-		DollyApi.getPersonnavn().then((result) => setNavnInfo({ value: result, loading: false }))
+		mutate()
 	}
-
-	useEffect(() => {
-		refreshNavn()
-	}, [])
 
 	useEffect(() => {
 		setFornavnOptions(concatNavnMedTidligereValgt('fornavn', navnInfo, selectedFornavn))

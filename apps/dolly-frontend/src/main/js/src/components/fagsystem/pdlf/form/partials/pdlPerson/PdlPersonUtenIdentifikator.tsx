@@ -6,6 +6,7 @@ import * as React from 'react'
 import { SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
 import { FormikProps } from 'formik'
 import * as _ from 'lodash-es'
+import {useGenererNavn} from "@/utils/hooks/useGenererNavn";
 
 interface PdlPersonUtenIdentifikatorValues {
 	formikBag: FormikProps<{}>
@@ -16,7 +17,7 @@ export const PdlPersonUtenIdentifikator = ({
 	formikBag,
 	path,
 }: PdlPersonUtenIdentifikatorValues) => {
-	const navnInfo = SelectOptionsOppslag.hentPersonnavn()
+	const {navnInfo} = useGenererNavn()
 	//@ts-ignore
 	const fornavnOptions = SelectOptionsOppslag.formatOptions('fornavn', navnInfo)
 	//@ts-ignore

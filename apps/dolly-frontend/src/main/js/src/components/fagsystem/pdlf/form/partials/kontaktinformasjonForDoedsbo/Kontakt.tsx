@@ -16,6 +16,7 @@ import { PdlNyPerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson
 import { PdlEksisterendePerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlEksisterendePerson'
 import { useEffect } from 'react'
 import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
+import { useGenererNavn } from '@/utils/hooks/useGenererNavn'
 
 interface KontaktValues {
 	formikBag: FormikProps<any>
@@ -57,7 +58,7 @@ export const Kontakt = ({ formikBag, path, eksisterendeNyPerson = null }: Kontak
 		} else return null
 	}
 
-	const navnInfo = SelectOptionsOppslag.hentPersonnavn()
+	const { navnInfo } = useGenererNavn()
 	const navnOptions = SelectOptionsOppslag.formatOptions('personnavn', navnInfo)
 
 	useEffect(() => {

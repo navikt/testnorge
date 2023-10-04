@@ -24,6 +24,7 @@ import { Adressetype } from '@/components/fagsystem/pdlf/PdlTypes'
 import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 import { getPlaceholder, setNavn } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
+import {useGenererNavn} from "@/utils/hooks/useGenererNavn";
 
 interface OppholdsadresseValues {
 	formikBag: FormikProps<{}>
@@ -110,7 +111,7 @@ export const OppholdsadresseForm = ({ formikBag, path, idx }: OppholdsadresseFor
 		formikBag.setFieldValue(path, adresseClone)
 	}
 
-	const navnInfo = SelectOptionsOppslag.hentPersonnavn()
+	const {navnInfo} = useGenererNavn()
 	const navnOptions = SelectOptionsOppslag.formatOptions('personnavn', navnInfo)
 
 	return (
