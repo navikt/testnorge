@@ -107,3 +107,13 @@ export const harArenaBestilling = (bestillingerFagsystemer) => {
 	})
 	return arena
 }
+
+export const harSykemeldingBestilling = (bestillingerFagsystemer) => {
+	let sykemelding = false
+	bestillingerFagsystemer?.forEach((i) => {
+		if (i.sykemelding) {
+			sykemelding = true
+		}
+	})
+	return sykemelding
+}

@@ -10,7 +10,6 @@ import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import useBoolean from '@/utils/hooks/useBoolean'
 import { KommentarModal } from '@/pages/gruppe/PersonListe/modal/KommentarModal'
 import { selectPersonListe, sokSelector } from '@/ducks/fagsystem'
-import { CopyButton } from '@/components/ui/button/CopyButton/CopyButton'
 import * as _ from 'lodash-es'
 import DollyTooltip from '@/components/ui/button/DollyTooltip'
 import { setSorting } from '@/ducks/finnPerson'
@@ -18,9 +17,10 @@ import { useDispatch } from 'react-redux'
 import { useBestillingerGruppe } from '@/utils/hooks/useBestilling'
 import { CypressSelector } from '../../../../cypress/mocks/Selectors'
 import PersonVisningConnector from '@/pages/gruppe/PersonVisning/PersonVisningConnector'
+import { DollyCopyButton } from '@/components/ui/button/CopyButton/DollyCopyButton'
 
 const PersonIBrukButtonConnector = React.lazy(
-	() => import('@/components/ui/button/PersonIBrukButton/PersonIBrukButtonConnector')
+	() => import('@/components/ui/button/PersonIBrukButton/PersonIBrukButtonConnector'),
 )
 
 const ikonTypeMap = {
@@ -55,7 +55,7 @@ export default function PersonListe({
 
 	const personListe = useMemo(
 		() => sokSelector(selectPersonListe(identer, bestillingStatuser, fagsystem), search),
-		[identer, search, fagsystem, bestillingStatuser, visPerson]
+		[identer, search, fagsystem, bestillingStatuser, visPerson],
 	)
 
 	useEffect(() => {
@@ -88,7 +88,7 @@ export default function PersonListe({
 	}
 
 	const getNavnLimited = (tekst) => {
-		const navn = tekst.length > 18 ? tekst.substring(0, 18) + '...' : tekst
+		const navn = tekst.length > 23 ? tekst.substring(0, 23) + '...' : tekst
 		return (
 			<div style={{ maxWidth: '170px' }}>
 				<p>{navn}</p>
@@ -99,23 +99,25 @@ export default function PersonListe({
 	const columnsDefault = [
 		{
 			text: 'Ident',
-			width: '20',
+			width: '25',
 			dataField: 'identNr',
 			unique: true,
 
-			formatter: (_cell, row) => <CopyButton value={row.identNr} />,
+			formatter: (_cell, row) => (
+				<DollyCopyButton
+					displayText={row.identNr}
+					copyText={row.identNr}
+					tooltipText={'Kopier fødselsnummer'}
+				/>
+			),
 		},
 		{
 			text: 'Navn',
-			width: '30',
+			width: '40',
 			dataField: 'navn',
 			formatter: (_cell, row) => {
 				return (
-					<DollyTooltip
-						overlay={row.navn?.length > 18 ? row.navn : null}
-						destroyTooltipOnHide={true}
-						mouseEnterDelay={0}
-					>
+					<DollyTooltip content={row.navn?.length > 23 ? row.navn : null} mouseEnterDelay={0}>
 						{getNavnLimited(row.navn)}
 					</DollyTooltip>
 				)
@@ -170,7 +172,7 @@ export default function PersonListe({
 			),
 		},
 		{
-			text: '',
+			text: 'Notat',
 			width: '10',
 			dataField: 'harBeskrivelse',
 			centerItem: true,
@@ -178,21 +180,21 @@ export default function PersonListe({
 				if (row.ident.beskrivelse) {
 					return (
 						<DollyTooltip
-							overlay={getKommentarTekst(row.ident.beskrivelse)}
-							destroyTooltipOnHide={true}
-							mouseEnterDelay={0}
-							onClick={(event) => {
-								setSelectedIdent(row.ident)
-								openKommentarModal()
-								event.stopPropagation()
-							}}
-							arrowContent={<div className="rc-tooltip-arrow-inner" />}
+							content={getKommentarTekst(row.ident.beskrivelse)}
 							align={{
 								offset: [0, -10],
 							}}
 						>
-							<div style={{ textAlign: 'center' }}>
-								<Icon kind="kommentar" size={20} />
+							<div>
+								<Icon
+									kind="kommentar"
+									size={20}
+									onClick={(event) => {
+										setSelectedIdent(row.ident)
+										openKommentarModal()
+										event.stopPropagation()
+									}}
+								/>
 							</div>
 						</DollyTooltip>
 					)
@@ -245,7 +247,7 @@ export default function PersonListe({
 
 	const onHeaderClick = (value) => {
 		const activeColumn = columns.filter(
-			(column) => column.headerCssClass !== undefined && column.text === value
+			(column) => column.headerCssClass !== undefined && column.text === value,
 		)
 
 		if (!activeColumn || !activeColumn.length) {

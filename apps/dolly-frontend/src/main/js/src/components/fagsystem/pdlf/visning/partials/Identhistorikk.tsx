@@ -9,7 +9,7 @@ type IdenthistorikkData = {
 
 export const IdenthistorikkVisning = ({ relasjoner }: IdenthistorikkData) => {
 	const historiskeIdenter = relasjoner?.filter(
-		(relasjon) => relasjon.relasjonType === 'GAMMEL_IDENTITET'
+		(relasjon) => relasjon.relasjonType === 'GAMMEL_IDENTITET',
 	)
 	if (!historiskeIdenter || historiskeIdenter.length < 1) {
 		return null

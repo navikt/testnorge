@@ -100,6 +100,12 @@ public class RelasjonerAlderService {
                         request.setFoedtFoer(LocalDateTime.of(foedsel.getFoedselsaar() + 1, 1, 1, 0, 0));
                     }
                 });
+
+        if (request.hasAlder() && nonNull(request.getAlder())) {
+            request.setFoedtEtter(LocalDateTime.now().minusYears(request.getAlder()).minusMonths(6));
+            request.setFoedtFoer(LocalDateTime.now().minusYears(request.getAlder()));
+            request.setAlder(null);
+        }
     }
 
     private Integer getAlderForelder(ForelderBarnRelasjonDTO relasjon) {

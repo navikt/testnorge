@@ -132,8 +132,12 @@ export type Dokument = {
 export type TransaksjonId = {
 	miljoe: string
 	transaksjonId: {
-		journalpostId: number
-		dokumentInfoId: number
+		journalpostId?: number
+		dokumentInfoId?: number
+		dokument?: {
+			journalpostId?: number
+			dokumentInfoId?: number
+		}
 	}
 	bestillingId: string
 }

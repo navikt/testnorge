@@ -10,7 +10,9 @@ export const OppsummeringKommentarForm = ({ formikBag }) => {
 			<TextEditor
 				text={null}
 				handleSubmit={(value) => formikBag.setFieldValue('beskrivelse', value)}
-				placeholder={eksisterendeBeskrivelse ? eksisterendeBeskrivelse : 'Skriv inn kommentar'}
+				placeholder={
+					eksisterendeBeskrivelse ? eksisterendeBeskrivelse : 'Skriv inn kommentar (notat)'
+				}
 			/>
 		</div>
 	)

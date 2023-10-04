@@ -63,24 +63,24 @@ export const MiljoTabs = ({ bestilteMiljoer, errorMiljoer = [], forsteMiljo, dat
 					)
 				})}
 			</Tabs.List>
-			{data.map((miljoData) => {
-				return (
-					<StyledPanel key={miljoData?.miljo} value={miljoData?.miljo}>
-						{!miljoData?.data || miljoData?.data?.length < 1 ? (
-							<Alert variant="info" size="small" inline>
-								{miljoData?.info ? miljoData.info : 'Fant ingen data i dette miljøet'}
-							</Alert>
-						) : (
-							React.cloneElement(children, {
-								data: miljoData?.data,
-								miljo: miljoData?.miljo,
-								isPanelOpen: isPanelOpen,
-								setPanelOpen: setPanelOpen,
-							})
-						)}
-					</StyledPanel>
-				)
-			})}
+			{data.map((miljoData) => (
+				<StyledPanel key={miljoData?.miljo} value={miljoData?.miljo}>
+					{!miljoData?.data ||
+					miljoData?.data?.length < 1 ||
+					miljoData?.data?.inntekter?.length === 0 ? (
+						<Alert variant="info" size="small" inline>
+							{miljoData?.info ? miljoData.info : 'Fant ingen data i dette miljøet'}
+						</Alert>
+					) : (
+						React.cloneElement(children, {
+							data: miljoData?.data,
+							miljo: miljoData?.miljo,
+							isPanelOpen: isPanelOpen,
+							setPanelOpen: setPanelOpen,
+						})
+					)}
+				</StyledPanel>
+			))}
 		</StyledTabs>
 	)
 }

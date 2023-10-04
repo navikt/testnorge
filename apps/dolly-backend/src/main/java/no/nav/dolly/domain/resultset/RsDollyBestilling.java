@@ -1,5 +1,6 @@
 package no.nav.dolly.domain.resultset;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -19,7 +20,8 @@ import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
 import no.nav.dolly.domain.resultset.medl.RsMedl;
 import no.nav.dolly.domain.resultset.pdldata.PdlPersondata;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
-import no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag;
+import no.nav.dolly.domain.resultset.sigrunstub.RsLignetInntekt;
+import no.nav.dolly.domain.resultset.sigrunstub.RsPensjonsgivendeForFolketrygden;
 import no.nav.dolly.domain.resultset.skjerming.RsSkjerming;
 import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding;
 import no.nav.dolly.domain.resultset.tpsmessagingservice.RsTpsMessaging;
@@ -43,7 +45,10 @@ import static java.util.Objects.nonNull;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class RsDollyBestilling {
 
-    private static final Set<String> EXCLUDE_METHODS = Set.of("getClass", "getMalBestillingNavn", "getEnvironments", "getPdldata");
+    private static final Set<String> EXCLUDE_METHODS = Set.of("getClass", "getMalBestillingNavn", "getEnvironments", "getPdldata", "getId");
+
+    @JsonIgnore
+    private long id; // Ved gjenopprett vil denne ID kan ha verdi fra bestillingen som gjenopprettes
 
     @Schema(description = "Sett av miljøer bestillingen skal deployes til")
     private Set<String> environments;
@@ -55,7 +60,8 @@ public class RsDollyBestilling {
     private RsMedl medl;
     private List<RsInstdata> instdata;
     private List<RsAareg> aareg;
-    private List<OpprettSkattegrunnlag> sigrunstub;
+    private List<RsLignetInntekt> sigrunstub;
+    private List<RsPensjonsgivendeForFolketrygden> sigrunstubPensjonsgivende;
     private InntektMultiplierWrapper inntektstub;
     private Arenadata arenaforvalter;
     private RsUdiPerson udistub;
@@ -84,11 +90,18 @@ public class RsDollyBestilling {
         return environments;
     }
 
-    public List<OpprettSkattegrunnlag> getSigrunstub() {
+    public List<RsLignetInntekt> getSigrunstub() {
         if (isNull(sigrunstub)) {
             sigrunstub = new ArrayList<>();
         }
         return sigrunstub;
+    }
+
+    public List<RsPensjonsgivendeForFolketrygden> getSigrunstubPensjonsgivende() {
+        if (isNull(sigrunstubPensjonsgivende)) {
+            sigrunstubPensjonsgivende = new ArrayList<>();
+        }
+        return sigrunstubPensjonsgivende;
     }
 
     public List<RsInstdata> getInstdata() {

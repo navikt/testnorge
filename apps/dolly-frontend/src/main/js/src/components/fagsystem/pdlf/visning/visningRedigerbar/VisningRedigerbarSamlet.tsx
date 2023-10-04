@@ -167,7 +167,7 @@ export const VisningRedigerbarSamlet = ({
 		{
 			telefonnummer: ifPresent('telefonnummer', Yup.array().of(telefonnummer)),
 		},
-		[['telefonnummer', 'telefonnummer']]
+		[['telefonnummer', 'telefonnummer']],
 	)
 
 	const _validate = (values: any) => validate(values, validationSchema)
@@ -178,7 +178,7 @@ export const VisningRedigerbarSamlet = ({
 		const liste = [] as Array<any>
 		initialValuesListe.forEach((item: any) => {
 			const found = _.get(redigertAttributt, path)?.find(
-				(redigertItem: any) => redigertItem.id === item.id
+				(redigertItem: any) => redigertItem.id === item.id,
 			)
 			if (found) {
 				liste.push(found)

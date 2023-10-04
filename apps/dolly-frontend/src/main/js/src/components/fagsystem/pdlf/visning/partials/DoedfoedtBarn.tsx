@@ -50,7 +50,7 @@ export const DoedfoedtBarnVisning = ({
 	let initialValues = { doedfoedtBarn: initDoedfoedtBarn }
 
 	const redigertDoedfoedtBarnPdlf = _.get(tmpPersoner, `${ident}.person.doedfoedtBarn`)?.find(
-		(a: DoedfoedtBarnData) => a.id === doedfoedtBarnData.id
+		(a: DoedfoedtBarnData) => a.id === doedfoedtBarnData.id,
 	)
 
 	const slettetDoedfoedtBarnPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertDoedfoedtBarnPdlf

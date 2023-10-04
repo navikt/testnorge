@@ -73,7 +73,7 @@ const FoedselVisning = ({
 	const initialValues = { foedsel: initFoedsel }
 
 	const redigertFoedselPdlf = _.get(tmpPersoner, `${ident}.person.foedsel`)?.find(
-		(a: Person) => a.id === foedsel.id
+		(a: Person) => a.id === foedsel.id,
 	)
 	const slettetFoedselPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertFoedselPdlf
 	if (slettetFoedselPdlf) {

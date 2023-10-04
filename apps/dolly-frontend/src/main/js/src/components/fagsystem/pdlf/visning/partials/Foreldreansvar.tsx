@@ -21,13 +21,13 @@ const ForeldreansvarLes = ({ foreldreansvarData, redigertRelatertePersoner, rela
 	const ansvarlig = relasjoner?.find(
 		(relasjon) =>
 			relasjon.relasjonType === 'FORELDREANSVAR_FORELDER' &&
-			relasjon.relatertPerson?.ident === foreldreansvarData.ansvarlig
+			relasjon.relatertPerson?.ident === foreldreansvarData.ansvarlig,
 	)
 
 	const ansvarligRedigert = redigertRelatertePersoner?.find(
 		(relasjon) =>
 			relasjon.relasjonType === 'FORELDREANSVAR_FORELDER' &&
-			relasjon.relatertPerson?.ident === foreldreansvarData.ansvarlig
+			relasjon.relatertPerson?.ident === foreldreansvarData.ansvarlig,
 	)
 
 	return (
@@ -107,12 +107,12 @@ export const ForeldreansvarEnkeltvisning = ({
 	let initialValues = { foreldreansvar: initForeldreansvar }
 
 	const redigertForeldreansvarPdlf = _.get(tmpPersoner, `${ident}.person.foreldreansvar`)?.find(
-		(a) => a.id === foreldreansvarData.id
+		(a) => a.id === foreldreansvarData.id,
 	)
 
 	const redigertForelderBarnRelasjonPdlf = _.get(
 		tmpPersoner,
-		`${ident}.person.forelderBarnRelasjon`
+		`${ident}.person.forelderBarnRelasjon`,
 	)
 
 	const redigertRelatertePersoner = _.get(tmpPersoner, `${ident}.relasjoner`)
@@ -132,7 +132,7 @@ export const ForeldreansvarEnkeltvisning = ({
 		? {
 				foreldreansvar: Object.assign(
 					_.cloneDeep(initialForeldreansvar),
-					redigertForeldreansvarPdlf
+					redigertForeldreansvarPdlf,
 				),
 		  }
 		: null
@@ -151,7 +151,7 @@ export const ForeldreansvarEnkeltvisning = ({
 	}
 
 	const erIGruppe = gruppeIdenter?.some(
-		(person) => person.ident === initialValues?.foreldreansvar?.ansvarlig
+		(person) => person.ident === initialValues?.foreldreansvar?.ansvarlig,
 	)
 	const relatertPersonInfo = erIGruppe
 		? {

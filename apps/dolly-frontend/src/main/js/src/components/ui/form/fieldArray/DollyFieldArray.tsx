@@ -30,15 +30,11 @@ export const FieldArrayAddButton = ({
 	</Button>
 )
 
-export const FieldArrayRemoveButton = ({ onClick }) => (
-	<Button className="field-group-remove" kind="remove-circle" onClick={onClick} title="Fjern" />
-)
-
 const DeleteButton = ({ onClick }) => {
 	if (!onClick) {
 		return null
 	}
-	return <Button kind="trashcan" onClick={onClick} title="Fjern" />
+	return <Button kind="trashcan" fontSize={'1.4rem'} onClick={onClick} title="Fjern" />
 }
 
 const Numbering = ({ idx, color = numberColor.ARRAY_LEVEL_ONE }) => (

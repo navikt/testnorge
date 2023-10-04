@@ -79,7 +79,7 @@ public class GjenopprettGruppeService extends DollyBestillingService {
             bestKriterier.setEkskluderEksternePersoner(true);
 
             var coBestillinger = identService.getBestillingerFromGruppe(bestilling.getGruppe()).stream()
-                    .sorted(Comparator.comparing(GruppeBestillingIdent::getBestillingid))
+                    .sorted(Comparator.comparing(GruppeBestillingIdent::getBestillingId))
                     .toList();
 
             var counter = new AtomicInteger(0);
@@ -109,8 +109,7 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                                                                                     .doOnNext(request -> log.info("Startet gjenopprett bestilling {} for ident: {}",
                                                                                             request.getId(), testident.getIdent()))
                                                                                     .flatMapSequential(bestillingRequest -> Flux.concat(
-                                                                                            tpsPersonService.syncPerson(dollyPerson, bestillingRequest,
-                                                                                                            progress, false)
+                                                                                            tpsPersonService.syncPerson(dollyPerson, bestillingRequest, progress)
                                                                                                     .map(ClientFuture::get),
                                                                                             gjenopprettKlienter(dollyPerson, bestillingRequest,
                                                                                                     fase2Klienter(),
@@ -137,8 +136,8 @@ public class GjenopprettGruppeService extends DollyBestillingService {
 
         return coBestillinger.stream()
                 .filter(bestilling -> ident.equals(bestilling.getIdent()))
-                .min(Comparator.comparing(GruppeBestillingIdent::getBestillingid))
-                .map(GruppeBestillingIdent::getBestillingid)
+                .min(Comparator.comparing(GruppeBestillingIdent::getBestillingId))
+                .map(GruppeBestillingIdent::getBestillingId)
                 .orElse(0L);
     }
 }

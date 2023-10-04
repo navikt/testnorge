@@ -34,15 +34,18 @@ export const stateModifierFns = (initial, setInitial, options = null, dispatch =
 			.map((b) => b.label)
 
 	const batchUpdate = (attrs, fn, ignoreKeys = [], key = 'add') => {
-		const state = Object.keys(attrs).reduce((acc, curr) => {
-			// Handle ignored keys
-			const ignores = Array.isArray(ignoreKeys) ? ignoreKeys : [ignoreKeys]
-			if (ignores.includes(curr)) return acc
+		const state = Object.keys(attrs).reduce(
+			(acc, curr) => {
+				// Handle ignored keys
+				const ignores = Array.isArray(ignoreKeys) ? ignoreKeys : [ignoreKeys]
+				if (ignores.includes(curr)) return acc
 
-			const sm_local = stateModifierFns(acc, (newState) => (acc = newState), opts, dispatch)(fn)
-			sm_local.attrs[curr][key]()
-			return acc
-		}, Object.assign({}, initial))
+				const sm_local = stateModifierFns(acc, (newState) => (acc = newState), opts, dispatch)(fn)
+				sm_local.attrs[curr][key]()
+				return acc
+			},
+			Object.assign({}, initial),
+		)
 
 		setInitial(state)
 	}
@@ -57,7 +60,7 @@ export const stateModifierFns = (initial, setInitial, options = null, dispatch =
 			opts: null
 			initial: any
 			setInitial: any
-		}) => {}
+		}) => {},
 	) => {
 		const attrs = fn({ set, setMulti, del, has, dispatch, opts, initial, setInitial }) || {}
 		const checked = allCheckedLabels(attrs)

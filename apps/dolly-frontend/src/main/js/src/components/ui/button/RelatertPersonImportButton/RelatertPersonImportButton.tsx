@@ -63,7 +63,7 @@ export const RelatertPersonImportButton = ({
 						setFullfoert(false)
 						setLoading(false)
 					})
-			})
+			}),
 		)
 	}
 

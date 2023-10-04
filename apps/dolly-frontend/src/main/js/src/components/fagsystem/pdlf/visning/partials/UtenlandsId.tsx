@@ -33,7 +33,7 @@ export const UtenlandsIdVisning = ({ utenlandsIdData, idx, data, tmpPersoner, id
 
 	const redigertUtenlandsIdPdlf = _.get(
 		tmpPersoner,
-		`${ident}.person.utenlandskIdentifikasjonsnummer`
+		`${ident}.person.utenlandskIdentifikasjonsnummer`,
 	)?.find((a) => a.id === utenlandsIdData.id)
 
 	const slettetUtenlandsIdPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertUtenlandsIdPdlf
@@ -46,7 +46,7 @@ export const UtenlandsIdVisning = ({ utenlandsIdData, idx, data, tmpPersoner, id
 	let redigertUtenlandsIdValues = redigertUtenlandsIdPdlf && {
 		utenlandskIdentifikasjonsnummer: Object.assign(
 			_.cloneDeep(initUtenlandsId),
-			redigertUtenlandsIdPdlf
+			redigertUtenlandsIdPdlf,
 		),
 	}
 

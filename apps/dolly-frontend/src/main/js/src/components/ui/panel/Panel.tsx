@@ -35,6 +35,16 @@ export default function Panel({
 		uncheckAttributeArray()
 	}
 
+	const erAvhengigAvQ1EllerQ2 = (heading: string) => {
+		const miljoeAvhengigeArtifakter = [
+			'PENSJON',
+			'ARBEIDSYTELSER',
+			'INSTITUSJONSOPPHOLD',
+			'DOKUMENTER',
+		]
+		return miljoeAvhengigeArtifakter.includes(heading.toUpperCase())
+	}
+
 	return (
 		<div className={shouldOpen ? 'dolly-panel dolly-panel-open' : 'dolly-panel'}>
 			<div
@@ -44,7 +54,7 @@ export default function Panel({
 					toggleOpen()
 				}}
 			>
-				{iconType && <Icon size={45} kind={iconType} className="header-icon" />}
+				{iconType && <Icon fontSize={'2.8rem'} kind={iconType} className="header-icon" />}
 				<h2>{heading}</h2>
 
 				{informasjonstekst && <Hjelpetekst>{informasjonstekst}</Hjelpetekst>}
@@ -57,14 +67,22 @@ export default function Panel({
 				<span className="dolly-panel-heading_buttons">
 					{checkAttributeArray && (
 						<LinkButton
-							data-cy={CypressSelector.BUTTON_VELG_ALLE}
+							data-cy={
+								erAvhengigAvQ1EllerQ2(heading)
+									? CypressSelector.BUTTON_VELG_MILJOE_AVHENGIG
+									: CypressSelector.BUTTON_VELG_ALLE
+							}
 							text="Velg alle"
 							onClick={check}
 						/>
 					)}
 					{uncheckAttributeArray && (
 						<LinkButton
-							data-cy={CypressSelector.BUTTON_FJERN_ALLE}
+							data-cy={
+								erAvhengigAvQ1EllerQ2(heading)
+									? CypressSelector.BUTTON_FJERN_MILJOE_AVHENGIG
+									: CypressSelector.BUTTON_FJERN_ALLE
+							}
 							text="Fjern alle"
 							onClick={uncheck}
 						/>

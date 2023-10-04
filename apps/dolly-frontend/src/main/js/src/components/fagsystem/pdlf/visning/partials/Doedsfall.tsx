@@ -51,7 +51,7 @@ const DoedsfallVisning = ({
 	const initialValues = { doedsfall: initDoedsfall }
 
 	const redigertDoedsfallPdlf = _.get(tmpPersoner, `${ident}.person.doedsfall`)?.find(
-		(a: Person) => a.id === doedsfall.id
+		(a: Person) => a.id === doedsfall.id,
 	)
 	const slettetDoedsfallPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertDoedsfallPdlf
 	if (slettetDoedsfallPdlf) {

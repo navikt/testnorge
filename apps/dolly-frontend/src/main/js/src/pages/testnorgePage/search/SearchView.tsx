@@ -10,7 +10,7 @@ import { getAlder, getKjoenn } from '@/ducks/fagsystem'
 import { formatAlder } from '@/utils/DataFormatter'
 import { getPdlIdent } from '@/pages/testnorgePage/utils'
 import { PdlVisning } from '@/components/fagsystem/pdl/visning/PdlVisning'
-import { CopyButton } from '@/components/ui/button/CopyButton/CopyButton'
+import { DollyCopyButton } from '@/components/ui/button/CopyButton/DollyCopyButton'
 import { ImportModal } from '@/pages/testnorgePage/search/importModal/ImportModal'
 import { Gruppe } from '@/utils/hooks/useGruppe'
 import { ArenaVisning } from '@/components/fagsystem/arena/visning/ArenaVisning'
@@ -25,7 +25,7 @@ type Props = {
 		valgtePersoner: ImportPerson[],
 		mal: any,
 		navigate: Function,
-		gruppeId?: number
+		gruppeId?: number,
 	) => void
 	gruppe?: Gruppe
 }
@@ -87,7 +87,10 @@ export default ({
 			text: 'Ident',
 			width: '25',
 			formatter: (_cell: any, row: PdlData) => {
-				return <CopyButton value={getPdlIdent(row)} />
+				const fnr = getPdlIdent(row)
+				return (
+					<DollyCopyButton displayText={fnr} copyText={fnr} tooltipText={'Kopier fødselsnummer'} />
+				)
 			},
 		},
 		{
@@ -117,7 +120,7 @@ export default ({
 			formatter: (_cell: any, row: PdlData) => {
 				const alder = getAlder(
 					row.hentPerson?.foedsel[0]?.foedselsdato,
-					row.hentPerson?.doedsfall[0]?.doedsdato
+					row.hentPerson?.doedsfall[0]?.doedsdato,
 				)
 				return <>{formatAlder(alder, row.hentPerson?.doedsfall[0]?.doedsdato)}</>
 			},
@@ -133,7 +136,7 @@ export default ({
 							const alleValgtPaaSiden = data.every((person) =>
 								valgtePersoner
 									.map((valgtPerson) => valgtPerson?.ident)
-									.includes(getPdlIdent(person))
+									.includes(getPdlIdent(person)),
 							)
 							alleValgtPaaSiden
 								? setValgtePersoner([])

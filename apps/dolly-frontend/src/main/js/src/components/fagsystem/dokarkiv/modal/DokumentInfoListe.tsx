@@ -41,8 +41,8 @@ export default ({ filer, handleChange, isMultiple = true }: Data) => {
 							...fil,
 							dokNavn: filnavn,
 					  }
-					: fil
-			)
+					: fil,
+			),
 		)
 	}
 

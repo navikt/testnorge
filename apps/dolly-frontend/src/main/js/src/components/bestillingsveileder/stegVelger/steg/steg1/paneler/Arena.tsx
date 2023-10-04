@@ -2,6 +2,7 @@ import Panel from '@/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
 import { harValgtAttributt } from '@/components/ui/form/formUtils'
 import { arenaPath } from '@/components/fagsystem/arena/form/Form'
+import { runningCypressE2E } from '@/service/services/Request'
 
 export const ArenaPanel = ({ stateModifier, formikBag }) => {
 	const sm = stateModifier(ArenaPanel.initialValues)
@@ -75,7 +76,7 @@ ArenaPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 		)?.data?.arenaforvalter?.kvalifiseringsgruppe
 	}
 
-	const sisteBestillingServicebehov = getServiceBehov()
+	const sisteBestillingServicebehov = runningCypressE2E() ? 'IKVAL' : getServiceBehov()
 
 	const MED_SERVICEBEHOV = ['arenaforvalter.arenaBrukertype', 'MED_SERVICEBEHOV']
 	const AUTOMATISK_INNSENDING_MELDEKORT = ['arenaforvalter.automatiskInnsendingAvMeldekort', true]
@@ -94,8 +95,8 @@ ArenaPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 					[
 						'arenaforvalter.aap115[0]',
 						{
-							fraDato: null,
-							tilDato: null,
+							fraDato: runningCypressE2E() ? new Date(2020, 1) : null,
+							tilDato: runningCypressE2E() ? new Date(2020, 2) : null,
 						},
 					],
 					MED_SERVICEBEHOV,
@@ -118,8 +119,8 @@ ArenaPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 					[
 						'arenaforvalter.aap[0]',
 						{
-							fraDato: null,
-							tilDato: null,
+							fraDato: runningCypressE2E() ? new Date(2021, 1) : null,
+							tilDato: runningCypressE2E() ? new Date(2022, 1) : null,
 						},
 					],
 					MED_SERVICEBEHOV,
@@ -144,8 +145,8 @@ ArenaPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 						{
 							vedtakstype: 'O',
 							rettighetKode: 'DAGO',
-							fraDato: null,
-							tilDato: null,
+							fraDato: runningCypressE2E() ? new Date(2023, 1) : null,
+							tilDato: runningCypressE2E() ? new Date(2023, 2) : null,
 							mottattDato: null,
 						},
 					],

@@ -6,7 +6,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+
+import static java.util.Objects.isNull;
 
 @Data
 @NoArgsConstructor
@@ -23,6 +26,22 @@ public class AlderspensjonRequest {
     private LocalDate sivilstandDatoFom;
 
     private List<AlderspensjonRequest.SkjemaRelasjon> relasjonListe;
+
+    public List<String> getMiljoer() {
+
+        if (isNull(miljoer)) {
+            miljoer = new ArrayList<>();
+        }
+        return miljoer;
+    }
+
+    public List<SkjemaRelasjon> getRelasjonListe() {
+
+        if (isNull(relasjonListe)) {
+            relasjonListe = new ArrayList<>();
+        }
+        return relasjonListe;
+    }
 
     @Data
     @NoArgsConstructor
