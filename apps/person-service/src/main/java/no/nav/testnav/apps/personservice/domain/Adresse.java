@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import no.nav.testnav.apps.personservice.consumer.dto.pdl.graphql.Vegadresse;
+import no.nav.testnav.apps.personservice.consumer.v1.pdl.graphql.Vegadresse;
 import no.nav.testnav.libs.dto.personservice.v1.AdresseDTO;
 import org.apache.commons.lang3.StringUtils;
 

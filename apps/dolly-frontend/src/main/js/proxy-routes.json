@@ -129,6 +129,11 @@
     "changeOrigin": true,
     "secure": false
   },
+  "/person-service/api": {
+    "target": "http://localhost:8020",
+    "changeOrigin": true,
+    "secure": false
+  },
   "/testnorge-profil-api/api": {
     "target": "http://localhost:8020",
     "changeOrigin": true,

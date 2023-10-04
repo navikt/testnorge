@@ -138,6 +138,11 @@ consumers:
     namespace: dolly
     name: testnav-person-search-service
     url: http://testnav-person-search-service.dolly.svc.cluster.local
+  testnav-person-service:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-person-service
+    url: http://testnav-person-service.dolly.svc.cluster.local
   testnav-adresse-service:
     cluster: dev-gcp
     namespace: dolly

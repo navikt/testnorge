@@ -9,7 +9,7 @@ import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpForholdRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpYtelseRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse.ResponseEnvironment;
-import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
+import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.Bestilling;
@@ -78,16 +78,13 @@ class PensjonforvalterClientTest {
     private TransactionHelperService transactionHelperService;
 
     @Mock
-    private PdlPersonConsumer pdlPersonConsumer;
+    private PersonServiceConsumer personServiceConsumer;
 
     @Mock
     private PdlDataConsumer pdlDataConsumer;
 
     @Mock
     private ErrorStatusDecoder errorStatusDecoder;
-
-    @Mock
-    private PdlPersonBolk pdlPersonBolk;
 
     @Captor
     ArgumentCaptor<String> statusCaptor;
@@ -111,7 +108,7 @@ class PensjonforvalterClientTest {
                                 .build()))
                         .build())
                 .build();
-        when(pdlPersonConsumer.getPdlPersoner(anyList())).thenReturn(Flux.just(pdlPersonBolk));
+        when(personServiceConsumer.getPdlPersoner(anyList())).thenReturn(Flux.just(pdlPersonBolk));
     }
 
     // empty new response list to empty previous list
