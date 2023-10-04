@@ -107,4 +107,4 @@ dependencies {
 }
 
 description = 'testnorge-statisk-data-forvalter'
-java.sourceCompatibility = JavaVersion.VERSION_20
+java.sourceCompatibility = JavaVersion.VERSION_21

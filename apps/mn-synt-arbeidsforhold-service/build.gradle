@@ -88,4 +88,4 @@ dependencies {
 }
 
 description = 'mn-synt-arbeidsforhold-service'
-java.sourceCompatibility = JavaVersion.VERSION_20
+java.sourceCompatibility = JavaVersion.VERSION_21

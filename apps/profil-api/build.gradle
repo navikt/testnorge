@@ -81,4 +81,4 @@ dependencies {
 }
 
 description = 'profil-api'
-java.sourceCompatibility = JavaVersion.VERSION_20
+java.sourceCompatibility = JavaVersion.VERSION_21

@@ -44,7 +44,7 @@ dependencyManagement {
     }
 }
 
-java.sourceCompatibility = JavaVersion.VERSION_20
+java.sourceCompatibility = JavaVersion.VERSION_21
 
 repositories {
     mavenLocal()
