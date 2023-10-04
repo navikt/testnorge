@@ -4,30 +4,26 @@ import { fetcher } from '@/api'
 type Navn = {
 	adjektiv: string
 	adverb: string
-	substantiv : string
+	substantiv: string
 }
 
 const GenererNavnBaseUrl = '/generer-navn-service/api/v1/navn'
 
 export const useGenererNavn = () => {
-	const { data, isLoading, error , mutate} = useSWR<string[], Error>(
+	const { data, isLoading, error, mutate } = useSWR<string[], Error>(
 		[GenererNavnBaseUrl],
 		([url, headers]) => fetcher(url, headers),
 	)
-	console.log(data)
-	const personnavn = []
-	data?.flat().forEach((element : any) => {
-		personnavn.push({
-			fornavn: element.adjektiv,
-			mellomnavn: element.adverb,
-			etternavn: element.substantiv
-		})
-	})
 
 	return {
-		navnInfo: personnavn,
+		data: data,
+		navnInfo: data?.map((element: any) => ({
+			fornavn: element.adjektiv,
+			mellomnavn: element.adverb,
+			etternavn: element.substantiv,
+		})),
 		loading: isLoading,
 		error: error,
-		mutate: mutate
+		mutate: mutate,
 	}
 }

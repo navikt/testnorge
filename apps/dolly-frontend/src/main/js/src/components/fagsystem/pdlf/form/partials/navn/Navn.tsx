@@ -8,14 +8,12 @@ import * as _ from 'lodash-es'
 import { FormikProps } from 'formik'
 import { isEmpty } from 'lodash'
 import { useEffect, useState } from 'react'
-import { DollyApi } from '@/service/Api'
 import { ArrowCirclepathIcon } from '@navikt/aksel-icons'
 import { Button } from '@navikt/ds-react'
 import styled from 'styled-components'
 import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
-import {mutate} from "swr";
-import {useGenererNavn} from "@/utils/hooks/useGenererNavn";
+import { useGenererNavn } from '@/utils/hooks/useGenererNavn'
 
 type NavnTypes = {
 	formikBag: FormikProps<{}>
@@ -26,16 +24,17 @@ const RefreshButton = styled(Button)`
 	margin: 8px 0 0 -10px;
 `
 
-const concatNavnMedTidligereValgt = (type, navnInfo, selectedFornavn) => {
+const concatNavnMedTidligereValgt = (type, navnInfo, selectedNavn) => {
 	if (!navnInfo) {
 		return []
 	}
-	const navnOptions = SelectOptionsOppslag.formatOptions(type, navnInfo)
+	const formattedNavnInfo = { loading: false, value: { data: navnInfo } }
+	const navnOptions = SelectOptionsOppslag.formatOptions(type, formattedNavnInfo)
 		.concat(
-			selectedFornavn?.map((navn) => ({
+			selectedNavn?.map((navn) => ({
 				value: navn,
 				label: navn,
-			}))
+			})),
 		)
 		?.sort((first, second) => (first.label > second.label ? 1 : -1))
 
@@ -48,22 +47,21 @@ export const NavnForm = ({ formikBag, path }: NavnTypes) => {
 	}
 
 	const [selectedFornavn, setSelectedFornavn] = useState(
-		_.get(formikBag?.values, `${path}.alleFornavn`) || []
+		_.get(formikBag?.values, `${path}.alleFornavn`) || [],
 	)
 	const [selectedMellomnavn, setSelectedMellomnavn] = useState(
-		_.get(formikBag?.values, `${path}.alleMellomnavn`) || []
+		_.get(formikBag?.values, `${path}.alleMellomnavn`) || [],
 	)
 	const [selectedEtternavn, setSelectedEtternavn] = useState(
-		_.get(formikBag?.values, `${path}.alleEtternavn`) || []
+		_.get(formikBag?.values, `${path}.alleEtternavn`) || [],
 	)
 
 	const [fornavnOptions, setFornavnOptions] = useState([])
 	const [mellomnavnOptions, setMellomnavnOptions] = useState([])
 	const [etternavnOptions, setetternavnOptions] = useState([])
-	const {navnInfo, mutate} = useGenererNavn()
+	const { data, navnInfo, mutate } = useGenererNavn()
 
-	console.log(navnInfo)
-	function refreshNavn() {
+	const refreshNavn = () => {
 		mutate()
 	}
 
@@ -71,7 +69,7 @@ export const NavnForm = ({ formikBag, path }: NavnTypes) => {
 		setFornavnOptions(concatNavnMedTidligereValgt('fornavn', navnInfo, selectedFornavn))
 		setMellomnavnOptions(concatNavnMedTidligereValgt('mellomnavn', navnInfo, selectedMellomnavn))
 		setetternavnOptions(concatNavnMedTidligereValgt('etternavn', navnInfo, selectedEtternavn))
-	}, [navnInfo])
+	}, [data])
 
 	const { fornavn, mellomnavn, etternavn } = _.get(formikBag?.values, path)
 
