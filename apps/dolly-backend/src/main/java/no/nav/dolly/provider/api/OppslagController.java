@@ -4,17 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
-import no.nav.dolly.bestilling.arbeidsplassencv.ArbeidsplassenCVConsumer;
-import no.nav.dolly.bestilling.arenaforvalter.ArenaForvalterConsumer;
-import no.nav.dolly.bestilling.arenaforvalter.dto.ArenaStatusResponse;
-import no.nav.dolly.bestilling.inntektstub.InntektstubConsumer;
-import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon;
-import no.nav.dolly.bestilling.inntektstub.domain.ValiderInntekt;
-import no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterConsumer;
-import no.nav.dolly.bestilling.skjermingsregister.SkjermingsRegisterConsumer;
-import no.nav.dolly.bestilling.skjermingsregister.domain.SkjermingDataResponse;
-import no.nav.dolly.bestilling.udistub.UdiStubConsumer;
-import no.nav.dolly.bestilling.udistub.domain.UdiPersonResponse;
 import no.nav.dolly.consumer.fastedatasett.DatasettType;
 import no.nav.dolly.consumer.fastedatasett.FasteDatasettConsumer;
 import no.nav.dolly.consumer.generernavn.GenererNavnConsumer;
@@ -28,33 +17,26 @@ import no.nav.dolly.consumer.profil.ProfilApiConsumer;
 import no.nav.dolly.domain.PdlPerson.Navn;
 import no.nav.dolly.domain.resultset.SystemTyper;
 import no.nav.dolly.domain.resultset.kodeverk.KodeverkAdjusted;
-import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.service.InntektsmeldingEnumService;
 import no.nav.dolly.service.InntektsmeldingEnumService.EnumTypes;
 import no.nav.dolly.service.RsTransaksjonMapping;
 import no.nav.dolly.service.TransaksjonMappingService;
-import no.nav.dolly.util.CallIdUtil;
 import no.nav.testnav.libs.dto.profil.v1.ProfilDTO;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import static java.lang.String.format;
 import static no.nav.dolly.config.CachingConfig.CACHE_KODEVERK;
 
 @RestController
@@ -65,43 +47,17 @@ public class OppslagController {
     private final KodeverkMapper kodeverkMapper;
     private final KodeverkConsumer kodeverkConsumer;
     private final PdlPersonConsumer pdlPersonConsumer;
-    private final InntektstubConsumer inntektstubConsumer;
     private final FasteDatasettConsumer fasteDatasettConsumer;
-    private final PensjonforvalterConsumer pensjonforvalterConsumer;
     private final GenererNavnConsumer genererNavnConsumer;
     private final InntektsmeldingEnumService inntektsmeldingEnumService;
     private final ProfilApiConsumer profilApiConsumer;
     private final TransaksjonMappingService transaksjonMappingService;
-    private final SkjermingsRegisterConsumer skjermingsRegisterConsumer;
-    private final UdiStubConsumer udiStubConsumer;
-
-    private final ArbeidsplassenCVConsumer arbeidsplassenCVConsumer;
     private final OrganisasjonTilgangConsumer organisasjonTilgangConsumer;
-    private final ArenaForvalterConsumer arenaForvalterConsumer;
-
-    @GetMapping("/arena/ident/{ident}/miljoe/{miljoe}")
-    public Mono<ArenaStatusResponse> getArenaBruker(@PathVariable("ident") String ident, @PathVariable("miljoe") String miljoe) {
-
-        return arenaForvalterConsumer.getArenaBruker(ident, miljoe);
-    }
 
     @GetMapping("/organisasjoner/tilgang")
     public Flux<OrganisasjonTilgang> getOrganisasjonerTilgang() {
 
         return organisasjonTilgangConsumer.getOrgansisjonTilganger();
-    }
-
-    @GetMapping("/arbeidsforholdcv/ident/{ident}")
-    public Flux<JsonNode> getArbeidsforhold(@PathVariable("ident") String ident) {
-
-        return arbeidsplassenCVConsumer.hentCV(ident, CallIdUtil.generateCallId())
-                .map(response -> {
-                    if (response.getStatus().is2xxSuccessful()) {
-                        return response.getJsonNode();
-                    } else {
-                        throw new ResponseStatusException(response.getStatus(), response.getFeilmelding());
-                    }
-                });
     }
 
     @Cacheable(CACHE_KODEVERK)
@@ -136,44 +92,12 @@ public class OppslagController {
         return pdlPersonConsumer.getPdlPersonerJson(identer);
     }
 
-    @GetMapping("/inntektstub/{ident}")
-    @Operation(description = "Hent inntekter tilhørende ident fra Inntektstub")
-    public List<Inntektsinformasjon> inntektstub(@PathVariable String ident) {
-
-        return inntektstubConsumer.getInntekter(ident)
-                .collectList()
-                .block();
-    }
-
-    @PostMapping("/inntektstub")
-    @Operation(description = "Valider inntekt mot Inntektstub")
-    public ResponseEntity<Object> inntektstub(@RequestBody ValiderInntekt validerInntekt) {
-        return inntektstubConsumer.validerInntekter(validerInntekt);
-    }
-
     @GetMapping("/systemer")
     @Operation(description = "Hent liste med systemer og deres beskrivelser")
     public List<SystemTyper.SystemBeskrivelse> getSystemTyper() {
         return Arrays.stream(SystemTyper.values())
                 .map(type -> SystemTyper.SystemBeskrivelse.builder().system(type.name()).beskrivelse(type.getBeskrivelse()).build())
                 .toList();
-    }
-
-    @GetMapping("/skjerming/{ident}")
-    @Operation(description = "Hent skjerming på ident")
-    public SkjermingDataResponse getSkjerming(@PathVariable String ident) {
-
-        var response = skjermingsRegisterConsumer.getSkjerming(ident);
-        if (response.isEksistererIkke()) {
-            throw new NotFoundException(format("Skjerming for ident %s ble ikke funnet", ident));
-        }
-        return response;
-    }
-
-    @GetMapping("/udistub/{ident}")
-    @Operation(description = "Hent udistub ident")
-    public UdiPersonResponse getUdistubIdent(@PathVariable String ident) {
-        return udiStubConsumer.getUdiPerson(ident).block();
     }
 
     @GetMapping("/fastedatasett/{datasettype}")
@@ -192,24 +116,6 @@ public class OppslagController {
     @Operation(description = "Hent faste orgnummer")
     public ResponseEntity<JsonNode> getOrgnummer() {
         return fasteDatasettConsumer.hentOrgnummer();
-    }
-
-    @GetMapping("/popp/inntekt/{ident}/{miljoe}")
-    @Operation(description = "Hent inntekter fra POPP-register")
-    public JsonNode getPoppInntekter(@PathVariable String ident, @PathVariable String miljoe) {
-        return pensjonforvalterConsumer.getInntekter(ident, miljoe);
-    }
-
-    @GetMapping("/tp/forhold/{ident}/{miljoe}")
-    @Operation(description = "Hent ordning fra TP-register")
-    public JsonNode getTpForhold(@PathVariable String ident, @PathVariable String miljoe) {
-        return pensjonforvalterConsumer.getTpForhold(ident, miljoe);
-    }
-
-    @GetMapping("/tp/miljoe")
-    @Operation(description = "Hent tilgjengelige miljøer for TP-register")
-    public Set<String> getTpMiljoer() {
-        return pensjonforvalterConsumer.getMiljoer().block();
     }
 
     @GetMapping("/personnavn")

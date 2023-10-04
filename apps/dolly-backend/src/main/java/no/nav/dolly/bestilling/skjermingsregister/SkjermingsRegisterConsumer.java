@@ -46,14 +46,6 @@ public class SkjermingsRegisterConsumer implements ConsumerStatus {
                 .build();
     }
 
-    @Timed(name = "providers", tags = {"operation", "skjermingsdata-hent"})
-    public SkjermingDataResponse getSkjerming(String ident) {
-
-        return tokenService.exchange(serviceProperties)
-                .flatMap(token -> new SkjermingsregisterGetCommand(webClient, ident, token.getTokenValue()).call())
-                .block();
-    }
-
     @Timed(name = "providers", tags = {"operation", "skjermingsdata-slett"})
     public Mono<List<Void>> deleteSkjerming(List<String> identer) {
 
