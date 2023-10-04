@@ -5,8 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
+import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.bestilling.skjermingsregister.SkjermingUtil;
-import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.BestillingProgress;
@@ -47,7 +47,7 @@ public class TpsMessagingClient implements ClientRegister {
 
     private final TpsMessagingConsumer tpsMessagingConsumer;
     private final MapperFacade mapperFacade;
-    private final PdlPersonConsumer pdlPersonConsumer;
+    private final PersonServiceConsumer personServiceConsumer;
     private final TransactionHelperService transactionHelperService;
     private final TpsMiljoerConsumer tpsMiljoerConsumer;
 
@@ -160,7 +160,7 @@ public class TpsMessagingClient implements ClientRegister {
 
     private Flux<PdlPersonBolk.PersonBolk> getPersonData(List<String> identer) {
 
-        return pdlPersonConsumer.getPdlPersoner(identer)
+        return personServiceConsumer.getPdlPersoner(identer)
                 .filter(pdlPersonBolk -> nonNull(pdlPersonBolk.getData()))
                 .map(PdlPersonBolk::getData)
                 .map(PdlPersonBolk.Data::getHentPersonBolk)

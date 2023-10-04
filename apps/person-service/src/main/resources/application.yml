@@ -21,6 +21,9 @@ spring:
   jackson:
     serialization:
       write_dates_as_timestamps: false
+  cloud:
+    vault:
+      enabled: false
 
 springdoc:
   swagger-ui:
@@ -28,7 +31,7 @@ springdoc:
     url: /v3/api-docs
 
 consumers:
-  pdl-service:
+  pdl-proxy:
     url: https://testnav-pdl-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
     namespace: dolly

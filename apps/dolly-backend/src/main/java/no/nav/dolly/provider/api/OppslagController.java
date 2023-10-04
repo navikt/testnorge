@@ -4,6 +4,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
+import no.nav.dolly.bestilling.inntektstub.InntektstubConsumer;
+import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon;
+import no.nav.dolly.bestilling.inntektstub.domain.ValiderInntekt;
 import no.nav.dolly.consumer.fastedatasett.DatasettType;
 import no.nav.dolly.consumer.fastedatasett.FasteDatasettConsumer;
 import no.nav.dolly.consumer.generernavn.GenererNavnConsumer;
@@ -11,8 +14,6 @@ import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
 import no.nav.dolly.consumer.kodeverk.KodeverkMapper;
 import no.nav.dolly.consumer.organisasjon.tilgang.OrganisasjonTilgangConsumer;
 import no.nav.dolly.consumer.organisasjon.tilgang.dto.OrganisasjonTilgang;
-import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
-import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer.PDL_MILJOER;
 import no.nav.dolly.domain.PdlPerson.Navn;
 import no.nav.dolly.domain.resultset.SystemTyper;
 import no.nav.dolly.domain.resultset.kodeverk.KodeverkAdjusted;
@@ -25,6 +26,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -44,7 +46,7 @@ public class OppslagController {
 
     private final KodeverkMapper kodeverkMapper;
     private final KodeverkConsumer kodeverkConsumer;
-    private final PdlPersonConsumer pdlPersonConsumer;
+    private final InntektstubConsumer inntektstubConsumer;
     private final FasteDatasettConsumer fasteDatasettConsumer;
     private final GenererNavnConsumer genererNavnConsumer;
     private final InntektsmeldingEnumService inntektsmeldingEnumService;
@@ -74,19 +76,19 @@ public class OppslagController {
         return kodeverkConsumer.getKodeverkByName(kodeverk);
     }
 
-    @GetMapping("/pdlperson/ident/{ident}")
-    @Operation(description = "Hent person tilhørende ident fra pdlperson")
-    public JsonNode pdlPerson(@PathVariable("ident") String ident,
-                              @RequestParam(value = "pdlMiljoe", required = false, defaultValue = "Q2") PDL_MILJOER
-                                      pdlMiljoe) {
-        return pdlPersonConsumer.getPdlPerson(ident, pdlMiljoe);
+    @GetMapping("/inntektstub/{ident}")
+    @Operation(description = "Hent inntekter tilhørende ident fra Inntektstub")
+    public List<Inntektsinformasjon> inntektstub(@PathVariable String ident) {
+
+        return inntektstubConsumer.getInntekter(ident)
+                .collectList()
+                .block();
     }
 
-    @GetMapping("/pdlperson/identer")
-    @Operation(description = "Hent flere personer angitt ved identer fra PDL, maks BLOCK_SIZE = 50 identer")
-    public Mono<JsonNode> pdlPerson(@RequestParam("identer") List<String> identer) {
-
-        return pdlPersonConsumer.getPdlPersonerJson(identer);
+    @PostMapping("/inntektstub")
+    @Operation(description = "Valider inntekt mot Inntektstub")
+    public ResponseEntity<Object> inntektstub(@RequestBody ValiderInntekt validerInntekt) {
+        return inntektstubConsumer.validerInntekter(validerInntekt);
     }
 
     @GetMapping("/systemer")
