@@ -13,7 +13,7 @@ import { useCurrentBruker, useOrganisasjonTilgang } from '@/utils/hooks/useBruke
 import Loading from '@/components/ui/loading/Loading'
 
 const Bestillingskriterier = React.lazy(
-	() => import('@/components/bestilling/sammendrag/kriterier/Bestillingskriterier')
+	() => import('@/components/bestilling/sammendrag/kriterier/Bestillingskriterier'),
 )
 
 export const Steg3 = () => {
@@ -52,6 +52,13 @@ export const Steg3 = () => {
 		return erQ2MiljoeAvhengig ? ['q2'] : []
 	}
 
+	const erQ1EllerQ2MiljoeAvhengig = (values: any) => {
+		if (!values) {
+			return false
+		}
+		return values.dokarkiv || values.instdata || values.arenaforvalter || values.pensjonforvalter
+	}
+
 	useEffect(() => {
 		if (importTestnorge) {
 			if (harAvhukedeAttributter(formikBag.values)) {
@@ -60,12 +67,14 @@ export const Steg3 = () => {
 			formikBag.setFieldValue('gruppeId', opts.gruppe?.id)
 		} else if (bankIdBruker) {
 			formikBag.setFieldValue('environments', alleredeValgtMiljoe())
+		} else if (erQ1EllerQ2MiljoeAvhengig(formikBag?.values)) {
+			formikBag.setFieldValue('environments', ['q1', 'q2'])
 		} else if (formikBag.values?.sykemelding) {
 			formikBag.setFieldValue('environments', ['q1'])
-		} else if (!formikBag.values?.environments) {
-			formikBag.setFieldValue('environments', [])
 		} else if (erQ2MiljoeAvhengig) {
 			formikBag.setFieldValue('environments', alleredeValgtMiljoe())
+		} else if (!formikBag.values?.environments) {
+			formikBag.setFieldValue('environments', [])
 		}
 		if (harRelatertPersonVedSivilstand || harEksisterendeNyIdent || harRelatertPersonBarn) {
 			formikBag.setFieldValue('malBestillingNavn', undefined)
@@ -130,5 +139,5 @@ export const Steg3 = () => {
 Steg3.label = 'Oppsummering'
 
 Steg3.validation = Yup.object(
-	Object.assign({}, MiljoVelger.validation, MalForm.validation, VelgGruppe.validation)
+	Object.assign({}, MiljoVelger.validation, MalForm.validation, VelgGruppe.validation),
 )

@@ -3,8 +3,8 @@ package no.nav.dolly.bestilling.tpsmessagingservice.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ClientFuture;
+import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.bestilling.tpsmessagingservice.TpsMessagingConsumer;
-import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.BestillingProgress;
@@ -45,9 +45,9 @@ public class TpsPersonService {
     private final TpsMessagingConsumer tpsMessagingConsumer;
     private final TransactionHelperService transactionHelperService;
     private final TransaksjonMappingService transaksjonMappingService;
-    private final PdlPersonConsumer pdlPersonConsumer;
+    private final PersonServiceConsumer personServiceConsumer;
 
-    public Flux<ClientFuture> syncPerson(DollyPerson dollyPerson, RsDollyUtvidetBestilling bestilling, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<ClientFuture> syncPerson(DollyPerson dollyPerson, RsDollyUtvidetBestilling bestilling, BestillingProgress progress) {
 
         long startTime = System.currentTimeMillis();
 
@@ -56,7 +56,8 @@ public class TpsPersonService {
                 .collectList()
                 .filter(penMiljoer -> !penMiljoer.isEmpty())
                 .filter(penMiljoer -> isRelevantBestilling(bestilling) &&
-                        (isOpprettEndre || !isTransaksjonMapping(dollyPerson.getIdent(), bestilling, penMiljoer)))
+                        (nonNull(bestilling.getPensjonforvalter().getInntekt()) ||
+                                !isTransaksjonMapping(dollyPerson.getIdent(), bestilling, penMiljoer)))
                 .flatMapMany(penMiljoer ->
                         getRelasjoner(dollyPerson.getIdent())
                                 .flatMap(relasjon -> Flux.from(getTpsPerson(startTime, dollyPerson.getIdent(),
@@ -69,7 +70,7 @@ public class TpsPersonService {
 
     private Flux<String> getRelasjoner(String ident) {
 
-        return pdlPersonConsumer.getPdlPersoner(List.of(ident))
+        return personServiceConsumer.getPdlPersoner(List.of(ident))
                 .filter(pdlPersonBolk -> nonNull(pdlPersonBolk.getData()))
                 .map(PdlPersonBolk::getData)
                 .map(PdlPersonBolk.Data::getHentPersonBolk)
@@ -90,7 +91,8 @@ public class TpsPersonService {
     private boolean isRelevantBestilling(RsDollyUtvidetBestilling bestilling) {
 
         return nonNull(bestilling.getPensjonforvalter()) &&
-                (nonNull(bestilling.getPensjonforvalter().getAlderspensjon()) ||
+                (nonNull(bestilling.getPensjonforvalter().getInntekt()) ||
+                        nonNull(bestilling.getPensjonforvalter().getAlderspensjon()) ||
                         nonNull(bestilling.getPensjonforvalter().getUforetrygd()));
     }
 

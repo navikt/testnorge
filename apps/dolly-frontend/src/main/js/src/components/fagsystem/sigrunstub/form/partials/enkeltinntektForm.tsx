@@ -5,8 +5,26 @@ import { SigrunKodeverk } from '@/config/kodeverk'
 import * as _ from 'lodash-es'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import React from 'react'
+import { useKodeverk } from '@/utils/hooks/useKodeverk'
+import { getYear } from 'date-fns'
 
-export const EnkeltinntektForm = ({ path, header, initialGrunnlag, tjeneste, formikBag }) => {
+export const EnkeltinntektForm = ({
+	path,
+	header,
+	initialGrunnlag,
+	tjeneste,
+	inntektsaar,
+	formikBag,
+}) => {
+	const { kodeverk: tekniskNavnOptions } = useKodeverk(SigrunKodeverk[tjeneste])
+
+	const getFilteredTekniskNavnOptions = () => {
+		return tekniskNavnOptions?.koder?.filter((item) => {
+			return getYear(new Date(item?.gyldigFra)) <= inntektsaar
+		})
+	}
+	const filteredTekniskNavnOptions = getFilteredTekniskNavnOptions()
+
 	return (
 		<FormikDollyFieldArray name={path} header={header} newEntry={initialGrunnlag} nested>
 			{(path, idx) => {
@@ -16,7 +34,7 @@ export const EnkeltinntektForm = ({ path, header, initialGrunnlag, tjeneste, for
 						<FormikSelect
 							name={`${path}.tekniskNavn`}
 							label="Type inntekt"
-							kodeverk={SigrunKodeverk[tjeneste]}
+							options={filteredTekniskNavnOptions || []}
 							size="xxlarge"
 							isClearable={false}
 							optionHeight={50}

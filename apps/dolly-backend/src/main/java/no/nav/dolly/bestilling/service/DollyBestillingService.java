@@ -230,8 +230,20 @@ public class DollyBestillingService {
 
         return Flux.just(getDollyBestillingRequest(
                 Bestilling.builder()
-                        .id(coBestilling.getBestillingid())
+                        .id(coBestilling.getBestillingId())
                         .bestKriterier(coBestilling.getBestkriterier())
+                        .miljoer(StringUtils.isNotBlank(bestilling.getMiljoer()) ?
+                                bestilling.getMiljoer() :
+                                coBestilling.getMiljoer())
+                        .build()));
+    }
+
+    protected Flux<RsDollyBestillingRequest> createBestilling(Bestilling bestilling, Bestilling coBestilling) {
+
+        return Flux.just(getDollyBestillingRequest(
+                Bestilling.builder()
+                        .id(coBestilling.getId())
+                        .bestKriterier(coBestilling.getBestKriterier())
                         .miljoer(StringUtils.isNotBlank(bestilling.getMiljoer()) ?
                                 bestilling.getMiljoer() :
                                 coBestilling.getMiljoer())

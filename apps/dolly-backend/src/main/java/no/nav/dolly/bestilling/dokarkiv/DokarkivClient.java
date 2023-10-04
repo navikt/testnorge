@@ -11,7 +11,7 @@ import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivRequest;
 import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivResponse;
 import no.nav.dolly.bestilling.dokarkiv.domain.JoarkTransaksjon;
-import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
+import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.TransaksjonMapping;
@@ -44,7 +44,7 @@ public class DokarkivClient implements ClientRegister {
     private final TransaksjonMappingService transaksjonMappingService;
     private final ObjectMapper objectMapper;
     private final TransactionHelperService transactionHelperService;
-    private final PdlPersonConsumer pdlPersonConsumer;
+    private final PersonServiceConsumer personServiceConsumer;
     private final ErrorStatusDecoder errorStatusDecoder;
 
     @Override
@@ -59,7 +59,7 @@ public class DokarkivClient implements ClientRegister {
                                         .flatMapIterable(env -> env)
                                         .filter(env -> bestilling.getEnvironments().contains(env))
                                         .filter(env -> !transaksjonMappingService.existAlready(DOKARKIV,
-                                                dollyPerson.getIdent(), env) || isOpprettEndre)
+                                                dollyPerson.getIdent(), env, bestilling.getId()) || isOpprettEndre)
                                         .flatMap(env -> dokarkivConsumer.postDokarkiv(env, request)
                                                 .map(status ->
                                                         getStatus(dollyPerson.getIdent(), progress.getBestilling().getId(), status))))
@@ -103,7 +103,7 @@ public class DokarkivClient implements ClientRegister {
 
     private Flux<PdlPersonBolk.PersonBolk> getPersonData(List<String> identer) {
 
-        return pdlPersonConsumer.getPdlPersoner(identer)
+        return personServiceConsumer.getPdlPersoner(identer)
                 .filter(pdlPersonBolk -> nonNull(pdlPersonBolk.getData()))
                 .map(PdlPersonBolk::getData)
                 .map(PdlPersonBolk.Data::getHentPersonBolk)

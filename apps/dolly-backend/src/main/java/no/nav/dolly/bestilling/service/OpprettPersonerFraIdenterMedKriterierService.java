@@ -98,7 +98,7 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
                                                                     .filter(BestillingProgress::isPdlSync)
                                                                     .flatMap(pdlSync -> Flux.concat(
                                                                             tpsPersonService.syncPerson(dollyPerson, bestKriterier,
-                                                                                            progress, true)
+                                                                                            progress)
                                                                                     .map(ClientFuture::get),
                                                                             gjenopprettKlienter(dollyPerson, bestKriterier,
                                                                                     fase2Klienter(),

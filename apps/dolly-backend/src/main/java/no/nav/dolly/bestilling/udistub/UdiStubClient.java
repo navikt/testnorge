@@ -4,11 +4,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
+import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.bestilling.udistub.domain.UdiPersonResponse;
 import no.nav.dolly.bestilling.udistub.domain.UdiPersonWrapper;
 import no.nav.dolly.bestilling.udistub.domain.UdiPersonWrapper.Status;
 import no.nav.dolly.bestilling.udistub.util.UdiMergeService;
-import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
@@ -33,7 +33,7 @@ public class UdiStubClient implements ClientRegister {
     private final ErrorStatusDecoder errorStatusDecoder;
     private final UdiMergeService udiMergeService;
     private final UdiStubConsumer udiStubConsumer;
-    private final PdlPersonConsumer pdlPersonConsumer;
+    private final PersonServiceConsumer personServiceConsumer;
     private final TransactionHelperService transactionHelperService;
 
     @Override
@@ -65,7 +65,7 @@ public class UdiStubClient implements ClientRegister {
 
     private Flux<PdlPersonBolk.PersonBolk> getPersonData(List<String> identer) {
 
-        return pdlPersonConsumer.getPdlPersoner(identer)
+        return personServiceConsumer.getPdlPersoner(identer)
                 .filter(pdlPersonBolk -> nonNull(pdlPersonBolk.getData()))
                 .map(PdlPersonBolk::getData)
                 .map(PdlPersonBolk.Data::getHentPersonBolk)

@@ -13,9 +13,12 @@ spring:
           jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
           accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
         tokenx:
-          issuer-uri: https://tokenx.dev-gcp.nav.cloud.nais.io 
+          issuer-uri: https://tokenx.dev-gcp.nav.cloud.nais.io
           jwk-set-uri: https://tokenx.dev-gcp.nav.cloud.nais.io/jwks
           accepted-audience: ${TOKEN_X_CLIENT_ID}
+  cloud:
+    vault:
+      enabled: false
 
 springdoc:
   swagger-ui:
@@ -29,9 +32,9 @@ consumers:
     cluster: dev-gcp
     namespace: dolly
   sykemelding-api:
-    url: https://testnav-sykemelding-api-proxy.dev-fss-pub.nais.io
-    name: testnav-sykemelding-api-proxy
-    cluster: dev-fss
+    url: http://testnav-sykemelding-api.dolly.svc.cluster.local
+    name: testnav-sykemelding-api
+    cluster: dev-gcp
     namespace: dolly
   testnav-organisasjon-service:
     url: http://testnav-organisasjon-service.dolly.svc.cluster.local

@@ -8,12 +8,12 @@ import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
+import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.bestilling.sykemelding.domain.DetaljertSykemeldingRequest;
 import no.nav.dolly.bestilling.sykemelding.domain.SyntSykemeldingRequest;
 import no.nav.dolly.bestilling.sykemelding.dto.Norg2EnhetResponse;
 import no.nav.dolly.bestilling.sykemelding.dto.SykemeldingResponse;
 import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
-import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.TransaksjonMapping;
@@ -48,7 +48,7 @@ public class SykemeldingClient implements ClientRegister {
     private final MapperFacade mapperFacade;
     private final ObjectMapper objectMapper;
     private final TransactionHelperService transactionHelperService;
-    private final PdlPersonConsumer pdlPersonConsumer;
+    private final PersonServiceConsumer personServiceConsumer;
     private final KodeverkConsumer kodeverkConsumer;
     private final Norg2Consumer norg2Consumer;
 
@@ -60,7 +60,7 @@ public class SykemeldingClient implements ClientRegister {
                 .map(RsDollyUtvidetBestilling::getSykemelding)
                 .flatMap(sykemelding -> {
 
-                    if (transaksjonMappingService.existAlready(SYKEMELDING, dollyPerson.getIdent(), null) && !isOpprettEndre) {
+                    if (transaksjonMappingService.existAlready(SYKEMELDING, dollyPerson.getIdent(), null, bestilling.getId()) && !isOpprettEndre) {
                         setProgress(progress, "OK");
                         return Mono.empty();
 
@@ -109,7 +109,7 @@ public class SykemeldingClient implements ClientRegister {
 
     private Flux<PdlPersonBolk.Data> getPerson(String ident) {
 
-        return pdlPersonConsumer.getPdlPersoner(List.of(ident))
+        return personServiceConsumer.getPdlPersoner(List.of(ident))
                 .filter(pdlPersonBolk -> nonNull(pdlPersonBolk.getData()))
                 .map(PdlPersonBolk::getData);
     }

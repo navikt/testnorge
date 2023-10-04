@@ -66,7 +66,7 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .clientConnector(new ReactorClientHttpConnector(
                         HttpClient.create(ConnectionProvider.builder("custom")
-                                .maxConnections(5)
+                                .maxConnections(10)
                                 .pendingAcquireMaxCount(500)
                                 .pendingAcquireTimeout(Duration.ofMinutes(15))
                                 .build())
