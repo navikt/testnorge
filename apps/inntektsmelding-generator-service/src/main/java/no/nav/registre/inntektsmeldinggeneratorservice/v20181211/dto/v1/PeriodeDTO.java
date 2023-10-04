@@ -8,7 +8,6 @@ import no.seres.xsd.nav.inntektsmelding_m._20181211.XMLPeriode;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Value
@@ -29,6 +28,7 @@ public class PeriodeDTO implements ToXmlElement<XMLPeriode> {
     }
 
     static List<XMLPeriode> convert(List<PeriodeDTO> list) {
-        return list.stream().map(PeriodeDTO::toXmlElement).collect(Collectors.toList());
+        return list.stream().map(PeriodeDTO::toXmlElement)
+                .toList();
     }
 }

@@ -12,6 +12,8 @@ import org.springframework.vault.authentication.TokenAuthentication;
 import org.springframework.vault.client.VaultEndpoint;
 import org.springframework.vault.config.AbstractVaultConfiguration;
 
+import static org.apache.commons.lang3.StringUtils.isBlank;
+
 @Configuration
 @Profile("local")
 @Import({ FlywayConfiguration.class,
@@ -33,7 +35,7 @@ public class LocalConfig extends AbstractVaultConfiguration {
             System.setProperty(TOKEN, System.getenv("VAULT_TOKEN"));
         }
         var token = System.getProperty(TOKEN);
-        if (token == null) {
+        if (isBlank(token)) {
             throw new IllegalArgumentException(String.format("Påkrevd property '%s' er ikke satt.", TOKEN));
         }
         return new TokenAuthentication(System.getProperty(TOKEN));

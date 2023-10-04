@@ -1,6 +1,12 @@
 package no.nav.testnav.apps.persontilgangservice.client.altinn.v1;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import no.nav.testnav.apps.persontilgangservice.client.altinn.v1.command.GetPersonAccessCommand;
+import no.nav.testnav.apps.persontilgangservice.client.altinn.v1.dto.AccessDTO;
+import no.nav.testnav.apps.persontilgangservice.client.maskinporten.v1.MaskinportenClient;
+import no.nav.testnav.apps.persontilgangservice.config.AltinnConfig;
+import no.nav.testnav.apps.persontilgangservice.domain.Access;
+import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedUserId;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.stereotype.Component;
@@ -9,14 +15,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
-import java.util.stream.Collectors;
-
-import no.nav.testnav.apps.persontilgangservice.client.altinn.v1.command.GetPersonAccessCommand;
-import no.nav.testnav.apps.persontilgangservice.client.altinn.v1.dto.AccessDTO;
-import no.nav.testnav.apps.persontilgangservice.client.maskinporten.v1.MaskinportenClient;
-import no.nav.testnav.apps.persontilgangservice.config.AltinnConfig;
-import no.nav.testnav.apps.persontilgangservice.domain.Access;
-import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedUserId;
 
 @Component
 public class AltinnClient {
@@ -66,7 +64,7 @@ public class AltinnClient {
                                 .stream(accesses)
                                 .filter(AccessDTO::isActive)
                                 .map(Access::new)
-                                .collect(Collectors.toList())
+                                .toList()
                         ).flatMapIterable(list -> list)
                 );
     }

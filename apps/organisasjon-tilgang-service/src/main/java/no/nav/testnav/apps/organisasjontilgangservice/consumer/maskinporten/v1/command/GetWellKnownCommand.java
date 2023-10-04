@@ -24,7 +24,7 @@ public class GetWellKnownCommand implements Callable<Mono<WellKnown>> {
                 .bodyToMono(WellKnown.class)
                 .doOnSuccess(value -> log.info("WellKnown hentet for maskinporten."))
                 .doOnError(
-                        throwable -> throwable instanceof WebClientResponseException,
+                        WebClientResponseException.class::isInstance,
                         throwable -> log.error(
                                 "Feil ved  henting av well known for maskinporten. \n{}",
                                 ((WebClientResponseException) throwable).getResponseBodyAsString()

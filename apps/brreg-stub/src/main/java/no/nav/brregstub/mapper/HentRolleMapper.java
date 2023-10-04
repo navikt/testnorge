@@ -1,14 +1,6 @@
 package no.nav.brregstub.mapper;
 
-import static java.time.format.DateTimeFormatter.ISO_DATE;
-import static no.nav.brregstub.api.common.UnderstatusKode.understatusKoder;
-
 import lombok.SneakyThrows;
-
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
-import java.time.LocalDate;
-
 import no.nav.brregstub.api.common.RolleKode;
 import no.nav.brregstub.api.common.RsOrganisasjon;
 import no.nav.brregstub.api.common.RsPersonOgRolle;
@@ -18,6 +10,13 @@ import no.nav.brregstub.tjenestekontrakter.hentroller.Grunndata.Melding;
 import no.nav.brregstub.tjenestekontrakter.hentroller.Grunndata.Melding.Eierkommune.Samendring;
 import no.nav.brregstub.tjenestekontrakter.hentroller.Grunndata.ResponseHeader;
 import no.nav.brregstub.tjenestekontrakter.hentroller.Grunndata.ResponseHeader.UnderStatus.UnderStatusMelding;
+
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
+import java.time.LocalDate;
+
+import static java.time.format.DateTimeFormatter.ISO_DATE;
+import static no.nav.brregstub.api.common.UnderstatusKode.understatusKoder;
 
 public class HentRolleMapper {
 
@@ -115,7 +114,7 @@ public class HentRolleMapper {
             RsSamendring rsSamendring,
             RolleKode rolleKode
     ) {
-        if (rsSamendring.getRoller().size() > 0) {
+        if (!rsSamendring.getRoller().isEmpty()) {
             var samendring = new Samendring();
             samendring.setSamendringstype(rolleKode.name());
             samendring.setBeskrivelse(rolleKode.getBeskrivelse());

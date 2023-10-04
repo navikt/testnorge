@@ -3,13 +3,13 @@ package no.nav.registre.sdforvalter.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.sdforvalter.consumer.rs.aareg.AaregConsumer;
-import no.nav.registre.sdforvalter.consumer.rs.kodeverk.KodeverkConsumer;
 import no.nav.registre.sdforvalter.consumer.rs.aareg.SyntAaregConsumer;
-import no.nav.registre.sdforvalter.consumer.rs.aareg.response.ArbeidsforholdRespons;
 import no.nav.registre.sdforvalter.consumer.rs.aareg.request.RsAaregSyntetiseringsRequest;
 import no.nav.registre.sdforvalter.consumer.rs.aareg.request.RsOrganisasjon;
 import no.nav.registre.sdforvalter.consumer.rs.aareg.request.RsSyntPerson;
 import no.nav.registre.sdforvalter.consumer.rs.aareg.request.RsSyntetiskArbeidsforhold;
+import no.nav.registre.sdforvalter.consumer.rs.aareg.response.ArbeidsforholdRespons;
+import no.nav.registre.sdforvalter.consumer.rs.kodeverk.KodeverkConsumer;
 import no.nav.registre.sdforvalter.domain.Aareg;
 import no.nav.registre.sdforvalter.domain.AaregListe;
 import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
@@ -22,7 +22,6 @@ import java.beans.PropertyDescriptor;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -58,7 +57,7 @@ public class AaregService {
                                 null,
                                 environment)
                 )
-                .collect(Collectors.toList());
+                .toList();
 
         var total = liste.getListe().size();
         var antallNye = nyeArbeidsforhold.size();

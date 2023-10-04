@@ -26,19 +26,12 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 public class IdentpoolGetLedigCommand implements Callable<Flux<IdentpoolLedigDTO>> {
 
     private static final String IDENTPOOL = "Identpool: ";
-    private static final String IDENT = "personidentifikator";
+    private static final String PERSONIDENTIFIKATOR = "personidentifikator";
     private static final String IS_AVAIL_URL = "/api/v1/identifikator/ledig";
 
     private final WebClient webClient;
     private final String ident;
     private final String token;
-
-    protected static String getMessage(Throwable error) {
-
-        return error instanceof WebClientResponseException webClientResponseException ?
-                webClientResponseException.getResponseBodyAsString(StandardCharsets.UTF_8) :
-                error.getMessage();
-    }
 
     @Override
     public Flux<IdentpoolLedigDTO> call() {
@@ -48,7 +41,7 @@ public class IdentpoolGetLedigCommand implements Callable<Flux<IdentpoolLedigDTO
                 .uri(builder -> builder.path(IS_AVAIL_URL).build())
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                .header(IDENT, ident)
+                .header(PERSONIDENTIFIKATOR, ident)
                 .retrieve()
                 .bodyToFlux(Boolean.class)
                 .map(result -> IdentpoolLedigDTO.builder()
@@ -59,8 +52,8 @@ public class IdentpoolGetLedigCommand implements Callable<Flux<IdentpoolLedigDTO
                         .filter(WebClientFilter::is5xxException))
                 .onErrorResume(throwable -> {
                     log.error(getMessage(throwable));
-                    if (throwable instanceof WebClientResponseException) {
-                        if (((WebClientResponseException) throwable).getStatusCode() == HttpStatus.NOT_FOUND) {
+                    if (throwable instanceof WebClientResponseException exception) {
+                        if (exception.getStatusCode() == HttpStatus.NOT_FOUND) {
                             return Mono.error(new NotFoundException(IDENTPOOL + getMessage(throwable)));
                         } else {
                             return Mono.error(new InvalidRequestException(IDENTPOOL + getMessage(throwable)));
@@ -69,5 +62,12 @@ public class IdentpoolGetLedigCommand implements Callable<Flux<IdentpoolLedigDTO
                         return Mono.error(new InternalError(IDENTPOOL + getMessage(throwable)));
                     }
                 });
+    }
+
+    protected static String getMessage(Throwable error) {
+
+        return error instanceof WebClientResponseException webClientResponseException ?
+                webClientResponseException.getResponseBodyAsString(StandardCharsets.UTF_8) :
+                error.getMessage();
     }
 }

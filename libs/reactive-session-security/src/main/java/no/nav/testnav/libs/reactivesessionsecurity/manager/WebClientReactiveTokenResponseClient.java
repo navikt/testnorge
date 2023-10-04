@@ -33,7 +33,7 @@ class WebClientReactiveTokenResponseClient implements ReactiveOAuth2AccessTokenR
         Assert.notNull(grantRequest, "grantRequest cannot be null");
         return Mono.defer(() -> this.webClient.post()
                 .uri(clientRegistration(grantRequest).getProviderDetails().getTokenUri())
-                .headers((headers) -> populateTokenRequestHeaders(grantRequest, headers))
+                .headers(headers -> populateTokenRequestHeaders(grantRequest, headers))
                 .body(createTokenRequestBody(grantRequest))
                 .exchangeToMono(clientResponse -> readTokenResponse(grantRequest, clientResponse))
         );
@@ -105,7 +105,7 @@ class WebClientReactiveTokenResponseClient implements ReactiveOAuth2AccessTokenR
 
     private Mono<OAuth2AccessTokenResponse> readTokenResponse(OAuth2AuthorizationCodeGrantRequest grantRequest, ClientResponse response) {
         return response.body(OAuth2BodyExtractors.oauth2AccessTokenResponse())
-                .map((tokenResponse) -> populateTokenResponse(grantRequest, tokenResponse));
+                .map(tokenResponse -> populateTokenResponse(grantRequest, tokenResponse));
     }
 
     private OAuth2AccessTokenResponse populateTokenResponse(OAuth2AuthorizationCodeGrantRequest grantRequest, OAuth2AccessTokenResponse tokenResponse) {

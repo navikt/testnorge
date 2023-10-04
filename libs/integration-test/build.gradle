@@ -49,7 +49,7 @@ if (project.hasProperty("releaseVersion")) {
     version = releaseVersion
 }
 
-java.sourceCompatibility = JavaVersion.VERSION_17
+java.sourceCompatibility = JavaVersion.VERSION_20
 
 dependencies {
     implementation 'no.nav.testnav.libs:security-core'

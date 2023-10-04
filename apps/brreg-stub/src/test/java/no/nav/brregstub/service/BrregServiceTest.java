@@ -78,7 +78,7 @@ public class BrregServiceTest {
 
         //assert responseheader
         assertThat(grunndata.getResponseHeader()).isNotNull();
-        assertThat(grunndata.getResponseHeader().getHovedStatus()).isEqualTo(0);
+        assertThat(grunndata.getResponseHeader().getHovedStatus()).isZero();
         assertThat(grunndata.getResponseHeader().getOrgnr()).isEqualTo(ORGNR);
         assertThat(grunndata.getResponseHeader().getTjeneste()).isEqualTo("hentRoller");
         assertThat(grunndata.getResponseHeader()
@@ -242,7 +242,7 @@ public class BrregServiceTest {
 
         //assert responseheader
         assertThat(grunndata.getResponseHeader()).isNotNull();
-        assertThat(grunndata.getResponseHeader().getHovedStatus()).isEqualTo(0);
+        assertThat(grunndata.getResponseHeader().getHovedStatus()).isZero();
         assertThat(grunndata.getResponseHeader().getFodselsnr()).isEqualTo(FNR);
         assertThat(grunndata.getResponseHeader().getTjeneste()).isEqualTo("hentRolleutskrift");
         assertThat(grunndata.getResponseHeader()

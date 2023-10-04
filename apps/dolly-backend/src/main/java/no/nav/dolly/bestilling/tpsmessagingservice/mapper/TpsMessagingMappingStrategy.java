@@ -34,10 +34,7 @@ public class TpsMessagingMappingStrategy implements MappingStrategy {
 
                         destinasjon.setTelefonnummer(kilde.getNummer());
                         destinasjon.setLandkode(kilde.getLandskode());
-                        destinasjon.setTelefontype(switch (kilde.getPrioritet()) {
-                            case 1 -> TypeTelefon.MOBI;
-                            default -> TypeTelefon.HJET;
-                        });
+                        destinasjon.setTelefontype(kilde.getPrioritet().equals(1) ? TypeTelefon.MOBI : TypeTelefon.HJET);
                     }
                 })
                 .register();

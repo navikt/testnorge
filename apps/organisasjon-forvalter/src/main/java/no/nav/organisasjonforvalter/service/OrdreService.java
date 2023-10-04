@@ -55,27 +55,28 @@ public class OrdreService {
                 .orgStatus(organisasjoner.stream()
                         .collect(Collectors.toMap(Organisasjon::getOrganisasjonsnummer,
                                 organisasjon -> request.getEnvironments().stream().map(env -> {
-                                    String uuid = UUID.randomUUID().toString();
-                                    try {
-                                        deployOrganisasjon(uuid, organisasjon, env);
-                                        statusRepository.save(Status.builder()
-                                                .uuid(uuid)
-                                                .organisasjonsnummer(organisasjon.getOrganisasjonsnummer())
-                                                .miljoe(env)
-                                                .build());
-                                        return EnvStatus.builder()
-                                                .status(OK)
-                                                .environment(env)
-                                                .build();
-                                    } catch (RuntimeException e) {
-                                        log.error(e.getMessage(), e);
-                                        return EnvStatus.builder()
-                                                .status(ERROR)
-                                                .details(e.getMessage())
-                                                .environment(env)
-                                                .build();
-                                    }
-                                }).collect(Collectors.toList()))))
+                                            String uuid = UUID.randomUUID().toString();
+                                            try {
+                                                deployOrganisasjon(uuid, organisasjon, env);
+                                                statusRepository.save(Status.builder()
+                                                        .uuid(uuid)
+                                                        .organisasjonsnummer(organisasjon.getOrganisasjonsnummer())
+                                                        .miljoe(env)
+                                                        .build());
+                                                return EnvStatus.builder()
+                                                        .status(OK)
+                                                        .environment(env)
+                                                        .build();
+                                            } catch (RuntimeException e) {
+                                                log.error(e.getMessage(), e);
+                                                return EnvStatus.builder()
+                                                        .status(ERROR)
+                                                        .details(e.getMessage())
+                                                        .environment(env)
+                                                        .build();
+                                            }
+                                        })
+                                        .toList())))
                 .build();
     }
 

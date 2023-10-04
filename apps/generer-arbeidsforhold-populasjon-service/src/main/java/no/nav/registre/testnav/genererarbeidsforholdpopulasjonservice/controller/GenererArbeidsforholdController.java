@@ -2,6 +2,7 @@ package no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.controlle
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.service.OrkestratorService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -10,9 +11,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
-import java.util.List;
-
-import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.service.OrkestratorService;
 
 @Slf4j
 @RestController

@@ -2,14 +2,13 @@ package no.nav.testnav.apps.persontilgangservice.client.maskinporten.v1.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.apps.persontilgangservice.client.maskinporten.v1.dto.WellKnown;
+import no.nav.testnav.apps.persontilgangservice.config.MaskinportenConfig;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
-
-import no.nav.testnav.apps.persontilgangservice.client.maskinporten.v1.dto.WellKnown;
-import no.nav.testnav.apps.persontilgangservice.config.MaskinportenConfig;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -25,7 +24,7 @@ public class GetWellKnownCommand implements Callable<Mono<WellKnown>> {
                 .bodyToMono(WellKnown.class)
                 .doOnSuccess(value -> log.info("WellKnown hentet for maskinporten."))
                 .doOnError(
-                        throwable -> throwable instanceof WebClientResponseException,
+                        WebClientResponseException.class::isInstance,
                         throwable -> log.error(
                                 "Feil ved  henting av well known for maskinporten. \n{}",
                                 ((WebClientResponseException) throwable).getResponseBodyAsString()

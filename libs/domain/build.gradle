@@ -41,13 +41,13 @@ repositories {
     mavenLocal()
 }
 
-java.sourceCompatibility = JavaVersion.VERSION_17
+java.sourceCompatibility = JavaVersion.VERSION_20
 
 
 dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-annotations'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml'
-    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.14.2'
 
     implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.0'
     implementation 'io.springfox:springfox-swagger2:3.0.0'

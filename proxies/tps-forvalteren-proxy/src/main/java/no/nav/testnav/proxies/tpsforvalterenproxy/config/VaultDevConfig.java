@@ -10,13 +10,17 @@ import org.springframework.vault.authentication.TokenAuthentication;
 import org.springframework.vault.client.VaultEndpoint;
 import org.springframework.vault.config.AbstractVaultConfiguration;
 
+import static io.micrometer.common.util.StringUtils.isBlank;
+
 @Slf4j
 @Configuration
-@Profile({"dev"})
+@Profile({ "dev" })
 @RequiredArgsConstructor
 @VaultPropertySource(value = "serviceuser/dev/srvtps-forvalteren", propertyNamePrefix = "credentials.", ignoreSecretNotFound = false)
 @VaultPropertySource(value = "kv/preprod/fss/tps-forvalteren-proxy/local", ignoreSecretNotFound = false)
 public class VaultDevConfig extends AbstractVaultConfiguration {
+
+    private static final String VAULT_TOKEN = "spring.cloud.vault.token";
 
     @Override
     public VaultEndpoint vaultEndpoint() {
@@ -26,12 +30,12 @@ public class VaultDevConfig extends AbstractVaultConfiguration {
     @Override
     public ClientAuthentication clientAuthentication() {
         if (System.getenv().containsKey("VAULT_TOKEN")) {
-            System.setProperty("spring.cloud.vault.token", System.getenv("VAULT_TOKEN"));
+            System.setProperty(VAULT_TOKEN, System.getenv("VAULT_TOKEN"));
         }
-        var token = System.getProperty("spring.cloud.vault.token");
-        if (token == null) {
+        var token = System.getProperty(VAULT_TOKEN);
+        if (isBlank(token)) {
             throw new IllegalArgumentException("Påkrevet property 'spring.cloud.vault.token' er ikke satt.");
         }
-        return new TokenAuthentication(System.getProperty("spring.cloud.vault.token"));
+        return new TokenAuthentication(System.getProperty(VAULT_TOKEN));
     }
 }

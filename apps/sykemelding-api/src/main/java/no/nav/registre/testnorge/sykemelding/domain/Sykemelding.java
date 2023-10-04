@@ -95,7 +95,7 @@ public class Sykemelding {
     }
 
     private XMLMsgHead getXMLMsgHead() {
-        return findObjectFromClass(value -> value instanceof XMLMsgHead);
+        return findObjectFromClass(XMLMsgHead.class::isInstance);
     }
 
     private void updatePatient(XMLPatient patient, PasientDTO dto) {
@@ -165,7 +165,7 @@ public class Sykemelding {
     }
 
     private XMLMottakenhetBlokk getXMLMottakenhetBlokk() {
-        return findObjectFromClass(value -> value instanceof XMLMottakenhetBlokk);
+        return findObjectFromClass(XMLMottakenhetBlokk.class::isInstance);
     }
 
     @FunctionalInterface

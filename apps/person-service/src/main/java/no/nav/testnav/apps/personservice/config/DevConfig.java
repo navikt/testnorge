@@ -8,6 +8,7 @@ import org.springframework.vault.authentication.TokenAuthentication;
 import org.springframework.vault.client.VaultEndpoint;
 import org.springframework.vault.config.AbstractVaultConfiguration;
 
+import static io.micrometer.common.util.StringUtils.isBlank;
 import static java.lang.String.format;
 
 @Configuration
@@ -28,8 +29,8 @@ public class DevConfig extends AbstractVaultConfiguration {
             System.setProperty(TOKEN_PROPERTY, System.getenv("VAULT_TOKEN"));
         }
         var token = System.getProperty(TOKEN_PROPERTY);
-        if (token == null) {
-            throw new IllegalArgumentException(format("Påkreved property '%s' er ikke satt.", TOKEN_PROPERTY));
+        if (isBlank(token)) {
+            throw new IllegalArgumentException(format("påkrevd property '%s' er ikke satt.", TOKEN_PROPERTY));
         }
         return new TokenAuthentication(System.getProperty(TOKEN_PROPERTY));
     }

@@ -39,7 +39,7 @@ repositories {
 dependencyManagement {
     applyMavenExclusions = false
     imports {
-        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2022.0.1'
+        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2022.0.4'
         mavenBom 'org.springframework.boot:spring-boot-dependencies:3.0.4'
     }
 }
@@ -49,7 +49,7 @@ if (project.hasProperty("releaseVersion")) {
     version = releaseVersion
 }
 
-java.sourceCompatibility = JavaVersion.VERSION_17
+java.sourceCompatibility = JavaVersion.VERSION_20
 
 publishing {
     repositories {

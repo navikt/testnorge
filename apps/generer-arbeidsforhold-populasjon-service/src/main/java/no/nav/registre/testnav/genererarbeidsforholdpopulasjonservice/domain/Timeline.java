@@ -1,5 +1,7 @@
 package no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.domain;
 
+import lombok.Getter;
+
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Collections;
@@ -15,6 +17,7 @@ import java.util.stream.Collectors;
 public class Timeline<T extends Id> {
     private final Map<LocalDate, TimelineEntries<T>> timeline;
     private final Map<LocalDate, TimelineEntries<T>> history;
+    @Getter
     private final Set<LocalDate> updatedDates = new HashSet<>();
 
     public Timeline(Map<LocalDate, ? extends Collection<T>> map) {
@@ -39,7 +42,7 @@ public class Timeline<T extends Id> {
     }
 
     public void put(LocalDate date, T value, boolean updated) {
-        if(updated){
+        if (updated) {
             updatedDates.add(date);
         }
 
@@ -75,12 +78,9 @@ public class Timeline<T extends Id> {
         timeline.forEach((date, entries) -> action.accept(date, entries.getAll()));
     }
 
-    public Set<LocalDate> getUpdatedDates(){
-        return updatedDates;
-    }
-
     public <I> List<I> applyForAll(Function<T, I> function) {
-        return timeline.values().stream().flatMap(value -> value.getAll().stream().map(function)).collect(Collectors.toList());
+        return timeline.values().stream().flatMap(value -> value.getAll().stream().map(function))
+                .collect(Collectors.toList());
     }
 
     public Set<T> getHistory(LocalDate date) {

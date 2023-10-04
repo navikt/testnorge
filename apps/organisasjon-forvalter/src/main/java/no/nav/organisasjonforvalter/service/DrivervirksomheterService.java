@@ -7,7 +7,6 @@ import no.nav.organisasjonforvalter.jpa.repository.OrganisasjonRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +24,6 @@ public class DrivervirksomheterService {
                         .orgnavn(org.getOrganisasjonsnavn())
                         .enhetstype(org.getEnhetstype())
                         .build())
-                .collect(Collectors.toList());
+                .toList();
     }
 }

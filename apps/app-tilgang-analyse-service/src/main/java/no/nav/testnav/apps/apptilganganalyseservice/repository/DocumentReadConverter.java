@@ -3,13 +3,12 @@ package no.nav.testnav.apps.apptilganganalyseservice.repository;
 
 import io.r2dbc.spi.Clob;
 import io.r2dbc.spi.Row;
-import org.springframework.core.convert.converter.Converter;
-import org.springframework.data.convert.ReadingConverter;
-import reactor.core.publisher.Flux;
-
 import no.nav.testnav.apps.apptilganganalyseservice.domain.DocumentType;
 import no.nav.testnav.apps.apptilganganalyseservice.repository.entity.DocumentEntity;
 import no.nav.testnav.apps.apptilganganalyseservice.util.ThreadUtil;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.data.convert.ReadingConverter;
+import reactor.core.publisher.Flux;
 
 @ReadingConverter
 public class DocumentReadConverter implements Converter<Row, DocumentEntity> {
@@ -31,8 +30,8 @@ public class DocumentReadConverter implements Converter<Row, DocumentEntity> {
      * TODO: Bruker en HACK for å hente ut stream av strings fra Flux.
      */
     private static String toString(Row row, String name) {
-        if (row.get(name) instanceof String) {
-            return (String) row.get(name);
+        if (row.get(name) instanceof String string) {
+            return string;
         }
         var publisher = (Flux<CharSequence>) ((Clob) row.get(name)).stream();
         return String.join("", ThreadUtil.Instance().resolve(publisher));

@@ -80,7 +80,7 @@ dependencies {
 
     implementation 'org.hibernate.validator:hibernate-validator'
 
-    implementation 'org.springdoc:springdoc-openapi-ui:1.6.9'
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.15'
     implementation 'net.logstash.logback:logstash-logback-encoder:7.3'
 
     implementation 'com.squareup.okhttp3:okhttp:4.9.3'
@@ -96,4 +96,4 @@ dependencies {
 }
 
 description = 'testnorge-bisys'
-java.sourceCompatibility = JavaVersion.VERSION_17
+java.sourceCompatibility = JavaVersion.VERSION_20

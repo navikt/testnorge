@@ -50,7 +50,7 @@ public class IdentifikasjonUtils {
             queryBuilder.must(nestedExistsQuery("hentPerson.utenlandskIdentifikasjonsnummer", METADATA_FIELD, null));
         }
         if (isTrue(search.getIdentHistorikk())) {
-            queryBuilder.must(nestedExistsQuery("hentPerson.folkeregisteridentifikator", METADATA_FIELD, true));
+            queryBuilder.must(nestedExistsQuery(IDENTIFIKATOR_PATH, METADATA_FIELD, true));
         }
     }
 

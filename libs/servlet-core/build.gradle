@@ -45,11 +45,11 @@ repositories {
     mavenLocal()
 }
 
-java.sourceCompatibility = JavaVersion.VERSION_17
+java.sourceCompatibility = JavaVersion.VERSION_20
 
 dependencies {
 
-    implementation 'io.swagger.core.v3:swagger-annotations-jakarta:2.2.8'
+    implementation 'io.swagger.core.v3:swagger-annotations-jakarta:2.2.10'
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'

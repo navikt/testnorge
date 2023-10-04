@@ -83,7 +83,7 @@ public class PdlAdresseService {
                                         buildCriteria("random", random.nextDouble(), RANDOM)
                                 )
                                 .filter(Objects::nonNull)
-                                .collect(Collectors.toList())
+                                .toList()
                 ))
                 .build());
 
@@ -118,7 +118,7 @@ public class PdlAdresseService {
                                         buildCriteria("random", random.nextDouble(), RANDOM)
                                 )
                                 .filter(Objects::nonNull)
-                                .collect(Collectors.toList())
+                                .toList()
                 ))
                 .build());
 

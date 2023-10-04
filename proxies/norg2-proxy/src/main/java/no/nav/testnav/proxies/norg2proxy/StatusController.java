@@ -23,7 +23,7 @@ public class StatusController {
                 statusWebClient);
 
         return Map.of(
-                "norg2", pensjonStatus
+                TEAM, pensjonStatus
         );
     }
 

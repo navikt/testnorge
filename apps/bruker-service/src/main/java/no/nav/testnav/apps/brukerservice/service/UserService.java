@@ -1,17 +1,16 @@
 package no.nav.testnav.apps.brukerservice.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import reactor.core.publisher.Mono;
-
-import java.time.LocalDateTime;
-
 import no.nav.testnav.apps.brukerservice.domain.User;
 import no.nav.testnav.apps.brukerservice.exception.UserAlreadyExistsException;
 import no.nav.testnav.apps.brukerservice.exception.UsernameAlreadyTakenException;
 import no.nav.testnav.apps.brukerservice.repository.UserEntity;
 import no.nav.testnav.apps.brukerservice.repository.UserRepository;
 import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedUserId;
+import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
+
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -37,7 +36,7 @@ public class UserService {
 
     }
 
-    public Mono<User> getUserFromOrganisasjonsnummer(String organisasjonsnummer){
+    public Mono<User> getUserFromOrganisasjonsnummer(String organisasjonsnummer) {
         return getAuthenticatedUserId
                 .call()
                 .map(userId -> cryptographyService.createId(userId, organisasjonsnummer))
@@ -82,7 +81,7 @@ public class UserService {
     private Mono<Void> validateUpdateUser(String username) {
         return repository.existsByBrukernavn(username)
                 .doOnNext(exists -> {
-                    if (exists) {
+                    if (Boolean.TRUE.equals(exists)) {
                         throw new UsernameAlreadyTakenException(username);
                     }
                 })
@@ -93,13 +92,13 @@ public class UserService {
         var id = cryptographyService.createId(userId, representing);
         return repository.existsById(id)
                 .doOnNext(exists -> {
-                    if (exists) {
+                    if (Boolean.TRUE.equals(exists)) {
                         throw new UserAlreadyExistsException(id);
                     }
                 })
                 .flatMap(ignored -> repository.existsByBrukernavn(username))
                 .doOnNext(exists -> {
-                    if (exists) {
+                    if (Boolean.TRUE.equals(exists)) {
                         throw new UsernameAlreadyTakenException(username);
                     }
                 })

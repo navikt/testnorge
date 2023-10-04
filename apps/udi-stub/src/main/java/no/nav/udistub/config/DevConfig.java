@@ -8,6 +8,8 @@ import org.springframework.vault.authentication.TokenAuthentication;
 import org.springframework.vault.client.VaultEndpoint;
 import org.springframework.vault.config.AbstractVaultConfiguration;
 
+import static io.micrometer.common.util.StringUtils.isBlank;
+
 @Configuration
 @Profile("dev")
 @VaultPropertySource(value = "secret/dolly/lokal", ignoreSecretNotFound = false)
@@ -27,7 +29,7 @@ public class DevConfig extends AbstractVaultConfiguration {
             System.setProperty(VAULT_PROPERTY, System.getenv("VAULT_TOKEN"));
         }
         var token = System.getProperty(VAULT_PROPERTY);
-        if (token == null) {
+        if (isBlank(token)) {
             throw new IllegalArgumentException(String.format("Påkrevet property '%s' er ikke satt.", VAULT_PROPERTY));
         }
         return new TokenAuthentication(System.getProperty(VAULT_PROPERTY));

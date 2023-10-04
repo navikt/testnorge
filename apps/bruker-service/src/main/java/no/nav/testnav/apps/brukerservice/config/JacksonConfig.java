@@ -14,6 +14,7 @@ public class JacksonConfig implements WebFluxConfigurer {
 
     private final ObjectMapper objectMapper;
 
+    @Override
     public void configureHttpMessageCodecs(ServerCodecConfigurer configurer) {
         configurer.defaultCodecs().jackson2JsonEncoder(
                 new Jackson2JsonEncoder(objectMapper)

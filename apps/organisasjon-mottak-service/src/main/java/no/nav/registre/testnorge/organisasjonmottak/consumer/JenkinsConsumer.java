@@ -10,7 +10,6 @@ import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
-
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Set;
@@ -48,7 +47,7 @@ public class JenkinsConsumer {
 
         var server = env.getProperty("JENKINS_SERVER_" + miljo.toUpperCase());
         if (server == null) {
-            throw new RuntimeException("Finner ikke url for miljo: " + miljo);
+            throw new IllegalArgumentException("Finner ikke url for miljo: " + miljo);
         }
         JenkinsCrumb jenkinsCrumb = new GetCrumbCommand(webClient, accessToken.getTokenValue()).call();
         var id = new StartBEREG007Command(webClient, accessToken.getTokenValue(), server, miljo, jenkinsCrumb, flatFile).call();

@@ -13,7 +13,7 @@ import lombok.Setter;
 public class RsDollyBestillingRequest extends RsDollyUtvidetBestilling {
 
     @Schema(
-            required = true,
+            requiredMode = Schema.RequiredMode.REQUIRED,
             description = "Antall testpersoner som bestilles"
     )
     private int antall;

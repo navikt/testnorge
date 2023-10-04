@@ -28,6 +28,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -36,6 +37,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class OppsummeringsdokumentAdapter {
 
+    private static final String MILJO = "miljo";
     private final ObjectMapper objectMapper;
     private final OppsummeringsdokumentRepository repository;
     private final ElasticsearchOperations operations;
@@ -74,7 +76,7 @@ public class OppsummeringsdokumentAdapter {
     public List<Oppsummeringsdokument> getAllCurrentDocumentsBy(String miljo) {
         return getAllCurrentDocumentsBy(new NativeSearchQueryBuilder()
                 .withQuery(
-                        QueryBuilders.matchQuery("miljo", miljo)
+                        QueryBuilders.matchQuery(MILJO, miljo)
                 )
         );
     }
@@ -83,7 +85,7 @@ public class OppsummeringsdokumentAdapter {
         var pageable = PageRequest.of(page, 1);
         return getAllCurrentDocumentsBy(new NativeSearchQueryBuilder()
                         .withQuery(
-                                QueryBuilders.matchQuery("miljo", miljo)
+                                QueryBuilders.matchQuery(MILJO, miljo)
                         ).withPageable(pageable),
                 pageable
         );
@@ -91,7 +93,7 @@ public class OppsummeringsdokumentAdapter {
 
     public List<Oppsummeringsdokument> getAllCurrentDocumentsBy(String miljo, String ident) {
         var queryBuilders = new ArrayList<QueryBuilder>();
-        queryBuilders.add(QueryBuilders.matchQuery("miljo", miljo));
+        queryBuilders.add(QueryBuilders.matchQuery(MILJO, miljo));
 
         queryBuilders.add(QueryBuilders.matchQuery("virksomheter.personer.ident", ident));
 
@@ -109,7 +111,7 @@ public class OppsummeringsdokumentAdapter {
         var pageable = PageRequest.of(page, 1);
         var queryBuilders = new ArrayList<QueryBuilder>();
 
-        queryBuilders.add(QueryBuilders.matchQuery("miljo", miljo));
+        queryBuilders.add(QueryBuilders.matchQuery(MILJO, miljo));
         getKalendermaanedBetween(fom, tom).ifPresent(queryBuilders::add);
         Optional.ofNullable(ident).ifPresent(value -> queryBuilders.add(
                 QueryBuilders.matchQuery("virksomheter.personer.ident", value)
@@ -151,7 +153,8 @@ public class OppsummeringsdokumentAdapter {
                 OppsummeringsdokumentModel.class
         );
 
-        var list = searchHist.get().map(SearchHit::getContent).collect(Collectors.toList());
+        var list = searchHist.get().map(SearchHit::getContent)
+                .toList();
         return new PageImpl<>(
                 filterOnVersion(list),
                 pageable,
@@ -162,16 +165,17 @@ public class OppsummeringsdokumentAdapter {
     private List<Oppsummeringsdokument> getAllCurrentDocumentsBy(NativeSearchQueryBuilder builder) {
         builder.withSorts(SortBuilders.fieldSort("lastModified").order(SortOrder.ASC));
         var list = operations.search(
-                builder.build(),
-                OppsummeringsdokumentModel.class
-        ).get().map(SearchHit::getContent).collect(Collectors.toList());
+                        builder.build(),
+                        OppsummeringsdokumentModel.class
+                ).get().map(SearchHit::getContent)
+                .toList();
         return filterOnVersion(list);
     }
 
     private List<Oppsummeringsdokument> getAllCurrentDocumentsBy(String miljo, String orgnummer, LocalDate fom, LocalDate tom) {
         var queryBuilders = new ArrayList<QueryBuilder>();
 
-        queryBuilders.add(QueryBuilders.matchQuery("miljo", miljo));
+        queryBuilders.add(QueryBuilders.matchQuery(MILJO, miljo));
         queryBuilders.add(QueryBuilders.matchQuery("opplysningspliktigOrganisajonsnummer", orgnummer));
 
         getKalendermaanedBetween(fom, tom).ifPresent(queryBuilders::add);
@@ -219,8 +223,8 @@ public class OppsummeringsdokumentAdapter {
                         total = value;
                     }
                     return total;
-                }))
+                })).filter(Objects::nonNull)
                 .map(Oppsummeringsdokument::new)
-                .collect(Collectors.toList());
+                .toList();
     }
 }

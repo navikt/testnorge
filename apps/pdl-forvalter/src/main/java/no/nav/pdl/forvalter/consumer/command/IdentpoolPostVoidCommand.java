@@ -30,13 +30,6 @@ public class IdentpoolPostVoidCommand implements Callable<Mono<Void>> {
     private final Object body;
     private final String token;
 
-    protected static String getMessage(Throwable error) {
-
-        return error instanceof WebClientResponseException webClientResponseException ?
-                webClientResponseException.getResponseBodyAsString(StandardCharsets.UTF_8) :
-                error.getMessage();
-    }
-
     @Override
     public Mono<Void> call() {
 
@@ -52,8 +45,8 @@ public class IdentpoolPostVoidCommand implements Callable<Mono<Void>> {
                         .filter(WebClientFilter::is5xxException))
                 .onErrorResume(throwable -> {
                     log.error(getMessage(throwable));
-                    if (throwable instanceof WebClientResponseException) {
-                        if (((WebClientResponseException) throwable).getStatusCode() == HttpStatus.NOT_FOUND) {
+                    if (throwable instanceof WebClientResponseException exception) {
+                        if (exception.getStatusCode() == HttpStatus.NOT_FOUND) {
                             return Mono.error(new NotFoundException(IDENTPOOL + getMessage(throwable)));
                         } else {
                             return Mono.error(new InvalidRequestException(IDENTPOOL + getMessage(throwable)));
@@ -62,5 +55,12 @@ public class IdentpoolPostVoidCommand implements Callable<Mono<Void>> {
                         return Mono.error(new InternalError(IDENTPOOL + getMessage(throwable)));
                     }
                 });
+    }
+
+    protected static String getMessage(Throwable error) {
+
+        return error instanceof WebClientResponseException webClientResponseException ?
+                webClientResponseException.getResponseBodyAsString(StandardCharsets.UTF_8) :
+                error.getMessage();
     }
 }

@@ -1,7 +1,7 @@
 plugins {
     id 'java'
     id "org.sonarqube" version "4.0.0.2929"
-    id 'org.springframework.boot' version "3.0.4"
+    id 'org.springframework.boot' version "3.1.4"
     id 'io.spring.dependency-management' version "1.1.0"
     id "jacoco"
 }
@@ -38,7 +38,7 @@ bootJar {
 dependencyManagement {
     applyMavenExclusions = false
     imports {
-        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2022.0.1'
+        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2022.0.4'
     }
 }
 
@@ -59,14 +59,14 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
 
     implementation 'org.hibernate.validator:hibernate-validator'
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
-    implementation 'io.swagger.core.v3:swagger-annotations-jakarta:2.2.8'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
+    implementation 'io.swagger.core.v3:swagger-annotations-jakarta:2.2.10'
 
     implementation 'org.aspectj:aspectjweaver:1.9.7'
 
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
     implementation 'javax.json.bind:javax.json.bind-api:1.0'
-    implementation 'javax.activation:activation:1.1'
+    implementation 'javax.activation:activation:1.1.1'
     implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.8'
     implementation 'com.sun.xml.bind:jaxb-core:2.3.0.1'
 
@@ -84,4 +84,4 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
 }
-java.sourceCompatibility = JavaVersion.VERSION_17
+java.sourceCompatibility = JavaVersion.VERSION_20

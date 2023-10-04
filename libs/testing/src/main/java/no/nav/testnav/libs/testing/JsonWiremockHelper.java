@@ -1,5 +1,20 @@
 package no.nav.testnav.libs.testing;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.tomakehurst.wiremock.client.MappingBuilder;
+import com.github.tomakehurst.wiremock.matching.RequestPatternBuilder;
+import com.github.tomakehurst.wiremock.matching.UrlPathPattern;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import static com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder.responseDefinition;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.delete;
@@ -16,37 +31,17 @@ import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static com.github.tomakehurst.wiremock.client.WireMock.verify;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.tomakehurst.wiremock.client.MappingBuilder;
-import com.github.tomakehurst.wiremock.matching.RequestPatternBuilder;
-import com.github.tomakehurst.wiremock.matching.UrlPathPattern;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 public class JsonWiremockHelper {
 
     private final ObjectMapper mapper;
-
+    private final Set<String> requestFieldsToIgnore = new HashSet<>();
+    private final Map<String, String> queryParamMap = new HashMap<>();
     private UrlPathPattern urlPathPattern;
     private String requestBody;
     private String responseBody;
-    private final Set<String> requestFieldsToIgnore = new HashSet<>();
-    private final Map<String, String> queryParamMap = new HashMap<>();
 
     private JsonWiremockHelper(ObjectMapper mapper) {
         this.mapper = mapper;
-    }
-
-    public static JsonWiremockHelper builder(ObjectMapper mapper) {
-        return new JsonWiremockHelper(mapper);
     }
 
     public JsonWiremockHelper withUrlPathMatching(String urlPathMatching) {
@@ -58,7 +53,6 @@ public class JsonWiremockHelper {
         queryParamMap.put(name, value);
         return this;
     }
-
 
     public JsonWiremockHelper withResponseBody(Object responseBody) throws JsonProcessingException {
         this.responseBody = mapper.writeValueAsString(responseBody);
@@ -79,7 +73,6 @@ public class JsonWiremockHelper {
                 )
         );
     }
-
 
     public void stubPut() {
         stubFor(updateMappingBuilder(put(urlPathPattern)));
@@ -125,22 +118,6 @@ public class JsonWiremockHelper {
         stubFor(updateMappingBuilder(delete(urlPathPattern)));
     }
 
-    private MappingBuilder updateMappingBuilder(MappingBuilder mappingBuilder) {
-        queryParamMap.forEach((name, value) -> mappingBuilder.withQueryParam(name, equalTo(value)));
-
-        if (requestBody != null) {
-            mappingBuilder.withRequestBody(equalToJson(requestBody));
-        }
-
-        if (responseBody != null) {
-            mappingBuilder.willReturn(aResponse()
-                    .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                    .withBody(responseBody)
-            );
-        }
-        return mappingBuilder;
-    }
-
     public void verifyDelete() {
         RequestPatternBuilder requestPatternBuilder = deleteRequestedFor(urlPathPattern);
         if (requestBody != null) {
@@ -158,11 +135,31 @@ public class JsonWiremockHelper {
         verify(requestPatternBuilder);
     }
 
+    public static JsonWiremockHelper builder(ObjectMapper mapper) {
+        return new JsonWiremockHelper(mapper);
+    }
+
+    private MappingBuilder updateMappingBuilder(MappingBuilder mappingBuilder) {
+        queryParamMap.forEach((name, value) -> mappingBuilder.withQueryParam(name, equalTo(value)));
+
+        if (requestBody != null) {
+            mappingBuilder.withRequestBody(equalToJson(requestBody));
+        }
+
+        if (responseBody != null) {
+            mappingBuilder.willReturn(aResponse()
+                    .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                    .withBody(responseBody)
+            );
+        }
+        return mappingBuilder;
+    }
+
     private static String convertToRegexString(final String value, String... fieldToIgnore) {
         return ignoreFields(
                 value
-                        .replaceAll("\\{", "\\\\{")
-                        .replaceAll("\\}", "\\\\}"),
+                        .replace("\\{", "\\\\{")
+                        .replace("\\}", "\\\\}"),
                 fieldToIgnore
         );
     }

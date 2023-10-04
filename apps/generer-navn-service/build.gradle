@@ -1,7 +1,7 @@
 plugins {
     id 'java'
     id "org.sonarqube" version "4.0.0.2929"
-    id 'org.springframework.boot' version "3.0.4"
+    id 'org.springframework.boot' version "3.1.4"
     id 'io.spring.dependency-management' version "1.1.0"
     id "jacoco"
 }
@@ -38,7 +38,7 @@ bootJar {
 dependencyManagement {
     applyMavenExclusions = false
     imports {
-        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2022.0.1'
+        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2022.0.4'
     }
 }
 
@@ -65,8 +65,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
     implementation 'io.micrometer:micrometer-registry-prometheus'
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
-    implementation 'io.swagger.core.v3:swagger-annotations-jakarta:2.2.8'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
+    implementation 'io.swagger.core.v3:swagger-annotations-jakarta:2.2.10'
 
     implementation 'net.logstash.logback:logstash-logback-encoder:7.3'
     implementation 'org.hibernate.validator:hibernate-validator'
@@ -78,4 +78,4 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
 }
-java.sourceCompatibility = JavaVersion.VERSION_17
+java.sourceCompatibility = JavaVersion.VERSION_20

@@ -13,14 +13,14 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 public class PersonSearch {
-    private final String tag = "TESTNORGE";
+    private static final String TAG = "TESTNORGE";
+    private static final Boolean KUN_LEVENDE = true;
     private final List<String> excludeTags = Collections.singletonList("DOLLY");
-    private final Boolean kunLevende = true;
-
+   
+    RelasjonSearch relasjoner;
     private Integer page;
     private Integer pageSize;
     private String randomSeed;
     private FoedselSearch foedsel;
-    RelasjonSearch relasjoner;
 
 }

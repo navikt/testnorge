@@ -41,7 +41,7 @@ repositories {
     mavenLocal()
 }
 
-java.sourceCompatibility = JavaVersion.VERSION_17
+java.sourceCompatibility = JavaVersion.VERSION_20
 
 tasks.named('compileJava') {
     inputs.files(tasks.named('processResources'))

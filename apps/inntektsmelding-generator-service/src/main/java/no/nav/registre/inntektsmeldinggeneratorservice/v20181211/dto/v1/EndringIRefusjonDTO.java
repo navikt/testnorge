@@ -9,7 +9,6 @@ import no.seres.xsd.nav.inntektsmelding_m._20181211.XMLEndringIRefusjon;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Value
 @NoArgsConstructor(force = true)
@@ -31,7 +30,8 @@ public class EndringIRefusjonDTO implements ToXmlElement<XMLEndringIRefusjon> {
         return xmlEndringIRefusjon;
     }
 
-    static List<XMLEndringIRefusjon> convert(List<EndringIRefusjonDTO> list){
-        return list.stream().map(EndringIRefusjonDTO::toXmlElement).collect(Collectors.toList());
+    static List<XMLEndringIRefusjon> convert(List<EndringIRefusjonDTO> list) {
+        return list.stream().map(EndringIRefusjonDTO::toXmlElement)
+                .toList();
     }
 }

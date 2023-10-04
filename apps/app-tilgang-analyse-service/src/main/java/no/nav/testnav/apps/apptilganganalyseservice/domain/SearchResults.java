@@ -28,7 +28,7 @@ public class SearchResults {
         this.items = dto.getItems()
                 .stream()
                 .map(ItemResult::new)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public SearchResults concat(SearchResults results) {

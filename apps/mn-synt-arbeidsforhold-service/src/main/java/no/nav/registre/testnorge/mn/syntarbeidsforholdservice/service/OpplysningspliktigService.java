@@ -2,20 +2,17 @@ package no.nav.registre.testnorge.mn.syntarbeidsforholdservice.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.stereotype.Service;
-
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.GenererOrganisasjonPopulasjonConsumer;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.OppsummeringsdokumentConsumer;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.OrganisasjonConsumer;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.Opplysningspliktig;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.domain.Organisajon;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -30,26 +27,15 @@ public class OpplysningspliktigService {
         return organisasjonConssumer
                 .getOrganisasjoner(opplysningspliktigOrgnummer, miljo)
                 .stream()
-                .filter(value ->  !value.getDriverVirksomheter().isEmpty())
+                .filter(value -> !value.getDriverVirksomheter().isEmpty())
                 .map(Organisajon::new)
-                .collect(Collectors.toList());
-    }
-
-    private Opplysningspliktig getOpplysningspliktig(Organisajon organisajon, LocalDate kalendermaaned, String miljo) {
-        Optional<Opplysningspliktig> opplysningspliktig = oppsummeringsdokumentConsumer.getOpplysningspliktig(organisajon, kalendermaaned, miljo);
-        if (opplysningspliktig.isPresent()) {
-            Opplysningspliktig temp = opplysningspliktig.get();
-            temp.setVersion(temp.getVersion() + 1);
-            temp.setKalendermaaned(kalendermaaned);
-            return temp;
-        }
-        return new Opplysningspliktig(organisajon, kalendermaaned);
+                .toList();
     }
 
     public List<Opplysningspliktig> getAllOpplysningspliktig(LocalDate kalendermaaned, String miljo) {
         var list = getOpplysningspliktigeOrganisasjoner(miljo);
         log.info("Fant {} opplysningspliktig i Mini-Norge Ereg.", list.stream().map(Organisajon::getOrgnummer).collect(Collectors.joining(", ")));
-        return list.stream().map(organisajon -> getOpplysningspliktig(organisajon, kalendermaaned, miljo)).collect(Collectors.toList());
+        return list.stream().map(organisajon -> getOpplysningspliktig(organisajon, kalendermaaned, miljo)).toList();
     }
 
     public void send(List<Opplysningspliktig> list, String miljo) {
@@ -62,7 +48,18 @@ public class OpplysningspliktigService {
                 );
             }
             return value.isChanged();
-        }).collect(Collectors.toList());
+        }).toList();
         oppsummeringsdokumentConsumer.sendOpplysningspliktig(opplysningspliktige, miljo);
+    }
+
+    private Opplysningspliktig getOpplysningspliktig(Organisajon organisajon, LocalDate kalendermaaned, String miljo) {
+        Optional<Opplysningspliktig> opplysningspliktig = oppsummeringsdokumentConsumer.getOpplysningspliktig(organisajon, kalendermaaned, miljo);
+        if (opplysningspliktig.isPresent()) {
+            Opplysningspliktig temp = opplysningspliktig.get();
+            temp.setVersion(temp.getVersion() + 1);
+            temp.setKalendermaaned(kalendermaaned);
+            return temp;
+        }
+        return new Opplysningspliktig(organisajon, kalendermaaned);
     }
 }
