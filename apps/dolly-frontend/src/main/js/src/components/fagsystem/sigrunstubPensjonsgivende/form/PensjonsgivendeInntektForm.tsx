@@ -17,7 +17,6 @@ const getSkatteordningOptions = (skatteordning) => {
 const createInntektForm = (kodeverk, skatteordning, path) => {
 	if (!kodeverk) {
 		return null
-		//TODO evt. lag fallback-data eller returner en feilmelding med kontakt dolly
 	}
 
 	const skatteordningOptions = getSkatteordningOptions(skatteordning)
@@ -61,7 +60,6 @@ const createInntektForm = (kodeverk, skatteordning, path) => {
 		return (
 			<FormikTextInput name={`${path}.${key}`} key={`${path}.${key}`} label={label} size={size} />
 		)
-		//TODO size utifra label length? :)
 	})
 }
 

@@ -252,7 +252,7 @@ export const fetchDataFraFagsystemer = (person, bestillingerById) => (dispatch) 
 		success.PDL = 'PDL'
 		success.PDL_FORVALTER = 'PDL_FORVALTER'
 	}
-	console.log('success: ', success) //TODO - SLETT MEG
+
 	Object.keys(success).forEach((system) => {
 		switch (system) {
 			case 'KRRSTUB':

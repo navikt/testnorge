@@ -27,7 +27,6 @@ export const kodeverkKeyToLabel = (key) => {
 export const getInitialInntekt = (kodeverk, skatteordning) => {
 	if (!kodeverk) {
 		return null
-		//TODO evt. lag fallback-data
 	}
 
 	const initialInntekt = {}
