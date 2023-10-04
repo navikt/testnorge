@@ -19,11 +19,6 @@ export const SigrunstubForm = ({ formikBag }) => (
 	</Vis>
 )
 
-const mapTjeneste = (tjeneste) => {
-	let mapped = tjeneste.toUpperCase()
-	return mapped.replace(' ', '_')
-}
-
 SigrunstubForm.validation = {
 	sigrunstub: ifPresent(
 		'$sigrunstub',
