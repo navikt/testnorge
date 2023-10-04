@@ -6,6 +6,7 @@ import ExpandableBlokk from './ExpandableBlokk'
 
 import './dollyFieldArray.less'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import styled from 'styled-components'
 
 const numberColor = {
 	ARRAY_LEVEL_ONE: '#CCE3ED',
@@ -42,6 +43,12 @@ const Numbering = ({ idx, color = numberColor.ARRAY_LEVEL_ONE }) => (
 		{idx}
 	</span>
 )
+
+const FaError = styled.div`
+	color: #ba3a26;
+	font-style: italic;
+	margin-bottom: 10px;
+`
 
 export const DollyFieldArrayWrapper = ({
 	header = null,
@@ -209,6 +216,7 @@ export const FormikDollyFieldArray = ({
 	maxEntries = null as unknown as number,
 	maxReachedDescription = null,
 	buttonText = null,
+	errorText = null,
 }) => (
 	<FieldArray name={name}>
 		{(arrayHelpers) => {
@@ -269,6 +277,7 @@ export const FormikDollyFieldArray = ({
 								)
 							}
 						})}
+						{errorText && <FaError>{errorText}</FaError>}
 						<FieldArrayAddButton
 							hoverText={title || (maxEntries === values.length && maxReachedDescription)}
 							addEntryButtonText={buttonText ? buttonText : header}

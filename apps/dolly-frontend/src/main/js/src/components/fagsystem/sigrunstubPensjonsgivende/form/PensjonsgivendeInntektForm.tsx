@@ -67,6 +67,7 @@ const createInntektForm = (kodeverk, skatteordning, path) => {
 
 export const PensjonsgivendeInntektForm = ({ path, formikBag, kodeverk, skatteordning }) => {
 	const newEntry = getInitialInntekt(kodeverk, skatteordning)
+	const inntektError = _.get(formikBag.errors, path)
 
 	return (
 		<FormikDollyFieldArray
@@ -74,6 +75,7 @@ export const PensjonsgivendeInntektForm = ({ path, formikBag, kodeverk, skatteor
 			header="Inntekter"
 			newEntry={newEntry}
 			canBeEmpty={false}
+			errorText={inntektError}
 			nested
 		>
 			{(path, idx) => {

@@ -15,6 +15,7 @@ import {
 } from '@/utils/hooks/useSigrunstub'
 import { getInitialInntekt } from '@/components/fagsystem/sigrunstubPensjonsgivende/utils'
 import * as _ from 'lodash-es'
+import { validation } from '@/components/fagsystem/sigrunstubPensjonsgivende/form/validation'
 
 export const getInitialSigrunstubPensjonsgivende = (kodeverk = null, skatteordning = null) => {
 	return {
@@ -86,3 +87,5 @@ export const SigrunstubPensjonsgivendeForm = ({ formikBag }) => {
 		</Vis>
 	)
 }
+
+SigrunstubPensjonsgivendeForm.validation = validation

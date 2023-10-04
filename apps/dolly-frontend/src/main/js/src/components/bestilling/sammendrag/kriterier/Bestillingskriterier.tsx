@@ -59,7 +59,7 @@ const _renderBestillingsDetaljer = (data) => {
 											{row?.map((attributt, idy) => {
 												if (attributt?.nestedItemRows) {
 													return (
-														<>
+														<React.Fragment key={idy}>
 															{attributt.nestedItemRows.map((nestedItem, y) => {
 																return (
 																	<div
@@ -68,9 +68,12 @@ const _renderBestillingsDetaljer = (data) => {
 																		style={{ backgroundColor: 'unset' }}
 																	>
 																		{nestedItem?.[0].numberHeader && (
-																			<h4>{nestedItem?.[0].numberHeader}</h4>
+																			<h4 key={'tittel' + y}>{nestedItem?.[0].numberHeader}</h4>
 																		)}
-																		<div className={'flexbox--align-start flexbox--wrap'}>
+																		<div
+																			className={'flexbox--align-start flexbox--wrap'}
+																			key={'values' + y}
+																		>
 																			{nestedItem?.[1].map((item, z) => {
 																				return _renderStaticValue(item, z)
 																			})}
@@ -78,7 +81,7 @@ const _renderBestillingsDetaljer = (data) => {
 																	</div>
 																)
 															})}
-														</>
+														</React.Fragment>
 													)
 												}
 												return attributt.expandableHeader ? (

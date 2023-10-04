@@ -91,6 +91,7 @@ Steg2.validation = Yup.object({
 	...AaregForm.validation,
 	...ArbeidsplassenForm.validation,
 	...SigrunstubForm.validation,
+	...SigrunstubPensjonsgivendeForm.validation,
 	...InntektstubForm.validation,
 	...InntektsmeldingForm.validation,
 	...SykdomForm.validation,
