@@ -27,6 +27,14 @@ spec:
           cluster: dev-gcp
         - application: dolly-backend-dev
           cluster: dev-gcp
+        - application: dolly-frontend
+          cluster: dev-gcp
+        - application: dolly-frontend-dev
+          cluster: dev-gcp
+        - application: dolly-idporten
+          cluster: dev-gcp
+        - application: dolly-frontend-dev-unstable
+          cluster: dev-gcp
         - application: testnorge-statisk-data-forvalter
           cluster: dev-fss
         - application: testnav-generer-organisasjon-populasjon-service
