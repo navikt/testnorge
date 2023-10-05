@@ -41,24 +41,25 @@ const concatNavnMedTidligereValgt = (type, navnInfo, selectedNavn) => {
 }
 
 export const NavnForm = ({ formikBag, path }: NavnTypes) => {
-	if (!_.get(formikBag?.values, path)) {
-		return null
-	}
-
 	const [selectedFornavn, setSelectedFornavn] = useState(
 		_.get(formikBag?.values, `${path}.alleFornavn`) || [],
 	)
+
 	const [selectedMellomnavn, setSelectedMellomnavn] = useState(
 		_.get(formikBag?.values, `${path}.alleMellomnavn`) || [],
 	)
 	const [selectedEtternavn, setSelectedEtternavn] = useState(
 		_.get(formikBag?.values, `${path}.alleEtternavn`) || [],
 	)
-
 	const [fornavnOptions, setFornavnOptions] = useState([])
+
 	const [mellomnavnOptions, setMellomnavnOptions] = useState([])
 	const [etternavnOptions, setetternavnOptions] = useState([])
 	const { data, navnInfo, mutate } = useGenererNavn()
+
+	if (!_.get(formikBag?.values, path)) {
+		return null
+	}
 
 	const refreshNavn = () => {
 		mutate()
