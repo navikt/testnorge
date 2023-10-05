@@ -1,6 +1,5 @@
 import { useAsync } from 'react-use'
 import { BrregstubApi, DollyApi, KrrApi, PdlforvalterApi } from '@/service/Api'
-import { getGenererNavn } from '@/utils/hooks/useGenererNavn'
 import Api from '@/api'
 import * as _ from 'lodash-es'
 import { Person, PersonData } from '@/components/fagsystem/pdlf/PdlTypes'
@@ -210,5 +209,5 @@ export const SelectOptionsOppslag = {
 				})
 			return options
 		}
-	}
+	},
 }

@@ -28,8 +28,7 @@ const concatNavnMedTidligereValgt = (type, navnInfo, selectedNavn) => {
 	if (!navnInfo) {
 		return []
 	}
-	const formattedNavnInfo = { loading: false, value: { data: navnInfo } }
-	const navnOptions = SelectOptionsOppslag.formatOptions(type, formattedNavnInfo)
+	const navnOptions = SelectOptionsOppslag.formatOptions(type, navnInfo)
 		.concat(
 			selectedNavn?.map((navn) => ({
 				value: navn,

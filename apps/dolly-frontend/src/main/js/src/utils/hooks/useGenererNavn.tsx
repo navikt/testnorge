@@ -17,11 +17,16 @@ export const useGenererNavn = () => {
 
 	return {
 		data: data,
-		navnInfo: data?.map((element: any) => ({
-			fornavn: element.adjektiv,
-			mellomnavn: element.adverb,
-			etternavn: element.substantiv,
-		})),
+		navnInfo: {
+			value: {
+				data: data?.map((element: any) => ({
+					fornavn: element.adjektiv,
+					mellomnavn: element.adverb,
+					etternavn: element.substantiv,
+				})),
+				loading: isLoading,
+			},
+		},
 		loading: isLoading,
 		error: error,
 		mutate: mutate,
