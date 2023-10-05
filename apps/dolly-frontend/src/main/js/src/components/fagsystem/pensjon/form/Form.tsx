@@ -39,7 +39,7 @@ export const PensjonForm = ({ formikBag }) => {
 					valgtAar < minAar &&
 					(nyBestilling || nyBestillingFraMal) && (
 						<StyledAlert variant={'info'} size={'small'}>
-							Pensjonsgivende inntekt kan settes fra året personen fyller 13 år. For å sikre at
+							Pensjonsgivende inntekt kan settes fra året personen fyller 17 år. For å sikre at
 							personen får gyldig alder kan denne settes ved å huke av for "Alder" på forrige side.
 						</StyledAlert>
 					)}

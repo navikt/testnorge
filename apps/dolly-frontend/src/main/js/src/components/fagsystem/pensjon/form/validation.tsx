@@ -43,7 +43,7 @@ const invalidAlderFom = (inntektFom, values) => {
 	const foedtEtter = _.get(values, 'pdldata.opprettNyPerson.foedtEtter')
 
 	if (!_.isNil(alder) && alder !== '') {
-		if (new Date().getFullYear() - alder + 13 > inntektFom) {
+		if (new Date().getFullYear() - alder + 17 > inntektFom) {
 			return true
 		}
 	} else if (!_.isNil(foedtFoer)) {
@@ -53,12 +53,12 @@ const invalidAlderFom = (inntektFom, values) => {
 		let year = foedtFoerDate.getFullYear()
 
 		year = day === 1 && month === 0 ? year - 1 : year
-		if (year + 13 > inntektFom) {
+		if (year + 17 > inntektFom) {
 			return true
 		}
 	} else if (!_.isNil(foedtEtter) && _.isNil(foedtFoer)) {
 		const foedtEtterDate = new Date(foedtEtter)
-		if (foedtEtterDate.getFullYear() + 13 > inntektFom) {
+		if (foedtEtterDate.getFullYear() + 17 > inntektFom) {
 			return true
 		}
 	}
@@ -128,7 +128,7 @@ const validFomDateTest = (val) => {
 		const values = this.options.context
 
 		if (invalidAlderFom(inntektFom, values)) {
-			return this.createError({ message: 'F.o.m kan tidligst være året personen fyller 13 år' })
+			return this.createError({ message: 'F.o.m kan tidligst være året personen fyller 17 år' })
 		}
 
 		let inntektTom = _.get(values, `${path}.tomAar`)
@@ -175,6 +175,6 @@ export const validation = {
 			tomAar: validTomDateTest(requiredNumber).typeError('Velg et gyldig år'),
 			belop: Yup.number().min(0, 'Tast inn et gyldig beløp').typeError('Tast inn et gyldig beløp'),
 			redusertMedGrunnbelop: Yup.boolean(),
-		})
+		}),
 	),
 }
