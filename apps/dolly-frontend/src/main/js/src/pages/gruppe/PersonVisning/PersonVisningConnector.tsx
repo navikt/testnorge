@@ -7,6 +7,9 @@ import PersonVisning from '@/pages/gruppe/PersonVisning/PersonVisning'
 
 const loadingSelectorKrr = createLoadingSelector(actions.getKrr)
 const loadingSelectorSigrun = createLoadingSelector([actions.getSigrun, actions.getSigrunSekvensnr])
+const loadingSelectorSigrunPensjonsgivende = createLoadingSelector([
+	actions.getSigrunPensjonsgivendeInntekt,
+])
 const loadingSelectorInntektstub = createLoadingSelector(actions.getInntektstub)
 const loadingSelectorPdlForvalter = createLoadingSelector(actions.getPdlForvalter)
 const loadingSelectorUdi = createLoadingSelector(actions.getUdi)
@@ -24,6 +27,7 @@ const loadingSelector = createSelector(
 		return {
 			krrstub: loadingSelectorKrr({ loading }),
 			sigrunstub: loadingSelectorSigrun({ loading }),
+			sigrunstubPensjonsgivende: loadingSelectorSigrunPensjonsgivende({ loading }),
 			inntektstub: loadingSelectorInntektstub({ loading }),
 			pdlforvalter: loadingSelectorPdlForvalter({ loading }),
 			udistub: loadingSelectorUdi({ loading }),
