@@ -58,7 +58,7 @@ export const Kontakt = ({ formikBag, path, eksisterendeNyPerson = null }: Kontak
 		} else return null
 	}
 
-	const { navnInfo } = useGenererNavn()
+	const { navnInfo, loading } = useGenererNavn()
 	const navnOptions = SelectOptionsOppslag.formatOptions('personnavn', navnInfo)
 
 	useEffect(() => {
@@ -130,7 +130,7 @@ export const Kontakt = ({ formikBag, path, eksisterendeNyPerson = null }: Kontak
 						options={navnOptions}
 						size="large"
 						placeholder={getPlaceholder(formikBag.values, `${advokatPath}.kontaktperson`)}
-						isLoading={navnInfo.loading}
+						isLoading={loading}
 						onChange={(navn: string) =>
 							setNavn(navn, `${advokatPath}.kontaktperson`, formikBag.setFieldValue)
 						}
@@ -151,7 +151,7 @@ export const Kontakt = ({ formikBag, path, eksisterendeNyPerson = null }: Kontak
 						options={navnOptions}
 						size="large"
 						placeholder={getPlaceholder(formikBag.values, `${organisasjonPath}.kontaktperson`)}
-						isLoading={navnInfo.loading}
+						isLoading={loading}
 						onChange={(navn: string) =>
 							setNavn(navn, `${organisasjonPath}.kontaktperson`, formikBag.setFieldValue)
 						}
@@ -184,7 +184,7 @@ export const Kontakt = ({ formikBag, path, eksisterendeNyPerson = null }: Kontak
 						options={navnOptions}
 						size="xlarge"
 						placeholder={getPlaceholder(formikBag.values, `${personPath}.navn`)}
-						isLoading={navnInfo.loading}
+						isLoading={loading}
 						onChange={(navn: string) =>
 							setNavn(navn, `${personPath}.navn`, formikBag.setFieldValue)
 						}

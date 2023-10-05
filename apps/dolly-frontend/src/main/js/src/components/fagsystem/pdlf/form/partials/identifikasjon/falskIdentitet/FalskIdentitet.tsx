@@ -12,7 +12,7 @@ import { PdlEksisterendePerson } from '@/components/fagsystem/pdlf/form/partials
 import { useGenererNavn } from '@/utils/hooks/useGenererNavn'
 
 export const FalskIdentitet = ({ formikBag }) => {
-	const { navnInfo } = useGenererNavn()
+	const { navnInfo , loading} = useGenererNavn()
 	const navnOptions = SelectOptionsOppslag.formatOptions('personnavn', navnInfo)
 
 	const settIdentitetType = (e, path, advancedValues) => {
@@ -95,7 +95,7 @@ export const FalskIdentitet = ({ formikBag }) => {
 											formikBag.values,
 											`${path}.rettIdentitetVedOpplysninger.personnavn`,
 										)}
-										isLoading={navnInfo.loading}
+										isLoading={loading}
 										onChange={(navn) =>
 											setNavn(
 												navn,
