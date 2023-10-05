@@ -3,10 +3,8 @@ package no.nav.dolly.provider.api;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
-import no.nav.dolly.consumer.generernavn.GenererNavnConsumer;
 import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
 import no.nav.dolly.consumer.kodeverk.KodeverkMapper;
-import no.nav.dolly.domain.PdlPerson.Navn;
 import no.nav.dolly.domain.resultset.kodeverk.KodeverkAdjusted;
 import no.nav.dolly.service.InntektsmeldingEnumService;
 import no.nav.dolly.service.InntektsmeldingEnumService.EnumTypes;
@@ -14,7 +12,6 @@ import no.nav.dolly.service.RsTransaksjonMapping;
 import no.nav.dolly.service.TransaksjonMappingService;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,7 +31,6 @@ public class OppslagController {
 
     private final KodeverkMapper kodeverkMapper;
     private final KodeverkConsumer kodeverkConsumer;
-    private final GenererNavnConsumer genererNavnConsumer;
     private final InntektsmeldingEnumService inntektsmeldingEnumService;
     private final TransaksjonMappingService transaksjonMappingService;
 
@@ -53,13 +49,6 @@ public class OppslagController {
     public Mono<Map<String, String>> fetchKodeverk(@RequestParam String kodeverk) {
 
         return kodeverkConsumer.getKodeverkByName(kodeverk);
-    }
-
-    @GetMapping("/personnavn")
-    @Operation(description = "Henter et gitt antall syntetiske personnavn")
-    public ResponseEntity<List<Navn>> getPersonnavn
-            (@RequestParam(required = false, defaultValue = "10") Integer antall) {
-        return genererNavnConsumer.getPersonnavn(antall);
     }
 
     @GetMapping("/inntektsmelding/{enumtype}")

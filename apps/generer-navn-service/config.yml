@@ -23,10 +23,6 @@ spec:
           cluster: dev-gcp
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
-        - application: dolly-backend
-          cluster: dev-gcp
-        - application: dolly-backend-dev
-          cluster: dev-gcp
         - application: dolly-frontend
           cluster: dev-gcp
         - application: dolly-frontend-dev

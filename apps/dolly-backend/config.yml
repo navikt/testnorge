@@ -40,7 +40,6 @@ spec:
           namespace: navdig
     outbound:
       rules:
-        - application: generer-navn-service
         - application: testnav-amelding-service
         - application: testnav-arbeidsforhold-service
         - application: testnav-inntektsmelding-service

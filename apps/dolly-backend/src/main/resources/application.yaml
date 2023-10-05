@@ -107,11 +107,6 @@ consumers:
     namespace: dolly
     url: https://testnav-norg2-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
-  testnav-generer-navn-service:
-    name: generer-navn-service
-    namespace: dolly
-    url: http://generer-navn-service.dolly.svc.cluster.local
-    cluster: dev-gcp
   testnav-person-service:
     name: testnav-person-service
     namespace: dolly
