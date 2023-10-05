@@ -63,6 +63,11 @@ export const initialValuesBasedOnMal = (mal: any) => {
 			initialValuesMal.pensjonforvalter.alderspensjon,
 		)
 	}
+	if (initialValuesMal.pensjonforvalter?.uforetrygd) {
+		initialValuesMal.pensjonforvalter.uforetrygd = getUpdatedUforetrygdData(
+			initialValuesMal.pensjonforvalter.uforetrygd,
+		)
+	}
 
 	initialValuesMal.environments = filterMiljoe(dollyEnvironments, mal.bestilling.environments)
 	return initialValuesMal
@@ -74,6 +79,14 @@ const getUpdatedAlderspensjonData = (alderspensjonData) => {
 		newAlderspensjonData.iverksettelsesdato = setDate(addMonths(new Date(), 1), 1)
 	}
 	return newAlderspensjonData
+}
+
+const getUpdatedUforetrygdData = (uforetrygdData) => {
+	const newUforetrygdData = Object.assign({}, uforetrygdData)
+	if (!isAfter(new Date(newUforetrygdData.onsketVirkningsDato), new Date())) {
+		newUforetrygdData.onsketVirkningsDato = setDate(addMonths(new Date(), 1), 1)
+	}
+	return newUforetrygdData
 }
 
 const getUpdatedArenaforvalterData = (arenaforvalterData) => {
