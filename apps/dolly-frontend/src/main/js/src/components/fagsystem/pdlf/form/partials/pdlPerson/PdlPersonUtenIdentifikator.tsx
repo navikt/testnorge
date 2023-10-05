@@ -17,7 +17,7 @@ export const PdlPersonUtenIdentifikator = ({
 	formikBag,
 	path,
 }: PdlPersonUtenIdentifikatorValues) => {
-	const { navnInfo } = useGenererNavn()
+	const { navnInfo, loading } = useGenererNavn()
 	//@ts-ignore
 	const fornavnOptions = SelectOptionsOppslag.formatOptions('fornavn', navnInfo)
 	//@ts-ignore
@@ -42,18 +42,21 @@ export const PdlPersonUtenIdentifikator = ({
 				label="Fornavn"
 				placeholder={fornavn ? fornavn : 'Velg...'}
 				options={fornavnOptions}
+				isLoading={loading}
 			/>
 			<FormikSelect
 				name={`${path}.navn.mellomnavn`}
 				label="Mellomnavn"
 				placeholder={mellomnavn ? mellomnavn : 'Velg...'}
 				options={mellomnavnOptions}
+				isLoading={loading}
 			/>
 			<FormikSelect
 				name={`${path}.navn.etternavn`}
 				label="Etternavn"
 				placeholder={etternavn ? etternavn : 'Velg...'}
 				options={etternavnOptions}
+				isLoading={loading}
 			/>
 		</div>
 	)
