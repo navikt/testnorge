@@ -20,7 +20,7 @@ const multiplePdlforvalterUrl = (gruppe) => {
 const multiplePdlPersonUrl = (gruppe) => {
 	if (!gruppe) return null
 	const maxAntall = 40
-	const url = '/dolly-backend/api/v1/pdlperson/identer?'
+	const url = '/person-service/api/v2/personer/identer?'
 	return sliceGruppe(gruppe, maxAntall, url)
 }
 

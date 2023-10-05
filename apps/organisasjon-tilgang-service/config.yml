@@ -26,8 +26,6 @@ spec:
       rules:
         - application: dolly-frontend-dev
           cluster: dev-gcp
-        - application: dolly-backend-dev
-          cluster: dev-gcp
         - application: team-dolly-lokal-app
           cluster: dev-gcp
         - application: testnav-oversikt-frontend

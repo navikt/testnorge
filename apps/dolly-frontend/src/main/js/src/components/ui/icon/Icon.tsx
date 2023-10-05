@@ -110,6 +110,7 @@ export const icons = {
 	'man-silhouette': SilhouetteIcon,
 	woman: FigureOutwardIcon,
 	person: PersonIcon,
+	ukjent: SilhouetteIcon,
 	group: PersonGroupIcon,
 	'group-light': PersonGroupIcon,
 	'group-dark': PersonGroupFillIcon,

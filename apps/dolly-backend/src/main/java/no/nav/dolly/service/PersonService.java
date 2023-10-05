@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
-import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
+import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.dto.TestidentDTO;
@@ -36,7 +36,7 @@ public class PersonService {
 
     private final List<ClientRegister> clientRegister;
     private final PdlDataConsumer pdlDataConsumer;
-    private final PdlPersonConsumer pdlPersonConsumer;
+    private final PersonServiceConsumer personServiceConsumer;
     private final BestillingService bestillingService;
     private final IdentService identService;
 
@@ -113,7 +113,7 @@ public class PersonService {
                 .toList();
 
         if (!testidenter.isEmpty()) {
-            var testnorgeRelasjoner = pdlPersonConsumer.getPdlPersoner(testnorgeIdenter)
+            var testnorgeRelasjoner = personServiceConsumer.getPdlPersoner(testnorgeIdenter)
                     .filter(pdlPersonBolk -> nonNull(pdlPersonBolk.getData()))
                     .map(PdlPersonBolk::getData)
                     .map(PdlPersonBolk.Data::getHentPersonBolk)

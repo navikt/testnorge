@@ -18,7 +18,7 @@ import static java.util.Objects.nonNull;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class PensjonData {
 
     @Schema(description = "Inntekt i pensjonsopptjeningsregister (POPP)")
@@ -38,7 +38,7 @@ public class PensjonData {
     }
 
     public boolean hasTp() {
-        return !tp.isEmpty();
+        return !getTp().isEmpty();
     }
 
     public boolean hasAlderspensjon() {

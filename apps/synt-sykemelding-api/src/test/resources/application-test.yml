@@ -6,6 +6,7 @@ spring:
   cloud:
     vault:
       enabled: false
+      token: dummy
 
 azure:
   app:
@@ -23,7 +24,7 @@ consumers:
     namespace: dummy
   sykemelding-api:
     url: http://localhost:${wiremock.server.port}/sykemelding
-    name: testnav-sykemelding-api-proxy
+    name: testnav-sykemelding-api
     cluster: dummy
     namespace: dummy
   testnav-organisasjon-service:

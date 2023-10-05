@@ -7,6 +7,7 @@ import {
 	KrrApi,
 	PdlforvalterApi,
 	SigrunApi,
+	SkjermingApi,
 	TpsMessagingApi,
 } from '@/service/Api'
 import { onSuccess } from '@/ducks/utils/requestActions'
@@ -25,6 +26,12 @@ export const actions = createActions(
 		],
 		getSigrun: [
 			SigrunApi.getPerson,
+			(ident) => ({
+				ident,
+			}),
+		],
+		getSigrunPensjonsgivendeInntekt: [
+			SigrunApi.getPensjonsgivendeInntekt,
 			(ident) => ({
 				ident,
 			}),
@@ -72,7 +79,7 @@ export const actions = createActions(
 			}),
 		],
 		getSkjermingsregister: [
-			DollyApi.getSkjerming,
+			SkjermingApi.getSkjerming,
 			(ident) => ({
 				ident,
 			}),
@@ -106,6 +113,7 @@ const initialState = {
 	tpsf: {},
 	tpsMessaging: {},
 	sigrunstub: {},
+	sigrunstubPensjonsgivende: {},
 	inntektstub: {},
 	krrstub: {},
 	pdl: {},
@@ -123,6 +131,9 @@ export default handleActions(
 	{
 		[onSuccess(actions.getSigrun)](state, action) {
 			state.sigrunstub[action.meta.ident] = action.payload.data.responseList
+		},
+		[onSuccess(actions.getSigrunPensjonsgivendeInntekt)](state, action) {
+			state.sigrunstubPensjonsgivende[action.meta.ident] = action.payload.data
 		},
 		[onSuccess(actions.getTpsMessaging)](state, action) {
 			state.tpsMessaging[action.meta.ident] = action?.payload.data?.[0]?.person
@@ -200,6 +211,7 @@ export default handleActions(
 const deleteIdentState = (state, ident) => {
 	delete state.tpsf[ident]
 	delete state.sigrunstub[ident]
+	delete state.sigrunstubPensjonsgivende[ident]
 	delete state.inntektstub[ident]
 	delete state.krrstub[ident]
 	delete state.pdl[ident]
@@ -252,6 +264,8 @@ export const fetchDataFraFagsystemer = (person, bestillingerById) => (dispatch) 
 			case 'SIGRUN_LIGNET':
 				dispatch(actions.getSigrun(personId))
 				return dispatch(actions.getSigrunSekvensnr(personId))
+			case 'SIGRUN_PENSJONSGIVENDE':
+				return dispatch(actions.getSigrunPensjonsgivendeInntekt(personId))
 			case 'INNTK':
 				return dispatch(actions.getInntektstub(personId))
 			case 'TPS_MESSAGING':
@@ -447,6 +461,7 @@ export const selectDataForIdent = (state, ident) => {
 		tpsf: state.fagsystem.tpsf[ident],
 		tpsMessaging: state.fagsystem.tpsMessaging[ident],
 		sigrunstub: state.fagsystem.sigrunstub[ident],
+		sigrunstubPensjonsgivende: state.fagsystem.sigrunstubPensjonsgivende[ident],
 		inntektstub: state.fagsystem.inntektstub[ident],
 		krrstub: state.fagsystem.krrstub[ident],
 		pdl: state.fagsystem.pdl[ident],

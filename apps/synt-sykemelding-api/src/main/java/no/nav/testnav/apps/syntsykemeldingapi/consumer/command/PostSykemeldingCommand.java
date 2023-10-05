@@ -25,7 +25,7 @@ public class PostSykemeldingCommand implements Callable<Mono<String>> {
     public Mono<String> call() {
         return webClient.post()
                 .uri(builder ->
-                        builder.path("/sykemelding/api/v1/sykemeldinger").build()
+                        builder.path("/api/v1/sykemeldinger").build()
                 )
                 .header(AUTHORIZATION, "Bearer " + token)
                 .bodyValue(sykemelding)

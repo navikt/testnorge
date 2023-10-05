@@ -3,15 +3,22 @@ package no.nav.dolly.service.excel;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
-import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.util.DatoFraIdentUtil;
 import no.nav.dolly.util.IdentTypeUtil;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.*;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.MatrikkeladresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.OppholdsadresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.SikkerhetstiltakDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskAdresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.IgnoredErrorType;
 import org.apache.poi.ss.util.CellRangeAddress;
@@ -24,7 +31,12 @@ import reactor.util.function.Tuple3;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
@@ -62,7 +74,7 @@ public class PersonExcelService {
     private static final int VERGE = 18;
     private static final int FULLMEKTIG = 19;
 
-    private final PdlPersonConsumer pdlPersonConsumer;
+    private final PersonServiceConsumer personServiceConsumer;
     private final KodeverkConsumer kodeverkConsumer;
 
     private static String getFornavn(PdlPerson.Navn navn) {
@@ -398,7 +410,7 @@ public class PersonExcelService {
                                         kodeverkConsumer.getKodeverkByName(KOMMUNENR),
                                         kodeverkConsumer.getKodeverkByName(POSTNUMMER))
 
-                                .flatMap(kodeverk -> pdlPersonConsumer.getPdlPersonerNoRetries(identer)
+                                .flatMap(kodeverk -> personServiceConsumer.getPdlPersonerNoRetries(identer)
                                         .filter(personbolk -> nonNull(personbolk.getData()))
                                         .map(PdlPersonBolk::getData)
                                         .map(PdlPersonBolk.Data::getHentPersonBolk)

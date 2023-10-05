@@ -2,10 +2,6 @@ import Request from '@/service/services/Request'
 import Endpoints from './DollyEndpoints'
 
 export default {
-	getSkjerming(ident) {
-		return Request.get(Endpoints.skjermingByIdent(ident))
-	},
-
 	getGruppeById(gruppeId) {
 		return Request.get(Endpoints.gruppeById(gruppeId))
 	},
@@ -156,10 +152,6 @@ export default {
 		return Request.get(Endpoints.personoppslagMange(identer))
 	},
 
-	getPersonnavn() {
-		return Request.get(Endpoints.getPersonnavn())
-	},
-
 	getTransaksjonid(system, ident, bestillingsid) {
 		return Request.get(Endpoints.getTransaksjonsid(system, ident, bestillingsid))
 	},
@@ -286,22 +278,5 @@ export default {
 				console.error(error)
 				throw error
 			})
-	},
-
-	// Pensjon-oppslag
-	getPoppMiljoer() {
-		return Request.get(Endpoints.getPoppMiljoer())
-	},
-
-	getPoppInntekter(ident, miljoe) {
-		return Request.get(Endpoints.getPoppInntekter(ident, miljoe))
-	},
-
-	getTpMiljoer() {
-		return Request.get(Endpoints.getTpMiljoer())
-	},
-
-	getTpOrdning(ident, miljoe) {
-		return Request.get(Endpoints.getTpOrdning(ident, miljoe))
 	},
 }

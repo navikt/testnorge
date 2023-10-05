@@ -6,7 +6,7 @@ import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.sykemelding.command.SykemeldingPostCommand;
 import no.nav.dolly.bestilling.sykemelding.domain.DetaljertSykemeldingRequest;
 import no.nav.dolly.bestilling.sykemelding.dto.SykemeldingResponse;
-import no.nav.dolly.config.credentials.SykemeldingApiProxyProperties;
+import no.nav.dolly.config.credentials.SykemeldingApiProperties;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
@@ -26,7 +26,7 @@ public class SykemeldingConsumer implements ConsumerStatus {
 
     public SykemeldingConsumer(
             TokenExchange accessTokenService,
-            SykemeldingApiProxyProperties serverProperties,
+            SykemeldingApiProperties serverProperties,
             ObjectMapper objectMapper,
             WebClient.Builder webClientBuilder
     ) {
@@ -38,7 +38,7 @@ public class SykemeldingConsumer implements ConsumerStatus {
                 .build();
     }
 
-    @Timed(name = "providers", tags = {"operation", "detaljertsykemelding_opprett"})
+    @Timed(name = "providers", tags = { "operation", "detaljertsykemelding_opprett" })
     public Mono<SykemeldingResponse> postDetaljertSykemelding(DetaljertSykemeldingRequest detaljertSykemeldingRequest) {
 
         log.info("Detaljert Sykemelding sendt {}", detaljertSykemeldingRequest);
@@ -55,6 +55,6 @@ public class SykemeldingConsumer implements ConsumerStatus {
 
     @Override
     public String consumerName() {
-        return "testnav-sykemelding-api-proxy";
+        return "testnav-sykemelding-api";
     }
 }

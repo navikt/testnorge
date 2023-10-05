@@ -1,6 +1,6 @@
 
 ALTINN_URL: https://tt02.altinn.no
-TOKENDINGS_URL: https://tokenx.dev-gcp.nav.cloud.nais.io 
+TOKENDINGS_URL: https://tokenx.dev-gcp.nav.cloud.nais.io
 
 altinn.api.key: dummy
 

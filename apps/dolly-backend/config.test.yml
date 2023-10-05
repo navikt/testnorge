@@ -7,7 +7,9 @@ metadata:
     team: dolly
   annotations:
     nginx.ingress.kubernetes.io/proxy-body-size: "512m"
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+
 spec:
   tokenx:
     enabled: true
@@ -31,17 +33,16 @@ spec:
           cluster: dev-gcp
     outbound:
       rules:
-        - application: generer-navn-service
         - application: testnav-amelding-service
         - application: testnav-arbeidsforhold-service
         - application: testnav-inntektsmelding-service
         - application: testnav-miljoer-service
         - application: testnav-organisasjon-forvalter
         - application: testnav-organisasjon-service
-        - application: testnav-organisasjon-tilgang-service
         - application: testnav-pdl-forvalter-dev
         - application: testnav-person-service
         - application: testnav-synt-sykemelding-api
+        - application: testnav-sykemelding-api
         - application: testnav-tps-messaging-service
         - application: testnorge-profil-api-dev
       external:
@@ -61,8 +62,6 @@ spec:
         - host: testnav-pdl-proxy.dev-fss-pub.nais.io
         - host: testnav-sigrunstub-proxy.dev-fss-pub.nais.io
         - host: testnav-skjermingsregister-proxy.dev-fss-pub.nais.io
-        - host: testnav-statisk-data-forvalter-proxy.dev-fss-pub.nais.io
-        - host: testnav-sykemelding-api-proxy.dev-fss-pub.nais.io
         - host: testnav-udistub-proxy.dev-fss-pub.nais.io
         - host: tps-forvalteren-dev-proxy.dev-fss-pub.nais.io
   webproxy: true
