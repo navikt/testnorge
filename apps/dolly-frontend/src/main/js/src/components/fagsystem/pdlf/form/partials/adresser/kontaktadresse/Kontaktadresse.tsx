@@ -22,6 +22,7 @@ import { Adressetype } from '@/components/fagsystem/pdlf/PdlTypes'
 import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 import { getPlaceholder, setNavn } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
+import { useGenererNavn } from '@/utils/hooks/useGenererNavn'
 
 interface KontaktadresseValues {
 	formikBag: FormikProps<{}>
@@ -89,7 +90,7 @@ export const KontaktadresseForm = ({ formikBag, path, idx }: KontaktadresseFormV
 		formikBag.setFieldValue(path, adresseClone)
 	}
 
-	const navnInfo = SelectOptionsOppslag.hentPersonnavn()
+	const { navnInfo, loading } = useGenererNavn()
 	const navnOptions = SelectOptionsOppslag.formatOptions('personnavn', navnInfo)
 
 	return (
@@ -127,7 +128,7 @@ export const KontaktadresseForm = ({ formikBag, path, idx }: KontaktadresseFormV
 					options={navnOptions}
 					size="xlarge"
 					placeholder={getPlaceholder(formikBag.values, `${path}.opprettCoAdresseNavn`)}
-					isLoading={navnInfo.loading}
+					isLoading={loading}
 					onChange={(navn: Target) =>
 						setNavn(navn, `${path}.opprettCoAdresseNavn`, formikBag.setFieldValue)
 					}

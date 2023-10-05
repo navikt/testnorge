@@ -1,15 +1,12 @@
 package no.nav.dolly.bestilling.pensjonforvalter;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.netty.channel.ChannelOption;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.pensjonforvalter.command.AnnullerSamboerCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.HentMiljoerCommand;
-import no.nav.dolly.bestilling.pensjonforvalter.command.HentPoppInntekterCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.HentSamboerCommand;
-import no.nav.dolly.bestilling.pensjonforvalter.command.HentTpForholdCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.LagreAlderspensjonCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.LagrePoppInntektCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.LagreSamboerCommand;
@@ -141,14 +138,6 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
                 .flatMapMany(token -> new LagreUforetrygdCommand(webClient, token.getTokenValue(), request).call());
     }
 
-    @Timed(name = "providers", tags = {"operation", "pen_getInntekter"})
-    public JsonNode getInntekter(String ident, String miljoe) {
-
-        return tokenService.exchange(serviceProperties)
-                .flatMap(token -> new HentPoppInntekterCommand(webClient, token.getTokenValue(), ident, miljoe).call())
-                .block();
-    }
-
     @Timed(name = "providers", tags = {"operation", "pen_lagreTpForhold"})
     public Flux<PensjonforvalterResponse> lagreTpForhold(PensjonTpForholdRequest pensjonTpForholdRequest) {
 
@@ -167,14 +156,6 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
                 .flatMap((Flux::from))
                 .collectList()
                 .subscribe(response -> log.info("Slettet mot PESYS (tp) i alle miljoer"));
-    }
-
-    @Timed(name = "providers", tags = {"operation", "pen_getTpForhold"})
-    public JsonNode getTpForhold(String ident, String miljoe) {
-
-        return tokenService.exchange(serviceProperties)
-                .flatMap(token -> new HentTpForholdCommand(webClient, token.getTokenValue(), ident, miljoe).call())
-                .block();
     }
 
     @Timed(name = "providers", tags = {"operation", "pen_lagreTpYtelse"})

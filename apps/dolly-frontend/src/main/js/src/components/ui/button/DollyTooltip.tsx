@@ -22,13 +22,7 @@ const DollyTooltip = ({
 	}
 	return useExternalTooltip ? (
 		<span data-cy={dataCy}>
-			<RcTooltip.default
-				overlay={content}
-				placement="top"
-				mouseEnterDelay={0.1}
-				mouseLeaveDelay={0.1}
-				{...rest}
-			>
+			<RcTooltip.default overlay={content} placement="top" {...rest}>
 				{children}
 			</RcTooltip.default>
 		</span>

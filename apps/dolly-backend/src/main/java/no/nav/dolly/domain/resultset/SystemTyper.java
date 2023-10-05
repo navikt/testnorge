@@ -1,10 +1,7 @@
 package no.nav.dolly.domain.resultset;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Getter
 @NoArgsConstructor
@@ -52,16 +49,5 @@ public enum SystemTyper {
 
     SystemTyper(String beskrivelse) {
         this.beskrivelse = beskrivelse;
-    }
-
-    @Getter
-    @Setter
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class SystemBeskrivelse {
-
-        private String system;
-        private String beskrivelse;
     }
 }

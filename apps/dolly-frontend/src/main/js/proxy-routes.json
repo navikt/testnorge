@@ -213,5 +213,10 @@
     "target": "http://localhost:8020",
     "changeOrigin": true,
     "secure": false
+  },
+  "/generer-navn-service": {
+    "target": "http://localhost:8020",
+    "changeOrigin": true,
+    "secure": false
   }
 }
