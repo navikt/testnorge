@@ -6,6 +6,10 @@ import { aaregAttributt } from '@/components/fagsystem/aareg/form/Form'
 import { sigrunAttributt } from '@/components/fagsystem/sigrunstub/form/Form'
 import { inntektstubAttributt } from '@/components/fagsystem/inntektstub/form/Form'
 import { inntektsmeldingAttributt } from '@/components/fagsystem/inntektsmelding/form/Form'
+import {
+	getInitialSigrunstubPensjonsgivende,
+	sigrunstubPensjonsgivendeAttributt,
+} from '@/components/fagsystem/sigrunstubPensjonsgivende/form/Form'
 
 export const ArbeidInntektPanel = ({ stateModifier, formikBag }) => {
 	const sm = stateModifier(ArbeidInntektPanel.initialValues)
@@ -26,13 +30,15 @@ export const ArbeidInntektPanel = ({ stateModifier, formikBag }) => {
 				sigrunAttributt,
 				inntektstubAttributt,
 				inntektsmeldingAttributt,
+				sigrunstubPensjonsgivendeAttributt,
 			])}
 		>
 			<AttributtKategori title="Arbeidsforhold (Aareg)" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.aareg} />
 			</AttributtKategori>
-			<AttributtKategori title="Skatteoppgjør (Sigrun)" attr={sm.attrs}>
+			<AttributtKategori title="Inntekt (Sigrun)" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.sigrunstub} />
+				<Attributt attr={sm.attrs.sigrunstubPensjonsgivende} />
 			</AttributtKategori>
 			<AttributtKategori title="A-ordningen (Inntektstub)" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.inntektstub} />
@@ -58,7 +64,7 @@ ArbeidInntektPanel.initialValues = ({ set, del, has }) => ({
 		},
 	},
 	sigrunstub: {
-		label: 'Har skattbar inntekt',
+		label: 'Har lignet inntekt',
 		checked: has('sigrunstub'),
 		add: () =>
 			set('sigrunstub', [
@@ -70,6 +76,12 @@ ArbeidInntektPanel.initialValues = ({ set, del, has }) => ({
 				},
 			]),
 		remove: () => del('sigrunstub'),
+	},
+	sigrunstubPensjonsgivende: {
+		label: 'Har pensjonsgivende inntekt',
+		checked: has('sigrunstubPensjonsgivende'),
+		add: () => set('sigrunstubPensjonsgivende', [getInitialSigrunstubPensjonsgivende()]),
+		remove: () => del('sigrunstubPensjonsgivende'),
 	},
 	inntektsmelding: {
 		label: 'Har inntektsmelding',

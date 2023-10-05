@@ -9,14 +9,14 @@ import {
 	omraaderArrayToString,
 	oversettBoolean,
 	showLabel,
-	uppercaseAndUnderscoreToCapitalized
+	uppercaseAndUnderscoreToCapitalized,
 } from '@/utils/DataFormatter'
 import {
 	AdresseKodeverk,
 	ArbeidKodeverk,
 	PersoninformasjonKodeverk,
 	SigrunKodeverk,
-	VergemaalKodeverk
+	VergemaalKodeverk,
 } from '@/config/kodeverk'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
@@ -24,6 +24,7 @@ import _get from 'lodash/get'
 import _has from 'lodash/has'
 import { MedlKodeverk } from '@/components/fagsystem/medl/MedlConstants'
 import { useNavEnheter } from '@/utils/hooks/useNorg2'
+import { kodeverkKeyToLabel } from '@/components/fagsystem/sigrunstubPensjonsgivende/utils'
 
 // TODO: Flytte til selector?
 // - Denne kan forminskes ved bruk av hjelpefunksjoner
@@ -1124,7 +1125,7 @@ const mapSigrunStub = (bestillingData, data) => {
 		})
 
 		const sigrunStub = {
-			header: 'Skatteoppgjør (Sigrun)',
+			header: 'Lignet inntekt (Sigrun)',
 			itemRows: [],
 		}
 
@@ -1152,6 +1153,42 @@ const mapSigrunStub = (bestillingData, data) => {
 		})
 
 		data.push(sigrunStub)
+	}
+}
+
+const mapSigrunstubPensjonsgivende = (bestillingData, data) => {
+	const sigrunstubPensjonsgivendeKriterier = bestillingData.sigrunstubPensjonsgivende
+
+	const sigrunstubPensjonsgivende = {
+		header: 'Pensjonsgivende inntekt (Sigrun)',
+		itemRows: [],
+	}
+
+	if (sigrunstubPensjonsgivendeKriterier) {
+		sigrunstubPensjonsgivendeKriterier.forEach((inntekt, i) => {
+			sigrunstubPensjonsgivende.itemRows.push([
+				{ numberHeader: `Pensjonsgivende inntekt ${i + 1}` },
+				obj('Inntektsår', inntekt.inntektsaar),
+				obj('Testdataeier', inntekt.testdataEier),
+				{ nestedItemRows: [] },
+			])
+			inntekt.pensjonsgivendeInntekt.forEach((test, y) => {
+				const dynamicObjects = Object.entries(test)?.map(([key, value]) => {
+					const erDato = !isNaN(Date.parse(value))
+					if (erDato && (key.includes('Dato') || key.includes('dato'))) {
+						return obj(kodeverkKeyToLabel(key), formatDate(value))
+					}
+					return obj(kodeverkKeyToLabel(key), value?.toString())
+				})
+				sigrunstubPensjonsgivende.itemRows[i][3].nestedItemRows.push([
+					{
+						numberHeader: `Inntekt ${y + 1}`,
+					},
+					dynamicObjects,
+				])
+			})
+		})
+		data.push(sigrunstubPensjonsgivende)
 	}
 }
 
@@ -2176,6 +2213,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 	mapTpsMessaging(bestillingData, data)
 	mapAareg(bestillingData, data)
 	mapSigrunStub(bestillingData, data)
+	mapSigrunstubPensjonsgivende(bestillingData, data)
 	mapInntektStub(bestillingData, data)
 	mapArbeidsplassenCV(bestillingData, data)
 	mapSykemelding(bestillingData, data)
