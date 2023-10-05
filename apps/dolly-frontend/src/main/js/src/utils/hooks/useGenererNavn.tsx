@@ -1,12 +1,6 @@
 import useSWR from 'swr'
 import { fetcher } from '@/api'
 
-type Navn = {
-	adjektiv: string
-	adverb: string
-	substantiv: string
-}
-
 const GenererNavnBaseUrl = '/generer-navn-service/api/v1/navn'
 
 export const useGenererNavn = () => {

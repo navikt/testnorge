@@ -47,8 +47,6 @@ spec:
         - application: testnav-miljoer-service
         - application: testnav-organisasjon-forvalter
         - application: testnav-organisasjon-service
-        - application: testnav-organisasjon-tilgang-service
-          cluster: prod-gcp
         - application: testnav-pdl-forvalter
         - application: testnav-person-service
         - application: testnav-synt-sykemelding-api
@@ -72,7 +70,6 @@ spec:
         - host: testnav-pdl-proxy.dev-fss-pub.nais.io
         - host: testnav-sigrunstub-proxy.dev-fss-pub.nais.io
         - host: testnav-skjermingsregister-proxy.dev-fss-pub.nais.io
-        - host: testnav-statisk-data-forvalter-proxy.dev-fss-pub.nais.io
         - host: testnav-udistub-proxy.dev-fss-pub.nais.io
         - host: tps-forvalteren-proxy.dev-fss-pub.nais.io
   webproxy: true

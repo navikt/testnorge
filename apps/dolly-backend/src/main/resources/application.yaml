@@ -157,11 +157,6 @@ consumers:
     namespace: dolly
     url: https://testnav-inst-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
-  testnav-statisk-data-forvalter-proxy:
-    name: testnav-statisk-data-forvalter-proxy
-    namespace: dolly
-    url: https://testnav-statisk-data-forvalter-proxy.dev-fss-pub.nais.io
-    cluster: dev-fss
   testnav-skjermingsregister-proxy:
     name: testnav-skjermingsregister-proxy
     namespace: dolly
@@ -238,9 +233,4 @@ consumers:
     namespace: dolly
     url: https://testnav-arbeidsplassencv-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
-  testnav-organisasjon-tilgang-service:
-    cluster: prod-gcp
-    namespace: dolly
-    name: testnav-organisasjon-tilgang-service
-    url: https://testnav-organisasjon-tilgang-service.intern.nav.no
     

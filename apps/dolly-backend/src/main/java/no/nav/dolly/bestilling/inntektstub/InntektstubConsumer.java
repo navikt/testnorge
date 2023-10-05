@@ -7,32 +7,23 @@ import no.nav.dolly.bestilling.inntektstub.command.InntektstubDeleteCommand;
 import no.nav.dolly.bestilling.inntektstub.command.InntektstubGetCommand;
 import no.nav.dolly.bestilling.inntektstub.command.InntektstubPostCommand;
 import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon;
-import no.nav.dolly.bestilling.inntektstub.domain.ValiderInntekt;
 import no.nav.dolly.config.credentials.InntektstubProxyProperties;
 import no.nav.dolly.metrics.Timed;
-import no.nav.dolly.util.WebClientFilter;
-import no.nav.testnav.libs.securitycore.config.UserConstant;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
 import java.time.Duration;
 import java.util.List;
 
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
-import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @Service
 @Slf4j
 public class InntektstubConsumer implements ConsumerStatus {
-
-    private static final String VALIDER_INNTEKTER_URL = "/api/v2/valider";
 
     private static final int BLOCK_SIZE = 10;
 
@@ -81,24 +72,6 @@ public class InntektstubConsumer implements ConsumerStatus {
 
         return tokenService.exchange(serviceProperties)
                 .flatMapMany(token -> new InntektstubPostCommand(webClient, inntektsinformasjon, token.getTokenValue()).call());
-    }
-
-    @Timed(name = "providers", tags = { "operation", "inntk_validerInntekt" })
-    public ResponseEntity<Object> validerInntekter(ValiderInntekt validerInntekt) {
-
-        return tokenService.exchange(serviceProperties)
-                .flatMap(token -> webClient.post()
-                        .uri(uriBuilder -> uriBuilder
-                                .path(VALIDER_INNTEKTER_URL)
-                                .build())
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token.getTokenValue())
-                        .header(UserConstant.USER_HEADER_JWT, getUserJwt())
-                        .bodyValue(validerInntekt)
-                        .retrieve()
-                        .toEntity(Object.class)
-                        .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                                .filter(WebClientFilter::is5xxException)))
-                .block();
     }
 
     @Override
