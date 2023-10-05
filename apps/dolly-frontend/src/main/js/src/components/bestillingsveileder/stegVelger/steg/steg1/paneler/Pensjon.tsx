@@ -150,7 +150,7 @@ PensjonPanel.initialValues = ({ set, del, has }: any) => {
 			remove: () => del(paths.alderspensjon),
 		},
 		uforetrygd: {
-			label: 'Har uføretrygdvedtak',
+			label: 'Har uføretrygd',
 			checked: has(paths.uforetrygd),
 			add: () => {
 				set(paths.uforetrygd, initialUforetrygd)

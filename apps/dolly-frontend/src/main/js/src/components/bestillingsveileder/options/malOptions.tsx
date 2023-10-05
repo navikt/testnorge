@@ -11,10 +11,11 @@ import {
 	ForeldreBarnRelasjon,
 	FullmaktValues,
 	NyIdent,
-	Sivilstand,
+	SivilstandData,
 	VergemaalValues,
 } from '@/components/fagsystem/pdlf/PdlTypes'
 import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
+import { addMonths, isAfter, setDate } from 'date-fns'
 
 export const initialValuesBasedOnMal = (mal: any) => {
 	const { dollyEnvironments } = useDollyEnvironments()
@@ -57,9 +58,22 @@ export const initialValuesBasedOnMal = (mal: any) => {
 	if (initialValuesMal.arenaforvalter) {
 		initialValuesMal.arenaforvalter = getUpdatedArenaforvalterData(initialValuesMal.arenaforvalter)
 	}
+	if (initialValuesMal.pensjonforvalter?.alderspensjon) {
+		initialValuesMal.pensjonforvalter.alderspensjon = getUpdatedAlderspensjonData(
+			initialValuesMal.pensjonforvalter.alderspensjon,
+		)
+	}
 
 	initialValuesMal.environments = filterMiljoe(dollyEnvironments, mal.bestilling.environments)
 	return initialValuesMal
+}
+
+const getUpdatedAlderspensjonData = (alderspensjonData) => {
+	const newAlderspensjonData = Object.assign({}, alderspensjonData)
+	if (!isAfter(new Date(newAlderspensjonData.iverksettelsesdato), new Date())) {
+		newAlderspensjonData.iverksettelsesdato = setDate(addMonths(new Date(), 1), 1)
+	}
+	return newAlderspensjonData
 }
 
 const getUpdatedArenaforvalterData = (arenaforvalterData) => {
@@ -217,7 +231,7 @@ const getUpdatedPdldata = (pdldata: any) => {
 	}
 
 	if (person?.sivilstand) {
-		newPdldata.person.sivilstand = person.sivilstand.map((relasjon: Sivilstand) => {
+		newPdldata.person.sivilstand = person.sivilstand.map((relasjon: SivilstandData) => {
 			if (relasjon.nyRelatertPerson) {
 				relasjon.nyRelatertPerson.syntetisk = true
 			}
