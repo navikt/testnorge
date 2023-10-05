@@ -1,4 +1,4 @@
-import { DollyApi, PdlforvalterApi } from '@/service/Api'
+import {PdlforvalterApi, SkjermingApi} from '@/service/Api'
 // @ts-ignore
 import { createActions } from 'redux-actions'
 import { handleActions } from '@/ducks/utils/immerHandleActions'
@@ -15,7 +15,7 @@ export const actions = createActions({
 		}),
 	],
 	getSkjermingsregister: [
-		DollyApi.getSkjerming,
+		SkjermingApi.getSkjerming,
 		(ident) => ({
 			ident,
 		}),

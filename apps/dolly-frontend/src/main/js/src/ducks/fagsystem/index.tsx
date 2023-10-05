@@ -7,6 +7,7 @@ import {
 	KrrApi,
 	PdlforvalterApi,
 	SigrunApi,
+	SkjermingApi,
 	TpsMessagingApi,
 } from '@/service/Api'
 import { onSuccess } from '@/ducks/utils/requestActions'
@@ -78,7 +79,7 @@ export const actions = createActions(
 			}),
 		],
 		getSkjermingsregister: [
-			DollyApi.getSkjerming,
+			SkjermingApi.getSkjerming,
 			(ident) => ({
 				ident,
 			}),

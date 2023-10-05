@@ -32,7 +32,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static org.mockito.Mockito.when;
-import static wiremock.org.hamcrest.MatcherAssert.assertThat;
 
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
@@ -104,21 +103,6 @@ class PensjonforvalterConsumerTest {
                             .withBody("{\"status\":[{\"miljo\":\"tx\",\"response\":{\"httpStatus\":{\"status\":500,\"reasonPhrase\":\"Internal Server Error\"},\"message\":\"POST Request failed with msg: 400 Bad Request\",\"path\":\"/api/v1/tp/forhold\"}}]}")
                             .withHeader("Content-Type", "application/json")));
         }
-    }
-
-    private void stubGetGetInntekter() {
-
-        stubFor(get(urlPathMatching("(.*)/api/v1/inntekt"))
-                .willReturn(ok()
-                        .withBody("{\"miljo\":\"tx\",\"fnr\":\"00000\",\"inntekter\":[{\"belop\":12345,\"inntektAar\":2000}]}")
-                        .withHeader("Content-Type", "application/json")));
-    }
-
-    private void stubGetGetTpForhold() {
-        stubFor(get(urlPathMatching("(.*)/api/v1/tp/forhold"))
-                .willReturn(ok()
-                        .withBody("[{\"ordning\":\"0001\"},{\"ordning\":\"0002\"},{\"ordning\":\"0003\"},{\"ordning\":\"0004\"}]")
-                        .withHeader("Content-Type", "application/json")));
     }
 
     private void stubPostLagreTpYtelse(boolean withError) {
@@ -236,21 +220,6 @@ class PensjonforvalterConsumerTest {
     }
 
     @Test
-    void testGetInntekter() {
-
-        stubGetGetInntekter();
-
-        var response = pensjonforvalterConsumer.getInntekter(null, null);
-
-        assertThat("Environment is 'tx'", response.get("miljo").asText().equals("tx"));
-        assertThat("Fnr is '00000'", response.get("fnr").asText().equals("00000"));
-        assertThat("inntekter is array", response.get("inntekter").isArray());
-        assertThat("inntekter have 1 object", response.get("inntekter").size() == 1);
-        assertThat("inntekter 'belop' is 12345", response.get("inntekter").get(0).get("belop").asInt() == 12345);
-        assertThat("inntekter 'inntektAar' is 2000", response.get("inntekter").get(0).get("inntektAar").asInt() == 2000);
-    }
-
-    @Test
     void testLagreTpForhold_ok() {
 
         stubPostLagreTpForhold(false);
@@ -291,20 +260,6 @@ class PensjonforvalterConsumerTest {
                                 .build()))
                         .build())
                 .verifyComplete();
-    }
-
-    @Test
-    void testGetTpForhold() {
-        stubGetGetTpForhold();
-
-        var response = pensjonforvalterConsumer.getTpForhold(null, null);
-
-        assertThat("size of response list is 4", response.size() == 4);
-
-        assertThat("ordning 1 is '0001'", response.get(0).get("ordning").asText().equals("0001"));
-        assertThat("ordning 2 is '0002'", response.get(1).get("ordning").asText().equals("0002"));
-        assertThat("ordning 3 is '0003'", response.get(2).get("ordning").asText().equals("0003"));
-        assertThat("ordning 4 is '0004'", response.get(3).get("ordning").asText().equals("0004"));
     }
 
     @Test

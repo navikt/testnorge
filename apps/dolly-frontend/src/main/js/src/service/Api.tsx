@@ -47,5 +47,5 @@ export default {
 	PdlforvalterApi: PdlForvalterService,
 	SessionApi: SessionService,
 	BankkontoApi: KontoregisterService,
-	SkjermingApi: SkjermingService,
+	SkjermingApi: SkjermingService
 }

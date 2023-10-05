@@ -41,9 +41,6 @@ management:
         prometheus: "prometheus"
 
 consumers:
-  testnav-profil-api:
-    name: testnorge-profil-api-dev
-    url: https://testnorge-profil-api-dev.intern.dev.nav.no
   testnav-pdl-forvalter:
     name: testnav-pdl-forvalter-dev
     url: https://testnav-pdl-forvalter-dev.intern.dev.nav.no
@@ -53,8 +50,6 @@ consumers:
     url: https://testnav-inntektsmelding-service.intern.dev.nav.no
   testnav-tps-messaging-service:
     url: https://testnav-tps-messaging-service.intern.dev.nav.no
-  testnav-generer-navn-service:
-    url: https://generer-navn-service.intern.dev.nav.no
   testnav-person-service:
     url: https://testnav-person-service.intern.dev.nav.no
   testnav-arbeidsforhold-service:
@@ -67,6 +62,3 @@ consumers:
     url: https://testnav-synt-sykemelding-api.intern.dev.nav.no
   testnav-miljoer-service:
     url: https://testnav-miljoer-service.intern.dev.nav.no
-  testnav-organisasjon-tilgang-service:
-    cluster: dev-gcp
-    url: https://testnav-organisasjon-tilgang-service.intern.dev.nav.no
