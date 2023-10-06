@@ -14,6 +14,4 @@ const HeaderLinksGroup = ({ children }: Props) => (
   <HeaderLinksGroupStyle>{children}</HeaderLinksGroupStyle>
 );
 
-HeaderLinksGroup.displayName = 'HeaderLinksGroup';
-
 export default HeaderLinksGroup;
