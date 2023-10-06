@@ -19,7 +19,6 @@ jobs:
     with:
       working-directory: "apps/budpro-service"
       deploy-tag: "#deploy-budpro-service"
-      sonar-enabled: false
     permissions:
       contents: read
       id-token: write
