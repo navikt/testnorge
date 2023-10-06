@@ -17,7 +17,7 @@ spec:
       enabled: true
       tenant: nav.no
   maskinporten:
-    enabled: true
+    enabled: false
     scopes:
       consumes:
         - name: "altinn:serviceowner"
@@ -30,6 +30,10 @@ spec:
           cluster: dev-gcp
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
+        - application: dolly-frontend
+          cluster: dev-gcp
+        - application: dolly-frontend-dev
+          cluster: dev-gcp
         - application: dolly-idporten
           cluster: dev-gcp
         - application: testnav-organisasjon-tilgang-frontend
@@ -39,7 +43,8 @@ spec:
           cluster: dev-gcp
     outbound:
       external:
-        - host: tt02.altinn.no
+        - host: altinn.no
+        - host: maskinporten.no
   liveness:
     path: /internal/isAlive
     initialDelay: 10
@@ -54,8 +59,9 @@ spec:
     enabled: true
     path: /internal/metrics
   envFrom:
-    - secret: altinn-dev
+    - secret: altinn-prod
     - secret: google-sql-testnav-organisasjon-tilgang-service
+    - secret: testnav-organisasjon-tilgang-service-secret
   replicas:
     min: 1
     max: 1
@@ -69,15 +75,15 @@ spec:
     - "https://testnav-organisasjon-tilgang-service.intern.dev.nav.no"
   env:
     - name: SPRING_PROFILES_ACTIVE
-      value: dev
+      value: prod
     - name: ACCEPTED_AUDIENCE
       value: dev-gcp:dolly:testnav-organisasjon-tilgang-service
     - name: TOKENDINGS_URL
       value: https://tokenx.dev-gcp.nav.cloud.nais.io 
   gcp:
     sqlInstances:
-      - type: POSTGRES_14
-        name: testnav-organisasjon-tilgang
+      - type: POSTGRES_15
+        name: testnav-organisasjon-tilganger
         databases:
-          - name: testnav-organisasjon-tilgang
-        autoBackupHour: 2
+          - name: testnav-organisasjon-tilganger
+        autoBackupTime: "02:30"
