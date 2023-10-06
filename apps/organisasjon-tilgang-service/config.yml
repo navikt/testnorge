@@ -16,11 +16,6 @@ spec:
       allowAllUsers: true
       enabled: true
       tenant: nav.no
-  maskinporten:
-    enabled: false
-    scopes:
-      consumes:
-        - name: "altinn:serviceowner"
   accessPolicy:
     inbound:
       rules:
