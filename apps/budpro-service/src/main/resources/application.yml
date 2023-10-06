@@ -38,7 +38,7 @@ consumers:
     name: generer-navn-service
     cluster: dev-gcp
     namespace: dolly
-    url: https://generer-navn-service.intern.dev.nav.no
+    url: https://generer-navn-service.dolly.svc.cluster.local
 
 app:
   security:
