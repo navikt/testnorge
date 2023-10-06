@@ -41,6 +41,7 @@ export default [
     output: [{ file: 'dist/index.d.ts', format: 'esm' }],
     plugins: [dts()],
 
-    external: [/\.css$/], // telling rollup anything that is .css aren't part of type exports
+    external: ['styled-components'],
+    globals: { 'styled-components': 'styled' },
   },
 ];

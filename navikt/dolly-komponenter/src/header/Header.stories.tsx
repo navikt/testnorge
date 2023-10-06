@@ -1,9 +1,9 @@
 import * as React from 'react';
-import { Story, Meta } from '@storybook/react';
+import { Meta, Story } from '@storybook/react';
 import Comp, { HeaderProps } from './Header';
 import Profil from '../profil/Profil';
-import HeaderLinkGroup from './HeaderLinkGroup';
-import HeaderLink from './HeaderLink';
+import { HeaderLinkGroup } from '../header-link-group';
+import { HeaderLink } from '../header-link';
 
 export default {
   title: 'Header/Header',
