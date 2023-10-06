@@ -1,13 +1,11 @@
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import dts from 'rollup-plugin-dts'; // To handle css files
-import postcss from 'rollup-plugin-postcss';
-import babel from '@rollup/plugin-babel';
-
 import terser from '@rollup/plugin-terser';
 import peerDepsExternal from 'rollup-plugin-peer-deps-external';
 import image from '@rollup/plugin-image';
 import typescript from '@rollup/plugin-typescript';
+import css from 'rollup-plugin-import-css';
 
 import packageJson from './package.json' assert { type: 'json' };
 
@@ -30,20 +28,16 @@ export default [
       peerDepsExternal(),
       resolve(),
       commonjs(),
+      css(),
       typescript({ tsconfig: './tsconfig.json' }),
-      postcss(),
-      babel({
-        babelHelpers: 'runtime',
-        exclude: 'node_modules/**', // only transpile our source code
-      }),
       terser(),
       image(),
     ],
+    external: ['react', 'react-dom', 'styled-components'],
   },
   {
-    input: 'dist/esm/types/index.d.ts',
-    output: [{ file: 'dist/index.d.ts', format: 'esm' }],
+    input: 'src/index.ts',
+    output: [{ file: 'dist/types.d.ts', format: 'es' }],
     plugins: [dts.default()],
-    external: ['react', 'react-dom', 'styled-components'],
   },
 ];
