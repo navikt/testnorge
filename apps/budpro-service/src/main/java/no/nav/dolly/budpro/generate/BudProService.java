@@ -181,7 +181,7 @@ class BudProService {
 
     private String aarsloenn(Random random) {
         var value = random.nextInt(500000, 1000000);
-        return String.valueOf(value);
+        return String.valueOf(value - (value % 100));
     }
 
     private String foedselsdato(Random random) {
