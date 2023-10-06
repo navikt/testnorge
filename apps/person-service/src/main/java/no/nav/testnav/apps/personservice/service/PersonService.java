@@ -1,9 +1,9 @@
 package no.nav.testnav.apps.personservice.service;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.testnav.apps.personservice.consumer.PdlApiConsumer;
-import no.nav.testnav.apps.personservice.consumer.PdlTestdataConsumer;
-import no.nav.testnav.apps.personservice.consumer.dto.pdl.graphql.PdlAktoer.AktoerIdent;
+import no.nav.testnav.apps.personservice.consumer.v1.PdlApiConsumer;
+import no.nav.testnav.apps.personservice.consumer.v1.PdlTestdataConsumer;
+import no.nav.testnav.apps.personservice.consumer.v1.pdl.graphql.PdlAktoer.AktoerIdent;
 import no.nav.testnav.apps.personservice.domain.Person;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;

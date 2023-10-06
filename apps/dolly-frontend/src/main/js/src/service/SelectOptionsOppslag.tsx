@@ -82,10 +82,6 @@ export const SelectOptionsOppslag = {
 		return useAsync(async () => KrrApi.getSdpLeverandoerListe(), [KrrApi.getSdpLeverandoerListe])
 	},
 
-	hentPersonnavn: () => {
-		return useAsync(async () => DollyApi.getPersonnavn(), [DollyApi.getPersonnavn])
-	},
-
 	hentInntektsmeldingOptions: (enumtype: string) =>
 		Api.fetchJson(`${uri}/inntektsmelding/${enumtype}`, { method: 'GET' }),
 

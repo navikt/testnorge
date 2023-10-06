@@ -36,9 +36,9 @@ public class CreateOrganisasjonAccessCommand implements Callable<Mono<RightDTO>>
                 .bodyToMono(RightDTO[].class)
                 .map(list -> list[0])
                 .doOnError(
-                        throwable -> throwable instanceof WebClientResponseException,
+                        WebClientResponseException.class::isInstance,
                         throwable -> log.error(
-                                "Feil ved opprettelse av organisasjon tilgang i Altinn. \n{}",
+                                "Feil ved opprettelse av organisasjon tilgang i Altinn. {}",
                                 ((WebClientResponseException) throwable).getResponseBodyAsString()
                         )
                 );

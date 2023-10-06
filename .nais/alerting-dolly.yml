@@ -6,10 +6,6 @@ metadata:
   labels:
     team: dolly
 spec:
-  receivers:
-    slack:
-      channel: "#dolly-alerts"
-      icon_emoji: ':dolly-panic:'
   groups:
     - name: dolly-alerts
       rules:
@@ -20,11 +16,12 @@ spec:
           annotations:
             summary: 'Applikasjonen *{{ $labels.deployment }}* har hatt 0 replicas i >5min og er ikke tilgjengelig.'
             action: |
+              Alertmanager: <https://alertmanager.dev-gcp.nav.cloud.nais.io/#/alerts?silenced=false&inhibited=false&active=true&filter=%7Balertname%3D%22dolly-replicas-unavailable%22%2C%20app%3D%22{{ $labels.app }}%22%7D&customGrouping=true|Link>
               Events: `kubectl describe pod -l app={{ $labels.deployment }}`
               Logger: `kubectl logs -l app={{ $labels.deployment }}`
-            labels:
-              namespace: 'dolly'
-              severity: 'critical'
+          labels:
+            namespace: 'dolly'
+            severity: 'critical'
 
         - alert: 'dolly-log-errors'
           expr: 'sum by (app,namespace) (increase(log_messages_errors{namespace="dolly",level="Error"}[15m]) > 1)'
@@ -32,12 +29,13 @@ spec:
           annotations:
             summary: 'Applikasjonen *{{ $labels.app }}* har hatt mer enn 1 ERRORs i loggen i løpet av de siste 15 minuttene.'
             action: |
+              Alertmanager: <https://alertmanager.dev-gcp.nav.cloud.nais.io/#/alerts?silenced=false&inhibited=false&active=true&filter=%7Balertname%3D%22dolly-log-errors%22%2C%20app%3D%22{{ $labels.app }}%22%7D&customGrouping=true|Link>
               Events: `kubectl describe pod -l app={{ $labels.app }}`
               Logger: `kubectl logs -l app={{ $labels.app }}`
-              Kibana: `<https://logs.adeo.no/app/discover#/?_g=(filters:!(),refreshInterval:(pause:!t,value:60000),time:(from:now-30m,to:now))&_a=(columns:!(level,message,envclass,application,pod),filters:!(),grid:(columns:(x_WorkerID:(width:325))),index:'96e648c0-980a-11e9-830a-e17bbd64b4db',interval:auto,query:(language:kuery,query:'namespace:%20%22dolly%22%20AND%20level:%20%22Error%22%20AND%20application:%20%22{{ $labels.app }}%22'),sort:!(!('@timestamp',desc)))|Link>`
-            labels:
-              namespace: 'dolly'
-              severity: 'warning'
+              Kibana: <https://logs.adeo.no/app/discover#/?_g=(filters:!(),refreshInterval:(pause:!t,value:60000),time:(from:now-30m,to:now))&_a=(columns:!(level,message,envclass,application,pod),filters:!(),grid:(columns:(x_WorkerID:(width:325))),index:'96e648c0-980a-11e9-830a-e17bbd64b4db',interval:auto,query:(language:kuery,query:'namespace:%20%22dolly%22%20AND%20level:%20%22Error%22%20AND%20application:%20%22{{ $labels.app }}%22'),sort:!(!('@timestamp',desc)))|Link>
+          labels:
+            namespace: 'dolly'
+            severity: 'warning'
 
         - alert: 'dolly-server-http-5xx'
           expr: 'sum by (app,namespace) (increase(http_server_requests_seconds_count{namespace="dolly",status=~"^5.."}[15m]) > 5)'
@@ -45,12 +43,13 @@ spec:
           annotations:
             summary: 'Applikasjonen *{{ $labels.app }}* har gitt mer enn 5 HTTP 5xx-responser i løpet av de siste 15 minuttene.'
             action: |
+              Alertmanager: <https://alertmanager.dev-gcp.nav.cloud.nais.io/#/alerts?silenced=false&inhibited=false&active=true&filter=%7Balertname%3D%22dolly-server-http-5xx%22%2C%20app%3D%22{{ $labels.app }}%22%7D&customGrouping=true|Link>
               Events: `kubectl describe pod -l app={{ $labels.app }}`
               Logger: `kubectl logs -l app={{ $labels.app }}`
-              Kibana: `<https://logs.adeo.no/app/discover#/?_g=(filters:!(),refreshInterval:(pause:!t,value:60000),time:(from:now-30m,to:now))&_a=(columns:!(level,message,envclass,application,pod),filters:!(),grid:(columns:(x_WorkerID:(width:325))),index:'96e648c0-980a-11e9-830a-e17bbd64b4db',interval:auto,query:(language:kuery,query:'namespace:%20%22dolly%22%20AND%20level:%20%22Error%22%20AND%20application:%20%22{{ $labels.app }}%22'),sort:!(!('@timestamp',desc)))|Link>`
-            labels:
-              namespace: 'dolly'
-              severity: 'warning'
+              Kibana: <https://logs.adeo.no/app/discover#/?_g=(filters:!(),refreshInterval:(pause:!t,value:60000),time:(from:now-30m,to:now))&_a=(columns:!(level,message,envclass,application,pod),filters:!(),grid:(columns:(x_WorkerID:(width:325))),index:'96e648c0-980a-11e9-830a-e17bbd64b4db',interval:auto,query:(language:kuery,query:'namespace:%20%22dolly%22%20AND%20level:%20%22Error%22%20AND%20application:%20%22{{ $labels.app }}%22'),sort:!(!('@timestamp',desc)))|Link>
+          labels:
+            namespace: 'dolly'
+            severity: 'warning'
 
         - alert: 'dolly-client-http-4xx'
           expr: 'sum by (app,namespace) (increase(http_client_requests_seconds_count{namespace="dolly",status=~"^4.."}[15m]) > 5)'
@@ -58,9 +57,10 @@ spec:
           annotations:
             summary: 'Applikasjonen *{{ $labels.app }}* har fått mer enn 5 HTTP 4xx-responser i løpet av de siste 15 minuttene.'
             action: |
+              Alertmanager: <https://alertmanager.dev-gcp.nav.cloud.nais.io/#/alerts?silenced=false&inhibited=false&active=true&filter=%7Balertname%3D%22dolly-client-http-4xx%22%2C%20app%3D%22{{ $labels.app }}%22%7D&customGrouping=true|Link>
               Events: `kubectl describe pod -l app={{ $labels.app }}`
               Logger: `kubectl logs -l app={{ $labels.app }}`
-              Kibana: `<https://logs.adeo.no/app/discover#/?_g=(filters:!(),refreshInterval:(pause:!t,value:60000),time:(from:now-30m,to:now))&_a=(columns:!(level,message,envclass,application,pod),filters:!(),grid:(columns:(x_WorkerID:(width:325))),index:'96e648c0-980a-11e9-830a-e17bbd64b4db',interval:auto,query:(language:kuery,query:'namespace:%20%22dolly%22%20AND%20level:%20%22Error%22%20AND%20application:%20%22{{ $labels.app }}%22'),sort:!(!('@timestamp',desc)))|Link>`
-            labels:
-              namespace: 'dolly'
-              severity: 'warning'
+              Kibana: <https://logs.adeo.no/app/discover#/?_g=(filters:!(),refreshInterval:(pause:!t,value:60000),time:(from:now-30m,to:now))&_a=(columns:!(level,message,envclass,application,pod),filters:!(),grid:(columns:(x_WorkerID:(width:325))),index:'96e648c0-980a-11e9-830a-e17bbd64b4db',interval:auto,query:(language:kuery,query:'namespace:%20%22dolly%22%20AND%20level:%20%22Error%22%20AND%20application:%20%22{{ $labels.app }}%22'),sort:!(!('@timestamp',desc)))|Link>
+          labels:
+            namespace: 'dolly'
+            severity: 'warning'

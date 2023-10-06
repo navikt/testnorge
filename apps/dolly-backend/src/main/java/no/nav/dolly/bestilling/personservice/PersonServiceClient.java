@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.personservice.dto.PersonServiceResponse;
-import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.BestillingProgress;
@@ -51,7 +50,6 @@ public class PersonServiceClient {
     private final PersonServiceConsumer personServiceConsumer;
     private final ErrorStatusDecoder errorStatusDecoder;
     private final TransactionHelperService transactionHelperService;
-    private final PdlPersonConsumer pdlPersonConsumer;
     private final ObjectMapper objectMapper;
 
     public Flux<ClientFuture> syncPerson(DollyPerson dollyPerson, BestillingProgress progress) {
@@ -127,7 +125,7 @@ public class PersonServiceClient {
         } else {
 
             return Flux.concat(Flux.just(Map.entry(dollyPerson.getIdent(), new HashSet<>())),
-                    pdlPersonConsumer.getPdlPersoner(List.of(dollyPerson.getIdent()))
+                    personServiceConsumer.getPdlPersoner(List.of(dollyPerson.getIdent()))
                             .filter(pdlPersonBolk -> nonNull(pdlPersonBolk.getData()))
                             .map(PdlPersonBolk::getData)
                             .map(PdlPersonBolk.Data::getHentPersonBolk)

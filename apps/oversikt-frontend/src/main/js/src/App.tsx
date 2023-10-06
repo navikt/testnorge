@@ -10,6 +10,7 @@ import { ScopeAccessTokenPage } from '@/pages/ScopeAccessTokenPage'
 import LoginPage from '@/pages/LoginPage'
 import { UserPage } from '@/pages/UserPage'
 import * as _ from 'lodash-es'
+import '@navikt/ds-css'
 
 export default () => (
 	<BrowserRouter>
@@ -29,7 +30,7 @@ export default () => (
 									navigations={uniqueItems.map((application) => {
 										const cluster = application.cluster?.replace(
 											'unknown',
-											application?.name?.includes('proxy') ? 'dev-fss' : 'dev-gcp'
+											application?.name?.includes('proxy') ? 'dev-fss' : 'dev-gcp',
 										)
 										return {
 											href:

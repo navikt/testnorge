@@ -6,4 +6,8 @@ export default {
 	deleteSkjerming(ident: string) {
 		return Request.delete(`${skjermingUrl}/${ident}`)
 	},
+
+	getSkjerming(ident: string) {
+		return Request.get(`${skjermingUrl}/${ident}`)
+	}
 }

@@ -60,16 +60,6 @@ const AccessTokenTextArea = styled.textarea`
 `
 
 const StyledCheckbox = styled(Checkbox)`
-	label {
-		span.navds-checkbox__icon {
-			visibility: hidden;
-		}
-
-		span.navds-checkbox__content {
-			margin-left: -20px;
-		}
-	}
-
 	padding: 5px 0;
 	margin-left: 172px;
 `

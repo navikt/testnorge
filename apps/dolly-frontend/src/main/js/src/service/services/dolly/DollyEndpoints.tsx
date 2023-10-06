@@ -1,6 +1,7 @@
 import { arrayToString } from '@/utils/DataFormatter'
 
 const uri = `/dolly-backend/api/v1`
+const personUri = '/person-service/api/v2'
 
 const groupBase = `${uri}/gruppe`
 const tagsBase = `${uri}/tags`
@@ -9,16 +10,8 @@ const brukerBase = `${uri}/bruker`
 const kodeverkBase = `${uri}/kodeverk`
 const udiBase = `${uri}/udistub`
 const bestillingBase = `${uri}/bestilling`
-const openamBase = `${uri}/openam`
-const personoppslagBase = `${uri}/pdlperson`
-const fasteOrgnummerBase = `${uri}/orgnummer`
-const fasteDatasettBase = `${uri}/fastedatasett`
-const dokarkivBase = `${uri}/dokarkiv`
-const skjermingBase = `${uri}/skjerming`
-const inntektsmeldingBase = `${uri}/inntektsmelding`
+const personoppslagBase = `${personUri}/personer`
 const organisasjonBase = `${uri}/organisasjon`
-const poppBase = `${uri}/popp`
-const tpBase = `${uri}/tp`
 
 export default class DollyEndpoints {
 	static gruppe() {
@@ -63,10 +56,6 @@ export default class DollyEndpoints {
 
 	static organisasjonBestilling() {
 		return `${organisasjonBase}/bestilling`
-	}
-
-	static skjermingByIdent(ident) {
-		return `${skjermingBase}/${ident}`
 	}
 
 	static gjenopprettOrganisasjonBestilling(bestillingId, envs) {
@@ -178,10 +167,6 @@ export default class DollyEndpoints {
 		return `${identBase}/${ident}/relasjon`
 	}
 
-	static getPersonnavn() {
-		return `${uri}/personnavn`
-	}
-
 	static getTransaksjonsid(system, ident, bestillingsid) {
 		if (bestillingsid) {
 			return `${uri}/transaksjonid?system=${system}&ident=${ident}&bestillingId=${bestillingsid}`
@@ -214,21 +199,5 @@ export default class DollyEndpoints {
 
 	static malBestillingOrganisasjon(malId, malNavn) {
 		return `${organisasjonBase}/bestilling/malbestilling/${malId}?malNavn=${malNavn}`
-	}
-
-	static getPoppMiljoer() {
-		return `${poppBase}/miljoe`
-	}
-
-	static getPoppInntekter(ident, miljoe) {
-		return `${poppBase}/inntekt/${ident}/${miljoe}`
-	}
-
-	static getTpMiljoer() {
-		return `${tpBase}/miljoe`
-	}
-
-	static getTpOrdning(ident, miljoe) {
-		return `${tpBase}/forhold/${ident}/${miljoe}`
 	}
 }

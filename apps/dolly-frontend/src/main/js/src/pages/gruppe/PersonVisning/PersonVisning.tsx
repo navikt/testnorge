@@ -83,6 +83,7 @@ import {
 	UforetrygdVisning,
 } from '@/components/fagsystem/uforetrygd/visning/UforetrygdVisning'
 import { usePensjonEnvironments } from '@/utils/hooks/useEnvironments'
+import { SigrunstubPensjonsgivendeVisning } from '@/components/fagsystem/sigrunstubPensjonsgivende/visning/Visning'
 
 const getIdenttype = (ident) => {
 	if (parseInt(ident.charAt(0)) > 3) {
@@ -220,7 +221,7 @@ export default ({
 		return null
 	}
 
-	const { sigrunstub, inntektstub, brregstub, krrstub, udistub } = data
+	const { sigrunstub, sigrunstubPensjonsgivende, inntektstub, brregstub, krrstub, udistub } = data
 
 	const manglerFagsystemdata = () => {
 		if (
@@ -412,6 +413,10 @@ export default ({
 					/>
 				)}
 				<SigrunstubVisning data={sigrunstub} loading={loading.sigrunstub} />
+				<SigrunstubPensjonsgivendeVisning
+					data={sigrunstubPensjonsgivende}
+					loading={loading.sigrunstubPensjonsgivende}
+				/>
 				<InntektstubVisning liste={inntektstub} loading={loading.inntektstub} />
 				<InntektsmeldingVisning
 					liste={InntektsmeldingVisning.filterValues(bestillingListe, ident.ident)}

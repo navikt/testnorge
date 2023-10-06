@@ -1,4 +1,4 @@
-import { Knapp } from '@navikt/dolly-komponenter/lib'
+import { Knapp } from '@navikt/dolly-komponenter'
 import React from 'react'
 
 export default () => {

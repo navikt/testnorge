@@ -8,7 +8,7 @@ import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.brregstub.domain.RolleoversiktTo;
 import no.nav.dolly.bestilling.brregstub.util.BrregstubMergeUtil;
-import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
+import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
@@ -35,7 +35,7 @@ public class BrregstubClient implements ClientRegister {
     private static final String FEIL_STATUS = "Feil= ";
 
     private final BrregstubConsumer brregstubConsumer;
-    private final PdlPersonConsumer pdlPersonConsumer;
+    private final PersonServiceConsumer personServiceConsumer;
     private final MapperFacade mapperFacade;
     private final TransactionHelperService transactionHelperService;
 
@@ -65,7 +65,7 @@ public class BrregstubClient implements ClientRegister {
 
     private Flux<PdlPersonBolk.PersonBolk> getPersonData(String ident) {
 
-        return pdlPersonConsumer.getPdlPersoner(List.of(ident))
+        return personServiceConsumer.getPdlPersoner(List.of(ident))
                 .filter(pdlPersonBolk -> nonNull(pdlPersonBolk.getData()))
                 .map(PdlPersonBolk::getData)
                 .map(PdlPersonBolk.Data::getHentPersonBolk)
