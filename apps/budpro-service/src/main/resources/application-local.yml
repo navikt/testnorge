@@ -14,3 +14,7 @@ management:
     web:
       exposure:
         include: "*"
+
+consumers:
+  generer-navn-service:
+    url: "https://generer-navn-service.intern.dev.nav.no"

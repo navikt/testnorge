@@ -29,5 +29,3 @@ spec:
     outbound:
       rules:
         - application: generer-navn-service
-  tokenx:
-    enabled: true
