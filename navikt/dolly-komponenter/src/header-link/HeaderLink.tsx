@@ -28,6 +28,4 @@ const HeaderLink = ({ href, children, isActive }: Props) => (
   </HeaderLinkStyle>
 );
 
-HeaderLink.displayName = 'HeaderLink';
-
 export default HeaderLink;
