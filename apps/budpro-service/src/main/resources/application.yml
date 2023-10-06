@@ -32,8 +32,6 @@ management:
 consumers:
   generer-navn-service:
     name: generer-navn-service
-    cluster: dev-gcp
-    namespace: dolly
     url: http://generer-navn-service
 
 app:
