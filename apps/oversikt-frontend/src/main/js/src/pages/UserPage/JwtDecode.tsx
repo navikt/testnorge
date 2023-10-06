@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Box } from '@/components/Box'
 import styled from 'styled-components'
-import { InputFormItem, Knapp } from '@navikt/dolly-komponenter/lib'
+import { InputFormItem, Knapp } from '@navikt/dolly-komponenter'
 
 const StyledHovedknapp = styled(Knapp)`
 	margin-top: 32px;
