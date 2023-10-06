@@ -1,3 +1,1 @@
-import HeaderLink from './HeaderLink';
-
-export { HeaderLink };
+export * from './HeaderLink';

@@ -1,3 +1,1 @@
-import HeaderLinkGroup from './HeaderLinkGroup';
-
-export { HeaderLinkGroup };
+export * from './HeaderLinkGroup';

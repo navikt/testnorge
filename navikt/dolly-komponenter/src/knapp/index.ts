@@ -1,3 +1,1 @@
-import Knapp from './Knapp';
-
-export { Knapp };
+export * from './Knapp';
