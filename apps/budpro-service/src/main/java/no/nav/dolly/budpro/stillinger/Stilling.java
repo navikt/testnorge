@@ -18,7 +18,6 @@ public class Stilling {
         if (lineIsTooShort(line) || lineContainsHeaders(line) || lineIsNotRelevant(line)) {
             return Optional.empty();
         }
-        log.info("Accepted line: {}", (Object) line);
         return Optional.of(new Stilling(line[0], line[1]));
     }
 

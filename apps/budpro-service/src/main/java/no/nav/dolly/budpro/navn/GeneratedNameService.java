@@ -1,4 +1,4 @@
-package no.nav.dolly.budpro.identities;
+package no.nav.dolly.budpro.navn;
 
 import no.nav.testnav.libs.commands.generernavnservice.v1.GenererNavnCommand;
 import no.nav.testnav.libs.reactivecore.config.WebClientConfig;
