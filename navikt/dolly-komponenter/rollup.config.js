@@ -2,6 +2,7 @@ import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import dts from 'rollup-plugin-dts'; // To handle css files
 import postcss from 'rollup-plugin-postcss';
+import babel from '@rollup/plugin-babel';
 
 import terser from '@rollup/plugin-terser';
 import peerDepsExternal from 'rollup-plugin-peer-deps-external';
@@ -31,7 +32,10 @@ export default [
       commonjs(),
       typescript({ tsconfig: './tsconfig.json' }),
       postcss(),
-
+      babel({
+        babelHelpers: 'runtime',
+        exclude: 'node_modules/**', // only transpile our source code
+      }),
       terser(),
       image(),
     ],
@@ -42,6 +46,5 @@ export default [
     plugins: [dts()],
 
     external: ['styled-components'],
-    globals: { 'styled-components': 'styled' },
   },
 ];
