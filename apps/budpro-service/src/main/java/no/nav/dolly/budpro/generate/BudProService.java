@@ -121,7 +121,7 @@ class BudProService {
             var organisasjonsenhet = organisasjonsenhetService.getRandom(random);
             var orgenhet = organisasjonsenhet.getId();
             var orgenhetNavn = organisasjonsenhet.getName();
-            String permisjonskode = null;
+            var permisjonskode = "";
             var produkt = UNSPECIFIED_ID;
             var produktBeskrivelse = UNSPECIFIED_NAME;
             var produktUtlaantFra = UNSPECIFIED_ID;
@@ -134,7 +134,7 @@ class BudProService {
             var statskontoPost = "01";
             var stillingsnummer = stillingService.getRandom(random).getNumber();
             var stillingsprosent = stillingsprosent(random);
-            String tilDato = null;
+            var tilDato = tilDato(random);
             var aarsloennInklFasteTillegg = aarsloenn(random);
             list.add(new BudproRecord(
                     aga,
@@ -223,6 +223,16 @@ class BudProService {
                 .minusDays(random.nextInt(365))
                 .plusDays(random.nextInt(365))
                 .minusYears(employmentInYears);
+        return then.format(DATE_FORMATTER);
+    }
+
+    private String tilDato(Random random) {
+        var monthsAhead = random.nextInt(1, 24);
+        var then = LocalDate
+                .now()
+                .plusDays(random.nextInt(365))
+                .plusDays(random.nextInt(365))
+                .plusMonths(monthsAhead);
         return then.format(DATE_FORMATTER);
     }
 
