@@ -5,12 +5,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import no.nav.testnav.apps.personservice.consumer.dto.pdl.FoedselDTO;
-import no.nav.testnav.apps.personservice.consumer.dto.pdl.graphql.Foedsel;
-import no.nav.testnav.apps.personservice.consumer.dto.pdl.graphql.Folkeregisteridentifikator;
-import no.nav.testnav.apps.personservice.consumer.dto.pdl.graphql.HentPerson;
-import no.nav.testnav.apps.personservice.consumer.dto.pdl.graphql.Navn;
-import no.nav.testnav.apps.personservice.consumer.dto.pdl.graphql.PdlPerson;
+import no.nav.testnav.apps.personservice.consumer.v1.pdl.FoedselDTO;
+import no.nav.testnav.apps.personservice.consumer.v1.pdl.graphql.Foedsel;
+import no.nav.testnav.apps.personservice.consumer.v1.pdl.graphql.Folkeregisteridentifikator;
+import no.nav.testnav.apps.personservice.consumer.v1.pdl.graphql.HentPerson;
+import no.nav.testnav.apps.personservice.consumer.v1.pdl.graphql.Navn;
+import no.nav.testnav.apps.personservice.consumer.v1.pdl.graphql.PdlPerson;
 import no.nav.testnav.libs.dto.personservice.v1.PersonDTO;
 
 import java.time.LocalDate;

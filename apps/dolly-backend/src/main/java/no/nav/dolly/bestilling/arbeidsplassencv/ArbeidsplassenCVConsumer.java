@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.arbeidsplassencv.command.ArbeidsplassenDeleteCVCommand;
-import no.nav.dolly.bestilling.arbeidsplassencv.command.ArbeidsplassenGetCVCommand;
 import no.nav.dolly.bestilling.arbeidsplassencv.command.ArbeidsplassenGodtaHjemmelCommand;
 import no.nav.dolly.bestilling.arbeidsplassencv.command.ArbeidsplassenGodtaVilkaarCommand;
 import no.nav.dolly.bestilling.arbeidsplassencv.command.ArbeidsplassenPostPersonCommand;
@@ -46,14 +45,6 @@ public class ArbeidsplassenCVConsumer implements ConsumerStatus {
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .build();
-    }
-
-    @Timed(name = "providers", tags = { "operation", "arbeidsplassen_getCV" })
-    public Flux<ArbeidsplassenCVStatusDTO> hentCV(String ident, String uuid) {
-
-        return tokenService.exchange(serviceProperties)
-                .flatMapMany(token -> new ArbeidsplassenGetCVCommand(webClient, ident, uuid, token.getTokenValue()).call())
-                .doOnNext(resultat -> log.info("Hentet CV for ident {} {}", ident, resultat));
     }
 
     @Timed(name = "providers", tags = { "operation", "arbeidsplassen_oppdaterCV" })

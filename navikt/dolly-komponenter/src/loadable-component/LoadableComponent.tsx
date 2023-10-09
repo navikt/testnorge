@@ -11,7 +11,7 @@ export type LoadableComponentProps<T> = {
 
 function LoadableComponent<T>({ onFetch, render, onNotFound }: LoadableComponentProps<T>) {
   const [loading, setLoading] = useState(true);
-  const [data, setData] = useState<T>();
+  const [data, setData] = useState<T | undefined>();
   const [notFound, setNotFound] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 
@@ -42,6 +42,7 @@ function LoadableComponent<T>({ onFetch, render, onNotFound }: LoadableComponent
     return <Loading />;
   }
 
+  // @ts-ignore
   return render(data);
 }
 

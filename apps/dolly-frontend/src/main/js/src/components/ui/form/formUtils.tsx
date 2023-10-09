@@ -64,6 +64,7 @@ const getValgteAttributter = (values) => {
 		'pdldata.person.kontaktinformasjonForDoedsbo',
 		'aareg',
 		'sigrunstub',
+		'sigrunstubPensjonsgivende',
 		'inntektstub',
 		'inntektsmelding',
 		'arbeidsplassenCV',

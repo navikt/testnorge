@@ -36,9 +36,8 @@ public class GetRightsCommand implements Callable<Flux<RightDTO>> {
                 .doOnError(
                         WebClientResponseException.class::isInstance,
                         throwable -> log.error(
-                                "Feil ved henting av rettigheter i Altinn. \n{}",
-                                ((WebClientResponseException) throwable).getResponseBodyAsString()
-                        )
-                );
+                                "Feil ved henting av rettigheter i Altinn. {}",
+                                ((WebClientResponseException) throwable).getResponseBodyAsString()))
+                ;
     }
 }

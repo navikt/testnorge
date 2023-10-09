@@ -5,7 +5,7 @@ import Search from '@/pages/UserPage/Search'
 import BrukerService from '@/services/BrukerService'
 // @ts-ignore
 import { CopyToClipboard } from 'react-copy-to-clipboard/lib/Component'
-import { Knapp } from '@navikt/dolly-komponenter/lib'
+import { Knapp } from '@navikt/dolly-komponenter'
 // @ts-ignore
 
 const AccessTokenTextArea = styled.textarea`

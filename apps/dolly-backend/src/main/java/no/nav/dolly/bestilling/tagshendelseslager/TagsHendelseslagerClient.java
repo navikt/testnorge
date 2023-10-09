@@ -4,9 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
+import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.bestilling.tagshendelseslager.dto.HendelselagerResponse;
 import no.nav.dolly.bestilling.tagshendelseslager.dto.TagsOpprettingResponse;
-import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.BestillingProgress;
@@ -37,7 +37,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 public class TagsHendelseslagerClient implements ClientRegister {
 
     private final TagsHendelseslagerConsumer tagsHendelseslagerConsumer;
-    private final PdlPersonConsumer pdlPersonConsumer;
+    private final PersonServiceConsumer personServiceConsumer;
 
     @Override
     public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
@@ -95,7 +95,7 @@ public class TagsHendelseslagerClient implements ClientRegister {
 
     private Flux<String> getPdlIdenter(List<String> identer) {
 
-        return pdlPersonConsumer.getPdlPersoner(identer)
+        return personServiceConsumer.getPdlPersoner(identer)
                 .filter(pdlPersonBolk -> nonNull(pdlPersonBolk.getData()))
                 .map(PdlPersonBolk::getData)
                 .map(PdlPersonBolk.Data::getHentPersonBolk)

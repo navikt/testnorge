@@ -13,7 +13,6 @@ import static io.micrometer.common.util.StringUtils.isBlank;
 @Configuration
 @Profile("dev")
 @VaultPropertySource(value = "secret/dolly/lokal", ignoreSecretNotFound = false)
-@VaultPropertySource(value = "secret/.common/idporten/ver2", ignoreSecretNotFound = false)
 @VaultPropertySource(value = "secret/.common/tokenx/dev/app-1", ignoreSecretNotFound = false)
 public class DevConfig  extends AbstractVaultConfiguration {
 

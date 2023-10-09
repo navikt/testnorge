@@ -16,6 +16,7 @@ import { PdlNyPerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson
 import { PdlEksisterendePerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlEksisterendePerson'
 import { useEffect } from 'react'
 import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
+import { useGenererNavn } from '@/utils/hooks/useGenererNavn'
 
 interface KontaktValues {
 	formikBag: FormikProps<any>
@@ -57,7 +58,7 @@ export const Kontakt = ({ formikBag, path, eksisterendeNyPerson = null }: Kontak
 		} else return null
 	}
 
-	const navnInfo = SelectOptionsOppslag.hentPersonnavn()
+	const { navnInfo, loading } = useGenererNavn()
 	const navnOptions = SelectOptionsOppslag.formatOptions('personnavn', navnInfo)
 
 	useEffect(() => {
@@ -129,7 +130,7 @@ export const Kontakt = ({ formikBag, path, eksisterendeNyPerson = null }: Kontak
 						options={navnOptions}
 						size="large"
 						placeholder={getPlaceholder(formikBag.values, `${advokatPath}.kontaktperson`)}
-						isLoading={navnInfo.loading}
+						isLoading={loading}
 						onChange={(navn: string) =>
 							setNavn(navn, `${advokatPath}.kontaktperson`, formikBag.setFieldValue)
 						}
@@ -150,7 +151,7 @@ export const Kontakt = ({ formikBag, path, eksisterendeNyPerson = null }: Kontak
 						options={navnOptions}
 						size="large"
 						placeholder={getPlaceholder(formikBag.values, `${organisasjonPath}.kontaktperson`)}
-						isLoading={navnInfo.loading}
+						isLoading={loading}
 						onChange={(navn: string) =>
 							setNavn(navn, `${organisasjonPath}.kontaktperson`, formikBag.setFieldValue)
 						}
@@ -183,7 +184,7 @@ export const Kontakt = ({ formikBag, path, eksisterendeNyPerson = null }: Kontak
 						options={navnOptions}
 						size="xlarge"
 						placeholder={getPlaceholder(formikBag.values, `${personPath}.navn`)}
-						isLoading={navnInfo.loading}
+						isLoading={loading}
 						onChange={(navn: string) =>
 							setNavn(navn, `${personPath}.navn`, formikBag.setFieldValue)
 						}

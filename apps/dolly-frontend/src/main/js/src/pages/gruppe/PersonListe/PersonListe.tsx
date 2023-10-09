@@ -117,7 +117,7 @@ export default function PersonListe({
 			dataField: 'navn',
 			formatter: (_cell, row) => {
 				return (
-					<DollyTooltip content={row.navn?.length > 23 ? row.navn : null} mouseEnterDelay={0}>
+					<DollyTooltip content={row.navn?.length > 23 ? row.navn : null}>
 						{getNavnLimited(row.navn)}
 					</DollyTooltip>
 				)

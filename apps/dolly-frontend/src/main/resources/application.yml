@@ -138,6 +138,11 @@ consumers:
     namespace: dolly
     name: testnav-person-search-service
     url: http://testnav-person-search-service.dolly.svc.cluster.local
+  testnav-person-service:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-person-service
+    url: http://testnav-person-service.dolly.svc.cluster.local
   testnav-adresse-service:
     cluster: dev-gcp
     namespace: dolly
@@ -168,6 +173,11 @@ consumers:
     namespace: dolly
     name: testnav-helsepersonell-service
     url: http://testnav-helsepersonell-service.dolly.svc.cluster.local
+  generer-navn-service:
+      cluster: dev-gcp
+      namespace: dolly
+      name: generer-navn-service
+      url: http://generer-navn-service.dolly.svc.cluster.local
   testnav-kontoregister-person-proxy:
     name: testnav-kontoregister-person-proxy
     namespace: dolly

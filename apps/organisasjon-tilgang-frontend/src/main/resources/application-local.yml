@@ -1,12 +1,10 @@
-azure.app.client.id: ${local.client.id}
-azure.app.client.secret: ${local.client.secret}
 
 consumers:
   testnav-bruker-service:
     name: testnav-bruker-service-dev
     url: https://testnav-bruker-service-dev.intern.dev.nav.no
   testnav-organisasjon-tilgang-service:
-    cluster: prod-gcp
+    cluster: dev-gcp
     namespace: dolly
     name: testnav-organisasjon-tilgang-service
     url: https://testnav-organisasjon-tilgang-service.intern.nav.no

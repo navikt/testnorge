@@ -6,10 +6,10 @@ import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
+import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.bestilling.skjermingsregister.domain.SkjermingBestilling;
 import no.nav.dolly.bestilling.skjermingsregister.domain.SkjermingDataRequest;
 import no.nav.dolly.bestilling.skjermingsregister.domain.SkjermingDataResponse;
-import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
@@ -37,7 +37,7 @@ public class SkjermingsRegisterClient implements ClientRegister {
     private final SkjermingsRegisterConsumer skjermingsRegisterConsumer;
     private final ErrorStatusDecoder errorStatusDecoder;
     private final MapperFacade mapperFacade;
-    private final PdlPersonConsumer pdlPersonConsumer;
+    private final PersonServiceConsumer personServiceConsumer;
     private final TransactionHelperService transactionHelperService;
 
     @Override
@@ -78,7 +78,7 @@ public class SkjermingsRegisterClient implements ClientRegister {
 
     private Flux<PdlPersonBolk.PersonBolk> getPersonData(String ident) {
 
-        return pdlPersonConsumer.getPdlPersoner(List.of(ident))
+        return personServiceConsumer.getPdlPersoner(List.of(ident))
                 .filter(pdlPersonBolk -> nonNull(pdlPersonBolk.getData()))
                 .map(PdlPersonBolk::getData)
                 .map(PdlPersonBolk.Data::getHentPersonBolk)
