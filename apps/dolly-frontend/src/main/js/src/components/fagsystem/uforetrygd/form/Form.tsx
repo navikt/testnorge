@@ -11,6 +11,7 @@ import * as _ from 'lodash-es'
 import { useNavEnheter } from '@/utils/hooks/useNorg2'
 import { BarnetilleggForm } from '@/components/fagsystem/uforetrygd/form/partials/BarnetilleggForm'
 import { validation } from '@/components/fagsystem/uforetrygd/form/validation'
+import { addDays } from 'date-fns'
 
 const uforetrygdPath = 'pensjonforvalter.uforetrygd'
 
@@ -43,6 +44,7 @@ export const UforetrygdForm = ({ formikBag }) => {
 					<FormikDatepicker
 						name={`${uforetrygdPath}.onsketVirkningsDato`}
 						label="Ønsket virkningsdato"
+						minDate={addDays(new Date(), 1)}
 					/>
 					<FormikDatepicker name={`${uforetrygdPath}.uforetidspunkt`} label="Uføretidspunkt" />
 					<FormikTextInput

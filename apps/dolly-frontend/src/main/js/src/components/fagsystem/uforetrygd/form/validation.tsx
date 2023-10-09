@@ -1,6 +1,6 @@
 import * as Yup from 'yup'
 import { ifPresent, requiredNumber, requiredString } from '@/utils/YupValidations'
-import { isFuture, isPast } from 'date-fns'
+import { isBefore, isFuture, isPast } from 'date-fns'
 import { testDatoFom, testDatoTom } from '@/components/fagsystem/utils'
 
 const erIkkeLik = () => {
@@ -40,7 +40,17 @@ export const validation = {
 	uforetrygd: ifPresent(
 		'$pensjonforvalter.uforetrygd',
 		Yup.object({
-			kravFremsattDato: Yup.date().nullable(),
+			kravFremsattDato: Yup.date()
+				.test(
+					'er-foer-virkningsdato',
+					'Dato må være før ønsket virkningsdato',
+					function validDate(kravFremsattDato) {
+						const virkningsdato =
+							this.options.context?.pensjonforvalter?.uforetrygd?.onsketVirkningsDato
+						return isBefore(new Date(kravFremsattDato), new Date(virkningsdato))
+					},
+				)
+				.nullable(),
 			onsketVirkningsDato: datoErFremtidig().nullable(),
 			uforetidspunkt: Yup.date()
 				.test('er-historisk', 'Dato må være historisk', function validDate(dato) {
