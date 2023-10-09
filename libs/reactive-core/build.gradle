@@ -51,7 +51,11 @@ if (project.hasProperty("releaseVersion")) {
     version = releaseVersion
 }
 
-java.sourceCompatibility = JavaVersion.VERSION_21
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
 
 publishing {
     repositories {

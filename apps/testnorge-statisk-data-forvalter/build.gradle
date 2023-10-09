@@ -107,4 +107,8 @@ dependencies {
 }
 
 description = 'testnorge-statisk-data-forvalter'
-java.sourceCompatibility = JavaVersion.VERSION_21
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
