@@ -22,6 +22,7 @@ export const Yearpicker = ({
 	date,
 	handleDateChange,
 	maxDate = null,
+	minDate = null,
 	disabled = false,
 }: YearpickerProps) => {
 	const getFeilmelding = (formikProps: FormikProps<any>, formikPath: string) => {
@@ -41,6 +42,7 @@ export const Yearpicker = ({
 					showYearPicker
 					customInput={<TextInput icon="calendar" feil={getFeilmelding(formikBag, name)} />}
 					maxDate={maxDate}
+					minDate={minDate}
 					disabled={disabled}
 				/>
 			</Label>
