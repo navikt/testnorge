@@ -16,17 +16,76 @@ import JoarkDokumentService, {
 } from '@/service/services/JoarkDokumentService'
 import LoadableComponentWithRetry from '@/components/ui/loading/LoadableComponentWithRetry'
 import Panel from '@/components/ui/panel/Panel'
+import { useBestilteMiljoer } from '@/utils/hooks/useBestilling'
+import Loading from '@/components/ui/loading/Loading'
+import React from 'react'
+import { Alert } from '@navikt/ds-react'
+import { MiljoTabs } from '@/components/ui/miljoTabs/MiljoTabs'
 
 interface InntektsmeldingVisningProps {
 	liste: Array<BestillingData>
 	ident: string
 }
 
-export const InntektsmeldingVisning = ({ liste, ident }: InntektsmeldingVisningProps) => {
-	//Viser data fra bestillingen
-	if (!liste || liste.length < 1) {
+export const sjekkManglerInntektsmeldingData = (inntektsmeldingData) => {
+	return (
+		!inntektsmeldingData ||
+		inntektsmeldingData?.length < 1 ||
+		inntektsmeldingData?.every((miljoData) => !miljoData.data)
+	)
+}
+
+export const sjekkManglerInntektsmeldingBestilling = (inntektsmeldingBestilling) => {
+	return !inntektsmeldingBestilling || inntektsmeldingBestilling?.length < 1
+}
+
+const InntektsmeldingListe = ({ data }) => {
+	if (!data) {
 		return null
 	}
+	console.log('data: ', data) //TODO - SLETT MEG
+	return (
+		<DollyFieldArray
+			ignoreOnSingleElement={true}
+			header="Inntektsmelding"
+			data={data.request?.inntekter}
+			expandable
+		>
+			{(inntekter: BestillingData) => (
+				<EnkelInntektsmeldingVisning bestilling={inntekter} data={data} />
+			)}
+		</DollyFieldArray>
+	)
+}
+
+// export const InntektsmeldingVisning = ({ liste, ident }: InntektsmeldingVisningProps) => {
+export const InntektsmeldingVisning = ({
+	data,
+	loading,
+	bestillingIdListe,
+	tilgjengeligMiljoe,
+	bestillinger,
+}: InntektsmeldingVisningProps) => {
+	const { bestilteMiljoer } = useBestilteMiljoer(bestillingIdListe, 'INNTKMELD')
+
+	if (loading) {
+		return <Loading label="Laster inntektsmelding-data" />
+	}
+
+	if (!data && !bestillinger) {
+		return null
+	}
+
+	const manglerFagsystemData =
+		sjekkManglerInntektsmeldingData(data) && sjekkManglerInntektsmeldingBestilling(bestillinger)
+
+	const miljoerMedData = data?.map((miljoData) => miljoData.data && miljoData.miljo)
+	const errorMiljoer = bestilteMiljoer?.filter((miljo) => !miljoerMedData?.includes(miljo))
+
+	const forsteMiljo = data?.find((miljoData) => miljoData?.data)?.miljo
+
+	const filteredData =
+		tilgjengeligMiljoe && data?.filter((item) => item.miljo === tilgjengeligMiljoe)
 
 	const getDokumenter = (bestilling: TransaksjonId): Promise<Dokument[]> => {
 		const journalpostId =
@@ -50,75 +109,124 @@ export const InntektsmeldingVisning = ({ liste, ident }: InntektsmeldingVisningP
 			},
 		)
 	}
-
+	console.log('data xxxxx: ', data) //TODO - SLETT MEG
 	return (
-		<LoadableComponentWithRetry
-			onFetch={() =>
-				DollyApi.getTransaksjonid('INNTKMELD', ident)
-					.then(({ data }: { data: Array<TransaksjonId> }) => {
-						if (!data) {
-							return null
-						}
-						return data.map((bestilling: TransaksjonId) => {
-							return getDokumenter(bestilling).then((response) => {
-								if (response) {
-									return {
-										bestillingId: bestilling.bestillingId,
-										miljoe: bestilling.miljoe,
-										dokumenter: response,
-									}
-								}
-							})
-						})
-					})
-					.then((data: Array<Promise<any>>) => {
-						return Promise.all(data)
-					})
-			}
-			render={(data: Array<Journalpost>) => {
-				if (data && data.length > 0) {
-					const gyldigeBestillinger = liste.filter((bestilling) =>
-						data.find((x) => (x && x.bestillingId ? x.bestillingId === bestilling.id : x)),
-					)
-
-					if (gyldigeBestillinger && gyldigeBestillinger.length > 0) {
-						return (
-							<>
-								<SubOverskrift label="Inntektsmelding (fra Altinn)" iconKind="inntektsmelding" />
-								{data.length > 5 ? (
-									// @ts-ignore
-									<Panel heading={`Inntektsmeldinger`}>
-										<DollyFieldArray
-											ignoreOnSingleElement={true}
-											header="Inntektsmelding"
-											data={gyldigeBestillinger}
-											expandable
-										>
-											{(inntekter: BestillingData) => (
-												<EnkelInntektsmeldingVisning bestilling={inntekter} data={data} />
-											)}
-										</DollyFieldArray>
-									</Panel>
-								) : (
-									<DollyFieldArray
-										ignoreOnSingleElement={true}
-										header="Inntektsmelding"
-										data={gyldigeBestillinger}
-										expandable
-									>
-										{(inntekter: BestillingData) => (
-											<EnkelInntektsmeldingVisning bestilling={inntekter} data={data} />
-										)}
-									</DollyFieldArray>
-								)}
-							</>
-						)
-					}
-				}
-			}}
-			label="Laster inntektsmelding data"
-		/>
+		<>
+			<SubOverskrift label="Inntektsmelding (fra Altinn)" iconKind="inntektsmelding" />
+			{manglerFagsystemData ? (
+				<Alert variant={'warning'} size={'small'} inline style={{ marginBottom: '20px' }}>
+					Fant ikke inntektsmelding-data på person
+				</Alert>
+			) : sjekkManglerInntektsmeldingData(data) ? (
+				<p>Vis bestillingsdata her</p>
+			) : (
+				<MiljoTabs
+					bestilteMiljoer={bestilteMiljoer}
+					errorMiljoer={errorMiljoer}
+					forsteMiljo={forsteMiljo}
+					data={filteredData ? filteredData : data}
+				>
+					{/*<InntektsmeldingListe data={filteredData ? filteredData : data} />*/}
+					<EnkelInntektsmeldingVisning />
+				</MiljoTabs>
+			)}
+			{/*{data.length > 5 ? (*/}
+			{/*	// @ts-ignore*/}
+			{/*	<Panel heading="Inntektsmeldinger">*/}
+			{/*		<DollyFieldArray*/}
+			{/*			ignoreOnSingleElement={true}*/}
+			{/*			header="Inntektsmelding"*/}
+			{/*			data={filteredData ? filteredData : data}*/}
+			{/*			expandable*/}
+			{/*		>*/}
+			{/*			{(inntekter: BestillingData) => (*/}
+			{/*				<EnkelInntektsmeldingVisning bestilling={inntekter} data={data} />*/}
+			{/*			)}*/}
+			{/*		</DollyFieldArray>*/}
+			{/*	</Panel>*/}
+			{/*) : (*/}
+			{/*	<DollyFieldArray*/}
+			{/*		ignoreOnSingleElement={true}*/}
+			{/*		header="Inntektsmelding"*/}
+			{/*		data={filteredData ? filteredData : data}*/}
+			{/*		expandable*/}
+			{/*	>*/}
+			{/*		{(inntekter: BestillingData) => (*/}
+			{/*			<EnkelInntektsmeldingVisning bestilling={inntekter} data={data} />*/}
+			{/*		)}*/}
+			{/*	</DollyFieldArray>*/}
+			{/*)}*/}
+		</>
 	)
+
+	// return (
+	// 	<LoadableComponentWithRetry
+	// 		onFetch={() =>
+	// 			DollyApi.getTransaksjonid('INNTKMELD', ident)
+	// 				.then(({ data }: { data: Array<TransaksjonId> }) => {
+	// 					if (!data) {
+	// 						return null
+	// 					}
+	// 					return data.map((bestilling: TransaksjonId) => {
+	// 						return getDokumenter(bestilling).then((response) => {
+	// 							if (response) {
+	// 								return {
+	// 									bestillingId: bestilling.bestillingId,
+	// 									miljoe: bestilling.miljoe,
+	// 									dokumenter: response,
+	// 								}
+	// 							}
+	// 						})
+	// 					})
+	// 				})
+	// 				.then((data: Array<Promise<any>>) => {
+	// 					return Promise.all(data)
+	// 				})
+	// 		}
+	// 		render={(data: Array<Journalpost>) => {
+	// 			if (data && data.length > 0) {
+	// 				const gyldigeBestillinger = liste.filter((bestilling) =>
+	// 					data.find((x) => (x && x.bestillingId ? x.bestillingId === bestilling.id : x)),
+	// 				)
+	//
+	// 				if (gyldigeBestillinger && gyldigeBestillinger.length > 0) {
+	// 					return (
+	// 						<>
+	// 							<SubOverskrift label="Inntektsmelding (fra Altinn)" iconKind="inntektsmelding" />
+	// 							{data.length > 5 ? (
+	// 								// @ts-ignore
+	// 								<Panel heading={`Inntektsmeldinger`}>
+	// 									<DollyFieldArray
+	// 										ignoreOnSingleElement={true}
+	// 										header="Inntektsmelding"
+	// 										data={gyldigeBestillinger}
+	// 										expandable
+	// 									>
+	// 										{(inntekter: BestillingData) => (
+	// 											<EnkelInntektsmeldingVisning bestilling={inntekter} data={data} />
+	// 										)}
+	// 									</DollyFieldArray>
+	// 								</Panel>
+	// 							) : (
+	// 								<DollyFieldArray
+	// 									ignoreOnSingleElement={true}
+	// 									header="Inntektsmelding"
+	// 									data={gyldigeBestillinger}
+	// 									expandable
+	// 								>
+	// 									{(inntekter: BestillingData) => (
+	// 										<EnkelInntektsmeldingVisning bestilling={inntekter} data={data} />
+	// 									)}
+	// 								</DollyFieldArray>
+	// 							)}
+	// 						</>
+	// 					)
+	// 				}
+	// 			}
+	// 		}}
+	// 		label="Laster inntektsmelding data"
+	// 	/>
+	// )
 }
 
 InntektsmeldingVisning.filterValues = (bestillinger: Array<Bestilling>, ident: string) => {

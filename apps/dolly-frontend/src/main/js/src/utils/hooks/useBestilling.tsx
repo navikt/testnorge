@@ -69,6 +69,17 @@ export const useBestillingerGruppe = (gruppeId: string | number) => {
 		fetcher,
 	)
 
+	const getInntektsmeldingBestilling = () => {
+		const inntektsmeldingId = []
+		data?.forEach((i) => {
+			if (i.bestilling.inntektsmelding) {
+				inntektsmeldingId.push(i.id)
+			}
+		})
+		return inntektsmeldingId
+	}
+	console.log('getInntektsmeldingBestilling(): ', getInntektsmeldingBestilling()) //TODO - SLETT MEG
+
 	const bestillingerSorted = data
 		?.sort((bestilling, bestilling2) => (bestilling.id < bestilling2.id ? 1 : -1))
 		.reduce((acc: { [key: string]: Bestilling }, curr) => ((acc[curr.id] = curr), acc), {})

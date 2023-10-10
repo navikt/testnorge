@@ -14,6 +14,7 @@ import {
 } from '@/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { PersonVisningContent } from '@/components/fagsystem/inntektsmelding/visning/partials/personVisningContent'
+import { useDokument, useJournalpost } from '@/utils/hooks/useJoarkDokument'
 
 const getHeader = (data: Inntekt) => {
 	const arbeidsgiver = data.arbeidsgiver
@@ -24,11 +25,37 @@ const getHeader = (data: Inntekt) => {
 	return `Inntekt (${arbeidsgiver})`
 }
 
-export const EnkelInntektsmeldingVisning = ({ bestilling, data }: EnkelInntektsmelding) => {
+export const EnkelInntektsmeldingVisning = ({ data }: EnkelInntektsmelding) => {
+	if (!data) {
+		return null
+	}
 	// Sjekk om bestillingid i bestilling er i data
-	const journalpostidPaaBestilling = data.filter(
-		(id) => id.bestillingId === bestilling.id || !id.bestillingId
+
+	//TODO: Hente denne her istedemfor??
+	// const journalpostidPaaBestilling = data.filter(
+	// 	(id) => id.bestillingId === bestilling.id || !id.bestillingId,
+	// )
+
+	// console.log('data blblblbaaa: ', data) //TODO - SLETT MEG
+
+	const {
+		journalpost,
+		loading: loadingJournalpost,
+		error: errorJournalpost,
+	} = useJournalpost(data.dokument?.journalpostId, data.request?.miljoe)
+	// console.log('journalpost: ', journalpost) //TODO - SLETT MEG
+
+	const {
+		dokument,
+		loading: loadingDokument,
+		error: errorDokument,
+	} = useDokument(
+		data.dokument?.journalpostId,
+		data.dokument?.dokumentInfoId,
+		data.request?.miljoe,
+		'ORIGINAL',
 	)
+	// console.log('dokument: ', dokument) //TODO - SLETT MEG
 
 	return (
 		<>
@@ -36,8 +63,8 @@ export const EnkelInntektsmeldingVisning = ({ bestilling, data }: EnkelInntektsm
 				<DollyFieldArray
 					header="Inntekt"
 					getHeader={getHeader}
-					data={bestilling.data.inntektsmelding.inntekter}
-					expandable={bestilling.data.inntektsmelding.inntekter.length > 1}
+					data={data?.request?.inntekter}
+					expandable={data?.request?.inntekter.length > 1}
 				>
 					{(inntekt: Inntekt, idx: number) => (
 						<>
@@ -82,15 +109,25 @@ export const EnkelInntektsmeldingVisning = ({ bestilling, data }: EnkelInntektsm
 								data={inntekt.opphoerAvNaturalytelseListe}
 								header="Opphør av naturalytelse"
 							/>
+							<PersonVisningContent
+								miljoe={data.request?.miljoe}
+								dokumentInfo={data.dokument}
+								dokument={dokument}
+							/>
 						</>
 					)}
 				</DollyFieldArray>
+				{/*<PersonVisningContent*/}
+				{/*	miljoe={data.request?.miljoe}*/}
+				{/*	dokumentInfo={data.dokument}*/}
+				{/*	dokument={dokument}*/}
+				{/*/>*/}
 			</ErrorBoundary>
-			<ErrorBoundary>
-				<DollyFieldArray data={journalpostidPaaBestilling} header="Journalpost-ID" nested>
-					{(id: Journalpost, idx: number) => <PersonVisningContent id={id} idx={idx} />}
-				</DollyFieldArray>
-			</ErrorBoundary>
+			{/*<ErrorBoundary>*/}
+			{/*	<DollyFieldArray data={journalpostidPaaBestilling} header="Journalpost-ID" nested>*/}
+			{/*		{(id: Journalpost, idx: number) => <PersonVisningContent id={id} idx={idx} />}*/}
+			{/*	</DollyFieldArray>*/}
+			{/*</ErrorBoundary>*/}
 		</>
 	)
 }

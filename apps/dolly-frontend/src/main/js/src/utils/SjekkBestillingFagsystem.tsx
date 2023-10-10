@@ -117,3 +117,13 @@ export const harSykemeldingBestilling = (bestillingerFagsystemer) => {
 	})
 	return sykemelding
 }
+
+export const harInntektsmeldingBestilling = (bestillingerFagsystemer) => {
+	let inntektsmelding = false
+	bestillingerFagsystemer?.forEach((i) => {
+		if (i.inntektsmelding) {
+			inntektsmelding = true
+		}
+	})
+	return inntektsmelding
+}
