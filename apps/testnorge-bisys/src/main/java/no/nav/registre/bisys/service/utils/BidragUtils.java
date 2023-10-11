@@ -1,7 +1,6 @@
 package no.nav.registre.bisys.service.utils;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.bidrag.ui.bisys.kodeverk.KodeSoknGrKomConstants;
 import no.nav.registre.bisys.consumer.response.SyntetisertBidragsmelding;
 import org.springframework.stereotype.Service;
 

@@ -8,7 +8,6 @@ import java.util.Random;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.bidrag.ui.bisys.soknad.Soknad;
 import no.nav.registre.bisys.consumer.SyntBisysConsumer;
 import no.nav.registre.bisys.consumer.response.SyntetisertBidragsmelding;
 
@@ -71,7 +70,7 @@ public class SyntetiseringService {
             bidragsmelding.setBidragsmottaker(barn.getFarFnr());
             bidragsmelding.setBidragspliktig(barn.getMorFnr());
         }
-        bidragsmelding.setMottattDato(mottattdato.format(DateTimeFormatter.ofPattern(Soknad.STANDARD_DATE_FORMAT_TESTNORGEBISYS_REQUEST)));
+        bidragsmelding.setMottattDato(mottattdato.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
     }
 
     private LocalDate getHistoricalMottattdato(SyntetisertBidragsmelding bidragsmelding, Barn barn) {
