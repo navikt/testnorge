@@ -2,14 +2,17 @@ import * as _ from 'lodash-es'
 import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikProps } from 'formik'
-import React from 'react'
+import React, { useContext } from 'react'
 import _get from 'lodash/get'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 interface AlderForm {
 	formikBag: FormikProps<{}>
 }
 
 export const Alder = ({ formikBag }: AlderForm) => {
+	const opts = useContext(BestillingsveilederContext)
+
 	const paths = {
 		alder: 'pdldata.opprettNyPerson.alder',
 		foedtEtter: 'pdldata.opprettNyPerson.foedtEtter',
@@ -34,6 +37,8 @@ export const Alder = ({ formikBag }: AlderForm) => {
 	const onlyNumberKeyPressHandler = (event: React.KeyboardEvent<any>) =>
 		!/\d/.test(event.key) && event.preventDefault()
 
+	const minDateAlder = opts?.identtype === 'NPID' ? new Date('01.01.1870') : new Date('01.01.1900')
+
 	return (
 		<div className="flexbox--flex-wrap">
 			<FormikTextInput
@@ -48,6 +53,7 @@ export const Alder = ({ formikBag }: AlderForm) => {
 				label="Født etter"
 				disabled={disableFoedtDato}
 				maxDate={new Date()}
+				minDate={minDateAlder}
 				fastfield={false}
 			/>
 			<FormikDatepicker
@@ -55,6 +61,7 @@ export const Alder = ({ formikBag }: AlderForm) => {
 				label="Født før"
 				disabled={disableFoedtDato}
 				maxDate={new Date()}
+				minDate={minDateAlder}
 				fastfield={false}
 			/>
 		</div>

@@ -8,7 +8,7 @@ import { Alert } from '@navikt/ds-react'
 import styled from 'styled-components'
 import _has from 'lodash/has'
 import _get from 'lodash/get'
-import { add, addMonths, getYear, isAfter, isDate, setDate } from 'date-fns'
+import { add, addMonths, getYear, isAfter, isDate, parseISO, setDate } from 'date-fns'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { validation } from '@/components/fagsystem/alderspensjon/form/validation'
 import { Monthpicker } from '@/components/ui/form/inputs/monthpicker/Monthpicker'
@@ -73,7 +73,7 @@ export const AlderspensjonForm = ({ formikBag }) => {
 		if (foedsel) {
 			const foedselsaar =
 				foedsel[foedsel.length - 1]?.foedselsaar ||
-				getYear(foedsel[foedsel.length - 1]?.foedselsdato)
+				getYear(parseISO(foedsel[foedsel.length - 1]?.foedselsdato))
 			if (foedselsaar < 1944) {
 				ugyldigFoedselsaar = true
 			} else if (foedselsaar >= 1944) {
