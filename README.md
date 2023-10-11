@@ -8,20 +8,6 @@ Info/lenker til Team Dollys interne verktøy finnes [her](https://navikt.github.
 
 ## Bygging/Kjøring
 ### Kjør lokalt
-
-**NB: `navtunnel` må kjøre, eller man må være logget inn med `naisdevice`**
-
-For å kunne hente ned alle avheningehter må det opprettes en Personal access tokens fra https://github.com/settings/tokens. Denne token må legges inn i system variabler NAV_TOKEN.
-
-Fra Mac
-```
-/etc/profile
-export NAV_TOKEN=xxxx-yyyy-zzzz
-```
-
-Gradle følger med prosjektet og `./gradlew build` vil derfor fungere. `gradle build` bruker lokalt installert Gradle.
-
-
 ### Utviklerimage
 - Opprett Personal access tokens i Github og legg til token som systemvariabelen NAV_TOKEN (se forklaring over)
 - Opprett `gradle.properties` under `C:/Users/%USERNAME%/.gradle` med innhold (bytt ut truststorepassord og -path):
