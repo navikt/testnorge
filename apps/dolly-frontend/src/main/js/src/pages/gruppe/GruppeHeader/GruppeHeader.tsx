@@ -21,6 +21,7 @@ import { LeggTilPaaGruppe } from '@/pages/gruppe/LeggTilPaaGruppe/LeggTilPaaGrup
 import cn from 'classnames'
 import Icon from '@/components/ui/icon/Icon'
 import { CypressSelector } from '../../../../cypress/mocks/Selectors'
+import Loading from '@/components/ui/loading/Loading'
 
 type GruppeHeaderProps = {
 	gruppeId: string
@@ -50,8 +51,11 @@ const GruppeHeader = ({
 	const {
 		currentBruker: { brukertype },
 	} = useCurrentBruker()
-	const { gruppe } = useGruppeById(gruppeId)
+	const { gruppe, loading } = useGruppeById(gruppeId)
 
+	if (loading) {
+		return <Loading label={'Laster gruppe...'} />
+	}
 	const erLaast = gruppe.erLaast
 
 	const headerClass = erLaast ? 'gruppe-header-laast' : 'gruppe-header'
