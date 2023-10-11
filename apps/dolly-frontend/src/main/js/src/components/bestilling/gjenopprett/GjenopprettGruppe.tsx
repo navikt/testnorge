@@ -6,19 +6,20 @@ import { GjenopprettModal } from '@/components/bestilling/gjenopprett/Gjenoppret
 import { DollyApi } from '@/service/Api'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import { useBestilteMiljoerForGruppe } from '@/utils/hooks/useBestilling'
-import { Gruppe } from '@/utils/hooks/useGruppe'
+import { useGruppeById } from '@/utils/hooks/useGruppe'
 import { setUpdateNow } from '@/ducks/finnPerson'
 import Loading from '@/components/ui/loading/Loading'
 import React from 'react'
 
 type GjenopprettGruppeProps = {
 	onClose: any
-	gruppe: Gruppe
+	gruppeId: string
 }
 
-export const GjenopprettGruppe = ({ onClose, gruppe }: GjenopprettGruppeProps) => {
+export const GjenopprettGruppe = ({ onClose, gruppeId }: GjenopprettGruppeProps) => {
 	const dispatch = useDispatch()
 	const { currentBruker } = useCurrentBruker()
+	const { gruppe } = useGruppeById(gruppeId)
 	const { miljoer, loading } = useBestilteMiljoerForGruppe(gruppe.id)
 	const brukertype = currentBruker?.brukertype
 

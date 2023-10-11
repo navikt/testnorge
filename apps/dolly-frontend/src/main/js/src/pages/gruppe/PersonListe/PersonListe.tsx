@@ -18,6 +18,7 @@ import { useBestillingerGruppe } from '@/utils/hooks/useBestilling'
 import { CypressSelector } from '../../../../cypress/mocks/Selectors'
 import PersonVisningConnector from '@/pages/gruppe/PersonVisning/PersonVisningConnector'
 import { DollyCopyButton } from '@/components/ui/button/CopyButton/DollyCopyButton'
+import { useGruppeById } from '@/utils/hooks/useGruppe'
 
 const PersonIBrukButtonConnector = React.lazy(
 	() => import('@/components/ui/button/PersonIBrukButton/PersonIBrukButtonConnector'),
@@ -33,7 +34,7 @@ const ikonTypeMap = {
 export default function PersonListe({
 	isFetching,
 	search,
-	gruppeInfo,
+	gruppeId,
 	identer,
 	sidetall,
 	sideStoerrelse,
@@ -51,7 +52,8 @@ export default function PersonListe({
 	const [selectedIdent, setSelectedIdent] = useState(null)
 	const [identListe, setIdentListe] = useState([])
 	const dispatch = useDispatch()
-	const { bestillingerById: bestillingStatuser } = useBestillingerGruppe(gruppeInfo.id)
+	const { bestillingerById: bestillingStatuser } = useBestillingerGruppe(gruppeId)
+	const { gruppe: gruppeInfo } = useGruppeById(gruppeId)
 
 	const personListe = useMemo(
 		() => sokSelector(selectPersonListe(identer, bestillingStatuser, fagsystem), search),

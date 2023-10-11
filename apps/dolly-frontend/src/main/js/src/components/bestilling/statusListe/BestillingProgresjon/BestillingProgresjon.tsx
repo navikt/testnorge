@@ -35,7 +35,6 @@ export const BestillingProgresjon = ({
 			setOrgStatus(detaljertStatus)
 		}
 	}
-
 	const harBestillingFeilet = (sistOppdatertState: Date) => {
 		const liveTimeStamp = new Date().getTime()
 		const oldTimeStamp = new Date(sistOppdatertState).getTime()

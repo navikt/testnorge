@@ -3,6 +3,7 @@ import FagsystemStatus from './fagsystemStatus/FagsystemStatus'
 import ApiFeilmelding from '@/components/ui/apiFeilmelding/ApiFeilmelding'
 import antallIdenterOpprettet from '@/components/bestilling/utils/antallIdenterOpprettet'
 import * as _ from 'lodash-es'
+import React from 'react'
 
 export type Miljostatus = {
 	bestilling: {
