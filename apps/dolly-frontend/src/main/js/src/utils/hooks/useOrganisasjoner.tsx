@@ -82,8 +82,9 @@ const fasteDataFallback = [
 export type Bestillingsstatus = {
 	id: number
 	environments: string[]
-	antallIdenter: number
-	antallLevert: number
+	antallIdenter?: number
+	antallIdenterOpprettet?: number
+	antallLevert?: number
 	bestilling: any
 	bruker: any
 	gruppeId: number

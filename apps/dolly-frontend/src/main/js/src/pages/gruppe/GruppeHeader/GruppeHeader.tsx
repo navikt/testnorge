@@ -14,16 +14,17 @@ import { TagsButton } from '@/components/ui/button/Tags/TagsButton'
 import { GjenopprettGruppe } from '@/components/bestilling/gjenopprett/GjenopprettGruppe'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 import { bottom } from '@popperjs/core'
-import { Gruppe } from '@/utils/hooks/useGruppe'
+import { useGruppeById } from '@/utils/hooks/useGruppe'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import { FlyttPersonButton } from '@/components/ui/button/FlyttPersonButton/FlyttPersonButton'
 import { LeggTilPaaGruppe } from '@/pages/gruppe/LeggTilPaaGruppe/LeggTilPaaGruppe'
 import cn from 'classnames'
 import Icon from '@/components/ui/icon/Icon'
 import { CypressSelector } from '../../../../cypress/mocks/Selectors'
+import Loading from '@/components/ui/loading/Loading'
 
 type GruppeHeaderProps = {
-	gruppe: Gruppe
+	gruppeId: string
 	laasGruppe: Function
 	isLockingGruppe: boolean
 	deleteGruppe: Function
@@ -35,7 +36,7 @@ type GruppeHeaderProps = {
 }
 
 const GruppeHeader = ({
-	gruppe,
+	gruppeId,
 	deleteGruppe,
 	isDeletingGruppe,
 	getGruppeExcelFil,
@@ -50,7 +51,11 @@ const GruppeHeader = ({
 	const {
 		currentBruker: { brukertype },
 	} = useCurrentBruker()
+	const { gruppe, loading } = useGruppeById(gruppeId)
 
+	if (loading) {
+		return <Loading label={'Laster gruppe...'} />
+	}
 	const erLaast = gruppe.erLaast
 
 	const headerClass = erLaast ? 'gruppe-header-laast' : 'gruppe-header'
@@ -147,9 +152,9 @@ const GruppeHeader = ({
 				</div>
 			</header>
 
-			{visRedigerState && <RedigerGruppeConnector gruppe={gruppe} onCancel={skjulRediger} />}
+			{visRedigerState && <RedigerGruppeConnector gruppeId={gruppeId} onCancel={skjulRediger} />}
 			{viserGjenopprettModal && (
-				<GjenopprettGruppe onClose={skjulGjenopprettModal} gruppe={gruppe} />
+				<GjenopprettGruppe onClose={skjulGjenopprettModal} gruppeId={gruppeId} />
 			)}
 		</Fragment>
 	)
