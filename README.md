@@ -80,4 +80,3 @@ Deretter kan itegrasjonstester kjøres med kommandoen:
 ```
 
 NB: Dette vil kun fungere hvis appen støtter itegrasjonstester.
-
