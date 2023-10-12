@@ -5,8 +5,9 @@ import GruppeConnector from '@/pages/gruppe/GruppeConnector'
 const GruppeOversikt = lazy(() => import('@/pages/gruppeOversikt/GruppeOversiktConnector'))
 const Organisasjon = lazy(() => import('@/pages/organisasjoner/OrganisasjonerConnector'))
 const BestillingsveilederConnector = lazy(
-	() => import('@/components/bestillingsveileder/BestillingsveilederConnector')
+	() => import('@/components/bestillingsveileder/BestillingsveilederConnector'),
 )
+const Statistikk = lazy(() => import('@/pages/statistikk/Statistikk'))
 const MinSide = lazy(() => import('@/pages/minSide/MinSide'))
 const UI = lazy(() => import('@/pages/ui/index'))
 const TestnorgePage = lazy(() => import('@/pages/testnorgePage/index'))
@@ -43,6 +44,7 @@ const allRoutes = [
 		element: () => <BestillingsveilederConnector />,
 	},
 	{ path: '/minside', breadcrumb: 'Min side', element: () => <MinSide /> },
+	{ path: '/statistikk', breadcrumb: 'Statistikk', element: () => <Statistikk /> },
 	{ path: '/ui', breadcrumb: 'UI demo', element: () => <UI /> },
 	{ path: '/testnorge', breadcrumb: 'Test-Norge', element: () => <TestnorgePage /> },
 	{
