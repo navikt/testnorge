@@ -79,6 +79,9 @@ export default ({
 		disabled: !isMultiple && files?.length > 0,
 		multiple: isMultiple,
 		onDrop: handleDrop,
+		accept: {
+			'application/pdf': ['.pdf'],
+		},
 	})
 
 	return (

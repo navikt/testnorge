@@ -61,7 +61,7 @@ export default ({ label, onBlur, required = false }: Props) => {
     if (isValid(date)) {
       setSelected(date);
     } else {
-      setSelected(undefined);
+      setSelected(undefined as unknown as Date);
     }
   };
 

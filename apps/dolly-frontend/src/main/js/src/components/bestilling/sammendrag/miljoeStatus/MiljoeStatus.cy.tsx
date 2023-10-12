@@ -1,6 +1,16 @@
 import React from 'react'
 import MiljoeStatus from './MiljoeStatus'
 import { gjeldendeBrukerMock } from '../../../../../cypress/mocks/BasicMocks'
+import styled from 'styled-components'
+import ConfettiExplosion from 'react-confetti-explosion'
+
+const StyledConfettiExplosion = styled(ConfettiExplosion)`
+	display: unset;
+	align-items: center;
+	align-content: center;
+	align-self: center;
+	text-align: center;
+`
 
 const mockedBestilling = {
 	id: 123,
@@ -81,6 +91,11 @@ const mockedBestilling = {
 
 describe('<MiljoeStatus />', () => {
 	it('renders', () => {
-		cy.mount(<MiljoeStatus bestilling={mockedBestilling} />)
+		cy.mount(
+			<div style={{ display: 'flex', flexDirection: 'column' }}>
+				<MiljoeStatus bestilling={mockedBestilling} />
+				<StyledConfettiExplosion particleCount={70} force={0.3} duration={2800} />
+			</div>,
+		)
 	})
 })

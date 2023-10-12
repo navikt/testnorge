@@ -12,10 +12,14 @@ import { initialAlderspensjon } from '@/components/fagsystem/alderspensjon/form/
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { initialUforetrygd } from '@/components/fagsystem/uforetrygd/initialValues'
 import { runningCypressE2E } from '@/service/services/Request'
+import * as _ from 'lodash-es'
 
 export const PensjonPanel = ({ stateModifier, formikBag }: any) => {
 	const sm = stateModifier(PensjonPanel.initialValues)
 	const opts = useContext(BestillingsveilederContext)
+
+	const harValgtAp = _.has(formikBag.values, 'pensjonforvalter.alderspensjon')
+	const harValgtUforetrygd = _.has(formikBag.values, 'pensjonforvalter.uforetrygd')
 
 	const harGyldigApBestilling = opts?.tidligereBestillinger?.some(
 		(bestilling) =>
@@ -33,6 +37,28 @@ export const PensjonPanel = ({ stateModifier, formikBag }: any) => {
 			),
 	)
 
+	const getTitleAlderspensjon = () => {
+		if (harGyldigApBestilling) {
+			return 'Personen har allerede alderspensjon'
+		} else if (harGyldigUforetrygdBestilling) {
+			return 'Personen har allerede uføretrygd'
+		} else if (harValgtUforetrygd) {
+			return 'Person kan ikke ha alderspensjon og uføretrygd samtidig'
+		}
+		return null
+	}
+
+	const getTitleUforetrygd = () => {
+		if (harGyldigUforetrygdBestilling) {
+			return 'Personen har allerede uføretrygd'
+		} else if (harGyldigApBestilling) {
+			return 'Personen har allerede alderspensjon'
+		} else if (harValgtAp) {
+			return 'Person kan ikke ha uføretrygd og alderspensjon samtidig'
+		}
+		return null
+	}
+
 	const infoTekst =
 		'Pensjon: \nPensjonsgivende inntekt: \nInntektene blir lagt til i POPP-register. \n\n' +
 		'Tjenestepensjon: \nTjenestepensjonsforhold lagt til i TP. \n\n' +
@@ -40,10 +66,10 @@ export const PensjonPanel = ({ stateModifier, formikBag }: any) => {
 
 	const getIgnoreKeys = () => {
 		const ignoreKeys = []
-		if (harGyldigApBestilling) {
+		if (harGyldigApBestilling || harGyldigUforetrygdBestilling || harValgtUforetrygd) {
 			ignoreKeys.push('alderspensjon')
 		}
-		if (harGyldigUforetrygdBestilling) {
+		if (harGyldigUforetrygdBestilling || harGyldigApBestilling || !harValgtUforetrygd) {
 			ignoreKeys.push('uforetrygd')
 		}
 		return ignoreKeys
@@ -69,15 +95,15 @@ export const PensjonPanel = ({ stateModifier, formikBag }: any) => {
 			<AttributtKategori title="Alderspensjon" attr={sm.attrs}>
 				<Attributt
 					attr={sm.attrs.alderspensjon}
-					disabled={harGyldigApBestilling}
-					title={harGyldigApBestilling ? 'Personen har allerede alderspensjon' : null}
+					disabled={harGyldigApBestilling || harGyldigUforetrygdBestilling || harValgtUforetrygd}
+					title={getTitleAlderspensjon()}
 				/>
 			</AttributtKategori>
 			<AttributtKategori title="Uføretrygd" attr={sm.attrs}>
 				<Attributt
 					attr={sm.attrs.uforetrygd}
-					disabled={harGyldigUforetrygdBestilling}
-					title={harGyldigUforetrygdBestilling ? 'Personen har allerede uføretrygd' : null}
+					disabled={harGyldigUforetrygdBestilling || harGyldigApBestilling || harValgtAp}
+					title={getTitleUforetrygd()}
 				/>
 			</AttributtKategori>
 		</Panel>
@@ -124,7 +150,7 @@ PensjonPanel.initialValues = ({ set, del, has }: any) => {
 			remove: () => del(paths.alderspensjon),
 		},
 		uforetrygd: {
-			label: 'Har uføretrygdvedtak',
+			label: 'Har uføretrygd',
 			checked: has(paths.uforetrygd),
 			add: () => {
 				set(paths.uforetrygd, initialUforetrygd)

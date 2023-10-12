@@ -46,6 +46,25 @@ const testGyldigFom = (val) => {
 	})
 }
 
+const testGyldigAlder = (val) => {
+	return val.test('is-valid', function alderErGyldig(alder: string) {
+		if (alder === null || alder === '') {
+			return true
+		}
+		if (parseInt(alder) < 0) {
+			return this.createError({ message: 'Alder må være minst 0 år' })
+		}
+		const identtype = this?.options?.parent?.identtype
+		const minYear = identtype === 'NPID' ? 1870 : 1900
+		if (new Date().getFullYear() - parseInt(alder) < minYear) {
+			return this.createError({
+				message: `Alder må være mindre enn ${new Date().getFullYear() - (minYear - 1)} år`,
+			})
+		}
+		return true
+	})
+}
+
 export const doedsfall = Yup.object({
 	doedsdato: requiredDate.nullable(),
 })
@@ -70,7 +89,7 @@ export const navn = Yup.object().shape(
 		hasMellomnavn: Yup.boolean().nullable(),
 		gyldigFraOgMed: testGyldigFom(Yup.mixed().nullable()),
 	},
-	['fornavn', 'etternavn']
+	['fornavn', 'etternavn'],
 )
 
 export const folkeregisterpersonstatus = Yup.object({
@@ -82,43 +101,36 @@ export const folkeregisterpersonstatus = Yup.object({
 export const validation = {
 	pdldata: Yup.object({
 		opprettNyPerson: Yup.object({
-			alder: Yup.mixed()
-				.test(
-					'max',
-					`Alder må være mindre enn ${new Date().getFullYear() - 1899} år`,
-					(val) => !val || new Date().getFullYear() - parseInt(val) >= 1900
-				)
-				.test('min', 'Alder må være minst 0 år', (val) => !val || parseInt(val) >= 0)
-				.nullable(),
+			alder: testGyldigAlder(Yup.string().nullable()),
 			foedtEtter: testDatoFom(Yup.date().nullable(), 'foedtFoer', 'Dato må være før født før-dato'),
 			foedtFoer: testDatoTom(
 				Yup.date().nullable(),
 				'foedtEtter',
-				'Dato må være etter født etter-dato'
+				'Dato må være etter født etter-dato',
 			),
 		}).nullable(),
 		person: Yup.object({
 			bostedsadresse: ifPresent('$pdldata.person.bostedsadresse', Yup.array().of(bostedsadresse)),
 			oppholdsadresse: ifPresent(
 				'$pdldata.person.oppholdsadresse',
-				Yup.array().of(oppholdsadresse)
+				Yup.array().of(oppholdsadresse),
 			),
 			kontaktadresse: ifPresent('$pdldata.person.kontaktadresse', Yup.array().of(kontaktadresse)),
 			adressebeskyttelse: ifPresent(
 				'$pdldata.person.adressebeskyttelse',
-				Yup.array().of(adressebeskyttelse)
+				Yup.array().of(adressebeskyttelse),
 			),
 			fullmakt: ifPresent('$pdldata.person.fullmakt', Yup.array().of(fullmakt)),
 			sikkerhetstiltak: ifPresent('$pdldata.person.sikkerhetstiltak', sikkerhetstiltak),
 			tilrettelagtKommunikasjon: ifPresent(
 				'$pdldata.person.tilrettelagtKommunikasjon',
-				tilrettelagtKommunikasjon
+				tilrettelagtKommunikasjon,
 			),
 			falskIdentitet: ifPresent('$pdldata.person.falskIdentitet', falskIdentitet),
 			telefonnummer: ifPresent('$pdldata.person.telefonnummer', Yup.array().of(telefonnummer)),
 			statsborgerskap: ifPresent(
 				'$pdldata.person.statsborgerskap',
-				Yup.array().of(statsborgerskap)
+				Yup.array().of(statsborgerskap),
 			),
 			doedsfall: ifPresent('$pdldata.person.doedsfall', Yup.array().of(doedsfall)),
 			doedfoedtBarn: ifPresent('$pdldata.person.doedfoedtBarn', Yup.array().of(doedfoedtBarn)),
@@ -126,15 +138,15 @@ export const validation = {
 			utflytting: ifPresent('$pdldata.person.utflytting', Yup.array().of(utflytting)),
 			utenlandskIdentifikasjonsnummer: ifPresent(
 				'$pdldata.person.utenlandskIdentifikasjonsnummer',
-				Yup.array().of(utenlandskId)
+				Yup.array().of(utenlandskId),
 			),
 			kontaktinformasjonForDoedsbo: ifPresent(
 				'$pdldata.person.kontaktinformasjonForDoedsbo',
-				Yup.array().of(kontaktDoedsbo)
+				Yup.array().of(kontaktDoedsbo),
 			),
 			forelderBarnRelasjon: ifPresent(
 				'$pdldata.person.forelderBarnRelasjon',
-				Yup.array().of(forelderBarnRelasjon)
+				Yup.array().of(forelderBarnRelasjon),
 			),
 			sivilstand: ifPresent('$pdldata.person.sivilstand', Yup.array().of(sivilstand)),
 			kjoenn: ifPresent('$pdldata.person.kjoenn', Yup.array().of(kjoenn)),

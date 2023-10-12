@@ -11,7 +11,7 @@ metadata:
 spec:
   env:
     - name: SPRING_PROFILES_ACTIVE
-      value: dev
+      value: prod
   port: 8080
   webproxy: true
   azure:

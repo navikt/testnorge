@@ -92,7 +92,7 @@ export const useOrganisasjonTilgang = () => {
 
 	const { data, isLoading, error } = useSWR<OrganisasjonMiljoe, Error>(
 		getOrganisasjonTilgangUrl(orgnummer),
-		fetcher
+		fetcher,
 	)
 
 	return {

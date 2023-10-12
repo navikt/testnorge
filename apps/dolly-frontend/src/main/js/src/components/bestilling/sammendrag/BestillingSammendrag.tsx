@@ -3,7 +3,7 @@ import React, { Suspense } from 'react'
 import Loading from '@/components/ui/loading/Loading'
 
 const Bestillingskriterier = React.lazy(
-	() => import('@/components/bestilling/sammendrag/kriterier/Bestillingskriterier')
+	() => import('@/components/bestilling/sammendrag/kriterier/Bestillingskriterier'),
 )
 
 export default function BestillingSammendrag({ bestilling }) {

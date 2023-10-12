@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { SubmitForm } from '@/components/SubmitForm';
 import { OrganisasjonTilgangService } from '@/services';
-import { InputFormItem, SelectFormItem, TimePicker } from '@navikt/dolly-komponenter/lib';
+import { InputFormItem, SelectFormItem, TimePicker } from '@navikt/dolly-komponenter';
 import styled from 'styled-components';
 
 const StyledTimepicker = styled(TimePicker)`
@@ -24,7 +24,7 @@ const createDefaultDate = () => {
     currentDate.getFullYear() + 3,
     currentDate.getDate(),
     currentDate.getDay(),
-    currentDate.getHours()
+    currentDate.getHours(),
   );
 };
 
@@ -44,7 +44,7 @@ const AccessForm = () => {
         OrganisasjonTilgangService.createOrganisasjonTilgang(
           orgnummer,
           gyldigTil.toISOString(),
-          miljoe
+          miljoe,
         )
       }
     >
