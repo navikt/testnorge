@@ -221,8 +221,6 @@ export default ({
 		ident.ident,
 	)
 
-	console.log('inntektsmeldingData: ', inntektsmeldingData) //TODO - SLETT MEG
-
 	const getGruppeIdenter = () => {
 		return useAsync(async () => DollyApi.getGruppeById(gruppeId), [DollyApi.getGruppeById])
 	}

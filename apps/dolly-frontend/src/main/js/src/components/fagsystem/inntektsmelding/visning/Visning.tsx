@@ -21,6 +21,7 @@ import Loading from '@/components/ui/loading/Loading'
 import React from 'react'
 import { Alert } from '@navikt/ds-react'
 import { MiljoTabs } from '@/components/ui/miljoTabs/MiljoTabs'
+import inntekt from '@/components/inntektStub/validerInntekt/Inntekt'
 
 interface InntektsmeldingVisningProps {
 	liste: Array<BestillingData>
@@ -84,8 +85,33 @@ export const InntektsmeldingVisning = ({
 
 	const forsteMiljo = data?.find((miljoData) => miljoData?.data)?.miljo
 
+	// const filteredData =
+	// 	tilgjengeligMiljoe && data?.filter((item) => item.miljo === tilgjengeligMiljoe)
+
+	const mergeData = () => {
+		const mergeMiljo = []
+		data.forEach((item) => {
+			const indexOfMiljo = mergeMiljo.findIndex((inntekt) => inntekt?.miljo === item?.miljo)
+			// console.log('item: ', item) //TODO - SLETT MEG
+			// console.log('indexOfMiljo: ', indexOfMiljo) //TODO - SLETT MEG
+			// if (mergeMiljo.includes((inntekt) => inntekt?.miljo === item?.miljo)) {
+			// console.log('mergeMiljo: ', mergeMiljo) //TODO - SLETT MEG
+			if (indexOfMiljo >= 0) {
+				mergeMiljo[indexOfMiljo].data?.push(item.data)
+			} else {
+				mergeMiljo.push({
+					data: [item.data],
+					miljo: item.miljo,
+				})
+			}
+		})
+		return mergeMiljo
+	}
+	const mergetData = mergeData()
+	// console.log('mergetData: ', mergetData) //TODO - SLETT MEG
+
 	const filteredData =
-		tilgjengeligMiljoe && data?.filter((item) => item.miljo === tilgjengeligMiljoe)
+		tilgjengeligMiljoe && mergetData?.filter((item) => item.miljo === tilgjengeligMiljoe)
 
 	const getDokumenter = (bestilling: TransaksjonId): Promise<Dokument[]> => {
 		const journalpostId =
@@ -109,7 +135,7 @@ export const InntektsmeldingVisning = ({
 			},
 		)
 	}
-	console.log('data xxxxx: ', data) //TODO - SLETT MEG
+	// console.log('data xxxxx: ', data) //TODO - SLETT MEG
 	return (
 		<>
 			<SubOverskrift label="Inntektsmelding (fra Altinn)" iconKind="inntektsmelding" />
@@ -124,7 +150,7 @@ export const InntektsmeldingVisning = ({
 					bestilteMiljoer={bestilteMiljoer}
 					errorMiljoer={errorMiljoer}
 					forsteMiljo={forsteMiljo}
-					data={filteredData ? filteredData : data}
+					data={filteredData ? filteredData : mergetData}
 				>
 					{/*<InntektsmeldingListe data={filteredData ? filteredData : data} />*/}
 					<EnkelInntektsmeldingVisning />

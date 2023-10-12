@@ -17,10 +17,11 @@ import { PersonVisningContent } from '@/components/fagsystem/inntektsmelding/vis
 import { useDokument, useJournalpost } from '@/utils/hooks/useJoarkDokument'
 
 const getHeader = (data: Inntekt) => {
-	const arbeidsgiver = data.arbeidsgiver
-		? data.arbeidsgiver.virksomhetsnummer
-		: data.arbeidsgiverPrivat
-		? data.arbeidsgiverPrivat.arbeidsgiverFnr
+	const inntekt = data.request?.inntekter?.[0]
+	const arbeidsgiver = inntekt.arbeidsgiver
+		? inntekt.arbeidsgiver.virksomhetsnummer
+		: inntekt.arbeidsgiverPrivat
+		? inntekt.arbeidsgiverPrivat.arbeidsgiverFnr
 		: ''
 	return `Inntekt (${arbeidsgiver})`
 }
@@ -36,26 +37,12 @@ export const EnkelInntektsmeldingVisning = ({ data }: EnkelInntektsmelding) => {
 	// 	(id) => id.bestillingId === bestilling.id || !id.bestillingId,
 	// )
 
-	// console.log('data blblblbaaa: ', data) //TODO - SLETT MEG
-
-	const {
-		journalpost,
-		loading: loadingJournalpost,
-		error: errorJournalpost,
-	} = useJournalpost(data.dokument?.journalpostId, data.request?.miljoe)
-	// console.log('journalpost: ', journalpost) //TODO - SLETT MEG
-
-	const {
-		dokument,
-		loading: loadingDokument,
-		error: errorDokument,
-	} = useDokument(
-		data.dokument?.journalpostId,
-		data.dokument?.dokumentInfoId,
-		data.request?.miljoe,
-		'ORIGINAL',
-	)
-	// console.log('dokument: ', dokument) //TODO - SLETT MEG
+	//TODO: Trenger vi denne??
+	// const {
+	// 	journalpost,
+	// 	loading: loadingJournalpost,
+	// 	error: errorJournalpost,
+	// } = useJournalpost(data.dokument?.journalpostId, data.request?.miljoe)
 
 	return (
 		<>
@@ -63,71 +50,65 @@ export const EnkelInntektsmeldingVisning = ({ data }: EnkelInntektsmelding) => {
 				<DollyFieldArray
 					header="Inntekt"
 					getHeader={getHeader}
-					data={data?.request?.inntekter}
-					expandable={data?.request?.inntekter.length > 1}
+					data={data}
+					expandable={data?.length > 3}
+					whiteBackground
 				>
-					{(inntekt: Inntekt, idx: number) => (
-						<>
-							<div className="person-visning_content" key={idx}>
-								<TitleValue
-									title="Årsak til innsending"
-									value={codeToNorskLabel(inntekt.aarsakTilInnsending)}
+					{(inntektsmelding: Inntekt, idx: number) => {
+						const inntekt = inntektsmelding?.request?.inntekter?.[0]
+						return (
+							<>
+								<div className="person-visning_content" key={idx}>
+									<TitleValue
+										title="Årsak til innsending"
+										value={codeToNorskLabel(inntekt.aarsakTilInnsending)}
+									/>
+									<TitleValue title="Ytelse" value={codeToNorskLabel(inntekt.ytelse)} />
+									<TitleValue
+										title="Virksomhet (orgnr)"
+										value={inntekt.arbeidsgiver && inntekt.arbeidsgiver.orgnummer}
+									/>
+									<TitleValue
+										title="Opplysningspliktig virksomhet"
+										value={inntekt.arbeidsgiver && inntekt.arbeidsgiver.virksomhetsnummer}
+									/>
+									<TitleValue
+										title="Innsendingstidspunkt"
+										value={formatDate(inntekt.avsendersystem.innsendingstidspunkt)}
+									/>
+									<TitleValue
+										title="Privat arbeidsgiver"
+										value={inntekt.arbeidsgiverPrivat && inntekt.arbeidsgiverPrivat.arbeidsgiverFnr}
+									/>
+									<TitleValue title="Har nær relasjon" value={inntekt.naerRelasjon} />
+									<TitleValue
+										title="Startdato foreldrepenger"
+										value={formatDate(inntekt.startdatoForeldrepengeperiode)}
+									/>
+								</div>
+								<ArbeidsforholdVisning data={inntekt.arbeidsforhold} />
+								<OmsorgspengerVisning data={inntekt.omsorgspenger} />
+								<RefusjonVisning data={inntekt.refusjon} />
+								<SykepengerVisning data={inntekt.sykepengerIArbeidsgiverperioden} />
+								<PleiepengerVisning data={inntekt.pleiepengerPerioder} />
+								<NaturalytelseVisning
+									data={inntekt.gjenopptakelseNaturalytelseListe}
+									header="Gjenopptagekse av naturalytelse"
 								/>
-								<TitleValue title="Ytelse" value={codeToNorskLabel(inntekt.ytelse)} />
-								<TitleValue
-									title="Virksomhet (orgnr)"
-									value={inntekt.arbeidsgiver && inntekt.arbeidsgiver.orgnummer}
+								<NaturalytelseVisning
+									data={inntekt.opphoerAvNaturalytelseListe}
+									header="Opphør av naturalytelse"
 								/>
-								<TitleValue
-									title="Opplysningspliktig virksomhet"
-									value={inntekt.arbeidsgiver && inntekt.arbeidsgiver.virksomhetsnummer}
+								<PersonVisningContent
+									miljoe={inntektsmelding?.request?.miljoe}
+									dokumentInfo={inntektsmelding?.dokument}
+									index={idx}
 								/>
-								<TitleValue
-									title="Innsendingstidspunkt"
-									value={formatDate(inntekt.avsendersystem.innsendingstidspunkt)}
-								/>
-								<TitleValue
-									title="Privat arbeidsgiver"
-									value={inntekt.arbeidsgiverPrivat && inntekt.arbeidsgiverPrivat.arbeidsgiverFnr}
-								/>
-								<TitleValue title="Har nær relasjon" value={inntekt.naerRelasjon} />
-								<TitleValue
-									title="Startdato foreldrepenger"
-									value={formatDate(inntekt.startdatoForeldrepengeperiode)}
-								/>
-							</div>
-							<ArbeidsforholdVisning data={inntekt.arbeidsforhold} />
-							<OmsorgspengerVisning data={inntekt.omsorgspenger} />
-							<RefusjonVisning data={inntekt.refusjon} />
-							<SykepengerVisning data={inntekt.sykepengerIArbeidsgiverperioden} />
-							<PleiepengerVisning data={inntekt.pleiepengerPerioder} />
-							<NaturalytelseVisning
-								data={inntekt.gjenopptakelseNaturalytelseListe}
-								header="Gjenopptagekse av naturalytelse"
-							/>
-							<NaturalytelseVisning
-								data={inntekt.opphoerAvNaturalytelseListe}
-								header="Opphør av naturalytelse"
-							/>
-							<PersonVisningContent
-								miljoe={data.request?.miljoe}
-								dokumentInfo={data.dokument}
-								dokument={dokument}
-							/>
-						</>
-					)}
+							</>
+						)
+					}}
 				</DollyFieldArray>
-				{/*<PersonVisningContent*/}
-				{/*	miljoe={data.request?.miljoe}*/}
-				{/*	dokumentInfo={data.dokument}*/}
-				{/*	dokument={dokument}*/}
-				{/*/>*/}
 			</ErrorBoundary>
-			{/*<ErrorBoundary>*/}
-			{/*	<DollyFieldArray data={journalpostidPaaBestilling} header="Journalpost-ID" nested>*/}
-			{/*		{(id: Journalpost, idx: number) => <PersonVisningContent id={id} idx={idx} />}*/}
-			{/*	</DollyFieldArray>*/}
-			{/*</ErrorBoundary>*/}
 		</>
 	)
 }
