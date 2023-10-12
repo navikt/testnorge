@@ -5,6 +5,7 @@ import { EndringsmeldingPage } from '@/pages';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import LoginPage from '@/pages/login-page/LoginPage';
 import ProfilService from './service/ProfilService';
+import '@navikt/ds-css';
 
 const App = () => (
   <Router>
