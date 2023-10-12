@@ -5,23 +5,28 @@ import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
 import no.nav.dolly.consumer.kodeverk.KodeverkMapper;
+import no.nav.dolly.domain.resultset.RsDollyStatistikk;
+import no.nav.dolly.domain.resultset.RsTransaksjonMapping;
 import no.nav.dolly.domain.resultset.kodeverk.KodeverkAdjusted;
+import no.nav.dolly.service.DollyStatistikkService;
 import no.nav.dolly.service.InntektsmeldingEnumService;
 import no.nav.dolly.service.InntektsmeldingEnumService.EnumTypes;
-import no.nav.dolly.service.RsTransaksjonMapping;
 import no.nav.dolly.service.TransaksjonMappingService;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.HttpClientErrorException;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Map;
 
+import static io.micrometer.common.util.StringUtils.isBlank;
 import static no.nav.dolly.config.CachingConfig.CACHE_KODEVERK;
 
 @RestController
@@ -33,6 +38,7 @@ public class OppslagController {
     private final KodeverkConsumer kodeverkConsumer;
     private final InntektsmeldingEnumService inntektsmeldingEnumService;
     private final TransaksjonMappingService transaksjonMappingService;
+    private final DollyStatistikkService dollyStatistikkService;
 
     @Cacheable(CACHE_KODEVERK)
     @GetMapping("/kodeverk/{kodeverkNavn}")
@@ -69,5 +75,16 @@ public class OppslagController {
                     system) {
 
         return transaksjonMappingService.getTransaksjonMapping(system, ident, bestillingId);
+    }
+
+    @GetMapping("/statistikk")
+    @Operation(description = "Henter statistikk for bruk av dolly basert på brukerens ID")
+    public RsDollyStatistikk getStatistikkByUser(
+            @RequestParam(value = "brukerId") String brukerId) {
+        if (isBlank(brukerId)) {
+            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Henting av statistikk krever ID for ønsket bruker");
+        }
+
+        return dollyStatistikkService.getDollyStatistikk(brukerId);
     }
 }

@@ -3,6 +3,7 @@ package no.nav.dolly.service;
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.TransaksjonMapping;
+import no.nav.dolly.domain.resultset.RsTransaksjonMapping;
 import no.nav.dolly.domain.resultset.SystemTyper;
 import no.nav.dolly.repository.TransaksjonMappingRepository;
 import org.springframework.stereotype.Service;

@@ -12,6 +12,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 public interface BestillingRepository extends CrudRepository<Bestilling, Long> {
 
@@ -24,6 +25,10 @@ public interface BestillingRepository extends CrudRepository<Bestilling, Long> {
             "ilike :id fetch first 10 rows only",
             nativeQuery = true)
     List<RsBestillingFragment> findByIdContaining(String id);
+
+    Long countAllByBruker_BrukerIdEquals(String id);
+
+    Stream<Bestilling> streamAllByBruker_BrukerIdEquals(String id);
 
     @Query(value = "select b.id, g.navn " +
             "from Bestilling b " +

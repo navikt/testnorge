@@ -1,4 +1,4 @@
-package no.nav.dolly.service;
+package no.nav.dolly.domain.resultset;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.JsonNode;
