@@ -88,14 +88,32 @@ export const InntektsmeldingVisning = ({
 	// const filteredData =
 	// 	tilgjengeligMiljoe && data?.filter((item) => item.miljo === tilgjengeligMiljoe)
 
+	const harTransaksjonsidData = data?.some((inntekt) => inntekt?.data?.request)
+
+	const setTransaksjonsidData = () => {
+		return data.map((miljo) => {
+			return {
+				data: {
+					dokument: miljo.data,
+					request: {
+						//TODO: Hent inntektsmelding fra alle bestillinger
+						inntekter: bestillinger?.[0]?.data.inntektsmelding.inntekter,
+						miljoe: miljo.miljo,
+					},
+				},
+				miljo: miljo.miljo,
+			}
+		})
+	}
+	console.log('data: ', data) //TODO - SLETT MEG
+	if (!harTransaksjonsidData) {
+		data = setTransaksjonsidData()
+	}
+
 	const mergeData = () => {
 		const mergeMiljo = []
 		data.forEach((item) => {
 			const indexOfMiljo = mergeMiljo.findIndex((inntekt) => inntekt?.miljo === item?.miljo)
-			// console.log('item: ', item) //TODO - SLETT MEG
-			// console.log('indexOfMiljo: ', indexOfMiljo) //TODO - SLETT MEG
-			// if (mergeMiljo.includes((inntekt) => inntekt?.miljo === item?.miljo)) {
-			// console.log('mergeMiljo: ', mergeMiljo) //TODO - SLETT MEG
 			if (indexOfMiljo >= 0) {
 				mergeMiljo[indexOfMiljo].data?.push(item.data)
 			} else {
@@ -113,29 +131,32 @@ export const InntektsmeldingVisning = ({
 	const filteredData =
 		tilgjengeligMiljoe && mergetData?.filter((item) => item.miljo === tilgjengeligMiljoe)
 
-	const getDokumenter = (bestilling: TransaksjonId): Promise<Dokument[]> => {
-		const journalpostId =
-			bestilling.transaksjonId.dokument?.journalpostId || bestilling.transaksjonId.journalpostId
-		return JoarkDokumentService.hentJournalpost(journalpostId, bestilling.miljoe).then(
-			(journalpost: Journalpost) => {
-				return Promise.all(
-					journalpost.dokumenter.map((document: Dokument) =>
-						JoarkDokumentService.hentDokument(
-							journalpostId,
-							document.dokumentInfoId,
-							bestilling.miljoe,
-							'ORIGINAL',
-						).then((dokument: string) => ({
-							journalpostId,
-							dokumentInfoId: document.dokumentInfoId,
-							dokument,
-						})),
-					),
-				)
-			},
-		)
-	}
+	// const getDokumenter = (bestilling: TransaksjonId): Promise<Dokument[]> => {
+	// 	const journalpostId =
+	// 		bestilling.transaksjonId.dokument?.journalpostId || bestilling.transaksjonId.journalpostId
+	// 	return JoarkDokumentService.hentJournalpost(journalpostId, bestilling.miljoe).then(
+	// 		(journalpost: Journalpost) => {
+	// 			return Promise.all(
+	// 				journalpost.dokumenter.map((document: Dokument) =>
+	// 					JoarkDokumentService.hentDokument(
+	// 						journalpostId,
+	// 						document.dokumentInfoId,
+	// 						bestilling.miljoe,
+	// 						'ORIGINAL',
+	// 					).then((dokument: string) => ({
+	// 						journalpostId,
+	// 						dokumentInfoId: document.dokumentInfoId,
+	// 						dokument,
+	// 					})),
+	// 				),
+	// 			)
+	// 		},
+	// 	)
+	// }
+
 	// console.log('data xxxxx: ', data) //TODO - SLETT MEG
+	// console.log('mergetData: ', mergetData) //TODO - SLETT MEG
+	// console.log('bestillinger: ', bestillinger) //TODO - SLETT MEG
 	return (
 		<>
 			<SubOverskrift label="Inntektsmelding (fra Altinn)" iconKind="inntektsmelding" />

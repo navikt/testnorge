@@ -17,11 +17,14 @@ import { PersonVisningContent } from '@/components/fagsystem/inntektsmelding/vis
 import { useDokument, useJournalpost } from '@/utils/hooks/useJoarkDokument'
 
 const getHeader = (data: Inntekt) => {
-	const inntekt = data.request?.inntekter?.[0]
+	const inntekt = data?.request?.inntekter?.[0]
+	if (!inntekt) {
+		return 'Inntekt'
+	}
 	const arbeidsgiver = inntekt.arbeidsgiver
-		? inntekt.arbeidsgiver.virksomhetsnummer
+		? inntekt.arbeidsgiver?.virksomhetsnummer
 		: inntekt.arbeidsgiverPrivat
-		? inntekt.arbeidsgiverPrivat.arbeidsgiverFnr
+		? inntekt.arbeidsgiverPrivat?.arbeidsgiverFnr
 		: ''
 	return `Inntekt (${arbeidsgiver})`
 }
@@ -56,6 +59,9 @@ export const EnkelInntektsmeldingVisning = ({ data }: EnkelInntektsmelding) => {
 				>
 					{(inntektsmelding: Inntekt, idx: number) => {
 						const inntekt = inntektsmelding?.request?.inntekter?.[0]
+						if (!inntekt) {
+							return null
+						}
 						return (
 							<>
 								<div className="person-visning_content" key={idx}>
