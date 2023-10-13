@@ -438,8 +438,6 @@ export default ({
 					bestillinger={
 						harInntektsmeldingBestilling(bestillingerFagsystemer) ? inntektsmeldingBestilling : null
 					}
-					// liste={InntektsmeldingVisning.filterValues(bestillingListe, ident.ident)}
-					// ident={ident.ident}
 				/>
 				<ArbeidsplassenVisning
 					data={arbeidsplassencvData}

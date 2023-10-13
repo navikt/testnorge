@@ -3,6 +3,7 @@ import { fetcher } from '@/api'
 
 const joarkUrl = '/testnav-joark-dokument-service/api/v2/journalpost/'
 
+//TODO: Trenger kanskje ikke denne?
 export const useJournalpost = (journalpostId: number, miljo: string) => {
 	const { data, isLoading, error } = useSWR<any, Error>(
 		[joarkUrl + journalpostId, { miljo: miljo }],

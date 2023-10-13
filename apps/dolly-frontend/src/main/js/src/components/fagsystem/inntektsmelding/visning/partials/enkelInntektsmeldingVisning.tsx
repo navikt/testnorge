@@ -10,11 +10,9 @@ import NaturalytelseVisning from './naturalytelseVisning'
 import {
 	EnkelInntektsmelding,
 	Inntekt,
-	Journalpost,
 } from '@/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { PersonVisningContent } from '@/components/fagsystem/inntektsmelding/visning/partials/personVisningContent'
-import { useDokument, useJournalpost } from '@/utils/hooks/useJoarkDokument'
 
 const getHeader = (data: Inntekt) => {
 	const inntekt = data?.request?.inntekter?.[0]
@@ -33,19 +31,6 @@ export const EnkelInntektsmeldingVisning = ({ data }: EnkelInntektsmelding) => {
 	if (!data) {
 		return null
 	}
-	// Sjekk om bestillingid i bestilling er i data
-
-	//TODO: Hente denne her istedemfor??
-	// const journalpostidPaaBestilling = data.filter(
-	// 	(id) => id.bestillingId === bestilling.id || !id.bestillingId,
-	// )
-
-	//TODO: Trenger vi denne??
-	// const {
-	// 	journalpost,
-	// 	loading: loadingJournalpost,
-	// 	error: errorJournalpost,
-	// } = useJournalpost(data.dokument?.journalpostId, data.request?.miljoe)
 
 	return (
 		<>

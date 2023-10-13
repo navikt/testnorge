@@ -119,6 +119,8 @@ export const useTransaksjonIdData = (ident, system, harBestilling, fagsystemMilj
 	}
 	const miljoData = getMiljoData()
 
+	//TODO: Kanskje legge til alle relevante miljoer i miljodata? Slik at vi faar faner for alle miljoer, ogsaa de det ikke finnes data i
+
 	return {
 		data: miljoData?.sort((a, b) => a.miljo?.localeCompare(b.miljo)),
 		loading: isLoading,

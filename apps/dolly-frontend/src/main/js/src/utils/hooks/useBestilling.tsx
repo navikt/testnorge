@@ -69,6 +69,7 @@ export const useBestillingerGruppe = (gruppeId: string | number) => {
 		fetcher,
 	)
 
+	//TODO: Fjernes, brukes bare for aa finne gamle inntektsmelding-bestillinger aa teste paa
 	const getInntektsmeldingBestilling = () => {
 		const inntektsmeldingId = []
 		data?.forEach((i) => {
