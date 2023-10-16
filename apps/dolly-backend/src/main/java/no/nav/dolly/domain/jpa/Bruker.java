@@ -74,7 +74,8 @@ public class Bruker implements Serializable {
     @JoinColumn(name = "EID_AV_ID")
     private Bruker eidAv;
 
-    @OneToMany(mappedBy = "opprettetAv")
+    @OneToMany
+    @JoinColumn(name = "opprettet_av")
     @Builder.Default
     private Set<Testgruppe> testgrupper = new HashSet<>();
 

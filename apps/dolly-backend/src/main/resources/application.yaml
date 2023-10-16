@@ -56,6 +56,7 @@ springdoc:
     url: /v3/api-docs
     disable-swagger-default-url: true
     tags-sorter: alpha
+  pre-loading-enabled: true
 
 management:
   endpoints:
