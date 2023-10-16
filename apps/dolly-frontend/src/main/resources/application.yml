@@ -109,7 +109,7 @@ consumers:
     name: testnorge-profil-api
     url: http://testnorge-profil-api.dolly.svc.cluster.local
   testnav-organisasjon-tilgang-service:
-    cluster: prod-gcp
+    cluster: dev-gcp
     namespace: dolly
     name: testnav-organisasjon-tilgang-service
     url: https://testnav-organisasjon-tilgang-service.intern.nav.no
