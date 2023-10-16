@@ -54,14 +54,17 @@ export default <T extends {}>({
       dispatch({ type: Action.SET_SUBMIT_START });
       onSend()
         .then((response) =>
-          dispatch({ type: Action.SET_SUBMIT_SUCCESS, successMessage: getSuccessMessage(response) })
+          dispatch({
+            type: Action.SET_SUBMIT_SUCCESS,
+            successMessage: getSuccessMessage(response),
+          }),
         )
         .catch((e) => {
           if (e instanceof BadRequestError) {
             return e.response
               .json()
               .then((body: string[]) =>
-                dispatch({ type: Action.SET_SUBMIT_WARNING, warningMessages: body })
+                dispatch({ type: Action.SET_SUBMIT_WARNING, warningMessages: body }),
               );
           }
 

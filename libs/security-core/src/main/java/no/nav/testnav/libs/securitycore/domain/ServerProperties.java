@@ -26,7 +26,7 @@ public abstract class ServerProperties {
      * NAIS cluster for target service, e.g. <pre>dev-gcp</pre.
      */
     @NotBlank
-    private String cluster;
+    private String cluster = "dev-gcp";
 
     /**
      * NAIS defined name for target service.
@@ -38,7 +38,7 @@ public abstract class ServerProperties {
      * NAIS namespace for target service, e.g. <pre>dolly</pre>.
      */
     @NotBlank
-    private String namespace;
+    private String namespace = "dolly";
 
     public String toTokenXScope() {
         return "%s:%s:%s".formatted(cluster, namespace, name);

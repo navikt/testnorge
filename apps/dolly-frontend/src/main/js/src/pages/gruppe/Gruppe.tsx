@@ -100,7 +100,7 @@ export default ({
 	const erLaast = gruppe.erLaast
 	return (
 		<div className="gruppe-container">
-			<GruppeHeaderConnector gruppe={gruppe} />
+			<GruppeHeaderConnector gruppeId={gruppe.id} />
 			{ikkeFerdigBestillinger && (
 				// @ts-ignore
 				<StatusListeConnector gruppeId={gruppe.id} bestillingListe={ikkeFerdigBestillinger} />
@@ -186,7 +186,7 @@ export default ({
 				<PersonListeConnector
 					iLaastGruppe={erLaast}
 					brukertype={brukertype}
-					gruppeInfo={gruppe}
+					gruppeId={gruppeId}
 					identer={identer}
 					bestillingerById={bestillingerById}
 				/>
@@ -196,7 +196,7 @@ export default ({
 					iLaastGruppe={erLaast}
 					brukertype={brukertype}
 					bestillingerById={bestillingerById}
-					gruppeInfo={gruppe}
+					gruppeId={gruppeId}
 				/>
 			)}
 		</div>

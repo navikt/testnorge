@@ -9,13 +9,10 @@ import './RedigerGruppe.less'
 import { useNavigate } from 'react-router-dom'
 import { REGEX_BACKEND_GRUPPER, useMatchMutate } from '@/utils/hooks/useMutate'
 import { CypressSelector } from '../../../cypress/mocks/Selectors'
+import { useGruppeById } from '@/utils/hooks/useGruppe'
 
 type Props = {
-	gruppe: {
-		id: number
-		navn: string
-		hensikt: string
-	}
+	gruppeId?: string
 	createGruppe: (arg0: any) => any
 	createOrUpdateFetching: boolean
 	updateGruppe: (arg0: number, arg1: any) => any
@@ -25,7 +22,7 @@ type Props = {
 	}
 }
 const RedigerGruppe = ({
-	gruppe,
+	gruppeId,
 	createGruppe,
 	createOrUpdateFetching,
 	updateGruppe,
@@ -33,6 +30,7 @@ const RedigerGruppe = ({
 	error,
 }: Props): JSX.Element => {
 	const navigate = useNavigate()
+	const { gruppe } = useGruppeById(gruppeId)
 	const erRedigering = Boolean(getIn(gruppe, 'id', false))
 	const mutate = useMatchMutate()
 

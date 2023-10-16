@@ -1,6 +1,6 @@
 {
   "name": "dolly",
-  "version": "2.5.21",
+  "version": "2.5.24",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -39,6 +39,7 @@
     "rc-progress": "^3.4.0",
     "rc-tooltip": "^6.0.1",
     "react": "^18.2.0",
+    "react-confetti-explosion": "^2.1.2",
     "react-datepicker": "^4.8.0",
     "react-day-picker": "^8.1.0",
     "react-dom": "^18.2.0",
