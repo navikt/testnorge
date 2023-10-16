@@ -3,6 +3,8 @@ kind: MaskinportenClient
 metadata:
   name: dolly
   namespace: dolly
+  labels:
+    team: dolly
 spec:
   scopes:
     consumes:
