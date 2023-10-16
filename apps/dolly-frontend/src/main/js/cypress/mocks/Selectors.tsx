@@ -48,6 +48,7 @@ export enum CypressSelector {
 	BUTTON_HEADER_ENDRINGSMELDING = 'button-header-endringsmelding',
 	BUTTON_PROFIL = 'button-minside',
 	BUTTON_PROFIL_MINSIDE = 'button-profil-minside',
+	BUTTON_PROFIL_STATISTIKK = 'button-profil-statistikk',
 	BUTTON_SEND_FORBEDRINGSOENSKE = 'button-send-forbedringsoenske',
 	BUTTON_FULLFOER_BESTILLING = 'button-fullfoer-bestilling',
 	BUTTON_AVBRYT_BESTILLING = 'button-avbryt-bestilling',

@@ -22,6 +22,7 @@ public class ForwardAndRedirectController {
         return RouterFunctions
                 .route(RequestPredicates.GET("/gruppe/**"), indexHandler)
                 .andRoute(RequestPredicates.GET("/minside/**"), indexHandler)
+                .andRoute(RequestPredicates.GET("/statistikk/**"), indexHandler)
                 .andRoute(RequestPredicates.GET("/maler/**"), indexHandler)
                 .andRoute(RequestPredicates.GET("/testnorge/**"), indexHandler)
                 .andRoute(RequestPredicates.GET("/endringsmelding/**"), indexHandler)
