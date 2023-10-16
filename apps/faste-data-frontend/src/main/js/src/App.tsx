@@ -6,6 +6,7 @@ import ProfilService from './service/ProfilService';
 import { FastePersonDataPage } from '@/pages/FastePersonDataPage';
 import { FasteOrganiasjonDataPage } from '@/pages/FasteOrganiasjonDataPage';
 import { HomePage } from '@/pages/HomePage';
+import '@navikt/ds-css';
 
 function App() {
   return (
