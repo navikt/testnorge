@@ -3,6 +3,8 @@ kind: IDPortenClient
 metadata:
   name: dolly
   namespace: dolly
+  labels:
+    team: dolly
 spec:
   clientURI: https://dolly-idporten.ekstern.dev.nav.no
   frontchannelLogoutURI: https://dolly-idporten.ekstern.dev.nav.no/oauth2/logout
