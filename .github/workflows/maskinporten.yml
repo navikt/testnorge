@@ -1,0 +1,20 @@
+name: Deploy maskinporten
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - '.nais/maskinporten.yml'
+
+jobs:
+  deploy-maskinporten:
+    name: Deploy maskinporten
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
+          CLUSTER: prod-gcp
+          RESOURCE: .nais/maskinporten.yml

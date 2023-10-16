@@ -56,7 +56,7 @@ spec:
   envFrom:
     - secret: altinn-prod
     - secret: google-sql-testnav-organisasjon-tilgang-service
-    - secret: testnav-organisasjon-tilgang-service-secret
+    - secret: maskinporten-dolly-prod
   replicas:
     min: 1
     max: 1
