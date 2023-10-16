@@ -1,7 +1,6 @@
 package no.nav.dolly.bestilling.personservice;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.netty.channel.ChannelOption;
 import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.personservice.command.PdlPersonerGetCommand;
 import no.nav.dolly.bestilling.personservice.command.PersonServiceExistCommand;
@@ -54,7 +53,7 @@ public class PersonServiceConsumer implements ConsumerStatus {
                                         .pendingAcquireMaxCount(5000)
                                         .pendingAcquireTimeout(Duration.ofMinutes(15))
                                         .build())
-                        .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000)))
+                        .responseTimeout(Duration.ofSeconds(5))))
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }
