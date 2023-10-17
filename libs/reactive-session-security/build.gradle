@@ -30,7 +30,7 @@ sonarqube {
 dependencyManagement {
     applyMavenExclusions = false
     imports {
-        mavenBom 'org.springframework.boot:spring-boot-dependencies:3.0.4'
+        mavenBom 'org.springframework.boot:spring-boot-dependencies:3.1.4'
         mavenBom 'org.springframework.session:spring-session-bom:2021.0.3'
     }
 }
