@@ -1,6 +1,5 @@
 package no.nav.dolly.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.dolly.MockedJwtAuthenticationTokenUtils;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.OrganisasjonBestilling;
@@ -25,14 +24,9 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDateTime;
 
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -42,20 +36,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @EnableAutoConfiguration
 @ComponentScan("no.nav.dolly")
 @AutoConfigureMockMvc(addFilters = false)
-public class OrganisasjonBestillingMalServiceTest {
+class OrganisasjonBestillingMalServiceTest {
 
     private final static String MALNAVN = "test";
     private final static String NYTT_MALNAVN = "nyttMalnavn";
     private final static String BEST_KRITERIER = "Testeteste";
     private static final Bruker DUMMY_EN = Bruker.builder()
-            .id(1L)
             .brukernavn("test_en")
             .brukerId("testbruker_en")
             .brukertype(Bruker.Brukertype.AZURE)
             .epost("epost@test_en")
             .build();
     private static final Bruker DUMMY_TO = Bruker.builder()
-            .id(2L)
             .brukernavn("test_to")
             .brukerId("testbruker_to")
             .brukertype(Bruker.Brukertype.AZURE)
@@ -72,8 +64,6 @@ public class OrganisasjonBestillingMalServiceTest {
     private OrganisasjonBestillingRepository organisasjonBestillingRepository;
     @Autowired
     private BrukerRepository brukerRepository;
-    @Autowired
-    private ObjectMapper objectMapper;
     @Autowired
     private Flyway flyway;
 
@@ -99,8 +89,8 @@ public class OrganisasjonBestillingMalServiceTest {
     void shouldCreateAndGetMaler()
             throws Exception {
 
-        var bruker_en = brukerRepository.findBrukerByBrukerId(DUMMY_EN.getBrukerId()).get();
-        var bruker_to = brukerRepository.findBrukerByBrukerId(DUMMY_TO.getBrukerId()).get();
+        var bruker_en = brukerRepository.findBrukerByBrukerId(DUMMY_EN.getBrukerId()).orElseThrow();
+        var bruker_to = brukerRepository.findBrukerByBrukerId(DUMMY_TO.getBrukerId()).orElseThrow();
         saveDummyBestillingMal(bruker_en);
         saveDummyBestillingMal(bruker_to);
 
@@ -121,7 +111,7 @@ public class OrganisasjonBestillingMalServiceTest {
     void shouldCreateMalerFromExistingOrder()
             throws Exception {
 
-        var bruker_en = brukerRepository.findBrukerByBrukerId(DUMMY_EN.getBrukerId()).get();
+        var bruker_en = brukerRepository.findBrukerByBrukerId(DUMMY_EN.getBrukerId()).orElseThrow();
         var bestilling = saveDummyBestilling(bruker_en);
 
         mockMvc.perform(post("/api/v1/organisasjon/bestilling/malbestilling")
@@ -141,7 +131,7 @@ public class OrganisasjonBestillingMalServiceTest {
     void shouldCreateUpdateAndDeleteMal()
             throws Exception {
 
-        var bruker_to = brukerRepository.findBrukerByBrukerId(DUMMY_TO.getBrukerId()).get();
+        var bruker_to = brukerRepository.findBrukerByBrukerId(DUMMY_TO.getBrukerId()).orElseThrow();
         var bestillingMal = saveDummyBestillingMal(bruker_to);
 
         mockMvc.perform(put("/api/v1/organisasjon/bestilling/malbestilling/{id}", bestillingMal.getId())
