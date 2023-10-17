@@ -11,8 +11,6 @@ import java.util.List;
 
 public interface OrganisasjonBestillingMalRepository extends CrudRepository<OrganisasjonBestillingMal, Long> {
 
-    List<OrganisasjonBestillingMal> findByIdContaining(String id);
-
     List<OrganisasjonBestillingMal> findByBrukerAndMalNavn(Bruker bruker, String navn);
 
     List<OrganisasjonBestillingMal> findByBruker(Bruker bruker);
