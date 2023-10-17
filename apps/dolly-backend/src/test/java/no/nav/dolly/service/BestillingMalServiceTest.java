@@ -54,14 +54,12 @@ class BestillingMalServiceTest {
     private final static String NYTT_MALNAVN = "nyttMalnavn";
     private final static String BEST_KRITERIER = "Testeteste";
     private static final Bruker DUMMY_EN = Bruker.builder()
-            .id(1L)
             .brukerId("testbruker_en")
             .brukernavn("test_en")
             .brukertype(Bruker.Brukertype.AZURE)
             .epost("epost@test_en")
             .build();
     private static final Bruker DUMMY_TO = Bruker.builder()
-            .id(2L)
             .brukerId("testbruker_to")
             .brukernavn("test_to")
             .brukertype(Bruker.Brukertype.AZURE)
@@ -193,7 +191,6 @@ class BestillingMalServiceTest {
         return bestillingRepository.save(
                 Bestilling
                         .builder()
-                        .id(1L)
                         .gruppe(testgruppe)
                         .ferdig(false)
                         .antallIdenter(1)
@@ -215,7 +212,6 @@ class BestillingMalServiceTest {
                         .navn(TESTGRUPPE)
                         .hensikt(TESTGRUPPE)
                         .datoEndret(LocalDate.now())
-                        .id(1L)
                         .build()
         );
     }
