@@ -22,7 +22,6 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,7 +43,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @ActiveProfiles("test")
-@Testcontainers(disabledWithoutDocker = true)
+@Testcontainers(disabledWithoutDocker = true, parallel = true)
 @EnableAutoConfiguration
 @ComponentScan("no.nav.dolly")
 @AutoConfigureMockMvc(addFilters = false)
@@ -99,10 +98,8 @@ class BestillingMalServiceTest {
         MockedJwtAuthenticationTokenUtils.setJwtAuthenticationToken();
     }
 
-    @Transactional
     @AfterEach
     public void afterEach() {
-        deleteAllDatabaseContent();
         MockedJwtAuthenticationTokenUtils.clearJwtAuthenticationToken();
     }
 
@@ -218,15 +215,5 @@ class BestillingMalServiceTest {
 
     void saveDummyBruker(Bruker bruker) {
         brukerRepository.save(bruker);
-    }
-
-    void deleteAllDatabaseContent() {
-        bestillingMalRepository.deleteAll();
-        identRepository.deleteAll();
-        bestillingRepository.deleteAll();
-        brukerFavoritterRepository.deleteAll();
-        testgruppeRepository.findAll(Sort.unsorted()).forEach(gruppe -> testgruppeRepository.deleteTestgruppeById(gruppe.getId()));
-        brukerRepository.deleteByBrukerId(DUMMY_EN.getBrukerId());
-        brukerRepository.deleteByBrukerId(DUMMY_TO.getBrukerId());
     }
 }
