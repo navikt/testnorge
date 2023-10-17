@@ -1,12 +1,11 @@
 package no.nav.brregstub.api.common;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import javax.validation.constraints.NotBlank;
 
 @Setter
 @Getter

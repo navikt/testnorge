@@ -1,10 +1,9 @@
 package no.nav.brregstub.database.domene;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
-
-import javax.validation.constraints.NotNull;
 
 @Entity
 @Getter

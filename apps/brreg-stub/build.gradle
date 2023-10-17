@@ -88,6 +88,7 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-vault-config-databases'
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
 
     implementation 'io.micrometer:micrometer-registry-prometheus'
     jaxb2 'org.jvnet.jaxb2_commons:jaxb2-basics-runtime:1.11.1'
@@ -107,8 +108,6 @@ dependencies {
     implementation 'org.apache.cxf:cxf-rt-frontend-jaxws:3.4.5'
     implementation 'wsdl4j:wsdl4j:1.6.3'
     implementation 'net.logstash.logback:logstash-logback-encoder:7.3'
-    implementation 'org.hibernate.validator:hibernate-validator'
-    implementation 'javax.validation:validation-api:2.0.1.Final'
     implementation 'org.springdoc:springdoc-openapi-ui:1.6.9'
     implementation 'no.nav.common:cxf:2.2021.11.10_07.34-c6f02734d4ab'
     implementation 'com.h2database:h2'
