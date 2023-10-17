@@ -53,7 +53,8 @@ public class PdlPersonConsumer {
                                 .maxConnections(10)
                                 .pendingAcquireMaxCount(5000)
                                 .pendingAcquireTimeout(Duration.ofMinutes(15))
-                                .build())))
+                                .build())
+                                .responseTimeout(Duration.ofSeconds(5))))
                 .build();
     }
 
