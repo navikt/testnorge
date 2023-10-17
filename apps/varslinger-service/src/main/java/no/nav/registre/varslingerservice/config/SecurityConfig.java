@@ -14,11 +14,9 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
 
-        httpSecurity.sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and().csrf().disable()
-                .authorizeHttpRequests()
-                .requestMatchers(
+        httpSecurity.sessionManagement(sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .csrf(csrfSpec -> csrfSpec.disable())
+                .authorizeHttpRequests(authorizeConfig -> authorizeConfig.requestMatchers(
                         "/internal/**",
                         "/webjars/**",
                         "/swagger-resources/**",
@@ -27,11 +25,9 @@ public class SecurityConfig {
                         "/swagger",
                         "/error",
                         "/swagger-ui.html"
-                ).permitAll()
-                .requestMatchers("/api/**").fullyAuthenticated()
-                .and()
-                .oauth2ResourceServer()
-                .jwt();
+                ).permitAll().requestMatchers("/api/**").fullyAuthenticated())
+                .oauth2ResourceServer(oauth2RSConfig -> oauth2RSConfig.jwt(jwtConfigurer -> {
+                }));
 
         return httpSecurity.build();
     }

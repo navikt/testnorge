@@ -51,7 +51,7 @@ java {
 dependencies {
 
     implementation 'no.nav.testnav.libs:security-core'
-    implementation 'com.auth0:java-jwt:3.18.2'
+    implementation 'com.auth0:java-jwt:4.3.0'
 
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'

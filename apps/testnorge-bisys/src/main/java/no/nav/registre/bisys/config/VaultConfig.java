@@ -8,7 +8,7 @@ import org.springframework.vault.authentication.TokenAuthentication;
 import org.springframework.vault.client.VaultEndpoint;
 import org.springframework.vault.config.AbstractVaultConfiguration;
 
-import static io.micrometer.common.util.StringUtils.isBlank;
+import static io.micrometer.core.instrument.util.StringUtils.isBlank;
 
 @Configuration
 @Profile("dev")

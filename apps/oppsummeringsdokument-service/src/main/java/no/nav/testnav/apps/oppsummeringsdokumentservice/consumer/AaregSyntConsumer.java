@@ -9,7 +9,6 @@ import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.webjars.NotFoundException;
 
 import static java.util.Objects.isNull;
 
@@ -44,7 +43,7 @@ public class AaregSyntConsumer {
     private String getAccessToken() {
         var token = tokenExchange.exchange(properties).block();
         if (isNull(token)) {
-            throw new NotFoundException("Klarte ikke å generere AccessToken for AaregSyntService");
+            throw new IllegalArgumentException("Klarte ikke å generere AccessToken for AaregSyntService");
         }
         return "Bearer " + token.getTokenValue();
     }

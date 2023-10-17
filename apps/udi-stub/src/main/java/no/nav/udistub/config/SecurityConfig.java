@@ -16,16 +16,20 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
 
-        httpSecurity.sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and().csrf().disable()
-                .authorizeHttpRequests()
-                .requestMatchers("/api/**").fullyAuthenticated()
-                .anyRequest()
-                .permitAll()
-                .and()
-                .oauth2ResourceServer()
-                .jwt();
+        httpSecurity.sessionManagement(sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .csrf(csrfSpec -> csrfSpec.disable())
+                .authorizeHttpRequests(authorizeConfig -> authorizeConfig.requestMatchers(
+                        "/internal/**",
+                        "/webjars/**",
+                        "/swagger-resources/**",
+                        "/v3/api-docs/**",
+                        "/swagger-ui/**",
+                        "/swagger",
+                        "/error",
+                        "/swagger-ui.html"
+                ).permitAll().requestMatchers("/api/**").fullyAuthenticated())
+                .oauth2ResourceServer(oauth2RSConfig -> oauth2RSConfig.jwt(jwtConfigurer -> {
+                }));
 
         return httpSecurity.build();
     }
