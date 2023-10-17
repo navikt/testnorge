@@ -450,6 +450,33 @@ const selectOptions = {
 		{ value: 'ORGNR', label: 'ORGNR' },
 	],
 
+	sakstype: [
+		{ value: 'GENERELL_SAK', label: 'Generell sak' },
+		{ value: 'FAGSAK', label: 'Fagsak' },
+	],
+
+	fagsaksystem: [
+		{ value: 'AO01', label: 'Arena (AO01)' },
+		{ value: 'BARNEBRILLER', label: 'Barnebriller' },
+		{ value: 'BA', label: 'Barnetrygd (BA)' },
+		{ value: 'BISYS', label: 'Bisys' },
+		{ value: 'EF', label: 'Enslig forsørger (EF)' },
+		{ value: 'EY', label: 'Etterlatteytelser (EY)' },
+		{ value: 'FS36', label: 'Foreldrepengeløsningen (FS36)' },
+		{ value: 'AO11', label: 'Grisen (AO11)' },
+		{ value: 'HJELPEMIDLER', label: 'Hjelpemidler' },
+		{ value: 'IT01', label: 'Infotrygd (IT01)' },
+		{ value: 'KONT', label: 'Kontantstøtte (KONT)' },
+		{ value: 'FS38', label: 'Melosys (FS38)' },
+		{ value: 'OMSORGSPENGER', label: 'Omsorgspenger' },
+		{ value: 'OEBS', label: 'Oracle E-Business Suite (OEBS)' },
+		{ value: 'PP01', label: 'Pesys (PP01)' },
+		{ value: 'SUPSTONAD', label: 'Supplerende stønad (SUPSTONAD)' },
+		{ value: 'K9', label: 'Sykdom i familien (K9)' },
+		{ value: 'UFM', label: 'Unntak fra medlemskap (UFM)' },
+		{ value: 'OB36', label: 'Utbetalingsreskontro (OB36)' },
+	],
+
 	tjenestepensjonYtelseType: [
 		{ value: 'ALDER', label: 'Alderspensjon' },
 		{ value: 'UFORE', label: 'Uførepensjon' },
@@ -503,6 +530,26 @@ const selectOptions = {
 		{ value: 50, label: '50%' },
 		{ value: 40, label: '40%' },
 		{ value: 20, label: '20%' },
+	],
+
+	// Uføretrygd:
+	minimumInntektForUforhetType: [
+		{ value: 'UNGUFOR', label: 'Minimum IFU fastsatt til sats for ung ufør' },
+		{ value: 'GIFT', label: 'Minimum IFU fastsatt til sats for gift' },
+		{ value: 'ENSLIG', label: 'Minimum IFU fastsatt til sats for enslig' },
+	],
+
+	barnetilleggType: [
+		{ value: 'FELLESBARN', label: 'Fellesbarn' },
+		{ value: 'SAERKULLSBARN', label: 'Særkullsbarn' },
+	],
+
+	inntektType: [
+		{ value: 'ARBEIDSINNTEKT', label: 'Forventet arbeidsinntekt' },
+		{ value: 'NAERINGSINNTEKT', label: 'Forventet næringsinntekt' },
+		{ value: 'PENSJON_FRA_UTLANDET', label: 'Forventet pensjon fra utlandet' },
+		{ value: 'UTENLANDS_INNTEKT', label: 'Forventet utenlandsinntekt' },
+		{ value: 'ANDRE_PENSJONER_OG_YTELSER', label: 'Forventet andre pensjoner og ytelser' },
 	],
 
 	// Arbeidsplassen:
@@ -600,6 +647,13 @@ const selectOptions = {
 		{ value: '7321', label: 'Typograf' },
 		{ value: '7543', label: 'Ullklassifisør' },
 		{ value: '9999', label: 'Utvikler' },
+	],
+
+	medlKilder: [
+		{ value: 'srvmelosys', label: 'Melosys' },
+		{ value: 'srvgosys', label: 'Gosys' },
+		{ value: 'AVGSYS', label: 'Avgiftsystemet' },
+		{ value: 'LAANEKASSEN', label: 'Lånekassen' },
 	],
 
 	omraade: [

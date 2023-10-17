@@ -26,7 +26,7 @@ on:
         required: true
       force-deploy:
         type: boolean
-        description: "Deploy? Make sure the effective working directory contains a NAIS manifest as named below!"
+        description: "Deploy? Make sure the effective working directory contains a NAIS manifest as named below! Note: For dolly-frontend, this will also deploy with config.idporten.yml."
         default: false
       nais-manifest:
         type: string
@@ -34,8 +34,12 @@ on:
         default: "config.yml"
       force-deploy-test:
         type: boolean
-        description: "Deploy to test? Make sure the effective working directory contains a config.test.yml!"
+        description: "Deploy to test? Make sure the effective working directory contains a config.test.yml! Note: For dolly-frontend, this will also deploy with config.unstable.yml."
         default: false
+
+permissions:
+  contents: read
+  id-token: write
 
 jobs:
 
@@ -58,6 +62,9 @@ jobs:
       deploy-tag: ""
       force-deploy: ${{ inputs.force-deploy }}
       force-deploy-test: ${{ inputs.force-deploy-test }}
+    permissions:
+      contents: read
+      id-token: write
     secrets:
       NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
       NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
@@ -73,9 +80,14 @@ jobs:
       working-directory: "${{ inputs.type }}/${{ inputs.name }}"
       image-suffix: ${{ inputs.name }}
       deploy-tag: ""
-      force-deploy: ${{ inputs.force-deploy }}
       nais-manifest: ${{ inputs.nais-manifest }}
+      force-deploy: ${{ inputs.force-deploy }}
       force-deploy-test: ${{ inputs.force-deploy-test }}
+      force-deploy-idporten: ${{ inputs.name == 'dolly-frontend' && inputs.force-deploy }}
+      force-deploy-unstable: ${{ inputs.name == 'dolly-frontend' && inputs.force-deploy-test }}
+    permissions:
+      contents: read
+      id-token: write
     secrets:
       NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
       NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}

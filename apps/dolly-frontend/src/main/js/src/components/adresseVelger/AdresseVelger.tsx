@@ -1,10 +1,9 @@
 import React, { useState } from 'react'
 import AdresseSok from './AdresseSok'
 import styled from 'styled-components'
-import AdresseService, { Adresse } from '@/service/services/AdresseService'
 import { DollySelect } from '@/components/ui/form/inputs/select/Select'
-import { NotFoundError } from '@/error'
 import { Alert } from '@navikt/ds-react'
+import { useAdresser } from '@/utils/hooks/useAdresseSoek'
 
 const StyledAdresseVelger = styled.div`
 	background-color: #edf2ff;
@@ -15,6 +14,24 @@ type Search = {
 	fritekst?: string
 	postnummer?: string
 	kommunenummer?: string
+}
+
+export type Adresse = {
+	matrikkelId: string
+	adressekode: string
+	adressenavn: string
+	husnummer: number
+	husbokstav?: string
+	postnummer: string
+	poststed: string
+	kommunenummer: string
+	kommunenavn: string
+	bydelsnummer?: string
+	bydelsnavn?: string
+	tilleggsnavn?: string
+	fylkesnummer: string
+	fylkesnavn: string
+	bruksenhetsnummer?: string
 }
 
 const Feil = styled(Alert)`
@@ -29,11 +46,10 @@ type Props = {
 }
 
 export default ({ onSelect }: Props) => {
-	const [adresser, setAdresser] = useState<Adresse[]>()
 	const [adresse, setAdresse] = useState<Adresse>()
-	const [loading, setLoading] = useState<boolean>(false)
-	const [notFound, setNotFound] = useState<boolean>(false)
-	const [error, setError] = useState<boolean>(false)
+	const [search, setSearch] = useState<Search>(null)
+
+	const { adresser, loading, notFound, error } = useAdresser(search)
 
 	const findAdresse = (matrikkelId: string) =>
 		adresser.find((value) => value.matrikkelId === matrikkelId)
@@ -42,33 +58,19 @@ export default ({ onSelect }: Props) => {
 		`${adressenavn} ${husnummer}${husbokstav ? husbokstav : ''}, ${postnummer} ${poststed}`
 
 	const onSubmit = (search: Search) => {
-		setLoading(true)
-		setNotFound(false)
-		setError(false)
-		setAdresser(null)
-		return AdresseService.hentAdresser(search, 10)
-			.then((response) => {
-				setAdresser(response)
-				setLoading(false)
-			})
-			.catch((e: Error) => {
-				setLoading(false)
-				if (e && (e instanceof NotFoundError || e.name === 'NotFoundError')) {
-					setNotFound(true)
-				} else {
-					setError(true)
-				}
-			})
+		setSearch(search)
 	}
 
 	return (
 		<StyledAdresseVelger>
 			<AdresseSok onSubmit={onSubmit} loading={loading} />
-			{error && (
-				<Feil variant={'error'}>Noe gikk galt! Prøv på nytt eller kontakt Team Dolly.</Feil>
+			{error && !notFound && (
+				<Feil variant={'error'} size={'small'}>
+					Noe gikk galt! Prøv på nytt eller kontakt Team Dolly.
+				</Feil>
 			)}
 			{notFound && (
-				<Advarsel variant={'warning'}>
+				<Advarsel variant={'warning'} size={'small'}>
 					Fant ikke et resultat. Prøv å endre kombinasjon av felter i søket.
 				</Advarsel>
 			)}

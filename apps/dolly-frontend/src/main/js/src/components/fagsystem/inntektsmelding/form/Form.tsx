@@ -31,7 +31,7 @@ import { AlertAaregRequired } from '@/components/ui/brukerAlert/AlertAaregRequir
 import { InputWarning } from '@/components/ui/form/inputWarning/inputWarning'
 import { OrgnrToggle } from '@/components/fagsystem/inntektsmelding/form/partials/orgnrToogle'
 import { testDatoFom, testDatoTom } from '@/components/fagsystem/utils'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bestillingsveileder'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 interface InntektsmeldingFormProps {
 	formikBag: FormikProps<{}>
@@ -81,7 +81,7 @@ export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingFormProps) => 
 	const [typeArbeidsgiver, setTypeArbeidsgiver] = useState(
 		_.get(formikBag.values, 'inntektsmelding.inntekter[0].arbeidsgiverPrivat')
 			? TypeArbeidsgiver.PRIVATPERSON
-			: TypeArbeidsgiver.VIRKSOMHET
+			: TypeArbeidsgiver.VIRKSOMHET,
 	)
 
 	const { personFoerLeggTil, leggTilPaaGruppe } = useContext(BestillingsveilederContext)
@@ -94,17 +94,17 @@ export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingFormProps) => 
 				if (type === TypeArbeidsgiver.VIRKSOMHET) {
 					formikBag.setFieldValue(
 						`inntektsmelding.inntekter[${idx}].arbeidsgiver.virksomhetsnummer`,
-						''
+						'',
 					)
 					formikBag.setFieldValue(`inntektsmelding.inntekter[${idx}].arbeidsgiverPrivat`, undefined)
 				} else if (type === TypeArbeidsgiver.PRIVATPERSON) {
 					formikBag.setFieldValue(`inntektsmelding.inntekter[${idx}].arbeidsgiver`, undefined)
 					formikBag.setFieldValue(
 						`inntektsmelding.inntekter[${idx}].arbeidsgiverPrivat.arbeidsgiverFnr`,
-						''
+						'',
 					)
 				}
-			}
+			},
 		)
 	}
 
@@ -241,13 +241,13 @@ InntektsmeldingForm.validation = {
 				arbeidsgiver: Yup.object({
 					virksomhetsnummer: ifPresent(
 						'$inntektsmelding.inntekter[0].arbeidsgiver.virksomhetsnummer',
-						requiredString.matches(/^\d{9}$/, 'Orgnummer må være et tall med 9 siffer')
+						requiredString.matches(/^\d{9}$/, 'Orgnummer må være et tall med 9 siffer'),
 					),
 				}),
 				arbeidsgiverPrivat: Yup.object({
 					arbeidsgiverFnr: ifPresent(
 						'$inntektsmelding.inntekter[0].arbeidsgiverPrivat.arbeidsgiverFnr',
-						requiredString.matches(/^\d{11}$/, 'Ident må være et tall med 11 siffer')
+						requiredString.matches(/^\d{11}$/, 'Ident må være et tall med 11 siffer'),
 					),
 				}),
 				arbeidsforhold: Yup.object({
@@ -258,14 +258,14 @@ InntektsmeldingForm.validation = {
 						Yup.object({
 							fom: testDatoFom(Yup.string(), 'tom'),
 							tom: testDatoTom(Yup.string(), 'fom'),
-						})
+						}),
 					),
 				}),
 				avsendersystem: Yup.object({
 					innsendingstidspunkt: requiredDate.nullable(),
 				}),
 				ytelse: requiredString,
-			})
+			}),
 		),
 	}),
 }

@@ -36,14 +36,14 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
     private static final String VALIDATION_MASTER_PDL_ERROR = "Bostedsadresse: utenlandsk adresse krever at master er PDL";
 
     private final AdresseServiceConsumer adresseServiceConsumer;
-    private final DummyAdresseService dummyAdresseService;
+    private final EnkelAdresseService enkelAdresseService;
     private final MapperFacade mapperFacade;
 
-    public BostedAdresseService(GenererNavnServiceConsumer genererNavnServiceConsumer, AdresseServiceConsumer adresseServiceConsumer, DummyAdresseService dummyAdresseService, MapperFacade mapperFacade) {
+    public BostedAdresseService(GenererNavnServiceConsumer genererNavnServiceConsumer, AdresseServiceConsumer adresseServiceConsumer, EnkelAdresseService enkelAdresseService, MapperFacade mapperFacade) {
         super(genererNavnServiceConsumer);
         this.adresseServiceConsumer = adresseServiceConsumer;
         this.mapperFacade = mapperFacade;
-        this.dummyAdresseService = dummyAdresseService;
+        this.enkelAdresseService = enkelAdresseService;
     }
 
     public List<BostedadresseDTO> convert(PersonDTO person, Boolean relaxed) {
@@ -52,9 +52,9 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
 
             if (isTrue(adresse.getIsNew())) {
 
-                populateMiscFields(adresse, person);
                 if (isNotTrue(relaxed)) {
                     handle(adresse, person);
+                    populateMiscFields(adresse, person);
                 }
             }
         }
@@ -121,7 +121,7 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
         } else if (bostedadresse.countAdresser() == 0) {
 
             if (person.getOppholdsadresse().isEmpty() &&
-                person.getKontaktadresse().isEmpty()) {
+                    person.getKontaktadresse().isEmpty()) {
 
                 bostedadresse.setUtenlandskAdresse(new UtenlandskAdresseDTO());
             } else {
@@ -141,7 +141,7 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
     }
 
     private void buildBoadresse(BostedadresseDTO bostedadresse, PersonDTO person) {
-        
+
         if (nonNull(bostedadresse.getVegadresse())) {
 
             var vegadresse =
@@ -156,10 +156,12 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
             bostedadresse.setAdresseIdentifikatorFraMatrikkelen(matrikkeladresse.getMatrikkelId());
             mapperFacade.map(matrikkeladresse, bostedadresse.getMatrikkeladresse());
 
-        } else if (nonNull(bostedadresse.getUtenlandskAdresse()) && bostedadresse.getUtenlandskAdresse().isEmpty()) {
+        } else if (nonNull(bostedadresse.getUtenlandskAdresse())) {
 
-            bostedadresse.setUtenlandskAdresse(dummyAdresseService.getUtenlandskAdresse(getLandkode(person)));
             bostedadresse.setMaster(Master.PDL);
+
+            bostedadresse.setUtenlandskAdresse(enkelAdresseService.getUtenlandskAdresse(bostedadresse.getUtenlandskAdresse(), getLandkode(person),
+                    bostedadresse.getMaster()));
         }
 
         bostedadresse.setCoAdressenavn(genererCoNavn(bostedadresse.getOpprettCoAdresseNavn()));

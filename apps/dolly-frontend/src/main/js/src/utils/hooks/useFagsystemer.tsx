@@ -1,6 +1,14 @@
 import useSWR from 'swr'
-import { fetcher, multiFetcherDokarkiv, multiFetcherInst, multiFetcherPensjon } from '@/api'
 import {
+	cvFetcher,
+	fetcher,
+	multiFetcherArena,
+	multiFetcherDokarkiv,
+	multiFetcherInst,
+	multiFetcherPensjon,
+} from '@/api'
+import {
+	useArenaEnvironments,
 	useDokarkivEnvironments,
 	useInstEnvironments,
 	usePensjonEnvironments,
@@ -10,7 +18,7 @@ import { useTransaksjonsid } from '@/utils/hooks/useTransaksjonsid'
 
 const poppUrl = (ident, miljoer) =>
 	miljoer?.map((miljo) => ({
-		url: `/testnav-pensjon-testdata-facade-proxy/api/v1/inntekt?fnr=${ident}`,
+		url: `/testnav-pensjon-testdata-facade-proxy/api/v1/inntekt?fnr=${ident}&miljo=${miljo}`,
 		miljo: miljo,
 	}))
 
@@ -24,6 +32,12 @@ const instUrl = (ident, miljoer) =>
 	miljoer?.map((miljo) => ({
 		url: `/testnav-inst-proxy/api/v1/institusjonsopphold/person?environments=${miljo}`,
 		miljo: miljo,
+	}))
+
+const arenaUrl = (miljoer) =>
+	miljoer?.map((miljoe) => ({
+		url: `/testnav-arena-forvalteren-proxy/${miljoe}/arena/syntetiser/brukeroppfolging/personstatusytelse`,
+		miljo: miljoe,
 	}))
 
 const journalpostUrl = (transaksjonsid, miljoer) =>
@@ -47,23 +61,17 @@ const arbeidsforholdcvHjemmelUrl = '/testnav-arbeidsplassencv-proxy/rest/hjemmel
 export const usePoppData = (ident, harPoppBestilling) => {
 	const { pensjonEnvironments } = usePensjonEnvironments()
 
-	if (!harPoppBestilling) {
-		return {
-			loading: false,
-		}
-	}
-
-	const { data, error } = useSWR<any, Error>(
+	const { data, isLoading, error } = useSWR<any, Error>(
 		[
-			poppUrl(ident, pensjonEnvironments),
+			harPoppBestilling ? poppUrl(ident, pensjonEnvironments) : null,
 			{ 'Nav-Call-Id': 'dolly', 'Nav-Consumer-Id': 'dolly', Authorization: 'dolly' },
 		],
-		([url, headers]) => multiFetcherPensjon(url, headers)
+		([url, headers]) => multiFetcherPensjon(url, headers),
 	)
 
 	return {
 		poppData: data?.sort((a, b) => a.miljo.localeCompare(b.miljo)),
-		loading: !error && !data,
+		loading: isLoading,
 		error: error,
 	}
 }
@@ -71,23 +79,49 @@ export const usePoppData = (ident, harPoppBestilling) => {
 export const useTpData = (ident, harTpBestilling) => {
 	const { pensjonEnvironments } = usePensjonEnvironments()
 
-	if (!harTpBestilling) {
-		return {
-			loading: false,
-		}
-	}
-
-	const { data, error } = useSWR<any, Error>(
+	const { data, isLoading, error } = useSWR<any, Error>(
 		[
-			tpUrl(ident, pensjonEnvironments),
+			harTpBestilling ? tpUrl(ident, pensjonEnvironments) : null,
 			{ 'Nav-Call-Id': 'dolly', 'Nav-Consumer-Id': 'dolly', Authorization: 'dolly' },
 		],
-		([url, headers]) => multiFetcherPensjon(url, headers)
+		([url, headers]) => multiFetcherPensjon(url, headers),
 	)
 
 	return {
 		tpData: data?.sort((a, b) => a.miljo.localeCompare(b.miljo)),
-		loading: !error && !data,
+		loading: isLoading,
+		error: error,
+	}
+}
+
+export const useTransaksjonIdData = (ident, system, harBestilling, fagsystemMiljoer = null) => {
+	const { data, isLoading, error } = useSWR<any, Error>(
+		harBestilling ? `/dolly-backend/api/v1/transaksjonid?ident=${ident}&system=${system}` : null,
+		fetcher,
+	)
+
+	const getMiljoData = () => {
+		if (!harBestilling || !data) {
+			return null
+		}
+		const miljoData = []
+		if (fagsystemMiljoer && fagsystemMiljoer.length > 0) {
+			fagsystemMiljoer.map((miljo) => {
+				const fagsystemData = data?.find((d) => d?.miljoe === miljo)?.transaksjonId
+				miljoData.push({ data: fagsystemData, miljo: miljo })
+			})
+		} else {
+			data?.map((m) => {
+				miljoData.push({ data: m.transaksjonId, miljo: m.miljoe })
+			})
+		}
+		return miljoData
+	}
+	const miljoData = getMiljoData()
+
+	return {
+		data: miljoData?.sort((a, b) => a.miljo?.localeCompare(b.miljo)),
+		loading: isLoading,
 		error: error,
 	}
 }
@@ -95,20 +129,14 @@ export const useTpData = (ident, harTpBestilling) => {
 export const useInstData = (ident, harInstBestilling) => {
 	const { instEnvironments } = useInstEnvironments()
 
-	if (!harInstBestilling) {
-		return {
-			loading: false,
-		}
-	}
-
-	const { data, error } = useSWR<any, Error>(
-		[instUrl(ident, instEnvironments), { norskident: ident }],
-		([url, headers]) => multiFetcherInst(url, headers)
+	const { data, isLoading, error } = useSWR<any, Error>(
+		[harInstBestilling ? instUrl(ident, instEnvironments) : null, { norskident: ident }],
+		([url, headers]) => multiFetcherInst(url, headers),
 	)
 
 	return {
 		instData: data?.sort((a, b) => a.miljo.localeCompare(b.miljo)),
-		loading: !error && !data,
+		loading: isLoading,
 		error: error,
 	}
 }
@@ -117,20 +145,14 @@ export const useDokarkivData = (ident, harDokarkivbestilling) => {
 	const { transaksjonsid } = useTransaksjonsid('DOKARKIV', ident)
 	const { dokarkivEnvironments } = useDokarkivEnvironments()
 
-	if (!harDokarkivbestilling) {
-		return {
-			loading: false,
-		}
-	}
-
-	const { data, error } = useSWR<any, Error>(
-		journalpostUrl(transaksjonsid, dokarkivEnvironments),
-		multiFetcherDokarkiv
+	const { data, isLoading, error } = useSWR<any, Error>(
+		harDokarkivbestilling ? journalpostUrl(transaksjonsid, dokarkivEnvironments) : null,
+		multiFetcherDokarkiv,
 	)
 
 	return {
 		dokarkivData: data?.filter((journalpost) => journalpost.data?.journalpostId !== null),
-		loading: !error && !data,
+		loading: isLoading,
 		error: error,
 	}
 }
@@ -140,13 +162,10 @@ export const useHistarkData = (ident, harHistarkbestilling) => {
 
 	const histarkId = transaksjonsid?.[0]?.transaksjonId?.dokumentInfoId
 
-	const { data, isLoading, error } = useSWR<any, Error>(histarkUrl(histarkId), fetcher)
-
-	if (!harHistarkbestilling) {
-		return {
-			loading: false,
-		}
-	}
+	const { data, isLoading, error } = useSWR<any, Error>(
+		harHistarkbestilling ? histarkUrl(histarkId) : null,
+		fetcher,
+	)
 
 	return {
 		histarkData: data,
@@ -156,33 +175,42 @@ export const useHistarkData = (ident, harHistarkbestilling) => {
 }
 
 export const useArbeidsplassencvData = (ident: string, harArbeidsplassenBestilling: boolean) => {
-	if (!harArbeidsplassenBestilling) {
-		return {
-			loading: false,
-		}
-	}
-
-	const { data, error } = useSWR<any, Error>(
-		[arbeidsforholdcvUrl, { fnr: ident }],
-		([url, headers]) => fetcher(url, headers)
+	const { data, isLoading, error } = useSWR<any, Error>(
+		[harArbeidsplassenBestilling ? arbeidsforholdcvUrl : null, { fnr: ident }],
+		([url, headers]) => cvFetcher(url, headers),
 	)
 
 	return {
 		arbeidsplassencvData: data,
-		loading: !error && !data,
+		loading: isLoading,
 		error: error,
 	}
 }
 
 export const useArbeidsplassencvHjemmel = (ident: string) => {
-	const { data, error } = useSWR<any, Error>(
+	const { data, isLoading, error } = useSWR<any, Error>(
 		[arbeidsforholdcvHjemmelUrl, { fnr: ident }],
-		([url, headers]) => fetcher(url, headers)
+		([url, headers]) => fetcher(url, headers),
 	)
 
 	return {
 		arbeidsplassencvHjemmel: data,
-		loading: !error && !data,
+		loading: isLoading,
+		error: error,
+	}
+}
+
+export const useArenaData = (ident: string, harArenaBestilling: boolean) => {
+	const { arenaEnvironments } = useArenaEnvironments()
+
+	const { data, isLoading, error } = useSWR<any, Error>(
+		[harArenaBestilling ? arenaUrl(arenaEnvironments) : null, { fodselsnr: ident }],
+		([url, headers]) => multiFetcherArena(url, headers),
+	)
+
+	return {
+		arenaData: data?.sort((a, b) => a.miljo?.localeCompare(b.miljo)),
+		loading: isLoading,
 		error: error,
 	}
 }

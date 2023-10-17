@@ -57,7 +57,19 @@ public class SivilstandDTO extends DbVersjonDTO {
     @JsonIgnore
     public boolean isGiftOrSamboer() {
 
-        return isGift() || Sivilstand.SAMBOER == type;
+        return isGift() || isSamboer();
+    }
+
+    @JsonIgnore
+    public boolean isSamboer() {
+
+        return Sivilstand.SAMBOER == type;
+    }
+
+    @JsonIgnore
+    public boolean isNotSamboer() {
+
+        return Sivilstand.SAMBOER != type;
     }
 
     @JsonIgnore
@@ -73,8 +85,13 @@ public class SivilstandDTO extends DbVersjonDTO {
     }
 
     @JsonIgnore
-    public boolean harRelatertVedSivilstand() {
+    public boolean hasRelatertVedSivilstand() {
 
         return isNotBlank(relatertVedSivilstand);
+    }
+
+    @JsonIgnore
+    public String getIdentForRelasjon() {
+        return relatertVedSivilstand;
     }
 }

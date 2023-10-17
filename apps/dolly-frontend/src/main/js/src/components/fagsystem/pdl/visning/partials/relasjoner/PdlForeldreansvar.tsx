@@ -53,10 +53,10 @@ export const PdlForeldreansvar = ({ data }: PdlForeldreansvarProps) => {
 	}
 
 	const gyldigeForeldreansvar = data.filter(
-		(foreldreansvar: Foreldreansvar) => !foreldreansvar.metadata?.historisk
+		(foreldreansvar: Foreldreansvar) => !foreldreansvar.metadata?.historisk,
 	)
 	const historiskeForeldreansvar = data.filter(
-		(foreldreansvar: Foreldreansvar) => foreldreansvar.metadata?.historisk
+		(foreldreansvar: Foreldreansvar) => foreldreansvar.metadata?.historisk,
 	)
 
 	return (

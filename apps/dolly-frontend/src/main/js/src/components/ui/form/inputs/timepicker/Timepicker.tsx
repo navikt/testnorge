@@ -6,11 +6,18 @@ import { TextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { Label } from '@/components/ui/form/inputs/label/Label'
 import { InputWrapper } from '@/components/ui/form/inputWrapper/InputWrapper'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
-import { fieldError, SyntEvent } from '@/components/ui/form/formUtils'
+import { fieldError, fixTimezone, SyntEvent } from '@/components/ui/form/formUtils'
 import 'react-datepicker/dist/react-datepicker.css'
 
 registerLocale('nb', locale_nb)
 
+const displayTimeZone = (date: Date) => {
+	if (!date) {
+		return null
+	}
+	const tzoffset = new Date().getTimezoneOffset() * 60000 //offset in milliseconds
+	return new Date(date.getTime() + tzoffset)
+}
 export const TimePicker = ({
 	name,
 	value,
@@ -23,12 +30,13 @@ export const TimePicker = ({
 	minDate,
 	maxDate,
 }) => {
+	const displayTime = value && displayTimeZone(new Date(value))
 	return (
 		<ReactDatepicker
 			locale="nb"
 			dateFormat="dd.MM.yyyy HH:mm"
 			placeholderText={placeholder}
-			selected={(value && new Date(value)) || null}
+			selected={displayTime}
 			onChange={onChange}
 			showMonthDropdown
 			showYearDropdown
@@ -60,11 +68,12 @@ const P_FormikTimepicker = ({ fastfield, ...props }) => (
 	<FormikField name={props.name} fastfield={fastfield}>
 		{({ field, form, meta }) => {
 			const handleChange = (date) => {
+				const fixedDate = fixTimezone(date)
 				form.setFieldTouched(props.name) // Need to trigger touched manually for Datepicker
 
-				if (props.afterChange) props.afterChange(date)
+				if (props.afterChange) props.afterChange(fixedDate)
 
-				return field.onChange(SyntEvent(field.name, date))
+				return field.onChange(SyntEvent(field.name, fixedDate))
 			}
 			const handleBlur = () => field.onBlur(SyntEvent(field.name, field.value))
 

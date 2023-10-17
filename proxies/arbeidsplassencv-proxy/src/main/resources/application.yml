@@ -12,9 +12,9 @@ spring:
           jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
           accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
         tokenx:
-          issuer-uri: https://tokendings.dev-gcp.nais.io
-          jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
-          accepted-audience: dev-gcp:dolly:testnav-arbeidsplassencv-proxy
+          issuer-uri: https://tokenx.dev-gcp.nav.cloud.nais.io 
+          jwk-set-uri: https://tokenx.dev-gcp.nav.cloud.nais.io/jwks
+          accepted-audience: dev-fss:dolly:testnav-arbeidsplassencv-proxy
   cloud:
     gateway:
       httpclient:
@@ -23,7 +23,7 @@ spring:
       enabled: false
 
 consumer:
-  arbeidsplassencv-proxy:
+  arbeidsplassencv:
     name: pam-cv-api
     namespace: teampam
     url: http://pam-cv-api.teampam.svc.nais.local
@@ -31,5 +31,5 @@ consumer:
   fakedings-token-provider:
     name: fakedings
     namespace: plattformsikkerhet
-    url: https://fakedings.dev-gcp.nais.io
+    url: https://fakedings.intern.dev.nav.no
     cluster: dev-fss

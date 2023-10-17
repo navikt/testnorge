@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { StegVelger } from './stegVelger/StegVelger'
 import { AppError } from '@/components/ui/appError/AppError'
 import { BVOptions } from './options/options'
@@ -6,14 +6,13 @@ import { BVOptions } from './options/options'
 import './bestillingsveileder.less'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-
-export const BestillingsveilederContext = createContext(undefined)
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 export const Bestillingsveileder = ({ error, sendBestilling }) => {
 	const location = useLocation()
 	const navigate = useNavigate()
 	const [navigateRoot, setNavigateRoot] = useState(false)
-	const { gruppeId } = useParams()
+	const { gruppeId, personId } = useParams()
 
 	useEffect(() => {
 		if (navigateRoot) {
@@ -27,7 +26,7 @@ export const Bestillingsveileder = ({ error, sendBestilling }) => {
 		return null
 	}
 
-	const options = BVOptions(location.state, gruppeId)
+	const options = BVOptions(location.state, gruppeId, personId)
 	const handleSubmit = (values) => {
 		sendBestilling(values, options, gruppeId, navigate)
 	}

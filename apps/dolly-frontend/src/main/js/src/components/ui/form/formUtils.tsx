@@ -1,5 +1,6 @@
 import * as _ from 'lodash-es'
 import { runningCypressE2E } from '@/service/services/Request'
+import { isDate } from 'date-fns'
 
 export const fieldError = (meta) => {
 	return !!meta.touched && !!meta.error ? { feilmelding: meta.error } : null
@@ -16,6 +17,14 @@ export const panelError = (formikBag, attributtPath) => {
 }
 
 export const SyntEvent = (name, value) => ({ target: { name, value } })
+
+export const fixTimezone = (date: Date) => {
+	if (!isDate(date) || date.getUTCHours() === 0) {
+		return date
+	}
+	const tzoffset = new Date().getTimezoneOffset() * 60000 //offset in milliseconds
+	return new Date(date.getTime() - tzoffset)
+}
 
 const getValgteAttributter = (values) => {
 	const rootPaths = [
@@ -55,12 +64,14 @@ const getValgteAttributter = (values) => {
 		'pdldata.person.kontaktinformasjonForDoedsbo',
 		'aareg',
 		'sigrunstub',
+		'sigrunstubPensjonsgivende',
 		'inntektstub',
 		'inntektsmelding',
 		'arbeidsplassenCV',
 		'pensjonforvalter.inntekt',
 		'pensjonforvalter.tp',
 		'pensjonforvalter.alderspensjon',
+		'pensjonforvalter.uforetrygd',
 		'arenaforvalter',
 		'sykemelding',
 		'brregstub',
@@ -69,6 +80,7 @@ const getValgteAttributter = (values) => {
 		'udistub',
 		'dokarkiv',
 		'histark',
+		'medl',
 		'organisasjon.enhetstype',
 		'organisasjon.naeringskode',
 		'organisasjon.sektorkode',

@@ -27,7 +27,7 @@ const saveHiddenAlerts = (alerts: string[]) => {
 type InfoStripeType = {
 	id: number
 	message: string
-	type: string
+	type: 'info' | 'warning' | 'error' | 'success'
 	start: Date
 	expires: Date
 }
@@ -121,7 +121,7 @@ export const InfoStripe = () => {
 					<div className="expand-alle-meldinger">
 						<Button
 							onClick={invertVisAlleMeldinger}
-							kind={showAll === false ? 'expand' : 'collapse'}
+							kind={showAll === false ? 'chevron-down' : 'chevron-up'}
 						>
 							{expandButtonText}
 						</Button>

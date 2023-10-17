@@ -29,7 +29,7 @@ export const OppholdSammeVilkaar = ({ formikBag }: { formikBag: FormikProps<any>
 			afterChange={(option: Option) =>
 				formikBag.setFieldValue(
 					`${pdlBasePath}[0].type`,
-					option ? option.value : 'OPPLYSNING_MANGLER'
+					option ? option.value : 'OPPLYSNING_MANGLER',
 				)
 			}
 			options={Options('oppholdstillatelseType')}

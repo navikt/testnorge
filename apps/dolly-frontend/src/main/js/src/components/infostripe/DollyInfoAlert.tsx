@@ -18,7 +18,7 @@ export const DollyInfoAlert = ({ type, text, id, onHide }: DollyInfoAlertType) =
 	}
 	return (
 		<div className="dolly-info-alert">
-			<Alert size={'small'} variant={type} style={{ width: '100%' }}>
+			<Alert size={'small'} variant={type?.toLowerCase()} style={{ width: '100%' }}>
 				{text}
 			</Alert>
 			<span>

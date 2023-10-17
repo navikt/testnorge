@@ -16,6 +16,7 @@ import { AdresseKodeverk } from '@/config/kodeverk'
 import { initialKontaktadresse } from '@/components/fagsystem/pdlf/form/initialValues'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
 import { formatDate } from '@/utils/DataFormatter'
+import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
 
 type KontaktadresseTypes = {
 	data: Array<any>
@@ -82,6 +83,7 @@ export const Adresse = ({ kontaktadresseData, idx }: AdresseTypes) => {
 						</TitleValue>
 						<Adressedatoer kontaktadresseData={kontaktadresseData} />
 						<TitleValue title="C/O adressenavn" value={kontaktadresseData.coAdressenavn} />
+						<TitleValue title="Master" value={kontaktadresseData.metadata?.master} />
 					</div>
 				</>
 			)}
@@ -169,17 +171,17 @@ const KontaktadresseVisning = ({
 }: KontaktadresseVisningTypes) => {
 	const initKontaktadresse = Object.assign(
 		_.cloneDeep(initialKontaktadresse),
-		data?.[idx] || tmpData?.[idx]
+		data?.[idx] || tmpData?.[idx],
 	)
 	const initialValues = { kontaktadresse: initKontaktadresse }
 
 	const redigertKontaktadressePdlf = _.get(tmpPersoner, `${ident}.person.kontaktadresse`)?.find(
-		(a: KontaktadresseData) => a.id === kontaktadresseData.id
+		(a: KontaktadresseData) => a.id === kontaktadresseData.id,
 	)
 	const slettetKontaktadressePdlf =
 		tmpPersoner?.hasOwnProperty(ident) && !redigertKontaktadressePdlf
 	if (slettetKontaktadressePdlf) {
-		return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+		return <OpplysningSlettet />
 	}
 
 	const kontaktadresseValues = redigertKontaktadressePdlf
@@ -189,7 +191,7 @@ const KontaktadresseVisning = ({
 		? {
 				kontaktadresse: Object.assign(
 					_.cloneDeep(initialKontaktadresse),
-					redigertKontaktadressePdlf
+					redigertKontaktadressePdlf,
 				),
 		  }
 		: null

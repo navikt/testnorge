@@ -2,7 +2,7 @@ import React from 'react'
 import { Box } from '@/components/Box'
 import SessionService from '@/services/SessionService'
 import styled from 'styled-components'
-import { Knapp } from '@navikt/dolly-komponenter/lib'
+import { Knapp } from '@navikt/dolly-komponenter'
 
 const StyledFareknapp = styled(Knapp)`
 	margin: 5px 0;

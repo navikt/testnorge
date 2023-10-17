@@ -24,6 +24,7 @@ import { Adressetype } from '@/components/fagsystem/pdlf/PdlTypes'
 import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 import { getPlaceholder, setNavn } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
+import { useGenererNavn } from '@/utils/hooks/useGenererNavn'
 
 interface OppholdsadresseValues {
 	formikBag: FormikProps<{}>
@@ -104,13 +105,13 @@ export const OppholdsadresseForm = ({ formikBag, path, idx }: OppholdsadresseFor
 			_.set(adresseClone, 'vegadresse', undefined)
 			_.set(adresseClone, 'matrikkeladresse', undefined)
 			_.set(adresseClone, 'utenlandskAdresse', undefined)
-			_.set(adresseClone, 'master', 'FREG')
+			_.set(adresseClone, 'master', 'PDL')
 		}
 
 		formikBag.setFieldValue(path, adresseClone)
 	}
 
-	const navnInfo = SelectOptionsOppslag.hentPersonnavn()
+	const { navnInfo, loading } = useGenererNavn()
 	const navnOptions = SelectOptionsOppslag.formatOptions('personnavn', navnInfo)
 
 	return (
@@ -131,7 +132,11 @@ export const OppholdsadresseForm = ({ formikBag, path, idx }: OppholdsadresseFor
 				<MatrikkeladresseVelger formikBag={formikBag} path={`${path}.matrikkeladresse`} />
 			)}
 			{valgtAdressetype === 'UTENLANDSK_ADRESSE' && (
-				<UtenlandskAdresse formikBag={formikBag} path={`${path}.utenlandskAdresse`} />
+				<UtenlandskAdresse
+					formikBag={formikBag}
+					path={`${path}.utenlandskAdresse`}
+					master={_.get(formikBag.values, `${path}.master`)}
+				/>
 			)}
 			{valgtAdressetype === 'OPPHOLD_ANNET_STED' && (
 				<OppholdAnnetSted formikBag={formikBag} path={`${path}.oppholdAnnetSted`} />
@@ -147,7 +152,7 @@ export const OppholdsadresseForm = ({ formikBag, path, idx }: OppholdsadresseFor
 					options={navnOptions}
 					size="xlarge"
 					placeholder={getPlaceholder(formikBag.values, `${path}.opprettCoAdresseNavn`)}
-					isLoading={navnInfo.loading}
+					isLoading={loading}
 					onChange={(navn: Target) =>
 						setNavn(navn, `${path}.opprettCoAdresseNavn`, formikBag.setFieldValue)
 					}

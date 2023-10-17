@@ -1,6 +1,5 @@
 import { createActions } from 'redux-actions'
 import {
-	ArenaApi,
 	BankkontoApi,
 	BrregstubApi,
 	DollyApi,
@@ -8,6 +7,7 @@ import {
 	KrrApi,
 	PdlforvalterApi,
 	SigrunApi,
+	SkjermingApi,
 	TpsMessagingApi,
 } from '@/service/Api'
 import { onSuccess } from '@/ducks/utils/requestActions'
@@ -30,6 +30,12 @@ export const actions = createActions(
 				ident,
 			}),
 		],
+		getSigrunPensjonsgivendeInntekt: [
+			SigrunApi.getPensjonsgivendeInntekt,
+			(ident) => ({
+				ident,
+			}),
+		],
 		getSigrunSekvensnr: [
 			SigrunApi.getSekvensnummer,
 			(ident) => ({
@@ -44,12 +50,6 @@ export const actions = createActions(
 		],
 		getKrr: [
 			KrrApi.getPerson,
-			(ident) => ({
-				ident,
-			}),
-		],
-		getArena: [
-			ArenaApi.getPerson,
 			(ident) => ({
 				ident,
 			}),
@@ -79,7 +79,7 @@ export const actions = createActions(
 			}),
 		],
 		getSkjermingsregister: [
-			DollyApi.getSkjerming,
+			SkjermingApi.getSkjerming,
 			(ident) => ({
 				ident,
 			}),
@@ -106,16 +106,16 @@ export const actions = createActions(
 	},
 	{
 		prefix: 'fagsystem', // String used to prefix each type
-	}
+	},
 )
 
 const initialState = {
 	tpsf: {},
 	tpsMessaging: {},
 	sigrunstub: {},
+	sigrunstubPensjonsgivende: {},
 	inntektstub: {},
 	krrstub: {},
-	arenaforvalteren: {},
 	pdl: {},
 	pdlforvalter: {},
 	instdata: {},
@@ -131,6 +131,9 @@ export default handleActions(
 	{
 		[onSuccess(actions.getSigrun)](state, action) {
 			state.sigrunstub[action.meta.ident] = action.payload.data.responseList
+		},
+		[onSuccess(actions.getSigrunPensjonsgivendeInntekt)](state, action) {
+			state.sigrunstubPensjonsgivende[action.meta.ident] = action.payload.data
 		},
 		[onSuccess(actions.getTpsMessaging)](state, action) {
 			state.tpsMessaging[action.meta.ident] = action?.payload.data?.[0]?.person
@@ -154,9 +157,6 @@ export default handleActions(
 		[onSuccess(actions.getKrr)](state, action) {
 			state.krrstub[action.meta.ident] = action.payload.data
 		},
-		[onSuccess(actions.getArena)](state, action) {
-			state.arenaforvalteren[action.meta.ident] = action.payload.data
-		},
 		[onSuccess(actions.getUdi)](state, action) {
 			state.udistub[action.meta.ident] = action.payload?.data?.person
 		},
@@ -172,7 +172,7 @@ export default handleActions(
 					...map,
 					[person.ident]: person.identer,
 				}),
-				{}
+				{},
 			)
 			const geografiskTilknytningBolk =
 				action.payload.data?.data?.hentGeografiskTilknytningBolk?.reduce(
@@ -180,7 +180,7 @@ export default handleActions(
 						...map,
 						[person.ident]: person.geografiskTilknytning,
 					}),
-					{}
+					{},
 				)
 
 			action.payload.data?.data?.hentPersonBolk?.forEach((ident) => {
@@ -205,15 +205,15 @@ export default handleActions(
 			deleteIdentState(state, action.meta.partnerident)
 		},
 	},
-	initialState
+	initialState,
 )
 
 const deleteIdentState = (state, ident) => {
 	delete state.tpsf[ident]
 	delete state.sigrunstub[ident]
+	delete state.sigrunstubPensjonsgivende[ident]
 	delete state.inntektstub[ident]
 	delete state.krrstub[ident]
-	delete state.arenaforvalteren[ident]
 	delete state.pdl[ident]
 	delete state.pdlforvalter[ident]
 	delete state.udistub[ident]
@@ -261,12 +261,15 @@ export const fetchDataFraFagsystemer = (person, bestillingerById) => (dispatch) 
 			case 'SIGRUNSTUB':
 				dispatch(actions.getSigrun(personId))
 				return dispatch(actions.getSigrunSekvensnr(personId))
+			case 'SIGRUN_LIGNET':
+				dispatch(actions.getSigrun(personId))
+				return dispatch(actions.getSigrunSekvensnr(personId))
+			case 'SIGRUN_PENSJONSGIVENDE':
+				return dispatch(actions.getSigrunPensjonsgivendeInntekt(personId))
 			case 'INNTK':
 				return dispatch(actions.getInntektstub(personId))
 			case 'TPS_MESSAGING':
 				return dispatch(actions.getTpsMessaging(personId))
-			case 'ARENA':
-				return dispatch(actions.getArena(personId))
 			case 'UDISTUB':
 				return dispatch(actions.getUdi(personId))
 			case 'BRREGSTUB':
@@ -286,7 +289,7 @@ export const sokSelector = (items, searchStr) => {
 
 	const query = searchStr.toLowerCase()
 	return items.filter((item) =>
-		Object.values(item).some((v) => (v || '').toString().toLowerCase().includes(query))
+		Object.values(item).some((v) => (v || '').toString().toLowerCase().includes(query)),
 	)
 }
 
@@ -326,7 +329,7 @@ export const selectPersonListe = (identer, bestillingStatuser, fagsystem) => {
 	const identListe = Object.values(identer).filter(
 		(gruppeIdent) =>
 			Object.keys(fagsystem.pdlforvalter).includes(gruppeIdent.ident) ||
-			Object.keys(fagsystem.pdl).includes(gruppeIdent.ident)
+			Object.keys(fagsystem.pdl).includes(gruppeIdent.ident),
 	)
 
 	return identListe.map((ident) => {
@@ -458,9 +461,9 @@ export const selectDataForIdent = (state, ident) => {
 		tpsf: state.fagsystem.tpsf[ident],
 		tpsMessaging: state.fagsystem.tpsMessaging[ident],
 		sigrunstub: state.fagsystem.sigrunstub[ident],
+		sigrunstubPensjonsgivende: state.fagsystem.sigrunstubPensjonsgivende[ident],
 		inntektstub: state.fagsystem.inntektstub[ident],
 		krrstub: state.fagsystem.krrstub[ident],
-		arenaforvalteren: state.fagsystem.arenaforvalteren[ident],
 		pdl: state.fagsystem.pdl[ident],
 		pdlforvalter: state.fagsystem.pdlforvalter[ident],
 		udistub: state.fagsystem.udistub[ident],

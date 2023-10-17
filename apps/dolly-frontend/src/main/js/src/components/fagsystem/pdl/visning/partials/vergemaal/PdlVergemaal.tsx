@@ -52,7 +52,7 @@ export const PdlVergemaal = ({ data }: VergemaalProps) => {
 
 	const gyldigeVergemaal = data.filter((vergemaal: VergemaalData) => !vergemaal.metadata?.historisk)
 	const historiskeVergemaal = data.filter(
-		(vergemaal: VergemaalData) => vergemaal.metadata?.historisk
+		(vergemaal: VergemaalData) => vergemaal.metadata?.historisk,
 	)
 
 	return (

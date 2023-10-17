@@ -107,7 +107,6 @@ const arbeidsavtale = Yup.object({
 })
 
 const fartoy = Yup.array()
-	.nullable()
 	.of(
 		Yup.object({
 			skipsregister: requiredString,
@@ -115,6 +114,7 @@ const fartoy = Yup.array()
 			fartsomraade: requiredString,
 		})
 	)
+	.nullable()
 
 const requiredPeriode = Yup.mixed()
 	.when('$aareg[0].arbeidsforholdstype', {
@@ -139,7 +139,10 @@ export const validation = {
 			arbeidsforholdID: Yup.string().nullable(),
 			arbeidsgiver: ifPresent('$aareg[0].arbeidsgiver.aktoertype', arbeidsgiver),
 			arbeidsavtale: ifPresent('$aareg[0].arbeidsgiver.aktoertype', arbeidsavtale),
-			fartoy: ifPresent('$aareg[0].fartoy.skipstype', fartoy),
+			fartoy: Yup.mixed().when({
+				is: (exists) => !!exists,
+				then: () => fartoy,
+			}),
 			antallTimerForTimeloennet: Yup.array().of(
 				Yup.object({
 					periode: Yup.object({

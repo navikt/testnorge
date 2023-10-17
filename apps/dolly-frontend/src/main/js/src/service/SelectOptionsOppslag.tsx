@@ -78,14 +78,8 @@ export const SelectOptionsOppslag = {
 		return options || Promise.resolve()
 	},
 
-	hentHelsepersonell: () => Api.fetchJson(`${uri}/helsepersonell`, { method: 'GET' }),
-
 	hentKrrLeverandoerer: () => {
 		return useAsync(async () => KrrApi.getSdpLeverandoerListe(), [KrrApi.getSdpLeverandoerListe])
-	},
-
-	hentPersonnavn: () => {
-		return useAsync(async () => DollyApi.getPersonnavn(), [DollyApi.getPersonnavn])
 	},
 
 	hentInntektsmeldingOptions: (enumtype: string) =>
@@ -94,7 +88,7 @@ export const SelectOptionsOppslag = {
 	hentArbeidsforholdstyperInntektstub: () => {
 		return useAsync(
 			async () => DollyApi.getKodeverkByNavn('Arbeidsforholdstyper'),
-			[DollyApi.getKodeverkByNavn]
+			[DollyApi.getKodeverkByNavn],
 		)
 	},
 
@@ -155,7 +149,7 @@ export const SelectOptionsOppslag = {
 								personInfo.fnr
 							options.push({ value: personInfo.fnr, label: navnOgFnr })
 						}
-					}
+					},
 				)
 			return options
 		} else if (type === 'arbeidsforholdstyper') {

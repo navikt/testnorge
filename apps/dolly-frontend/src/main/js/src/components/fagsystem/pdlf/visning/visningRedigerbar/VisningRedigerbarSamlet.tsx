@@ -19,6 +19,7 @@ import {
 	Modus,
 	RedigerLoading,
 } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/RedigerLoading'
+import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -84,9 +85,7 @@ export const VisningRedigerbarSamlet = ({
 
 	const pdlfError = (error: any) => {
 		error &&
-			setErrorMessagePdlf(
-				`Feil ved oppdatering i PDL-forvalter: ${error.message || error.toString()}`
-			)
+			setErrorMessagePdlf(`Feil ved oppdatering av person: ${error.message || error.toString()}`)
 		setVisningModus(Modus.Les)
 	}
 
@@ -168,7 +167,7 @@ export const VisningRedigerbarSamlet = ({
 		{
 			telefonnummer: ifPresent('telefonnummer', Yup.array().of(telefonnummer)),
 		},
-		[['telefonnummer', 'telefonnummer']]
+		[['telefonnummer', 'telefonnummer']],
 	)
 
 	const _validate = (values: any) => validate(values, validationSchema)
@@ -179,7 +178,7 @@ export const VisningRedigerbarSamlet = ({
 		const liste = [] as Array<any>
 		initialValuesListe.forEach((item: any) => {
 			const found = _.get(redigertAttributt, path)?.find(
-				(redigertItem: any) => redigertItem.id === item.id
+				(redigertItem: any) => redigertItem.id === item.id,
 			)
 			if (found) {
 				liste.push(found)
@@ -213,7 +212,7 @@ export const VisningRedigerbarSamlet = ({
 								{(visningModus === Modus.Les || slettId !== idx) && (
 									<>
 										{slettetItem || alleSlettet ? (
-											<pre style={{ margin: '0' }}>Opplysning slettet</pre>
+											<OpplysningSlettet />
 										) : (
 											getVisning(redigertItem || item, idx)
 										)}
@@ -295,11 +294,7 @@ export const VisningRedigerbarSamlet = ({
 									nested
 								>
 									{(item: any, idx: number) =>
-										item ? (
-											getForm(`${path}[${idx}]`)
-										) : (
-											<pre style={{ margin: '0' }}>Opplysning slettet</pre>
-										)
+										item ? getForm(`${path}[${idx}]`) : <OpplysningSlettet />
 									}
 								</DollyFieldArray>
 								<FieldArrayEdit>

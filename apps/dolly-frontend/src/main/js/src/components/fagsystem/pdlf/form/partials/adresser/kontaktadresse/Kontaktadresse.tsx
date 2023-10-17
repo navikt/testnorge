@@ -22,6 +22,7 @@ import { Adressetype } from '@/components/fagsystem/pdlf/PdlTypes'
 import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 import { getPlaceholder, setNavn } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
+import { useGenererNavn } from '@/utils/hooks/useGenererNavn'
 
 interface KontaktadresseValues {
 	formikBag: FormikProps<{}>
@@ -74,13 +75,11 @@ export const KontaktadresseForm = ({ formikBag, path, idx }: KontaktadresseFormV
 			_.set(adresseClone, 'vegadresse', initialVegadresse)
 			_.set(adresseClone, 'utenlandskAdresse', undefined)
 			_.set(adresseClone, 'postboksadresse', undefined)
-			_.set(adresseClone, 'master', 'PDL')
 		}
 		if (target?.value === 'UTENLANDSK_ADRESSE') {
 			_.set(adresseClone, 'utenlandskAdresse', initialUtenlandskAdresse)
 			_.set(adresseClone, 'vegadresse', undefined)
 			_.set(adresseClone, 'postboksadresse', undefined)
-			_.set(adresseClone, 'master', 'PDL')
 		}
 		if (target?.value === 'POSTBOKSADRESSE') {
 			_.set(adresseClone, 'postboksadresse', initialPostboksadresse)
@@ -91,7 +90,7 @@ export const KontaktadresseForm = ({ formikBag, path, idx }: KontaktadresseFormV
 		formikBag.setFieldValue(path, adresseClone)
 	}
 
-	const navnInfo = SelectOptionsOppslag.hentPersonnavn()
+	const { navnInfo, loading } = useGenererNavn()
 	const navnOptions = SelectOptionsOppslag.formatOptions('personnavn', navnInfo)
 
 	return (
@@ -109,7 +108,11 @@ export const KontaktadresseForm = ({ formikBag, path, idx }: KontaktadresseFormV
 				<VegadresseVelger formikBag={formikBag} path={`${path}.vegadresse`} key={`veg_${idx}`} />
 			)}
 			{valgtAdressetype === 'UTENLANDSK_ADRESSE' && (
-				<UtenlandskAdresse formikBag={formikBag} path={`${path}.utenlandskAdresse`} />
+				<UtenlandskAdresse
+					formikBag={formikBag}
+					path={`${path}.utenlandskAdresse`}
+					master={_.get(formikBag.values, `${path}.master`)}
+				/>
 			)}
 			{valgtAdressetype === 'POSTBOKSADRESSE' && (
 				<Postboksadresse formikBag={formikBag} path={`${path}.postboksadresse`} />
@@ -125,19 +128,14 @@ export const KontaktadresseForm = ({ formikBag, path, idx }: KontaktadresseFormV
 					options={navnOptions}
 					size="xlarge"
 					placeholder={getPlaceholder(formikBag.values, `${path}.opprettCoAdresseNavn`)}
-					isLoading={navnInfo.loading}
+					isLoading={loading}
 					onChange={(navn: Target) =>
 						setNavn(navn, `${path}.opprettCoAdresseNavn`, formikBag.setFieldValue)
 					}
 					value={_.get(formikBag.values, `${path}.opprettCoAdresseNavn.fornavn`)}
 				/>
 			</div>
-			<AvansertForm
-				path={path}
-				kanVelgeMaster={
-					valgtAdressetype !== 'VEGADRESSE' && valgtAdressetype !== 'UTENLANDSK_ADRESSE'
-				}
-			/>
+			<AvansertForm path={path} />
 		</React.Fragment>
 	)
 }

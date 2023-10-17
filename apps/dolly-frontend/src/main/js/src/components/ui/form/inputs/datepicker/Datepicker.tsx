@@ -6,7 +6,7 @@ import { TextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { Label } from '@/components/ui/form/inputs/label/Label'
 import { InputWrapper } from '@/components/ui/form/inputWrapper/InputWrapper'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
-import { fieldError, SyntEvent } from '@/components/ui/form/formUtils'
+import { fieldError, fixTimezone, SyntEvent } from '@/components/ui/form/formUtils'
 import 'react-datepicker/dist/react-datepicker.css'
 import './Datepicker.less'
 
@@ -69,9 +69,11 @@ const P_FormikDatepicker = ({ fastfield, addHour = false, ...props }) => (
 				form.setFieldTouched(props.name) // Need to trigger touched manually for Datepicker
 
 				if (props.afterChange) props.afterChange(date)
-				let val = date
+				let val = fixTimezone(date)?.toISOString().substring(0, 19) || null
 				if (addHour) {
-					val = addHours(new Date(date), 1).toISOString()
+					val = addHours(new Date(fixTimezone(date)), 3)
+						.toISOString()
+						.substring(0, 19)
 				}
 				return field.onChange(SyntEvent(field.name, val))
 			}

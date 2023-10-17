@@ -6,6 +6,7 @@ import styled from 'styled-components';
 
 const StyledPage = styled(Page)`
   display: flex;
+  justify-content: center;
 `;
 
 const HomePage = () => {

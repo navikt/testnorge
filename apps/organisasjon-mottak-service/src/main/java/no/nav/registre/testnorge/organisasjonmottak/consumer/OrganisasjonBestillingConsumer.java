@@ -40,7 +40,7 @@ public class OrganisasjonBestillingConsumer {
             var order = tokenExchange.exchange(properties)
                     .flatMap(accessToken -> new RegisterBestillingCommand(webClient, accessToken.getTokenValue(), orderDTO).call())
                     .block();
-            log.info("Ordre med {} opprettet.", order.getId());
+            log.info("Ordre med id:{} opprettet.", order.getId());
         } catch (Exception ex) {
             log.error("Noe gikk galt med innsending til organisasjon-bestilling-service.", ex);
         }

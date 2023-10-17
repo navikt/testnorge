@@ -9,14 +9,14 @@ public class ArtifactUtils {
 
     public static final String NORGE = "NOR";
 
-    public static boolean isLandkode(String landkode) {
+    public static boolean hasLandkode(String landkode) {
 
         return isNotBlank(landkode) &&
                 (landkode.matches("[A-Z]{3}") ||
                         "???".equals(landkode));
     }
 
-    public static boolean isSpraak(String spraak) {
+    public static boolean hasSpraak(String spraak) {
 
         return isNotBlank(spraak) && spraak.matches("[A-Z]{2}");
     }

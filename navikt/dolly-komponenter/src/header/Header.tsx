@@ -61,6 +61,4 @@ const Header = ({ children, title, profile }: HeaderProps) => (
   </StyledHeader>
 );
 
-Header.displayName = 'Header';
-
 export default Header;

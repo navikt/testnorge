@@ -1,6 +1,7 @@
 package no.nav.testnav.apps.organisasjontilgangservice.consumer.altinn.v1;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.organisasjontilgangservice.config.AltinnConfig;
 import no.nav.testnav.apps.organisasjontilgangservice.consumer.altinn.v1.command.CreateOrganisasjonAccessCommand;
 import no.nav.testnav.apps.organisasjontilgangservice.consumer.altinn.v1.command.DeleteOrganisasjonAccessCommand;
@@ -13,13 +14,14 @@ import no.nav.testnav.apps.organisasjontilgangservice.domain.Organisasjon;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.stereotype.Component;
-
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 
+@Slf4j
 @Component
 public class AltinnConsumer {
 
@@ -45,8 +47,33 @@ public class AltinnConsumer {
                             .defaultCodecs()
                             .jackson2JsonDecoder(new Jackson2JsonDecoder(objectMapper));
                 })
+                .filters(exchangeFilterFunctions ->
+                        exchangeFilterFunctions.add(logRequest()))
                 .build();
     }
+
+    private ExchangeFilterFunction logRequest() {
+
+        return (clientRequest, next) -> {
+            var buffer = new StringBuilder(250)
+                    .append("Request: ")
+                    .append(clientRequest.method())
+                    .append(' ')
+                    .append(clientRequest.url())
+                    .append(System.lineSeparator());
+
+            clientRequest.headers()
+                    .forEach((name, values) -> values
+                            .forEach(value -> buffer.append('\t')
+                                    .append(name)
+                                    .append('=')
+                                    .append(value.contains("Bearer ") ? "Bearer token" : value)
+                                    .append(System.lineSeparator())));
+            log.trace(buffer.substring(0, buffer.length() - 1));
+            return next.exchange(clientRequest);
+        };
+    }
+
 
     public Flux<DeleteStatus> delete(String organiasjonsnummer) {
         return getRights()

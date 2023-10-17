@@ -10,9 +10,12 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class JournalpostDTO {
+
     Integer journalpostId;
     String tittel;
     String temanavn;
     AvsenderMottakerDTO avsenderMottaker;
     List<DokumentDTO> dokumenter;
+    SakDTO sak;
+    String journalfoerendeEnhet;
 }

@@ -21,10 +21,11 @@ import {
 import { ArbeidsgiverIdent } from '@/components/fagsystem/aareg/form/partials/arbeidsgiverIdent'
 import { isDate } from 'date-fns'
 import { EgneOrganisasjoner } from '@/components/fagsystem/brregstub/form/partials/EgneOrganisasjoner'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bestillingsveileder'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { FormikErrors, FormikTouched, FormikValues, useFormikContext } from 'formik'
 import * as _ from 'lodash-es'
 import { Monthpicker } from '@/components/ui/form/inputs/monthpicker/Monthpicker'
+import { fixTimezone } from '@/components/ui/form/formUtils'
 
 type Arbeidsforhold = {
 	isOppdatering?: boolean
@@ -73,7 +74,7 @@ export const ArbeidsforholdForm = ({
 		return _.uniqWith(
 			aaregBestillinger,
 			(best1: Arbeidsforhold, best2) =>
-				best1?.arbeidsgiver?.orgnummer === best2?.arbeidsgiver?.orgnummer
+				best1?.arbeidsgiver?.orgnummer === best2?.arbeidsgiver?.orgnummer,
 		)
 	}
 
@@ -112,7 +113,7 @@ export const ArbeidsforholdForm = ({
 			tidligereAaregBestillinger.map((aaregBestilling) => {
 				aaregBestilling.isOppdatering = true
 				return aaregBestilling
-			})
+			}),
 		)
 	}, [values.aareg])
 
@@ -125,19 +126,23 @@ export const ArbeidsforholdForm = ({
 	const onChangeLenket = (fieldPath: string) => {
 		if (arbeidsgiverType !== ArbeidsgiverTyper.egen) {
 			return (field) => {
-				const value = isDate(field) ? field : field?.value || field?.target?.value || null
+				const value = isDate(field)
+					? fixTimezone(field)
+					: field?.value || field?.target?.value || null
 				setFieldValue(`${path}.${fieldPath}`, value)
 			}
 		} else {
 			return (field) => {
-				const value = isDate(field) ? field : field?.value || field?.target?.value || null
+				const value = isDate(field)
+					? fixTimezone(field)
+					: field?.value || field?.target?.value || null
 				const amelding = _.get(values, 'aareg[0].amelding') || []
 				amelding.forEach((_maaned, idx) => {
 					if (!erLenket && idx < ameldingIndex) {
 						return null
 					} else {
 						const arbeidsforholdClone = _.cloneDeep(
-							amelding[idx].arbeidsforhold[arbeidsforholdIndex]
+							amelding[idx].arbeidsforhold[arbeidsforholdIndex],
 						)
 						_.set(arbeidsforholdClone, fieldPath, value)
 						_.set(amelding[idx], `arbeidsforhold[${arbeidsforholdIndex}]`, arbeidsforholdClone)
@@ -205,7 +210,7 @@ export const ArbeidsforholdForm = ({
 						year: navArbeidsforholdPeriode.getFullYear(),
 						monthValue: navArbeidsforholdPeriode.getMonth(),
 				  }
-				: undefined
+				: undefined,
 		)
 	}, [navArbeidsforholdPeriode])
 

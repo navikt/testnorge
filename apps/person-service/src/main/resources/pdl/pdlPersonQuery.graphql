@@ -1,0 +1,32 @@
+
+query($ident1: ID!) {
+    hentPerson(ident: $ident1) {
+        navn {
+            metadata {
+                opplysningsId
+            }
+        }
+        foedsel {
+            metadata {
+                opplysningsId
+            }
+        }
+        kjoenn {
+            metadata {
+                opplysningsId
+            }
+        }
+        folkeregisterpersonstatus {
+            metadata {
+                opplysningsId
+            }
+        }
+    },
+    hentIdenter(ident: $ident1, historikk: true, grupper: [AKTORID, FOLKEREGISTERIDENT, NPID]) {
+        identer {
+            ident,
+            historisk,
+            gruppe
+        }
+    }
+}

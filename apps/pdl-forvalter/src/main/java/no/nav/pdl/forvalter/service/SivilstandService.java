@@ -86,7 +86,7 @@ public class SivilstandService implements Validation<SivilstandDTO> {
             sivilstand.setType(UGIFT);
         }
 
-        if (sivilstand.isGift() || sivilstand.isSeparert() || sivilstand.getType() == SAMBOER) {
+        if (sivilstand.isGift() || sivilstand.isSeparert() || sivilstand.isSamboer()) {
 
             sivilstand.setEksisterendePerson(isNotBlank(sivilstand.getRelatertVedSivilstand()));
             if (isBlank(sivilstand.getRelatertVedSivilstand())) {
@@ -149,10 +149,10 @@ public class SivilstandService implements Validation<SivilstandDTO> {
         SivilstandDTO relatertSivilstand = mapperFacade.map(sivilstand, SivilstandDTO.class);
         relatertSivilstand.setRelatertVedSivilstand(hovedperson);
         relatertSivilstand.setId(relatertPerson.getPerson().getSivilstand().stream()
+                .max(Comparator.comparing(SivilstandDTO::getId))
                 .map(SivilstandDTO::getId)
-                .findFirst()
                 .orElse(0) + 1);
-        relatertPerson.getPerson().getSivilstand().add(relatertSivilstand);
+        relatertPerson.getPerson().getSivilstand().add(0, relatertSivilstand);
 
         relatertPerson.getPerson().setSivilstand(enforceIntegrity(relatertPerson.getPerson()));
         personRepository.save(relatertPerson);

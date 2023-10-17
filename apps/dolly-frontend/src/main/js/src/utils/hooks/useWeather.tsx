@@ -5,7 +5,7 @@ const fyrstikkAlleenForecastUrl =
 	'https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=59.91254828924253&lon=10.796522002335804'
 
 export const useWeatherFyrstikkAlleen = () => {
-	const { data, error } = useSWR<any, Error>(fyrstikkAlleenForecastUrl, fetcher, {
+	const { data, isLoading, error } = useSWR<any, Error>(fyrstikkAlleenForecastUrl, fetcher, {
 		dedupingInterval: 60000,
 	})
 
@@ -14,7 +14,7 @@ export const useWeatherFyrstikkAlleen = () => {
 
 	return {
 		millimeterNedboer: millimeterNedboer ? millimeterNedboer * 10 : 0,
-		loading: !error && !data,
+		loading: isLoading,
 		error: error,
 	}
 }

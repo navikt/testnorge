@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 import * as _ from 'lodash-es'
 import Panel from '@/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bestillingsveileder'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import {
 	initialDoedsfall,
 	initialFoedsel,
@@ -278,7 +278,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 							_.get(personFoerLeggTil, paths.egenAnsattDatoFom.tpsM) ||
 							new Date(),
 					],
-					[paths.egenAnsattDatoTom.skjerming, undefined]
+					[paths.egenAnsattDatoTom.skjerming, undefined],
 				)
 			},
 			remove() {
@@ -292,7 +292,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 				_.has(personFoerLeggTil, 'pdlforvalter[0].person.telefonnummer')
 					? setMulti(
 							[paths.telefonnummer.pdl, fjernIdFoerLeggTil('telefonnummer')],
-							[paths.telefonnummer.tpsM, _.get(personFoerLeggTil, 'tpsMessaging.telefonnumre')]
+							[paths.telefonnummer.tpsM, _.get(personFoerLeggTil, 'tpsMessaging.telefonnumre')],
 					  )
 					: setMulti(
 							[
@@ -316,7 +316,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 										telefontype: 'MOBI',
 									},
 								],
-							]
+							],
 					  )
 			},
 			remove() {
@@ -341,7 +341,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 			add: () =>
 				setMulti(
 					[paths.sikkerhetstiltak.pdl, [initialSikkerhetstiltak]],
-					[paths.sikkerhetstiltak.tpsM, [initialTpsSikkerhetstiltak]]
+					[paths.sikkerhetstiltak.tpsM, [initialTpsSikkerhetstiltak]],
 				),
 			remove: () => del([paths.sikkerhetstiltak.pdl, paths.sikkerhetstiltak.tpsM]),
 		},

@@ -6,6 +6,9 @@ import GjenopprettConnector from '@/components/bestilling/gjenopprett/Gjenoppret
 import './BestillingDetaljer.less'
 import { MalModal } from '@/pages/minSide/maler/MalModal'
 import * as _ from 'lodash-es'
+import { SlettButton } from '@/components/ui/button/SlettButton/SlettButton'
+import React from 'react'
+import { DollyApi } from '@/service/Api'
 
 export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId, brukertype }) {
 	const [isGjenopprettModalOpen, openGjenopprettModal, closeGjenoprettModal] = useBoolean(false)
@@ -27,7 +30,9 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId,
 
 	const gjenopprettingsId = bestilling.opprettetFraGruppeId || bestilling.opprettetFraId
 
-	const gjenopprettTitle = harLevertPersoner
+	const gjenopprettTitle = gjenopprettingsId
+		? 'Kan ikke gjenopprette gjenoppretting av bestilling'
+		: harLevertPersoner
 		? 'Gjenopprett bestilling'
 		: 'Kan ikke gjenopprette bestilling fordi den har ingen leverte identer'
 
@@ -41,7 +46,7 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId,
 						<Button
 							onClick={openGjenopprettModal}
 							kind="synchronize"
-							disabled={!harLevertPersoner}
+							disabled={!harLevertPersoner || gjenopprettingsId}
 							title={gjenopprettTitle}
 						>
 							GJENOPPRETT
@@ -56,6 +61,14 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId,
 								OPPRETT NY MAL
 							</Button>
 						)}
+					<SlettButton
+						bestillingId={bestilling.id}
+						action={DollyApi.slettBestilling}
+						loading={false}
+						navigateHome={false}
+					>
+						Er du sikker på at du vil slette denne bestillingen?
+					</SlettButton>
 				</div>
 			)}
 
@@ -66,10 +79,15 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId,
 						kind="synchronize"
 						disabled={!bestilling.ferdig}
 						title={
-							!bestilling.ferdig ? 'Bestillingen kan ikke gjenopprettes før den er ferdig' : null
+							!bestilling.ferdig
+								? 'Bestillingen kan ikke gjenopprettes før den er ferdig'
+								: undefined
 						}
 					>
 						GJENOPPRETT
+					</Button>
+					<Button onClick={openMalModal} kind={'maler'} className="svg-icon-blue">
+						OPPRETT NY MAL
 					</Button>
 				</div>
 			)}
@@ -83,7 +101,9 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId,
 				/>
 			)}
 
-			{isMalModalOpen && <MalModal id={bestilling.id} closeModal={closeMalModal} />}
+			{isMalModalOpen && (
+				<MalModal id={bestilling.id} erOrganisasjon={erOrganisasjon} closeModal={closeMalModal} />
+			)}
 		</div>
 	)
 }

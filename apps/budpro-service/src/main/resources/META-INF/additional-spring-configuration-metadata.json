@@ -1,0 +1,34 @@
+{
+  "properties": [
+    {
+      "name": "app.security.allow-api",
+      "type": "java.lang.Boolean",
+      "description": "If true, disable authentication requirement on endpoints.",
+      "defaultValue": "false"
+    },
+    {
+      "name": "consumers.generer-navn-service.url",
+      "type": "java.net.URL",
+      "description": "URL to generer-navn-service, i.e. 'http://generer-navn-service'."
+    },
+    {
+      "name": "consumers.generer-navn-service.name",
+      "type": "java.lang.String",
+      "description": "Name of generer-navn-service, i.e. 'generer-navn-service'."
+    },
+    {
+      "name": "spring.security.oauth2.resourceserver.aad.issuer-uri",
+      "type": "java.lang.String",
+      "description": "URI to Azure AD issuer, i.e. '${AAD_ISSUER_URI}/v2.0'."
+    },
+    {
+      "name": "spring.security.oauth2.resourceserver.aad.jwk-set-uri",
+      "type": "java.lang.String",
+      "description": "URI to Azure AD JWK Set, i.e. '${AAD_ISSUER_URI}/v2.0'."
+    },
+    {
+      "name": "spring.security.oauth2.resourceserver.aad.accepted-audience",
+      "type": "java.lang.String",
+      "description": "Accepted audience for Azure AD, i.e. '${azure.app.client.id}, api://${azure.app.client.id}'."
+    }
+  ] }

@@ -1,11 +1,11 @@
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { formatDate } from '@/utils/DataFormatter'
-import { MatrikkelAdresse } from '@/service/services/AdresseService'
 import KodeverkConnector from '@/components/kodeverk/KodeverkConnector'
 import {
 	Kodeverk,
 	KodeverkValues,
 } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import { MatrikkelAdresse } from '@/components/adresseVelger/MatrikkelAdresseVelger'
 
 interface MatrikkeladresseValues {
 	adresse: {
@@ -30,7 +30,10 @@ export const Matrikkeladresse = ({ adresse, idx }: MatrikkeladresseValues) => {
 		startdatoForKontrakt,
 		sluttdatoForKontrakt,
 		coAdressenavn,
+		metadata,
 	} = adresse
+
+	const master = metadata?.master
 
 	return (
 		<>
@@ -64,6 +67,7 @@ export const Matrikkeladresse = ({ adresse, idx }: MatrikkeladresseValues) => {
 				<TitleValue title="Startdato for kontrakt" value={formatDate(startdatoForKontrakt)} />
 				<TitleValue title="Sluttdato for kontrakt" value={formatDate(sluttdatoForKontrakt)} />
 				<TitleValue title="C/O adressenavn" value={coAdressenavn} />
+				<TitleValue title="Master" value={master} />
 			</div>
 		</>
 	)

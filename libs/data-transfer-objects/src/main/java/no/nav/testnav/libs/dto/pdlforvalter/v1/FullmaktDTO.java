@@ -1,5 +1,6 @@
 package no.nav.testnav.libs.dto.pdlforvalter.v1;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -30,5 +31,10 @@ public class FullmaktDTO extends DbVersjonDTO {
     public boolean isEksisterendePerson() {
 
         return isTrue(eksisterendePerson);
+    }
+
+    @JsonIgnore
+    public String getIdentForRelasjon() {
+        return motpartsPersonident;
     }
 }

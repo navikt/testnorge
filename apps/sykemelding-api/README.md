@@ -1,10 +1,10 @@
-# Testnorge-Sykemelding-api
+# testnav-sykemelding-api
 
 API for sykemeldinger.
 
 ## Swagger
 
-Swagger finnes under [/api](https://testnorge-sykemelding-api.dev.intern.nav.no/api) -endepunktet til applikasjonen.
+Swagger finnes under [/api](https://testnav-sykemelding-api.dev.intern.nav.no/api) -endepunktet til applikasjonen.
 
 ## Lokal kjøring
 

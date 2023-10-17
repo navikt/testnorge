@@ -1,10 +1,8 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { Suspense, useEffect, useMemo, useState } from 'react'
 import 'rc-tooltip/assets/bootstrap.css'
 import { DollyTable } from '@/components/ui/dollyTable/DollyTable'
 import Loading from '@/components/ui/loading/Loading'
 import ContentContainer from '@/components/ui/contentContainer/ContentContainer'
-import PersonIBrukButtonConnector from '@/components/ui/button/PersonIBrukButton/PersonIBrukButtonConnector'
-import PersonVisningConnector from '../PersonVisning/PersonVisningConnector'
 import { ManIconItem, UnknownIconItem, WomanIconItem } from '@/components/ui/icon/IconItem'
 
 import Icon from '@/components/ui/icon/Icon'
@@ -12,13 +10,19 @@ import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import useBoolean from '@/utils/hooks/useBoolean'
 import { KommentarModal } from '@/pages/gruppe/PersonListe/modal/KommentarModal'
 import { selectPersonListe, sokSelector } from '@/ducks/fagsystem'
-import { CopyButton } from '@/components/ui/button/CopyButton/CopyButton'
 import * as _ from 'lodash-es'
 import DollyTooltip from '@/components/ui/button/DollyTooltip'
 import { setSorting } from '@/ducks/finnPerson'
 import { useDispatch } from 'react-redux'
 import { useBestillingerGruppe } from '@/utils/hooks/useBestilling'
 import { CypressSelector } from '../../../../cypress/mocks/Selectors'
+import PersonVisningConnector from '@/pages/gruppe/PersonVisning/PersonVisningConnector'
+import { DollyCopyButton } from '@/components/ui/button/CopyButton/DollyCopyButton'
+import { useGruppeById } from '@/utils/hooks/useGruppe'
+
+const PersonIBrukButtonConnector = React.lazy(
+	() => import('@/components/ui/button/PersonIBrukButton/PersonIBrukButtonConnector'),
+)
 
 const ikonTypeMap = {
 	Ferdig: 'feedback-check-circle',
@@ -30,7 +34,7 @@ const ikonTypeMap = {
 export default function PersonListe({
 	isFetching,
 	search,
-	gruppeInfo,
+	gruppeId,
 	identer,
 	sidetall,
 	sideStoerrelse,
@@ -48,11 +52,12 @@ export default function PersonListe({
 	const [selectedIdent, setSelectedIdent] = useState(null)
 	const [identListe, setIdentListe] = useState([])
 	const dispatch = useDispatch()
-	const { bestillingerById: bestillingStatuser } = useBestillingerGruppe(gruppeInfo.id)
+	const { bestillingerById: bestillingStatuser } = useBestillingerGruppe(gruppeId)
+	const { gruppe: gruppeInfo } = useGruppeById(gruppeId)
 
 	const personListe = useMemo(
 		() => sokSelector(selectPersonListe(identer, bestillingStatuser, fagsystem), search),
-		[identer, search, fagsystem, bestillingStatuser, visPerson]
+		[identer, search, fagsystem, bestillingStatuser, visPerson],
 	)
 
 	useEffect(() => {
@@ -85,7 +90,7 @@ export default function PersonListe({
 	}
 
 	const getNavnLimited = (tekst) => {
-		const navn = tekst.length > 18 ? tekst.substring(0, 18) + '...' : tekst
+		const navn = tekst.length > 23 ? tekst.substring(0, 23) + '...' : tekst
 		return (
 			<div style={{ maxWidth: '170px' }}>
 				<p>{navn}</p>
@@ -96,23 +101,25 @@ export default function PersonListe({
 	const columnsDefault = [
 		{
 			text: 'Ident',
-			width: '20',
+			width: '25',
 			dataField: 'identNr',
 			unique: true,
 
-			formatter: (_cell, row) => <CopyButton value={row.identNr} />,
+			formatter: (_cell, row) => (
+				<DollyCopyButton
+					displayText={row.identNr}
+					copyText={row.identNr}
+					tooltipText={'Kopier fødselsnummer'}
+				/>
+			),
 		},
 		{
 			text: 'Navn',
-			width: '30',
+			width: '40',
 			dataField: 'navn',
 			formatter: (_cell, row) => {
 				return (
-					<DollyTooltip
-						overlay={row.navn?.length > 18 ? row.navn : null}
-						destroyTooltipOnHide={true}
-						mouseEnterDelay={0}
-					>
+					<DollyTooltip content={row.navn?.length > 23 ? row.navn : null}>
 						{getNavnLimited(row.navn)}
 					</DollyTooltip>
 				)
@@ -158,14 +165,16 @@ export default function PersonListe({
 			sortField: 'iBruk',
 			headerCssClass: 'header-sort-sortable',
 			formatter: (_cell, row) => (
-				<PersonIBrukButtonConnector
-					data-cy={CypressSelector.TOGGLE_PERSON_IBRUK}
-					ident={row.ident}
-				/>
+				<Suspense fallback={<Loading label={'Laster...'} />}>
+					<PersonIBrukButtonConnector
+						data-cy={CypressSelector.TOGGLE_PERSON_IBRUK}
+						ident={row.ident}
+					/>
+				</Suspense>
 			),
 		},
 		{
-			text: '',
+			text: 'Notat',
 			width: '10',
 			dataField: 'harBeskrivelse',
 			centerItem: true,
@@ -173,21 +182,21 @@ export default function PersonListe({
 				if (row.ident.beskrivelse) {
 					return (
 						<DollyTooltip
-							overlay={getKommentarTekst(row.ident.beskrivelse)}
-							destroyTooltipOnHide={true}
-							mouseEnterDelay={0}
-							onClick={(event) => {
-								setSelectedIdent(row.ident)
-								openKommentarModal()
-								event.stopPropagation()
-							}}
-							arrowContent={<div className="rc-tooltip-arrow-inner" />}
+							content={getKommentarTekst(row.ident.beskrivelse)}
 							align={{
 								offset: [0, -10],
 							}}
 						>
-							<div style={{ textAlign: 'center' }}>
-								<Icon kind="kommentar" size={20} />
+							<div>
+								<Icon
+									kind="kommentar"
+									size={20}
+									onClick={(event) => {
+										setSelectedIdent(row.ident)
+										openKommentarModal()
+										event.stopPropagation()
+									}}
+								/>
 							</div>
 						</DollyTooltip>
 					)
@@ -240,7 +249,7 @@ export default function PersonListe({
 
 	const onHeaderClick = (value) => {
 		const activeColumn = columns.filter(
-			(column) => column.headerCssClass !== undefined && column.text === value
+			(column) => column.headerCssClass !== undefined && column.text === value,
 		)
 
 		if (!activeColumn || !activeColumn.length) {
@@ -292,13 +301,15 @@ export default function PersonListe({
 				visPerson={visPerson}
 				hovedperson={hovedperson}
 				onExpand={(bruker) => (
-					<PersonVisningConnector
-						ident={bruker.ident}
-						personId={bruker.identNr}
-						bestillingIdListe={bruker.ident.bestillingId}
-						iLaastGruppe={iLaastGruppe}
-						brukertype={brukertype}
-					/>
+					<Suspense fallback={<Loading label={'Laster ident...'} />}>
+						<PersonVisningConnector
+							ident={bruker.ident}
+							personId={bruker.identNr}
+							bestillingIdListe={bruker.ident.bestillingId}
+							iLaastGruppe={iLaastGruppe}
+							brukertype={brukertype}
+						/>
+					</Suspense>
 				)}
 				onHeaderClick={onHeaderClick}
 			/>

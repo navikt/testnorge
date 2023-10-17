@@ -11,24 +11,17 @@ import no.nav.dolly.bestilling.tpsmessagingservice.TpsMessagingClient;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
-import no.nav.dolly.domain.resultset.RsStatusRapport;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsOrdreStatus;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.mapper.BestillingPdlOrdreStatusMapper;
-import no.nav.dolly.mapper.BestillingPensjonforvalterStatusMapper;
-import no.nav.dolly.mapper.BestillingTpsMessagingStatusMapper;
 import no.nav.dolly.repository.IdentRepository;
+import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Stream;
-
-import static java.util.Objects.nonNull;
-import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Slf4j
 @Service
@@ -42,11 +35,6 @@ public class OrdreService {
     private final TpsMessagingClient tpsMessagingClient;
     private final PensjonforvalterClient pensjonforvalterClient;
     private final ObjectMapper objectMapper;
-
-    private static RsStatusRapport getStatus(List<RsStatusRapport> status) {
-
-        return nonNull(status) ? status.stream().findFirst().orElse(null) : null;
-    }
 
     @Transactional(readOnly = true)
     public RsOrdreStatus sendOrdre(String ident) {
@@ -71,19 +59,14 @@ public class OrdreService {
                                         personServiceClient.syncPerson(dollyperson, progress)
                                                 .map(ClientFuture::get)
                                                 .map(BestillingProgress::isPdlSync)
-                                                .flatMap(isPresent -> isTrue(isPresent) ?
-                                                        Flux.merge(pensjonforvalterClient.gjenopprett(new RsDollyUtvidetBestilling(), dollyperson, progress, false),
-                                                                tpsMessagingClient.gjenopprett(new RsDollyUtvidetBestilling(), dollyperson, progress, false)) :
-                                                        Flux.empty())
-                                                .filter(Objects::nonNull)
+                                                .filter(BooleanUtils::isTrue)
+                                                .flatMap(opprettet -> Flux.merge(
+                                                        pensjonforvalterClient.gjenopprett(new RsDollyUtvidetBestilling(), dollyperson, progress, false),
+                                                        tpsMessagingClient.gjenopprett(new RsDollyUtvidetBestilling(), dollyperson, progress, false)))
                                                 .map(ClientFuture::get)
                                                 .collectList()
                                                 .map(status -> RsOrdreStatus.builder()
-                                                        .status(Stream.of(getStatus(BestillingPdlOrdreStatusMapper.buildPdlOrdreStatusMap(List.of(progress), objectMapper)),
-                                                                        getStatus(BestillingTpsMessagingStatusMapper.buildTpsMessagingStatusMap(List.of(progress))),
-                                                                        getStatus(BestillingPensjonforvalterStatusMapper.buildPensjonforvalterStatusMap(List.of(progress))))
-                                                                .filter(Objects::nonNull)
-                                                                .toList())
+                                                        .status(BestillingPdlOrdreStatusMapper.buildPdlOrdreStatusMap(List.of(progress), objectMapper))
                                                         .build()))))
                 .blockFirst();
     }

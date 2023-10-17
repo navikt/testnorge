@@ -8,6 +8,7 @@ import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.pdldata.dto.PdlResponse;
 import no.nav.dolly.bestilling.personservice.PersonServiceClient;
+import no.nav.dolly.bestilling.tpsmessagingservice.service.TpsPersonService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
@@ -50,7 +51,8 @@ public class OppdaterPersonService extends DollyBestillingService {
             ErrorStatusDecoder errorStatusDecoder,
             PdlDataConsumer pdlDataConsumer,
             TransactionHelperService transactionHelperService,
-            PersonServiceClient personServiceClient) {
+            PersonServiceClient personServiceClient,
+            TpsPersonService tpsPersonService) {
         super(
                 identService,
                 bestillingService,
@@ -59,7 +61,8 @@ public class OppdaterPersonService extends DollyBestillingService {
                 counterCustomRegistry,
                 pdlDataConsumer,
                 errorStatusDecoder,
-                transactionHelperService
+                transactionHelperService,
+                tpsPersonService
         );
         this.personServiceClient = personServiceClient;
         this.mapperFacade = mapperFacade;
@@ -71,6 +74,7 @@ public class OppdaterPersonService extends DollyBestillingService {
 
         log.info("Bestilling med id=#{} med type={} er startet ...", bestilling.getId(), getBestillingType(bestilling));
         MDC.put(MDC_KEY_BESTILLING, bestilling.getId().toString());
+        request.setId(bestilling.getId());
 
         var testident = identService.getTestIdent(bestilling.getIdent());
         Flux.just(OriginatorUtility.prepOriginator(request, testident, mapperFacade))
@@ -93,6 +97,9 @@ public class OppdaterPersonService extends DollyBestillingService {
                                                                 .filter(BestillingProgress::isPdlSync)
                                                                 .flatMap(pdlSync ->
                                                                         Flux.concat(
+                                                                                tpsPersonService.syncPerson(dollyPerson, request,
+                                                                                                progress)
+                                                                                        .map(ClientFuture::get),
                                                                                 gjenopprettKlienter(dollyPerson, request,
                                                                                         fase2Klienter(),
                                                                                         progress, true),

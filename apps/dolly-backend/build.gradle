@@ -89,6 +89,8 @@ dependencies {
     implementation 'org.springframework.retry:spring-retry:2.0.0'
 
     implementation 'org.apache.commons:commons-lang3:3.12.0'
+    implementation 'org.springframework.boot:spring-boot-starter-cache'
+    implementation 'com.github.ben-manes.caffeine:caffeine'
 
     implementation 'org.ehcache:ehcache:3.10.8'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'

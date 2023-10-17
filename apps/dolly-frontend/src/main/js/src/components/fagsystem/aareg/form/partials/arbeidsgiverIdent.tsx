@@ -4,7 +4,7 @@ import * as _ from 'lodash-es'
 import Icon from '@/components/ui/icon/Icon'
 import Loading from '@/components/ui/loading/Loading'
 import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import { TpsMessagingApi } from '@/service/Api'
+import { PdlforvalterApi } from '@/service/Api'
 import { useFormikContext } from 'formik'
 
 type ArbeidsgiverIdentProps = {
@@ -18,12 +18,10 @@ export const ArbeidsgiverIdent = ({ path, isDisabled }: ArbeidsgiverIdentProps) 
 	const [personnummer, setPersonnummer] = useState(_.get(formikBag.values, path))
 	const [success, setSuccess] = useBoolean(false)
 	const [loading, setLoading] = useBoolean(false)
-	const [miljoer, setMiljoer] = useState(null)
 
 	const handleChange = (event: React.ChangeEvent<any>) => {
 		event.preventDefault()
 		setError(null)
-		setMiljoer(null)
 		setSuccess(false)
 
 		const personnr = event.target.value
@@ -32,7 +30,7 @@ export const ArbeidsgiverIdent = ({ path, isDisabled }: ArbeidsgiverIdentProps) 
 		if (personnr.match(/^\d{11}$/) != null) {
 			handleManualPersonnrChange(personnr)
 		} else {
-			setError('Ident må være et tall med 11 siffer.')
+			setError('Ident må være et tall med 11 siffer')
 			formikBag.setFieldValue(`${path}`, '')
 		}
 	}
@@ -40,14 +38,10 @@ export const ArbeidsgiverIdent = ({ path, isDisabled }: ArbeidsgiverIdentProps) 
 	const handleManualPersonnrChange = (personnr: string) => {
 		setLoading(true)
 
-		TpsMessagingApi.getTpsPersonInfoAllEnvs(personnr)
+		PdlforvalterApi.getPersoner([personnr])
 			.then((response: any) => {
-				if (
-					!('statusPaaIdenter' in response.data) ||
-					response.data.statusPaaIdenter.length === 0 ||
-					response.data.statusPaaIdenter[0].env.length === 0
-				) {
-					setError('Fant ikke arbeidsgiver ident.')
+				if (!response?.data || response?.data?.length < 1) {
+					setError('Fant ikke arbeidsgiver-ident')
 					setLoading(false)
 					formikBag.setFieldValue(`${path}`, '')
 					return
@@ -58,12 +52,9 @@ export const ArbeidsgiverIdent = ({ path, isDisabled }: ArbeidsgiverIdentProps) 
 				setLoading(false)
 				setPersonnummer(personnr)
 
-				const env = response.data.statusPaaIdenter[0].env
-				setMiljoer(env === null ? env : env.toString())
-
 				formikBag.setFieldValue(`${path}`, personnr)
 			})
-			.catch(() => setError('Fant ikke arbeidsgiver ident.'))
+			.catch(() => setError('Fant ikke arbeidsgiver-ident'))
 	}
 
 	return (
@@ -82,8 +73,9 @@ export const ArbeidsgiverIdent = ({ path, isDisabled }: ArbeidsgiverIdentProps) 
 				}
 			/>
 			{success && (
-				<div className="flexbox">
-					<Icon size={22} kind="feedback-check-circle" /> Ident funnet i miljø: {miljoer}
+				<div className="flexbox" style={{ marginTop: '-5px' }}>
+					<Icon size={22} kind="feedback-check-circle" style={{ marginRight: '10px' }} /> Ident
+					funnet
 				</div>
 			)}
 			{loading && <Loading label="Sjekker arbeidsgiver ident." />}

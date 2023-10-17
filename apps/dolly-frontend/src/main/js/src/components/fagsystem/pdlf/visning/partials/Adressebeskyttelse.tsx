@@ -8,6 +8,7 @@ import { showLabel } from '@/utils/DataFormatter'
 import { initialAdressebeskyttelse } from '@/components/fagsystem/pdlf/form/initialValues'
 import { AdressebeskyttelseData, Person } from '@/components/fagsystem/pdlf/PdlTypes'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
+import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
 
 type AdressebeskyttelseTypes = {
 	data: Array<AdressebeskyttelseData>
@@ -59,12 +60,12 @@ const AdressebeskyttelseVisning = ({
 
 	const redigertAdressebeskyttelsePdlf = _.get(
 		tmpPersoner,
-		`${ident}.person.adressebeskyttelse`
+		`${ident}.person.adressebeskyttelse`,
 	)?.find((a: Person) => a.id === adressebeskyttelse.id)
 	const slettetAdressebeskyttelsePdlf =
 		tmpPersoner?.hasOwnProperty(ident) && !redigertAdressebeskyttelsePdlf
 	if (slettetAdressebeskyttelsePdlf) {
-		return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+		return <OpplysningSlettet />
 	}
 
 	const adressebeskyttelseValues = redigertAdressebeskyttelsePdlf
@@ -74,7 +75,7 @@ const AdressebeskyttelseVisning = ({
 		? {
 				adressebeskyttelse: Object.assign(
 					_.cloneDeep(initialAdressebeskyttelse),
-					redigertAdressebeskyttelsePdlf
+					redigertAdressebeskyttelsePdlf,
 				),
 		  }
 		: null

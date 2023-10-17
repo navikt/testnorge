@@ -14,15 +14,15 @@ public class GenerateNavnService {
     private static final List<String> ADJEKTIVER = FileReader.readLinesFromResources("static/adjektiv.csv");
     private static final List<String> ADVERBER = FileReader.readLinesFromResources("static/adverb.csv");
     private static final List<String> SUBSTANTIVER = FileReader.readLinesFromResources("static/substantiv.csv");
-    private static final Random RANDOM = new SecureRandom();
 
-    public List<NavnDTO> getRandomNavn(Integer antall) {
-
-        return IntStream.range(0, antall).boxed()
+    public List<NavnDTO> getRandomNavn(Long seed, Integer antall) {
+        var random = seed == null ? new SecureRandom() : new Random(seed);
+        return IntStream
+                .range(0, antall).boxed()
                 .map(navn -> NavnDTO.builder()
-                        .adjektiv(toTitleCase(ADJEKTIVER.get(RANDOM.nextInt(ADJEKTIVER.size()))))
-                        .adverb(toTitleCase(ADVERBER.get(RANDOM.nextInt(ADVERBER.size()))))
-                        .substantiv(toTitleCase(SUBSTANTIVER.get(RANDOM.nextInt(SUBSTANTIVER.size()))))
+                        .adjektiv(toTitleCase(ADJEKTIVER.get(random.nextInt(ADJEKTIVER.size()))))
+                        .adverb(toTitleCase(ADVERBER.get(random.nextInt(ADVERBER.size()))))
+                        .substantiv(toTitleCase(SUBSTANTIVER.get(random.nextInt(SUBSTANTIVER.size()))))
                         .build())
                 .collect(Collectors.toList());
     }

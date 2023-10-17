@@ -14,10 +14,9 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.Setter;
 import no.nav.dolly.domain.resultset.Tags;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -36,7 +35,8 @@ import static no.nav.dolly.domain.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATO
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Entity
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -75,23 +75,17 @@ public class Testgruppe implements Serializable {
 
     @OneToMany(mappedBy = "testgruppe", fetch = FetchType.EAGER)
     @Column(unique = true)
-    @EqualsAndHashCode.Exclude
     @Builder.Default
-    @ToString.Exclude
     @OrderBy("id DESC")
     private List<Testident> testidenter = new ArrayList<>();
 
     @ManyToMany(mappedBy = "favoritter", fetch = FetchType.EAGER)
     @Builder.Default
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
     private Set<Bruker> favorisertAv = new HashSet<>();
 
     @OrderBy("id")
     @OneToMany(mappedBy = "gruppe", fetch = FetchType.LAZY)
     @Builder.Default
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
     private Set<Bestilling> bestillinger = new HashSet<>();
 
     @Column(name = "ER_LAAST")
@@ -114,35 +108,39 @@ public class Testgruppe implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
+        if (this == o) return true;
 
-        if (!(o instanceof Testgruppe that))
-            return false;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Testgruppe that = (Testgruppe) o;
 
         return new EqualsBuilder()
-                .append(getId(), that.getId())
-                .append(getNavn(), that.getNavn())
-                .append(getHensikt(), that.getHensikt())
-                .append(getOpprettetAv(), that.getOpprettetAv())
-                .append(getSistEndretAv(), that.getSistEndretAv())
-                .append(getDatoEndret(), that.getDatoEndret())
-                .append(getErLaast(), that.getErLaast())
-                .append(getLaastBeskrivelse(), that.getLaastBeskrivelse())
+                .append(id, that.id)
+                .append(versjon, that.versjon)
+                .append(navn, that.navn)
+                .append(hensikt, that.hensikt)
+                .append(opprettetAv, that.opprettetAv)
+                .append(sistEndretAv, that.sistEndretAv)
+                .append(datoEndret, that.datoEndret)
+                .append(erLaast, that.erLaast)
+                .append(laastBeskrivelse, that.laastBeskrivelse)
+                .append(tags, that.tags)
                 .isEquals();
     }
 
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
-                .append(getId())
-                .append(getNavn())
-                .append(getHensikt())
-                .append(getOpprettetAv())
-                .append(getSistEndretAv())
-                .append(getDatoEndret())
-                .append(getErLaast())
-                .append(getLaastBeskrivelse())
+                .append(id)
+                .append(versjon)
+                .append(navn)
+                .append(hensikt)
+                .append(opprettetAv)
+                .append(sistEndretAv)
+                .append(datoEndret)
+                .append(erLaast)
+                .append(laastBeskrivelse)
+                .append(tags)
                 .toHashCode();
     }
 }

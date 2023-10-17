@@ -21,21 +21,16 @@ spec:
       rules:
         - application: team-dolly-lokal-app
           cluster: dev-gcp
-        - application: dolly-backend
+        - application: dolly-frontend
           cluster: dev-gcp
-        - application: dolly-backend-dev
+        - application: dolly-frontend-dev
+          cluster: dev-gcp
+        - application: dolly-idporten
           cluster: dev-gcp
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
         - application: testnav-synt-sykemelding-api
           cluster: dev-gcp
-    outbound:
-      rules:
-        - application: dolly-backend
-          cluster: dev-gcp
-      external:
-        - host: testnav-pdl-proxy.dev-fss-pub.nais.io
-        - host: testnav-samhandlerregisteret-proxy.dev-fss-pub.nais.io
   liveness:
     path: /internal/isAlive
     initialDelay: 4

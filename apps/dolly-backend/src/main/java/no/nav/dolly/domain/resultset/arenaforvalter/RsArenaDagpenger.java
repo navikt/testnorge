@@ -1,32 +1,25 @@
 package no.nav.dolly.domain.resultset.arenaforvalter;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 
 @Data
-@Builder
+@EqualsAndHashCode(callSuper = true)
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class RsArenaDagpenger {
+public class RsArenaDagpenger extends ArenaPeriode {
 
 
     @Schema(
             type = "String")
     private String rettighetKode;
-
-    @Schema(
-            type = "LocalDateTime")
-    private LocalDateTime fraDato;
-
-    @Schema(type = "LocalDateTime")
-    private LocalDateTime tilDato;
 
     @Schema(type = "LocalDateTime")
     private LocalDateTime mottattDato;

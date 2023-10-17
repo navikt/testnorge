@@ -7,6 +7,7 @@ import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.pdldata.dto.PdlResponse;
 import no.nav.dolly.bestilling.personservice.PersonServiceClient;
+import no.nav.dolly.bestilling.tpsmessagingservice.service.TpsPersonService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
@@ -29,12 +30,10 @@ import java.time.Duration;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
-import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 
 @Slf4j
 @Service
@@ -51,7 +50,8 @@ public class GjenopprettGruppeService extends DollyBestillingService {
             ErrorStatusDecoder errorStatusDecoder,
             PdlDataConsumer pdlDataConsumer,
             TransactionHelperService transactionHelperService,
-            PersonServiceClient personServiceClient
+            PersonServiceClient personServiceClient,
+            TpsPersonService tpsPersonService
     ) {
         super(
                 identService,
@@ -61,7 +61,8 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                 counterCustomRegistry,
                 pdlDataConsumer,
                 errorStatusDecoder,
-                transactionHelperService
+                transactionHelperService,
+                tpsPersonService
         );
         this.personServiceClient = personServiceClient;
     }
@@ -77,10 +78,11 @@ public class GjenopprettGruppeService extends DollyBestillingService {
         if (nonNull(bestKriterier)) {
             bestKriterier.setEkskluderEksternePersoner(true);
 
-            var coBestillinger = identService.getBestillingerFromGruppe(bestilling.getGruppe());
+            var coBestillinger = identService.getBestillingerFromGruppe(bestilling.getGruppe()).stream()
+                    .sorted(Comparator.comparing(GruppeBestillingIdent::getBestillingId))
+                    .toList();
 
             var counter = new AtomicInteger(0);
-            var emptyBestillingFlag = new ConcurrentHashMap<String, Boolean>();
             Flux.fromIterable(bestilling.getGruppe().getTestidenter())
                     .delayElements(Duration.ofSeconds(counter.incrementAndGet() % 20 == 0 ? 30 : 0))
                     .flatMap(testident -> opprettProgress(bestilling, testident.getMaster(), testident.getIdent())
@@ -98,18 +100,23 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                                                             .map(ClientFuture::get)
                                                             .filter(BestillingProgress::isPdlSync)
                                                             .flatMap(pdlSync -> Flux.fromIterable(coBestillinger)
-                                                                    .sort(Comparator.comparing(GruppeBestillingIdent::getBestillingid))
-                                                                    .filter(cobestilling -> ident.equals(cobestilling.getIdent()))
-                                                                    .flatMap(cobestilling -> createBestilling(bestilling, cobestilling)
-                                                                            .filter(bestillingRequest -> isNotTrue(emptyBestillingFlag.putIfAbsent(ident, true)) ||
-                                                                                    RsDollyBestilling.isNonEmpty(bestillingRequest))
-                                                                            .flatMap(bestillingRequest -> Flux.concat(
-                                                                                    gjenopprettKlienter(dollyPerson, bestillingRequest,
-                                                                                            fase2Klienter(),
-                                                                                            progress, false),
-                                                                                    gjenopprettKlienter(dollyPerson, bestillingRequest,
-                                                                                            fase3Klienter(),
-                                                                                            progress, false)))))))
+                                                                    .concatMap(bestilling1 -> Flux.just(bestilling1)
+                                                                            .filter(cobestilling -> ident.equals(cobestilling.getIdent()))
+                                                                            .flatMapSequential(cobestilling -> createBestilling(bestilling, cobestilling)
+                                                                                    .filter(bestillingRequest -> bestillingRequest.getId() ==
+                                                                                            isFirstBestilling(coBestillinger, cobestilling.getIdent()) ||
+                                                                                            RsDollyBestilling.isNonEmpty(bestillingRequest))
+                                                                                    .doOnNext(request -> log.info("Startet gjenopprett bestilling {} for ident: {}",
+                                                                                            request.getId(), testident.getIdent()))
+                                                                                    .flatMapSequential(bestillingRequest -> Flux.concat(
+                                                                                            tpsPersonService.syncPerson(dollyPerson, bestillingRequest, progress)
+                                                                                                    .map(ClientFuture::get),
+                                                                                            gjenopprettKlienter(dollyPerson, bestillingRequest,
+                                                                                                    fase2Klienter(),
+                                                                                                    progress, false),
+                                                                                            gjenopprettKlienter(dollyPerson, bestillingRequest,
+                                                                                                    fase3Klienter(),
+                                                                                                    progress, false))))))))
                                             .onErrorResume(throwable -> {
                                                 var error = errorStatusDecoder.getErrorText(
                                                         WebClientFilter.getStatus(throwable), WebClientFilter.getMessage(throwable));
@@ -123,5 +130,14 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                     .doFinally(done -> doFerdig(bestilling))
                     .subscribe();
         }
+    }
+
+    private long isFirstBestilling(List<GruppeBestillingIdent> coBestillinger, String ident) {
+
+        return coBestillinger.stream()
+                .filter(bestilling -> ident.equals(bestilling.getIdent()))
+                .min(Comparator.comparing(GruppeBestillingIdent::getBestillingId))
+                .map(GruppeBestillingIdent::getBestillingId)
+                .orElse(0L);
     }
 }

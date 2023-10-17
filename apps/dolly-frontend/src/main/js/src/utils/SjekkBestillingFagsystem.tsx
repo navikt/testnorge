@@ -8,6 +8,16 @@ export const harAaregBestilling = (bestillingerFagsystemer) => {
 	return aareg
 }
 
+export const harMedlBestilling = (bestillingerFagsystemer) => {
+	let medl = false
+	bestillingerFagsystemer?.forEach((i) => {
+		if (i.medl) {
+			medl = true
+		}
+	})
+	return medl
+}
+
 export const harTpBestilling = (bestillingerFagsystemer) => {
 	let tp = false
 	bestillingerFagsystemer?.forEach((i) => {
@@ -36,6 +46,16 @@ export const harApBestilling = (bestillingerFagsystemer) => {
 		}
 	})
 	return alderspensjon
+}
+
+export const harUforetrygdBestilling = (bestillingerFagsystemer) => {
+	let uforetrygd = false
+	bestillingerFagsystemer?.forEach((i) => {
+		if (i.pensjonforvalter?.uforetrygd) {
+			uforetrygd = true
+		}
+	})
+	return uforetrygd
 }
 
 export const harInstBestilling = (bestillingerFagsystemer) => {
@@ -76,4 +96,24 @@ export const harArbeidsplassenBestilling = (bestillingerFagsystemer) => {
 		}
 	})
 	return arbeidsplassen
+}
+
+export const harArenaBestilling = (bestillingerFagsystemer) => {
+	let arena = false
+	bestillingerFagsystemer?.forEach((i) => {
+		if (i.arenaforvalter) {
+			arena = true
+		}
+	})
+	return arena
+}
+
+export const harSykemeldingBestilling = (bestillingerFagsystemer) => {
+	let sykemelding = false
+	bestillingerFagsystemer?.forEach((i) => {
+		if (i.sykemelding) {
+			sykemelding = true
+		}
+	})
+	return sykemelding
 }

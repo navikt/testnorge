@@ -13,8 +13,8 @@ spring:
           jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
           accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
         tokenx:
-          issuer-uri: https://tokendings.dev-gcp.nais.io
-          jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
+          issuer-uri: https://tokenx.dev-gcp.nav.cloud.nais.io 
+          jwk-set-uri: https://tokenx.dev-gcp.nav.cloud.nais.io/jwks
           accepted-audience: dev-gcp:dolly:testnav-endringsmelding-service
 
 springdoc:
@@ -28,6 +28,11 @@ consumers:
     cluster: dev-fss
     namespace: dolly
     name: tps-forvalteren-proxy
+  tps-messaging-service:
+    url: http://testnav-tps-messaging-service.dolly.svc.cluster.local
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-tps-messaging-service
 
 management:
   endpoints:

@@ -9,9 +9,10 @@ import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFiel
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { initialFalskIdentitetValues } from '@/components/fagsystem/pdlf/form/initialValues'
 import { PdlEksisterendePerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlEksisterendePerson'
+import { useGenererNavn } from '@/utils/hooks/useGenererNavn'
 
 export const FalskIdentitet = ({ formikBag }) => {
-	const navnInfo = SelectOptionsOppslag.hentPersonnavn()
+	const { navnInfo , loading} = useGenererNavn()
 	const navnOptions = SelectOptionsOppslag.formatOptions('personnavn', navnInfo)
 
 	const settIdentitetType = (e, path, advancedValues) => {
@@ -92,19 +93,19 @@ export const FalskIdentitet = ({ formikBag }) => {
 										size="xlarge"
 										placeholder={getPlaceholder(
 											formikBag.values,
-											`${path}.rettIdentitetVedOpplysninger.personnavn`
+											`${path}.rettIdentitetVedOpplysninger.personnavn`,
 										)}
-										isLoading={navnInfo.loading}
+										isLoading={loading}
 										onChange={(navn) =>
 											setNavn(
 												navn,
 												`${path}.rettIdentitetVedOpplysninger.personnavn`,
-												formikBag.setFieldValue
+												formikBag.setFieldValue,
 											)
 										}
 										value={_.get(
 											formikBag.values,
-											`${path}.rettIdentitetVedOpplysninger.personnavn.fornavn`
+											`${path}.rettIdentitetVedOpplysninger.personnavn.fornavn`,
 										)}
 									/>
 									<FormikDatepicker

@@ -101,6 +101,9 @@ export const MiljoVelger = ({
 
 			<FieldArray name="environments">
 				{({ push, remove, form }) => {
+					if (disableAllEnvironments) {
+						form.values.environments = []
+					}
 					const values = form.values.environments
 
 					const isChecked = (id) => values.includes(id)
@@ -157,6 +160,6 @@ MiljoVelger.validation = {
 			const miljoeNotRequired = erMiljouavhengig(values)
 			const hasEnvironments = values.environments.length > 0
 			return miljoeNotRequired || hasEnvironments
-		})
+		}),
 	),
 }

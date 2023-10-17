@@ -12,6 +12,7 @@ import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.pdldata.dto.PdlResponse;
 import no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterClient;
 import no.nav.dolly.bestilling.tagshendelseslager.TagsHendelseslagerClient;
+import no.nav.dolly.bestilling.tpsmessagingservice.service.TpsPersonService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Bruker;
@@ -56,6 +57,7 @@ public class DollyBestillingService {
     protected final PdlDataConsumer pdlDataConsumer;
     protected final ErrorStatusDecoder errorStatusDecoder;
     protected final TransactionHelperService transactionHelperService;
+    protected final TpsPersonService tpsPersonService;
 
     public static Set<String> getEnvironments(String miljoer) {
         return isNotBlank(miljoer) ? Set.of(miljoer.split(",")) : emptySet();
@@ -91,6 +93,7 @@ public class DollyBestillingService {
         try {
             RsDollyBestillingRequest bestKriterier = objectMapper.readValue(bestilling.getBestKriterier(), RsDollyBestillingRequest.class);
 
+            bestKriterier.setId(bestilling.getId());
             bestKriterier.setNavSyntetiskIdent(bestilling.getNavSyntetiskIdent());
             bestKriterier.setEnvironments(getEnvironments(bestilling.getMiljoer()));
             bestKriterier.setBeskrivelse(bestilling.getBeskrivelse());
@@ -128,13 +131,12 @@ public class DollyBestillingService {
                                                            GjenopprettSteg steg,
                                                            BestillingProgress progress, boolean isOpprettEndre) {
 
-        return Flux.from(Flux.fromIterable(clientRegisters)
-                .parallel()
+        return Flux.fromIterable(clientRegisters)
                 .filter(steg::apply)
                 .flatMap(clientRegister ->
                         clientRegister.gjenopprett(bestKriterier, dollyPerson, progress, isOpprettEndre))
                 .filter(Objects::nonNull)
-                .map(ClientFuture::get));
+                .map(ClientFuture::get);
     }
 
     protected void leggIdentTilGruppe(String ident, BestillingProgress progress, String beskrivelse) {
@@ -228,7 +230,20 @@ public class DollyBestillingService {
 
         return Flux.just(getDollyBestillingRequest(
                 Bestilling.builder()
+                        .id(coBestilling.getBestillingId())
                         .bestKriterier(coBestilling.getBestkriterier())
+                        .miljoer(StringUtils.isNotBlank(bestilling.getMiljoer()) ?
+                                bestilling.getMiljoer() :
+                                coBestilling.getMiljoer())
+                        .build()));
+    }
+
+    protected Flux<RsDollyBestillingRequest> createBestilling(Bestilling bestilling, Bestilling coBestilling) {
+
+        return Flux.just(getDollyBestillingRequest(
+                Bestilling.builder()
+                        .id(coBestilling.getId())
+                        .bestKriterier(coBestilling.getBestKriterier())
                         .miljoer(StringUtils.isNotBlank(bestilling.getMiljoer()) ?
                                 bestilling.getMiljoer() :
                                 coBestilling.getMiljoer())

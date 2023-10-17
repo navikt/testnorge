@@ -12,6 +12,7 @@ type OrganisasjonLoaderProps = {
 	value: any
 	feil?: any
 	useFormikSelect?: boolean
+	isClearable?: boolean
 }
 
 export const OrganisasjonLoader = ({
@@ -23,6 +24,7 @@ export const OrganisasjonLoader = ({
 	useFormikSelect,
 	feil,
 	value,
+	isClearable = false,
 	...props
 }: OrganisasjonLoaderProps) => {
 	const validEnhetstyper = ['BEDR', 'AAFY']
@@ -32,7 +34,7 @@ export const OrganisasjonLoader = ({
 	const formatLabel = (org) => `${org.orgnummer} (${org.enhetstype}) - ${org.navn}`
 	const organisasjonerSorted = organisasjoner
 		.filter((virksomhet) =>
-			kanHaArbeidsforhold ? validEnhetstyper.includes(virksomhet.enhetstype) : true
+			kanHaArbeidsforhold ? validEnhetstyper.includes(virksomhet.enhetstype) : true,
 		)
 		.sort(function (a, b) {
 			if (a.opprinnelse < b.opprinnelse) {
@@ -62,7 +64,7 @@ export const OrganisasjonLoader = ({
 			options={organisasjonerSorted}
 			size="xlarge"
 			optionHeight={50}
-			isClearable={false}
+			isClearable={isClearable}
 			{...props}
 		/>
 	) : (
@@ -75,7 +77,7 @@ export const OrganisasjonLoader = ({
 			onChange={handleChange}
 			value={value}
 			feil={feil}
-			isClearable={false}
+			isClearable={isClearable}
 			{...props}
 		/>
 	)

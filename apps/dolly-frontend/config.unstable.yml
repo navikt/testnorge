@@ -46,13 +46,17 @@ spec:
         - application: testnav-pdl-forvalter-dev
         - application: testnav-bruker-service-dev
         - application: testnav-person-search-service
+        - application: testnav-helsepersonell-service
         - application: dolly-backend-dev
+        - application: testnav-person-service
+        - application: generer-navn-service
       external:
         - host: testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
         - host: testnav-sigrunstub-proxy.dev-fss-pub.nais.io
         - host: testnav-krrstub-proxy.dev-fss-pub.nais.io
         - host: testnav-inst-proxy.dev-fss-pub.nais.io
         - host: testnav-aareg-proxy.dev-fss-pub.nais.io
+        - host: testnav-medl-proxy.dev-fss-pub.nais.io
         - host: testnav-histark-proxy.dev-fss-pub.nais.io
         - host: testnav-kodeverk-proxy.dev-fss-pub.nais.io
         - host: testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io

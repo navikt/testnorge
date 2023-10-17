@@ -9,7 +9,7 @@ import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpForholdRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpYtelseRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse.ResponseEnvironment;
-import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
+import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.Bestilling;
@@ -78,16 +78,13 @@ class PensjonforvalterClientTest {
     private TransactionHelperService transactionHelperService;
 
     @Mock
-    private PdlPersonConsumer pdlPersonConsumer;
+    private PersonServiceConsumer personServiceConsumer;
 
     @Mock
     private PdlDataConsumer pdlDataConsumer;
 
     @Mock
     private ErrorStatusDecoder errorStatusDecoder;
-
-    @Mock
-    private PdlPersonBolk pdlPersonBolk;
 
     @Captor
     ArgumentCaptor<String> statusCaptor;
@@ -99,9 +96,8 @@ class PensjonforvalterClientTest {
     void setup() {
         statusCaptor = ArgumentCaptor.forClass(String.class);
         when(mapperFacade.map(any(PdlPersonBolk.PersonBolk.class), eq(PensjonPersonRequest.class))).thenReturn(new PensjonPersonRequest());
-        when(pensjonforvalterConsumer.getAccessToken()).thenReturn(Mono.just(accessToken));
         when(accessToken.getTokenValue()).thenReturn("123");
-        when(pensjonforvalterConsumer.opprettPerson(any(PensjonPersonRequest.class), anySet(), eq(accessToken)))
+        when(pensjonforvalterConsumer.opprettPerson(any(PensjonPersonRequest.class), anySet()))
                 .thenReturn(Flux.just(new PensjonforvalterResponse()));
 
         var pdlPersonBolk = PdlPersonBolk.builder()
@@ -112,7 +108,7 @@ class PensjonforvalterClientTest {
                                 .build()))
                         .build())
                 .build();
-        when(pdlPersonConsumer.getPdlPersoner(anyList())).thenReturn(Flux.just(pdlPersonBolk));
+        when(personServiceConsumer.getPdlPersoner(anyList())).thenReturn(Flux.just(pdlPersonBolk));
     }
 
     // empty new response list to empty previous list
@@ -271,7 +267,7 @@ class PensjonforvalterClientTest {
 
         when(pensjonforvalterConsumer.getMiljoer()).thenReturn(Mono.just(Set.of("TEST1", "TEST2")));
 
-        when(pensjonforvalterConsumer.opprettPerson(any(PensjonPersonRequest.class), anySet(), any(AccessToken.class)))
+        when(pensjonforvalterConsumer.opprettPerson(any(PensjonPersonRequest.class), anySet()))
                 .thenReturn(Flux.just(PensjonforvalterResponse.builder()
                         .status(List.of(ResponseEnvironment.builder()
                                 .miljo("TEST1")
@@ -283,7 +279,7 @@ class PensjonforvalterClientTest {
                                 .build()))
                         .build()));
 
-        when(pensjonforvalterConsumer.lagreTpForhold(any(PensjonTpForholdRequest.class), eq(accessToken)))
+        when(pensjonforvalterConsumer.lagreTpForhold(any(PensjonTpForholdRequest.class)))
                 .thenReturn(Flux.just(PensjonforvalterResponse.builder()
                         .status(List.of(
                                 new ResponseEnvironment("TEST1", PensjonforvalterResponse.Response.builder()
@@ -294,7 +290,7 @@ class PensjonforvalterClientTest {
                                         .build())))
                         .build()));
 
-        when(pensjonforvalterConsumer.lagreTpYtelse(any(PensjonTpYtelseRequest.class), eq(accessToken)))
+        when(pensjonforvalterConsumer.lagreTpYtelse(any(PensjonTpYtelseRequest.class)))
                 .thenReturn(Flux.just(PensjonforvalterResponse.builder()
                         .status(List.of(
                                 new ResponseEnvironment("TEST1", PensjonforvalterResponse.Response.builder()
@@ -314,6 +310,7 @@ class PensjonforvalterClientTest {
         when(mapperFacade.map(any(PensjonData.TpYtelse.class), eq(PensjonTpYtelseRequest.class), any(MappingContext.class)))
                 .thenReturn(new PensjonTpYtelseRequest());
         when(pdlDataConsumer.getPersoner(anyList())).thenReturn(Flux.empty());
+        when(pensjonforvalterConsumer.hentSamboer(anyString(), anyString())).thenReturn(Flux.empty());
 
         StepVerifier.create(pensjonforvalterClient.gjenopprett(bestilling, dollyPerson, progress, false)
                         .map(ClientFuture::get))
@@ -351,7 +348,7 @@ class PensjonforvalterClientTest {
 
         when(pensjonforvalterConsumer.getMiljoer()).thenReturn(Mono.just(Set.of("TEST1", "TEST2")));
 
-        when(pensjonforvalterConsumer.opprettPerson(any(PensjonPersonRequest.class), anySet(), any(AccessToken.class)))
+        when(pensjonforvalterConsumer.opprettPerson(any(PensjonPersonRequest.class), anySet()))
                 .thenReturn(Flux.just(PensjonforvalterResponse.builder()
                         .status(List.of(ResponseEnvironment.builder()
                                         .miljo("TEST1")
@@ -371,7 +368,7 @@ class PensjonforvalterClientTest {
                                         .build()))
                         .build()));
 
-        when(pensjonforvalterConsumer.lagreTpForhold(any(PensjonTpForholdRequest.class), eq(accessToken)))
+        when(pensjonforvalterConsumer.lagreTpForhold(any(PensjonTpForholdRequest.class)))
                 .thenReturn(Flux.just(PensjonforvalterResponse.builder()
                         .status(List.of(
                                 new ResponseEnvironment("TEST1", PensjonforvalterResponse.Response.builder()
@@ -382,7 +379,7 @@ class PensjonforvalterClientTest {
                                         .build())))
                         .build()));
 
-        when(pensjonforvalterConsumer.lagreTpYtelse(any(PensjonTpYtelseRequest.class), eq(accessToken)))
+        when(pensjonforvalterConsumer.lagreTpYtelse(any(PensjonTpYtelseRequest.class)))
                 .thenReturn(Flux.just(PensjonforvalterResponse.builder()
                         .status(List.of(
                                 new ResponseEnvironment("TEST1", PensjonforvalterResponse.Response.builder()
@@ -405,6 +402,7 @@ class PensjonforvalterClientTest {
         when(errorStatusDecoder.getErrorText(HttpStatus.INTERNAL_SERVER_ERROR, "ytelse2 feil on TEST2"))
                 .thenReturn("Feil= ytelse2 feil on TEST2");
         when(pdlDataConsumer.getPersoner(anyList())).thenReturn(Flux.empty());
+        when(pensjonforvalterConsumer.hentSamboer(anyString(), anyString())).thenReturn(Flux.empty());
 
         StepVerifier.create(pensjonforvalterClient.gjenopprett(bestilling, dollyPerson, progress, false)
                         .map(ClientFuture::get))
@@ -439,7 +437,7 @@ class PensjonforvalterClientTest {
 
         when(pensjonforvalterConsumer.getMiljoer()).thenReturn(Mono.just(Set.of("TEST1", "TEST2")));
 
-        when(pensjonforvalterConsumer.opprettPerson(any(PensjonPersonRequest.class), anySet(), any(AccessToken.class)))
+        when(pensjonforvalterConsumer.opprettPerson(any(PensjonPersonRequest.class), anySet()))
                 .thenReturn(Flux.just(PensjonforvalterResponse.builder()
                         .status(List.of(ResponseEnvironment.builder()
                                         .miljo("TEST1")
@@ -459,7 +457,7 @@ class PensjonforvalterClientTest {
                                         .build()))
                         .build()));
 
-        when(pensjonforvalterConsumer.lagreTpForhold(any(PensjonTpForholdRequest.class), eq(accessToken)))
+        when(pensjonforvalterConsumer.lagreTpForhold(any(PensjonTpForholdRequest.class)))
                 .thenReturn(Flux.just(PensjonforvalterResponse.builder()
                         .status(List.of(
                                 new ResponseEnvironment("TEST1", PensjonforvalterResponse.Response.builder()
@@ -471,7 +469,7 @@ class PensjonforvalterClientTest {
                         ))
                         .build()));
 
-        when(pensjonforvalterConsumer.lagreTpYtelse(any(PensjonTpYtelseRequest.class), eq(accessToken)))
+        when(pensjonforvalterConsumer.lagreTpYtelse(any(PensjonTpYtelseRequest.class)))
                 .thenReturn(Flux.just(PensjonforvalterResponse.builder()
                         .status(List.of(
                                 new ResponseEnvironment("TEST1", PensjonforvalterResponse.Response.builder()
@@ -494,6 +492,7 @@ class PensjonforvalterClientTest {
         when(errorStatusDecoder.getErrorText(eq(HttpStatus.INTERNAL_SERVER_ERROR), anyString()))
                 .thenReturn("Feil= Klarte ikke å få TP-ytelse respons for 12345 i PESYS (pensjon)");
         when(pdlDataConsumer.getPersoner(anyList())).thenReturn(Flux.empty());
+        when(pensjonforvalterConsumer.hentSamboer(anyString(), anyString())).thenReturn(Flux.empty());
 
         StepVerifier.create(pensjonforvalterClient.gjenopprett(bestilling, dollyPerson, progress, false)
                         .map(ClientFuture::get))

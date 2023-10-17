@@ -3,6 +3,7 @@ import FagsystemStatus from './fagsystemStatus/FagsystemStatus'
 import ApiFeilmelding from '@/components/ui/apiFeilmelding/ApiFeilmelding'
 import antallIdenterOpprettet from '@/components/bestilling/utils/antallIdenterOpprettet'
 import * as _ from 'lodash-es'
+import React from 'react'
 
 export type Miljostatus = {
 	bestilling: {
@@ -92,20 +93,27 @@ const mergeIdentiskeStatusmeldinger = (statuser: Status[]) => {
 		?.map((status) => ({
 			melding: status.melding,
 			navn: status.navn,
+			identer: status.identer,
 		}))
 		?.filter(
-			(value, index, self) => index === self?.findIndex((status) => _.isEqual(status, value))
+			(value, index, self) => index === self?.findIndex((status) => _.isEqual(status, value)),
 		)
 
-	return [...unikeStatusMeldingerPerSystem]?.map((statusMelding) =>
-		statuser
-			?.filter(
-				(status) => status.melding === statusMelding.melding && status.navn === statusMelding.navn
-			)
-			?.reduce((previousValue, currentValue) => ({
-				...previousValue,
-				miljo: `${previousValue.miljo}, ${currentValue.miljo}`,
-			}))
+	return [...unikeStatusMeldingerPerSystem]?.map(
+		(statusMelding) =>
+			statuser
+				?.filter((status) => {
+					const identerErIdentiske = _.isEqual(status.identer, statusMelding.identer)
+					return (
+						status.melding === statusMelding.melding &&
+						status.navn === statusMelding.navn &&
+						identerErIdentiske
+					)
+				})
+				?.reduce((previousValue, currentValue) => ({
+					...previousValue,
+					miljo: `${previousValue.miljo}, ${currentValue.miljo}`,
+				})),
 	)
 }
 

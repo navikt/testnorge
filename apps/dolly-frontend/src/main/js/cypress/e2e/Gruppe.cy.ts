@@ -53,6 +53,7 @@ describe('Navigering, Opprett gruppe og start bestilling med alle mulige tilvalg
 
 		cy.dollyGet(CypressSelector.BUTTON_START_BESTILLING).click()
 		cy.dollyGet(CypressSelector.BUTTON_VELG_ALLE).each((btn) => cy.wrap(btn).click())
+		cy.dollyGet(CypressSelector.BUTTON_VELG_MILJOE_AVHENGIG).each((btn) => cy.wrap(btn).click())
 
 		cy.dollyGet(CypressSelector.BUTTON_VIDERE).click()
 		cy.wait(500)

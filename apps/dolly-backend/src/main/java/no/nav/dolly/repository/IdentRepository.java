@@ -37,13 +37,13 @@ public interface IdentRepository extends JpaRepository<Testident, Long> {
     @Query(value = "update Testident ti set ti.ident = :newIdent where ti.ident = :oldIdent")
     int swapIdent(@Param(value = "oldIdent") String oldIdent, @Param(value = "newIdent") String newIdent);
 
-    @Query(value = "select bp.ident as ident, b.id as bestillingid, " +
+    @Query(value = "select bp.ident as ident, b.id as bestillingId, " +
             "b.bestKriterier as bestkriterier, b.miljoer as miljoer from Bestilling b " +
             "join BestillingProgress bp on bp.bestilling.id = b.id " +
             "and b.gruppe = :gruppe ")
     List<GruppeBestillingIdent> getBestillingerFromGruppe(@Param(value = "gruppe") Testgruppe testgruppe);
 
-    @Query(value = "select bp.ident as ident, b.id as bestillingid, " +
+    @Query(value = "select bp.ident as ident, b.id as bestillingId, " +
             "b.bestKriterier as bestkriterier, b.miljoer as miljoer from Bestilling b " +
             "join BestillingProgress bp on bp.bestilling.id = b.id " +
             "and bp.ident = :ident")
@@ -68,7 +68,7 @@ public interface IdentRepository extends JpaRepository<Testident, Long> {
 
         String getIdent();
 
-        Long getBestillingid();
+        Long getBestillingId();
 
         String getBestkriterier();
 

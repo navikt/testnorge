@@ -11,11 +11,28 @@ import { REGEX_BACKEND_GRUPPER, useMatchMutate } from '@/utils/hooks/useMutate'
 import { Bestillingsstatus } from '@/utils/hooks/useOrganisasjoner'
 import { BestillingStatus } from '@/components/bestilling/statusListe/BestillingProgresjon/BestillingStatus'
 import { CypressSelector } from '../../../../../cypress/mocks/Selectors'
+import ConfettiExplosion from 'react-confetti-explosion'
+import React from 'react'
+import styled from 'styled-components'
+
+const StyledConfettiExplosion = styled(ConfettiExplosion)`
+	align-items: center;
+	align-content: center;
+	align-self: center;
+	text-align: center;
+`
 
 type ResultatProps = {
 	bestilling: Bestillingsstatus
 	lukkBestilling: Function
 	erOrganisasjon: boolean
+}
+
+const bestillingHarFeil = (bestilling: Bestillingsstatus) => {
+	const statuser = bestilling?.status?.map(
+		(fagsystem) => fagsystem.statuser?.some((status) => status?.melding !== 'OK'),
+	)
+	return statuser?.some((value) => value)
 }
 
 export default function BestillingResultat({
@@ -55,10 +72,24 @@ export default function BestillingResultat({
 					label="Hvordan var din opplevelse med bruk av Dolly?"
 					feedbackFor="Bruk av Dolly etter bestilling"
 				/>
+				{bestilling.ferdig && !bestillingHarFeil(bestilling) && (
+					<div style={{ display: 'flex', flexDirection: 'column' }}>
+						<StyledConfettiExplosion particleCount={70} force={0.3} duration={2800} />
+					</div>
+				)}
 				<div className="flexbox--all-center">
 					<BestillingSammendragModal bestilling={bestilling} />
 					{harIdenterOpprettet && (
-						<Button onClick={openGjenopprettModal} kind="synchronize">
+						<Button
+							disabled={bestilling?.opprettetFraId}
+							title={
+								bestilling?.opprettetFraId
+									? 'Kan ikke gjenopprette gjenoppretting av bestilling'
+									: 'Gjenopprett'
+							}
+							onClick={openGjenopprettModal}
+							kind="synchronize"
+						>
 							GJENOPPRETT
 						</Button>
 					)}

@@ -21,6 +21,7 @@ import static no.nav.dolly.domain.resultset.arenaforvalter.ArenaKvalifiseringsgr
 import static no.nav.dolly.domain.resultset.arenaforvalter.ArenaKvalifiseringsgruppe.VARIG;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -57,7 +58,7 @@ public class ArenaMappingStrategyTest {
                 .arenaBrukertype(UTEN_SERVICEBEHOV)
                 .build(), no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyBruker.class);
 
-        assertThat(arenaNyBruker.getUtenServicebehov().getStansDato(), is(nullValue()));
+        assertThat(arenaNyBruker.getUtenServicebehov().getStansDato(), is(notNullValue()));
         assertThat(arenaNyBruker.getKvalifiseringsgruppe(), is(equalTo(IKVAL)));
     }
 
@@ -75,7 +76,7 @@ public class ArenaMappingStrategyTest {
     }
 
     @Test
-    public void arenaBrukerMedAaap() {
+    public void arenaBrukerMedAap() {
 
         ArenaNyBruker arenaNyBruker = mapperFacade.map(Arenadata.builder()
                 .arenaBrukertype(MED_SERVICEBEHOV)
@@ -91,9 +92,8 @@ public class ArenaMappingStrategyTest {
 
         assertThat(arenaNyBruker.getUtenServicebehov(), is(nullValue()));
         assertThat(arenaNyBruker.getKvalifiseringsgruppe(), is(equalTo(VARIG)));
-        assertThat(arenaNyBruker.getAap115().get(0).getFraDato(), is(equalTo(OLD_TIMES.toLocalDate())));
-        assertThat(arenaNyBruker.getAap().get(0).getFraDato(), is(equalTo(PAST_TIME.toLocalDate())));
-        assertThat(arenaNyBruker.getAap().get(0).getTilDato(), is(equalTo(TIME_NOW.toLocalDate())));
+        assertThat(arenaNyBruker.getAap115(), is(nullValue()));
+        assertThat(arenaNyBruker.getAap(), is(nullValue()));
         assertThat(arenaNyBruker.getAktiveringsDato(), is(equalTo(OLD_TIMES.toLocalDate())));
     }
 }
