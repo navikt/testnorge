@@ -97,6 +97,7 @@ public class DollyBestillingService {
             bestKriterier.setNavSyntetiskIdent(bestilling.getNavSyntetiskIdent());
             bestKriterier.setEnvironments(getEnvironments(bestilling.getMiljoer()));
             bestKriterier.setBeskrivelse(bestilling.getBeskrivelse());
+
             return bestKriterier;
 
         } catch (JsonProcessingException e) {

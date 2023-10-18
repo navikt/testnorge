@@ -1,8 +1,7 @@
-package no.nav.dolly.domain.resultset;
+package no.nav.dolly.elastic;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,54 +26,76 @@ import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding;
 import no.nav.dolly.domain.resultset.tpsmessagingservice.RsTpsMessaging;
 import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
 import no.nav.testnav.libs.dto.arbeidsplassencv.v1.ArbeidsplassenCVDTO;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.domain.Persistable;
+import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 
+@Document(indexName = "bestilling")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class RsDollyBestilling {
-
-    private static final Set<String> EXCLUDE_METHODS = Set.of("getClass", "getMalBestillingNavn", "getEnvironments", "getPdldata", "getId");
+public class ElasticBestilling implements Persistable<String> {
 
     @JsonIgnore
-    private long id; // Ved gjenopprett vil denne ID kan ha verdi fra bestillingen som gjenopprettes
+    @Id
+    private String id;
 
-    @Schema(description = "Sett av miljøer bestillingen skal deployes til")
+    @Field
     private Set<String> environments;
-
-    @Schema(description = "Navn på malbestillling")
+    @Field
     private String malBestillingNavn;
+    @Field
     private PdlPersondata pdldata;
+    @Field
     private RsDigitalKontaktdata krrstub;
+    @Field
     private RsMedl medl;
+    @Field
     private List<RsInstdata> instdata;
+    @Field
     private List<RsAareg> aareg;
+    @Field
     private List<RsLignetInntekt> sigrunstub;
+    @Field
     private List<RsPensjonsgivendeForFolketrygden> sigrunstubPensjonsgivende;
+    @Field
     private InntektMultiplierWrapper inntektstub;
+    @Field
     private Arenadata arenaforvalter;
+    @Field
     private RsUdiPerson udistub;
+    @Field
     private PensjonData pensjonforvalter;
+    @Field
     private RsInntektsmelding inntektsmelding;
+    @Field
     private RsBregdata brregstub;
+    @Field
     private RsDokarkiv dokarkiv;
+    @Field
     private RsHistark histark;
+    @Field
     private RsSykemelding sykemelding;
+    @Field
     private RsTpsMessaging tpsMessaging;
+    @Field
     private BankkontoData bankkonto;
+    @Field
     private RsSkjerming skjerming;
+    @Field
     private ArbeidsplassenCVDTO arbeidsplassenCV;
+    @Field
+    private List<String> identer;
 
     public List<RsAareg> getAareg() {
         if (isNull(aareg)) {
@@ -111,19 +132,17 @@ public class RsDollyBestilling {
         return instdata;
     }
 
-    @JsonIgnore
-    public boolean isNonEmpty() {
+    public List<String> getIdenter() {
+        if (isNull(identer)) {
+            identer = new ArrayList<>();
+        }
+        return identer;
+    }
 
-        return Arrays.stream(RsDollyBestilling.class.getMethods())
-                .filter(method -> "get".equals(method.getName().substring(0, 3)))
-                .filter(method -> !EXCLUDE_METHODS.contains(method.getName()))
-                .anyMatch(method -> {
-                    try {
-                        var object = method.invoke(this);
-                        return nonNull(object) && (!(object instanceof List) || !((List<?>) object).isEmpty());
-                    } catch (IllegalAccessException | InvocationTargetException e) {
-                        return true;
-                    }
-                });
+    @Override
+    @JsonIgnore
+    public boolean isNew() {
+
+        return true;
     }
 }

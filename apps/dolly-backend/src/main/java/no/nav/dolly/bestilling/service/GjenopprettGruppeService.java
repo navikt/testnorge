@@ -10,7 +10,6 @@ import no.nav.dolly.bestilling.personservice.PersonServiceClient;
 import no.nav.dolly.bestilling.tpsmessagingservice.service.TpsPersonService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.repository.IdentRepository.GruppeBestillingIdent;
@@ -105,7 +104,7 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                                                                             .flatMapSequential(cobestilling -> createBestilling(bestilling, cobestilling)
                                                                                     .filter(bestillingRequest -> bestillingRequest.getId() ==
                                                                                             isFirstBestilling(coBestillinger, cobestilling.getIdent()) ||
-                                                                                            RsDollyBestilling.isNonEmpty(bestillingRequest))
+                                                                                            bestillingRequest.isNonEmpty())
                                                                                     .doOnNext(request -> log.info("Startet gjenopprett bestilling {} for ident: {}",
                                                                                             request.getId(), testident.getIdent()))
                                                                                     .flatMapSequential(bestillingRequest -> Flux.concat(

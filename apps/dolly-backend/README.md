@@ -40,3 +40,9 @@ DOCKER_HOST=unix://${HOME}/.colima/default/docker.sock
 TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE=/var/run/docker.sock
 TESTCONTAINERS_RYUK_DISABLED=true
 ```
+
+For å kjøre lokalt med elastic search:
+
+```
+docker run -d --name es762 -p 9200:9200 -e "discovery.type=single-node" elasticsearch:7.6.2 
+```

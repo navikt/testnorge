@@ -71,6 +71,9 @@ spec:
       enabled: true
       tenant: nav.no
   image: {{image}}
+  openSearch:
+    instance: dolly-bestilling-test
+    access: admin
   env:
     - name: SPRING_PROFILES_ACTIVE
       value: dev
