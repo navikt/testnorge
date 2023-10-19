@@ -2,7 +2,7 @@ plugins {
     id 'java'
     id "org.sonarqube" version "4.0.0.2929"
     id 'org.springframework.boot' version "3.1.4"
-    id 'io.spring.dependency-management' version "1.1.3"
+    id 'io.spring.dependency-management' version "1.1.0"
     id "jacoco"
 }
 
@@ -48,11 +48,7 @@ repositories {
     mavenLocal()
 }
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
-    }
-}
+java.sourceCompatibility = JavaVersion.VERSION_17
 
 dependencies {
 
@@ -67,7 +63,7 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-gateway'
     
 
-    implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.3'
     implementation 'org.hibernate.validator:hibernate-validator'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
