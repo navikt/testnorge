@@ -3,7 +3,7 @@ package no.nav.testnav.proxies.synthdatameldekortproxy;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder;
 import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
@@ -11,7 +11,7 @@ import org.springframework.test.context.ActiveProfiles;
 class ApplicationContextTest {
 
     @MockBean
-    public JwtDecoder jwtDecoder;
+    public ReactiveJwtDecoder reactiveJwtDecoder;
 
     @Test
     @SuppressWarnings("java:S2699")

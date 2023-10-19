@@ -3,7 +3,7 @@ plugins {
     id 'java'
     id "uk.co.boothen.gradle.wsimport" version "0.18"
     id 'org.springframework.boot' version "3.1.4"
-    id 'io.spring.dependency-management' version "1.1.0"
+    id 'io.spring.dependency-management' version "1.1.3"
     id "jacoco"
 }
 
@@ -54,7 +54,11 @@ bootJar {
     archiveFileName = "app.jar"
 }
 
-java.sourceCompatibility = JavaVersion.VERSION_17
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
 
 repositories {
     mavenCentral()
@@ -70,7 +74,7 @@ repositories {
 }
 dependencies {
 
-    implementation platform('org.testcontainers:testcontainers-bom:1.17.6')
+    implementation platform('org.testcontainers:testcontainers-bom:1.19.1')
 
     implementation 'no.nav.testnav.libs:servlet-core'
     implementation 'no.nav.testnav.libs:servlet-security'
@@ -96,8 +100,8 @@ dependencies {
 
     implementation 'ma.glasnost.orika:orika-core:1.5.4'
 
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
-    implementation 'net.logstash.logback:logstash-logback-encoder:7.3'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
     implementation 'org.hibernate.validator:hibernate-validator'
 
     testImplementation 'com.h2database:h2'

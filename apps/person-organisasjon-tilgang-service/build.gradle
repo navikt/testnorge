@@ -2,7 +2,7 @@ plugins {
     id 'java'
     id "org.sonarqube" version "4.0.0.2929"
     id 'org.springframework.boot' version "3.1.4"
-    id 'io.spring.dependency-management' version "1.1.0"
+    id 'io.spring.dependency-management' version "1.1.3"
     id "jacoco"
 }
 
@@ -43,7 +43,11 @@ sonarqube {
     }
 }
 
-java.sourceCompatibility = JavaVersion.VERSION_17
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
 
 bootJar {
     archiveFileName = "app.jar"
@@ -73,8 +77,8 @@ dependencies {
 
     implementation 'io.micrometer:micrometer-registry-prometheus'
 
-    implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.0.2'
-    implementation 'net.logstash.logback:logstash-logback-encoder:7.3'
+    implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.0.4'
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
 
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.14.2'
 
