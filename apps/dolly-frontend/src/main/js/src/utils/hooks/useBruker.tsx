@@ -3,6 +3,7 @@ import useSWRImmutable from 'swr/immutable'
 import { fetcher, imageFetcher } from '@/api'
 import { runningCypressE2E } from '@/service/services/Request'
 import { navigateToLogin } from '@/components/utlogging/navigateToLogin'
+import { ERROR_ACTIVE_USER } from '../../ducks/errors/ErrorMessages'
 
 const getBrukereUrl = `/dolly-backend/api/v1/bruker`
 const getCurrentBrukerUrl = `/dolly-backend/api/v1/bruker/current`
@@ -49,7 +50,7 @@ export const useCurrentBruker = () => {
 	const { data, isLoading, error } = useSWR<BrukerType, Error>(getCurrentBrukerUrl, fetcher)
 
 	if (error && !runningCypressE2E()) {
-		console.error('Klarte ikke å hente aktiv bruker, navigerer til login..')
+		console.error(ERROR_ACTIVE_USER)
 		navigateToLogin()
 	}
 
