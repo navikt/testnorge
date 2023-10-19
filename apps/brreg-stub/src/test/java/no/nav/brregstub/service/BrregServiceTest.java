@@ -8,7 +8,7 @@ import no.nav.brregstub.database.domene.HentRolle;
 import no.nav.brregstub.database.domene.Rolleoversikt;
 import no.nav.brregstub.database.repository.HentRolleRepository;
 import no.nav.brregstub.database.repository.RolleoversiktRepository;
-import no.nav.brregstub.tjenestekontrakter.hentroller.Grunndata;
+import no.nav.brregstub.generated.Grunndata;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
