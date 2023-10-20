@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
+
+import static no.nav.brregstub.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
 
 @Entity
 @Getter
@@ -12,7 +15,12 @@ import lombok.Setter;
 public class Rolleoversikt {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(generator = "rolleOversiktIdGenerator")
+    @GenericGenerator(name = "rolleOversiktIdGenerator", strategy = SEQUENCE_STYLE_GENERATOR, parameters = {
+            @org.hibernate.annotations.Parameter(name = "sequence_name", value = "ROLLEOVERSIKT_SEQ"),
+            @org.hibernate.annotations.Parameter(name = "initial_value", value = "1"),
+            @org.hibernate.annotations.Parameter(name = "increment_size", value = "1")
+    })
     private Long id;
 
     @NotNull(message = "fnr must not be null")
