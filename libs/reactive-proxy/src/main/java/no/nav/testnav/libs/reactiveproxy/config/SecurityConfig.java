@@ -6,6 +6,7 @@ import no.nav.testnav.libs.reactivesecurity.manager.JwtReactiveAuthenticationMan
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
@@ -35,7 +36,6 @@ public class SecurityConfig {
                         "/error",
                         "/swagger-ui.html"
                 ).permitAll().anyExchange().authenticated())
-                .oauth2ResourceServer(oauth2RSConfig -> oauth2RSConfig.jwt(jwtConfigurer -> {
-                })).build();
+                .oauth2ResourceServer(oauth2RSConfig -> oauth2RSConfig.jwt(Customizer.withDefaults())).build();
     }
 }
