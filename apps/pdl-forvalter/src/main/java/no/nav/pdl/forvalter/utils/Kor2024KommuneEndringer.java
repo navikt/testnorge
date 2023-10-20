@@ -4,13 +4,21 @@ import lombok.experimental.UtilityClass;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.MatrikkeladresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 
+import java.security.SecureRandom;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Random;
+import java.util.Set;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @UtilityClass
 public class Kor2024KommuneEndringer {
+
+    private static String HARAM = "1580";
+    private static String AALESUND = "1508";
+    private static Random postnummer = new SecureRandom();
 
     private static Map<String, String> KOMMUNER = new HashMap<>();
 
@@ -130,6 +138,100 @@ public class Kor2024KommuneEndringer {
         KOMMUNER.put("5636", "5442");  // Nesseby
         KOMMUNER.put("5632", "5443");  // Båtsfjord
         KOMMUNER.put("5605", "5444");  // Sør-Varanger
+    }
+
+    private static Set<String> POSTNUMMER_HARAM = new HashSet<>();
+
+    static {
+
+        POSTNUMMER_HARAM.add("6264"); // TENNFJORD
+        POSTNUMMER_HARAM.add("6265"); // VATNE
+        POSTNUMMER_HARAM.add("6270"); // BRATTVÅG
+        POSTNUMMER_HARAM.add("6272"); // HILDRE
+        POSTNUMMER_HARAM.add("6280"); // SØVIK
+        POSTNUMMER_HARAM.add("6281"); // SØVIK
+        POSTNUMMER_HARAM.add("6282"); // BRATTVÅG
+        POSTNUMMER_HARAM.add("6283"); // VATNE
+        POSTNUMMER_HARAM.add("6285"); // STOREKALVØY
+        POSTNUMMER_HARAM.add("6290"); // HARAMSØY
+        POSTNUMMER_HARAM.add("6291"); // HARAMSØY
+        POSTNUMMER_HARAM.add("6292"); // KJERSTAD
+        POSTNUMMER_HARAM.add("6293"); // LONGVA
+        POSTNUMMER_HARAM.add("6294"); // FJØRTOF
+    }
+
+    private static Set<String> POSTNUMMER_AALESUND = new HashSet<>();
+
+    static {
+        POSTNUMMER_AALESUND.add("6001");  // ÅLESUND
+        POSTNUMMER_AALESUND.add("6002");  // ÅLESUND
+        POSTNUMMER_AALESUND.add("6003");  // ÅLESUND
+        POSTNUMMER_AALESUND.add("6004");  // ÅLESUND
+        POSTNUMMER_AALESUND.add("6005");  // ÅLESUND
+        POSTNUMMER_AALESUND.add("6006");  // ÅLESUND
+        POSTNUMMER_AALESUND.add("6007");  // ÅLESUND
+        POSTNUMMER_AALESUND.add("6008");  // ÅLESUND
+        POSTNUMMER_AALESUND.add("6009");  // ÅLESUND
+        POSTNUMMER_AALESUND.add("6010");  // ÅLESUND
+        POSTNUMMER_AALESUND.add("6011");  // ÅLESUND
+        POSTNUMMER_AALESUND.add("6012");  // ÅLESUND
+        POSTNUMMER_AALESUND.add("6013");  // ÅLESUND
+        POSTNUMMER_AALESUND.add("6014");  // ÅLESUND
+        POSTNUMMER_AALESUND.add("6015");  // ÅLESUND
+        POSTNUMMER_AALESUND.add("6016");  // ÅLESUND
+        POSTNUMMER_AALESUND.add("6017");  // ÅLESUND
+        POSTNUMMER_AALESUND.add("6018");  // ÅLESUND
+        POSTNUMMER_AALESUND.add("6019");  // ÅLESUND
+        POSTNUMMER_AALESUND.add("6020");  // ÅLESUND
+        POSTNUMMER_AALESUND.add("6021");  // ÅLESUND
+        POSTNUMMER_AALESUND.add("6022");  // ÅLESUND
+        POSTNUMMER_AALESUND.add("6023");  // ÅLESUND
+        POSTNUMMER_AALESUND.add("6024");  // ÅLESUND
+        POSTNUMMER_AALESUND.add("6025");  // ÅLESUND
+        POSTNUMMER_AALESUND.add("6026");  // ÅLESUND
+        POSTNUMMER_AALESUND.add("6028");  // ÅLESUND
+        POSTNUMMER_AALESUND.add("6029");  // ÅLESUND
+        POSTNUMMER_AALESUND.add("6043");  // ÅLESUND
+        POSTNUMMER_AALESUND.add("6044");  // ÅLESUND
+        POSTNUMMER_AALESUND.add("6045");  // ÅLESUND
+        POSTNUMMER_AALESUND.add("6046");  // ÅLESUND
+        POSTNUMMER_AALESUND.add("6047");  // ÅLESUND
+        POSTNUMMER_AALESUND.add("6048");  // ÅLESUND
+        POSTNUMMER_AALESUND.add("6057");  // ELLINGSØY
+        POSTNUMMER_AALESUND.add("6240");  // ØRSKOG
+        POSTNUMMER_AALESUND.add("6249");  // ØRSKOG
+        POSTNUMMER_AALESUND.add("6260");  // SKODJE
+        POSTNUMMER_AALESUND.add("6263");  // SKODJE
+        POSTNUMMER_AALESUND.add("6286");  // ORTEN
+        POSTNUMMER_AALESUND.add("6287");  // HARØY
+        POSTNUMMER_AALESUND.add("6295");  // MYKLEBOST
+        POSTNUMMER_AALESUND.add("6296");  // HARØY
+        POSTNUMMER_AALESUND.add("6297");  // SANDØY
+        POSTNUMMER_AALESUND.add("6298");  // ONA
+        POSTNUMMER_AALESUND.add("6424");  // SANDØY
+        POSTNUMMER_AALESUND.add("6426");  // ORTEN
+        POSTNUMMER_AALESUND.add("6427");  // HARØY
+        POSTNUMMER_AALESUND.add("6428");  // MYKLEBOST
+    }
+
+    private String getRandomPostnummer(Set<String> kommune) {
+
+        return kommune.stream()
+                .skip(postnummer.nextInt(kommune.size()))
+                .findFirst()
+                .orElse(null);
+    }
+    public String getRandomPostnummer(String kommune) {
+
+        if (HARAM.equals(kommune)) {
+            return getRandomPostnummer(POSTNUMMER_HARAM);
+
+        } else if (AALESUND.equals(kommune)) {
+            return getRandomPostnummer(POSTNUMMER_AALESUND);
+
+        } else {
+            return null;
+        }
     }
 
     public String getKommuneNummer(String kommuneNummer) {
