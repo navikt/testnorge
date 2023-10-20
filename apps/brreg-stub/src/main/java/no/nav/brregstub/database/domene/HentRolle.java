@@ -1,12 +1,14 @@
 package no.nav.brregstub.database.domene;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.GenericGenerator;
-
-import static no.nav.brregstub.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
 
 @Entity
 @Getter
@@ -15,12 +17,13 @@ import static no.nav.brregstub.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
 public class HentRolle {
 
     @Id
-    @GeneratedValue(generator = "hentRolleIdGenerator")
-    @GenericGenerator(name = "hentRolleIdGenerator", strategy = SEQUENCE_STYLE_GENERATOR, parameters = {
-            @org.hibernate.annotations.Parameter(name = "sequence_name", value = "HENTROLLE_SEQ"),
-            @org.hibernate.annotations.Parameter(name = "initial_value", value = "1"),
-            @org.hibernate.annotations.Parameter(name = "increment_size", value = "1")
-    })
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(generator = "hentRolleIdGenerator")
+//    @GenericGenerator(name = "hentRolleIdGenerator", strategy = SEQUENCE_STYLE_GENERATOR, parameters = {
+//            @org.hibernate.annotations.Parameter(name = "sequence_name", value = "HENTROLLE_SEQ"),
+//            @org.hibernate.annotations.Parameter(name = "initial_value", value = "1"),
+//            @org.hibernate.annotations.Parameter(name = "increment_size", value = "1")
+//    })
     private Long id;
 
     @NotNull(message = "orgnr must not be null")
