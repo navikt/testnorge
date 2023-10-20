@@ -24,7 +24,7 @@ spring:
 
 consumers:
   saf:
-    url: http://saf-TEMP.teamdokumenthandtering.svc.nais.local
+    url: http://saf-MILJOE.teamdokumenthandtering.svc.nais.local
     cluster: dev-fss
-    name: saf-TEMP
+    name: saf-MILJOE
     namespace: teamdokumenthandtering

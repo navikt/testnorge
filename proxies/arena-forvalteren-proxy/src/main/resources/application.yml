@@ -25,7 +25,7 @@ spring:
 app:
   arena:
     services:
-      name: arena-services-TEMP
+      name: arena-services-MILJOE
       namespace: teamarenanais
-      url: http://arena-ords-TEMP.teamarenanais.svc.nais.local
+      url: http://arena-ords-MILJOE.teamarenanais.svc.nais.local
       cluster: dev-fss

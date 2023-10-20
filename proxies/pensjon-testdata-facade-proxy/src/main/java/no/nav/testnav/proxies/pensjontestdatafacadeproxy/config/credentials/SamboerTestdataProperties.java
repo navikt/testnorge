@@ -20,8 +20,8 @@ public class SamboerTestdataProperties extends ServerProperties {
     public SamboerTestdataProperties forEnvironment(String env) {
 
         var copy = copyOf(this);
-        copy.setUrl(copy.getUrl().replace("TEMP", env + ("q1".equals(env) ? ".very" : "")));
-        copy.setName(copy.getName().replace("TEMP", env));
+        copy.setUrl(copy.getUrl().replace("MILJOE", env + ("q1".equals(env) ? ".very" : "")));
+        copy.setName(copy.getName().replace("MILJOE", env));
         return copy;
     }
 }
