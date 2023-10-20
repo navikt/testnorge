@@ -20,8 +20,8 @@ public class SafProperties extends ServerProperties {
     public ServerProperties forEnvironment(String env) {
         var replacement = "q2".equals(env) ? "" : '-' + env;
         var copy = SafProperties.copyOf(this);
-        copy.setUrl(copy.getUrl().replace("-{env}", replacement));
-        copy.setName(copy.getName().replace("-{env}", replacement));
+        copy.setUrl(copy.getUrl().replace("-TEMP", replacement));
+        copy.setName(copy.getName().replace("-TEMP", replacement));
         return copy;
     }
 

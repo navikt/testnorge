@@ -24,7 +24,7 @@ spring:
 
 consumers:
   saf:
-    url: http://saf-{env}.teamdokumenthandtering.svc.nais.local
+    url: http://saf-TEMP.teamdokumenthandtering.svc.nais.local
     cluster: dev-fss
-    name: saf-{env}
+    name: saf-TEMP
     namespace: teamdokumenthandtering

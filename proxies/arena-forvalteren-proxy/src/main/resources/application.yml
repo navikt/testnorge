@@ -25,7 +25,7 @@ spring:
 app:
   arena:
     services:
-      name: arena-services-{env}
+      name: arena-services-TEMP
       namespace: teamarenanais
-      url: http://arena-ords-{env}.teamarenanais.svc.nais.local
+      url: http://arena-ords-TEMP.teamarenanais.svc.nais.local
       cluster: dev-fss
