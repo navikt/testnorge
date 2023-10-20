@@ -1,6 +1,8 @@
 package no.nav.testnav.libs.reactivesecurity.decoder;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.libs.reactivesecurity.properties.ResourceServerProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
 import org.springframework.security.oauth2.core.OAuth2Error;
@@ -16,8 +18,6 @@ import reactor.netty.transport.ProxyProvider;
 
 import java.net.URI;
 
-import no.nav.testnav.libs.reactivesecurity.properties.ResourceServerProperties;
-
 @Slf4j
 public class JwtDecoder {
 
@@ -27,6 +27,39 @@ public class JwtDecoder {
     public JwtDecoder(ResourceServerProperties resourceServerProperties, String proxyHost) {
         this.resourceServerProperties = resourceServerProperties;
         this.proxyWebClient = buildProxyWebClient(proxyHost);
+    }
+
+    @Bean
+    public ReactiveJwtDecoder jwtDecoder() {
+        NimbusReactiveJwtDecoder jwtDecoder = switch (resourceServerProperties.getType()) {
+            case TOKEN_X -> NimbusReactiveJwtDecoder.withJwkSetUri(resourceServerProperties.getJwkSetUri()).build();
+            case AZURE_AD ->
+                    NimbusReactiveJwtDecoder.withJwkSetUri(resourceServerProperties.getJwkSetUri()).webClient(proxyWebClient).build();
+        };
+
+        OAuth2TokenValidator<Jwt> audienceValidator = new AudienceValidator();
+        OAuth2TokenValidator<Jwt> withIssuer = JwtValidators.createDefaultWithIssuer(resourceServerProperties.getIssuerUri());
+        OAuth2TokenValidator<Jwt> withAudience = new DelegatingOAuth2TokenValidator<>(withIssuer, audienceValidator);
+
+        jwtDecoder.setJwtValidator(withAudience);
+        return jwtDecoder;
+    }
+
+    private WebClient buildProxyWebClient(String proxyHost) {
+        var builder = WebClient.builder();
+        if (proxyHost != null) {
+            log.info("Setter opp proxy host {} for jwt decoder.", proxyHost);
+            var uri = URI.create(proxyHost);
+            builder.clientConnector(new ReactorClientHttpConnector(
+                    HttpClient
+                            .create()
+                            .proxy(proxy -> proxy
+                                    .type(ProxyProvider.Proxy.HTTP)
+                                    .host(uri.getHost())
+                                    .port(uri.getPort()))
+            ));
+        }
+        return builder.build();
     }
 
     public class AudienceValidator implements OAuth2TokenValidator<Jwt> {
@@ -40,36 +73,5 @@ public class JwtDecoder {
                     ? OAuth2TokenValidatorResult.success()
                     : OAuth2TokenValidatorResult.failure(error);
         }
-    }
-
-    private WebClient buildProxyWebClient(String proxyHost) {
-        var builder = WebClient.builder();
-        if (proxyHost != null) {
-            log.info("Setter opp proxy host {} for jwt decoder.", proxyHost);
-            var uri = URI.create(proxyHost);
-            builder.clientConnector(new ReactorClientHttpConnector(
-                HttpClient
-                    .create()
-                    .proxy(proxy -> proxy
-                        .type(ProxyProvider.Proxy.HTTP)
-                        .host(uri.getHost())
-                        .port(uri.getPort()))
-            ));
-        }
-        return builder.build();
-    }
-
-    public ReactiveJwtDecoder jwtDecoder() {
-        NimbusReactiveJwtDecoder jwtDecoder = switch (resourceServerProperties.getType()) {
-            case TOKEN_X -> NimbusReactiveJwtDecoder.withJwkSetUri(resourceServerProperties.getJwkSetUri()).build();
-            case AZURE_AD -> NimbusReactiveJwtDecoder.withJwkSetUri(resourceServerProperties.getJwkSetUri()).webClient(proxyWebClient).build();
-        };
-
-        OAuth2TokenValidator<Jwt> audienceValidator = new AudienceValidator();
-        OAuth2TokenValidator<Jwt> withIssuer = JwtValidators.createDefaultWithIssuer(resourceServerProperties.getIssuerUri());
-        OAuth2TokenValidator<Jwt> withAudience = new DelegatingOAuth2TokenValidator<>(withIssuer, audienceValidator);
-
-        jwtDecoder.setJwtValidator(withAudience);
-        return jwtDecoder;
     }
 }
