@@ -16,7 +16,7 @@ jobs:
     with:
       cluster: "dev-fss"
       working-directory: "proxies/statisk-data-forvalter-proxy"
-      deploy-tag: "#deploy-statisk-data-forvalter-proxy"
+      deploy-tag: "#deploy-proxy"
     permissions:
       contents: read
       id-token: write

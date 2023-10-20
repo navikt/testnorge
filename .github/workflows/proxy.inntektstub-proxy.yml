@@ -14,7 +14,7 @@ jobs:
     with:
       cluster: "dev-fss"
       working-directory: "proxies/inntektstub-proxy"
-      deploy-tag: "#deploy-inntektstub-proxy"
+      deploy-tag: "#deploy-proxy"
     permissions:
       contents: read
       id-token: write

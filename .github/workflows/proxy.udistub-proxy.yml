@@ -16,7 +16,7 @@ jobs:
     with:
       cluster: "dev-fss"
       working-directory: "proxies/udistub-proxy"
-      deploy-tag: "#deploy-udistub-proxy"
+      deploy-tag: "#deploy-proxy"
     permissions:
       contents: read
       id-token: write
