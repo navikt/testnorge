@@ -2,7 +2,6 @@ package no.nav.testnav.libs.reactivesecurity.decoder;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.reactivesecurity.properties.ResourceServerProperties;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
 import org.springframework.security.oauth2.core.OAuth2Error;
@@ -29,7 +28,6 @@ public class JwtDecoder {
         this.proxyWebClient = buildProxyWebClient(proxyHost);
     }
 
-    @Bean
     public ReactiveJwtDecoder jwtDecoder() {
         NimbusReactiveJwtDecoder jwtDecoder = switch (resourceServerProperties.getType()) {
             case TOKEN_X -> NimbusReactiveJwtDecoder.withJwkSetUri(resourceServerProperties.getJwkSetUri()).build();

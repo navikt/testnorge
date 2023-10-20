@@ -31,8 +31,7 @@ public class SecurityConfig {
                         "/error",
                         "/swagger-ui.html"
                 ).permitAll().anyExchange().authenticated())
-                .oauth2ResourceServer(oauth2RSConfig -> oauth2RSConfig.jwt(jwtConfigurer -> {
-                }))
+                .oauth2ResourceServer(oauth2RSConfig -> oauth2RSConfig.jwt(jwtSpec -> jwtSpec.authenticationManager(jwtReactiveAuthenticationManager)))
                 .build();
     }
 }
