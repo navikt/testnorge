@@ -9,28 +9,25 @@ import no.nav.testnav.apps.oppsummeringsdokumentservice.domain.Oppsummeringsdoku
 import no.nav.testnav.apps.oppsummeringsdokumentservice.repository.OppsummeringsdokumentRepository;
 import no.nav.testnav.apps.oppsummeringsdokumentservice.repository.model.OppsummeringsdokumentModel;
 import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.Populasjon;
-import org.opensearch.client.RestHighLevelClient;
-import org.opensearch.data.client.orhlc.NativeSearchQueryBuilder;
-import org.opensearch.index.query.QueryBuilder;
-import org.opensearch.index.query.QueryBuilders;
-import org.opensearch.index.query.RangeQueryBuilder;
-import org.opensearch.search.sort.SortBuilders;
-import org.opensearch.search.sort.SortOrder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.UncategorizedElasticsearchException;
+import org.springframework.data.elasticsearch.client.elc.NativeQueryBuilder;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
+import org.springframework.data.elasticsearch.core.query.Criteria;
+import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static java.util.Objects.isNull;
 
 @Slf4j
 @Component
@@ -41,7 +38,6 @@ public class OppsummeringsdokumentAdapter {
     private final ObjectMapper objectMapper;
     private final OppsummeringsdokumentRepository repository;
     private final ElasticsearchOperations operations;
-    private final RestHighLevelClient client;
     private final AaregSyntConsumer aaregSyntConsumer;
 
     public void deleteAllBy(String miljo, Populasjon populasjon) {
@@ -74,30 +70,28 @@ public class OppsummeringsdokumentAdapter {
     }
 
     public List<Oppsummeringsdokument> getAllCurrentDocumentsBy(String miljo) {
-        return getAllCurrentDocumentsBy(new NativeSearchQueryBuilder()
+        return getAllCurrentDocumentsBy(new NativeQueryBuilder()
                 .withQuery(
-                        QueryBuilders.matchQuery(MILJO, miljo)
-                )
-        );
+                        new CriteriaQuery(new Criteria(MILJO).is(miljo)
+                        )
+                ));
     }
 
     public Page<Oppsummeringsdokument> getAllCurrentDocumentsBy(String miljo, Integer page) {
         var pageable = PageRequest.of(page, 1);
-        return getAllCurrentDocumentsBy(new NativeSearchQueryBuilder()
+        return getAllCurrentDocumentsBy(new NativeQueryBuilder()
                         .withQuery(
-                                QueryBuilders.matchQuery(MILJO, miljo)
+                                new CriteriaQuery(new Criteria(MILJO).is(miljo)
+                                )
                         ).withPageable(pageable),
                 pageable
         );
     }
 
     public List<Oppsummeringsdokument> getAllCurrentDocumentsBy(String miljo, String ident) {
-        var queryBuilders = new ArrayList<QueryBuilder>();
-        queryBuilders.add(QueryBuilders.matchQuery(MILJO, miljo));
-
-        queryBuilders.add(QueryBuilders.matchQuery("virksomheter.personer.ident", ident));
-
-        return getAllCurrentDocumentsBy(new NativeSearchQueryBuilder().withQuery(combinedOnANDOperator(queryBuilders)));
+        return getAllCurrentDocumentsBy(new NativeQueryBuilder()
+                .withQuery(new CriteriaQuery(new Criteria(MILJO).is(miljo).and("virksomheter.personer.ident").is(ident)))
+        );
     }
 
     public Page<Oppsummeringsdokument> getAllCurrentDocumentsBy(
@@ -109,19 +103,16 @@ public class OppsummeringsdokumentAdapter {
             Integer page
     ) {
         var pageable = PageRequest.of(page, 1);
-        var queryBuilders = new ArrayList<QueryBuilder>();
 
-        queryBuilders.add(QueryBuilders.matchQuery(MILJO, miljo));
-        getKalendermaanedBetween(fom, tom).ifPresent(queryBuilders::add);
-        Optional.ofNullable(ident).ifPresent(value -> queryBuilders.add(
-                QueryBuilders.matchQuery("virksomheter.personer.ident", value)
-        ));
-        Optional.ofNullable(typeArbeidsforhold).ifPresent(value -> queryBuilders.add(
-                QueryBuilders.matchQuery("virksomheter.personer.arbeidsforhold.typeArbeidsforhold", value)
-        ));
+        var criteria = new Criteria(MILJO).is(miljo);
+        criteria = isNull(fom) ? criteria : criteria.and("kalendermaaned").greaterThanEqual(fom.withDayOfMonth(1));
+        criteria = isNull(tom) ? criteria : criteria.and("kalendermaaned").lessThanEqual(tom.withDayOfMonth(tom.lengthOfMonth()));
+        criteria = isNull(ident) ? criteria : criteria.and("virksomheter.personer.ident").is(ident);
+        criteria = isNull(typeArbeidsforhold) ? criteria : criteria.and("virksomheter.personer.arbeidsforhold.typeArbeidsforhold").is(typeArbeidsforhold);
+
         return getAllCurrentDocumentsBy(
-                new NativeSearchQueryBuilder()
-                        .withQuery(combinedOnANDOperator(queryBuilders))
+                new NativeQueryBuilder()
+                        .withQuery(new CriteriaQuery(criteria))
                         .withPageable(pageable),
                 pageable
         );
@@ -145,9 +136,9 @@ public class OppsummeringsdokumentAdapter {
         return list.stream().findFirst().orElse(null);
     }
 
-    private Page<Oppsummeringsdokument> getAllCurrentDocumentsBy(NativeSearchQueryBuilder builder, Pageable pageable) {
+    private Page<Oppsummeringsdokument> getAllCurrentDocumentsBy(NativeQueryBuilder builder, Pageable pageable) {
 
-//        builder.withSorts(SortBuilders.fieldSort("lastModified").order(SortOrder.ASC));
+        builder.withSort(Sort.by("lastModified").ascending());
         var searchHist = operations.search(
                 builder.build(),
                 OppsummeringsdokumentModel.class
@@ -162,8 +153,8 @@ public class OppsummeringsdokumentAdapter {
         );
     }
 
-    private List<Oppsummeringsdokument> getAllCurrentDocumentsBy(NativeSearchQueryBuilder builder) {
-        builder.withSorts(SortBuilders.fieldSort("lastModified").order(SortOrder.ASC));
+    private List<Oppsummeringsdokument> getAllCurrentDocumentsBy(NativeQueryBuilder builder) {
+        builder.withSort(Sort.by("lastModified").ascending());
         var list = operations.search(
                         builder.build(),
                         OppsummeringsdokumentModel.class
@@ -173,40 +164,14 @@ public class OppsummeringsdokumentAdapter {
     }
 
     private List<Oppsummeringsdokument> getAllCurrentDocumentsBy(String miljo, String orgnummer, LocalDate fom, LocalDate tom) {
-        var queryBuilders = new ArrayList<QueryBuilder>();
 
-        queryBuilders.add(QueryBuilders.matchQuery(MILJO, miljo));
-        queryBuilders.add(QueryBuilders.matchQuery("opplysningspliktigOrganisajonsnummer", orgnummer));
+        var criteria = new Criteria(MILJO).is(miljo).and("opplysningspliktigOrganisajonsnummer").is(orgnummer);
+        criteria = isNull(fom) ? criteria : criteria.and("kalendermaaned").greaterThanEqual(fom.withDayOfMonth(1));
+        criteria = isNull(tom) ? criteria : criteria.and("kalendermaaned").lessThanEqual(tom.withDayOfMonth(tom.lengthOfMonth()));
 
-        getKalendermaanedBetween(fom, tom).ifPresent(queryBuilders::add);
-
-        return getAllCurrentDocumentsBy(new NativeSearchQueryBuilder()
-                .withQuery(combinedOnANDOperator(queryBuilders))
+        return getAllCurrentDocumentsBy(new NativeQueryBuilder()
+                .withQuery(new CriteriaQuery(criteria))
         );
-    }
-
-    private Optional<RangeQueryBuilder> getKalendermaanedBetween(LocalDate fom, LocalDate tom) {
-        if (fom == null && tom == null) {
-            return Optional.empty();
-        }
-        var builder = QueryBuilders.rangeQuery("kalendermaaned");
-
-        if (fom != null) {
-            builder.gte(fom.withDayOfMonth(1));
-        }
-
-        if (tom != null) {
-            builder.lte(tom.withDayOfMonth(tom.lengthOfMonth()));
-        }
-        return Optional.of(builder);
-    }
-
-    private QueryBuilder combinedOnANDOperator(List<QueryBuilder> list) {
-        var queryBuilder = QueryBuilders.boolQuery();
-        for (var item : list) {
-            queryBuilder.must(item);
-        }
-        return queryBuilder;
     }
 
     /**
