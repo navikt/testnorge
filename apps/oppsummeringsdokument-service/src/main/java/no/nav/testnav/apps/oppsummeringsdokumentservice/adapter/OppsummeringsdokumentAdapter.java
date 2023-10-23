@@ -15,11 +15,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.UncategorizedElasticsearchException;
-import org.springframework.data.elasticsearch.client.elc.NativeQueryBuilder;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.query.Criteria;
-import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
+import org.springframework.data.elasticsearch.core.query.CriteriaQueryBuilder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -70,27 +69,22 @@ public class OppsummeringsdokumentAdapter {
     }
 
     public List<Oppsummeringsdokument> getAllCurrentDocumentsBy(String miljo) {
-        return getAllCurrentDocumentsBy(new NativeQueryBuilder()
-                .withQuery(
-                        new CriteriaQuery(new Criteria(MILJO).is(miljo)
-                        )
+        return getAllCurrentDocumentsBy(
+                new CriteriaQueryBuilder(new Criteria(MILJO).is(miljo)
                 ));
     }
 
     public Page<Oppsummeringsdokument> getAllCurrentDocumentsBy(String miljo, Integer page) {
         var pageable = PageRequest.of(page, 1);
-        return getAllCurrentDocumentsBy(new NativeQueryBuilder()
-                        .withQuery(
-                                new CriteriaQuery(new Criteria(MILJO).is(miljo)
-                                )
-                        ).withPageable(pageable),
+        return getAllCurrentDocumentsBy(
+                new CriteriaQueryBuilder(new Criteria(MILJO).is(miljo))
+                        .withPageable(pageable),
                 pageable
         );
     }
 
     public List<Oppsummeringsdokument> getAllCurrentDocumentsBy(String miljo, String ident) {
-        return getAllCurrentDocumentsBy(new NativeQueryBuilder()
-                .withQuery(new CriteriaQuery(new Criteria(MILJO).is(miljo).and("virksomheter.personer.ident").is(ident)))
+        return getAllCurrentDocumentsBy(new CriteriaQueryBuilder(new Criteria(MILJO).is(miljo).and("virksomheter.personer.ident").is(ident))
         );
     }
 
@@ -111,8 +105,7 @@ public class OppsummeringsdokumentAdapter {
         criteria = isNull(typeArbeidsforhold) ? criteria : criteria.and("virksomheter.personer.arbeidsforhold.typeArbeidsforhold").is(typeArbeidsforhold);
 
         return getAllCurrentDocumentsBy(
-                new NativeQueryBuilder()
-                        .withQuery(new CriteriaQuery(criteria))
+                new CriteriaQueryBuilder(criteria)
                         .withPageable(pageable),
                 pageable
         );
@@ -136,7 +129,7 @@ public class OppsummeringsdokumentAdapter {
         return list.stream().findFirst().orElse(null);
     }
 
-    private Page<Oppsummeringsdokument> getAllCurrentDocumentsBy(NativeQueryBuilder builder, Pageable pageable) {
+    private Page<Oppsummeringsdokument> getAllCurrentDocumentsBy(CriteriaQueryBuilder builder, Pageable pageable) {
 
         builder.withSort(Sort.by("lastModified").ascending());
         var searchHist = operations.search(
@@ -153,7 +146,7 @@ public class OppsummeringsdokumentAdapter {
         );
     }
 
-    private List<Oppsummeringsdokument> getAllCurrentDocumentsBy(NativeQueryBuilder builder) {
+    private List<Oppsummeringsdokument> getAllCurrentDocumentsBy(CriteriaQueryBuilder builder) {
         builder.withSort(Sort.by("lastModified").ascending());
         var list = operations.search(
                         builder.build(),
@@ -169,9 +162,7 @@ public class OppsummeringsdokumentAdapter {
         criteria = isNull(fom) ? criteria : criteria.and("kalendermaaned").greaterThanEqual(fom.withDayOfMonth(1));
         criteria = isNull(tom) ? criteria : criteria.and("kalendermaaned").lessThanEqual(tom.withDayOfMonth(tom.lengthOfMonth()));
 
-        return getAllCurrentDocumentsBy(new NativeQueryBuilder()
-                .withQuery(new CriteriaQuery(criteria))
-        );
+        return getAllCurrentDocumentsBy(new CriteriaQueryBuilder(criteria));
     }
 
     /**
