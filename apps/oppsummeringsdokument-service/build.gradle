@@ -74,13 +74,13 @@ dependencies {
     implementation 'no.nav.testnav.libs:servlet-security'
     implementation 'no.nav.testnav.xsd:arbeidsforhold-xsd'
 
-    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.14.2'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.15.3'
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
-    implementation 'org.opensearch.client:spring-data-opensearch-starter:1.2.0'
+    implementation 'org.opensearch.client:spring-data-opensearch:1.2.0'
     implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
 
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
