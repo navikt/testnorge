@@ -27,6 +27,7 @@ public class OpprinnelseModel extends AuditModel {
     @GeneratedValue
     @EqualsAndHashCode.Exclude
     private Long id;
+
     @NotNull
     @Column(unique = true)
     private String navn;
@@ -38,4 +39,5 @@ public class OpprinnelseModel extends AuditModel {
     public OpprinnelseModel(Opprinnelse opprinnelse) {
         this(opprinnelse.getNavn());
     }
+
 }
