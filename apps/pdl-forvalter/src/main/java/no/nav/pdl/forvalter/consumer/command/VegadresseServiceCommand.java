@@ -86,7 +86,9 @@ public class VegadresseServiceCommand implements Callable<Mono<VegadresseDTO[]>>
                                 "adressenavn", filterArtifact(query.getAdressenavn()),
                                 "husnummer", filterArtifact(query.getHusnummer()),
                                 "husbokstav", filterArtifact(query.getHusbokstav()),
-                                "postnummer", filterArtifact(query.getPostnummer()),
+                                "postnummer", filterArtifact(isNotBlank(query.getKommunenummer()) ?
+                                        Kor2024KommuneEndringer.getRandomPostnummer(query.getKommunenummer()) :
+                                        query.getPostnummer()),
                                 "kommunenummer", filterArtifact(isNotBlank(query.getKommunenummer()) ?
                                         Kor2024KommuneEndringer.getKommuneNummer(query.getKommunenummer()) : null),
                                 "bydelsnummer", filterArtifact(query.getBydelsnummer()),
