@@ -19,8 +19,6 @@ import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingFragment;
-import no.nav.dolly.elastic.BestillingElasticRepository;
-import no.nav.dolly.elastic.ElasticBestilling;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
@@ -77,7 +75,6 @@ public class BestillingService {
     private final TestgruppeRepository testgruppeRepository;
     private final BrukerService brukerService;
     private final GetUserInfo getUserInfo;
-    private final BestillingElasticRepository bestillingElasticRepository;
     private final MapperFacade mapperFacade;
 
     public Bestilling fetchBestillingById(Long bestillingId) {
@@ -224,7 +221,6 @@ public class BestillingService {
         if (isNotBlank(request.getMalBestillingNavn())) {
             bestillingMalService.saveBestillingMal(bestilling, request.getMalBestillingNavn(), bruker);
         }
-        saveBestillingToElasticServer(request);
         return saveBestillingToDB(bestilling);
     }
 
@@ -248,7 +244,6 @@ public class BestillingService {
         if (isNotBlank(request.getMalBestillingNavn())) {
             bestillingMalService.saveBestillingMal(bestilling, request.getMalBestillingNavn(), bruker);
         }
-        saveBestillingToElasticServer(request);
         return saveBestillingToDB(bestilling);
     }
 
@@ -335,7 +330,6 @@ public class BestillingService {
         if (isNotBlank(request.getMalBestillingNavn())) {
             bestillingMalService.saveBestillingMal(bestilling, request.getMalBestillingNavn(), bruker);
         }
-        saveBestillingToElasticServer(request);
         return saveBestillingToDB(bestilling);
     }
 
@@ -346,7 +340,6 @@ public class BestillingService {
         var size = identRepository.countByTestgruppe(gruppeId);
         log.info("Antall testidenter {} i gruppe {} ", size, gruppeId);
         fixAaregAbstractClassProblem(request.getAareg());
-        saveBestillingToElasticServer(request);
         return saveBestillingToDB(
                 Bestilling.builder()
                         .gruppe(gruppe)
@@ -448,12 +441,5 @@ public class BestillingService {
                         arbeidforhold.getArbeidsgiver() instanceof RsOrganisasjon ? "ORG" : "PERS");
             }
         });
-    }
-
-    private void saveBestillingToElasticServer(RsDollyBestilling request) {
-
-        if (request.isNonEmpty()) {
-            bestillingElasticRepository.save(mapperFacade.map(request, ElasticBestilling.class));
-        }
     }
 }

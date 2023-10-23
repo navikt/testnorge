@@ -72,13 +72,14 @@ spec:
       tenant: nav.no
   image: {{image}}
   openSearch:
-    instance: dolly-bestilling-test
+    instance: dolly-bestilling-dev
     access: admin
   env:
     - name: SPRING_PROFILES_ACTIVE
       value: dev
   envFrom:
     - secret: user-encryption-dev
+    - secret: dolly-bestilling-dev
   replicas:
     min: 1
     max: 1
