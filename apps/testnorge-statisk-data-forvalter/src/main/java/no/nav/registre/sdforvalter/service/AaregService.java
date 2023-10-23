@@ -91,7 +91,7 @@ public class AaregService {
             List<RsAaregSyntetiseringsRequest> arbeidsforhold
     ) {
         List<ArbeidsforholdRespons> aaregResponses = new ArrayList<>(arbeidsforhold.size());
-        fyllInnArbeidsforholdMedSyntetiskeData(arbeidsforhold);
+        arbeidsforhold = fyllInnArbeidsforholdMedSyntetiskeData(arbeidsforhold);
 
         for (var forholdet : arbeidsforhold) {
             var opprettRequest = forholdet.getArbeidsforhold().toArbeidsforhold();
@@ -103,7 +103,7 @@ public class AaregService {
     }
 
 
-    private void fyllInnArbeidsforholdMedSyntetiskeData (List<RsAaregSyntetiseringsRequest> arbeidsforhold){
+    private List<RsAaregSyntetiseringsRequest> fyllInnArbeidsforholdMedSyntetiskeData(List<RsAaregSyntetiseringsRequest> arbeidsforhold) {
         if (!arbeidsforhold.isEmpty()) {
             List<String> identer = arbeidsforhold.stream().map(x -> x.getArbeidsforhold().getArbeidstaker().getIdent()).toList();
 
@@ -120,7 +120,7 @@ public class AaregService {
                     String pdName = pd.getName();
                     Object originalPropertyValue = original.getPropertyValue(pdName);
                     Object syntPropertyValue = synt.getPropertyValue(pdName);
-                    if (originalPropertyValue == null && syntPropertyValue != null && !"class" .equals(pdName)) {
+                    if (originalPropertyValue == null && syntPropertyValue != null && !"class".equals(pdName)) {
                         original.setPropertyValue(pd.getName(), syntPropertyValue);
                     }
                 }
@@ -129,13 +129,15 @@ public class AaregService {
             validerArbeidsforholdMotAaregSpecs(arbeidsforhold);
 
             List<RsAaregSyntetiseringsRequest> ugyldigeArbeidsforhold = new ArrayList<>();
-
             sjekkArbeidsforholdEtterArbeidsavtale(arbeidsforhold, ugyldigeArbeidsforhold);
-
             if (!ugyldigeArbeidsforhold.isEmpty()) {
-                arbeidsforhold.removeAll(ugyldigeArbeidsforhold);
+                return arbeidsforhold
+                        .stream()
+                        .filter(ugyldigeArbeidsforhold::contains)
+                        .toList();
             }
         }
+        return arbeidsforhold;
     }
 
     private void sjekkArbeidsforholdEtterArbeidsavtale(List<RsAaregSyntetiseringsRequest> arbeidsforhold, List<RsAaregSyntetiseringsRequest> ugyldigeArbeidsforhold) {

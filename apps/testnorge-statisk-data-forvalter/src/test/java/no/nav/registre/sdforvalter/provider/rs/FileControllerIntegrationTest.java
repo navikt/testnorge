@@ -3,12 +3,7 @@ package no.nav.registre.sdforvalter.provider.rs;
 import no.nav.registre.sdforvalter.database.model.GruppeModel;
 import no.nav.registre.sdforvalter.database.model.OpprinnelseModel;
 import no.nav.registre.sdforvalter.database.model.TpsIdentModel;
-import no.nav.registre.sdforvalter.database.repository.EregTagRepository;
-import no.nav.registre.sdforvalter.database.repository.GruppeRepository;
-import no.nav.registre.sdforvalter.database.repository.OpprinnelseRepository;
-import no.nav.registre.sdforvalter.database.repository.TagRepository;
-import no.nav.registre.sdforvalter.database.repository.TpsIdentTagRepository;
-import no.nav.registre.sdforvalter.database.repository.TpsIdenterRepository;
+import no.nav.registre.sdforvalter.database.repository.*;
 import no.nav.registre.sdforvalter.domain.TpsIdent;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -67,6 +62,7 @@ class FileControllerIntegrationTest {
     }
 
     public void assertListOfPersonsFromCsvIsSavedInDatabase(List<TpsIdentModel> expectedTpsIdenterListe, String csvInnhold) throws Exception {
+
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
                 .multipart("/api/v1/faste-data/file/tpsIdenter")
                 .file("file", csvInnhold.getBytes())
@@ -77,6 +73,7 @@ class FileControllerIntegrationTest {
 
         assertThat(tpsIdenterRepository.findAll())
                 .containsAll(expectedTpsIdenterListe);
+
     }
 
     @AfterEach
@@ -116,9 +113,10 @@ class FileControllerIntegrationTest {
 
     @Test
     void should_save_two_idents_from_csv_to_tps_ident_database() throws Exception {
-        String csvInnhold = "FNR*;Fornavn;Etternavn;Adresse;Postnummer;Poststed;Gruppe;Opprinnelse;Tags\n" +
-                "12345678910;Dolly;Dollesen;Dollygata 2;9999;Dollyville;Gruppen;Test;OTP\n" +
-                "12345678911;Donald;Dollesen;Dollygata 3;2222;Dollyby;Gruppen;Test;";
+        String csvInnhold = """
+                FNR*;Fornavn;Etternavn;Adresse;Postnummer;Poststed;Gruppe;Opprinnelse;Tags
+                12345678910;Dolly;Dollesen;Dollygata 2;9999;Dollyville;Gruppen;Test;OTP
+                12345678911;Donald;Dollesen;Dollygata 3;2222;Dollyby;Gruppen;Test;""";
 
         TpsIdent expectedTpsPerson1 = TpsIdent.builder()
                 .fnr("12345678910")
@@ -137,9 +135,11 @@ class FileControllerIntegrationTest {
                 .postNr("2222")
                 .city("Dollyby")
                 .build();
+        var opprinnelse = new OpprinnelseModel(null, "Test");
+        var gruppe = new GruppeModel(null, "Gruppen", "Gruppenbeskrivelse");
         List<TpsIdentModel> expectedTpsIdenterListe = List.of(
-                new TpsIdentModel(expectedTpsPerson1, new OpprinnelseModel(null, "Test"), new GruppeModel(null, "Gruppen", "Gruppenbeskrivelse")),
-                new TpsIdentModel(expectedTpsPerson2, new OpprinnelseModel(null, "Test"), new GruppeModel(null, "Gruppen", "Gruppenbeskrivelse"))
+                new TpsIdentModel(expectedTpsPerson1, opprinnelse, gruppe),
+                new TpsIdentModel(expectedTpsPerson2, opprinnelse, gruppe)
         );
 
         assertListOfPersonsFromCsvIsSavedInDatabase(expectedTpsIdenterListe, csvInnhold);
