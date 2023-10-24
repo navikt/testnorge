@@ -52,12 +52,7 @@ repositories {
 
 dependencies {
 
-    implementation('com.google.guava:guava:31.1-jre') {
-        version {
-            strictly '20.0'
-        }
-    }
-
+    implementation 'com.google.guava:guava:31.1-jre'
     implementation 'no.nav.testnav.libs:security-core'
     implementation 'no.nav.testnav.libs:servlet-core'
     implementation 'no.nav.testnav.libs:database'
@@ -66,7 +61,7 @@ dependencies {
 
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
-    
+
     implementation 'org.springframework.cloud:spring-cloud-vault-config-databases'
 
     implementation 'org.springframework.boot:spring-boot-starter-security'
