@@ -10,7 +10,7 @@ import no.nav.dolly.bestilling.tpsmessagingservice.command.PersonGetCommand;
 import no.nav.dolly.bestilling.tpsmessagingservice.command.SikkerhetstiltakDeleteCommand;
 import no.nav.dolly.bestilling.tpsmessagingservice.command.TelefonnummerDeleteCommand;
 import no.nav.dolly.bestilling.tpsmessagingservice.command.TpsMessagingPostCommand;
-import no.nav.dolly.config.credentials.TpsMessagingServiceProperties;
+import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.BankkontonrNorskDTO;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.BankkontonrUtlandDTO;
@@ -51,7 +51,7 @@ public class TpsMessagingConsumer implements ConsumerStatus {
 
     public TpsMessagingConsumer(
             TokenExchange tokenService,
-            TpsMessagingServiceProperties serverProperties,
+            Consumers.TpsMessagingService serverProperties,
             ObjectMapper objectMapper,
             WebClient.Builder webClientBuilder
     ) {

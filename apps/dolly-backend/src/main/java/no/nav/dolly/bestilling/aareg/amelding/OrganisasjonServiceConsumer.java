@@ -1,7 +1,7 @@
 package no.nav.dolly.bestilling.aareg.amelding;
 
 import no.nav.dolly.bestilling.aareg.command.OrganisasjonGetCommand;
-import no.nav.dolly.config.credentials.OrganisasjonServiceProperties;
+import no.nav.dolly.config.Consumers;
 import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
@@ -20,7 +20,7 @@ public class OrganisasjonServiceConsumer {
 
     public OrganisasjonServiceConsumer(
             TokenExchange tokenService,
-            OrganisasjonServiceProperties serviceProperties,
+            Consumers.OrganisasjonService serviceProperties,
             WebClient.Builder webClientBuilder
     ) {
         this.tokenService = tokenService;

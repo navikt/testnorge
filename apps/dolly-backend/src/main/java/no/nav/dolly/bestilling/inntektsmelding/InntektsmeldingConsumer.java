@@ -5,7 +5,7 @@ import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.inntektsmelding.command.OpprettInntektsmeldingCommand;
 import no.nav.dolly.bestilling.inntektsmelding.domain.InntektsmeldingRequest;
 import no.nav.dolly.bestilling.inntektsmelding.domain.InntektsmeldingResponse;
-import no.nav.dolly.config.credentials.InntektsmeldingServiceProperties;
+import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
@@ -28,7 +28,7 @@ public class InntektsmeldingConsumer implements ConsumerStatus {
 
     public InntektsmeldingConsumer(
             TokenExchange tokenService,
-            InntektsmeldingServiceProperties serviceProperties,
+            Consumers.InntektsmeldingService serviceProperties,
             WebClient.Builder webClientBuilder
     ) {
         this.tokenService = tokenService;

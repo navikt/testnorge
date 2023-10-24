@@ -6,7 +6,7 @@ import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.kontoregisterservice.command.KontoregisterDeleteCommand;
 import no.nav.dolly.bestilling.kontoregisterservice.command.KontoregisterGetCommand;
 import no.nav.dolly.bestilling.kontoregisterservice.command.KontoregisterPostCommand;
-import no.nav.dolly.config.credentials.KontoregisterConsumerProperties;
+import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.HentKontoRequestDTO;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.HentKontoResponseDTO;
@@ -38,7 +38,7 @@ public class KontoregisterConsumer implements ConsumerStatus {
 
     public KontoregisterConsumer(
             TokenExchange tokenService,
-            KontoregisterConsumerProperties serverProperties,
+            Consumers.Kontoregister serverProperties,
             ObjectMapper objectMapper,
             WebClient.Builder webClientBuilder
     ) {

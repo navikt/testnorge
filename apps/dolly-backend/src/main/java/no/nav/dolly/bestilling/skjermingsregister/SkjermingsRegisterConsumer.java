@@ -9,7 +9,7 @@ import no.nav.dolly.bestilling.skjermingsregister.command.SkjermingsregisterPost
 import no.nav.dolly.bestilling.skjermingsregister.command.SkjermingsregisterPutCommand;
 import no.nav.dolly.bestilling.skjermingsregister.domain.SkjermingDataRequest;
 import no.nav.dolly.bestilling.skjermingsregister.domain.SkjermingDataResponse;
-import no.nav.dolly.config.credentials.SkjermingsregisterProxyProperties;
+import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
@@ -34,7 +34,7 @@ public class SkjermingsRegisterConsumer implements ConsumerStatus {
 
     public SkjermingsRegisterConsumer(
             TokenExchange tokenService,
-            SkjermingsregisterProxyProperties serverProperties,
+            Consumers.SkjermingsregisterProxy serverProperties,
             ObjectMapper objectMapper,
             WebClient.Builder webClientBuilder
     ) {

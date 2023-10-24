@@ -16,7 +16,7 @@ import no.nav.dolly.bestilling.arenaforvalter.dto.AapRequest;
 import no.nav.dolly.bestilling.arenaforvalter.dto.AapResponse;
 import no.nav.dolly.bestilling.arenaforvalter.dto.ArenaResponse;
 import no.nav.dolly.bestilling.arenaforvalter.dto.ArenaStatusResponse;
-import no.nav.dolly.config.credentials.ArenaforvalterProxyProperties;
+import no.nav.dolly.config.Consumers;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaDagpenger;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukere;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukereResponse;
@@ -44,7 +44,7 @@ public class ArenaForvalterConsumer implements ConsumerStatus {
     private final TokenExchange tokenService;
 
     public ArenaForvalterConsumer(
-            ArenaforvalterProxyProperties serverProperties,
+            Consumers.ArenaforvalterProxy serverProperties,
             TokenExchange tokenService,
             ObjectMapper objectMapper,
             WebClient.Builder webClientBuilder

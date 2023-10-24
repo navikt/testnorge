@@ -9,7 +9,7 @@ import no.nav.dolly.bestilling.organisasjonforvalter.domain.DeployRequest;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.DeployResponse;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonDeployStatus;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonDetaljer;
-import no.nav.dolly.config.credentials.OrganisasjonForvalterProperties;
+import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
@@ -43,11 +43,11 @@ public class OrganisasjonConsumer {
 
     private final TokenExchange tokenService;
     private final WebClient webClient;
-    private final OrganisasjonForvalterProperties serviceProperties;
+    private final Consumers.OrganisasjonForvalter serviceProperties;
 
     public OrganisasjonConsumer(
             TokenExchange tokenService,
-            OrganisasjonForvalterProperties serviceProperties,
+            Consumers.OrganisasjonForvalter serviceProperties,
             ObjectMapper objectMapper,
             WebClient.Builder webClientBuilder
     ) {

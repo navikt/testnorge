@@ -10,7 +10,7 @@ import no.nav.dolly.bestilling.instdata.command.InstdataPostCommand;
 import no.nav.dolly.bestilling.instdata.domain.DeleteResponse;
 import no.nav.dolly.bestilling.instdata.domain.InstdataResponse;
 import no.nav.dolly.bestilling.instdata.domain.InstitusjonsoppholdRespons;
-import no.nav.dolly.config.credentials.InstProxyProperties;
+import no.nav.dolly.config.Consumers;
 import no.nav.dolly.domain.resultset.inst.Instdata;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
@@ -34,7 +34,7 @@ public class InstdataConsumer implements ConsumerStatus {
 
     public InstdataConsumer(
             TokenExchange tokenService,
-            InstProxyProperties serverProperties,
+            Consumers.InstProxy serverProperties,
             ObjectMapper objectMapper,
             WebClient.Builder webClientBuilder
     ) {

@@ -7,7 +7,7 @@ import no.nav.dolly.bestilling.inntektstub.command.InntektstubDeleteCommand;
 import no.nav.dolly.bestilling.inntektstub.command.InntektstubGetCommand;
 import no.nav.dolly.bestilling.inntektstub.command.InntektstubPostCommand;
 import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon;
-import no.nav.dolly.config.credentials.InntektstubProxyProperties;
+import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
@@ -33,7 +33,7 @@ public class InntektstubConsumer implements ConsumerStatus {
 
     public InntektstubConsumer(
             TokenExchange tokenService,
-            InntektstubProxyProperties serverProperties,
+            Consumers.InntektstubProxy serverProperties,
             ObjectMapper objectMapper,
             WebClient.Builder webClientBuilder
     ) {

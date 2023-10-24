@@ -7,7 +7,7 @@ import no.nav.dolly.bestilling.brregstub.command.BrregDeleteCommand;
 import no.nav.dolly.bestilling.brregstub.command.BrregGetCommand;
 import no.nav.dolly.bestilling.brregstub.command.BrregPostCommand;
 import no.nav.dolly.bestilling.brregstub.domain.RolleoversiktTo;
-import no.nav.dolly.config.credentials.BrregstubProxyProperties;
+import no.nav.dolly.config.Consumers;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
@@ -29,7 +29,7 @@ public class BrregstubConsumer implements ConsumerStatus {
 
     public BrregstubConsumer(
             TokenExchange tokenService,
-            BrregstubProxyProperties serverProperties,
+            Consumers.BrregstubProxy serverProperties,
             ObjectMapper objectMapper,
             WebClient.Builder webClientBuilder
     ) {

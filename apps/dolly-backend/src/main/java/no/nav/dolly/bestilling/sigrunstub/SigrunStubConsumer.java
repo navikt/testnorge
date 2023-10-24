@@ -9,7 +9,7 @@ import no.nav.dolly.bestilling.sigrunstub.command.SigurunstubPutCommand;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubLignetInntektRequest;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubPensjonsgivendeInntektRequest;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubResponse;
-import no.nav.dolly.config.credentials.SigrunstubProxyProperties;
+import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
@@ -35,7 +35,7 @@ public class SigrunStubConsumer implements ConsumerStatus {
 
     public SigrunStubConsumer(
             TokenExchange tokenService,
-            SigrunstubProxyProperties serverProperties,
+            Consumers.SigrunstubProxy serverProperties,
             ObjectMapper objectMapper,
             WebClient.Builder webClientBuilder
     ) {

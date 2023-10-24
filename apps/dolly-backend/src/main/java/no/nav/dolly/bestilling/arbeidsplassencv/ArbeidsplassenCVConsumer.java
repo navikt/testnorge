@@ -10,7 +10,7 @@ import no.nav.dolly.bestilling.arbeidsplassencv.command.ArbeidsplassenPostPerson
 import no.nav.dolly.bestilling.arbeidsplassencv.command.ArbeidsplassenPutCVCommand;
 import no.nav.dolly.bestilling.arbeidsplassencv.dto.ArbeidsplassenCVStatusDTO;
 import no.nav.dolly.bestilling.arbeidsplassencv.dto.PAMCVDTO;
-import no.nav.dolly.config.credentials.ArbeidsplassenProxyProperties;
+import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
@@ -34,7 +34,7 @@ public class ArbeidsplassenCVConsumer implements ConsumerStatus {
     private final TokenExchange tokenService;
 
     public ArbeidsplassenCVConsumer(
-            ArbeidsplassenProxyProperties serverProperties,
+            Consumers.ArbeidsplassenProxy serverProperties,
             TokenExchange tokenService,
             ObjectMapper objectMapper,
             WebClient.Builder webClientBuilder

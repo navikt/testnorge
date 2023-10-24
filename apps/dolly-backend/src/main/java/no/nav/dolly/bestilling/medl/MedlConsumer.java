@@ -7,7 +7,7 @@ import no.nav.dolly.bestilling.medl.command.MedlGetCommand;
 import no.nav.dolly.bestilling.medl.command.MedlPostCommand;
 import no.nav.dolly.bestilling.medl.command.MedlPutCommand;
 import no.nav.dolly.bestilling.medl.dto.MedlPostResponse;
-import no.nav.dolly.config.credentials.MedlProxyProperties;
+import no.nav.dolly.config.Consumers;
 import no.nav.dolly.domain.resultset.medl.MedlData;
 import no.nav.dolly.domain.resultset.medl.MedlDataResponse;
 import no.nav.dolly.metrics.Timed;
@@ -33,7 +33,7 @@ public class MedlConsumer implements ConsumerStatus {
 
     public MedlConsumer(
             TokenExchange tokenService,
-            MedlProxyProperties serverProperties,
+            Consumers.MedlProxy serverProperties,
             ObjectMapper objectMapper,
             WebClient.Builder webClientBuilder
     ) {

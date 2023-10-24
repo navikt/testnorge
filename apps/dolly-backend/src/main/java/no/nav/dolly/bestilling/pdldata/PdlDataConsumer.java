@@ -13,7 +13,7 @@ import no.nav.dolly.bestilling.pdldata.command.PdlDataSlettCommand;
 import no.nav.dolly.bestilling.pdldata.command.PdlDataSlettUtenomCommand;
 import no.nav.dolly.bestilling.pdldata.command.PdlDataStanaloneCommand;
 import no.nav.dolly.bestilling.pdldata.dto.PdlResponse;
-import no.nav.dolly.config.credentials.PdlDataForvalterProperties;
+import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.util.JacksonExchangeStrategyUtil;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.AvailibilityResponseDTO;
@@ -40,11 +40,11 @@ public class PdlDataConsumer implements ConsumerStatus {
 
     private final TokenExchange tokenService;
     private final WebClient webClient;
-    private final PdlDataForvalterProperties serviceProperties;
+    private final Consumers.PdlDataForvalter serviceProperties;
 
     public PdlDataConsumer(
             TokenExchange tokenService,
-            PdlDataForvalterProperties serviceProperties,
+            Consumers.PdlDataForvalter serviceProperties,
             ObjectMapper objectMapper,
             WebClient.Builder webClientBuilder) {
 

@@ -8,7 +8,7 @@ import no.nav.dolly.bestilling.udistub.command.UdistubPostCommand;
 import no.nav.dolly.bestilling.udistub.command.UdistubPutCommand;
 import no.nav.dolly.bestilling.udistub.domain.UdiPerson;
 import no.nav.dolly.bestilling.udistub.domain.UdiPersonResponse;
-import no.nav.dolly.config.credentials.UdistubServerProperties;
+import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.util.JacksonExchangeStrategyUtil;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
@@ -29,7 +29,7 @@ public class UdiStubConsumer implements ConsumerStatus {
 
     public UdiStubConsumer(
             TokenExchange accessTokenService,
-            UdistubServerProperties serverProperties,
+            Consumers.UdistubServer serverProperties,
             ObjectMapper objectMapper,
             WebClient.Builder webClientBuilder
     ) {

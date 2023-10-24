@@ -7,7 +7,7 @@ import no.nav.dolly.bestilling.dokarkiv.command.DokarkivGetMiljoeCommand;
 import no.nav.dolly.bestilling.dokarkiv.command.DokarkivPostCommand;
 import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivRequest;
 import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivResponse;
-import no.nav.dolly.config.credentials.DokarkivProxyServiceProperties;
+import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
@@ -29,7 +29,7 @@ public class DokarkivConsumer implements ConsumerStatus {
     private final ServerProperties serviceProperties;
 
     public DokarkivConsumer(
-            DokarkivProxyServiceProperties properties,
+            Consumers.DokarkivProxyService properties,
             TokenExchange tokenService,
             ObjectMapper objectMapper,
             WebClient.Builder webClientBuilder) {

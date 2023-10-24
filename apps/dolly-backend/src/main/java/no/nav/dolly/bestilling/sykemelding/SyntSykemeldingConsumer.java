@@ -6,7 +6,7 @@ import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.sykemelding.command.SyntSykemeldingPostCommand;
 import no.nav.dolly.bestilling.sykemelding.domain.SyntSykemeldingRequest;
 import no.nav.dolly.bestilling.sykemelding.dto.SykemeldingResponse;
-import no.nav.dolly.config.credentials.SyntSykemeldingApiProperties;
+import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
@@ -30,7 +30,7 @@ public class SyntSykemeldingConsumer implements ConsumerStatus {
 
     public SyntSykemeldingConsumer(
             TokenExchange accessTokenService,
-            SyntSykemeldingApiProperties serverProperties,
+            Consumers.SyntSykemeldingApi serverProperties,
             ObjectMapper objectMapper,
             WebClient.Builder webClientBuilder
     ) {

@@ -3,7 +3,7 @@ package no.nav.dolly.bestilling.aareg.amelding;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.aareg.command.AmeldingPutCommand;
-import no.nav.dolly.config.credentials.AmeldingServiceProperties;
+import no.nav.dolly.config.Consumers;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.dto.ameldingservice.v1.AMeldingDTO;
@@ -37,7 +37,7 @@ public class AmeldingConsumer {
 
     public AmeldingConsumer(
             TokenExchange tokenService,
-            AmeldingServiceProperties serviceProperties,
+            Consumers.AmeldingService serviceProperties,
             ObjectMapper objectMapper,
             ErrorStatusDecoder errorStatusDecoder,
             WebClient.Builder webClientBuilder

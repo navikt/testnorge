@@ -5,7 +5,7 @@ import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPoppInntektRequest
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpForholdRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpYtelseRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
-import no.nav.dolly.config.credentials.PensjonforvalterProxyProperties;
+import no.nav.dolly.config.Consumers;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.junit.jupiter.api.BeforeEach;
@@ -49,7 +49,7 @@ class PensjonforvalterConsumerTest {
     @BeforeEach
     void setup() {
 
-        when(tokenService.exchange(ArgumentMatchers.any(PensjonforvalterProxyProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
+        when(tokenService.exchange(ArgumentMatchers.any(Consumers.PensjonforvalterProxy.class))).thenReturn(Mono.just(new AccessToken("token")));
     }
 
     private void stubGetMiljo() {

@@ -9,7 +9,7 @@ import no.nav.dolly.bestilling.tagshendelseslager.command.TagsOpprettingCommand;
 import no.nav.dolly.bestilling.tagshendelseslager.command.TagsSlettingCommand;
 import no.nav.dolly.bestilling.tagshendelseslager.dto.HendelselagerResponse;
 import no.nav.dolly.bestilling.tagshendelseslager.dto.TagsOpprettingResponse;
-import no.nav.dolly.config.credentials.PdlProxyProperties;
+import no.nav.dolly.config.Consumers;
 import no.nav.dolly.domain.resultset.Tags;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.util.JacksonExchangeStrategyUtil;
@@ -33,7 +33,7 @@ public class TagsHendelseslagerConsumer {
 
     public TagsHendelseslagerConsumer(
             TokenExchange tokenService,
-            PdlProxyProperties serviceProperties,
+            Consumers.PdlProxy serviceProperties,
             ObjectMapper objectMapper,
             WebClient.Builder webClientBuilder
     ) {

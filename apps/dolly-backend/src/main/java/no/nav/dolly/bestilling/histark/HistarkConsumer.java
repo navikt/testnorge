@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.histark.command.HistarkPostCommand;
 import no.nav.dolly.bestilling.histark.domain.HistarkRequest;
 import no.nav.dolly.bestilling.histark.domain.HistarkResponse;
-import no.nav.dolly.config.credentials.HistarkProxyProperties;
+import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
@@ -28,7 +28,7 @@ public class HistarkConsumer {
     private final ServerProperties serviceProperties;
 
     public HistarkConsumer(
-            HistarkProxyProperties properties,
+            Consumers.HistarkProxy properties,
             TokenExchange tokenService,
             ObjectMapper objectMapper,
             WebClient.Builder webClientBuilder) {

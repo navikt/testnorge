@@ -6,7 +6,7 @@ import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.krrstub.command.KontaktadataDeleteCommand;
 import no.nav.dolly.bestilling.krrstub.command.KontaktdataPostCommand;
 import no.nav.dolly.bestilling.krrstub.dto.DigitalKontaktdataResponse;
-import no.nav.dolly.config.credentials.KrrstubProxyProperties;
+import no.nav.dolly.config.Consumers;
 import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdata;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
@@ -31,7 +31,7 @@ public class KrrstubConsumer implements ConsumerStatus {
 
     public KrrstubConsumer(
             TokenExchange tokenService,
-            KrrstubProxyProperties serverProperties,
+            Consumers.KrrstubProxy serverProperties,
             ObjectMapper objectMapper,
             WebClient.Builder webClientBuilder
     ) {

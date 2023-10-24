@@ -1,6 +1,6 @@
 package no.nav.dolly.bestilling.arenaforvalter;
 
-import no.nav.dolly.config.credentials.ArenaforvalterProxyProperties;
+import no.nav.dolly.config.Consumers;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukere;
@@ -59,7 +59,7 @@ class ArenaForvalterConsumerTest {
     @BeforeEach
     void setup() {
 
-        when(tokenService.exchange(ArgumentMatchers.any(ArenaforvalterProxyProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
+        when(tokenService.exchange(ArgumentMatchers.any(Consumers.ArenaforvalterProxy.class))).thenReturn(Mono.just(new AccessToken("token")));
     }
 
     @Test
@@ -69,7 +69,7 @@ class ArenaForvalterConsumerTest {
 
         var response = arenaForvalterConsumer.deleteIdenter(List.of(IDENT)).collectList().block();
 
-        verify(tokenService).exchange(ArgumentMatchers.any(ArenaforvalterProxyProperties.class));
+        verify(tokenService).exchange(ArgumentMatchers.any(Consumers.ArenaforvalterProxy.class));
     }
 
     @Test

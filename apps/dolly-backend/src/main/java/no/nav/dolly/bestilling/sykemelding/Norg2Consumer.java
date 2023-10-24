@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.sykemelding.command.Norg2GetCommand;
 import no.nav.dolly.bestilling.sykemelding.dto.Norg2EnhetResponse;
-import no.nav.dolly.config.credentials.Norg2ProxyProperties;
+import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
@@ -25,7 +25,7 @@ public class Norg2Consumer implements ConsumerStatus {
 
     public Norg2Consumer(
             TokenExchange accessTokenService,
-            Norg2ProxyProperties serverProperties,
+            Consumers.Norg2Proxy serverProperties,
             ObjectMapper objectMapper,
             WebClient.Builder webClientBuilder
     ) {

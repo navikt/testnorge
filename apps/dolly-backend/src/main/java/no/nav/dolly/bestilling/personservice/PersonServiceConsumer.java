@@ -5,7 +5,7 @@ import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.personservice.command.PdlPersonerGetCommand;
 import no.nav.dolly.bestilling.personservice.command.PersonServiceExistCommand;
 import no.nav.dolly.bestilling.personservice.dto.PersonServiceResponse;
-import no.nav.dolly.config.credentials.PersonServiceProperties;
+import no.nav.dolly.config.Consumers;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
@@ -38,7 +38,7 @@ public class PersonServiceConsumer implements ConsumerStatus {
 
     public PersonServiceConsumer(
             TokenExchange tokenService,
-            PersonServiceProperties serverProperties,
+            Consumers.PersonService serverProperties,
             WebClient.Builder webClientBuilder,
             ObjectMapper objectMapper) {
 

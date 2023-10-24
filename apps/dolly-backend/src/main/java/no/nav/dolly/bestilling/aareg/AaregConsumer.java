@@ -7,7 +7,7 @@ import no.nav.dolly.bestilling.aareg.command.ArbeidsforholdGetCommand;
 import no.nav.dolly.bestilling.aareg.command.ArbeidsforholdPostCommand;
 import no.nav.dolly.bestilling.aareg.command.ArbeidsforholdPutCommand;
 import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdRespons;
-import no.nav.dolly.config.credentials.AaregProxyProperties;
+import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
@@ -34,7 +34,7 @@ public class AaregConsumer implements ConsumerStatus {
     private final TokenExchange tokenService;
 
     public AaregConsumer(
-            AaregProxyProperties serverProperties,
+            Consumers.AaregProxy serverProperties,
             TokenExchange tokenService,
             ObjectMapper objectMapper,
             WebClient.Builder webClientBuilder

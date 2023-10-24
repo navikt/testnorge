@@ -3,7 +3,7 @@ package no.nav.dolly.bestilling.tpsmessagingservice;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.tpsmessagingservice.command.MiljoerGetCommand;
-import no.nav.dolly.config.credentials.TpsMiljoerProperties;
+import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
@@ -24,7 +24,7 @@ public class TpsMiljoerConsumer implements ConsumerStatus {
 
     public TpsMiljoerConsumer(
             TokenExchange tokenService,
-            TpsMiljoerProperties serverProperties,
+            Consumers.TpsMiljoer serverProperties,
             WebClient.Builder webClientBuilder
     ) {
         this.tokenService = tokenService;

@@ -1,7 +1,7 @@
 package no.nav.dolly.consumer.kodeverk;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.config.credentials.KodeverkProxyProperties;
+import no.nav.dolly.config.Consumers;
 import no.nav.dolly.consumer.kodeverk.domain.KodeverkBetydningerResponse;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.util.WebClientFilter;
@@ -44,7 +44,7 @@ public class KodeverkConsumer {
 
     public KodeverkConsumer(
             TokenExchange tokenService,
-            KodeverkProxyProperties serverProperties,
+            Consumers.KodeverkProxy serverProperties,
             WebClient.Builder webClientBuilder
     ) {
         this.tokenService = tokenService;
