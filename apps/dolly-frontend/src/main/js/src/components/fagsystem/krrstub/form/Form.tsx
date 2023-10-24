@@ -73,6 +73,7 @@ export const KrrstubForm = ({ formikBag }: KrrstubFormProps) => {
 								fastfield={false}
 							/>
 							<FormikTextInput name="krrstub.epost" label="E-post" />
+							TODO: FIKSE DENNE TIL Å VISE TYDELIG AT +47xxx ER RIKTIG FORMAT
 							<FormikTextInput name="krrstub.mobil" label="Mobilnummer" type="number" />
 							<FormikSelect
 								name="krrstub.spraak"
