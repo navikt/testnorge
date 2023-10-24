@@ -1,7 +1,7 @@
 package no.nav.testnav.endringsmeldingservice.consumer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nav.testnav.endringsmeldingservice.config.credentias.TpsMessagingServiceProperties;
+import no.nav.testnav.endringsmeldingservice.config.Consumers;
 import no.nav.testnav.endringsmeldingservice.consumer.command.GetIdentEnvironmentsCommand;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PersonMiljoeDTO;
 import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
@@ -21,7 +21,7 @@ public class TpsMessagingConsumer {
     private final TokenExchange accessTokenService;
 
     public TpsMessagingConsumer(
-            TpsMessagingServiceProperties serverProperties,
+            Consumers.TpsMessagingService serverProperties,
             TokenExchange tokenExchange,
             ObjectMapper objectMapper) {
 
