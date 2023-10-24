@@ -1,19 +1,18 @@
 package no.nav.registre.sdforvalter.adapter;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.StreamSupport;
-
 import no.nav.registre.sdforvalter.database.model.TagModel;
 import no.nav.registre.sdforvalter.database.model.TpsIdentModel;
 import no.nav.registre.sdforvalter.database.model.TpsIdentTagModel;
 import no.nav.registre.sdforvalter.database.repository.TpsIdenterRepository;
 import no.nav.registre.sdforvalter.domain.TpsIdent;
 import no.nav.registre.sdforvalter.domain.TpsIdentListe;
+import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.StreamSupport;
 
 @Slf4j
 @Component
@@ -88,9 +87,9 @@ public class TpsIdenterAdapter extends FasteDataAdapter {
         List<TpsIdent> tpsIdents = new ArrayList<>();
 
         for (TpsIdent tpsIdent : list) {
-            TpsIdentModel tpsIdentModel = tpsIdenterRepository.save(
-                    new TpsIdentModel(tpsIdent, getOppinnelse(tpsIdent), getGruppe(tpsIdent))
-            );
+            var opprinnelse = getOpprinnelse(tpsIdent);
+            var gruppe = getGruppe(tpsIdent);
+            TpsIdentModel tpsIdentModel = tpsIdenterRepository.save(new TpsIdentModel(tpsIdent, opprinnelse, gruppe));
             List<TagModel> tagModels = tpsIdent.getTags() == null ? Collections.emptyList() : tpsIdent.getTags().stream().map(tagsAdapter::save).toList();
             tagModels.forEach(tagModel -> tpsIdentTagAdapter.save(
                     new TpsIdentTagModel(null, tpsIdentModel, tagModel)

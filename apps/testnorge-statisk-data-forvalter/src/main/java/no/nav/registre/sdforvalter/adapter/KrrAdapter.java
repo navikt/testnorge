@@ -41,7 +41,7 @@ public class KrrAdapter extends FasteDataAdapter {
         }
         return new KrrListe(repository.saveAll(list
                 .stream()
-                .map(item -> new KrrModel(item, getOppinnelse(item), getGruppe(item)))
+                .map(item -> new KrrModel(item, getOpprinnelse(item), getGruppe(item)))
                 .toList())
         );
     }

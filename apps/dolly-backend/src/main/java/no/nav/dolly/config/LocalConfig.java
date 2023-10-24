@@ -36,7 +36,7 @@ public class LocalConfig extends AbstractVaultConfiguration {
         }
         var token = System.getProperty(TOKEN);
         if (isBlank(token)) {
-            throw new IllegalArgumentException(String.format("Påkrevd property '%s' er ikke satt.", TOKEN));
+            throw new IllegalArgumentException(String.format("Påkrevet property '%s' er ikke satt.", TOKEN));
         }
         return new TokenAuthentication(System.getProperty(TOKEN));
     }

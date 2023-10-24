@@ -1,5 +1,7 @@
 package no.nav.brregstub.ws;
 
+import jakarta.xml.bind.JAXB;
+import jakarta.xml.bind.JAXBElement;
 import no.nav.brregstub.service.BrregService;
 import no.nav.brregstub.tjenestekontrakter.ws.HentRoller;
 import no.nav.brregstub.tjenestekontrakter.ws.HentRollerResponse;
@@ -13,8 +15,6 @@ import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 
-import javax.xml.bind.JAXB;
-import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 import java.io.StringWriter;
 

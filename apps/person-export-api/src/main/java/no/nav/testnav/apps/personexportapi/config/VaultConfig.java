@@ -30,7 +30,7 @@ public class VaultConfig extends AbstractVaultConfiguration {
         }
         var token = System.getProperty(VAULT_TOKEN);
         if (isBlank(token)) {
-            throw new IllegalArgumentException("påkrevd property 'spring.cloud.vault.token' er ikke satt.");
+            throw new IllegalArgumentException("Påkrevet property 'spring.cloud.vault.token' er ikke satt.");
         }
         return new TokenAuthentication(System.getProperty(VAULT_TOKEN));
     }

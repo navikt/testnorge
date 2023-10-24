@@ -1,0 +1,10 @@
+spring.cloud.vault.token: dummy
+azure.app.client.id: dummy
+azure.app.client.secret: dummy
+
+consumers:
+  dokarkiv:
+    url: http://dokarkiv-dummy.dummy.no
+    cluster: dev-fss
+    name: dokarkiv-dummy
+    namespace: dummy

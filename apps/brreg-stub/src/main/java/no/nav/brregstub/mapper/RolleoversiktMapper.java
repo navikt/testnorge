@@ -1,14 +1,6 @@
 package no.nav.brregstub.mapper;
 
-import static java.time.format.DateTimeFormatter.ISO_DATE;
-import static no.nav.brregstub.api.common.UnderstatusKode.understatusKoder;
-
 import lombok.SneakyThrows;
-
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
-import java.time.LocalDate;
-
 import no.nav.brregstub.api.common.RolleKode;
 import no.nav.brregstub.api.common.RsAdresse;
 import no.nav.brregstub.api.common.RsNavn;
@@ -16,24 +8,24 @@ import no.nav.brregstub.api.v1.RolleTo;
 import no.nav.brregstub.api.v1.RolleoversiktTo;
 import no.nav.brregstub.api.v2.RsRolle;
 import no.nav.brregstub.api.v2.RsRolleoversikt;
-import no.nav.brregstub.tjenestekontrakter.rolleutskrift.AdresseType1;
-import no.nav.brregstub.tjenestekontrakter.rolleutskrift.AdresseType2;
-import no.nav.brregstub.tjenestekontrakter.rolleutskrift.Grunndata;
-import no.nav.brregstub.tjenestekontrakter.rolleutskrift.Grunndata.Melding;
-import no.nav.brregstub.tjenestekontrakter.rolleutskrift.Grunndata.Melding.RolleInnehaver;
-import no.nav.brregstub.tjenestekontrakter.rolleutskrift.Grunndata.Melding.RolleInnehaver.Fodselsdato;
-import no.nav.brregstub.tjenestekontrakter.rolleutskrift.Grunndata.Melding.Roller.Enhet;
-import no.nav.brregstub.tjenestekontrakter.rolleutskrift.Grunndata.ResponseHeader;
-import no.nav.brregstub.tjenestekontrakter.rolleutskrift.Grunndata.ResponseHeader.UnderStatus;
-import no.nav.brregstub.tjenestekontrakter.rolleutskrift.Grunndata.ResponseHeader.UnderStatus.UnderStatusMelding;
-import no.nav.brregstub.tjenestekontrakter.rolleutskrift.NavnType;
+import no.nav.brregstub.generated.AdresseType1;
+import no.nav.brregstub.generated.AdresseType2;
+import no.nav.brregstub.generated.GrunndataUtskrift;
+import no.nav.brregstub.generated.NavnType;
+
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
+import java.time.LocalDate;
+
+import static java.time.format.DateTimeFormatter.ISO_DATE;
+import static no.nav.brregstub.api.common.UnderstatusKode.understatusKoder;
 
 public class RolleoversiktMapper {
 
     public static final String TJENESTE_NAVN = "hentRolleutskrift";
 
-    public static Grunndata map(RolleoversiktTo to) {
-        var grunndata = new Grunndata();
+    public static GrunndataUtskrift map(RolleoversiktTo to) {
+        var grunndata = new GrunndataUtskrift();
         var responseHeader = mapTilResponseHeader(to);
         grunndata.setResponseHeader(responseHeader);
 
@@ -45,8 +37,8 @@ public class RolleoversiktMapper {
         return grunndata;
     }
 
-    public static Grunndata map(RsRolleoversikt rsRolleoversikt) {
-        var grunndata = new Grunndata();
+    public static GrunndataUtskrift map(RsRolleoversikt rsRolleoversikt) {
+        var grunndata = new GrunndataUtskrift();
         var responseHeader = mapTilResponseHeader(rsRolleoversikt);
         grunndata.setResponseHeader(responseHeader);
 
@@ -58,22 +50,50 @@ public class RolleoversiktMapper {
         return grunndata;
     }
 
-    private static ResponseHeader mapTilResponseHeader(RolleoversiktTo to) {
-        var responseHeader = new ResponseHeader();
+    public static GrunndataUtskrift.Melding.Roller.Enhet.RolleBeskrivelse mapTilRollebeskrivelse(String beskrivelseTo) {
+        var beskrivelse = new GrunndataUtskrift.Melding.Roller.Enhet.RolleBeskrivelse();
+        beskrivelse.setValue(beskrivelseTo);
+        beskrivelse.setLedetekst("Rolle");
+        return beskrivelse;
+    }
+
+    public static GrunndataUtskrift.Melding.Roller.Enhet.RolleBeskrivelse mapTilRollebeskrivelse(RolleKode rolleKode) {
+        var beskrivelse = new GrunndataUtskrift.Melding.Roller.Enhet.RolleBeskrivelse();
+        beskrivelse.setValue(rolleKode.getBeskrivelse());
+        beskrivelse.setLedetekst("Rolle");
+        return beskrivelse;
+    }
+
+    public static GrunndataUtskrift.Melding.Roller.Enhet.Orgnr mapTilOrganisasjonsNummer(Integer orgnrTo) {
+        var orgnr = new GrunndataUtskrift.Melding.Roller.Enhet.Orgnr();
+        orgnr.setValue(orgnrTo);
+        return orgnr;
+    }
+
+    public static NavnType mapTilNavntype(RsNavn rsNavn) {
+        var navn = new NavnType();
+        navn.setNavn1(rsNavn.getNavn1());
+        navn.setNavn2(rsNavn.getNavn2());
+        navn.setNavn3(rsNavn.getNavn3());
+        return navn;
+    }
+
+    private static GrunndataUtskrift.ResponseHeader mapTilResponseHeader(RolleoversiktTo to) {
+        var responseHeader = new GrunndataUtskrift.ResponseHeader();
         responseHeader.setProssessDato(localDateToXmlGregorianCalendar(LocalDate.now()));
         responseHeader.setTjeneste(TJENESTE_NAVN);
         responseHeader.setFodselsnr(to.getFnr());
         responseHeader.setHovedStatus(to.getHovedstatus());
-        var underStatus = new UnderStatus();
+        var underStatus = new GrunndataUtskrift.ResponseHeader.UnderStatus();
         if (to.getUnderstatuser().isEmpty()) {
-            var underStatusMelding = new UnderStatusMelding();
+            var underStatusMelding = new GrunndataUtskrift.ResponseHeader.UnderStatus.UnderStatusMelding();
             underStatusMelding.setKode(0);
             underStatusMelding.setValue(understatusKoder.get(0));
 
             underStatus.getUnderStatusMelding().add(underStatusMelding);
         } else {
             to.getUnderstatuser().forEach(understatus -> {
-                var underStatusMelding = new UnderStatusMelding();
+                var underStatusMelding = new GrunndataUtskrift.ResponseHeader.UnderStatus.UnderStatusMelding();
                 underStatusMelding.setKode(understatus);
                 underStatusMelding.setValue(understatusKoder.get(understatus));
                 underStatus.getUnderStatusMelding().add(underStatusMelding);
@@ -84,22 +104,22 @@ public class RolleoversiktMapper {
         return responseHeader;
     }
 
-    private static ResponseHeader mapTilResponseHeader(RsRolleoversikt rsRolleoversikt) {
-        var responseHeader = new ResponseHeader();
+    private static GrunndataUtskrift.ResponseHeader mapTilResponseHeader(RsRolleoversikt rsRolleoversikt) {
+        var responseHeader = new GrunndataUtskrift.ResponseHeader();
         responseHeader.setProssessDato(localDateToXmlGregorianCalendar(LocalDate.now()));
         responseHeader.setTjeneste(TJENESTE_NAVN);
         responseHeader.setFodselsnr(rsRolleoversikt.getFnr());
         responseHeader.setHovedStatus(rsRolleoversikt.getHovedstatus());
-        var underStatus = new UnderStatus();
+        var underStatus = new GrunndataUtskrift.ResponseHeader.UnderStatus();
         if (rsRolleoversikt.getUnderstatuser().isEmpty()) {
-            var underStatusMelding = new UnderStatusMelding();
+            var underStatusMelding = new GrunndataUtskrift.ResponseHeader.UnderStatus.UnderStatusMelding();
             underStatusMelding.setKode(0);
             underStatusMelding.setValue(understatusKoder.get(0));
 
             underStatus.getUnderStatusMelding().add(underStatusMelding);
         } else {
             rsRolleoversikt.getUnderstatuser().forEach(understatus -> {
-                var underStatusMelding = new UnderStatusMelding();
+                var underStatusMelding = new GrunndataUtskrift.ResponseHeader.UnderStatus.UnderStatusMelding();
                 underStatusMelding.setKode(understatus);
                 underStatusMelding.setValue(understatusKoder.get(understatus));
                 underStatus.getUnderStatusMelding().add(underStatusMelding);
@@ -110,8 +130,8 @@ public class RolleoversiktMapper {
         return responseHeader;
     }
 
-    private static Melding mapTilMelding(RolleoversiktTo to) {
-        var melding = new Melding();
+    private static GrunndataUtskrift.Melding mapTilMelding(RolleoversiktTo to) {
+        var melding = new GrunndataUtskrift.Melding();
         melding.setRolleInnehaver(mapTilRolleInnhaver(to));
         melding.setRoller(mapTilRoller(to));
         melding.setTjeneste(TJENESTE_NAVN);
@@ -119,8 +139,8 @@ public class RolleoversiktMapper {
         return melding;
     }
 
-    private static Melding mapTilMelding(RsRolleoversikt rsRolleoversikt) {
-        var melding = new Melding();
+    private static GrunndataUtskrift.Melding mapTilMelding(RsRolleoversikt rsRolleoversikt) {
+        var melding = new GrunndataUtskrift.Melding();
         melding.setRolleInnehaver(mapTilRolleInnhaver(rsRolleoversikt));
         melding.setRoller(mapTilRoller(rsRolleoversikt));
         melding.setTjeneste(TJENESTE_NAVN);
@@ -128,12 +148,12 @@ public class RolleoversiktMapper {
         return melding;
     }
 
-    private static Melding.Roller mapTilRoller(RolleoversiktTo to) {
-        var roller = new Melding.Roller();
+    private static GrunndataUtskrift.Melding.Roller mapTilRoller(RolleoversiktTo to) {
+        var roller = new GrunndataUtskrift.Melding.Roller();
         if (to.getEnheter() != null) {
             int count = 1;
             for (RolleTo enhetTo : to.getEnheter()) {
-                var enhet = new Enhet();
+                var enhet = new GrunndataUtskrift.Melding.Roller.Enhet();
                 enhet.setRolleBeskrivelse(mapTilRollebeskrivelse(enhetTo.getRollebeskrivelse()));
                 enhet.setNr(count);
                 count++;
@@ -147,12 +167,12 @@ public class RolleoversiktMapper {
         return roller;
     }
 
-    private static Melding.Roller mapTilRoller(RsRolleoversikt rsRolleoversikt) {
-        var roller = new Melding.Roller();
+    private static GrunndataUtskrift.Melding.Roller mapTilRoller(RsRolleoversikt rsRolleoversikt) {
+        var roller = new GrunndataUtskrift.Melding.Roller();
         if (rsRolleoversikt.getEnheter() != null) {
             int count = 1;
             for (RsRolle rsRolle : rsRolleoversikt.getEnheter()) {
-                var enhet = new Enhet();
+                var enhet = new GrunndataUtskrift.Melding.Roller.Enhet();
                 enhet.setRolleBeskrivelse(mapTilRollebeskrivelse(rsRolle.getRolle()));
                 enhet.setNr(count);
                 count++;
@@ -166,48 +186,20 @@ public class RolleoversiktMapper {
         return roller;
     }
 
-    public static Enhet.RolleBeskrivelse mapTilRollebeskrivelse(String beskrivelseTo) {
-        var beskrivelse = new Enhet.RolleBeskrivelse();
-        beskrivelse.setValue(beskrivelseTo);
-        beskrivelse.setLedetekst("Rolle");
-        return beskrivelse;
-    }
-
-    public static Enhet.RolleBeskrivelse mapTilRollebeskrivelse(RolleKode rolleKode) {
-        var beskrivelse = new Enhet.RolleBeskrivelse();
-        beskrivelse.setValue(rolleKode.getBeskrivelse());
-        beskrivelse.setLedetekst("Rolle");
-        return beskrivelse;
-    }
-
-    public static Enhet.Orgnr mapTilOrganisasjonsNummer(Integer orgnrTo) {
-        var orgnr = new Enhet.Orgnr();
-        orgnr.setValue(orgnrTo);
-        return orgnr;
-    }
-
-    public static NavnType mapTilNavntype(RsNavn rsNavn) {
-        var navn = new NavnType();
-        navn.setNavn1(rsNavn.getNavn1());
-        navn.setNavn2(rsNavn.getNavn2());
-        navn.setNavn3(rsNavn.getNavn3());
-        return navn;
-    }
-
-    private static RolleInnehaver mapTilRolleInnhaver(RolleoversiktTo to) {
-        var rolleInnehaver = new RolleInnehaver();
+    private static GrunndataUtskrift.Melding.RolleInnehaver mapTilRolleInnhaver(RolleoversiktTo to) {
+        var rolleInnehaver = new GrunndataUtskrift.Melding.RolleInnehaver();
         rolleInnehaver.setNavn(mapTilNavntype(to.getNavn()));
-        Fodselsdato fødselsdato = new Fodselsdato();
+        GrunndataUtskrift.Melding.RolleInnehaver.Fodselsdato fødselsdato = new GrunndataUtskrift.Melding.RolleInnehaver.Fodselsdato();
         fødselsdato.setValue(localDateToXmlGregorianCalendar(to.getFodselsdato()));
         rolleInnehaver.setFodselsdato(fødselsdato);
         rolleInnehaver.setAdresse(mapTilAdresse(to.getAdresse()));
         return rolleInnehaver;
     }
 
-    private static RolleInnehaver mapTilRolleInnhaver(RsRolleoversikt rsRolleoversikt) {
-        var rolleInnehaver = new RolleInnehaver();
+    private static GrunndataUtskrift.Melding.RolleInnehaver mapTilRolleInnhaver(RsRolleoversikt rsRolleoversikt) {
+        var rolleInnehaver = new GrunndataUtskrift.Melding.RolleInnehaver();
         rolleInnehaver.setNavn(mapTilNavntype(rsRolleoversikt.getNavn()));
-        Fodselsdato fødselsdato = new Fodselsdato();
+        GrunndataUtskrift.Melding.RolleInnehaver.Fodselsdato fødselsdato = new GrunndataUtskrift.Melding.RolleInnehaver.Fodselsdato();
         fødselsdato.setValue(localDateToXmlGregorianCalendar(rsRolleoversikt.getFodselsdato()));
         rolleInnehaver.setFodselsdato(fødselsdato);
         rolleInnehaver.setAdresse(mapTilAdresse(rsRolleoversikt.getAdresse()));
@@ -252,15 +244,15 @@ public class RolleoversiktMapper {
         return adresse;
     }
 
-    private static Enhet.Adresse mapTilAdresseEnhet(RolleTo to) {
-        var adresse = new Enhet.Adresse();
+    private static GrunndataUtskrift.Melding.Roller.Enhet.Adresse mapTilAdresseEnhet(RolleTo to) {
+        var adresse = new GrunndataUtskrift.Melding.Roller.Enhet.Adresse();
         adresse.setForretningsAdresse(mapTilAdresse2(to.getForretningsAdresse()));
         adresse.setPostAdresse(mapTilAdresse2(to.getPostAdresse()));
         return adresse;
     }
 
-    private static Enhet.Adresse mapTilAdresseEnhet(RsRolle rsRolle) {
-        var adresse = new Enhet.Adresse();
+    private static GrunndataUtskrift.Melding.Roller.Enhet.Adresse mapTilAdresseEnhet(RsRolle rsRolle) {
+        var adresse = new GrunndataUtskrift.Melding.Roller.Enhet.Adresse();
         adresse.setForretningsAdresse(mapTilAdresse2(rsRolle.getForretningsAdresse()));
         adresse.setPostAdresse(mapTilAdresse2(rsRolle.getPostAdresse()));
         return adresse;

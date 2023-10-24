@@ -1,6 +1,5 @@
 package no.nav.dolly.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.dolly.MockedJwtAuthenticationTokenUtils;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.OrganisasjonBestilling;
@@ -25,14 +24,9 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDateTime;
 
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -71,8 +65,6 @@ class OrganisasjonBestillingMalServiceTest {
     @Autowired
     private BrukerRepository brukerRepository;
     @Autowired
-    private ObjectMapper objectMapper;
-    @Autowired
     private Flyway flyway;
 
     @BeforeEach
@@ -97,8 +89,8 @@ class OrganisasjonBestillingMalServiceTest {
     void shouldCreateAndGetMaler()
             throws Exception {
 
-        var bruker_en = brukerRepository.findBrukerByBrukerId(DUMMY_EN.getBrukerId()).get();
-        var bruker_to = brukerRepository.findBrukerByBrukerId(DUMMY_TO.getBrukerId()).get();
+        var bruker_en = brukerRepository.findBrukerByBrukerId(DUMMY_EN.getBrukerId()).orElseThrow();
+        var bruker_to = brukerRepository.findBrukerByBrukerId(DUMMY_TO.getBrukerId()).orElseThrow();
         saveDummyBestillingMal(bruker_en);
         saveDummyBestillingMal(bruker_to);
 
@@ -119,7 +111,7 @@ class OrganisasjonBestillingMalServiceTest {
     void shouldCreateMalerFromExistingOrder()
             throws Exception {
 
-        var bruker_en = brukerRepository.findBrukerByBrukerId(DUMMY_EN.getBrukerId()).get();
+        var bruker_en = brukerRepository.findBrukerByBrukerId(DUMMY_EN.getBrukerId()).orElseThrow();
         var bestilling = saveDummyBestilling(bruker_en);
 
         mockMvc.perform(post("/api/v1/organisasjon/bestilling/malbestilling")
@@ -139,7 +131,7 @@ class OrganisasjonBestillingMalServiceTest {
     void shouldCreateUpdateAndDeleteMal()
             throws Exception {
 
-        var bruker_to = brukerRepository.findBrukerByBrukerId(DUMMY_TO.getBrukerId()).get();
+        var bruker_to = brukerRepository.findBrukerByBrukerId(DUMMY_TO.getBrukerId()).orElseThrow();
         var bestillingMal = saveDummyBestillingMal(bruker_to);
 
         mockMvc.perform(put("/api/v1/organisasjon/bestilling/malbestilling/{id}", bestillingMal.getId())

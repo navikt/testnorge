@@ -21,7 +21,8 @@ public class ArenaServerProperties extends ServerProperties {
     ArenaServerProperties forEnvironment(String env) {
 
         var copy = copyOf(this);
-        copy.setUrl(copy.getUrl().replace("{env}", env));
+        copy.setUrl(copy.getUrl().replace("MILJOE", env));
+        copy.setName(copy.getName().replace("MILJOE", env));
         return copy;
     }
 }
