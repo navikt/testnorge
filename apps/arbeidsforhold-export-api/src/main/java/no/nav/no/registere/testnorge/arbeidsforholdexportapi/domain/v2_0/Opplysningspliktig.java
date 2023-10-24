@@ -5,6 +5,7 @@ import jakarta.xml.bind.JAXBElement;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_0.EDAGM;
 
@@ -80,12 +81,9 @@ public class Opplysningspliktig {
                 .toList();
     }
 
+    @SneakyThrows
     public static Opplysningspliktig from(String xml) {
-        try {
-            return new Opplysningspliktig(from(xml, unmarshaller));
-        } catch (Exception e) {
-            throw new RuntimeException("Klarer ikke a konvertere xmlene til EDAGM", e);
-        }
+        return new Opplysningspliktig(from(xml, unmarshaller));
     }
 
     private List<Permisjon> getPermisjoner() {
