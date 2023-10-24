@@ -73,7 +73,8 @@ public class Testgruppe implements Serializable {
     @Column(name = "DATO_ENDRET", nullable = false)
     private LocalDate datoEndret;
 
-    @OneToMany(mappedBy = "testgruppe", fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name = "tilhoerer_gruppe")
     @Column(unique = true)
     @Builder.Default
     @OrderBy("id DESC")
@@ -84,7 +85,8 @@ public class Testgruppe implements Serializable {
     private Set<Bruker> favorisertAv = new HashSet<>();
 
     @OrderBy("id")
-    @OneToMany(mappedBy = "gruppe", fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "gruppe_id")
     @Builder.Default
     private Set<Bestilling> bestillinger = new HashSet<>();
 

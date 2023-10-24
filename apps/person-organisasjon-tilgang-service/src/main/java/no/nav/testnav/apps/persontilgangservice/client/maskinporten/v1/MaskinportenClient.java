@@ -11,6 +11,10 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.apps.persontilgangservice.client.maskinporten.v1.command.GetAccessTokenCommand;
+import no.nav.testnav.apps.persontilgangservice.client.maskinporten.v1.command.GetWellKnownCommand;
+import no.nav.testnav.apps.persontilgangservice.client.maskinporten.v1.dto.AccessToken;
+import no.nav.testnav.apps.persontilgangservice.config.MaskinportenConfig;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -20,11 +24,6 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.UUID;
 import java.util.function.Function;
-
-import no.nav.testnav.apps.persontilgangservice.client.maskinporten.v1.command.GetAccessTokenCommand;
-import no.nav.testnav.apps.persontilgangservice.client.maskinporten.v1.command.GetWellKnownCommand;
-import no.nav.testnav.apps.persontilgangservice.client.maskinporten.v1.dto.AccessToken;
-import no.nav.testnav.apps.persontilgangservice.config.MaskinportenConfig;
 
 @Slf4j
 @Component
@@ -43,7 +42,7 @@ public class MaskinportenClient {
         );
         this.accessToken = cache(
                 wellKnownMono.flatMap(wellKnown -> new GetAccessTokenCommand(webClient, wellKnown, createJwtClaims(wellKnown.issuer())).call()),
-                value -> Duration.ofSeconds(value.expiresIn() - 10)
+                value -> Duration.ofSeconds(value.expiresIn() - 10L)
         );
     }
 

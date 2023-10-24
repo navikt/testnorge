@@ -41,7 +41,7 @@ public class AaregAdapter extends FasteDataAdapter {
         }
         return new AaregListe(repository.saveAll(list
                 .stream()
-                .map(aareg -> new AaregModel(aareg, getOppinnelse(aareg), getGruppe(aareg)))
+                .map(aareg -> new AaregModel(aareg, getOpprinnelse(aareg), getGruppe(aareg)))
                 .toList())
         );
     }

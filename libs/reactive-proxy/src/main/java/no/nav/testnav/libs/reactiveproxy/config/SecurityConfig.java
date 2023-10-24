@@ -1,6 +1,8 @@
 package no.nav.testnav.libs.reactiveproxy.config;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2ServerToServerConfiguration;
+import no.nav.testnav.libs.reactivesecurity.manager.JwtReactiveAuthenticationManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -8,9 +10,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
-
-import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2ServerToServerConfiguration;
-import no.nav.testnav.libs.reactivesecurity.manager.JwtReactiveAuthenticationManager;
 
 
 @Configuration
@@ -23,21 +22,20 @@ public class SecurityConfig {
     private final JwtReactiveAuthenticationManager jwtReactiveAuthenticationManager;
 
     @Bean
-    public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
-        return http.csrf().disable()
-                .authorizeExchange()
-                .pathMatchers(
-                        "/swagger-ui.html",
+    public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity httpSecurity) {
+        return httpSecurity
+                .csrf(csrfSpec -> csrfSpec.disable())
+                .authorizeExchange(authorizeConfig -> authorizeConfig.pathMatchers(
+                        "/internal/**",
                         "/webjars/**",
+                        "/swagger-resources/**",
                         "/v3/api-docs/**",
-                        "/internal/isReady",
-                        "/internal/isAlive",
-                        "/internal/status"
-                ).permitAll()
-                .anyExchange().authenticated()
-                .and()
-                .oauth2ResourceServer()
-                .jwt(spec -> spec.authenticationManager(jwtReactiveAuthenticationManager))
-                .and().build();
+                        "/swagger-ui/**",
+                        "/swagger",
+                        "/error",
+                        "/swagger-ui.html"
+                ).permitAll().anyExchange().authenticated())
+                .oauth2ResourceServer(oauth2RSConfig -> oauth2RSConfig.jwt(jwtSpec -> jwtSpec.authenticationManager(jwtReactiveAuthenticationManager)))
+                .build();
     }
 }

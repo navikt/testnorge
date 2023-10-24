@@ -7,9 +7,10 @@ import no.nav.brregstub.api.common.RsOrganisasjon;
 import no.nav.brregstub.api.v1.RolleoversiktTo;
 import no.nav.brregstub.database.repository.HentRolleRepository;
 import no.nav.brregstub.database.repository.RolleoversiktRepository;
+import no.nav.brregstub.generated.Grunndata;
+import no.nav.brregstub.generated.GrunndataUtskrift;
 import no.nav.brregstub.mapper.HentRolleMapper;
 import no.nav.brregstub.mapper.RolleoversiktMapper;
-import no.nav.brregstub.tjenestekontrakter.hentroller.Grunndata;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -43,7 +44,7 @@ public class BrregService {
     }
 
     @SneakyThrows
-    public no.nav.brregstub.tjenestekontrakter.rolleutskrift.Grunndata hentRolleutskrift(String requestId) {
+    public GrunndataUtskrift hentRolleutskrift(String requestId) {
         var rolleutskrift = rolleoversiktRepository.findByIdent(requestId);
         if (rolleutskrift.isPresent()) {
             var d = objectMapper.readValue(rolleutskrift.get().getJson(), RolleoversiktTo.class);

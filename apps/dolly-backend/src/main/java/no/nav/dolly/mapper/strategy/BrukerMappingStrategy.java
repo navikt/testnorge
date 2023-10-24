@@ -10,7 +10,6 @@ import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
 
 import static java.util.Objects.nonNull;
-import static java.util.stream.Collectors.toList;
 
 @Component
 public class BrukerMappingStrategy implements MappingStrategy {
@@ -23,7 +22,9 @@ public class BrukerMappingStrategy implements MappingStrategy {
                     public void mapAtoB(Bruker bruker, RsBrukerAndGruppeId rsBruker, MappingContext context) {
 
                         if (!bruker.getFavoritter().isEmpty()) {
-                            rsBruker.setFavoritter(bruker.getFavoritter().stream().map(gruppe -> gruppe.getId().toString()).collect(toList()));
+                            rsBruker.setFavoritter(bruker.getFavoritter().stream()
+                                    .map(gruppe -> gruppe.getId().toString())
+                                    .toList());
                         }
                     }
                 })

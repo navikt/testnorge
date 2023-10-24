@@ -1,24 +1,22 @@
 package no.nav.no.registere.testnorge.arbeidsforholdexportapi.domain.v2_0;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBElement;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
+import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_0.EDAGM;
+
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
-
-import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_0.EDAGM;
 
 @Slf4j
 @RequiredArgsConstructor
 public class Opplysningspliktig {
-    private final EDAGM edagm;
     private static Unmarshaller unmarshaller;
 
     static {
@@ -30,23 +28,7 @@ public class Opplysningspliktig {
         }
     }
 
-
-    @SuppressWarnings("unchecked")
-    private static EDAGM from(String xml, Unmarshaller unmarshaller) throws JAXBException {
-        try (var reader = new StringReader(xml)) {
-            EDAGM edagm = ((JAXBElement<EDAGM>) unmarshaller.unmarshal(reader)).getValue();
-            reader.close();
-            return edagm;
-        }
-    }
-
-    public static Opplysningspliktig from(String xml) {
-        try {
-            return new Opplysningspliktig(from(xml, unmarshaller));
-        } catch (Exception e) {
-            throw new RuntimeException("Klarer ikke a konvertere xmlene til EDAGM", e);
-        }
-    }
+    private final EDAGM edagm;
 
     public List<Avvik> toAvvik() {
         var avviks = new ArrayList<Avvik>();
@@ -56,7 +38,7 @@ public class Opplysningspliktig {
                         .filter(Arbeidsforhold::hasAvvik)
                         .map(Arbeidsforhold::getAvvikList)
                         .flatMap(Collection::stream)
-                        .collect(Collectors.toList())
+                        .toList()
         );
         avviks.addAll(
                 getPermisjoner()
@@ -64,7 +46,7 @@ public class Opplysningspliktig {
                         .filter(Permisjon::hasAvvik)
                         .map(Permisjon::getAvvikList)
                         .flatMap(Collection::stream)
-                        .collect(Collectors.toList())
+                        .toList()
         );
 
         avviks.addAll(
@@ -73,9 +55,35 @@ public class Opplysningspliktig {
                         .filter(Inntekt::hasAvvik)
                         .map(Inntekt::getAvvikList)
                         .flatMap(Collection::stream)
-                        .collect(Collectors.toList())
+                        .toList()
         );
         return avviks;
+    }
+
+    public List<Permisjon> toPermisjoner() {
+        return getPermisjoner()
+                .stream()
+                .filter(value -> !value.hasAvvik())
+                .toList();
+    }
+
+    public List<Arbeidsforhold> toArbeidsforhold() {
+        return getArbeidsforhold()
+                .stream()
+                .filter(value -> !value.hasAvvik())
+                .toList();
+    }
+
+    public List<Inntekt> toInntekt() {
+        return getInntekter()
+                .stream()
+                .filter(value -> !value.hasAvvik())
+                .toList();
+    }
+
+    @SneakyThrows
+    public static Opplysningspliktig from(String xml) {
+        return new Opplysningspliktig(from(xml, unmarshaller));
     }
 
     private List<Permisjon> getPermisjoner() {
@@ -83,22 +91,7 @@ public class Opplysningspliktig {
                 .stream()
                 .map(Arbeidsforhold::getPermisjoner)
                 .flatMap(Collection::stream)
-                .collect(Collectors.toList());
-    }
-
-
-    public List<Permisjon> toPermisjoner() {
-        return getPermisjoner()
-                .stream()
-                .filter(value -> !value.hasAvvik())
-                .collect(Collectors.toList());
-    }
-
-    public List<Arbeidsforhold> toArbeidsforhold() {
-        return getArbeidsforhold()
-                .stream()
-                .filter(value -> !value.hasAvvik())
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private List<Arbeidsforhold> getArbeidsforhold() {
@@ -113,13 +106,6 @@ public class Opplysningspliktig {
         return arbeidsforholds;
     }
 
-    public List<Inntekt> toInntekt() {
-        return getInntekter()
-                .stream()
-                .filter(value -> !value.hasAvvik())
-                .collect(Collectors.toList());
-    }
-
     private List<Inntekt> getInntekter() {
         List<Inntekt> inntekts = new ArrayList<>();
         var leveranse = this.edagm.getLeveranse();
@@ -130,5 +116,12 @@ public class Opplysningspliktig {
                 })
         );
         return inntekts;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static EDAGM from(String xml, Unmarshaller unmarshaller) throws JAXBException {
+        try (var reader = new StringReader(xml)) {
+            return ((JAXBElement<EDAGM>) unmarshaller.unmarshal(reader)).getValue();
+        }
     }
 }

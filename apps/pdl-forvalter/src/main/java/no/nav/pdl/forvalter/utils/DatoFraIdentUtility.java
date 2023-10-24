@@ -15,8 +15,6 @@ import static java.lang.Integer.parseInt;
 @UtilityClass
 public class DatoFraIdentUtility {
 
-    private static final long MYNDIG = 18;
-
     public static LocalDate getDato(String ident) {
 
         var year = parseInt(ident.substring(4, 6));

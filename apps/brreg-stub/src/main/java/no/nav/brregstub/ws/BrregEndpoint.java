@@ -1,5 +1,7 @@
 package no.nav.brregstub.ws;
 
+import jakarta.xml.bind.JAXB;
+import jakarta.xml.bind.JAXBElement;
 import no.nav.brregstub.service.BrregService;
 import no.nav.brregstub.tjenestekontrakter.ws.HentRoller;
 import no.nav.brregstub.tjenestekontrakter.ws.HentRollerResponse;
@@ -13,8 +15,6 @@ import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 
-import javax.xml.bind.JAXB;
-import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 import java.io.StringWriter;
 
@@ -42,9 +42,9 @@ public class BrregEndpoint {
             var response = new HentRollerResponse();
             response.setReturn(konverterGrunndataTilString(brregService.hentRoller(request.getValue().getOrgnr())));
 
-            return new JAXBElement<>(new QName("http://no/brreg/saksys/grunndata/ws", "hentRollerResponse"),
-                                     HentRollerResponse.class,
-                                     response);
+            return new JAXBElement<>(new QName(NAMESPACE_URI, "hentRollerResponse"),
+                    HentRollerResponse.class,
+                    response);
         } catch (Exception e) {
             LOGGER.error("Ukjent feil ved kall av hentRoller", e);
             throw new RuntimeException("Ukjent feil ved kall av hentRoller: " + e.getMessage());
@@ -60,8 +60,8 @@ public class BrregEndpoint {
             var response = new HentRolleutskriftResponse();
             response.setReturn(konverterGrunndataTilString(brregService.hentRolleutskrift(request.getValue().getRequestId())));
             return new JAXBElement<>(new QName("http://no/brreg/saksys/grunndata/ws", "hentRolleutskriftResponse"),
-                                     HentRolleutskriftResponse.class,
-                                     response);
+                    HentRolleutskriftResponse.class,
+                    response);
         } catch (Exception e) {
             LOGGER.error("Ukjent feil ved kall av hentRolleutskrift", e);
             throw new RuntimeException("Ukjent feil ved kall av hentRoller: " + e.getMessage());

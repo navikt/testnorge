@@ -16,17 +16,12 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class ProfilService {
+    private static final String UKJENT = "[ukjent]";
+    private static final String BANK_ID = "BankId";
     private final AzureAdProfileConsumer azureAdProfileConsumer;
     private final TokenXResourceServerProperties tokenXResourceServerProperties;
     private final PersonOrganisasjonTilgangConsumer organisasjonTilgangConsumer;
     private final GetUserInfo getUserInfo;
-
-    private JwtAuthenticationToken getJwtAuthenticationToken() {
-        return Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
-                .filter(o -> o instanceof JwtAuthenticationToken)
-                .map(JwtAuthenticationToken.class::cast)
-                .orElseThrow();
-    }
 
     public Profil getProfile() {
         if (isTokenX()) {
@@ -35,26 +30,33 @@ public class ProfilService {
                             .getOrganisasjon(userInfo.organisasjonsnummer())
                             .map(dto -> new Profil(
                                     userInfo.brukernavn(),
-                                    "[ukjent]",
-                                    "[ukjent]",
+                                    UKJENT,
+                                    UKJENT,
                                     dto.navn(),
                                     dto.organisasjonsnummer(),
-                                    "BankId")
+                                    BANK_ID)
                             ).block()
             ).orElse(new Profil(
-                    "BankId",
-                    "[ukjent]",
-                    "[ukjent]",
-                    "[ukjent]",
-                    "[ukjent]",
-                    "BankId"
+                    BANK_ID,
+                    UKJENT,
+                    UKJENT,
+                    UKJENT,
+                    UKJENT,
+                    BANK_ID
             ));
         }
         return azureAdProfileConsumer.getProfil();
     }
 
     public Optional<byte[]> getImage() {
-            return isTokenX() ? Optional.empty() : azureAdProfileConsumer.getProfilImage();
+        return isTokenX() ? Optional.empty() : azureAdProfileConsumer.getProfilImage();
+    }
+
+    private JwtAuthenticationToken getJwtAuthenticationToken() {
+        return Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
+                .filter(JwtAuthenticationToken.class::isInstance)
+                .map(JwtAuthenticationToken.class::cast)
+                .orElseThrow();
     }
 
     private boolean isTokenX() {

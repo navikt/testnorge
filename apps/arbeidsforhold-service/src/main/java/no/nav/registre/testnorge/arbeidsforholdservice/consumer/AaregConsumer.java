@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
 
@@ -66,7 +65,7 @@ public class AaregConsumer {
                 .stream()
                 .filter(Objects::nonNull)
                 .filter(value -> value.getArbeidsgiver().getOrganisasjonsnummer().equals(orgnummer))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public Optional<ArbeidsforholdDTO> getArbeidsforhold(String ident, String orgnummer, String arbeidsforholdId, String miljo) {

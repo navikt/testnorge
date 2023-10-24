@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.apptilganganalyseservice.dto.AccessDTO;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 public class Access {
@@ -19,19 +18,19 @@ public class Access {
                 .stream()
                 .filter(application -> application.getInbound().contains(name))
                 .map(application -> new Application(application, find(application, deploys)))
-                .collect(Collectors.toList());
+                .toList();
         this.accessFrom = applications
                 .stream()
                 .filter(application -> application.getOutbound().contains(name))
                 .map(application -> new Application(application, find(application, deploys)))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public AccessDTO toDTO() {
         return new AccessDTO(
                 name,
-                accessTo.stream().map(Application::toDTO).collect(Collectors.toList()),
-                accessFrom.stream().map(Application::toDTO).collect(Collectors.toList())
+                accessTo.stream().map(Application::toDTO).toList(),
+                accessFrom.stream().map(Application::toDTO).toList()
         );
     }
 

@@ -38,11 +38,9 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
-public class BrukerServiceTest {
+class BrukerServiceTest {
 
     private final static String BRUKERID = "123";
-    private final static String BRUKERNAVN = "BRUKER";
-    private final static String EPOST = "@@@@";
 
     @Mock
     private BrukerRepository brukerRepository;
@@ -53,41 +51,46 @@ public class BrukerServiceTest {
     @InjectMocks
     private BrukerService brukerService;
 
+    @BeforeEach
+    public void setup() {
+        MockedJwtAuthenticationTokenUtils.setJwtAuthenticationToken();
+    }
+
     @Test
-    public void fetchBruker_kasterIkkeExceptionOgReturnererBrukerHvisBrukerErFunnet() {
+    void fetchBruker_kasterIkkeExceptionOgReturnererBrukerHvisBrukerErFunnet() {
         when(brukerRepository.findBrukerByBrukerId(any())).thenReturn(Optional.of(Bruker.builder().build()));
         Bruker b = brukerService.fetchBruker("test");
         assertThat(b, is(notNullValue()));
     }
 
     @Test
-    public void fetchBruker_kasterExceptionHvisIngenBrukerFunnet() {
+    void fetchBruker_kasterExceptionHvisIngenBrukerFunnet() {
         when(brukerRepository.findBrukerByBrukerId(any())).thenReturn(Optional.empty());
         Assertions.assertThrows(NotFoundException.class, () ->
                 brukerService.fetchBruker(BRUKERID));
     }
 
     @Test
-    public void getBruker_KallerRepoHentBrukere() {
+    void getBruker_KallerRepoHentBrukere() {
         brukerService.fetchBrukere();
         verify(brukerRepository).findAllByOrderById();
     }
 
     @Test
-    public void fetchOrCreateBruker_saveKallesVedNotFoundException() {
+    void fetchOrCreateBruker_saveKallesVedNotFoundException() {
         brukerService.fetchOrCreateBruker("tullestring");
         verify(brukerRepository).save(any());
     }
 
     @Test
-    public void saveBrukerTilDB_kasterExceptionNarDBConstrainBrytes() {
+    void saveBrukerTilDB_kasterExceptionNarDBConstrainBrytes() {
         when(brukerRepository.save(any(Bruker.class))).thenThrow(DataIntegrityViolationException.class);
         Assertions.assertThrows(ConstraintViolationException.class, () ->
                 brukerService.saveBrukerTilDB(Bruker.builder().build()));
     }
 
     @Test
-    public void leggTilFavoritter_medGrupperIDer() {
+    void leggTilFavoritter_medGrupperIDer() {
         Long ID = 1L;
         Testgruppe testgruppe = Testgruppe.builder().navn("gruppe").hensikt("hen").build();
         Bruker bruker = Bruker.builder().brukerId(BRUKERID).favoritter(new HashSet<>()).build();
@@ -110,7 +113,7 @@ public class BrukerServiceTest {
     }
 
     @Test
-    public void fjernFavoritter_medGrupperIDer() {
+    void fjernFavoritter_medGrupperIDer() {
         Long ID = 1L;
         Bruker bruker = Bruker.builder().brukerId(BRUKERID).build();
         Testgruppe testgruppe = Testgruppe.builder().navn("gruppe").id(ID).opprettetAv(bruker).hensikt("hen").build();
@@ -140,7 +143,7 @@ public class BrukerServiceTest {
     }
 
     @Test
-    public void fetchBrukere() {
+    void fetchBrukere() {
 
         brukerService.fetchBrukere();
 
@@ -148,17 +151,12 @@ public class BrukerServiceTest {
     }
 
     @Test
-    public void sletteBrukerFavoritterByGroupId() {
+    void sletteBrukerFavoritterByGroupId() {
 
         long groupId = 1L;
 
         brukerService.sletteBrukerFavoritterByGroupId(groupId);
 
         verify(brukerRepository).deleteBrukerFavoritterByGroupId(groupId);
-    }
-
-    @BeforeEach
-    public void setup() {
-        MockedJwtAuthenticationTokenUtils.setJwtAuthenticationToken();
     }
 }

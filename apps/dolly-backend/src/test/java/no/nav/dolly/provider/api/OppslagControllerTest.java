@@ -3,7 +3,6 @@ package no.nav.dolly.provider.api;
 import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
 import no.nav.dolly.consumer.kodeverk.KodeverkMapper;
 import no.nav.dolly.consumer.kodeverk.domain.KodeverkBetydningerResponse;
-import no.nav.dolly.consumer.kodeverk.domain.KodeverkBetydningerResponse.Betydning;
 import no.nav.dolly.domain.resultset.kodeverk.KodeverkAdjusted;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,7 +18,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class OppslagControllerTest {
+class OppslagControllerTest {
 
     private static final String STANDARD_KODEVERK_NAME = "name";
 
@@ -33,20 +32,17 @@ public class OppslagControllerTest {
     private OppslagController oppslagController;
 
     @Mock
-    private Betydning betydning;
-
-    @Mock
     private KodeverkAdjusted kodeverkAdjusted;
 
     @Mock
     private KodeverkBetydningerResponse kodeverkKoderBetydningerResponse;
 
     @Test
-    public void fetchKodeverkByName_happyPath() {
+    void fetchKodeverkByName_happyPath() {
 
         when(kodeverkConsumer.fetchKodeverkByName(STANDARD_KODEVERK_NAME)).thenReturn(Flux.just(kodeverkKoderBetydningerResponse));
 
-        when(kodeverkMapper.mapBetydningToAdjustedKodeverk(eq(STANDARD_KODEVERK_NAME), any(Flux.class)))
+        when(kodeverkMapper.mapBetydningToAdjustedKodeverk(eq(STANDARD_KODEVERK_NAME), any()))
                 .thenReturn(Flux.just(kodeverkAdjusted));
 
         var kodeverkResponse = oppslagController.fetchKodeverkByName(STANDARD_KODEVERK_NAME);

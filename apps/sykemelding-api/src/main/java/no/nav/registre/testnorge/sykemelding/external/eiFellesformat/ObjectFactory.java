@@ -31,11 +31,11 @@ import javax.xml.namespace.QName;
 @XmlRegistry
 public class ObjectFactory {
 
-    private final static QName _SporinformasjonBlokk_QNAME = new QName("http://www.trygdeetaten.no/xml/eiff/1/", "SporinformasjonBlokk");
-    private final static QName _Etternavn_QNAME = new QName("http://www.trygdeetaten.no/xml/eiff/1/", "Etternavn");
-    private final static QName _Fornavn_QNAME = new QName("http://www.trygdeetaten.no/xml/eiff/1/", "Fornavn");
-    private final static QName _Mellomnavn_QNAME = new QName("http://www.trygdeetaten.no/xml/eiff/1/", "Mellomnavn");
-    private final static QName _PostalAddress_QNAME = new QName("http://www.trygdeetaten.no/xml/eiff/1/", "PostalAddress");
+    private static final QName _SporinformasjonBlokk_QNAME = new QName("http://www.trygdeetaten.no/xml/eiff/1/", "SporinformasjonBlokk");
+    private static final QName _Etternavn_QNAME = new QName("http://www.trygdeetaten.no/xml/eiff/1/", "Etternavn");
+    private static final QName _Fornavn_QNAME = new QName("http://www.trygdeetaten.no/xml/eiff/1/", "Fornavn");
+    private static final QName _Mellomnavn_QNAME = new QName("http://www.trygdeetaten.no/xml/eiff/1/", "Mellomnavn");
+    private static final QName _PostalAddress_QNAME = new QName("http://www.trygdeetaten.no/xml/eiff/1/", "PostalAddress");
 
     /**
      * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: no.nav.helse.eiFellesformat

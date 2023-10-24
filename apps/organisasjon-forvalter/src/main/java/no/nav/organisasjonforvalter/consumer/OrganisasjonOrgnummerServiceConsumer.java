@@ -7,12 +7,10 @@ import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
-
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.lang.String.format;
@@ -48,7 +46,8 @@ public class OrganisasjonOrgnummerServiceConsumer {
 
             log.info("Orgnummer-service svarte etter {} ms", currentTimeMillis() - startTime);
 
-            return Stream.of(response).collect(Collectors.toList());
+            return Stream.of(response)
+                    .toList();
 
         } catch (WebClientResponseException e) {
             log.error(e.getMessage(), e);

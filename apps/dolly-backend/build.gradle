@@ -1,8 +1,8 @@
 plugins {
     id 'java'
     id "org.sonarqube" version "4.0.0.2929"
-    id 'org.springframework.boot' version "3.0.4"
-    id 'io.spring.dependency-management' version "1.1.0"
+    id 'org.springframework.boot' version "3.1.4"
+    id 'io.spring.dependency-management' version "1.1.3"
     id "jacoco"
 }
 
@@ -41,11 +41,15 @@ bootJar {
 dependencyManagement {
     applyMavenExclusions = false
     imports {
-        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2022.0.1'
+        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2022.0.4'
     }
 }
 
-java.sourceCompatibility = JavaVersion.VERSION_17
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
 
 repositories {
     mavenCentral()
@@ -61,7 +65,7 @@ repositories {
 
 dependencies {
 
-    implementation platform('org.testcontainers:testcontainers-bom:1.17.6')
+    implementation platform('org.testcontainers:testcontainers-bom:1.19.1')
 
     implementation 'no.nav.testnav.libs:servlet-core'
     implementation 'no.nav.testnav.libs:servlet-security'
@@ -74,9 +78,9 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
     implementation 'org.springframework.cloud:spring-cloud-vault-config-databases'
 
-    implementation 'net.logstash.logback:logstash-logback-encoder:7.3'
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.4'
-    implementation 'io.swagger.core.v3:swagger-annotations-jakarta:2.2.8'
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
+    implementation 'io.swagger.core.v3:swagger-annotations-jakarta:2.2.16'
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
@@ -93,7 +97,7 @@ dependencies {
     implementation 'com.github.ben-manes.caffeine:caffeine'
 
     implementation 'org.ehcache:ehcache:3.10.8'
-    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.14.2'
     implementation 'org.postgresql:postgresql'
     implementation 'org.flywaydb:flyway-core'
     implementation 'io.micrometer:micrometer-registry-prometheus'
@@ -109,7 +113,7 @@ dependencies {
     testImplementation 'io.projectreactor:reactor-test:3.5.3'
     testImplementation 'org.testcontainers:junit-jupiter'
     testImplementation 'org.testcontainers:postgresql'
-    testImplementation 'org.bitbucket.b_c:jose4j:0.9.1'
+    testImplementation 'org.bitbucket.b_c:jose4j:0.9.3'
     implementation 'net.java.dev.jna:jna:5.13.0'
 
     implementation 'org.projectlombok:lombok'

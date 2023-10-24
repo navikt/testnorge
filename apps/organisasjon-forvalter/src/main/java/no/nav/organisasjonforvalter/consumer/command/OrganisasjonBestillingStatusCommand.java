@@ -25,23 +25,6 @@ public class OrganisasjonBestillingStatusCommand implements Callable<Mono<Bestil
     private final Status status;
     private final String token;
 
-    private static String getMessage(Throwable throwable) {
-
-        return throwable instanceof WebClientResponseException ?
-                ((WebClientResponseException) throwable).getResponseBodyAsString() :
-                throwable.getMessage();
-    }
-
-    private static Mono<BestillingStatus> getError(Status status, String description) {
-
-        return Mono.just(BestillingStatus.builder()
-                .orgnummer(status.getOrganisasjonsnummer())
-                .uuid(status.getUuid())
-                .miljoe(status.getMiljoe())
-                .feilmelding(description)
-                .build());
-    }
-
     @Override
     public Mono<BestillingStatus> call() {
 
@@ -61,5 +44,22 @@ public class OrganisasjonBestillingStatusCommand implements Callable<Mono<Bestil
                         .filter(WebClientFilter::is5xxException))
                 .doOnError(throwable -> log.error(getMessage(throwable)))
                 .onErrorResume(throwable -> getError(status, getMessage(throwable)));
+    }
+
+    private static String getMessage(Throwable throwable) {
+
+        return throwable instanceof WebClientResponseException webClientResponseException ?
+                webClientResponseException.getResponseBodyAsString() :
+                throwable.getMessage();
+    }
+
+    private static Mono<BestillingStatus> getError(Status status, String description) {
+
+        return Mono.just(BestillingStatus.builder()
+                .orgnummer(status.getOrganisasjonsnummer())
+                .uuid(status.getUuid())
+                .miljoe(status.getMiljoe())
+                .feilmelding(description)
+                .build());
     }
 }

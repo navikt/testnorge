@@ -2,6 +2,11 @@ package no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.OppsummeringsdokumentConsumer;
+import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.domain.OppsummeringsdokumentTimeline;
+import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.domain.Person;
+import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.domain.amelding.Arbeidsforhold;
+import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.domain.amelding.Oppsummeringsdokument;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
@@ -9,12 +14,6 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.OppsummeringsdokumentConsumer;
-import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.domain.OppsummeringsdokumentTimeline;
-import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.domain.Person;
-import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.domain.amelding.Arbeidsforhold;
-import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.domain.amelding.Oppsummeringsdokument;
 
 @Slf4j
 @Service
@@ -48,7 +47,7 @@ public class OppsummeringsdokumentService {
                 .values()
                 .parallelStream()
                 .map(OppsummeringsdokumentTimeline::new)
-                .forEach(timeline -> timeline.applyForAll((value) -> oppsummeringsdokumentConsumer.save(value.toDTO(), miljo).block()));
+                .forEach(timeline -> timeline.applyForAll(value -> oppsummeringsdokumentConsumer.save(value.toDTO(), miljo).block()));
     }
 
     private List<Oppsummeringsdokument> getOppdatertOppsumeringsdokument(List<Person> personer, LocalDate kalendermnd, String miljo) {
@@ -63,8 +62,8 @@ public class OppsummeringsdokumentService {
                                 .map(oppsummeringsdokument -> {
                                     oppsummeringsdokument.addAll(entry.getValue());
                                     return oppsummeringsdokument;
-                                })
-                        ).collect(Collectors.toList())
+                                }))
+                        .toList()
         ).collectList().block();
         log.info("Oppdatert {} opplysningsplikitg med nye arbeidsforhold.", oppsummeringsdokumenter.size());
         return oppsummeringsdokumenter;

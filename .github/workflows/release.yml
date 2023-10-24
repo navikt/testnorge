@@ -20,7 +20,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: '17'
+          java-version: 21
       - name: "Setup"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -23,19 +23,12 @@ import java.util.concurrent.Callable;
 public class IdentpoolGetCommand implements Callable<Mono<IdentpoolStatusDTO>> {
 
     private static final String IDENTPOOL = "Identpool: ";
-    private static final String IDENT = "personidentifikator";
+    private static final String PERSONIDENTIFIKATOR = "personidentifikator";
 
     private final WebClient webClient;
     private final String url;
     private final String ident;
     private final String token;
-
-    protected static String getMessage(Throwable error) {
-
-        return error instanceof WebClientResponseException webClientResponseException ?
-                webClientResponseException.getResponseBodyAsString(StandardCharsets.UTF_8) :
-                error.getMessage();
-    }
 
     @Override
     public Mono<IdentpoolStatusDTO> call() {
@@ -45,15 +38,15 @@ public class IdentpoolGetCommand implements Callable<Mono<IdentpoolStatusDTO>> {
                 .uri(builder -> builder.path(url).build())
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                .header(IDENT, ident)
+                .header(PERSONIDENTIFIKATOR, ident)
                 .retrieve()
                 .bodyToMono(IdentpoolStatusDTO.class)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException))
                 .onErrorResume(throwable -> {
                     log.error(getMessage(throwable));
-                    if (throwable instanceof WebClientResponseException) {
-                        if (((WebClientResponseException) throwable).getStatusCode() == HttpStatus.NOT_FOUND) {
+                    if (throwable instanceof WebClientResponseException webClientResponseException) {
+                        if (webClientResponseException.getStatusCode() == HttpStatus.NOT_FOUND) {
                             return Mono.error(new NotFoundException(IDENTPOOL + getMessage(throwable)));
                         } else {
                             return Mono.error(new InvalidRequestException(IDENTPOOL + getMessage(throwable)));
@@ -62,5 +55,12 @@ public class IdentpoolGetCommand implements Callable<Mono<IdentpoolStatusDTO>> {
                         return Mono.error(new InternalError(IDENTPOOL + getMessage(throwable)));
                     }
                 });
+    }
+
+    protected static String getMessage(Throwable error) {
+
+        return error instanceof WebClientResponseException webClientResponseException ?
+                webClientResponseException.getResponseBodyAsString(StandardCharsets.UTF_8) :
+                error.getMessage();
     }
 }

@@ -16,7 +16,7 @@ jobs:
     with:
       cluster: "dev-fss"
       working-directory: "proxies/pensjon-testdata-facade-proxy"
-      deploy-tag: "#deploy-pensjon-testdata-facade-proxy"
+      deploy-tag: "#deploy-proxy"
     permissions:
       contents: read
       id-token: write

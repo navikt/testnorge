@@ -3,9 +3,9 @@ package no.nav.dolly.bestilling.medl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
+import no.nav.dolly.bestilling.medl.command.MedlGetCommand;
 import no.nav.dolly.bestilling.medl.command.MedlPostCommand;
 import no.nav.dolly.bestilling.medl.command.MedlPutCommand;
-import no.nav.dolly.bestilling.medl.command.getMedldataCommand;
 import no.nav.dolly.bestilling.medl.dto.MedlPostResponse;
 import no.nav.dolly.config.credentials.MedlProxyProperties;
 import no.nav.dolly.domain.resultset.medl.MedlData;
@@ -68,7 +68,7 @@ public class MedlConsumer implements ConsumerStatus {
         return tokenService.exchange(serviceProperties)
                 .flatMapMany(token -> Flux.fromIterable(identer)
                         .delayElements(Duration.ofMillis(100))
-                        .flatMap(ident -> new getMedldataCommand(webClient, ident,
+                        .flatMap(ident -> new MedlGetCommand(webClient, ident,
                                 token.getTokenValue()).call()));
     }
 

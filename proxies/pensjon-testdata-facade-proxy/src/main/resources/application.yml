@@ -29,7 +29,7 @@ consumers:
     url: https://popp-testdata.intern.dev.nav.no
     cluster: dev-gcp
   samboer-testdata:
-    name: pensjon-samboerforhold-backend-{env}
+    name: pensjon-samboerforhold-backend-MILJOE
     namespace: pensjon-person
-    url:  https://pensjon-samboerforhold-backend-{env}.intern.dev.nav.no
+    url:  https://pensjon-samboerforhold-backend-MILJOE.intern.dev.nav.no
     cluster: dev-gcp

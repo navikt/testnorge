@@ -16,6 +16,8 @@ import static net.logstash.logback.util.StringUtils.isBlank;
 @VaultPropertySource(value = "secret/.common/tokenx/dev/app-1", ignoreSecretNotFound = false)
 public class DevConfig extends AbstractVaultConfiguration {
 
+       private static final String VAULT_TOKEN = "spring.cloud.vault.token";
+
     @Override
     public VaultEndpoint vaultEndpoint() {
         return VaultEndpoint.create("vault.adeo.no", 443);
@@ -24,12 +26,12 @@ public class DevConfig extends AbstractVaultConfiguration {
     @Override
     public ClientAuthentication clientAuthentication() {
         if (System.getenv().containsKey("VAULT_TOKEN")) {
-            System.setProperty("spring.cloud.vault.token", System.getenv("VAULT_TOKEN"));
+            System.setProperty(VAULT_TOKEN, System.getenv("VAULT_TOKEN"));
         }
-        var token = System.getProperty("spring.cloud.vault.token");
+        var token = System.getProperty(VAULT_TOKEN);
         if (isBlank(token)) {
-            throw new IllegalArgumentException("Påkreved property 'spring.cloud.vault.token' er ikke satt.");
+            throw new IllegalArgumentException("Påkrevet property 'spring.cloud.vault.token' er ikke satt.");
         }
-        return new TokenAuthentication(System.getProperty("spring.cloud.vault.token"));
+        return new TokenAuthentication(System.getProperty(VAULT_TOKEN));
     }
 }

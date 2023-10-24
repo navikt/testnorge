@@ -54,7 +54,7 @@ public class PersonOrganisasjonTilgangConsumer {
         return tokenExchange.exchange(serviceProperties)
                 .flatMap(accessToken -> new GetPersonOrganisasjonTilgangCommand(webClient, accessToken.getTokenValue(), organisasjonsnummer).call())
                 .onErrorResume(
-                        throwable -> throwable instanceof WebClientResponseException,
+                        WebClientResponseException.class::isInstance,
                         throwable -> {
                             log.warn("Person har ikke tilgang til organisasjon {}.", organisasjonsnummer);
                             return Mono.empty();

@@ -20,7 +20,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasProperty;
 
-public class KodeverkMapperTest {
+class KodeverkMapperTest {
 
     private static final String STANDARD_KODE = "1234";
     private static final String STANDARD_KODE_2 = "5678";
@@ -45,7 +45,7 @@ public class KodeverkMapperTest {
     }
 
     @Test
-    public void mapBetydningToAdjustedKodeverk_gjorOmKodeverkBetydningerTilKodeverkAdjustedMedValueOgLabel() {
+    void mapBetydningToAdjustedKodeverk_gjorOmKodeverkBetydningerTilKodeverkAdjustedMedValueOgLabel() {
         Beskrivelse beskrivelse2 = Beskrivelse.builder().tekst("tekst").term(STANDARD_TERM_2).build();
         Map<String, Beskrivelse> beskrivelser2 = new HashMap<>();
         beskrivelser2.put(KODE_BOKMAAL, beskrivelse2);
@@ -54,10 +54,10 @@ public class KodeverkMapperTest {
         betydninger.put(STANDARD_KODE_2, List.of(betydning2));
 
         var kodeverk = kodeverkMapper.mapBetydningToAdjustedKodeverk("navn",
-                Flux.just(KodeverkBetydningerResponse.builder()
-                        .betydninger(betydninger)
-                        .build()))
-                        .blockFirst();
+                        Flux.just(KodeverkBetydningerResponse.builder()
+                                .betydninger(betydninger)
+                                .build()))
+                .blockFirst();
 
         assertThat(kodeverk.getKoder(), hasItem(allOf(
                 hasProperty("value", equalTo(STANDARD_KODE)),
@@ -77,23 +77,23 @@ public class KodeverkMapperTest {
     }
 
     @Test
-    public void mapBetydningToAdjustedKodeverk_tomListeAvBetydningerGirKodeverkadjustedMedTomListeAvKoder() {
+    void mapBetydningToAdjustedKodeverk_tomListeAvBetydningerGirKodeverkadjustedMedTomListeAvKoder() {
 
         var kodeverk = kodeverkMapper.mapBetydningToAdjustedKodeverk(STANDARD_KODEVERK_NAVN,
-                Flux.just(KodeverkBetydningerResponse.builder()
-                        .betydninger(new HashMap<>())
-                        .build()))
-                        .blockFirst();
+                        Flux.just(KodeverkBetydningerResponse.builder()
+                                .betydninger(new HashMap<>())
+                                .build()))
+                .blockFirst();
 
         assertThat(kodeverk.getKoder().isEmpty(), is(true));
         assertThat(kodeverk.getName(), is(STANDARD_KODEVERK_NAVN));
     }
 
     @Test
-    public void mapBetydningToAdjustedKodeverk_nullVerdiForBetydningerGirKodeverkadjustedMedTomListeAvKoder() {
+    void mapBetydningToAdjustedKodeverk_nullVerdiForBetydningerGirKodeverkadjustedMedTomListeAvKoder() {
 
         var kodeverk = kodeverkMapper.mapBetydningToAdjustedKodeverk(STANDARD_KODEVERK_NAVN, Flux.empty())
-                        .blockFirst();
+                .blockFirst();
 
         Assertions.assertNull(kodeverk);
     }

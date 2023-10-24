@@ -52,7 +52,7 @@ public class RolleoversiktControllerTest {
 
     @Test
     @DisplayName("GET rolleoversikt returnerer 404 hvis ikke eksisterer")
-    public void skalKasteNotFoundHvisRolleIkkeEksister() {
+    void skalKasteNotFoundHvisRolleIkkeEksister() {
         var response = restTemplate.exchange(API_V_2_ROLLEUTSKRIFT,
                 HttpMethod.GET,
                 createHttpEntity("eksister ikke", null),
@@ -62,14 +62,14 @@ public class RolleoversiktControllerTest {
 
     @Test
     @DisplayName("GET rolleoversikt returnerer 400 hvis input mangler")
-    public void skalKasteBadRequestHvisInputMangler() {
+    void skalKasteBadRequestHvisInputMangler() {
         var response = restTemplate.getForEntity(API_V_2_ROLLEUTSKRIFT, Map.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
     @Test
     @DisplayName("GET rolleoversikt returnerer 200 hvis ikke eksisterer")
-    public void skalHenteRolleutskriftFraDatabase() {
+    void skalHenteRolleutskriftFraDatabase() {
         var fnr = "03030303030";
         var nyRolle = new Rolleoversikt();
         nyRolle.setIdent(fnr);
@@ -86,7 +86,7 @@ public class RolleoversiktControllerTest {
 
     @Test
     @DisplayName("DELETE rolleoversikt skal slette rolleoversikt")
-    public void skalSletteRolleutskrift() {
+    void skalSletteRolleutskrift() {
         var nyRolle = new Rolleoversikt();
         nyRolle.setIdent("slettes");
         nyRolle.setJson("{\"fnr\":\"slettes\"}");
@@ -105,7 +105,7 @@ public class RolleoversiktControllerTest {
 
     @Test
     @DisplayName("DELETE rolleoversikt returnerer 400 hvis input mangler")
-    public void deleteSkalKasteBadRequestHvisInputMangler() {
+    void deleteSkalKasteBadRequestHvisInputMangler() {
         var responseDelete =
                 restTemplate.exchange(API_V_2_ROLLEUTSKRIFT, HttpMethod.DELETE, null, Map.class);
         assertThat(responseDelete.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -113,7 +113,7 @@ public class RolleoversiktControllerTest {
 
     @Test
     @DisplayName("POST rolleoversikt skal opprette ny rolleoversikt")
-    public void skalLagreRequestIDatabase() {
+    void skalLagreRequestIDatabase() {
         var fnr = "01010101010";
         var orgnummer = 99112345;
         var rsRolleoversikt = lagGyldigRsRolleoversikt(fnr, orgnummer);
@@ -126,7 +126,7 @@ public class RolleoversiktControllerTest {
 
     @Test
     @DisplayName("POST rolleoversikt skal returnere bad request ved mangle input")
-    public void skalReturnereBadRequestVedPost() {
+    void skalReturnereBadRequestVedPost() {
         var fnr = "01010101010";
         var rsRolleoversikt = new RsRolleoversikt();
 

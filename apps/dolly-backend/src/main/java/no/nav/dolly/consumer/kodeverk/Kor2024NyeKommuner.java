@@ -8,7 +8,7 @@ import java.util.Set;
 @UtilityClass
 public class Kor2024NyeKommuner {
 
-    private static Set<String> KOMMUNER = new HashSet<>();
+    private static final Set<String> KOMMUNER = new HashSet<>();
 
     static {
         KOMMUNER.add("1508");  // Ålesund

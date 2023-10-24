@@ -4,36 +4,19 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Value;
+import no.nav.registre.testnorge.organisasjonfastedataservice.repository.model.OrganisasjonModel;
+import no.nav.testnav.libs.dto.organisasjonfastedataservice.v1.Gruppe;
+import no.nav.testnav.libs.dto.organisasjonfastedataservice.v1.OrganisasjonDTO;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
-
-import no.nav.testnav.libs.dto.organisasjonfastedataservice.v1.Gruppe;
-import no.nav.testnav.libs.dto.organisasjonfastedataservice.v1.OrganisasjonDTO;
-import no.nav.registre.testnorge.organisasjonfastedataservice.repository.model.OrganisasjonModel;
 
 @Value
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class Organisasjon {
-
-    public Organisasjon(OrganisasjonDTO dto) {
-        orgnummer = dto.getOrgnummer();
-        enhetstype = dto.getEnhetstype();
-        navn = dto.getNavn();
-        redigertNavn = dto.getRedigertNavn();
-        epost = dto.getEpost();
-        internetAdresse = dto.getInternetAdresse();
-        overenhet = dto.getOverenhet();
-        forretningsAdresse = dto.getForretningsAdresse() != null ? new Adresse(dto.getForretningsAdresse()) : null;
-        postadresse = dto.getPostadresse() != null ? new Adresse(dto.getPostadresse()) : null;
-        opprinnelse = dto.getOpprinnelse();
-        tags = dto.getTags();
-        model = null;
-    }
 
     String orgnummer;
     String enhetstype;
@@ -48,6 +31,20 @@ public class Organisasjon {
     Set<String> tags;
     @JsonIgnore
     OrganisasjonModel model;
+    public Organisasjon(OrganisasjonDTO dto) {
+        orgnummer = dto.getOrgnummer();
+        enhetstype = dto.getEnhetstype();
+        navn = dto.getNavn();
+        redigertNavn = dto.getRedigertNavn();
+        epost = dto.getEpost();
+        internetAdresse = dto.getInternetAdresse();
+        overenhet = dto.getOverenhet();
+        forretningsAdresse = dto.getForretningsAdresse() != null ? new Adresse(dto.getForretningsAdresse()) : null;
+        postadresse = dto.getPostadresse() != null ? new Adresse(dto.getPostadresse()) : null;
+        opprinnelse = dto.getOpprinnelse();
+        tags = dto.getTags();
+        model = null;
+    }
 
     public Organisasjon(OrganisasjonModel model) {
         var organisasjon = model.getOrganisasjon();
@@ -74,7 +71,8 @@ public class Organisasjon {
     public List<Organisasjon> getUnderenheter() {
         return Optional
                 .ofNullable(model.getUnderenheter())
-                .map(value -> value.stream().map(Organisasjon::new).collect(Collectors.toList()))
+                .map(value -> value.stream().map(Organisasjon::new)
+                        .toList())
                 .orElse(Collections.emptyList());
     }
 

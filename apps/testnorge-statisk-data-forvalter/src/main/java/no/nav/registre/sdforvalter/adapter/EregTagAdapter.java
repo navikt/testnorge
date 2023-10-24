@@ -1,14 +1,12 @@
 package no.nav.registre.sdforvalter.adapter;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
-
-import java.util.List;
-import java.util.stream.Collectors;
-
 import no.nav.registre.sdforvalter.database.model.EregTagModel;
 import no.nav.registre.sdforvalter.database.model.TagModel;
 import no.nav.registre.sdforvalter.database.repository.EregTagRepository;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -26,6 +24,6 @@ public class EregTagAdapter {
                 .findAllBy(orgnr)
                 .stream()
                 .map(EregTagModel::getTag)
-                .collect(Collectors.toList());
+                .toList();
     }
 }

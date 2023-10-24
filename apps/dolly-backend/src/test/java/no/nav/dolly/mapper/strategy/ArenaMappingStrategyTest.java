@@ -26,7 +26,7 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 @ExtendWith(MockitoExtension.class)
-public class ArenaMappingStrategyTest {
+class ArenaMappingStrategyTest {
 
     private static final LocalDateTime TIME_NOW = LocalDateTime.now();
     private static final LocalDateTime OLD_TIMES = LocalDateTime.of(2018, 1, 1, 0, 0);
@@ -40,7 +40,7 @@ public class ArenaMappingStrategyTest {
     }
 
     @Test
-    public void arenaBrukerUtenServicebehovMedDato() {
+    void arenaBrukerUtenServicebehovMedDato() {
 
         ArenaNyBruker arenaNyBruker = mapperFacade.map(Arenadata.builder()
                 .arenaBrukertype(UTEN_SERVICEBEHOV)
@@ -52,7 +52,7 @@ public class ArenaMappingStrategyTest {
     }
 
     @Test
-    public void arenaBrukerUtenServicebehovUtenDato() {
+    void arenaBrukerUtenServicebehovUtenDato() {
 
         ArenaNyBruker arenaNyBruker = mapperFacade.map(Arenadata.builder()
                 .arenaBrukertype(UTEN_SERVICEBEHOV)
@@ -63,7 +63,7 @@ public class ArenaMappingStrategyTest {
     }
 
     @Test
-    public void arenaBrukerMedServicebehovVarig() {
+    void arenaBrukerMedServicebehovVarig() {
 
         ArenaNyBruker arenaNyBruker = mapperFacade.map(Arenadata.builder()
                 .arenaBrukertype(MED_SERVICEBEHOV)
@@ -76,7 +76,7 @@ public class ArenaMappingStrategyTest {
     }
 
     @Test
-    public void arenaBrukerMedAap() {
+    void arenaBrukerMedAap() {
 
         ArenaNyBruker arenaNyBruker = mapperFacade.map(Arenadata.builder()
                 .arenaBrukertype(MED_SERVICEBEHOV)

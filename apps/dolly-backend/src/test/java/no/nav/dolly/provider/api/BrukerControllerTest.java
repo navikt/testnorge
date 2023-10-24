@@ -24,7 +24,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
-public class BrukerControllerTest {
+class BrukerControllerTest {
 
     private final static String BRUKERID = "123";
     private final static String BRUKERNAVN = "BRUKER";
@@ -39,8 +39,13 @@ public class BrukerControllerTest {
     @InjectMocks
     private BrukerController controller;
 
+    @BeforeEach
+    public void setup() {
+        MockedJwtAuthenticationTokenUtils.setJwtAuthenticationToken();
+    }
+
     @Test
-    public void getBrukerByBrukerId() {
+    void getBrukerByBrukerId() {
         RsBrukerAndGruppeId bruker = RsBrukerAndGruppeId.builder().brukerId("brukerId").build();
         Bruker b = Bruker.builder().build();
 
@@ -53,7 +58,7 @@ public class BrukerControllerTest {
     }
 
     @Test
-    public void getCurrentBruker() {
+    void getCurrentBruker() {
 
         Bruker bruker = Bruker.builder().build();
         RsBruker rsBruker = new RsBruker();
@@ -65,13 +70,13 @@ public class BrukerControllerTest {
     }
 
     @Test
-    public void getAllBrukere() {
+    void getAllBrukere() {
         controller.getAllBrukere();
         verify(brukerService).fetchBrukere();
     }
 
     @Test
-    public void fjernFavoritter() {
+    void fjernFavoritter() {
         RsBrukerUpdateFavoritterReq req = new RsBrukerUpdateFavoritterReq();
         req.setGruppeId(1l);
         controller.fjernFavoritt(req);
@@ -79,15 +84,10 @@ public class BrukerControllerTest {
     }
 
     @Test
-    public void leggTilFavoritter() {
+    void leggTilFavoritter() {
         RsBrukerUpdateFavoritterReq req = new RsBrukerUpdateFavoritterReq();
         req.setGruppeId(1l);
         controller.leggTilFavoritt(req);
         verify(brukerService).leggTilFavoritt(anyLong());
-    }
-
-    @BeforeEach
-    public void setup() {
-        MockedJwtAuthenticationTokenUtils.setJwtAuthenticationToken();
     }
 }

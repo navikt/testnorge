@@ -24,15 +24,15 @@ public class ExcelUtil {
     public static final String PERSON_FANE = "Personer";
     public static final String BANKKONTO_FANE = "Bankkontoer";
 
-    public static final Object[] BANKKONTO_HEADER = {"Ident", "Kontonummer (Norge)", "Kontonummer (Utland)", "Banknavn", "Bankkode",
-            "Banklandkode", "Valutakode", "Swift/Bickode", "Bankadresse1", "Bankadresse2", "Bankadresse3"};
-    public static final Integer[] BANKKONTO_COL_WIDTHS = {14, 20, 20, 20, 20, 20, 20, 20, 30, 30, 30};
+    static final Object[] BANKKONTO_HEADER = { "Ident", "Kontonummer (Norge)", "Kontonummer (Utland)", "Banknavn", "Bankkode",
+            "Banklandkode", "Valutakode", "Swift/Bickode", "Bankadresse1", "Bankadresse2", "Bankadresse3" };
+    static final Integer[] BANKKONTO_COL_WIDTHS = { 14, 20, 20, 20, 20, 20, 20, 20, 30, 30, 30 };
 
     public static void appendHyperlinkRelasjon(XSSFWorkbook workbook,
-                                        String fane,
-                                        List<Object[]> verdier,
-                                        int indekskolonne,
-                                        int kolonne) {
+                                               String fane,
+                                               List<Object[]> verdier,
+                                               int indekskolonne,
+                                               int kolonne) {
 
         var hyperLinks = createLinkReferanser(verdier, indekskolonne);
         IntStream.range(0, verdier.size()).boxed()

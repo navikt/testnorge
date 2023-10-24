@@ -19,21 +19,19 @@ public class SecurityConfig {
     private final JwtReactiveAuthenticationManager jwtReactiveAuthenticationManager;
 
     @Bean
-    public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
-        return http.csrf().disable()
-                .authorizeExchange()
-                .pathMatchers(
-                        "/swagger**",
+    public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity httpSecurity) {
+        return httpSecurity
+                .csrf(csrfSpec -> csrfSpec.disable())
+                .authorizeExchange(authorizeConfig -> authorizeConfig.pathMatchers(
+                        "/internal/**",
                         "/webjars/**",
                         "/v3/api-docs/**",
-                        "/internal/isReady",
-                        "/internal/isAlive",
-                        "/internal/metrics"
-                ).permitAll()
-                .anyExchange().authenticated()
-                .and()
-                .oauth2ResourceServer()
-                .jwt(spec -> spec.authenticationManager(jwtReactiveAuthenticationManager))
-                .and().build();
+                        "/swagger-ui/**",
+                        "/swagger",
+                        "/error",
+                        "/swagger-ui.html"
+                ).permitAll().anyExchange().authenticated())
+                .oauth2ResourceServer(oauth2RSConfig -> oauth2RSConfig.jwt(jwtSpec -> jwtSpec.authenticationManager(jwtReactiveAuthenticationManager)))
+                .build();
     }
 }

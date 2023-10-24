@@ -1,17 +1,17 @@
 package no.nav.dolly.domain.resultset.breg;
 
-import static java.util.Objects.isNull;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import static java.util.Objects.isNull;
 
 @Getter
 @Setter
@@ -20,10 +20,7 @@ import lombok.Setter;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RsBregdata {
 
-    public enum Egenskap {Deltager, Komplementar, Kontaktperson, Sameier, Styre}
-
     private List<RolleTo> enheter;
-
     private List<Integer> understatuser;
 
     public List<RolleTo> getEnheter() {
@@ -39,6 +36,8 @@ public class RsBregdata {
         }
         return understatuser;
     }
+
+    public enum Egenskap {DELTAGER, KOMPLEMENTAR, KONTAKTPERSON, SAMEIER, STYRE}
 
     @Getter
     @Setter

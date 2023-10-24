@@ -96,7 +96,8 @@ public class OrganisasjonMottakListener {
         Optional.ofNullable(parent).ifPresent(value -> list.add(new Knytning(value, organisasjon)));
 
         var record = Record.create(
-                list.stream().map(ToLine::toLine).collect(Collectors.toList()),
+                list.stream().map(ToLine::toLine)
+                        .toList(),
                 organisasjon.getOrgnummer(),
                 organisasjon.getEnhetstype(),
                 update

@@ -1,31 +1,23 @@
 package no.nav.registre.sdforvalter.database.model;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.MappedSuperclass;
-import jakarta.persistence.OneToOne;
-
+import jakarta.persistence.*;
+import lombok.*;
 import no.nav.registre.sdforvalter.domain.FasteData;
 
+@MappedSuperclass
 @Getter
 @Setter
 @AllArgsConstructor
 @ToString
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-@MappedSuperclass
 public abstract class FasteDataModel<T extends FasteData> extends AuditModel {
-    @OneToOne
+
+    @ManyToOne
     @JoinColumn(name = "gruppe_id")
     private GruppeModel gruppeModel;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "opprinnelse_id")
     private OpprinnelseModel opprinnelseModel;
 

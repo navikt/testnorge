@@ -50,12 +50,10 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
 
         for (var adresse : person.getBostedsadresse()) {
 
-            if (isTrue(adresse.getIsNew())) {
+            if (isTrue(adresse.getIsNew()) && (isNotTrue(relaxed))) {
+                handle(adresse, person);
+                populateMiscFields(adresse, person);
 
-                if (isNotTrue(relaxed)) {
-                    handle(adresse, person);
-                    populateMiscFields(adresse, person);
-                }
             }
         }
         enforceIntegrity(person.getBostedsadresse());

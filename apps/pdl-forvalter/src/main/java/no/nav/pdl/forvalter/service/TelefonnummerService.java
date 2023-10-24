@@ -12,12 +12,12 @@ import static java.util.Objects.isNull;
 @Service
 public class TelefonnummerService extends PdlArtifactService<TelefonnummerDTO> {
 
-    private static final String VALIDATION_PRIORITET_REQUIRED = "Telefonnummer: prioritet er påkrevd";
+    private static final String VALIDATION_PRIORITET_REQUIRED = "Telefonnummer: prioritet er påkrevet";
     private static final String VALIDATION_PRIORITET_ERROR = "Telefonnummerets prioritet må være 1 eller 2";
     private static final String VALIDATION_PRIORITET_INVALID = "Telefonnummer: prioritet 1 må angis før 2 kan benyttes";
     private static final String VALIDATION_PRIORITET_AMBIGUOUS = "Telefonnummer: prioritet 1 og prioritet 2 kan kun benyttes én gang hver";
-    private static final String VALIDATION_NUMMER_REQUIRED = "Telefonnummer: nummer er påkrevd felt";
-    private static final String VALIDATION_LANDSKODE_REQUIRED = "Telefonnummer: landskode er påkrevd felt";
+    private static final String VALIDATION_NUMMER_REQUIRED = "Telefonnummer: nummer er påkrevet felt";
+    private static final String VALIDATION_LANDSKODE_REQUIRED = "Telefonnummer: landskode er påkrevet felt";
     private static final String VALIDATION_LANDKODE_INVALID_FORMAT = "Telefonnummer: Landkode består av ledende + " +
             "(plusstegn) fulgt av  1 til 5 sifre";
     private static final String VALIDATION_NUMMER_INVALID_FORMAT = "Telefonnummer: nummer kan kun inneholde tallsifre";

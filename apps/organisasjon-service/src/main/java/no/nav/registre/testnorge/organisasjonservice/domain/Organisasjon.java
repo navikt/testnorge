@@ -2,12 +2,10 @@ package no.nav.registre.testnorge.organisasjonservice.domain;
 
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnorge.organisasjonservice.consumer.dto.OrganisasjonDTO;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
-
-import no.nav.registre.testnorge.organisasjonservice.consumer.dto.OrganisasjonDTO;
 
 
 @Slf4j
@@ -31,7 +29,7 @@ public class Organisasjon {
         enhetType = dto.getDetaljer().getEnhetstype();
 
         driverVirksomheter = dto.getChildren() != null
-                ? dto.getChildren().stream().map(OrganisasjonDTO::getOrganisasjonsnummer).collect(Collectors.toList())
+                ? dto.getChildren().stream().map(OrganisasjonDTO::getOrganisasjonsnummer).toList()
                 : Collections.emptyList();
 
         if (dto.getOrganisasjonDetaljer() != null) {
@@ -54,15 +52,6 @@ public class Organisasjon {
     }
 
     public no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO toDTO() {
-        return no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO.builder()
-                .navn(navn)
-                .enhetType(enhetType)
-                .orgnummer(orgnummer)
-                .juridiskEnhet(juridiskEnhet)
-                .postadresse(postadresse != null ? postadresse.toDTO() : null)
-                .forretningsadresser(forretningsadresser != null ? forretningsadresser.toDTO() : null)
-                .redigertnavn(redigertnavn)
-                .driverVirksomheter(driverVirksomheter)
-                .build();
+        return no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO.builder().navn(navn).enhetType(enhetType).orgnummer(orgnummer).juridiskEnhet(juridiskEnhet).postadresse(postadresse != null ? postadresse.toDTO() : null).forretningsadresser(forretningsadresser != null ? forretningsadresser.toDTO() : null).redigertnavn(redigertnavn).driverVirksomheter(driverVirksomheter).build();
     }
 }

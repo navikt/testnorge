@@ -1,10 +1,9 @@
 plugins {
     id 'java'
     id "org.sonarqube" version "4.0.0.2929"
-    id "uk.co.boothen.gradle.wsimport" version "0.17"
-    id 'com.ewerk.gradle.plugins.jaxb2' version '1.0.10'
-    id 'org.springframework.boot' version "2.7.5"
-    id 'io.spring.dependency-management' version "1.1.0"
+    id "uk.co.boothen.gradle.wsimport" version "0.21"
+    id 'org.springframework.boot' version "3.1.4"
+    id 'io.spring.dependency-management' version "1.1.3"
     id "jacoco"
 }
 
@@ -38,7 +37,8 @@ sonarqube {
 dependencyManagement {
     applyMavenExclusions = false
     imports {
-        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2021.0.5'
+        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2022.0.4'
+
     }
 }
 
@@ -55,25 +55,16 @@ wsimport {
 
 repositories {
     mavenCentral()
+    maven { url "https://github-package-registry-mirror.gc.nav.no/cached/maven-release" }
+    maven { url "https://build.shibboleth.net/maven/releases/" }
     mavenLocal()
 }
 
-jaxb2 {
-    xjc {
-        'hentroller' {
-            basePackage = 'no.nav.brregstub.tjenestekontrakter.hentroller'
-            schema = 'src/main/xsd/HentRoller.xsd'
-        }
-    }
-    xjc {
-        'rolleutskrift' {
-            basePackage = 'no.nav.brregstub.tjenestekontrakter.rolleutskrift'
-            schema = 'src/main/xsd/Rolleutskrift.xsd'
-        }
-    }
-}
-
 dependencies {
+
+    implementation("io.dropwizard:dropwizard-jackson:4.0.2") {
+        exclude group: "com.google.code.findbugs"
+    }
 
     implementation 'no.nav.testnav.libs:database'
     implementation 'no.nav.testnav.libs:servlet-core'
@@ -87,29 +78,33 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-vault-config-databases'
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
 
     implementation 'io.micrometer:micrometer-registry-prometheus'
-    jaxb2 'org.jvnet.jaxb2_commons:jaxb2-basics-runtime:1.11.1'
-    jaxb2 'org.jvnet.jaxb2_commons:jaxb2-basics-ant:1.11.1'
-    jaxb2 'org.jvnet.jaxb2_commons:jaxb2-basics:1.11.1'
-    jaxb2 'com.sun.xml.bind:jaxb-core:2.2.11'
-    jaxb2 'com.sun.xml.bind:jaxb-xjc:2.2.11'
-    jaxb2 'com.sun.xml.bind:jaxb-impl:2.2.11'
-    jaxb2 'javax.xml.bind:jaxb-api:2.3.1'
 
+
+    implementation 'org.apache.cxf:cxf-rt-bindings-soap'
+    implementation 'org.apache.cxf:cxf-rt-ws-policy'
+    implementation 'org.apache.cxf:cxf-core'
+    implementation 'org.apache.cxf:cxf-rt-frontend-jaxws'
+    implementation 'org.apache.cxf:cxf-rt-transports-http'
+    implementation 'org.apache.cxf:cxf-rt-ws-security'
+    implementation 'jakarta.servlet:jakarta.servlet-api'
+    
     implementation 'org.postgresql:postgresql'
     implementation 'com.zaxxer:HikariCP'
 
     implementation 'org.flywaydb:flyway-core'
     implementation 'com.h2database:h2'
 
-    implementation 'org.apache.cxf:cxf-rt-frontend-jaxws:3.4.5'
-    implementation 'wsdl4j:wsdl4j:1.6.3'
-    implementation 'net.logstash.logback:logstash-logback-encoder:7.3'
-    implementation 'org.hibernate.validator:hibernate-validator'
-    implementation 'javax.validation:validation-api:2.0.1.Final'
-    implementation 'org.springdoc:springdoc-openapi-ui:1.6.9'
-    implementation 'no.nav.common:cxf:2.2021.11.10_07.34-c6f02734d4ab'
+    implementation 'wsdl4j:wsdl4j'
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.15'
+
+    implementation 'no.nav.common:auth'
+    implementation 'no.nav.common:util'
+    implementation 'no.nav.common:cxf:3.2023.10.17_06.55-4e30d96bba05'
+
     implementation 'com.h2database:h2'
     implementation 'jakarta.jws:jakarta.jws-api:3.0.0'
 
@@ -121,4 +116,8 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
 }
-java.sourceCompatibility = JavaVersion.VERSION_17
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}

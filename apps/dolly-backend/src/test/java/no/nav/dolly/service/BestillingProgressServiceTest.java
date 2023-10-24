@@ -24,7 +24,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class BestillingProgressServiceTest {
+class BestillingProgressServiceTest {
 
     private final static String BRUKERID = "123";
     private final static String BRUKERNAVN = "BRUKER";
@@ -36,15 +36,20 @@ public class BestillingProgressServiceTest {
     @InjectMocks
     private BestillingProgressService progressService;
 
+    @BeforeTestClass
+    public void setup() {
+        MockedJwtAuthenticationTokenUtils.setJwtAuthenticationToken();
+    }
+
     @Test
-    public void bestillingProgressKasterExceptionHvisManIkkeFinnerProgress() throws Exception {
+    void bestillingProgressKasterExceptionHvisManIkkeFinnerProgress() throws Exception {
         when(mockRepo.findByBestillingId(any())).thenReturn(Optional.empty());
         Assertions.assertThrows(NotFoundException.class, () ->
                 progressService.fetchBestillingProgressByBestillingsIdFromDB(null));
     }
 
     @Test
-    public void hviFetchBestillingProgressFinnerObjectSåReturnerObjektet() {
+    void hviFetchBestillingProgressFinnerObjectSåReturnerObjektet() {
         BestillingProgress mock = Mockito.mock(BestillingProgress.class);
         when(mockRepo.findByBestillingId(1l)).thenReturn(Optional.of(Collections.singletonList(mock)));
         List<BestillingProgress> bes = progressService.fetchBestillingProgressByBestillingsIdFromDB(1l);
@@ -52,15 +57,10 @@ public class BestillingProgressServiceTest {
     }
 
     @Test
-    public void hvisFetchProgressSomReturnererTomListeHvisIkkeFunnetIkkeFinnerObjektSåReturnerTomListe() {
+    void hvisFetchProgressSomReturnererTomListeHvisIkkeFunnetIkkeFinnerObjektSåReturnerTomListe() {
         when(mockRepo.findByBestillingId(1l)).thenReturn(Optional.of(new ArrayList<>()));
         List<BestillingProgress> bes = progressService.fetchBestillingProgressByBestillingId(1l);
         assertThat(bes.isEmpty(), is(true));
-    }
-
-    @BeforeTestClass
-    public void setup() {
-        MockedJwtAuthenticationTokenUtils.setJwtAuthenticationToken();
     }
 
 }

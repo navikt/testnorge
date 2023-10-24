@@ -1,9 +1,8 @@
 package no.nav.testnav.endringsmeldingservice.domain;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import no.nav.testnav.endringsmeldingservice.consumer.response.EndringsmeldingResponse;
+
+import java.util.List;
 
 public class Status {
     private final String personId;
@@ -16,7 +15,7 @@ public class Status {
                 .values()
                 .stream()
                 .filter(value -> !value.equals("OK"))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public List<String> getErrors() {

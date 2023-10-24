@@ -30,16 +30,9 @@ public class Organisajon {
     }
 
     public boolean isOpplysningspliktig() {
-        switch (dto.getEnhetType()) {
-            case "AS":
-            case "NUF":
-            case "BRL":
-            case "KBO":
-            case "SA":
-            case "ENK":
-                return true;
-            default:
-                return false;
-        }
+        return switch (dto.getEnhetType()) {
+            case "AS", "NUF", "BRL", "KBO", "SA", "ENK" -> true;
+            default -> false;
+        };
     }
 }
