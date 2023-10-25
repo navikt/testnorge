@@ -13,7 +13,7 @@ spec:
   env:
     - name: SPRING_PROFILES_ACTIVE
       value: dev
-  image: {{ image }}
+  image: {{image}}
   webproxy: true
   tokenx:
     enabled: true
@@ -26,10 +26,11 @@ spec:
     - "https://testnav-pdl-forvalter-dev.intern.dev.nav.no"
   liveness:
     path: /internal/isAlive
-    periodSeconds: 30
+    periodSeconds: 60
     initialDelay: 60
   readiness:
     path: /internal/isReady
+    periodSeconds: 60
     initialDelay: 60
   prometheus:
     enabled: true
