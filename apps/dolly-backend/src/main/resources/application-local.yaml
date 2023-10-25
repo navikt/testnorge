@@ -42,10 +42,9 @@ management:
 
 open:
   search:
-    username: dolly
-    password: kBU0JYmilht2pGRQ
-    uri: opensearch-dolly-testdata-gjeter-nav-dev.aivencloud.com
-    port: 26482
+    username: admin
+    password: admin
+    uri: localhost:9200
 
 consumers:
   testnav-pdl-forvalter:

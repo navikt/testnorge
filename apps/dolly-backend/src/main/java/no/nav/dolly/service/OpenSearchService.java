@@ -6,22 +6,22 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
+import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.dolly.elastic.ElasticBestilling;
-import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.StreamSupport;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ElasticService {
+public class OpenSearchService {
 
     private final MapperFacade mapperFacade;
-//    private final ElasticsearchRepository elasticsearchRepository;
-    private final ElasticsearchOperations elasticsearchOperations;
+    private final BestillingElasticRepository bestillingElasticRepository;
 
     public void lagreBestillingMedStatus(RsDollyBestilling dollyBestilling, Bestilling bestillingMedStatus) {
 
@@ -32,15 +32,15 @@ public class ElasticService {
                 .map(BestillingProgress::getIdent)
                 .toList());
 
-//        var resultat = elasticsearchRepository.save(elasticBestilling);
-//
-//        log.info("Elastic search record lagret {}", resultat);
+        var resultat = bestillingElasticRepository.save(elasticBestilling);
+
+        log.info("Elastic search record lagret {}", resultat);
     }
 
-    public List<String> getIdenterForBestilling() {
+    public List<ElasticBestilling> getAll() {
 
-
-//        elasticsearchOperations.search()
-        return null;
+        var all = bestillingElasticRepository.findAll();
+        return StreamSupport.stream(all.spliterator(),false)
+                .toList();
     }
 }

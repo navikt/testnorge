@@ -6,6 +6,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.springframework.data.elasticsearch.annotations.DateFormat;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -36,6 +39,7 @@ public class ArbeidsplassenCVDTO {
     private String sammendrag;
     private Jobboensker jobboensker;
     private Boolean sistEndretAvNav;
+    @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second, pattern = "uuuu-MM-dd'T'HH:mm:ss")
     private LocalDateTime sistEndret;
 
     public List<Arbeidserfaring> getArbeidserfaring() {
@@ -121,7 +125,9 @@ public class ArbeidsplassenCVDTO {
         private String conceptId;
         private String location;
         private String description;
+        @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second, pattern = "uuuu-MM-dd'T'HH:mm:ss")
         private LocalDateTime fromDate;
+        @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second, pattern = "uuuu-MM-dd'T'HH:mm:ss")
         private LocalDateTime toDate;
         private Boolean ongoing;
         private String styrkkode;
@@ -140,7 +146,9 @@ public class ArbeidsplassenCVDTO {
         private String nuskode;
         private Boolean hasAuthorization;
         private Yrkesskole vocationalCollege;
+        @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second, pattern = "uuuu-MM-dd'T'HH:mm:ss")
         private LocalDateTime startDate;
+        @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second, pattern = "uuuu-MM-dd'T'HH:mm:ss")
         private LocalDateTime endDate;
         private String description;
         private Boolean ongoing;
@@ -165,7 +173,9 @@ public class ArbeidsplassenCVDTO {
         private String alternativeName;
         private String conceptId;
         private String issuer;
+        @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second, pattern = "uuuu-MM-dd'T'HH:mm:ss")
         private LocalDateTime fromDate;
+        @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second, pattern = "uuuu-MM-dd'T'HH:mm:ss")
         private LocalDateTime toDate;
     }
 
@@ -177,7 +187,9 @@ public class ArbeidsplassenCVDTO {
     public static class Foererkort extends CVFelles {
 
         private String type;
+        @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second, pattern = "uuuu-MM-dd'T'HH:mm:ss")
         private LocalDateTime acquiredDate;
+        @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second, pattern = "uuuu-MM-dd'T'HH:mm:ss")
         private LocalDateTime expiryDate;
     }
 
@@ -190,7 +202,9 @@ public class ArbeidsplassenCVDTO {
 
         private String description;
         private String role;
+        @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second, pattern = "uuuu-MM-dd'T'HH:mm:ss")
         private LocalDateTime fromDate;
+        @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second, pattern = "uuuu-MM-dd'T'HH:mm:ss")
         private LocalDateTime toDate;
         private Boolean ongoing;
     }
@@ -206,6 +220,7 @@ public class ArbeidsplassenCVDTO {
         private String issuer;
         private Long duration;
         private Tidsenhet durationUnit;
+        @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second, pattern = "uuuu-MM-dd'T'HH:mm:ss")
         private LocalDateTime date;
     }
 
@@ -247,7 +262,9 @@ public class ArbeidsplassenCVDTO {
         private String title;
         private String conceptId;
         private String issuer;
+        @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second, pattern = "uuuu-MM-dd'T'HH:mm:ss")
         private LocalDateTime fromDate;
+        @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second, pattern = "uuuu-MM-dd'T'HH:mm:ss")
         private LocalDateTime toDate;
     }
 
@@ -385,6 +402,7 @@ public class ArbeidsplassenCVDTO {
     @NoArgsConstructor
     public abstract static class CVFelles {
         private String uuid;
+        @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second, pattern = "uuuu-MM-dd'T'HH:mm:ss")
         private LocalDateTime updatedAt;
     }
 }

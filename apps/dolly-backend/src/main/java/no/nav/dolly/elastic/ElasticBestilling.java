@@ -44,11 +44,10 @@ import static java.util.Objects.isNull;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class ElasticBestilling implements Persistable<String> {
+public class ElasticBestilling implements Persistable<Long> {
 
-    @JsonIgnore
     @Id
-    private String id;
+    private Long id;
 
     @Field
     private Set<String> environments;

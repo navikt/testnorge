@@ -92,10 +92,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.retry:spring-retry:2.0.0'
 
-    implementation 'org.opensearch.client:spring-data-opensearch-starter:1.2.0'
     implementation 'org.opensearch.client:spring-data-opensearch:1.2.0'
-//    implementation 'com.fasterxml.jackson.core:jackson-core:2.15.2'
-//    implementation 'org.elasticsearch.client:elasticsearch-rest-high-level-client:7.16.1'
 
     implementation 'org.apache.commons:commons-lang3:3.12.0'
     implementation 'org.springframework.boot:spring-boot-starter-cache'
@@ -119,6 +116,7 @@ dependencies {
     testImplementation 'org.testcontainers:junit-jupiter'
     testImplementation 'org.testcontainers:postgresql'
     testImplementation 'org.bitbucket.b_c:jose4j:0.9.3'
+    testImplementation 'org.opensearch.client:spring-data-opensearch-test-autoconfigure:1.2.0'
     implementation 'net.java.dev.jna:jna:5.13.0'
 
     implementation 'org.projectlombok:lombok'

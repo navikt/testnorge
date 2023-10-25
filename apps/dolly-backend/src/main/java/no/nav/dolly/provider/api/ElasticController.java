@@ -7,7 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
-import no.nav.dolly.service.ElasticService;
+import no.nav.dolly.elastic.ElasticBestilling;
+import no.nav.dolly.service.OpenSearchService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,19 +22,19 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ElasticController {
 
-    private final ElasticService elasticService;
+    private final OpenSearchService openSearchService;
 
     @Deprecated
     @PostMapping
     public void lagreBestilling(@RequestBody Wrapper bestilling) {
 
-        elasticService.lagreBestillingMedStatus(bestilling.getDollyBestilling(), bestilling.getBestillingStatus());
+        openSearchService.lagreBestillingMedStatus(bestilling.getDollyBestilling(), bestilling.getBestillingStatus());
     }
 
-    @GetMapping
-    public List<String> getIdenter() {
+    @GetMapping("/all")
+    public List<ElasticBestilling> getAll() {
 
-        return null;
+        return openSearchService.getAll();
     }
 
     @Data

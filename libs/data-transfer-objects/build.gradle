@@ -61,6 +61,7 @@ dependencies {
     implementation 'org.apache.commons:commons-lang3'
     implementation 'org.springframework:spring-web'
 
+    implementation 'org.springframework.data:spring-data-elasticsearch'
 
     implementation 'no.nav.tjenestespesifikasjoner:nav-altinn-inntektsmelding:1.2019.08.16-13.46-35cbdfd492d4'
 

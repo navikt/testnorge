@@ -9,6 +9,9 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.deserialization.OppholdAnnetStedEnumDeserializer;
+import org.springframework.data.elasticsearch.annotations.DateFormat;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -21,7 +24,9 @@ import java.time.LocalDateTime;
 public abstract class AdresseDTO extends DbVersjonDTO {
 
     private String adresseIdentifikatorFraMatrikkelen;
+    @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second, pattern = "uuuu-MM-dd'T'HH:mm:ss")
     private LocalDateTime gyldigFraOgMed;
+    @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second, pattern = "uuuu-MM-dd'T'HH:mm:ss")
     private LocalDateTime gyldigTilOgMed;
 
     @Schema(description = "For å sette coAdresseNavn, benytt opprettCoAdresseNavn")
