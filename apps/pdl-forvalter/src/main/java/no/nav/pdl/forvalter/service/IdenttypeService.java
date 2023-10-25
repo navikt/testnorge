@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Random;
 
 import static java.util.Objects.nonNull;
@@ -59,15 +60,16 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
     public PersonDTO convert(PersonDTO person) {
 
         var nyPerson = person;
-        log.info("Gjeldende ident: {}", person);
-        for (var type : person.getNyident()) {
+        List<IdentRequestDTO> nyident = person.getNyident();
+        for (int index = 0; index < nyident.size(); index++) {
+            var type = nyident.get(index);
 
             if (isTrue(type.getIsNew())) {
 
                 nyPerson = handle(type, nyPerson);
                 type.setKilde(isNotBlank(type.getKilde()) ? type.getKilde() : "Dolly");
                 type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : DbVersjonDTO.Master.FREG);
-                type.setFoedtEtter(person.getFoedsel().getFirst().getFoedselsdato().plusDays(1));
+                type.setFoedtEtter(person.getFoedsel().getFirst().getFoedselsdato().plusDays(index + 1L));
             }
         }
         return nyPerson;
