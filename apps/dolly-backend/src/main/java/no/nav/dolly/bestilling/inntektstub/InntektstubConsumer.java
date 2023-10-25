@@ -29,16 +29,16 @@ public class InntektstubConsumer implements ConsumerStatus {
 
     private final WebClient webClient;
     private final TokenExchange tokenService;
-    private final ServerProperties serviceProperties;
+    private final ServerProperties serverProperties;
 
     public InntektstubConsumer(
             TokenExchange tokenService,
-            Consumers.InntektstubProxy serverProperties,
+            Consumers consumers,
             ObjectMapper objectMapper,
             WebClient.Builder webClientBuilder
     ) {
         this.tokenService = tokenService;
-        this.serviceProperties = serverProperties;
+        serverProperties = consumers.getTestnavInntektstubProxy();
         this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
@@ -48,14 +48,14 @@ public class InntektstubConsumer implements ConsumerStatus {
     @Timed(name = "providers", tags = { "operation", "inntk_getInntekter" })
     public Flux<Inntektsinformasjon> getInntekter(String ident) {
 
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> new InntektstubGetCommand(webClient, ident, token.getTokenValue()).call());
     }
 
     @Timed(name = "providers", tags = { "operation", "inntk_deleteInntekter" })
     public Mono<List<String>> deleteInntekter(List<String> identer) {
 
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> Flux.range(0, (identer.size() / BLOCK_SIZE) + 1)
                         .delayElements(Duration.ofMillis(100))
                         .map(index -> new InntektstubDeleteCommand(webClient,
@@ -70,13 +70,13 @@ public class InntektstubConsumer implements ConsumerStatus {
 
         log.info("Sender inntektstub: {}", inntektsinformasjon);
 
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> new InntektstubPostCommand(webClient, inntektsinformasjon, token.getTokenValue()).call());
     }
 
     @Override
     public String serviceUrl() {
-        return serviceProperties.getUrl();
+        return serverProperties.getUrl();
     }
 
     @Override

@@ -3,10 +3,10 @@ package no.nav.dolly.bestilling.krrstub;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 import no.nav.dolly.bestilling.krrstub.dto.DigitalKontaktdataResponse;
-import no.nav.dolly.config.Consumers;
 import no.nav.dolly.domain.CommonKeysAndUtils;
 import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdata;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -60,7 +60,7 @@ class KrrstubConsumerTest {
     @BeforeEach
     void setup() {
 
-        when(tokenService.exchange(ArgumentMatchers.any(Consumers.KrrstubProxy.class))).thenReturn(Mono.just(new AccessToken("token")));
+        when(tokenService.exchange(ArgumentMatchers.any(ServerProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
     }
 
     @Test
@@ -108,7 +108,7 @@ class KrrstubConsumerTest {
     @Test
     void createDigitalKontaktdata_GenerateTokenFailed_NoAction() {
 
-        when(tokenService.exchange(any(Consumers.KrrstubProxy.class))).thenReturn(Mono.empty());
+        when(tokenService.exchange(any(ServerProperties.class))).thenReturn(Mono.empty());
 
         StepVerifier.create(krrStubConsumer.createDigitalKontaktdata(DigitalKontaktdata.builder()
                         .epost(EPOST)
@@ -118,7 +118,7 @@ class KrrstubConsumerTest {
                 .expectNextCount(0)
                 .verifyComplete();
 
-        verify(tokenService).exchange(any(Consumers.KrrstubProxy.class));
+        verify(tokenService).exchange(any(ServerProperties.class));
     }
 
     @Test

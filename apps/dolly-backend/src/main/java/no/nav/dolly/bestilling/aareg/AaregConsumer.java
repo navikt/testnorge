@@ -30,16 +30,16 @@ import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 public class AaregConsumer implements ConsumerStatus {
 
     private final WebClient webClient;
-    private final ServerProperties serviceProperties;
+    private final ServerProperties serverProperties;
     private final TokenExchange tokenService;
 
     public AaregConsumer(
-            Consumers.AaregProxy serverProperties,
+            Consumers consumers,
             TokenExchange tokenService,
             ObjectMapper objectMapper,
             WebClient.Builder webClientBuilder
     ) {
-        this.serviceProperties = serverProperties;
+        serverProperties = consumers.getTestnavAaregProxy();
         this.tokenService = tokenService;
         this.webClient = webClientBuilder
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
@@ -55,7 +55,7 @@ public class AaregConsumer implements ConsumerStatus {
 
     public Mono<AccessToken> getAccessToken() {
 
-        return tokenService.exchange(serviceProperties);
+        return tokenService.exchange(serverProperties);
     }
 
     @Timed(name = "providers", tags = {"operation", "aareg_opprettArbeidforhold"})
@@ -81,7 +81,7 @@ public class AaregConsumer implements ConsumerStatus {
 
     @Override
     public String serviceUrl() {
-        return serviceProperties.getUrl();
+        return serverProperties.getUrl();
     }
 
     @Override

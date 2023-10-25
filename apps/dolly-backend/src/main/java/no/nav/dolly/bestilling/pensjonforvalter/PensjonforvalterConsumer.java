@@ -48,16 +48,16 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
 
     private final TokenExchange tokenService;
     private final WebClient webClient;
-    private final ServerProperties serviceProperties;
+    private final ServerProperties serverProperties;
 
     public PensjonforvalterConsumer(
             TokenExchange tokenService,
-            Consumers.PensjonforvalterProxy serverProperties,
+            Consumers consumers,
             ObjectMapper objectMapper,
             WebClient.Builder webClientBuilder
     ) {
         this.tokenService = tokenService;
-        this.serviceProperties = serverProperties;
+        serverProperties = consumers.getTestnavPensjonTestdataFacadeProxy();
         this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
@@ -74,7 +74,7 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
     @Timed(name = "providers", tags = {"operation", "pen_getMiljoer"})
     public Mono<Set<String>> getMiljoer() {
 
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMap(token -> new HentMiljoerCommand(webClient, token.getTokenValue()).call());
     }
 
@@ -82,7 +82,7 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
     public Flux<PensjonforvalterResponse> lagreInntekter(PensjonPoppInntektRequest pensjonPoppInntektRequest) {
 
         log.info("Popp lagre inntekt {}", pensjonPoppInntektRequest);
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> new LagrePoppInntektCommand(webClient, token.getTokenValue(),
                                 pensjonPoppInntektRequest).call());
     }
@@ -93,14 +93,14 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
 
         pensjonPersonRequest.setMiljoer(miljoer);
         log.info("Pensjon opprett person {}", pensjonPersonRequest);
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> new OpprettPersonCommand(webClient, pensjonPersonRequest, token.getTokenValue()).call());
     }
 
     @Timed(name = "providers", tags = {"operation", "pen_hentSamboer"})
     public Flux<PensjonSamboerResponse> hentSamboer(String ident, String miljoe) {
 
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> new HentSamboerCommand(webClient, ident, miljoe, token.getTokenValue()).call())
                 .doOnNext(response -> log.info("Pensjon samboer for {} i {} hentet {}", ident, miljoe, response));
     }
@@ -110,7 +110,7 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
                                                        String miljoe) {
 
         log.info("Pensjon samboer opprett i {} {}", miljoe, pensjonSamboerRequest);
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> new LagreSamboerCommand(webClient, pensjonSamboerRequest, miljoe, token.getTokenValue()).call());
     }
 
@@ -118,7 +118,7 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
     public Flux<PensjonforvalterResponse> annullerSamboer(String ident, String periodeId, String miljoe) {
 
         log.info("Pensjon samboer annuller {} periodeId {}", ident, periodeId);
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> new AnnullerSamboerCommand(webClient, periodeId, miljoe, token.getTokenValue()).call());
     }
 
@@ -126,7 +126,7 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
     public Flux<PensjonforvalterResponse> lagreAlderspensjon(AlderspensjonRequest request) {
 
         log.info("Pensjon lagre alderspensjon {}", request);
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> new LagreAlderspensjonCommand(webClient, token.getTokenValue(), request).call());
     }
 
@@ -134,7 +134,7 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
     public Flux<PensjonforvalterResponse> lagreUforetrygd(PensjonUforetrygdRequest request) {
 
         log.info("Pensjon lagre uforetrygd {}", request);
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> new LagreUforetrygdCommand(webClient, token.getTokenValue(), request).call());
     }
 
@@ -142,14 +142,14 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
     public Flux<PensjonforvalterResponse> lagreTpForhold(PensjonTpForholdRequest pensjonTpForholdRequest) {
 
         log.info("Pensjon lagre TP-forhold {}", pensjonTpForholdRequest);
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> new LagreTpForholdCommand(webClient, token.getTokenValue(), pensjonTpForholdRequest).call());
     }
 
     @Timed(name = "providers", tags = {"operation", "pen_sletteTpForhold"})
     public void sletteTpForhold(List<String> identer) {
 
-        tokenService.exchange(serviceProperties)
+        tokenService.exchange(serverProperties)
                 .flatMapMany(token -> new HentMiljoerCommand(webClient, token.getTokenValue()).call()
                         .flatMapMany(miljoer -> Flux.range(0, identer.size())
                                 .map(index -> new SletteTpForholdCommand(webClient, identer.get(index), miljoer, token.getTokenValue()).call())))
@@ -162,13 +162,13 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
     public Flux<PensjonforvalterResponse> lagreTpYtelse(PensjonTpYtelseRequest pensjonTpYtelseRequest) {
 
         log.info("Pensjon lagre TP-ytelse {}", pensjonTpYtelseRequest);
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> new LagreTpYtelseCommand(webClient, token.getTokenValue(), pensjonTpYtelseRequest).call());
     }
 
     @Override
     public String serviceUrl() {
-        return serviceProperties.getUrl();
+        return serverProperties.getUrl();
     }
 
     @Override

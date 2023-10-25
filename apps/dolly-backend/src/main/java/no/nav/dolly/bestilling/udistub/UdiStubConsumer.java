@@ -25,16 +25,16 @@ public class UdiStubConsumer implements ConsumerStatus {
 
     private final WebClient webClient;
     private final TokenExchange tokenService;
-    private final ServerProperties serviceProperties;
+    private final ServerProperties serverProperties;
 
     public UdiStubConsumer(
             TokenExchange accessTokenService,
-            Consumers.UdistubServer serverProperties,
+            Consumers consumers,
             ObjectMapper objectMapper,
             WebClient.Builder webClientBuilder
     ) {
         this.tokenService = accessTokenService;
-        this.serviceProperties = serverProperties;
+        serverProperties = consumers.getTestnavUdistubProxy();
         this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(JacksonExchangeStrategyUtil.getJacksonStrategy(objectMapper))
@@ -44,28 +44,28 @@ public class UdiStubConsumer implements ConsumerStatus {
     @Timed(name = "providers", tags = {"operation", "udi_getPerson"})
     public Mono<UdiPersonResponse> getUdiPerson(String ident) {
 
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMap(token -> new UdistubGetCommand(webClient, ident, token.getTokenValue()).call());
     }
 
     @Timed(name = "providers", tags = {"operation", "udi_createPerson"})
     public Mono<UdiPersonResponse> createUdiPerson(UdiPerson udiPerson) {
 
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMap(token -> new UdistubPostCommand(webClient, udiPerson, token.getTokenValue()).call());
     }
 
     @Timed(name = "providers", tags = {"operation", "udi_updatePerson"})
     public Mono<UdiPersonResponse> updateUdiPerson(UdiPerson udiPerson) {
 
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMap(token -> new UdistubPutCommand(webClient, udiPerson, token.getTokenValue()).call());
     }
 
     @Timed(name = "providers", tags = {"operation", "udi_deletePerson"})
     public Flux<UdiPersonResponse> deleteUdiPerson(List<String> identer) {
 
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> Flux.fromIterable(identer)
                         .map(ident -> new UdistubDeleteCommand(webClient,
                                 ident, token.getTokenValue()).call())
@@ -74,7 +74,7 @@ public class UdiStubConsumer implements ConsumerStatus {
 
     @Override
     public String serviceUrl() {
-        return serviceProperties.getUrl();
+        return serverProperties.getUrl();
     }
 
     @Override

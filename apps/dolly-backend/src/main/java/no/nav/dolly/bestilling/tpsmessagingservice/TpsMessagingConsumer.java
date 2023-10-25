@@ -47,16 +47,16 @@ public class TpsMessagingConsumer implements ConsumerStatus {
 
     private final WebClient webClient;
     private final TokenExchange tokenService;
-    private final ServerProperties serviceProperties;
+    private final ServerProperties serverProperties;
 
     public TpsMessagingConsumer(
             TokenExchange tokenService,
-            Consumers.TpsMessagingService serverProperties,
+            Consumers consumers,
             ObjectMapper objectMapper,
             WebClient.Builder webClientBuilder
     ) {
         this.tokenService = tokenService;
-        this.serviceProperties = serverProperties;
+        serverProperties = consumers.getTestnavTpsMessagingService();
         this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
@@ -74,7 +74,7 @@ public class TpsMessagingConsumer implements ConsumerStatus {
     public Flux<TpsMeldingResponseDTO> sendUtenlandskBankkontoRequest(String ident, List<String> miljoer,
                                                                       BankkontonrUtlandDTO body) {
 
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMapMany(token ->
                         new TpsMessagingPostCommand(webClient, ident, miljoer, body, UTENLANDSK_BANKKONTO_URL, token.getTokenValue()).call());
     }
@@ -82,7 +82,7 @@ public class TpsMessagingConsumer implements ConsumerStatus {
     @Timed(name = "providers", tags = {"operation", "tps_messaging_createNorskBankkonto"})
     public Flux<TpsMeldingResponseDTO> sendNorskBankkontoRequest(String ident, List<String> miljoer, BankkontonrNorskDTO body) {
 
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMapMany(token ->
                         new TpsMessagingPostCommand(webClient, ident, miljoer, body, NORSK_BANKKONTO_URL, token.getTokenValue()).call());
     }
@@ -90,14 +90,14 @@ public class TpsMessagingConsumer implements ConsumerStatus {
     @Timed(name = "providers", tags = {"operation", "tps_messaging_deleteSikkerhetstiltak"})
     public Flux<TpsMeldingResponseDTO> deleteSikkerhetstiltakRequest(String ident, List<String> miljoer) {
 
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> new SikkerhetstiltakDeleteCommand(webClient, ident, miljoer, token.getTokenValue()).call());
     }
 
     @Timed(name = "providers", tags = {"operation", "tps_messaging_createSikkerhetstiltak"})
     public Flux<TpsMeldingResponseDTO> sendSikkerhetstiltakRequest(String ident, List<String> miljoer, Object body) {
 
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMapMany(token ->
                         new TpsMessagingPostCommand(webClient, ident, miljoer, body, SIKKERHETSTILTAK_URL, token.getTokenValue()).call());
     }
@@ -105,7 +105,7 @@ public class TpsMessagingConsumer implements ConsumerStatus {
     @Timed(name = "providers", tags = {"operation", "tps_messaging_createSkjerming"})
     public Flux<TpsMeldingResponseDTO> sendEgenansattRequest(String ident, List<String> miljoer, LocalDate fraOgMed) {
 
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMapMany(token ->
                         new EgenansattPostCommand(webClient, ident, miljoer, fraOgMed, token.getTokenValue()).call());
     }
@@ -113,14 +113,14 @@ public class TpsMessagingConsumer implements ConsumerStatus {
     @Timed(name = "providers", tags = {"operation", "tps_messaging_deleteSkjerming"})
     public Flux<TpsMeldingResponseDTO> deleteEgenansattRequest(String ident, List<String> miljoer) {
 
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> new EgenansattDeleteCommand(webClient, ident, miljoer, token.getTokenValue()).call());
     }
 
     @Timed(name = "providers", tags = {"operation", "tps_messaging_createTelefonnummer"})
     public Flux<TpsMeldingResponseDTO> sendTelefonnummerRequest(String ident, List<String> miljoer, Object body) {
 
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMapMany(token ->
                         new TpsMessagingPostCommand(webClient, ident, miljoer, body, TELEFONNUMMER_URL, token.getTokenValue()).call());
     }
@@ -128,7 +128,7 @@ public class TpsMessagingConsumer implements ConsumerStatus {
     @Timed(name = "providers", tags = {"operation", "tps_messaging_deleteTelefonnummer"})
     public Flux<TpsMeldingResponseDTO> deleteTelefonnummerRequest(String ident, List<String> miljoer) {
 
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMapMany(token ->
                         new TelefonnummerDeleteCommand(webClient, ident, miljoer, TELEFONTYPER_LISTE, token.getTokenValue()).call());
     }
@@ -136,7 +136,7 @@ public class TpsMessagingConsumer implements ConsumerStatus {
     @Timed(name = "providers", tags = {"operation", "tps_messaging_createSpraakkode"})
     public Flux<TpsMeldingResponseDTO> sendSpraakkodeRequest(String ident, List<String> miljoer, SpraakDTO body) {
 
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMapMany(token ->
                         new TpsMessagingPostCommand(webClient, ident, miljoer, body, SPRAAKKODE_URL, token.getTokenValue()).call());
     }
@@ -144,7 +144,7 @@ public class TpsMessagingConsumer implements ConsumerStatus {
     @Timed(name = "providers", tags = {"operation", "tps_messaging_getPersoner"})
     public Flux<PersonMiljoeDTO> getPersoner(List<String> identer, List<String> miljoer) {
 
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> Flux.range(0, identer.size())
                         .flatMap(index -> new PersonGetCommand(webClient, identer.get(index), miljoer, token.getTokenValue()).call()));
     }
@@ -152,13 +152,13 @@ public class TpsMessagingConsumer implements ConsumerStatus {
     @Timed(name = "providers", tags = {"operation", "tps_messaging_getPerson"})
     public Flux<PersonMiljoeDTO> getPerson(String ident, List<String> miljoer) {
 
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> new PersonGetCommand(webClient, ident, miljoer, token.getTokenValue()).call());
     }
 
     @Override
     public String serviceUrl() {
-        return serviceProperties.getUrl();
+        return serverProperties.getUrl();
     }
 
     @Override

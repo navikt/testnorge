@@ -4,16 +4,14 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.URL;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
 @EnableConfigurationProperties
-@ConfigurationProperties(prefix = "server")
 @Validated
 @NoArgsConstructor
 @Data
-public abstract class ServerProperties {
+public class ServerProperties {
 
     /**
      * NAIS ingress URL for target service.

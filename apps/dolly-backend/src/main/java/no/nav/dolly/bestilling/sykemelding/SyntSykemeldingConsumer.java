@@ -26,16 +26,16 @@ public class SyntSykemeldingConsumer implements ConsumerStatus {
 
     private final WebClient webClient;
     private final TokenExchange tokenService;
-    private final ServerProperties serviceProperties;
+    private final ServerProperties serverProperties;
 
     public SyntSykemeldingConsumer(
             TokenExchange accessTokenService,
-            Consumers.SyntSykemeldingApi serverProperties,
+            Consumers consumers,
             ObjectMapper objectMapper,
             WebClient.Builder webClientBuilder
     ) {
         this.tokenService = accessTokenService;
-        this.serviceProperties = serverProperties;
+        serverProperties = consumers.getTestnavSyntSykemeldingApi();
         this.webClient = webClientBuilder
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .baseUrl(serverProperties.getUrl())
@@ -52,14 +52,14 @@ public class SyntSykemeldingConsumer implements ConsumerStatus {
     public Mono<SykemeldingResponse> postSyntSykemelding(SyntSykemeldingRequest sykemeldingRequest) {
 
         log.info("SyntSykemelding sendt {}", sykemeldingRequest);
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMap(accessToken -> new
                         SyntSykemeldingPostCommand(webClient, sykemeldingRequest, accessToken.getTokenValue()).call());
     }
 
     @Override
     public String serviceUrl() {
-        return serviceProperties.getUrl();
+        return serverProperties.getUrl();
     }
 
     @Override

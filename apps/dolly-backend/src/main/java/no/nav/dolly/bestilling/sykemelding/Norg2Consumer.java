@@ -21,16 +21,16 @@ public class Norg2Consumer implements ConsumerStatus {
 
     private final WebClient webClient;
     private final TokenExchange tokenService;
-    private final ServerProperties serviceProperties;
+    private final ServerProperties serverProperties;
 
     public Norg2Consumer(
             TokenExchange accessTokenService,
-            Consumers.Norg2Proxy serverProperties,
+            Consumers consumers,
             ObjectMapper objectMapper,
             WebClient.Builder webClientBuilder
     ) {
         this.tokenService = accessTokenService;
-        this.serviceProperties = serverProperties;
+        serverProperties = consumers.getTestnavNorg2Proxy();
         this.webClient = webClientBuilder
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .baseUrl(serverProperties.getUrl())
@@ -40,14 +40,14 @@ public class Norg2Consumer implements ConsumerStatus {
     @Timed(name = "providers", tags = { "operation", "detaljertsykemelding_opprett" })
     public Mono<Norg2EnhetResponse> getNorgEnhet(String geografiskTilhoerighet) {
 
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMap(token -> new Norg2GetCommand(webClient, geografiskTilhoerighet,
                         token.getTokenValue()).call());
     }
 
     @Override
     public String serviceUrl() {
-        return serviceProperties.getUrl();
+        return serverProperties.getUrl();
     }
 
     @Override

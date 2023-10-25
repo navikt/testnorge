@@ -32,20 +32,20 @@ public class AmeldingConsumer {
 
     private final TokenExchange tokenService;
     private final WebClient webClient;
-    private final ServerProperties serviceProperties;
+    private final ServerProperties serverProperties;
     private final ErrorStatusDecoder errorStatusDecoder;
 
     public AmeldingConsumer(
             TokenExchange tokenService,
-            Consumers.AmeldingService serviceProperties,
+            Consumers consumers,
             ObjectMapper objectMapper,
             ErrorStatusDecoder errorStatusDecoder,
             WebClient.Builder webClientBuilder
     ) {
         this.tokenService = tokenService;
-        this.serviceProperties = serviceProperties;
+        serverProperties = consumers.getTestnavAmeldingService();
         this.webClient = webClientBuilder
-                .baseUrl(serviceProperties.getUrl())
+                .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .build();
         this.errorStatusDecoder = errorStatusDecoder;
@@ -54,7 +54,7 @@ public class AmeldingConsumer {
     @Timed(name = "providers", tags = { "operation", "amelding_put" })
     public Flux<String> sendAmeldinger(List<AMeldingDTO> ameldinger, String miljoe) {
 
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> Flux.fromIterable(ameldinger)
                         .flatMap(amelding -> {
                             if (NOT_FOUND.equals(amelding.getOpplysningspliktigOrganisajonsnummer())) {

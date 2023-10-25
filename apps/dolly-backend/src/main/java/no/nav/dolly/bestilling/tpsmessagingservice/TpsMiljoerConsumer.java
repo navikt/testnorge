@@ -20,15 +20,15 @@ public class TpsMiljoerConsumer implements ConsumerStatus {
 
     private final WebClient webClient;
     private final TokenExchange tokenService;
-    private final ServerProperties serviceProperties;
+    private final ServerProperties serverProperties;
 
     public TpsMiljoerConsumer(
             TokenExchange tokenService,
-            Consumers.TpsMiljoer serverProperties,
+            Consumers consumers,
             WebClient.Builder webClientBuilder
     ) {
         this.tokenService = tokenService;
-        this.serviceProperties = serverProperties;
+        serverProperties = consumers.getTestnavMiljoerService();
         this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
                 .build();
@@ -36,19 +36,19 @@ public class TpsMiljoerConsumer implements ConsumerStatus {
 
     public Mono<AccessToken> getToken() {
 
-        return tokenService.exchange(serviceProperties);
+        return tokenService.exchange(serverProperties);
     }
 
     @Timed(name = "providers", tags = {"operation", "get_tps_miljoer"})
     public Mono<List<String>> getTpsMiljoer() {
 
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMap(token -> new MiljoerGetCommand(webClient, token.getTokenValue()).call());
     }
 
     @Override
     public String serviceUrl() {
-        return serviceProperties.getUrl();
+        return serverProperties.getUrl();
     }
 
     @Override

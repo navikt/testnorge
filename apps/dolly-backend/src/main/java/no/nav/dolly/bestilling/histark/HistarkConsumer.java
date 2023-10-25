@@ -25,17 +25,17 @@ public class HistarkConsumer {
 
     private final WebClient webClient;
     private final TokenExchange tokenService;
-    private final ServerProperties serviceProperties;
+    private final ServerProperties serverProperties;
 
     public HistarkConsumer(
-            Consumers.HistarkProxy properties,
+            Consumers consumers,
             TokenExchange tokenService,
             ObjectMapper objectMapper,
             WebClient.Builder webClientBuilder) {
-        this.serviceProperties = properties;
+        serverProperties = consumers.getTestnavHistarkProxy();
         this.tokenService = tokenService;
         this.webClient = webClientBuilder
-                .baseUrl(properties.getUrl())
+                .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .build();
     }
@@ -46,7 +46,7 @@ public class HistarkConsumer {
         var callId = getNavCallId();
         log.info("Sender histark melding: callId: {}, consumerId: {}\n{}", callId, CONSUMER, histarkRequest);
 
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> new HistarkPostCommand(webClient, histarkRequest,
                         token.getTokenValue()).call());
     }

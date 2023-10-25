@@ -3,7 +3,6 @@ package no.nav.dolly.bestilling.tpsmessagingservice;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import no.nav.dolly.config.Consumers;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.BankkontonrUtlandDTO;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
@@ -90,7 +89,7 @@ class TpsMessagingConsumerTest {
     @Test
     void createDigitalKontaktdata_GenerateTokenFailed_ThrowsDollyFunctionalException() {
 
-        when(tokenService.exchange(any(Consumers.TpsMessagingService.class))).thenThrow(new SecurityException());
+        when(tokenService.exchange(any(ServerProperties.class))).thenThrow(new SecurityException());
 
         BankkontonrUtlandDTO bankkontonrUtlandDTO = new BankkontonrUtlandDTO();
 
@@ -102,7 +101,7 @@ class TpsMessagingConsumerTest {
                         .collectList()
                         .block());
 
-        verify(tokenService).exchange(any(Consumers.TpsMessagingService.class));
+        verify(tokenService).exchange(any(ServerProperties.class));
     }
 
     @Test

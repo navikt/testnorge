@@ -24,17 +24,17 @@ public class InntektsmeldingConsumer implements ConsumerStatus {
 
     private final TokenExchange tokenService;
     private final WebClient webClient;
-    private final ServerProperties serviceProperties;
+    private final ServerProperties serverProperties;
 
     public InntektsmeldingConsumer(
             TokenExchange tokenService,
-            Consumers.InntektsmeldingService serviceProperties,
+            Consumers consumers,
             WebClient.Builder webClientBuilder
     ) {
         this.tokenService = tokenService;
-        this.serviceProperties = serviceProperties;
+        serverProperties = consumers.getTestnavInntektsmeldingService();
         this.webClient = webClientBuilder
-                .baseUrl(serviceProperties.getUrl())
+                .baseUrl(serverProperties.getUrl())
                 .build();
     }
 
@@ -44,14 +44,14 @@ public class InntektsmeldingConsumer implements ConsumerStatus {
         var callId = getNavCallId();
         log.info("Inntektsmelding med callId {} sendt", callId);
 
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> new OpprettInntektsmeldingCommand(webClient,
                         token.getTokenValue(), inntekstsmelding, callId).call());
     }
 
     @Override
     public String serviceUrl() {
-        return serviceProperties.getUrl();
+        return serverProperties.getUrl();
     }
 
     @Override
