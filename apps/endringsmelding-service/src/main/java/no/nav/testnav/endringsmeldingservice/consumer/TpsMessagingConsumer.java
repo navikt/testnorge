@@ -21,11 +21,11 @@ public class TpsMessagingConsumer {
     private final TokenExchange accessTokenService;
 
     public TpsMessagingConsumer(
-            Consumers.TpsMessagingService serverProperties,
+            Consumers consumers,
             TokenExchange tokenExchange,
             ObjectMapper objectMapper) {
 
-        this.serverProperties = serverProperties;
+        serverProperties = consumers.getTpsMessagingService();
         this.accessTokenService = tokenExchange;
 
         ExchangeStrategies jacksonStrategy = ExchangeStrategies.builder()

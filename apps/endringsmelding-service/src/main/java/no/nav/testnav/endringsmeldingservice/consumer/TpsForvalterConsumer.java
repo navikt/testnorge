@@ -27,11 +27,11 @@ public class TpsForvalterConsumer {
     private final TokenExchange accessTokenService;
 
     public TpsForvalterConsumer(
-            Consumers.TpsForvalterenProxyService serverProperties,
+            Consumers consumers,
             TokenExchange tokenExchange,
             ObjectMapper objectMapper) {
 
-        this.serverProperties = serverProperties;
+        serverProperties = consumers.getTpsForvalterenProxy();
         this.accessTokenService = tokenExchange;
 
         ExchangeStrategies jacksonStrategy = ExchangeStrategies.builder()
