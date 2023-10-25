@@ -1,9 +1,9 @@
 package no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.config.Consumers;
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.command.GenererArbeidsforholdHistorikkCommand;
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.command.GenererStartArbeidsforholdCommand;
-import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.credentials.SyntAmeldingProperties;
 import no.nav.testnav.libs.dto.syntrest.v1.ArbeidsforholdRequest;
 import no.nav.testnav.libs.dto.syntrest.v1.ArbeidsforholdResponse;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
@@ -21,21 +21,21 @@ import java.util.List;
 @Component
 public class SyntArbeidsforholdConsumer {
     private final TokenExchange tokenExchange;
-    private final ServerProperties properties;
+    private final ServerProperties serverProperties;
     private final WebClient webClient;
     private final ObjectMapper objectMapper;
 
     public SyntArbeidsforholdConsumer(
             TokenExchange tokenExchange,
-            SyntAmeldingProperties properties,
+            Consumers consumers,
             ObjectMapper objectMapper) {
 
         this.tokenExchange = tokenExchange;
-        this.properties = properties;
+        serverProperties = consumers.getSyntAmelding();
         this.objectMapper = objectMapper;
         this.webClient = WebClient
                 .builder()
-                .baseUrl(properties.getUrl())
+                .baseUrl(serverProperties.getUrl())
                 .codecs(clientDefaultCodecsConfigurer -> {
                     clientDefaultCodecsConfigurer
                             .defaultCodecs()
@@ -49,13 +49,13 @@ public class SyntArbeidsforholdConsumer {
 
     public Mono<List<ArbeidsforholdResponse>> genererStartArbeidsforhold(LocalDate startdato) {
         return tokenExchange
-                .exchange(properties)
+                .exchange(serverProperties)
                 .flatMap(accessToken -> new GenererStartArbeidsforholdCommand(webClient, startdato, accessToken.getTokenValue()).call());
     }
 
     public Mono<List<List<ArbeidsforholdResponse>>> genererArbeidsforholdHistorikk(List<ArbeidsforholdRequest> requests) {
         return tokenExchange
-                .exchange(properties)
+                .exchange(serverProperties)
                 .flatMap(accessToken -> new GenererArbeidsforholdHistorikkCommand(webClient, requests, accessToken.getTokenValue(), objectMapper).call());
     }
 }

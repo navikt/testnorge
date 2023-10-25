@@ -3,9 +3,9 @@ package no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.config.Consumers;
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.command.GetOppsummeringsdokumentCommand;
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.command.SaveOppsummeringsdokumenterCommand;
-import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.credentials.OppsummeringsdokuemntServerProperties;
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.domain.amelding.Oppsummeringsdokument;
 import no.nav.testnav.libs.commands.GetOppsummeringsdokumenterByIdentCommand;
 import no.nav.testnav.libs.commands.GetOppsummeringsdokumenterCommand;
@@ -34,24 +34,24 @@ public class OppsummeringsdokumentConsumer {
     private static final int BYTE_COUNT = 16 * 1024 * 1024;
     private final WebClient webClient;
     private final TokenExchange tokenExchange;
-    private final ServerProperties properties;
+    private final ServerProperties serverProperties;
     private final ApplicationProperties applicationProperties;
     private final Executor executor;
 
     public OppsummeringsdokumentConsumer(
             TokenExchange tokenExchange,
-            OppsummeringsdokuemntServerProperties properties,
+            Consumers consumers,
             ObjectMapper objectMapper,
             ApplicationProperties applicationProperties) {
 
         this.applicationProperties = applicationProperties;
         this.tokenExchange = tokenExchange;
-        this.properties = properties;
+        serverProperties = consumers.getOppsummeringsdokumentService();
         this.executor = Executors.newFixedThreadPool(20);
 
         this.webClient = WebClient
                 .builder()
-                .baseUrl(properties.getUrl())
+                .baseUrl(serverProperties.getUrl())
                 .codecs(clientDefaultCodecsConfigurer -> {
                     clientDefaultCodecsConfigurer.defaultCodecs().maxInMemorySize(BYTE_COUNT);
                     clientDefaultCodecsConfigurer
@@ -75,7 +75,7 @@ public class OppsummeringsdokumentConsumer {
     private CompletableFuture<String> saveFuture(OppsummeringsdokumentDTO dto, String miljo) {
         return CompletableFuture.supplyAsync(
                 () -> tokenExchange
-                        .exchange(properties)
+                        .exchange(serverProperties)
                         .flatMap(accessToken -> new SaveOppsummeringsdokumenterCommand(
                                 webClient,
                                 accessToken.getTokenValue(),
@@ -91,20 +91,20 @@ public class OppsummeringsdokumentConsumer {
 
     public List<OppsummeringsdokumentDTO> getAll(String miljo) {
         log.info("Henter alle oppsummeringsdokument fra {}...", miljo);
-        var accessToken = tokenExchange.exchange(properties).block();
+        var accessToken = tokenExchange.exchange(serverProperties).block();
         var list = new GetOppsummeringsdokumenterCommand(webClient, accessToken.getTokenValue(), miljo).call();
         log.info("Fant {} opplysningspliktig fra {}.", list.size(), miljo);
         return list;
     }
 
     public Mono<List<OppsummeringsdokumentDTO>> getAllForIdent(String ident, String miljo) {
-        return tokenExchange.exchange(properties)
+        return tokenExchange.exchange(serverProperties)
                 .flatMap(accessToken -> new GetOppsummeringsdokumenterByIdentCommand(webClient, accessToken.getTokenValue(), ident, miljo).call());
     }
 
     public Mono<Oppsummeringsdokument> getOppsummeringsdokument(String opplysningspliktigOrgnummer, LocalDate kalendermaaned, String miljo) {
         return tokenExchange
-                .exchange(properties)
+                .exchange(serverProperties)
                 .flatMap(accessToken -> new GetOppsummeringsdokumentCommand(
                         webClient,
                         accessToken.getTokenValue(),
