@@ -10,7 +10,6 @@ import no.nav.pdl.forvalter.exception.InternalServerException;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.exception.NotFoundException;
 import org.springframework.core.MethodParameter;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -45,7 +44,6 @@ public class ExceptionAdvice implements ResponseBodyAdvice<Object> {
                                   final Class<? extends HttpMessageConverter<?>> selectedConverterType,
                                   final ServerHttpRequest request,
                                   final ServerHttpResponse response) {
-        response.getHeaders().add(HttpHeaders.CONTENT_TYPE, "application/json;charset=utf-8");
         return body;
     }
 
