@@ -38,6 +38,11 @@ public class ServerProperties {
     @NotBlank
     private String namespace = "dolly";
 
+    /**
+     * Requested number of threads used to run requests to this target service. Not used by all clients.
+     */
+    private int threads = 1;
+
     public String toTokenXScope() {
         return "%s:%s:%s".formatted(cluster, namespace, name);
     }
