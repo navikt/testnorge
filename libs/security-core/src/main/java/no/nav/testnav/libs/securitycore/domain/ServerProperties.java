@@ -58,4 +58,13 @@ public class ServerProperties {
         };
     }
 
+    public static ServerProperties of(String cluster, String namespace, String name, String url) {
+        var properties = new ServerProperties();
+        properties.setCluster(cluster);
+        properties.setNamespace(namespace);
+        properties.setName(name);
+        properties.setUrl(url);
+        return properties;
+    }
+
 }
