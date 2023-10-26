@@ -27,7 +27,7 @@ public class ServerProperties {
     private String cluster = "dev-gcp";
 
     /**
-     * NAIS defined name for target service.
+     * NAIS defined name for target service. Sometimes used as segment for routing.
      */
     @NotBlank
     private String name;
