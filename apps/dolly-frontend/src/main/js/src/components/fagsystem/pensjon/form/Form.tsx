@@ -11,6 +11,7 @@ import React, { useContext } from 'react'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
 import * as _ from 'lodash-es'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import { FormikProps } from 'formik'
 
 export const pensjonPath = 'pensjonforvalter.inntekt'
 
@@ -22,6 +23,19 @@ export const PensjonForm = ({ formikBag }) => {
 	const opts = useContext(BestillingsveilederContext)
 	const { nyBestilling, nyBestillingFraMal } = opts?.is
 
+	function kalkulerIdentFyltSyttenAar(values: FormikProps<any>) {
+		const curDate = new Date()
+		const alder =
+			_.has(values, 'pdldata.opprettNyPerson.foedtEtter') &&
+			_.get(values, 'pdldata.opprettNyPerson.foedtEtter') !== null
+				? curDate.getFullYear() -
+				  // @ts-ignore
+				  new Date(_.get(values, 'pdldata.opprettNyPerson.foedtEtter')).getFullYear()
+				: _.get(values, 'pdldata.opprettNyPerson.alder')
+		return alder && curDate.getFullYear() - alder + 17
+	}
+
+	const syttenFraOgMedAar = kalkulerIdentFyltSyttenAar(formikBag.values)
 	const minAar = new Date().getFullYear() - 17
 	const valgtAar = _.get(formikBag.values, `${pensjonPath}.fomAar`)
 
@@ -48,7 +62,7 @@ export const PensjonForm = ({ formikBag }) => {
 						<FormikSelect
 							name={`${pensjonPath}.fomAar`}
 							label="Fra og med år"
-							options={getYearRangeOptions(1968, new Date().getFullYear() - 1)}
+							options={getYearRangeOptions(syttenFraOgMedAar || 1968, new Date().getFullYear() - 1)}
 							isClearable={false}
 						/>
 

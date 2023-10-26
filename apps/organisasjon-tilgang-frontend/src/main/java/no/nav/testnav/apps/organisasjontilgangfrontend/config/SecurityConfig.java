@@ -13,12 +13,12 @@ public class SecurityConfig {
 
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
-        return http.csrf()
-                .disable()
-                .authorizeExchange()
-                .pathMatchers("/internal/isReady", "/internal/isAlive", "/internal/metrics").permitAll()
-                .anyExchange().authenticated()
-                .and().oauth2Login()
-                .and().build();
+        return http.csrf(ServerHttpSecurity.CsrfSpec::disable)
+                .authorizeExchange(authorizeExchangeSpec ->
+                        authorizeExchangeSpec.pathMatchers("/internal/isReady", "/internal/isAlive", "/internal/metrics").permitAll()
+                                .anyExchange().authenticated())
+                .oauth2Login(oAuth2LoginSpec -> {
+                })
+                .build();
     }
 }
