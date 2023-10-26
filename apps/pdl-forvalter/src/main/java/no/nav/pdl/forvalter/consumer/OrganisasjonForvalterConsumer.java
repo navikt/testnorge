@@ -1,7 +1,7 @@
 package no.nav.pdl.forvalter.consumer;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.pdl.forvalter.config.credentials.OrgForvalterServiceProperties;
+import no.nav.pdl.forvalter.config.Consumers;
 import no.nav.pdl.forvalter.consumer.command.OrganisasjonForvalterCommand;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
@@ -19,22 +19,22 @@ public class OrganisasjonForvalterConsumer {
 
     private final WebClient webClient;
     private final TokenExchange tokenExchange;
-    private final ServerProperties properties;
+    private final ServerProperties serverProperties;
 
-    public OrganisasjonForvalterConsumer(TokenExchange tokenExchange,
-                                         OrgForvalterServiceProperties properties) {
-
+    public OrganisasjonForvalterConsumer(
+            TokenExchange tokenExchange,
+            Consumers consumers) {
         this.tokenExchange = tokenExchange;
-        this.properties = properties;
+        serverProperties = consumers.getOrgForvalter();
         this.webClient = WebClient
                 .builder()
-                .baseUrl(properties.getUrl())
+                .baseUrl(serverProperties.getUrl())
                 .build();
     }
 
     public Map<String, Map<String, Object>> get(String orgNummer) {
 
-        return tokenExchange.exchange(properties).flatMap(
+        return tokenExchange.exchange(serverProperties).flatMap(
                         token -> new OrganisasjonForvalterCommand(webClient, IMPORT_ORG_URL,
                                 String.format("orgnummer=%s", orgNummer), token.getTokenValue()).call())
                 .block();
