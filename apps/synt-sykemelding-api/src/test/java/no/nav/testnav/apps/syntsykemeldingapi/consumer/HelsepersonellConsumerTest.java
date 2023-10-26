@@ -3,9 +3,9 @@ package no.nav.testnav.apps.syntsykemeldingapi.consumer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import no.nav.testnav.apps.syntsykemeldingapi.config.credentials.HelsepersonellServiceProperties;
 import no.nav.testnav.libs.dto.helsepersonell.v1.HelsepersonellListeDTO;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.junit.Before;
 import org.junit.Test;
@@ -55,7 +55,7 @@ public class HelsepersonellConsumerTest {
     @Before
     public void before() {
         WireMock.reset();
-        when(tokenService.exchange(ArgumentMatchers.any(HelsepersonellServiceProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
+        when(tokenService.exchange(ArgumentMatchers.any(ServerProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
         helsepersonellResponse = getTestLegeListeDTO();
     }
 

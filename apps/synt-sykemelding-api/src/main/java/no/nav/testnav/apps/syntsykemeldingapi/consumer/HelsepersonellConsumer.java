@@ -2,10 +2,11 @@ package no.nav.testnav.apps.syntsykemeldingapi.consumer;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.apps.syntsykemeldingapi.config.credentials.HelsepersonellServiceProperties;
+import no.nav.testnav.apps.syntsykemeldingapi.config.Consumers;
 import no.nav.testnav.apps.syntsykemeldingapi.consumer.command.GetHelsepersonellCommand;
 import no.nav.testnav.apps.syntsykemeldingapi.domain.HelsepersonellListe;
 import no.nav.testnav.apps.syntsykemeldingapi.exception.HelsepersonellNotFoundException;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
 
@@ -19,24 +20,23 @@ import static java.util.Objects.nonNull;
 public class HelsepersonellConsumer {
     private final TokenExchange tokenExchange;
     private final WebClient webClient;
-    private final HelsepersonellServiceProperties serviceProperties;
+    private final ServerProperties serverProperties;
 
     public HelsepersonellConsumer(
             TokenExchange tokenExchange,
-            HelsepersonellServiceProperties serviceProperties) {
-
+            Consumers consumers) {
         this.tokenExchange = tokenExchange;
-        this.serviceProperties = serviceProperties;
+        serverProperties = consumers.getTestnavHelsepersonellService();
         this.webClient = WebClient
                 .builder()
-                .baseUrl(serviceProperties.getUrl())
+                .baseUrl(serverProperties.getUrl())
                 .build();
     }
 
     @SneakyThrows
     public HelsepersonellListe hentHelsepersonell() {
         log.info("Henter helsepersonell...");
-        var response = tokenExchange.exchange(serviceProperties)
+        var response = tokenExchange.exchange(serverProperties)
                 .flatMap(accessToken -> new GetHelsepersonellCommand(webClient, accessToken.getTokenValue()).call())
                 .block();
 

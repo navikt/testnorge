@@ -2,7 +2,6 @@ package no.nav.testnav.apps.syntsykemeldingapi.consumer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import no.nav.testnav.apps.syntsykemeldingapi.config.credentials.SykemeldingProperties;
 import no.nav.testnav.apps.syntsykemeldingapi.consumer.dto.SyntSykemeldingHistorikkDTO;
 import no.nav.testnav.apps.syntsykemeldingapi.domain.Arbeidsforhold;
 import no.nav.testnav.apps.syntsykemeldingapi.domain.Helsepersonell;
@@ -16,6 +15,7 @@ import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
 import no.nav.testnav.libs.dto.sykemelding.v1.SykemeldingDTO;
 import no.nav.testnav.libs.dto.synt.sykemelding.v1.SyntSykemeldingDTO;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.junit.Before;
 import org.junit.Test;
@@ -83,7 +83,7 @@ public class SykemeldingConsumerTest {
 
     @Before
     public void setUp() {
-        when(tokenService.exchange(ArgumentMatchers.any(SykemeldingProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
+        when(tokenService.exchange(ArgumentMatchers.any(ServerProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
 
         dto = SyntSykemeldingDTO.builder()
                 .arbeidsforholdId(arbeidsforholdId)

@@ -1,7 +1,7 @@
 package no.nav.testnav.apps.syntsykemeldingapi.consumer;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.apps.syntsykemeldingapi.config.credentials.PdlProxyProperties;
+import no.nav.testnav.apps.syntsykemeldingapi.config.Consumers;
 import no.nav.testnav.apps.syntsykemeldingapi.consumer.command.GetPdlPersonCommand;
 import no.nav.testnav.apps.syntsykemeldingapi.domain.pdl.PdlPerson;
 import no.nav.testnav.apps.syntsykemeldingapi.exception.PdlPersonException;
@@ -26,24 +26,25 @@ import static java.util.Objects.nonNull;
 @Component
 public class PdlProxyConsumer {
     private final TokenExchange tokenExchange;
-    private final ServerProperties serviceProperties;
+    private final ServerProperties serverProperties;
     private final WebClient webClient;
 
     private static final String SINGLE_PERSON_QUERY = "pdlperson/pdlquery.graphql";
 
     public PdlProxyConsumer(
-            PdlProxyProperties pdlProxyProperties,
+            Consumers consumers,
             TokenExchange tokenExchange) {
-
-        this.serviceProperties = pdlProxyProperties;
+        serverProperties = consumers.getTestnavPdlProxy();
         this.tokenExchange = tokenExchange;
-        this.webClient = WebClient.builder()
-                .exchangeStrategies(ExchangeStrategies.builder()
+        this.webClient = WebClient
+                .builder()
+                .exchangeStrategies(ExchangeStrategies
+                        .builder()
                         .codecs(configurer -> configurer
                                 .defaultCodecs()
                                 .maxInMemorySize(16 * 1024 * 1024))
                         .build())
-                .baseUrl(pdlProxyProperties.getUrl())
+                .baseUrl(serverProperties.getUrl())
                 .build();
     }
 
@@ -53,7 +54,7 @@ public class PdlProxyConsumer {
         }
         try {
             var query = getQueryFromFile(SINGLE_PERSON_QUERY);
-            var response = tokenExchange.exchange(serviceProperties)
+            var response = tokenExchange.exchange(serverProperties)
                     .flatMap(accessToken -> new GetPdlPersonCommand(ident, query, accessToken.getTokenValue(), webClient).call())
                     .block();
             if (nonNull(response) && !response.getErrors().isEmpty()) {
