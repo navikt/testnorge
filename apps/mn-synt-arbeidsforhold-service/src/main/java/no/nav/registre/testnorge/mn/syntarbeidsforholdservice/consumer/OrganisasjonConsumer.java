@@ -1,10 +1,11 @@
 package no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.config.credentials.OrganisasjonServiceProperties;
+import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.config.Consumers;
 import no.nav.testnav.libs.commands.organisasjonservice.v1.GetOrganisasjonCommand;
 import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
@@ -24,16 +25,15 @@ import java.util.stream.Collectors;
 @Component
 @CacheConfig
 public class OrganisasjonConsumer {
-    private final OrganisasjonServiceProperties serviceProperties;
+    private final ServerProperties serviceProperties;
     private final TokenExchange tokenExchange;
     private final WebClient webClient;
     private final ExecutorService executorService;
 
     public OrganisasjonConsumer(
-            OrganisasjonServiceProperties serviceProperties,
+            Consumers consumers,
             TokenExchange tokenExchange) {
-
-        this.serviceProperties = serviceProperties;
+        serviceProperties = consumers.getTestnavOrganisasjonService();
         this.tokenExchange = tokenExchange;
         this.executorService = Executors.newFixedThreadPool(serviceProperties.getThreads());
         this.webClient = WebClient
