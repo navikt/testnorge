@@ -1,6 +1,6 @@
 package no.nav.registre.sdforvalter.consumer.rs.kodeverk;
 
-import no.nav.registre.sdforvalter.config.credentials.KodeverkProperties;
+import no.nav.registre.sdforvalter.config.Consumers;
 import no.nav.registre.sdforvalter.consumer.rs.kodeverk.command.GetYrkerKodeverkCommand;
 import no.nav.registre.sdforvalter.consumer.rs.kodeverk.response.KodeverkResponse;
 import org.springframework.stereotype.Component;
@@ -12,15 +12,19 @@ public class KodeverkConsumer {
     private final WebClient webClient;
 
     public KodeverkConsumer(
-            KodeverkProperties serverProperties
+            Consumers consumers
     ) {
-        this.webClient = WebClient.builder()
-                .exchangeStrategies(ExchangeStrategies.builder()
+        this.webClient = WebClient
+                .builder()
+                .exchangeStrategies(ExchangeStrategies
+                        .builder()
                         .codecs(configurer -> configurer
                                 .defaultCodecs()
                                 .maxInMemorySize(16 * 1024 * 1024))
                         .build())
-                .baseUrl(serverProperties.getUrl())
+                .baseUrl(consumers
+                        .getKodeverk()
+                        .getUrl())
                 .build();
     }
 

@@ -1,12 +1,13 @@
 package no.nav.registre.sdforvalter.consumer.rs.person;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.sdforvalter.config.credentials.PersonFasteDataServiceProperties;
+import no.nav.registre.sdforvalter.config.Consumers;
 import no.nav.registre.sdforvalter.consumer.rs.person.command.SavePersonFasteDataCommand;
 import no.nav.registre.sdforvalter.domain.TpsIdent;
 import no.nav.registre.sdforvalter.domain.TpsIdentListe;
 import no.nav.testnav.libs.dto.personservice.v1.Gruppe;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -18,14 +19,13 @@ import reactor.core.publisher.Mono;
 @Component
 public class PersonFasteDataConsumer {
     private final WebClient webClient;
-    private final PersonFasteDataServiceProperties serverProperties;
+    private final ServerProperties serverProperties;
     private final TokenExchange tokenExchange;
 
     public PersonFasteDataConsumer(
-            PersonFasteDataServiceProperties serverProperties,
+            Consumers consumers,
             TokenExchange tokenExchange) {
-
-        this.serverProperties = serverProperties;
+        serverProperties = consumers.getTestnavPersonFasteDataService();
         this.tokenExchange = tokenExchange;
         this.webClient = WebClient
                 .builder()

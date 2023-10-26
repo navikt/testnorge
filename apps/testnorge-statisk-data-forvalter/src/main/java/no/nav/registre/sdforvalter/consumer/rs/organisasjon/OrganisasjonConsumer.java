@@ -1,9 +1,10 @@
 package no.nav.registre.sdforvalter.consumer.rs.organisasjon;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.sdforvalter.config.credentials.OrganisasjonServiceProperties;
+import no.nav.registre.sdforvalter.config.Consumers;
 import no.nav.registre.sdforvalter.domain.status.ereg.Organisasjon;
 import no.nav.testnav.libs.commands.organisasjonservice.v1.GetOrganisasjonCommand;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -18,15 +19,14 @@ import java.util.concurrent.Executors;
 @Component
 public class OrganisasjonConsumer {
     private final WebClient webClient;
-    private final OrganisasjonServiceProperties serverProperties;
+    private final ServerProperties serverProperties;
     private final TokenExchange tokenExchange;
     private final Executor executor;
 
     public OrganisasjonConsumer(
-            OrganisasjonServiceProperties serverProperties,
+            Consumers consumers,
             TokenExchange tokenExchange) {
-
-        this.serverProperties = serverProperties;
+        serverProperties = consumers.getTestnavOrganisasjonService();
         this.tokenExchange = tokenExchange;
         this.executor = Executors.newFixedThreadPool(serverProperties.getThreads());
         this.webClient = WebClient
