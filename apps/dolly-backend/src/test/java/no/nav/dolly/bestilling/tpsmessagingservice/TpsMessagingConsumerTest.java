@@ -4,7 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import no.nav.dolly.config.credentials.TpsMessagingServiceProperties;
-import no.nav.testnav.libs.dto.kontoregisterservice.v1.BankkontonrUtlandDTO;
+import no.nav.dolly.elastic.BestillingElasticRepository;
+import no.nav.testnav.libs.data.kontoregister.v1.BankkontonrUtlandDTO;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
@@ -52,6 +53,9 @@ class TpsMessagingConsumerTest {
 
     @MockBean
     private AccessToken accessToken;
+
+    @MockBean
+    private BestillingElasticRepository bestillingElasticRepository;
 
     @Autowired
     private TpsMessagingConsumer tpsMessagingConsumer;

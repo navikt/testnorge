@@ -7,6 +7,7 @@ import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubLignetInntektRequest;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubPensjonsgivendeInntektRequest;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubResponse;
 import no.nav.dolly.config.credentials.SigrunstubProxyProperties;
+import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,6 +48,9 @@ class SigrunStubConsumerTest {
 
     @MockBean
     private TokenExchange tokenService;
+
+    @MockBean
+    private BestillingElasticRepository bestillingElasticRepository;
 
     @Autowired
     private SigrunStubConsumer sigrunStubConsumer;

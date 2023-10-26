@@ -44,5 +44,5 @@ TESTCONTAINERS_RYUK_DISABLED=true
 For å kjøre lokalt med elastic search:
 
 ```
-docker run -d --name es762 -p 9200:9200 -e "discovery.type=single-node" elasticsearch:7.6.2 
+docker run -p 9200:9200 -p 9600:9600 -e "discovery.type=single-node" -e "plugins.security.disabled=true" --name opensearch-node -d opensearchproject/opensearch:latest
 ```

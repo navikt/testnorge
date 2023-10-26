@@ -27,6 +27,6 @@ public class OpensearchConfig extends AbstractOpenSearchConfiguration {
                 .withSocketTimeout(Duration.ofSeconds(5))
                 .build();
 
-        return RestClients.create(clientConfiguration,).rest();
+        return RestClients.create(clientConfiguration).rest();
     }
 }

@@ -4,9 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import no.nav.dolly.config.credentials.KontoregisterConsumerProperties;
-import no.nav.testnav.libs.dto.kontoregisterservice.v1.HentKontoRequestDTO;
-import no.nav.testnav.libs.dto.kontoregisterservice.v1.KontoregisterResponseDTO;
-import no.nav.testnav.libs.dto.kontoregisterservice.v1.OppdaterKontoRequestDTO;
+import no.nav.dolly.elastic.BestillingElasticRepository;
+import no.nav.testnav.libs.data.kontoregister.v1.HentKontoRequestDTO;
+import no.nav.testnav.libs.data.kontoregister.v1.KontoregisterResponseDTO;
+import no.nav.testnav.libs.data.kontoregister.v1.OppdaterKontoRequestDTO;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.junit.jupiter.api.AfterEach;
@@ -48,6 +49,9 @@ class KontoregisterConsumerTest {
 
     @MockBean
     private TokenExchange tokenService;
+
+    @MockBean
+    private BestillingElasticRepository bestillingElasticRepository;
 
     @Autowired
     private KontoregisterConsumer kontoregisterConsumer;

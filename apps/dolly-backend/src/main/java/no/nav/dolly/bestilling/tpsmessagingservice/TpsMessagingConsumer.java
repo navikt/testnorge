@@ -12,11 +12,11 @@ import no.nav.dolly.bestilling.tpsmessagingservice.command.TelefonnummerDeleteCo
 import no.nav.dolly.bestilling.tpsmessagingservice.command.TpsMessagingPostCommand;
 import no.nav.dolly.config.credentials.TpsMessagingServiceProperties;
 import no.nav.dolly.metrics.Timed;
-import no.nav.testnav.libs.dto.kontoregisterservice.v1.BankkontonrNorskDTO;
-import no.nav.testnav.libs.dto.kontoregisterservice.v1.BankkontonrUtlandDTO;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PersonMiljoeDTO;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.SpraakDTO;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TpsMeldingResponseDTO;
+import no.nav.testnav.libs.data.kontoregister.v1.BankkontonrNorskDTO;
+import no.nav.testnav.libs.data.kontoregister.v1.BankkontonrUtlandDTO;
+import no.nav.testnav.libs.data.tpsmessagingservice.v1.PersonMiljoeDTO;
+import no.nav.testnav.libs.data.tpsmessagingservice.v1.SpraakDTO;
+import no.nav.testnav.libs.data.tpsmessagingservice.v1.TpsMeldingResponseDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;

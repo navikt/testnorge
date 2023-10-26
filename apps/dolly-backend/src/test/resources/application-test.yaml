@@ -17,12 +17,6 @@ azure:
       id: dummy
       secret: dummy
 
-open:
-  search:
-    username: admin
-    password: admin
-    uri: https://localhost:9200
-
 consumers:
   testnav-kodeverk-proxy:
     name: kodeverk-mock

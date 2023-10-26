@@ -73,6 +73,7 @@ dependencies {
     implementation 'no.nav.testnav.libs:security-core'
     implementation 'no.nav.testnav.libs:database'
     implementation 'no.nav.testnav.libs:data-transfer-objects'
+    implementation 'no.nav.testnav.libs:data-transfer-search-objects'
     implementation 'no.nav.testnav.libs:reactive-core'
 
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
@@ -109,6 +110,10 @@ dependencies {
     implementation 'org.apache.poi:poi-ooxml:5.2.3'
 
     testImplementation "org.springframework.boot:spring-boot-starter-test"
+    testImplementation 'org.opensearch:opensearch-testcontainers:2.0.0'
+    testImplementation 'org.springframework.boot:spring-boot-testcontainers'
+    testImplementation 'org.testcontainers:elasticsearch'
+
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
     testImplementation 'com.h2database:h2'
@@ -116,7 +121,7 @@ dependencies {
     testImplementation 'org.testcontainers:junit-jupiter'
     testImplementation 'org.testcontainers:postgresql'
     testImplementation 'org.bitbucket.b_c:jose4j:0.9.3'
-    testImplementation 'org.opensearch.client:spring-data-opensearch-test-autoconfigure:1.2.0'
+
     implementation 'net.java.dev.jna:jna:5.13.0'
 
     implementation 'org.projectlombok:lombok'

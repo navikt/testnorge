@@ -3,7 +3,7 @@ package no.nav.dolly.bestilling.tpsmessagingservice.command;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.util.WebClientFilter;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TpsMeldingResponseDTO;
+import no.nav.testnav.libs.data.tpsmessagingservice.v1.TpsMeldingResponseDTO;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;

@@ -7,8 +7,8 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.pdl.forvalter.consumer.GeografiskeKodeverkConsumer;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO.KontaktinformasjonForDoedsboAdresse;
+import no.nav.testnav.libs.data.pdlforvalter.v1.BostedadresseDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO.KontaktinformasjonForDoedsboAdresse;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

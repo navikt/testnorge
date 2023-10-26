@@ -7,11 +7,13 @@ import org.opensearch.data.client.orhlc.ClientConfiguration;
 import org.opensearch.data.client.orhlc.RestClients;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 
 import java.time.Duration;
 
 @Configuration
+@Profile({"prod", "dev"})
 @RequiredArgsConstructor
 @EnableElasticsearchRepositories("no.nav.dolly.elastic")
 public class OpenSearchConfig extends AbstractOpenSearchConfiguration {

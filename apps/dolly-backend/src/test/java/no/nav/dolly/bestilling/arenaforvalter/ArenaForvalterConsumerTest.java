@@ -4,6 +4,7 @@ import no.nav.dolly.config.credentials.ArenaforvalterProxyProperties;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukere;
+import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.hamcrest.CoreMatchers;
@@ -55,6 +56,9 @@ class ArenaForvalterConsumerTest {
 
     @Autowired
     private ArenaForvalterConsumer arenaForvalterConsumer;
+
+    @MockBean
+    private BestillingElasticRepository bestillingElasticRepository;
 
     @BeforeEach
     void setup() {

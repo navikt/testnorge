@@ -9,7 +9,7 @@ import no.nav.testnav.apps.tpsmessagingservice.dto.KontaktopplysningerRequest;
 import no.nav.testnav.apps.tpsmessagingservice.dto.KontaktopplysningerResponse;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsMeldingResponse;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsSystemInfo;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TelefonTypeNummerDTO;
+import no.nav.testnav.libs.data.tpsmessagingservice.v1.TelefonTypeNummerDTO;
 import org.springframework.stereotype.Service;
 
 import javax.xml.bind.JAXBContext;

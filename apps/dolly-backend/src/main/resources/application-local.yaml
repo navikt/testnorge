@@ -42,8 +42,6 @@ management:
 
 open:
   search:
-    username: admin
-    password: admin
     uri: localhost:9200
 
 consumers:

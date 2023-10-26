@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.model.DbRelasjon;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType;
+import no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType;
 
 @Data
 @Builder

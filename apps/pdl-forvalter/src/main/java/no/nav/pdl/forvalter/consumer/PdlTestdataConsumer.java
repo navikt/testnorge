@@ -11,10 +11,10 @@ import no.nav.pdl.forvalter.consumer.command.PdlOpprettPersonCommandPdl;
 import no.nav.pdl.forvalter.dto.ArtifactValue;
 import no.nav.pdl.forvalter.dto.OpprettIdent;
 import no.nav.pdl.forvalter.dto.OrdreRequest;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregistermetadataDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.PdlStatus;
+import no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregistermetadataDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.Identtype;
+import no.nav.testnav.libs.data.pdlforvalter.v1.OrdreResponseDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.PdlStatus;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
@@ -29,7 +29,7 @@ import java.util.Set;
 import static java.util.Objects.isNull;
 import static no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility.getIdenttype;
 import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.getBestillingUrl;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_SLETTING;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_SLETTING;
 
 @Slf4j
 @Service

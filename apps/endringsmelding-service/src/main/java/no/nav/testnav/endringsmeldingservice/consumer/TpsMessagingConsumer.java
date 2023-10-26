@@ -3,7 +3,7 @@ package no.nav.testnav.endringsmeldingservice.consumer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.testnav.endringsmeldingservice.config.credentias.TpsMessagingServiceProperties;
 import no.nav.testnav.endringsmeldingservice.consumer.command.GetIdentEnvironmentsCommand;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PersonMiljoeDTO;
+import no.nav.testnav.libs.data.tpsmessagingservice.v1.PersonMiljoeDTO;
 import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.http.MediaType;

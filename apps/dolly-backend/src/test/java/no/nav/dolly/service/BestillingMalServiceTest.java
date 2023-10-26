@@ -5,7 +5,13 @@ import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingMal;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.repository.*;
+import no.nav.dolly.elastic.BestillingElasticRepository;
+import no.nav.dolly.repository.BestillingMalRepository;
+import no.nav.dolly.repository.BestillingRepository;
+import no.nav.dolly.repository.BrukerFavoritterRepository;
+import no.nav.dolly.repository.BrukerRepository;
+import no.nav.dolly.repository.IdentRepository;
+import no.nav.dolly.repository.TestgruppeRepository;
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -24,9 +31,14 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -37,6 +49,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ComponentScan("no.nav.dolly")
 @AutoConfigureMockMvc(addFilters = false)
 class BestillingMalServiceTest {
+
+    @MockBean
+    private BestillingElasticRepository bestillingElasticRepository;
 
     private final static String MALNAVN = "test";
     private final static String NYTT_MALNAVN = "nyttMalnavn";

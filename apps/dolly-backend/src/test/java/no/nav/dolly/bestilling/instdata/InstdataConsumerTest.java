@@ -2,6 +2,7 @@ package no.nav.dolly.bestilling.instdata;
 
 import no.nav.dolly.config.credentials.InstProxyProperties;
 import no.nav.dolly.domain.resultset.inst.Instdata;
+import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
@@ -50,6 +51,9 @@ class InstdataConsumerTest {
 
     @Autowired
     private InstdataConsumer instdataConsumer;
+
+    @MockBean
+    private BestillingElasticRepository bestillingElasticRepository;
 
     @BeforeEach
     void setup() {

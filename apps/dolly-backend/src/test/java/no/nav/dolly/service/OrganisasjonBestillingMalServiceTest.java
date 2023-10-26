@@ -4,6 +4,7 @@ import no.nav.dolly.MockedJwtAuthenticationTokenUtils;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.OrganisasjonBestilling;
 import no.nav.dolly.domain.jpa.OrganisasjonBestillingMal;
+import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.OrganisasjonBestillingMalRepository;
 import no.nav.dolly.repository.OrganisasjonBestillingRepository;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -24,9 +26,14 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDateTime;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -37,6 +44,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ComponentScan("no.nav.dolly")
 @AutoConfigureMockMvc(addFilters = false)
 class OrganisasjonBestillingMalServiceTest {
+
+    @MockBean
+    private BestillingElasticRepository bestillingElasticRepository;
 
     private final static String MALNAVN = "test";
     private final static String NYTT_MALNAVN = "nyttMalnavn";
