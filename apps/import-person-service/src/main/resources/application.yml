@@ -5,10 +5,6 @@ spring:
     version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
     name: testnav-import-person-service
     desciption: Tjeneste for å sende inn personer til PDL
-  management:
-    health:
-      elasticsearch:
-        enabled: false
   security:
     oauth2:
       resourceserver:
@@ -44,6 +40,9 @@ management:
   endpoint:
     prometheus.enabled: true
     heapdump.enabled: true
+  health:
+    elasticsearch:
+      enabled: false
   prometheus:
     metrics:
       export:
