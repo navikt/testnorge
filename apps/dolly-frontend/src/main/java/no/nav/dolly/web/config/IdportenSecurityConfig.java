@@ -48,34 +48,32 @@ public class IdportenSecurityConfig {
         var logoutSuccessHandler = new LogoutSuccessHandler();
         logoutSuccessHandler.applyOn("idporten", new IdportenOcidLogoutUrlResolver(wellKnownUrl, postLogoutRedirectUri));
 
-        return http.cors()
-                .and().csrf().disable()
-                .authorizeExchange()
-                .pathMatchers(
-                        "/internal/isReady",
-                        "/internal/isAlive",
-                        "/assets/*",
-                        "/internal/metrics",
-                        "/oauth2/callback",
-                        "/favicon.ico",
-                        LOGIN,
-                        LOGOUT,
-                        "/oauth2/logout",
-                        "/*.css",
-                        "/*.js",
-                        "/*.mjs",
-                        "/*.png"
-                ).permitAll()
-                .anyExchange().authenticated()
-                .and().oauth2Login(oAuth2LoginSpec -> oAuth2LoginSpec
+        return http.cors(ServerHttpSecurity.CorsSpec::disable)
+                .csrf(ServerHttpSecurity.CsrfSpec::disable)
+                .authorizeExchange(authorizeExchangeSpec -> authorizeExchangeSpec.pathMatchers(
+                                "/internal/isReady",
+                                "/internal/isAlive",
+                                "/assets/*",
+                                "/internal/metrics",
+                                "/oauth2/callback",
+                                "/favicon.ico",
+                                LOGIN,
+                                LOGOUT,
+                                "/oauth2/logout",
+                                "/*.css",
+                                "/*.js",
+                                "/*.mjs",
+                                "/*.png"
+                        ).permitAll()
+                        .anyExchange().authenticated())
+                .oauth2Login(oAuth2LoginSpec -> oAuth2LoginSpec
                         .authenticationManager(authenticationManger)
                         .authenticationSuccessHandler(authenticationSuccessHandler))
-                .formLogin().loginPage(LOGIN)
-                .and().logout(logoutSpec -> logoutSpec
+                .formLogin(formLoginSpec -> formLoginSpec.loginPage(LOGIN))
+                .logout(logoutSpec -> logoutSpec
                         .logoutUrl(LOGOUT)
                         .requiresLogout(ServerWebExchangeMatchers.pathMatchers(HttpMethod.GET, LOGOUT))
                         .logoutSuccessHandler(logoutSuccessHandler))
                 .build();
     }
-
 }

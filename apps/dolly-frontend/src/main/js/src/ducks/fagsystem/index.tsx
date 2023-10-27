@@ -54,12 +54,6 @@ export const actions = createActions(
 				ident,
 			}),
 		],
-		getUdi: [
-			DollyApi.getUdiPerson,
-			(ident) => ({
-				ident,
-			}),
-		],
 		getBrreg: [
 			BrregstubApi.getPerson,
 			(ident) => ({
@@ -156,9 +150,6 @@ export default handleActions(
 		},
 		[onSuccess(actions.getKrr)](state, action) {
 			state.krrstub[action.meta.ident] = action.payload.data
-		},
-		[onSuccess(actions.getUdi)](state, action) {
-			state.udistub[action.meta.ident] = action.payload?.data?.person
 		},
 		[onSuccess(actions.getBrreg)](state, action) {
 			state.brregstub[action.meta.ident] = action.payload?.data
@@ -270,8 +261,6 @@ export const fetchDataFraFagsystemer = (person, bestillingerById) => (dispatch) 
 				return dispatch(actions.getInntektstub(personId))
 			case 'TPS_MESSAGING':
 				return dispatch(actions.getTpsMessaging(personId))
-			case 'UDISTUB':
-				return dispatch(actions.getUdi(personId))
 			case 'BRREGSTUB':
 				return dispatch(actions.getBrreg(personId))
 			case 'SKJERMINGSREGISTER':

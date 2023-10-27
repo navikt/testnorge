@@ -221,7 +221,7 @@ const FinnPersonBestilling = ({
 	const CustomOption = ({ children, ...props }) => (
 		// @ts-ignore
 		<components.Option {...props}>
-			<span data-cy={CypressSelector.BUTTON_NAVIGER_PERSON}>
+			<span data-cy={CypressSelector.BUTTON_NAVIGER_DOLLY}>
 				<Highlighter
 					textToHighlight={children}
 					searchWords={fragment.split(' ')}
@@ -236,7 +236,7 @@ const FinnPersonBestilling = ({
 		return (
 			// @ts-ignore
 			<components.DropdownIndicator {...props}>
-				<Icon fontSize={'1.5rem'} data-cy={CypressSelector.INPUT_PERSON_SOEK} kind={'search'} />
+				<Icon fontSize={'1.5rem'} data-cy={CypressSelector.INPUT_DOLLY_SOEK} kind={'search'} />
 			</components.DropdownIndicator>
 		)
 	}

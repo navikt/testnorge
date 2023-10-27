@@ -33,7 +33,6 @@ import { RelatertPersonImportButton } from '@/components/ui/button/RelatertPerso
 import { useAsync } from 'react-use'
 import { DollyApi } from '@/service/Api'
 import { GjenopprettPerson } from '@/components/bestilling/gjenopprett/GjenopprettPerson'
-import { sjekkManglerUdiData } from '@/components/fagsystem/udistub/visning/UdiVisning'
 import { sjekkManglerBrregData } from '@/components/fagsystem/brregstub/visning/BrregVisning'
 import { sjekkManglerPensjonData } from '@/components/fagsystem/pensjon/visning/PensjonVisning'
 import { sjekkManglerAaregData } from '@/components/fagsystem/aareg/visning/Visning'
@@ -62,6 +61,7 @@ import {
 	harPoppBestilling,
 	harSykemeldingBestilling,
 	harTpBestilling,
+	harUdistubBestilling,
 	harUforetrygdBestilling,
 } from '@/utils/SjekkBestillingFagsystem'
 import {
@@ -84,6 +84,7 @@ import {
 } from '@/components/fagsystem/uforetrygd/visning/UforetrygdVisning'
 import { usePensjonEnvironments } from '@/utils/hooks/useEnvironments'
 import { SigrunstubPensjonsgivendeVisning } from '@/components/fagsystem/sigrunstubPensjonsgivende/visning/Visning'
+import { useUdistub } from '@/utils/hooks/useUdistub'
 
 const getIdenttype = (ident) => {
 	if (parseInt(ident.charAt(0)) > 3) {
@@ -142,6 +143,11 @@ export default ({
 	const { loading: loadingMedl, medl } = useMedlPerson(
 		ident.ident,
 		harMedlBestilling(bestillingerFagsystemer) || ident?.master === 'PDL',
+	)
+
+	const { loading: loadingUdistub, udistub } = useUdistub(
+		ident.ident,
+		harUdistubBestilling(bestillingerFagsystemer) || ident?.master === 'PDL',
 	)
 
 	const visArbeidsforhold =
@@ -221,7 +227,7 @@ export default ({
 		return null
 	}
 
-	const { sigrunstub, sigrunstubPensjonsgivende, inntektstub, brregstub, krrstub, udistub } = data
+	const { sigrunstub, sigrunstubPensjonsgivende, inntektstub, brregstub, krrstub } = data
 
 	const manglerFagsystemdata = () => {
 		if (
@@ -247,9 +253,6 @@ export default ({
 			return true
 		}
 		if (brregstub && sjekkManglerBrregData(brregstub)) {
-			return true
-		}
-		if (udistub && sjekkManglerUdiData(udistub)) {
 			return true
 		}
 		if (instData && sjekkManglerInstData(instData)) {
@@ -329,7 +332,6 @@ export default ({
 		)
 		return arbeidsplassenBestillinger?.[0]?.data?.arbeidsplassenCV?.harHjemmel
 	}
-
 	return (
 		<ErrorBoundary>
 			<div className="person-visning">
@@ -479,7 +481,7 @@ export default ({
 				<MedlVisning data={medl} loading={loadingMedl} />
 				<UdiVisning
 					data={UdiVisning.filterValues(udistub, bestilling?.bestilling.udistub)}
-					loading={loading.udistub}
+					loading={loadingUdistub}
 				/>
 				<DokarkivVisning
 					data={dokarkivData}

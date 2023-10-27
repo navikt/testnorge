@@ -18,6 +18,16 @@ export const harMedlBestilling = (bestillingerFagsystemer) => {
 	return medl
 }
 
+export const harUdistubBestilling = (bestillingerFagsystemer) => {
+	let udistub = false
+	bestillingerFagsystemer?.forEach((i) => {
+		if (i.udistub) {
+			udistub = true
+		}
+	})
+	return udistub
+}
+
 export const harTpBestilling = (bestillingerFagsystemer) => {
 	let tp = false
 	bestillingerFagsystemer?.forEach((i) => {

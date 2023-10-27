@@ -22,7 +22,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 class DigitalKontaktMappingStrategyTest {
 
     private static final String EPOST = "test@nav.no";
-    private static final String MOBIL = "99990000";
+    private static final String MOBIL_INCORRECT = "99990000";
+    private static final String MOBIL_INCORRECT_SPACE = "+47 99990000";
+    private static final String MOBIL_CORRECT = "+4799990000";
     private static final String SPRAAK = "NO";
     private static final boolean RESERVERT = true;
     private static final LocalDateTime GYLDIG_FRA = LocalDateTime.of(2018, 1, 1, 0, 0);
@@ -59,14 +61,27 @@ class DigitalKontaktMappingStrategyTest {
     }
 
     @Test
-    void mapMobil_OK() {
+    void mapMobil_Incorrect_OK() {
 
         var result = mapperFacade.map(RsDigitalKontaktdata.builder()
                 .gyldigFra(GYLDIG_FRA)
-                .mobil(MOBIL)
+                .mobil(MOBIL_INCORRECT)
                 .build(), DigitalKontaktdata.class, context);
 
-        assertThat(result.getMobil(), is(equalTo(MOBIL)));
+        assertThat(result.getMobil(), is(equalTo(MOBIL_CORRECT)));
+        assertThat(result.getMobilOppdatert(), is(equalTo(Z_GYLDIG_FRA)));
+        assertThat(result.getMobilVerifisert(), is(equalTo(Z_GYLDIG_FRA)));
+    }
+
+    @Test
+    void mapMobil_WithSpace_OK() {
+
+        var result = mapperFacade.map(RsDigitalKontaktdata.builder()
+                .gyldigFra(GYLDIG_FRA)
+                .mobil(MOBIL_INCORRECT_SPACE)
+                .build(), DigitalKontaktdata.class, context);
+
+        assertThat(result.getMobil(), is(equalTo(MOBIL_CORRECT)));
         assertThat(result.getMobilOppdatert(), is(equalTo(Z_GYLDIG_FRA)));
         assertThat(result.getMobilVerifisert(), is(equalTo(Z_GYLDIG_FRA)));
     }

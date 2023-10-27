@@ -8,14 +8,16 @@ import { Annet } from './partials/Annet'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { hasProperty } from 'dot-prop'
 import { Alert } from '@navikt/ds-react'
+import { filtrerKeysMedKunNullVerdier } from '@/components/fagsystem/utils'
 
 const kunTommeObjekter = (udiData) => {
 	const { oppholdStatus, arbeidsadgang, aliaser } = udiData
+	const formatertOppholdStatus = filtrerKeysMedKunNullVerdier(oppholdStatus)
 	return (
-		(!oppholdStatus || Object.keys(oppholdStatus)?.length < 1) &&
-		(!arbeidsadgang || Object.keys(arbeidsadgang)?.length < 1) &&
-		(!aliaser || (Array.isArray(aliaser) && aliaser.length < 1)) &&
-		!hasProperty(udiData, 'flyktning') &&
+		(_.isEmpty(formatertOppholdStatus) || Object.keys(oppholdStatus)?.length < 1) &&
+		(_.isEmpty(arbeidsadgang) || Object.keys(arbeidsadgang)?.length < 1) &&
+		(_.isEmpty(aliaser) || (Array.isArray(aliaser) && aliaser.length < 1)) &&
+		!udiData?.flyktning &&
 		!hasProperty(udiData, 'soeknadOmBeskyttelseUnderBehandling')
 	)
 }
@@ -41,7 +43,7 @@ export const UdiVisning = ({ data, loading }) => {
 				) : (
 					<div className="person-visning">
 						<Oppholdsstatus
-							oppholdsstatus={data.oppholdStatus}
+							oppholdsstatus={data?.oppholdStatus}
 							oppholdstillatelse={visHarOppholdstillatelse}
 						/>
 						<Arbeidsadgang arbeidsadgang={data.arbeidsadgang} />
