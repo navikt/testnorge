@@ -1,7 +1,7 @@
 package no.nav.registre.testnav.ameldingservice.consumer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nav.registre.testnav.ameldingservice.credentials.OppsummeringsdokumentServerProperties;
+import no.nav.registre.testnav.ameldingservice.config.Consumers;
 import no.nav.testnav.libs.commands.GetOppsummeringsdokumentByIdCommand;
 import no.nav.testnav.libs.commands.GetOppsummeringsdokumentCommand;
 import no.nav.testnav.libs.commands.SaveOppsummeringsdokumenterCommand;
@@ -25,23 +25,25 @@ public class OppsummeringsdokumentConsumer {
     private final ApplicationProperties applicationProperties;
 
     public OppsummeringsdokumentConsumer(
-            OppsummeringsdokumentServerProperties properties,
+            Consumers consumers,
             ObjectMapper objectMapper,
             ApplicationProperties applicationProperties) {
-
         this.applicationProperties = applicationProperties;
         this.webClient = WebClient
                 .builder()
-                .baseUrl(properties.getUrl())
-                .codecs(clientDefaultCodecsConfigurer -> {
-                    clientDefaultCodecsConfigurer.defaultCodecs().maxInMemorySize(BYTE_COUNT);
-                    clientDefaultCodecsConfigurer
-                            .defaultCodecs()
-                            .jackson2JsonEncoder(new Jackson2JsonEncoder(objectMapper, MediaType.APPLICATION_JSON));
-                    clientDefaultCodecsConfigurer
-                            .defaultCodecs()
-                            .jackson2JsonDecoder(new Jackson2JsonDecoder(objectMapper, MediaType.APPLICATION_JSON));
-                })
+                .baseUrl(consumers.getOppsummeringsdokumentService().getUrl())
+                .codecs(
+                        clientDefaultCodecsConfigurer -> {
+                            clientDefaultCodecsConfigurer
+                                    .defaultCodecs()
+                                    .maxInMemorySize(BYTE_COUNT);
+                            clientDefaultCodecsConfigurer
+                                    .defaultCodecs()
+                                    .jackson2JsonEncoder(new Jackson2JsonEncoder(objectMapper, MediaType.APPLICATION_JSON));
+                            clientDefaultCodecsConfigurer
+                                    .defaultCodecs()
+                                    .jackson2JsonDecoder(new Jackson2JsonDecoder(objectMapper, MediaType.APPLICATION_JSON));
+                        })
                 .build();
     }
 

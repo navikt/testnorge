@@ -2,7 +2,7 @@ package no.nav.registre.testnorge.arbeidsforholdservice.consumer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.arbeidsforholdservice.config.credentials.AaregServiceProperties;
+import no.nav.registre.testnorge.arbeidsforholdservice.config.Consumers;
 import no.nav.registre.testnorge.arbeidsforholdservice.consumer.command.GetArbeidstakerArbeidsforholdCommand;
 import no.nav.registre.testnorge.arbeidsforholdservice.consumer.dto.ArbeidsforholdDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
@@ -30,21 +30,23 @@ public class AaregConsumer {
     private final TokenExchange tokenExchange;
 
     public AaregConsumer(
-            AaregServiceProperties serverProperties,
+            Consumers consumers,
             TokenExchange tokenExchange,
             ObjectMapper objectMapper) {
-
-        this.serverProperties = serverProperties;
+        serverProperties = consumers.getTestnavAaregProxy();
         this.tokenExchange = tokenExchange;
-
-        ExchangeStrategies jacksonStrategy = ExchangeStrategies.builder()
-                .codecs(config -> {
-                    config.defaultCodecs()
-                            .jackson2JsonEncoder(new Jackson2JsonEncoder(objectMapper, MediaType.APPLICATION_JSON));
-                    config.defaultCodecs()
-                            .jackson2JsonDecoder(new Jackson2JsonDecoder(objectMapper, MediaType.APPLICATION_JSON));
-                }).build();
-
+        ExchangeStrategies jacksonStrategy = ExchangeStrategies
+                .builder()
+                .codecs(
+                        config -> {
+                            config
+                                    .defaultCodecs()
+                                    .jackson2JsonEncoder(new Jackson2JsonEncoder(objectMapper, MediaType.APPLICATION_JSON));
+                            config
+                                    .defaultCodecs()
+                                    .jackson2JsonDecoder(new Jackson2JsonDecoder(objectMapper, MediaType.APPLICATION_JSON));
+                        })
+                .build();
         this.webClient = WebClient
                 .builder()
                 .exchangeStrategies(jacksonStrategy)

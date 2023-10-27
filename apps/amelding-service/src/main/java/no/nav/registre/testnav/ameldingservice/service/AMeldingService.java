@@ -1,8 +1,8 @@
 package no.nav.registre.testnav.ameldingservice.service;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.registre.testnav.ameldingservice.config.Consumers;
 import no.nav.registre.testnav.ameldingservice.consumer.OppsummeringsdokumentConsumer;
-import no.nav.registre.testnav.ameldingservice.credentials.OppsummeringsdokumentServerProperties;
 import no.nav.registre.testnav.ameldingservice.domain.AMelding;
 import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
@@ -13,11 +13,11 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class AMeldingService {
     private final OppsummeringsdokumentConsumer oppsummeringsdokumentConsumer;
-    private final OppsummeringsdokumentServerProperties applicationProperties;
+    private final Consumers consumers;
     private final TokenExchange tokenExchange;
 
     public Mono<String> save(AMelding aMelding, String miljo) {
-        return tokenExchange.exchange(applicationProperties).flatMap(accessToken -> oppsummeringsdokumentConsumer
+        return tokenExchange.exchange(consumers.getOppsummeringsdokumentService()).flatMap(accessToken -> oppsummeringsdokumentConsumer
                 .get(
                         aMelding.getOpplysningspliktigOrganisajonsnummer(),
                         aMelding.getKalendermaaned(),
@@ -29,7 +29,7 @@ public class AMeldingService {
     }
 
     public Mono<AMelding> get(String id) {
-        Mono<String> accessToken = tokenExchange.exchange(applicationProperties).map(AccessToken::getTokenValue);
+        Mono<String> accessToken = tokenExchange.exchange(consumers.getOppsummeringsdokumentService()).map(AccessToken::getTokenValue);
         return oppsummeringsdokumentConsumer.get(id, accessToken).map(AMelding::new);
     }
 }
