@@ -26,11 +26,11 @@ export const PensjonForm = ({ formikBag }) => {
 	function kalkulerIdentFyltSyttenAar(values: FormikProps<any>) {
 		const curDate = new Date()
 		const alder =
-			_.has(values, 'pdldata.opprettNyPerson.foedtEtter') &&
-			_.get(values, 'pdldata.opprettNyPerson.foedtEtter') !== null
+			_.has(values, 'pdldata.opprettNyPerson.foedtFoer') &&
+			_.get(values, 'pdldata.opprettNyPerson.foedtFoer') !== null
 				? curDate.getFullYear() -
 				  // @ts-ignore
-				  new Date(_.get(values, 'pdldata.opprettNyPerson.foedtEtter')).getFullYear()
+				  new Date(_.get(values, 'pdldata.opprettNyPerson.foedtFoer')).getFullYear()
 				: _.get(values, 'pdldata.opprettNyPerson.alder')
 		return alder && curDate.getFullYear() - alder + 17
 	}
