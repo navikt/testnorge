@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.aareg.AaregClient;
@@ -17,10 +18,13 @@ import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testident;
+import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.Tags;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
+import no.nav.dolly.elastic.BestillingElasticRepository;
+import no.nav.dolly.elastic.ElasticBestilling;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.repository.IdentRepository;
@@ -42,6 +46,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.jpa.Testident.Master.PDL;
 import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
+import static org.apache.logging.log4j.util.Strings.isBlank;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
 @Slf4j
@@ -52,12 +57,14 @@ public class DollyBestillingService {
     protected final IdentService identService;
     protected final BestillingService bestillingService;
     protected final ObjectMapper objectMapper;
+    protected final MapperFacade mapperFacade;
     protected final List<ClientRegister> clientRegisters;
     protected final CounterCustomRegistry counterCustomRegistry;
     protected final PdlDataConsumer pdlDataConsumer;
     protected final ErrorStatusDecoder errorStatusDecoder;
     protected final TransactionHelperService transactionHelperService;
     protected final TpsPersonService tpsPersonService;
+    protected final BestillingElasticRepository bestillingElasticRepository;
 
     public static Set<String> getEnvironments(String miljoer) {
         return isNotBlank(miljoer) ? Set.of(miljoer.split(",")) : emptySet();
@@ -166,6 +173,25 @@ public class DollyBestillingService {
 
         MDC.remove(MDC_KEY_BESTILLING);
         log.info("Bestilling med id=#{} er ferdig", bestilling.getId());
+    }
+
+    protected void saveBestillingToElasticServer(RsDollyBestilling bestillingRequest, Bestilling bestilling) {
+
+        if (isBlank(bestilling.getFeil()) &&
+                nonNull(bestilling.getOpprettetFraId()) &&
+                isBlank(bestilling.getGjenopprettetFraIdent()) &&
+                isNull(bestilling.getOpprettetFraGruppeId())) {
+
+            var request = mapperFacade.map(bestillingRequest, ElasticBestilling.class);
+            request.setId(bestilling.getId());
+            var progresser = bestillingService.getProgressByBestillingId(bestilling.getId());
+            request.setIdenter(progresser.stream()
+                    .filter(BestillingProgress::isIdentGyldig)
+                    .map(BestillingProgress::getIdent)
+                    .filter(StringUtils::isNotBlank)
+                    .toList());
+            bestillingElasticRepository.save(request);
+        }
     }
 
     protected Flux<BestillingProgress> opprettProgress(Bestilling bestilling, Testident.Master master) {

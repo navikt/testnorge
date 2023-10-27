@@ -2,6 +2,7 @@ package no.nav.dolly.bestilling.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
@@ -11,6 +12,7 @@ import no.nav.dolly.bestilling.tpsmessagingservice.service.TpsPersonService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
+import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.repository.IdentRepository.GruppeBestillingIdent;
@@ -44,24 +46,28 @@ public class GjenopprettIdentService extends DollyBestillingService {
             IdentService identService,
             BestillingService bestillingService,
             ObjectMapper objectMapper,
+            MapperFacade mapperFacade,
             List<ClientRegister> clientRegisters,
             CounterCustomRegistry counterCustomRegistry,
             ErrorStatusDecoder errorStatusDecoder,
             PdlDataConsumer pdlDataConsumer,
             TransactionHelperService transactionHelperService,
             PersonServiceClient personServiceClient,
-            TpsPersonService tpsPersonService
+            TpsPersonService tpsPersonService,
+            BestillingElasticRepository bestillingElasticRepository
     ) {
         super(
                 identService,
                 bestillingService,
                 objectMapper,
+                mapperFacade,
                 clientRegisters,
                 counterCustomRegistry,
                 pdlDataConsumer,
                 errorStatusDecoder,
                 transactionHelperService,
-                tpsPersonService
+                tpsPersonService,
+                bestillingElasticRepository
         );
         this.personServiceClient = personServiceClient;
     }

@@ -5,7 +5,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingKontroll;
 import no.nav.dolly.domain.jpa.BestillingProgress;
@@ -19,8 +18,6 @@ import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingFragment;
-import no.nav.dolly.elastic.BestillingElasticRepository;
-import no.nav.dolly.elastic.ElasticBestilling;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
@@ -77,8 +74,6 @@ public class BestillingService {
     private final TestgruppeRepository testgruppeRepository;
     private final BrukerService brukerService;
     private final GetUserInfo getUserInfo;
-    private final BestillingElasticRepository bestillingElasticRepository;
-    private final MapperFacade mapperFacade;
 
     public Bestilling fetchBestillingById(Long bestillingId) {
         return bestillingRepository.findById(bestillingId)
@@ -224,7 +219,6 @@ public class BestillingService {
         if (isNotBlank(request.getMalBestillingNavn())) {
             bestillingMalService.saveBestillingMal(bestilling, request.getMalBestillingNavn(), bruker);
         }
-        saveBestillingToElasticServer(request);
         return saveBestillingToDB(bestilling);
     }
 
@@ -248,7 +242,6 @@ public class BestillingService {
         if (isNotBlank(request.getMalBestillingNavn())) {
             bestillingMalService.saveBestillingMal(bestilling, request.getMalBestillingNavn(), bruker);
         }
-        saveBestillingToElasticServer(request);
         return saveBestillingToDB(bestilling);
     }
 
@@ -335,7 +328,6 @@ public class BestillingService {
         if (isNotBlank(request.getMalBestillingNavn())) {
             bestillingMalService.saveBestillingMal(bestilling, request.getMalBestillingNavn(), bruker);
         }
-        saveBestillingToElasticServer(request);
         return saveBestillingToDB(bestilling);
     }
 
@@ -346,7 +338,6 @@ public class BestillingService {
         var size = identRepository.countByTestgruppe(gruppeId);
         log.info("Antall testidenter {} i gruppe {} ", size, gruppeId);
         fixAaregAbstractClassProblem(request.getAareg());
-        saveBestillingToElasticServer(request);
         return saveBestillingToDB(
                 Bestilling.builder()
                         .gruppe(gruppe)
@@ -450,11 +441,8 @@ public class BestillingService {
         });
     }
 
-    private void saveBestillingToElasticServer(RsDollyBestilling bestillingRequest) {
+    public List<BestillingProgress> getProgressByBestillingId(Long bestillingId){
 
-        if (bestillingRequest.isNonEmpty()) {
-            var request = mapperFacade.map(bestillingRequest, ElasticBestilling.class);
-            bestillingElasticRepository.save(request);
-        }
+        return bestillingProgressRepository.findByBestilling_Id(bestillingId);
     }
 }
