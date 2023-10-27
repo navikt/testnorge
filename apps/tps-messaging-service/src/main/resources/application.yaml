@@ -5,6 +5,10 @@ spring:
     name: testnav-tps-messaging-service
   flyway:
     enabled: false
+  management:
+    health:
+      elasticsearch:
+        enabled: false
   security:
     oauth2:
       resourceserver:

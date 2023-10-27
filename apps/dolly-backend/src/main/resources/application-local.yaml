@@ -20,6 +20,9 @@ spring:
       maximum-pool-size: 3
       minimum-idle: 1
     driver-class-name: org.postgresql.Driver
+  health:
+    elasticsearch:
+      enabled: false
   security:
     oauth2:
       resourceserver:
