@@ -29,7 +29,7 @@ public class SecurityConfig {
                         "/swagger",
                         "/error",
                         "/swagger-ui.html"
-                ).permitAll().requestMatchers("/api/**").fullyAuthenticated())
+                ).permitAll().anyRequest().fullyAuthenticated())
                 .oauth2ResourceServer(oauth2RSConfig -> oauth2RSConfig.jwt(Customizer.withDefaults()));
 
         return httpSecurity.build();
