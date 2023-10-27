@@ -23,7 +23,7 @@ spring:
           jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
           accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
         tokenx:
-          issuer-uri: https://tokenx.dev-gcp.nav.cloud.nais.io 
+          issuer-uri: https://tokenx.dev-gcp.nav.cloud.nais.io
           jwk-set-uri: https://tokenx.dev-gcp.nav.cloud.nais.io/jwks
           accepted-audience: ${TOKEN_X_CLIENT_ID}
 
@@ -53,6 +53,11 @@ consumers:
     namespace: dolly
     name: testnav-brregstub-proxy
     url: https://testnav-brregstub-proxy.dev-fss-pub.nais.io
+  testnav-udistub-proxy:
+    cluster: dev-fss
+    namespace: dolly
+    name: testnav-udistub-proxy
+    url: https://testnav-udistub-proxy.dev-fss-pub.nais.io
   testnav-aareg-proxy:
     cluster: dev-fss
     namespace: dolly
@@ -174,10 +179,10 @@ consumers:
     name: testnav-helsepersonell-service
     url: http://testnav-helsepersonell-service.dolly.svc.cluster.local
   generer-navn-service:
-      cluster: dev-gcp
-      namespace: dolly
-      name: generer-navn-service
-      url: http://generer-navn-service.dolly.svc.cluster.local
+    cluster: dev-gcp
+    namespace: dolly
+    name: generer-navn-service
+    url: http://generer-navn-service.dolly.svc.cluster.local
   testnav-kontoregister-person-proxy:
     name: testnav-kontoregister-person-proxy
     namespace: dolly

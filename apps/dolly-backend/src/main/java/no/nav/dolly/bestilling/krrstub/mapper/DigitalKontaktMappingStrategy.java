@@ -20,6 +20,52 @@ import static org.apache.logging.log4j.util.Strings.isNotBlank;
 @Component
 public class DigitalKontaktMappingStrategy implements MappingStrategy {
 
+    @Override
+    public void register(MapperFactory factory) {
+        factory.classMap(RsDigitalKontaktdata.class, DigitalKontaktdata.class)
+                .customize(new CustomMapper<>() {
+                    @Override
+                    public void mapAtoB(RsDigitalKontaktdata digitalKontaktdata, DigitalKontaktdata kontaktdataRequest, MappingContext context) {
+
+                        kontaktdataRequest.setPersonident((String) context.getProperty("ident"));
+
+                        kontaktdataRequest.setGyldigFra(getDato(digitalKontaktdata));
+
+                        if (isNotBlank(digitalKontaktdata.getMobil())) {
+                            kontaktdataRequest.setMobilOppdatert(getDato(digitalKontaktdata));
+                            kontaktdataRequest.setMobilVerifisert(getDato(digitalKontaktdata));
+                            kontaktdataRequest.setMobil(digdirFormatertTlfNummer(digitalKontaktdata.getMobil()));
+                        }
+                        if (nonNull(digitalKontaktdata.getEpost())) {
+                            kontaktdataRequest.setEpostOppdatert(getDato(digitalKontaktdata));
+                            kontaktdataRequest.setEpostVerifisert(getDato(digitalKontaktdata));
+                        }
+                        if (nonNull(digitalKontaktdata.getSpraak())) {
+                            kontaktdataRequest.setSpraakOppdatert(getDato(digitalKontaktdata));
+                        }
+
+                        kobleMaalformTilSpraak((RsDollyUtvidetBestilling) context.getProperty("bestilling"), kontaktdataRequest);
+                    }
+
+                    private String digdirFormatertTlfNummer(String mobil) {
+                        if (isBlank(mobil)) {
+                            return null;
+                        }
+                        var nummerUtenSpace = mobil.replace(" ", "");
+                        return nummerUtenSpace.contains("+47") ? nummerUtenSpace : "+47%s".formatted(nummerUtenSpace);
+                    }
+
+                    private ZonedDateTime getDato(RsDigitalKontaktdata digitalKontaktdata) {
+                        return nonNull(digitalKontaktdata.getGyldigFra()) ?
+                                ZonedDateTime.of(digitalKontaktdata.getGyldigFra(), ZoneId.systemDefault()) :
+                                ZonedDateTime.now();
+                    }
+                })
+                .exclude("gyldigFra")
+                .byDefault()
+                .register();
+    }
+
     private static void kobleMaalformTilSpraak(RsDollyUtvidetBestilling bestilling, DigitalKontaktdata digitalKontaktdata) {
 
         String maalform = null;
@@ -39,42 +85,5 @@ public class DigitalKontaktMappingStrategy implements MappingStrategy {
     private static boolean isKrrMaalform(String spraak) {
 
         return isNotBlank(spraak) && Stream.of("NB", "NN", "EN", "SE").anyMatch(spraak::equalsIgnoreCase);
-    }
-
-    @Override
-    public void register(MapperFactory factory) {
-        factory.classMap(RsDigitalKontaktdata.class, DigitalKontaktdata.class)
-                .customize(new CustomMapper<>() {
-                    @Override
-                    public void mapAtoB(RsDigitalKontaktdata digitalKontaktdata, DigitalKontaktdata kontaktdataRequest, MappingContext context) {
-
-                        kontaktdataRequest.setPersonident((String) context.getProperty("ident"));
-
-                        kontaktdataRequest.setGyldigFra(getDato(digitalKontaktdata));
-
-                        if (nonNull(digitalKontaktdata.getMobil())) {
-                            kontaktdataRequest.setMobilOppdatert(getDato(digitalKontaktdata));
-                            kontaktdataRequest.setMobilVerifisert(getDato(digitalKontaktdata));
-                        }
-                        if (nonNull(digitalKontaktdata.getEpost())) {
-                            kontaktdataRequest.setEpostOppdatert(getDato(digitalKontaktdata));
-                            kontaktdataRequest.setEpostVerifisert(getDato(digitalKontaktdata));
-                        }
-                        if (nonNull(digitalKontaktdata.getSpraak())) {
-                            kontaktdataRequest.setSpraakOppdatert(getDato(digitalKontaktdata));
-                        }
-
-                        kobleMaalformTilSpraak((RsDollyUtvidetBestilling) context.getProperty("bestilling"), kontaktdataRequest);
-                    }
-
-                    private ZonedDateTime getDato(RsDigitalKontaktdata digitalKontaktdata) {
-                        return nonNull(digitalKontaktdata.getGyldigFra()) ?
-                                ZonedDateTime.of(digitalKontaktdata.getGyldigFra(), ZoneId.systemDefault()) :
-                                ZonedDateTime.now();
-                    }
-                })
-                .exclude("gyldigFra")
-                .byDefault()
-                .register();
     }
 }

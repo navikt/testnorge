@@ -8,7 +8,6 @@ const tagsBase = `${uri}/tags`
 const identBase = `${uri}/ident`
 const brukerBase = `${uri}/bruker`
 const kodeverkBase = `${uri}/kodeverk`
-const udiBase = `${uri}/udistub`
 const bestillingBase = `${uri}/bestilling`
 const personoppslagBase = `${personUri}/personer`
 const organisasjonBase = `${uri}/organisasjon`
@@ -120,10 +119,6 @@ export default class DollyEndpoints {
 
 	static orgExcelFil(brukerId) {
 		return `${uri}/excel/organisasjoner?brukerId=${brukerId}`
-	}
-
-	static udiPerson(ident) {
-		return `${udiBase}/${ident}`
 	}
 
 	//TESTPERSON-CONTROLLER
