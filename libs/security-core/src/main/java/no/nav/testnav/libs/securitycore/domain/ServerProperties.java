@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.URL;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.lang.Nullable;
 import org.springframework.validation.annotation.Validated;
 
 @EnableConfigurationProperties
@@ -58,10 +59,19 @@ public class ServerProperties {
         };
     }
 
-    public static ServerProperties of(String cluster, String namespace, String name, String url) {
+    /**
+     * Convenience constructor.
+     *
+     * @param cluster See {@link #getCluster()}, defaults to {@code dev-gcp} if {@code null}.
+     * @param namespace See {@link #getNamespace()}, defaults to {@code dolly} if {@code null}.
+     * @param name See {@link #getName()}.
+     * @param url See {@link #getUrl()}.
+     * @return New instance.
+     */
+    public static ServerProperties of(@Nullable String cluster, @Nullable String namespace, String name, String url) {
         var properties = new ServerProperties();
-        properties.setCluster(cluster);
-        properties.setNamespace(namespace);
+        properties.setCluster(cluster == null ? "dev-gcp" : cluster);
+        properties.setNamespace(namespace == null ? "dolly" : namespace);
         properties.setName(name);
         properties.setUrl(url);
         return properties;
