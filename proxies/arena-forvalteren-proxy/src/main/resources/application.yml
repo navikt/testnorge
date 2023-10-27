@@ -22,10 +22,9 @@ spring:
     vault:
       enabled: false
 
-app:
-  arena:
-    services:
-      name: arena-services-MILJOE
-      namespace: teamarenanais
-      url: http://arena-ords-MILJOE.teamarenanais.svc.nais.local
-      cluster: dev-fss
+consumers:
+  arena-services:
+    name: arena-services-MILJOE
+    namespace: teamarenanais
+    url: http://arena-ords-MILJOE.teamarenanais.svc.nais.local
+    cluster: dev-fss

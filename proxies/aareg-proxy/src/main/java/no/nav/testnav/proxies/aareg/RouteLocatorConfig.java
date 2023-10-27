@@ -57,14 +57,14 @@ public class RouteLocatorConfig {
                         .map(AccessToken::getTokenValue));
     }
 
-    ServerProperties forEnvironment(ServerProperties original, String environment) {
+    private static ServerProperties forEnvironment(ServerProperties original, String environment) {
         var replacement = "q2".equals(environment) ? "" : '-' + environment;
-        var copy = new ServerProperties();
-        copy.setCluster(original.getCluster());
-        copy.setName(original.getName().replace("-{env}", replacement));
-        copy.setNamespace(original.getNamespace());
-        copy.setUrl(original.getUrl().replace("-{env}", replacement));
-        return copy;
+        return ServerProperties.of(
+                original.getCluster(),
+                original.getNamespace(),
+                original.getName().replace("-{env}", replacement),
+                original.getUrl().replace("-{env}", replacement)
+        );
     }
 
     private Function<PredicateSpec, Buildable<Route>> createReadableRouteToNewEndpoint(String miljoe, GatewayFilter authentication) {

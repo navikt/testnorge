@@ -1,10 +1,6 @@
 azure.app.client.id: dummy
 
 consumers:
-  popp-testdata:
-    name: popp-dummy
-    namespace: dummy
-    url: https://popp-dummy.dummy.no
   samboer-testdata:
     name: pensjon-dummy
     namespace: dummy

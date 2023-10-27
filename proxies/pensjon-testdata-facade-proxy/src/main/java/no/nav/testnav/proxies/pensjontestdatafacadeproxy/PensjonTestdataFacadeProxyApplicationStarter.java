@@ -69,13 +69,13 @@ public class PensjonTestdataFacadeProxyApplicationStarter {
                                 .map(AccessToken::getTokenValue));
     }
 
-    public ServerProperties forEnvironment(ServerProperties original, String env) {
-        var copy = new ServerProperties();
-        copy.setCluster(original.getCluster());
-        copy.setName(original.getName().replace("MILJOE", env));
-        copy.setNamespace(original.getNamespace());
-        copy.setUrl(original.getUrl().replace("MILJOE", env + ("q1".equals(env) ? ".very" : "")));
-        return copy;
+    private static ServerProperties forEnvironment(ServerProperties original, String env) {
+        return ServerProperties.of(
+                original.getCluster(),
+                original.getNamespace(),
+                original.getName().replace("MILJOE", env),
+                original.getUrl().replace("MILJOE", env + ("q1".equals(env) ? ".very" : ""))
+        );
     }
 
     public static void main(String[] args) {
