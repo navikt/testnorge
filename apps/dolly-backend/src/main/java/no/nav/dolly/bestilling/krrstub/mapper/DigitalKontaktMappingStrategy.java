@@ -36,11 +36,11 @@ public class DigitalKontaktMappingStrategy implements MappingStrategy {
                             kontaktdataRequest.setMobilVerifisert(getDato(digitalKontaktdata));
                             kontaktdataRequest.setMobil(digdirFormatertTlfNummer(digitalKontaktdata.getMobil()));
                         }
-                        if (nonNull(digitalKontaktdata.getEpost())) {
+                        if (isNotBlank(digitalKontaktdata.getEpost())) {
                             kontaktdataRequest.setEpostOppdatert(getDato(digitalKontaktdata));
                             kontaktdataRequest.setEpostVerifisert(getDato(digitalKontaktdata));
                         }
-                        if (nonNull(digitalKontaktdata.getSpraak())) {
+                        if (isNotBlank(digitalKontaktdata.getSpraak())) {
                             kontaktdataRequest.setSpraakOppdatert(getDato(digitalKontaktdata));
                         }
 
