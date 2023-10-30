@@ -3,7 +3,7 @@
 
 # app-tilgang-analyse-service
 
-Appen brukes for å finne avehingheter mellom apper basert på `inbound` og `outbound` regler i nais. 
+Appen brukes for å finne avhengigheter mellom apper basert på `inbound` og `outbound` regler i nais. 
  
 ## Swagger
 Swagger finnes under [/swagger](https://testnav-app-tilgang-analyse-service.intern.dev.nav.no/swagger) -endepunktet til
