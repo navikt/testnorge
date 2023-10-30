@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.dolly.elastic.ElasticBestilling;
 import no.nav.dolly.elastic.ElasticTyper;
-import org.opensearch.index.query.QueryBuilders;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
@@ -35,14 +34,11 @@ public class OpenSearchService {
 
     public List<String> getTyper(ElasticTyper[] typer) {
 
-        var builder = QueryBuilders.boolQuery();
+        var criteria = new Criteria();
 
         Arrays.stream(typer)
                 .map(this::getCriteria)
-                .map(CriteriaQuery::new)
-                .forEach(criteriaQuery ->  builder.must(criteriaQuery));
-
-        var criteria = new Criteria("skjerming").exists().;
+                .forEach(criteria::and);
 
         var hits = searchOperations.search(new CriteriaQuery(criteria),
                 ElasticBestilling.class, IndexCoordinates.of("bestilling"));
