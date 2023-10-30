@@ -1,6 +1,7 @@
 import { Alert, Tabs } from '@navikt/ds-react'
 import styled from 'styled-components'
 import React, { useState } from 'react'
+import { random } from 'lodash'
 
 const StyledTabs = styled(Tabs)`
 	margin-top: -10px;
@@ -39,7 +40,7 @@ export const MiljoTabs = ({ bestilteMiljoer, errorMiljoer = [], forsteMiljo, dat
 					if (errorMiljoer?.includes(miljoData?.miljo)) {
 						return (
 							<ErrorMiljoTab
-								key={miljoData?.miljo}
+								key={miljoData?.miljo + random()}
 								value={miljoData?.miljo}
 								label={miljoData?.miljo?.toUpperCase() || '?'}
 							/>
@@ -48,7 +49,7 @@ export const MiljoTabs = ({ bestilteMiljoer, errorMiljoer = [], forsteMiljo, dat
 					if (bestilteMiljoer?.includes(miljoData?.miljo)) {
 						return (
 							<BestiltMiljoTab
-								key={miljoData?.miljo}
+								key={miljoData?.miljo + random()}
 								value={miljoData?.miljo}
 								label={miljoData?.miljo?.toUpperCase() || '?'}
 							/>
@@ -56,7 +57,7 @@ export const MiljoTabs = ({ bestilteMiljoer, errorMiljoer = [], forsteMiljo, dat
 					}
 					return (
 						<Tabs.Tab
-							key={miljoData?.miljo}
+							key={miljoData?.miljo + random()}
 							value={miljoData?.miljo}
 							label={miljoData?.miljo?.toUpperCase() || '?'}
 						/>
@@ -64,7 +65,7 @@ export const MiljoTabs = ({ bestilteMiljoer, errorMiljoer = [], forsteMiljo, dat
 				})}
 			</Tabs.List>
 			{data.map((miljoData) => (
-				<StyledPanel key={miljoData?.miljo} value={miljoData?.miljo}>
+				<StyledPanel key={miljoData?.miljo + random()} value={miljoData?.miljo}>
 					{!miljoData?.data ||
 					miljoData?.data?.length < 1 ||
 					miljoData?.data?.inntekter?.length === 0 ? (
