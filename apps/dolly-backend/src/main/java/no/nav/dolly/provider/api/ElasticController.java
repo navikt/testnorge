@@ -8,10 +8,9 @@ import lombok.RequiredArgsConstructor;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.elastic.ElasticBestilling;
+import no.nav.dolly.elastic.ElasticTyper;
 import no.nav.dolly.service.OpenSearchService;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,17 +23,16 @@ public class ElasticController {
 
     private final OpenSearchService openSearchService;
 
-    @Deprecated
-    @PostMapping
-    public void lagreBestilling(@RequestBody Wrapper bestilling) {
-
-        openSearchService.lagreBestillingMedStatus(bestilling.getDollyBestilling(), bestilling.getBestillingStatus());
-    }
-
     @GetMapping("/all")
     public List<ElasticBestilling> getAll() {
 
         return openSearchService.getAll();
+    }
+
+    @GetMapping("/typer")
+    public List<String> getIdenterMed(ElasticTyper... typer) {
+
+        return openSearchService.getTyper(typer);
     }
 
     @Data

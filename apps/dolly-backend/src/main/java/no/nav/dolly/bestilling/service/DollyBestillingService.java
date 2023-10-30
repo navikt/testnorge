@@ -178,7 +178,7 @@ public class DollyBestillingService {
     protected void saveBestillingToElasticServer(RsDollyBestilling bestillingRequest, Bestilling bestilling) {
 
         if (isBlank(bestilling.getFeil()) &&
-                nonNull(bestilling.getOpprettetFraId()) &&
+                isNull(bestilling.getOpprettetFraId()) &&
                 isBlank(bestilling.getGjenopprettetFraIdent()) &&
                 isNull(bestilling.getOpprettetFraGruppeId())) {
 

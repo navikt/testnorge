@@ -7,7 +7,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
-import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
+import no.nav.dolly.domain.resultset.arenaforvalter.ArenaBrukertype;
+import no.nav.dolly.domain.resultset.arenaforvalter.ArenaKvalifiseringsgruppe;
+import no.nav.dolly.domain.resultset.arenaforvalter.RsArenaAap;
+import no.nav.dolly.domain.resultset.arenaforvalter.RsArenaAap115;
+import no.nav.dolly.domain.resultset.arenaforvalter.RsArenaDagpenger;
 import no.nav.dolly.domain.resultset.breg.RsBregdata;
 import no.nav.dolly.domain.resultset.dokarkiv.RsDokarkiv;
 import no.nav.dolly.domain.resultset.histark.RsHistark;
@@ -23,18 +27,18 @@ import no.nav.dolly.domain.resultset.sigrunstub.RsLignetInntekt;
 import no.nav.dolly.domain.resultset.sigrunstub.RsPensjonsgivendeForFolketrygden;
 import no.nav.dolly.domain.resultset.skjerming.RsSkjerming;
 import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding;
-import no.nav.dolly.domain.resultset.tpsmessagingservice.RsTpsMessaging;
 import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
 import no.nav.testnav.libs.data.arbeidsplassencv.v1.ArbeidsplassenCVDTO;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.domain.Persistable;
+import org.springframework.data.elasticsearch.annotations.DateFormat;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import static java.util.Objects.isNull;
 
@@ -49,10 +53,13 @@ public class ElasticBestilling implements Persistable<Long> {
     @Id
     private Long id;
 
-    @Field
-    private Set<String> environments;
-    @Field
-    private String malBestillingNavn;
+    @Override
+    @JsonIgnore
+    public boolean isNew() {
+
+        return true;
+    }
+
     @Field
     private PdlPersondata pdldata;
     @Field
@@ -64,17 +71,29 @@ public class ElasticBestilling implements Persistable<Long> {
     @Field
     private List<RsAareg> aareg;
     @Field
-    private List<RsLignetInntekt> sigrunstub;
+    private List<RsLignetInntekt> sigrunInntekt;
     @Field
-    private List<RsPensjonsgivendeForFolketrygden> sigrunstubPensjonsgivende;
+    private List<RsPensjonsgivendeForFolketrygden> sigrunPensjonsgivende;
     @Field
     private InntektMultiplierWrapper inntektstub;
     @Field
-    private Arenadata arenaforvalter;
+    private ArenaBruker arenaBruker;
+    @Field
+    private List<RsArenaAap115> arenaAap115;
+    @Field
+    private List<RsArenaAap> arenaAap;
+    @Field
+    private List<RsArenaDagpenger> arenaDagpenger;
     @Field
     private RsUdiPerson udistub;
     @Field
-    private PensjonData pensjonforvalter;
+    private PensjonData.PoppInntekt penInntekt;
+    @Field
+    private List<PensjonData.TpOrdning> penTp;
+    @Field
+    private PensjonData.Alderspensjon penAlderspensjon;
+    @Field
+    private PensjonData.Uforetrygd penUforetrygd;
     @Field
     private RsInntektsmelding inntektsmelding;
     @Field
@@ -85,8 +104,6 @@ public class ElasticBestilling implements Persistable<Long> {
     private RsHistark histark;
     @Field
     private RsSykemelding sykemelding;
-    @Field
-    private RsTpsMessaging tpsMessaging;
     @Field
     private BankkontoData bankkonto;
     @Field
@@ -103,25 +120,28 @@ public class ElasticBestilling implements Persistable<Long> {
         return aareg;
     }
 
-    public Set<String> getEnvironments() {
-        if (isNull(environments)) {
-            environments = new HashSet<>();
+    public List<RsLignetInntekt> getSigrunInntekt() {
+
+        if (isNull(sigrunInntekt)) {
+            sigrunInntekt = new ArrayList<>();
         }
-        return environments;
+        return sigrunInntekt;
     }
 
-    public List<RsLignetInntekt> getSigrunstub() {
-        if (isNull(sigrunstub)) {
-            sigrunstub = new ArrayList<>();
+    public List<RsPensjonsgivendeForFolketrygden> getSigrunPensjonsgivende() {
+
+        if (isNull(sigrunPensjonsgivende)) {
+            sigrunPensjonsgivende = new ArrayList<>();
         }
-        return sigrunstub;
+        return sigrunPensjonsgivende;
     }
 
-    public List<RsPensjonsgivendeForFolketrygden> getSigrunstubPensjonsgivende() {
-        if (isNull(sigrunstubPensjonsgivende)) {
-            sigrunstubPensjonsgivende = new ArrayList<>();
+    public List<PensjonData.TpOrdning> getPenTp() {
+
+        if (isNull(penTp)) {
+            penTp = new ArrayList<>();
         }
-        return sigrunstubPensjonsgivende;
+        return penTp;
     }
 
     public List<RsInstdata> getInstdata() {
@@ -138,10 +158,19 @@ public class ElasticBestilling implements Persistable<Long> {
         return identer;
     }
 
-    @Override
-    @JsonIgnore
-    public boolean isNew() {
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ArenaBruker {
 
-        return true;
+        @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second, pattern = "uuuu-MM-dd'T'HH:mm:ss")
+        private LocalDateTime aktiveringDato;
+
+        private ArenaBrukertype arenaBrukertype;
+        private ArenaKvalifiseringsgruppe kvalifiseringsgruppe;
+        private Boolean automatiskInnsendingAvMeldekort;
+
+        @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second, pattern = "uuuu-MM-dd'T'HH:mm:ss")
+        private LocalDateTime inaktiveringDato;
     }
 }

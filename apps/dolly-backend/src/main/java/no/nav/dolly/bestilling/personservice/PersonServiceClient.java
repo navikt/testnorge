@@ -102,7 +102,7 @@ public class PersonServiceClient {
 
         } catch (JsonProcessingException e) {
 
-            throw new DollyFunctionalException("Feilet å hente hendelseId fra opprettinng.", e);
+            throw new DollyFunctionalException("Feilet å hente hendelseId fra oppretting.", e);
         }
     }
 
