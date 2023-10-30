@@ -3,21 +3,21 @@ package no.nav.registre.testnorge.personsearchservice.service.utils;
 import lombok.experimental.UtilityClass;
 import no.nav.testnav.libs.dto.personsearchservice.v1.search.AdresserSearch;
 import no.nav.testnav.libs.dto.personsearchservice.v1.search.PersonSearch;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
+import org.opensearch.index.query.BoolQueryBuilder;
+import org.opensearch.index.query.QueryBuilders;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import static java.util.Objects.nonNull;
-import static no.nav.registre.testnorge.personsearchservice.service.utils.QueryUtils.YES;
-import static no.nav.registre.testnorge.personsearchservice.service.utils.QueryUtils.NO;
 import static no.nav.registre.testnorge.personsearchservice.service.utils.QueryUtils.METADATA_FIELD;
-import static no.nav.registre.testnorge.personsearchservice.service.utils.QueryUtils.nestedShouldExistQuery;
-import static no.nav.registre.testnorge.personsearchservice.service.utils.QueryUtils.nestedShouldMatchQuery;
+import static no.nav.registre.testnorge.personsearchservice.service.utils.QueryUtils.NO;
+import static no.nav.registre.testnorge.personsearchservice.service.utils.QueryUtils.YES;
 import static no.nav.registre.testnorge.personsearchservice.service.utils.QueryUtils.nestedExistsQuery;
 import static no.nav.registre.testnorge.personsearchservice.service.utils.QueryUtils.nestedMatchQuery;
+import static no.nav.registre.testnorge.personsearchservice.service.utils.QueryUtils.nestedShouldExistQuery;
+import static no.nav.registre.testnorge.personsearchservice.service.utils.QueryUtils.nestedShouldMatchQuery;
 
 @UtilityClass
 public class AdresserUtils {
