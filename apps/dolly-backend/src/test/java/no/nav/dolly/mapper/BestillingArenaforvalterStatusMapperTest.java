@@ -22,6 +22,13 @@ class BestillingArenaforvalterStatusMapperTest {
                     .build()
     );
 
+    //TODO: GJØRE FERDIG DENNE TESTEN
+    private static final List<BestillingProgress> ORACLE_EXCEPTION = List.of(
+            BestillingProgress.builder().ident("IDENT_1")
+                    .arenaforvalterStatus("q1$AKTIVER_AAP: { \"code\"= \"UserDefinedResourceError\"; \"title\"= \"User Defined Resource Error\"; \"message\"= \"The request could not be processed due to an error in a user defined resource\"; \"o=errorCode\"= \"ORDS-25001\"; \"cause\"= \"An error occurred when evaluating the SQL statement associated with this resource. SQL Error Code 20999; Error Message= ORA-20999= Det finnes et overlappende vedtak om livsoppholdsytelse for denne perioden.\\nORA-06512= ved \\\"DUMMY.DUMMY_DUMMY\\\"; line 1234\\nORA-06512= ved \\\"DUMMY.DUMMY_DUMMY\\\"; line 1234\\nORA-06512= ved \\\"DUMMY.DUMMY_DUMMY\\\"; line 1234\\nORA-06512= ved \\\"DUMMY.DUMMY_DUMMY\\\"; line 1234\\nORA-06512= ved \\\"DUMMY.DUMMY_DUMMY\\\"; line 1234\\nORA-06512= ved \\\"DUMMY.DUMMYDUMMY\\\"; line 15\\nORA-06512= ved line 1\\n\"; \"action\"= \"Ask the user defined resource author to check the SQL statement is correctly formed and executes without error\"; \"type\"= \"tag=oracle.com;2020=error/UserDefinedResourceError\"; \"instance\"= \"tag=oracle.com;2020=ecid/adawd\" }")
+                    .build()
+    );
+
     @Test
     void buildArenaForvalterStatusMap_OK() {
 
