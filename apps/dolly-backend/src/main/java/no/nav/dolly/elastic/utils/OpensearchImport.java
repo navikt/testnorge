@@ -48,11 +48,8 @@ public class OpensearchImport implements ApplicationListener<ContextRefreshedEve
                 .peek(bestilling -> antallLest.incrementAndGet())
                 .filter(bestilling -> hasNotBestilling(bestilling.getId()))
                 .map(bestilling -> mapperFacade.map(bestilling, ElasticBestilling.class))
-                .filter(bestilling -> !bestilling.isIgnore())
                 .peek(bestilling -> antallSkrevet.incrementAndGet())
-                .forEach(elastic ->
-                        bestillingElasticRepository.save(elastic));
-
+                .forEach(bestillingElasticRepository::save);
     }
 
     private boolean hasNotBestilling(Long id) {

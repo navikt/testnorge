@@ -70,6 +70,7 @@ public class ElasticBestillingStrategyMapping implements MappingStrategy {
                                public void mapAtoB(Bestilling bestilling, ElasticBestilling elasticBestilling, MappingContext context) {
 
                                    try {
+                                       elasticBestilling.setId(bestilling.getId());
                                        elasticBestilling.setIgnore(isBlank(bestilling.getBestKriterier()) ||
                                                "{}".equals(bestilling.getBestKriterier()) ||
                                                bestilling.getProgresser().stream().noneMatch(BestillingProgress::isIdentGyldig));
