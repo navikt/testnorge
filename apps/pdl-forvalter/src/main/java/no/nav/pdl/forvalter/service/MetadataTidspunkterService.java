@@ -191,7 +191,7 @@ public class MetadataTidspunkterService {
 
         person.getSivilstand().sort(Comparator.comparing(SivilstandDTO::getId).reversed());
 
-        for (int i = person.getSivilstand().size() - 1; i >= 0; i--) {
+        for (int i = 0; i < person.getSivilstand().size(); i++) {
 
             fixFolkeregisterMetadata(person.getSivilstand().get(i));
 
@@ -207,9 +207,9 @@ public class MetadataTidspunkterService {
 
     private static LocalDateTime getRelatertDato(PersonDTO person, int i) {
 
-        return i == person.getSivilstand().size() - 1 ? LocalDateTime.now() :
+        return i == 0 ? LocalDateTime.now() :
                 person.getSivilstand().get(i - 1)
-                        .getFolkeregistermetadata().getGyldighetstidspunkt().minusDays(1);
+                        .getFolkeregistermetadata().getGyldighetstidspunkt().minusYears(1);
     }
 
     private LocalDateTime getSivilstandDato(SivilstandDTO sivilstand) {
