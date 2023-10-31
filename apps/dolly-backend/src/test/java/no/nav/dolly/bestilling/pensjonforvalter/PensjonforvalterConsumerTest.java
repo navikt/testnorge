@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -46,6 +47,9 @@ class PensjonforvalterConsumerTest {
 
     @MockBean
     private BestillingElasticRepository bestillingElasticRepository;
+
+    @MockBean
+    private ElasticsearchOperations elasticsearchOperations;
 
     @Autowired
     private PensjonforvalterConsumer pensjonforvalterConsumer;

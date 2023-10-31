@@ -17,6 +17,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
@@ -47,6 +48,9 @@ public abstract class AbstractControllerTest {
 
     @MockBean
     private BestillingElasticRepository bestillingElasticRepository;
+
+    @MockBean
+    private ElasticsearchOperations elasticsearchOperations;
 
     @BeforeEach
     public void beforeEach() {

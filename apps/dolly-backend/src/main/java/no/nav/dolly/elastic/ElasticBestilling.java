@@ -56,9 +56,10 @@ public class ElasticBestilling implements Persistable<Long> {
 
     @Override
     @JsonIgnore
+    @Transient
     public boolean isNew() {
 
-        return true;
+        return false;
     }
 
     @Field

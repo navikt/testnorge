@@ -15,6 +15,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
@@ -30,6 +31,9 @@ class TestgruppeMappingStrategyTest {
 
     @MockBean
     private BestillingElasticRepository bestillingElasticRepository;
+
+    @MockBean
+    private ElasticsearchOperations elasticsearchOperations;
 
     private final static String BRUKERID = "123";
 
