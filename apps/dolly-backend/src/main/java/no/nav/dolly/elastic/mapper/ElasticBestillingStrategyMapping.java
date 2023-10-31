@@ -1,17 +1,28 @@
 package no.nav.dolly.elastic.mapper;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
+import no.nav.dolly.domain.jpa.Bestilling;
+import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.elastic.ElasticBestilling;
 import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
 
 import static java.util.Objects.nonNull;
+import static org.apache.logging.log4j.util.Strings.isBlank;
 
+@Slf4j
 @Component
+@RequiredArgsConstructor
 public class ElasticBestillingStrategyMapping implements MappingStrategy {
+
+    private final ObjectMapper objectMapper;
 
     @Override
     public void register(MapperFactory factory) {
@@ -50,6 +61,38 @@ public class ElasticBestillingStrategyMapping implements MappingStrategy {
                                }
                            }
                 ).byDefault()
+                .register();
+
+
+        factory.classMap(Bestilling.class, ElasticBestilling.class)
+                .customize(new CustomMapper<>() {
+                               @Override
+                               public void mapAtoB(Bestilling bestilling, ElasticBestilling elasticBestilling, MappingContext context) {
+
+                                   try {
+                                       elasticBestilling.setIgnore(isBlank(bestilling.getBestKriterier()) ||
+                                               "{}".equals(bestilling.getBestKriterier()) ||
+                                               bestilling.getProgresser().stream().noneMatch(BestillingProgress::isIdentGyldig));
+
+                                       if (!elasticBestilling.isIgnore()) {
+
+                                           elasticBestilling.setIdenter(bestilling.getProgresser().stream()
+                                                   .filter(BestillingProgress::isIdentGyldig)
+                                                   .map(BestillingProgress::getIdent)
+                                                   .toList());
+
+                                           var dollyBestilling = objectMapper.readValue(bestilling.getBestKriterier(), RsDollyBestilling.class);
+                                           mapperFacade.map(dollyBestilling, elasticBestilling);
+                                       }
+
+                                   } catch (JsonProcessingException | IllegalArgumentException e) {
+
+                                       elasticBestilling.setIgnore(true);
+                                       log.warn("Kunne ikke konvertere fra JSON for bestilling-ID={}", bestilling.getId());
+                                   }
+                               }
+                           }
+                )
                 .register();
     }
 }

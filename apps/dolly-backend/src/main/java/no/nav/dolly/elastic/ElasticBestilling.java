@@ -30,6 +30,7 @@ import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding;
 import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
 import no.nav.testnav.libs.data.arbeidsplassencv.v1.ArbeidsplassenCVDTO;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.domain.Persistable;
 import org.springframework.data.elasticsearch.annotations.DateFormat;
 import org.springframework.data.elasticsearch.annotations.Document;
@@ -112,6 +113,10 @@ public class ElasticBestilling implements Persistable<Long> {
     private ArbeidsplassenCVDTO arbeidsplassenCV;
     @Field
     private List<String> identer;
+
+    @Transient
+    @JsonIgnore
+    private boolean ignore;
 
     public List<RsAareg> getAareg() {
         if (isNull(aareg)) {

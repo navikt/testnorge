@@ -188,7 +188,6 @@ public class DollyBestillingService {
             request.setIdenter(progresser.stream()
                     .filter(BestillingProgress::isIdentGyldig)
                     .map(BestillingProgress::getIdent)
-                    .filter(StringUtils::isNotBlank)
                     .toList());
             bestillingElasticRepository.save(request);
         }
