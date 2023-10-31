@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
@@ -57,6 +58,9 @@ class KrrstubConsumerTest {
 
     @MockBean
     private BestillingElasticRepository bestillingElasticRepository;
+
+    @MockBean
+    private ElasticsearchOperations elasticsearchOperations;
 
     @Autowired
     private KrrstubConsumer krrStubConsumer;

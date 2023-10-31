@@ -7,6 +7,7 @@ import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.dolly.elastic.ElasticBestilling;
 import no.nav.dolly.repository.BestillingRepository;
 import org.springframework.context.ApplicationListener;
+import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.StreamSupport;
 
 @Slf4j
+@Profile("!test")
 @Component
 @RequiredArgsConstructor
 public class OpensearchImport implements ApplicationListener<ContextRefreshedEvent> {
