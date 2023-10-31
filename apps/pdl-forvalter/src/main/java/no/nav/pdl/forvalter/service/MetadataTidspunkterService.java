@@ -187,16 +187,6 @@ public class MetadataTidspunkterService {
         sikkerhetstiltakDTO.getFolkeregistermetadata().setOpphoerstidspunkt(sikkerhetstiltakDTO.getGyldigTilOgMed());
     }
 
-    private void fixSivilstand(SivilstandDTO sivilstandDTO) {
-
-        fixFolkeregisterMetadata(sivilstandDTO);
-
-        sivilstandDTO.getFolkeregistermetadata().setGyldighetstidspunkt(nonNull(sivilstandDTO.getSivilstandsdato()) ?
-                sivilstandDTO.getSivilstandsdato() : LocalDateTime.now().minusSeconds(10).plusSeconds(sivilstandDTO.getId()));
-        sivilstandDTO.getFolkeregistermetadata()
-                .setAjourholdstidspunkt(sivilstandDTO.getFolkeregistermetadata().getGyldighetstidspunkt());
-    }
-
     private void fixSivilstand(PersonDTO person) {
 
         person.getSivilstand().sort(Comparator.comparing(SivilstandDTO::getId).reversed());
