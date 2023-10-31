@@ -29,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -89,8 +90,7 @@ public class MetadataTidspunkterService {
                 .forEach(this::fixOpphold);
         person.getSikkerhetstiltak()
                 .forEach(this::fixSikkerhetstiltak);
-        person.getSivilstand()
-                .forEach(this::fixSivilstand);
+        fixSivilstand(person);
         person.getStatsborgerskap()
                 .forEach(this::fixStatsborgerskap);
         person.getTelefonnummer()
@@ -195,6 +195,37 @@ public class MetadataTidspunkterService {
                 sivilstandDTO.getSivilstandsdato() : LocalDateTime.now().minusSeconds(10).plusSeconds(sivilstandDTO.getId()));
         sivilstandDTO.getFolkeregistermetadata()
                 .setAjourholdstidspunkt(sivilstandDTO.getFolkeregistermetadata().getGyldighetstidspunkt());
+    }
+
+    private void fixSivilstand(PersonDTO person) {
+
+        person.getSivilstand().sort(Comparator.comparing(SivilstandDTO::getId).reversed());
+
+        for (int i = person.getSivilstand().size() - 1; i >= 0; i--) {
+
+            fixFolkeregisterMetadata(person.getSivilstand().get(i));
+
+            person.getSivilstand().get(i).getFolkeregistermetadata().setGyldighetstidspunkt(
+                    nonNull(getSivilstandDato(person.getSivilstand().get(i))) ?
+                            getSivilstandDato(person.getSivilstand().get(i)) :
+                            getRelatertDato(person, i));
+
+            person.getSivilstand().get(i).getFolkeregistermetadata().setAjourholdstidspunkt(
+                    person.getSivilstand().get(i).getFolkeregistermetadata().getGyldighetstidspunkt());
+        }
+    }
+
+    private static LocalDateTime getRelatertDato(PersonDTO person, int i) {
+
+        return i == person.getSivilstand().size() - 1 ? LocalDateTime.now() :
+                person.getSivilstand().get(i - 1)
+                        .getFolkeregistermetadata().getGyldighetstidspunkt().minusDays(1);
+    }
+
+    private LocalDateTime getSivilstandDato(SivilstandDTO sivilstand) {
+
+        return nonNull(sivilstand.getSivilstandsdato()) ?
+                sivilstand.getSivilstandsdato() : sivilstand.getBekreftelsesdato();
     }
 
     private void fixStatsborgerskap(StatsborgerskapDTO statsborgerskapDTO) {
