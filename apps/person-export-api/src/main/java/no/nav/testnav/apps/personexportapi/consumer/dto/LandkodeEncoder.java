@@ -1,10 +1,9 @@
 package no.nav.testnav.apps.personexportapi.consumer.dto;
 
-import static java.util.Objects.nonNull;
-
+import lombok.experimental.UtilityClass;
 import org.bouncycastle.asn1.eac.BidirectionalMap;
 
-import lombok.experimental.UtilityClass;
+import static java.util.Objects.nonNull;
 
 @UtilityClass
 public class LandkodeEncoder {

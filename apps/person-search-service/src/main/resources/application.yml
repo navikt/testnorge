@@ -20,6 +20,9 @@ spring:
           issuer-uri: https://tokenx.dev-gcp.nav.cloud.nais.io 
           jwk-set-uri: https://tokenx.dev-gcp.nav.cloud.nais.io/jwks
           accepted-audience: dev-gcp:dolly:testnav-person-search-service
+  cloud:
+    vault:
+      enabled: false
 
 springdoc:
   swagger-ui:

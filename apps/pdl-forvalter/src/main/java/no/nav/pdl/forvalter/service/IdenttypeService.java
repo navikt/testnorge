@@ -1,6 +1,7 @@
 package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Random;
 
 import static java.util.Objects.nonNull;
@@ -35,6 +37,7 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class IdenttypeService implements Validation<IdentRequestDTO> {
 
@@ -54,64 +57,19 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
     private final MapperFacade mapperFacade;
     private final PersonRepository personRepository;
 
-    private static Identtype getIdenttype(IdentRequestDTO request, String ident) {
-
-        if (nonNull(request.getIdenttype())) {
-            return request.getIdenttype();
-        }
-        return nonNull(ident) ? IdenttypeFraIdentUtility.getIdenttype(ident) : FNR;
-    }
-
-    private static Kjoenn getTilfeldigKjoenn() {
-
-        return secureRandom.nextBoolean() ? MANN : KVINNE;
-    }
-
-    private static Kjoenn getKjoenn(IdentRequestDTO request, String ident) {
-
-        if (nonNull(request.getKjoenn()) && request.getKjoenn() != UKJENT) {
-            return request.getKjoenn();
-        }
-        return nonNull(ident) ? KjoennFraIdentUtility.getKjoenn(ident) : getTilfeldigKjoenn();
-    }
-
-    private static LocalDateTime getFoedtFoer(IdentRequestDTO request, String ident) {
-
-        if (nonNull(request.getFoedtFoer())) {
-            return request.getFoedtFoer();
-        } else if (nonNull(request.getAlder())) {
-            return LocalDateTime.now().minusYears(request.getAlder()).minusMonths(3);
-        }
-        return (nonNull(ident)) ? DatoFraIdentUtility.getDato(ident).plusMonths(1).atStartOfDay() :
-                LocalDateTime.now().minusYears(18);
-    }
-
-    private static LocalDateTime getFoedtEtter(IdentRequestDTO request, String ident) {
-
-        if (nonNull(request.getFoedtEtter())) {
-            return request.getFoedtEtter();
-        } else if (nonNull(request.getAlder())) {
-            return LocalDateTime.now().minusYears(request.getAlder()).minusYears(1);
-        }
-        return (nonNull(ident)) ? DatoFraIdentUtility.getDato(ident).minusMonths(1).atStartOfDay() :
-                LocalDateTime.now().minusYears(67);
-    }
-
-    private static boolean isSyntetisk(IdentRequestDTO request, String ident) {
-        return nonNull(request.getSyntetisk()) ? request.getSyntetisk() :
-                SyntetiskFraIdentUtility.isSyntetisk(ident);
-    }
-
     public PersonDTO convert(PersonDTO person) {
 
         var nyPerson = person;
-        for (var type : person.getNyident()) {
+        List<IdentRequestDTO> nyident = person.getNyident();
+        for (int index = 0; index < nyident.size(); index++) {
+            var type = nyident.get(index);
 
             if (isTrue(type.getIsNew())) {
 
                 nyPerson = handle(type, nyPerson);
                 type.setKilde(isNotBlank(type.getKilde()) ? type.getKilde() : "Dolly");
                 type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : DbVersjonDTO.Master.FREG);
+                type.setFoedtEtter(person.getFoedsel().getFirst().getFoedselsdato().plusDays(index + 1L));
             }
         }
         return nyPerson;
@@ -169,5 +127,53 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
         relasjonService.setRelasjoner(nyPerson.getIdent(), NY_IDENTITET, person.getIdent(), GAMMEL_IDENTITET);
 
         return nonNull(oppdatertPerson) ? oppdatertPerson : person;
+    }
+
+    private static Identtype getIdenttype(IdentRequestDTO request, String ident) {
+
+        if (nonNull(request.getIdenttype())) {
+            return request.getIdenttype();
+        }
+        return nonNull(ident) ? IdenttypeFraIdentUtility.getIdenttype(ident) : FNR;
+    }
+
+    private static Kjoenn getTilfeldigKjoenn() {
+
+        return secureRandom.nextBoolean() ? MANN : KVINNE;
+    }
+
+    private static Kjoenn getKjoenn(IdentRequestDTO request, String ident) {
+
+        if (nonNull(request.getKjoenn()) && request.getKjoenn() != UKJENT) {
+            return request.getKjoenn();
+        }
+        return nonNull(ident) ? KjoennFraIdentUtility.getKjoenn(ident) : getTilfeldigKjoenn();
+    }
+
+    private static LocalDateTime getFoedtFoer(IdentRequestDTO request, String ident) {
+
+        if (nonNull(request.getFoedtFoer())) {
+            return request.getFoedtFoer();
+        } else if (nonNull(request.getAlder())) {
+            return LocalDateTime.now().minusYears(request.getAlder()).minusMonths(3);
+        }
+        return (nonNull(ident)) ? DatoFraIdentUtility.getDato(ident).plusMonths(1).atStartOfDay() :
+                LocalDateTime.now().minusYears(18);
+    }
+
+    private static LocalDateTime getFoedtEtter(IdentRequestDTO request, String ident) {
+
+        if (nonNull(request.getFoedtEtter())) {
+            return request.getFoedtEtter();
+        } else if (nonNull(request.getAlder())) {
+            return LocalDateTime.now().minusYears(request.getAlder()).plusDays(1);
+        }
+        return (nonNull(ident)) ? DatoFraIdentUtility.getDato(ident).plusMonths(1).atStartOfDay() :
+                LocalDateTime.now().minusYears(67);
+    }
+
+    private static boolean isSyntetisk(IdentRequestDTO request, String ident) {
+        return nonNull(request.getSyntetisk()) ? request.getSyntetisk() :
+                SyntetiskFraIdentUtility.isSyntetisk(ident);
     }
 }

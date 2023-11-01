@@ -23,7 +23,7 @@ public class SecurityConfig {
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity httpSecurity) {
         return httpSecurity
-                .csrf(csrfSpec -> csrfSpec.disable())
+                .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(authorizeConfig -> authorizeConfig.pathMatchers(
                         "/internal/**",
                         "/webjars/**",

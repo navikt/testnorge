@@ -36,22 +36,6 @@ public class VegadresseServiceCommand implements Callable<Mono<VegadresseDTO[]>>
     private final String matrikkelId;
     private final String token;
 
-    public static VegadresseDTO defaultAdresse() {
-
-        return VegadresseDTO.builder()
-                .matrikkelId("285693617")
-                .adressenavn("FYRSTIKKALLÉEN")
-                .postnummer("0661")
-                .husnummer(2)
-                .kommunenummer("0301")
-                .poststed("Oslo")
-                .build();
-    }
-
-    private static String filterArtifact(String artifact) {
-        return isNotBlank(artifact) ? artifact : "";
-    }
-
     @Override
     public Mono<VegadresseDTO[]> call() {
 
@@ -74,8 +58,21 @@ public class VegadresseServiceCommand implements Callable<Mono<VegadresseDTO[]>>
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException))
                 .onErrorResume(throwable -> throwable instanceof WebClientResponseException.NotFound ||
+                                throwable instanceof WebClientResponseException.BadRequest ||
                                 Exceptions.isRetryExhausted(throwable),
-                        throwable -> Mono.just(new VegadresseDTO[]{defaultAdresse()}));
+                        throwable -> Mono.just(new VegadresseDTO[]{ defaultAdresse() }));
+    }
+
+    public static VegadresseDTO defaultAdresse() {
+
+        return VegadresseDTO.builder()
+                .matrikkelId("285693617")
+                .adressenavn("FYRSTIKKALLÉEN")
+                .postnummer("0661")
+                .husnummer(2)
+                .kommunenummer("0301")
+                .poststed("Oslo")
+                .build();
     }
 
     private MultiValueMap<String, String> getQuery() {
@@ -96,5 +93,9 @@ public class VegadresseServiceCommand implements Callable<Mono<VegadresseDTO[]>>
                         .entrySet().stream()
                         .filter(entry -> isNotBlank(entry.getValue()))
                         .collect(Collectors.toMap(Map.Entry::getKey, entry -> List.of(entry.getValue())))));
+    }
+
+    private static String filterArtifact(String artifact) {
+        return isNotBlank(artifact) ? artifact : "";
     }
 }
