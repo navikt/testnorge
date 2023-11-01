@@ -9,7 +9,7 @@ import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.elastic.ElasticBestilling;
 import no.nav.dolly.elastic.ElasticTyper;
-import no.nav.dolly.service.OpenSearchService;
+import no.nav.dolly.elastic.service.OpenSearchService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

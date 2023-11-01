@@ -70,26 +70,29 @@ public class ElasticBestillingStrategyMapping implements MappingStrategy {
                                public void mapAtoB(Bestilling bestilling, ElasticBestilling elasticBestilling, MappingContext context) {
 
                                    try {
-                                       elasticBestilling.setId(bestilling.getId());
                                        elasticBestilling.setIgnore(isBlank(bestilling.getBestKriterier()) ||
                                                "{}".equals(bestilling.getBestKriterier()) ||
                                                bestilling.getProgresser().stream().noneMatch(BestillingProgress::isIdentGyldig));
 
                                        if (!elasticBestilling.isIgnore()) {
 
+                                           var dollyBestilling = objectMapper.readValue(bestilling.getBestKriterier(), RsDollyBestilling.class);
+                                           mapperFacade.map(dollyBestilling, elasticBestilling);
+
                                            elasticBestilling.setIdenter(bestilling.getProgresser().stream()
                                                    .filter(BestillingProgress::isIdentGyldig)
                                                    .map(BestillingProgress::getIdent)
                                                    .toList());
-
-                                           var dollyBestilling = objectMapper.readValue(bestilling.getBestKriterier(), RsDollyBestilling.class);
-                                           mapperFacade.map(dollyBestilling, elasticBestilling);
                                        }
 
                                    } catch (JsonProcessingException | IllegalArgumentException e) {
 
                                        elasticBestilling.setIgnore(true);
                                        log.warn("Kunne ikke konvertere fra JSON for bestilling-ID={}", bestilling.getId());
+
+                                   } finally {
+
+                                       elasticBestilling.setId(bestilling.getId());
                                    }
                                }
                            }

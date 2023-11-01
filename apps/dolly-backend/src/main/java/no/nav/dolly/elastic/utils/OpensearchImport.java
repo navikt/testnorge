@@ -9,6 +9,7 @@ import no.nav.dolly.repository.BestillingRepository;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.data.elasticsearch.UncategorizedElasticsearchException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,12 +49,24 @@ public class OpensearchImport implements ApplicationListener<ContextRefreshedEve
                 .peek(bestilling -> antallLest.incrementAndGet())
                 .filter(bestilling -> hasNotBestilling(bestilling.getId()))
                 .map(bestilling -> mapperFacade.map(bestilling, ElasticBestilling.class))
+                .filter(bestilling -> !bestilling.isIgnore())
                 .peek(bestilling -> antallSkrevet.incrementAndGet())
-                .forEach(bestillingElasticRepository::save);
+                .forEach(this::save);
     }
 
     private boolean hasNotBestilling(Long id) {
 
         return !bestillingElasticRepository.existsById(id);
+    }
+
+    private void save(ElasticBestilling elasticBestilling) {
+
+        try {
+            bestillingElasticRepository.save(elasticBestilling);
+
+        } catch (UncategorizedElasticsearchException e) {
+
+            log.warn("Feilet å lagre elastic id {}, {}", elasticBestilling.getId(), e.getLocalizedMessage());
+        }
     }
 }

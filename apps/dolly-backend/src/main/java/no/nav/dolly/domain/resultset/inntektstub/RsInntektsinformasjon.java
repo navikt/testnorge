@@ -175,6 +175,7 @@ public class RsInntektsinformasjon {
 
         private List<Arbeidsforhold> arbeidsforholdsliste;
 
+        @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second, pattern = "uuuu-MM-dd'T'HH:mm:ss")
         private LocalDateTime rapporteringsdato;
     }
 }

@@ -119,44 +119,6 @@ public class ElasticBestilling implements Persistable<Long> {
     @JsonIgnore
     private boolean ignore;
 
-    public List<RsAareg> getAareg() {
-        if (isNull(aareg)) {
-            aareg = new ArrayList<>();
-        }
-        return aareg;
-    }
-
-    public List<RsLignetInntekt> getSigrunInntekt() {
-
-        if (isNull(sigrunInntekt)) {
-            sigrunInntekt = new ArrayList<>();
-        }
-        return sigrunInntekt;
-    }
-
-    public List<RsPensjonsgivendeForFolketrygden> getSigrunPensjonsgivende() {
-
-        if (isNull(sigrunPensjonsgivende)) {
-            sigrunPensjonsgivende = new ArrayList<>();
-        }
-        return sigrunPensjonsgivende;
-    }
-
-    public List<PensjonData.TpOrdning> getPenTp() {
-
-        if (isNull(penTp)) {
-            penTp = new ArrayList<>();
-        }
-        return penTp;
-    }
-
-    public List<RsInstdata> getInstdata() {
-        if (isNull(instdata)) {
-            instdata = new ArrayList<>();
-        }
-        return instdata;
-    }
-
     public List<String> getIdenter() {
         if (isNull(identer)) {
             identer = new ArrayList<>();
