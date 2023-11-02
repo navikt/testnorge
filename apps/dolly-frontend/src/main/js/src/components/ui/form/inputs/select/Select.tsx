@@ -5,11 +5,11 @@ import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { Label } from '@/components/ui/form/inputs/label/Label'
 import { InputWrapper } from '@/components/ui/form/inputWrapper/InputWrapper'
 import { fieldError, SyntEvent } from '@/components/ui/form/formUtils'
-import KodeverkConnector from '@/components/kodeverk/KodeverkConnector'
 import './Select.less'
 import MenuList from '@/components/ui/form/inputs/select/MenuList'
 import Option from '@/components/ui/form/inputs/select/Option'
 import * as _ from 'lodash-es'
+import { useKodeverk } from '@/utils/hooks/useKodeverk'
 
 type SelectProps = {
 	id?: string
@@ -85,6 +85,7 @@ export const Select = ({
 }
 
 export const SelectMedKodeverk = ({ kodeverk, label, isLoading, ...rest }: SelectProps) => {
+	const { kodeverk: kodeverkListe } = useKodeverk(kodeverk)
 	const getSortedKodeverk = (kodeverkVerdier) => {
 		if (label === 'Bostedskommune') {
 			const kodeverkClone = _.cloneDeep(kodeverkVerdier)
@@ -97,15 +98,11 @@ export const SelectMedKodeverk = ({ kodeverk, label, isLoading, ...rest }: Selec
 	}
 
 	return (
-		<KodeverkConnector navn={kodeverk}>
-			{(kodeverkVerdier) => (
-				<Select
-					{...rest}
-					isLoading={!kodeverkVerdier || isLoading}
-					options={getSortedKodeverk(kodeverkVerdier)}
-				/>
-			)}
-		</KodeverkConnector>
+		<Select
+			{...rest}
+			isLoading={!kodeverkListe || isLoading}
+			options={getSortedKodeverk(kodeverkListe)}
+		/>
 	)
 }
 
