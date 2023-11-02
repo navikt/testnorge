@@ -31,7 +31,7 @@ export const RelatertPerson = ({ data, tittel, marginTop = '0' }: RelatertPerson
 			(item, idx) =>
 				`${allCapsToCapitalized(item?.ansvar)}: ${item?.ansvarlig}${
 					idx + 1 < foreldreansvar.length ? ', ' : ''
-				}`
+				}`,
 		)
 	}
 
@@ -55,10 +55,7 @@ export const RelatertPerson = ({ data, tittel, marginTop = '0' }: RelatertPerson
 					value={showLabel('gradering', data.adressebeskyttelse?.[0].gradering)}
 				/>
 				{data.foreldreansvar?.[0].ansvarlig && (
-					<TitleValue
-						title="Foreldreansvar"
-						value={getForeldreansvarValues(data.foreldreansvar)}
-					/>
+					<TitleValue title="Foreldreansvar" value={getForeldreansvarValues(data.foreldreansvar)} />
 				)}
 				{data.foreldreansvar?.[0].ansvarligUtenIdentifikator && (
 					<TitleValue title="Foreldreansvar" value="Ansvarlig uten identifikator" />

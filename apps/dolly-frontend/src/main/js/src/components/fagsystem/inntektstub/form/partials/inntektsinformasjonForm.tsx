@@ -53,7 +53,7 @@ export default ({ path, formikBag }: InntektsinformasjonForm) => {
 				/>
 				<FormikTextInput
 					name={`${path}.antallMaaneder`}
-					label="Generer antall måneder"
+					label="Generer x mnd tilbake i tid"
 					type="number"
 				/>
 				<FormikDateTimepicker

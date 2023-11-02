@@ -9,7 +9,12 @@ import { DollyCopyButton } from '@/components/ui/button/CopyButton/DollyCopyButt
 
 const displayValue = (value, visKopier) => {
 	return visKopier ? (
-		<DollyCopyButton displayText={value} copyText={value} tooltipText={'Kopier ' + value} />
+		<DollyCopyButton
+			displayText={value}
+			copyText={value}
+			tooltipText={'Kopier ' + value}
+			style={{ position: 'unset' }}
+		/>
 	) : (
 		value
 	)
