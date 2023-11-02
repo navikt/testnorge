@@ -6,12 +6,17 @@ import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.dolly.elastic.ElasticBestilling;
 import no.nav.dolly.elastic.ElasticTyper;
 import no.nav.testnav.libs.dto.personsearchservice.v1.search.PersonSearch;
+import org.opensearch.client.RestHighLevelClient;
 import org.opensearch.index.query.BoolQueryBuilder;
 import org.opensearch.index.query.QueryBuilders;
 import org.opensearch.index.query.functionscore.RandomScoreFunctionBuilder;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
+import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 import org.springframework.data.elasticsearch.core.query.Criteria;
+import org.springframework.data.elasticsearch.core.query.CriteriaQuery;
+import org.springframework.data.elasticsearch.core.query.StringQuery;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
@@ -29,6 +34,7 @@ public class OpenSearchService {
 
     private final BestillingElasticRepository bestillingElasticRepository;
     private final ElasticsearchOperations searchOperations;
+    private final RestHighLevelClient restHighLevelClient;
     private Random random = new SecureRandom();
 
     public List<ElasticBestilling> getAll() {
@@ -46,16 +52,43 @@ public class OpenSearchService {
                 .map(this::getCriteria)
                 .forEach(criteria::and);
 
-//        var query = new CriteriaQuery(criteria);
+        var functionScore = new StringQuery("{\n" +
+                "  \"query\": {\n" +
+                "    \"function_score\": {\n" +
+                "      \"random_score\": {\n" +
+                "        \"seed\": 10,\n" +
+                "        \"field\": \"_seq_no\"\n" +
+                "      }\n" +
+                "    }\n" +
+                "  }\n" +
+                "}");
+
+        var query = new CriteriaQuery(criteria)
+                .setPageable(Pageable.ofSize(10))
+                .getRe
+
+//        var query = new NativeQuery(new NativeQueryBuilder()
+//                .withQuery()
+//                .withMaxResults(10)
+//                .build());
 
         var functionScoreQueryBuilder = QueryBuilders.functionScoreQuery(new RandomScoreFunctionBuilder().seed(random.nextLong()));
 
-        var query = QueryBuilder.getSearchRequest(QueryBuilder.buildPersonSearchQuery(), 1, 10, 10)
+//        var query = QueryBuilder.getSearchRequest(QueryBuilder.buildPersonSearchQuery(), 1, 10, 10);
 
-//        var hits = searchOperations.search(query,
-//                ElasticBestilling.class, IndexCoordinates.of("bestilling"));
+        var hits = searchOperations.search(query,
+                ElasticBestilling.class, IndexCoordinates.of("bestilling"));
 
-        var hits = searchOperations.search(query)
+//        SearchResponse hits = null;
+//        try {
+//            hits = restHighLevelClient.search(query, RequestOptions.DEFAULT);
+//
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+
+        log.info("hits. {}", hits);
+//        return null;
 
         return hits.getSearchHits().stream()
                 .map(SearchHit::getContent)

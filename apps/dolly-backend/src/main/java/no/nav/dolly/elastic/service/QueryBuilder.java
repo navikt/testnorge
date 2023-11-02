@@ -26,7 +26,6 @@ public class QueryBuilder {
         var queryBuilder = QueryBuilders.boolQuery();
         queryBuilder.must(QueryBuilders.functionScoreQuery(new RandomScoreFunctionBuilder()
                         .seed(random.nextLong())));
-        queryBuilder.must(QueryBuilders.existsQuery("aareg"));
 
         return queryBuilder;
     }

@@ -93,6 +93,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.retry:spring-retry:2.0.0'
 
+    implementation 'org.springframework.data:spring-data-elasticsearch'
     implementation 'org.opensearch.client:spring-data-opensearch:1.2.0'
 
     implementation 'org.apache.commons:commons-lang3:3.12.0'
