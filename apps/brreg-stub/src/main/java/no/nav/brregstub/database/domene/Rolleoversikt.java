@@ -19,7 +19,7 @@ public class Rolleoversikt {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "rolleoversikt_seq")
-    @SequenceGenerator(name = "rolleoversikt_seq", sequenceName = "ROLLEOVERSIKT_SEQ")
+    @SequenceGenerator(name = "rolleoversikt_seq", sequenceName = "ROLLEOVERSIKT_SEQ", allocationSize = 1)
     private Long id;
 
     @NotNull(message = "fnr must not be null")
