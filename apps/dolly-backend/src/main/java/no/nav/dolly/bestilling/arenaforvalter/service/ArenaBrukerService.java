@@ -24,6 +24,7 @@ import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.bestilling.arenaforvalter.ArenaUtils.fixFormatUserDefinedError;
 import static no.nav.dolly.bestilling.arenaforvalter.ArenaUtils.toLocalDate;
 import static no.nav.dolly.bestilling.arenaforvalter.utils.ArenaStatusUtil.getMessage;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
@@ -84,14 +85,6 @@ public class ArenaBrukerService {
                 });
     }
 
-    private static LocalDate oppdaterAktiveringsdato(ArenaNyBruker bruker, ArenaVedtakOperasjoner arbeidssoker) {
-
-        return Stream.of(bruker.getAktiveringsDato(), arbeidssoker.getRegistrertDato())
-                .filter(Objects::nonNull)
-                .max(LocalDate::compareTo)
-                .orElse(LocalDate.now());
-    }
-
     private Mono<String> getBrukerStatus(ArenaNyeBrukereResponse response) {
 
         return Flux.concat(Flux.just(response.getStatus())
@@ -113,11 +106,19 @@ public class ArenaBrukerService {
                                                     "aktivering eller har status som aktivert ved forsøk på aktivering")) {
                                         return "OK";
                                     } else {
-                                        return decoded;
+                                        return fixFormatUserDefinedError(decoded);
                                     }
                                 })
                                 .collect(Collectors.joining()))
 
                 .collect(Collectors.joining());
+    }
+
+    private static LocalDate oppdaterAktiveringsdato(ArenaNyBruker bruker, ArenaVedtakOperasjoner arbeidssoker) {
+
+        return Stream.of(bruker.getAktiveringsDato(), arbeidssoker.getRegistrertDato())
+                .filter(Objects::nonNull)
+                .max(LocalDate::compareTo)
+                .orElse(LocalDate.now());
     }
 }
