@@ -24,7 +24,6 @@ public enum ElasticTyper {
     HISTARK("Saksmappearkiv (HISTARK)"),
     SYKEMELDING("NAV sykemelding"),
     SKJERMING("Skjermingsregisteret"),
-    PDLPERSON("Persondetaljer"),
     BANKKONTO("Bankkontoregister"),
     ARBEIDSPLASSENCV("Arbeidsplassen CV");
 

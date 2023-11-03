@@ -13,6 +13,7 @@ import org.springframework.data.elasticsearch.core.query.CriteriaQueryBuilder;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -70,6 +71,7 @@ public class RandomSearchHelperService {
 
         return elasticsearchOperations.search(new CriteriaQueryBuilder(criteria)
                         .withPageable(Pageable.ofSize(PAGE_SIZE * FACTOR).withPage(pageNo))
+                        .withTimeout(Duration.ofSeconds(3))
                         .build(),
                 ElasticBestilling.class, IndexCoordinates.of("bestilling"));
     }

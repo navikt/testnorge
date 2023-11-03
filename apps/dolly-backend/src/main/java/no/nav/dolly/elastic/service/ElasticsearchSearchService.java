@@ -5,17 +5,21 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.dolly.elastic.ElasticBestilling;
 import no.nav.dolly.elastic.ElasticTyper;
+import no.nav.dolly.elastic.dto.SearchRequest;
 import org.springframework.data.elasticsearch.core.query.Criteria;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.StreamSupport;
+
+import static no.nav.dolly.elastic.utils.PersonQueryUtils.*;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class OpenSearchService {
+public class ElasticsearchSearchService {
 
     private final BestillingElasticRepository bestillingElasticRepository;
     private final RandomSearchHelperService randomSearchHelperService;
@@ -34,6 +38,45 @@ public class OpenSearchService {
         Arrays.stream(typer)
                 .map(this::getCriteria)
                 .forEach(criteria::and);
+
+        return randomSearchHelperService.search(criteria);
+    }
+
+    public List<String> search(SearchRequest request) {
+
+        var criteria = new Criteria();
+
+        request.getTyper().stream()
+                .map(this::getCriteria)
+                .forEach(criteria::and);
+
+        Optional.ofNullable(request.getPersonRequest())
+                .ifPresent(value -> {
+                    addBarnQuery(criteria, request);
+                    addForeldreQuery(criteria, request);
+                    addSivilstandQuery(criteria, request);
+                    addHarDoedfoedtbarnQuery(criteria, request);
+                    addHarForeldreansvarQuery(criteria, request);
+                    addVergemaalQuery(criteria, request);
+                    addFullmaktQuery(criteria, request);
+                    addDoedsfallQuery(criteria, request);
+                    addHarInnflyttingQuery(criteria, request);
+                    addHarUtflyttingQuery(criteria, request);
+                    addAdressebeskyttelseQuery(criteria, request);
+                    addHarOppholdsadresseQuery(criteria, request);
+                    addHarKontaktadresseQuery(criteria, request);
+                    addBostedKommuneQuery(criteria, request);
+                    addBostedPostnrQuery(criteria, request);
+                    addBostedBydelsnrQuery(criteria, request);
+                    addHarDeltBostedQuery(criteria, request);
+                    addHarKontaktinformasjonForDoedsboQuery(criteria, request);
+                    addHarUtenlandskIdentifikasjonsnummerQuery(criteria, request);
+                    addHarFalskIdentitetQuery(criteria, request);
+                    addHarTilrettelagtKommunikasjonQuery(criteria, request);
+                    addHarSikkerhetstiltakQuery(criteria, request);
+                    addStatsborgerskapQuery(criteria, request);
+                    addHarOppholdQuery(criteria, request);
+                });
 
         return randomSearchHelperService.search(criteria);
     }
@@ -63,7 +106,6 @@ public class OpenSearchService {
             case HISTARK -> new Criteria("histark").exists();
             case SYKEMELDING -> new Criteria("sykemelding").exists();
             case SKJERMING -> new Criteria("skjerming").exists();
-            case PDLPERSON -> new Criteria("pdldata").exists();
             case BANKKONTO -> new Criteria("bankkonto").exists();
             case ARBEIDSPLASSENCV -> new Criteria("arbeidsplassenCV").exists();
         };
