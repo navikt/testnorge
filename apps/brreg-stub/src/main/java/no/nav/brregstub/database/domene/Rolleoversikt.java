@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -17,7 +18,8 @@ import lombok.Setter;
 public class Rolleoversikt {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "rolleoversikt_seq")
+    @SequenceGenerator(name = "rolleoversikt_seq", sequenceName = "ROLLEOVERSIKT_SEQ")
     private Long id;
 
     @NotNull(message = "fnr must not be null")
