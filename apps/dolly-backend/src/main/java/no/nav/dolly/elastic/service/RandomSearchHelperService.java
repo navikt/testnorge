@@ -3,6 +3,7 @@ package no.nav.dolly.elastic.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.elastic.ElasticBestilling;
+import no.nav.dolly.elastic.dto.SearchResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
@@ -27,19 +28,20 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class RandomSearchHelperService {
 
-    private static final int PAGE_SIZE = 10;
+    private static final int WINDOW_SIZE = 10;
     private static final int FACTOR = 2;
 
     private final ElasticsearchOperations elasticsearchOperations;
     private Random random = new SecureRandom();
 
-    public List<String> search(Criteria criteria) {
+    public SearchResponse search(Criteria criteria) {
 
         var hits = search(criteria, 0);
+        var currentPage = 0;
 
-        if (hits.getTotalHits() > PAGE_SIZE * FACTOR) {
-            var noOfPages = (int) hits.getTotalHits() / (PAGE_SIZE * FACTOR);
-            var currentPage = random.nextInt(noOfPages);
+        if (hits.getTotalHits() > WINDOW_SIZE * FACTOR) {
+            var noOfPages = (int) hits.getTotalHits() / (WINDOW_SIZE * FACTOR);
+            currentPage = random.nextInt(noOfPages);
             log.info("Total hits={}, noOfPages={}, currentPage={}", hits.getTotalHits(), noOfPages, currentPage);
             hits = search(criteria, currentPage);
         }
@@ -51,7 +53,13 @@ public class RandomSearchHelperService {
                 .distinct()
                 .collect(toShuffledList());
 
-        return identer.subList(0, Math.min(identer.size(), PAGE_SIZE));
+        return SearchResponse.builder()
+                .identer(identer.subList(0, Math.min(identer.size(), WINDOW_SIZE)))
+                .totalHits((int) hits.getTotalHits())
+                .pageNumber(currentPage)
+                .pageSize(WINDOW_SIZE * FACTOR)
+                .windowSize(WINDOW_SIZE)
+                .build();
     }
 
     private static final Collector<?, ?, ?> SHUFFLER = Collectors.collectingAndThen(
@@ -70,7 +78,7 @@ public class RandomSearchHelperService {
     private SearchHits<ElasticBestilling> search(Criteria criteria, int pageNo) {
 
         return elasticsearchOperations.search(new CriteriaQueryBuilder(criteria)
-                        .withPageable(Pageable.ofSize(PAGE_SIZE * FACTOR).withPage(pageNo))
+                        .withPageable(Pageable.ofSize(WINDOW_SIZE * FACTOR).withPage(pageNo))
                         .withTimeout(Duration.ofSeconds(3))
                         .build(),
                 ElasticBestilling.class, IndexCoordinates.of("bestilling"));

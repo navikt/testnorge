@@ -6,6 +6,7 @@ import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.dolly.elastic.ElasticBestilling;
 import no.nav.dolly.elastic.ElasticTyper;
 import no.nav.dolly.elastic.dto.SearchRequest;
+import no.nav.dolly.elastic.dto.SearchResponse;
 import org.springframework.data.elasticsearch.core.query.Criteria;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +32,7 @@ public class ElasticsearchSearchService {
                 .toList();
     }
 
-    public List<String> getTyper(ElasticTyper[] typer) {
+    public SearchResponse getTyper(ElasticTyper[] typer) {
 
         var criteria = new Criteria();
 
@@ -42,7 +43,7 @@ public class ElasticsearchSearchService {
         return randomSearchHelperService.search(criteria);
     }
 
-    public List<String> search(SearchRequest request) {
+    public SearchResponse search(SearchRequest request) {
 
         var criteria = new Criteria();
 

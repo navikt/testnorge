@@ -1,15 +1,10 @@
 package no.nav.dolly.provider.api;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import no.nav.dolly.domain.jpa.Bestilling;
-import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.elastic.ElasticBestilling;
 import no.nav.dolly.elastic.ElasticTyper;
 import no.nav.dolly.elastic.dto.SearchRequest;
+import no.nav.dolly.elastic.dto.SearchResponse;
 import no.nav.dolly.elastic.service.ElasticsearchSearchService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,24 +29,14 @@ public class ElasticController {
     }
 
     @GetMapping("/typer")
-    public List<String> getIdenterMed(@RequestParam ElasticTyper... typer) {
+    public SearchResponse getIdenterMed(@RequestParam ElasticTyper... typer) {
 
         return elasticsearchSearchService.getTyper(typer);
     }
 
     @PostMapping()
-    public List<String> getIdenterMed(@RequestBody SearchRequest request) {
+    public SearchResponse getIdenterMed(@RequestBody SearchRequest request) {
 
         return elasticsearchSearchService.search(request);
-    }
-
-    @Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class Wrapper {
-
-        private RsDollyBestilling dollyBestilling;
-        private Bestilling bestillingStatus;
     }
 }
