@@ -42,7 +42,7 @@ public class PersonQueryUtils {
     public static void addHarForeldreansvarQuery(Criteria criteria, SearchRequest request) {
 
         if (isTrue(request.getPersonRequest().getHarForeldreAnsvar())) {
-            criteria.and(new Criteria("pdldata.person.harForeldreAnsvar").exists());
+            criteria.and(new Criteria("pdldata.person.foreldreansvar").exists());
         }
     }
 
