@@ -12,39 +12,58 @@ import no.nav.brregstub.generated.Grunndata;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.ActiveProfiles;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
-import java.util.Optional;
 
 import static java.time.format.DateTimeFormatter.ISO_DATE;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
-@ExtendWith(SpringExtension.class)
+@SpringBootTest(webEnvironment = RANDOM_PORT)
+@ActiveProfiles("test")
+@AutoConfigureWireMock(port = 0)
+@AutoConfigureMockMvc(addFilters = false)
 @Import(JacksonConfig.class)
+@Testcontainers
 public class BrregServiceTest {
 
     private static final Integer ORGNR = 971524553;
     private static final String FNR = "010176100000";
-    @MockBean
+    @Autowired
     private HentRolleRepository hentRolleRepositoryMock;
-    @MockBean
+    @Autowired
     private RolleoversiktRepository rolleoversiktRepositoryMock;
+
     @Autowired
     private ObjectMapper objectMapper;
     private BrregService brregService;
 
     @BeforeEach
     public void onSetup() {
+        rolleoversiktRepositoryMock.deleteAll();
+        hentRolleRepositoryMock.deleteAll();
         brregService = new BrregService(rolleoversiktRepositoryMock, hentRolleRepositoryMock, objectMapper);
+
+        hentRolleRepositoryMock.save(HentRolle.builder()
+                .json(classpathToString("testdata/hentRoller.json"))
+                .orgnr(ORGNR)
+                .build());
+
+        rolleoversiktRepositoryMock.save(Rolleoversikt.builder()
+                .json(classpathToString("testdata/rolleutskrift.json"))
+                .ident(FNR)
+                .build());
+
     }
 
     @Test
@@ -57,10 +76,10 @@ public class BrregServiceTest {
         assertThat(grunndata.getResponseHeader().getOrgnr()).isEqualTo(123);
         assertThat(grunndata.getResponseHeader().getTjeneste()).isEqualTo("hentRoller");
         assertThat(grunndata.getResponseHeader()
-                            .getProssessDato()
-                            .toGregorianCalendar()
-                            .toZonedDateTime()
-                            .toLocalDate()).isEqualTo((LocalDate.now()));
+                .getProssessDato()
+                .toGregorianCalendar()
+                .toZonedDateTime()
+                .toLocalDate()).isEqualTo((LocalDate.now()));
         assertThat(grunndata.getResponseHeader().getUnderStatus().getUnderStatusMelding())
                 .hasSize(1).extracting(underStatusMelding -> assertThat(underStatusMelding.getKode()).isEqualTo(100));
         assertThat(grunndata.getMelding()).isNull();
@@ -68,12 +87,8 @@ public class BrregServiceTest {
 
 
     @Test
-    @DisplayName("hentRoller returnerer en gyldig respnseheader med melding")
+    @DisplayName("hentRoller returnerer en gyldig responseheader med melding")
     public void hentRollerForOrganisasjon() {
-        var rolle = new HentRolle();
-        rolle.setJson(classpathToString("testdata/hentRoller.json"));
-        when(hentRolleRepositoryMock.findByOrgnr(ORGNR)).thenReturn(Optional.of(rolle));
-
         var grunndata = brregService.hentRoller(ORGNR.toString());
 
         //assert responseheader
@@ -82,33 +97,29 @@ public class BrregServiceTest {
         assertThat(grunndata.getResponseHeader().getOrgnr()).isEqualTo(ORGNR);
         assertThat(grunndata.getResponseHeader().getTjeneste()).isEqualTo("hentRoller");
         assertThat(grunndata.getResponseHeader()
-                            .getProssessDato()
-                            .toGregorianCalendar()
-                            .toZonedDateTime()
-                            .toLocalDate()).isEqualTo((LocalDate.now()));
+                .getProssessDato()
+                .toGregorianCalendar()
+                .toZonedDateTime()
+                .toLocalDate()).isEqualTo((LocalDate.now()));
         assertThat(grunndata.getResponseHeader().getUnderStatus().getUnderStatusMelding())
                 .hasSize(2).extracting("kode").contains(0, 1180);
 
         //assert melding
         assertThat(grunndata.getMelding()).isNotNull();
         assertThat(grunndata.getMelding()
-                            .getOrganisasjonsnummer()
-                            .getRegistreringsDato()
-                            .toGregorianCalendar()
-                            .toZonedDateTime()
-                            .toLocalDate()
-                            .format(
-                                    ISO_DATE)).isEqualTo("1999-03-12");
+                .getOrganisasjonsnummer()
+                .getRegistreringsDato()
+                .toGregorianCalendar()
+                .toZonedDateTime()
+                .toLocalDate()
+                .format(
+                        ISO_DATE)).isEqualTo("1999-03-12");
         assertThat(grunndata.getMelding().getOrganisasjonsnummer().getValue()).isEqualTo(ORGNR.toString());
     }
 
     @Test
     @DisplayName("hentRoller returnerer en gyldig kontaktperson")
     public void hentRollerForOrganisasjonKontaktpersoner() {
-        var rolle = new HentRolle();
-        rolle.setJson(classpathToString("testdata/hentRoller.json"));
-        when(hentRolleRepositoryMock.findByOrgnr(ORGNR)).thenReturn(Optional.of(rolle));
-
         var grunndata = brregService.hentRoller(ORGNR.toString());
 
         //assert kontaktperson
@@ -126,10 +137,6 @@ public class BrregServiceTest {
     @Test
     @DisplayName("hentRoller returnerer en gyldig deltaker")
     public void hentRollerForOrganisasjonDeltaker() {
-        var rolle = new HentRolle();
-        rolle.setJson(classpathToString("testdata/hentRoller.json"));
-        when(hentRolleRepositoryMock.findByOrgnr(ORGNR)).thenReturn(Optional.of(rolle));
-
         var grunndata = brregService.hentRoller(ORGNR.toString());
 
         //assert deltaker
@@ -148,10 +155,6 @@ public class BrregServiceTest {
     @Test
     @DisplayName("hentRoller returnerer en gyldig styre")
     public void hentRollerForOrganisasjonStyre() {
-        var rolle = new HentRolle();
-        rolle.setJson(classpathToString("testdata/hentRoller.json"));
-        when(hentRolleRepositoryMock.findByOrgnr(ORGNR)).thenReturn(Optional.of(rolle));
-
         var grunndata = brregService.hentRoller(ORGNR.toString());
 
         //assert styreleder
@@ -171,10 +174,6 @@ public class BrregServiceTest {
     @Test
     @DisplayName("hentRoller returnerer en gyldig komplementar")
     public void hentRollerForOrganisasjonKomplementar() {
-        var rolle = new HentRolle();
-        rolle.setJson(classpathToString("testdata/hentRoller.json"));
-        when(hentRolleRepositoryMock.findByOrgnr(ORGNR)).thenReturn(Optional.of(rolle));
-
         var grunndata = brregService.hentRoller(ORGNR.toString());
 
         //assert komplementar
@@ -193,10 +192,6 @@ public class BrregServiceTest {
     @Test
     @DisplayName("hentRoller returnerer en gyldig sameiere")
     public void hentRollerForOrganisasjonSameiere() {
-        var rolle = new HentRolle();
-        rolle.setJson(classpathToString("testdata/hentRoller.json"));
-        when(hentRolleRepositoryMock.findByOrgnr(ORGNR)).thenReturn(Optional.of(rolle));
-
         var grunndata = brregService.hentRoller(ORGNR.toString());
 
         //assert sameier
@@ -222,10 +217,10 @@ public class BrregServiceTest {
         assertThat(grunndata.getResponseHeader().getOrgnr()).isNull();
         assertThat(grunndata.getResponseHeader().getTjeneste()).isEqualTo("hentRolleutskrift");
         assertThat(grunndata.getResponseHeader()
-                            .getProssessDato()
-                            .toGregorianCalendar()
-                            .toZonedDateTime()
-                            .toLocalDate()).isEqualTo((LocalDate.now()));
+                .getProssessDato()
+                .toGregorianCalendar()
+                .toZonedDateTime()
+                .toLocalDate()).isEqualTo((LocalDate.now()));
         assertThat(grunndata.getResponseHeader().getUnderStatus().getUnderStatusMelding())
                 .hasSize(1).extracting(underStatusMelding -> assertThat(underStatusMelding.getKode()).isEqualTo(180));
         assertThat(grunndata.getMelding()).isNull();
@@ -234,10 +229,6 @@ public class BrregServiceTest {
     @Test
     @DisplayName("rolleutskrift returnerer en gyldig responseheader med status 0")
     public void hentRolleutskriftForPersonResponseHeader() {
-        var rolleutskrift = new Rolleoversikt();
-        rolleutskrift.setJson(classpathToString("testdata/rolleutskrift.json"));
-        when(rolleoversiktRepositoryMock.findByIdent(FNR)).thenReturn(Optional.of(rolleutskrift));
-
         var grunndata = brregService.hentRolleutskrift(FNR);
 
         //assert responseheader
@@ -246,10 +237,10 @@ public class BrregServiceTest {
         assertThat(grunndata.getResponseHeader().getFodselsnr()).isEqualTo(FNR);
         assertThat(grunndata.getResponseHeader().getTjeneste()).isEqualTo("hentRolleutskrift");
         assertThat(grunndata.getResponseHeader()
-                            .getProssessDato()
-                            .toGregorianCalendar()
-                            .toZonedDateTime()
-                            .toLocalDate()).isEqualTo((LocalDate.now()));
+                .getProssessDato()
+                .toGregorianCalendar()
+                .toZonedDateTime()
+                .toLocalDate()).isEqualTo((LocalDate.now()));
         assertThat(grunndata.getResponseHeader().getUnderStatus().getUnderStatusMelding())
                 .hasSize(2).extracting("kode").contains(0, 1180);
     }
@@ -257,22 +248,18 @@ public class BrregServiceTest {
     @Test
     @DisplayName("rolleutskrift returnerer en gyldig meldiong")
     public void hentRolleutskriftForPersonMelding() {
-        var rolleutskrift = new Rolleoversikt();
-        rolleutskrift.setJson(classpathToString("testdata/rolleutskrift.json"));
-        when(rolleoversiktRepositoryMock.findByIdent(FNR)).thenReturn(Optional.of(rolleutskrift));
-
         var grunndata = brregService.hentRolleutskrift(FNR);
 
         //assert melding
         assertThat(grunndata.getMelding()).isNotNull();
         assertThat(grunndata.getMelding()
-                            .getRolleInnehaver()
-                            .getFodselsdato()
-                            .getValue()
-                            .toGregorianCalendar()
-                            .toZonedDateTime()
-                            .toLocalDate()
-                            .format(ISO_DATE)).isEqualTo("1976-01-01");
+                .getRolleInnehaver()
+                .getFodselsdato()
+                .getValue()
+                .toGregorianCalendar()
+                .toZonedDateTime()
+                .toLocalDate()
+                .format(ISO_DATE)).isEqualTo("1976-01-01");
         assertThat(grunndata.getMelding().getRolleInnehaver().getNavn().getNavn1()).isEqualTo("Navn");
         assertThat(grunndata.getMelding().getRolleInnehaver().getNavn().getNavn3()).isEqualTo("Navnesen");
         assertThat(grunndata.getMelding().getRolleInnehaver().getAdresse().getAdresse1()).isEqualTo("Dollyveien 1");
@@ -285,10 +272,6 @@ public class BrregServiceTest {
     @Test
     @DisplayName("rolleutskrift returnerer en gyldig grunndata med roller")
     public void hentRolleutskriftForPersonRoller() {
-        var rolleutskrift = new Rolleoversikt();
-        rolleutskrift.setJson(classpathToString("testdata/rolleutskrift.json"));
-        when(rolleoversiktRepositoryMock.findByIdent(FNR)).thenReturn(Optional.of(rolleutskrift));
-
         var grunndata = brregService.hentRolleutskrift(FNR);
 
         //assert roller
@@ -330,6 +313,4 @@ public class BrregServiceTest {
             throw new RuntimeException("Could not convert url to String" + url);
         }
     }
-
-
 }
