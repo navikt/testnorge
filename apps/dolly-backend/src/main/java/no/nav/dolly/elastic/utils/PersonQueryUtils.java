@@ -123,7 +123,7 @@ public class PersonQueryUtils {
 
         if (isNotBlank(request.getPersonRequest().getBostedBydelsnummer())) {
             criteria.and(getCriteria("pdldata.person.bostedsadresse.vegadresse.bydelsnummer",
-                    request.getPersonRequest().getBostedPostnummer()));
+                    request.getPersonRequest().getBostedBydelsnummer()));
         }
     }
 
