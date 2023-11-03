@@ -55,7 +55,7 @@ public class RandomSearchHelperService {
 
         return SearchResponse.builder()
                 .identer(identer.subList(0, Math.min(identer.size(), WINDOW_SIZE)))
-                .totalHits((int) hits.getTotalHits())
+                .totalHits(hits.getTotalHits())
                 .pageNumber(currentPage)
                 .pageSize(WINDOW_SIZE * FACTOR)
                 .windowSize(WINDOW_SIZE)

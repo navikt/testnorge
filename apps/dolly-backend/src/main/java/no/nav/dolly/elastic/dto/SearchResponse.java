@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 public class SearchResponse {
 
-    private int totalHits;
+    private long totalHits;
     private int pageNumber;
     private int pageSize;
     private int windowSize;
