@@ -11,7 +11,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 
-import java.io.IOException;
 import java.time.Duration;
 
 @Slf4j
@@ -27,17 +26,11 @@ public class OpenSearchLocalConfig extends AbstractOpenSearchConfiguration {
     @Override
     public RestHighLevelClient opensearchClient() {
 
-        try (RestHighLevelClient client = RestClients.create(ClientConfiguration.builder()
+        return RestClients.create(ClientConfiguration.builder()
                         .connectedTo(uri.replace("https://", ""))
                         .withConnectTimeout(Duration.ofSeconds(10))
                         .withSocketTimeout(Duration.ofSeconds(5))
                         .build())
-                .rest()) {
-            return client;
-
-        } catch (IOException e) {
-            log.error("Feilet å avslutte ressurs RestHighLevelClient.", e);
-        }
-        return null;
+                .rest();
     }
 }

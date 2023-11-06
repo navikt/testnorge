@@ -25,6 +25,7 @@ public class ElasticBestillingStrategyMapping implements MappingStrategy {
     private final ObjectMapper objectMapper;
 
     @Override
+    @SuppressWarnings("java:S3776")
     public void register(MapperFactory factory) {
 
         factory.classMap(RsDollyBestilling.class, ElasticBestilling.class)
