@@ -67,6 +67,7 @@ spec:
         - host: testnav-brregstub-proxy.dev-fss-pub.nais.io
         - host: testnav-dokarkiv-proxy.dev-fss-pub.nais.io
         - host: testnav-arbeidsplassencv-proxy.dev-fss-pub.nais.io
+        - host: testnav-sokos-kodeverk-proxy.dev.intern.nav.no
   replicas:
     min: 1
     max: 2

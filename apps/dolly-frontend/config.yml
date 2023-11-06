@@ -73,6 +73,7 @@ spec:
         - host: testnav-brregstub-proxy.dev-fss-pub.nais.io
         - host: testnav-dokarkiv-proxy.dev-fss-pub.nais.io
         - host: testnav-arbeidsplassencv-proxy.dev-fss-pub.nais.io
+        - host: testnav-sokos-kodeverk-proxy.dev.intern.nav.no
   liveness:
     path: /internal/isAlive
     initialDelay: 20
