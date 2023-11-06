@@ -24,6 +24,7 @@ public class OpenSearchLocalConfig extends AbstractOpenSearchConfiguration {
     private String uri;
 
     @Override
+    @SuppressWarnings("java:S2095")
     public RestHighLevelClient opensearchClient() {
 
         return RestClients.create(ClientConfiguration.builder()
