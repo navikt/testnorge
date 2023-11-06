@@ -52,4 +52,4 @@ spec:
     limits:
       memory: 2048Mi
   ingresses:
-    - "https://testnav-sokos-kodeverk-proxy.intern.dev.nav.no"
+    - "https://testnav-sokos-kodeverk-proxy.dev-fss-pub.nais.io"
