@@ -8,19 +8,20 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
+import no.nav.brregstub.api.common.RsAdresse;
+import no.nav.brregstub.api.common.RsNavn;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import no.nav.brregstub.api.common.RsAdresse;
-import no.nav.brregstub.api.common.RsNavn;
-
 @Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class RsRolleoversikt {
 
     @NotBlank

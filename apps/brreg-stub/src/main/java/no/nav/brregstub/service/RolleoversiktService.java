@@ -5,18 +5,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
 import no.nav.brregstub.api.common.Egenskap;
 import no.nav.brregstub.api.common.RsNavn;
 import no.nav.brregstub.api.common.RsOrganisasjon;
 import no.nav.brregstub.api.common.RsPersonOgRolle;
-import no.nav.brregstub.api.v1.RolleoversiktTo;
 import no.nav.brregstub.api.common.RsSamendring;
+import no.nav.brregstub.api.v1.RolleoversiktTo;
 import no.nav.brregstub.api.v2.RsRolle;
 import no.nav.brregstub.api.v2.RsRolleoversikt;
 import no.nav.brregstub.database.domene.HentRolle;
@@ -25,6 +19,11 @@ import no.nav.brregstub.database.repository.HentRolleRepository;
 import no.nav.brregstub.database.repository.RolleoversiktRepository;
 import no.nav.brregstub.mapper.HentRolleMapper;
 import no.nav.brregstub.mapper.RolleoversiktMapper;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -55,6 +54,7 @@ public class RolleoversiktService {
 
     @SneakyThrows
     public Optional<RsRolleoversikt> opprettRolleoversiktV2(RsRolleoversikt rsRolleoversikt) {
+        log.info("Mottok rsRolleoversikt: {}", rsRolleoversikt);
         RolleoversiktMapper.map(rsRolleoversikt); //Sjekker om object kan mappes
 
         setRollebeskrivelse(rsRolleoversikt);
