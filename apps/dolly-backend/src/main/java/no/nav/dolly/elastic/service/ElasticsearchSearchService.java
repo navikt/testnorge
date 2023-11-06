@@ -55,6 +55,11 @@ public class ElasticsearchSearchService {
 
         return searchHelperService.getRaw(getCriteria(request));
     }
+    public SearchHits<ElasticBestilling> getAll(String ident) {
+
+        var identCriteria = new Criteria("identer").contains(ident);
+        return searchHelperService.getRaw(identCriteria);
+    }
 
     public SearchResponse getTyper(ElasticTyper[] typer) {
 
