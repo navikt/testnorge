@@ -35,7 +35,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @AutoConfigureMockMvc(addFilters = false)
 @Import(JacksonConfig.class)
 @Testcontainers
-public class BrregServiceTest {
+class BrregServiceTest {
 
     private static final Integer ORGNR = 971524553;
     private static final String FNR = "010176100000";
@@ -66,10 +66,35 @@ public class BrregServiceTest {
 
     }
 
+    private void assertPerson(Grunndata.Melding.Eierkommune.Samendring.Rolle.Person person) {
+        assertThat(person.getFodselsnr()).isEqualTo("010176100000");
+        assertThat(person.getFornavn()).isEqualTo("Navn");
+        assertThat(person.getSlektsnavn()).isEqualTo("Navnesen");
+        assertThat(person.getAdresse1()).isEqualTo("Navneveien 12");
+        assertThat(person.getPostnr()).isEqualTo("0576");
+        assertThat(person.getPoststed()).isEqualTo("OSLO");
+        assertThat(person.getFratraadt()).isEqualTo("N");
+        assertThat(person.getBeskrivelse()).isEqualTo("Lever");
+        assertThat(person.getStatuskode()).isEqualTo("L");
+        assertThat(person).extracting("land").extracting("value").isEqualTo("Norge");
+    }
+
+    private static String classpathToString(String path) {
+        return resourceUrlToString(Resources.getResource(path));
+    }
+
+    private static String resourceUrlToString(URL url) {
+        try {
+            return Resources.toString(url, StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            throw new RuntimeException("Could not convert url to String" + url);
+        }
+    }
+
     @Test
     @DisplayName(
             "hentRoller returnerer grunndata uten melding, men med status 1 og understatus 100 hvis ikke finner data om orgnr i database")
-    public void hentRollerFinnerIkkeBruker() {
+    void hentRollerFinnerIkkeBruker() {
         var grunndata = brregService.hentRoller("123");
         assertThat(grunndata.getResponseHeader()).isNotNull();
         assertThat(grunndata.getResponseHeader().getHovedStatus()).isEqualTo(1);
@@ -85,10 +110,9 @@ public class BrregServiceTest {
         assertThat(grunndata.getMelding()).isNull();
     }
 
-
     @Test
     @DisplayName("hentRoller returnerer en gyldig responseheader med melding")
-    public void hentRollerForOrganisasjon() {
+    void hentRollerForOrganisasjon() {
         var grunndata = brregService.hentRoller(ORGNR.toString());
 
         //assert responseheader
@@ -119,7 +143,7 @@ public class BrregServiceTest {
 
     @Test
     @DisplayName("hentRoller returnerer en gyldig kontaktperson")
-    public void hentRollerForOrganisasjonKontaktpersoner() {
+    void hentRollerForOrganisasjonKontaktpersoner() {
         var grunndata = brregService.hentRoller(ORGNR.toString());
 
         //assert kontaktperson
@@ -136,7 +160,7 @@ public class BrregServiceTest {
 
     @Test
     @DisplayName("hentRoller returnerer en gyldig deltaker")
-    public void hentRollerForOrganisasjonDeltaker() {
+    void hentRollerForOrganisasjonDeltaker() {
         var grunndata = brregService.hentRoller(ORGNR.toString());
 
         //assert deltaker
@@ -154,7 +178,7 @@ public class BrregServiceTest {
 
     @Test
     @DisplayName("hentRoller returnerer en gyldig styre")
-    public void hentRollerForOrganisasjonStyre() {
+    void hentRollerForOrganisasjonStyre() {
         var grunndata = brregService.hentRoller(ORGNR.toString());
 
         //assert styreleder
@@ -173,7 +197,7 @@ public class BrregServiceTest {
 
     @Test
     @DisplayName("hentRoller returnerer en gyldig komplementar")
-    public void hentRollerForOrganisasjonKomplementar() {
+    void hentRollerForOrganisasjonKomplementar() {
         var grunndata = brregService.hentRoller(ORGNR.toString());
 
         //assert komplementar
@@ -191,7 +215,7 @@ public class BrregServiceTest {
 
     @Test
     @DisplayName("hentRoller returnerer en gyldig sameiere")
-    public void hentRollerForOrganisasjonSameiere() {
+    void hentRollerForOrganisasjonSameiere() {
         var grunndata = brregService.hentRoller(ORGNR.toString());
 
         //assert sameier
@@ -209,7 +233,7 @@ public class BrregServiceTest {
     @Test
     @DisplayName(
             "rolleutskrift returnerer grunndata uten melding, men med status 1 og understatus 180 hvis ikke finner data om ident i database")
-    public void hentRolleutskriftFinnerIkkeBruker() {
+    void hentRolleutskriftFinnerIkkeBruker() {
         var grunndata = brregService.hentRolleutskrift("ident");
         assertThat(grunndata.getResponseHeader()).isNotNull();
         assertThat(grunndata.getResponseHeader().getHovedStatus()).isEqualTo(1);
@@ -228,7 +252,7 @@ public class BrregServiceTest {
 
     @Test
     @DisplayName("rolleutskrift returnerer en gyldig responseheader med status 0")
-    public void hentRolleutskriftForPersonResponseHeader() {
+    void hentRolleutskriftForPersonResponseHeader() {
         var grunndata = brregService.hentRolleutskrift(FNR);
 
         //assert responseheader
@@ -247,7 +271,7 @@ public class BrregServiceTest {
 
     @Test
     @DisplayName("rolleutskrift returnerer en gyldig meldiong")
-    public void hentRolleutskriftForPersonMelding() {
+    void hentRolleutskriftForPersonMelding() {
         var grunndata = brregService.hentRolleutskrift(FNR);
 
         //assert melding
@@ -271,7 +295,7 @@ public class BrregServiceTest {
 
     @Test
     @DisplayName("rolleutskrift returnerer en gyldig grunndata med roller")
-    public void hentRolleutskriftForPersonRoller() {
+    void hentRolleutskriftForPersonRoller() {
         var grunndata = brregService.hentRolleutskrift(FNR);
 
         //assert roller
@@ -287,30 +311,5 @@ public class BrregServiceTest {
         assertThat(rolle1.getAdresse().getForretningsAdresse().getPoststed()).isEqualTo("Oslo");
         assertThat(rolle1.getAdresse().getForretningsAdresse().getLand().getValue()).isEqualTo("NO");
         assertThat(rolle1.getAdresse().getPostAdresse().getAdresse1()).isEqualTo("Postadresseveien 1");
-    }
-
-    private void assertPerson(Grunndata.Melding.Eierkommune.Samendring.Rolle.Person person) {
-        assertThat(person.getFodselsnr()).isEqualTo("010176100000");
-        assertThat(person.getFornavn()).isEqualTo("Navn");
-        assertThat(person.getSlektsnavn()).isEqualTo("Navnesen");
-        assertThat(person.getAdresse1()).isEqualTo("Navneveien 12");
-        assertThat(person.getPostnr()).isEqualTo("0576");
-        assertThat(person.getPoststed()).isEqualTo("OSLO");
-        assertThat(person.getFratraadt()).isEqualTo("N");
-        assertThat(person.getBeskrivelse()).isEqualTo("Lever");
-        assertThat(person.getStatuskode()).isEqualTo("L");
-        assertThat(person).extracting("land").extracting("value").isEqualTo("Norge");
-    }
-
-    private static String classpathToString(String path) {
-        return resourceUrlToString(Resources.getResource(path));
-    }
-
-    private static String resourceUrlToString(URL url) {
-        try {
-            return Resources.toString(url, StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            throw new RuntimeException("Could not convert url to String" + url);
-        }
     }
 }
