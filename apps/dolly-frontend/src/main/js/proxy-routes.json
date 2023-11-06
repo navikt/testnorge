@@ -84,6 +84,11 @@
     "changeOrigin": true,
     "secure": false
   },
+  "/testnav-sokos-kodeverk-proxy/api": {
+    "target": "http://localhost:8020",
+    "changeOrigin": true,
+    "secure": false
+  },
   "/tps-forvalteren-proxy/api": {
     "target": "http://localhost:8020",
     "changeOrigin": true,
