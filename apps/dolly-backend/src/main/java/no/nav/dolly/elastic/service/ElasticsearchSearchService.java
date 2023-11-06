@@ -7,6 +7,7 @@ import no.nav.dolly.elastic.ElasticBestilling;
 import no.nav.dolly.elastic.ElasticTyper;
 import no.nav.dolly.elastic.dto.SearchRequest;
 import no.nav.dolly.elastic.dto.SearchResponse;
+import org.springframework.core.convert.ConverterNotFoundException;
 import org.springframework.data.elasticsearch.UncategorizedElasticsearchException;
 import org.springframework.data.elasticsearch.core.query.Criteria;
 import org.springframework.stereotype.Service;
@@ -45,7 +46,7 @@ public class ElasticsearchSearchService {
             return randomSearchHelperService.search(criteria);
 
         } catch (
-                UncategorizedElasticsearchException e) {
+                UncategorizedElasticsearchException | ConverterNotFoundException e) {
 
             log.warn("Feilet å utføre søk {}: {}", criteria, e.getLocalizedMessage());
             return SearchResponse.builder()
@@ -94,7 +95,7 @@ public class ElasticsearchSearchService {
             return randomSearchHelperService.search(criteria);
 
         } catch (
-                UncategorizedElasticsearchException e) {
+                UncategorizedElasticsearchException | ConverterNotFoundException e) {
 
             log.warn("Feilet å utføre søk {}: {}", criteria, e.getLocalizedMessage());
             return SearchResponse.builder()

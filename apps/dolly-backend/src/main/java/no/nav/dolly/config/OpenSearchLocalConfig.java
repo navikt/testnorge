@@ -1,6 +1,7 @@
 package no.nav.dolly.config;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.opensearch.client.RestHighLevelClient;
 import org.opensearch.data.client.orhlc.AbstractOpenSearchConfiguration;
 import org.opensearch.data.client.orhlc.ClientConfiguration;
@@ -10,8 +11,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 
+import java.io.IOException;
 import java.time.Duration;
 
+@Slf4j
 @Configuration
 @Profile("local")
 @RequiredArgsConstructor
@@ -24,11 +27,17 @@ public class OpenSearchLocalConfig extends AbstractOpenSearchConfiguration {
     @Override
     public RestHighLevelClient opensearchClient() {
 
-        return RestClients.create(ClientConfiguration.builder()
+        try (RestHighLevelClient client = RestClients.create(ClientConfiguration.builder()
                         .connectedTo(uri.replace("https://", ""))
                         .withConnectTimeout(Duration.ofSeconds(10))
                         .withSocketTimeout(Duration.ofSeconds(5))
                         .build())
-                .rest();
+                .rest()) {
+            return client;
+
+        } catch (IOException e) {
+            log.error("Feilet å avslutte ressurs RestHighLevelClient.", e);
+        }
+        return null;
     }
 }

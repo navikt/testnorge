@@ -38,7 +38,6 @@ import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
 public class OppdaterPersonService extends DollyBestillingService {
 
     private final PersonServiceClient personServiceClient;
-    private final MapperFacade mapperFacade;
     private final BestillingProgressService bestillingProgressService;
 
     public OppdaterPersonService(
@@ -69,7 +68,6 @@ public class OppdaterPersonService extends DollyBestillingService {
                 bestillingElasticRepository
         );
         this.personServiceClient = personServiceClient;
-        this.mapperFacade = mapperFacade;
         this.bestillingProgressService = bestillingProgressService;
     }
 

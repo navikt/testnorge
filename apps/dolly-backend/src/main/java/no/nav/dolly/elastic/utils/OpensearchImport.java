@@ -43,6 +43,7 @@ public class OpensearchImport implements ApplicationListener<ContextRefreshedEve
                 System.currentTimeMillis() - start);
     }
 
+    @SuppressWarnings("java:S3864")
     private void importAll(AtomicInteger antallLest, AtomicInteger antallSkrevet) {
 
         StreamSupport.stream(bestillingRepository.findAll().spliterator(), false)
