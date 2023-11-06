@@ -18,6 +18,7 @@ import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingFragment;
+import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
@@ -38,6 +39,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -74,6 +76,7 @@ public class BestillingService {
     private final TestgruppeRepository testgruppeRepository;
     private final BrukerService brukerService;
     private final GetUserInfo getUserInfo;
+    private final BestillingElasticRepository elasticRepository;
 
     public Bestilling fetchBestillingById(Long bestillingId) {
         return bestillingRepository.findById(bestillingId)
@@ -352,6 +355,12 @@ public class BestillingService {
 
     public void slettBestillingerByGruppeId(Long gruppeId) {
 
+        testgruppeRepository.findById(gruppeId).stream()
+                .map(Testgruppe::getBestillinger)
+                .flatMap(Collection::stream)
+                .map(Bestilling::getId)
+                .forEach(elasticRepository::deleteById);
+
         bestillingKontrollRepository.deleteByGruppeId(gruppeId);
         bestillingProgressRepository.deleteByGruppeId(gruppeId);
         bestillingRepository.deleteByGruppeId(gruppeId);
@@ -363,6 +372,7 @@ public class BestillingService {
         bestillingProgressRepository.deleteByBestilling_Id(bestillingId);
         bestillingKontrollRepository.deleteByBestillingWithNoChildren(bestillingId);
         bestillingRepository.deleteById(bestillingId);
+        elasticRepository.deleteById(bestillingId);
     }
 
     public void slettBestillingByTestIdent(String ident) {
@@ -379,6 +389,7 @@ public class BestillingService {
 
             bestillingKontrollRepository.deleteByBestillingWithNoChildren(id);
             bestillingRepository.deleteBestillingWithNoChildren(id);
+            elasticRepository.deleteById(id);
         });
     }
 
@@ -441,7 +452,7 @@ public class BestillingService {
         });
     }
 
-    public List<BestillingProgress> getProgressByBestillingId(Long bestillingId){
+    public List<BestillingProgress> getProgressByBestillingId(Long bestillingId) {
 
         return bestillingProgressRepository.findByBestilling_Id(bestillingId);
     }

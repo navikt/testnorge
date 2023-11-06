@@ -26,13 +26,21 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class RandomSearchHelperService {
+public class SearchHelperService {
 
     private static final int WINDOW_SIZE = 10;
     private static final int FACTOR = 2;
 
     private final ElasticsearchOperations elasticsearchOperations;
     private Random random = new SecureRandom();
+
+    public SearchHits<ElasticBestilling> getRaw(Criteria criteria) {
+
+            return elasticsearchOperations.search(new CriteriaQueryBuilder(criteria)
+                            .withTimeout(Duration.ofSeconds(3))
+                            .build(),
+                    ElasticBestilling.class, IndexCoordinates.of("bestilling"));
+    }
 
     public SearchResponse search(Criteria criteria) {
 

@@ -152,7 +152,7 @@ public class PersonQueryUtils {
     public static void addBostedUkjentQuery(Criteria criteria, SearchRequest request) {
 
         Optional.ofNullable(request.getPersonRequest().getBostedsadresse())
-                .filter(boadresse -> isTrue(boadresse.getHarUtenlandsadresse()))
+                .filter(boadresse -> isTrue(boadresse.getHarUkjentAdresse()))
                 .ifPresent(boadresse ->
                         criteria.and(new Criteria("pdldata.person.bostedsadresse.ukjentBosted").exists()));
     }
