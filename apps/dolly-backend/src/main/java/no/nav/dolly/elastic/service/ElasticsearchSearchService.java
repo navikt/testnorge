@@ -7,6 +7,7 @@ import no.nav.dolly.elastic.ElasticBestilling;
 import no.nav.dolly.elastic.ElasticTyper;
 import no.nav.dolly.elastic.dto.SearchRequest;
 import no.nav.dolly.elastic.dto.SearchResponse;
+import org.springframework.data.elasticsearch.UncategorizedElasticsearchException;
 import org.springframework.data.elasticsearch.core.query.Criteria;
 import org.springframework.stereotype.Service;
 
@@ -40,7 +41,17 @@ public class ElasticsearchSearchService {
                 .map(this::getCriteria)
                 .forEach(criteria::and);
 
-        return randomSearchHelperService.search(criteria);
+        try {
+            return randomSearchHelperService.search(criteria);
+
+        } catch (
+                UncategorizedElasticsearchException e) {
+
+            log.warn("Feilet å utføre søk {}: {}", criteria, e.getLocalizedMessage());
+            return SearchResponse.builder()
+                    .error(e.getLocalizedMessage())
+                    .build();
+        }
     }
 
     public SearchResponse search(SearchRequest request) {
@@ -79,7 +90,17 @@ public class ElasticsearchSearchService {
                     addHarOppholdQuery(criteria, request);
                 });
 
-        return randomSearchHelperService.search(criteria);
+        try {
+            return randomSearchHelperService.search(criteria);
+
+        } catch (
+                UncategorizedElasticsearchException e) {
+
+            log.warn("Feilet å utføre søk {}: {}", criteria, e.getLocalizedMessage());
+            return SearchResponse.builder()
+                    .error(e.getLocalizedMessage())
+                    .build();
+        }
     }
 
     private Criteria getCriteria(ElasticTyper type) {

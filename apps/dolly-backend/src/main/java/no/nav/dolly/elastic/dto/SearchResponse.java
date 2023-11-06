@@ -1,5 +1,6 @@
 package no.nav.dolly.elastic.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,6 +12,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class SearchResponse {
 
     private long totalHits;
@@ -18,4 +20,5 @@ public class SearchResponse {
     private int pageSize;
     private int windowSize;
     private List<String> identer;
+    private String error;
 }

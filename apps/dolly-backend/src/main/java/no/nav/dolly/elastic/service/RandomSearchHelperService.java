@@ -77,10 +77,10 @@ public class RandomSearchHelperService {
 
     private SearchHits<ElasticBestilling> search(Criteria criteria, int pageNo) {
 
-        return elasticsearchOperations.search(new CriteriaQueryBuilder(criteria)
-                        .withPageable(Pageable.ofSize(WINDOW_SIZE * FACTOR).withPage(pageNo))
-                        .withTimeout(Duration.ofSeconds(3))
-                        .build(),
-                ElasticBestilling.class, IndexCoordinates.of("bestilling"));
+            return elasticsearchOperations.search(new CriteriaQueryBuilder(criteria)
+                            .withPageable(Pageable.ofSize(WINDOW_SIZE * FACTOR).withPage(pageNo))
+                            .withTimeout(Duration.ofSeconds(3))
+                            .build(),
+                    ElasticBestilling.class, IndexCoordinates.of("bestilling"));
     }
 }
