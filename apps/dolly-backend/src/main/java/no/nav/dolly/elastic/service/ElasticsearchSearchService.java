@@ -81,6 +81,9 @@ public class ElasticsearchSearchService {
                     addBostedKommuneQuery(criteria, request);
                     addBostedPostnrQuery(criteria, request);
                     addBostedBydelsnrQuery(criteria, request);
+                    addBostedUtlandQuery(criteria, request);
+                    addBostedMatrikkelQuery(criteria, request);
+                    addBostedUkjentQuery(criteria, request);
                     addHarDeltBostedQuery(criteria, request);
                     addHarKontaktinformasjonForDoedsboQuery(criteria, request);
                     addHarUtenlandskIdentifikasjonsnummerQuery(criteria, request);
@@ -89,6 +92,7 @@ public class ElasticsearchSearchService {
                     addHarSikkerhetstiltakQuery(criteria, request);
                     addStatsborgerskapQuery(criteria, request);
                     addHarOppholdQuery(criteria, request);
+                    addHarNyIdentitetQuery(criteria, request);
                 });
 
         try {

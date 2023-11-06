@@ -4,6 +4,8 @@ import lombok.experimental.UtilityClass;
 import no.nav.dolly.elastic.dto.SearchRequest;
 import org.springframework.data.elasticsearch.core.query.Criteria;
 
+import java.util.Optional;
+
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -28,7 +30,8 @@ public class PersonQueryUtils {
     public static void addSivilstandQuery(Criteria criteria, SearchRequest request) {
 
         if (nonNull(request.getPersonRequest().getSivilstand())) {
-            criteria.and(getCriteria("pdldata.person.sivilstand.type", request.getPersonRequest().getSivilstand().name()));
+            criteria.and(getCriteria("pdldata.person.sivilstand.type",
+                    request.getPersonRequest().getSivilstand().name()));
         }
     }
 
@@ -105,26 +108,53 @@ public class PersonQueryUtils {
 
     public static void addBostedKommuneQuery(Criteria criteria, SearchRequest request) {
 
-        if (isNotBlank(request.getPersonRequest().getBostedKommune())) {
-            criteria.and(getCriteria("pdldata.person.bostedsadresse.vegadresse.kommunenummer",
-                    request.getPersonRequest().getBostedKommune()));
-        }
+        Optional.ofNullable(request.getPersonRequest().getBostedsadresse())
+                .filter(boadresse -> isNotBlank(boadresse.getKommunenummer()))
+                .ifPresent(boadresse ->
+                        criteria.and(getCriteria("pdldata.person.bostedsadresse.vegadresse.kommunenummer",
+                                boadresse.getKommunenummer())));
     }
 
     public static void addBostedPostnrQuery(Criteria criteria, SearchRequest request) {
 
-        if (isNotBlank(request.getPersonRequest().getBostedPostnummer())) {
-            criteria.and(getCriteria("pdldata.person.bostedsadresse.vegadresse.postnummer",
-                    request.getPersonRequest().getBostedPostnummer()));
-        }
+        Optional.ofNullable(request.getPersonRequest().getBostedsadresse())
+                .filter(boadresse -> isNotBlank(boadresse.getPostnummer()))
+                .ifPresent(boadresse ->
+                        criteria.and(getCriteria("pdldata.person.bostedsadresse.vegadresse.postnummer",
+                                boadresse.getPostnummer())));
     }
 
     public static void addBostedBydelsnrQuery(Criteria criteria, SearchRequest request) {
 
-        if (isNotBlank(request.getPersonRequest().getBostedBydelsnummer())) {
-            criteria.and(getCriteria("pdldata.person.bostedsadresse.vegadresse.bydelsnummer",
-                    request.getPersonRequest().getBostedBydelsnummer()));
-        }
+        Optional.ofNullable(request.getPersonRequest().getBostedsadresse())
+                .filter(boadresse -> isNotBlank(boadresse.getBydelsnummer()))
+                .ifPresent(boadresse ->
+                        criteria.and(getCriteria("pdldata.person.bostedsadresse.vegadresse.bydelsnummer",
+                                boadresse.getBydelsnummer())));
+    }
+
+    public static void addBostedUtlandQuery(Criteria criteria, SearchRequest request) {
+
+        Optional.ofNullable(request.getPersonRequest().getBostedsadresse())
+                .filter(boadresse -> isTrue(boadresse.getHarUtenlandsadresse()))
+                .ifPresent(boadresse ->
+                        criteria.and(new Criteria("pdldata.person.bostedsadresse.utenlandskAdresse").exists()));
+    }
+
+    public static void addBostedMatrikkelQuery(Criteria criteria, SearchRequest request) {
+
+        Optional.ofNullable(request.getPersonRequest().getBostedsadresse())
+                .filter(boadresse -> isTrue(boadresse.getHarMatrikkelAdresse()))
+                .ifPresent(boadresse ->
+                        criteria.and(new Criteria("pdldata.person.bostedsadresse.matrikkeladresse").exists()));
+    }
+
+    public static void addBostedUkjentQuery(Criteria criteria, SearchRequest request) {
+
+        Optional.ofNullable(request.getPersonRequest().getBostedsadresse())
+                .filter(boadresse -> isTrue(boadresse.getHarUtenlandsadresse()))
+                .ifPresent(boadresse ->
+                        criteria.and(new Criteria("pdldata.person.bostedsadresse.ukjentBosted").exists()));
     }
 
     public static void addHarDeltBostedQuery(Criteria criteria, SearchRequest request) {
@@ -140,18 +170,21 @@ public class PersonQueryUtils {
             criteria.and(new Criteria("pdldata.person.kontaktinformasjonForDoedsbo").exists());
         }
     }
+
     public static void addHarUtenlandskIdentifikasjonsnummerQuery(Criteria criteria, SearchRequest request) {
 
         if (isTrue(request.getPersonRequest().getHarUtenlandskIdentifikasjonsnummer())) {
             criteria.and(new Criteria("pdldata.person.utenlandskIdentifikasjonsnummer").exists());
         }
     }
+
     public static void addHarFalskIdentitetQuery(Criteria criteria, SearchRequest request) {
 
         if (isTrue(request.getPersonRequest().getHarFalskIdentitet())) {
             criteria.and(new Criteria("pdldata.person.falskIdentitet").exists());
         }
     }
+
     public static void addHarTilrettelagtKommunikasjonQuery(Criteria criteria, SearchRequest request) {
 
         if (isTrue(request.getPersonRequest().getHarTilrettelagtKommunikasjon())) {
@@ -178,6 +211,13 @@ public class PersonQueryUtils {
 
         if (isTrue(request.getPersonRequest().getHarOpphold())) {
             criteria.and(new Criteria("pdldata.person.opphold").exists());
+        }
+    }
+
+    public static void addHarNyIdentitetQuery(Criteria criteria, SearchRequest request) {
+
+        if (isTrue(request.getPersonRequest().getNyIdentitet())) {
+            criteria.and(new Criteria("pdldata.person.nyident").exists());
         }
     }
 

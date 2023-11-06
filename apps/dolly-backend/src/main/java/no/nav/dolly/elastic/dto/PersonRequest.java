@@ -32,13 +32,6 @@ public class PersonRequest {
     private Boolean harDoedsfall;
     private Boolean harInnflytting;
     private Boolean harUtflytting;
-    private Boolean harDeltBosted;
-    private Boolean harKontaktadresse;
-    private Boolean harOppholdsadresse;
-    @Schema($comment = "Kommunenummer")
-    private String bostedKommune;
-    private String bostedPostnummer;
-    private String bostedBydelsnummer;
     private Boolean harKontaktinformasjonForDoedsbo;
     private Boolean harUtenlandskIdentifikasjonsnummer;
     private Boolean harFalskIdentitet;
@@ -47,4 +40,25 @@ public class PersonRequest {
     private Boolean harOpphold;
     @Schema($comment = "landkode")
     private String statsborgerskap;
+    private Boolean nyIdentitet;
+
+    private BostedAdresseRequest bostedsadresse;
+    private Boolean harDeltBosted;
+
+    private Boolean harKontaktadresse;
+    private Boolean harOppholdsadresse;
+
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor(force = true)
+    public static class BostedAdresseRequest {
+
+        private String kommunenummer;
+        private String postnummer;
+        private String bydelsnummer;
+        private Boolean harUtenlandsadresse;
+        private Boolean harMatrikkelAdresse;
+        private Boolean harUkjentAdresse;
+    }
 }
