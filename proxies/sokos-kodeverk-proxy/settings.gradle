@@ -1,0 +1,17 @@
+plugins {
+    id "com.gradle.enterprise" version "3.12.3"
+}
+
+rootProject.name = 'sokos-kodeverk-proxy'
+
+
+includeBuild '../../libs/reactive-core'
+includeBuild '../../libs/data-transfer-objects'
+includeBuild '../../libs/reactive-proxy'
+
+gradleEnterprise {
+    buildScan {
+        termsOfServiceUrl = "https://gradle.com/terms-of-service"
+        termsOfServiceAgree = "yes"
+    }
+}
