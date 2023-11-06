@@ -5,21 +5,25 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
+@Builder
 @Table(name = "hent_rolle")
+@NoArgsConstructor
+@AllArgsConstructor
 public class HentRolle {
-
+    
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "hentrolle_seq")
-    @SequenceGenerator(name = "hentrolle_seq", sequenceName = "HENTROLLE_SEQ", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull(message = "orgnr must not be null")

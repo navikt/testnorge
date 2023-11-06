@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static no.nav.dolly.bestilling.arenaforvalter.ArenaUtils.fixFormatUserDefinedError;
 import static no.nav.dolly.domain.resultset.SystemTyper.ARENA;
 import static no.nav.dolly.domain.resultset.SystemTyper.ARENA_AAP;
 import static no.nav.dolly.domain.resultset.SystemTyper.ARENA_AAP115;
@@ -108,7 +109,7 @@ public final class BestillingArenaforvalterStatusMapper {
                     .statuser(
                             meldStatusMiljoeIdents.get(clientid).entrySet().stream().map(entry ->
                                             RsStatusRapport.Status.builder()
-                                                    .melding(decodeMsg(entry.getKey()).
+                                                    .melding(fixFormatUserDefinedError(decodeMsg(entry.getKey())).
                                                             replace("BRUKER: Info:", "Info:"))
                                                     .detaljert(entry.getValue().entrySet().stream().map(miljeStatus ->
                                                                     RsStatusRapport.Detaljert.builder()

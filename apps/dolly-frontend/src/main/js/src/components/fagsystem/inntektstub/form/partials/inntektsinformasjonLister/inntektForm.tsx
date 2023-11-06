@@ -59,7 +59,7 @@ const simpleValues = {
 
 export const InntektForm = ({ formikBag, inntektsinformasjonPath }: data) => {
 	const [formSimple, setFormSimple] = useBoolean(
-		sessionStorage.getItem(INNTEKTSTYPE_TOGGLE) === FormType.FORENKLET
+		sessionStorage.getItem(INNTEKTSTYPE_TOGGLE) === FormType.FORENKLET,
 	)
 
 	useEffect(() => {
@@ -101,7 +101,7 @@ export const InntektForm = ({ formikBag, inntektsinformasjonPath }: data) => {
 			</div>
 			<FormikDollyFieldArray
 				name={`${inntektsinformasjonPath}.inntektsliste`}
-				header="Inntekt"
+				header="Inntekt per måned"
 				newEntry={formSimple ? simpleInitialValues : initialValues}
 				tag={null}
 			>

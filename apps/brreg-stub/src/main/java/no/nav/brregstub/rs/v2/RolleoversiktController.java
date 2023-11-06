@@ -4,8 +4,13 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.brregstub.api.v2.RsRolleoversikt;
+import no.nav.brregstub.exception.CouldNotCreateStubException;
+import no.nav.brregstub.exception.NotFoundException;
+import no.nav.brregstub.service.RolleoversiktService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,11 +19,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import no.nav.brregstub.api.v2.RsRolleoversikt;
-import no.nav.brregstub.exception.CouldNotCreateStubException;
-import no.nav.brregstub.exception.NotFoundException;
-import no.nav.brregstub.service.RolleoversiktService;
 
 @Validated
 @Slf4j
@@ -30,6 +30,7 @@ public class RolleoversiktController {
     private final RolleoversiktService service;
 
     @PostMapping
+    @Transactional
     public ResponseEntity<RsRolleoversikt> lagreEllerOppdaterRolleoversikt(@Valid @RequestBody RsRolleoversikt rolleoversikt) {
         var grunndata = service.opprettRolleoversiktV2(rolleoversikt)
                 .orElseThrow(() -> new CouldNotCreateStubException("Kunne ikke opprette rolleoversikt"));
@@ -44,8 +45,8 @@ public class RolleoversiktController {
     }
 
     @DeleteMapping
-    public ResponseEntity slettRolleoversikt(@NotNull @RequestHeader(name = "Nav-Personident") String ident) {
+    @Transactional
+    public void slettRolleoversikt(@NotNull @RequestHeader(name = "Nav-Personident") String ident) {
         service.slettRolleoversikt(ident);
-        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }
