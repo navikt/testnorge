@@ -160,7 +160,7 @@ public class PersonQueryUtils {
     public static void addHarDeltBostedQuery(Criteria criteria, SearchRequest request) {
 
         if (isTrue(request.getPersonRequest().getHarDeltBosted())) {
-            criteria.and(new Criteria("pdldata.person.deltBosted").exists());
+            criteria.and(new Criteria("pdldata.person.forelderBarnRelasjon.deltBosted").exists());
         }
     }
 
