@@ -73,7 +73,7 @@ public class ElasticController {
     public ElasticBestilling get(@PathVariable long id) {
 
         return bestillingElasticRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(format("Bestilling med id: %d finnes ikke på elastic server", id)));
+                .orElseThrow(() -> new NotFoundException(format("Bestilling med id: %d finnes ikke", id)));
     }
 
     @DeleteMapping("/bestilling/id/{id}")
