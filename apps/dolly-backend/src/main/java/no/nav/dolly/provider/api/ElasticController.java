@@ -79,4 +79,11 @@ public class ElasticController {
 
         bestillingElasticRepository.deleteById(id);
     }
+
+    @DeleteMapping()
+    @Operation(description = "Sletter all data")
+    public void delete() {
+
+        bestillingElasticRepository.deleteAll();
+    }
 }
