@@ -2,6 +2,7 @@ package no.nav.dolly.provider.api;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.dolly.elastic.ElasticBestilling;
 import no.nav.dolly.elastic.ElasticTyper;
@@ -29,6 +30,7 @@ public class ElasticController {
 
     private final ElasticsearchSearchService elasticsearchSearchService;
     private final BestillingElasticRepository bestillingElasticRepository;
+    private final MapperFacade mapperFacade;
 
     @PostMapping("/search-hits")
     @Operation(description = "Henter all lagret informasjon i hht request")
@@ -62,7 +64,8 @@ public class ElasticController {
     @Operation(description = "Lagrer/oppdaterer søkbar bestilling")
     public ElasticBestilling lagreEllerOppdaterBestilling(@RequestBody ElasticBestilling request) {
 
-        return bestillingElasticRepository.save(request);
+        var copy = mapperFacade.map(request, ElasticBestilling.class);
+        return bestillingElasticRepository.save(copy);
     }
 
     @GetMapping("/bestilling/id/{id}")
