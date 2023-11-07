@@ -5,6 +5,7 @@ import useBoolean from '@/utils/hooks/useBoolean'
 import { Journalpost } from '@/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
 import styled from 'styled-components'
 import { useDokument } from '@/utils/hooks/useJoarkDokument'
+import { Alert } from '@navikt/ds-react'
 
 interface PersonVisningContentProps {
 	id: Journalpost
@@ -56,7 +57,14 @@ export const PersonVisningContent = ({ miljoe, dokumentInfo }: PersonVisningCont
 					{(viserSkjemainnhold ? 'SKJUL ' : 'VIS ') + 'SKJEMAINNHOLD'}
 				</Button>
 			</div>
-			{viserSkjemainnhold && <CodeView language="xml" code={dokument} />}
+			{viserSkjemainnhold &&
+				(dokument ? (
+					<CodeView language="xml" code={dokument} />
+				) : (
+					<Alert variant="error" size="small" inline>
+						Kunne ikke hente skjemainnhold
+					</Alert>
+				))}
 		</StyledJournalpost>
 	)
 }

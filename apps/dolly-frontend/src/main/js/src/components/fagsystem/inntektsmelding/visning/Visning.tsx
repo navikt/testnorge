@@ -55,22 +55,23 @@ export const InntektsmeldingVisning = ({
 
 	const forsteMiljo = data?.find((miljoData) => miljoData?.data)?.miljo
 
-	// const harTransaksjonsidData = data?.some((inntekt) => inntekt?.data?.request)
 	const harTransaksjonsidData = data?.every((inntekt) => inntekt?.data?.request)
-	// console.log('harTransaksjonsidData: ', harTransaksjonsidData) //TODO - SLETT MEG
-	console.log('data: ', data) //TODO - SLETT MEG
-	console.log('bestillinger: ', bestillinger) //TODO - SLETT MEG
 
 	const setTransaksjonsidData = () => {
 		return data.map((miljo) => {
+			const request = miljo?.data?.request
+			const dokument = miljo?.data?.dokument
 			return {
 				data: {
-					dokument: miljo.data,
-					request: {
-						//TODO: Hent inntektsmelding fra alle bestillinger, ikke bare den forste
-						inntekter: bestillinger?.[0]?.data.inntektsmelding.inntekter,
-						miljoe: miljo.miljo,
-					},
+					dokument: dokument ? dokument : miljo.data,
+					request: request
+						? request
+						: {
+								inntekter: bestillinger?.flatMap(
+									(bestilling) => bestilling?.data.inntektsmelding.inntekter,
+								),
+								miljoe: miljo.miljo,
+						  },
 				},
 				miljo: miljo.miljo,
 			}
@@ -100,9 +101,6 @@ export const InntektsmeldingVisning = ({
 
 	const filteredData =
 		tilgjengeligMiljoe && mergetData?.filter((item) => item.miljo === tilgjengeligMiljoe)
-
-	// console.log('filteredData: ', filteredData) //TODO - SLETT MEG
-	// console.log('mergetData: ', mergetData) //TODO - SLETT MEG
 
 	return (
 		<>
