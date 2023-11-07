@@ -57,7 +57,7 @@ export default ({ data, bestillingIdListe, loading, tilgjengeligMiljoe }: Form) 
 				mergeMiljo[indexOfMiljo].data?.push(item.data)
 			} else {
 				mergeMiljo.push({
-					data: item.data ? [item.data] : null,
+					data: item.data && [item.data],
 					miljo: item.miljo,
 				})
 			}
@@ -68,7 +68,7 @@ export default ({ data, bestillingIdListe, loading, tilgjengeligMiljoe }: Form) 
 	const mergedData = mergeData()
 
 	const filteredData =
-		tilgjengeligMiljoe && mergedData.filter((item) => item.miljo === tilgjengeligMiljoe)
+		tilgjengeligMiljoe && mergedData?.filter((item) => item?.miljo === tilgjengeligMiljoe)
 
 	return (
 		<>
