@@ -19,18 +19,17 @@ const StyledDiv = styled.div`
 	align-items: center;
 `
 
-export const DollyCopyButton = ({ copyText, displayText, tooltipText, style }: Props) => {
-	return (
-		<StyledDiv style={style}>
-			{displayText}
-			<StyledTooltip content={tooltipText}>
-				<CopyButton
-					onClick={(event) => event.stopPropagation()}
-					size={'xsmall'}
-					copyText={copyText}
-					variant={'action'}
-				/>
-			</StyledTooltip>
-		</StyledDiv>
-	)
-}
+export const DollyCopyButton = ({ copyText, displayText, tooltipText, style }: Props) => (
+	<StyledDiv style={style}>
+		{displayText}
+		<StyledTooltip content={tooltipText}>
+			<CopyButton
+				onClick={(event) => event.stopPropagation()}
+				size={'xsmall'}
+				copyText={copyText}
+				variant={'action'}
+				style={style}
+			/>
+		</StyledTooltip>
+	</StyledDiv>
+)

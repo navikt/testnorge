@@ -6,7 +6,7 @@ metadata:
   labels:
     team: dolly
 spec:
-  image: {{ image }}
+  image: {{image}}
   port: 8080
   liveness:
     path: /isAlive
@@ -31,4 +31,4 @@ spec:
       memory: 1024Mi
   ingresses:
     - "https://brreg-stub.dev-fss.nais.io"
-    - "https://brreg-stub.dev.intern.nav.no" # dev-fss
+    - "https://brreg-stub.intern.dev.nav.no" # dev-fss
