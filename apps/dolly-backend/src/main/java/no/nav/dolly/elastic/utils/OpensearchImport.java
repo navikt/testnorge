@@ -3,6 +3,7 @@ package no.nav.dolly.elastic.utils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.dolly.elastic.ElasticBestilling;
 import no.nav.dolly.repository.BestillingRepository;
@@ -12,9 +13,10 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.data.elasticsearch.UncategorizedElasticsearchException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Flux;
 
+import java.util.Comparator;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.StreamSupport;
 
 @Slf4j
 @Profile("!test")
@@ -43,16 +45,17 @@ public class OpensearchImport implements ApplicationListener<ContextRefreshedEve
                 System.currentTimeMillis() - start);
     }
 
-    @SuppressWarnings("java:S3864")
     private void importAll(AtomicInteger antallLest, AtomicInteger antallSkrevet) {
 
-        StreamSupport.stream(bestillingRepository.findAll().spliterator(), false)
-                .peek(bestilling -> antallLest.incrementAndGet())
-                .filter(bestilling -> hasNotBestilling(bestilling.getId()))
+        Flux.fromIterable(bestillingRepository.findAll())
+                .sort(Comparator.comparing(Bestilling::getId).reversed())
+                .doOnNext(bestilling -> antallLest.incrementAndGet())
+                .takeWhile(bestilling -> hasNotBestilling(bestilling.getId()))
                 .map(bestilling -> mapperFacade.map(bestilling, ElasticBestilling.class))
                 .filter(bestilling -> !bestilling.isIgnore())
-                .peek(bestilling -> antallSkrevet.incrementAndGet())
-                .forEach(this::save);
+                .doOnNext(bestilling -> antallSkrevet.incrementAndGet())
+                .doOnNext(this::save)
+                .subscribe();
     }
 
     private boolean hasNotBestilling(Long id) {
