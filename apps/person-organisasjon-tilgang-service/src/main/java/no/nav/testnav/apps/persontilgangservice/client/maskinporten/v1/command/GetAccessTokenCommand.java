@@ -2,15 +2,14 @@ package no.nav.testnav.apps.persontilgangservice.client.maskinporten.v1.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.apps.persontilgangservice.client.maskinporten.v1.dto.AccessToken;
+import no.nav.testnav.apps.persontilgangservice.client.maskinporten.v1.dto.WellKnown;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
 import java.util.concurrent.Callable;
-
-import no.nav.testnav.apps.persontilgangservice.client.maskinporten.v1.dto.AccessToken;
-import no.nav.testnav.apps.persontilgangservice.client.maskinporten.v1.dto.WellKnown;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -31,7 +30,7 @@ public class GetAccessTokenCommand implements Callable<Mono<AccessToken>> {
                 .bodyToMono(AccessToken.class)
                 .doOnSuccess(value -> log.info("AccessToken hentet fra maskinporten."))
                 .doOnError(
-                        throwable -> throwable instanceof WebClientResponseException,
+                        WebClientResponseException.class::isInstance,
                         throwable -> log.error(
                                 "Feil ved  henting av AccessToken for maskinporten. \n{}",
                                 ((WebClientResponseException) throwable).getResponseBodyAsString()

@@ -1,17 +1,11 @@
 package no.nav.dolly.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.dolly.MockedJwtAuthenticationTokenUtils;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingMal;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.repository.BestillingMalRepository;
-import no.nav.dolly.repository.BestillingRepository;
-import no.nav.dolly.repository.BrukerFavoritterRepository;
-import no.nav.dolly.repository.BrukerRepository;
-import no.nav.dolly.repository.IdentRepository;
-import no.nav.dolly.repository.TestgruppeRepository;
+import no.nav.dolly.repository.*;
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,7 +16,6 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,37 +24,30 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @ActiveProfiles("test")
-@Testcontainers(disabledWithoutDocker = true)
+@Testcontainers(disabledWithoutDocker = true, parallel = true)
 @EnableAutoConfiguration
 @ComponentScan("no.nav.dolly")
 @AutoConfigureMockMvc(addFilters = false)
-public class BestillingMalServiceTest {
+class BestillingMalServiceTest {
 
     private final static String MALNAVN = "test";
     private final static String NYTT_MALNAVN = "nyttMalnavn";
     private final static String BEST_KRITERIER = "Testeteste";
     private static final Bruker DUMMY_EN = Bruker.builder()
-            .id(1L)
             .brukerId("testbruker_en")
             .brukernavn("test_en")
             .brukertype(Bruker.Brukertype.AZURE)
             .epost("epost@test_en")
             .build();
     private static final Bruker DUMMY_TO = Bruker.builder()
-            .id(2L)
             .brukerId("testbruker_to")
             .brukernavn("test_to")
             .brukertype(Bruker.Brukertype.AZURE)
@@ -88,8 +74,6 @@ public class BestillingMalServiceTest {
     @Autowired
     private IdentRepository identRepository;
     @Autowired
-    private ObjectMapper objectMapper;
-    @Autowired
     private Flyway flyway;
 
     @Transactional
@@ -101,10 +85,8 @@ public class BestillingMalServiceTest {
         MockedJwtAuthenticationTokenUtils.setJwtAuthenticationToken();
     }
 
-    @Transactional
     @AfterEach
     public void afterEach() {
-        deleteAllDatabaseContent();
         MockedJwtAuthenticationTokenUtils.clearJwtAuthenticationToken();
     }
 
@@ -114,8 +96,8 @@ public class BestillingMalServiceTest {
     void shouldCreateAndGetMaler()
             throws Exception {
 
-        var bruker_en = brukerRepository.findBrukerByBrukerId(DUMMY_EN.getBrukerId()).get();
-        var bruker_to = brukerRepository.findBrukerByBrukerId(DUMMY_TO.getBrukerId()).get();
+        var bruker_en = brukerRepository.findBrukerByBrukerId(DUMMY_EN.getBrukerId()).orElseThrow();
+        var bruker_to = brukerRepository.findBrukerByBrukerId(DUMMY_TO.getBrukerId()).orElseThrow();
         saveDummyBestillingMal(bruker_en);
         saveDummyBestillingMal(bruker_to);
 
@@ -136,7 +118,7 @@ public class BestillingMalServiceTest {
     void shouldCreateMalerFromExistingOrder()
             throws Exception {
 
-        var bruker_en = brukerRepository.findBrukerByBrukerId(DUMMY_EN.getBrukerId()).get();
+        var bruker_en = brukerRepository.findBrukerByBrukerId(DUMMY_EN.getBrukerId()).orElseThrow();
         var testgruppe = saveDummyGruppe();
         var bestilling = saveDummyBestilling(bruker_en, testgruppe);
 
@@ -157,7 +139,7 @@ public class BestillingMalServiceTest {
     void shouldCreateUpdateAndDeleteMal()
             throws Exception {
 
-        var bruker_en = brukerRepository.findBrukerByBrukerId(DUMMY_EN.getBrukerId()).get();
+        var bruker_en = brukerRepository.findBrukerByBrukerId(DUMMY_EN.getBrukerId()).orElseThrow();
         var bestillingMal = saveDummyBestillingMal(bruker_en);
 
         mockMvc.perform(put("/api/v1/bestilling/malbestilling/{id}", bestillingMal.getId())
@@ -193,7 +175,6 @@ public class BestillingMalServiceTest {
         return bestillingRepository.save(
                 Bestilling
                         .builder()
-                        .id(1L)
                         .gruppe(testgruppe)
                         .ferdig(false)
                         .antallIdenter(1)
@@ -215,22 +196,11 @@ public class BestillingMalServiceTest {
                         .navn(TESTGRUPPE)
                         .hensikt(TESTGRUPPE)
                         .datoEndret(LocalDate.now())
-                        .id(1L)
                         .build()
         );
     }
 
     void saveDummyBruker(Bruker bruker) {
         brukerRepository.save(bruker);
-    }
-
-    void deleteAllDatabaseContent() {
-        bestillingMalRepository.deleteAll();
-        bestillingRepository.deleteAll();
-        identRepository.deleteAll();
-        brukerFavoritterRepository.deleteAll();
-        testgruppeRepository.findAll(Sort.unsorted()).forEach(gruppe -> testgruppeRepository.deleteTestgruppeById(gruppe.getId()));
-        brukerRepository.deleteByBrukerId(DUMMY_EN.getBrukerId());
-        brukerRepository.deleteByBrukerId(DUMMY_TO.getBrukerId());
     }
 }

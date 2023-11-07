@@ -48,6 +48,7 @@ public class DollyFrontendApplicationStarter {
     private final TestnavBrregstubProxyProperties testnavBrregstubProxyProperties;
     private final TestnavInstProxyProperties testnavInstProxyProperties;
     private final TestnavAaregProxyProperties testnavAaregProxyProperties;
+    private final TestnavUdistubProxyProperties testnavUdistubProxyProperties;
     private final TestnavArenaForvalterenProxyProperties testnavArenaForvalterenProxyProperties;
     private final TestnavKrrstubProxyProperties testnavKrrstubProxyProperties;
     private final TestnavMedlProxyProperties testnavMedlProxyProperties;
@@ -97,6 +98,7 @@ public class DollyFrontendApplicationStarter {
                 .route(createRoute(testnavInntektstubProxyProperties))
                 .route(createRoute(testnavBrregstubProxyProperties))
                 .route(createRoute(testnavAaregProxyProperties))
+                .route(createRoute(testnavUdistubProxyProperties, "testnav-udistub-proxy"))
                 .route(createRoute(testnavArenaForvalterenProxyProperties))
                 .route(createRoute(testnavKrrstubProxyProperties, "testnav-krrstub-proxy"))
                 .route(createRoute(testnavMedlProxyProperties, "testnav-medl-proxy"))

@@ -1,13 +1,14 @@
 import * as Yup from 'yup'
 import { ifPresent, requiredBoolean, requiredDate, requiredString } from '@/utils/YupValidations'
 import { MEDL_KILDER } from '@/components/fagsystem/medl/MedlConstants'
+import { testDatoTom } from '@/components/fagsystem/utils'
 
 export const MedlValidation = {
 	medl: ifPresent(
 		'$medl',
 		Yup.object({
 			fraOgMed: requiredDate,
-			tilOgMed: requiredDate,
+			tilOgMed: testDatoTom(Yup.date().nullable(), 'fraOgMed', 'Sluttdato må være etter startdato'),
 			status: requiredString,
 			grunnlag: Yup.string().when('kilde', {
 				is: (kilde) => kilde !== MEDL_KILDER.LAANEKASSEN,
@@ -45,6 +46,6 @@ export const MedlValidation = {
 					}).required(),
 				otherwise: () => Yup.mixed().nullable(),
 			}),
-		}).required()
+		}).required(),
 	),
 }

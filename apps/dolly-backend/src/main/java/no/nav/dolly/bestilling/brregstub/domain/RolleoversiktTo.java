@@ -20,8 +20,6 @@ import static java.util.Objects.isNull;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RolleoversiktTo {
 
-    public enum Egenskap {Deltager, Komplementar, Kontaktperson, Sameier, Styre}
-
     private AdresseTo adresse;
     private List<RolleTo> enheter;
     private String fnr;
@@ -32,7 +30,7 @@ public class RolleoversiktTo {
     private String error;
 
     public List<Integer> getUnderstatuser() {
-        if (isNull(understatuser)){
+        if (isNull(understatuser)) {
             understatuser = new ArrayList<>();
         }
         return understatuser;
@@ -44,6 +42,8 @@ public class RolleoversiktTo {
         }
         return enheter;
     }
+
+    public enum Egenskap {DELTAGER, KOMPLEMENTAR, KONTAKTPERSON, SAMEIER, STYRE}
 
     @Data
     @Builder

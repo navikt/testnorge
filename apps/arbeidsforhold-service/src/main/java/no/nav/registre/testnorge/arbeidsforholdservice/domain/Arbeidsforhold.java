@@ -5,15 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.arbeidsforholdservice.consumer.dto.ArbeidsforholdDTO;
 import no.nav.registre.testnorge.arbeidsforholdservice.exception.ArbeidsforholdNotFoundException;
 
-import java.util.stream.Collectors;
-
 @Slf4j
 @AllArgsConstructor
 public class Arbeidsforhold {
 
     private final ArbeidsforholdDTO dto;
 
-    public  no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v1.ArbeidsforholdDTO toV1DTO() {
+    public no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v1.ArbeidsforholdDTO toV1DTO() {
 
         if (dto.getArbeidsavtaler().isEmpty()) {
             throw new ArbeidsforholdNotFoundException("Finner ikke arbeidsforhold");
@@ -50,7 +48,7 @@ public class Arbeidsforhold {
                         .stream()
                         .map(AntallTimerForTimeloennet::new)
                         .map(AntallTimerForTimeloennet::toDTO)
-                        .collect(Collectors.toList());
+                        .toList();
 
         var utenlandsopphold = dto.getUtenlandsopphold() == null ?
                 null :
@@ -58,7 +56,7 @@ public class Arbeidsforhold {
                         .stream()
                         .map(Utenlandsopphold::new)
                         .map(Utenlandsopphold::toDTO)
-                        .collect(Collectors.toList());
+                        .toList();
 
         var permisjoner = dto.getPermisjonPermitteringer() == null ?
                 null :
@@ -66,7 +64,7 @@ public class Arbeidsforhold {
                         .stream()
                         .map(Permisjon::new)
                         .map(Permisjon::toDTO)
-                        .collect(Collectors.toList());
+                        .toList();
 
         return no.nav.registre.testnorge.arbeidsforholdservice.provider.v2.dto.ArbeidsforholdDTO
                 .builder()
@@ -75,7 +73,8 @@ public class Arbeidsforhold {
                 .antallTimerForTimeloennet(antallImerForTimeloennetList)
                 .arbeidsgiver(new Arbeidsgiver(dto.getArbeidsgiver()).toDTO())
                 .ansettelsesperiode(new Ansettelsesperiode(dto.getAnsettelsesperiode()).toDTO())
-                .arbeidsavtaler(dto.getArbeidsavtaler().stream().map(Arbeidsavtale::new).map(Arbeidsavtale::toDTO).collect(Collectors.toList()))
+                .arbeidsavtaler(dto.getArbeidsavtaler().stream().map(Arbeidsavtale::new).map(Arbeidsavtale::toDTO)
+                        .toList())
                 .fartoy(dto.getArbeidsavtaler().get(0).getSkipstype() == null ? null : new Fartoy(dto.getArbeidsavtaler().get(0)).toDTO())
                 .arbeidstaker(new Arbeidstaker(dto.getArbeidstaker()).toDTO())
                 .utenlandsopphold(utenlandsopphold)

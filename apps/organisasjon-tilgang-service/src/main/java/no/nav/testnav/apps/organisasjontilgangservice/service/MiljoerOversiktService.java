@@ -1,11 +1,11 @@
 package no.nav.testnav.apps.organisasjontilgangservice.service;
 
+import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.organisasjontilgangservice.consumer.altinn.v1.AltinnConsumer;
 import no.nav.testnav.apps.organisasjontilgangservice.database.entity.OrganisasjonTilgang;
 import no.nav.testnav.apps.organisasjontilgangservice.database.repository.OrganisasjonTilgangRepository;
 import org.springframework.stereotype.Service;
-import org.webjars.NotFoundException;
 import reactor.core.publisher.Mono;
 
 import static org.apache.commons.lang3.BooleanUtils.isTrue;

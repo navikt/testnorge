@@ -1,0 +1,12 @@
+azure.app.client.id: dummy
+azure.app.client.secret: dummy
+consumers:
+  saf:
+    url: http://saf-dummy.dummy.no
+    cluster: dev-fss
+    name: saf-dummy
+    namespace: dummy
+spring:
+  cloud:
+    vault:
+      enabled: false

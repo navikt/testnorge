@@ -16,12 +16,8 @@ public class LocalSecurityConfig {
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
         return http
-                .csrf().disable()
-                .authorizeExchange()
-                .anyExchange()
-                .permitAll()
-                .and()
+                .csrf(ServerHttpSecurity.CsrfSpec::disable)
+                .authorizeExchange(authorizeExchangeSpec -> authorizeExchangeSpec.anyExchange().permitAll())
                 .build();
     }
-
 }

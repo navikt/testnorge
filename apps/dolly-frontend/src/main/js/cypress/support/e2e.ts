@@ -6,6 +6,8 @@ import {
 	arenaMock,
 	backendBestillingerMock,
 	backendTransaksjonMock,
+	bestillingFragmentNavigerMock,
+	bestillingFragmentSearchMock,
 	brregstubMock,
 	brukerMalerMock,
 	brukerOrganisasjonMalerMock,
@@ -46,7 +48,11 @@ const profil = new RegExp(/\/profil\/bilde/)
 const hentGrupper = new RegExp(/api\/v1\/gruppe\?pageNo/)
 const histark = new RegExp(/testnav-histark-proxy\/api\//)
 const personFragmentSearch = new RegExp(/\/testnav-pdl-forvalter\/api\/v1\/identiteter\?fragment/)
+const bestillingFragmentSearch = new RegExp(
+	/\/dolly-backend\/api\/v1\/bestilling\/soekBestilling\?fragment/,
+)
 const personFragmentNaviger = new RegExp(/dolly-backend\/api\/v1\/ident\/naviger\/12345678912/)
+const bestillingFragmentNaviger = new RegExp(/dolly-backend\/api\/v1\/bestilling\/naviger\/1/)
 const hentGruppeEn = new RegExp(/\/api\/v1\/gruppe\/1/)
 const hentGruppeTo = new RegExp(/\/api\/v1\/gruppe\/2/)
 const hentGruppeBestilling = new RegExp(/dolly-backend\/api\/v1\/bestilling\/gruppe\/1/)
@@ -69,7 +75,7 @@ const pensjon = new RegExp(/testnav-pensjon-testdata-facade-proxy\/api\/v1\/innt
 const pensjonMiljoer = new RegExp(/testnav-pensjon-testdata-facade-proxy\/api\/v1\/miljo/)
 const pensjonTp = new RegExp(/testnav-pensjon-testdata-facade-proxy\/api\/v1\/tp(.*?)q1/)
 const krrstub = new RegExp(/testnav-krrstub-proxy\/api\/v2/)
-const udistub = new RegExp(/dolly-backend\/api\/v1\/udistub/)
+const udistub = new RegExp(/testnav-udistub-proxy\/api\/v1/)
 const brregstub = new RegExp(/testnav-brregstub/)
 const medl = new RegExp(/testnav-medl-proxy/)
 const sigrunstub = new RegExp(/testnav-sigrunstub-proxy\/api\/v1\/lignetinntekt/)
@@ -100,7 +106,9 @@ beforeEach(() => {
 	cy.intercept({ method: 'GET', url: miljoer }, miljoeMock).as('miljoer')
 	cy.intercept({ method: 'GET', url: bilde }, { statusCode: 404 }).as('bilde')
 	cy.intercept({ method: 'GET', url: personFragmentSearch }, personFragmentSearchMock)
+	cy.intercept({ method: 'GET', url: bestillingFragmentSearch }, bestillingFragmentSearchMock)
 	cy.intercept({ method: 'GET', url: personFragmentNaviger }, personFragmentNavigerMock)
+	cy.intercept({ method: 'GET', url: bestillingFragmentNaviger }, bestillingFragmentNavigerMock)
 	cy.intercept({ method: 'GET', url: hentGrupper }, paginerteGrupperMock)
 	cy.intercept({ method: 'GET', url: histark }, histarkMock)
 	cy.intercept({ method: 'GET', url: hentGruppeEn }, eksisterendeGruppeMock)

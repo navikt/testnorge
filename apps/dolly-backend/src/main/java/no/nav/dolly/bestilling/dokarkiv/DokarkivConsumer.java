@@ -17,10 +17,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
-import java.util.UUID;
 
-import static java.lang.String.format;
-import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
 @Slf4j
@@ -70,10 +67,6 @@ public class DokarkivConsumer implements ConsumerStatus {
     @Override
     public String consumerName() {
         return "testnav-dokarkiv-proxy";
-    }
-
-    private static String getNavCallId() {
-        return format("%s %s", CONSUMER, UUID.randomUUID());
     }
 
 }

@@ -3,9 +3,9 @@ package no.nav.registre.testnorge.personsearchservice.service.utils;
 import lombok.experimental.UtilityClass;
 import no.nav.testnav.libs.dto.personsearchservice.v1.search.PersonSearch;
 import org.apache.lucene.search.join.ScoreMode;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.query.RangeQueryBuilder;
+import org.opensearch.index.query.BoolQueryBuilder;
+import org.opensearch.index.query.QueryBuilders;
+import org.opensearch.index.query.RangeQueryBuilder;
 
 import java.time.LocalDate;
 import java.util.Optional;

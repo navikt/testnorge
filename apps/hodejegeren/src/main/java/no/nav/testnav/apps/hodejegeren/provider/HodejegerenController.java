@@ -7,6 +7,9 @@ import no.nav.testnav.apps.hodejegeren.provider.responses.NavEnhetResponse;
 import no.nav.testnav.apps.hodejegeren.provider.responses.kontoinfo.KontoinfoResponse;
 import no.nav.testnav.apps.hodejegeren.provider.responses.persondata.PersondataResponse;
 import no.nav.testnav.apps.hodejegeren.provider.responses.relasjon.RelasjonsResponse;
+import no.nav.testnav.apps.hodejegeren.service.CacheService;
+import no.nav.testnav.apps.hodejegeren.service.EksisterendeIdenterService;
+import no.nav.testnav.apps.hodejegeren.service.EndringskodeTilFeltnavnMapperService;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,10 +25,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import no.nav.testnav.apps.hodejegeren.service.CacheService;
-import no.nav.testnav.apps.hodejegeren.service.EksisterendeIdenterService;
-import no.nav.testnav.apps.hodejegeren.service.EndringskodeTilFeltnavnMapperService;
 
 @RestController
 @RequiredArgsConstructor
@@ -127,9 +126,10 @@ public class HodejegerenController {
         return eksisterendeIdenterService.finnLevendeIdenterIAldersgruppe(avspillergruppeId, minimumAlder, maksimumAlder);
     }
 
-    @ApiOperation(value = "Her bestilles et gitt antall identer med tilhørende nav-enhet som hentes tilfeldig fra TPSF. \n"
-            + "Disse er føreløpig ikke garantert til å være gyldige fnr med tilhørende arbeidsforhold for å få en sykemelding.\n"
-            + "De er garantert til å være myndige.")
+    @ApiOperation(value = """
+            Her bestilles et gitt antall identer med tilhørende nav-enhet som hentes tilfeldig fra TPSF.
+            Disse er føreløpig ikke garantert til å være gyldige fnr med tilhørende arbeidsforhold for å få en sykemelding.
+            De er garantert til å være myndige.""")
     @GetMapping("api/v1/fnr-med-navkontor/{avspillergruppeId}")
     public List<NavEnhetResponse> hentEksisterendeMyndigeIdenterMedNavKontor(
             @PathVariable("avspillergruppeId") Long avspillergruppeId,

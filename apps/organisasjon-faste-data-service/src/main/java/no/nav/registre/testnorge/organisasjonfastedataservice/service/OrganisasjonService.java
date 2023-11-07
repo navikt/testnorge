@@ -2,16 +2,15 @@ package no.nav.registre.testnorge.organisasjonfastedataservice.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnorge.organisasjonfastedataservice.domain.Organisasjon;
+import no.nav.registre.testnorge.organisasjonfastedataservice.repository.OrganisasjonRepository;
+import no.nav.testnav.libs.dto.organisasjonfastedataservice.v1.Gruppe;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-
-import no.nav.testnav.libs.dto.organisasjonfastedataservice.v1.Gruppe;
-import no.nav.registre.testnorge.organisasjonfastedataservice.domain.Organisasjon;
-import no.nav.registre.testnorge.organisasjonfastedataservice.repository.OrganisasjonRepository;
 
 @Slf4j
 @Service
@@ -41,7 +40,7 @@ public class OrganisasjonService {
         var organisasjoner = StreamSupport
                 .stream(list.spliterator(), false)
                 .map(Organisasjon::new)
-                .collect(Collectors.toList());
+                .toList();
         log.info("Fant {} organisasjoner.", organisasjoner.size());
         return organisasjoner;
     }

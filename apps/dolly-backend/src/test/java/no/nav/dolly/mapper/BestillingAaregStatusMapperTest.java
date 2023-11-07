@@ -12,12 +12,12 @@ import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
-public class BestillingAaregStatusMapperTest {
+class BestillingAaregStatusMapperTest {
 
     private static final String IDENT = "111111111";
 
     @Test
-    public void buildAaregStatusMap() {
+    void buildAaregStatusMap() {
         BestillingProgress progress = BestillingProgress.builder()
                 .aaregStatus("t0: arbforhold=1$Feil& OpprettArbeidsforholdSikkerhetsbegrensning -> Bruker har ikke rettighet til å opprette denne personen.,"
                         + "t6: arbforhold=1$OK,"
@@ -40,7 +40,7 @@ public class BestillingAaregStatusMapperTest {
     }
 
     @Test
-    public void buildAaregBAFeilmeldingStatusMap() {
+    void buildAaregBAFeilmeldingStatusMap() {
         BestillingProgress progress = BestillingProgress.builder()
                 .aaregStatus("t0: arbforhold=1$Feil= BA40 UgyldigPersonnummerException 123456789,"
                         + "t6: arbforhold=1$OK,"

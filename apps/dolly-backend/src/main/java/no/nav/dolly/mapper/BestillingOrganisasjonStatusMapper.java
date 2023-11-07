@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
@@ -55,19 +54,20 @@ public class BestillingOrganisasjonStatusMapper {
                         .map(entry -> RsOrganisasjonStatusRapport.Status.builder()
                                 .melding(entry.getKey())
                                 .detaljert(entry.getValue().stream().map(value -> RsOrganisasjonStatusRapport.Detaljert.builder()
-                                        .miljo(value)
-                                        .orgnummer(progress.getOrganisasjonsnummer())
-                                        .detaljertStatus(getOrgStatusDetailForMiljo(orgStatuser, value))
-                                        .build()).collect(Collectors.toList()))
+                                                .miljo(value)
+                                                .orgnummer(progress.getOrganisasjonsnummer())
+                                                .detaljertStatus(getOrgStatusDetailForMiljo(orgStatuser, value))
+                                                .build())
+                                        .toList())
                                 .build())
-                        .collect(Collectors.toList()))
+                        .toList())
                 .build());
     }
 
     private static String getOrgStatusDetailForMiljo(List<OrganisasjonDeployStatus.OrgStatus> orgStatuser, String miljo) {
         return orgStatuser.stream()
-                .filter( orgStatus -> orgStatus.getEnvironment().equals(miljo))
-                .findFirst().orElseGet(() -> new OrganisasjonDeployStatus.OrgStatus())
+                .filter(orgStatus -> orgStatus.getEnvironment().equals(miljo))
+                .findFirst().orElseGet(OrganisasjonDeployStatus.OrgStatus::new)
                 .getDetails();
     }
 }

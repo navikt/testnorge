@@ -8,7 +8,6 @@ import no.seres.xsd.nav.inntektsmelding_m._20181211.ObjectFactory;
 import no.seres.xsd.nav.inntektsmelding_m._20181211.XMLUtsettelseAvForeldrepenger;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Value
 @NoArgsConstructor(force = true)
@@ -34,6 +33,7 @@ public class UtsettelseAvForeldrepengerDTO implements ToXmlElement<XMLUtsettelse
     }
 
     static List<XMLUtsettelseAvForeldrepenger> convert(List<UtsettelseAvForeldrepengerDTO> list){
-        return list.stream().map(UtsettelseAvForeldrepengerDTO::toXmlElement).collect(Collectors.toList());
+        return list.stream().map(UtsettelseAvForeldrepengerDTO::toXmlElement)
+                .toList();
     }
 }

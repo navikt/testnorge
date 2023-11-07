@@ -40,17 +40,28 @@ const arenaUrl = (miljoer) =>
 		miljo: miljoe,
 	}))
 
-const journalpostUrl = (transaksjonsid, miljoer) =>
-	miljoer?.map((miljoe) => {
-		const journalpostId = transaksjonsid?.find((id) => id.miljoe === miljoe)?.transaksjonId
-			?.journalpostId
-		return {
-			url: journalpostId
-				? `/testnav-joark-dokument-service/api/v2/journalpost/${journalpostId}`
-				: null,
-			miljo: miljoe,
+const journalpostUrl = (transaksjonsid, miljoer) => {
+	const urlListe = []
+	miljoer.forEach((miljoe) => {
+		const journalpostId = transaksjonsid
+			?.filter((id) => id.miljoe === miljoe)
+			?.map((filtrertId) => filtrertId?.transaksjonId?.journalpostId)
+		if (journalpostId && journalpostId?.length > 0) {
+			journalpostId?.forEach((journalpost) => {
+				urlListe.push({
+					url: `/testnav-joark-dokument-service/api/v2/journalpost/${journalpost}`,
+					miljo: miljoe,
+				})
+			})
+		} else {
+			urlListe.push({
+				url: null,
+				miljo: miljoe,
+			})
 		}
 	})
+	return urlListe
+}
 
 const histarkUrl = (transaksjonsid: string) =>
 	transaksjonsid ? `/testnav-histark-proxy/api/saksmapper/${transaksjonsid}` : null

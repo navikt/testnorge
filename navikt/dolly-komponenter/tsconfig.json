@@ -6,7 +6,6 @@
     "jsx": "react",
     "module": "ESNext",
     "declaration": true,
-    "declarationDir": "types",
     "sourceMap": true,
     "outDir": "dist",
     "moduleResolution": "node",
@@ -15,7 +14,6 @@
     "forceConsistentCasingInFileNames": true
   },
   "exclude": [
-    "dist",
     "node_modules",
     "src/**/*.test.tsx",
     "src/**/*.stories.tsx"

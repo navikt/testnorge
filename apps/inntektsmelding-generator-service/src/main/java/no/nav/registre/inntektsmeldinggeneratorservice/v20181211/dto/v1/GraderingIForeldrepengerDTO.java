@@ -8,7 +8,6 @@ import no.seres.xsd.nav.inntektsmelding_m._20181211.XMLGraderingIForeldrepenger;
 
 import java.math.BigInteger;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Value
@@ -38,6 +37,7 @@ public class GraderingIForeldrepengerDTO implements ToXmlElement<XMLGraderingIFo
     }
 
     static List<XMLGraderingIForeldrepenger> convert(List<GraderingIForeldrepengerDTO> list) {
-        return list.stream().map(GraderingIForeldrepengerDTO::toXmlElement).collect(Collectors.toList());
+        return list.stream().map(GraderingIForeldrepengerDTO::toXmlElement)
+                .toList();
     }
 }

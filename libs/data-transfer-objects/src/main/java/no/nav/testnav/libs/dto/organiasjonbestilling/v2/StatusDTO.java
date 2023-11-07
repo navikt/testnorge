@@ -19,23 +19,14 @@ public class StatusDTO {
     }
 
     private static String getDescription(Status status) {
-        switch (status) {
-            case ERROR:
-                return "Ukjent feil";
-            case FAILED:
-                return "Ukjent kristisk feil";
-            case RUNNING:
-                return "Bestillingen blir prosessert av EREG";
-            case COMPLETED:
-                return "Bestilling er fullført";
-            case NOT_FOUND:
-                return "Finner ikke bestilling. Loggene kan ha blitt slettet";
-            case ADDING_TO_QUEUE:
-                return "Bestillingen venter på tildeling av plass i køen";
-            case IN_QUEUE_WAITING_TO_START:
-                return "Bestillingen venter i køen";
-            default:
-                return null;
-        }
+        return switch (status) {
+            case ERROR -> "Ukjent feil";
+            case FAILED -> "Ukjent kristisk feil";
+            case RUNNING -> "Bestillingen blir prosessert av EREG";
+            case COMPLETED -> "Bestilling er fullført";
+            case NOT_FOUND -> "Finner ikke bestilling. Loggene kan ha blitt slettet";
+            case ADDING_TO_QUEUE -> "Bestillingen venter på tildeling av plass i køen";
+            case IN_QUEUE_WAITING_TO_START -> "Bestillingen venter i køen";
+        };
     }
 }

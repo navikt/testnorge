@@ -20,8 +20,8 @@ public class DokarkivProperties extends ServerProperties {
     public DokarkivProperties forEnvironment(String env) {
         var replacement = "q2".equals(env) ? "" : '-' + env;
         var copy = DokarkivProperties.copyOf(this);
-        copy.setUrl(copy.getUrl().replace("-{env}", replacement));
-        copy.setName(copy.getName().replace("-{env}", replacement));
+        copy.setUrl(copy.getUrl().replace("-MILJOE", replacement));
+        copy.setName(copy.getName().replace("-MILJOE", replacement));
         return copy;
     }
 

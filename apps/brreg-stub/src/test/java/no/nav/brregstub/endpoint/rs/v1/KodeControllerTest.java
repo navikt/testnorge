@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ExtendWith(SpringExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class KodeControllerTest {
+class KodeControllerTest {
 
     @Autowired
     protected TestRestTemplate restTemplate;
@@ -29,7 +29,7 @@ public class KodeControllerTest {
 
     @Test
     @DisplayName("GET kode/roller returnerer 200 og rollene")
-    public void skalHenteRollelist() {
+    void skalHenteRollelist() {
         var response = restTemplate.getForEntity("/api/v1/kode/roller", Map.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotEmpty();
@@ -39,7 +39,7 @@ public class KodeControllerTest {
 
     @Test
     @DisplayName("GET kode/understatus returnerer 200 og tilgjenglige understatuser")
-    public void skalHenteUnderstatuser() {
+    void skalHenteUnderstatuser() {
         var response = restTemplate.getForEntity("/api/v1/kode/understatus", Map.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotEmpty();

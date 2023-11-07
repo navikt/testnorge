@@ -15,10 +15,14 @@ repositories {
     mavenLocal()
 }
 
-java.sourceCompatibility = JavaVersion.VERSION_17
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
 
 dependencies {
-    implementation 'jakarta.activation:jakarta.activation-api:2.1.1'
+    implementation 'jakarta.activation:jakarta.activation-api:2.1.2'
     implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.0'
 
     xjc 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.0'

@@ -3,13 +3,13 @@ package no.nav.registre.sdforvalter.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.sdforvalter.consumer.rs.aareg.AaregConsumer;
-import no.nav.registre.sdforvalter.consumer.rs.kodeverk.KodeverkConsumer;
 import no.nav.registre.sdforvalter.consumer.rs.aareg.SyntAaregConsumer;
-import no.nav.registre.sdforvalter.consumer.rs.aareg.response.ArbeidsforholdRespons;
 import no.nav.registre.sdforvalter.consumer.rs.aareg.request.RsAaregSyntetiseringsRequest;
 import no.nav.registre.sdforvalter.consumer.rs.aareg.request.RsOrganisasjon;
 import no.nav.registre.sdforvalter.consumer.rs.aareg.request.RsSyntPerson;
 import no.nav.registre.sdforvalter.consumer.rs.aareg.request.RsSyntetiskArbeidsforhold;
+import no.nav.registre.sdforvalter.consumer.rs.aareg.response.ArbeidsforholdRespons;
+import no.nav.registre.sdforvalter.consumer.rs.kodeverk.KodeverkConsumer;
 import no.nav.registre.sdforvalter.domain.Aareg;
 import no.nav.registre.sdforvalter.domain.AaregListe;
 import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
@@ -22,7 +22,6 @@ import java.beans.PropertyDescriptor;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -58,7 +57,7 @@ public class AaregService {
                                 null,
                                 environment)
                 )
-                .collect(Collectors.toList());
+                .toList();
 
         var total = liste.getListe().size();
         var antallNye = nyeArbeidsforhold.size();
@@ -92,7 +91,7 @@ public class AaregService {
             List<RsAaregSyntetiseringsRequest> arbeidsforhold
     ) {
         List<ArbeidsforholdRespons> aaregResponses = new ArrayList<>(arbeidsforhold.size());
-        fyllInnArbeidsforholdMedSyntetiskeData(arbeidsforhold);
+        arbeidsforhold = fyllInnArbeidsforholdMedSyntetiskeData(arbeidsforhold);
 
         for (var forholdet : arbeidsforhold) {
             var opprettRequest = forholdet.getArbeidsforhold().toArbeidsforhold();
@@ -104,7 +103,7 @@ public class AaregService {
     }
 
 
-    private void fyllInnArbeidsforholdMedSyntetiskeData (List<RsAaregSyntetiseringsRequest> arbeidsforhold){
+    private List<RsAaregSyntetiseringsRequest> fyllInnArbeidsforholdMedSyntetiskeData(List<RsAaregSyntetiseringsRequest> arbeidsforhold) {
         if (!arbeidsforhold.isEmpty()) {
             List<String> identer = arbeidsforhold.stream().map(x -> x.getArbeidsforhold().getArbeidstaker().getIdent()).toList();
 
@@ -121,7 +120,7 @@ public class AaregService {
                     String pdName = pd.getName();
                     Object originalPropertyValue = original.getPropertyValue(pdName);
                     Object syntPropertyValue = synt.getPropertyValue(pdName);
-                    if (originalPropertyValue == null && syntPropertyValue != null && !"class" .equals(pdName)) {
+                    if (originalPropertyValue == null && syntPropertyValue != null && !"class".equals(pdName)) {
                         original.setPropertyValue(pd.getName(), syntPropertyValue);
                     }
                 }
@@ -130,13 +129,15 @@ public class AaregService {
             validerArbeidsforholdMotAaregSpecs(arbeidsforhold);
 
             List<RsAaregSyntetiseringsRequest> ugyldigeArbeidsforhold = new ArrayList<>();
-
             sjekkArbeidsforholdEtterArbeidsavtale(arbeidsforhold, ugyldigeArbeidsforhold);
-
             if (!ugyldigeArbeidsforhold.isEmpty()) {
-                arbeidsforhold.removeAll(ugyldigeArbeidsforhold);
+                return arbeidsforhold
+                        .stream()
+                        .filter(ugyldigeArbeidsforhold::contains)
+                        .toList();
             }
         }
+        return arbeidsforhold;
     }
 
     private void sjekkArbeidsforholdEtterArbeidsavtale(List<RsAaregSyntetiseringsRequest> arbeidsforhold, List<RsAaregSyntetiseringsRequest> ugyldigeArbeidsforhold) {

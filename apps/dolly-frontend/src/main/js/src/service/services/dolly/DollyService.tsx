@@ -92,11 +92,6 @@ export default {
 		return Request.get(Endpoints.kodeverkByNavn(kodeverkNavn))
 	},
 
-	//* Udistub
-	getUdiPerson(ident) {
-		return Request.get(Endpoints.udiPerson(ident))
-	},
-
 	//* Bestilling
 	getBestillingerFragment(fragment) {
 		return Request.get(Endpoints.bestillingerFragment(fragment))

@@ -20,7 +20,7 @@ public class RsArbeidsavtale {
 
     @Schema(description = "Gyldige verdier finnes i kodeverk 'Arbeidstidsordninger'",
             type = "String",
-            required = true)
+            requiredMode = Schema.RequiredMode.REQUIRED)
     private String arbeidstidsordning;
 
     private Double avtaltArbeidstimerPerUke;
@@ -36,7 +36,7 @@ public class RsArbeidsavtale {
 
     @Schema(description = "Gyldige verdier finnes i kodeverk 'Yrker'",
             type = "String",
-            required = true)
+            requiredMode = Schema.RequiredMode.REQUIRED)
     private String yrke;
 
     @Schema(description = "Gyldige verdier finnes i kodeverk 'AnsettelsesformAaareg'",

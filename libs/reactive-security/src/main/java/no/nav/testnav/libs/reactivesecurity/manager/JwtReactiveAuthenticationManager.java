@@ -29,7 +29,7 @@ public class JwtReactiveAuthenticationManager implements ReactiveAuthenticationM
 
     private final GetJwtDecoder getJwtDecoder;
 
-    private Converter<Jwt, ? extends Mono<? extends AbstractAuthenticationToken>> jwtAuthenticationConverter =
+    private final Converter<Jwt, ? extends Mono<? extends AbstractAuthenticationToken>> jwtAuthenticationConverter =
             new ReactiveJwtAuthenticationConverterAdapter(new JwtAuthenticationConverter());
 
     public JwtReactiveAuthenticationManager(
@@ -47,7 +47,7 @@ public class JwtReactiveAuthenticationManager implements ReactiveAuthenticationM
     @Override
     public Mono<Authentication> authenticate(Authentication authentication) {
         return Mono.justOrEmpty(authentication)
-                .filter((a) -> a instanceof BearerTokenAuthenticationToken)
+                .filter(BearerTokenAuthenticationToken.class::isInstance)
                 .cast(BearerTokenAuthenticationToken.class)
                 .map(BearerTokenAuthenticationToken::getToken)
                 .flatMap(token -> getJwtDecoder.from(parse(token)).decode(token))

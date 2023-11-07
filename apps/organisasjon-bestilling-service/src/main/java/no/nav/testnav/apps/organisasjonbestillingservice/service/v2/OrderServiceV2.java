@@ -15,7 +15,6 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 
 import java.util.List;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Slf4j
@@ -99,7 +98,8 @@ public class OrderServiceV2 {
     }
 
     public List<Order> find(String uuid) {
-        return repository.findBy(uuid).stream().map(Order::new).collect(Collectors.toList());
+        return repository.findBy(uuid).stream().map(Order::new)
+                .toList();
     }
 
     public void delete(String uuid) {
@@ -110,7 +110,7 @@ public class OrderServiceV2 {
         return StreamSupport
                 .stream(repository.findAll().spliterator(), false)
                 .map(Order::new)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private Status getStatusFromBatchId(Order order) {

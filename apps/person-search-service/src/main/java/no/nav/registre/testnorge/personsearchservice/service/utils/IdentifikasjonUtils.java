@@ -3,7 +3,7 @@ package no.nav.registre.testnorge.personsearchservice.service.utils;
 import lombok.experimental.UtilityClass;
 import no.nav.testnav.libs.dto.personsearchservice.v1.search.IdentifikasjonSearch;
 import no.nav.testnav.libs.dto.personsearchservice.v1.search.PersonSearch;
-import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.opensearch.index.query.BoolQueryBuilder;
 
 import java.util.Optional;
 
@@ -50,7 +50,7 @@ public class IdentifikasjonUtils {
             queryBuilder.must(nestedExistsQuery("hentPerson.utenlandskIdentifikasjonsnummer", METADATA_FIELD, null));
         }
         if (isTrue(search.getIdentHistorikk())) {
-            queryBuilder.must(nestedExistsQuery("hentPerson.folkeregisteridentifikator", METADATA_FIELD, true));
+            queryBuilder.must(nestedExistsQuery(IDENTIFIKATOR_PATH, METADATA_FIELD, true));
         }
     }
 

@@ -1,0 +1,17 @@
+apiVersion: nais.io/v1
+kind: IDPortenClient
+metadata:
+  name: dolly
+  namespace: dolly
+  labels:
+    team: dolly
+spec:
+  clientURI: https://dolly-idporten.ekstern.dev.nav.no
+  frontchannelLogoutURI: https://dolly-idporten.ekstern.dev.nav.no/oauth2/logout
+  postLogoutRedirectURIs:
+    - https://dolly.ekstern.dev.nav.no/login
+    - https://dolly-idporten.ekstern.dev.nav.no/login
+  redirectURIs:
+    - https://dolly.ekstern.dev.nav.no/login/oauth2/code/idporten
+    - https://dolly-idporten.ekstern.dev.nav.no/login/oauth2/code/idporten
+  secretName: idporten-dolly-prod # deployes til prod. secret kopieres manuelt til dev.

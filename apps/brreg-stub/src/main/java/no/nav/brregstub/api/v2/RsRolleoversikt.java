@@ -1,26 +1,27 @@
 package no.nav.brregstub.api.v2;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
+import no.nav.brregstub.api.common.RsAdresse;
+import no.nav.brregstub.api.common.RsNavn;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import no.nav.brregstub.api.common.RsAdresse;
-import no.nav.brregstub.api.common.RsNavn;
-
 @Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class RsRolleoversikt {
 
     @NotBlank

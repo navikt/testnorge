@@ -15,7 +15,7 @@ jobs:
     uses: ./.github/workflows/common.workflow.backend.yml
     with:
       working-directory: "proxies/synthdata-meldekort-proxy"
-      deploy-tag: "#deploy-synthdata-meldekort-proxy"
+      deploy-tag: "#deploy-proxy"
     permissions:
       contents: read
       id-token: write

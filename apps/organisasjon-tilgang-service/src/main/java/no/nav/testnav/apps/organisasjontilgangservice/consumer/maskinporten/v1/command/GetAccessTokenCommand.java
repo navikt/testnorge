@@ -30,7 +30,7 @@ public class GetAccessTokenCommand implements Callable<Mono<AccessToken>> {
                 .bodyToMono(AccessToken.class)
                 .doOnSuccess(value -> log.info("AccessToken hentet fra maskinporten."))
                 .doOnError(
-                        throwable -> throwable instanceof WebClientResponseException,
+                        WebClientResponseException.class::isInstance,
                         throwable -> log.error(
                                 "Feil ved henting av AccessToken for maskinporten. \n{}",
                                 ((WebClientResponseException) throwable).getResponseBodyAsString()

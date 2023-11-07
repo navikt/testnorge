@@ -18,7 +18,7 @@ public class RsAnsettelsesPeriode {
 
     @Schema(description = "Dato fra-og-med",
             type = "LocalDateTime",
-            required = true)
+            requiredMode = Schema.RequiredMode.REQUIRED)
     private LocalDateTime fom;
 
     @Schema(description = "Dato til-og-med",

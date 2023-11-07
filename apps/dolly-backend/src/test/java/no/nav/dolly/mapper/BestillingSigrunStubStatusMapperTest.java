@@ -15,7 +15,7 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
 
 @ExtendWith(MockitoExtension.class)
-public class BestillingSigrunStubStatusMapperTest {
+class BestillingSigrunStubStatusMapperTest {
 
     private static final List<BestillingProgress> RUN_STATUS = asList(
             BestillingProgress.builder().ident("IDENT_1")
@@ -36,7 +36,7 @@ public class BestillingSigrunStubStatusMapperTest {
     );
 
     @Test
-    public void sigrunStubStatusMap() {
+    void sigrunStubStatusMap() {
 
         List<RsStatusRapport> identStatuses = BestillingSigrunStubStatusMapper.buildSigrunStubStatusMap(RUN_STATUS);
 

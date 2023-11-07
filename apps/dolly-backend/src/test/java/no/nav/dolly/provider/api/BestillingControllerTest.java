@@ -23,7 +23,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class BestillingControllerTest {
+class BestillingControllerTest {
 
     private static final Long BESTILLING_ID = 1L;
     private static final Long GRUPPE_ID = 111L;
@@ -44,7 +44,7 @@ public class BestillingControllerTest {
     private BestillingController bestillingController;
 
     @Test
-    public void getBestillingById_oppdatererMedPersonstatusOrReturnererBestilling() {
+    void getBestillingById_oppdatererMedPersonstatusOrReturnererBestilling() {
 
         RsBestillingStatus bestillingStatus = RsBestillingStatus.builder().build();
         when(bestillingService.fetchBestillingById(any())).thenReturn(new Bestilling());
@@ -56,7 +56,7 @@ public class BestillingControllerTest {
     }
 
     @Test
-    public void getBestillingerOk() {
+    void getBestillingerOk() {
         when(mapperFacade.mapAsList(anyList(), eq(RsBestillingStatus.class)))
                 .thenReturn(singletonList(RsBestillingStatus.builder().id(BESTILLING_ID).build()));
 
@@ -69,7 +69,7 @@ public class BestillingControllerTest {
     }
 
     @Test
-    public void stopBestillingProgressOk() {
+    void stopBestillingProgressOk() {
         when(bestillingService.cancelBestilling(BESTILLING_ID)).thenReturn(Bestilling.builder().build());
         bestillingController.stopBestillingProgress(BESTILLING_ID, null);
 
@@ -78,7 +78,7 @@ public class BestillingControllerTest {
     }
 
     @Test
-    public void malBestillingNavnOk() {
+    void malBestillingNavnOk() {
 
         bestillingController.getMalBestillinger(null);
 

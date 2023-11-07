@@ -21,7 +21,7 @@ public class TagsHenteCommand implements Callable<Mono<JsonNode>> {
 
     private static final String PDL_TAGS_URL = "/api/v1/bestilling/tags";
     private static final String PDL_TESTDATA = "/pdl-testdata";
-    private static final String IDENT = "Nav-Personident";
+    private static final String PERSONIDENT = "Nav-Personident";
 
     private final WebClient webClient;
     private final String ident;
@@ -37,7 +37,7 @@ public class TagsHenteCommand implements Callable<Mono<JsonNode>> {
                         .build())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
-                .header(IDENT, ident)
+                .header(PERSONIDENT, ident)
                 .retrieve()
                 .bodyToMono(JsonNode.class)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))

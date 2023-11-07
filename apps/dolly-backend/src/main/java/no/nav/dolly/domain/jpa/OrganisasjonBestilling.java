@@ -70,7 +70,8 @@ public class OrganisasjonBestilling {
     @JoinColumn(name = "bruker_id", nullable = false)
     private Bruker bruker;
 
-    @OneToMany(mappedBy = "bestilling", fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "bestilling_id")
     @Builder.Default
     private List<OrganisasjonBestillingProgress> progresser = new ArrayList<>();
 

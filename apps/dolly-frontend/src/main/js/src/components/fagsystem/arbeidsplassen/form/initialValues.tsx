@@ -31,16 +31,16 @@ export const initialJobboenskerVerdier = {
 	],
 	locations: [
 		{
-			location: 'Lørenskog',
-			code: 'NO02.0230',
+			location: 'Hamar',
+			code: 'NO04.0403',
 		},
 		{
-			location: 'Oslo',
-			code: 'NO03',
+			location: 'Råde',
+			code: 'NO30.3017',
 		},
 		{
-			location: 'Fredrikstad',
-			code: 'NO01.0106',
+			location: 'Vestby',
+			code: 'NO02.0211',
 		},
 	],
 	occupationTypes: ['FAST', 'PROSJEKT', 'FERIEJOBB'],

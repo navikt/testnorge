@@ -18,7 +18,7 @@ jobs:
     with:
       cluster: "dev-fss"
       working-directory: "proxies/medl-proxy"
-      deploy-tag: "#deploy-medl-proxy"
+      deploy-tag: "#deploy-proxy"
     permissions:
       contents: read
       id-token: write

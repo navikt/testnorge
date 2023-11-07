@@ -28,12 +28,23 @@ import java.util.function.Function;
         OidcInMemorySessionConfiguration.class,
         FrontendConfig.class
 })
-@SpringBootApplication(exclude = {ReactiveUserDetailsServiceAutoConfiguration.class})
+@SpringBootApplication(exclude = { ReactiveUserDetailsServiceAutoConfiguration.class })
 @RequiredArgsConstructor
 public class OrganisasjonTilgangFrontendApplicationStarter {
 
     private final TestnavOrganisasjonTilgangServiceProperties testnavOrganisasjonTilgangServiceProperties;
     private final TokenExchange tokenExchange;
+
+    @Bean
+    public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
+        return builder
+                .routes()
+                .route(createRoute(
+                        testnavOrganisasjonTilgangServiceProperties.getUrl(),
+                        addAuthenticationHeaderFilterFrom(testnavOrganisasjonTilgangServiceProperties)
+                ))
+                .build();
+    }
 
     public static void main(String[] args) {
         SpringApplication.run(OrganisasjonTilgangFrontendApplicationStarter.class, args);
@@ -46,17 +57,6 @@ public class OrganisasjonTilgangFrontendApplicationStarter {
                             .exchange(serverProperties, exchange)
                             .map(AccessToken::getTokenValue);
                 });
-    }
-
-    @Bean
-    public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
-        return builder
-                .routes()
-                .route(createRoute(
-                        testnavOrganisasjonTilgangServiceProperties.getUrl(),
-                        addAuthenticationHeaderFilterFrom(testnavOrganisasjonTilgangServiceProperties)
-                ))
-                .build();
     }
 
     private Function<PredicateSpec, Buildable<Route>> createRoute(String host, GatewayFilter filter) {

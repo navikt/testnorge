@@ -13,7 +13,6 @@ import no.nav.dolly.domain.resultset.dokarkiv.Sakstype;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 
@@ -83,7 +82,9 @@ public class DokarkivRequest {
             return String.format("Dokument{tittel='%s', brevkode='%s', dokumentvariantListe=%s}",
                     tittel,
                     brevkode,
-                    dokumentvarianter.stream().map(DokumentVariant::toString).collect(Collectors.toList()));
+                    dokumentvarianter.stream()
+                            .map(DokumentVariant::toString)
+                            .toList());
         }
     }
 

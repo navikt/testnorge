@@ -11,13 +11,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Slf4j
@@ -32,7 +30,7 @@ public class FileController {
                     .filter(Files::isRegularFile)
                     .map(value -> value.getFileName().toString())
                     .filter(value -> value.endsWith(".csv"))
-                    .collect(Collectors.toList())
+                    .toList()
             );
         }
     }

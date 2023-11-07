@@ -1,5 +1,6 @@
 package no.nav.dolly.budpro.generate;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.budpro.navn.GeneratedNameService;
 import org.junit.jupiter.api.AfterEach;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -20,6 +22,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -30,6 +33,9 @@ class BudproControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @MockBean
     private GeneratedNameService generatedNameService;
@@ -75,7 +81,7 @@ class BudproControllerTest {
 
     @Test
     void testThatSameSeedGivesSameResults()
-        throws Exception {
+            throws Exception {
         var result1 = mockMvc
                 .perform(get("/api/random?seed={seed}&limit={limit}", 123L, 50))
                 .andExpect(status().isOk())
@@ -90,6 +96,60 @@ class BudproControllerTest {
                 .getContentAsString();
         assertThat(result1)
                 .isEqualTo(result2);
+    }
+
+    @Test
+    void testThatOverrideWorksAsIntended()
+            throws Exception {
+        var override = new BudproRecord(
+                "OVERRIDE",
+                "OVERRIDE",
+                "OVERRIDE",
+                "OVERRIDE",
+                "OVERRIDE",
+                "OVERRIDE",
+                "OVERRIDE",
+                "OVERRIDE",
+                "OVERRIDE",
+                "OVERRIDE",
+                "OVERRIDE",
+                "OVERRIDE",
+                "OVERRIDE",
+                "OVERRIDE",
+                "OVERRIDE",
+                "OVERRIDE",
+                "OVERRIDE",
+                "OVERRIDE",
+                "OVERRIDE",
+                "OVERRIDE",
+                "OVERRIDE",
+                "OVERRIDE",
+                "OVERRIDE",
+                "OVERRIDE",
+                "OVERRIDE",
+                "OVERRIDE",
+                "OVERRIDE",
+                "OVERRIDE",
+                "OVERRIDE",
+                "OVERRIDE",
+                "OVERRIDE",
+                "OVERRIDE",
+                "OVERRIDE",
+                "OVERRIDE",
+                "OVERRIDE",
+                "OVERRIDE",
+                "OVERRIDE"
+        );
+        var json = mockMvc
+                .perform(post("/api/random?limit={limit}", 3)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(override)))
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+        var result = objectMapper.readValue(json, BudproRecord[].class);
+        assertThat(result).allMatch(element -> element.equals(override));
     }
 
 }

@@ -1,5 +1,6 @@
 package no.nav.registre.sdforvalter.database.model;
 
+import jakarta.persistence.Column;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,6 +22,7 @@ import no.nav.registre.sdforvalter.domain.Aareg;
 @NoArgsConstructor
 public class AaregModel extends FasteDataModel<Aareg> {
     @Id
+    @Column(nullable = false)
     private String fnr;
     private String orgId;
 

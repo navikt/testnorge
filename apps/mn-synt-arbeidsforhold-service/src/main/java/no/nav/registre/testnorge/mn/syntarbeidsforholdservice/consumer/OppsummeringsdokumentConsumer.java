@@ -64,21 +64,6 @@ public class OppsummeringsdokumentConsumer {
                 .build();
     }
 
-    private CompletableFuture<String> saveOpplysningspliktig(Opplysningspliktig opplysningspliktig, String miljo) {
-        AccessToken accessToken = tokenExchange.exchange(properties).block();
-        return CompletableFuture.supplyAsync(
-                () -> new SaveOppsummeringsdokumenterCommand(
-                        webClient,
-                        accessToken.getTokenValue(),
-                        opplysningspliktig.toDTO(),
-                        miljo,
-                        applicationProperties.getName(),
-                        Populasjon.MINI_NORGE
-                ).call().block(),
-                executor
-        );
-    }
-
     public Optional<Opplysningspliktig> getOpplysningspliktig(Organisajon organisajon, LocalDate kalendermaaned, String miljo) {
         AccessToken accessToken = tokenExchange.exchange(properties).block();
         var dto = new GetOppsummeringsdokumentCommand(webClient, accessToken.getTokenValue(), organisajon.getOrgnummer(), kalendermaaned, miljo).call().block();
@@ -104,10 +89,26 @@ public class OppsummeringsdokumentConsumer {
 
     @SneakyThrows
     public void sendOpplysningspliktig(List<Opplysningspliktig> opplysningspliktig, String miljo) {
-        var futures = opplysningspliktig.stream().map(value -> saveOpplysningspliktig(value, miljo)).collect(Collectors.toList());
+        var futures = opplysningspliktig.stream().map(value -> saveOpplysningspliktig(value, miljo))
+                .toList();
         for (var future : futures) {
             future.get();
         }
+    }
+
+    private CompletableFuture<String> saveOpplysningspliktig(Opplysningspliktig opplysningspliktig, String miljo) {
+        AccessToken accessToken = tokenExchange.exchange(properties).block();
+        return CompletableFuture.supplyAsync(
+                () -> new SaveOppsummeringsdokumenterCommand(
+                        webClient,
+                        accessToken.getTokenValue(),
+                        opplysningspliktig.toDTO(),
+                        miljo,
+                        applicationProperties.getName(),
+                        Populasjon.MINI_NORGE
+                ).call().block(),
+                executor
+        );
     }
 
 }

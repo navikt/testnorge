@@ -8,31 +8,65 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
+import static java.util.Collections.singletonList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 
 @ExtendWith(MockitoExtension.class)
-public class BestillingArenaforvalterStatusMapperTest {
+class BestillingArenaforvalterStatusMapperTest {
 
-    private static final List<BestillingProgress> RUN_STATUS = List.of(
-            BestillingProgress.builder().ident("IDENT_1")
+    private static final String IDENT = "IDENT_1";
+    private static final List<BestillingProgress> RUN_STATUS = singletonList(
+            BestillingProgress.builder().ident(IDENT)
                     .arenaforvalterStatus("t4$OK,t3$Feil: Miljø ikke støttet")
                     .build()
     );
 
+    private static final List<BestillingProgress> ARENA_ORACLE_EXCEPTION = singletonList(
+            BestillingProgress.builder().ident(IDENT)
+                    .arenaforvalterStatus("q1$AKTIVER_AAP: { \"code\"= \"UserDefinedResourceError\"; \"title\"= \"User Defined Resource Error\"; \"message\"= \"The request could not be processed due to an error in a user defined resource\"; \"o=errorCode\"= \"ORDS-1234\"; \"cause\"= \"An error occurred when evaluating the SQL statement associated with this resource. SQL Error Code 1234; Error Message= ORA-1234= Det finnes et overlappende vedtak om livsoppholdsytelse for denne perioden.\\nORA-1234= ved \\\"DUMMY.DUMMY_DUMMY\\\"; line 1234\\nORA-1234= ved \\\"DUMMY.DUMMY_DUMMY\\\"; line 1234\\nORA-1234= ved \\\"DUMMY.DUMMY_DUMMY\\\"; line 1234\\nORA-1234= ved \\\"DUMMY.DUMMY_DUMMY\\\"; line 1234\\nORA-1234= ved \\\"DUMMY.DUMMY_DUMMY\\\"; line 1234\\nORA-1234= ved \\\"DUMMY.DUMMYDUMMY\\\"; line 15\\nORA-1234= ved line 1\\n\"; \"action\"= \"Ask the user defined resource author to check the SQL statement is correctly formed and executes without error\"; \"type\"= \"tag=oracle.com;2020=error/UserDefinedResourceError\"; \"instance\"= \"tag=oracle.com;2020=ecid/adawd\" }")
+                    .build()
+    );
+
+    private static final List<BestillingProgress> ARENA_ORACLE_EXCEPTION_DOED = singletonList(
+            BestillingProgress.builder().ident(IDENT)
+                    .arenaforvalterStatus("q2$BRUKER Oppretting= AKTIVER_BRUKER=exception type= class org.springframework.web.client.HttpServerErrorException; message= 555 User Defined Resource Error= <EOL>{<EOL>    code= UserDefinedResourceError;<EOL>    title= User Defined Resource Error;<EOL>    message= The request could not be processed due to an error in a user defined resource;<EOL>    o=errorCode= ORDS-1234;<EOL>    cause= An error occurred when evaluating the SQL statement associated with this resource. SQL Error Code 1234; Error Message= ORA-1234= -1234= Person med fødselsnr 12345678912 kan ikke aktiveres fordi denne er død ved forsøk på aktivering med iverksatt 14a-vedtak.\\nORA-1234= ved \\DUMMY_DUMMY.DUMMY_DUMMY\\; line 123\\nORA-1234= ved \\DUMMY_DUMMY.DUMMY_DUMMY\\; line 123\\nORA-1234= ved \\DUMMY_DUMMY.DUMMY_DUMMY\\; line 5\\nORA-1234= ved line 1\\n;<EOL>    action= Ask the user defined resource author to check the SQL statement is correctly formed and executes without error;<EOL>    type= tag=oracle.com;2020=error/UserDefinedResourceError;<EOL>    instance= tag=oracle.com;2020=ecid/dawdawdawda<EOL>}")
+                    .build()
+    );
+
     @Test
-    public void buildArenaForvalterStatusMap_OK() {
+    void buildArenaForvalterStatusMap_OK() {
 
         List<RsStatusRapport> identStatuses = BestillingArenaforvalterStatusMapper.buildArenaStatusMap(RUN_STATUS);
 
         assertThat(identStatuses.get(0).getStatuser().get(0).getMelding(), is(equalTo("Feil: Miljø ikke støttet")));
         assertThat(identStatuses.get(0).getStatuser().get(0).getDetaljert().get(0).getMiljo(), is(equalTo("t3")));
-        assertThat(identStatuses.get(0).getStatuser().get(0).getDetaljert().get(0).getIdenter(), containsInAnyOrder("IDENT_1"));
+        assertThat(identStatuses.get(0).getStatuser().get(0).getDetaljert().get(0).getIdenter(), containsInAnyOrder(IDENT));
 
         assertThat(identStatuses.get(0).getStatuser().get(1).getMelding(), is(equalTo("OK")));
         assertThat(identStatuses.get(0).getStatuser().get(1).getDetaljert().get(0).getMiljo(), is(equalTo("t4")));
-        assertThat(identStatuses.get(0).getStatuser().get(1).getDetaljert().get(0).getIdenter(), containsInAnyOrder("IDENT_1"));
+        assertThat(identStatuses.get(0).getStatuser().get(1).getDetaljert().get(0).getIdenter(), containsInAnyOrder(IDENT));
+    }
+
+    @Test
+    void formaterOracleException_OK() {
+
+        List<RsStatusRapport> identStatuses = BestillingArenaforvalterStatusMapper.buildArenaStatusMap(ARENA_ORACLE_EXCEPTION);
+
+        assertThat(identStatuses.get(0).getStatuser().get(0).getMelding(), is(equalTo("Feil: Det finnes et overlappende vedtak om livsoppholdsytelse for denne perioden.")));
+        assertThat(identStatuses.get(0).getStatuser().get(0).getDetaljert().get(0).getMiljo(), is(equalTo("q1")));
+        assertThat(identStatuses.get(0).getStatuser().get(0).getDetaljert().get(0).getIdenter(), containsInAnyOrder(IDENT));
+    }
+
+    @Test
+    void formaterOracleExceptionDoed_OK() {
+
+        List<RsStatusRapport> identStatuses = BestillingArenaforvalterStatusMapper.buildArenaStatusMap(ARENA_ORACLE_EXCEPTION_DOED);
+
+        assertThat(identStatuses.get(0).getStatuser().get(0).getMelding(), is(equalTo("Feil: Person med fødselsnr 12345678912 kan ikke aktiveres fordi denne er død ved forsøk på aktivering med iverksatt 14a-vedtak.")));
+        assertThat(identStatuses.get(0).getStatuser().get(0).getDetaljert().get(0).getMiljo(), is(equalTo("q2")));
+        assertThat(identStatuses.get(0).getStatuser().get(0).getDetaljert().get(0).getIdenter(), containsInAnyOrder(IDENT));
     }
 }
