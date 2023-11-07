@@ -2,7 +2,6 @@ package no.nav.dolly.provider.api;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
-import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.dolly.elastic.ElasticBestilling;
 import no.nav.dolly.elastic.ElasticTyper;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,7 +28,6 @@ public class ElasticController {
 
     private final ElasticsearchSearchService elasticsearchSearchService;
     private final BestillingElasticRepository bestillingElasticRepository;
-    private final MapperFacade mapperFacade;
 
     @PostMapping("/search-hits")
     @Operation(description = "Henter all lagret informasjon i hht request")
@@ -60,17 +57,9 @@ public class ElasticController {
         return elasticsearchSearchService.search(request);
     }
 
-    @PutMapping("/bestilling")
-    @Operation(description = "Lagrer/oppdaterer søkbar bestilling")
-    public ElasticBestilling lagreEllerOppdaterBestilling(@RequestBody ElasticBestilling request) {
-
-        var copy = mapperFacade.map(request, ElasticBestilling.class);
-        return bestillingElasticRepository.save(copy);
-    }
-
     @GetMapping("/bestilling/id/{id}")
-    @Operation(description = "Henter lagret bestilinng, basert på id")
-    public ElasticBestilling get(@PathVariable long id) {
+    @Operation(description = "Henter lagret bestilling, basert på id")
+    public ElasticBestilling getBestillinger(@PathVariable long id) {
 
         return bestillingElasticRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(format("Bestilling med id: %d finnes ikke", id)));
