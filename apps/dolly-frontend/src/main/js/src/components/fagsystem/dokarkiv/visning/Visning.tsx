@@ -4,6 +4,7 @@ import { MiljoTabs } from '@/components/ui/miljoTabs/MiljoTabs'
 import { useBestilteMiljoer } from '@/utils/hooks/useBestilling'
 import Loading from '@/components/ui/loading/Loading'
 import { Journalpost } from '@/service/services/JoarkDokumentService'
+import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 
 interface Form {
 	data?: Array<MiljoDataListe>
@@ -16,14 +17,20 @@ type MiljoDataListe = {
 	data: Array<Journalpost>
 }
 
-type DokarkivTypes = {
-	data?: Journalpost
-	miljo?: string
-}
-
-const Dokarkiv = ({ data, miljo }: DokarkivTypes) => {
-	if (!data) return null
-	return <DokarkivVisning journalpost={data} miljoe={miljo} />
+const Dokarkiv = ({ data, miljo }: MiljoDataListe) => {
+	if (!data || data?.length < 1) {
+		return null
+	}
+	if (data.length === 1) {
+		return <DokarkivVisning journalpost={data[0]} miljoe={miljo} />
+	}
+	return (
+		<DollyFieldArray header={'Dokument'} data={data}>
+			{(dokument: Journalpost) => {
+				return <DokarkivVisning journalpost={dokument} miljoe={miljo} />
+			}}
+		</DollyFieldArray>
+	)
 }
 
 export default ({ data, bestillingIdListe, loading, tilgjengeligMiljoe }: Form) => {
@@ -42,8 +49,26 @@ export default ({ data, bestillingIdListe, loading, tilgjengeligMiljoe }: Form) 
 
 	const forsteMiljo = data.find((miljoData) => miljoData?.data)?.miljo
 
+	const mergeData = () => {
+		const mergeMiljo = []
+		data.forEach((item) => {
+			const indexOfMiljo = mergeMiljo.findIndex((dok) => dok?.miljo === item?.miljo)
+			if (indexOfMiljo >= 0) {
+				mergeMiljo[indexOfMiljo].data?.push(item.data)
+			} else {
+				mergeMiljo.push({
+					data: item.data ? [item.data] : null,
+					miljo: item.miljo,
+				})
+			}
+		})
+		return mergeMiljo
+	}
+
+	const mergedData = mergeData()
+
 	const filteredData =
-		tilgjengeligMiljoe && data.filter((item) => item.miljo === tilgjengeligMiljoe)
+		tilgjengeligMiljoe && mergedData.filter((item) => item.miljo === tilgjengeligMiljoe)
 
 	return (
 		<>
@@ -52,7 +77,7 @@ export default ({ data, bestillingIdListe, loading, tilgjengeligMiljoe }: Form) 
 				bestilteMiljoer={bestilteMiljoer}
 				errorMiljoer={errorMiljoer}
 				forsteMiljo={forsteMiljo}
-				data={filteredData || data}
+				data={filteredData || mergedData}
 			>
 				<Dokarkiv />
 			</MiljoTabs>
