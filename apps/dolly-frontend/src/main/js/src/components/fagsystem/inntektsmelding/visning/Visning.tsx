@@ -100,7 +100,7 @@ export const InntektsmeldingVisning = ({
 	const mergetData = mergeData()
 
 	const filteredData =
-		tilgjengeligMiljoe && mergetData?.filter((item) => item.miljo === tilgjengeligMiljoe)
+		tilgjengeligMiljoe && mergetData?.filter((item) => item?.miljo === tilgjengeligMiljoe)
 
 	return (
 		<>

@@ -32,14 +32,12 @@ type Sak = {
 
 type DokumentType = 'ORIGINAL' | 'ARKIV'
 
-//TODO Flytt til hooks?
 const hentJournalpost = (journalpostId: number, miljo: string): Promise<Journalpost> =>
 	api.fetchJson(`/testnav-joark-dokument-service/api/v2/journalpost/${journalpostId}`, {
 		method: 'GET',
 		headers: { miljo: miljo },
 	})
 
-//TODO Flytt til hooks?
 const hentDokument = (
 	journalpostId: number,
 	dokumentInfoId: number,
