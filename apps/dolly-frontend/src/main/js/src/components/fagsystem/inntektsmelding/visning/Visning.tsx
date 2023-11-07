@@ -55,7 +55,11 @@ export const InntektsmeldingVisning = ({
 
 	const forsteMiljo = data?.find((miljoData) => miljoData?.data)?.miljo
 
-	const harTransaksjonsidData = data?.some((inntekt) => inntekt?.data?.request)
+	// const harTransaksjonsidData = data?.some((inntekt) => inntekt?.data?.request)
+	const harTransaksjonsidData = data?.every((inntekt) => inntekt?.data?.request)
+	// console.log('harTransaksjonsidData: ', harTransaksjonsidData) //TODO - SLETT MEG
+	console.log('data: ', data) //TODO - SLETT MEG
+	console.log('bestillinger: ', bestillinger) //TODO - SLETT MEG
 
 	const setTransaksjonsidData = () => {
 		return data.map((miljo) => {
@@ -96,6 +100,9 @@ export const InntektsmeldingVisning = ({
 
 	const filteredData =
 		tilgjengeligMiljoe && mergetData?.filter((item) => item.miljo === tilgjengeligMiljoe)
+
+	// console.log('filteredData: ', filteredData) //TODO - SLETT MEG
+	// console.log('mergetData: ', mergetData) //TODO - SLETT MEG
 
 	return (
 		<>

@@ -99,7 +99,7 @@ export const useTransaksjonIdData = (ident, system, harBestilling, fagsystemMilj
 		harBestilling ? `/dolly-backend/api/v1/transaksjonid?ident=${ident}&system=${system}` : null,
 		fetcher,
 	)
-
+	// console.log('data: ', data) //TODO - SLETT MEG
 	const getMiljoData = () => {
 		if (!harBestilling || !data) {
 			return null
@@ -108,6 +108,10 @@ export const useTransaksjonIdData = (ident, system, harBestilling, fagsystemMilj
 		if (fagsystemMiljoer && fagsystemMiljoer.length > 0) {
 			fagsystemMiljoer.map((miljo) => {
 				const fagsystemData = data?.find((d) => d?.miljoe === miljo)?.transaksjonId
+				// if (!fagsystemData?.dokument && !fagsystemData?.request) {
+				// 	miljoData.push({})
+				// }
+				//TODO: Fortsette her!! Vil legge journalpostId og dokumentInfoId inn i et dokument-object der de ikke er det
 				miljoData.push({ data: fagsystemData, miljo: miljo })
 			})
 		} else {
