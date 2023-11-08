@@ -50,7 +50,6 @@ spec:
         - application: dolly-backend-dev
         - application: testnav-person-service
         - application: generer-navn-service
-        - application: testnav-sokos-kodeverk-proxy
       external:
         - host: testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
         - host: testnav-sigrunstub-proxy.dev-fss-pub.nais.io
@@ -68,7 +67,6 @@ spec:
         - host: testnav-brregstub-proxy.dev-fss-pub.nais.io
         - host: testnav-dokarkiv-proxy.dev-fss-pub.nais.io
         - host: testnav-arbeidsplassencv-proxy.dev-fss-pub.nais.io
-        - host: testnav-sokos-kodeverk-proxy.dev-fss-pub.nais.io
   replicas:
     min: 1
     max: 1

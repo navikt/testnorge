@@ -55,8 +55,8 @@ export const Select = ({
 	...rest
 }: SelectProps) => {
 	let _value = isMulti
-		? options.filter((o) => value?.some((el) => el === o.value))
-		: options.filter((o) => o.value === value)
+		? options?.filter?.((o) => value?.some((el) => el === o.value))
+		: options?.filter?.((o) => o.value === value)
 
 	return (
 		<ReactSelect
@@ -85,7 +85,7 @@ export const Select = ({
 }
 
 export const SelectMedKodeverk = ({ kodeverk, label, isLoading, ...rest }: SelectProps) => {
-	const { kodeverk: kodeverkListe } = useKodeverk(kodeverk)
+	const { kodeverk: kodeverkListe, loading } = useKodeverk(kodeverk)
 	const getSortedKodeverk = (kodeverkVerdier) => {
 		if (label === 'Bostedskommune') {
 			const kodeverkClone = _.cloneDeep(kodeverkVerdier)

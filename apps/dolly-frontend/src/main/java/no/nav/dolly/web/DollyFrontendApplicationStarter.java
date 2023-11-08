@@ -52,7 +52,6 @@ public class DollyFrontendApplicationStarter {
     private final TestnavArenaForvalterenProxyProperties testnavArenaForvalterenProxyProperties;
     private final TestnavKrrstubProxyProperties testnavKrrstubProxyProperties;
     private final TestnavMedlProxyProperties testnavMedlProxyProperties;
-    private final TestnavSokosKodeverkProxyProperties testnavSokosKodeverkProxyProperties;
     private final TestnavSigrunstubProxyProperties testnavSigrunstubProxyProperties;
     private final TestnavPensjonTestdataFacadeProxyProperties testnavPensjonTestdataFacadeProxyProperties;
     private final TestnavPersonOrganisasjonTilgangServiceProperties testnavPersonOrganisasjonTilgangServiceProperties;
@@ -108,7 +107,6 @@ public class DollyFrontendApplicationStarter {
                 .route(createRoute(testnavHistarkProxyProperties, "testnav-histark-proxy"))
                 .route(createRoute(testnavOrganisasjonServiceProperties))
                 .route(createRoute(testnavSigrunstubProxyProperties))
-                .route(createRoute(testnavSokosKodeverkProxyProperties, "testnav-sokos-kodeverk-proxy"))
                 .route(createRoute(testnavPdlForvalterProperties, "testnav-pdl-forvalter"))
                 .route(createRoute(personSearchServiceProperties))
                 .route(createRoute(testnavPersonOrganisasjonTilgangServiceProperties, "testnav-person-organisasjon-tilgang-service"))
