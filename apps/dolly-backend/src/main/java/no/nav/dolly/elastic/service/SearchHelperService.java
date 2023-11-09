@@ -29,30 +29,40 @@ import java.util.stream.Collectors;
 public class SearchHelperService {
 
     private static final int WINDOW_SIZE = 10;
-    private static final int FACTOR = 2;
+    private static final double FACTOR = 2;
 
     private final ElasticsearchOperations elasticsearchOperations;
     private Random random = new SecureRandom();
 
     public SearchHits<ElasticBestilling> getRaw(Criteria criteria) {
 
-            return elasticsearchOperations.search(new CriteriaQueryBuilder(criteria)
-                            .withTimeout(Duration.ofSeconds(3))
-                            .build(),
-                    ElasticBestilling.class, IndexCoordinates.of("bestilling"));
+        return elasticsearchOperations.search(new CriteriaQueryBuilder(criteria)
+                        .withTimeout(Duration.ofSeconds(3))
+                        .build(),
+                ElasticBestilling.class, IndexCoordinates.of("bestilling"));
     }
 
     public SearchResponse search(Criteria criteria) {
 
-        var hits = search(criteria, 0);
+        var blockSize = (int) (WINDOW_SIZE * FACTOR);
         var currentPage = 0;
+        var hits = search(criteria, blockSize, currentPage);
+        var noOfPages = (int) Math.ceil(hits.getTotalHits() / (WINDOW_SIZE * FACTOR));
 
-        if (hits.getTotalHits() > WINDOW_SIZE * FACTOR) {
-            var noOfPages = (int) hits.getTotalHits() / (WINDOW_SIZE * FACTOR);
+        if (noOfPages > 0) {
+
             currentPage = random.nextInt(noOfPages);
-            log.info("Total hits={}, noOfPages={}, currentPage={}", hits.getTotalHits(), noOfPages, currentPage);
-            hits = search(criteria, currentPage);
+            if (currentPage + 1 == noOfPages) {
+
+                currentPage = currentPage / 2;
+                blockSize = blockSize * 2;
+                hits = search(criteria, blockSize, currentPage);
+
+            } else if (currentPage > 0) {
+                hits = search(criteria, blockSize, currentPage);
+            }
         }
+        log.info("Total hits={}, currentSize={}, currentPage={}", hits.getTotalHits(), blockSize, currentPage);
 
         var identer = hits.getSearchHits().stream()
                 .map(SearchHit::getContent)
@@ -65,7 +75,7 @@ public class SearchHelperService {
                 .identer(identer.subList(0, Math.min(identer.size(), WINDOW_SIZE)))
                 .totalHits(hits.getTotalHits())
                 .pageNumber(currentPage)
-                .pageSize(WINDOW_SIZE * FACTOR)
+                .pageSize(blockSize)
                 .windowSize(WINDOW_SIZE)
                 .build();
     }
@@ -83,12 +93,12 @@ public class SearchHelperService {
         return (Collector<T, ?, List<T>>) SHUFFLER;
     }
 
-    private SearchHits<ElasticBestilling> search(Criteria criteria, int pageNo) {
+    private SearchHits<ElasticBestilling> search(Criteria criteria, int pageSize, int pageNo) {
 
-            return elasticsearchOperations.search(new CriteriaQueryBuilder(criteria)
-                            .withPageable(Pageable.ofSize(WINDOW_SIZE * FACTOR).withPage(pageNo))
-                            .withTimeout(Duration.ofSeconds(3))
-                            .build(),
-                    ElasticBestilling.class, IndexCoordinates.of("bestilling"));
+        return elasticsearchOperations.search(new CriteriaQueryBuilder(criteria)
+                        .withPageable(Pageable.ofSize(pageSize).withPage(pageNo))
+                        .withTimeout(Duration.ofSeconds(3))
+                        .build(),
+                ElasticBestilling.class, IndexCoordinates.of("bestilling"));
     }
 }
