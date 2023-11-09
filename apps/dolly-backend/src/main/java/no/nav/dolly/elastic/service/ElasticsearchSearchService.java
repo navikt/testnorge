@@ -167,6 +167,8 @@ public class ElasticsearchSearchService {
             case SYKEMELDING -> new Criteria("sykemelding").exists();
             case SKJERMING -> new Criteria("skjerming").exists();
             case BANKKONTO -> new Criteria("bankkonto").exists();
+            case BANKKONTO_NORGE -> new Criteria("bankkonto.norskBankkonto").exists();
+            case BANKKONTO_UTLAND -> new Criteria("bankkonto.utenlandskBankkonto").exists();
             case ARBEIDSPLASSENCV -> new Criteria("arbeidsplassenCV").exists();
         };
     }

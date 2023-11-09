@@ -25,6 +25,8 @@ public enum ElasticTyper {
     SYKEMELDING("NAV sykemelding"),
     SKJERMING("Skjermingsregisteret"),
     BANKKONTO("Bankkontoregister"),
+    BANKKONTO_NORGE("Norsk bankkonto"),
+    BANKKONTO_UTLAND("Utenlandsk bankkonto"),
     ARBEIDSPLASSENCV("Arbeidsplassen CV");
 
     private final String beskrivelse;
