@@ -1,4 +1,5 @@
 import { useToggle } from 'react-use'
+import { useForm } from 'react-hook-form'
 
 const FormikState = (props) => (
 	<pre>
@@ -14,6 +15,7 @@ const replacer = (key: string, value: any) => {
 }
 
 export default function DisplayFormikState({ visState = false, ...props }) {
+	const { getValues } = useForm()
 	const [showState, toggleShowState] = useToggle(visState)
 
 	return (
@@ -33,7 +35,7 @@ export default function DisplayFormikState({ visState = false, ...props }) {
 				zIndex: 99,
 			}}
 		>
-			{showState && <FormikState {...props} />}
+			{showState && <FormikState {...getValues()} />}
 			{!showState && <span>Vis state</span>}
 		</div>
 	)

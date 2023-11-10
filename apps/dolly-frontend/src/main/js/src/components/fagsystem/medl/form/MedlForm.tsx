@@ -4,7 +4,6 @@ import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import Panel from '@/components/ui/panel/Panel'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
 import { FormikProps } from 'formik'
-import * as _ from 'lodash-es'
 import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
@@ -18,17 +17,27 @@ import { MedlSelect } from '@/components/fagsystem/medl/form/MedlSelect'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { MEDL_KILDER, MedlAttributt, MedlKodeverk } from '@/components/fagsystem/medl/MedlConstants'
 import { MedlValidation } from '@/components/fagsystem/medl/form/MedlValidation'
+import { useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
 
 interface MedlFormProps {
 	formikBag: FormikProps<{}>
 }
 
 export const MedlForm = ({ formikBag }: MedlFormProps) => {
-	const [aktivKilde, setAktivKilde] = useState(
-		_.get(formikBag.values, 'medl.kilde') || MEDL_KILDER.SRVMELOSYS,
-	)
+	const {
+		register,
+		formState: { errors },
+		handleSubmit,
+		watch,
+		getValues,
+	} = useForm({
+		resolver: yupResolver(MedlValidation),
+	})
+	const [aktivKilde, setAktivKilde] = useState(getValues('medl.kilde') || MEDL_KILDER.SRVMELOSYS)
+	console.log('getValues(): ', getValues()) //TODO - SLETT MEG
 
-	if (!_.has(formikBag.values, MedlAttributt)) {
+	if (!getValues(MedlAttributt)) {
 		return null
 	}
 

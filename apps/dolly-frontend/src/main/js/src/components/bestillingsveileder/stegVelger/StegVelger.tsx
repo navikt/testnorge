@@ -1,5 +1,4 @@
-import React, { Fragment, useContext, useState } from 'react'
-import { Formik } from 'formik'
+import React, { useContext, useState } from 'react'
 import { Navigation } from './Navigation/Navigation'
 import { stateModifierFns } from '../stateModifier'
 import { validate } from '@/utils/YupValidations'
@@ -17,11 +16,13 @@ import {
 	useMatchMutate,
 } from '@/utils/hooks/useMutate'
 import { Stepper } from '@navikt/ds-react'
+import { useForm } from 'react-hook-form'
 
 const STEPS = [Steg1, Steg2, Steg3]
 
 export const StegVelger = ({ initialValues, onSubmit }) => {
 	const [step, setStep] = useState(0)
+	const { setValue, getValues, handleSubmit, reset } = useForm({ defaultValues: initialValues })
 
 	const opts = useContext(BestillingsveilederContext)
 	const mutate = useMatchMutate()
@@ -38,16 +39,14 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 		if (step !== 0) setStep(step - 1)
 	}
 
-	const _handleSubmit = (values, formikBag) => {
-		const { setSubmitting } = formikBag
-
+	const _handleSubmit = (values) => {
 		if (!isLastStep()) {
-			setSubmitting(false)
 			handleNext()
 			return
 		}
 
 		sessionStorage.clear()
+		reset()
 
 		onSubmit(values)
 		mutate(REGEX_BACKEND_GRUPPER)
@@ -57,6 +56,7 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 
 	const CurrentStepComponent = STEPS[step]
 
+	//TODO: Sjekke om denne trengs eller om den kan fjernes
 	const _validate = (values) =>
 		validate(
 			{
@@ -65,42 +65,36 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 				tidligereBestillinger: tidligereBestillinger,
 				leggTilPaaGruppe: leggTilPaaGruppe,
 			},
-			CurrentStepComponent.validation
+			CurrentStepComponent.validation,
 		)
 
 	const labels = STEPS.map((v) => ({ label: v.label }))
 
+	const stateModifier = stateModifierFns(getValues(), setValue, opts)
+	const devEnabled =
+		window.location.hostname.includes('localhost') ||
+		window.location.hostname.includes('dolly-frontend-dev')
+
 	return (
-		<Formik initialValues={initialValues} validate={_validate} onSubmit={_handleSubmit}>
-			{(formikBag) => {
-				const stateModifier = stateModifierFns(formikBag.values, formikBag.setValues, opts)
-				const devEnabled =
-					window.location.hostname.includes('localhost') ||
-					window.location.hostname.includes('dolly-frontend-dev')
+		<form onSubmit={handleSubmit(_handleSubmit)}>
+			<Stepper orientation="horizontal" activeStep={step + 1}>
+				{labels.map((label, index) => (
+					<Stepper.Step key={index}>{label.label}</Stepper.Step>
+				))}
+			</Stepper>
 
-				return (
-					<Fragment>
-						<Stepper orientation="horizontal" activeStep={step + 1}>
-							{labels.map((label, index) => (
-								<Stepper.Step key={index}>{label.label}</Stepper.Step>
-							))}
-						</Stepper>
+			<BestillingsveilederHeader />
 
-						<BestillingsveilederHeader />
+			<CurrentStepComponent stateModifier={stateModifier} />
 
-						<CurrentStepComponent formikBag={formikBag} stateModifier={stateModifier} />
+			{devEnabled && <DisplayFormikState />}
 
-						{devEnabled && <DisplayFormikState {...formikBag} />}
-
-						<Navigation
-							step={step}
-							onPrevious={handleBack}
-							isLastStep={isLastStep()}
-							formikBag={formikBag}
-						/>
-					</Fragment>
-				)
-			}}
-		</Formik>
+			<Navigation
+				step={step}
+				onPrevious={handleBack}
+				isLastStep={isLastStep()}
+				formikBag={formikBag}
+			/>
+		</form>
 	)
 }
