@@ -66,10 +66,11 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
 
             if (isTrue(type.getIsNew())) {
 
+                type.setFoedtEtter(person.getFoedsel().getFirst().getFoedselsdato().plusDays(index + 1L));
+
                 nyPerson = handle(type, nyPerson);
                 type.setKilde(isNotBlank(type.getKilde()) ? type.getKilde() : "Dolly");
                 type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : DbVersjonDTO.Master.FREG);
-                type.setFoedtEtter(person.getFoedsel().getFirst().getFoedselsdato().plusDays(index + 1L));
             }
         }
         return nyPerson;
