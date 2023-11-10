@@ -2,30 +2,39 @@ package no.nav.dolly.provider.api;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
+import no.nav.dolly.domain.resultset.aareg.RsAnsettelsesPeriode;
 import no.nav.dolly.domain.resultset.aareg.RsArbeidsavtale;
+import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
 import no.nav.dolly.domain.resultset.kontoregister.BankkontoData;
+import no.nav.dolly.domain.resultset.pdldata.PdlPersondata;
 import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.dolly.elastic.ElasticBestilling;
-import no.nav.testnav.libs.data.kontoregister.v1.BankkontonrNorskDTO;
+import no.nav.testnav.libs.data.kontoregister.v1.BankkontonrUtlandDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.Identtype;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.hasItems;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -101,7 +110,6 @@ class ElasticControllerTest {
                 .andExpect(jsonPath("$.totalHits").value(0L));
     }
 
-    @Disabled
     @Test
     void getSearchResponseFromSpecifQuery_OK() throws Exception {
 
@@ -116,49 +124,97 @@ class ElasticControllerTest {
                 .andExpect(jsonPath("$.identer[*]", hasItems(IDENT1, IDENT2, IDENT3)));
     }
 
-    @Disabled
     @Test
     void getSearchResponseFromSpecifQuery2_OK() throws Exception {
 
         mockMvc
                 .perform(post(BASE_URL + "/identer")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"typer\":[\"BANKKONTO\"]}"))
+                        .content("{\"typer\":[\"AAREG\"]}"))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.totalHits").value(1L))
+                .andExpect(jsonPath("$.identer[*]", hasSize(2)))
+                .andExpect(jsonPath("$.identer[*]", hasItems(IDENT4, IDENT5)));
+    }
+
+    @Test
+    void getBestillingFromQuery_OK() throws Exception {
+
+        mockMvc
+                .perform(get(BASE_URL + "/bestilling/id/{id}", 1L)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.pdldata.opprettNyPerson.syntetisk").value(true))
+                .andExpect(jsonPath("$.bankkonto.utenlandskBankkonto.tilfeldigKontonummer").value(true))
                 .andExpect(jsonPath("$.identer[*]", hasSize(3)))
                 .andExpect(jsonPath("$.identer[*]", hasItems(IDENT1, IDENT2, IDENT3)));
     }
 
+    @Test
+    void deleteBestilling_OK() throws Exception {
 
-//
-//    @Test
-//    void getBestillinger() {
-//    }
-//
-//    @Test
-//    void deleteBestilling() {
-//    }
-//
-//    @Test
-//    void delete() {
-//    }
+        mockMvc
+                .perform(delete(BASE_URL + "/bestilling/id/{id}", 2L)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+        var bestilling = bestillingElasticRepository.findById(2L);
+        assertThat(bestilling.isPresent(), is(false));
+    }
+
+    @Test
+    void deleteAlleBestilling_OK() throws Exception {
+
+        mockMvc
+                .perform(delete(BASE_URL))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+        var bestillinger = (PageImpl<ElasticBestilling>) bestillingElasticRepository.findAll();
+        assertThat(bestillinger.getTotalElements(), is(equalTo(0L)));
+    }
 
     private List<ElasticBestilling> lagreTestBestillinger() {
 
         return List.of(
                 ElasticBestilling.builder()
                         .id(1L)
+                        .pdldata(PdlPersondata.builder()
+                                .opprettNyPerson(PdlPersondata.PdlPerson.builder()
+                                        .identtype(Identtype.FNR)
+                                        .syntetisk(true)
+                                        .build())
+                                .build())
                         .bankkonto(BankkontoData.builder()
-                                .norskBankkonto(new BankkontonrNorskDTO())
+                                .utenlandskBankkonto(BankkontonrUtlandDTO.builder()
+                                        .tilfeldigKontonummer(true)
+                                        .build())
                                 .build())
                         .identer(List.of(IDENT1, IDENT2, IDENT3))
                         .build(),
                 ElasticBestilling.builder()
                         .id(2L)
+                        .pdldata(PdlPersondata.builder()
+                                .opprettNyPerson(PdlPersondata.PdlPerson.builder()
+                                        .identtype(Identtype.FNR)
+                                        .syntetisk(true)
+                                        .build())
+                                .build())
                         .aareg(List.of(RsAareg.builder()
-                                .arbeidsavtale(new RsArbeidsavtale())
+                                .arbeidsforholdstype("forenkletOppgjoersordning")
+                                .ansettelsesPeriode(RsAnsettelsesPeriode.builder()
+                                        .fom(LocalDateTime.of(2003, 10, 20, 0, 0))
+                                        .build())
+                                .arbeidsavtale(RsArbeidsavtale.builder()
+                                        .yrke("2521106")
+                                        .build())
+                                .arbeidsgiver(RsOrganisasjon.builder()
+                                        .aktoertype("ORG")
+                                        .orgnummer("896929119")
+                                        .build())
                                 .build()))
                         .identer(List.of(IDENT4, IDENT5))
                         .build());
