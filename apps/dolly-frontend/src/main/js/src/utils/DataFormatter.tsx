@@ -188,7 +188,7 @@ export const showLabel = (optionsGruppe, value) => {
 	optionsGruppe.includes('barn') && (copyOptionsGruppe = optionsGruppe.replace('barn_', ''))
 
 	const obj = Options(copyOptionsGruppe).filter(
-		(options) => options.value.toUpperCase() === value.toUpperCase()
+		(options) => options.value.toUpperCase() === value.toUpperCase(),
 	)
 
 	if (_.get(obj, 'label') || _.get(obj, '[0].label')) {
@@ -209,7 +209,7 @@ export const showKodeverkLabel = (kodeverkNavn, value) => {
 	if (loading || error) {
 		return value
 	}
-	return kodeverk?.koder?.find((kode) => kode?.value === value)?.label
+	return kodeverk?.find((kode) => kode?.value === value)?.label
 }
 
 export const getYearRangeOptions = (start, stop) => {

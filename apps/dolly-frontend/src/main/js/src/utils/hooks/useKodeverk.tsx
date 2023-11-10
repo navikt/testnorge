@@ -1,6 +1,8 @@
 import useSWR from 'swr'
 import { fetcher } from '@/api'
 import * as _ from 'lodash'
+import { toLower } from 'lodash'
+import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
 
 type KodeverkListe = {
 	koder: Array<KodeverkType>
@@ -39,7 +41,7 @@ export const useKodeverk = (kodeverkNavn) => {
 		data?.koder
 
 	return {
-		kodeverk: koder || [],
+		kodeverk: SelectOptionsFormat.formatOptions(toLower(kodeverkNavn), koder, isLoading),
 		loading: isLoading,
 		error: error,
 	}

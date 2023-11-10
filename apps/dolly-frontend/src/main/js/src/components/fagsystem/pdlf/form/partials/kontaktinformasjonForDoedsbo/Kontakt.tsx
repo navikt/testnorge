@@ -2,7 +2,6 @@ import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import { DollySelect, FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
-import { SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
 import { getPlaceholder, setNavn } from '../utils'
 import * as _ from 'lodash-es'
 import {
@@ -17,6 +16,7 @@ import { PdlEksisterendePerson } from '@/components/fagsystem/pdlf/form/partials
 import { useEffect } from 'react'
 import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 import { useGenererNavn } from '@/utils/hooks/useGenererNavn'
+import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
 
 interface KontaktValues {
 	formikBag: FormikProps<any>
@@ -59,7 +59,7 @@ export const Kontakt = ({ formikBag, path, eksisterendeNyPerson = null }: Kontak
 	}
 
 	const { navnInfo, loading } = useGenererNavn()
-	const navnOptions = SelectOptionsOppslag.formatOptions('personnavn', navnInfo)
+	const navnOptions = SelectOptionsFormat.formatOptions('personnavn', navnInfo)
 
 	useEffect(() => {
 		if (!_.get(formikBag.values, `${path}.kontaktType`)) {

@@ -85,7 +85,7 @@ export const Select = ({
 }
 
 export const SelectMedKodeverk = ({ kodeverk, label, isLoading, ...rest }: SelectProps) => {
-	const { kodeverk: kodeverkListe, loading } = useKodeverk(kodeverk)
+	const { kodeverk: kodeverkResult, loading } = useKodeverk(kodeverk)
 	const getSortedKodeverk = (kodeverkVerdier) => {
 		if (label === 'Bostedskommune') {
 			const kodeverkClone = _.cloneDeep(kodeverkVerdier)
@@ -100,8 +100,8 @@ export const SelectMedKodeverk = ({ kodeverk, label, isLoading, ...rest }: Selec
 	return (
 		<Select
 			{...rest}
-			isLoading={!kodeverkListe || isLoading}
-			options={getSortedKodeverk(kodeverkListe)}
+			isLoading={!kodeverkResult || isLoading}
+			options={getSortedKodeverk(kodeverkResult)}
 		/>
 	)
 }
