@@ -32,10 +32,10 @@ export default () => {
 				<NavLink data-cy={CypressSelector.BUTTON_HEADER_PERSONER} to="/gruppe">
 					Personer
 				</NavLink>
+				<FinnPersonDropdown />
 				<NavLink data-cy={CypressSelector.BUTTON_HEADER_ORGANISASJONER} to="/organisasjoner">
 					Organisasjoner
 				</NavLink>
-				<FinnPersonDropdown />
 				{/*<NavLink data-cy={CypressSelector.BUTTON_HEADER_TESTNORGE} to="/testnorge">*/}
 				{/*	Test-Norge*/}
 				{/*</NavLink>*/}
