@@ -23,7 +23,7 @@ export const useTransaksjonsid = (system, ident, bestillingsid = null) => {
 
 	const { data, isLoading, error } = useSWR<any, Error>(
 		getTransaksjonsidUrl(system, ident, bestillingsid),
-		fetcher
+		fetcher,
 	)
 
 	return {

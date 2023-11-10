@@ -56,6 +56,7 @@ import {
 	harArenaBestilling,
 	harDokarkivBestilling,
 	harHistarkBestilling,
+	harInntektsmeldingBestilling,
 	harInstBestilling,
 	harMedlBestilling,
 	harPoppBestilling,
@@ -135,6 +136,9 @@ export default ({
 		harAaregBestilling(bestillingerFagsystemer) || ident?.master === 'PDL',
 	)
 
+	const visArbeidsforhold =
+		ident?.master !== 'PDL' || arbeidsforhold?.some((miljodata) => miljodata?.data?.length > 0)
+
 	const { loading: loadingAmelding, ameldinger } = useAmeldinger(
 		ident.ident,
 		harAaregBestilling(bestillingerFagsystemer) || ident?.master === 'PDL',
@@ -149,9 +153,6 @@ export default ({
 		ident.ident,
 		harUdistubBestilling(bestillingerFagsystemer) || ident?.master === 'PDL',
 	)
-
-	const visArbeidsforhold =
-		ident?.master !== 'PDL' || arbeidsforhold?.some((miljodata) => miljodata?.data?.length > 0)
 
 	const { loading: loadingTpData, tpData } = useTpData(
 		ident.ident,
@@ -214,6 +215,17 @@ export default ({
 	)
 
 	const sykemeldingBestilling = SykemeldingVisning.filterValues(bestillingListe, ident.ident)
+
+	const { loading: loadingInntektsmeldingData, data: inntektsmeldingData } = useTransaksjonIdData(
+		ident.ident,
+		'INNTKMELD',
+		harInntektsmeldingBestilling(bestillingerFagsystemer),
+	)
+
+	const inntektsmeldingBestilling = InntektsmeldingVisning.filterValues(
+		bestillingListe,
+		ident.ident,
+	)
 
 	const getGruppeIdenter = () => {
 		return useAsync(async () => DollyApi.getGruppeById(gruppeId), [DollyApi.getGruppeById])
@@ -421,8 +433,13 @@ export default ({
 				/>
 				<InntektstubVisning liste={inntektstub} loading={loading.inntektstub} />
 				<InntektsmeldingVisning
-					liste={InntektsmeldingVisning.filterValues(bestillingListe, ident.ident)}
-					ident={ident.ident}
+					data={inntektsmeldingData}
+					loading={loadingInntektsmeldingData}
+					bestillingIdListe={bestillingIdListe}
+					tilgjengeligMiljoe={tilgjengeligMiljoe}
+					bestillinger={
+						harInntektsmeldingBestilling(bestillingerFagsystemer) ? inntektsmeldingBestilling : null
+					}
 				/>
 				<ArbeidsplassenVisning
 					data={arbeidsplassencvData}
