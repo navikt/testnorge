@@ -1,0 +1,51 @@
+{
+  "response": {
+    "data1": {
+      "antallRelasjoner": 2,
+      "endringsDato": "2017-12-08",
+      "adresse": "HOFFSVEIEN 30",
+      "fnr": 12090080405,
+      "spesregType": "",
+      "typeAdresse": "OFFA",
+      "typeAdrBeskr": "Offisiell adresse",
+      "sivilstand": "GIFT",
+      "relasjoner": {
+        "relasjon": [
+          {
+            "kortnavn": "DATAMASKIN VERTIKAL",
+            "datoDo": "",
+            "typeRelBeskr": "Barn av",
+            "mellomnavn": "",
+            "etternavn": "DATAMASKIN",
+            "adresseStatus": 0,
+            "adrStatusBeskr": "",
+            "spesregType": "",
+            "fornavn": "VERTIKAL",
+            "fnrRelasjon": 12021790069,
+            "typeRelasjon": "BARN"
+          },
+          {
+            "kortnavn": "OPPOSISJON INNESLUTTET TY",
+            "datoDo": "",
+            "typeRelBeskr": "Ektefelle til",
+            "mellomnavn": "TYPISK",
+            "etternavn": "OPPOSISJON",
+            "adresseStatus": 0,
+            "adrStatusBeskr": "",
+            "spesregType": "",
+            "fornavn": "INNESLUTTET",
+            "fnrRelasjon": 17120080318,
+            "typeRelasjon": "EKTE"
+          }
+        ]
+      },
+      "sivilstandBeskr": "Gift"
+    },
+    "status": {
+      "kode": "00",
+      "melding": " ",
+      "utfyllendeMelding": " "
+    },
+    "antallTotalt": 1
+  }
+}

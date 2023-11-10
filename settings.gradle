@@ -127,6 +127,7 @@ includeBuild './apps/organisasjon-tilgang-frontend'
 includeBuild './apps/synt-vedtakshistorikk-service'
 includeBuild './apps/testnav-ident-pool'
 includeBuild './apps/dollystatus'
+includeBuild './apps/opensearch-server'
 
 includeBuild './xsd/arbeidsforhold-xsd'
 
