@@ -7,6 +7,11 @@ import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.dolly.elastic.ElasticBestilling;
 import no.nav.dolly.repository.BestillingRepository;
+import org.opensearch.action.admin.indices.settings.put.UpdateSettingsRequest;
+import org.opensearch.client.RequestOptions;
+import org.opensearch.client.RestHighLevelClient;
+import org.opensearch.common.settings.Settings;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -15,6 +20,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 
+import java.io.IOException;
 import java.util.Comparator;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -24,13 +30,34 @@ import java.util.concurrent.atomic.AtomicInteger;
 @RequiredArgsConstructor
 public class OpensearchImport implements ApplicationListener<ContextRefreshedEvent> {
 
+    private static final String TOTAL_FIELDS = "index.mapping.total_fields.limit";
+
     private final BestillingRepository bestillingRepository;
     private final BestillingElasticRepository bestillingElasticRepository;
     private final MapperFacade mapperFacade;
+    private final RestHighLevelClient restHighLevelClient;
+
+    @Value("${opensearch.index-name}")
+    private String index;
+
+    @Value("${opensearch.total-fields}")
+    private String totalFields;
 
     @Override
     @Transactional
     public void onApplicationEvent(ContextRefreshedEvent event) {
+
+        try {
+            var request = new UpdateSettingsRequest(index);
+            request.settings(Settings.builder()
+                    .put(TOTAL_FIELDS, totalFields)
+                    .build());
+            restHighLevelClient.indices()
+                    .putSettings(request, RequestOptions.DEFAULT);
+
+        } catch (IOException e) {
+            log.error("Feilet å sette {} for index {}", TOTAL_FIELDS, index, e);
+        }
 
         var start = System.currentTimeMillis();
         var antallLest = new AtomicInteger(0);
