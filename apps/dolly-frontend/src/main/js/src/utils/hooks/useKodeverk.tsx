@@ -3,6 +3,7 @@ import { fetcher } from '@/api'
 import * as _ from 'lodash'
 import { toLower } from 'lodash'
 import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
+import { SortKodeverkArray } from '@/service/services/dolly/Utils'
 
 type KodeverkListe = {
 	koder: Array<KodeverkType>
@@ -40,8 +41,10 @@ export const useKodeverk = (kodeverkNavn) => {
 			}))) ||
 		data?.koder
 
+	const kodeverkSortert = SortKodeverkArray({ koder: koder, name: kodeverkNavn })
+
 	return {
-		kodeverk: SelectOptionsFormat.formatOptions(toLower(kodeverkNavn), koder, isLoading),
+		kodeverk: SelectOptionsFormat.formatOptions(toLower(kodeverkNavn), kodeverkSortert, isLoading),
 		loading: isLoading,
 		error: error,
 	}
