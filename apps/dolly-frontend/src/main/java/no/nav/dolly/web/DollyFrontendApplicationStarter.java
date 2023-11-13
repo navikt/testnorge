@@ -40,7 +40,6 @@ public class DollyFrontendApplicationStarter {
     private final AccessService accessService;
     private final UserJwtExchange userJwtExchange;
     private final Consumers consumers;
-    //private final TestnavUdistubProxyProperties testnavUdistubProxyProperties;
 
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
@@ -64,7 +63,7 @@ public class DollyFrontendApplicationStarter {
                 .route(createRoute(consumers.getTestnavInntektstubProxy()))
                 .route(createRoute(consumers.getTestnavBrregstubProxy()))
                 .route(createRoute(consumers.getTestnavAaregProxy()))
-                //.route(createRoute(testnavUdistubProxyProperties, "testnav-udistub-proxy"))
+                .route(createRoute(consumers.getTestnavUdistubProxy(), "testnav-udistub-proxy"))
                 .route(createRoute(consumers.getTestnavArenaForvalterenProxy()))
                 .route(createRoute(consumers.getTestnavKrrstubProxy(), "testnav-krrstub-proxy"))
                 .route(createRoute(consumers.getTestnavMedlProxy(), "testnav-medl-proxy"))
