@@ -45,7 +45,7 @@ const allRoutes = [
 	},
 	{ path: '/minside', breadcrumb: 'Min side', element: () => <MinSide /> },
 	{ path: '/ui', breadcrumb: 'UI demo', element: () => <UI /> },
-	{ path: '/testnorge', breadcrumb: 'Test-Norge', element: () => <TestnorgePage /> },
+	{ path: '/testnorge', breadcrumb: 'Søk i Test-Norge', element: () => <TestnorgePage /> },
 	{ path: '/dollysoek', breadcrumb: 'Søk i Dolly', element: () => <DollySoekPage /> },
 	{
 		path: '/importer',

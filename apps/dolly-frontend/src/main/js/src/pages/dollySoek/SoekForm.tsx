@@ -5,7 +5,8 @@ import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import React from 'react'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
-import Button from '@/components/ui/button/Button'
+import { Accordion } from '@navikt/ds-react'
+import { AdresseKodeverk, GtKodeverk } from '@/config/kodeverk'
 
 const SoekefeltWrapper = styled.div`
 	display: flex;
@@ -74,73 +75,143 @@ export const SoekForm = () => {
 									fastfield={false}
 								/>
 							</div>
-							<div className="flexbox--full-width">
-								<Button onClick={null} kind={'chevron-down'}>
-									PERSONINFORMASJON
-								</Button>
-								<div className="flexbox--flex-wrap">
-									<FormikCheckbox name={`${personPath}.harVerge`} label="Har verge" />
-									<FormikCheckbox name={`${personPath}.harFullmakt`} label="Har fullmakt" />
-									<FormikCheckbox name={`${personPath}.harDoedsfall`} label="Har dødsfall" />
-									<FormikCheckbox name={`${personPath}.harInnflytting`} label="Har innflytting" />
-									<FormikCheckbox name={`${personPath}.harUtflytting`} label="Har utflytting" />
-									<FormikCheckbox
-										name={`${personPath}.harTilrettelagtKommunikasjon`}
-										label="Har tilrettelagt kommunikasjon"
-									/>
-								</div>
-							</div>
-							<div className="flexbox--full-width">
-								<Button onClick={null} kind={'chevron-down'}>
-									FAMILIERELASJONER
-								</Button>
-								<div className="flexbox--flex-wrap">
-									<FormikCheckbox name={`${personPath}.harBarn`} label="Har barn" />
-									<FormikCheckbox name={`${personPath}.harForeldre`} label="Har foreldre" />
-									<FormikCheckbox
-										name={`${personPath}.harDoedfoedtBarn`}
-										label="Har dødfødt barn"
-									/>
-									<FormikCheckbox
-										name={`${personPath}.harForeldreAnsvar`}
-										label="Har foreldreansvar"
-									/>
-								</div>
-							</div>
-							<div className="flexbox--full-width">
-								<Button onClick={null} kind={'chevron-down'}>
-									IDENTIFIKASJON
-								</Button>
-								<div className="flexbox--flex-wrap">
-									<FormikCheckbox
-										name={`${personPath}.harFalskIdentitet`}
-										label="Har falsk identitet"
-									/>
-									<FormikCheckbox
-										name={`${personPath}.harUtenlandskIdentifikasjonsnummer`}
-										label="Har utenlandsk identifikasjonsnummer"
-									/>
-									<FormikCheckbox name={`${personPath}.nyIdentitet`} label="Har ny identitet" />
-								</div>
-							</div>
-
-							{/*<FormikCheckbox*/}
-							{/*	name={`${personPath}.harKontaktinformasjonForDoedsbo`}*/}
-							{/*	label="Har kontaktinformasjon for dødsbo"*/}
-							{/*/>*/}
-
-							{/*<FormikCheckbox*/}
-							{/*	name={`${personPath}.harSikkerhetstiltak`}*/}
-							{/*	label="Har sikkerhetstiltak"*/}
-							{/*/>*/}
-							{/*<FormikCheckbox name={`${personPath}.harOpphold`} label="Har opphold" />*/}
-
-							{/*<FormikCheckbox name={`${personPath}.harDeltBosted`} label="Har delt bosted" />*/}
-							{/*<FormikCheckbox name={`${personPath}.harKontaktadresse`} label="Har kontaktadresse" />*/}
-							{/*<FormikCheckbox*/}
-							{/*	name={`${personPath}.harOppholdsadresse`}*/}
-							{/*	label="Har oppholdsadresse"*/}
-							{/*/>*/}
+							<Accordion size="small" headingSize="xsmall" className="flexbox--full-width">
+								<Accordion.Item>
+									<Accordion.Header>Personinformasjon</Accordion.Header>
+									<Accordion.Content>
+										<div className="flexbox--flex-wrap">
+											<FormikSelect
+												name={`${personPath}.statsborgerskap`}
+												kodeverk={AdresseKodeverk.StatsborgerskapLand}
+												size="large"
+												placeholder="Statsborgerskap"
+											/>
+											<FormikCheckbox name={`${personPath}.harVerge`} label="Har verge" />
+											<FormikCheckbox name={`${personPath}.harFullmakt`} label="Har fullmakt" />
+											<FormikCheckbox name={`${personPath}.harDoedsfall`} label="Har dødsfall" />
+											<FormikCheckbox
+												name={`${personPath}.harInnflytting`}
+												label="Har innflytting"
+											/>
+											<FormikCheckbox name={`${personPath}.harUtflytting`} label="Har utflytting" />
+											<FormikCheckbox
+												name={`${personPath}.harSikkerhetstiltak`}
+												label="Har sikkerhetstiltak"
+											/>
+											<FormikCheckbox
+												name={`${personPath}.harTilrettelagtKommunikasjon`}
+												label="Har tilrettelagt kommunikasjon"
+											/>
+										</div>
+									</Accordion.Content>
+								</Accordion.Item>
+								<Accordion.Item>
+									<Accordion.Header>Adresser</Accordion.Header>
+									<Accordion.Content>
+										<div className="flexbox--flex-wrap">
+											<FormikSelect
+												name={`${personPath}.bostedsadresse.kommunenummer`}
+												kodeverk={AdresseKodeverk.Kommunenummer}
+												size="large"
+												placeholder="Kommunenummer"
+											/>
+											<FormikSelect
+												name={`${personPath}.bostedsadresse.postnummer`}
+												kodeverk={AdresseKodeverk.Postnummer}
+												size="large"
+												placeholder="Postnummer"
+											/>
+											<FormikSelect
+												name={`${personPath}.bostedsadresse.bydelsnummer`}
+												kodeverk={GtKodeverk.BYDEL}
+												size="large"
+												placeholder="Bydelsnummer"
+											/>
+											<FormikSelect
+												name={`${personPath}.addressebeskyttelse`}
+												options={Options('gradering')}
+												size="large"
+												placeholder="Adressebeskyttelse"
+											/>
+											<FormikCheckbox
+												name={`${personPath}.bostedsadresse.harUtenlandsadresse`}
+												label="Har utenlandsadresse"
+											/>
+											<FormikCheckbox
+												name={`${personPath}.bostedsadresse.harMatrikkelAdresse`}
+												label="Har matrikkeladresse"
+											/>
+											<FormikCheckbox
+												name={`${personPath}.bostedsadresse.harUkjentAdresse`}
+												label="Har ukjent adresse"
+											/>
+											<FormikCheckbox
+												name={`${personPath}.harKontaktadresse`}
+												label="Har kontaktadresse"
+											/>
+											<FormikCheckbox
+												name={`${personPath}.harOppholdsadresse`}
+												label="Har oppholdsadresse"
+											/>
+										</div>
+									</Accordion.Content>
+								</Accordion.Item>
+								<Accordion.Item>
+									<Accordion.Header>Familierelasjoner</Accordion.Header>
+									<Accordion.Content>
+										<div className="flexbox--flex-wrap">
+											<FormikSelect
+												name={`${personPath}.sivilstand`}
+												options={Options('sivilstandType')}
+												size="large"
+												placeholder="Sivilstand"
+											/>
+											<FormikCheckbox name={`${personPath}.harBarn`} label="Har barn" />
+											<FormikCheckbox name={`${personPath}.harForeldre`} label="Har foreldre" />
+											<FormikCheckbox
+												name={`${personPath}.harDoedfoedtBarn`}
+												label="Har dødfødt barn"
+											/>
+											<FormikCheckbox
+												name={`${personPath}.harForeldreAnsvar`}
+												label="Har foreldreansvar"
+											/>
+											<FormikCheckbox
+												name={`${personPath}.harDeltBosted`}
+												label="Har delt bosted"
+											/>
+										</div>
+									</Accordion.Content>
+								</Accordion.Item>
+								<Accordion.Item>
+									<Accordion.Header>Identifikasjon</Accordion.Header>
+									<Accordion.Content>
+										<div className="flexbox--flex-wrap">
+											<FormikCheckbox
+												name={`${personPath}.harFalskIdentitet`}
+												label="Har falsk identitet"
+											/>
+											<FormikCheckbox
+												name={`${personPath}.harUtenlandskIdentifikasjonsnummer`}
+												label="Har utenlandsk identifikasjonsnummer"
+											/>
+											<FormikCheckbox name={`${personPath}.nyIdentitet`} label="Har ny identitet" />
+										</div>
+									</Accordion.Content>
+								</Accordion.Item>
+								<Accordion.Item>
+									<Accordion.Header>Annet</Accordion.Header>
+									<Accordion.Content>
+										<div className="flexbox--flex-wrap">
+											<FormikCheckbox
+												name={`${personPath}.harKontaktinformasjonForDoedsbo`}
+												label="Har kontaktinformasjon for dødsbo"
+											/>
+											<FormikCheckbox name={`${personPath}.harOpphold`} label="Har opphold" />
+										</div>
+									</Accordion.Content>
+								</Accordion.Item>
+							</Accordion>
 						</Form>
 					)}
 				</Formik>
