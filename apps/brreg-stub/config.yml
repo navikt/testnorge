@@ -30,5 +30,4 @@ spec:
       cpu: 200m
       memory: 1024Mi
   ingresses:
-    - "https://brreg-stub.dev-fss.nais.io"
     - "https://brreg-stub.intern.dev.nav.no" # dev-fss
