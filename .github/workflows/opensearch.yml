@@ -17,5 +17,5 @@ jobs:
       - uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
-          CLUSTER: nav-gcp
+          CLUSTER: dev-gcp
           RESOURCE: .nais/opensearch.yml
