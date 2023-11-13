@@ -29,12 +29,10 @@ public class SecurityConfig {
     @Bean
     public SecurityWebFilterChain configure(ServerHttpSecurity http) {
 
-        http.cors()
-                .and().csrf().disable()
-                .authorizeExchange()
-                .anyExchange()
-                .permitAll()
-                .and().oauth2ResourceServer().jwt(jwt -> jwtDecoder());
+        http.cors(ServerHttpSecurity.CorsSpec::disable)
+                .csrf(ServerHttpSecurity.CsrfSpec::disable)
+                .authorizeExchange(authorizeExchangeSpec -> authorizeExchangeSpec.anyExchange().permitAll())
+                .oauth2ResourceServer(oAuth2ResourceServerSpec -> oAuth2ResourceServerSpec.jwt(jwtSpec -> jwtDecoder()));
         return http.build();
     }
 

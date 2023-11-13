@@ -33,7 +33,6 @@ import { RelatertPersonImportButton } from '@/components/ui/button/RelatertPerso
 import { useAsync } from 'react-use'
 import { DollyApi } from '@/service/Api'
 import { GjenopprettPerson } from '@/components/bestilling/gjenopprett/GjenopprettPerson'
-import { sjekkManglerUdiData } from '@/components/fagsystem/udistub/visning/UdiVisning'
 import { sjekkManglerBrregData } from '@/components/fagsystem/brregstub/visning/BrregVisning'
 import { sjekkManglerPensjonData } from '@/components/fagsystem/pensjon/visning/PensjonVisning'
 import { sjekkManglerAaregData } from '@/components/fagsystem/aareg/visning/Visning'
@@ -57,11 +56,13 @@ import {
 	harArenaBestilling,
 	harDokarkivBestilling,
 	harHistarkBestilling,
+	harInntektsmeldingBestilling,
 	harInstBestilling,
 	harMedlBestilling,
 	harPoppBestilling,
 	harSykemeldingBestilling,
 	harTpBestilling,
+	harUdistubBestilling,
 	harUforetrygdBestilling,
 } from '@/utils/SjekkBestillingFagsystem'
 import {
@@ -84,6 +85,7 @@ import {
 } from '@/components/fagsystem/uforetrygd/visning/UforetrygdVisning'
 import { usePensjonEnvironments } from '@/utils/hooks/useEnvironments'
 import { SigrunstubPensjonsgivendeVisning } from '@/components/fagsystem/sigrunstubPensjonsgivende/visning/Visning'
+import { useUdistub } from '@/utils/hooks/useUdistub'
 
 const getIdenttype = (ident) => {
 	if (parseInt(ident.charAt(0)) > 3) {
@@ -134,6 +136,9 @@ export default ({
 		harAaregBestilling(bestillingerFagsystemer) || ident?.master === 'PDL',
 	)
 
+	const visArbeidsforhold =
+		ident?.master !== 'PDL' || arbeidsforhold?.some((miljodata) => miljodata?.data?.length > 0)
+
 	const { loading: loadingAmelding, ameldinger } = useAmeldinger(
 		ident.ident,
 		harAaregBestilling(bestillingerFagsystemer) || ident?.master === 'PDL',
@@ -144,8 +149,10 @@ export default ({
 		harMedlBestilling(bestillingerFagsystemer) || ident?.master === 'PDL',
 	)
 
-	const visArbeidsforhold =
-		ident?.master !== 'PDL' || arbeidsforhold?.some((miljodata) => miljodata?.data?.length > 0)
+	const { loading: loadingUdistub, udistub } = useUdistub(
+		ident.ident,
+		harUdistubBestilling(bestillingerFagsystemer) || ident?.master === 'PDL',
+	)
 
 	const { loading: loadingTpData, tpData } = useTpData(
 		ident.ident,
@@ -209,6 +216,17 @@ export default ({
 
 	const sykemeldingBestilling = SykemeldingVisning.filterValues(bestillingListe, ident.ident)
 
+	const { loading: loadingInntektsmeldingData, data: inntektsmeldingData } = useTransaksjonIdData(
+		ident.ident,
+		'INNTKMELD',
+		harInntektsmeldingBestilling(bestillingerFagsystemer),
+	)
+
+	const inntektsmeldingBestilling = InntektsmeldingVisning.filterValues(
+		bestillingListe,
+		ident.ident,
+	)
+
 	const getGruppeIdenter = () => {
 		return useAsync(async () => DollyApi.getGruppeById(gruppeId), [DollyApi.getGruppeById])
 	}
@@ -221,7 +239,7 @@ export default ({
 		return null
 	}
 
-	const { sigrunstub, sigrunstubPensjonsgivende, inntektstub, brregstub, krrstub, udistub } = data
+	const { sigrunstub, sigrunstubPensjonsgivende, inntektstub, brregstub, krrstub } = data
 
 	const manglerFagsystemdata = () => {
 		if (
@@ -247,9 +265,6 @@ export default ({
 			return true
 		}
 		if (brregstub && sjekkManglerBrregData(brregstub)) {
-			return true
-		}
-		if (udistub && sjekkManglerUdiData(udistub)) {
 			return true
 		}
 		if (instData && sjekkManglerInstData(instData)) {
@@ -329,7 +344,6 @@ export default ({
 		)
 		return arbeidsplassenBestillinger?.[0]?.data?.arbeidsplassenCV?.harHjemmel
 	}
-
 	return (
 		<ErrorBoundary>
 			<div className="person-visning">
@@ -419,8 +433,13 @@ export default ({
 				/>
 				<InntektstubVisning liste={inntektstub} loading={loading.inntektstub} />
 				<InntektsmeldingVisning
-					liste={InntektsmeldingVisning.filterValues(bestillingListe, ident.ident)}
-					ident={ident.ident}
+					data={inntektsmeldingData}
+					loading={loadingInntektsmeldingData}
+					bestillingIdListe={bestillingIdListe}
+					tilgjengeligMiljoe={tilgjengeligMiljoe}
+					bestillinger={
+						harInntektsmeldingBestilling(bestillingerFagsystemer) ? inntektsmeldingBestilling : null
+					}
 				/>
 				<ArbeidsplassenVisning
 					data={arbeidsplassencvData}
@@ -479,7 +498,7 @@ export default ({
 				<MedlVisning data={medl} loading={loadingMedl} />
 				<UdiVisning
 					data={UdiVisning.filterValues(udistub, bestilling?.bestilling.udistub)}
-					loading={loading.udistub}
+					loading={loadingUdistub}
 				/>
 				<DokarkivVisning
 					data={dokarkivData}

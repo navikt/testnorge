@@ -2,7 +2,6 @@ import { connect } from 'react-redux'
 import { createSelector } from 'reselect'
 import { actions, fetchDataFraFagsystemer, selectDataForIdent } from '@/ducks/fagsystem'
 import { createLoadingSelector } from '@/ducks/loading'
-import React from 'react'
 import PersonVisning from '@/pages/gruppe/PersonVisning/PersonVisning'
 
 const loadingSelectorKrr = createLoadingSelector(actions.getKrr)
@@ -12,7 +11,6 @@ const loadingSelectorSigrunPensjonsgivende = createLoadingSelector([
 ])
 const loadingSelectorInntektstub = createLoadingSelector(actions.getInntektstub)
 const loadingSelectorPdlForvalter = createLoadingSelector(actions.getPdlForvalter)
-const loadingSelectorUdi = createLoadingSelector(actions.getUdi)
 const loadingSelectorSlettPerson = createLoadingSelector(actions.slettPerson)
 const loadingSelectorSlettPersonOgRelatertePersoner = createLoadingSelector(
 	actions.slettPersonOgRelatertePersoner,
@@ -30,7 +28,6 @@ const loadingSelector = createSelector(
 			sigrunstubPensjonsgivende: loadingSelectorSigrunPensjonsgivende({ loading }),
 			inntektstub: loadingSelectorInntektstub({ loading }),
 			pdlforvalter: loadingSelectorPdlForvalter({ loading }),
-			udistub: loadingSelectorUdi({ loading }),
 			slettPerson: loadingSelectorSlettPerson({ loading }),
 			slettPersonOgRelatertePersoner: loadingSelectorSlettPersonOgRelatertePersoner({ loading }),
 			brregstub: loadingSelectorBrregstub({ loading }),

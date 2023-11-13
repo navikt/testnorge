@@ -1,5 +1,5 @@
 import * as Yup from 'yup'
-import { messages, requiredDate, requiredString } from '@/utils/YupValidations'
+import { messages, requiredString } from '@/utils/YupValidations'
 import { isAfter, isBefore, isEqual } from 'date-fns'
 import * as _ from 'lodash-es'
 
@@ -174,6 +174,34 @@ const ingenOverlappFraTildato = (tildato, values) => {
 	return true
 }
 
+const invalidDoedsdato = (arenaFom, values) => {
+	const personFoerLeggTil = values.personFoerLeggTil
+	const importPersoner = values.importPersoner
+
+	let doedsdato = values?.pdldata?.person?.doedsfall?.[0]?.doedsdato
+	if (_.isNil(doedsdato)) {
+		if (personFoerLeggTil?.pdlforvalter?.person?.doedsfall) {
+			const doedsdatoer = personFoerLeggTil.pdlforvalter.person.doedsfall
+				.map((doedsfall) => doedsfall.doedsdato)
+				.sort((a, b) => new Date(a) - new Date(b))
+			doedsdato = doedsdatoer?.[0]
+		} else if (personFoerLeggTil?.pdl) {
+			const pdlPerson = personFoerLeggTil.pdl.hentPerson || personFoerLeggTil.pdl.person
+			const pdlDoedsdato = pdlPerson?.doedsfall?.[0]?.doedsdato
+			if (pdlDoedsdato) doedsdato = pdlDoedsdato
+		} else if (importPersoner) {
+			const doedsdatoer = importPersoner
+				.map((person) => person?.data?.hentPerson?.doedsfall?.[0]?.doedsdato)
+				.sort((a, b) => new Date(a) - new Date(b))
+			doedsdato = doedsdatoer?.[0]
+		}
+	}
+	if (!_.isNil(doedsdato)) {
+		return isAfter(new Date(arenaFom), new Date(doedsdato))
+	}
+	return false
+}
+
 const validFradato = (vedtakType) => {
 	return Yup.string()
 		.test(
@@ -196,6 +224,14 @@ const validFradato = (vedtakType) => {
 					naavaerendeVerdier[annenVedtakType]?.fraDato,
 					naavaerendeVerdier[annenVedtakType]?.tilDato,
 				)
+			},
+		)
+		.test(
+			'tiltak-fra-etter-doedsdato',
+			'Ident kan ikke ha tiltak etter dødsfall',
+			function validDate(value) {
+				const values = this.options.context
+				return !invalidDoedsdato(value, values)
 			},
 		)
 		.nullable()
@@ -246,6 +282,14 @@ export const validation = Yup.object({
 						return !erEtter67aarsdag(new Date(fradato), new Date(tildato), values)
 					},
 				)
+				.test(
+					'tiltak-til-etter-doedsdato',
+					'Ident kan ikke ha tiltak etter dødsfall',
+					function validDate(value) {
+						const values = this.options.context
+						return !invalidDoedsdato(value, values)
+					},
+				)
 				.nullable()
 				.required(messages.required),
 		}),
@@ -259,6 +303,14 @@ export const validation = Yup.object({
 					function validDate(fradato) {
 						const values = this.options.context
 						return !erEtter67aarsdag(new Date(fradato), null, values)
+					},
+				)
+				.test(
+					'tiltak-fra-etter-doedsdato',
+					'Ident kan ikke ha tiltak etter dødsfall',
+					function validDate(value) {
+						const values = this.options.context
+						return !invalidDoedsdato(value, values)
 					},
 				)
 				.nullable()
@@ -278,6 +330,14 @@ export const validation = Yup.object({
 				!arenaforvalter?.dagpenger
 			return !(ingenYtelser && !dato)
 		})
+		.test(
+			'aktivert-etter-doedsdato',
+			'Ident kan ikke aktiveres etter dødsfall',
+			function validDate(value) {
+				const values = this.options.context
+				return !invalidDoedsdato(value, values)
+			},
+		)
 		.nullable(),
 	inaktiveringDato: Yup.mixed()
 		.test(
@@ -355,6 +415,14 @@ export const validation = Yup.object({
 						const values = this.options.context
 						const fradato = this.options.context.arenaforvalter.dagpenger[0]?.fraDato
 						return !erEtter67aarsdag(new Date(fradato), new Date(tildato), values)
+					},
+				)
+				.test(
+					'tiltak-fra-etter-doedsdato',
+					'Ident kan ikke ha tiltak etter dødsfall',
+					function validDate(value) {
+						const values = this.options.context
+						return !invalidDoedsdato(value, values)
 					},
 				)
 				.nullable(),

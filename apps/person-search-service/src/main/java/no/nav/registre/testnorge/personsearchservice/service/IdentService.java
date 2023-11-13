@@ -8,7 +8,7 @@ import no.nav.registre.testnorge.personsearchservice.domain.IdentSearch;
 import no.nav.registre.testnorge.personsearchservice.service.utils.QueryBuilder;
 import no.nav.testnav.libs.dto.personsearchservice.v1.IdentdataDTO;
 import org.apache.commons.lang3.StringUtils;
-import org.elasticsearch.action.search.SearchRequest;
+import org.opensearch.action.search.SearchRequest;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 

@@ -1,5 +1,10 @@
 import './GruppeFeilmelding.less'
 import Icon from '@/components/ui/icon/Icon'
+import {
+	ERROR_ACCESS_DENIED,
+	ERROR_FETCH_GRUPPE_FAILED,
+	ERROR_GENERIC,
+} from '../../../ducks/errors/ErrorMessages'
 
 type Props = {
 	feil: GruppeFeil
@@ -22,11 +27,11 @@ export const GruppeFeilmelding = ({ feil }: Props) => {
 const getFeilmelding = (feil: GruppeFeil) => {
 	switch (feil) {
 		case GruppeFeil.ACCESS_DENIED:
-			return 'Du mangler tilgang til denne gruppen.'
+			return ERROR_ACCESS_DENIED
 		case GruppeFeil.FETCH_FAILED:
-			return 'Noe gikk galt med henting av gruppe. Ta kontakt med Team Dolly hvis feilen vedvarer.'
+			return ERROR_FETCH_GRUPPE_FAILED
 		default:
-			return 'Noe gikk galt.'
+			return ERROR_GENERIC
 	}
 }
 

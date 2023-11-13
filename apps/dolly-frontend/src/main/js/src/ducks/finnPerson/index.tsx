@@ -5,6 +5,7 @@ import { handleActions } from '@/ducks/utils/immerHandleActions'
 import { LOCATION_CHANGE } from 'redux-first-history'
 import { VisningType } from '@/pages/gruppe/Gruppe'
 import { isEmpty } from 'lodash'
+import { ERROR_NAVIGATE_IDENT } from '../errors/ErrorMessages'
 
 export const {
 	navigerTilPerson,
@@ -56,7 +57,7 @@ export default handleActions(
 		},
 		[onSuccess(navigerTilPerson)](state, action) {
 			state.feilmelding = isEmpty(action.payload?.data)
-				? 'Klarte ikke å navigere til person'
+				? ERROR_NAVIGATE_IDENT
 				: action.payload?.data?.message
 			state.hovedperson = action.payload.data.identHovedperson
 			state.visPerson = action.payload.data.identNavigerTil
@@ -102,5 +103,5 @@ export default handleActions(
 			state.update = new Date()
 		},
 	},
-	initialState
+	initialState,
 )

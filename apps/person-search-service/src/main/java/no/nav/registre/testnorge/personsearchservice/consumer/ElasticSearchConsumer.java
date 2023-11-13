@@ -10,9 +10,8 @@ import no.nav.registre.testnorge.personsearchservice.model.Response;
 import no.nav.registre.testnorge.personsearchservice.model.SearchResponse;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
-import org.elasticsearch.action.search.SearchRequest;
+import org.opensearch.action.search.SearchRequest;
 import org.springframework.stereotype.Component;
-
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 

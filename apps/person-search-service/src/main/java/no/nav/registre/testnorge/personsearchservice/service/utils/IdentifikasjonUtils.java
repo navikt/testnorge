@@ -3,7 +3,7 @@ package no.nav.registre.testnorge.personsearchservice.service.utils;
 import lombok.experimental.UtilityClass;
 import no.nav.testnav.libs.dto.personsearchservice.v1.search.IdentifikasjonSearch;
 import no.nav.testnav.libs.dto.personsearchservice.v1.search.PersonSearch;
-import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.opensearch.index.query.BoolQueryBuilder;
 
 import java.util.Optional;
 

@@ -5,7 +5,7 @@ import { AvslagEllerBortfall, AvslagEllerBortfallVisning } from './AvslagEllerBo
 
 type Opphold = {
 	oppholdsstatus: {
-		oppholdSammeVilkaar: {}
+		oppholdSammeVilkaar: object
 		ikkeOppholdstilatelseIkkeVilkaarIkkeVisum: {
 			avslagEllerBortfall: AvslagEllerBortfall
 		}
@@ -15,7 +15,8 @@ type Opphold = {
 }
 
 export const Oppholdsstatus = ({ oppholdsstatus, oppholdstillatelse }: Opphold) => {
-	if (!oppholdsstatus && !oppholdstillatelse) {
+	const opphold = _.omitBy(oppholdsstatus, _.isNil)
+	if (_.isEmpty(opphold) && !oppholdstillatelse) {
 		return null
 	}
 
@@ -25,14 +26,14 @@ export const Oppholdsstatus = ({ oppholdsstatus, oppholdstillatelse }: Opphold) 
 		'eosEllerEFTAOppholdstillatelse',
 	]
 	// @ts-ignore
-	const currentOppholdsrettType = oppholdsrettTyper.find((type) => oppholdsstatus[type])
+	const currentOppholdsrettType = oppholdsrettTyper.find((type) => opphold[type])
 
 	const currentTredjelandsborgereStatus = () => {
-		if (oppholdsstatus.oppholdSammeVilkaar) {
+		if (opphold.oppholdSammeVilkaar) {
 			return 'Oppholdstillatelse eller opphold på samme vilkår'
-		} else if (oppholdsstatus.ikkeOppholdstilatelseIkkeVilkaarIkkeVisum) {
+		} else if (opphold.ikkeOppholdstilatelseIkkeVilkaarIkkeVisum) {
 			return 'Ikke oppholdstillatelse eller ikke opphold på samme vilkår'
-		} else if (oppholdsstatus.uavklart) {
+		} else if (opphold.uavklart) {
 			return 'Uavklart'
 		}
 		return null
@@ -64,36 +65,36 @@ export const Oppholdsstatus = ({ oppholdsstatus, oppholdstillatelse }: Opphold) 
 					title="Oppholdstillatelse fra"
 					value={formatStringDates(
 						tredjelandsborger
-							? _.get(oppholdsstatus, 'oppholdSammeVilkaar.oppholdSammeVilkaarPeriode.fra')
-							: _.get(oppholdsstatus, `${currentOppholdsrettType}Periode.fra`)
+							? _.get(opphold, 'oppholdSammeVilkaar.oppholdSammeVilkaarPeriode.fra')
+							: _.get(opphold, `${currentOppholdsrettType}Periode.fra`),
 					)}
 				/>
 				<TitleValue
 					title="Oppholdstillatelse til"
 					value={formatStringDates(
 						tredjelandsborger
-							? _.get(oppholdsstatus, 'oppholdSammeVilkaar.oppholdSammeVilkaarPeriode.til')
-							: _.get(oppholdsstatus, `${currentOppholdsrettType}Periode.til`)
+							? _.get(opphold, 'oppholdSammeVilkaar.oppholdSammeVilkaarPeriode.til')
+							: _.get(opphold, `${currentOppholdsrettType}Periode.til`),
 					)}
 				/>
 				<TitleValue
 					title="Effektueringsdato"
 					value={formatStringDates(
-						_.get(oppholdsstatus, `${currentOppholdsrettType}Effektuering`) ||
-							_.get(oppholdsstatus, 'oppholdSammeVilkaar.oppholdSammeVilkaarEffektuering')
+						_.get(opphold, `${currentOppholdsrettType}Effektuering`) ||
+							_.get(opphold, 'oppholdSammeVilkaar.oppholdSammeVilkaarEffektuering'),
 					)}
 				/>
 				<TitleValue
 					title="Type oppholdstillatelse"
 					value={showLabel(
 						'oppholdstillatelseType',
-						_.get(oppholdsstatus, 'oppholdSammeVilkaar.oppholdstillatelseType')
+						_.get(opphold, 'oppholdSammeVilkaar.oppholdstillatelseType'),
 					)}
 				/>
 				<TitleValue
 					title="Vedtaksdato"
 					value={formatStringDates(
-						_.get(oppholdsstatus, 'oppholdSammeVilkaar.oppholdstillatelseVedtaksDato')
+						_.get(opphold, 'oppholdSammeVilkaar.oppholdstillatelseVedtaksDato'),
 					)}
 				/>
 				<TitleValue
@@ -101,7 +102,7 @@ export const Oppholdsstatus = ({ oppholdsstatus, oppholdstillatelse }: Opphold) 
 					value={
 						oppholdsrett &&
 						// @ts-ignore
-						showLabel([currentOppholdsrettType], oppholdsstatus[currentOppholdsrettType])
+						showLabel([currentOppholdsrettType], opphold[currentOppholdsrettType])
 					}
 				/>
 				{oppholdstillatelse && <TitleValue title="Har oppholdstillatelse" value="Ja" />}
@@ -109,7 +110,7 @@ export const Oppholdsstatus = ({ oppholdsstatus, oppholdstillatelse }: Opphold) 
 			<AvslagEllerBortfallVisning
 				// @ts-ignore
 				avslagEllerBortfall={
-					oppholdsstatus?.ikkeOppholdstilatelseIkkeVilkaarIkkeVisum?.avslagEllerBortfall
+					opphold?.ikkeOppholdstilatelseIkkeVilkaarIkkeVisum?.avslagEllerBortfall
 				}
 			/>
 		</div>

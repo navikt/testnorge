@@ -2,7 +2,7 @@ import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFiel
 import { initialNavn } from '@/components/fagsystem/pdlf/form/initialValues'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
-import { Option, SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
+import { Option } from '@/service/SelectOptionsOppslag'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import * as _ from 'lodash-es'
 import { FormikProps } from 'formik'
@@ -14,6 +14,7 @@ import styled from 'styled-components'
 import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { useGenererNavn } from '@/utils/hooks/useGenererNavn'
+import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
 
 type NavnTypes = {
 	formikBag: FormikProps<{}>
@@ -28,7 +29,7 @@ const concatNavnMedTidligereValgt = (type, navnInfo, selectedNavn) => {
 	if (!navnInfo) {
 		return []
 	}
-	const navnOptions = SelectOptionsOppslag.formatOptions(type, navnInfo)
+	const navnOptions = SelectOptionsFormat.formatOptions(type, navnInfo)
 		.concat(
 			selectedNavn?.map((navn) => ({
 				value: navn,

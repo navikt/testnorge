@@ -5,6 +5,7 @@ import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
 import { PersonrollerForm } from '@/components/fagsystem/brregstub/form/partials/personrollerForm'
 import { OrgnrToggle } from '@/components/fagsystem/brregstub/form/partials/orgnrToggle'
+import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
 
 const initialValues = {
 	rolle: '',
@@ -18,7 +19,7 @@ const initialValues = {
 
 export const EnheterForm = ({ formikBag }) => {
 	const roller = SelectOptionsOppslag.hentRollerFraBrregstub()
-	const rollerOptions = SelectOptionsOppslag.formatOptions('roller', roller)
+	const rollerOptions = SelectOptionsFormat.formatOptions('roller', roller)
 
 	const setEnhetsinfo = (org, path) => {
 		const currentValues = _.get(formikBag.values, path)

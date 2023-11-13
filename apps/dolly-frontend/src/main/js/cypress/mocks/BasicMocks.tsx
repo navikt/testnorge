@@ -21,6 +21,8 @@ export const personFragmentSearchMock = [
 	},
 ]
 
+export const bestillingFragmentSearchMock = [{ id: 1, navn: 'Testytest' }]
+
 export const kodeverkMock = {
 	name: 'Tema',
 	koder: [
@@ -1867,5 +1869,13 @@ export const personFragmentNavigerMock = {
 	gruppe: eksisterendeGruppeMock,
 	identHovedperson: '12345678912',
 	identNavigerTil: '12345678912',
+	sidetall: 0,
+}
+
+export const bestillingFragmentNavigerMock = {
+	gruppe: eksisterendeGruppeMock,
+	identHovedperson: null,
+	identNavigerTil: null,
+	bestillingNavigerTil: 1,
 	sidetall: 0,
 }

@@ -2,8 +2,8 @@ package no.nav.registre.testnorge.personsearchservice.service.utils;
 
 import lombok.experimental.UtilityClass;
 import org.apache.lucene.search.join.ScoreMode;
-import org.elasticsearch.index.query.NestedQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
+import org.opensearch.index.query.NestedQueryBuilder;
+import org.opensearch.index.query.QueryBuilders;
 
 import java.util.Collection;
 import java.util.List;
