@@ -39,7 +39,7 @@ export const useKodeverk = (kodeverkNavn) => {
 				label: kode.valuta + ` (${kode.valutakode})`,
 				value: kode.valutakode,
 			}))) ||
-		data?.koder
+		_.cloneDeep(data?.koder)
 
 	const kodeverkSortert = SortKodeverkArray({ koder: koder, name: kodeverkNavn })
 
