@@ -106,22 +106,31 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
 
     private PersonDTO handle(IdentRequestDTO request, PersonDTO person) {
 
-        var nyPerson = isNotBlank(request.getEksisterendeIdent()) ?
+        PersonDTO nyPerson = null;
 
-                personRepository.findByIdent(request.getEksisterendeIdent())
-                        .orElseThrow(() -> new NotFoundException(String.format("Eksisterende ident %s ble ikke funnet",
-                                request.getEksisterendeIdent())))
-                        .getPerson() :
+        if (isNotBlank(request.getEksisterendeIdent())) {
 
-                createPersonService.execute(PersonRequestDTO.builder()
-                        .eksisterendeIdent(request.getEksisterendeIdent())
-                        .identtype(getIdenttype(request, person.getIdent()))
-                        .kjoenn(getKjoenn(request, person.getIdent()))
-                        .foedtEtter(getFoedtEtter(request, person.getIdent()))
-                        .foedtFoer(getFoedtFoer(request, person.getIdent()))
-                        .nyttNavn(mapperFacade.map(request.getNyttNavn(), NyttNavnDTO.class))
-                        .syntetisk(isSyntetisk(request, person.getIdent()))
-                        .build());
+            nyPerson = personRepository.findByIdent(request.getEksisterendeIdent())
+                    .orElseThrow(() -> new NotFoundException(String.format("Eksisterende ident %s ble ikke funnet",
+                            request.getEksisterendeIdent())))
+                    .getPerson();
+        } else {
+
+            var nyRequest = PersonRequestDTO.builder()
+                    .eksisterendeIdent(request.getEksisterendeIdent())
+                    .identtype(getIdenttype(request, person.getIdent()))
+                    .kjoenn(getKjoenn(request, person.getIdent()))
+                    .foedtEtter(getFoedtEtter(request, person.getIdent()))
+                    .foedtFoer(getFoedtFoer(request, person.getIdent()))
+                    .nyttNavn(mapperFacade.map(request.getNyttNavn(), NyttNavnDTO.class))
+                    .syntetisk(isSyntetisk(request, person.getIdent()))
+                    .build();
+
+            if (nyRequest.getFoedtFoer().isBefore(nyRequest.getFoedtEtter())) {
+                nyRequest.setFoedtFoer(nyRequest.getFoedtEtter().plusDays(3));
+            }
+            nyPerson = createPersonService.execute(nyRequest);
+        }
 
         var oppdatertPerson = swopIdentsService.execute(person.getIdent(), nyPerson.getIdent());
 
