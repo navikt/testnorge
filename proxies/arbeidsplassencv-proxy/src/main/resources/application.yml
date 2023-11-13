@@ -22,14 +22,9 @@ spring:
     vault:
       enabled: false
 
-consumer:
+consumers:
   arbeidsplassencv:
     name: pam-cv-api
     namespace: teampam
     url: http://pam-cv-api.teampam.svc.nais.local
-    cluster: dev-fss
-  fakedings-token-provider:
-    name: fakedings
-    namespace: plattformsikkerhet
-    url: https://fakedings.intern.dev.nav.no
     cluster: dev-fss
