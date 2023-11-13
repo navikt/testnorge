@@ -17,6 +17,10 @@ azure:
       id: dummy
       secret: dummy
 
+opensearch:
+  index-name: dummy
+  total-fields: 150
+
 consumers:
   testnav-kodeverk-proxy:
     name: kodeverk-mock
