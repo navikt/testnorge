@@ -11,7 +11,7 @@ on:
 
 jobs:
   deploy-opensearch:
-    name: Deploy redis
+    name: Deploy opensearch
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
