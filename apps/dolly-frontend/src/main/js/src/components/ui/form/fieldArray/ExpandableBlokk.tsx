@@ -22,12 +22,14 @@ export default function ExpandableBlokk<T>({
 	idx,
 	children,
 	data,
+	whiteBackground,
 }: ExpandableBlokkProps<T>) {
 	const [isExpanded, setIsExpanded] = useState(false)
-	const headerClass = cn('dfa-blokk_header', { clickable: true })
+	const className = whiteBackground ? 'dfa-blokk-white' : 'dfa-blokk'
+	const headerClass = cn(`${className}_header`, { clickable: true })
 
 	return (
-		<div className="dfa-blokk">
+		<div className={className}>
 			<div className={headerClass} onClick={() => setIsExpanded(!isExpanded)}>
 				<Numbering idx={idx} />
 				<h2>{getHeader(data)} </h2>
@@ -37,7 +39,7 @@ export default function ExpandableBlokk<T>({
 					onClick={() => setIsExpanded(!isExpanded)}
 				/>
 			</div>
-			{isExpanded && <div className="dfa-blokk_content">{children}</div>}
+			{isExpanded && <div className={`${className}_content`}>{children}</div>}
 		</div>
 	)
 }

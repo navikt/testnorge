@@ -1,5 +1,10 @@
+import * as _ from 'lodash'
+
 // Specialbehov for modifisering og sortering av kodeverk
 export const SortKodeverkArray = (data) => {
+	if (!data || _.isEmpty(data.koder)) {
+		return []
+	}
 	const kodeverk = data.koder
 	if (data.name === 'Språk') {
 		const spesKoder = ['ES', 'EN', 'NN', 'NB']
@@ -73,21 +78,6 @@ export const SortKodeverkArray = (data) => {
 			{ value: '2521106', label: 'ADVOKAT' },
 		]
 		spesKoder.map((yrke) => kodeverk.unshift(yrke))
-	}
-
-	if (data.name === 'Arbeidsforholdstyper') {
-		// Kodeverket for arbeidsforholdstyper har en type som AAREG per i dag ikke støtter
-		return kodeverk
-			.filter((kode) => kode.value !== 'pensjonOgAndreTyperYtelserUtenAnsettelsesforhold')
-			.map((kode) => {
-				if (kode.value === 'frilanserOppdragstakerHonorarPersonerMm') {
-					return {
-						...kode,
-						label: 'Frilansere/oppdragstakere, honorar, m.m.',
-					}
-				}
-				return kode
-			})
 	}
 
 	if (data.name === 'Landkoder') {

@@ -73,7 +73,7 @@ export const DetaljertSykemelding = ({ formikBag }: SykemeldingForm) => {
 	}
 
 	const { kodeverk: yrker } = useKodeverk(ArbeidKodeverk.Yrker)
-	const randomYrke = getRandomValue(yrker?.koder)
+	const randomYrke = getRandomValue(yrker)
 
 	useEffect(() => {
 		const yrkePath = 'sykemelding.detaljertSykemelding.arbeidsgiver.yrkesbetegnelse'

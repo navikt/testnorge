@@ -75,17 +75,21 @@ export const DollyFaBlokk = ({
 	children,
 	showDeleteButton,
 	number,
-}) => (
-	<div className="dfa-blokk">
-		<div className="dfa-blokk_header">
-			<Numbering idx={number || idx + 1} />
-			<h2>{header}</h2>
-			{hjelpetekst && <Hjelpetekst>{hjelpetekst}</Hjelpetekst>}
-			{showDeleteButton && <DeleteButton onClick={handleRemove} />}
+	whiteBackground,
+}) => {
+	const className = whiteBackground ? 'dfa-blokk-white' : 'dfa-blokk'
+	return (
+		<div className={className}>
+			<div className={`${className}_header`}>
+				<Numbering idx={number || idx + 1} />
+				<h2>{header}</h2>
+				{hjelpetekst && <Hjelpetekst>{hjelpetekst}</Hjelpetekst>}
+				{showDeleteButton && <DeleteButton onClick={handleRemove} />}
+			</div>
+			<div className={`${className}_content`}>{children}</div>
 		</div>
-		<div className="dfa-blokk_content">{children}</div>
-	</div>
-)
+	)
+}
 
 export const DollyFaBlokkOrg = ({
 	header,
@@ -177,6 +181,7 @@ export const DollyFieldArray = ({
 								idx={idx}
 								getHeader={getHeader ? getHeader : () => header}
 								data={curr}
+								whiteBackground={whiteBackground}
 							>
 								{children(curr, idx)}
 							</ExpandableBlokk>
@@ -188,6 +193,7 @@ export const DollyFieldArray = ({
 								idx={idx}
 								header={getHeader ? getHeader(curr) : header}
 								hjelpetekst={hjelpetekst}
+								whiteBackground={whiteBackground}
 							>
 								{children(curr, idx)}
 							</DollyFaBlokk>
