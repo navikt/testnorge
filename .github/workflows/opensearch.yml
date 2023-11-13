@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - feature/provisjonering-av-open-search-server
     paths:
       - '.nais/opensearch.yml'
   workflow_dispatch:
