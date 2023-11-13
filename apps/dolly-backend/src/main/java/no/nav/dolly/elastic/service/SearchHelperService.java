@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.elastic.ElasticBestilling;
 import no.nav.dolly.elastic.dto.SearchResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
@@ -34,12 +35,15 @@ public class SearchHelperService {
     private final ElasticsearchOperations elasticsearchOperations;
     private Random random = new SecureRandom();
 
+    @Value("${opensearch.index-name}")
+    private String indexName;
+
     public SearchHits<ElasticBestilling> getRaw(Criteria criteria) {
 
         return elasticsearchOperations.search(new CriteriaQueryBuilder(criteria)
                         .withTimeout(Duration.ofSeconds(3))
                         .build(),
-                ElasticBestilling.class, IndexCoordinates.of("bestilling"));
+                ElasticBestilling.class, IndexCoordinates.of(indexName));
     }
 
     public SearchResponse search(Criteria criteria) {
@@ -99,6 +103,6 @@ public class SearchHelperService {
                         .withPageable(Pageable.ofSize(pageSize).withPage(pageNo))
                         .withTimeout(Duration.ofSeconds(3))
                         .build(),
-                ElasticBestilling.class, IndexCoordinates.of("bestilling"));
+                ElasticBestilling.class, IndexCoordinates.of(indexName));
     }
 }

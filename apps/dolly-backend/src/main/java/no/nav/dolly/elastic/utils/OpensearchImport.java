@@ -7,6 +7,7 @@ import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.dolly.elastic.ElasticBestilling;
 import no.nav.dolly.repository.BestillingRepository;
+import org.opensearch.OpenSearchException;
 import org.opensearch.action.admin.indices.settings.put.UpdateSettingsRequest;
 import org.opensearch.client.RequestOptions;
 import org.opensearch.client.RestHighLevelClient;
@@ -48,14 +49,14 @@ public class OpensearchImport implements ApplicationListener<ContextRefreshedEve
     public void onApplicationEvent(ContextRefreshedEvent event) {
 
         try {
-            var request = new UpdateSettingsRequest(index);
+            var request = new UpdateSettingsRequest();
             request.settings(Settings.builder()
                     .put(TOTAL_FIELDS, totalFields)
                     .build());
             restHighLevelClient.indices()
                     .putSettings(request, RequestOptions.DEFAULT);
 
-        } catch (IOException e) {
+        } catch (OpenSearchException | IOException e) {
             log.error("Feilet å sette {} for index {}", TOTAL_FIELDS, index, e);
         }
 

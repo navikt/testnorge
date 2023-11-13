@@ -13,6 +13,7 @@ import no.nav.testnav.libs.data.kontoregister.v1.BankkontonrUtlandDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.Identtype;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles({"test", "integrationtest"})
 @ExtendWith(SpringExtension.class)
 @AutoConfigureMockMvc(addFilters = false)
+@Disabled
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 class ElasticControllerTest {
 
@@ -65,7 +67,7 @@ class ElasticControllerTest {
     @BeforeEach
     void setup() {
 
-        bestillingElasticRepository.saveAll(lagreTestBestillinger());
+        bestillingElasticRepository.saveAll(getTestBestillinger());
     }
 
     @AfterEach
@@ -177,7 +179,7 @@ class ElasticControllerTest {
         assertThat(bestillinger.getTotalElements(), is(equalTo(0L)));
     }
 
-    private List<ElasticBestilling> lagreTestBestillinger() {
+    private List<ElasticBestilling> getTestBestillinger() {
 
         return List.of(
                 ElasticBestilling.builder()

@@ -18,7 +18,7 @@ azure:
       secret: dummy
 
 opensearch:
-  index-name: dummy
+  index-name: bestillinger
   total-fields: 150
 
 consumers:
