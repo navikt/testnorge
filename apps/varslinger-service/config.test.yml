@@ -16,8 +16,6 @@ spec:
           cluster: dev-gcp
         - application: dolly-frontend-dev-unstable
           cluster: dev-gcp
-        - application: testnav-oversikt-frontend
-          cluster: dev-gcp
         - application: team-dolly-lokal-app
           cluster: dev-gcp
         - application: app-1
