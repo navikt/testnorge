@@ -7,6 +7,7 @@ on:
       - feature/provisjonering-av-open-search-server
     paths:
       - '.nais/opensearch.yml'
+      - '.github/workflows/opensearch.yml'
 
 jobs:
   deploy-opensearch:
