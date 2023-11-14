@@ -5,9 +5,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.organisasjonforvalter.config.credentials.OrganisasjonServiceProperties;
+import no.nav.organisasjonforvalter.config.Consumers;
 import no.nav.testnav.libs.commands.organisasjonservice.v1.GetOrganisasjonCommand;
 import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 
@@ -30,19 +31,18 @@ public class OrganisasjonServiceConsumer {
 
     private final TokenExchange tokenExchange;
     private final WebClient webClient;
-    private final OrganisasjonServiceProperties serviceProperties;
+    private final ServerProperties serverProperties;
     private final ExecutorService executorService;
 
     public OrganisasjonServiceConsumer(
-            OrganisasjonServiceProperties serviceProperties,
+            Consumers consumers,
             TokenExchange tokenExchange) {
-
-        this.serviceProperties = serviceProperties;
+        serverProperties = consumers.getTestnavOrganisasjonService();
         this.webClient = WebClient.builder()
-                .baseUrl(serviceProperties.getUrl())
+                .baseUrl(serverProperties.getUrl())
                 .build();
         this.tokenExchange = tokenExchange;
-        this.executorService = Executors.newFixedThreadPool(serviceProperties.getThreads());
+        this.executorService = Executors.newFixedThreadPool(serverProperties.getThreads());
     }
 
     public Optional<OrganisasjonDTO> getStatus(String orgnummer, String miljoe) {
@@ -59,7 +59,7 @@ public class OrganisasjonServiceConsumer {
 
         long startTime = currentTimeMillis();
 
-        var token = tokenExchange.exchange(serviceProperties).block().getTokenValue();
+        var token = tokenExchange.exchange(serverProperties).block().getTokenValue();
 
         var completables = miljoer.stream()
                 .map(miljoe -> OrgFutureDTO.builder()

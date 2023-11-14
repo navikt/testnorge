@@ -1,7 +1,7 @@
 package no.nav.testnav.identpool.consumers;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.identpool.config.credentials.TpsMessagingServiceProperties;
+import no.nav.testnav.identpool.config.Consumers;
 import no.nav.testnav.identpool.consumers.command.TpsMessagingGetCommand;
 import no.nav.testnav.identpool.consumers.command.TpsValidation;
 import no.nav.testnav.identpool.dto.TpsStatusDTO;
@@ -24,16 +24,17 @@ public class TpsMessagingConsumer {
     private static final int PAGESIZE = 80;
 
     private final WebClient webClient;
-    private final ServerProperties serviceProperties;
+    private final ServerProperties serverProperties;
     private final TokenExchange tokenExchange;
 
     public TpsMessagingConsumer(
-            TpsMessagingServiceProperties serviceProperties,
-            TokenExchange tokenExchange) {
-
-        this.serviceProperties = serviceProperties;
-        this.webClient = WebClient.builder()
-                .baseUrl(serviceProperties.getUrl())
+            Consumers consumers,
+            TokenExchange tokenExchange
+    ) {
+        serverProperties = consumers.getTpsMessagingService();
+        this.webClient = WebClient
+                .builder()
+                .baseUrl(serverProperties.getUrl())
                 .build();
         this.tokenExchange = tokenExchange;
     }
@@ -52,7 +53,7 @@ public class TpsMessagingConsumer {
 
         var startTid = System.currentTimeMillis();
 
-        var response = tokenExchange.exchange(serviceProperties)
+        var response = tokenExchange.exchange(serverProperties)
                 .flatMapMany(token -> Flux.range(0, identer.size() / PAGESIZE + 1)
                         .flatMap(page -> new TpsMessagingGetCommand(webClient, token.getTokenValue(),
                                 identer.subList(page * PAGESIZE, Math.min(identer.size(), (page + 1) * PAGESIZE)),

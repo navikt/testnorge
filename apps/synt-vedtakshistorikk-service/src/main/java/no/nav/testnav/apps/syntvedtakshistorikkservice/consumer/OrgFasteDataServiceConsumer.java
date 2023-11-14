@@ -1,8 +1,8 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.config.Consumers;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.fastedata.GetOrganisasjonerCommand;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.credential.OrgFasteDataServiceProperties;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.fastedata.Organisasjon;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
@@ -18,20 +18,23 @@ public class OrgFasteDataServiceConsumer {
 
     private final WebClient webClient;
     private final TokenExchange tokenExchange;
-    private final ServerProperties serviceProperties;
+    private final ServerProperties serverProperties;
 
     public OrgFasteDataServiceConsumer(
-            OrgFasteDataServiceProperties serviceProperties,
+            Consumers consumers,
             TokenExchange tokenExchange
     ) {
-        this.serviceProperties = serviceProperties;
-        this.webClient = WebClient.builder().baseUrl(serviceProperties.getUrl()).build();
+        serverProperties = consumers.getTestnavOrganisasjonFasteDataService();
+        this.webClient = WebClient
+                .builder()
+                .baseUrl(serverProperties.getUrl())
+                .build();
         this.tokenExchange = tokenExchange;
     }
 
     public List<Organisasjon> getOrganisasjoner() {
         try {
-            return tokenExchange.exchange(serviceProperties)
+            return tokenExchange.exchange(serverProperties)
                     .flatMap(accessToken -> new GetOrganisasjonerCommand(accessToken.getTokenValue(), webClient).call())
                     .block();
         } catch (Exception e) {

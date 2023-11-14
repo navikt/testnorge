@@ -18,6 +18,5 @@ config:
     queue: DEV.QUEUE.1
 
 consumers:
-  testmiljoer:
-    service:
+  testmiljoerService:
       url: https://testnav-miljoer-service.intern.dev.nav.no

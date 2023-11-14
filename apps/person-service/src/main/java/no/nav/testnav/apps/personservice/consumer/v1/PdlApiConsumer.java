@@ -2,12 +2,13 @@ package no.nav.testnav.apps.personservice.consumer.v1;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.apps.personservice.config.credentials.PdlProxyProperties;
+import no.nav.testnav.apps.personservice.config.Consumers;
 import no.nav.testnav.apps.personservice.consumer.v1.command.GetPdlAktoerCommand;
 import no.nav.testnav.apps.personservice.consumer.v1.command.GetPdlPersonCommand;
 import no.nav.testnav.apps.personservice.consumer.v1.pdl.graphql.MetadataDTO;
 import no.nav.testnav.apps.personservice.consumer.v1.pdl.graphql.PdlAktoer;
 import no.nav.testnav.apps.personservice.domain.Person;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
@@ -37,29 +38,31 @@ public class PdlApiConsumer {
     private static final String PDL_Q1_URL = "/pdl-api-q1";
 
     private final WebClient webClient;
-    private final PdlProxyProperties serviceProperties;
+    private final ServerProperties serverProperties;
     private final TokenExchange tokenExchange;
 
     public PdlApiConsumer(
-            PdlProxyProperties serviceProperties,
+            Consumers consumers,
             TokenExchange tokenExchange,
-            ObjectMapper objectMapper) {
-
-        this.serviceProperties = serviceProperties;
+            ObjectMapper objectMapper
+    ) {
+        serverProperties = consumers.getPdlProxy();
         this.tokenExchange = tokenExchange;
         ExchangeStrategies jacksonStrategy = ExchangeStrategies.builder()
-                .codecs(config -> {
-                    config.defaultCodecs()
-                            .jackson2JsonEncoder(new Jackson2JsonEncoder(objectMapper, MediaType.APPLICATION_JSON));
-                    config.defaultCodecs()
-                            .jackson2JsonDecoder(new Jackson2JsonDecoder(objectMapper, MediaType.APPLICATION_JSON));
-                })
+                .codecs(
+                        config -> {
+                            config
+                                    .defaultCodecs()
+                                    .jackson2JsonEncoder(new Jackson2JsonEncoder(objectMapper, MediaType.APPLICATION_JSON));
+                            config
+                                    .defaultCodecs()
+                                    .jackson2JsonDecoder(new Jackson2JsonDecoder(objectMapper, MediaType.APPLICATION_JSON));
+                        })
                 .build();
-
         this.webClient = WebClient
                 .builder()
                 .exchangeStrategies(jacksonStrategy)
-                .baseUrl(serviceProperties.getUrl())
+                .baseUrl(serverProperties.getUrl())
                 .build();
     }
 
@@ -67,7 +70,7 @@ public class PdlApiConsumer {
 
         log.info("Henter person {} fra PDL", ident);
         return tokenExchange
-                .exchange(serviceProperties)
+                .exchange(serverProperties)
                 .flatMap(token -> new GetPdlPersonCommand(webClient, PDL_URL, ident, token.getTokenValue()).call())
                 .map(pdlPerson -> {
                     if (pdlPerson.getErrors().stream().anyMatch(value -> value.getMessage().equals("Fant ikke person"))) {
@@ -140,7 +143,7 @@ public class PdlApiConsumer {
 
         log.info("Henter ident {} fra PDL", ident);
         return tokenExchange
-                .exchange(serviceProperties)
+                .exchange(serverProperties)
                 .flatMap(token -> Mono.zip(new GetPdlAktoerCommand(webClient, PDL_URL, ident, token.getTokenValue()).call(),
                                 new GetPdlAktoerCommand(webClient, PDL_Q1_URL, ident, token.getTokenValue()).call())
                         .map(tuple -> {
@@ -154,7 +157,7 @@ public class PdlApiConsumer {
     public Mono<Boolean> isPerson(String ident, Set<String> opplysningId) {
 
         return tokenExchange
-                .exchange(serviceProperties)
+                .exchange(serverProperties)
                 .flatMap(token -> Mono.zip(new GetPdlAktoerCommand(webClient, PDL_Q1_URL, ident, token.getTokenValue()).call(),
                                 new GetPdlAktoerCommand(webClient, PDL_URL, ident, token.getTokenValue()).call())
                         .map(tuple -> isPresent(ident, tuple, opplysningId)));

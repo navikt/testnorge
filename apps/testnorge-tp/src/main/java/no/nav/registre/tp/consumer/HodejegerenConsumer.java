@@ -1,8 +1,8 @@
 package no.nav.registre.tp.consumer;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.tp.config.Consumers;
 import no.nav.registre.tp.consumer.command.GetLevendeIdenterCommand;
-import no.nav.registre.tp.consumer.credential.HodejegerenProperties;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
@@ -17,23 +17,24 @@ public class HodejegerenConsumer {
 
     private final WebClient webClient;
     private final TokenExchange tokenExchange;
-    private final ServerProperties serviceProperties;
+    private final ServerProperties serverProperties;
 
-    public HodejegerenConsumer(HodejegerenProperties serviceProperties,
-                               TokenExchange tokenExchange) {
-
-        this.serviceProperties = serviceProperties;
+    public HodejegerenConsumer(
+            Consumers consumers,
+            TokenExchange tokenExchange
+    ) {
+        serverProperties = consumers.getHodejegeren();
         this.tokenExchange = tokenExchange;
-
-        this.webClient = WebClient.builder()
-                .baseUrl(serviceProperties.getUrl())
+        this.webClient = WebClient
+                .builder()
+                .baseUrl(serverProperties.getUrl())
                 .build();
     }
 
     public List<String> getLevende(
             Long avspillergruppeId
     ) {
-        return tokenExchange.exchange(serviceProperties)
+        return tokenExchange.exchange(serverProperties)
                 .flatMap(accessToken -> new GetLevendeIdenterCommand(avspillergruppeId, accessToken.getTokenValue(), webClient).call())
                 .block();
     }

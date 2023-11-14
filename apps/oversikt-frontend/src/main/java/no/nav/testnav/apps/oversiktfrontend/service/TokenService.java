@@ -14,22 +14,11 @@ public class TokenService {
     private final TokenExchange tokenExchange;
 
     public Mono<AccessToken> getMagicToken() {
-        return tokenExchange.exchange(new MagicServerProperties("dev-gcp", "dolly", "team-dolly-lokal-app"));
+        return tokenExchange.exchange(ServerProperties.of("dev-gcp", "dolly", "team-dolly-lokal-app", "http://valid.but.not.used"));
     }
 
     public Mono<AccessToken> getToken(Application application) {
         return tokenExchange.exchange(application.toServerProperties());
-    }
-
-    public static class MagicServerProperties extends ServerProperties {
-        public MagicServerProperties(String cluster, String namespace, String name) {
-            super();
-            super.setCluster(cluster);
-            super.setNamespace(namespace);
-            super.setName(name);
-            super.setUrl("http://valid.but.not.used");
-        }
-
     }
 
 }

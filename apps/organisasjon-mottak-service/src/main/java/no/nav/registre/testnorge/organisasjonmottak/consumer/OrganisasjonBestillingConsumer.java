@@ -1,7 +1,7 @@
 package no.nav.registre.testnorge.organisasjonmottak.consumer;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.organisasjonmottak.config.properties.OrganisasjonBestillingServiceProperties;
+import no.nav.registre.testnorge.organisasjonmottak.config.Consumers;
 import no.nav.registre.testnorge.organisasjonmottak.consumer.command.RegisterBestillingCommand;
 import no.nav.testnav.libs.dto.organiasjonbestilling.v2.OrderDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
@@ -14,17 +14,16 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class OrganisasjonBestillingConsumer {
     private final WebClient webClient;
     private final TokenExchange tokenExchange;
-    private final ServerProperties properties;
+    private final ServerProperties serverProperties;
 
     public OrganisasjonBestillingConsumer(
-            OrganisasjonBestillingServiceProperties properties,
+            Consumers consumers,
             TokenExchange tokenExchange) {
-
-        this.properties = properties;
+        serverProperties = consumers.getOrganisasjonBestillingService();
         this.tokenExchange = tokenExchange;
         this.webClient = WebClient
                 .builder()
-                .baseUrl(properties.getUrl())
+                .baseUrl(serverProperties.getUrl())
                 .build();
     }
 
@@ -37,7 +36,7 @@ public class OrganisasjonBestillingConsumer {
                     .uuid(uuid)
                     .build();
 
-            var order = tokenExchange.exchange(properties)
+            var order = tokenExchange.exchange(serverProperties)
                     .flatMap(accessToken -> new RegisterBestillingCommand(webClient, accessToken.getTokenValue(), orderDTO).call())
                     .block();
             log.info("Ordre med id:{} opprettet.", order.getId());

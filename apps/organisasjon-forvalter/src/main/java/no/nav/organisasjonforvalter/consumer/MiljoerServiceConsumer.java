@@ -1,8 +1,9 @@
 package no.nav.organisasjonforvalter.consumer;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.organisasjonforvalter.config.credentials.MiljoerServiceProperties;
+import no.nav.organisasjonforvalter.config.Consumers;
 import no.nav.organisasjonforvalter.consumer.command.MiljoerServiceCommand;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -21,15 +22,15 @@ public class MiljoerServiceConsumer {
 
     private final TokenExchange tokenExchange;
     private final WebClient webClient;
-    private final MiljoerServiceProperties serviceProperties;
+    private final ServerProperties serverProperties;
 
     public MiljoerServiceConsumer(
-            MiljoerServiceProperties serviceProperties,
+            Consumers consumers,
             TokenExchange tokenExchange) {
 
-        this.serviceProperties = serviceProperties;
+        serverProperties = consumers.getTestnavMiljoerService();
         this.webClient = WebClient.builder()
-                .baseUrl(serviceProperties.getUrl())
+                .baseUrl(serverProperties.getUrl())
                 .build();
         this.tokenExchange = tokenExchange;
     }
@@ -38,7 +39,7 @@ public class MiljoerServiceConsumer {
     public Set<String> getOrgMiljoer() {
 
         try {
-            return Stream.of(tokenExchange.exchange(serviceProperties)
+            return Stream.of(tokenExchange.exchange(serverProperties)
                             .flatMap(token ->
                                     new MiljoerServiceCommand(webClient, token.getTokenValue()).call()).block())
                     .filter(env -> !env.equals("u5") && !env.equals("qx"))

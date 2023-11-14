@@ -4,7 +4,7 @@ import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactiveproxy.config.DevConfig;
 import no.nav.testnav.libs.reactiveproxy.config.SecurityConfig;
 import no.nav.testnav.libs.reactivesecurity.exchange.tokenx.TokenXService;
-import no.nav.testnav.proxies.arbeidsplassencvproxy.config.ArbeidsplassenCVProperties;
+import no.nav.testnav.proxies.arbeidsplassencvproxy.config.Consumers;
 import no.nav.testnav.proxies.arbeidsplassencvproxy.consumer.FakedingsConsumer;
 import no.nav.testnav.proxies.arbeidsplassencvproxy.filter.AddAuthenticationRequestGatewayFilterFactory;
 import org.springframework.boot.SpringApplication;
@@ -33,25 +33,29 @@ public class ArbeidsplassenCVProxyApplicationStarter {
 
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder,
-                                           ArbeidsplassenCVProperties arbeidsplassenCVProperties,
+                                           Consumers consumers,
                                            FakedingsConsumer fakedingsConsumer,
                                            TokenXService tokenXService) {
-
-        return builder.routes()
-                .route(createRoute(arbeidsplassenCVProperties.getUrl(),
+        return builder
+                .routes()
+                .route(createRoute(
+                        consumers
+                                .getArbeidsplassenCv()
+                                .getUrl(),
                         AddAuthenticationRequestGatewayFilterFactory
-                                .bearerIdportenHeaderFilter(fakedingsConsumer, tokenXService,
-                                        arbeidsplassenCVProperties)))
+                                .bearerIdportenHeaderFilter(fakedingsConsumer, tokenXService, consumers.getArbeidsplassenCv())))
                 .build();
     }
 
     private Function<PredicateSpec, Buildable<Route>> createRoute(String url, GatewayFilter filter) {
         return spec -> spec
                 .path("/**")
-                .filters(filterSpec -> filterSpec
-                        .rewritePath("/(?<segment>.*)", "/pam-cv-api/${segment}")
-                        .setResponseHeader("Content-Type", "application/json; charset=UTF-8")
-                        .filter(filter)
-                ).uri(url);
+                .filters(
+                        filterSpec -> filterSpec
+                                .rewritePath("/(?<segment>.*)", "/pam-cv-api/${segment}")
+                                .setResponseHeader("Content-Type", "application/json; charset=UTF-8")
+                                .filter(filter))
+                .uri(url);
     }
+
 }

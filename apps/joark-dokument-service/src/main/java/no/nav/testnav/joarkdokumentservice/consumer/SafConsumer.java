@@ -1,7 +1,7 @@
 package no.nav.testnav.joarkdokumentservice.consumer;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.joarkdokumentservice.config.credentias.TestnavSafProxyServiceProperties;
+import no.nav.testnav.joarkdokumentservice.config.Consumers;
 import no.nav.testnav.joarkdokumentservice.consumer.command.GetDokumentCommand;
 import no.nav.testnav.joarkdokumentservice.consumer.command.GetDokumentInfoCommand;
 import no.nav.testnav.joarkdokumentservice.consumer.command.GetPDFCommand;
@@ -10,7 +10,6 @@ import no.nav.testnav.joarkdokumentservice.domain.DokumentType;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
-
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -21,25 +20,27 @@ import static java.util.Objects.nonNull;
 public class SafConsumer {
     private final WebClient webClient;
     private final TokenExchange tokenExchange;
-    private final ServerProperties properties;
+    private final ServerProperties serverProperties;
 
     public SafConsumer(
-            TestnavSafProxyServiceProperties properties,
+            Consumers consumers,
             TokenExchange tokenExchange) {
-
         this.tokenExchange = tokenExchange;
-        this.properties = properties;
-        this.webClient = WebClient.builder()
+        serverProperties = consumers.getTestnavSafProxy();
+        this.webClient = WebClient
+                .builder()
                 .exchangeStrategies(
-                        ExchangeStrategies.builder()
-                                .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(1024 * 1024 * 50)).build())
-                .baseUrl(properties.getUrl())
+                        ExchangeStrategies
+                                .builder()
+                                .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(1024 * 1024 * 50))
+                                .build())
+                .baseUrl(serverProperties.getUrl())
                 .build();
     }
 
     public JournalpostDTO getJournalpost(String journalpostId, String miljo) {
         return tokenExchange
-                .exchange(properties)
+                .exchange(serverProperties)
                 .flatMap(accessToken -> new GetDokumentInfoCommand(
                         webClient,
                         accessToken.getTokenValue(),
@@ -58,7 +59,7 @@ public class SafConsumer {
 
     public String getDokument(String journalpostId, String dokumentInfoId, DokumentType dokumentType, String miljo) {
         return tokenExchange
-                .exchange(properties)
+                .exchange(serverProperties)
                 .flatMap(accessToken -> new GetDokumentCommand(
                                 webClient,
                                 accessToken.getTokenValue(),
@@ -72,7 +73,7 @@ public class SafConsumer {
 
     public byte[] getPDF(String journalpostId, String dokumentInfoId, String miljo) {
         return tokenExchange
-                .exchange(properties)
+                .exchange(serverProperties)
                 .flatMap(accessToken -> new GetPDFCommand(
                                 webClient,
                                 accessToken.getTokenValue(),

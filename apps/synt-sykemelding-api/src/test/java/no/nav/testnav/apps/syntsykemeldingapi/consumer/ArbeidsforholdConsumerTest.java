@@ -3,9 +3,9 @@ package no.nav.testnav.apps.syntsykemeldingapi.consumer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import no.nav.testnav.apps.syntsykemeldingapi.config.credentials.ArbeidsforholdServiceProperties;
 import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v1.ArbeidsforholdDTO;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.junit.Before;
 import org.junit.Test;
@@ -58,7 +58,7 @@ public class ArbeidsforholdConsumerTest {
     @Before
     public void before() {
         WireMock.reset();
-        when(tokenService.exchange(ArgumentMatchers.any(ArbeidsforholdServiceProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
+        when(tokenService.exchange(ArgumentMatchers.any(ServerProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
         arbeidsforholdResponse = getTestArbeidsforholdDTO(arbeidsforholdId, orgnr);
     }
 

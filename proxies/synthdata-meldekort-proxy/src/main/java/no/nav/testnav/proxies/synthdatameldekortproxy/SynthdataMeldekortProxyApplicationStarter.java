@@ -6,8 +6,8 @@ import no.nav.testnav.libs.reactiveproxy.filter.AddAuthenticationRequestGatewayF
 import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2ServerToServerConfiguration;
 import no.nav.testnav.libs.reactivesecurity.exchange.azuread.NavAzureAdTokenService;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.proxies.synthdatameldekortproxy.config.Consumers;
 import no.nav.testnav.proxies.synthdatameldekortproxy.config.VaultConfig;
-import no.nav.testnav.proxies.synthdatameldekortproxy.config.credentials.SyntMeldekortProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.gateway.route.RouteLocator;
@@ -29,15 +29,23 @@ public class SynthdataMeldekortProxyApplicationStarter {
     }
 
     @Bean
-    public RouteLocator customRouteLocator(RouteLocatorBuilder builder, NavAzureAdTokenService tokenService, SyntMeldekortProperties properties) {
-
+    public RouteLocator customRouteLocator(
+            RouteLocatorBuilder builder,
+            NavAzureAdTokenService tokenService,
+            Consumers consumers
+    ) {
         var addAuthenticationHeaderFilter = AddAuthenticationRequestGatewayFilterFactory
-                .bearerAuthenticationHeaderFilter(() -> tokenService.exchange(properties).map(AccessToken::getTokenValue));
-
-        return builder.routes()
-                .route(spec -> spec.path("/**")
-                        .filters(filterSpec -> filterSpec.filter(addAuthenticationHeaderFilter))
-                        .uri(properties.getUrl()))
+                .bearerAuthenticationHeaderFilter(
+                        () -> tokenService
+                                .exchange(consumers.getSyntMeldekort())
+                                .map(AccessToken::getTokenValue));
+        return builder
+                .routes()
+                .route(
+                        spec -> spec.path("/**")
+                                .filters(filterSpec -> filterSpec.filter(addAuthenticationHeaderFilter))
+                                .uri(consumers.getSyntMeldekort().getUrl()))
                 .build();
     }
+
 }

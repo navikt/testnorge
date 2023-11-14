@@ -6,3 +6,10 @@ config:
     preprod:
       user: 'preprod_user'
       password: 'preprod_password'
+
+consumers:
+  testmiljoerService:
+      url: http://not.actually.used
+      cluster: dev-gcp
+      namespace: dolly
+      name: testnav-miljoer-service

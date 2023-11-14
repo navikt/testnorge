@@ -3,6 +3,7 @@ package no.nav.testnav.proxies.arenaforvalterenproxy;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactiveproxy.config.DevConfig;
 import no.nav.testnav.libs.reactiveproxy.config.SecurityConfig;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.gateway.route.Route;
@@ -31,15 +32,19 @@ public class ArenaForvalterenProxyApplicationStarter {
     }
 
     @Bean
-    public RouteLocator customRouteLocator(RouteLocatorBuilder builder, ArenaServerProperties serverProperties) {
-
-        var routes = builder.routes()
-                .route(spec -> spec.path("/api/**").uri("http://arena-forvalteren.teamarenanais.svc.nais.local/"));
-
-        Arrays.stream(ARENA_MILJOER)
-                .forEach(env ->
-                        routes.route(createRoute(env, serverProperties.forEnvironment(env).getUrl())));
-
+    public RouteLocator customRouteLocator(
+            RouteLocatorBuilder builder,
+            Consumers consumers
+    ) {
+        var routes = builder
+                .routes()
+                .route(
+                        spec -> spec
+                                .path("/api/**")
+                                .uri("http://arena-forvalteren.teamarenanais.svc.nais.local/"));
+        Arrays
+                .stream(ARENA_MILJOER)
+                .forEach(env -> routes.route(createRoute(env, forEnvironment(consumers.getArenaServices(), env).getUrl())));
         return routes.build();
     }
 
@@ -50,4 +55,14 @@ public class ArenaForvalterenProxyApplicationStarter {
                         .rewritePath("/" + segment + "/(?<segment>.*)", "/${segment}")
                 ).uri(host);
     }
+
+    private static ServerProperties forEnvironment(ServerProperties original, String env) {
+        return ServerProperties.of(
+                original.getCluster(),
+                original.getNamespace(),
+                original.getName().replace("MILJOE", env),
+                original.getUrl().replace("MILJOE", env)
+        );
+    }
+
 }

@@ -2,20 +2,16 @@ package no.nav.testnav.apps.personservice.consumer.v1;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.apps.personservice.consumer.v1.command.OpprettFoedselCommand;
-import no.nav.testnav.apps.personservice.consumer.v1.command.OpprettPersonCommand;
-import no.nav.testnav.apps.personservice.consumer.v1.command.PostAdresseCommand;
-import no.nav.testnav.apps.personservice.consumer.v1.command.PostNavnCommand;
-import no.nav.testnav.apps.personservice.consumer.v1.command.PostTagsCommand;
+import no.nav.testnav.apps.personservice.config.Consumers;
+import no.nav.testnav.apps.personservice.consumer.v1.command.*;
 import no.nav.testnav.apps.personservice.consumer.v1.exception.PdlCreatePersonException;
-import no.nav.testnav.apps.personservice.config.credentials.PdlProxyProperties;
 import no.nav.testnav.apps.personservice.domain.Person;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -25,28 +21,31 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class PdlTestdataConsumer {
 
     private final WebClient webClient;
-    private final PdlProxyProperties serviceProperties;
+    private final ServerProperties serverProperties;
     private final TokenExchange tokenExchange;
 
     public PdlTestdataConsumer(
-            PdlProxyProperties serviceProperties,
+            Consumers consumers,
             TokenExchange tokenExchange,
-            ObjectMapper objectMapper) {
-
-        this.serviceProperties = serviceProperties;
+            ObjectMapper objectMapper
+    ) {
+        serverProperties = consumers.getPdlProxy();
         this.tokenExchange = tokenExchange;
-        ExchangeStrategies jacksonStrategy = ExchangeStrategies.builder()
+        ExchangeStrategies jacksonStrategy = ExchangeStrategies
+                .builder()
                 .codecs(config -> {
-                    config.defaultCodecs()
+                    config
+                            .defaultCodecs()
                             .jackson2JsonEncoder(new Jackson2JsonEncoder(objectMapper, MediaType.APPLICATION_JSON));
-                    config.defaultCodecs()
+                    config
+                            .defaultCodecs()
                             .jackson2JsonDecoder(new Jackson2JsonDecoder(objectMapper, MediaType.APPLICATION_JSON));
-                }).build();
-
+                })
+                .build();
         this.webClient = WebClient
                 .builder()
                 .exchangeStrategies(jacksonStrategy)
-                .baseUrl(serviceProperties.getUrl())
+                .baseUrl(serverProperties.getUrl())
                 .build();
     }
 
@@ -81,7 +80,7 @@ public class PdlTestdataConsumer {
         log.info("Oppretter person med ident {} i PDL", person.getIdent());
 
         try {
-            var accessToken = tokenExchange.exchange(serviceProperties).block();
+            var accessToken = tokenExchange.exchange(serverProperties).block();
             opprettPerson(person, kilde, accessToken);
             opprettNavn(person, kilde, accessToken);
             opprettAdresse(person, kilde, accessToken);

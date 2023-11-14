@@ -6,8 +6,8 @@ import no.nav.testnav.libs.reactiveproxy.filter.AddAuthenticationRequestGatewayF
 import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2ServerToServerConfiguration;
 import no.nav.testnav.libs.reactivesecurity.exchange.azuread.TrygdeetatenAzureAdTokenService;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.proxies.kontoregisterperson.config.Consumers;
 import no.nav.testnav.proxies.kontoregisterperson.config.LocalVaultConfig;
-import no.nav.testnav.proxies.kontoregisterperson.config.credentials.KontoregisterProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.gateway.route.RouteLocator;
@@ -29,16 +29,23 @@ public class KontoregisterProxyApplicationStarter {
     }
 
     @Bean
-    public RouteLocator customRouteLocator(RouteLocatorBuilder builder, TrygdeetatenAzureAdTokenService tokenService, KontoregisterProperties properties) {
-
+    public RouteLocator customRouteLocator(
+            RouteLocatorBuilder builder,
+            TrygdeetatenAzureAdTokenService tokenService,
+            Consumers consumers
+    ) {
         var addAuthenticationHeaderDevFilter = AddAuthenticationRequestGatewayFilterFactory
-                .bearerAuthenticationHeaderFilter(() -> tokenService.exchange(properties).map(AccessToken::getTokenValue));
-
-        return builder.routes()
-                .route(spec -> spec.path("/**")
-                        .filters(filterSpec -> filterSpec.filter(addAuthenticationHeaderDevFilter))
-                        .uri(properties.getUrl()))
+                .bearerAuthenticationHeaderFilter(
+                        () -> tokenService
+                                .exchange(consumers.getKontoregister())
+                                .map(AccessToken::getTokenValue));
+        return builder
+                .routes()
+                .route(
+                        spec -> spec
+                                .path("/**")
+                                .filters(filterSpec -> filterSpec.filter(addAuthenticationHeaderDevFilter))
+                                .uri(consumers.getKontoregister().getUrl()))
                 .build();
-
     }
 }
