@@ -19,6 +19,11 @@ azure:
 
 opensearch:
   total-fields: 150
+open:
+  search:
+    uri: http://localhost:9200
+    username: dummy
+    password: dummy
 
 consumers:
   testnav-kodeverk-proxy:

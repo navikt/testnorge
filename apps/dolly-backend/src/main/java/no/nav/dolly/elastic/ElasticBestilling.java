@@ -43,7 +43,7 @@ import java.util.List;
 
 import static java.util.Objects.isNull;
 
-@Document(indexName = "${opensearch.index-navn}")
+@Document(indexName = "bestilling")
 @Data
 @Builder
 @NoArgsConstructor
