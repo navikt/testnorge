@@ -38,9 +38,6 @@ public class OpensearchImport implements ApplicationListener<ContextRefreshedEve
     private final MapperFacade mapperFacade;
     private final RestHighLevelClient restHighLevelClient;
 
-    @Value("${opensearch.index-name}")
-    private String index;
-
     @Value("${opensearch.total-fields}")
     private String totalFields;
 
@@ -57,7 +54,7 @@ public class OpensearchImport implements ApplicationListener<ContextRefreshedEve
                     .putSettings(request, RequestOptions.DEFAULT);
 
         } catch (OpenSearchException | IOException e) {
-            log.error("Feilet å sette {} for index {}", TOTAL_FIELDS, index, e);
+            log.error("Feilet å sette {} for samtlige indekser", TOTAL_FIELDS, e);
         }
 
         var start = System.currentTimeMillis();

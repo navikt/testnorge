@@ -13,7 +13,6 @@ import no.nav.testnav.libs.data.kontoregister.v1.BankkontonrUtlandDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.Identtype;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +45,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles({"test", "integrationtest"})
 @ExtendWith(SpringExtension.class)
 @AutoConfigureMockMvc(addFilters = false)
-@Disabled
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 class ElasticControllerTest {
 

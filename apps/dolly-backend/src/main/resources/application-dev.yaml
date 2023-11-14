@@ -15,6 +15,3 @@ consumers:
   testnav-organisasjon-tilgang-service:
     cluster: dev-gcp
     url: http://testnav-organisasjon-tilgang-service.dolly.svc.cluster.local
-
-opensearch:
-  index-name: bestillinger-dev
