@@ -45,7 +45,9 @@ management:
 
 open:
   search:
-    uri: localhost:9200
+    uri: http://localhost:9200
+    username: dummy
+    password: dummy
 
 consumers:
   testnav-pdl-forvalter:

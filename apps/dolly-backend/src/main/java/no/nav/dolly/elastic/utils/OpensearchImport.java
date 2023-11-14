@@ -6,22 +6,19 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.dolly.elastic.ElasticBestilling;
+import no.nav.dolly.elastic.consumer.ElasticParamsConsumer;
 import no.nav.dolly.repository.BestillingRepository;
-import org.opensearch.OpenSearchException;
-import org.opensearch.action.admin.indices.settings.put.UpdateSettingsRequest;
-import org.opensearch.client.RequestOptions;
 import org.opensearch.client.RestHighLevelClient;
-import org.opensearch.common.settings.Settings;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.data.elasticsearch.UncategorizedElasticsearchException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 
-import java.io.IOException;
 import java.util.Comparator;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -37,6 +34,7 @@ public class OpensearchImport implements ApplicationListener<ContextRefreshedEve
     private final BestillingElasticRepository bestillingElasticRepository;
     private final MapperFacade mapperFacade;
     private final RestHighLevelClient restHighLevelClient;
+    private final ElasticParamsConsumer elasticParamsConsumer;
 
     @Value("${opensearch.total-fields}")
     private String totalFields;
@@ -45,17 +43,21 @@ public class OpensearchImport implements ApplicationListener<ContextRefreshedEve
     @Transactional
     public void onApplicationEvent(ContextRefreshedEvent event) {
 
-        try {
-            var request = new UpdateSettingsRequest();
-            request.settings(Settings.builder()
-                    .put(TOTAL_FIELDS, totalFields)
-                    .build());
-            restHighLevelClient.indices()
-                    .putSettings(request, RequestOptions.DEFAULT);
-
-        } catch (OpenSearchException | IOException e) {
-            log.error("Feilet å sette {} for samtlige indekser", TOTAL_FIELDS, e);
-        }
+        var settinger = new HttpHeaders();
+        settinger.add(TOTAL_FIELDS, totalFields);
+        elasticParamsConsumer.oppdaterParametre(settinger)
+                .subscribe(status -> log.info("Status fra parameter oppdatering: {}", status));
+//        try {
+//            var request = new UpdateSettingsRequest();
+//            request.settings(Settings.builder()
+//                    .put(TOTAL_FIELDS, totalFields)
+//                    .build());
+//            restHighLevelClient.indices()
+//                    .putSettings(request, RequestOptions.DEFAULT);
+//
+//        } catch (OpenSearchException | IOException e) {
+//            log.error("Feilet å sette {} for samtlige indekser", TOTAL_FIELDS, e);
+//        }
 
         var start = System.currentTimeMillis();
         var antallLest = new AtomicInteger(0);

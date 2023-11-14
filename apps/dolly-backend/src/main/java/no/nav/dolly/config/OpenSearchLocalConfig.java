@@ -28,7 +28,7 @@ public class OpenSearchLocalConfig extends AbstractOpenSearchConfiguration {
     public RestHighLevelClient opensearchClient() {
 
         return RestClients.create(ClientConfiguration.builder()
-                        .connectedTo(uri.replace("https://", ""))
+                        .connectedTo(uri.replace("http://", ""))
                         .withConnectTimeout(Duration.ofSeconds(10))
                         .withSocketTimeout(Duration.ofSeconds(5))
                         .build())
