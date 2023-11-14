@@ -2,11 +2,13 @@ import '@/styles/variables.less'
 import styled from 'styled-components'
 import { Form, Formik } from 'formik'
 import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
-import React from 'react'
+import React, { useState } from 'react'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { Accordion, Button } from '@navikt/ds-react'
 import { AdresseKodeverk, GtKodeverk } from '@/config/kodeverk'
+import { useSoekIdenter } from '@/utils/hooks/usePersonSoek'
+import { SoekRequest } from '@/pages/dollySoek/DollySoekTypes'
 
 const SoekefeltWrapper = styled.div`
 	display: flex;
@@ -67,13 +69,23 @@ const initialValues = {
 }
 
 export const SoekForm = () => {
+	const [request, setRequest] = useState(null)
+	const { result, loading, error } = useSoekIdenter(request)
+
+	const handleSubmit = (request: SoekRequest) => {
+		setRequest(request)
+	}
+
 	const personPath = 'personRequest'
+
 	return (
 		<SoekefeltWrapper>
 			<Soekefelt>
-				<Formik initialValues={initialValues} onSubmit={() => console.log('submit...')}>
+				<Formik
+					initialValues={initialValues}
+					onSubmit={(request: SoekRequest) => handleSubmit(request)}
+				>
 					{(formikBag) => {
-						console.log('formikBag: ', formikBag.values) //TODO - SLETT MEG
 						return (
 							<>
 								<Form className="flexbox--flex-wrap" autoComplete="off">
@@ -238,8 +250,8 @@ export const SoekForm = () => {
 									<Button
 										onClick={() => formikBag.handleSubmit()}
 										variant="primary"
-										// disabled={loading}
-										// loading={loading}
+										disabled={loading}
+										loading={loading}
 										type="submit"
 									>
 										Søk
