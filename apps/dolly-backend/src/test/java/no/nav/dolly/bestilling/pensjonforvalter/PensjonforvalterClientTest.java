@@ -387,7 +387,7 @@ class PensjonforvalterClientTest {
                                         .build()),
                                 new ResponseEnvironment("TEST2", PensjonforvalterResponse.Response.builder()
                                         .httpStatus(new PensjonforvalterResponse.HttpStatus("Intern feil", 500))
-                                        .message("ytelse2 feil on TEST2")
+                                        .message("{ytelse2 feil on TEST2}")
                                         .build())))
                         .build()));
 
@@ -399,8 +399,8 @@ class PensjonforvalterClientTest {
                 .thenReturn(new PensjonTpForholdRequest());
         when(mapperFacade.map(any(PensjonData.TpYtelse.class), eq(PensjonTpYtelseRequest.class), any(MappingContext.class)))
                 .thenReturn(new PensjonTpYtelseRequest());
-        when(errorStatusDecoder.getErrorText(HttpStatus.INTERNAL_SERVER_ERROR, "ytelse2 feil on TEST2"))
-                .thenReturn("Feil= ytelse2 feil on TEST2");
+        when(errorStatusDecoder.getErrorText(any(), any()))
+                .thenCallRealMethod();
         when(pdlDataConsumer.getPersoner(anyList())).thenReturn(Flux.empty());
         when(pensjonforvalterConsumer.hentSamboer(anyString(), anyString())).thenReturn(Flux.empty());
 
@@ -411,7 +411,8 @@ class PensjonforvalterClientTest {
                             .persister(any(BestillingProgress.class), any(), statusCaptor.capture());
                     assertThat(statusCaptor.getAllValues().get(0).split("#")[0], is(equalTo("PensjonForvalter")));
                     assertThat(Arrays.asList(statusCaptor.getAllValues().get(0).split("#")[1].split(",")),
-                            containsInAnyOrder("TEST1:Info= Oppretting startet mot PESYS ...","TEST2:Info= Oppretting startet mot PESYS ..."));                    assertThat(statusCaptor.getAllValues().get(1), is(CoreMatchers.equalTo("PensjonForvalter#TEST1:OK,TEST2:OK$TpForhold#TEST2:Feil= ytelse2 feil on TEST2,TEST1:OK")));
+                            containsInAnyOrder("TEST1:Info= Oppretting startet mot PESYS ...","TEST2:Info= Oppretting startet mot PESYS ..."));
+                    assertThat(statusCaptor.getAllValues().get(1), is(CoreMatchers.equalTo("PensjonForvalter#TEST1:OK,TEST2:OK$TpForhold#TEST2:Feil= ytelse2 feil on TEST2,TEST1:OK")));
                 })
                 .verifyComplete();
     }
@@ -539,4 +540,80 @@ class PensjonforvalterClientTest {
             return response;
         }
     }
+
+    @Test
+    void testGetErrorWithMessage() {
+
+        when(errorStatusDecoder.getErrorText(any(), any()))
+                .thenCallRealMethod();
+        var entry = ResponseEnvironment
+                .builder()
+                .miljo("ENV")
+                .response(
+                        PensjonforvalterResponse.Response
+                                .builder()
+                                .path("/test")
+                                .message("{MESSAGE}")
+                                .httpStatus(
+                                        PensjonforvalterResponse.HttpStatus
+                                                .builder()
+                                                .status(500)
+                                                .reasonPhrase("REASON")
+                                                .build())
+                                .build())
+                .build();
+        var error = pensjonforvalterClient.getError(entry);
+        assertThat(error, is("Feil= MESSAGE"));
+    }
+
+    @Test
+    void testGetErrorWithoutMessageButWithReason() {
+
+        when(errorStatusDecoder.getErrorText(any(), any()))
+                .thenCallRealMethod();
+        var entry = ResponseEnvironment
+                .builder()
+                .miljo("ENV")
+                .response(
+                        PensjonforvalterResponse.Response
+                                .builder()
+                                .path("/test")
+                                .message(null)
+                                .httpStatus(
+                                        PensjonforvalterResponse.HttpStatus
+                                                .builder()
+                                                .status(500)
+                                                .reasonPhrase("REASON")
+                                                .build())
+                                .build())
+                .build();
+        var error = pensjonforvalterClient.getError(entry);
+        assertThat(error, is("Feil= REASON"));
+    }
+
+    @Test
+    void testGetErrorWithoutMessageAndWithReason() {
+
+        when(errorStatusDecoder.getErrorText(any(), any()))
+                .thenCallRealMethod();
+        var entry = ResponseEnvironment
+                .builder()
+                .miljo("ENV")
+                .response(
+                        PensjonforvalterResponse.Response
+                                .builder()
+                                .path("/test")
+                                .message(null)
+                                .httpStatus(
+                                        PensjonforvalterResponse.HttpStatus
+                                                .builder()
+                                                .status(500)
+                                                .reasonPhrase(null)
+                                                .build())
+                                .build())
+                .build();
+        var error = pensjonforvalterClient.getError(entry);
+        assertThat(error, is("Feil= 500 INTERNAL_SERVER_ERROR"));
+    }
+
 }
