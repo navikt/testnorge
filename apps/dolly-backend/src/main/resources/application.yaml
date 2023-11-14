@@ -83,6 +83,7 @@ logging:
             jdbc: ERROR
 
 opensearch:
+  index-name: bestilling
   total-fields: 1500
 
 consumers:

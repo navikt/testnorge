@@ -1,5 +1,7 @@
 package no.nav.dolly.elastic.utils;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -14,11 +16,11 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.data.elasticsearch.UncategorizedElasticsearchException;
-import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 
+import java.io.IOException;
 import java.util.Comparator;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -35,6 +37,7 @@ public class OpensearchImport implements ApplicationListener<ContextRefreshedEve
     private final MapperFacade mapperFacade;
     private final RestHighLevelClient restHighLevelClient;
     private final ElasticParamsConsumer elasticParamsConsumer;
+    private final ObjectMapper objectMapper;
 
     @Value("${opensearch.total-fields}")
     private String totalFields;
@@ -43,16 +46,37 @@ public class OpensearchImport implements ApplicationListener<ContextRefreshedEve
     @Transactional
     public void onApplicationEvent(ContextRefreshedEvent event) {
 
-        var settinger = new HttpHeaders();
-        settinger.add(TOTAL_FIELDS, totalFields);
-        elasticParamsConsumer.oppdaterParametre(settinger)
-                .subscribe(status -> log.info("Status fra parameter oppdatering: {}", status));
+        var jsonString  = """
+                {\"settings\": {
+                    \"index\" : {
+                      \"mapping\" : {
+                        \"total_fields\" : {
+                          \"limit\" : \"1500\"
+                        }
+                      }
+                    }
+                }} """;
+
+        try {
+            var jsonFactory = objectMapper.getFactory();
+            var jsonParser = jsonFactory.createParser(jsonString);
+            var jsonNode = (JsonNode) objectMapper.readTree(jsonParser);
+            elasticParamsConsumer.oppdaterParametre(jsonNode)
+                    .subscribe(status -> log.info("Status fra parameter oppdatering: {}", status));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 //        try {
+//            var indexRequest = new CreateIndexRequest.Builder()
+//                    .index("bestillinger")
+//                    .settings(IndexSettings.Builder)
+//                    .build();
 //            var request = new UpdateSettingsRequest();
 //            request.settings(Settings.builder()
 //                    .put(TOTAL_FIELDS, totalFields)
 //                    .build());
 //            restHighLevelClient.indices()
+//                    .create()
 //                    .putSettings(request, RequestOptions.DEFAULT);
 //
 //        } catch (OpenSearchException | IOException e) {
