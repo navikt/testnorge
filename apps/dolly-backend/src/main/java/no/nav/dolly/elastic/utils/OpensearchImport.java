@@ -10,7 +10,6 @@ import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.dolly.elastic.ElasticBestilling;
 import no.nav.dolly.elastic.consumer.ElasticParamsConsumer;
 import no.nav.dolly.repository.BestillingRepository;
-import org.opensearch.client.RestHighLevelClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Profile;
@@ -30,58 +29,23 @@ import java.util.concurrent.atomic.AtomicInteger;
 @RequiredArgsConstructor
 public class OpensearchImport implements ApplicationListener<ContextRefreshedEvent> {
 
-    private static final String TOTAL_FIELDS = "index.mapping.total_fields.limit";
+    private static final String INDEX_SETTING =
+            "{\"settings\":{\"index\":{\"mapping\":{\"total_fields\":{\"limit\":\"%s\"}}}}}";
+
+    @Value("${open.search.total-fields}")
+    private String totalFields;
 
     private final BestillingRepository bestillingRepository;
     private final BestillingElasticRepository bestillingElasticRepository;
     private final MapperFacade mapperFacade;
-    private final RestHighLevelClient restHighLevelClient;
     private final ElasticParamsConsumer elasticParamsConsumer;
     private final ObjectMapper objectMapper;
-
-    @Value("${opensearch.total-fields}")
-    private String totalFields;
 
     @Override
     @Transactional
     public void onApplicationEvent(ContextRefreshedEvent event) {
 
-        var jsonString  = """
-                {\"settings\": {
-                    \"index\" : {
-                      \"mapping\" : {
-                        \"total_fields\" : {
-                          \"limit\" : \"1500\"
-                        }
-                      }
-                    }
-                }} """;
-
-        try {
-            var jsonFactory = objectMapper.getFactory();
-            var jsonParser = jsonFactory.createParser(jsonString);
-            var jsonNode = (JsonNode) objectMapper.readTree(jsonParser);
-            elasticParamsConsumer.oppdaterParametre(jsonNode)
-                    .subscribe(status -> log.info("Status fra parameter oppdatering: {}", status));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-//        try {
-//            var indexRequest = new CreateIndexRequest.Builder()
-//                    .index("bestillinger")
-//                    .settings(IndexSettings.Builder)
-//                    .build();
-//            var request = new UpdateSettingsRequest();
-//            request.settings(Settings.builder()
-//                    .put(TOTAL_FIELDS, totalFields)
-//                    .build());
-//            restHighLevelClient.indices()
-//                    .create()
-//                    .putSettings(request, RequestOptions.DEFAULT);
-//
-//        } catch (OpenSearchException | IOException e) {
-//            log.error("Feilet å sette {} for samtlige indekser", TOTAL_FIELDS, e);
-//        }
+        oppdaterIndexSetting();
 
         var start = System.currentTimeMillis();
         var antallLest = new AtomicInteger(0);
@@ -94,6 +58,21 @@ public class OpensearchImport implements ApplicationListener<ContextRefreshedEve
                 antallLest.get(),
                 antallSkrevet.get(),
                 System.currentTimeMillis() - start);
+    }
+
+    private void oppdaterIndexSetting() {
+
+        try {
+            var indexSetting = String.format(INDEX_SETTING, totalFields);
+            var jsonFactory = objectMapper.getFactory();
+            var jsonParser = jsonFactory.createParser(indexSetting);
+            var jsonNode = (JsonNode) objectMapper.readTree(jsonParser);
+            elasticParamsConsumer.oppdaterParametre(jsonNode)
+                    .subscribe(status -> log.info("OpenSearch; status fra indeks parameter oppdatering: {}", status));
+
+        } catch (IOException e) {
+            log.error("Feilet å gjøre setting for indekser {}", INDEX_SETTING, e);
+        }
     }
 
     private void importAll(AtomicInteger antallLest, AtomicInteger antallSkrevet) {

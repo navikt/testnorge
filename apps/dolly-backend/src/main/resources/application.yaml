@@ -82,9 +82,9 @@ logging:
           results:
             jdbc: ERROR
 
-opensearch:
-  index-name: bestilling
-  total-fields: 1500
+open:
+  search:
+    total-fields: 1500
 
 consumers:
   testnav-organisasjon-forvalter:

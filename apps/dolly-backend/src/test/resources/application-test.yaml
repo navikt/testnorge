@@ -17,13 +17,12 @@ azure:
       id: dummy
       secret: dummy
 
-opensearch:
-  total-fields: 150
 open:
   search:
-    uri: http://localhost:9200
+    uri: dummy
     username: dummy
     password: dummy
+    total-fields: 150
 
 consumers:
   testnav-kodeverk-proxy:
