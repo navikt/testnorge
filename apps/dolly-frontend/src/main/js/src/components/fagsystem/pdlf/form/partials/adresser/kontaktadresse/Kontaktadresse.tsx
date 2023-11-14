@@ -11,9 +11,9 @@ import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFiel
 import { DollySelect, FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import {
-	VegadresseVelger,
-	UtenlandskAdresse,
 	Postboksadresse,
+	UtenlandskAdresse,
+	VegadresseVelger,
 } from '@/components/fagsystem/pdlf/form/partials/adresser/adressetyper'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
@@ -21,8 +21,8 @@ import { FormikProps } from 'formik'
 import { Adressetype } from '@/components/fagsystem/pdlf/PdlTypes'
 import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 import { getPlaceholder, setNavn } from '@/components/fagsystem/pdlf/form/partials/utils'
-import { SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
 import { useGenererNavn } from '@/utils/hooks/useGenererNavn'
+import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
 
 interface KontaktadresseValues {
 	formikBag: FormikProps<{}>
@@ -91,7 +91,7 @@ export const KontaktadresseForm = ({ formikBag, path, idx }: KontaktadresseFormV
 	}
 
 	const { navnInfo, loading } = useGenererNavn()
-	const navnOptions = SelectOptionsOppslag.formatOptions('personnavn', navnInfo)
+	const navnOptions = SelectOptionsFormat.formatOptions('personnavn', navnInfo)
 
 	return (
 		<React.Fragment key={idx}>

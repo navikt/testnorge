@@ -216,7 +216,6 @@ consumers:
     namespace: dolly
     url: http://testnav-organisasjon-service.dolly.svc.cluster.local
     cluster: dev-gcp
-    threads: 5
   testnav-udistub-proxy:
     name: testnav-udistub-proxy
     namespace: dolly

@@ -33,7 +33,7 @@ export const NorskBankkonto = ({ formikBag }: { formikBag: FormikProps<{}> }) =>
 					<FormikCheckbox
 						name={`${path}.tilfeldigKontonummer`}
 						label="Har tilfeldig kontonummer"
-						size="x-small"
+						size="medium"
 						isDisabled={kontonummer}
 					/>
 				</div>

@@ -19,7 +19,7 @@ export const EnkeltinntektForm = ({
 	const { kodeverk: tekniskNavnOptions } = useKodeverk(SigrunKodeverk[tjeneste])
 
 	const getFilteredTekniskNavnOptions = () => {
-		return tekniskNavnOptions?.koder?.filter((item) => {
+		return tekniskNavnOptions?.filter((item) => {
 			return getYear(new Date(item?.gyldigFra)) <= inntektsaar
 		})
 	}

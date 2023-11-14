@@ -2,7 +2,7 @@ package no.nav.registre.testnav.inntektsmeldingservice.consumer;
 
 import io.swagger.v3.core.util.Json;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnav.inntektsmeldingservice.config.credentials.DokarkivProxyServiceProperties;
+import no.nav.registre.testnav.inntektsmeldingservice.config.Consumers;
 import no.nav.registre.testnav.inntektsmeldingservice.consumer.command.OpprettJournalpostCommand;
 import no.nav.registre.testnav.inntektsmeldingservice.domain.FilLaster;
 import no.nav.testnav.libs.dto.dokarkiv.v1.DokmotRequest;
@@ -23,16 +23,16 @@ public class DokmotConsumer {
 
     private final WebClient webClient;
     private final TokenExchange tokenExchange;
-    private final ServerProperties properties;
+    private final ServerProperties serverProperties;
 
     public DokmotConsumer(
-            DokarkivProxyServiceProperties properties,
+            Consumers consumers,
             TokenExchange tokenExchange) {
-
         this.tokenExchange = tokenExchange;
-        this.properties = properties;
-        this.webClient = WebClient.builder()
-                .baseUrl(properties.getUrl())
+        serverProperties = consumers.getTestnavDokarkivProxy();
+        this.webClient = WebClient
+                .builder()
+                .baseUrl(serverProperties.getUrl())
                 .build();
     }
 
@@ -41,7 +41,7 @@ public class DokmotConsumer {
         var pdf = FilLaster.instans().hentDummyPDF();
 
         return tokenExchange
-                .exchange(properties)
+                .exchange(serverProperties)
                 .flatMapMany(token -> Flux.concat(
                                 inntektDokumenter
                                         .stream()

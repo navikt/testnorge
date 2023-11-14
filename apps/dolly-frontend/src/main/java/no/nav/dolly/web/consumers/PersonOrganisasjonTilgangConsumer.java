@@ -3,8 +3,9 @@ package no.nav.dolly.web.consumers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.web.consumers.command.GetPersonOrganisasjonTilgangCommand;
-import no.nav.dolly.web.credentials.TestnavPersonOrganisasjonTilgangServiceProperties;
+import no.nav.dolly.web.config.Consumers;
 import no.nav.dolly.web.service.AccessService;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
@@ -19,17 +20,17 @@ import reactor.core.publisher.Mono;
 @Component
 public class PersonOrganisasjonTilgangConsumer {
     private final WebClient webClient;
-    private final TestnavPersonOrganisasjonTilgangServiceProperties serviceProperties;
+    private final ServerProperties serverProperties;
 
     private final AccessService accessService;
 
     public PersonOrganisasjonTilgangConsumer(
-            TestnavPersonOrganisasjonTilgangServiceProperties serviceProperties,
+            Consumers consumers,
             AccessService accessService,
             ObjectMapper objectMapper) {
 
         this.accessService = accessService;
-        this.serviceProperties = serviceProperties;
+        serverProperties = consumers.getTestnavOrganisasjonTilgangService();
         ExchangeStrategies jacksonStrategy = ExchangeStrategies.builder()
                 .codecs(config -> {
                     config.defaultCodecs()
@@ -41,12 +42,12 @@ public class PersonOrganisasjonTilgangConsumer {
         this.webClient = WebClient
                 .builder()
                 .exchangeStrategies(jacksonStrategy)
-                .baseUrl(serviceProperties.getUrl())
+                .baseUrl(serverProperties.getUrl())
                 .build();
     }
 
     public Mono<Boolean> hasAccess(String organisasjonsnummer, ServerWebExchange exchange) {
-        return accessService.getAccessToken(serviceProperties, exchange)
+        return accessService.getAccessToken(serverProperties, exchange)
                 .flatMap(accessToken -> new GetPersonOrganisasjonTilgangCommand(webClient, accessToken, organisasjonsnummer).call())
                 .onErrorResume(
                         WebClientResponseException.class::isInstance,

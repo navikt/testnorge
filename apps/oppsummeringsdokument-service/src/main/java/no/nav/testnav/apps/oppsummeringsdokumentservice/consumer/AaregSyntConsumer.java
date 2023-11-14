@@ -2,7 +2,7 @@ package no.nav.testnav.apps.oppsummeringsdokumentservice.consumer;
 
 import io.swagger.v3.core.util.Json;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.apps.oppsummeringsdokumentservice.config.credentials.AaregSyntServiceProperties;
+import no.nav.testnav.apps.oppsummeringsdokumentservice.config.Consumers;
 import no.nav.testnav.apps.oppsummeringsdokumentservice.consumer.command.SaveOpplysningspliktigCommand;
 import no.nav.testnav.apps.oppsummeringsdokumentservice.domain.Oppsummeringsdokument;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
@@ -17,16 +17,16 @@ import static java.util.Objects.isNull;
 public class AaregSyntConsumer {
     private final WebClient webClient;
     private final TokenExchange tokenExchange;
-    private final ServerProperties properties;
+    private final ServerProperties serverProperties;
 
-    public AaregSyntConsumer(TokenExchange tokenExchange,
-                             AaregSyntServiceProperties properties) {
-
+    public AaregSyntConsumer(
+            TokenExchange tokenExchange,
+            Consumers consumers) {
         this.tokenExchange = tokenExchange;
-        this.properties = properties;
+        serverProperties = consumers.getAaregSyntServices();
         this.webClient = WebClient
                 .builder()
-                .baseUrl(properties.getUrl())
+                .baseUrl(serverProperties.getUrl())
                 .build();
     }
 
@@ -41,7 +41,7 @@ public class AaregSyntConsumer {
     }
 
     private String getAccessToken() {
-        var token = tokenExchange.exchange(properties).block();
+        var token = tokenExchange.exchange(serverProperties).block();
         if (isNull(token)) {
             throw new IllegalArgumentException("Klarte ikke å generere AccessToken for AaregSyntService");
         }

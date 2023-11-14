@@ -4,16 +4,15 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.URL;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.lang.Nullable;
 import org.springframework.validation.annotation.Validated;
 
 @EnableConfigurationProperties
-@ConfigurationProperties(prefix = "server")
 @Validated
 @NoArgsConstructor
 @Data
-public abstract class ServerProperties {
+public class ServerProperties {
 
     /**
      * NAIS ingress URL for target service.
@@ -29,7 +28,7 @@ public abstract class ServerProperties {
     private String cluster = "dev-gcp";
 
     /**
-     * NAIS defined name for target service.
+     * NAIS defined name for target service. Sometimes used as segment for routing.
      */
     @NotBlank
     private String name;
@@ -39,6 +38,11 @@ public abstract class ServerProperties {
      */
     @NotBlank
     private String namespace = "dolly";
+
+    /**
+     * Requested number of threads used to run requests to this target service. Not used by all clients.
+     */
+    private int threads = 1;
 
     public String toTokenXScope() {
         return "%s:%s:%s".formatted(cluster, namespace, name);
@@ -53,6 +57,24 @@ public abstract class ServerProperties {
             case AZURE_AD -> toAzureAdScope();
             case TOKEN_X -> toTokenXScope();
         };
+    }
+
+    /**
+     * Convenience constructor.
+     *
+     * @param cluster See {@link #getCluster()}, defaults to {@code dev-gcp} if {@code null}.
+     * @param namespace See {@link #getNamespace()}, defaults to {@code dolly} if {@code null}.
+     * @param name See {@link #getName()}.
+     * @param url See {@link #getUrl()}.
+     * @return New instance.
+     */
+    public static ServerProperties of(@Nullable String cluster, @Nullable String namespace, String name, String url) {
+        var properties = new ServerProperties();
+        properties.setCluster(cluster == null ? "dev-gcp" : cluster);
+        properties.setNamespace(namespace == null ? "dolly" : namespace);
+        properties.setName(name);
+        properties.setUrl(url);
+        return properties;
     }
 
 }

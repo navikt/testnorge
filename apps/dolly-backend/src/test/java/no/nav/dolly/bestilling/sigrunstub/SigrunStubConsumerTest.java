@@ -6,9 +6,9 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubLignetInntektRequest;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubPensjonsgivendeInntektRequest;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubResponse;
-import no.nav.dolly.config.credentials.SigrunstubProxyProperties;
 import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -72,7 +72,7 @@ class SigrunStubConsumerTest {
 
         WireMock.reset();
 
-        when(tokenService.exchange(ArgumentMatchers.any(SigrunstubProxyProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
+        when(tokenService.exchange(ArgumentMatchers.any(ServerProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
 
         lignetInntektRequest = SigrunstubLignetInntektRequest.builder()
                 .inntektsaar("1978")

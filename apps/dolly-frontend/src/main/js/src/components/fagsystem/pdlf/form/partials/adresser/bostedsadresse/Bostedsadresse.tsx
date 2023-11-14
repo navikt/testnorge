@@ -23,9 +23,9 @@ import { FormikProps } from 'formik'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 import { Adressetype } from '@/components/fagsystem/pdlf/PdlTypes'
-import { SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
 import { getPlaceholder, setNavn } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { useGenererNavn } from '@/utils/hooks/useGenererNavn'
+import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
 
 interface BostedsadresseValues {
 	formikBag: FormikProps<{}>
@@ -124,7 +124,7 @@ export const BostedsadresseForm = ({
 	}
 
 	const { navnInfo, loading } = useGenererNavn()
-	const navnOptions = SelectOptionsOppslag.formatOptions('personnavn', navnInfo)
+	const navnOptions = SelectOptionsFormat.formatOptions('personnavn', navnInfo)
 
 	return (
 		<React.Fragment key={idx}>

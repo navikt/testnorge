@@ -2,11 +2,7 @@ package no.nav.testnav.apps.fastedatafrontend;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.apps.fastedatafrontend.credentials.OrganisasjonFasteDataServiceProperties;
-import no.nav.testnav.apps.fastedatafrontend.credentials.OrganisasjonServiceProperties;
-import no.nav.testnav.apps.fastedatafrontend.credentials.PersonFasteDataServiceProperties;
-import no.nav.testnav.apps.fastedatafrontend.credentials.PersonServiceProperties;
-import no.nav.testnav.apps.fastedatafrontend.credentials.ProfilApiServiceProperties;
+import no.nav.testnav.apps.fastedatafrontend.config.Consumers;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactivefrontend.config.FrontendConfig;
 import no.nav.testnav.libs.reactivefrontend.filter.AddAuthenticationHeaderToRequestGatewayFilterFactory;
@@ -37,42 +33,18 @@ import java.util.function.Function;
 @RequiredArgsConstructor
 public class FasteDataFrontendApplicationStarter {
 
-    private final ProfilApiServiceProperties profilApiServiceProperties;
-    private final OrganisasjonServiceProperties organisasjonServiceProperties;
-    private final OrganisasjonFasteDataServiceProperties organisasjonFasteDataServiceProperties;
-    private final PersonServiceProperties personServiceProperties;
-    private final PersonFasteDataServiceProperties personFasteDataServiceProperties;
+    private final Consumers consumers;
     private final TokenExchange tokenExchange;
 
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         return builder
                 .routes()
-                .route(createRoute(
-                        "testnav-organisasjon-service",
-                        organisasjonServiceProperties.getUrl(),
-                        addAuthenticationHeaderFilterFrom(organisasjonServiceProperties)
-                ))
-                .route(createRoute(
-                        "testnav-organisasjon-faste-data-service",
-                        organisasjonFasteDataServiceProperties.getUrl(),
-                        addAuthenticationHeaderFilterFrom(organisasjonFasteDataServiceProperties)
-                ))
-                .route(createRoute(
-                        "testnorge-profil-api",
-                        profilApiServiceProperties.getUrl(),
-                        addAuthenticationHeaderFilterFrom(profilApiServiceProperties)
-                ))
-                .route(createRoute(
-                        "testnav-person-service",
-                        personServiceProperties.getUrl(),
-                        addAuthenticationHeaderFilterFrom(personServiceProperties)
-                ))
-                .route(createRoute(
-                        "testnav-person-faste-data-service",
-                        personFasteDataServiceProperties.getUrl(),
-                        addAuthenticationHeaderFilterFrom(personFasteDataServiceProperties)
-                ))
+                .route(createRoute(consumers.getTestnavOrganisasjonService()))
+                .route(createRoute(consumers.getTestnavOrganisasjonFasteDataService()))
+                .route(createRoute(consumers.getTestnorgeProfilApi()))
+                .route(createRoute(consumers.getTestnavPersonService()))
+                .route(createRoute(consumers.getTestnavPersonFasteDataService()))
                 .build();
     }
 
@@ -89,7 +61,10 @@ public class FasteDataFrontendApplicationStarter {
                 });
     }
 
-    private Function<PredicateSpec, Buildable<Route>> createRoute(String segment, String host, GatewayFilter filter) {
+    private Function<PredicateSpec, Buildable<Route>> createRoute(ServerProperties serverProperties) {
+        var segment = serverProperties.getName();
+        var host = serverProperties.getUrl();
+        var filter = addAuthenticationHeaderFilterFrom(serverProperties);
         log.info("Redirect fra segment {} til host {}.", segment, host);
         return spec -> spec
                 .path("/" + segment + "/**")
@@ -98,4 +73,5 @@ public class FasteDataFrontendApplicationStarter {
                         .filter(filter)
                 ).uri(host);
     }
+
 }

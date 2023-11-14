@@ -1,7 +1,7 @@
 package no.nav.registre.testnav.inntektsmeldingservice.consumer;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnav.inntektsmeldingservice.config.credentials.InntektsmeldingGeneratorServiceProperties;
+import no.nav.registre.testnav.inntektsmeldingservice.config.Consumers;
 import no.nav.registre.testnav.inntektsmeldingservice.consumer.command.GenererInntektsmeldingCommand;
 import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsInntektsmelding;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
@@ -16,21 +16,21 @@ public class GenererInntektsmeldingConsumer {
 
     private final WebClient webClient;
     private final TokenExchange tokenExchange;
-    private final ServerProperties properties;
+    private final ServerProperties serverProperties;
 
     public GenererInntektsmeldingConsumer(
-            InntektsmeldingGeneratorServiceProperties properties,
+            Consumers consumers,
             TokenExchange tokenExchange) {
-
         this.tokenExchange = tokenExchange;
-        this.properties = properties;
-        this.webClient = WebClient.builder()
-                .baseUrl(properties.getUrl())
+        serverProperties = consumers.getInntektsmeldingGeneratorService();
+        this.webClient = WebClient
+                .builder()
+                .baseUrl(serverProperties.getUrl())
                 .build();
     }
 
     public String getInntektsmeldingXml201812(RsInntektsmelding inntektsmelding) {
-        return tokenExchange.exchange(properties)
+        return tokenExchange.exchange(serverProperties)
                 .flatMap(token -> new GenererInntektsmeldingCommand(webClient, inntektsmelding, token.getTokenValue()).call())
                 .block();
     }

@@ -1,8 +1,8 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer;
 
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.credential.PdlProxyProperties;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.pdl.PdlPerson;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -144,6 +144,6 @@ class PdlConsumerTest {
     }
 
     private void stubTokenRequest() {
-        when(tokenExchange.exchange(ArgumentMatchers.any(PdlProxyProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
+        when(tokenExchange.exchange(ArgumentMatchers.any(ServerProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
     }
 }

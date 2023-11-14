@@ -1,7 +1,7 @@
 package no.nav.pdl.forvalter.consumer;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.pdl.forvalter.config.credentials.AdresseServiceProperties;
+import no.nav.pdl.forvalter.config.Consumers;
 import no.nav.pdl.forvalter.consumer.command.MatrikkeladresseServiceCommand;
 import no.nav.pdl.forvalter.consumer.command.VegadresseServiceCommand;
 import no.nav.testnav.libs.data.pdlforvalter.v1.MatrikkeladresseDTO;
@@ -23,16 +23,16 @@ public class AdresseServiceConsumer {
     private static final String UOPPGITT = "9999";
     private final WebClient webClient;
     private final TokenExchange tokenExchange;
-    private final ServerProperties properties;
+    private final ServerProperties serverProperties;
 
-    public AdresseServiceConsumer(TokenExchange tokenExchange,
-                                  AdresseServiceProperties properties) {
-
+    public AdresseServiceConsumer(
+            TokenExchange tokenExchange,
+            Consumers consumers) {
         this.tokenExchange = tokenExchange;
-        this.properties = properties;
+        serverProperties = consumers.getAdresseService();
         this.webClient = WebClient
                 .builder()
-                .baseUrl(properties.getUrl())
+                .baseUrl(serverProperties.getUrl())
                 .build();
     }
 
@@ -41,7 +41,7 @@ public class AdresseServiceConsumer {
         var startTime = currentTimeMillis();
 
         if (UOPPGITT.equals(vegadresse.getKommunenummer())) {
-            var adresser = tokenExchange.exchange(properties)
+            var adresser = tokenExchange.exchange(serverProperties)
                     .flatMap(token -> new VegadresseServiceCommand(webClient, new VegadresseDTO(), null, token.getTokenValue()).call())
                     .block();
 
@@ -55,7 +55,7 @@ public class AdresseServiceConsumer {
                     .build();
         }
 
-        var adresser = tokenExchange.exchange(properties).flatMap(
+        var adresser = tokenExchange.exchange(serverProperties).flatMap(
                         token -> new VegadresseServiceCommand(webClient, vegadresse, matrikkelId, token.getTokenValue()).call())
                 .block();
 
@@ -68,7 +68,7 @@ public class AdresseServiceConsumer {
 
         var startTime = currentTimeMillis();
 
-        var adresser = tokenExchange.exchange(properties).flatMap(
+        var adresser = tokenExchange.exchange(serverProperties).flatMap(
                         token -> new MatrikkeladresseServiceCommand(webClient, adresse, matrikkelId, token.getTokenValue()).call())
                 .block();
 

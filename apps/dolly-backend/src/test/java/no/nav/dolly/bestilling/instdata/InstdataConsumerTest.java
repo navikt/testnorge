@@ -1,10 +1,10 @@
 package no.nav.dolly.bestilling.instdata;
 
-import no.nav.dolly.config.credentials.InstProxyProperties;
 import no.nav.dolly.domain.resultset.inst.Instdata;
 import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -62,7 +62,7 @@ class InstdataConsumerTest {
     @BeforeEach
     void setup() {
 
-        when(tokenService.exchange(ArgumentMatchers.any(InstProxyProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
+        when(tokenService.exchange(ArgumentMatchers.any(ServerProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
     }
 
     @Test
@@ -72,7 +72,7 @@ class InstdataConsumerTest {
 
         instdataConsumer.deleteInstdata(List.of(IDENT))
                 .subscribe(resultat ->
-                        verify(tokenService).exchange(ArgumentMatchers.any(InstProxyProperties.class)));
+                        verify(tokenService).exchange(ArgumentMatchers.any(ServerProperties.class)));
     }
 
     @Test

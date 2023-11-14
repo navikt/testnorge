@@ -3,7 +3,7 @@ package no.nav.pdl.forvalter.consumer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.pdl.forvalter.config.credentials.PdlServiceProperties;
+import no.nav.pdl.forvalter.config.Consumers;
 import no.nav.pdl.forvalter.consumer.command.PdlAktoerNpidCommand;
 import no.nav.pdl.forvalter.consumer.command.PdlDeleteCommandPdl;
 import no.nav.pdl.forvalter.consumer.command.PdlOpprettArtifactCommandPdl;
@@ -37,19 +37,19 @@ public class PdlTestdataConsumer {
 
     private final WebClient webClient;
     private final TokenExchange tokenExchange;
-    private final ServerProperties properties;
+    private final ServerProperties serverProperties;
     private final ObjectMapper objectMapper;
 
-    public PdlTestdataConsumer(TokenExchange tokenExchange,
-                               PdlServiceProperties properties,
-                               ObjectMapper objectMapper) {
-
+    public PdlTestdataConsumer(
+            TokenExchange tokenExchange,
+            Consumers consumers,
+            ObjectMapper objectMapper) {
         this.tokenExchange = tokenExchange;
-        this.properties = properties;
-        this.webClient = WebClient.builder()
-                .baseUrl(properties.getUrl())
-                .filters(exchangeFilterFunctions ->
-                    exchangeFilterFunctions.add(logRequest()))
+        serverProperties = consumers.getPdlService();
+        this.webClient = WebClient
+                .builder()
+                .baseUrl(serverProperties.getUrl())
+                .filters(exchangeFilterFunctions -> exchangeFilterFunctions.add(logRequest()))
                 .build();
         this.objectMapper = objectMapper;
     }
@@ -79,7 +79,7 @@ public class PdlTestdataConsumer {
     public Flux<OrdreResponseDTO.PdlStatusDTO> send(OrdreRequest orders) {
 
         return tokenExchange
-                .exchange(properties)
+                .exchange(serverProperties)
                 .flatMapMany(accessToken -> Flux.concat(
                                 Flux.fromIterable(orders.getSletting())
                                         .parallel()
@@ -101,7 +101,7 @@ public class PdlTestdataConsumer {
     public Flux<List<OrdreResponseDTO.HendelseDTO>> delete(Set<String> identer) {
 
         return Flux.from(tokenExchange
-                .exchange(properties)
+                .exchange(serverProperties)
                 .flatMapMany(accessToken -> identer
                         .stream()
                         .map(ident -> Flux.from(new PdlDeleteCommandPdl(webClient, getBestillingUrl().get(PDL_SLETTING), ident, accessToken.getTokenValue()).call()))

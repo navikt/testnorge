@@ -6,7 +6,7 @@ import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.kontoregisterservice.command.KontoregisterDeleteCommand;
 import no.nav.dolly.bestilling.kontoregisterservice.command.KontoregisterGetCommand;
 import no.nav.dolly.bestilling.kontoregisterservice.command.KontoregisterPostCommand;
-import no.nav.dolly.config.credentials.KontoregisterConsumerProperties;
+import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.data.kontoregister.v1.HentKontoRequestDTO;
 import no.nav.testnav.libs.data.kontoregister.v1.HentKontoResponseDTO;
@@ -34,16 +34,16 @@ public class KontoregisterConsumer implements ConsumerStatus {
 
     private final WebClient webClient;
     private final TokenExchange tokenService;
-    private final ServerProperties serviceProperties;
+    private final ServerProperties serverProperties;
 
     public KontoregisterConsumer(
             TokenExchange tokenService,
-            KontoregisterConsumerProperties serverProperties,
+            Consumers consumers,
             ObjectMapper objectMapper,
             WebClient.Builder webClientBuilder
     ) {
         this.tokenService = tokenService;
-        this.serviceProperties = serverProperties;
+        serverProperties = consumers.getTestnavKontoregisterPersonProxy();
         this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
@@ -60,7 +60,7 @@ public class KontoregisterConsumer implements ConsumerStatus {
 
     public Mono<KontoregisterResponseDTO> opprettKontonummer(OppdaterKontoRequestDTO bankdetaljer) {
 
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMap(token -> new KontoregisterPostCommand(webClient, bankdetaljer, token.getTokenValue()).call())
                 .doOnNext(response -> log.info("Opprettet kontonummer for ident {} {}", bankdetaljer.getKontohaver(), response));
     }
@@ -68,7 +68,7 @@ public class KontoregisterConsumer implements ConsumerStatus {
     @Timed(name = "providers", tags = {"operation", "kontoregister_hentKonto"})
     public Mono<HentKontoResponseDTO> getKontonummer(String ident) {
 
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMap(token -> new KontoregisterGetCommand(webClient,
                         HentKontoRequestDTO.builder()
                                 .kontohaver(ident)
@@ -80,7 +80,7 @@ public class KontoregisterConsumer implements ConsumerStatus {
     @Timed(name = "providers", tags = {"operation", "kontoregister_slettKonto"})
     public Flux<KontoregisterResponseDTO> deleteKontonumre(List<String> identer) {
 
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> Flux.range(0, identer.size())
                         .delayElements(Duration.ofMillis(10))
                         .flatMap(index -> new KontoregisterDeleteCommand(
@@ -90,7 +90,7 @@ public class KontoregisterConsumer implements ConsumerStatus {
 
     @Override
     public String serviceUrl() {
-        return serviceProperties.getUrl();
+        return serverProperties.getUrl();
     }
 
     @Override

@@ -6,7 +6,7 @@ import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.sykemelding.command.SyntSykemeldingPostCommand;
 import no.nav.dolly.bestilling.sykemelding.domain.SyntSykemeldingRequest;
 import no.nav.dolly.bestilling.sykemelding.dto.SykemeldingResponse;
-import no.nav.dolly.config.credentials.SyntSykemeldingApiProperties;
+import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
@@ -26,16 +26,16 @@ public class SyntSykemeldingConsumer implements ConsumerStatus {
 
     private final WebClient webClient;
     private final TokenExchange tokenService;
-    private final ServerProperties serviceProperties;
+    private final ServerProperties serverProperties;
 
     public SyntSykemeldingConsumer(
             TokenExchange accessTokenService,
-            SyntSykemeldingApiProperties serverProperties,
+            Consumers consumers,
             ObjectMapper objectMapper,
             WebClient.Builder webClientBuilder
     ) {
         this.tokenService = accessTokenService;
-        this.serviceProperties = serverProperties;
+        serverProperties = consumers.getTestnavSyntSykemeldingApi();
         this.webClient = webClientBuilder
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .baseUrl(serverProperties.getUrl())
@@ -52,14 +52,14 @@ public class SyntSykemeldingConsumer implements ConsumerStatus {
     public Mono<SykemeldingResponse> postSyntSykemelding(SyntSykemeldingRequest sykemeldingRequest) {
 
         log.info("SyntSykemelding sendt {}", sykemeldingRequest);
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMap(accessToken -> new
                         SyntSykemeldingPostCommand(webClient, sykemeldingRequest, accessToken.getTokenValue()).call());
     }
 
     @Override
     public String serviceUrl() {
-        return serviceProperties.getUrl();
+        return serverProperties.getUrl();
     }
 
     @Override

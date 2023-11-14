@@ -5,7 +5,7 @@ import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.personservice.command.PdlPersonerGetCommand;
 import no.nav.dolly.bestilling.personservice.command.PersonServiceExistCommand;
 import no.nav.dolly.bestilling.personservice.dto.PersonServiceResponse;
-import no.nav.dolly.config.credentials.PersonServiceProperties;
+import no.nav.dolly.config.Consumers;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
@@ -34,16 +34,16 @@ public class PersonServiceConsumer implements ConsumerStatus {
 
     private final TokenExchange tokenService;
     private final WebClient webClient;
-    private final ServerProperties serviceProperties;
+    private final ServerProperties serverProperties;
 
     public PersonServiceConsumer(
             TokenExchange tokenService,
-            PersonServiceProperties serverProperties,
+            Consumers consumers,
             WebClient.Builder webClientBuilder,
             ObjectMapper objectMapper) {
 
         this.tokenService = tokenService;
-        this.serviceProperties = serverProperties;
+        serverProperties = consumers.getTestnavPersonService();
         this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
@@ -61,7 +61,7 @@ public class PersonServiceConsumer implements ConsumerStatus {
     @Timed(name = "providers", tags = {"operation", "personService_isPerson"})
     public Mono<PersonServiceResponse> isPerson(String ident, Set<String> opplysningId) {
 
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMap(token -> new PersonServiceExistCommand(webClient, ident, opplysningId, token.getTokenValue()).call());
     }
 
@@ -80,7 +80,7 @@ public class PersonServiceConsumer implements ConsumerStatus {
     @Timed(name = "providers", tags = {"operation", "pdl_getPersoner"})
     public Flux<PdlPersonBolk> getPdlPersoner(List<String> identer, AtomicInteger retry) {
 
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> Flux.range(0, identer.size() / BLOCK_SIZE + 1)
                         .flatMap(index -> new PdlPersonerGetCommand(webClient,
                                 identer.subList(index * BLOCK_SIZE, Math.min((index + 1) * BLOCK_SIZE, identer.size())),
@@ -107,7 +107,7 @@ public class PersonServiceConsumer implements ConsumerStatus {
 
     @Override
     public String serviceUrl() {
-        return serviceProperties.getUrl();
+        return serverProperties.getUrl();
     }
 
     @Override

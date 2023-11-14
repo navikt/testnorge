@@ -39,8 +39,7 @@ config:
       password: ${mq.dev.password:#{null}}
 
 consumers:
-  testmiljoer:
-    service:
+  testmiljoerService:
       url: http://testnav-miljoer-service.dolly.svc.cluster.local
       cluster: dev-gcp
       namespace: dolly

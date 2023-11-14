@@ -1,9 +1,10 @@
 package no.nav.dolly.web.consumers;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.web.credentials.TestnorgeTilbakemeldingApiProperties;
+import no.nav.dolly.web.config.Consumers;
 import no.nav.dolly.web.service.AccessService;
 import no.nav.testnav.libs.dto.tilbakemeldingapi.v1.TilbakemeldingDTO;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -17,23 +18,23 @@ import reactor.core.publisher.Mono;
 @Service
 public class TilbakemeldingConsumer {
     private final WebClient webClient;
-    private final TestnorgeTilbakemeldingApiProperties testnorgeTilbakemeldingApiProperties;
+    private final ServerProperties serverProperties;
     private final AccessService accessService;
 
     public TilbakemeldingConsumer(
-            TestnorgeTilbakemeldingApiProperties tilbakemeldingApiProperties,
+            Consumers consumers,
             AccessService accessService) {
 
-        this.testnorgeTilbakemeldingApiProperties = tilbakemeldingApiProperties;
+        serverProperties = consumers.getTestnorgeTilbakemeldingApi();
         this.webClient = WebClient.builder()
-                .baseUrl(tilbakemeldingApiProperties.getUrl())
+                .baseUrl(serverProperties.getUrl())
                 .build();
         this.accessService = accessService;
     }
 
     public Mono<Void> send(TilbakemeldingDTO dto, ServerWebExchange exchange) {
         return
-                accessService.getAccessToken(testnorgeTilbakemeldingApiProperties, exchange)
+                accessService.getAccessToken(serverProperties, exchange)
                         .flatMap(accessToken -> webClient
                                 .post()
                                 .uri("/api/v1/tilbakemelding")

@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.sykemelding.command.Norg2GetCommand;
 import no.nav.dolly.bestilling.sykemelding.dto.Norg2EnhetResponse;
-import no.nav.dolly.config.credentials.Norg2ProxyProperties;
+import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
@@ -21,16 +21,16 @@ public class Norg2Consumer implements ConsumerStatus {
 
     private final WebClient webClient;
     private final TokenExchange tokenService;
-    private final ServerProperties serviceProperties;
+    private final ServerProperties serverProperties;
 
     public Norg2Consumer(
             TokenExchange accessTokenService,
-            Norg2ProxyProperties serverProperties,
+            Consumers consumers,
             ObjectMapper objectMapper,
             WebClient.Builder webClientBuilder
     ) {
         this.tokenService = accessTokenService;
-        this.serviceProperties = serverProperties;
+        serverProperties = consumers.getTestnavNorg2Proxy();
         this.webClient = webClientBuilder
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .baseUrl(serverProperties.getUrl())
@@ -40,14 +40,14 @@ public class Norg2Consumer implements ConsumerStatus {
     @Timed(name = "providers", tags = { "operation", "detaljertsykemelding_opprett" })
     public Mono<Norg2EnhetResponse> getNorgEnhet(String geografiskTilhoerighet) {
 
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMap(token -> new Norg2GetCommand(webClient, geografiskTilhoerighet,
                         token.getTokenValue()).call());
     }
 
     @Override
     public String serviceUrl() {
-        return serviceProperties.getUrl();
+        return serverProperties.getUrl();
     }
 
     @Override

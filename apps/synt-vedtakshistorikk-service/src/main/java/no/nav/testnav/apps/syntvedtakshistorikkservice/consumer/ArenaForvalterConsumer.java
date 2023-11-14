@@ -1,6 +1,7 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.config.Consumers;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.arena.GetArenaBrukereCommand;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.arena.PostArenaBrukerCommand;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.arena.PostDagpengerCommand;
@@ -8,7 +9,6 @@ import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.arena.Po
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.arena.PostFinnTiltakCommand;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.arena.PostRettighetCommand;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.arena.SlettArenaBrukerCommand;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.credential.ArenaForvalterenProxyProperties;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.EndreInnsatsbehovRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.FinnTiltakRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.rettighet.RettighetRequest;
@@ -42,19 +42,19 @@ public class ArenaForvalterConsumer {
 
     private final WebClient webClient;
     private final TokenExchange tokenExchange;
-    private final ServerProperties serviceProperties;
+    private final ServerProperties serverProperties;
 
     private static final String MOTTA_DAGPENGESOKNAD_PATH = "/api/v1/mottadagpengesoknad";
     private static final String MOTTA_DAGPENGEVEDTAK_PATH = "/api/v1/mottadagpengevedtak";
     private static final String DAGPENGEVEDTAK_PATH = "/api/v1/dagpenger";
 
     public ArenaForvalterConsumer(
-            ArenaForvalterenProxyProperties serviceProperties,
+            Consumers consumers,
             TokenExchange tokenExchange) {
-
-        this.serviceProperties = serviceProperties;
-        this.webClient = WebClient.builder()
-                .baseUrl(serviceProperties.getUrl())
+        serverProperties = consumers.getTestnavArenaForvalterenProxy();
+        this.webClient = WebClient
+                .builder()
+                .baseUrl(serverProperties.getUrl())
                 .build();
         this.tokenExchange = tokenExchange;
     }
@@ -63,7 +63,7 @@ public class ArenaForvalterConsumer {
             List<NyBruker> nyeBrukere
     ) {
         try {
-            return tokenExchange.exchange(serviceProperties)
+            return tokenExchange.exchange(serverProperties)
                     .flatMap(accessToken -> new PostArenaBrukerCommand(nyeBrukere, accessToken.getTokenValue(), webClient).call())
                     .block();
         } catch (Exception e) {
@@ -74,7 +74,7 @@ public class ArenaForvalterConsumer {
 
     public void slettBrukerIArenaForvalteren(String ident, String miljoe) {
         try {
-            var response = tokenExchange.exchange(serviceProperties)
+            var response = tokenExchange.exchange(serverProperties)
                     .flatMap(accessToken -> new SlettArenaBrukerCommand(ident, miljoe, accessToken.getTokenValue(), webClient).call())
                     .block();
 
@@ -92,7 +92,7 @@ public class ArenaForvalterConsumer {
         for (var rettighet : rettigheter) {
             NyttVedtakResponse response = null;
             try {
-                response = tokenExchange.exchange(serviceProperties)
+                response = tokenExchange.exchange(serverProperties)
                         .flatMap(accessToken -> new PostRettighetCommand(rettighet, accessToken.getTokenValue(), webClient).call())
                         .block();
             } catch (Exception e) {
@@ -117,7 +117,7 @@ public class ArenaForvalterConsumer {
 
     public NyttVedtakResponse finnTiltak(FinnTiltakRequest rettighet) {
         try {
-            return tokenExchange.exchange(serviceProperties)
+            return tokenExchange.exchange(serverProperties)
                     .flatMap(accessToken -> new PostFinnTiltakCommand(rettighet, accessToken.getTokenValue(), webClient).call())
                     .block();
         } catch (Exception e) {
@@ -129,7 +129,7 @@ public class ArenaForvalterConsumer {
     public void endreInnsatsbehovForBruker(EndreInnsatsbehovRequest endreRequest) {
         EndreInnsatsbehovResponse response = null;
         try {
-            response = tokenExchange.exchange(serviceProperties)
+            response = tokenExchange.exchange(serverProperties)
                     .flatMap(accessToken -> new PostEndreInnsatsbehovCommand(endreRequest, accessToken.getTokenValue(), webClient).call())
                     .block();
         } catch (Exception e) {
@@ -150,7 +150,7 @@ public class ArenaForvalterConsumer {
         var queryParams = getQueryParams(personident, eier, miljoe, null);
         NyeBrukereResponse response = null;
         try {
-            response = tokenExchange.exchange(serviceProperties)
+            response = tokenExchange.exchange(serverProperties)
                     .flatMap(accessToken -> new GetArenaBrukereCommand(queryParams, accessToken.getTokenValue(), webClient).call())
                     .block();
         } catch (Exception e) {
@@ -199,7 +199,7 @@ public class ArenaForvalterConsumer {
             var queryParams = getQueryParams(personident, eier, miljoe, page + "");
             NyeBrukereResponse response = null;
             try {
-                response = tokenExchange.exchange(serviceProperties)
+                response = tokenExchange.exchange(serverProperties)
                         .flatMap(accessToken -> new GetArenaBrukereCommand(queryParams, accessToken.getTokenValue(), webClient).call())
                         .block();
             } catch (Exception e) {
@@ -231,7 +231,7 @@ public class ArenaForvalterConsumer {
 
     private DagpengerResponseDTO opprettDagpenger(DagpengerRequestDTO request, String path) {
         try {
-            return tokenExchange.exchange(serviceProperties)
+            return tokenExchange.exchange(serverProperties)
                     .flatMap(accessToken -> new PostDagpengerCommand(
                             request, path, accessToken.getTokenValue(), webClient).call())
                     .block();

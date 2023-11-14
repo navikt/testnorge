@@ -72,7 +72,7 @@ export default function BestillingResultat({
 					label="Hvordan var din opplevelse med bruk av Dolly?"
 					feedbackFor="Bruk av Dolly etter bestilling"
 				/>
-				{bestilling.ferdig && !bestillingHarFeil(bestilling) && (
+				{bestilling.ferdig && !bestilling.stoppet && !bestillingHarFeil(bestilling) && (
 					<div style={{ display: 'flex', flexDirection: 'column' }}>
 						<StyledConfettiExplosion particleCount={70} force={0.3} duration={2800} />
 					</div>

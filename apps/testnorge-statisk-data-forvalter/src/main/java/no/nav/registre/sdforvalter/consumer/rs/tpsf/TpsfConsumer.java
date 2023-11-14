@@ -1,11 +1,12 @@
 package no.nav.registre.sdforvalter.consumer.rs.tpsf;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.sdforvalter.config.credentials.TpsfProxyProperties;
+import no.nav.registre.sdforvalter.config.Consumers;
 import no.nav.registre.sdforvalter.consumer.rs.tpsf.command.GetMeldingsIdsCommand;
 import no.nav.registre.sdforvalter.consumer.rs.tpsf.command.PostSendSkdMeldingerTpsCommand;
 import no.nav.registre.sdforvalter.consumer.rs.tpsf.request.SendToTpsRequest;
 import no.nav.registre.sdforvalter.consumer.rs.tpsf.response.SkdMeldingerTilTpsRespons;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -18,15 +19,15 @@ import java.util.List;
 public class TpsfConsumer {
     private final WebClient webClient;
     private final TokenExchange tokenExchange;
-    private final TpsfProxyProperties serviceProperties;
+    private final ServerProperties serverProperties;
 
     public TpsfConsumer(
-            TpsfProxyProperties serviceProperties,
+            Consumers consumers,
             TokenExchange tokenExchange) {
-
-        this.serviceProperties = serviceProperties;
-        this.webClient = WebClient.builder()
-                .baseUrl(serviceProperties.getUrl())
+        serverProperties = consumers.getTpsForvalterenProxy();
+        this.webClient = WebClient
+                .builder()
+                .baseUrl(serverProperties.getUrl())
                 .build();
         this.tokenExchange = tokenExchange;
     }
@@ -36,12 +37,12 @@ public class TpsfConsumer {
             SendToTpsRequest sendToTpsRequest) {
 
         log.info("Sender skd-meldinger med avspillergruppe {} til tps", gruppeId);
-        return tokenExchange.exchange(serviceProperties).flatMap(accessToken ->
+        return tokenExchange.exchange(serverProperties).flatMap(accessToken ->
                 new PostSendSkdMeldingerTpsCommand(gruppeId, sendToTpsRequest, webClient, accessToken.getTokenValue()).call());
     }
 
     private Mono<List<Long>> getMeldingIdsFromAvspillergruppe(Long gruppeId) {
-        return tokenExchange.exchange(serviceProperties)
+        return tokenExchange.exchange(serverProperties)
                 .flatMap(accessToken -> new GetMeldingsIdsCommand(gruppeId, webClient, accessToken.getTokenValue()).call());
     }
 
