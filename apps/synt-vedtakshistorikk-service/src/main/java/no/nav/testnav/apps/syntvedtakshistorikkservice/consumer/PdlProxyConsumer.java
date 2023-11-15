@@ -1,11 +1,11 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.config.Consumers;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.pdl.GetPdlPersonCommand;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.pdl.GetPdlPersonerCommand;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.pdl.TagsOpprettingCommand;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.pdl.TagsSlettingCommand;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.credential.PdlProxyProperties;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.pdl.PdlPerson;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.pdl.PdlPersonBolk;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.domain.FilLaster;
@@ -33,18 +33,18 @@ public class PdlProxyConsumer {
 
     private final WebClient webClient;
     private final TokenExchange tokenExchange;
-    private final ServerProperties serviceProperties;
+    private final ServerProperties serverProperties;
 
     private static final String SINGLE_PERSON_QUERY = "pdlperson/pdlquery.graphql";
     private static final String BOLK_PERSON_QUERY = "pdlperson/pdlbolkquery.graphql";
 
     public PdlProxyConsumer(
-            PdlProxyProperties serviceProperties,
+            Consumers consumers,
             TokenExchange tokenExchange) {
-
-        this.serviceProperties = serviceProperties;
-        this.webClient = WebClient.builder()
-                .baseUrl(serviceProperties.getUrl())
+        serverProperties = consumers.getPdlApiProxy();
+        this.webClient = WebClient
+                .builder()
+                .baseUrl(serverProperties.getUrl())
                 .build();
         this.tokenExchange = tokenExchange;
     }
@@ -53,7 +53,7 @@ public class PdlProxyConsumer {
         if (isNullOrEmpty(ident)) return null;
         try {
             var query = getQueryFromFile(SINGLE_PERSON_QUERY);
-            var response = tokenExchange.exchange(serviceProperties)
+            var response = tokenExchange.exchange(serverProperties)
                     .flatMap(accessToken -> new GetPdlPersonCommand(ident, query, accessToken.getTokenValue(), webClient).call())
                     .block();
             if (nonNull(response) && nonNull(response.getErrors()) && !response.getErrors().isEmpty()) {
@@ -72,7 +72,7 @@ public class PdlProxyConsumer {
         if (isNull(identer) || identer.isEmpty()) return null;
         try {
             var query = getQueryFromFile(BOLK_PERSON_QUERY);
-            return tokenExchange.exchange(serviceProperties)
+            return tokenExchange.exchange(serverProperties)
                     .flatMap(accessToken -> new GetPdlPersonerCommand(identer, query, accessToken.getTokenValue(), webClient).call())
                     .block();
         } catch (Exception e) {
@@ -95,7 +95,7 @@ public class PdlProxyConsumer {
     public boolean createTags(List<String> identer, List<Tags> tags) {
         try {
             if (isNull(identer) || identer.isEmpty()) return false;
-            var response = tokenExchange.exchange(serviceProperties)
+            var response = tokenExchange.exchange(serverProperties)
                     .flatMap(accessToken -> new TagsOpprettingCommand(webClient, identer, tags, accessToken.getTokenValue()).call())
                     .block();
 
@@ -114,7 +114,7 @@ public class PdlProxyConsumer {
     public boolean deleteTags(List<String> identer, List<Tags> tags){
         try {
             if (isNull(identer) || identer.isEmpty()) return false;
-            var response =  tokenExchange.exchange(serviceProperties)
+            var response =  tokenExchange.exchange(serverProperties)
                     .flatMap(accessToken -> new TagsSlettingCommand(webClient, identer, tags, accessToken.getTokenValue()).call())
                     .block();
             if (isNull(response) || !response.getStatusCode().is2xxSuccessful()) {

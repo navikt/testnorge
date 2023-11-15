@@ -7,7 +7,7 @@ import no.nav.dolly.bestilling.medl.command.MedlGetCommand;
 import no.nav.dolly.bestilling.medl.command.MedlPostCommand;
 import no.nav.dolly.bestilling.medl.command.MedlPutCommand;
 import no.nav.dolly.bestilling.medl.dto.MedlPostResponse;
-import no.nav.dolly.config.credentials.MedlProxyProperties;
+import no.nav.dolly.config.Consumers;
 import no.nav.dolly.domain.resultset.medl.MedlData;
 import no.nav.dolly.domain.resultset.medl.MedlDataResponse;
 import no.nav.dolly.metrics.Timed;
@@ -29,16 +29,16 @@ public class MedlConsumer implements ConsumerStatus {
 
     private final WebClient webClient;
     private final TokenExchange tokenService;
-    private final ServerProperties serviceProperties;
+    private final ServerProperties serverProperties;
 
     public MedlConsumer(
             TokenExchange tokenService,
-            MedlProxyProperties serverProperties,
+            Consumers consumers,
             ObjectMapper objectMapper,
             WebClient.Builder webClientBuilder
     ) {
         this.tokenService = tokenService;
-        this.serviceProperties = serverProperties;
+        serverProperties = consumers.getTestnavMedlProxy();
         this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
@@ -49,14 +49,14 @@ public class MedlConsumer implements ConsumerStatus {
     public Mono<MedlPostResponse> createMedlemskapsperiode(MedlData medlData) {
 
         log.info("Medlemskapsperiode opprett {}", medlData);
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMap(token -> new MedlPostCommand(webClient, medlData, token.getTokenValue()).call());
     }
 
     @Timed(name = "providers", tags = { "operation", "medl_deleteMedlemskapsperioder" })
     public Flux<MedlPostResponse> deleteMedlemskapsperioder(Flux<MedlData> medlDataRequests) {
 
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMapMany(token ->
                         medlDataRequests.flatMap(medlData ->
                                 new MedlPutCommand(webClient, medlData, token.getTokenValue()).call()));
@@ -65,7 +65,7 @@ public class MedlConsumer implements ConsumerStatus {
     @Timed(name = "providers", tags = { "operation", "medl_getMedlemskapsperiode" })
     public Flux<MedlDataResponse> getMedlemskapsperioder(List<String> identer) {
 
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> Flux.fromIterable(identer)
                         .delayElements(Duration.ofMillis(100))
                         .flatMap(ident -> new MedlGetCommand(webClient, ident,
@@ -74,7 +74,7 @@ public class MedlConsumer implements ConsumerStatus {
 
     @Override
     public String serviceUrl() {
-        return serviceProperties.getUrl();
+        return serverProperties.getUrl();
     }
 
     @Override

@@ -1,10 +1,10 @@
 package no.nav.registre.orgnrservice.consumer;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.orgnrservice.config.credentials.MiljoerServiceProperties;
-import no.nav.registre.orgnrservice.config.credentials.OrganisasjonServiceProperties;
+import no.nav.registre.orgnrservice.config.Consumers;
 import no.nav.registre.orgnrservice.consumer.command.GetOrganisasjonCommand;
 import no.nav.registre.orgnrservice.consumer.command.MiljoerCommand;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -25,22 +25,22 @@ public class OrganisasjonConsumer {
     private final WebClient organisasjonWebClient;
     private final WebClient miljoerWebClient;
     private final TokenExchange tokenExchange;
-    private final MiljoerServiceProperties miljoerServiceProperties;
-    private final OrganisasjonServiceProperties organisasjonServiceProperties;
+    private final ServerProperties miljoerServerProperties;
+    private final ServerProperties organisasjonServerProperties;
 
     public OrganisasjonConsumer(
-            MiljoerServiceProperties miljoerServiceProperties,
-            OrganisasjonServiceProperties organisasjonServiceProperties,
+            Consumers consumers,
             TokenExchange tokenExchange) {
-
-        this.miljoerServiceProperties = miljoerServiceProperties;
-        this.organisasjonServiceProperties = organisasjonServiceProperties;
+        miljoerServerProperties = consumers.getTestnavMiljoerService();
+        organisasjonServerProperties = consumers.getTestnavOrganisasjonService();
         this.tokenExchange = tokenExchange;
-        this.organisasjonWebClient = WebClient.builder()
-                .baseUrl(organisasjonServiceProperties.getUrl())
+        this.organisasjonWebClient = WebClient
+                .builder()
+                .baseUrl(organisasjonServerProperties.getUrl())
                 .build();
-        this.miljoerWebClient = WebClient.builder()
-                .baseUrl(miljoerServiceProperties.getUrl())
+        this.miljoerWebClient = WebClient
+                .builder()
+                .baseUrl(miljoerServerProperties.getUrl())
                 .build();
     }
 
@@ -52,8 +52,8 @@ public class OrganisasjonConsumer {
     public boolean finnesOrgnrIEreg(String orgnummer) {
 
         var organisasjoner =
-                Mono.zip(tokenExchange.exchange(miljoerServiceProperties),
-                                tokenExchange.exchange(organisasjonServiceProperties))
+                Mono.zip(tokenExchange.exchange(miljoerServerProperties),
+                                tokenExchange.exchange(organisasjonServerProperties))
                         .flatMapMany(token -> new MiljoerCommand(miljoerWebClient, token.getT1().getTokenValue()).call()
                                 .flatMapMany(miljoer -> Flux.fromIterable(Arrays.asList(miljoer))
                                         .filter(OrganisasjonConsumer::supportedEnv)

@@ -1,7 +1,7 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer;
 
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.credential.SyntVedtakshistorikkProperties;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,7 +40,7 @@ class SyntVedtakshistorikkConsumerTest {
 
     @BeforeEach
     public void setup() {
-        when(tokenExchange.exchange(ArgumentMatchers.any(SyntVedtakshistorikkProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
+        when(tokenExchange.exchange(ArgumentMatchers.any(ServerProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
     }
 
     @Test

@@ -1,7 +1,7 @@
 package no.nav.registre.sdforvalter.consumer.rs.hodejegeren;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.sdforvalter.consumer.rs.credential.HodejegerenProperties;
+import no.nav.registre.sdforvalter.config.Consumers;
 import no.nav.registre.sdforvalter.consumer.rs.hodejegeren.command.GetAlleIdenterCommand;
 import no.nav.registre.sdforvalter.consumer.rs.hodejegeren.command.GetLevendeIdenterCommand;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
@@ -17,17 +17,17 @@ public class HodejegerenConsumer {
 
     private final WebClient webClient;
     private final TokenExchange tokenExchange;
-    private final ServerProperties serviceProperties;
+    private final ServerProperties serverProperties;
 
     public HodejegerenConsumer(
-            HodejegerenProperties serviceProperties,
+            Consumers consumers,
             TokenExchange tokenExchange
     ) {
-        this.serviceProperties = serviceProperties;
+        serverProperties = consumers.getTestnorgeHodejegeren();
         this.tokenExchange = tokenExchange;
-
-        this.webClient = WebClient.builder()
-                .baseUrl(serviceProperties.getUrl())
+        this.webClient = WebClient
+                .builder()
+                .baseUrl(serverProperties.getUrl())
                 .build();
     }
 
@@ -36,13 +36,13 @@ public class HodejegerenConsumer {
      * @return En liste med fnr som eksisterer i gruppen
      */
     public List<String> getPlaygroupFnrs(Long playgroupId) {
-        return tokenExchange.exchange(serviceProperties)
+        return tokenExchange.exchange(serverProperties)
                 .flatMap(accessToken -> new GetAlleIdenterCommand(playgroupId, webClient, accessToken.getTokenValue()).call())
                 .block();
     }
 
     public List<String> getLivingFnrs(Long playgroupId, String environment) {
-        return tokenExchange.exchange(serviceProperties)
+        return tokenExchange.exchange(serverProperties)
                 .flatMap(accessToken -> new GetLevendeIdenterCommand(playgroupId, environment, webClient, accessToken.getTokenValue()).call())
                 .block();
     }

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import no.nav.testnav.apps.personservice.config.credentials.PdlProxyProperties;
+import no.nav.testnav.apps.personservice.config.Consumers;
 import no.nav.testnav.apps.personservice.consumer.v2.commad.PdlBolkPersonCommand;
 import no.nav.testnav.apps.personservice.consumer.v2.commad.PdlPersonGetCommand;
 import no.nav.testnav.apps.personservice.provider.v2.PdlMiljoer;
@@ -34,40 +34,43 @@ import static no.nav.testnav.apps.personservice.consumer.v2.JacksonExchangeStrat
 public class PdlPersonConsumer {
 
     private final TokenExchange tokenService;
-    private final ServerProperties serviceProperties;
+    private final ServerProperties serverProperties;
     private final WebClient webClient;
 
     public PdlPersonConsumer(
             TokenExchange tokenService,
-            PdlProxyProperties serverProperties,
+            Consumers consumers,
             ObjectMapper objectMapper,
             WebClient.Builder webClientBuilder
     ) {
-        this.serviceProperties = serverProperties;
+        serverProperties = consumers.getPdlProxy();
         this.tokenService = tokenService;
         webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
-                .clientConnector(new ReactorClientHttpConnector(
-                        HttpClient.create(ConnectionProvider.builder("custom")
-                                .maxConnections(10)
-                                .pendingAcquireMaxCount(5000)
-                                .pendingAcquireTimeout(Duration.ofMinutes(15))
-                                .build())
-                                .responseTimeout(Duration.ofSeconds(5))))
+                .clientConnector(
+                        new ReactorClientHttpConnector(
+                                HttpClient.create(
+                                                ConnectionProvider
+                                                        .builder("custom")
+                                                        .maxConnections(10)
+                                                        .pendingAcquireMaxCount(5000)
+                                                        .pendingAcquireTimeout(Duration.ofMinutes(15))
+                                                        .build())
+                                        .responseTimeout(Duration.ofSeconds(5))))
                 .build();
     }
 
     public Mono<JsonNode> getPdlPerson(String ident, PdlMiljoer pdlMiljoe) {
 
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMap((AccessToken token) -> new PdlPersonGetCommand(webClient, ident, token.getTokenValue(), pdlMiljoe)
                         .call());
     }
 
     public Mono<JsonNode> getPdlPersoner(List<String> identer) {
 
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMap(token -> new PdlBolkPersonCommand(webClient, identer, token.getTokenValue()).call());
     }
 

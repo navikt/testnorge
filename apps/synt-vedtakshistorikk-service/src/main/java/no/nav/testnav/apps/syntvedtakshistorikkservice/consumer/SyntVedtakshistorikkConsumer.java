@@ -1,8 +1,8 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.config.Consumers;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.synt.HentVedtakshistorikkCommand;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.credential.SyntVedtakshistorikkProperties;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.historikk.Vedtakshistorikk;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
@@ -26,23 +26,24 @@ public class SyntVedtakshistorikkConsumer {
     private static final LocalDate MINIMUM_DATE = LocalDate.of(2015, 1, 1);
 
     private final TokenExchange tokenExchange;
-    private final ServerProperties serviceProperties;
+    private final ServerProperties serverProperties;
     private final WebClient webClient;
     private final Random rand = new Random();
 
     public SyntVedtakshistorikkConsumer(
-            SyntVedtakshistorikkProperties syntVedtakshistorikkProperties,
+            Consumers consumers,
             TokenExchange tokenExchange) {
-
-        this.serviceProperties = syntVedtakshistorikkProperties;
+        serverProperties = consumers.getSyntVedtakshistorikk();
         this.tokenExchange = tokenExchange;
-        this.webClient = WebClient.builder()
-                .exchangeStrategies(ExchangeStrategies.builder()
+        this.webClient = WebClient
+                .builder()
+                .exchangeStrategies(ExchangeStrategies
+                        .builder()
                         .codecs(configurer -> configurer
                                 .defaultCodecs()
                                 .maxInMemorySize(16 * 1024 * 1024))
                         .build())
-                .baseUrl(syntVedtakshistorikkProperties.getUrl())
+                .baseUrl(serverProperties.getUrl())
                 .build();
     }
 
@@ -54,7 +55,7 @@ public class SyntVedtakshistorikkConsumer {
             oppstartsdatoer.add(dato.toString());
         }
         try {
-            return tokenExchange.exchange(serviceProperties)
+            return tokenExchange.exchange(serverProperties)
                     .flatMap(accessToken -> new HentVedtakshistorikkCommand(webClient, oppstartsdatoer, accessToken.getTokenValue()).call())
                     .block();
         } catch (Exception e) {

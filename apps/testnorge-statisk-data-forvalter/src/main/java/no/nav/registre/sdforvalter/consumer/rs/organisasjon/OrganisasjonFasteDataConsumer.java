@@ -1,7 +1,7 @@
 package no.nav.registre.sdforvalter.consumer.rs.organisasjon;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.sdforvalter.config.credentials.OrganisasjonFasteDataServiceProperties;
+import no.nav.registre.sdforvalter.config.Consumers;
 import no.nav.registre.sdforvalter.consumer.rs.navn.GenererNavnConsumer;
 import no.nav.registre.sdforvalter.consumer.rs.organisasjon.command.SaveOrganisasjonFasteDataCommand;
 import no.nav.registre.sdforvalter.consumer.rs.organisasjon.domain.OrgTree;
@@ -9,6 +9,7 @@ import no.nav.registre.sdforvalter.consumer.rs.organisasjon.domain.OrgTreeList;
 import no.nav.registre.sdforvalter.domain.EregListe;
 import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
 import no.nav.testnav.libs.dto.organisasjonfastedataservice.v1.Gruppe;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -19,16 +20,16 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Component
 public class OrganisasjonFasteDataConsumer {
     private final WebClient webClient;
-    private final OrganisasjonFasteDataServiceProperties serverProperties;
+    private final ServerProperties serverProperties;
     private final TokenExchange tokenExchange;
     private final GenererNavnConsumer genererNavnConsumer;
 
     public OrganisasjonFasteDataConsumer(
-            OrganisasjonFasteDataServiceProperties serverProperties,
+            Consumers consumers,
             TokenExchange tokenExchange,
             GenererNavnConsumer genererNavnConsumer) {
 
-        this.serverProperties = serverProperties;
+        serverProperties = consumers.getTestnavOrganisasjonFasteDataService();
         this.tokenExchange = tokenExchange;
         this.webClient = WebClient
                 .builder()

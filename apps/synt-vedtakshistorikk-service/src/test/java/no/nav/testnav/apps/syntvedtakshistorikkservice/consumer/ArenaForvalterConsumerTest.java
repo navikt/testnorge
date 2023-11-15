@@ -1,9 +1,9 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer;
 
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.credential.ArenaForvalterenProxyProperties;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.rettighet.*;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -52,7 +52,7 @@ class ArenaForvalterConsumerTest {
 
     @BeforeEach
     public void setup() {
-        when(tokenExchange.exchange(ArgumentMatchers.any(ArenaForvalterenProxyProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
+        when(tokenExchange.exchange(ArgumentMatchers.any(ServerProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
     }
 
     @Test

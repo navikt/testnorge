@@ -1,14 +1,13 @@
 package no.nav.testnav.apps.personexportapi.consumer;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.apps.personexportapi.config.Consumers;
 import no.nav.testnav.apps.personexportapi.consumer.command.GetTpsfGrupperCommand;
 import no.nav.testnav.apps.personexportapi.consumer.command.GetTpsfMeldingerFromPageCommand;
-import no.nav.testnav.apps.personexportapi.consumer.credential.TpsfProperties;
 import no.nav.testnav.apps.personexportapi.consumer.dto.GruppeDTO;
 import no.nav.testnav.apps.personexportapi.domain.Person;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
@@ -32,26 +31,25 @@ import static java.lang.String.format;
 public class TpsfConsumer {
     private final WebClient webClient;
     private final TokenExchange tokenExchange;
-    private final ServerProperties properties;
+    private final ServerProperties serverProperties;
     private final ExecutorService executorService;
 
     public TpsfConsumer(
             TokenExchange tokenExchange,
-            TpsfProperties serviceProperties,
-            @Value("${consumers.tps-forvalter.threads}") Integer threads) {
-
+            Consumers consumers) {
         this.tokenExchange = tokenExchange;
-        this.properties = serviceProperties;
-        this.webClient = WebClient.builder()
-                .baseUrl(properties.getUrl())
+        serverProperties = consumers.getTpsForvalter();
+        this.webClient = WebClient
+                .builder()
+                .baseUrl(serverProperties.getUrl())
                 .build();
-        this.executorService = Executors.newFixedThreadPool(threads);
+        this.executorService = Executors.newFixedThreadPool(serverProperties.getThreads());
     }
 
     private GruppeDTO getGruppe(String avspillingsgruppe) {
         log.info("Henter avspillingsgruppe med id {}...", avspillingsgruppe);
 
-        var list = tokenExchange.exchange(properties)
+        var list = tokenExchange.exchange(serverProperties)
                 .flatMap(accessToken -> new GetTpsfGrupperCommand(webClient, accessToken.getTokenValue()).call())
                 .block();
 
@@ -71,7 +69,7 @@ public class TpsfConsumer {
 
     private CompletableFuture<List<Person>> getPersonFromPage(String avspillingsgruppe, int page, int numberOfPages) {
         return CompletableFuture.supplyAsync(
-                () -> tokenExchange.exchange(properties)
+                () -> tokenExchange.exchange(serverProperties)
                         .flatMap(accessToken -> new GetTpsfMeldingerFromPageCommand(
                                 webClient, accessToken.getTokenValue(), avspillingsgruppe, page).call())
                         .block(),

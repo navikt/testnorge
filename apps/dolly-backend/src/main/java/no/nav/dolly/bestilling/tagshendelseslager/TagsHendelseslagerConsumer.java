@@ -9,7 +9,7 @@ import no.nav.dolly.bestilling.tagshendelseslager.command.TagsOpprettingCommand;
 import no.nav.dolly.bestilling.tagshendelseslager.command.TagsSlettingCommand;
 import no.nav.dolly.bestilling.tagshendelseslager.dto.HendelselagerResponse;
 import no.nav.dolly.bestilling.tagshendelseslager.dto.TagsOpprettingResponse;
-import no.nav.dolly.config.credentials.PdlProxyProperties;
+import no.nav.dolly.config.Consumers;
 import no.nav.dolly.domain.resultset.Tags;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.util.JacksonExchangeStrategyUtil;
@@ -29,18 +29,18 @@ public class TagsHendelseslagerConsumer {
     private static final int BLOCK_SIZE = 100;
     private final TokenExchange tokenService;
     private final WebClient webClient;
-    private final ServerProperties serviceProperties;
+    private final ServerProperties serverProperties;
 
     public TagsHendelseslagerConsumer(
             TokenExchange tokenService,
-            PdlProxyProperties serviceProperties,
+            Consumers consumers,
             ObjectMapper objectMapper,
             WebClient.Builder webClientBuilder
     ) {
         this.tokenService = tokenService;
-        this.serviceProperties = serviceProperties;
+        serverProperties = consumers.getTestnavPdlProxy();
         this.webClient = webClientBuilder
-                .baseUrl(serviceProperties.getUrl())
+                .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(JacksonExchangeStrategyUtil.getJacksonStrategy(objectMapper))
                 .build();
     }
@@ -48,7 +48,7 @@ public class TagsHendelseslagerConsumer {
     @Timed(name = "providers", tags = {"operation", "tags_create"})
     public Mono<TagsOpprettingResponse> createTags(List<String> identer, List<Tags> tags) {
 
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMap(token -> new TagsOpprettingCommand(webClient,
                         identer, tags, token.getTokenValue()).call());
     }
@@ -56,7 +56,7 @@ public class TagsHendelseslagerConsumer {
     @Timed(name = "providers", tags = {"operation", "tags_delete"})
     public Flux<String> deleteTags(List<String> identer, List<Tags> tags) {
 
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> Flux.range(0, (identer.size() / BLOCK_SIZE) + 1)
                         .map(index -> new TagsSlettingCommand(webClient,
                                 identer.subList(index * BLOCK_SIZE, Math.min((index + 1) * BLOCK_SIZE, identer.size())),
@@ -67,14 +67,14 @@ public class TagsHendelseslagerConsumer {
     @Timed(name = "providers", tags = {"operation", "tags_get"})
     public JsonNode getTag(String ident) {
 
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMap(token -> new TagsHenteCommand(webClient, ident, token.getTokenValue()).call()).block();
     }
 
     @Timed(name = "providers", tags = {"operation", "hendelselager_publish"})
     public Mono<HendelselagerResponse> publish(List<String> identer) {
 
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMap(token -> new HendelseslagerPublishCommand(webClient, identer, token.getTokenValue()).call());
     }
 }

@@ -9,7 +9,7 @@ import no.nav.dolly.bestilling.sigrunstub.command.SigurunstubPutCommand;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubLignetInntektRequest;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubPensjonsgivendeInntektRequest;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubResponse;
-import no.nav.dolly.config.credentials.SigrunstubProxyProperties;
+import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
@@ -31,16 +31,16 @@ public class SigrunStubConsumer implements ConsumerStatus {
     private static final String SIGRUN_STUB_PENSJONSGIVENDE_INNTEKT_URL = "/api/v1/pensjonsgivendeinntektforfolketrygden";
     private final TokenExchange tokenService;
     private final WebClient webClient;
-    private final ServerProperties serviceProperties;
+    private final ServerProperties serverProperties;
 
     public SigrunStubConsumer(
             TokenExchange tokenService,
-            SigrunstubProxyProperties serverProperties,
+            Consumers consumers,
             ObjectMapper objectMapper,
             WebClient.Builder webClientBuilder
     ) {
         this.tokenService = tokenService;
-        this.serviceProperties = serverProperties;
+        serverProperties = consumers.getTestnavSigrunstubProxy();
         this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
@@ -50,7 +50,7 @@ public class SigrunStubConsumer implements ConsumerStatus {
     @Timed(name = "providers", tags = {"operation", "sigrun_deleteGrunnlag"})
     public Flux<SigrunstubResponse> deleteLignetInntekt(List<String> identer) {
 
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> Flux.range(0, identer.size())
                         .delayElements(Duration.ofMillis(50))
                         .map(index -> new SigrunstubLignetDeleteCommand(webClient, identer.get(index), token.getTokenValue()).call())
@@ -60,7 +60,7 @@ public class SigrunStubConsumer implements ConsumerStatus {
     @Timed(name = "providers", tags = {"operation", "sigrun_deleteGrunnlag"})
     public Flux<SigrunstubResponse> deletePensjonsgivendeInntekt(List<String> identer) {
 
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> Flux.range(0, identer.size())
                         .delayElements(Duration.ofMillis(50))
                         .map(index -> new SigrunstubPensjonsgivendeDeleteCommand(webClient, identer.get(index), token.getTokenValue()).call())
@@ -72,7 +72,7 @@ public class SigrunStubConsumer implements ConsumerStatus {
 
         log.info("Put lignet inntekt til Sigrunstub med data {}", request);
 
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMap(token -> new SigurunstubPutCommand(webClient, SIGRUN_STUB_LIGNET_INNTEKT_URL, request, token.getTokenValue()).call());
     }
 
@@ -81,14 +81,14 @@ public class SigrunStubConsumer implements ConsumerStatus {
 
         log.info("Put pensjonsgivende inntekt til Sigrunstub med data {}", request);
 
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMap(token -> new SigurunstubPutCommand(webClient, SIGRUN_STUB_PENSJONSGIVENDE_INNTEKT_URL,
                         request, token.getTokenValue()).call());
     }
 
     @Override
     public String serviceUrl() {
-        return serviceProperties.getUrl();
+        return serverProperties.getUrl();
     }
 
     @Override

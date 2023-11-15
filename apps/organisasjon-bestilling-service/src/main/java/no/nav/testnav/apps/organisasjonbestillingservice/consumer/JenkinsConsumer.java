@@ -1,12 +1,12 @@
 package no.nav.testnav.apps.organisasjonbestillingservice.consumer;
 
+import no.nav.testnav.apps.organisasjonbestillingservice.config.Consumers;
 import no.nav.testnav.apps.organisasjonbestillingservice.consumer.command.GetBEREG007Command;
 import no.nav.testnav.apps.organisasjonbestillingservice.consumer.command.GetBEREG007LogCommand;
 import no.nav.testnav.apps.organisasjonbestillingservice.consumer.command.GetCrumbCommand;
 import no.nav.testnav.apps.organisasjonbestillingservice.consumer.command.GetQueueItemCommand;
 import no.nav.testnav.apps.organisasjonbestillingservice.consumer.dto.BuildDTO;
 import no.nav.testnav.apps.organisasjonbestillingservice.consumer.dto.ItemDTO;
-import no.nav.testnav.apps.organisasjonbestillingservice.credentials.JenkinsServiceProperties;
 import no.nav.testnav.libs.dto.jenkins.v1.JenkinsCrumb;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
@@ -20,16 +20,16 @@ public class JenkinsConsumer {
 
     private final WebClient webClient;
     private final TokenExchange tokenExchange;
-    private final ServerProperties properties;
+    private final ServerProperties serverProperties;
 
     public JenkinsConsumer(
-            JenkinsServiceProperties properties,
+            Consumers consumers,
             TokenExchange tokenExchange) {
-
         this.tokenExchange = tokenExchange;
-        this.properties = properties;
-        this.webClient = WebClient.builder()
-                .baseUrl(properties.getUrl())
+        serverProperties = consumers.getJenkins();
+        this.webClient = WebClient
+                .builder()
+                .baseUrl(serverProperties.getUrl())
                 .build();
     }
 
@@ -39,7 +39,7 @@ public class JenkinsConsumer {
 
     public Mono<Long> getBuildId(Long itemId) {
         return tokenExchange
-                .exchange(properties)
+                .exchange(serverProperties)
                 .flatMap(accessToken -> getCrumb(accessToken)
                         .flatMap(jenkinsCrumb -> new GetQueueItemCommand(webClient, accessToken.getTokenValue(), jenkinsCrumb, itemId).call())
                         .map(ItemDTO::getNumber)
@@ -48,13 +48,13 @@ public class JenkinsConsumer {
 
     public Mono<String> getBuildLog(Long buildId) {
         return tokenExchange
-                .exchange(properties)
+                .exchange(serverProperties)
                 .flatMap(accessToken -> new GetBEREG007LogCommand(webClient, accessToken.getTokenValue(), buildId).call());
     }
 
     public Mono<BuildDTO> getBuild(Long buildId) {
         return tokenExchange
-                .exchange(properties)
+                .exchange(serverProperties)
                 .flatMap(accessToken -> new GetBEREG007Command(webClient, accessToken.getTokenValue(), buildId).call());
     }
 

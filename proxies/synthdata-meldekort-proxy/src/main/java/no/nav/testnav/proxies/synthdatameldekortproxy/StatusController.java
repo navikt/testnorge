@@ -1,7 +1,7 @@
 package no.nav.testnav.proxies.synthdatameldekortproxy;
 
 import no.nav.testnav.libs.dto.status.v1.TestnavStatusResponse;
-import no.nav.testnav.proxies.synthdatameldekortproxy.config.credentials.SyntMeldekortProperties;
+import no.nav.testnav.proxies.synthdatameldekortproxy.config.Consumers;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,8 +16,8 @@ public class StatusController {
 
     private final String url;
 
-    public StatusController(SyntMeldekortProperties properties) {
-        url = properties.getUrl();
+    public StatusController(Consumers consumers) {
+        url = consumers.getSyntMeldekort().getUrl();
     }
 
     @GetMapping(value = "/internal/status", produces = MediaType.APPLICATION_JSON_VALUE)

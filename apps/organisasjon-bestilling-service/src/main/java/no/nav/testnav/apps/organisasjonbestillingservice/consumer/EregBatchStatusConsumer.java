@@ -1,6 +1,6 @@
 package no.nav.testnav.apps.organisasjonbestillingservice.consumer;
 
-import no.nav.testnav.apps.organisasjonbestillingservice.config.credentials.EregBatchStatusServiceProperties;
+import no.nav.testnav.apps.organisasjonbestillingservice.config.Consumers;
 import no.nav.testnav.apps.organisasjonbestillingservice.consumer.command.GetEregBatchStatusCommand;
 import no.nav.testnav.apps.organisasjonbestillingservice.domain.v2.Order;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
@@ -12,22 +12,22 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class EregBatchStatusConsumer {
     private final WebClient webClient;
     private final TokenExchange tokenExchange;
-    private final ServerProperties serviceProperties;
+    private final ServerProperties serverProperties;
 
     public EregBatchStatusConsumer(
-            EregBatchStatusServiceProperties serviceProperties,
+            Consumers consumers,
             TokenExchange tokenExchange
     ) {
-
-        this.serviceProperties = serviceProperties;
+        serverProperties = consumers.getEregBatchStatusService();
         this.tokenExchange = tokenExchange;
-        this.webClient = WebClient.builder()
-                .baseUrl(serviceProperties.getUrl())
+        this.webClient = WebClient
+                .builder()
+                .baseUrl(serverProperties.getUrl())
                 .build();
     }
 
     public Long getStatusKode(no.nav.testnav.apps.organisasjonbestillingservice.domain.v1.Order order) {
-        var accessToken = tokenExchange.exchange(serviceProperties).block();
+        var accessToken = tokenExchange.exchange(serverProperties).block();
         var command = new GetEregBatchStatusCommand(
                 webClient,
                 order.getBatchId(),
@@ -38,7 +38,7 @@ public class EregBatchStatusConsumer {
     }
 
     public Long getStatusKode(Order order) {
-        var accessToken = tokenExchange.exchange(serviceProperties).block();
+        var accessToken = tokenExchange.exchange(serverProperties).block();
         var command = new GetEregBatchStatusCommand(
                 webClient,
                 order.getBatchId(),

@@ -1,6 +1,6 @@
 package no.nav.testnav.apps.adresseservice.consumer;
 
-import no.nav.testnav.apps.adresseservice.config.credentials.PdlServiceProperties;
+import no.nav.testnav.apps.adresseservice.config.Consumers;
 import no.nav.testnav.apps.adresseservice.consumer.command.PdlAdresseSoekCommand;
 import no.nav.testnav.apps.adresseservice.dto.GraphQLRequest;
 import no.nav.testnav.apps.adresseservice.dto.PdlAdresseResponse;
@@ -13,19 +13,21 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class PdlAdresseConsumer {
     private final WebClient webClient;
     private final TokenExchange tokenExchange;
-    private final ServerProperties properties;
+    private final ServerProperties serverProperties;
 
-    public PdlAdresseConsumer(TokenExchange tokenExchange, PdlServiceProperties properties) {
+    public PdlAdresseConsumer(
+            TokenExchange tokenExchange,
+            Consumers consumers) {
         this.tokenExchange = tokenExchange;
-        this.properties = properties;
+        serverProperties = consumers.getPdlServices();
         this.webClient = WebClient
                 .builder()
-                .baseUrl(properties.getUrl())
+                .baseUrl(serverProperties.getUrl())
                 .build();
     }
 
     public PdlAdresseResponse sendAdressesoek(GraphQLRequest adresseQuery) {
-        return tokenExchange.exchange(properties)
+        return tokenExchange.exchange(serverProperties)
                 .flatMap(token -> new PdlAdresseSoekCommand(webClient, adresseQuery, token.getTokenValue()).call())
                 .block();
     }

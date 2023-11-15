@@ -1,8 +1,9 @@
 package no.nav.organisasjonforvalter.consumer;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.organisasjonforvalter.config.credentials.GenererNavnServiceProperties;
+import no.nav.organisasjonforvalter.config.Consumers;
 import no.nav.testnav.libs.commands.generernavnservice.v1.GenererNavnCommand;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -24,15 +25,15 @@ public class GenererNavnServiceConsumer {
 
     private final TokenExchange tokenExchange;
     private final WebClient webClient;
-    private final GenererNavnServiceProperties serviceProperties;
+    private final ServerProperties serverProperties;
 
     public GenererNavnServiceConsumer(
-            GenererNavnServiceProperties serviceProperties,
+            Consumers consumers,
             TokenExchange tokenExchange) {
 
-        this.serviceProperties = serviceProperties;
+        serverProperties = consumers.getGenererNavnService();
         this.webClient = WebClient.builder()
-                .baseUrl(serviceProperties.getUrl())
+                .baseUrl(serverProperties.getUrl())
                 .build();
         this.tokenExchange = tokenExchange;
     }
@@ -41,7 +42,7 @@ public class GenererNavnServiceConsumer {
 
         long startTime = currentTimeMillis();
         try {
-            var accessToken = tokenExchange.exchange(serviceProperties);
+            var accessToken = tokenExchange.exchange(serverProperties);
             var navn = new GenererNavnCommand(webClient, accessToken.block().getTokenValue(), antall).call();
 
             log.info("Generer-navn-service svarte etter {} ms", currentTimeMillis() - startTime);

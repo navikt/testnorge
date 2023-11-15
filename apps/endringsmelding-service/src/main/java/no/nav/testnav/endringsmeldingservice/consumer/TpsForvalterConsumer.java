@@ -1,7 +1,7 @@
 package no.nav.testnav.endringsmeldingservice.consumer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nav.testnav.endringsmeldingservice.config.credentias.TpsForvalterenProxyServiceProperties;
+import no.nav.testnav.endringsmeldingservice.config.Consumers;
 import no.nav.testnav.endringsmeldingservice.consumer.command.SendDoedsmeldingCommand;
 import no.nav.testnav.endringsmeldingservice.consumer.command.SendFoedselsmeldingCommand;
 import no.nav.testnav.endringsmeldingservice.consumer.dto.DoedsmeldingDTO;
@@ -27,11 +27,11 @@ public class TpsForvalterConsumer {
     private final TokenExchange accessTokenService;
 
     public TpsForvalterConsumer(
-            TpsForvalterenProxyServiceProperties serverProperties,
+            Consumers consumers,
             TokenExchange tokenExchange,
             ObjectMapper objectMapper) {
 
-        this.serverProperties = serverProperties;
+        serverProperties = consumers.getTpsForvalterenProxy();
         this.accessTokenService = tokenExchange;
 
         ExchangeStrategies jacksonStrategy = ExchangeStrategies.builder()
