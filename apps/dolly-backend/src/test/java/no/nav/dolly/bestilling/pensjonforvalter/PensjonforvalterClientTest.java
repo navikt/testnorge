@@ -45,19 +45,10 @@ import java.util.Set;
 
 import static no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterClient.mergePensjonforvalterResponses;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anySet;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -147,7 +138,7 @@ class PensjonforvalterClientTest {
             "T1,200,T1,200,T1,200",
             "T1,200,T1,500,T1,500",
             "T1,500,T1,200,T1,500",
-            "T1,500,T1,500,T1,500"})
+            "T1,500,T1,500,T1,500" })
         // none empty new response list (with status 200) to none empty previous list with same env name and previous status of 200
         // none empty new response list (with status 200) to none empty previous list with same env name and previous status of 500
         // none empty new response list (with status 500) to none empty previous list with same env name and previous status of 200
@@ -319,7 +310,7 @@ class PensjonforvalterClientTest {
                             .persister(any(BestillingProgress.class), any(), statusCaptor.capture());
                     assertThat(statusCaptor.getAllValues().get(0).split("#")[0], is(equalTo("PensjonForvalter")));
                     assertThat(Arrays.asList(statusCaptor.getAllValues().get(0).split("#")[1].split(",")),
-                            containsInAnyOrder("TEST1:Info= Oppretting startet mot PESYS ...","TEST2:Info= Oppretting startet mot PESYS ..."));
+                            containsInAnyOrder("TEST1:Info= Oppretting startet mot PESYS ...", "TEST2:Info= Oppretting startet mot PESYS ..."));
                     assertThat(statusCaptor.getAllValues().get(1), is(CoreMatchers.equalTo("PensjonForvalter#TEST1:OK$TpForhold#TEST2:OK,TEST1:OK")));
                 })
                 .verifyComplete();
@@ -387,7 +378,7 @@ class PensjonforvalterClientTest {
                                         .build()),
                                 new ResponseEnvironment("TEST2", PensjonforvalterResponse.Response.builder()
                                         .httpStatus(new PensjonforvalterResponse.HttpStatus("Intern feil", 500))
-                                        .message("ytelse2 feil on TEST2")
+                                        .message("{ytelse2 feil on TEST2}")
                                         .build())))
                         .build()));
 
@@ -399,8 +390,8 @@ class PensjonforvalterClientTest {
                 .thenReturn(new PensjonTpForholdRequest());
         when(mapperFacade.map(any(PensjonData.TpYtelse.class), eq(PensjonTpYtelseRequest.class), any(MappingContext.class)))
                 .thenReturn(new PensjonTpYtelseRequest());
-        when(errorStatusDecoder.getErrorText(HttpStatus.INTERNAL_SERVER_ERROR, "ytelse2 feil on TEST2"))
-                .thenReturn("Feil= ytelse2 feil on TEST2");
+        when(errorStatusDecoder.getErrorText(any(), any()))
+                .thenCallRealMethod();
         when(pdlDataConsumer.getPersoner(anyList())).thenReturn(Flux.empty());
         when(pensjonforvalterConsumer.hentSamboer(anyString(), anyString())).thenReturn(Flux.empty());
 
@@ -411,7 +402,8 @@ class PensjonforvalterClientTest {
                             .persister(any(BestillingProgress.class), any(), statusCaptor.capture());
                     assertThat(statusCaptor.getAllValues().get(0).split("#")[0], is(equalTo("PensjonForvalter")));
                     assertThat(Arrays.asList(statusCaptor.getAllValues().get(0).split("#")[1].split(",")),
-                            containsInAnyOrder("TEST1:Info= Oppretting startet mot PESYS ...","TEST2:Info= Oppretting startet mot PESYS ..."));                    assertThat(statusCaptor.getAllValues().get(1), is(CoreMatchers.equalTo("PensjonForvalter#TEST1:OK,TEST2:OK$TpForhold#TEST2:Feil= ytelse2 feil on TEST2,TEST1:OK")));
+                            containsInAnyOrder("TEST1:Info= Oppretting startet mot PESYS ...", "TEST2:Info= Oppretting startet mot PESYS ..."));
+                    assertThat(statusCaptor.getAllValues().get(1), is(CoreMatchers.equalTo("PensjonForvalter#TEST1:OK,TEST2:OK$TpForhold#TEST2:Feil= ytelse2 feil on TEST2,TEST1:OK")));
                 })
                 .verifyComplete();
     }
@@ -501,7 +493,7 @@ class PensjonforvalterClientTest {
                             .persister(any(BestillingProgress.class), any(), statusCaptor.capture());
                     assertThat(statusCaptor.getAllValues().get(0).split("#")[0], is(equalTo("PensjonForvalter")));
                     assertThat(Arrays.asList(statusCaptor.getAllValues().get(0).split("#")[1].split(",")),
-                            containsInAnyOrder("TEST1:Info= Oppretting startet mot PESYS ...","TEST2:Info= Oppretting startet mot PESYS ..."));
+                            containsInAnyOrder("TEST1:Info= Oppretting startet mot PESYS ...", "TEST2:Info= Oppretting startet mot PESYS ..."));
                     assertThat(statusCaptor.getAllValues().get(1),
                             is(CoreMatchers.equalTo("PensjonForvalter#TEST1:OK,TEST2:OK$" +
                                     "TpForhold#TEST2:Feil= Klarte ikke å få TP-ytelse respons for 12345 i PESYS (pensjon),TEST1:OK")));
@@ -539,4 +531,41 @@ class PensjonforvalterClientTest {
             return response;
         }
     }
+
+    @ParameterizedTest
+    @CsvSource(
+            value = {
+                    "{MESSAGE},REASON,Feil= MESSAGE",
+                    "null,REASON,Feil= REASON",
+                    "null,null,Feil= 500 INTERNAL_SERVER_ERROR"
+            },
+            nullValues = {
+                    "null"
+            }
+    )
+    void testGetError(String message, String reason, String expected) {
+
+        when(errorStatusDecoder.getErrorText(any(), any()))
+                .thenCallRealMethod();
+        var entry = ResponseEnvironment
+                .builder()
+                .miljo("ENV")
+                .response(
+                        PensjonforvalterResponse.Response
+                                .builder()
+                                .path("/test")
+                                .message(message)
+                                .httpStatus(
+                                        PensjonforvalterResponse.HttpStatus
+                                                .builder()
+                                                .status(500)
+                                                .reasonPhrase(reason)
+                                                .build())
+                                .build())
+                .build();
+        var error = pensjonforvalterClient.getError(entry);
+        assertThat(error, is(expected));
+
+    }
+
 }
