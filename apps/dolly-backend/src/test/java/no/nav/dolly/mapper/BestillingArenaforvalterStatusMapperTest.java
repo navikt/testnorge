@@ -36,6 +36,12 @@ class BestillingArenaforvalterStatusMapperTest {
                     .build()
     );
 
+    private static final List<BestillingProgress> ARENA_ORACLE_EXCEPTION_TJENESTE = singletonList(
+            BestillingProgress.builder().ident(IDENT)
+                    .arenaforvalterStatus("q1$BRUKER Oppretting= AKTIVER_BRUKER=exception type= class org.springframework.web.client.HttpServerErrorException; message= 555 User Defined Resource Error= \"<EOL>{<EOL>    \"code\"= \"UserDefinedResourceError\";<EOL>    \"title\"= \"User Defined Resource Error\";<EOL>    \"message\"= \"The request could not be processed due to an error in a user defined resource\";<EOL>    \"o=errorCode\"= \"ORDS-25001\";<EOL>    \"cause\"= \"An error occurred when evaluating the SQL statement associated with this resource. SQL Error Code 20999; Error Message= ORA-20999= -20180= Tjeneste HentPerson returnerte feil= Tilgang til ressursen er avvist (12345678912) ved forsøk på aktivering med iverksatt 14a-vedtak.\\nORA-06512= ved \\\"SIAMO.SYNT_PERSON\\\"; line 203\\nORA-06512= ved \\\"SIAMO.SYNT_PERSON\\\"; line 185\\nORA-06512= ved \\\"SYNT_REST.BRUKEROPPFOLGING\\\"; line 5\\nORA-06512= ved line 1\\n\";<EOL>    \"action\"= \"Ask the user defined resource author to check the SQL statement is correctly formed and executes without error\";<EOL>    \"type\"= \"tag=oracle.com;2020=error/UserDefinedResourceError\";<EOL>    \"instance\"= \"tag=oracle.com;2020=ecid/1238y21y312dwa")
+                    .build()
+    );
+
     @Test
     void buildArenaForvalterStatusMap_OK() {
 
@@ -67,6 +73,16 @@ class BestillingArenaforvalterStatusMapperTest {
 
         assertThat(identStatuses.get(0).getStatuser().get(0).getMelding(), is(equalTo("Feil: Person med fødselsnr 12345678912 kan ikke aktiveres fordi denne er død ved forsøk på aktivering med iverksatt 14a-vedtak.")));
         assertThat(identStatuses.get(0).getStatuser().get(0).getDetaljert().get(0).getMiljo(), is(equalTo("q2")));
+        assertThat(identStatuses.get(0).getStatuser().get(0).getDetaljert().get(0).getIdenter(), containsInAnyOrder(IDENT));
+    }
+
+    @Test
+    void formaterOracleExceptionTjeneste_OK() {
+
+        List<RsStatusRapport> identStatuses = BestillingArenaforvalterStatusMapper.buildArenaStatusMap(ARENA_ORACLE_EXCEPTION_TJENESTE);
+
+        assertThat(identStatuses.get(0).getStatuser().get(0).getMelding(), is(equalTo("Feil: Tilgang til ressursen er avvist (12345678912) ved forsøk på aktivering med iverksatt 14a-vedtak.")));
+        assertThat(identStatuses.get(0).getStatuser().get(0).getDetaljert().get(0).getMiljo(), is(equalTo("q1")));
         assertThat(identStatuses.get(0).getStatuser().get(0).getDetaljert().get(0).getIdenter(), containsInAnyOrder(IDENT));
     }
 }
