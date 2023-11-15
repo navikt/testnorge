@@ -37,7 +37,7 @@ export const PdlPersonForm = ({
 			<PdlNyPerson
 				nyPersonPath={nyPersonPath}
 				eksisterendePersonPath={eksisterendePersonPath}
-				formikBag={formikBag}
+				formMethods={formMethods}
 				erNyIdent={nyIdentValg !== null}
 				gruppeIdenter={gruppeIdenter}
 				eksisterendeNyPerson={eksisterendeNyPerson}
@@ -47,7 +47,7 @@ export const PdlPersonForm = ({
 				nyPersonPath={nyPersonPath}
 				eksisterendePersonPath={eksisterendePersonPath}
 				label={label}
-				formikBag={formikBag}
+				formMethods={formMethods}
 				nyIdentValg={nyIdentValg}
 				eksisterendeNyPerson={eksisterendeNyPerson}
 			/>

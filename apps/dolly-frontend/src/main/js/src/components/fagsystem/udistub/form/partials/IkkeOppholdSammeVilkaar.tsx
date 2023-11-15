@@ -7,7 +7,7 @@ interface Formik {
 }
 
 // @ts-ignore
-export const IkkeOppholdSammeVilkaar = ({ formikBag }: Formik) => (
+export const IkkeOppholdSammeVilkaar = ({ formMethods }: Formik) => (
 	<div className="flexbox--flex-wrap">
 		<Kategori title={'Avslag eller bortfall'}>
 			<FormikDatepicker

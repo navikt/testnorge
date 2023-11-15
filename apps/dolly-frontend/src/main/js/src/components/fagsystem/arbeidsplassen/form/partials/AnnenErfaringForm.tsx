@@ -12,7 +12,7 @@ import * as React from 'react'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { EraseFillButtons } from '@/components/fagsystem/arbeidsplassen/form/partials/EraseFillButtons'
 
-export const AnnenErfaringForm = ({ formikBag }) => {
+export const AnnenErfaringForm = ({ formMethods }) => {
 	const annenErfaringListePath = 'arbeidsplassenCV.annenErfaring'
 
 	return (
@@ -40,7 +40,7 @@ export const AnnenErfaringForm = ({ formikBag }) => {
 								onBlur={(beskrivelse) =>
 									formikBag.setFieldValue(
 										`${annenErfaringPath}.description`,
-										beskrivelse?.target?.value
+										beskrivelse?.target?.value,
 									)
 								}
 								size="small"
@@ -64,7 +64,7 @@ export const AnnenErfaringForm = ({ formikBag }) => {
 							/>
 						</div>
 						<EraseFillButtons
-							formikBag={formikBag}
+							formMethods={formMethods}
 							path={annenErfaringPath}
 							initialErase={initialAnnenErfaring}
 							initialFill={initialAnnenErfaringVerdier}

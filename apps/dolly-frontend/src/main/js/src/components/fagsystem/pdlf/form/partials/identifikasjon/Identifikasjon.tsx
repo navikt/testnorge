@@ -20,7 +20,7 @@ export const identifikasjonAttributter = [
 const hjelpetekst =
 	'Her kan du velge ny identitet for person, enten fra en eksisterende ident, eller ved å opprette en helt ny ident. Ny ident vil settes som gjeldende, og tidligere valgte attributter vil settes som identhistorikk på personen.'
 
-export const Identifikasjon = ({ formikBag }: IdentifikasjonValues) => {
+export const Identifikasjon = ({ formMethods }: IdentifikasjonValues) => {
 	return (
 		<Vis attributt={identifikasjonAttributter}>
 			<Panel
@@ -30,7 +30,7 @@ export const Identifikasjon = ({ formikBag }: IdentifikasjonValues) => {
 				startOpen={erForsteEllerTest(formikBag.values, identifikasjonAttributter)}
 			>
 				<Kategori title="Falsk identitet" vis="pdldata.person.falskIdentitet">
-					<FalskIdentitet formikBag={formikBag} />
+					<FalskIdentitet formMethods={formMethods} />
 				</Kategori>
 				<Kategori
 					title="Utenlandsk identifikasjonsnummer"
@@ -40,7 +40,7 @@ export const Identifikasjon = ({ formikBag }: IdentifikasjonValues) => {
 					<UtenlandsId />
 				</Kategori>
 				<Kategori title="Ny identitet" vis="pdldata.person.nyident" hjelpetekst={hjelpetekst}>
-					<NyIdent formikBag={formikBag} />
+					<NyIdent formMethods={formMethods} />
 				</Kategori>
 			</Panel>
 		</Vis>

@@ -25,7 +25,7 @@ type Inntektslister = {
 
 const hjelpetekst = `Den øverste inntektinformasjonen er den gjeldende inntekten. All inntektsinformasjon merket med "Versjon #" er historiske endringer der økende versjonsnummer er nyere.`
 
-export default ({ formikBag, path }: InntektendringForm) => {
+export default ({ formMethods, path }: InntektendringForm) => {
 	const kopiAvGjeldendeInntekt = _.get(formikBag.values, path)
 	const initialValues: Inntektslister = {
 		arbeidsforholdsliste: kopiAvGjeldendeInntekt.arbeidsforholdsliste,
@@ -63,12 +63,12 @@ export default ({ formikBag, path }: InntektendringForm) => {
 										handleRemove={clickRemove}
 									>
 										<FormikDateTimepicker
-											formikBag={formikBag}
+											formMethods={formMethods}
 											name={`${listePath}.rapporteringsdato`}
 											label="Rapporteringsdato"
 											onChange={(date: Date) => handleRapporteringDateChange(date, listePath)}
 										/>
-										<InntektsinformasjonLister formikBag={formikBag} path={listePath} />
+										<InntektsinformasjonLister formMethods={formMethods} path={listePath} />
 									</DollyFaBlokk>
 								)
 							})}

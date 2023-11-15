@@ -50,7 +50,7 @@ export const PdlPersonExpander = ({
 					nyPersonPath={nyPersonPath}
 					eksisterendePersonPath={eksisterendePersonPath}
 					label={label}
-					formikBag={formikBag}
+					formMethods={formMethods}
 					nyIdentValg={nyIdentValg}
 					eksisterendeNyPerson={eksisterendeNyPerson}
 				/>

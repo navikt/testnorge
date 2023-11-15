@@ -12,7 +12,7 @@ interface DoedfoedtBarnProps {
 	path?: string
 }
 
-export const DoedfoedtBarnForm = ({ formikBag, path }: DoedfoedtBarnProps) => {
+export const DoedfoedtBarnForm = ({ formMethods, path }: DoedfoedtBarnProps) => {
 	return (
 		<div className="flexbox--flex-wrap">
 			<DatepickerWrapper>
@@ -31,7 +31,7 @@ export const DoedfoedtBarnForm = ({ formikBag, path }: DoedfoedtBarnProps) => {
 	)
 }
 
-export const DoedfoedtBarn = ({ formikBag }: DoedfoedtBarnProps) => {
+export const DoedfoedtBarn = ({ formMethods }: DoedfoedtBarnProps) => {
 	return (
 		<FormikDollyFieldArray
 			name="pdldata.person.doedfoedtBarn"
@@ -39,7 +39,7 @@ export const DoedfoedtBarn = ({ formikBag }: DoedfoedtBarnProps) => {
 			newEntry={initialDoedfoedtBarn}
 			canBeEmpty={false}
 		>
-			{(path: string) => <DoedfoedtBarnForm formikBag={formikBag} path={path} />}
+			{(path: string) => <DoedfoedtBarnForm formMethods={formMethods} path={path} />}
 		</FormikDollyFieldArray>
 	)
 }

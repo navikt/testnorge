@@ -40,7 +40,7 @@ enum Kodeverk {
 
 export const histarkAttributt = 'histark'
 
-export const HistarkForm = ({ formikBag }: HistarkFormProps) => {
+export const HistarkForm = ({ formMethods }: HistarkFormProps) => {
 	if (!_.has(formikBag.values, histarkAttributt)) {
 		return null
 	}
@@ -123,7 +123,7 @@ export const HistarkForm = ({ formikBag }: HistarkFormProps) => {
 										isLoading={_.isEmpty(navEnheter)}
 									/>
 									<Yearpicker
-										formikBag={formikBag}
+										formMethods={formMethods}
 										name={`${path}.startAar`}
 										label="Startår"
 										date={startAar}
@@ -135,7 +135,7 @@ export const HistarkForm = ({ formikBag }: HistarkFormProps) => {
 										maxDate={new Date()}
 									/>
 									<Yearpicker
-										formikBag={formikBag}
+										formMethods={formMethods}
 										name={`${path}.sluttAar`}
 										label="Sluttår"
 										date={sluttAar}

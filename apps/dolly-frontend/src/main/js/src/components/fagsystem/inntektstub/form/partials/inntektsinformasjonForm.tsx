@@ -57,16 +57,16 @@ export default ({ path, formikBag }: InntektsinformasjonForm) => {
 					type="number"
 				/>
 				<FormikDateTimepicker
-					formikBag={formikBag}
+					formMethods={formMethods}
 					name={`${path}.rapporteringsdato`}
 					label="Rapporteringstidspunkt"
 					date={rapporteringsdate}
 					onChange={handleRapporteringDateChange}
 				/>
 			</div>
-			<InntektstubVirksomhetToggle formikBag={formikBag} path={path} />
-			<InntektsinformasjonLister formikBag={formikBag} path={path} />
-			<InntektsendringForm formikBag={formikBag} path={path} />
+			<InntektstubVirksomhetToggle formMethods={formMethods} path={path} />
+			<InntektsinformasjonLister formMethods={formMethods} path={path} />
+			<InntektsendringForm formMethods={formMethods} path={path} />
 		</div>
 	)
 }

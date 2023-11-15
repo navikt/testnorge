@@ -92,7 +92,7 @@ export default ({ gruppe }: TestnorgePageProps) => {
 						<Fragment>
 							{devEnabled && <DisplayFormikState {...formikBag} />}
 							<SearchContainer
-								left={<SearchOptions formikBag={formikBag} />}
+								left={<SearchOptions formMethods={formMethods} />}
 								right={
 									<>
 										{error && <ContentContainer>{error}</ContentContainer>}
@@ -108,7 +108,7 @@ export default ({ gruppe }: TestnorgePageProps) => {
 										)}
 									</>
 								}
-								formikBag={formikBag}
+								formMethods={formMethods}
 								onSubmit={formikBag.handleSubmit}
 								onEmpty={formikBag.resetForm}
 							/>
@@ -128,7 +128,7 @@ const validation = Yup.object({
 				.nullable()
 				.transform((curr, orig) => (orig === '' ? null : curr))
 				.matches(/^\d*$/, 'Ident må være et tall med 11 siffer')
-				.test('len', 'Ident må være et tall med 11 siffer', (val) => !val || val.length === 11)
-		)
+				.test('len', 'Ident må være et tall med 11 siffer', (val) => !val || val.length === 11),
+		),
 	),
 })

@@ -138,20 +138,24 @@ export const BostedsadresseForm = ({
 				/>
 			</div>
 			{valgtAdressetype === 'VEGADRESSE' && (
-				<VegadresseVelger formikBag={formikBag} path={`${path}.vegadresse`} key={`veg_${idx}`} />
+				<VegadresseVelger
+					formMethods={formMethods}
+					path={`${path}.vegadresse`}
+					key={`veg_${idx}`}
+				/>
 			)}
 			{valgtAdressetype === 'MATRIKKELADRESSE' && (
-				<MatrikkeladresseVelger formikBag={formikBag} path={`${path}.matrikkeladresse`} />
+				<MatrikkeladresseVelger formMethods={formMethods} path={`${path}.matrikkeladresse`} />
 			)}
 			{valgtAdressetype === 'UTENLANDSK_ADRESSE' && (
 				<UtenlandskAdresse
-					formikBag={formikBag}
+					formMethods={formMethods}
 					path={`${path}.utenlandskAdresse`}
 					master={_.get(formikBag.values, `${path}.master`)}
 				/>
 			)}
 			{valgtAdressetype === 'UKJENT_BOSTED' && (
-				<UkjentBosted formikBag={formikBag} path={`${path}.ukjentBosted`} />
+				<UkjentBosted formMethods={formMethods} path={`${path}.ukjentBosted`} />
 			)}
 			<div className="flexbox--flex-wrap">
 				<DatepickerWrapper>
@@ -177,7 +181,7 @@ export const BostedsadresseForm = ({
 	)
 }
 
-export const Bostedsadresse = ({ formikBag }: BostedsadresseValues) => {
+export const Bostedsadresse = ({ formMethods }: BostedsadresseValues) => {
 	return (
 		<Kategori title="Bostedsadresse">
 			<FormikDollyFieldArray
@@ -187,7 +191,7 @@ export const Bostedsadresse = ({ formikBag }: BostedsadresseValues) => {
 				canBeEmpty={false}
 			>
 				{(path: string, idx: number) => (
-					<BostedsadresseForm formikBag={formikBag} path={path} idx={idx} />
+					<BostedsadresseForm formMethods={formMethods} path={path} idx={idx} />
 				)}
 			</FormikDollyFieldArray>
 		</Kategori>

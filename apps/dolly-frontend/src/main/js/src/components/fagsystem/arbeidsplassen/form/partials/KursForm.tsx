@@ -13,7 +13,7 @@ import { showLabel } from '@/utils/DataFormatter'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { EraseFillButtons } from '@/components/fagsystem/arbeidsplassen/form/partials/EraseFillButtons'
 
-export const KursForm = ({ formikBag }) => {
+export const KursForm = ({ formMethods }) => {
 	const kursListePath = 'arbeidsplassenCV.kurs'
 
 	return (
@@ -61,7 +61,7 @@ export const KursForm = ({ formikBag }) => {
 								/>
 							</div>
 							<EraseFillButtons
-								formikBag={formikBag}
+								formMethods={formMethods}
 								path={kursPath}
 								initialFill={initialKursVerdier}
 								initialErase={initialKurs}

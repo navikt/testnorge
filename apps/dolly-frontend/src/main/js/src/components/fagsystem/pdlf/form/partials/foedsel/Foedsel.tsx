@@ -18,7 +18,7 @@ type FoedselTypes = {
 	path?: string
 }
 
-export const FoedselForm = ({ formikBag, path }: FoedselTypes) => {
+export const FoedselForm = ({ formMethods, path }: FoedselTypes) => {
 	const opts = useContext(BestillingsveilederContext)
 
 	const handleLandChange = (selected: SelectedValue, foedselPath: string) => {
@@ -54,7 +54,7 @@ export const FoedselForm = ({ formikBag, path }: FoedselTypes) => {
 					fastfield={false}
 				/>
 				<Yearpicker
-					formikBag={formikBag}
+					formMethods={formMethods}
 					name={`${path}.foedselsaar`}
 					label="Fødselsår"
 					date={foedselsaar ? new Date(foedselsaar, 0) : null}
@@ -90,7 +90,7 @@ export const FoedselForm = ({ formikBag, path }: FoedselTypes) => {
 	)
 }
 
-export const Foedsel = ({ formikBag }: FoedselTypes) => {
+export const Foedsel = ({ formMethods }: FoedselTypes) => {
 	return (
 		<div className="flexbox--flex-wrap">
 			<FormikDollyFieldArray
@@ -100,7 +100,7 @@ export const Foedsel = ({ formikBag }: FoedselTypes) => {
 				canBeEmpty={false}
 			>
 				{(path: string, _idx: number) => {
-					return <FoedselForm formikBag={formikBag} path={path} />
+					return <FoedselForm formMethods={formMethods} path={path} />
 				}}
 			</FormikDollyFieldArray>
 		</div>

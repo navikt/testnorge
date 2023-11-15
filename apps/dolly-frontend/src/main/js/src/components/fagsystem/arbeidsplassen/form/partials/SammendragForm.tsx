@@ -5,7 +5,7 @@ import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { EraseFillButtons } from '@/components/fagsystem/arbeidsplassen/form/partials/EraseFillButtons'
 import { initialSammendragVerdi } from '@/components/fagsystem/arbeidsplassen/form/initialValues'
 
-export const SammendragForm = ({ formikBag }) => {
+export const SammendragForm = ({ formMethods }) => {
 	const sammendragPath = 'arbeidsplassenCV.sammendrag'
 
 	return (
@@ -22,7 +22,7 @@ export const SammendragForm = ({ formikBag }) => {
 				resize
 			/>
 			<EraseFillButtons
-				formikBag={formikBag}
+				formMethods={formMethods}
 				path={sammendragPath}
 				initialErase={''}
 				initialFill={initialSammendragVerdi}

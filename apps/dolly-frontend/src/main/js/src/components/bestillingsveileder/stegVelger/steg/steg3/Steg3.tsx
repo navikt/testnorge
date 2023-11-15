@@ -67,7 +67,7 @@ export const Steg3 = () => {
 			formikBag.setFieldValue('gruppeId', opts.gruppe?.id)
 		} else if (bankIdBruker) {
 			formikBag.setFieldValue('environments', alleredeValgtMiljoe())
-		} else if (erQ1EllerQ2MiljoeAvhengig(formikBag?.values)) {
+		} else if (erQ1EllerQ2MiljoeAvhengig(formMethods.getValues())) {
 			formikBag.setFieldValue('environments', ['q1', 'q2'])
 		} else if (formikBag.values?.sykemelding) {
 			formikBag.setFieldValue('environments', ['q1'])
@@ -101,7 +101,7 @@ export const Steg3 = () => {
 				/>
 			)}
 			{importTestnorge && !opts.gruppe && (
-				<VelgGruppe formikBag={formikBag} title={'Hvilken gruppe vil du importere til?'} />
+				<VelgGruppe formMethods={formMethods} title={'Hvilken gruppe vil du importere til?'} />
 			)}
 			{importTestnorge && opts.gruppe && (
 				<div className="oppsummering">
@@ -119,7 +119,7 @@ export const Steg3 = () => {
 				!harEksisterendeNyIdent &&
 				!harRelatertPersonBarn && (
 					<MalForm
-						formikBag={formikBag}
+						formMethods={formMethods}
 						brukerId={currentBruker?.brukerId}
 						opprettetFraMal={opts?.mal?.malNavn}
 					/>
@@ -127,11 +127,13 @@ export const Steg3 = () => {
 			{erOrganisasjon && (
 				<MalFormOrganisasjon
 					brukerId={currentBruker?.brukerId}
-					formikBag={formikBag}
+					formMethods={formMethods}
 					opprettetFraMal={opts?.mal?.malNavn}
 				/>
 			)}
-			{!erOrganisasjon && !importTestnorge && <OppsummeringKommentarForm formikBag={formikBag} />}
+			{!erOrganisasjon && !importTestnorge && (
+				<OppsummeringKommentarForm formMethods={formMethods} />
+			)}
 		</div>
 	)
 }

@@ -4,9 +4,9 @@ import { FormikProps } from 'formik'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import {
-	VegadresseVelger,
 	MatrikkeladresseVelger,
 	UkjentBosted,
+	VegadresseVelger,
 } from '@/components/fagsystem/pdlf/form/partials/adresser/adressetyper'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
@@ -44,16 +44,19 @@ const endreAdressetypeBosted = (forelderBarnRelasjoner) => {
 	foreldrerelasjoner.forEach((forelder) => {
 		options.unshift({
 			value: forelder?.relatertPerson,
-			label: `Adresse fra ${forelder?.relatertPersonsRolle?.toLowerCase()} (${
-				forelder?.relatertPerson
-			})`,
+			label: `Adresse fra ${forelder?.relatertPersonsRolle?.toLowerCase()} (${forelder?.relatertPerson})`,
 		})
 	})
 
 	return options
 }
 
-export const DeltBostedForm = ({ formikBag, path, relasjoner, personValues }: DeltBostedValues) => {
+export const DeltBostedForm = ({
+	formMethods,
+	path,
+	relasjoner,
+	personValues,
+}: DeltBostedValues) => {
 	const getAdressetype = () => {
 		const type = _.get(formikBag.values, `${path}.adressetype`)
 		if (type) {
@@ -97,7 +100,7 @@ export const DeltBostedForm = ({ formikBag, path, relasjoner, personValues }: De
 			_.set(adresseClone, 'ukjentBosted', initialUkjentBosted)
 		} else if (target?.value && relasjoner?.length > 0) {
 			const foreldersAdresse = relasjoner.find(
-				(forelder) => forelder?.relatertPerson?.ident == target?.value
+				(forelder) => forelder?.relatertPerson?.ident == target?.value,
 			)?.relatertPerson?.bostedsadresse?.[0]
 			if (foreldersAdresse?.vegadresse) {
 				_.set(adresseClone, 'vegadresse', foreldersAdresse?.vegadresse)
@@ -136,13 +139,13 @@ export const DeltBostedForm = ({ formikBag, path, relasjoner, personValues }: De
 			/>
 
 			{adressetype === 'VEGADRESSE' && (
-				<VegadresseVelger formikBag={formikBag} path={`${path}.vegadresse`} />
+				<VegadresseVelger formMethods={formMethods} path={`${path}.vegadresse`} />
 			)}
 			{adressetype === 'MATRIKKELADRESSE' && (
-				<MatrikkeladresseVelger formikBag={formikBag} path={`${path}.matrikkeladresse`} />
+				<MatrikkeladresseVelger formMethods={formMethods} path={`${path}.matrikkeladresse`} />
 			)}
 			{adressetype === 'UKJENT_BOSTED' && (
-				<UkjentBosted formikBag={formikBag} path={`${path}.ukjentBosted`} />
+				<UkjentBosted formMethods={formMethods} path={`${path}.ukjentBosted`} />
 			)}
 			<div className="flexbox--flex-wrap">
 				<DatepickerWrapper>
@@ -154,10 +157,10 @@ export const DeltBostedForm = ({ formikBag, path, relasjoner, personValues }: De
 	)
 }
 
-export const DeltBosted = ({ formikBag, path }: DeltBostedValues) => {
+export const DeltBosted = ({ formMethods, path }: DeltBostedValues) => {
 	return (
 		<Kategori title="Delt bosted">
-			<DeltBostedForm formikBag={formikBag} path={path} />
+			<DeltBostedForm formMethods={formMethods} path={path} />
 		</Kategori>
 	)
 }

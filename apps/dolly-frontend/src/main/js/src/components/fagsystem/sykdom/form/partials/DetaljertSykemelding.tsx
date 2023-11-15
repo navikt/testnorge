@@ -42,7 +42,7 @@ const initialValuesPeriode = {
 
 const KODESYSTEM = '2.16.578.1.12.4.1.1.7170'
 
-export const DetaljertSykemelding = ({ formikBag }: SykemeldingForm) => {
+export const DetaljertSykemelding = ({ formMethods }: SykemeldingForm) => {
 	const handleDiagnoseChange = (v: DiagnoseSelect, path: string) => {
 		formikBag.setFieldValue(`${path}.diagnose`, v.diagnoseNavn)
 		formikBag.setFieldValue(`${path}.system`, KODESYSTEM)

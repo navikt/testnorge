@@ -15,7 +15,7 @@ type PersondetaljerSamletTypes = {
 	}
 }
 
-export const PersondetaljerSamlet = ({ formikBag, tpsMessaging }: PersondetaljerSamletTypes) => {
+export const PersondetaljerSamlet = ({ formMethods, tpsMessaging }: PersondetaljerSamletTypes) => {
 	const sprak = tpsMessaging?.tpsMessagingData?.sprakKode
 
 	const getTekst = () => {
@@ -38,7 +38,7 @@ export const PersondetaljerSamlet = ({ formikBag, tpsMessaging }: Persondetaljer
 					<>
 						<h3>Navn</h3>
 						<div className="flexbox--flex-wrap">
-							<NavnForm formikBag={formikBag} path="navn[0]" />
+							<NavnForm formMethods={formMethods} path="navn[0]" />
 						</div>
 					</>
 				)}

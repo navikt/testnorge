@@ -15,7 +15,7 @@ import { addDays } from 'date-fns'
 
 const uforetrygdPath = 'pensjonforvalter.uforetrygd'
 
-export const UforetrygdForm = ({ formikBag }) => {
+export const UforetrygdForm = ({ formMethods }) => {
 	const saksbehandler = _.get(formikBag.values, `${uforetrygdPath}.saksbehandler`)
 	const attesterer = _.get(formikBag.values, `${uforetrygdPath}.attesterer`)
 
@@ -54,7 +54,7 @@ export const UforetrygdForm = ({ formikBag }) => {
 						fastfield="false"
 					/>
 				</div>
-				<BarnetilleggForm formikBag={formikBag} />
+				<BarnetilleggForm formMethods={formMethods} />
 				<div className="flexbox--flex-wrap">
 					<FormikSelect
 						name={`${uforetrygdPath}.minimumInntektForUforhetType`}

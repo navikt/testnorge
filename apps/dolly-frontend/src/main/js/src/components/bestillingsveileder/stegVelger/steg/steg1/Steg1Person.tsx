@@ -17,6 +17,7 @@ import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bes
 import { PensjonPanel } from '@/components/bestillingsveileder/stegVelger/steg/steg1/paneler/Pensjon'
 import { ArbeidsplassenPanel } from '@/components/bestillingsveileder/stegVelger/steg/steg1/paneler/Arbeidsplassen'
 import { MedlPanel } from '@/components/bestillingsveileder/stegVelger/steg/steg1/paneler/Medl'
+import { useFormContext } from 'react-hook-form'
 
 export const identFraTestnorge = (opts: any) => {
 	if (opts?.is?.importTestnorge) {
@@ -25,8 +26,9 @@ export const identFraTestnorge = (opts: any) => {
 	return opts?.is?.leggTil && opts?.identMaster === 'PDL'
 }
 
-export const Steg1Person = ({ formikBag, stateModifier }: any) => {
+export const Steg1Person = ({ stateModifier }: any) => {
 	const opts = useContext(BestillingsveilederContext)
+	const { getValues } = useFormContext()
 	const testnorgeIdent = identFraTestnorge(opts)
 	const checked = [
 		PersoninformasjonPanel,
@@ -52,36 +54,34 @@ export const Steg1Person = ({ formikBag, stateModifier }: any) => {
 		}))
 		.filter((v) => v.values.length)
 
+	const formValues = getValues()
+
 	return (
 		<AttributtVelger checked={checked}>
-			<PersoninformasjonPanel
-				stateModifier={stateModifier}
-				testnorgeIdent={testnorgeIdent}
-				formikBag={formikBag}
-			/>
+			<PersoninformasjonPanel stateModifier={stateModifier} testnorgeIdent={testnorgeIdent} />
 			{!testnorgeIdent && (
 				<>
-					<AdressePanel stateModifier={stateModifier} formikBag={formikBag} />
-					<FamilierelasjonPanel stateModifier={stateModifier} formikBag={formikBag} />
-					<IdentifikasjonPanel stateModifier={stateModifier} formikBag={formikBag} />
-					<KontaktDoedsboPanel stateModifier={stateModifier} formikBag={formikBag} />
+					<AdressePanel stateModifier={stateModifier} formValues={formValues} />
+					<FamilierelasjonPanel stateModifier={stateModifier} formValues={formValues} />
+					<IdentifikasjonPanel stateModifier={stateModifier} formValues={formValues} />
+					<KontaktDoedsboPanel stateModifier={stateModifier} formValues={formValues} />
 				</>
 			)}
-			<ArbeidInntektPanel stateModifier={stateModifier} formikBag={formikBag} />
-			<ArbeidsplassenPanel stateModifier={stateModifier} formikBag={formikBag} />
-			<PensjonPanel stateModifier={stateModifier} formikBag={formikBag} />
-			<ArenaPanel stateModifier={stateModifier} formikBag={formikBag} />
-			<SykdomPanel stateModifier={stateModifier} formikBag={formikBag} />
-			<BrregPanel stateModifier={stateModifier} formikBag={formikBag} />
-			<InstitusjonsoppholdPanel stateModifier={stateModifier} formikBag={formikBag} />
-			<KontaktReservasjonsPanel stateModifier={stateModifier} formikBag={formikBag} />
-			<MedlPanel stateModifier={stateModifier} formikBag={formikBag} />
+			<ArbeidInntektPanel stateModifier={stateModifier} formValues={formValues} />
+			<ArbeidsplassenPanel stateModifier={stateModifier} formValues={formValues} />
+			<PensjonPanel stateModifier={stateModifier} formValues={formValues} />
+			<ArenaPanel stateModifier={stateModifier} formValues={formValues} />
+			<SykdomPanel stateModifier={stateModifier} formValues={formValues} />
+			<BrregPanel stateModifier={stateModifier} formValues={formValues} />
+			<InstitusjonsoppholdPanel stateModifier={stateModifier} formValues={formValues} />
+			<KontaktReservasjonsPanel stateModifier={stateModifier} formValues={formValues} />
+			<MedlPanel stateModifier={stateModifier} formValues={formValues} />
 			<UdiPanel
 				stateModifier={stateModifier}
 				testnorgeIdent={testnorgeIdent}
-				formikBag={formikBag}
+				formValues={formValues}
 			/>
-			<DokarkivPanel stateModifier={stateModifier} formikBag={formikBag} />
+			<DokarkivPanel stateModifier={stateModifier} formValues={formValues} />
 		</AttributtVelger>
 	)
 }

@@ -41,7 +41,7 @@ export const PdlNyPerson = ({
 			? Options('identtype').filter((a) => a.value !== 'NPID')
 			: Options('identtype')
 
-	const eksisterendePerson = _.get(formikBag?.values, eksisterendePersonPath)
+	const eksisterendePerson = _.get(formMethods.getValues(), eksisterendePersonPath)
 
 	const hasEksisterendePerson =
 		eksisterendePerson &&

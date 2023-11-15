@@ -14,7 +14,7 @@ import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { EraseFillButtons } from '@/components/fagsystem/arbeidsplassen/form/partials/EraseFillButtons'
 
-export const UtdanningForm = ({ formikBag }) => {
+export const UtdanningForm = ({ formMethods }) => {
 	const utdanningListePath = 'arbeidsplassenCV.utdanning'
 
 	return (
@@ -55,7 +55,7 @@ export const UtdanningForm = ({ formikBag }) => {
 								onBlur={(beskrivelse) =>
 									formikBag.setFieldValue(
 										`${utdanningPath}.description`,
-										beskrivelse?.target?.value
+										beskrivelse?.target?.value,
 									)
 								}
 								size="small"
@@ -79,7 +79,7 @@ export const UtdanningForm = ({ formikBag }) => {
 							/>
 						</div>
 						<EraseFillButtons
-							formikBag={formikBag}
+							formMethods={formMethods}
 							path={utdanningPath}
 							initialErase={initialUtdanning}
 							initialFill={initialUtdanningVerdier}

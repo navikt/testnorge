@@ -1,5 +1,3 @@
-import * as Yup from 'yup'
-import { ifPresent, requiredBoolean } from '@/utils/YupValidations'
 import * as _ from 'lodash-es'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
@@ -12,6 +10,7 @@ import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import { SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
 import { FormikProps } from 'formik'
 import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
+import { KrrValidation } from '@/components/fagsystem/krrstub/form/KrrValidation'
 
 type KrrstubFormProps = {
 	formikBag: FormikProps<{}>
@@ -23,7 +22,7 @@ type Change = {
 
 export const krrAttributt = 'krrstub'
 
-export const KrrstubForm = ({ formikBag }: KrrstubFormProps) => {
+export const KrrstubForm = ({ formMethods }: KrrstubFormProps) => {
 	const leverandoerer = SelectOptionsOppslag.hentKrrLeverandoerer()
 	//@ts-ignore
 	const leverandoerOptions = SelectOptionsFormat.formatOptions('sdpLeverandoer', leverandoerer)
@@ -111,15 +110,4 @@ export const KrrstubForm = ({ formikBag }: KrrstubFormProps) => {
 	)
 }
 
-KrrstubForm.validation = {
-	krrstub: Yup.object({
-		epost: Yup.string(),
-		gyldigFra: Yup.date().nullable(),
-		mobil: Yup.string().matches(/^\+?\d*$/, 'Ugyldig mobilnummer'),
-		sdpAdresse: Yup.string(),
-		sdpLeverandoer: Yup.string().nullable(),
-		spraak: Yup.string(),
-		registrert: ifPresent('$krrstub.registrert', requiredBoolean),
-		reservert: Yup.boolean().nullable(),
-	}),
-}
+KrrstubForm.validation = KrrValidation

@@ -9,7 +9,7 @@ const initialValues = {
 	fratraadt: false,
 }
 
-export const PersonrollerForm = ({ formikBag, path }) => {
+export const PersonrollerForm = ({ formMethods, path }) => {
 	const personroller = _.get(formikBag.values, `${path}.personroller`)
 
 	const getEgenskapOptions = () => {

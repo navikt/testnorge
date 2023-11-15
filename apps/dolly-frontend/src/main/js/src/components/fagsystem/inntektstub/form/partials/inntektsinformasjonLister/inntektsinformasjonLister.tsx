@@ -12,10 +12,10 @@ interface InntektsinformasjonLister {
 export default ({ path, formikBag }: InntektsinformasjonLister) => {
 	return (
 		<>
-			<InntektForm formikBag={formikBag} inntektsinformasjonPath={path} />
+			<InntektForm formMethods={formMethods} inntektsinformasjonPath={path} />
 			<FradragForm inntektsinformasjonPath={path} />
 			<ForskuddstrekkForm inntektsinformasjonPath={path} />
-			<ArbeidsforholdForm formikBag={formikBag} inntektsinformasjonPath={path} />
+			<ArbeidsforholdForm formMethods={formMethods} inntektsinformasjonPath={path} />
 		</>
 	)
 }

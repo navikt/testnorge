@@ -7,7 +7,7 @@ interface OppholdAnnetStedValues {
 	path: string
 }
 
-export const OppholdAnnetSted = ({ formikBag, path }: OppholdAnnetStedValues) => {
+export const OppholdAnnetSted = ({ formMethods, path }: OppholdAnnetStedValues) => {
 	return (
 		<div className="flexbox--flex-wrap">
 			<FormikSelect name={path} label="Opphold annet sted" options={Options('oppholdAnnetSted')} />

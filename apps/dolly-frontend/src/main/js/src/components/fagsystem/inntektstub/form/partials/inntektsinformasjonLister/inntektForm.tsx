@@ -57,7 +57,7 @@ const simpleValues = {
 	beskrivelse: 'fastloenn',
 }
 
-export const InntektForm = ({ formikBag, inntektsinformasjonPath }: data) => {
+export const InntektForm = ({ formMethods, inntektsinformasjonPath }: data) => {
 	const [formSimple, setFormSimple] = useBoolean(
 		sessionStorage.getItem(INNTEKTSTYPE_TOGGLE) === FormType.FORENKLET,
 	)
@@ -116,7 +116,7 @@ export const InntektForm = ({ formikBag, inntektsinformasjonPath }: data) => {
 							name={`${path}.sluttOpptjeningsperiode`}
 							label="Slutt opptjeningsperiode"
 						/>
-						{!formSimple && <InntektStub formikBag={formikBag} inntektPath={path} />}
+						{!formSimple && <InntektStub formMethods={formMethods} inntektPath={path} />}
 					</>
 				)}
 			</FormikDollyFieldArray>

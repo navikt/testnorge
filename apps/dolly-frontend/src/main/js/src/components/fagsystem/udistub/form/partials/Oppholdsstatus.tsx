@@ -53,7 +53,7 @@ function setPdlInitialValues(formikBag: FormikProps<any>) {
 	])
 }
 
-export const Oppholdsstatus = ({ formikBag }: { formikBag: FormikProps<any> }) => {
+export const Oppholdsstatus = ({ formMethods }: { formikBag: FormikProps<any> }) => {
 	const initialStatus = findInitialStatus(formikBag)
 	const [oppholdsstatus, setOppholdsstatus] = useState(initialStatus[0])
 	const [eosEllerEFTAtypeOpphold, setEosEllerEFTAtypeOpphold] = useState(initialStatus[1])
@@ -177,10 +177,10 @@ export const Oppholdsstatus = ({ formikBag }: { formikBag: FormikProps<any> }) =
 						isClearable={false}
 					/>
 					{tredjelandsBorgereValg === 'oppholdSammeVilkaar' && (
-						<OppholdSammeVilkaar formikBag={formikBag} />
+						<OppholdSammeVilkaar formMethods={formMethods} />
 					)}
 					{tredjelandsBorgereValg === 'ikkeOppholdSammeVilkaar' && (
-						<IkkeOppholdSammeVilkaar formikBag={formikBag} />
+						<IkkeOppholdSammeVilkaar formMethods={formMethods} />
 					)}
 				</React.Fragment>
 			)}

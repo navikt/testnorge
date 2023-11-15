@@ -406,7 +406,7 @@ export const VisningRedigerbarPersondetaljer = ({
 								<FieldArrayEdit>
 									<div className="flexbox--flex-wrap">
 										<PersondetaljerSamlet
-											formikBag={formikBag}
+											formMethods={formMethods}
 											tpsMessaging={tpsMessagingData}
 											harSkjerming={harSkjerming}
 										/>

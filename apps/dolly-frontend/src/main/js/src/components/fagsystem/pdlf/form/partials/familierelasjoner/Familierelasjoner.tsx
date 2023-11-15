@@ -15,7 +15,7 @@ export const relasjonerAttributter = [
 	'pdldata.person.doedfoedtBarn',
 ]
 
-export const Familierelasjoner = ({ formikBag }: { formikBag: FormikProps<any> }) => {
+export const Familierelasjoner = ({ formMethods }: { formikBag: FormikProps<any> }) => {
 	return (
 		<Vis attributt={relasjonerAttributter}>
 			<Panel
@@ -27,16 +27,16 @@ export const Familierelasjoner = ({ formikBag }: { formikBag: FormikProps<any> }
 				uncheckAttributeArray={undefined}
 			>
 				<Kategori title="Sivilstand (partner)" vis="pdldata.person.sivilstand">
-					<Sivilstand formikBag={formikBag} />
+					<Sivilstand formMethods={formMethods} />
 				</Kategori>
 				<Kategori title="Barn/foreldre" vis="pdldata.person.forelderBarnRelasjon">
-					<ForelderBarnRelasjon formikBag={formikBag} />
+					<ForelderBarnRelasjon formMethods={formMethods} />
 				</Kategori>
 				<Kategori title="Foreldreansvar" vis="pdldata.person.foreldreansvar">
-					<Foreldreansvar formikBag={formikBag} />
+					<Foreldreansvar formMethods={formMethods} />
 				</Kategori>
 				<Kategori title="Dødfødt barn" vis="pdldata.person.doedfoedtBarn">
-					<DoedfoedtBarn formikBag={formikBag} />
+					<DoedfoedtBarn formMethods={formMethods} />
 				</Kategori>
 			</Panel>
 		</Vis>

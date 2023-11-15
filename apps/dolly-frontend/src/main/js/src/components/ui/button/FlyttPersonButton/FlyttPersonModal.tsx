@@ -236,7 +236,7 @@ export const FlyttPersonModal = ({ gruppeId, modalIsOpen, closeModal }: FlyttPer
 		gruppeId: Yup.string().required('Velg eksisterende gruppe eller opprett ny gruppe'),
 	})
 
-	const FlyttPersonForm = ({ formikBag }: { formikBag: FormikProps<FormikBagTypes> }) => {
+	const FlyttPersonForm = ({ formMethods }: { formikBag: FormikProps<FormikBagTypes> }) => {
 		const [searchText, setSearchText] = useState('')
 
 		return (
@@ -244,7 +244,7 @@ export const FlyttPersonModal = ({ gruppeId, modalIsOpen, closeModal }: FlyttPer
 				<h1>Flytt personer til gruppe</h1>
 				<GruppeVelger>
 					<VelgGruppe
-						formikBag={formikBag}
+						formMethods={formMethods}
 						title={'Velg hvilken gruppe du ønsker å flytte personer til'}
 						fraGruppe={gruppeId}
 					/>
@@ -389,7 +389,7 @@ export const FlyttPersonModal = ({ gruppeId, modalIsOpen, closeModal }: FlyttPer
 						onSubmit={handleSubmit}
 						validationSchema={validation}
 					>
-						{(formikBag) => <FlyttPersonForm formikBag={formikBag} />}
+						{(formikBag) => <FlyttPersonForm formMethods={formMethods} />}
 					</Formik>
 				</ModalContent>
 			</DollyModal>

@@ -7,7 +7,7 @@ import * as _ from 'lodash-es'
 import { FormikProps } from 'formik'
 import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 
-export const NorskBankkonto = ({ formikBag }: { formikBag: FormikProps<{}> }) => {
+export const NorskBankkonto = ({ formMethods }: { formikBag: FormikProps<{}> }) => {
 	const [validKontoOptions, setValidKontoOptions] = useState([])
 
 	useEffect(() => {
@@ -15,8 +15,8 @@ export const NorskBankkonto = ({ formikBag }: { formikBag: FormikProps<{}> }) =>
 	}, [])
 
 	const path = 'bankkonto.norskBankkonto'
-	const harTilfeldig = _.get(formikBag?.values, `${path}.tilfeldigKontonummer`)
-	const kontonummer = _.get(formikBag?.values, `${path}.kontonummer`)
+	const harTilfeldig = _.get(formMethods.getValues(), `${path}.tilfeldigKontonummer`)
+	const kontonummer = _.get(formMethods.getValues(), `${path}.kontonummer`)
 
 	return (
 		<Vis attributt={path} formik>

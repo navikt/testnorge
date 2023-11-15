@@ -13,7 +13,7 @@ import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bes
 
 export const arenaPath = 'arenaforvalter'
 
-export const ArenaForm = ({ formikBag }) => {
+export const ArenaForm = ({ formMethods }) => {
 	const opts = useContext(BestillingsveilederContext)
 	const { leggTilPaaGruppe } = opts?.is
 
@@ -59,7 +59,7 @@ export const ArenaForm = ({ formikBag }) => {
 						)}
 					</div>
 				)}
-				{servicebehovAktiv && <MedServicebehov formikBag={formikBag} path={arenaPath} />}
+				{servicebehovAktiv && <MedServicebehov formMethods={formMethods} path={arenaPath} />}
 				<FormikCheckbox
 					name={`${arenaPath}.automatiskInnsendingAvMeldekort`}
 					label="Automatisk innsending av meldekort"

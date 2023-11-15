@@ -28,7 +28,7 @@ export const InntektstubVirksomhetToggle = ({
 			? _.get(formikBag.values, virksomhetPath).length === orgnummerLength
 				? ToggleValg.ORGANISASJON
 				: ToggleValg.PRIVAT
-			: ToggleValg.ORGANISASJON
+			: ToggleValg.ORGANISASJON,
 	)
 
 	const handleToggleChange = (value: ToggleValg) => {
@@ -55,7 +55,7 @@ export const InntektstubVirksomhetToggle = ({
 
 			{inputType === ToggleValg.ORGANISASJON ? (
 				<OrgnummerToggle
-					formikBag={formikBag}
+					formMethods={formMethods}
 					path={`${path}.virksomhet`}
 					opplysningspliktigPath={`${path}.opplysningspliktig`}
 				/>

@@ -1,7 +1,7 @@
 import Button from '@/components/ui/button/Button'
 import * as React from 'react'
 
-export const EraseFillButtons = ({ formikBag, path, initialErase, initialFill }) => {
+export const EraseFillButtons = ({ formMethods, path, initialErase, initialFill }) => {
 	return (
 		<div className="flexbox--full-width">
 			<div className="flexbox--flex-wrap">

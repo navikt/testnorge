@@ -14,7 +14,7 @@ import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { EraseFillButtons } from '@/components/fagsystem/arbeidsplassen/form/partials/EraseFillButtons'
 
-export const ArbeidserfaringForm = ({ formikBag }) => {
+export const ArbeidserfaringForm = ({ formMethods }) => {
 	const setYrke = (valg, path) => {
 		formikBag.setFieldValue(`${path}.styrkkode`, valg.value)
 		formikBag.setFieldValue(`${path}.jobTitle`, valg.label)
@@ -48,7 +48,7 @@ export const ArbeidserfaringForm = ({ formikBag }) => {
 								size="large"
 								key={`alternativeJobTitle_${_get(
 									formikBag.values,
-									`${arbeidsforholdPath}.alternativeJobTitle`
+									`${arbeidsforholdPath}.alternativeJobTitle`,
 								)}`}
 							/>
 							<FormikTextInput
@@ -70,7 +70,7 @@ export const ArbeidserfaringForm = ({ formikBag }) => {
 								onBlur={(beskrivelse) =>
 									formikBag.setFieldValue(
 										`${arbeidsforholdPath}.description`,
-										beskrivelse?.target?.value
+										beskrivelse?.target?.value,
 									)
 								}
 								size="small"
@@ -94,7 +94,7 @@ export const ArbeidserfaringForm = ({ formikBag }) => {
 							/>
 						</div>
 						<EraseFillButtons
-							formikBag={formikBag}
+							formMethods={formMethods}
 							path={arbeidsforholdPath}
 							initialErase={initialArbeidserfaring}
 							initialFill={initialArbeidserfaringVerdier}

@@ -7,7 +7,7 @@ interface UkjentBostedValues {
 	path: string
 }
 
-export const UkjentBosted = ({ formikBag, path }: UkjentBostedValues) => {
+export const UkjentBosted = ({ formMethods, path }: UkjentBostedValues) => {
 	return (
 		<div className="flexbox--flex-wrap">
 			<FormikSelect

@@ -1,31 +1,49 @@
-import * as _ from 'lodash-es'
-import _set from 'lodash/fp/set'
 import { useDispatch } from 'react-redux'
+import { isArray } from 'lodash'
 
-export const stateModifierFns = (initial, setInitial, options = null, dispatch = null) => {
-	if (dispatch == null) {
-		dispatch = useDispatch()
+export const stateModifierFns = (methods, opts = null) => {
+	const dispatch = useDispatch()
+	const set = (path, value) => {
+		return methods.setValue(path, value)
 	}
-	const opts = options
-	const set = (path, value) => setInitial(_set(path, value, initial))
-	const has = (path) => _.has(initial, path)
+	const has = (path) => {
+		return methods.watch(path) !== undefined
+		// return methods.getValues(path) !== undefined
+	}
 	const del = (path) => {
-		let newObj = _.omit(initial, path)
-
-		// Ingen tomme objekter guard
-		let rootPath = Array.isArray(path) ? path[0].split('.')[0] : path.split('.')[0]
-		if (path.includes('pdldata.person') || path[0].includes('pdldata.person'))
-			rootPath = 'pdldata.person'
-		if (_.isEmpty(_.get(newObj, rootPath))) newObj = _.omit(newObj, rootPath)
-
-		setInitial(newObj)
+		// methods.resetField(path)
+		if (isArray(path)) {
+			path.forEach((p) => {
+				methods.setValue(p, undefined)
+				methods.resetField(p)
+			})
+		} else {
+			console.log('path: ', path) //TODO - SLETT MEG
+			methods.watch(path)
+			methods.setValue(path, undefined)
+			methods.resetField(path)
+		}
+		// methods.setValue(path, undefined)
+		// methods.resetField(path)
+		// let newObj = _.omit(initial, path)
+		//
+		// // Ingen tomme objekter guard
+		// let rootPath = Array.isArray(path) ? path[0].split('.')[0] : path.split('.')[0]
+		// if (path.includes('pdldata.person') || path[0].includes('pdldata.person'))
+		// 	rootPath = 'pdldata.person'
+		// if (_.isEmpty(_.get(newObj, rootPath))) newObj = _.omit(newObj, rootPath)
+		//
+		// setInitial(newObj)
 	}
 	const setMulti = (...arrays) => {
-		const newInitial = arrays.reduce((acc, curr) => {
+		arrays.forEach((curr) => {
 			const [path, val] = curr
-			return _set(path, val, acc)
-		}, initial)
-		setInitial(newInitial)
+			console.log('path: ', path) //TODO - SLETT MEG
+			console.log('val: ', val) //TODO - SLETT MEG
+
+			methods.setValue(path, val)
+		})
+		// methods.setValue(newInitial)
 	}
 
 	const allCheckedLabels = (attrs) =>
@@ -44,10 +62,10 @@ export const stateModifierFns = (initial, setInitial, options = null, dispatch =
 				sm_local.attrs[curr][key]()
 				return acc
 			},
-			Object.assign({}, initial),
+			Object.assign({}, methods.getValues()),
 		)
 
-		setInitial(state)
+		methods.setValue(state)
 	}
 
 	return (
@@ -58,11 +76,10 @@ export const stateModifierFns = (initial, setInitial, options = null, dispatch =
 			has: (path: any) => boolean
 			dispatch: null
 			opts: null
-			initial: any
-			setInitial: any
+			methods: any
 		}) => {},
 	) => {
-		const attrs = fn({ set, setMulti, del, has, dispatch, opts, initial, setInitial }) || {}
+		const attrs = fn({ set, setMulti, del, has, dispatch, opts, methods }) || {}
 		const checked = allCheckedLabels(attrs)
 		return {
 			attrs,

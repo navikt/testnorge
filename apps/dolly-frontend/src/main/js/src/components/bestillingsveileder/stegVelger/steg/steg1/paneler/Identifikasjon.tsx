@@ -6,7 +6,7 @@ import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bes
 import { harValgtAttributt } from '@/components/ui/form/formUtils'
 import { identifikasjonAttributter } from '@/components/fagsystem/pdlf/form/partials/identifikasjon/Identifikasjon'
 
-export const IdentifikasjonPanel = ({ stateModifier, formikBag }) => {
+export const IdentifikasjonPanel = ({ stateModifier, formValues }) => {
 	const sm = stateModifier(IdentifikasjonPanel.initialValues)
 	const opts = useContext(BestillingsveilederContext)
 
@@ -23,7 +23,7 @@ export const IdentifikasjonPanel = ({ stateModifier, formikBag }) => {
 			checkAttributeArray={() => sm.batchAdd(harNpid && 'nyident')}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType="identifikasjon"
-			startOpen={harValgtAttributt(formikBag.values, identifikasjonAttributter)}
+			startOpen={harValgtAttributt(formValues, identifikasjonAttributter)}
 		>
 			<AttributtKategori attr={sm.attrs}>
 				<Attributt attr={sm.attrs.falskIdentitet} />

@@ -39,7 +39,7 @@ type Target = {
 	label?: string
 }
 
-export const KontaktadresseForm = ({ formikBag, path, idx }: KontaktadresseFormValues) => {
+export const KontaktadresseForm = ({ formMethods, path, idx }: KontaktadresseFormValues) => {
 	useEffect(() => {
 		formikBag.setFieldValue(`${path}.adresseIdentifikatorFraMatrikkelen`, undefined)
 		const kontaktadresse = _.get(formikBag.values, path)
@@ -105,17 +105,21 @@ export const KontaktadresseForm = ({ formikBag, path, idx }: KontaktadresseFormV
 				/>
 			</div>
 			{valgtAdressetype === 'VEGADRESSE' && (
-				<VegadresseVelger formikBag={formikBag} path={`${path}.vegadresse`} key={`veg_${idx}`} />
+				<VegadresseVelger
+					formMethods={formMethods}
+					path={`${path}.vegadresse`}
+					key={`veg_${idx}`}
+				/>
 			)}
 			{valgtAdressetype === 'UTENLANDSK_ADRESSE' && (
 				<UtenlandskAdresse
-					formikBag={formikBag}
+					formMethods={formMethods}
 					path={`${path}.utenlandskAdresse`}
 					master={_.get(formikBag.values, `${path}.master`)}
 				/>
 			)}
 			{valgtAdressetype === 'POSTBOKSADRESSE' && (
-				<Postboksadresse formikBag={formikBag} path={`${path}.postboksadresse`} />
+				<Postboksadresse formMethods={formMethods} path={`${path}.postboksadresse`} />
 			)}
 			<div className="flexbox--flex-wrap">
 				<DatepickerWrapper>
@@ -140,7 +144,7 @@ export const KontaktadresseForm = ({ formikBag, path, idx }: KontaktadresseFormV
 	)
 }
 
-export const Kontaktadresse = ({ formikBag }: KontaktadresseValues) => {
+export const Kontaktadresse = ({ formMethods }: KontaktadresseValues) => {
 	return (
 		<Kategori title="Kontaktadresse">
 			<FormikDollyFieldArray
@@ -150,7 +154,7 @@ export const Kontaktadresse = ({ formikBag }: KontaktadresseValues) => {
 				canBeEmpty={false}
 			>
 				{(path: string, idx: number) => (
-					<KontaktadresseForm formikBag={formikBag} path={path} idx={idx} />
+					<KontaktadresseForm formMethods={formMethods} path={path} idx={idx} />
 				)}
 			</FormikDollyFieldArray>
 		</Kategori>

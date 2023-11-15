@@ -11,7 +11,7 @@ interface VegadressevelgerValues {
 	path: string
 }
 
-export const VegadresseVelger = ({ formikBag, path }: VegadressevelgerValues) => {
+export const VegadresseVelger = ({ formMethods, path }: VegadressevelgerValues) => {
 	const vegadresseValg = {
 		POSTNUMMER: 'POSTNUMMER',
 		KOMMUNENUMMER: 'KOMMUNENUMMER',
@@ -81,7 +81,7 @@ export const VegadresseVelger = ({ formikBag, path }: VegadressevelgerValues) =>
 				/>
 			)}
 			{vegadresseType === vegadresseValg.DETALJERT && (
-				<Vegadresse formikBag={formikBag} path={path} />
+				<Vegadresse formMethods={formMethods} path={path} />
 			)}
 		</div>
 	)

@@ -12,11 +12,11 @@ interface BarnRelasjonValues {
 	path: string
 }
 
-export const BarnRelasjon = ({ formikBag, path }: BarnRelasjonValues) => {
+export const BarnRelasjon = ({ formMethods, path }: BarnRelasjonValues) => {
 	const erRedigering = !path?.includes('pdldata')
 
 	const [deltBosted, setDeltBosted] = useState(
-		_.get(formikBag.values, `${path}.deltBosted`) !== null
+		_.get(formikBag.values, `${path}.deltBosted`) !== null,
 	)
 
 	useEffect(() => {
@@ -55,7 +55,7 @@ export const BarnRelasjon = ({ formikBag, path }: BarnRelasjonValues) => {
 				)}
 			</div>
 			{deltBosted && !erRedigering && (
-				<DeltBosted formikBag={formikBag} path={`${path}.deltBosted`} />
+				<DeltBosted formMethods={formMethods} path={`${path}.deltBosted`} />
 			)}
 		</>
 	)

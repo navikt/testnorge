@@ -245,9 +245,9 @@ export const VisningRedigerbar = ({
 	const getForm = (formikBag: FormikProps<{}>) => {
 		switch (path) {
 			case Attributt.Navn:
-				return <NavnForm formikBag={formikBag} path={path} />
+				return <NavnForm formMethods={formMethods} path={path} />
 			case Attributt.Foedsel:
-				return <FoedselForm formikBag={formikBag} path={path} />
+				return <FoedselForm formMethods={formMethods} path={path} />
 			case Attributt.Doedsfall:
 				return <DoedsfallForm path={path} />
 			case Attributt.Statsborgerskap:
@@ -259,7 +259,7 @@ export const VisningRedigerbar = ({
 			case Attributt.Vergemaal:
 				return (
 					<VergemaalForm
-						formikBag={formikBag}
+						formMethods={formMethods}
 						path={path}
 						eksisterendeNyPerson={eksisterendeNyPerson}
 					/>
@@ -267,21 +267,21 @@ export const VisningRedigerbar = ({
 			case Attributt.Fullmakt:
 				return (
 					<FullmaktForm
-						formikBag={formikBag}
+						formMethods={formMethods}
 						path={path}
 						eksisterendeNyPerson={eksisterendeNyPerson}
 					/>
 				)
 			case Attributt.Boadresse:
-				return <BostedsadresseForm formikBag={formikBag} path={path} identtype={identtype} />
+				return <BostedsadresseForm formMethods={formMethods} path={path} identtype={identtype} />
 			case Attributt.Oppholdsadresse:
-				return <OppholdsadresseForm formikBag={formikBag} path={path} />
+				return <OppholdsadresseForm formMethods={formMethods} path={path} />
 			case Attributt.Kontaktadresse:
-				return <KontaktadresseForm formikBag={formikBag} path={path} />
+				return <KontaktadresseForm formMethods={formMethods} path={path} />
 			case Attributt.Adressebeskyttelse:
 				return (
 					<AdressebeskyttelseForm
-						formikBag={formikBag}
+						formMethods={formMethods}
 						path={path}
 						identtype={getIdenttype(formikBag, identtype)}
 					/>
@@ -289,7 +289,7 @@ export const VisningRedigerbar = ({
 			case Attributt.DeltBosted:
 				return (
 					<DeltBostedForm
-						formikBag={formikBag}
+						formMethods={formMethods}
 						path={path}
 						relasjoner={relasjoner}
 						personValues={personValues}
@@ -299,14 +299,14 @@ export const VisningRedigerbar = ({
 				return (
 					<SivilstandForm
 						path={path}
-						formikBag={formikBag}
+						formMethods={formMethods}
 						eksisterendeNyPerson={eksisterendeNyPerson}
 					/>
 				)
 			case Attributt.KontaktinformasjonForDoedsbo:
 				return (
 					<KontaktinformasjonForDoedsboForm
-						formikBag={formikBag}
+						formMethods={formMethods}
 						path={path}
 						eksisterendeNyPerson={eksisterendeNyPerson}
 					/>
@@ -314,7 +314,7 @@ export const VisningRedigerbar = ({
 			case Attributt.ForelderBarnRelasjon:
 				return (
 					<ForelderBarnRelasjonForm
-						formikBag={formikBag}
+						formMethods={formMethods}
 						path={path}
 						eksisterendeNyPerson={eksisterendeNyPerson}
 					/>
@@ -322,13 +322,13 @@ export const VisningRedigerbar = ({
 			case Attributt.Foreldreansvar:
 				return (
 					<ForeldreansvarForm
-						formikBag={formikBag}
+						formMethods={formMethods}
 						path={path}
 						eksisterendeNyPerson={eksisterendeNyPerson}
 					/>
 				)
 			case Attributt.DoedfoedtBarn:
-				return <DoedfoedtBarnForm formikBag={formikBag} path={path} />
+				return <DoedfoedtBarnForm formMethods={formMethods} path={path} />
 			case Attributt.UtenlandskIdentifikasjonsnummer:
 				return <UtenlandsIdForm path={path} />
 		}

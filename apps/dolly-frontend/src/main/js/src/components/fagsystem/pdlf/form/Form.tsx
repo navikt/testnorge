@@ -5,13 +5,13 @@ import { Personinformasjon } from '@/components/fagsystem/pdlf/form/partials/per
 import { Identifikasjon } from '@/components/fagsystem/pdlf/form/partials/identifikasjon/Identifikasjon'
 import { Familierelasjoner } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/Familierelasjoner'
 
-export const PdlfForm = ({ formikBag }) => (
+export const PdlfForm = ({ formMethods }) => (
 	<>
-		<Personinformasjon formikBag={formikBag} />
-		<Adresser formikBag={formikBag} />
-		<Familierelasjoner formikBag={formikBag} />
-		<Identifikasjon formikBag={formikBag} />
-		<KontaktinformasjonForDoedsbo formikBag={formikBag} />
+		<Personinformasjon formMethods={formMethods} />
+		<Adresser formMethods={formMethods} />
+		<Familierelasjoner formMethods={formMethods} />
+		<Identifikasjon formMethods={formMethods} />
+		<KontaktinformasjonForDoedsbo formMethods={formMethods} />
 	</>
 )
 

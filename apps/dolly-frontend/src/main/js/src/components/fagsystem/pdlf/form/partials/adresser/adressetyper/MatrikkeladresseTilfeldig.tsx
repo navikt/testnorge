@@ -14,7 +14,7 @@ type MatrikkeladresseProps = {
 	path: string
 }
 
-export const MatrikkeladresseTilfeldig = ({ formikBag, path }: MatrikkeladresseProps) => {
+export const MatrikkeladresseTilfeldig = ({ formMethods, path }: MatrikkeladresseProps) => {
 	const settMatrikkelAdresse = (adresse: MatrikkelAdresse) => {
 		formikBag.setFieldValue(path, {
 			kommunenummer: adresse.kommunenummer,
@@ -30,7 +30,7 @@ export const MatrikkeladresseTilfeldig = ({ formikBag, path }: MatrikkeladresseP
 	const renderAdresse = () => {
 		const { kommunenummer, gaardsnummer, bruksnummer, postnummer, tilleggsnavn } = _.get(
 			formikBag.values,
-			path
+			path,
 		)
 		if (kommunenummer) {
 			return `Gårdsnr: ${gaardsnummer}, Bruksnr: ${bruksnummer}, Kommunenr: ${kommunenummer}, Postnr: ${postnummer} ${

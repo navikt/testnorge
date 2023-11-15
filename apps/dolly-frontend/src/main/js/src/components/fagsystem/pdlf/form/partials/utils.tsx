@@ -22,10 +22,6 @@ export const setNavn = (navn, path, setFieldValue) => {
 	}
 }
 
-export const setValue = (value, path, setFieldValue) => {
-	setFieldValue(`${path}`, value.value)
-}
-
 export const isEmpty = (attributt, excludeList = []) => {
 	const flattenData = (objekt) => {
 		let result = {}

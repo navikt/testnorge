@@ -37,7 +37,7 @@ const ForventedeInntekterForm = ({ path, header, initialValues }) => {
 	)
 }
 
-export const BarnetilleggForm = ({ formikBag }) => {
+export const BarnetilleggForm = ({ formMethods }) => {
 	const barnetilleggPath = 'pensjonforvalter.uforetrygd.barnetilleggDetaljer'
 
 	const [harBarnetillegg, setHarBarnetillegg] = useState(

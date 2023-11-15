@@ -41,7 +41,7 @@ type Target = {
 	label?: string
 }
 
-export const OppholdsadresseForm = ({ formikBag, path, idx }: OppholdsadresseFormValues) => {
+export const OppholdsadresseForm = ({ formMethods, path, idx }: OppholdsadresseFormValues) => {
 	useEffect(() => {
 		formikBag.setFieldValue(`${path}.adresseIdentifikatorFraMatrikkelen`, undefined)
 		const oppholdsadresse = _.get(formikBag.values, path)
@@ -126,20 +126,24 @@ export const OppholdsadresseForm = ({ formikBag, path, idx }: OppholdsadresseFor
 				/>
 			</div>
 			{valgtAdressetype === 'VEGADRESSE' && (
-				<VegadresseVelger formikBag={formikBag} path={`${path}.vegadresse`} key={`veg_${idx}`} />
+				<VegadresseVelger
+					formMethods={formMethods}
+					path={`${path}.vegadresse`}
+					key={`veg_${idx}`}
+				/>
 			)}
 			{valgtAdressetype === 'MATRIKKELADRESSE' && (
-				<MatrikkeladresseVelger formikBag={formikBag} path={`${path}.matrikkeladresse`} />
+				<MatrikkeladresseVelger formMethods={formMethods} path={`${path}.matrikkeladresse`} />
 			)}
 			{valgtAdressetype === 'UTENLANDSK_ADRESSE' && (
 				<UtenlandskAdresse
-					formikBag={formikBag}
+					formMethods={formMethods}
 					path={`${path}.utenlandskAdresse`}
 					master={_.get(formikBag.values, `${path}.master`)}
 				/>
 			)}
 			{valgtAdressetype === 'OPPHOLD_ANNET_STED' && (
-				<OppholdAnnetSted formikBag={formikBag} path={`${path}.oppholdAnnetSted`} />
+				<OppholdAnnetSted formMethods={formMethods} path={`${path}.oppholdAnnetSted`} />
 			)}
 			<div className="flexbox--flex-wrap">
 				<DatepickerWrapper>
@@ -169,7 +173,7 @@ export const OppholdsadresseForm = ({ formikBag, path, idx }: OppholdsadresseFor
 	)
 }
 
-export const Oppholdsadresse = ({ formikBag }: OppholdsadresseValues) => {
+export const Oppholdsadresse = ({ formMethods }: OppholdsadresseValues) => {
 	return (
 		<Kategori title="Oppholdsadresse">
 			<FormikDollyFieldArray
@@ -179,7 +183,7 @@ export const Oppholdsadresse = ({ formikBag }: OppholdsadresseValues) => {
 				canBeEmpty={false}
 			>
 				{(path: string, idx: number) => (
-					<OppholdsadresseForm formikBag={formikBag} path={path} idx={idx} />
+					<OppholdsadresseForm formMethods={formMethods} path={path} idx={idx} />
 				)}
 			</FormikDollyFieldArray>
 		</Kategori>

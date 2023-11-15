@@ -18,7 +18,7 @@ export const initialValues = {
 }
 export const instAttributt = 'instdata'
 
-export const InstForm = ({ formikBag }) => {
+export const InstForm = ({ formMethods }) => {
 	const opts = useContext(BestillingsveilederContext)
 	const { personFoerLeggTil } = opts
 

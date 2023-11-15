@@ -11,7 +11,7 @@ import { PdlEksisterendePerson } from '@/components/fagsystem/pdlf/form/partials
 import { useGenererNavn } from '@/utils/hooks/useGenererNavn'
 import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
 
-export const FalskIdentitet = ({ formikBag }) => {
+export const FalskIdentitet = ({ formMethods }) => {
 	const { navnInfo, loading } = useGenererNavn()
 	const navnOptions = SelectOptionsFormat.formatOptions('personnavn', navnInfo)
 
@@ -81,7 +81,7 @@ export const FalskIdentitet = ({ formikBag }) => {
 								<PdlEksisterendePerson
 									eksisterendePersonPath={`${path}.rettIdentitetVedIdentifikasjonsnummer`}
 									label="Eksisterende identifikasjonsnummer"
-									formikBag={formikBag}
+									formMethods={formMethods}
 								/>
 							)}
 							{identType() === 'OMTRENTLIG' && (

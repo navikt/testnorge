@@ -5,7 +5,7 @@ import * as _ from 'lodash-es'
 import useBoolean from '@/utils/hooks/useBoolean'
 import Button from '@/components/ui/button/Button'
 
-export const Adresse = ({ formikBag, path }) => {
+export const Adresse = ({ formMethods, path }) => {
 	const [visAdresse, setVisAdresse, setSkjulAdresse] = useBoolean(false)
 	const handleAfterChange = (selected) => {
 		return formikBag.setFieldValue(`${path}.poststedsnavn`, selected?.data || null)

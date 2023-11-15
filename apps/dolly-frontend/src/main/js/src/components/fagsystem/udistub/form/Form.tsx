@@ -18,7 +18,7 @@ const attrPaths = [
 
 export const udiAttributt = 'udistub'
 
-export const UdistubForm = ({ formikBag }) => (
+export const UdistubForm = ({ formMethods }) => (
 	<Vis attributt={attrPaths}>
 		<Panel
 			heading="UDI"
@@ -27,9 +27,9 @@ export const UdistubForm = ({ formikBag }) => (
 			startOpen={erForsteEllerTest(formikBag.values, [udiAttributt])}
 		>
 			<Kategori title="Gjeldende oppholdsstatus" vis="udistub.oppholdStatus">
-				<Oppholdsstatus formikBag={formikBag} />
+				<Oppholdsstatus formMethods={formMethods} />
 			</Kategori>
-			<Arbeidsadgang formikBag={formikBag} />
+			<Arbeidsadgang formMethods={formMethods} />
 			<Kategori title="Alias" vis="udistub.aliaser" flex={false}>
 				<Alias />
 			</Kategori>

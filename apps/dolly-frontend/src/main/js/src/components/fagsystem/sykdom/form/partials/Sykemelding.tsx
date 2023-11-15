@@ -78,7 +78,7 @@ enum SykemeldingTyper {
 	synt = 'SYNT',
 }
 
-export const Sykemelding = ({ formikBag }: SykemeldingForm) => {
+export const Sykemelding = ({ formMethods }: SykemeldingForm) => {
 	const [typeSykemelding, setTypeSykemelding] = useState(
 		_.get(formikBag.values, 'sykemelding').hasOwnProperty('detaljertSykemelding')
 			? SykemeldingTyper.detaljert
@@ -121,7 +121,7 @@ export const Sykemelding = ({ formikBag }: SykemeldingForm) => {
 			</ToggleGroup>
 			{typeSykemelding === SykemeldingTyper.synt && <SyntSykemelding />}
 			{typeSykemelding === SykemeldingTyper.detaljert && (
-				<DetaljertSykemelding formikBag={formikBag} />
+				<DetaljertSykemelding formMethods={formMethods} />
 			)}
 		</div>
 	)

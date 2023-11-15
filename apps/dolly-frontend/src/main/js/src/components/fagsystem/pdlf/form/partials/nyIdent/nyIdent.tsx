@@ -11,7 +11,7 @@ interface NyIdentForm {
 	formikBag: FormikProps<{}>
 }
 
-export const NyIdent = ({ formikBag }: NyIdentForm) => (
+export const NyIdent = ({ formMethods }: NyIdentForm) => (
 	<FormikDollyFieldArray
 		name="pdldata.person.nyident"
 		header="Ny identitet"
@@ -32,7 +32,7 @@ export const NyIdent = ({ formikBag }: NyIdentForm) => (
 						nyPersonPath={path}
 						eksisterendePersonPath={`${path}.eksisterendeIdent`}
 						label="NY IDENTITET"
-						formikBag={formikBag}
+						formMethods={formMethods}
 						nyIdentValg={nyIdentValg}
 						isExpanded={
 							!isEmpty(nyIdentValg, ['syntetisk']) ||

@@ -11,7 +11,7 @@ export const Steg1 = ({ stateModifier }) => {
 		opts.is.nyOrganisasjonFraMal ? (
 		<Steg1Organisasjon stateModifier={stateModifier} />
 	) : (
-		<Steg1Person formikBag={formikBag} stateModifier={stateModifier} />
+		<Steg1Person stateModifier={stateModifier} />
 	)
 }
 

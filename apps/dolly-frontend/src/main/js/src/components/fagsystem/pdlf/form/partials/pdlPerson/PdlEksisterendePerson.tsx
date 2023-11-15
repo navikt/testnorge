@@ -56,7 +56,7 @@ export const PdlEksisterendePerson = ({
 
 	const harForeldreansvarForValgteBarn = (foreldreansvar: Array<string>) => {
 		let harEksisterendeAnsvar = false
-		const valgteBarn = _.get(formikBag?.values, 'pdldata.person.forelderBarnRelasjon')
+		const valgteBarn = _.get(formMethods.getValues(), 'pdldata.person.forelderBarnRelasjon')
 			?.filter((relasjon: ForeldreBarnRelasjon) => relasjon.relatertPersonsRolle === 'BARN')
 			?.map((relasjon: ForeldreBarnRelasjon) => relasjon.relatertPerson)
 
@@ -70,11 +70,14 @@ export const PdlEksisterendePerson = ({
 
 	const getAntallForeldre = (eksisterendeForeldre: Array<string>) => {
 		const partnerErForelder = () =>
-			_.get(formikBag?.values, 'pdldata.person.sivilstand')?.find(
+			_.get(formMethods.getValues(), 'pdldata.person.sivilstand')?.find(
 				(partner: Sivilstand) =>
-					partner.type && !gyldigeSivilstanderForPartner.includes(partner.type)
+					partner.type && !gyldigeSivilstanderForPartner.includes(partner.type),
 			) &&
-			!_.get(formikBag?.values, `pdldata.person.forelderBarnRelasjon[${idx}].partnerErIkkeForelder`)
+			!_.get(
+				formMethods.getValues(),
+				`pdldata.person.forelderBarnRelasjon[${idx}].partnerErIkkeForelder`,
+			)
 		const antallEksisterendeForeldre = eksisterendeForeldre.length
 		const antallNyeForeldre = parseInt(antall) + (partnerErForelder() ? parseInt(antall) : 0)
 		return antallEksisterendeForeldre + antallNyeForeldre
@@ -93,15 +96,15 @@ export const PdlEksisterendePerson = ({
 		} else if (
 			eksisterendePersonPath?.includes('forelderBarnRelasjon') &&
 			_.get(
-				formikBag?.values,
-				`pdldata.person.forelderBarnRelasjon[${idx}].relatertPersonsRolle`
+				formMethods.getValues(),
+				`pdldata.person.forelderBarnRelasjon[${idx}].relatertPersonsRolle`,
 			) === 'BARN'
 		) {
 			return (
 				getAntallForeldre(person.foreldre) < 3 &&
 				!_.get(formikBag.values, 'pdldata.person.forelderBarnRelasjon').some(
 					(relasjon: ForeldreBarnRelasjon, relasjonId: number) =>
-						relasjon.relatertPerson === person.value && relasjonId !== idx
+						relasjon.relatertPerson === person.value && relasjonId !== idx,
 				)
 			)
 		} else if (eksisterendePersonPath?.includes('foreldreansvar')) {
@@ -147,7 +150,7 @@ export const PdlEksisterendePerson = ({
 
 	const hasNyPersonValues = nyIdentValg
 		? !isEmpty(nyIdentValg, ['syntetisk'])
-		: nyPersonPath && !isEmpty(_.get(formikBag?.values, nyPersonPath), ['syntetisk'])
+		: nyPersonPath && !isEmpty(_.get(formMethods.getValues(), nyPersonPath), ['syntetisk'])
 
 	const bestillingFlerePersoner = parseInt(antall) > 1 && (harSivilstand || harNyIdent)
 

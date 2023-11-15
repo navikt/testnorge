@@ -9,7 +9,7 @@ import {
 	initialJobboenskerVerdier,
 } from '@/components/fagsystem/arbeidsplassen/form/initialValues'
 
-export const JobboenskerForm = ({ formikBag }) => {
+export const JobboenskerForm = ({ formMethods }) => {
 	const jobboenskerPath = 'arbeidsplassenCV.jobboensker'
 
 	const setYrker = (options) => {
@@ -95,7 +95,7 @@ export const JobboenskerForm = ({ formikBag }) => {
 				/>
 			</div>
 			<EraseFillButtons
-				formikBag={formikBag}
+				formMethods={formMethods}
 				path={jobboenskerPath}
 				initialErase={initialJobboensker}
 				initialFill={initialJobboenskerVerdier}

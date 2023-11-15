@@ -68,7 +68,7 @@ export const OrgnrToggle = ({
 			{inputType === inputValg.fraEgenListe && (
 				<EgneOrganisasjoner
 					path={`${path}.orgNr`}
-					formikBag={formikBag}
+					formMethods={formMethods}
 					handleChange={handleChange}
 					warningMessage={warningMessage}
 				/>

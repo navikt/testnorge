@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { useContext, useEffect } from 'react'
 import { FormikProps } from 'formik'
 import {
 	initialForeldreansvar,
@@ -16,7 +17,6 @@ import { PdlEksisterendePerson } from '@/components/fagsystem/pdlf/form/partials
 import { PdlNyPerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlNyPerson'
 import { PdlPersonUtenIdentifikator } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonUtenIdentifikator'
 import { Alert } from '@navikt/ds-react'
-import { useContext, useEffect } from 'react'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import styled from 'styled-components'
 import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
@@ -144,20 +144,20 @@ export const ForeldreansvarForm = ({
 				<PdlEksisterendePerson
 					eksisterendePersonPath={`${path}.ansvarlig`}
 					label="Ansvarlig"
-					formikBag={formikBag}
+					formMethods={formMethods}
 					eksisterendeNyPerson={eksisterendeNyPerson}
 				/>
 			)}
 
 			{getTypeAnsvarlig() === TypeAnsvarlig.UTEN_ID && (
 				<PdlPersonUtenIdentifikator
-					formikBag={formikBag}
+					formMethods={formMethods}
 					path={`${path}.ansvarligUtenIdentifikator`}
 				/>
 			)}
 
 			{getTypeAnsvarlig() === TypeAnsvarlig.NY && (
-				<PdlNyPerson nyPersonPath={`${path}.nyAnsvarlig`} formikBag={formikBag} />
+				<PdlNyPerson nyPersonPath={`${path}.nyAnsvarlig`} formMethods={formMethods} />
 			)}
 
 			<AvansertForm path={path} kanVelgeMaster={false} />
@@ -165,7 +165,7 @@ export const ForeldreansvarForm = ({
 	)
 }
 
-export const Foreldreansvar = ({ formikBag }: ForeldreansvarForm) => {
+export const Foreldreansvar = ({ formMethods }: ForeldreansvarForm) => {
 	const { personFoerLeggTil, leggTilPaaGruppe } = useContext(BestillingsveilederContext)
 
 	const relasjoner = _.get(formikBag.values, 'pdldata.person.forelderBarnRelasjon')
@@ -174,10 +174,10 @@ export const Foreldreansvar = ({ formikBag }: ForeldreansvarForm) => {
 	const harBarn = () => {
 		return (
 			relasjoner?.some(
-				(relasjon: ForeldreBarnRelasjon) => relasjon.relatertPersonsRolle === 'BARN'
+				(relasjon: ForeldreBarnRelasjon) => relasjon.relatertPersonsRolle === 'BARN',
 			) ||
 			eksisterendeRelasjoner?.some(
-				(relasjon: ForeldreBarnRelasjon) => relasjon.relatertPersonsRolle === 'BARN'
+				(relasjon: ForeldreBarnRelasjon) => relasjon.relatertPersonsRolle === 'BARN',
 			)
 		)
 	}
@@ -187,12 +187,12 @@ export const Foreldreansvar = ({ formikBag }: ForeldreansvarForm) => {
 			relasjoner?.some(
 				(relasjon: ForeldreBarnRelasjon) =>
 					relasjon.relatertPersonsRolle === 'BARN' &&
-					relasjon.relatertPersonUtenFolkeregisteridentifikator
+					relasjon.relatertPersonUtenFolkeregisteridentifikator,
 			) ||
 			eksisterendeRelasjoner?.some(
 				(relasjon: ForeldreBarnRelasjon) =>
 					relasjon.relatertPersonsRolle === 'BARN' &&
-					relasjon.relatertPersonUtenFolkeregisteridentifikator
+					relasjon.relatertPersonUtenFolkeregisteridentifikator,
 			)
 		)
 	}
@@ -220,7 +220,7 @@ export const Foreldreansvar = ({ formikBag }: ForeldreansvarForm) => {
 				canBeEmpty={false}
 			>
 				{(path: string, _idx: number) => {
-					return <ForeldreansvarForm formikBag={formikBag} path={path} />
+					return <ForeldreansvarForm formMethods={formMethods} path={path} />
 				}}
 			</FormikDollyFieldArray>
 		</>

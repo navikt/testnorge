@@ -18,7 +18,7 @@ export const adresseAttributter = [
 	'pdldata.person.adressebeskyttelse',
 ]
 
-export const Adresser = ({ formikBag }: AdresserValues) => {
+export const Adresser = ({ formMethods }: AdresserValues) => {
 	return (
 		<Vis attributt={adresseAttributter}>
 			<Panel
@@ -28,16 +28,16 @@ export const Adresser = ({ formikBag }: AdresserValues) => {
 				startOpen={erForsteEllerTest(formikBag.values, adresseAttributter)}
 			>
 				<Vis attributt={'pdldata.person.bostedsadresse'}>
-					<Bostedsadresse formikBag={formikBag} />
+					<Bostedsadresse formMethods={formMethods} />
 				</Vis>
 				<Vis attributt={'pdldata.person.oppholdsadresse'}>
-					<Oppholdsadresse formikBag={formikBag} />
+					<Oppholdsadresse formMethods={formMethods} />
 				</Vis>
 				<Vis attributt={'pdldata.person.kontaktadresse'}>
-					<Kontaktadresse formikBag={formikBag} />
+					<Kontaktadresse formMethods={formMethods} />
 				</Vis>
 				<Vis attributt={'pdldata.person.adressebeskyttelse'}>
-					<Adressebeskyttelse formikBag={formikBag} />
+					<Adressebeskyttelse formMethods={formMethods} />
 				</Vis>
 			</Panel>
 		</Vis>

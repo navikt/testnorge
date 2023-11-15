@@ -8,7 +8,7 @@ interface PostboksadresseValues {
 	path: string
 }
 
-export const Postboksadresse = ({ formikBag, path }: PostboksadresseValues) => {
+export const Postboksadresse = ({ formMethods, path }: PostboksadresseValues) => {
 	return (
 		<div className="flexbox--flex-wrap">
 			<FormikTextInput name={`${path}.postbokseier`} label="Postbokseier" size="large" />

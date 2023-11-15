@@ -6,7 +6,7 @@ import {
 } from '@/components/fagsystem/pdlf/form/partials/adresser/adressetyper'
 import { Radio, RadioGroup } from '@navikt/ds-react'
 
-export const MatrikkeladresseVelger = ({ formikBag, path }) => {
+export const MatrikkeladresseVelger = ({ formMethods, path }) => {
 	const matrikkeladresseValg = {
 		TILFELDIG: 'TILFELDIG',
 		DETALJERT: 'DETALJERT',
@@ -43,11 +43,11 @@ export const MatrikkeladresseVelger = ({ formikBag, path }) => {
 			</RadioGroup>
 
 			{matrikkeladresseType === matrikkeladresseValg.TILFELDIG && (
-				<MatrikkeladresseTilfeldig formikBag={formikBag} path={path} />
+				<MatrikkeladresseTilfeldig formMethods={formMethods} path={path} />
 			)}
 
 			{matrikkeladresseType === matrikkeladresseValg.DETALJERT && (
-				<Matrikkeladresse formikBag={formikBag} path={path} />
+				<Matrikkeladresse formMethods={formMethods} path={path} />
 			)}
 		</div>
 	)

@@ -94,7 +94,7 @@ export const SivilstandForm = ({
 					eksisterendePersonPath={`${path}.relatertVedSivilstand`}
 					eksisterendeNyPerson={eksisterendeNyPerson}
 					label={'PERSON RELATERT TIL'}
-					formikBag={formikBag}
+					formMethods={formMethods}
 					isExpanded={
 						!isEmpty(_.get(formikBag.values, `${path}.nyRelatertPerson`), ['syntetisk']) ||
 						_.get(formikBag.values, `${path}.relatertVedSivilstand`) !== null
@@ -109,7 +109,7 @@ export const SivilstandForm = ({
 	)
 }
 
-export const Sivilstand = ({ formikBag }: SivilstandFormTypes) => {
+export const Sivilstand = ({ formMethods }: SivilstandFormTypes) => {
 	return (
 		<FormikDollyFieldArray
 			name="pdldata.person.sivilstand"
@@ -117,7 +117,7 @@ export const Sivilstand = ({ formikBag }: SivilstandFormTypes) => {
 			newEntry={initialSivilstand}
 			canBeEmpty={false}
 		>
-			{(path: string) => <SivilstandForm path={path} formikBag={formikBag} />}
+			{(path: string) => <SivilstandForm path={path} formMethods={formMethods} />}
 		</FormikDollyFieldArray>
 	)
 }

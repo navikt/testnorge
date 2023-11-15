@@ -51,7 +51,7 @@ enum Kodeverk {
 
 export const dokarkivAttributt = 'dokarkiv'
 
-export const DokarkivForm = ({ formikBag }: DokarkivFormProps) => {
+export const DokarkivForm = ({ formMethods }: DokarkivFormProps) => {
 	if (!_.has(formikBag.values, dokarkivAttributt)) {
 		return null
 	}

@@ -14,7 +14,7 @@ type AdresserProps = {
 const hjelpetekstAdresser =
 	'For å få generert en gyldig norsk adresse kan du velge å fylle ut postnummer, kommunenummer, eller ingen ting. Det vil opprettes en gyldig adresse på grunnlag av det du har fylt ut, og har du ikke fylt ut noe blir adressen en tilfeldig gyldig adresse.'
 
-export const Adresser = ({ formikBag, path }: AdresserProps) => {
+export const Adresser = ({ formMethods, path }: AdresserProps) => {
 	const landForretningsadresse = _.get(formikBag, `values.${path}.forretningsadresse.landkode`)
 	const landPostadresse = _.get(formikBag, `values.${path}.postadresse.landkode`)
 

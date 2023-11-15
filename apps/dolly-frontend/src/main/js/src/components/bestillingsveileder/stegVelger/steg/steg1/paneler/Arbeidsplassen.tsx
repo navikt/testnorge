@@ -22,7 +22,7 @@ import _get from 'lodash/get'
 import _has from 'lodash/has'
 import { isBoolean } from 'lodash-es'
 
-export const ArbeidsplassenPanel = ({ stateModifier, formikBag }) => {
+export const ArbeidsplassenPanel = ({ stateModifier, formValues }) => {
 	const sm = stateModifier(ArbeidsplassenPanel.initialValues)
 
 	return (
@@ -31,7 +31,7 @@ export const ArbeidsplassenPanel = ({ stateModifier, formikBag }) => {
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType="cv"
-			startOpen={harValgtAttributt(formikBag.values, ['arbeidsplassenCV'])}
+			startOpen={harValgtAttributt(formValues, ['arbeidsplassenCV'])}
 		>
 			<AttributtKategori title={null} attr={sm.attrs}>
 				<Attributt attr={sm.attrs.jobboensker} />

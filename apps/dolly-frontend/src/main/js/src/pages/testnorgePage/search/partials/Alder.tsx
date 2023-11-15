@@ -14,7 +14,7 @@ type Props = {
 	formikBag: FormikProps<{}>
 }
 
-export const Alder = ({ formikBag }: Props) => (
+export const Alder = ({ formMethods }: Props) => (
 	<section>
 		<FormikTextInput
 			name={paths.fra}

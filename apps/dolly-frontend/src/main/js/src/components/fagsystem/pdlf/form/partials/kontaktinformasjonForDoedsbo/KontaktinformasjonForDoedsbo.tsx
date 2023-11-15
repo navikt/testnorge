@@ -33,14 +33,14 @@ export const KontaktinformasjonForDoedsboForm = ({
 					label="Utstedelsesdato skifteattest"
 				/>
 			</DatepickerWrapper>
-			<Kontakt formikBag={formikBag} path={path} eksisterendeNyPerson={eksisterendeNyPerson} />
-			<Adresse formikBag={formikBag} path={`${path}.adresse`} />
+			<Kontakt formMethods={formMethods} path={path} eksisterendeNyPerson={eksisterendeNyPerson} />
+			<Adresse formMethods={formMethods} path={`${path}.adresse`} />
 			<AvansertForm path={path} kanVelgeMaster={false} />
 		</>
 	)
 }
 
-export const KontaktinformasjonForDoedsbo = ({ formikBag }) => {
+export const KontaktinformasjonForDoedsbo = ({ formMethods }) => {
 	return (
 		<Vis attributt={doedsboAttributt}>
 			<Panel
@@ -55,7 +55,7 @@ export const KontaktinformasjonForDoedsbo = ({ formikBag }) => {
 					newEntry={initialKontaktinfoForDoedebo}
 					canBeEmpty={false}
 				>
-					{(path) => <KontaktinformasjonForDoedsboForm formikBag={formikBag} path={path} />}
+					{(path) => <KontaktinformasjonForDoedsboForm formMethods={formMethods} path={path} />}
 				</FormikDollyFieldArray>
 			</Panel>
 		</Vis>

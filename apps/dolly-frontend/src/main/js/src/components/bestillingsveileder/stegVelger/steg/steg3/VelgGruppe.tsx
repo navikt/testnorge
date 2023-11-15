@@ -12,7 +12,7 @@ type VelgGruppeProps = {
 	fraGruppe?: number
 }
 
-export const VelgGruppe = ({ formikBag, title, fraGruppe = null }: VelgGruppeProps) => {
+export const VelgGruppe = ({ formMethods, title, fraGruppe = null }: VelgGruppeProps) => {
 	const [valgtGruppe, setValgtGruppe] = useState(_.get(formikBag.values, `gruppeId`))
 
 	useEffect(() => {
@@ -40,7 +40,7 @@ VelgGruppe.validation = {
 	gruppeId: ifPresent(
 		'$gruppeId',
 		Yup.string().required(
-			'Velg eksisterende gruppe eller opprett ny gruppe for å importere personen(e)'
-		)
+			'Velg eksisterende gruppe eller opprett ny gruppe for å importere personen(e)',
+		),
 	),
 }

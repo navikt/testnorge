@@ -14,7 +14,7 @@ type OrganisasjonFormProps = {
 
 const detaljerPaths = [organisasjonPaths, kontaktPaths, adressePaths].flat()
 
-export const OrganisasjonForm = ({ formikBag }: OrganisasjonFormProps) => {
+export const OrganisasjonForm = ({ formMethods }: OrganisasjonFormProps) => {
 	return (
 		<>
 			{/* @ts-ignore */}
@@ -25,7 +25,7 @@ export const OrganisasjonForm = ({ formikBag }: OrganisasjonFormProps) => {
 					iconType={'personinformasjon'}
 					startOpen={erForsteEllerTest(formikBag.values, detaljerPaths)}
 				>
-					<Detaljer formikBag={formikBag} path="organisasjon" level={0} />
+					<Detaljer formMethods={formMethods} path="organisasjon" level={0} />
 				</Panel>
 			</Vis>
 		</>

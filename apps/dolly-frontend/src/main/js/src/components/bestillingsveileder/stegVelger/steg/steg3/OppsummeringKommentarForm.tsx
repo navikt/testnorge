@@ -2,7 +2,7 @@ import { TextEditor } from '@/components/ui/form/inputs/textEditor/TextEditor'
 import * as _ from 'lodash-es'
 import { CypressSelector } from '../../../../../../cypress/mocks/Selectors'
 
-export const OppsummeringKommentarForm = ({ formikBag }) => {
+export const OppsummeringKommentarForm = ({ formMethods }) => {
 	const eksisterendeBeskrivelse = _.get(formikBag.values, 'beskrivelse')
 	return (
 		<div className="input-oppsummering">

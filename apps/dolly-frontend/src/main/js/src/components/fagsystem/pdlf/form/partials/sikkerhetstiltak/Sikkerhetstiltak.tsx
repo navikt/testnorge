@@ -31,7 +31,7 @@ interface SikkerhetstiltakProps {
 	formikBag: FormikProps<{ tpsf: SikkerhetstiltakValues }>
 }
 
-export const Sikkerhetstiltak = ({ formikBag }: SikkerhetstiltakProps) => {
+export const Sikkerhetstiltak = ({ formMethods }: SikkerhetstiltakProps) => {
 	const opts = useContext(BestillingsveilederContext)
 	const [randomNavUsers, setRandomNavUsers] = useState([])
 
@@ -60,7 +60,7 @@ export const Sikkerhetstiltak = ({ formikBag }: SikkerhetstiltakProps) => {
 		handleValueChange(
 			option.label === 'Opphørt' ? option.label : option.label.substring(indexBeskrSikkerhetTiltak),
 			'beskrivelse',
-			idx
+			idx,
 		)
 	}
 
@@ -106,7 +106,7 @@ export const Sikkerhetstiltak = ({ formikBag }: SikkerhetstiltakProps) => {
 										opts.personFoerLeggTil
 											? Options('sikkerhetstiltakType')
 											: Options('sikkerhetstiltakType').filter(
-													(option) => option.label !== 'Opphørt'
+													(option) => option.label !== 'Opphørt',
 											  )
 									}
 									size="large"
@@ -138,8 +138,8 @@ export const Sikkerhetstiltak = ({ formikBag }: SikkerhetstiltakProps) => {
 										!isToday(
 											_.get(
 												formikBag.values,
-												`pdldata.person.sikkerhetstiltak[${idx}].gyldigFraOgMed`
-											)
+												`pdldata.person.sikkerhetstiltak[${idx}].gyldigFraOgMed`,
+											),
 										)
 									}
 									warningText="TPS støtter kun sikkerhetstiltak fra gjeldende dato. Endre til dagens dato dersom et

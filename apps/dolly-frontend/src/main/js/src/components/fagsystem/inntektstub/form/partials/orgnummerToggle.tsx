@@ -22,11 +22,11 @@ type Props = {
 
 const validEnhetstyper = ['BEDR', 'AAFY']
 
-export const OrgnummerToggle = ({ formikBag, opplysningspliktigPath, path }: Props) => {
+export const OrgnummerToggle = ({ formMethods, opplysningspliktigPath, path }: Props) => {
 	const { dollyEnvironments: aktiveMiljoer } = useDollyEnvironments()
 
 	const [inputType, setInputType] = useState(
-		sessionStorage.getItem(ORGANISASJONSTYPE_TOGGLE) || inputValg.fraFellesListe
+		sessionStorage.getItem(ORGANISASJONSTYPE_TOGGLE) || inputValg.fraFellesListe,
 	)
 	const [error, setError] = useState(null)
 	const [success, setSuccess] = useBoolean(false)
@@ -97,7 +97,7 @@ export const OrgnummerToggle = ({ formikBag, opplysningspliktigPath, path }: Pro
 			{inputType === inputValg.fraEgenListe && (
 				<EgneOrganisasjoner
 					path={path}
-					formikBag={formikBag}
+					formMethods={formMethods}
 					filterValidEnhetstyper={true}
 					// @ts-ignore
 					handleChange={handleChange}

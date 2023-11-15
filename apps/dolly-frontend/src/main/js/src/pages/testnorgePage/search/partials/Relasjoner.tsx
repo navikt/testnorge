@@ -31,7 +31,7 @@ const barnOptions = [
 	{ value: 'M', label: 'Har flere barn' },
 ]
 
-export const Relasjoner = ({ formikBag }: RelasjonerProps) => {
+export const Relasjoner = ({ formMethods }: RelasjonerProps) => {
 	const [foreldre, setForeldre] = useState(_.get(formikBag.values, paths.forelderBarnRelasjoner))
 	const handleForelderChange = (relasjon: string) => {
 		let nyeForeldre = [...foreldre]
@@ -67,13 +67,13 @@ export const Relasjoner = ({ formikBag }: RelasjonerProps) => {
 				size="medium"
 			/>
 			<RadioGroupOptions
-				formikBag={formikBag}
+				formMethods={formMethods}
 				name={'Har barn'}
 				path={paths.harBarn}
 				options={barnOptions}
 			/>
 			<RadioGroupOptions
-				formikBag={formikBag}
+				formMethods={formMethods}
 				name={'Har dødfødt barn'}
 				path={paths.harDoedfoedtBarn}
 				options={yesNoOptions}
@@ -94,7 +94,7 @@ export const Relasjoner = ({ formikBag }: RelasjonerProps) => {
 			<DollyCheckbox
 				label={'Medmor'}
 				checked={_.get(formikBag.values, paths.forelderBarnRelasjoner).includes(
-					foreldreRoller.MEDMOR
+					foreldreRoller.MEDMOR,
 				)}
 				onChange={() => handleForelderChange(foreldreRoller.MEDMOR)}
 				size="small"

@@ -36,7 +36,7 @@ export const fetchTpOrdninger = () => {
 	}
 }
 
-export const TjenestepensjonForm = ({ formikBag }) => {
+export const TjenestepensjonForm = ({ formMethods }) => {
 	useEffect(() => {
 		fetchTpOrdninger()
 	}, [Options('tpOrdninger')])

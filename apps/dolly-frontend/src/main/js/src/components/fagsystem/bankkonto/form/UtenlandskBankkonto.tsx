@@ -9,8 +9,8 @@ import { landkodeIsoMapping } from '@/service/services/kontoregister/landkoder'
 
 const path = 'bankkonto.utenlandskBankkonto'
 
-export const UtenlandskBankkonto = ({ formikBag }: any) => {
-	const values = formikBag?.values
+export const UtenlandskBankkonto = ({ formMethods }: any) => {
+	const values = formMethods.getValues()
 	const disableKontonummer = _.get(values, `${path}.tilfeldigKontonummer`)
 	const disableTilfeldigKontonummer = _.get(values, `${path}.kontonummer`)
 

@@ -77,7 +77,7 @@ export const initialValues = (type: string) => ({
 export const inntektsmeldingAttributt = 'inntektsmelding'
 const informasjonstekst = 'Personen må ha et arbeidsforhold knyttet til den valgte virksomheten.'
 
-export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingFormProps) => {
+export const InntektsmeldingForm = ({ formMethods }: InntektsmeldingFormProps) => {
 	const [typeArbeidsgiver, setTypeArbeidsgiver] = useState(
 		_.get(formikBag.values, 'inntektsmelding.inntekter[0].arbeidsgiverPrivat')
 			? TypeArbeidsgiver.PRIVATPERSON
@@ -157,7 +157,7 @@ export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingFormProps) => 
 										idx={idx}
 										label="Ytelse"
 										kodeverk={Kodeverk.Ytelse}
-										formikBag={formikBag}
+										formMethods={formMethods}
 									/>
 									<FormikDatepicker
 										name={`${path}.avsendersystem.innsendingstidspunkt`}
@@ -181,7 +181,7 @@ export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingFormProps) => 
 										<div className={'flexbox'}>
 											<OrgnrToggle
 												path={`${path}.arbeidsgiver.virksomhetsnummer`}
-												formikBag={formikBag}
+												formMethods={formMethods}
 											/>
 											<div style={{ margin: '70px 0 0 30px' }}>
 												<FormikCheckbox name={`${path}.naerRelasjon`} label="Nær relasjon" />

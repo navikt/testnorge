@@ -18,7 +18,7 @@ import { validation } from '@/components/fagsystem/arbeidsplassen/form/validatio
 import { HjemmelForm } from '@/components/fagsystem/arbeidsplassen/form/partials/HjemmelForm'
 
 export const arbeidsplassenAttributt = 'arbeidsplassenCV'
-export const ArbeidsplassenForm = ({ formikBag }) => {
+export const ArbeidsplassenForm = ({ formMethods }) => {
 	return (
 		<Vis attributt={arbeidsplassenAttributt}>
 			<Panel
@@ -28,18 +28,18 @@ export const ArbeidsplassenForm = ({ formikBag }) => {
 				startOpen={erForsteEllerTest(formikBag.values, [arbeidsplassenAttributt])}
 			>
 				<div className="flexbox--flex-wrap">
-					<JobboenskerForm formikBag={formikBag} />
-					<UtdanningForm formikBag={formikBag} />
-					<FagbrevForm formikBag={formikBag} />
-					<ArbeidserfaringForm formikBag={formikBag} />
-					<AnnenErfaringForm formikBag={formikBag} />
-					<KompetanserForm formikBag={formikBag} />
-					<OffentligeGodkjenningerForm formikBag={formikBag} />
-					<AndreGodkjenningerForm formikBag={formikBag} />
-					<SpraakForm formikBag={formikBag} />
-					<FoererkortForm formikBag={formikBag} />
-					<KursForm formikBag={formikBag} />
-					<SammendragForm formikBag={formikBag} />
+					<JobboenskerForm formMethods={formMethods} />
+					<UtdanningForm formMethods={formMethods} />
+					<FagbrevForm formMethods={formMethods} />
+					<ArbeidserfaringForm formMethods={formMethods} />
+					<AnnenErfaringForm formMethods={formMethods} />
+					<KompetanserForm formMethods={formMethods} />
+					<OffentligeGodkjenningerForm formMethods={formMethods} />
+					<AndreGodkjenningerForm formMethods={formMethods} />
+					<SpraakForm formMethods={formMethods} />
+					<FoererkortForm formMethods={formMethods} />
+					<KursForm formMethods={formMethods} />
+					<SammendragForm formMethods={formMethods} />
 					<HjemmelForm />
 				</div>
 			</Panel>

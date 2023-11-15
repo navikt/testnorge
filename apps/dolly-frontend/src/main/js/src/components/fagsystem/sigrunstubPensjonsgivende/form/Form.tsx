@@ -28,7 +28,7 @@ export const getInitialSigrunstubPensjonsgivende = (kodeverk = null, skatteordni
 
 export const sigrunstubPensjonsgivendeAttributt = 'sigrunstubPensjonsgivende'
 
-export const SigrunstubPensjonsgivendeForm = ({ formikBag }) => {
+export const SigrunstubPensjonsgivendeForm = ({ formMethods }) => {
 	const { kodeverk } = usePensjonsgivendeInntektKodeverk()
 	const { skatteordning } = usePensjonsgivendeInntektSkatteordning()
 
@@ -75,7 +75,7 @@ export const SigrunstubPensjonsgivendeForm = ({ formikBag }) => {
 								</div>
 								<PensjonsgivendeInntektForm
 									path={`${path}.pensjonsgivendeInntekt`}
-									formikBag={formikBag}
+									formMethods={formMethods}
 									kodeverk={kodeverk}
 									skatteordning={skatteordning}
 								/>

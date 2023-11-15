@@ -27,7 +27,7 @@ const StyledAlert = styled(Alert)`
 
 const alderspensjonPath = 'pensjonforvalter.alderspensjon'
 
-export const AlderspensjonForm = ({ formikBag }) => {
+export const AlderspensjonForm = ({ formMethods }) => {
 	const opts = useContext(BestillingsveilederContext)
 	const { nyBestilling, leggTil, importTestnorge, leggTilPaaGruppe } = opts?.is
 
@@ -127,8 +127,8 @@ export const AlderspensjonForm = ({ formikBag }) => {
 		return !gjeldendeAdresse || !gjeldendeAdresse?.adressetype
 			? null
 			: gjeldendeAdresse?.adressetype === 'UTENLANDSK_ADRESSE'
-			? adressetyper.utland
-			: adressetyper.norge
+			  ? adressetyper.utland
+			  : adressetyper.norge
 	}
 
 	const harNorskAdresse = () => {

@@ -19,7 +19,7 @@ const hjelpetekst =
 	'Hvis nedjuster med grunnbeløp er valgt skal beløp angis som årsbeløp i dagens kroneverdi, ' +
 	'og vil nedjusteres basert på snitt grunnbeløp i inntektsåret.'
 
-export const PensjonForm = ({ formikBag }) => {
+export const PensjonForm = ({ formMethods }) => {
 	const opts = useContext(BestillingsveilederContext)
 	const { nyBestilling, nyBestillingFraMal } = opts?.is
 

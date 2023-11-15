@@ -16,7 +16,7 @@ const initialValues = {
 	svalbardGrunnlag: [],
 }
 
-export const InntektsaarForm = ({ formikBag }) => {
+export const InntektsaarForm = ({ formMethods }) => {
 	const initialGrunnlag = {
 		tekniskNavn: '',
 		verdi: '',
@@ -59,7 +59,7 @@ export const InntektsaarForm = ({ formikBag }) => {
 									initialGrunnlag={initialGrunnlag}
 									tjeneste={_.get(formikBag.values, `${path}.tjeneste`)}
 									inntektsaar={_.get(formikBag.values, `${path}.inntektsaar`)}
-									formikBag={formikBag}
+									formMethods={formMethods}
 								/>
 							)}
 							{_.get(formikBag.values, `${path}.tjeneste`) === 'SUMMERT_SKATTEGRUNNLAG' && (
@@ -69,7 +69,7 @@ export const InntektsaarForm = ({ formikBag }) => {
 									initialGrunnlag={initialGrunnlag}
 									tjeneste={_.get(formikBag.values, `${path}.tjeneste`)}
 									inntektsaar={_.get(formikBag.values, `${path}.inntektsaar`)}
-									formikBag={formikBag}
+									formMethods={formMethods}
 								/>
 							)}
 

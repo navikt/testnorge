@@ -4,7 +4,7 @@ import { initialKontaktinfoForDoedebo } from '@/components/fagsystem/pdlf/form/i
 import { harValgtAttributt } from '@/components/ui/form/formUtils'
 import { doedsboAttributt } from '@/components/fagsystem/pdlf/form/partials/kontaktinformasjonForDoedsbo/KontaktinformasjonForDoedsbo'
 
-export const KontaktDoedsboPanel = ({ stateModifier, formikBag }) => {
+export const KontaktDoedsboPanel = ({ stateModifier, formValues }) => {
 	const sm = stateModifier(KontaktDoedsboPanel.initialValues)
 
 	return (
@@ -13,7 +13,7 @@ export const KontaktDoedsboPanel = ({ stateModifier, formikBag }) => {
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType="doedsbo"
-			startOpen={harValgtAttributt(formikBag.values, [doedsboAttributt])}
+			startOpen={harValgtAttributt(formValues, [doedsboAttributt])}
 		>
 			<AttributtKategori attr={sm.attrs}>
 				<Attributt attr={sm.attrs.kontaktinformasjonForDoedsbo} />

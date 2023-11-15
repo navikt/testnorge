@@ -24,7 +24,7 @@ interface MedlFormProps {
 	formikBag: FormikProps<{}>
 }
 
-export const MedlForm = ({ formikBag }: MedlFormProps) => {
+export const MedlForm = ({ formMethods }: MedlFormProps) => {
 	const {
 		register,
 		formState: { errors },

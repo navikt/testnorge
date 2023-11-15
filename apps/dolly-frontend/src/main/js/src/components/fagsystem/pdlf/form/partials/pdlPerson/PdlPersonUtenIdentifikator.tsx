@@ -25,7 +25,7 @@ export const PdlPersonUtenIdentifikator = ({
 	//@ts-ignore
 	const etternavnOptions = SelectOptionsFormat.formatOptions('etternavn', navnInfo)
 
-	const { fornavn, mellomnavn, etternavn } = _.get(formikBag?.values, `${path}.navn`)
+	const { fornavn, mellomnavn, etternavn } = _.get(formMethods.getValues(), `${path}.navn`)
 
 	return (
 		<div className={'flexbox--flex-wrap'} style={{ marginTop: '10px' }}>

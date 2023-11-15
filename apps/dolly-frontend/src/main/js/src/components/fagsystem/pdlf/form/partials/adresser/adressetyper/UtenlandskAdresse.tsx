@@ -11,7 +11,7 @@ interface UtenlandskAdresseForm {
 	master?: string | unknown
 }
 
-export const UtenlandskAdresse = ({ formikBag, path, master }: UtenlandskAdresseForm) => {
+export const UtenlandskAdresse = ({ formMethods, path, master }: UtenlandskAdresseForm) => {
 	const harAdressenavn =
 		_.get(formikBag.values, `${path}.adressenavnNummer`) !== '' &&
 		_.get(formikBag.values, `${path}.adressenavnNummer`) !== null

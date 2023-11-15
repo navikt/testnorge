@@ -21,7 +21,7 @@ const initialValues = {
 	sisteDatoForStillingsprosentendring: undefined,
 }
 
-export const ArbeidsforholdForm = ({ formikBag, inntektsinformasjonPath }) => {
+export const ArbeidsforholdForm = ({ formMethods, inntektsinformasjonPath }) => {
 	const arbeidsforholdstyper = SelectOptionsOppslag.hentArbeidsforholdstyperInntektstub()
 	const arbeidsforholdstyperFormatted = SelectOptionsFormat.formatOptions(
 		'arbeidsforholdstyper',

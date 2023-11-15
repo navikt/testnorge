@@ -4,7 +4,7 @@ import {
 	initialAndreGodkjenningerVerdier,
 } from '@/components/fagsystem/arbeidsplassen/form/initialValues'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
-import { DollyTextInput, FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import * as React from 'react'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
@@ -12,7 +12,7 @@ import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { EraseFillButtons } from '@/components/fagsystem/arbeidsplassen/form/partials/EraseFillButtons'
 import _get from 'lodash/get'
 
-export const AndreGodkjenningerForm = ({ formikBag }) => {
+export const AndreGodkjenningerForm = ({ formMethods }) => {
 	const andreGodkjenningerListePath = 'arbeidsplassenCV.andreGodkjenninger'
 
 	return (
@@ -44,7 +44,7 @@ export const AndreGodkjenningerForm = ({ formikBag }) => {
 							<FormikDatepicker name={`${annenGodkjenningPath}.toDate`} label="Utløper" />
 						</div>
 						<EraseFillButtons
-							formikBag={formikBag}
+							formMethods={formMethods}
 							path={annenGodkjenningPath}
 							initialErase={initialAndreGodkjenninger}
 							initialFill={initialAndreGodkjenningerVerdier}

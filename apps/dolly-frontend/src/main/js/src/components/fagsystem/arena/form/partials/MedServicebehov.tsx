@@ -35,7 +35,7 @@ const getFeilmelding = (formikBag) => {
 	return melding ? melding + feilmeldingFiks : null
 }
 
-export const MedServicebehov = ({ formikBag, path }) => {
+export const MedServicebehov = ({ formMethods, path }) => {
 	const opts = useContext(BestillingsveilederContext)
 	const { arenaforvalter } = formikBag.values
 	const feilmelding = getFeilmelding(formikBag)

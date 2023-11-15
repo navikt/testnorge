@@ -54,7 +54,7 @@ export const Detaljer = ({
 			(_.has(formikBag.values, `${path}.underenheter`) &&
 				_.get(formikBag.values, `${path}.underenheter`))
 			? TypeUnderenhet.JURIDISKENHET
-			: TypeUnderenhet.VIRKSOMHET
+			: TypeUnderenhet.VIRKSOMHET,
 	)
 
 	const handleToggleChange = (value: TypeUnderenhet) => {
@@ -131,7 +131,7 @@ export const Detaljer = ({
 
 			<Kontaktdata path={path} />
 
-			<Adresser formikBag={formikBag} path={path} />
+			<Adresser formMethods={formMethods} path={path} />
 
 			<FormikDollyFieldArray
 				name={`${path}.underenheter`}
@@ -142,8 +142,8 @@ export const Detaljer = ({
 					level > 3
 						? 'Du kan maksimalt lage fire nivåer av underenheter'
 						: typeUnderenhet === TypeUnderenhet.VIRKSOMHET
-						? 'Du kan ikke legge til underenheter på enhet av type virksomhet'
-						: null
+						  ? 'Du kan ikke legge til underenheter på enhet av type virksomhet'
+						  : null
 				}
 				canBeEmpty={!maaHaUnderenhet || _.get(formikBag, `values.${path}.enhetstype`) === 'ENK'}
 				tag={number}
@@ -153,7 +153,7 @@ export const Detaljer = ({
 					return (
 						<Detaljer
 							key={idx}
-							formikBag={formikBag}
+							formMethods={formMethods}
 							path={path}
 							level={level + 1}
 							number={number ? number : (level + 1).toString()}

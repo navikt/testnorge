@@ -45,7 +45,7 @@ export const OrgnrToggle = ({ path, formikBag }: OrgnrToggleProps) => {
 				<EgneOrganisasjoner
 					path={path}
 					label="Arbeidsgiver (orgnr)"
-					formikBag={formikBag}
+					formMethods={formMethods}
 					filterValidEnhetstyper={true}
 					// @ts-ignore
 					handleChange={handleChangeEgne}

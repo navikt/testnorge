@@ -6,7 +6,7 @@ import { InntektsaarForm } from './partials/inntektsaarForm'
 import { ifPresent, requiredDate } from '@/utils/YupValidations'
 
 export const sigrunAttributt = 'sigrunstub'
-export const SigrunstubForm = ({ formikBag }) => (
+export const SigrunstubForm = ({ formMethods }) => (
 	<Vis attributt={sigrunAttributt}>
 		<Panel
 			heading="Lignet inntekt (Sigrun)"
@@ -14,7 +14,7 @@ export const SigrunstubForm = ({ formikBag }) => (
 			iconType="sigrun"
 			startOpen={erForsteEllerTest(formikBag.values, [sigrunAttributt])}
 		>
-			<InntektsaarForm formikBag={formikBag} />
+			<InntektsaarForm formMethods={formMethods} />
 		</Panel>
 	</Vis>
 )

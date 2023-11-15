@@ -18,7 +18,7 @@ interface FullmaktProps {
 	eksisterendeNyPerson?: any
 }
 
-export const FullmaktForm = ({ formikBag, path, eksisterendeNyPerson = null }: FullmaktProps) => {
+export const FullmaktForm = ({ formMethods, path, eksisterendeNyPerson = null }: FullmaktProps) => {
 	const fullmaktOmraader = SelectOptionsOppslag.hentFullmaktOmraader()
 	const fullmaktOptions = SelectOptionsFormat.formatOptions('fullmaktOmraader', fullmaktOmraader)
 
@@ -43,7 +43,7 @@ export const FullmaktForm = ({ formikBag, path, eksisterendeNyPerson = null }: F
 				nyPersonPath={`${path}.nyFullmektig`}
 				eksisterendePersonPath={`${path}.motpartsPersonident`}
 				label={'FULLMEKTIG'}
-				formikBag={formikBag}
+				formMethods={formMethods}
 				isExpanded={
 					!isEmpty(_.get(formikBag.values, `${path}.nyFullmektig`), ['syntetisk']) ||
 					_.get(formikBag.values, `${path}.motpartsPersonident`) !== null
@@ -55,7 +55,7 @@ export const FullmaktForm = ({ formikBag, path, eksisterendeNyPerson = null }: F
 	)
 }
 
-export const Fullmakt = ({ formikBag }: FullmaktProps) => {
+export const Fullmakt = ({ formMethods }: FullmaktProps) => {
 	return (
 		<FormikDollyFieldArray
 			name="pdldata.person.fullmakt"
@@ -63,7 +63,7 @@ export const Fullmakt = ({ formikBag }: FullmaktProps) => {
 			newEntry={initialFullmakt}
 			canBeEmpty={false}
 		>
-			{(path: string) => <FullmaktForm formikBag={formikBag} path={path} />}
+			{(path: string) => <FullmaktForm formMethods={formMethods} path={path} />}
 		</FormikDollyFieldArray>
 	)
 }

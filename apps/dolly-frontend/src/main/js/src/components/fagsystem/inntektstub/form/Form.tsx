@@ -37,7 +37,7 @@ const inntektstubPath = 'inntektstub.inntektsinformasjon'
 const infotekst =
 	'For å generere samme inntektsinformasjon for flere måneder - fyll inn siste måned/år, samt antall måneder bakover inntektsinformasjonen skal genereres for.'
 
-export const InntektstubForm = ({ formikBag }: InntektstubFormProps) => (
+export const InntektstubForm = ({ formMethods }: InntektstubFormProps) => (
 	//@ts-ignore
 	<Vis attributt={inntektstubAttributt}>
 		<Panel
@@ -55,7 +55,7 @@ export const InntektstubForm = ({ formikBag }: InntektstubFormProps) => (
 					hjelpetekst={infotekst}
 					canBeEmpty={false}
 				>
-					{(path: string) => <InntektsinformasjonForm path={path} formikBag={formikBag} />}
+					{(path: string) => <InntektsinformasjonForm path={path} formMethods={formMethods} />}
 				</FormikDollyFieldArray>
 			</div>
 		</Panel>

@@ -10,7 +10,7 @@ import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
 
 export const brregAttributt = 'brregstub'
 
-export const BrregstubForm = ({ formikBag }) => {
+export const BrregstubForm = ({ formMethods }) => {
 	const understatuser = SelectOptionsOppslag.hentUnderstatusFraBrregstub()
 	const understatuserOptions = SelectOptionsFormat.formatOptions('understatuser', understatuser)
 
@@ -33,7 +33,7 @@ export const BrregstubForm = ({ formikBag }) => {
 						isClearable={false}
 						fastfield={false}
 					/>
-					<EnheterForm formikBag={formikBag} />
+					<EnheterForm formMethods={formMethods} />
 				</div>
 			</Panel>
 		</Vis>

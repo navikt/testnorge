@@ -17,7 +17,7 @@ const initialValues = {
 	personroller: [],
 }
 
-export const EnheterForm = ({ formikBag }) => {
+export const EnheterForm = ({ formMethods }) => {
 	const roller = SelectOptionsOppslag.hentRollerFraBrregstub()
 	const rollerOptions = SelectOptionsFormat.formatOptions('roller', roller)
 
@@ -71,8 +71,8 @@ export const EnheterForm = ({ formikBag }) => {
 						fastfield={false}
 					/>
 					<FormikDatepicker name={`${path}.registreringsdato`} label="Registreringsdato" />
-					<OrgnrToggle path={path} formikBag={formikBag} setEnhetsinfo={setEnhetsinfo} />
-					<PersonrollerForm formikBag={formikBag} path={path} />
+					<OrgnrToggle path={path} formMethods={formMethods} setEnhetsinfo={setEnhetsinfo} />
+					<PersonrollerForm formMethods={formMethods} path={path} />
 				</>
 			)}
 		</FormikDollyFieldArray>

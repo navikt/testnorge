@@ -109,7 +109,7 @@ export const TelefonnummerForm = ({ path, formikBag, idx }: TelefonnummerProps) 
 		formikBag.setFieldValue(`${path}.prioritet`, value)
 		formikBag.setFieldValue(
 			`${paths.tpsMTelefonnummer}[${idx}].telefontype`,
-			value === 2 ? 'HJET' : 'MOBI'
+			value === 2 ? 'HJET' : 'MOBI',
 		)
 	}
 
@@ -149,7 +149,7 @@ export const TelefonnummerForm = ({ path, formikBag, idx }: TelefonnummerProps) 
 	)
 }
 
-export const Telefonnummer = ({ formikBag, path }: TelefonnummerProps) => {
+export const Telefonnummer = ({ formMethods, path }: TelefonnummerProps) => {
 	const tlfListe = _.get(formikBag.values, path || paths.pdlTelefonnummer)
 	const tlfListeTps = _.get(formikBag.values, path || paths.tpsMTelefonnummer)
 
@@ -184,7 +184,7 @@ export const Telefonnummer = ({ formikBag, path }: TelefonnummerProps) => {
 				maxReachedDescription={'En person kan maksimalt ha to telefonnumre'}
 			>
 				{(tlfPath: string, idx: number) => (
-					<TelefonnummerForm path={tlfPath} formikBag={formikBag} idx={idx} />
+					<TelefonnummerForm path={tlfPath} formMethods={formMethods} idx={idx} />
 				)}
 			</FormikDollyFieldArray>
 		</div>

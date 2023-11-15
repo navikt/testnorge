@@ -38,7 +38,7 @@ const getAdressebeskyttelseOptions = (identtype: string) => {
 	return identtype === 'FNR'
 		? Options('gradering')
 		: Options('gradering').filter(
-				(v: Target) => !['STRENGT_FORTROLIG', 'FORTROLIG'].includes(v.value)
+				(v: Target) => !['STRENGT_FORTROLIG', 'FORTROLIG'].includes(v.value),
 		  )
 }
 
@@ -86,7 +86,7 @@ export const AdressebeskyttelseForm = ({
 	)
 }
 
-export const Adressebeskyttelse = ({ formikBag }: AdressebeskyttelseValues) => {
+export const Adressebeskyttelse = ({ formMethods }: AdressebeskyttelseValues) => {
 	const opts = useContext(BestillingsveilederContext)
 	const identtype = getIdenttype(formikBag, opts.identtype)
 	return (
@@ -99,7 +99,7 @@ export const Adressebeskyttelse = ({ formikBag }: AdressebeskyttelseValues) => {
 			>
 				{(path: string, idx: number) => (
 					<AdressebeskyttelseForm
-						formikBag={formikBag}
+						formMethods={formMethods}
 						path={path}
 						idx={idx}
 						identtype={identtype}

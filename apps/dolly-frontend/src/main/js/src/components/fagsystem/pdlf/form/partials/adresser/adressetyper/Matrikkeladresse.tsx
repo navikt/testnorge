@@ -8,7 +8,7 @@ interface MatrikkeladresseValues {
 	path: string
 }
 
-export const Matrikkeladresse = ({ formikBag, path }: MatrikkeladresseValues) => {
+export const Matrikkeladresse = ({ formMethods, path }: MatrikkeladresseValues) => {
 	return (
 		<div className="flexbox--flex-wrap" style={{ marginTop: '10px' }}>
 			<FormikTextInput name={`${path}.gaardsnummer`} label="Gårdsnummer" type="number" />

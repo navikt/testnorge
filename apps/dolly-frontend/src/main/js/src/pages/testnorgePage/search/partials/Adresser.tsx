@@ -30,7 +30,7 @@ const adressebeskyttelseOptions = [
 	{ value: 'INGEN', label: 'Ingen' },
 ]
 
-export const Adresser = ({ formikBag }: AdresserProps) => {
+export const Adresser = ({ formMethods }: AdresserProps) => {
 	const bostedOptions = [
 		{ value: 'Y', label: 'Ja' },
 		{
@@ -53,7 +53,7 @@ export const Adresser = ({ formikBag }: AdresserProps) => {
 			/>
 			<div className="options-title-bold">Bostedsadresse</div>
 			<RadioGroupOptions
-				formikBag={formikBag}
+				formMethods={formMethods}
 				name={'Har bostedsadresse i Norge'}
 				path={paths.borINorge}
 				options={bostedOptions}
@@ -110,19 +110,19 @@ export const Adresser = ({ formikBag }: AdresserProps) => {
 			</AdvancedOptions>
 			<div className="options-title-bold">Annet</div>
 			<RadioGroupOptions
-				formikBag={formikBag}
+				formMethods={formMethods}
 				name={'Har utenlandsk adresse'}
 				path={paths.utenlandsk}
 				options={yesNoOptions}
 			/>
 			<RadioGroupOptions
-				formikBag={formikBag}
+				formMethods={formMethods}
 				name={'Har kontaktadresse'}
 				path={paths.kontakt}
 				options={yesNoOptions}
 			/>
 			<RadioGroupOptions
-				formikBag={formikBag}
+				formMethods={formMethods}
 				name={'Har oppholdsadresse'}
 				path={paths.opphold}
 				options={yesNoOptions}

@@ -4,7 +4,7 @@ import { harValgtAttributt } from '@/components/ui/form/formUtils'
 import { arenaPath } from '@/components/fagsystem/arena/form/Form'
 import { runningCypressE2E } from '@/service/services/Request'
 
-export const ArenaPanel = ({ stateModifier, formikBag }) => {
+export const ArenaPanel = ({ stateModifier, formValues }) => {
 	const sm = stateModifier(ArenaPanel.initialValues)
 
 	return (
@@ -17,7 +17,7 @@ export const ArenaPanel = ({ stateModifier, formikBag }) => {
 			}}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType="arena"
-			startOpen={harValgtAttributt(formikBag.values, [arenaPath])}
+			startOpen={harValgtAttributt(formValues, [arenaPath])}
 		>
 			<AttributtKategori title={'Aktiv bruker'} attr={sm.attrs}>
 				<Attributt

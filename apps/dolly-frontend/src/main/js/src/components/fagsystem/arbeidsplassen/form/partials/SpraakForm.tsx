@@ -9,7 +9,7 @@ import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { EraseFillButtons } from '@/components/fagsystem/arbeidsplassen/form/partials/EraseFillButtons'
 
-export const SpraakForm = ({ formikBag }) => {
+export const SpraakForm = ({ formMethods }) => {
 	const spraakListePath = 'arbeidsplassenCV.spraak'
 
 	return (
@@ -46,7 +46,7 @@ export const SpraakForm = ({ formikBag }) => {
 							/>
 						</div>
 						<EraseFillButtons
-							formikBag={formikBag}
+							formMethods={formMethods}
 							path={spraakPath}
 							initialErase={initialSpraak}
 							initialFill={initialSpraakVerdier}

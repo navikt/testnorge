@@ -10,7 +10,7 @@ interface IdentSearchProps {
 
 const identerPath = 'identer'
 
-export const Identer: React.FC<IdentSearchProps> = ({ formikBag }: IdentSearchProps) => {
+export const Identer: React.FC<IdentSearchProps> = ({ formMethods }: IdentSearchProps) => {
 	// @ts-ignore
 	const values = formikBag.values[identerPath]
 	return (

@@ -37,7 +37,7 @@ export const Identifikasjon: React.FC<IdentifikasjonProps> = ({
 	return (
 		<section>
 			<RadioGroupOptions
-				formikBag={formikBag}
+				formMethods={formMethods}
 				name={'Identifikatortype'}
 				path={paths.identtype}
 				legend={'Velg identifikatortype'}
@@ -48,7 +48,7 @@ export const Identifikasjon: React.FC<IdentifikasjonProps> = ({
 			<FormikCheckbox name={paths.utenlandsk} label="Har utenlandsk identitet" />
 			<FormikCheckbox name={paths.historikk} label="Har identhistorikk" />
 			<RadioGroupOptions
-				formikBag={formikBag}
+				formMethods={formMethods}
 				name={paths.kjoenn}
 				path={paths.kjoenn}
 				legend={'Velg kjønn'}

@@ -16,15 +16,15 @@ const tilleggsinformasjonAttributter = {
 	ReiseKostOgLosji: 'reiseKostOgLosji',
 }
 
-const InntektStub = ({ formikBag, inntektPath }) => {
+const InntektStub = ({ formMethods, inntektPath }) => {
 	const [fields, setFields] = useState({})
 	const [inntektValues] = useState(_.get(formikBag.values, inntektPath))
 	const [currentInntektstype, setCurrentInntektstype] = useState(
-		_.get(formikBag.values, `${inntektPath}.inntektstype`)
+		_.get(formikBag.values, `${inntektPath}.inntektstype`),
 	)
 	const currentTilleggsinformasjonstype = _.get(
 		formikBag.values,
-		`${inntektPath}.tilleggsinformasjonstype`
+		`${inntektPath}.tilleggsinformasjonstype`,
 	)
 
 	useEffect(() => {
@@ -38,7 +38,7 @@ const InntektStub = ({ formikBag, inntektPath }) => {
 			Object.keys(fields).length < 1
 		) {
 			InntektstubService.validate(_.omitBy(inntektValues, (value) => value === '' || !value)).then(
-				(response) => setFields(response)
+				(response) => setFields(response),
 			)
 		}
 	}, [inntektValues, fields])
@@ -108,7 +108,7 @@ const InntektStub = ({ formikBag, inntektPath }) => {
 					values = { inntektstype: values.inntektstype }
 				}
 				const emptyableFields = Object.entries(fields).filter(
-					(field) => field?.[1]?.[0] === '<TOM>' && field?.[1]?.length > 2
+					(field) => field?.[1]?.[0] === '<TOM>' && field?.[1]?.length > 2,
 				)
 				for (const [key] of emptyableFields) {
 					if (!values[key] && key !== 'tilleggsinformasjonstype') {
@@ -116,7 +116,7 @@ const InntektStub = ({ formikBag, inntektPath }) => {
 					}
 				}
 				InntektstubService.validate(_.omitBy(values, (value) => value === '' || !value)).then(
-					(response) => setFields(response)
+					(response) => setFields(response),
 				)
 				clearEmptyValuesAndFields(values)
 				setFormikBag(values)
@@ -126,7 +126,7 @@ const InntektStub = ({ formikBag, inntektPath }) => {
 					<Inntekt
 						fields={fields}
 						onValidate={handleSubmit}
-						formikBag={formikBag}
+						formMethods={formMethods}
 						path={inntektPath}
 					/>
 				</div>

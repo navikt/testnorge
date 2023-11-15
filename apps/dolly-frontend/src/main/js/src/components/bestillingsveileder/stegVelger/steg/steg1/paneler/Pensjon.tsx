@@ -14,12 +14,12 @@ import { initialUforetrygd } from '@/components/fagsystem/uforetrygd/initialValu
 import { runningCypressE2E } from '@/service/services/Request'
 import * as _ from 'lodash-es'
 
-export const PensjonPanel = ({ stateModifier, formikBag }: any) => {
+export const PensjonPanel = ({ stateModifier, formValues }: any) => {
 	const sm = stateModifier(PensjonPanel.initialValues)
 	const opts = useContext(BestillingsveilederContext)
 
-	const harValgtAp = _.has(formikBag.values, 'pensjonforvalter.alderspensjon')
-	const harValgtUforetrygd = _.has(formikBag.values, 'pensjonforvalter.uforetrygd')
+	const harValgtAp = _.has(formValues, 'pensjonforvalter.alderspensjon')
+	const harValgtUforetrygd = _.has(formValues, 'pensjonforvalter.uforetrygd')
 
 	const harGyldigApBestilling = opts?.tidligereBestillinger?.some(
 		(bestilling) =>
@@ -84,7 +84,7 @@ export const PensjonPanel = ({ stateModifier, formikBag }: any) => {
 			}}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType="pensjon"
-			startOpen={harValgtAttributt(formikBag.values, [pensjonPath, tpPath])}
+			startOpen={harValgtAttributt(formValues, [pensjonPath, tpPath])}
 		>
 			<AttributtKategori title="Pensjonsgivende inntekt (POPP)" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.inntekt} id="inntekt_pensjon" />

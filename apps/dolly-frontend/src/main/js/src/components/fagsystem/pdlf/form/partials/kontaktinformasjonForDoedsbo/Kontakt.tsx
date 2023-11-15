@@ -34,7 +34,7 @@ type OrgValues = {
 	navn: string
 }
 
-export const Kontakt = ({ formikBag, path, eksisterendeNyPerson = null }: KontaktValues) => {
+export const Kontakt = ({ formMethods, path, eksisterendeNyPerson = null }: KontaktValues) => {
 	const advokatPath = `${path}.advokatSomKontakt`
 	const organisasjonPath = `${path}.organisasjonSomKontakt`
 	const personPath = `${path}.personSomKontakt`
@@ -167,7 +167,7 @@ export const Kontakt = ({ formikBag, path, eksisterendeNyPerson = null }: Kontak
 						label="Kontaktperson"
 						disabled={disableIdent}
 						eksisterendeNyPerson={eksisterendeNyPerson}
-						formikBag={formikBag}
+						formMethods={formMethods}
 					/>
 					<DatepickerWrapper>
 						<FormikDatepicker
@@ -195,7 +195,7 @@ export const Kontakt = ({ formikBag, path, eksisterendeNyPerson = null }: Kontak
 			)}
 
 			{getKontakttype() === 'NY_PERSON' && (
-				<PdlNyPerson nyPersonPath={`${personPath}.nyKontaktperson`} formikBag={formikBag} />
+				<PdlNyPerson nyPersonPath={`${personPath}.nyKontaktperson`} formMethods={formMethods} />
 			)}
 		</Kategori>
 	)

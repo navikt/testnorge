@@ -13,7 +13,7 @@ interface SykdomFormProps {
 
 export const sykdomAttributt = 'sykemelding'
 
-export const SykdomForm = ({ formikBag }: SykdomFormProps) => (
+export const SykdomForm = ({ formMethods }: SykdomFormProps) => (
 	// @ts-ignore
 	<Vis attributt={sykdomAttributt}>
 		<Panel
@@ -30,7 +30,7 @@ export const SykdomForm = ({ formikBag }: SykdomFormProps) => (
 						sykemeldinger og kan derfor medføre litt lenger bestillingstid.
 					</StyledAlert>
 				)}
-			<Sykemelding formikBag={formikBag} />
+			<Sykemelding formMethods={formMethods} />
 		</Panel>
 	</Vis>
 )

@@ -16,13 +16,15 @@ import {
 	useMatchMutate,
 } from '@/utils/hooks/useMutate'
 import { Stepper } from '@navikt/ds-react'
-import { useForm } from 'react-hook-form'
+import { FormProvider, useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { Validations } from '@/components/bestilling/validation/Validations'
 
 const STEPS = [Steg1, Steg2, Steg3]
 
 export const StegVelger = ({ initialValues, onSubmit }) => {
 	const [step, setStep] = useState(0)
-	const { setValue, getValues, handleSubmit, reset } = useForm({ defaultValues: initialValues })
+	const methods = useForm({ defaultValues: initialValues, resolver: yupResolver(Validations) })
 
 	const opts = useContext(BestillingsveilederContext)
 	const mutate = useMatchMutate()
@@ -46,7 +48,7 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 		}
 
 		sessionStorage.clear()
-		reset()
+		methods.reset()
 
 		onSubmit(values)
 		mutate(REGEX_BACKEND_GRUPPER)
@@ -70,31 +72,28 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 
 	const labels = STEPS.map((v) => ({ label: v.label }))
 
-	const stateModifier = stateModifierFns(getValues(), setValue, opts)
+	const stateModifier = stateModifierFns(methods, opts)
 	const devEnabled =
 		window.location.hostname.includes('localhost') ||
 		window.location.hostname.includes('dolly-frontend-dev')
 
 	return (
-		<form onSubmit={handleSubmit(_handleSubmit)}>
-			<Stepper orientation="horizontal" activeStep={step + 1}>
-				{labels.map((label, index) => (
-					<Stepper.Step key={index}>{label.label}</Stepper.Step>
-				))}
-			</Stepper>
+		<FormProvider {...methods}>
+			<form onSubmit={methods.handleSubmit(_handleSubmit)}>
+				<Stepper orientation="horizontal" activeStep={step + 1}>
+					{labels.map((label, index) => (
+						<Stepper.Step key={index}>{label.label}</Stepper.Step>
+					))}
+				</Stepper>
 
-			<BestillingsveilederHeader />
+				<BestillingsveilederHeader />
 
-			<CurrentStepComponent stateModifier={stateModifier} />
+				<CurrentStepComponent stateModifier={stateModifier} />
 
-			{devEnabled && <DisplayFormikState />}
+				{devEnabled && <DisplayFormikState />}
 
-			<Navigation
-				step={step}
-				onPrevious={handleBack}
-				isLastStep={isLastStep()}
-				formikBag={formikBag}
-			/>
-		</form>
+				<Navigation step={step} onPrevious={handleBack} isLastStep={isLastStep()} />
+			</form>
+		</FormProvider>
 	)
 }

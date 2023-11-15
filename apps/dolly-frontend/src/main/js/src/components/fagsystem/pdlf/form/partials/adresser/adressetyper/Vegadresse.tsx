@@ -19,7 +19,7 @@ type Postnummer = {
 		{
 			value: string
 			label: string
-		}
+		},
 	]
 }
 
@@ -27,7 +27,7 @@ const StyledVegadresse = styled.div`
 	width: 100%;
 `
 
-export const Vegadresse = ({ formikBag, path }: VegadresseValues) => {
+export const Vegadresse = ({ formMethods, path }: VegadresseValues) => {
 	const settVegadresse = (adresse: Adresse) => {
 		formikBag.setFieldValue(path, {
 			postnummer: adresse.postnummer,

@@ -7,7 +7,7 @@ import React from 'react'
 
 const pdlBasePath = 'pdldata.person.opphold'
 
-export const OppholdSammeVilkaar = ({ formikBag }: { formikBag: FormikProps<any> }) => (
+export const OppholdSammeVilkaar = ({ formMethods }: { formikBag: FormikProps<any> }) => (
 	<React.Fragment>
 		<FormikDatepicker
 			name="udistub.oppholdStatus.oppholdSammeVilkaar.oppholdSammeVilkaarPeriode.fra"

@@ -53,7 +53,7 @@ export const VergemaalForm = ({
 				eksisterendePersonPath={`${path}.vergeIdent`}
 				eksisterendeNyPerson={eksisterendeNyPerson}
 				label={'VERGE'}
-				formikBag={formikBag}
+				formMethods={formMethods}
 				isExpanded={
 					!isEmpty(_.get(formikBag.values, `${path}.nyVergeIdent`), ['syntetisk']) ||
 					_.get(formikBag.values, `${path}.vergeIdent`) !== null
@@ -64,7 +64,7 @@ export const VergemaalForm = ({
 	)
 }
 
-export const Vergemaal = ({ formikBag }: VergemaalFormTypes) => {
+export const Vergemaal = ({ formMethods }: VergemaalFormTypes) => {
 	return (
 		<div className="flexbox--flex-wrap">
 			<FormikDollyFieldArray
@@ -73,7 +73,7 @@ export const Vergemaal = ({ formikBag }: VergemaalFormTypes) => {
 				newEntry={initialVergemaal}
 				canBeEmpty={false}
 			>
-				{(path: string, _idx: number) => <VergemaalForm formikBag={formikBag} path={path} />}
+				{(path: string, _idx: number) => <VergemaalForm formMethods={formMethods} path={path} />}
 			</FormikDollyFieldArray>
 		</div>
 	)

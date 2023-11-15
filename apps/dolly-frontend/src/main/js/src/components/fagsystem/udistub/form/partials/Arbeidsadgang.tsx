@@ -8,7 +8,7 @@ import { Textarea } from '@navikt/ds-react'
 import styled from 'styled-components'
 import React from 'react'
 
-export const Arbeidsadgang = ({ formikBag }) => {
+export const Arbeidsadgang = ({ formMethods }) => {
 	const StyledTextArea = styled(Textarea)`
 		margin-bottom: 1rem;
 
