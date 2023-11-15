@@ -4,13 +4,13 @@ import Panel from '@/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import {
+	getInitialFoedsel,
+	getInitialStatsborgerskap,
 	initialDoedsfall,
-	initialFoedsel,
 	initialFullmakt,
 	initialKjoenn,
 	initialNavn,
 	initialSikkerhetstiltak,
-	initialStatsborgerskap,
 	initialTilrettelagtKommunikasjon,
 	initialTpsSikkerhetstiltak,
 	initialVergemaal,
@@ -151,7 +151,7 @@ PersoninformasjonPanel.heading = 'Personinformasjon'
 
 // @ts-ignore
 PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
-	const { personFoerLeggTil } = opts
+	const { personFoerLeggTil, identtype } = opts
 
 	const fjernIdFoerLeggTil = (path: string) => {
 		const pdlDataElement = _.get(personFoerLeggTil, `pdlforvalter[0].person.${path}`)
@@ -206,7 +206,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 		foedsel: {
 			label: 'Fødsel',
 			checked: has(paths.foedsel),
-			add: () => set(paths.foedsel, [initialFoedsel]),
+			add: () => set(paths.foedsel, [getInitialFoedsel(identtype === 'NPID' ? 'PDL' : 'FREG')]),
 			remove: () => del([paths.foedsel]),
 		},
 		doedsdato: {
@@ -221,7 +221,9 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 			add() {
 				_.has(personFoerLeggTil, 'pdlforvalter[0].person.statsborgerskap')
 					? set(paths.statsborgerskap, fjernIdFoerLeggTil('statsborgerskap'))
-					: set(paths.statsborgerskap, [initialStatsborgerskap])
+					: set(paths.statsborgerskap, [
+							getInitialStatsborgerskap(identtype === 'NPID' ? 'PDL' : 'FREG'),
+					  ])
 			},
 			remove() {
 				del([paths.statsborgerskap])

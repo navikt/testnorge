@@ -251,7 +251,7 @@ export const VisningRedigerbar = ({
 			case Attributt.Doedsfall:
 				return <DoedsfallForm path={path} />
 			case Attributt.Statsborgerskap:
-				return <StatsborgerskapForm path={path} />
+				return <StatsborgerskapForm path={path} identtype={identtype} />
 			case Attributt.Innvandring:
 				return <InnvandringForm path={path} />
 			case Attributt.Utvandring:

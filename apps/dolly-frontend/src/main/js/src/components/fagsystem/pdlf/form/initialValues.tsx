@@ -178,13 +178,13 @@ export const initialTpsSikkerhetstiltak = {
 	gyldigTilOgMed: null as unknown as string,
 }
 
-export const initialStatsborgerskap = {
+export const getInitialStatsborgerskap = (master = 'FREG') => ({
 	landkode: null as unknown as string,
 	gyldigFraOgMed: null as unknown as string,
 	gyldigTilOgMed: null as unknown as string,
 	kilde: 'Dolly',
-	master: 'FREG',
-}
+	master: master,
+})
 
 export const initialTilrettelagtKommunikasjon = {
 	spraakForTaletolk: null as unknown as string,
@@ -199,15 +199,15 @@ export const initialDoedsfall = {
 	master: 'PDL',
 }
 
-export const initialFoedsel = {
+export const getInitialFoedsel = (master = 'FREG') => ({
 	foedekommune: null as unknown as string,
 	foedeland: null as unknown as string,
 	foedested: null as unknown as string,
 	foedselsaar: null as unknown as number,
 	foedselsdato: null as unknown as string,
 	kilde: 'Dolly',
-	master: 'FREG',
-}
+	master: master,
+})
 
 export const initialOrganisasjon = {
 	organisasjonsnummer: null as unknown as string,

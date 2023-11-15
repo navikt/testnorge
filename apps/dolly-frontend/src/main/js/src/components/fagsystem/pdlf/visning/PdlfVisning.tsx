@@ -91,7 +91,11 @@ export const PdlfVisning = ({ fagsystemData, loading, tmpPersoner }) => {
 				/>
 				<Foedsel data={data?.person?.foedsel} tmpPersoner={tmpPdlforvalter} ident={ident} />
 				<Doedsfall data={data?.person?.doedsfall} tmpPersoner={tmpPdlforvalter} ident={ident} />
-				<Nasjonalitet data={data?.person} tmpPersoner={tmpPdlforvalter} />
+				<Nasjonalitet
+					data={data?.person}
+					tmpPersoner={tmpPdlforvalter}
+					identtype={data?.person?.identtype}
+				/>
 				<Telefonnummer
 					data={data?.person?.telefonnummer}
 					tmpPersoner={tmpPdlforvalter}
