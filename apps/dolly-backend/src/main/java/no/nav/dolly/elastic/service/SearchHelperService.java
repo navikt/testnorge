@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class SearchHelperService {
 
-    private static String INDEX_NAME = "bestilling";
+    private static final String INDEX_NAME = "bestilling";
 
     private static final int WINDOW_SIZE = 10;
     private static final double FACTOR = 2;
