@@ -20,13 +20,21 @@ export const IdentifikasjonPanel = ({ stateModifier, formikBag }) => {
 	return (
 		<Panel
 			heading={IdentifikasjonPanel.heading}
-			checkAttributeArray={() => sm.batchAdd(harNpid && 'nyident')}
+			checkAttributeArray={() => sm.batchAdd(harNpid && ['nyident', 'falskIdentitet'])}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType="identifikasjon"
 			startOpen={harValgtAttributt(formikBag.values, identifikasjonAttributter)}
 		>
 			<AttributtKategori attr={sm.attrs}>
-				<Attributt attr={sm.attrs.falskIdentitet} />
+				<Attributt
+					attr={sm.attrs.falskIdentitet}
+					disabled={harNpid}
+					title={
+						opts?.identtype === 'NPID'
+							? 'Personer med identtype NPID kan ikke ha falsk identitet'
+							: ''
+					}
+				/>
 				<Attributt attr={sm.attrs.utenlandskIdentifikasjonsnummer} />
 				<Attributt attr={sm.attrs.nyident} disabled={harNpid} title={nyIdentTitle()} />
 			</AttributtKategori>

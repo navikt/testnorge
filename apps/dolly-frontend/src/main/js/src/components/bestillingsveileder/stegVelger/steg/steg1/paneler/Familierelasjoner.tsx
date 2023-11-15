@@ -8,14 +8,24 @@ import {
 } from '@/components/fagsystem/pdlf/form/initialValues'
 import { harValgtAttributt } from '@/components/ui/form/formUtils'
 import { relasjonerAttributter } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/Familierelasjoner'
+import { useContext } from 'react'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 export const FamilierelasjonPanel = ({ stateModifier, formikBag }) => {
 	const sm = stateModifier(FamilierelasjonPanel.initialValues)
+	const opts = useContext(BestillingsveilederContext)
+
+	const getIgnoreKeys = () => {
+		if (opts?.identtype === 'NPID') {
+			return ['foreldreansvar', 'doedfoedtBarn']
+		}
+		return []
+	}
 
 	return (
 		<Panel
 			heading={FamilierelasjonPanel.heading}
-			checkAttributeArray={sm.batchAdd}
+			checkAttributeArray={() => sm.batchAdd(getIgnoreKeys())}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType={'relasjoner'}
 			startOpen={harValgtAttributt(formikBag.values, relasjonerAttributter)}
@@ -25,10 +35,22 @@ export const FamilierelasjonPanel = ({ stateModifier, formikBag }) => {
 			</AttributtKategori>
 			<AttributtKategori title="Barn/foreldre" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.barnForeldre} />
-				<Attributt attr={sm.attrs.foreldreansvar} />
+				<Attributt
+					attr={sm.attrs.foreldreansvar}
+					disabled={opts?.identtype === 'NPID'}
+					title={
+						opts?.identtype === 'NPID' ? 'Ikke tilgjengelig for personer med identtype NPID' : ''
+					}
+				/>
 			</AttributtKategori>
 			<AttributtKategori title="Dødfødt barn" attr={sm.attrs}>
-				<Attributt attr={sm.attrs.doedfoedtBarn} />
+				<Attributt
+					attr={sm.attrs.doedfoedtBarn}
+					disabled={opts?.identtype === 'NPID'}
+					title={
+						opts?.identtype === 'NPID' ? 'Ikke tilgjengelig for personer med identtype NPID' : ''
+					}
+				/>
 			</AttributtKategori>
 		</Panel>
 	)

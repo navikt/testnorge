@@ -55,6 +55,10 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 		if (!testnorgeIdent && !harFnr) {
 			ignoreKeys.push(utvandret)
 		}
+		if (!harFnr) {
+			ignoreKeys.push('innvandretFraLand')
+			ignoreKeys.push('vergemaal')
+		}
 		return ignoreKeys
 	}
 
@@ -101,7 +105,15 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 
 			<AttributtKategori title="Nasjonalitet" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.statsborgerskap} />
-				<Attributt attr={sm.attrs.innvandretFraLand} />
+				<Attributt
+					attr={sm.attrs.innvandretFraLand}
+					disabled={!harFnr}
+					title={
+						!harFnr
+							? 'Personer med identtype DNR eller NPID kan ikke innvandre fordi de ikke har norsk statsborgerskap'
+							: ''
+					}
+				/>
 				<Attributt
 					attr={sm.attrs.utvandretTilLand}
 					disabled={!harFnr}
@@ -120,7 +132,13 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 				<Attributt attr={sm.attrs.norskBankkonto} disabled={sm.attrs.utenlandskBankkonto.checked} />
 				<Attributt attr={sm.attrs.utenlandskBankkonto} disabled={sm.attrs.norskBankkonto.checked} />
 				<Attributt attr={sm.attrs.telefonnummer} />
-				<Attributt attr={sm.attrs.vergemaal} />
+				<Attributt
+					attr={sm.attrs.vergemaal}
+					disabled={opts?.identtype === 'NPID'}
+					title={
+						opts?.identtype === 'NPID' ? 'Ikke tilgjengelig for personer med identtype NPID' : ''
+					}
+				/>
 				<Attributt attr={sm.attrs.fullmakt} />
 				<Attributt attr={sm.attrs.sikkerhetstiltak} />
 				<Attributt attr={sm.attrs.tilrettelagtKommunikasjon} />
