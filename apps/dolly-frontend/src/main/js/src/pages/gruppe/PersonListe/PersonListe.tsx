@@ -54,7 +54,7 @@ export default function PersonListe({
 	const dispatch = useDispatch()
 	const { bestillingerById: bestillingStatuser } = useBestillingerGruppe(gruppeId)
 	const { gruppe: gruppeInfo } = useGruppeById(gruppeId)
-
+	console.log('identer: ', identer) //TODO - SLETT MEG
 	const personListe = useMemo(
 		() => sokSelector(selectPersonListe(identer, bestillingStatuser, fagsystem), search),
 		[identer, search, fagsystem, bestillingStatuser, visPerson],
@@ -212,7 +212,8 @@ export default function PersonListe({
 		}
 		return column
 	})
-
+	console.log('personListe: ', personListe) //TODO - SLETT MEG
+	//TODO: Personliste er tom, må få laget den!
 	if (isFetching || (personListe?.length === 0 && !_.isEmpty(identer))) {
 		return <Loading label="Laster personer" panel />
 	}
@@ -284,7 +285,7 @@ export default function PersonListe({
 				data={personListe}
 				columns={columns}
 				gruppeDetaljer={{
-					antallElementer: gruppeInfo.antallIdenter,
+					antallElementer: gruppeInfo?.antallIdenter,
 					pageSize: sideStoerrelse,
 				}}
 				pagination
