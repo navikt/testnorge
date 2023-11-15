@@ -1,5 +1,8 @@
 package no.nav.dolly.bestilling.kontoregisterservice.command;
 
+import io.netty.channel.ConnectTimeoutException;
+import io.netty.handler.timeout.ReadTimeoutException;
+import io.netty.handler.timeout.WriteTimeoutException;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.KontoregisterResponseDTO;
@@ -26,6 +29,8 @@ public class KontoregisterPostCommand implements Callable<Mono<KontoregisterResp
     @Override
     public Mono<KontoregisterResponseDTO> call() {
 
+        long startTid = System.currentTimeMillis();
+
         return webClient.post()
                 .uri(uriBuilder -> uriBuilder
                         .path(KONTOREGISTER_API_URL)
@@ -39,7 +44,15 @@ public class KontoregisterPostCommand implements Callable<Mono<KontoregisterResp
                         .status(HttpStatus.valueOf(value.getStatusCode().value()))
                         .build())
                 .doOnError(WebClientFilter::logErrorMessage)
-                .onErrorResume(error -> Mono.just(KontoregisterResponseDTO.builder()
+                .onErrorResume(error -> error instanceof ConnectTimeoutException ||
+                        error instanceof ReadTimeoutException ||
+                        error instanceof WriteTimeoutException ?
+                        Mono.just(KontoregisterResponseDTO.builder()
+                                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                .feilmelding(String.format("Oppretting av bankkonto gitt opp etter %d sekunder",
+                                        (System.currentTimeMillis() - startTid)/1000))
+                                .build()) :
+                    Mono.just(KontoregisterResponseDTO.builder()
                         .status(WebClientFilter.getStatus(error))
                         .feilmelding(WebClientFilter.getMessage(error))
                         .build()))

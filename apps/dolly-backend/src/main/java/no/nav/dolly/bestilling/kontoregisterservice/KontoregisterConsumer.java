@@ -40,8 +40,8 @@ public class KontoregisterConsumer implements ConsumerStatus {
             TokenExchange tokenService,
             Consumers consumers,
             ObjectMapper objectMapper,
-            WebClient.Builder webClientBuilder
-    ) {
+            WebClient.Builder webClientBuilder) {
+
         this.tokenService = tokenService;
         serverProperties = consumers.getTestnavKontoregisterPersonProxy();
         this.webClient = webClientBuilder
