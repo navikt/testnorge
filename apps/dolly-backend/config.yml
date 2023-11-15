@@ -79,7 +79,7 @@ spec:
       tenant: nav.no
   image: {{image}}
   openSearch:
-    instance: opensearch-dolly-bestillinger
+    instance: bestillinger
     access: admin
   env:
     - name: SPRING_PROFILES_ACTIVE
