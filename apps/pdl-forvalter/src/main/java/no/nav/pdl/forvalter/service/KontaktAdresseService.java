@@ -6,7 +6,6 @@ import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility;
 import no.nav.testnav.libs.data.pdlforvalter.v1.AdressebeskyttelseDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO.Master;
 import no.nav.testnav.libs.data.pdlforvalter.v1.KontaktadresseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
@@ -14,7 +13,6 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.StatsborgerskapDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.UtenlandskAdresseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.UtflyttingDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.VegadresseDTO;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,6 +21,8 @@ import java.util.stream.Stream;
 
 import static java.time.LocalDateTime.now;
 import static java.util.Objects.nonNull;
+import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
+import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.AdressebeskyttelseDTO.AdresseBeskyttelse.STRENGT_FORTROLIG;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.Identtype.FNR;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
@@ -65,8 +65,8 @@ public class KontaktAdresseService extends AdresseService<KontaktadresseDTO, Per
 
             if (isTrue(adresse.getIsNew())) {
 
-                adresse.setKilde(StringUtils.isNotBlank(adresse.getKilde()) ? adresse.getKilde() : "Dolly");
-                adresse.setMaster(nonNull(adresse.getMaster()) ? adresse.getMaster() : DbVersjonDTO.Master.FREG);
+                adresse.setKilde(getKilde(adresse));
+                adresse.setMaster(getMaster(adresse, person));
 
                 if (isNotTrue(relaxed)) {
                     handle(adresse, person);
