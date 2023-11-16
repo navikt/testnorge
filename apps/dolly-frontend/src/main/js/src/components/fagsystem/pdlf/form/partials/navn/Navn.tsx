@@ -1,5 +1,5 @@
 import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
-import { initialNavn } from '@/components/fagsystem/pdlf/form/initialValues'
+import { getInitialNavn } from '@/components/fagsystem/pdlf/form/initialValues'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { Option } from '@/service/SelectOptionsOppslag'
@@ -7,7 +7,7 @@ import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import * as _ from 'lodash-es'
 import { FormikProps } from 'formik'
 import { isEmpty } from 'lodash'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { ArrowCirclepathIcon } from '@navikt/aksel-icons'
 import { Button } from '@navikt/ds-react'
 import styled from 'styled-components'
@@ -15,10 +15,12 @@ import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/Datepi
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { useGenererNavn } from '@/utils/hooks/useGenererNavn'
 import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 type NavnTypes = {
 	formikBag: FormikProps<{}>
 	path?: string
+	identtype?: string
 }
 
 const RefreshButton = styled(Button)`
@@ -41,7 +43,8 @@ const concatNavnMedTidligereValgt = (type, navnInfo, selectedNavn) => {
 	return _.uniqBy(navnOptions, 'label')
 }
 
-export const NavnForm = ({ formikBag, path }: NavnTypes) => {
+export const NavnForm = ({ formikBag, path, identtype }: NavnTypes) => {
+	const opts = useContext(BestillingsveilederContext)
 	const [selectedFornavn, setSelectedFornavn] = useState(
 		_.get(formikBag?.values, `${path}.alleFornavn`) || [],
 	)
@@ -171,18 +174,23 @@ export const NavnForm = ({ formikBag, path }: NavnTypes) => {
 					/>
 				</DatepickerWrapper>
 			</div>
-			<AvansertForm path={path} kanVelgeMaster={true} />
+			<AvansertForm
+				path={path}
+				kanVelgeMaster={opts?.identtype !== 'NPID' && identtype !== 'NPID'}
+			/>
 		</>
 	)
 }
 
 export const Navn = ({ formikBag }: NavnTypes) => {
+	const opts = useContext(BestillingsveilederContext)
+
 	return (
 		<div className="flexbox--flex-wrap">
 			<FormikDollyFieldArray
 				name={'pdldata.person.navn'}
 				header="Navn"
-				newEntry={initialNavn}
+				newEntry={getInitialNavn(opts?.identtype === 'NPID' ? 'PDL' : 'FREG')}
 				canBeEmpty={false}
 			>
 				{(path: string) => <NavnForm formikBag={formikBag} path={path} />}

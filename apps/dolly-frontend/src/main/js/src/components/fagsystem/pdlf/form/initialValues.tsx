@@ -266,21 +266,21 @@ export const initialSivilstand = {
 	master: 'FREG',
 }
 
-export const initialKjoenn = {
+export const getInitialKjoenn = (master = 'FREG') => ({
 	kjoenn: null as unknown as string,
 	kilde: 'Dolly',
-	master: 'FREG',
-}
+	master: master,
+})
 
-export const initialNavn = {
+export const getInitialNavn = (master = 'FREG') => ({
 	fornavn: undefined as unknown as string,
 	mellomnavn: undefined as unknown as string,
 	etternavn: undefined as unknown as string,
 	hasMellomnavn: false,
 	gyldigFraOgMed: null as unknown as string,
 	kilde: 'Dolly',
-	master: 'FREG',
-}
+	master: master,
+})
 
 export const initialVergemaal = {
 	vergemaalEmbete: null as unknown as string,

@@ -5,11 +5,11 @@ import { Attributt, AttributtKategori } from '../Attributt'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import {
 	getInitialFoedsel,
+	getInitialKjoenn,
+	getInitialNavn,
 	getInitialStatsborgerskap,
 	initialDoedsfall,
 	initialFullmakt,
-	initialKjoenn,
-	initialNavn,
 	initialSikkerhetstiltak,
 	initialTilrettelagtKommunikasjon,
 	initialTpsSikkerhetstiltak,
@@ -272,13 +272,13 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 		kjonn: {
 			label: 'Kjønn',
 			checked: has(paths.kjoenn),
-			add: () => set(paths.kjoenn, [initialKjoenn]),
+			add: () => set(paths.kjoenn, [getInitialKjoenn(identtype === 'NPID' ? 'PDL' : 'FREG')]),
 			remove: () => del(paths.kjoenn),
 		},
 		navn: {
 			label: 'Navn',
 			checked: has(paths.navn),
-			add: () => set(paths.navn, [initialNavn]),
+			add: () => set(paths.navn, [getInitialNavn(identtype === 'NPID' ? 'PDL' : 'FREG')]),
 			remove: () => del(paths.navn),
 		},
 		sprakKode: {

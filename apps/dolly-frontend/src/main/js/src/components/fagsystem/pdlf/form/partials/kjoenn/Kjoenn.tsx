@@ -1,14 +1,19 @@
 import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
-import { initialKjoenn } from '@/components/fagsystem/pdlf/form/initialValues'
+import { getInitialKjoenn } from '@/components/fagsystem/pdlf/form/initialValues'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
+import { useContext } from 'react'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 type KjoennTypes = {
 	path: string
+	identtype?: string
 }
 
-export const KjoennForm = ({ path }: KjoennTypes) => {
+export const KjoennForm = ({ path, identtype }: KjoennTypes) => {
+	const opts = useContext(BestillingsveilederContext)
+
 	return (
 		<>
 			<FormikSelect
@@ -18,18 +23,23 @@ export const KjoennForm = ({ path }: KjoennTypes) => {
 				size="large"
 				isClearable={false}
 			/>
-			<AvansertForm path={path} kanVelgeMaster={true} />
+			<AvansertForm
+				path={path}
+				kanVelgeMaster={opts?.identtype !== 'NPID' && identtype !== 'NPID'}
+			/>
 		</>
 	)
 }
 
 export const Kjoenn = () => {
+	const opts = useContext(BestillingsveilederContext)
+
 	return (
 		<div className="flexbox--flex-wrap">
 			<FormikDollyFieldArray
 				name={'pdldata.person.kjoenn'}
 				header="Kjønn"
-				newEntry={initialKjoenn}
+				newEntry={getInitialKjoenn(opts?.identtype === 'NPID' ? 'PDL' : 'FREG')}
 				canBeEmpty={false}
 			>
 				{(path: string) => <KjoennForm path={path} />}

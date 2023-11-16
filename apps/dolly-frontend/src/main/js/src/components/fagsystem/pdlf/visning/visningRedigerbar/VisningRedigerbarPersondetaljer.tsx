@@ -87,6 +87,7 @@ export const VisningRedigerbarPersondetaljer = ({
 	redigertAttributt = null,
 	ident,
 	tpsMessagingData,
+	identtype,
 }: VisningTypes) => {
 	const [visningModus, setVisningModus] = useState(Modus.Les)
 	const [errorMessagePdlf, setErrorMessagePdlf] = useState(null)
@@ -409,6 +410,7 @@ export const VisningRedigerbarPersondetaljer = ({
 											formikBag={formikBag}
 											tpsMessaging={tpsMessagingData}
 											harSkjerming={harSkjerming}
+											identtype={identtype}
 										/>
 									</div>
 									<Knappegruppe>
