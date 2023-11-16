@@ -12,11 +12,6 @@ export const IdentifikasjonPanel = ({ stateModifier, formikBag }) => {
 
 	const harNpid = opts.identtype === 'NPID'
 
-	const nyIdentTitle = () => {
-		if (harNpid) return 'Personer med identtype NPID kan ikke ha identhistorikk'
-		return ''
-	}
-
 	return (
 		<Panel
 			heading={IdentifikasjonPanel.heading}
@@ -29,14 +24,10 @@ export const IdentifikasjonPanel = ({ stateModifier, formikBag }) => {
 				<Attributt
 					attr={sm.attrs.falskIdentitet}
 					disabled={harNpid}
-					title={
-						opts?.identtype === 'NPID'
-							? 'Personer med identtype NPID kan ikke ha falsk identitet'
-							: ''
-					}
+					title={harNpid ? 'Personer med identtype NPID kan ikke ha falsk identitet' : ''}
 				/>
 				<Attributt attr={sm.attrs.utenlandskIdentifikasjonsnummer} />
-				<Attributt attr={sm.attrs.nyident} disabled={harNpid} title={nyIdentTitle()} />
+				<Attributt attr={sm.attrs.nyident} />
 			</AttributtKategori>
 		</Panel>
 	)
