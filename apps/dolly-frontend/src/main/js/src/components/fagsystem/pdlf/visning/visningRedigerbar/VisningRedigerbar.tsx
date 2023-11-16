@@ -275,9 +275,9 @@ export const VisningRedigerbar = ({
 			case Attributt.Boadresse:
 				return <BostedsadresseForm formikBag={formikBag} path={path} identtype={identtype} />
 			case Attributt.Oppholdsadresse:
-				return <OppholdsadresseForm formikBag={formikBag} path={path} />
+				return <OppholdsadresseForm formikBag={formikBag} path={path} identtype={identtype} />
 			case Attributt.Kontaktadresse:
-				return <KontaktadresseForm formikBag={formikBag} path={path} />
+				return <KontaktadresseForm formikBag={formikBag} path={path} identtype={identtype} />
 			case Attributt.Adressebeskyttelse:
 				return (
 					<AdressebeskyttelseForm

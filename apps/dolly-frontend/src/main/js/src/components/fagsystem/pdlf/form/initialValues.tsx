@@ -25,23 +25,23 @@ export const initialPdlBiPerson = {
 	statsborgerskap: null as unknown as string,
 }
 
-export const initialKontaktadresse = {
+export const getInitialKontaktadresse = (master = 'FREG') => ({
 	adressetype: null as unknown as string,
 	gyldigFraOgMed: null as unknown as string,
 	gyldigTilOgMed: null as unknown as string,
 	opprettCoAdresseNavn: null as object,
 	kilde: 'Dolly',
-	master: 'FREG',
-}
+	master: master,
+})
 
-export const initialOppholdsadresse = {
-	...initialKontaktadresse,
-}
+export const getInitialOppholdsadresse = (master = 'FREG') => ({
+	...getInitialKontaktadresse(master),
+})
 
-export const initialBostedsadresse = {
-	...initialKontaktadresse,
+export const getInitialBostedsadresse = (master = 'FREG') => ({
+	...getInitialKontaktadresse(master),
 	angittFlyttedato: null as unknown as string,
-}
+})
 
 export const initialDeltBosted = {
 	adressetype: null as unknown as string,
@@ -49,11 +49,11 @@ export const initialDeltBosted = {
 	sluttdatoForKontrakt: null as unknown as string,
 }
 
-export const initialAdressebeskyttelse = {
+export const getInitialAdressebeskyttelse = (master = 'FREG') => ({
 	gradering: null as unknown as string,
 	kilde: 'Dolly',
-	master: 'FREG',
-}
+	master: master,
+})
 
 export const initialVegadresse = {
 	adressekode: null as unknown as string,

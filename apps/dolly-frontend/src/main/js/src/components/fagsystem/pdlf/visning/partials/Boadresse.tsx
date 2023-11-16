@@ -7,7 +7,7 @@ import { Vegadresse } from '@/components/fagsystem/pdlf/visning/partials/Vegadre
 import { Matrikkeladresse } from '@/components/fagsystem/pdlf/visning/partials/Matrikkeladresse'
 import { UtenlandskAdresse } from '@/components/fagsystem/pdlf/visning/partials/UtenlandskAdresse'
 import { UkjentBosted } from '@/components/fagsystem/pdlf/visning/partials/UkjentBosted'
-import { initialBostedsadresse } from '@/components/fagsystem/pdlf/form/initialValues'
+import { getInitialBostedsadresse } from '@/components/fagsystem/pdlf/form/initialValues'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
 import { BostedData } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
@@ -58,7 +58,7 @@ const BoadresseVisning = ({
 	identtype,
 	erPdlVisning,
 }: BoadresseVisningTypes) => {
-	const initBoadresse = Object.assign(_.cloneDeep(initialBostedsadresse), data[idx])
+	const initBoadresse = Object.assign(_.cloneDeep(getInitialBostedsadresse()), data[idx])
 	const initialValues = { bostedsadresse: initBoadresse }
 
 	const redigertBoadressePdlf = _.get(tmpPersoner, `${ident}.person.bostedsadresse`)?.find(
@@ -72,7 +72,10 @@ const BoadresseVisning = ({
 	const boadresseValues = redigertBoadressePdlf ? redigertBoadressePdlf : boadresseData
 	const redigertBoadresseValues = redigertBoadressePdlf
 		? {
-				bostedsadresse: Object.assign(_.cloneDeep(initialBostedsadresse), redigertBoadressePdlf),
+				bostedsadresse: Object.assign(
+					_.cloneDeep(getInitialBostedsadresse()),
+					redigertBoadressePdlf,
+				),
 		  }
 		: null
 

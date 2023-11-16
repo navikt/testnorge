@@ -3,7 +3,7 @@ import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { DollySelect, FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import {
-	initialBostedsadresse,
+	getInitialBostedsadresse,
 	initialMatrikkeladresse,
 	initialUkjentBosted,
 	initialUtenlandskAdresse,
@@ -172,18 +172,25 @@ export const BostedsadresseForm = ({
 					value={_.get(formikBag.values, `${path}.opprettCoAdresseNavn.fornavn`)}
 				/>
 			</div>
-			<AvansertForm path={path} kanVelgeMaster={valgtAdressetype === null} />
+			<AvansertForm
+				path={path}
+				kanVelgeMaster={
+					valgtAdressetype === null && opts?.identtype !== 'NPID' && identtype !== 'NPID'
+				}
+			/>
 		</React.Fragment>
 	)
 }
 
 export const Bostedsadresse = ({ formikBag }: BostedsadresseValues) => {
+	const opts = useContext(BestillingsveilederContext)
+
 	return (
 		<Kategori title="Bostedsadresse">
 			<FormikDollyFieldArray
 				name="pdldata.person.bostedsadresse"
 				header="Bostedsadresse"
-				newEntry={initialBostedsadresse}
+				newEntry={getInitialBostedsadresse(opts?.identtype === 'NPID' ? 'PDL' : 'FREG')}
 				canBeEmpty={false}
 			>
 				{(path: string, idx: number) => (

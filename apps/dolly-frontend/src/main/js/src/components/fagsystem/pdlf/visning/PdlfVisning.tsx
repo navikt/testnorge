@@ -138,11 +138,13 @@ export const PdlfVisning = ({ fagsystemData, loading, tmpPersoner }) => {
 					data={data?.person?.oppholdsadresse}
 					tmpPersoner={tmpPdlforvalter}
 					ident={ident}
+					identtype={data?.person?.identtype}
 				/>
 				<Kontaktadresse
 					data={data?.person?.kontaktadresse}
 					tmpPersoner={tmpPdlforvalter}
 					ident={ident}
+					identtype={data?.person?.identtype}
 				/>
 				<Adressebeskyttelse
 					data={data?.person?.adressebeskyttelse}

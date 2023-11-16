@@ -8,7 +8,7 @@ import { UtenlandskAdresse } from '@/components/fagsystem/pdlf/visning/partials/
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { showLabel } from '@/utils/DataFormatter'
 import * as _ from 'lodash-es'
-import { initialOppholdsadresse } from '@/components/fagsystem/pdlf/form/initialValues'
+import { getInitialOppholdsadresse } from '@/components/fagsystem/pdlf/form/initialValues'
 import { OppholdsadresseData } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
 import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
@@ -18,6 +18,7 @@ type OppholdsadresseTypes = {
 	tmpPersoner?: Array<OppholdsadresseData>
 	ident?: string
 	erPdlVisning?: boolean
+	identtype?: string
 }
 
 type AdresseTypes = {
@@ -32,6 +33,7 @@ type OppholdsadresseVisningTypes = {
 	tmpPersoner: Array<OppholdsadresseData>
 	ident: string
 	erPdlVisning: boolean
+	identtype?: string
 }
 
 export const Adresse = ({ oppholdsadresseData, idx }: AdresseTypes) => {
@@ -67,8 +69,9 @@ const OppholdsadresseVisning = ({
 	tmpPersoner,
 	ident,
 	erPdlVisning,
+	identtype,
 }: OppholdsadresseVisningTypes) => {
-	const initOppholdsadresse = Object.assign(_.cloneDeep(initialOppholdsadresse), data[idx])
+	const initOppholdsadresse = Object.assign(_.cloneDeep(getInitialOppholdsadresse()), data[idx])
 	const initialValues = { oppholdsadresse: initOppholdsadresse }
 
 	const redigertOppholdsadressePdlf = _.get(tmpPersoner, `${ident}.person.oppholdsadresse`)?.find(
@@ -86,7 +89,7 @@ const OppholdsadresseVisning = ({
 	const redigertOppholdsadresseValues = redigertOppholdsadressePdlf
 		? {
 				oppholdsadresse: Object.assign(
-					_.cloneDeep(initialOppholdsadresse),
+					_.cloneDeep(getInitialOppholdsadresse()),
 					redigertOppholdsadressePdlf,
 				),
 		  }
@@ -100,6 +103,7 @@ const OppholdsadresseVisning = ({
 			redigertAttributt={redigertOppholdsadresseValues}
 			path="oppholdsadresse"
 			ident={ident}
+			identtype={identtype}
 		/>
 	)
 }
@@ -109,6 +113,7 @@ export const Oppholdsadresse = ({
 	tmpPersoner,
 	ident,
 	erPdlVisning = false,
+	identtype,
 }: OppholdsadresseTypes) => {
 	if (!data || data.length === 0) {
 		return null
@@ -128,6 +133,7 @@ export const Oppholdsadresse = ({
 								tmpPersoner={tmpPersoner}
 								ident={ident}
 								erPdlVisning={erPdlVisning}
+								identtype={identtype}
 							/>
 						)}
 					</DollyFieldArray>

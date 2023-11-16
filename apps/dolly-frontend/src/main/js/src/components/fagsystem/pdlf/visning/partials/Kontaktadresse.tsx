@@ -13,7 +13,7 @@ import {
 } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import * as _ from 'lodash-es'
 import { AdresseKodeverk } from '@/config/kodeverk'
-import { initialKontaktadresse } from '@/components/fagsystem/pdlf/form/initialValues'
+import { getInitialKontaktadresse } from '@/components/fagsystem/pdlf/form/initialValues'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
 import { formatDate } from '@/utils/DataFormatter'
 import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
@@ -23,6 +23,7 @@ type KontaktadresseTypes = {
 	tmpPersoner?: Array<KontaktadresseData>
 	ident?: number
 	erPdlVisning?: boolean
+	identtype?: string
 }
 
 type KontaktadresseVisningTypes = {
@@ -33,6 +34,7 @@ type KontaktadresseVisningTypes = {
 	tmpPersoner: Array<KontaktadresseData>
 	ident: number
 	erPdlVisning: boolean
+	identtype?: string
 }
 
 type AdresseTypes = {
@@ -168,13 +170,14 @@ const KontaktadresseVisning = ({
 	tmpPersoner,
 	ident,
 	erPdlVisning,
+	identtype,
 }: KontaktadresseVisningTypes) => {
 	const initKontaktadresse = Object.assign(
-		_.cloneDeep(initialKontaktadresse),
+		_.cloneDeep(getInitialKontaktadresse()),
 		data?.[idx] || tmpData?.[idx],
 	)
 	const initialValues = { kontaktadresse: initKontaktadresse }
-
+	console.log('data: ', data) //TODO - SLETT MEG
 	const redigertKontaktadressePdlf = _.get(tmpPersoner, `${ident}.person.kontaktadresse`)?.find(
 		(a: KontaktadresseData) => a.id === kontaktadresseData.id,
 	)
@@ -190,7 +193,7 @@ const KontaktadresseVisning = ({
 	const redigertKontaktadresseValues = redigertKontaktadressePdlf
 		? {
 				kontaktadresse: Object.assign(
-					_.cloneDeep(initialKontaktadresse),
+					_.cloneDeep(getInitialKontaktadresse()),
 					redigertKontaktadressePdlf,
 				),
 		  }
@@ -204,6 +207,7 @@ const KontaktadresseVisning = ({
 			redigertAttributt={redigertKontaktadresseValues}
 			path="kontaktadresse"
 			ident={ident}
+			identtype={identtype}
 		/>
 	)
 }
@@ -213,6 +217,7 @@ export const Kontaktadresse = ({
 	tmpPersoner,
 	ident,
 	erPdlVisning = false,
+	identtype,
 }: KontaktadresseTypes) => {
 	if ((!data || data.length === 0) && (!tmpPersoner || Object.keys(tmpPersoner).length < 1)) {
 		return null
@@ -238,6 +243,7 @@ export const Kontaktadresse = ({
 								ident={ident}
 								erPdlVisning={erPdlVisning}
 								tmpPersoner={tmpPersoner}
+								identtype={identtype}
 							/>
 						)}
 					</DollyFieldArray>
