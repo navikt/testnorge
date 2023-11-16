@@ -17,6 +17,13 @@ azure:
       id: dummy
       secret: dummy
 
+open:
+  search:
+    uri: dummy
+    username: dummy
+    password: dummy
+    total-fields: 150
+
 consumers:
   testnav-kodeverk-proxy:
     name: kodeverk-mock

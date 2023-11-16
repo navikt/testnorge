@@ -5,6 +5,10 @@ spring:
     version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
     name: testnav-person-service
     description: API for opprettelse av personer
+  management:
+    health:
+      elasticsearch:
+        enabled: false
   main:
     banner-mode: off
   security:

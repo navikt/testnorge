@@ -5,7 +5,7 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.testnav.apps.tpsmessagingservice.dto.SikkerhetstiltakRequest;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsSystemInfo;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.SikkerhetTiltakDTO;
+import no.nav.testnav.libs.data.tpsmessagingservice.v1.SikkerhetTiltakDTO;
 import no.nav.tps.ctg.s610.domain.TsikkerhetsTiltakS610;
 import org.springframework.stereotype.Component;
 

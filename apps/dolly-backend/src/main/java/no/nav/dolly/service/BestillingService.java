@@ -10,7 +10,6 @@ import no.nav.dolly.domain.jpa.BestillingKontroll;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.BestilteKriterier;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyBestillingLeggTilPaaGruppe;
@@ -19,6 +18,7 @@ import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingFragment;
+import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
@@ -39,6 +39,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -75,6 +76,7 @@ public class BestillingService {
     private final TestgruppeRepository testgruppeRepository;
     private final BrukerService brukerService;
     private final GetUserInfo getUserInfo;
+    private final BestillingElasticRepository elasticRepository;
 
     public Bestilling fetchBestillingById(Long bestillingId) {
         return bestillingRepository.findById(bestillingId)
@@ -201,12 +203,12 @@ public class BestillingService {
     @Transactional
     public Bestilling saveBestilling(RsDollyUpdateRequest request, String ident) {
 
-        Testident testident = identRepository.findByIdent(ident)
+        var testident = identRepository.findByIdent(ident)
                 .orElseThrow(() -> new NotFoundException(format("Testident %s ble ikke funnet", ident)));
         var bruker = fetchOrCreateBruker();
 
         fixAaregAbstractClassProblem(request.getAareg());
-        Bestilling bestilling = Bestilling.builder()
+        var bestilling = Bestilling.builder()
                 .gruppe(testident.getTestgruppe())
                 .ident(ident)
                 .antallIdenter(1)
@@ -353,6 +355,12 @@ public class BestillingService {
 
     public void slettBestillingerByGruppeId(Long gruppeId) {
 
+        testgruppeRepository.findById(gruppeId).stream()
+                .map(Testgruppe::getBestillinger)
+                .flatMap(Collection::stream)
+                .map(Bestilling::getId)
+                .forEach(elasticRepository::deleteById);
+
         bestillingKontrollRepository.deleteByGruppeId(gruppeId);
         bestillingProgressRepository.deleteByGruppeId(gruppeId);
         bestillingRepository.deleteByGruppeId(gruppeId);
@@ -364,6 +372,7 @@ public class BestillingService {
         bestillingProgressRepository.deleteByBestilling_Id(bestillingId);
         bestillingKontrollRepository.deleteByBestillingWithNoChildren(bestillingId);
         bestillingRepository.deleteById(bestillingId);
+        elasticRepository.deleteById(bestillingId);
     }
 
     public void slettBestillingByTestIdent(String ident) {
@@ -380,6 +389,7 @@ public class BestillingService {
 
             bestillingKontrollRepository.deleteByBestillingWithNoChildren(id);
             bestillingRepository.deleteBestillingWithNoChildren(id);
+            elasticRepository.deleteById(id);
         });
     }
 
@@ -440,5 +450,10 @@ public class BestillingService {
                         arbeidforhold.getArbeidsgiver() instanceof RsOrganisasjon ? "ORG" : "PERS");
             }
         });
+    }
+
+    public List<BestillingProgress> getProgressByBestillingId(Long bestillingId) {
+
+        return bestillingProgressRepository.findByBestilling_Id(bestillingId);
     }
 }

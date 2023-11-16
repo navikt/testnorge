@@ -10,6 +10,7 @@ import no.nav.dolly.bestilling.personservice.PersonServiceClient;
 import no.nav.dolly.bestilling.tpsmessagingservice.service.TpsPersonService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.service.BestillingService;
@@ -36,7 +37,6 @@ import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
 public class OpprettPersonerByKriterierService extends DollyBestillingService {
 
     private final PersonServiceClient personServiceClient;
-    private final MapperFacade mapperFacade;
 
     public OpprettPersonerByKriterierService(
             IdentService identService,
@@ -49,20 +49,22 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
             PdlDataConsumer pdlDataConsumer,
             TransactionHelperService transactionHelperService,
             PersonServiceClient personServiceClient,
-            TpsPersonService tpsPersonService) {
+            TpsPersonService tpsPersonService,
+            BestillingElasticRepository bestillingElasticRepository) {
         super(
                 identService,
                 bestillingService,
                 objectMapper,
+                mapperFacade,
                 clientRegisters,
                 counterCustomRegistry,
                 pdlDataConsumer,
                 errorStatusDecoder,
                 transactionHelperService,
-                tpsPersonService
+                tpsPersonService,
+                bestillingElasticRepository
         );
         this.personServiceClient = personServiceClient;
-        this.mapperFacade = mapperFacade;
     }
 
     @Async
@@ -113,7 +115,10 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                                             }))))
                     .takeWhile(test -> !bestillingService.isStoppet(bestilling.getId()))
                     .collectList()
-                    .doFinally(done -> doFerdig(bestilling))
+                    .doFinally(done -> {
+                        doFerdig(bestilling);
+                        saveBestillingToElasticServer(bestKriterier, bestilling);
+                    })
                     .subscribe();
 
         } else {
