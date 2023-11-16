@@ -44,13 +44,13 @@ public class WebClientConfig {
                                                     .maxConnections(1500)
                                                     .pendingAcquireMaxCount(3000)
                                                     .build())
-                                            .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 60000)
+                                            .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000)
                                             .option(ChannelOption.SO_KEEPALIVE, true)
                                             .option(EpollChannelOption.TCP_KEEPIDLE, 300)
                                             .option(EpollChannelOption.TCP_KEEPINTVL, 60)
                                             .option(EpollChannelOption.TCP_KEEPCNT, 8)
-                                            .responseTimeout(Duration.ofSeconds(60))
-                                            .resolver(spec -> spec.queryTimeout(Duration.ofSeconds(60)))));
+                                            .responseTimeout(Duration.ofSeconds(30))
+                            ));
 
         } catch (NoSuchBeanDefinitionException e) {
 

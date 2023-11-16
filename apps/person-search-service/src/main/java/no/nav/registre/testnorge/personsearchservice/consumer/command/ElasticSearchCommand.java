@@ -2,9 +2,9 @@ package no.nav.registre.testnorge.personsearchservice.consumer.command;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.registre.testnorge.personsearchservice.model.SearchResponse;
+import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
 import reactor.util.retry.Retry;
 
@@ -26,12 +26,6 @@ public class ElasticSearchCommand implements Callable<Flux<SearchResponse>> {
     private final String token;
     private final Object body;
 
-    private static boolean is5xxException(Throwable throwable) {
-
-        return throwable instanceof WebClientResponseException wce &&
-                wce.getStatusCode().is5xxServerError();
-    }
-
     @Override
     public Flux<SearchResponse> call() {
 
@@ -45,6 +39,6 @@ public class ElasticSearchCommand implements Callable<Flux<SearchResponse>> {
                 .retrieve()
                 .bodyToFlux(SearchResponse.class)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(ElasticSearchCommand::is5xxException));
+                        .filter(WebClientFilter::is5xxException));
     }
 }

@@ -1,13 +1,15 @@
 package no.nav.testnav.libs.reactivecore.utils;
-import io.netty.channel.ChannelException;
-import io.netty.resolver.dns.DnsNameResolverException;
+
+import io.netty.channel.ConnectTimeoutException;
+import io.netty.handler.timeout.ReadTimeoutException;
+import io.netty.handler.timeout.WriteTimeoutException;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClientRequestException;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
-import java.io.IOException;
+import java.net.SocketException;
 import java.nio.charset.StandardCharsets;
 
 @Slf4j
@@ -16,19 +18,28 @@ public class WebClientFilter {
 
     public static boolean is5xxException(Throwable throwable) {
 
-        return (throwable instanceof WebClientResponseException wce &&
-                wce.getStatusCode().is5xxServerError()) ||
-                throwable instanceof WebClientRequestException ||
-                throwable instanceof DnsNameResolverException ||
-                throwable instanceof IOException ||
-                throwable instanceof ChannelException;
+        return throwable instanceof WebClientResponseException responseException &&
+                responseException.getStatusCode().is5xxServerError() ||
+                throwable instanceof WebClientRequestException requestException &&
+                        requestException.getCause() instanceof SocketException;
     }
 
     public static String getMessage(Throwable throwable) {
 
-        return throwable instanceof WebClientResponseException webClientResponseException ?
-                webClientResponseException.getResponseBodyAsString(StandardCharsets.UTF_8) :
-                throwable.getMessage();
+        if (throwable instanceof WebClientResponseException responseException) {
+            return responseException.getResponseBodyAsString(StandardCharsets.UTF_8);
+
+        } else if (throwable instanceof WebClientRequestException requestException) {
+
+            return requestException.getCause() instanceof ConnectTimeoutException ||
+                    requestException.getCause() instanceof ReadTimeoutException ||
+                    requestException.getCause() instanceof WriteTimeoutException ?
+                    "Mottaker svarer ikke, eller har for lang svartid." :
+                    requestException.getCause().toString();
+
+        } else {
+            return throwable.getMessage();
+        }
     }
 
     public static HttpStatus getStatus(Throwable throwable) {
