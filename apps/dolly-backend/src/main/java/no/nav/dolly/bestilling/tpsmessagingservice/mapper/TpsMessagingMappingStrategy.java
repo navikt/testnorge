@@ -5,9 +5,10 @@ import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.mapper.MappingStrategy;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.TelefonnummerDTO;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.SpraakDTO;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TelefonTypeNummerDTO.TypeTelefon;
+import no.nav.testnav.libs.data.pdlforvalter.v1.TelefonnummerDTO;
+import no.nav.testnav.libs.data.tpsmessagingservice.v1.SpraakDTO;
+import no.nav.testnav.libs.data.tpsmessagingservice.v1.TelefonTypeNummerDTO;
+import no.nav.testnav.libs.data.tpsmessagingservice.v1.TelefonTypeNummerDTO.TypeTelefon;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -27,10 +28,10 @@ public class TpsMessagingMappingStrategy implements MappingStrategy {
                 })
                 .register();
 
-        factory.classMap(TelefonnummerDTO.class, no.nav.testnav.libs.dto.tpsmessagingservice.v1.TelefonTypeNummerDTO.class)
+        factory.classMap(TelefonnummerDTO.class, TelefonTypeNummerDTO.class)
                 .customize(new CustomMapper<>() {
                     @Override
-                    public void mapAtoB(TelefonnummerDTO kilde, no.nav.testnav.libs.dto.tpsmessagingservice.v1.TelefonTypeNummerDTO destinasjon, MappingContext context) {
+                    public void mapAtoB(TelefonnummerDTO kilde, TelefonTypeNummerDTO destinasjon, MappingContext context) {
 
                         destinasjon.setTelefonnummer(kilde.getNummer());
                         destinasjon.setLandkode(kilde.getLandskode());

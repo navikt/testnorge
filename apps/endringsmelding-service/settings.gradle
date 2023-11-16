@@ -8,6 +8,7 @@ includeBuild '../../libs/security-core'
 includeBuild '../../libs/reactive-core'
 includeBuild '../../libs/reactive-security'
 includeBuild '../../libs/data-transfer-objects'
+includeBuild '../../libs/data-transfer-search-objects'
 
 gradleEnterprise {
     buildScan {

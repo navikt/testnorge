@@ -6,6 +6,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.elasticsearch.annotations.DateFormat;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.time.YearMonth;
 import java.util.ArrayList;
@@ -43,7 +46,8 @@ public class RsAareg {
 
     private RsAktoer arbeidsgiver;
 
-    @Schema(description = "Angir periode oppdateringen gjelder fra")
+    @Schema(description = "Angir periode oppdateringen gjelder fra", type = "string", pattern="^\\d{4}-\\d{2}$")
+    @Field(type = FieldType.Date, format = DateFormat.year_month, pattern = "uuuu-MM")
     private YearMonth navArbeidsforholdPeriode;
 
     @Schema(description = "Angir om posten er oppdatering")

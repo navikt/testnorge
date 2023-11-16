@@ -9,7 +9,7 @@ import no.nav.testnav.apps.tpsmessagingservice.consumer.command.TpsMeldingComman
 import no.nav.testnav.apps.tpsmessagingservice.dto.SikkerhetstiltakRequest;
 import no.nav.testnav.apps.tpsmessagingservice.dto.SikkerhetstiltakResponse;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsMeldingResponse;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.SikkerhetTiltakDTO;
+import no.nav.testnav.libs.data.tpsmessagingservice.v1.SikkerhetTiltakDTO;
 import org.springframework.stereotype.Service;
 
 import javax.xml.bind.JAXBContext;

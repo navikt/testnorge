@@ -2,8 +2,8 @@ package no.nav.dolly.bestilling.kontoregisterservice.command;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.util.WebClientFilter;
-import no.nav.testnav.libs.dto.kontoregisterservice.v1.KontoregisterResponseDTO;
-import no.nav.testnav.libs.dto.kontoregisterservice.v1.OppdaterKontoRequestDTO;
+import no.nav.testnav.libs.data.kontoregister.v1.KontoregisterResponseDTO;
+import no.nav.testnav.libs.data.kontoregister.v1.OppdaterKontoRequestDTO;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

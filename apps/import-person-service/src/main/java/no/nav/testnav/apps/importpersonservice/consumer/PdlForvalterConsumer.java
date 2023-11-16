@@ -5,7 +5,7 @@ import no.nav.testnav.apps.importpersonservice.consumer.command.OppdaterPersonCo
 import no.nav.testnav.apps.importpersonservice.consumer.command.SendPersonTilPdlCommand;
 import no.nav.testnav.apps.importpersonservice.consumer.request.OppdaterPersonRequest;
 import no.nav.testnav.apps.importpersonservice.domain.PersonList;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.stereotype.Component;

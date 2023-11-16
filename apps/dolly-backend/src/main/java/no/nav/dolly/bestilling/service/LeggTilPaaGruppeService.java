@@ -13,6 +13,7 @@ import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
+import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.service.BestillingProgressService;
@@ -21,7 +22,7 @@ import no.nav.dolly.service.IdentService;
 import no.nav.dolly.util.ThreadLocalContextLifter;
 import no.nav.dolly.util.TransactionHelperService;
 import no.nav.dolly.util.WebClientFilter;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.PersonUpdateRequestDTO;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.MDC;
 import org.springframework.scheduling.annotation.Async;
@@ -42,35 +43,36 @@ import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
 public class LeggTilPaaGruppeService extends DollyBestillingService {
 
     private final PersonServiceClient personServiceClient;
-    private final MapperFacade mapperFacade;
     private final BestillingProgressService bestillingProgressService;
 
     public LeggTilPaaGruppeService(
             IdentService identService,
             BestillingProgressService bestillingProgressService,
             BestillingService bestillingService,
-            MapperFacade mapperFacade,
             ObjectMapper objectMapper,
+            MapperFacade mapperFacade,
             List<ClientRegister> clientRegisters,
             CounterCustomRegistry counterCustomRegistry,
             ErrorStatusDecoder errorStatusDecoder,
             PdlDataConsumer pdlDataConsumer,
             TransactionHelperService transactionHelperService,
             PersonServiceClient personServiceClient,
-            TpsPersonService tpsPersonService) {
+            TpsPersonService tpsPersonService,
+            BestillingElasticRepository bestillingElasticRepository) {
         super(
                 identService,
                 bestillingService,
                 objectMapper,
+                mapperFacade,
                 clientRegisters,
                 counterCustomRegistry,
                 pdlDataConsumer,
                 errorStatusDecoder,
                 transactionHelperService,
-                tpsPersonService
+                tpsPersonService,
+                bestillingElasticRepository
         );
         this.personServiceClient = personServiceClient;
-        this.mapperFacade = mapperFacade;
         this.bestillingProgressService = bestillingProgressService;
     }
 
@@ -126,7 +128,10 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
                                                     })))))
                     .takeWhile(test -> !bestillingService.isStoppet(bestilling.getId()))
                     .collectList()
-                    .doFinally(done -> doFerdig(bestilling))
+                    .doFinally(done -> {
+                        doFerdig(bestilling);
+                        saveBestillingToElasticServer(bestKriterier, bestilling);
+                    })
                     .subscribe();
         }
     }
