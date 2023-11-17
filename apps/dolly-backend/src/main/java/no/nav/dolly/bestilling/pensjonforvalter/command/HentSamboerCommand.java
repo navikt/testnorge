@@ -8,7 +8,6 @@ import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.concurrent.Callable;
 
