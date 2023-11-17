@@ -79,7 +79,7 @@ const informasjonstekst = 'Personen må ha et arbeidsforhold knyttet til den val
 
 export const InntektsmeldingForm = ({ formMethods }: InntektsmeldingFormProps) => {
 	const [typeArbeidsgiver, setTypeArbeidsgiver] = useState(
-		_.get(formikBag.values, 'inntektsmelding.inntekter[0].arbeidsgiverPrivat')
+		_.get(formMethods.getValues(), 'inntektsmelding.inntekter[0].arbeidsgiverPrivat')
 			? TypeArbeidsgiver.PRIVATPERSON
 			: TypeArbeidsgiver.VIRKSOMHET,
 	)
@@ -89,17 +89,17 @@ export const InntektsmeldingForm = ({ formMethods }: InntektsmeldingFormProps) =
 	const handleArbeidsgiverChange = (type: TypeArbeidsgiver) => {
 		setTypeArbeidsgiver(type)
 
-		_.get(formikBag.values, 'inntektsmelding.inntekter').forEach(
+		_.get(formMethods.getValues(), 'inntektsmelding.inntekter').forEach(
 			(_inntekt: Inntekt, idx: number) => {
 				if (type === TypeArbeidsgiver.VIRKSOMHET) {
-					formikBag.setFieldValue(
+					formMethods.setValue(
 						`inntektsmelding.inntekter[${idx}].arbeidsgiver.virksomhetsnummer`,
 						'',
 					)
-					formikBag.setFieldValue(`inntektsmelding.inntekter[${idx}].arbeidsgiverPrivat`, undefined)
+					formMethods.setValue(`inntektsmelding.inntekter[${idx}].arbeidsgiverPrivat`, undefined)
 				} else if (type === TypeArbeidsgiver.PRIVATPERSON) {
-					formikBag.setFieldValue(`inntektsmelding.inntekter[${idx}].arbeidsgiver`, undefined)
-					formikBag.setFieldValue(
+					formMethods.setValue(`inntektsmelding.inntekter[${idx}].arbeidsgiver`, undefined)
+					formMethods.setValue(
 						`inntektsmelding.inntekter[${idx}].arbeidsgiverPrivat.arbeidsgiverFnr`,
 						'',
 					)
@@ -113,13 +113,13 @@ export const InntektsmeldingForm = ({ formMethods }: InntektsmeldingFormProps) =
 		<Vis attributt={inntektsmeldingAttributt}>
 			<Panel
 				heading="Inntektsmelding (fra Altinn)"
-				hasErrors={panelError(formikBag, inntektsmeldingAttributt)}
+				hasErrors={panelError(formMethods.formState.errors, inntektsmeldingAttributt)}
 				iconType="inntektsmelding"
 				informasjonstekst={informasjonstekst}
-				startOpen={erForsteEllerTest(formikBag.values, [inntektsmeldingAttributt])}
+				startOpen={erForsteEllerTest(formMethods.getValues(), [inntektsmeldingAttributt])}
 			>
 				{!leggTilPaaGruppe &&
-					!_.has(formikBag.values, 'aareg') &&
+					!_.has(formMethods.getValues(), 'aareg') &&
 					!_.has(personFoerLeggTil, 'aareg') && (
 						<AlertAaregRequired meldingSkjema="Inntektsmeldingen" />
 					)}
@@ -143,7 +143,7 @@ export const InntektsmeldingForm = ({ formMethods }: InntektsmeldingFormProps) =
 					canBeEmpty={false}
 				>
 					{(path: string, idx: number) => {
-						const ytelse = _.get(formikBag.values, `${path}.ytelse`)
+						const ytelse = _.get(formMethods.getValues(), `${path}.ytelse`)
 						return (
 							<div className="flexbox--column">
 								<div className="flexbox--flex-wrap">
@@ -199,7 +199,9 @@ export const InntektsmeldingForm = ({ formMethods }: InntektsmeldingFormProps) =
 								{ytelse === Ytelser.Foreldrepenger && (
 									<Kategori title="Foreldrepenger">
 										<InputWarning
-											visWarning={!_.get(formikBag.values, `${path}.startdatoForeldrepengeperiode`)}
+											visWarning={
+												!_.get(formMethods.getValues(), `${path}.startdatoForeldrepengeperiode`)
+											}
 											warningText="For automatisk behandling av inntektsmelding må dette feltet fylles ut"
 										>
 											<FormikDatepicker

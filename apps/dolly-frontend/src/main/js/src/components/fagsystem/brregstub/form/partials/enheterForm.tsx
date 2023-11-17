@@ -22,7 +22,7 @@ export const EnheterForm = ({ formMethods }) => {
 	const rollerOptions = SelectOptionsFormat.formatOptions('roller', roller)
 
 	const setEnhetsinfo = (org, path) => {
-		const currentValues = _.get(formikBag.values, path)
+		const currentValues = _.get(formMethods.getValues(), path)
 		currentValues['orgNr'] = org.value
 		currentValues['foretaksNavn'] = { navn1: org.navn }
 		if (org.forretningsAdresse) {
@@ -49,7 +49,7 @@ export const EnheterForm = ({ formMethods }) => {
 			delete currentValues['postAdresse']
 		}
 
-		formikBag.setFieldValue(path, currentValues)
+		formMethods.setValue(path, currentValues)
 	}
 
 	return (

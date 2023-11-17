@@ -15,7 +15,7 @@ export const FagbrevForm = ({ formMethods }) => {
 			title: selected.value,
 			type: selected.type,
 		}
-		formikBag.setFieldValue(path, fagbrev)
+		formMethods.setValue(path, fagbrev)
 	}
 
 	const fagbrevListePath = 'arbeidsplassenCV.fagbrev'

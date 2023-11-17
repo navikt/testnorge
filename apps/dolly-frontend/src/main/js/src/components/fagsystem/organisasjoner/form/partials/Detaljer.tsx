@@ -39,33 +39,33 @@ export const Detaljer = ({
 	number,
 	maaHaUnderenhet = true,
 }: DetaljerProps) => {
-	const initialValues = _.omit(formikBag.values.organisasjon, ['underenheter', 'sektorkode'])
-	const underenheter = formikBag.values?.organisasjon?.underenheter
-	const sektorkodeErValgt = formikBag.values.organisasjon.hasOwnProperty('sektorkode')
+	const initialValues = _.omit(formMethods.getValues().organisasjon, ['underenheter', 'sektorkode'])
+	const underenheter = formMethods.getValues()?.organisasjon?.underenheter
+	const sektorkodeErValgt = formMethods.getValues().organisasjon.hasOwnProperty('sektorkode')
 
 	useEffect(() => {
 		if (level === 0 && !_.get(formikBag, `${path}.underenheter`)) {
-			formikBag.setFieldValue(`${path}.underenheter`, underenheter || [initialValues])
+			formMethods.setValue(`${path}.underenheter`, underenheter || [initialValues])
 		}
 	}, [])
 
 	const [typeUnderenhet, setTypeUnderenhet] = useState(
 		level === 0 ||
-			(_.has(formikBag.values, `${path}.underenheter`) &&
-				_.get(formikBag.values, `${path}.underenheter`))
+			(_.has(formMethods.getValues(), `${path}.underenheter`) &&
+				_.get(formMethods.getValues(), `${path}.underenheter`))
 			? TypeUnderenhet.JURIDISKENHET
 			: TypeUnderenhet.VIRKSOMHET,
 	)
 
 	const handleToggleChange = (value: TypeUnderenhet) => {
 		setTypeUnderenhet(value)
-		formikBag.setFieldValue(`${path}.enhetstype`, '')
+		formMethods.setValue(`${path}.enhetstype`, '')
 		if (value === TypeUnderenhet.VIRKSOMHET) {
-			formikBag.setFieldValue(`${path}.underenheter`, undefined)
-			sektorkodeErValgt && formikBag.setFieldValue(`${path}.sektorkode`, undefined)
+			formMethods.setValue(`${path}.underenheter`, undefined)
+			sektorkodeErValgt && formMethods.setValue(`${path}.sektorkode`, undefined)
 		} else if (value === TypeUnderenhet.JURIDISKENHET && level < 4) {
-			formikBag.setFieldValue(`${path}.underenheter`, [initialValues])
-			sektorkodeErValgt && formikBag.setFieldValue(`${path}.sektorkode`, '')
+			formMethods.setValue(`${path}.underenheter`, [initialValues])
+			sektorkodeErValgt && formMethods.setValue(`${path}.sektorkode`, '')
 		}
 	}
 

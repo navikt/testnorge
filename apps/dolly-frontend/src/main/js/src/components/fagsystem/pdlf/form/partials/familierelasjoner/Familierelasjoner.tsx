@@ -20,9 +20,9 @@ export const Familierelasjoner = ({ formMethods }: { formikBag: FormikProps<any>
 		<Vis attributt={relasjonerAttributter}>
 			<Panel
 				heading="Familierelasjoner"
-				hasErrors={panelError(formikBag, relasjonerAttributter)}
+				hasErrors={panelError(formMethods.formState.errors, relasjonerAttributter)}
 				iconType={'relasjoner'}
-				startOpen={erForsteEllerTest(formikBag.values, relasjonerAttributter)}
+				startOpen={erForsteEllerTest(formMethods.getValues(), relasjonerAttributter)}
 				checkAttributeArray={undefined}
 				uncheckAttributeArray={undefined}
 			>

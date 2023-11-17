@@ -17,17 +17,17 @@ export const FalskIdentitet = ({ formMethods }) => {
 
 	const settIdentitetType = (e, path, advancedValues) => {
 		if (!e) {
-			formikBag.setFieldValue(path, advancedValues)
+			formMethods.setValue(path, advancedValues)
 			return null
 		} else if (e.value === 'UKJENT') {
-			formikBag.setFieldValue(path, { rettIdentitetErUkjent: true, ...advancedValues })
+			formMethods.setValue(path, { rettIdentitetErUkjent: true, ...advancedValues })
 		} else if (e.value === 'ENTYDIG') {
-			formikBag.setFieldValue(path, {
+			formMethods.setValue(path, {
 				rettIdentitetVedIdentifikasjonsnummer: null,
 				...advancedValues,
 			})
 		} else if (e.value === 'OMTRENTLIG') {
-			formikBag.setFieldValue(path, {
+			formMethods.setValue(path, {
 				rettIdentitetVedOpplysninger: {
 					foedselsdato: null,
 					kjoenn: null,
@@ -49,20 +49,22 @@ export const FalskIdentitet = ({ formMethods }) => {
 		>
 			{(path, idx) => {
 				const identType = () => {
-					if (_.has(formikBag.values, `${path}.rettIdentitetErUkjent`)) {
+					if (_.has(formMethods.getValues(), `${path}.rettIdentitetErUkjent`)) {
 						return 'UKJENT'
-					} else if (_.has(formikBag.values, `${path}.rettIdentitetVedIdentifikasjonsnummer`)) {
+					} else if (
+						_.has(formMethods.getValues(), `${path}.rettIdentitetVedIdentifikasjonsnummer`)
+					) {
 						return 'ENTYDIG'
 					}
-					return _.has(formikBag.values, `${path}.rettIdentitetVedOpplysninger`)
+					return _.has(formMethods.getValues(), `${path}.rettIdentitetVedOpplysninger`)
 						? 'OMTRENTLIG'
 						: null
 				}
 
 				const advancedValues = {
 					erFalsk: true,
-					kilde: _.get(formikBag.values, `${path}.kilde`),
-					master: _.get(formikBag.values, `${path}.master`),
+					kilde: _.get(formMethods.getValues(), `${path}.kilde`),
+					master: _.get(formMethods.getValues(), `${path}.master`),
 				}
 
 				return (
@@ -92,7 +94,7 @@ export const FalskIdentitet = ({ formMethods }) => {
 										options={navnOptions}
 										size="xlarge"
 										placeholder={getPlaceholder(
-											formikBag.values,
+											formMethods.getValues(),
 											`${path}.rettIdentitetVedOpplysninger.personnavn`,
 										)}
 										isLoading={loading}
@@ -100,11 +102,11 @@ export const FalskIdentitet = ({ formMethods }) => {
 											setNavn(
 												navn,
 												`${path}.rettIdentitetVedOpplysninger.personnavn`,
-												formikBag.setFieldValue,
+												formMethods.setValue,
 											)
 										}
 										value={_.get(
-											formikBag.values,
+											formMethods.getValues(),
 											`${path}.rettIdentitetVedOpplysninger.personnavn.fornavn`,
 										)}
 									/>

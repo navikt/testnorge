@@ -26,7 +26,7 @@ type Inntektslister = {
 const hjelpetekst = `Den øverste inntektinformasjonen er den gjeldende inntekten. All inntektsinformasjon merket med "Versjon #" er historiske endringer der økende versjonsnummer er nyere.`
 
 export default ({ formMethods, path }: InntektendringForm) => {
-	const kopiAvGjeldendeInntekt = _.get(formikBag.values, path)
+	const kopiAvGjeldendeInntekt = _.get(formMethods.getValues(), path)
 	const initialValues: Inntektslister = {
 		arbeidsforholdsliste: kopiAvGjeldendeInntekt.arbeidsforholdsliste,
 		forskuddstrekksliste: kopiAvGjeldendeInntekt.forskuddstrekksliste,
@@ -35,10 +35,10 @@ export default ({ formMethods, path }: InntektendringForm) => {
 		rapporteringsdato: kopiAvGjeldendeInntekt.rapporteringsdato,
 	}
 	const historikkPath = `${path}.historikk`
-	const data = _.get(formikBag.values, historikkPath, [])
+	const data = _.get(formMethods.getValues(), historikkPath, [])
 
 	const handleRapporteringDateChange = (selectedDate: Date, listePath: string) => {
-		formikBag.setFieldValue(
+		formMethods.setValue(
 			`${listePath}.rapporteringsdato`,
 			selectedDate && selectedDate.toISOString().substring(0, 19),
 		)

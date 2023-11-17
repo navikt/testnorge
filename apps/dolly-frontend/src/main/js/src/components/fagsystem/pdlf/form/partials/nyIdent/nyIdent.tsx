@@ -19,10 +19,10 @@ export const NyIdent = ({ formMethods }: NyIdentForm) => (
 		canBeEmpty={false}
 	>
 		{(path: string) => {
-			const nyIdentValg = Object.keys(_.get(formikBag.values, path))
+			const nyIdentValg = Object.keys(_.get(formMethods.getValues(), path))
 				.filter((key) => key !== 'eksisterendeIdent' && key !== 'kilde' && key !== 'master')
 				.reduce((obj, key) => {
-					obj[key] = _.get(formikBag.values, path)[key]
+					obj[key] = _.get(formMethods.getValues(), path)[key]
 					return obj
 				}, {})
 
@@ -36,7 +36,7 @@ export const NyIdent = ({ formMethods }: NyIdentForm) => (
 						nyIdentValg={nyIdentValg}
 						isExpanded={
 							!isEmpty(nyIdentValg, ['syntetisk']) ||
-							_.get(formikBag.values, `${path}.eksisterendeIdent`) !== null
+							_.get(formMethods.getValues(), `${path}.eksisterendeIdent`) !== null
 						}
 					/>
 					<AvansertForm path={path} kanVelgeMaster={true} />

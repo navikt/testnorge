@@ -13,8 +13,8 @@ import {
 	initialValues,
 } from '../initialValues'
 import { ArbeidsgiverTyper } from '@/components/fagsystem/aareg/AaregTypes'
-import { useFormikContext } from 'formik'
 import { useDollyFasteDataOrganisasjoner } from '@/utils/hooks/useOrganisasjoner'
+import { useFormContext } from 'react-hook-form'
 
 const ToggleArbeidsgiver = styled(ToggleGroup)`
 	display: grid;
@@ -25,17 +25,17 @@ const StyledAlert = styled(Alert)`
 	margin-top: 10px;
 `
 export const ArbeidsforholdToggle = (): ReactElement => {
-	const formikBag = useFormikContext()
+	const formMethods = useFormContext()
 	const { organisasjoner } = useDollyFasteDataOrganisasjoner(true)
 
 	const getArbeidsgiverType = () => {
-		const orgnummer = _.get(formikBag.values, 'aareg[0].arbeidsgiver.orgnummer')
+		const orgnummer = _.get(formMethods.getValues(), 'aareg[0].arbeidsgiver.orgnummer')
 		if (
-			_.get(formikBag.values, 'aareg[0].amelding[0]') ||
-			_.get(formikBag.values, 'aareg[0].arbeidsforhold')
+			_.get(formMethods.getValues(), 'aareg[0].amelding[0]') ||
+			_.get(formMethods.getValues(), 'aareg[0].arbeidsforhold')
 		) {
 			return ArbeidsgiverTyper.egen
-		} else if (_.get(formikBag.values, 'aareg[0].arbeidsgiver.aktoertype') === 'PERS') {
+		} else if (_.get(formMethods.getValues(), 'aareg[0].arbeidsgiver.aktoertype') === 'PERS') {
 			return ArbeidsgiverTyper.privat
 		} else if (
 			!orgnummer ||
@@ -71,11 +71,11 @@ export const ArbeidsforholdToggle = (): ReactElement => {
 	const handleToggleChange = (value: ArbeidsgiverTyper) => {
 		setTypeArbeidsgiver(value)
 		if (value === ArbeidsgiverTyper.privat) {
-			formikBag.setFieldValue('aareg', [initialAaregPers])
+			formMethods.setValue('aareg', [initialAaregPers])
 		} else if (value === ArbeidsgiverTyper.felles || value === ArbeidsgiverTyper.fritekst) {
-			formikBag.setFieldValue('aareg', [initialAaregOrg])
+			formMethods.setValue('aareg', [initialAaregOrg])
 		} else if (value === ArbeidsgiverTyper.egen) {
-			formikBag.setFieldValue('aareg', [initialValues])
+			formMethods.setValue('aareg', [initialValues])
 		}
 	}
 

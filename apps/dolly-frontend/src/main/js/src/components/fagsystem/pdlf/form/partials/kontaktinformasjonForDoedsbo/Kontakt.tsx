@@ -40,20 +40,20 @@ export const Kontakt = ({ formMethods, path, eksisterendeNyPerson = null }: Kont
 	const personPath = `${path}.personSomKontakt`
 
 	const getKontakttype = () => {
-		const kontaktType = _.get(formikBag.values, `${path}.kontaktType`)
+		const kontaktType = _.get(formMethods.getValues(), `${path}.kontaktType`)
 		if (kontaktType) {
 			return kontaktType
-		} else if (_.get(formikBag.values, `${path}.advokatSomKontakt`)) {
+		} else if (_.get(formMethods.getValues(), `${path}.advokatSomKontakt`)) {
 			return 'ADVOKAT'
-		} else if (_.get(formikBag.values, `${path}.organisasjonSomKontakt`)) {
+		} else if (_.get(formMethods.getValues(), `${path}.organisasjonSomKontakt`)) {
 			return 'ORGANISASJON'
 		} else if (
 			eksisterendeNyPerson ||
-			_.get(formikBag.values, `${path}.personSomKontakt.identifikasjonsnummer`) ||
-			_.get(formikBag.values, `${path}.personSomKontakt.foedselsdato`)
+			_.get(formMethods.getValues(), `${path}.personSomKontakt.identifikasjonsnummer`) ||
+			_.get(formMethods.getValues(), `${path}.personSomKontakt.foedselsdato`)
 		) {
 			return 'PERSON_FDATO'
-		} else if (_.get(formikBag.values, `${path}.personSomKontakt.nyKontaktperson`)) {
+		} else if (_.get(formMethods.getValues(), `${path}.personSomKontakt.nyKontaktperson`)) {
 			return 'NY_PERSON'
 		} else return null
 	}
@@ -62,14 +62,14 @@ export const Kontakt = ({ formMethods, path, eksisterendeNyPerson = null }: Kont
 	const navnOptions = SelectOptionsFormat.formatOptions('personnavn', navnInfo)
 
 	useEffect(() => {
-		if (!_.get(formikBag.values, `${path}.kontaktType`)) {
-			formikBag.setFieldValue(`${path}.kontaktType`, getKontakttype())
+		if (!_.get(formMethods.getValues(), `${path}.kontaktType`)) {
+			formMethods.setValue(`${path}.kontaktType`, getKontakttype())
 		}
 	}, [])
 
 	const handleAfterChange = (type: TypeValues) => {
 		const { value } = type
-		const kontaktinfo = _.get(formikBag.values, path)
+		const kontaktinfo = _.get(formMethods.getValues(), path)
 		const kontaktinfoClone = _.cloneDeep(kontaktinfo)
 
 		if (value !== getKontakttype()) {
@@ -92,19 +92,19 @@ export const Kontakt = ({ formMethods, path, eksisterendeNyPerson = null }: Kont
 				_.set(kontaktinfoClone, 'organisasjonSomKontakt', undefined)
 			}
 		}
-		formikBag.setFieldValue(path, kontaktinfoClone)
+		formMethods.setValue(path, kontaktinfoClone)
 	}
 
 	const organisasjonHandleChange = (values: OrgValues, orgPath: string) => {
-		formikBag.setFieldValue(`${orgPath}.organisasjonsnummer`, values.orgnr)
-		formikBag.setFieldValue(`${orgPath}.organisasjonsnavn`, values.navn)
+		formMethods.setValue(`${orgPath}.organisasjonsnummer`, values.orgnr)
+		formMethods.setValue(`${orgPath}.organisasjonsnavn`, values.navn)
 	}
 
 	const disableIdent =
-		_.get(formikBag.values, `${personPath}.foedselsdato`) ||
-		_.get(formikBag.values, `${personPath}.navn.fornavn`)
+		_.get(formMethods.getValues(), `${personPath}.foedselsdato`) ||
+		_.get(formMethods.getValues(), `${personPath}.navn.fornavn`)
 
-	const disablePersoninfo = _.get(formikBag.values, `${personPath}.identifikasjonsnummer`)
+	const disablePersoninfo = _.get(formMethods.getValues(), `${personPath}.identifikasjonsnummer`)
 
 	return (
 		<Kategori title="Kontakt">
@@ -129,12 +129,12 @@ export const Kontakt = ({ formMethods, path, eksisterendeNyPerson = null }: Kont
 						label="Kontaktperson navn"
 						options={navnOptions}
 						size="large"
-						placeholder={getPlaceholder(formikBag.values, `${advokatPath}.kontaktperson`)}
+						placeholder={getPlaceholder(formMethods.getValues(), `${advokatPath}.kontaktperson`)}
 						isLoading={loading}
 						onChange={(navn: string) =>
-							setNavn(navn, `${advokatPath}.kontaktperson`, formikBag.setFieldValue)
+							setNavn(navn, `${advokatPath}.kontaktperson`, formMethods.setValue)
 						}
-						value={_.get(formikBag.values, `${advokatPath}.kontaktperson.fornavn`)}
+						value={_.get(formMethods.getValues(), `${advokatPath}.kontaktperson.fornavn`)}
 					/>
 				</div>
 			)}
@@ -150,12 +150,15 @@ export const Kontakt = ({ formMethods, path, eksisterendeNyPerson = null }: Kont
 						label="Kontaktperson navn"
 						options={navnOptions}
 						size="large"
-						placeholder={getPlaceholder(formikBag.values, `${organisasjonPath}.kontaktperson`)}
+						placeholder={getPlaceholder(
+							formMethods.getValues(),
+							`${organisasjonPath}.kontaktperson`,
+						)}
 						isLoading={loading}
 						onChange={(navn: string) =>
-							setNavn(navn, `${organisasjonPath}.kontaktperson`, formikBag.setFieldValue)
+							setNavn(navn, `${organisasjonPath}.kontaktperson`, formMethods.setValue)
 						}
-						value={_.get(formikBag.values, `${organisasjonPath}.kontaktperson.fornavn`)}
+						value={_.get(formMethods.getValues(), `${organisasjonPath}.kontaktperson.fornavn`)}
 					/>
 				</div>
 			)}
@@ -183,12 +186,10 @@ export const Kontakt = ({ formMethods, path, eksisterendeNyPerson = null }: Kont
 						label="Kontaktperson navn"
 						options={navnOptions}
 						size="xlarge"
-						placeholder={getPlaceholder(formikBag.values, `${personPath}.navn`)}
+						placeholder={getPlaceholder(formMethods.getValues(), `${personPath}.navn`)}
 						isLoading={loading}
-						onChange={(navn: string) =>
-							setNavn(navn, `${personPath}.navn`, formikBag.setFieldValue)
-						}
-						value={_.get(formikBag.values, `${personPath}.navn.fornavn`)}
+						onChange={(navn: string) => setNavn(navn, `${personPath}.navn`, formMethods.setValue)}
+						value={_.get(formMethods.getValues(), `${personPath}.navn.fornavn`)}
 						isDisabled={disablePersoninfo}
 					/>
 				</div>

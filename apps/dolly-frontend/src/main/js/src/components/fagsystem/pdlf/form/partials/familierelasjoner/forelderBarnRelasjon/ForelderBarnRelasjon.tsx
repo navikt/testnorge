@@ -47,7 +47,7 @@ export const ForelderBarnRelasjonForm = ({
 		'relatertPersonUtenFolkeregisteridentifikator'
 
 	const handleChangeTypeForelderBarn = (target: Target, path: string) => {
-		const forelderBarnRelasjon = _.get(formikBag.values, path)
+		const forelderBarnRelasjon = _.get(formMethods.getValues(), path)
 		const forelderBarnClone = _.cloneDeep(forelderBarnRelasjon)
 
 		_.set(forelderBarnClone, 'typeForelderBarn', target?.value || null)
@@ -72,33 +72,35 @@ export const ForelderBarnRelasjonForm = ({
 			_.set(forelderBarnClone, nyRelatertPerson, initialPdlPerson)
 		}
 
-		formikBag.setFieldValue(path, forelderBarnClone)
+		formMethods.setValue(path, forelderBarnClone)
 	}
 
 	const relatertPersonsRolle = forelderTyper.includes(
-		_.get(formikBag.values, `${path}.relatertPersonsRolle`),
+		_.get(formMethods.getValues(), `${path}.relatertPersonsRolle`),
 	)
 		? RELASJON_FORELDER
 		: RELASJON_BARN
 
 	const erBarn = relatertPersonsRolle === RELASJON_BARN
 
-	const id = _.get(formikBag.values, `${path}.id`)
+	const id = _.get(formMethods.getValues(), `${path}.id`)
 
 	const getForelderBarnType = () => {
-		const forelderBarnType = _.get(formikBag.values, `${path}.typeForelderBarn`)
+		const forelderBarnType = _.get(formMethods.getValues(), `${path}.typeForelderBarn`)
 		if (forelderBarnType) {
 			return forelderBarnType
-		} else if (_.get(formikBag.values, `${path}.relatertPerson`)) {
+		} else if (_.get(formMethods.getValues(), `${path}.relatertPerson`)) {
 			return 'EKSISTERENDE'
-		} else if (_.get(formikBag.values, `${path}.relatertPersonUtenFolkeregisteridentifikator`)) {
+		} else if (
+			_.get(formMethods.getValues(), `${path}.relatertPersonUtenFolkeregisteridentifikator`)
+		) {
 			return 'UTEN_ID'
 		} else return null
 	}
 
 	useEffect(() => {
-		if (!_.get(formikBag.values, `${path}.typeForelderBarn`)) {
-			formikBag.setFieldValue(`${path}.typeForelderBarn`, getForelderBarnType())
+		if (!_.get(formMethods.getValues(), `${path}.typeForelderBarn`)) {
+			formMethods.setValue(`${path}.typeForelderBarn`, getForelderBarnType())
 		}
 	}, [])
 
@@ -107,7 +109,7 @@ export const ForelderBarnRelasjonForm = ({
 			<div className="toggle--wrapper">
 				<ToggleGroup
 					onChange={(value: string) => {
-						formikBag.setFieldValue(
+						formMethods.setValue(
 							path,
 							value === RELASJON_BARN ? { ...initialBarn, id: id } : { ...initialForelder, id: id },
 						)
@@ -166,7 +168,7 @@ export const ForelderBarnRelasjonForm = ({
 				<PdlNyPerson nyPersonPath={`${path}.nyRelatertPerson`} formMethods={formMethods} />
 			)}
 
-			{!path?.includes('pdldata') && erBarn && _.get(formikBag.values, 'harDeltBosted') && (
+			{!path?.includes('pdldata') && erBarn && _.get(formMethods.getValues(), 'harDeltBosted') && (
 				<div className="flexbox--full-width">
 					<Alert
 						variant={'info'}
@@ -179,7 +181,7 @@ export const ForelderBarnRelasjonForm = ({
 				</div>
 			)}
 
-			{!path?.includes('pdldata') && _.get(formikBag.values, 'harForeldreansvar') && (
+			{!path?.includes('pdldata') && _.get(formMethods.getValues(), 'harForeldreansvar') && (
 				<div className="flexbox--full-width">
 					<Alert
 						variant={'info'}
@@ -194,7 +196,7 @@ export const ForelderBarnRelasjonForm = ({
 
 			<AvansertForm
 				path={path}
-				kanVelgeMaster={_.get(formikBag.values, `${path}.bekreftelsesdato`) === null}
+				kanVelgeMaster={_.get(formMethods.getValues(), `${path}.bekreftelsesdato`) === null}
 			/>
 		</div>
 	)

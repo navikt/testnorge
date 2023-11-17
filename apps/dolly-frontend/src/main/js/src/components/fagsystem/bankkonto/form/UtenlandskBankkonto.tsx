@@ -29,7 +29,7 @@ export const UtenlandskBankkonto = ({ formMethods }: any) => {
 			} else {
 				swift = 'BANK' + mappedLandkode + '11222'
 			}
-			formikBag.setFieldValue(`${path}.swift`, swift, false)
+			formMethods.setValue(`${path}.swift`, swift, false)
 			formikBag.setFieldTouched(`${path}.swift`, true)
 		}
 	}

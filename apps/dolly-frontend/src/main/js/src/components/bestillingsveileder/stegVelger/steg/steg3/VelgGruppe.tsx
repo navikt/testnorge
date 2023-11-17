@@ -1,26 +1,26 @@
 import React, { useEffect, useState } from 'react'
 import { VelgGruppeToggle } from '@/components/velgGruppe/VelgGruppeToggle'
 import { ifPresent } from '@/utils/YupValidations'
-import { FormikProps } from 'formik'
 import * as _ from 'lodash-es'
 import { ErrorMessageWithFocus } from '@/utils/ErrorMessageWithFocus'
 import * as Yup from 'yup'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 type VelgGruppeProps = {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 	title: string
 	fraGruppe?: number
 }
 
 export const VelgGruppe = ({ formMethods, title, fraGruppe = null }: VelgGruppeProps) => {
-	const [valgtGruppe, setValgtGruppe] = useState(_.get(formikBag.values, `gruppeId`))
+	const [valgtGruppe, setValgtGruppe] = useState(_.get(formMethods.getValues(), `gruppeId`))
 
 	useEffect(() => {
 		setValgtGruppe(valgtGruppe || '') // for å vise feilmeldingsvisning
 	})
 
 	useEffect(() => {
-		formikBag.setFieldValue('gruppeId', valgtGruppe)
+		formMethods.setValue('gruppeId', valgtGruppe)
 	}, [valgtGruppe])
 
 	return (

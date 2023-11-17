@@ -12,7 +12,7 @@ const identerPath = 'identer'
 
 export const Identer: React.FC<IdentSearchProps> = ({ formMethods }: IdentSearchProps) => {
 	// @ts-ignore
-	const values = formikBag.values[identerPath]
+	const values = formMethods.getValues()[identerPath]
 	return (
 		<section>
 			<FieldArray name={identerPath}>
@@ -32,7 +32,7 @@ export const Identer: React.FC<IdentSearchProps> = ({ formMethods }: IdentSearch
 											style={{ width: '220px' }}
 											onKeyPress={(event: BaseSyntheticEvent<KeyboardEvent>) => {
 												event.nativeEvent.code === 'Enter' &&
-													!Object.keys(formikBag.errors).length &&
+													!Object.keys(formMethods.formState.errors).length &&
 													formikBag.handleSubmit()
 											}}
 										/>

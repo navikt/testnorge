@@ -31,10 +31,12 @@ export const PdlNyPerson = ({
 	const opts = useContext(BestillingsveilederContext)
 	const isLeggTil = opts?.is?.leggTil
 	const disableAlder =
-		_.get(formikBag.values, `${nyPersonPath}.foedtEtter`) != null ||
-		_.get(formikBag.values, `${nyPersonPath}.foedtFoer`) != null
+		_.get(formMethods.getValues(), `${nyPersonPath}.foedtEtter`) != null ||
+		_.get(formMethods.getValues(), `${nyPersonPath}.foedtFoer`) != null
 
-	const disableFoedtDato = !['', null].includes(_.get(formikBag.values, `${nyPersonPath}.alder`))
+	const disableFoedtDato = !['', null].includes(
+		_.get(formMethods.getValues(), `${nyPersonPath}.alder`),
+	)
 
 	const identtypeOptions =
 		erNyIdent && isLeggTil
@@ -47,8 +49,9 @@ export const PdlNyPerson = ({
 		eksisterendePerson &&
 		(gruppeIdenter?.includes(eksisterendePerson) ||
 			eksisterendePerson === eksisterendeNyPerson?.value ||
-			_.get(formikBag.values, 'vergemaal.vergeIdent') === eksisterendeNyPerson?.value ||
-			_.get(formikBag.values, 'sivilstand.relatertVedSivilstand') === eksisterendeNyPerson?.value)
+			_.get(formMethods.getValues(), 'vergemaal.vergeIdent') === eksisterendeNyPerson?.value ||
+			_.get(formMethods.getValues(), 'sivilstand.relatertVedSivilstand') ===
+				eksisterendeNyPerson?.value)
 
 	return (
 		<div className={'flexbox--flex-wrap'} style={{ marginTop: '10px' }}>

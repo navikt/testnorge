@@ -52,14 +52,16 @@ enum Kodeverk {
 export const dokarkivAttributt = 'dokarkiv'
 
 export const DokarkivForm = ({ formMethods }: DokarkivFormProps) => {
-	if (!_.has(formikBag.values, dokarkivAttributt)) {
+	if (!_.has(formMethods.getValues(), dokarkivAttributt)) {
 		return null
 	}
 
-	const sessionDokumenter = _.get(formikBag.values, 'dokarkiv.vedlegg')
-	const digitalInnsending = _.get(formikBag.values, 'dokarkiv.avsenderMottaker')
+	const sessionDokumenter = _.get(formMethods.getValues(), 'dokarkiv.vedlegg')
+	const digitalInnsending = _.get(formMethods.getValues(), 'dokarkiv.avsenderMottaker')
 	const [files, setFiles] = useState(sessionDokumenter || [])
-	const [skjemaValues, setSkjemaValues] = useState(_.get(formikBag.values, 'dokarkiv.skjema'))
+	const [skjemaValues, setSkjemaValues] = useState(
+		_.get(formMethods.getValues(), 'dokarkiv.skjema'),
+	)
 
 	useEffect(() => {
 		handleSkjemaChange(skjemaValues)
@@ -72,8 +74,8 @@ export const DokarkivForm = ({ formMethods }: DokarkivFormProps) => {
 		}
 
 		setSkjemaValues(skjema)
-		formikBag.setFieldValue('dokarkiv.tittel', skjema.data)
-		formikBag.setFieldValue('dokarkiv.skjema', skjema)
+		formMethods.setValue('dokarkiv.tittel', skjema.data)
+		formMethods.setValue('dokarkiv.skjema', skjema)
 
 		const dokumentVarianter = files.map((vedl: Vedlegg, index: number) => ({
 			tittel: vedl.dokNavn ? vedl.dokNavn : vedl.name,
@@ -88,34 +90,34 @@ export const DokarkivForm = ({ formMethods }: DokarkivFormProps) => {
 		}))
 
 		dokumentVarianter.length > 0
-			? formikBag.setFieldValue('dokarkiv.dokumenter', dokumentVarianter)
-			: formikBag.setFieldValue('dokarkiv.dokumenter[0].tittel', skjema.data)
+			? formMethods.setValue('dokarkiv.dokumenter', dokumentVarianter)
+			: formMethods.setValue('dokarkiv.dokumenter[0].tittel', skjema.data)
 	}
 
 	const handleVedleggChange = (filer: [Vedlegg]) => {
 		setFiles(filer)
-		formikBag.setFieldValue('dokarkiv.vedlegg', filer)
+		formMethods.setValue('dokarkiv.vedlegg', filer)
 	}
 
 	const handleSakstypeChange = (target) => {
-		formikBag.setFieldValue('dokarkiv.sak.sakstype', target.value)
+		formMethods.setValue('dokarkiv.sak.sakstype', target.value)
 		if (target.value !== 'FAGSAK') {
-			formikBag.setFieldValue('dokarkiv.sak.fagsaksystem', '')
-			formikBag.setFieldValue('dokarkiv.sak.fagsakId', '')
+			formMethods.setValue('dokarkiv.sak.fagsaksystem', '')
+			formMethods.setValue('dokarkiv.sak.fagsakId', '')
 		}
 	}
 
-	const harFagsak = _.get(formikBag.values, 'dokarkiv.sak.sakstype') === 'FAGSAK'
+	const harFagsak = _.get(formMethods.getValues(), 'dokarkiv.sak.sakstype') === 'FAGSAK'
 
 	return (
 		// @ts-ignore
 		<Vis attributt={dokarkivAttributt}>
 			<Panel
 				heading="Dokumenter (Joark)"
-				hasErrors={panelError(formikBag, dokarkivAttributt)}
+				hasErrors={panelError(formMethods.formState.errors, dokarkivAttributt)}
 				iconType="dokarkiv"
 				// @ts-ignore
-				startOpen={erForsteEllerTest(formikBag.values, [dokarkivAttributt])}
+				startOpen={erForsteEllerTest(formMethods.getValues(), [dokarkivAttributt])}
 			>
 				<Kategori
 					title={`Oppretting av ${digitalInnsending ? 'digitalt' : 'skannet '} dokument`}
@@ -142,14 +144,19 @@ export const DokarkivForm = ({ formMethods }: DokarkivFormProps) => {
 						/>
 						<DollyTextInput
 							onChange={(event: BaseSyntheticEvent) => {
-								formikBag.setFieldValue(
+								formMethods.setValue(
 									'dokarkiv.journalfoerendeEnhet',
 									event.target.value === '' ? undefined : event.target.value,
 								)
 							}}
 							feil={
-								_.get(formikBag.errors, `dokarkiv.journalfoerendeEnhet`)
-									? { feilmelding: _.get(formikBag.errors, `dokarkiv.journalfoerendeEnhet`) }
+								_.get(formMethods.formState.errors, `dokarkiv.journalfoerendeEnhet`)
+									? {
+											feilmelding: _.get(
+												formMethods.formState.errors,
+												`dokarkiv.journalfoerendeEnhet`,
+											),
+									  }
 									: null
 							}
 							name="dokarkiv.journalfoerendeEnhet"

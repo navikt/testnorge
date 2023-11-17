@@ -25,9 +25,9 @@ export const Identifikasjon = ({ formMethods }: IdentifikasjonValues) => {
 		<Vis attributt={identifikasjonAttributter}>
 			<Panel
 				heading="Identifikasjon"
-				hasErrors={panelError(formikBag, identifikasjonAttributter)}
+				hasErrors={panelError(formMethods.formState.errors, identifikasjonAttributter)}
 				iconType="identifikasjon"
-				startOpen={erForsteEllerTest(formikBag.values, identifikasjonAttributter)}
+				startOpen={erForsteEllerTest(formMethods.getValues(), identifikasjonAttributter)}
 			>
 				<Kategori title="Falsk identitet" vis="pdldata.person.falskIdentitet">
 					<FalskIdentitet formMethods={formMethods} />

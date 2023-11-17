@@ -313,12 +313,10 @@ export const FlyttPersonModal = ({ gruppeId, modalIsOpen, closeModal }: FlyttPer
 										</PersonvelgerCheckboxes>
 									)}
 									<div className="flexbox--flex-wrap" style={{ marginTop: '10px' }}>
-										<Button onClick={() => formikBag.setFieldValue('identer', gruppeIdenterListe)}>
+										<Button onClick={() => formMethods.setValue('identer', gruppeIdenterListe)}>
 											VELG ALLE
 										</Button>
-										<Button onClick={() => formikBag.setFieldValue('identer', [])}>
-											NULLSTILL
-										</Button>
+										<Button onClick={() => formMethods.setValue('identer', [])}>NULLSTILL</Button>
 									</div>
 									<StyledErrorMessageWithFocus
 										name="identer"
@@ -332,16 +330,16 @@ export const FlyttPersonModal = ({ gruppeId, modalIsOpen, closeModal }: FlyttPer
 
 					<PersonKolonne>
 						<h2 style={{ marginLeft: '20px' }}>Valgte personer</h2>
-						{harRelatertePersoner(_.get(formikBag.values, 'identer')) && (
+						{harRelatertePersoner(_.get(formMethods.getValues(), 'identer')) && (
 							<Alert variant="info" size="small" inline>
 								Du har valgt én eller flere personer som har relaterte personer. Disse vil også
 								flyttes.
 							</Alert>
 						)}
 						<ValgtePersonerList>
-							{_.get(formikBag.values, 'identer')?.length > 0 ? (
+							{_.get(formMethods.getValues(), 'identer')?.length > 0 ? (
 								<ul>
-									{_.get(formikBag.values, 'identer')?.map((ident: string) => (
+									{_.get(formMethods.getValues(), 'identer')?.map((ident: string) => (
 										<li key={ident}>
 											{gruppeOptions?.find((person: Option) => person?.value === ident)?.label}
 										</li>

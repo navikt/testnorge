@@ -1,18 +1,19 @@
 import { NavnForm } from '@/components/fagsystem/pdlf/form/partials/navn/Navn'
 import { KjoennForm } from '@/components/fagsystem/pdlf/form/partials/kjoenn/Kjoenn'
 import { PersonstatusForm } from '@/components/fagsystem/pdlf/form/partials/personstatus/Personstatus'
-import { FormikProps } from 'formik'
 import { Alert } from '@navikt/ds-react'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 import * as _ from 'lodash-es'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 type PersondetaljerSamletTypes = {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 	tpsMessaging?: {
 		tpsMessagingData: {
 			sprakKode: string
 		}
 	}
+	harSkjerming?: boolean
 }
 
 export const PersondetaljerSamlet = ({ formMethods, tpsMessaging }: PersondetaljerSamletTypes) => {
@@ -34,7 +35,7 @@ export const PersondetaljerSamlet = ({ formMethods, tpsMessaging }: Persondetalj
 					size={'small'}
 				>{`Identnummer${getTekst()} kan ikke endres her.`}</Alert>
 
-				{_.get(formikBag.values, 'navn') && (
+				{_.get(formMethods.getValues(), 'navn') && (
 					<>
 						<h3>Navn</h3>
 						<div className="flexbox--flex-wrap">

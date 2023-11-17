@@ -22,10 +22,10 @@ import { ArbeidsgiverIdent } from '@/components/fagsystem/aareg/form/partials/ar
 import { isDate } from 'date-fns'
 import { EgneOrganisasjoner } from '@/components/fagsystem/brregstub/form/partials/EgneOrganisasjoner'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
-import { FormikErrors, FormikTouched, FormikValues, useFormikContext } from 'formik'
 import * as _ from 'lodash-es'
 import { Monthpicker } from '@/components/ui/form/inputs/monthpicker/Monthpicker'
 import { fixTimezone } from '@/components/ui/form/formUtils'
+import { useFormContext } from 'react-hook-form'
 
 type Arbeidsforhold = {
 	isOppdatering?: boolean
@@ -82,20 +82,14 @@ export const ArbeidsforholdForm = ({
 		if (formValues.length > 1) {
 			return true
 		}
-		return !_.isEqual(values.aareg, [initialArbeidsforholdOrg])
+		return !_.isEqual(getValues('aareg'), [initialArbeidsforholdOrg])
 	}
 
 	const {
-		touched,
-		values,
-		errors,
-		setFieldValue,
-	}: {
-		touched: FormikTouched<any>
-		values: FormikValues
-		errors: FormikErrors<any>
-		setFieldValue: any
-	} = useFormikContext()
+		formState: { errors, touchedFields: touched },
+		getValues,
+		setValue: setFieldValue,
+	} = useFormContext()
 	const [navArbeidsforholdPeriode, setNavArbeidsforholdPeriode] = useState(null as unknown as Date)
 	const { tidligereBestillinger } = useContext(BestillingsveilederContext)
 	const tidligereAaregBestillinger = hentUnikeAaregBestillinger(tidligereBestillinger)
@@ -105,7 +99,7 @@ export const ArbeidsforholdForm = ({
 		arbeidsforholdIndex < tidligereAaregBestillinger?.length
 
 	useEffect(() => {
-		if (_.isEmpty(tidligereAaregBestillinger) || harGjortFormEndringer(values.aareg)) {
+		if (_.isEmpty(tidligereAaregBestillinger) || harGjortFormEndringer(getValues('aareg'))) {
 			return
 		}
 		setFieldValue(
@@ -115,14 +109,14 @@ export const ArbeidsforholdForm = ({
 				return aaregBestilling
 			}),
 		)
-	}, [values.aareg])
+	}, [getValues('aareg')])
 
-	const gjeldendeArbeidsgiver = _.get(values, `${path}.arbeidsgiver`)
+	const gjeldendeArbeidsgiver = _.get(getValues(), `${path}.arbeidsgiver`)
 
 	const arbeidsforholdstype =
 		typeof ameldingIndex !== 'undefined'
-			? _.get(values, 'aareg[0].arbeidsforholdstype')
-			: _.get(values, `${path}.arbeidsforholdstype`)
+			? _.get(getValues(), 'aareg[0].arbeidsforholdstype')
+			: _.get(getValues(), `${path}.arbeidsforholdstype`)
 	const onChangeLenket = (fieldPath: string) => {
 		if (arbeidsgiverType !== ArbeidsgiverTyper.egen) {
 			return (field) => {
@@ -136,7 +130,7 @@ export const ArbeidsforholdForm = ({
 				const value = isDate(field)
 					? fixTimezone(field)
 					: field?.value || field?.target?.value || null
-				const amelding = _.get(values, 'aareg[0].amelding') || []
+				const amelding = _.get(getValues(), 'aareg[0].amelding') || []
 				amelding.forEach((_maaned, idx) => {
 					if (!erLenket && idx < ameldingIndex) {
 						return null
@@ -216,7 +210,7 @@ export const ArbeidsforholdForm = ({
 
 	const feilmelding = () => {
 		if (
-			!_.get(values, `${path}.arbeidsforholdstype`) &&
+			!_.get(getValues(), `${path}.arbeidsforholdstype`) &&
 			_.has(touched, `${path}.arbeidsforholdstype`)
 		) {
 			return {
@@ -259,7 +253,7 @@ export const ArbeidsforholdForm = ({
 					<OrganisasjonMedArbeidsforholdSelect
 						path={`${path}.arbeidsgiver.orgnummer`}
 						label={'Organisasjonsnummer'}
-						feil={checkAktiveArbeidsforhold(values.aareg)}
+						feil={checkAktiveArbeidsforhold(getValues('aareg'))}
 						isDisabled={erLaastArbeidsforhold}
 					/>
 				)}
@@ -268,7 +262,7 @@ export const ArbeidsforholdForm = ({
 						name={`${path}.arbeidsgiver.orgnummer`}
 						label={'Organisasjonsnummer'}
 						size="xlarge"
-						feil={checkAktiveArbeidsforhold(values.aareg)}
+						feil={checkAktiveArbeidsforhold(getValues('aareg'))}
 						defaultValue={gjeldendeArbeidsgiver?.orgnummer}
 						isDisabled={erLaastArbeidsforhold}
 					/>
@@ -309,7 +303,7 @@ export const ArbeidsforholdForm = ({
 					kodeverk={ArbeidKodeverk.SluttaarsakAareg}
 					size="xlarge"
 					onChange={onChangeLenket('ansettelsesPeriode.sluttaarsak')}
-					isDisabled={!_.get(values, `${path}.ansettelsesPeriode.tom`)}
+					isDisabled={!_.get(getValues(), `${path}.ansettelsesPeriode.tom`)}
 				/>
 				<Monthpicker
 					name={`${path}.navArbeidsforholdPeriode`}

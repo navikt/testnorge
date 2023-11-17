@@ -1,5 +1,4 @@
 import * as _ from 'lodash-es'
-import { FormikProps } from 'formik'
 import { Alder, AlderPaths } from './partials/Alder'
 import { Identifikasjon, IdentifikasjonPaths } from './partials/Identifikasjon'
 import { Identer, IdenterPaths } from '@/pages/testnorgePage/search/partials/Identer'
@@ -9,15 +8,16 @@ import { Relasjoner, RelasjonerPaths } from '@/pages/testnorgePage/search/partia
 import { Personstatus, PersonstatusPaths } from '@/pages/testnorgePage/search/partials/Personstatus'
 import { OptionsPanel } from './optionsPanel/OptionsPanel'
 import React from 'react'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 export type SearchOptionsProps = {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 }
 
-export const getCount = (paths: string[], formikBag: FormikProps<{}>) => {
+export const getCount = (paths: string[], formMethods: UseFormReturn) => {
 	let count = 0
 	for (const path of paths) {
-		const value = _.get(formikBag.values, path)
+		const value = _.get(formMethods.getValues(), path)
 		const valueType = typeof value
 		if (valueType === 'string') {
 			if (value && value !== '') {
@@ -37,7 +37,7 @@ export const getCount = (paths: string[], formikBag: FormikProps<{}>) => {
 }
 
 export const SearchOptions: React.FC<SearchOptionsProps> = (props: SearchOptionsProps) => {
-	const disabled = getCount(IdenterPaths, props.formikBag) > 0
+	const disabled = getCount(IdenterPaths, props.formMethods) > 0
 
 	return (
 		<>
@@ -45,51 +45,51 @@ export const SearchOptions: React.FC<SearchOptionsProps> = (props: SearchOptions
 			<OptionsPanel
 				heading={'Fødsels- eller D-nummer'}
 				startOpen
-				numSelected={getCount(IdenterPaths, props.formikBag)}
+				numSelected={getCount(IdenterPaths, props.formMethods)}
 			>
-				<Identer formikBag={props.formikBag} />
+				<Identer formikBag={props.formMethods} />
 			</OptionsPanel>
 			<OptionsPanel
 				heading={'Identifikasjon'}
-				numSelected={getCount(IdentifikasjonPaths, props.formikBag)}
+				numSelected={getCount(IdentifikasjonPaths, props.formMethods)}
 				disabled={disabled}
 			>
-				<Identifikasjon formikBag={props.formikBag} />
+				<Identifikasjon formikBag={props.formMethods} />
 			</OptionsPanel>
 			<OptionsPanel
 				heading={'Personstatus'}
-				numSelected={getCount(PersonstatusPaths, props.formikBag)}
+				numSelected={getCount(PersonstatusPaths, props.formMethods)}
 				disabled={disabled}
 			>
 				<Personstatus />
 			</OptionsPanel>
 			<OptionsPanel
 				heading={'Alder'}
-				numSelected={getCount(AlderPaths, props.formikBag)}
+				numSelected={getCount(AlderPaths, props.formMethods)}
 				disabled={disabled}
 			>
-				<Alder formikBag={props.formikBag} />
+				<Alder formMethods={props.formMethods} />
 			</OptionsPanel>
 			<OptionsPanel
 				heading={'Adresser'}
-				numSelected={getCount(AdresserPaths, props.formikBag)}
+				numSelected={getCount(AdresserPaths, props.formMethods)}
 				disabled={disabled}
 			>
-				<Adresser formikBag={props.formikBag} />
+				<Adresser formMethods={props.formMethods} />
 			</OptionsPanel>
 			<OptionsPanel
 				heading={'Nasjonalitet'}
-				numSelected={getCount(NasjonalitetPaths, props.formikBag)}
+				numSelected={getCount(NasjonalitetPaths, props.formMethods)}
 				disabled={disabled}
 			>
 				<Nasjonalitet />
 			</OptionsPanel>
 			<OptionsPanel
 				heading={'Relasjoner'}
-				numSelected={getCount(RelasjonerPaths, props.formikBag)}
+				numSelected={getCount(RelasjonerPaths, props.formMethods)}
 				disabled={disabled}
 			>
-				<Relasjoner formikBag={props.formikBag} />
+				<Relasjoner formMethods={props.formMethods} />
 			</OptionsPanel>
 		</>
 	)

@@ -13,17 +13,17 @@ interface UtenlandskAdresseForm {
 
 export const UtenlandskAdresse = ({ formMethods, path, master }: UtenlandskAdresseForm) => {
 	const harAdressenavn =
-		_.get(formikBag.values, `${path}.adressenavnNummer`) !== '' &&
-		_.get(formikBag.values, `${path}.adressenavnNummer`) !== null
+		_.get(formMethods.getValues(), `${path}.adressenavnNummer`) !== '' &&
+		_.get(formMethods.getValues(), `${path}.adressenavnNummer`) !== null
 
 	const harPostboksnummer =
-		_.get(formikBag.values, `${path}.postboksNummerNavn`) !== '' &&
-		_.get(formikBag.values, `${path}.postboksNummerNavn`) !== null
+		_.get(formMethods.getValues(), `${path}.postboksNummerNavn`) !== '' &&
+		_.get(formMethods.getValues(), `${path}.postboksNummerNavn`) !== null
 
 	useEffect(() => {
 		if (master !== 'PDL') {
-			formikBag.setFieldValue(`${path}.bygningEtasjeLeilighet`, null)
-			formikBag.setFieldValue(`${path}.regionDistriktOmraade`, null)
+			formMethods.setValue(`${path}.bygningEtasjeLeilighet`, null)
+			formMethods.setValue(`${path}.regionDistriktOmraade`, null)
 		}
 	}, [master])
 

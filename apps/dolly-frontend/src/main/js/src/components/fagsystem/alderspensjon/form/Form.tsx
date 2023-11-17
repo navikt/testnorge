@@ -32,10 +32,10 @@ export const AlderspensjonForm = ({ formMethods }) => {
 	const { nyBestilling, leggTil, importTestnorge, leggTilPaaGruppe } = opts?.is
 
 	const harAlder =
-		_has(formikBag.values, 'pdldata.opprettNyPerson.alder') &&
-		_has(formikBag.values, 'pdldata.opprettNyPerson.foedtFoer')
-	const alderNyPerson = _get(formikBag.values, 'pdldata.opprettNyPerson.alder')
-	const foedtFoer = _get(formikBag.values, 'pdldata.opprettNyPerson.foedtFoer')
+		_has(formMethods.getValues(), 'pdldata.opprettNyPerson.alder') &&
+		_has(formMethods.getValues(), 'pdldata.opprettNyPerson.foedtFoer')
+	const alderNyPerson = _get(formMethods.getValues(), 'pdldata.opprettNyPerson.alder')
+	const foedtFoer = _get(formMethods.getValues(), 'pdldata.opprettNyPerson.foedtFoer')
 	const harUgyldigAlder =
 		(alderNyPerson && alderNyPerson < 62) ||
 		(isDate(foedtFoer) && add(foedtFoer, { years: 62 }) > new Date())
@@ -69,7 +69,7 @@ export const AlderspensjonForm = ({ formMethods }) => {
 				ugyldigFoedselsaar = true
 			}
 		}
-		const foedsel = _get(formikBag.values, 'pdldata.person.foedsel')
+		const foedsel = _get(formMethods.getValues(), 'pdldata.person.foedsel')
 		if (foedsel) {
 			const foedselsaar =
 				foedsel[foedsel.length - 1]?.foedselsaar ||
@@ -84,17 +84,17 @@ export const AlderspensjonForm = ({ formMethods }) => {
 	}
 
 	const harNorskBankkonto =
-		_has(formikBag.values, 'bankkonto.norskBankkonto') ||
+		_has(formMethods.getValues(), 'bankkonto.norskBankkonto') ||
 		_has(opts, 'personFoerLeggTil.kontoregister.aktivKonto')
 
 	const harPopp =
-		_has(formikBag.values, 'pensjonforvalter.inntekt') ||
+		_has(formMethods.getValues(), 'pensjonforvalter.inntekt') ||
 		opts?.tidligereBestillinger?.some((bestilling) => bestilling.data?.pensjonforvalter?.inntekt)
 
 	const gyldigSivilstand = ['GIFT', 'SAMBOER', 'REGISTRERT_PARTNER']
 
 	const harPartner =
-		_get(formikBag.values, 'pdldata.person.sivilstand')?.some((siv) =>
+		_get(formMethods.getValues(), 'pdldata.person.sivilstand')?.some((siv) =>
 			gyldigSivilstand.includes(siv?.type),
 		) ||
 		_get(opts, 'personFoerLeggTil.pdl.hentPerson.sivilstand')?.some((siv) =>
@@ -115,12 +115,12 @@ export const AlderspensjonForm = ({ formMethods }) => {
 		utland: 'UTLAND',
 	}
 	const valgtAdresseType = () => {
-		const adresseUtenTilDato = _get(formikBag.values, 'pdldata.person.bostedsadresse')?.find(
+		const adresseUtenTilDato = _get(formMethods.getValues(), 'pdldata.person.bostedsadresse')?.find(
 			(adresse) => adresse.gyldigFraOgMed && !adresse.gyldigTilOgMed,
 		)
 		const gjeldendeAdresse =
 			adresseUtenTilDato ||
-			_get(formikBag.values, 'pdldata.person.bostedsadresse')?.reduce((prev, curr) => {
+			_get(formMethods.getValues(), 'pdldata.person.bostedsadresse')?.reduce((prev, curr) => {
 				if (!prev.gyldigTilOgMed || !curr.gyldigTilOgMed) return null
 				return isAfter(prev.gyldigTilOgMed, curr.gyldigTilOgMed) ? prev : curr
 			})
@@ -155,9 +155,9 @@ export const AlderspensjonForm = ({ formMethods }) => {
 		<Vis attributt={alderspensjonPath}>
 			<Panel
 				heading="Alderspensjon"
-				hasErrors={panelError(formikBag, alderspensjonPath)}
+				hasErrors={panelError(formMethods.formState.errors, alderspensjonPath)}
 				iconType="pensjon"
-				startOpen={erForsteEllerTest(formikBag.values, [alderspensjonPath])}
+				startOpen={erForsteEllerTest(formMethods.getValues(), [alderspensjonPath])}
 			>
 				{nyBestilling && (!harAlder || harUgyldigAlder) && (
 					<StyledAlert variant={'warning'} size={'small'}>
@@ -199,7 +199,10 @@ export const AlderspensjonForm = ({ formMethods }) => {
 						kunne opprettes automatisk.
 					</StyledAlert>
 				)}
-				{_get(formikBag.values, `${alderspensjonPath}.relasjoner[0].sumAvForvArbKapPenInntekt`) &&
+				{_get(
+					formMethods.getValues(),
+					`${alderspensjonPath}.relasjoner[0].sumAvForvArbKapPenInntekt`,
+				) &&
 					!leggTilPaaGruppe &&
 					!harPartner &&
 					!harPartnerImportertPerson() && (
@@ -213,9 +216,9 @@ export const AlderspensjonForm = ({ formMethods }) => {
 					<Monthpicker
 						name={`${alderspensjonPath}.iverksettelsesdato`}
 						label="Iverksettelsesmåned"
-						date={_get(formikBag.values, `${alderspensjonPath}.iverksettelsesdato`)}
+						date={_get(formMethods.getValues(), `${alderspensjonPath}.iverksettelsesdato`)}
 						handleDateChange={(dato: string) =>
-							formikBag.setFieldValue(`${alderspensjonPath}.iverksettelsesdato`, dato)
+							formMethods.setValue(`${alderspensjonPath}.iverksettelsesdato`, dato)
 						}
 						minDate={setDate(addMonths(new Date(), 1), 1)}
 					/>

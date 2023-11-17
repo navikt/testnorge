@@ -34,18 +34,20 @@ export const SivilstandForm = ({
 	eksisterendeNyPerson = null,
 }: SivilstandFormTypes) => {
 	const handleTypeChange = (selected: any, path: string) => {
-		formikBag.setFieldValue(`${path}.type`, selected.value)
+		formMethods.setValue(`${path}.type`, selected.value)
 		if (!gyldigeSivilstander.includes(selected.value)) {
-			formikBag.setFieldValue(`${path}.borIkkeSammen`, false)
-			formikBag.setFieldValue(`${path}.relatertVedSivilstand`, null)
-			formikBag.setFieldValue(`${path}.nyRelatertPerson`, initialPdlPerson)
+			formMethods.setValue(`${path}.borIkkeSammen`, false)
+			formMethods.setValue(`${path}.relatertVedSivilstand`, null)
+			formMethods.setValue(`${path}.nyRelatertPerson`, initialPdlPerson)
 		}
 		if (selected.value === 'SAMBOER') {
-			formikBag.setFieldValue(`${path}.bekreftelsesdato`, null)
+			formMethods.setValue(`${path}.bekreftelsesdato`, null)
 		}
 	}
 
-	const kanHaRelatertPerson = gyldigeSivilstander.includes(_.get(formikBag.values, `${path}.type`))
+	const kanHaRelatertPerson = gyldigeSivilstander.includes(
+		_.get(formMethods.getValues(), `${path}.type`),
+	)
 
 	return (
 		<div className="flexbox--flex-wrap">
@@ -56,7 +58,7 @@ export const SivilstandForm = ({
 				onChange={(selected: any) => handleTypeChange(selected, path)}
 				isClearable={false}
 			/>
-			{_.get(formikBag.values, `${path}.type`) === 'SAMBOER' && (
+			{_.get(formMethods.getValues(), `${path}.type`) === 'SAMBOER' && (
 				<div style={{ marginLeft: '-20px', marginRight: '20px', paddingTop: '27px' }}>
 					<Hjelpetekst>
 						Samboer eksisterer verken i PDL eller TPS. Personer med denne typen sisvilstand vil
@@ -68,16 +70,16 @@ export const SivilstandForm = ({
 				<FormikDatepicker
 					name={`${path}.sivilstandsdato`}
 					label="Gyldig fra og med"
-					disabled={_.get(formikBag.values, `${path}.bekreftelsesdato`) != null}
+					disabled={_.get(formMethods.getValues(), `${path}.bekreftelsesdato`) != null}
 					fastfield={false}
 				/>
 				<FormikDatepicker
 					name={`${path}.bekreftelsesdato`}
 					label="Bekreftelsesdato"
 					disabled={
-						_.get(formikBag.values, `${path}.sivilstandsdato`) != null ||
-						_.get(formikBag.values, `${path}.master`) !== 'PDL' ||
-						_.get(formikBag.values, `${path}.type`) === 'SAMBOER'
+						_.get(formMethods.getValues(), `${path}.sivilstandsdato`) != null ||
+						_.get(formMethods.getValues(), `${path}.master`) !== 'PDL' ||
+						_.get(formMethods.getValues(), `${path}.type`) === 'SAMBOER'
 					}
 					fastfield={false}
 				/>
@@ -96,14 +98,14 @@ export const SivilstandForm = ({
 					label={'PERSON RELATERT TIL'}
 					formMethods={formMethods}
 					isExpanded={
-						!isEmpty(_.get(formikBag.values, `${path}.nyRelatertPerson`), ['syntetisk']) ||
-						_.get(formikBag.values, `${path}.relatertVedSivilstand`) !== null
+						!isEmpty(_.get(formMethods.getValues(), `${path}.nyRelatertPerson`), ['syntetisk']) ||
+						_.get(formMethods.getValues(), `${path}.relatertVedSivilstand`) !== null
 					}
 				/>
 			)}
 			<AvansertForm
 				path={path}
-				kanVelgeMaster={_.get(formikBag.values, `${path}.bekreftelsesdato`) === null}
+				kanVelgeMaster={_.get(formMethods.getValues(), `${path}.bekreftelsesdato`) === null}
 			/>
 		</div>
 	)

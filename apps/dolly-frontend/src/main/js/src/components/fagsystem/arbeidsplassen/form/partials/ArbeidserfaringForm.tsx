@@ -16,8 +16,8 @@ import { EraseFillButtons } from '@/components/fagsystem/arbeidsplassen/form/par
 
 export const ArbeidserfaringForm = ({ formMethods }) => {
 	const setYrke = (valg, path) => {
-		formikBag.setFieldValue(`${path}.styrkkode`, valg.value)
-		formikBag.setFieldValue(`${path}.jobTitle`, valg.label)
+		formMethods.setValue(`${path}.styrkkode`, valg.value)
+		formMethods.setValue(`${path}.jobTitle`, valg.label)
 	}
 
 	const arbeidserfaringListePath = 'arbeidsplassenCV.arbeidserfaring'
@@ -47,7 +47,7 @@ export const ArbeidserfaringForm = ({ formMethods }) => {
 								label="Alternativ tittel"
 								size="large"
 								key={`alternativeJobTitle_${_get(
-									formikBag.values,
+									formMethods.getValues(),
 									`${arbeidsforholdPath}.alternativeJobTitle`,
 								)}`}
 							/>
@@ -55,33 +55,36 @@ export const ArbeidserfaringForm = ({ formMethods }) => {
 								name={`${arbeidsforholdPath}.employer`}
 								label="Bedrift"
 								size="large"
-								key={`employer_${_get(formikBag.values, `${arbeidsforholdPath}.employer`)}`}
+								key={`employer_${_get(formMethods.getValues(), `${arbeidsforholdPath}.employer`)}`}
 							/>
 							<FormikTextInput
 								name={`${arbeidsforholdPath}.location`}
 								label="Sted"
 								size="large"
-								key={`location_${_get(formikBag.values, `${arbeidsforholdPath}.location`)}`}
+								key={`location_${_get(formMethods.getValues(), `${arbeidsforholdPath}.location`)}`}
 							/>
 							<Fritekstfelt
 								label="Arbeidsoppgaver"
 								placeholder="Beskrivelse av arbeidsoppgaver"
-								defaultValue={_get(formikBag.values, `${arbeidsforholdPath}.description`)}
+								defaultValue={_get(formMethods.getValues(), `${arbeidsforholdPath}.description`)}
 								onBlur={(beskrivelse) =>
-									formikBag.setFieldValue(
+									formMethods.setValue(
 										`${arbeidsforholdPath}.description`,
 										beskrivelse?.target?.value,
 									)
 								}
 								size="small"
-								key={`description_${_get(formikBag.values, `${arbeidsforholdPath}.description`)}`}
+								key={`description_${_get(
+									formMethods.getValues(),
+									`${arbeidsforholdPath}.description`,
+								)}`}
 								resize
 							/>
 							<FormikDatepicker name={`${arbeidsforholdPath}.fromDate`} label="Ansatt fra" />
 							<FormikDatepicker
 								name={`${arbeidsforholdPath}.toDate`}
 								label="Ansatt til"
-								disabled={_get(formikBag.values, `${arbeidsforholdPath}.ongoing`)}
+								disabled={_get(formMethods.getValues(), `${arbeidsforholdPath}.ongoing`)}
 								fastfield={false}
 							/>
 							<FormikCheckbox
@@ -89,7 +92,7 @@ export const ArbeidserfaringForm = ({ formMethods }) => {
 								name={`${arbeidsforholdPath}.ongoing`}
 								label="Nåværende jobb"
 								wrapperSize="inherit"
-								isDisabled={_get(formikBag.values, `${arbeidsforholdPath}.toDate`)}
+								isDisabled={_get(formMethods.getValues(), `${arbeidsforholdPath}.toDate`)}
 								checkboxMargin
 							/>
 						</div>

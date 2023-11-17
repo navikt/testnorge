@@ -55,8 +55,8 @@ export const VergemaalForm = ({
 				label={'VERGE'}
 				formMethods={formMethods}
 				isExpanded={
-					!isEmpty(_.get(formikBag.values, `${path}.nyVergeIdent`), ['syntetisk']) ||
-					_.get(formikBag.values, `${path}.vergeIdent`) !== null
+					!isEmpty(_.get(formMethods.getValues(), `${path}.nyVergeIdent`), ['syntetisk']) ||
+					_.get(formMethods.getValues(), `${path}.vergeIdent`) !== null
 				}
 			/>
 			<AvansertForm path={path} kanVelgeMaster={false} />

@@ -19,9 +19,9 @@ export const Adresser = ({ formMethods, path }: AdresserProps) => {
 	const landPostadresse = _.get(formikBag, `values.${path}.postadresse.landkode`)
 
 	const handleLandChange = (adressePath: string) => {
-		formikBag.setFieldValue(`${adressePath}.postnr`, '')
-		formikBag.setFieldValue(`${adressePath}.kommunenr`, '')
-		formikBag.setFieldValue(`${adressePath}.poststed`, '')
+		formMethods.setValue(`${adressePath}.postnr`, '')
+		formMethods.setValue(`${adressePath}.kommunenr`, '')
+		formMethods.setValue(`${adressePath}.poststed`, '')
 	}
 
 	return (

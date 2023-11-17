@@ -3,18 +3,15 @@ import { ifPresent, requiredString } from '@/utils/YupValidations'
 import { Mal, useDollyMalerBrukerOgMalnavn } from '@/utils/hooks/useMaler'
 import Loading from '@/components/ui/loading/Loading'
 import { MalOppsummering } from '@/components/bestillingsveileder/stegVelger/steg/steg3/MalOppsummering'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 export type MalerFormProps = {
 	brukerId: string
-	formikBag: { setFieldValue: (arg0: string, arg1: string) => void }
+	formMethods: UseFormReturn
 	opprettetFraMal: string
 }
 
-export const MalForm = ({
-	brukerId,
-	formikBag: { setFieldValue },
-	opprettetFraMal,
-}: MalerFormProps) => {
+export const MalForm = ({ brukerId, formMethods, opprettetFraMal }: MalerFormProps) => {
 	const [typeMal, setTypeMal] = useState(MalTyper.OPPRETT)
 	const [opprettMal, setOpprettMal] = useState(false)
 	const { maler, loading } = useDollyMalerBrukerOgMalnavn(brukerId, null)
@@ -26,14 +23,14 @@ export const MalForm = ({
 	const handleToggleChange = (value: MalTyper) => {
 		setTypeMal(value)
 		if (value === MalTyper.OPPRETT) {
-			setFieldValue('malBestillingNavn', '')
+			formMethods.setValue('malBestillingNavn', '')
 		} else if (value === MalTyper.ENDRE) {
-			setFieldValue('malBestillingNavn', opprettetFraMal || '')
+			formMethods.setValue('malBestillingNavn', opprettetFraMal || '')
 		}
 	}
 
 	const handleCheckboxChange = (value: BaseSyntheticEvent) => {
-		setFieldValue('malBestillingNavn', value.target?.checked ? '' : undefined)
+		formMethods.setValue('malBestillingNavn', value.target?.checked ? '' : undefined)
 		setOpprettMal(value.target?.checked)
 	}
 

@@ -1,19 +1,24 @@
 import * as _ from 'lodash-es'
 import { runningCypressE2E } from '@/service/services/Request'
 import { isDate } from 'date-fns'
+import { useFormContext } from 'react-hook-form'
 
 export const fieldError = (meta) => {
 	return !!meta.touched && !!meta.error ? { feilmelding: meta.error } : null
 }
 
-export const panelError = (formikBag, attributtPath) => {
+export const panelError = (errors, attributtPath) => {
+	const {
+		formState: { errors: panelErrors },
+	} = useFormContext()
+	console.log('panelErrors: ', panelErrors) //TODO - SLETT MEG
 	// Ignore if values ikke er satt
 	if (_.isNil(attributtPath)) return false
 
 	// Strings er akseptert, men konverter til Array
 	if (!Array.isArray(attributtPath)) attributtPath = [attributtPath]
 
-	return attributtPath.some((attr) => _.has(formikBag.errors, attr))
+	return attributtPath.some((attr) => _.has(errors, attr))
 }
 
 export const SyntEvent = (name, value) => ({ target: { name, value } })

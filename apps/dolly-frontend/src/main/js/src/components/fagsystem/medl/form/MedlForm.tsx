@@ -59,10 +59,10 @@ export const MedlForm = ({ formMethods }: MedlFormProps) => {
 		<Vis attributt={MedlAttributt}>
 			<Panel
 				heading="Medlemskap (MEDL)"
-				hasErrors={panelError(formikBag, MedlAttributt)}
+				hasErrors={panelError(formMethods.formState.errors, MedlAttributt)}
 				iconType="calendar"
 				// @ts-ignore
-				startOpen={erForsteEllerTest(formikBag.values, [MedlAttributt])}
+				startOpen={erForsteEllerTest(formMethods.getValues(), [MedlAttributt])}
 			>
 				<Kategori title={`Oppretting av medlemskapsperiode`} vis={MedlAttributt}>
 					<div className="flexbox--flex-wrap">
@@ -75,7 +75,7 @@ export const MedlForm = ({ formMethods }: MedlFormProps) => {
 								isClearable={false}
 								afterChange={(selected) => {
 									setAktivKilde(selected?.value)
-									formikBag.setFieldValue('medl', getInitialValue(selected?.value))
+									formMethods.setValue('medl', getInitialValue(selected?.value))
 								}}
 							/>
 							<MedlSelect

@@ -18,18 +18,18 @@ const tilleggsinformasjonAttributter = {
 
 const InntektStub = ({ formMethods, inntektPath }) => {
 	const [fields, setFields] = useState({})
-	const [inntektValues] = useState(_.get(formikBag.values, inntektPath))
+	const [inntektValues] = useState(_.get(formMethods.getValues(), inntektPath))
 	const [currentInntektstype, setCurrentInntektstype] = useState(
-		_.get(formikBag.values, `${inntektPath}.inntektstype`),
+		_.get(formMethods.getValues(), `${inntektPath}.inntektstype`),
 	)
 	const currentTilleggsinformasjonstype = _.get(
-		formikBag.values,
+		formMethods.getValues(),
 		`${inntektPath}.tilleggsinformasjonstype`,
 	)
 
 	useEffect(() => {
-		setCurrentInntektstype(_.get(formikBag.values, `${inntektPath}.inntektstype`))
-	}, [formikBag.values])
+		setCurrentInntektstype(_.get(formMethods.getValues(), `${inntektPath}.inntektstype`))
+	}, [formMethods.getValues()])
 
 	useEffect(() => {
 		if (
@@ -51,26 +51,35 @@ const InntektStub = ({ formMethods, inntektPath }) => {
 
 	useEffect(() => {
 		if (!currentTilleggsinformasjonstype) {
-			formikBag.setFieldValue(`${inntektPath}.tilleggsinformasjon`, undefined)
+			formMethods.setValue(`${inntektPath}.tilleggsinformasjon`, undefined)
 			return
 		}
-		formikBag.setFieldValue(`${inntektPath}.tilleggsinformasjon`, {
+		formMethods.setValue(`${inntektPath}.tilleggsinformasjon`, {
 			[`${tilleggsinformasjonAttributter[currentTilleggsinformasjonstype]}`]: {},
 		})
 	}, [currentTilleggsinformasjonstype])
 
 	const setFormikBag = (values) => {
 		const nullstiltInntekt = {
-			beloep: _.get(formikBag.values, `${inntektPath}.beloep`),
-			startOpptjeningsperiode: _.get(formikBag.values, `${inntektPath}.startOpptjeningsperiode`),
-			sluttOpptjeningsperiode: _.get(formikBag.values, `${inntektPath}.sluttOpptjeningsperiode`),
+			beloep: _.get(formMethods.getValues(), `${inntektPath}.beloep`),
+			startOpptjeningsperiode: _.get(
+				formMethods.getValues(),
+				`${inntektPath}.startOpptjeningsperiode`,
+			),
+			sluttOpptjeningsperiode: _.get(
+				formMethods.getValues(),
+				`${inntektPath}.sluttOpptjeningsperiode`,
+			),
 			inntektstype: values.inntektstype,
 		}
 
 		if (values.inntektstype !== currentInntektstype) {
-			formikBag.setFieldValue(inntektPath, nullstiltInntekt)
+			formMethods.setValue(inntektPath, nullstiltInntekt)
 		} else {
-			formikBag.setFieldValue(inntektPath, { ..._.get(formikBag.values, inntektPath), ...values })
+			formMethods.setValue(inntektPath, {
+				..._.get(formMethods.getValues(), inntektPath),
+				...values,
+			})
 		}
 	}
 
@@ -80,9 +89,9 @@ const InntektStub = ({ formMethods, inntektPath }) => {
 		if (
 			valueArray.length === 1 &&
 			valueArray[0] === '<TOM>' &&
-			_.get(formikBag.values, `${inntektPath}.${name}`)
+			_.get(formMethods.getValues(), `${inntektPath}.${name}`)
 		) {
-			formikBag.setFieldValue(`${inntektPath}.${name}`, undefined)
+			formMethods.setValue(`${inntektPath}.${name}`, undefined)
 		}
 	}
 

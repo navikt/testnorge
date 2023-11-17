@@ -80,7 +80,7 @@ enum SykemeldingTyper {
 
 export const Sykemelding = ({ formMethods }: SykemeldingForm) => {
 	const [typeSykemelding, setTypeSykemelding] = useState(
-		_.get(formikBag.values, 'sykemelding').hasOwnProperty('detaljertSykemelding')
+		_.get(formMethods.getValues(), 'sykemelding').hasOwnProperty('detaljertSykemelding')
 			? SykemeldingTyper.detaljert
 			: SykemeldingTyper.synt,
 	)
@@ -88,9 +88,9 @@ export const Sykemelding = ({ formMethods }: SykemeldingForm) => {
 	const handleToggleChange = (value: SykemeldingTyper) => {
 		setTypeSykemelding(value)
 		if (value === SykemeldingTyper.detaljert) {
-			formikBag.setFieldValue('sykemelding', initialValuesDetaljertSykemelding)
+			formMethods.setValue('sykemelding', initialValuesDetaljertSykemelding)
 		} else {
-			formikBag.setFieldValue('sykemelding', initialValuesSyntSykemelding)
+			formMethods.setValue('sykemelding', initialValuesSyntSykemelding)
 		}
 	}
 

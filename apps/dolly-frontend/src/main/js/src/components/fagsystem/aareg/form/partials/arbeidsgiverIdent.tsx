@@ -5,7 +5,7 @@ import Icon from '@/components/ui/icon/Icon'
 import Loading from '@/components/ui/loading/Loading'
 import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { PdlforvalterApi } from '@/service/Api'
-import { useFormikContext } from 'formik'
+import { useFormContext } from 'react-hook-form'
 
 type ArbeidsgiverIdentProps = {
 	path: string
@@ -13,9 +13,9 @@ type ArbeidsgiverIdentProps = {
 }
 
 export const ArbeidsgiverIdent = ({ path, isDisabled }: ArbeidsgiverIdentProps) => {
-	const formikBag = useFormikContext()
+	const formMethods = useFormContext()
 	const [error, setError] = useState(null)
-	const [personnummer, setPersonnummer] = useState(_.get(formikBag.values, path))
+	const [personnummer, setPersonnummer] = useState(_.get(formMethods.getValues(), path))
 	const [success, setSuccess] = useBoolean(false)
 	const [loading, setLoading] = useBoolean(false)
 
@@ -31,7 +31,7 @@ export const ArbeidsgiverIdent = ({ path, isDisabled }: ArbeidsgiverIdentProps) 
 			handleManualPersonnrChange(personnr)
 		} else {
 			setError('Ident må være et tall med 11 siffer')
-			formikBag.setFieldValue(`${path}`, '')
+			formMethods.setValue(`${path}`, '')
 		}
 	}
 
@@ -43,7 +43,7 @@ export const ArbeidsgiverIdent = ({ path, isDisabled }: ArbeidsgiverIdentProps) 
 				if (!response?.data || response?.data?.length < 1) {
 					setError('Fant ikke arbeidsgiver-ident')
 					setLoading(false)
-					formikBag.setFieldValue(`${path}`, '')
+					formMethods.setValue(`${path}`, '')
 					return
 				}
 
@@ -52,7 +52,7 @@ export const ArbeidsgiverIdent = ({ path, isDisabled }: ArbeidsgiverIdentProps) 
 				setLoading(false)
 				setPersonnummer(personnr)
 
-				formikBag.setFieldValue(`${path}`, personnr)
+				formMethods.setValue(`${path}`, personnr)
 			})
 			.catch(() => setError('Fant ikke arbeidsgiver-ident'))
 	}

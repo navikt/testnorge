@@ -42,9 +42,9 @@ export const ArbeidsforholdForm = ({ formMethods, inntektsinformasjonPath }) => 
 						options={arbeidsforholdstyperFormatted}
 						isLoading={arbeidsforholdstyper.loading}
 						onChange={(forhold) =>
-							formikBag.setFieldValue(`${path}.arbeidsforholdstype`, forhold.value)
+							formMethods.setValue(`${path}.arbeidsforholdstype`, forhold.value)
 						}
-						value={_.get(formikBag.values, `${path}.arbeidsforholdstype`)}
+						value={_.get(formMethods.getValues(), `${path}.arbeidsforholdstype`)}
 						size="xlarge"
 						isClearable={false}
 					/>

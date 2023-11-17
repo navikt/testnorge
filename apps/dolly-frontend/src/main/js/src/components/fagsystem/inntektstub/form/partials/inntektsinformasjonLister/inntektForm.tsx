@@ -73,7 +73,7 @@ export const InntektForm = ({ formMethods, inntektsinformasjonPath }: data) => {
 
 		const restValues = eventValueSimple && { ...simpleValues }
 
-		const inntektsListe = _.get(formikBag.values, `${inntektsinformasjonPath}.inntektsliste`)
+		const inntektsListe = _.get(formMethods.getValues(), `${inntektsinformasjonPath}.inntektsliste`)
 		const newInntektArray =
 			inntektsListe &&
 			inntektsListe.map((inntekt: inntekt) => ({
@@ -84,7 +84,7 @@ export const InntektForm = ({ formMethods, inntektsinformasjonPath }: data) => {
 			}))
 
 		newInntektArray &&
-			formikBag.setFieldValue(`${inntektsinformasjonPath}.inntektsliste`, newInntektArray)
+			formMethods.setValue(`${inntektsinformasjonPath}.inntektsliste`, newInntektArray)
 	}
 	return (
 		<>

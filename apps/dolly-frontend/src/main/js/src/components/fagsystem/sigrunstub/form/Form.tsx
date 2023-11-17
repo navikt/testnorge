@@ -10,9 +10,9 @@ export const SigrunstubForm = ({ formMethods }) => (
 	<Vis attributt={sigrunAttributt}>
 		<Panel
 			heading="Lignet inntekt (Sigrun)"
-			hasErrors={panelError(formikBag, sigrunAttributt)}
+			hasErrors={panelError(formMethods.formState.errors, sigrunAttributt)}
 			iconType="sigrun"
-			startOpen={erForsteEllerTest(formikBag.values, [sigrunAttributt])}
+			startOpen={erForsteEllerTest(formMethods.getValues(), [sigrunAttributt])}
 		>
 			<InntektsaarForm formMethods={formMethods} />
 		</Panel>

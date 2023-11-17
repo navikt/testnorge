@@ -23,9 +23,9 @@ export const ArbeidsplassenForm = ({ formMethods }) => {
 		<Vis attributt={arbeidsplassenAttributt}>
 			<Panel
 				heading="Arbeidsplassen (CV)"
-				hasErrors={panelError(formikBag, arbeidsplassenAttributt)}
+				hasErrors={panelError(formMethods.formState.errors, arbeidsplassenAttributt)}
 				iconType="cv"
-				startOpen={erForsteEllerTest(formikBag.values, [arbeidsplassenAttributt])}
+				startOpen={erForsteEllerTest(formMethods.getValues(), [arbeidsplassenAttributt])}
 			>
 				<div className="flexbox--flex-wrap">
 					<JobboenskerForm formMethods={formMethods} />

@@ -16,8 +16,8 @@ import { addDays } from 'date-fns'
 const uforetrygdPath = 'pensjonforvalter.uforetrygd'
 
 export const UforetrygdForm = ({ formMethods }) => {
-	const saksbehandler = _.get(formikBag.values, `${uforetrygdPath}.saksbehandler`)
-	const attesterer = _.get(formikBag.values, `${uforetrygdPath}.attesterer`)
+	const saksbehandler = _.get(formMethods.getValues(), `${uforetrygdPath}.saksbehandler`)
+	const attesterer = _.get(formMethods.getValues(), `${uforetrygdPath}.attesterer`)
 
 	const [randomSaksbehandlere, setRandomSaksbehandlere] = useState([])
 	const [randomAttesterere, setRandomAttesterere] = useState([])
@@ -32,9 +32,9 @@ export const UforetrygdForm = ({ formMethods }) => {
 		<Vis attributt={uforetrygdPath}>
 			<Panel
 				heading="Uføretrygd"
-				hasErrors={panelError(formikBag, uforetrygdPath)}
+				hasErrors={panelError(formMethods.formState.errors, uforetrygdPath)}
 				iconType="pensjon"
-				startOpen={erForsteEllerTest(formikBag.values, [uforetrygdPath])}
+				startOpen={erForsteEllerTest(formMethods.getValues(), [uforetrygdPath])}
 			>
 				<div className="flexbox--flex-wrap">
 					<FormikDatepicker

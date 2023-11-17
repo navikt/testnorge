@@ -58,14 +58,14 @@ export const DeltBostedForm = ({
 	personValues,
 }: DeltBostedValues) => {
 	const getAdressetype = () => {
-		const type = _.get(formikBag.values, `${path}.adressetype`)
+		const type = _.get(formMethods.getValues(), `${path}.adressetype`)
 		if (type) {
 			return type
-		} else if (_.get(formikBag.values, `${path}.vegadresse`)) {
+		} else if (_.get(formMethods.getValues(), `${path}.vegadresse`)) {
 			return 'VEGADRESSE'
-		} else if (_.get(formikBag.values, `${path}.matrikkeladresse`)) {
+		} else if (_.get(formMethods.getValues(), `${path}.matrikkeladresse`)) {
 			return 'MATRIKKELADRESSE'
-		} else if (_.get(formikBag.values, `${path}.ukjentBosted`)) {
+		} else if (_.get(formMethods.getValues(), `${path}.ukjentBosted`)) {
 			return 'UKJENT_BOSTED'
 		}
 	}
@@ -73,13 +73,13 @@ export const DeltBostedForm = ({
 	const [adressetype, setAdressetype] = useState(getAdressetype())
 
 	useEffect(() => {
-		if (!_.get(formikBag.values, `${path}.adressetype`)) {
-			formikBag.setFieldValue(`${path}.adressetype`, getAdressetype())
+		if (!_.get(formMethods.getValues(), `${path}.adressetype`)) {
+			formMethods.setValue(`${path}.adressetype`, getAdressetype())
 		}
 	}, [])
 
 	const handleChangeAdressetype = (target: Target, adressePath: string) => {
-		const adresse = _.get(formikBag.values, adressePath)
+		const adresse = _.get(formMethods.getValues(), adressePath)
 		const adresseClone = _.cloneDeep(adresse)
 
 		if (!target || target?.value === 'PARTNER_ADRESSE') {
@@ -119,7 +119,7 @@ export const DeltBostedForm = ({
 
 		setAdressetype(target?.value)
 		_.set(adresseClone, 'adressetype', target?.value || null)
-		formikBag.setFieldValue(path, adresseClone)
+		formMethods.setValue(path, adresseClone)
 	}
 
 	return (

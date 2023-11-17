@@ -41,16 +41,16 @@ enum Kodeverk {
 export const histarkAttributt = 'histark'
 
 export const HistarkForm = ({ formMethods }: HistarkFormProps) => {
-	if (!_.has(formikBag.values, histarkAttributt)) {
+	if (!_.has(formMethods.getValues(), histarkAttributt)) {
 		return null
 	}
 
-	const sessionDokumenter = _.get(formikBag.values, 'histark.vedlegg')
+	const sessionDokumenter = _.get(formMethods.getValues(), 'histark.vedlegg')
 	const [files, setFiles] = useState(sessionDokumenter || [])
 	const [startAar, setStartAar] = useState(new Date())
 	const [sluttAar, setSluttAar] = useState(new Date())
 	const [selectedNavEnhet, setSelectedNavEnhet] = useState(
-		_.get(formikBag.values, 'histark.dokumenter.0.enhetsnummer'),
+		_.get(formMethods.getValues(), 'histark.dokumenter.0.enhetsnummer'),
 	)
 
 	const { navEnheter = [] } = useNavEnheter()
@@ -60,15 +60,15 @@ export const HistarkForm = ({ formMethods }: HistarkFormProps) => {
 	}, [files])
 	const handleVedleggChange = (filer: [Vedlegg]) => {
 		setFiles(filer)
-		formikBag.setFieldValue('histark.vedlegg', filer)
-		formikBag.setFieldValue('histark.dokumenter.0.tittel', null)
-		formikBag.setFieldValue('histark.dokumenter.0.antallSider', null)
-		formikBag.setFieldValue('histark.dokumenter.0.fysiskDokument', null)
+		formMethods.setValue('histark.vedlegg', filer)
+		formMethods.setValue('histark.dokumenter.0.tittel', null)
+		formMethods.setValue('histark.dokumenter.0.antallSider', null)
+		formMethods.setValue('histark.dokumenter.0.fysiskDokument', null)
 
 		filer.forEach((fil: Vedlegg, index: number) => {
-			formikBag.setFieldValue(`histark.dokumenter.${index}.tittel`, fil.dokNavn || fil.name)
-			formikBag.setFieldValue(`histark.dokumenter.${index}.antallSider`, 1)
-			formikBag.setFieldValue(`histark.dokumenter.${index}.fysiskDokument`, fil.content.base64)
+			formMethods.setValue(`histark.dokumenter.${index}.tittel`, fil.dokNavn || fil.name)
+			formMethods.setValue(`histark.dokumenter.${index}.antallSider`, 1)
+			formMethods.setValue(`histark.dokumenter.${index}.fysiskDokument`, fil.content.base64)
 		})
 	}
 
@@ -77,10 +77,10 @@ export const HistarkForm = ({ formMethods }: HistarkFormProps) => {
 		<Vis attributt={histarkAttributt}>
 			<Panel
 				heading="Dokumenter (Histark)"
-				hasErrors={panelError(formikBag, histarkAttributt)}
+				hasErrors={panelError(formMethods.formState.errors, histarkAttributt)}
 				iconType="dokarkiv"
 				// @ts-ignore
-				startOpen={erForsteEllerTest(formikBag.values, [histarkAttributt])}
+				startOpen={erForsteEllerTest(formMethods.getValues(), [histarkAttributt])}
 			>
 				<Kategori title={`Oppretting av saksmappe for histark`} vis={histarkAttributt}>
 					<FormikDollyFieldArray
@@ -107,8 +107,8 @@ export const HistarkForm = ({ formMethods }: HistarkFormProps) => {
 										name={'navenhet'}
 										value={selectedNavEnhet}
 										onChange={(selected: Option) => {
-											formikBag.setFieldValue(`${path}.enhetsnummer`, selected.value)
-											formikBag.setFieldValue(`${path}.enhetsnavn`, selected.label)
+											formMethods.setValue(`${path}.enhetsnummer`, selected.value)
+											formMethods.setValue(`${path}.enhetsnavn`, selected.label)
 											setSelectedNavEnhet(selected?.value)
 										}}
 										label={'NAV-enhet'}
@@ -116,7 +116,7 @@ export const HistarkForm = ({ formMethods }: HistarkFormProps) => {
 										size={'xlarge'}
 										options={navEnheter}
 										feil={
-											_.has(formikBag.errors, `${path}.enhetsnavn`)
+											_.has(formMethods.formState.errors, `${path}.enhetsnavn`)
 												? { feilmelding: 'Velg en NAV-enhet' }
 												: null
 										}
@@ -130,7 +130,7 @@ export const HistarkForm = ({ formMethods }: HistarkFormProps) => {
 										handleDateChange={(val) => {
 											const time = val ? new Date(val) : null
 											setStartAar(time)
-											formikBag.setFieldValue(`${path}.startAar`, val ? new Date(val) : null)
+											formMethods.setValue(`${path}.startAar`, val ? new Date(val) : null)
 										}}
 										maxDate={new Date()}
 									/>
@@ -142,7 +142,7 @@ export const HistarkForm = ({ formMethods }: HistarkFormProps) => {
 										handleDateChange={(val) => {
 											const time = val ? new Date(val) : null
 											setSluttAar(time)
-											formikBag.setFieldValue(`${path}.sluttAar`, time)
+											formMethods.setValue(`${path}.sluttAar`, time)
 										}}
 										maxDate={new Date()}
 									/>
@@ -170,7 +170,7 @@ export const HistarkForm = ({ formMethods }: HistarkFormProps) => {
 											setFiles={setFiles}
 											isMultiple={false}
 											feil={
-												_.has(formikBag.errors, `${path}.tittel`)
+												_.has(formMethods.formState.errors, `${path}.tittel`)
 													? { feilmelding: 'Fil er påkrevd' }
 													: null
 											}

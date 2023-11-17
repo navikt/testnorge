@@ -41,27 +41,27 @@ type Target = {
 
 export const KontaktadresseForm = ({ formMethods, path, idx }: KontaktadresseFormValues) => {
 	useEffect(() => {
-		formikBag.setFieldValue(`${path}.adresseIdentifikatorFraMatrikkelen`, undefined)
-		const kontaktadresse = _.get(formikBag.values, path)
+		formMethods.setValue(`${path}.adresseIdentifikatorFraMatrikkelen`, undefined)
+		const kontaktadresse = _.get(formMethods.getValues(), path)
 		if (_.get(kontaktadresse, 'vegadresse') && _.get(kontaktadresse, 'vegadresse') !== null) {
-			formikBag.setFieldValue(`${path}.adressetype`, Adressetype.Veg)
+			formMethods.setValue(`${path}.adressetype`, Adressetype.Veg)
 		} else if (
 			_.get(kontaktadresse, 'utenlandskAdresse') &&
 			_.get(kontaktadresse, 'utenlandskAdresse') !== null
 		) {
-			formikBag.setFieldValue(`${path}.adressetype`, Adressetype.Utenlandsk)
+			formMethods.setValue(`${path}.adressetype`, Adressetype.Utenlandsk)
 		} else if (
 			_.get(kontaktadresse, 'postboksadresse') &&
 			_.get(kontaktadresse, 'postboksadresse') !== null
 		) {
-			formikBag.setFieldValue(`${path}.adressetype`, Adressetype.Postboks)
+			formMethods.setValue(`${path}.adressetype`, Adressetype.Postboks)
 		}
 	}, [])
 
-	const valgtAdressetype = _.get(formikBag.values, `${path}.adressetype`)
+	const valgtAdressetype = _.get(formMethods.getValues(), `${path}.adressetype`)
 
 	const handleChangeAdressetype = (target: Target, path: string) => {
-		const adresse = _.get(formikBag.values, path)
+		const adresse = _.get(formMethods.getValues(), path)
 		const adresseClone = _.cloneDeep(adresse)
 
 		_.set(adresseClone, 'adressetype', target?.value || null)
@@ -87,7 +87,7 @@ export const KontaktadresseForm = ({ formMethods, path, idx }: KontaktadresseFor
 			_.set(adresseClone, 'utenlandskAdresse', undefined)
 		}
 
-		formikBag.setFieldValue(path, adresseClone)
+		formMethods.setValue(path, adresseClone)
 	}
 
 	const { navnInfo, loading } = useGenererNavn()
@@ -115,7 +115,7 @@ export const KontaktadresseForm = ({ formMethods, path, idx }: KontaktadresseFor
 				<UtenlandskAdresse
 					formMethods={formMethods}
 					path={`${path}.utenlandskAdresse`}
-					master={_.get(formikBag.values, `${path}.master`)}
+					master={_.get(formMethods.getValues(), `${path}.master`)}
 				/>
 			)}
 			{valgtAdressetype === 'POSTBOKSADRESSE' && (
@@ -131,12 +131,12 @@ export const KontaktadresseForm = ({ formMethods, path, idx }: KontaktadresseFor
 					label="C/O adressenavn"
 					options={navnOptions}
 					size="xlarge"
-					placeholder={getPlaceholder(formikBag.values, `${path}.opprettCoAdresseNavn`)}
+					placeholder={getPlaceholder(formMethods.getValues(), `${path}.opprettCoAdresseNavn`)}
 					isLoading={loading}
 					onChange={(navn: Target) =>
-						setNavn(navn, `${path}.opprettCoAdresseNavn`, formikBag.setFieldValue)
+						setNavn(navn, `${path}.opprettCoAdresseNavn`, formMethods.setValue)
 					}
-					value={_.get(formikBag.values, `${path}.opprettCoAdresseNavn.fornavn`)}
+					value={_.get(formMethods.getValues(), `${path}.opprettCoAdresseNavn.fornavn`)}
 				/>
 			</div>
 			<AvansertForm path={path} />

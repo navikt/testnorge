@@ -32,7 +32,7 @@ export const OrgnrToggle = ({
 	}
 
 	const clearEnhetsinfo = () => {
-		const oldValues = _.get(formikBag.values, path) || {}
+		const oldValues = _.get(formMethods.getValues(), path) || {}
 		if (oldValues.hasOwnProperty('foretaksNavn')) {
 			delete oldValues['foretaksNavn']
 		}
@@ -43,7 +43,7 @@ export const OrgnrToggle = ({
 			delete oldValues['postAdresse']
 		}
 		oldValues['orgNr'] = ''
-		formikBag.setFieldValue(path, oldValues)
+		formMethods.setValue(path, oldValues)
 	}
 
 	const handleChange = (event: React.ChangeEvent<any>) => {
@@ -57,9 +57,9 @@ export const OrgnrToggle = ({
 				<OrganisasjonLoader
 					path={`${path}.orgNr`}
 					handleChange={handleChange}
-					value={_.get(formikBag.values, `${path}.orgNr`)}
+					value={_.get(formMethods.getValues(), `${path}.orgNr`)}
 					feil={
-						_.get(formikBag.values, path) === '' && {
+						_.get(formMethods.getValues(), path) === '' && {
 							feilmelding: 'Feltet er påkrevd',
 						}
 					}

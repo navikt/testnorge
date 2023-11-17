@@ -34,14 +34,14 @@ export const NyOrganisasjon = ({ onAvbryt, onSubmit, brukernavn }: NyBestillingP
 
 	const handleMalChange = (formikbag: FormikProps<any>) => {
 		toggleMalAktiv()
-		if (formikbag.values?.mal) {
-			formikbag.setFieldValue('mal', null)
+		if (formMethods.getValues()?.mal) {
+			formMethods.setValue('mal', null)
 		}
 	}
 
 	const handleBrukerChange = (event: { value: any }, formikbag: FormikProps<any>) => {
 		setBruker(event.value)
-		formikbag.setFieldValue('mal', null)
+		formMethods.setValue('mal', null)
 	}
 
 	const preSubmit = (values: { mal: any }, formikBag: any) => {

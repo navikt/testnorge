@@ -39,20 +39,19 @@ export const OrgnummerToggle = ({ formMethods, opplysningspliktigPath, path }: P
 	const handleToggleChange = (value: string) => {
 		setInputType(value)
 		sessionStorage.setItem(ORGANISASJONSTYPE_TOGGLE, value)
-		formikBag.setFieldValue(path, '')
+		formMethods.setValue(path, '')
 	}
 
 	const handleChange = (value: { juridiskEnhet: string; orgnr: string }) => {
-		opplysningspliktigPath &&
-			formikBag.setFieldValue(`${opplysningspliktigPath}`, value.juridiskEnhet)
-		formikBag.setFieldValue(`${path}`, value.orgnr)
+		opplysningspliktigPath && formMethods.setValue(`${opplysningspliktigPath}`, value.juridiskEnhet)
+		formMethods.setValue(`${path}`, value.orgnr)
 	}
 
 	const handleManualOrgChange = (org: string, miljo: string) => {
 		if (!org || !miljo) {
 			return
 		}
-		formikBag.setFieldValue(path, '')
+		formMethods.setValue(path, '')
 		setError(null)
 		setLoading(true)
 		setSuccess(false)
@@ -66,7 +65,7 @@ export const OrgnummerToggle = ({ formMethods, opplysningspliktigPath, path }: P
 				if (!response.data.juridiskEnhet) {
 					if (organisasjon?.overenhet) {
 						opplysningspliktigPath &&
-							formikBag.setFieldValue(`${opplysningspliktigPath}`, organisasjon.overenhet)
+							formMethods.setValue(`${opplysningspliktigPath}`, organisasjon.overenhet)
 					} else {
 						setError('Organisasjonen mangler juridisk enhet')
 						return
@@ -75,8 +74,8 @@ export const OrgnummerToggle = ({ formMethods, opplysningspliktigPath, path }: P
 				setSuccess(true)
 				opplysningspliktigPath &&
 					response.data.juridiskEnhet &&
-					formikBag.setFieldValue(`${opplysningspliktigPath}`, response.data.juridiskEnhet)
-				formikBag.setFieldValue(`${path}`, response.data.orgnummer)
+					formMethods.setValue(`${opplysningspliktigPath}`, response.data.juridiskEnhet)
+				formMethods.setValue(`${path}`, response.data.orgnummer)
 			})
 			.catch(() => {
 				setLoading(false)

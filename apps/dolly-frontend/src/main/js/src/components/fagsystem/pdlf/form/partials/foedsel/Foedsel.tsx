@@ -22,23 +22,23 @@ export const FoedselForm = ({ formMethods, path }: FoedselTypes) => {
 	const opts = useContext(BestillingsveilederContext)
 
 	const handleLandChange = (selected: SelectedValue, foedselPath: string) => {
-		formikBag.setFieldValue(`${foedselPath}.foedeland`, selected?.value || null)
+		formMethods.setValue(`${foedselPath}.foedeland`, selected?.value || null)
 		if (selected?.value !== 'NOR') {
-			formikBag.setFieldValue(`${foedselPath}.foedekommune`, null)
+			formMethods.setValue(`${foedselPath}.foedekommune`, null)
 		}
 	}
 
-	const foedselsaar = _.get(formikBag.values, `${path}.foedselsaar`)
-	const foedselsdato = _.get(formikBag.values, `${path}.foedselsdato`)
+	const foedselsaar = _.get(formMethods.getValues(), `${path}.foedselsaar`)
+	const foedselsdato = _.get(formMethods.getValues(), `${path}.foedselsdato`)
 
 	const minDateFoedsel =
 		opts?.identtype === 'NPID' ? new Date('01.01.1870') : new Date('01.01.1900')
 
 	const harAlder = () => {
 		return (
-			_.get(formikBag.values, 'pdldata.opprettNyPerson.alder') ||
-			_.get(formikBag.values, 'pdldata.opprettNyPerson.foedtEtter') ||
-			_.get(formikBag.values, 'pdldata.opprettNyPerson.foedtFoer')
+			_.get(formMethods.getValues(), 'pdldata.opprettNyPerson.alder') ||
+			_.get(formMethods.getValues(), 'pdldata.opprettNyPerson.foedtEtter') ||
+			_.get(formMethods.getValues(), 'pdldata.opprettNyPerson.foedtFoer')
 		)
 	}
 
@@ -59,7 +59,7 @@ export const FoedselForm = ({ formMethods, path }: FoedselTypes) => {
 					label="Fødselsår"
 					date={foedselsaar ? new Date(foedselsaar, 0) : null}
 					handleDateChange={(val) =>
-						formikBag.setFieldValue(`${path}.foedselsaar`, val ? new Date(val).getFullYear() : null)
+						formMethods.setValue(`${path}.foedselsaar`, val ? new Date(val).getFullYear() : null)
 					}
 					maxDate={new Date()}
 					minDate={minDateFoedsel}
@@ -74,8 +74,8 @@ export const FoedselForm = ({ formMethods, path }: FoedselTypes) => {
 				kodeverk={AdresseKodeverk.Kommunenummer}
 				size="large"
 				isDisabled={
-					_.get(formikBag.values, `${path}.foedeland`) !== 'NOR' &&
-					_.get(formikBag.values, `${path}.foedeland`) !== null
+					_.get(formMethods.getValues(), `${path}.foedeland`) !== 'NOR' &&
+					_.get(formMethods.getValues(), `${path}.foedeland`) !== null
 				}
 			/>
 			<FormikSelect

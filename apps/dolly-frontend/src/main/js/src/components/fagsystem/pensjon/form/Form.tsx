@@ -35,21 +35,21 @@ export const PensjonForm = ({ formMethods }) => {
 		return alder && curDate.getFullYear() - alder + 17
 	}
 
-	const syttenFraOgMedAar = kalkulerIdentFyltSyttenAar(formikBag.values)
+	const syttenFraOgMedAar = kalkulerIdentFyltSyttenAar(formMethods.getValues())
 	const minAar = new Date().getFullYear() - 17
-	const valgtAar = _.get(formikBag.values, `${pensjonPath}.fomAar`)
+	const valgtAar = _.get(formMethods.getValues(), `${pensjonPath}.fomAar`)
 
 	return (
 		<Vis attributt={pensjonPath}>
 			<Panel
 				heading="Pensjonsgivende inntekt (POPP)"
-				hasErrors={panelError(formikBag, pensjonPath)}
+				hasErrors={panelError(formMethods.formState.errors, pensjonPath)}
 				iconType="pensjon"
-				startOpen={erForsteEllerTest(formikBag.values, [pensjonPath])}
+				startOpen={erForsteEllerTest(formMethods.getValues(), [pensjonPath])}
 				informasjonstekst={hjelpetekst}
 			>
 				{/*// @ts-ignore*/}
-				{!_.has(formikBag.values, 'pdldata.opprettNyPerson.alder') &&
+				{!_.has(formMethods.getValues(), 'pdldata.opprettNyPerson.alder') &&
 					valgtAar < minAar &&
 					(nyBestilling || nyBestillingFraMal) && (
 						<StyledAlert variant={'info'} size={'small'}>

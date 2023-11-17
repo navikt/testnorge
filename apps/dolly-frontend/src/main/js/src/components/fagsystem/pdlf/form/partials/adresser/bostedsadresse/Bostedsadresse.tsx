@@ -50,26 +50,26 @@ export const BostedsadresseForm = ({
 	identtype,
 }: BostedsadresseFormValues) => {
 	useEffect(() => {
-		formikBag.setFieldValue(`${path}.adresseIdentifikatorFraMatrikkelen`, undefined)
-		const boadresse = _.get(formikBag.values, path)
+		formMethods.setValue(`${path}.adresseIdentifikatorFraMatrikkelen`, undefined)
+		const boadresse = _.get(formMethods.getValues(), path)
 		if (_.get(boadresse, 'vegadresse') && _.get(boadresse, 'vegadresse') !== null) {
-			formikBag.setFieldValue(`${path}.adressetype`, Adressetype.Veg)
+			formMethods.setValue(`${path}.adressetype`, Adressetype.Veg)
 		} else if (
 			_.get(boadresse, 'matrikkeladresse') &&
 			_.get(boadresse, 'matrikkeladresse') !== null
 		) {
-			formikBag.setFieldValue(`${path}.adressetype`, Adressetype.Matrikkel)
+			formMethods.setValue(`${path}.adressetype`, Adressetype.Matrikkel)
 		} else if (
 			_.get(boadresse, 'utenlandskAdresse') &&
 			_.get(boadresse, 'utenlandskAdresse') !== null
 		) {
-			formikBag.setFieldValue(`${path}.adressetype`, Adressetype.Utenlandsk)
+			formMethods.setValue(`${path}.adressetype`, Adressetype.Utenlandsk)
 		} else if (_.get(boadresse, 'ukjentBosted') && _.get(boadresse, 'ukjentBosted') !== null) {
-			formikBag.setFieldValue(`${path}.adressetype`, Adressetype.Ukjent)
+			formMethods.setValue(`${path}.adressetype`, Adressetype.Ukjent)
 		}
 	}, [])
 
-	const valgtAdressetype = _.get(formikBag.values, `${path}.adressetype`)
+	const valgtAdressetype = _.get(formMethods.getValues(), `${path}.adressetype`)
 
 	const opts = useContext(BestillingsveilederContext)
 	const getAdresseOptions = () => {
@@ -80,7 +80,7 @@ export const BostedsadresseForm = ({
 	}
 
 	const handleChangeAdressetype = (target: Target, path: string) => {
-		const adresse = _.get(formikBag.values, path)
+		const adresse = _.get(formMethods.getValues(), path)
 		const adresseClone = _.cloneDeep(adresse)
 
 		_.set(adresseClone, 'adressetype', target?.value || null)
@@ -120,7 +120,7 @@ export const BostedsadresseForm = ({
 			_.set(adresseClone, 'master', 'FREG')
 		}
 
-		formikBag.setFieldValue(path, adresseClone)
+		formMethods.setValue(path, adresseClone)
 	}
 
 	const { navnInfo, loading } = useGenererNavn()
@@ -151,7 +151,7 @@ export const BostedsadresseForm = ({
 				<UtenlandskAdresse
 					formMethods={formMethods}
 					path={`${path}.utenlandskAdresse`}
-					master={_.get(formikBag.values, `${path}.master`)}
+					master={_.get(formMethods.getValues(), `${path}.master`)}
 				/>
 			)}
 			{valgtAdressetype === 'UKJENT_BOSTED' && (
@@ -168,12 +168,12 @@ export const BostedsadresseForm = ({
 					label="C/O adressenavn"
 					options={navnOptions}
 					size="xlarge"
-					placeholder={getPlaceholder(formikBag.values, `${path}.opprettCoAdresseNavn`)}
+					placeholder={getPlaceholder(formMethods.getValues(), `${path}.opprettCoAdresseNavn`)}
 					isLoading={loading}
 					onChange={(navn: Target) =>
-						setNavn(navn, `${path}.opprettCoAdresseNavn`, formikBag.setFieldValue)
+						setNavn(navn, `${path}.opprettCoAdresseNavn`, formMethods.setValue)
 					}
-					value={_.get(formikBag.values, `${path}.opprettCoAdresseNavn.fornavn`)}
+					value={_.get(formMethods.getValues(), `${path}.opprettCoAdresseNavn.fornavn`)}
 				/>
 			</div>
 			<AvansertForm path={path} kanVelgeMaster={valgtAdressetype === null} />

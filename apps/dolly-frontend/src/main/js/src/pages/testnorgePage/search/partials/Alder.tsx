@@ -1,7 +1,7 @@
 import React, { BaseSyntheticEvent } from 'react'
 import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
-import { FormikProps } from 'formik'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 const paths = {
 	fra: 'alder.fra',
@@ -11,7 +11,7 @@ const paths = {
 }
 
 type Props = {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 }
 
 export const Alder = ({ formMethods }: Props) => (
@@ -24,8 +24,8 @@ export const Alder = ({ formMethods }: Props) => (
 			useControlled
 			onKeyPress={(event: BaseSyntheticEvent<KeyboardEvent>) => {
 				event.nativeEvent.code === 'Enter' &&
-					!Object.keys(formikBag.errors).length &&
-					formikBag.handleSubmit()
+					!Object.keys(formMethods.formState.errors).length &&
+					formMethods.handleSubmit()
 			}}
 		/>
 		<FormikTextInput
@@ -36,8 +36,8 @@ export const Alder = ({ formMethods }: Props) => (
 			useControlled
 			onKeyPress={(event: BaseSyntheticEvent<KeyboardEvent>) => {
 				event.nativeEvent.code === 'Enter' &&
-					!Object.keys(formikBag.errors).length &&
-					formikBag.handleSubmit()
+					!Object.keys(formMethods.formState.errors).length &&
+					formMethods.handleSubmit()
 			}}
 		/>
 		<FormikDatepicker

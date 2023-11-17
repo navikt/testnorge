@@ -41,16 +41,16 @@ export const BarnetilleggForm = ({ formMethods }) => {
 	const barnetilleggPath = 'pensjonforvalter.uforetrygd.barnetilleggDetaljer'
 
 	const [harBarnetillegg, setHarBarnetillegg] = useState(
-		_.get(formikBag.values, barnetilleggPath) !== null,
+		_.get(formMethods.getValues(), barnetilleggPath) !== null,
 	)
 
 	const handleBarnetilleggChange = (value) => {
 		const checked = value?.target?.checked
 		setHarBarnetillegg(checked)
 		if (checked) {
-			formikBag.setFieldValue(barnetilleggPath, barnetilleggDetaljer)
+			formMethods.setValue(barnetilleggPath, barnetilleggDetaljer)
 		} else {
-			formikBag.setFieldValue(barnetilleggPath, null)
+			formMethods.setValue(barnetilleggPath, null)
 		}
 	}
 

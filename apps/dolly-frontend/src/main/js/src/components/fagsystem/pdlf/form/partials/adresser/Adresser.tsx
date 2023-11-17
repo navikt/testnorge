@@ -23,9 +23,9 @@ export const Adresser = ({ formMethods }: AdresserValues) => {
 		<Vis attributt={adresseAttributter}>
 			<Panel
 				heading="Adresser"
-				hasErrors={panelError(formikBag, adresseAttributter)}
+				hasErrors={panelError(formMethods.formState.errors, adresseAttributter)}
 				iconType="adresse"
-				startOpen={erForsteEllerTest(formikBag.values, adresseAttributter)}
+				startOpen={erForsteEllerTest(formMethods.getValues(), adresseAttributter)}
 			>
 				<Vis attributt={'pdldata.person.bostedsadresse'}>
 					<Bostedsadresse formMethods={formMethods} />

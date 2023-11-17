@@ -11,12 +11,12 @@ export const OppholdSammeVilkaar = ({ formMethods }: { formikBag: FormikProps<an
 	<React.Fragment>
 		<FormikDatepicker
 			name="udistub.oppholdStatus.oppholdSammeVilkaar.oppholdSammeVilkaarPeriode.fra"
-			afterChange={(dato: Date) => formikBag.setFieldValue(`${pdlBasePath}[0].oppholdFra`, dato)}
+			afterChange={(dato: Date) => formMethods.setValue(`${pdlBasePath}[0].oppholdFra`, dato)}
 			label="Oppholdstillatelse fra dato"
 		/>
 		<FormikDatepicker
 			name="udistub.oppholdStatus.oppholdSammeVilkaar.oppholdSammeVilkaarPeriode.til"
-			afterChange={(dato: Date) => formikBag.setFieldValue(`${pdlBasePath}[0].oppholdTil`, dato)}
+			afterChange={(dato: Date) => formMethods.setValue(`${pdlBasePath}[0].oppholdTil`, dato)}
 			label="Oppholdstillatelse til dato"
 		/>
 		<FormikDatepicker
@@ -27,10 +27,7 @@ export const OppholdSammeVilkaar = ({ formMethods }: { formikBag: FormikProps<an
 			name="udistub.oppholdStatus.oppholdSammeVilkaar.oppholdstillatelseType"
 			label="Type oppholdstillatelse"
 			afterChange={(option: Option) =>
-				formikBag.setFieldValue(
-					`${pdlBasePath}[0].type`,
-					option ? option.value : 'OPPLYSNING_MANGLER',
-				)
+				formMethods.setValue(`${pdlBasePath}[0].type`, option ? option.value : 'OPPLYSNING_MANGLER')
 			}
 			options={Options('oppholdstillatelseType')}
 		/>

@@ -38,7 +38,7 @@ export const AndreGodkjenningerForm = ({ formMethods }) => {
 								name={`${annenGodkjenningPath}.issuer`}
 								label="Utsteder"
 								size="large"
-								key={`issuer_${_get(formikBag.values, `${annenGodkjenningPath}.issuer`)}`}
+								key={`issuer_${_get(formMethods.getValues(), `${annenGodkjenningPath}.issuer`)}`}
 							/>
 							<FormikDatepicker name={`${annenGodkjenningPath}.fromDate`} label="Fullført" />
 							<FormikDatepicker name={`${annenGodkjenningPath}.toDate`} label="Utløper" />

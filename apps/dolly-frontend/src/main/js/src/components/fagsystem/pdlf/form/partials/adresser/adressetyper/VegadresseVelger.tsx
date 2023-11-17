@@ -19,10 +19,10 @@ export const VegadresseVelger = ({ formMethods, path }: VegadressevelgerValues) 
 		DETALJERT: 'DETALJERT',
 	}
 
-	const vegadresseType = _.get(formikBag.values, `${path}.vegadresseType`) || null
+	const vegadresseType = _.get(formMethods.getValues(), `${path}.vegadresseType`) || null
 
 	const handleRadioChange = (valg: string) => {
-		formikBag.setFieldValue(path, { ...initialVegadresse, vegadresseType: valg })
+		formMethods.setValue(path, { ...initialVegadresse, vegadresseType: valg })
 	}
 
 	return (

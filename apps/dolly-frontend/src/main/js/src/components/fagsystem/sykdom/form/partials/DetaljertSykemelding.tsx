@@ -44,12 +44,12 @@ const KODESYSTEM = '2.16.578.1.12.4.1.1.7170'
 
 export const DetaljertSykemelding = ({ formMethods }: SykemeldingForm) => {
 	const handleDiagnoseChange = (v: DiagnoseSelect, path: string) => {
-		formikBag.setFieldValue(`${path}.diagnose`, v.diagnoseNavn)
-		formikBag.setFieldValue(`${path}.system`, KODESYSTEM)
+		formMethods.setValue(`${path}.diagnose`, v.diagnoseNavn)
+		formMethods.setValue(`${path}.system`, KODESYSTEM)
 	}
 
 	const handleLegeChange = (v: Helsepersonell) => {
-		formikBag.setFieldValue('sykemelding.detaljertSykemelding.helsepersonell', {
+		formMethods.setValue('sykemelding.detaljertSykemelding.helsepersonell', {
 			etternavn: v.etternavn,
 			fornavn: v.fornavn,
 			hprId: v.hprId,
@@ -60,7 +60,7 @@ export const DetaljertSykemelding = ({ formMethods }: SykemeldingForm) => {
 	}
 
 	const handleArbeidsgiverChange = (v: Arbeidsgiver) => {
-		formikBag.setFieldValue('sykemelding.detaljertSykemelding.mottaker', {
+		formMethods.setValue('sykemelding.detaljertSykemelding.mottaker', {
 			navn: v?.navn || null,
 			orgNr: v?.orgnr || null,
 			adresse: {
@@ -77,8 +77,8 @@ export const DetaljertSykemelding = ({ formMethods }: SykemeldingForm) => {
 
 	useEffect(() => {
 		const yrkePath = 'sykemelding.detaljertSykemelding.arbeidsgiver.yrkesbetegnelse'
-		if (_.get(formikBag.values, yrkePath) === '') {
-			formikBag.setFieldValue(yrkePath, randomYrke?.value || '')
+		if (_.get(formMethods.getValues(), yrkePath) === '') {
+			formMethods.setValue(yrkePath, randomYrke?.value || '')
 		}
 	}, [randomYrke])
 
@@ -87,7 +87,8 @@ export const DetaljertSykemelding = ({ formMethods }: SykemeldingForm) => {
 
 	useEffect(() => {
 		if (
-			_.get(formikBag.values, 'sykemelding.detaljertSykemelding.helsepersonell.ident') === '' &&
+			_.get(formMethods.getValues(), 'sykemelding.detaljertSykemelding.helsepersonell.ident') ===
+				'' &&
 			randomHelsepersonell
 		) {
 			handleLegeChange(randomHelsepersonell)

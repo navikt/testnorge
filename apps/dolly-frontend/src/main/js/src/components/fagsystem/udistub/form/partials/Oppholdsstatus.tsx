@@ -13,7 +13,7 @@ const pdlBasePath = 'pdldata.person.opphold'
 const harOppholdsTillatelsePath = 'udistub.harOppholdsTillatelse'
 
 const findInitialStatus = (formikBag: FormikProps<any>) => {
-	const oppholdsstatusObj = formikBag.values.udistub.oppholdStatus
+	const oppholdsstatusObj = formMethods.getValues().udistub.oppholdStatus
 	const eosEllerEFTAOpphold = Object.keys(oppholdsstatusObj).some((key) =>
 		key.includes('eosEllerEFTA'),
 	)
@@ -33,7 +33,7 @@ const findInitialStatus = (formikBag: FormikProps<any>) => {
 	}
 	if (
 		oppholdsstatusObj.ikkeOppholdSammeVilkaar ||
-		formikBag.values.udistub.harOppholdsTillatelse === false
+		formMethods.getValues().udistub.harOppholdsTillatelse === false
 	) {
 		return ['tredjelandsBorgere', '', 'ikkeOppholdSammeVilkaar']
 	}
@@ -44,7 +44,7 @@ const findInitialStatus = (formikBag: FormikProps<any>) => {
 }
 
 function setPdlInitialValues(formikBag: FormikProps<any>) {
-	formikBag.setFieldValue(`${pdlBasePath}`, [
+	formMethods.setValue(`${pdlBasePath}`, [
 		{
 			type: 'OPPLYSNING_MANGLER',
 			oppholdFra: null,
@@ -63,45 +63,45 @@ export const Oppholdsstatus = ({ formMethods }: { formikBag: FormikProps<any> })
 		setOppholdsstatus(value)
 		setEosEllerEFTAtypeOpphold('')
 		setTredjelandsBorgereValg('')
-		formikBag.setFieldValue(basePath, {})
+		formMethods.setValue(basePath, {})
 		setPdlInitialValues(formikBag)
 	}
 
 	const endreEosEllerEFTAtypeOpphold = (value: string) => {
 		setEosEllerEFTAtypeOpphold(value)
-		formikBag.setFieldValue(basePath, {})
-		formikBag.setFieldValue(`udistub.oppholdStatus.${value}Periode`, {
+		formMethods.setValue(basePath, {})
+		formMethods.setValue(`udistub.oppholdStatus.${value}Periode`, {
 			fra: null,
 			til: null,
 		})
 		setPdlInitialValues(formikBag)
-		formikBag.setFieldValue(`udistub.oppholdStatus.${value}Effektuering`, null)
-		formikBag.setFieldValue(`udistub.oppholdStatus.${value}`, '')
+		formMethods.setValue(`udistub.oppholdStatus.${value}Effektuering`, null)
+		formMethods.setValue(`udistub.oppholdStatus.${value}`, '')
 	}
 
 	const endreTredjelandsBorgereValg = (value: string) => {
 		setTredjelandsBorgereValg(value)
 		setPdlInitialValues(formikBag)
-		formikBag.setFieldValue(basePath, {})
+		formMethods.setValue(basePath, {})
 		if (value === 'oppholdSammeVilkaar') {
-			formikBag.setFieldValue(harOppholdsTillatelsePath, true)
-			formikBag.setFieldValue('udistub.oppholdStatus.oppholdSammeVilkaar', {
+			formMethods.setValue(harOppholdsTillatelsePath, true)
+			formMethods.setValue('udistub.oppholdStatus.oppholdSammeVilkaar', {
 				oppholdSammeVilkaarPeriode: { fra: null, til: null },
 				oppholdSammeVilkaarEffektuering: null,
 				oppholdstillatelseVedtaksDato: null,
 				oppholdstillatelseType: '',
 			})
 		} else if (value === 'ikkeOppholdSammeVilkaar') {
-			formikBag.setFieldValue(basePath, {})
-			formikBag.setFieldValue(harOppholdsTillatelsePath, false)
-			formikBag.setFieldValue('udistub.oppholdStatus.ikkeOppholdstilatelseIkkeVilkaarIkkeVisum', {
+			formMethods.setValue(basePath, {})
+			formMethods.setValue(harOppholdsTillatelsePath, false)
+			formMethods.setValue('udistub.oppholdStatus.ikkeOppholdstilatelseIkkeVilkaarIkkeVisum', {
 				avslagEllerBortfall: {
 					avgjorelsesDato: null,
 				},
 			})
 		} else if (value === 'UAVKLART') {
-			formikBag.setFieldValue(basePath, { uavklart: true })
-			formikBag.setFieldValue(harOppholdsTillatelsePath, undefined)
+			formMethods.setValue(basePath, { uavklart: true })
+			formMethods.setValue(harOppholdsTillatelsePath, undefined)
 		}
 	}
 
@@ -138,14 +138,14 @@ export const Oppholdsstatus = ({ formMethods }: { formikBag: FormikProps<any> })
 					<FormikDatepicker
 						name={`udistub.oppholdStatus.${eosEllerEFTAtypeOpphold}Periode.fra`}
 						afterChange={(dato: Date) =>
-							formikBag.setFieldValue(`${pdlBasePath}[0].oppholdFra`, fixTimezone(dato))
+							formMethods.setValue(`${pdlBasePath}[0].oppholdFra`, fixTimezone(dato))
 						}
 						label="Oppholdstillatelse fra dato"
 					/>
 					<FormikDatepicker
 						name={`udistub.oppholdStatus.${eosEllerEFTAtypeOpphold}Periode.til`}
 						afterChange={(dato: Date) =>
-							formikBag.setFieldValue(`${pdlBasePath}[0].oppholdTil`, fixTimezone(dato))
+							formMethods.setValue(`${pdlBasePath}[0].oppholdTil`, fixTimezone(dato))
 						}
 						label="Oppholdstillatelse til dato"
 					/>

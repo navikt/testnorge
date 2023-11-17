@@ -12,10 +12,11 @@ export const MatrikkeladresseVelger = ({ formMethods, path }) => {
 		DETALJERT: 'DETALJERT',
 	}
 
-	const matrikkeladresseType = _.get(formikBag.values, `${path}.matrikkeladresseType`) || null
+	const matrikkeladresseType =
+		_.get(formMethods.getValues(), `${path}.matrikkeladresseType`) || null
 
 	const handleRadioChange = (valg) => {
-		formikBag.setFieldValue(path, {
+		formMethods.setValue(path, {
 			...initialMatrikkeladresse,
 			matrikkeladresseType: valg,
 		})

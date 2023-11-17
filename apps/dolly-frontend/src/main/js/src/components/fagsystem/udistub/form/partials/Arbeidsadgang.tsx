@@ -26,24 +26,24 @@ export const Arbeidsadgang = ({ formMethods }) => {
 		}
 	`
 
-	const harArbeidsAdgang = _.get(formikBag.values, 'udistub.arbeidsadgang.harArbeidsAdgang')
+	const harArbeidsAdgang = _.get(formMethods.getValues(), 'udistub.arbeidsadgang.harArbeidsAdgang')
 
 	const endreArbeidsadgang = (v) => {
-		formikBag.setFieldValue('udistub.arbeidsadgang.harArbeidsAdgang', v.value)
+		formMethods.setValue('udistub.arbeidsadgang.harArbeidsAdgang', v.value)
 		if (v.value !== 'JA') {
-			formikBag.setFieldValue('udistub.arbeidsadgang.arbeidsOmfang', null)
-			formikBag.setFieldValue('udistub.arbeidsadgang.periode', {
+			formMethods.setValue('udistub.arbeidsadgang.arbeidsOmfang', null)
+			formMethods.setValue('udistub.arbeidsadgang.periode', {
 				fra: null,
 				til: null,
 			})
-			formikBag.setFieldValue('udistub.arbeidsadgang.typeArbeidsadgang', null)
+			formMethods.setValue('udistub.arbeidsadgang.typeArbeidsadgang', null)
 		}
 	}
 
-	const forklaring = _.get(formikBag.values, 'udistub.arbeidsadgang.forklaring')
+	const forklaring = _.get(formMethods.getValues(), 'udistub.arbeidsadgang.forklaring')
 
 	const endreForklaring = (text) => {
-		formikBag.setFieldValue('udistub.arbeidsadgang.forklaring', text === '' ? null : text)
+		formMethods.setValue('udistub.arbeidsadgang.forklaring', text === '' ? null : text)
 	}
 
 	const MAX_LENGTH = 4000

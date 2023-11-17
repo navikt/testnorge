@@ -24,8 +24,8 @@ export const InntektstubVirksomhetToggle = ({
 	const orgnummerLength = 9
 
 	const [inputType, setInputType] = useState(
-		_.get(formikBag.values, virksomhetPath)
-			? _.get(formikBag.values, virksomhetPath).length === orgnummerLength
+		_.get(formMethods.getValues(), virksomhetPath)
+			? _.get(formMethods.getValues(), virksomhetPath).length === orgnummerLength
 				? ToggleValg.ORGANISASJON
 				: ToggleValg.PRIVAT
 			: ToggleValg.ORGANISASJON,
@@ -33,8 +33,8 @@ export const InntektstubVirksomhetToggle = ({
 
 	const handleToggleChange = (value: ToggleValg) => {
 		setInputType(value)
-		formikBag.setFieldValue(virksomhetPath, '')
-		formikBag.setFieldValue(opplysningspliktigPath, '')
+		formMethods.setValue(virksomhetPath, '')
+		formMethods.setValue(opplysningspliktigPath, '')
 	}
 
 	return (

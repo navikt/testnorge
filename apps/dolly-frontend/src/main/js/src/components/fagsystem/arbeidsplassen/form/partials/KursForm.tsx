@@ -25,7 +25,7 @@ export const KursForm = ({ formMethods }) => {
 				nested
 			>
 				{(kursPath, idx) => {
-					const durationUnit = _get(formikBag.values, `${kursPath}.durationUnit`)
+					const durationUnit = _get(formMethods.getValues(), `${kursPath}.durationUnit`)
 					return (
 						<>
 							<div key={idx} className="flexbox--flex-wrap">
@@ -33,13 +33,13 @@ export const KursForm = ({ formMethods }) => {
 									name={`${kursPath}.title`}
 									label="Kursnavn"
 									size="xlarge"
-									key={`title_${_get(formikBag.values, `${kursPath}.title`)}`}
+									key={`title_${_get(formMethods.getValues(), `${kursPath}.title`)}`}
 								/>
 								<FormikTextInput
 									name={`${kursPath}.issuer`}
 									label="Kursholder"
 									size="xlarge"
-									key={`issuer_${_get(formikBag.values, `${kursPath}.issuer`)}`}
+									key={`issuer_${_get(formMethods.getValues(), `${kursPath}.issuer`)}`}
 								/>
 								<FormikDatepicker name={`${kursPath}.date`} label="Fullført" />
 								<FormikSelect
@@ -57,7 +57,7 @@ export const KursForm = ({ formMethods }) => {
 									}`}
 									size="small"
 									type="number"
-									key={`duration_${_get(formikBag.values, `${kursPath}.duration`)}`}
+									key={`duration_${_get(formMethods.getValues(), `${kursPath}.duration`)}`}
 								/>
 							</div>
 							<EraseFillButtons

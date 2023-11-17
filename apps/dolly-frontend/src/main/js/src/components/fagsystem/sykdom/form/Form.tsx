@@ -18,13 +18,13 @@ export const SykdomForm = ({ formMethods }: SykdomFormProps) => (
 	<Vis attributt={sykdomAttributt}>
 		<Panel
 			heading="Sykemelding"
-			hasErrors={panelError(formikBag, sykdomAttributt)}
+			hasErrors={panelError(formMethods.formState.errors, sykdomAttributt)}
 			iconType="sykdom"
-			startOpen={erForsteEllerTest(formikBag.values, [sykdomAttributt])}
+			startOpen={erForsteEllerTest(formMethods.getValues(), [sykdomAttributt])}
 			informasjonstekst="Om du velger å generere en sykemelding automatisk, vil du få en syntetisk sykemelding hvor alle verdier blir satt for deg."
 		>
-			{formikBag.values.sykemelding != null &&
-				formikBag.values.sykemelding.hasOwnProperty('syntSykemelding') && (
+			{formMethods.getValues().sykemelding != null &&
+				formMethods.getValues().sykemelding.hasOwnProperty('syntSykemelding') && (
 					<StyledAlert variant={'info'} size={'small'}>
 						Syntetisk sykemelding behandler en stor mengde data for å opprette realistiske
 						sykemeldinger og kan derfor medføre litt lenger bestillingstid.

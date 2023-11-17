@@ -23,9 +23,9 @@ export const InntektsaarForm = ({ formMethods }) => {
 	}
 
 	const handleTjenesteChange = (target, path) => {
-		formikBag.setFieldValue(`${path}.tjeneste`, target.value)
-		formikBag.setFieldValue(`${path}.grunnlag`, [])
-		formikBag.setFieldValue(`${path}.svalbardGrunnlag`, [])
+		formMethods.setValue(`${path}.tjeneste`, target.value)
+		formMethods.setValue(`${path}.grunnlag`, [])
+		formMethods.setValue(`${path}.svalbardGrunnlag`, [])
 	}
 
 	return (
@@ -45,7 +45,9 @@ export const InntektsaarForm = ({ formMethods }) => {
 									name={`${path}.tjeneste`}
 									label="Tjeneste"
 									options={Options('tjeneste')}
-									isDisabled={_.get(formikBag.values, `${path}.svalbardGrunnlag`, []).length > 0}
+									isDisabled={
+										_.get(formMethods.getValues(), `${path}.svalbardGrunnlag`, []).length > 0
+									}
 									fastfield={false}
 									isClearable={false}
 									size="large"
@@ -57,24 +59,24 @@ export const InntektsaarForm = ({ formMethods }) => {
 									path={`${path}.grunnlag`}
 									header="Grunnlag fra Fastlands-Norge"
 									initialGrunnlag={initialGrunnlag}
-									tjeneste={_.get(formikBag.values, `${path}.tjeneste`)}
-									inntektsaar={_.get(formikBag.values, `${path}.inntektsaar`)}
+									tjeneste={_.get(formMethods.getValues(), `${path}.tjeneste`)}
+									inntektsaar={_.get(formMethods.getValues(), `${path}.inntektsaar`)}
 									formMethods={formMethods}
 								/>
 							)}
-							{_.get(formikBag.values, `${path}.tjeneste`) === 'SUMMERT_SKATTEGRUNNLAG' && (
+							{_.get(formMethods.getValues(), `${path}.tjeneste`) === 'SUMMERT_SKATTEGRUNNLAG' && (
 								<EnkeltinntektForm
 									path={`${path}.svalbardGrunnlag`}
 									header="Grunnlag fra Svalbard"
 									initialGrunnlag={initialGrunnlag}
-									tjeneste={_.get(formikBag.values, `${path}.tjeneste`)}
-									inntektsaar={_.get(formikBag.values, `${path}.inntektsaar`)}
+									tjeneste={_.get(formMethods.getValues(), `${path}.tjeneste`)}
+									inntektsaar={_.get(formMethods.getValues(), `${path}.inntektsaar`)}
 									formMethods={formMethods}
 								/>
 							)}
 
 							<div style={{ marginTop: '20px' }}>
-								{_.isString(_.get(formikBag.errors, `${path}.grunnlag`)) && (
+								{_.isString(_.get(formMethods.formState.errors, `${path}.grunnlag`)) && (
 									<ErrorMessageWithFocus
 										name={`${path}.grunnlag`}
 										className="error-message"
@@ -91,5 +93,5 @@ export const InntektsaarForm = ({ formMethods }) => {
 }
 
 const tjenesteErValgt = (formikBag, path) => {
-	return _.get(formikBag.values, `${path}.tjeneste`)
+	return _.get(formMethods.getValues(), `${path}.tjeneste`)
 }

@@ -19,7 +19,7 @@ export const JobboenskerForm = ({ formMethods }) => {
 				styrk08: opt.value,
 			}
 		})
-		formikBag.setFieldValue(`${jobboenskerPath}.occupations`, yrker)
+		formMethods.setValue(`${jobboenskerPath}.occupations`, yrker)
 	}
 
 	const setOmraader = (options) => {
@@ -29,7 +29,7 @@ export const JobboenskerForm = ({ formMethods }) => {
 				code: opt.value,
 			}
 		})
-		formikBag.setFieldValue(`${jobboenskerPath}.locations`, omraader)
+		formMethods.setValue(`${jobboenskerPath}.locations`, omraader)
 	}
 
 	return (
@@ -44,7 +44,9 @@ export const JobboenskerForm = ({ formMethods }) => {
 					isClearable={false}
 					isMulti={true}
 					fastfield={false}
-					value={_get(formikBag.values, `${jobboenskerPath}.occupations`)?.map((y) => y.styrk08)}
+					value={_get(formMethods.getValues(), `${jobboenskerPath}.occupations`)?.map(
+						(y) => y.styrk08,
+					)}
 					onChange={(options) => setYrker(options)}
 				/>
 				<FormikSelect
@@ -55,7 +57,7 @@ export const JobboenskerForm = ({ formMethods }) => {
 					isClearable={false}
 					isMulti={true}
 					fastfield={false}
-					value={_get(formikBag.values, `${jobboenskerPath}.locations`)?.map((o) => o.code)}
+					value={_get(formMethods.getValues(), `${jobboenskerPath}.locations`)?.map((o) => o.code)}
 					onChange={(options) => setOmraader(options)}
 				/>
 			</div>

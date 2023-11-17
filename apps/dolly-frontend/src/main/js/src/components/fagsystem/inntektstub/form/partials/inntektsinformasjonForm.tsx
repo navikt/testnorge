@@ -15,20 +15,20 @@ interface InntektsinformasjonForm {
 
 export default ({ path, formikBag }: InntektsinformasjonForm) => {
 	const [date, setDate] = useState(
-		_.get(formikBag.values, `${path}.sisteAarMaaned`) !== ''
-			? Date.parse(_.get(formikBag.values, `${path}.sisteAarMaaned`))
+		_.get(formMethods.getValues(), `${path}.sisteAarMaaned`) !== ''
+			? Date.parse(_.get(formMethods.getValues(), `${path}.sisteAarMaaned`))
 			: null,
 	)
 
 	const [rapporteringsdate, setRapporteringsdato] = useState(
-		_.get(formikBag.values, `${path}.rapporteringsdato`) !== ''
-			? Date.parse(_.get(formikBag.values, `${path}.rapporteringsdato`))
+		_.get(formMethods.getValues(), `${path}.rapporteringsdato`) !== ''
+			? Date.parse(_.get(formMethods.getValues(), `${path}.rapporteringsdato`))
 			: null,
 	)
 
 	const handleDateChange = (selectedDate: Date) => {
 		setDate(selectedDate)
-		formikBag.setFieldValue(
+		formMethods.setValue(
 			`${path}.sisteAarMaaned`,
 			selectedDate ? selectedDate.toISOString().substr(0, 7) : '',
 		)
@@ -36,7 +36,7 @@ export default ({ path, formikBag }: InntektsinformasjonForm) => {
 
 	const handleRapporteringDateChange = (selectedDate: Date) => {
 		setRapporteringsdato(selectedDate)
-		formikBag.setFieldValue(
+		formMethods.setValue(
 			`${path}.rapporteringsdato`,
 			selectedDate ? selectedDate.toISOString().substring(0, 19) : null,
 		)

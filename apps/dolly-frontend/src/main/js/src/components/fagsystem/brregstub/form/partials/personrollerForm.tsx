@@ -10,7 +10,7 @@ const initialValues = {
 }
 
 export const PersonrollerForm = ({ formMethods, path }) => {
-	const personroller = _.get(formikBag.values, `${path}.personroller`)
+	const personroller = _.get(formMethods.getValues(), `${path}.personroller`)
 
 	const getEgenskapOptions = () => {
 		const valgteOptions = []
@@ -48,18 +48,20 @@ export const PersonrollerForm = ({ formMethods, path }) => {
 							name={egenskap}
 							label="Egenskap"
 							options={egenskapOptions}
-							onChange={(egenskapen) => formikBag.setFieldValue(egenskap, egenskapen.value)}
-							value={_.get(formikBag.values, egenskap)}
+							onChange={(egenskapen) => formMethods.setValue(egenskap, egenskapen.value)}
+							value={_.get(formMethods.getValues(), egenskap)}
 							placeholder={
-								_.get(formikBag.values, egenskap) ? _.get(formikBag.values, egenskap) : 'Velg...'
+								_.get(formMethods.getValues(), egenskap)
+									? _.get(formMethods.getValues(), egenskap)
+									: 'Velg...'
 							}
 							isClearable={false}
 							feil={
-								_.get(formikBag.values, egenskap) === '' && {
+								_.get(formMethods.getValues(), egenskap) === '' && {
 									feilmelding: 'Feltet er påkrevd',
 								}
 							}
-							styles={_.get(formikBag.values, egenskap) ? colorStyles : null}
+							styles={_.get(formMethods.getValues(), egenskap) ? colorStyles : null}
 						/>
 						<FormikCheckbox name={`${path}.fratraadt`} label="Har fratrådt" checkboxMargin />
 					</>

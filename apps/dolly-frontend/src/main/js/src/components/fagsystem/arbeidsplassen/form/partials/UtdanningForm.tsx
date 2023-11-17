@@ -40,33 +40,30 @@ export const UtdanningForm = ({ formMethods }) => {
 								name={`${utdanningPath}.field`}
 								label="Grad og utdanningsretning"
 								size="medium"
-								key={`field_${_get(formikBag.values, `${utdanningPath}.field`)}`}
+								key={`field_${_get(formMethods.getValues(), `${utdanningPath}.field`)}`}
 							/>
 							<FormikTextInput
 								name={`${utdanningPath}.institution`}
 								label="Skole/studiested"
 								size="medium"
-								key={`institution_${_get(formikBag.values, `${utdanningPath}.institution`)}`}
+								key={`institution_${_get(formMethods.getValues(), `${utdanningPath}.institution`)}`}
 							/>
 							<Fritekstfelt
 								label="Beskrivelse"
 								placeholder="Beskrivelse av utdanning"
-								defaultValue={_get(formikBag.values, `${utdanningPath}.description`)}
+								defaultValue={_get(formMethods.getValues(), `${utdanningPath}.description`)}
 								onBlur={(beskrivelse) =>
-									formikBag.setFieldValue(
-										`${utdanningPath}.description`,
-										beskrivelse?.target?.value,
-									)
+									formMethods.setValue(`${utdanningPath}.description`, beskrivelse?.target?.value)
 								}
 								size="small"
-								key={`description_${_get(formikBag.values, `${utdanningPath}.description`)}`}
+								key={`description_${_get(formMethods.getValues(), `${utdanningPath}.description`)}`}
 								resize
 							/>
 							<FormikDatepicker name={`${utdanningPath}.startDate`} label="Startdato" />
 							<FormikDatepicker
 								name={`${utdanningPath}.endDate`}
 								label="Sluttdato"
-								disabled={_get(formikBag.values, `${utdanningPath}.ongoing`)}
+								disabled={_get(formMethods.getValues(), `${utdanningPath}.ongoing`)}
 								fastfield={false}
 							/>
 							<FormikCheckbox
@@ -74,7 +71,7 @@ export const UtdanningForm = ({ formMethods }) => {
 								name={`${utdanningPath}.ongoing`}
 								label="Pågående utdanning"
 								wrapperSize="inherit"
-								isDisabled={_get(formikBag.values, `${utdanningPath}.endDate`)}
+								isDisabled={_get(formMethods.getValues(), `${utdanningPath}.endDate`)}
 								checkboxMargin
 							/>
 						</div>

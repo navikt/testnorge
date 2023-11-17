@@ -45,8 +45,8 @@ export const FullmaktForm = ({ formMethods, path, eksisterendeNyPerson = null }:
 				label={'FULLMEKTIG'}
 				formMethods={formMethods}
 				isExpanded={
-					!isEmpty(_.get(formikBag.values, `${path}.nyFullmektig`), ['syntetisk']) ||
-					_.get(formikBag.values, `${path}.motpartsPersonident`) !== null
+					!isEmpty(_.get(formMethods.getValues(), `${path}.nyFullmektig`), ['syntetisk']) ||
+					_.get(formMethods.getValues(), `${path}.motpartsPersonident`) !== null
 				}
 				eksisterendeNyPerson={eksisterendeNyPerson}
 			/>

@@ -46,8 +46,8 @@ export const Sikkerhetstiltak = ({ formMethods }: SikkerhetstiltakProps) => {
 		tpsMessagingRootPath: 'tpsMessaging.sikkerhetstiltak',
 	}
 
-	const sikkerhetstiltakListe = _.get(formikBag.values, paths.rootPath)
-	const sikkerhetstiltakListeTps = _.get(formikBag.values, paths.tpsMessagingRootPath)
+	const sikkerhetstiltakListe = _.get(formMethods.getValues(), paths.rootPath)
+	const sikkerhetstiltakListeTps = _.get(formMethods.getValues(), paths.tpsMessagingRootPath)
 
 	if (!sikkerhetstiltakListe) {
 		return null
@@ -65,23 +65,23 @@ export const Sikkerhetstiltak = ({ formMethods }: SikkerhetstiltakProps) => {
 	}
 
 	const handleNewEntry = () => {
-		formikBag.setFieldValue(paths.rootPath, [...sikkerhetstiltakListe, initialSikkerhetstiltak])
-		formikBag.setFieldValue(paths.tpsMessagingRootPath, [
+		formMethods.setValue(paths.rootPath, [...sikkerhetstiltakListe, initialSikkerhetstiltak])
+		formMethods.setValue(paths.tpsMessagingRootPath, [
 			...sikkerhetstiltakListeTps,
 			initialTpsSikkerhetstiltak,
 		])
 	}
 
 	const handleValueChange = (value: string, name: string, idx: number) => {
-		formikBag.setFieldValue(`${paths.rootPath}[${idx}].${name}`, value)
-		formikBag.setFieldValue(`${paths.tpsMessagingRootPath}[${idx}].${name}`, value)
+		formMethods.setValue(`${paths.rootPath}[${idx}].${name}`, value)
+		formMethods.setValue(`${paths.tpsMessagingRootPath}[${idx}].${name}`, value)
 	}
 
 	const handleRemoveEntry = (idx: number) => {
 		sikkerhetstiltakListe.splice(idx, 1)
 		sikkerhetstiltakListeTps.splice(idx, 1)
-		formikBag.setFieldValue(paths.rootPath, sikkerhetstiltakListe)
-		formikBag.setFieldValue(paths.tpsMessagingRootPath, sikkerhetstiltakListeTps)
+		formMethods.setValue(paths.rootPath, sikkerhetstiltakListe)
+		formMethods.setValue(paths.tpsMessagingRootPath, sikkerhetstiltakListeTps)
 	}
 
 	return (
@@ -96,7 +96,7 @@ export const Sikkerhetstiltak = ({ formMethods }: SikkerhetstiltakProps) => {
 					handleRemoveEntry={handleRemoveEntry}
 				>
 					{(path: string, idx: number) => {
-						const personident = _.get(formikBag.values, `${path}.kontaktperson.personident`)
+						const personident = _.get(formMethods.getValues(), `${path}.kontaktperson.personident`)
 						return (
 							<>
 								<DollySelect
@@ -111,10 +111,10 @@ export const Sikkerhetstiltak = ({ formMethods }: SikkerhetstiltakProps) => {
 									}
 									size="large"
 									onChange={(option: Option) => handleSikkerhetstiltakChange(option, idx)}
-									value={_.get(formikBag.values, `${path}.tiltakstype`)}
+									value={_.get(formMethods.getValues(), `${path}.tiltakstype`)}
 									isClearable={false}
 									feil={
-										_.get(formikBag.values, `${path}.tiltakstype`) === '' && {
+										_.get(formMethods.getValues(), `${path}.tiltakstype`) === '' && {
 											feilmelding: 'Feltet er påkrevd',
 										}
 									}
@@ -137,7 +137,7 @@ export const Sikkerhetstiltak = ({ formMethods }: SikkerhetstiltakProps) => {
 									visWarning={
 										!isToday(
 											_.get(
-												formikBag.values,
+												formMethods.getValues(),
 												`pdldata.person.sikkerhetstiltak[${idx}].gyldigFraOgMed`,
 											),
 										)

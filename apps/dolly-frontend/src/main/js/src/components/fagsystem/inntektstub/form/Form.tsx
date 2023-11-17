@@ -1,4 +1,3 @@
-import { FormikProps } from 'formik'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import Panel from '@/components/ui/panel/Panel'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
@@ -6,9 +5,10 @@ import { validation } from './validation'
 import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import InntektsinformasjonForm from './partials/inntektsinformasjonForm'
 import { Inntektsinformasjon } from './partials/inntektstubTypes'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface InntektstubFormProps {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 }
 
 export const initialValues: Inntektsinformasjon = {
@@ -42,9 +42,9 @@ export const InntektstubForm = ({ formMethods }: InntektstubFormProps) => (
 	<Vis attributt={inntektstubAttributt}>
 		<Panel
 			heading="A-ordningen (Inntektstub)"
-			hasErrors={panelError(formikBag, inntektstubAttributt)}
+			hasErrors={panelError(formMethods.formState.errors, inntektstubAttributt)}
 			iconType="inntektstub"
-			startOpen={erForsteEllerTest(formikBag.values, [inntektstubAttributt])}
+			startOpen={erForsteEllerTest(formMethods.getValues(), [inntektstubAttributt])}
 		>
 			<div className="flexbox--flex-wrap">
 				<FormikDollyFieldArray

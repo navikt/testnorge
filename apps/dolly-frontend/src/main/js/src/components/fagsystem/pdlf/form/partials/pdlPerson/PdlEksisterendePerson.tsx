@@ -102,7 +102,7 @@ export const PdlEksisterendePerson = ({
 		) {
 			return (
 				getAntallForeldre(person.foreldre) < 3 &&
-				!_.get(formikBag.values, 'pdldata.person.forelderBarnRelasjon').some(
+				!_.get(formMethods.getValues(), 'pdldata.person.forelderBarnRelasjon').some(
 					(relasjon: ForeldreBarnRelasjon, relasjonId: number) =>
 						relasjon.relatertPerson === person.value && relasjonId !== idx,
 				)

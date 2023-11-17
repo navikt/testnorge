@@ -7,14 +7,14 @@ export const EraseFillButtons = ({ formMethods, path, initialErase, initialFill 
 			<div className="flexbox--flex-wrap">
 				<Button
 					kind="eraser"
-					onClick={() => formikBag.setFieldValue(path, initialErase)}
+					onClick={() => formMethods.setValue(path, initialErase)}
 					style={{ position: 'initial' }}
 				>
 					TØM SKJEMA
 				</Button>
 				<Button
 					kind="edit"
-					onClick={() => formikBag.setFieldValue(path, initialFill)}
+					onClick={() => formMethods.setValue(path, initialFill)}
 					style={{ position: 'initial', marginLeft: '7px' }}
 				>
 					FYLL SKJEMA

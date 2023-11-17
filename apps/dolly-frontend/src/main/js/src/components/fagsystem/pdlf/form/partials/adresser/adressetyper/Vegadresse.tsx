@@ -29,7 +29,7 @@ const StyledVegadresse = styled.div`
 
 export const Vegadresse = ({ formMethods, path }: VegadresseValues) => {
 	const settVegadresse = (adresse: Adresse) => {
-		formikBag.setFieldValue(path, {
+		formMethods.setValue(path, {
 			postnummer: adresse.postnummer,
 			adressenavn: adresse.adressenavn,
 			adressekode: adresse.adressekode,
@@ -38,12 +38,12 @@ export const Vegadresse = ({ formMethods, path }: VegadresseValues) => {
 			husbokstav: adresse.husbokstav,
 			kommunenummer: adresse.kommunenummer,
 			bruksenhetsnummer: adresse.bruksenhetsnummer,
-			vegadresseType: _.get(formikBag.values, `${path}.vegadresseType`),
+			vegadresseType: _.get(formMethods.getValues(), `${path}.vegadresseType`),
 		})
 	}
 
 	const renderAdresse = (postnummerListe: Postnummer) => {
-		const { adressenavn, husnummer, postnummer } = _.get(formikBag.values, path)
+		const { adressenavn, husnummer, postnummer } = _.get(formMethods.getValues(), path)
 		if (!adressenavn) {
 			return ''
 		}

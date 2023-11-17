@@ -2,12 +2,12 @@ import * as _ from 'lodash-es'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { AdresseKodeverk, GtKodeverk } from '@/config/kodeverk'
 import { RadioGroupOptions } from '@/pages/testnorgePage/search/radioGroupOptions/RadioGroupOptions'
-import { FormikProps } from 'formik'
 import { yesNoOptions } from '@/pages/testnorgePage/utils'
 import { AdvancedOptions } from '@/pages/testnorgePage/search/advancedOptions/AdvancedOptions'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 type AdresserProps = {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 }
 
 const paths = {
@@ -37,9 +37,9 @@ export const Adresser = ({ formMethods }: AdresserProps) => {
 			value: 'N',
 			label: 'Nei',
 			disabled:
-				_.get(formikBag.values, paths.kommunenummer) ||
-				_.get(formikBag.values, paths.postnummer) ||
-				_.get(formikBag.values, paths.bydelsnummer),
+				_.get(formMethods.getValues(), paths.kommunenummer) ||
+				_.get(formMethods.getValues(), paths.postnummer) ||
+				_.get(formMethods.getValues(), paths.bydelsnummer),
 		},
 	]
 	return (
@@ -62,7 +62,7 @@ export const Adresser = ({ formMethods }: AdresserProps) => {
 				name={paths.postnummer}
 				label="Postnummer"
 				kodeverk={AdresseKodeverk.Postnummer}
-				isDisabled={_.get(formikBag.values, paths.borINorge) === 'N'}
+				isDisabled={_.get(formMethods.getValues(), paths.borINorge) === 'N'}
 				optionHeight={50}
 				size="medium"
 			/>
@@ -70,7 +70,7 @@ export const Adresser = ({ formMethods }: AdresserProps) => {
 				name={paths.bydelsnummer}
 				label="Bydel"
 				kodeverk={GtKodeverk.BYDEL}
-				isDisabled={_.get(formikBag.values, paths.borINorge) === 'N'}
+				isDisabled={_.get(formMethods.getValues(), paths.borINorge) === 'N'}
 				optionHeight={50}
 				size="medium"
 			/>
@@ -78,7 +78,7 @@ export const Adresser = ({ formMethods }: AdresserProps) => {
 				name={paths.kommunenummer}
 				label="Kommunenummer"
 				kodeverk={AdresseKodeverk.Kommunenummer}
-				isDisabled={_.get(formikBag.values, paths.borINorge) === 'N'}
+				isDisabled={_.get(formMethods.getValues(), paths.borINorge) === 'N'}
 				optionHeight={50}
 				size="medium"
 			/>

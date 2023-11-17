@@ -57,7 +57,7 @@ export default ({ left, right, formikBag, onSubmit, onEmpty }: Props) => {
 				<Button
 					variant={'primary'}
 					onClick={() => onSubmit()}
-					disabled={Object.keys(formikBag.errors).length > 0}
+					disabled={Object.keys(formMethods.formState.errors).length > 0}
 				>
 					{'Søk'}
 				</Button>

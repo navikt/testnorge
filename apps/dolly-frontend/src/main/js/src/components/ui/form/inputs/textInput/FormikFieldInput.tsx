@@ -2,24 +2,26 @@ import * as _ from 'lodash-es'
 import { fieldError } from '@/components/ui/form/formUtils'
 
 import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import { useFormikContext } from 'formik'
 import { FormikField } from '@/components/ui/form/FormikField'
+import { useFormContext } from 'react-hook-form'
 
 type Props = {
 	name: string
 	useOnChange?: boolean
 	useControlled?: boolean
+	onSubmit?: any
 }
 
 export default ({ name, useOnChange = false, useControlled = false, ...props }: Props) => {
-	const { errors, touched, setFieldTouched, setFieldValue, values } = useFormikContext()
+	const {
+		formState: { errors, touchedFields: touched },
+		setValue: setFieldValue,
+		getValues,
+	} = useFormContext()
 	return (
 		<FormikField name={name} fastfield={false}>
 			{({ field, _form, _meta }) => {
 				const handleChanges = (event: { target: { value: any } }) => {
-					if (!_.get(touched, field.name)) {
-						setFieldTouched(field.name, true)
-					}
 					if (_.get(touched, field.name) !== event.target.value) {
 						setFieldValue(name, event.target.value, true)
 					}
@@ -31,7 +33,7 @@ export default ({ name, useOnChange = false, useControlled = false, ...props }: 
 				return useControlled ? (
 					<DollyTextInput
 						name={name}
-						value={_.get(values, name)}
+						value={_.get(getValues(), name)}
 						onChange={handleChanges}
 						feil={fieldError({
 							touched: _.get(touched, name),
@@ -42,7 +44,7 @@ export default ({ name, useOnChange = false, useControlled = false, ...props }: 
 				) : (
 					<DollyTextInput
 						// @ts-ignore
-						defaultValue={props.defaultValue || _.get(values, name)}
+						defaultValue={props.defaultValue || _.get(getValues(), name)}
 						onBlur={useOnChange ? null : handleChanges}
 						onChange={useOnChange ? handleChanges : null}
 						name={name}

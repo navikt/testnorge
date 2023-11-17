@@ -1,4 +1,3 @@
-import * as _ from 'lodash-es'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { DollySelect, FormikSelect } from '@/components/ui/form/inputs/select/Select'
@@ -8,12 +7,12 @@ import Panel from '@/components/ui/panel/Panel'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import { SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
-import { FormikProps } from 'formik'
 import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
 import { KrrValidation } from '@/components/fagsystem/krrstub/form/KrrValidation'
+import { FieldValues, UseFormReturn } from 'react-hook-form/dist/types'
 
 type KrrstubFormProps = {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn<FieldValues, any, undefined>
 }
 
 type Change = {
@@ -26,11 +25,11 @@ export const KrrstubForm = ({ formMethods }: KrrstubFormProps) => {
 	const leverandoerer = SelectOptionsOppslag.hentKrrLeverandoerer()
 	//@ts-ignore
 	const leverandoerOptions = SelectOptionsFormat.formatOptions('sdpLeverandoer', leverandoerer)
-	const registrert = _.get(formikBag, 'values.krrstub.registrert')
+	const registrert = formMethods.watch('krrstub.registrert')
 
 	const handleRegistrertChange = (newRegistrert: Change) => {
 		if (!newRegistrert.value) {
-			formikBag.setFieldValue('krrstub', {
+			formMethods.setValue('krrstub', {
 				epost: '',
 				gyldigFra: null,
 				mobil: '',
@@ -41,7 +40,7 @@ export const KrrstubForm = ({ formMethods }: KrrstubFormProps) => {
 				reservert: null,
 			})
 		} else {
-			formikBag.setFieldValue('krrstub.registrert', true)
+			formMethods.setValue('krrstub.registrert', true)
 		}
 	}
 
@@ -50,9 +49,9 @@ export const KrrstubForm = ({ formMethods }: KrrstubFormProps) => {
 		<Vis attributt={krrAttributt}>
 			<Panel
 				heading="Kontakt- og reservasjonsregisteret"
-				hasErrors={panelError(formikBag, krrAttributt)}
+				hasErrors={panelError(formMethods.formState.errors, krrAttributt)}
 				iconType="krr"
-				startOpen={erForsteEllerTest(formikBag.values, [krrAttributt])}
+				startOpen={erForsteEllerTest(formMethods.getValues(), [krrAttributt])}
 			>
 				<div className="flexbox--flex-wrap">
 					<DollySelect

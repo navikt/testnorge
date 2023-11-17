@@ -1,6 +1,5 @@
 import React, { useCallback, useRef, useState } from 'react'
 import * as Yup from 'yup'
-import { Formik } from 'formik'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 import styled from 'styled-components'
 import Button from '@/components/ui/button/Button'
@@ -22,6 +21,7 @@ import {
 	RedigerLoading,
 } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/RedigerLoading'
 import { Alert } from '@navikt/ds-react'
+import { Form } from 'react-hook-form'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -394,13 +394,12 @@ export const VisningRedigerbarPersondetaljer = ({
 				</PersondetaljerVisning>
 			)}
 			{visningModus === Modus.Skriv && (
-				<Formik
+				<Form
 					initialValues={redigertAttributt.pdlf ? redigertAttributt.pdlf : initialValues}
 					onSubmit={handleSubmit}
-					enableReinitialize
 					validationSchema={validationSchema}
 				>
-					{(formikBag) => {
+					{(formMethods) => {
 						return (
 							<>
 								<FieldArrayEdit>
@@ -415,15 +414,17 @@ export const VisningRedigerbarPersondetaljer = ({
 										<NavButton
 											variant={'secondary'}
 											onClick={() => setVisningModus(Modus.Les)}
-											disabled={formikBag.isSubmitting}
+											disabled={formMethods.formState.isSubmitting}
 											style={{ top: '1.75px' }}
 										>
 											Avbryt
 										</NavButton>
 										<NavButton
 											variant={'primary'}
-											onClick={() => formikBag.handleSubmit()}
-											disabled={!formikBag.isValid || formikBag.isSubmitting}
+											onClick={() => formMethods.handleSubmit()}
+											disabled={
+												!formMethods.formState.isValid || formMethods.formState.isSubmitting
+											}
 										>
 											Endre
 										</NavButton>
@@ -432,7 +433,7 @@ export const VisningRedigerbarPersondetaljer = ({
 							</>
 						)
 					}}
-				</Formik>
+				</Form>
 			)}
 		</>
 	)

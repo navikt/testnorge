@@ -1,6 +1,6 @@
 import React, { useCallback, useRef, useState } from 'react'
 import * as Yup from 'yup'
-import { Formik, FormikProps } from 'formik'
+import { Form } from 'formik'
 import { FoedselForm } from '@/components/fagsystem/pdlf/form/partials/foedsel/Foedsel'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 import styled from 'styled-components'
@@ -58,6 +58,8 @@ import {
 import { DeltBostedForm } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/forelderBarnRelasjon/DeltBosted'
 import { DoedfoedtBarnForm } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/doedfoedtBarn/DoedfoedtBarn'
 import { UtenlandsIdForm } from '@/components/fagsystem/pdlf/form/partials/identifikasjon/utenlandsId/UtenlandsId'
+import { UseFormReturn } from 'react-hook-form/dist/types'
+import { useFormContext } from 'react-hook-form'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -141,6 +143,7 @@ export const VisningRedigerbar = ({
 	const [errorMessagePdlf, setErrorMessagePdlf] = useState(null)
 	const [errorMessagePdl, setErrorMessagePdl] = useState(null)
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
+	const formMethods = useFormContext()
 
 	const pdlfError = (error: any) => {
 		error &&
@@ -242,7 +245,7 @@ export const VisningRedigerbar = ({
 		return slett()
 	}, [])
 
-	const getForm = (formikBag: FormikProps<{}>) => {
+	const getForm = (formMethods: UseFormReturn) => {
 		switch (path) {
 			case Attributt.Navn:
 				return <NavnForm formMethods={formMethods} path={path} />
@@ -283,7 +286,7 @@ export const VisningRedigerbar = ({
 					<AdressebeskyttelseForm
 						formMethods={formMethods}
 						path={path}
-						identtype={getIdenttype(formikBag, identtype)}
+						identtype={getIdenttype(formMethods, identtype)}
 					/>
 				)
 			case Attributt.DeltBosted:
@@ -384,6 +387,7 @@ export const VisningRedigerbar = ({
 		],
 	)
 
+	//TODO: Sjekk om denne validerer riktig
 	const _validate = (values: any) =>
 		validate(
 			{
@@ -440,7 +444,7 @@ export const VisningRedigerbar = ({
 				</>
 			)}
 			{visningModus === Modus.Skriv && (
-				<Formik
+				<Form
 					initialValues={redigertAttributt ? redigertAttributt : initialValues}
 					onSubmit={(data) =>
 						relatertPersonInfo?.ident
@@ -450,23 +454,23 @@ export const VisningRedigerbar = ({
 					enableReinitialize
 					validate={_validate}
 				>
-					{(formikBag) => {
+					{(formMethods) => {
 						return (
 							<>
 								<FieldArrayEdit>
-									<div className="flexbox--flex-wrap">{getForm(formikBag)}</div>
+									<div className="flexbox--flex-wrap">{getForm(formMethods)}</div>
 									<Knappegruppe>
 										<NavButton
 											variant="secondary"
 											onClick={() => setVisningModus(Modus.Les)}
-											disabled={formikBag.isSubmitting}
+											disabled={formMethods.formState.isSubmitting}
 										>
 											Avbryt
 										</NavButton>
 										<NavButton
 											variant="primary"
-											onClick={() => formikBag.handleSubmit()}
-											disabled={!formikBag.isValid || formikBag.isSubmitting}
+											onClick={() => formMethods.handleSubmit()}
+											disabled={formMethods.formState.isSubmitting}
 										>
 											Endre
 										</NavButton>
@@ -475,7 +479,7 @@ export const VisningRedigerbar = ({
 							</>
 						)
 					}}
-				</Formik>
+				</Form>
 			)}
 		</>
 	)

@@ -8,9 +8,9 @@ import { OppsummeringKommentarForm } from '@/components/bestillingsveileder/steg
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import * as _ from 'lodash-es'
 import { MalFormOrganisasjon } from '@/pages/organisasjoner/MalFormOrganisasjon'
-import { useFormikContext } from 'formik'
 import { useCurrentBruker, useOrganisasjonTilgang } from '@/utils/hooks/useBruker'
 import Loading from '@/components/ui/loading/Loading'
+import { useFormContext } from 'react-hook-form'
 
 const Bestillingskriterier = React.lazy(
 	() => import('@/components/bestilling/sammendrag/kriterier/Bestillingskriterier'),
@@ -18,7 +18,7 @@ const Bestillingskriterier = React.lazy(
 
 export const Steg3 = () => {
 	const opts = useContext(BestillingsveilederContext)
-	const formikBag = useFormikContext()
+	const formMethods = useFormContext()
 	const { currentBruker } = useCurrentBruker()
 
 	const { organisasjonTilgang } = useOrganisasjonTilgang()
@@ -26,23 +26,23 @@ export const Steg3 = () => {
 
 	const importTestnorge = opts.is.importTestnorge
 
-	const erOrganisasjon = formikBag.values.hasOwnProperty('organisasjon')
+	const erOrganisasjon = formMethods.getValues('organisasjon')
 	const erQ2MiljoeAvhengig =
-		_.get(formikBag.values, 'pdldata.person.fullmakt') ||
-		_.get(formikBag.values, 'pdldata.person.falskIdentitet') ||
-		_.get(formikBag.values, 'pdldata.person.falskIdentitet') ||
-		_.get(formikBag.values, 'pdldata.person.utenlandskIdentifikasjonsnummer') ||
-		_.get(formikBag.values, 'pdldata.person.kontaktinformasjonForDoedsbo')
+		_.get(formMethods.getValues(), 'pdldata.person.fullmakt') ||
+		_.get(formMethods.getValues(), 'pdldata.person.falskIdentitet') ||
+		_.get(formMethods.getValues(), 'pdldata.person.falskIdentitet') ||
+		_.get(formMethods.getValues(), 'pdldata.person.utenlandskIdentifikasjonsnummer') ||
+		_.get(formMethods.getValues(), 'pdldata.person.kontaktinformasjonForDoedsbo')
 
 	const bankIdBruker = currentBruker?.brukertype === 'BANKID'
 
-	const sivilstand = _.get(formikBag.values, 'pdldata.person.sivilstand')
+	const sivilstand = _.get(formMethods.getValues(), 'pdldata.person.sivilstand')
 	const harRelatertPersonVedSivilstand = sivilstand?.some((item) => item.relatertVedSivilstand)
 
-	const nyIdent = _.get(formikBag.values, 'pdldata.person.nyident')
+	const nyIdent = _.get(formMethods.getValues(), 'pdldata.person.nyident')
 	const harEksisterendeNyIdent = nyIdent?.some((item) => item.eksisterendeIdent)
 
-	const forelderBarnRelasjon = _.get(formikBag.values, 'pdldata.person.forelderBarnRelasjon')
+	const forelderBarnRelasjon = _.get(formMethods.getValues(), 'pdldata.person.forelderBarnRelasjon')
 	const harRelatertPersonBarn = forelderBarnRelasjon?.some((item) => item.relatertPerson)
 
 	const alleredeValgtMiljoe = () => {
@@ -61,39 +61,39 @@ export const Steg3 = () => {
 
 	useEffect(() => {
 		if (importTestnorge) {
-			if (harAvhukedeAttributter(formikBag.values)) {
-				formikBag.setFieldValue('environments', alleredeValgtMiljoe())
+			if (harAvhukedeAttributter(formMethods.getValues())) {
+				formMethods.setValue('environments', alleredeValgtMiljoe())
 			}
-			formikBag.setFieldValue('gruppeId', opts.gruppe?.id)
+			formMethods.setValue('gruppeId', opts.gruppe?.id)
 		} else if (bankIdBruker) {
-			formikBag.setFieldValue('environments', alleredeValgtMiljoe())
+			formMethods.setValue('environments', alleredeValgtMiljoe())
 		} else if (erQ1EllerQ2MiljoeAvhengig(formMethods.getValues())) {
-			formikBag.setFieldValue('environments', ['q1', 'q2'])
-		} else if (formikBag.values?.sykemelding) {
-			formikBag.setFieldValue('environments', ['q1'])
+			formMethods.setValue('environments', ['q1', 'q2'])
+		} else if (formMethods.getValues()?.sykemelding) {
+			formMethods.setValue('environments', ['q1'])
 		} else if (erQ2MiljoeAvhengig) {
-			formikBag.setFieldValue('environments', alleredeValgtMiljoe())
-		} else if (!formikBag.values?.environments) {
-			formikBag.setFieldValue('environments', [])
+			formMethods.setValue('environments', alleredeValgtMiljoe())
+		} else if (!formMethods.getValues()?.environments) {
+			formMethods.setValue('environments', [])
 		}
 		if (harRelatertPersonVedSivilstand || harEksisterendeNyIdent || harRelatertPersonBarn) {
-			formikBag.setFieldValue('malBestillingNavn', undefined)
+			formMethods.setValue('malBestillingNavn', undefined)
 		}
 	}, [])
 
-	const visMiljoeVelger = formikBag.values.hasOwnProperty('environments')
+	const visMiljoeVelger = formMethods.getValues().hasOwnProperty('environments')
 	return (
 		<div>
-			{harAvhukedeAttributter(formikBag.values) && (
+			{harAvhukedeAttributter(formMethods.getValues()) && (
 				<div className="oppsummering">
 					<Suspense fallback={<Loading label={'Laster bestillingskriterier...'} />}>
-						<Bestillingskriterier bestilling={formikBag.values} />
+						<Bestillingskriterier bestilling={formMethods.getValues()} />
 					</Suspense>
 				</div>
 			)}
 			{visMiljoeVelger && (
 				<MiljoVelger
-					bestillingsdata={formikBag.values}
+					bestillingsdata={formMethods.getValues()}
 					heading="Hvilke miljøer vil du opprette i?"
 					bankIdBruker={bankIdBruker}
 					orgTilgang={organisasjonTilgang}

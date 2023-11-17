@@ -45,9 +45,9 @@ export const TjenestepensjonForm = ({ formMethods }) => {
 		<Vis attributt={tpPath}>
 			<Panel
 				heading="Tjenestepensjon"
-				hasErrors={panelError(formikBag, tpPath)}
+				hasErrors={panelError(formMethods.formState.errors, tpPath)}
 				iconType="pensjon"
-				startOpen={erForsteEllerTest(formikBag.values, [tpPath])}
+				startOpen={erForsteEllerTest(formMethods.getValues(), [tpPath])}
 				informasjonstekst={hjelpetekst}
 			>
 				{/*// @ts-ignore*/}

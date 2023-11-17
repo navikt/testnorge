@@ -34,9 +34,9 @@ export const InstForm = ({ formMethods }) => {
 		<Vis attributt={instAttributt}>
 			<Panel
 				heading="Institusjonsopphold"
-				hasErrors={panelError(formikBag, instAttributt)}
+				hasErrors={panelError(formMethods.formState.errors, instAttributt)}
 				iconType="institusjon"
-				startOpen={erForsteEllerTest(formikBag.values, [instAttributt])}
+				startOpen={erForsteEllerTest(formMethods.getValues(), [instAttributt])}
 			>
 				{/*// @ts-ignore*/}
 				<FormikDollyFieldArray name="instdata" header="Opphold" newEntry={initialValues}>

@@ -38,7 +38,10 @@ export const OffentligeGodkjenningerForm = ({ formMethods }) => {
 								name={`${offentligGodkjenningPath}.issuer`}
 								label="Utsteder"
 								size="large"
-								key={`issuer_${_get(formikBag.values, `${offentligGodkjenningPath}.issuer`)}`}
+								key={`issuer_${_get(
+									formMethods.getValues(),
+									`${offentligGodkjenningPath}.issuer`,
+								)}`}
 							/>
 							<FormikDatepicker name={`${offentligGodkjenningPath}.fromDate`} label="Fullført" />
 							<FormikDatepicker name={`${offentligGodkjenningPath}.toDate`} label="Utløper" />

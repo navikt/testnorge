@@ -28,7 +28,7 @@ export const EnkeltinntektForm = ({
 	return (
 		<FormikDollyFieldArray name={path} header={header} newEntry={initialGrunnlag} nested>
 			{(path, idx) => {
-				const typeInntekt = _.get(formikBag.values, `${path}.tekniskNavn`)
+				const typeInntekt = _.get(formMethods.getValues(), `${path}.tekniskNavn`)
 				return (
 					<React.Fragment key={idx}>
 						<FormikSelect

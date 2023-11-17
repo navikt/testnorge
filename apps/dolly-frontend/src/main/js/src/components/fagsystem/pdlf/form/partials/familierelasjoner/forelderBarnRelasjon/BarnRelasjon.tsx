@@ -16,15 +16,15 @@ export const BarnRelasjon = ({ formMethods, path }: BarnRelasjonValues) => {
 	const erRedigering = !path?.includes('pdldata')
 
 	const [deltBosted, setDeltBosted] = useState(
-		_.get(formikBag.values, `${path}.deltBosted`) !== null,
+		_.get(formMethods.getValues(), `${path}.deltBosted`) !== null,
 	)
 
 	useEffect(() => {
-		const currentValues = _.get(formikBag.values, `${path}.deltBosted`)
+		const currentValues = _.get(formMethods.getValues(), `${path}.deltBosted`)
 		if (deltBosted && currentValues === null) {
-			formikBag.setFieldValue(`${path}.deltBosted`, initialDeltBosted)
+			formMethods.setValue(`${path}.deltBosted`, initialDeltBosted)
 		} else if (!deltBosted) {
-			formikBag.setFieldValue(`${path}.deltBosted`, null)
+			formMethods.setValue(`${path}.deltBosted`, null)
 		}
 	}, [deltBosted])
 

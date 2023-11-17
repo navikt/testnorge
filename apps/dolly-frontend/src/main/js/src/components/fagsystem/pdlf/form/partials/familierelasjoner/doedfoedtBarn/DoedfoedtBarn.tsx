@@ -25,7 +25,7 @@ export const DoedfoedtBarnForm = ({ formMethods, path }: DoedfoedtBarnProps) => 
 			</DatepickerWrapper>
 			<AvansertForm
 				path={path}
-				kanVelgeMaster={_.get(formikBag.values, `${path}.bekreftelsesdato`) === null}
+				kanVelgeMaster={_.get(formMethods.getValues(), `${path}.bekreftelsesdato`) === null}
 			/>
 		</div>
 	)

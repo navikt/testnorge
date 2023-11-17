@@ -45,9 +45,9 @@ export const KontaktinformasjonForDoedsbo = ({ formMethods }) => {
 		<Vis attributt={doedsboAttributt}>
 			<Panel
 				heading="Kontaktinformasjon for dødsbo"
-				hasErrors={panelError(formikBag, doedsboAttributt)}
+				hasErrors={panelError(formMethods.formState.errors, doedsboAttributt)}
 				iconType="doedsbo"
-				startOpen={erForsteEllerTest(formikBag.values, [doedsboAttributt])}
+				startOpen={erForsteEllerTest(formMethods.getValues(), [doedsboAttributt])}
 			>
 				<FormikDollyFieldArray
 					name="pdldata.person.kontaktinformasjonForDoedsbo"

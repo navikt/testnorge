@@ -18,11 +18,11 @@ export const OrgnrToggle = ({ path, formikBag }: OrgnrToggleProps) => {
 
 	const handleToggleChange = (value: string) => {
 		setInputType(value)
-		formikBag.setFieldValue(path, '')
+		formMethods.setValue(path, '')
 	}
 
 	const handleChangeEgne = (value: { orgnr: string }) => {
-		formikBag.setFieldValue(`${path}`, value.orgnr)
+		formMethods.setValue(`${path}`, value.orgnr)
 	}
 
 	return (

@@ -129,7 +129,7 @@ export const RelatertPersonImportButton = ({
 							<NavButton
 								onClick={() => {
 									closeModal()
-									handleImport(formikBag.values?.identer)
+									handleImport(formMethods.getValues()?.identer)
 								}}
 								variant={'primary'}
 							>

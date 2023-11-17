@@ -18,9 +18,9 @@ export const BrregstubForm = ({ formMethods }) => {
 		<Vis attributt={brregAttributt}>
 			<Panel
 				heading="Brønnøysundregistrene"
-				hasErrors={panelError(formikBag, brregAttributt)}
+				hasErrors={panelError(formMethods.formState.errors, brregAttributt)}
 				iconType="brreg"
-				startOpen={erForsteEllerTest(formikBag.values, [brregAttributt])}
+				startOpen={erForsteEllerTest(formMethods.getValues(), [brregAttributt])}
 			>
 				<div className="flexbox--flex-wrap">
 					<FormikSelect

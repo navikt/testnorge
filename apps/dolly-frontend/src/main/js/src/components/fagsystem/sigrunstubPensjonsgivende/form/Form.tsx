@@ -34,16 +34,14 @@ export const SigrunstubPensjonsgivendeForm = ({ formMethods }) => {
 
 	useEffect(() => {
 		const pensjonsgivendeInntektPath = 'sigrunstubPensjonsgivende[0].pensjonsgivendeInntekt'
-		const forstePensjonsgivendeInntekt = _.get(formikBag.values, pensjonsgivendeInntektPath)
+		const forstePensjonsgivendeInntekt = _.get(formMethods.getValues(), pensjonsgivendeInntektPath)
 		if (
-			_.has(formikBag.values, 'sigrunstubPensjonsgivende') &&
+			_.has(formMethods.getValues(), 'sigrunstubPensjonsgivende') &&
 			kodeverk &&
 			skatteordning &&
 			(!forstePensjonsgivendeInntekt || forstePensjonsgivendeInntekt.length < 1)
 		) {
-			formikBag.setFieldValue(pensjonsgivendeInntektPath, [
-				getInitialInntekt(kodeverk, skatteordning),
-			])
+			formMethods.setValue(pensjonsgivendeInntektPath, [getInitialInntekt(kodeverk, skatteordning)])
 		}
 	}, [kodeverk, skatteordning])
 
@@ -51,9 +49,9 @@ export const SigrunstubPensjonsgivendeForm = ({ formMethods }) => {
 		<Vis attributt={sigrunstubPensjonsgivendeAttributt}>
 			<Panel
 				heading="Pensjonsgivende inntekt (Sigrun)"
-				hasErrors={panelError(formikBag, sigrunstubPensjonsgivendeAttributt)}
+				hasErrors={panelError(formMethods.formState.errors, sigrunstubPensjonsgivendeAttributt)}
 				iconType="sigrun"
-				startOpen={erForsteEllerTest(formikBag.values, [sigrunstubPensjonsgivendeAttributt])}
+				startOpen={erForsteEllerTest(formMethods.getValues(), [sigrunstubPensjonsgivendeAttributt])}
 			>
 				<ErrorBoundary>
 					<FormikDollyFieldArray

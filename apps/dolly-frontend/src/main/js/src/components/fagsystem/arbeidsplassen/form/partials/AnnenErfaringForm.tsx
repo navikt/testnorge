@@ -31,27 +31,30 @@ export const AnnenErfaringForm = ({ formMethods }) => {
 								name={`${annenErfaringPath}.role`}
 								label="Rolle"
 								size="xlarge"
-								key={`role_${_get(formikBag.values, `${annenErfaringPath}.role`)}`}
+								key={`role_${_get(formMethods.getValues(), `${annenErfaringPath}.role`)}`}
 							/>
 							<Fritekstfelt
 								label="Beskrivelse"
 								placeholder="Beskrivelse av annen erfaring"
-								defaultValue={_get(formikBag.values, `${annenErfaringPath}.description`)}
+								defaultValue={_get(formMethods.getValues(), `${annenErfaringPath}.description`)}
 								onBlur={(beskrivelse) =>
-									formikBag.setFieldValue(
+									formMethods.setValue(
 										`${annenErfaringPath}.description`,
 										beskrivelse?.target?.value,
 									)
 								}
 								size="small"
-								key={`description_${_get(formikBag.values, `${annenErfaringPath}.description`)}`}
+								key={`description_${_get(
+									formMethods.getValues(),
+									`${annenErfaringPath}.description`,
+								)}`}
 								resize
 							/>
 							<FormikDatepicker name={`${annenErfaringPath}.fromDate`} label="Startdato" />
 							<FormikDatepicker
 								name={`${annenErfaringPath}.toDate`}
 								label="Sluttdato"
-								disabled={_get(formikBag.values, `${annenErfaringPath}.ongoing`)}
+								disabled={_get(formMethods.getValues(), `${annenErfaringPath}.ongoing`)}
 								fastfield={false}
 							/>
 							<FormikCheckbox
@@ -59,7 +62,7 @@ export const AnnenErfaringForm = ({ formMethods }) => {
 								name={`${annenErfaringPath}.ongoing`}
 								label="Pågående"
 								wrapperSize="inherit"
-								isDisabled={_get(formikBag.values, `${annenErfaringPath}.toDate`)}
+								isDisabled={_get(formMethods.getValues(), `${annenErfaringPath}.toDate`)}
 								checkboxMargin
 							/>
 						</div>

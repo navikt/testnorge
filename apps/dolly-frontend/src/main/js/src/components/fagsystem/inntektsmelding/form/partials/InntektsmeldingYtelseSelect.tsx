@@ -27,7 +27,7 @@ export default ({
 	const ytelsePath = `${path}.ytelse`
 
 	const feil = (feilmelding: Feilmelding) => {
-		if (_.has(formikBag.touched, ytelsePath) && _.get(formikBag.values, ytelsePath) === '') {
+		if (_.has(formikBag.touched, ytelsePath) && _.get(formMethods.getValues(), ytelsePath) === '') {
 			return { feilmelding: 'Feltet er påkrevd' }
 		} else {
 			return feilmelding
@@ -43,7 +43,7 @@ export default ({
 							value,
 							label: codeToNorskLabel(value),
 							tema: findTema(value),
-						}))
+						})),
 					)
 				}
 				render={(data: Array<Option>, feilmelding: Feilmelding) => (
@@ -53,7 +53,7 @@ export default ({
 						options={data}
 						type="text"
 						size={size}
-						value={_.get(formikBag.values, ytelsePath)}
+						value={_.get(formMethods.getValues(), ytelsePath)}
 						onChange={(e: Option) => setYtelseOgTema(e, formikBag, path, idx)}
 						feil={feil(feilmelding)}
 						isClearable={false}
@@ -75,7 +75,7 @@ const findTema = (ytelse: string) => {
 }
 
 const setYtelseOgTema = (value: Option, formikBag: FormikProps<{}>, path: string, _idx: number) => {
-	formikBag.setFieldValue('inntektsmelding.joarkMetadata.tema', value.tema)
+	formMethods.setValue('inntektsmelding.joarkMetadata.tema', value.tema)
 
 	const {
 		sykepengerIArbeidsgiverperioden,
@@ -83,23 +83,23 @@ const setYtelseOgTema = (value: Option, formikBag: FormikProps<{}>, path: string
 		pleiepengerPerioder,
 		omsorgspenger,
 		...rest
-	} = _.get(formikBag.values, path)
+	} = _.get(formMethods.getValues(), path)
 
 	if (value.value === Ytelser.Omsorgspenger) {
-		formikBag.setFieldValue(path, {
+		formMethods.setValue(path, {
 			...rest,
 			ytelse: value.value,
 			omsorgspenger: { harUtbetaltPliktigeDager: false },
 			sykepengerIArbeidsgiverperioden: { bruttoUtbetalt: '' },
 		})
 	} else if (value.value === Ytelser.Sykepenger) {
-		formikBag.setFieldValue(path, {
+		formMethods.setValue(path, {
 			...rest,
 			ytelse: value.value,
 			sykepengerIArbeidsgiverperioden: { bruttoUtbetalt: '' },
 		})
 	} else if (value.value === Ytelser.Foreldrepenger) {
-		formikBag.setFieldValue(path, {
+		formMethods.setValue(path, {
 			...rest,
 			ytelse: value.value,
 			startdatoForeldrepengeperiode: '',
@@ -109,13 +109,13 @@ const setYtelseOgTema = (value: Option, formikBag: FormikProps<{}>, path: string
 		value.value === Ytelser.PleiepengerBarn ||
 		value.value === Ytelser.PleiepengerNaerstaaende
 	) {
-		formikBag.setFieldValue(path, {
+		formMethods.setValue(path, {
 			...rest,
 			ytelse: value.value,
 			pleiepengerPerioder: [{ fom: '', tom: '' }],
 		})
 	} else {
 		// Foreløpig ingen spesielle keys for opplærings- og svangerskapspenger
-		formikBag.setFieldValue(`${path}.ytelse`, value.value)
+		formMethods.setValue(`${path}.ytelse`, value.value)
 	}
 }

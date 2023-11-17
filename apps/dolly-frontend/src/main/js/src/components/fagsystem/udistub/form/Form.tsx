@@ -22,9 +22,9 @@ export const UdistubForm = ({ formMethods }) => (
 	<Vis attributt={attrPaths}>
 		<Panel
 			heading="UDI"
-			hasErrors={panelError(formikBag, attrPaths)}
+			hasErrors={panelError(formMethods.formState.errors, attrPaths)}
 			iconType="udi"
-			startOpen={erForsteEllerTest(formikBag.values, [udiAttributt])}
+			startOpen={erForsteEllerTest(formMethods.getValues(), [udiAttributt])}
 		>
 			<Kategori title="Gjeldende oppholdsstatus" vis="udistub.oppholdStatus">
 				<Oppholdsstatus formMethods={formMethods} />

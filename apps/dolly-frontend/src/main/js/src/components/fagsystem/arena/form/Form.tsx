@@ -18,9 +18,9 @@ export const ArenaForm = ({ formMethods }) => {
 	const { leggTilPaaGruppe } = opts?.is
 
 	const servicebehovAktiv =
-		_.get(formikBag.values, `${arenaPath}.arenaBrukertype`) === 'MED_SERVICEBEHOV'
+		_.get(formMethods.getValues(), `${arenaPath}.arenaBrukertype`) === 'MED_SERVICEBEHOV'
 
-	const dagpengerAktiv = _.get(formikBag.values, `${arenaPath}.dagpenger[0]`)
+	const dagpengerAktiv = _.get(formMethods.getValues(), `${arenaPath}.dagpenger[0]`)
 
 	const personFoerLeggTilInntektstub = _.get(opts.personFoerLeggTil, 'inntektstub')
 
@@ -32,14 +32,14 @@ export const ArenaForm = ({ formMethods }) => {
 		<Vis attributt={arenaPath}>
 			<Panel
 				heading="Arbeidsytelser"
-				hasErrors={panelError(formikBag, arenaPath)}
+				hasErrors={panelError(formMethods.formState.errors, arenaPath)}
 				iconType="arena"
-				startOpen={erForsteEllerTest(formikBag.values, [arenaPath])}
+				startOpen={erForsteEllerTest(formMethods.getValues(), [arenaPath])}
 			>
 				{!leggTilPaaGruppe &&
 					dagpengerAktiv &&
 					!personFoerLeggTilInntektstub &&
-					!formikBag.values.hasOwnProperty('inntektstub') && (
+					!formMethods.getValues().hasOwnProperty('inntektstub') && (
 						<AlertInntektskomponentenRequired vedtak={'dagpengevedtak'} />
 					)}
 				{!servicebehovAktiv && (

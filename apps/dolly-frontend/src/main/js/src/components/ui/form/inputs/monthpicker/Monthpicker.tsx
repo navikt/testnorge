@@ -1,9 +1,9 @@
 import ReactDatepicker from 'react-datepicker'
 import * as _ from 'lodash-es'
-import { FormikProps, useFormikContext } from 'formik'
 import { Label } from '@/components/ui/form/inputs/label/Label'
 import { TextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { InputWrapper } from '@/components/ui/form/inputWrapper/InputWrapper'
+import { useFormContext } from 'react-hook-form'
 
 interface MonthpickerProps {
 	name: string
@@ -27,16 +27,18 @@ export const Monthpicker = ({
 	maxDate = null,
 	...props
 }: MonthpickerProps) => {
-	const formikBag = useFormikContext()
-	const getFeilmelding = (formikProps: FormikProps<any>, formikPath: string) => {
-		const feilmelding = _.get(formikProps.errors, formikPath)
+	const {
+		formState: { errors },
+	} = useFormContext()
+	const getFeilmelding = (path) => {
+		const feilmelding = _.get(errors, path)
 		return feilmelding ? { feilmelding: feilmelding } : null
 	}
 	const formattedDate = date instanceof Date || date === null ? date : new Date(date)
 
 	return (
 		<InputWrapper size={'medium'}>
-			<Label name={name} label={label} feil={getFeilmelding(formikBag, name)} containerClass={null}>
+			<Label name={name} label={label} feil={getFeilmelding(name)} containerClass={null}>
 				<ReactDatepicker
 					className={'skjemaelement__input'}
 					locale="nb"
@@ -45,7 +47,7 @@ export const Monthpicker = ({
 					onChange={onChange ? onChange : handleDateChange}
 					placeholderText={'yyyy-mm'}
 					showMonthYearPicker
-					customInput={<TextInput icon="calendar" feil={getFeilmelding(formikBag, name)} />}
+					customInput={<TextInput icon="calendar" feil={getFeilmelding(name)} />}
 					dropdownMode="select"
 					autoComplete="off"
 					minDate={minDate}

@@ -3,19 +3,19 @@ import Panel from '@/components/ui/panel/Panel'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
 import { validation } from './validation'
 import { ArbeidsforholdToggle } from './partials/arbeidsforholdToggle'
-import { useFormikContext } from 'formik'
+import { useFormContext } from 'react-hook-form'
 
 export const aaregAttributt = 'aareg'
 
 export const AaregForm = () => {
-	const formikBag = useFormikContext()
+	const formMethods = useFormContext()
 	return (
 		<Vis attributt={aaregAttributt}>
 			<Panel
 				heading="Arbeidsforhold (Aareg)"
-				hasErrors={panelError(formikBag, aaregAttributt)}
+				hasErrors={panelError(formMethods.formState.errors, aaregAttributt)}
 				iconType="arbeid"
-				startOpen={erForsteEllerTest(formikBag.values, [aaregAttributt])}
+				startOpen={erForsteEllerTest(formMethods.getValues(), [aaregAttributt])}
 			>
 				<ArbeidsforholdToggle />
 			</Panel>

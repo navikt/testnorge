@@ -21,7 +21,7 @@ export const SkjermingForm = ({ formMethods }) => {
 	}
 
 	const settFormikDate = (value, path) => {
-		formikBag.setFieldValue(`skjerming.${path}`, value)
+		formMethods.setValue(`skjerming.${path}`, value)
 	}
 
 	const harSkjerming = HarAktivSkjerming()

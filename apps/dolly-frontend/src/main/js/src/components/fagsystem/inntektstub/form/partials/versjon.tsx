@@ -19,13 +19,13 @@ export default function versjonsinformasjon(
 	formikBag: FormikProps<{}>,
 	inntektstubPath: string,
 	inntektValues: Array<Inntektsinformasjon>,
-	idx: number
+	idx: number,
 ): SpesifikkVersjon {
 	// Skaffer oversikt over hvilke av inntektene i formikBag som er gjeldende og historikk
 	const versjonsliste: Array<Versjonsoversikt> = mapVersjonsliste(
 		formikBag,
 		inntektstubPath,
-		inntektValues
+		inntektValues,
 	)
 
 	//Samler spesifikk versjoninformasjon for den inntekten (idx) som skal vise
@@ -39,7 +39,7 @@ export default function versjonsinformasjon(
 				return acc
 			}
 		},
-		{ versjonAv: -1, underversjonerIdx: [], gjeldendeIdx: -1 }
+		{ versjonAv: -1, underversjonerIdx: [], gjeldendeIdx: -1 },
 	)
 
 	const gjeldendeInntektMedHistorikk =
@@ -51,7 +51,7 @@ export default function versjonsinformasjon(
 const mapVersjonsliste = (
 	formikBag: FormikProps<{}>,
 	inntektstubPath: string,
-	inntektValues: Array<Inntektsinformasjon>
+	inntektValues: Array<Inntektsinformasjon>,
 ): Array<Versjonsoversikt> => {
 	const versjonsoversikt: Array<Versjonsoversikt> = []
 	inntektValues.forEach((inntektinfo: Inntektsinformasjon, idx: number) => {
@@ -63,9 +63,9 @@ const mapVersjonsliste = (
 					inntekt.underversjonerIdx.push(idx)
 					if (inntektinfo.versjon !== inntekt.underversjonerIdx.length) {
 						//Endrer versjonsnr ved sletting av versjonsnr foran
-						formikBag.setFieldValue(
+						formMethods.setValue(
 							`${inntektstubPath}[${idx}].versjon`,
-							inntekt.underversjonerIdx.length
+							inntekt.underversjonerIdx.length,
 						)
 					}
 				}
@@ -78,7 +78,7 @@ const mapVersjonsliste = (
 
 const sjekkKombinasjon = (
 	startversjon: Inntektsinformasjon,
-	testinntekt: Inntektsinformasjon
+	testinntekt: Inntektsinformasjon,
 ): boolean =>
 	// De tre verdiene som må være like mellom gjeldende inntekt og historikk
 	startversjon.antallMaaneder === testinntekt.antallMaaneder &&

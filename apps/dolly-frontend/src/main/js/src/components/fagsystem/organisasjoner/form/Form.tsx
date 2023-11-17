@@ -21,9 +21,9 @@ export const OrganisasjonForm = ({ formMethods }: OrganisasjonFormProps) => {
 			<Vis attributt={detaljerPaths}>
 				<Panel
 					heading="Detaljer"
-					hasErrors={panelError(formikBag, detaljerPaths)}
+					hasErrors={panelError(formMethods.formState.errors, detaljerPaths)}
 					iconType={'personinformasjon'}
-					startOpen={erForsteEllerTest(formikBag.values, detaljerPaths)}
+					startOpen={erForsteEllerTest(formMethods.getValues(), detaljerPaths)}
 				>
 					<Detaljer formMethods={formMethods} path="organisasjon" level={0} />
 				</Panel>

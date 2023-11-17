@@ -41,7 +41,7 @@ const StyledAlert = styled(Alert)`
 `
 
 export const ForeldreansvarForm = ({
-	formikBag,
+	formMethods,
 	path,
 	eksisterendeNyPerson = null,
 }: ForeldreansvarForm) => {
@@ -50,7 +50,7 @@ export const ForeldreansvarForm = ({
 	const nyAnsvarlig = 'nyAnsvarlig'
 	const typeAnsvarlig = 'typeAnsvarlig'
 	const handleChangeTypeAnsvarlig = (target: Target, path: string) => {
-		const foreldreansvar = _.get(formikBag.values, path)
+		const foreldreansvar = _.get(formMethods.getValues(), path)
 		const foreldreansvarClone = _.cloneDeep(foreldreansvar)
 
 		_.set(foreldreansvarClone, typeAnsvarlig, target?.value || null)
@@ -75,11 +75,11 @@ export const ForeldreansvarForm = ({
 			_.set(foreldreansvarClone, nyAnsvarlig, initialPdlPerson)
 		}
 
-		formikBag.setFieldValue(path, foreldreansvarClone)
+		formMethods.setValue(path, foreldreansvarClone)
 	}
 
 	const handleChangeAnsvar = (target: Target, path: string) => {
-		const foreldreansvar = _.get(formikBag.values, path)
+		const foreldreansvar = _.get(formMethods.getValues(), path)
 		const foreldreansvarClone = _.cloneDeep(foreldreansvar)
 
 		_.set(foreldreansvarClone, 'ansvar', target?.value || null)
@@ -90,30 +90,30 @@ export const ForeldreansvarForm = ({
 			_.set(foreldreansvarClone, nyAnsvarlig, undefined)
 		}
 
-		formikBag.setFieldValue(path, foreldreansvarClone)
+		formMethods.setValue(path, foreldreansvarClone)
 	}
 
-	const ansvar = _.get(formikBag.values, `${path}.ansvar`)
+	const ansvar = _.get(formMethods.getValues(), `${path}.ansvar`)
 
 	const getTypeAnsvarlig = () => {
 		if (ansvar !== 'ANDRE') {
 			return null
 		}
-		const type = _.get(formikBag.values, `${path}.typeAnsvarlig`)
+		const type = _.get(formMethods.getValues(), `${path}.typeAnsvarlig`)
 		if (type) {
 			return type
-		} else if (_.get(formikBag.values, `${path}.ansvarlig`)) {
+		} else if (_.get(formMethods.getValues(), `${path}.ansvarlig`)) {
 			return TypeAnsvarlig.EKSISTERENDE
-		} else if (_.get(formikBag.values, `${path}.nyAnsvarlig`)) {
+		} else if (_.get(formMethods.getValues(), `${path}.nyAnsvarlig`)) {
 			return TypeAnsvarlig.NY
-		} else if (_.get(formikBag.values, `${path}.ansvarligUtenIdentifikator`)) {
+		} else if (_.get(formMethods.getValues(), `${path}.ansvarligUtenIdentifikator`)) {
 			return TypeAnsvarlig.UTEN_ID
 		} else return null
 	}
 
 	useEffect(() => {
-		if (!_.get(formikBag.values, `${path}.typeAnsvarlig`)) {
-			formikBag.setFieldValue(`${path}.typeAnsvarlig`, getTypeAnsvarlig())
+		if (!_.get(formMethods.getValues(), `${path}.typeAnsvarlig`)) {
+			formMethods.setValue(`${path}.typeAnsvarlig`, getTypeAnsvarlig())
 		}
 	}, [])
 
@@ -168,7 +168,7 @@ export const ForeldreansvarForm = ({
 export const Foreldreansvar = ({ formMethods }: ForeldreansvarForm) => {
 	const { personFoerLeggTil, leggTilPaaGruppe } = useContext(BestillingsveilederContext)
 
-	const relasjoner = _.get(formikBag.values, 'pdldata.person.forelderBarnRelasjon')
+	const relasjoner = _.get(formMethods.getValues(), 'pdldata.person.forelderBarnRelasjon')
 	const eksisterendeRelasjoner = _.get(personFoerLeggTil, 'pdl.hentPerson.forelderBarnRelasjon')
 
 	const harBarn = () => {
