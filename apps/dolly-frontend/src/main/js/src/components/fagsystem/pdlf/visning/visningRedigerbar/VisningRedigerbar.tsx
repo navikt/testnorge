@@ -332,7 +332,7 @@ export const VisningRedigerbar = ({
 			case Attributt.DoedfoedtBarn:
 				return <DoedfoedtBarnForm formikBag={formikBag} path={path} />
 			case Attributt.UtenlandskIdentifikasjonsnummer:
-				return <UtenlandsIdForm path={path} />
+				return <UtenlandsIdForm path={path} identtype={identtype} />
 		}
 	}
 

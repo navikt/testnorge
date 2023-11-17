@@ -1,47 +1,53 @@
 import * as React from 'react'
 import { FormikProps } from 'formik'
-import { initialNyIdent } from '@/components/fagsystem/pdlf/form/initialValues'
+import { getInitialNyIdent } from '@/components/fagsystem/pdlf/form/initialValues'
 import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { PdlPersonExpander } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonExpander'
 import * as _ from 'lodash-es'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
+import { useContext } from 'react'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 interface NyIdentForm {
 	formikBag: FormikProps<{}>
 }
 
-export const NyIdent = ({ formikBag }: NyIdentForm) => (
-	<FormikDollyFieldArray
-		name="pdldata.person.nyident"
-		header="Ny identitet"
-		newEntry={initialNyIdent}
-		canBeEmpty={false}
-	>
-		{(path: string) => {
-			const nyIdentValg = Object.keys(_.get(formikBag.values, path))
-				.filter((key) => key !== 'eksisterendeIdent' && key !== 'kilde' && key !== 'master')
-				.reduce((obj, key) => {
-					obj[key] = _.get(formikBag.values, path)[key]
-					return obj
-				}, {})
+export const NyIdent = ({ formikBag }: NyIdentForm) => {
+	const opts = useContext(BestillingsveilederContext)
 
-			return (
-				<div className="flexbox--flex-wrap">
-					<PdlPersonExpander
-						nyPersonPath={path}
-						eksisterendePersonPath={`${path}.eksisterendeIdent`}
-						label="NY IDENTITET"
-						formikBag={formikBag}
-						nyIdentValg={nyIdentValg}
-						isExpanded={
-							!isEmpty(nyIdentValg, ['syntetisk']) ||
-							_.get(formikBag.values, `${path}.eksisterendeIdent`) !== null
-						}
-					/>
-					<AvansertForm path={path} kanVelgeMaster={true} />
-				</div>
-			)
-		}}
-	</FormikDollyFieldArray>
-)
+	return (
+		<FormikDollyFieldArray
+			name="pdldata.person.nyident"
+			header="Ny identitet"
+			newEntry={getInitialNyIdent(opts?.identtype === 'NPID' ? 'PDL' : 'FREG')}
+			canBeEmpty={false}
+		>
+			{(path: string) => {
+				const nyIdentValg = Object.keys(_.get(formikBag.values, path))
+					.filter((key) => key !== 'eksisterendeIdent' && key !== 'kilde' && key !== 'master')
+					.reduce((obj, key) => {
+						obj[key] = _.get(formikBag.values, path)[key]
+						return obj
+					}, {})
+
+				return (
+					<div className="flexbox--flex-wrap">
+						<PdlPersonExpander
+							nyPersonPath={path}
+							eksisterendePersonPath={`${path}.eksisterendeIdent`}
+							label="NY IDENTITET"
+							formikBag={formikBag}
+							nyIdentValg={nyIdentValg}
+							isExpanded={
+								!isEmpty(nyIdentValg, ['syntetisk']) ||
+								_.get(formikBag.values, `${path}.eksisterendeIdent`) !== null
+							}
+						/>
+						<AvansertForm path={path} kanVelgeMaster={opts?.identtype !== 'NPID'} />
+					</div>
+				)
+			}}
+		</FormikDollyFieldArray>
+	)
+}

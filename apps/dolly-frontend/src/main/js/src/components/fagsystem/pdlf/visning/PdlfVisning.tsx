@@ -183,6 +183,7 @@ export const PdlfVisning = ({ fagsystemData, loading, tmpPersoner }) => {
 					data={data?.person?.utenlandskIdentifikasjonsnummer}
 					tmpPersoner={tmpPdlforvalter}
 					ident={ident}
+					identtype={data?.person?.identtype}
 				/>
 				<IdenthistorikkVisning relasjoner={data?.relasjoner} />
 				<KontaktinformasjonForDoedsbo

@@ -225,14 +225,6 @@ export const initialNyPerson = {
 	nyKontaktperson: initialPdlPerson,
 }
 
-export const initialUtenlandsIdValues = {
-	identifikasjonsnummer: '',
-	opphoert: false,
-	utstederland: '',
-	kilde: 'Dolly',
-	master: 'FREG',
-}
-
 export const initialFalskIdentitetValues = {
 	erFalsk: true,
 	kilde: 'Dolly',
@@ -328,6 +320,14 @@ export const initialForeldreansvar = {
 	master: 'FREG',
 }
 
+export const getInitialUtenlandskIdentifikasjonsnummer = (master = 'FREG') => ({
+	identifikasjonsnummer: '',
+	opphoert: false,
+	utstederland: '',
+	kilde: 'Dolly',
+	master: master,
+})
+
 export const initialNyIdent = {
 	eksisterendeIdent: null as unknown as string,
 	identtype: null as unknown as string,
@@ -342,6 +342,21 @@ export const initialNyIdent = {
 	kilde: 'Dolly',
 	master: 'FREG',
 }
+
+export const getInitialNyIdent = (master = 'FREG') => ({
+	eksisterendeIdent: null as unknown as string,
+	identtype: null as unknown as string,
+	kjoenn: null as unknown as string,
+	foedtEtter: null as unknown as string,
+	foedtFoer: null as unknown as string,
+	alder: '',
+	syntetisk: true,
+	nyttNavn: {
+		hasMellomnavn: false,
+	},
+	kilde: 'Dolly',
+	master: master,
+})
 
 export const initialFullmakt = {
 	omraader: [] as any,
