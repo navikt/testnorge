@@ -108,7 +108,7 @@ export const BestillingProgresjon = ({
 	}
 
 	const SECONDS_BEFORE_WARNING_MESSAGE = 120
-	const SECONDS_BEFORE_WARNING_MESSAGE_ORGANISASJON = 300
+	const SECONDS_BEFORE_WARNING_MESSAGE_ORGANISASJON = 200
 
 	const { bestilling, loading } = useBestillingById(bestillingID, erOrganisasjon, true)
 	const { bestillingStatus } = useOrganisasjonBestillingStatus(bestillingID, erOrganisasjon, true)

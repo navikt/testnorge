@@ -15,7 +15,7 @@ import * as _ from 'lodash-es'
 import { tpsfAttributter } from '@/components/bestillingsveileder/utils'
 import { Mal, useDollyMaler } from '@/utils/hooks/useMaler'
 import { CypressSelector } from '../../../../../cypress/mocks/Selectors'
-import { useFormContext } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 
 const initialValues = {
@@ -48,7 +48,7 @@ export const NyIdent = ({ brukernavn, onAvbryt, onSubmit }: NyBestillingProps) =
 	const [bruker, setBruker] = useState(brukernavn)
 	const [malAktiv, toggleMalAktiv] = useToggle(false)
 	const { maler, loading } = useDollyMaler()
-	const formMethods = useFormContext()
+	const formMethods = useForm({ defaultValues: initialValues })
 
 	const brukerOptions = getBrukerOptions(maler)
 	const malOptions = getMalOptions(maler, bruker)
@@ -140,7 +140,7 @@ export const NyIdent = ({ brukernavn, onAvbryt, onSubmit }: NyBestillingProps) =
 					data-cy={CypressSelector.BUTTON_START_BESTILLING}
 					submitknapp="Start bestilling"
 					disabled={!formMethods.formState.isValid || formMethods.formState.isSubmitting}
-					onSubmit={formMethods.handleSubmit}
+					onSubmit={formMethods.handleSubmit(preSubmit(formMethods.getValues()))}
 					onAvbryt={onAvbryt}
 					center
 				/>

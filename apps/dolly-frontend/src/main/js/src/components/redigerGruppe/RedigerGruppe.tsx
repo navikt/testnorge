@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form, Formik, getIn } from 'formik'
+// import { Form, Formik, getIn } from 'formik'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 import * as yup from 'yup'
 import Loading from '@/components/ui/loading/Loading'
@@ -31,7 +31,7 @@ const RedigerGruppe = ({
 }: Props): JSX.Element => {
 	const navigate = useNavigate()
 	const { gruppe } = useGruppeById(gruppeId)
-	const erRedigering = Boolean(getIn(gruppe, 'id', false))
+	const erRedigering = getIn(gruppe, 'id', false)
 	const mutate = useMatchMutate()
 
 	const onHandleSubmit = async (values: { hensikt: any; navn: any }, _actions: any) => {

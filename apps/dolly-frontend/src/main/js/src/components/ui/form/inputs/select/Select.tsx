@@ -1,4 +1,3 @@
-import { useField } from 'formik'
 import { createFilter, default as ReactSelect } from 'react-select'
 import cn from 'classnames'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
@@ -10,6 +9,7 @@ import MenuList from '@/components/ui/form/inputs/select/MenuList'
 import Option from '@/components/ui/form/inputs/select/Option'
 import * as _ from 'lodash-es'
 import { useKodeverk } from '@/utils/hooks/useKodeverk'
+import { useController } from 'react-hook-form'
 
 type SelectProps = {
 	id?: string
@@ -121,7 +121,7 @@ export const DollySelect = (props: SelectProps) => (
 )
 
 const P_FormikSelect = ({ feil, ...props }: SelectProps) => {
-	const [field, meta] = useField(props)
+	const { field, fieldState: meta } = useController(props)
 	const handleChange = (selected, meta) => {
 		let value
 		if (props.isMulti) {

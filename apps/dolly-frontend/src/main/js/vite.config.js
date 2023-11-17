@@ -1,6 +1,5 @@
 import { defineConfig } from 'vite'
 import viteTsconfigPaths from 'vite-tsconfig-paths'
-import svgr from 'vite-plugin-svgr'
 import proxyRoutes from './proxy-routes.json'
 import path from 'path'
 import EnvironmentPlugin from 'vite-plugin-environment'
@@ -74,7 +73,6 @@ export default defineConfig(({ mode }) => ({
 				],
 			},
 		}),
-		svgr(),
 		viteTsconfigPaths(),
 		preserveRefPlugin(),
 		EnvironmentPlugin({

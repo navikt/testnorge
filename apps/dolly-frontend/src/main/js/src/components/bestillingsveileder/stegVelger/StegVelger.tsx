@@ -24,7 +24,7 @@ const STEPS = [Steg1, Steg2, Steg3]
 
 export const StegVelger = ({ initialValues, onSubmit }) => {
 	const [step, setStep] = useState(0)
-	const methods = useForm({ defaultValues: initialValues, resolver: yupResolver(Validations) })
+	const formMethods = useForm({ defaultValues: initialValues, resolver: yupResolver(Validations) })
 
 	const opts = useContext(BestillingsveilederContext)
 	const mutate = useMatchMutate()
@@ -33,10 +33,9 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 	const isLastStep = () => step === STEPS.length - 1
 	const handleNext = () => setStep(step + 1)
 
-	const handleBack = (formikBag) => {
+	const handleBack = () => {
 		if (isLastStep()) {
-			const { setSubmitting } = formikBag
-			setSubmitting(false)
+			// const { setSubmitting } = formMethods.setSubmitting(false)
 		}
 		if (step !== 0) setStep(step - 1)
 	}
@@ -48,7 +47,7 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 		}
 
 		sessionStorage.clear()
-		methods.reset()
+		formMethods.reset()
 
 		onSubmit(values)
 		mutate(REGEX_BACKEND_GRUPPER)
@@ -72,14 +71,14 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 
 	const labels = STEPS.map((v) => ({ label: v.label }))
 
-	const stateModifier = stateModifierFns(methods, opts)
+	const stateModifier = stateModifierFns(formMethods, opts)
 	const devEnabled =
 		window.location.hostname.includes('localhost') ||
 		window.location.hostname.includes('dolly-frontend-dev')
 
 	return (
-		<FormProvider {...methods}>
-			<form onSubmit={methods.handleSubmit(_handleSubmit)}>
+		<FormProvider {...formMethods}>
+			<form onSubmit={formMethods.handleSubmit(_handleSubmit)}>
 				<Stepper orientation="horizontal" activeStep={step + 1}>
 					{labels.map((label, index) => (
 						<Stepper.Step key={index}>{label.label}</Stepper.Step>
