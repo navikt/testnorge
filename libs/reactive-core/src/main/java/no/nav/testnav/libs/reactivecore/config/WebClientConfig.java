@@ -41,8 +41,9 @@ public class WebClientConfig {
                             new ReactorClientHttpConnector(
                                     HttpClient
                                             .create(ConnectionProvider.builder("Testnorge connection pool")
-                                                    .maxConnections(10)
-                                                    .pendingAcquireMaxCount(3000)
+                                                    .maxConnections(5)
+                                                    .pendingAcquireMaxCount(10000)
+                                                    .pendingAcquireTimeout(Duration.ofMinutes(30))
                                                     .build())
                                             .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000)
                                             .option(ChannelOption.SO_KEEPALIVE, true)

@@ -31,11 +31,20 @@ public class WebClientFilter {
 
         } else if (throwable instanceof WebClientRequestException requestException) {
 
-            return requestException.getCause() instanceof ConnectTimeoutException ||
+            if (requestException.getCause() instanceof ConnectTimeoutException ||
                     requestException.getCause() instanceof ReadTimeoutException ||
-                    requestException.getCause() instanceof WriteTimeoutException ?
-                    "Mottaker svarer ikke, eller har for lang svartid." :
-                    requestException.getCause().toString();
+                    requestException.getCause() instanceof WriteTimeoutException) {
+
+                return "Mottaker svarer ikke, eller har for lang svartid.";
+
+            } else if (requestException.getCause() instanceof SocketException) {
+
+                return "Forbindelsen er ustabil og mottaker kunne ikke nås.";
+
+            } else {
+
+                return requestException.getCause().toString();
+            }
 
         } else {
             return throwable.getMessage();
