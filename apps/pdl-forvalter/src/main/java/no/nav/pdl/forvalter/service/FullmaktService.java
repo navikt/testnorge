@@ -17,6 +17,8 @@ import java.util.List;
 import static java.lang.String.format;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
+import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -41,8 +43,8 @@ public class FullmaktService implements BiValidation<FullmaktDTO, PersonDTO> {
 
             if (isTrue(type.getIsNew())) {
 
-                type.setKilde(isNotBlank(type.getKilde()) ? type.getKilde() : "Dolly");
-                type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : Master.FREG);
+                type.setKilde(getKilde(type));
+                type.setMaster(getMaster(type, person));
                 handle(type, person.getIdent());
             }
         }

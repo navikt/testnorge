@@ -379,7 +379,7 @@ public class ArtifactUpdateService {
                 updateArtifact(person.getPerson().getUtenlandskIdentifikasjonsnummer(), oppdatertIdentifikasjon, id, "UtenlandskIdentifikasjonsnummer"));
 
         utenlandsidentifikasjonsnummerService.validate(oppdatertIdentifikasjon);
-        utenlandsidentifikasjonsnummerService.convert(person.getPerson().getUtenlandskIdentifikasjonsnummer());
+        utenlandsidentifikasjonsnummerService.convert(person.getPerson());
     }
 
     public void updateFalskIdentitet(String ident, Integer id, FalskIdentitetDTO oppdatertIdentitet) {
@@ -440,7 +440,7 @@ public class ArtifactUpdateService {
                 updateArtifact(person.getPerson().getDoedsfall(), oppdatertDoedsfall, id, "Doedsfall"));
 
         doedsfallService.validate(oppdatertDoedsfall);
-        doedsfallService.convert(person.getPerson().getDoedsfall());
+        doedsfallService.convert(person.getPerson());
 
         folkeregisterPersonstatusService.update(person.getPerson());
     }

@@ -9,14 +9,14 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.service.EnkelAdresseService.getStrengtFortroligKontaktadresse;
+import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
+import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.AdressebeskyttelseDTO.AdresseBeskyttelse.FORTROLIG;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.AdressebeskyttelseDTO.AdresseBeskyttelse.STRENGT_FORTROLIG;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.AdressebeskyttelseDTO.AdresseBeskyttelse.STRENGT_FORTROLIG_UTLAND;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.Identtype.FNR;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
 public class AdressebeskyttelseService implements BiValidation<AdressebeskyttelseDTO, PersonDTO> {
@@ -32,8 +32,8 @@ public class AdressebeskyttelseService implements BiValidation<Adressebeskyttels
             if (isTrue(type.getIsNew())) {
 
                 handle(type, person);
-                type.setKilde(isNotBlank(type.getKilde()) ? type.getKilde() : "Dolly");
-                type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : Master.FREG);
+                type.setKilde(getKilde(type));
+                type.setMaster(getMaster(type, person));
             }
         }
         return person.getAdressebeskyttelse();

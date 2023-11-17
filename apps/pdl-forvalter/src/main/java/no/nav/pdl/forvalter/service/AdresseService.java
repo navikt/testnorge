@@ -3,11 +3,10 @@ package no.nav.pdl.forvalter.service;
 import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
-import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.AdresseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.BostedadresseDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
+import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
 import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDateTime;
@@ -17,6 +16,8 @@ import java.util.Objects;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
+import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
 import static org.apache.commons.lang3.BooleanUtils.isFalse;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -107,8 +108,8 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
                     .orElse(FoedselsdatoUtility.getFoedselsdato(person)));
         }
 
-        adresse.setKilde(StringUtils.isNotBlank(adresse.getKilde()) ? adresse.getKilde() : "Dolly");
-        adresse.setMaster(nonNull(adresse.getMaster()) ? adresse.getMaster() : DbVersjonDTO.Master.FREG);
+        adresse.setKilde(getKilde(adresse));
+        adresse.setMaster(getMaster(adresse, person));
     }
 
     protected void enforceIntegrity(List<T> adresser) {
