@@ -255,7 +255,7 @@ export const initialUtvandring = {
 	kilde: 'Dolly',
 }
 
-export const initialSivilstand = {
+export const getInitialSivilstand = (master = 'FREG') => ({
 	type: null as unknown as string,
 	sivilstandsdato: null as unknown as string,
 	relatertVedSivilstand: null as unknown as string,
@@ -263,8 +263,8 @@ export const initialSivilstand = {
 	borIkkeSammen: false,
 	nyRelatertPerson: initialPdlPerson,
 	kilde: 'Dolly',
-	master: 'FREG',
-}
+	master: master,
+})
 
 export const getInitialKjoenn = (master = 'FREG') => ({
 	kjoenn: null as unknown as string,
@@ -294,24 +294,24 @@ export const initialVergemaal = {
 	master: 'FREG',
 }
 
-export const initialForelder = {
+export const getInitialForelder = (master = 'FREG') => ({
 	minRolleForPerson: 'BARN',
 	relatertPersonsRolle: 'FORELDER',
 	borIkkeSammen: false,
 	typeForelderBarn: null as unknown as string,
 	kilde: 'Dolly',
-	master: 'FREG',
-}
+	master: master,
+})
 
-export const initialBarn = {
+export const getInitialBarn = (master = 'FREG') => ({
 	minRolleForPerson: 'FORELDER',
 	relatertPersonsRolle: 'BARN',
 	partnerErIkkeForelder: false,
 	typeForelderBarn: null as unknown as string,
 	deltBosted: null as any,
 	kilde: 'Dolly',
-	master: 'FREG',
-}
+	master: master,
+})
 
 export const initialDoedfoedtBarn = {
 	dato: new Date(),

@@ -301,6 +301,7 @@ export const VisningRedigerbar = ({
 						path={path}
 						formikBag={formikBag}
 						eksisterendeNyPerson={eksisterendeNyPerson}
+						identtype={identtype}
 					/>
 				)
 			case Attributt.KontaktinformasjonForDoedsbo:
@@ -317,6 +318,7 @@ export const VisningRedigerbar = ({
 						formikBag={formikBag}
 						path={path}
 						eksisterendeNyPerson={eksisterendeNyPerson}
+						identtype={identtype}
 					/>
 				)
 			case Attributt.Foreldreansvar:

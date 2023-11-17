@@ -8,8 +8,8 @@ import { ForeldreBarnRelasjon, Relasjon } from '@/components/fagsystem/pdlf/PdlT
 import { RelatertPersonUtenId } from '@/components/fagsystem/pdlf/visning/partials/RelatertPersonUtenId'
 import * as _ from 'lodash-es'
 import {
-	initialBarn,
-	initialForelder,
+	getInitialBarn,
+	getInitialForelder,
 	initialPdlPerson,
 } from '@/components/fagsystem/pdlf/form/initialValues'
 import { getEksisterendeNyPerson } from '@/components/fagsystem/utils'
@@ -22,6 +22,9 @@ import { useGruppeIdenter } from '@/utils/hooks/useGruppe'
 type FamilieRelasjonerData = {
 	data: Array<ForeldreBarnRelasjon>
 	relasjoner: Array<Relasjon>
+	tmpPersoner?: Array<ForeldreBarnRelasjon>
+	ident?: string
+	identtype?: string
 }
 
 type VisningData = {
@@ -81,12 +84,15 @@ export const ForelderBarnRelasjonVisning = ({
 	tmpPersoner,
 	ident,
 	relasjoner,
+	identtype,
 }: FamilieRelasjonerData) => {
 	const { gruppeId } = useParams()
 	const { identer: gruppeIdenter } = useGruppeIdenter(gruppeId)
 
 	const initForelderBarn = Object.assign(
-		_.cloneDeep(data[idx]?.relatertPersonsRolle === 'BARN' ? initialBarn : initialForelder),
+		_.cloneDeep(
+			data[idx]?.relatertPersonsRolle === 'BARN' ? getInitialBarn() : getInitialForelder(),
+		),
 		data[idx],
 	)
 	let initialValues = { forelderBarnRelasjon: initForelderBarn }
@@ -110,8 +116,8 @@ export const ForelderBarnRelasjonVisning = ({
 				forelderBarnRelasjon: Object.assign(
 					_.cloneDeep(
 						redigertForelderBarnPdlf.relatertPersonsRolle === 'BARN'
-							? initialBarn
-							: initialForelder,
+							? getInitialBarn()
+							: getInitialForelder(),
 					),
 					redigertForelderBarnPdlf,
 				),
@@ -182,6 +188,7 @@ export const ForelderBarnRelasjonVisning = ({
 			path="forelderBarnRelasjon"
 			ident={ident}
 			relatertPersonInfo={relatertPersonInfo}
+			identtype={identtype}
 		/>
 	)
 }
@@ -191,6 +198,7 @@ export const ForelderBarnRelasjon = ({
 	tmpPersoner,
 	ident,
 	relasjoner,
+	identtype,
 }: FamilieRelasjonerData) => {
 	if (!data || data.length < 1) {
 		return null
@@ -215,6 +223,7 @@ export const ForelderBarnRelasjon = ({
 						tmpPersoner={tmpPersoner}
 						ident={ident}
 						relasjoner={relasjoner}
+						identtype={identtype}
 					/>
 				)}
 			</DollyFieldArray>

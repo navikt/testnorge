@@ -157,12 +157,14 @@ export const PdlfVisning = ({ fagsystemData, loading, tmpPersoner }) => {
 					relasjoner={data?.relasjoner}
 					tmpPersoner={tmpPdlforvalter}
 					ident={ident}
+					identtype={data?.person?.identtype}
 				/>
 				<ForelderBarnRelasjon
 					data={data?.person?.forelderBarnRelasjon}
 					tmpPersoner={tmpPdlforvalter}
 					ident={ident}
 					relasjoner={data?.relasjoner}
+					identtype={data?.person?.identtype}
 				/>
 				<ForeldreansvarVisning
 					data={data?.person?.foreldreansvar}
