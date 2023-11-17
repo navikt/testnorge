@@ -5,7 +5,7 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.testnav.apps.tpsmessagingservice.dto.SpraakRequest;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsSystemInfo;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.SpraakDTO;
+import no.nav.testnav.libs.data.tpsmessagingservice.v1.SpraakDTO;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;

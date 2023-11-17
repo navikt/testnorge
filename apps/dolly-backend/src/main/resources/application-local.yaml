@@ -39,6 +39,15 @@ management:
         include: "*"
       path-mapping:
         prometheus: "prometheus"
+  health:
+    elasticsearch:
+      enabled: false
+
+open:
+  search:
+    uri: http://localhost:9200
+    username: dummy
+    password: dummy
 
 consumers:
   testnav-pdl-forvalter:

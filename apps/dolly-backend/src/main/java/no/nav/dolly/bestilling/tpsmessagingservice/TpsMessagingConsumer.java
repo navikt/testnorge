@@ -1,7 +1,6 @@
 package no.nav.dolly.bestilling.tpsmessagingservice;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.netty.channel.ChannelOption;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.tpsmessagingservice.command.EgenansattDeleteCommand;
@@ -12,21 +11,17 @@ import no.nav.dolly.bestilling.tpsmessagingservice.command.TelefonnummerDeleteCo
 import no.nav.dolly.bestilling.tpsmessagingservice.command.TpsMessagingPostCommand;
 import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
-import no.nav.testnav.libs.dto.kontoregisterservice.v1.BankkontonrNorskDTO;
-import no.nav.testnav.libs.dto.kontoregisterservice.v1.BankkontonrUtlandDTO;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PersonMiljoeDTO;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.SpraakDTO;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TpsMeldingResponseDTO;
+import no.nav.testnav.libs.data.kontoregister.v1.BankkontonrNorskDTO;
+import no.nav.testnav.libs.data.kontoregister.v1.BankkontonrUtlandDTO;
+import no.nav.testnav.libs.data.tpsmessagingservice.v1.PersonMiljoeDTO;
+import no.nav.testnav.libs.data.tpsmessagingservice.v1.SpraakDTO;
+import no.nav.testnav.libs.data.tpsmessagingservice.v1.TpsMeldingResponseDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
-import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
-import reactor.netty.http.client.HttpClient;
-import reactor.netty.resources.ConnectionProvider;
 
-import java.time.Duration;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
@@ -60,13 +55,6 @@ public class TpsMessagingConsumer implements ConsumerStatus {
         this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
-                .clientConnector(new ReactorClientHttpConnector(
-                        HttpClient.create(ConnectionProvider.builder("custom")
-                                        .maxConnections(5)
-                                        .pendingAcquireMaxCount(500)
-                                        .pendingAcquireTimeout(Duration.ofMinutes(15))
-                                        .build())
-                                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000)))
                 .build();
     }
 

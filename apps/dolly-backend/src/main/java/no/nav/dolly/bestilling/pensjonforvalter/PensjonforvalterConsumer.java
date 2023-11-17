@@ -1,7 +1,6 @@
 package no.nav.dolly.bestilling.pensjonforvalter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.netty.channel.ChannelOption;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.pensjonforvalter.command.AnnullerSamboerCommand;
@@ -28,15 +27,11 @@ import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
-import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.netty.http.client.HttpClient;
-import reactor.netty.resources.ConnectionProvider;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.Set;
 
@@ -61,13 +56,6 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
         this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
-                .clientConnector(new ReactorClientHttpConnector(
-                        HttpClient.create(ConnectionProvider.builder("custom")
-                                .maxConnections(10)
-                                .pendingAcquireMaxCount(500)
-                                .pendingAcquireTimeout(Duration.ofMinutes(15))
-                                .build())
-                                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000)))
                 .build();
     }
 

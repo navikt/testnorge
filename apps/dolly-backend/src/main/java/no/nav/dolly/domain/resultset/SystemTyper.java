@@ -35,7 +35,6 @@ public enum SystemTyper {
     SYKEMELDING("NAV sykemelding"),
     PDLIMPORT("Import av identer (TESTNORGE)"),
     SKJERMINGSREGISTER("Skjermingsregisteret"),
-    SAKOGARKIV("Sak og arkivfasade (SAF)"),
     ORGANISASJON_FORVALTER("Enhetsregisteret (EREG)"),
     PDL_FORVALTER("Persondetaljer"),
     PDL_ORDRE("Ordre til PDL"),

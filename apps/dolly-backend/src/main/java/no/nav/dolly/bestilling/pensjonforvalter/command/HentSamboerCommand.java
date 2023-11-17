@@ -4,11 +4,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonSamboerResponse;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
-import no.nav.dolly.util.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.concurrent.Callable;
 
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
@@ -58,7 +58,7 @@ public class HentSamboerCommand implements Callable<Mono<PensjonSamboerResponse>
                 .build();
 
         return PensjonSamboerResponse.builder()
-                .status(Arrays.asList(miljoeResponse))
+                .status(Collections.singletonList(miljoeResponse))
                 .build();
     }
 }

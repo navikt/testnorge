@@ -2,8 +2,8 @@ package no.nav.dolly.bestilling.aareg.command;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.util.TokenXUtil;
-import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.dto.ameldingservice.v1.AMeldingDTO;
+import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

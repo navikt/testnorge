@@ -10,12 +10,11 @@ import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
 import no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility;
 import no.nav.pdl.forvalter.utils.KjoennFraIdentUtility;
 import no.nav.pdl.forvalter.utils.SyntetiskFraIdentUtility;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.IdentRequestDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonRequestDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonRequestDTO.NyttNavnDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.IdentRequestDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.Identtype;
+import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.PersonRequestDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.PersonRequestDTO.NyttNavnDTO;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
@@ -24,15 +23,17 @@ import java.util.List;
 import java.util.Random;
 
 import static java.util.Objects.nonNull;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype.DNR;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype.FNR;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype.NPID;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO.Kjoenn;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO.Kjoenn.KVINNE;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO.Kjoenn.MANN;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO.Kjoenn.UKJENT;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.GAMMEL_IDENTITET;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.NY_IDENTITET;
+import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
+import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.Identtype.DNR;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.Identtype.FNR;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.Identtype.NPID;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.KjoennDTO.Kjoenn;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.KjoennDTO.Kjoenn.KVINNE;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.KjoennDTO.Kjoenn.MANN;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.KjoennDTO.Kjoenn.UKJENT;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType.GAMMEL_IDENTITET;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType.NY_IDENTITET;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -69,8 +70,8 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
                 type.setFoedtEtter(person.getFoedsel().getFirst().getFoedselsdato().plusDays(index + 1L));
 
                 nyPerson = handle(type, nyPerson);
-                type.setKilde(isNotBlank(type.getKilde()) ? type.getKilde() : "Dolly");
-                type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : DbVersjonDTO.Master.FREG);
+                type.setKilde(getKilde(type));
+                type.setMaster(getMaster(type, person));
             }
         }
         return nyPerson;

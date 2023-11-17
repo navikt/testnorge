@@ -1,11 +1,11 @@
 package no.nav.pdl.forvalter.service;
 
-import no.nav.testnav.libs.dto.pdlforvalter.v1.BestillingRequestDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonRequestDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.BestillingRequestDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.FoedselDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.ForelderBarnRelasjonDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.PersonRequestDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.SivilstandDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
