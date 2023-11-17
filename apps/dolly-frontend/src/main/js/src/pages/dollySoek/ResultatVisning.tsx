@@ -18,13 +18,16 @@ export const ResultatVisning = ({ resultat }) => {
 	const obj = resultat?.identer?.reduce((o, key) => ({ ...o, [key]: { ident: key } }), {})
 	console.log('obj: ', obj) //TODO - SLETT MEG
 
-	return (
-		<PersonListeConnector
-			iLaastGruppe={false}
-			brukertype={null}
-			gruppeId={null}
-			identer={resultat?.identer}
-			bestillingerById={null}
-		/>
-	)
+	return resultat?.identer?.map((ident) => {
+		console.log('ident: ', ident) //TODO - SLETT MEG
+		return <p key={ident}>{ident}</p>
+	})
+
+	// <PersonListeConnector
+	// 	iLaastGruppe={false}
+	// 	brukertype={null}
+	// 	gruppeId={null}
+	// 	identer={resultat?.identer}
+	// 	bestillingerById={null}
+	// />
 }

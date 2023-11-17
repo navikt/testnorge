@@ -94,7 +94,7 @@ export const SoekForm = () => {
 										<div className="flexbox--full-width" style={{ marginBottom: '10px' }}>
 											<FormikSelect
 												name="typer"
-												label="Registre"
+												label="Fagsystemer"
 												options={Options('registerTyper')}
 												isMulti={true}
 												size="grow"

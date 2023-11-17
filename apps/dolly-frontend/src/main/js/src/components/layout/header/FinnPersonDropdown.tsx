@@ -23,7 +23,7 @@ export const FinnPersonDropdown = () => {
 		<div style={{ color: 'white', fontSize: '1.2em', margin: '0 10px' }}>
 			<Dropdown>
 				<DropdownToggle />
-				<Dropdown.Menu placement="bottom-end">
+				<Dropdown.Menu placement="bottom-start">
 					<Dropdown.Menu.List>
 						<Dropdown.Menu.List.Item
 							onClick={() => navigate('/dollysoek')}
