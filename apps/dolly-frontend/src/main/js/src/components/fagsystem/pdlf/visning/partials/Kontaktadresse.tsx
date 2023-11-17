@@ -177,7 +177,7 @@ const KontaktadresseVisning = ({
 		data?.[idx] || tmpData?.[idx],
 	)
 	const initialValues = { kontaktadresse: initKontaktadresse }
-	console.log('data: ', data) //TODO - SLETT MEG
+
 	const redigertKontaktadressePdlf = _.get(tmpPersoner, `${ident}.person.kontaktadresse`)?.find(
 		(a: KontaktadresseData) => a.id === kontaktadresseData.id,
 	)
