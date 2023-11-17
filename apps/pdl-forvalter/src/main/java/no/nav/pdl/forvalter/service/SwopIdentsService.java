@@ -8,11 +8,11 @@ import no.nav.pdl.forvalter.database.repository.AliasRepository;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.database.repository.RelasjonRepository;
 import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO.Sivilstand;
+import no.nav.testnav.libs.data.pdlforvalter.v1.FoedselDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.NavnDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.SivilstandDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.SivilstandDTO.Sivilstand;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static no.nav.pdl.forvalter.service.EnkelAdresseService.getStrengtFortroligKontaktadresse;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master.FREG;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO.Master.FREG;
 
 @Service
 @RequiredArgsConstructor

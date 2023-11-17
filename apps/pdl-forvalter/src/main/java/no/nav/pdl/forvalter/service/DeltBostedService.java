@@ -5,17 +5,18 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.consumer.AdresseServiceConsumer;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.DeltBostedDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.UkjentBostedDTO;
+import no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility;
+import no.nav.testnav.libs.data.pdlforvalter.v1.BostedadresseDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.DeltBostedDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.FoedselDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.UkjentBostedDTO;
 import org.springframework.stereotype.Service;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
+import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
 
 @Service
 @RequiredArgsConstructor
@@ -111,8 +112,9 @@ public class DeltBostedService {
                 .findFirst()
                 .map(DeltBostedDTO::getId)
                 .orElse(0) + 1);
-        deltBosted.setKilde(isNotBlank(deltBosted.getKilde()) ? deltBosted.getKilde() : "Dolly");
-        deltBosted.setMaster(nonNull(deltBosted.getMaster()) ? deltBosted.getMaster() : DbVersjonDTO.Master.FREG);
+
+        deltBosted.setKilde(getKilde(deltBosted));
+        deltBosted.setMaster(getMaster(deltBosted, IdenttypeFraIdentUtility.getIdenttype(barn.getIdent())));
         barn.getDeltBosted().add(0, deltBosted);
     }
 }

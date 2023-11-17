@@ -82,6 +82,10 @@ logging:
           results:
             jdbc: ERROR
 
+open:
+  search:
+    total-fields: 1500
+
 consumers:
   testnav-organisasjon-forvalter:
     name: testnav-organisasjon-forvalter

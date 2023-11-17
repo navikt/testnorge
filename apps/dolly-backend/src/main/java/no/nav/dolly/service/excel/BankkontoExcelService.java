@@ -6,7 +6,7 @@ import no.nav.dolly.bestilling.kontoregisterservice.KontoregisterConsumer;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.testnav.libs.dto.kontoregisterservice.v1.KontoDTO;
+import no.nav.testnav.libs.data.kontoregister.v1.KontoDTO;
 import org.apache.poi.ss.usermodel.IgnoredErrorType;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -24,7 +24,9 @@ import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static no.nav.dolly.service.excel.ExcelUtil.*;
+import static no.nav.dolly.service.excel.ExcelUtil.BANKKONTO_COL_WIDTHS;
+import static no.nav.dolly.service.excel.ExcelUtil.BANKKONTO_FANE;
+import static no.nav.dolly.service.excel.ExcelUtil.BANKKONTO_HEADER;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j

@@ -40,6 +40,9 @@ management:
   endpoint:
     prometheus.enabled: true
     heapdump.enabled: true
+  health:
+    elasticsearch:
+      enabled: false
   prometheus:
     metrics:
       export:

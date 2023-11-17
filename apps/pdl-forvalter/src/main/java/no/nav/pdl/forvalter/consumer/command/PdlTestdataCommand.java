@@ -1,7 +1,7 @@
 package no.nav.pdl.forvalter.consumer.command;
 
-import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.PdlStatus;
+import no.nav.testnav.libs.data.pdlforvalter.v1.OrdreResponseDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.PdlStatus;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;

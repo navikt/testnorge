@@ -6,8 +6,8 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.testnav.apps.tpsmessagingservice.dto.KontaktopplysningerRequest;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TelefonnummerRequest;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsSystemInfo;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TelefonTypeNummerDTO;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TelefonTypeNummerDTO.TypeTelefon;
+import no.nav.testnav.libs.data.tpsmessagingservice.v1.TelefonTypeNummerDTO;
+import no.nav.testnav.libs.data.tpsmessagingservice.v1.TelefonTypeNummerDTO.TypeTelefon;
 import no.nav.tps.ctg.s610.domain.TelefonType;
 import org.springframework.stereotype.Component;
 

@@ -41,16 +41,17 @@ public class WebClientConfig {
                             new ReactorClientHttpConnector(
                                     HttpClient
                                             .create(ConnectionProvider.builder("Testnorge connection pool")
-                                                    .maxConnections(1500)
-                                                    .pendingAcquireMaxCount(3000)
+                                                    .maxConnections(5)
+                                                    .pendingAcquireMaxCount(10000)
+                                                    .pendingAcquireTimeout(Duration.ofMinutes(30))
                                                     .build())
-                                            .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 60000)
+                                            .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000)
                                             .option(ChannelOption.SO_KEEPALIVE, true)
                                             .option(EpollChannelOption.TCP_KEEPIDLE, 300)
                                             .option(EpollChannelOption.TCP_KEEPINTVL, 60)
                                             .option(EpollChannelOption.TCP_KEEPCNT, 8)
-                                            .responseTimeout(Duration.ofSeconds(60))
-                                            .resolver(spec -> spec.queryTimeout(Duration.ofSeconds(60)))));
+                                            .responseTimeout(Duration.ofSeconds(30))
+                            ));
 
         } catch (NoSuchBeanDefinitionException e) {
 

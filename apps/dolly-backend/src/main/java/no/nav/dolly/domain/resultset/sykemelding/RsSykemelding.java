@@ -7,6 +7,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.elasticsearch.annotations.DateFormat;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -37,6 +40,7 @@ public class RsSykemelding {
 
         private String arbeidsforholdId;
         private String orgnummer;
+        @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second, pattern = "uuuu-MM-dd'T'HH:mm:ss")
         private LocalDateTime startDato;
     }
 
@@ -58,6 +62,7 @@ public class RsSykemelding {
         private Pasient pasient;
         private List<Periode> perioder;
         private Organisasjon sender;
+        @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
         private LocalDate startDato;
         private Boolean umiddelbarBistand;
 
@@ -159,6 +164,7 @@ public class RsSykemelding {
 
             private Adresse adresse;
             private String etternavn;
+            @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
             private LocalDate foedselsdato;
             private String fornavn;
             private String ident;
@@ -176,7 +182,9 @@ public class RsSykemelding {
         public static class Periode {
 
             private DollyAktivitet aktivitet;
+            @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
             private LocalDate fom;
+            @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
             private LocalDate tom;
         }
 

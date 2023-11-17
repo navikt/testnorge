@@ -2,6 +2,7 @@ package no.nav.dolly.bestilling.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
@@ -10,6 +11,7 @@ import no.nav.dolly.bestilling.personservice.PersonServiceClient;
 import no.nav.dolly.bestilling.tpsmessagingservice.service.TpsPersonService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.service.BestillingProgressService;
@@ -17,7 +19,7 @@ import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
 import no.nav.dolly.util.ThreadLocalContextLifter;
 import no.nav.dolly.util.TransactionHelperService;
-import no.nav.dolly.util.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.slf4j.MDC;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -42,24 +44,29 @@ public class GjenopprettBestillingService extends DollyBestillingService {
             IdentService identService,
             BestillingProgressService bestillingProgressService,
             BestillingService bestillingService,
-            ObjectMapper objectMapper, List<ClientRegister> clientRegisters,
+            ObjectMapper objectMapper,
+            MapperFacade mapperFacade,
+            List<ClientRegister> clientRegisters,
             CounterCustomRegistry counterCustomRegistry,
             ErrorStatusDecoder errorStatusDecoder,
             PdlDataConsumer pdlDataConsumer,
             TransactionHelperService transactionHelperService,
             PersonServiceClient personServiceClient,
-            TpsPersonService tpsPersonService
+            TpsPersonService tpsPersonService,
+            BestillingElasticRepository bestillingElasticRepository
     ) {
         super(
                 identService,
                 bestillingService,
                 objectMapper,
+                mapperFacade,
                 clientRegisters,
                 counterCustomRegistry,
                 pdlDataConsumer,
                 errorStatusDecoder,
                 transactionHelperService,
-                tpsPersonService
+                tpsPersonService,
+                bestillingElasticRepository
         );
         this.bestillingProgressService = bestillingProgressService;
         this.personServiceClient = personServiceClient;
@@ -108,12 +115,15 @@ public class GjenopprettBestillingService extends DollyBestillingService {
                                                 log.error("Feil oppsto ved utføring av bestilling, progressId {} {}",
                                                         progress.getId(), error, throwable);
                                                 progress.setFeil(error);
-                                                transactionHelperService.persister(progress, BestillingProgress::setFeil, error);
+                                                saveFeil(progress, error);
                                                 return Flux.just(progress);
                                             }))))
                     .takeWhile(test -> !bestillingService.isStoppet(bestilling.getId()))
                     .collectList()
-                    .doFinally(done -> doFerdig(bestilling))
+                    .doFinally(done -> {
+                        doFerdig(bestilling);
+                        clearCache();
+                    })
                     .subscribe();
 
         } else {
