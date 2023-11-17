@@ -27,11 +27,9 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Hooks;
 import reactor.core.publisher.Operators;
 
-import java.time.Duration;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
@@ -87,9 +85,7 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                     .sorted(Comparator.comparing(GruppeBestillingIdent::getBestillingId))
                     .toList();
 
-            var counter = new AtomicInteger(0);
             Flux.fromIterable(bestilling.getGruppe().getTestidenter())
-                    .delayElements(Duration.ofSeconds(counter.incrementAndGet() % 20 == 0 ? 30 : 0))
                     .flatMap(testident -> opprettProgress(bestilling, testident.getMaster(), testident.getIdent())
                             .flatMap(progress -> sendOrdrePerson(progress, PdlResponse.builder()
                                     .ident(testident.getIdent())
