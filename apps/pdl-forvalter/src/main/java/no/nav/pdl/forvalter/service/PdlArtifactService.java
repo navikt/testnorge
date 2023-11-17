@@ -6,8 +6,8 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO.Master;
 import java.util.List;
 
 import static java.util.Objects.nonNull;
+import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 public abstract class PdlArtifactService<T extends DbVersjonDTO> implements Validation<T> {
 
@@ -17,7 +17,7 @@ public abstract class PdlArtifactService<T extends DbVersjonDTO> implements Vali
 
             if (isTrue(type.getIsNew())) {
 
-                type.setKilde(isNotBlank(type.getKilde()) ? type.getKilde() : "Dolly");
+                type.setKilde(getKilde(type));
                 type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : Master.FREG);
                 handle(type);
             }

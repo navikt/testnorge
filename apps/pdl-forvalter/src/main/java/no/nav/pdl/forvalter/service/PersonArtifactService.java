@@ -50,11 +50,10 @@ public class PersonArtifactService {
         person.setUtflytting(utflyttingService.convert(person));
         person.setOpphold(oppholdService.convert(person.getOpphold()));
         person.setTilrettelagtKommunikasjon(tilrettelagtKommunikasjonService.convert(person.getTilrettelagtKommunikasjon()));
-        person.setDoedsfall(doedsfallService.convert(person.getDoedsfall()));
+        person.setDoedsfall(doedsfallService.convert(person));
         person.setFullmakt(fullmaktService.convert(person));
         person.setKontaktadresse(kontaktAdresseService.convert(person, relaxed));
-        person.setUtenlandskIdentifikasjonsnummer(utenlandsidentifikasjonsnummerService
-                .convert(person.getUtenlandskIdentifikasjonsnummer()));
+        person.setUtenlandskIdentifikasjonsnummer(utenlandsidentifikasjonsnummerService.convert(person));
         person.setVergemaal(vergemaalService.convert(person));
         person.setFalskIdentitet(falskIdentitetService.convert(person));
         person.setKontaktinformasjonForDoedsbo(kontaktinformasjonForDoedsboService.convert(person));

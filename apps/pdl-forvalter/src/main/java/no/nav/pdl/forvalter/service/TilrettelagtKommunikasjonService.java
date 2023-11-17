@@ -1,6 +1,7 @@
 package no.nav.pdl.forvalter.service;
 
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
+import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.TilrettelagtKommunikasjonDTO;
 import org.springframework.stereotype.Service;
 
@@ -39,7 +40,7 @@ public class TilrettelagtKommunikasjonService extends PdlArtifactService<Tilrett
     @Override
     protected void handle(TilrettelagtKommunikasjonDTO tilrettelagtKommunikasjon) {
 
-        //Ingen håndtering for enkeltpost
+        tilrettelagtKommunikasjon.setMaster(DbVersjonDTO.Master.PDL);
     }
 
     @Override

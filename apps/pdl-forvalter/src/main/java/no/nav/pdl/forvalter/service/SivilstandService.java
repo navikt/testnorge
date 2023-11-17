@@ -9,7 +9,6 @@ import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
 import no.nav.pdl.forvalter.utils.KjoennFraIdentUtility;
 import no.nav.pdl.forvalter.utils.KjoennUtility;
 import no.nav.testnav.libs.data.pdlforvalter.v1.BostedadresseDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO.Master;
 import no.nav.testnav.libs.data.pdlforvalter.v1.KjoennDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonRequestDTO;
@@ -25,8 +24,9 @@ import java.util.Objects;
 
 import static java.time.LocalDateTime.now;
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.consumer.command.VegadresseServiceCommand.defaultAdresse;
+import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
+import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
 import static no.nav.pdl.forvalter.utils.SyntetiskFraIdentUtility.isSyntetisk;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.SivilstandDTO.Sivilstand.SAMBOER;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.SivilstandDTO.Sivilstand.UGIFT;
@@ -56,8 +56,8 @@ public class SivilstandService implements Validation<SivilstandDTO> {
 
             if (isTrue(type.getIsNew())) {
 
-                type.setKilde(isNotBlank(type.getKilde()) ? type.getKilde() : "Dolly");
-                type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : Master.FREG);
+                type.setKilde(getKilde(type));
+                type.setMaster(getMaster(type, person));
 
                 handle(type, person);
             }

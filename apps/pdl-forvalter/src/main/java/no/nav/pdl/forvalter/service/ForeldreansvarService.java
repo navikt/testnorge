@@ -12,7 +12,6 @@ import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
 import no.nav.pdl.forvalter.utils.KjoennFraIdentUtility;
-import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO.Master;
 import no.nav.testnav.libs.data.pdlforvalter.v1.ForelderBarnRelasjonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.ForelderBarnRelasjonDTO.Rolle;
 import no.nav.testnav.libs.data.pdlforvalter.v1.ForeldreansvarDTO;
@@ -36,6 +35,8 @@ import java.util.Random;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
+import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
 import static no.nav.pdl.forvalter.utils.SyntetiskFraIdentUtility.isSyntetisk;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.ForelderBarnRelasjonDTO.Rolle.FAR;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.ForelderBarnRelasjonDTO.Rolle.FORELDER;
@@ -84,8 +85,8 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
 
             if (isTrue(type.getIsNew())) {
 
-                type.setKilde(isNotBlank(type.getKilde()) ? type.getKilde() : "Dolly");
-                type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : Master.FREG);
+                type.setKilde(getKilde(type));
+                type.setMaster(getMaster(type, person));
                 if (person.getFoedsel().stream()
                         .anyMatch(alder -> alder.getFoedselsdato().isBefore(LocalDateTime.now().minusYears(MYNDIG_ALDER)))) {
                     // hovedperson er voksen
