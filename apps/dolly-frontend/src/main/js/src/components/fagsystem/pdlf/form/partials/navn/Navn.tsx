@@ -44,7 +44,6 @@ const concatNavnMedTidligereValgt = (type, navnInfo, selectedNavn) => {
 }
 
 export const NavnForm = ({ formikBag, path, identtype }: NavnTypes) => {
-	const opts = useContext(BestillingsveilederContext)
 	const [selectedFornavn, setSelectedFornavn] = useState(
 		_.get(formikBag?.values, `${path}.alleFornavn`) || [],
 	)
@@ -174,10 +173,7 @@ export const NavnForm = ({ formikBag, path, identtype }: NavnTypes) => {
 					/>
 				</DatepickerWrapper>
 			</div>
-			<AvansertForm
-				path={path}
-				kanVelgeMaster={opts?.identtype !== 'NPID' && identtype !== 'NPID'}
-			/>
+			<AvansertForm path={path} kanVelgeMaster={identtype !== 'NPID'} />
 		</>
 	)
 }
@@ -193,7 +189,9 @@ export const Navn = ({ formikBag }: NavnTypes) => {
 				newEntry={getInitialNavn(opts?.identtype === 'NPID' ? 'PDL' : 'FREG')}
 				canBeEmpty={false}
 			>
-				{(path: string) => <NavnForm formikBag={formikBag} path={path} />}
+				{(path: string) => (
+					<NavnForm formikBag={formikBag} path={path} identtype={opts?.identtype} />
+				)}
 			</FormikDollyFieldArray>
 		</div>
 	)

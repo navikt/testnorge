@@ -71,9 +71,8 @@ export const BostedsadresseForm = ({
 
 	const valgtAdressetype = _.get(formikBag.values, `${path}.adressetype`)
 
-	const opts = useContext(BestillingsveilederContext)
 	const getAdresseOptions = () => {
-		if ((opts?.identtype && opts?.identtype !== 'FNR') || (identtype && identtype !== 'FNR')) {
+		if (identtype && identtype !== 'FNR') {
 			return Options('adressetypeUtenlandskBostedsadresse')
 		}
 		return Options('adressetypeBostedsadresse')
@@ -174,9 +173,7 @@ export const BostedsadresseForm = ({
 			</div>
 			<AvansertForm
 				path={path}
-				kanVelgeMaster={
-					valgtAdressetype === null && opts?.identtype !== 'NPID' && identtype !== 'NPID'
-				}
+				kanVelgeMaster={valgtAdressetype === null && identtype !== 'NPID'}
 			/>
 		</React.Fragment>
 	)
@@ -194,7 +191,12 @@ export const Bostedsadresse = ({ formikBag }: BostedsadresseValues) => {
 				canBeEmpty={false}
 			>
 				{(path: string, idx: number) => (
-					<BostedsadresseForm formikBag={formikBag} path={path} idx={idx} />
+					<BostedsadresseForm
+						formikBag={formikBag}
+						path={path}
+						idx={idx}
+						identtype={opts?.identtype}
+					/>
 				)}
 			</FormikDollyFieldArray>
 		</Kategori>

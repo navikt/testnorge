@@ -12,8 +12,6 @@ type KjoennTypes = {
 }
 
 export const KjoennForm = ({ path, identtype }: KjoennTypes) => {
-	const opts = useContext(BestillingsveilederContext)
-
 	return (
 		<>
 			<FormikSelect
@@ -23,10 +21,7 @@ export const KjoennForm = ({ path, identtype }: KjoennTypes) => {
 				size="large"
 				isClearable={false}
 			/>
-			<AvansertForm
-				path={path}
-				kanVelgeMaster={opts?.identtype !== 'NPID' && identtype !== 'NPID'}
-			/>
+			<AvansertForm path={path} kanVelgeMaster={identtype !== 'NPID'} />
 		</>
 	)
 }
@@ -42,7 +37,7 @@ export const Kjoenn = () => {
 				newEntry={getInitialKjoenn(opts?.identtype === 'NPID' ? 'PDL' : 'FREG')}
 				canBeEmpty={false}
 			>
-				{(path: string) => <KjoennForm path={path} />}
+				{(path: string) => <KjoennForm path={path} identtype={opts?.identtype} />}
 			</FormikDollyFieldArray>
 		</div>
 	)

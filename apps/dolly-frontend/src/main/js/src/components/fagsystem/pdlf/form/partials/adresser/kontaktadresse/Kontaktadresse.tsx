@@ -47,8 +47,6 @@ export const KontaktadresseForm = ({
 	idx,
 	identtype,
 }: KontaktadresseFormValues) => {
-	const opts = useContext(BestillingsveilederContext)
-	console.log('identtype: ', identtype) //TODO - SLETT MEG
 	useEffect(() => {
 		formikBag.setFieldValue(`${path}.adresseIdentifikatorFraMatrikkelen`, undefined)
 		const kontaktadresse = _.get(formikBag.values, path)
@@ -144,10 +142,7 @@ export const KontaktadresseForm = ({
 					value={_.get(formikBag.values, `${path}.opprettCoAdresseNavn.fornavn`)}
 				/>
 			</div>
-			<AvansertForm
-				path={path}
-				kanVelgeMaster={opts?.identtype !== 'NPID' && identtype !== 'NPID'}
-			/>
+			<AvansertForm path={path} kanVelgeMaster={identtype !== 'NPID'} />
 		</React.Fragment>
 	)
 }
@@ -164,7 +159,12 @@ export const Kontaktadresse = ({ formikBag }: KontaktadresseValues) => {
 				canBeEmpty={false}
 			>
 				{(path: string, idx: number) => (
-					<KontaktadresseForm formikBag={formikBag} path={path} idx={idx} />
+					<KontaktadresseForm
+						formikBag={formikBag}
+						path={path}
+						idx={idx}
+						identtype={opts?.identtype}
+					/>
 				)}
 			</FormikDollyFieldArray>
 		</Kategori>

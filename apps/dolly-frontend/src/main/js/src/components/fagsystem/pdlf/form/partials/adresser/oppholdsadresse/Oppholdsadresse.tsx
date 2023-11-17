@@ -49,8 +49,7 @@ export const OppholdsadresseForm = ({
 	idx,
 	identtype,
 }: OppholdsadresseFormValues) => {
-	const opts = useContext(BestillingsveilederContext)
-	const erNPID = opts?.identtype === 'NPID' || identtype === 'NPID'
+	const erNPID = identtype === 'NPID'
 
 	useEffect(() => {
 		formikBag.setFieldValue(`${path}.adresseIdentifikatorFraMatrikkelen`, undefined)
@@ -193,7 +192,12 @@ export const Oppholdsadresse = ({ formikBag }: OppholdsadresseValues) => {
 				canBeEmpty={false}
 			>
 				{(path: string, idx: number) => (
-					<OppholdsadresseForm formikBag={formikBag} path={path} idx={idx} />
+					<OppholdsadresseForm
+						formikBag={formikBag}
+						path={path}
+						idx={idx}
+						identtype={opts?.identtype}
+					/>
 				)}
 			</FormikDollyFieldArray>
 		</Kategori>

@@ -14,8 +14,6 @@ type StatsborgerskapTypes = {
 }
 
 export const StatsborgerskapForm = ({ path, identtype }: StatsborgerskapTypes) => {
-	const opts = useContext(BestillingsveilederContext)
-
 	return (
 		<>
 			<FormikSelect
@@ -33,10 +31,7 @@ export const StatsborgerskapForm = ({ path, identtype }: StatsborgerskapTypes) =
 				/>
 				<FormikDatepicker name={`${path}.gyldigTilOgMed`} label="Statsborgerskap til" />
 			</DatepickerWrapper>
-			<AvansertForm
-				path={path}
-				kanVelgeMaster={opts?.identtype !== 'NPID' && identtype !== 'NPID'}
-			/>
+			<AvansertForm path={path} kanVelgeMaster={identtype !== 'NPID'} />
 		</>
 	)
 }
@@ -52,7 +47,9 @@ export const Statsborgerskap = () => {
 				newEntry={getInitialStatsborgerskap(opts?.identtype === 'NPID' ? 'PDL' : 'FREG')}
 				canBeEmpty={false}
 			>
-				{(path: string, _idx: number) => <StatsborgerskapForm path={path} />}
+				{(path: string, _idx: number) => (
+					<StatsborgerskapForm path={path} identtype={opts?.identtype} />
+				)}
 			</FormikDollyFieldArray>
 		</div>
 	)
