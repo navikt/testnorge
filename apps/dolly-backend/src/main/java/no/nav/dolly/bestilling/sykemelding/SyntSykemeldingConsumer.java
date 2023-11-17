@@ -43,8 +43,7 @@ public class SyntSykemeldingConsumer implements ConsumerStatus {
                         new ReactorClientHttpConnector(
                                 HttpClient
                                         .create()
-                                        .responseTimeout(Duration.ofSeconds(120))
-                                        .resolver(spec -> spec.queryTimeout(Duration.ofSeconds(120)))))
+                                        .responseTimeout(Duration.ofSeconds(120))))
                 .build();
     }
 

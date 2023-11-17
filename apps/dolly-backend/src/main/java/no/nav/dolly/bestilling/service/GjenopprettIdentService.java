@@ -20,7 +20,7 @@ import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
 import no.nav.dolly.util.ThreadLocalContextLifter;
 import no.nav.dolly.util.TransactionHelperService;
-import no.nav.dolly.util.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.slf4j.MDC;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -130,12 +130,15 @@ public class GjenopprettIdentService extends DollyBestillingService {
                                                         WebClientFilter.getStatus(throwable), WebClientFilter.getMessage(throwable));
                                                 log.error("Feil oppsto ved utføring av bestilling, progressId {} {}",
                                                         progress.getId(), error, throwable);
-                                                transactionHelperService.persister(progress, BestillingProgress::setFeil, error);
+                                                saveFeil(progress, error);
                                                 return Flux.just(progress);
                                             }))))
                     .takeWhile(test -> !bestillingService.isStoppet(bestilling.getId()))
                     .collectList()
-                    .doFinally(done -> doFerdig(bestilling))
+                    .doFinally(done -> {
+                        doFerdig(bestilling);
+                        clearCache();
+                    })
                     .subscribe();
         }
     }
