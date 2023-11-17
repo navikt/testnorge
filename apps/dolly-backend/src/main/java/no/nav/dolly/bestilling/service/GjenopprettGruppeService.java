@@ -127,12 +127,15 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                                                         WebClientFilter.getStatus(throwable), WebClientFilter.getMessage(throwable));
                                                 log.error("Feil oppsto ved utføring av bestilling, progressId {} {}",
                                                         progress.getId(), error, throwable);
-                                                transactionHelperService.persister(progress, BestillingProgress::setFeil, error);
+                                                saveFeil(progress, error);
                                                 return Flux.just(progress);
                                             }))))
                     .takeWhile(test -> !bestillingService.isStoppet(bestilling.getId()))
                     .collectList()
-                    .doFinally(done -> doFerdig(bestilling))
+                    .doFinally(done -> {
+                        doFerdig(bestilling);
+                        clearCache();
+                    })
                     .subscribe();
         }
     }

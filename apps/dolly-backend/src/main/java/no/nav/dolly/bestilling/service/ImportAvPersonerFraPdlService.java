@@ -105,7 +105,7 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
                                                 WebClientFilter.getStatus(throwable), WebClientFilter.getMessage(throwable));
                                         log.error("Feil oppsto ved utføring av bestilling, progressId {} {}",
                                                 progress.getId(), error, throwable);
-                                        transactionHelperService.persister(progress, BestillingProgress::setFeil, error);
+                                        saveFeil(progress, error);
                                     })
                                     .doOnNext(status -> oppdaterStatus(progress))))
                     .takeWhile(test -> !bestillingService.isStoppet(bestilling.getId()))
@@ -113,6 +113,7 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
                     .doFinally(done -> {
                         doFerdig(bestilling);
                         saveBestillingToElasticServer(bestKriterier, bestilling);
+                        clearCache();
                     })
                     .subscribe();
 

@@ -113,7 +113,7 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
                                                         WebClientFilter.getStatus(throwable), WebClientFilter.getMessage(throwable));
                                                 log.error("Feil oppsto ved utføring av bestilling, progressId {} {}",
                                                         progress.getId(), error, throwable);
-                                                transactionHelperService.persister(progress, BestillingProgress::setFeil, error);
+                                                saveFeil(progress, error);
                                                 return Flux.just(progress);
                                             }))))
                     .takeWhile(test -> !bestillingService.isStoppet(bestilling.getId()))
@@ -121,6 +121,7 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
                     .doFinally(done -> {
                         doFerdig(bestilling);
                         saveBestillingToElasticServer(bestKriterier, bestilling);
+                        clearCache();
                     })
                     .subscribe();
 

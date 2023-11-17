@@ -115,12 +115,15 @@ public class GjenopprettBestillingService extends DollyBestillingService {
                                                 log.error("Feil oppsto ved utføring av bestilling, progressId {} {}",
                                                         progress.getId(), error, throwable);
                                                 progress.setFeil(error);
-                                                transactionHelperService.persister(progress, BestillingProgress::setFeil, error);
+                                                saveFeil(progress, error);
                                                 return Flux.just(progress);
                                             }))))
                     .takeWhile(test -> !bestillingService.isStoppet(bestilling.getId()))
                     .collectList()
-                    .doFinally(done -> doFerdig(bestilling))
+                    .doFinally(done -> {
+                        doFerdig(bestilling);
+                        clearCache();
+                    })
                     .subscribe();
 
         } else {
