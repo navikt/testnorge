@@ -32,7 +32,7 @@ public class ArenaUtils {
             }
 
             var feilmeldingStart = decoded.indexOf("Error Message");
-            var feilmeldingSlutt = decoded.indexOf(".", feilmeldingStart);
+            var feilmeldingSlutt = decoded.indexOf("\\n", feilmeldingStart) - 1;
             var feilmelding = feilmeldingStart != -1 && feilmeldingSlutt != -1 ? "Feil:" + decoded.substring(feilmeldingStart, feilmeldingSlutt + 1) : decoded;
             var feilmeldingUtenUrelevantInfo = feilmelding.replace("=", ":")
                     .replaceAll("request for.*", "request"); //Fjerner URL og påfølgende feilmelding som er urelevant for bruker
