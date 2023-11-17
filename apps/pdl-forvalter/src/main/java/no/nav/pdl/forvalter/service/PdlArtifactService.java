@@ -17,7 +17,7 @@ public abstract class PdlArtifactService<T extends DbVersjonDTO> implements Vali
 
             if (isTrue(type.getIsNew())) {
 
-                type.setKilde(getKilde(type));;
+                type.setKilde(getKilde(type));
                 type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : Master.FREG);
                 handle(type);
             }
