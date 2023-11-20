@@ -57,7 +57,7 @@ export const App = () => {
 			<VarslingerModal />
 			<Header />
 			<Breadcrumbs />
-			{/*<InfoStripe />*/}
+			<InfoStripe />
 			<main>
 				<Suspense fallback={<Loading label="Laster inn" />}>
 					<Routes>
