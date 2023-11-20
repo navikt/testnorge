@@ -221,6 +221,24 @@ public class PersonQueryUtils {
         }
     }
 
+    public static void addKjoennQuery(Criteria criteria, SearchRequest request) {
+
+        if (nonNull(request.getPersonRequest().getKjoenn())) {
+            criteria.and(getCriteria("pdldata.person.kjoenn.kjoenn",
+                    request.getPersonRequest().getKjoenn().name()));
+        }
+    }
+
+    public static void addIdenttypeQuery(Criteria criteria, SearchRequest request) {
+
+        if (nonNull(request.getPersonRequest().getIdenttype())) {
+            criteria.subCriteria(getCriteria("pdldata.opprettNyPerson.identtype",
+                    request.getPersonRequest().getIdenttype().name())
+                    .or(getCriteria("pdldata.person.nyident.identtype",
+                            request.getPersonRequest().getIdenttype().name())));
+        }
+    }
+
     private Criteria getCriteria(String field, String value) {
 
         return new Criteria(field).is(value);

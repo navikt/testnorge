@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import no.nav.testnav.libs.data.pdlforvalter.v1.AdressebeskyttelseDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.Identtype;
+import no.nav.testnav.libs.data.pdlforvalter.v1.KjoennDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.SivilstandDTO;
 
 @Data
@@ -15,6 +17,8 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.SivilstandDTO;
 @NoArgsConstructor(force = true)
 public class PersonRequest {
 
+    private Identtype identtype;
+    private KjoennDTO.Kjoenn kjoenn;
     @Schema($comment = "Status: " +
             "UOPPGITT,  UGIFT," +
             "GIFT,   ENKE_ELLER_ENKEMANN," +

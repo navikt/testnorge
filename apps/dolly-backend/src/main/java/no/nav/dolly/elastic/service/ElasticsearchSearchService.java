@@ -40,6 +40,8 @@ import static no.nav.dolly.elastic.utils.PersonQueryUtils.addHarSikkerhetstiltak
 import static no.nav.dolly.elastic.utils.PersonQueryUtils.addHarTilrettelagtKommunikasjonQuery;
 import static no.nav.dolly.elastic.utils.PersonQueryUtils.addHarUtenlandskIdentifikasjonsnummerQuery;
 import static no.nav.dolly.elastic.utils.PersonQueryUtils.addHarUtflyttingQuery;
+import static no.nav.dolly.elastic.utils.PersonQueryUtils.addIdenttypeQuery;
+import static no.nav.dolly.elastic.utils.PersonQueryUtils.addKjoennQuery;
 import static no.nav.dolly.elastic.utils.PersonQueryUtils.addSivilstandQuery;
 import static no.nav.dolly.elastic.utils.PersonQueryUtils.addStatsborgerskapQuery;
 import static no.nav.dolly.elastic.utils.PersonQueryUtils.addVergemaalQuery;
@@ -137,6 +139,8 @@ public class ElasticsearchSearchService {
                     addStatsborgerskapQuery(criteria, request);
                     addHarOppholdQuery(criteria, request);
                     addHarNyIdentitetQuery(criteria, request);
+                    addKjoennQuery(criteria, request);
+                    addIdenttypeQuery(criteria, request);
                 });
         return criteria;
     }
