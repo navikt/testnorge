@@ -19,13 +19,6 @@ public class PersonRequest {
 
     private Identtype identtype;
     private KjoennDTO.Kjoenn kjoenn;
-    @Schema($comment = "Status: " +
-            "UOPPGITT,  UGIFT," +
-            "GIFT,   ENKE_ELLER_ENKEMANN," +
-            "SKILT, SEPARERT," +
-            "REGISTRERT_PARTNER, SEPARERT_PARTNER," +
-            "SKILT_PARTNER, GJENLEVENDE_PARTNER" +
-            "SAMBOER")
     private SivilstandDTO.Sivilstand sivilstand;
     private AdressebeskyttelseDTO.AdresseBeskyttelse addressebeskyttelse;
     private Boolean harBarn;
@@ -43,7 +36,7 @@ public class PersonRequest {
     private Boolean harTilrettelagtKommunikasjon;
     private Boolean harSikkerhetstiltak;
     private Boolean harOpphold;
-    @Schema($comment = "landkode")
+    @Schema(description = "landkode")
     private String statsborgerskap;
     private Boolean nyIdentitet;
 
