@@ -17,7 +17,6 @@ import {
 	requiredNumber,
 	requiredString,
 } from '@/utils/YupValidations'
-import { FormikProps } from 'formik'
 import { Inntekt, Kodeverk, Ytelser } from '../InntektsmeldingTypes'
 import InntektsmeldingSelect from './partials/InntektsmeldingSelect'
 import InntektsmeldingYtelseSelect from './partials/InntektsmeldingYtelseSelect'
@@ -32,9 +31,10 @@ import { InputWarning } from '@/components/ui/form/inputWarning/inputWarning'
 import { OrgnrToggle } from '@/components/fagsystem/inntektsmelding/form/partials/orgnrToogle'
 import { testDatoFom, testDatoTom } from '@/components/fagsystem/utils'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface InntektsmeldingFormProps {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 }
 
 enum TypeArbeidsgiver {

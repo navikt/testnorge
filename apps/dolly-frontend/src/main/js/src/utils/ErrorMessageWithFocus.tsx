@@ -1,8 +1,7 @@
 import * as React from 'react'
 import { useEffect } from 'react'
-import { ErrorMessage } from 'formik'
-import { ErrorMessageProps } from 'formik/dist/ErrorMessage'
 import { useFormContext } from 'react-hook-form'
+import { ErrorMessage } from '@navikt/ds-react'
 
 const ErrorFocus = (): JSX.Element | null => {
 	const {
@@ -23,7 +22,7 @@ const ErrorFocus = (): JSX.Element | null => {
 	return null
 }
 
-export const ErrorMessageWithFocus = (props: ErrorMessageProps): JSX.Element => {
+export const ErrorMessageWithFocus = (props): JSX.Element => {
 	return (
 		<>
 			<ErrorMessage {...props} />

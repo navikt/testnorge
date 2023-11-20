@@ -1,6 +1,5 @@
 import * as Yup from 'yup'
 import * as _ from 'lodash-es'
-import { yupToFormErrors } from 'formik'
 import { parseDate } from '@/utils/DataFormatter'
 import { isDate } from 'date-fns'
 
@@ -14,7 +13,8 @@ export const validate = async (values, schema) => {
 		return {}
 	} catch (err) {
 		if (err.name === 'ValidationError') {
-			return yupToFormErrors(err)
+			console.warn('Validation error: ', err)
+			// return yupToFormErrors(err)
 		} else {
 			console.info('Validation error')
 			throw err

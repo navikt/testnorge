@@ -1,10 +1,10 @@
-import { FormikProps } from 'formik'
 import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { RadioGroupOptions } from '@/pages/testnorgePage/search/radioGroupOptions/RadioGroupOptions'
 import React from 'react'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface IdentifikasjonProps {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 }
 
 const options = {
@@ -32,7 +32,7 @@ const paths = {
 }
 
 export const Identifikasjon: React.FC<IdentifikasjonProps> = ({
-	formikBag,
+	formMethods,
 }: IdentifikasjonProps) => {
 	return (
 		<section>

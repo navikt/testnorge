@@ -1,6 +1,11 @@
-import { Field, FastField } from 'formik'
+import { useFormContext } from 'react-hook-form'
+
+const { register } = useFormContext()
 
 export const FormikField = ({ fastfield = true, children, ...props }) => {
-	const FieldComponent = fastfield ? FastField : Field
-	return <FieldComponent {...props}>{children}</FieldComponent>
+	return (
+		<input {...props} {...register(props.name)}>
+			{children}
+		</input>
+	)
 }

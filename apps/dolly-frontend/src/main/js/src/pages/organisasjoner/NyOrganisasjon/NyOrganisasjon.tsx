@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { Formik, FormikProps } from 'formik'
 import { useToggle } from 'react-use'
 import { NavLink } from 'react-router-dom'
 import Button from '@/components/ui/button/Button'
@@ -15,6 +14,8 @@ import {
 	NyBestillingProps,
 } from '@/components/bestillingsveileder/startModal/NyIdent/NyIdent'
 import { CypressSelector } from '../../../../cypress/mocks/Selectors'
+import { UseFormReturn } from 'react-hook-form/dist/types'
+import { Form, useForm } from 'react-hook-form'
 
 const initialValues = {
 	mal: null as unknown as string,
@@ -28,18 +29,19 @@ export const NyOrganisasjon = ({ onAvbryt, onSubmit, brukernavn }: NyBestillingP
 	const [bruker, setBruker] = useState(brukernavn)
 	const [malAktiv, toggleMalAktiv] = useToggle(false)
 	const { maler, loading } = useDollyOrganisasjonMaler()
+	const formMethods = useForm({ defaultValues: initialValues })
 
 	const brukerOptions = getBrukerOptions(maler)
 	const malOptions = getMalOptions(maler, bruker)
 
-	const handleMalChange = (formikbag: FormikProps<any>) => {
+	const handleMalChange = (formMethods: UseFormReturn) => {
 		toggleMalAktiv()
 		if (formMethods.getValues()?.mal) {
 			formMethods.setValue('mal', null)
 		}
 	}
 
-	const handleBrukerChange = (event: { value: any }, formikbag: FormikProps<any>) => {
+	const handleBrukerChange = (event: { value: any }, formMethods: UseFormReturn) => {
 		setBruker(event.value)
 		formMethods.setValue('mal', null)
 	}
@@ -50,61 +52,57 @@ export const NyOrganisasjon = ({ onAvbryt, onSubmit, brukernavn }: NyBestillingP
 	}
 
 	return (
-		<Formik initialValues={initialValues} onSubmit={preSubmit}>
-			{(formikBag) => {
-				return (
-					<div className="ny-bestilling-form">
-						<div className="ny-bestilling-form_maler">
-							<div>
-								<DollyCheckbox
-									name="aktiver-maler"
-									onChange={() => handleMalChange(formikBag)}
-									label="Opprett fra mal"
-									wrapperSize={'none'}
-									size={'small'}
-									isSwitch
-								/>
-							</div>
-
-							<InputDiv>
-								<DollySelect
-									name="zIdent"
-									label="Bruker"
-									isLoading={loading}
-									options={brukerOptions}
-									size="medium"
-									onChange={(e: { value: any }) => handleBrukerChange(e, formikBag)}
-									value={bruker}
-									isClearable={false}
-									isDisabled={!malAktiv}
-								/>
-								<FormikSelect
-									name="mal"
-									label="Maler"
-									isLoading={loading}
-									options={malOptions}
-									size="grow"
-									fastfield={false}
-									isDisabled={!malAktiv}
-								/>
-							</InputDiv>
-							<div className="mal-admin">
-								<Button kind="maler" fontSize={'1.2rem'}>
-									<NavLink to="/minside">Administrer maler</NavLink>
-								</Button>
-							</div>
-						</div>
-						<ModalActionKnapper
-							data-cy={CypressSelector.BUTTON_START_BESTILLING}
-							submitknapp="Start bestilling"
-							disabled={!formikBag.isValid || formikBag.isSubmitting}
-							onSubmit={formikBag.handleSubmit}
-							onAvbryt={onAvbryt}
-							center
+		<Form initialValues={initialValues} onSubmit={formMethods.handleSubmit(preSubmit)}>
+			<div className="ny-bestilling-form">
+				<div className="ny-bestilling-form_maler">
+					<div>
+						<DollyCheckbox
+							name="aktiver-maler"
+							onChange={() => handleMalChange(formMethods)}
+							label="Opprett fra mal"
+							wrapperSize={'none'}
+							size={'small'}
+							isSwitch
 						/>
 					</div>
-				)
-			}}
-		</Formik>
+
+					<InputDiv>
+						<DollySelect
+							name="zIdent"
+							label="Bruker"
+							isLoading={loading}
+							options={brukerOptions}
+							size="medium"
+							onChange={(e: { value: any }) => handleBrukerChange(e, formMethods)}
+							value={bruker}
+							isClearable={false}
+							isDisabled={!malAktiv}
+						/>
+						<FormikSelect
+							name="mal"
+							label="Maler"
+							isLoading={loading}
+							options={malOptions}
+							size="grow"
+							fastfield={false}
+							isDisabled={!malAktiv}
+						/>
+					</InputDiv>
+					<div className="mal-admin">
+						<Button kind="maler" fontSize={'1.2rem'}>
+							<NavLink to="/minside">Administrer maler</NavLink>
+						</Button>
+					</div>
+				</div>
+				<ModalActionKnapper
+					data-cy={CypressSelector.BUTTON_START_BESTILLING}
+					submitknapp="Start bestilling"
+					disabled={!formMethods.formState.isValid || formMethods.formState.isSubmitting}
+					onSubmit={formMethods.handleSubmit}
+					onAvbryt={onAvbryt}
+					center
+				/>
+			</div>
+		</Form>
 	)
 }

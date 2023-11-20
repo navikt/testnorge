@@ -1,6 +1,5 @@
 import styled from 'styled-components'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
-import { FormikProps } from 'formik'
 import { IdenterPaths } from '@/pages/testnorgePage/search/partials/Identer'
 import { IdentifikasjonPaths } from '@/pages/testnorgePage/search/partials/Identifikasjon'
 import { PersonstatusPaths } from '@/pages/testnorgePage/search/partials/Personstatus'
@@ -10,6 +9,7 @@ import { NasjonalitetPaths } from '@/pages/testnorgePage/search/partials/Nasjona
 import { RelasjonerPaths } from '@/pages/testnorgePage/search/partials/Relasjoner'
 import { getCount } from '@/pages/testnorgePage/search/SearchOptions'
 import React from 'react'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 const Container = styled.div`
 	display: flex;
@@ -31,12 +31,12 @@ const Button = styled(NavButton)`
 type Props = {
 	left: React.ReactNode
 	right: React.ReactNode
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 	onSubmit: () => void
 	onEmpty: () => void
 }
 
-export default ({ left, right, formikBag, onSubmit, onEmpty }: Props) => {
+export default ({ left, right, formMethods, onSubmit, onEmpty }: Props) => {
 	const getNumSelected = () => {
 		const allPaths = [
 			...IdenterPaths,
@@ -47,7 +47,7 @@ export default ({ left, right, formikBag, onSubmit, onEmpty }: Props) => {
 			...NasjonalitetPaths,
 			...RelasjonerPaths,
 		]
-		return getCount(allPaths, formikBag)
+		return getCount(allPaths, formMethods)
 	}
 
 	return (

@@ -1,6 +1,5 @@
 import React, { Fragment, useState } from 'react'
 import Title from '@/components/Title'
-import { Formik } from 'formik'
 import SearchContainer from './search/searchContainer/SearchContainer'
 import { SearchOptions } from './search/SearchOptions'
 import PersonSearch from '@/service/services/personsearch'
@@ -18,17 +17,21 @@ import { Gruppe } from '@/utils/hooks/useGruppe'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 import { bottom } from '@popperjs/core'
 import { CypressSelector } from '../../../cypress/mocks/Selectors'
+import { Form, useForm } from 'react-hook-form'
 
 type TestnorgePageProps = {
 	gruppe?: Gruppe
 }
 
 export default ({ gruppe }: TestnorgePageProps) => {
+	const _validate = (values: any) => validate(values, validation)
+
 	const [items, setItems] = useState<PdlData[]>([])
 	const [loading, setLoading] = useState(false)
 	const [valgtePersoner, setValgtePersoner] = useState([])
 	const [startedSearch, setStartedSearch] = useState(false)
 	const [error, setError] = useState(null)
+	const formMethods = useForm({ defaultValues: initialValues, resolver: _validate(validation) })
 
 	const search = (seed: string, values: any) => {
 		setError(null)
@@ -58,7 +61,9 @@ export default ({ gruppe }: TestnorgePageProps) => {
 		</a>
 	)
 
-	const _validate = (values: any) => validate(values, validation)
+	const devEnabled =
+		window.location.hostname.includes('localhost') ||
+		window.location.hostname.includes('dolly-frontend-dev')
 
 	return (
 		<div>
@@ -82,40 +87,32 @@ export default ({ gruppe }: TestnorgePageProps) => {
 				</Hjelpetekst>
 			</div>
 
-			<Formik initialValues={initialValues} validate={_validate} onSubmit={onSubmit}>
-				{(formikBag) => {
-					const devEnabled =
-						window.location.hostname.includes('localhost') ||
-						window.location.hostname.includes('dolly-frontend-dev')
-
-					return (
-						<Fragment>
-							{devEnabled && <DisplayFormikState {...formikBag} />}
-							<SearchContainer
-								left={<SearchOptions formMethods={formMethods} />}
-								right={
-									<>
-										{error && <ContentContainer>{error}</ContentContainer>}
-										{!startedSearch && <ContentContainer>Ingen søk er gjort</ContentContainer>}
-										{startedSearch && !error && (
-											<SearchViewConnector
-												items={items}
-												loading={loading}
-												valgtePersoner={valgtePersoner}
-												setValgtePersoner={setValgtePersoner}
-												gruppe={gruppe}
-											/>
-										)}
-									</>
-								}
-								formMethods={formMethods}
-								onSubmit={formikBag.handleSubmit}
-								onEmpty={formikBag.resetForm}
-							/>
-						</Fragment>
-					)
-				}}
-			</Formik>
+			<Form onSubmit={onSubmit}>
+				<Fragment>
+					{devEnabled && <DisplayFormikState {...formMethods} />}
+					<SearchContainer
+						left={<SearchOptions formMethods={formMethods} />}
+						right={
+							<>
+								{error && <ContentContainer>{error}</ContentContainer>}
+								{!startedSearch && <ContentContainer>Ingen søk er gjort</ContentContainer>}
+								{startedSearch && !error && (
+									<SearchViewConnector
+										items={items}
+										loading={loading}
+										valgtePersoner={valgtePersoner}
+										setValgtePersoner={setValgtePersoner}
+										gruppe={gruppe}
+									/>
+								)}
+							</>
+						}
+						formMethods={formMethods}
+						onSubmit={formMethods.handleSubmit}
+						onEmpty={formMethods.reset}
+					/>
+				</Fragment>
+			</Form>
 		</div>
 	)
 }
