@@ -28,8 +28,6 @@ spec:
           cluster: dev-gcp
         - application: testnav-organisasjon-forvalter
           cluster: dev-gcp
-        - application: testnav-oversikt-frontend
-          cluster: dev-gcp
         - application: dolly-backend
           cluster: dev-gcp
         - application: dolly-backend-dev

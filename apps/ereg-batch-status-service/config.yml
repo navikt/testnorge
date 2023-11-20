@@ -14,8 +14,6 @@ spec:
       rules:
         - application: team-dolly-lokal-app
           cluster: dev-gcp
-        - application: testnav-oversikt-frontend
-          cluster: dev-gcp
         - application: organisasjon-bestilling-service
           cluster: dev-gcp
   tokenx:

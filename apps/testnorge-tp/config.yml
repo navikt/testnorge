@@ -39,8 +39,6 @@ spec:
     inbound:
       rules:
         - application: testnorge-statisk-data-forvalter
-        - application: testnav-oversikt-frontend
-          cluster: dev-gcp
         - application: team-dolly-lokal-app
           cluster: dev-gcp
     outbound:
