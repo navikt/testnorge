@@ -81,7 +81,7 @@ export default function BestillingResultat({
 					<BestillingSammendragModal bestilling={bestilling} />
 					{harIdenterOpprettet && (
 						<Button
-							disabled={bestilling?.opprettetFraId}
+							disabled={bestilling?.opprettetFraId || bestilling?.opprettetFraGruppeId}
 							title={
 								bestilling?.opprettetFraId
 									? 'Kan ikke gjenopprette gjenoppretting av bestilling'

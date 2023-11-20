@@ -91,6 +91,8 @@ export type Bestillingsstatus = {
 	ferdig: boolean
 	feil?: string
 	sistOppdatert: Date
+	opprettetFraGruppeId: number
+	opprettetFraId: number
 	status: Bestillingsinformasjon[]
 	systeminfo: string
 	stoppet: boolean
