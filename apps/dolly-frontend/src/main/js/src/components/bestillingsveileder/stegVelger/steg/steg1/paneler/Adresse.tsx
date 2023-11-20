@@ -4,10 +4,10 @@ import {
 	AttributtKategori,
 } from '@/components/bestillingsveileder/stegVelger/steg/steg1/Attributt'
 import {
-	initialAdressebeskyttelse,
-	initialBostedsadresse,
-	initialKontaktadresse,
-	initialOppholdsadresse,
+	getInitialAdressebeskyttelse,
+	getInitialBostedsadresse,
+	getInitialKontaktadresse,
+	getInitialOppholdsadresse,
 } from '@/components/fagsystem/pdlf/form/initialValues'
 import { harValgtAttributt } from '@/components/ui/form/formUtils'
 import { adresseAttributter } from '@/components/fagsystem/pdlf/form/partials/adresser/Adresser'
@@ -38,7 +38,9 @@ export const AdressePanel = ({ stateModifier, formikBag }: any) => {
 
 AdressePanel.heading = 'Adresser'
 
-AdressePanel.initialValues = ({ set, del, has }: any) => {
+AdressePanel.initialValues = ({ set, del, has, opts }: any) => {
+	const { identtype } = opts
+
 	const paths = {
 		bostedadresse: 'pdldata.person.bostedsadresse',
 		oppholdsadresse: 'pdldata.person.oppholdsadresse',
@@ -51,7 +53,7 @@ AdressePanel.initialValues = ({ set, del, has }: any) => {
 			label: 'Bostedsadresse',
 			checked: has(paths.bostedadresse),
 			add: () => {
-				set(paths.bostedadresse, [initialBostedsadresse])
+				set(paths.bostedadresse, [getInitialBostedsadresse(identtype === 'NPID' ? 'PDL' : 'FREG')])
 			},
 			remove: () => {
 				del(paths.bostedadresse)
@@ -61,7 +63,9 @@ AdressePanel.initialValues = ({ set, del, has }: any) => {
 			label: 'Oppholdsadresse',
 			checked: has(paths.oppholdsadresse),
 			add() {
-				set(paths.oppholdsadresse, [initialOppholdsadresse])
+				set(paths.oppholdsadresse, [
+					getInitialOppholdsadresse(identtype === 'NPID' ? 'PDL' : 'FREG'),
+				])
 			},
 			remove() {
 				del(paths.oppholdsadresse)
@@ -71,7 +75,7 @@ AdressePanel.initialValues = ({ set, del, has }: any) => {
 			label: 'Kontaktadresse',
 			checked: has(paths.kontaktadresse),
 			add() {
-				set(paths.kontaktadresse, [initialKontaktadresse])
+				set(paths.kontaktadresse, [getInitialKontaktadresse(identtype === 'NPID' ? 'PDL' : 'FREG')])
 			},
 			remove() {
 				del(paths.kontaktadresse)
@@ -81,7 +85,9 @@ AdressePanel.initialValues = ({ set, del, has }: any) => {
 			label: 'Adressebeskyttelse',
 			checked: has(paths.adressebeskyttelse),
 			add() {
-				set(paths.adressebeskyttelse, [initialAdressebeskyttelse])
+				set(paths.adressebeskyttelse, [
+					getInitialAdressebeskyttelse(identtype === 'NPID' ? 'PDL' : 'FREG'),
+				])
 			},
 			remove() {
 				del(paths.adressebeskyttelse)

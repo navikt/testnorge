@@ -13,9 +13,14 @@ type PersondetaljerSamletTypes = {
 			sprakKode: string
 		}
 	}
+	identtype?: string
 }
 
-export const PersondetaljerSamlet = ({ formikBag, tpsMessaging }: PersondetaljerSamletTypes) => {
+export const PersondetaljerSamlet = ({
+	formikBag,
+	tpsMessaging,
+	identtype,
+}: PersondetaljerSamletTypes) => {
 	const sprak = tpsMessaging?.tpsMessagingData?.sprakKode
 
 	const getTekst = () => {
@@ -38,24 +43,28 @@ export const PersondetaljerSamlet = ({ formikBag, tpsMessaging }: Persondetaljer
 					<>
 						<h3>Navn</h3>
 						<div className="flexbox--flex-wrap">
-							<NavnForm formikBag={formikBag} path="navn[0]" />
+							<NavnForm formikBag={formikBag} path="navn[0]" identtype={identtype} />
 						</div>
 					</>
 				)}
 
 				<h3>Kjønn</h3>
-				<KjoennForm path="kjoenn[0]" />
+				<KjoennForm path="kjoenn[0]" identtype={identtype} />
 
-				<div className="flexbox--align-center">
-					<h3>Personstatus</h3>
-					<Hjelpetekst>
-						Endring av personstatus er kun ment for negativ testing. Adresser og andre avhengige
-						verdier vil ikke bli oppdatert for å stemme overens med ny personstatus.
-					</Hjelpetekst>
-				</div>
-				<div className="flexbox--flex-wrap" style={{ marginTop: '10px' }}>
-					<PersonstatusForm path="folkeregisterpersonstatus[0]" />
-				</div>
+				{identtype !== 'NPID' && (
+					<>
+						<div className="flexbox--align-center">
+							<h3>Personstatus</h3>
+							<Hjelpetekst>
+								Endring av personstatus er kun ment for negativ testing. Adresser og andre avhengige
+								verdier vil ikke bli oppdatert for å stemme overens med ny personstatus.
+							</Hjelpetekst>
+						</div>
+						<div className="flexbox--flex-wrap" style={{ marginTop: '10px' }}>
+							<PersonstatusForm path="folkeregisterpersonstatus[0]" />
+						</div>
+					</>
+				)}
 			</div>
 		</>
 	)

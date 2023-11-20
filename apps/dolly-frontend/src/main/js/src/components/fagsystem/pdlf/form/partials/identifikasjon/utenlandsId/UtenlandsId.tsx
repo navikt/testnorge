@@ -4,10 +4,11 @@ import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput
 import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
-import { initialUtenlandsIdValues } from '@/components/fagsystem/pdlf/form/initialValues'
-import React from 'react'
+import { getInitialUtenlandskIdentifikasjonsnummer } from '@/components/fagsystem/pdlf/form/initialValues'
+import React, { useContext } from 'react'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 
-export const UtenlandsIdForm = ({ path, idx }) => {
+export const UtenlandsIdForm = ({ path, idx, identtype }) => {
 	return (
 		<React.Fragment key={idx}>
 			<FormikTextInput name={`${path}.identifikasjonsnummer`} label="Identifikasjonsnummer" />
@@ -24,20 +25,26 @@ export const UtenlandsIdForm = ({ path, idx }) => {
 				label="Er opphørt"
 				checkboxMargin
 			/>
-			<AvansertForm path={path} />
+			<AvansertForm path={path} kanVelgeMaster={identtype !== 'NPID'} />
 		</React.Fragment>
 	)
 }
 
 export const UtenlandsId = () => {
+	const opts = useContext(BestillingsveilederContext)
+
 	return (
 		<FormikDollyFieldArray
 			name="pdldata.person.utenlandskIdentifikasjonsnummer"
 			header="Utenlandsk ID"
-			newEntry={initialUtenlandsIdValues}
+			newEntry={getInitialUtenlandskIdentifikasjonsnummer(
+				opts?.identtype === 'NPID' ? 'PDL' : 'FREG',
+			)}
 			canBeEmpty={false}
 		>
-			{(path: string, idx: number) => <UtenlandsIdForm path={path} idx={idx} />}
+			{(path: string, idx: number) => (
+				<UtenlandsIdForm path={path} idx={idx} identtype={opts?.identtype} />
+			)}
 		</FormikDollyFieldArray>
 	)
 }

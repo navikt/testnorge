@@ -5,7 +5,10 @@ import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { PdlPersonExpander } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonExpander'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
-import { initialPdlPerson, initialSivilstand } from '@/components/fagsystem/pdlf/form/initialValues'
+import {
+	getInitialSivilstand,
+	initialPdlPerson,
+} from '@/components/fagsystem/pdlf/form/initialValues'
 import { FormikProps } from 'formik'
 import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import * as _ from 'lodash-es'
@@ -13,11 +16,14 @@ import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 import { Option } from '@/service/SelectOptionsOppslag'
+import { useContext } from 'react'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 interface SivilstandFormTypes {
 	formikBag: FormikProps<{}>
 	path?: string
 	eksisterendeNyPerson?: Option | null
+	identtype?: string
 }
 
 const gyldigeSivilstander = [
@@ -32,6 +38,7 @@ export const SivilstandForm = ({
 	path,
 	formikBag,
 	eksisterendeNyPerson = null,
+	identtype,
 }: SivilstandFormTypes) => {
 	const handleTypeChange = (selected: any, path: string) => {
 		formikBag.setFieldValue(`${path}.type`, selected.value)
@@ -103,21 +110,27 @@ export const SivilstandForm = ({
 			)}
 			<AvansertForm
 				path={path}
-				kanVelgeMaster={_.get(formikBag.values, `${path}.bekreftelsesdato`) === null}
+				kanVelgeMaster={
+					_.get(formikBag.values, `${path}.bekreftelsesdato`) === null && identtype !== 'NPID'
+				}
 			/>
 		</div>
 	)
 }
 
 export const Sivilstand = ({ formikBag }: SivilstandFormTypes) => {
+	const opts = useContext(BestillingsveilederContext)
+
 	return (
 		<FormikDollyFieldArray
 			name="pdldata.person.sivilstand"
 			header="Sivilstand"
-			newEntry={initialSivilstand}
+			newEntry={getInitialSivilstand(opts?.identtype === 'NPID' ? 'PDL' : 'FREG')}
 			canBeEmpty={false}
 		>
-			{(path: string) => <SivilstandForm path={path} formikBag={formikBag} />}
+			{(path: string) => (
+				<SivilstandForm path={path} formikBag={formikBag} identtype={opts?.identtype} />
+			)}
 		</FormikDollyFieldArray>
 	)
 }

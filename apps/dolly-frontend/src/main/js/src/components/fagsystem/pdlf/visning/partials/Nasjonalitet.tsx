@@ -9,6 +9,7 @@ type NasjonalitetTypes = {
 	tmpPersoner?: Array<PersonData>
 	visTittel?: boolean
 	erPdlVisning?: boolean
+	identtype?: string
 }
 
 export const Nasjonalitet = ({
@@ -16,6 +17,7 @@ export const Nasjonalitet = ({
 	tmpPersoner,
 	visTittel = true,
 	erPdlVisning = false,
+	identtype,
 }: NasjonalitetTypes) => {
 	if (!data) {
 		return null
@@ -39,6 +41,7 @@ export const Nasjonalitet = ({
 					tmpPersoner={tmpPersoner}
 					ident={ident}
 					erPdlVisning={erPdlVisning}
+					identtype={identtype}
 				/>
 			)}
 			{innflytting?.length > 0 && (
