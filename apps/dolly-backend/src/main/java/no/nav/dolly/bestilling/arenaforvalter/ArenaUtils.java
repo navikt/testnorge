@@ -35,9 +35,10 @@ public class ArenaUtils {
             var feilmeldingSlutt = decoded.indexOf("\\n", feilmeldingStart) - 1;
             var feilmelding = feilmeldingStart != -1 && feilmeldingSlutt != -1 ? "Feil:" + decoded.substring(feilmeldingStart, feilmeldingSlutt + 1) : decoded;
             var feilmeldingUtenUrelevantInfo = feilmelding.replace("=", ":")
+                    .replace("&2", "")
                     .replaceAll("request for.*", "request"); //Fjerner URL og påfølgende feilmelding som er urelevant for bruker
             var feilmeldingInformasjonStart = feilmeldingUtenUrelevantInfo.lastIndexOf(":") + 2;
-            return feilmelding.equals(decoded) ? decoded : "Feil: " + feilmeldingUtenUrelevantInfo.substring(feilmeldingInformasjonStart);
+            return feilmelding.equals(decoded) ? decoded : "Feil: " + feilmeldingUtenUrelevantInfo.substring(feilmeldingInformasjonStart).stripTrailing();
         } catch (NullPointerException exception) {
             log.error("Klarte ikke å parse feilmelding fra ArenaException", exception);
             return decoded;
