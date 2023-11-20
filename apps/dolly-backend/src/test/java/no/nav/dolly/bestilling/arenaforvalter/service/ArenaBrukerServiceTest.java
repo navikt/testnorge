@@ -58,4 +58,23 @@ class ArenaBrukerServiceTest {
 
         assertThat(response, is("Feil: Bruker kan ikke aktiveres fra dato 01.01.2023 da bruker tidligere har vært aktivert eller inaktivert fra en nyere dato."));
     }
+
+    @Test
+    void getBrukerStatus_Tjenestekall_Sats_Exception() {
+        var response = arenaBrukerService.getBrukerStatus(
+                ArenaNyeBrukereResponse.builder()
+                        .status(HttpStatus.OK)
+                        .arbeidsokerList(Collections.emptyList())
+                        .miljoe("t1")
+                        .nyBrukerFeilList(Collections.singletonList(ArenaNyeBrukereResponse.NyBrukerFeilV1.builder()
+                                .miljoe("t1")
+                                .personident("12345678901")
+                                .nyBrukerFeilstatus(ArenaNyeBrukereResponse.BrukerFeilstatus.AKTIVER_BRUKER)
+                                .melding("\"code\": \"UserDefinedResourceError\", \"title\": \"User Defined Resource Error\", \"message\": \"The request could not be processed due to an error in a user defined resource\", \"o:errorCode\": \"ORDS-12345\", \"cause\": \"An error occurred when evaluating the SQL statement associated with this resource. SQL Error Code 12345, Error Message: ORA-12345: Tjenestekall for beregning av sats feilet. &2\\nORA-12345: ved \\\"SIAMO.SYNT_DAGPENGER\\\", line 1234\\nORA-12345: ved \\\"SIAMO.SYNT_DAGPENGER\\\", line 1234\\nORA-12345: ved \\\"SIAMO.SYNT_DAGPENGER\\\", line 1234\\nORA-12345: ved \\\"SIAMO.SYNT_DAGPENGER\\\", line 1234\\nORA-12345: ved \\\"SYNT_REST.DAGPENGER\\\", line 12\\nORA-12345: ved line 1\\n\", \"action\": \"Ask the user defined resource author to check the SQL statement is correctly formed and executes without error\", \"type\": \"tag:oracle.com,2020:error/UserDefinedResourceError\", \"instance\": \"tag:oracle.com,2020:ecid/qwert12345\"")
+                                .build()))
+                        .build()
+        ).block();
+
+        assertThat(response, is("Feil: Tjenestekall for beregning av sats feilet."));
+    }
 }

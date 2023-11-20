@@ -19,8 +19,6 @@ spec:
           cluster: dev-gcp
         - application: testnav-pdl-forvalter-dev
           cluster: dev-gcp
-        - application: testnav-oversikt-frontend
-          cluster: dev-gcp
   tokenx:
     enabled: true
   azure:

@@ -38,7 +38,6 @@ spec:
     inbound:
       rules:
         - application: team-dolly-lokal-app
-        - application: testnav-oversikt-frontend
     outbound:
       rules:
         - application: synthdata-arena-vedtakshistorikk

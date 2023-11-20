@@ -21,8 +21,6 @@ spec:
       rules:
         - application: team-dolly-lokal-app
           cluster: dev-gcp
-        - application: testnav-oversikt-frontend
-          cluster: dev-gcp
         - application: testnav-pdl-forvalter
           cluster: dev-gcp
     outbound:

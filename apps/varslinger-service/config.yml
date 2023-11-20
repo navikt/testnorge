@@ -18,8 +18,6 @@ spec:
           cluster: dev-gcp
         - application: dolly-idporten
           cluster: dev-gcp
-        - application: testnav-oversikt-frontend
-          cluster: dev-gcp
         - application: team-dolly-lokal-app
           cluster: dev-gcp
         - application: app-1
