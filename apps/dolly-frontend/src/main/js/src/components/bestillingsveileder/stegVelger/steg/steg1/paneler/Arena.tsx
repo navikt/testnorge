@@ -11,7 +11,7 @@ export const ArenaPanel = ({ stateModifier, formikBag }) => {
 
 	const veileder = useContext(BestillingsveilederContext)
 	const maaned = veileder.personFoerLeggTil?.pdl?.ident?.substring?.(2, 4)
-	const syntetisk = maaned === undefined ? true : maaned >= 40
+	const syntetisk = maaned === undefined || maaned >= 40
 
 	const infoTekst = syntetisk
 		? 'Arbeidsytelser sendes til Arena for valgt(e) miljø(er). ' +
