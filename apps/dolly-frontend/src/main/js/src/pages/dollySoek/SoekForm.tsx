@@ -74,14 +74,9 @@ export const SoekForm = () => {
 	const [request, setRequest] = useState(null)
 	const { result, loading, error, mutate } = useSoekIdenter(request)
 
-	//TODO fix
 	const handleSubmit = (request: SoekRequest) => {
 		setRequest(request)
-	}
-
-	//TODO fix
-	const handleReset = () => {
-		setRequest(null)
+		mutate()
 	}
 
 	const personPath = 'personRequest'
@@ -440,11 +435,11 @@ export const SoekForm = () => {
 										<Button
 											onClick={() => formikBag.handleSubmit()}
 											variant="primary"
-											disabled={loading}
+											disabled={loading || !result}
 											loading={loading}
 											type="submit"
 										>
-											Søk
+											Hent nye treff
 										</Button>
 										<Button
 											onClick={() => {
@@ -452,9 +447,9 @@ export const SoekForm = () => {
 												formikBag.setValues(initialValuesClone)
 											}}
 											variant="secondary"
-											type={'reset'}
+											disabled={!result}
 										>
-											Tøm
+											Nullstill søk
 										</Button>
 									</Buttons>
 								</>
