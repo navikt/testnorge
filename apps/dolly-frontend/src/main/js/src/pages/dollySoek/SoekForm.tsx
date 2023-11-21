@@ -2,7 +2,7 @@ import '@/styles/variables.less'
 import styled from 'styled-components'
 import { Form, Formik } from 'formik'
 import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
-import React, { useState } from 'react'
+import React, { SyntheticEvent, useState } from 'react'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { Accordion, Button } from '@navikt/ds-react'
@@ -10,6 +10,7 @@ import { AdresseKodeverk, GtKodeverk } from '@/config/kodeverk'
 import { useSoekIdenter } from '@/utils/hooks/usePersonSoek'
 import { SoekRequest } from '@/pages/dollySoek/DollySoekTypes'
 import { ResultatVisning } from '@/pages/dollySoek/ResultatVisning'
+import * as _ from 'lodash-es'
 
 const SoekefeltWrapper = styled.div`
 	display: flex;
@@ -71,23 +72,49 @@ const initialValues = {
 
 export const SoekForm = () => {
 	const [request, setRequest] = useState(null)
-	const { result, loading, error } = useSoekIdenter(request)
+	const { result, loading, error, mutate } = useSoekIdenter(request)
 
+	//TODO fix
 	const handleSubmit = (request: SoekRequest) => {
 		setRequest(request)
 	}
 
+	//TODO fix
+	const handleReset = () => {
+		setRequest(null)
+	}
+
 	const personPath = 'personRequest'
+
+	const initialValuesClone = _.cloneDeep(initialValues)
 
 	return (
 		<>
 			<SoekefeltWrapper>
 				<Soekefelt>
 					<Formik
-						initialValues={initialValues}
+						initialValues={initialValuesClone}
 						onSubmit={(request: SoekRequest) => handleSubmit(request)}
 					>
 						{(formikBag) => {
+							const handleChange = (value: any, path: string) => {
+								const updatedRequest = _.set(formikBag.values, path, value)
+								setRequest(updatedRequest)
+								formikBag.setFieldValue(path, value)
+								mutate()
+							}
+
+							const handleChangeList = (value: any, path: string) => {
+								const list = value.map((item: any) => item.value)
+								const updatedRequest = _.set(formikBag.values, path, list)
+								setRequest(updatedRequest)
+								mutate()
+							}
+
+							const getValue = (path: string) => {
+								return _.get(formikBag.values, path)
+							}
+
 							return (
 								<>
 									<Form className="flexbox--flex-wrap" autoComplete="off">
@@ -99,6 +126,7 @@ export const SoekForm = () => {
 												isMulti={true}
 												size="grow"
 												fastfield={false}
+												onChange={(val: SyntheticEvent) => handleChangeList(val, 'typer')}
 											/>
 										</div>
 										<Accordion size="small" headingSize="xsmall" className="flexbox--full-width">
@@ -111,31 +139,72 @@ export const SoekForm = () => {
 															kodeverk={AdresseKodeverk.StatsborgerskapLand}
 															size="large"
 															placeholder="Statsborgerskap"
+															onChange={(val: SyntheticEvent) =>
+																handleChange(val?.value || null, `${personPath}.statsborgerskap`)
+															}
+															value={getValue(`${personPath}.statsborgerskap`)}
 														/>
-														<FormikCheckbox name={`${personPath}.harVerge`} label="Har verge" />
+														<FormikCheckbox
+															name={`${personPath}.harVerge`}
+															label="Har verge"
+															onChange={(val: SyntheticEvent) =>
+																handleChange(val.target.checked, `${personPath}.harVerge`)
+															}
+															value={getValue(`${personPath}.harVerge`)}
+														/>
 														<FormikCheckbox
 															name={`${personPath}.harFullmakt`}
 															label="Har fullmakt"
+															onChange={(val: SyntheticEvent) =>
+																handleChange(val.target.checked, `${personPath}.harFullmakt`)
+															}
+															value={getValue(`${personPath}.harFullmakt`)}
 														/>
 														<FormikCheckbox
 															name={`${personPath}.harDoedsfall`}
 															label="Har dødsfall"
+															onChange={(val: SyntheticEvent) =>
+																handleChange(val.target.checked, `${personPath}.harDoedsfall`)
+															}
+															value={getValue(`${personPath}.harDoedsfall`)}
 														/>
 														<FormikCheckbox
 															name={`${personPath}.harInnflytting`}
 															label="Har innflytting"
+															onChange={(val: SyntheticEvent) =>
+																handleChange(val.target.checked, `${personPath}.harInnflytting`)
+															}
+															value={getValue(`${personPath}.harInnflytting`)}
 														/>
 														<FormikCheckbox
 															name={`${personPath}.harUtflytting`}
 															label="Har utflytting"
+															onChange={(val: SyntheticEvent) =>
+																handleChange(val.target.checked, `${personPath}.harUtflytting`)
+															}
+															value={getValue(`${personPath}.harUtflytting`)}
 														/>
 														<FormikCheckbox
 															name={`${personPath}.harSikkerhetstiltak`}
 															label="Har sikkerhetstiltak"
+															onChange={(val: SyntheticEvent) =>
+																handleChange(
+																	val.target.checked,
+																	`${personPath}.harSikkerhetstiltak`,
+																)
+															}
+															value={getValue(`${personPath}.harSikkerhetstiltak`)}
 														/>
 														<FormikCheckbox
 															name={`${personPath}.harTilrettelagtKommunikasjon`}
 															label="Har tilrettelagt kommunikasjon"
+															onChange={(val: SyntheticEvent) =>
+																handleChange(
+																	val.target.checked,
+																	`${personPath}.harTilrettelagtKommunikasjon`,
+																)
+															}
+															value={getValue(`${personPath}.harTilrettelagtKommunikasjon`)}
 														/>
 													</div>
 												</Accordion.Content>
@@ -149,44 +218,101 @@ export const SoekForm = () => {
 															kodeverk={AdresseKodeverk.Kommunenummer}
 															size="large"
 															placeholder="Kommunenummer"
+															onChange={(val: SyntheticEvent) =>
+																handleChange(
+																	val?.value || null,
+																	`${personPath}.bostedsadresse.kommunenummer`,
+																)
+															}
+															value={getValue(`${personPath}.bostedsadresse.kommunenummer`)}
 														/>
 														<FormikSelect
 															name={`${personPath}.bostedsadresse.postnummer`}
 															kodeverk={AdresseKodeverk.Postnummer}
 															size="large"
 															placeholder="Postnummer"
+															onChange={(val: SyntheticEvent) =>
+																handleChange(
+																	val?.value || null,
+																	`${personPath}.bostedsadresse.postnummer`,
+																)
+															}
+															value={getValue(`${personPath}.bostedsadresse.postnummer`)}
 														/>
 														<FormikSelect
 															name={`${personPath}.bostedsadresse.bydelsnummer`}
 															kodeverk={GtKodeverk.BYDEL}
 															size="large"
 															placeholder="Bydelsnummer"
+															onChange={(val: SyntheticEvent) =>
+																handleChange(
+																	val?.value || null,
+																	`${personPath}.bostedsadresse.bydelsnummer`,
+																)
+															}
+															value={getValue(`${personPath}.bostedsadresse.bydelsnummer`)}
 														/>
 														<FormikSelect
 															name={`${personPath}.addressebeskyttelse`}
 															options={Options('gradering')}
 															size="large"
 															placeholder="Adressebeskyttelse"
+															onChange={(val: SyntheticEvent) =>
+																handleChange(
+																	val?.value || null,
+																	`${personPath}.addressebeskyttelse`,
+																)
+															}
+															value={getValue(`${personPath}.addressebeskyttelse`)}
 														/>
 														<FormikCheckbox
 															name={`${personPath}.bostedsadresse.harUtenlandsadresse`}
 															label="Har utenlandsadresse"
+															onChange={(val: SyntheticEvent) =>
+																handleChange(
+																	val.target.checked,
+																	`${personPath}.bostedsadresse.harUtenlandsadresse`,
+																)
+															}
+															value={getValue(`${personPath}.bostedsadresse.harUtenlandsadresse`)}
 														/>
 														<FormikCheckbox
 															name={`${personPath}.bostedsadresse.harMatrikkelAdresse`}
 															label="Har matrikkeladresse"
+															onChange={(val: SyntheticEvent) =>
+																handleChange(
+																	val.target.checked,
+																	`${personPath}.bostedsadresse.harMatrikkelAdresse`,
+																)
+															}
+															value={getValue(`${personPath}.bostedsadresse.harMatrikkelAdresse`)}
 														/>
 														<FormikCheckbox
 															name={`${personPath}.bostedsadresse.harUkjentAdresse`}
 															label="Har ukjent adresse"
+															onChange={(val: SyntheticEvent) =>
+																handleChange(
+																	val.target.checked,
+																	`${personPath}.bostedsadresse.harUkjentAdresse`,
+																)
+															}
+															value={getValue(`${personPath}.bostedsadresse.harUkjentAdresse`)}
 														/>
 														<FormikCheckbox
 															name={`${personPath}.harKontaktadresse`}
 															label="Har kontaktadresse"
+															onChange={(val: SyntheticEvent) =>
+																handleChange(val.target.checked, `${personPath}.harKontaktadresse`)
+															}
+															value={getValue(`${personPath}.harKontaktadresse`)}
 														/>
 														<FormikCheckbox
 															name={`${personPath}.harOppholdsadresse`}
 															label="Har oppholdsadresse"
+															onChange={(val: SyntheticEvent) =>
+																handleChange(val.target.checked, `${personPath}.harOppholdsadresse`)
+															}
+															value={getValue(`${personPath}.harOppholdsadresse`)}
 														/>
 													</div>
 												</Accordion.Content>
@@ -200,23 +326,50 @@ export const SoekForm = () => {
 															options={Options('sivilstandType')}
 															size="large"
 															placeholder="Sivilstand"
+															onChange={(val: SyntheticEvent) =>
+																handleChange(val?.value || null, `${personPath}.sivilstand`)
+															}
+															value={getValue(`${personPath}.sivilstand`)}
 														/>
-														<FormikCheckbox name={`${personPath}.harBarn`} label="Har barn" />
+														<FormikCheckbox
+															name={`${personPath}.harBarn`}
+															label="Har barn"
+															onChange={(val: SyntheticEvent) =>
+																handleChange(val.target.checked, `${personPath}.harBarn`)
+															}
+															value={getValue(`${personPath}.harBarn`)}
+														/>
 														<FormikCheckbox
 															name={`${personPath}.harForeldre`}
 															label="Har foreldre"
+															onChange={(val: SyntheticEvent) =>
+																handleChange(val.target.checked, `${personPath}.harForeldre`)
+															}
+															value={getValue(`${personPath}.harForeldre`)}
 														/>
 														<FormikCheckbox
 															name={`${personPath}.harDoedfoedtBarn`}
 															label="Har dødfødt barn"
+															onChange={(val: SyntheticEvent) =>
+																handleChange(val.target.checked, `${personPath}.harDoedfoedtBarn`)
+															}
+															value={getValue(`${personPath}.harDoedfoedtBarn`)}
 														/>
 														<FormikCheckbox
 															name={`${personPath}.harForeldreAnsvar`}
 															label="Har foreldreansvar"
+															onChange={(val: SyntheticEvent) =>
+																handleChange(val.target.checked, `${personPath}.harForeldreAnsvar`)
+															}
+															value={getValue(`${personPath}.harForeldreAnsvar`)}
 														/>
 														<FormikCheckbox
 															name={`${personPath}.harDeltBosted`}
 															label="Har delt bosted"
+															onChange={(val: SyntheticEvent) =>
+																handleChange(val.target.checked, `${personPath}.harDeltBosted`)
+															}
+															value={getValue(`${personPath}.harDeltBosted`)}
 														/>
 													</div>
 												</Accordion.Content>
@@ -228,14 +381,29 @@ export const SoekForm = () => {
 														<FormikCheckbox
 															name={`${personPath}.harFalskIdentitet`}
 															label="Har falsk identitet"
+															onChange={(val: SyntheticEvent) =>
+																handleChange(val.target.checked, `${personPath}.harFalskIdentitet`)
+															}
+															value={getValue(`${personPath}.harFalskIdentitet`)}
 														/>
 														<FormikCheckbox
 															name={`${personPath}.harUtenlandskIdentifikasjonsnummer`}
 															label="Har utenlandsk identifikasjonsnummer"
+															onChange={(val: SyntheticEvent) =>
+																handleChange(
+																	val.target.checked,
+																	`${personPath}.harUtenlandskIdentifikasjonsnummer`,
+																)
+															}
+															value={getValue(`${personPath}.harUtenlandskIdentifikasjonsnummer`)}
 														/>
 														<FormikCheckbox
 															name={`${personPath}.nyIdentitet`}
 															label="Har ny identitet"
+															onChange={(val: SyntheticEvent) =>
+																handleChange(val.target.checked, `${personPath}.nyIdentitet`)
+															}
+															value={getValue(`${personPath}.nyIdentitet`)}
 														/>
 													</div>
 												</Accordion.Content>
@@ -247,8 +415,22 @@ export const SoekForm = () => {
 														<FormikCheckbox
 															name={`${personPath}.harKontaktinformasjonForDoedsbo`}
 															label="Har kontaktinformasjon for dødsbo"
+															onChange={(val: SyntheticEvent) =>
+																handleChange(
+																	val.target.checked,
+																	`${personPath}.harKontaktinformasjonForDoedsbo`,
+																)
+															}
+															value={getValue(`${personPath}.harKontaktinformasjonForDoedsbo`)}
 														/>
-														<FormikCheckbox name={`${personPath}.harOpphold`} label="Har opphold" />
+														<FormikCheckbox
+															name={`${personPath}.harOpphold`}
+															label="Har opphold"
+															onChange={(val: SyntheticEvent) =>
+																handleChange(val.target.checked, `${personPath}.harOpphold`)
+															}
+															value={getValue(`${personPath}.harOpphold`)}
+														/>
 													</div>
 												</Accordion.Content>
 											</Accordion.Item>
@@ -264,7 +446,14 @@ export const SoekForm = () => {
 										>
 											Søk
 										</Button>
-										<Button onClick={() => formikBag.setValues(initialValues)} variant="secondary">
+										<Button
+											onClick={() => {
+												setRequest(null)
+												formikBag.setValues(initialValuesClone)
+											}}
+											variant="secondary"
+											type={'reset'}
+										>
 											Tøm
 										</Button>
 									</Buttons>

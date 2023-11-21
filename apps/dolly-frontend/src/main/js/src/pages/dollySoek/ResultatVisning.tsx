@@ -2,7 +2,7 @@ import ContentContainer from '@/components/ui/contentContainer/ContentContainer'
 import PersonListeConnector from '@/pages/gruppe/PersonListe/PersonListeConnector'
 
 export const ResultatVisning = ({ resultat }) => {
-	console.log('resultat: ', resultat) //TODO - SLETT MEG
+	// console.log('resultat: ', resultat) //TODO - SLETT MEG
 	if (!resultat) {
 		return <ContentContainer>Ingen søk er gjort</ContentContainer>
 	}
@@ -16,10 +16,10 @@ export const ResultatVisning = ({ resultat }) => {
 	}
 
 	const obj = resultat?.identer?.reduce((o, key) => ({ ...o, [key]: { ident: key } }), {})
-	console.log('obj: ', obj) //TODO - SLETT MEG
+	// console.log('obj: ', obj) //TODO - SLETT MEG
 
 	return resultat?.identer?.map((ident) => {
-		console.log('ident: ', ident) //TODO - SLETT MEG
+		// console.log('ident: ', ident) //TODO - SLETT MEG
 		return <p key={ident}>{ident}</p>
 	})
 

@@ -5,7 +5,7 @@ import Request from '@/service/services/Request'
 const elasticUrl = '/dolly-backend/api/v1/elastic'
 
 export const useSoekIdenter = (request: SoekRequest) => {
-	const { data, isLoading, error } = useSWR<ResponseIdenter, Error>(
+	const { data, isLoading, error, mutate } = useSWR<ResponseIdenter, Error>(
 		request ? [`${elasticUrl}/identer`, request] : null,
 		([url, headers]) => Request.post(url, headers),
 	)
@@ -14,5 +14,6 @@ export const useSoekIdenter = (request: SoekRequest) => {
 		result: data?.data,
 		loading: isLoading,
 		error: error,
+		mutate: mutate,
 	}
 }
