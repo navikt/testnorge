@@ -10,7 +10,7 @@ export const ArenaPanel = ({ stateModifier, formikBag }) => {
 	const sm = stateModifier(ArenaPanel.initialValues)
 
 	const veilleder = useContext(BestillingsveilederContext)
-	const syntetisk = veilleder.personFoerLeggTil.pdl.ident.substring(2, 3) >= 4
+	const syntetisk = veilleder.personFoerLeggTil?.pdl?.ident?.substring?.(2, 3) >= 4
 
 	const infoTekst = syntetisk
 		? 'Arbeidsytelser sendes til Arena for valgt(e) miljø(er). ' +
