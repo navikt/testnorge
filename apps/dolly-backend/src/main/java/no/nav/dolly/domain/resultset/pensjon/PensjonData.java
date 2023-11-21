@@ -140,28 +140,15 @@ public class PensjonData {
         @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
         private LocalDate iverksettelsesdato;
 
+        @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
+        private LocalDate kravFremsattDato;
+
+        private String saksbehandler;
+        private String attesterer;
+        private String navEnhetId;
+
         @Schema
         private Integer uttaksgrad;
-
-        @Schema
-        private List<SkjemaRelasjon> relasjoner;
-
-        public List<SkjemaRelasjon> getRelasjoner() {
-
-            if (isNull(relasjoner)) {
-                relasjoner = new ArrayList<>();
-            }
-            return relasjoner;
-        }
-    }
-
-    @Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class SkjemaRelasjon {
-        @Schema
-        private Integer sumAvForvArbKapPenInntekt;
     }
 
     @Data
