@@ -37,6 +37,8 @@ const Buttons = styled.div`
 const initialValues = {
 	typer: [],
 	personRequest: {
+		identtype: null,
+		kjoenn: null,
 		sivilstand: null,
 		addressebeskyttelse: null,
 		harBarn: false,
@@ -129,6 +131,16 @@ export const SoekForm = () => {
 												<Accordion.Header>Personinformasjon</Accordion.Header>
 												<Accordion.Content>
 													<div className="flexbox--flex-wrap">
+														<FormikSelect
+															name={`${personPath}.kjoenn`}
+															options={Options('kjoenn')}
+															size="large"
+															placeholder="Kjønn"
+															onChange={(val: SyntheticEvent) =>
+																handleChange(val?.value || null, `${personPath}.kjoenn`)
+															}
+															value={getValue(`${personPath}.kjoenn`)}
+														/>
 														<FormikSelect
 															name={`${personPath}.statsborgerskap`}
 															kodeverk={AdresseKodeverk.StatsborgerskapLand}
@@ -373,6 +385,16 @@ export const SoekForm = () => {
 												<Accordion.Header>Identifikasjon</Accordion.Header>
 												<Accordion.Content>
 													<div className="flexbox--flex-wrap">
+														<FormikSelect
+															name={`${personPath}.identtype`}
+															options={Options('identtype')}
+															size="large"
+															placeholder="Identtype"
+															onChange={(val: SyntheticEvent) =>
+																handleChange(val?.value || null, `${personPath}.identtype`)
+															}
+															value={getValue(`${personPath}.identtype`)}
+														/>
 														<FormikCheckbox
 															name={`${personPath}.harFalskIdentitet`}
 															label="Har falsk identitet"
