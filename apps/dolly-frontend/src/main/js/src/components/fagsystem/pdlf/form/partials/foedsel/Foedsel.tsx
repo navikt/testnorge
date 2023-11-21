@@ -1,7 +1,7 @@
 import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
-import { initialFoedsel } from '@/components/fagsystem/pdlf/form/initialValues'
+import { getInitialFoedsel } from '@/components/fagsystem/pdlf/form/initialValues'
 import { Yearpicker } from '@/components/ui/form/inputs/yearpicker/Yearpicker'
 import * as _ from 'lodash-es'
 import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
@@ -91,12 +91,13 @@ export const FoedselForm = ({ formMethods, path }: FoedselTypes) => {
 }
 
 export const Foedsel = ({ formMethods }: FoedselTypes) => {
+	const opts = useContext(BestillingsveilederContext)
 	return (
 		<div className="flexbox--flex-wrap">
 			<FormikDollyFieldArray
 				name={'pdldata.person.foedsel'}
 				header="Fødsel"
-				newEntry={initialFoedsel}
+				newEntry={getInitialFoedsel(opts?.identtype === 'NPID' ? 'PDL' : 'FREG')}
 				canBeEmpty={false}
 			>
 				{(path: string, _idx: number) => {

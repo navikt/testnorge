@@ -91,7 +91,11 @@ export const PdlfVisning = ({ fagsystemData, loading, tmpPersoner }) => {
 				/>
 				<Foedsel data={data?.person?.foedsel} tmpPersoner={tmpPdlforvalter} ident={ident} />
 				<Doedsfall data={data?.person?.doedsfall} tmpPersoner={tmpPdlforvalter} ident={ident} />
-				<Nasjonalitet data={data?.person} tmpPersoner={tmpPdlforvalter} />
+				<Nasjonalitet
+					data={data?.person}
+					tmpPersoner={tmpPdlforvalter}
+					identtype={data?.person?.identtype}
+				/>
 				<Telefonnummer
 					data={data?.person?.telefonnummer}
 					tmpPersoner={tmpPdlforvalter}
@@ -134,11 +138,13 @@ export const PdlfVisning = ({ fagsystemData, loading, tmpPersoner }) => {
 					data={data?.person?.oppholdsadresse}
 					tmpPersoner={tmpPdlforvalter}
 					ident={ident}
+					identtype={data?.person?.identtype}
 				/>
 				<Kontaktadresse
 					data={data?.person?.kontaktadresse}
 					tmpPersoner={tmpPdlforvalter}
 					ident={ident}
+					identtype={data?.person?.identtype}
 				/>
 				<Adressebeskyttelse
 					data={data?.person?.adressebeskyttelse}
@@ -151,12 +157,14 @@ export const PdlfVisning = ({ fagsystemData, loading, tmpPersoner }) => {
 					relasjoner={data?.relasjoner}
 					tmpPersoner={tmpPdlforvalter}
 					ident={ident}
+					identtype={data?.person?.identtype}
 				/>
 				<ForelderBarnRelasjon
 					data={data?.person?.forelderBarnRelasjon}
 					tmpPersoner={tmpPdlforvalter}
 					ident={ident}
 					relasjoner={data?.relasjoner}
+					identtype={data?.person?.identtype}
 				/>
 				<ForeldreansvarVisning
 					data={data?.person?.foreldreansvar}
@@ -175,6 +183,7 @@ export const PdlfVisning = ({ fagsystemData, loading, tmpPersoner }) => {
 					data={data?.person?.utenlandskIdentifikasjonsnummer}
 					tmpPersoner={tmpPdlforvalter}
 					ident={ident}
+					identtype={data?.person?.identtype}
 				/>
 				<IdenthistorikkVisning relasjoner={data?.relasjoner} />
 				<KontaktinformasjonForDoedsbo

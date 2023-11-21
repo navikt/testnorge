@@ -44,6 +44,8 @@ spec:
           cluster: dev-gcp
         - application: dolly-frontend-dev
           cluster: dev-gcp
+        - application: testnav-oversikt-frontend
+          cluster: dev-gcp
         - application: testnav-arbeidsforhold-service
           cluster: dev-gcp
         - application: testnorge-statisk-data-forvalter

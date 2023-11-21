@@ -3,20 +3,36 @@ import { Attributt, AttributtKategori } from '../Attributt'
 import { initialKontaktinfoForDoedebo } from '@/components/fagsystem/pdlf/form/initialValues'
 import { harValgtAttributt } from '@/components/ui/form/formUtils'
 import { doedsboAttributt } from '@/components/fagsystem/pdlf/form/partials/kontaktinformasjonForDoedsbo/KontaktinformasjonForDoedsbo'
+import { useContext } from 'react'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 export const KontaktDoedsboPanel = ({ stateModifier, formValues }) => {
 	const sm = stateModifier(KontaktDoedsboPanel.initialValues)
+	const opts = useContext(BestillingsveilederContext)
+
+	const getIgnoreKeys = () => {
+		if (opts?.identtype === 'NPID') {
+			return ['kontaktinformasjonForDoedsbo']
+		}
+		return []
+	}
 
 	return (
 		<Panel
 			heading={KontaktDoedsboPanel.heading}
-			checkAttributeArray={sm.batchAdd}
+			checkAttributeArray={() => sm.batchAdd(getIgnoreKeys())}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType="doedsbo"
 			startOpen={harValgtAttributt(formValues, [doedsboAttributt])}
 		>
 			<AttributtKategori attr={sm.attrs}>
-				<Attributt attr={sm.attrs.kontaktinformasjonForDoedsbo} />
+				<Attributt
+					attr={sm.attrs.kontaktinformasjonForDoedsbo}
+					disabled={opts?.identtype === 'NPID'}
+					title={
+						opts?.identtype === 'NPID' ? 'Ikke tilgjengelig for personer med identtype NPID' : ''
+					}
+				/>
 			</AttributtKategori>
 		</Panel>
 	)

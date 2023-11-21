@@ -3,8 +3,8 @@ import { useEffect } from 'react'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import {
-	initialBarn,
-	initialForelder,
+	getInitialBarn,
+	getInitialForelder,
 	initialPdlBiPerson,
 	initialPdlPerson,
 } from '@/components/fagsystem/pdlf/form/initialValues'
@@ -19,11 +19,15 @@ import { PdlEksisterendePerson } from '@/components/fagsystem/pdlf/form/partials
 import { PdlPersonUtenIdentifikator } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonUtenIdentifikator'
 import { PdlNyPerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlNyPerson'
 import { Alert, ToggleGroup } from '@navikt/ds-react'
+import { useContext, useEffect } from 'react'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 interface ForelderForm {
 	formikBag: FormikProps<{}>
 	path?: string
 	idx?: number
+	eksisterendeNyPerson?: any
+	identtype?: string
 }
 
 type Target = {
@@ -40,6 +44,7 @@ export const ForelderBarnRelasjonForm = ({
 	formikBag,
 	path,
 	eksisterendeNyPerson = null,
+	identtype,
 }: ForelderForm) => {
 	const relatertPerson = 'relatertPerson'
 	const nyRelatertPerson = 'nyRelatertPerson'
@@ -111,7 +116,9 @@ export const ForelderBarnRelasjonForm = ({
 					onChange={(value: string) => {
 						formMethods.setValue(
 							path,
-							value === RELASJON_BARN ? { ...initialBarn, id: id } : { ...initialForelder, id: id },
+							value === RELASJON_BARN
+								? { ...getInitialBarn(identtype === 'NPID' ? 'PDL' : 'FREG'), id: id }
+								: { ...getInitialForelder(identtype === 'NPID' ? 'PDL' : 'FREG'), id: id },
 						)
 					}}
 					size={'small'}
@@ -194,24 +201,24 @@ export const ForelderBarnRelasjonForm = ({
 				</div>
 			)}
 
-			<AvansertForm
-				path={path}
-				kanVelgeMaster={_.get(formMethods.getValues(), `${path}.bekreftelsesdato`) === null}
-			/>
+			<AvansertForm path={path} kanVelgeMaster={identtype !== 'NPID'} />
 		</div>
 	)
 }
 
 export const ForelderBarnRelasjon = ({ formMethods }: ForelderForm) => {
+	const opts = useContext(BestillingsveilederContext)
 	return (
 		<FormikDollyFieldArray
 			name="pdldata.person.forelderBarnRelasjon"
 			header={'Relasjon'}
-			newEntry={initialBarn}
+			newEntry={getInitialBarn(opts?.identtype === 'NPID' ? 'PDL' : 'FREG')}
 			canBeEmpty={false}
 		>
 			{(path: string, idx: number) => {
-				return <ForelderBarnRelasjonForm formMethods={formMethods} path={path} />
+				return (
+					<ForelderBarnRelasjonForm formMethods={formMethods} path={path} identtype={opts?.identtype} />
+				)
 			}}
 		</FormikDollyFieldArray>
 	)

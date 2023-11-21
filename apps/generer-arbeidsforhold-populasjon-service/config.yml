@@ -22,6 +22,8 @@ spec:
       rules:
         - application: team-dolly-lokal-app
           cluster: dev-gcp
+        - application: testnav-oversikt-frontend
+          cluster: dev-gcp
     outbound:
       rules:
         - application: oppsummeringsdokument-service

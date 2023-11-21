@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
 import * as _ from 'lodash-es'
 import {
-	initialKontaktadresse,
+	getInitialKontaktadresse,
 	initialPostboksadresse,
 	initialUtenlandskAdresse,
 	initialVegadresse,
@@ -23,6 +23,7 @@ import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/Datepi
 import { getPlaceholder, setNavn } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { useGenererNavn } from '@/utils/hooks/useGenererNavn'
 import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 interface KontaktadresseValues {
 	formikBag: FormikProps<{}>
@@ -32,6 +33,7 @@ type KontaktadresseFormValues = {
 	formikBag: FormikProps<{}>
 	path: string
 	idx?: number
+	identtype?: string
 }
 
 type Target = {
@@ -39,7 +41,12 @@ type Target = {
 	label?: string
 }
 
-export const KontaktadresseForm = ({ formMethods, path, idx }: KontaktadresseFormValues) => {
+export const KontaktadresseForm = ({
+	formMethods,
+	path,
+	idx,
+	identtype,
+}: KontaktadresseFormValues) => {
 	useEffect(() => {
 		formMethods.setValue(`${path}.adresseIdentifikatorFraMatrikkelen`, undefined)
 		const kontaktadresse = _.get(formMethods.getValues(), path)
@@ -139,22 +146,28 @@ export const KontaktadresseForm = ({ formMethods, path, idx }: KontaktadresseFor
 					value={_.get(formMethods.getValues(), `${path}.opprettCoAdresseNavn.fornavn`)}
 				/>
 			</div>
-			<AvansertForm path={path} />
+			<AvansertForm path={path} kanVelgeMaster={identtype !== 'NPID'} />
 		</React.Fragment>
 	)
 }
 
 export const Kontaktadresse = ({ formMethods }: KontaktadresseValues) => {
+	const opts = useContext(BestillingsveilederContext)
 	return (
 		<Kategori title="Kontaktadresse">
 			<FormikDollyFieldArray
 				name="pdldata.person.kontaktadresse"
 				header="Kontaktadresse"
-				newEntry={initialKontaktadresse}
+				newEntry={getInitialKontaktadresse(opts?.identtype === 'NPID' ? 'PDL' : 'FREG')}
 				canBeEmpty={false}
 			>
 				{(path: string, idx: number) => (
-					<KontaktadresseForm formMethods={formMethods} path={path} idx={idx} />
+					<KontaktadresseForm
+						formMethods={formMethods}
+						path={path}
+						idx={idx}
+						identtype={opts?.identtype}
+					/>
 				)}
 			</FormikDollyFieldArray>
 		</Kategori>

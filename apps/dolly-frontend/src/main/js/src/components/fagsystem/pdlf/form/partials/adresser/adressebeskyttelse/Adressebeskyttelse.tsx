@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { initialAdressebeskyttelse } from '@/components/fagsystem/pdlf/form/initialValues'
+import { getInitialAdressebeskyttelse } from '@/components/fagsystem/pdlf/form/initialValues'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
@@ -37,6 +37,9 @@ export const getIdenttype = (formMethods: any, identtype: string) => {
 }
 
 const getAdressebeskyttelseOptions = (identtype: string) => {
+	if (identtype === 'NPID') {
+		return [{ value: 'STRENGT_FORTROLIG_UTLAND', label: 'Strengt fortrolig utland' }]
+	}
 	return identtype === 'FNR'
 		? Options('gradering')
 		: Options('gradering').filter(
@@ -68,7 +71,7 @@ export const AdressebeskyttelseForm = ({
 		if (target?.value === 'STRENGT_FORTROLIG_UTLAND') {
 			_.set(adressebeskyttelseClone, 'master', 'PDL')
 		} else {
-			_.set(adressebeskyttelseClone, 'master', 'FREG')
+			identtype !== 'NPID' && _.set(adressebeskyttelseClone, 'master', 'FREG')
 		}
 		formMethods.setValue(path, adressebeskyttelseClone)
 	}
@@ -96,7 +99,7 @@ export const Adressebeskyttelse = ({ formMethods }: AdressebeskyttelseValues) =>
 			<FormikDollyFieldArray
 				name="pdldata.person.adressebeskyttelse"
 				header="Adressebeskyttelse"
-				newEntry={initialAdressebeskyttelse}
+				newEntry={getInitialAdressebeskyttelse(identtype === 'NPID' ? 'PDL' : 'FREG')}
 				canBeEmpty={false}
 			>
 				{(path: string, idx: number) => (

@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
 import * as _ from 'lodash-es'
 import {
+	getInitialOppholdsadresse,
 	initialMatrikkeladresse,
 	initialOppholdAnnetSted,
-	initialOppholdsadresse,
 	initialUtenlandskAdresse,
 	initialVegadresse,
 } from '@/components/fagsystem/pdlf/form/initialValues'
@@ -25,6 +25,7 @@ import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/Datepi
 import { getPlaceholder, setNavn } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { useGenererNavn } from '@/utils/hooks/useGenererNavn'
 import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 interface OppholdsadresseValues {
 	formikBag: FormikProps<{}>
@@ -34,6 +35,7 @@ type OppholdsadresseFormValues = {
 	formikBag: FormikProps<{}>
 	path: string
 	idx?: number
+	identtype?: string
 }
 
 type Target = {
@@ -41,7 +43,13 @@ type Target = {
 	label?: string
 }
 
-export const OppholdsadresseForm = ({ formMethods, path, idx }: OppholdsadresseFormValues) => {
+export const OppholdsadresseForm = ({
+	formMethods,
+	path,
+	idx,
+	identtype,
+}: OppholdsadresseFormValues) => {
+	const erNPID = identtype === 'NPID'
 	useEffect(() => {
 		formMethods.setValue(`${path}.adresseIdentifikatorFraMatrikkelen`, undefined)
 		const oppholdsadresse = _.get(formMethods.getValues(), path)
@@ -84,28 +92,28 @@ export const OppholdsadresseForm = ({ formMethods, path, idx }: OppholdsadresseF
 			_.set(adresseClone, 'matrikkeladresse', undefined)
 			_.set(adresseClone, 'utenlandskAdresse', undefined)
 			_.set(adresseClone, 'oppholdAnnetSted', undefined)
-			_.set(adresseClone, 'master', 'FREG')
+			!erNPID && _.set(adresseClone, 'master', 'FREG')
 		}
 		if (target?.value === 'MATRIKKELADRESSE') {
 			_.set(adresseClone, 'matrikkeladresse', initialMatrikkeladresse)
 			_.set(adresseClone, 'vegadresse', undefined)
 			_.set(adresseClone, 'utenlandskAdresse', undefined)
 			_.set(adresseClone, 'oppholdAnnetSted', undefined)
-			_.set(adresseClone, 'master', 'FREG')
+			!erNPID && _.set(adresseClone, 'master', 'FREG')
 		}
 		if (target?.value === 'UTENLANDSK_ADRESSE') {
 			_.set(adresseClone, 'utenlandskAdresse', initialUtenlandskAdresse)
 			_.set(adresseClone, 'vegadresse', undefined)
 			_.set(adresseClone, 'matrikkeladresse', undefined)
 			_.set(adresseClone, 'oppholdAnnetSted', undefined)
-			_.set(adresseClone, 'master', 'PDL')
+			!erNPID && _.set(adresseClone, 'master', 'PDL')
 		}
 		if (target?.value === 'OPPHOLD_ANNET_STED') {
 			_.set(adresseClone, 'oppholdAnnetSted', initialOppholdAnnetSted)
 			_.set(adresseClone, 'vegadresse', undefined)
 			_.set(adresseClone, 'matrikkeladresse', undefined)
 			_.set(adresseClone, 'utenlandskAdresse', undefined)
-			_.set(adresseClone, 'master', 'PDL')
+			!erNPID && _.set(adresseClone, 'master', 'PDL')
 		}
 
 		formMethods.setValue(path, adresseClone)
@@ -166,7 +174,9 @@ export const OppholdsadresseForm = ({ formMethods, path, idx }: OppholdsadresseF
 			<AvansertForm
 				path={path}
 				kanVelgeMaster={
-					valgtAdressetype !== 'MATRIKKELADRESSE' && valgtAdressetype !== 'OPPHOLD_ANNET_STED'
+					valgtAdressetype !== 'MATRIKKELADRESSE' &&
+					valgtAdressetype !== 'OPPHOLD_ANNET_STED' &&
+					!erNPID
 				}
 			/>
 		</React.Fragment>
@@ -174,16 +184,22 @@ export const OppholdsadresseForm = ({ formMethods, path, idx }: OppholdsadresseF
 }
 
 export const Oppholdsadresse = ({ formMethods }: OppholdsadresseValues) => {
+	const opts = useContext(BestillingsveilederContext)
 	return (
 		<Kategori title="Oppholdsadresse">
 			<FormikDollyFieldArray
 				name="pdldata.person.oppholdsadresse"
 				header="Oppholdsadresse"
-				newEntry={initialOppholdsadresse}
+				newEntry={getInitialOppholdsadresse(opts?.identtype === 'NPID' ? 'PDL' : 'FREG')}
 				canBeEmpty={false}
 			>
 				{(path: string, idx: number) => (
-					<OppholdsadresseForm formMethods={formMethods} path={path} idx={idx} />
+					<OppholdsadresseForm
+						formMethods={formMethods}
+						path={path}
+						idx={idx}
+						identtype={opts?.identtype}
+					/>
 				)}
 			</FormikDollyFieldArray>
 		</Kategori>

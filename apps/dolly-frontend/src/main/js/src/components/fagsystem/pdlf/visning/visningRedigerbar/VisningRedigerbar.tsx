@@ -254,7 +254,7 @@ export const VisningRedigerbar = ({
 			case Attributt.Doedsfall:
 				return <DoedsfallForm path={path} />
 			case Attributt.Statsborgerskap:
-				return <StatsborgerskapForm path={path} />
+				return <StatsborgerskapForm path={path} identtype={identtype} />
 			case Attributt.Innvandring:
 				return <InnvandringForm path={path} />
 			case Attributt.Utvandring:
@@ -278,9 +278,9 @@ export const VisningRedigerbar = ({
 			case Attributt.Boadresse:
 				return <BostedsadresseForm formMethods={formMethods} path={path} identtype={identtype} />
 			case Attributt.Oppholdsadresse:
-				return <OppholdsadresseForm formMethods={formMethods} path={path} />
+				return <OppholdsadresseForm formMethods={formMethods} path={path} identtype={identtype} />
 			case Attributt.Kontaktadresse:
-				return <KontaktadresseForm formMethods={formMethods} path={path} />
+				return <KontaktadresseForm formMethods={formMethods} path={path} identtype={identtype} />
 			case Attributt.Adressebeskyttelse:
 				return (
 					<AdressebeskyttelseForm
@@ -304,6 +304,7 @@ export const VisningRedigerbar = ({
 						path={path}
 						formMethods={formMethods}
 						eksisterendeNyPerson={eksisterendeNyPerson}
+						identtype={identtype}
 					/>
 				)
 			case Attributt.KontaktinformasjonForDoedsbo:
@@ -320,6 +321,7 @@ export const VisningRedigerbar = ({
 						formMethods={formMethods}
 						path={path}
 						eksisterendeNyPerson={eksisterendeNyPerson}
+						identtype={identtype}
 					/>
 				)
 			case Attributt.Foreldreansvar:
@@ -333,7 +335,7 @@ export const VisningRedigerbar = ({
 			case Attributt.DoedfoedtBarn:
 				return <DoedfoedtBarnForm formMethods={formMethods} path={path} />
 			case Attributt.UtenlandskIdentifikasjonsnummer:
-				return <UtenlandsIdForm path={path} />
+				return <UtenlandsIdForm path={path} identtype={identtype} />
 		}
 	}
 

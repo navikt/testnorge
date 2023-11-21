@@ -24,6 +24,8 @@ spec:
           cluster: dev-gcp
         - application: dolly-backend-dev
           cluster: dev-gcp
+        - application: testnav-oversikt-frontend
+          cluster: dev-gcp
         - application: testnav-synt-sykemelding-api
           cluster: dev-gcp
     outbound:
