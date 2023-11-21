@@ -2,11 +2,11 @@ import { DollyTextInput, FormikTextInput } from '@/components/ui/form/inputs/tex
 import { GtKodeverk } from '@/config/kodeverk'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import * as _ from 'lodash-es'
-import { FormikProps } from 'formik'
 import { useEffect } from 'react'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface UtenlandskAdresseForm {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 	path: string
 	master?: string | unknown
 }

@@ -7,14 +7,14 @@ import { AdresseKodeverk } from '@/config/kodeverk'
 import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import * as _ from 'lodash-es'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
-import { FormikProps } from 'formik'
 import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 import { Option } from '@/service/SelectOptionsOppslag'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface PdlNyPersonValues {
 	nyPersonPath: string
 	eksisterendePersonPath?: string
-	formikBag?: FormikProps<{}>
+	formMethods: UseFormReturn
 	erNyIdent?: boolean
 	gruppeIdenter?: Array<string>
 	eksisterendeNyPerson?: Option
@@ -23,7 +23,7 @@ interface PdlNyPersonValues {
 export const PdlNyPerson = ({
 	nyPersonPath,
 	eksisterendePersonPath,
-	formikBag,
+	formMethods,
 	erNyIdent = false,
 	gruppeIdenter,
 	eksisterendeNyPerson = null,

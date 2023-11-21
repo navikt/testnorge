@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useEffect } from 'react'
+import { useContext, useEffect } from 'react'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import {
@@ -8,7 +8,6 @@ import {
 	initialPdlBiPerson,
 	initialPdlPerson,
 } from '@/components/fagsystem/pdlf/form/initialValues'
-import { FormikProps } from 'formik'
 import * as _ from 'lodash-es'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
@@ -19,11 +18,11 @@ import { PdlEksisterendePerson } from '@/components/fagsystem/pdlf/form/partials
 import { PdlPersonUtenIdentifikator } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonUtenIdentifikator'
 import { PdlNyPerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlNyPerson'
 import { Alert, ToggleGroup } from '@navikt/ds-react'
-import { useContext, useEffect } from 'react'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 interface ForelderForm {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 	path?: string
 	idx?: number
 	eksisterendeNyPerson?: any
@@ -41,7 +40,7 @@ const RELASJON_FORELDER = 'FORELDER'
 const forelderTyper = ['FORELDER', 'MOR', 'MEDMOR', 'FAR']
 
 export const ForelderBarnRelasjonForm = ({
-	formikBag,
+	formMethods,
 	path,
 	eksisterendeNyPerson = null,
 	identtype,

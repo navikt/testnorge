@@ -4,9 +4,9 @@ import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import InntektStub from '@/components/inntektStub/validerInntekt'
 import { useBoolean } from 'react-use'
-import { FormikProps } from 'formik'
 import * as _ from 'lodash-es'
 import { ToggleGroup } from '@navikt/ds-react'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 const INNTEKTSTYPE_TOGGLE = 'INNTEKTSTYPE_TOGGLE'
 
@@ -45,7 +45,7 @@ type inntekt = {
 }
 
 type data = {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 	inntektsinformasjonPath: string
 }
 
@@ -116,7 +116,7 @@ export const InntektForm = ({ formMethods, inntektsinformasjonPath }: data) => {
 							name={`${path}.sluttOpptjeningsperiode`}
 							label="Slutt opptjeningsperiode"
 						/>
-						{!formSimple && <InntektStub formMethods={formMethods} inntektPath={path} />}
+						{!formSimple && <InntektStub inntektPath={path} />}
 					</>
 				)}
 			</FormikDollyFieldArray>

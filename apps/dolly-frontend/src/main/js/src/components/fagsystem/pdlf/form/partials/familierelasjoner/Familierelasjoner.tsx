@@ -2,11 +2,11 @@ import Panel from '@/components/ui/panel/Panel'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
-import { FormikProps } from 'formik'
 import { DoedfoedtBarn } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/doedfoedtBarn/DoedfoedtBarn'
 import { ForelderBarnRelasjon } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/forelderBarnRelasjon/ForelderBarnRelasjon'
 import { Sivilstand } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/sivilstand/Sivilstand'
 import { Foreldreansvar } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/foreldreansvar/Foreldreansvar'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 export const relasjonerAttributter = [
 	'pdldata.person.sivilstand',
@@ -15,7 +15,7 @@ export const relasjonerAttributter = [
 	'pdldata.person.doedfoedtBarn',
 ]
 
-export const Familierelasjoner = ({ formMethods }: { formikBag: FormikProps<any> }) => {
+export const Familierelasjoner = ({ formMethods }: { formMethods: UseFormReturn }) => {
 	return (
 		<Vis attributt={relasjonerAttributter}>
 			<Panel

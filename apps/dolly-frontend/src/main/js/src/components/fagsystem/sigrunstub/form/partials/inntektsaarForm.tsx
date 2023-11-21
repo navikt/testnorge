@@ -54,7 +54,7 @@ export const InntektsaarForm = ({ formMethods }) => {
 									onChange={(target) => handleTjenesteChange(target, path)}
 								/>
 							</div>
-							{tjenesteErValgt(formikBag, path) && (
+							{tjenesteErValgt(formMethods, path) && (
 								<EnkeltinntektForm
 									path={`${path}.grunnlag`}
 									header="Grunnlag fra Fastlands-Norge"
@@ -92,6 +92,6 @@ export const InntektsaarForm = ({ formMethods }) => {
 	)
 }
 
-const tjenesteErValgt = (formikBag, path) => {
+const tjenesteErValgt = (formMethods, path) => {
 	return _.get(formMethods.getValues(), `${path}.tjeneste`)
 }

@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import * as _ from 'lodash-es'
-import { FormikProps } from 'formik'
 import { OrganisasjonTextSelect } from '@/components/fagsystem/brregstub/form/partials/organisasjonTextSelect'
 import {
 	inputValg,
@@ -9,17 +8,18 @@ import {
 import { EgneOrganisasjoner } from '@/components/fagsystem/brregstub/form/partials/EgneOrganisasjoner'
 import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 import { OrganisasjonLoader } from '@/components/organisasjonSelect/OrganisasjonLoader'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface OrgnrToggleProps {
 	path: string
-	formikBag: FormikProps<any>
+	formMethods: UseFormReturn
 	setEnhetsinfo: (org: any, path: string) => Record<string, unknown>
 	warningMessage?: any
 }
 
 export const OrgnrToggle = ({
 	path,
-	formikBag,
+	formMethods,
 	setEnhetsinfo,
 	warningMessage,
 }: OrgnrToggleProps) => {

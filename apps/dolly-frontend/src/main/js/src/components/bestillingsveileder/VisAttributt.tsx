@@ -1,7 +1,8 @@
-import { connect } from 'formik'
 import * as _ from 'lodash-es'
+import { useFormContext } from 'react-hook-form'
 
-const InternalVis = ({ formik = null, attributt, children }) => {
+const InternalVis = ({ attributt, children }) => {
+	const { getValues } = useFormContext()
 	const isChecked = (values, attributtPath) => {
 		// Ignore if values ikke er satt
 		if (_.isNil(attributtPath)) return false
@@ -12,7 +13,7 @@ const InternalVis = ({ formik = null, attributt, children }) => {
 		return attributtPath.some((v) => _.has(values, v))
 	}
 
-	return isChecked(formik?.values, attributt) && children
+	return isChecked(getValues(), attributt) && children
 }
 
-export const Vis = connect(InternalVis)
+export const Vis = InternalVis

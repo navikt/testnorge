@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { useContext } from 'react'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
@@ -9,18 +10,17 @@ import {
 	getInitialSivilstand,
 	initialPdlPerson,
 } from '@/components/fagsystem/pdlf/form/initialValues'
-import { FormikProps } from 'formik'
 import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import * as _ from 'lodash-es'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 import { Option } from '@/service/SelectOptionsOppslag'
-import { useContext } from 'react'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface SivilstandFormTypes {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 	path?: string
 	eksisterendeNyPerson?: Option | null
 	identtype?: string
@@ -36,7 +36,7 @@ const gyldigeSivilstander = [
 
 export const SivilstandForm = ({
 	path,
-	formikBag,
+	formMethods,
 	eksisterendeNyPerson = null,
 	identtype,
 }: SivilstandFormTypes) => {

@@ -1,14 +1,14 @@
 import * as React from 'react'
 import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { initialDoedfoedtBarn } from '@/components/fagsystem/pdlf/form/initialValues'
-import { FormikProps } from 'formik'
 import * as _ from 'lodash-es'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface DoedfoedtBarnProps {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 	path?: string
 }
 

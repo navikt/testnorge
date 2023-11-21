@@ -1,13 +1,13 @@
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
-import { FormikProps } from 'formik'
 import { Option } from '@/service/SelectOptionsOppslag'
 import React from 'react'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 const pdlBasePath = 'pdldata.person.opphold'
 
-export const OppholdSammeVilkaar = ({ formMethods }: { formikBag: FormikProps<any> }) => (
+export const OppholdSammeVilkaar = ({ formMethods }: { formMethods: UseFormReturn }) => (
 	<React.Fragment>
 		<FormikDatepicker
 			name="udistub.oppholdStatus.oppholdSammeVilkaar.oppholdSammeVilkaarPeriode.fra"

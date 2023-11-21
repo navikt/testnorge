@@ -10,16 +10,16 @@ import {
 	initialPerson,
 } from '@/components/fagsystem/pdlf/form/initialValues'
 import { OrganisasjonSelect } from '@/components/organisasjonSelect'
-import { FormikProps } from 'formik'
 import { PdlNyPerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlNyPerson'
 import { PdlEksisterendePerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlEksisterendePerson'
 import { useEffect } from 'react'
 import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 import { useGenererNavn } from '@/utils/hooks/useGenererNavn'
 import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface KontaktValues {
-	formikBag: FormikProps<any>
+	formMethods: UseFormReturn
 	path: string
 	eksisterendeNyPerson?: any
 }

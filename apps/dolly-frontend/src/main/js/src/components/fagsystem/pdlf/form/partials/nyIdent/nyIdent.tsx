@@ -1,16 +1,16 @@
 import * as React from 'react'
-import { FormikProps } from 'formik'
+import { useContext } from 'react'
 import { getInitialNyIdent } from '@/components/fagsystem/pdlf/form/initialValues'
 import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { PdlPersonExpander } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonExpander'
 import * as _ from 'lodash-es'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
-import { useContext } from 'react'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface NyIdentForm {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 }
 
 export const NyIdent = ({ formMethods }: NyIdentForm) => {

@@ -1,4 +1,3 @@
-import { FormikProps } from 'formik'
 import { PdlNyPerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlNyPerson'
 import { PdlEksisterendePerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlEksisterendePerson'
 import { NyIdent } from '@/components/fagsystem/pdlf/PdlTypes'
@@ -6,12 +5,13 @@ import { useParams } from 'react-router-dom'
 import { DollyApi } from '@/service/Api'
 import { useAsync } from 'react-use'
 import { Option } from '@/service/SelectOptionsOppslag'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface PdlPersonValues {
 	nyPersonPath: string
 	eksisterendePersonPath: string
 	label: string
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 	nyIdentValg?: NyIdent
 	eksisterendeNyPerson?: Option
 }
@@ -20,7 +20,7 @@ export const PdlPersonForm = ({
 	nyPersonPath,
 	eksisterendePersonPath,
 	label,
-	formikBag,
+	formMethods,
 	nyIdentValg = null,
 	eksisterendeNyPerson = null,
 }: PdlPersonValues) => {

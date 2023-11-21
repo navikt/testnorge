@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { FormikProps } from 'formik'
 import { OrganisasjonMedArbeidsforholdSelect } from '@/components/organisasjonSelect'
 import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import {
@@ -7,13 +6,14 @@ import {
 	OrganisasjonToogleGruppe,
 } from '@/components/organisasjonSelect/OrganisasjonToogleGruppe'
 import { EgneOrganisasjoner } from '@/components/fagsystem/brregstub/form/partials/EgneOrganisasjoner'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface OrgnrToggleProps {
 	path: string
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 }
 
-export const OrgnrToggle = ({ path, formikBag }: OrgnrToggleProps) => {
+export const OrgnrToggle = ({ path, formMethods }: OrgnrToggleProps) => {
 	const [inputType, setInputType] = useState(inputValg.fraFellesListe)
 
 	const handleToggleChange = (value: string) => {

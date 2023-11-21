@@ -4,10 +4,10 @@ import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { generateValidKontoOptions } from '@/utils/GenererGyldigNorskBankkonto'
 import * as _ from 'lodash-es'
-import { FormikProps } from 'formik'
 import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
-export const NorskBankkonto = ({ formMethods }: { formikBag: FormikProps<{}> }) => {
+export const NorskBankkonto = ({ formMethods }: { formMethods: UseFormReturn }) => {
 	const [validKontoOptions, setValidKontoOptions] = useState([])
 
 	useEffect(() => {

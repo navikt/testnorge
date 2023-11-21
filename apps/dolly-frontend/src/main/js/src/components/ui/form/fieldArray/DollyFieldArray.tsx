@@ -1,4 +1,3 @@
-import { FieldArray } from 'formik'
 import * as _ from 'lodash-es'
 import Button from '@/components/ui/button/Button'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
@@ -7,6 +6,7 @@ import ExpandableBlokk from './ExpandableBlokk'
 import './dollyFieldArray.less'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import styled from 'styled-components'
+import { useFieldArray } from 'react-hook-form'
 
 const numberColor = {
 	ARRAY_LEVEL_ONE: '#CCE3ED',
@@ -223,76 +223,73 @@ export const FormikDollyFieldArray = ({
 	maxReachedDescription = null,
 	buttonText = null,
 	errorText = null,
-}) => (
-	<FieldArray name={name}>
-		{(arrayHelpers) => {
-			const values = _.get(arrayHelpers.form.values, name, [])
-			const addNewEntry = () => {
-				handleNewEntry ? handleNewEntry() : arrayHelpers.push(newEntry)
-			}
+}) => {
+	const fieldMethods = useFieldArray({ name: name })
+	const values = _.get(fieldMethods.fields.values, name, [])
+	const addNewEntry = () => {
+		handleNewEntry ? handleNewEntry() : fieldMethods.append(newEntry)
+	}
 
-			return (
-				<ErrorBoundary>
-					<DollyFieldArrayWrapper header={header} hjelpetekst={hjelpetekst} nested={nested}>
-						{values.map((curr, idx) => {
-							const showDeleteButton = canBeEmpty ? true : values.length >= 2
-							const path = `${name}.${idx}`
-							const number = tag ? `${tag}.${idx + 1}` : `${idx + 1}`
-							const handleRemove = () => {
-								handleRemoveEntry ? handleRemoveEntry(idx) : arrayHelpers.remove(idx)
-							}
+	return (
+		<ErrorBoundary>
+			<DollyFieldArrayWrapper header={header} hjelpetekst={hjelpetekst} nested={nested}>
+				{values.map((curr, idx) => {
+					const showDeleteButton = canBeEmpty ? true : values.length >= 2
+					const path = `${name}.${idx}`
+					const number = tag ? `${tag}.${idx + 1}` : `${idx + 1}`
+					const handleRemove = () => {
+						handleRemoveEntry ? handleRemoveEntry(idx) : fieldMethods.remove(idx)
+					}
 
-							if (nested) {
-								return (
-									<DollyFaBlokkNested
-										key={idx}
-										idx={idx}
-										handleRemove={handleRemove}
-										showDeleteButton={showDeleteButton}
-									>
-										{children(path, idx, curr)}
-									</DollyFaBlokkNested>
-								)
-							} else if (isOrganisasjon) {
-								return (
-									<DollyFaBlokkOrg
-										key={idx}
-										idx={idx}
-										number={number}
-										header={header}
-										hjelpetekst={hjelpetekst}
-										handleRemove={handleRemove}
-										showDeleteButton={showDeleteButton}
-									>
-										{children(path, idx, curr, number)}
-									</DollyFaBlokkOrg>
-								)
-							} else {
-								return (
-									<DollyFaBlokk
-										key={idx}
-										idx={idx}
-										number={number}
-										header={header}
-										hjelpetekst={hjelpetekst}
-										handleRemove={handleRemove}
-										showDeleteButton={showDeleteButton}
-									>
-										{children(path, idx, curr, number)}
-									</DollyFaBlokk>
-								)
-							}
-						})}
-						{errorText && <FaError>{errorText}</FaError>}
-						<FieldArrayAddButton
-							hoverText={title || (maxEntries === values.length && maxReachedDescription)}
-							addEntryButtonText={buttonText ? buttonText : header}
-							onClick={addNewEntry}
-							disabled={disabled || maxEntries === values.length}
-						/>
-					</DollyFieldArrayWrapper>
-				</ErrorBoundary>
-			)
-		}}
-	</FieldArray>
-)
+					if (nested) {
+						return (
+							<DollyFaBlokkNested
+								key={idx}
+								idx={idx}
+								handleRemove={handleRemove}
+								showDeleteButton={showDeleteButton}
+							>
+								{children(path, idx, curr)}
+							</DollyFaBlokkNested>
+						)
+					} else if (isOrganisasjon) {
+						return (
+							<DollyFaBlokkOrg
+								key={idx}
+								idx={idx}
+								number={number}
+								header={header}
+								hjelpetekst={hjelpetekst}
+								handleRemove={handleRemove}
+								showDeleteButton={showDeleteButton}
+							>
+								{children(path, idx, curr, number)}
+							</DollyFaBlokkOrg>
+						)
+					} else {
+						return (
+							<DollyFaBlokk
+								key={idx}
+								idx={idx}
+								number={number}
+								header={header}
+								hjelpetekst={hjelpetekst}
+								handleRemove={handleRemove}
+								showDeleteButton={showDeleteButton}
+							>
+								{children(path, idx, curr, number)}
+							</DollyFaBlokk>
+						)
+					}
+				})}
+				{errorText && <FaError>{errorText}</FaError>}
+				<FieldArrayAddButton
+					hoverText={title || (maxEntries === values.length && maxReachedDescription)}
+					addEntryButtonText={buttonText ? buttonText : header}
+					onClick={addNewEntry}
+					disabled={disabled || maxEntries === values.length}
+				/>
+			</DollyFieldArrayWrapper>
+		</ErrorBoundary>
+	)
+}

@@ -19,20 +19,20 @@ import {
 } from '@/components/fagsystem/pdlf/form/partials/adresser/adressetyper'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
-import { FormikProps } from 'formik'
 import { Adressetype } from '@/components/fagsystem/pdlf/PdlTypes'
 import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 import { getPlaceholder, setNavn } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { useGenererNavn } from '@/utils/hooks/useGenererNavn'
 import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface OppholdsadresseValues {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 }
 
 type OppholdsadresseFormValues = {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 	path: string
 	idx?: number
 	identtype?: string
@@ -151,7 +151,7 @@ export const OppholdsadresseForm = ({
 				/>
 			)}
 			{valgtAdressetype === 'OPPHOLD_ANNET_STED' && (
-				<OppholdAnnetSted formMethods={formMethods} path={`${path}.oppholdAnnetSted`} />
+				<OppholdAnnetSted path={`${path}.oppholdAnnetSted`} />
 			)}
 			<div className="flexbox--flex-wrap">
 				<DatepickerWrapper>

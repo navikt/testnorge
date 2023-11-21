@@ -17,20 +17,20 @@ import {
 } from '@/components/fagsystem/pdlf/form/partials/adresser/adressetyper'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
-import { FormikProps } from 'formik'
 import { Adressetype } from '@/components/fagsystem/pdlf/PdlTypes'
 import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 import { getPlaceholder, setNavn } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { useGenererNavn } from '@/utils/hooks/useGenererNavn'
 import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 interface KontaktadresseValues {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 }
 
 type KontaktadresseFormValues = {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 	path: string
 	idx?: number
 	identtype?: string
@@ -126,7 +126,7 @@ export const KontaktadresseForm = ({
 				/>
 			)}
 			{valgtAdressetype === 'POSTBOKSADRESSE' && (
-				<Postboksadresse formMethods={formMethods} path={`${path}.postboksadresse`} />
+				<Postboksadresse path={`${path}.postboksadresse`} />
 			)}
 			<div className="flexbox--flex-wrap">
 				<DatepickerWrapper>

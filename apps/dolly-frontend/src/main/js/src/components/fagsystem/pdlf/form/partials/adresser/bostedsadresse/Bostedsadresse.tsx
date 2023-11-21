@@ -19,20 +19,20 @@ import {
 	UtenlandskAdresse,
 	VegadresseVelger,
 } from '@/components/fagsystem/pdlf/form/partials/adresser/adressetyper'
-import { FormikProps } from 'formik'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 import { Adressetype } from '@/components/fagsystem/pdlf/PdlTypes'
 import { getPlaceholder, setNavn } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { useGenererNavn } from '@/utils/hooks/useGenererNavn'
 import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface BostedsadresseValues {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 }
 
 type BostedsadresseFormValues = {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 	path: string
 	idx?: number
 	identtype?: string
@@ -44,7 +44,7 @@ type Target = {
 }
 
 export const BostedsadresseForm = ({
-	formikBag,
+	formMethods,
 	path,
 	idx,
 	identtype,
@@ -153,9 +153,7 @@ export const BostedsadresseForm = ({
 					master={_.get(formMethods.getValues(), `${path}.master`)}
 				/>
 			)}
-			{valgtAdressetype === 'UKJENT_BOSTED' && (
-				<UkjentBosted formMethods={formMethods} path={`${path}.ukjentBosted`} />
-			)}
+			{valgtAdressetype === 'UKJENT_BOSTED' && <UkjentBosted path={`${path}.ukjentBosted`} />}
 			<div className="flexbox--flex-wrap">
 				<DatepickerWrapper>
 					<FormikDatepicker name={`${path}.angittFlyttedato`} label="Flyttedato" />

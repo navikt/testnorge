@@ -6,14 +6,14 @@ import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFiel
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { PdlPersonExpander } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonExpander'
 import { initialFullmakt } from '@/components/fagsystem/pdlf/form/initialValues'
-import { FormikProps } from 'formik'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import * as _ from 'lodash-es'
 import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface FullmaktProps {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 	path?: string
 	eksisterendeNyPerson?: any
 }

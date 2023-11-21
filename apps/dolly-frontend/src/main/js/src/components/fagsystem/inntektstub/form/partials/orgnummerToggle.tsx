@@ -7,15 +7,15 @@ import {
 	inputValg,
 	OrganisasjonToogleGruppe,
 } from '@/components/organisasjonSelect/OrganisasjonToogleGruppe'
-import { FormikProps } from 'formik'
 import { EgneOrganisasjoner } from '@/components/fagsystem/brregstub/form/partials/EgneOrganisasjoner'
 import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 import { useFasteDataOrganisasjon } from '@/utils/hooks/useOrganisasjoner'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 export const ORGANISASJONSTYPE_TOGGLE = 'ORGANISASJONSTYPE_TOGGLE'
 
 type Props = {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 	path: string
 	opplysningspliktigPath: any
 }

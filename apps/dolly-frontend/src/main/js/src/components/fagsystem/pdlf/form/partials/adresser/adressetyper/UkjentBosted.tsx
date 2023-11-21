@@ -1,13 +1,11 @@
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
-import { FormikProps } from 'formik'
 
 interface UkjentBostedValues {
-	formikBag: FormikProps<{}>
 	path: string
 }
 
-export const UkjentBosted = ({ formMethods, path }: UkjentBostedValues) => {
+export const UkjentBosted = ({ path }: UkjentBostedValues) => {
 	return (
 		<div className="flexbox--flex-wrap">
 			<FormikSelect

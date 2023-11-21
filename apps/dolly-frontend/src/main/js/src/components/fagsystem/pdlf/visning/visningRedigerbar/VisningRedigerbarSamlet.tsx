@@ -1,7 +1,6 @@
 import React, { useCallback, useRef, useState } from 'react'
 import * as Yup from 'yup'
 import Loading from '@/components/ui/loading/Loading'
-import { Formik } from 'formik'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 import styled from 'styled-components'
 import Button from '@/components/ui/button/Button'
@@ -20,6 +19,8 @@ import {
 	RedigerLoading,
 } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/RedigerLoading'
 import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
+import { Form, useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -72,11 +73,37 @@ export const VisningRedigerbarSamlet = ({
 	alleSlettet,
 	disableSlett,
 }: VisningTypes) => {
+	const _validate = (values: any) => validate(values, validationSchema)
+
+	const getRedigertAttributtListe = () => {
+		const liste = [] as Array<any>
+		initialValuesListe.forEach((item: any) => {
+			const found = _.get(redigertAttributt, path)?.find(
+				(redigertItem: any) => redigertItem.id === item.id,
+			)
+			if (found) {
+				liste.push(found)
+			} else {
+				liste.push(null)
+			}
+		})
+		return { [path]: liste }
+	}
+
+	const initialValuesListe = _.get(initialValues, path)
+	const redigertAttributtListe = redigertAttributt && getRedigertAttributtListe()
+
+	const disableIdx = disableSlett(_.get(redigertAttributtListe, path) || initialValuesListe)
+
 	const [visningModus, setVisningModus] = useState(Modus.Les)
 	const [errorMessagePdlf, setErrorMessagePdlf] = useState(null)
 	const [errorMessagePdl, setErrorMessagePdl] = useState(null)
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 	const [slettId, setSlettId] = useState(null)
+	const formMethods = useForm({
+		defaultValues: redigertAttributt ? redigertAttributtListe : initialValues,
+		resolver: yupResolver(_validate),
+	})
 
 	const openDeleteModal = (idx: number) => {
 		setSlettId(idx)
@@ -170,28 +197,6 @@ export const VisningRedigerbarSamlet = ({
 		[['telefonnummer', 'telefonnummer']],
 	)
 
-	const _validate = (values: any) => validate(values, validationSchema)
-
-	const initialValuesListe = _.get(initialValues, path)
-
-	const getRedigertAttributtListe = () => {
-		const liste = [] as Array<any>
-		initialValuesListe.forEach((item: any) => {
-			const found = _.get(redigertAttributt, path)?.find(
-				(redigertItem: any) => redigertItem.id === item.id,
-			)
-			if (found) {
-				liste.push(found)
-			} else {
-				liste.push(null)
-			}
-		})
-		return { [path]: liste }
-	}
-	const redigertAttributtListe = redigertAttributt && getRedigertAttributtListe()
-
-	const disableIdx = disableSlett(_.get(redigertAttributtListe, path) || initialValuesListe)
-
 	return (
 		<>
 			<RedigerLoading visningModus={visningModus} />
@@ -279,47 +284,38 @@ export const VisningRedigerbarSamlet = ({
 				</DollyFieldArray>
 			)}
 			{visningModus === Modus.Skriv && (
-				<Formik
-					initialValues={redigertAttributt ? redigertAttributtListe : initialValues}
-					onSubmit={handleSubmit}
-					enableReinitialize
-					validate={_validate}
-				>
-					{(formikBag) => {
-						return (
-							<>
-								<DollyFieldArray
-									data={_.get(redigertAttributtListe, path) || initialValuesListe}
-									header=""
-									nested
+				<Form onSubmit={formMethods.handleSubmit(handleSubmit)} enableReinitialize>
+					<>
+						<DollyFieldArray
+							data={_.get(redigertAttributtListe, path) || initialValuesListe}
+							header=""
+							nested
+						>
+							{(item: any, idx: number) =>
+								item ? getForm(`${path}[${idx}]`) : <OpplysningSlettet />
+							}
+						</DollyFieldArray>
+						<FieldArrayEdit>
+							<Knappegruppe>
+								<NavButton
+									variant={'secondary'}
+									onClick={() => setVisningModus(Modus.Les)}
+									disabled={formMethods.formState.isSubmitting}
+									style={{ top: '1.75px' }}
 								>
-									{(item: any, idx: number) =>
-										item ? getForm(`${path}[${idx}]`) : <OpplysningSlettet />
-									}
-								</DollyFieldArray>
-								<FieldArrayEdit>
-									<Knappegruppe>
-										<NavButton
-											variant={'secondary'}
-											onClick={() => setVisningModus(Modus.Les)}
-											disabled={formikBag.isSubmitting}
-											style={{ top: '1.75px' }}
-										>
-											Avbryt
-										</NavButton>
-										<NavButton
-											variant={'primary'}
-											onClick={() => formikBag.handleSubmit()}
-											disabled={!formikBag.isValid || formikBag.isSubmitting}
-										>
-											Endre
-										</NavButton>
-									</Knappegruppe>
-								</FieldArrayEdit>
-							</>
-						)
-					}}
-				</Formik>
+									Avbryt
+								</NavButton>
+								<NavButton
+									variant={'primary'}
+									onClick={() => formMethods.handleSubmit()}
+									disabled={!formMethods.formState.isValid || formMethods.formState.isSubmitting}
+								>
+									Endre
+								</NavButton>
+							</Knappegruppe>
+						</FieldArrayEdit>
+					</>
+				</Form>
 			)}
 		</>
 	)

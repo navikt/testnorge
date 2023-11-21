@@ -113,10 +113,10 @@ const fieldResolver = (field, handleChange, formik, path, index, options = []) =
 	)
 }
 
-const Inntekt = ({ fields = {}, onValidate, formikBag, path }) => {
+const Inntekt = ({ fields = {}, onValidate, formMethods, path }) => {
 	return (
 		<div className="flexbox--flex-wrap">
-			{fieldResolver('inntektstype', onValidate, formikBag, path, `${path}.inntektstype`, [
+			{fieldResolver('inntektstype', onValidate, formMethods, path, `${path}.inntektstype`, [
 				'LOENNSINNTEKT',
 				'YTELSE_FRA_OFFENTLIGE',
 				'PENSJON_ELLER_TRYGD',
@@ -126,7 +126,7 @@ const Inntekt = ({ fields = {}, onValidate, formikBag, path }) => {
 			{Object.keys(fields)
 				.filter((field) => !(fields[field].length === 1 && fields[field][0] === '<TOM>'))
 				.map((field) =>
-					fieldResolver(field, onValidate, formikBag, path, `${path}.${field}`, fields[field])
+					fieldResolver(field, onValidate, formMethods, path, `${path}.${field}`, fields[field]),
 				)}
 		</div>
 	)

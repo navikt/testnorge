@@ -5,14 +5,14 @@ import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { OppholdSammeVilkaar } from '@/components/fagsystem/udistub/form/partials/OppholdSammeVilkaar'
 import { IkkeOppholdSammeVilkaar } from '@/components/fagsystem/udistub/form/partials/IkkeOppholdSammeVilkaar'
 import { Option } from '@/service/SelectOptionsOppslag'
-import { FormikProps } from 'formik'
 import { fixTimezone } from '@/components/ui/form/formUtils'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 const basePath = 'udistub.oppholdStatus'
 const pdlBasePath = 'pdldata.person.opphold'
 const harOppholdsTillatelsePath = 'udistub.harOppholdsTillatelse'
 
-const findInitialStatus = (formikBag: FormikProps<any>) => {
+const findInitialStatus = (formMethods: UseFormReturn) => {
 	const oppholdsstatusObj = formMethods.getValues().udistub.oppholdStatus
 	const eosEllerEFTAOpphold = Object.keys(oppholdsstatusObj).some((key) =>
 		key.includes('eosEllerEFTA'),
@@ -43,7 +43,7 @@ const findInitialStatus = (formikBag: FormikProps<any>) => {
 	return ['', '', '']
 }
 
-function setPdlInitialValues(formikBag: FormikProps<any>) {
+function setPdlInitialValues(formMethods: UseFormReturn) {
 	formMethods.setValue(`${pdlBasePath}`, [
 		{
 			type: 'OPPLYSNING_MANGLER',
@@ -53,8 +53,8 @@ function setPdlInitialValues(formikBag: FormikProps<any>) {
 	])
 }
 
-export const Oppholdsstatus = ({ formMethods }: { formikBag: FormikProps<any> }) => {
-	const initialStatus = findInitialStatus(formikBag)
+export const Oppholdsstatus = ({ formMethods }: { formMethods: UseFormReturn }) => {
+	const initialStatus = findInitialStatus(formMethods)
 	const [oppholdsstatus, setOppholdsstatus] = useState(initialStatus[0])
 	const [eosEllerEFTAtypeOpphold, setEosEllerEFTAtypeOpphold] = useState(initialStatus[1])
 	const [tredjelandsBorgereValg, setTredjelandsBorgereValg] = useState(initialStatus[2])
@@ -64,7 +64,7 @@ export const Oppholdsstatus = ({ formMethods }: { formikBag: FormikProps<any> })
 		setEosEllerEFTAtypeOpphold('')
 		setTredjelandsBorgereValg('')
 		formMethods.setValue(basePath, {})
-		setPdlInitialValues(formikBag)
+		setPdlInitialValues(formMethods)
 	}
 
 	const endreEosEllerEFTAtypeOpphold = (value: string) => {
@@ -74,14 +74,14 @@ export const Oppholdsstatus = ({ formMethods }: { formikBag: FormikProps<any> })
 			fra: null,
 			til: null,
 		})
-		setPdlInitialValues(formikBag)
+		setPdlInitialValues(formMethods)
 		formMethods.setValue(`udistub.oppholdStatus.${value}Effektuering`, null)
 		formMethods.setValue(`udistub.oppholdStatus.${value}`, '')
 	}
 
 	const endreTredjelandsBorgereValg = (value: string) => {
 		setTredjelandsBorgereValg(value)
-		setPdlInitialValues(formikBag)
+		setPdlInitialValues(formMethods)
 		formMethods.setValue(basePath, {})
 		if (value === 'oppholdSammeVilkaar') {
 			formMethods.setValue(harOppholdsTillatelsePath, true)
@@ -179,9 +179,7 @@ export const Oppholdsstatus = ({ formMethods }: { formikBag: FormikProps<any> })
 					{tredjelandsBorgereValg === 'oppholdSammeVilkaar' && (
 						<OppholdSammeVilkaar formMethods={formMethods} />
 					)}
-					{tredjelandsBorgereValg === 'ikkeOppholdSammeVilkaar' && (
-						<IkkeOppholdSammeVilkaar formMethods={formMethods} />
-					)}
+					{tredjelandsBorgereValg === 'ikkeOppholdSammeVilkaar' && <IkkeOppholdSammeVilkaar />}
 				</React.Fragment>
 			)}
 		</div>

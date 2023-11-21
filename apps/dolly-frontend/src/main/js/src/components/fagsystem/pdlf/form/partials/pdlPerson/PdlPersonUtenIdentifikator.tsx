@@ -3,18 +3,18 @@ import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { AdresseKodeverk } from '@/config/kodeverk'
 import * as React from 'react'
-import { FormikProps } from 'formik'
 import * as _ from 'lodash-es'
 import { useGenererNavn } from '@/utils/hooks/useGenererNavn'
 import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface PdlPersonUtenIdentifikatorValues {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 	path: string
 }
 
 export const PdlPersonUtenIdentifikator = ({
-	formikBag,
+	formMethods,
 	path,
 }: PdlPersonUtenIdentifikatorValues) => {
 	const { navnInfo, loading } = useGenererNavn()

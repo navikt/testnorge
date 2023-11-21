@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { useContext, useEffect } from 'react'
-import { FormikProps } from 'formik'
 import {
 	initialForeldreansvar,
 	initialPdlBiPerson,
@@ -20,9 +19,12 @@ import { Alert } from '@navikt/ds-react'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import styled from 'styled-components'
 import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface ForeldreansvarForm {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
+	path: string
+	eksisterendeNyPerson?: any
 }
 
 type Target = {

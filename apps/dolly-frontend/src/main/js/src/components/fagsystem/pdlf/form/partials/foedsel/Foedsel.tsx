@@ -7,14 +7,14 @@ import * as _ from 'lodash-es'
 import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
-import { FormikProps } from 'formik'
 import { SelectedValue } from '@/components/fagsystem/pdlf/PdlTypes'
 import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 import { useContext } from 'react'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 type FoedselTypes = {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 	path?: string
 }
 

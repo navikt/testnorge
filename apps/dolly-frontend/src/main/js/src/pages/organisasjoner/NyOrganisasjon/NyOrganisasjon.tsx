@@ -46,9 +46,9 @@ export const NyOrganisasjon = ({ onAvbryt, onSubmit, brukernavn }: NyBestillingP
 		formMethods.setValue('mal', null)
 	}
 
-	const preSubmit = (values: { mal: any }, formikBag: any) => {
+	const preSubmit = (values: { mal: any }, formMethods: any) => {
 		if (values.mal) values.mal = malOptions.find((m) => m.value === values.mal)?.data
-		return onSubmit(values, formikBag)
+		return onSubmit(values, formMethods)
 	}
 
 	return (

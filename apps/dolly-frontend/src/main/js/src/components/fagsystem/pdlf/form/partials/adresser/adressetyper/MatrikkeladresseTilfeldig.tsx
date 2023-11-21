@@ -1,16 +1,16 @@
 import { MatrikkelAdresseVelger } from '@/components/adresseVelger'
-import { FormikProps } from 'formik'
 import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import * as _ from 'lodash-es'
 import styled from 'styled-components'
 import { MatrikkelAdresse } from '@/components/adresseVelger/MatrikkelAdresseVelger'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 const StyledMatrikkeladresse = styled.div`
 	width: 100%;
 `
 
 type MatrikkeladresseProps = {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 	path: string
 }
 

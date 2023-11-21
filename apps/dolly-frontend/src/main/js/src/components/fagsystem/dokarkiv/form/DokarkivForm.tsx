@@ -7,10 +7,10 @@ import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { DollyTextInput, FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import Panel from '@/components/ui/panel/Panel'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
-import { FormikProps } from 'formik'
 import * as _ from 'lodash-es'
 import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 const Digitalinnsending = React.lazy(
 	() => import('@/components/fagsystem/dokarkiv/form/partials/Digitalinnsending'),
@@ -23,7 +23,7 @@ const DokumentInfoListe = React.lazy(
 )
 
 interface DokarkivFormProps {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 }
 
 type Skjema = {

@@ -1,15 +1,15 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
-import { FormikProps } from 'formik'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { DollyCheckbox, FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { initialDeltBosted } from '@/components/fagsystem/pdlf/form/initialValues'
 import { DeltBosted } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/forelderBarnRelasjon/DeltBosted'
 import * as _ from 'lodash-es'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface BarnRelasjonValues {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 	path: string
 }
 

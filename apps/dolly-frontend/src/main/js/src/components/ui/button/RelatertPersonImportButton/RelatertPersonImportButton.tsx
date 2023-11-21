@@ -8,10 +8,10 @@ import Loading from '@/components/ui/loading/Loading'
 import { DollyApi } from '@/service/Api'
 import './RelatertPersonImportButton.less'
 import { DollyCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
-import { FieldArray, Formik } from 'formik'
 import { allCapsToCapitalized } from '@/utils/DataFormatter'
 import * as _ from 'lodash-es'
 import { REGEX_BACKEND_GRUPPER, useMatchMutate } from '@/utils/hooks/useMutate'
+import { useFieldArray, useForm } from 'react-hook-form'
 
 type RelatertPersonProps = {
 	type: string
@@ -36,6 +36,7 @@ export const RelatertPersonImportButton = ({
 	const [feilmelding, setFeilmelding] = useState(null)
 	const [fullfoert, setFullfoert] = useState(false)
 	const mutate = useMatchMutate()
+	const formMethods = useForm({ defaultValues: { identer: [] } })
 
 	if (!relatertPersonIdenter) {
 		return null
@@ -105,40 +106,31 @@ export const RelatertPersonImportButton = ({
 	}
 
 	const identForm = () => {
+		const fieldMethods = useFieldArray({ name: 'identer' })
+		const values = fieldMethods.fields?.values?.identer
+		const isChecked = (id: string) => values?.includes(id)
+		const onClick = (e: { target: RelatertPersonProps }) => {
+			const { id } = e.target
+			isChecked(id) ? fieldMethods.remove(values?.indexOf(id)) : fieldMethods.append(id)
+		}
 		return (
-			<Formik initialValues={{ identer: [] }} onSubmit={null}>
-				{(formikBag) => (
-					<>
-						<div className="relatertPersonImportModal-content">
-							<FieldArray name="identer">
-								{({ push, remove, form }) => {
-									const values = form.values?.identer
-									const isChecked = (id: string) => values?.includes(id)
-									const onClick = (e: { target: RelatertPersonProps }) => {
-										const { id } = e.target
-										isChecked(id) ? remove(values?.indexOf(id)) : push(id)
-									}
-									return identCheckbox(values, onClick)
-								}}
-							</FieldArray>
-						</div>
-						<div className="relatertPersonImportModal-actions">
-							<NavButton onClick={closeModal} variant={'secondary'}>
-								Avbryt
-							</NavButton>
-							<NavButton
-								onClick={() => {
-									closeModal()
-									handleImport(formMethods.getValues()?.identer)
-								}}
-								variant={'primary'}
-							>
-								Importer
-							</NavButton>
-						</div>
-					</>
-				)}
-			</Formik>
+			<>
+				<div className="relatertPersonImportModal-content">{identCheckbox(values, onClick)}</div>
+				<div className="relatertPersonImportModal-actions">
+					<NavButton onClick={closeModal} variant={'secondary'}>
+						Avbryt
+					</NavButton>
+					<NavButton
+						onClick={() => {
+							closeModal()
+							handleImport(formMethods.getValues()?.identer)
+						}}
+						variant={'primary'}
+					>
+						Importer
+					</NavButton>
+				</div>
+			</>
 		)
 	}
 

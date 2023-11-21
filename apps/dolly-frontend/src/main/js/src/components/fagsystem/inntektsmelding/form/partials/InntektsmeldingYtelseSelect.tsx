@@ -3,15 +3,15 @@ import LoadableComponent, { Feilmelding } from '@/components/ui/loading/Loadable
 import { DollySelect } from '@/components/ui/form/inputs/select/Select'
 import { Option, SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
 import { codeToNorskLabel } from '@/utils/DataFormatter'
-import { FormikProps } from 'formik'
 import { Tema, Ytelser } from '@/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface InntektsmeldingSelect {
 	path: string
 	idx: number
 	label: string
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 	kodeverk: string
 	size?: string
 }
@@ -21,13 +21,16 @@ export default ({
 	idx,
 	label,
 	kodeverk,
-	formikBag,
+	formMethods,
 	size = 'medium',
 }: InntektsmeldingSelect) => {
 	const ytelsePath = `${path}.ytelse`
 
 	const feil = (feilmelding: Feilmelding) => {
-		if (_.has(formikBag.touched, ytelsePath) && _.get(formMethods.getValues(), ytelsePath) === '') {
+		if (
+			_.has(formMethods.formState.touchedFields, ytelsePath) &&
+			_.get(formMethods.getValues(), ytelsePath) === ''
+		) {
 			return { feilmelding: 'Feltet er påkrevd' }
 		} else {
 			return feilmelding
@@ -54,7 +57,7 @@ export default ({
 						type="text"
 						size={size}
 						value={_.get(formMethods.getValues(), ytelsePath)}
-						onChange={(e: Option) => setYtelseOgTema(e, formikBag, path, idx)}
+						onChange={(e: Option) => setYtelseOgTema(e, formMethods, path, idx)}
 						feil={feil(feilmelding)}
 						isClearable={false}
 					/>
@@ -74,7 +77,7 @@ const findTema = (ytelse: string) => {
 	}
 }
 
-const setYtelseOgTema = (value: Option, formikBag: FormikProps<{}>, path: string, _idx: number) => {
+const setYtelseOgTema = (value: Option, formMethods: UseFormReturn, path: string, _idx: number) => {
 	formMethods.setValue('inntektsmelding.joarkMetadata.tema', value.tema)
 
 	const {

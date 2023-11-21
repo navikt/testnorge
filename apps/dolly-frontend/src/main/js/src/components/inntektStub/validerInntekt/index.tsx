@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import Inntekt from '@/components/inntektStub/validerInntekt/Inntekt'
-import { Formik } from 'formik'
 import InntektstubService from '@/service/services/inntektstub/InntektstubService'
 import * as _ from 'lodash-es'
+import { Form, useForm } from 'react-hook-form'
 
 const tilleggsinformasjonAttributter = {
 	BilOgBaat: 'bilOgBaat',
@@ -16,7 +16,10 @@ const tilleggsinformasjonAttributter = {
 	ReiseKostOgLosji: 'reiseKostOgLosji',
 }
 
-const InntektStub = ({ formMethods, inntektPath }) => {
+const InntektStub = ({ inntektPath }) => {
+	const formMethods = useForm({
+		defaultValues: {},
+	})
 	const [fields, setFields] = useState({})
 	const [inntektValues] = useState(_.get(formMethods.getValues(), inntektPath))
 	const [currentInntektstype, setCurrentInntektstype] = useState(
@@ -59,7 +62,7 @@ const InntektStub = ({ formMethods, inntektPath }) => {
 		})
 	}, [currentTilleggsinformasjonstype])
 
-	const setFormikBag = (values) => {
+	const setForm = (values) => {
 		const nullstiltInntekt = {
 			beloep: _.get(formMethods.getValues(), `${inntektPath}.beloep`),
 			startOpptjeningsperiode: _.get(
@@ -110,8 +113,7 @@ const InntektStub = ({ formMethods, inntektPath }) => {
 	}
 
 	return (
-		<Formik
-			initialValues={inntektValues.inntektstype !== '' ? inntektValues : {}}
+		<Form
 			onSubmit={(values) => {
 				if (currentInntektstype && values.inntektstype !== currentInntektstype) {
 					values = { inntektstype: values.inntektstype }
@@ -128,19 +130,18 @@ const InntektStub = ({ formMethods, inntektPath }) => {
 					(response) => setFields(response),
 				)
 				clearEmptyValuesAndFields(values)
-				setFormikBag(values)
+				setForm(values)
 			}}
-			component={({ handleSubmit }) => (
-				<div>
-					<Inntekt
-						fields={fields}
-						onValidate={handleSubmit}
-						formMethods={formMethods}
-						path={inntektPath}
-					/>
-				</div>
-			)}
-		/>
+		>
+			<div>
+				<Inntekt
+					fields={fields}
+					onValidate={formMethods.handleSubmit()}
+					formMethods={formMethods}
+					path={inntektPath}
+				/>
+			</div>
+		</Form>
 	)
 }
 

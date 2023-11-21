@@ -8,8 +8,10 @@ import { useOrganisasjoner } from '@/utils/hooks/useOrganisasjoner'
 import { OrgforvalterApi } from '@/service/Api'
 import { OrgMiljoeInfoVisning } from '@/components/fagsystem/brregstub/form/partials/OrgMiljoeInfoVisning'
 import { useFormContext } from 'react-hook-form'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface OrgProps {
+	formMethods: UseFormReturn
 	path: string
 	label?: string
 	handleChange: (event: React.ChangeEvent<any>) => void

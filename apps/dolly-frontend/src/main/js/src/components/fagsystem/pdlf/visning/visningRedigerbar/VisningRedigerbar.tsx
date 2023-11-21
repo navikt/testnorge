@@ -1,6 +1,4 @@
 import React, { useCallback, useRef, useState } from 'react'
-import * as Yup from 'yup'
-import { Form } from 'formik'
 import { FoedselForm } from '@/components/fagsystem/pdlf/form/partials/foedsel/Foedsel'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 import styled from 'styled-components'
@@ -24,24 +22,7 @@ import {
 	AdressebeskyttelseForm,
 	getIdenttype,
 } from '@/components/fagsystem/pdlf/form/partials/adresser/adressebeskyttelse/Adressebeskyttelse'
-import { doedsfall, navn } from '@/components/fagsystem/pdlf/form/validation/validation'
-import {
-	adressebeskyttelse,
-	bostedsadresse,
-	doedfoedtBarn,
-	forelderBarnRelasjon,
-	fullmakt,
-	innflytting,
-	kontaktadresse,
-	kontaktDoedsbo,
-	oppholdsadresse,
-	sivilstand,
-	statsborgerskap,
-	utenlandskId,
-	utflytting,
-	vergemaal,
-} from '@/components/fagsystem/pdlf/form/validation/partials'
-import { ifPresent, validate } from '@/utils/YupValidations'
+import { validate } from '@/utils/YupValidations'
 import {
 	Modus,
 	RedigerLoading,
@@ -51,15 +32,12 @@ import { KontaktinformasjonForDoedsboForm } from '@/components/fagsystem/pdlf/fo
 import { NavnForm } from '@/components/fagsystem/pdlf/form/partials/navn/Navn'
 import { ForelderBarnRelasjonForm } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/forelderBarnRelasjon/ForelderBarnRelasjon'
 import { ForeldreansvarForm } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/foreldreansvar/Foreldreansvar'
-import {
-	deltBosted,
-	foreldreansvarForBarn,
-} from '@/components/fagsystem/pdlf/form/validation/partials/familierelasjoner'
 import { DeltBostedForm } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/forelderBarnRelasjon/DeltBosted'
 import { DoedfoedtBarnForm } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/doedfoedtBarn/DoedfoedtBarn'
 import { UtenlandsIdForm } from '@/components/fagsystem/pdlf/form/partials/identifikasjon/utenlandsId/UtenlandsId'
 import { UseFormReturn } from 'react-hook-form/dist/types'
-import { useFormContext } from 'react-hook-form'
+import { Form, useForm } from 'react-hook-form'
+import { visningRedigerbarValidation } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarValidation'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -139,11 +117,25 @@ export const VisningRedigerbar = ({
 	relasjoner = null,
 	relatertPersonInfo = null,
 }: VisningTypes) => {
+	//TODO: Sjekk om denne validerer riktig
+	const _validate = (values: any) =>
+		validate(
+			{
+				...values,
+				personFoerLeggTil: personFoerLeggTil,
+				personValues: personValues,
+			},
+			visningRedigerbarValidation,
+		)
+
 	const [visningModus, setVisningModus] = useState(Modus.Les)
 	const [errorMessagePdlf, setErrorMessagePdlf] = useState(null)
 	const [errorMessagePdl, setErrorMessagePdl] = useState(null)
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
-	const formMethods = useFormContext()
+	const formMethods = useForm({
+		defaultValues: redigertAttributt ? redigertAttributt : initialValues,
+		resolver: YupResolver(_validate),
+	})
 
 	const pdlfError = (error: any) => {
 		error &&
@@ -339,67 +331,6 @@ export const VisningRedigerbar = ({
 		}
 	}
 
-	const validationSchema = Yup.object().shape(
-		{
-			navn: ifPresent('navn', navn),
-			doedsfall: ifPresent('doedsfall', doedsfall),
-			statsborgerskap: ifPresent('statsborgerskap', statsborgerskap),
-			innflytting: ifPresent('innflytting', innflytting),
-			utflytting: ifPresent('utflytting', utflytting),
-			vergemaal: ifPresent('vergemaal', vergemaal),
-			fullmakt: ifPresent('fullmakt', fullmakt),
-			bostedsadresse: ifPresent('bostedsadresse', bostedsadresse),
-			oppholdsadresse: ifPresent('oppholdsadresse', oppholdsadresse),
-			kontaktadresse: ifPresent('kontaktadresse', kontaktadresse),
-			adressebeskyttelse: ifPresent('adressebeskyttelse', adressebeskyttelse),
-			deltBosted: ifPresent('deltBosted', deltBosted),
-			sivilstand: ifPresent('sivilstand', sivilstand),
-			kontaktinformasjonForDoedsbo: ifPresent('kontaktinformasjonForDoedsbo', kontaktDoedsbo),
-			forelderBarnRelasjon: ifPresent('forelderBarnRelasjon', forelderBarnRelasjon),
-			foreldreansvar: ifPresent(
-				'foreldreansvar',
-				Yup.mixed().when('foreldreansvar', {
-					is: (foreldreansvar) => Array.isArray(foreldreansvar),
-					then: () => Yup.array().of(foreldreansvarForBarn),
-					otherwise: () => foreldreansvarForBarn,
-				}),
-			),
-			doedfoedtBarn: ifPresent('doedfoedtBarn', doedfoedtBarn),
-			utenlandskIdentifikasjonsnummer: ifPresent('utenlandskIdentifikasjonsnummer', utenlandskId),
-		},
-		[
-			['navn', 'navn'],
-			['doedsfall', 'doedsfall'],
-			['statsborgerskap', 'statsborgerskap'],
-			['innflytting', 'innflytting'],
-			['utflytting', 'utflytting'],
-			['vergemaal', 'vergemaal'],
-			['fullmakt', 'fullmakt'],
-			['bostedsadresse', 'bostedsadresse'],
-			['oppholdsadresse', 'oppholdsadresse'],
-			['kontaktadresse', 'kontaktadresse'],
-			['adressebeskyttelse', 'adressebeskyttelse'],
-			['deltBosted', 'deltBosted'],
-			['sivilstand', 'sivilstand'],
-			['kontaktinformasjonForDoedsbo', 'kontaktinformasjonForDoedsbo'],
-			['forelderBarnRelasjon', 'forelderBarnRelasjon'],
-			['foreldreansvar', 'foreldreansvar'],
-			['doedfoedtBarn', 'doedfoedtBarn'],
-			['utenlandskIdentifikasjonsnummer', 'utenlandskIdentifikasjonsnummer'],
-		],
-	)
-
-	//TODO: Sjekk om denne validerer riktig
-	const _validate = (values: any) =>
-		validate(
-			{
-				...values,
-				personFoerLeggTil: personFoerLeggTil,
-				personValues: personValues,
-			},
-			validationSchema,
-		)
-
 	return (
 		<>
 			<RedigerLoading visningModus={visningModus} />
@@ -447,40 +378,33 @@ export const VisningRedigerbar = ({
 			)}
 			{visningModus === Modus.Skriv && (
 				<Form
-					initialValues={redigertAttributt ? redigertAttributt : initialValues}
 					onSubmit={(data) =>
 						relatertPersonInfo?.ident
 							? handleSubmitRelatertPerson(data, relatertPersonInfo.ident)
 							: handleSubmit(data)
 					}
-					enableReinitialize
-					validate={_validate}
 				>
-					{(formMethods) => {
-						return (
-							<>
-								<FieldArrayEdit>
-									<div className="flexbox--flex-wrap">{getForm(formMethods)}</div>
-									<Knappegruppe>
-										<NavButton
-											variant="secondary"
-											onClick={() => setVisningModus(Modus.Les)}
-											disabled={formMethods.formState.isSubmitting}
-										>
-											Avbryt
-										</NavButton>
-										<NavButton
-											variant="primary"
-											onClick={() => formMethods.handleSubmit()}
-											disabled={formMethods.formState.isSubmitting}
-										>
-											Endre
-										</NavButton>
-									</Knappegruppe>
-								</FieldArrayEdit>
-							</>
-						)
-					}}
+					<>
+						<FieldArrayEdit>
+							<div className="flexbox--flex-wrap">{getForm(formMethods)}</div>
+							<Knappegruppe>
+								<NavButton
+									variant="secondary"
+									onClick={() => setVisningModus(Modus.Les)}
+									disabled={formMethods.formState.isSubmitting}
+								>
+									Avbryt
+								</NavButton>
+								<NavButton
+									variant="primary"
+									onClick={() => formMethods.handleSubmit()}
+									disabled={formMethods.formState.isSubmitting}
+								>
+									Endre
+								</NavButton>
+							</Knappegruppe>
+						</FieldArrayEdit>
+					</>
 				</Form>
 			)}
 		</>

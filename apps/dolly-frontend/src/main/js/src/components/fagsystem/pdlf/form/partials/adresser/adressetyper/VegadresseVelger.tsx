@@ -3,11 +3,11 @@ import { Vegadresse } from '@/components/fagsystem/pdlf/form/partials/adresser/a
 import { AdresseKodeverk, GtKodeverk } from '@/config/kodeverk'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import * as _ from 'lodash-es'
-import { FormikProps } from 'formik'
 import { Radio, RadioGroup } from '@navikt/ds-react'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface VegadressevelgerValues {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 	path: string
 }
 

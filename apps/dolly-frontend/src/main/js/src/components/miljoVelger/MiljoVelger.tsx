@@ -1,4 +1,3 @@
-import { FieldArray } from 'formik'
 import { DollyCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { MiljoeInfo } from './MiljoeInfo'
 
@@ -10,6 +9,7 @@ import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 import Loading from '@/components/ui/loading/Loading'
 import { ErrorMessageWithFocus } from '@/utils/ErrorMessageWithFocus'
 import { Alert } from '@navikt/ds-react'
+import { useFieldArray, useFormContext } from 'react-hook-form'
 
 const StyledH3 = styled.h3`
 	display: flex;
@@ -66,6 +66,8 @@ export const MiljoVelger = ({
 	alleredeValgtMiljoe,
 }) => {
 	const { dollyEnvironments, loading } = useDollyEnvironments()
+	const formMethods = useFormContext()
+	const fieldMethods = useFieldArray({ control: formMethods.control, name: 'environments' })
 
 	if (loading) {
 		return <Loading label={'Laster miljøer...'} />
@@ -99,53 +101,51 @@ export const MiljoVelger = ({
 				</>
 			)}
 
-			<FieldArray name="environments">
-				{({ push, remove, form }) => {
-					if (disableAllEnvironments) {
-						form.values.environments = []
+			{fieldMethods.fields.map((field, index) => {
+				if (disableAllEnvironments) {
+					formMethods.setValue('environments', [])
+				}
+				const values = formMethods.getValues('environments')
+
+				const isChecked = (id) => values.includes(id)
+
+				const onClick = (e) => {
+					const { id } = e.target
+					if (!alleredeValgtMiljoe?.includes(id)) {
+						isChecked(id) ? fieldMethods.remove(values.indexOf(id)) : fieldMethods.append(id)
 					}
-					const values = form.values.environments
+				}
 
-					const isChecked = (id) => values.includes(id)
-
-					const onClick = (e) => {
-						const { id } = e.target
-						if (!alleredeValgtMiljoe?.includes(id)) {
-							isChecked(id) ? remove(values.indexOf(id)) : push(id)
-						}
+				return order.map((type) => {
+					const category = filteredEnvironments[type]
+					if (!category) {
+						return null
 					}
 
-					return order.map((type) => {
-						const category = filteredEnvironments[type]
-						if (!category) {
-							return null
-						}
-
-						return (
-							<fieldset key={type} name={`Liste over ${type}-miljøer`}>
-								<StyledH3>{type}-miljøer </StyledH3>
-								<div className="miljo-velger_checkboxes">
-									{category.map((env) => (
-										<DollyCheckbox
-											key={env.id}
-											id={env.id}
-											disabled={
-												env.disabled ||
-												(disableAllEnvironments && values.length < 1) ||
-												alleredeValgtMiljoe.some((miljoe) => miljoe === env.id)
-											}
-											label={env?.id?.toUpperCase()}
-											checked={values.includes(env.id)}
-											onClick={onClick}
-											size={'small'}
-										/>
-									))}
-								</div>
-							</fieldset>
-						)
-					})
-				}}
-			</FieldArray>
+					return (
+						<fieldset key={type} name={`Liste over ${type}-miljøer`}>
+							<StyledH3>{type}-miljøer </StyledH3>
+							<div className="miljo-velger_checkboxes">
+								{category.map((env) => (
+									<DollyCheckbox
+										key={env.id}
+										id={env.id}
+										disabled={
+											env.disabled ||
+											(disableAllEnvironments && values.length < 1) ||
+											alleredeValgtMiljoe.some((miljoe) => miljoe === env.id)
+										}
+										label={env?.id?.toUpperCase()}
+										checked={values.includes(env.id)}
+										onClick={onClick}
+										size={'small'}
+									/>
+								))}
+							</div>
+						</fieldset>
+					)
+				})
+			})}
 
 			<ErrorMessageWithFocus name="environments" className="error-message" component="div" />
 		</div>

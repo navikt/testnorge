@@ -47,14 +47,14 @@ export const SearchOptions: React.FC<SearchOptionsProps> = (props: SearchOptions
 				startOpen
 				numSelected={getCount(IdenterPaths, props.formMethods)}
 			>
-				<Identer formikBag={props.formMethods} />
+				<Identer formMethods={props.formMethods} />
 			</OptionsPanel>
 			<OptionsPanel
 				heading={'Identifikasjon'}
 				numSelected={getCount(IdentifikasjonPaths, props.formMethods)}
 				disabled={disabled}
 			>
-				<Identifikasjon formikBag={props.formMethods} />
+				<Identifikasjon formMethods={props.formMethods} />
 			</OptionsPanel>
 			<OptionsPanel
 				heading={'Personstatus'}

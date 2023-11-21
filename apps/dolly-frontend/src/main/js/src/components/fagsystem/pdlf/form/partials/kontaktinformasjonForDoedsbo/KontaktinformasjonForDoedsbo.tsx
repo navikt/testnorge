@@ -15,7 +15,7 @@ import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/Datepi
 export const doedsboAttributt = 'pdldata.person.kontaktinformasjonForDoedsbo'
 
 export const KontaktinformasjonForDoedsboForm = ({
-	formikBag,
+	formMethods,
 	path,
 	eksisterendeNyPerson = null,
 }) => {

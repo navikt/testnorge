@@ -1,14 +1,16 @@
 import React, { useState } from 'react'
-import { Form, Formik } from 'formik'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 import * as yup from 'yup'
 import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { DollyApi } from '@/service/Api'
 import styled from 'styled-components'
+import { Form, useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
 
 interface NyGruppe {
 	setValgtGruppe: React.Dispatch<React.SetStateAction<string>>
 }
+
 const initialValues = {
 	navn: '',
 	hensikt: '',
@@ -31,6 +33,7 @@ const validation = () =>
 export default ({ setValgtGruppe }: NyGruppe) => {
 	const [nyGruppe, setNyGruppe] = useState('')
 	const [feilmelding, setFeilmelding] = useState('')
+	const formMethods = useForm({ defaultValues: initialValues, resolver: yupResolver(validation()) })
 
 	const onHandleSubmit = async (values: any) => {
 		await DollyApi.createGruppe({
@@ -47,19 +50,19 @@ export default ({ setValgtGruppe }: NyGruppe) => {
 	}
 	return (
 		<>
-			<Formik initialValues={initialValues} validationSchema={validation} onSubmit={onHandleSubmit}>
-				{() => (
-					<Form className="ny-gruppe" autoComplete="off">
-						<div className="flexbox--flex-wrap">
-							<FormikTextInput name="navn" label="NAVN" size="small" autoFocus />
-							<FormikTextInput name="hensikt" label="HENSIKT" size="medium" />
-						</div>
-						<NavButton variant="primary" type="submit">
-							Opprett
-						</NavButton>
-					</Form>
-				)}
-			</Formik>
+			<Form
+				className={'ny-gruppe'}
+				autoComplete={'off'}
+				onSubmit={formMethods.handleSubmit(onHandleSubmit)}
+			>
+				<div className="flexbox--flex-wrap">
+					<FormikTextInput name="navn" label="NAVN" size="small" autoFocus />
+					<FormikTextInput name="hensikt" label="HENSIKT" size="medium" />
+				</div>
+				<NavButton variant="primary" type="submit">
+					Opprett
+				</NavButton>
+			</Form>
 			<FeedbackText>
 				{nyGruppe.length > 0 && <div>Gruppe ble opprettet: {nyGruppe}</div>}
 				{feilmelding && <div className="error-message">{feilmelding}</div>}

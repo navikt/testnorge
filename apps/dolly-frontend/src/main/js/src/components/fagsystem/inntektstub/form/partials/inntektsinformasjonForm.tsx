@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { FormikProps } from 'formik'
 import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { InntektstubVirksomhetToggle } from './inntektstubVirksomhetToggle'
 import InntektsinformasjonLister from './inntektsinformasjonLister/inntektsinformasjonLister'
@@ -7,13 +6,14 @@ import InntektsendringForm from './inntektsendringForm'
 import * as _ from 'lodash-es'
 import { Monthpicker } from '@/components/ui/form/inputs/monthpicker/Monthpicker'
 import { FormikDateTimepicker } from '@/components/ui/form/inputs/timepicker/Timepicker'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface InntektsinformasjonForm {
 	path: string
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 }
 
-export default ({ path, formikBag }: InntektsinformasjonForm) => {
+export default ({ path, formMethods }: InntektsinformasjonForm) => {
 	const [date, setDate] = useState(
 		_.get(formMethods.getValues(), `${path}.sisteAarMaaned`) !== ''
 			? Date.parse(_.get(formMethods.getValues(), `${path}.sisteAarMaaned`))

@@ -1,5 +1,4 @@
 import React from 'react'
-// import { Form, Formik, getIn } from 'formik'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 import * as yup from 'yup'
 import Loading from '@/components/ui/loading/Loading'
@@ -10,6 +9,9 @@ import { useNavigate } from 'react-router-dom'
 import { REGEX_BACKEND_GRUPPER, useMatchMutate } from '@/utils/hooks/useMutate'
 import { CypressSelector } from '../../../cypress/mocks/Selectors'
 import { useGruppeById } from '@/utils/hooks/useGruppe'
+import _get from 'lodash/get'
+import { Form, useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
 
 type Props = {
 	gruppeId?: string
@@ -21,6 +23,16 @@ type Props = {
 		message: string
 	}
 }
+
+const validation = () =>
+	yup.object().shape({
+		navn: yup.string().trim().required('Navn er et påkrevd felt').max(30, 'Maksimalt 30 bokstaver'),
+		hensikt: yup
+			.string()
+			.trim()
+			.required('Gi en beskrivelse av hensikten med gruppen')
+			.max(200, 'Maksimalt 200 bokstaver'),
+	})
 const RedigerGruppe = ({
 	gruppeId,
 	createGruppe,
@@ -31,10 +43,21 @@ const RedigerGruppe = ({
 }: Props): JSX.Element => {
 	const navigate = useNavigate()
 	const { gruppe } = useGruppeById(gruppeId)
-	const erRedigering = getIn(gruppe, 'id', false)
+	const erRedigering = gruppe?.id !== undefined
+	const initialValues = {
+		navn: _get(gruppe, 'navn', ''),
+		hensikt: _get(gruppe, 'hensikt', ''),
+	}
 	const mutate = useMatchMutate()
+	const formMethods = useForm({ defaultValues: initialValues, resolver: yupResolver(validation()) })
 
-	const onHandleSubmit = async (values: { hensikt: any; navn: any }, _actions: any) => {
+	const onHandleSubmit = async (
+		values: {
+			hensikt: any
+			navn: any
+		},
+		_actions: any,
+	) => {
 		const groupValues = {
 			hensikt: values.hensikt,
 			navn: values.navn,
@@ -43,36 +66,25 @@ const RedigerGruppe = ({
 			? await updateGruppe(gruppe.id, groupValues).then(() => {
 					return mutate(REGEX_BACKEND_GRUPPER)
 			  })
-			: await createGruppe(groupValues).then((response: { value: { data: { id: any } } }) => {
-					const gruppeId = response.value?.data?.id
-					if (gruppeId) {
-						navigate(`/gruppe/${gruppeId}`)
-					}
-			  })
+			: await createGruppe(groupValues).then(
+					(response: {
+						value: {
+							data: {
+								id: any
+							}
+						}
+					}) => {
+						const gruppeId = response.value?.data?.id
+						if (gruppeId) {
+							navigate(`/gruppe/${gruppeId}`)
+						}
+					},
+			  )
 		return !error && onCancel()
 	}
 
-	const validation = () =>
-		yup.object().shape({
-			navn: yup
-				.string()
-				.trim()
-				.required('Navn er et påkrevd felt')
-				.max(30, 'Maksimalt 30 bokstaver'),
-			hensikt: yup
-				.string()
-				.trim()
-				.required('Gi en beskrivelse av hensikten med gruppen')
-				.max(200, 'Maksimalt 200 bokstaver'),
-		})
-
 	if (createOrUpdateFetching) {
 		return <Loading label="oppdaterer gruppe" />
-	}
-
-	const initialValues = {
-		navn: getIn(gruppe, 'navn', ''),
-		hensikt: getIn(gruppe, 'hensikt', ''),
 	}
 
 	const buttons = (
@@ -87,35 +99,35 @@ const RedigerGruppe = ({
 	)
 
 	return (
-		<Formik initialValues={initialValues} validationSchema={validation} onSubmit={onHandleSubmit}>
-			{() => (
-				<Form className="opprett-tabellrad" autoComplete="off">
-					<div className="fields">
-						<FormikTextInput
-							data-cy={CypressSelector.INPUT_NAVN}
-							name="navn"
-							label="NAVN"
-							size="grow"
-							useOnChange={true}
-							autoFocus
-						/>
-						<FormikTextInput
-							data-cy={CypressSelector.INPUT_HENSIKT}
-							name="hensikt"
-							label="HENSIKT"
-							size="grow"
-							useOnChange={true}
-						/>
-						{buttons}
-					</div>
-					{error && (
-						<div className="opprett-error">
-							<span>{error.message}</span>
-						</div>
-					)}
-				</Form>
+		<Form
+			className={'opprett-tabellrad'}
+			autoComplete={'off'}
+			onSubmit={formMethods.handleSubmit(onHandleSubmit)}
+		>
+			<div className="fields">
+				<FormikTextInput
+					data-cy={CypressSelector.INPUT_NAVN}
+					name="navn"
+					label="NAVN"
+					size="grow"
+					useOnChange={true}
+					autoFocus
+				/>
+				<FormikTextInput
+					data-cy={CypressSelector.INPUT_HENSIKT}
+					name="hensikt"
+					label="HENSIKT"
+					size="grow"
+					useOnChange={true}
+				/>
+				{buttons}
+			</div>
+			{error && (
+				<div className="opprett-error">
+					<span>{error.message}</span>
+				</div>
 			)}
-		</Formik>
+		</Form>
 	)
 }
 export default RedigerGruppe

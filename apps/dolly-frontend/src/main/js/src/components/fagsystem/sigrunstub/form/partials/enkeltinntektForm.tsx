@@ -14,7 +14,7 @@ export const EnkeltinntektForm = ({
 	initialGrunnlag,
 	tjeneste,
 	inntektsaar,
-	formikBag,
+	formMethods,
 }) => {
 	const { kodeverk: tekniskNavnOptions } = useKodeverk(SigrunKodeverk[tjeneste])
 

@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { useContext, useEffect, useState } from 'react'
-import { FormikProps } from 'formik'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { DollySelect, FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
@@ -18,6 +17,7 @@ import {
 } from '@/components/fagsystem/pdlf/form/initialValues'
 import { useNavEnheter } from '@/utils/hooks/useNorg2'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface SikkerhetstiltakValues {
 	tiltakstype: string
@@ -28,7 +28,7 @@ interface SikkerhetstiltakValues {
 }
 
 interface SikkerhetstiltakProps {
-	formikBag: FormikProps<{ tpsf: SikkerhetstiltakValues }>
+	formMethods: UseFormReturn
 }
 
 export const Sikkerhetstiltak = ({ formMethods }: SikkerhetstiltakProps) => {

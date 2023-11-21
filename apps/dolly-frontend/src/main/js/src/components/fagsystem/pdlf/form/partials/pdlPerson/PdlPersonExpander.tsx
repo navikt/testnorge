@@ -1,17 +1,17 @@
 import React, { useEffect } from 'react'
 import useBoolean from '@/utils/hooks/useBoolean'
 import Button from '@/components/ui/button/Button'
-import { FormikProps } from 'formik'
 import { PdlPersonForm } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonForm'
 import { NyIdent } from '@/components/fagsystem/pdlf/PdlTypes'
 import { Option } from '@/service/SelectOptionsOppslag'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface PdlPersonValues {
 	nyPersonPath: string
 	eksisterendePersonPath: string
 	eksisterendeNyPerson?: Option
 	label: string
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 	nyIdentValg?: NyIdent
 	isExpanded?: boolean
 }
@@ -21,7 +21,7 @@ export const PdlPersonExpander = ({
 	eksisterendePersonPath,
 	eksisterendeNyPerson = null,
 	label,
-	formikBag,
+	formMethods,
 	nyIdentValg = null,
 	isExpanded = false,
 }: PdlPersonValues) => {

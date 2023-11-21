@@ -3,7 +3,6 @@ import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import Panel from '@/components/ui/panel/Panel'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
-import { FormikProps } from 'formik'
 import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
@@ -19,9 +18,10 @@ import { MEDL_KILDER, MedlAttributt, MedlKodeverk } from '@/components/fagsystem
 import { MedlValidation } from '@/components/fagsystem/medl/form/MedlValidation'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface MedlFormProps {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 }
 
 export const MedlForm = ({ formMethods }: MedlFormProps) => {

@@ -1,14 +1,14 @@
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
-import { FormikProps } from 'formik'
 import Panel from '@/components/ui/panel/Panel'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import { FalskIdentitet } from '@/components/fagsystem/pdlf/form/partials/identifikasjon/falskIdentitet/FalskIdentitet'
 import { UtenlandsId } from '@/components/fagsystem/pdlf/form/partials/identifikasjon/utenlandsId/UtenlandsId'
 import { NyIdent } from '@/components/fagsystem/pdlf/form/partials/nyIdent/nyIdent'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface IdentifikasjonValues {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 }
 
 export const identifikasjonAttributter = [

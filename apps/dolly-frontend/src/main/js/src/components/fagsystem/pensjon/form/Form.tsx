@@ -11,7 +11,7 @@ import React, { useContext } from 'react'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
 import * as _ from 'lodash-es'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
-import { FormikProps } from 'formik'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 export const pensjonPath = 'pensjonforvalter.inntekt'
 
@@ -23,7 +23,7 @@ export const PensjonForm = ({ formMethods }) => {
 	const opts = useContext(BestillingsveilederContext)
 	const { nyBestilling, nyBestillingFraMal } = opts?.is
 
-	function kalkulerIdentFyltSyttenAar(values: FormikProps<any>) {
+	function kalkulerIdentFyltSyttenAar(values: UseFormReturn['getValues']) {
 		const curDate = new Date()
 		const alder =
 			_.has(values, 'pdldata.opprettNyPerson.foedtFoer') &&

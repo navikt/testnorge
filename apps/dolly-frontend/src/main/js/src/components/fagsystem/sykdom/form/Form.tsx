@@ -3,12 +3,12 @@ import Panel from '@/components/ui/panel/Panel'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
 import { Sykemelding } from './partials/Sykemelding'
 import { validation } from './validation'
-import { FormikProps } from 'formik'
 import React from 'react'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface SykdomFormProps {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 }
 
 export const sykdomAttributt = 'sykemelding'

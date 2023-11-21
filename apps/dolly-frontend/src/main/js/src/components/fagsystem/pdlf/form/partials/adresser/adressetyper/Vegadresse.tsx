@@ -6,11 +6,11 @@ import { AdresseKodeverk } from '@/config/kodeverk'
 import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import * as _ from 'lodash-es'
 import styled from 'styled-components'
-import { FormikProps } from 'formik'
 import { Adresse } from '@/components/adresseVelger/AdresseVelger'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface VegadresseValues {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 	path: string
 }
 

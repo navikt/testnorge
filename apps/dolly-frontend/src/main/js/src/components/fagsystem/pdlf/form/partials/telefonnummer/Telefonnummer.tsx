@@ -2,7 +2,6 @@ import React, { useEffect } from 'react'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { DollyTextInput, FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { PersoninformasjonKodeverk } from '@/config/kodeverk'
-import { FormikProps } from 'formik'
 import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import * as _ from 'lodash-es'
@@ -11,6 +10,7 @@ import {
 	initialTpsTelefonnummer,
 } from '@/components/fagsystem/pdlf/form/initialValues'
 import styled from 'styled-components'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 export interface TelefonnummerArray {
 	person: {
@@ -24,7 +24,7 @@ interface TelefonnummerValues {
 }
 
 interface TelefonnummerProps {
-	formikBag?: FormikProps<{}>
+	formMethods: UseFormReturn
 	path: string
 	idx?: number
 }
@@ -70,7 +70,7 @@ export const TelefonnummerFormRedigering = ({ path }: TelefonnummerProps) => {
 	)
 }
 
-export const TelefonnummerForm = ({ path, formikBag, idx }: TelefonnummerProps) => {
+export const TelefonnummerForm = ({ path, formMethods, idx }: TelefonnummerProps) => {
 	const tlfListe = _.get(formMethods.getValues(), path || 'pdldata.person.telefonnummer')
 
 	useEffect(() => {

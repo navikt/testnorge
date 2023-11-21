@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import * as _ from 'lodash-es'
-import { FormikProps } from 'formik'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import {
@@ -16,9 +15,10 @@ import {
 	initialVegadresse,
 } from '@/components/fagsystem/pdlf/form/initialValues'
 import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface DeltBostedValues {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 	path: string
 }
 
@@ -144,9 +144,7 @@ export const DeltBostedForm = ({
 			{adressetype === 'MATRIKKELADRESSE' && (
 				<MatrikkeladresseVelger formMethods={formMethods} path={`${path}.matrikkeladresse`} />
 			)}
-			{adressetype === 'UKJENT_BOSTED' && (
-				<UkjentBosted formMethods={formMethods} path={`${path}.ukjentBosted`} />
-			)}
+			{adressetype === 'UKJENT_BOSTED' && <UkjentBosted path={`${path}.ukjentBosted`} />}
 			<div className="flexbox--flex-wrap">
 				<DatepickerWrapper>
 					<FormikDatepicker name={`${path}.startdatoForKontrakt`} label="Startdato for kontrakt" />

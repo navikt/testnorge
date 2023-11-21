@@ -6,19 +6,19 @@ import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import * as _ from 'lodash-es'
 import { PdlPersonExpander } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonExpander'
-import { FormikProps } from 'formik'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 import { Option } from '@/service/SelectOptionsOppslag'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface VergemaalFormTypes {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 	path?: string
 	eksisterendeNyPerson?: Option
 }
 
 export const VergemaalForm = ({
-	formikBag,
+	formMethods,
 	path,
 	eksisterendeNyPerson = null,
 }: VergemaalFormTypes) => {

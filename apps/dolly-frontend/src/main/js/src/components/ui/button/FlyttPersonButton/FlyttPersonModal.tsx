@@ -5,7 +5,6 @@ import DollyModal from '@/components/ui/modal/DollyModal'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 import { DollyApi } from '@/service/Api'
 import * as _ from 'lodash-es'
-import { FieldArray, Formik, FormikProps } from 'formik'
 import { DollyCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import styled from 'styled-components'
 import { VelgGruppe } from '@/components/bestillingsveileder/stegVelger/steg/steg3/VelgGruppe'
@@ -19,6 +18,8 @@ import { Alert } from '@navikt/ds-react'
 import { usePdlOptions, useTestnorgeOptions } from '@/utils/hooks/useSelectOptions'
 import { useGruppeIdenter } from '@/utils/hooks/useGruppe'
 import { CypressSelector } from '../../../../../cypress/mocks/Selectors'
+import { Form, useFieldArray, useFormContext } from 'react-hook-form'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 type FlyttPersonButtonTypes = {
 	gruppeId: number
@@ -35,11 +36,6 @@ type Option = {
 	value: string
 	label: string
 	relasjoner: Array<string>
-}
-
-type FormikBagTypes = {
-	gruppeId: string
-	identer: Array<string>
 }
 
 const PersonvelgerCheckboxes = styled.div`
@@ -132,6 +128,7 @@ const StyledErrorMessageWithFocus = styled(ErrorMessageWithFocus)`
 `
 
 export const FlyttPersonModal = ({ gruppeId, modalIsOpen, closeModal }: FlyttPersonButtonTypes) => {
+	const formMethods = useFormContext()
 	const [loading, setLoading] = useState(false)
 	const [error, setError] = useState(null)
 
@@ -202,10 +199,10 @@ export const FlyttPersonModal = ({ gruppeId, modalIsOpen, closeModal }: FlyttPer
 	const mountedRef = useRef(true)
 
 	const handleSubmit = useCallback(
-		(formikBag: any) => {
+		(formMethods: any) => {
 			const submit = async () => {
 				setLoading(true)
-				const { gruppeId, identer } = formikBag
+				const { gruppeId, identer } = formMethods
 				const relasjoner = getRelatertePersoner(identer)
 				const identerSamlet = Array.from(new Set([...identer, ...relasjoner]))
 				await DollyApi.flyttPersonerTilGruppe(gruppeId, identerSamlet)
@@ -236,8 +233,15 @@ export const FlyttPersonModal = ({ gruppeId, modalIsOpen, closeModal }: FlyttPer
 		gruppeId: Yup.string().required('Velg eksisterende gruppe eller opprett ny gruppe'),
 	})
 
-	const FlyttPersonForm = ({ formMethods }: { formikBag: FormikProps<FormikBagTypes> }) => {
+	const FlyttPersonForm = ({ formMethods }: { formMethods: UseFormReturn }) => {
 		const [searchText, setSearchText] = useState('')
+		const fieldMethods = useFieldArray({ control: formMethods.control, name: 'identer' })
+		const values = fieldMethods.fields.values?.identer
+		const isChecked = (id: string) => values?.includes(id)
+		const onClick = (e: { target: any }) => {
+			const { id } = e.target
+			isChecked(id) ? fieldMethods.remove(values?.indexOf(id)) : fieldMethods.append(id)
+		}
 
 		return (
 			<>
@@ -251,83 +255,66 @@ export const FlyttPersonModal = ({ gruppeId, modalIsOpen, closeModal }: FlyttPer
 					<StyledErrorMessageWithFocus name="gruppe" className="error-message" component="div" />
 				</GruppeVelger>
 				<PersonVelger>
-					<FieldArray name="identer">
-						{({ push, remove, form }) => {
-							const values = form.values?.identer
-							const isChecked = (id: string) => values?.includes(id)
-							const onClick = (e: { target: any }) => {
-								const { id } = e.target
-								isChecked(id) ? remove(values?.indexOf(id)) : push(id)
-							}
-							return (
-								<PersonKolonne>
-									<div className="flexbox--align-center">
-										<h2>Velg personer</h2>
-										<Hjelpetekst>
-											Personer vil bli flyttet til valgt gruppe. Dersom valgte personer har
-											relaterte personer vil disse også bli flyttet.
-										</Hjelpetekst>
-									</div>
-									<PersonSoek>
-										<DollyTextInput
-											name="search"
-											value={searchText}
-											onChange={(e: any) => setSearchText(e.target.value)}
-											size="grow"
-											placeholder="Søk etter person"
-										/>
-										<Icon kind="search" size={20} />
-									</PersonSoek>
-									{!gruppeOptions ||
-									gruppeOptions?.length < 1 ||
-									gruppeOptions.every((i) => i === undefined) ? (
-										pdlError && testnorgeError ? (
-											<div className="error-message" style={{ marginBottom: '5px' }}>
-												Henting av personer feilet helt eller delvis
-											</div>
-										) : (
-											<Loading label="Laster personer..." />
-										)
-									) : (
-										<PersonvelgerCheckboxes>
-											{gruppeOptions?.map((person: Option) => {
-												if (person?.label?.toUpperCase().includes(searchText?.toUpperCase())) {
-													return (
-														<div key={person.value}>
-															<DollyCheckbox
-																key={person.value}
-																id={person.value}
-																label={person.label}
-																checked={values?.includes(person.value)}
-																onChange={onClick}
-																size="small"
-																attributtCheckbox
-															/>
-														</div>
-													)
-												}
-											})}
-											{(gruppeLoading || pdlLoading || testnorgeLoading) && (
-												<Loading label="Laster personer..." />
-											)}
-										</PersonvelgerCheckboxes>
-									)}
-									<div className="flexbox--flex-wrap" style={{ marginTop: '10px' }}>
-										<Button onClick={() => formMethods.setValue('identer', gruppeIdenterListe)}>
-											VELG ALLE
-										</Button>
-										<Button onClick={() => formMethods.setValue('identer', [])}>NULLSTILL</Button>
-									</div>
-									<StyledErrorMessageWithFocus
-										name="identer"
-										className="error-message"
-										component="div"
-									/>
-								</PersonKolonne>
+					<PersonKolonne>
+						<div className="flexbox--align-center">
+							<h2>Velg personer</h2>
+							<Hjelpetekst>
+								Personer vil bli flyttet til valgt gruppe. Dersom valgte personer har relaterte
+								personer vil disse også bli flyttet.
+							</Hjelpetekst>
+						</div>
+						<PersonSoek>
+							<DollyTextInput
+								name="search"
+								value={searchText}
+								onChange={(e: any) => setSearchText(e.target.value)}
+								size="grow"
+								placeholder="Søk etter person"
+							/>
+							<Icon kind="search" size={20} />
+						</PersonSoek>
+						{!gruppeOptions ||
+						gruppeOptions?.length < 1 ||
+						gruppeOptions.every((i) => i === undefined) ? (
+							pdlError && testnorgeError ? (
+								<div className="error-message" style={{ marginBottom: '5px' }}>
+									Henting av personer feilet helt eller delvis
+								</div>
+							) : (
+								<Loading label="Laster personer..." />
 							)
-						}}
-					</FieldArray>
-
+						) : (
+							<PersonvelgerCheckboxes>
+								{gruppeOptions?.map((person: Option) => {
+									if (person?.label?.toUpperCase().includes(searchText?.toUpperCase())) {
+										return (
+											<div key={person.value}>
+												<DollyCheckbox
+													key={person.value}
+													id={person.value}
+													label={person.label}
+													checked={values?.includes(person.value)}
+													onChange={onClick}
+													size="small"
+													attributtCheckbox
+												/>
+											</div>
+										)
+									}
+								})}
+								{(gruppeLoading || pdlLoading || testnorgeLoading) && (
+									<Loading label="Laster personer..." />
+								)}
+							</PersonvelgerCheckboxes>
+						)}
+						<div className="flexbox--flex-wrap" style={{ marginTop: '10px' }}>
+							<Button onClick={() => formMethods.setValue('identer', gruppeIdenterListe)}>
+								VELG ALLE
+							</Button>
+							<Button onClick={() => formMethods.setValue('identer', [])}>NULLSTILL</Button>
+						</div>
+						<StyledErrorMessageWithFocus name="identer" className="error-message" component="div" />
+					</PersonKolonne>
 					<PersonKolonne>
 						<h2 style={{ marginLeft: '20px' }}>Valgte personer</h2>
 						{harRelatertePersoner(_.get(formMethods.getValues(), 'identer')) && (
@@ -364,7 +351,7 @@ export const FlyttPersonModal = ({ gruppeId, modalIsOpen, closeModal }: FlyttPer
 						Avbryt
 					</NavButton>
 					<NavButton
-						onClick={() => formikBag.handleSubmit()}
+						onClick={() => formMethods.handleSubmit()}
 						variant="primary"
 						disabled={loading}
 						loading={loading}
@@ -382,13 +369,13 @@ export const FlyttPersonModal = ({ gruppeId, modalIsOpen, closeModal }: FlyttPer
 		<>
 			<DollyModal isOpen={modalIsOpen} closeModal={handleClose} minWidth="50%" overflow="auto">
 				<ModalContent>
-					<Formik
+					<Form
 						initialValues={{ identer: [], gruppeId: null }}
 						onSubmit={handleSubmit}
 						validationSchema={validation}
 					>
-						{(formikBag) => <FlyttPersonForm formMethods={formMethods} />}
-					</Formik>
+						<FlyttPersonForm formMethods={formMethods} />
+					</Form>
 				</ModalContent>
 			</DollyModal>
 		</>

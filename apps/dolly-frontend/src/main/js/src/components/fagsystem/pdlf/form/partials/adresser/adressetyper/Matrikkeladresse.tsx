@@ -1,14 +1,12 @@
 import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { AdresseKodeverk } from '@/config/kodeverk'
-import { FormikProps } from 'formik'
 
 interface MatrikkeladresseValues {
-	formikBag: FormikProps<{}>
 	path: string
 }
 
-export const Matrikkeladresse = ({ formMethods, path }: MatrikkeladresseValues) => {
+export const Matrikkeladresse = ({ path }: MatrikkeladresseValues) => {
 	return (
 		<div className="flexbox--flex-wrap" style={{ marginTop: '10px' }}>
 			<FormikTextInput name={`${path}.gaardsnummer`} label="Gårdsnummer" type="number" />

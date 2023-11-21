@@ -1,7 +1,7 @@
-import { FormikProps } from 'formik'
 import * as _ from 'lodash-es'
 // @ts-ignore
 import { Inntektsinformasjon } from './inntektinformasjonTypes'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 type Versjonsoversikt = {
 	formikIdx?: number
@@ -16,14 +16,14 @@ type SpesifikkVersjon = {
 }
 
 export default function versjonsinformasjon(
-	formikBag: FormikProps<{}>,
+	formMethods: UseFormReturn,
 	inntektstubPath: string,
 	inntektValues: Array<Inntektsinformasjon>,
 	idx: number,
 ): SpesifikkVersjon {
-	// Skaffer oversikt over hvilke av inntektene i formikBag som er gjeldende og historikk
+	// Skaffer oversikt over hvilke av inntektene i formet som er gjeldende og historikk
 	const versjonsliste: Array<Versjonsoversikt> = mapVersjonsliste(
-		formikBag,
+		formMethods,
 		inntektstubPath,
 		inntektValues,
 	)
@@ -49,7 +49,7 @@ export default function versjonsinformasjon(
 }
 
 const mapVersjonsliste = (
-	formikBag: FormikProps<{}>,
+	formMethods: UseFormReturn,
 	inntektstubPath: string,
 	inntektValues: Array<Inntektsinformasjon>,
 ): Array<Versjonsoversikt> => {

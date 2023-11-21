@@ -8,15 +8,14 @@ import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFiel
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { OrganisasjonKodeverk } from '@/config/kodeverk'
-import { FormikProps } from 'formik'
-import { EnhetBestilling } from '../../types'
 import { Kontaktdata } from './Kontaktdata'
 import { Adresser } from './Adresser'
 import { ToggleGroup } from '@navikt/ds-react'
 import styled from 'styled-components'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 type DetaljerProps = {
-	formikBag: FormikProps<{ organisasjon: EnhetBestilling }>
+	formMethods: UseFormReturn
 	path: string
 	level: number
 	number?: string
@@ -33,7 +32,7 @@ const StyledToggleGroup = styled(ToggleGroup)`
 `
 
 export const Detaljer = ({
-	formikBag,
+	formMethods,
 	path,
 	level,
 	number,
@@ -44,7 +43,7 @@ export const Detaljer = ({
 	const sektorkodeErValgt = formMethods.getValues().organisasjon.hasOwnProperty('sektorkode')
 
 	useEffect(() => {
-		if (level === 0 && !_.get(formikBag, `${path}.underenheter`)) {
+		if (level === 0 && !_.get(formMethods.getValues(), `${path}.underenheter`)) {
 			formMethods.setValue(`${path}.underenheter`, underenheter || [initialValues])
 		}
 	}, [])
@@ -145,7 +144,9 @@ export const Detaljer = ({
 						  ? 'Du kan ikke legge til underenheter på enhet av type virksomhet'
 						  : null
 				}
-				canBeEmpty={!maaHaUnderenhet || _.get(formikBag, `values.${path}.enhetstype`) === 'ENK'}
+				canBeEmpty={
+					!maaHaUnderenhet || _.get(formMethods.getValues(), `${path}.enhetstype`) === 'ENK'
+				}
 				tag={number}
 				isOrganisasjon={true}
 			>
@@ -159,7 +160,7 @@ export const Detaljer = ({
 							number={number ? number : (level + 1).toString()}
 							maaHaUnderenhet={
 								typeUnderenhet === 'JURIDISKENHET' &&
-								_.get(formikBag, `values.${path}.enhetstype`) !== 'ENK'
+								_.get(formMethods.getValues(), `${path}.enhetstype`) !== 'ENK'
 							}
 						/>
 					)

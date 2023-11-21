@@ -7,16 +7,16 @@ import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bes
 import { identFraTestnorge } from '@/components/bestillingsveileder/stegVelger/steg/steg1/Steg1Person'
 import { Option, SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
 import { useBoolean } from 'react-use'
-import { FormikProps } from 'formik'
 import { ForeldreBarnRelasjon, NyIdent, Sivilstand } from '@/components/fagsystem/pdlf/PdlTypes'
 import { Alert } from '@navikt/ds-react'
 import { useParams } from 'react-router-dom'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface PdlEksisterendePersonValues {
 	nyPersonPath?: string
 	eksisterendePersonPath: string
 	label: string
-	formikBag?: FormikProps<{}>
+	formMethods: UseFormReturn
 	idx?: number
 	disabled?: boolean
 	nyIdentValg?: NyIdent
@@ -27,7 +27,7 @@ export const PdlEksisterendePerson = ({
 	nyPersonPath,
 	eksisterendePersonPath,
 	label,
-	formikBag,
+	formMethods,
 	idx,
 	disabled = false,
 	nyIdentValg = null,
@@ -143,10 +143,10 @@ export const PdlEksisterendePerson = ({
 	}, [])
 
 	useEffect(() => {
-		if (formikBag) {
+		if (formMethods) {
 			getFilteredOptionList()
 		}
-	}, [formikBag])
+	}, [formMethods])
 
 	const hasNyPersonValues = nyIdentValg
 		? !isEmpty(nyIdentValg, ['syntetisk'])
