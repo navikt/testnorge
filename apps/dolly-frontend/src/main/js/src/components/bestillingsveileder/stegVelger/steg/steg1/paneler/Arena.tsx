@@ -1,10 +1,10 @@
 import Panel from '@/components/ui/panel/Panel'
-import {Attributt, AttributtKategori} from '../Attributt'
-import {harValgtAttributt} from '@/components/ui/form/formUtils'
-import {arenaPath} from '@/components/fagsystem/arena/form/Form'
-import {runningCypressE2E} from '@/service/services/Request'
-import {BestillingsveilederContext} from '@/components/bestillingsveileder/BestillingsveilederContext'
-import {useContext} from 'react'
+import { Attributt, AttributtKategori } from '../Attributt'
+import { harValgtAttributt } from '@/components/ui/form/formUtils'
+import { arenaPath } from '@/components/fagsystem/arena/form/Form'
+import { runningCypressE2E } from '@/service/services/Request'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import { useContext } from 'react'
 
 export const ArenaPanel = ({ stateModifier, formikBag }) => {
 	const sm = stateModifier(ArenaPanel.initialValues)
@@ -26,6 +26,9 @@ export const ArenaPanel = ({ stateModifier, formikBag }) => {
 			checkAttributeArray={() => {
 				if (!sm.attrs.ingenYtelser.checked && !sm.attrs.ikkeServicebehov.checked) {
 					sm.batchAdd(['ikkeServicebehov', 'ingenYtelser'])
+				}
+				if (!syntetisk) {
+					sm.batchAdd(['ikkeServicebehov', 'ingenYtelser', 'aap', 'aap115', 'dagpenger'])
 				}
 			}}
 			uncheckAttributeArray={sm.batchRemove}

@@ -56,7 +56,7 @@ const antallIdenterOpprettetPaaBestilling = (statusListe: [System]) => {
 			}
 		})
 
-	const identStatusIdList = ['TPSF', 'TPSIMPORT', 'PDLIMPORT', 'PDL_FORVALTER']
+	const identStatusIdList = ['PDLIMPORT', 'PDL_FORVALTER']
 	const aktivIdList = statusListe.filter((system) => identStatusIdList.includes(system.id))
 
 	const identerOpprettet =

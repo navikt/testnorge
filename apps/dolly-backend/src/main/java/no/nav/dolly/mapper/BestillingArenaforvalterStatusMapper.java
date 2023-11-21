@@ -109,8 +109,9 @@ public final class BestillingArenaforvalterStatusMapper {
                     .statuser(
                             meldStatusMiljoeIdents.get(clientid).entrySet().stream().map(entry ->
                                             RsStatusRapport.Status.builder()
-                                                    .melding(fixFormatUserDefinedError(decodeMsg(entry.getKey())).
-                                                            replace("BRUKER: Info:", "Info:"))
+                                                    .melding(fixFormatUserDefinedError(decodeMsg(entry.getKey()))
+                                                            .replace("BRUKER: Info:", "Info:")
+                                                            .replace("BRUKER: Avvik:", "Avvik:"))
                                                     .detaljert(entry.getValue().entrySet().stream().map(miljeStatus ->
                                                                     RsStatusRapport.Detaljert.builder()
                                                                             .miljo(miljeStatus.getKey())
