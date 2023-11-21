@@ -7,6 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import no.nav.testnav.libs.data.pdlforvalter.v1.AdressebeskyttelseDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.Identtype;
+import no.nav.testnav.libs.data.pdlforvalter.v1.KjoennDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.SivilstandDTO;
 
 @Data
@@ -15,13 +17,8 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.SivilstandDTO;
 @NoArgsConstructor(force = true)
 public class PersonRequest {
 
-    @Schema($comment = "Status: " +
-            "UOPPGITT,  UGIFT," +
-            "GIFT,   ENKE_ELLER_ENKEMANN," +
-            "SKILT, SEPARERT," +
-            "REGISTRERT_PARTNER, SEPARERT_PARTNER," +
-            "SKILT_PARTNER, GJENLEVENDE_PARTNER" +
-            "SAMBOER")
+    private Identtype identtype;
+    private KjoennDTO.Kjoenn kjoenn;
     private SivilstandDTO.Sivilstand sivilstand;
     private AdressebeskyttelseDTO.AdresseBeskyttelse addressebeskyttelse;
     private Boolean harBarn;
@@ -39,7 +36,7 @@ public class PersonRequest {
     private Boolean harTilrettelagtKommunikasjon;
     private Boolean harSikkerhetstiltak;
     private Boolean harOpphold;
-    @Schema($comment = "landkode")
+    @Schema(description = "landkode")
     private String statsborgerskap;
     private Boolean nyIdentitet;
 
