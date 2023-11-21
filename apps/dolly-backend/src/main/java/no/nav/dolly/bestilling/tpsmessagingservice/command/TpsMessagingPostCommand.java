@@ -8,6 +8,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
@@ -47,6 +48,10 @@ public class TpsMessagingPostCommand implements Callable<Flux<TpsMeldingResponse
                 .bodyToFlux(TpsMeldingResponseDTO.class)
                 .doOnError(WebClientFilter::logErrorMessage)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
+                        .filter(WebClientFilter::is5xxException))
+                .onErrorResume(throwable -> Mono.just(TpsMeldingResponseDTO.builder()
+                                .status("FEIL")
+                                .utfyllendeMelding(WebClientFilter.getMessage(throwable))
+                        .build()));
     }
 }
