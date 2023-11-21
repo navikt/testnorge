@@ -111,7 +111,7 @@ public final class BestillingArenaforvalterStatusMapper {
                                             RsStatusRapport.Status.builder()
                                                     .melding(fixFormatUserDefinedError(decodeMsg(entry.getKey()))
                                                             .replace("BRUKER: Info:", "Info:")
-                                                            .replace("BRUKER: Avvik:", "Avvik:"))
+                                                            .replace("BRUKER Avvik:", "Avvik:"))
                                                     .detaljert(entry.getValue().entrySet().stream().map(miljeStatus ->
                                                                     RsStatusRapport.Detaljert.builder()
                                                                             .miljo(miljeStatus.getKey())
