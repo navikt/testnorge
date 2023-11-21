@@ -1,16 +1,16 @@
 import Panel from '@/components/ui/panel/Panel'
-import { Attributt, AttributtKategori } from '../Attributt'
-import { harValgtAttributt } from '@/components/ui/form/formUtils'
-import { arenaPath } from '@/components/fagsystem/arena/form/Form'
-import { runningCypressE2E } from '@/service/services/Request'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
-import { useContext } from 'react'
+import {Attributt, AttributtKategori} from '../Attributt'
+import {harValgtAttributt} from '@/components/ui/form/formUtils'
+import {arenaPath} from '@/components/fagsystem/arena/form/Form'
+import {runningCypressE2E} from '@/service/services/Request'
+import {BestillingsveilederContext} from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {useContext} from 'react'
 
 export const ArenaPanel = ({ stateModifier, formikBag }) => {
 	const sm = stateModifier(ArenaPanel.initialValues)
 
-	const veilleder = useContext(BestillingsveilederContext)
-	const syntetisk = veilleder.personFoerLeggTil?.pdl?.ident?.substring?.(2, 3) >= 4
+	const veileder = useContext(BestillingsveilederContext)
+	const syntetisk = veileder.personFoerLeggTil?.pdl?.ident?.substring?.(2, 3) >= 4
 
 	const infoTekst = syntetisk
 		? 'Arbeidsytelser sendes til Arena for valgt(e) miljø(er). ' +
