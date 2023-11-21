@@ -3,13 +3,26 @@ import { Attributt, AttributtKategori } from '../Attributt'
 import { harValgtAttributt } from '@/components/ui/form/formUtils'
 import { arenaPath } from '@/components/fagsystem/arena/form/Form'
 import { runningCypressE2E } from '@/service/services/Request'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import { useContext } from 'react'
 
 export const ArenaPanel = ({ stateModifier, formikBag }) => {
 	const sm = stateModifier(ArenaPanel.initialValues)
 
+	const veilleder = useContext(BestillingsveilederContext)
+	const syntetisk = veilleder.personFoerLeggTil.pdl.ident.substring(2, 3) >= 4
+
+	const infoTekst = syntetisk
+		? 'Arbeidsytelser sendes til Arena for valgt(e) miljø(er). ' +
+		  'For å ha rett på dagpenger kreves det opptjening på minimum 1,5G ' +
+		  'de siste 12 måneder, eller 3G de siste 36 måneder. '
+		: 'Arena har sluttet å støtte ikke-syntetiske identer, ' +
+		  'og disse kan ikke benyttes mer for arbeidsytelser.'
+
 	return (
 		<Panel
 			heading={ArenaPanel.heading}
+			informasjonstekst={infoTekst}
 			checkAttributeArray={() => {
 				if (!sm.attrs.ingenYtelser.checked && !sm.attrs.ikkeServicebehov.checked) {
 					sm.batchAdd(['ikkeServicebehov', 'ingenYtelser'])
@@ -25,20 +38,27 @@ export const ArenaPanel = ({ stateModifier, formikBag }) => {
 						sm.attrs.ikkeServicebehov.checked ||
 						sm.attrs.aap115.checked ||
 						sm.attrs.aap.checked ||
-						sm.attrs.dagpenger.checked
+						sm.attrs.dagpenger.checked ||
+						!syntetisk
 					}
 					attr={sm.attrs.ingenYtelser}
 				/>
 				<Attributt
-					disabled={sm.attrs.ikkeServicebehov.checked || sm.attrs.ingenYtelser.checked}
+					disabled={
+						sm.attrs.ikkeServicebehov.checked || sm.attrs.ingenYtelser.checked || !syntetisk
+					}
 					attr={sm.attrs.aap115}
 				/>
 				<Attributt
-					disabled={sm.attrs.ikkeServicebehov.checked || sm.attrs.ingenYtelser.checked}
+					disabled={
+						sm.attrs.ikkeServicebehov.checked || sm.attrs.ingenYtelser.checked || !syntetisk
+					}
 					attr={sm.attrs.aap}
 				/>
 				<Attributt
-					disabled={sm.attrs.ikkeServicebehov.checked || sm.attrs.ingenYtelser.checked}
+					disabled={
+						sm.attrs.ikkeServicebehov.checked || sm.attrs.ingenYtelser.checked || !syntetisk
+					}
 					attr={sm.attrs.dagpenger}
 				/>
 			</AttributtKategori>
@@ -49,7 +69,8 @@ export const ArenaPanel = ({ stateModifier, formikBag }) => {
 						sm.attrs.ingenYtelser.checked ||
 						sm.attrs.aap.checked ||
 						sm.attrs.aap115.checked ||
-						sm.attrs.dagpenger.checked
+						sm.attrs.dagpenger.checked ||
+						!syntetisk
 					}
 					attr={sm.attrs.ikkeServicebehov}
 				/>

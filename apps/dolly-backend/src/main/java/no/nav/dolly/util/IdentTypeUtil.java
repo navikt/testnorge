@@ -8,6 +8,7 @@ import static java.lang.Integer.parseInt;
 import static no.nav.dolly.domain.resultset.IdentType.DNR;
 import static no.nav.dolly.domain.resultset.IdentType.FNR;
 import static no.nav.dolly.domain.resultset.IdentType.NPID;
+import static org.apache.poi.util.StringUtil.isNotBlank;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class IdentTypeUtil {
@@ -23,5 +24,11 @@ public class IdentTypeUtil {
         } else {
             return FNR;
         }
+    }
+
+    public static boolean isSyntetisk(String ident) {
+
+        return isNotBlank(ident) && ident.length() == 11 &&
+                Integer.parseInt(ident.substring(2, 3)) >= 4;
     }
 }
