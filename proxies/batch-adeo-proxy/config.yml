@@ -27,6 +27,8 @@ spec:
           cluster: dev-gcp
         - application: organisasjon-bestilling-service
           cluster: dev-fss
+        - application: testnav-oversikt-frontend
+          cluster: dev-gcp
         - application: organisasjon-mottak-service
           cluster: dev-fss
         - application: testnav-organisasjon-mottak-service

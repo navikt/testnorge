@@ -34,6 +34,8 @@ spec:
       rules:
         - application: team-dolly-lokal-app
           cluster: dev-gcp
+        - application: testnav-oversikt-frontend
+          cluster: dev-gcp
         - application: testnav-adresse-service
           cluster: dev-gcp
         - application: testnav-pdl-forvalter

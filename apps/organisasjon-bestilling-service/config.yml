@@ -20,6 +20,8 @@ spec:
       rules:
         - application: team-dolly-lokal-app
           cluster: dev-gcp
+        - application: testnav-oversikt-frontend
+          cluster: dev-gcp
         - application: testnav-organisasjon-forvalter
           cluster: dev-gcp
         - application: jenkins-batch-status-service
