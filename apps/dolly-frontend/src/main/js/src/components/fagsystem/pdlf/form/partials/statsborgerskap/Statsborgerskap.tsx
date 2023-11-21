@@ -3,14 +3,17 @@ import { AdresseKodeverk } from '@/config/kodeverk'
 import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
-import { initialStatsborgerskap } from '@/components/fagsystem/pdlf/form/initialValues'
+import { getInitialStatsborgerskap } from '@/components/fagsystem/pdlf/form/initialValues'
 import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
+import { useContext } from 'react'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 type StatsborgerskapTypes = {
 	path: string
+	identtype?: string
 }
 
-export const StatsborgerskapForm = ({ path }: StatsborgerskapTypes) => {
+export const StatsborgerskapForm = ({ path, identtype }: StatsborgerskapTypes) => {
 	return (
 		<>
 			<FormikSelect
@@ -28,21 +31,25 @@ export const StatsborgerskapForm = ({ path }: StatsborgerskapTypes) => {
 				/>
 				<FormikDatepicker name={`${path}.gyldigTilOgMed`} label="Statsborgerskap til" />
 			</DatepickerWrapper>
-			<AvansertForm path={path} />
+			<AvansertForm path={path} kanVelgeMaster={identtype !== 'NPID'} />
 		</>
 	)
 }
 
 export const Statsborgerskap = () => {
+	const opts = useContext(BestillingsveilederContext)
+
 	return (
 		<div className="flexbox--flex-wrap">
 			<FormikDollyFieldArray
 				name={'pdldata.person.statsborgerskap'}
 				header="Statsborgerskap"
-				newEntry={initialStatsborgerskap}
+				newEntry={getInitialStatsborgerskap(opts?.identtype === 'NPID' ? 'PDL' : 'FREG')}
 				canBeEmpty={false}
 			>
-				{(path: string, _idx: number) => <StatsborgerskapForm path={path} />}
+				{(path: string, _idx: number) => (
+					<StatsborgerskapForm path={path} identtype={opts?.identtype} />
+				)}
 			</FormikDollyFieldArray>
 		</div>
 	)

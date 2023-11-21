@@ -5,7 +5,7 @@ import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { showLabel } from '@/utils/DataFormatter'
-import { initialAdressebeskyttelse } from '@/components/fagsystem/pdlf/form/initialValues'
+import { getInitialAdressebeskyttelse } from '@/components/fagsystem/pdlf/form/initialValues'
 import { AdressebeskyttelseData, Person } from '@/components/fagsystem/pdlf/PdlTypes'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
 import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
@@ -55,7 +55,10 @@ const AdressebeskyttelseVisning = ({
 	identtype,
 	erPdlVisning,
 }: AdressebeskyttelseVisningTypes) => {
-	const initAdressebeskyttelse = Object.assign(_.cloneDeep(initialAdressebeskyttelse), data[idx])
+	const initAdressebeskyttelse = Object.assign(
+		_.cloneDeep(getInitialAdressebeskyttelse()),
+		data[idx],
+	)
 	const initialValues = { adressebeskyttelse: initAdressebeskyttelse }
 
 	const redigertAdressebeskyttelsePdlf = _.get(
@@ -74,7 +77,7 @@ const AdressebeskyttelseVisning = ({
 	const redigertAdressebeskyttelseValues = redigertAdressebeskyttelsePdlf
 		? {
 				adressebeskyttelse: Object.assign(
-					_.cloneDeep(initialAdressebeskyttelse),
+					_.cloneDeep(getInitialAdressebeskyttelse()),
 					redigertAdressebeskyttelsePdlf,
 				),
 		  }

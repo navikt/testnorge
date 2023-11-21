@@ -25,23 +25,23 @@ export const initialPdlBiPerson = {
 	statsborgerskap: null as unknown as string,
 }
 
-export const initialKontaktadresse = {
+export const getInitialKontaktadresse = (master = 'FREG') => ({
 	adressetype: null as unknown as string,
 	gyldigFraOgMed: null as unknown as string,
 	gyldigTilOgMed: null as unknown as string,
 	opprettCoAdresseNavn: null as object,
 	kilde: 'Dolly',
-	master: 'FREG',
-}
+	master: master,
+})
 
-export const initialOppholdsadresse = {
-	...initialKontaktadresse,
-}
+export const getInitialOppholdsadresse = (master = 'FREG') => ({
+	...getInitialKontaktadresse(master),
+})
 
-export const initialBostedsadresse = {
-	...initialKontaktadresse,
+export const getInitialBostedsadresse = (master = 'FREG') => ({
+	...getInitialKontaktadresse(master),
 	angittFlyttedato: null as unknown as string,
-}
+})
 
 export const initialDeltBosted = {
 	adressetype: null as unknown as string,
@@ -49,11 +49,11 @@ export const initialDeltBosted = {
 	sluttdatoForKontrakt: null as unknown as string,
 }
 
-export const initialAdressebeskyttelse = {
+export const getInitialAdressebeskyttelse = (master = 'FREG') => ({
 	gradering: null as unknown as string,
 	kilde: 'Dolly',
-	master: 'FREG',
-}
+	master: master,
+})
 
 export const initialVegadresse = {
 	adressekode: null as unknown as string,
@@ -178,13 +178,13 @@ export const initialTpsSikkerhetstiltak = {
 	gyldigTilOgMed: null as unknown as string,
 }
 
-export const initialStatsborgerskap = {
+export const getInitialStatsborgerskap = (master = 'FREG') => ({
 	landkode: null as unknown as string,
 	gyldigFraOgMed: null as unknown as string,
 	gyldigTilOgMed: null as unknown as string,
 	kilde: 'Dolly',
-	master: 'FREG',
-}
+	master: master,
+})
 
 export const initialTilrettelagtKommunikasjon = {
 	spraakForTaletolk: null as unknown as string,
@@ -199,15 +199,15 @@ export const initialDoedsfall = {
 	master: 'PDL',
 }
 
-export const initialFoedsel = {
+export const getInitialFoedsel = (master = 'FREG') => ({
 	foedekommune: null as unknown as string,
 	foedeland: null as unknown as string,
 	foedested: null as unknown as string,
 	foedselsaar: null as unknown as number,
 	foedselsdato: null as unknown as string,
 	kilde: 'Dolly',
-	master: 'FREG',
-}
+	master: master,
+})
 
 export const initialOrganisasjon = {
 	organisasjonsnummer: null as unknown as string,
@@ -223,14 +223,6 @@ export const initialPerson = {
 
 export const initialNyPerson = {
 	nyKontaktperson: initialPdlPerson,
-}
-
-export const initialUtenlandsIdValues = {
-	identifikasjonsnummer: '',
-	opphoert: false,
-	utstederland: '',
-	kilde: 'Dolly',
-	master: 'FREG',
 }
 
 export const initialFalskIdentitetValues = {
@@ -255,7 +247,7 @@ export const initialUtvandring = {
 	kilde: 'Dolly',
 }
 
-export const initialSivilstand = {
+export const getInitialSivilstand = (master = 'FREG') => ({
 	type: null as unknown as string,
 	sivilstandsdato: null as unknown as string,
 	relatertVedSivilstand: null as unknown as string,
@@ -263,24 +255,24 @@ export const initialSivilstand = {
 	borIkkeSammen: false,
 	nyRelatertPerson: initialPdlPerson,
 	kilde: 'Dolly',
-	master: 'FREG',
-}
+	master: master,
+})
 
-export const initialKjoenn = {
+export const getInitialKjoenn = (master = 'FREG') => ({
 	kjoenn: null as unknown as string,
 	kilde: 'Dolly',
-	master: 'FREG',
-}
+	master: master,
+})
 
-export const initialNavn = {
+export const getInitialNavn = (master = 'FREG') => ({
 	fornavn: undefined as unknown as string,
 	mellomnavn: undefined as unknown as string,
 	etternavn: undefined as unknown as string,
 	hasMellomnavn: false,
 	gyldigFraOgMed: null as unknown as string,
 	kilde: 'Dolly',
-	master: 'FREG',
-}
+	master: master,
+})
 
 export const initialVergemaal = {
 	vergemaalEmbete: null as unknown as string,
@@ -294,24 +286,24 @@ export const initialVergemaal = {
 	master: 'FREG',
 }
 
-export const initialForelder = {
+export const getInitialForelder = (master = 'FREG') => ({
 	minRolleForPerson: 'BARN',
 	relatertPersonsRolle: 'FORELDER',
 	borIkkeSammen: false,
 	typeForelderBarn: null as unknown as string,
 	kilde: 'Dolly',
-	master: 'FREG',
-}
+	master: master,
+})
 
-export const initialBarn = {
+export const getInitialBarn = (master = 'FREG') => ({
 	minRolleForPerson: 'FORELDER',
 	relatertPersonsRolle: 'BARN',
 	partnerErIkkeForelder: false,
 	typeForelderBarn: null as unknown as string,
 	deltBosted: null as any,
 	kilde: 'Dolly',
-	master: 'FREG',
-}
+	master: master,
+})
 
 export const initialDoedfoedtBarn = {
 	dato: new Date(),
@@ -328,6 +320,14 @@ export const initialForeldreansvar = {
 	master: 'FREG',
 }
 
+export const getInitialUtenlandskIdentifikasjonsnummer = (master = 'FREG') => ({
+	identifikasjonsnummer: '',
+	opphoert: false,
+	utstederland: '',
+	kilde: 'Dolly',
+	master: master,
+})
+
 export const initialNyIdent = {
 	eksisterendeIdent: null as unknown as string,
 	identtype: null as unknown as string,
@@ -342,6 +342,21 @@ export const initialNyIdent = {
 	kilde: 'Dolly',
 	master: 'FREG',
 }
+
+export const getInitialNyIdent = (master = 'FREG') => ({
+	eksisterendeIdent: null as unknown as string,
+	identtype: null as unknown as string,
+	kjoenn: null as unknown as string,
+	foedtEtter: null as unknown as string,
+	foedtFoer: null as unknown as string,
+	alder: '',
+	syntetisk: true,
+	nyttNavn: {
+		hasMellomnavn: false,
+	},
+	kilde: 'Dolly',
+	master: master,
+})
 
 export const initialFullmakt = {
 	omraader: [] as any,
