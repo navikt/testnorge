@@ -1,4 +1,4 @@
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import { fieldError } from '@/components/ui/form/formUtils'
 
 import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
@@ -20,42 +20,28 @@ export default ({ name, useOnChange = false, useControlled = false, ...props }: 
 	} = useFormContext()
 	return (
 		<FormikField name={name} fastfield={false}>
-			{({ field, _form, _meta }) => {
-				const handleChanges = (event: { target: { value: any } }) => {
-					if (_.get(touched, field.name) !== event.target.value) {
-						setFieldValue(name, event.target.value, true)
-					}
-					if (props.onSubmit) {
-						props.onSubmit()
-					}
-				}
-
-				return useControlled ? (
-					<DollyTextInput
-						name={name}
-						value={_.get(getValues(), name)}
-						onChange={handleChanges}
-						feil={fieldError({
-							touched: _.get(touched, name),
-							error: _.get(errors, name),
-						})}
-						{...props}
-					/>
-				) : (
-					<DollyTextInput
-						// @ts-ignore
-						defaultValue={props.defaultValue || _.get(getValues(), name)}
-						onBlur={useOnChange ? null : handleChanges}
-						onChange={useOnChange ? handleChanges : null}
-						name={name}
-						feil={fieldError({
-							touched: _.get(touched, name),
-							error: _.get(errors, name),
-						})}
-						{...props}
-					/>
-				)
-			}}
+			{useControlled ? (
+				<DollyTextInput
+					name={name}
+					value={_.get(getValues(), name)}
+					feil={fieldError({
+						touched: _.get(touched, name),
+						error: _.get(errors, name),
+					})}
+					{...props}
+				/>
+			) : (
+				<DollyTextInput
+					// @ts-ignore
+					defaultValue={props.defaultValue || _.get(getValues(), name)}
+					name={name}
+					feil={fieldError({
+						touched: _.get(touched, name),
+						error: _.get(errors, name),
+					})}
+					{...props}
+				/>
+			)}
 		</FormikField>
 	)
 }

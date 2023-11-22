@@ -3,7 +3,7 @@ import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { formatDate, showLabel } from '@/utils/DataFormatter'
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import {
 	getInitialKjoenn,
 	getInitialNavn,

@@ -1,4 +1,4 @@
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import { Alert } from '@navikt/ds-react'
 import {
 	useArenaEnvironments,

@@ -4,7 +4,7 @@ import { DollyTextInput, FormikTextInput } from '@/components/ui/form/inputs/tex
 import { PersoninformasjonKodeverk } from '@/config/kodeverk'
 import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import {
 	initialTelefonnummer,
 	initialTpsTelefonnummer,

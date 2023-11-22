@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import { Adresse, Organisasjon } from '@/service/services/organisasjonforvalter/types'
 import { Alert } from '@navikt/ds-react'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'

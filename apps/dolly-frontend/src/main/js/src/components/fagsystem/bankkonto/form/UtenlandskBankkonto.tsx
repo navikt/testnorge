@@ -4,7 +4,7 @@ import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput
 import { ArbeidKodeverk, GtKodeverk } from '@/config/kodeverk'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import { landkodeIsoMapping } from '@/service/services/kontoregister/landkoder'
 
 const path = 'bankkonto.utenlandskBankkonto'

@@ -5,7 +5,7 @@ import GjenopprettConnector from '@/components/bestilling/gjenopprett/Gjenoppret
 
 import './BestillingDetaljer.less'
 import { MalModal } from '@/pages/minSide/maler/MalModal'
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import { SlettButton } from '@/components/ui/button/SlettButton/SlettButton'
 import React from 'react'
 import { DollyApi } from '@/service/Api'
@@ -33,8 +33,8 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId,
 	const gjenopprettTitle = gjenopprettingsId
 		? 'Kan ikke gjenopprette gjenoppretting av bestilling'
 		: harLevertPersoner
-		? 'Gjenopprett bestilling'
-		: 'Kan ikke gjenopprette bestilling fordi den har ingen leverte identer'
+		  ? 'Gjenopprett bestilling'
+		  : 'Kan ikke gjenopprette bestilling fordi den har ingen leverte identer'
 
 	return (
 		<div className="bestilling-detaljer">

@@ -1,4 +1,4 @@
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { SyntSykemelding } from './partials/SyntSykemelding'
 import { DetaljertSykemelding } from './partials/DetaljertSykemelding'

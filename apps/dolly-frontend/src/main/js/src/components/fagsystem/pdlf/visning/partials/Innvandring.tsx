@@ -9,7 +9,7 @@ import {
 	UtvandringValues,
 } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import { initialInnvandring } from '@/components/fagsystem/pdlf/form/initialValues'
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
 import { PersonData } from '@/components/fagsystem/pdlf/PdlTypes'
 import { getSisteDato } from '@/components/bestillingsveileder/utils'
@@ -43,7 +43,7 @@ export const getSisteDatoInnUtvandring = (
 	innflyttingData: Array<InnvandringValues>,
 	utflyttingData: Array<UtvandringValues>,
 	tmpPersoner?: Array<PersonData>,
-	ident?: string
+	ident?: string,
 ) => {
 	const tmpPerson = tmpPersoner?.hasOwnProperty(ident)
 
@@ -53,10 +53,10 @@ export const getSisteDatoInnUtvandring = (
 	const utflytting = tmpPerson ? _.get(tmpPersoner, `${ident}.person.utflytting`) : utflyttingData
 
 	let sisteInnflytting = getSisteDato(
-		innflytting?.map((val: InnvandringValues) => new Date(val.innflyttingsdato))
+		innflytting?.map((val: InnvandringValues) => new Date(val.innflyttingsdato)),
 	)
 	let sisteUtflytting = getSisteDato(
-		utflytting?.map((val: UtvandringValues) => new Date(val.utflyttingsdato))
+		utflytting?.map((val: UtvandringValues) => new Date(val.utflyttingsdato)),
 	)
 	return sisteInnflytting > sisteUtflytting ? sisteInnflytting : sisteUtflytting
 }
@@ -92,7 +92,7 @@ const InnvandringVisning = ({
 	const initialValues = { innflytting: initInnvandring }
 
 	const redigertInnvandringPdlf = _.get(tmpPersoner, `${ident}.person.innflytting`)?.find(
-		(a: InnvandringValues) => a.id === innvandringData.id
+		(a: InnvandringValues) => a.id === innvandringData.id,
 	)
 	const slettetInnvandringPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertInnvandringPdlf
 	if (slettetInnvandringPdlf) {
@@ -126,7 +126,7 @@ export const Innvandring = ({
 	erPdlVisning = false,
 }: InnvandringTypes) => {
 	const [sisteDato, setSisteDato] = useState(
-		getSisteDatoInnUtvandring(data, utflyttingData, tmpPersoner, ident)
+		getSisteDatoInnUtvandring(data, utflyttingData, tmpPersoner, ident),
 	)
 
 	useEffect(() => {

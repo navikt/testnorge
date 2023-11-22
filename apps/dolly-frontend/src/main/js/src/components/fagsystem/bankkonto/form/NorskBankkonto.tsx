@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { generateValidKontoOptions } from '@/utils/GenererGyldigNorskBankkonto'
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 

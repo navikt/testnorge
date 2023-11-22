@@ -11,7 +11,7 @@ import {
 	initialPdlPerson,
 } from '@/components/fagsystem/pdlf/form/initialValues'
 import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
@@ -113,7 +113,8 @@ export const SivilstandForm = ({
 			<AvansertForm
 				path={path}
 				kanVelgeMaster={
-					_.get(formMethods.getValues(), `${path}.bekreftelsesdato`) === null && identtype !== 'NPID'
+					_.get(formMethods.getValues(), `${path}.bekreftelsesdato`) === null &&
+					identtype !== 'NPID'
 				}
 			/>
 		</div>

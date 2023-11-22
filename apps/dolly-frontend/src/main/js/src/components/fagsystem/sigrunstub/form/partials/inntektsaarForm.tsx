@@ -1,5 +1,5 @@
 import { subYears } from 'date-fns'
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'

@@ -1,4 +1,4 @@
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import { Alder, AlderPaths } from './partials/Alder'
 import { Identifikasjon, IdentifikasjonPaths } from './partials/Identifikasjon'
 import { Identer, IdenterPaths } from '@/pages/testnorgePage/search/partials/Identer'

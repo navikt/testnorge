@@ -1,5 +1,5 @@
 import cn from 'classnames'
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import styled from 'styled-components'
 import './Label.less'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
@@ -9,7 +9,7 @@ const StyledLabel = styled.label`
 	text-transform: uppercase;
 `
 
-export const Label = ({ name, label, feil, info = null, containerClass, children }) => {
+export const Label = ({ name, label, feil, info = null, containerClass = null, children }) => {
 	const wrapClass = cn('skjemaelement', containerClass, {
 		error: Boolean(feil && !_.isEmpty(feil.feilmelding)),
 		'label-offscreen': _.isNil(label),

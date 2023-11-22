@@ -1,4 +1,4 @@
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { DollySelect, FormikSelect } from '@/components/ui/form/inputs/select/Select'

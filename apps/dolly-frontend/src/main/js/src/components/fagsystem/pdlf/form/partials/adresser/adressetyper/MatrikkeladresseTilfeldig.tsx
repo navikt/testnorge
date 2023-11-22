@@ -1,6 +1,6 @@
 import { MatrikkelAdresseVelger } from '@/components/adresseVelger'
 import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import styled from 'styled-components'
 import { MatrikkelAdresse } from '@/components/adresseVelger/MatrikkelAdresseVelger'
 import { UseFormReturn } from 'react-hook-form/dist/types'

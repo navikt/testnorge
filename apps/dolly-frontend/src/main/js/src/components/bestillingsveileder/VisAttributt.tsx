@@ -1,7 +1,7 @@
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import { useFormContext } from 'react-hook-form'
 
-const InternalVis = ({ attributt, children }) => {
+export const Vis = ({ attributt, children }) => {
 	const { getValues } = useFormContext()
 	const isChecked = (values, attributtPath) => {
 		// Ignore if values ikke er satt
@@ -15,5 +15,3 @@ const InternalVis = ({ attributt, children }) => {
 
 	return isChecked(getValues(), attributt) && children
 }
-
-export const Vis = InternalVis

@@ -1,5 +1,5 @@
 import * as Yup from 'yup'
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import { addDays, areIntervalsOverlapping, subMonths } from 'date-fns'
 import {
 	ifPresent,
@@ -78,7 +78,7 @@ const finnesOverlappendeDato = (tidsrom, index) => {
 		if (idx === 0) return //Tester mot første tidsrom
 		return areIntervalsOverlapping(
 			{ start: firstInterval.start, end: addDays(firstInterval.end, 1) },
-			{ start: t.start, end: t.end }
+			{ start: t.start, end: t.end },
 		)
 	})
 }
@@ -98,22 +98,22 @@ const inntektsliste = Yup.array().of(
 		[
 			['fordel', 'fordel'],
 			['beskrivelse', 'beskrivelse'],
-		]
-	)
+		],
+	),
 )
 
 const fradragsliste = Yup.array().of(
 	Yup.object({
 		beloep: requiredNumber.typeError(messages.required),
 		beskrivelse: requiredString,
-	})
+	}),
 )
 
 const forskuddstrekksliste = Yup.array().of(
 	Yup.object({
 		beloep: requiredNumber.typeError(messages.required),
 		beskrivelse: Yup.string().nullable(),
-	})
+	}),
 )
 
 const arbeidsforholdsliste = Yup.array().of(
@@ -124,7 +124,7 @@ const arbeidsforholdsliste = Yup.array().of(
 				is: (val) => val !== undefined,
 				then: () => requiredDate,
 			}),
-			'sluttdato'
+			'sluttdato',
 		),
 		sluttdato: testDatoTom(Yup.string().nullable(), 'startdato'),
 		antallTimerPerUkeSomEnFullStillingTilsvarer: Yup.number()
@@ -138,7 +138,7 @@ const arbeidsforholdsliste = Yup.array().of(
 			.nullable(),
 		sisteLoennsendringsdato: Yup.string().nullable(),
 		sisteDatoForStillingsprosentendring: Yup.string().nullable(),
-	})
+	}),
 )
 
 export const validation = {
@@ -161,7 +161,7 @@ export const validation = {
 				fradragsliste: fradragsliste,
 				forskuddstrekksliste: forskuddstrekksliste,
 				arbeidsforholdsliste: arbeidsforholdsliste,
-			})
+			}),
 		),
 	}),
 }

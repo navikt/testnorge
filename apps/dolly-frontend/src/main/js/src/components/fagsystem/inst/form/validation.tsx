@@ -1,6 +1,6 @@
 import * as Yup from 'yup'
 import { requiredDate, requiredString } from '@/utils/YupValidations'
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 
 const datoOverlapperIkkeAndreOppholdTest = (oppholdValidation, validerStart) => {
 	const errorMsgAge =
@@ -55,6 +55,6 @@ export const validation = {
 			institusjonstype: requiredString,
 			startdato: datoOverlapperIkkeAndreOppholdTest(requiredDate, true),
 			sluttdato: datoOverlapperIkkeAndreOppholdTest(Yup.string().nullable(), false),
-		})
+		}),
 	),
 }

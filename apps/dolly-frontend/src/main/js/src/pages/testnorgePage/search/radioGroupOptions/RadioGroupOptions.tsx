@@ -1,7 +1,7 @@
 import Icon from '@/components/ui/icon/Icon'
 import { Radio, RadioGroup } from '@navikt/ds-react'
 import styled from 'styled-components'
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 
 type Option = {

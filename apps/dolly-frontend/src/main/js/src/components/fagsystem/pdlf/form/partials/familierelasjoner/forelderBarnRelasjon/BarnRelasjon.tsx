@@ -4,7 +4,7 @@ import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { DollyCheckbox, FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { initialDeltBosted } from '@/components/fagsystem/pdlf/form/initialValues'
 import { DeltBosted } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/forelderBarnRelasjon/DeltBosted'
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 

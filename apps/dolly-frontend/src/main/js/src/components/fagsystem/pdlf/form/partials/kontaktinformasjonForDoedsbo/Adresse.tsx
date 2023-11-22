@@ -1,7 +1,7 @@
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import useBoolean from '@/utils/hooks/useBoolean'
 import Button from '@/components/ui/button/Button'
 

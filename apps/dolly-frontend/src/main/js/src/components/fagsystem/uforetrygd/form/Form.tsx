@@ -7,7 +7,7 @@ import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { genererTilfeldigeNavPersonidenter } from '@/utils/GenererTilfeldigeNavPersonidenter'
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import { useNavEnheter } from '@/utils/hooks/useNorg2'
 import { BarnetilleggForm } from '@/components/fagsystem/uforetrygd/form/partials/BarnetilleggForm'
 import { validation } from '@/components/fagsystem/uforetrygd/form/validation'

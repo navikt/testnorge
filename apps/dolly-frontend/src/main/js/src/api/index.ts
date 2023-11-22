@@ -4,7 +4,7 @@ import originalFetch from 'isomorphic-fetch'
 import axios from 'axios'
 import fetch_retry from 'fetch-retry'
 import { runningCypressE2E } from '@/service/services/Request'
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import { navigateToLogin } from '@/components/utlogging/navigateToLogin'
 
 const fetchRetry = fetch_retry(originalFetch)

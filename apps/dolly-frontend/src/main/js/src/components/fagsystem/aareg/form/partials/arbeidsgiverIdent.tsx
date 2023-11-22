@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useBoolean } from 'react-use'
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import Icon from '@/components/ui/icon/Icon'
 import Loading from '@/components/ui/loading/Loading'
 import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'

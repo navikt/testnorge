@@ -1,5 +1,5 @@
 import React, { ReactElement, useState } from 'react'
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import styled from 'styled-components'
 import { Alert, ToggleGroup } from '@navikt/ds-react'
 import { AmeldingForm } from './ameldingForm'

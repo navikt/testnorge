@@ -3,7 +3,7 @@ import { initialForeldreansvar } from '@/components/fagsystem/pdlf/form/initialV
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import * as React from 'react'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import { formatDate } from '@/utils/DataFormatter'
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { getEksisterendeNyPerson } from '@/components/fagsystem/utils'

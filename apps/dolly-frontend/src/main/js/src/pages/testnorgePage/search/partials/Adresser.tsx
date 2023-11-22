@@ -1,4 +1,4 @@
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { AdresseKodeverk, GtKodeverk } from '@/config/kodeverk'
 import { RadioGroupOptions } from '@/pages/testnorgePage/search/radioGroupOptions/RadioGroupOptions'

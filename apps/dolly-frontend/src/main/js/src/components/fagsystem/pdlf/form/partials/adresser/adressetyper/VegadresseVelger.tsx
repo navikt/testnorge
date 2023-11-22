@@ -2,7 +2,7 @@ import { initialVegadresse } from '@/components/fagsystem/pdlf/form/initialValue
 import { Vegadresse } from '@/components/fagsystem/pdlf/form/partials/adresser/adressetyper'
 import { AdresseKodeverk, GtKodeverk } from '@/config/kodeverk'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import { Radio, RadioGroup } from '@navikt/ds-react'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 

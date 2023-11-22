@@ -1,4 +1,4 @@
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'

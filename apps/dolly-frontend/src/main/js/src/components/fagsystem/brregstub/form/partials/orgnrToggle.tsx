@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import { OrganisasjonTextSelect } from '@/components/fagsystem/brregstub/form/partials/organisasjonTextSelect'
 import {
 	inputValg,

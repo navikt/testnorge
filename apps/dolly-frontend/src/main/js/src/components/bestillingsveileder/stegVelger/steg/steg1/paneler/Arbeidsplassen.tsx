@@ -20,7 +20,7 @@ import {
 } from '@/components/fagsystem/arbeidsplassen/form/initialValues'
 import _get from 'lodash/get'
 import _has from 'lodash/has'
-import { isBoolean } from 'lodash-es'
+import { isBoolean } from 'lodash'
 
 export const ArbeidsplassenPanel = ({ stateModifier, formValues }) => {
 	const sm = stateModifier(ArbeidsplassenPanel.initialValues)

@@ -3,7 +3,7 @@ import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput
 import { InntektstubVirksomhetToggle } from './inntektstubVirksomhetToggle'
 import InntektsinformasjonLister from './inntektsinformasjonLister/inntektsinformasjonLister'
 import InntektsendringForm from './inntektsendringForm'
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import { Monthpicker } from '@/components/ui/form/inputs/monthpicker/Monthpicker'
 import { FormikDateTimepicker } from '@/components/ui/form/inputs/timepicker/Timepicker'
 import { UseFormReturn } from 'react-hook-form/dist/types'

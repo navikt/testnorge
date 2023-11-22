@@ -3,7 +3,7 @@ import { KjoennForm } from '@/components/fagsystem/pdlf/form/partials/kjoenn/Kjo
 import { PersonstatusForm } from '@/components/fagsystem/pdlf/form/partials/personstatus/Personstatus'
 import { Alert } from '@navikt/ds-react'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 
 type PersondetaljerSamletTypes = {

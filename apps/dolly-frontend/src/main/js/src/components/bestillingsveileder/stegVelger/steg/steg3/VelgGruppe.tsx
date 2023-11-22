@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { VelgGruppeToggle } from '@/components/velgGruppe/VelgGruppeToggle'
 import { ifPresent } from '@/utils/YupValidations'
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import { ErrorMessageWithFocus } from '@/utils/ErrorMessageWithFocus'
 import * as Yup from 'yup'
 import { UseFormReturn } from 'react-hook-form/dist/types'

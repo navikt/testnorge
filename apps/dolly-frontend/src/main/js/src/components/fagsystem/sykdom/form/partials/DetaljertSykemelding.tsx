@@ -16,7 +16,7 @@ import {
 import { useKodeverk } from '@/utils/hooks/useKodeverk'
 import { getRandomValue } from '@/components/fagsystem/utils'
 import { useEffect } from 'react'
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import { useHelsepersonellOptions } from '@/utils/hooks/useSelectOptions'
 
 type DiagnoseSelect = {

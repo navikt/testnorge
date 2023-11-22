@@ -14,7 +14,7 @@ import {
 	usePensjonsgivendeInntektSkatteordning,
 } from '@/utils/hooks/useSigrunstub'
 import { getInitialInntekt } from '@/components/fagsystem/sigrunstubPensjonsgivende/utils'
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import { validation } from '@/components/fagsystem/sigrunstubPensjonsgivende/form/validation'
 
 export const getInitialSigrunstubPensjonsgivende = (kodeverk = null, skatteordning = null) => {

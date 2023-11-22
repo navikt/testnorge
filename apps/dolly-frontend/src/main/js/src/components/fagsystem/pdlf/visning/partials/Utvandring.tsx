@@ -8,7 +8,7 @@ import {
 	InnvandringValues,
 	UtvandringValues,
 } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import { PersonData } from '@/components/fagsystem/pdlf/PdlTypes'
 import { initialUtvandring } from '@/components/fagsystem/pdlf/form/initialValues'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
@@ -70,7 +70,7 @@ const UtvandringVisning = ({
 	const initialValues = { utflytting: initUtvandring }
 
 	const redigertUtvandringPdlf = _.get(tmpPersoner, `${ident}.person.utflytting`)?.find(
-		(a: UtvandringValues) => a.id === utvandringData.id
+		(a: UtvandringValues) => a.id === utvandringData.id,
 	)
 	const slettetUtvandringPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertUtvandringPdlf
 	if (slettetUtvandringPdlf) {
@@ -104,7 +104,7 @@ export const Utvandring = ({
 	erPdlVisning,
 }: UtvandringTypes) => {
 	const [sisteDato, setSisteDato] = useState(
-		getSisteDatoInnUtvandring(innflyttingData, data, tmpPersoner, ident)
+		getSisteDatoInnUtvandring(innflyttingData, data, tmpPersoner, ident),
 	)
 
 	useEffect(() => {

@@ -1,5 +1,5 @@
 import * as Yup from 'yup'
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import { getMonth, getYear, isWithinInterval } from 'date-fns'
 import { ifPresent, messages, requiredDate, requiredString } from '@/utils/YupValidations'
 import { testDatoFom, testDatoTom } from '@/components/fagsystem/utils'
@@ -45,7 +45,7 @@ const innenforAnsettelsesforholdTest = (periodeValidation, validateFomMonth) => 
 				start: new Date(ansattFom),
 				end: _.isNil(ansattTom) ? new Date() : new Date(ansattTom),
 			})
-		}
+		},
 	)
 }
 
@@ -63,7 +63,7 @@ const fullArbeidsforholdTest = (arbeidsforholdValidation) => {
 				gyldig = false
 			}
 			return gyldig
-		}
+		},
 	)
 }
 
@@ -102,7 +102,7 @@ const arbeidsavtale = Yup.object({
 		Yup.number()
 			.min(1, 'Kan ikke være mindre enn ${min}')
 			.max(75, 'Kan ikke være større enn ${max}')
-			.typeError(messages.required)
+			.typeError(messages.required),
 	).nullable(),
 })
 
@@ -112,7 +112,7 @@ const fartoy = Yup.array()
 			skipsregister: requiredString,
 			skipstype: requiredString,
 			fartsomraade: requiredString,
-		})
+		}),
 	)
 	.nullable()
 
@@ -152,7 +152,7 @@ export const validation = {
 					antallTimer: Yup.number()
 						.min(1, 'Kan ikke være mindre enn ${min}')
 						.typeError(messages.required),
-				})
+				}),
 			),
 			utenlandsopphold: Yup.array().of(
 				Yup.object({
@@ -161,7 +161,7 @@ export const validation = {
 						tom: innenforAnsettelsesforholdTest(requiredDate, true),
 					}),
 					land: requiredString,
-				})
+				}),
 			),
 			permisjon: Yup.array().of(
 				Yup.object({
@@ -174,7 +174,7 @@ export const validation = {
 						.max(100, 'Kan ikke være større enn ${max}')
 						.typeError(messages.required),
 					permisjon: requiredString,
-				})
+				}),
 			),
 			permittering: Yup.array().of(
 				Yup.object({
@@ -186,7 +186,7 @@ export const validation = {
 						.min(1, 'Kan ikke være mindre enn ${min}')
 						.max(100, 'Kan ikke være større enn ${max}')
 						.typeError(messages.required),
-				})
+				}),
 			),
 			amelding: ifPresent(
 				'$aareg[0].amelding',
@@ -208,7 +208,7 @@ export const validation = {
 										antallTimer: Yup.number()
 											.min(1, 'Kan ikke være mindre enn ${min}')
 											.typeError(messages.required),
-									})
+									}),
 								),
 								utenlandsopphold: Yup.array().of(
 									Yup.object({
@@ -217,7 +217,7 @@ export const validation = {
 											tom: requiredDate,
 										}),
 										land: requiredString,
-									})
+									}),
 								),
 								permisjon: Yup.array().of(
 									Yup.object({
@@ -230,7 +230,7 @@ export const validation = {
 											.max(100, 'Kan ikke være større enn ${max}')
 											.typeError(messages.required),
 										permisjon: requiredString,
-									})
+									}),
 								),
 								permittering: Yup.array().of(
 									Yup.object({
@@ -242,20 +242,20 @@ export const validation = {
 											.min(1, 'Kan ikke være mindre enn ${min}')
 											.max(100, 'Kan ikke være større enn ${max}')
 											.typeError(messages.required),
-									})
+									}),
 								),
-							})
+							}),
 						),
-					})
-				)
+					}),
+				),
 			),
 			genererPeriode: ifPresent(
 				'$aareg[0].amelding[0]',
 				Yup.object({
 					fom: testDatoFom(requiredPeriode, 'tom'),
 					tom: testDatoTom(requiredPeriode, 'fom'),
-				})
+				}),
 			),
-		})
+		}),
 	),
 }

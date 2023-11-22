@@ -1,6 +1,6 @@
 import * as Yup from 'yup'
 import { ifPresent, messages, requiredString } from '@/utils/YupValidations'
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import { landkodeIsoMapping, landkoder } from '@/service/services/kontoregister/landkoder'
 
 const validInputOrCheckboxTest = (val, checkboxPath, feilmelding, inputValidation) => {
@@ -114,7 +114,7 @@ const validateSwift = (val) => {
 						value,
 						4,
 						5,
-						mappedLandkode
+						mappedLandkode,
 					)}). \n\n` + `Swift format: ${swiftFormatExplain}`,
 			})
 		}
@@ -133,7 +133,7 @@ export const bankkontoValidation = {
 						Yup.string(),
 						'tilfeldigKontonummer',
 						messages.required,
-						validateIban
+						validateIban,
 					),
 					tilfeldigKontonummer: Yup.string().nullable(),
 					swift: validateSwift(Yup.string()),
@@ -142,7 +142,7 @@ export const bankkontoValidation = {
 					valuta: requiredString
 						.nullable()
 						.test('length', 'Valutakode kan kun bestå av tre store bokstaver', (val) =>
-							/^[A-Z]{3}$/.test(val)
+							/^[A-Z]{3}$/.test(val),
 						),
 					banknavn: Yup.string().nullable().optional(),
 					bankAdresse1: Yup.string()
@@ -151,7 +151,7 @@ export const bankkontoValidation = {
 						.test(
 							'length',
 							'Bankadresse må være mellom 1 og 34 tegn',
-							(val) => !val || val.length <= 34
+							(val) => !val || val.length <= 34,
 						),
 					bankAdresse2: Yup.string()
 						.nullable()
@@ -159,7 +159,7 @@ export const bankkontoValidation = {
 						.test(
 							'length',
 							'Bankadresse må være mellom 1 og 34 tegn',
-							(val) => !val || val.length <= 34
+							(val) => !val || val.length <= 34,
 						),
 					bankAdresse3: Yup.string()
 						.nullable()
@@ -167,9 +167,9 @@ export const bankkontoValidation = {
 						.test(
 							'length',
 							'Bankadresse må være mellom 1 og 34 tegn',
-							(val) => !val || val.length <= 34
+							(val) => !val || val.length <= 34,
 						),
-				})
+				}),
 			),
 			norskBankkonto: ifPresent(
 				'$bankkonto.norskBankkonto',
@@ -178,11 +178,11 @@ export const bankkontoValidation = {
 						Yup.string().nullable(),
 						'tilfeldigKontonummer',
 						messages.required,
-						null
+						null,
 					),
 					tilfeldigKontonummer: Yup.string().nullable(),
-				})
+				}),
 			),
-		})
+		}),
 	),
 }

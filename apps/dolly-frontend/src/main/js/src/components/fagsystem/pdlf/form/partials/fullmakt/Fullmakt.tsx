@@ -7,7 +7,7 @@ import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert
 import { PdlPersonExpander } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonExpander'
 import { initialFullmakt } from '@/components/fagsystem/pdlf/form/initialValues'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
 import { UseFormReturn } from 'react-hook-form/dist/types'

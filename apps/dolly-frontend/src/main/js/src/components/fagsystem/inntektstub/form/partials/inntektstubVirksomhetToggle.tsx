@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { OrgnummerToggle } from '@/components/fagsystem/inntektstub/form/partials/orgnummerToggle'
 import { ToggleGroup } from '@navikt/ds-react'

@@ -2,7 +2,7 @@ import { AdresseKodeverk } from '@/config/kodeverk'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { Historikk } from '@/components/ui/historikk/Historikk'
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 
 export const PostadresseVisning = ({ postadresse }) => {
 	const { postLinje1, postLinje2, postLinje3, postLand } = postadresse

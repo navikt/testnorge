@@ -4,7 +4,7 @@ import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import InntektStub from '@/components/inntektStub/validerInntekt'
 import { useBoolean } from 'react-use'
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import { ToggleGroup } from '@navikt/ds-react'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 

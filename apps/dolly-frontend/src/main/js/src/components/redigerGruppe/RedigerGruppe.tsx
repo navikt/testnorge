@@ -10,7 +10,7 @@ import { REGEX_BACKEND_GRUPPER, useMatchMutate } from '@/utils/hooks/useMutate'
 import { CypressSelector } from '../../../cypress/mocks/Selectors'
 import { useGruppeById } from '@/utils/hooks/useGruppe'
 import _get from 'lodash/get'
-import { Form, useForm } from 'react-hook-form'
+import { Form, FormProvider, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 
 type Props = {
@@ -99,35 +99,38 @@ const RedigerGruppe = ({
 	)
 
 	return (
-		<Form
-			className={'opprett-tabellrad'}
-			autoComplete={'off'}
-			onSubmit={formMethods.handleSubmit(onHandleSubmit)}
-		>
-			<div className="fields">
-				<FormikTextInput
-					data-cy={CypressSelector.INPUT_NAVN}
-					name="navn"
-					label="NAVN"
-					size="grow"
-					useOnChange={true}
-					autoFocus
-				/>
-				<FormikTextInput
-					data-cy={CypressSelector.INPUT_HENSIKT}
-					name="hensikt"
-					label="HENSIKT"
-					size="grow"
-					useOnChange={true}
-				/>
-				{buttons}
-			</div>
-			{error && (
-				<div className="opprett-error">
-					<span>{error.message}</span>
+		<FormProvider {...formMethods}>
+			<Form
+				control={formMethods.control}
+				className={'opprett-tabellrad'}
+				autoComplete={'off'}
+				onSubmit={formMethods.handleSubmit(onHandleSubmit)}
+			>
+				<div className="fields">
+					<FormikTextInput
+						data-cy={CypressSelector.INPUT_NAVN}
+						name="navn"
+						label="NAVN"
+						size="grow"
+						useOnChange={true}
+						autoFocus
+					/>
+					<FormikTextInput
+						data-cy={CypressSelector.INPUT_HENSIKT}
+						name="hensikt"
+						label="HENSIKT"
+						size="grow"
+						useOnChange={true}
+					/>
+					{buttons}
 				</div>
-			)}
-		</Form>
+				{error && (
+					<div className="opprett-error">
+						<span>{error.message}</span>
+					</div>
+				)}
+			</Form>
+		</FormProvider>
 	)
 }
 export default RedigerGruppe

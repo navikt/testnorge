@@ -5,7 +5,7 @@ import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 import { Option } from '@/service/SelectOptionsOppslag'

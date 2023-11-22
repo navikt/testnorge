@@ -1,5 +1,5 @@
 import { TextEditor } from '@/components/ui/form/inputs/textEditor/TextEditor'
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import { CypressSelector } from '../../../../../../cypress/mocks/Selectors'
 
 export const OppsummeringKommentarForm = ({ formMethods }) => {

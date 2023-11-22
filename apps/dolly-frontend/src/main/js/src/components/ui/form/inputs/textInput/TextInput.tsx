@@ -6,6 +6,7 @@ import Icon from '@/components/ui/icon/Icon'
 import FormikFieldInput from '@/components/ui/form/inputs/textInput/FormikFieldInput'
 import styled from 'styled-components'
 import React from 'react'
+import { useFormContext } from 'react-hook-form'
 
 const StyledIcon = styled(Icon)`
 	pointer-events: none;
@@ -32,6 +33,7 @@ export const TextInput = React.forwardRef(
 		},
 		ref,
 	) => {
+		const { register } = useFormContext()
 		const css = cn('skjemaelement__input', className, {
 			'skjemaelement__input--harFeil': props.feil,
 		})
@@ -45,6 +47,7 @@ export const TextInput = React.forwardRef(
 					className={css}
 					placeholder={placeholder}
 					{...props}
+					{...register(props.name)}
 				/>
 				{icon && <StyledIcon fontSize={'1.5rem'} kind={icon} />}
 			</>
@@ -70,7 +73,6 @@ export const DollyTextInput = (props: {
 	placeholder?: string
 }) => (
 	<InputWrapper {...props}>
-		{/*@ts-ignore*/}
 		<Label name={props.name} label={props.label} feil={props.feil}>
 			<TextInput {...props} />
 		</Label>
@@ -94,7 +96,11 @@ export const FormikTextInput = ({
 	autoFocus?: boolean
 	feil?: { feilmelding: string }
 }) => {
-	const component = <FormikFieldInput {...props} />
-	// @ts-ignore
-	return visHvisAvhuket ? <Vis attributt={props.name}>{component}</Vis> : component
+	return visHvisAvhuket ? (
+		<Vis attributt={props.name}>
+			<FormikFieldInput {...props} />
+		</Vis>
+	) : (
+		<FormikFieldInput {...props} />
+	)
 }

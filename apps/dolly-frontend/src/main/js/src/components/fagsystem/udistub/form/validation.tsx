@@ -1,5 +1,5 @@
 import * as Yup from 'yup'
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import { ifPresent, requiredBoolean, requiredString } from '@/utils/YupValidations'
 import { testDatoFom, testDatoTom } from '@/components/fagsystem/utils'
 
@@ -19,7 +19,7 @@ const aliaser = Yup.array().of(
 				then: () => requiredString,
 			})
 			.nullable(),
-	})
+	}),
 )
 
 const arbeidsadgang = Yup.object({
@@ -32,7 +32,7 @@ const arbeidsadgang = Yup.object({
 	typeArbeidsadgang: Yup.string().nullable(),
 	hjemmel: ifPresent(
 		'$udistub.arbeidsadgang.hjemmel',
-		requiredString.max(255, 'Hjemmel kan ikke være lenger enn 255 tegn').nullable()
+		requiredString.max(255, 'Hjemmel kan ikke være lenger enn 255 tegn').nullable(),
 	),
 	forklaring: Yup.string().max(4000).nullable(),
 })
@@ -92,8 +92,8 @@ export const validation = {
 			oppholdStatus: ifPresent('$udistub.oppholdStatus', oppholdStatus),
 			soeknadOmBeskyttelseUnderBehandling: ifPresent(
 				'$udistub.soeknadOmBeskyttelseUnderBehandling',
-				requiredString
+				requiredString,
 			),
-		})
+		}),
 	),
 }

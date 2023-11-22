@@ -3,7 +3,7 @@ import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import React, { useState } from 'react'
 import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import {
 	barnetilleggDetaljer,
 	forventedeInntekterSokerOgEP,

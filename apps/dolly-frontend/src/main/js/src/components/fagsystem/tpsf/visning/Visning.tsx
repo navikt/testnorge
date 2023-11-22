@@ -1,4 +1,4 @@
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import {
 	Fullmakt,
 	MidlertidigAdresse,
@@ -51,7 +51,7 @@ TpsfVisning.filterValues = (data, bestillingsListe) => {
 			...data,
 			innvandretUtvandret: data?.innvandretUtvandret?.filter(
 				(element, idx) =>
-					idx !== data.innvandretUtvandret.length - 1 || element?.innutvandret === 'UTVANDRET'
+					idx !== data.innvandretUtvandret.length - 1 || element?.innutvandret === 'UTVANDRET',
 			),
 		}
 	return data

@@ -4,7 +4,7 @@ import { initialVergemaal } from '@/components/fagsystem/pdlf/form/initialValues
 import { VergemaalKodeverk } from '@/config/kodeverk'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import { PdlPersonExpander } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonExpander'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'

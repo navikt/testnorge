@@ -1,5 +1,5 @@
 import ReactDatepicker from 'react-datepicker'
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import { Label } from '@/components/ui/form/inputs/label/Label'
 import { TextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { InputWrapper } from '@/components/ui/form/inputWrapper/InputWrapper'

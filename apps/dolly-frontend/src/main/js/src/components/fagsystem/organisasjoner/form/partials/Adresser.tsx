@@ -1,4 +1,4 @@
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'

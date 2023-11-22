@@ -1,4 +1,4 @@
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import { initialMatrikkeladresse } from '@/components/fagsystem/pdlf/form/initialValues'
 import {
 	Matrikkeladresse,

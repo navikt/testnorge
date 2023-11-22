@@ -1,4 +1,4 @@
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import LoadableComponent, { Feilmelding } from '@/components/ui/loading/LoadableComponent'
 import { DollySelect } from '@/components/ui/form/inputs/select/Select'
 import { Option, SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'

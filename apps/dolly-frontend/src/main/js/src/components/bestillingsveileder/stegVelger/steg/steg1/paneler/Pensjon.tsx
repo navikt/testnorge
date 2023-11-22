@@ -12,7 +12,7 @@ import { initialAlderspensjon } from '@/components/fagsystem/alderspensjon/form/
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { initialUforetrygd } from '@/components/fagsystem/uforetrygd/initialValues'
 import { runningCypressE2E } from '@/service/services/Request'
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 
 export const PensjonPanel = ({ stateModifier, formValues }: any) => {
 	const sm = stateModifier(PensjonPanel.initialValues)

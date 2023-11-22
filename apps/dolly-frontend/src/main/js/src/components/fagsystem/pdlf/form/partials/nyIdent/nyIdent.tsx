@@ -4,7 +4,7 @@ import { getInitialNyIdent } from '@/components/fagsystem/pdlf/form/initialValue
 import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { PdlPersonExpander } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonExpander'
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { UseFormReturn } from 'react-hook-form/dist/types'

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import { organisasjonPaths } from '../paths'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'

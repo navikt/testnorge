@@ -9,7 +9,7 @@ import { DollyApi } from '@/service/Api'
 import './RelatertPersonImportButton.less'
 import { DollyCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { allCapsToCapitalized } from '@/utils/DataFormatter'
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import { REGEX_BACKEND_GRUPPER, useMatchMutate } from '@/utils/hooks/useMutate'
 import { useFieldArray, useForm } from 'react-hook-form'
 

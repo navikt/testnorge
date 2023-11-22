@@ -9,7 +9,7 @@ import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput
 import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import React, { useContext } from 'react'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 

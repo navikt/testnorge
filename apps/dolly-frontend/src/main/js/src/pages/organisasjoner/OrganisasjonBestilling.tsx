@@ -1,4 +1,4 @@
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { DollyTable } from '@/components/ui/dollyTable/DollyTable'
 import { OrganisasjonItem } from '@/components/ui/icon/IconItem'

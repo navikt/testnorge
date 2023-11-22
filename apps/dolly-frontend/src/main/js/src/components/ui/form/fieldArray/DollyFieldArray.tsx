@@ -1,4 +1,4 @@
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import Button from '@/components/ui/button/Button'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 import ExpandableBlokk from './ExpandableBlokk'

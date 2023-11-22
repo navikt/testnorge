@@ -1,5 +1,5 @@
 import * as Yup from 'yup'
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import { parseDate } from '@/utils/DataFormatter'
 import { isDate } from 'date-fns'
 

@@ -4,7 +4,7 @@ import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert
 import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { Option } from '@/service/SelectOptionsOppslag'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import { isEmpty } from 'lodash'
 import { useContext, useEffect, useState } from 'react'
 import { ArrowCirclepathIcon } from '@navikt/aksel-icons'

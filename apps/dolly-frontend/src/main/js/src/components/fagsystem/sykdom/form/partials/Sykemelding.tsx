@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import { SyntSykemelding } from './SyntSykemelding'
 import { DetaljertSykemelding } from './DetaljertSykemelding'
 import { Diagnose, SykemeldingForm } from '@/components/fagsystem/sykdom/SykemeldingTypes'

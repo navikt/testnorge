@@ -1,7 +1,7 @@
 import { Historikk } from '@/components/ui/historikk/Historikk'
 import { Adressevisning } from '@/components/fagsystem/tpsf/visning/partials/Boadresse'
 import { PostadresseVisning } from '@/components/fagsystem/tpsf/visning/partials/Postadresse'
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 
 export const Adressevalg = ({ data }: any) => {
 	return (

@@ -1,4 +1,4 @@
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import { runningCypressE2E } from '@/service/services/Request'
 import { isDate } from 'date-fns'
 import { useFormContext } from 'react-hook-form'

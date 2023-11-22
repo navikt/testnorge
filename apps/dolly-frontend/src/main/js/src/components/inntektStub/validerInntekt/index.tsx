@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Inntekt from '@/components/inntektStub/validerInntekt/Inntekt'
 import InntektstubService from '@/service/services/inntektstub/InntektstubService'
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import { Form, useForm } from 'react-hook-form'
 
 const tilleggsinformasjonAttributter = {

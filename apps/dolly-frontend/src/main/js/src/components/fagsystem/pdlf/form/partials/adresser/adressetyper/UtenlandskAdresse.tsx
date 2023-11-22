@@ -1,7 +1,7 @@
 import { DollyTextInput, FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { GtKodeverk } from '@/config/kodeverk'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import { useEffect } from 'react'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 

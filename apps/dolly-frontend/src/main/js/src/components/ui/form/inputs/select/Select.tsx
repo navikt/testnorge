@@ -7,7 +7,7 @@ import { fieldError, SyntEvent } from '@/components/ui/form/formUtils'
 import './Select.less'
 import MenuList from '@/components/ui/form/inputs/select/MenuList'
 import Option from '@/components/ui/form/inputs/select/Option'
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import { useKodeverk } from '@/utils/hooks/useKodeverk'
 import { useController } from 'react-hook-form'
 

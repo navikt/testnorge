@@ -3,7 +3,7 @@ import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { getInitialFoedsel } from '@/components/fagsystem/pdlf/form/initialValues'
 import { Yearpicker } from '@/components/ui/form/inputs/yearpicker/Yearpicker'
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'

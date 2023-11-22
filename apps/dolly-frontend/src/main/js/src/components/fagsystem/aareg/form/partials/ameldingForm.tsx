@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import useBoolean from '@/utils/hooks/useBoolean'
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 import { add, eachMonthOfInterval, format, isDate } from 'date-fns'
 import { DollySelect } from '@/components/ui/form/inputs/select/Select'
 import { ArbeidKodeverk } from '@/config/kodeverk'

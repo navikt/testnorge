@@ -1,6 +1,6 @@
 import { createAction } from 'redux-actions'
 import { createSelector } from 'reselect'
-import * as _ from 'lodash-es'
+import * as _ from 'lodash'
 
 export const clearAllErrors = createAction('ERRORS/CLEAR_ALL_ERRORS')
 export const addGlobalError = createAction('ERRORS/ADD_GLOBAL_ERROR')
@@ -20,7 +20,7 @@ export const applicationErrorSelector = createSelector(
 	(errors) => {
 		const filtered = _.filter(errors, (val) => val !== '')
 		return filtered[Object.keys(filtered)[0]]
-	}
+	},
 )
 
 const initialState = {}
