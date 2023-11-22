@@ -51,9 +51,8 @@ export const BestillingStatus = ({ bestilling, erOrganisasjon = false }: Miljost
 		else if (
 			statuser.some(
 				(status) =>
-					status?.melding?.includes('TIDSAVBRUDD') ||
-					status?.melding?.includes('Tidsavbrudd') ||
-					status?.melding?.includes('tidsavbrudd'),
+					status?.melding?.toLowerCase()?.includes('tidsavbrudd') ||
+				    status?.melding?.toLowerCase()?.includes('avvik'),
 			)
 		) {
 			return IconTypes.avvik

@@ -18,8 +18,9 @@ export default function FagsystemStatus({ statusrapport }: { statusrapport: Stat
 		const melding = status.melding
 		if (melding && !melding.includes('OK')) {
 			if (
-				melding?.toUpperCase()?.includes('ADVARSEL') ||
-				melding?.toUpperCase()?.includes('INFO')
+				melding?.toLowerCase()?.includes('advarsel') ||
+				melding?.toLowerCase()?.includes('info') ||
+				melding?.toLowerCase()?.includes('avvik')
 			) {
 				return 'report-problem-circle'
 			}
