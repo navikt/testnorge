@@ -34,7 +34,6 @@ public class DigitalKontaktMappingStrategy implements MappingStrategy {
                         if (isNotBlank(digitalKontaktdata.getMobil())) {
                             kontaktdataRequest.setMobilOppdatert(getDato(digitalKontaktdata));
                             kontaktdataRequest.setMobilVerifisert(getDato(digitalKontaktdata));
-                            kontaktdataRequest.setMobil(digdirFormatertTlfNummer(digitalKontaktdata.getMobil()));
                         }
                         if (isNotBlank(digitalKontaktdata.getEpost())) {
                             kontaktdataRequest.setEpostOppdatert(getDato(digitalKontaktdata));
@@ -44,6 +43,9 @@ public class DigitalKontaktMappingStrategy implements MappingStrategy {
                             kontaktdataRequest.setSpraakOppdatert(getDato(digitalKontaktdata));
                         }
 
+                        kontaktdataRequest.setMobil(digdirFormatertTlfNummer(digitalKontaktdata.getMobil()));
+                        kontaktdataRequest.setEpost(isBlank(digitalKontaktdata.getEpost()) ? null : digitalKontaktdata.getEpost());
+                        kontaktdataRequest.setSpraak(isBlank(digitalKontaktdata.getSpraak()) ? null : digitalKontaktdata.getSpraak());
                         kobleMaalformTilSpraak((RsDollyUtvidetBestilling) context.getProperty("bestilling"), kontaktdataRequest);
                     }
 
@@ -76,7 +78,7 @@ public class DigitalKontaktMappingStrategy implements MappingStrategy {
 
         if (isNotBlank(maalform) && isBlank(digitalKontaktdata.getSpraak())) {
 
-            digitalKontaktdata.setSpraak(isNotBlank(maalform) ? maalform.toLowerCase() : maalform); //NOSONAR
+            digitalKontaktdata.setSpraak(isNotBlank(maalform) ? maalform.toLowerCase() : null);
             digitalKontaktdata.setSpraakOppdatert(ZonedDateTime.now());
             digitalKontaktdata.setRegistrert(true);
         }
