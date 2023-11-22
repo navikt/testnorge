@@ -1,33 +1,123 @@
 import ContentContainer from '@/components/ui/contentContainer/ContentContainer'
-import PersonListeConnector from '@/pages/gruppe/PersonListe/PersonListeConnector'
+import { Alert } from '@navikt/ds-react'
+import { usePdlfPersoner } from '@/utils/hooks/usePdlForvalter'
+import { DollyTable } from '@/components/ui/dollyTable/DollyTable'
+import { ManIconItem, UnknownIconItem, WomanIconItem } from '@/components/ui/icon/IconItem'
+import React, { Suspense } from 'react'
+import Loading from '@/components/ui/loading/Loading'
+import { DollyCopyButton } from '@/components/ui/button/CopyButton/DollyCopyButton'
+import { getAlder } from '@/ducks/fagsystem'
+import { formatAlder } from '@/utils/DataFormatter'
+import PersonVisningConnector from '@/pages/gruppe/PersonVisning/PersonVisningConnector'
+import PdlfVisningConnector from '@/components/fagsystem/pdlf/visning/PdlfVisningConnector'
 
 export const ResultatVisning = ({ resultat }) => {
 	// console.log('resultat: ', resultat) //TODO - SLETT MEG
 	if (!resultat) {
-		return <ContentContainer>Ingen søk er gjort</ContentContainer>
+		return (
+			<ContentContainer>
+				<Alert variant="info" size="small" inline>
+					Ingen søk er gjort
+				</Alert>
+			</ContentContainer>
+		)
 	}
 
 	if (resultat?.error) {
-		return <ContentContainer>Feil: {resultat.error}</ContentContainer>
+		return (
+			<ContentContainer>
+				<Alert variant={'error'} size={'small'} inline>
+					Feil: {resultat.error}
+				</Alert>
+			</ContentContainer>
+		)
 	}
 
 	if (resultat?.totalHits < 1) {
-		return <ContentContainer>Ingen treff</ContentContainer>
+		return (
+			<ContentContainer>
+				<Alert variant="warning" size="small" inline>
+					Ingen treff
+				</Alert>
+			</ContentContainer>
+		)
 	}
 
-	const obj = resultat?.identer?.reduce((o, key) => ({ ...o, [key]: { ident: key } }), {})
-	// console.log('obj: ', obj) //TODO - SLETT MEG
+	const identString = resultat?.identer?.join(',')
+	const { personer, loading, error } = usePdlfPersoner(identString)
 
-	return resultat?.identer?.map((ident) => {
-		// console.log('ident: ', ident) //TODO - SLETT MEG
-		return <p key={ident}>{ident}</p>
-	})
+	const columns = [
+		{
+			text: 'Ident',
+			width: '25',
+			formatter: (_cell: any, row: any) => {
+				const ident = row.person?.ident
+				return <DollyCopyButton displayText={ident} copyText={ident} tooltipText={'Kopier ident'} />
+			},
+		},
+		{
+			text: 'Navn',
+			width: '40',
+			formatter: (_cell: any, row: any) => {
+				const navn = row.person?.navn?.[0]
+				const mellomnavn = navn?.mellomnavn ? `${navn.mellomnavn.charAt(0)}.` : ''
+				return <>{`${navn?.fornavn} ${mellomnavn} ${navn?.etternavn}`}</>
+			},
+		},
+		{
+			text: 'Kjønn',
+			width: '15',
+			formatter: (_cell: any, row: any) => {
+				const kjoenn = row.person?.kjoenn?.[0]?.kjoenn
+				if (kjoenn === 'MANN' || kjoenn === 'GUTT') {
+					return <>Mann</>
+				} else if (kjoenn === 'KVINNE' || kjoenn === 'JENTE') {
+					return <>Kvinne</>
+				} else {
+					return <>Ukjent</>
+				}
+			},
+		},
+		{
+			text: 'Alder',
+			width: '15',
+			formatter: (_cell: any, row: any) => {
+				const alder = getAlder(
+					row.person?.foedsel?.[0]?.foedselsdato,
+					row.person?.doedsfall?.[0]?.doedsdato,
+				)
+				return <>{formatAlder(alder, row.person?.doedsfall?.[0]?.doedsdato)}</>
+			},
+		},
+	]
 
-	// <PersonListeConnector
-	// 	iLaastGruppe={false}
-	// 	brukertype={null}
-	// 	gruppeId={null}
-	// 	identer={resultat?.identer}
-	// 	bestillingerById={null}
-	// />
+	if (loading) {
+		return <Loading label={'Laster personer...'} />
+	}
+
+	return (
+		<DollyTable
+			data={personer}
+			columns={columns}
+			iconItem={(person) => {
+				console.log('person: ', person) //TODO - SLETT MEG
+				const kjoenn = person.person?.kjoenn[0]?.kjoenn
+				if (kjoenn === 'MANN' || kjoenn === 'GUTT') {
+					return <ManIconItem />
+				} else if (kjoenn === 'KVINNE' || kjoenn === 'JENTE') {
+					return <WomanIconItem />
+				} else {
+					return <UnknownIconItem />
+				}
+			}}
+			onExpand={(person) => {
+				return (
+					<PdlfVisningConnector fagsystemData={{ pdlforvalter: person }} loading={loading} />
+					// <Suspense fallback={<Loading label={'Laster ident...'} />}>
+					// 	<PersonVisningConnector ident={person.person.ident} />
+					// </Suspense>
+				)
+			}}
+		/>
+	)
 }

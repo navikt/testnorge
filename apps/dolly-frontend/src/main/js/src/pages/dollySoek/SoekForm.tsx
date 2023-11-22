@@ -15,7 +15,7 @@ import * as _ from 'lodash-es'
 const SoekefeltWrapper = styled.div`
 	display: flex;
 	flex-direction: column;
-	margin-bottom: 10px;
+	margin-bottom: 20px;
 	background-color: white;
 	border: 1px @color-bg-grey-border;
 	border-radius: 4px;
