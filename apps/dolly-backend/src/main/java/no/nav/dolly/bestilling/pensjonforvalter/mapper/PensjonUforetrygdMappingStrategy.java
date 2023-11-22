@@ -11,19 +11,20 @@ import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
 
-import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.Random;
 
 import static java.util.Objects.isNull;
+import static no.nav.dolly.bestilling.pensjonforvalter.mapper.PensjonMappingSupportUtils.getFoedselsdato;
+import static no.nav.dolly.bestilling.pensjonforvalter.mapper.PensjonMappingSupportUtils.getForrigeMaaned;
+import static no.nav.dolly.bestilling.pensjonforvalter.mapper.PensjonMappingSupportUtils.getNesteMaaned;
+import static no.nav.dolly.bestilling.pensjonforvalter.mapper.PensjonMappingSupportUtils.getRandomAnsatt;
 import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
 
 @Component
 public class PensjonUforetrygdMappingStrategy implements MappingStrategy {
 
-    private static Random ansatt = new SecureRandom();
     @Override
     public void register(MapperFactory factory) {
         factory.classMap(PensjonData.Uforetrygd.class, PensjonUforetrygdRequest.class)
@@ -74,28 +75,5 @@ public class PensjonUforetrygdMappingStrategy implements MappingStrategy {
                 })
                 .byDefault()
                 .register();
-    }
-
-    private static LocalDate getForrigeMaaned() {
-
-        var forrigeMaaned = LocalDate.now().minusMonths(1);
-        return LocalDate.of(forrigeMaaned.getYear(), forrigeMaaned.getMonth(), 1);
-    }
-
-    private static LocalDate getNesteMaaned() {
-
-        var nesteMaaned = LocalDate.now().plusMonths(1);
-        return LocalDate.of(nesteMaaned.getYear(), nesteMaaned.getMonth(), 1);
-    }
-
-    private static String getRandomAnsatt() {
-
-        return String.format("Z9%05d", ansatt.nextInt(99999));
-    }
-
-    private static LocalDate getFoedselsdato(PdlPerson.Foedsel foedsel) {
-
-        return nullcheckSetDefaultValue(foedsel.getFoedselsdato(),
-                LocalDate.of(foedsel.getFoedselsaar(), 1, 1));
     }
 }

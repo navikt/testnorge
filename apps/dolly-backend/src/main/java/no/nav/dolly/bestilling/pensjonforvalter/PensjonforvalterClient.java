@@ -299,7 +299,8 @@ public class PensjonforvalterClient implements ClientRegister {
                         .filter(response -> hovedperson.equals(request.getFnr())));
     }
 
-    private Flux<PensjonforvalterResponse> lagreAlderspensjon(PensjonData pensjonData, List<PdlPersonBolk.PersonBolk> relasjoner,
+    private Flux<PensjonforvalterResponse> lagreAlderspensjon(PensjonData pensjonData,
+                                                              List<PdlPersonBolk.PersonBolk> relasjoner,
                                                               String ident, Set<String> miljoer,
                                                               boolean isOpprettEndre, Long bestillingId,
                                                               List<String> isTpsSyncEnv) {
