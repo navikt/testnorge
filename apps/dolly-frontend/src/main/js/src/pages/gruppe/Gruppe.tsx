@@ -5,7 +5,7 @@ import PersonListeConnector from './PersonListe/PersonListeConnector'
 import BestillingListeConnector from './BestillingListe/BestillingListeConnector'
 import { BestillingsveilederModal } from '@/components/bestillingsveileder/startModal/StartModal'
 import Icon from '@/components/ui/icon/Icon'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import FinnPersonBestillingConnector from '@/pages/gruppeOversikt/FinnPersonBestillingConnector'
 import { resetNavigering, resetPaginering } from '@/ducks/finnPerson'
@@ -47,6 +47,8 @@ export default ({
 		loading: loadingBruker,
 	} = useCurrentBruker()
 
+	const location = useLocation()
+
 	const { bestillingerById: ikkeFerdigBestillinger } = useIkkeFerdigBestillingerGruppe(
 		gruppeId,
 		'personer',
@@ -68,7 +70,15 @@ export default ({
 		identer,
 		loading: loadingGruppe,
 		// @ts-ignore
-	} = useGruppeById(gruppeId, sidetall, sideStoerrelse, false, sorting?.kolonne, sorting?.retning)
+	} = useGruppeById(
+		gruppeId,
+		location?.state?.sidetall || sidetall,
+		sideStoerrelse,
+		false,
+		sorting?.kolonne,
+		sorting?.retning,
+	)
+
 	const [startBestillingAktiv, visStartBestilling, skjulStartBestilling] = useBoolean(false)
 
 	const dispatch = useDispatch()

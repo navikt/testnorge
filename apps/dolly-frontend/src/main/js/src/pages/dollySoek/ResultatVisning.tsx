@@ -10,6 +10,7 @@ import { getAlder } from '@/ducks/fagsystem'
 import { formatAlder } from '@/utils/DataFormatter'
 import PersonVisningConnector from '@/pages/gruppe/PersonVisning/PersonVisningConnector'
 import PdlfVisningConnector from '@/components/fagsystem/pdlf/visning/PdlfVisningConnector'
+import { NavigerTilPerson } from '@/pages/dollySoek/NavigerTilPerson'
 
 export const ResultatVisning = ({ resultat }) => {
 	// console.log('resultat: ', resultat) //TODO - SLETT MEG
@@ -49,7 +50,7 @@ export const ResultatVisning = ({ resultat }) => {
 	const columns = [
 		{
 			text: 'Ident',
-			width: '25',
+			width: '20',
 			formatter: (_cell: any, row: any) => {
 				const ident = row.person?.ident
 				return <DollyCopyButton displayText={ident} copyText={ident} tooltipText={'Kopier ident'} />
@@ -57,7 +58,7 @@ export const ResultatVisning = ({ resultat }) => {
 		},
 		{
 			text: 'Navn',
-			width: '40',
+			width: '35',
 			formatter: (_cell: any, row: any) => {
 				const navn = row.person?.navn?.[0]
 				const mellomnavn = navn?.mellomnavn ? `${navn.mellomnavn.charAt(0)}.` : ''
@@ -66,7 +67,7 @@ export const ResultatVisning = ({ resultat }) => {
 		},
 		{
 			text: 'Kjønn',
-			width: '15',
+			width: '10',
 			formatter: (_cell: any, row: any) => {
 				const kjoenn = row.person?.kjoenn?.[0]?.kjoenn
 				if (kjoenn === 'MANN' || kjoenn === 'GUTT') {
@@ -80,13 +81,24 @@ export const ResultatVisning = ({ resultat }) => {
 		},
 		{
 			text: 'Alder',
-			width: '15',
+			width: '10',
 			formatter: (_cell: any, row: any) => {
 				const alder = getAlder(
 					row.person?.foedsel?.[0]?.foedselsdato,
 					row.person?.doedsfall?.[0]?.doedsdato,
 				)
 				return <>{formatAlder(alder, row.person?.doedsfall?.[0]?.doedsdato)}</>
+			},
+		},
+		{
+			text: 'Gruppe',
+			width: '20',
+			formatter: (_cell: any, row: any) => {
+				return (
+					// <Suspense fallback={<Loading label={'Laster gruppe...'} />}>
+					<NavigerTilPerson ident={row.person.ident} />
+					// </Suspense>
+				)
 			},
 		},
 	]
