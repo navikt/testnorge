@@ -15,10 +15,10 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class SearchResponse {
 
-    private long totalHits;
-    private int pageNumber;
-    private int pageSize;
-    private int windowSize;
+    private Long totalHits;
+    private Integer pageNumber;
+    private Integer pageSize;
+    private Integer windowSize;
     private List<String> identer;
     private String error;
 }
