@@ -10,6 +10,7 @@ import org.opensearch.client.RestHighLevelClient;
 import org.opensearch.index.query.BoolQueryBuilder;
 import org.opensearch.search.SearchHit;
 import org.opensearch.search.builder.SearchSourceBuilder;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -21,6 +22,9 @@ import java.util.List;
 public class OpenSearchService {
 
     private final RestHighLevelClient restHighLevelClient;
+
+    @Value("${open.search.index}")
+    private String index;
 
     public SearchResponse getTyper(ElasticTyper[] typer) {
 
@@ -41,7 +45,7 @@ public class OpenSearchService {
     @SneakyThrows
     private org.opensearch.action.search.SearchResponse execQuery(BoolQueryBuilder query)  {
 
-        var searchRequest = new org.opensearch.action.search.SearchRequest("bestilling");
+        var searchRequest = new org.opensearch.action.search.SearchRequest(index);
         searchRequest.source(new SearchSourceBuilder().query(query)
                 .size(50));
 

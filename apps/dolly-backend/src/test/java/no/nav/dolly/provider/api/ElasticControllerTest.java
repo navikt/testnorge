@@ -1,6 +1,7 @@
 package no.nav.dolly.provider.api;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.config.ApplicationConfig;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.aareg.RsAnsettelsesPeriode;
 import no.nav.dolly.domain.resultset.aareg.RsArbeidsavtale;
@@ -61,6 +62,9 @@ class ElasticControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private ApplicationConfig applicationConfig;
 
     @BeforeEach
     void setup() {

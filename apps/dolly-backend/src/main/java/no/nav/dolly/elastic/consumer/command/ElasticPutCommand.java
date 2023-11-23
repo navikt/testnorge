@@ -13,12 +13,12 @@ import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
 public class ElasticPutCommand implements Callable<Mono<String>> {
-
-    private static final String ELASTIC_SETTINGS_URL = "/bestilling/_settings";
+    private static final String ELASTIC_SETTINGS_URL = "/{index}/_settings";
 
     private final WebClient webClient;
     private final String username;
     private final String password;
+    private final String index;
     private final JsonNode params;
 
     @Override
@@ -26,7 +26,7 @@ public class ElasticPutCommand implements Callable<Mono<String>> {
 
         return webClient.put()
                 .uri(builder -> builder.path(ELASTIC_SETTINGS_URL)
-                        .build())
+                        .build(index))
                 .body(BodyInserters.fromValue(params))
                 .headers(httpHeaders -> httpHeaders.setBasicAuth(username, password))
                 .retrieve()

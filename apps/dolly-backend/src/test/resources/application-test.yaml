@@ -23,6 +23,7 @@ open:
     username: dummy
     password: dummy
     total-fields: 150
+    index:
 
 consumers:
   testnav-kodeverk-proxy:
