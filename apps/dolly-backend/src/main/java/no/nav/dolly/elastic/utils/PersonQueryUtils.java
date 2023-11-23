@@ -216,7 +216,7 @@ public class PersonQueryUtils {
 
     public static void addHarNyIdentitetQuery(Criteria criteria, SearchRequest request) {
 
-        if (isTrue(request.getPersonRequest().getNyIdentitet())) {
+        if (isTrue(request.getPersonRequest().getHarNyIdentitet())) {
             criteria.and(new Criteria("pdldata.person.nyident").exists());
         }
     }

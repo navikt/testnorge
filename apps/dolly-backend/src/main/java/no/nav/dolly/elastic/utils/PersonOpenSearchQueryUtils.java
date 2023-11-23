@@ -135,6 +135,14 @@ public class PersonOpenSearchQueryUtils {
                                 boadresse.getBydelsnummer())));
     }
 
+    public static void addHarBostedBydelsnrQuery(BoolQueryBuilder queryBuilder, SearchRequest request) {
+
+        Optional.ofNullable(request.getPersonRequest().getBostedsadresse())
+                .filter(boadresse -> isTrue(boadresse.getHarBydelsnummer()))
+                .ifPresent(boadresse ->
+                        queryBuilder.must(existQuery("pdldata.person.bostedsadresse.vegadresse.bydelsnummer")));
+    }
+
     public static void addBostedUtlandQuery(BoolQueryBuilder queryBuilder, SearchRequest request) {
 
         Optional.ofNullable(request.getPersonRequest().getBostedsadresse())
@@ -218,7 +226,7 @@ public class PersonOpenSearchQueryUtils {
 
     public static void addHarNyIdentitetQuery(BoolQueryBuilder queryBuilder, SearchRequest request) {
 
-        if (isTrue(request.getPersonRequest().getNyIdentitet())) {
+        if (isTrue(request.getPersonRequest().getHarNyIdentitet())) {
             queryBuilder.must(existQuery("pdldata.person.nyident"));
         }
     }

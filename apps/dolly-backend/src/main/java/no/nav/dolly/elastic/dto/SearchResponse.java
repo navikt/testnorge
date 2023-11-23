@@ -16,6 +16,8 @@ import java.util.List;
 public class SearchResponse {
 
     private Long totalHits;
+    private String took;
+    private Float score;
     private Integer pageNumber;
     private Integer pageSize;
     private Integer windowSize;

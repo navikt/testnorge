@@ -22,28 +22,33 @@ public class OpenSearchService {
 
     private final RestHighLevelClient restHighLevelClient;
 
-    public SearchResponse getAll(SearchRequest request) {
-
-        var query = OpenSearchQueryBuilder.buildSearchQuery(request);
-
-        return execQuery(query);
-    }
-
     public SearchResponse getTyper(ElasticTyper[] typer) {
 
         var query = OpenSearchQueryBuilder.buildTyperQuery(typer);
+        var response = execQuery(query);
 
-        return execQuery(query);
+        return getIdenter(response);
+    }
+
+    public SearchResponse search(SearchRequest request) {
+
+        var query = OpenSearchQueryBuilder.buildSearchQuery(request);
+        var response = execQuery(query);
+
+        return getIdenter(response);
     }
 
     @SneakyThrows
-    private SearchResponse execQuery(BoolQueryBuilder query)  {
+    private org.opensearch.action.search.SearchResponse execQuery(BoolQueryBuilder query)  {
 
         var searchRequest = new org.opensearch.action.search.SearchRequest("bestilling");
         searchRequest.source(new SearchSourceBuilder().query(query)
                 .size(50));
 
-        var response = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
+        return  restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
+    }
+
+    private static SearchResponse getIdenter(org.opensearch.action.search.SearchResponse response) {
 
         return SearchResponse.builder()
                 .identer(Arrays.stream(response.getHits().getHits())
@@ -54,6 +59,8 @@ public class OpenSearchService {
                         .limit(10)
                         .toList())
                 .totalHits(response.getHits().getTotalHits().value)
+                .took(response.getTook().getStringRep())
+                .score(response.getHits().getMaxScore())
                 .build();
     }
 }

@@ -25,6 +25,7 @@ import static no.nav.dolly.elastic.utils.PersonOpenSearchQueryUtils.addBostedUtl
 import static no.nav.dolly.elastic.utils.PersonOpenSearchQueryUtils.addDoedsfallQuery;
 import static no.nav.dolly.elastic.utils.PersonOpenSearchQueryUtils.addForeldreQuery;
 import static no.nav.dolly.elastic.utils.PersonOpenSearchQueryUtils.addFullmaktQuery;
+import static no.nav.dolly.elastic.utils.PersonOpenSearchQueryUtils.addHarBostedBydelsnrQuery;
 import static no.nav.dolly.elastic.utils.PersonOpenSearchQueryUtils.addHarDeltBostedQuery;
 import static no.nav.dolly.elastic.utils.PersonOpenSearchQueryUtils.addHarDoedfoedtbarnQuery;
 import static no.nav.dolly.elastic.utils.PersonOpenSearchQueryUtils.addHarFalskIdentitetQuery;
@@ -96,6 +97,7 @@ public class OpenSearchQueryBuilder {
                     addBostedKommuneQuery(queryBuilder, request);
                     addBostedPostnrQuery(queryBuilder, request);
                     addBostedBydelsnrQuery(queryBuilder, request);
+                    addHarBostedBydelsnrQuery(queryBuilder, request);
                     addBostedUtlandQuery(queryBuilder, request);
                     addBostedMatrikkelQuery(queryBuilder, request);
                     addBostedUkjentQuery(queryBuilder, request);
