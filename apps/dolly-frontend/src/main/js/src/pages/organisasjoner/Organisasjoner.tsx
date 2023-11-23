@@ -36,7 +36,7 @@ enum BestillingType {
 const VISNING_ORGANISASJONER = 'organisasjoner'
 const VISNING_BESTILLINGER = 'bestillinger'
 
-export default ({ search, sidetall }: OrganisasjonerProps) => {
+export default () => {
 	const {
 		currentBruker: { brukerId, brukertype, brukernavn },
 	} = useCurrentBruker()
@@ -142,12 +142,7 @@ export default ({ search, sidetall }: OrganisasjonerProps) => {
 					(isFetching ? (
 						<Loading label="Laster organisasjoner" panel />
 					) : antallOrg !== 0 ? (
-						<OrganisasjonListe
-							bestillinger={bestillinger}
-							search={search}
-							setAntallOrg={setAntallOrg}
-							sidetall={sidetall}
-						/>
+						<OrganisasjonListe bestillinger={bestillinger} setAntallOrg={setAntallOrg} />
 					) : (
 						<TomOrgListe
 							startBestilling={startBestilling}
@@ -159,10 +154,9 @@ export default ({ search, sidetall }: OrganisasjonerProps) => {
 						<Loading label="Laster bestillinger" panel />
 					) : antallBest > 0 ? (
 						<OrganisasjonBestilling
-							sidetall={sidetall}
 							brukerId={brukerId}
 							brukertype={brukertype}
-							bestillinger={sokSelector(bestillingerById, search)}
+							bestillinger={sokSelector(bestillingerById)}
 						/>
 					) : (
 						<TomOrgListe

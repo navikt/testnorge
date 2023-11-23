@@ -18,13 +18,22 @@ import {
 import { Stepper } from '@navikt/ds-react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Validations } from '@/components/bestilling/validation/Validations'
 
 const STEPS = [Steg1, Steg2, Steg3]
 
 export const StegVelger = ({ initialValues, onSubmit }) => {
+	const _validate = (values) =>
+		validate(
+			{
+				...values,
+				personFoerLeggTil: personFoerLeggTil,
+				tidligereBestillinger: tidligereBestillinger,
+				leggTilPaaGruppe: leggTilPaaGruppe,
+			},
+			CurrentStepComponent.validation,
+		)
 	const [step, setStep] = useState(0)
-	const formMethods = useForm({ defaultValues: initialValues, resolver: yupResolver(Validations) })
+	const formMethods = useForm({ defaultValues: initialValues, resolver: yupResolver(_validate) })
 
 	const opts = useContext(BestillingsveilederContext)
 	const mutate = useMatchMutate()
@@ -49,25 +58,13 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 		sessionStorage.clear()
 		formMethods.reset()
 
-		onSubmit(values)
+		formMethods.handleSubmit(onSubmit(values))
 		mutate(REGEX_BACKEND_GRUPPER)
 		mutate(REGEX_BACKEND_ORGANISASJONER)
 		return mutate(REGEX_BACKEND_BESTILLINGER)
 	}
 
 	const CurrentStepComponent = STEPS[step]
-
-	//TODO: Sjekke om denne trengs eller om den kan fjernes
-	const _validate = (values) =>
-		validate(
-			{
-				...values,
-				personFoerLeggTil: personFoerLeggTil,
-				tidligereBestillinger: tidligereBestillinger,
-				leggTilPaaGruppe: leggTilPaaGruppe,
-			},
-			CurrentStepComponent.validation,
-		)
 
 	const labels = STEPS.map((v) => ({ label: v.label }))
 
@@ -78,21 +75,24 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 
 	return (
 		<FormProvider {...formMethods}>
-			<form onSubmit={formMethods.handleSubmit(_handleSubmit)}>
-				<Stepper orientation="horizontal" activeStep={step + 1}>
-					{labels.map((label, index) => (
-						<Stepper.Step key={index}>{label.label}</Stepper.Step>
-					))}
-				</Stepper>
+			<Stepper orientation="horizontal" activeStep={step + 1}>
+				{labels.map((label, index) => (
+					<Stepper.Step key={index}>{label.label}</Stepper.Step>
+				))}
+			</Stepper>
 
-				<BestillingsveilederHeader />
+			<BestillingsveilederHeader />
 
-				<CurrentStepComponent stateModifier={stateModifier} />
+			<CurrentStepComponent stateModifier={stateModifier} />
 
-				{devEnabled && <DisplayFormikState />}
+			{devEnabled && <DisplayFormikState />}
 
-				<Navigation step={step} onPrevious={handleBack} isLastStep={isLastStep()} />
-			</form>
+			<Navigation
+				step={step}
+				onPrevious={handleBack}
+				isLastStep={isLastStep()}
+				handleSubmit={_handleSubmit}
+			/>
 		</FormProvider>
 	)
 }

@@ -18,7 +18,6 @@ export const stateModifierFns = (methods, opts = null) => {
 				methods.resetField(p)
 			})
 		} else {
-			console.log('path: ', path) //TODO - SLETT MEG
 			methods.watch(path)
 			methods.setValue(path, undefined)
 			methods.resetField(path)
@@ -38,9 +37,6 @@ export const stateModifierFns = (methods, opts = null) => {
 	const setMulti = (...arrays) => {
 		arrays.forEach((curr) => {
 			const [path, val] = curr
-			console.log('path: ', path) //TODO - SLETT MEG
-			console.log('val: ', val) //TODO - SLETT MEG
-
 			methods.setValue(path, val)
 		})
 		// methods.setValue(newInitial)

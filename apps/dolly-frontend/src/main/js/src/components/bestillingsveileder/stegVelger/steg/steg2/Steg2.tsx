@@ -75,7 +75,7 @@ export const Steg2 = () => {
 			<BrregstubForm formMethods={formMethods} />
 			<InstForm formMethods={formMethods} />
 			<KrrstubForm formMethods={formMethods} />
-			<MedlForm formMethods={formMethods} />
+			<MedlForm />
 			<UdistubForm formMethods={formMethods} />
 			<DokarkivForm formMethods={formMethods} />
 			<HistarkForm formMethods={formMethods} />

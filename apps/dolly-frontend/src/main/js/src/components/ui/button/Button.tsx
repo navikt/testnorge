@@ -23,6 +23,7 @@ const Button = ({
 	iconSize = 16,
 	fontSize = '1.15rem',
 	loading = false,
+	type = 'button',
 	disabled,
 	...rest
 }: Button) => {

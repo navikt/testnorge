@@ -24,12 +24,13 @@ export const TextInput = React.forwardRef(
 			isDisabled,
 			...props
 		}: {
-			name?: string
+			name: string
 			className?: string
 			icon?: string
 			placeholder?: string
 			feil?: any
 			isDisabled?: boolean
+			onChange?: any
 		},
 		ref,
 	) => {
@@ -46,8 +47,8 @@ export const TextInput = React.forwardRef(
 					id={props.name}
 					className={css}
 					placeholder={placeholder}
-					{...props}
 					{...register(props.name)}
+					{...props}
 				/>
 				{icon && <StyledIcon fontSize={'1.5rem'} kind={icon} />}
 			</>

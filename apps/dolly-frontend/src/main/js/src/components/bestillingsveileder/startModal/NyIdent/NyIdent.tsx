@@ -15,8 +15,9 @@ import * as _ from 'lodash'
 import { tpsfAttributter } from '@/components/bestillingsveileder/utils'
 import { Mal, useDollyMaler } from '@/utils/hooks/useMaler'
 import { CypressSelector } from '../../../../../cypress/mocks/Selectors'
-import { useForm } from 'react-hook-form'
+import { FormProvider, useForm } from 'react-hook-form'
 import { UseFormReturn } from 'react-hook-form/dist/types'
+import { yupResolver } from '@hookform/resolvers/yup'
 
 const initialValues = {
 	antall: 1,
@@ -48,7 +49,10 @@ export const NyIdent = ({ brukernavn, onAvbryt, onSubmit }: NyBestillingProps) =
 	const [bruker, setBruker] = useState(brukernavn)
 	const [malAktiv, toggleMalAktiv] = useToggle(false)
 	const { maler, loading } = useDollyMaler()
-	const formMethods = useForm({ defaultValues: initialValues })
+	const formMethods = useForm({
+		defaultValues: initialValues,
+		resolver: yupResolver(validationSchema),
+	})
 
 	const brukerOptions = getBrukerOptions(maler)
 	const malOptions = getMalOptions(maler, bruker)
@@ -75,77 +79,79 @@ export const NyIdent = ({ brukernavn, onAvbryt, onSubmit }: NyBestillingProps) =
 	const erTpsfMal = tpsfAttributter.some((a) => _.has(valgtMalTpsfValues, a))
 
 	return (
-		<form onSubmit={formMethods.handleSubmit(preSubmit(formMethods.getValues()))}>
-			<div className="ny-bestilling-form">
-				<h3>Velg type og antall</h3>
-				<div className="ny-bestilling-form_selects">
-					<FormikSelect
-						name="identtype"
-						label="Velg identtype"
-						size="medium"
-						options={Options('identtype')}
-						isClearable={false}
-					/>
-					<FormikTextInput name="antall" label="Antall" type="number" size="medium" />
-				</div>
-				<div className="ny-bestilling-form_maler">
-					<div>
-						<DollyCheckbox
-							data-cy={CypressSelector.TOGGLE_MAL}
-							name="aktiver-maler"
-							onChange={() => handleMalChange(formMethods)}
-							label="Opprett fra mal"
-							wrapperSize={'none'}
-							size={'small'}
-							isSwitch
-						/>
-					</div>
-
-					<InputDiv>
-						<DollySelect
-							name="zIdent"
-							label="Bruker"
-							isLoading={loading}
-							options={brukerOptions}
-							size="medium"
-							onChange={(e) => handleBrukerChange(e, formMethods)}
-							value={bruker}
-							isClearable={false}
-							isDisabled={!malAktiv}
-						/>
+		<FormProvider {...formMethods}>
+			<form onSubmit={formMethods.handleSubmit(preSubmit(formMethods.getValues()))}>
+				<div className="ny-bestilling-form">
+					<h3>Velg type og antall</h3>
+					<div className="ny-bestilling-form_selects">
 						<FormikSelect
-							name="mal"
-							label="Maler"
-							isLoading={loading}
-							options={malOptions}
-							size="grow"
-							fastfield={false}
-							isDisabled={!malAktiv}
+							name="identtype"
+							label="Velg identtype"
+							size="medium"
+							options={Options('identtype')}
+							isClearable={false}
 						/>
-					</InputDiv>
-					{erTpsfMal && (
-						<Alert variant={'warning'} style={{ width: '97%' }}>
-							Denne malen er utdatert, og vil dessverre ikke fungere som den skal. Dette fordi
-							master for bestillinger er endret fra TPS til PDL. Vi anbefaler at du oppretter en ny
-							mal og sletter denne malen.
-						</Alert>
-					)}
-					<div className="mal-admin">
-						<Button kind="maler" fontSize={'1.2rem'}>
-							<NavLink to="/minside">Administrer maler</NavLink>
-						</Button>
+						<FormikTextInput name="antall" label="Antall" type="number" size="medium" />
 					</div>
+					<div className="ny-bestilling-form_maler">
+						<div>
+							<DollyCheckbox
+								data-cy={CypressSelector.TOGGLE_MAL}
+								name="aktiver-maler"
+								onChange={() => handleMalChange(formMethods)}
+								label="Opprett fra mal"
+								wrapperSize={'none'}
+								size={'small'}
+								isSwitch
+							/>
+						</div>
+
+						<InputDiv>
+							<DollySelect
+								name="zIdent"
+								label="Bruker"
+								isLoading={loading}
+								options={brukerOptions}
+								size="medium"
+								onChange={(e) => handleBrukerChange(e, formMethods)}
+								value={bruker}
+								isClearable={false}
+								isDisabled={!malAktiv}
+							/>
+							<FormikSelect
+								name="mal"
+								label="Maler"
+								isLoading={loading}
+								options={malOptions}
+								size="grow"
+								fastfield={false}
+								isDisabled={!malAktiv}
+							/>
+						</InputDiv>
+						{erTpsfMal && (
+							<Alert variant={'warning'} style={{ width: '97%' }}>
+								Denne malen er utdatert, og vil dessverre ikke fungere som den skal. Dette fordi
+								master for bestillinger er endret fra TPS til PDL. Vi anbefaler at du oppretter en
+								ny mal og sletter denne malen.
+							</Alert>
+						)}
+						<div className="mal-admin">
+							<Button kind="maler" fontSize={'1.2rem'}>
+								<NavLink to="/minside">Administrer maler</NavLink>
+							</Button>
+						</div>
+					</div>
+					<ModalActionKnapper
+						data-cy={CypressSelector.BUTTON_START_BESTILLING}
+						submitknapp="Start bestilling"
+						disabled={!formMethods.formState.isValid || formMethods.formState.isSubmitting}
+						onSubmit={formMethods.handleSubmit(preSubmit(formMethods.getValues()))}
+						onAvbryt={onAvbryt}
+						center
+					/>
 				</div>
-				<ModalActionKnapper
-					data-cy={CypressSelector.BUTTON_START_BESTILLING}
-					submitknapp="Start bestilling"
-					disabled={!formMethods.formState.isValid || formMethods.formState.isSubmitting}
-					onSubmit={formMethods.handleSubmit(preSubmit(formMethods.getValues()))}
-					onAvbryt={onAvbryt}
-					center
-				/>
-			</div>
-		</form>
+			</form>
+		</FormProvider>
 	)
 }
 

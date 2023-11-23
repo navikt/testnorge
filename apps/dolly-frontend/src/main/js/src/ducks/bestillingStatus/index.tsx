@@ -1,6 +1,7 @@
 import { createActions } from 'redux-actions'
 import * as _ from 'lodash'
 import { DollyApi } from '@/service/Api'
+import { useReduxSelector } from '@/utils/hooks/useRedux'
 
 export const {
 	cancelBestilling,
@@ -37,7 +38,8 @@ export const getBestillingsListe = (bestillinger, IDer) => {
 }
 
 // Filtrer bestillinger basert på søkestreng
-export const sokSelector = (bestillingerById, searchStr) => {
+export const sokSelector = (bestillingerById) => {
+	const searchStr = useReduxSelector((state) => state.search)
 	const items = Object.values(bestillingerById)
 	if (!searchStr || !items) return items
 

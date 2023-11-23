@@ -12,6 +12,5 @@ export const Vis = ({ attributt, children }) => {
 
 		return attributtPath.some((v) => _.has(values, v))
 	}
-
 	return isChecked(getValues(), attributt) && children
 }

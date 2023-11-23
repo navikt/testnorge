@@ -6,7 +6,7 @@ import ExpandableBlokk from './ExpandableBlokk'
 import './dollyFieldArray.less'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import styled from 'styled-components'
-import { useFieldArray } from 'react-hook-form'
+import { useFieldArray, useFormContext } from 'react-hook-form'
 
 const numberColor = {
 	ARRAY_LEVEL_ONE: '#CCE3ED',
@@ -224,8 +224,9 @@ export const FormikDollyFieldArray = ({
 	buttonText = null,
 	errorText = null,
 }) => {
-	const fieldMethods = useFieldArray({ name: name })
-	const values = _.get(fieldMethods.fields.values, name, [])
+	const formMethods = useFormContext()
+	const fieldMethods = useFieldArray({ control: formMethods.control, name: name })
+	const values = _.get(fieldMethods.fields.values, name, [newEntry])
 	const addNewEntry = () => {
 		handleNewEntry ? handleNewEntry() : fieldMethods.append(newEntry)
 	}

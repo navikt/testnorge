@@ -7,9 +7,9 @@ import { AvbrytButton } from '@/components/ui/button/AvbrytButton/AvbrytButton'
 import { useNavigate } from 'react-router-dom'
 import { CypressSelector } from '../../../../../cypress/mocks/Selectors'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
-import { useForm } from 'react-hook-form'
+import { useFormContext } from 'react-hook-form'
 
-export const Navigation = ({ step, onPrevious, isLastStep }) => {
+export const Navigation = ({ step, onPrevious, isLastStep, handleSubmit }) => {
 	const showPrevious = step > 0
 	const opts = useContext(BestillingsveilederContext)
 	const importTestnorge = opts?.is?.importTestnorge
@@ -17,9 +17,8 @@ export const Navigation = ({ step, onPrevious, isLastStep }) => {
 	const navigate = useNavigate()
 	const {
 		getValues,
-		handleSubmit,
 		formState: { errors, isSubmitting },
-	} = useForm()
+	} = useFormContext()
 
 	const onAbort = () => navigate(-1)
 

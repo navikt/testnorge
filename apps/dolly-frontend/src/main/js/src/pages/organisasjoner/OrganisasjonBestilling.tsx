@@ -27,7 +27,6 @@ export default function OrganisasjonBestilling({
 	brukerId,
 	brukertype,
 	bestillinger,
-	sidetall,
 }: OrganisasjonBestillingProps) {
 	if (!bestillinger) {
 		return null
@@ -92,7 +91,6 @@ export default function OrganisasjonBestilling({
 			<DollyTable
 				data={bestillingStatuser}
 				columns={columns}
-				visSide={sidetall}
 				pagination
 				iconItem={<OrganisasjonItem />}
 				onExpand={(bestilling: OrgStatus) => {

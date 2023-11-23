@@ -38,6 +38,7 @@ import { UtenlandsIdForm } from '@/components/fagsystem/pdlf/form/partials/ident
 import { UseFormReturn } from 'react-hook-form/dist/types'
 import { Form, useForm } from 'react-hook-form'
 import { visningRedigerbarValidation } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarValidation'
+import { yupResolver } from '@hookform/resolvers/yup'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -134,7 +135,7 @@ export const VisningRedigerbar = ({
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 	const formMethods = useForm({
 		defaultValues: redigertAttributt ? redigertAttributt : initialValues,
-		resolver: YupResolver(_validate),
+		resolver: yupResolver(_validate),
 	})
 
 	const pdlfError = (error: any) => {

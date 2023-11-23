@@ -1,9 +1,11 @@
 import { useToggle } from 'react-use'
 import { useFormContext } from 'react-hook-form'
 
-const FormState = (props) => (
+const FormState = ({ values, errors }) => (
 	<pre>
-		<strong>props</strong> = {JSON.stringify(props, replacer, 2)}
+		<strong>props</strong> = {JSON.stringify(values, replacer, 2)}
+		<p></p>
+		<strong>Errors</strong> = {JSON.stringify(errors, replacer, 2)}
 	</pre>
 )
 
@@ -15,9 +17,11 @@ const replacer = (key: string, value: any) => {
 }
 
 export default function DisplayFormikState({ visState = false, ...props }) {
-	const { getValues } = useFormContext()
+	const {
+		getValues,
+		formState: { errors },
+	} = useFormContext()
 	const [showState, toggleShowState] = useToggle(visState)
-	console.log('getValues(): ', getValues()) //TODO - SLETT MEG
 
 	return (
 		<div
@@ -36,7 +40,7 @@ export default function DisplayFormikState({ visState = false, ...props }) {
 				zIndex: 99,
 			}}
 		>
-			{showState && <FormState {...getValues()} />}
+			{showState && <FormState values={getValues()} errors={errors} />}
 			{!showState && <span>Vis state</span>}
 		</div>
 	)

@@ -11,7 +11,6 @@ export const panelError = (errors, attributtPath) => {
 	const {
 		formState: { errors: panelErrors },
 	} = useFormContext()
-	console.log('panelErrors: ', panelErrors) //TODO - SLETT MEG
 	// Ignore if values ikke er satt
 	if (_.isNil(attributtPath)) return false
 

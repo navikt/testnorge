@@ -16,26 +16,16 @@ import { MedlSelect } from '@/components/fagsystem/medl/form/MedlSelect'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { MEDL_KILDER, MedlAttributt, MedlKodeverk } from '@/components/fagsystem/medl/MedlConstants'
 import { MedlValidation } from '@/components/fagsystem/medl/form/MedlValidation'
-import { useForm } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
-import { UseFormReturn } from 'react-hook-form/dist/types'
+import { useFormContext } from 'react-hook-form'
 
-interface MedlFormProps {
-	formMethods: UseFormReturn
-}
-
-export const MedlForm = ({ formMethods }: MedlFormProps) => {
+export const MedlForm = () => {
 	const {
-		register,
+		setValue,
 		formState: { errors },
-		handleSubmit,
 		watch,
 		getValues,
-	} = useForm({
-		resolver: yupResolver(MedlValidation),
-	})
+	} = useFormContext()
 	const [aktivKilde, setAktivKilde] = useState(getValues('medl.kilde') || MEDL_KILDER.SRVMELOSYS)
-	console.log('getValues(): ', getValues()) //TODO - SLETT MEG
 
 	if (!getValues(MedlAttributt)) {
 		return null
@@ -59,10 +49,10 @@ export const MedlForm = ({ formMethods }: MedlFormProps) => {
 		<Vis attributt={MedlAttributt}>
 			<Panel
 				heading="Medlemskap (MEDL)"
-				hasErrors={panelError(formMethods.formState.errors, MedlAttributt)}
+				hasErrors={panelError(errors, MedlAttributt)}
 				iconType="calendar"
 				// @ts-ignore
-				startOpen={erForsteEllerTest(formMethods.getValues(), [MedlAttributt])}
+				startOpen={erForsteEllerTest(getValues(), [MedlAttributt])}
 			>
 				<Kategori title={`Oppretting av medlemskapsperiode`} vis={MedlAttributt}>
 					<div className="flexbox--flex-wrap">
@@ -75,7 +65,7 @@ export const MedlForm = ({ formMethods }: MedlFormProps) => {
 								isClearable={false}
 								afterChange={(selected) => {
 									setAktivKilde(selected?.value)
-									formMethods.setValue('medl', getInitialValue(selected?.value))
+									setValue('medl', getInitialValue(selected?.value))
 								}}
 							/>
 							<MedlSelect
