@@ -2,7 +2,7 @@ TOKEN_X_CLIENT_ID: dev-gcp:dolly:dolly-backend-dev
 
 open:
   search:
-    index: bestilling-dev
+    index: bestilling
 
 spring:
   datasource:
