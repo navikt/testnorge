@@ -48,7 +48,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 class OpensearchControllerTest {
 
-    private static final String BASE_URL = "/api/v2/elastic";
+    private static final String BASE_URL = "/api/v1/elastic";
     private static final String IDENT1 = "11111111111";
     private static final String IDENT2 = "22222222222";
     private static final String IDENT3 = "33333333333";
