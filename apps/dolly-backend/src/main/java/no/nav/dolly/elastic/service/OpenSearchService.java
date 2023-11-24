@@ -9,6 +9,7 @@ import org.opensearch.client.RequestOptions;
 import org.opensearch.client.RestHighLevelClient;
 import org.opensearch.index.query.BoolQueryBuilder;
 import org.opensearch.search.SearchHit;
+import org.opensearch.search.SearchHits;
 import org.opensearch.search.builder.SearchSourceBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,8 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+
+import static java.util.Objects.nonNull;
 
 @Slf4j
 @Service
@@ -68,9 +71,15 @@ public class OpenSearchService {
                         .distinct()
                         .limit(10)
                         .toList())
-                .totalHits(response.getHits().getTotalHits().value)
+                .totalHits(getTotalHits(response.getHits()))
                 .took(response.getTook().getStringRep())
                 .score(response.getHits().getMaxScore())
                 .build();
+    }
+
+    private static Long getTotalHits(SearchHits searchHits) {
+
+        return nonNull(searchHits) && nonNull(searchHits.getTotalHits()) ?
+                searchHits.getTotalHits().value : null;
     }
 }
