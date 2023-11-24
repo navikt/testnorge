@@ -11,6 +11,7 @@ import { formatAlder } from '@/utils/DataFormatter'
 import PersonVisningConnector from '@/pages/gruppe/PersonVisning/PersonVisningConnector'
 import PdlfVisningConnector from '@/components/fagsystem/pdlf/visning/PdlfVisningConnector'
 import { NavigerTilPerson } from '@/pages/dollySoek/NavigerTilPerson'
+import StyledAlert from '@/components/ui/alert/StyledAlert'
 
 export const ResultatVisning = ({ resultat }) => {
 	// console.log('resultat: ', resultat) //TODO - SLETT MEG
@@ -124,10 +125,14 @@ export const ResultatVisning = ({ resultat }) => {
 			}}
 			onExpand={(person) => {
 				return (
-					<PdlfVisningConnector fagsystemData={{ pdlforvalter: person }} loading={loading} />
-					// <Suspense fallback={<Loading label={'Laster ident...'} />}>
-					// 	<PersonVisningConnector ident={person.person.ident} />
-					// </Suspense>
+					<>
+						<StyledAlert variant={'info'} size={'small'} style={{ marginTop: '10px' }}>
+							Viser kun egenskaper fra PDL,{' '}
+							<NavigerTilPerson ident={person.person.ident} linkTekst={'vis person i gruppe'} /> for
+							å se egenskaper fra alle fagsystemer.
+						</StyledAlert>
+						<PdlfVisningConnector fagsystemData={{ pdlforvalter: person }} loading={loading} />
+					</>
 				)
 			}}
 		/>

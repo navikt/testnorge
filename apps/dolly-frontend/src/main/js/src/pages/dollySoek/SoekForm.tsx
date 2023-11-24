@@ -124,6 +124,7 @@ export const SoekForm = () => {
 														<FormikSelect
 															name="typer"
 															placeholder="Velg fagsystemer..."
+															title="Fagsystemer"
 															options={Options('registerTyper')}
 															isMulti={true}
 															size="grow"
@@ -141,7 +142,7 @@ export const SoekForm = () => {
 															name={`${personPath}.kjoenn`}
 															options={Options('kjoenn')}
 															size="large"
-															placeholder="Kjønn"
+															placeholder="Velg kjønn..."
 															onChange={(val: SyntheticEvent) =>
 																handleChange(val?.value || null, `${personPath}.kjoenn`)
 															}
@@ -151,7 +152,7 @@ export const SoekForm = () => {
 															name={`${personPath}.statsborgerskap`}
 															kodeverk={AdresseKodeverk.StatsborgerskapLand}
 															size="large"
-															placeholder="Statsborgerskap"
+															placeholder="Velg statsborgerskap..."
 															onChange={(val: SyntheticEvent) =>
 																handleChange(val?.value || null, `${personPath}.statsborgerskap`)
 															}
@@ -230,7 +231,7 @@ export const SoekForm = () => {
 															name={`${personPath}.bostedsadresse.kommunenummer`}
 															kodeverk={AdresseKodeverk.Kommunenummer}
 															size="large"
-															placeholder="Kommunenummer"
+															placeholder="Velg kommunenummer..."
 															onChange={(val: SyntheticEvent) =>
 																handleChange(
 																	val?.value || null,
@@ -243,7 +244,7 @@ export const SoekForm = () => {
 															name={`${personPath}.bostedsadresse.postnummer`}
 															kodeverk={AdresseKodeverk.Postnummer}
 															size="large"
-															placeholder="Postnummer"
+															placeholder="Velg postnummer..."
 															onChange={(val: SyntheticEvent) =>
 																handleChange(
 																	val?.value || null,
@@ -256,7 +257,7 @@ export const SoekForm = () => {
 															name={`${personPath}.bostedsadresse.bydelsnummer`}
 															kodeverk={GtKodeverk.BYDEL}
 															size="large"
-															placeholder="Bydelsnummer"
+															placeholder="Velg bydelsnummer..."
 															onChange={(val: SyntheticEvent) =>
 																handleChange(
 																	val?.value || null,
@@ -269,7 +270,7 @@ export const SoekForm = () => {
 															name={`${personPath}.addressebeskyttelse`}
 															options={Options('gradering')}
 															size="large"
-															placeholder="Adressebeskyttelse"
+															placeholder="Velg adressebeskyttelse..."
 															onChange={(val: SyntheticEvent) =>
 																handleChange(
 																	val?.value || null,
@@ -349,7 +350,7 @@ export const SoekForm = () => {
 															name={`${personPath}.sivilstand`}
 															options={Options('sivilstandType')}
 															size="large"
-															placeholder="Sivilstand"
+															placeholder="Velg sivilstand..."
 															onChange={(val: SyntheticEvent) =>
 																handleChange(val?.value || null, `${personPath}.sivilstand`)
 															}
@@ -406,7 +407,7 @@ export const SoekForm = () => {
 															name={`${personPath}.identtype`}
 															options={Options('identtype')}
 															size="large"
-															placeholder="Identtype"
+															placeholder="Velg identtype..."
 															onChange={(val: SyntheticEvent) =>
 																handleChange(val?.value || null, `${personPath}.identtype`)
 															}

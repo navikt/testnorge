@@ -3,8 +3,17 @@ import { ArrowRightIcon } from '@navikt/aksel-icons'
 import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { useNaviger } from '@/utils/hooks/useNaviger'
+import styled from 'styled-components'
 
-export const NavigerTilPerson = ({ ident }) => {
+const StyledButton = styled.button`
+	background: none !important;
+	border: none;
+	padding: 0 !important;
+	color: #069;
+	text-decoration: underline;
+	cursor: pointer;
+`
+export const NavigerTilPerson = ({ ident, linkTekst = null }) => {
 	const navigate = useNavigate()
 	const [valgtIdent, setValgtIdent] = useState(null)
 
@@ -28,6 +37,10 @@ export const NavigerTilPerson = ({ ident }) => {
 		setValgtIdent(ident)
 	}
 
+	if (linkTekst) {
+		return <StyledButton onClick={handleClick}>{linkTekst}</StyledButton>
+	}
+
 	return (
 		<Button
 			variant="tertiary"
@@ -36,7 +49,7 @@ export const NavigerTilPerson = ({ ident }) => {
 			loading={loading}
 			onClick={handleClick}
 		>
-			Gå til person
+			Vis i gruppe
 		</Button>
 	)
 }
