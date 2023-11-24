@@ -30,11 +30,12 @@ export type SoekRequest = {
 		harSikkerhetstiltak: boolean
 		harOpphold: boolean
 		statsborgerskap: string
-		nyIdentitet: boolean
+		harNyIdentitet: boolean
 		bostedsadresse: {
 			kommunenummer: string
 			postnummer: string
 			bydelsnummer: string
+			harBydelsnummer: boolean
 			harUtenlandsadresse: boolean
 			harMatrikkelAdresse: boolean
 			harUkjentAdresse: boolean

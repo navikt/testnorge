@@ -57,11 +57,12 @@ const initialValues = {
 		harSikkerhetstiltak: false,
 		harOpphold: false,
 		statsborgerskap: null,
-		nyIdentitet: false,
+		harNyIdentitet: false,
 		bostedsadresse: {
 			kommunenummer: null,
 			postnummer: null,
 			bydelsnummer: null,
+			harBydelsnummer: false,
 			harUtenlandsadresse: false,
 			harMatrikkelAdresse: false,
 			harUkjentAdresse: false,
@@ -278,6 +279,17 @@ export const SoekForm = () => {
 															value={getValue(`${personPath}.addressebeskyttelse`)}
 														/>
 														<FormikCheckbox
+															name={`${personPath}.bostedsadresse.harBydelsnummer`}
+															label="Har bydelsnummer"
+															onChange={(val: SyntheticEvent) =>
+																handleChange(
+																	val.target.checked,
+																	`${personPath}.bostedsadresse.harBydelsnummer`,
+																)
+															}
+															value={getValue(`${personPath}.bostedsadresse.harBydelsnummer`)}
+														/>
+														<FormikCheckbox
 															name={`${personPath}.bostedsadresse.harUtenlandsadresse`}
 															label="Har utenlandsadresse"
 															onChange={(val: SyntheticEvent) =>
@@ -420,12 +432,12 @@ export const SoekForm = () => {
 															value={getValue(`${personPath}.harUtenlandskIdentifikasjonsnummer`)}
 														/>
 														<FormikCheckbox
-															name={`${personPath}.nyIdentitet`}
+															name={`${personPath}.harNyIdentitet`}
 															label="Har ny identitet"
 															onChange={(val: SyntheticEvent) =>
-																handleChange(val.target.checked, `${personPath}.nyIdentitet`)
+																handleChange(val.target.checked, `${personPath}.harNyIdentitet`)
 															}
-															value={getValue(`${personPath}.nyIdentitet`)}
+															value={getValue(`${personPath}.harNyIdentitet`)}
 														/>
 													</div>
 												</Accordion.Content>

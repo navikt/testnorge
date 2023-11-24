@@ -113,7 +113,7 @@ export const ResultatVisning = ({ resultat }) => {
 			columns={columns}
 			iconItem={(person) => {
 				console.log('person: ', person) //TODO - SLETT MEG
-				const kjoenn = person.person?.kjoenn[0]?.kjoenn
+				const kjoenn = person.person?.kjoenn?.[0]?.kjoenn
 				if (kjoenn === 'MANN' || kjoenn === 'GUTT') {
 					return <ManIconItem />
 				} else if (kjoenn === 'KVINNE' || kjoenn === 'JENTE') {
