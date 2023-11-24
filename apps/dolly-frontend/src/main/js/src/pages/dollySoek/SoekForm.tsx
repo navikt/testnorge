@@ -22,7 +22,7 @@ const SoekefeltWrapper = styled.div`
 `
 
 const Soekefelt = styled.div`
-	padding: 10px;
+	padding: 20px 15px 5px 15px;
 `
 
 const Buttons = styled.div`
@@ -115,18 +115,23 @@ export const SoekForm = () => {
 							return (
 								<>
 									<Form className="flexbox--flex-wrap" autoComplete="off">
-										<div className="flexbox--full-width" style={{ marginBottom: '10px' }}>
-											<FormikSelect
-												name="typer"
-												label="Fagsystemer"
-												options={Options('registerTyper')}
-												isMulti={true}
-												size="grow"
-												fastfield={false}
-												onChange={(val: SyntheticEvent) => handleChangeList(val, 'typer')}
-											/>
-										</div>
 										<Accordion size="small" headingSize="xsmall" className="flexbox--full-width">
+											<Accordion.Item defaultOpen={true}>
+												<Accordion.Header>Fagsystemer</Accordion.Header>
+												<Accordion.Content>
+													<div className="flexbox--full-width" style={{ marginBottom: '10px' }}>
+														<FormikSelect
+															name="typer"
+															placeholder="Velg fagsystemer..."
+															options={Options('registerTyper')}
+															isMulti={true}
+															size="grow"
+															fastfield={false}
+															onChange={(val: SyntheticEvent) => handleChangeList(val, 'typer')}
+														/>
+													</div>
+												</Accordion.Content>
+											</Accordion.Item>
 											<Accordion.Item>
 												<Accordion.Header>Personinformasjon</Accordion.Header>
 												<Accordion.Content>
