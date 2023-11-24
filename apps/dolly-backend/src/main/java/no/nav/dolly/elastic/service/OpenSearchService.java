@@ -68,7 +68,8 @@ public class OpenSearchService {
                         try {
                             return objectMapper.readValue(hit.getSourceAsString(), ElasticBestilling.class);
                         } catch (JsonProcessingException e) {
-                            throw new RuntimeException(e);
+                            log.warn("OpenSearch kunne ikke lese bestilling fra elastic resultat for ident {}",
+                                    String.join(", ", resultat.getIdenter()));
                         }
                     })
                     .toList());
@@ -116,6 +117,7 @@ public class OpenSearchService {
                 .build();
     }
 
+    @SuppressWarnings("java:S2259")
     private static Long getTotalHits(SearchHits searchHits) {
 
         return nonNull(searchHits) && nonNull(searchHits.getTotalHits()) ?
