@@ -36,7 +36,7 @@ import java.util.List;
 
 import static java.util.Objects.isNull;
 
-@Document(indexName = "bestillinger")
+@Document(indexName = "bestilling")
 //@Document(indexName = "#{@applicationConfig.getElasticIndex}")
 @Data
 @Builder
