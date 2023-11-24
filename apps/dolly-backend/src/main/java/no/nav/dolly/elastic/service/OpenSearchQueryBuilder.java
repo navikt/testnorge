@@ -53,13 +53,7 @@ public class OpenSearchQueryBuilder {
 
     public static BoolQueryBuilder buildSearchQuery(SearchRequest request) {
 
-        var queryBuilder = QueryBuilders.boolQuery()
-                .must(getRandomScoreQueryBuilder());
-
-        request.getTyper().stream()
-                .map(OpenSearchQueryBuilder::getFagsystemQuery)
-                .forEach(queryBuilder::must);
-
+        var queryBuilder = buildTyperQuery(request.getTyper().toArray(ElasticTyper[]::new));
        setPersonQuery(queryBuilder, request);
 
         return queryBuilder;
@@ -75,6 +69,13 @@ public class OpenSearchQueryBuilder {
                 .forEach(queryBuilder::must);
 
         return queryBuilder;
+    }
+
+    public static BoolQueryBuilder buildSearchQuery(String ident) {
+
+        return QueryBuilders.boolQuery()
+                .must(getRandomScoreQueryBuilder())
+                .must(QueryBuilders.matchQuery("identer", ident));
     }
 
     private void setPersonQuery(BoolQueryBuilder queryBuilder, SearchRequest request) {
@@ -114,25 +115,23 @@ public class OpenSearchQueryBuilder {
                     addIdenttypeQuery(queryBuilder, request);
                 });
     }
-
     private QueryBuilder getFagsystemQuery(ElasticTyper type) {
 
         return switch (type) {
             case AAREG -> QueryBuilders.existsQuery("aareg");
             case INST -> QueryBuilders.existsQuery("instdata");
             case KRRSTUB -> QueryBuilders.existsQuery("krrstub");
-            case SIGRUN_LIGNET -> QueryBuilders.existsQuery("sigrunInntekt");
-            case SIGRUN_PENSJONSGIVENDE -> QueryBuilders.existsQuery("sigrunPensjonsgivende");
-            case ARENA_BRUKER -> QueryBuilders.existsQuery("arenaBruker");
-            case ARENA_AAP -> QueryBuilders.existsQuery("arenaAap");
-            case ARENA_AAP115 -> QueryBuilders.existsQuery("arenaAap115");
-            case ARENA_DAGP -> QueryBuilders.existsQuery("arenaDagpenger");
+            case SIGRUN_LIGNET -> QueryBuilders.existsQuery("sigrunstub");
+            case SIGRUN_PENSJONSGIVENDE -> QueryBuilders.existsQuery("sigrunstubPensjonsgivende");
+            case ARENA_AAP -> QueryBuilders.existsQuery("arenaforvalter.aap");
+            case ARENA_AAP115 -> QueryBuilders.existsQuery("arenaforvalter.aap115");
+            case ARENA_DAGP -> QueryBuilders.existsQuery("arenaforvalter.dagpenger");
             case UDISTUB -> QueryBuilders.existsQuery("udistub");
             case INNTK -> QueryBuilders.existsQuery("inntektstub");
-            case PEN_INNTEKT -> QueryBuilders.existsQuery("penInntekt");
-            case PEN_TP -> QueryBuilders.existsQuery("penTp");
-            case PEN_AP -> QueryBuilders.existsQuery("penAlderspensjon");
-            case PEN_UT -> QueryBuilders.existsQuery("penUforetrygd");
+            case PEN_INNTEKT -> QueryBuilders.existsQuery("pensjonforvalter.inntekt");
+            case PEN_TP -> QueryBuilders.existsQuery("pensjonforvalter.tp");
+            case PEN_AP -> QueryBuilders.existsQuery("pensjonforvalter.alderspensjon");
+            case PEN_UT -> QueryBuilders.existsQuery("pensjonforvalter.uforetrygd");
             case INNTKMELD -> QueryBuilders.existsQuery("inntektsmelding");
             case BRREGSTUB -> QueryBuilders.existsQuery("brregstub");
             case DOKARKIV -> QueryBuilders.existsQuery("dokarkiv");
@@ -146,6 +145,7 @@ public class OpenSearchQueryBuilder {
             case ARBEIDSPLASSENCV -> QueryBuilders.existsQuery("arbeidsplassenCV");
         };
     }
+
     private static FunctionScoreQueryBuilder getRandomScoreQueryBuilder() {
 
         return QueryBuilders.functionScoreQuery(new RandomScoreFunctionBuilder().seed(seed.nextInt()));

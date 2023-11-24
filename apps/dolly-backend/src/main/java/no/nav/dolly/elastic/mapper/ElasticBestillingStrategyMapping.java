@@ -14,7 +14,6 @@ import no.nav.dolly.elastic.ElasticBestilling;
 import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
 
-import static java.util.Objects.nonNull;
 import static org.apache.logging.log4j.util.Strings.isBlank;
 
 @Slf4j
@@ -25,45 +24,7 @@ public class ElasticBestillingStrategyMapping implements MappingStrategy {
     private final ObjectMapper objectMapper;
 
     @Override
-    @SuppressWarnings("java:S3776")
     public void register(MapperFactory factory) {
-
-        factory.classMap(RsDollyBestilling.class, ElasticBestilling.class)
-                .customize(new CustomMapper<>() {
-                               @Override
-                               public void mapAtoB(RsDollyBestilling dollyBestilling, ElasticBestilling elasticBestilling, MappingContext context) {
-
-                                   elasticBestilling.setPenInntekt(nonNull(dollyBestilling.getPensjonforvalter()) ?
-                                           dollyBestilling.getPensjonforvalter().getInntekt() : null);
-
-                                   elasticBestilling.setPenAlderspensjon(nonNull(dollyBestilling.getPensjonforvalter()) ?
-                                           dollyBestilling.getPensjonforvalter().getAlderspensjon() : null);
-
-                                   elasticBestilling.setPenUforetrygd(nonNull(dollyBestilling.getPensjonforvalter()) ?
-                                           dollyBestilling.getPensjonforvalter().getUforetrygd() : null);
-
-                                   elasticBestilling.setPenTp(nonNull(dollyBestilling.getPensjonforvalter()) ?
-                                           dollyBestilling.getPensjonforvalter().getTp() : null);
-
-                                   elasticBestilling.setSigrunInntekt(dollyBestilling.getSigrunstub());
-
-                                   elasticBestilling.setSigrunPensjonsgivende(dollyBestilling.getSigrunstubPensjonsgivende());
-
-                                   elasticBestilling.setArenaBruker(nonNull(dollyBestilling.getArenaforvalter()) ?
-                                           mapperFacade.map(dollyBestilling.getArenaforvalter(), ElasticBestilling.ArenaBruker.class) : null);
-                                   elasticBestilling.setArenaAap(nonNull(dollyBestilling.getArenaforvalter()) ?
-                                           dollyBestilling.getArenaforvalter().getAap() : null);
-
-                                   elasticBestilling.setArenaAap115(nonNull(dollyBestilling.getArenaforvalter()) ?
-                                           dollyBestilling.getArenaforvalter().getAap115() : null);
-
-                                   elasticBestilling.setArenaDagpenger(nonNull(dollyBestilling.getArenaforvalter()) ?
-                                           dollyBestilling.getArenaforvalter().getDagpenger() : null);
-                               }
-                           }
-                ).byDefault()
-                .register();
-
 
         factory.classMap(Bestilling.class, ElasticBestilling.class)
                 .customize(new CustomMapper<>() {

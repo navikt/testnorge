@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import no.nav.dolly.elastic.ElasticBestilling;
 
 import java.util.List;
 
@@ -19,5 +20,6 @@ public class SearchResponse {
     private Float score;
     private String took;
     private List<String> identer;
+    private List<ElasticBestilling> bestillinger;
     private String error;
 }
