@@ -33,8 +33,6 @@ public class ElasticPutCommand implements Callable<Mono<String>> {
                 .bodyToMono(String.class)
                 .doOnError(WebClientFilter::logErrorMessage)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
-                .onErrorResume(throwable -> Mono.just(String.format("Feilet å oppdatere %s: %s",
-                        ELASTIC_SETTINGS_URL, WebClientFilter.getMessage(throwable))));
+                        .filter(WebClientFilter::is5xxException));
     }
 }

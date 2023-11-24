@@ -13,7 +13,7 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @UtilityClass
-public class PersonOpenSearchQueryUtils {
+public class OpenSearchPersonQueryUtils {
 
     public static void addBarnQuery(BoolQueryBuilder queryBuilder, SearchRequest request) {
 

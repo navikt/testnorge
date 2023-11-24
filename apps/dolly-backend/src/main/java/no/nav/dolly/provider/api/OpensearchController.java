@@ -23,7 +23,7 @@ import java.util.List;
 import static java.lang.String.format;
 
 @RestController
-@RequestMapping("/api/v2/elastic")
+@RequestMapping("/api/v1/elastic")
 @RequiredArgsConstructor
 public class OpensearchController {
 
