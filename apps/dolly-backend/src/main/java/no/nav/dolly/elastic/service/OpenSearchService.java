@@ -68,8 +68,9 @@ public class OpenSearchService {
                         try {
                             return objectMapper.readValue(hit.getSourceAsString(), ElasticBestilling.class);
                         } catch (JsonProcessingException e) {
-                            log.warn("OpenSearch kunne ikke lese bestilling fra elastic resultat for ident {}",
-                                    String.join(", ", resultat.getIdenter()));
+                            log.warn("OpenSearch kunne ikke lese bestilling fra elastic resultat for ident {}, {}",
+                                    String.join(", ", resultat.getIdenter()), e.getMessage());
+                            return null;
                         }
                     })
                     .toList());
