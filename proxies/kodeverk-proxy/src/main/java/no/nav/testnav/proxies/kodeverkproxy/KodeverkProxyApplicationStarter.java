@@ -38,7 +38,7 @@ public class KodeverkProxyApplicationStarter {
                 .route(spec -> spec
                         .path("/**")
                         .filters(filterSpec -> filterSpec.filter(addAuthenticationHeaderDevFilter))
-                        .uri("http://kodeverk.org.svc.nais.local/")
+                        .uri(consumers.getKodeverk().getUrl())
                 )
                 .build();
     }
