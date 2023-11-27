@@ -12,6 +12,8 @@ import PersonVisningConnector from '@/pages/gruppe/PersonVisning/PersonVisningCo
 import PdlfVisningConnector from '@/components/fagsystem/pdlf/visning/PdlfVisningConnector'
 import { NavigerTilPerson } from '@/pages/dollySoek/NavigerTilPerson'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
+import { usePdlMiljoeinfo, usePdlPersonbolk } from '@/utils/hooks/usePdlPerson'
+import { PdlVisning } from '@/components/fagsystem/pdl/visning/PdlVisning'
 
 export const ResultatVisning = ({ resultat }) => {
 	// console.log('resultat: ', resultat) //TODO - SLETT MEG
@@ -47,6 +49,11 @@ export const ResultatVisning = ({ resultat }) => {
 
 	const identString = resultat?.identer?.join(',')
 	const { personer, loading, error } = usePdlfPersoner(identString)
+	// const { personer: test } = usePdlfPersoner(identString)
+	// const { pdlData: personer, loading, error } = usePdlMiljoeinfo(identString)
+	// const { pdlData, loading, error } = usePdlPersonbolk(identString)
+	// console.log('test: ', test) //TODO - SLETT MEG
+	// console.log('personer: ', personer) //TODO - SLETT MEG
 
 	const columns = [
 		{
@@ -54,6 +61,7 @@ export const ResultatVisning = ({ resultat }) => {
 			width: '20',
 			formatter: (_cell: any, row: any) => {
 				const ident = row.person?.ident
+				// const ident = row.ident
 				return <DollyCopyButton displayText={ident} copyText={ident} tooltipText={'Kopier ident'} />
 			},
 		},
@@ -97,7 +105,8 @@ export const ResultatVisning = ({ resultat }) => {
 			formatter: (_cell: any, row: any) => {
 				return (
 					// <Suspense fallback={<Loading label={'Laster gruppe...'} />}>
-					<NavigerTilPerson ident={row.person.ident} />
+					<NavigerTilPerson ident={row.person?.ident} />
+					// <NavigerTilPerson ident={row.ident} />
 					// </Suspense>
 				)
 			},
@@ -111,6 +120,7 @@ export const ResultatVisning = ({ resultat }) => {
 	return (
 		<DollyTable
 			data={personer}
+			// data={pdlData?.hentPersonBolk}
 			columns={columns}
 			iconItem={(person) => {
 				console.log('person: ', person) //TODO - SLETT MEG
@@ -124,6 +134,7 @@ export const ResultatVisning = ({ resultat }) => {
 				}
 			}}
 			onExpand={(person) => {
+				// console.log('person: ', person) //TODO - SLETT MEG
 				return (
 					<>
 						<StyledAlert variant={'info'} size={'small'} style={{ marginTop: '10px' }}>
@@ -132,6 +143,7 @@ export const ResultatVisning = ({ resultat }) => {
 							å se egenskaper fra alle fagsystemer.
 						</StyledAlert>
 						<PdlfVisningConnector fagsystemData={{ pdlforvalter: person }} loading={loading} />
+						{/*<PdlVisning pdlData={{ hentPerson: person }} loading={loading} />*/}
 					</>
 				)
 			}}
