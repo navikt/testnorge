@@ -81,7 +81,7 @@ class BestillingArenaforvalterStatusMapperTest {
 
         List<RsStatusRapport> identStatuses = BestillingArenaforvalterStatusMapper.buildArenaStatusMap(ARENA_ORACLE_EXCEPTION_TJENESTE);
 
-        assertThat(identStatuses.get(0).getStatuser().get(0).getMelding(), is(equalTo("Feil: I/O error on POST request")));
+        assertThat(identStatuses.get(0).getStatuser().get(0).getMelding(), is(equalTo("Feil: IO error on POST request")));
         assertThat(identStatuses.get(0).getStatuser().get(0).getDetaljert().get(0).getMiljo(), is(equalTo("q1")));
         assertThat(identStatuses.get(0).getStatuser().get(0).getDetaljert().get(0).getIdenter(), containsInAnyOrder(IDENT));
     }

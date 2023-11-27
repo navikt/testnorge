@@ -46,7 +46,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @AutoConfigureMockMvc(addFilters = false)
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-class ElasticControllerTest {
+class OpensearchControllerTest {
 
     private static final String BASE_URL = "/api/v1/elastic";
     private static final String IDENT1 = "11111111111";
@@ -75,39 +75,28 @@ class ElasticControllerTest {
     }
 
     @Test
-    void getAllSearchHits_OK() throws Exception {
+    void getBestillingByIdent_OK() throws Exception {
 
         mockMvc
-                .perform(post(BASE_URL + "/search-hits")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{}"))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.totalHits").value(2L));
-    }
-
-    @Test
-    void getSpecificSearchHit_OK() throws Exception {
-
-        mockMvc
-                .perform(get(BASE_URL + "/search-hits/ident/{ident}", IDENT1)
+                .perform(get(BASE_URL + "/bestilling/ident/{ident}", IDENT1)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.totalHits").value(1L))
-                .andExpect(jsonPath("$.searchHits[*].content.identer[*]", hasSize(3)))
-                .andExpect(jsonPath("$.searchHits[*].content.identer[*]", hasItem(IDENT1)));
+                .andExpect(jsonPath("$.[*]", hasSize(1)))
+                .andExpect(jsonPath("$.[0].id", is(1)))
+                .andExpect(jsonPath("$.[0].identer[*]", hasSize(3)))
+                .andExpect(jsonPath("$.[0].identer[*]", hasItem(IDENT1)));
     }
 
     @Test
-    void getSpecificSearchHit_NotFound() throws Exception {
+    void getBestillingByIdent__NotFound() throws Exception {
 
         mockMvc
-                .perform(get(BASE_URL + "/search-hits/ident/{ident}", IDENT6)
+                .perform(get(BASE_URL + "/bestilling/ident/{ident}", IDENT6)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.totalHits").value(0L));
+                .andExpect(jsonPath("$.[*]", hasSize(0)));
     }
 
     @Test

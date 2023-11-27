@@ -7,7 +7,6 @@ public enum ElasticTyper {
     KRRSTUB("Digital kontaktinformasjon (DKIF)"),
     SIGRUN_LIGNET("Lignet skatteinntekt (Sigrunstub)"),
     SIGRUN_PENSJONSGIVENDE("Pensjonsgivende inntekt (Sigrunstub)"),
-    ARENA_BRUKER("Arena bruker"),
     ARENA_AAP("Arena AAP ytelse"),
     ARENA_AAP115("Arena AAP115 rettighet"),
     ARENA_DAGP("Arena dagpenger"),

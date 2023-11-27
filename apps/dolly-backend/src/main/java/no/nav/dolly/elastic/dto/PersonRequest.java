@@ -38,7 +38,7 @@ public class PersonRequest {
     private Boolean harOpphold;
     @Schema(description = "landkode")
     private String statsborgerskap;
-    private Boolean nyIdentitet;
+    private Boolean harNyIdentitet;
 
     private BostedAdresseRequest bostedsadresse;
     private Boolean harDeltBosted;
@@ -55,6 +55,7 @@ public class PersonRequest {
         private String kommunenummer;
         private String postnummer;
         private String bydelsnummer;
+        private Boolean harBydelsnummer;
         private Boolean harUtenlandsadresse;
         private Boolean harMatrikkelAdresse;
         private Boolean harUkjentAdresse;

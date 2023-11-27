@@ -14,6 +14,7 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
+import no.nav.dolly.util.IdentTypeUtil;
 import no.nav.dolly.util.TransactionHelperService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -36,6 +37,7 @@ import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
 @RequiredArgsConstructor
 public class ArenaForvalterClient implements ClientRegister {
 
+    private static final String NOT_SUPPORTED = "Avvik: Arena har sluttet å støtte ikke-syntetiske identer.";
     private static final String MILJOE_FMT = "%s$BRUKER= %s";
     private static final String SYSTEM = "Arena";
 
@@ -69,24 +71,32 @@ public class ArenaForvalterClient implements ClientRegister {
     private Mono<String> doArenaOpprett(Arenadata arenadata, String ident, List<String> miljoer) {
 
         return Flux.fromIterable(miljoer)
-                .flatMap(miljoe -> arenaForvalterConsumer.getArenaBruker(ident, miljoe)
-                        .map(arenaArbeidsokerStatus -> ArenaEksisterendeVedtakUtil.getArenaOperasjoner(arenadata, arenaArbeidsokerStatus))
-                        .flatMapMany(arenaOperasjoner -> Flux.concat(
+                .flatMap(miljoe -> {
 
-                                arenaBrukerService.sendBruker(arenadata, arenaOperasjoner, ident, miljoe)
-                                        .map(brukerStatus -> fmtResponse(miljoe, BRUKER, brukerStatus)),
+                    if (IdentTypeUtil.isSyntetisk(ident)) {
 
-                                arenaAap115Service.sendAap115(arenadata, arenaOperasjoner, ident, miljoe)
-                                        .map(aap115tstaus -> fmtResponse(miljoe, AAP115, aap115tstaus)),
+                        return arenaForvalterConsumer.getArenaBruker(ident, miljoe)
+                                .map(arenaArbeidsokerStatus -> ArenaEksisterendeVedtakUtil.getArenaOperasjoner(arenadata, arenaArbeidsokerStatus))
+                                .flatMapMany(arenaOperasjoner -> Flux.concat(
 
-                                arenaStansYtelseService.stopYtelse(arenaOperasjoner, ident, miljoe),
+                                        arenaBrukerService.sendBruker(arenadata, arenaOperasjoner, ident, miljoe)
+                                                .map(brukerStatus -> fmtResponse(miljoe, BRUKER, brukerStatus)),
 
-                                arenaAapService.sendAap(arenadata, arenaOperasjoner, ident, miljoe)
-                                        .map(aapStataus -> fmtResponse(miljoe, AAP, aapStataus)),
+                                        arenaAap115Service.sendAap115(arenadata, arenaOperasjoner, ident, miljoe)
+                                                .map(aap115tstaus -> fmtResponse(miljoe, AAP115, aap115tstaus)),
 
-                                arenaDagpengerService.sendDagpenger(arenadata, arenaOperasjoner, ident, miljoe)
-                                        .map(dagpengerStatus -> fmtResponse(miljoe, DAGPENGER, dagpengerStatus))
-                        )))
+                                        arenaStansYtelseService.stopYtelse(arenaOperasjoner, ident, miljoe),
+
+                                        arenaAapService.sendAap(arenadata, arenaOperasjoner, ident, miljoe)
+                                                .map(aapStataus -> fmtResponse(miljoe, AAP, aapStataus)),
+
+                                        arenaDagpengerService.sendDagpenger(arenadata, arenaOperasjoner, ident, miljoe)
+                                                .map(dagpengerStatus -> fmtResponse(miljoe, DAGPENGER, dagpengerStatus))
+                                ));
+                    } else {
+                        return Flux.just(fmtResponse(miljoe, BRUKER, NOT_SUPPORTED));
+                    }
+                })
                 .collect(Collectors.joining(","));
     }
 
