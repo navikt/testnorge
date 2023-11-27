@@ -28,6 +28,7 @@ export const Bestillingsveileder = ({ error, sendBestilling }) => {
 
 	const options = BVOptions(location.state, gruppeId, personId)
 	const handleSubmit = (values) => {
+		console.log('values: ', values) //TODO - SLETT MEG
 		sendBestilling(values, options, gruppeId, navigate)
 	}
 

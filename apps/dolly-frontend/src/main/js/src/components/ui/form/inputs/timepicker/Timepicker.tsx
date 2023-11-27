@@ -8,6 +8,7 @@ import { InputWrapper } from '@/components/ui/form/inputWrapper/InputWrapper'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { fieldError, fixTimezone, SyntEvent } from '@/components/ui/form/formUtils'
 import 'react-datepicker/dist/react-datepicker.css'
+import { useFormContext } from 'react-hook-form'
 
 registerLocale('nb', locale_nb)
 
@@ -64,31 +65,29 @@ export const DollyTimepicker = (props) => (
 	</InputWrapper>
 )
 
-const P_FormikTimepicker = ({ fastfield, ...props }) => (
-	<FormikField name={props.name} fastfield={fastfield}>
-		{({ field, form, meta }) => {
-			const handleChange = (date) => {
-				const fixedDate = fixTimezone(date)
-				form.setFieldTouched(props.name) // Need to trigger touched manually for Datepicker
+const P_FormikTimepicker = ({ fastfield, ...props }) => {
+	const formMethods = useFormContext()
+	const value = formMethods.watch(props.name)
 
-				if (props.afterChange) props.afterChange(fixedDate)
+	const handleChange = (date) => {
+		const fixedDate = fixTimezone(date)
+		if (props.afterChange) props.afterChange(fixedDate)
 
-				return field.onChange(SyntEvent(field.name, fixedDate))
-			}
-			const handleBlur = () => field.onBlur(SyntEvent(field.name, field.value))
-
-			return (
-				<DollyTimepicker
-					value={field.value}
-					onChange={handleChange}
-					onBlur={handleBlur}
-					feil={fieldError(meta)}
-					{...props}
-				/>
-			)
-		}}
-	</FormikField>
-)
+		return props.onChange(SyntEvent(props.name, fixedDate))
+	}
+	const handleBlur = () => props.onBlur(SyntEvent(props.name, value))
+	return (
+		<FormikField name={props.name} fastfield={fastfield}>
+			<DollyTimepicker
+				value={value}
+				onChange={handleChange}
+				onBlur={handleBlur}
+				feil={fieldError(formMethods.formState.errors[props.name])}
+				{...props}
+			/>
+		</FormikField>
+	)
+}
 
 export const FormikDateTimepicker = ({ visHvisAvhuket = true, ...props }) => {
 	const component = <P_FormikTimepicker {...props} />

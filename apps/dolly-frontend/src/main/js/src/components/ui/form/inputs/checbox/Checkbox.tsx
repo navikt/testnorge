@@ -1,10 +1,10 @@
 import { InputWrapper } from '@/components/ui/form/inputWrapper/InputWrapper'
 import { FormikField } from '@/components/ui/form/FormikField'
-import { SyntEvent } from '@/components/ui/form/formUtils'
 import { Checkbox as NavCheckbox, Switch } from '@navikt/ds-react'
 
 import './Checkbox.less'
 import styled from 'styled-components'
+import { useFormContext } from 'react-hook-form'
 
 const StyledAttributeCheckbox = styled(NavCheckbox)`
 	&&& {
@@ -62,23 +62,23 @@ export const FormikCheckbox = ({
 	fastfield = false,
 	checkboxMargin = false,
 	...props
-}) => (
-	<FormikField name={props.name} fastfield={fastfield}>
-		{({ field, _form, _meta }) => {
-			const handleChange = (event: { target: { checked: any } }) => {
-				field.onChange(SyntEvent(field.name, event.target.checked))
-				if (afterChange) afterChange(event.target.checked)
-			}
+}) => {
+	const formMethods = useFormContext()
+	const value = formMethods.watch(props.name)
+	const handleChange = (event: { target: { checked: any } }) => {
+		formMethods.setValue(props.name, event.target.checked)
+		if (afterChange) afterChange(event.target.checked)
+	}
 
-			return (
-				<DollyCheckbox
-					size={size}
-					checked={field.value}
-					onChange={handleChange}
-					checkboxMargin={checkboxMargin}
-					{...props}
-				/>
-			)
-		}}
-	</FormikField>
-)
+	return (
+		<FormikField name={props.name} fastfield={fastfield}>
+			<DollyCheckbox
+				size={size}
+				checked={value}
+				onChange={handleChange}
+				checkboxMargin={checkboxMargin}
+				{...props}
+			/>
+		</FormikField>
+	)
+}

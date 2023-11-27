@@ -45,6 +45,7 @@ export default defineConfig(({ mode }) => ({
 	base: '/',
 	build: {
 		outDir: 'build',
+		sourcemap: true,
 		cssCodeSplit: false,
 		rollupOptions: {
 			external: ['./nais.js'],

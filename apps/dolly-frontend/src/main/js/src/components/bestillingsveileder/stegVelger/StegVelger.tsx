@@ -22,8 +22,9 @@ import { yupResolver } from '@hookform/resolvers/yup'
 const STEPS = [Steg1, Steg2, Steg3]
 
 export const StegVelger = ({ initialValues, onSubmit }) => {
-	const _validate = (values) =>
-		validate(
+	const _validate = (values) => {
+		console.log('values: ', values) //TODO - SLETT MEG
+		return validate(
 			{
 				...values,
 				personFoerLeggTil: personFoerLeggTil,
@@ -32,10 +33,24 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 			},
 			CurrentStepComponent.validation,
 		)
+	}
 	const [step, setStep] = useState(0)
-	const formMethods = useForm({ defaultValues: initialValues, resolver: yupResolver(_validate) })
+	const CurrentStepComponent: any = STEPS[step]
+	const formMethods = useForm({
+		defaultValues: initialValues,
+		// resolver: yupResolver(CurrentStepComponent.validation),
+		resolver: async (data, context, options) => {
+			// you can debug your validation schema here
+			console.log('formData', data)
+			console.log(
+				'validation result',
+				await yupResolver(CurrentStepComponent.validation)(data, context, options),
+			)
+			return yupResolver(CurrentStepComponent.validation)(data, context, options)
+		},
+	})
 
-	const opts = useContext(BestillingsveilederContext)
+	const opts: any = useContext(BestillingsveilederContext)
 	const mutate = useMatchMutate()
 	const { personFoerLeggTil, tidligereBestillinger, leggTilPaaGruppe } = opts
 
@@ -64,8 +79,6 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 		return mutate(REGEX_BACKEND_BESTILLINGER)
 	}
 
-	const CurrentStepComponent = STEPS[step]
-
 	const labels = STEPS.map((v) => ({ label: v.label }))
 
 	const stateModifier = stateModifierFns(formMethods, opts)
@@ -91,7 +104,7 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 				step={step}
 				onPrevious={handleBack}
 				isLastStep={isLastStep()}
-				handleSubmit={_handleSubmit}
+				handleSubmit={() => _handleSubmit(formMethods.getValues())}
 			/>
 		</FormProvider>
 	)

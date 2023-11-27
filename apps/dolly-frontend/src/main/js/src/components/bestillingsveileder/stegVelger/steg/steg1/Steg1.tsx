@@ -4,7 +4,7 @@ import { Steg1Person } from './Steg1Person'
 import { Steg1Organisasjon } from './Steg1Organisasjon'
 
 export const Steg1 = ({ stateModifier }) => {
-	const opts = useContext(BestillingsveilederContext)
+	const opts: any = useContext(BestillingsveilederContext)
 
 	return opts.is.nyOrganisasjon ||
 		opts.is.nyStandardOrganisasjon ||

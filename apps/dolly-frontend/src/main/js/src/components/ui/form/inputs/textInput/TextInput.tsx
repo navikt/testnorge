@@ -19,6 +19,7 @@ export const TextInput = React.forwardRef(
 	(
 		{
 			placeholder = 'Ikke spesifisert',
+			name = 'dummy',
 			className,
 			icon,
 			isDisabled,
@@ -38,16 +39,17 @@ export const TextInput = React.forwardRef(
 		const css = cn('skjemaelement__input', className, {
 			'skjemaelement__input--harFeil': props.feil,
 		})
+		console.log('props: ', props) //TODO - SLETT MEG
 
 		return (
 			<>
 				<input
 					ref={ref}
 					disabled={isDisabled}
-					id={props.name}
+					id={name}
 					className={css}
 					placeholder={placeholder}
-					{...register(props.name)}
+					{...register(name)}
 					{...props}
 				/>
 				{icon && <StyledIcon fontSize={'1.5rem'} kind={icon} />}

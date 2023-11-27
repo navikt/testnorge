@@ -6,8 +6,11 @@ import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepic
 import texts from '@/components/inntektStub/texts'
 import tilleggsinformasjonPaths from '@/components/inntektStub/paths'
 
-const sjekkFelt = (formik, field, options, values, path) => {
-	const fieldValue = _.get(values, path)
+const sjekkFelt = (formMethods, field, options, values, path) => {
+	const fieldValue = formMethods.watch(path)
+	console.log('values: ', values) //TODO - SLETT MEG
+	console.log('field: ', field) //TODO - SLETT MEG
+	console.log('fieldValue: ', fieldValue) //TODO - SLETT MEG
 	const fieldPath = tilleggsinformasjonPaths(field)
 	const val = _.get(fieldValue, fieldPath)
 
@@ -15,8 +18,11 @@ const sjekkFelt = (formik, field, options, values, path) => {
 		!options.includes('<TOM>') &&
 		((fieldValue && !val && val !== false) || (!optionsUtfylt(options) && !options.includes(val)))
 	) {
-		if (fieldValue['inntektstype'] !== '' && !formik.errors?.hasOwnProperty('inntektstub')) {
-			formik.setFieldError(`inntektstub.${field}`, 'Feltet er påkrevd')
+		if (
+			fieldValue?.['inntektstype'] !== '' &&
+			!formMethods.formState.errors?.hasOwnProperty('inntektstub')
+		) {
+			formMethods.setError(`inntektstub.${field}`, 'Feltet er påkrevd')
 		}
 		return { feilmelding: 'Feltet er påkrevd' }
 	}
@@ -52,9 +58,9 @@ function optionsUtfylt(options) {
 	)
 }
 
-const fieldResolver = (field, handleChange, formik, path, index, options = []) => {
+const fieldResolver = (field, handleChange, formMethods, path, index, options = []) => {
 	const fieldName = tilleggsinformasjonPaths(field)
-	const values = formik.values
+	const values = formMethods.getValues()
 
 	if (dateFields.includes(field)) {
 		return (
@@ -64,7 +70,7 @@ const fieldResolver = (field, handleChange, formik, path, index, options = []) =
 				name={fieldName}
 				label={texts(field)}
 				afterChange={handleChange}
-				feil={sjekkFelt(formik, field, options, values, path)}
+				feil={sjekkFelt(formMethods, field, options, values, path)}
 			/>
 		)
 	} else if (field === 'skattemessigBosattILand' || field === 'opptjeningsland') {
@@ -77,7 +83,7 @@ const fieldResolver = (field, handleChange, formik, path, index, options = []) =
 				fastfield={false}
 				afterChange={handleChange}
 				size="large"
-				feil={sjekkFelt(formik, field, options, values, path)}
+				feil={sjekkFelt(formMethods, field, options, values, path)}
 			/>
 		)
 	} else if (optionsUtfylt(options)) {
@@ -89,7 +95,7 @@ const fieldResolver = (field, handleChange, formik, path, index, options = []) =
 				label={texts(field)}
 				onSubmit={handleChange}
 				size={numberFields.includes(field) ? 'medium' : 'large'}
-				feil={sjekkFelt(formik, field, options, values, path)}
+				feil={sjekkFelt(formMethods, field, options, values, path)}
 				type={numberFields.includes(field) ? 'number' : 'text'}
 			/>
 		)
@@ -107,13 +113,15 @@ const fieldResolver = (field, handleChange, formik, path, index, options = []) =
 			fastfield={false}
 			afterChange={handleChange}
 			size={booleanField(options) ? 'small' : wideFields.includes(field) ? 'xxlarge' : 'large'}
-			feil={sjekkFelt(formik, field, options, values, path)}
+			feil={sjekkFelt(formMethods, field, options, values, path)}
 			isClearable={field !== 'inntektstype'}
 		/>
 	)
 }
 
 const Inntekt = ({ fields = {}, onValidate, formMethods, path }) => {
+	console.log('fields: ', fields) //TODO - SLETT MEG
+	console.log('path: ', path) //TODO - SLETT MEG
 	return (
 		<div className="flexbox--flex-wrap">
 			{fieldResolver('inntektstype', onValidate, formMethods, path, `${path}.inntektstype`, [

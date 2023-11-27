@@ -1,4 +1,3 @@
-import * as _ from 'lodash'
 import Button from '@/components/ui/button/Button'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 import ExpandableBlokk from './ExpandableBlokk'
@@ -225,21 +224,20 @@ export const FormikDollyFieldArray = ({
 	errorText = null,
 }) => {
 	const formMethods = useFormContext()
-	const fieldMethods = useFieldArray({ control: formMethods.control, name: name })
-	const values = _.get(fieldMethods.fields.values, name, [newEntry])
+	const { append, fields, remove } = useFieldArray({ control: formMethods.control, name: name })
 	const addNewEntry = () => {
-		handleNewEntry ? handleNewEntry() : fieldMethods.append(newEntry)
+		handleNewEntry ? handleNewEntry() : append(newEntry)
 	}
 
 	return (
 		<ErrorBoundary>
 			<DollyFieldArrayWrapper header={header} hjelpetekst={hjelpetekst} nested={nested}>
-				{values.map((curr, idx) => {
-					const showDeleteButton = canBeEmpty ? true : values.length >= 2
+				{fields.map((curr, idx) => {
+					const showDeleteButton = canBeEmpty ? true : fields.length >= 2
 					const path = `${name}.${idx}`
 					const number = tag ? `${tag}.${idx + 1}` : `${idx + 1}`
 					const handleRemove = () => {
-						handleRemoveEntry ? handleRemoveEntry(idx) : fieldMethods.remove(idx)
+						handleRemoveEntry ? handleRemoveEntry(idx) : remove(idx)
 					}
 
 					if (nested) {
@@ -285,10 +283,10 @@ export const FormikDollyFieldArray = ({
 				})}
 				{errorText && <FaError>{errorText}</FaError>}
 				<FieldArrayAddButton
-					hoverText={title || (maxEntries === values.length && maxReachedDescription)}
+					hoverText={title || (maxEntries === fields.length && maxReachedDescription)}
 					addEntryButtonText={buttonText ? buttonText : header}
 					onClick={addNewEntry}
-					disabled={disabled || maxEntries === values.length}
+					disabled={disabled || maxEntries === fields.length}
 				/>
 			</DollyFieldArrayWrapper>
 		</ErrorBoundary>

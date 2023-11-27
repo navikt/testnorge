@@ -4,6 +4,10 @@ import { isDate } from 'date-fns'
 import { useFormContext } from 'react-hook-form'
 
 export const fieldError = (meta) => {
+	console.log('meta: ', meta) //TODO - SLETT MEG
+	if (_.isEmpty(meta)) {
+		return null
+	}
 	return !!meta.touched && !!meta.error ? { feilmelding: meta.error } : null
 }
 

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Inntekt from '@/components/inntektStub/validerInntekt/Inntekt'
 import InntektstubService from '@/service/services/inntektstub/InntektstubService'
 import * as _ from 'lodash'
-import { Form, useForm } from 'react-hook-form'
+import { Form, useFormContext } from 'react-hook-form'
 
 const tilleggsinformasjonAttributter = {
 	BilOgBaat: 'bilOgBaat',
@@ -17,9 +17,7 @@ const tilleggsinformasjonAttributter = {
 }
 
 const InntektStub = ({ inntektPath }) => {
-	const formMethods = useForm({
-		defaultValues: {},
-	})
+	const formMethods = useFormContext()
 	const [fields, setFields] = useState({})
 	const [inntektValues] = useState(_.get(formMethods.getValues(), inntektPath))
 	const [currentInntektstype, setCurrentInntektstype] = useState(
@@ -31,12 +29,14 @@ const InntektStub = ({ inntektPath }) => {
 	)
 
 	useEffect(() => {
+		console.log('formMethods.getValues(): ', formMethods.getValues()) //TODO - SLETT MEG
 		setCurrentInntektstype(_.get(formMethods.getValues(), `${inntektPath}.inntektstype`))
 	}, [formMethods.getValues()])
 
 	useEffect(() => {
+		console.log('inntektValues: ', inntektValues) //TODO - SLETT MEG
 		if (
-			inntektValues.inntektstype &&
+			inntektValues?.inntektstype &&
 			inntektValues.inntektstype !== '' &&
 			Object.keys(fields).length < 1
 		) {

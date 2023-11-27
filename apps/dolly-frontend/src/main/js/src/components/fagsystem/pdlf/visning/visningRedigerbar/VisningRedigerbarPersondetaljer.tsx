@@ -21,7 +21,8 @@ import {
 	RedigerLoading,
 } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/RedigerLoading'
 import { Alert } from '@navikt/ds-react'
-import { Form } from 'react-hook-form'
+import { Form, FormProvider, useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -33,6 +34,22 @@ type VisningTypes = {
 	ident: string
 	tpsMessagingData?: any
 }
+
+const validationSchema = Yup.object().shape(
+	{
+		folkeregisterpersonstatus: ifPresent(
+			'folkeregisterpersonstatus',
+			Yup.array().of(folkeregisterpersonstatus),
+		),
+		kjoenn: ifPresent('kjoenn', Yup.array().of(kjoenn)),
+		navn: ifPresent('navn', Yup.array().of(navn)),
+	},
+	[
+		['folkeregisterpersonstatus', 'folkeregisterpersonstatus'],
+		['kjoenn', 'kjoenn'],
+		['navn', 'navn'],
+	],
+)
 
 const FieldArrayEdit = styled.div`
 	&&& {
@@ -95,6 +112,10 @@ export const VisningRedigerbarPersondetaljer = ({
 	const [errorMessageSkjerming, setErrorMessageSkjerming] = useState(null)
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 	const [slettAttr, setSlettAttr] = useState(initialSlettAttr)
+	const formMethods = useForm({
+		defaultValues: redigertAttributt.pdlf ? redigertAttributt.pdlf : initialValues,
+		resolver: yupResolver(validationSchema),
+	})
 
 	const pdlfError = (error: any) => {
 		error &&
@@ -231,22 +252,6 @@ export const VisningRedigerbarPersondetaljer = ({
 		mountedRef.current = false
 		return slett()
 	}, [])
-
-	const validationSchema = Yup.object().shape(
-		{
-			folkeregisterpersonstatus: ifPresent(
-				'folkeregisterpersonstatus',
-				Yup.array().of(folkeregisterpersonstatus),
-			),
-			kjoenn: ifPresent('kjoenn', Yup.array().of(kjoenn)),
-			navn: ifPresent('navn', Yup.array().of(navn)),
-		},
-		[
-			['folkeregisterpersonstatus', 'folkeregisterpersonstatus'],
-			['kjoenn', 'kjoenn'],
-			['navn', 'navn'],
-		],
-	)
 
 	const harNavn = redigertAttributt?.pdlf
 		? redigertAttributt?.pdlf?.navn?.[0]?.fornavn ||
@@ -395,47 +400,39 @@ export const VisningRedigerbarPersondetaljer = ({
 				</PersondetaljerVisning>
 			)}
 			{visningModus === Modus.Skriv && (
-				<Form
-					initialValues={redigertAttributt.pdlf ? redigertAttributt.pdlf : initialValues}
-					onSubmit={handleSubmit}
-					validationSchema={validationSchema}
-				>
-					{(formMethods) => {
-						return (
-							<>
-								<FieldArrayEdit>
-									<div className="flexbox--flex-wrap">
-										<PersondetaljerSamlet
-											formMethods={formMethods}
-											tpsMessaging={tpsMessagingData}
-											harSkjerming={harSkjerming}
-											identtype={identtype}
-										/>
-									</div>
-									<Knappegruppe>
-										<NavButton
-											variant={'secondary'}
-											onClick={() => setVisningModus(Modus.Les)}
-											disabled={formMethods.formState.isSubmitting}
-											style={{ top: '1.75px' }}
-										>
-											Avbryt
-										</NavButton>
-										<NavButton
-											variant={'primary'}
-											onClick={() => formMethods.handleSubmit()}
-											disabled={
-												!formMethods.formState.isValid || formMethods.formState.isSubmitting
-											}
-										>
-											Endre
-										</NavButton>
-									</Knappegruppe>
-								</FieldArrayEdit>
-							</>
-						)
-					}}
-				</Form>
+				<FormProvider {...formMethods}>
+					<Form onSubmit={formMethods.handleSubmit(handleSubmit)}>
+						<>
+							<FieldArrayEdit>
+								<div className="flexbox--flex-wrap">
+									<PersondetaljerSamlet
+										formMethods={formMethods}
+										tpsMessaging={tpsMessagingData}
+										harSkjerming={harSkjerming}
+										identtype={identtype}
+									/>
+								</div>
+								<Knappegruppe>
+									<NavButton
+										variant={'secondary'}
+										onClick={() => setVisningModus(Modus.Les)}
+										disabled={formMethods.formState.isSubmitting}
+										style={{ top: '1.75px' }}
+									>
+										Avbryt
+									</NavButton>
+									<NavButton
+										variant={'primary'}
+										onClick={() => formMethods.handleSubmit(handleSubmit)}
+										disabled={!formMethods.formState.isValid || formMethods.formState.isSubmitting}
+									>
+										Endre
+									</NavButton>
+								</Knappegruppe>
+							</FieldArrayEdit>
+						</>
+					</Form>
+				</FormProvider>
 			)}
 		</>
 	)
