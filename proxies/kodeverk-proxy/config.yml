@@ -70,5 +70,7 @@ spec:
       memory: 1024Mi
     limits:
       memory: 2048Mi
+  envFrom:
+    - secret: azure-trygdeetaten-kodeverk-medl-proxy-trygdeetaten
   ingresses:
     - "https://testnav-kodeverk-proxy.dev-fss-pub.nais.io"
