@@ -36,8 +36,7 @@ import java.util.List;
 
 import static java.util.Objects.isNull;
 
-@Document(indexName = "bestilling")
-//@Document(indexName = "#{@applicationConfig.getElasticIndex}")
+@Document(indexName = "#{@environment.getProperty('open.search.index')}")
 @Data
 @Builder
 @NoArgsConstructor
