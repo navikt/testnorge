@@ -5,7 +5,7 @@ import no.nav.testnav.libs.reactiveproxy.config.DevConfig;
 import no.nav.testnav.libs.reactiveproxy.config.SecurityConfig;
 import no.nav.testnav.libs.reactiveproxy.filter.AddAuthenticationRequestGatewayFilterFactory;
 import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2ServerToServerConfiguration;
-import no.nav.testnav.libs.reactivesecurity.exchange.azuread.TrygdeetatenAzureAdTokenService;
+import no.nav.testnav.libs.reactivesecurity.exchange.azuread.NavAzureAdTokenService;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -25,7 +25,7 @@ public class KodeverkProxyApplicationStarter {
     @Bean
     public RouteLocator customRouteLocator(
             RouteLocatorBuilder builder,
-            TrygdeetatenAzureAdTokenService tokenService,
+            NavAzureAdTokenService tokenService,
             Consumers consumers
     ) {
         var addAuthenticationHeaderDevFilter = AddAuthenticationRequestGatewayFilterFactory
