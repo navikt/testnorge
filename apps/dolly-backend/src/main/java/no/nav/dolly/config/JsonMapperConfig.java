@@ -88,7 +88,6 @@ public class JsonMapperConfig {
                 return null;
             }
             var dateTime = node.asText().length() > 10 ? node.asText().substring(0, 10) : node.asText();
-            dateTime = dateTime.length() == 8 ? dateTime.substring(0,4) + '-' + dateTime.substring(4, 6) + '-' + dateTime.substring(6,8) : dateTime;
             return LocalDate.parse(dateTime);
         }
     }
@@ -101,7 +100,7 @@ public class JsonMapperConfig {
             if (isBlank(node.asText())) {
                 return null;
             }
-            String dateTime = node.asText().length() > 19 ? node.asText().substring(0, 19) : node.asText();
+            var dateTime = node.asText().length() > 19 ? node.asText().substring(0, 19) : node.asText();
             return dateTime.length() > 10 ? LocalDateTime.parse(dateTime) : LocalDate.parse(dateTime).atStartOfDay();
         }
     }

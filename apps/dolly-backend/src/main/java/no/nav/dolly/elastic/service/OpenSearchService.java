@@ -1,9 +1,8 @@
 package no.nav.dolly.elastic.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.dolly.elastic.ElasticBestilling;
 import no.nav.dolly.elastic.ElasticTyper;
 import no.nav.dolly.elastic.dto.SearchRequest;
@@ -30,7 +29,7 @@ import static java.util.Objects.nonNull;
 public class OpenSearchService {
 
     private final RestHighLevelClient restHighLevelClient;
-    private final ObjectMapper objectMapper;
+    private final BestillingElasticRepository bestillingElasticRepository;
 
     @Value("${open.search.index}")
     private String index;
@@ -47,41 +46,9 @@ public class OpenSearchService {
         return execQuery(query);
     }
 
-    public SearchResponse search(String ident) {
+    public List<ElasticBestilling> search(String ident) {
 
-        var query = OpenSearchQueryBuilder.buildSearchQuery(ident);
-        return execBestillingQuery(query);
-    }
-
-    private SearchResponse execBestillingQuery(BoolQueryBuilder query) {
-
-        var searchRequest = new org.opensearch.action.search.SearchRequest(index);
-        searchRequest.source(new SearchSourceBuilder().query(query)
-                .size(50));
-
-        try {
-            var response = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
-            var resultat = getIdenter(response);
-
-            resultat.setBestillinger(Arrays.stream(response.getHits().getHits())
-                    .map(hit -> {
-                        try {
-                            return objectMapper.readValue(hit.getSourceAsString(), ElasticBestilling.class);
-                        } catch (JsonProcessingException e) {
-                            log.warn("OpenSearch kunne ikke lese bestilling fra elastic resultat for ident {}, {}",
-                                    String.join(", ", resultat.getIdenter()), e.getMessage());
-                            return null;
-                        }
-                    })
-                    .toList());
-            return resultat;
-
-        } catch (IOException e) {
-            log.error("OpenSearch feil ved utføring av søk: {}", e.getMessage(), e);
-            return SearchResponse.builder()
-                    .error(e.getLocalizedMessage())
-                    .build();
-        }
+        return bestillingElasticRepository.getAllByIdenterIn(List.of(ident));
     }
 
     private SearchResponse execQuery(BoolQueryBuilder query) {

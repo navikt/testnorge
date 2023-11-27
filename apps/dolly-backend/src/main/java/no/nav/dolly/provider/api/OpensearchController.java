@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 import static java.lang.String.format;
 
 @RestController
@@ -30,7 +32,7 @@ public class OpensearchController {
 
     @GetMapping("/bestilling/ident/{ident}")
     @Operation(description = "Henter all lagret informasjon basert på ident")
-    public SearchResponse getAll(@PathVariable String ident) {
+    public List<ElasticBestilling> getAll(@PathVariable String ident) {
 
         return openSearchService.search(ident);
     }
