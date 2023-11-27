@@ -72,7 +72,7 @@ spec:
       tenant: nav.no
   image: {{image}}
   openSearch:
-    instance: bestillinger-dev
+    instance: bestillinger
     access: admin
   env:
     - name: SPRING_PROFILES_ACTIVE

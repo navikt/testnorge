@@ -24,5 +24,4 @@ public class ApplicationConfig {
     public void enableAuthCtxOnSpawnedThreads() {
         SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
     }
-
 }

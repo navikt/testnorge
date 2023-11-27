@@ -45,12 +45,12 @@ public class OpensearchImport implements ApplicationListener<ContextRefreshedEve
     @Transactional
     public void onApplicationEvent(ContextRefreshedEvent event) {
 
-        oppdaterIndexSetting();
+        log.info("OpenSearch database oppdatering starter ...");
 
         var start = System.currentTimeMillis();
         var antallLest = new AtomicInteger(0);
         var antallSkrevet = new AtomicInteger(0);
-        log.info("OpenSearch database oppdatering starter ...");
+        oppdaterIndexSetting();
 
         importAll(antallLest, antallSkrevet);
 
@@ -68,7 +68,7 @@ public class OpensearchImport implements ApplicationListener<ContextRefreshedEve
             var jsonParser = jsonFactory.createParser(indexSetting);
             var jsonNode = (JsonNode) objectMapper.readTree(jsonParser);
             elasticParamsConsumer.oppdaterParametre(jsonNode)
-                    .subscribe(status -> log.info("OpenSearch; status fra indeks parameter oppdatering: {}", status));
+                    .subscribe(status -> log.info("OpenSearch oppdatering av indeks status: {}", status));
 
         } catch (IOException e) {
             log.error("Feilet å gjøre setting for indekser {}", INDEX_SETTING, e);
