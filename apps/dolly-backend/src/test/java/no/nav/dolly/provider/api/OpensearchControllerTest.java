@@ -82,10 +82,10 @@ class OpensearchControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.bestillinger[*]", hasSize(1)))
-                .andExpect(jsonPath("$.bestillinger[0].id", is(1)))
-                .andExpect(jsonPath("$.bestillinger[0].identer[*]", hasSize(3)))
-                .andExpect(jsonPath("$.bestillinger[0].identer[*]", hasItem(IDENT1)));
+                .andExpect(jsonPath("$.[*]", hasSize(1)))
+                .andExpect(jsonPath("$.[0].id", is(1)))
+                .andExpect(jsonPath("$.[0].identer[*]", hasSize(3)))
+                .andExpect(jsonPath("$.[0].identer[*]", hasItem(IDENT1)));
     }
 
     @Test
@@ -96,7 +96,7 @@ class OpensearchControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.bestillinger.[*]", hasSize(0)));
+                .andExpect(jsonPath("$.[*]", hasSize(0)));
     }
 
     @Test
