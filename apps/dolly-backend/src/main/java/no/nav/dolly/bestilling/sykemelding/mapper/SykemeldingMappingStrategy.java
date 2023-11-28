@@ -8,7 +8,7 @@ import no.nav.dolly.bestilling.sykemelding.domain.DetaljertSykemeldingRequest.Ad
 import no.nav.dolly.bestilling.sykemelding.domain.DetaljertSykemeldingRequest.Organisasjon;
 import no.nav.dolly.bestilling.sykemelding.domain.DetaljertSykemeldingRequest.Pasient;
 import no.nav.dolly.bestilling.sykemelding.domain.SyntSykemeldingRequest;
-import no.nav.dolly.bestilling.sykemelding.dto.Norg2EnhetResponse;
+import no.nav.dolly.consumer.norg2.dto.Norg2EnhetResponse;
 import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding;
