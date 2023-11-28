@@ -12,10 +12,19 @@ spring:
           jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
           accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
         tokenx:
-          issuer-uri: https://tokenx.dev-gcp.nav.cloud.nais.io 
+          issuer-uri: https://tokenx.dev-gcp.nav.cloud.nais.io
           jwk-set-uri: https://tokenx.dev-gcp.nav.cloud.nais.io/jwks
           accepted-audience: ${TOKEN_X_CLIENT_ID}
   cloud:
     gateway:
       httpclient:
         response-timeout: 240s
+    vault:
+      enabled: false
+
+consumers:
+  kodeverk:
+    name: kodeverk-dev
+    namespace: team-rocket
+    url: http://kodeverk.org.svc.nais.local
+    cluster: dev-fss

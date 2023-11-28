@@ -8,6 +8,8 @@ rootProject.name = 'kodeverk-proxy'
 includeBuild '../../libs/reactive-core'
 includeBuild '../../libs/reactive-proxy'
 includeBuild '../../libs/data-transfer-objects'
+includeBuild '../../libs/security-core'
+includeBuild '../../libs/reactive-security'
 
 gradleEnterprise {
     buildScan {
