@@ -72,6 +72,7 @@ public class PdlPersonBolk {
     }
 
     @lombok.Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class GeografiskTilknytningBolk {
@@ -90,6 +91,7 @@ public class PdlPersonBolk {
     }
 
     @lombok.Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class GeografiskTilknytning {

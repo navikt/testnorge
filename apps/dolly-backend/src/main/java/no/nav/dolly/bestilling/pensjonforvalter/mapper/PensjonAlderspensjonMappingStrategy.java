@@ -32,12 +32,12 @@ public class PensjonAlderspensjonMappingStrategy implements MappingStrategy {
 
                         request.setKravFremsattDato(
                                 nullcheckSetDefaultValue(alderspensjon.getKravFremsattDato(), LocalDate.now()));
-                        request.setOnsketVirkningsDato(
+                        request.setIverksettelsesdato(
                                 nullcheckSetDefaultValue(alderspensjon.getIverksettelsesdato(), getNesteMaaned()));
 
                         request.setNavEnhetId(
                                 nullcheckSetDefaultValue(alderspensjon.getNavEnhetId(),
-                                        (String) context.getProperty("navEnhetId")));
+                                        (String) context.getProperty("navEnhet")));
 
                         request.setSaksbehandler(nullcheckSetDefaultValue(alderspensjon.getSaksbehandler(), getRandomAnsatt()));
                         request.setAttesterer(nullcheckSetDefaultValue(alderspensjon.getAttesterer(), getRandomAnsatt()));

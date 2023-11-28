@@ -10,6 +10,8 @@ import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpYtelseRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse.ResponseEnvironment;
 import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
+import no.nav.dolly.bestilling.sykemelding.Norg2Consumer;
+import no.nav.dolly.bestilling.sykemelding.dto.Norg2EnhetResponse;
 import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.Bestilling;
@@ -45,10 +47,19 @@ import java.util.Set;
 
 import static no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterClient.mergePensjonforvalterResponses;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anySet;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -75,6 +86,9 @@ class PensjonforvalterClientTest {
     private PdlDataConsumer pdlDataConsumer;
 
     @Mock
+    private Norg2Consumer norg2Consumer;
+
+    @Mock
     private ErrorStatusDecoder errorStatusDecoder;
 
     @Captor
@@ -93,6 +107,11 @@ class PensjonforvalterClientTest {
 
         var pdlPersonBolk = PdlPersonBolk.builder()
                 .data(PdlPersonBolk.Data.builder()
+                        .hentGeografiskTilknytningBolk(List.of(PdlPersonBolk.GeografiskTilknytningBolk.builder()
+                                        .geografiskTilknytning(PdlPersonBolk.GeografiskTilknytning.builder()
+                                                .gtKommune("1200")
+                                                .build())
+                                .build()))
                         .hentPersonBolk(List.of(PdlPersonBolk.PersonBolk.builder()
                                 .ident(IDENT)
                                 .person(new PdlPerson.Person())
@@ -100,6 +119,7 @@ class PensjonforvalterClientTest {
                         .build())
                 .build();
         when(personServiceConsumer.getPdlPersoner(anyList())).thenReturn(Flux.just(pdlPersonBolk));
+        when(norg2Consumer.getNorgEnhet(anyString())).thenReturn(Mono.just(Norg2EnhetResponse.builder().enhetNr("0315").build()));
     }
 
     // empty new response list to empty previous list

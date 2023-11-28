@@ -19,7 +19,7 @@ public class AlderspensjonRequest {
     private String fnr;
 
     private LocalDate kravFremsattDato;
-    private LocalDate onsketVirkningsDato;
+    private LocalDate iverksettelsesdato;
     private Integer uttaksgrad;
     private String saksbehandler;
     private String attesterer;

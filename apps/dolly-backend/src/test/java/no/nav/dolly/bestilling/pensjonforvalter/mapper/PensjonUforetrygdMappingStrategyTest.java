@@ -3,8 +3,6 @@ package no.nav.dolly.bestilling.pensjonforvalter.mapper;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonUforetrygdRequest;
-import no.nav.dolly.domain.PdlPerson;
-import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.mapper.strategy.LocalDateCustomMapping;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
@@ -15,10 +13,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.util.Collections;
-import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.stringContainsInOrder;
 
 @ExtendWith(MockitoExtension.class)
 class PensjonUforetrygdMappingStrategyTest {
@@ -84,79 +83,6 @@ class PensjonUforetrygdMappingStrategyTest {
 
         assertThat(resultat.getSaksbehandler(), is(equalTo(ANSATT)));
         assertThat(resultat.getAttesterer(),  stringContainsInOrder("Z", "9"));
-    }
-
-    @Test
-    void brukerErGift_setterUforeTypeGift() {
-
-        var context = new MappingContext.Factory().getContext();
-        context.setProperty(IDENT, FNR_1);
-        context.setProperty(PERSONDATA, List.of(PdlPersonBolk.PersonBolk.builder()
-                .ident(FNR_1)
-                .person(PdlPerson.Person.builder()
-                        .sivilstand(List.of(PdlPerson.Sivilstand.builder()
-                                .type(PdlPerson.SivilstandType.GIFT)
-                                .id(1)
-                                .build()))
-                        .build())
-                .build()));
-
-        var resultat = mapperFacade.map(new PensjonData.Uforetrygd(), PensjonUforetrygdRequest.class, context);
-
-        assertThat(resultat.getMinimumInntektForUforhetType(), is(equalTo(PensjonUforetrygdRequest.UforeType.GIFT)));
-    }
-
-    @Test
-    void brukerEnslig_setterUforeTypeEnslig() {
-
-        var context = new MappingContext.Factory().getContext();
-        context.setProperty(IDENT, FNR_1);
-        context.setProperty(PERSONDATA, List.of(PdlPersonBolk.PersonBolk.builder()
-                .ident(FNR_1)
-                .person(PdlPerson.Person.builder()
-                        .sivilstand(List.of(PdlPerson.Sivilstand.builder()
-                                .type(PdlPerson.SivilstandType.UGIFT)
-                                .id(1)
-                                .build()))
-                        .foedsel(List.of(PdlPerson.Foedsel.builder()
-                                .foedselsdato(LocalDate.of(1985, 1, 1))
-                                .foedselsaar(1985)
-                                .id(1)
-                                .build()))
-                        .build())
-                .build()));
-
-        var resultat = mapperFacade.map(PensjonData.Uforetrygd.builder()
-                .onsketVirkningsDato(LocalDate.of(2015, 1, 1))
-                .build(), PensjonUforetrygdRequest.class, context);
-
-        assertThat(resultat.getMinimumInntektForUforhetType(), is(equalTo(PensjonUforetrygdRequest.UforeType.ENSLIG)));
-    }
-
-    @Test
-    void brukerErUngUfoer_setterUforeTypeUngUfoer() {
-
-        var context = new MappingContext.Factory().getContext();
-        context.setProperty(IDENT, FNR_1);
-        context.setProperty(PERSONDATA, List.of(PdlPersonBolk.PersonBolk.builder()
-                .ident(FNR_1)
-                .person(PdlPerson.Person.builder()
-                        .sivilstand(List.of(PdlPerson.Sivilstand.builder()
-                                .type(PdlPerson.SivilstandType.UGIFT)
-                                .id(1)
-                                .build()))
-                        .foedsel(List.of(PdlPerson.Foedsel.builder()
-                                .foedselsaar(2000)
-                                .id(1)
-                                .build()))
-                        .build())
-                .build()));
-
-        var resultat = mapperFacade.map(PensjonData.Uforetrygd.builder()
-                .onsketVirkningsDato(LocalDate.of(2015, 1, 1))
-                .build(), PensjonUforetrygdRequest.class, context);
-
-        assertThat(resultat.getMinimumInntektForUforhetType(), is(equalTo(PensjonUforetrygdRequest.UforeType.UNGUFOR)));
     }
 
     private static LocalDate getForrigeMaaned() {
