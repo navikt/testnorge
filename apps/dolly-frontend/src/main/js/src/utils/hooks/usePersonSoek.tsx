@@ -17,3 +17,16 @@ export const useSoekIdenter = (request: SoekRequest) => {
 		mutate: mutate,
 	}
 }
+
+export const useBestillingerPaaIdent = (ident: string) => {
+	const { data, isLoading, error } = useSWR(
+		ident ? `${elasticUrl}/bestilling/ident/${ident}` : null,
+		(url) => Request.get(url),
+	)
+
+	return {
+		bestillinger: data,
+		loading: isLoading,
+		error: error,
+	}
+}

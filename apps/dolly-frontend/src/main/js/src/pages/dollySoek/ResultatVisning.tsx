@@ -14,9 +14,14 @@ import { NavigerTilPerson } from '@/pages/dollySoek/NavigerTilPerson'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
 import { usePdlMiljoeinfo, usePdlPersonbolk } from '@/utils/hooks/usePdlPerson'
 import { PdlVisning } from '@/components/fagsystem/pdl/visning/PdlVisning'
+import { useBestillingerPaaIdent } from '@/utils/hooks/usePersonSoek'
+import { BestillingSammendragModal } from '@/components/bestilling/sammendrag/BestillingSammendragModal'
+import { BestillingVisningListe } from '@/pages/dollySoek/BestillingVisningModal'
 
 export const ResultatVisning = ({ resultat }) => {
-	// console.log('resultat: ', resultat) //TODO - SLETT MEG
+	const identString = resultat?.identer?.join(',')
+	const { personer, loading, error } = usePdlfPersoner(identString)
+
 	if (!resultat) {
 		return (
 			<ContentContainer>
@@ -47,8 +52,6 @@ export const ResultatVisning = ({ resultat }) => {
 		)
 	}
 
-	const identString = resultat?.identer?.join(',')
-	const { personer, loading, error } = usePdlfPersoner(identString)
 	// const { personer: test } = usePdlfPersoner(identString)
 	// const { pdlData: personer, loading, error } = usePdlMiljoeinfo(identString)
 	// const { pdlData, loading, error } = usePdlPersonbolk(identString)
@@ -135,15 +138,25 @@ export const ResultatVisning = ({ resultat }) => {
 			}}
 			onExpand={(person) => {
 				// console.log('person: ', person) //TODO - SLETT MEG
+				const { bestillinger } = useBestillingerPaaIdent(person.person?.ident)
 				return (
 					<>
 						<StyledAlert variant={'info'} size={'small'} style={{ marginTop: '10px' }}>
+							Søket er gjort mot bestillinger foretatt i Dolly, og denne personenen ble returnert
+							fordi én eller flere av bestillingene samsvarer med søket. Fordi det er mulig å gjøre
+							endringer på personer i etterkant av bestilling er det ikke sikkert at alle treffene
+							stemmer overens med søket. Se bestillingen(e) knyttet til personen her:
+							<BestillingVisningListe bestillinger={bestillinger?.data} />
+						</StyledAlert>
+						{/*//TODO Bestillingsknapp her?*/}
+						{/*<BestillingSammendragModal bestilling={bestillinger?.data?.[0]} />*/}
+						<PdlfVisningConnector fagsystemData={{ pdlforvalter: person }} loading={loading} />
+						{/*<PdlVisning pdlData={{ hentPerson: person }} loading={loading} />*/}
+						<StyledAlert variant={'info'} size={'small'} inline style={{ marginTop: '10px' }}>
 							Viser kun egenskaper fra PDL,{' '}
 							<NavigerTilPerson ident={person.person.ident} linkTekst={'vis person i gruppe'} /> for
 							å se egenskaper fra alle fagsystemer.
 						</StyledAlert>
-						<PdlfVisningConnector fagsystemData={{ pdlforvalter: person }} loading={loading} />
-						{/*<PdlVisning pdlData={{ hentPerson: person }} loading={loading} />*/}
 					</>
 				)
 			}}
