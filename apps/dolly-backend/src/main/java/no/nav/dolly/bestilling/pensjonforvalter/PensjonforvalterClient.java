@@ -145,7 +145,7 @@ public class PensjonforvalterClient implements ClientRegister {
                                     .map(this::getPersonData)
                                     .flatMap(persondata -> Mono.zip(
                                             getPdlPerson(persondata),
-                                            getNavEnhetId(persondata)))
+                                            getNavEnhetNr(persondata)))
                                     .doOnNext(utvidetPersondata -> {
                                         if (utvidetPersondata.getT1().isEmpty()) {
                                             log.warn("Persondata for {} gir tom response fra PDL", dollyPerson.getIdent());
@@ -205,7 +205,7 @@ public class PensjonforvalterClient implements ClientRegister {
                 .collectList();
     }
 
-    private Mono<String> getNavEnhetId(Flux<PdlPersonBolk.Data> persondata) {
+    private Mono<String> getNavEnhetNr(Flux<PdlPersonBolk.Data> persondata) {
 
         return persondata
                 .map(PdlPersonBolk.Data::getHentGeografiskTilknytningBolk)
@@ -372,7 +372,7 @@ public class PensjonforvalterClient implements ClientRegister {
                         }));
     }
 
-    private Flux<PensjonforvalterResponse> lagreUforetrygd(PensjonData pensjondata, String navEnhetId,
+    private Flux<PensjonforvalterResponse> lagreUforetrygd(PensjonData pensjondata, String navEnhetNr,
                                                            String ident, Set<String> miljoer, boolean isOpprettEndre,
                                                            Long bestillingId, List<String> isTpsSyncEnv) {
 
@@ -389,7 +389,7 @@ public class PensjonforvalterClient implements ClientRegister {
                                     var context = MappingContextUtils.getMappingContext();
                                     context.setProperty(IDENT, ident);
                                     context.setProperty(MILJOER, List.of(miljoe));
-                                    context.setProperty(NAV_ENHET, navEnhetId);
+                                    context.setProperty(NAV_ENHET, navEnhetNr);
                                     return Flux.just(mapperFacade.map(uforetrygd, PensjonUforetrygdRequest.class, context))
                                             .flatMap(request -> pensjonforvalterConsumer.lagreUforetrygd(request)
                                                     .map(response -> {
