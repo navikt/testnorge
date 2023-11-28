@@ -126,7 +126,7 @@ export const ResultatVisning = ({ resultat }) => {
 			// data={pdlData?.hentPersonBolk}
 			columns={columns}
 			iconItem={(person) => {
-				console.log('person: ', person) //TODO - SLETT MEG
+				// console.log('person: ', person) //TODO - SLETT MEG
 				const kjoenn = person.person?.kjoenn?.[0]?.kjoenn
 				if (kjoenn === 'MANN' || kjoenn === 'GUTT') {
 					return <ManIconItem />

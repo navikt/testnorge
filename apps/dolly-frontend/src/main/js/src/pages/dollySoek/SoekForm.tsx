@@ -34,6 +34,30 @@ const Buttons = styled.div`
 	}
 `
 
+const KategoriHeader = styled.div`
+	display: flex;
+	align-items: center;
+`
+
+const KategoriCircle = styled.div`
+	display: flex;
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	margin-left: 10px;
+	background-color: #0067c5ff;
+	&& {
+		p {
+			margin: auto;
+			margin-top: -1px;
+			font-size: 15px;
+			font-weight: bold;
+			color: white;
+			padding-bottom: 5px;
+		}
+	}
+`
+
 const initialValues = {
 	typer: [],
 	personRequest: {
@@ -72,6 +96,17 @@ const initialValues = {
 		harOppholdsadresse: false,
 	},
 }
+
+const Header = ({ title, antall }) => (
+	<KategoriHeader>
+		<span>{title}</span>
+		{antall > 0 && (
+			<KategoriCircle>
+				<p>{antall}</p>
+			</KategoriCircle>
+		)}
+	</KategoriHeader>
+)
 
 export const SoekForm = () => {
 	const [request, setRequest] = useState(null)
@@ -113,36 +148,64 @@ export const SoekForm = () => {
 								return _.get(formikBag.values, path)
 							}
 
+							const antallFagsystemer = _.get(formikBag.values, 'typer')?.length
+
+							const getAntallRequest = (liste: Array<string>) => {
+								let antall = 0
+								liste.forEach((item) => {
+									_.get(formikBag.values.personRequest, item) && antall++
+								})
+								return antall
+							}
+
 							return (
 								<>
 									<Form className="flexbox--flex-wrap" autoComplete="off">
 										<Accordion size="small" headingSize="xsmall" className="flexbox--full-width">
 											<Accordion.Item defaultOpen={true}>
-												<Accordion.Header>Fagsystemer</Accordion.Header>
+												<Accordion.Header>
+													<Header title="Fagsystemer" antall={antallFagsystemer} />
+												</Accordion.Header>
 												<Accordion.Content>
 													<div className="flexbox--full-width" style={{ marginBottom: '10px' }}>
 														<FormikSelect
 															name="typer"
-															placeholder="Velg fagsystemer..."
+															placeholder="Velg fagsystemer ..."
 															title="Fagsystemer"
 															options={Options('registerTyper')}
 															isMulti={true}
 															size="grow"
-															fastfield={false}
+															// fastfield={false}
 															onChange={(val: SyntheticEvent) => handleChangeList(val, 'typer')}
+															value={getValue('typer')}
 														/>
 													</div>
 												</Accordion.Content>
 											</Accordion.Item>
 											<Accordion.Item>
-												<Accordion.Header>Personinformasjon</Accordion.Header>
+												<Accordion.Header>
+													<Header
+														title="Personinformasjon"
+														antall={getAntallRequest([
+															'kjoenn',
+															'statsborgerskap',
+															'harVerge',
+															'harFullmakt',
+															'harDoedsfall',
+															'harInnflytting',
+															'harUtflytting',
+															'harSikkerhetstiltak',
+															'harTilrettelagtKommunikasjon',
+														])}
+													/>
+												</Accordion.Header>
 												<Accordion.Content>
 													<div className="flexbox--flex-wrap">
 														<FormikSelect
 															name={`${personPath}.kjoenn`}
 															options={Options('kjoenn')}
 															size="large"
-															placeholder="Velg kjønn..."
+															placeholder="Velg kjønn ..."
 															onChange={(val: SyntheticEvent) =>
 																handleChange(val?.value || null, `${personPath}.kjoenn`)
 															}
@@ -152,7 +215,7 @@ export const SoekForm = () => {
 															name={`${personPath}.statsborgerskap`}
 															kodeverk={AdresseKodeverk.StatsborgerskapLand}
 															size="large"
-															placeholder="Velg statsborgerskap..."
+															placeholder="Velg statsborgerskap ..."
 															onChange={(val: SyntheticEvent) =>
 																handleChange(val?.value || null, `${personPath}.statsborgerskap`)
 															}
@@ -224,14 +287,30 @@ export const SoekForm = () => {
 												</Accordion.Content>
 											</Accordion.Item>
 											<Accordion.Item>
-												<Accordion.Header>Adresser</Accordion.Header>
+												<Accordion.Header>
+													<Header
+														title="Adresser"
+														antall={getAntallRequest([
+															'bostedsadresse.kommunenummer',
+															'bostedsadresse.postnummer',
+															'bostedsadresse.bydelsnummer',
+															'addressebeskyttelse',
+															'bostedsadresse.harBydelsnummer',
+															'bostedsadresse.harUtenlandsadresse',
+															'bostedsadresse.harMatrikkelAdresse',
+															'bostedsadresse.harUkjentAdresse',
+															'harKontaktadresse',
+															'harOppholdsadresse',
+														])}
+													/>
+												</Accordion.Header>
 												<Accordion.Content>
 													<div className="flexbox--flex-wrap">
 														<FormikSelect
 															name={`${personPath}.bostedsadresse.kommunenummer`}
 															kodeverk={AdresseKodeverk.Kommunenummer}
 															size="large"
-															placeholder="Velg kommunenummer..."
+															placeholder="Velg kommunenummer ..."
 															onChange={(val: SyntheticEvent) =>
 																handleChange(
 																	val?.value || null,
@@ -244,7 +323,7 @@ export const SoekForm = () => {
 															name={`${personPath}.bostedsadresse.postnummer`}
 															kodeverk={AdresseKodeverk.Postnummer}
 															size="large"
-															placeholder="Velg postnummer..."
+															placeholder="Velg postnummer ..."
 															onChange={(val: SyntheticEvent) =>
 																handleChange(
 																	val?.value || null,
@@ -257,7 +336,7 @@ export const SoekForm = () => {
 															name={`${personPath}.bostedsadresse.bydelsnummer`}
 															kodeverk={GtKodeverk.BYDEL}
 															size="large"
-															placeholder="Velg bydelsnummer..."
+															placeholder="Velg bydelsnummer ..."
 															onChange={(val: SyntheticEvent) =>
 																handleChange(
 																	val?.value || null,
@@ -270,7 +349,7 @@ export const SoekForm = () => {
 															name={`${personPath}.addressebeskyttelse`}
 															options={Options('gradering')}
 															size="large"
-															placeholder="Velg adressebeskyttelse..."
+															placeholder="Velg adressebeskyttelse ..."
 															onChange={(val: SyntheticEvent) =>
 																handleChange(
 																	val?.value || null,
@@ -343,14 +422,26 @@ export const SoekForm = () => {
 												</Accordion.Content>
 											</Accordion.Item>
 											<Accordion.Item>
-												<Accordion.Header>Familierelasjoner</Accordion.Header>
+												<Accordion.Header>
+													<Header
+														title="Familierelasjoner"
+														antall={getAntallRequest([
+															'sivilstand',
+															'harBarn',
+															'harForeldre',
+															'harDoedfoedtBarn',
+															'harForeldreAnsvar',
+															'harDeltBosted',
+														])}
+													/>
+												</Accordion.Header>
 												<Accordion.Content>
 													<div className="flexbox--flex-wrap">
 														<FormikSelect
 															name={`${personPath}.sivilstand`}
 															options={Options('sivilstandType')}
 															size="large"
-															placeholder="Velg sivilstand..."
+															placeholder="Velg sivilstand ..."
 															onChange={(val: SyntheticEvent) =>
 																handleChange(val?.value || null, `${personPath}.sivilstand`)
 															}
@@ -400,14 +491,24 @@ export const SoekForm = () => {
 												</Accordion.Content>
 											</Accordion.Item>
 											<Accordion.Item>
-												<Accordion.Header>Identifikasjon</Accordion.Header>
+												<Accordion.Header>
+													<Header
+														title="Identifikasjon"
+														antall={getAntallRequest([
+															'identtype',
+															'harFalskIdentitet',
+															'harUtenlandskIdentifikasjonsnummer',
+															'harNyIdentitet',
+														])}
+													/>
+												</Accordion.Header>
 												<Accordion.Content>
 													<div className="flexbox--flex-wrap">
 														<FormikSelect
 															name={`${personPath}.identtype`}
 															options={Options('identtype')}
 															size="large"
-															placeholder="Velg identtype..."
+															placeholder="Velg identtype ..."
 															onChange={(val: SyntheticEvent) =>
 																handleChange(val?.value || null, `${personPath}.identtype`)
 															}
@@ -444,7 +545,15 @@ export const SoekForm = () => {
 												</Accordion.Content>
 											</Accordion.Item>
 											<Accordion.Item>
-												<Accordion.Header>Annet</Accordion.Header>
+												<Accordion.Header>
+													<Header
+														title="Annet"
+														antall={getAntallRequest([
+															'harOpphold',
+															'harKontaktinformasjonForDoedsbo',
+														])}
+													/>
+												</Accordion.Header>
 												<Accordion.Content>
 													<div className="flexbox--flex-wrap">
 														<FormikCheckbox
