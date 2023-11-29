@@ -141,7 +141,8 @@ const P_FormikSelect = ({ feil, ...props }: SelectProps) => {
 		if (props.afterChange) props.afterChange(selected)
 	}
 
-	const handleBlur = () => field.onBlur(SyntEvent(field.name))
+	const handleBlur = () => field?.onBlur?.(SyntEvent(field.name))
+	console.log('field.name: ', field.name) //TODO - SLETT MEG
 
 	return (
 		<DollySelect

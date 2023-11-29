@@ -10,8 +10,11 @@ const StyledLabel = styled.label`
 `
 
 export const Label = ({ name, label, feil, info = null, containerClass = null, children }) => {
+	const feilmelding = feil?.feilmelding?.message || feil?.feilmelding
+	console.log('feilmelding: ', feilmelding) //TODO - SLETT MEG
+	console.log('info: ', info) //TODO - SLETT MEG
 	const wrapClass = cn('skjemaelement', containerClass, {
-		error: Boolean(feil && !_.isEmpty(feil.feilmelding)),
+		error: Boolean(!_.isEmpty(feilmelding)),
 		'label-offscreen': _.isNil(label),
 	})
 
@@ -32,9 +35,9 @@ export const Label = ({ name, label, feil, info = null, containerClass = null, c
 				</StyledLabel>
 			)}
 			{children}
-			{feil && !_.isEmpty(feil.feilmelding) && (
+			{!_.isEmpty(feilmelding) && (
 				<div role="alert" aria-live="assertive">
-					<div className="skjemaelement__feilmelding">{feil.feilmelding}</div>
+					<div className="skjemaelement__feilmelding">{feilmelding}</div>
 				</div>
 			)}
 		</div>

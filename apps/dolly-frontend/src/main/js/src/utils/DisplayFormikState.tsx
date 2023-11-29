@@ -10,7 +10,7 @@ const FormState = ({ values, errors }) => (
 )
 
 const replacer = (key: string, value: any) => {
-	const exludedProperties = ['fysiskDokument', 'base64']
+	const exludedProperties = ['fysiskDokument', 'base64', 'ref']
 	if (exludedProperties.some((excludedKey) => excludedKey === key)) {
 		return '**Forkortet verdi**'
 	} else return value
@@ -21,6 +21,8 @@ export default function DisplayFormikState({ visState = false, ...props }) {
 		getValues,
 		formState: { errors },
 	} = useFormContext()
+	console.log('getValues(): ', getValues()) //TODO - SLETT MEG
+	console.log('errors: ', errors) //TODO - SLETT MEG
 	const [showState, toggleShowState] = useToggle(visState)
 
 	return (

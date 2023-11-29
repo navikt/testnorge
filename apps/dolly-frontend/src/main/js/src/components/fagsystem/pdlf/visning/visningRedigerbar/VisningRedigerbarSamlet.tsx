@@ -284,7 +284,7 @@ export const VisningRedigerbarSamlet = ({
 				</DollyFieldArray>
 			)}
 			{visningModus === Modus.Skriv && (
-				<Form onSubmit={formMethods.handleSubmit(handleSubmit)} enableReinitialize>
+				<Form onSubmit={() => formMethods.handleSubmit(handleSubmit)} enableReinitialize>
 					<>
 						<DollyFieldArray
 							data={_.get(redigertAttributtListe, path) || initialValuesListe}

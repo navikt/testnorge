@@ -70,8 +70,9 @@ export const NyIdent = ({ brukernavn, onAvbryt, onSubmit }: NyBestillingProps) =
 	}
 
 	const preSubmit = (values: { mal: any }) => {
+		console.log('values: ', values) //TODO - SLETT MEG
 		if (values.mal) values.mal = malOptions.find((m) => m.value === values.mal).data
-		return onSubmit(values, undefined)
+		return onSubmit(values, formMethods)
 	}
 
 	const valgtMal = malOptions.find((mal) => mal.value === _.get(formMethods.getValues(), 'mal'))
@@ -80,7 +81,7 @@ export const NyIdent = ({ brukernavn, onAvbryt, onSubmit }: NyBestillingProps) =
 
 	return (
 		<FormProvider {...formMethods}>
-			<form onSubmit={formMethods.handleSubmit(preSubmit(formMethods.getValues()))}>
+			<form onSubmit={() => preSubmit(formMethods.getValues())}>
 				<div className="ny-bestilling-form">
 					<h3>Velg type og antall</h3>
 					<div className="ny-bestilling-form_selects">
@@ -145,7 +146,7 @@ export const NyIdent = ({ brukernavn, onAvbryt, onSubmit }: NyBestillingProps) =
 						data-cy={CypressSelector.BUTTON_START_BESTILLING}
 						submitknapp="Start bestilling"
 						disabled={!formMethods.formState.isValid || formMethods.formState.isSubmitting}
-						onSubmit={formMethods.handleSubmit(preSubmit(formMethods.getValues()))}
+						onSubmit={() => preSubmit(formMethods.getValues())}
 						onAvbryt={onAvbryt}
 						center
 					/>

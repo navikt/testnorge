@@ -75,7 +75,7 @@ const P_FormikTimepicker = ({ fastfield, ...props }) => {
 
 		return props.onChange(SyntEvent(props.name, fixedDate))
 	}
-	const handleBlur = () => props.onBlur(SyntEvent(props.name, value))
+	const handleBlur = () => props?.onBlur?.(SyntEvent(props.name, value))
 	return (
 		<FormikField name={props.name} fastfield={fastfield}>
 			<DollyTimepicker

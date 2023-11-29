@@ -53,7 +53,7 @@ export const NyOrganisasjon = ({ onAvbryt, onSubmit, brukernavn }: NyBestillingP
 
 	return (
 		<FormProvider {...formMethods}>
-			<Form initialValues={initialValues} onSubmit={formMethods.handleSubmit(preSubmit)}>
+			<Form initialValues={initialValues} onSubmit={() => formMethods.handleSubmit(preSubmit)}>
 				<div className="ny-bestilling-form">
 					<div className="ny-bestilling-form_maler">
 						<div>
@@ -99,7 +99,7 @@ export const NyOrganisasjon = ({ onAvbryt, onSubmit, brukernavn }: NyBestillingP
 						data-cy={CypressSelector.BUTTON_START_BESTILLING}
 						submitknapp="Start bestilling"
 						disabled={!formMethods.formState.isValid || formMethods.formState.isSubmitting}
-						onSubmit={formMethods.handleSubmit}
+						onSubmit={() => formMethods.handleSubmit(preSubmit)}
 						onAvbryt={onAvbryt}
 						center
 					/>

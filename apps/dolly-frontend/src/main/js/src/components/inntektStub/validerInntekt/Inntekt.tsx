@@ -130,7 +130,6 @@ const Inntekt = ({ fields = {}, onValidate, formMethods, path }) => {
 				'PENSJON_ELLER_TRYGD',
 				'NAERINGSINNTEKT',
 			])}
-
 			{Object.keys(fields)
 				.filter((field) => !(fields[field].length === 1 && fields[field][0] === '<TOM>'))
 				.map((field) =>

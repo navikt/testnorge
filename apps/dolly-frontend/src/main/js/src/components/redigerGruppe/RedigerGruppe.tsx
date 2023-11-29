@@ -104,7 +104,7 @@ const RedigerGruppe = ({
 				control={formMethods.control}
 				className={'opprett-tabellrad'}
 				autoComplete={'off'}
-				onSubmit={formMethods.handleSubmit(onHandleSubmit)}
+				onSubmit={() => formMethods.handleSubmit(onHandleSubmit)}
 			>
 				<div className="fields">
 					<FormikTextInput

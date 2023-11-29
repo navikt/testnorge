@@ -17,29 +17,21 @@ const tilleggsinformasjonAttributter = {
 }
 
 const InntektStub = ({ inntektPath }) => {
+	console.log('inntektPath: ', inntektPath) //TODO - SLETT MEG
 	const formMethods = useFormContext()
 	const [fields, setFields] = useState({})
-	const [inntektValues] = useState(_.get(formMethods.getValues(), inntektPath))
-	const [currentInntektstype, setCurrentInntektstype] = useState(
-		_.get(formMethods.getValues(), `${inntektPath}.inntektstype`),
-	)
-	const currentTilleggsinformasjonstype = _.get(
-		formMethods.getValues(),
-		`${inntektPath}.tilleggsinformasjonstype`,
-	)
-
-	useEffect(() => {
-		console.log('formMethods.getValues(): ', formMethods.getValues()) //TODO - SLETT MEG
-		setCurrentInntektstype(_.get(formMethods.getValues(), `${inntektPath}.inntektstype`))
-	}, [formMethods.getValues()])
+	const inntektValues = formMethods.watch(inntektPath)
+	const {
+		beloep,
+		startOpptjeningsperiode,
+		sluttOpptjeningsperiode,
+		inntektstype,
+		tilleggsinformasjonstype,
+	} = inntektValues
 
 	useEffect(() => {
 		console.log('inntektValues: ', inntektValues) //TODO - SLETT MEG
-		if (
-			inntektValues?.inntektstype &&
-			inntektValues.inntektstype !== '' &&
-			Object.keys(fields).length < 1
-		) {
+		if (inntektstype !== '' && Object.keys(fields).length < 1) {
 			InntektstubService.validate(_.omitBy(inntektValues, (value) => value === '' || !value)).then(
 				(response) => setFields(response),
 			)
@@ -53,34 +45,28 @@ const InntektStub = ({ inntektPath }) => {
 	}, [fields])
 
 	useEffect(() => {
-		if (!currentTilleggsinformasjonstype) {
+		if (!tilleggsinformasjonstype) {
 			formMethods.setValue(`${inntektPath}.tilleggsinformasjon`, undefined)
 			return
 		}
 		formMethods.setValue(`${inntektPath}.tilleggsinformasjon`, {
-			[`${tilleggsinformasjonAttributter[currentTilleggsinformasjonstype]}`]: {},
+			[`${tilleggsinformasjonAttributter[tilleggsinformasjonstype]}`]: {},
 		})
-	}, [currentTilleggsinformasjonstype])
+	}, [tilleggsinformasjonstype])
 
 	const setForm = (values) => {
 		const nullstiltInntekt = {
-			beloep: _.get(formMethods.getValues(), `${inntektPath}.beloep`),
-			startOpptjeningsperiode: _.get(
-				formMethods.getValues(),
-				`${inntektPath}.startOpptjeningsperiode`,
-			),
-			sluttOpptjeningsperiode: _.get(
-				formMethods.getValues(),
-				`${inntektPath}.sluttOpptjeningsperiode`,
-			),
-			inntektstype: values.inntektstype,
+			beloep: beloep,
+			startOpptjeningsperiode: startOpptjeningsperiode,
+			sluttOpptjeningsperiode: sluttOpptjeningsperiode,
+			inntektstype: inntektstype,
 		}
 
-		if (values.inntektstype !== currentInntektstype) {
+		if (values.inntektstype !== inntektstype) {
 			formMethods.setValue(inntektPath, nullstiltInntekt)
 		} else {
 			formMethods.setValue(inntektPath, {
-				..._.get(formMethods.getValues(), inntektPath),
+				...inntektValues,
 				...values,
 			})
 		}
@@ -115,7 +101,8 @@ const InntektStub = ({ inntektPath }) => {
 	return (
 		<Form
 			onSubmit={(values) => {
-				if (currentInntektstype && values.inntektstype !== currentInntektstype) {
+				console.log('values, kapplah!: ', values) //TODO - SLETT MEG
+				if (inntektstype && values.inntektstype !== inntektstype) {
 					values = { inntektstype: values.inntektstype }
 				}
 				const emptyableFields = Object.entries(fields).filter(
@@ -136,7 +123,7 @@ const InntektStub = ({ inntektPath }) => {
 			<div>
 				<Inntekt
 					fields={fields}
-					onValidate={formMethods.handleSubmit()}
+					onValidate={() => formMethods.trigger('inntekt')}
 					formMethods={formMethods}
 					path={inntektPath}
 				/>

@@ -76,7 +76,7 @@ const P_FormikDatepicker = ({ fastfield, addHour = false, ...props }) => {
 		}
 		return formMethods.setValue(props.name, val)
 	}
-	const handleBlur = () => props.onBlur(SyntEvent(props.name, value))
+	const handleBlur = () => props?.onBlur?.(SyntEvent(props.name, value))
 	return (
 		<FormikField name={props.name} fastfield={fastfield}>
 			<DollyDatepicker

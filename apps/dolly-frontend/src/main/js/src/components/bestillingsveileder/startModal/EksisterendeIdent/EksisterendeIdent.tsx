@@ -10,6 +10,7 @@ import Icon from '@/components/ui/icon/Icon'
 import './eksisterendeIdent.less'
 import { Alert, Table, Textarea } from '@navikt/ds-react'
 import { CypressSelector } from '../../../../../cypress/mocks/Selectors'
+import { useFormContext } from 'react-hook-form'
 
 export const EksisterendeIdent = ({
 	onAvbryt,
@@ -18,6 +19,7 @@ export const EksisterendeIdent = ({
 	onSubmit: (arg0: any, arg1?: any) => any
 	onAvbryt: () => void
 }) => {
+	const formMethods = useFormContext()
 	const [text, setText] = useState('')
 	const [state, fetch] = useAsyncFn(async () => {
 		const identListe = text?.trim().split(/[\W\s]+/)
@@ -97,7 +99,7 @@ export const EksisterendeIdent = ({
 				<ModalActionKnapper
 					data-cy={CypressSelector.BUTTON_START_BESTILLING}
 					submitknapp="Start bestilling"
-					onSubmit={_onSubmit}
+					onSubmit={() => formMethods.handleSubmit(_onSubmit)}
 					onAvbryt={onAvbryt}
 					center
 				/>

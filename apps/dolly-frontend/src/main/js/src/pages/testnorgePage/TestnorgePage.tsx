@@ -108,7 +108,7 @@ export default ({ gruppe }: TestnorgePageProps) => {
 							</>
 						}
 						formMethods={formMethods}
-						onSubmit={formMethods.handleSubmit}
+						onSubmit={() => formMethods.handleSubmit}
 						onEmpty={formMethods.reset}
 					/>
 				</Fragment>

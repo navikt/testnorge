@@ -401,7 +401,7 @@ export const VisningRedigerbarPersondetaljer = ({
 			)}
 			{visningModus === Modus.Skriv && (
 				<FormProvider {...formMethods}>
-					<Form onSubmit={formMethods.handleSubmit(handleSubmit)}>
+					<Form onSubmit={() => formMethods.handleSubmit(handleSubmit)}>
 						<>
 							<FieldArrayEdit>
 								<div className="flexbox--flex-wrap">

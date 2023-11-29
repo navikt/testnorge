@@ -51,7 +51,7 @@ export const GjenopprettModal = ({
 						<NavButton variant={'danger'} onClick={closeModal}>
 							Avbryt
 						</NavButton>
-						<NavButton variant={'primary'} onClick={formMethods.handleSubmit(submitFormik)}>
+						<NavButton variant={'primary'} onClick={() => formMethods.handleSubmit(submitFormik)}>
 							Utfør
 						</NavButton>
 					</div>

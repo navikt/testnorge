@@ -30,7 +30,7 @@ export default ({ path, formMethods }: InntektsinformasjonForm) => {
 		setDate(selectedDate)
 		formMethods.setValue(
 			`${path}.sisteAarMaaned`,
-			selectedDate ? selectedDate.toISOString().substr(0, 7) : '',
+			selectedDate ? selectedDate.toISOString().substring(0, 7) : '',
 		)
 	}
 
