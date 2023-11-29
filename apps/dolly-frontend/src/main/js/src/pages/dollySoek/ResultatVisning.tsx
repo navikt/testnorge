@@ -152,7 +152,7 @@ export const ResultatVisning = ({ resultat }) => {
 						{/*<BestillingSammendragModal bestilling={bestillinger?.data?.[0]} />*/}
 						<PdlfVisningConnector fagsystemData={{ pdlforvalter: person }} loading={loading} />
 						{/*<PdlVisning pdlData={{ hentPerson: person }} loading={loading} />*/}
-						<StyledAlert variant={'info'} size={'small'} inline style={{ marginTop: '10px' }}>
+						<StyledAlert variant={'info'} size={'small'} inline style={{ marginTop: '20px' }}>
 							Viser kun egenskaper fra PDL,{' '}
 							<NavigerTilPerson ident={person.person.ident} linkTekst={'vis person i gruppe'} /> for
 							å se egenskaper fra alle fagsystemer.

@@ -25,6 +25,23 @@ const Soekefelt = styled.div`
 	padding: 20px 15px 5px 15px;
 `
 
+const SoekKategori = styled.div`
+	display: flex;
+	flex-wrap: wrap;
+	font-size: medium;
+	&& {
+		.dolly-form-input {
+			min-width: 0;
+			flex-grow: 0;
+		}
+	}
+	&& {
+		.navds-checkbox__icon {
+			margin-top: -4px;
+		}
+	}
+`
+
 const Buttons = styled.div`
 	margin: 15px 0 10px 0;
 	&& {
@@ -167,7 +184,7 @@ export const SoekForm = () => {
 													<Header title="Fagsystemer" antall={antallFagsystemer} />
 												</Accordion.Header>
 												<Accordion.Content>
-													<div className="flexbox--full-width" style={{ marginBottom: '10px' }}>
+													<div className="flexbox--full-width" style={{ fontSize: 'medium' }}>
 														<FormikSelect
 															name="typer"
 															placeholder="Velg fagsystemer ..."
@@ -200,11 +217,11 @@ export const SoekForm = () => {
 													/>
 												</Accordion.Header>
 												<Accordion.Content>
-													<div className="flexbox--flex-wrap">
+													<SoekKategori>
 														<FormikSelect
 															name={`${personPath}.kjoenn`}
 															options={Options('kjoenn')}
-															size="large"
+															size="small"
 															placeholder="Velg kjønn ..."
 															onChange={(val: SyntheticEvent) =>
 																handleChange(val?.value || null, `${personPath}.kjoenn`)
@@ -283,7 +300,7 @@ export const SoekForm = () => {
 															}
 															value={getValue(`${personPath}.harTilrettelagtKommunikasjon`)}
 														/>
-													</div>
+													</SoekKategori>
 												</Accordion.Content>
 											</Accordion.Item>
 											<Accordion.Item>
@@ -305,59 +322,63 @@ export const SoekForm = () => {
 													/>
 												</Accordion.Header>
 												<Accordion.Content>
-													<div className="flexbox--flex-wrap">
-														<FormikSelect
-															name={`${personPath}.bostedsadresse.kommunenummer`}
-															kodeverk={AdresseKodeverk.Kommunenummer}
-															size="large"
-															placeholder="Velg kommunenummer ..."
-															onChange={(val: SyntheticEvent) =>
-																handleChange(
-																	val?.value || null,
-																	`${personPath}.bostedsadresse.kommunenummer`,
-																)
-															}
-															value={getValue(`${personPath}.bostedsadresse.kommunenummer`)}
-														/>
-														<FormikSelect
-															name={`${personPath}.bostedsadresse.postnummer`}
-															kodeverk={AdresseKodeverk.Postnummer}
-															size="large"
-															placeholder="Velg postnummer ..."
-															onChange={(val: SyntheticEvent) =>
-																handleChange(
-																	val?.value || null,
-																	`${personPath}.bostedsadresse.postnummer`,
-																)
-															}
-															value={getValue(`${personPath}.bostedsadresse.postnummer`)}
-														/>
-														<FormikSelect
-															name={`${personPath}.bostedsadresse.bydelsnummer`}
-															kodeverk={GtKodeverk.BYDEL}
-															size="large"
-															placeholder="Velg bydelsnummer ..."
-															onChange={(val: SyntheticEvent) =>
-																handleChange(
-																	val?.value || null,
-																	`${personPath}.bostedsadresse.bydelsnummer`,
-																)
-															}
-															value={getValue(`${personPath}.bostedsadresse.bydelsnummer`)}
-														/>
-														<FormikSelect
-															name={`${personPath}.addressebeskyttelse`}
-															options={Options('gradering')}
-															size="large"
-															placeholder="Velg adressebeskyttelse ..."
-															onChange={(val: SyntheticEvent) =>
-																handleChange(
-																	val?.value || null,
-																	`${personPath}.addressebeskyttelse`,
-																)
-															}
-															value={getValue(`${personPath}.addressebeskyttelse`)}
-														/>
+													<SoekKategori>
+														<div className="flexbox--full-width">
+															<div className="flexbox--flex-wrap">
+																<FormikSelect
+																	name={`${personPath}.bostedsadresse.kommunenummer`}
+																	kodeverk={AdresseKodeverk.Kommunenummer}
+																	size="large"
+																	placeholder="Velg kommunenummer ..."
+																	onChange={(val: SyntheticEvent) =>
+																		handleChange(
+																			val?.value || null,
+																			`${personPath}.bostedsadresse.kommunenummer`,
+																		)
+																	}
+																	value={getValue(`${personPath}.bostedsadresse.kommunenummer`)}
+																/>
+																<FormikSelect
+																	name={`${personPath}.bostedsadresse.postnummer`}
+																	kodeverk={AdresseKodeverk.Postnummer}
+																	size="large"
+																	placeholder="Velg postnummer ..."
+																	onChange={(val: SyntheticEvent) =>
+																		handleChange(
+																			val?.value || null,
+																			`${personPath}.bostedsadresse.postnummer`,
+																		)
+																	}
+																	value={getValue(`${personPath}.bostedsadresse.postnummer`)}
+																/>
+																<FormikSelect
+																	name={`${personPath}.bostedsadresse.bydelsnummer`}
+																	kodeverk={GtKodeverk.BYDEL}
+																	size="large"
+																	placeholder="Velg bydelsnummer ..."
+																	onChange={(val: SyntheticEvent) =>
+																		handleChange(
+																			val?.value || null,
+																			`${personPath}.bostedsadresse.bydelsnummer`,
+																		)
+																	}
+																	value={getValue(`${personPath}.bostedsadresse.bydelsnummer`)}
+																/>
+																<FormikSelect
+																	name={`${personPath}.addressebeskyttelse`}
+																	options={Options('gradering')}
+																	size="large"
+																	placeholder="Velg adressebeskyttelse ..."
+																	onChange={(val: SyntheticEvent) =>
+																		handleChange(
+																			val?.value || null,
+																			`${personPath}.addressebeskyttelse`,
+																		)
+																	}
+																	value={getValue(`${personPath}.addressebeskyttelse`)}
+																/>
+															</div>
+														</div>
 														<FormikCheckbox
 															name={`${personPath}.bostedsadresse.harBydelsnummer`}
 															label="Har bydelsnummer"
@@ -418,7 +439,7 @@ export const SoekForm = () => {
 															}
 															value={getValue(`${personPath}.harOppholdsadresse`)}
 														/>
-													</div>
+													</SoekKategori>
 												</Accordion.Content>
 											</Accordion.Item>
 											<Accordion.Item>
@@ -436,7 +457,7 @@ export const SoekForm = () => {
 													/>
 												</Accordion.Header>
 												<Accordion.Content>
-													<div className="flexbox--flex-wrap">
+													<SoekKategori>
 														<FormikSelect
 															name={`${personPath}.sivilstand`}
 															options={Options('sivilstandType')}
@@ -487,7 +508,7 @@ export const SoekForm = () => {
 															}
 															value={getValue(`${personPath}.harDeltBosted`)}
 														/>
-													</div>
+													</SoekKategori>
 												</Accordion.Content>
 											</Accordion.Item>
 											<Accordion.Item>
@@ -503,11 +524,11 @@ export const SoekForm = () => {
 													/>
 												</Accordion.Header>
 												<Accordion.Content>
-													<div className="flexbox--flex-wrap">
+													<SoekKategori>
 														<FormikSelect
 															name={`${personPath}.identtype`}
 															options={Options('identtype')}
-															size="large"
+															size="small"
 															placeholder="Velg identtype ..."
 															onChange={(val: SyntheticEvent) =>
 																handleChange(val?.value || null, `${personPath}.identtype`)
@@ -524,7 +545,7 @@ export const SoekForm = () => {
 														/>
 														<FormikCheckbox
 															name={`${personPath}.harUtenlandskIdentifikasjonsnummer`}
-															label="Har utenlandsk identifikasjonsnummer"
+															label="Har utenlandsk identitet"
 															onChange={(val: SyntheticEvent) =>
 																handleChange(
 																	val.target.checked,
@@ -541,7 +562,7 @@ export const SoekForm = () => {
 															}
 															value={getValue(`${personPath}.harNyIdentitet`)}
 														/>
-													</div>
+													</SoekKategori>
 												</Accordion.Content>
 											</Accordion.Item>
 											<Accordion.Item>
@@ -555,7 +576,7 @@ export const SoekForm = () => {
 													/>
 												</Accordion.Header>
 												<Accordion.Content>
-													<div className="flexbox--flex-wrap">
+													<SoekKategori>
 														<FormikCheckbox
 															name={`${personPath}.harKontaktinformasjonForDoedsbo`}
 															label="Har kontaktinformasjon for dødsbo"
@@ -575,7 +596,7 @@ export const SoekForm = () => {
 															}
 															value={getValue(`${personPath}.harOpphold`)}
 														/>
-													</div>
+													</SoekKategori>
 												</Accordion.Content>
 											</Accordion.Item>
 										</Accordion>
