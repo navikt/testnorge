@@ -1,1 +1,7 @@
 azure.app.client.id: dummy
+
+consumers:
+  samboer-testdata:
+    name: pensjon-dummy
+    namespace: dummy
+    url: https://pensjon-dummy.dummy.no

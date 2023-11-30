@@ -3,7 +3,7 @@ package no.nav.dolly.bestilling.aareg.amelding;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.aareg.command.AmeldingPutCommand;
-import no.nav.dolly.config.credentials.AmeldingServiceProperties;
+import no.nav.dolly.config.Consumers;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.dto.ameldingservice.v1.AMeldingDTO;
@@ -32,20 +32,20 @@ public class AmeldingConsumer {
 
     private final TokenExchange tokenService;
     private final WebClient webClient;
-    private final ServerProperties serviceProperties;
+    private final ServerProperties serverProperties;
     private final ErrorStatusDecoder errorStatusDecoder;
 
     public AmeldingConsumer(
             TokenExchange tokenService,
-            AmeldingServiceProperties serviceProperties,
+            Consumers consumers,
             ObjectMapper objectMapper,
             ErrorStatusDecoder errorStatusDecoder,
             WebClient.Builder webClientBuilder
     ) {
         this.tokenService = tokenService;
-        this.serviceProperties = serviceProperties;
+        serverProperties = consumers.getTestnavAmeldingService();
         this.webClient = webClientBuilder
-                .baseUrl(serviceProperties.getUrl())
+                .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .build();
         this.errorStatusDecoder = errorStatusDecoder;
@@ -54,7 +54,7 @@ public class AmeldingConsumer {
     @Timed(name = "providers", tags = { "operation", "amelding_put" })
     public Flux<String> sendAmeldinger(List<AMeldingDTO> ameldinger, String miljoe) {
 
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> Flux.fromIterable(ameldinger)
                         .flatMap(amelding -> {
                             if (NOT_FOUND.equals(amelding.getOpplysningspliktigOrganisajonsnummer())) {

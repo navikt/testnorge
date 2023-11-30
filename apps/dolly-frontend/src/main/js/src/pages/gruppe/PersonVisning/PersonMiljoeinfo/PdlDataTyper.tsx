@@ -1,13 +1,14 @@
 import {
-	DoedfoedtBarn,
+	DoedfoedtBarnData,
 	FoedselData,
 	Foreldreansvar,
 	ForeldreBarnRelasjon,
 	Metadata,
-	Sivilstand,
+	SivilstandData,
 } from '@/components/fagsystem/pdlf/PdlTypes'
 
 export type PdlDataWrapper = {
+	errors: any
 	data: {
 		data: PdlData
 		errors: Array<PdlError>
@@ -43,9 +44,9 @@ export type HentPerson = {
 	vergemaalEllerFremtidsfullmakt: Array<VergemaalData>
 	tilrettelagtKommunikasjon: Array<TilrettelagtKommunikasjonData>
 	sikkerhetstiltak: [SikkerhetstiltakData]
-	sivilstand: Array<Sivilstand>
+	sivilstand: Array<SivilstandData>
 	forelderBarnRelasjon: Array<ForeldreBarnRelasjon>
-	doedfoedtBarn: Array<DoedfoedtBarn>
+	doedfoedtBarn: Array<DoedfoedtBarnData>
 	foreldreansvar: Array<Foreldreansvar>
 	kontaktinformasjonForDoedsbo: Array<any>
 	utenlandskIdentifikasjonsnummer: Array<{}>

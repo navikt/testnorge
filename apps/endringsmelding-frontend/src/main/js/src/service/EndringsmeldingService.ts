@@ -1,10 +1,5 @@
 import { Api } from '@navikt/dolly-lib';
 
-export const fetchMiljoer = (ident: string) =>
-  Api.fetchJson<string[]>(`/endringsmelding-service/api/v1/identer/${ident}/miljoer`, {
-    method: 'GET',
-  });
-
 type Dodsmelding = {
   ident: string;
   handling: 'SETTE_DOEDSDATO' | 'ENDRET_DOEDSDATO' | 'ANNULLERE_DOEDSDATO';

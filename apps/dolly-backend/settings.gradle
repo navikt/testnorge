@@ -1,5 +1,5 @@
 plugins {
-    id "com.gradle.enterprise" version "3.12.3"
+    id "com.gradle.enterprise" version "3.12.6"
 }
 
 rootProject.name = 'dolly-backend'
@@ -11,6 +11,7 @@ includeBuild '../../libs/servlet-insecure-security'
 includeBuild '../../libs/security-core'
 includeBuild '../../libs/database'
 includeBuild '../../libs/data-transfer-objects'
+includeBuild '../../libs/data-transfer-search-objects'
 includeBuild '../../.github/workflows'
 
 gradleEnterprise {

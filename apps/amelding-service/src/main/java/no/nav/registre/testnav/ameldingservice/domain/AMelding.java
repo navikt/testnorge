@@ -1,10 +1,6 @@
 package no.nav.registre.testnav.ameldingservice.domain;
 
 import lombok.RequiredArgsConstructor;
-
-import java.time.LocalDate;
-import java.util.stream.Collectors;
-
 import no.nav.testnav.libs.dto.ameldingservice.v1.AMeldingDTO;
 import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.ArbeidsforholdDTO;
 import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.AvvikDTO;
@@ -14,6 +10,8 @@ import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.Oppsummeringsdoku
 import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.PermisjonDTO;
 import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.PersonDTO;
 import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.VirksomhetDTO;
+
+import java.time.LocalDate;
 
 @RequiredArgsConstructor
 public class AMelding {
@@ -92,10 +90,10 @@ public class AMelding {
 
     private void merge(ArbeidsforholdDTO target, no.nav.testnav.libs.dto.ameldingservice.v1.ArbeidsforholdDTO other) {
         target.setArbeidstidsordning(other.getArbeidstidsordning());
-        target.setAvvik(other.getAvvik().stream().map(this::create).collect(Collectors.toList()));
+        target.setAvvik(other.getAvvik().stream().map(this::create).toList());
         target.setFartoey(create(other.getFartoey()));
-        target.setInntekter(other.getInntekter().stream().map(this::create).collect(Collectors.toList()));
-        target.setPermisjoner(other.getPermisjoner().stream().map(this::create).collect(Collectors.toList()));
+        target.setInntekter(other.getInntekter().stream().map(this::create).toList());
+        target.setPermisjoner(other.getPermisjoner().stream().map(this::create).toList());
         target.setAntallTimerPerUke(other.getAntallTimerPerUke());
         target.setSluttdato(other.getSluttdato());
         target.setStartdato(other.getStartdato());
@@ -116,7 +114,7 @@ public class AMelding {
                 .builder()
                 .kalendermaaned(aMeldingDTO.getKalendermaaned())
                 .opplysningspliktigOrganisajonsnummer(aMeldingDTO.getOpplysningspliktigOrganisajonsnummer())
-                .virksomheter(aMeldingDTO.getVirksomheter().stream().map(this::create).collect(Collectors.toList()))
+                .virksomheter(aMeldingDTO.getVirksomheter().stream().map(this::create).toList())
                 .version(1L)
                 .build();
     }
@@ -126,7 +124,7 @@ public class AMelding {
                 .builder()
                 .kalendermaaned(oppsummeringsdokumentDTO.getKalendermaaned())
                 .opplysningspliktigOrganisajonsnummer(oppsummeringsdokumentDTO.getOpplysningspliktigOrganisajonsnummer())
-                .virksomheter(oppsummeringsdokumentDTO.getVirksomheter().stream().map(this::create).collect(Collectors.toList()))
+                .virksomheter(oppsummeringsdokumentDTO.getVirksomheter().stream().map(this::create).toList())
                 .build();
     }
 
@@ -134,7 +132,7 @@ public class AMelding {
         return VirksomhetDTO
                 .builder()
                 .organisajonsnummer(virksomhet.getOrganisajonsnummer())
-                .personer(virksomhet.getPersoner().stream().map(this::create).collect(Collectors.toList()))
+                .personer(virksomhet.getPersoner().stream().map(this::create).toList())
                 .build();
     }
 
@@ -142,7 +140,7 @@ public class AMelding {
         return no.nav.testnav.libs.dto.ameldingservice.v1.VirksomhetDTO
                 .builder()
                 .organisajonsnummer(virksomhet.getOrganisajonsnummer())
-                .personer(virksomhet.getPersoner().stream().map(this::create).collect(Collectors.toList()))
+                .personer(virksomhet.getPersoner().stream().map(this::create).toList())
                 .build();
     }
 
@@ -150,7 +148,7 @@ public class AMelding {
         return PersonDTO
                 .builder()
                 .ident(personDTO.getIdent())
-                .arbeidsforhold(personDTO.getArbeidsforhold().stream().map(this::create).collect(Collectors.toList()))
+                .arbeidsforhold(personDTO.getArbeidsforhold().stream().map(this::create).toList())
                 .build();
     }
 
@@ -158,7 +156,7 @@ public class AMelding {
         return no.nav.testnav.libs.dto.ameldingservice.v1.PersonDTO
                 .builder()
                 .ident(personDTO.getIdent())
-                .arbeidsforhold(personDTO.getArbeidsforhold().stream().map(this::create).collect(Collectors.toList()))
+                .arbeidsforhold(personDTO.getArbeidsforhold().stream().map(this::create).toList())
                 .build();
     }
 
@@ -168,7 +166,7 @@ public class AMelding {
                 .antallTimerPerUke(arbeidsforholdDTO.getAntallTimerPerUke())
                 .arbeidsforholdId(arbeidsforholdDTO.getArbeidsforholdId())
                 .arbeidstidsordning(arbeidsforholdDTO.getArbeidstidsordning())
-                .avvik(arbeidsforholdDTO.getAvvik().stream().map(this::create).collect(Collectors.toList()))
+                .avvik(arbeidsforholdDTO.getAvvik().stream().map(this::create).toList())
                 .fartoey(create(arbeidsforholdDTO.getFartoey()))
                 .sisteLoennsendringsdato(arbeidsforholdDTO.getSisteLoennsendringsdato())
                 .sluttdato(arbeidsforholdDTO.getSluttdato())
@@ -176,8 +174,8 @@ public class AMelding {
                 .stillingsprosent(arbeidsforholdDTO.getStillingsprosent())
                 .typeArbeidsforhold(arbeidsforholdDTO.getArbeidsforholdType())
                 .yrke(arbeidsforholdDTO.getYrke())
-                .inntekter(arbeidsforholdDTO.getInntekter().stream().map(this::create).collect(Collectors.toList()))
-                .permisjoner(arbeidsforholdDTO.getPermisjoner().stream().map(this::create).collect(Collectors.toList()))
+                .inntekter(arbeidsforholdDTO.getInntekter().stream().map(this::create).toList())
+                .permisjoner(arbeidsforholdDTO.getPermisjoner().stream().map(this::create).toList())
                 .build();
     }
 
@@ -187,7 +185,7 @@ public class AMelding {
                 .antallTimerPerUke(arbeidsforholdDTO.getAntallTimerPerUke())
                 .arbeidsforholdId(arbeidsforholdDTO.getArbeidsforholdId())
                 .arbeidstidsordning(arbeidsforholdDTO.getArbeidstidsordning())
-                .avvik(arbeidsforholdDTO.getAvvik().stream().map(this::create).collect(Collectors.toList()))
+                .avvik(arbeidsforholdDTO.getAvvik().stream().map(this::create).toList())
                 .fartoey(create(arbeidsforholdDTO.getFartoey()))
                 .sisteLoennsendringsdato(arbeidsforholdDTO.getSisteLoennsendringsdato())
                 .sluttdato(arbeidsforholdDTO.getSluttdato())
@@ -195,15 +193,15 @@ public class AMelding {
                 .stillingsprosent(arbeidsforholdDTO.getStillingsprosent())
                 .arbeidsforholdType(arbeidsforholdDTO.getTypeArbeidsforhold())
                 .yrke(arbeidsforholdDTO.getYrke())
-                .inntekter(arbeidsforholdDTO.getInntekter().stream().map(this::create).collect(Collectors.toList()))
-                .permisjoner(arbeidsforholdDTO.getPermisjoner().stream().map(this::create).collect(Collectors.toList()))
+                .inntekter(arbeidsforholdDTO.getInntekter().stream().map(this::create).toList())
+                .permisjoner(arbeidsforholdDTO.getPermisjoner().stream().map(this::create).toList())
                 .build();
     }
 
     private PermisjonDTO create(no.nav.testnav.libs.dto.ameldingservice.v1.PermisjonDTO permisjonDTO) {
         return PermisjonDTO
                 .builder()
-                .avvik(permisjonDTO.getAvvik().stream().map(this::create).collect(Collectors.toList()))
+                .avvik(permisjonDTO.getAvvik().stream().map(this::create).toList())
                 .beskrivelse(permisjonDTO.getBeskrivelse())
                 .permisjonId(permisjonDTO.getPermisjonId())
                 .permisjonsprosent(permisjonDTO.getPermisjonsprosent())
@@ -215,7 +213,7 @@ public class AMelding {
     private no.nav.testnav.libs.dto.ameldingservice.v1.PermisjonDTO create(PermisjonDTO permisjonDTO) {
         return no.nav.testnav.libs.dto.ameldingservice.v1.PermisjonDTO
                 .builder()
-                .avvik(permisjonDTO.getAvvik().stream().map(this::create).collect(Collectors.toList()))
+                .avvik(permisjonDTO.getAvvik().stream().map(this::create).toList())
                 .beskrivelse(permisjonDTO.getBeskrivelse())
                 .permisjonId(permisjonDTO.getPermisjonId())
                 .permisjonsprosent(permisjonDTO.getPermisjonsprosent())
@@ -228,7 +226,7 @@ public class AMelding {
         return InntektDTO
                 .builder()
                 .antall(inntektDTO.getAntall())
-                .avvik(inntektDTO.getAvvik().stream().map(this::create).collect(Collectors.toList()))
+                .avvik(inntektDTO.getAvvik().stream().map(this::create).toList())
                 .opptjeningsland(inntektDTO.getOpptjeningsland())
                 .sluttdatoOpptjeningsperiode(inntektDTO.getSluttdatoOpptjeningsperiode())
                 .startdatoOpptjeningsperiode(inntektDTO.getStartdatoOpptjeningsperiode())
@@ -239,7 +237,7 @@ public class AMelding {
         return no.nav.testnav.libs.dto.ameldingservice.v1.InntektDTO
                 .builder()
                 .antall(inntektDTO.getAntall())
-                .avvik(inntektDTO.getAvvik().stream().map(this::create).collect(Collectors.toList()))
+                .avvik(inntektDTO.getAvvik().stream().map(this::create).toList())
                 .opptjeningsland(inntektDTO.getOpptjeningsland())
                 .sluttdatoOpptjeningsperiode(inntektDTO.getSluttdatoOpptjeningsperiode())
                 .startdatoOpptjeningsperiode(inntektDTO.getStartdatoOpptjeningsperiode())

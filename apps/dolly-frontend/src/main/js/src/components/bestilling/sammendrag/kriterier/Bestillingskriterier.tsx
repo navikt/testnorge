@@ -7,6 +7,7 @@ import { OrganisasjonKriterier } from './OrganisasjonKriterier'
 import DollyKjede from '@/components/dollyKjede/DollyKjede'
 import Button from '@/components/ui/button/Button'
 import useBoolean from '@/utils/hooks/useBoolean'
+import StyledAlert from '@/components/ui/alert/StyledAlert'
 
 const _renderBestillingsDetaljer = (data) => {
 	const [selectedIndex, setSelectedIndex] = useState(0)
@@ -56,6 +57,33 @@ const _renderBestillingsDetaljer = (data) => {
 										{row?.[0].numberHeader && <h4>{row[0].numberHeader}</h4>}
 										<div className={'flexbox--align-start flexbox--wrap'} key={idx}>
 											{row?.map((attributt, idy) => {
+												if (attributt?.nestedItemRows) {
+													return (
+														<React.Fragment key={idy}>
+															{attributt.nestedItemRows.map((nestedItem, y) => {
+																return (
+																	<div
+																		className="dfa-blokk"
+																		key={y}
+																		style={{ backgroundColor: 'unset' }}
+																	>
+																		{nestedItem?.[0].numberHeader && (
+																			<h4 key={'tittel' + y}>{nestedItem?.[0].numberHeader}</h4>
+																		)}
+																		<div
+																			className={'flexbox--align-start flexbox--wrap'}
+																			key={'values' + y}
+																		>
+																			{nestedItem?.[1].map((item, z) => {
+																				return _renderStaticValue(item, z)
+																			})}
+																		</div>
+																	</div>
+																)
+															})}
+														</React.Fragment>
+													)
+												}
 												return attributt.expandableHeader ? (
 													<RenderExpandablePanel attributt={attributt} key={idy} />
 												) : (
@@ -100,7 +128,7 @@ const RenderExpandablePanel = ({ attributt }) => {
 		<div className="flexbox--full-width">
 			<Button
 				onClick={visPersonValg ? setSkjulPersonValg : setVisPersonValg}
-				kind={visPersonValg ? 'collapse' : 'expand'}
+				kind={visPersonValg ? 'chevron-up' : 'chevron-down'}
 				style={visPersonValg ? { margin: '10px 0 10px 0' } : { margin: '10px 0 0 0' }}
 			>
 				{attributt.expandableHeader}
@@ -114,10 +142,12 @@ const RenderExpandablePanel = ({ attributt }) => {
 	)
 }
 
-export default function Bestillingskriterier({ bestilling, bestillingsinformasjon, header }) {
+export default ({ bestilling, bestillingsinformasjon, header, erMalVisning = false }) => {
+	const cn = erMalVisning ? 'bestilling-detaljer malbestilling' : 'bestilling-detaljer'
+
 	if (bestilling.organisasjon || bestilling.enhetstype) {
 		return (
-			<div className="bestilling-detaljer">
+			<div className={cn}>
 				{header && <SubOverskrift label={header} />}
 				<OrganisasjonKriterier
 					data={bestilling.organisasjon || bestilling}
@@ -129,10 +159,19 @@ export default function Bestillingskriterier({ bestilling, bestillingsinformasjo
 
 	const data = mapBestillingData(bestilling, bestillingsinformasjon)
 
-	if (!data) return <p>Kunne ikke hente bestillingsdata</p>
+	if (!data || data?.length < 1) {
+		if (erMalVisning) {
+			return (
+				<StyledAlert variant={'warning'} size={'small'} inline>
+					Denne malen inneholder ingen bestillingsdata
+				</StyledAlert>
+			)
+		}
+		return <p>Kunne ikke hente bestillingsdata</p>
+	}
 
 	return (
-		<div className="bestilling-detaljer">
+		<div className={cn}>
 			{header && <SubOverskrift label={header} />}
 			{_renderBestillingsDetaljer(data)}
 		</div>

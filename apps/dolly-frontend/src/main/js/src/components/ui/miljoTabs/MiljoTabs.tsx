@@ -1,6 +1,6 @@
 import { Alert, Tabs } from '@navikt/ds-react'
 import styled from 'styled-components'
-import React from 'react'
+import React, { useState } from 'react'
 
 const StyledTabs = styled(Tabs)`
 	margin-top: -10px;
@@ -30,14 +30,16 @@ const ErrorMiljoTab = styled(Tabs.Tab)`
 `
 
 export const MiljoTabs = ({ bestilteMiljoer, errorMiljoer = [], forsteMiljo, data, children }) => {
+	const [isPanelOpen, setPanelOpen] = useState()
+
 	return (
 		<StyledTabs size="small" defaultValue={forsteMiljo}>
 			<Tabs.List>
-				{data.map((miljoData) => {
+				{data.map((miljoData, idx: number) => {
 					if (errorMiljoer?.includes(miljoData?.miljo)) {
 						return (
 							<ErrorMiljoTab
-								key={miljoData?.miljo}
+								key={miljoData?.miljo + idx}
 								value={miljoData?.miljo}
 								label={miljoData?.miljo?.toUpperCase() || '?'}
 							/>
@@ -46,7 +48,7 @@ export const MiljoTabs = ({ bestilteMiljoer, errorMiljoer = [], forsteMiljo, dat
 					if (bestilteMiljoer?.includes(miljoData?.miljo)) {
 						return (
 							<BestiltMiljoTab
-								key={miljoData?.miljo}
+								key={miljoData?.miljo + idx}
 								value={miljoData?.miljo}
 								label={miljoData?.miljo?.toUpperCase() || '?'}
 							/>
@@ -54,26 +56,31 @@ export const MiljoTabs = ({ bestilteMiljoer, errorMiljoer = [], forsteMiljo, dat
 					}
 					return (
 						<Tabs.Tab
-							key={miljoData?.miljo}
+							key={miljoData?.miljo + idx}
 							value={miljoData?.miljo}
 							label={miljoData?.miljo?.toUpperCase() || '?'}
 						/>
 					)
 				})}
 			</Tabs.List>
-			{data.map((miljoData) => {
-				return (
-					<StyledPanel key={miljoData?.miljo} value={miljoData?.miljo}>
-						{!miljoData?.data || miljoData?.data?.length < 1 ? (
-							<Alert variant="info" size="small" inline>
-								{miljoData?.info ? miljoData.info : 'Fant ingen data i dette miljøet'}
-							</Alert>
-						) : (
-							React.cloneElement(children, { data: miljoData?.data, miljo: miljoData?.miljo })
-						)}
-					</StyledPanel>
-				)
-			})}
+			{data.map((miljoData, idx: number) => (
+				<StyledPanel key={miljoData?.miljo + idx} value={miljoData?.miljo}>
+					{!miljoData?.data ||
+					miljoData?.data?.length < 1 ||
+					miljoData?.data?.inntekter?.length === 0 ? (
+						<Alert variant="info" size="small" inline>
+							{miljoData?.info ? miljoData.info : 'Fant ingen data i dette miljøet'}
+						</Alert>
+					) : (
+						React.cloneElement(children, {
+							data: miljoData?.data,
+							miljo: miljoData?.miljo,
+							isPanelOpen: isPanelOpen,
+							setPanelOpen: setPanelOpen,
+						})
+					)}
+				</StyledPanel>
+			))}
 		</StyledTabs>
 	)
 }

@@ -1,17 +1,14 @@
 package no.nav.testnav.apps.apptilganganalyseservice.service;
 
 import lombok.AllArgsConstructor;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-
-import java.util.stream.Collectors;
-
 import no.nav.testnav.apps.apptilganganalyseservice.consumer.GithubConsumer;
 import no.nav.testnav.apps.apptilganganalyseservice.domain.DocumentType;
 import no.nav.testnav.apps.apptilganganalyseservice.domain.ItemResult;
 import no.nav.testnav.apps.apptilganganalyseservice.domain.SearchResults;
 import no.nav.testnav.apps.apptilganganalyseservice.repository.DocumentRepository;
 import no.nav.testnav.apps.apptilganganalyseservice.repository.entity.DocumentEntity;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @AllArgsConstructor
 abstract class ReadConfigService {
@@ -43,7 +40,7 @@ abstract class ReadConfigService {
                 results.getItems()
                         .stream()
                         .map(item -> fetchAndSave(item, results.getOwner(), results.getRepo()))
-                        .collect(Collectors.toList())
+                        .toList()
         );
     }
 

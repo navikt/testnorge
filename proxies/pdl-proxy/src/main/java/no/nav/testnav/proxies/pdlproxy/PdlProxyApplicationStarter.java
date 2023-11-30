@@ -7,9 +7,8 @@ import no.nav.testnav.libs.reactiveproxy.filter.AddAuthenticationRequestGatewayF
 import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2ServerToServerConfiguration;
 import no.nav.testnav.libs.reactivesecurity.exchange.azuread.TrygdeetatenAzureAdTokenService;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
-import no.nav.testnav.proxies.pdlproxy.config.credentials.PdlApiProperties;
-import no.nav.testnav.proxies.pdlproxy.config.credentials.PdlQ1ApiProperties;
-import no.nav.testnav.proxies.pdlproxy.config.credentials.PdlTestdataProperties;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.proxies.pdlproxy.config.Consumers;
 import no.nav.testnav.proxies.pdlproxy.dto.CredentialsHolder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -52,20 +51,7 @@ public class PdlProxyApplicationStarter {
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder,
                                            CredentialsHolder credentialsHolder,
                                            TrygdeetatenAzureAdTokenService tokenService,
-                                           PdlTestdataProperties pdlTestdataProperties,
-                                           PdlApiProperties pdlApiProperties,
-                                           PdlQ1ApiProperties pdlQ1ApiProperties) {
-
-        var addPdlApiAuthenticationHeaderFilter = AddAuthenticationRequestGatewayFilterFactory
-                .bearerAuthenticationHeaderFilter(() -> tokenService.exchange(pdlApiProperties)
-                        .map(AccessToken::getTokenValue));
-        var addPdlQ1ApiAuthenticationHeaderFilter = AddAuthenticationRequestGatewayFilterFactory
-                .bearerAuthenticationHeaderFilter(() -> tokenService.exchange(pdlQ1ApiProperties)
-                        .map(AccessToken::getTokenValue));
-        var addPdlTestdataAuthenticationHeaderFilter = AddAuthenticationRequestGatewayFilterFactory
-                .bearerAuthenticationHeaderFilter(() -> tokenService.exchange(pdlTestdataProperties)
-                        .map(AccessToken::getTokenValue));
-
+                                           Consumers consumers) {
         var addHendelselagerApiKeyAuthenticationHeader = AddAuthenticationRequestGatewayFilterFactory
                 .apiKeyAuthenticationHeaderFilter(credentialsHolder.hendelselagerApiKey());
         var addAktoerAdminApiKeyAuthenticationHeader = AddAuthenticationRequestGatewayFilterFactory
@@ -75,9 +61,9 @@ public class PdlProxyApplicationStarter {
 
         return builder
                 .routes()
-                .route(createRoute("pdl-api", pdlApiProperties.getUrl(), addPdlApiAuthenticationHeaderFilter))
-                .route(createRoute("pdl-api-q1", pdlQ1ApiProperties.getUrl(), addPdlQ1ApiAuthenticationHeaderFilter))
-                .route(createRoute("pdl-testdata", pdlTestdataProperties.getUrl(), addPdlTestdataAuthenticationHeaderFilter))
+                .route(createRoute(consumers.getPdlApi(), tokenService))
+                .route(createRoute(consumers.getPdlApiQ1(), tokenService))
+                .route(createRoute(consumers.getPdlTestdata(), tokenService))
                 .route(createRoute("pdl-identhendelse", "http://pdl-identhendelse-lager.pdl.svc.nais.local", addHendelselagerApiKeyAuthenticationHeader))
                 .route(createRoute("pdl-npid", "http://pdl-aktor.pdl.svc.nais.local", addAktoerAdminApiKeyAuthenticationHeader))
                 .route(createRoute("pdl-elastic", "https://pdl-es-q.adeo.no", addElasticSearchBasicAuthenticationHeader))
@@ -92,4 +78,16 @@ public class PdlProxyApplicationStarter {
                         .filter(filter)
                 ).uri(host);
     }
+
+    private Function<PredicateSpec, Buildable<Route>> createRoute(ServerProperties serverProperties, TrygdeetatenAzureAdTokenService tokenService) {
+        var segment = serverProperties.getName();
+        var host = serverProperties.getUrl();
+        var filter = AddAuthenticationRequestGatewayFilterFactory
+                .bearerAuthenticationHeaderFilter(
+                        () -> tokenService
+                                .exchange(serverProperties)
+                                .map(AccessToken::getTokenValue));
+        return createRoute(segment, host, filter);
+    }
+
 }

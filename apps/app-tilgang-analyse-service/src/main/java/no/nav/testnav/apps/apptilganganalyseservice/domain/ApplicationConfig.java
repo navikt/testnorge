@@ -1,14 +1,14 @@
 package no.nav.testnav.apps.apptilganganalyseservice.domain;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import no.nav.testnav.apps.apptilganganalyseservice.domain.yml.application.v1.AccessPolicy;
 import no.nav.testnav.apps.apptilganganalyseservice.domain.yml.application.v1.KindApplikasjon;
 import no.nav.testnav.apps.apptilganganalyseservice.domain.yml.application.v1.Rule;
 import no.nav.testnav.apps.apptilganganalyseservice.repository.entity.DocumentEntity;
 import no.nav.testnav.apps.apptilganganalyseservice.util.YAMLUtil;
+import org.yaml.snakeyaml.error.YAMLException;
+
+import java.util.Collections;
+import java.util.List;
 
 public class ApplicationConfig {
     private final KindApplikasjon kindApplikasjon;
@@ -26,7 +26,7 @@ public class ApplicationConfig {
                     KindApplikasjon.class
             );
         } catch (Exception e) {
-            throw new RuntimeException("Klarer ikke å convertere til yaml. ( " + entity.getPath() + " )", e);
+            throw new YAMLException("Klarer ikke å convertere til yaml. ( " + entity.getPath() + " )", e);
         }
     }
 
@@ -42,7 +42,7 @@ public class ApplicationConfig {
                 .getRules()
                 .stream()
                 .map(Rule::getApplication)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public List<String> getOutbound() {
@@ -57,15 +57,11 @@ public class ApplicationConfig {
                 .getRules()
                 .stream()
                 .map(Rule::getApplication)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public String getPath() {
         return path;
-    }
-
-    private AccessPolicy getAccessPolicy() {
-        return kindApplikasjon.getSpec().getAccessPolicy();
     }
 
     public String getName() {
@@ -74,5 +70,9 @@ public class ApplicationConfig {
 
     public String getNamespace() {
         return kindApplikasjon.getMetadata().getNamespace();
+    }
+
+    private AccessPolicy getAccessPolicy() {
+        return kindApplikasjon.getSpec().getAccessPolicy();
     }
 }

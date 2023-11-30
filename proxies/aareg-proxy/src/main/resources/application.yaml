@@ -13,8 +13,8 @@ spring:
           jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
           accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
         tokenx:
-          issuer-uri: https://tokendings.dev-gcp.nais.io
-          jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
+          issuer-uri: https://tokenx.dev-gcp.nav.cloud.nais.io 
+          jwk-set-uri: https://tokenx.dev-gcp.nav.cloud.nais.io/jwks
           accepted-audience: ${TOKEN_X_CLIENT_ID}
   cloud:
     gateway:
@@ -28,14 +28,13 @@ springdoc:
     disable-swagger-default-url: true
     url: /v3/api-docs
 
-app:
-  aareg:
-    services:
+consumers:
+    aareg-services:
       name: aareg-services-nais-{env}
       namespace: arbeidsforhold
-      url: https://aareg-services-{env}.dev.intern.nav.no
+      url: http://aareg-services-{env}.arbeidsforhold.svc.nais.local
       cluster: dev-fss
-    vedlikehold:
+    aareg-vedlikehold:
       name: aareg-vedlikehold-{env}
       namespace: arbeidsforhold
       url: https://aareg-vedlikehold-{env}.dev.intern.nav.no

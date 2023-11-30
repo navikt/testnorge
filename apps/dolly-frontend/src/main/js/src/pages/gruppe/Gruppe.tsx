@@ -52,7 +52,7 @@ export default ({
 		'personer',
 		sidetall,
 		sideStoerrelse,
-		update
+		update,
 	)
 
 	const { bestillingerById, loading: loadingBestillinger } = useIkkeFerdigBestillingerGruppe(
@@ -60,7 +60,7 @@ export default ({
 		visning,
 		sidetall,
 		sideStoerrelse,
-		update
+		update,
 	)
 
 	const {
@@ -100,7 +100,7 @@ export default ({
 	const erLaast = gruppe.erLaast
 	return (
 		<div className="gruppe-container">
-			<GruppeHeaderConnector gruppe={gruppe} />
+			<GruppeHeaderConnector gruppeId={gruppe.id} />
 			{ikkeFerdigBestillinger && (
 				// @ts-ignore
 				<StatusListeConnector gruppeId={gruppe.id} bestillingListe={ikkeFerdigBestillinger} />
@@ -142,7 +142,6 @@ export default ({
 				</div>
 				<div className="gruppe--flex-column-center margin-top-20 margin-bottom-10">
 					<ToggleGroup
-						size={'small'}
 						value={visning}
 						onChange={byttVisning}
 						style={{ backgroundColor: '#ffffff' }}
@@ -155,7 +154,7 @@ export default ({
 							<Icon
 								key={VisningType.VISNING_PERSONER}
 								size={13}
-								kind={visning === VisningType.VISNING_PERSONER ? 'manLight' : 'man'}
+								kind={visning === VisningType.VISNING_PERSONER ? 'man-light' : 'man'}
 							/>
 							{`Personer (${gruppe.antallIdenter || 0})`}
 						</ToggleGroup.Item>
@@ -167,7 +166,9 @@ export default ({
 							<Icon
 								key={VisningType.VISNING_BESTILLING}
 								size={13}
-								kind={visning === VisningType.VISNING_BESTILLING ? 'bestillingLight' : 'bestilling'}
+								kind={
+									visning === VisningType.VISNING_BESTILLING ? 'bestilling-light' : 'bestilling'
+								}
 							/>
 							{`Bestillinger (${gruppe.antallBestillinger || 0})`}
 						</ToggleGroup.Item>
@@ -185,7 +186,7 @@ export default ({
 				<PersonListeConnector
 					iLaastGruppe={erLaast}
 					brukertype={brukertype}
-					gruppeInfo={gruppe}
+					gruppeId={gruppeId}
 					identer={identer}
 					bestillingerById={bestillingerById}
 				/>
@@ -195,7 +196,7 @@ export default ({
 					iLaastGruppe={erLaast}
 					brukertype={brukertype}
 					bestillingerById={bestillingerById}
-					gruppeInfo={gruppe}
+					gruppeId={gruppeId}
 				/>
 			)}
 		</div>

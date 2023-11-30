@@ -1,7 +1,7 @@
 import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
-import { initialFoedsel } from '@/components/fagsystem/pdlf/form/initialValues'
+import { getInitialFoedsel } from '@/components/fagsystem/pdlf/form/initialValues'
 import { Yearpicker } from '@/components/ui/form/inputs/yearpicker/Yearpicker'
 import * as _ from 'lodash-es'
 import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
@@ -10,7 +10,8 @@ import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { FormikProps } from 'formik'
 import { SelectedValue } from '@/components/fagsystem/pdlf/PdlTypes'
 import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
-import _get from 'lodash/get'
+import { useContext } from 'react'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 type FoedselTypes = {
 	formikBag: FormikProps<{}>
@@ -18,6 +19,8 @@ type FoedselTypes = {
 }
 
 export const FoedselForm = ({ formikBag, path }: FoedselTypes) => {
+	const opts = useContext(BestillingsveilederContext)
+
 	const handleLandChange = (selected: SelectedValue, foedselPath: string) => {
 		formikBag.setFieldValue(`${foedselPath}.foedeland`, selected?.value || null)
 		if (selected?.value !== 'NOR') {
@@ -28,11 +31,14 @@ export const FoedselForm = ({ formikBag, path }: FoedselTypes) => {
 	const foedselsaar = _.get(formikBag.values, `${path}.foedselsaar`)
 	const foedselsdato = _.get(formikBag.values, `${path}.foedselsdato`)
 
+	const minDateFoedsel =
+		opts?.identtype === 'NPID' ? new Date('01.01.1870') : new Date('01.01.1900')
+
 	const harAlder = () => {
 		return (
-			_get(formikBag.values, 'pdldata.opprettNyPerson.alder') ||
-			_get(formikBag.values, 'pdldata.opprettNyPerson.foedtEtter') ||
-			_get(formikBag.values, 'pdldata.opprettNyPerson.foedtFoer')
+			_.get(formikBag.values, 'pdldata.opprettNyPerson.alder') ||
+			_.get(formikBag.values, 'pdldata.opprettNyPerson.foedtEtter') ||
+			_.get(formikBag.values, 'pdldata.opprettNyPerson.foedtFoer')
 		)
 	}
 
@@ -44,6 +50,7 @@ export const FoedselForm = ({ formikBag, path }: FoedselTypes) => {
 					label="Fødselsdato"
 					disabled={(foedselsaar !== null && foedselsdato === null) || harAlder()}
 					maxDate={new Date()}
+					minDate={minDateFoedsel}
 					fastfield={false}
 				/>
 				<Yearpicker
@@ -55,6 +62,7 @@ export const FoedselForm = ({ formikBag, path }: FoedselTypes) => {
 						formikBag.setFieldValue(`${path}.foedselsaar`, val ? new Date(val).getFullYear() : null)
 					}
 					maxDate={new Date()}
+					minDate={minDateFoedsel}
 					// @ts-ignore
 					disabled={(foedselsdato !== null && foedselsaar === null) || harAlder()}
 				/>
@@ -83,12 +91,14 @@ export const FoedselForm = ({ formikBag, path }: FoedselTypes) => {
 }
 
 export const Foedsel = ({ formikBag }: FoedselTypes) => {
+	const opts = useContext(BestillingsveilederContext)
+
 	return (
 		<div className="flexbox--flex-wrap">
 			<FormikDollyFieldArray
 				name={'pdldata.person.foedsel'}
 				header="Fødsel"
-				newEntry={initialFoedsel}
+				newEntry={getInitialFoedsel(opts?.identtype === 'NPID' ? 'PDL' : 'FREG')}
 				canBeEmpty={false}
 			>
 				{(path: string, _idx: number) => {

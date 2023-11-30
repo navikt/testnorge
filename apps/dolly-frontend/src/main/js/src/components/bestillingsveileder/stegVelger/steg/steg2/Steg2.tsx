@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import * as Yup from 'yup'
 import { harAvhukedeAttributter } from '@/components/bestillingsveileder/utils'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bestillingsveileder'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { KrrstubForm } from '@/components/fagsystem/krrstub/form/Form'
 import { SigrunstubForm } from '@/components/fagsystem/sigrunstub/form/Form'
 import { InntektstubForm } from '@/components/fagsystem/inntektstub/form/Form'
@@ -14,6 +14,7 @@ import { InstForm } from '@/components/fagsystem/inst/form/Form'
 import { UdistubForm } from '@/components/fagsystem/udistub/form/Form'
 import { PensjonForm } from '@/components/fagsystem/pensjon/form/Form'
 import { DokarkivForm } from '@/components/fagsystem/dokarkiv/form/DokarkivForm'
+import { MedlForm } from '@/components/fagsystem/medl/form/MedlForm'
 import { SykdomForm } from '@/components/fagsystem/sykdom/form/Form'
 import { OrganisasjonForm } from '@/components/fagsystem/organisasjoner/form/Form'
 import { TjenestepensjonForm } from '@/components/fagsystem/tjenestepensjon/form/Form'
@@ -24,6 +25,8 @@ import { AlderspensjonForm } from '@/components/fagsystem/alderspensjon/form/For
 import { SkjermingForm } from '@/components/fagsystem/skjermingsregister/form/SkjermingForm'
 import { ArbeidsplassenForm } from '@/components/fagsystem/arbeidsplassen/form/Form'
 import { HistarkForm } from '@/components/fagsystem/histark/form/HistarkForm'
+import { UforetrygdForm } from '@/components/fagsystem/uforetrygd/form/Form'
+import { SigrunstubPensjonsgivendeForm } from '@/components/fagsystem/sigrunstubPensjonsgivende/form/Form'
 
 const gruppeNavn = (gruppe) => <span style={{ fontWeight: 'bold' }}>{gruppe.navn}</span>
 
@@ -60,16 +63,19 @@ export const Steg2 = () => {
 			<AaregForm />
 			<ArbeidsplassenForm formikBag={formikBag} />
 			<SigrunstubForm formikBag={formikBag} />
+			<SigrunstubPensjonsgivendeForm formikBag={formikBag} />
 			<InntektstubForm formikBag={formikBag} />
 			<InntektsmeldingForm formikBag={formikBag} />
 			<PensjonForm formikBag={formikBag} />
 			<TjenestepensjonForm formikBag={formikBag} />
 			<AlderspensjonForm formikBag={formikBag} />
+			<UforetrygdForm formikBag={formikBag} />
 			<ArenaForm formikBag={formikBag} />
 			<SykdomForm formikBag={formikBag} />
 			<BrregstubForm formikBag={formikBag} />
 			<InstForm formikBag={formikBag} />
 			<KrrstubForm formikBag={formikBag} />
+			<MedlForm formikBag={formikBag} />
 			<UdistubForm formikBag={formikBag} />
 			<DokarkivForm formikBag={formikBag} />
 			<HistarkForm formikBag={formikBag} />
@@ -85,12 +91,14 @@ Steg2.validation = Yup.object({
 	...AaregForm.validation,
 	...ArbeidsplassenForm.validation,
 	...SigrunstubForm.validation,
+	...SigrunstubPensjonsgivendeForm.validation,
 	...InntektstubForm.validation,
 	...InntektsmeldingForm.validation,
 	...SykdomForm.validation,
 	...BrregstubForm.validation,
 	...InstForm.validation,
 	...KrrstubForm.validation,
+	...MedlForm.validation,
 	...ArenaForm.validation,
 	...UdistubForm.validation,
 	...SkjermingForm.validation,
@@ -103,6 +111,7 @@ Steg2.validation = Yup.object({
 			...PensjonForm.validation,
 			...TjenestepensjonForm.validation,
 			...AlderspensjonForm.validation,
-		})
+			...UforetrygdForm.validation,
+		}),
 	),
 })

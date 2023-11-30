@@ -23,7 +23,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: 17
+          java-version: 21
       - name: "Gradle"
         env:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
@@ -31,5 +31,5 @@ jobs:
           GITHUB_USERNAME: ${{ secrets.GITHUB_USERNAME }}
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: build --info --scan
+          arguments: build --scan
           cache-read-only: false

@@ -12,7 +12,7 @@ abstract class FasteDataAdapter {
     private final OpprinnelseAdapter opprinnelseAdapter;
     private final GruppeAdapter gruppeAdapter;
 
-    OpprinnelseModel getOppinnelse(FasteData fasteData) {
+    OpprinnelseModel getOpprinnelse(FasteData fasteData) {
         return fasteData.getOpprinnelse() != null
                 ? opprinnelseAdapter.saveOpprinnelse(fasteData.getOpprinnelse())
                 : null;

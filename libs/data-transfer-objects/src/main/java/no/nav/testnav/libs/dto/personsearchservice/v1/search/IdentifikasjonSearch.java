@@ -12,4 +12,5 @@ public class IdentifikasjonSearch {
     String adressebeskyttelse;
     Boolean falskIdentitet;
     Boolean utenlandskIdentitet;
+    Boolean identHistorikk;
 }

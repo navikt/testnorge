@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -41,7 +40,8 @@ public class OrkestreringController {
             @RequestBody List<String> fnrs
     ) {
         var people = tpService.createPeople(fnrs);
-        var feilet = fnrs.parallelStream().filter(fnr -> !people.contains(fnr)).collect(Collectors.toList());
+        var feilet = fnrs.parallelStream().filter(fnr -> !people.contains(fnr))
+                .toList();
         return ResponseEntity.ok(feilet);
     }
 

@@ -7,6 +7,7 @@ import {
 	usePensjonEnvironments,
 } from '@/utils/hooks/useEnvironments'
 import { arrayToString } from '@/utils/DataFormatter'
+import StyledAlert from '@/components/ui/alert/StyledAlert'
 
 export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 	const { arenaEnvironments, loading: loadingArena, error: errorArena } = useArenaEnvironments()
@@ -46,10 +47,10 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 
 	return (
 		<>
-			<Alert variant={'info'}>
+			<StyledAlert variant={'info'}>
 				Du har valgt egenskaper som ikke blir distribuert til alle miljøer. For hver av følgende
 				egenskaper må derfor ett eller flere av miljøene under velges:
-				<ul>
+				<ul style={{ margin: '7px 0' }}>
 					{instdata && (
 						<li>
 							Institusjonsopphold:&nbsp;
@@ -78,6 +79,12 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 							<span>{getMiljoer(pensjonEnvironments, loadingPensjon, errorPensjon)}</span>
 						</li>
 					)}
+					{pensjonforvalter?.uforetrygd && (
+						<li>
+							Uføretrygd:&nbsp;
+							<span>{getMiljoer(pensjonEnvironments, loadingPensjon, errorPensjon)}</span>
+						</li>
+					)}
 
 					{sykemelding && <li>Sykemelding: Q1 må velges</li>}
 
@@ -92,7 +99,7 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 						</li>
 					)}
 				</ul>
-			</Alert>
+			</StyledAlert>
 			{pensjonforvalter && bestillingsdata?.environments?.includes('q4') && (
 				<Alert variant={'info'} style={{ marginTop: 20 }}>
 					Innsending av testdata til pensjon er for øyeblikket ikke støttet i Q4, bestillingen vil
@@ -115,7 +122,7 @@ export const filterMiljoe = (dollyMiljoe, utvalgteMiljoer) => {
 const flatDollyMiljoe = (dollymiljoe) => {
 	const miljoeArray = []
 	Object.values(dollymiljoe).forEach((miljoeKat) =>
-		miljoeKat.forEach((miljoe) => miljoeArray.push(miljoe.id))
+		miljoeKat.forEach((miljoe) => miljoeArray.push(miljoe.id)),
 	)
 	return miljoeArray
 }

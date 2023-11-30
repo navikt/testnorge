@@ -6,6 +6,8 @@ export type Journalpost = {
 	avsenderMottaker: AvsenderMottaker
 	tema: string
 	kanal: string
+	journalfoerendeEnhet: string
+	sak: Sak
 	dokumenter: Dokument[]
 	miljoe: string
 	bestillingId?: number
@@ -22,6 +24,12 @@ type AvsenderMottaker = {
 	type: string
 }
 
+type Sak = {
+	sakstype: string
+	fagsaksystem: string
+	fagsakId: string
+}
+
 type DokumentType = 'ORIGINAL' | 'ARKIV'
 
 const hentJournalpost = (journalpostId: number, miljo: string): Promise<Journalpost> =>
@@ -34,7 +42,7 @@ const hentDokument = (
 	journalpostId: number,
 	dokumentInfoId: number,
 	miljo: string,
-	dokumentType: DokumentType
+	dokumentType: DokumentType,
 ): Promise<string> =>
 	api
 		.fetch(
@@ -42,7 +50,7 @@ const hentDokument = (
 			{
 				method: 'GET',
 				headers: { miljo: miljo },
-			}
+			},
 		)
 		.then((response) => response.text())
 
@@ -57,7 +65,7 @@ const hentPDF = (journalpostId: number, dokumentInfoId: number, miljo: string): 
 					Accept: 'application/pdf',
 					'Content-Type': 'application/pdf',
 				},
-			}
+			},
 		)
 		.then((response) => {
 			return response.blob()

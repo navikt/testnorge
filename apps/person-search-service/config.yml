@@ -36,7 +36,7 @@ spec:
           cluster: dev-gcp
     outbound:
       external:
-        - host: https://testnav-pdl-proxy.dev-fss-pub.nais.io
+        - host: testnav-pdl-proxy.dev-fss-pub.nais.io
   liveness:
     path: /internal/isAlive
     initialDelay: 4

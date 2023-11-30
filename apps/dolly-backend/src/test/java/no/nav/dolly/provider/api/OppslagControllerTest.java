@@ -3,25 +3,22 @@ package no.nav.dolly.provider.api;
 import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
 import no.nav.dolly.consumer.kodeverk.KodeverkMapper;
 import no.nav.dolly.consumer.kodeverk.domain.KodeverkBetydningerResponse;
-import no.nav.dolly.consumer.kodeverk.domain.KodeverkBetydningerResponse.Betydning;
 import no.nav.dolly.domain.resultset.kodeverk.KodeverkAdjusted;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import reactor.core.publisher.Flux;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static java.util.Collections.singletonList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class OppslagControllerTest {
+class OppslagControllerTest {
 
     private static final String STANDARD_KODEVERK_NAME = "name";
 
@@ -35,24 +32,20 @@ public class OppslagControllerTest {
     private OppslagController oppslagController;
 
     @Mock
-    private Betydning betydning;
-
-    @Mock
     private KodeverkAdjusted kodeverkAdjusted;
 
     @Mock
-    private KodeverkBetydningerResponse getKodeverkKoderBetydningerResponse;
+    private KodeverkBetydningerResponse kodeverkKoderBetydningerResponse;
 
     @Test
-    public void fetchKodeverkByName_happyPath() {
-        Map<String, List<Betydning>> betydningerMap = new HashMap<>();
-        betydningerMap.put("kode", singletonList(betydning));
+    void fetchKodeverkByName_happyPath() {
 
-        when(kodeverkConsumer.fetchKodeverkByName(STANDARD_KODEVERK_NAME)).thenReturn(getKodeverkKoderBetydningerResponse);
-        when(getKodeverkKoderBetydningerResponse.getBetydninger()).thenReturn(betydningerMap);
-        when(kodeverkMapper.mapBetydningToAdjustedKodeverk(STANDARD_KODEVERK_NAME, betydningerMap)).thenReturn(kodeverkAdjusted);
+        when(kodeverkConsumer.fetchKodeverkByName(STANDARD_KODEVERK_NAME)).thenReturn(Flux.just(kodeverkKoderBetydningerResponse));
 
-        KodeverkAdjusted kodeverkResponse = oppslagController.fetchKodeverkByName(STANDARD_KODEVERK_NAME);
+        when(kodeverkMapper.mapBetydningToAdjustedKodeverk(eq(STANDARD_KODEVERK_NAME), any()))
+                .thenReturn(Flux.just(kodeverkAdjusted));
+
+        var kodeverkResponse = oppslagController.fetchKodeverkByName(STANDARD_KODEVERK_NAME);
 
         assertThat(kodeverkResponse, is(kodeverkAdjusted));
     }

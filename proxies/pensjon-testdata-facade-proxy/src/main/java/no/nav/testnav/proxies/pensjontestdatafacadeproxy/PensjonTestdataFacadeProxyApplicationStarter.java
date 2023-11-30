@@ -7,16 +7,18 @@ import no.nav.testnav.libs.reactiveproxy.filter.AddAuthenticationRequestGatewayF
 import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2ServerToServerConfiguration;
 import no.nav.testnav.libs.reactivesecurity.exchange.azuread.TrygdeetatenAzureAdTokenService;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
-import no.nav.testnav.proxies.pensjontestdatafacadeproxy.config.credentials.PoppTestdataProperties;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.proxies.pensjontestdatafacadeproxy.config.Consumers;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 
-import java.util.UUID;
+import java.util.Arrays;
 
 @Import({
         CoreConfig.class,
@@ -27,31 +29,57 @@ import java.util.UUID;
 @SpringBootApplication
 public class PensjonTestdataFacadeProxyApplicationStarter {
 
+    private static final String[] MILJOER = {"q1", "q2"};
+
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder,
                                            TrygdeetatenAzureAdTokenService tokenService,
-                                           PoppTestdataProperties properties) {
-
-        var addAuthenticationHeaderDevFilter = AddAuthenticationRequestGatewayFilterFactory
-                .bearerAuthenticationHeaderFilter(() -> tokenService.exchange(properties).map(AccessToken::getTokenValue));
-
-        return builder.routes()
-                .route(spec -> spec
-                        .path("/api/v1/inntekt")
-                        .filters(filterSpec -> filterSpec.filter(addAuthenticationHeaderDevFilter)
-                                .setRequestHeader("Nav-Call-Id", "Dolly " + UUID.randomUUID())
-                                .setRequestHeader("Nav-Consumer-Id", "Dolly"))
-                        .uri(properties.getUrl()))
-                .route(spec -> spec
-                        .path("/api/**")
-                        .filters(gatewayFilterSpec -> gatewayFilterSpec
-                                .addRequestHeader(HttpHeaders.AUTHORIZATION, "dolly")
-                        ) //Auth header er required men sjekkes ikke utover det
-                        .uri("http://pensjon-testdata-facade.pensjontestdata.svc.nais.local/"))
+                                           Consumers consumers) {
+        var routes = builder.routes();
+        Arrays
+                .stream(MILJOER)
+                .forEach(
+                        miljoe ->
+                                routes.route(
+                                        spec -> spec
+                                                .path("/" + miljoe + "/api/samboer/**")
+                                                .filters(filterSPec -> filterSPec.filter(getAuthenticationFilter(tokenService, consumers.getSamboerTestdata(), miljoe))
+                                                        .rewritePath("/" + miljoe + "/(?<segment>.*)", "/${segment}"))
+                                                .uri(forEnvironment(consumers.getSamboerTestdata(), miljoe).getUrl())));
+        routes
+                .route(
+                        spec -> spec
+                                .path("/api/**")
+                                .filters(gatewayFilterSpec -> gatewayFilterSpec
+                                        .addRequestHeader(HttpHeaders.AUTHORIZATION, "dolly")
+                                ) //Auth header er required men sjekkes ikke utover det
+                                .uri("http://pensjon-testdata-facade.pensjontestdata.svc.nais.local/"))
                 .build();
+
+        return routes.build();
+    }
+
+    private GatewayFilter getAuthenticationFilter(TrygdeetatenAzureAdTokenService tokenService,
+                                                  ServerProperties serverProperties,
+                                                  String miljoe) {
+        return AddAuthenticationRequestGatewayFilterFactory
+                .bearerAuthenticationHeaderFilter(
+                        () -> tokenService
+                                .exchange(forEnvironment(serverProperties, miljoe))
+                                .map(AccessToken::getTokenValue));
+    }
+
+    private static ServerProperties forEnvironment(ServerProperties original, String env) {
+        return ServerProperties.of(
+                original.getCluster(),
+                original.getNamespace(),
+                original.getName().replace("MILJOE", env),
+                original.getUrl().replace("MILJOE", env + ("q1".equals(env) ? ".very" : ""))
+        );
     }
 
     public static void main(String[] args) {
         SpringApplication.run(PensjonTestdataFacadeProxyApplicationStarter.class, args);
     }
+
 }

@@ -39,8 +39,8 @@ public class OrganisasjonBestillingIdsCommand implements Callable<Mono<Status>> 
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException))
                 .doOnError(throwable ->
-                        log.error(throwable instanceof WebClientResponseException ?
-                                ((WebClientResponseException) throwable).getResponseBodyAsString() :
+                        log.error(throwable instanceof WebClientResponseException webClientResponseException ?
+                                webClientResponseException.getResponseBodyAsString() :
                                 throwable.getMessage()));
     }
 }

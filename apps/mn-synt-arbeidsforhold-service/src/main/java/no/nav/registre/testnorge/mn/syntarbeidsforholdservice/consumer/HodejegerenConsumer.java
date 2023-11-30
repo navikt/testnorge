@@ -1,6 +1,6 @@
 package no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer;
 
-import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.config.credentials.HodejegerenProperties;
+import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.config.Consumers;
 import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.consumer.command.GetLevendeIdenterCommand;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
@@ -14,16 +14,14 @@ public class HodejegerenConsumer {
 
     private final WebClient webClient;
     private final TokenExchange tokenExchange;
-    private final ServerProperties serviceProperties;
+    private final ServerProperties serverProperties;
 
     public HodejegerenConsumer(
             @Value("${consumers.hodejegeren.url}") String url,
-            HodejegerenProperties serviceProperties,
+            Consumers consumers,
             TokenExchange tokenExchange) {
-
-        this.serviceProperties = serviceProperties;
+        serverProperties = consumers.getHodejegeren();
         this.tokenExchange = tokenExchange;
-
         this.webClient = WebClient
                 .builder()
                 .baseUrl(url)
@@ -31,7 +29,7 @@ public class HodejegerenConsumer {
     }
 
     public Flux<String> getIdenter(String miljo, int antall) {
-        return tokenExchange.exchange(serviceProperties)
+        return tokenExchange.exchange(serverProperties)
                 .flatMapMany(accessToken -> new GetLevendeIdenterCommand(webClient, miljo, antall, accessToken.getTokenValue()).call());
     }
 }

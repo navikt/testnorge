@@ -17,9 +17,12 @@ spring:
           jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
           accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
         tokenx:
-          issuer-uri: https://tokendings.dev-gcp.nais.io
-          jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
+          issuer-uri: https://tokenx.dev-gcp.nav.cloud.nais.io 
+          jwk-set-uri: https://tokenx.dev-gcp.nav.cloud.nais.io/jwks
           accepted-audience: dev-gcp:dolly:testnav-orgnummer-service
+  cloud:
+    vault:
+      enabled: false
 
 springdoc:
   swagger-ui:
@@ -32,7 +35,6 @@ consumers:
     name: testnav-organisasjon-service
     cluster: dev-gcp
     namespace: dolly
-    threads: 5
   testnav-miljoer-service:
     url: http://testnav-miljoer-service.dolly.svc.cluster.local
     name: testnav-miljoer-service

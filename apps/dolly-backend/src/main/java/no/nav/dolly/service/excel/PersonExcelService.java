@@ -3,21 +3,22 @@ package no.nav.dolly.service.excel;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
-import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
+import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.util.DatoFraIdentUtil;
 import no.nav.dolly.util.IdentTypeUtil;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.MatrikkeladresseDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.OppholdsadresseDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.SikkerhetstiltakDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskAdresseDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.AdressebeskyttelseDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.BostedadresseDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.FullmaktDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.MatrikkeladresseDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.OppholdsadresseDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.SikkerhetstiltakDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.UtenlandskAdresseDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.VegadresseDTO;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.IgnoredErrorType;
 import org.apache.poi.ss.util.CellRangeAddress;
@@ -30,7 +31,6 @@ import reactor.util.function.Tuple3;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -45,14 +46,16 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.service.excel.ExcelUtil.PERSON_FANE;
 import static no.nav.dolly.service.excel.ExcelUtil.appendHyperlinkRelasjon;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.trimToEmpty;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class PersonExcelService {
 
-    private static final Object[] HEADER = {"Ident", "Identtype", "Fornavn", "Etternavn", "Alder", "Kjønn", "Foedselsdato",
+    private static final Object[] PERSONDATA_HEADER = {"Ident", "Identtype", "Fornavn", "Etternavn", "Alder", "Kjønn", "Foedselsdato",
             "Dødsdato", "Personstatus", "Statsborgerskap", "Adressebeskyttelse", "Bostedsadresse", "Kontaktadresse",
             "Oppholdsadresse", "Sivilstand", "Partner", "Barn", "Foreldre", "Verge", "Fullmektig", "Sikkerhetstiltak", "Brukt", "Beskrivelse"};
     private static final Integer[] COL_WIDTHS = {14, 10, 20, 20, 6, 8, 12, 12, 18, 20, 20, 25, 25, 25, 25, 14, 14, 14, 14, 14, 14, 14, 20};
@@ -70,9 +73,8 @@ public class PersonExcelService {
     private static final int FORELDRE = 17;
     private static final int VERGE = 18;
     private static final int FULLMEKTIG = 19;
-    private static final int BLOCK_SIZE = 50;
 
-    private final PdlPersonConsumer pdlPersonConsumer;
+    private final PersonServiceConsumer personServiceConsumer;
     private final KodeverkConsumer kodeverkConsumer;
 
     private static String getFornavn(PdlPerson.Navn navn) {
@@ -325,54 +327,64 @@ public class PersonExcelService {
     }
 
     public Mono<Void> preparePersonSheet(XSSFWorkbook workbook,
-                                         List<Testident> identer) {
+                                         Testgruppe testgruppe) {
 
-        var sheet = workbook.createSheet(PERSON_FANE);
-        var rows = getPersondataRowContents(identer);
-        sheet.addIgnoredErrors(new CellRangeAddress(0, rows.size(), 0, HEADER.length),
-                IgnoredErrorType.NUMBER_STORED_AS_TEXT);
+        return getPersondataRowContents(testgruppe)
+                .flatMap(rows -> {
 
-        var columnNo = new AtomicInteger(0);
-        Arrays.stream(COL_WIDTHS)
-                .forEach(colWidth -> sheet.setColumnWidth(columnNo.getAndIncrement(), colWidth * 256));
+                    var sheet = workbook.createSheet(PERSON_FANE);
+                    sheet.addIgnoredErrors(new CellRangeAddress(0, rows.size(), 0, PERSONDATA_HEADER.length),
+                            IgnoredErrorType.NUMBER_STORED_AS_TEXT);
 
-        ExcelService.appendRows(workbook, PERSON_FANE,
-                Stream.of(Collections.singletonList(HEADER), rows)
-                        .flatMap(Collection::stream)
-                        .toList());
+                    var columnNo = new AtomicInteger(0);
+                    Arrays.stream(COL_WIDTHS)
+                            .forEach(colWidth -> sheet.setColumnWidth(columnNo.getAndIncrement(), colWidth * 256));
 
-        appendHyperlinks(workbook, rows);
+                    ExcelService.appendRows(workbook, PERSON_FANE,
+                            Stream.of(Collections.singletonList(PERSONDATA_HEADER), rows)
+                                    .flatMap(Collection::stream)
+                                    .toList());
 
-        return Mono.empty();
+                    appendHyperlinks(workbook, rows);
+
+                    return Mono.empty();
+                });
     }
 
-    private List<String> identList(List<Testident> hovedpersoner) {
-        return hovedpersoner.stream()
-                .map(Testident::getIdent)
-                .toList();
-    }
+    private Mono<List<Object[]>> getPersondataRowContents(Testgruppe testgruppe) {
 
-    private List<Object[]> getPersondataRowContents(List<Testident> hovedpersoner) {
-
-        var start = System.currentTimeMillis();
-        var personer = new ArrayList<>(getPersoner(identList(hovedpersoner), hovedpersoner));
-
-        log.info("Excel: hentet alle hovedpersoner, medgått tid er {} sekunder", (System.currentTimeMillis() - start) / 1000);
-        start = System.currentTimeMillis();
-        personer.addAll(getPersoner(Stream.of(
-                                        getIdenterForRelasjon(personer, PARTNER),
-                                        getIdenterForRelasjon(personer, BARN),
-                                        getIdenterForRelasjon(personer, FORELDRE),
-                                        getIdenterForRelasjon(personer, VERGE),
-                                        getIdenterForRelasjon(personer, FULLMEKTIG)
-                        )
-                        .flatMap(Collection::stream)
-                        .filter(ident -> hovedpersoner.stream().noneMatch(person -> person.getIdent().equals(ident)))
-                        .distinct()
-                        .toList(), hovedpersoner)
-        );
-        log.info("Excel: hentet alle relasjoner, medgått tid er {} sekunder", (System.currentTimeMillis() - start) / 1000);
-        return personer;
+        var start = new AtomicLong();
+        return Flux.just(testgruppe)
+                .doOnNext(gruppe -> start.set(System.currentTimeMillis()))
+                .map(gruppe -> testgruppe.getTestidenter())
+                .flatMap(Flux::fromIterable)
+                .collectList()
+                .flatMap(testidenter -> getPersoner(testidenter)
+                        .doOnNext(personer ->
+                                log.info("Excel: hentet alle hovedpersoner antall {}, medgått tid er {} sekunder",
+                                        personer.size(),
+                                        (System.currentTimeMillis() - start.get()) / 1000))
+                        .doOnNext(personer -> start.set(System.currentTimeMillis()))
+                        .flatMap(personer -> Flux.concat(Mono.just(personer),
+                                        getPersoner(Stream.of(
+                                                        getIdenterForRelasjon(personer, PARTNER),
+                                                        getIdenterForRelasjon(personer, BARN),
+                                                        getIdenterForRelasjon(personer, FORELDRE),
+                                                        getIdenterForRelasjon(personer, VERGE),
+                                                        getIdenterForRelasjon(personer, FULLMEKTIG))
+                                                .flatMap(Collection::stream)
+                                                .distinct()
+                                                .filter(ident -> testidenter.stream().noneMatch(person -> person.getIdent().equals(ident)))
+                                                .map(ident -> Testident.builder()
+                                                        .ident(ident)
+                                                        .build())
+                                                .toList()))
+                                .flatMap(Flux::fromIterable)
+                                .collectList()
+                                .doOnNext(allePersoner ->
+                                        log.info("Excel: hentet alle relasjoner, totalt antall {}, medgått tid er {} sekunder",
+                                                allePersoner.size(),
+                                                (System.currentTimeMillis() - start.get()) / 1000))));
     }
 
     private void appendHyperlinks(XSSFWorkbook workbook, List<Object[]> persondata) {
@@ -385,25 +397,27 @@ public class PersonExcelService {
     }
 
     @SneakyThrows
-    private List<Object[]> getPersoner(List<String> identer, List<Testident> testidenter) {
+    private Mono<List<Object[]>> getPersoner(List<Testident> testidenter) {
 
-        return identer.isEmpty() ?
-                Collections.emptyList() :
+        return Flux.fromIterable(testidenter)
+                .map(Testident::getIdent)
+                .distinct()
+                .collectList()
+                .filter(identer -> !identer.isEmpty())
+                .flatMap(identer ->
 
-                Mono.zip(kodeverkConsumer.getKodeverkByName(LANDKODER),
-                                kodeverkConsumer.getKodeverkByName(KOMMUNENR),
-                                kodeverkConsumer.getKodeverkByName(POSTNUMMER))
-                        .flatMapMany(kodeverk -> Flux.range(0, identer.size() / BLOCK_SIZE + 1)
-                                .flatMap(index -> pdlPersonConsumer.getPdlPersoner(identer.subList(index * BLOCK_SIZE, Math.min((index + 1) * BLOCK_SIZE, identer.size())))
-                                )
-                                .filter(personbolk -> nonNull(personbolk.getData()))
-                                .map(PdlPersonBolk::getData)
-                                .map(PdlPersonBolk.Data::getHentPersonBolk)
-                                .flatMap(Flux::fromIterable)
-                                .filter(personBolk -> nonNull(personBolk.getPerson()))
-                                .map(person -> prepDataRow(person, kodeverk, testidenter)))
-                        .collectList()
-                        .block();
+                        Mono.zip(kodeverkConsumer.getKodeverkByName(LANDKODER),
+                                        kodeverkConsumer.getKodeverkByName(KOMMUNENR),
+                                        kodeverkConsumer.getKodeverkByName(POSTNUMMER))
+
+                                .flatMap(kodeverk -> personServiceConsumer.getPdlPersonerNoRetries(identer)
+                                        .filter(personbolk -> nonNull(personbolk.getData()))
+                                        .map(PdlPersonBolk::getData)
+                                        .map(PdlPersonBolk.Data::getHentPersonBolk)
+                                        .flatMap(Flux::fromIterable)
+                                        .filter(personBolk -> nonNull(personBolk.getPerson()))
+                                        .map(person -> prepDataRow(person, kodeverk, testidenter))
+                                        .collectList()));
     }
 
     private Object[] prepDataRow(PdlPersonBolk.PersonBolk person, Tuple3 kodeverk, List<Testident> identer) {
@@ -445,26 +459,21 @@ public class PersonExcelService {
     }
 
     private static String getIBruk(PdlPersonBolk.PersonBolk person, List<Testident> identer) {
-        var testident = identer.stream()
-                .filter(ident -> ident.getIdent().equals(person.getIdent()))
-                .findAny();
 
-        if (testident.isEmpty() || (testident.get().getIBruk() == null)) {
-            return "";
-        }
-
-        return Boolean.TRUE.equals(testident.get().getIBruk()) ? "Ja" : "Nei";
+        return identer.stream()
+                .anyMatch(ident -> ident.getIdent().equals(person.getIdent()) &&
+                        isTrue(ident.getIBruk())) ?
+                "Ja" : "Nei";
     }
 
     private static String getBeskrivelse(PdlPersonBolk.PersonBolk person, List<Testident> identer) {
-        var testident = identer.stream()
+
+        var beskrivelse = identer.stream()
                 .filter(ident -> ident.getIdent().equals(person.getIdent()))
+                .map(Testident::getBeskrivelse)
+                .filter(StringUtils::isNotBlank)
                 .findAny();
 
-        if (testident.isPresent()) {
-            return StringUtils.trimToEmpty(testident.get().getBeskrivelse());
-        } else {
-            return "";
-        }
+        return beskrivelse.isPresent() ? trimToEmpty(beskrivelse.get()) : "";
     }
 }

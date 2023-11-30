@@ -11,6 +11,7 @@ import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import { SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
 import { FormikProps } from 'formik'
+import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
 
 type KrrstubFormProps = {
 	formikBag: FormikProps<{}>
@@ -25,7 +26,7 @@ export const krrAttributt = 'krrstub'
 export const KrrstubForm = ({ formikBag }: KrrstubFormProps) => {
 	const leverandoerer = SelectOptionsOppslag.hentKrrLeverandoerer()
 	//@ts-ignore
-	const leverandoerOptions = SelectOptionsOppslag.formatOptions('sdpLeverandoer', leverandoerer)
+	const leverandoerOptions = SelectOptionsFormat.formatOptions('sdpLeverandoer', leverandoerer)
 	const registrert = _.get(formikBag, 'values.krrstub.registrert')
 
 	const handleRegistrertChange = (newRegistrert: Change) => {
@@ -73,7 +74,11 @@ export const KrrstubForm = ({ formikBag }: KrrstubFormProps) => {
 								fastfield={false}
 							/>
 							<FormikTextInput name="krrstub.epost" label="E-post" />
-							<FormikTextInput name="krrstub.mobil" label="Mobilnummer" type="number" />
+							<FormikTextInput
+								name="krrstub.mobil"
+								label="Mobilnummer (+47)"
+								placeholder={'+4712345678'}
+							/>
 							<FormikSelect
 								name="krrstub.spraak"
 								label="Språk"
@@ -110,7 +115,7 @@ KrrstubForm.validation = {
 	krrstub: Yup.object({
 		epost: Yup.string(),
 		gyldigFra: Yup.date().nullable(),
-		mobil: Yup.string().matches(/^\d*$/, 'Ugyldig mobilnummer'),
+		mobil: Yup.string().matches(/^\+?\d*$/, 'Ugyldig mobilnummer'),
 		sdpAdresse: Yup.string(),
 		sdpLeverandoer: Yup.string().nullable(),
 		spraak: Yup.string(),

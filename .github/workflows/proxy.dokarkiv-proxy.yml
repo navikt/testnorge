@@ -16,7 +16,10 @@ jobs:
     with:
       cluster: "dev-fss"
       working-directory: "proxies/dokarkiv-proxy"
-      deploy-tag: "#deploy-dokarkiv-proxy"
+      deploy-tag: "#deploy-proxy"
+    permissions:
+      contents: read
+      id-token: write
     secrets:
       NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
       NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}

@@ -34,7 +34,7 @@ const Container = styled.div`
 	outline: none;
 	transition: border 0.24s ease-in-out;
 `
-export const FileUploader = ({
+export default ({
 	files,
 	setFiles,
 	feil,
@@ -79,6 +79,9 @@ export const FileUploader = ({
 		disabled: !isMultiple && files?.length > 0,
 		multiple: isMultiple,
 		onDrop: handleDrop,
+		accept: {
+			'application/pdf': ['.pdf'],
+		},
 	})
 
 	return (

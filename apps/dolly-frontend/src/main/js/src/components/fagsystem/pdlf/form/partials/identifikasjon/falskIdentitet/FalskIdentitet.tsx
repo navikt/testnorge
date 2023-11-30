@@ -4,15 +4,16 @@ import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { DollySelect, FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { getPlaceholder, setNavn } from '../../utils'
-import { SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
 import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { initialFalskIdentitetValues } from '@/components/fagsystem/pdlf/form/initialValues'
 import { PdlEksisterendePerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlEksisterendePerson'
+import { useGenererNavn } from '@/utils/hooks/useGenererNavn'
+import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
 
 export const FalskIdentitet = ({ formikBag }) => {
-	const navnInfo = SelectOptionsOppslag.hentPersonnavn()
-	const navnOptions = SelectOptionsOppslag.formatOptions('personnavn', navnInfo)
+	const { navnInfo, loading } = useGenererNavn()
+	const navnOptions = SelectOptionsFormat.formatOptions('personnavn', navnInfo)
 
 	const settIdentitetType = (e, path, advancedValues) => {
 		if (!e) {
@@ -92,19 +93,19 @@ export const FalskIdentitet = ({ formikBag }) => {
 										size="xlarge"
 										placeholder={getPlaceholder(
 											formikBag.values,
-											`${path}.rettIdentitetVedOpplysninger.personnavn`
+											`${path}.rettIdentitetVedOpplysninger.personnavn`,
 										)}
-										isLoading={navnInfo.loading}
+										isLoading={loading}
 										onChange={(navn) =>
 											setNavn(
 												navn,
 												`${path}.rettIdentitetVedOpplysninger.personnavn`,
-												formikBag.setFieldValue
+												formikBag.setFieldValue,
 											)
 										}
 										value={_.get(
 											formikBag.values,
-											`${path}.rettIdentitetVedOpplysninger.personnavn.fornavn`
+											`${path}.rettIdentitetVedOpplysninger.personnavn.fornavn`,
 										)}
 									/>
 									<FormikDatepicker

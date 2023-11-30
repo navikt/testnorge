@@ -3,15 +3,15 @@ package no.nav.registre.testnorge.personsearchservice.service.utils;
 import lombok.experimental.UtilityClass;
 import no.nav.testnav.libs.dto.personsearchservice.v1.search.IdentifikasjonSearch;
 import no.nav.testnav.libs.dto.personsearchservice.v1.search.PersonSearch;
-import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.opensearch.index.query.BoolQueryBuilder;
 
 import java.util.Optional;
 
-import static java.util.Objects.nonNull;
-import static no.nav.registre.testnorge.personsearchservice.service.utils.QueryUtils.nestedMatchQuery;
-import static no.nav.registre.testnorge.personsearchservice.service.utils.QueryUtils.nestedExistsQuery;
-import static no.nav.registre.testnorge.personsearchservice.service.utils.QueryUtils.nestedTermsQuery;
 import static no.nav.registre.testnorge.personsearchservice.service.utils.QueryUtils.METADATA_FIELD;
+import static no.nav.registre.testnorge.personsearchservice.service.utils.QueryUtils.nestedExistsQuery;
+import static no.nav.registre.testnorge.personsearchservice.service.utils.QueryUtils.nestedMatchQuery;
+import static no.nav.registre.testnorge.personsearchservice.service.utils.QueryUtils.nestedTermsQuery;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @UtilityClass
 public class IdentifikasjonUtils {
@@ -43,11 +43,14 @@ public class IdentifikasjonUtils {
     }
 
     private static void addIdentitetQueries(BoolQueryBuilder queryBuilder, IdentifikasjonSearch search) {
-        if (nonNull(search.getFalskIdentitet()) && Boolean.TRUE.equals(search.getFalskIdentitet())) {
+        if (isTrue(search.getFalskIdentitet())) {
             queryBuilder.must(nestedExistsQuery("hentPerson.falskIdentitet", METADATA_FIELD, null));
         }
-        if (nonNull(search.getUtenlandskIdentitet()) && Boolean.TRUE.equals(search.getUtenlandskIdentitet())) {
+        if (isTrue(search.getUtenlandskIdentitet())) {
             queryBuilder.must(nestedExistsQuery("hentPerson.utenlandskIdentifikasjonsnummer", METADATA_FIELD, null));
+        }
+        if (isTrue(search.getIdentHistorikk())) {
+            queryBuilder.must(nestedExistsQuery(IDENTIFIKATOR_PATH, METADATA_FIELD, true));
         }
     }
 

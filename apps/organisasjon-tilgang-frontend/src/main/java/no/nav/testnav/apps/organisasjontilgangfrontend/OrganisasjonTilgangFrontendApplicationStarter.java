@@ -1,7 +1,7 @@
 package no.nav.testnav.apps.organisasjontilgangfrontend;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.testnav.apps.organisasjontilgangfrontend.credentials.TestnavOrganisasjonTilgangServiceProperties;
+import no.nav.testnav.apps.organisasjontilgangfrontend.config.Consumers;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactivefrontend.config.FrontendConfig;
 import no.nav.testnav.libs.reactivefrontend.filter.AddAuthenticationHeaderToRequestGatewayFilterFactory;
@@ -28,12 +28,20 @@ import java.util.function.Function;
         OidcInMemorySessionConfiguration.class,
         FrontendConfig.class
 })
-@SpringBootApplication(exclude = {ReactiveUserDetailsServiceAutoConfiguration.class})
+@SpringBootApplication(exclude = { ReactiveUserDetailsServiceAutoConfiguration.class })
 @RequiredArgsConstructor
 public class OrganisasjonTilgangFrontendApplicationStarter {
 
-    private final TestnavOrganisasjonTilgangServiceProperties testnavOrganisasjonTilgangServiceProperties;
+    private final Consumers consumers;
     private final TokenExchange tokenExchange;
+
+    @Bean
+    public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
+        return builder
+                .routes()
+                .route(createRoute(consumers.getTestnavOrganisasjonTilgangService()))
+                .build();
+    }
 
     public static void main(String[] args) {
         SpringApplication.run(OrganisasjonTilgangFrontendApplicationStarter.class, args);
@@ -48,18 +56,9 @@ public class OrganisasjonTilgangFrontendApplicationStarter {
                 });
     }
 
-    @Bean
-    public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
-        return builder
-                .routes()
-                .route(createRoute(
-                        testnavOrganisasjonTilgangServiceProperties.getUrl(),
-                        addAuthenticationHeaderFilterFrom(testnavOrganisasjonTilgangServiceProperties)
-                ))
-                .build();
-    }
-
-    private Function<PredicateSpec, Buildable<Route>> createRoute(String host, GatewayFilter filter) {
+    private Function<PredicateSpec, Buildable<Route>> createRoute(ServerProperties serverProperties) {
+        var host = serverProperties.getUrl();
+        var filter = addAuthenticationHeaderFilterFrom(serverProperties);
         return spec -> spec
                 .path("/organisasjon-tilgang-service/**")
                 .filters(filterSpec -> filterSpec

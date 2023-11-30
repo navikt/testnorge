@@ -15,15 +15,45 @@ import { SammendragVisning } from '@/components/fagsystem/arbeidsplassen/visning
 import { JobboenskerVisning } from '@/components/fagsystem/arbeidsplassen/visning/partials/JobboenskerVisning'
 import Panel from '@/components/ui/panel/Panel'
 import { HjemmelVisning } from '@/components/fagsystem/arbeidsplassen/visning/partials/HjemmelVisning'
+import styled from 'styled-components'
+import { PadlockLockedFillIcon } from '@navikt/aksel-icons'
+import { BodyLong } from '@navikt/ds-react'
 
-export const ArbeidsplassenVisning = ({ data, loading, hjemmel }) => {
-	if (loading) return <Loading label="Laster CV" />
+const StyledCVVisning = styled.div`
+	margin-bottom: 20px;
+`
+
+const ForbiddenVisning = styled.div`
+	align-items: center;
+	margin-bottom: 20px;
+
+	&& {
+		p {
+			margin-left: 10px;
+		}
+	}
+`
+
+export const ArbeidsplassenVisning = ({ data, loading, error, hjemmel }) => {
+	if (loading && !data && !error) return <Loading label="Laster CV" />
+
+	if (error?.status === 403)
+		return (
+			<>
+				<SubOverskrift label="Arbeidsplassen (CV)" iconKind="cv" isWarning />
+				<ForbiddenVisning className="flexbox">
+					<PadlockLockedFillIcon color={'#C77300'} fontSize={'2rem'} />
+					<BodyLong size={'small'}>{error?.message}</BodyLong>
+				</ForbiddenVisning>
+			</>
+		)
+
 	if (!data) {
 		return null
 	}
 
 	return (
-		<>
+		<StyledCVVisning>
 			<SubOverskrift label="Arbeidsplassen (CV)" iconKind="cv" />
 			<Panel heading="CV-opplysninger">
 				<JobboenskerVisning data={data.jobboensker} />
@@ -40,6 +70,6 @@ export const ArbeidsplassenVisning = ({ data, loading, hjemmel }) => {
 				<SammendragVisning data={data.sammendrag} />
 				<HjemmelVisning hjemmel={hjemmel} />
 			</Panel>
-		</>
+		</StyledCVVisning>
 	)
 }

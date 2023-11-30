@@ -14,7 +14,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
 @ExtendWith(MockitoExtension.class)
-public class BestillingUdiStatusMapperTest {
+class BestillingUdiStatusMapperTest {
 
     private static final List<BestillingProgress> ERROR_STATUS = List.of(
             BestillingProgress.builder().ident("IDENT_1")
@@ -35,7 +35,7 @@ public class BestillingUdiStatusMapperTest {
     );
 
     @Test
-    public void udiStatusMapper_MapFeilmeldinger() {
+    void udiStatusMapper_MapFeilmeldinger() {
         List<RsStatusRapport> statusRapport = BestillingUdiStubStatusMapper.buildUdiStubStatusMap(ERROR_STATUS);
 
         assertThat(statusRapport.get(0).getStatuser().get(0).getMelding(), is(equalTo("FEIL: Gjenopprett feilet for udistubclient: 500 Internal Server Error")));

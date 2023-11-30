@@ -20,14 +20,27 @@ export const testDatoTom = (val, fomPath, feilmelding = 'Dato må være etter fr
 	})
 }
 
+export const filtrerKeysMedKunNullVerdier = (data) => {
+	if (!data) {
+		return null
+	}
+	JSON.stringify(
+		data,
+		(_key, value) => {
+			return value === null || value === '' ? undefined : value
+		},
+		4,
+	)
+}
+
 export const getEksisterendeNyPerson = (
 	relasjoner: Array<Relasjon>,
 	ident: String,
-	relasjonType: String
+	relasjonTyper: Array<String>,
 ) => {
 	const relasjon = relasjoner?.find(
 		(relasjon) =>
-			relasjon?.relatertPerson?.ident === ident && relasjon?.relasjonType === relasjonType
+			relasjon?.relatertPerson?.ident === ident && relasjonTyper.includes(relasjon.relasjonType),
 	)
 
 	if (!relasjon) {
@@ -38,4 +51,12 @@ export const getEksisterendeNyPerson = (
 		value: relasjon?.relatertPerson?.ident,
 		label: `${relasjon?.relatertPerson?.ident} - ${relasjon?.relatertPerson?.navn?.[0]?.fornavn} ${relasjon?.relatertPerson?.navn?.[0]?.etternavn}`,
 	}
+}
+
+export const getRandomValue = (liste: Array<any>) => {
+	if (!liste || liste?.length < 1) {
+		return null
+	}
+	const random = Math.floor(Math.random() * liste.length) //NOSONAR not used in secure contexts
+	return liste[random]
 }

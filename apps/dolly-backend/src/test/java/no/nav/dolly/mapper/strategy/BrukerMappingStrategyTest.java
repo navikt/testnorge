@@ -16,7 +16,7 @@ import static java.util.Collections.singletonList;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class BrukerMappingStrategyTest {
+class BrukerMappingStrategyTest {
 
     private MapperFacade mapper;
 
@@ -26,7 +26,7 @@ public class BrukerMappingStrategyTest {
     }
 
     @Test
-    public void mapBruker() {
+    void mapBruker() {
 
         Bruker bruker = Bruker.builder().brukerId("ident")
                 .favoritter(new HashSet<>(singletonList(Testgruppe.builder()

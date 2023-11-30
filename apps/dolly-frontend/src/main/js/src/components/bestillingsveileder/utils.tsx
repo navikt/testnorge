@@ -60,6 +60,7 @@ export const rootPaths = [
 	'arbeidsplassenCV',
 	'skjerming',
 	'sigrunstub',
+	'sigrunstubPensjonsgivende',
 	'pensjonforvalter',
 	'inntektstub',
 	'instdata',
@@ -70,6 +71,7 @@ export const rootPaths = [
 	'brregstub',
 	'histark',
 	'dokarkiv',
+	'medl',
 	'sykemelding',
 	'organisasjon',
 ]

@@ -24,7 +24,7 @@ export const sjekkManglerInstData = (instData) => {
 }
 
 export const InstVisning = ({ data, loading, bestillingIdListe, tilgjengeligMiljoe }) => {
-	const { bestilteMiljoer } = useBestilteMiljoer(bestillingIdListe, 'instdata')
+	const { bestilteMiljoer } = useBestilteMiljoer(bestillingIdListe, 'INST2')
 
 	if (loading) {
 		return <Loading label="Laster inst data" />

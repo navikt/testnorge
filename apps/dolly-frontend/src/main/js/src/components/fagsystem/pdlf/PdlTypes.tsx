@@ -128,7 +128,7 @@ export type ForeldreBarnRelasjon = {
 	typeForelderBarn?: string
 }
 
-export type DoedfoedtBarn = {
+export type DoedfoedtBarnData = {
 	id?: number
 	dato: Date
 }
@@ -161,6 +161,10 @@ export type VergemaalValues = {
 
 export type FullmaktValues = {
 	nyFullmektig?: NyIdent
+	id: number
+}
+
+export type DeltBostedValues = {
 	id: number
 }
 

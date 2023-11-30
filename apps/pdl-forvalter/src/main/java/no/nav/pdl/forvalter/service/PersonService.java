@@ -12,23 +12,23 @@ import no.nav.pdl.forvalter.database.model.DbRelasjon;
 import no.nav.pdl.forvalter.database.repository.AliasRepository;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.dto.HentIdenterRequest;
+import no.nav.pdl.forvalter.dto.IdentDTO;
 import no.nav.pdl.forvalter.dto.Paginering;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.exception.NotFoundException;
-import no.nav.pdl.forvalter.utils.RelasjonerAlder;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.BestillingRequestDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.ForeldreansvarDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.BestillingRequestDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.BostedadresseDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.FoedselDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.ForeldreansvarDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.FullPersonDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.Identtype;
+import no.nav.testnav.libs.data.pdlforvalter.v1.KjoennDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.NavnDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.PersonUpdateRequestDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.SivilstandDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.StatsborgerskapDTO;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -50,7 +50,7 @@ import static java.time.LocalDateTime.now;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility.getIdenttype;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FAMILIERELASJON_BARN;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType.FAMILIERELASJON_BARN;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -76,6 +76,7 @@ public class PersonService {
     private final AliasRepository aliasRepository;
     private final ValidateArtifactsService validateArtifactsService;
     private final UnhookEksternePersonerService unhookEksternePersonerService;
+    private final RelasjonerAlderService relasjonerAlderService;
 
     @Transactional
     public String updatePerson(String ident, PersonUpdateRequestDTO request, Boolean overwrite, Boolean relaxed) {
@@ -200,12 +201,14 @@ public class PersonService {
         if (isNull(request.getPerson())) {
             request.setPerson(new PersonDTO());
         }
-        RelasjonerAlder.fixRelasjonerAlder(request);
+        relasjonerAlderService.fixRelasjonerAlder(request);
 
         if (isBlank(request.getOpprettFraIdent())) {
             request.getPerson().setIdent(identPoolConsumer.acquireIdents(
                             mapperFacade.map(request, HentIdenterRequest.class))
-                    .blockFirst().stream().findFirst().get().getIdent());
+                    .flatMap(Flux::fromIterable)
+                    .map(IdentDTO::getIdent)
+                    .blockFirst());
         } else {
             if (personRepository.existsByIdent(request.getOpprettFraIdent())) {
                 throw new InvalidRequestException(format(IDENT_ALREADY_EXISTS, request.getOpprettFraIdent()));

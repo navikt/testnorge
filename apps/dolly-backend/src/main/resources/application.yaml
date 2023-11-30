@@ -28,6 +28,9 @@ spring:
     enabled: true # Disabled by default as you should probably think twice before running Flyway-migrations
     locations: classpath:db/migration
     baseline-on-migrate: true
+  mvc:
+    async:
+      request-timeout: -1
   jpa:
     properties:
       hibernate:
@@ -44,8 +47,8 @@ spring:
           #The client_id of this application
           accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
         tokenx:
-          issuer-uri: https://tokendings.dev-gcp.nais.io
-          jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
+          issuer-uri: https://tokenx.dev-gcp.nav.cloud.nais.io
+          jwk-set-uri: https://tokenx.dev-gcp.nav.cloud.nais.io/jwks
           accepted-audience: ${TOKEN_X_CLIENT_ID}
 
 springdoc:
@@ -53,6 +56,7 @@ springdoc:
     url: /v3/api-docs
     disable-swagger-default-url: true
     tags-sorter: alpha
+  pre-loading-enabled: true
 
 management:
   endpoints:
@@ -78,11 +82,12 @@ logging:
           results:
             jdbc: ERROR
 
+open:
+  search:
+    total-fields: 1500
+    index: bestilling
+
 consumers:
-  testnav-helsepersonell-service:
-    name: testnav-helsepersonell-service
-    namespace: dolly
-    url: http://testnav-helsepersonell-service.dolly.svc.cluster.local
   testnav-organisasjon-forvalter:
     name: testnav-organisasjon-forvalter
     namespace: dolly
@@ -108,20 +113,10 @@ consumers:
     namespace: dolly
     url: https://testnav-norg2-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
-  testnav-generer-navn-service:
-    name: generer-navn-service
-    namespace: dolly
-    url: http://generer-navn-service.dolly.svc.cluster.local
-    cluster: dev-gcp
-  testnav-profil-api:
-    name: testnorge-profil-api
-    namespace: dolly
-    url: http://testnorge-profil-api.dolly.svc.cluster.local
-    cluster: dev-gcp
   testnav-person-service:
     name: testnav-person-service
     namespace: dolly
-    url:  http://testnav-person-service.dolly.svc.cluster.local
+    url: http://testnav-person-service.dolly.svc.cluster.local
     cluster: dev-gcp
   testnav-kodeverk-proxy:
     name: testnav-kodeverk-proxy
@@ -148,6 +143,11 @@ consumers:
     namespace: dolly
     url: https://testnav-krrstub-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
+  testnav-medl-proxy:
+    name: testnav-medl-proxy
+    namespace: dolly
+    url: https://testnav-medl-proxy.dev-fss-pub.nais.io
+    cluster: dev-fss
   testnav-inntektstub-proxy:
     name: testnav-inntektstub-proxy
     namespace: dolly
@@ -157,11 +157,6 @@ consumers:
     name: testnav-inst-proxy
     namespace: dolly
     url: https://testnav-inst-proxy.dev-fss-pub.nais.io
-    cluster: dev-fss
-  testnav-statisk-data-forvalter-proxy:
-    name: testnav-statisk-data-forvalter-proxy
-    namespace: dolly
-    url: https://testnav-statisk-data-forvalter-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
   testnav-skjermingsregister-proxy:
     name: testnav-skjermingsregister-proxy
@@ -208,11 +203,11 @@ consumers:
     namespace: dolly
     url: http://testnav-amelding-service.dolly.svc.cluster.local
     cluster: dev-gcp
-  testnav-sykemelding-api-proxy:
-    name: testnav-sykemelding-api-proxy
+  testnav-sykemelding-api:
+    name: testnav-sykemelding-api
     namespace: dolly
-    url: https://testnav-sykemelding-api-proxy.dev-fss-pub.nais.io
-    cluster: dev-fss
+    url: http://testnav-sykemelding-api.dolly.svc.cluster.local
+    cluster: dev-gcp
   testnav-synt-sykemelding-api:
     name: testnav-synt-sykemelding-api
     namespace: dolly
@@ -223,7 +218,6 @@ consumers:
     namespace: dolly
     url: http://testnav-organisasjon-service.dolly.svc.cluster.local
     cluster: dev-gcp
-    threads: 5
   testnav-udistub-proxy:
     name: testnav-udistub-proxy
     namespace: dolly

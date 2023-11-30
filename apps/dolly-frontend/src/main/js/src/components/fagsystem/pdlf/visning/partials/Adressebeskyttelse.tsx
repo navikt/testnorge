@@ -5,9 +5,10 @@ import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { showLabel } from '@/utils/DataFormatter'
-import { initialAdressebeskyttelse } from '@/components/fagsystem/pdlf/form/initialValues'
+import { getInitialAdressebeskyttelse } from '@/components/fagsystem/pdlf/form/initialValues'
 import { AdressebeskyttelseData, Person } from '@/components/fagsystem/pdlf/PdlTypes'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
+import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
 
 type AdressebeskyttelseTypes = {
 	data: Array<AdressebeskyttelseData>
@@ -54,17 +55,20 @@ const AdressebeskyttelseVisning = ({
 	identtype,
 	erPdlVisning,
 }: AdressebeskyttelseVisningTypes) => {
-	const initAdressebeskyttelse = Object.assign(_.cloneDeep(initialAdressebeskyttelse), data[idx])
+	const initAdressebeskyttelse = Object.assign(
+		_.cloneDeep(getInitialAdressebeskyttelse()),
+		data[idx],
+	)
 	const initialValues = { adressebeskyttelse: initAdressebeskyttelse }
 
 	const redigertAdressebeskyttelsePdlf = _.get(
 		tmpPersoner,
-		`${ident}.person.adressebeskyttelse`
+		`${ident}.person.adressebeskyttelse`,
 	)?.find((a: Person) => a.id === adressebeskyttelse.id)
 	const slettetAdressebeskyttelsePdlf =
 		tmpPersoner?.hasOwnProperty(ident) && !redigertAdressebeskyttelsePdlf
 	if (slettetAdressebeskyttelsePdlf) {
-		return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+		return <OpplysningSlettet />
 	}
 
 	const adressebeskyttelseValues = redigertAdressebeskyttelsePdlf
@@ -73,8 +77,8 @@ const AdressebeskyttelseVisning = ({
 	const redigertAdressebeskyttelseValues = redigertAdressebeskyttelsePdlf
 		? {
 				adressebeskyttelse: Object.assign(
-					_.cloneDeep(initialAdressebeskyttelse),
-					redigertAdressebeskyttelsePdlf
+					_.cloneDeep(getInitialAdressebeskyttelse()),
+					redigertAdressebeskyttelsePdlf,
 				),
 		  }
 		: null

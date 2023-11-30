@@ -1,11 +1,8 @@
 package no.nav.testnav.apps.syntsykemeldingapi.domain;
 
 import lombok.RequiredArgsConstructor;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-
+import no.nav.testnav.apps.syntsykemeldingapi.consumer.dto.SyntDiagnoserDTO;
+import no.nav.testnav.apps.syntsykemeldingapi.consumer.dto.SyntSykemeldingHistorikkDTO;
 import no.nav.testnav.libs.dto.sykemelding.v1.AdresseDTO;
 import no.nav.testnav.libs.dto.sykemelding.v1.Aktivitet;
 import no.nav.testnav.libs.dto.sykemelding.v1.AktivitetDTO;
@@ -17,8 +14,11 @@ import no.nav.testnav.libs.dto.sykemelding.v1.PasientDTO;
 import no.nav.testnav.libs.dto.sykemelding.v1.PeriodeDTO;
 import no.nav.testnav.libs.dto.sykemelding.v1.SykemeldingDTO;
 import no.nav.testnav.libs.dto.synt.sykemelding.v1.SyntSykemeldingDTO;
-import no.nav.testnav.apps.syntsykemeldingapi.consumer.dto.SyntDiagnoserDTO;
-import no.nav.testnav.apps.syntsykemeldingapi.consumer.dto.SyntSykemeldingHistorikkDTO;
+
+import java.util.Collections;
+import java.util.List;
+
+import static java.util.Objects.nonNull;
 
 @RequiredArgsConstructor
 public class Sykemelding {
@@ -34,12 +34,14 @@ public class Sykemelding {
     }
 
     public SykemeldingDTO toDTO() {
-        var arbeidsgiverDTO = ArbeidsgiverDTO
-                .builder()
-                .navn(arbeidsforhold.getNavn())
-                .stillingsprosent(arbeidsforhold.getStillingsprosent())
-                .yrkesbetegnelse(arbeidsforhold.getYrkesbetegnelse())
-                .build();
+        var arbeidsgiverDTO = nonNull(arbeidsforhold) ?
+                ArbeidsgiverDTO
+                        .builder()
+                        .navn(arbeidsforhold.getNavn())
+                        .stillingsprosent(arbeidsforhold.getStillingsprosent())
+                        .yrkesbetegnelse(arbeidsforhold.getYrkesbetegnelse())
+                        .build() :
+                null;
 
         var sykemeldinger = historikk.getSykmeldinger();
         var firstSykemelding = sykemeldinger.get(0);
@@ -65,19 +67,21 @@ public class Sykemelding {
                 .diagnosekode(firstSykemelding.getHovedDiagnose().getDiagnosekode())
                 .build();
 
-        var mottaker = OrganisasjonDTO
-                .builder()
-                .navn(arbeidsforhold.getNavn())
-                .orgNr(arbeidsforhold.getOrgnr())
-                .adresse(AdresseDTO
+        var mottaker = nonNull(arbeidsforhold) ?
+                OrganisasjonDTO
                         .builder()
-                        .by(arbeidsforhold.getBy())
-                        .gate(arbeidsforhold.getGatenavn())
-                        .land(arbeidsforhold.getLand())
-                        .postnummer(arbeidsforhold.getPostnummer())
-                        .build()
-                )
-                .build();
+                        .navn(arbeidsforhold.getNavn())
+                        .orgNr(arbeidsforhold.getOrgnr())
+                        .adresse(AdresseDTO
+                                .builder()
+                                .by(arbeidsforhold.getBy())
+                                .gate(arbeidsforhold.getGatenavn())
+                                .land(arbeidsforhold.getLand())
+                                .postnummer(arbeidsforhold.getPostnummer())
+                                .build()
+                        )
+                        .build() :
+                null;
 
         var pasient = PasientDTO
                 .builder()

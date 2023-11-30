@@ -39,14 +39,4 @@ public interface PersonRepository extends JpaRepository<DbPerson, Long> {
                                        @Param("partialNavn1") String partialNavn1,
                                        @Param("partialNavn2") String partialNavn2,
                                        Pageable pageable);
-
-    @Query(value = "select * from person p "
-            + "where p.person -> 'sivilstand' -> 0 ->> 'relatertVedSivilstand' = :ident "
-            + "or p.person -> 'forelderBarnRelasjon' -> 0 ->> 'relatertPerson' = :ident "
-            + "or p.person -> 'foreldreansvar' -> 0 ->> 'ansvarlig' = :ident "
-            + "or p.person -> 'kontaktinformasjonForDoedsbo' -> 0 -> 'personSomKontakt' ->> 'identifikasjonsnummer' = :ident "
-            + "or p.person -> 'vergemaal' -> 0 ->> 'vergeIdent' = :ident "
-            + "or p.person -> 'fullmakt' -> 0 ->> 'motpartsPersonident' = :ident",
-            nativeQuery = true)
-    List<DbPerson> findByRelatertPerson(@Param("ident") String ident);
 }

@@ -3,7 +3,7 @@ package no.nav.dolly.bestilling.sykemelding.command;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.sykemelding.domain.SyntSykemeldingRequest;
 import no.nav.dolly.bestilling.sykemelding.dto.SykemeldingResponse;
-import no.nav.dolly.util.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -35,11 +35,17 @@ public class SyntSykemeldingPostCommand {
                 .bodyValue(sykemeldingRequest)
                 .retrieve()
                 .toBodilessEntity()
+                .timeout(Duration.ofMinutes(4))
                 .map(response -> SykemeldingResponse.builder()
                         .status(HttpStatus.valueOf(response.getStatusCode().value()))
+                        .ident(sykemeldingRequest.getIdent())
+                        .sykemeldingRequest(SykemeldingResponse.SykemeldingRequest.builder()
+                                .syntSykemeldingRequest(sykemeldingRequest)
+                                .build())
                         .build())
                 .doOnError(WebClientFilter::logErrorMessage)
                 .onErrorResume(error -> Mono.just(SykemeldingResponse.builder()
+                        .ident(sykemeldingRequest.getIdent())
                         .status(WebClientFilter.getStatus(error))
                         .avvik(WebClientFilter.getMessage(error))
                         .build()))

@@ -49,16 +49,39 @@ a {
 
 }
 
+.navds-copybutton__icon {
+
+  svg {
+    margin-left: 2px;
+  }
+}
+
 .navds-checkbox {
   margin-bottom: 6px;
+}
+
+.navds-checkbox--medium > .navds-checkbox__input + .navds-checkbox__label > .navds-checkbox__icon {
+  margin-top: 2px;
 }
 
 .navds-checkboxes {
   margin-bottom: 1rem;
 }
 
+.navds-toggle-group__button-inner {
+  font-size: 16px;
+}
+
 .navds-table__header-cell--align-center, .navds-table__data-cell--align-center {
   text-align: -webkit-center;
+}
+
+.navds-checkbox__input {
+  z-index: unset;
+}
+
+.navds-checkbox--small .navds-checkbox__input:checked + .navds-checkbox__label > .navds-checkbox__icon {
+  transform: translate(0.22rem, 1%)
 }
 
 .miljo-velger {
@@ -143,6 +166,13 @@ a {
 
 .popover {
   max-width: 350px;
+}
+
+.form-flex-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 100%;
 }
 
 .ny-bestilling-form {

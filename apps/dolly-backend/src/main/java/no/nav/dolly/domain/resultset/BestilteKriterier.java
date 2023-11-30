@@ -16,14 +16,16 @@ import no.nav.dolly.domain.resultset.inntektstub.InntektMultiplierWrapper;
 import no.nav.dolly.domain.resultset.inst.RsInstdata;
 import no.nav.dolly.domain.resultset.kontoregister.BankkontoData;
 import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
+import no.nav.dolly.domain.resultset.medl.RsMedl;
 import no.nav.dolly.domain.resultset.pdldata.PdlPersondata;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
-import no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag;
+import no.nav.dolly.domain.resultset.sigrunstub.RsLignetInntekt;
+import no.nav.dolly.domain.resultset.sigrunstub.RsPensjonsgivendeForFolketrygden;
 import no.nav.dolly.domain.resultset.skjerming.RsSkjerming;
 import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding;
 import no.nav.dolly.domain.resultset.tpsmessagingservice.RsTpsMessaging;
 import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
-import no.nav.testnav.libs.dto.arbeidsplassencv.v1.ArbeidsplassenCVDTO;
+import no.nav.testnav.libs.data.arbeidsplassencv.v1.ArbeidsplassenCVDTO;
 
 import java.util.List;
 
@@ -40,7 +42,8 @@ public class BestilteKriterier {
     private List<RsAareg> aareg;
     private RsDigitalKontaktdata krrstub;
     private RsUdiPerson udistub;
-    private List<OpprettSkattegrunnlag> sigrunstub;
+    private List<RsLignetInntekt> sigrunstub;
+    private List<RsPensjonsgivendeForFolketrygden> sigrunstubPensjonsgivende;
     private Arenadata arenaforvalter;
     private PdlPersondata pdldata;
     private List<RsInstdata> instdata;
@@ -49,6 +52,7 @@ public class BestilteKriterier {
     private RsInntektsmelding inntektsmelding;
     private RsBregdata brregstub;
     private RsDokarkiv dokarkiv;
+    private RsMedl medl;
     private RsHistark histark;
     private RsTpsMessaging tpsMessaging;
     private BankkontoData bankkonto;

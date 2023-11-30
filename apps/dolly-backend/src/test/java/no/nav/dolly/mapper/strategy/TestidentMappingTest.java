@@ -16,7 +16,7 @@ import java.time.LocalDate;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class TestidentMappingTest {
+class TestidentMappingTest {
 
     private MapperFacade mapper;
 
@@ -26,7 +26,7 @@ public class TestidentMappingTest {
     }
 
     @Test
-    public void mapToRsTestidentIncludingTestgruppe() {
+    void mapToRsTestidentIncludingTestgruppe() {
         Bruker bruker = Bruker.builder().navIdent("ident").build();
 
         Testgruppe testgruppe = Testgruppe.builder()

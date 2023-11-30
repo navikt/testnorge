@@ -6,16 +6,23 @@ import { formatDate, showLabel } from '@/utils/DataFormatter'
 import { RelatertPerson } from '@/components/fagsystem/pdlf/visning/partials/RelatertPerson'
 import { Relasjon, SivilstandData } from '@/components/fagsystem/pdlf/PdlTypes'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
-import { initialPdlPerson, initialSivilstand } from '@/components/fagsystem/pdlf/form/initialValues'
+import {
+	getInitialSivilstand,
+	initialPdlPerson,
+} from '@/components/fagsystem/pdlf/form/initialValues'
 import * as _ from 'lodash-es'
 import React from 'react'
 import { getEksisterendeNyPerson } from '@/components/fagsystem/utils'
+import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
+import { useParams } from 'react-router-dom'
+import { useGruppeIdenter } from '@/utils/hooks/useGruppe'
 
 type SivilstandTypes = {
 	data: Array<SivilstandData>
 	relasjoner: Array<Relasjon>
 	tmpPersoner?: Array<SivilstandData>
 	ident?: string
+	identtype?: string
 }
 
 type VisningData = {
@@ -26,6 +33,7 @@ type VisningData = {
 	data?: Array<SivilstandData>
 	tmpPersoner?: Array<SivilstandData>
 	ident: string
+	identtype?: string
 }
 
 const SivilstandLes = ({
@@ -41,7 +49,7 @@ const SivilstandLes = ({
 	const relatertPersonIdent = sivilstandData.relatertVedSivilstand
 	const relasjon = relasjoner?.find((item) => item.relatertPerson?.ident === relatertPersonIdent)
 	const relasjonRedigert = redigertRelatertePersoner?.find(
-		(item) => item.relatertPerson?.ident === relatertPersonIdent
+		(item) => item.relatertPerson?.ident === relatertPersonIdent,
 	)
 
 	return (
@@ -82,25 +90,29 @@ const SivilstandVisning = ({
 	relasjoner,
 	tmpPersoner,
 	ident,
+	identtype,
 }: VisningData) => {
-	const initSivilstand = Object.assign(_.cloneDeep(initialSivilstand), data[idx])
+	const { gruppeId } = useParams()
+	const { identer: gruppeIdenter } = useGruppeIdenter(gruppeId)
+
+	const initSivilstand = Object.assign(_.cloneDeep(getInitialSivilstand()), data[idx])
 	let initialValues = { sivilstand: initSivilstand }
 	initialValues.sivilstand.nyRelatertPerson = initialPdlPerson
 
 	const redigertSivilstandPdlf = _.get(tmpPersoner, `${ident}.person.sivilstand`)?.find(
-		(a) => a.id === sivilstandData.id
+		(a) => a.id === sivilstandData.id,
 	)
 	const redigertRelatertePersoner = _.get(tmpPersoner, `${ident}.relasjoner`)
 
 	const slettetSivilstandPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertSivilstandPdlf
 	if (slettetSivilstandPdlf) {
-		return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+		return <OpplysningSlettet />
 	}
 
 	const sivilstandValues = redigertSivilstandPdlf ? redigertSivilstandPdlf : sivilstandData
 	let redigertSivilstandValues = redigertSivilstandPdlf
 		? {
-				sivilstand: Object.assign(_.cloneDeep(initialSivilstand), redigertSivilstandPdlf),
+				sivilstand: Object.assign(_.cloneDeep(getInitialSivilstand()), redigertSivilstandPdlf),
 		  }
 		: null
 	if (redigertSivilstandValues) {
@@ -108,16 +120,21 @@ const SivilstandVisning = ({
 	}
 
 	const eksisterendeNyPerson = redigertRelatertePersoner
-		? getEksisterendeNyPerson(
-				redigertRelatertePersoner,
-				sivilstandValues?.relatertVedSivilstand,
-				'EKTEFELLE_PARTNER'
-		  )
-		: getEksisterendeNyPerson(
-				relasjoner,
-				sivilstandValues?.relatertVedSivilstand,
-				'EKTEFELLE_PARTNER'
-		  )
+		? getEksisterendeNyPerson(redigertRelatertePersoner, sivilstandValues?.relatertVedSivilstand, [
+				'EKTEFELLE_PARTNER',
+		  ])
+		: getEksisterendeNyPerson(relasjoner, sivilstandValues?.relatertVedSivilstand, [
+				'EKTEFELLE_PARTNER',
+		  ])
+
+	const erIGruppe = gruppeIdenter?.some(
+		(person) => person.ident === initialValues?.sivilstand?.relatertVedSivilstand,
+	)
+	const relatertPersonInfo = erIGruppe
+		? {
+				ident: initialValues?.sivilstand?.relatertVedSivilstand,
+		  }
+		: null
 
 	return (
 		<VisningRedigerbarConnector
@@ -134,11 +151,19 @@ const SivilstandVisning = ({
 			redigertAttributt={redigertSivilstandValues}
 			path="sivilstand"
 			ident={ident}
+			relatertPersonInfo={relatertPersonInfo}
+			identtype={identtype}
 		/>
 	)
 }
 
-export const Sivilstand = ({ data, relasjoner, tmpPersoner, ident }: SivilstandTypes) => {
+export const Sivilstand = ({
+	data,
+	relasjoner,
+	tmpPersoner,
+	ident,
+	identtype,
+}: SivilstandTypes) => {
 	if (!data || data.length < 1) {
 		return null
 	}
@@ -146,18 +171,21 @@ export const Sivilstand = ({ data, relasjoner, tmpPersoner, ident }: SivilstandT
 	return (
 		<div>
 			<SubOverskrift label="Sivilstand (partner)" iconKind="partner" />
-			<DollyFieldArray data={data} nested>
-				{(sivilstand: SivilstandData, idx: number) => (
-					<SivilstandVisning
-						sivilstandData={sivilstand}
-						idx={idx}
-						data={data}
-						relasjoner={relasjoner}
-						tmpPersoner={tmpPersoner}
-						ident={ident}
-					/>
-				)}
-			</DollyFieldArray>
+			<div className="person-visning_content">
+				<DollyFieldArray data={data} nested>
+					{(sivilstand: SivilstandData, idx: number) => (
+						<SivilstandVisning
+							sivilstandData={sivilstand}
+							idx={idx}
+							data={data}
+							relasjoner={relasjoner}
+							tmpPersoner={tmpPersoner}
+							ident={ident}
+							identtype={identtype}
+						/>
+					)}
+				</DollyFieldArray>
+			</div>
 		</div>
 	)
 }

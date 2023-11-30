@@ -22,6 +22,7 @@ import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.bestilling.arenaforvalter.ArenaUtils.toLocalDate;
 import static no.nav.dolly.domain.resultset.arenaforvalter.ArenaBrukertype.UTEN_SERVICEBEHOV;
 import static no.nav.dolly.domain.resultset.arenaforvalter.ArenaDagpenger.DAGPENGER_VILKAAR;
 import static no.nav.dolly.domain.resultset.arenaforvalter.ArenaKvalifiseringsgruppe.IKVAL;
@@ -38,17 +39,21 @@ public class ArenaMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(Arenadata arenadata, ArenaNyBruker arenaNyBruker, MappingContext context) {
 
+                        arenaNyBruker.setAktiveringsDato(toLocalDate(arenadata.getAktiveringDato()));
+                        if (isNull(arenaNyBruker.getKvalifiseringsgruppe())) {
+                            arenaNyBruker.setKvalifiseringsgruppe(IKVAL);
+                        }
+                        if (isNull(arenaNyBruker.getAutomatiskInnsendingAvMeldekort())) {
+                            arenaNyBruker.setAutomatiskInnsendingAvMeldekort(true);
+                        }
+
                         if (UTEN_SERVICEBEHOV.equals(arenadata.getArenaBrukertype())) {
                             mapUtenServicebehov(arenadata, arenaNyBruker);
                         } else if (!arenadata.getAap().isEmpty() || !arenadata.getAap115().isEmpty() || !arenadata.getDagpenger().isEmpty()) {
                             mapMedServicebehov(arenadata, arenaNyBruker);
                         }
-                        if (arenadata.getAap().isEmpty()) {
-                            arenaNyBruker.setAap(null);
-                        }
-                        if (arenadata.getAap115().isEmpty()) {
-                            arenaNyBruker.setAap115(null);
-                        }
+                        arenaNyBruker.setAap(null);
+                        arenaNyBruker.setAap115(null);
                     }
                 })
                 .byDefault()
@@ -99,7 +104,7 @@ public class ArenaMappingStrategy implements MappingStrategy {
 
                         dagpenger.setUtfall("JA");
 
-                        dagpenger.setVedtaktype("O");
+                        dagpenger.setVedtaktype(ArenaDagpenger.VedtaksType.O);
 
                         dagpenger.setVilkaar(DAGPENGER_VILKAAR);
 
@@ -117,7 +122,8 @@ public class ArenaMappingStrategy implements MappingStrategy {
 
     private void mapMedServicebehov(Arenadata arenadata, ArenaNyBruker arenaNyBruker) {
         arenaNyBruker.setAktiveringsDato(
-                Stream.of(
+                Stream.of(Stream.of(arenadata.getAktiveringDato())
+                                        .filter(Objects::nonNull),
                                 arenadata.getAap().stream()
                                         .filter(Objects::nonNull)
                                         .map(RsArenaAap::getFraDato),
@@ -134,15 +140,11 @@ public class ArenaMappingStrategy implements MappingStrategy {
     }
 
     private void mapUtenServicebehov(Arenadata arenadata, ArenaNyBruker arenaNyBruker) {
-        arenaNyBruker.setUtenServicebehov(new ArenaBrukerUtenServicebehov());
 
-        arenaNyBruker.setKvalifiseringsgruppe(IKVAL);
-        if (isNull(arenadata.getAutomatiskInnsendingAvMeldekort())) {
-            arenaNyBruker.setAutomatiskInnsendingAvMeldekort(true);
-        }
-
-        if (nonNull(arenadata.getInaktiveringDato())) {
-            arenaNyBruker.getUtenServicebehov().setStansDato(arenadata.getInaktiveringDato().toLocalDate());
-        }
+        arenaNyBruker.setUtenServicebehov(ArenaBrukerUtenServicebehov.builder()
+                .stansDato(nonNull(arenadata.getInaktiveringDato()) ?
+                        arenadata.getInaktiveringDato().toLocalDate() :
+                        LocalDate.now())
+                .build());
     }
 }

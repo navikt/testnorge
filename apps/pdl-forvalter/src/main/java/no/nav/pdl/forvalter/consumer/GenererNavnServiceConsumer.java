@@ -1,7 +1,7 @@
 package no.nav.pdl.forvalter.consumer;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.pdl.forvalter.config.credentials.GenererNavnServiceProperties;
+import no.nav.pdl.forvalter.config.Consumers;
 import no.nav.pdl.forvalter.consumer.command.GenererNavnServiceCommand;
 import no.nav.pdl.forvalter.consumer.command.VerifiserNavnServiceCommand;
 import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
@@ -23,22 +23,22 @@ public class GenererNavnServiceConsumer {
 
     private final WebClient webClient;
     private final TokenExchange tokenExchange;
-    private final ServerProperties properties;
+    private final ServerProperties serverProperties;
 
-    public GenererNavnServiceConsumer(TokenExchange tokenExchange,
-                                      GenererNavnServiceProperties properties) {
-
+    public GenererNavnServiceConsumer(
+            TokenExchange tokenExchange,
+            Consumers consumers) {
         this.tokenExchange = tokenExchange;
-        this.properties = properties;
+        serverProperties = consumers.getGenererNavnService();
         this.webClient = WebClient
                 .builder()
-                .baseUrl(properties.getUrl())
+                .baseUrl(serverProperties.getUrl())
                 .build();
     }
 
     public Optional<NavnDTO> getNavn(Integer antall) {
 
-        return Arrays.asList(tokenExchange.exchange(properties).flatMap(
+        return Arrays.asList(tokenExchange.exchange(serverProperties).flatMap(
                                 token -> new GenererNavnServiceCommand(webClient, NAVN_URL, antall, token.getTokenValue()).call())
                         .block())
                 .stream().findFirst();
@@ -46,7 +46,7 @@ public class GenererNavnServiceConsumer {
 
     public Boolean verifyNavn(NavnDTO navn) {
 
-        return tokenExchange.exchange(properties).flatMap(
+        return tokenExchange.exchange(serverProperties).flatMap(
                         token -> new VerifiserNavnServiceCommand(webClient, NAVN_CHECK_URL, navn, token.getTokenValue()).call())
                 .block();
     }

@@ -2,7 +2,7 @@ package no.nav.dolly.bestilling.arenaforvalter.command;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.arenaforvalter.dto.InaktiverResponse;
-import no.nav.dolly.util.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -11,8 +11,11 @@ import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
+import java.time.LocalDate;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 
+import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
@@ -26,6 +29,7 @@ public class ArenaForvalterDeleteCommand implements Callable<Mono<InaktiverRespo
 
     private final WebClient webClient;
     private final String ident;
+    private final LocalDate stansDato;
     private final String environment;
     private final String token;
 
@@ -37,6 +41,8 @@ public class ArenaForvalterDeleteCommand implements Callable<Mono<InaktiverRespo
                                 .path(ARENAFORVALTER_BRUKER)
                                 .queryParam("miljoe", environment)
                                 .queryParam("personident", ident)
+                                .queryParamIfPresent("stansDato",
+                                        Optional.ofNullable(nonNull(stansDato) ? stansDato : null))
                                 .build())
                 .header(HEADER_NAV_CALL_ID, generateCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)

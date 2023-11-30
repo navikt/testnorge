@@ -5,7 +5,7 @@ import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import * as _ from 'lodash-es'
 import { Alert } from '@navikt/ds-react'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bestillingsveileder'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 const errorPaths = [
 	`arenaforvalter.aap115[0].fraDato`,
@@ -47,12 +47,21 @@ export const MedServicebehov = ({ formikBag, path }) => {
 					{feilmelding}
 				</Alert>
 			)}
-			<FormikSelect
-				name={`${path}.kvalifiseringsgruppe`}
-				label="Servicebehov"
-				options={Options('kvalifiseringsgruppe')}
-				size="large"
-			/>
+			<div className="flexbox--flex-wrap">
+				<FormikSelect
+					name={`${path}.kvalifiseringsgruppe`}
+					label="Servicebehov"
+					options={Options('kvalifiseringsgruppe')}
+					size="xlarge"
+				/>
+				{!opts.personFoerLeggTil?.arenaforvalteren && (
+					<FormikDatepicker
+						name={`${path}.aktiveringDato`}
+						label="Aktiveringsdato"
+						minDate={new Date('2002-12-30')}
+					/>
+				)}
+			</div>
 			{arenaforvalter.aap115 && (
 				<Kategori title="11-5-vedtak">
 					<FormikDatepicker name={`${path}.aap115[0].fraDato`} label="Fra dato" />

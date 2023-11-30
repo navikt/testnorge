@@ -8,18 +8,20 @@ import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.pdldata.dto.PdlResponse;
 import no.nav.dolly.bestilling.personservice.PersonServiceClient;
+import no.nav.dolly.bestilling.tpsmessagingservice.service.TpsPersonService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
+import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.service.BestillingProgressService;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
 import no.nav.dolly.util.TransactionHelperService;
-import no.nav.dolly.util.WebClientFilter;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.PersonUpdateRequestDTO;
+import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.MDC;
 import org.springframework.scheduling.annotation.Async;
@@ -36,33 +38,36 @@ import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
 public class OppdaterPersonService extends DollyBestillingService {
 
     private final PersonServiceClient personServiceClient;
-    private final MapperFacade mapperFacade;
     private final BestillingProgressService bestillingProgressService;
 
     public OppdaterPersonService(
             IdentService identService,
             BestillingProgressService bestillingProgressService,
             BestillingService bestillingService,
-            MapperFacade mapperFacade,
             ObjectMapper objectMapper,
+            MapperFacade mapperFacade,
             List<ClientRegister> clientRegisters,
             CounterCustomRegistry counterCustomRegistry,
             ErrorStatusDecoder errorStatusDecoder,
             PdlDataConsumer pdlDataConsumer,
             TransactionHelperService transactionHelperService,
-            PersonServiceClient personServiceClient) {
+            PersonServiceClient personServiceClient,
+            TpsPersonService tpsPersonService,
+            BestillingElasticRepository bestillingElasticRepository) {
         super(
                 identService,
                 bestillingService,
                 objectMapper,
+                mapperFacade,
                 clientRegisters,
                 counterCustomRegistry,
                 pdlDataConsumer,
                 errorStatusDecoder,
-                transactionHelperService
+                transactionHelperService,
+                tpsPersonService,
+                bestillingElasticRepository
         );
         this.personServiceClient = personServiceClient;
-        this.mapperFacade = mapperFacade;
         this.bestillingProgressService = bestillingProgressService;
     }
 
@@ -71,6 +76,7 @@ public class OppdaterPersonService extends DollyBestillingService {
 
         log.info("Bestilling med id=#{} med type={} er startet ...", bestilling.getId(), getBestillingType(bestilling));
         MDC.put(MDC_KEY_BESTILLING, bestilling.getId().toString());
+        request.setId(bestilling.getId());
 
         var testident = identService.getTestIdent(bestilling.getIdent());
         Flux.just(OriginatorUtility.prepOriginator(request, testident, mapperFacade))
@@ -93,6 +99,9 @@ public class OppdaterPersonService extends DollyBestillingService {
                                                                 .filter(BestillingProgress::isPdlSync)
                                                                 .flatMap(pdlSync ->
                                                                         Flux.concat(
+                                                                                tpsPersonService.syncPerson(dollyPerson, request,
+                                                                                                progress)
+                                                                                        .map(ClientFuture::get),
                                                                                 gjenopprettKlienter(dollyPerson, request,
                                                                                         fase2Klienter(),
                                                                                         progress, true),
@@ -104,12 +113,16 @@ public class OppdaterPersonService extends DollyBestillingService {
                                             WebClientFilter.getStatus(throwable), WebClientFilter.getMessage(throwable));
                                     log.error("Feil oppsto ved utføring av bestilling, progressId {} {}",
                                             progress.getId(), error, throwable);
-                                    transactionHelperService.persister(progress, BestillingProgress::setFeil, error);
+                                    saveFeil(progress, error);
                                     return Flux.just(progress);
                                 })))
                 .takeWhile(test -> !bestillingService.isStoppet(bestilling.getId()))
                 .collectList()
-                .doFinally(done -> doFerdig(bestilling))
+                .doFinally(done -> {
+                    doFerdig(bestilling);
+                    saveBestillingToElasticServer(request, bestilling);
+                    clearCache();
+                })
                 .subscribe();
     }
 

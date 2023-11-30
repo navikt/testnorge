@@ -12,6 +12,8 @@ import * as _ from 'lodash-es'
 import { initialFullmakt, initialPdlPerson } from '@/components/fagsystem/pdlf/form/initialValues'
 import { getEksisterendeNyPerson } from '@/components/fagsystem/utils'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
+import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
+import React from 'react'
 
 type Data = {
 	fullmaktData: FullmaktData
@@ -42,10 +44,10 @@ const FullmaktLes = ({ fullmaktData, relasjoner, redigertRelatertePersoner = nul
 
 	const fullmektigIdent = fullmaktData.motpartsPersonident
 	const fullmektig = relasjoner?.find(
-		(relasjon) => relasjon.relatertPerson?.ident === fullmektigIdent
+		(relasjon) => relasjon.relatertPerson?.ident === fullmektigIdent,
 	)
 	const fullmektigRedigert = redigertRelatertePersoner?.find(
-		(item) => item.relatertPerson?.ident === fullmektigIdent
+		(item) => item.relatertPerson?.ident === fullmektigIdent,
 	)
 
 	const omraader = fullmaktData.omraader
@@ -92,13 +94,13 @@ export const FullmaktVisning = ({
 	let initialValues = { fullmakt: initFullmakt }
 
 	const redigertFullmaktPdlf = _.get(tmpPersoner, `${ident}.person.fullmakt`)?.find(
-		(a: FullmaktValues) => a.id === fullmaktData.id
+		(a: FullmaktValues) => a.id === fullmaktData.id,
 	)
 	const redigertRelatertePersoner = _.get(tmpPersoner, `${ident}.relasjoner`)
 
 	const slettetFullmaktPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertFullmaktPdlf
 	if (slettetFullmaktPdlf) {
-		return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+		return <OpplysningSlettet />
 	}
 
 	const fullmaktValues = redigertFullmaktPdlf ? redigertFullmaktPdlf : fullmaktData
@@ -109,12 +111,10 @@ export const FullmaktVisning = ({
 		: null
 
 	const eksisterendeNyPerson = redigertRelatertePersoner
-		? getEksisterendeNyPerson(
-				redigertRelatertePersoner,
-				fullmaktValues?.motpartsPersonident,
-				'FULLMEKTIG'
-		  )
-		: getEksisterendeNyPerson(relasjoner, fullmaktValues?.motpartsPersonident, 'FULLMEKTIG')
+		? getEksisterendeNyPerson(redigertRelatertePersoner, fullmaktValues?.motpartsPersonident, [
+				'FULLMEKTIG',
+		  ])
+		: getEksisterendeNyPerson(relasjoner, fullmaktValues?.motpartsPersonident, ['FULLMEKTIG'])
 
 	if (eksisterendeNyPerson && initialValues?.fullmakt?.nyFullmektig) {
 		initialValues.fullmakt.nyFullmektig = initialPdlPerson
@@ -148,7 +148,7 @@ export const Fullmakt = ({ data, tmpPersoner, ident, relasjoner }: DataListe) =>
 		return null
 	}
 	const fullmaktRelasjoner = relasjoner?.filter(
-		(relasjon) => relasjon.relasjonType === 'FULLMEKTIG'
+		(relasjon) => relasjon.relasjonType === 'FULLMEKTIG',
 	)
 
 	return (

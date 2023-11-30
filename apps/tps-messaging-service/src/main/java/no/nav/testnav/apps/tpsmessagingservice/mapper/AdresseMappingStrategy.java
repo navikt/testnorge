@@ -3,10 +3,10 @@ package no.nav.testnav.apps.tpsmessagingservice.mapper;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.GateadresseDTO;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.MatrikkeladresseDTO;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.MidlertidigAdresseDTO;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PostadresseDTO;
+import no.nav.testnav.libs.data.tpsmessagingservice.v1.GateadresseDTO;
+import no.nav.testnav.libs.data.tpsmessagingservice.v1.MatrikkeladresseDTO;
+import no.nav.testnav.libs.data.tpsmessagingservice.v1.MidlertidigAdresseDTO;
+import no.nav.testnav.libs.data.tpsmessagingservice.v1.PostadresseDTO;
 import no.nav.tps.ctg.s610.domain.BoAdresseType;
 import no.nav.tps.ctg.s610.domain.PostAdresseType;
 import no.nav.tps.ctg.s610.domain.UtlandsAdresseType;
@@ -18,8 +18,8 @@ import java.time.LocalDateTime;
 
 import static java.lang.String.format;
 import static java.util.Objects.nonNull;
-import static no.nav.testnav.libs.dto.tpsmessagingservice.v1.AdresseDTO.Adressetype.GATE;
-import static no.nav.testnav.libs.dto.tpsmessagingservice.v1.AdresseDTO.Adressetype.MATR;
+import static no.nav.testnav.libs.data.tpsmessagingservice.v1.AdresseDTO.Adressetype.GATE;
+import static no.nav.testnav.libs.data.tpsmessagingservice.v1.AdresseDTO.Adressetype.MATR;
 
 @Component
 public class AdresseMappingStrategy implements MappingStrategy {

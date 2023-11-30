@@ -1,11 +1,11 @@
 package no.nav.pdl.forvalter.service;
 
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.DeltBostedDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.MatrikkeladresseDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.RelatertBiPersonDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.DeltBostedDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.ForelderBarnRelasjonDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.MatrikkeladresseDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.RelatertBiPersonDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.VegadresseDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -14,13 +14,16 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO.Rolle.BARN;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO.Rolle.FAR;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO.Rolle.FORELDER;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO.Rolle.MOR;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.ForelderBarnRelasjonDTO.Rolle.BARN;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.ForelderBarnRelasjonDTO.Rolle.FAR;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.ForelderBarnRelasjonDTO.Rolle.FORELDER;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.ForelderBarnRelasjonDTO.Rolle.MOR;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
@@ -149,5 +152,23 @@ class ForelderBarnRelasjonServiceTest {
 
         assertThat(exception.getMessage(), containsString("ForelderBarnRelasjon: Relatert person skal finnes med eller uten ident, " +
                 "ikke begge deler"));
+    }
+
+
+    @Test
+    void whenSortering() {
+
+        var request = List.of(ForelderBarnRelasjonDTO.builder()
+                        .id(1)
+                        .build(),
+                ForelderBarnRelasjonDTO.builder()
+                        .id(2)
+                        .build());
+
+        for (int i = 0; i < request.size(); i++) {
+            request.get(i).setId(request.size() - i);
+        }
+        assertThat(request.get(0).getId(), is(equalTo(2)));
+        assertThat(request.get(1).getId(), is(equalTo(1)));
     }
 }

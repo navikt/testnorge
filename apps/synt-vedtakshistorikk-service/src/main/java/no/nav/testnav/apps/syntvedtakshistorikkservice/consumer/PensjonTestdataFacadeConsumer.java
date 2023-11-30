@@ -1,9 +1,9 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.apps.syntvedtakshistorikkservice.config.Consumers;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.pensjon.PostPensjonTestdataInntektCommand;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.command.pensjon.PostPensjonTestdataPersonCommand;
-import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.credential.PensjonTestdataFacadeProxyProperties;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.pensjon.PensjonTestdataInntekt;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.pensjon.PensjonTestdataPerson;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.pensjon.PensjonTestdataResponse;
@@ -21,15 +21,15 @@ public class PensjonTestdataFacadeConsumer {
 
     private final WebClient webClient;
     private final TokenExchange tokenExchange;
-    private final ServerProperties serviceProperties;
+    private final ServerProperties serverProperties;
 
     public PensjonTestdataFacadeConsumer(
-            PensjonTestdataFacadeProxyProperties serviceProperties,
+            Consumers consumers,
             TokenExchange tokenExchange) {
-
-        this.serviceProperties = serviceProperties;
-        this.webClient = WebClient.builder()
-                .baseUrl(serviceProperties.getUrl())
+        serverProperties = consumers.getTestnavPensjonTestdataFacadeProxy();
+        this.webClient = WebClient
+                .builder()
+                .baseUrl(serverProperties.getUrl())
                 .build();
         this.tokenExchange = tokenExchange;
     }
@@ -38,7 +38,7 @@ public class PensjonTestdataFacadeConsumer {
             PensjonTestdataPerson person
     ) {
         try {
-            return tokenExchange.exchange(serviceProperties)
+            return tokenExchange.exchange(serverProperties)
                     .flatMap(accessToken -> new PostPensjonTestdataPersonCommand(webClient, person, accessToken.getTokenValue()).call())
                     .block();
         } catch (Exception e) {
@@ -51,7 +51,7 @@ public class PensjonTestdataFacadeConsumer {
             PensjonTestdataInntekt inntekt
     ) {
         try {
-            return tokenExchange.exchange(serviceProperties)
+            return tokenExchange.exchange(serverProperties)
                     .flatMap(accessToken -> new PostPensjonTestdataInntektCommand(webClient, inntekt, accessToken.getTokenValue()).call())
                     .block();
         } catch (Exception e) {

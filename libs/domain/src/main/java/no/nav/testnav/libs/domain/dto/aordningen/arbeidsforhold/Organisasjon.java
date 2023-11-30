@@ -23,7 +23,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 @EqualsAndHashCode
-public class Organisasjon extends OpplysningspliktigArbeidsgiver {
+public class Organisasjon implements OpplysningspliktigArbeidsgiver {
 
     @ApiModelProperty(
             notes = "Organisasjonsnummer fra Enhetsregisteret",

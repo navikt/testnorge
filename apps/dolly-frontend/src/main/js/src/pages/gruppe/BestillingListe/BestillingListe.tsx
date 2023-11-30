@@ -9,6 +9,7 @@ import Spinner from '@/components/ui/loading/Spinner'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import bestillingStatusMapper from '@/ducks/bestillingStatus/bestillingStatusMapper'
 import { CypressSelector } from '../../../../cypress/mocks/Selectors'
+import { useGruppeById } from '@/utils/hooks/useGruppe'
 
 const ikonTypeMap = {
 	Ferdig: 'feedback-check-circle',
@@ -25,12 +26,13 @@ export default function BestillingListe({
 	navigerBestillingId,
 	visBestilling,
 	sidetall,
-	gruppeInfo,
+	gruppeId,
 	sideStoerrelse,
 }) {
 	if (!bestillingerById) {
 		return null
 	}
+	const { gruppe: gruppeInfo } = useGruppeById(gruppeId)
 	const bestillingListe = Object.values(bestillingerById)
 
 	if (bestillingListe.length === 0) {

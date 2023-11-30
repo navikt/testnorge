@@ -7,17 +7,16 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface TransaksjonMappingRepository extends CrudRepository<TransaksjonMapping, Long> {
 
-    Optional<List<TransaksjonMapping>> findAllBySystemAndIdent(String system, String ident);
+    List<TransaksjonMapping> findAllBySystemAndIdent(String system, String ident);
 
-    @Query(value = "from TransaksjonMapping t where (:bestillingId is null or " +
-            "t.bestillingId is null or " +
-            "(t.bestillingId is not null and t.bestillingId=:bestillingId)) and " +
-            "t.ident=:ident")
-    Optional<List<TransaksjonMapping>> findAllByBestillingIdAndIdent(@Param("bestillingId") Long bestillingId, @Param("ident") String ident);
+    @Query(value = "from TransaksjonMapping t " +
+            " where t.ident=:ident" +
+            " and (:bestillingId is null " +
+            " or (t.bestillingId is not null and t.bestillingId=:bestillingId))")
+    List<TransaksjonMapping> findAllByBestillingIdAndIdent(@Param("bestillingId") Long bestillingId, @Param("ident") String ident);
 
     @Modifying
     int deleteAllByIdent(String ident);

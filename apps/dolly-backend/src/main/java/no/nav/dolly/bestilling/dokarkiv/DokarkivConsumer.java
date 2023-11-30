@@ -7,7 +7,7 @@ import no.nav.dolly.bestilling.dokarkiv.command.DokarkivGetMiljoeCommand;
 import no.nav.dolly.bestilling.dokarkiv.command.DokarkivPostCommand;
 import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivRequest;
 import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivResponse;
-import no.nav.dolly.config.credentials.DokarkivProxyServiceProperties;
+import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
@@ -17,10 +17,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
-import java.util.UUID;
 
-import static java.lang.String.format;
-import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
 @Slf4j
@@ -29,17 +26,17 @@ public class DokarkivConsumer implements ConsumerStatus {
 
     private final WebClient webClient;
     private final TokenExchange tokenService;
-    private final ServerProperties serviceProperties;
+    private final ServerProperties serverProperties;
 
     public DokarkivConsumer(
-            DokarkivProxyServiceProperties properties,
+            Consumers consumers,
             TokenExchange tokenService,
             ObjectMapper objectMapper,
             WebClient.Builder webClientBuilder) {
-        this.serviceProperties = properties;
+        serverProperties = consumers.getTestnavDokarkivProxy();
         this.tokenService = tokenService;
         this.webClient = webClientBuilder
-                .baseUrl(properties.getUrl())
+                .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .build();
     }
@@ -47,33 +44,29 @@ public class DokarkivConsumer implements ConsumerStatus {
     @Timed(name = "providers", tags = { "operation", "dokarkiv-opprett" })
     public Flux<DokarkivResponse> postDokarkiv(String environment, DokarkivRequest dokarkivRequest) {
 
-        var callId = getNavCallId();
-        log.info("Sender dokarkiv melding: callId: {}, consumerId: {}, miljø: {}", callId, CONSUMER, environment);
+        log.info("Sender dokarkiv melding for ident {} miljoe {} request {}",
+                dokarkivRequest.getBruker().getId(), environment, dokarkivRequest);
 
-        return tokenService.exchange(serviceProperties)
-                .flatMapMany(token -> new DokarkivPostCommand(webClient, environment, callId, dokarkivRequest,
+        return tokenService.exchange(serverProperties)
+                .flatMapMany(token -> new DokarkivPostCommand(webClient, environment, dokarkivRequest,
                         token.getTokenValue()).call());
     }
 
     @Timed(name = "providers", tags = { "operation", "dokarkiv_getEnvironments" })
     public Mono<List<String>> getEnvironments() {
 
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMap(token -> new DokarkivGetMiljoeCommand(webClient, token.getTokenValue()).call());
     }
 
     @Override
     public String serviceUrl() {
-        return serviceProperties.getUrl();
+        return serverProperties.getUrl();
     }
 
     @Override
     public String consumerName() {
         return "testnav-dokarkiv-proxy";
-    }
-
-    private static String getNavCallId() {
-        return format("%s %s", CONSUMER, UUID.randomUUID());
     }
 
 }

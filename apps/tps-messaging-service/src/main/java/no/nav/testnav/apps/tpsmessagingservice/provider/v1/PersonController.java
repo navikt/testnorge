@@ -2,7 +2,6 @@ package no.nav.testnav.apps.tpsmessagingservice.provider.v1;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsMeldingResponse;
-import no.nav.testnav.apps.tpsmessagingservice.service.AdresseService;
 import no.nav.testnav.apps.tpsmessagingservice.service.BankkontoNorskService;
 import no.nav.testnav.apps.tpsmessagingservice.service.BankkontoUtlandService;
 import no.nav.testnav.apps.tpsmessagingservice.service.EgenansattService;
@@ -10,14 +9,13 @@ import no.nav.testnav.apps.tpsmessagingservice.service.PersonService;
 import no.nav.testnav.apps.tpsmessagingservice.service.SikkerhetstiltakService;
 import no.nav.testnav.apps.tpsmessagingservice.service.SpraakService;
 import no.nav.testnav.apps.tpsmessagingservice.service.TelefonnummerService;
-import no.nav.testnav.libs.dto.kontoregisterservice.v1.BankkontonrNorskDTO;
-import no.nav.testnav.libs.dto.kontoregisterservice.v1.BankkontonrUtlandDTO;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.AdresseUtlandDTO;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PersonMiljoeDTO;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.SikkerhetTiltakDTO;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.SpraakDTO;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TelefonTypeNummerDTO;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TpsMeldingResponseDTO;
+import no.nav.testnav.libs.data.kontoregister.v1.BankkontonrNorskDTO;
+import no.nav.testnav.libs.data.kontoregister.v1.BankkontonrUtlandDTO;
+import no.nav.testnav.libs.data.tpsmessagingservice.v1.PersonMiljoeDTO;
+import no.nav.testnav.libs.data.tpsmessagingservice.v1.SikkerhetTiltakDTO;
+import no.nav.testnav.libs.data.tpsmessagingservice.v1.SpraakDTO;
+import no.nav.testnav.libs.data.tpsmessagingservice.v1.TelefonTypeNummerDTO;
+import no.nav.testnav.libs.data.tpsmessagingservice.v1.TpsMeldingResponseDTO;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -47,7 +45,6 @@ public class PersonController {
     private final BankkontoNorskService bankkontoNorskService;
     private final TelefonnummerService telefonnummerService;
     private final SikkerhetstiltakService sikkerhetstiltakService;
-    private final AdresseService adresseService;
 
     private static List<TpsMeldingResponseDTO> convert(Map<String, TpsMeldingResponse> tpsMeldingDTO) {
 
@@ -152,14 +149,6 @@ public class PersonController {
                                                                @RequestParam(required = false) List<String> miljoer) {
 
         return convert(sikkerhetstiltakService.opphoerSikkerhetstiltak(ident, miljoer));
-    }
-
-    @PostMapping("/{ident}/adresse-utland")
-    public List<TpsMeldingResponseDTO> endreAdresseUtland(@PathVariable String ident,
-                                                          @RequestBody AdresseUtlandDTO postadresse,
-                                                          @RequestParam(required = false) List<String> miljoer) {
-
-        return convert(adresseService.endreAdresseUtland(ident, postadresse, miljoer));
     }
 }
 

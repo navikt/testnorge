@@ -5,6 +5,7 @@ import {
 	uferdigBestillingMock,
 	uferdigeBestillingerMock,
 } from '../mocks/BasicMocks'
+import { ERROR_NAVIGATE_IDENT } from '../../src/ducks/errors/ErrorMessages'
 
 const uferdigBestilling = new RegExp(/dolly-backend\/api\/v1\/bestilling\/2$/)
 const uferdigeBestillinger = new RegExp(/dolly-backend\/api\/v1\/bestilling\/gruppe\/2\/ikkeferdig/)
@@ -17,17 +18,25 @@ describe('Navigering, Opprett gruppe og start bestilling med alle mulige tilvalg
 		//Midlertidig not found på navigering til ident etter søk
 		cy.intercept({ method: 'GET', url: personFragmentNaviger }, { statusCode: 404 })
 
-		cy.dollyType(CypressSelector.INPUT_PERSON_SOEK, '12345')
-		cy.dollyGet(CypressSelector.BUTTON_NAVIGER_PERSON).click()
+		cy.dollyType(CypressSelector.INPUT_DOLLY_SOEK, '12345')
+		cy.dollyGet(CypressSelector.BUTTON_NAVIGER_DOLLY).click()
 		cy.wait(400)
 
-		cy.dollyGet(CypressSelector.ERROR_MESSAGE_NAVIGERING).should('contain.text', 'navigere')
+		cy.dollyGet(CypressSelector.ERROR_MESSAGE_NAVIGERING).should(
+			'contains.text',
+			ERROR_NAVIGATE_IDENT,
+		)
 
 		//Korrekt navigering igjen
 		cy.intercept({ method: 'GET', url: personFragmentNaviger }, personFragmentNavigerMock)
 
-		cy.dollyType(CypressSelector.INPUT_PERSON_SOEK, '12345')
-		cy.dollyGet(CypressSelector.BUTTON_NAVIGER_PERSON).click()
+		cy.dollyGet(CypressSelector.TOGGLE_SEARCH_BESTILLING).click()
+		cy.dollyType(CypressSelector.INPUT_DOLLY_SOEK, '1')
+		cy.dollyGet(CypressSelector.BUTTON_NAVIGER_DOLLY).click()
+		cy.dollyGet(CypressSelector.TOGGLE_SEARCH_PERSON).click()
+
+		cy.dollyType(CypressSelector.INPUT_DOLLY_SOEK, '12345')
+		cy.dollyGet(CypressSelector.BUTTON_NAVIGER_DOLLY).click()
 		cy.wait(400)
 
 		cy.url().should('include', '/gruppe/1')
@@ -53,6 +62,7 @@ describe('Navigering, Opprett gruppe og start bestilling med alle mulige tilvalg
 
 		cy.dollyGet(CypressSelector.BUTTON_START_BESTILLING).click()
 		cy.dollyGet(CypressSelector.BUTTON_VELG_ALLE).each((btn) => cy.wrap(btn).click())
+		cy.dollyGet(CypressSelector.BUTTON_VELG_MILJOE_AVHENGIG).each((btn) => cy.wrap(btn).click())
 
 		cy.dollyGet(CypressSelector.BUTTON_VIDERE).click()
 		cy.wait(500)

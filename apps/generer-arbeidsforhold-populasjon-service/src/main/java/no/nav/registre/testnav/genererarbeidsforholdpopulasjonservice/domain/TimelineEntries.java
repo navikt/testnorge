@@ -1,6 +1,5 @@
 package no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.domain;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -17,7 +16,7 @@ public class TimelineEntries<T extends Id> {
         entires.put(value.getId(), value);
     }
 
-    public Set<T> getAll(){
+    public Set<T> getAll() {
         return entires.entrySet().stream().map(Map.Entry::getValue).collect(Collectors.toSet());
     }
 }

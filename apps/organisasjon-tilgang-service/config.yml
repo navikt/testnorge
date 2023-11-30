@@ -10,16 +10,12 @@ spec:
     enabled: true
   image: {{ image }}
   port: 8080
+  webproxy: true
   azure:
     application:
       allowAllUsers: true
       enabled: true
       tenant: nav.no
-  maskinporten:
-    enabled: true
-    scopes:
-      consumes:
-        - name: "altinn:serviceowner"
   accessPolicy:
     inbound:
       rules:
@@ -29,16 +25,21 @@ spec:
           cluster: dev-gcp
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
+        - application: dolly-frontend
+          cluster: dev-gcp
+        - application: dolly-frontend-dev
+          cluster: dev-gcp
         - application: dolly-idporten
           cluster: dev-gcp
         - application: testnav-organisasjon-tilgang-frontend
-          cluster: prod-gcp
+          cluster: dev-gcp
         - application: app-1
           namespace: plattformsikkerhet
           cluster: dev-gcp
     outbound:
       external:
-        - host: tt02.altinn.no
+        - host: altinn.no
+        - host: maskinporten.no
   liveness:
     path: /internal/isAlive
     initialDelay: 10
@@ -53,8 +54,9 @@ spec:
     enabled: true
     path: /internal/metrics
   envFrom:
-    - secret: altinn-dev
+    - secret: altinn-prod
     - secret: google-sql-testnav-organisasjon-tilgang-service
+    - secret: maskinporten-dolly-prod
   replicas:
     min: 1
     max: 1
@@ -68,15 +70,15 @@ spec:
     - "https://testnav-organisasjon-tilgang-service.intern.dev.nav.no"
   env:
     - name: SPRING_PROFILES_ACTIVE
-      value: dev
+      value: prod
     - name: ACCEPTED_AUDIENCE
       value: dev-gcp:dolly:testnav-organisasjon-tilgang-service
     - name: TOKENDINGS_URL
-      value: https://tokendings.dev-gcp.nais.io
+      value: https://tokenx.dev-gcp.nav.cloud.nais.io 
   gcp:
     sqlInstances:
-      - type: POSTGRES_14
-        name: testnav-organisasjon-tilgang
+      - type: POSTGRES_15
+        name: testnav-organisasjon-tilganger
         databases:
-          - name: testnav-organisasjon-tilgang
-        autoBackupTime: "02:00"
+          - name: testnav-organisasjon-tilganger
+        autoBackupTime: "02:30"

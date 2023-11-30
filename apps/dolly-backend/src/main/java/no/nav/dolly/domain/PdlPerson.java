@@ -9,27 +9,29 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import no.nav.dolly.domain.deserialization.PersonStatusEnumDeserializer;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.AdresseDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.DeltBostedDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.DoedfoedtBarnDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.FalskIdentitetDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.ForeldreansvarDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.InnflyttingDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.OppholdDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.OppholdsadresseDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.RelatertBiPersonDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.SikkerhetstiltakDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.TelefonnummerDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.TilrettelagtKommunikasjonDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskAdresseDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskIdentifikasjonsnummerDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.AdresseDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.AdressebeskyttelseDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.BostedadresseDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.DeltBostedDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.DoedfoedtBarnDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.FalskIdentitetDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.ForeldreansvarDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.FullmaktDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.InnflyttingDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.NavnDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.OppholdDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.OppholdsadresseDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.RelatertBiPersonDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.SikkerhetstiltakDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.TelefonnummerDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.TilrettelagtKommunikasjonDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.UtenlandskAdresseDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.UtenlandskIdentifikasjonsnummerDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.VegadresseDTO;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -312,14 +314,14 @@ public class PdlPerson {
     }
 
     @lombok.Data
+    @EqualsAndHashCode(callSuper = true)
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Folkeregisteridentifikator {
+    public static class Folkeregisteridentifikator extends DbVersjonDTO {
 
         private String identifikasjonsnummer;
         private String type;
         private String status;
-        private Metadata metadata;
 
         public boolean isOpphoert() {
             return "OPPHOERT".equals(status);
@@ -327,58 +329,51 @@ public class PdlPerson {
     }
 
     @lombok.Data
+    @EqualsAndHashCode(callSuper = true)
     @NoArgsConstructor
     @AllArgsConstructor
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class Navn {
+    public static class Navn extends DbVersjonDTO {
 
         private String fornavn;
         private String mellomnavn;
         private String etternavn;
-        private Metadata metadata;
     }
 
     @lombok.Data
+    @EqualsAndHashCode(callSuper = true)
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class PdlKjoenn {
+    public static class PdlKjoenn extends DbVersjonDTO {
 
         private String kjoenn;
-        private Metadata metadata;
     }
 
     @lombok.Data
+    @SuperBuilder
+    @EqualsAndHashCode(callSuper = true)
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Foedsel {
+    public static class Foedsel extends DbVersjonDTO {
 
         private String foedekommune;
         private String foedeland;
         private String foedested;
         private Integer foedselsaar;
         private LocalDate foedselsdato;
-        private Metadata metadata;
     }
 
     @lombok.Data
+    @EqualsAndHashCode(callSuper = true)
+    @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Metadata {
-
-        private boolean historisk;
-    }
-
-    @lombok.Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class ForelderBarnRelasjon {
+    public static class ForelderBarnRelasjon extends DbVersjonDTO {
 
         private String relatertPersonsIdent;
         private Rolle relatertPersonsRolle;
         private Rolle minRolleForPerson;
         private RelatertBiPersonDTO relatertPersonUtenFolkeregisteridentifikator;
-        private Metadata metadata;
 
         public boolean isForelder() {
             return MOR == getRelatertPersonsRolle() ||
@@ -392,57 +387,60 @@ public class PdlPerson {
     }
 
     @lombok.Data
-    @Builder
+    @EqualsAndHashCode(callSuper = true)
+    @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Sivilstand {
+    public static class Sivilstand extends DbVersjonDTO {
 
         private SivilstandType type;
         private LocalDate gyldigFraOgMed;
         private String relatertVedSivilstand;
-        private Metadata metadata;
 
         public boolean isGift() {
-            return nonNull(type) &&
-                    type != SivilstandType.UOPPGITT &&
-                    type != SivilstandType.UGIFT;
+            return type == SivilstandType.GIFT ||
+                    type == SivilstandType.SEPARERT ||
+                    type == SivilstandType.REGISTRERT_PARTNER ||
+                    type == SivilstandType.SEPARERT_PARTNER;
+        }
+
+        public boolean isTidligereGift() {
+            return type == SivilstandType.SKILT ||
+                    type == SivilstandType.SKILT_PARTNER ||
+                    type == SivilstandType.ENKE_ELLER_ENKEMANN ||
+                    type == SivilstandType.GJENLEVENDE_PARTNER;
+        }
+
+        public boolean isUgift() {
+            return type == SivilstandType.UGIFT ||
+                    type == SivilstandType.UOPPGITT;
         }
     }
 
     @lombok.Data
+    @EqualsAndHashCode(callSuper = true)
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Doedsfall {
+    public static class Doedsfall extends DbVersjonDTO {
 
         private LocalDate doedsdato;
-        private Metadata metadata;
     }
 
     @lombok.Data
+    @EqualsAndHashCode(callSuper = true)
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class UtflyttingFraNorge {
+    public static class UtflyttingFraNorge extends DbVersjonDTO {
 
         private String tilflyttingsland;
         private LocalDateTime utflyttingsdato;
-        private Metadata metadata;
     }
 
     @lombok.Data
+    @EqualsAndHashCode(callSuper = true)
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Folkeregistermetadata {
-
-        private LocalDateTime gyldighetstidspunkt;
-        private String aarsak;
-        private LocalDateTime ajourholdstidspunkt;
-        private LocalDateTime opphoerstidspunkt;
-    }
-
-    @lombok.Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class Statsborgerskap {
+    public static class Statsborgerskap extends DbVersjonDTO {
 
         private String land;
         private LocalDateTime gyldigFraOgMed;
@@ -450,9 +448,10 @@ public class PdlPerson {
     }
 
     @lombok.Data
+    @EqualsAndHashCode(callSuper = true)
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Vergemaal {
+    public static class Vergemaal extends DbVersjonDTO {
 
         private String embete;
         private String type;
@@ -460,9 +459,10 @@ public class PdlPerson {
     }
 
     @lombok.Data
+    @EqualsAndHashCode(callSuper = true)
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class VergeEllerFullmektig {
+    public static class VergeEllerFullmektig extends DbVersjonDTO {
 
         private NavnDTO navn;
         private String motpartsPersonident;
@@ -494,12 +494,12 @@ public class PdlPerson {
     }
 
     @lombok.Data
+    @EqualsAndHashCode(callSuper = true)
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class FolkeregisterPersonstatus {
+    public static class FolkeregisterPersonstatus extends DbVersjonDTO {
 
         private Personstatus status;
-        private Folkeregistermetadata folkeregistermetadata;
 
         @Getter
         @JsonDeserialize(using = PersonStatusEnumDeserializer.class)
@@ -530,7 +530,7 @@ public class PdlPerson {
 
         private VegadresseDTO vegadresse;
         private UtenlandskAdresseDTO utenlandskAdresse;
-        private no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktadresseDTO.PostboksadresseDTO postboksadresse;
+        private no.nav.testnav.libs.data.pdlforvalter.v1.KontaktadresseDTO.PostboksadresseDTO postboksadresse;
         private PostadresseIFrittFormat postadresseIFrittFormat;
         private UtenlandskAdresseIFrittFormat utenlandskAdresseIFrittFormat;
 

@@ -127,7 +127,7 @@ public class EregAdapter extends FasteDataAdapter {
             EregModel eregModel = repository.save(new EregModel(
                     ereg,
                     ereg.getJuridiskEnhet() != null ? model : null,
-                    getOppinnelse(ereg),
+                    getOpprinnelse(ereg),
                     getGruppe(ereg)
             ));
             List<TagModel> tagModels = ereg.getTags().stream().map(tagsAdapter::save).toList();

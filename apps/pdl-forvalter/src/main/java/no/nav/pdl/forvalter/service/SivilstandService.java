@@ -8,14 +8,13 @@ import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
 import no.nav.pdl.forvalter.utils.KjoennFraIdentUtility;
 import no.nav.pdl.forvalter.utils.KjoennUtility;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonRequestDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.BostedadresseDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.KjoennDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.PersonRequestDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType;
+import no.nav.testnav.libs.data.pdlforvalter.v1.SivilstandDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.VegadresseDTO;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -25,11 +24,12 @@ import java.util.Objects;
 
 import static java.time.LocalDateTime.now;
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.consumer.command.VegadresseServiceCommand.defaultAdresse;
+import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
+import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
 import static no.nav.pdl.forvalter.utils.SyntetiskFraIdentUtility.isSyntetisk;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO.Sivilstand.SAMBOER;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO.Sivilstand.UGIFT;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.SivilstandDTO.Sivilstand.SAMBOER;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.SivilstandDTO.Sivilstand.UGIFT;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -56,8 +56,8 @@ public class SivilstandService implements Validation<SivilstandDTO> {
 
             if (isTrue(type.getIsNew())) {
 
-                type.setKilde(isNotBlank(type.getKilde()) ? type.getKilde() : "Dolly");
-                type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : Master.FREG);
+                type.setKilde(getKilde(type));
+                type.setMaster(getMaster(type, person));
 
                 handle(type, person);
             }
@@ -86,7 +86,7 @@ public class SivilstandService implements Validation<SivilstandDTO> {
             sivilstand.setType(UGIFT);
         }
 
-        if (sivilstand.isGift() || sivilstand.isSeparert() || sivilstand.getType() == SAMBOER) {
+        if (sivilstand.isGift() || sivilstand.isSeparert() || sivilstand.isSamboer()) {
 
             sivilstand.setEksisterendePerson(isNotBlank(sivilstand.getRelatertVedSivilstand()));
             if (isBlank(sivilstand.getRelatertVedSivilstand())) {
@@ -149,10 +149,10 @@ public class SivilstandService implements Validation<SivilstandDTO> {
         SivilstandDTO relatertSivilstand = mapperFacade.map(sivilstand, SivilstandDTO.class);
         relatertSivilstand.setRelatertVedSivilstand(hovedperson);
         relatertSivilstand.setId(relatertPerson.getPerson().getSivilstand().stream()
+                .max(Comparator.comparing(SivilstandDTO::getId))
                 .map(SivilstandDTO::getId)
-                .findFirst()
                 .orElse(0) + 1);
-        relatertPerson.getPerson().getSivilstand().add(relatertSivilstand);
+        relatertPerson.getPerson().getSivilstand().add(0, relatertSivilstand);
 
         relatertPerson.getPerson().setSivilstand(enforceIntegrity(relatertPerson.getPerson()));
         personRepository.save(relatertPerson);

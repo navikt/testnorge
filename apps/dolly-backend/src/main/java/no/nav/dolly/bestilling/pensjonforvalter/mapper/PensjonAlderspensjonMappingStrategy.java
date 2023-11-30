@@ -11,6 +11,8 @@ import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -20,8 +22,6 @@ import static no.nav.dolly.domain.PdlPerson.SivilstandType.ENKE_ELLER_ENKEMANN;
 import static no.nav.dolly.domain.PdlPerson.SivilstandType.GJENLEVENDE_PARTNER;
 import static no.nav.dolly.domain.PdlPerson.SivilstandType.SKILT;
 import static no.nav.dolly.domain.PdlPerson.SivilstandType.SKILT_PARTNER;
-import static no.nav.dolly.domain.PdlPerson.SivilstandType.UGIFT;
-import static no.nav.dolly.domain.PdlPerson.SivilstandType.UOPPGITT;
 
 @Component
 public class PensjonAlderspensjonMappingStrategy implements MappingStrategy {
@@ -41,18 +41,23 @@ public class PensjonAlderspensjonMappingStrategy implements MappingStrategy {
 
     private static boolean isHarVaertGift(PdlPerson.SivilstandType sivilstandType) {
 
-        return nonNull(sivilstandType) && sivilstandType != UOPPGITT && sivilstandType != UGIFT;
+        return sivilstandType == SKILT ||
+                sivilstandType == ENKE_ELLER_ENKEMANN ||
+                sivilstandType == SKILT_PARTNER ||
+                sivilstandType != GJENLEVENDE_PARTNER;
     }
 
     private static boolean isVarigAdskilt(PdlPerson.SivilstandType sivilstandType) {
 
-        return nonNull(sivilstandType) && (sivilstandType == SKILT || sivilstandType == ENKE_ELLER_ENKEMANN ||
-                sivilstandType == SKILT_PARTNER || sivilstandType == GJENLEVENDE_PARTNER);
+        return sivilstandType == ENKE_ELLER_ENKEMANN ||
+                sivilstandType == GJENLEVENDE_PARTNER ||
+                sivilstandType == SKILT ||
+                sivilstandType == SKILT_PARTNER;
     }
 
     private static LocalDate getSamlovsbruddDato(PdlPerson.SivilstandType sivilstandType, LocalDate sivilstandFomDato) {
 
-        return nonNull(sivilstandType) && (sivilstandType == SKILT || sivilstandType == SKILT_PARTNER) ?
+        return sivilstandType == SKILT || sivilstandType == SKILT_PARTNER ?
                 sivilstandFomDato : null;
     }
 
@@ -68,30 +73,39 @@ public class PensjonAlderspensjonMappingStrategy implements MappingStrategy {
                         request.setMiljoer((List<String>) context.getProperty("miljoer"));
                         request.setStatsborgerskap("NOR");
 
-                        var relasjoner = (List<PdlPersonBolk.PersonBolk>) context.getProperty("relasjoner");
+                        var personer = (List<PdlPersonBolk.PersonBolk>) context.getProperty("relasjoner");
 
                         var partner = new AtomicReference<String>();
-                        relasjoner.stream()
+                        personer.stream()
                                 .filter(person -> person.getIdent().equals(hovedperson))
                                 .forEach(personBolk -> personBolk.getPerson().getSivilstand().stream()
-                                        .findFirst()
-                                        .ifPresent(sivilstand -> {
-                                            request.setSivilstand(mapSivilstand(sivilstand.getType()));
-                                            request.setSivilstandDatoFom(sivilstand.getGyldigFraOgMed());
-                                            partner.set(sivilstand.getRelatertVedSivilstand());
-                                        }));
+                                        .min(new SivilstandSort())
+                                        .ifPresentOrElse(sivilstand -> {
+                                                    request.setSivilstand(mapSivilstand(sivilstand.getType()));
+                                                    request.setSivilstandDatoFom(sivilstand.getGyldigFraOgMed());
+                                                    partner.set(sivilstand.getRelatertVedSivilstand());
+                                                },
+                                                () -> personer.stream()
+                                                        .filter(person -> hovedperson.equals(person.getIdent()))
+                                                        .map(PdlPersonBolk.PersonBolk::getPerson)
+                                                        .map(PdlPerson.Person::getSivilstand)
+                                                        .flatMap(Collection::stream)
+                                                        .findFirst()
+                                                        .ifPresent(sivilstand -> {
+                                                            request.setSivilstand(mapSivilstand(sivilstand.getType()));
+                                                            request.setSivilstandDatoFom(sivilstand.getGyldigFraOgMed());
+                                                        })));
 
-                        if (relasjoner.stream().anyMatch(person -> person.getIdent().equals(partner.get())) &&
+                        if (personer.stream().anyMatch(person -> person.getIdent().equals(partner.get())) &&
                                 !alderspensjon.getRelasjoner().isEmpty()) {
 
                             request.setRelasjonListe(mapperFacade.mapAsList(alderspensjon.getRelasjoner(), AlderspensjonRequest.SkjemaRelasjon.class));
-                            relasjoner.stream()
+                            personer.stream()
                                     .filter(personBolk -> personBolk.getIdent().equals(partner.get()))
                                     .forEach(partnerPerson -> {
                                         request.getRelasjonListe().get(0).setFnr(partnerPerson.getIdent());
                                         partnerPerson.getPerson().getSivilstand().stream()
-                                                .filter(PdlPerson.Sivilstand::isGift)
-                                                .findFirst()
+                                                .min(new SivilstandSort())
                                                 .ifPresent(sivilstand -> {
                                                     request.getRelasjonListe().get(0).setRelasjonType(getRelasjonType(sivilstand.getType()));
                                                     request.getRelasjonListe().get(0).setRelasjonFraDato(sivilstand.getGyldigFraOgMed());
@@ -110,7 +124,7 @@ public class PensjonAlderspensjonMappingStrategy implements MappingStrategy {
                                                 partnerPerson.getPerson().getForelderBarnRelasjon().stream()
                                                         .filter(PdlPerson.ForelderBarnRelasjon::isBarn)
                                                         .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent)
-                                                        .anyMatch(barnAvPartner -> relasjoner.stream()
+                                                        .anyMatch(barnAvPartner -> personer.stream()
                                                                 .filter(person -> hovedperson.equals(person.getIdent()))
                                                                 .map(PdlPersonBolk.PersonBolk::getPerson)
                                                                 .anyMatch(person -> person.getForelderBarnRelasjon().stream()
@@ -155,5 +169,25 @@ public class PensjonAlderspensjonMappingStrategy implements MappingStrategy {
             case SKILT_PARTNER -> SivilstandRelasjoner.SKPA.name();
             case GJENLEVENDE_PARTNER -> SivilstandRelasjoner.GJPA.name();
         };
+    }
+
+    public static class SivilstandSort implements Comparator<PdlPerson.Sivilstand> {
+
+        @Override
+        public int compare(PdlPerson.Sivilstand sivilstand1, PdlPerson.Sivilstand sivilstand2) {
+
+            if (nonNull(sivilstand1.getGyldigFraOgMed()) && nonNull(sivilstand2.getGyldigFraOgMed())) {
+                return sivilstand2.getGyldigFraOgMed().compareTo(sivilstand1.getGyldigFraOgMed());
+
+            } else if (sivilstand1.getType() == sivilstand2.getType()) {
+                return 0;
+
+            } else if (sivilstand2.isUgift() || sivilstand1.isTidligereGift()) {
+                return -1;
+
+            } else {
+                return 1;
+            }
+        }
     }
 }

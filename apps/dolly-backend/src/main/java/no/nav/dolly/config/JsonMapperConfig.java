@@ -1,7 +1,13 @@
 package no.nav.dolly.config;
 
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
@@ -81,7 +87,7 @@ public class JsonMapperConfig {
             if (isBlank(node.asText())) {
                 return null;
             }
-            String dateTime = node.asText().length() > 10 ? node.asText().substring(0, 10) : node.asText();
+            var dateTime = node.asText().length() > 10 ? node.asText().substring(0, 10) : node.asText();
             return LocalDate.parse(dateTime);
         }
     }
@@ -94,7 +100,7 @@ public class JsonMapperConfig {
             if (isBlank(node.asText())) {
                 return null;
             }
-            String dateTime = node.asText().length() > 19 ? node.asText().substring(0, 19) : node.asText();
+            var dateTime = node.asText().length() > 19 ? node.asText().substring(0, 19) : node.asText();
             return dateTime.length() > 10 ? LocalDateTime.parse(dateTime) : LocalDate.parse(dateTime).atStartOfDay();
         }
     }

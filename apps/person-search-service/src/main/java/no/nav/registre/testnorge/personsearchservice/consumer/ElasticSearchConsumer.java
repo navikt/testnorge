@@ -4,14 +4,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.personsearchservice.config.credentials.PdlProxyProperties;
+import no.nav.registre.testnorge.personsearchservice.config.Consumers;
 import no.nav.registre.testnorge.personsearchservice.consumer.command.ElasticSearchCommand;
 import no.nav.registre.testnorge.personsearchservice.model.Response;
 import no.nav.registre.testnorge.personsearchservice.model.SearchResponse;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
-import org.elasticsearch.action.search.SearchRequest;
+import org.opensearch.action.search.SearchRequest;
 import org.springframework.stereotype.Component;
-
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
@@ -24,24 +24,26 @@ public class ElasticSearchConsumer {
     private final ObjectMapper objectMapper;
     private final WebClient webClient;
     private final TokenExchange tokenExchange;
-    private final PdlProxyProperties pdlProxyProperties;
+    private final ServerProperties serverProperties;
 
-    public ElasticSearchConsumer(TokenExchange tokenExchange,
-                                 PdlProxyProperties pdlProxyProperties,
-                                 ObjectMapper objectMapper) {
-
-        this.webClient = WebClient.builder()
-                .baseUrl(pdlProxyProperties.getUrl())
+    public ElasticSearchConsumer(
+            TokenExchange tokenExchange,
+            Consumers consumers,
+            ObjectMapper objectMapper
+    ) {
+        serverProperties = consumers.getTestnavPdlProxy();
+        this.webClient = WebClient
+                .builder()
+                .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .build();
         this.tokenExchange = tokenExchange;
-        this.pdlProxyProperties = pdlProxyProperties;
         this.objectMapper = objectMapper;
     }
 
     @SneakyThrows
     private Flux<Object> getSearchResponse(SearchRequest searchRequest) {
-        return tokenExchange.exchange(pdlProxyProperties)
+        return tokenExchange.exchange(serverProperties)
                 .flatMapMany(token ->
                         new ElasticSearchCommand(webClient, searchRequest.indices()[0], token.getTokenValue(), searchRequest.source().toString()).call())
                 .map(SearchResponse::getHits)

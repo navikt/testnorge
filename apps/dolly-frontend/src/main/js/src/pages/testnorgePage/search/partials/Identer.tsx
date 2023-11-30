@@ -46,7 +46,8 @@ export const Identer: React.FC<IdentSearchProps> = ({ formikBag }: IdentSearchPr
 										<Button
 											onClick={() => remove(index)}
 											kind="trashcan"
-											style={{ margin: '5px 0 0 10px' }}
+											fontSize={'1.5rem'}
+											style={{ marginLeft: '10px' }}
 										/>
 									)}
 								</div>

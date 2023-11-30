@@ -2,10 +2,6 @@ import Request from '@/service/services/Request'
 import Endpoints from './DollyEndpoints'
 
 export default {
-	getSkjerming(ident) {
-		return Request.get(Endpoints.skjermingByIdent(ident))
-	},
-
 	getGruppeById(gruppeId) {
 		return Request.get(Endpoints.gruppeById(gruppeId))
 	},
@@ -96,11 +92,6 @@ export default {
 		return Request.get(Endpoints.kodeverkByNavn(kodeverkNavn))
 	},
 
-	//* Udistub
-	getUdiPerson(ident) {
-		return Request.get(Endpoints.udiPerson(ident))
-	},
-
 	//* Bestilling
 	getBestillingerFragment(fragment) {
 		return Request.get(Endpoints.bestillingerFragment(fragment))
@@ -112,6 +103,10 @@ export default {
 
 	gjenopprettBestilling(bestillingId, envs) {
 		return Request.post(Endpoints.gjenopprettBestilling(bestillingId, envs))
+	},
+
+	slettBestilling(bestillingId) {
+		return Request.delete(Endpoints.slettBestilling(bestillingId))
 	},
 
 	cancelBestilling(bestillingId, erOrganisasjon) {
@@ -129,13 +124,13 @@ export default {
 					Request.delete(Endpoints.slettPerson(person.id)).catch((error) => {
 						console.error(error)
 					})
-				})
+				}),
 			)
 		})
 	},
 
-	gjenopprettPerson(ident) {
-		return Request.post(Endpoints.gjenopprettPerson(ident))
+	gjenopprettPerson(ident, miljoer) {
+		return Request.post(Endpoints.gjenopprettPerson(ident, miljoer))
 	},
 
 	importerPersonerFraPdl: (gruppeId, request) => {
@@ -150,10 +145,6 @@ export default {
 	},
 	getPersonerFraPdl(identer) {
 		return Request.get(Endpoints.personoppslagMange(identer))
-	},
-
-	getPersonnavn() {
-		return Request.get(Endpoints.getPersonnavn())
 	},
 
 	getTransaksjonid(system, ident, bestillingsid) {
@@ -201,7 +192,7 @@ export default {
 	},
 
 	slettMal(malId) {
-		return Request.delete(Endpoints.malBestilling(malId))
+		return Request.delete(Endpoints.malBestillingMedId(malId))
 			.then((response) => {
 				if (!response.ok) {
 					throw new Error(response.statusText)
@@ -215,9 +206,37 @@ export default {
 	},
 
 	endreMalNavn(malID, malNavn) {
-		return Request.putWithoutResponse(Endpoints.malBestilling(malID), malNavn)
+		return Request.putWithoutResponse(Endpoints.malBestillingMedId(malID, malNavn))
 			.then((response) => {
 				if (!response.ok) {
+					throw new Error(response.statusText)
+				}
+				return response
+			})
+			.catch((error) => {
+				console.error(error)
+				throw error
+			})
+	},
+
+	lagreMalFraBestillingId(bestillingId, malNavn) {
+		return Request.post(Endpoints.malBestillingMedBestillingId(bestillingId, malNavn))
+			.then((response) => {
+				if (!response.ok) {
+					throw new Error(response.statusText)
+				}
+				return response
+			})
+			.catch((error) => {
+				console.error(error)
+				throw error
+			})
+	},
+
+	lagreOrganisasjonMalFraBestillingId(bestillingId, malNavn) {
+		return Request.post(Endpoints.organisasjonMalBestillingMedBestillingId(bestillingId, malNavn))
+			.then((response) => {
+				if (!response.data) {
 					throw new Error(response.statusText)
 				}
 				return response
@@ -243,7 +262,7 @@ export default {
 	},
 
 	endreMalNavnOrganisasjon(malID, malNavn) {
-		return Request.putWithoutResponse(Endpoints.malBestillingOrganisasjon(malID), malNavn)
+		return Request.putWithoutResponse(Endpoints.malBestillingOrganisasjon(malID, malNavn))
 			.then((response) => {
 				if (!response.ok) {
 					throw new Error(response.statusText)
@@ -254,22 +273,5 @@ export default {
 				console.error(error)
 				throw error
 			})
-	},
-
-	// Pensjon-oppslag
-	getPoppMiljoer() {
-		return Request.get(Endpoints.getPoppMiljoer())
-	},
-
-	getPoppInntekter(ident, miljoe) {
-		return Request.get(Endpoints.getPoppInntekter(ident, miljoe))
-	},
-
-	getTpMiljoer() {
-		return Request.get(Endpoints.getTpMiljoer())
-	},
-
-	getTpOrdning(ident, miljoe) {
-		return Request.get(Endpoints.getTpOrdning(ident, miljoe))
 	},
 }

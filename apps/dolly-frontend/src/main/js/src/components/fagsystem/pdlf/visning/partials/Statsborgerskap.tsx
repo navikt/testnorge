@@ -2,18 +2,20 @@ import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import React from 'react'
 import * as _ from 'lodash-es'
-import { initialStatsborgerskap } from '@/components/fagsystem/pdlf/form/initialValues'
+import { getInitialStatsborgerskap } from '@/components/fagsystem/pdlf/form/initialValues'
 import { PersonData, StatsborgerskapData } from '@/components/fagsystem/pdlf/PdlTypes'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { formatDate } from '@/utils/DataFormatter'
+import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
 
 type StatsborgerskapTypes = {
 	data: Array<StatsborgerskapData>
 	tmpPersoner?: Array<PersonData>
 	ident?: string
 	erPdlVisning?: boolean
+	identtype?: string
 }
 
 type StatsborgerskapLesTypes = {
@@ -28,6 +30,7 @@ type StatsborgerskapVisningTypes = {
 	tmpPersoner: Array<PersonData>
 	ident: string
 	erPdlVisning: boolean
+	identtype?: string
 }
 
 const StatsborgerskapLes = ({ statsborgerskapData, idx }: StatsborgerskapLesTypes) => {
@@ -60,17 +63,18 @@ const StatsborgerskapVisning = ({
 	tmpPersoner,
 	ident,
 	erPdlVisning,
+	identtype,
 }: StatsborgerskapVisningTypes) => {
-	const initStatsborgerskap = Object.assign(_.cloneDeep(initialStatsborgerskap), data[idx])
+	const initStatsborgerskap = Object.assign(_.cloneDeep(getInitialStatsborgerskap()), data[idx])
 	const initialValues = { statsborgerskap: initStatsborgerskap }
 
 	const redigertStatsborgerskapPdlf = _.get(tmpPersoner, `${ident}.person.statsborgerskap`)?.find(
-		(a: StatsborgerskapData) => a.id === statsborgerskapData.id
+		(a: StatsborgerskapData) => a.id === statsborgerskapData.id,
 	)
 	const slettetStatsborgerskapPdlf =
 		tmpPersoner?.hasOwnProperty(ident) && !redigertStatsborgerskapPdlf
 	if (slettetStatsborgerskapPdlf) {
-		return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+		return <OpplysningSlettet />
 	}
 
 	const statsborgerskapValues = redigertStatsborgerskapPdlf
@@ -79,8 +83,8 @@ const StatsborgerskapVisning = ({
 	const redigertStatsborgerskapValues = redigertStatsborgerskapPdlf
 		? {
 				statsborgerskap: Object.assign(
-					_.cloneDeep(initialStatsborgerskap),
-					redigertStatsborgerskapPdlf
+					_.cloneDeep(getInitialStatsborgerskap()),
+					redigertStatsborgerskapPdlf,
 				),
 		  }
 		: null
@@ -93,6 +97,7 @@ const StatsborgerskapVisning = ({
 			redigertAttributt={redigertStatsborgerskapValues}
 			path="statsborgerskap"
 			ident={ident}
+			identtype={identtype}
 		/>
 	)
 }
@@ -102,6 +107,7 @@ export const Statsborgerskap = ({
 	tmpPersoner,
 	ident,
 	erPdlVisning,
+	identtype,
 }: StatsborgerskapTypes) => {
 	if (data.length < 1) {
 		return null
@@ -119,6 +125,7 @@ export const Statsborgerskap = ({
 							tmpPersoner={tmpPersoner}
 							ident={ident}
 							erPdlVisning={erPdlVisning}
+							identtype={identtype}
 						/>
 					)}
 				</DollyFieldArray>

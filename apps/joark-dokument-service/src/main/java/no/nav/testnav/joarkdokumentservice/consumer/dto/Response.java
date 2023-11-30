@@ -10,6 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class Response {
+
     DataDTO data;
     List<Error> errors;
 }

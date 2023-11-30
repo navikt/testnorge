@@ -21,7 +21,7 @@ const StatusListe = ({ bestillingListe, cancelBestilling, isCanceling }: StatusP
 		const nyBestillingListe = Object.values(bestillinger).filter(
 			(bestilling) =>
 				!bestilling?.ferdig ||
-				(bestilling?.ferdig && nyeBestillinger.some((best) => best?.id === bestilling?.id))
+				(bestilling?.ferdig && nyeBestillinger.some((best) => best?.id === bestilling?.id)),
 		)
 		setNyeBestillinger(nyBestillingListe)
 	}
@@ -56,7 +56,7 @@ const StatusListe = ({ bestillingListe, cancelBestilling, isCanceling }: StatusP
 			bestillingID={bestilling.id}
 			erOrganisasjon={_has(bestilling, 'organisasjonNummer')}
 			cancelBestilling={cancelBestilling}
-			onFinishBestilling={(bestilling) => setTimeout(() => onFinishBestilling(bestilling), 200)}
+			onFinishBestilling={onFinishBestilling}
 		/>
 	))
 

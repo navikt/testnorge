@@ -1,3 +1,5 @@
+import { runningCypressE2E } from '@/service/services/Request'
+
 export const initialJobboensker = {
 	startOption: null,
 	occupations: [],
@@ -29,16 +31,16 @@ export const initialJobboenskerVerdier = {
 	],
 	locations: [
 		{
-			location: 'Lørenskog',
-			code: 'NO02.0230',
+			location: 'Hamar',
+			code: 'NO04.0403',
 		},
 		{
-			location: 'Oslo',
-			code: 'NO03',
+			location: 'Råde',
+			code: 'NO30.3017',
 		},
 		{
-			location: 'Fredrikstad',
-			code: 'NO01.0106',
+			location: 'Vestby',
+			code: 'NO02.0211',
 		},
 	],
 	occupationTypes: ['FAST', 'PROSJEKT', 'FERIEJOBB'],
@@ -232,6 +234,11 @@ export const initialDigitalInnsending = {
 	tittel: '',
 	tema: '',
 	kanal: 'NAV_NO',
+	sak: {
+		sakstype: 'GENERELL_SAK',
+		fagsaksystem: '',
+		fagsakId: '',
+	},
 	ferdigstill: true,
 	avsenderMottaker: {
 		id: '',
@@ -248,15 +255,20 @@ export const initialDigitalInnsending = {
 }
 
 export const initialDokarkiv = {
-	tittel: '',
-	tema: '',
+	tittel: runningCypressE2E() ? 'test' : '',
+	tema: runningCypressE2E() ? 'test ' : '',
+	sak: {
+		sakstype: 'GENERELL_SAK',
+		fagsaksystem: '',
+		fagsakId: '',
+	},
 	kanal: 'SKAN_IM',
 	ferdigstill: true,
 	journalfoerendeEnhet: undefined,
 	dokumenter: [
 		{
-			tittel: '',
-			brevkode: '',
+			tittel: runningCypressE2E() ? 'test' : '',
+			brevkode: runningCypressE2E() ? 'test' : '',
 		},
 	],
 }

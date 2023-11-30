@@ -1,5 +1,6 @@
 package no.nav.dolly.domain.resultset.arenaforvalter;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,6 +9,9 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.List;
+
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 @Data
 @Builder
@@ -24,4 +28,14 @@ public class ArenaNyBruker {
     private Boolean automatiskInnsendingAvMeldekort;
     private List<ArenaAap115> aap115;
     private List<ArenaAap> aap;
+
+    @JsonIgnore
+    public boolean hasKvalifiseringsgruppe() {
+        return nonNull(kvalifiseringsgruppe);
+    }
+
+    @JsonIgnore
+    public boolean hasServicebehov() {
+        return isNull(utenServicebehov);
+    }
 }

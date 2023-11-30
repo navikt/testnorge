@@ -7,7 +7,7 @@ rootProject.name = 'tps-messaging-service'
 includeBuild '../../libs/security-core'
 includeBuild '../../libs/servlet-core'
 includeBuild '../../libs/servlet-security'
-includeBuild '../../libs/data-transfer-objects'
+includeBuild '../../libs/data-transfer-search-objects'
 
 
 gradleEnterprise {

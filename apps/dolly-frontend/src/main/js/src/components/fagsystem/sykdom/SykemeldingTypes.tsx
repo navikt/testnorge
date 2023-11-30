@@ -6,6 +6,10 @@ export interface SykemeldingForm {
 
 export type Sykemelding = {
 	data: Array<SykemeldingSynt | SykemeldingDetaljert>
+	loading: boolean
+	bestillingIdListe: any
+	tilgjengeligMiljoe: any
+	bestillinger: any
 }
 
 export type SykemeldingSynt = {

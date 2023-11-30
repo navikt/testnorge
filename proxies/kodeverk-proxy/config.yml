@@ -38,6 +38,11 @@ spec:
         - application: app-1
           namespace: plattformsikkerhet
           cluster: dev-gcp
+    outbound:
+      rules:
+        - application: kodeverk-dev
+          cluster: dev-fss
+          namespace: team-rocket
   liveness:
     path: /internal/isAlive
     initialDelay: 4

@@ -2,11 +2,12 @@ package no.nav.dolly.bestilling.tpsmessagingservice.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.util.WebClientFilter;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TpsMeldingResponseDTO;
+import no.nav.testnav.libs.data.tpsmessagingservice.v1.TpsMeldingResponseDTO;
+import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
@@ -43,6 +44,10 @@ public class SikkerhetstiltakDeleteCommand implements Callable<Flux<TpsMeldingRe
                 .bodyToFlux(TpsMeldingResponseDTO.class)
                 .doOnError(WebClientFilter::logErrorMessage)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
+                        .filter(WebClientFilter::is5xxException))
+                .onErrorResume(throwable -> Mono.just(TpsMeldingResponseDTO.builder()
+                        .status("FEIL")
+                        .utfyllendeMelding(WebClientFilter.getMessage(throwable))
+                        .build()));
     }
 }

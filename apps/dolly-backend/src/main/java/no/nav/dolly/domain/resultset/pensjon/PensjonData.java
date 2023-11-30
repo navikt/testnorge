@@ -6,18 +6,22 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.elasticsearch.annotations.DateFormat;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class PensjonData {
 
     @Schema(description = "Inntekt i pensjonsopptjeningsregister (POPP)")
@@ -29,7 +33,27 @@ public class PensjonData {
     @Schema(description = "Data for alderspensjon (AP)")
     private Alderspensjon alderspensjon;
 
+    @Schema(description = "Data for uføretrygd (UT)")
+    private Uforetrygd uforetrygd;
+
+    public boolean hasInntekt() {
+        return nonNull(inntekt);
+    }
+
+    public boolean hasTp() {
+        return !getTp().isEmpty();
+    }
+
+    public boolean hasAlderspensjon() {
+        return nonNull(alderspensjon);
+    }
+
+    public boolean hasUforetrygd() {
+        return nonNull(uforetrygd);
+    }
+
     public List<TpOrdning> getTp() {
+
         if (isNull(tp)) {
             tp = new ArrayList<>();
         }
@@ -94,13 +118,16 @@ public class PensjonData {
 
         @Schema(
                 description = "Dato innmeldt ytelse fom, kan være tidligere eller samme som iverksatt fom dato.")
+        @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
         private LocalDate datoInnmeldtYtelseFom;
 
         @Schema(
                 description = "Dato iverksatt fom")
+        @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
         private LocalDate datoYtelseIverksattFom;
 
         @Schema(description = "Dato iverksatt tom")
+        @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
         private LocalDate datoYtelseIverksattTom;
     }
 
@@ -109,7 +136,8 @@ public class PensjonData {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Alderspensjon {
-        @Schema
+
+        @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
         private LocalDate iverksettelsesdato;
 
         @Schema
@@ -135,4 +163,69 @@ public class PensjonData {
         @Schema
         private Integer sumAvForvArbKapPenInntekt;
     }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Uforetrygd {
+
+        @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
+        private LocalDate kravFremsattDato;
+        @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
+        private LocalDate onsketVirkningsDato;
+        @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
+        private LocalDate uforetidspunkt;
+        private Integer inntektForUforhet;
+        private Integer uforegrad;
+        private UforeType minimumInntektForUforhetType;
+        private String saksbehandler;
+        private String attesterer;
+        private String navEnhetId;
+        private Barnetillegg barnetilleggDetaljer;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Barnetillegg {
+        private BarnetilleggType barnetilleggType;
+
+        private List<ForventetInntekt> forventedeInntekterSoker;
+        private List<ForventetInntekt> forventedeInntekterEP;
+
+        public List<ForventetInntekt> getForventedeInntekterSoker() {
+
+            if (isNull(forventedeInntekterSoker)) {
+                forventedeInntekterSoker = new ArrayList<>();
+            }
+            return forventedeInntekterSoker;
+        }
+
+        public List<ForventetInntekt> getForventedeInntekterEP() {
+
+            if (isNull(forventedeInntekterEP)) {
+                forventedeInntekterEP = new ArrayList<>();
+            }
+            return forventedeInntekterEP;
+        }
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ForventetInntekt {
+        @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
+        private LocalDate datoFom;
+        @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
+        private LocalDate datoTom;
+        private InntektType inntektType;
+        private Integer belop;
+    }
+
+    public enum UforeType {UNGUFOR, GIFT, ENSLIG}
+
+    public enum BarnetilleggType {FELLESBARN, SAERKULLSBARN}
+
+    public enum InntektType {ARBEIDSINNTEKT, NAERINGSINNTEKT, PENSJON_FRA_UTLANDET, UTENLANDS_INNTEKT, ANDRE_PENSJONER_OG_YTELSER}
 }

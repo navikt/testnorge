@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
 import * as _ from 'lodash-es'
 import {
+	getInitialOppholdsadresse,
 	initialMatrikkeladresse,
 	initialOppholdAnnetSted,
-	initialOppholdsadresse,
 	initialUtenlandskAdresse,
 	initialVegadresse,
 } from '@/components/fagsystem/pdlf/form/initialValues'
@@ -12,10 +12,10 @@ import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFiel
 import { DollySelect, FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import {
-	VegadresseVelger,
-	UtenlandskAdresse,
-	OppholdAnnetSted,
 	MatrikkeladresseVelger,
+	OppholdAnnetSted,
+	UtenlandskAdresse,
+	VegadresseVelger,
 } from '@/components/fagsystem/pdlf/form/partials/adresser/adressetyper'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
@@ -23,7 +23,9 @@ import { FormikProps } from 'formik'
 import { Adressetype } from '@/components/fagsystem/pdlf/PdlTypes'
 import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 import { getPlaceholder, setNavn } from '@/components/fagsystem/pdlf/form/partials/utils'
-import { SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
+import { useGenererNavn } from '@/utils/hooks/useGenererNavn'
+import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 interface OppholdsadresseValues {
 	formikBag: FormikProps<{}>
@@ -33,6 +35,7 @@ type OppholdsadresseFormValues = {
 	formikBag: FormikProps<{}>
 	path: string
 	idx?: number
+	identtype?: string
 }
 
 type Target = {
@@ -40,7 +43,14 @@ type Target = {
 	label?: string
 }
 
-export const OppholdsadresseForm = ({ formikBag, path, idx }: OppholdsadresseFormValues) => {
+export const OppholdsadresseForm = ({
+	formikBag,
+	path,
+	idx,
+	identtype,
+}: OppholdsadresseFormValues) => {
+	const erNPID = identtype === 'NPID'
+
 	useEffect(() => {
 		formikBag.setFieldValue(`${path}.adresseIdentifikatorFraMatrikkelen`, undefined)
 		const oppholdsadresse = _.get(formikBag.values, path)
@@ -83,35 +93,35 @@ export const OppholdsadresseForm = ({ formikBag, path, idx }: OppholdsadresseFor
 			_.set(adresseClone, 'matrikkeladresse', undefined)
 			_.set(adresseClone, 'utenlandskAdresse', undefined)
 			_.set(adresseClone, 'oppholdAnnetSted', undefined)
-			_.set(adresseClone, 'master', 'FREG')
+			!erNPID && _.set(adresseClone, 'master', 'FREG')
 		}
 		if (target?.value === 'MATRIKKELADRESSE') {
 			_.set(adresseClone, 'matrikkeladresse', initialMatrikkeladresse)
 			_.set(adresseClone, 'vegadresse', undefined)
 			_.set(adresseClone, 'utenlandskAdresse', undefined)
 			_.set(adresseClone, 'oppholdAnnetSted', undefined)
-			_.set(adresseClone, 'master', 'FREG')
+			!erNPID && _.set(adresseClone, 'master', 'FREG')
 		}
 		if (target?.value === 'UTENLANDSK_ADRESSE') {
 			_.set(adresseClone, 'utenlandskAdresse', initialUtenlandskAdresse)
 			_.set(adresseClone, 'vegadresse', undefined)
 			_.set(adresseClone, 'matrikkeladresse', undefined)
 			_.set(adresseClone, 'oppholdAnnetSted', undefined)
-			_.set(adresseClone, 'master', 'PDL')
+			!erNPID && _.set(adresseClone, 'master', 'PDL')
 		}
 		if (target?.value === 'OPPHOLD_ANNET_STED') {
 			_.set(adresseClone, 'oppholdAnnetSted', initialOppholdAnnetSted)
 			_.set(adresseClone, 'vegadresse', undefined)
 			_.set(adresseClone, 'matrikkeladresse', undefined)
 			_.set(adresseClone, 'utenlandskAdresse', undefined)
-			_.set(adresseClone, 'master', 'FREG')
+			!erNPID && _.set(adresseClone, 'master', 'PDL')
 		}
 
 		formikBag.setFieldValue(path, adresseClone)
 	}
 
-	const navnInfo = SelectOptionsOppslag.hentPersonnavn()
-	const navnOptions = SelectOptionsOppslag.formatOptions('personnavn', navnInfo)
+	const { navnInfo, loading } = useGenererNavn()
+	const navnOptions = SelectOptionsFormat.formatOptions('personnavn', navnInfo)
 
 	return (
 		<React.Fragment key={idx}>
@@ -131,7 +141,11 @@ export const OppholdsadresseForm = ({ formikBag, path, idx }: OppholdsadresseFor
 				<MatrikkeladresseVelger formikBag={formikBag} path={`${path}.matrikkeladresse`} />
 			)}
 			{valgtAdressetype === 'UTENLANDSK_ADRESSE' && (
-				<UtenlandskAdresse formikBag={formikBag} path={`${path}.utenlandskAdresse`} />
+				<UtenlandskAdresse
+					formikBag={formikBag}
+					path={`${path}.utenlandskAdresse`}
+					master={_.get(formikBag.values, `${path}.master`)}
+				/>
 			)}
 			{valgtAdressetype === 'OPPHOLD_ANNET_STED' && (
 				<OppholdAnnetSted formikBag={formikBag} path={`${path}.oppholdAnnetSted`} />
@@ -147,7 +161,7 @@ export const OppholdsadresseForm = ({ formikBag, path, idx }: OppholdsadresseFor
 					options={navnOptions}
 					size="xlarge"
 					placeholder={getPlaceholder(formikBag.values, `${path}.opprettCoAdresseNavn`)}
-					isLoading={navnInfo.loading}
+					isLoading={loading}
 					onChange={(navn: Target) =>
 						setNavn(navn, `${path}.opprettCoAdresseNavn`, formikBag.setFieldValue)
 					}
@@ -157,7 +171,9 @@ export const OppholdsadresseForm = ({ formikBag, path, idx }: OppholdsadresseFor
 			<AvansertForm
 				path={path}
 				kanVelgeMaster={
-					valgtAdressetype !== 'MATRIKKELADRESSE' && valgtAdressetype !== 'OPPHOLD_ANNET_STED'
+					valgtAdressetype !== 'MATRIKKELADRESSE' &&
+					valgtAdressetype !== 'OPPHOLD_ANNET_STED' &&
+					!erNPID
 				}
 			/>
 		</React.Fragment>
@@ -165,16 +181,23 @@ export const OppholdsadresseForm = ({ formikBag, path, idx }: OppholdsadresseFor
 }
 
 export const Oppholdsadresse = ({ formikBag }: OppholdsadresseValues) => {
+	const opts = useContext(BestillingsveilederContext)
+
 	return (
 		<Kategori title="Oppholdsadresse">
 			<FormikDollyFieldArray
 				name="pdldata.person.oppholdsadresse"
 				header="Oppholdsadresse"
-				newEntry={initialOppholdsadresse}
+				newEntry={getInitialOppholdsadresse(opts?.identtype === 'NPID' ? 'PDL' : 'FREG')}
 				canBeEmpty={false}
 			>
 				{(path: string, idx: number) => (
-					<OppholdsadresseForm formikBag={formikBag} path={path} idx={idx} />
+					<OppholdsadresseForm
+						formikBag={formikBag}
+						path={path}
+						idx={idx}
+						identtype={opts?.identtype}
+					/>
 				)}
 			</FormikDollyFieldArray>
 		</Kategori>

@@ -10,7 +10,6 @@ import org.apache.commons.text.CaseUtils;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -46,7 +45,8 @@ public class NaturalYtelseDetaljerDTO implements ToXmlElement<XMLNaturalytelseDe
     }
 
     static List<XMLNaturalytelseDetaljer> covert(List<NaturalYtelseDetaljerDTO> list) {
-        return list.stream().map(NaturalYtelseDetaljerDTO::toXmlElement).collect(Collectors.toList());
+        return list.stream().map(NaturalYtelseDetaljerDTO::toXmlElement)
+                .toList();
     }
 
 }

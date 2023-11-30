@@ -6,8 +6,9 @@ import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray
 import { formatDate } from '@/utils/DataFormatter'
 import * as _ from 'lodash-es'
 import { DoedsfallData, Person } from '@/components/fagsystem/pdlf/PdlTypes'
-import { initialDoedsfall, initialFoedsel } from '@/components/fagsystem/pdlf/form/initialValues'
+import { getInitialFoedsel, initialDoedsfall } from '@/components/fagsystem/pdlf/form/initialValues'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
+import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
 
 type DoedsfallTypes = {
 	data: Array<DoedsfallData>
@@ -50,16 +51,16 @@ const DoedsfallVisning = ({
 	const initialValues = { doedsfall: initDoedsfall }
 
 	const redigertDoedsfallPdlf = _.get(tmpPersoner, `${ident}.person.doedsfall`)?.find(
-		(a: Person) => a.id === doedsfall.id
+		(a: Person) => a.id === doedsfall.id,
 	)
 	const slettetDoedsfallPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertDoedsfallPdlf
 	if (slettetDoedsfallPdlf) {
-		return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+		return <OpplysningSlettet />
 	}
 
 	const doedsfallValues = redigertDoedsfallPdlf ? redigertDoedsfallPdlf : doedsfall
 	const redigertDoedsfallValues = redigertDoedsfallPdlf
-		? { doedsfall: Object.assign(_.cloneDeep(initialFoedsel), redigertDoedsfallPdlf) }
+		? { doedsfall: Object.assign(_.cloneDeep(getInitialFoedsel()), redigertDoedsfallPdlf) }
 		: null
 
 	return erPdlVisning ? (

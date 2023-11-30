@@ -1,10 +1,12 @@
 package no.nav.dolly.domain.resultset.arenaforvalter;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
+import no.nav.dolly.bestilling.arenaforvalter.dto.ArenaResponse;
 import org.springframework.http.HttpStatus;
 
 import java.util.ArrayList;
@@ -13,15 +15,18 @@ import java.util.List;
 import static java.util.Objects.isNull;
 
 @Data
-@Builder
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
-@AllArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class ArenaNyeDagpengerResponse {
+@ToString(callSuper = true)
+public class ArenaNyeDagpengerResponse extends ArenaResponse {
 
-    private HttpStatus status;
-    private String feilmelding;
-    private String miljoe;
+    @Builder
+    public ArenaNyeDagpengerResponse(HttpStatus status, String miljoe, String feilmelding, List<Dagp> nyeDagp, List<NyeDagpResponse> nyeDagpResponse, List<NyDagpFeilV1> nyeDagpFeilList) {
+        super(status, miljoe, feilmelding);
+        this.nyeDagp = nyeDagp;
+        this.nyeDagpResponse = nyeDagpResponse;
+        this.nyeDagpFeilList = nyeDagpFeilList;
+    }
 
     public enum DagpFeilstatus {DUPLIKAT, MILJOE_IKKE_STOETTET, AKTIVER_DAGP}
     private List<Dagp> nyeDagp;

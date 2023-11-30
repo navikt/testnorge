@@ -59,7 +59,7 @@ export const useGruppeById = (
 			error: 'GruppeId mangler!',
 		}
 	}
-	const { data, error } = useSWR<Gruppe, Error>(
+	const { data, isLoading, error } = useSWR<Gruppe, Error>(
 		getPaginertGruppeUrl(gruppeId, pageNo, pageSize, sortKolonne, sortRetning),
 		fetcher,
 		{
@@ -75,13 +75,16 @@ export const useGruppeById = (
 		}, {}),
 		gruppeId: data?.id,
 		gruppe: data,
-		loading: !error && !data,
+		loading: isLoading,
 		error: error,
 	}
 }
 
 export const useGruppeIdenter = (gruppeId) => {
-	const { data, error } = useSWR<Gruppe, Error>(getHelGruppeUrl(gruppeId), fetcher)
+	const { data, isLoading, error } = useSWR<Gruppe, Error>(
+		gruppeId ? getHelGruppeUrl(gruppeId) : null,
+		fetcher
+	)
 
 	return {
 		identer: data?.identer?.map((person) => {
@@ -90,30 +93,33 @@ export const useGruppeIdenter = (gruppeId) => {
 				master: person.master,
 			}
 		}),
-		loading: !error && !data,
+		loading: isLoading,
 		error: error,
 	}
 }
 
 export const useGrupper = (pageNo, pageSize, brukerId?: string) => {
-	const { data, error } = useSWR<PaginertGruppe, Error>(
+	const { data, isLoading, error } = useSWR<PaginertGruppe, Error>(
 		getGrupperUrl(pageNo, pageSize, brukerId),
 		fetcher
 	)
 
 	return {
 		grupper: data,
-		loading: !error && !data,
+		loading: isLoading,
 		error: error,
 	}
 }
 
 export const useEgneGrupper = (brukerId: string) => {
-	const { data, error } = useSWR<PaginertGruppe, Error>(getEgneGrupperUrl(brukerId), fetcher)
+	const { data, isLoading, error } = useSWR<PaginertGruppe, Error>(
+		getEgneGrupperUrl(brukerId),
+		fetcher
+	)
 
 	return {
 		grupper: data,
-		loading: !error && !data,
+		loading: isLoading,
 		error: error,
 	}
 }

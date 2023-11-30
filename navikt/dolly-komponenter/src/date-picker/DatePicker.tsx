@@ -61,7 +61,7 @@ export default ({ label, onBlur, required = false }: Props) => {
     if (isValid(date)) {
       setSelected(date);
     } else {
-      setSelected(undefined);
+      setSelected(undefined as unknown as Date);
     }
   };
 
@@ -104,9 +104,8 @@ export default ({ label, onBlur, required = false }: Props) => {
             <StyledDaypicker
               mode="single"
               selected={selected}
-              required={required}
               defaultMonth={selected}
-              onSelect={handleDaySelect}
+              onDayClick={handleDaySelect}
             />
           </div>
         )}

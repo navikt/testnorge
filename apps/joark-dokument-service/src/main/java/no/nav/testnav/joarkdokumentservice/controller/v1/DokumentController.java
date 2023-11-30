@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RestController
@@ -32,7 +31,7 @@ public class DokumentController {
                 .journalpostId(journalpost.getJournalpostId())
                 .dokumentInfoId(dokument.getDokumentInfoId())
                 .build()
-        ).collect(Collectors.toList());
+        ).toList();
         return ResponseEntity.ok(list);
     }
 

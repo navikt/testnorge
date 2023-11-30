@@ -13,8 +13,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import static java.time.LocalDateTime.now;
 import static java.util.Objects.nonNull;
@@ -65,15 +67,28 @@ public class TransactionHelperService {
 
         return transactionTemplate.execute(status1 -> {
 
+            var akkumulert = new AtomicReference<>(bestillingProgress);
+
             bestillingProgressRepository.findByIdAndLock(bestillingProgress.getId())
                     .ifPresent(progress -> {
                         this.setField(progress, status, setter);
-                        bestillingProgressRepository.save(progress);
+                        akkumulert.set(bestillingProgressRepository.save(progress));
                         clearCache();
                     });
 
-            return bestillingProgress;
+            return akkumulert.get();
         });
+    }
+
+    @Retryable
+    public String getProgress(BestillingProgress bestillingProgress, Function<BestillingProgress, String> getter) {
+
+        var status = new AtomicReference<String>(null);
+        bestillingProgressRepository.findById(bestillingProgress.getId())
+                    .ifPresent(progress ->
+                        status.set(getter.apply(progress)));
+
+        return status.get();
     }
 
     @Retryable
@@ -81,12 +96,14 @@ public class TransactionHelperService {
 
         return transactionTemplate.execute(status -> {
 
+            var akkumulert = new AtomicReference<Bestilling>(null);
             bestillingRepository.findByIdAndLock(bestillingId)
                     .ifPresent(best -> {
                         best.setBestKriterier(bestillingService.getBestKriterier(bestilling));
-                        bestillingRepository.save(best);
+                        akkumulert.set(bestillingRepository.save(best));
                     });
-            return null;
+
+            return akkumulert.get();
         });
     }
 
@@ -94,15 +111,19 @@ public class TransactionHelperService {
     public Bestilling oppdaterBestillingFerdig(Long id, Consumer<Bestilling> bestillingFunksjon) {
 
         return transactionTemplate.execute(status -> {
+
+            var akkumulert = new AtomicReference<Bestilling>(null);
+
             bestillingRepository.findByIdAndLock(id)
                     .ifPresent(bestilling -> {
                         bestilling.setSistOppdatert(now());
                         bestilling.setFerdig(true);
                         bestillingFunksjon.accept(bestilling);
-                        bestillingRepository.save(bestilling);
+                        akkumulert.set(bestillingRepository.save(bestilling));
                         clearCache();
                     });
-            return null;
+
+            return akkumulert.get();
         });
     }
 

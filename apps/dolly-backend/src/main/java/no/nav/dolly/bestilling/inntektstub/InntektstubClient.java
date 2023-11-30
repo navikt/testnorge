@@ -21,11 +21,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.StringUtils.truncate;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class InntektstubClient implements ClientRegister {
+
+    private static final int MAX_STATUS_LEN = 2048;
 
     private final InntektstubConsumer inntektstubConsumer;
     private final ErrorStatusDecoder errorStatusDecoder;
@@ -48,7 +51,7 @@ public class InntektstubClient implements ClientRegister {
                     .flatMap(eksisterende -> Flux.fromIterable(inntektsinformasjonWrapper.getInntektsinformasjon())
                             .filter(nyinntekt -> eksisterende.stream().noneMatch(entry ->
                                     entry.getAarMaaned().equals(nyinntekt.getAarMaaned()) &&
-                                    entry.getVirksomhet().equals(nyinntekt.getVirksomhet())))
+                                            entry.getVirksomhet().equals(nyinntekt.getVirksomhet())))
                             .collectList()
                             .flatMapMany(inntektstubConsumer::postInntekter)
                             .collectList()
@@ -71,7 +74,8 @@ public class InntektstubClient implements ClientRegister {
     private ClientFuture futurePersist(BestillingProgress progress, String status) {
 
         return () -> {
-            transactionHelperService.persister(progress, BestillingProgress::setInntektstubStatus, status);
+            transactionHelperService.persister(progress, BestillingProgress::setInntektstubStatus,
+                    truncate(status, MAX_STATUS_LEN));
             return progress;
         };
     }

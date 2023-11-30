@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.aareg.AaregClient;
@@ -12,14 +13,18 @@ import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.pdldata.dto.PdlResponse;
 import no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterClient;
 import no.nav.dolly.bestilling.tagshendelseslager.TagsHendelseslagerClient;
+import no.nav.dolly.bestilling.tpsmessagingservice.service.TpsPersonService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testident;
+import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.Tags;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
+import no.nav.dolly.elastic.BestillingElasticRepository;
+import no.nav.dolly.elastic.ElasticBestilling;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.repository.IdentRepository;
@@ -41,6 +46,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.jpa.Testident.Master.PDL;
 import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
+import static org.apache.logging.log4j.util.Strings.isBlank;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
 @Slf4j
@@ -51,11 +57,14 @@ public class DollyBestillingService {
     protected final IdentService identService;
     protected final BestillingService bestillingService;
     protected final ObjectMapper objectMapper;
+    protected final MapperFacade mapperFacade;
     protected final List<ClientRegister> clientRegisters;
     protected final CounterCustomRegistry counterCustomRegistry;
     protected final PdlDataConsumer pdlDataConsumer;
     protected final ErrorStatusDecoder errorStatusDecoder;
     protected final TransactionHelperService transactionHelperService;
+    protected final TpsPersonService tpsPersonService;
+    protected final BestillingElasticRepository bestillingElasticRepository;
 
     public static Set<String> getEnvironments(String miljoer) {
         return isNotBlank(miljoer) ? Set.of(miljoer.split(",")) : emptySet();
@@ -91,9 +100,11 @@ public class DollyBestillingService {
         try {
             RsDollyBestillingRequest bestKriterier = objectMapper.readValue(bestilling.getBestKriterier(), RsDollyBestillingRequest.class);
 
+            bestKriterier.setId(bestilling.getId());
             bestKriterier.setNavSyntetiskIdent(bestilling.getNavSyntetiskIdent());
             bestKriterier.setEnvironments(getEnvironments(bestilling.getMiljoer()));
             bestKriterier.setBeskrivelse(bestilling.getBeskrivelse());
+
             return bestKriterier;
 
         } catch (JsonProcessingException e) {
@@ -128,13 +139,12 @@ public class DollyBestillingService {
                                                            GjenopprettSteg steg,
                                                            BestillingProgress progress, boolean isOpprettEndre) {
 
-        return Flux.from(Flux.fromIterable(clientRegisters)
-                .parallel()
+        return Flux.fromIterable(clientRegisters)
                 .filter(steg::apply)
                 .flatMap(clientRegister ->
                         clientRegister.gjenopprett(bestKriterier, dollyPerson, progress, isOpprettEndre))
                 .filter(Objects::nonNull)
-                .map(ClientFuture::get));
+                .map(ClientFuture::get);
     }
 
     protected void leggIdentTilGruppe(String ident, BestillingProgress progress, String beskrivelse) {
@@ -159,10 +169,37 @@ public class DollyBestillingService {
     protected void doFerdig(Bestilling bestilling) {
 
         transactionHelperService.oppdaterBestillingFerdig(bestilling.getId(), bestillingService.cleanBestilling());
-        transactionHelperService.clearCache();
 
         MDC.remove(MDC_KEY_BESTILLING);
         log.info("Bestilling med id=#{} er ferdig", bestilling.getId());
+    }
+
+    protected void clearCache() {
+
+        transactionHelperService.clearCache();
+    }
+
+    protected void saveFeil(BestillingProgress progress, String error) {
+
+        transactionHelperService.persister(progress, BestillingProgress::setFeil, error);
+    }
+
+    protected void saveBestillingToElasticServer(RsDollyBestilling bestillingRequest, Bestilling bestilling) {
+
+        if (isBlank(bestilling.getFeil()) &&
+                isNull(bestilling.getOpprettetFraId()) &&
+                isBlank(bestilling.getGjenopprettetFraIdent()) &&
+                isNull(bestilling.getOpprettetFraGruppeId())) {
+
+            var request = mapperFacade.map(bestillingRequest, ElasticBestilling.class);
+            request.setId(bestilling.getId());
+            var progresser = bestillingService.getProgressByBestillingId(bestilling.getId());
+            request.setIdenter(progresser.stream()
+                    .filter(BestillingProgress::isIdentGyldig)
+                    .map(BestillingProgress::getIdent)
+                    .toList());
+            bestillingElasticRepository.save(request);
+        }
     }
 
     protected Flux<BestillingProgress> opprettProgress(Bestilling bestilling, Testident.Master master) {
@@ -228,7 +265,20 @@ public class DollyBestillingService {
 
         return Flux.just(getDollyBestillingRequest(
                 Bestilling.builder()
+                        .id(coBestilling.getBestillingId())
                         .bestKriterier(coBestilling.getBestkriterier())
+                        .miljoer(StringUtils.isNotBlank(bestilling.getMiljoer()) ?
+                                bestilling.getMiljoer() :
+                                coBestilling.getMiljoer())
+                        .build()));
+    }
+
+    protected Flux<RsDollyBestillingRequest> createBestilling(Bestilling bestilling, Bestilling coBestilling) {
+
+        return Flux.just(getDollyBestillingRequest(
+                Bestilling.builder()
+                        .id(coBestilling.getId())
+                        .bestKriterier(coBestilling.getBestKriterier())
                         .miljoer(StringUtils.isNotBlank(bestilling.getMiljoer()) ?
                                 bestilling.getMiljoer() :
                                 coBestilling.getMiljoer())

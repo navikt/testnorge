@@ -20,7 +20,12 @@ public interface BestillingProgressRepository extends CrudRepository<BestillingP
     @Modifying
     int deleteByIdent(String ident);
 
+    @Modifying
+    int deleteByBestilling_Id(Long bestillingId);
+
     List<BestillingProgress> findByIdent(String ident);
+
+    List<BestillingProgress> findByBestilling_Id(Long bestillingId);
 
     @Modifying
     @Query(value = "update BestillingProgress bp set bp.ident = :newIdent where bp.ident = :oldIdent")

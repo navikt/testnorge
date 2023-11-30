@@ -18,8 +18,8 @@ spring:
           jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
           accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
         tokenx:
-          issuer-uri: https://tokendings.dev-gcp.nais.io
-          jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
+          issuer-uri: https://tokenx.dev-gcp.nav.cloud.nais.io 
+          jwk-set-uri: https://tokenx.dev-gcp.nav.cloud.nais.io/jwks
           accepted-audience: dev-fss:dolly:testnorge-statisk-data-forvalter
 
 springdoc:
@@ -85,12 +85,20 @@ consumers:
   synthdata-aareg:
     url: http://nais-synthdata-aareg.dolly.svc.nais.local
   kodeverk:
+    cluster: dev-fss
+    name: testnav-kodeverk-proxy
+    namespace: dolly
     url: https://kodeverk.dev.intern.nav.no
   testnav-aareg-proxy:
     name: testnav-aareg-proxy
     namespace: dolly
     url: https://testnav-aareg-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
+  testnav-bruker-service:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-bruker-service
+    url: http://testnav-bruker-service.dolly.svc.cluster.local
 
 aareg:
   pageSize: 50

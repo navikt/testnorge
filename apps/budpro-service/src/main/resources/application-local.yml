@@ -1,0 +1,20 @@
+spring:
+  cloud:
+    vault:
+      host: vault.adeo.no
+      port: 443
+  security:
+    oauth2:
+      resourceserver:
+        aad:
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+consumers:
+  generer-navn-service:
+    url: "https://generer-navn-service.intern.dev.nav.no"

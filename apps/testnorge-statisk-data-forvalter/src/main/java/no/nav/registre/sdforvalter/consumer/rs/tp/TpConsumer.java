@@ -1,7 +1,7 @@
 package no.nav.registre.sdforvalter.consumer.rs.tp;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.sdforvalter.consumer.rs.credential.TestnorgeTpProperties;
+import no.nav.registre.sdforvalter.config.Consumers;
 import no.nav.registre.sdforvalter.consumer.rs.tp.command.OpprettPersonerTpCommand;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
@@ -18,17 +18,16 @@ public class TpConsumer {
 
     private final WebClient webClient;
     private final TokenExchange tokenExchange;
-    private final ServerProperties serviceProperties;
+    private final ServerProperties serverProperties;
 
     public TpConsumer(
             TokenExchange tokenExchange,
-            TestnorgeTpProperties serviceProperties) {
-        this.serviceProperties = serviceProperties;
+            Consumers consumers) {
+        serverProperties = consumers.getTestnorgeTp();
         this.tokenExchange = tokenExchange;
-
         this.webClient = WebClient
                 .builder()
-                .baseUrl(serviceProperties.getUrl())
+                .baseUrl(serverProperties.getUrl())
                 .build();
     }
 
@@ -38,7 +37,7 @@ public class TpConsumer {
      * @return true hvis den ble lagret i tp, false hvis de ikke ble lagret
      */
     public boolean send(List<String> data, String environment) {
-        var response = tokenExchange.exchange(serviceProperties)
+        var response = tokenExchange.exchange(serverProperties)
                 .flatMap(accessToken -> new OpprettPersonerTpCommand(webClient, data, environment, accessToken.getTokenValue()).call())
                 .block();
 

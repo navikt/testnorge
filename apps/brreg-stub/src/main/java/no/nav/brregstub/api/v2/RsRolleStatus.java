@@ -1,9 +1,8 @@
 package no.nav.brregstub.api.v2;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import javax.validation.constraints.NotBlank;
 
 import no.nav.brregstub.api.common.Egenskap;
 

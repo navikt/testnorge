@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.bestilling.tagshendelseslager.TagsHendelseslagerConsumer;
 import no.nav.dolly.bestilling.tagshendelseslager.dto.TagsOpprettingResponse;
-import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.Testident;
@@ -14,9 +14,9 @@ import no.nav.dolly.domain.resultset.Tags;
 import no.nav.dolly.domain.resultset.Tags.TagBeskrivelse;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.TestgruppeRepository;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.ForeldreansvarDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.ForeldreansvarDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.FullmaktDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,7 +49,7 @@ public class TagController {
 
     private final TestgruppeRepository testgruppeRepository;
     private final TagsHendelseslagerConsumer tagsHendelseslagerConsumer;
-    private final PdlPersonConsumer pdlPersonConsumer;
+    private final PersonServiceConsumer personServiceConsumer;
 
     @GetMapping()
     @Transactional
@@ -85,7 +85,7 @@ public class TagController {
                 .map(Testident::getIdent)
                 .toList();
 
-        var pdlPersonBolk = pdlPersonConsumer.getPdlPersoner(gruppeIdenter)
+        var pdlPersonBolk = personServiceConsumer.getPdlPersoner(gruppeIdenter)
                 .filter(pdlBolk -> nonNull(pdlBolk.getData()))
                 .map(PdlPersonBolk::getData)
                 .map(PdlPersonBolk.Data::getHentPersonBolk)

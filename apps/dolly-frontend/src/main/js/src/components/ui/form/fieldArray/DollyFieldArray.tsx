@@ -6,6 +6,7 @@ import ExpandableBlokk from './ExpandableBlokk'
 
 import './dollyFieldArray.less'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import styled from 'styled-components'
 
 const numberColor = {
 	ARRAY_LEVEL_ONE: '#CCE3ED',
@@ -30,15 +31,11 @@ export const FieldArrayAddButton = ({
 	</Button>
 )
 
-export const FieldArrayRemoveButton = ({ onClick }) => (
-	<Button className="field-group-remove" kind="remove-circle" onClick={onClick} title="Fjern" />
-)
-
 const DeleteButton = ({ onClick }) => {
 	if (!onClick) {
 		return null
 	}
-	return <Button kind="trashcan" onClick={onClick} title="Fjern" />
+	return <Button kind="trashcan" fontSize={'1.4rem'} onClick={onClick} title="Fjern" />
 }
 
 const Numbering = ({ idx, color = numberColor.ARRAY_LEVEL_ONE }) => (
@@ -46,6 +43,12 @@ const Numbering = ({ idx, color = numberColor.ARRAY_LEVEL_ONE }) => (
 		{idx}
 	</span>
 )
+
+const FaError = styled.div`
+	color: #ba3a26;
+	font-style: italic;
+	margin-bottom: 10px;
+`
 
 export const DollyFieldArrayWrapper = ({
 	header = null,
@@ -72,17 +75,21 @@ export const DollyFaBlokk = ({
 	children,
 	showDeleteButton,
 	number,
-}) => (
-	<div className="dfa-blokk">
-		<div className="dfa-blokk_header">
-			<Numbering idx={number || idx + 1} />
-			<h2>{header}</h2>
-			{hjelpetekst && <Hjelpetekst>{hjelpetekst}</Hjelpetekst>}
-			{showDeleteButton && <DeleteButton onClick={handleRemove} />}
+	whiteBackground,
+}) => {
+	const className = whiteBackground ? 'dfa-blokk-white' : 'dfa-blokk'
+	return (
+		<div className={className}>
+			<div className={`${className}_header`}>
+				<Numbering idx={number || idx + 1} />
+				<h2>{header}</h2>
+				{hjelpetekst && <Hjelpetekst>{hjelpetekst}</Hjelpetekst>}
+				{showDeleteButton && <DeleteButton onClick={handleRemove} />}
+			</div>
+			<div className={`${className}_content`}>{children}</div>
 		</div>
-		<div className="dfa-blokk_content">{children}</div>
-	</div>
-)
+	)
+}
 
 export const DollyFaBlokkOrg = ({
 	header,
@@ -124,13 +131,19 @@ export const DollyFaBlokkOrg = ({
 	)
 }
 
-export const DollyFaBlokkNested = ({ idx, handleRemove, children, whiteBackground }) => (
+export const DollyFaBlokkNested = ({
+	idx,
+	handleRemove,
+	children,
+	whiteBackground,
+	showDeleteButton = true,
+}) => (
 	<div className="dfa-blokk-nested">
 		<div className="dfa-blokk_header">
 			<Numbering idx={idx + 1} />
 		</div>
 		<div className={whiteBackground ? 'dfa-blokk_content_white' : 'dfa-blokk_content'}>
-			<DeleteButton onClick={handleRemove} />
+			{showDeleteButton && <DeleteButton onClick={handleRemove} />}
 			{children}
 		</div>
 	</div>
@@ -168,6 +181,7 @@ export const DollyFieldArray = ({
 								idx={idx}
 								getHeader={getHeader ? getHeader : () => header}
 								data={curr}
+								whiteBackground={whiteBackground}
 							>
 								{children(curr, idx)}
 							</ExpandableBlokk>
@@ -179,6 +193,7 @@ export const DollyFieldArray = ({
 								idx={idx}
 								header={getHeader ? getHeader(curr) : header}
 								hjelpetekst={hjelpetekst}
+								whiteBackground={whiteBackground}
 							>
 								{children(curr, idx)}
 							</DollyFaBlokk>
@@ -207,6 +222,7 @@ export const FormikDollyFieldArray = ({
 	maxEntries = null as unknown as number,
 	maxReachedDescription = null,
 	buttonText = null,
+	errorText = null,
 }) => (
 	<FieldArray name={name}>
 		{(arrayHelpers) => {
@@ -228,7 +244,12 @@ export const FormikDollyFieldArray = ({
 
 							if (nested) {
 								return (
-									<DollyFaBlokkNested key={idx} idx={idx} handleRemove={handleRemove}>
+									<DollyFaBlokkNested
+										key={idx}
+										idx={idx}
+										handleRemove={handleRemove}
+										showDeleteButton={showDeleteButton}
+									>
 										{children(path, idx, curr)}
 									</DollyFaBlokkNested>
 								)
@@ -262,6 +283,7 @@ export const FormikDollyFieldArray = ({
 								)
 							}
 						})}
+						{errorText && <FaError>{errorText}</FaError>}
 						<FieldArrayAddButton
 							hoverText={title || (maxEntries === values.length && maxReachedDescription)}
 							addEntryButtonText={buttonText ? buttonText : header}

@@ -44,7 +44,7 @@ public class HentRolleoversiktControllerTest {
 
     @Test
     @DisplayName("GET rolleoversikt returnerer 404 hvis ikke eksisterer")
-    public void skalKasteNotFoundHvisRolleIkkeEksister() {
+    void skalKasteNotFoundHvisRolleIkkeEksister() {
         var response = restTemplate.exchange(API_V_1_ROLLEUTSKRIFT,
                 HttpMethod.GET,
                 createHttpEntity("eksister ikke", null),
@@ -55,14 +55,14 @@ public class HentRolleoversiktControllerTest {
 
     @Test
     @DisplayName("GET rolleoversikt returnerer 400 hvis input mangler")
-    public void skalKasteBadRequestHvisInputMangler() {
+    void skalKasteBadRequestHvisInputMangler() {
         var response = restTemplate.getForEntity(API_V_1_ROLLEUTSKRIFT, Map.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
 
     @Test
     @DisplayName("GET rolleoversikt returnerer 200 hvis ikke eksisterer")
-    public void skalHenteRolleutskriftFraDatabase() {
+    void skalHenteRolleutskriftFraDatabase() {
         var nyRolle = new Rolleoversikt();
         nyRolle.setIdent(IDENT);
         nyRolle.setJson("{\"fnr\":\"ident\"}");
@@ -73,12 +73,13 @@ public class HentRolleoversiktControllerTest {
                 createHttpEntity("ident", null),
                 RolleoversiktTo.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().getFnr()).isEqualTo("ident");
     }
 
     @Test
     @DisplayName("DELETE rolleoversikt skal slette rolleoversikt")
-    public void skalSletteRolleutskrift() {
+    void skalSletteRolleutskrift() {
         var nyRolle = new Rolleoversikt();
         nyRolle.setIdent("slettes");
         nyRolle.setJson("{\"fnr\":\"slettes\"}");
@@ -94,7 +95,7 @@ public class HentRolleoversiktControllerTest {
 
     @Test
     @DisplayName("DELETE rolleoversikt returnerer 400 hvis input mangler")
-    public void deleteSkalKasteBadRequestHvisInputMangler() {
+    void deleteSkalKasteBadRequestHvisInputMangler() {
         var responseDelete =
                 restTemplate.exchange(API_V_1_ROLLEUTSKRIFT, HttpMethod.DELETE, null, Map.class);
         assertThat(responseDelete.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -102,19 +103,20 @@ public class HentRolleoversiktControllerTest {
 
     @Test
     @DisplayName("POST rolleoversikt skal opprette ny rolleoversikt")
-    public void skalLagreRequestIDatabase() {
+    void skalLagreRequestIDatabase() {
         RolleoversiktTo to = lagGyldigRolleoversiktTo();
 
         var response =
                 restTemplate.exchange(API_V_1_ROLLEUTSKRIFT, HttpMethod.POST, createHttpEntity("ny", to), RolleoversiktTo.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().getFnr()).isEqualTo("ny");
 
     }
 
     @Test
     @DisplayName("POST rolleoversikt skal returnere bad request ved mangle input")
-    public void skalReturnereBadRequestVedPost() {
+    void skalReturnereBadRequestVedPost() {
         RolleoversiktTo to = new RolleoversiktTo();
 
         var response =
@@ -142,12 +144,12 @@ public class HentRolleoversiktControllerTest {
         return to;
     }
 
-    private HttpEntity createHttpEntity(
+    private HttpEntity<RolleoversiktTo> createHttpEntity(
             String ident,
             RolleoversiktTo body
     ) {
         var headers = new HttpHeaders();
         headers.add("Nav-Personident", ident);
-        return new HttpEntity(body, headers);
+        return new HttpEntity<>(body, headers);
     }
 }

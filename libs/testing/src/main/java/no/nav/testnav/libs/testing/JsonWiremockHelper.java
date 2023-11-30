@@ -1,21 +1,5 @@
 package no.nav.testnav.libs.testing;
 
-import static com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder.responseDefinition;
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.delete;
-import static com.github.tomakehurst.wiremock.client.WireMock.deleteRequestedFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.matching;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.put;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
-import static com.github.tomakehurst.wiremock.client.WireMock.verify;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.MappingBuilder;
@@ -25,28 +9,22 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+
+import static com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder.responseDefinition;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
 public class JsonWiremockHelper {
 
     private final ObjectMapper mapper;
-
+    private final Set<String> requestFieldsToIgnore = new HashSet<>();
+    private final Map<String, String> queryParamMap = new HashMap<>();
     private UrlPathPattern urlPathPattern;
     private String requestBody;
     private String responseBody;
-    private final Set<String> requestFieldsToIgnore = new HashSet<>();
-    private final Map<String, String> queryParamMap = new HashMap<>();
 
     private JsonWiremockHelper(ObjectMapper mapper) {
         this.mapper = mapper;
-    }
-
-    public static JsonWiremockHelper builder(ObjectMapper mapper) {
-        return new JsonWiremockHelper(mapper);
     }
 
     public JsonWiremockHelper withUrlPathMatching(String urlPathMatching) {
@@ -58,7 +36,6 @@ public class JsonWiremockHelper {
         queryParamMap.put(name, value);
         return this;
     }
-
 
     public JsonWiremockHelper withResponseBody(Object responseBody) throws JsonProcessingException {
         this.responseBody = mapper.writeValueAsString(responseBody);
@@ -78,11 +55,6 @@ public class JsonWiremockHelper {
                                 .willReturn(responseDefinition().withStatus(status.value()))
                 )
         );
-    }
-
-
-    public void stubPut() {
-        stubFor(updateMappingBuilder(put(urlPathPattern)));
     }
 
     public void stubGet() {
@@ -121,8 +93,8 @@ public class JsonWiremockHelper {
         verify(requestPatternBuilder);
     }
 
-    public void stubDelete() {
-        stubFor(updateMappingBuilder(delete(urlPathPattern)));
+    public static JsonWiremockHelper builder(ObjectMapper mapper) {
+        return new JsonWiremockHelper(mapper);
     }
 
     private MappingBuilder updateMappingBuilder(MappingBuilder mappingBuilder) {
@@ -141,35 +113,18 @@ public class JsonWiremockHelper {
         return mappingBuilder;
     }
 
-    public void verifyDelete() {
-        RequestPatternBuilder requestPatternBuilder = deleteRequestedFor(urlPathPattern);
-        if (requestBody != null) {
-
-            if (requestFieldsToIgnore.isEmpty()) {
-                requestPatternBuilder.withRequestBody(equalToJson(requestBody));
-            } else {
-                requestPatternBuilder.withRequestBody(matching(convertToRegexString(
-                        requestBody,
-                        requestFieldsToIgnore.toArray(String[]::new)
-                )));
-            }
-
-        }
-        verify(requestPatternBuilder);
-    }
-
-    private static String convertToRegexString(final String value, String... fieldToIgnore) {
+    private static String convertToRegexString(final String json, String... fieldToIgnore) {
         return ignoreFields(
-                value
-                        .replaceAll("\\{", "\\\\{")
-                        .replaceAll("\\}", "\\\\}"),
+                json
+                        .replace("{", "\\{")
+                        .replace("}", "\\}"),
                 fieldToIgnore
         );
     }
 
-    private static String ignoreFields(final String property, String... fieldToIgnore) {
-        String regex = property;
-        for (String ignored : fieldToIgnore) {
+    private static String ignoreFields(final String json, String... fieldsToIgnore) {
+        String regex = json;
+        for (String ignored : fieldsToIgnore) {
             regex = regex.replaceAll("\"" + ignored + "\":(\"([^\"]*)\"|null|true|false|\\d+)", "\"" + ignored + "\":\".*\"");
         }
         return regex;

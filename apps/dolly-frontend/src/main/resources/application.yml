@@ -23,8 +23,8 @@ spring:
           jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
           accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
         tokenx:
-          issuer-uri: https://tokendings.dev-gcp.nais.io
-          jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
+          issuer-uri: https://tokenx.dev-gcp.nav.cloud.nais.io
+          jwk-set-uri: https://tokenx.dev-gcp.nav.cloud.nais.io/jwks
           accepted-audience: ${TOKEN_X_CLIENT_ID}
 
 consumers:
@@ -53,11 +53,21 @@ consumers:
     namespace: dolly
     name: testnav-brregstub-proxy
     url: https://testnav-brregstub-proxy.dev-fss-pub.nais.io
+  testnav-udistub-proxy:
+    cluster: dev-fss
+    namespace: dolly
+    name: testnav-udistub-proxy
+    url: https://testnav-udistub-proxy.dev-fss-pub.nais.io
   testnav-aareg-proxy:
     cluster: dev-fss
     namespace: dolly
     name: testnav-aareg-proxy
     url: https://testnav-aareg-proxy.dev-fss-pub.nais.io
+  testnav-medl-proxy:
+    cluster: dev-fss
+    namespace: dolly
+    name: testnav-medl-proxy
+    url: https://testnav-medl-proxy.dev-fss-pub.nais.io
   testnav-inntektstub-proxy:
     cluster: dev-fss
     namespace: dolly
@@ -104,10 +114,10 @@ consumers:
     name: testnorge-profil-api
     url: http://testnorge-profil-api.dolly.svc.cluster.local
   testnav-organisasjon-tilgang-service:
-    cluster: prod-gcp
+    cluster: dev-gcp
     namespace: dolly
     name: testnav-organisasjon-tilgang-service
-    url: https://testnav-organisasjon-tilgang-service.intern.nav.no
+    url: http://testnav-organisasjon-tilgang-service.dolly.svc.cluster.local
   testnav-varslinger-service:
     cluster: dev-gcp
     namespace: dolly
@@ -133,6 +143,11 @@ consumers:
     namespace: dolly
     name: testnav-person-search-service
     url: http://testnav-person-search-service.dolly.svc.cluster.local
+  testnav-person-service:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-person-service
+    url: http://testnav-person-service.dolly.svc.cluster.local
   testnav-adresse-service:
     cluster: dev-gcp
     namespace: dolly
@@ -147,7 +162,7 @@ consumers:
     cluster: dev-gcp
     namespace: dolly
     name: testnav-person-organisasjon-tilgang-service
-    url: https://testnav-person-organisasjon-tilgang-service.intern.dev.nav.no
+    url: http://testnav-person-organisasjon-tilgang-service.dolly.svc.cluster.local
   testnav-bruker-service:
     cluster: dev-gcp
     namespace: dolly
@@ -158,6 +173,16 @@ consumers:
     namespace: dolly
     name: testnav-pdl-forvalter
     url: http://testnav-pdl-forvalter.dolly.svc.cluster.local
+  testnav-helsepersonell-service:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-helsepersonell-service
+    url: http://testnav-helsepersonell-service.dolly.svc.cluster.local
+  generer-navn-service:
+    cluster: dev-gcp
+    namespace: dolly
+    name: generer-navn-service
+    url: http://generer-navn-service.dolly.svc.cluster.local
   testnav-kontoregister-person-proxy:
     name: testnav-kontoregister-person-proxy
     namespace: dolly

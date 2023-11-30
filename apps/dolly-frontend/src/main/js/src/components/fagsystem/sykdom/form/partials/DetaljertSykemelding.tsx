@@ -7,13 +7,17 @@ import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { OrganisasjonMedArbeidsforholdSelect } from '@/components/organisasjonSelect'
 import { SelectOptionsDiagnoser } from './SelectOptionsDiagnoser'
-import HelsepersonellSelect from './HelsepersonellSelect'
 import { ArbeidKodeverk } from '@/config/kodeverk'
 import {
 	Arbeidsgiver,
 	Helsepersonell,
 	SykemeldingForm,
 } from '@/components/fagsystem/sykdom/SykemeldingTypes'
+import { useKodeverk } from '@/utils/hooks/useKodeverk'
+import { getRandomValue } from '@/components/fagsystem/utils'
+import { useEffect } from 'react'
+import * as _ from 'lodash-es'
+import { useHelsepersonellOptions } from '@/utils/hooks/useSelectOptions'
 
 type DiagnoseSelect = {
 	diagnoseNavn: string
@@ -57,16 +61,38 @@ export const DetaljertSykemelding = ({ formikBag }: SykemeldingForm) => {
 
 	const handleArbeidsgiverChange = (v: Arbeidsgiver) => {
 		formikBag.setFieldValue('sykemelding.detaljertSykemelding.mottaker', {
-			navn: v.navn,
-			orgNr: v.orgnr,
+			navn: v?.navn || null,
+			orgNr: v?.orgnr || null,
 			adresse: {
-				by: v.forretningsAdresse.poststed,
-				gate: v.forretningsAdresse.adresse,
-				land: v.forretningsAdresse.landkode,
-				postnummer: v.forretningsAdresse.postnr,
+				by: v?.forretningsAdresse?.poststed || null,
+				gate: v?.forretningsAdresse?.adresse || null,
+				land: v?.forretningsAdresse?.landkode || null,
+				postnummer: v?.forretningsAdresse?.postnr || null,
 			},
 		})
 	}
+
+	const { kodeverk: yrker } = useKodeverk(ArbeidKodeverk.Yrker)
+	const randomYrke = getRandomValue(yrker)
+
+	useEffect(() => {
+		const yrkePath = 'sykemelding.detaljertSykemelding.arbeidsgiver.yrkesbetegnelse'
+		if (_.get(formikBag.values, yrkePath) === '') {
+			formikBag.setFieldValue(yrkePath, randomYrke?.value || '')
+		}
+	}, [randomYrke])
+
+	const { helsepersonellOptions, helsepersonellError } = useHelsepersonellOptions()
+	const randomHelsepersonell = getRandomValue(helsepersonellOptions)
+
+	useEffect(() => {
+		if (
+			_.get(formikBag.values, 'sykemelding.detaljertSykemelding.helsepersonell.ident') === '' &&
+			randomHelsepersonell
+		) {
+			handleLegeChange(randomHelsepersonell)
+		}
+	}, [randomHelsepersonell])
 
 	return (
 		<div className="flexbox--wrap">
@@ -114,32 +140,39 @@ export const DetaljertSykemelding = ({ formikBag }: SykemeldingForm) => {
 				)}
 			</FormikDollyFieldArray>
 			<Kategori title="Helsepersonell" vis="sykemelding">
-				<HelsepersonellSelect
+				<FormikSelect
 					name="sykemelding.detaljertSykemelding.helsepersonell.ident"
 					label="Helsepersonell"
+					options={helsepersonellOptions}
+					size="xxxlarge"
 					afterChange={(v: Helsepersonell) => handleLegeChange(v)}
+					isClearable={false}
+					feil={helsepersonellError}
 				/>
 			</Kategori>
 			<Kategori title="Arbeidsgiver" vis="sykemelding">
-				<OrganisasjonMedArbeidsforholdSelect
-					path="sykemelding.detaljertSykemelding.arbeidsgiver.navn"
-					label="Navn"
-					afterChange={(v: Arbeidsgiver) => handleArbeidsgiverChange(v)}
-					valueNavn={true}
-				/>
-				<FormikSelect
-					name="sykemelding.detaljertSykemelding.arbeidsgiver.yrkesbetegnelse"
-					label="Yrkesbetegnelse"
-					kodeverk={ArbeidKodeverk.Yrker}
-					size="xxxlarge"
-					isClearable={false}
-					optionHeight={50}
-				/>
-				<FormikTextInput
-					name="sykemelding.detaljertSykemelding.arbeidsgiver.stillingsprosent"
-					label="Stillingsprosent"
-					type="number"
-				/>
+				<div className="flexbox--flex-wrap">
+					<OrganisasjonMedArbeidsforholdSelect
+						path="sykemelding.detaljertSykemelding.arbeidsgiver.navn"
+						label="Navn"
+						afterChange={(v: Arbeidsgiver) => handleArbeidsgiverChange(v)}
+						valueNavn={true}
+						isClearable={true}
+					/>
+					<FormikSelect
+						name="sykemelding.detaljertSykemelding.arbeidsgiver.yrkesbetegnelse"
+						label="Yrkesbetegnelse"
+						kodeverk={ArbeidKodeverk.Yrker}
+						size="xxxlarge"
+						isClearable={false}
+						optionHeight={50}
+					/>
+					<FormikTextInput
+						name="sykemelding.detaljertSykemelding.arbeidsgiver.stillingsprosent"
+						label="Stillingsprosent"
+						type="number"
+					/>
+				</div>
 			</Kategori>
 			<FormikDollyFieldArray
 				name="sykemelding.detaljertSykemelding.perioder"
@@ -170,26 +203,29 @@ export const DetaljertSykemelding = ({ formikBag }: SykemeldingForm) => {
 				)}
 			</FormikDollyFieldArray>
 			<Kategori title="Detaljer" vis="sykemelding">
-				<FormikTextInput
-					name="sykemelding.detaljertSykemelding.detaljer.tiltakNav"
-					label="Tiltak fra Nav"
-					size="large"
-				/>
-				<FormikTextInput
-					name="sykemelding.detaljertSykemelding.detaljer.tiltakArbeidsplass"
-					label="Tiltak på arbeidsplass"
-					size="large"
-				/>
-				<FormikTextInput
-					name="sykemelding.detaljertSykemelding.detaljer.beskrivHensynArbeidsplassen"
-					label="Hensyn på arbeidsplass"
-					size="large"
-				/>
-				<FormikCheckbox
-					name="sykemelding.detaljertSykemelding.detaljer.arbeidsforEtterEndtPeriode"
-					label="Arbeidsfør etter endt periode"
-					size="small"
-				/>
+				<div className="flexbox--flex-wrap">
+					<FormikTextInput
+						name="sykemelding.detaljertSykemelding.detaljer.tiltakNav"
+						label="Tiltak fra Nav"
+						size="xlarge"
+					/>
+					<FormikTextInput
+						name="sykemelding.detaljertSykemelding.detaljer.tiltakArbeidsplass"
+						label="Tiltak på arbeidsplass"
+						size="xlarge"
+					/>
+					<FormikTextInput
+						name="sykemelding.detaljertSykemelding.detaljer.beskrivHensynArbeidsplassen"
+						label="Hensyn på arbeidsplass"
+						size="xlarge"
+					/>
+					<FormikCheckbox
+						name="sykemelding.detaljertSykemelding.detaljer.arbeidsforEtterEndtPeriode"
+						label="Arbeidsfør etter endt periode"
+						size="small"
+						checkboxMargin
+					/>
+				</div>
 			</Kategori>
 		</div>
 	)

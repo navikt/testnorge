@@ -2,12 +2,12 @@ package no.nav.pdl.forvalter.service;
 
 import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.consumer.AdresseServiceConsumer;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.MatrikkeladresseDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.OppholdsadresseDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskAdresseDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.AdressebeskyttelseDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.MatrikkeladresseDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.OppholdsadresseDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.UtenlandskAdresseDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.VegadresseDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -16,19 +16,16 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO.AdresseBeskyttelse.STRENGT_FORTROLIG;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.AdressebeskyttelseDTO.AdresseBeskyttelse.STRENGT_FORTROLIG;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -44,7 +41,7 @@ class OppholdsadresseServiceTest {
     private MapperFacade mapperFacade;
 
     @Mock
-    private DummyAdresseService dummyAdresseService;
+    private EnkelAdresseService enkelAdresseService;
 
     @InjectMocks
     private OppholdsadresseService oppholdsadresseService;
@@ -140,103 +137,6 @@ class OppholdsadresseServiceTest {
     }
 
     @Test
-    void whenPartialDayBetweenDates_AcceptInput() {
-
-        when(adresseServiceConsumer.getVegadresse(any(VegadresseDTO.class), isNull()))
-                .thenReturn(new no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO());
-        when(adresseServiceConsumer.getMatrikkeladresse(any(MatrikkeladresseDTO.class), any()))
-                .thenReturn(new no.nav.testnav.libs.dto.adresseservice.v1.MatrikkeladresseDTO());
-
-        var request = PersonDTO.builder()
-                .ident(FNR_IDENT)
-                .oppholdsadresse(new ArrayList<>(List.of(OppholdsadresseDTO.builder()
-                                .vegadresse(new VegadresseDTO())
-                                .gyldigFraOgMed(LocalDate.of(2020, 1, 2).atTime(15, 0, 0))
-                                .isNew(true)
-                                .build(),
-                        OppholdsadresseDTO.builder()
-                                .matrikkeladresse(new MatrikkeladresseDTO())
-                                .gyldigFraOgMed(LocalDate.of(2020, 1, 1).atTime(16, 0, 0))
-                                .isNew(true)
-                                .build())))
-                .build();
-
-        var response = oppholdsadresseService.convert(request);
-
-        assertThat(response.get(1).getGyldigTilOgMed(), is(equalTo(LocalDateTime.of(2020, 1, 2, 14, 59, 59))));
-    }
-
-    @Test
-    void whenOverlappingGyldigTil_thenFixIt() {
-
-        when(adresseServiceConsumer.getMatrikkeladresse(any(MatrikkeladresseDTO.class), any()))
-                .thenReturn(new no.nav.testnav.libs.dto.adresseservice.v1.MatrikkeladresseDTO());
-
-        var request = PersonDTO.builder()
-                .ident(FNR_IDENT)
-                .oppholdsadresse(new ArrayList<>(List.of(OppholdsadresseDTO.builder()
-                                .gyldigFraOgMed(LocalDate.of(2020, 1, 1).atStartOfDay())
-                                .gyldigTilOgMed(LocalDate.of(2021, 2, 3).atStartOfDay())
-                                .utenlandskAdresse(new UtenlandskAdresseDTO())
-                                .isNew(true)
-                                .build(),
-                        OppholdsadresseDTO.builder()
-                                .gyldigFraOgMed(LocalDate.of(2020, 2, 3).atStartOfDay())
-                                .matrikkeladresse(new MatrikkeladresseDTO())
-                                .isNew(true)
-                                .build())))
-                .build();
-
-        var response = oppholdsadresseService.convert(request);
-
-        assertThat(response.get(1).getGyldigTilOgMed(), is(equalTo(LocalDate.of(2020, 2, 2).atStartOfDay())));
-    }
-
-    @Test
-    void whenFraDatoAndEmptyTilDato_thenAcceptRequest() {
-
-        when(adresseServiceConsumer.getMatrikkeladresse(any(MatrikkeladresseDTO.class), any()))
-                .thenReturn(new no.nav.testnav.libs.dto.adresseservice.v1.MatrikkeladresseDTO());
-
-        var request = PersonDTO.builder()
-                .ident(FNR_IDENT)
-                .oppholdsadresse(new ArrayList<>(List.of(OppholdsadresseDTO.builder()
-                        .gyldigFraOgMed(LocalDate.of(2020, 1, 1).atStartOfDay())
-                        .matrikkeladresse(new MatrikkeladresseDTO())
-                        .isNew(true)
-                        .build())))
-                .build();
-
-        var target = oppholdsadresseService.convert(request).get(0);
-
-        assertThat(target.getGyldigFraOgMed(), is(equalTo(LocalDate.of(2020, 1, 1).atStartOfDay())));
-    }
-
-    @Test
-    void whenPreviousOppholdHasEmptyTilDato_thenFixPreviousOppholdTilDato() {
-
-        when(adresseServiceConsumer.getVegadresse(any(VegadresseDTO.class), isNull())).thenReturn(new no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO());
-
-        var request = PersonDTO.builder()
-                .ident(FNR_IDENT)
-                .oppholdsadresse(new ArrayList<>(List.of(OppholdsadresseDTO.builder()
-                                .gyldigFraOgMed(LocalDate.of(2020, 2, 4).atStartOfDay())
-                                .vegadresse(new VegadresseDTO())
-                                .isNew(true)
-                                .build(),
-                        OppholdsadresseDTO.builder()
-                                .gyldigFraOgMed(LocalDate.of(2020, 1, 1).atStartOfDay())
-                                .utenlandskAdresse(new UtenlandskAdresseDTO())
-                                .isNew(true)
-                                .build())))
-                .build();
-
-        var target = oppholdsadresseService.convert(request);
-
-        assertThat(target.get(1).getGyldigTilOgMed(), is(equalTo(LocalDate.of(2020, 2, 3).atStartOfDay())));
-    }
-
-    @Test
     void whenIdenttypeFnrAndStrengtFortrolig_thenMakeNoAdress() {
 
         var request = PersonDTO.builder()
@@ -284,7 +184,7 @@ class OppholdsadresseServiceTest {
                         .build())))
                 .build();
 
-        when(dummyAdresseService.getUtenlandskAdresse(any())).thenReturn(new UtenlandskAdresseDTO());
+        when(enkelAdresseService.getUtenlandskAdresse(any(), any(), any())).thenReturn(new UtenlandskAdresseDTO());
 
         var target = oppholdsadresseService.convert(request).get(0);
 

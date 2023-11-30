@@ -1,6 +1,6 @@
 package no.nav.pdl.forvalter.service;
 
-import no.nav.testnav.libs.dto.pdlforvalter.v1.TelefonnummerDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.TelefonnummerDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -31,7 +31,7 @@ class TelefonnummerServiceTest {
         var exception = assertThrows(HttpClientErrorException.class, () ->
                 telefonnummerService.validate(request));
 
-        assertThat(exception.getMessage(), containsString("Telefonnummer: nummer er påkrevd felt"));
+        assertThat(exception.getMessage(), containsString("Telefonnummer: nummer er påkrevet felt"));
     }
 
     @Test
@@ -74,7 +74,7 @@ class TelefonnummerServiceTest {
         var exception = assertThrows(HttpClientErrorException.class, () ->
                 telefonnummerService.validate(request));
 
-        assertThat(exception.getMessage(), containsString("Telefonnummer: landskode er påkrevd felt"));
+        assertThat(exception.getMessage(), containsString("Telefonnummer: landskode er påkrevet felt"));
     }
 
     @Test
@@ -105,7 +105,7 @@ class TelefonnummerServiceTest {
         var exception = assertThrows(HttpClientErrorException.class, () ->
                 telefonnummerService.validate(request));
 
-        assertThat(exception.getMessage(), containsString("Telefonnummer: prioritet er påkrevd"));
+        assertThat(exception.getMessage(), containsString("Telefonnummer: prioritet er påkrevet"));
     }
 
     @Test

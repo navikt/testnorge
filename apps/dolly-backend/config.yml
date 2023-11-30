@@ -36,12 +36,12 @@ spec:
           namespace: aap
         - application: testnav-helsepersonell-service
           cluster: dev-gcp
+        - application: statuspoll
+          namespace: navdig
     outbound:
       rules:
-        - application: generer-navn-service
         - application: testnav-amelding-service
         - application: testnav-arbeidsforhold-service
-        - application: testnav-helsepersonell-service
         - application: testnav-inntektsmelding-service
         - application: testnav-miljoer-service
         - application: testnav-organisasjon-forvalter
@@ -49,6 +49,7 @@ spec:
         - application: testnav-pdl-forvalter
         - application: testnav-person-service
         - application: testnav-synt-sykemelding-api
+        - application: testnav-sykemelding-api
         - application: testnav-tps-messaging-service
         - application: testnorge-profil-api
       external:
@@ -56,6 +57,7 @@ spec:
         - host: testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io
         - host: testnav-brregstub-proxy.dev-fss-pub.nais.io
         - host: testnav-dokarkiv-proxy.dev-fss-pub.nais.io
+        - host: testnav-medl-proxy.dev-fss-pub.nais.io
         - host: testnav-histark-proxy.dev-fss-pub.nais.io
         - host: testnav-inntektstub-proxy.dev-fss-pub.nais.io
         - host: testnav-inst-proxy.dev-fss-pub.nais.io
@@ -67,8 +69,6 @@ spec:
         - host: testnav-pdl-proxy.dev-fss-pub.nais.io
         - host: testnav-sigrunstub-proxy.dev-fss-pub.nais.io
         - host: testnav-skjermingsregister-proxy.dev-fss-pub.nais.io
-        - host: testnav-statisk-data-forvalter-proxy.dev-fss-pub.nais.io
-        - host: testnav-sykemelding-api-proxy.dev-fss-pub.nais.io
         - host: testnav-udistub-proxy.dev-fss-pub.nais.io
         - host: tps-forvalteren-proxy.dev-fss-pub.nais.io
   webproxy: true
@@ -78,6 +78,9 @@ spec:
       enabled: true
       tenant: nav.no
   image: {{image}}
+  openSearch:
+    instance: bestillinger
+    access: admin
   env:
     - name: SPRING_PROFILES_ACTIVE
       value: prod

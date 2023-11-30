@@ -33,11 +33,7 @@ public class Application {
     }
 
     public ServerProperties toServerProperties() {
-        return ServerProperties
-                .builder()
-                .cluster(cluster)
-                .namespace(namespace)
-                .name(name)
-                .build();
+        return ServerProperties.of(cluster, namespace, name, "http://valid.but.not.used");
     }
+
 }

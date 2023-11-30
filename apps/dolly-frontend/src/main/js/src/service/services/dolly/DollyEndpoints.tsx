@@ -1,24 +1,16 @@
 import { arrayToString } from '@/utils/DataFormatter'
 
 const uri = `/dolly-backend/api/v1`
+const personUri = '/person-service/api/v2'
 
 const groupBase = `${uri}/gruppe`
 const tagsBase = `${uri}/tags`
 const identBase = `${uri}/ident`
 const brukerBase = `${uri}/bruker`
 const kodeverkBase = `${uri}/kodeverk`
-const udiBase = `${uri}/udistub`
 const bestillingBase = `${uri}/bestilling`
-const openamBase = `${uri}/openam`
-const personoppslagBase = `${uri}/pdlperson`
-const fasteOrgnummerBase = `${uri}/orgnummer`
-const fasteDatasettBase = `${uri}/fastedatasett`
-const dokarkivBase = `${uri}/dokarkiv`
-const skjermingBase = `${uri}/skjerming`
-const inntektsmeldingBase = `${uri}/inntektsmelding`
+const personoppslagBase = `${personUri}/personer`
 const organisasjonBase = `${uri}/organisasjon`
-const poppBase = `${uri}/popp`
-const tpBase = `${uri}/tp`
 
 export default class DollyEndpoints {
 	static gruppe() {
@@ -63,10 +55,6 @@ export default class DollyEndpoints {
 
 	static organisasjonBestilling() {
 		return `${organisasjonBase}/bestilling`
-	}
-
-	static skjermingByIdent(ident) {
-		return `${skjermingBase}/${ident}`
 	}
 
 	static gjenopprettOrganisasjonBestilling(bestillingId, envs) {
@@ -133,17 +121,17 @@ export default class DollyEndpoints {
 		return `${uri}/excel/organisasjoner?brukerId=${brukerId}`
 	}
 
-	static udiPerson(ident) {
-		return `${udiBase}/${ident}`
-	}
-
 	//TESTPERSON-CONTROLLER
 	static slettPerson(ident) {
 		return `${identBase}/${ident}`
 	}
 
-	static gjenopprettPerson(ident) {
-		return `${identBase}/gjenopprett/${ident}`
+	static slettBestilling(bestillingId) {
+		return `${bestillingBase}/${bestillingId}`
+	}
+
+	static gjenopprettPerson(ident, miljoer) {
+		return `${identBase}/gjenopprett/${ident}${miljoer}`
 	}
 
 	static identBeskrivelse(ident) {
@@ -174,10 +162,6 @@ export default class DollyEndpoints {
 		return `${identBase}/${ident}/relasjon`
 	}
 
-	static getPersonnavn() {
-		return `${uri}/personnavn`
-	}
-
 	static getTransaksjonsid(system, ident, bestillingsid) {
 		if (bestillingsid) {
 			return `${uri}/transaksjonid?system=${system}&ident=${ident}&bestillingId=${bestillingsid}`
@@ -196,27 +180,19 @@ export default class DollyEndpoints {
 		return `${groupBase}/${gruppeId}/identer/${arrayToString(identer).replaceAll(' ', '')}`
 	}
 
-	static malBestilling(malId) {
-		return `${bestillingBase}/malbestilling/${malId}`
+	static malBestillingMedId(malId, malNavn) {
+		return `${bestillingBase}/malbestilling/${malId}?malNavn=${malNavn}`
 	}
 
-	static malBestillingOrganisasjon(malId) {
-		return `${organisasjonBase}/bestilling/malbestilling/${malId}`
+	static malBestillingMedBestillingId(bestillingId, malNavn) {
+		return `${bestillingBase}/malbestilling?bestillingId=${bestillingId}&malNavn=${malNavn}`
 	}
 
-	static getPoppMiljoer() {
-		return `${poppBase}/miljoe`
+	static organisasjonMalBestillingMedBestillingId(bestillingId, malNavn) {
+		return `${organisasjonBase}/bestilling/malbestilling?bestillingId=${bestillingId}&malNavn=${malNavn}`
 	}
 
-	static getPoppInntekter(ident, miljoe) {
-		return `${poppBase}/inntekt/${ident}/${miljoe}`
-	}
-
-	static getTpMiljoer() {
-		return `${tpBase}/miljoe`
-	}
-
-	static getTpOrdning(ident, miljoe) {
-		return `${tpBase}/forhold/${ident}/${miljoe}`
+	static malBestillingOrganisasjon(malId, malNavn) {
+		return `${organisasjonBase}/bestilling/malbestilling/${malId}?malNavn=${malNavn}`
 	}
 }

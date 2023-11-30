@@ -45,15 +45,7 @@ public class MaskinportenConsumer {
         );
         this.accessToken = cache(
                 wellKnownMono.flatMap(wellKnown -> new GetAccessTokenCommand(webClient, wellKnown, createJwtClaims(wellKnown.issuer())).call()),
-                value -> Duration.ofSeconds(value.expiresIn() - 10)
-        );
-    }
-
-    private static <T> Mono<T> cache(Mono<T> value, Function<? super T, Duration> ttlForValue) {
-        return value.cache(
-                ttlForValue,
-                throwable -> Duration.ZERO,
-                () -> Duration.ZERO
+                value -> Duration.ofSeconds(value.expiresIn() - 10L)
         );
     }
 
@@ -89,6 +81,14 @@ public class MaskinportenConsumer {
         } catch (JOSEException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private static <T> Mono<T> cache(Mono<T> value, Function<? super T, Duration> ttlForValue) {
+        return value.cache(
+                ttlForValue,
+                throwable -> Duration.ZERO,
+                () -> Duration.ZERO
+        );
     }
 
 }

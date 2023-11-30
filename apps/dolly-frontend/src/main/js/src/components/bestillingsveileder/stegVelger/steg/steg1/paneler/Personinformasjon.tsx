@@ -2,15 +2,15 @@ import React, { useContext } from 'react'
 import * as _ from 'lodash-es'
 import Panel from '@/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bestillingsveileder'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import {
+	getInitialFoedsel,
+	getInitialKjoenn,
+	getInitialNavn,
+	getInitialStatsborgerskap,
 	initialDoedsfall,
-	initialFoedsel,
 	initialFullmakt,
-	initialKjoenn,
-	initialNavn,
 	initialSikkerhetstiltak,
-	initialStatsborgerskap,
 	initialTilrettelagtKommunikasjon,
 	initialTpsSikkerhetstiltak,
 	initialVergemaal,
@@ -54,6 +54,10 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 		}
 		if (!testnorgeIdent && !harFnr) {
 			ignoreKeys.push(utvandret)
+		}
+		if (!harFnr) {
+			ignoreKeys.push('innvandretFraLand')
+			ignoreKeys.push('vergemaal')
 		}
 		return ignoreKeys
 	}
@@ -101,7 +105,15 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 
 			<AttributtKategori title="Nasjonalitet" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.statsborgerskap} />
-				<Attributt attr={sm.attrs.innvandretFraLand} />
+				<Attributt
+					attr={sm.attrs.innvandretFraLand}
+					disabled={!harFnr}
+					title={
+						!harFnr
+							? 'Personer med identtype DNR eller NPID kan ikke innvandre fordi de ikke har norsk statsborgerskap'
+							: ''
+					}
+				/>
 				<Attributt
 					attr={sm.attrs.utvandretTilLand}
 					disabled={!harFnr}
@@ -120,7 +132,13 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 				<Attributt attr={sm.attrs.norskBankkonto} disabled={sm.attrs.utenlandskBankkonto.checked} />
 				<Attributt attr={sm.attrs.utenlandskBankkonto} disabled={sm.attrs.norskBankkonto.checked} />
 				<Attributt attr={sm.attrs.telefonnummer} />
-				<Attributt attr={sm.attrs.vergemaal} />
+				<Attributt
+					attr={sm.attrs.vergemaal}
+					disabled={opts?.identtype === 'NPID'}
+					title={
+						opts?.identtype === 'NPID' ? 'Ikke tilgjengelig for personer med identtype NPID' : ''
+					}
+				/>
 				<Attributt attr={sm.attrs.fullmakt} />
 				<Attributt attr={sm.attrs.sikkerhetstiltak} />
 				<Attributt attr={sm.attrs.tilrettelagtKommunikasjon} />
@@ -133,7 +151,7 @@ PersoninformasjonPanel.heading = 'Personinformasjon'
 
 // @ts-ignore
 PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
-	const { personFoerLeggTil } = opts
+	const { personFoerLeggTil, identtype } = opts
 
 	const fjernIdFoerLeggTil = (path: string) => {
 		const pdlDataElement = _.get(personFoerLeggTil, `pdlforvalter[0].person.${path}`)
@@ -188,7 +206,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 		foedsel: {
 			label: 'Fødsel',
 			checked: has(paths.foedsel),
-			add: () => set(paths.foedsel, [initialFoedsel]),
+			add: () => set(paths.foedsel, [getInitialFoedsel(identtype === 'NPID' ? 'PDL' : 'FREG')]),
 			remove: () => del([paths.foedsel]),
 		},
 		doedsdato: {
@@ -203,7 +221,9 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 			add() {
 				_.has(personFoerLeggTil, 'pdlforvalter[0].person.statsborgerskap')
 					? set(paths.statsborgerskap, fjernIdFoerLeggTil('statsborgerskap'))
-					: set(paths.statsborgerskap, [initialStatsborgerskap])
+					: set(paths.statsborgerskap, [
+							getInitialStatsborgerskap(identtype === 'NPID' ? 'PDL' : 'FREG'),
+					  ])
 			},
 			remove() {
 				del([paths.statsborgerskap])
@@ -252,13 +272,13 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 		kjonn: {
 			label: 'Kjønn',
 			checked: has(paths.kjoenn),
-			add: () => set(paths.kjoenn, [initialKjoenn]),
+			add: () => set(paths.kjoenn, [getInitialKjoenn(identtype === 'NPID' ? 'PDL' : 'FREG')]),
 			remove: () => del(paths.kjoenn),
 		},
 		navn: {
 			label: 'Navn',
 			checked: has(paths.navn),
-			add: () => set(paths.navn, [initialNavn]),
+			add: () => set(paths.navn, [getInitialNavn(identtype === 'NPID' ? 'PDL' : 'FREG')]),
 			remove: () => del(paths.navn),
 		},
 		sprakKode: {
@@ -278,7 +298,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 							_.get(personFoerLeggTil, paths.egenAnsattDatoFom.tpsM) ||
 							new Date(),
 					],
-					[paths.egenAnsattDatoTom.skjerming, undefined]
+					[paths.egenAnsattDatoTom.skjerming, undefined],
 				)
 			},
 			remove() {
@@ -292,7 +312,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 				_.has(personFoerLeggTil, 'pdlforvalter[0].person.telefonnummer')
 					? setMulti(
 							[paths.telefonnummer.pdl, fjernIdFoerLeggTil('telefonnummer')],
-							[paths.telefonnummer.tpsM, _.get(personFoerLeggTil, 'tpsMessaging.telefonnumre')]
+							[paths.telefonnummer.tpsM, _.get(personFoerLeggTil, 'tpsMessaging.telefonnumre')],
 					  )
 					: setMulti(
 							[
@@ -316,7 +336,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 										telefontype: 'MOBI',
 									},
 								],
-							]
+							],
 					  )
 			},
 			remove() {
@@ -341,7 +361,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 			add: () =>
 				setMulti(
 					[paths.sikkerhetstiltak.pdl, [initialSikkerhetstiltak]],
-					[paths.sikkerhetstiltak.tpsM, [initialTpsSikkerhetstiltak]]
+					[paths.sikkerhetstiltak.tpsM, [initialTpsSikkerhetstiltak]],
 				),
 			remove: () => del([paths.sikkerhetstiltak.pdl, paths.sikkerhetstiltak.tpsM]),
 		},

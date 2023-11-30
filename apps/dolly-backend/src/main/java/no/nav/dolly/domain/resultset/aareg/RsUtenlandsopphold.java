@@ -18,6 +18,6 @@ public class RsUtenlandsopphold {
     private RsPeriodeAareg periode;
 
     @Schema(description = "Gyldige verdier finnes i kodeverk 'LandkoderISO2'",
-            required = true)
+            requiredMode = Schema.RequiredMode.REQUIRED)
     private String land;
 }

@@ -2,7 +2,7 @@ package no.nav.dolly.bestilling.sykemelding.command;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.sykemelding.dto.Norg2EnhetResponse;
-import no.nav.dolly.util.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;

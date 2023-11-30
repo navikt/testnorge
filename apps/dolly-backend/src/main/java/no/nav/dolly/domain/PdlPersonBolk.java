@@ -5,7 +5,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static java.util.Objects.isNull;
 
 @Data
 @Builder
@@ -14,6 +17,7 @@ import java.util.List;
 public class PdlPersonBolk {
 
     private Data data;
+    private Extensions extensions;
 
     @lombok.Data
     @Builder
@@ -30,10 +34,41 @@ public class PdlPersonBolk {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
+    public static class Extensions {
+
+        private List<Warning> warnings;
+
+        public List<Warning> getWarnings() {
+
+            if (isNull(warnings)) {
+                warnings = new ArrayList<>();
+            }
+            return warnings;
+        }
+    }
+
+    @lombok.Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Warning {
+
+        private String code;
+        private String details;
+        private String id;
+        private String message;
+        private String query;
+    }
+
+    @lombok.Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class PersonBolk {
 
         private String ident;
         private PdlPerson.Person person;
+        private String code;
     }
 
     @lombok.Data

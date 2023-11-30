@@ -23,7 +23,7 @@ public class RsPermisjon {
     private BigDecimal permisjonsprosent;
 
     @Schema(description = "Gyldige verdier finnes i kodeverk 'PermisjonsOgPermitteringsBeskrivelse'",
-            required = true)
+            requiredMode = Schema.RequiredMode.REQUIRED)
     private String permisjon;
 
     private String permisjonOgPermittering;

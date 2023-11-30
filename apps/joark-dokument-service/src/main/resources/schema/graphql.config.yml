@@ -1,0 +1,8 @@
+schema: saf.graphqls
+extensions:
+  endpoints:
+    PDL GraphQL Endpoint:
+      url: apps/joark-dokument-service/src/main/resources/schema/saf.graphqls
+      headers:
+        user-agent: ''
+      introspect: false

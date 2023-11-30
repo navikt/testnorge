@@ -51,7 +51,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
-public class TestgruppeServiceTest {
+class TestgruppeServiceTest {
 
     private final static String BRUKERID = "123";
     private final static String BRUKERNAVN = "BRUKER";
@@ -101,8 +101,13 @@ public class TestgruppeServiceTest {
         testGruppe = Testgruppe.builder().id(GROUP_ID).testidenter(gruppe).hensikt("test").build();
     }
 
+    @BeforeEach
+    public void establishSecurity() {
+        MockedJwtAuthenticationTokenUtils.setJwtAuthenticationToken();
+    }
+
     @Test
-    public void opprettTestgruppe_HappyPath() {
+    void opprettTestgruppe_HappyPath() {
         RsOpprettEndreTestgruppe rsTestgruppe = mock(RsOpprettEndreTestgruppe.class);
         Bruker bruker = mock(Bruker.class);
 
@@ -120,7 +125,7 @@ public class TestgruppeServiceTest {
     }
 
     @Test
-    public void fetchTestgruppeById_KasterExceptionHvisGruppeIkkeErFunnet() throws Exception {
+    void fetchTestgruppeById_KasterExceptionHvisGruppeIkkeErFunnet() throws Exception {
         Optional<Testgruppe> op = Optional.empty();
         when(testgruppeRepository.findById(any())).thenReturn(op);
 
@@ -129,7 +134,7 @@ public class TestgruppeServiceTest {
     }
 
     @Test
-    public void fetchTestgruppeById_ReturnererGruppeHvisGruppeMedIdFinnes() throws Exception {
+    void fetchTestgruppeById_ReturnererGruppeHvisGruppeMedIdFinnes() throws Exception {
         Testgruppe g = mock(Testgruppe.class);
         Optional<Testgruppe> op = Optional.of(g);
         when(testgruppeRepository.findById(any())).thenReturn(op);
@@ -140,7 +145,7 @@ public class TestgruppeServiceTest {
     }
 
     @Test
-    public void fetchTestgrupperByTFavoritterOfBruker() {
+    void fetchTestgrupperByTFavoritterOfBruker() {
         Testgruppe tg1 = Testgruppe.builder().id(1L).navn("test1").build();
         Testgruppe tg2 = Testgruppe.builder().id(2L).navn("test2").build();
         Testgruppe tg3 = Testgruppe.builder().id(3L).navn("test3").build();
@@ -161,7 +166,7 @@ public class TestgruppeServiceTest {
     }
 
     @Test
-    public void saveGruppeTilDB_returnererTestgruppeHvisTestgruppeFinnes() {
+    void saveGruppeTilDB_returnererTestgruppeHvisTestgruppeFinnes() {
         Testgruppe g = new Testgruppe();
         when(testgruppeRepository.save(any())).thenReturn(g);
 
@@ -170,7 +175,7 @@ public class TestgruppeServiceTest {
     }
 
     @Test
-    public void slettGruppeById_deleteBlirKaltMotRepoMedGittId() {
+    void slettGruppeById_deleteBlirKaltMotRepoMedGittId() {
         when(testgruppeRepository.findById(GROUP_ID)).thenReturn(Optional.of(testGruppe));
         testgruppeService.deleteGruppeById(GROUP_ID);
         verify(brukerService).sletteBrukerFavoritterByGroupId(GROUP_ID);
@@ -178,41 +183,41 @@ public class TestgruppeServiceTest {
     }
 
     @Test
-    public void saveGruppeTilDB_kasterExceptionHvisDBConstraintErBrutt() {
+    void saveGruppeTilDB_kasterExceptionHvisDBConstraintErBrutt() {
         when(testgruppeRepository.save(any())).thenThrow(DataIntegrityViolationException.class);
         Assertions.assertThrows(ConstraintViolationException.class, () ->
                 testgruppeService.saveGruppeTilDB(new Testgruppe()));
     }
 
     @Test
-    public void saveGruppeTilDB_kasterDollyExceptionHvisDBConstraintErBrutt() {
+    void saveGruppeTilDB_kasterDollyExceptionHvisDBConstraintErBrutt() {
         when(testgruppeRepository.save(any())).thenThrow(nonTransientDataAccessException);
         Assertions.assertThrows(DollyFunctionalException.class, () ->
                 testgruppeService.saveGruppeTilDB(new Testgruppe()));
     }
 
     @Test
-    public void saveGrupper_kasterExceptionHvisDBConstraintErBrutt() {
+    void saveGrupper_kasterExceptionHvisDBConstraintErBrutt() {
         when(testgruppeRepository.save(any(Testgruppe.class))).thenThrow(DataIntegrityViolationException.class);
         Assertions.assertThrows(ConstraintViolationException.class, () ->
                 testgruppeService.saveGrupper(new HashSet<>(singletonList(new Testgruppe()))));
     }
 
     @Test
-    public void saveGrupper_kasterDollyExceptionHvisDBConstraintErBrutt() {
+    void saveGrupper_kasterDollyExceptionHvisDBConstraintErBrutt() {
         when(testgruppeRepository.save(any(Testgruppe.class))).thenThrow(nonTransientDataAccessException);
         Assertions.assertThrows(DollyFunctionalException.class, () ->
                 testgruppeService.saveGrupper(new HashSet<>(singletonList(new Testgruppe()))));
     }
 
     @Test
-    public void fetchGrupperByIdsIn_kasterExceptionOmGruppeIkkeFinnes() {
+    void fetchGrupperByIdsIn_kasterExceptionOmGruppeIkkeFinnes() {
         Assertions.assertThrows(NotFoundException.class, () ->
                 testgruppeService.fetchGrupperByIdsIn(singletonList(anyLong())));
     }
 
     @Test
-    public void oppdaterTestgruppe_sjekkAtDBKalles() {
+    void oppdaterTestgruppe_sjekkAtDBKalles() {
 
         RsOpprettEndreTestgruppe rsOpprettEndreTestgruppe = RsOpprettEndreTestgruppe.builder().hensikt("test").navn("navn").build();
 
@@ -223,14 +228,9 @@ public class TestgruppeServiceTest {
     }
 
     @Test
-    public void getTestgrupper() {
+    void getTestgrupper() {
         when(testgruppeRepository.findAllByOrderByIdDesc(any(Pageable.class))).thenReturn(new PageImpl<>(emptyList()));
         testgruppeService.getTestgruppeByBrukerId(0, 10, null);
         verify(testgruppeRepository).findAllByOrderByIdDesc(Pageable.ofSize(10));
-    }
-
-    @BeforeEach
-    public void establishSecurity() {
-        MockedJwtAuthenticationTokenUtils.setJwtAuthenticationToken();
     }
 }

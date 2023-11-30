@@ -10,6 +10,7 @@ import { FormikProps } from 'formik'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import * as _ from 'lodash-es'
 import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
+import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
 
 interface FullmaktProps {
 	formikBag: FormikProps<{}>
@@ -19,7 +20,7 @@ interface FullmaktProps {
 
 export const FullmaktForm = ({ formikBag, path, eksisterendeNyPerson = null }: FullmaktProps) => {
 	const fullmaktOmraader = SelectOptionsOppslag.hentFullmaktOmraader()
-	const fullmaktOptions = SelectOptionsOppslag.formatOptions('fullmaktOmraader', fullmaktOmraader)
+	const fullmaktOptions = SelectOptionsFormat.formatOptions('fullmaktOmraader', fullmaktOmraader)
 
 	return (
 		<div className="flexbox--flex-wrap">

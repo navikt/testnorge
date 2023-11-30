@@ -1,9 +1,3 @@
-azure:
-  app:
-    client:
-      id: ${client_id}
-      secret: ${client_secret}
-
 spring:
   h2:
     console:
@@ -34,6 +28,9 @@ server:
   port: 4390
 
 consumers:
+  testnav-bruker-service:
+    name: testnav-bruker-service-dev
+    url: https://testnav-bruker-service-dev.intern.dev.nav.no
   tps-forvalteren-proxy:
     url: https://tps-forvalteren-proxy.dev-fss-pub.nais.io
   testnorge-hodejegeren:

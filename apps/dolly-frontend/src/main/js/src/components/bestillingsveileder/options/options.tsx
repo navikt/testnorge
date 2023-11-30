@@ -1,4 +1,6 @@
 import { initialValuesBasedOnMal } from '@/components/bestillingsveileder/options/malOptions'
+import { useArenaData } from '@/utils/hooks/useFagsystemer'
+import { harArenaBestilling } from '@/utils/SjekkBestillingFagsystem'
 
 const TYPE = Object.freeze({
 	NY_BESTILLING: 'NY_BESTILLING',
@@ -26,7 +28,8 @@ export const BVOptions = (
 		leggTilPaaGruppe = null,
 		gruppe,
 	} = {},
-	gruppeId
+	gruppeId,
+	personId,
 ) => {
 	let initialValues = {
 		antall: antall || 1,
@@ -109,6 +112,14 @@ export const BVOptions = (
 	if (personFoerLeggTil) {
 		bestType = TYPE.LEGG_TIL
 		initialValues = initialValuesLeggTil
+	}
+
+	if (personFoerLeggTil) {
+		const bestillinger = tidligereBestillinger?.map((best) => best?.data)
+		const { arenaData } = useArenaData(personId, harArenaBestilling(bestillinger))
+		if (arenaData && arenaData.length > 0) {
+			personFoerLeggTil.arenaforvalteren = arenaData
+		}
 	}
 
 	if (leggTilPaaGruppe) {

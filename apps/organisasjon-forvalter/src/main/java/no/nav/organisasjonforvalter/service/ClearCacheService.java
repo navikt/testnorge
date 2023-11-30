@@ -12,7 +12,7 @@ import static no.nav.organisasjonforvalter.config.CacheConfig.CACHE_MILJOER;
 @RequiredArgsConstructor
 public class ClearCacheService {
 
-    private final static long EVERY_HOUR = 60 * 60 * 1000L;
+    private static final long EVERY_HOUR = 60 * 60 * 1000L;
 
     private final CacheManager cacheManager;
 

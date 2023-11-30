@@ -1,18 +1,17 @@
 package no.nav.organisasjonforvalter.consumer;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.organisasjonforvalter.config.credentials.TestnavOrgnummerServiceProperties;
+import no.nav.organisasjonforvalter.config.Consumers;
 import no.nav.organisasjonforvalter.consumer.command.OrganisasjonOrgnummerServiceCommand;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
-
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.lang.String.format;
@@ -25,15 +24,15 @@ public class OrganisasjonOrgnummerServiceConsumer {
 
     private final TokenExchange tokenExchange;
     private final WebClient webClient;
-    private final TestnavOrgnummerServiceProperties serviceProperties;
+    private final ServerProperties serverProperties;
 
     public OrganisasjonOrgnummerServiceConsumer(
-            TestnavOrgnummerServiceProperties serviceProperties,
+            Consumers consumers,
             TokenExchange tokenExchange) {
 
-        this.serviceProperties = serviceProperties;
+        serverProperties = consumers.getTestnavOrgnummerService();
         this.webClient = WebClient.builder()
-                .baseUrl(serviceProperties.getUrl())
+                .baseUrl(serverProperties.getUrl())
                 .build();
         this.tokenExchange = tokenExchange;
     }
@@ -42,13 +41,14 @@ public class OrganisasjonOrgnummerServiceConsumer {
 
         long startTime = currentTimeMillis();
         try {
-            var response = tokenExchange.exchange(serviceProperties)
+            var response = tokenExchange.exchange(serverProperties)
                     .flatMap(token -> new OrganisasjonOrgnummerServiceCommand(webClient, antall, token.getTokenValue()).call())
                     .block();
 
             log.info("Orgnummer-service svarte etter {} ms", currentTimeMillis() - startTime);
 
-            return Stream.of(response).collect(Collectors.toList());
+            return Stream.of(response)
+                    .toList();
 
         } catch (WebClientResponseException e) {
             log.error(e.getMessage(), e);

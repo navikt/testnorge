@@ -45,7 +45,7 @@ public final class CurrentAuthentication {
 
     private static JwtAuthenticationToken getToken() {
         return Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
-                .filter(o -> o instanceof JwtAuthenticationToken)
+                .filter(JwtAuthenticationToken.class::isInstance)
                 .map(JwtAuthenticationToken.class::cast)
                 .orElseThrow(() -> new RuntimeException("Finner ikke Jwt Authentication Token"));
     }

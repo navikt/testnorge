@@ -1,11 +1,11 @@
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { formatDate } from '@/utils/DataFormatter'
-import { Adresse } from '@/service/services/AdresseService'
 import KodeverkConnector from '@/components/kodeverk/KodeverkConnector'
 import {
 	Kodeverk,
 	KodeverkValues,
 } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import { Adresse } from '@/components/adresseVelger/AdresseVelger'
 
 interface VegadresseValues {
 	adresse: {
@@ -38,7 +38,10 @@ export const Vegadresse = ({ adresse, idx }: VegadresseValues) => {
 		startdatoForKontrakt,
 		sluttdatoForKontrakt,
 		coAdressenavn,
+		metadata,
 	} = adresse
+
+	const master = metadata?.master
 
 	return (
 		<>
@@ -82,6 +85,7 @@ export const Vegadresse = ({ adresse, idx }: VegadresseValues) => {
 				<TitleValue title="Startdato for kontrakt" value={formatDate(startdatoForKontrakt)} />
 				<TitleValue title="Sluttdato for kontrakt" value={formatDate(sluttdatoForKontrakt)} />
 				<TitleValue title="C/O adressenavn" value={coAdressenavn} />
+				<TitleValue title="Master" value={master} />
 			</div>
 		</>
 	)

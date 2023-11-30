@@ -5,8 +5,8 @@ import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { formatDate, showLabel } from '@/utils/DataFormatter'
 import * as _ from 'lodash-es'
 import {
-	initialKjoenn,
-	initialNavn,
+	getInitialKjoenn,
+	getInitialNavn,
 	initialPersonstatus,
 } from '@/components/fagsystem/pdlf/form/initialValues'
 import VisningRedigerbarPersondetaljerConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarPersondetaljerConnector'
@@ -16,6 +16,7 @@ import { SkjermingVisning } from '@/components/fagsystem/skjermingsregister/visn
 import { Skjerming } from '@/components/fagsystem/skjermingsregister/SkjermingTypes'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
+import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
 
 type PersondetaljerTypes = {
 	data: any
@@ -105,13 +106,20 @@ export const Persondetaljer = ({
 			return undefined
 		} else if (data?.navn?.length === 1) {
 			return [data.navn[0]]
-		} else return [initialNavn]
+		} else return [getInitialNavn()]
+	}
+
+	const getPersonstatus = () => {
+		if (data?.identtype === 'NPID') {
+			return undefined
+		}
+		return [data?.folkeregisterPersonstatus?.[0] || initialPersonstatus]
 	}
 
 	const initPerson = {
 		navn: getNavn(),
-		kjoenn: [data?.kjoenn?.[0] || initialKjoenn],
-		folkeregisterpersonstatus: [data?.folkeregisterPersonstatus?.[0] || initialPersonstatus],
+		kjoenn: [data?.kjoenn?.[0] || getInitialKjoenn()],
+		folkeregisterpersonstatus: getPersonstatus(),
 		skjermingsregister: skjermingData,
 	}
 
@@ -121,8 +129,8 @@ export const Persondetaljer = ({
 	const personValues = redigertPersonPdlf ? redigertPersonPdlf : data
 	const redigertPdlfPersonValues = redigertPersonPdlf
 		? {
-				navn: [redigertPersonPdlf?.navn ? redigertPersonPdlf?.navn?.[0] : initialNavn],
-				kjoenn: [redigertPersonPdlf?.kjoenn ? redigertPersonPdlf?.kjoenn?.[0] : initialKjoenn],
+				navn: [redigertPersonPdlf?.navn ? redigertPersonPdlf?.navn?.[0] : getInitialNavn()],
+				kjoenn: [redigertPersonPdlf?.kjoenn ? redigertPersonPdlf?.kjoenn?.[0] : getInitialKjoenn()],
 				folkeregisterpersonstatus: [
 					redigertPersonPdlf?.folkeregisterPersonstatus
 						? redigertPersonPdlf?.folkeregisterPersonstatus?.[0]
@@ -168,19 +176,20 @@ export const Persondetaljer = ({
 								path="person"
 								ident={ident}
 								tpsMessagingData={tpsMessaging}
+								identtype={data?.identtype}
 							/>
 							{(tmpNavn ? tmpNavn.length > 1 : data?.navn?.length > 1) && (
 								<DollyFieldArray data={data?.navn} header="Navn" nested>
 									{(navn) => {
 										const redigertNavn = _.get(
 											tmpPersoner?.pdlforvalter,
-											`${ident}.person.navn`
+											`${ident}.person.navn`,
 										)?.find((a) => a.id === navn.id)
 
 										const slettetNavn =
 											tmpPersoner?.pdlforvalter?.hasOwnProperty(ident) && !redigertNavn
 										if (slettetNavn) {
-											return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+											return <OpplysningSlettet />
 										}
 
 										const filtrertNavn = tmpNavn

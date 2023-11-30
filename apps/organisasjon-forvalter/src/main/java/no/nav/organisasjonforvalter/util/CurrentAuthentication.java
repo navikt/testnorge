@@ -11,14 +11,14 @@ import java.util.Optional;
 @Slf4j
 public final class CurrentAuthentication {
 
-    private static JwtAuthenticationToken getToken() {
-        return Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
-                .filter(o -> o instanceof JwtAuthenticationToken)
-                .map(JwtAuthenticationToken.class::cast)
-                .orElseThrow(() -> new RuntimeException("Finner ikke Jwt Authentication Token"));
-    }
-
     public static String getUserId() {
         return (String) getToken().getToken().getClaims().get("oid");
+    }
+
+    private static JwtAuthenticationToken getToken() {
+        return Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication())
+                .filter(JwtAuthenticationToken.class::isInstance)
+                .map(JwtAuthenticationToken.class::cast)
+                .orElseThrow(() -> new RuntimeException("Finner ikke Jwt Authentication Token"));
     }
 }

@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import useBoolean from '@/utils/hooks/useBoolean'
 import * as _ from 'lodash-es'
-import { add, eachMonthOfInterval, format } from 'date-fns'
+import { add, eachMonthOfInterval, format, isDate } from 'date-fns'
 import { DollySelect } from '@/components/ui/form/inputs/select/Select'
 import { ArbeidKodeverk } from '@/config/kodeverk'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
@@ -20,6 +20,7 @@ import KjedeIcon from '@/components/dollyKjede/KjedeIcon'
 import { useFormikContext } from 'formik'
 import { Amelding, KodeverkValue } from '@/components/fagsystem/aareg/AaregTypes'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
+import { fixTimezone } from '@/components/ui/form/formUtils'
 
 interface AmeldingFormProps {
 	warningMessage?: any
@@ -51,7 +52,9 @@ export const AmeldingForm = ({ warningMessage }: AmeldingFormProps): JSX.Element
 	const arbeidsforholdstype = _.get(formikBag.values, paths.arbeidsforholdstype)
 
 	const fom = _.get(formikBag.values, 'aareg[0].genererPeriode.fom')
+	const fomDate = isDate(fom) ? fixTimezone(fom) : fom
 	const tom = _.get(formikBag.values, 'aareg[0].genererPeriode.tom')
+	const tomDate = isDate(tom) ? fixTimezone(tom) : tom
 	const periode = _.get(formikBag.values, paths.periode)
 	const ameldinger = _.get(formikBag.values, paths.amelding)
 
@@ -59,14 +62,15 @@ export const AmeldingForm = ({ warningMessage }: AmeldingFormProps): JSX.Element
 	const [selectedIndex, setSelectedIndex] = useState(0)
 
 	const handlePeriodeChange = (dato: string, type: string) => {
-		formikBag.setFieldValue(`aareg[0].genererPeriode.${type}`, dato)
+		const fixedDato = fixTimezone(dato)
+		formikBag.setFieldValue(`aareg[0].genererPeriode.${type}`, fixedDato)
 
 		if ((type === 'tom' && fom) || (type === 'fom' && tom)) {
 			const maanederPrev: Array<Amelding> = _.get(formikBag.values, paths.amelding)
 			const maaneder: Array<string> = []
 			const maanederTmp = eachMonthOfInterval({
-				start: new Date(type === 'fom' ? dato : fom),
-				end: new Date(type === 'tom' ? dato : tom),
+				start: new Date(type === 'fom' ? dato : fomDate),
+				end: new Date(type === 'tom' ? dato : tomDate),
 			})
 			maanederTmp.forEach((maaned) => {
 				maaneder.push(format(maaned, 'yyyy-MM'))
@@ -79,7 +83,7 @@ export const AmeldingForm = ({ warningMessage }: AmeldingFormProps): JSX.Element
 			} else {
 				maaneder.forEach((mnd, idx) => {
 					const currMaaned = _.get(formikBag.values, paths.amelding).find(
-						(element: Amelding) => element.maaned === mnd
+						(element: Amelding) => element.maaned === mnd,
 					)
 					formikBag.setFieldValue(`${paths.amelding}[${idx}]`, {
 						maaned: mnd,
@@ -92,7 +96,7 @@ export const AmeldingForm = ({ warningMessage }: AmeldingFormProps): JSX.Element
 					if (arbeidsforholdstype === 'maritimtArbeidsforhold') {
 						formikBag.setFieldValue(
 							`${paths.amelding}[${idx}].arbeidsforhold[0].fartoy`,
-							initialFartoy
+							initialFartoy,
 						)
 					}
 				})
@@ -135,7 +139,7 @@ export const AmeldingForm = ({ warningMessage }: AmeldingFormProps): JSX.Element
 			}
 			const currArbeidsforhold = _.get(
 				formikBag.values,
-				`${paths.amelding}[${idMaaned}].arbeidsforhold`
+				`${paths.amelding}[${idMaaned}].arbeidsforhold`,
 			)
 			const nyttArbeidsforhold =
 				arbeidsforholdstype === 'forenkletOppgjoersordning'
@@ -157,7 +161,7 @@ export const AmeldingForm = ({ warningMessage }: AmeldingFormProps): JSX.Element
 			}
 			const currArbeidsforhold = _.get(
 				formikBag.values,
-				`${paths.amelding}[${idMaaned}].arbeidsforhold`
+				`${paths.amelding}[${idMaaned}].arbeidsforhold`,
 			)
 			currArbeidsforhold?.splice(idArbeidsforhold, 1)
 			formikBag.setFieldValue(`${paths.amelding}[${idMaaned}].arbeidsforhold`, currArbeidsforhold)
@@ -208,7 +212,7 @@ export const AmeldingForm = ({ warningMessage }: AmeldingFormProps): JSX.Element
 					name={`aareg[0].arbeidsforholdstype`}
 					label="Type arbeidsforhold"
 					kodeverk={ArbeidKodeverk.Arbeidsforholdstyper}
-					size="large-plus"
+					size="xlarge"
 					isClearable={false}
 					onChange={handleArbeidsforholdstypeChange}
 					value={arbeidsforholdstype}

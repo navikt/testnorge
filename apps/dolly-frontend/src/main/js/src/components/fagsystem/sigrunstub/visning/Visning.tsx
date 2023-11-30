@@ -65,7 +65,7 @@ export const SigrunstubVisning = ({ data, loading, visTittel = true }) => {
 		<>
 			{visTittel && (
 				<SubOverskrift
-					label="Skatteoppgjør (Sigrun)"
+					label="Lignet inntekt (Sigrun)"
 					iconKind="sigrun"
 					isWarning={manglerFagsystemdata}
 				/>

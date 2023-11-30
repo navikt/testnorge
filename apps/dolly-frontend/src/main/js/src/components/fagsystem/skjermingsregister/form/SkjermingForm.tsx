@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import { isAfter } from 'date-fns'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bestillingsveileder'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { validation } from '@/components/fagsystem/skjermingsregister/form/validation'
 

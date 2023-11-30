@@ -14,7 +14,7 @@ export const {
 		gjenopprettOrganisasjonBestilling: DollyApi.gjenopprettOrganisasjonBestilling,
 	},
 	'removeNyBestillingStatus',
-	{ prefix: 'bestillingStatus' }
+	{ prefix: 'bestillingStatus' },
 )
 
 // Henter alle bestillinger som er gjort på en ident

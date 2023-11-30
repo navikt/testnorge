@@ -5,30 +5,31 @@ import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.model.DbRelasjon;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.AdresseDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.DeltBostedDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.DoedsfallDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.FalskIdentitetDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregistermetadataDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.ForeldreansvarDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.InnflyttingDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.OppholdDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.SikkerhetstiltakDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.UtflyttingDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.AdresseDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.DeltBostedDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.DoedsfallDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.FalskIdentitetDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.FoedselDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregistermetadataDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.ForeldreansvarDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.FullmaktDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.InnflyttingDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.KjoennDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.NavnDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.OppholdDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.SikkerhetstiltakDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.SivilstandDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.StatsborgerskapDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.UtflyttingDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -82,19 +83,14 @@ public class MetadataTidspunkterService {
                 .forEach(this::fixInnflytting);
         person.getKjoenn()
                 .forEach(kjoenn -> fixKjoenn(kjoenn, person));
-        person.getKontaktadresse()
-                .forEach(this::fixAdresser);
         person.getKontaktinformasjonForDoedsbo()
                 .forEach(this::fixVersioning);
         fixNavn(person);
         person.getOpphold()
                 .forEach(this::fixOpphold);
-        person.getOppholdsadresse()
-                .forEach(this::fixAdresser);
         person.getSikkerhetstiltak()
                 .forEach(this::fixSikkerhetstiltak);
-        person.getSivilstand()
-                .forEach(this::fixSivilstand);
+        fixSivilstand(person);
         person.getStatsborgerskap()
                 .forEach(this::fixStatsborgerskap);
         person.getTelefonnummer()
@@ -191,14 +187,35 @@ public class MetadataTidspunkterService {
         sikkerhetstiltakDTO.getFolkeregistermetadata().setOpphoerstidspunkt(sikkerhetstiltakDTO.getGyldigTilOgMed());
     }
 
-    private void fixSivilstand(SivilstandDTO sivilstandDTO) {
+    private void fixSivilstand(PersonDTO person) {
 
-        fixFolkeregisterMetadata(sivilstandDTO);
+        person.getSivilstand().sort(Comparator.comparing(SivilstandDTO::getId).reversed());
 
-        sivilstandDTO.getFolkeregistermetadata().setGyldighetstidspunkt(nonNull(sivilstandDTO.getSivilstandsdato()) ?
-                sivilstandDTO.getSivilstandsdato() : LocalDateTime.now().minusSeconds(10).plusSeconds(sivilstandDTO.getId()));
-        sivilstandDTO.getFolkeregistermetadata()
-                .setAjourholdstidspunkt(sivilstandDTO.getFolkeregistermetadata().getGyldighetstidspunkt());
+        for (int i = 0; i < person.getSivilstand().size(); i++) {
+
+            fixFolkeregisterMetadata(person.getSivilstand().get(i));
+
+            person.getSivilstand().get(i).getFolkeregistermetadata().setGyldighetstidspunkt(
+                    nonNull(getSivilstandDato(person.getSivilstand().get(i))) ?
+                            getSivilstandDato(person.getSivilstand().get(i)) :
+                            getRelatertDato(person, i));
+
+            person.getSivilstand().get(i).getFolkeregistermetadata().setAjourholdstidspunkt(
+                    person.getSivilstand().get(i).getFolkeregistermetadata().getGyldighetstidspunkt());
+        }
+    }
+
+    private static LocalDateTime getRelatertDato(PersonDTO person, int i) {
+
+        return i == 0 ? LocalDateTime.now() :
+                person.getSivilstand().get(i - 1)
+                        .getFolkeregistermetadata().getGyldighetstidspunkt().minusYears(1);
+    }
+
+    private LocalDateTime getSivilstandDato(SivilstandDTO sivilstand) {
+
+        return nonNull(sivilstand.getSivilstandsdato()) ?
+                sivilstand.getSivilstandsdato() : sivilstand.getBekreftelsesdato();
     }
 
     private void fixStatsborgerskap(StatsborgerskapDTO statsborgerskapDTO) {

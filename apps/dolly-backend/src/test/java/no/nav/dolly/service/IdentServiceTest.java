@@ -20,7 +20,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class IdentServiceTest {
+class IdentServiceTest {
 
     private static final String STANDARD_IDENTER_1 = "en";
 
@@ -45,7 +45,7 @@ public class IdentServiceTest {
     }
 
     @Test
-    public void saveIdentTilGruppe_saveAvIdentInnholderInputIdentstringOgTestgruppe() {
+    void saveIdentTilGruppe_saveAvIdentInnholderInputIdentstringOgTestgruppe() {
         when(identRepository.save(any())).thenReturn(new Testident());
 
         identService.saveIdentTilGruppe(STANDARD_IDENTER_1, standardGruppe, Testident.Master.PDLF, null);
@@ -60,7 +60,7 @@ public class IdentServiceTest {
     }
 
     @Test
-    public void slettTestident_ok() {
+    void slettTestident_ok() {
 
         String ident = "1";
 
@@ -70,7 +70,7 @@ public class IdentServiceTest {
     }
 
     @Test
-    public void slettTestidenterByGruppeId_ok() {
+    void slettTestidenterByGruppeId_ok() {
 
         long gruppeId = 1L;
 

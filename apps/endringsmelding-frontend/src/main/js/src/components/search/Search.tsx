@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import styled from 'styled-components';
 import { TextField as NavInput } from '@navikt/ds-react';
@@ -9,7 +9,8 @@ import {
   WarningAlert,
   WarningAlertstripe,
 } from '@navikt/dolly-komponenter';
-import { NotFoundError } from '@navikt/dolly-lib';
+import { useIdentSearch } from '@/useIdentSearch';
+import { Action } from '@/pages/endringsmelding-page/form/endringsmelding-form/EndringsmeldingReducer';
 
 const Search = styled.div`
   display: flex;
@@ -25,7 +26,8 @@ const StyledKnapp = styled(Knapp)`
 `;
 
 type Props<T> = {
-  onSearch: (value: string) => Promise<T>;
+  dispatch: any;
+  setMiljoer: any;
   labels: {
     label: string;
     button: string;
@@ -55,33 +57,18 @@ const StyledWarning = styled(WarningAlertstripe)`
   width: -webkit-fill-available;
 `;
 
-export default <T extends unknown>({ labels, onSearch, onChange }: Props<T>) => {
-  const [loading, setLoading] = useState(false);
+export default <T extends unknown>({ labels, onChange, setMiljoer, dispatch }: Props<T>) => {
   const [value, setValue] = useState('');
-  const [success, setSuccess] = useState(undefined);
-  const [error, setError] = useState(false);
+  const [search, setSearch] = useState(null);
 
-  const _onSearch = (value: string) => {
-    setLoading(true);
-    setSuccess(undefined);
-    setError(false);
-    return onSearch(value)
-      .then((response) => {
-        if (!response || response.length === 0) {
-          setSuccess(false);
-          throw new NotFoundError();
-        }
-        setSuccess(true);
-        return response;
-      })
-      .catch((e) => {
-        setSuccess(false);
-        if (!(e instanceof NotFoundError)) {
-          setError(true);
-        }
-      })
-      .finally(() => setLoading(false));
-  };
+  const { error, identer, loading } = useIdentSearch(search);
+
+  useEffect(() => {
+    setMiljoer(identer?.map((ident) => ident.miljoe));
+    error
+      ? dispatch({ type: Action.SET_HENT_MILJOER_ERROR_ACTION })
+      : dispatch({ type: Action.SET_HENT_MILJOER_SUCCESS_ACTION });
+  }, [identer, error]);
 
   return (
     <Search>
@@ -96,7 +83,7 @@ export default <T extends unknown>({ labels, onSearch, onChange }: Props<T>) => 
         }}
       />
       <StyledKnapp
-        onClick={() => _onSearch(value)}
+        onClick={() => setSearch(value)}
         disabled={loading || isSyntheticIdent(value)}
         loading={loading}
       >
@@ -104,7 +91,7 @@ export default <T extends unknown>({ labels, onSearch, onChange }: Props<T>) => 
       </StyledKnapp>
       {isSyntheticIdent(value) && <StyledWarning label={labels.syntIdent} />}
       <Alert>
-        {success == undefined ? null : !success ? (
+        {!identer ? null : identer.length === 0 ? (
           error ? (
             <ErrorAlert label={labels.onError} />
           ) : (

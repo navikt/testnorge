@@ -39,4 +39,11 @@ export default {
 		const endpoint = `${getPdlUrl()}/personer/${ident}/${attributt}/${id}`
 		return Request.delete(endpoint)
 	},
+	setStandalone(ident: string, standalone = true) {
+		if (!ident) {
+			return
+		}
+		const endpoint = `${getPdlUrl()}/identiteter/${ident}/standalone/${standalone}`
+		return Request.putWithoutResponse(endpoint)
+	},
 }

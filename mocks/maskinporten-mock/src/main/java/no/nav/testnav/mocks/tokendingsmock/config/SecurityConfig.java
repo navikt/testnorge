@@ -18,6 +18,6 @@ public class SecurityConfig {
 
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
-        return http.csrf().disable().build();
+        return http.csrf(ServerHttpSecurity.CsrfSpec::disable).build();
     }
 }

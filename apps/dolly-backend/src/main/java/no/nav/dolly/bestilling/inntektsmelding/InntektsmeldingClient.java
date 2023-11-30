@@ -8,6 +8,7 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.inntektsmelding.domain.InntektsmeldingRequest;
+import no.nav.dolly.bestilling.inntektsmelding.domain.TransaksjonMappingDTO;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.TransaksjonMapping;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
@@ -24,6 +25,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.util.Collections.singletonList;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.INNTKMELD;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -59,8 +61,8 @@ public class InntektsmeldingClient implements ClientRegister {
                                 var request = mapperFacade.map(inntektsmeldingRequest, InntektsmeldingRequest.class);
                                 request.setMiljoe(environment);
                                 return postInntektsmelding(isOpprettEndre ||
-                                                !transaksjonMappingService.existAlready(INNTKMELD, dollyPerson.getIdent(), environment),
-                                        request, progress.getBestilling().getId());
+                                                !transaksjonMappingService.existAlready(INNTKMELD, dollyPerson.getIdent(), environment, bestilling.getId()),
+                                        request, bestilling.getId());
                             })
                             .filter(StringUtils::isNotBlank)
                             .collect(Collectors.joining(","))
@@ -69,18 +71,18 @@ public class InntektsmeldingClient implements ClientRegister {
         return Flux.empty();
     }
 
+    @Override
+    public void release(List<String> identer) {
+
+        // Inntektsmelding mangler pt. sletting
+    }
+
     private ClientFuture futurePersist(BestillingProgress progress, String status) {
 
         return () -> {
             transactionHelperService.persister(progress, BestillingProgress::setInntektsmeldingStatus, status);
             return progress;
         };
-    }
-
-    @Override
-    public void release(List<String> identer) {
-
-        // Inntektsmelding mangler pt. sletting
     }
 
     private Flux<String> postInntektsmelding(boolean isSendMelding,
@@ -93,14 +95,27 @@ public class InntektsmeldingClient implements ClientRegister {
 
                             transaksjonMappingService.saveAll(
                                     response.getDokumenter().stream()
-                                            .map(dokument -> TransaksjonMapping.builder()
-                                                    .ident(inntektsmeldingRequest.getArbeidstakerFnr())
-                                                    .bestillingId(bestillingid)
-                                                    .transaksjonId(toJson(dokument))
-                                                    .datoEndret(LocalDateTime.now())
-                                                    .miljoe(inntektsmeldingRequest.getMiljoe())
-                                                    .system(INNTKMELD.name())
-                                                    .build())
+                                            .map(dokument -> {
+                                                var gjeldendeInntektRequest = InntektsmeldingRequest.builder()
+                                                        .arbeidstakerFnr(inntektsmeldingRequest.getArbeidstakerFnr())
+                                                        .inntekter(singletonList(
+                                                                inntektsmeldingRequest.getInntekter().get(response.getDokumenter().indexOf(dokument))))
+                                                        .joarkMetadata(inntektsmeldingRequest.getJoarkMetadata())
+                                                        .miljoe(inntektsmeldingRequest.getMiljoe())
+                                                        .build();
+
+                                                return TransaksjonMapping.builder()
+                                                        .ident(inntektsmeldingRequest.getArbeidstakerFnr())
+                                                        .bestillingId(bestillingid)
+                                                        .transaksjonId(toJson(TransaksjonMappingDTO.builder()
+                                                                .request(gjeldendeInntektRequest)
+                                                                .dokument(dokument)
+                                                                .build()))
+                                                        .datoEndret(LocalDateTime.now())
+                                                        .miljoe(inntektsmeldingRequest.getMiljoe())
+                                                        .system(INNTKMELD.name())
+                                                        .build();
+                                            })
                                             .toList());
 
                             return inntektsmeldingRequest.getMiljoe() + ":OK";

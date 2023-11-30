@@ -17,6 +17,14 @@ azure:
       id: dummy
       secret: dummy
 
+open:
+  search:
+    uri: dummy
+    username: dummy
+    password: dummy
+    total-fields: 150
+    index: dummy
+
 consumers:
   testnav-kodeverk-proxy:
     name: kodeverk-mock
@@ -68,7 +76,6 @@ consumers:
     name: testnav-organisasjon-service
     cluster: dev-gcp
     namespace: dolly
-    threads: 5
   testnav-pensjon-testdata-facade-proxy:
     url: http://localhost:${wiremock.server.port:0}/pensjon-testdata
     name: testnav-pensjon-testdata-facade-proxy
@@ -92,11 +99,11 @@ spring:
       token: test
       enabled: false
   datasource:
-    url: jdbc:tc:postgresql:14.4:///dollyDB # 14.4 er versjon p.t. i dev-gcp.
+    url: jdbc:tc:postgresql:14.4:///dollyDB?TC_REUSABLE=true # 14.4 er versjon p.t. i dev-gcp.
     username: user
     password: pass
   flyway:
     enabled: true
-    url: jdbc:tc:postgresql:14.4:///dollyDB # 14.4 er versjon p.t. i dev-gcp.
+    url: jdbc:tc:postgresql:14.4:///dollyDB?TC_REUSABLE=true # 14.4 er versjon p.t. i dev-gcp.
     user: user
     password: pass

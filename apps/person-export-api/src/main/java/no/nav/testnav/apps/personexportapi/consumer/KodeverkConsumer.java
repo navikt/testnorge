@@ -6,8 +6,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import no.nav.testnav.apps.personexportapi.config.Consumers;
 import no.nav.testnav.apps.personexportapi.consumer.command.GetKodeverkCommand;
-import no.nav.testnav.apps.personexportapi.consumer.credential.KodeverkProperties;
 import no.nav.testnav.apps.personexportapi.consumer.response.KodeverkBetydningerResponse;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
@@ -25,16 +25,16 @@ public class KodeverkConsumer {
 
     private final WebClient webClient;
     private final TokenExchange tokenExchange;
-    private final ServerProperties properties;
+    private final ServerProperties serverProperties;
 
     public KodeverkConsumer(
             TokenExchange tokenExchange,
-            KodeverkProperties serviceProperties) {
-
+            Consumers consumers) {
         this.tokenExchange = tokenExchange;
-        this.properties = serviceProperties;
-        this.webClient = WebClient.builder()
-                .baseUrl(serviceProperties.getUrl())
+        serverProperties = consumers.getKodeverk();
+        this.webClient = WebClient
+                .builder()
+                .baseUrl(serverProperties.getUrl())
                 .codecs(configurer -> configurer
                         .defaultCodecs()
                         .maxInMemorySize(16 * 1024 * 1024))
@@ -55,7 +55,7 @@ public class KodeverkConsumer {
     @Cacheable(sync = true)
     public Map<String, List<KodeverkBetydningerResponse.Betydning>> getKodeverkByName(String kodeverk) {
 
-        var kodeverkResponse = tokenExchange.exchange(properties)
+        var kodeverkResponse = tokenExchange.exchange(serverProperties)
                 .flatMap(accessToken -> new GetKodeverkCommand(webClient, accessToken.getTokenValue(), kodeverk).call())
                 .block();
 

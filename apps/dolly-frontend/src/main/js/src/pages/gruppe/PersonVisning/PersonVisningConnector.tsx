@@ -2,17 +2,18 @@ import { connect } from 'react-redux'
 import { createSelector } from 'reselect'
 import { actions, fetchDataFraFagsystemer, selectDataForIdent } from '@/ducks/fagsystem'
 import { createLoadingSelector } from '@/ducks/loading'
-import { PersonVisning } from './PersonVisning'
+import PersonVisning from '@/pages/gruppe/PersonVisning/PersonVisning'
 
 const loadingSelectorKrr = createLoadingSelector(actions.getKrr)
 const loadingSelectorSigrun = createLoadingSelector([actions.getSigrun, actions.getSigrunSekvensnr])
+const loadingSelectorSigrunPensjonsgivende = createLoadingSelector([
+	actions.getSigrunPensjonsgivendeInntekt,
+])
 const loadingSelectorInntektstub = createLoadingSelector(actions.getInntektstub)
 const loadingSelectorPdlForvalter = createLoadingSelector(actions.getPdlForvalter)
-const loadingSelectorArena = createLoadingSelector(actions.getArena)
-const loadingSelectorUdi = createLoadingSelector(actions.getUdi)
 const loadingSelectorSlettPerson = createLoadingSelector(actions.slettPerson)
 const loadingSelectorSlettPersonOgRelatertePersoner = createLoadingSelector(
-	actions.slettPersonOgRelatertePersoner
+	actions.slettPersonOgRelatertePersoner,
 )
 const loadingSelectorBrregstub = createLoadingSelector(actions.getBrreg)
 const loadingSelectorTpsMessaging = createLoadingSelector(actions.getTpsMessaging)
@@ -24,17 +25,16 @@ const loadingSelector = createSelector(
 		return {
 			krrstub: loadingSelectorKrr({ loading }),
 			sigrunstub: loadingSelectorSigrun({ loading }),
+			sigrunstubPensjonsgivende: loadingSelectorSigrunPensjonsgivende({ loading }),
 			inntektstub: loadingSelectorInntektstub({ loading }),
 			pdlforvalter: loadingSelectorPdlForvalter({ loading }),
-			arenaforvalteren: loadingSelectorArena({ loading }),
-			udistub: loadingSelectorUdi({ loading }),
 			slettPerson: loadingSelectorSlettPerson({ loading }),
 			slettPersonOgRelatertePersoner: loadingSelectorSlettPersonOgRelatertePersoner({ loading }),
 			brregstub: loadingSelectorBrregstub({ loading }),
 			tpsMessaging: loadingSelectorTpsMessaging({ loading }),
 			kontoregister: loadingSelectorKontoregister({ loading }),
 		}
-	}
+	},
 )
 
 const mapStateToProps = (state, ownProps) => ({
@@ -52,7 +52,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 		},
 		slettPersonOgRelatertePersoner: (relatertPersonIdenter) => {
 			return dispatch(
-				actions.slettPersonOgRelatertePersoner(ownProps.personId, relatertPersonIdenter)
+				actions.slettPersonOgRelatertePersoner(ownProps.personId, relatertPersonIdenter),
 			)
 		},
 		leggTilPaaPerson: (data, bestillinger, master, type, gruppeId, navigate) =>

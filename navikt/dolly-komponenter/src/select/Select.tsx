@@ -4,8 +4,6 @@ import React from 'react';
 import Select from 'react-select';
 import styled from 'styled-components';
 
-import './Select.less';
-
 type Option = {
   value: string;
   label: string;
@@ -28,8 +26,17 @@ const customStyles = {
 };
 
 const StyledSelect = styled(Select)`
+  border-radius: 4px;
+  border: 1px solid #78706a;
+
   margin-top: 7px;
   min-height: 47px;
+
+  &--error {
+    border-radius: 4px;
+  }
+
+  --rdp-accent-color: hsl(209deg 100% 39%);
 `;
 
 export default ({ multi, options, onChange, htmlId, label, error, ...props }: Props) => {

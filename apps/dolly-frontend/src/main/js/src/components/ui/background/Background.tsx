@@ -20,7 +20,7 @@ import Faarikaal from '@/components/ui/background/backgrounds/Faarikaal.svg'
 import '@/snow.scss'
 import '@/rain.scss'
 import '@/flowers.scss'
-import { useWeatherFyrstikkAlleen } from '@/utils/hooks/useWeather'
+import { NEDBOER_TYPE, useWeatherFyrstikkAlleen } from '@/utils/hooks/useWeather'
 import * as _ from 'lodash-es'
 
 const month = new Date().getMonth()
@@ -28,23 +28,27 @@ const day = new Date().getDate()
 const weekDay = new Date().getDay()
 
 const isHalloween = (month === 9 && day > 14) || (month === 10 && day === 0)
+const isSpring = month >= 2 && month <= 4
+const isSummer = month >= 5 && month <= 7
+const isFall = month >= 8 && month <= 10
 const isWinter = month === 0 || month === 1
 const isChristmas = month === 11
 const isEaster = (month === 2 && day > 21) || (month === 3 && day === 1)
+const isFaarikaal = month === 8 && day > 23 && weekDay === 4
 
 const DefaultBackground = styled.div`
 	background-image: url(${() => {
 		if (isEaster) {
 			return Paaske
-		} else if (month >= 2 && month <= 4) {
+		} else if (isSpring) {
 			return Spring
-		} else if (month >= 5 && month <= 7) {
+		} else if (isSummer) {
 			return Sommer
 		} else if (isHalloween) {
 			return Halloween
-		} else if (month === 8 && day > 23 && weekDay === 4) {
+		} else if (isFaarikaal) {
 			return Faarikaal
-		} else if (month >= 8 && month <= 10) {
+		} else if (isFall) {
 			return Fall
 		} else if (isWinter) {
 			return Winter
@@ -66,7 +70,7 @@ const DefaultBackground = styled.div`
 	}};
 `
 
-const animateNedboer = (millimeterNedboer: number) => {
+const animateNedboer = (millimeterNedboer: number, nedBoerType: NEDBOER_TYPE) => {
 	const month = new Date().getMonth()
 	if (month >= 2 && month <= 4) {
 		return (
@@ -76,15 +80,7 @@ const animateNedboer = (millimeterNedboer: number) => {
 				))}
 			</>
 		)
-	} else if (month >= 5 && month <= 10) {
-		return (
-			<>
-				{Array.from(Array(3 * _.round(millimeterNedboer) * 10).keys()).map((idx) => (
-					<div key={idx} className="rain" />
-				))}
-			</>
-		)
-	} else if (month === 11 || month === 0 || month === 1) {
+	} else if (nedBoerType === NEDBOER_TYPE.SNOW) {
 		return (
 			<>
 				{Array.from(Array(70).keys()).map((idx) => (
@@ -92,13 +88,20 @@ const animateNedboer = (millimeterNedboer: number) => {
 				))}
 			</>
 		)
+	} else {
+		return (
+			<>
+				{Array.from(Array(3 * _.round(millimeterNedboer) * 10).keys()).map((idx) => (
+					<div key={idx} className="rain" />
+				))}
+			</>
+		)
 	}
-	return null
 }
 
 export const Background = (props: any) => {
-	const { millimeterNedboer = 0 } = useWeatherFyrstikkAlleen()
-	const nedboer = animateNedboer(millimeterNedboer)
+	const { millimeterNedboer = 0, nedBoerType } = useWeatherFyrstikkAlleen()
+	const nedboer = animateNedboer(millimeterNedboer, nedBoerType)
 	return (
 		<>
 			{!isEaster && nedboer}

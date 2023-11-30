@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPersonRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
-import no.nav.dolly.util.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -12,7 +12,6 @@ import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.concurrent.Callable;
 
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
@@ -29,10 +28,8 @@ public class OpprettPersonCommand implements Callable<Flux<PensjonforvalterRespo
     private static final String PENSJON_OPPRETT_PERSON_URL = "/api/v1/person";
 
     private final WebClient webClient;
-
-    private final String token;
-
     private final PensjonPersonRequest pensjonPersonRequest;
+    private final String token;
 
     public Flux<PensjonforvalterResponse> call() {
         return webClient
@@ -61,7 +58,6 @@ public class OpprettPersonCommand implements Callable<Flux<PensjonforvalterRespo
                                                                 .reasonPhrase(WebClientFilter.getStatus(error).getReasonPhrase())
                                                                 .build())
                                                         .message(WebClientFilter.getMessage(error))
-                                                        .timestamp(LocalDateTime.now())
                                                         .path(PENSJON_OPPRETT_PERSON_URL)
                                                         .build())
                                                 .build())

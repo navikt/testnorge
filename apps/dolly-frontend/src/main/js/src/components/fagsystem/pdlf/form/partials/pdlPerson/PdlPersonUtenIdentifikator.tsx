@@ -3,9 +3,10 @@ import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { AdresseKodeverk } from '@/config/kodeverk'
 import * as React from 'react'
-import { SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
 import { FormikProps } from 'formik'
 import * as _ from 'lodash-es'
+import { useGenererNavn } from '@/utils/hooks/useGenererNavn'
+import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
 
 interface PdlPersonUtenIdentifikatorValues {
 	formikBag: FormikProps<{}>
@@ -16,13 +17,13 @@ export const PdlPersonUtenIdentifikator = ({
 	formikBag,
 	path,
 }: PdlPersonUtenIdentifikatorValues) => {
-	const navnInfo = SelectOptionsOppslag.hentPersonnavn()
+	const { navnInfo, loading } = useGenererNavn()
 	//@ts-ignore
-	const fornavnOptions = SelectOptionsOppslag.formatOptions('fornavn', navnInfo)
+	const fornavnOptions = SelectOptionsFormat.formatOptions('fornavn', navnInfo)
 	//@ts-ignore
-	const mellomnavnOptions = SelectOptionsOppslag.formatOptions('mellomnavn', navnInfo)
+	const mellomnavnOptions = SelectOptionsFormat.formatOptions('mellomnavn', navnInfo)
 	//@ts-ignore
-	const etternavnOptions = SelectOptionsOppslag.formatOptions('etternavn', navnInfo)
+	const etternavnOptions = SelectOptionsFormat.formatOptions('etternavn', navnInfo)
 
 	const { fornavn, mellomnavn, etternavn } = _.get(formikBag?.values, `${path}.navn`)
 
@@ -41,18 +42,21 @@ export const PdlPersonUtenIdentifikator = ({
 				label="Fornavn"
 				placeholder={fornavn ? fornavn : 'Velg...'}
 				options={fornavnOptions}
+				isLoading={loading}
 			/>
 			<FormikSelect
 				name={`${path}.navn.mellomnavn`}
 				label="Mellomnavn"
 				placeholder={mellomnavn ? mellomnavn : 'Velg...'}
 				options={mellomnavnOptions}
+				isLoading={loading}
 			/>
 			<FormikSelect
 				name={`${path}.navn.etternavn`}
 				label="Etternavn"
 				placeholder={etternavn ? etternavn : 'Velg...'}
 				options={etternavnOptions}
+				isLoading={loading}
 			/>
 		</div>
 	)

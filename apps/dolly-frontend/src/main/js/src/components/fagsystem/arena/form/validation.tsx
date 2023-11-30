@@ -1,6 +1,6 @@
 import * as Yup from 'yup'
-import { messages, requiredDate, requiredString } from '@/utils/YupValidations'
-import { isAfter, isBefore } from 'date-fns'
+import { messages, requiredString } from '@/utils/YupValidations'
+import { isAfter, isBefore, isEqual } from 'date-fns'
 import * as _ from 'lodash-es'
 
 const ikkeOverlappendeVedtak = ['aap', 'dagpenger']
@@ -88,12 +88,16 @@ const overlapp25aarsdag = (fradato, tildato, values) => {
 	} else {
 		foedtEtter.setFullYear(foedtEtter.getFullYear() + 25)
 		foedtFoer.setFullYear(foedtFoer.getFullYear() + 25)
-		return overlapperMedliste(fradato.toISOString(), tildato.toISOString(), [
-			{
-				fraDato: foedtEtter.toISOString(),
-				tilDato: foedtFoer.toISOString(),
-			},
-		])
+		return overlapperMedliste(
+			fradato.toISOString().substring(0, 19),
+			tildato.toISOString().substring(0, 19),
+			[
+				{
+					fraDato: foedtEtter.toISOString().substring(0, 19),
+					tilDato: foedtFoer.toISOString().substring(0, 19),
+				},
+			],
+		)
 	}
 }
 
@@ -146,8 +150,8 @@ const validTildato = (fradato, tildato) => {
 }
 
 const ingenOverlappFraTildato = (tildato, values) => {
-	const fraDato = values.arenaforvalter.dagpenger?.[0].fraDato
-	const aapFraDato = values.arenaforvalter.aap?.[0].fraDato
+	const fraDato = values.arenaforvalter.dagpenger?.[0]?.fraDato
+	const aapFraDato = values.arenaforvalter.aap?.[0]?.fraDato
 
 	if (tildato || !fraDato) return true
 
@@ -155,19 +159,47 @@ const ingenOverlappFraTildato = (tildato, values) => {
 
 	if (values.tidligereBestillinger) {
 		const arenaBestillinger = values.tidligereBestillinger.filter((bestilling) =>
-			bestilling.data.hasOwnProperty('arenaforvalter')
+			bestilling.data.hasOwnProperty('arenaforvalter'),
 		)
 		for (let bestilling of arenaBestillinger) {
 			let arenaInfo = bestilling.data.arenaforvalter
 			for (let key of ikkeOverlappendeVedtak) {
 				if (arenaInfo[key]?.length > 0) {
-					const fraDatoBestilling = arenaInfo[key]?.[0].fraDato
+					const fraDatoBestilling = arenaInfo[key]?.[0]?.fraDato
 					if (isBefore(new Date(fraDato), new Date(fraDatoBestilling))) return false
 				}
 			}
 		}
 	}
 	return true
+}
+
+const invalidDoedsdato = (arenaFom, values) => {
+	const personFoerLeggTil = values.personFoerLeggTil
+	const importPersoner = values.importPersoner
+
+	let doedsdato = values?.pdldata?.person?.doedsfall?.[0]?.doedsdato
+	if (_.isNil(doedsdato)) {
+		if (personFoerLeggTil?.pdlforvalter?.person?.doedsfall) {
+			const doedsdatoer = personFoerLeggTil.pdlforvalter.person.doedsfall
+				.map((doedsfall) => doedsfall.doedsdato)
+				.sort((a, b) => new Date(a) - new Date(b))
+			doedsdato = doedsdatoer?.[0]
+		} else if (personFoerLeggTil?.pdl) {
+			const pdlPerson = personFoerLeggTil.pdl.hentPerson || personFoerLeggTil.pdl.person
+			const pdlDoedsdato = pdlPerson?.doedsfall?.[0]?.doedsdato
+			if (pdlDoedsdato) doedsdato = pdlDoedsdato
+		} else if (importPersoner) {
+			const doedsdatoer = importPersoner
+				.map((person) => person?.data?.hentPerson?.doedsfall?.[0]?.doedsdato)
+				.sort((a, b) => new Date(a) - new Date(b))
+			doedsdato = doedsdatoer?.[0]
+		}
+	}
+	if (!_.isNil(doedsdato)) {
+		return isAfter(new Date(arenaFom), new Date(doedsdato))
+	}
+	return false
 }
 
 const validFradato = (vedtakType) => {
@@ -177,68 +209,39 @@ const validFradato = (vedtakType) => {
 			'AAP- og Dagpenger-vedtak kan ikke overlappe hverandre',
 			function validVedtak() {
 				const values = this.options.context
-
 				const naavaerendeVerdier = {}
 				for (let key of ikkeOverlappendeVedtak) {
 					naavaerendeVerdier[key] = {
-						fraDato: values.arenaforvalter[key]?.[0].fraDato,
-						tilDato: values.arenaforvalter[key]?.[0].tilDato,
+						fraDato: values.arenaforvalter[key]?.[0]?.fraDato,
+						tilDato: values.arenaforvalter[key]?.[0]?.tilDato,
 					}
 				}
-
 				// Hvis det bare er en type vedtak trengs det ikke å sjekkes videre
-				if (!naavaerendeVerdier.dagpenger.fraDato && !naavaerendeVerdier.aap.fraDato) return true
-				if (values.tidligereBestillinger) {
-					return datoOverlapperIkkeAndreVedtak(
-						vedtakType,
-						naavaerendeVerdier,
-						values.tidligereBestillinger
-					)
-				} else {
-					let annenVedtakType = vedtakType === 'aap' ? 'dagpenger' : 'aap'
-
-					return datoIkkeMellom(
-						naavaerendeVerdier[vedtakType].fraDato,
-						naavaerendeVerdier[annenVedtakType].fraDato,
-						naavaerendeVerdier[annenVedtakType].tilDato
-					)
-				}
-			}
+				if (!naavaerendeVerdier.dagpenger?.fraDato || !naavaerendeVerdier.aap?.fraDato) return true
+				let annenVedtakType = vedtakType === 'aap' ? 'dagpenger' : 'aap'
+				return datoIkkeMellom(
+					naavaerendeVerdier[vedtakType]?.fraDato,
+					naavaerendeVerdier[annenVedtakType]?.fraDato,
+					naavaerendeVerdier[annenVedtakType]?.tilDato,
+				)
+			},
+		)
+		.test(
+			'tiltak-fra-etter-doedsdato',
+			'Ident kan ikke ha tiltak etter dødsfall',
+			function validDate(value) {
+				const values = this.options.context
+				return !invalidDoedsdato(value, values)
+			},
 		)
 		.nullable()
 		.required(messages.required)
 }
 
-const datoOverlapperIkkeAndreVedtak = (vedtaktype, naeverendeVerdier, tidligereBestillinger) => {
-	const nyDatoFra = naeverendeVerdier[vedtaktype].fraDato
-	const nyDatoTil = naeverendeVerdier[vedtaktype].tilDato
-
-	const arenaBestillinger = tidligereBestillinger.filter((bestilling) =>
-		bestilling.data.hasOwnProperty('arenaforvalter')
-	)
-
-	for (const [key, value] of Object.entries(naeverendeVerdier)) {
-		if (key !== vedtaktype && !datoIkkeMellom(nyDatoFra, value.fraDato, value.tilDato)) {
-			return false
-		}
-
-		for (let bestilling of arenaBestillinger) {
-			let arenaInfo = bestilling.data.arenaforvalter
-			if (
-				key in arenaInfo &&
-				arenaInfo[key].length > 0 &&
-				overlapperMedliste(nyDatoFra, nyDatoTil, arenaInfo[key])
-			)
-				return false
-		}
-	}
-	return true
-}
-
 const overlapperMedliste = (originalFradato, orginialTildato, vedtakListe) => {
 	for (let vedtak of vedtakListe) {
-		const fraDato = vedtak.fraDato
-		const tilDato = vedtak.tilDato
+		const fraDato = vedtak?.fraDato
+		const tilDato = vedtak?.tilDato
 
 		if (
 			fraDato &&
@@ -258,7 +261,7 @@ export const validation = Yup.object({
 			fraDato: validFradato('aap'),
 			tilDato: Yup.string()
 				.test('etter-fradato', 'Til-dato må være etter fra-dato', function validDate(tildato) {
-					const fradato = this.options.context.arenaforvalter.aap[0].fraDato
+					const fradato = this.options.context.arenaforvalter.aap[0]?.fraDato
 					return validTildato(fradato, tildato)
 				})
 				.test(
@@ -266,22 +269,30 @@ export const validation = Yup.object({
 					'Vedtak kan ikke overlappe dato person fyller 25',
 					function validDate(tildato) {
 						const values = this.options.context
-						const fradato = this.options.context.arenaforvalter.aap[0].fraDato
+						const fradato = this.options.context.arenaforvalter.aap[0]?.fraDato
 						return !overlapp25aarsdag(new Date(fradato), new Date(tildato), values)
-					}
+					},
 				)
 				.test(
 					'avslutter-ved-67',
 					'Person kan ikke ha vedtak etter fylte 67 år',
 					function validDate(tildato) {
 						const values = this.options.context
-						const fradato = this.options.context.arenaforvalter.aap[0].fraDato
+						const fradato = this.options.context.arenaforvalter.aap[0]?.fraDato
 						return !erEtter67aarsdag(new Date(fradato), new Date(tildato), values)
-					}
+					},
+				)
+				.test(
+					'tiltak-til-etter-doedsdato',
+					'Ident kan ikke ha tiltak etter dødsfall',
+					function validDate(value) {
+						const values = this.options.context
+						return !invalidDoedsdato(value, values)
+					},
 				)
 				.nullable()
 				.required(messages.required),
-		})
+		}),
 	),
 	aap115: Yup.array().of(
 		Yup.object({
@@ -292,19 +303,64 @@ export const validation = Yup.object({
 					function validDate(fradato) {
 						const values = this.options.context
 						return !erEtter67aarsdag(new Date(fradato), null, values)
-					}
+					},
+				)
+				.test(
+					'tiltak-fra-etter-doedsdato',
+					'Ident kan ikke ha tiltak etter dødsfall',
+					function validDate(value) {
+						const values = this.options.context
+						return !invalidDoedsdato(value, values)
+					},
 				)
 				.nullable()
 				.required(messages.required),
-		})
+		}),
 	),
 	arenaBrukertype: requiredString,
+	aktiveringDato: Yup.mixed()
+		.test('er-paakrevd', 'Feltet er påkrevd', function isRequired(dato) {
+			const values = this.options.context
+			if (values.personFoerLeggTil && values.personFoerLeggTil.arenaforvalteren) return true
+			const { arenaforvalter } = values
+			const ingenYtelser =
+				arenaforvalter?.arenaBrukertype === 'MED_SERVICEBEHOV' &&
+				!arenaforvalter?.aap115 &&
+				!arenaforvalter?.aap &&
+				!arenaforvalter?.dagpenger
+			return !(ingenYtelser && !dato)
+		})
+		.test(
+			'aktivert-etter-doedsdato',
+			'Ident kan ikke aktiveres etter dødsfall',
+			function validDate(value) {
+				const values = this.options.context
+				return !invalidDoedsdato(value, values)
+			},
+		)
+		.nullable(),
 	inaktiveringDato: Yup.mixed()
-		.nullable()
-		.when('arenaBrukertype', {
-			is: 'UTEN_SERVICEBEHOV',
-			then: () => requiredDate,
-		}),
+		.test(
+			'er-etter-aktiveringsdato',
+			'Dato må være etter aktiveringsdato',
+			function isAfterAktivering(dato) {
+				const arenaValues = this.options.context?.arenaforvalter
+				if (arenaValues.inaktiveringDato === undefined) {
+					return true
+				}
+				if (arenaValues?.arenaBrukertype === 'UTEN_SERVICEBEHOV' && !dato) {
+					return this.createError({
+						message: 'Feltet er påkrevd',
+					})
+				}
+				return (
+					!arenaValues?.aktiveringDato ||
+					isEqual(new Date(dato), new Date(arenaValues.aktiveringDato)) ||
+					isAfter(new Date(dato), new Date(arenaValues.aktiveringDato))
+				)
+			},
+		)
+		.nullable(),
 	automatiskInnsendingAvMeldekort: Yup.boolean().nullable(),
 	kvalifiseringsgruppe: Yup.string()
 		.test('har-verdi', messages.required, function validKvalifiseringsgruppe(gruppe) {
@@ -321,36 +377,56 @@ export const validation = Yup.object({
 			fraDato: validFradato('dagpenger'),
 			tilDato: Yup.string()
 				.test('etter-fradato', 'Til-dato må være etter fra-dato', function validDate(tildato) {
-					const fradato = this.options.context.arenaforvalter.dagpenger[0].fraDato
+					if (!tildato) {
+						return true
+					}
+					const fradato = this.options.context.arenaforvalter.dagpenger[0]?.fraDato
 					return validTildato(fradato, tildato)
 				})
 				.test(
 					'skaper-ikke-overlapp',
 					'Manglende til-dato skaper overlapp med annet vedtak',
 					function validDate(tildato) {
+						if (!tildato) {
+							return true
+						}
 						return ingenOverlappFraTildato(tildato, this.options.context)
-					}
+					},
 				)
 				.test(
 					'overlapper-ikke-25',
 					'Vedtak kan ikke overlappe dato person fyller 25',
 					function validDate(tildato) {
+						if (!tildato) {
+							return true
+						}
 						const values = this.options.context
-						const fradato = this.options.context.arenaforvalter.dagpenger[0].fraDato
+						const fradato = this.options.context.arenaforvalter.dagpenger[0]?.fraDato
 						return !overlapp25aarsdag(new Date(fradato), new Date(tildato), values)
-					}
+					},
 				)
 				.test(
 					'avslutter-ved-67',
 					'Person kan ikke ha vedtak etter fylte 67 år',
 					function validDate(tildato) {
+						if (!tildato) {
+							return true
+						}
 						const values = this.options.context
-						const fradato = this.options.context.arenaforvalter.dagpenger[0].fraDato
+						const fradato = this.options.context.arenaforvalter.dagpenger[0]?.fraDato
 						return !erEtter67aarsdag(new Date(fradato), new Date(tildato), values)
-					}
+					},
+				)
+				.test(
+					'tiltak-fra-etter-doedsdato',
+					'Ident kan ikke ha tiltak etter dødsfall',
+					function validDate(value) {
+						const values = this.options.context
+						return !invalidDoedsdato(value, values)
+					},
 				)
 				.nullable(),
 			mottattDato: Yup.date().nullable(),
-		})
+		}),
 	),
 })

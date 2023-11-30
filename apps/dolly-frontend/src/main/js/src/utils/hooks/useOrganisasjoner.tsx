@@ -82,14 +82,17 @@ const fasteDataFallback = [
 export type Bestillingsstatus = {
 	id: number
 	environments: string[]
-	antallIdenter: number
-	antallLevert: number
+	antallIdenter?: number
+	antallIdenterOpprettet?: number
+	antallLevert?: number
 	bestilling: any
 	bruker: any
 	gruppeId: number
 	ferdig: boolean
 	feil?: string
 	sistOppdatert: Date
+	opprettetFraGruppeId: number
+	opprettetFraId: number
 	status: Bestillingsinformasjon[]
 	systeminfo: string
 	stoppet: boolean
@@ -103,33 +106,36 @@ export const useOrganisasjoner = (brukerId: string) => {
 		}
 	}
 
-	const { data, error } = useSWR<Organisasjon[], Error>(getOrganisasjonerUrl(brukerId), fetcher)
+	const { data, isLoading, error } = useSWR<Organisasjon[], Error>(
+		getOrganisasjonerUrl(brukerId),
+		fetcher,
+	)
 
 	return {
 		organisasjoner: data,
-		loading: !error && !data,
+		loading: isLoading,
 		error: error,
 	}
 }
 
 export const useDollyFasteDataOrganisasjoner = (kanHaArbeidsforhold?: boolean) => {
-	const { data, error } = useSWR<OrganisasjonFasteData[], Error>(
+	const { data, isLoading, error } = useSWR<OrganisasjonFasteData[], Error>(
 		getDollyFasteDataOrganisasjoner(kanHaArbeidsforhold),
 		fetcher,
-		{ fallbackData: fasteDataFallback }
+		{ fallbackData: fasteDataFallback },
 	)
 
 	return {
 		organisasjoner: data,
-		loading: !error && !data,
+		loading: isLoading,
 		error: error,
 	}
 }
 
 export const useFasteDataOrganisasjon = (orgnummer: string) => {
-	const { data, error } = useSWR<OrganisasjonFasteData, Error>(
+	const { data, isLoading, error } = useSWR<OrganisasjonFasteData, Error>(
 		getFasteDataOrganisasjon(orgnummer),
-		fetcher
+		fetcher,
 	)
 
 	if (!orgnummer) {
@@ -141,7 +147,7 @@ export const useFasteDataOrganisasjon = (orgnummer: string) => {
 
 	return {
 		organisasjon: data,
-		loading: !error && !data,
+		loading: isLoading,
 		error: error,
 	}
 }
@@ -153,13 +159,13 @@ export const useOrganisasjonBestilling = (brukerId: string, autoRefresh = false)
 			error: 'BrukerId mangler!',
 		}
 	}
-	const { data, error } = useSWR<Bestillingsstatus[], Error>(
+	const { data, isLoading, error } = useSWR<Bestillingsstatus[], Error>(
 		getOrganisasjonBestillingerUrl(brukerId),
 		fetcher,
 		{
 			refreshInterval: autoRefresh ? 4000 : 0,
 			dedupingInterval: autoRefresh ? 4000 : 0,
-		}
+		},
 	)
 
 	const bestillingerSorted = data
@@ -169,7 +175,7 @@ export const useOrganisasjonBestilling = (brukerId: string, autoRefresh = false)
 	return {
 		bestillinger: data,
 		bestillingerById: bestillingerSorted,
-		loading: !error && !data,
+		loading: isLoading,
 		error: error,
 	}
 }
@@ -177,7 +183,7 @@ export const useOrganisasjonBestilling = (brukerId: string, autoRefresh = false)
 export const useOrganisasjonBestillingStatus = (
 	bestillingId: number | string,
 	erOrganisasjon: boolean,
-	autoRefresh = false
+	autoRefresh = false,
 ) => {
 	if (!erOrganisasjon) {
 		return {
@@ -191,25 +197,25 @@ export const useOrganisasjonBestillingStatus = (
 			error: 'BestillingId mangler!',
 		}
 	}
-	const { data, error } = useSWR<Bestillingsstatus[], Error>(
+	const { data, isLoading, error } = useSWR<Bestillingsstatus[], Error>(
 		getOrganisasjonBestillingStatusUrl(bestillingId),
 		fetcher,
 		{
 			refreshInterval: autoRefresh ? 3000 : 0,
 			dedupingInterval: autoRefresh ? 3000 : 0,
-		}
+		},
 	)
 
 	return {
 		bestillingStatus: data,
-		loading: !error && !data,
+		loading: isLoading,
 		error: error,
 	}
 }
 
 export const useArbeidsforhold = (ident: string, harAaregBestilling: boolean, miljoe?: string) => {
 	const { dollyEnvironmentList } = useDollyEnvironments()
-	const unsupportedEnvironments = ['t13', 'qx']
+	const unsupportedEnvironments = ['t13', 'qx', 't3']
 	const filteredEnvironments = dollyEnvironmentList
 		?.map((miljoe) => miljoe.id)
 		?.filter((miljoe) => !unsupportedEnvironments.includes(miljoe))
@@ -229,15 +235,14 @@ export const useArbeidsforhold = (ident: string, harAaregBestilling: boolean, mi
 
 	const miljoer = miljoe ? [miljoe] : filteredEnvironments
 
-	const { data, error } = useSWR<Array<MiljoDataListe>, Error>(
+	const { data, isLoading, error } = useSWR<Array<MiljoDataListe>, Error>(
 		[getArbeidsforholdUrl(miljoer), { 'Nav-Personident': ident }],
 		([url, headers]) => multiFetcherAareg(url, headers),
-		{ dedupingInterval: 30000 }
 	)
 
 	return {
 		arbeidsforhold: data?.sort((a, b) => a.miljo.localeCompare(b.miljo)),
-		loading: !error && !data,
+		loading: isLoading,
 		error: error,
 	}
 }
@@ -264,15 +269,14 @@ export const useAmeldinger = (ident: string, harAaregBestilling: boolean, miljoe
 
 	const miljoer = miljoe ? [miljoe] : filteredEnvironments
 
-	const { data, error } = useSWR<Array<MiljoDataListe>, Error>(
+	const { data, isLoading, error } = useSWR<Array<MiljoDataListe>, Error>(
 		[getAmeldingerUrl(ident, miljoer)],
 		([url, headers]) => multiFetcherAmelding(url, headers),
-		{ dedupingInterval: 30000 }
 	)
 
 	return {
 		ameldinger: data?.sort((a, b) => a.miljo.localeCompare(b.miljo)),
-		loading: !error && !data,
+		loading: isLoading,
 		error: error,
 	}
 }

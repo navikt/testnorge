@@ -1,4 +1,4 @@
-FROM navikt/java:17
+FROM ghcr.io/navikt/baseimages/temurin:21
 LABEL maintainer="Team Registre"
 
 ADD /build/libs/app.jar /app/app.jar

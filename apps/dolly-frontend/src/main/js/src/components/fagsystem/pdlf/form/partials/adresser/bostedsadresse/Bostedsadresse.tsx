@@ -3,7 +3,7 @@ import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { DollySelect, FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import {
-	initialBostedsadresse,
+	getInitialBostedsadresse,
 	initialMatrikkeladresse,
 	initialUkjentBosted,
 	initialUtenlandskAdresse,
@@ -14,17 +14,18 @@ import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import * as _ from 'lodash-es'
 import {
-	UtenlandskAdresse,
-	UkjentBosted,
-	VegadresseVelger,
 	MatrikkeladresseVelger,
+	UkjentBosted,
+	UtenlandskAdresse,
+	VegadresseVelger,
 } from '@/components/fagsystem/pdlf/form/partials/adresser/adressetyper'
 import { FormikProps } from 'formik'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bestillingsveileder'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 import { Adressetype } from '@/components/fagsystem/pdlf/PdlTypes'
-import { SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
 import { getPlaceholder, setNavn } from '@/components/fagsystem/pdlf/form/partials/utils'
+import { useGenererNavn } from '@/utils/hooks/useGenererNavn'
+import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
 
 interface BostedsadresseValues {
 	formikBag: FormikProps<{}>
@@ -70,9 +71,8 @@ export const BostedsadresseForm = ({
 
 	const valgtAdressetype = _.get(formikBag.values, `${path}.adressetype`)
 
-	const opts = useContext(BestillingsveilederContext)
 	const getAdresseOptions = () => {
-		if ((opts?.identtype && opts?.identtype !== 'FNR') || (identtype && identtype !== 'FNR')) {
+		if (identtype && identtype !== 'FNR') {
 			return Options('adressetypeUtenlandskBostedsadresse')
 		}
 		return Options('adressetypeBostedsadresse')
@@ -122,8 +122,8 @@ export const BostedsadresseForm = ({
 		formikBag.setFieldValue(path, adresseClone)
 	}
 
-	const navnInfo = SelectOptionsOppslag.hentPersonnavn()
-	const navnOptions = SelectOptionsOppslag.formatOptions('personnavn', navnInfo)
+	const { navnInfo, loading } = useGenererNavn()
+	const navnOptions = SelectOptionsFormat.formatOptions('personnavn', navnInfo)
 
 	return (
 		<React.Fragment key={idx}>
@@ -143,7 +143,11 @@ export const BostedsadresseForm = ({
 				<MatrikkeladresseVelger formikBag={formikBag} path={`${path}.matrikkeladresse`} />
 			)}
 			{valgtAdressetype === 'UTENLANDSK_ADRESSE' && (
-				<UtenlandskAdresse formikBag={formikBag} path={`${path}.utenlandskAdresse`} />
+				<UtenlandskAdresse
+					formikBag={formikBag}
+					path={`${path}.utenlandskAdresse`}
+					master={_.get(formikBag.values, `${path}.master`)}
+				/>
 			)}
 			{valgtAdressetype === 'UKJENT_BOSTED' && (
 				<UkjentBosted formikBag={formikBag} path={`${path}.ukjentBosted`} />
@@ -160,29 +164,39 @@ export const BostedsadresseForm = ({
 					options={navnOptions}
 					size="xlarge"
 					placeholder={getPlaceholder(formikBag.values, `${path}.opprettCoAdresseNavn`)}
-					isLoading={navnInfo.loading}
+					isLoading={loading}
 					onChange={(navn: Target) =>
 						setNavn(navn, `${path}.opprettCoAdresseNavn`, formikBag.setFieldValue)
 					}
 					value={_.get(formikBag.values, `${path}.opprettCoAdresseNavn.fornavn`)}
 				/>
 			</div>
-			<AvansertForm path={path} kanVelgeMaster={valgtAdressetype === null} />
+			<AvansertForm
+				path={path}
+				kanVelgeMaster={valgtAdressetype === null && identtype !== 'NPID'}
+			/>
 		</React.Fragment>
 	)
 }
 
 export const Bostedsadresse = ({ formikBag }: BostedsadresseValues) => {
+	const opts = useContext(BestillingsveilederContext)
+
 	return (
 		<Kategori title="Bostedsadresse">
 			<FormikDollyFieldArray
 				name="pdldata.person.bostedsadresse"
 				header="Bostedsadresse"
-				newEntry={initialBostedsadresse}
+				newEntry={getInitialBostedsadresse(opts?.identtype === 'NPID' ? 'PDL' : 'FREG')}
 				canBeEmpty={false}
 			>
 				{(path: string, idx: number) => (
-					<BostedsadresseForm formikBag={formikBag} path={path} idx={idx} />
+					<BostedsadresseForm
+						formikBag={formikBag}
+						path={path}
+						idx={idx}
+						identtype={opts?.identtype}
+					/>
 				)}
 			</FormikDollyFieldArray>
 		</Kategori>

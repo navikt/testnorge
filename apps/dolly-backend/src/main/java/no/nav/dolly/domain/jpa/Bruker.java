@@ -53,23 +53,32 @@ public class Bruker implements Serializable {
 
     @Column(name = "BRUKER_ID", unique = true)
     private String brukerId;
+
     @Column(name = "BRUKERNAVN")
     private String brukernavn;
+
     @Column(name = "EPOST")
     private String epost;
+
     @Column(name = "NAV_IDENT", length = 10)
     private String navIdent;
+
     @Column(name = "MIGRERT")
     private Boolean migrert;
+
     @Column(name = "BRUKERTYPE")
     @Enumerated(EnumType.STRING)
     private Brukertype brukertype;
+
     @ManyToOne
     @JoinColumn(name = "EID_AV_ID")
     private Bruker eidAv;
-    @OneToMany(mappedBy = "opprettetAv")
+
+    @OneToMany
+    @JoinColumn(name = "opprettet_av")
     @Builder.Default
     private Set<Testgruppe> testgrupper = new HashSet<>();
+
     @ManyToMany
     @Builder.Default
     @JoinTable(name = "BRUKER_FAVORITTER",
@@ -79,31 +88,37 @@ public class Bruker implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
-            return true;
+        if (this == o) return true;
 
-        if (!(o instanceof Bruker bruker))
-            return false;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Bruker bruker = (Bruker) o;
 
         return new EqualsBuilder()
-                .append(getId(), bruker.getId())
-                .append(getBrukerId(), bruker.getBrukerId())
-                .append(getBrukernavn(), bruker.getBrukernavn())
-                .append(getEpost(), bruker.getEpost())
-                .append(getNavIdent(), bruker.getNavIdent())
-                .append(getMigrert(), bruker.getMigrert())
+                .append(id, bruker.id)
+                .append(versjon, bruker.versjon)
+                .append(brukerId, bruker.brukerId)
+                .append(brukernavn, bruker.brukernavn)
+                .append(epost, bruker.epost)
+                .append(navIdent, bruker.navIdent)
+                .append(migrert, bruker.migrert)
+                .append(brukertype, bruker.brukertype)
+                .append(eidAv, bruker.eidAv)
                 .isEquals();
     }
 
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
-                .append(getId())
-                .append(getBrukerId())
-                .append(getBrukernavn())
-                .append(getEpost())
-                .append(getNavIdent())
-                .append(getMigrert())
+                .append(id)
+                .append(versjon)
+                .append(brukerId)
+                .append(brukernavn)
+                .append(epost)
+                .append(navIdent)
+                .append(migrert)
+                .append(brukertype)
+                .append(eidAv)
                 .toHashCode();
     }
 

@@ -3,7 +3,7 @@ package no.nav.registre.testnorge.batchbestillingservice.consumer;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.batchbestillingservice.command.GetAktiveBestillingerCommand;
 import no.nav.registre.testnorge.batchbestillingservice.command.PostBestillingCommand;
-import no.nav.registre.testnorge.batchbestillingservice.credentials.DollyBackendServiceProperties;
+import no.nav.registre.testnorge.batchbestillingservice.config.Consumers;
 import no.nav.registre.testnorge.batchbestillingservice.request.RsDollyBestillingRequest;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
@@ -21,18 +21,17 @@ public class DollyBackendConsumer {
 
     private final WebClient webClient;
     private final TokenExchange tokenService;
-    private final ServerProperties serviceProperties;
+    private final ServerProperties serverProperties;
 
     public DollyBackendConsumer(
-            DollyBackendServiceProperties properties,
+            Consumers consumers,
             TokenExchange tokenService,
             WebClient.Builder webClientBuilder
     ) {
-
-        this.serviceProperties = properties;
+        serverProperties = consumers.getDollyBackend();
         this.tokenService = tokenService;
         this.webClient = webClientBuilder
-                .baseUrl(serviceProperties.getUrl())
+                .baseUrl(serverProperties.getUrl())
                 .build();
     }
 
@@ -41,7 +40,7 @@ public class DollyBackendConsumer {
         request.setAntall(antall.intValue());
 
         tokenService
-                .exchange(serviceProperties)
+                .exchange(serverProperties)
                 .map(token -> new PostBestillingCommand(webClient, token.getTokenValue(), gruppeId, request).call())
                 .doOnError(error -> log.error("Bestilling feilet for gruppe {}", gruppeId, error))
                 .doOnSuccess(response -> log.info("Bestilling med {} identer startet i backend for gruppe {}", antall, gruppeId))
@@ -53,7 +52,7 @@ public class DollyBackendConsumer {
         return Optional
                 .ofNullable(
                         tokenService
-                                .exchange(serviceProperties)
+                                .exchange(serverProperties)
                                 .map(token -> new GetAktiveBestillingerCommand(webClient, token.getTokenValue(), gruppeId).call())
                                 .doOnError(error -> log.error("Henting av aktive bestillinger feilet for gruppe {}", gruppeId, error))
                                 .onErrorReturn(Flux.empty())

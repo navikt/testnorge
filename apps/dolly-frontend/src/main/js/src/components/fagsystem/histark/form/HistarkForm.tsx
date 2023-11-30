@@ -7,9 +7,7 @@ import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import Panel from '@/components/ui/panel/Panel'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
 import { FormikProps } from 'formik'
-import { DokumentInfoListe } from '@/components/fagsystem/dokarkiv/modal/DokumentInfoListe'
 import { Vedlegg } from '@/components/fagsystem/dokarkiv/form/DokarkivForm'
-import { FileUploader } from '@/utils/FileUploader/FileUploader'
 import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { initialHistark } from '@/components/fagsystem/arbeidsplassen/form/initialValues'
 import { useNavEnheter } from '@/utils/hooks/useNorg2'
@@ -19,6 +17,11 @@ import { FormikDateTimepicker } from '@/components/ui/form/inputs/timepicker/Tim
 import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { Yearpicker } from '@/components/ui/form/inputs/yearpicker/Yearpicker'
 import { testDatoFom } from '@/components/fagsystem/utils'
+
+const DokumentInfoListe = React.lazy(
+	() => import('@/components/fagsystem/dokarkiv/modal/DokumentInfoListe'),
+)
+const FileUploader = React.lazy(() => import('@/utils/FileUploader/FileUploader'))
 
 interface HistarkFormProps {
 	formikBag: FormikProps<object>
@@ -47,7 +50,7 @@ export const HistarkForm = ({ formikBag }: HistarkFormProps) => {
 	const [startAar, setStartAar] = useState(new Date())
 	const [sluttAar, setSluttAar] = useState(new Date())
 	const [selectedNavEnhet, setSelectedNavEnhet] = useState(
-		_.get(formikBag.values, 'histark.dokumenter.0.enhetsnummer')
+		_.get(formikBag.values, 'histark.dokumenter.0.enhetsnummer'),
 	)
 
 	const { navEnheter = [] } = useNavEnheter()
@@ -205,8 +208,8 @@ HistarkForm.validation = {
 					skanningsTidspunkt: requiredDate.nullable(),
 					startAar: testDatoFom(requiredDate.nullable(), 'sluttAar', 'Startår må være før sluttår'),
 					sluttAar: requiredDate.nullable(),
-				})
+				}),
 			),
-		})
+		}),
 	),
 }

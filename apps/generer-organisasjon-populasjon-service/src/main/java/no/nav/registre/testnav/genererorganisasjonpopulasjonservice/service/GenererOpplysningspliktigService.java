@@ -2,6 +2,9 @@ package no.nav.registre.testnav.genererorganisasjonpopulasjonservice.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnav.genererorganisasjonpopulasjonservice.consumer.GenererNavnConsumer;
+import no.nav.registre.testnav.genererorganisasjonpopulasjonservice.consumer.OrgnummerConsumer;
+import no.nav.registre.testnav.genererorganisasjonpopulasjonservice.domain.Organisasjon;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -10,10 +13,6 @@ import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
-
-import no.nav.registre.testnav.genererorganisasjonpopulasjonservice.consumer.GenererNavnConsumer;
-import no.nav.registre.testnav.genererorganisasjonpopulasjonservice.consumer.OrgnummerConsumer;
-import no.nav.registre.testnav.genererorganisasjonpopulasjonservice.domain.Organisasjon;
 
 @Slf4j
 @Service
@@ -25,8 +24,9 @@ public class GenererOpplysningspliktigService {
 
     public List<Organisasjon> generer(Integer antall) {
         var futures = new ArrayList<CompletableFuture<Organisasjon>>(antall);
+        var random = new Random();
         for (int index = 0; index < antall; index++) {
-            futures.add(generer());
+            futures.add(generer(random));
         }
 
         var organisasjoner = new ArrayList<Organisasjon>();
@@ -51,8 +51,7 @@ public class GenererOpplysningspliktigService {
         return organisasjoner;
     }
 
-    private CompletableFuture<Organisasjon> generer() {
-        var random = new Random();
+    private CompletableFuture<Organisasjon> generer(Random random) {
         return CompletableFuture.supplyAsync(() -> {
             var opplysningspliktig = generer("AS");
             for (int index = 0; index <= random.nextInt(5); index++) {

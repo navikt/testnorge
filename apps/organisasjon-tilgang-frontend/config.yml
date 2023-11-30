@@ -5,17 +5,21 @@ metadata:
   namespace: dolly
   labels:
     team: dolly
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "15"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "15"
 spec:
   env:
     - name: SPRING_PROFILES_ACTIVE
       value: prod
   port: 8080
+  webproxy: true
   azure:
     application:
       enabled: true
       tenant: nav.no
       replyURLs:
-        - "https://testnav-organisasjon-tilgang.intern.nav.no/login/oauth2/code/aad"
+        - "https://testnav-organisasjon-tilgang.intern.dev.nav.no/login/oauth2/code/aad"
         - "http://localhost:8080/login/oauth2/code/aad"
       claims:
         groups:
@@ -45,4 +49,4 @@ spec:
       memory: 512Mi
   image: {{ image }}
   ingresses:
-    - "https://testnav-organisasjon-tilgang.intern.nav.no"
+    - "https://testnav-organisasjon-tilgang.intern.dev.nav.no"

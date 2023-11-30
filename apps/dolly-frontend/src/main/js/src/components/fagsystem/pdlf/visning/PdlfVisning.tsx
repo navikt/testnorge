@@ -11,8 +11,8 @@ import { Oppholdsadresse } from '@/components/fagsystem/pdlf/visning/partials/Op
 import { Kontaktadresse } from '@/components/fagsystem/pdlf/visning/partials/Kontaktadresse'
 import { Adressebeskyttelse } from '@/components/fagsystem/pdlf/visning/partials/Adressebeskyttelse'
 import { Sivilstand } from '@/components/fagsystem/pdlf/visning/partials/Sivilstand'
-import { ForelderBarnRelasjonVisning } from '@/components/fagsystem/pdlf/visning/partials/ForeldreBarnRelasjon'
-import { DoedfoedtBarnVisning } from '@/components/fagsystem/pdlf/visning/partials/DoedfoedtBarn'
+import { ForelderBarnRelasjon } from '@/components/fagsystem/pdlf/visning/partials/ForelderBarnRelasjon'
+import { DoedfoedtBarn } from '@/components/fagsystem/pdlf/visning/partials/DoedfoedtBarn'
 import { Foedsel } from '@/components/fagsystem/pdlf/visning/partials/Foedsel'
 import { Vergemaal } from '@/components/fagsystem/pdlf/visning/partials/Vergemaal'
 import { IdenthistorikkVisning } from '@/components/fagsystem/pdlf/visning/partials/Identhistorikk'
@@ -22,6 +22,7 @@ import { Nasjonalitet } from '@/components/fagsystem/pdlf/visning/partials/Nasjo
 import { Persondetaljer } from '@/components/fagsystem/pdlf/visning/partials/Persondetaljer'
 import { PdlSikkerhetstiltak } from '@/components/fagsystem/pdl/visning/partials/PdlSikkerhetstiltak'
 import { TpsMBankkonto } from '@/components/fagsystem/pdl/visning/partials/tpsMessaging/TpsMBankkonto'
+import { ForeldreansvarVisning } from '@/components/fagsystem/pdlf/visning/partials/Foreldreansvar'
 
 export const getBankkontoData = (data) => {
 	if (data?.kontoregister) {
@@ -90,7 +91,11 @@ export const PdlfVisning = ({ fagsystemData, loading, tmpPersoner }) => {
 				/>
 				<Foedsel data={data?.person?.foedsel} tmpPersoner={tmpPdlforvalter} ident={ident} />
 				<Doedsfall data={data?.person?.doedsfall} tmpPersoner={tmpPdlforvalter} ident={ident} />
-				<Nasjonalitet data={data?.person} tmpPersoner={tmpPdlforvalter} />
+				<Nasjonalitet
+					data={data?.person}
+					tmpPersoner={tmpPdlforvalter}
+					identtype={data?.person?.identtype}
+				/>
 				<Telefonnummer
 					data={data?.person?.telefonnummer}
 					tmpPersoner={tmpPdlforvalter}
@@ -122,16 +127,24 @@ export const PdlfVisning = ({ fagsystemData, loading, tmpPersoner }) => {
 					ident={ident}
 					identtype={data?.person?.identtype}
 				/>
-				<DeltBosted data={data?.person?.deltBosted} />
+				<DeltBosted
+					data={data?.person?.deltBosted}
+					tmpPersoner={tmpPdlforvalter}
+					ident={ident}
+					personValues={data?.person}
+					relasjoner={data?.relasjoner}
+				/>
 				<Oppholdsadresse
 					data={data?.person?.oppholdsadresse}
 					tmpPersoner={tmpPdlforvalter}
 					ident={ident}
+					identtype={data?.person?.identtype}
 				/>
 				<Kontaktadresse
 					data={data?.person?.kontaktadresse}
 					tmpPersoner={tmpPdlforvalter}
 					ident={ident}
+					identtype={data?.person?.identtype}
 				/>
 				<Adressebeskyttelse
 					data={data?.person?.adressebeskyttelse}
@@ -144,14 +157,34 @@ export const PdlfVisning = ({ fagsystemData, loading, tmpPersoner }) => {
 					relasjoner={data?.relasjoner}
 					tmpPersoner={tmpPdlforvalter}
 					ident={ident}
+					identtype={data?.person?.identtype}
 				/>
-				<ForelderBarnRelasjonVisning
+				<ForelderBarnRelasjon
 					data={data?.person?.forelderBarnRelasjon}
+					tmpPersoner={tmpPdlforvalter}
+					ident={ident}
 					relasjoner={data?.relasjoner}
+					identtype={data?.person?.identtype}
 				/>
-				<DoedfoedtBarnVisning data={data?.person?.doedfoedtBarn} />
+				<ForeldreansvarVisning
+					data={data?.person?.foreldreansvar}
+					tmpPersoner={tmpPdlforvalter}
+					ident={ident}
+					relasjoner={data?.relasjoner}
+					personValues={data?.person}
+				/>
+				<DoedfoedtBarn
+					data={data?.person?.doedfoedtBarn}
+					tmpPersoner={tmpPdlforvalter}
+					ident={ident}
+				/>
 				<FalskIdentitet data={data?.person?.falskIdentitet} />
-				<UtenlandsId data={data?.person?.utenlandskIdentifikasjonsnummer} />
+				<UtenlandsId
+					data={data?.person?.utenlandskIdentifikasjonsnummer}
+					tmpPersoner={tmpPdlforvalter}
+					ident={ident}
+					identtype={data?.person?.identtype}
+				/>
 				<IdenthistorikkVisning relasjoner={data?.relasjoner} />
 				<KontaktinformasjonForDoedsbo
 					data={data?.person?.kontaktinformasjonForDoedsbo}

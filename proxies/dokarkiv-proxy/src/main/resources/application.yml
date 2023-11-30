@@ -12,8 +12,8 @@ spring:
           jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
           accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
         tokenx:
-          issuer-uri: https://tokendings.dev-gcp.nais.io
-          jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
+          issuer-uri: https://tokenx.dev-gcp.nav.cloud.nais.io 
+          jwk-set-uri: https://tokenx.dev-gcp.nav.cloud.nais.io/jwks
           accepted-audience: ${TOKEN_X_CLIENT_ID}
   cloud:
     gateway:
@@ -24,9 +24,9 @@ spring:
 
 consumers:
   dokarkiv:
-    url: http://dokarkiv-{env}.teamdokumenthandtering.svc.nais.local
+    url: http://dokarkiv-MILJOE.teamdokumenthandtering.svc.nais.local
     cluster: dev-fss
-    name: dokarkiv-{env}
+    name: dokarkiv-MILJOE
     namespace: teamdokumenthandtering
 
 environments: q1,q2,q4,q5

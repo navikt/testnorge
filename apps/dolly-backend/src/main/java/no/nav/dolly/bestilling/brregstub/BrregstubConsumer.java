@@ -7,7 +7,7 @@ import no.nav.dolly.bestilling.brregstub.command.BrregDeleteCommand;
 import no.nav.dolly.bestilling.brregstub.command.BrregGetCommand;
 import no.nav.dolly.bestilling.brregstub.command.BrregPostCommand;
 import no.nav.dolly.bestilling.brregstub.domain.RolleoversiktTo;
-import no.nav.dolly.config.credentials.BrregstubProxyProperties;
+import no.nav.dolly.config.Consumers;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
@@ -25,16 +25,16 @@ public class BrregstubConsumer implements ConsumerStatus {
 
     private final TokenExchange tokenService;
     private final WebClient webClient;
-    private final ServerProperties serviceProperties;
+    private final ServerProperties serverProperties;
 
     public BrregstubConsumer(
             TokenExchange tokenService,
-            BrregstubProxyProperties serverProperties,
+            Consumers consumers,
             ObjectMapper objectMapper,
             WebClient.Builder webClientBuilder
     ) {
         this.tokenService = tokenService;
-        this.serviceProperties = serverProperties;
+        serverProperties = consumers.getTestnavBrregStubProxy();
         this.webClient = webClientBuilder
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .baseUrl(serverProperties.getUrl())
@@ -43,19 +43,19 @@ public class BrregstubConsumer implements ConsumerStatus {
 
     public Mono<RolleoversiktTo> getRolleoversikt(String ident) {
 
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMap(token -> new BrregGetCommand(webClient, ident, token.getTokenValue()).call());
     }
 
     public Mono<RolleoversiktTo> postRolleoversikt(RolleoversiktTo rolleoversiktTo) {
 
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMap(token -> new BrregPostCommand(webClient, rolleoversiktTo, token.getTokenValue()).call());
     }
 
     public Mono<List<Void>> deleteRolleoversikt(List<String> identer) {
 
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> Flux.range(0, identer.size())
                         .map(idx -> new BrregDeleteCommand(webClient, identer.get(idx), token.getTokenValue()).call())
                         .flatMap(Flux::from))
@@ -64,7 +64,7 @@ public class BrregstubConsumer implements ConsumerStatus {
 
     @Override
     public String serviceUrl() {
-        return serviceProperties.getUrl();
+        return serverProperties.getUrl();
     }
 
     @Override

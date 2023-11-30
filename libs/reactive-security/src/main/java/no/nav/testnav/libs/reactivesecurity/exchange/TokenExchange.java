@@ -72,7 +72,7 @@ public class TokenExchange implements ExchangeToken {
     private boolean expires(AccessToken accessToken) {
 
         var chunks = accessToken.getTokenValue().split("\\.");
-        var body = new String(Base64.getDecoder().decode(chunks[1]));
+        var body = Base64.getDecoder().decode(chunks[1]);
 
         return Instant.ofEpochSecond(objectMapper.readTree(body).get("exp").asInt())
                 .minusSeconds(300)

@@ -5,14 +5,14 @@ import no.nav.pdl.forvalter.consumer.AdresseServiceConsumer;
 import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktadresseDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskAdresseDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.UtflyttingDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.AdressebeskyttelseDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO.Master;
+import no.nav.testnav.libs.data.pdlforvalter.v1.KontaktadresseDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.StatsborgerskapDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.UtenlandskAdresseDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.UtflyttingDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.VegadresseDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,8 +21,10 @@ import java.util.stream.Stream;
 
 import static java.time.LocalDateTime.now;
 import static java.util.Objects.nonNull;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO.AdresseBeskyttelse.STRENGT_FORTROLIG;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype.FNR;
+import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
+import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.AdressebeskyttelseDTO.AdresseBeskyttelse.STRENGT_FORTROLIG;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.Identtype.FNR;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.logging.log4j.util.Strings.isBlank;
@@ -36,15 +38,15 @@ public class KontaktAdresseService extends AdresseService<KontaktadresseDTO, Per
 
     private final AdresseServiceConsumer adresseServiceConsumer;
     private final MapperFacade mapperFacade;
-    private final DummyAdresseService dummyAdresseService;
+    private final EnkelAdresseService enkelAdresseService;
 
     public KontaktAdresseService(GenererNavnServiceConsumer genererNavnServiceConsumer,
                                  AdresseServiceConsumer adresseServiceConsumer, MapperFacade mapperFacade,
-                                 DummyAdresseService dummyAdresseService) {
+                                 EnkelAdresseService enkelAdresseService) {
         super(genererNavnServiceConsumer);
         this.adresseServiceConsumer = adresseServiceConsumer;
         this.mapperFacade = mapperFacade;
-        this.dummyAdresseService = dummyAdresseService;
+        this.enkelAdresseService = enkelAdresseService;
     }
 
     private static void validatePostBoksAdresse(KontaktadresseDTO.PostboksadresseDTO postboksadresse) {
@@ -63,13 +65,14 @@ public class KontaktAdresseService extends AdresseService<KontaktadresseDTO, Per
 
             if (isTrue(adresse.getIsNew())) {
 
+                adresse.setKilde(getKilde(adresse));
+                adresse.setMaster(getMaster(adresse, person));
+
                 if (isNotTrue(relaxed)) {
                     handle(adresse, person);
                 }
-                populateMiscFields(adresse, person);
             }
         }
-        enforceIntegrity(person.getKontaktadresse());
         return person.getKontaktadresse();
     }
 
@@ -111,17 +114,17 @@ public class KontaktAdresseService extends AdresseService<KontaktadresseDTO, Per
                     adresseServiceConsumer.getVegadresse(kontaktadresse.getVegadresse(), kontaktadresse.getAdresseIdentifikatorFraMatrikkelen());
             kontaktadresse.setAdresseIdentifikatorFraMatrikkelen(vegadresse.getMatrikkelId());
             mapperFacade.map(vegadresse, kontaktadresse.getVegadresse());
+            kontaktadresse.getVegadresse().setKommunenummer(null);
 
-        } else if (nonNull(kontaktadresse.getUtenlandskAdresse()) &&
-                kontaktadresse.getUtenlandskAdresse().isEmpty()) {
+        } else if (nonNull(kontaktadresse.getUtenlandskAdresse())) {
 
-            kontaktadresse.setMaster(Master.PDL);
-            kontaktadresse.setUtenlandskAdresse(dummyAdresseService.getUtenlandskAdresse(getLandkode(person)));
+            kontaktadresse.setUtenlandskAdresse(enkelAdresseService.getUtenlandskAdresse(kontaktadresse.getUtenlandskAdresse(), getLandkode(person), kontaktadresse.getMaster()));
         }
 
         if (Master.PDL == kontaktadresse.getMaster()) {
             kontaktadresse.setGyldigFraOgMed(nonNull(kontaktadresse.getGyldigFraOgMed()) ? kontaktadresse.getGyldigFraOgMed() : now());
-            kontaktadresse.setGyldigTilOgMed(nonNull(kontaktadresse.getGyldigTilOgMed()) ? kontaktadresse.getGyldigTilOgMed() : now().plusYears(1));
+            kontaktadresse.setGyldigTilOgMed(nonNull(kontaktadresse.getGyldigTilOgMed()) ? kontaktadresse.getGyldigTilOgMed() :
+                    kontaktadresse.getGyldigFraOgMed().plusYears(1));
         }
         kontaktadresse.setCoAdressenavn(genererCoNavn(kontaktadresse.getOpprettCoAdresseNavn()));
         kontaktadresse.setOpprettCoAdresseNavn(null);

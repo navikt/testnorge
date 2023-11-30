@@ -41,9 +41,7 @@ public class GetDokumentInfoCommand implements Callable<Mono<Response>> {
                 ))
                 .retrieve()
                 .bodyToMono(Response.class)
-                .doOnError(throwable -> {
-                    log.error("Feilet under henting av Journalpost", throwable);
-                })
+                .doOnError(throwable -> log.error("Feilet under henting av Journalpost", throwable))
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException));
     }

@@ -12,7 +12,6 @@ export const FlyttPersonButton = ({ gruppeId, disabled }) => {
 			<Button
 				data-cy={CypressSelector.BUTTON_FLYTT_PERSONER}
 				onClick={openModal}
-				className="svg-icon-blue-line"
 				kind="flytt"
 				disabled={disabled}
 				title={disabled ? 'Kan ikke flytte personer fra en tom gruppe' : null}

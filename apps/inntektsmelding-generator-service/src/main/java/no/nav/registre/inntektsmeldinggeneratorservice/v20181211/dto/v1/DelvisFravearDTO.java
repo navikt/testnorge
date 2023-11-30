@@ -9,7 +9,6 @@ import no.seres.xsd.nav.inntektsmelding_m._20181211.XMLDelvisFravaer;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Value
 @NoArgsConstructor(force = true)
@@ -31,8 +30,9 @@ public class DelvisFravearDTO implements ToXmlElement<XMLDelvisFravaer> {
         return xmlDelvisFravaer;
     }
 
-    static List<XMLDelvisFravaer> convert(List<DelvisFravearDTO> list){
-        return list.stream().map(DelvisFravearDTO::toXmlElement).collect(Collectors.toList());
+    static List<XMLDelvisFravaer> convert(List<DelvisFravearDTO> list) {
+        return list.stream().map(DelvisFravearDTO::toXmlElement)
+                .toList();
     }
 
 }

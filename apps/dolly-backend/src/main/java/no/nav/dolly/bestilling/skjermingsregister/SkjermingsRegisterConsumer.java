@@ -9,7 +9,7 @@ import no.nav.dolly.bestilling.skjermingsregister.command.SkjermingsregisterPost
 import no.nav.dolly.bestilling.skjermingsregister.command.SkjermingsregisterPutCommand;
 import no.nav.dolly.bestilling.skjermingsregister.domain.SkjermingDataRequest;
 import no.nav.dolly.bestilling.skjermingsregister.domain.SkjermingDataResponse;
-import no.nav.dolly.config.credentials.SkjermingsregisterProxyProperties;
+import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
@@ -30,34 +30,26 @@ public class SkjermingsRegisterConsumer implements ConsumerStatus {
 
     private final TokenExchange tokenService;
     private final WebClient webClient;
-    private final ServerProperties serviceProperties;
+    private final ServerProperties serverProperties;
 
     public SkjermingsRegisterConsumer(
             TokenExchange tokenService,
-            SkjermingsregisterProxyProperties serverProperties,
+            Consumers consumers,
             ObjectMapper objectMapper,
             WebClient.Builder webClientBuilder
     ) {
         this.tokenService = tokenService;
-        this.serviceProperties = serverProperties;
+        serverProperties = consumers.getTestnavSkjermingsregisterProxy();
         this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .build();
     }
 
-    @Timed(name = "providers", tags = {"operation", "skjermingsdata-hent"})
-    public SkjermingDataResponse getSkjerming(String ident) {
-
-        return tokenService.exchange(serviceProperties)
-                .flatMap(token -> new SkjermingsregisterGetCommand(webClient, ident, token.getTokenValue()).call())
-                .block();
-    }
-
     @Timed(name = "providers", tags = {"operation", "skjermingsdata-slett"})
     public Mono<List<Void>> deleteSkjerming(List<String> identer) {
 
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> Flux.range(0, identer.size())
                         .delayElements(Duration.ofMillis(100))
                         .map(index -> new SkjermingsregisterDeleteCommand(webClient,
@@ -69,7 +61,7 @@ public class SkjermingsRegisterConsumer implements ConsumerStatus {
     @Timed(name = "providers", tags = {"operation", "skjermingsdata-oppdater"})
     public Mono<SkjermingDataResponse> oppdaterPerson(SkjermingDataRequest skjerming) {
 
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMap(token -> new SkjermingsregisterGetCommand(webClient, skjerming.getPersonident(), token.getTokenValue()).call()
                         .flatMap(response -> {
                             if (response.isEksistererIkke()) {
@@ -98,7 +90,7 @@ public class SkjermingsRegisterConsumer implements ConsumerStatus {
 
     @Override
     public String serviceUrl() {
-        return serviceProperties.getUrl();
+        return serverProperties.getUrl();
     }
 
     @Override

@@ -3,6 +3,7 @@ import useSWRImmutable from 'swr/immutable'
 import { fetcher, imageFetcher } from '@/api'
 import { runningCypressE2E } from '@/service/services/Request'
 import { navigateToLogin } from '@/components/utlogging/navigateToLogin'
+import { ERROR_ACTIVE_USER } from '../../ducks/errors/ErrorMessages'
 
 const getBrukereUrl = `/dolly-backend/api/v1/bruker`
 const getCurrentBrukerUrl = `/dolly-backend/api/v1/bruker/current`
@@ -36,46 +37,46 @@ type OrganisasjonMiljoe = {
 }
 
 export const useAlleBrukere = () => {
-	const { data, error } = useSWR<BrukerType, Error>(getBrukereUrl, fetcher)
+	const { data, isLoading, error } = useSWR<BrukerType, Error>(getBrukereUrl, fetcher)
 
 	return {
 		brukere: data,
-		loading: !error && !data,
+		loading: isLoading,
 		error: error,
 	}
 }
 
 export const useCurrentBruker = () => {
-	const { data, error } = useSWR<BrukerType, Error>(getCurrentBrukerUrl, fetcher)
+	const { data, isLoading, error } = useSWR<BrukerType, Error>(getCurrentBrukerUrl, fetcher)
 
 	if (error && !runningCypressE2E()) {
-		console.error('Klarte ikke å hente aktiv bruker, navigerer til login..')
+		console.error(ERROR_ACTIVE_USER)
 		navigateToLogin()
 	}
 
 	return {
 		currentBruker: data,
-		loading: !error && !data,
+		loading: isLoading,
 		error: error,
 	}
 }
 
 export const useBrukerProfil = () => {
-	const { data, error } = useSWR<BrukerProfil, Error>(getProfilUrl, fetcher)
+	const { data, isLoading, error } = useSWR<BrukerProfil, Error>(getProfilUrl, fetcher)
 
 	return {
 		brukerProfil: data,
-		loading: !error && !data,
+		loading: isLoading,
 		error: error,
 	}
 }
 
 export const useBrukerProfilBilde = () => {
-	const { data, error } = useSWRImmutable<Blob, Error>(getProfilBildeUrl, imageFetcher)
+	const { data, isLoading, error } = useSWRImmutable<Blob, Error>(getProfilBildeUrl, imageFetcher)
 
 	return {
 		brukerBilde: data,
-		loading: !error && !data,
+		loading: isLoading,
 		error: error,
 	}
 }
@@ -90,14 +91,14 @@ export const useOrganisasjonTilgang = () => {
 		}
 	}
 
-	const { data, error } = useSWR<OrganisasjonMiljoe, Error>(
+	const { data, isLoading, error } = useSWR<OrganisasjonMiljoe, Error>(
 		getOrganisasjonTilgangUrl(orgnummer),
-		fetcher
+		fetcher,
 	)
 
 	return {
 		organisasjonTilgang: data,
-		loading: !error && !data,
+		loading: isLoading,
 		error: error,
 	}
 }

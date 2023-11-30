@@ -10,7 +10,10 @@ import { MiljoTabs } from '@/components/ui/miljoTabs/MiljoTabs'
 import { useBestilteMiljoer } from '@/utils/hooks/useBestilling'
 
 export const sjekkManglerPensjonData = (pensjonData) => {
-	return pensjonData?.length < 1 || pensjonData?.every((miljoData) => miljoData?.data?.length < 1)
+	return (
+		pensjonData?.length < 1 ||
+		pensjonData?.every((miljoData) => miljoData?.data?.inntekter?.length < 1)
+	)
 }
 
 const getTittel = (data) => {
@@ -20,12 +23,17 @@ const getTittel = (data) => {
 	return `Pensjonsgivende inntekter (${foerste} - ${siste})`
 }
 
-const PensjonInntekt = ({ data }) => {
+const PensjonInntekt = ({ data, isPanelOpen, setPanelOpen }) => {
 	if (!data) return null
+	const inntekter = data?.inntekter
 
 	return (
-		<Panel startOpen={runningCypressE2E()} heading={getTittel(data)}>
-			<DollyFieldArray data={data} nested>
+		<Panel
+			startOpen={isPanelOpen || runningCypressE2E()}
+			heading={getTittel(inntekter)}
+			setPanelOpen={setPanelOpen}
+		>
+			<DollyFieldArray data={inntekter} nested>
 				{(inntekt, idx) => (
 					<div className="person-visning_content" key={idx}>
 						<TitleValue title="Inntektsår" value={inntekt?.inntektAar} />
@@ -38,7 +46,7 @@ const PensjonInntekt = ({ data }) => {
 }
 
 export const PensjonVisning = ({ data, loading, bestillingIdListe, tilgjengeligMiljoe }) => {
-	const { bestilteMiljoer } = useBestilteMiljoer(bestillingIdListe, 'pensjonforvalter.inntekt')
+	const { bestilteMiljoer } = useBestilteMiljoer(bestillingIdListe, 'PEN_INNTEKT')
 
 	if (loading) {
 		return <Loading label="Laster pensjonforvalter-data" />
@@ -49,10 +57,12 @@ export const PensjonVisning = ({ data, loading, bestillingIdListe, tilgjengeligM
 
 	const manglerFagsystemdata = sjekkManglerPensjonData(data)
 
-	const miljoerMedData = data?.map((miljoData) => miljoData.data?.length > 0 && miljoData.miljo)
+	const miljoerMedData = data?.map(
+		(miljoData) => miljoData.data?.inntekter?.length > 0 && miljoData.miljo,
+	)
 	const errorMiljoer = bestilteMiljoer.filter((miljo) => !miljoerMedData?.includes(miljo))
 
-	const forsteMiljo = data.find((miljoData) => miljoData?.data?.length > 0)?.miljo
+	const forsteMiljo = data.find((miljoData) => miljoData?.data?.inntekter?.length > 0)?.miljo
 
 	const filteredData =
 		tilgjengeligMiljoe && data.filter((item) => item.miljo === tilgjengeligMiljoe)

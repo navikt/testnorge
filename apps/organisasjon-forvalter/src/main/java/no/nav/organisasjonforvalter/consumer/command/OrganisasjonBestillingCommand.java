@@ -45,15 +45,15 @@ public class OrganisasjonBestillingCommand implements Callable<Mono<BestillingSt
                         .filter(WebClientFilter::is5xxException))
 
                 .doOnError(throwable -> {
-                    log.error(throwable instanceof WebClientResponseException ?
-                            ((WebClientResponseException) throwable).getResponseBodyAsString() :
+                    log.error(throwable instanceof WebClientResponseException webClientResponseException ?
+                            webClientResponseException.getResponseBodyAsString() :
                             throwable.getMessage());
 
                     BestillingStatus.builder()
                             .uuid(status.getUuid())
                             .miljoe(status.getMiljoe())
-                            .feilmelding(throwable instanceof WebClientResponseException ?
-                                    ((WebClientResponseException) throwable).getResponseBodyAsString() :
+                            .feilmelding(throwable instanceof WebClientResponseException webClientResponseException ?
+                                    webClientResponseException.getResponseBodyAsString() :
                                     throwable.getMessage())
                             .build();
                 });

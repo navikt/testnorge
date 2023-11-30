@@ -12,10 +12,10 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Schema(description = "" +
-        "Resultatobjekt for finn-arbeidsforhold-per-arbeidsgiver\n" +
-        "En tom liste og antall > 0 betyr at søket gir for mange treff\n" +
-        "Arbeidsforhold er filtrert grunnet tilgangskontroll hvis størrelse på liste er mindre enn (total) antall"
+@Schema(description = """
+        Resultatobjekt for finn-arbeidsforhold-per-arbeidsgiver
+        En tom liste og antall > 0 betyr at søket gir for mange treff
+        Arbeidsforhold er filtrert grunnet tilgangskontroll hvis størrelse på liste er mindre enn (total) antall"""
 )
 public class ArbeidsgiverArbeidsforhold {
 

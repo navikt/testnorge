@@ -14,16 +14,11 @@ public class TokenService {
     private final TokenExchange tokenExchange;
 
     public Mono<AccessToken> getMagicToken() {
-        return tokenExchange.exchange(ServerProperties
-                .builder()
-                .name("team-dolly-lokal-app")
-                .cluster("dev-gcp")
-                .namespace("dolly")
-                .build()
-        );
-}
+        return tokenExchange.exchange(ServerProperties.of("dev-gcp", "dolly", "team-dolly-lokal-app", "http://valid.but.not.used"));
+    }
 
     public Mono<AccessToken> getToken(Application application) {
         return tokenExchange.exchange(application.toServerProperties());
     }
+
 }

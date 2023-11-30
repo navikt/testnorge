@@ -12,6 +12,10 @@ import no.nav.testnav.apps.syntsykemeldingapi.domain.Sykemelding;
 import no.nav.testnav.libs.dto.synt.sykemelding.v1.SyntSykemeldingDTO;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
+
+import static java.util.Objects.nonNull;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -22,24 +26,26 @@ public class SykemeldingService {
     private final ArbeidsforholdAdapter arbeidsforholdAdapter;
     private final PdlProxyConsumer pdlProxyConsumer;
 
-    public void opprettSykemelding(SyntSykemeldingDTO dto) {
-        var pdlData = pdlProxyConsumer.getPdlPerson(dto.getIdent());
+    public void opprettSykemelding(SyntSykemeldingDTO syntSykemelding) {
+
+        var pdlData = pdlProxyConsumer.getPdlPerson(syntSykemelding.getIdent());
         var pasient = new Person(pdlData);
 
-        var arbeidsforhold = arbeidsforholdAdapter.getArbeidsforhold(
-                dto.getIdent(),
-                dto.getOrgnummer(),
-                dto.getArbeidsforholdId()
-        );
+        var arbeidsforhold = nonNull(syntSykemelding.getOrgnummer()) ?
+                arbeidsforholdAdapter.getArbeidsforhold(
+                        syntSykemelding.getIdent(),
+                        syntSykemelding.getOrgnummer(),
+                        syntSykemelding.getArbeidsforholdId()) :
+                null;
 
         var historikk = syntElsamConsumer.genererSykemeldinger(
-                dto.getIdent(),
-                dto.getStartDato()
+                syntSykemelding.getIdent(),
+                syntSykemelding.getStartDato()
         );
         var helsepersonellListe = helsepersonellConsumer.hentHelsepersonell();
 
         sykemeldingConsumer.opprettSykemelding(
-                new Sykemelding(pasient, historikk, dto, helsepersonellListe.getRandomLege(), arbeidsforhold).toDTO()
+                new Sykemelding(pasient, historikk, syntSykemelding, helsepersonellListe.getRandomLege(), arbeidsforhold).toDTO()
         );
     }
 }

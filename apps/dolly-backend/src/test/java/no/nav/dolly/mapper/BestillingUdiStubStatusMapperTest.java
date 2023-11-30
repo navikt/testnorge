@@ -14,14 +14,14 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
 @ExtendWith(MockitoExtension.class)
-public class BestillingUdiStubStatusMapperTest {
+class BestillingUdiStubStatusMapperTest {
 
     private static final String IDENT1 = "11111111111";
     private static final String IDENT2 = "22222222222";
     private static final String ERROR_STATUS = "FEIL: something fishy: is going on";
 
     @Test
-    public void buildUdiStubStatusMap() {
+    void buildUdiStubStatusMap() {
 
         List<RsStatusRapport> result = BestillingUdiStubStatusMapper.buildUdiStubStatusMap(List.of(BestillingProgress.builder()
                         .ident(IDENT1)

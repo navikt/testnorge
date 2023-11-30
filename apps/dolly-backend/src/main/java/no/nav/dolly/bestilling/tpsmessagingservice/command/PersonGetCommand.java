@@ -2,14 +2,13 @@ package no.nav.dolly.bestilling.tpsmessagingservice.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.util.WebClientFilter;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PersonMiljoeDTO;
+import no.nav.testnav.libs.data.tpsmessagingservice.v1.PersonMiljoeDTO;
+import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
-import reactor.util.retry.Retry;
+import reactor.core.publisher.Mono;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -36,8 +35,14 @@ public class PersonGetCommand implements Callable<Flux<PersonMiljoeDTO>> {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToFlux(PersonMiljoeDTO.class)
-                .doOnError(WebClientFilter::logErrorMessage)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
+                .map(resultat -> {
+                    resultat.setIdent(ident);
+                    return resultat;
+                })
+                .onErrorResume(throwable -> Mono.just(PersonMiljoeDTO.builder()
+                        .status("FEIL")
+                        .melding(WebClientFilter.getStatus(throwable).getReasonPhrase())
+                        .utfyllendeMelding(WebClientFilter.getMessage(throwable))
+                        .build()));
     }
 }

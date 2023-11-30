@@ -23,9 +23,11 @@ public class GenerateNavnController {
     private final VerifyNavnService verifyNavnService;
 
     @GetMapping
-    public List<NavnDTO> generateName(@RequestParam Integer antall) {
+    public List<NavnDTO> generateName(
+            @RequestParam(required = false, defaultValue = "10") Integer antall,
+            @RequestParam(required = false) Long seed) {
 
-        return generateNavnService.getRandomNavn(antall);
+        return generateNavnService.getRandomNavn(seed, antall);
     }
 
     @PostMapping("/check")

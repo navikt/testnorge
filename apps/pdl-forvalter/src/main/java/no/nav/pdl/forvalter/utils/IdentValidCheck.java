@@ -1,7 +1,6 @@
 package no.nav.pdl.forvalter.utils;
 
 import lombok.experimental.UtilityClass;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.Collection;
 import java.util.Set;
@@ -12,8 +11,8 @@ import static org.apache.commons.lang3.StringUtils.isNumeric;
 @UtilityClass
 public class IdentValidCheck {
 
-    private static final int[] CHECK_DIGIT_C1 = {3, 7, 6, 1, 8, 9, 4, 5, 2};
-    private static final int[] CHECK_DIGIT_C2 = {5, 4, 3, 2, 7, 6, 5, 4, 3, 2};
+    private static final int[] CHECK_DIGIT_C1 = { 3, 7, 6, 1, 8, 9, 4, 5, 2 };
+    private static final int[] CHECK_DIGIT_C2 = { 5, 4, 3, 2, 7, 6, 5, 4, 3, 2 };
 
     public Set<String> isIdentValid(Collection<String> identer) {
 

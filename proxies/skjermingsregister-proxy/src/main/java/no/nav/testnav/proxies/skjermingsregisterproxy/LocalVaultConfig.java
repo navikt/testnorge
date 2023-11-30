@@ -11,6 +11,8 @@ import org.springframework.vault.authentication.TokenAuthentication;
 import org.springframework.vault.client.VaultEndpoint;
 import org.springframework.vault.config.AbstractVaultConfiguration;
 
+import static io.micrometer.common.util.StringUtils.isBlank;
+
 @Profile("local")
 @Import(DevConfig.class)
 @Configuration
@@ -31,8 +33,8 @@ public class LocalVaultConfig extends AbstractVaultConfiguration {
             System.setProperty(TOKEN_PROPERTY_NAME, System.getenv("VAULT_TOKEN"));
         }
         var token = System.getProperty(TOKEN_PROPERTY_NAME);
-        if (token == null) {
-            throw new IllegalArgumentException("Påkreved property '%s' er ikke satt.".formatted(TOKEN_PROPERTY_NAME));
+        if (isBlank(token)) {
+            throw new IllegalArgumentException("Påkrevet property '%s' er ikke satt.".formatted(TOKEN_PROPERTY_NAME));
         }
         return new TokenAuthentication(System.getProperty(TOKEN_PROPERTY_NAME));
     }

@@ -2,6 +2,10 @@ package no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.domain.Organisajon;
+import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.domain.Person;
+import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.domain.Timeline;
+import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.domain.amelding.Arbeidsforhold;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -21,11 +25,6 @@ import java.util.TreeSet;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.domain.Organisajon;
-import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.domain.Person;
-import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.domain.Timeline;
-import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.domain.amelding.Arbeidsforhold;
 
 @Slf4j
 @Service
@@ -137,10 +136,6 @@ public class PersonArbeidsforholdHistorkkService {
 
             var generert = generer(previous, organisajoner, ident, dates);
 
-            if (generert == null) {
-                return null;
-            }
-
             map.putAll(generert);
             return map;
         }
@@ -157,7 +152,7 @@ public class PersonArbeidsforholdHistorkkService {
                     dateList.size()
             ).block();
         } catch (Exception ex) {
-            return null;
+            return Collections.emptyMap();
         }
 
 

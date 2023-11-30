@@ -35,7 +35,7 @@ type ResponsBestilling = {
 		{
 			navn: string
 			id: number
-		}
+		},
 	]
 }
 
@@ -64,6 +64,7 @@ const FinnPersonBestilling = ({
 		control: (provided: any, state: { isFocused: boolean }) => ({
 			...provided,
 			borderRadius: 0,
+			paddingTop: '3px',
 			borderWidth: 0,
 			borderStyle: 'none',
 			boxShadow: state.isFocused ? 'inset 0px 0px 2px 1px #5684ff' : null,
@@ -208,7 +209,7 @@ const FinnPersonBestilling = ({
 				? soekBestillinger(tekst).catch((err: Error) => setError(err.message))
 				: soekPersoner(tekst).catch((err: Error) => setError(err.message))
 		},
-		[soekType]
+		[soekType],
 	)
 
 	const handleChange = (tekst: string) => {
@@ -220,7 +221,7 @@ const FinnPersonBestilling = ({
 	const CustomOption = ({ children, ...props }) => (
 		// @ts-ignore
 		<components.Option {...props}>
-			<span data-cy={CypressSelector.BUTTON_NAVIGER_PERSON}>
+			<span data-cy={CypressSelector.BUTTON_NAVIGER_DOLLY}>
 				<Highlighter
 					textToHighlight={children}
 					searchWords={fragment.split(' ')}
@@ -235,7 +236,7 @@ const FinnPersonBestilling = ({
 		return (
 			// @ts-ignore
 			<components.DropdownIndicator {...props}>
-				<Icon data-cy={CypressSelector.INPUT_PERSON_SOEK} kind={'search'} size={20} />
+				<Icon fontSize={'1.5rem'} data-cy={CypressSelector.INPUT_DOLLY_SOEK} kind={'search'} />
 			</components.DropdownIndicator>
 		)
 	}
