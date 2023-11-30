@@ -8,8 +8,11 @@
                     <maxDepthPerThrowable>256</maxDepthPerThrowable>
                     <maxLength>10280</maxLength>
                     <shortenedClassNameLength>20</shortenedClassNameLength>
-                    <exclude>^sun\.reflect\..*\.invoke</exclude>
-                    <exclude>^net\.sf\.cglib\.proxy\.MethodProxy\.invoke</exclude>
+                    <rootCauseFirst>true</rootCauseFirst>
+                    <exclude>^sun\.</exclude>
+                    <exclude>^net\.sf\.cglib\.</exclude>
+                    <exclude>^java\.lang\.Thread\.</exclude>
+                    <exclude>^java\.io\.</exclude>
                     <exclude>java\.util\.concurrent\..*</exclude>
                     <exclude>org\.apache\.catalina\..*</exclude>
                     <exclude>org\.apache\.coyote\..*</exclude>
@@ -36,5 +39,5 @@
         </root>
     </springProfile>
 
-    <logger level="TRACE" name="no.nav.testnav.libs.reactivecore.filter.RequestLogger" />
+    <logger level="TRACE" name="no.nav.testnav.libs.reactivecore.filter.RequestLogger"/>
 </configuration>
