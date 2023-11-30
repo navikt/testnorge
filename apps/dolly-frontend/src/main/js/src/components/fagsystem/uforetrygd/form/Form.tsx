@@ -11,7 +11,8 @@ import * as _ from 'lodash-es'
 import { useNavEnheter } from '@/utils/hooks/useNorg2'
 import { BarnetilleggForm } from '@/components/fagsystem/uforetrygd/form/partials/BarnetilleggForm'
 import { validation } from '@/components/fagsystem/uforetrygd/form/validation'
-import { addDays } from 'date-fns'
+import _get from 'lodash/get'
+import { Monthpicker } from '@/components/ui/form/inputs/monthpicker/Monthpicker'
 
 const uforetrygdPath = 'pensjonforvalter.uforetrygd'
 
@@ -38,15 +39,20 @@ export const UforetrygdForm = ({ formikBag }) => {
 			>
 				<div className="flexbox--flex-wrap">
 					<FormikDatepicker
+						name={`${uforetrygdPath}.uforetidspunkt`}
+						label="Uføretidspunkt" />
+					<FormikDatepicker
 						name={`${uforetrygdPath}.kravFremsattDato`}
 						label="Krav fremsatt dato"
 					/>
-					<FormikDatepicker
+					<Monthpicker
 						name={`${uforetrygdPath}.onsketVirkningsDato`}
 						label="Ønsket virkningsdato"
-						minDate={addDays(new Date(), 1)}
+						date={_get(formikBag.values, `${uforetrygdPath}.onsketVirkningsDato`)}
+						handleDateChange={(dato: string) =>
+							formikBag.setFieldValue(`${uforetrygdPath}.onsketVirkningsDato`, dato)
+						}
 					/>
-					<FormikDatepicker name={`${uforetrygdPath}.uforetidspunkt`} label="Uføretidspunkt" />
 					<FormikTextInput
 						name={`${uforetrygdPath}.inntektForUforhet`}
 						label="Inntekt før uførhet"
@@ -83,10 +89,9 @@ export const UforetrygdForm = ({ formikBag }) => {
 					/>
 					<FormikSelect
 						name={`${uforetrygdPath}.navEnhetId`}
-						label={'NAV-enhet'}
-						size={'xxxlarge'}
+						label={'NAV-kontor'}
+						size={'xxlarge'}
 						options={navEnheter}
-						isClearable={false}
 					/>
 				</div>
 			</Panel>

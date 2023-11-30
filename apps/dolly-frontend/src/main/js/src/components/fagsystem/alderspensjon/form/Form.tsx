@@ -2,7 +2,7 @@ import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
 import Panel from '@/components/ui/panel/Panel'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { Alert } from '@navikt/ds-react'
 import styled from 'styled-components'
@@ -13,7 +13,10 @@ import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bes
 import { validation } from '@/components/fagsystem/alderspensjon/form/validation'
 import { Monthpicker } from '@/components/ui/form/inputs/monthpicker/Monthpicker'
 import { getAlder } from '@/ducks/fagsystem'
-import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { useNavEnheter } from '@/utils/hooks/useNorg2'
+import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import * as _ from 'lodash-es'
+import { genererTilfeldigeNavPersonidenter } from '@/utils/GenererTilfeldigeNavPersonidenter'
 
 const StyledAlert = styled(Alert)`
 	margin-bottom: 20px;
@@ -28,6 +31,20 @@ const StyledAlert = styled(Alert)`
 const alderspensjonPath = 'pensjonforvalter.alderspensjon'
 
 export const AlderspensjonForm = ({ formikBag }) => {
+
+	const { navEnheter } = useNavEnheter()
+
+	const saksbehandler = _.get(formikBag.values, `${alderspensjonPath}.saksbehandler`)
+	const attesterer = _.get(formikBag.values, `${alderspensjonPath}.attesterer`)
+
+	const [randomAttesterer, setRandomAttesterer] = useState([])
+	const [randomSaksbehandler, setRandomSaksbehandler] = useState([])
+
+	useEffect(() => {
+		setRandomAttesterer(genererTilfeldigeNavPersonidenter(saksbehandler))
+		setRandomSaksbehandler(genererTilfeldigeNavPersonidenter(attesterer))
+	}, [])
+
 	const opts = useContext(BestillingsveilederContext)
 	const { nyBestilling, leggTil, importTestnorge, leggTilPaaGruppe } = opts?.is
 
@@ -101,15 +118,6 @@ export const AlderspensjonForm = ({ formikBag }) => {
 			gyldigSivilstand.includes(siv?.type),
 		)
 
-	const harPartnerImportertPerson = () => {
-		const personerMedPartner = opts?.importPersoner?.filter((person) => {
-			return person?.data?.hentPerson?.sivilstand?.some((siv) =>
-				gyldigSivilstand.includes(siv?.type),
-			)
-		})
-		return personerMedPartner?.length > 0
-	}
-
 	const adressetyper = {
 		norge: 'NORGE',
 		utland: 'UTLAND',
@@ -150,6 +158,7 @@ export const AlderspensjonForm = ({ formikBag }) => {
 
 		return opts?.identtype === 'FNR' && valgtAdresseType() !== adressetyper.utland
 	}
+
 
 	return (
 		<Vis attributt={alderspensjonPath}>
@@ -199,25 +208,32 @@ export const AlderspensjonForm = ({ formikBag }) => {
 						kunne opprettes automatisk.
 					</StyledAlert>
 				)}
-				{_get(formikBag.values, `${alderspensjonPath}.relasjoner[0].sumAvForvArbKapPenInntekt`) &&
-					!leggTilPaaGruppe &&
-					!harPartner &&
-					!harPartnerImportertPerson() && (
-						<StyledAlert variant={'info'} size={'small'}>
-							Personen må ha ektefelle/partner for at feltet "Ektefelle/partners inntekt" skal være
-							gyldig.
-						</StyledAlert>
-					)}
 
 				<div className="flexbox--flex-wrap">
+					<FormikDatepicker
+						name={`${alderspensjonPath}.kravFremsattDato`}
+						label="Krav fremsatt dato"
+						date={_get(formikBag.values, `${alderspensjonPath}.kravFremsattDato`)}
+					/>
 					<Monthpicker
 						name={`${alderspensjonPath}.iverksettelsesdato`}
-						label="Iverksettelsesmåned"
+						label="Iverksettelsesdato"
 						date={_get(formikBag.values, `${alderspensjonPath}.iverksettelsesdato`)}
 						handleDateChange={(dato: string) =>
 							formikBag.setFieldValue(`${alderspensjonPath}.iverksettelsesdato`, dato)
 						}
-						minDate={setDate(addMonths(new Date(), 1), 1)}
+					/>
+					<FormikSelect
+						options={randomSaksbehandler}
+						name={`${alderspensjonPath}.saksbehandler`}
+						label={'Saksbehandler'}
+						fastfield={false}
+					/>
+					<FormikSelect
+						options={randomAttesterer}
+						name={`${alderspensjonPath}.attesterer`}
+						label={'Attesterer'}
+						fastfield={false}
 					/>
 					<FormikSelect
 						name={`${alderspensjonPath}.uttaksgrad`}
@@ -225,10 +241,11 @@ export const AlderspensjonForm = ({ formikBag }) => {
 						options={Options('apUttaksgrad')}
 						isClearable={false}
 					/>
-					<FormikTextInput
-						name={`${alderspensjonPath}.relasjoner[0].sumAvForvArbKapPenInntekt`}
-						label="Ektefelle/partners inntekt"
-						type="number"
+					<FormikSelect
+						name={`${alderspensjonPath}.navEnhetId`}
+						label="Nav-kontor"
+						size={'xlarge'}
+						options={navEnheter}
 					/>
 				</div>
 			</Panel>

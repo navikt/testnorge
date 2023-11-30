@@ -61,9 +61,9 @@ const DataVisning = ({ data, miljo }) => {
 		<>
 			<div className="person-visning_content">
 				<TitleValue title="Vedtaksstatus" value={vedtakData?.[0]?.vedtakStatus} />
+				<TitleValue title="Uføretidspunkt" value={formatDate(data?.uforetidspunkt)} />
 				<TitleValue title="Krav fremsatt dato" value={formatDate(data?.kravFremsattDato)} />
 				<TitleValue title="Ønsket virkningsdato" value={formatDate(data?.onsketVirkningsDato)} />
-				<TitleValue title="Uføretidspunkt" value={formatDate(data?.uforetidspunkt)} />
 				<TitleValue title="Inntekt før uførhet" value={data?.inntektForUforhet} />
 				<TitleValue
 					title="Type barnetillegg"

@@ -1878,12 +1878,21 @@ const mapPensjon = (bestillingData, data) => {
 
 		if (pensjonKriterier.alderspensjon) {
 			const ap = pensjonKriterier.alderspensjon
+
+			const { navEnheter } = useNavEnheter()
+			const navEnhetLabel = navEnheter?.find(
+				(enhet) => enhet.value === ap.navEnhetId?.toString(),
+			)?.label
+
 			const pensjonforvalterAlderspensjon = {
 				header: 'Alderspensjon',
 				items: [
+					obj('KravFremsattDato', formatDate(ap.kravFremsattDato)),
 					obj('Iverksettelsesdato', formatDate(ap.iverksettelsesdato)),
+					obj('Saksbehandler', `${ap.saksbehandler}`),
+					obj('Attesterer', `${ap.attesterer}` ),
 					obj('Uttaksgrad', `${ap.uttaksgrad}%`),
-					obj('Ektefelle/partners inntekt', ap.relasjoner?.[0]?.sumAvForvArbKapPenInntekt),
+					obj('NAV-kontor', navEnhetLabel || ap.navEnhetId),
 				],
 			}
 			data.push(pensjonforvalterAlderspensjon)
@@ -1924,7 +1933,7 @@ const mapPensjon = (bestillingData, data) => {
 					obj('Uføregrad', uforetrygd.uforegrad ? `${uforetrygd.uforegrad}%` : null),
 					obj('Saksbehandler', uforetrygd.saksbehandler),
 					obj('Attesterer', uforetrygd.attesterer),
-					obj('NAV-enhet', navEnhetLabel || uforetrygd.navEnhetId),
+					obj('NAV-kontor', navEnhetLabel || uforetrygd.navEnhetId),
 				],
 			}
 			data.push(pensjonforvalterUforetrygd)
