@@ -46,6 +46,8 @@ export enum CypressSelector {
 	BUTTON_NAVIGER_DOLLY = 'button-naviger-dolly',
 	BUTTON_HEADER_PERSONER = 'button-header-personer',
 	BUTTON_HEADER_ORGANISASJONER = 'button-header-organisasjoner',
+	BUTTON_HEADER_FINNPERSON = 'button-header-finnperson',
+	BUTTON_HEADER_DOLLYSOEK = 'button-header-dollysoek',
 	BUTTON_HEADER_TESTNORGE = 'button-header-testnorge',
 	BUTTON_HEADER_ENDRINGSMELDING = 'button-header-endringsmelding',
 	BUTTON_PROFIL = 'button-minside',
