@@ -7,7 +7,6 @@ import no.nav.dolly.bestilling.tpsmessagingservice.command.EgenansattDeleteComma
 import no.nav.dolly.bestilling.tpsmessagingservice.command.EgenansattPostCommand;
 import no.nav.dolly.bestilling.tpsmessagingservice.command.PersonGetCommand;
 import no.nav.dolly.bestilling.tpsmessagingservice.command.SikkerhetstiltakDeleteCommand;
-import no.nav.dolly.bestilling.tpsmessagingservice.command.TelefonnummerDeleteCommand;
 import no.nav.dolly.bestilling.tpsmessagingservice.command.TpsMessagingPostCommand;
 import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
@@ -37,7 +36,6 @@ public class TpsMessagingConsumer implements ConsumerStatus {
     private static final String NORSK_BANKKONTO_URL = BASE_URL + "/bankkonto-norsk";
     private static final String SIKKERHETSTILTAK_URL = BASE_URL + "/sikkerhetstiltak";
     private static final String SPRAAKKODE_URL = BASE_URL + "/spraakkode";
-    private static final String TELEFONNUMMER_URL = BASE_URL + "/telefonnumre";
     private static final List<String> TELEFONTYPER_LISTE = Arrays.asList("ARBT", "HJET", "MOBI");
 
     private final WebClient webClient;
@@ -103,22 +101,6 @@ public class TpsMessagingConsumer implements ConsumerStatus {
 
         return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> new EgenansattDeleteCommand(webClient, ident, miljoer, token.getTokenValue()).call());
-    }
-
-    @Timed(name = "providers", tags = {"operation", "tps_messaging_createTelefonnummer"})
-    public Flux<TpsMeldingResponseDTO> sendTelefonnummerRequest(String ident, List<String> miljoer, Object body) {
-
-        return tokenService.exchange(serverProperties)
-                .flatMapMany(token ->
-                        new TpsMessagingPostCommand(webClient, ident, miljoer, body, TELEFONNUMMER_URL, token.getTokenValue()).call());
-    }
-
-    @Timed(name = "providers", tags = {"operation", "tps_messaging_deleteTelefonnummer"})
-    public Flux<TpsMeldingResponseDTO> deleteTelefonnummerRequest(String ident, List<String> miljoer) {
-
-        return tokenService.exchange(serverProperties)
-                .flatMapMany(token ->
-                        new TelefonnummerDeleteCommand(webClient, ident, miljoer, TELEFONTYPER_LISTE, token.getTokenValue()).call());
     }
 
     @Timed(name = "providers", tags = {"operation", "tps_messaging_createSpraakkode"})
