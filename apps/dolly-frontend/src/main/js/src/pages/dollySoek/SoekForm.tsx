@@ -11,6 +11,7 @@ import { useSoekIdenter } from '@/utils/hooks/usePersonSoek'
 import { SoekRequest } from '@/pages/dollySoek/DollySoekTypes'
 import { ResultatVisning } from '@/pages/dollySoek/ResultatVisning'
 import * as _ from 'lodash-es'
+import { CypressSelector } from '../../../cypress/mocks/Selectors'
 
 const SoekefeltWrapper = styled.div`
 	display: flex;
@@ -200,7 +201,7 @@ export const SoekForm = () => {
 												</Accordion.Content>
 											</Accordion.Item>
 											<Accordion.Item>
-												<Accordion.Header>
+												<Accordion.Header data-cy={CypressSelector.EXPANDABLE_PERSONINFORMASJON}>
 													<Header
 														title="Personinformasjon"
 														antall={getAntallRequest([
@@ -219,6 +220,7 @@ export const SoekForm = () => {
 												<Accordion.Content>
 													<SoekKategori>
 														<FormikSelect
+															classNamePrefix="select-kjoenn"
 															name={`${personPath}.kjoenn`}
 															options={Options('kjoenn')}
 															size="small"
@@ -239,6 +241,7 @@ export const SoekForm = () => {
 															value={getValue(`${personPath}.statsborgerskap`)}
 														/>
 														<FormikCheckbox
+															data-cy={CypressSelector.TOGGLE_HAR_VERGE}
 															name={`${personPath}.harVerge`}
 															label="Har verge"
 															onChange={(val: SyntheticEvent) =>
@@ -612,6 +615,7 @@ export const SoekForm = () => {
 											Hent nye treff
 										</Button>
 										<Button
+											data-cy={CypressSelector.BUTTON_NULLSTILL_SOEK}
 											onClick={() => {
 												setRequest(null)
 												formikBag.setValues(initialValuesClone)

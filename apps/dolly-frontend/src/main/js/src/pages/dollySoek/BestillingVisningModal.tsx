@@ -35,7 +35,7 @@ export const BestillingVisningModal = ({ bestilling }) => {
 export const BestillingVisningListe = ({ bestillinger }) => {
 	return (
 		<div className="flexbox--flex-wrap">
-			{bestillinger.map((bestilling) => (
+			{bestillinger?.map((bestilling) => (
 				<BestillingVisningModal key={bestilling.id} bestilling={bestilling} />
 			))}
 		</div>
