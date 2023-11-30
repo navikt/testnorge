@@ -96,4 +96,22 @@ class ArenaBrukerServiceTest {
 
         assertThat(response, is("Feil: Det finnes et overlappende vedtak om livsoppholdsytelse for denne perioden."));
     }
+
+    @Test
+    void getBrukerStatus_Meldeform_Exception() {
+        var response = arenaBrukerService.getBrukerStatus(
+                ArenaNyeBrukereResponse.builder()
+                        .status(HttpStatus.OK)
+                        .arbeidsokerList(Collections.emptyList())
+                        .miljoe("t1")
+                        .nyBrukerFeilList(Collections.singletonList(ArenaNyeBrukereResponse.NyBrukerFeilV1.builder()
+                                .miljoe("t1")
+                                .personident("12345678901")
+                                .melding("\"code\": \"UserDefinedResourceError\", \"title\": \"User Defined Resource Error\", \"message\": \"The request could not be processed due to an error in a user defined resource\", \"o:errorCode\": \"ORDS-00000\", \"cause\": \"An error occurred when evaluating the SQL statement associated with this resource. SQL Error Code 00000, Error Message: ORA-00000: Personen TESTESEN TEST har ingen meldeform\\nORA-00000: ved \\\"SIAMO.SYNT_DAGPENGER\\\", line 0000\\nORA-00000: ved \\\"SIAMO.VEDTAK_AS\\\", line 00\\nORA-00000: ved \\\"SIAMO.AU_FEIL\\\", line 000\\nORA-00000: ved \\\"SIAMO.AU_FEIL\\\", line 000\\nORA-00000: ved \\\"SIAMO.MK_MELDEKORT\\\", line 000\\nORA-00000: ingen data funnet\\nORA-00000: ved \\\"SIAMO.MK_MELDEKORT\\\", line 000\\nORA-00000: ved \\\"SIAMO.MK_MELDEKORT\\\", line 0000\\nORA-00000: ved \\\"SIAMO.MK_MELDESTATUS\\\", line 0000\\nORA-00000: ved \\\"SIAMO.VEDTAK_PAKKE\\\", line 0000\\nORA-00000: ved \\\"SIAMO.VEDTAK_AS\\\", line 00\\nORA-00000: feil ved utføring av triggeren 'SIAMO.VEDTAK_AS'\\nORA-00000: ved \\\"SIAMO.SYNT_VEDTAK\\\", line 000\\nORA-00000: ved \\\"SIAMO.SYNT_VEDTAK\\\", line 0000\\nORA-00000: ved \\\"SIAMO.SYNT_VEDTAK\\\", line 0000\\nORA-00000: ved \\\"SIAMO.SYNT_DAGPENGER\\\", line 0000\\nORA-00000: ved \\\"SYNT_REST.DAGPENGER\\\", line 00\\nORA-00000: ved line 0\\n\", \"action\": \"Ask the user defined resource author to check the SQL statement is correctly formed and executes without error\", \"type\": \"tag:oracle.com,0000:error/UserDefinedResourceError\", \"instance\": \"tag:oracle.com,0000:ecid/qwert12345\" }")
+                                .build()))
+                        .build()
+        ).block();
+
+        assertThat(response, is("Feil: Personen TESTESEN TEST har ingen meldeform"));
+    }
 }
