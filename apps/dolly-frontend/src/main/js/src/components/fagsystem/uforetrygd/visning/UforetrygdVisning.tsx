@@ -86,7 +86,7 @@ const DataVisning = ({ data, miljo }) => {
 				<TitleValue title="Uføregrad" value={data?.uforegrad ? `${data?.uforegrad}%` : null} />
 				<TitleValue title="Saksbehandler" value={data?.saksbehandler} />
 				<TitleValue title="Attesterer" value={data?.attesterer} />
-				<TitleValue title="NAV-enhet" value={navEnhetLabel || data?.navEnhetId} />
+				<TitleValue title="NAV-kontor" value={navEnhetLabel || data?.navEnhetId} />
 			</div>
 		</>
 	)

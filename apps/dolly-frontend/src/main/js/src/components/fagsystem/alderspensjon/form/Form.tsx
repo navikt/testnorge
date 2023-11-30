@@ -8,7 +8,7 @@ import { Alert } from '@navikt/ds-react'
 import styled from 'styled-components'
 import _has from 'lodash/has'
 import _get from 'lodash/get'
-import { add, addMonths, getYear, isAfter, isDate, parseISO, setDate } from 'date-fns'
+import { add, getYear, isAfter, isDate, parseISO } from 'date-fns'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { validation } from '@/components/fagsystem/alderspensjon/form/validation'
 import { Monthpicker } from '@/components/ui/form/inputs/monthpicker/Monthpicker'
@@ -37,12 +37,12 @@ export const AlderspensjonForm = ({ formikBag }) => {
 	const saksbehandler = _.get(formikBag.values, `${alderspensjonPath}.saksbehandler`)
 	const attesterer = _.get(formikBag.values, `${alderspensjonPath}.attesterer`)
 
-	const [randomAttesterer, setRandomAttesterer] = useState([])
-	const [randomSaksbehandler, setRandomSaksbehandler] = useState([])
+	const [randomAttesterere, setRandomAttesterere] = useState([])
+	const [randomSaksbehandlere, setRandomSaksbehandlere] = useState([])
 
 	useEffect(() => {
-		setRandomAttesterer(genererTilfeldigeNavPersonidenter(saksbehandler))
-		setRandomSaksbehandler(genererTilfeldigeNavPersonidenter(attesterer))
+		setRandomAttesterere(genererTilfeldigeNavPersonidenter(saksbehandler))
+		setRandomSaksbehandlere(genererTilfeldigeNavPersonidenter(attesterer))
 	}, [])
 
 	const opts = useContext(BestillingsveilederContext)
@@ -108,16 +108,6 @@ export const AlderspensjonForm = ({ formikBag }) => {
 		_has(formikBag.values, 'pensjonforvalter.inntekt') ||
 		opts?.tidligereBestillinger?.some((bestilling) => bestilling.data?.pensjonforvalter?.inntekt)
 
-	const gyldigSivilstand = ['GIFT', 'SAMBOER', 'REGISTRERT_PARTNER']
-
-	const harPartner =
-		_get(formikBag.values, 'pdldata.person.sivilstand')?.some((siv) =>
-			gyldigSivilstand.includes(siv?.type),
-		) ||
-		_get(opts, 'personFoerLeggTil.pdl.hentPerson.sivilstand')?.some((siv) =>
-			gyldigSivilstand.includes(siv?.type),
-		)
-
 	const adressetyper = {
 		norge: 'NORGE',
 		utland: 'UTLAND',
@@ -158,7 +148,6 @@ export const AlderspensjonForm = ({ formikBag }) => {
 
 		return opts?.identtype === 'FNR' && valgtAdresseType() !== adressetyper.utland
 	}
-
 
 	return (
 		<Vis attributt={alderspensjonPath}>
@@ -224,13 +213,13 @@ export const AlderspensjonForm = ({ formikBag }) => {
 						}
 					/>
 					<FormikSelect
-						options={randomSaksbehandler}
+						options={randomSaksbehandlere}
 						name={`${alderspensjonPath}.saksbehandler`}
 						label={'Saksbehandler'}
 						fastfield={false}
 					/>
 					<FormikSelect
-						options={randomAttesterer}
+						options={randomAttesterere}
 						name={`${alderspensjonPath}.attesterer`}
 						label={'Attesterer'}
 						fastfield={false}

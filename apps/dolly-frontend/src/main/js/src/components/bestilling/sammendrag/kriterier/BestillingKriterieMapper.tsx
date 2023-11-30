@@ -1889,8 +1889,8 @@ const mapPensjon = (bestillingData, data) => {
 				items: [
 					obj('KravFremsattDato', formatDate(ap.kravFremsattDato)),
 					obj('Iverksettelsesdato', formatDate(ap.iverksettelsesdato)),
-					obj('Saksbehandler', `${ap.saksbehandler}`),
-					obj('Attesterer', `${ap.attesterer}` ),
+					obj('Saksbehandler', ap.saksbehandler),
+					obj('Attesterer', ap.attesterer),
 					obj('Uttaksgrad', `${ap.uttaksgrad}%`),
 					obj('NAV-kontor', navEnhetLabel || ap.navEnhetId),
 				],

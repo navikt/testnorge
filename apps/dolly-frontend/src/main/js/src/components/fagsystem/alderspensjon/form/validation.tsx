@@ -1,6 +1,6 @@
-import { ifPresent, messages, requiredDate, requiredNumber } from '@/utils/YupValidations'
+import { ifPresent, messages, requiredNumber } from '@/utils/YupValidations'
 import * as Yup from 'yup'
-import { isAfter, isBefore } from 'date-fns'
+import { isAfter } from 'date-fns'
 
 export const validation = {
 	alderspensjon: ifPresent(
