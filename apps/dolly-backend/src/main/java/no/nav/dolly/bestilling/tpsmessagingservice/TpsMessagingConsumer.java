@@ -22,7 +22,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.List;
 
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
@@ -36,7 +35,6 @@ public class TpsMessagingConsumer implements ConsumerStatus {
     private static final String NORSK_BANKKONTO_URL = BASE_URL + "/bankkonto-norsk";
     private static final String SIKKERHETSTILTAK_URL = BASE_URL + "/sikkerhetstiltak";
     private static final String SPRAAKKODE_URL = BASE_URL + "/spraakkode";
-    private static final List<String> TELEFONTYPER_LISTE = Arrays.asList("ARBT", "HJET", "MOBI");
 
     private final WebClient webClient;
     private final TokenExchange tokenService;
