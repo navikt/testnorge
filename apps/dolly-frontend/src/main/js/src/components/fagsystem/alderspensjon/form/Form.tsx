@@ -232,7 +232,7 @@ export const AlderspensjonForm = ({ formikBag }) => {
 					<FormikSelect
 						name={`${alderspensjonPath}.navEnhetId`}
 						label="Nav-kontor"
-						size={'xlarge'}
+						size={'xxlarge'}
 						options={navEnheter}
 					/>
 				</div>

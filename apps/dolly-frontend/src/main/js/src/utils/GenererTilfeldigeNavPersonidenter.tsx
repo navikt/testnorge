@@ -13,7 +13,5 @@ export const genererTilfeldigeNavPersonidenter = (valgtIdent = null) => {
 	if (valgtIdent) {
 		personidenter.unshift({ value: valgtIdent, label: valgtIdent })
 	}
-	console.log('personidenter',personidenter)
-	console.log('valgtIdent',valgtIdent)
 	return personidenter
 }
