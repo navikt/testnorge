@@ -38,9 +38,7 @@ export const UforetrygdForm = ({ formikBag }) => {
 				startOpen={erForsteEllerTest(formikBag.values, [uforetrygdPath])}
 			>
 				<div className="flexbox--flex-wrap">
-					<FormikDatepicker
-						name={`${uforetrygdPath}.uforetidspunkt`}
-						label="Uføretidspunkt" />
+					<FormikDatepicker name={`${uforetrygdPath}.uforetidspunkt`} label="Uføretidspunkt" />
 					<FormikDatepicker
 						name={`${uforetrygdPath}.kravFremsattDato`}
 						label="Krav fremsatt dato"

@@ -31,7 +31,6 @@ const StyledAlert = styled(Alert)`
 const alderspensjonPath = 'pensjonforvalter.alderspensjon'
 
 export const AlderspensjonForm = ({ formikBag }) => {
-
 	const { navEnheter } = useNavEnheter()
 
 	const saksbehandler = _.get(formikBag.values, `${alderspensjonPath}.saksbehandler`)
@@ -41,8 +40,8 @@ export const AlderspensjonForm = ({ formikBag }) => {
 	const [randomSaksbehandlere, setRandomSaksbehandlere] = useState([])
 
 	useEffect(() => {
-		setRandomAttesterere(genererTilfeldigeNavPersonidenter(saksbehandler))
-		setRandomSaksbehandlere(genererTilfeldigeNavPersonidenter(attesterer))
+		setRandomAttesterere(genererTilfeldigeNavPersonidenter(attesterer))
+		setRandomSaksbehandlere(genererTilfeldigeNavPersonidenter(saksbehandler))
 	}, [])
 
 	const opts = useContext(BestillingsveilederContext)
