@@ -109,14 +109,6 @@ public class TpsMessagingConsumer implements ConsumerStatus {
                         new TpsMessagingPostCommand(webClient, ident, miljoer, body, SPRAAKKODE_URL, token.getTokenValue()).call());
     }
 
-    @Timed(name = "providers", tags = {"operation", "tps_messaging_getPersoner"})
-    public Flux<PersonMiljoeDTO> getPersoner(List<String> identer, List<String> miljoer) {
-
-        return tokenService.exchange(serverProperties)
-                .flatMapMany(token -> Flux.range(0, identer.size())
-                        .flatMap(index -> new PersonGetCommand(webClient, identer.get(index), miljoer, token.getTokenValue()).call()));
-    }
-
     @Timed(name = "providers", tags = {"operation", "tps_messaging_getPerson"})
     public Flux<PersonMiljoeDTO> getPerson(String ident, List<String> miljoer) {
 
