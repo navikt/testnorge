@@ -20,7 +20,7 @@ spring:
       httpclient:
         response-timeout: 30s
 
-app:
+consumers:
   skjermingsregister:
     name: skjermede-personer
     namespace: nom

@@ -19,7 +19,7 @@ import static org.springframework.security.test.web.reactive.server.SecurityMock
 
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        properties = "app.skjermingsregister.url=http://localhost:${wiremock.server.port}"
+        properties = "consumers.skjermingsregister.url=http://localhost:${wiremock.server.port}"
 )
 @AutoConfigureWireMock(port = 0)
 @AutoConfigureWebTestClient
