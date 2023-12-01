@@ -1,11 +1,13 @@
 package no.nav.testnav.proxies.skjermingsregisterproxy;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.vault.authentication.TokenAuthentication;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
+@ActiveProfiles("test")
 class LocalVaultConfigTest {
 
     @Test

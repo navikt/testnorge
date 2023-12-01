@@ -13,7 +13,7 @@ spec:
     application:
       allowAllUsers: true
       enabled: true
-      tenant: nav.no
+      tenant: trygdeetaten.no
   accessPolicy:
     inbound:
       rules:
