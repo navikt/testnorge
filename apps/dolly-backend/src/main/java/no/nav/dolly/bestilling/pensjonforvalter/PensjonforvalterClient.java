@@ -50,7 +50,6 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
@@ -506,15 +505,22 @@ public class PensjonforvalterClient implements ClientRegister {
                 .collect(Collectors.joining(","));
     }
 
-    String getError(PensjonforvalterResponse.ResponseEnvironment entry) {
+     String getError(PensjonforvalterResponse.ResponseEnvironment entry) {
+
         var response = entry.getResponse();
         var httpStatus = response.getHttpStatus();
-        var status = Optional
-                .ofNullable(response.getMessage())
-                .filter(m -> m.contains("{"))
-                .map(m -> "Feil: " + m.split("\\{")[1].split("}")[0].replace("message\":", ""))
-                .orElse(errorStatusDecoder.getErrorText(HttpStatus.valueOf(httpStatus.getStatus()), httpStatus.getReasonPhrase()));
-        return ErrorStatusDecoder.encodeStatus(status);
+
+        if (isNotBlank(response.getMessage())) {
+            if (response.getMessage().contains("{")) {
+                return ErrorStatusDecoder.encodeStatus(
+                        "Feil: " + response.getMessage().split("\\{")[1].split("}")[0].replace("message\":", ""));
+            } else {
+                return ErrorStatusDecoder.encodeStatus("Feil: " + response.getMessage());
+            }
+
+        } else {
+           return errorStatusDecoder.getErrorText(HttpStatus.valueOf(httpStatus.getStatus()), httpStatus.getReasonPhrase());
+        }
     }
 
     private String toJson(Object object) {

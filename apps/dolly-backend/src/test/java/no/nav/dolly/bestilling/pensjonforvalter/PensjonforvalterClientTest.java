@@ -585,7 +585,5 @@ class PensjonforvalterClientTest {
                 .build();
         var error = pensjonforvalterClient.getError(entry);
         assertThat(error, is(expected));
-
     }
-
 }
