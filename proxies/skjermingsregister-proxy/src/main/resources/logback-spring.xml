@@ -22,7 +22,7 @@
         </root>
     </springProfile>
 
-    <springProfile name="local">
+    <springProfile name="dev">
         <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
             <encoder>
                 <pattern>

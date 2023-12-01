@@ -18,7 +18,7 @@ jacocoTestReport {
 
 sonarqube {
     properties {
-        property "sonar.coverage.jacoco.xmlReportPaths", "${project.layout.buildDirectory}/reports/jacoco/test/jacocoTestReport.xml"
+        property "sonar.coverage.jacoco.xmlReportPaths", "${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml"
         property "sonar.dynamicAnalysis", "reuseReports"
         property "sonar.host.url", "https://sonarcloud.io"
         property "sonar.java.coveragePlugin", "jacoco"
@@ -50,31 +50,25 @@ repositories {
 }
 
 dependencies {
-    implementation 'no.nav.testnav.libs:data-transfer-objects'
+
     implementation 'no.nav.testnav.libs:reactive-core'
     implementation 'no.nav.testnav.libs:reactive-proxy'
-    implementation 'no.nav.testnav.libs:reactive-security'
-    implementation 'no.nav.testnav.libs:security-core'
     implementation 'no.nav.testnav.libs:security-token-service'
+    implementation 'no.nav.testnav.libs:data-transfer-objects'
 
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
-    implementation 'org.springframework.cloud:spring-cloud-starter-gateway'
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
+    implementation 'org.springframework.cloud:spring-cloud-starter-gateway'
+    
 
     implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
     implementation 'org.hibernate.validator:hibernate-validator'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
-    testImplementation 'org.springframework.security:spring-security-test'
-
-    annotationProcessor 'org.projectlombok:lombok'
-    implementation 'org.projectlombok:lombok'
-    testAnnotationProcessor 'org.projectlombok:lombok'
 }
-
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(21)
