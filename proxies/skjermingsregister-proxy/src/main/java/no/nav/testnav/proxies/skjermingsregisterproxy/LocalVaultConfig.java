@@ -1,6 +1,9 @@
 package no.nav.testnav.proxies.skjermingsregisterproxy;
 
+import io.micrometer.common.lang.NonNullApi;
+import no.nav.testnav.libs.reactiveproxy.config.DevConfig;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 import org.springframework.vault.annotation.VaultPropertySource;
 import org.springframework.vault.authentication.ClientAuthentication;
@@ -10,12 +13,14 @@ import org.springframework.vault.config.AbstractVaultConfiguration;
 
 import static io.micrometer.common.util.StringUtils.isBlank;
 
-@Profile("dev")
+@Profile("local")
+@Import(DevConfig.class)
 @Configuration
 @VaultPropertySource(value = "kv/preprod/fss/testnav-skjermingsregister-proxy/dev", ignoreSecretNotFound = false)
-public class DevVaultConfig extends AbstractVaultConfiguration {
+@NonNullApi
+public class LocalVaultConfig extends AbstractVaultConfiguration {
 
-       private static final String VAULT_TOKEN = "spring.cloud.vault.token";
+    static final String TOKEN_PROPERTY_NAME = "spring.cloud.vault.token";
 
     @Override
     public VaultEndpoint vaultEndpoint() {
@@ -25,12 +30,13 @@ public class DevVaultConfig extends AbstractVaultConfiguration {
     @Override
     public ClientAuthentication clientAuthentication() {
         if (System.getenv().containsKey("VAULT_TOKEN")) {
-            System.setProperty(VAULT_TOKEN, System.getenv("VAULT_TOKEN"));
+            System.setProperty(TOKEN_PROPERTY_NAME, System.getenv("VAULT_TOKEN"));
         }
-        var token = System.getProperty(VAULT_TOKEN);
+        var token = System.getProperty(TOKEN_PROPERTY_NAME);
         if (isBlank(token)) {
-            throw new IllegalArgumentException("Påkrevet property 'spring.cloud.vault.token' er ikke satt.");
+            throw new IllegalArgumentException("Påkrevet property '%s' er ikke satt.".formatted(TOKEN_PROPERTY_NAME));
         }
-        return new TokenAuthentication(System.getProperty(VAULT_TOKEN));
+        return new TokenAuthentication(System.getProperty(TOKEN_PROPERTY_NAME));
     }
+
 }

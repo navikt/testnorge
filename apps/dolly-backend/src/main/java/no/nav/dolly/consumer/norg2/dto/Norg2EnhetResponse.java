@@ -1,4 +1,4 @@
-package no.nav.dolly.bestilling.sykemelding.dto;
+package no.nav.dolly.consumer.norg2.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

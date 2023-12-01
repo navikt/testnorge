@@ -15,7 +15,6 @@ import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.data.pdlforvalter.v1.SikkerhetstiltakDTO;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.SpraakDTO;
-import no.nav.testnav.libs.data.tpsmessagingservice.v1.TelefonTypeNummerDTO;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.TpsMeldingResponseDTO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -102,15 +101,7 @@ public class TpsMessagingClient implements ClientRegister {
                                             sendSikkerhetstiltakOpprett(personer.stream()
                                                     .filter(personBolk -> personBolk.getIdent().equals(dollyPerson.getIdent()))
                                                     .findFirst())
-                                                    .map(respons -> Map.of("Sikkerhetstiltak_opprett", respons)),
-                                            sendTelefonnumreSlett(personer.stream()
-                                                    .filter(personBolk -> personBolk.getIdent().equals(dollyPerson.getIdent()))
-                                                    .findFirst())
-                                                    .map(respons -> Map.of("Telefonnummer_slett", respons)),
-                                            sendTelefonnumreOpprett(personer.stream()
-                                                    .filter(personBolk -> personBolk.getIdent().equals(dollyPerson.getIdent()))
-                                                    .findFirst())
-                                                    .map(respons -> Map.of("Telefonnummer_opprett", respons))
+                                                    .map(respons -> Map.of("Sikkerhetstiltak_opprett", respons))
                                     ))
                                     .map(respons -> respons.entrySet().stream()
                                             .map(entry -> getStatus(entry.getKey(), entry.getValue()))
@@ -166,31 +157,6 @@ public class TpsMessagingClient implements ClientRegister {
                 .map(PdlPersonBolk.Data::getHentPersonBolk)
                 .flatMap(Flux::fromIterable)
                 .filter(personBolk -> nonNull(personBolk.getPerson()));
-    }
-
-    private Mono<List<TpsMeldingResponseDTO>> sendTelefonnumreSlett(Optional<PdlPersonBolk.PersonBolk> personBolk) {
-
-        return personBolk.isPresent() && !personBolk.get().getPerson().getTelefonnummer().isEmpty() ?
-
-                tpsMessagingConsumer.deleteTelefonnummerRequest(
-                                personBolk.get().getIdent(), null)
-                        .collectList() :
-
-                Mono.just(emptyList());
-    }
-
-    private Mono<List<TpsMeldingResponseDTO>> sendTelefonnumreOpprett(Optional<PdlPersonBolk.PersonBolk> personBolk) {
-
-        return personBolk.isPresent() && !personBolk.get().getPerson().getTelefonnummer().isEmpty() ?
-
-                tpsMessagingConsumer.sendTelefonnummerRequest(
-                                personBolk.get().getIdent(),
-                                null,
-                                mapperFacade.mapAsList(personBolk.get().getPerson().getTelefonnummer(),
-                                        TelefonTypeNummerDTO.class))
-                        .collectList() :
-
-                Mono.just(emptyList());
     }
 
     private Mono<List<TpsMeldingResponseDTO>> sendSikkerhetstiltakSlett(Optional<PdlPersonBolk.PersonBolk> personBolk) {
