@@ -9,45 +9,45 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
+import no.nav.dolly.service.RsTransaksjonMapping;
 import no.nav.dolly.service.TransaksjonMappingService;
 import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.PersonMiljoeDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 import reactor.core.publisher.Flux;
 import reactor.test.StepVerifier;
 
 import java.util.List;
 import java.util.Set;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.ok;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-//@ActiveProfiles("test")
-//@ExtendWith(SpringExtension.class)
-//@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-//@TestPropertySource(locations = "classpath:application.yaml")
-//@AutoConfigureWireMock(port = 0)
 @ExtendWith(MockitoExtension.class)
 class TpsPersonServiceTest {
 
+    private static final String AP = "PEN_AP";
+    private static final String UT = "PEN_UT";
     private static final Set<String> ENVS = Set.of("q1", "q2");
     private static final String IDENT = "11111111111";
 
@@ -69,12 +69,12 @@ class TpsPersonServiceTest {
     @BeforeEach
     void setup() {
         statusCaptor = ArgumentCaptor.forClass(String.class);
+        ReflectionTestUtils.setField(tpsPersonService, "waitMaxMillies", 1000);
     }
 
     @Test
     void syncPerson_TPS_OK() {
 
-//        when(transaksjonMappingService.getTransaksjonMapping(eq(IDENT))).thenReturn(Collections.emptyList());
         when(personServiceConsumer.getPdlPersoner(anyList())).thenReturn(Flux.just(PdlPersonBolk.builder()
                 .data(PdlPersonBolk.Data.builder()
                         .hentPersonBolk(List.of(PdlPersonBolk.PersonBolk.builder()
@@ -89,7 +89,7 @@ class TpsPersonServiceTest {
 
         var progress = getProgress();
 
-        StepVerifier.create(tpsPersonService.syncPerson(getDollyPerson(), getBestilling(), progress)
+        StepVerifier.create(tpsPersonService.syncPerson(getDollyPerson(), getBestilling(null), progress)
                         .map(ClientFuture::get))
                 .assertNext(status -> {
                     verify(transactionHelperService, times(2))
@@ -98,15 +98,33 @@ class TpsPersonServiceTest {
                     assertThat(statusCaptor.getAllValues().get(0), containsString("q2:Info: Synkronisering mot TPS startet ..."));
                     assertThat(statusCaptor.getAllValues().get(1), containsString("q1:OK"));
                     assertThat(statusCaptor.getAllValues().get(1), containsString("q2:OK"));
-                    assertThat(progress.getIsTpsSyncEnv(), contains("q1","q2"));
+                    assertThat(progress.getIsTpsSyncEnv(), contains("q1", "q2"));
                 })
                 .verifyComplete();
     }
 
-    @Test
-    void syncPerson_TPS_NOK() {
+    @ParameterizedTest
+    @CsvSource({
+            "PEN_AP",
+            "PEN_UT"})
+    void syncPerson_pensjon_TPS_OK(String pensjonType) {
 
-//        when(transaksjonMappingService.getTransaksjonMapping(eq(IDENT))).thenReturn(Collections.emptyList());
+        when(transaksjonMappingService.getTransaksjonMapping(getDollyPerson().getIdent()))
+                .thenReturn(List.of(
+                        RsTransaksjonMapping.builder().ident(IDENT).system(pensjonType).miljoe("q1").build(),
+                        RsTransaksjonMapping.builder().ident(IDENT).system(pensjonType).miljoe("q2").build()));
+
+        var progress = getProgress();
+
+        StepVerifier.create(tpsPersonService.syncPerson(getDollyPerson(), getBestilling(pensjonType), progress)
+                        .map(ClientFuture::get))
+                .expectNextCount(0)
+                .verifyComplete();
+    }
+
+    @Test
+    void syncPerson_TPS_svarer_ikke() {
+
         when(personServiceConsumer.getPdlPersoner(anyList())).thenReturn(Flux.just(PdlPersonBolk.builder()
                 .data(PdlPersonBolk.Data.builder()
                         .hentPersonBolk(List.of(PdlPersonBolk.PersonBolk.builder()
@@ -119,16 +137,85 @@ class TpsPersonServiceTest {
 
         var progress = getProgress();
 
-        StepVerifier.create(tpsPersonService.syncPerson(getDollyPerson(), getBestilling(), progress)
+        StepVerifier.create(tpsPersonService.syncPerson(getDollyPerson(), getBestilling(null), progress)
                         .map(ClientFuture::get))
                 .assertNext(status -> {
-                    verify(transactionHelperService, times(2))
+                    verify(transactionHelperService, Mockito.atLeastOnce())
                             .persister(any(BestillingProgress.class), any(), statusCaptor.capture());
                     assertThat(statusCaptor.getAllValues().get(0), containsString("q1:Info: Synkronisering mot TPS startet ..."));
                     assertThat(statusCaptor.getAllValues().get(0), containsString("q2:Info: Synkronisering mot TPS startet ..."));
-                    assertThat(statusCaptor.getAllValues().get(1), containsString("q1:OK"));
-                    assertThat(statusCaptor.getAllValues().get(1), containsString("q2:OK"));
-                    assertThat(progress.getIsTpsSyncEnv(), contains("q1","q2"));
+                    assertThat(statusCaptor.getAllValues().get(statusCaptor.getAllValues().size() - 1), containsString("q1:FEIL= Synkronisering mot TPS gitt opp"));
+                    assertThat(statusCaptor.getAllValues().get(statusCaptor.getAllValues().size() - 1), containsString("q2:FEIL= Synkronisering mot TPS gitt opp"));
+                    assertThat(progress.getIsTpsSyncEnv(), is(empty()));
+                })
+                .verifyComplete();
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "q1,q2",
+            "q2,q1"})
+    void syncPerson_en_TPS_svarer_ikke(String miljoeSomSvarer, String miljoeSomIkkeSvarer) {
+
+        when(personServiceConsumer.getPdlPersoner(anyList())).thenReturn(Flux.just(PdlPersonBolk.builder()
+                .data(PdlPersonBolk.Data.builder()
+                        .hentPersonBolk(List.of(PdlPersonBolk.PersonBolk.builder()
+                                .person(PdlPerson.Person.builder()
+                                        .build())
+                                .build()))
+                        .build())
+                .build()));
+        when(tpsMessagingConsumer.getPerson(IDENT, ENVS.stream().toList())).thenReturn(Flux.just(
+                PersonMiljoeDTO.builder().miljoe(miljoeSomSvarer).ident(IDENT).status("OK").build()));
+
+        var progress = getProgress();
+
+        StepVerifier.create(tpsPersonService.syncPerson(getDollyPerson(), getBestilling(null), progress)
+                        .map(ClientFuture::get))
+                .assertNext(status -> {
+                    verify(transactionHelperService, Mockito.atLeastOnce())
+                            .persister(any(BestillingProgress.class), any(), statusCaptor.capture());
+                    assertThat(statusCaptor.getAllValues().get(0), containsString("q1:Info: Synkronisering mot TPS startet ..."));
+                    assertThat(statusCaptor.getAllValues().get(0), containsString("q2:Info: Synkronisering mot TPS startet ..."));
+                    assertThat(statusCaptor.getAllValues().get(statusCaptor.getAllValues().size() - 1), containsString(miljoeSomSvarer + ":OK"));
+                    assertThat(statusCaptor.getAllValues().get(statusCaptor.getAllValues().size() - 1), containsString(miljoeSomIkkeSvarer + ":FEIL= Synkronisering mot TPS gitt opp"));
+                    assertThat(progress.getIsTpsSyncEnv(), contains(miljoeSomSvarer));
+                    assertThat(progress.getIsTpsSyncEnv(), contains(not(miljoeSomIkkeSvarer)));
+                })
+                .verifyComplete();
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "q1,q2",
+            "q2,q1"})
+    void syncPerson_en_TPS_har_ikke_data(String miljoeSomHarData, String miljoeSomIkkeHarData) {
+
+        when(personServiceConsumer.getPdlPersoner(anyList())).thenReturn(Flux.just(PdlPersonBolk.builder()
+                .data(PdlPersonBolk.Data.builder()
+                        .hentPersonBolk(List.of(PdlPersonBolk.PersonBolk.builder()
+                                .person(PdlPerson.Person.builder()
+                                        .build())
+                                .build()))
+                        .build())
+                .build()));
+        when(tpsMessagingConsumer.getPerson(IDENT, ENVS.stream().toList())).thenReturn(Flux.just(
+                PersonMiljoeDTO.builder().miljoe(miljoeSomHarData).ident(IDENT).status("OK").build(),
+                PersonMiljoeDTO.builder().miljoe(miljoeSomIkkeHarData).ident(IDENT).status("FEIL").utfyllendeMelding("Personen finnes ikke").build()));
+
+        var progress = getProgress();
+
+        StepVerifier.create(tpsPersonService.syncPerson(getDollyPerson(), getBestilling(null), progress)
+                        .map(ClientFuture::get))
+                .assertNext(status -> {
+                    verify(transactionHelperService, Mockito.atLeastOnce())
+                            .persister(any(BestillingProgress.class), any(), statusCaptor.capture());
+                    assertThat(statusCaptor.getAllValues().get(0), containsString("q1:Info: Synkronisering mot TPS startet ..."));
+                    assertThat(statusCaptor.getAllValues().get(0), containsString("q2:Info: Synkronisering mot TPS startet ..."));
+                    assertThat(statusCaptor.getAllValues().get(statusCaptor.getAllValues().size() - 1), containsString(miljoeSomHarData + ":OK"));
+                    assertThat(statusCaptor.getAllValues().get(statusCaptor.getAllValues().size() - 1), containsString(miljoeSomIkkeHarData + ":FEIL= Personen finnes ikke"));
+                    assertThat(progress.getIsTpsSyncEnv(), contains(miljoeSomHarData));
+                    assertThat(progress.getIsTpsSyncEnv(), contains(not(miljoeSomIkkeHarData)));
                 })
                 .verifyComplete();
     }
@@ -147,29 +234,25 @@ class TpsPersonServiceTest {
                 .build();
     }
 
-    private RsDollyUtvidetBestilling getBestilling() {
+    private RsDollyUtvidetBestilling getBestilling(String pensjon) {
 
         var dollyBestilling = new RsDollyUtvidetBestilling();
         dollyBestilling.setEnvironments(ENVS);
-        dollyBestilling.setPensjonforvalter(
-                PensjonData.builder()
-                        .inntekt(new PensjonData.PoppInntekt())
-                        .build());
-        return dollyBestilling;
-    }
+        dollyBestilling.setPensjonforvalter(new PensjonData());
 
-    private void stubPostLagreTpYtelse(boolean withError) {
+        if (AP.equals(pensjon)) {
+            dollyBestilling.getPensjonforvalter()
+                    .setAlderspensjon(new PensjonData.Alderspensjon());
 
-        if (!withError) {
-            stubFor(get(urlPathMatching("(.*)/api/v1/personer/{ident}"))
-                    .willReturn(ok()
-                            .withBody("[{\"miljo\":\"q1\",\"ident\":\"" + IDENT + "\",\"status\":\"]")
-                            .withHeader("Content-Type", "application/json")));
+        } else if (UT.equals(pensjon)) {
+            dollyBestilling.getPensjonforvalter()
+                    .setUforetrygd(new PensjonData.Uforetrygd());
+
         } else {
-            stubFor(post(urlPathMatching("(.*)/api/v1/tp/ytelse"))
-                    .willReturn(ok()
-                            .withBody("{\"status\":[{\"miljo\":\"tx\",\"response\":{\"httpStatus\":{\"status\":500,\"reasonPhrase\":\"Internal Server Error\"},\"message\":\"404 Not Found from POST https://tp-q4.dev.intern.nav.no/api/tjenestepensjon/08525803725/forhold/3200/ytelse\",\"path\":\"/api/v1/tp/ytelse\"}}]}")
-                            .withHeader("Content-Type", "application/json")));
+            dollyBestilling.getPensjonforvalter()
+                    .setInntekt(new PensjonData.PoppInntekt());
         }
+
+        return dollyBestilling;
     }
 }
