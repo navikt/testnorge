@@ -20,6 +20,8 @@ import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpYtelseRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonUforetrygdRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
+import no.nav.dolly.consumer.norg2.Norg2Consumer;
+import no.nav.dolly.consumer.norg2.dto.Norg2EnhetResponse;
 import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.BestillingProgress;
@@ -48,7 +50,6 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
@@ -59,6 +60,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.PEN_AP;
 import static no.nav.dolly.domain.resultset.SystemTyper.PEN_UT;
+import static org.apache.poi.util.StringUtil.isNotBlank;
 
 @Slf4j
 @Service
@@ -67,6 +69,7 @@ public class PensjonforvalterClient implements ClientRegister {
 
     private static final String IDENT = "ident";
     private static final String MILJOER = "miljoer";
+    private static final String NAV_ENHET = "navEnhet";
     private static final String SYSTEM = "PESYS";
     private static final String PENSJON_FORVALTER = "PensjonForvalter#";
     private static final String SAMBOER_REGISTER = "Samboer#";
@@ -85,6 +88,7 @@ public class PensjonforvalterClient implements ClientRegister {
     private final PdlDataConsumer pdlDataConsumer;
     private final TransaksjonMappingService transaksjonMappingService;
     private final ObjectMapper objectMapper;
+    private final Norg2Consumer norg2Consumer;
 
     public static PensjonforvalterResponse mergePensjonforvalterResponses(List<PensjonforvalterResponse> responser) {
 
@@ -138,14 +142,16 @@ public class PensjonforvalterClient implements ClientRegister {
                             .flatMap(bestilling1 -> getIdenterRelasjoner(dollyPerson.getIdent())
                                     .collectList()
                                     .map(this::getPersonData)
-                                    .flatMapMany(Flux::collectList)
-                                    .doOnNext(persondata -> {
-                                        if (persondata.isEmpty()) {
+                                    .flatMap(persondata -> Mono.zip(
+                                            getPdlPerson(persondata),
+                                            getNavEnhetNr(persondata)))
+                                    .doOnNext(utvidetPersondata -> {
+                                        if (utvidetPersondata.getT1().isEmpty()) {
                                             log.warn("Persondata for {} gir tom response fra PDL", dollyPerson.getIdent());
                                         }
                                     })
-                                    .map(persondata -> Flux.concat(
-                                            opprettPersoner(dollyPerson.getIdent(), tilgjengeligeMiljoer, persondata)
+                                    .map(utvidetPersondata -> Flux.concat(
+                                            opprettPersoner(dollyPerson.getIdent(), tilgjengeligeMiljoer, utvidetPersondata.getT1())
                                                     .map(response -> PENSJON_FORVALTER + decodeStatus(response, dollyPerson.getIdent())),
 
                                             lagreSamboer(dollyPerson.getIdent(), tilgjengeligeMiljoer)
@@ -164,7 +170,7 @@ public class PensjonforvalterClient implements ClientRegister {
 
                                                             lagreAlderspensjon(
                                                                     pensjon,
-                                                                    persondata,
+                                                                    utvidetPersondata.getT2(),
                                                                     dollyPerson.getIdent(),
                                                                     bestilteMiljoer.get(),
                                                                     isOpprettEndre,
@@ -174,19 +180,43 @@ public class PensjonforvalterClient implements ClientRegister {
 
                                                             lagreUforetrygd(
                                                                     pensjon,
-                                                                    persondata,
+                                                                    utvidetPersondata.getT2(),
                                                                     dollyPerson.getIdent(),
                                                                     bestilteMiljoer.get(),
                                                                     isOpprettEndre,
                                                                     bestillingId,
                                                                     progress.getIsTpsSyncEnv())
-                                                                    .map(response -> PEN_UFORETRYGD + decodeStatus(response, dollyPerson.getIdent()))))))
+                                                                    .map(response -> PEN_UFORETRYGD + decodeStatus(response, dollyPerson.getIdent())))))))
 
-                                    .flatMap(Flux::from)
-                                    .filter(StringUtils::isNotBlank)
-                                    .collect(Collectors.joining("$")));
+                            .flatMap(Flux::from)
+                            .filter(StringUtils::isNotBlank)
+                            .collect(Collectors.joining("$"));
                 })
                 .map(status -> futurePersist(dollyPerson, progress, status));
+    }
+
+    private static Mono<List<PdlPersonBolk.PersonBolk>> getPdlPerson(Flux<PdlPersonBolk.Data> persondata) {
+
+        return persondata
+                .map(PdlPersonBolk.Data::getHentPersonBolk)
+                .flatMap(Flux::fromIterable)
+                .filter(personBolk -> nonNull(personBolk.getPerson()))
+                .collectList();
+    }
+
+    private Mono<String> getNavEnhetNr(Flux<PdlPersonBolk.Data> persondata) {
+
+        return persondata
+                .map(PdlPersonBolk.Data::getHentGeografiskTilknytningBolk)
+                .flatMap(Flux::fromIterable)
+                .map(PdlPersonBolk.GeografiskTilknytningBolk::getGeografiskTilknytning)
+                .map(PensjonforvalterClient::getGeografiskTilknytning)
+                .flatMap(norg2Consumer::getNorgEnhet)
+                .filter(norgenhet -> nonNull(norgenhet.getEnhetNr()))
+                .map(Norg2EnhetResponse::getEnhetNr)
+                .collectList()
+                .doOnNext(norgdata -> log.info("Mottatt norgdata: {}", norgdata))
+                .map(norgdata -> !norgdata.isEmpty() ? norgdata.get(0) : "0315");
     }
 
     private Flux<PensjonforvalterResponse> lagreSamboer(String ident, Set<String> tilgjengeligeMiljoer) {
@@ -248,6 +278,9 @@ public class PensjonforvalterClient implements ClientRegister {
 
         return Flux.concat(Flux.just(ident),
                         getPersonData(List.of(ident))
+                                .map(PdlPersonBolk.Data::getHentPersonBolk)
+                                .flatMap(Flux::fromIterable)
+                                .filter(personBolk -> nonNull(personBolk.getPerson()))
                                 .flatMap(person -> Flux.fromStream(Stream.of(
                                                 person.getPerson().getSivilstand().stream()
                                                         .map(PdlPerson.Sivilstand::getRelatertVedSivilstand)
@@ -266,7 +299,7 @@ public class PensjonforvalterClient implements ClientRegister {
                 .distinct();
     }
 
-    private Flux<PdlPersonBolk.PersonBolk> getPersonData(List<String> identer) {
+    private Flux<PdlPersonBolk.Data> getPersonData(List<String> identer) {
 
         return personServiceConsumer.getPdlPersoner(identer)
                 .doOnNext(bolk -> {
@@ -276,10 +309,7 @@ public class PensjonforvalterClient implements ClientRegister {
                     }
                 })
                 .filter(pdlPersonBolk -> nonNull(pdlPersonBolk.getData()))
-                .map(PdlPersonBolk::getData)
-                .map(PdlPersonBolk.Data::getHentPersonBolk)
-                .flatMap(Flux::fromIterable)
-                .filter(personBolk -> nonNull(personBolk.getPerson()));
+                .map(PdlPersonBolk::getData);
     }
 
     @Override
@@ -299,7 +329,8 @@ public class PensjonforvalterClient implements ClientRegister {
                         .filter(response -> hovedperson.equals(request.getFnr())));
     }
 
-    private Flux<PensjonforvalterResponse> lagreAlderspensjon(PensjonData pensjonData, List<PdlPersonBolk.PersonBolk> relasjoner,
+    private Flux<PensjonforvalterResponse> lagreAlderspensjon(PensjonData pensjonData,
+                                                              String navEnhetNr,
                                                               String ident, Set<String> miljoer,
                                                               boolean isOpprettEndre, Long bestillingId,
                                                               List<String> isTpsSyncEnv) {
@@ -317,7 +348,7 @@ public class PensjonforvalterClient implements ClientRegister {
                                     var context = new MappingContext.Factory().getContext();
                                     context.setProperty(IDENT, ident);
                                     context.setProperty(MILJOER, List.of(miljoe));
-                                    context.setProperty("relasjoner", relasjoner);
+                                    context.setProperty(NAV_ENHET, navEnhetNr);
                                     return Flux.just(mapperFacade.map(alderspensjon, AlderspensjonRequest.class, context))
                                             .flatMap(alderspensjonRequest -> pensjonforvalterConsumer.lagreAlderspensjon(alderspensjonRequest)
                                                     .map(response -> {
@@ -340,8 +371,7 @@ public class PensjonforvalterClient implements ClientRegister {
                         }));
     }
 
-    private Flux<PensjonforvalterResponse> lagreUforetrygd(PensjonData pensjondata,
-                                                           List<PdlPersonBolk.PersonBolk> persondata,
+    private Flux<PensjonforvalterResponse> lagreUforetrygd(PensjonData pensjondata, String navEnhetNr,
                                                            String ident, Set<String> miljoer, boolean isOpprettEndre,
                                                            Long bestillingId, List<String> isTpsSyncEnv) {
 
@@ -358,7 +388,7 @@ public class PensjonforvalterClient implements ClientRegister {
                                     var context = MappingContextUtils.getMappingContext();
                                     context.setProperty(IDENT, ident);
                                     context.setProperty(MILJOER, List.of(miljoe));
-                                    context.setProperty("persondata", persondata);
+                                    context.setProperty(NAV_ENHET, navEnhetNr);
                                     return Flux.just(mapperFacade.map(uforetrygd, PensjonUforetrygdRequest.class, context))
                                             .flatMap(request -> pensjonforvalterConsumer.lagreUforetrygd(request)
                                                     .map(response -> {
@@ -475,15 +505,22 @@ public class PensjonforvalterClient implements ClientRegister {
                 .collect(Collectors.joining(","));
     }
 
-    String getError(PensjonforvalterResponse.ResponseEnvironment entry) {
+     String getError(PensjonforvalterResponse.ResponseEnvironment entry) {
+
         var response = entry.getResponse();
         var httpStatus = response.getHttpStatus();
-        var status = Optional
-                .ofNullable(response.getMessage())
-                .filter(m -> m.contains("{"))
-                .map(m -> "Feil: " + m.split("\\{")[1].split("}")[0].replace("message\":", ""))
-                .orElse(errorStatusDecoder.getErrorText(HttpStatus.valueOf(httpStatus.getStatus()), httpStatus.getReasonPhrase()));
-        return ErrorStatusDecoder.encodeStatus(status);
+
+        if (isNotBlank(response.getMessage())) {
+            if (response.getMessage().contains("{")) {
+                return ErrorStatusDecoder.encodeStatus(
+                        "Feil: " + response.getMessage().split("\\{")[1].split("}")[0].replace("message\":", ""));
+            } else {
+                return ErrorStatusDecoder.encodeStatus("Feil: " + response.getMessage());
+            }
+
+        } else {
+           return errorStatusDecoder.getErrorText(HttpStatus.valueOf(httpStatus.getStatus()), httpStatus.getReasonPhrase());
+        }
     }
 
     private String toJson(Object object) {
@@ -494,5 +531,18 @@ public class PensjonforvalterClient implements ClientRegister {
             log.error("Feilet å konvertere transaksjonsId for pensjonForvalter", e);
         }
         return null;
+    }
+
+    private static String getGeografiskTilknytning(PdlPersonBolk.GeografiskTilknytning tilknytning) {
+
+        if (isNotBlank(tilknytning.getGtKommune())) {
+            return tilknytning.getGtKommune();
+
+        } else if (isNotBlank(tilknytning.getGtBydel())) {
+            return tilknytning.getGtBydel();
+
+        } else {
+            return "030102";
+        }
     }
 }

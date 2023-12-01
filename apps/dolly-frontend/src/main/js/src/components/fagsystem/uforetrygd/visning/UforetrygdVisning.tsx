@@ -61,9 +61,9 @@ const DataVisning = ({ data, miljo }) => {
 		<>
 			<div className="person-visning_content">
 				<TitleValue title="Vedtaksstatus" value={vedtakData?.[0]?.vedtakStatus} />
+				<TitleValue title="Uføretidspunkt" value={formatDate(data?.uforetidspunkt)} />
 				<TitleValue title="Krav fremsatt dato" value={formatDate(data?.kravFremsattDato)} />
 				<TitleValue title="Ønsket virkningsdato" value={formatDate(data?.onsketVirkningsDato)} />
-				<TitleValue title="Uføretidspunkt" value={formatDate(data?.uforetidspunkt)} />
 				<TitleValue title="Inntekt før uførhet" value={data?.inntektForUforhet} />
 				<TitleValue
 					title="Type barnetillegg"
@@ -86,7 +86,7 @@ const DataVisning = ({ data, miljo }) => {
 				<TitleValue title="Uføregrad" value={data?.uforegrad ? `${data?.uforegrad}%` : null} />
 				<TitleValue title="Saksbehandler" value={data?.saksbehandler} />
 				<TitleValue title="Attesterer" value={data?.attesterer} />
-				<TitleValue title="NAV-enhet" value={navEnhetLabel || data?.navEnhetId} />
+				<TitleValue title="NAV-kontor" value={navEnhetLabel || data?.navEnhetId} />
 			</div>
 		</>
 	)

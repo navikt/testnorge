@@ -1,11 +1,11 @@
-package no.nav.dolly.bestilling.sykemelding;
+package no.nav.dolly.consumer.norg2;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
-import no.nav.dolly.bestilling.sykemelding.command.Norg2GetCommand;
-import no.nav.dolly.bestilling.sykemelding.dto.Norg2EnhetResponse;
 import no.nav.dolly.config.Consumers;
+import no.nav.dolly.consumer.norg2.command.Norg2GetCommand;
+import no.nav.dolly.consumer.norg2.dto.Norg2EnhetResponse;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
