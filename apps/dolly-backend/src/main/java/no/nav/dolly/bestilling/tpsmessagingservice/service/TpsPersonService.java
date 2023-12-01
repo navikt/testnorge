@@ -154,7 +154,7 @@ public class TpsPersonService {
                                         .ident(ident)
                                         .miljoe(miljoe)
                                         .status("NOK")
-                                        .utfyllendeMelding(String.format("Feil: Synkronisering mot TPS gitt opp etter %d sekunder.", MAX_MILLIES / 1000))
+                                        .utfyllendeMelding(String.format("Synkronisering mot TPS gitt opp etter %d sekunder.", MAX_MILLIES / 1000))
                                         .build()))
                 .flatMap(Function.identity())
                 .toList();
