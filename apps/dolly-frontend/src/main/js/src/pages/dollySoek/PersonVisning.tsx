@@ -7,7 +7,7 @@ import React from 'react'
 
 export const PersonVisning = ({ person, loading }: any) => {
 	const { bestillinger } = useBestillingerPaaIdent(person.person?.ident)
-	console.log('bestillinger: ', bestillinger) //TODO - SLETT MEG
+
 	return (
 		<>
 			{bestillinger?.data?.length > 0 && (

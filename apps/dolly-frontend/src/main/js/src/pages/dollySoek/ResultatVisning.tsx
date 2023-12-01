@@ -59,8 +59,13 @@ export const ResultatVisning = ({ resultat }) => {
 			width: '35',
 			formatter: (_cell: any, row: any) => {
 				const navn = row.person?.navn?.[0]
+				if (!navn) {
+					return <>Ukjent</>
+				}
+				const fornavn = navn?.fornavn || ''
 				const mellomnavn = navn?.mellomnavn ? `${navn.mellomnavn.charAt(0)}.` : ''
-				return <>{`${navn?.fornavn} ${mellomnavn} ${navn?.etternavn}`}</>
+				const etternavn = navn?.etternavn || ''
+				return <>{`${fornavn} ${mellomnavn} ${etternavn}`}</>
 			},
 		},
 		{
@@ -81,6 +86,9 @@ export const ResultatVisning = ({ resultat }) => {
 			text: 'Alder',
 			width: '10',
 			formatter: (_cell: any, row: any) => {
+				if (!row.person?.foedsel?.[0]?.foedselsdato) {
+					return <>Ukjent</>
+				}
 				const alder = getAlder(
 					row.person?.foedsel?.[0]?.foedselsdato,
 					row.person?.doedsfall?.[0]?.doedsdato,
