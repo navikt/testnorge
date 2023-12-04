@@ -70,7 +70,7 @@ class TpsPersonServiceTest {
     @BeforeEach
     void setup() {
         statusCaptor = ArgumentCaptor.forClass(String.class);
-        ReflectionTestUtils.setField(tpsPersonService, "waitMaxMillies", 1000);
+        ReflectionTestUtils.setField(tpsPersonService, "awaitMaxMillies", 1000);
     }
 
     @Test

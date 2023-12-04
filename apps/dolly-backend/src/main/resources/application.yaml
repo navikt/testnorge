@@ -90,7 +90,7 @@ open:
 tps:
   person:
     service:
-      wait: 1_000
+      wait: 30_000
 
 consumers:
   testnav-organisasjon-forvalter:

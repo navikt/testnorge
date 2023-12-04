@@ -43,7 +43,7 @@ public class TpsPersonService {
     private static final long TIMEOUT_MILLIES = 839;
 
     @Value("${tps.person.service.wait}")
-    private long waitMaxMillies;
+    private long awaitMaxMillies;
 
     private final TpsMessagingConsumer tpsMessagingConsumer;
     private final TransactionHelperService transactionHelperService;
@@ -119,7 +119,7 @@ public class TpsPersonService {
     private Mono<List<PersonMiljoeDTO>> getTpsPerson(Long starttid, String ident, List<String> miljoer,
                                                      List<PersonMiljoeDTO> status, BestillingProgress progress) {
 
-        if (System.currentTimeMillis() - (starttid + waitMaxMillies) > 0 ||
+        if (System.currentTimeMillis() - (starttid + awaitMaxMillies) > 0 ||
                 (status.size() == miljoer.size() &&
                         status.stream().allMatch(PersonMiljoeDTO::isOk))) {
             return Mono.just(status);
@@ -157,7 +157,7 @@ public class TpsPersonService {
                                         .ident(ident)
                                         .miljoe(miljoe)
                                         .status("NOK")
-                                        .utfyllendeMelding(String.format("Synkronisering mot TPS gitt opp etter %d sekunder.", waitMaxMillies / 1000))
+                                        .utfyllendeMelding(String.format("Synkronisering mot TPS gitt opp etter %d sekunder.", awaitMaxMillies / 1000))
                                         .build()))
                 .flatMap(Function.identity())
                 .toList();
