@@ -39,6 +39,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -119,6 +120,39 @@ class TpsPersonServiceTest {
         StepVerifier.create(tpsPersonService.syncPerson(getDollyPerson(), getBestilling(pensjonType), progress)
                         .map(ClientFuture::get))
                 .expectNextCount(0)
+                .verifyComplete();
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "PEN_AP,q1",
+            "PEN_AP,q2",
+            "PEN_UT,q1",
+            "PEN_UT,q2"})
+    void syncPerson_pensjon_med_en_TPS_OK(String pensjonType, String miljoe) {
+
+        when(personServiceConsumer.getPdlPersoner(anyList())).thenReturn(Flux.just(PdlPersonBolk.builder()
+                .data(PdlPersonBolk.Data.builder()
+                        .hentPersonBolk(List.of(PdlPersonBolk.PersonBolk.builder()
+                                .person(PdlPerson.Person.builder()
+                                        .build())
+                                .build()))
+                        .build())
+                .build()));
+        when(tpsMessagingConsumer.getPerson(eq(IDENT), anyList())).thenReturn(Flux.just(
+                PersonMiljoeDTO.builder().miljoe(miljoe).ident(IDENT).status("OK").build()));
+
+        var progress = getProgress();
+
+        StepVerifier.create(tpsPersonService.syncPerson(getDollyPerson(), getBestilling(pensjonType, miljoe), progress)
+                        .map(ClientFuture::get))
+                .assertNext(status -> {
+                    verify(transactionHelperService, times(2))
+                            .persister(any(BestillingProgress.class), any(), statusCaptor.capture());
+                    assertThat(statusCaptor.getAllValues().get(0), containsString(miljoe + ":Info: Synkronisering mot TPS startet ..."));
+                    assertThat(statusCaptor.getAllValues().get(1), containsString(miljoe + ":OK"));
+                    assertThat(progress.getIsTpsSyncEnv(), contains(miljoe));
+                })
                 .verifyComplete();
     }
 
@@ -236,8 +270,18 @@ class TpsPersonServiceTest {
 
     private RsDollyUtvidetBestilling getBestilling(String pensjon) {
 
+        return getBestilling(pensjon, ENVS);
+    }
+
+    private RsDollyUtvidetBestilling getBestilling(String pensjon, String miljoe) {
+
+        return getBestilling(pensjon, Set.of(miljoe));
+    }
+
+    private RsDollyUtvidetBestilling getBestilling(String pensjon, Set<String> miljoe) {
+
         var dollyBestilling = new RsDollyUtvidetBestilling();
-        dollyBestilling.setEnvironments(ENVS);
+        dollyBestilling.setEnvironments(miljoe);
         dollyBestilling.setPensjonforvalter(new PensjonData());
 
         if (AP.equals(pensjon)) {
