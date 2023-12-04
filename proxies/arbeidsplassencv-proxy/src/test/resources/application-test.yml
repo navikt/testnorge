@@ -1,1 +1,8 @@
 azure.app.client.id: dummy
+
+consumers:
+  arbeidsplassencv:
+    name: placeholder
+    namespace: placeholder
+    url: http://not.actually.used
+    cluster: placeholder

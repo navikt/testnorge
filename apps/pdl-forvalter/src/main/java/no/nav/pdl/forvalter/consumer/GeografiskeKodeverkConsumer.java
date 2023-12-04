@@ -1,7 +1,7 @@
 package no.nav.pdl.forvalter.consumer;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.pdl.forvalter.config.credentials.GeografiskeKodeverkServiceProperties;
+import no.nav.pdl.forvalter.config.Consumers;
 import no.nav.pdl.forvalter.consumer.command.GeografiskeKodeverkCommand;
 import no.nav.testnav.libs.dto.geografiskekodeverkservice.v1.GeografiskeKodeverkDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
@@ -25,24 +25,24 @@ public class GeografiskeKodeverkConsumer {
 
     private final WebClient webClient;
     private final TokenExchange tokenExchange;
-    private final ServerProperties properties;
+    private final ServerProperties serverProperties;
     private Flux<GeografiskeKodeverkDTO> kommuneKodeverkFlux;
     private Flux<GeografiskeKodeverkDTO> landkodeverkFlux;
 
-    public GeografiskeKodeverkConsumer(TokenExchange tokenExchange,
-                                       GeografiskeKodeverkServiceProperties properties) {
-
+    public GeografiskeKodeverkConsumer(
+            TokenExchange tokenExchange,
+            Consumers consumers) {
         this.tokenExchange = tokenExchange;
-        this.properties = properties;
+        serverProperties = consumers.getGeografiskeKodeverkService();
         this.webClient = WebClient
                 .builder()
-                .baseUrl(properties.getUrl())
+                .baseUrl(serverProperties.getUrl())
                 .build();
     }
 
     private Flux<GeografiskeKodeverkDTO> cache(String url) {
         return tokenExchange
-                .exchange(properties)
+                .exchange(serverProperties)
                 .flatMapMany(token -> new GeografiskeKodeverkCommand(webClient, url, null, token.getTokenValue()).call())
                 .cache(Duration.ofDays(7));
     }
@@ -73,7 +73,7 @@ public class GeografiskeKodeverkConsumer {
 
     public String getPoststedNavn(String postnummer) {
         return tokenExchange
-                .exchange(properties)
+                .exchange(serverProperties)
                 .flatMapMany(token -> new GeografiskeKodeverkCommand(webClient, POSTNUMMER_URL, "postnummer=" + postnummer, token.getTokenValue()).call())
                 .next()
                 .blockOptional()
@@ -83,7 +83,7 @@ public class GeografiskeKodeverkConsumer {
 
     public String getEmbeteNavn(String embete) {
         return tokenExchange
-                .exchange(properties)
+                .exchange(serverProperties)
                 .flatMapMany(token -> new GeografiskeKodeverkCommand(webClient, EMBETE_URL, "embetekode=" + embete, token.getTokenValue()).call())
                 .next()
                 .blockOptional()

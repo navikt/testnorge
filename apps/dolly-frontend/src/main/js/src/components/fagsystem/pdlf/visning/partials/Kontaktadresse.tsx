@@ -13,7 +13,7 @@ import {
 } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import * as _ from 'lodash-es'
 import { AdresseKodeverk } from '@/config/kodeverk'
-import { initialKontaktadresse } from '@/components/fagsystem/pdlf/form/initialValues'
+import { getInitialKontaktadresse } from '@/components/fagsystem/pdlf/form/initialValues'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
 import { formatDate } from '@/utils/DataFormatter'
 import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
@@ -23,6 +23,7 @@ type KontaktadresseTypes = {
 	tmpPersoner?: Array<KontaktadresseData>
 	ident?: number
 	erPdlVisning?: boolean
+	identtype?: string
 	erRedigerbar?: boolean
 }
 
@@ -34,6 +35,7 @@ type KontaktadresseVisningTypes = {
 	tmpPersoner: Array<KontaktadresseData>
 	ident: number
 	erPdlVisning: boolean
+	identtype?: string
 }
 
 type AdresseTypes = {
@@ -169,9 +171,10 @@ const KontaktadresseVisning = ({
 	tmpPersoner,
 	ident,
 	erPdlVisning,
+	identtype,
 }: KontaktadresseVisningTypes) => {
 	const initKontaktadresse = Object.assign(
-		_.cloneDeep(initialKontaktadresse),
+		_.cloneDeep(getInitialKontaktadresse()),
 		data?.[idx] || tmpData?.[idx],
 	)
 	const initialValues = { kontaktadresse: initKontaktadresse }
@@ -191,7 +194,7 @@ const KontaktadresseVisning = ({
 	const redigertKontaktadresseValues = redigertKontaktadressePdlf
 		? {
 				kontaktadresse: Object.assign(
-					_.cloneDeep(initialKontaktadresse),
+					_.cloneDeep(getInitialKontaktadresse()),
 					redigertKontaktadressePdlf,
 				),
 		  }
@@ -205,6 +208,7 @@ const KontaktadresseVisning = ({
 			redigertAttributt={redigertKontaktadresseValues}
 			path="kontaktadresse"
 			ident={ident}
+			identtype={identtype}
 		/>
 	)
 }
@@ -214,6 +218,7 @@ export const Kontaktadresse = ({
 	tmpPersoner,
 	ident,
 	erPdlVisning = false,
+	identtype,
 	erRedigerbar = true,
 }: KontaktadresseTypes) => {
 	if ((!data || data.length === 0) && (!tmpPersoner || Object.keys(tmpPersoner).length < 1)) {
@@ -241,7 +246,7 @@ export const Kontaktadresse = ({
 									ident={ident}
 									erPdlVisning={erPdlVisning}
 									tmpPersoner={tmpPersoner}
-								/>
+								identtype={identtype}/>
 							) : (
 								<Adresse kontaktadresseData={adresse} idx={idx} />
 							)

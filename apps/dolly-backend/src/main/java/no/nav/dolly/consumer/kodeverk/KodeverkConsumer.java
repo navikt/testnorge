@@ -1,10 +1,10 @@
 package no.nav.dolly.consumer.kodeverk;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.config.credentials.KodeverkProxyProperties;
+import no.nav.dolly.config.Consumers;
 import no.nav.dolly.consumer.kodeverk.domain.KodeverkBetydningerResponse;
 import no.nav.dolly.metrics.Timed;
-import no.nav.dolly.util.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
@@ -40,15 +40,15 @@ public class KodeverkConsumer {
 
     private final TokenExchange tokenService;
     private final WebClient webClient;
-    private final ServerProperties serviceProperties;
+    private final ServerProperties serverProperties;
 
     public KodeverkConsumer(
             TokenExchange tokenService,
-            KodeverkProxyProperties serverProperties,
+            Consumers consumers,
             WebClient.Builder webClientBuilder
     ) {
         this.tokenService = tokenService;
-        this.serviceProperties = serverProperties;
+        serverProperties = consumers.getTestnavKodeverkProxy();
         this.webClient = webClientBuilder
                 .exchangeStrategies(
                         ExchangeStrategies
@@ -89,7 +89,7 @@ public class KodeverkConsumer {
 
     private Flux<KodeverkBetydningerResponse> getKodeverk(String kodeverk) {
 
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> webClient
                         .get()
                         .uri(uriBuilder -> uriBuilder

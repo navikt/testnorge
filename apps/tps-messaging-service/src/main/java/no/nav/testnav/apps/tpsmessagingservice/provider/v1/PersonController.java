@@ -8,14 +8,12 @@ import no.nav.testnav.apps.tpsmessagingservice.service.EgenansattService;
 import no.nav.testnav.apps.tpsmessagingservice.service.PersonService;
 import no.nav.testnav.apps.tpsmessagingservice.service.SikkerhetstiltakService;
 import no.nav.testnav.apps.tpsmessagingservice.service.SpraakService;
-import no.nav.testnav.apps.tpsmessagingservice.service.TelefonnummerService;
-import no.nav.testnav.libs.dto.kontoregisterservice.v1.BankkontonrNorskDTO;
-import no.nav.testnav.libs.dto.kontoregisterservice.v1.BankkontonrUtlandDTO;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PersonMiljoeDTO;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.SikkerhetTiltakDTO;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.SpraakDTO;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TelefonTypeNummerDTO;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TpsMeldingResponseDTO;
+import no.nav.testnav.libs.data.kontoregister.v1.BankkontonrNorskDTO;
+import no.nav.testnav.libs.data.kontoregister.v1.BankkontonrUtlandDTO;
+import no.nav.testnav.libs.data.tpsmessagingservice.v1.PersonMiljoeDTO;
+import no.nav.testnav.libs.data.tpsmessagingservice.v1.SikkerhetTiltakDTO;
+import no.nav.testnav.libs.data.tpsmessagingservice.v1.SpraakDTO;
+import no.nav.testnav.libs.data.tpsmessagingservice.v1.TpsMeldingResponseDTO;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,7 +41,6 @@ public class PersonController {
     private final SpraakService spraakService;
     private final BankkontoUtlandService bankkontoUtlandService;
     private final BankkontoNorskService bankkontoNorskService;
-    private final TelefonnummerService telefonnummerService;
     private final SikkerhetstiltakService sikkerhetstiltakService;
 
     private static List<TpsMeldingResponseDTO> convert(Map<String, TpsMeldingResponse> tpsMeldingDTO) {
@@ -69,7 +66,7 @@ public class PersonController {
     public List<TpsMeldingResponseDTO> opprettEgenansatt(@PathVariable String ident,
                                                          @RequestParam
                                                          @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-                                                                 LocalDate fraOgMed,
+                                                         LocalDate fraOgMed,
                                                          @RequestParam(required = false) List<String> miljoer) {
 
         return convert(egenansattService.opprettEgenansatt(ident, fraOgMed, miljoer));
@@ -118,22 +115,6 @@ public class PersonController {
                                                                 @RequestParam(required = false) List<String> miljoer) {
 
         return convert(bankkontoUtlandService.opphoerBankkontonrUtland(ident, miljoer));
-    }
-
-    @PostMapping("/{ident}/telefonnumre")
-    public List<TpsMeldingResponseDTO> endreTelefonnummer(@PathVariable String ident,
-                                                          @RequestBody List<TelefonTypeNummerDTO> telefonnumre,
-                                                          @RequestParam(required = false) List<String> miljoer) {
-
-        return convert(telefonnummerService.endreTelefonnummer(ident, telefonnumre, miljoer));
-    }
-
-    @DeleteMapping("/{ident}/telefonnumre")
-    public List<TpsMeldingResponseDTO> opphoerTelefonnummer(@PathVariable String ident,
-                                                            @RequestParam List<TelefonTypeNummerDTO.TypeTelefon> telefontyper,
-                                                            @RequestParam(required = false) List<String> miljoer) {
-
-        return convert(telefonnummerService.opphoerTelefonnummer(ident, telefontyper, miljoer));
     }
 
     @PostMapping("/{ident}/sikkerhetstiltak")

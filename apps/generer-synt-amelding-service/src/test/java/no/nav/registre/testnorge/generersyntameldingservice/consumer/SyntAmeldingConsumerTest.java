@@ -1,10 +1,10 @@
 package no.nav.registre.testnorge.generersyntameldingservice.consumer;
 
-import no.nav.registre.testnorge.generersyntameldingservice.consumer.credentials.SyntAmeldingProperties;
 import no.nav.registre.testnorge.generersyntameldingservice.domain.ArbeidsforholdType;
 import no.nav.testnav.libs.domain.dto.aareg.amelding.Arbeidsforhold;
 import no.nav.testnav.libs.domain.dto.aareg.amelding.ArbeidsforholdPeriode;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,6 +33,7 @@ import static org.mockito.Mockito.when;
 @AutoConfigureWireMock(port = 0)
 class SyntAmeldingConsumerTest {
 
+    @SuppressWarnings("unused")
     @MockBean
     private JwtDecoder jwtDecoder;
 
@@ -44,7 +45,7 @@ class SyntAmeldingConsumerTest {
 
     @BeforeEach
     public void setup() {
-        when(tokenExchange.exchange(ArgumentMatchers.any(SyntAmeldingProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
+        when(tokenExchange.exchange(ArgumentMatchers.any(ServerProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
     }
 
     @Test

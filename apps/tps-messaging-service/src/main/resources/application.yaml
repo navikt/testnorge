@@ -39,8 +39,7 @@ config:
       password: ${mq.dev.password:#{null}}
 
 consumers:
-  testmiljoer:
-    service:
+  testmiljoerService:
       url: http://testnav-miljoer-service.dolly.svc.cluster.local
       cluster: dev-gcp
       namespace: dolly
@@ -59,6 +58,10 @@ management:
     heapdump.enabled: true
     health:
       show-details: always
+  management:
+    health:
+      elasticsearch:
+        enabled: false
   prometheus:
     metrics:
       export:

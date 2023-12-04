@@ -10,6 +10,7 @@ import { DollySelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
 import { REGEX_BACKEND_GRUPPER, useMatchMutate } from '@/utils/hooks/useMutate'
 import { Alert } from '@navikt/ds-react'
+import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
 
 type Props = {
 	action: Function
@@ -28,7 +29,7 @@ export const TagsButton = ({ action, loading, gruppeId, eksisterendeTags }: Prop
 	}
 
 	const tagsFraDolly = SelectOptionsOppslag.hentTagsFraDolly()
-	const tagOptions = SelectOptionsOppslag.formatOptions('tags', tagsFraDolly)
+	const tagOptions = SelectOptionsFormat.formatOptions('tags', tagsFraDolly)
 
 	return (
 		<React.Fragment>

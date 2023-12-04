@@ -10,7 +10,7 @@ import no.nav.dolly.bestilling.instdata.command.InstdataPostCommand;
 import no.nav.dolly.bestilling.instdata.domain.DeleteResponse;
 import no.nav.dolly.bestilling.instdata.domain.InstdataResponse;
 import no.nav.dolly.bestilling.instdata.domain.InstitusjonsoppholdRespons;
-import no.nav.dolly.config.credentials.InstProxyProperties;
+import no.nav.dolly.config.Consumers;
 import no.nav.dolly.domain.resultset.inst.Instdata;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
@@ -30,16 +30,16 @@ public class InstdataConsumer implements ConsumerStatus {
 
     private final WebClient webClient;
     private final TokenExchange tokenService;
-    private final ServerProperties serviceProperties;
+    private final ServerProperties serverProperties;
 
     public InstdataConsumer(
             TokenExchange tokenService,
-            InstProxyProperties serverProperties,
+            Consumers consumers,
             ObjectMapper objectMapper,
             WebClient.Builder webClientBuilder
     ) {
         this.tokenService = tokenService;
-        this.serviceProperties = serverProperties;
+        serverProperties = consumers.getTestnavInstProxy();
         this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
@@ -49,21 +49,21 @@ public class InstdataConsumer implements ConsumerStatus {
     @Timed(name = "providers", tags = {"operation", "inst_getMiljoer"})
     public Mono<List<String>> getMiljoer() {
 
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMap(token -> new InstdataGetMiljoerCommand(webClient, token.getTokenValue()).call());
     }
 
     @Timed(name = "providers", tags = {"operation", "inst_getInstdata"})
     public Mono<InstitusjonsoppholdRespons> getInstdata(String ident, String environment) {
 
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMap(token -> new InstdataGetCommand(webClient, ident, environment, token.getTokenValue()).call());
     }
 
     @Timed(name = "providers", tags = {"operation", "inst_deleteInstdata"})
     public Mono<List<DeleteResponse>> deleteInstdata(List<String> identer) {
 
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMap(token -> new InstdataGetMiljoerCommand(webClient, token.getTokenValue()).call()
                         .flatMap(miljoer -> Flux.fromIterable(identer)
                                 .flatMap(ident -> new InstdataDeleteCommand(webClient,
@@ -75,7 +75,7 @@ public class InstdataConsumer implements ConsumerStatus {
     public Flux<InstdataResponse> postInstdata(List<Instdata> instdata, String environment) {
 
         log.info("Instdata opprett til {}: {}", environment, instdata);
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> Flux.fromIterable(instdata)
                         .flatMap(opphold -> new InstdataPostCommand(webClient, opphold, environment,
                                 token.getTokenValue()).call()));
@@ -83,7 +83,7 @@ public class InstdataConsumer implements ConsumerStatus {
 
     @Override
     public String serviceUrl() {
-        return serviceProperties.getUrl();
+        return serverProperties.getUrl();
     }
 
     @Override

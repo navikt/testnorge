@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
 import * as _ from 'lodash-es'
 import {
-	initialKontaktadresse,
+	getInitialKontaktadresse,
 	initialPostboksadresse,
 	initialUtenlandskAdresse,
 	initialVegadresse,
@@ -11,9 +11,9 @@ import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFiel
 import { DollySelect, FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import {
-	VegadresseVelger,
-	UtenlandskAdresse,
 	Postboksadresse,
+	UtenlandskAdresse,
+	VegadresseVelger,
 } from '@/components/fagsystem/pdlf/form/partials/adresser/adressetyper'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
@@ -21,8 +21,9 @@ import { FormikProps } from 'formik'
 import { Adressetype } from '@/components/fagsystem/pdlf/PdlTypes'
 import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 import { getPlaceholder, setNavn } from '@/components/fagsystem/pdlf/form/partials/utils'
-import { SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
 import { useGenererNavn } from '@/utils/hooks/useGenererNavn'
+import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 interface KontaktadresseValues {
 	formikBag: FormikProps<{}>
@@ -32,6 +33,7 @@ type KontaktadresseFormValues = {
 	formikBag: FormikProps<{}>
 	path: string
 	idx?: number
+	identtype?: string
 }
 
 type Target = {
@@ -39,7 +41,12 @@ type Target = {
 	label?: string
 }
 
-export const KontaktadresseForm = ({ formikBag, path, idx }: KontaktadresseFormValues) => {
+export const KontaktadresseForm = ({
+	formikBag,
+	path,
+	idx,
+	identtype,
+}: KontaktadresseFormValues) => {
 	useEffect(() => {
 		formikBag.setFieldValue(`${path}.adresseIdentifikatorFraMatrikkelen`, undefined)
 		const kontaktadresse = _.get(formikBag.values, path)
@@ -91,7 +98,7 @@ export const KontaktadresseForm = ({ formikBag, path, idx }: KontaktadresseFormV
 	}
 
 	const { navnInfo, loading } = useGenererNavn()
-	const navnOptions = SelectOptionsOppslag.formatOptions('personnavn', navnInfo)
+	const navnOptions = SelectOptionsFormat.formatOptions('personnavn', navnInfo)
 
 	return (
 		<React.Fragment key={idx}>
@@ -135,22 +142,29 @@ export const KontaktadresseForm = ({ formikBag, path, idx }: KontaktadresseFormV
 					value={_.get(formikBag.values, `${path}.opprettCoAdresseNavn.fornavn`)}
 				/>
 			</div>
-			<AvansertForm path={path} />
+			<AvansertForm path={path} kanVelgeMaster={identtype !== 'NPID'} />
 		</React.Fragment>
 	)
 }
 
 export const Kontaktadresse = ({ formikBag }: KontaktadresseValues) => {
+	const opts = useContext(BestillingsveilederContext)
+
 	return (
 		<Kategori title="Kontaktadresse">
 			<FormikDollyFieldArray
 				name="pdldata.person.kontaktadresse"
 				header="Kontaktadresse"
-				newEntry={initialKontaktadresse}
+				newEntry={getInitialKontaktadresse(opts?.identtype === 'NPID' ? 'PDL' : 'FREG')}
 				canBeEmpty={false}
 			>
 				{(path: string, idx: number) => (
-					<KontaktadresseForm formikBag={formikBag} path={path} idx={idx} />
+					<KontaktadresseForm
+						formikBag={formikBag}
+						path={path}
+						idx={idx}
+						identtype={opts?.identtype}
+					/>
 				)}
 			</FormikDollyFieldArray>
 		</Kategori>

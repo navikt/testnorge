@@ -26,7 +26,7 @@ import no.nav.dolly.domain.resultset.skjerming.RsSkjerming;
 import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding;
 import no.nav.dolly.domain.resultset.tpsmessagingservice.RsTpsMessaging;
 import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
-import no.nav.testnav.libs.dto.arbeidsplassencv.v1.ArbeidsplassenCVDTO;
+import no.nav.testnav.libs.data.arbeidsplassencv.v1.ArbeidsplassenCVDTO;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -111,14 +111,15 @@ public class RsDollyBestilling {
         return instdata;
     }
 
-    public static boolean isNonEmpty(RsDollyBestilling bestilling) {
+    @JsonIgnore
+    public boolean isNonEmpty() {
 
         return Arrays.stream(RsDollyBestilling.class.getMethods())
                 .filter(method -> "get".equals(method.getName().substring(0, 3)))
                 .filter(method -> !EXCLUDE_METHODS.contains(method.getName()))
                 .anyMatch(method -> {
                     try {
-                        var object = method.invoke(bestilling);
+                        var object = method.invoke(this);
                         return nonNull(object) && (!(object instanceof List) || !((List<?>) object).isEmpty());
                     } catch (IllegalAccessException | InvocationTargetException e) {
                         return true;

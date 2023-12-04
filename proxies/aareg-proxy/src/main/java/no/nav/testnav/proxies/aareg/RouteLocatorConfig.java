@@ -33,15 +33,15 @@ public class RouteLocatorConfig {
     public RouteLocator customRouteLocator(
             RouteLocatorBuilder builder,
             TrygdeetatenAzureAdTokenService tokenService,
-            AaregProperties aaregProperties) {
+            Consumers consumers) {
 
         var routes = builder.routes();
         Arrays.stream(MILJOER)
                 .forEach(env -> {
                     var readableAuthentication =
-                            getAuthenticationFilter(tokenService, aaregProperties.services.forEnvironment(env));
+                            getAuthenticationFilter(tokenService, forEnvironment(consumers.getAaregServices(), env));
                     var writeableAuthentication =
-                            getAuthenticationFilter(tokenService, aaregProperties.vedlikehold.forEnvironment(env));
+                            getAuthenticationFilter(tokenService, forEnvironment(consumers.getAaregVedlikehold(), env));
 
                     routes
                             .route(createReadableRouteToNewEndpoint(env, readableAuthentication))
@@ -55,6 +55,16 @@ public class RouteLocatorConfig {
                 .bearerAuthenticationHeaderFilter(() -> tokenService
                         .exchange(serverProperties)
                         .map(AccessToken::getTokenValue));
+    }
+
+    private static ServerProperties forEnvironment(ServerProperties original, String environment) {
+        var replacement = "q2".equals(environment) ? "" : '-' + environment;
+        return ServerProperties.of(
+                original.getCluster(),
+                original.getNamespace(),
+                original.getName().replace("-{env}", replacement),
+                original.getUrl().replace("-{env}", replacement)
+        );
     }
 
     private Function<PredicateSpec, Buildable<Route>> createReadableRouteToNewEndpoint(String miljoe, GatewayFilter authentication) {

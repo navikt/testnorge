@@ -5,7 +5,7 @@ import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray
 import { oversettBoolean } from '@/utils/DataFormatter'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import React from 'react'
-import { initialUtenlandsIdValues } from '@/components/fagsystem/pdlf/form/initialValues'
+import { getInitialUtenlandskIdentifikasjonsnummer } from '@/components/fagsystem/pdlf/form/initialValues'
 import * as _ from 'lodash-es'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
 import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
@@ -27,8 +27,18 @@ const UtenlandsIdLes = ({ data, idx }) => {
 	)
 }
 
-export const UtenlandsIdVisning = ({ utenlandsIdData, idx, data, tmpPersoner, ident }) => {
-	const initUtenlandsId = Object.assign(_.cloneDeep(initialUtenlandsIdValues), data[idx])
+export const UtenlandsIdVisning = ({
+	utenlandsIdData,
+	idx,
+	data,
+	tmpPersoner,
+	ident,
+	identtype,
+}) => {
+	const initUtenlandsId = Object.assign(
+		_.cloneDeep(getInitialUtenlandskIdentifikasjonsnummer()),
+		data[idx],
+	)
 	let initialValues = { utenlandskIdentifikasjonsnummer: initUtenlandsId }
 
 	const redigertUtenlandsIdPdlf = _.get(
@@ -57,11 +67,12 @@ export const UtenlandsIdVisning = ({ utenlandsIdData, idx, data, tmpPersoner, id
 			redigertAttributt={redigertUtenlandsIdValues}
 			path="utenlandskIdentifikasjonsnummer"
 			ident={ident}
+			identtype={identtype}
 		/>
 	)
 }
 
-export const UtenlandsId = ({ data, tmpPersoner, ident, erRedigerbar = true }) => {
+export const UtenlandsId = ({ data, tmpPersoner, ident, identtype, erRedigerbar = true }) => {
 	if (!data || data.length === 0) {
 		return null
 	}
@@ -79,7 +90,7 @@ export const UtenlandsId = ({ data, tmpPersoner, ident, erRedigerbar = true }) =
 								data={data}
 								tmpPersoner={tmpPersoner}
 								ident={ident}
-							/>
+							identtype={identtype}/>
 						) : (
 							<UtenlandsIdLes data={id} idx={idx} />
 						)

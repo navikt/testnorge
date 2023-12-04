@@ -1,8 +1,9 @@
 package no.nav.registre.sdforvalter.consumer.rs.navn;
 
-import no.nav.registre.sdforvalter.config.credentials.GenererNavnServiceProperties;
+import no.nav.registre.sdforvalter.config.Consumers;
 import no.nav.testnav.libs.commands.generernavnservice.v1.GenererNavnCommand;
 import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -11,15 +12,16 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class GenererNavnConsumer {
 
     private final WebClient webClient;
-    private final GenererNavnServiceProperties properties;
+    private final ServerProperties properties;
     private final TokenExchange tokenExchange;
 
-    public GenererNavnConsumer(GenererNavnServiceProperties properties,
-                               TokenExchange tokenExchange) {
-
+    public GenererNavnConsumer(
+            Consumers consumers,
+            TokenExchange tokenExchange) {
         this.tokenExchange = tokenExchange;
-        this.properties = properties;
-        this.webClient = WebClient.builder()
+        properties = consumers.getGenererNavnService();
+        this.webClient = WebClient
+                .builder()
                 .baseUrl(properties.getUrl())
                 .build();
     }

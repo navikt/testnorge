@@ -1,8 +1,7 @@
 package no.nav.testnav.apps.endringsmeldingfrontend;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.testnav.apps.endringsmeldingfrontend.credentials.EndringsmeldingServiceProperties;
-import no.nav.testnav.apps.endringsmeldingfrontend.credentials.ProfilApiServiceProperties;
+import no.nav.testnav.apps.endringsmeldingfrontend.config.Consumers;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactivefrontend.config.FrontendConfig;
 import no.nav.testnav.libs.reactivefrontend.filter.AddAuthenticationHeaderToRequestGatewayFilterFactory;
@@ -32,24 +31,15 @@ import java.util.function.Function;
 @RequiredArgsConstructor
 public class EndringsmeldingFrontendApplicationStarter {
 
-    private final EndringsmeldingServiceProperties endringsmeldingServiceProperties;
-    private final ProfilApiServiceProperties profilApiServiceProperties;
+    private final Consumers consumers;
     private final TokenExchange tokenExchange;
 
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         return builder
                 .routes()
-                .route(createRoute(
-                        "endringsmelding-service",
-                        endringsmeldingServiceProperties.getUrl(),
-                        addAuthenticationHeaderFilterFrom(endringsmeldingServiceProperties)
-                ))
-                .route(createRoute(
-                        "testnorge-profil-api",
-                        profilApiServiceProperties.getUrl(),
-                        addAuthenticationHeaderFilterFrom(profilApiServiceProperties)
-                ))
+                .route(createRoute(consumers.getEndringsmeldingService()))
+                .route(createRoute(consumers.getTestnorgeProfilApi()))
                 .build();
     }
 
@@ -66,7 +56,10 @@ public class EndringsmeldingFrontendApplicationStarter {
                 });
     }
 
-    private Function<PredicateSpec, Buildable<Route>> createRoute(String segment, String host, GatewayFilter filter) {
+    private Function<PredicateSpec, Buildable<Route>> createRoute(ServerProperties serverProperties) {
+        var segment = serverProperties.getName();
+        var host = serverProperties.getUrl();
+        var filter = addAuthenticationHeaderFilterFrom(serverProperties);
         return spec -> spec
                 .path("/" + segment + "/**")
                 .filters(filterSpec -> filterSpec
@@ -74,4 +67,5 @@ public class EndringsmeldingFrontendApplicationStarter {
                         .filter(filter)
                 ).uri(host);
     }
+
 }

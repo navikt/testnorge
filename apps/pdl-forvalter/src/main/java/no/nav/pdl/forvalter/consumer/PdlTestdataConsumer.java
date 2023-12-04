@@ -3,7 +3,7 @@ package no.nav.pdl.forvalter.consumer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.pdl.forvalter.config.credentials.PdlServiceProperties;
+import no.nav.pdl.forvalter.config.Consumers;
 import no.nav.pdl.forvalter.consumer.command.PdlAktoerNpidCommand;
 import no.nav.pdl.forvalter.consumer.command.PdlDeleteCommandPdl;
 import no.nav.pdl.forvalter.consumer.command.PdlOpprettArtifactCommandPdl;
@@ -11,10 +11,10 @@ import no.nav.pdl.forvalter.consumer.command.PdlOpprettPersonCommandPdl;
 import no.nav.pdl.forvalter.dto.ArtifactValue;
 import no.nav.pdl.forvalter.dto.OpprettIdent;
 import no.nav.pdl.forvalter.dto.OrdreRequest;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregistermetadataDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.PdlStatus;
+import no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregistermetadataDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.Identtype;
+import no.nav.testnav.libs.data.pdlforvalter.v1.OrdreResponseDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.PdlStatus;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
@@ -29,7 +29,7 @@ import java.util.Set;
 import static java.util.Objects.isNull;
 import static no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility.getIdenttype;
 import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.getBestillingUrl;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_SLETTING;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_SLETTING;
 
 @Slf4j
 @Service
@@ -37,19 +37,19 @@ public class PdlTestdataConsumer {
 
     private final WebClient webClient;
     private final TokenExchange tokenExchange;
-    private final ServerProperties properties;
+    private final ServerProperties serverProperties;
     private final ObjectMapper objectMapper;
 
-    public PdlTestdataConsumer(TokenExchange tokenExchange,
-                               PdlServiceProperties properties,
-                               ObjectMapper objectMapper) {
-
+    public PdlTestdataConsumer(
+            TokenExchange tokenExchange,
+            Consumers consumers,
+            ObjectMapper objectMapper) {
         this.tokenExchange = tokenExchange;
-        this.properties = properties;
-        this.webClient = WebClient.builder()
-                .baseUrl(properties.getUrl())
-                .filters(exchangeFilterFunctions ->
-                    exchangeFilterFunctions.add(logRequest()))
+        serverProperties = consumers.getPdlService();
+        this.webClient = WebClient
+                .builder()
+                .baseUrl(serverProperties.getUrl())
+                .filters(exchangeFilterFunctions -> exchangeFilterFunctions.add(logRequest()))
                 .build();
         this.objectMapper = objectMapper;
     }
@@ -79,7 +79,7 @@ public class PdlTestdataConsumer {
     public Flux<OrdreResponseDTO.PdlStatusDTO> send(OrdreRequest orders) {
 
         return tokenExchange
-                .exchange(properties)
+                .exchange(serverProperties)
                 .flatMapMany(accessToken -> Flux.concat(
                                 Flux.fromIterable(orders.getSletting())
                                         .parallel()
@@ -101,7 +101,7 @@ public class PdlTestdataConsumer {
     public Flux<List<OrdreResponseDTO.HendelseDTO>> delete(Set<String> identer) {
 
         return Flux.from(tokenExchange
-                .exchange(properties)
+                .exchange(serverProperties)
                 .flatMapMany(accessToken -> identer
                         .stream()
                         .map(ident -> Flux.from(new PdlDeleteCommandPdl(webClient, getBestillingUrl().get(PDL_SLETTING), ident, accessToken.getTokenValue()).call()))

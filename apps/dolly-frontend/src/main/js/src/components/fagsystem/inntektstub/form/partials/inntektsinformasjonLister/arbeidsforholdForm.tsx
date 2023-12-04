@@ -6,6 +6,7 @@ import { DollySelect, FormikSelect } from '@/components/ui/form/inputs/select/Se
 import { SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
 import { ArbeidKodeverk } from '@/config/kodeverk'
 import React from 'react'
+import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
 
 const initialValues = {
 	arbeidsforholdstype: '',
@@ -22,9 +23,9 @@ const initialValues = {
 
 export const ArbeidsforholdForm = ({ formikBag, inntektsinformasjonPath }) => {
 	const arbeidsforholdstyper = SelectOptionsOppslag.hentArbeidsforholdstyperInntektstub()
-	const arbeidsforholdstyperFormatted = SelectOptionsOppslag.formatOptions(
+	const arbeidsforholdstyperFormatted = SelectOptionsFormat.formatOptions(
 		'arbeidsforholdstyper',
-		arbeidsforholdstyper
+		arbeidsforholdstyper,
 	)
 
 	return (

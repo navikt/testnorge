@@ -85,7 +85,7 @@ public class ArenaBrukerService {
                 });
     }
 
-    private Mono<String> getBrukerStatus(ArenaNyeBrukereResponse response) {
+    Mono<String> getBrukerStatus(ArenaNyeBrukereResponse response) {
 
         return Flux.concat(Flux.just(response.getStatus())
                                 .filter(status -> !status.is2xxSuccessful())

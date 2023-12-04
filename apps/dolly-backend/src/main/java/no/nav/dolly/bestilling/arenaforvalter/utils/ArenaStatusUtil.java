@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.bestilling.arenaforvalter.ArenaUtils.fixFormatUserDefinedError;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -47,7 +48,7 @@ public class ArenaStatusUtil {
                                 .collect(Collectors.joining()),
                         Flux.fromIterable(response.getNyeDagpFeilList())
                                 .map(dagpFeil ->
-                                        encodeStatus(String.format(ArenaUtils.STATUS_FMT, dagpFeil.getNyDagpFeilstatus(), dagpFeil.getMelding())))
+                                        fixFormatUserDefinedError(encodeStatus(String.format(ArenaUtils.STATUS_FMT, dagpFeil.getNyDagpFeilstatus(), dagpFeil.getMelding()))))
                                 .collect(Collectors.joining()))
 
                 .collect(Collectors.joining());
@@ -70,7 +71,7 @@ public class ArenaStatusUtil {
                                     .collect(Collectors.joining()),
                             Flux.fromIterable(response.getNyeAapFeilList())
                                     .map(aapFeil ->
-                                            encodeStatus(String.format(ArenaUtils.STATUS_FMT, aapFeil.getNyAapFeilstatus(), aapFeil.getMelding())))
+                                            fixFormatUserDefinedError(encodeStatus(String.format(ArenaUtils.STATUS_FMT, aapFeil.getNyAapFeilstatus(), aapFeil.getMelding()))))
                                     .collect(Collectors.joining()))
 
                     .collect(Collectors.joining());

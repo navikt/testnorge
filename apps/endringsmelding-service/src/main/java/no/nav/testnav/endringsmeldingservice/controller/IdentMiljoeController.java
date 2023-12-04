@@ -2,7 +2,7 @@ package no.nav.testnav.endringsmeldingservice.controller;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.endringsmeldingservice.consumer.TpsMessagingConsumer;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PersonMiljoeDTO;
+import no.nav.testnav.libs.data.tpsmessagingservice.v1.PersonMiljoeDTO;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;

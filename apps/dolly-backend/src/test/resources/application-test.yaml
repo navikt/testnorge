@@ -17,6 +17,14 @@ azure:
       id: dummy
       secret: dummy
 
+open:
+  search:
+    uri: dummy
+    username: dummy
+    password: dummy
+    total-fields: 150
+    index: dummy
+
 consumers:
   testnav-kodeverk-proxy:
     name: kodeverk-mock
@@ -68,7 +76,6 @@ consumers:
     name: testnav-organisasjon-service
     cluster: dev-gcp
     namespace: dolly
-    threads: 5
   testnav-pensjon-testdata-facade-proxy:
     url: http://localhost:${wiremock.server.port:0}/pensjon-testdata
     name: testnav-pensjon-testdata-facade-proxy

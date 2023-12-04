@@ -1,6 +1,6 @@
 import * as Yup from 'yup'
 import { ifPresent, requiredNumber, requiredString } from '@/utils/YupValidations'
-import { isBefore, isFuture, isPast } from 'date-fns'
+import { isAfter, isBefore, isFuture, isPast } from 'date-fns'
 import { testDatoFom, testDatoTom } from '@/components/fagsystem/utils'
 
 const erIkkeLik = () => {
@@ -40,32 +40,48 @@ export const validation = {
 	uforetrygd: ifPresent(
 		'$pensjonforvalter.uforetrygd',
 		Yup.object({
+			uforetidspunkt: Yup.date()
+				.test('er-historisk', 'Dato må være historisk', function validDate(dato) {
+					return isPast(dato)
+				})
+				.nullable(),
 			kravFremsattDato: Yup.date()
 				.test(
 					'er-foer-virkningsdato',
-					'Dato må være før ønsket virkningsdato',
+					'Dato må være etter uføretidspunkt og før ønsket virkningsdato',
 					function validDate(kravFremsattDato) {
 						const virkningsdato =
 							this.options.context?.pensjonforvalter?.uforetrygd?.onsketVirkningsDato
-						return isBefore(new Date(kravFremsattDato), new Date(virkningsdato))
+						const uforetidspunkt =
+							this.options.context?.pensjonforvalter?.uforetrygd?.uforetidspunkt
+						return (
+							isBefore(new Date(kravFremsattDato), new Date(virkningsdato)) &&
+							isAfter(new Date(kravFremsattDato), new Date(uforetidspunkt))
+						)
 					},
 				)
 				.nullable(),
-			onsketVirkningsDato: datoErFremtidig().nullable(),
-			uforetidspunkt: Yup.date()
-				.test('er-historisk', 'Dato må være historisk', function validDate(dato) {
-					if (!dato) {
-						return true
-					}
-					return isPast(dato)
-				})
+			onsketVirkningsDato: Yup.date()
+				.test(
+					'er-foer-virkningsdato',
+					'Dato må være etter dato for fremsettelse av krav (og tidligst 1. januar 2015)',
+					function validDate(onsketVirkningsDato) {
+						const kravFremsattDato =
+							this.options.context?.pensjonforvalter?.uforetrygd?.kravFremsattDato
+						return (
+							isAfter(new Date(onsketVirkningsDato), new Date(kravFremsattDato)) &&
+							isAfter(new Date(onsketVirkningsDato), new Date('2015-01-01'))
+
+						)
+					},
+				)
 				.nullable(),
 			inntektForUforhet: requiredNumber.transform((i, j) => (j === '' ? null : i)),
 			uforegrad: requiredNumber.transform((i, j) => (j === '' ? null : i)),
 			minimumInntektForUforhetType: Yup.string().nullable(),
 			saksbehandler: erIkkeLik().nullable(),
 			attesterer: erIkkeLik().nullable(),
-			navEnhetId: requiredString,
+			navEnhetId: Yup.string().nullable(),
 			barnetilleggDetaljer: Yup.object({
 				barnetilleggType: requiredString,
 				forventedeInntekterSoker: Yup.array().of(forventetInntekt),

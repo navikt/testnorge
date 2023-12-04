@@ -1,7 +1,7 @@
 package no.nav.registre.testnorge.jenkinsbatchstatusservice.consumer;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.jenkinsbatchstatusservice.config.credentials.JenkinsServiceProperties;
+import no.nav.registre.testnorge.jenkinsbatchstatusservice.config.Consumers;
 import no.nav.registre.testnorge.jenkinsbatchstatusservice.consumer.command.GetBEREG007LogCommand;
 import no.nav.registre.testnorge.jenkinsbatchstatusservice.consumer.command.GetQueueItemCommand;
 import no.nav.testnav.libs.commands.GetCrumbCommand;
@@ -16,32 +16,32 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class JenkinsConsumer {
     private final WebClient webClient;
     private final TokenExchange tokenExchange;
-    private final ServerProperties properties;
+    private final ServerProperties serverProperties;
 
     public JenkinsConsumer(
-            JenkinsServiceProperties properties,
+            Consumers consumers,
             TokenExchange tokenExchange) {
-
         this.tokenExchange = tokenExchange;
-        this.properties = properties;
-        this.webClient = WebClient.builder()
-                .baseUrl(properties.getUrl())
+        serverProperties = consumers.getJenkins();
+        this.webClient = WebClient
+                .builder()
+                .baseUrl(serverProperties.getUrl())
                 .build();
     }
 
     private JenkinsCrumb getCrumb() {
-        var accessToken = tokenExchange.exchange(properties).block();
+        var accessToken = tokenExchange.exchange(serverProperties).block();
         return new GetCrumbCommand(webClient, accessToken.getTokenValue()).call();
     }
 
     public Long getJobNumber(Long itemId) {
-        var accessToken = tokenExchange.exchange(properties).block();
+        var accessToken = tokenExchange.exchange(serverProperties).block();
         var dto = new GetQueueItemCommand(webClient, accessToken.getTokenValue(), getCrumb(), itemId).call();
         return dto.getNumber();
     }
 
     public String getJobLog(Long jobNumber) {
-        var accessToken = tokenExchange.exchange(properties).block();
+        var accessToken = tokenExchange.exchange(serverProperties).block();
         return new GetBEREG007LogCommand(webClient, accessToken.getTokenValue(), jobNumber).call();
     }
 }

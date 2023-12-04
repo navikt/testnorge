@@ -1,8 +1,7 @@
 package no.nav.testnav.apps.oversiktfrontend;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.testnav.apps.oversiktfrontend.credentials.PersonOrganisasjonTilgangServiceProperties;
-import no.nav.testnav.apps.oversiktfrontend.credentials.ProfilApiServiceProperties;
+import no.nav.testnav.apps.oversiktfrontend.config.Consumers;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactivefrontend.config.FrontendConfig;
 import no.nav.testnav.libs.reactivefrontend.filter.AddAuthenticationHeaderToRequestGatewayFilterFactory;
@@ -32,8 +31,7 @@ import java.util.function.Function;
 @RequiredArgsConstructor
 public class OversiktFrontendApplicationStarter {
 
-    private final ProfilApiServiceProperties profilApiServiceProperties;
-    private final PersonOrganisasjonTilgangServiceProperties personOrganisasjonTilgangServiceProperties;
+    private final Consumers consumers;
     private final TokenExchange tokenExchange;
 
     @Bean
@@ -42,13 +40,13 @@ public class OversiktFrontendApplicationStarter {
                 .routes()
                 .route(createRoute(
                         "testnorge-profil-api",
-                        profilApiServiceProperties.getUrl(),
-                        addAuthenticationHeaderFilterFrom(profilApiServiceProperties)
+                        consumers.getTestnorgeProfilApi().getUrl(),
+                        addAuthenticationHeaderFilterFrom(consumers.getTestnorgeProfilApi())
                 ))
                 .route(createRoute(
                         "testnav-organisasjon-tilgang-service",
-                        personOrganisasjonTilgangServiceProperties.getUrl(),
-                        addAuthenticationHeaderFilterFrom(personOrganisasjonTilgangServiceProperties)
+                        consumers.getTestnavPersonOrganisasjonTilgangService().getUrl(),
+                        addAuthenticationHeaderFilterFrom(consumers.getTestnavPersonOrganisasjonTilgangService())
                 ))
                 .build();
     }

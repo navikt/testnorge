@@ -12,7 +12,7 @@ import {
 } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { FoedselData, Person } from '@/components/fagsystem/pdlf/PdlTypes'
-import { initialFoedsel } from '@/components/fagsystem/pdlf/form/initialValues'
+import { getInitialFoedsel } from '@/components/fagsystem/pdlf/form/initialValues'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
 import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
 
@@ -70,7 +70,7 @@ const FoedselVisning = ({
 	erPdlVisning,
 	ident,
 }: FoedselVisningTypes) => {
-	const initFoedsel = Object.assign(_.cloneDeep(initialFoedsel), data[idx])
+	const initFoedsel = Object.assign(_.cloneDeep(getInitialFoedsel()), data[idx])
 	const initialValues = { foedsel: initFoedsel }
 
 	const redigertFoedselPdlf = _.get(tmpPersoner, `${ident}.person.foedsel`)?.find(
@@ -83,7 +83,7 @@ const FoedselVisning = ({
 
 	const foedselValues = redigertFoedselPdlf ? redigertFoedselPdlf : foedsel
 	const redigertFoedselValues = redigertFoedselPdlf
-		? { foedsel: Object.assign(_.cloneDeep(initialFoedsel), redigertFoedselPdlf) }
+		? { foedsel: Object.assign(_.cloneDeep(getInitialFoedsel()), redigertFoedselPdlf) }
 		: null
 
 	return erPdlVisning ? (

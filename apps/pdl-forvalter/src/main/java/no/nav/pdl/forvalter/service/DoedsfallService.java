@@ -1,17 +1,33 @@
 package no.nav.pdl.forvalter.service;
 
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.DoedsfallDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.DoedsfallDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 import static java.util.Objects.isNull;
+import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
+import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Service
-public class DoedsfallService extends PdlArtifactService<DoedsfallDTO> {
+public class DoedsfallService implements Validation<DoedsfallDTO> {
 
     private static final String INVALID_DATO_MISSING = "Dødsfall: dødsdato må oppgis";
+
+    public List<DoedsfallDTO> convert(PersonDTO person) {
+
+        for (var type : person.getDoedsfall()) {
+            if (isTrue(type.getIsNew())) {
+
+                type.setKilde(getKilde(type));
+                type.setMaster(getMaster(type, person));
+            }
+        }
+        return person.getDoedsfall();
+    }
 
     @Override
     public void validate(DoedsfallDTO type) {
@@ -20,16 +36,5 @@ public class DoedsfallService extends PdlArtifactService<DoedsfallDTO> {
 
             throw new InvalidRequestException(INVALID_DATO_MISSING);
         }
-    }
-
-    @Override
-    protected void handle(DoedsfallDTO type) {
-        // Ingen håndtering
-    }
-
-    @Override
-    protected void enforceIntegrity(List<DoedsfallDTO> type) {
-
-        // Ingen referansevalidering
     }
 }

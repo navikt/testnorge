@@ -82,6 +82,16 @@ logging:
           results:
             jdbc: ERROR
 
+open:
+  search:
+    total-fields: 1500
+    index: bestilling
+
+tps:
+  person:
+    service:
+      wait: 30_000
+
 consumers:
   testnav-organisasjon-forvalter:
     name: testnav-organisasjon-forvalter
@@ -213,7 +223,6 @@ consumers:
     namespace: dolly
     url: http://testnav-organisasjon-service.dolly.svc.cluster.local
     cluster: dev-gcp
-    threads: 5
   testnav-udistub-proxy:
     name: testnav-udistub-proxy
     namespace: dolly

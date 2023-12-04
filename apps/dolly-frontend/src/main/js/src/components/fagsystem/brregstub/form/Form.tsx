@@ -6,12 +6,13 @@ import { SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
 import Panel from '@/components/ui/panel/Panel'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
 import { EnheterForm } from './partials/enheterForm'
+import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
 
 export const brregAttributt = 'brregstub'
 
 export const BrregstubForm = ({ formikBag }) => {
 	const understatuser = SelectOptionsOppslag.hentUnderstatusFraBrregstub()
-	const understatuserOptions = SelectOptionsOppslag.formatOptions('understatuser', understatuser)
+	const understatuserOptions = SelectOptionsFormat.formatOptions('understatuser', understatuser)
 
 	return (
 		<Vis attributt={brregAttributt}>

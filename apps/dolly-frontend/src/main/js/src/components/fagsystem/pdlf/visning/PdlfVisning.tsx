@@ -105,6 +105,7 @@ export const PdlfVisning = ({ fagsystemData, loading, tmpPersoner, erRedigerbar 
 				<Nasjonalitet
 					data={data?.person}
 					tmpPersoner={tmpPdlforvalter}
+                    identtype={data?.person?.identtype}
 					erRedigerbar={erRedigerbar}
 				/>
 				<Telefonnummer
@@ -154,12 +155,14 @@ export const PdlfVisning = ({ fagsystemData, loading, tmpPersoner, erRedigerbar 
 					data={data?.person?.oppholdsadresse}
 					tmpPersoner={tmpPdlforvalter}
 					ident={ident}
+					identtype={data?.person?.identtype}
 					erRedigerbar={erRedigerbar}
 				/>
 				<Kontaktadresse
 					data={data?.person?.kontaktadresse}
 					tmpPersoner={tmpPdlforvalter}
 					ident={ident}
+					identtype={data?.person?.identtype}
 					erRedigerbar={erRedigerbar}
 				/>
 				<Adressebeskyttelse
@@ -174,6 +177,7 @@ export const PdlfVisning = ({ fagsystemData, loading, tmpPersoner, erRedigerbar 
 					relasjoner={data?.relasjoner}
 					tmpPersoner={tmpPdlforvalter}
 					ident={ident}
+					identtype={data?.person?.identtype}
 					erRedigerbar={erRedigerbar}
 				/>
 				<ForelderBarnRelasjon
@@ -181,6 +185,7 @@ export const PdlfVisning = ({ fagsystemData, loading, tmpPersoner, erRedigerbar 
 					tmpPersoner={tmpPdlforvalter}
 					ident={ident}
 					relasjoner={data?.relasjoner}
+					identtype={data?.person?.identtype}
 					erRedigerbar={erRedigerbar}
 				/>
 				<ForeldreansvarVisning
@@ -202,6 +207,7 @@ export const PdlfVisning = ({ fagsystemData, loading, tmpPersoner, erRedigerbar 
 					data={data?.person?.utenlandskIdentifikasjonsnummer}
 					tmpPersoner={tmpPdlforvalter}
 					ident={ident}
+					identtype={data?.person?.identtype}
 					erRedigerbar={erRedigerbar}
 				/>
 				<IdenthistorikkVisning relasjoner={data?.relasjoner} />

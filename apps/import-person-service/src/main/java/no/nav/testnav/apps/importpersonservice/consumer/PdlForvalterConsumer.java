@@ -1,11 +1,11 @@
 package no.nav.testnav.apps.importpersonservice.consumer;
 
+import no.nav.testnav.apps.importpersonservice.config.Consumers;
 import no.nav.testnav.apps.importpersonservice.consumer.command.OppdaterPersonCommand;
 import no.nav.testnav.apps.importpersonservice.consumer.command.SendPersonTilPdlCommand;
 import no.nav.testnav.apps.importpersonservice.consumer.request.OppdaterPersonRequest;
-import no.nav.testnav.apps.importpersonservice.credentias.TestnavPdlForvalterProperties;
 import no.nav.testnav.apps.importpersonservice.domain.PersonList;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.stereotype.Component;
@@ -21,12 +21,10 @@ public class PdlForvalterConsumer {
     private final TokenExchange tokenExchange;
 
     public PdlForvalterConsumer(
-            TestnavPdlForvalterProperties serverProperties,
+            Consumers consumers,
             TokenExchange tokenExchange) {
-
-        this.serverProperties = serverProperties;
+        serverProperties = consumers.getTestnavPdlForvalter();
         this.tokenExchange = tokenExchange;
-
         this.webClient = WebClient
                 .builder()
                 .baseUrl(serverProperties.getUrl())

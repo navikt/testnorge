@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { FormikProps } from 'formik'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
@@ -6,6 +6,7 @@ import { DollyCheckbox, FormikCheckbox } from '@/components/ui/form/inputs/checb
 import { initialDeltBosted } from '@/components/fagsystem/pdlf/form/initialValues'
 import { DeltBosted } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/forelderBarnRelasjon/DeltBosted'
 import * as _ from 'lodash-es'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 interface BarnRelasjonValues {
 	formikBag: FormikProps<{}>
@@ -13,10 +14,11 @@ interface BarnRelasjonValues {
 }
 
 export const BarnRelasjon = ({ formikBag, path }: BarnRelasjonValues) => {
+	const opts = useContext(BestillingsveilederContext)
 	const erRedigering = !path?.includes('pdldata')
 
 	const [deltBosted, setDeltBosted] = useState(
-		_.get(formikBag.values, `${path}.deltBosted`) !== null
+		_.get(formikBag.values, `${path}.deltBosted`) !== null,
 	)
 
 	useEffect(() => {
@@ -51,6 +53,10 @@ export const BarnRelasjon = ({ formikBag, path }: BarnRelasjonValues) => {
 						checkboxMargin
 						onChange={() => setDeltBosted(!deltBosted)}
 						size="small"
+						isDisabled={opts?.identtype === 'NPID'}
+						title={
+							opts?.identtype === 'NPID' ? 'Ikke tilgjengelig for personer med identtype NPID' : ''
+						}
 					/>
 				)}
 			</div>

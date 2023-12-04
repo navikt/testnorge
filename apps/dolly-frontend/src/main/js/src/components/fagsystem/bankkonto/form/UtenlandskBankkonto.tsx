@@ -30,6 +30,7 @@ export const UtenlandskBankkonto = ({ formikBag }: any) => {
 				swift = 'BANK' + mappedLandkode + '11222'
 			}
 			formikBag.setFieldValue(`${path}.swift`, swift, false)
+			formikBag.setFieldTouched(`${path}.swift`, true)
 		}
 	}
 
@@ -46,7 +47,7 @@ export const UtenlandskBankkonto = ({ formikBag }: any) => {
 						<FormikCheckbox
 							name={`${path}.tilfeldigKontonummer`}
 							label="Har tilfeldig kontonummer"
-							size="x-small"
+							size="medium"
 							isDisabled={disableTilfeldigKontonummer}
 						/>
 					</div>

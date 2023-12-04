@@ -9,10 +9,11 @@ import no.nav.dolly.bestilling.organisasjonforvalter.domain.DeployRequest;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.DeployResponse;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonDeployStatus;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonDetaljer;
-import no.nav.dolly.config.credentials.OrganisasjonForvalterProperties;
+import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
-import no.nav.dolly.util.WebClientFilter;
+import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -43,18 +44,18 @@ public class OrganisasjonConsumer {
 
     private final TokenExchange tokenService;
     private final WebClient webClient;
-    private final OrganisasjonForvalterProperties serviceProperties;
+    private final ServerProperties serverProperties;
 
     public OrganisasjonConsumer(
             TokenExchange tokenService,
-            OrganisasjonForvalterProperties serviceProperties,
+            Consumers consumers,
             ObjectMapper objectMapper,
             WebClient.Builder webClientBuilder
     ) {
         this.tokenService = tokenService;
-        this.serviceProperties = serviceProperties;
+        serverProperties = consumers.getTestnavOrganisasjonForvalter();
         this.webClient = webClientBuilder
-                .baseUrl(serviceProperties.getUrl())
+                .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .build();
     }
@@ -62,7 +63,7 @@ public class OrganisasjonConsumer {
     @Timed(name = "providers", tags = {"operation", "organisasjon-hent"})
     public Flux<OrganisasjonDetaljer> hentOrganisasjon(List<String> orgnumre) {
 
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> new GetOrganisasjonCommand(webClient, orgnumre, token.getTokenValue()).call());
     }
 
@@ -71,7 +72,7 @@ public class OrganisasjonConsumer {
         var navCallId = getNavCallId();
         log.info("Organisasjon hent request sendt, callId: {}, consumerId: {}", navCallId, CONSUMER);
 
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMap(token -> webClient
                         .get()
                         .uri(uriBuilder ->
@@ -94,7 +95,7 @@ public class OrganisasjonConsumer {
 
         var navCallId = getNavCallId();
         log.info("Organisasjon oppretting sendt, callId: {}, consumerId: {}", navCallId, CONSUMER);
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMap(token -> webClient
                         .post()
                         .uri(uriBuilder -> uriBuilder.path(ORGANISASJON_FORVALTER_URL).build())
@@ -120,7 +121,7 @@ public class OrganisasjonConsumer {
 
     private ResponseEntity<DeployResponse> sendDeployOrganisasjonRequest(DeployRequest deployRequest, String callId) {
 
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMap(token -> webClient
                         .post()
                         .uri(uriBuilder -> uriBuilder.path(ORGANISASJON_DEPLOYMENT_URL).build())

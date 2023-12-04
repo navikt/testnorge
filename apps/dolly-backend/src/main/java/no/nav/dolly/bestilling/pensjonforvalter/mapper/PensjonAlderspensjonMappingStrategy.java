@@ -1,65 +1,24 @@
 package no.nav.dolly.bestilling.pensjonforvalter.mapper;
 
+import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonRequest;
-import no.nav.dolly.domain.PdlPerson;
-import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
-import static no.nav.dolly.domain.PdlPerson.SivilstandType.ENKE_ELLER_ENKEMANN;
-import static no.nav.dolly.domain.PdlPerson.SivilstandType.GJENLEVENDE_PARTNER;
-import static no.nav.dolly.domain.PdlPerson.SivilstandType.SKILT;
-import static no.nav.dolly.domain.PdlPerson.SivilstandType.SKILT_PARTNER;
+import static no.nav.dolly.bestilling.pensjonforvalter.mapper.PensjonMappingSupportUtils.getNesteMaaned;
+import static no.nav.dolly.bestilling.pensjonforvalter.mapper.PensjonMappingSupportUtils.getRandomAnsatt;
+import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
 
 @Component
+@RequiredArgsConstructor
 public class PensjonAlderspensjonMappingStrategy implements MappingStrategy {
-
-    private static String getRelasjonType(PdlPerson.SivilstandType sivilstandType) {
-
-        if (isNull(sivilstandType)) {
-            return null;
-        }
-        return switch (sivilstandType) {
-            case GIFT, SKILT, SEPARERT, ENKE_ELLER_ENKEMANN -> RelasjonType.EKTEF.name();
-            case REGISTRERT_PARTNER, SKILT_PARTNER, SEPARERT_PARTNER, GJENLEVENDE_PARTNER ->
-                    RelasjonType.PARTNER.name();
-            default -> null;
-        };
-    }
-
-    private static boolean isHarVaertGift(PdlPerson.SivilstandType sivilstandType) {
-
-        return sivilstandType == SKILT ||
-                sivilstandType == ENKE_ELLER_ENKEMANN ||
-                sivilstandType == SKILT_PARTNER ||
-                sivilstandType != GJENLEVENDE_PARTNER;
-    }
-
-    private static boolean isVarigAdskilt(PdlPerson.SivilstandType sivilstandType) {
-
-        return sivilstandType == ENKE_ELLER_ENKEMANN ||
-                sivilstandType == GJENLEVENDE_PARTNER ||
-                sivilstandType == SKILT ||
-                sivilstandType == SKILT_PARTNER;
-    }
-
-    private static LocalDate getSamlovsbruddDato(PdlPerson.SivilstandType sivilstandType, LocalDate sivilstandFomDato) {
-
-        return sivilstandType == SKILT || sivilstandType == SKILT_PARTNER ?
-                sivilstandFomDato : null;
-    }
 
     @Override
     public void register(MapperFactory factory) {
@@ -68,126 +27,23 @@ public class PensjonAlderspensjonMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(PensjonData.Alderspensjon alderspensjon, AlderspensjonRequest request, MappingContext context) {
 
-                        var hovedperson = (String) context.getProperty("ident");
-                        request.setFnr(hovedperson);
+                        request.setFnr((String) context.getProperty("ident"));
                         request.setMiljoer((List<String>) context.getProperty("miljoer"));
-                        request.setStatsborgerskap("NOR");
 
-                        var personer = (List<PdlPersonBolk.PersonBolk>) context.getProperty("relasjoner");
+                        request.setKravFremsattDato(
+                                nullcheckSetDefaultValue(alderspensjon.getKravFremsattDato(), LocalDate.now()));
+                        request.setIverksettelsesdato(
+                                nullcheckSetDefaultValue(alderspensjon.getIverksettelsesdato(), getNesteMaaned()));
 
-                        var partner = new AtomicReference<String>();
-                        personer.stream()
-                                .filter(person -> person.getIdent().equals(hovedperson))
-                                .forEach(personBolk -> personBolk.getPerson().getSivilstand().stream()
-                                        .min(new SivilstandSort())
-                                        .ifPresentOrElse(sivilstand -> {
-                                                    request.setSivilstand(mapSivilstand(sivilstand.getType()));
-                                                    request.setSivilstandDatoFom(sivilstand.getGyldigFraOgMed());
-                                                    partner.set(sivilstand.getRelatertVedSivilstand());
-                                                },
-                                                () -> personer.stream()
-                                                        .filter(person -> hovedperson.equals(person.getIdent()))
-                                                        .map(PdlPersonBolk.PersonBolk::getPerson)
-                                                        .map(PdlPerson.Person::getSivilstand)
-                                                        .flatMap(Collection::stream)
-                                                        .findFirst()
-                                                        .ifPresent(sivilstand -> {
-                                                            request.setSivilstand(mapSivilstand(sivilstand.getType()));
-                                                            request.setSivilstandDatoFom(sivilstand.getGyldigFraOgMed());
-                                                        })));
+                        request.setNavEnhetId(
+                                nullcheckSetDefaultValue(alderspensjon.getNavEnhetId(),
+                                        (String) context.getProperty("navEnhet")));
 
-                        if (personer.stream().anyMatch(person -> person.getIdent().equals(partner.get())) &&
-                                !alderspensjon.getRelasjoner().isEmpty()) {
-
-                            request.setRelasjonListe(mapperFacade.mapAsList(alderspensjon.getRelasjoner(), AlderspensjonRequest.SkjemaRelasjon.class));
-                            personer.stream()
-                                    .filter(personBolk -> personBolk.getIdent().equals(partner.get()))
-                                    .forEach(partnerPerson -> {
-                                        request.getRelasjonListe().get(0).setFnr(partnerPerson.getIdent());
-                                        partnerPerson.getPerson().getSivilstand().stream()
-                                                .min(new SivilstandSort())
-                                                .ifPresent(sivilstand -> {
-                                                    request.getRelasjonListe().get(0).setRelasjonType(getRelasjonType(sivilstand.getType()));
-                                                    request.getRelasjonListe().get(0).setRelasjonFraDato(sivilstand.getGyldigFraOgMed());
-                                                    request.getRelasjonListe().get(0).setHarVaertGift(isHarVaertGift(sivilstand.getType()));
-                                                    request.getRelasjonListe().get(0).setVarigAdskilt(isVarigAdskilt(sivilstand.getType()));
-                                                    request.getRelasjonListe().get(0).setSamlivsbruddDato(
-                                                            getSamlovsbruddDato(sivilstand.getType(), sivilstand.getGyldigFraOgMed()));
-                                                });
-
-                                        partnerPerson.getPerson().getDoedsfall().stream()
-                                                .findFirst()
-                                                .map(PdlPerson.Doedsfall::getDoedsdato)
-                                                .ifPresent(doedsdato -> request.getRelasjonListe().get(0).setDodsdato(doedsdato));
-
-                                        request.getRelasjonListe().get(0).setHarFellesBarn(
-                                                partnerPerson.getPerson().getForelderBarnRelasjon().stream()
-                                                        .filter(PdlPerson.ForelderBarnRelasjon::isBarn)
-                                                        .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent)
-                                                        .anyMatch(barnAvPartner -> personer.stream()
-                                                                .filter(person -> hovedperson.equals(person.getIdent()))
-                                                                .map(PdlPersonBolk.PersonBolk::getPerson)
-                                                                .anyMatch(person -> person.getForelderBarnRelasjon().stream()
-                                                                        .filter(PdlPerson.ForelderBarnRelasjon::isBarn)
-                                                                        .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent)
-                                                                        .anyMatch(barnAvHovedperson -> barnAvHovedperson.equals(barnAvPartner)))));
-                                    });
-                        }
+                        request.setSaksbehandler(nullcheckSetDefaultValue(alderspensjon.getSaksbehandler(), getRandomAnsatt()));
+                        request.setAttesterer(nullcheckSetDefaultValue(alderspensjon.getAttesterer(), getRandomAnsatt()));
                     }
                 })
                 .byDefault()
                 .register();
-
-        factory.classMap(PensjonData.SkjemaRelasjon.class, AlderspensjonRequest.SkjemaRelasjon.class)
-                .customize(new CustomMapper<>() {
-                    @Override
-                    public void mapAtoB(PensjonData.SkjemaRelasjon relasjon, AlderspensjonRequest.SkjemaRelasjon request, MappingContext context) {
-
-                        request.setSumAvForventetArbeidKapitalPensjonInntekt(relasjon.getSumAvForvArbKapPenInntekt());
-                    }
-                })
-                .byDefault()
-                .register();
-    }
-
-    public enum RelasjonType {EKTEF, PARTNER, SAMBO}
-
-    private static String mapSivilstand(PdlPerson.SivilstandType sivilstandType) {
-
-        if (isNull(sivilstandType)) {
-            return null;
-        }
-
-        return switch (sivilstandType) {
-            case UGIFT, UOPPGITT -> SivilstandRelasjoner.UGIF.name();
-            case GIFT -> SivilstandRelasjoner.GIFT.name();
-            case ENKE_ELLER_ENKEMANN -> SivilstandRelasjoner.ENKE.name();
-            case SKILT -> SivilstandRelasjoner.SKIL.name();
-            case SEPARERT -> SivilstandRelasjoner.SEPR.name();
-            case REGISTRERT_PARTNER -> SivilstandRelasjoner.REPA.name();
-            case SEPARERT_PARTNER -> SivilstandRelasjoner.SEPA.name();
-            case SKILT_PARTNER -> SivilstandRelasjoner.SKPA.name();
-            case GJENLEVENDE_PARTNER -> SivilstandRelasjoner.GJPA.name();
-        };
-    }
-
-    public static class SivilstandSort implements Comparator<PdlPerson.Sivilstand> {
-
-        @Override
-        public int compare(PdlPerson.Sivilstand sivilstand1, PdlPerson.Sivilstand sivilstand2) {
-
-            if (nonNull(sivilstand1.getGyldigFraOgMed()) && nonNull(sivilstand2.getGyldigFraOgMed())) {
-                return sivilstand2.getGyldigFraOgMed().compareTo(sivilstand1.getGyldigFraOgMed());
-
-            } else if (sivilstand1.getType() == sivilstand2.getType()) {
-                return 0;
-
-            } else if (sivilstand2.isUgift() || sivilstand1.isTidligereGift()) {
-                return -1;
-
-            } else {
-                return 1;
-            }
-        }
     }
 }

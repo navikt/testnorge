@@ -3,12 +3,11 @@ package no.nav.testnav.apps.importpersonservice.consumer.dto;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Value;
+import no.nav.testnav.apps.importpersonservice.domain.Person;
+import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO;
 
 import java.util.Collections;
 import java.util.List;
-
-import no.nav.testnav.apps.importpersonservice.domain.Person;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
 
 @Value
 @AllArgsConstructor

@@ -6,7 +6,10 @@ import { formatDate, showLabel } from '@/utils/DataFormatter'
 import { RelatertPerson } from '@/components/fagsystem/pdlf/visning/partials/RelatertPerson'
 import { Relasjon, SivilstandData } from '@/components/fagsystem/pdlf/PdlTypes'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
-import { initialPdlPerson, initialSivilstand } from '@/components/fagsystem/pdlf/form/initialValues'
+import {
+	getInitialSivilstand,
+	initialPdlPerson,
+} from '@/components/fagsystem/pdlf/form/initialValues'
 import * as _ from 'lodash-es'
 import React from 'react'
 import { getEksisterendeNyPerson } from '@/components/fagsystem/utils'
@@ -19,6 +22,7 @@ type SivilstandTypes = {
 	relasjoner: Array<Relasjon>
 	tmpPersoner?: Array<SivilstandData>
 	ident?: string
+	identtype?: string
 	erRedigerbar?: boolean
 }
 
@@ -30,6 +34,7 @@ type VisningData = {
 	data?: Array<SivilstandData>
 	tmpPersoner?: Array<SivilstandData>
 	ident?: string
+	identtype?: string
 }
 
 const SivilstandLes = ({
@@ -86,11 +91,12 @@ const SivilstandVisning = ({
 	relasjoner,
 	tmpPersoner,
 	ident,
+	identtype,
 }: VisningData) => {
 	const { gruppeId } = useParams()
 	const { identer: gruppeIdenter } = useGruppeIdenter(gruppeId)
 
-	const initSivilstand = Object.assign(_.cloneDeep(initialSivilstand), data[idx])
+	const initSivilstand = Object.assign(_.cloneDeep(getInitialSivilstand()), data[idx])
 	let initialValues = { sivilstand: initSivilstand }
 	initialValues.sivilstand.nyRelatertPerson = initialPdlPerson
 
@@ -107,7 +113,7 @@ const SivilstandVisning = ({
 	const sivilstandValues = redigertSivilstandPdlf ? redigertSivilstandPdlf : sivilstandData
 	let redigertSivilstandValues = redigertSivilstandPdlf
 		? {
-				sivilstand: Object.assign(_.cloneDeep(initialSivilstand), redigertSivilstandPdlf),
+				sivilstand: Object.assign(_.cloneDeep(getInitialSivilstand()), redigertSivilstandPdlf),
 		  }
 		: null
 	if (redigertSivilstandValues) {
@@ -147,6 +153,7 @@ const SivilstandVisning = ({
 			path="sivilstand"
 			ident={ident}
 			relatertPersonInfo={relatertPersonInfo}
+			identtype={identtype}
 		/>
 	)
 }
@@ -156,6 +163,7 @@ export const Sivilstand = ({
 	relasjoner,
 	tmpPersoner,
 	ident,
+    identtype,
 	erRedigerbar = true,
 }: SivilstandTypes) => {
 	if (!data || data.length < 1) {
@@ -176,7 +184,7 @@ export const Sivilstand = ({
 								relasjoner={relasjoner}
 								tmpPersoner={tmpPersoner}
 								ident={ident}
-							/>
+							identtype={identtype}/>
 						) : (
 							<SivilstandLes sivilstandData={sivilstand} relasjoner={relasjoner} idx={idx} />
 						)

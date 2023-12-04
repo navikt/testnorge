@@ -8,13 +8,13 @@ import no.nav.dolly.bestilling.sykemelding.domain.DetaljertSykemeldingRequest.Ad
 import no.nav.dolly.bestilling.sykemelding.domain.DetaljertSykemeldingRequest.Organisasjon;
 import no.nav.dolly.bestilling.sykemelding.domain.DetaljertSykemeldingRequest.Pasient;
 import no.nav.dolly.bestilling.sykemelding.domain.SyntSykemeldingRequest;
-import no.nav.dolly.bestilling.sykemelding.dto.Norg2EnhetResponse;
+import no.nav.dolly.consumer.norg2.dto.Norg2EnhetResponse;
 import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding;
 import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding.RsDetaljertSykemelding;
 import no.nav.dolly.mapper.MappingStrategy;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.BostedadresseDTO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
@@ -103,6 +103,7 @@ public class SykemeldingMappingStrategy implements MappingStrategy {
                                 .findFirst().orElse(new PdlPerson.Navn()), pasient);
                         pasient.setAdresse(mapperFacade.map(person.getPerson().getBostedsadresse().stream()
                                 .findFirst().orElse(new BostedadresseDTO()), Adresse.class, context));
+                        pasient.setFoedselsdato(person.getPerson().getFoedsel().getFirst().getFoedselsdato());
 
                         pasient.setTelefon(person.getPerson().getTelefonnummer().stream()
                                 .filter(telefonnummer -> telefonnummer.getPrioritet() == 1)

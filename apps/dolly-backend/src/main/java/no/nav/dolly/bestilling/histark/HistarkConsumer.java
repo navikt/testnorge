@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.histark.command.HistarkPostCommand;
 import no.nav.dolly.bestilling.histark.domain.HistarkRequest;
 import no.nav.dolly.bestilling.histark.domain.HistarkResponse;
-import no.nav.dolly.config.credentials.HistarkProxyProperties;
+import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
@@ -25,17 +25,17 @@ public class HistarkConsumer {
 
     private final WebClient webClient;
     private final TokenExchange tokenService;
-    private final ServerProperties serviceProperties;
+    private final ServerProperties serverProperties;
 
     public HistarkConsumer(
-            HistarkProxyProperties properties,
+            Consumers consumers,
             TokenExchange tokenService,
             ObjectMapper objectMapper,
             WebClient.Builder webClientBuilder) {
-        this.serviceProperties = properties;
+        serverProperties = consumers.getTestnavHistarkProxy();
         this.tokenService = tokenService;
         this.webClient = webClientBuilder
-                .baseUrl(properties.getUrl())
+                .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .build();
     }
@@ -46,7 +46,7 @@ public class HistarkConsumer {
         var callId = getNavCallId();
         log.info("Sender histark melding: callId: {}, consumerId: {}\n{}", callId, CONSUMER, histarkRequest);
 
-        return tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> new HistarkPostCommand(webClient, histarkRequest,
                         token.getTokenValue()).call());
     }
