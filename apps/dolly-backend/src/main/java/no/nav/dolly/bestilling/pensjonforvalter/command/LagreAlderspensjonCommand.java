@@ -3,6 +3,7 @@ package no.nav.dolly.bestilling.pensjonforvalter.command;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonVedtakRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -23,7 +24,8 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @RequiredArgsConstructor
 public class LagreAlderspensjonCommand implements Callable<Flux<PensjonforvalterResponse>> {
 
-    private static final String PENSJON_AP_URL = "/api/v3/vedtak/ap";
+    private static final String PENSJON_AP_VEDTAK_URL = "/api/v3/vedtak/ap";
+    private static final String PENSJON_AP_SOKNAD_URL = PENSJON_AP_VEDTAK_URL + "/soknad";
 
     private final WebClient webClient;
 
@@ -35,7 +37,8 @@ public class LagreAlderspensjonCommand implements Callable<Flux<Pensjonforvalter
         return webClient
                 .post()
                 .uri(uriBuilder -> uriBuilder
-                        .path(PENSJON_AP_URL)
+                        .path(alderspensjonRequest instanceof AlderspensjonVedtakRequest ?
+                                PENSJON_AP_VEDTAK_URL : PENSJON_AP_SOKNAD_URL)
                         .build())
                 .header(AUTHORIZATION, "Bearer " + token)
                 .header(HEADER_NAV_CALL_ID, generateCallId())
@@ -57,7 +60,8 @@ public class LagreAlderspensjonCommand implements Callable<Flux<Pensjonforvalter
                                                                 .reasonPhrase(WebClientFilter.getStatus(error).getReasonPhrase())
                                                                 .build())
                                                         .message(WebClientFilter.getMessage(error))
-                                                        .path(PENSJON_AP_URL)
+                                                        .path(alderspensjonRequest instanceof AlderspensjonVedtakRequest ?
+                                                                PENSJON_AP_VEDTAK_URL : PENSJON_AP_SOKNAD_URL)
                                                         .build())
                                                 .build())
                                         .toList())

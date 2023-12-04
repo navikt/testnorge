@@ -149,6 +149,28 @@ public class PensjonData {
 
         @Schema
         private Integer uttaksgrad;
+
+        private Boolean soknad;
+
+        @Schema
+        private List<SkjemaRelasjon> relasjoner;
+
+        public List<SkjemaRelasjon> getRelasjoner() {
+
+            if (isNull(relasjoner)) {
+                relasjoner = new ArrayList<>();
+            }
+            return relasjoner;
+        }
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class SkjemaRelasjon {
+        @Schema
+        private Integer sumAvForvArbKapPenInntekt;
     }
 
     @Data

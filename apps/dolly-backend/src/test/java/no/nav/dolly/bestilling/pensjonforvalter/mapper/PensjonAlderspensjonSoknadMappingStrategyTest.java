@@ -2,7 +2,7 @@ package no.nav.dolly.bestilling.pensjonforvalter.mapper;
 
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
-import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonSoknadRequest;
 import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
@@ -22,7 +22,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 @ExtendWith(MockitoExtension.class)
-class PensjonAlderspensjonMappingStrategyTest {
+class PensjonAlderspensjonSoknadMappingStrategyTest {
 
 
     private MapperFacade mapperFacade;
@@ -30,7 +30,7 @@ class PensjonAlderspensjonMappingStrategyTest {
     @BeforeEach
     void setup() {
         mapperFacade = MapperTestUtils.createMapperFacadeForMappingStrategy(new LocalDateCustomMapping(),
-                new PensjonAlderspensjonMappingStrategy());
+                new PensjonAlderspensjonSoknadMappingStrategy());
     }
 
     @Test
@@ -53,7 +53,7 @@ class PensjonAlderspensjonMappingStrategyTest {
                         .build())
                 .build()));
 
-        var target = mapperFacade.map(pensjon, AlderspensjonRequest.class, context);
+        var target = mapperFacade.map(pensjon, AlderspensjonSoknadRequest.class, context);
 
         assertThat(target.getIverksettelsesdato(), is(equalTo(LocalDate.of(2023, 1, 11))));
         assertThat(target.getUttaksgrad(), is(equalTo(100)));
@@ -93,7 +93,7 @@ class PensjonAlderspensjonMappingStrategyTest {
                                 .build())
                         .build()));
 
-        var target = mapperFacade.map(pensjon, AlderspensjonRequest.class, context);
+        var target = mapperFacade.map(pensjon, AlderspensjonSoknadRequest.class, context);
 
         assertThat(target.getIverksettelsesdato(), is(equalTo(LocalDate.of(2023, 1, 11))));
         assertThat(target.getUttaksgrad(), is(equalTo(100)));
@@ -136,12 +136,59 @@ class PensjonAlderspensjonMappingStrategyTest {
                                 .build())
                         .build()));
 
-        var target = mapperFacade.map(pensjon, AlderspensjonRequest.class, context);
+        var target = mapperFacade.map(pensjon, AlderspensjonSoknadRequest.class, context);
 
         assertThat(target.getIverksettelsesdato(), is(equalTo(LocalDate.of(2023, 1, 11))));
         assertThat(target.getUttaksgrad(), is(equalTo(100)));
 
         assertThat(target.getFnr(), is(equalTo("123")));
         assertThat(target.getMiljoer(), hasItem("q2"));
+    }
+
+    @Test
+    void sivilstandOrderSjekkMedDato_OK() {
+
+        var sivilstand = List.of(PdlPerson.Sivilstand.builder()
+                        .type(PdlPerson.SivilstandType.UGIFT)
+                        .gyldigFraOgMed(LocalDate.of(1960,1,15))
+                        .build(),
+                PdlPerson.Sivilstand.builder()
+                        .type(PdlPerson.SivilstandType.GIFT)
+                        .gyldigFraOgMed(LocalDate.of(1986,5,8))
+                        .build(),
+                PdlPerson.Sivilstand.builder()
+                        .type(PdlPerson.SivilstandType.SKILT)
+                        .gyldigFraOgMed(LocalDate.of(2013, 10,5))
+                        .build());
+
+        var resultat = sivilstand.stream()
+                .sorted(new PensjonAlderspensjonSoknadMappingStrategy.SivilstandSort())
+                .toList();
+
+        assertThat(resultat.get(0).getType(), is(equalTo(PdlPerson.SivilstandType.SKILT)));
+        assertThat(resultat.get(1).getType(), is(equalTo(PdlPerson.SivilstandType.GIFT)));
+        assertThat(resultat.get(2).getType(), is(equalTo(PdlPerson.SivilstandType.UGIFT)));
+    }
+
+    @Test
+    void sivilstandOrderSjekkUtenDato_OK() {
+
+        var sivilstand = List.of(PdlPerson.Sivilstand.builder()
+                        .type(PdlPerson.SivilstandType.UGIFT)
+                        .build(),
+                PdlPerson.Sivilstand.builder()
+                        .type(PdlPerson.SivilstandType.GIFT)
+                        .build(),
+                PdlPerson.Sivilstand.builder()
+                        .type(PdlPerson.SivilstandType.SKILT)
+                        .build());
+
+        var resultat = sivilstand.stream()
+                .sorted(new PensjonAlderspensjonSoknadMappingStrategy.SivilstandSort())
+                .toList();
+
+        assertThat(resultat.get(0).getType(), is(equalTo(PdlPerson.SivilstandType.SKILT)));
+        assertThat(resultat.get(1).getType(), is(equalTo(PdlPerson.SivilstandType.GIFT)));
+        assertThat(resultat.get(2).getType(), is(equalTo(PdlPerson.SivilstandType.UGIFT)));
     }
 }
