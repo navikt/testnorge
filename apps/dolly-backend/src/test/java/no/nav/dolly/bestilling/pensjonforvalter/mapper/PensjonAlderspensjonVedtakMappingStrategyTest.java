@@ -12,6 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -38,7 +39,7 @@ class PensjonAlderspensjonVedtakMappingStrategyTest {
         var pensjon = PensjonData.Alderspensjon.builder()
                 .uttaksgrad(100)
                 .kravFremsattDato(LocalDate.of(2023, 12, 4))
-                .iverksettelsesdato(LocalDate.of(2024,1,1))
+                .iverksettelsesdato(LocalDate.of(2024, 1, 1))
                 .saksbehandler("Z112233")
                 .attesterer("Z445566")
                 .navEnhetId("1111")
@@ -50,8 +51,8 @@ class PensjonAlderspensjonVedtakMappingStrategyTest {
 
         var target = mapperFacade.map(pensjon, AlderspensjonVedtakRequest.class, context);
 
-        assertThat(target.getKravFremsattDato(), is(equalTo(LocalDate.of(2023,12,4))));
-        assertThat(target.getIverksettelsesdato(), is(equalTo(LocalDate.of(2024,1,1))));
+        assertThat(target.getKravFremsattDato(), is(equalTo(LocalDate.of(2023, 12, 4))));
+        assertThat(target.getIverksettelsesdato(), is(equalTo(LocalDate.of(2024, 1, 1))));
         assertThat(target.getUttaksgrad(), is(equalTo(100)));
         assertThat(target.getSaksbehandler(), is(equalTo("Z112233")));
         assertThat(target.getAttesterer(), is(equalTo("Z445566")));
@@ -75,9 +76,8 @@ class PensjonAlderspensjonVedtakMappingStrategyTest {
         var target = mapperFacade.map(pensjon, AlderspensjonVedtakRequest.class, context);
 
         assertThat(target.getKravFremsattDato(), is(equalTo(LocalDate.now())));
-        var nesteMaaned = LocalDate.now().plusMonths(1);
-        assertThat(target.getIverksettelsesdato(),
-                is(equalTo(LocalDate.of(nesteMaaned.getYear(), nesteMaaned.getMonth(), 1))));
+        assertThat(target.getIverksettelsesdato(), is(equalTo(LocalDate.now()
+                .with(TemporalAdjusters.firstDayOfNextMonth()))));
         assertThat(target.getUttaksgrad(), is(equalTo(100)));
         assertThat(target.getSaksbehandler(), matchesPattern("Z[0-9]{6}"));
         assertThat(target.getAttesterer(), matchesPattern("Z[0-9]{6}"));
