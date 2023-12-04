@@ -1,6 +1,5 @@
 package no.nav.testnav.proxies.skjermingsregisterproxy;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
@@ -26,7 +25,6 @@ import static org.springframework.security.test.web.reactive.server.SecurityMock
 @AutoConfigureWireMock(port = 0)
 @AutoConfigureWebTestClient
 @ActiveProfiles("test")
-@Disabled
 class RouteLocatorConfigTest {
 
     @Autowired
