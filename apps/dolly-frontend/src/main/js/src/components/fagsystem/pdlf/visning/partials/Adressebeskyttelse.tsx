@@ -16,6 +16,7 @@ type AdressebeskyttelseTypes = {
 	ident?: string
 	identtype?: string
 	erPdlVisning?: boolean
+	erRedigerbar?: boolean
 }
 
 type AdressebeskyttelseVisningTypes = {
@@ -102,6 +103,7 @@ export const Adressebeskyttelse = ({
 	ident,
 	identtype,
 	erPdlVisning = false,
+	erRedigerbar = true,
 }: AdressebeskyttelseTypes) => {
 	if (!data || data.length === 0) {
 		return null
@@ -113,17 +115,21 @@ export const Adressebeskyttelse = ({
 			<div className="person-visning_content">
 				<ErrorBoundary>
 					<DollyFieldArray data={data} header="" nested>
-						{(adressebeskyttelse: AdressebeskyttelseData, idx: number) => (
-							<AdressebeskyttelseVisning
-								adressebeskyttelse={adressebeskyttelse}
-								idx={idx}
-								tmpPersoner={tmpPersoner}
-								ident={ident}
-								identtype={identtype}
-								data={data}
-								erPdlVisning={erPdlVisning}
-							/>
-						)}
+						{(adressebeskyttelse: AdressebeskyttelseData, idx: number) =>
+							erRedigerbar ? (
+								<AdressebeskyttelseVisning
+									adressebeskyttelse={adressebeskyttelse}
+									idx={idx}
+									tmpPersoner={tmpPersoner}
+									ident={ident}
+									identtype={identtype}
+									data={data}
+									erPdlVisning={erPdlVisning}
+								/>
+							) : (
+								<AdressebeskyttelseLes adressebeskyttelse={adressebeskyttelse} idx={idx} />
+							)
+						}
 					</DollyFieldArray>
 				</ErrorBoundary>
 			</div>

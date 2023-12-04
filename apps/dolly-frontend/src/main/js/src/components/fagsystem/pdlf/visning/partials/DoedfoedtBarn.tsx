@@ -14,6 +14,7 @@ type DataListe = {
 	data: Array<DoedfoedtBarnData>
 	tmpPersoner?: Array<PersonData>
 	ident?: string
+	erRedigerbar?: boolean
 }
 
 type Data = {
@@ -77,7 +78,7 @@ export const DoedfoedtBarnVisning = ({
 	)
 }
 
-export const DoedfoedtBarn = ({ data, tmpPersoner, ident }: DataListe) => {
+export const DoedfoedtBarn = ({ data, tmpPersoner, ident, erRedigerbar = true }: DataListe) => {
 	if (!data || data.length < 1) {
 		return null
 	}
@@ -86,15 +87,19 @@ export const DoedfoedtBarn = ({ data, tmpPersoner, ident }: DataListe) => {
 		<div>
 			<SubOverskrift label="Dødfødt barn" iconKind="doedfoedt" />
 			<DollyFieldArray data={data} nested>
-				{(doedfoedtBarn: DoedfoedtBarnData, idx: number) => (
-					<DoedfoedtBarnVisning
-						doedfoedtBarnData={doedfoedtBarn}
-						idx={idx}
-						data={data}
-						tmpPersoner={tmpPersoner}
-						ident={ident}
-					/>
-				)}
+				{(doedfoedtBarn: DoedfoedtBarnData, idx: number) =>
+					erRedigerbar ? (
+						<DoedfoedtBarnVisning
+							doedfoedtBarnData={doedfoedtBarn}
+							idx={idx}
+							data={data}
+							tmpPersoner={tmpPersoner}
+							ident={ident}
+						/>
+					) : (
+						<DoedfoedtBarnLes data={doedfoedtBarn} idx={idx} />
+					)
+				}
 			</DollyFieldArray>
 		</div>
 	)

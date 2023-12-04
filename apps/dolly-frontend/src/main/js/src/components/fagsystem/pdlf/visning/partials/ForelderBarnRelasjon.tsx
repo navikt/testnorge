@@ -22,6 +22,7 @@ import { useGruppeIdenter } from '@/utils/hooks/useGruppe'
 type FamilieRelasjonerData = {
 	data: Array<ForeldreBarnRelasjon>
 	relasjoner: Array<Relasjon>
+	erRedigerbar?: boolean
 }
 
 type VisningData = {
@@ -191,6 +192,7 @@ export const ForelderBarnRelasjon = ({
 	tmpPersoner,
 	ident,
 	relasjoner,
+	erRedigerbar = true,
 }: FamilieRelasjonerData) => {
 	if (!data || data.length < 1) {
 		return null
@@ -207,16 +209,24 @@ export const ForelderBarnRelasjon = ({
 		<div>
 			<SubOverskrift label="Barn/foreldre" iconKind="relasjoner" />
 			<DollyFieldArray data={forelderBarnData} nested>
-				{(forelderBarnRelasjon: ForeldreBarnRelasjon, idx: number) => (
-					<ForelderBarnRelasjonVisning
-						forelderBarnRelasjonData={forelderBarnRelasjon}
-						idx={idx}
-						data={forelderBarnData}
-						tmpPersoner={tmpPersoner}
-						ident={ident}
-						relasjoner={relasjoner}
-					/>
-				)}
+				{(forelderBarnRelasjon: ForeldreBarnRelasjon, idx: number) =>
+					erRedigerbar ? (
+						<ForelderBarnRelasjonVisning
+							forelderBarnRelasjonData={forelderBarnRelasjon}
+							idx={idx}
+							data={forelderBarnData}
+							tmpPersoner={tmpPersoner}
+							ident={ident}
+							relasjoner={relasjoner}
+						/>
+					) : (
+						<ForelderBarnRelasjonLes
+							forelderBarnData={forelderBarnRelasjon}
+							relasjoner={relasjoner}
+							idx={idx}
+						/>
+					)
+				}
 			</DollyFieldArray>
 		</div>
 	)

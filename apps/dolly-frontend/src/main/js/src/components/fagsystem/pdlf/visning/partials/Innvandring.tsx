@@ -21,6 +21,7 @@ type InnvandringTypes = {
 	tmpPersoner?: Array<PersonData>
 	ident?: string
 	erPdlVisning?: boolean
+	erRedigerbar?: boolean
 }
 
 type InnvandringLesTypes = {
@@ -43,7 +44,7 @@ export const getSisteDatoInnUtvandring = (
 	innflyttingData: Array<InnvandringValues>,
 	utflyttingData: Array<UtvandringValues>,
 	tmpPersoner?: Array<PersonData>,
-	ident?: string
+	ident?: string,
 ) => {
 	const tmpPerson = tmpPersoner?.hasOwnProperty(ident)
 
@@ -53,10 +54,10 @@ export const getSisteDatoInnUtvandring = (
 	const utflytting = tmpPerson ? _.get(tmpPersoner, `${ident}.person.utflytting`) : utflyttingData
 
 	let sisteInnflytting = getSisteDato(
-		innflytting?.map((val: InnvandringValues) => new Date(val.innflyttingsdato))
+		innflytting?.map((val: InnvandringValues) => new Date(val.innflyttingsdato)),
 	)
 	let sisteUtflytting = getSisteDato(
-		utflytting?.map((val: UtvandringValues) => new Date(val.utflyttingsdato))
+		utflytting?.map((val: UtvandringValues) => new Date(val.utflyttingsdato)),
 	)
 	return sisteInnflytting > sisteUtflytting ? sisteInnflytting : sisteUtflytting
 }
@@ -92,7 +93,7 @@ const InnvandringVisning = ({
 	const initialValues = { innflytting: initInnvandring }
 
 	const redigertInnvandringPdlf = _.get(tmpPersoner, `${ident}.person.innflytting`)?.find(
-		(a: InnvandringValues) => a.id === innvandringData.id
+		(a: InnvandringValues) => a.id === innvandringData.id,
 	)
 	const slettetInnvandringPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertInnvandringPdlf
 	if (slettetInnvandringPdlf) {
@@ -124,9 +125,10 @@ export const Innvandring = ({
 	tmpPersoner,
 	ident,
 	erPdlVisning = false,
+	erRedigerbar = true,
 }: InnvandringTypes) => {
 	const [sisteDato, setSisteDato] = useState(
-		getSisteDatoInnUtvandring(data, utflyttingData, tmpPersoner, ident)
+		getSisteDatoInnUtvandring(data, utflyttingData, tmpPersoner, ident),
 	)
 
 	useEffect(() => {
@@ -143,18 +145,22 @@ export const Innvandring = ({
 		<div className="person-visning_content" style={{ marginTop: '-20px' }}>
 			<ErrorBoundary>
 				<DollyFieldArray data={data} header="Innvandret" nested>
-					{(innvandring: InnvandringValues, idx: number) => (
-						<InnvandringVisning
-							innvandringData={innvandring}
-							idx={idx}
-							sisteDato={sisteDato}
-							data={data}
-							utflyttingData={utflyttingData}
-							tmpPersoner={tmpPersoner}
-							ident={ident}
-							erPdlVisning={erPdlVisning}
-						/>
-					)}
+					{(innvandring: InnvandringValues, idx: number) =>
+						erRedigerbar ? (
+							<InnvandringVisning
+								innvandringData={innvandring}
+								idx={idx}
+								sisteDato={sisteDato}
+								data={data}
+								utflyttingData={utflyttingData}
+								tmpPersoner={tmpPersoner}
+								ident={ident}
+								erPdlVisning={erPdlVisning}
+							/>
+						) : (
+							<InnvandringLes innvandringData={innvandring} idx={idx} />
+						)
+					}
 				</DollyFieldArray>
 			</ErrorBoundary>
 		</div>

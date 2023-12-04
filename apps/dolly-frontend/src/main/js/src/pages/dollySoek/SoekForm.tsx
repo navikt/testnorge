@@ -193,7 +193,6 @@ export const SoekForm = () => {
 															options={Options('registerTyper')}
 															isMulti={true}
 															size="grow"
-															// fastfield={false}
 															onChange={(val: SyntheticEvent) => handleChangeList(val, 'typer')}
 															value={getValue('typer')}
 														/>
@@ -632,7 +631,7 @@ export const SoekForm = () => {
 					</Formik>
 				</Soekefelt>
 			</SoekefeltWrapper>
-			<ResultatVisning resultat={result} />
+			<ResultatVisning resultat={result} soekError={error} />
 		</>
 	)
 }

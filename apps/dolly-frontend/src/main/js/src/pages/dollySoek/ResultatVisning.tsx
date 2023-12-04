@@ -11,7 +11,7 @@ import { formatAlder } from '@/utils/DataFormatter'
 import { NavigerTilPerson } from '@/pages/dollySoek/NavigerTilPerson'
 import { PersonVisning } from '@/pages/dollySoek/PersonVisning'
 
-export const ResultatVisning = ({ resultat }) => {
+export const ResultatVisning = ({ resultat, soekError }) => {
 	const identString = resultat?.identer?.join(',')
 	const { personer, loading, error } = usePdlfPersoner(identString)
 
@@ -25,11 +25,11 @@ export const ResultatVisning = ({ resultat }) => {
 		)
 	}
 
-	if (resultat?.error) {
+	if (resultat?.error || error || soekError) {
 		return (
 			<ContentContainer>
 				<Alert variant={'error'} size={'small'} inline>
-					Feil: {resultat.error}
+					Feil: {resultat.error || error || soekError}
 				</Alert>
 			</ContentContainer>
 		)

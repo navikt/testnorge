@@ -18,6 +18,7 @@ type OppholdsadresseTypes = {
 	tmpPersoner?: Array<OppholdsadresseData>
 	ident?: string
 	erPdlVisning?: boolean
+	erRedigerbar?: boolean
 }
 
 type AdresseTypes = {
@@ -109,6 +110,7 @@ export const Oppholdsadresse = ({
 	tmpPersoner,
 	ident,
 	erPdlVisning = false,
+	erRedigerbar = true,
 }: OppholdsadresseTypes) => {
 	if (!data || data.length === 0) {
 		return null
@@ -120,16 +122,20 @@ export const Oppholdsadresse = ({
 			<div className="person-visning_content">
 				<ErrorBoundary>
 					<DollyFieldArray data={data} header="" nested>
-						{(adresse: any, idx: number) => (
-							<OppholdsadresseVisning
-								oppholdsadresseData={adresse}
-								idx={idx}
-								data={data}
-								tmpPersoner={tmpPersoner}
-								ident={ident}
-								erPdlVisning={erPdlVisning}
-							/>
-						)}
+						{(adresse: any, idx: number) =>
+							erRedigerbar ? (
+								<OppholdsadresseVisning
+									oppholdsadresseData={adresse}
+									idx={idx}
+									data={data}
+									tmpPersoner={tmpPersoner}
+									ident={ident}
+									erPdlVisning={erPdlVisning}
+								/>
+							) : (
+								<Adresse oppholdsadresseData={adresse} idx={idx} />
+							)
+						}
 					</DollyFieldArray>
 				</ErrorBoundary>
 			</div>

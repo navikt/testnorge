@@ -26,6 +26,7 @@ type PersondetaljerTypes = {
 	tpsMessaging: any
 	tpsMessagingLoading?: boolean
 	skjermingData: Skjerming
+	erRedigerbar?: boolean
 }
 
 type PersonTypes = {
@@ -95,6 +96,7 @@ export const Persondetaljer = ({
 	tpsMessaging,
 	tpsMessagingLoading = false,
 	skjermingData,
+	erRedigerbar = true,
 }: PersondetaljerTypes) => {
 	if (!data) {
 		return null
@@ -144,7 +146,7 @@ export const Persondetaljer = ({
 			<div>
 				<SubOverskrift label="Persondetaljer" iconKind="personinformasjon" />
 				<div className="person-visning_content" style={{ flexDirection: 'column' }}>
-					{erPdlVisning ? (
+					{erPdlVisning || !erRedigerbar ? (
 						<PersondetaljerLes
 							person={data}
 							skjerming={skjermingData}

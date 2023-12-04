@@ -19,7 +19,11 @@ export const PersonVisning = ({ person, loading }: any) => {
 					<BestillingVisningListe bestillinger={bestillinger?.data} />
 				</StyledAlert>
 			)}
-			<PdlfVisningConnector fagsystemData={{ pdlforvalter: person }} loading={loading} />
+			<PdlfVisningConnector
+				fagsystemData={{ pdlforvalter: person }}
+				loading={loading}
+				erRedigerbar={false}
+			/>
 			<StyledAlert variant={'info'} size={'small'} inline style={{ marginTop: '20px' }}>
 				Viser kun egenskaper fra PDL,{' '}
 				<NavigerTilPerson ident={person.person.ident} linkTekst={'vis person i gruppe'} /> for å se

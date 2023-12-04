@@ -15,6 +15,7 @@ type StatsborgerskapTypes = {
 	tmpPersoner?: Array<PersonData>
 	ident?: string
 	erPdlVisning?: boolean
+	erRedigerbar?: boolean
 }
 
 type StatsborgerskapLesTypes = {
@@ -66,7 +67,7 @@ const StatsborgerskapVisning = ({
 	const initialValues = { statsborgerskap: initStatsborgerskap }
 
 	const redigertStatsborgerskapPdlf = _.get(tmpPersoner, `${ident}.person.statsborgerskap`)?.find(
-		(a: StatsborgerskapData) => a.id === statsborgerskapData.id
+		(a: StatsborgerskapData) => a.id === statsborgerskapData.id,
 	)
 	const slettetStatsborgerskapPdlf =
 		tmpPersoner?.hasOwnProperty(ident) && !redigertStatsborgerskapPdlf
@@ -81,7 +82,7 @@ const StatsborgerskapVisning = ({
 		? {
 				statsborgerskap: Object.assign(
 					_.cloneDeep(initialStatsborgerskap),
-					redigertStatsborgerskapPdlf
+					redigertStatsborgerskapPdlf,
 				),
 		  }
 		: null
@@ -103,6 +104,7 @@ export const Statsborgerskap = ({
 	tmpPersoner,
 	ident,
 	erPdlVisning,
+	erRedigerbar = true,
 }: StatsborgerskapTypes) => {
 	if (data.length < 1) {
 		return null
@@ -112,16 +114,20 @@ export const Statsborgerskap = ({
 		<div className="person-visning_content" style={{ marginTop: '-15px' }}>
 			<ErrorBoundary>
 				<DollyFieldArray data={data} header="Statsborgerskap" nested>
-					{(borgerskap: StatsborgerskapData, idx: number) => (
-						<StatsborgerskapVisning
-							statsborgerskapData={borgerskap}
-							idx={idx}
-							data={data}
-							tmpPersoner={tmpPersoner}
-							ident={ident}
-							erPdlVisning={erPdlVisning}
-						/>
-					)}
+					{(borgerskap: StatsborgerskapData, idx: number) =>
+						erRedigerbar ? (
+							<StatsborgerskapVisning
+								statsborgerskapData={borgerskap}
+								idx={idx}
+								data={data}
+								tmpPersoner={tmpPersoner}
+								ident={ident}
+								erPdlVisning={erPdlVisning}
+							/>
+						) : (
+							<StatsborgerskapLes statsborgerskapData={borgerskap} idx={idx} />
+						)
+					}
 				</DollyFieldArray>
 			</ErrorBoundary>
 		</div>

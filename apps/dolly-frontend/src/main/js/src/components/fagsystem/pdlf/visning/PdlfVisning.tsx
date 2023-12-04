@@ -62,7 +62,7 @@ const getKontoregisterBankkonto = (bankkontoData) => {
 	return resp
 }
 
-export const PdlfVisning = ({ fagsystemData, loading, tmpPersoner }) => {
+export const PdlfVisning = ({ fagsystemData, loading, tmpPersoner, erRedigerbar = true }) => {
 	if (loading?.pdlforvalter) {
 		return <Loading label="Laster PDL-data" />
 	}
@@ -88,26 +88,44 @@ export const PdlfVisning = ({ fagsystemData, loading, tmpPersoner }) => {
 					tpsMessaging={fagsystemData?.tpsMessaging}
 					tpsMessagingLoading={loading?.tpsMessaging}
 					skjermingData={skjermingData}
+					erRedigerbar={erRedigerbar}
 				/>
-				<Foedsel data={data?.person?.foedsel} tmpPersoner={tmpPdlforvalter} ident={ident} />
-				<Doedsfall data={data?.person?.doedsfall} tmpPersoner={tmpPdlforvalter} ident={ident} />
-				<Nasjonalitet data={data?.person} tmpPersoner={tmpPdlforvalter} />
+				<Foedsel
+					data={data?.person?.foedsel}
+					tmpPersoner={tmpPdlforvalter}
+					ident={ident}
+					erRedigerbar={erRedigerbar}
+				/>
+				<Doedsfall
+					data={data?.person?.doedsfall}
+					tmpPersoner={tmpPdlforvalter}
+					ident={ident}
+					erRedigerbar={erRedigerbar}
+				/>
+				<Nasjonalitet
+					data={data?.person}
+					tmpPersoner={tmpPdlforvalter}
+					erRedigerbar={erRedigerbar}
+				/>
 				<Telefonnummer
 					data={data?.person?.telefonnummer}
 					tmpPersoner={tmpPdlforvalter}
 					ident={ident}
+					erRedigerbar={erRedigerbar}
 				/>
 				<Vergemaal
 					data={data?.person?.vergemaal}
 					tmpPersoner={tmpPdlforvalter}
 					ident={ident}
 					relasjoner={data?.relasjoner}
+					erRedigerbar={erRedigerbar}
 				/>
 				<Fullmakt
 					data={data?.person?.fullmakt}
 					tmpPersoner={tmpPdlforvalter}
 					ident={ident}
 					relasjoner={data?.relasjoner}
+					erRedigerbar={erRedigerbar}
 				/>
 				<PdlSikkerhetstiltak data={data?.person?.sikkerhetstiltak} />
 				<TilrettelagtKommunikasjon data={data?.person?.tilrettelagtKommunikasjon} />
@@ -122,6 +140,7 @@ export const PdlfVisning = ({ fagsystemData, loading, tmpPersoner }) => {
 					tmpPersoner={tmpPdlforvalter}
 					ident={ident}
 					identtype={data?.person?.identtype}
+					erRedigerbar={erRedigerbar}
 				/>
 				<DeltBosted
 					data={data?.person?.deltBosted}
@@ -129,34 +148,40 @@ export const PdlfVisning = ({ fagsystemData, loading, tmpPersoner }) => {
 					ident={ident}
 					personValues={data?.person}
 					relasjoner={data?.relasjoner}
+					erRedigerbar={erRedigerbar}
 				/>
 				<Oppholdsadresse
 					data={data?.person?.oppholdsadresse}
 					tmpPersoner={tmpPdlforvalter}
 					ident={ident}
+					erRedigerbar={erRedigerbar}
 				/>
 				<Kontaktadresse
 					data={data?.person?.kontaktadresse}
 					tmpPersoner={tmpPdlforvalter}
 					ident={ident}
+					erRedigerbar={erRedigerbar}
 				/>
 				<Adressebeskyttelse
 					data={data?.person?.adressebeskyttelse}
 					tmpPersoner={tmpPdlforvalter}
 					ident={ident}
 					identtype={data?.person?.identtype}
+					erRedigerbar={erRedigerbar}
 				/>
 				<Sivilstand
 					data={data?.person?.sivilstand}
 					relasjoner={data?.relasjoner}
 					tmpPersoner={tmpPdlforvalter}
 					ident={ident}
+					erRedigerbar={erRedigerbar}
 				/>
 				<ForelderBarnRelasjon
 					data={data?.person?.forelderBarnRelasjon}
 					tmpPersoner={tmpPdlforvalter}
 					ident={ident}
 					relasjoner={data?.relasjoner}
+					erRedigerbar={erRedigerbar}
 				/>
 				<ForeldreansvarVisning
 					data={data?.person?.foreldreansvar}
@@ -164,17 +189,20 @@ export const PdlfVisning = ({ fagsystemData, loading, tmpPersoner }) => {
 					ident={ident}
 					relasjoner={data?.relasjoner}
 					personValues={data?.person}
+					erRedigerbar={erRedigerbar}
 				/>
 				<DoedfoedtBarn
 					data={data?.person?.doedfoedtBarn}
 					tmpPersoner={tmpPdlforvalter}
 					ident={ident}
+					erRedigerbar={erRedigerbar}
 				/>
 				<FalskIdentitet data={data?.person?.falskIdentitet} />
 				<UtenlandsId
 					data={data?.person?.utenlandskIdentifikasjonsnummer}
 					tmpPersoner={tmpPdlforvalter}
 					ident={ident}
+					erRedigerbar={erRedigerbar}
 				/>
 				<IdenthistorikkVisning relasjoner={data?.relasjoner} />
 				<KontaktinformasjonForDoedsbo
@@ -182,6 +210,7 @@ export const PdlfVisning = ({ fagsystemData, loading, tmpPersoner }) => {
 					tmpPersoner={tmpPdlforvalter}
 					ident={ident}
 					relasjoner={data?.relasjoner}
+					erRedigerbar={erRedigerbar}
 				/>
 			</div>
 		</ErrorBoundary>

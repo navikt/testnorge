@@ -61,7 +61,7 @@ export const UtenlandsIdVisning = ({ utenlandsIdData, idx, data, tmpPersoner, id
 	)
 }
 
-export const UtenlandsId = ({ data, tmpPersoner, ident }) => {
+export const UtenlandsId = ({ data, tmpPersoner, ident, erRedigerbar = true }) => {
 	if (!data || data.length === 0) {
 		return null
 	}
@@ -71,15 +71,19 @@ export const UtenlandsId = ({ data, tmpPersoner, ident }) => {
 			<SubOverskrift label="Utenlandsk identifikasjonsnummer" iconKind="identifikasjon" />
 			<ErrorBoundary>
 				<DollyFieldArray data={data} nested>
-					{(id, idx) => (
-						<UtenlandsIdVisning
-							utenlandsIdData={id}
-							idx={idx}
-							data={data}
-							tmpPersoner={tmpPersoner}
-							ident={ident}
-						/>
-					)}
+					{(id, idx) =>
+						erRedigerbar ? (
+							<UtenlandsIdVisning
+								utenlandsIdData={id}
+								idx={idx}
+								data={data}
+								tmpPersoner={tmpPersoner}
+								ident={ident}
+							/>
+						) : (
+							<UtenlandsIdLes data={id} idx={idx} />
+						)
+					}
 				</DollyFieldArray>
 			</ErrorBoundary>
 		</div>

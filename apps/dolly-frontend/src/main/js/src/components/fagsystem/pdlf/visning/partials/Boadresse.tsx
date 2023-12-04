@@ -18,6 +18,7 @@ type BoadresseTypes = {
 	ident?: string
 	identtype?: string
 	erPdlVisning?: boolean
+	erRedigerbar?: boolean
 }
 
 type BoadresseVisningTypes = {
@@ -106,6 +107,7 @@ export const Boadresse = ({
 	ident,
 	identtype,
 	erPdlVisning = false,
+	erRedigerbar = true,
 }: BoadresseTypes) => {
 	if (!data || data.length === 0) {
 		return null
@@ -117,17 +119,21 @@ export const Boadresse = ({
 			<div className="person-visning_content">
 				<ErrorBoundary>
 					<DollyFieldArray data={data} header="" nested>
-						{(adresse: any, idx: number) => (
-							<BoadresseVisning
-								boadresseData={adresse}
-								idx={idx}
-								data={data}
-								tmpPersoner={tmpPersoner}
-								identtype={identtype}
-								ident={ident}
-								erPdlVisning={erPdlVisning}
-							/>
-						)}
+						{(adresse: any, idx: number) =>
+							erRedigerbar ? (
+								<BoadresseVisning
+									boadresseData={adresse}
+									idx={idx}
+									data={data}
+									tmpPersoner={tmpPersoner}
+									identtype={identtype}
+									ident={ident}
+									erPdlVisning={erPdlVisning}
+								/>
+							) : (
+								<Adresse boadresseData={adresse} idx={idx} />
+							)
+						}
 					</DollyFieldArray>
 				</ErrorBoundary>
 			</div>

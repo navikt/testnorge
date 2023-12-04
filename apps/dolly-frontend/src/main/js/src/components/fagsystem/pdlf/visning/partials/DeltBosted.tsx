@@ -14,6 +14,7 @@ type Data = {
 	data: Array<any>
 	tmpPersoner?: Array<PersonData>
 	ident?: string
+	erRedigerbar?: boolean
 }
 
 type AdresseProps = {
@@ -93,7 +94,14 @@ export const DeltBostedVisning = ({
 	)
 }
 
-export const DeltBosted = ({ data, tmpPersoner, ident, personValues, relasjoner }: Data) => {
+export const DeltBosted = ({
+	data,
+	tmpPersoner,
+	ident,
+	personValues,
+	relasjoner,
+	erRedigerbar = true,
+}: Data) => {
 	if (!data || data.length === 0) {
 		return null
 	}
@@ -104,17 +112,21 @@ export const DeltBosted = ({ data, tmpPersoner, ident, personValues, relasjoner 
 			<div className="person-visning_content">
 				<ErrorBoundary>
 					<DollyFieldArray data={data} header="" nested>
-						{(adresse: any, idx: number) => (
-							<DeltBostedVisning
-								adresseData={adresse}
-								idx={idx}
-								data={data}
-								tmpPersoner={tmpPersoner}
-								ident={ident}
-								personValues={personValues}
-								relasjoner={relasjoner}
-							/>
-						)}
+						{(adresse: any, idx: number) =>
+							erRedigerbar ? (
+								<DeltBostedVisning
+									adresseData={adresse}
+									idx={idx}
+									data={data}
+									tmpPersoner={tmpPersoner}
+									ident={ident}
+									personValues={personValues}
+									relasjoner={relasjoner}
+								/>
+							) : (
+								<Adresse adresse={adresse} idx={idx} />
+							)
+						}
 					</DollyFieldArray>
 				</ErrorBoundary>
 			</div>

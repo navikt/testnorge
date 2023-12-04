@@ -19,16 +19,17 @@ type SivilstandTypes = {
 	relasjoner: Array<Relasjon>
 	tmpPersoner?: Array<SivilstandData>
 	ident?: string
+	erRedigerbar?: boolean
 }
 
 type VisningData = {
 	sivilstandData: SivilstandData
 	relasjoner: Array<Relasjon>
-	redigertRelatertePersoner: Array<Relasjon> | null
+	redigertRelatertePersoner?: Array<Relasjon> | null
 	idx: number
 	data?: Array<SivilstandData>
 	tmpPersoner?: Array<SivilstandData>
-	ident: string
+	ident?: string
 }
 
 const SivilstandLes = ({
@@ -150,7 +151,13 @@ const SivilstandVisning = ({
 	)
 }
 
-export const Sivilstand = ({ data, relasjoner, tmpPersoner, ident }: SivilstandTypes) => {
+export const Sivilstand = ({
+	data,
+	relasjoner,
+	tmpPersoner,
+	ident,
+	erRedigerbar = true,
+}: SivilstandTypes) => {
 	if (!data || data.length < 1) {
 		return null
 	}
@@ -160,16 +167,20 @@ export const Sivilstand = ({ data, relasjoner, tmpPersoner, ident }: SivilstandT
 			<SubOverskrift label="Sivilstand (partner)" iconKind="partner" />
 			<div className="person-visning_content">
 				<DollyFieldArray data={data} nested>
-					{(sivilstand: SivilstandData, idx: number) => (
-						<SivilstandVisning
-							sivilstandData={sivilstand}
-							idx={idx}
-							data={data}
-							relasjoner={relasjoner}
-							tmpPersoner={tmpPersoner}
-							ident={ident}
-						/>
-					)}
+					{(sivilstand: SivilstandData, idx: number) =>
+						erRedigerbar ? (
+							<SivilstandVisning
+								sivilstandData={sivilstand}
+								idx={idx}
+								data={data}
+								relasjoner={relasjoner}
+								tmpPersoner={tmpPersoner}
+								ident={ident}
+							/>
+						) : (
+							<SivilstandLes sivilstandData={sivilstand} relasjoner={relasjoner} idx={idx} />
+						)
+					}
 				</DollyFieldArray>
 			</div>
 		</div>
