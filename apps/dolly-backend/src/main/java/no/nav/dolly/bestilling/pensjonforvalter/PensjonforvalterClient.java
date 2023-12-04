@@ -440,6 +440,7 @@ public class PensjonforvalterClient implements ClientRegister {
                 .build());
     }
 
+    @SuppressWarnings("java:S3740")
     private void saveAPTransaksjonId(String ident, String miljoe, Long bestillingId, SystemTyper type, AtomicReference vedtak) {
 
         log.info("Lagrer transaksjon for {} i {} ", ident, miljoe);
