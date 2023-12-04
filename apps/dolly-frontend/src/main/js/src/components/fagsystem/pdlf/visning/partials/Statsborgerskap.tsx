@@ -128,7 +128,8 @@ export const Statsborgerskap = ({
 								tmpPersoner={tmpPersoner}
 								ident={ident}
 								erPdlVisning={erPdlVisning}
-							identtype={identtype}/>
+								identtype={identtype}
+							/>
 						) : (
 							<StatsborgerskapLes statsborgerskapData={borgerskap} idx={idx} />
 						)

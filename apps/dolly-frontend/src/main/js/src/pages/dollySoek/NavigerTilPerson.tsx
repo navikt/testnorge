@@ -14,6 +14,7 @@ const StyledButton = styled.button`
 	text-decoration: underline;
 	cursor: pointer;
 `
+
 export const NavigerTilPerson = ({ ident, linkTekst = null }) => {
 	const navigate = useNavigate()
 	const [valgtIdent, setValgtIdent] = useState(null)

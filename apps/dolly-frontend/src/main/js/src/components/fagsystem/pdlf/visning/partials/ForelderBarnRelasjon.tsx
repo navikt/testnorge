@@ -37,7 +37,6 @@ const ForelderBarnRelasjonLes = ({
 	forelderBarnData,
 	redigertRelatertePersoner = null,
 	relasjoner,
-	idx,
 }: VisningData) => {
 	if (!forelderBarnData) {
 		return null
@@ -180,7 +179,6 @@ export const ForelderBarnRelasjonVisning = ({
 					forelderBarnData={forelderBarnValues}
 					redigertRelatertePersoner={redigertRelatertePersoner}
 					relasjoner={relasjoner}
-					idx={idx}
 				/>
 			}
 			initialValues={initialValues}
@@ -226,12 +224,12 @@ export const ForelderBarnRelasjon = ({
 							tmpPersoner={tmpPersoner}
 							ident={ident}
 							relasjoner={relasjoner}
-						identtype={identtype}/>
+							identtype={identtype}
+						/>
 					) : (
 						<ForelderBarnRelasjonLes
 							forelderBarnData={forelderBarnRelasjon}
 							relasjoner={relasjoner}
-							idx={idx}
 						/>
 					)
 				}

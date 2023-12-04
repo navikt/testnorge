@@ -44,7 +44,7 @@ export const PdlVisning = ({
 	if (!pdlData?.hentPerson) {
 		return null
 	}
-	console.log('pdlData: ', pdlData) //TODO - SLETT MEG
+
 	const { hentPerson, hentIdenter, hentGeografiskTilknytning } = pdlData
 	const {
 		foedsel,

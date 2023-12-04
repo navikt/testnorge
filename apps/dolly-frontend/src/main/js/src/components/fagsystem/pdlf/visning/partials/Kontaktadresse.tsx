@@ -246,7 +246,8 @@ export const Kontaktadresse = ({
 									ident={ident}
 									erPdlVisning={erPdlVisning}
 									tmpPersoner={tmpPersoner}
-								identtype={identtype}/>
+									identtype={identtype}
+								/>
 							) : (
 								<Adresse kontaktadresseData={adresse} idx={idx} />
 							)

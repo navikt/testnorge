@@ -4,7 +4,6 @@ import { DollyTable } from '@/components/ui/dollyTable/DollyTable'
 import Loading from '@/components/ui/loading/Loading'
 import ContentContainer from '@/components/ui/contentContainer/ContentContainer'
 import { ManIconItem, UnknownIconItem, WomanIconItem } from '@/components/ui/icon/IconItem'
-
 import Icon from '@/components/ui/icon/Icon'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import useBoolean from '@/utils/hooks/useBoolean'

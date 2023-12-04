@@ -136,7 +136,8 @@ export const Oppholdsadresse = ({
 									tmpPersoner={tmpPersoner}
 									ident={ident}
 									erPdlVisning={erPdlVisning}
-								identtype={identtype}/>
+									identtype={identtype}
+								/>
 							) : (
 								<Adresse oppholdsadresseData={adresse} idx={idx} />
 							)

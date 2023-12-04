@@ -163,7 +163,7 @@ export const Sivilstand = ({
 	relasjoner,
 	tmpPersoner,
 	ident,
-    identtype,
+	identtype,
 	erRedigerbar = true,
 }: SivilstandTypes) => {
 	if (!data || data.length < 1) {
@@ -184,7 +184,8 @@ export const Sivilstand = ({
 								relasjoner={relasjoner}
 								tmpPersoner={tmpPersoner}
 								ident={ident}
-							identtype={identtype}/>
+								identtype={identtype}
+							/>
 						) : (
 							<SivilstandLes sivilstandData={sivilstand} relasjoner={relasjoner} idx={idx} />
 						)

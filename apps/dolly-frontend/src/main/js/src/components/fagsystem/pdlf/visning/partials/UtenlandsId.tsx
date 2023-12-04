@@ -90,7 +90,8 @@ export const UtenlandsId = ({ data, tmpPersoner, ident, identtype, erRedigerbar 
 								data={data}
 								tmpPersoner={tmpPersoner}
 								ident={ident}
-							identtype={identtype}/>
+								identtype={identtype}
+							/>
 						) : (
 							<UtenlandsIdLes data={id} idx={idx} />
 						)

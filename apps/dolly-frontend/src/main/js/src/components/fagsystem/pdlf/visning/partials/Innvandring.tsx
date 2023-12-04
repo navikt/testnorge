@@ -82,12 +82,10 @@ const InnvandringLes = ({ innvandringData, idx }: InnvandringLesTypes) => {
 const InnvandringVisning = ({
 	innvandringData,
 	idx,
-	sisteDato,
 	data,
 	tmpPersoner,
 	ident,
 	erPdlVisning,
-	utflyttingData,
 }: InnvandringVisningTypes) => {
 	const initInnvandring = Object.assign(_.cloneDeep(initialInnvandring), data[idx])
 	const initialValues = { innflytting: initInnvandring }

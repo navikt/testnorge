@@ -60,9 +60,7 @@ const UtvandringLes = ({ utvandringData, idx }: UtvandringLesTypes) => {
 const UtvandringVisning = ({
 	utvandringData,
 	idx,
-	sisteDato,
 	data,
-	innflyttingData,
 	tmpPersoner,
 	ident,
 	erPdlVisning,

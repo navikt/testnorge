@@ -795,7 +795,6 @@ const selectOptions = {
 		{ value: 'PEN_TP', label: 'Tjenestepensjon (TP)' },
 		{ value: 'PEN_AP', label: 'Alderspensjon' },
 		{ value: 'PEN_UT', label: 'Uføretrygd' },
-		// { value: 'ARENA_BRUKER', label: 'Arena bruker' }, // Fjernes!
 		{ value: 'ARENA_AAP', label: 'Arena AAP-vedtak' },
 		{ value: 'ARENA_AAP115', label: 'Arena 11.5-vedtak' },
 		{ value: 'ARENA_DAGP', label: 'Arena dagpengevedtak' },
