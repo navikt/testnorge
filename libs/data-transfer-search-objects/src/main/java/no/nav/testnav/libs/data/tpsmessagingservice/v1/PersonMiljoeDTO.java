@@ -17,8 +17,6 @@ public class PersonMiljoeDTO {
     private String miljoe;
     private String ident;
 
-    private PersonDTO person;
-
     private String status;
     private String melding;
     private String utfyllendeMelding;

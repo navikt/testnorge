@@ -16,6 +16,7 @@ import no.nav.dolly.service.TransaksjonMappingService;
 import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.PersonMiljoeDTO;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -40,7 +41,9 @@ public class TpsPersonService {
     private static final List<String> PENSJON_MILJOER = List.of("q1", "q2");
     private static final String TPS_SYNC_START = "Info: Synkronisering mot TPS startet ... %d ms";
     private static final long TIMEOUT_MILLIES = 839;
-    private static final long MAX_MILLIES = 45_000;
+
+    @Value("${tps.person.service.wait}")
+    private long awaitMaxMillies;
 
     private final TpsMessagingConsumer tpsMessagingConsumer;
     private final TransactionHelperService transactionHelperService;
@@ -116,7 +119,7 @@ public class TpsPersonService {
     private Mono<List<PersonMiljoeDTO>> getTpsPerson(Long starttid, String ident, List<String> miljoer,
                                                      List<PersonMiljoeDTO> status, BestillingProgress progress) {
 
-        if (System.currentTimeMillis() - (starttid + MAX_MILLIES) > 0 ||
+        if (System.currentTimeMillis() - (starttid + awaitMaxMillies) > 0 ||
                 (status.size() == miljoer.size() &&
                         status.stream().allMatch(PersonMiljoeDTO::isOk))) {
             return Mono.just(status);
@@ -154,7 +157,7 @@ public class TpsPersonService {
                                         .ident(ident)
                                         .miljoe(miljoe)
                                         .status("NOK")
-                                        .utfyllendeMelding(String.format("Feil: Synkronisering mot TPS gitt opp etter %d sekunder.", MAX_MILLIES / 1000))
+                                        .utfyllendeMelding(String.format("Synkronisering mot TPS gitt opp etter %d sekunder.", awaitMaxMillies / 1000))
                                         .build()))
                 .flatMap(Function.identity())
                 .toList();
