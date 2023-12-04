@@ -5,6 +5,7 @@ import no.nav.testnav.libs.reactiveproxy.filter.AddAuthenticationRequestGatewayF
 import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2ServerToServerConfiguration;
 import no.nav.testnav.libs.reactivesecurity.exchange.azuread.TrygdeetatenAzureAdTokenService;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
@@ -22,12 +23,8 @@ public class RouteLocatorConfig {
     public RouteLocator customRouteLocator(
             RouteLocatorBuilder builder,
             Consumers consumers,
-            TrygdeetatenAzureAdTokenService tokenService
+            GatewayFilter authenticationFilter
     ) {
-        var authenticationFilter =  AddAuthenticationRequestGatewayFilterFactory
-                .bearerAuthenticationHeaderFilter(() -> tokenService
-                        .exchange(consumers.getSkjermingsregister())
-                        .map(AccessToken::getTokenValue));
         return builder
                 .routes()
                 .route(spec -> spec
@@ -35,6 +32,17 @@ public class RouteLocatorConfig {
                         .filters(f -> f.filter(authenticationFilter))
                         .uri(consumers.getSkjermingsregister().getUrl()))
                 .build();
+    }
+
+    @Bean
+    GatewayFilter getAuthenticationFilter(
+            TrygdeetatenAzureAdTokenService tokenService,
+            Consumers consumers
+    ) {
+        return AddAuthenticationRequestGatewayFilterFactory
+                .bearerAuthenticationHeaderFilter(() -> tokenService
+                        .exchange(consumers.getSkjermingsregister())
+                        .map(AccessToken::getTokenValue));
     }
 
 }
