@@ -16,6 +16,7 @@ type StatsborgerskapTypes = {
 	ident?: string
 	erPdlVisning?: boolean
 	identtype?: string
+	erRedigerbar?: boolean
 }
 
 type StatsborgerskapLesTypes = {
@@ -108,6 +109,7 @@ export const Statsborgerskap = ({
 	ident,
 	erPdlVisning,
 	identtype,
+	erRedigerbar = true,
 }: StatsborgerskapTypes) => {
 	if (data.length < 1) {
 		return null
@@ -117,17 +119,21 @@ export const Statsborgerskap = ({
 		<div className="person-visning_content" style={{ marginTop: '-15px' }}>
 			<ErrorBoundary>
 				<DollyFieldArray data={data} header="Statsborgerskap" nested>
-					{(borgerskap: StatsborgerskapData, idx: number) => (
-						<StatsborgerskapVisning
-							statsborgerskapData={borgerskap}
-							idx={idx}
-							data={data}
-							tmpPersoner={tmpPersoner}
-							ident={ident}
-							erPdlVisning={erPdlVisning}
-							identtype={identtype}
-						/>
-					)}
+					{(borgerskap: StatsborgerskapData, idx: number) =>
+						erRedigerbar ? (
+							<StatsborgerskapVisning
+								statsborgerskapData={borgerskap}
+								idx={idx}
+								data={data}
+								tmpPersoner={tmpPersoner}
+								ident={ident}
+								erPdlVisning={erPdlVisning}
+								identtype={identtype}
+							/>
+						) : (
+							<StatsborgerskapLes statsborgerskapData={borgerskap} idx={idx} />
+						)
+					}
 				</DollyFieldArray>
 			</ErrorBoundary>
 		</div>

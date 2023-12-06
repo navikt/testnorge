@@ -4,6 +4,7 @@ describe('Test-Norge søk testing', () => {
 	it('passes', () => {
 		cy.visit('http://localhost:5678')
 
+		cy.dollyGet(CypressSelector.BUTTON_HEADER_FINNPERSON).click()
 		cy.dollyGet(CypressSelector.BUTTON_HEADER_TESTNORGE).click()
 
 		cy.dollyType(CypressSelector.INPUT_TESTNORGE_FNR, '123456')

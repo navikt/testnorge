@@ -15,6 +15,7 @@ type DoedsfallTypes = {
 	tmpPersoner?: Array<DoedsfallData>
 	ident?: string
 	erPdlVisning?: boolean
+	erRedigerbar?: boolean
 }
 
 type DoedsfallVisningTypes = {
@@ -76,7 +77,13 @@ const DoedsfallVisning = ({
 	)
 }
 
-export const Doedsfall = ({ data, tmpPersoner, ident, erPdlVisning = false }: DoedsfallTypes) => {
+export const Doedsfall = ({
+	data,
+	tmpPersoner,
+	ident,
+	erPdlVisning = false,
+	erRedigerbar = true,
+}: DoedsfallTypes) => {
 	if (!data || data.length === 0) {
 		return null
 	}
@@ -87,16 +94,20 @@ export const Doedsfall = ({ data, tmpPersoner, ident, erPdlVisning = false }: Do
 			<div className="person-visning_content">
 				<ErrorBoundary>
 					<DollyFieldArray data={data} header="" nested>
-						{(item: DoedsfallData, idx: number) => (
-							<DoedsfallVisning
-								doedsfall={item}
-								idx={idx}
-								data={data}
-								tmpPersoner={tmpPersoner}
-								ident={ident}
-								erPdlVisning={erPdlVisning}
-							/>
-						)}
+						{(item: DoedsfallData, idx: number) =>
+							erRedigerbar ? (
+								<DoedsfallVisning
+									doedsfall={item}
+									idx={idx}
+									data={data}
+									tmpPersoner={tmpPersoner}
+									ident={ident}
+									erPdlVisning={erPdlVisning}
+								/>
+							) : (
+								<DoedsfallLes doedsfall={item} idx={idx} />
+							)
+						}
 					</DollyFieldArray>
 				</ErrorBoundary>
 			</div>

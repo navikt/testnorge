@@ -209,6 +209,7 @@ export const KontaktinformasjonForDoedsbo = ({
 	ident,
 	erPdlVisning = false,
 	relasjoner,
+	erRedigerbar = true,
 }) => {
 	if (!data || data.length < 1) {
 		return null
@@ -224,17 +225,25 @@ export const KontaktinformasjonForDoedsbo = ({
 			<div className="person-visning_content">
 				<ErrorBoundary>
 					<DollyFieldArray data={data} nested>
-						{(kontaktinfo, idx) => (
-							<KontaktinformasjonForDoedsboVisning
-								kontaktinfoData={kontaktinfo}
-								idx={idx}
-								data={data}
-								tmpPersoner={tmpPersoner}
-								ident={ident}
-								erPdlVisning={erPdlVisning}
-								relasjoner={kontaktpersonRelasjoner}
-							/>
-						)}
+						{(kontaktinfo, idx) =>
+							erRedigerbar ? (
+								<KontaktinformasjonForDoedsboVisning
+									kontaktinfoData={kontaktinfo}
+									idx={idx}
+									data={data}
+									tmpPersoner={tmpPersoner}
+									ident={ident}
+									erPdlVisning={erPdlVisning}
+									relasjoner={kontaktpersonRelasjoner}
+								/>
+							) : (
+								<KontaktinformasjonForDoedsboLes
+									data={kontaktinfo}
+									relasjoner={kontaktpersonRelasjoner}
+									idx={idx}
+								/>
+							)
+						}
 					</DollyFieldArray>
 				</ErrorBoundary>
 			</div>
