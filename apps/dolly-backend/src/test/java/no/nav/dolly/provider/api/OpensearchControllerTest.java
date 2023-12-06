@@ -155,7 +155,7 @@ class OpensearchControllerTest {
     }
 
     @Test
-    void deleteAlleBestilling_OK() throws Exception {
+    void deleteAlleBestillingerInkludertIndeks_OK() throws Exception {
 
         mockMvc
                 .perform(delete(BASE_URL))
