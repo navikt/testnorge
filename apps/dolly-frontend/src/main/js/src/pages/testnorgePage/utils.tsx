@@ -1,4 +1,5 @@
 import { PdlData } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import _ from 'lodash'
 
 export const initialValues = {
 	alder: {
@@ -28,7 +29,7 @@ export const initialValues = {
 		forelderBarnRelasjoner: [] as string[],
 		foreldreansvar: '',
 	},
-	identer: [''],
+	identer: [{ fnr: '' }],
 	identifikasjon: {
 		adressebeskyttelse: '',
 		identtype: '',
@@ -63,7 +64,9 @@ const fellesSearchValues = {
 }
 
 export const getSearchValues = (randomSeed: string, values: any) => {
-	const identer = values?.identer ? [...values.identer].filter((n) => n) : []
+	const identer = values?.identer
+		? values.identer.filter((ident) => !_.isEmpty(ident.fnr)).map((ident) => ident.fnr)
+		: []
 	const kunLevende = values?.personstatus?.status !== 'DOED'
 
 	if (identer.length > 0) {
@@ -72,7 +75,7 @@ export const getSearchValues = (randomSeed: string, values: any) => {
 		const searchValues = Object.assign(
 			{},
 			JSON.parse(JSON.stringify(fellesSearchValues)),
-			JSON.parse(JSON.stringify(values))
+			JSON.parse(JSON.stringify(values)),
 		)
 
 		searchValues['randomSeed'] = randomSeed
@@ -93,7 +96,7 @@ export const yesNoOptions = [
 
 export const getPdlIdent = (person: PdlData) => {
 	const identer = person?.hentIdenter?.identer?.filter(
-		(ident) => ident.gruppe === 'FOLKEREGISTERIDENT'
+		(ident) => ident.gruppe === 'FOLKEREGISTERIDENT',
 	)
 	return identer?.length > 0 ? identer[0].ident : ''
 }

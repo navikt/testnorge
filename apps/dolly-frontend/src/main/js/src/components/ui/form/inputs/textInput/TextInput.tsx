@@ -45,7 +45,6 @@ export const TextInput = React.forwardRef(
 		return (
 			<>
 				<input
-					ref={ref}
 					disabled={isDisabled}
 					id={name}
 					className={css}
@@ -62,11 +61,12 @@ export const TextInput = React.forwardRef(
 export const DollyTextInput = (props: {
 	name: string
 	label?: string
-	feil?: any
 	value?: any
+	style?: any
 	size?: string
 	type?: string
 	readOnly?: boolean
+	onKeyDown?: any
 	useOnChange?: boolean
 	isDisabled?: boolean
 	onBlur?: Function
@@ -77,7 +77,7 @@ export const DollyTextInput = (props: {
 	placeholder?: string
 }) => (
 	<InputWrapper {...props}>
-		<Label name={props.name} label={props.label} feil={props.feil}>
+		<Label name={props.name} label={props.label}>
 			<TextInput {...props} />
 		</Label>
 	</InputWrapper>
@@ -98,7 +98,6 @@ export const FormikTextInput = ({
 	isDisabled?: boolean
 	onKeyPress?: Function
 	autoFocus?: boolean
-	feil?: { feilmelding: string }
 }) =>
 	visHvisAvhuket ? (
 		<Vis attributt={props.name}>

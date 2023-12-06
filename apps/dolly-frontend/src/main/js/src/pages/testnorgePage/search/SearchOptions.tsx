@@ -1,4 +1,3 @@
-import * as _ from 'lodash'
 import { Alder, AlderPaths } from './partials/Alder'
 import { Identifikasjon, IdentifikasjonPaths } from './partials/Identifikasjon'
 import { Identer, IdenterPaths } from '@/pages/testnorgePage/search/partials/Identer'
@@ -17,7 +16,7 @@ export type SearchOptionsProps = {
 export const getCount = (paths: string[], formMethods: UseFormReturn) => {
 	let count = 0
 	for (const path of paths) {
-		const value = _.get(formMethods.getValues(), path)
+		const value = formMethods.getValues(path)
 		const valueType = typeof value
 		if (valueType === 'string') {
 			if (value && value !== '') {
@@ -30,7 +29,7 @@ export const getCount = (paths: string[], formMethods: UseFormReturn) => {
 		} else if (value instanceof Date) {
 			count++
 		} else if (Array.isArray(value)) {
-			count += [...value].filter((n) => n).length
+			count += [...value].filter((n) => n && n.fnr !== '').length
 		}
 	}
 	return count
