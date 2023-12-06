@@ -19,27 +19,28 @@ export const TextInput = React.forwardRef(
 	(
 		{
 			placeholder = 'Ikke spesifisert',
-			name = 'dummy',
+			name,
+			fieldName,
 			className,
 			icon,
 			isDisabled,
 			...props
 		}: {
 			name: string
+			fieldName: string
 			className?: string
 			icon?: string
 			placeholder?: string
-			feil?: any
 			isDisabled?: boolean
 			onChange?: any
 		},
 		ref,
 	) => {
-		const { register } = useFormContext()
+		const { register, getFieldState } = useFormContext()
+		const feil = getFieldState(fieldName)?.error || getFieldState(name)?.error
 		const css = cn('skjemaelement__input', className, {
-			'skjemaelement__input--harFeil': props.feil,
+			'skjemaelement__input--harFeil': feil,
 		})
-		console.log('props: ', props) //TODO - SLETT MEG
 
 		return (
 			<>
@@ -49,7 +50,7 @@ export const TextInput = React.forwardRef(
 					id={name}
 					className={css}
 					placeholder={placeholder}
-					{...register(name)}
+					{...(name && register(name))}
 					{...props}
 				/>
 				{icon && <StyledIcon fontSize={'1.5rem'} kind={icon} />}
@@ -98,12 +99,11 @@ export const FormikTextInput = ({
 	onKeyPress?: Function
 	autoFocus?: boolean
 	feil?: { feilmelding: string }
-}) => {
-	return visHvisAvhuket ? (
+}) =>
+	visHvisAvhuket ? (
 		<Vis attributt={props.name}>
 			<FormikFieldInput {...props} />
 		</Vis>
 	) : (
 		<FormikFieldInput {...props} />
 	)
-}

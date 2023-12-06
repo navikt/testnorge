@@ -22,7 +22,7 @@ const unikOrgMndTest = (unikValidation) => {
 
 		const alleInntekter = _.get(values, inntektsinformasjonPath)
 		const currInntektsinformasjon = _.get(values, currInntektsinformasjonPath)
-		if (!currInntektsinformasjon.sisteAarMaaned) return true
+		if (!currInntektsinformasjon?.sisteAarMaaned) return true
 
 		return !nyeInntekterOverlapper(alleInntekter, currInntektsinformasjon)
 	})
@@ -90,8 +90,8 @@ const inntektsliste = Yup.array().of(
 			inntektstype: requiredString,
 			startOpptjeningsperiode: testDatoFom(Yup.string().nullable(), 'sluttOpptjeningsperiode'),
 			sluttOpptjeningsperiode: testDatoTom(Yup.string().nullable(), 'startOpptjeningsperiode'),
-			inngaarIGrunnlagForTrekk: Yup.boolean().required(),
-			utloeserArbeidsgiveravgift: Yup.boolean().required(),
+			inngaarIGrunnlagForTrekk: Yup.boolean().required(messages.required),
+			utloeserArbeidsgiveravgift: Yup.boolean().required(messages.required),
 			fordel: ifPresent('fordel', requiredString),
 			beskrivelse: ifPresent('beskrivelse', requiredString),
 		},

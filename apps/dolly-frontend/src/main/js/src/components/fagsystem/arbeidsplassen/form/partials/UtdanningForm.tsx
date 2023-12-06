@@ -64,7 +64,6 @@ export const UtdanningForm = ({ formMethods }) => {
 								name={`${utdanningPath}.endDate`}
 								label="Sluttdato"
 								disabled={_get(formMethods.getValues(), `${utdanningPath}.ongoing`)}
-								fastfield={false}
 							/>
 							<FormikCheckbox
 								id={`${utdanningPath}.ongoing`}

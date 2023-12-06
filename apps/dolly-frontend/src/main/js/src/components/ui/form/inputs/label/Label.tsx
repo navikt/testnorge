@@ -3,16 +3,17 @@ import * as _ from 'lodash'
 import styled from 'styled-components'
 import './Label.less'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
+import { useFormContext } from 'react-hook-form'
 
 const StyledLabel = styled.label`
 	font-size: 0.75em;
 	text-transform: uppercase;
 `
 
-export const Label = ({ name, label, feil, info = null, containerClass = null, children }) => {
-	const feilmelding = feil?.feilmelding?.message || feil?.feilmelding
-	console.log('feilmelding: ', feilmelding) //TODO - SLETT MEG
-	console.log('info: ', info) //TODO - SLETT MEG
+export const Label = ({ name, label, info = null, containerClass = null, children }) => {
+	const { getFieldState } = useFormContext()
+	const { error } = getFieldState(name)
+	const feilmelding = error?.message
 	const wrapClass = cn('skjemaelement', containerClass, {
 		error: Boolean(!_.isEmpty(feilmelding)),
 		'label-offscreen': _.isNil(label),

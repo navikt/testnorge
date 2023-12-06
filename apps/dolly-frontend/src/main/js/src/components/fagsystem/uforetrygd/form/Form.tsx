@@ -51,7 +51,6 @@ export const UforetrygdForm = ({ formMethods }) => {
 						name={`${uforetrygdPath}.inntektForUforhet`}
 						label="Inntekt før uførhet"
 						type="number"
-						fastfield="false"
 					/>
 				</div>
 				<BarnetilleggForm formMethods={formMethods} />
@@ -63,23 +62,16 @@ export const UforetrygdForm = ({ formMethods }) => {
 						options={Options('minimumInntektForUforhetType')}
 					/>
 
-					<FormikTextInput
-						name={`${uforetrygdPath}.uforegrad`}
-						label="Uføregrad"
-						type="number"
-						fastfield="false"
-					/>
+					<FormikTextInput name={`${uforetrygdPath}.uforegrad`} label="Uføregrad" type="number" />
 					<FormikSelect
 						options={randomSaksbehandlere}
 						name={`${uforetrygdPath}.saksbehandler`}
 						label={'Saksbehandler'}
-						fastfield={false}
 					/>
 					<FormikSelect
 						options={randomAttesterere}
 						name={`${uforetrygdPath}.attesterer`}
 						label={'Attesterer'}
-						fastfield={false}
 					/>
 					<FormikSelect
 						name={`${uforetrygdPath}.navEnhetId`}

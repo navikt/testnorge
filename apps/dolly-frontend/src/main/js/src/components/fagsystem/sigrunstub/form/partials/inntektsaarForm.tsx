@@ -48,7 +48,6 @@ export const InntektsaarForm = ({ formMethods }) => {
 									isDisabled={
 										_.get(formMethods.getValues(), `${path}.svalbardGrunnlag`, []).length > 0
 									}
-									fastfield={false}
 									isClearable={false}
 									size="large"
 									onChange={(target) => handleTjenesteChange(target, path)}

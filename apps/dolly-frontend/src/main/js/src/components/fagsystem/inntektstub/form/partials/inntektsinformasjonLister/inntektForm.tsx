@@ -85,6 +85,7 @@ export const InntektForm = ({ formMethods, inntektsinformasjonPath }: data) => {
 
 		newInntektArray &&
 			formMethods.setValue(`${inntektsinformasjonPath}.inntektsliste`, newInntektArray)
+		formMethods.trigger(`${inntektsinformasjonPath}.inntektsliste`)
 	}
 	return (
 		<>

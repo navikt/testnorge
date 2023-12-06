@@ -43,7 +43,6 @@ export const JobboenskerForm = ({ formMethods }) => {
 					size="grow"
 					isClearable={false}
 					isMulti={true}
-					fastfield={false}
 					value={_get(formMethods.getValues(), `${jobboenskerPath}.occupations`)?.map(
 						(y) => y.styrk08,
 					)}
@@ -56,7 +55,6 @@ export const JobboenskerForm = ({ formMethods }) => {
 					size="grow"
 					isClearable={false}
 					isMulti={true}
-					fastfield={false}
 					value={_get(formMethods.getValues(), `${jobboenskerPath}.locations`)?.map((o) => o.code)}
 					onChange={(options) => setOmraader(options)}
 				/>
@@ -69,7 +67,6 @@ export const JobboenskerForm = ({ formMethods }) => {
 					size="medium"
 					isClearable={false}
 					isMulti={true}
-					fastfield={false}
 				/>
 				<FormikSelect
 					name={`${jobboenskerPath}.workScheduleTypes`}
@@ -77,7 +74,6 @@ export const JobboenskerForm = ({ formMethods }) => {
 					options={Options('arbeidstid')}
 					size="xxxlarge"
 					isMulti={true}
-					fastfield={false}
 				/>
 			</div>
 			<div className="flexbox--flex-wrap">
@@ -87,7 +83,6 @@ export const JobboenskerForm = ({ formMethods }) => {
 					options={Options('ansettelsestype')}
 					size="xxlarge"
 					isMulti={true}
-					fastfield={false}
 				/>
 				<FormikSelect
 					name={`${jobboenskerPath}.startOption`}

@@ -130,6 +130,8 @@ export const AmeldingForm = ({ warningMessage }: AmeldingFormProps): JSX.Element
 		}
 		formMethods.setValue(paths.amelding, ameldingClone)
 		formMethods.setValue(paths.arbeidsforholdstype, event.value)
+		formMethods.trigger(paths.amelding)
+		formMethods.trigger(paths.arbeidsforholdstype)
 	}
 
 	const handleNewEntry = () => {
@@ -186,17 +188,6 @@ export const AmeldingForm = ({ warningMessage }: AmeldingFormProps): JSX.Element
 		}
 	}
 
-	const feilmelding = () => {
-		if (
-			!_.get(formMethods.getValues(), paths.arbeidsforholdstype) &&
-			_.has(formMethods.formState.touchedFields, paths.arbeidsforholdstype)
-		) {
-			return {
-				feilmelding: _.get(formMethods.formState.errors, paths.arbeidsforholdstype),
-			}
-		}
-	}
-
 	return (
 		<>
 			<div className="flexbox--align-center">
@@ -216,7 +207,6 @@ export const AmeldingForm = ({ warningMessage }: AmeldingFormProps): JSX.Element
 					isClearable={false}
 					onChange={handleArbeidsforholdstypeChange}
 					value={arbeidsforholdstype}
-					feil={feilmelding()}
 				/>
 				<>
 					<Monthpicker

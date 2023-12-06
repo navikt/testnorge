@@ -14,8 +14,7 @@ import {
 	NyBestillingProps,
 } from '@/components/bestillingsveileder/startModal/NyIdent/NyIdent'
 import { CypressSelector } from '../../../../cypress/mocks/Selectors'
-import { UseFormReturn } from 'react-hook-form/dist/types'
-import { Form, FormProvider, useForm } from 'react-hook-form'
+import { FormProvider, useForm } from 'react-hook-form'
 
 const initialValues = {
 	mal: null as unknown as string,
@@ -29,37 +28,37 @@ export const NyOrganisasjon = ({ onAvbryt, onSubmit, brukernavn }: NyBestillingP
 	const [bruker, setBruker] = useState(brukernavn)
 	const [malAktiv, toggleMalAktiv] = useToggle(false)
 	const { maler, loading } = useDollyOrganisasjonMaler()
-	const formMethods = useForm({ defaultValues: initialValues })
+	const formMethods = useForm({ mode: 'onBlur', defaultValues: initialValues })
 
 	const brukerOptions = getBrukerOptions(maler)
 	const malOptions = getMalOptions(maler, bruker)
 
-	const handleMalChange = (formMethods: UseFormReturn) => {
+	const handleMalChange = () => {
 		toggleMalAktiv()
-		if (formMethods.getValues()?.mal) {
+		if (formMethods.getValues('mal')) {
 			formMethods.setValue('mal', null)
 		}
 	}
 
-	const handleBrukerChange = (event: { value: any }, formMethods: UseFormReturn) => {
+	const handleBrukerChange = (event: { value: string }) => {
 		setBruker(event.value)
 		formMethods.setValue('mal', null)
 	}
 
-	const preSubmit = (values: { mal: any }, formMethods: any) => {
+	const preSubmit = (values: { mal: any }) => {
 		if (values.mal) values.mal = malOptions.find((m) => m.value === values.mal)?.data
 		return onSubmit(values, formMethods)
 	}
 
 	return (
 		<FormProvider {...formMethods}>
-			<Form initialValues={initialValues} onSubmit={() => formMethods.handleSubmit(preSubmit)}>
+			<form onSubmit={() => preSubmit(formMethods.getValues())}>
 				<div className="ny-bestilling-form">
 					<div className="ny-bestilling-form_maler">
 						<div>
 							<DollyCheckbox
 								name="aktiver-maler"
-								onChange={() => handleMalChange(formMethods)}
+								onChange={() => handleMalChange()}
 								label="Opprett fra mal"
 								wrapperSize={'none'}
 								size={'small'}
@@ -74,7 +73,7 @@ export const NyOrganisasjon = ({ onAvbryt, onSubmit, brukernavn }: NyBestillingP
 								isLoading={loading}
 								options={brukerOptions}
 								size="medium"
-								onChange={(e: { value: any }) => handleBrukerChange(e, formMethods)}
+								onChange={(e: { value: any }) => handleBrukerChange(e)}
 								value={bruker}
 								isClearable={false}
 								isDisabled={!malAktiv}
@@ -85,7 +84,6 @@ export const NyOrganisasjon = ({ onAvbryt, onSubmit, brukernavn }: NyBestillingP
 								isLoading={loading}
 								options={malOptions}
 								size="grow"
-								fastfield={false}
 								isDisabled={!malAktiv}
 							/>
 						</InputDiv>
@@ -99,12 +97,12 @@ export const NyOrganisasjon = ({ onAvbryt, onSubmit, brukernavn }: NyBestillingP
 						data-cy={CypressSelector.BUTTON_START_BESTILLING}
 						submitknapp="Start bestilling"
 						disabled={!formMethods.formState.isValid || formMethods.formState.isSubmitting}
-						onSubmit={() => formMethods.handleSubmit(preSubmit)}
+						onSubmit={() => preSubmit(formMethods.getValues())}
 						onAvbryt={onAvbryt}
 						center
 					/>
 				</div>
-			</Form>
+			</form>
 		</FormProvider>
 	)
 }

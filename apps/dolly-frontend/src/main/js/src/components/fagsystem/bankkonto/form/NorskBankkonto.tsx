@@ -9,20 +9,19 @@ import { UseFormReturn } from 'react-hook-form/dist/types'
 
 export const NorskBankkonto = ({ formMethods }: { formMethods: UseFormReturn }) => {
 	const [validKontoOptions, setValidKontoOptions] = useState([])
-
-	useEffect(() => {
-		setValidKontoOptions(generateValidKontoOptions())
-	}, [])
-
 	const path = 'bankkonto.norskBankkonto'
 	const harTilfeldig = _.get(formMethods.getValues(), `${path}.tilfeldigKontonummer`)
 	const kontonummer = _.get(formMethods.getValues(), `${path}.kontonummer`)
+
+	useEffect(() => {
+		setValidKontoOptions(generateValidKontoOptions(kontonummer))
+	}, [])
 
 	return (
 		<Vis attributt={path} formik>
 			<div className="flexbox--flex-wrap">
 				<FormikSelect
-					placeholder={kontonummer ? kontonummer : 'Velg...'}
+					placeholder={'Velg...'}
 					options={validKontoOptions}
 					isClearable={true}
 					name={`${path}.kontonummer`}

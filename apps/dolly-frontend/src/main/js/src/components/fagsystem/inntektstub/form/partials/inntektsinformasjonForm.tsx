@@ -6,14 +6,14 @@ import InntektsendringForm from './inntektsendringForm'
 import * as _ from 'lodash'
 import { Monthpicker } from '@/components/ui/form/inputs/monthpicker/Monthpicker'
 import { FormikDateTimepicker } from '@/components/ui/form/inputs/timepicker/Timepicker'
-import { UseFormReturn } from 'react-hook-form/dist/types'
+import { useFormContext } from 'react-hook-form'
 
 interface InntektsinformasjonForm {
 	path: string
-	formMethods: UseFormReturn
 }
 
-export default ({ path, formMethods }: InntektsinformasjonForm) => {
+export default ({ path }: InntektsinformasjonForm) => {
+	const formMethods = useFormContext()
 	const [date, setDate] = useState(
 		_.get(formMethods.getValues(), `${path}.sisteAarMaaned`) !== ''
 			? Date.parse(_.get(formMethods.getValues(), `${path}.sisteAarMaaned`))
@@ -32,6 +32,7 @@ export default ({ path, formMethods }: InntektsinformasjonForm) => {
 			`${path}.sisteAarMaaned`,
 			selectedDate ? selectedDate.toISOString().substring(0, 7) : '',
 		)
+		formMethods.trigger(`${path}.sisteAarMaaned`)
 	}
 
 	const handleRapporteringDateChange = (selectedDate: Date) => {
@@ -40,6 +41,7 @@ export default ({ path, formMethods }: InntektsinformasjonForm) => {
 			`${path}.rapporteringsdato`,
 			selectedDate ? selectedDate.toISOString().substring(0, 19) : null,
 		)
+		formMethods.trigger(`${path}.rapporteringsdato`)
 	}
 
 	return (

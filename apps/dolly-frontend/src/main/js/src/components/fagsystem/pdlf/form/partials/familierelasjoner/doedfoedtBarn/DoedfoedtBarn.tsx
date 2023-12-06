@@ -16,12 +16,7 @@ export const DoedfoedtBarnForm = ({ formMethods, path }: DoedfoedtBarnProps) => 
 	return (
 		<div className="flexbox--flex-wrap">
 			<DatepickerWrapper>
-				<FormikDatepicker
-					name={`${path}.dato`}
-					label="Dødsdato"
-					fastfield={false}
-					maxDate={new Date()}
-				/>
+				<FormikDatepicker name={`${path}.dato`} label="Dødsdato" maxDate={new Date()} />
 			</DatepickerWrapper>
 			<AvansertForm
 				path={path}

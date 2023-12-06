@@ -7,24 +7,18 @@ import texts from '@/components/inntektStub/texts'
 import tilleggsinformasjonPaths from '@/components/inntektStub/paths'
 
 const sjekkFelt = (formMethods, field, options, values, path) => {
-	const fieldValue = formMethods.watch(path)
-	console.log('values: ', values) //TODO - SLETT MEG
-	console.log('field: ', field) //TODO - SLETT MEG
-	console.log('fieldValue: ', fieldValue) //TODO - SLETT MEG
+	const { watch, getFieldState, setError } = formMethods
+	const fieldValue = watch(path)
+	const existingError = getFieldState(`${path}.${field}`)?.error
 	const fieldPath = tilleggsinformasjonPaths(field)
 	const val = _.get(fieldValue, fieldPath)
 
 	if (
 		!options.includes('<TOM>') &&
+		!existingError &&
 		((fieldValue && !val && val !== false) || (!optionsUtfylt(options) && !options.includes(val)))
 	) {
-		if (
-			fieldValue?.['inntektstype'] !== '' &&
-			!formMethods.formState.errors?.hasOwnProperty('inntektstub')
-		) {
-			formMethods.setError(`inntektstub.${field}`, 'Feltet er påkrevd')
-		}
-		return { feilmelding: 'Feltet er påkrevd' }
+		setError(`${path}.${field}`, { message: 'Feltet er påkrevd' })
 	}
 	return null
 }
@@ -67,7 +61,7 @@ const fieldResolver = (field, handleChange, formMethods, path, index, options = 
 			<FormikDatepicker
 				key={index}
 				visHvisAvhuket={false}
-				name={fieldName}
+				name={`${path}.${fieldName}`}
 				label={texts(field)}
 				afterChange={handleChange}
 				feil={sjekkFelt(formMethods, field, options, values, path)}
@@ -77,10 +71,9 @@ const fieldResolver = (field, handleChange, formMethods, path, index, options = 
 		return (
 			<FormikSelect
 				key={index}
-				name={fieldName}
+				name={`${path}.${fieldName}`}
 				label={texts(field)}
 				kodeverk={AdresseKodeverk.ArbeidOgInntektLand}
-				fastfield={false}
 				afterChange={handleChange}
 				size="large"
 				feil={sjekkFelt(formMethods, field, options, values, path)}
@@ -91,7 +84,7 @@ const fieldResolver = (field, handleChange, formMethods, path, index, options = 
 			<FormikTextInput
 				key={index}
 				visHvisAvhuket={false}
-				name={fieldName}
+				name={`${path}.${fieldName}`}
 				label={texts(field)}
 				onSubmit={handleChange}
 				size={numberFields.includes(field) ? 'medium' : 'large'}
@@ -106,11 +99,10 @@ const fieldResolver = (field, handleChange, formMethods, path, index, options = 
 	return (
 		<FormikSelect
 			key={index}
-			name={fieldName}
+			name={`${path}.${fieldName}`}
 			value={_.get(values, fieldPath)}
 			label={texts(field)}
 			options={filteredOptions.filter((option) => option.value !== '<TOM>')}
-			fastfield={false}
 			afterChange={handleChange}
 			size={booleanField(options) ? 'small' : wideFields.includes(field) ? 'xxlarge' : 'large'}
 			feil={sjekkFelt(formMethods, field, options, values, path)}
@@ -120,8 +112,6 @@ const fieldResolver = (field, handleChange, formMethods, path, index, options = 
 }
 
 const Inntekt = ({ fields = {}, onValidate, formMethods, path }) => {
-	console.log('fields: ', fields) //TODO - SLETT MEG
-	console.log('path: ', path) //TODO - SLETT MEG
 	return (
 		<div className="flexbox--flex-wrap">
 			{fieldResolver('inntektstype', onValidate, formMethods, path, `${path}.inntektstype`, [

@@ -126,7 +126,6 @@ export const FalskIdentitet = ({ formMethods }) => {
 										kodeverk={AdresseKodeverk.StatsborgerskapLand}
 										isClearable={false}
 										isMulti={true}
-										fastfield={false}
 										size="large"
 									/>
 								</>

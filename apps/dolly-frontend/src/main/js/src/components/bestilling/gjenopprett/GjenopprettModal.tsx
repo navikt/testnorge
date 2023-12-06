@@ -31,6 +31,7 @@ export const GjenopprettModal = ({
 		environments: yup.array().required('Velg minst ett miljø'),
 	})
 	const formMethods = useForm({
+		mode: 'onBlur',
 		defaultValues: { environments: filterMiljoe(tilgjengeligeEnvironments, environments) },
 		resolver: yupResolver(schemaValidation),
 	})

@@ -19,14 +19,6 @@ import { useNavEnheter } from '@/utils/hooks/useNorg2'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 
-interface SikkerhetstiltakValues {
-	tiltakstype: string
-	beskrivelse: string
-	kontaktperson: Object
-	gyldigFraOgMed: Date
-	gyldigTilOgMed: Date
-}
-
 interface SikkerhetstiltakProps {
 	formMethods: UseFormReturn
 }
@@ -70,11 +62,13 @@ export const Sikkerhetstiltak = ({ formMethods }: SikkerhetstiltakProps) => {
 			...sikkerhetstiltakListeTps,
 			initialTpsSikkerhetstiltak,
 		])
+		formMethods.trigger(paths.rootPath)
 	}
 
 	const handleValueChange = (value: string, name: string, idx: number) => {
 		formMethods.setValue(`${paths.rootPath}[${idx}].${name}`, value)
 		formMethods.setValue(`${paths.tpsMessagingRootPath}[${idx}].${name}`, value)
+		formMethods.trigger(`${paths.rootPath}[${idx}].${name}`)
 	}
 
 	const handleRemoveEntry = (idx: number) => {
@@ -82,6 +76,7 @@ export const Sikkerhetstiltak = ({ formMethods }: SikkerhetstiltakProps) => {
 		sikkerhetstiltakListeTps.splice(idx, 1)
 		formMethods.setValue(paths.rootPath, sikkerhetstiltakListe)
 		formMethods.setValue(paths.tpsMessagingRootPath, sikkerhetstiltakListeTps)
+		formMethods.trigger(paths.rootPath)
 	}
 
 	return (
@@ -120,12 +115,15 @@ export const Sikkerhetstiltak = ({ formMethods }: SikkerhetstiltakProps) => {
 									}
 								/>
 								<FormikSelect
-									options={randomNavUsers}
+									options={
+										_.isEmpty(personident)
+											? randomNavUsers
+											: randomNavUsers.concat({ value: personident, label: personident })
+									}
 									isClearable={false}
 									name={`${path}.kontaktperson.personident`}
-									placeholder={personident ? personident : 'Velg...'}
+									placeholder={'Velg...'}
 									label={'Kontaktperson'}
-									fastfield={false}
 								/>
 								<FormikSelect
 									name={`${path}.kontaktperson.enhet`}

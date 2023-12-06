@@ -68,7 +68,6 @@ export const EnheterForm = ({ formMethods }) => {
 						isLoading={roller.loading}
 						size="large"
 						isClearable={false}
-						fastfield={false}
 					/>
 					<FormikDatepicker name={`${path}.registreringsdato`} label="Registreringsdato" />
 					<OrgnrToggle path={path} formMethods={formMethods} setEnhetsinfo={setEnhetsinfo} />

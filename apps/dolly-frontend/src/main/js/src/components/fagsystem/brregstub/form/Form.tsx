@@ -31,7 +31,6 @@ export const BrregstubForm = ({ formMethods }) => {
 						isMulti={true}
 						size="grow"
 						isClearable={false}
-						fastfield={false}
 					/>
 					<EnheterForm formMethods={formMethods} />
 				</div>

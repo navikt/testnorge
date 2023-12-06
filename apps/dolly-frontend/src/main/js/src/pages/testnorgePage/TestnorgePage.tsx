@@ -31,7 +31,11 @@ export default ({ gruppe }: TestnorgePageProps) => {
 	const [valgtePersoner, setValgtePersoner] = useState([])
 	const [startedSearch, setStartedSearch] = useState(false)
 	const [error, setError] = useState(null)
-	const formMethods = useForm({ defaultValues: initialValues, resolver: _validate(validation) })
+	const formMethods = useForm({
+		mode: 'onBlur',
+		defaultValues: initialValues,
+		resolver: _validate(validation),
+	})
 
 	const search = (seed: string, values: any) => {
 		setError(null)

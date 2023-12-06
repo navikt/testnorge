@@ -49,7 +49,11 @@ const RedigerGruppe = ({
 		hensikt: _get(gruppe, 'hensikt', ''),
 	}
 	const mutate = useMatchMutate()
-	const formMethods = useForm({ defaultValues: initialValues, resolver: yupResolver(validation()) })
+	const formMethods = useForm({
+		mode: 'onBlur',
+		defaultValues: initialValues,
+		resolver: yupResolver(validation()),
+	})
 
 	const onHandleSubmit = async (
 		values: {

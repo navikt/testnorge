@@ -32,7 +32,6 @@ export const FullmaktForm = ({ formMethods, path, eksisterendeNyPerson = null }:
 					size="grow"
 					isMulti={true}
 					isClearable={false}
-					fastfield={false}
 				/>
 			</div>
 			<DatepickerWrapper>

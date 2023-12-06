@@ -3,13 +3,13 @@ import cn from 'classnames'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { Label } from '@/components/ui/form/inputs/label/Label'
 import { InputWrapper } from '@/components/ui/form/inputWrapper/InputWrapper'
-import { fieldError, SyntEvent } from '@/components/ui/form/formUtils'
+import { SyntEvent } from '@/components/ui/form/formUtils'
 import './Select.less'
 import MenuList from '@/components/ui/form/inputs/select/MenuList'
 import Option from '@/components/ui/form/inputs/select/Option'
 import * as _ from 'lodash'
 import { useKodeverk } from '@/utils/hooks/useKodeverk'
-import { useController } from 'react-hook-form'
+import { useController, useFormContext } from 'react-hook-form'
 
 type SelectProps = {
 	id?: string
@@ -35,7 +35,6 @@ type SelectProps = {
 	info?: any
 	visHvisAvhuket?: any
 	afterChange?: any
-	fastfield?: boolean
 }
 
 export const Select = ({
@@ -121,7 +120,8 @@ export const DollySelect = (props: SelectProps) => (
 )
 
 const P_FormikSelect = ({ feil, ...props }: SelectProps) => {
-	const { field, fieldState: meta } = useController(props)
+	const { field } = useController(props)
+	const formMethods = useFormContext()
 	const handleChange = (selected, meta) => {
 		let value
 		if (props.isMulti) {
@@ -142,7 +142,6 @@ const P_FormikSelect = ({ feil, ...props }: SelectProps) => {
 	}
 
 	const handleBlur = () => field?.onBlur?.(SyntEvent(field.name))
-	console.log('field.name: ', field.name) //TODO - SLETT MEG
 
 	return (
 		<DollySelect
@@ -150,7 +149,7 @@ const P_FormikSelect = ({ feil, ...props }: SelectProps) => {
 			value={field.value}
 			onChange={handleChange}
 			onBlur={handleBlur}
-			feil={feil || fieldError(meta)}
+			feil={feil || formMethods.getFieldState(props.name)?.error}
 			{...props}
 		/>
 	)

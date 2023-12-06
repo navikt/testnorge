@@ -44,6 +44,7 @@ export const OrgnummerToggle = ({ formMethods, opplysningspliktigPath, path }: P
 
 	const handleChange = (value: { juridiskEnhet: string; orgnr: string }) => {
 		opplysningspliktigPath && formMethods.setValue(`${opplysningspliktigPath}`, value.juridiskEnhet)
+		formMethods.trigger(opplysningspliktigPath)
 		formMethods.setValue(`${path}`, value.orgnr)
 	}
 

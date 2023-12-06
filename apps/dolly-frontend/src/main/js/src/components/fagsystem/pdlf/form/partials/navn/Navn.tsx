@@ -106,7 +106,6 @@ export const NavnForm = ({ formMethods, path, identtype }: NavnTypes) => {
 						isMulti={true}
 						size="grow"
 						isClearable={false}
-						fastfield={false}
 						feil={
 							_.get(errors, `${path}.fornavn`) && {
 								feilmelding: _.get(errors, `${path}.fornavn`),
@@ -130,7 +129,6 @@ export const NavnForm = ({ formMethods, path, identtype }: NavnTypes) => {
 						isMulti={true}
 						size="grow"
 						isClearable={true}
-						fastfield={false}
 					/>
 					{getRefreshButton()}
 				</div>
@@ -148,7 +146,6 @@ export const NavnForm = ({ formMethods, path, identtype }: NavnTypes) => {
 						isMulti={true}
 						size="grow"
 						isClearable={false}
-						fastfield={false}
 						feil={
 							_.get(errors, `${path}.etternavn`) && {
 								feilmelding: _.get(errors, `${path}.etternavn`),
@@ -166,11 +163,7 @@ export const NavnForm = ({ formMethods, path, identtype }: NavnTypes) => {
 					checkboxMargin
 				/>
 				<DatepickerWrapper>
-					<FormikDatepicker
-						name={`${path}.gyldigFraOgMed`}
-						label="Gyldig f.o.m. dato"
-						fastfield={false}
-					/>
+					<FormikDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig f.o.m. dato" />
 				</DatepickerWrapper>
 			</div>
 			<AvansertForm path={path} kanVelgeMaster={identtype !== 'NPID'} />

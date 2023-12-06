@@ -113,6 +113,7 @@ export const VisningRedigerbarPersondetaljer = ({
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 	const [slettAttr, setSlettAttr] = useState(initialSlettAttr)
 	const formMethods = useForm({
+		mode: 'onBlur',
 		defaultValues: redigertAttributt.pdlf ? redigertAttributt.pdlf : initialValues,
 		resolver: yupResolver(validationSchema),
 	})

@@ -22,11 +22,7 @@ import useBoolean from '@/utils/hooks/useBoolean'
 import { OrganisasjonBestillingsveilederModal } from '@/pages/organisasjoner/OrganisasjonBestillingsveilederModal'
 import OrganisasjonHeaderConnector from '@/pages/organisasjoner/OrgansisasjonHeader/OrganisasjonHeaderConnector'
 import { CypressSelector } from '../../../cypress/mocks/Selectors'
-
-type OrganisasjonerProps = {
-	search?: string
-	sidetall: number
-}
+import { useReduxSelector } from '@/utils/hooks/useRedux'
 
 enum BestillingType {
 	NY = 'NY',
@@ -43,6 +39,7 @@ export default () => {
 
 	const [visning, setVisning] = useState(VISNING_ORGANISASJONER)
 	const [startBestillingAktiv, visStartBestilling, skjulStartBestilling] = useBoolean(false)
+	const searchStr = useReduxSelector((state) => state.search)
 
 	const [antallOrg, setAntallOrg] = useState(null)
 	const navigate = useNavigate()
@@ -66,7 +63,7 @@ export default () => {
 
 	const antallBest = bestillinger?.length
 
-	const startBestilling = (values: Record<string, unknown>) => {
+	const startBestilling = (values) => {
 		navigate('/organisasjoner/bestilling', {
 			state: { opprettOrganisasjon: BestillingType.NY, ...values },
 		})
@@ -132,7 +129,7 @@ export default () => {
 
 				{startBestillingAktiv && (
 					<OrganisasjonBestillingsveilederModal
-						onSubmit={startBestilling}
+						onSubmit={() => startBestilling}
 						onAvbryt={skjulStartBestilling}
 						brukernavn={brukernavn}
 					/>
@@ -145,7 +142,7 @@ export default () => {
 						<OrganisasjonListe bestillinger={bestillinger} setAntallOrg={setAntallOrg} />
 					) : (
 						<TomOrgListe
-							startBestilling={startBestilling}
+							startBestilling={() => startBestilling}
 							bestillingstype={BestillingType.STANDARD}
 						/>
 					))}
@@ -156,11 +153,11 @@ export default () => {
 						<OrganisasjonBestilling
 							brukerId={brukerId}
 							brukertype={brukertype}
-							bestillinger={sokSelector(bestillingerById)}
+							bestillinger={sokSelector(bestillingerById, searchStr)}
 						/>
 					) : (
 						<TomOrgListe
-							startBestilling={startBestilling}
+							startBestilling={() => startBestilling}
 							bestillingstype={BestillingType.STANDARD}
 						/>
 					))}

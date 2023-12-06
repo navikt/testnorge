@@ -33,7 +33,11 @@ const validation = () =>
 export default ({ setValgtGruppe }: NyGruppe) => {
 	const [nyGruppe, setNyGruppe] = useState('')
 	const [feilmelding, setFeilmelding] = useState('')
-	const formMethods = useForm({ defaultValues: initialValues, resolver: yupResolver(validation()) })
+	const formMethods = useForm({
+		mode: 'onBlur',
+		defaultValues: initialValues,
+		resolver: yupResolver(validation()),
+	})
 
 	const onHandleSubmit = async (values: any) => {
 		await DollyApi.createGruppe({

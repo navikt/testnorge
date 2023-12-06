@@ -1,43 +1,41 @@
 import { useDispatch } from 'react-redux'
-import { isArray } from 'lodash'
+import _, { isArray } from 'lodash'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
-export const stateModifierFns = (methods, opts = null) => {
+export const stateModifierFns = (formMethods: UseFormReturn, opts = null) => {
 	const dispatch = useDispatch()
 	const set = (path, value) => {
-		return methods.setValue(path, value)
+		return formMethods.setValue(path, value)
 	}
 	const has = (path) => {
-		return methods.watch(path) !== undefined
-		// return methods.getValues(path) !== undefined
+		return formMethods.watch(path) !== undefined
 	}
 	const del = (path) => {
 		// methods.resetField(path)
 		if (isArray(path)) {
 			path.forEach((p) => {
-				methods.setValue(p, undefined)
-				methods.resetField(p)
+				formMethods.setValue(p, undefined)
+				formMethods.resetField(p)
 			})
 		} else {
-			methods.watch(path)
-			methods.setValue(path, undefined)
-			methods.resetField(path)
+			formMethods.setValue(path, undefined)
+			formMethods.resetField(path)
+			formMethods.watch(path)
 		}
-		// methods.setValue(path, undefined)
-		// methods.resetField(path)
-		// let newObj = _.omit(initial, path)
-		//
-		// // Ingen tomme objekter guard
-		// let rootPath = Array.isArray(path) ? path[0].split('.')[0] : path.split('.')[0]
-		// if (path.includes('pdldata.person') || path[0].includes('pdldata.person'))
-		// 	rootPath = 'pdldata.person'
-		// if (_.isEmpty(_.get(newObj, rootPath))) newObj = _.omit(newObj, rootPath)
-		//
-		// setInitial(newObj)
+		let newObj = _.omit(formMethods.getValues(), path)
+
+		// Ingen tomme objekter guard
+		let rootPath = Array.isArray(path) ? path[0].split('.')[0] : path.split('.')[0]
+		if (path.includes('pdldata.person') || path[0].includes('pdldata.person'))
+			rootPath = 'pdldata.person'
+		if (_.isEmpty(_.get(newObj, rootPath))) newObj = _.omit(newObj, rootPath)
+
+		formMethods.reset(newObj)
 	}
 	const setMulti = (...arrays) => {
 		arrays.forEach((curr) => {
 			const [path, val] = curr
-			methods.setValue(path, val)
+			formMethods.setValue(path, val)
 		})
 		// methods.setValue(newInitial)
 	}
@@ -47,21 +45,14 @@ export const stateModifierFns = (methods, opts = null) => {
 			.filter((a) => a.checked)
 			.map((b) => b.label)
 
-	const batchUpdate = (attrs, fn, ignoreKeys = [], key = 'add') => {
-		const state = Object.keys(attrs).reduce(
-			(acc, curr) => {
-				// Handle ignored keys
-				const ignores = Array.isArray(ignoreKeys) ? ignoreKeys : [ignoreKeys]
-				if (ignores.includes(curr)) return acc
-
-				const sm_local = stateModifierFns(acc, (newState) => (acc = newState), opts, dispatch)(fn)
-				sm_local.attrs[curr][key]()
-				return acc
-			},
-			Object.assign({}, methods.getValues()),
-		)
-
-		methods.setValue(state)
+	const batchUpdate = (attrs, ignoreKeys = [], key = 'add') => {
+		Object.entries(attrs)
+			.filter(([name, value]) => {
+				return !ignoreKeys?.includes(name)
+			})
+			.forEach(([_name, value]: [name: string, value: any]) => {
+				value[key]() // Call add or remove method
+			})
 	}
 
 	return (
@@ -75,14 +66,13 @@ export const stateModifierFns = (methods, opts = null) => {
 			methods: any
 		}) => {},
 	) => {
-		const attrs = fn({ set, setMulti, del, has, dispatch, opts, methods }) || {}
+		const attrs = fn({ set, setMulti, del, has, dispatch, opts, methods: formMethods }) || {}
 		const checked = allCheckedLabels(attrs)
 		return {
 			attrs,
 			checked,
-			batchAdd: (ignoreKeys: never[] | undefined) => batchUpdate(attrs, fn, ignoreKeys, 'add'),
-			batchRemove: (ignoreKeys: never[] | undefined) =>
-				batchUpdate(attrs, fn, ignoreKeys, 'remove'),
+			batchAdd: (ignoreKeys: never[] | undefined) => batchUpdate(attrs, ignoreKeys, 'add'),
+			batchRemove: (ignoreKeys: never[] | undefined) => batchUpdate(attrs, ignoreKeys, 'remove'),
 		}
 	}
 }

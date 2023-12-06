@@ -22,13 +22,7 @@ const ForventedeInntekterForm = ({ path, header, initialValues }) => {
 						size="xlarge"
 						options={Options('inntektType')}
 					/>
-					<FormikTextInput
-						name={`${path}.belop`}
-						label="Beløp"
-						type="number"
-						size="medium"
-						fastfield="false"
-					/>
+					<FormikTextInput name={`${path}.belop`} label="Beløp" type="number" size="medium" />
 					<FormikDatepicker name={`${path}.datoFom`} label="Dato f.o.m." />
 					<FormikDatepicker name={`${path}.datoTom`} label="Dato t.o.m." />
 				</>

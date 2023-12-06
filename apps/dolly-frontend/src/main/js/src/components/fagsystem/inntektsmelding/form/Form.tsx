@@ -104,6 +104,7 @@ export const InntektsmeldingForm = ({ formMethods }: InntektsmeldingFormProps) =
 						'',
 					)
 				}
+				formMethods.trigger(`inntektsmelding.inntekter[${idx}]`)
 			},
 		)
 	}

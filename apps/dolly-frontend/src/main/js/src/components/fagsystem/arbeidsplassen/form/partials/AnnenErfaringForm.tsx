@@ -55,7 +55,6 @@ export const AnnenErfaringForm = ({ formMethods }) => {
 								name={`${annenErfaringPath}.toDate`}
 								label="Sluttdato"
 								disabled={_get(formMethods.getValues(), `${annenErfaringPath}.ongoing`)}
-								fastfield={false}
 							/>
 							<FormikCheckbox
 								id={`${annenErfaringPath}.ongoing`}

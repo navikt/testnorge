@@ -55,7 +55,7 @@ export const InntektstubForm = ({ formMethods }: InntektstubFormProps) => (
 					hjelpetekst={infotekst}
 					canBeEmpty={false}
 				>
-					{(path: string) => <InntektsinformasjonForm path={path} formMethods={formMethods} />}
+					{(path: string) => <InntektsinformasjonForm path={path} />}
 				</FormikDollyFieldArray>
 			</div>
 		</Panel>

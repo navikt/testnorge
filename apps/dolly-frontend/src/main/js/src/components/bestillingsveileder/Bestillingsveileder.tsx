@@ -21,14 +21,21 @@ export const Bestillingsveileder = ({ error, sendBestilling }) => {
 		}
 	}, [navigateRoot])
 
-	if (!location.state && !gruppeId) {
+	if (!location.state) {
+		location.state = {
+			antall: 1,
+			identtype: 'FNR',
+			mal: null,
+		}
+	}
+
+	if (!gruppeId) {
 		setNavigateRoot(true)
 		return null
 	}
 
 	const options = BVOptions(location.state, gruppeId, personId)
 	const handleSubmit = (values) => {
-		console.log('values: ', values) //TODO - SLETT MEG
 		sendBestilling(values, options, gruppeId, navigate)
 	}
 

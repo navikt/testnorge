@@ -49,7 +49,6 @@ export const Alder = ({ formMethods }) => {
 				disabled={disableFoedtDato}
 				maxDate={new Date()}
 				minDate={minDateAlder}
-				fastfield={false}
 			/>
 			<FormikDatepicker
 				name={paths.foedtFoer}
@@ -57,7 +56,6 @@ export const Alder = ({ formMethods }) => {
 				disabled={disableFoedtDato}
 				maxDate={new Date()}
 				minDate={minDateAlder}
-				fastfield={false}
 			/>
 		</div>
 	)

@@ -26,17 +26,6 @@ export default ({
 }: InntektsmeldingSelect) => {
 	const ytelsePath = `${path}.ytelse`
 
-	const feil = (feilmelding: Feilmelding) => {
-		if (
-			_.has(formMethods.formState.touchedFields, ytelsePath) &&
-			_.get(formMethods.getValues(), ytelsePath) === ''
-		) {
-			return { feilmelding: 'Feltet er påkrevd' }
-		} else {
-			return feilmelding
-		}
-	}
-
 	return (
 		<ErrorBoundary>
 			<LoadableComponent
@@ -49,16 +38,16 @@ export default ({
 						})),
 					)
 				}
-				render={(data: Array<Option>, feilmelding: Feilmelding) => (
+				render={(data: Array<Option>, _feilmelding: Feilmelding) => (
 					<DollySelect
 						name={ytelsePath}
 						label={label}
 						options={data}
-						type="text"
 						size={size}
 						value={_.get(formMethods.getValues(), ytelsePath)}
-						onChange={(e: Option) => setYtelseOgTema(e, formMethods, path, idx)}
-						feil={feil(feilmelding)}
+						onChange={(e: Option) => {
+							setYtelseOgTema(e, formMethods, path, idx)
+						}}
 						isClearable={false}
 					/>
 				)}
@@ -121,4 +110,5 @@ const setYtelseOgTema = (value: Option, formMethods: UseFormReturn, path: string
 		// Foreløpig ingen spesielle keys for opplærings- og svangerskapspenger
 		formMethods.setValue(`${path}.ytelse`, value.value)
 	}
+	formMethods.trigger(path)
 }

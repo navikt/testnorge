@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Navigation } from './Navigation/Navigation'
 import { stateModifierFns } from '../stateModifier'
 import { validate } from '@/utils/YupValidations'
@@ -18,12 +18,12 @@ import {
 import { Stepper } from '@navikt/ds-react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
+import DisplayFormikErrors from '@/utils/DisplayFormikErrors'
 
 const STEPS = [Steg1, Steg2, Steg3]
 
 export const StegVelger = ({ initialValues, onSubmit }) => {
 	const _validate = (values) => {
-		console.log('values: ', values) //TODO - SLETT MEG
 		return validate(
 			{
 				...values,
@@ -37,18 +37,14 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 	const [step, setStep] = useState(0)
 	const CurrentStepComponent: any = STEPS[step]
 	const formMethods = useForm({
+		mode: 'onChange',
 		defaultValues: initialValues,
-		// resolver: yupResolver(CurrentStepComponent.validation),
-		resolver: async (data, context, options) => {
-			// you can debug your validation schema here
-			console.log('formData', data)
-			console.log(
-				'validation result',
-				await yupResolver(CurrentStepComponent.validation)(data, context, options),
-			)
-			return yupResolver(CurrentStepComponent.validation)(data, context, options)
-		},
+		resolver: yupResolver(CurrentStepComponent.validation),
 	})
+
+	useEffect(() => {
+		formMethods.trigger().catch((e) => /* ignore */ e)
+	}, [formMethods.watch, step])
 
 	const opts: any = useContext(BestillingsveilederContext)
 	const mutate = useMatchMutate()
@@ -58,9 +54,6 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 	const handleNext = () => setStep(step + 1)
 
 	const handleBack = () => {
-		if (isLastStep()) {
-			// const { setSubmitting } = formMethods.setSubmitting(false)
-		}
 		if (step !== 0) setStep(step - 1)
 	}
 
@@ -98,7 +91,12 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 
 			<CurrentStepComponent stateModifier={stateModifier} />
 
-			{devEnabled && <DisplayFormikState />}
+			{devEnabled && (
+				<>
+					<DisplayFormikState />
+					<DisplayFormikErrors errors={formMethods.formState.errors} label={'Vis errors'} />
+				</>
+			)}
 
 			<Navigation
 				step={step}

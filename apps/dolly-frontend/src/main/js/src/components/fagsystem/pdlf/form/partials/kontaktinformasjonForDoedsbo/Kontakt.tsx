@@ -178,7 +178,6 @@ export const Kontakt = ({ formMethods, path, eksisterendeNyPerson = null }: Kont
 							label="Fødselsdato"
 							disabled={disablePersoninfo}
 							maxDate={new Date()}
-							fastfield={false}
 						/>
 					</DatepickerWrapper>
 					<DollySelect

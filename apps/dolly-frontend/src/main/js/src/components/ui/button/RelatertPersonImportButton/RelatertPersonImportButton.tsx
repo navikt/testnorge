@@ -36,7 +36,7 @@ export const RelatertPersonImportButton = ({
 	const [feilmelding, setFeilmelding] = useState(null)
 	const [fullfoert, setFullfoert] = useState(false)
 	const mutate = useMatchMutate()
-	const formMethods = useForm({ defaultValues: { identer: [] } })
+	const formMethods = useForm({ mode: 'onBlur', defaultValues: { identer: [] } })
 
 	if (!relatertPersonIdenter) {
 		return null

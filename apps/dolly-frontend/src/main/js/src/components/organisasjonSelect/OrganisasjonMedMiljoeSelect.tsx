@@ -50,7 +50,6 @@ export const OrganisasjonMedMiljoeSelect = ({
 				name={path}
 				size={'small'}
 				isClearable={false}
-				fastfield={false}
 				label={'Organisasjon Miljø'}
 				options={options}
 				value={environment}

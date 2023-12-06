@@ -78,7 +78,6 @@ export const SivilstandForm = ({
 					name={`${path}.sivilstandsdato`}
 					label="Gyldig fra og med"
 					disabled={_.get(formMethods.getValues(), `${path}.bekreftelsesdato`) != null}
-					fastfield={false}
 				/>
 				<FormikDatepicker
 					name={`${path}.bekreftelsesdato`}
@@ -88,7 +87,6 @@ export const SivilstandForm = ({
 						_.get(formMethods.getValues(), `${path}.master`) !== 'PDL' ||
 						_.get(formMethods.getValues(), `${path}.type`) === 'SAMBOER'
 					}
-					fastfield={false}
 				/>
 			</DatepickerWrapper>
 			<FormikCheckbox

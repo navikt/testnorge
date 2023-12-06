@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom'
 import { CypressSelector } from '../../../../../cypress/mocks/Selectors'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { useFormContext } from 'react-hook-form'
+import _ from 'lodash'
 
 export const Navigation = ({ step, onPrevious, isLastStep, handleSubmit }) => {
 	const showPrevious = step > 0
@@ -33,8 +34,7 @@ export const Navigation = ({ step, onPrevious, isLastStep, handleSubmit }) => {
 		return 'Opprett'
 	}
 
-	const hasInntektstubError = step === 1 && errors?.hasOwnProperty('inntektstub')
-	const hasAaregError = step === 1 && errors?.hasOwnProperty('aareg')
+	const hasErrors = step === 1 && !_.isEmpty(errors)
 	const disabledVidere = step === 1 && opts?.is?.leggTil && !harAvhukedeAttributter(getValues())
 
 	return (
@@ -59,12 +59,7 @@ export const Navigation = ({ step, onPrevious, isLastStep, handleSubmit }) => {
 							data-cy={CypressSelector.BUTTON_VIDERE}
 							variant={'primary'}
 							disabled={isSubmitting || disabledVidere}
-							onClick={
-								hasInntektstubError || hasAaregError
-									? () => console.error('Feil i skjemaet, må fikse denne')
-									: //setTouched(setNestedObjectValues(errors, true)) TODO: FIKSE DENNE
-									  handleSubmit
-							}
+							onClick={hasErrors ? () => console.error('Feil i skjemaet') : handleSubmit}
 						>
 							Videre
 						</NavButton>

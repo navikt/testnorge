@@ -101,6 +101,7 @@ export const VisningRedigerbarSamlet = ({
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 	const [slettId, setSlettId] = useState(null)
 	const formMethods = useForm({
+		mode: 'onBlur',
 		defaultValues: redigertAttributt ? redigertAttributtListe : initialValues,
 		resolver: yupResolver(_validate),
 	})

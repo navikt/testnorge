@@ -124,7 +124,7 @@ export const BestillingProgresjon = ({
 			setDetaljertOrgStatus(bestillingStatus)
 		}
 		harBestillingFeilet(sistOppdatert)
-	}, [bestilling, bestillingStatus])
+	}, [bestillingStatus])
 
 	if (loading) {
 		return null

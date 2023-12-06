@@ -18,7 +18,7 @@ export const IdentifikasjonPanel = ({ stateModifier, formValues }) => {
 	return (
 		<Panel
 			heading={IdentifikasjonPanel.heading}
-			checkAttributeArray={() => sm.batchAdd(harNpid && ['falskIdentitet'])}
+			checkAttributeArray={() => sm.batchAdd(harNpid ? ['falskIdentitet'] : [])}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType="identifikasjon"
 			startOpen={harValgtAttributt(formValues, identifikasjonAttributter)}

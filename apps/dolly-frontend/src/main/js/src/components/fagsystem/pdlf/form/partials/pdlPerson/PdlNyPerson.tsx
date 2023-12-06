@@ -79,14 +79,12 @@ export const PdlNyPerson = ({
 					label="Født etter"
 					disabled={disableFoedtDato || hasEksisterendePerson}
 					maxDate={new Date()}
-					fastfield={false}
 				/>
 				<FormikDatepicker
 					name={`${nyPersonPath}.foedtFoer`}
 					label="Født før"
 					disabled={disableFoedtDato || hasEksisterendePerson}
 					maxDate={new Date()}
-					fastfield={false}
 				/>
 			</DatepickerWrapper>
 			{!erNyIdent && (

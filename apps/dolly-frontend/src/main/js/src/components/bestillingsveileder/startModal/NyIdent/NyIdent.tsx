@@ -50,6 +50,7 @@ export const NyIdent = ({ brukernavn, onAvbryt, onSubmit }: NyBestillingProps) =
 	const [malAktiv, toggleMalAktiv] = useToggle(false)
 	const { maler, loading } = useDollyMaler()
 	const formMethods = useForm({
+		mode: 'onBlur',
 		defaultValues: initialValues,
 		resolver: yupResolver(validationSchema),
 	})
@@ -70,7 +71,6 @@ export const NyIdent = ({ brukernavn, onAvbryt, onSubmit }: NyBestillingProps) =
 	}
 
 	const preSubmit = (values: { mal: any }) => {
-		console.log('values: ', values) //TODO - SLETT MEG
 		if (values.mal) values.mal = malOptions.find((m) => m.value === values.mal).data
 		return onSubmit(values, formMethods)
 	}
@@ -125,7 +125,6 @@ export const NyIdent = ({ brukernavn, onAvbryt, onSubmit }: NyBestillingProps) =
 								isLoading={loading}
 								options={malOptions}
 								size="grow"
-								fastfield={false}
 								isDisabled={!malAktiv}
 							/>
 						</InputDiv>

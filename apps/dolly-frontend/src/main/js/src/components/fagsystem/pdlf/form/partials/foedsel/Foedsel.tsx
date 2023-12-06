@@ -51,7 +51,6 @@ export const FoedselForm = ({ formMethods, path }: FoedselTypes) => {
 					disabled={(foedselsaar !== null && foedselsdato === null) || harAlder()}
 					maxDate={new Date()}
 					minDate={minDateFoedsel}
-					fastfield={false}
 				/>
 				<Yearpicker
 					formMethods={formMethods}

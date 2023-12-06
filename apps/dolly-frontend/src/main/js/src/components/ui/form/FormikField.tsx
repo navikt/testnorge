@@ -1,3 +1,3 @@
-export const FormikField = ({ fastfield = true, children, ...props }) => {
+export const FormikField = ({ children, ...props }) => {
 	return <div {...props}>{children}</div>
 }

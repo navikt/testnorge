@@ -69,7 +69,6 @@ export const KrrstubForm = ({ formMethods }: KrrstubFormProps) => {
 								name="krrstub.reservert"
 								label="Reservert"
 								options={Options('boolean')}
-								fastfield={false}
 							/>
 							<FormikTextInput name="krrstub.epost" label="E-post" />
 							<FormikTextInput
@@ -77,17 +76,8 @@ export const KrrstubForm = ({ formMethods }: KrrstubFormProps) => {
 								label="Mobilnummer (+47)"
 								placeholder={'+4712345678'}
 							/>
-							<FormikSelect
-								name="krrstub.spraak"
-								label="Språk"
-								options={Options('spraaktype')}
-								fastfield={false}
-							/>
-							<FormikDatepicker
-								name="krrstub.gyldigFra"
-								label="Kontaktinfo gjelder fra"
-								fastfield={false}
-							/>
+							<FormikSelect name="krrstub.spraak" label="Språk" options={Options('spraaktype')} />
+							<FormikDatepicker name="krrstub.gyldigFra" label="Kontaktinfo gjelder fra" />
 						</>
 					)}
 				</div>
@@ -96,7 +86,6 @@ export const KrrstubForm = ({ formMethods }: KrrstubFormProps) => {
 						<div className="flexbox--flex-wrap">
 							<FormikTextInput name="krrstub.sdpAdresse" label="Adresse" />
 							<FormikSelect
-								fastfield={false}
 								name="krrstub.sdpLeverandoer"
 								label="Leverandør"
 								options={leverandoerOptions}

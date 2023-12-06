@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react'
 import Inntekt from '@/components/inntektStub/validerInntekt/Inntekt'
 import InntektstubService from '@/service/services/inntektstub/InntektstubService'
 import * as _ from 'lodash'
-import { Form, useFormContext } from 'react-hook-form'
+import { Form, useFormContext, useWatch } from 'react-hook-form'
+import _get from 'lodash/get'
 
 const tilleggsinformasjonAttributter = {
 	BilOgBaat: 'bilOgBaat',
@@ -17,10 +18,10 @@ const tilleggsinformasjonAttributter = {
 }
 
 const InntektStub = ({ inntektPath }) => {
-	console.log('inntektPath: ', inntektPath) //TODO - SLETT MEG
 	const formMethods = useFormContext()
 	const [fields, setFields] = useState({})
-	const inntektValues = formMethods.watch(inntektPath)
+	const watched = useWatch()
+	const inntektValues = _get(watched, inntektPath)
 	const {
 		beloep,
 		startOpptjeningsperiode,
@@ -30,13 +31,15 @@ const InntektStub = ({ inntektPath }) => {
 	} = inntektValues
 
 	useEffect(() => {
-		console.log('inntektValues: ', inntektValues) //TODO - SLETT MEG
-		if (inntektstype !== '' && Object.keys(fields).length < 1) {
+		if (inntektstype !== '') {
 			InntektstubService.validate(_.omitBy(inntektValues, (value) => value === '' || !value)).then(
-				(response) => setFields(response),
+				(response) => {
+					setFields(response)
+				},
 			)
 		}
-	}, [inntektValues, fields])
+		formMethods.trigger(`${inntektPath}.inntektstype`)
+	}, [inntektValues])
 
 	useEffect(() => {
 		Object.entries(fields).forEach((entry) => {
@@ -101,7 +104,6 @@ const InntektStub = ({ inntektPath }) => {
 	return (
 		<Form
 			onSubmit={(values) => {
-				console.log('values, kapplah!: ', values) //TODO - SLETT MEG
 				if (inntektstype && values.inntektstype !== inntektstype) {
 					values = { inntektstype: values.inntektstype }
 				}

@@ -112,7 +112,6 @@ export const HistarkForm = ({ formMethods }: HistarkFormProps) => {
 											setSelectedNavEnhet(selected?.value)
 										}}
 										label={'NAV-enhet'}
-										fastfield={false}
 										size={'xlarge'}
 										options={navEnheter}
 										feil={

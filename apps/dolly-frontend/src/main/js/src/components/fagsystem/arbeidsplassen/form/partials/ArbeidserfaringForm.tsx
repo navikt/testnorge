@@ -85,7 +85,6 @@ export const ArbeidserfaringForm = ({ formMethods }) => {
 								name={`${arbeidsforholdPath}.toDate`}
 								label="Ansatt til"
 								disabled={_get(formMethods.getValues(), `${arbeidsforholdPath}.ongoing`)}
-								fastfield={false}
 							/>
 							<FormikCheckbox
 								id={`${arbeidsforholdPath}.ongoing`}

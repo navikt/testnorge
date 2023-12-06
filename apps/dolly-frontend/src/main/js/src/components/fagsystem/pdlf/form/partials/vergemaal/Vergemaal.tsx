@@ -41,7 +41,7 @@ export const VergemaalForm = ({
 				name={`${path}.mandatType`}
 				label="Mandattype"
 				kodeverk={VergemaalKodeverk.Mandattype}
-				size="xxlarge"
+				size="fullWidth"
 				optionHeight={50}
 			/>
 			<DatepickerWrapper>

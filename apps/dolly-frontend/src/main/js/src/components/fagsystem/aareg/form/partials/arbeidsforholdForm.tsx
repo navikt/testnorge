@@ -85,11 +85,7 @@ export const ArbeidsforholdForm = ({
 		return !_.isEqual(getValues('aareg'), [initialArbeidsforholdOrg])
 	}
 
-	const {
-		formState: { errors, touchedFields: touched },
-		getValues,
-		setValue: setFieldValue,
-	} = useFormContext()
+	const { setError, getValues, setValue: setFieldValue, trigger } = useFormContext()
 	const [navArbeidsforholdPeriode, setNavArbeidsforholdPeriode] = useState(null as unknown as Date)
 	const { tidligereBestillinger } = useContext(BestillingsveilederContext)
 	const tidligereAaregBestillinger = hentUnikeAaregBestillinger(tidligereBestillinger)
@@ -194,6 +190,7 @@ export const ArbeidsforholdForm = ({
 				setFieldValue(`${path}.fartoy`, undefined)
 			}
 		}
+		trigger(path)
 	}
 
 	useEffect(() => {
@@ -208,18 +205,8 @@ export const ArbeidsforholdForm = ({
 		)
 	}, [navArbeidsforholdPeriode])
 
-	const feilmelding = () => {
-		if (
-			!_.get(getValues(), `${path}.arbeidsforholdstype`) &&
-			_.has(touched, `${path}.arbeidsforholdstype`)
-		) {
-			return {
-				feilmelding: _.get(errors, `${path}.arbeidsforholdstype`),
-			}
-		}
-	}
-
-	const checkAktiveArbeidsforhold = (aaregValues) => {
+	const checkAktiveArbeidsforhold = () => {
+		const aaregValues = getValues('aareg')
 		const aktiveArbeidsforhold = aaregValues.map((arbeidsforhold) => {
 			const orgnummer = arbeidsforhold?.arbeidsgiver?.orgnummer
 			if (!arbeidsforhold?.ansettelsesPeriode?.sluttaarsak) {
@@ -229,11 +216,11 @@ export const ArbeidsforholdForm = ({
 		const dupliserteAktiveArbeidsforhold = aktiveArbeidsforhold
 			.filter((arbeidsforhold, index) => index !== aktiveArbeidsforhold.indexOf(arbeidsforhold))
 			.filter((arbeidsforhold) => !_.isEmpty(arbeidsforhold))
-		return _.isEmpty(dupliserteAktiveArbeidsforhold)
-			? null
-			: {
-					feilmelding: `Identen har allerede pågående arbeidsforhold i org: ${dupliserteAktiveArbeidsforhold.toString()}`,
-			  }
+		if (!_.isEmpty(dupliserteAktiveArbeidsforhold)) {
+			setError(`${path}.arbeidsgiver.orgnummer`, {
+				message: `Identen har allerede pågående arbeidsforhold i org: ${dupliserteAktiveArbeidsforhold.toString()}`,
+			})
+		}
 	}
 
 	return (
@@ -253,7 +240,7 @@ export const ArbeidsforholdForm = ({
 					<OrganisasjonMedArbeidsforholdSelect
 						path={`${path}.arbeidsgiver.orgnummer`}
 						label={'Organisasjonsnummer'}
-						feil={checkAktiveArbeidsforhold(getValues('aareg'))}
+						afterChange={() => checkAktiveArbeidsforhold()}
 						isDisabled={erLaastArbeidsforhold}
 					/>
 				)}
@@ -262,7 +249,7 @@ export const ArbeidsforholdForm = ({
 						name={`${path}.arbeidsgiver.orgnummer`}
 						label={'Organisasjonsnummer'}
 						size="xlarge"
-						feil={checkAktiveArbeidsforhold(getValues('aareg'))}
+						onKeyPress={() => checkAktiveArbeidsforhold()}
 						defaultValue={gjeldendeArbeidsgiver?.orgnummer}
 						isDisabled={erLaastArbeidsforhold}
 					/>
@@ -275,7 +262,6 @@ export const ArbeidsforholdForm = ({
 						size="xlarge"
 						isClearable={false}
 						onChange={handleArbeidsforholdstypeChange}
-						feil={feilmelding()}
 						isDisabled={erLaastArbeidsforhold}
 					/>
 				)}
@@ -289,13 +275,11 @@ export const ArbeidsforholdForm = ({
 					name={`${path}.ansettelsesPeriode.fom`}
 					label="Ansatt fra"
 					onChange={onChangeLenket('ansettelsesPeriode.fom')}
-					fastfield={false}
 				/>
 				<FormikDatepicker
 					name={`${path}.ansettelsesPeriode.tom`}
 					label="Ansatt til"
 					onChange={onChangeLenket('ansettelsesPeriode.tom')}
-					fastfield={false}
 				/>
 				<FormikSelect
 					name={`${path}.ansettelsesPeriode.sluttaarsak`}

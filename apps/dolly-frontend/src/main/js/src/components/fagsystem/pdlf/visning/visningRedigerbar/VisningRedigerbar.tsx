@@ -134,6 +134,7 @@ export const VisningRedigerbar = ({
 	const [errorMessagePdl, setErrorMessagePdl] = useState(null)
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 	const formMethods = useForm({
+		mode: 'onBlur',
 		defaultValues: redigertAttributt ? redigertAttributt : initialValues,
 		resolver: yupResolver(_validate),
 	})

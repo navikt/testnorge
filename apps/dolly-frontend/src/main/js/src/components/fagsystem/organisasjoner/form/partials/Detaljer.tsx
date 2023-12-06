@@ -94,7 +94,6 @@ export const Detaljer = ({
 								: OrganisasjonKodeverk.EnhetstyperVirksomhet
 						}
 						size="xxlarge"
-						fastfield={false}
 						isClearable={false}
 					/>
 				</div>

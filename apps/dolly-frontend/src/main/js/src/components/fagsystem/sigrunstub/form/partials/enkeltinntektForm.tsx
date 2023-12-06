@@ -40,7 +40,7 @@ export const EnkeltinntektForm = ({
 							optionHeight={50}
 						/>
 						{typeInntekt === 'skatteoppgjoersdato' ? (
-							<FormikDatepicker name={`${path}.verdi`} label="Oppgjørsdato" fastfield={false} />
+							<FormikDatepicker name={`${path}.verdi`} label="Oppgjørsdato" />
 						) : (
 							<FormikTextInput name={`${path}.verdi`} label="Verdi" type="number" />
 						)}

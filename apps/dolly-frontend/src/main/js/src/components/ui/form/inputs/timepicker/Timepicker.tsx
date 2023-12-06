@@ -6,7 +6,7 @@ import { TextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { Label } from '@/components/ui/form/inputs/label/Label'
 import { InputWrapper } from '@/components/ui/form/inputWrapper/InputWrapper'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
-import { fieldError, fixTimezone, SyntEvent } from '@/components/ui/form/formUtils'
+import { fixTimezone, SyntEvent } from '@/components/ui/form/formUtils'
 import 'react-datepicker/dist/react-datepicker.css'
 import { useFormContext } from 'react-hook-form'
 
@@ -26,7 +26,6 @@ export const TimePicker = ({
 	onChange,
 	onBlur,
 	disabled = false,
-	feil,
 	excludeDates,
 	minDate,
 	maxDate,
@@ -51,7 +50,7 @@ export const TimePicker = ({
 			name={name}
 			id={name}
 			autoComplete="off"
-			customInput={<TextInput icon="calendar" feil={feil} />}
+			customInput={<TextInput fieldName={name} icon="calendar" />}
 			excludeDates={excludeDates}
 		/>
 	)
@@ -65,7 +64,7 @@ export const DollyTimepicker = (props) => (
 	</InputWrapper>
 )
 
-const P_FormikTimepicker = ({ fastfield, ...props }) => {
+const P_FormikTimepicker = ({ ...props }) => {
 	const formMethods = useFormContext()
 	const value = formMethods.watch(props.name)
 
@@ -77,12 +76,12 @@ const P_FormikTimepicker = ({ fastfield, ...props }) => {
 	}
 	const handleBlur = () => props?.onBlur?.(SyntEvent(props.name, value))
 	return (
-		<FormikField name={props.name} fastfield={fastfield}>
+		<FormikField name={props.name}>
 			<DollyTimepicker
 				value={value}
 				onChange={handleChange}
 				onBlur={handleBlur}
-				feil={fieldError(formMethods.formState.errors[props.name])}
+				feil={formMethods.getFieldState(props.name)?.error}
 				{...props}
 			/>
 		</FormikField>
