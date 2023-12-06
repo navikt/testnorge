@@ -35,7 +35,7 @@ const DataVisning = ({ data, miljo }) => {
 
 				<TitleValue
 					title="Ektefelle/partners inntekt"
-					value={data?.relasjoner?.[0]?.sumAvForvArbKapPenInntekt}
+					value={data?.relasjonListe?.[0]?.sumAvForventetArbeidKapitalPensjonInntekt}
 				/>
 			</div>
 		</>
