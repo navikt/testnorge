@@ -72,6 +72,7 @@ public class OpensearchController {
     @Operation(description = "Sletter all data inkludert indeks")
     public Mono<JsonNode> delete() {
 
+        bestillingElasticRepository.deleteAll();
         return openSearchService.deleteIndex();
     }
 }

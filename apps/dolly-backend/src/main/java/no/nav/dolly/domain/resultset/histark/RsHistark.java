@@ -72,6 +72,7 @@ public class RsHistark {
         private LocalDate sluttAar;
 
         @Schema(description = "Selve PDF dokumentet. Ved fysisk dokument brukes bytearray.")
+        @Field(enabled = false)
         private String fysiskDokument;
     }
 }

@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.elasticsearch.annotations.Field;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -131,6 +132,7 @@ public class RsDokarkiv {
             private String filtype;
 
             @Schema(description = "Selve dokumentet. Hvis filtype er PDF/XML, ved fysisk dokument brukes bytearray.")
+            @Field(enabled = false)
             private String fysiskDokument;
 
             @Schema(description = """
