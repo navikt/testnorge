@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.elasticsearch.annotations.DateFormat;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -18,7 +21,7 @@ import static java.util.Objects.isNull;
 @AllArgsConstructor
 public class Arenadata {
 
-    @Schema
+    @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second, pattern = "uuuu-MM-dd'T'HH:mm:ss")
     private LocalDateTime aktiveringDato;
 
     @Schema
@@ -30,7 +33,7 @@ public class Arenadata {
     @Schema(description = "Automatisk innsending av meldekort")
     private Boolean automatiskInnsendingAvMeldekort;
 
-    @Schema(type = "LocalDateTime")
+    @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second, pattern = "uuuu-MM-dd'T'HH:mm:ss")
     private LocalDateTime inaktiveringDato;
 
     @Schema(description = "Om rettigheten aap115 skal aktiveres på personen")
