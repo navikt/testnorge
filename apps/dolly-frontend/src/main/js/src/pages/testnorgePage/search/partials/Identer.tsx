@@ -27,7 +27,7 @@ export const Identer: React.FC<IdentSearchProps> = ({ formikBag }: IdentSearchPr
 											name={`${identerPath}.${index}`}
 											className="skjemaelement__input"
 											placeholder={'Ikke spesifisert'}
-											label={'Fødselsnummer eller D-dummer'}
+											label={'Fødselsnummer eller D-nummer'}
 											type="text"
 											style={{ width: '220px' }}
 											onKeyPress={(event: BaseSyntheticEvent<KeyboardEvent>) => {

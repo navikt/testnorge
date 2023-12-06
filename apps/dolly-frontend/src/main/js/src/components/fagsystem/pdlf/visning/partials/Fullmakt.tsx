@@ -29,6 +29,7 @@ type DataListe = {
 	tmpPersoner?: Array<PersonData>
 	ident?: string
 	relasjoner: Array<Relasjon>
+	erRedigerbar?: boolean
 }
 
 const Omraader = styled(TitleValue)`
@@ -143,7 +144,13 @@ export const FullmaktVisning = ({
 	)
 }
 
-export const Fullmakt = ({ data, tmpPersoner, ident, relasjoner }: DataListe) => {
+export const Fullmakt = ({
+	data,
+	tmpPersoner,
+	ident,
+	relasjoner,
+	erRedigerbar = true,
+}: DataListe) => {
 	if (!data || data.length < 1) {
 		return null
 	}
@@ -157,16 +164,20 @@ export const Fullmakt = ({ data, tmpPersoner, ident, relasjoner }: DataListe) =>
 			<div className="person-visning_content">
 				<ErrorBoundary>
 					<DollyFieldArray data={data} nested>
-						{(fullmakt: FullmaktData, idx: number) => (
-							<FullmaktVisning
-								fullmaktData={fullmakt}
-								idx={idx}
-								data={data}
-								tmpPersoner={tmpPersoner}
-								ident={ident}
-								relasjoner={fullmaktRelasjoner}
-							/>
-						)}
+						{(fullmakt: FullmaktData, idx: number) =>
+							erRedigerbar ? (
+								<FullmaktVisning
+									fullmaktData={fullmakt}
+									idx={idx}
+									data={data}
+									tmpPersoner={tmpPersoner}
+									ident={ident}
+									relasjoner={fullmaktRelasjoner}
+								/>
+							) : (
+								<FullmaktLes fullmaktData={fullmakt} relasjoner={relasjoner} idx={idx} />
+							)
+						}
 					</DollyFieldArray>
 				</ErrorBoundary>
 			</div>
