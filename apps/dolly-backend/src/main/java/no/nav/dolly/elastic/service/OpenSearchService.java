@@ -1,10 +1,12 @@
 package no.nav.dolly.elastic.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.dolly.elastic.ElasticBestilling;
 import no.nav.dolly.elastic.ElasticTyper;
+import no.nav.dolly.elastic.consumer.ElasticParamsConsumer;
 import no.nav.dolly.elastic.dto.SearchRequest;
 import no.nav.dolly.elastic.dto.SearchResponse;
 import org.opensearch.client.RequestOptions;
@@ -15,6 +17,7 @@ import org.opensearch.search.SearchHits;
 import org.opensearch.search.builder.SearchSourceBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -29,6 +32,7 @@ import static java.util.Objects.nonNull;
 public class OpenSearchService {
 
     private final RestHighLevelClient restHighLevelClient;
+    private final ElasticParamsConsumer elasticParamsConsumer;
     private final BestillingElasticRepository bestillingElasticRepository;
 
     @Value("${open.search.index}")
@@ -49,6 +53,11 @@ public class OpenSearchService {
     public List<ElasticBestilling> search(String ident) {
 
         return bestillingElasticRepository.getAllByIdenterIn(List.of(ident));
+    }
+
+    public Mono<JsonNode> deleteIndex() {
+
+        return elasticParamsConsumer.deleteIndex();
     }
 
     private SearchResponse execQuery(BoolQueryBuilder query) {

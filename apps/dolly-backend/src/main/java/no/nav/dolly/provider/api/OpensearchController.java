@@ -1,5 +1,6 @@
 package no.nav.dolly.provider.api;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.elastic.BestillingElasticRepository;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -67,9 +69,9 @@ public class OpensearchController {
     }
 
     @DeleteMapping()
-    @Operation(description = "Sletter all data")
-    public void delete() {
+    @Operation(description = "Sletter all data inkludert indeks")
+    public Mono<JsonNode> delete() {
 
-        bestillingElasticRepository.deleteAll();
+        return openSearchService.deleteIndex();
     }
 }
