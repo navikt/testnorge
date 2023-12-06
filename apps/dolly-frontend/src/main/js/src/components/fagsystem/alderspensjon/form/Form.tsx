@@ -172,10 +172,10 @@ export const AlderspensjonForm = ({formikBag}) => {
         return opts?.identtype === 'FNR' && valgtAdresseType() !== adressetyper.utland
     }
 
-    const VEDTAK = 'VEDTAK'
-    const SOKNAD = 'SØKNAD'
-
     const soknad = _.get(formikBag.values, `${alderspensjonPath}.soknad`)
+
+    const VEDTAK = 'Vedtak'
+    const SOKNAD = 'Søknad'
 
     return (
         <Vis attributt={alderspensjonPath}>
@@ -246,14 +246,14 @@ export const AlderspensjonForm = ({formikBag}) => {
                             )
                         }}
                                      size={'small'}
-                                     defaultValue={VEDTAK}
+                                     defaultValue={soknad ? SOKNAD : VEDTAK}
                                      style={{backgroundColor: '#ffffff'}}
                         >
                             <ToggleGroup.Item value={VEDTAK} style={{marginRight: 0}}>
-                                {'Vedtak'}
+                                {VEDTAK}
                             </ToggleGroup.Item>
                             <ToggleGroup.Item value={SOKNAD} style={{marginRight: 0}}>
-                                {'Søknad'}
+                                {SOKNAD}
                             </ToggleGroup.Item>
                         </ToggleGroup>
                     </div>

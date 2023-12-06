@@ -1,21 +1,25 @@
 import { ifPresent, messages, requiredNumber } from '@/utils/YupValidations'
 import * as Yup from 'yup'
-import {isAfter, isBefore} from 'date-fns'
+import { isAfter, isBefore } from 'date-fns'
 
 export const validation = {
 	alderspensjon: ifPresent(
 		'$pensjonforvalter.alderspensjon',
 		Yup.object({
 			kravFremsattDato: Yup.date()
-				.test(
-					'is-before-iverksettelsesdato',
-					'Dato må være før iverksettelsesdato.',
-					function validate(kravFremsattDato) {
-						const iverksettelsesdato: Date =
-							this.options.context?.pensjonforvalter?.alderspensjon?.iverksettelsesdato
-						return kravFremsattDato && isBefore(kravFremsattDato, new Date(iverksettelsesdato))
-					},
-				)
+				.when('soknad', {
+					is: (soknad: Boolean) => !soknad,
+					then: () =>
+						Yup.date().test(
+							'is-before-iverksettelsesdato',
+							'Dato må være før iverksettelsesdato.',
+							function validate(kravFremsattDato) {
+								const iverksettelsesdato: Date =
+									this.options.context?.pensjonforvalter?.alderspensjon?.iverksettelsesdato
+								return kravFremsattDato && isBefore(kravFremsattDato, new Date(iverksettelsesdato))
+							},
+						),
+				})
 				.nullable(),
 			iverksettelsesdato: Yup.date()
 				.when('soknad', {
