@@ -241,8 +241,8 @@ export const AlderspensjonForm = ({formikBag}) => {
                             formikBag.setFieldValue(
                                 alderspensjonPath,
                                 value === VEDTAK
-                                    ? {...genInitialAlderspensjonVedtak, soknad: false}
-                                    : {...genInitialAlderspensjonSoknad, soknad: true}
+                                    ? {...genInitialAlderspensjonVedtak}
+                                    : {...genInitialAlderspensjonSoknad}
                             )
                         }}
                                      size={'small'}

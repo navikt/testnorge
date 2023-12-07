@@ -1,6 +1,7 @@
 import { addMonths, setDate } from 'date-fns'
 
 export const genInitialAlderspensjonSoknad = {
+	kravFremsattDato: null,
 	iverksettelsesdato: setDate(addMonths(new Date(), 1), 1),
 	uttaksgrad: 100,
 	relasjoner: [{ sumAvForvArbKapPenInntekt: null }],

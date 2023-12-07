@@ -1,6 +1,7 @@
 import { ifPresent, messages, requiredNumber } from '@/utils/YupValidations'
 import * as Yup from 'yup'
 import { isAfter, isBefore } from 'date-fns'
+import { date } from 'yup'
 
 export const validation = {
 	alderspensjon: ifPresent(
@@ -8,40 +9,53 @@ export const validation = {
 		Yup.object({
 			kravFremsattDato: Yup.date()
 				.when('soknad', {
-					is: (soknad: Boolean) => !soknad,
+					is: (soknad: boolean, kravFramsattDato: Date) => kravFramsattDato && !soknad,
 					then: () =>
-						Yup.date().test(
-							'is-before-iverksettelsesdato',
-							'Dato må være før iverksettelsesdato.',
-							function validate(kravFremsattDato) {
-								const iverksettelsesdato: Date =
-									this.options.context?.pensjonforvalter?.alderspensjon?.iverksettelsesdato
-								return kravFremsattDato && isBefore(kravFremsattDato, new Date(iverksettelsesdato))
-							},
-						),
+						Yup.date()
+							.test(
+								'is-before-iverksettelsesdato',
+								'Dato må være før iverksettelsesdato.',
+								function validate(kravFremsattDato) {
+									const iverksettelsesdato: Date =
+										this.options.context?.pensjonforvalter?.alderspensjon?.iverksettelsesdato
+									return (
+										kravFremsattDato && isBefore(kravFremsattDato, new Date(iverksettelsesdato))
+									)
+								},
+							)
+							.nullable(),
 				})
 				.nullable(),
 			iverksettelsesdato: Yup.date()
 				.when('soknad', {
-					is: (soknad: Boolean) => soknad,
+					is: (iverksettelsesdato: Date, soknad: boolean) => iverksettelsesdato && soknad,
 					then: () =>
-						Yup.date().test(
-							'is-month-after-now',
-							'Dato må være frem i tid.',
-							(iverksettelsesdato) => {
+						Yup.date()
+							.test('is-month-after-now', 'Dato må være frem i tid.', (iverksettelsesdato) => {
 								return iverksettelsesdato && isAfter(iverksettelsesdato, new Date())
-							},
-						),
+							})
+							.nullable(),
 					otherwise: () =>
-						Yup.date().test(
-							'is-month-after-kravfremsatt',
-							'Dato må være etter krav fremsatt.',
-							function validate(iverksettelsesdato) {
-								const kravFremsattDato: Date =
-									this.options.context?.pensjonforvalter?.alderspensjon?.kravFremsattDato
-								return iverksettelsesdato && isAfter(iverksettelsesdato, new Date(kravFremsattDato))
-							},
-						),
+						Yup.date()
+							.when('soknad', {
+								is: (iverksettelsesdato: Date, soknad: boolean) => iverksettelsesdato && !soknad,
+								then: () =>
+									Yup.date()
+										.test(
+											'is-month-after-kravfremsatt',
+											'Dato må være etter krav fremsatt.',
+											function validate(iverksettelsesdato) {
+												const kravFremsattDato: Date =
+													this.options.context?.pensjonforvalter?.alderspensjon?.kravFremsattDato
+												return (
+													iverksettelsesdato &&
+													isAfter(iverksettelsesdato, new Date(kravFremsattDato))
+												)
+											},
+										)
+										.nullable(),
+							})
+							.nullable(),
 				})
 				.nullable(),
 			saksbehandler: Yup.string().nullable(),
