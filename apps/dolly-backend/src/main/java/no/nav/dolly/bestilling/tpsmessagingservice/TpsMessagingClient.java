@@ -119,9 +119,12 @@ public class TpsMessagingClient implements ClientRegister {
 
     private boolean isTpsMessage(RsDollyUtvidetBestilling bestilling) {
 
-        return isNotBlank(bestilling.getTpsMessaging().getSpraakKode()) ||
+        return (nonNull(bestilling.getTpsMessaging()) &&
+                isNotBlank(bestilling.getTpsMessaging().getSpraakKode())) ||
+
                 nonNull(bestilling.getBankkonto()) ||
                 nonNull(bestilling.getSkjerming()) ||
+
                 (nonNull(bestilling.getPdldata()) &&
                         nonNull(bestilling.getPdldata().getPerson()) &&
                         !bestilling.getPdldata().getPerson().getSikkerhetstiltak().isEmpty());
