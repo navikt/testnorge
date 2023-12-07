@@ -7,21 +7,25 @@ export const validation = {
 	alderspensjon: ifPresent(
 		'$pensjonforvalter.alderspensjon',
 		Yup.object({
-			kravFremsattDato: Yup.date().when('soknad', {
-				is: (soknad: boolean) => !soknad,
-				then: () =>
-					Yup.date()
-						.test(
-							'is-before-iverksettelsesdato',
-							'Dato må være før iverksettelsesdato.',
-							function validate(kravFremsattDato) {
-								const iverksettelsesdato: Date =
-									this.options.context?.pensjonforvalter?.alderspensjon?.iverksettelsesdato
-								return kravFremsattDato && isBefore(kravFremsattDato, new Date(iverksettelsesdato))
-							},
-						)
-						.nullable(),
-			}),
+			kravFremsattDato: Yup.date()
+				.when('soknad', {
+					is: (soknad: boolean) => !soknad,
+					then: () =>
+						Yup.date()
+							.test(
+								'is-before-iverksettelsesdato',
+								'Dato må være før iverksettelsesdato.',
+								function validate(kravFremsattDato) {
+									const iverksettelsesdato: Date =
+										this.options.context?.pensjonforvalter?.alderspensjon?.iverksettelsesdato
+									return (
+										kravFremsattDato && isBefore(kravFremsattDato, new Date(iverksettelsesdato))
+									)
+								},
+							)
+							.nullable(),
+				})
+				.nullable(),
 			iverksettelsesdato: Yup.date().when('soknad', {
 				is: (soknad: boolean) => soknad,
 				then: () =>
