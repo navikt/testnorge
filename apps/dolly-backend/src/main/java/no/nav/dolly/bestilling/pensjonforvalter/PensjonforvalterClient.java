@@ -139,7 +139,9 @@ public class PensjonforvalterClient implements ClientRegister {
                     return Flux.just(bestilling)
                             .doOnNext(bestilling1 -> {
                                 if (!dollyPerson.isOrdre()) {
-                                    transactionHelperService.persister(progress, BestillingProgress::setPensjonforvalterStatus,
+                                    transactionHelperService.persister(progress,
+                                            BestillingProgress::getPensjonforvalterStatus,
+                                            BestillingProgress::setPensjonforvalterStatus,
                                             prepInitStatus(tilgjengeligeMiljoer));
                                 }
                             })
@@ -272,7 +274,8 @@ public class PensjonforvalterClient implements ClientRegister {
 
         return () -> {
             if (!dollyPerson.isOrdre()) {
-                transactionHelperService.persister(progress, BestillingProgress::setPensjonforvalterStatus, status);
+                transactionHelperService.persister(progress, BestillingProgress::getPensjonforvalterStatus,
+                        BestillingProgress::setPensjonforvalterStatus, status);
             }
             return progress;
         };

@@ -13,16 +13,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.time.LocalDateTime.now;
 import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
 @Service
@@ -71,13 +75,45 @@ public class TransactionHelperService {
 
             bestillingProgressRepository.findByIdAndLock(bestillingProgress.getId())
                     .ifPresent(progress -> {
-                        this.setField(progress, status, setter);
+                        setter.accept(progress, status);
                         akkumulert.set(bestillingProgressRepository.save(progress));
                         clearCache();
                     });
 
             return akkumulert.get();
         });
+    }
+
+    @Retryable
+    public BestillingProgress persister(BestillingProgress bestillingProgress, Function<BestillingProgress, String> getter, BiConsumer<BestillingProgress, String> setter, String status) {
+
+        return transactionTemplate.execute(status1 -> {
+
+            var akkumulert = new AtomicReference<>(bestillingProgress);
+
+            bestillingProgressRepository.findByIdAndLock(bestillingProgress.getId())
+                    .ifPresent(progress -> {
+                        var value = getter.apply(progress);
+                        var result = applyChanges(value, status);
+                        setter.accept(progress, result);
+                        akkumulert.set(bestillingProgressRepository.save(progress));
+                        clearCache();
+                    });
+
+            return akkumulert.get();
+        });
+    }
+
+    private String applyChanges(String value, String status) {
+
+        return isBlank(value) ?
+                status :
+
+                Stream.of(status.split(","),
+                    value.split(","))
+                .flatMap(Arrays::stream)
+                .distinct()
+                .collect(Collectors.joining(","));
     }
 
     @Retryable
@@ -134,10 +170,5 @@ public class TransactionHelperService {
         if (nonNull(cacheManager.getCache(CACHE_GRUPPE))) {
             requireNonNull(cacheManager.getCache(CACHE_GRUPPE)).clear();
         }
-    }
-
-    private <T, R> void setField(T object, R value, BiConsumer<T, R> setter) {
-
-        setter.accept(object, value);
     }
 }
