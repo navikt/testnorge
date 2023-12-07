@@ -11,6 +11,7 @@ import { formatAlder } from '@/utils/DataFormatter'
 import { NavigerTilPerson } from '@/pages/dollySoek/NavigerTilPerson'
 import { PersonVisning } from '@/pages/dollySoek/PersonVisning'
 import { usePdlPersonbolk } from '@/utils/hooks/usePdlPerson'
+import { runningCypressE2E } from '@/service/services/Request'
 
 export const ResultatVisning = ({ resultat, soekError }) => {
 	const identString = resultat?.identer?.join(',')
@@ -119,7 +120,7 @@ export const ResultatVisning = ({ resultat, soekError }) => {
 
 	return (
 		<DollyTable
-			data={personer}
+			data={runningCypressE2E() ? pdlfPersoner : personer}
 			columns={columns}
 			iconItem={(person) => {
 				const kjoenn = person.person?.kjoenn?.[0]?.kjoenn
