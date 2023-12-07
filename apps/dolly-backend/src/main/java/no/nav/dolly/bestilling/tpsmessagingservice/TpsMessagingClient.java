@@ -12,6 +12,7 @@ import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
+import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.data.pdlforvalter.v1.SikkerhetstiltakDTO;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.SpraakDTO;
@@ -52,7 +53,8 @@ public class TpsMessagingClient implements ClientRegister {
 
     private static String getResultat(TpsMeldingResponseDTO respons) {
 
-        return "OK".equals(respons.getStatus()) ? "OK" : "FEIL= " + respons.getUtfyllendeMelding();
+        return "OK".equals(respons.getStatus()) ? "OK" :
+                ErrorStatusDecoder.encodeStatus("FEIL: " + respons.getUtfyllendeMelding());
     }
 
     private static String getStatus(String melding, List<TpsMeldingResponseDTO> statuser) {
