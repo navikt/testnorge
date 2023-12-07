@@ -21,6 +21,7 @@ type FoedselTypes = {
 	tmpPersoner?: Array<FoedselData>
 	ident?: string
 	erPdlVisning?: boolean
+	erRedigerbar?: boolean
 }
 
 type FoedselLesTypes = {
@@ -98,7 +99,13 @@ const FoedselVisning = ({
 	)
 }
 
-export const Foedsel = ({ data, tmpPersoner, ident, erPdlVisning = false }: FoedselTypes) => {
+export const Foedsel = ({
+	data,
+	tmpPersoner,
+	ident,
+	erPdlVisning = false,
+	erRedigerbar = true,
+}: FoedselTypes) => {
 	if (!data || data.length === 0) {
 		return null
 	}
@@ -109,16 +116,20 @@ export const Foedsel = ({ data, tmpPersoner, ident, erPdlVisning = false }: Foed
 			<div className="person-visning_content">
 				<ErrorBoundary>
 					<DollyFieldArray data={data} header="" nested>
-						{(item: FoedselData, idx: number) => (
-							<FoedselVisning
-								foedsel={item}
-								idx={idx}
-								data={data}
-								ident={ident}
-								erPdlVisning={erPdlVisning}
-								tmpPersoner={tmpPersoner}
-							/>
-						)}
+						{(item: FoedselData, idx: number) =>
+							erRedigerbar ? (
+								<FoedselVisning
+									foedsel={item}
+									idx={idx}
+									data={data}
+									ident={ident}
+									erPdlVisning={erPdlVisning}
+									tmpPersoner={tmpPersoner}
+								/>
+							) : (
+								<FoedselLes foedsel={item} idx={idx} />
+							)
+						}
 					</DollyFieldArray>
 				</ErrorBoundary>
 			</div>

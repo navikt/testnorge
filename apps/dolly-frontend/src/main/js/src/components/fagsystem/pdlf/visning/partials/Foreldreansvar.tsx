@@ -180,7 +180,14 @@ export const ForeldreansvarEnkeltvisning = ({
 	)
 }
 
-export const ForeldreansvarVisning = ({ data, tmpPersoner, ident, relasjoner, personValues }) => {
+export const ForeldreansvarVisning = ({
+	data,
+	tmpPersoner,
+	ident,
+	relasjoner,
+	personValues,
+	erRedigerbar = true,
+}) => {
 	if (!data || data?.length === 0) {
 		return null
 	}
@@ -196,17 +203,25 @@ export const ForeldreansvarVisning = ({ data, tmpPersoner, ident, relasjoner, pe
 		<div>
 			<SubOverskrift label="Foreldreansvar" iconKind="foreldreansvar" />
 			<DollyFieldArray data={foreldreansvarData} nested>
-				{(foreldreansvar, idx) => (
-					<ForeldreansvarEnkeltvisning
-						foreldreansvarData={foreldreansvar}
-						idx={idx}
-						data={foreldreansvarData}
-						tmpPersoner={tmpPersoner}
-						ident={ident}
-						relasjoner={relasjoner}
-						personValues={personValues}
-					/>
-				)}
+				{(foreldreansvar, idx) =>
+					erRedigerbar ? (
+						<ForeldreansvarEnkeltvisning
+							foreldreansvarData={foreldreansvar}
+							idx={idx}
+							data={foreldreansvarData}
+							tmpPersoner={tmpPersoner}
+							ident={ident}
+							relasjoner={relasjoner}
+							personValues={personValues}
+						/>
+					) : (
+						<ForeldreansvarLes
+							foreldreansvarData={foreldreansvar}
+							relasjoner={relasjoner}
+							idx={idx}
+						/>
+					)
+				}
 			</DollyFieldArray>
 		</div>
 	)

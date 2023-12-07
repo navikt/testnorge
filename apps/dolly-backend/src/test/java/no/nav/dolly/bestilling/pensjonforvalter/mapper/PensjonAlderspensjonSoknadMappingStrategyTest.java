@@ -2,7 +2,7 @@ package no.nav.dolly.bestilling.pensjonforvalter.mapper;
 
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
-import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonSoknadRequest;
 import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
@@ -16,15 +16,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDate;
 import java.util.List;
 
-import static java.util.Collections.emptyList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 @ExtendWith(MockitoExtension.class)
-class PensjonAlderspensjonMappingStrategyTest {
+class PensjonAlderspensjonSoknadMappingStrategyTest {
 
 
     private MapperFacade mapperFacade;
@@ -32,7 +30,7 @@ class PensjonAlderspensjonMappingStrategyTest {
     @BeforeEach
     void setup() {
         mapperFacade = MapperTestUtils.createMapperFacadeForMappingStrategy(new LocalDateCustomMapping(),
-                new PensjonAlderspensjonMappingStrategy());
+                new PensjonAlderspensjonSoknadMappingStrategy());
     }
 
     @Test
@@ -55,11 +53,9 @@ class PensjonAlderspensjonMappingStrategyTest {
                         .build())
                 .build()));
 
-        var target = mapperFacade.map(pensjon, AlderspensjonRequest.class, context);
+        var target = mapperFacade.map(pensjon, AlderspensjonSoknadRequest.class, context);
 
         assertThat(target.getIverksettelsesdato(), is(equalTo(LocalDate.of(2023, 1, 11))));
-        assertThat(target.getSivilstand(), is(equalTo("SKPA")));
-        assertThat(target.getSivilstandDatoFom(), is(equalTo(LocalDate.of(1988, 1, 2))));
         assertThat(target.getUttaksgrad(), is(equalTo(100)));
 
         assertThat(target.getFnr(), is(equalTo("123")));
@@ -72,9 +68,6 @@ class PensjonAlderspensjonMappingStrategyTest {
         var pensjon = PensjonData.Alderspensjon.builder()
                 .iverksettelsesdato(LocalDate.of(2023, 1, 11))
                 .uttaksgrad(100)
-                .relasjoner(List.of(PensjonData.SkjemaRelasjon.builder()
-                        .sumAvForvArbKapPenInntekt(100000)
-                        .build()))
                 .build();
         var context = new MappingContext.Factory().getContext();
         context.setProperty("ident", "123");
@@ -100,24 +93,13 @@ class PensjonAlderspensjonMappingStrategyTest {
                                 .build())
                         .build()));
 
-        var target = mapperFacade.map(pensjon, AlderspensjonRequest.class, context);
+        var target = mapperFacade.map(pensjon, AlderspensjonSoknadRequest.class, context);
 
         assertThat(target.getIverksettelsesdato(), is(equalTo(LocalDate.of(2023, 1, 11))));
-        assertThat(target.getSivilstand(), is(equalTo("GIFT")));
-        assertThat(target.getSivilstandDatoFom(), is(equalTo(LocalDate.of(1988, 1, 2))));
         assertThat(target.getUttaksgrad(), is(equalTo(100)));
 
         assertThat(target.getFnr(), is(equalTo("123")));
         assertThat(target.getMiljoer(), hasItem("q2"));
-
-        assertThat(target.getRelasjonListe().get(0).getFnr(), is(equalTo("456")));
-        assertThat(target.getRelasjonListe().get(0).getSumAvForventetArbeidKapitalPensjonInntekt(), is(equalTo(100000)));
-        assertThat(target.getRelasjonListe().get(0).getRelasjonType(), is(equalTo(PensjonAlderspensjonMappingStrategy.RelasjonType.EKTEF.name())));
-        assertThat(target.getRelasjonListe().get(0).getRelasjonFraDato(), is(equalTo(LocalDate.of(1988, 1, 2))));
-        assertThat(target.getRelasjonListe().get(0).getHarVaertGift(), is(equalTo(true)));
-        assertThat(target.getRelasjonListe().get(0).getVarigAdskilt(), is(equalTo(false)));
-        assertThat(target.getRelasjonListe().get(0).getSamlivsbruddDato(), is(nullValue()));
-        assertThat(target.getRelasjonListe().get(0).getHarFellesBarn(), is(equalTo(false)));
     }
 
     @Test
@@ -126,9 +108,6 @@ class PensjonAlderspensjonMappingStrategyTest {
         var pensjon = PensjonData.Alderspensjon.builder()
                 .iverksettelsesdato(LocalDate.of(2023, 1, 11))
                 .uttaksgrad(100)
-                .relasjoner(List.of(PensjonData.SkjemaRelasjon.builder()
-                        .sumAvForvArbKapPenInntekt(100000)
-                        .build()))
                 .build();
         var context = new MappingContext.Factory().getContext();
         context.setProperty("ident", "123");
@@ -157,66 +136,13 @@ class PensjonAlderspensjonMappingStrategyTest {
                                 .build())
                         .build()));
 
-        var target = mapperFacade.map(pensjon, AlderspensjonRequest.class, context);
+        var target = mapperFacade.map(pensjon, AlderspensjonSoknadRequest.class, context);
 
         assertThat(target.getIverksettelsesdato(), is(equalTo(LocalDate.of(2023, 1, 11))));
-        assertThat(target.getSivilstand(), is(equalTo("SKIL")));
-        assertThat(target.getSivilstandDatoFom(), is(nullValue()));
         assertThat(target.getUttaksgrad(), is(equalTo(100)));
 
         assertThat(target.getFnr(), is(equalTo("123")));
         assertThat(target.getMiljoer(), hasItem("q2"));
-
-        assertThat(target.getRelasjonListe(), is(emptyList()));
-    }
-
-    @Test
-    void mapAlderspensjonMedPartnerOgFellesBarn_OK() {
-
-        var pensjon = PensjonData.Alderspensjon.builder()
-                .relasjoner(List.of(PensjonData.SkjemaRelasjon.builder()
-                        .sumAvForvArbKapPenInntekt(100000)
-                        .build()))
-                .build();
-        var context = new MappingContext.Factory().getContext();
-        context.setProperty("ident", "123");
-        context.setProperty("relasjoner", List.of(PdlPersonBolk.PersonBolk.builder()
-                        .ident("123")
-                        .person(PdlPerson.Person.builder()
-                                .sivilstand(List.of(PdlPerson.Sivilstand.builder()
-                                        .gyldigFraOgMed(LocalDate.of(1988, 1, 2))
-                                        .type(PdlPerson.SivilstandType.GIFT)
-                                        .relatertVedSivilstand("456")
-                                        .build()))
-                                .forelderBarnRelasjon(List.of(PdlPerson.ForelderBarnRelasjon.builder()
-                                        .relatertPersonsRolle(PdlPerson.Rolle.BARN)
-                                        .relatertPersonsIdent("891")
-                                        .build()))
-                                .build())
-                        .build(),
-                PdlPersonBolk.PersonBolk.builder()
-                        .ident("456")
-                        .person(PdlPerson.Person.builder()
-                                .sivilstand(List.of(PdlPerson.Sivilstand.builder()
-                                        .gyldigFraOgMed(LocalDate.of(1988, 1, 2))
-                                        .type(PdlPerson.SivilstandType.GIFT)
-                                        .relatertVedSivilstand("123")
-                                        .build()))
-                                .forelderBarnRelasjon(List.of(PdlPerson.ForelderBarnRelasjon.builder()
-                                        .relatertPersonsRolle(PdlPerson.Rolle.BARN)
-                                        .relatertPersonsIdent("891")
-                                        .build()))
-                                .build())
-                        .build()));
-
-        var target = mapperFacade.map(pensjon, AlderspensjonRequest.class, context);
-
-        assertThat(target.getRelasjonListe().get(0).getFnr(), is(equalTo("456")));
-        assertThat(target.getRelasjonListe().get(0).getSumAvForventetArbeidKapitalPensjonInntekt(), is(equalTo(100000)));
-        assertThat(target.getRelasjonListe().get(0).getRelasjonType(), is(equalTo(PensjonAlderspensjonMappingStrategy.RelasjonType.EKTEF.name())));
-        assertThat(target.getRelasjonListe().get(0).getRelasjonFraDato(), is(equalTo(LocalDate.of(1988, 1, 2))));
-        assertThat(target.getRelasjonListe().get(0).getHarVaertGift(), is(equalTo(true)));
-        assertThat(target.getRelasjonListe().get(0).getHarFellesBarn(), is(equalTo(true)));
     }
 
     @Test
@@ -236,7 +162,7 @@ class PensjonAlderspensjonMappingStrategyTest {
                         .build());
 
         var resultat = sivilstand.stream()
-                .sorted(new PensjonAlderspensjonMappingStrategy.SivilstandSort())
+                .sorted(new PensjonAlderspensjonSoknadMappingStrategy.SivilstandSort())
                 .toList();
 
         assertThat(resultat.get(0).getType(), is(equalTo(PdlPerson.SivilstandType.SKILT)));
@@ -258,7 +184,7 @@ class PensjonAlderspensjonMappingStrategyTest {
                         .build());
 
         var resultat = sivilstand.stream()
-                .sorted(new PensjonAlderspensjonMappingStrategy.SivilstandSort())
+                .sorted(new PensjonAlderspensjonSoknadMappingStrategy.SivilstandSort())
                 .toList();
 
         assertThat(resultat.get(0).getType(), is(equalTo(PdlPerson.SivilstandType.SKILT)));

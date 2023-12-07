@@ -1,7 +1,7 @@
-package no.nav.dolly.bestilling.sykemelding.command;
+package no.nav.dolly.consumer.norg2.command;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.dolly.bestilling.sykemelding.dto.Norg2EnhetResponse;
+import no.nav.dolly.consumer.norg2.dto.Norg2EnhetResponse;
 import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -14,7 +14,7 @@ import java.util.concurrent.Callable;
 @RequiredArgsConstructor
 public class Norg2GetCommand implements Callable<Mono<Norg2EnhetResponse>> {
 
-    private static final String NAVKONTOR_URL = "/api/v1/enhet/navkontor/{geografiskOmraade}";
+    private static final String NAVKONTOR_URL = "/norg2/api/v1/enhet/navkontor/{geografiskOmraade}";
 
     private final WebClient webClient;
     private final String geografiskOmraade;

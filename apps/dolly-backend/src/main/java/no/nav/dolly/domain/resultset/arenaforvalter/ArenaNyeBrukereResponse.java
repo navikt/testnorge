@@ -20,32 +20,14 @@ import static java.util.Objects.isNull;
 @ToString(callSuper = true)
 public class ArenaNyeBrukereResponse extends ArenaResponse {
 
+    private List<ArenaBruker> arbeidsokerList;
+    private List<NyBrukerFeilV1> nyBrukerFeilList;
+
     @Builder
     public ArenaNyeBrukereResponse(HttpStatus status, String miljoe, String feilmelding, List<ArenaBruker> arbeidsokerList, List<NyBrukerFeilV1> nyBrukerFeilList) {
         super(status, miljoe, feilmelding);
         this.arbeidsokerList = arbeidsokerList;
         this.nyBrukerFeilList = nyBrukerFeilList;
-    }
-
-    public enum BrukerFeilstatus {
-        DUPLIKAT, MILJOE_IKKE_STOETTET, FINNES_ALLEREDE_PAA_VALGT_MILJO,
-        BRUKEREN_ER_IKKE_REGISTRERT, AKTIVER_BRUKER, INAKTIVER_BRUKER, AKTIVER_AAP_115, AKTIVER_AAP
-    }
-
-    private List<ArenaBruker> arbeidsokerList;
-    private List<NyBrukerFeilV1> nyBrukerFeilList;
-
-
-    @Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class NyBrukerFeilV1 {
-
-        private String personident;
-        private String miljoe;
-        private BrukerFeilstatus nyBrukerFeilstatus;
-        private String melding;
     }
 
     public List<ArenaBruker> getArbeidsokerList() {
@@ -60,5 +42,22 @@ public class ArenaNyeBrukereResponse extends ArenaResponse {
             nyBrukerFeilList = new ArrayList<>();
         }
         return nyBrukerFeilList;
+    }
+
+    public enum BrukerFeilstatus {
+        DUPLIKAT, MILJOE_IKKE_STOETTET, FINNES_ALLEREDE_PAA_VALGT_MILJO,
+        BRUKEREN_ER_IKKE_REGISTRERT, AKTIVER_BRUKER, INAKTIVER_BRUKER, AKTIVER_AAP_115, AKTIVER_AAP
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class NyBrukerFeilV1 {
+
+        private String personident;
+        private String miljoe;
+        private BrukerFeilstatus nyBrukerFeilstatus;
+        private String melding;
     }
 }

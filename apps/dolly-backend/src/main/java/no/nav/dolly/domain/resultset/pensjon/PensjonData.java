@@ -140,8 +140,17 @@ public class PensjonData {
         @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
         private LocalDate iverksettelsesdato;
 
+        @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
+        private LocalDate kravFremsattDato;
+
+        private String saksbehandler;
+        private String attesterer;
+        private String navEnhetId;
+
         @Schema
         private Integer uttaksgrad;
+
+        private Boolean soknad;
 
         @Schema
         private List<SkjemaRelasjon> relasjoner;

@@ -14,7 +14,6 @@ import java.time.Duration;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
-import static java.util.Collections.emptySet;
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
@@ -46,7 +45,7 @@ public class HentMiljoerCommand implements Callable<Mono<Set<String>>> {
                 .doOnError(WebClientFilter::logErrorMessage)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException))
-                .onErrorResume(throwable -> Mono.just(emptySet()))
+                .onErrorResume(throwable -> Mono.just(Set.of("q1", "q2")))
                 .cache(Duration.ofHours(1));
     }
 }

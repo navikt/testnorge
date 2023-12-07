@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import no.nav.dolly.elastic.ElasticBestilling;
 
 import java.util.List;
 
@@ -15,10 +16,10 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class SearchResponse {
 
-    private long totalHits;
-    private int pageNumber;
-    private int pageSize;
-    private int windowSize;
+    private Long totalHits;
+    private Float score;
+    private String took;
     private List<String> identer;
+    private List<ElasticBestilling> bestillinger;
     private String error;
 }

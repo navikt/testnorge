@@ -21,6 +21,7 @@ type InnvandringTypes = {
 	tmpPersoner?: Array<PersonData>
 	ident?: string
 	erPdlVisning?: boolean
+	erRedigerbar?: boolean
 }
 
 type InnvandringLesTypes = {
@@ -81,12 +82,10 @@ const InnvandringLes = ({ innvandringData, idx }: InnvandringLesTypes) => {
 const InnvandringVisning = ({
 	innvandringData,
 	idx,
-	sisteDato,
 	data,
 	tmpPersoner,
 	ident,
 	erPdlVisning,
-	utflyttingData,
 }: InnvandringVisningTypes) => {
 	const initInnvandring = Object.assign(_.cloneDeep(initialInnvandring), data[idx])
 	const initialValues = { innflytting: initInnvandring }
@@ -124,6 +123,7 @@ export const Innvandring = ({
 	tmpPersoner,
 	ident,
 	erPdlVisning = false,
+	erRedigerbar = true,
 }: InnvandringTypes) => {
 	const [sisteDato, setSisteDato] = useState(
 		getSisteDatoInnUtvandring(data, utflyttingData, tmpPersoner, ident),
@@ -143,18 +143,22 @@ export const Innvandring = ({
 		<div className="person-visning_content" style={{ marginTop: '-20px' }}>
 			<ErrorBoundary>
 				<DollyFieldArray data={data} header="Innvandret" nested>
-					{(innvandring: InnvandringValues, idx: number) => (
-						<InnvandringVisning
-							innvandringData={innvandring}
-							idx={idx}
-							sisteDato={sisteDato}
-							data={data}
-							utflyttingData={utflyttingData}
-							tmpPersoner={tmpPersoner}
-							ident={ident}
-							erPdlVisning={erPdlVisning}
-						/>
-					)}
+					{(innvandring: InnvandringValues, idx: number) =>
+						erRedigerbar ? (
+							<InnvandringVisning
+								innvandringData={innvandring}
+								idx={idx}
+								sisteDato={sisteDato}
+								data={data}
+								utflyttingData={utflyttingData}
+								tmpPersoner={tmpPersoner}
+								ident={ident}
+								erPdlVisning={erPdlVisning}
+							/>
+						) : (
+							<InnvandringLes innvandringData={innvandring} idx={idx} />
+						)
+					}
 				</DollyFieldArray>
 			</ErrorBoundary>
 		</div>

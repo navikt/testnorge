@@ -10,7 +10,8 @@ type DataListe = {
 	data: Array<TelefonData>
 	tmpPersoner: any
 	ident: string
-	erPdlVisning: boolean
+	erPdlVisning?: boolean
+	erRedigerbar?: boolean
 }
 
 type TelefonnummerTypes = {
@@ -38,7 +39,13 @@ export const TelefonnummerLes = ({ telefonnummerData, idx }: TelefonnummerTypes)
 	)
 }
 
-export const Telefonnummer = ({ data, tmpPersoner, ident, erPdlVisning = false }: DataListe) => {
+export const Telefonnummer = ({
+	data,
+	tmpPersoner,
+	ident,
+	erPdlVisning = false,
+	erRedigerbar = true,
+}: DataListe) => {
 	if (!data || data.length === 0) {
 		return null
 	}
@@ -63,7 +70,7 @@ export const Telefonnummer = ({ data, tmpPersoner, ident, erPdlVisning = false }
 		<div>
 			<SubOverskrift label="Telefonnummer" iconKind="telephone" />
 			<div className="person-visning_content">
-				{erPdlVisning ? (
+				{erPdlVisning || !erRedigerbar ? (
 					<ErrorBoundary>
 						<DollyFieldArray data={data} header="" nested>
 							{(item: TelefonData, idx: number) => (

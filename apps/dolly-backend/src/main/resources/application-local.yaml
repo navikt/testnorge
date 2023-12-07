@@ -48,6 +48,7 @@ open:
     uri: http://localhost:9200
     username: dummy
     password: dummy
+    index: local
 
 consumers:
   testnav-pdl-forvalter:
@@ -69,5 +70,7 @@ consumers:
     url: https://testnav-organisasjon-service.intern.dev.nav.no
   testnav-synt-sykemelding-api:
     url: https://testnav-synt-sykemelding-api.intern.dev.nav.no
+  testnav-sykemelding-api:
+    url: http://testnav-sykemelding-api.intern.dev.nav.no
   testnav-miljoer-service:
     url: https://testnav-miljoer-service.intern.dev.nav.no

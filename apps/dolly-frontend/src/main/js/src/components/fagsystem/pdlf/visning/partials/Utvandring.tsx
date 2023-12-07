@@ -21,6 +21,7 @@ type UtvandringTypes = {
 	tmpPersoner?: Array<PersonData>
 	ident?: string
 	erPdlVisning?: boolean
+	erRedigerbar?: boolean
 }
 
 type UtvandringLesTypes = {
@@ -59,9 +60,7 @@ const UtvandringLes = ({ utvandringData, idx }: UtvandringLesTypes) => {
 const UtvandringVisning = ({
 	utvandringData,
 	idx,
-	sisteDato,
 	data,
-	innflyttingData,
 	tmpPersoner,
 	ident,
 	erPdlVisning,
@@ -102,6 +101,7 @@ export const Utvandring = ({
 	tmpPersoner,
 	ident,
 	erPdlVisning,
+	erRedigerbar = true,
 }: UtvandringTypes) => {
 	const [sisteDato, setSisteDato] = useState(
 		getSisteDatoInnUtvandring(innflyttingData, data, tmpPersoner, ident),
@@ -121,18 +121,22 @@ export const Utvandring = ({
 		<div className="person-visning_content" style={{ marginTop: '-20px' }}>
 			<ErrorBoundary>
 				<DollyFieldArray data={data} header={'Utvandret'} nested>
-					{(utvandring: UtvandringValues, idx: number) => (
-						<UtvandringVisning
-							utvandringData={utvandring}
-							idx={idx}
-							sisteDato={sisteDato}
-							data={data}
-							innflyttingData={innflyttingData}
-							tmpPersoner={tmpPersoner}
-							ident={ident}
-							erPdlVisning={erPdlVisning}
-						/>
-					)}
+					{(utvandring: UtvandringValues, idx: number) =>
+						erRedigerbar ? (
+							<UtvandringVisning
+								utvandringData={utvandring}
+								idx={idx}
+								sisteDato={sisteDato}
+								data={data}
+								innflyttingData={innflyttingData}
+								tmpPersoner={tmpPersoner}
+								ident={ident}
+								erPdlVisning={erPdlVisning}
+							/>
+						) : (
+							<UtvandringLes utvandringData={utvandring} idx={idx} />
+						)
+					}
 				</DollyFieldArray>
 			</ErrorBoundary>
 		</div>

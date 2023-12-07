@@ -30,7 +30,7 @@ export const Identer: React.FC<IdentSearchProps> = ({
 									name={`${identerPath}.${index}.fnr`}
 									data-cy={CypressSelector.INPUT_TESTNORGE_FNR}
 									placeholder={'Ikke spesifisert'}
-									label={'Fødselsnummer eller D-dummer'}
+									label={'Fødselsnummer eller D-nummer'}
 									style={{ width: '220px' }}
 									onKeyDown={(event: BaseSyntheticEvent<KeyboardEvent>) => {
 										event.nativeEvent.key === 'Enter' &&

@@ -24,6 +24,7 @@ type KontaktadresseTypes = {
 	ident?: number
 	erPdlVisning?: boolean
 	identtype?: string
+	erRedigerbar?: boolean
 }
 
 type KontaktadresseVisningTypes = {
@@ -218,6 +219,7 @@ export const Kontaktadresse = ({
 	ident,
 	erPdlVisning = false,
 	identtype,
+	erRedigerbar = true,
 }: KontaktadresseTypes) => {
 	if ((!data || data.length === 0) && (!tmpPersoner || Object.keys(tmpPersoner).length < 1)) {
 		return null
@@ -234,18 +236,22 @@ export const Kontaktadresse = ({
 			<div className="person-visning_content">
 				<ErrorBoundary>
 					<DollyFieldArray data={data || tmpData} header="" nested>
-						{(adresse: any, idx: number) => (
-							<KontaktadresseVisning
-								kontaktadresseData={adresse}
-								idx={idx}
-								data={data}
-								tmpData={tmpData}
-								ident={ident}
-								erPdlVisning={erPdlVisning}
-								tmpPersoner={tmpPersoner}
-								identtype={identtype}
-							/>
-						)}
+						{(adresse: any, idx: number) =>
+							erRedigerbar ? (
+								<KontaktadresseVisning
+									kontaktadresseData={adresse}
+									idx={idx}
+									data={data}
+									tmpData={tmpData}
+									ident={ident}
+									erPdlVisning={erPdlVisning}
+									tmpPersoner={tmpPersoner}
+									identtype={identtype}
+								/>
+							) : (
+								<Adresse kontaktadresseData={adresse} idx={idx} />
+							)
+						}
 					</DollyFieldArray>
 				</ErrorBoundary>
 			</div>

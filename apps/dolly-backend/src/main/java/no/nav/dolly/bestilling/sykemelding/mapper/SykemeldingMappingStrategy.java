@@ -8,7 +8,7 @@ import no.nav.dolly.bestilling.sykemelding.domain.DetaljertSykemeldingRequest.Ad
 import no.nav.dolly.bestilling.sykemelding.domain.DetaljertSykemeldingRequest.Organisasjon;
 import no.nav.dolly.bestilling.sykemelding.domain.DetaljertSykemeldingRequest.Pasient;
 import no.nav.dolly.bestilling.sykemelding.domain.SyntSykemeldingRequest;
-import no.nav.dolly.bestilling.sykemelding.dto.Norg2EnhetResponse;
+import no.nav.dolly.consumer.norg2.dto.Norg2EnhetResponse;
 import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding;
@@ -103,6 +103,7 @@ public class SykemeldingMappingStrategy implements MappingStrategy {
                                 .findFirst().orElse(new PdlPerson.Navn()), pasient);
                         pasient.setAdresse(mapperFacade.map(person.getPerson().getBostedsadresse().stream()
                                 .findFirst().orElse(new BostedadresseDTO()), Adresse.class, context));
+                        pasient.setFoedselsdato(person.getPerson().getFoedsel().getFirst().getFoedselsdato());
 
                         pasient.setTelefon(person.getPerson().getTelefonnummer().stream()
                                 .filter(telefonnummer -> telefonnummer.getPrioritet() == 1)

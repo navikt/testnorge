@@ -7,20 +7,35 @@ import { useBestilteMiljoer } from '@/utils/hooks/useBestilling'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { Alert } from '@navikt/ds-react'
 import { MiljoTabs } from '@/components/ui/miljoTabs/MiljoTabs'
+import {useNavEnheter} from "@/utils/hooks/useNorg2";
+import {usePensjonVedtak} from "@/utils/hooks/usePensjon";
 
 export const sjekkManglerApData = (apData) => {
 	return apData?.length < 1 || apData?.every((miljoData) => !miljoData.data)
 }
 
-const DataVisning = ({ data }) => {
+const DataVisning = ({ data, miljo }) => {
+
+	const { navEnheter } = useNavEnheter()
+	const navEnhetLabel = navEnheter?.find((enhet) => enhet.value === data?.navEnhetId?.toString())
+		?.label
+
+	const { vedtakData } = usePensjonVedtak(data?.fnr, miljo)
+
 	return (
 		<>
 			<div className="person-visning_content">
+				<TitleValue title="Vedtaksstatus" value={vedtakData?.[0]?.vedtakStatus} />
+				<TitleValue title="Krav fremsatt dato" value={formatDate(data?.kravFremsattDato)} />
 				<TitleValue title="Iverksettelsesdato" value={formatDate(data?.iverksettelsesdato)} />
+				<TitleValue title="Saksbehandler" value={data?.saksbehandler} />
+				<TitleValue title="Attesterer" value={data?.attesterer} />
 				<TitleValue title="Uttaksgrad" value={`${data?.uttaksgrad}%`} />
+				<TitleValue title="NAV-kontor" value={navEnhetLabel || data?.navEnhetId} />
+
 				<TitleValue
 					title="Ektefelle/partners inntekt"
-					value={data?.relasjoner?.[0]?.sumAvForvArbKapPenInntekt}
+					value={data?.relasjonListe?.[0]?.sumAvForventetArbeidKapitalPensjonInntekt}
 				/>
 			</div>
 		</>

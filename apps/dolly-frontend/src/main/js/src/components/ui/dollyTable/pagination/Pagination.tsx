@@ -6,6 +6,7 @@ import ItemCountSelect from './ItemCountSelect/ItemCountSelect'
 import './Pagination.less'
 import { setSideStoerrelse, setSidetall } from '@/ducks/finnPerson'
 import { useDispatch } from 'react-redux'
+import { useLocation } from 'react-router-dom'
 
 type PaginationProps = {
 	visSide?: number
@@ -24,6 +25,8 @@ export const Pagination = ({
 	const [currentPage, setCurrentPage] = useState(visSide)
 	const [currentPageSize, setCurrentPageSize] = useState(pageSize || ITEM_PER_PAGE)
 
+	const location = useLocation()
+
 	useEffect(() => {
 		setCurrentPage(visSide)
 	})
@@ -31,6 +34,7 @@ export const Pagination = ({
 	const dispatch = useDispatch()
 
 	const pageChangeHandler = (event: { selected: number }) => {
+		location.state = null
 		dispatch(setSidetall(event.selected))
 		setCurrentPage(event.selected)
 	}

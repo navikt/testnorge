@@ -3,15 +3,15 @@ import { addMonths, getDaysInMonth, setDate } from 'date-fns'
 const treMaanederFrem = addMonths(new Date(), 3)
 
 export const initialUforetrygd = {
+	uforetidspunkt: setDate(addMonths(new Date(), -1), 1),
 	kravFremsattDato: new Date(),
 	onsketVirkningsDato: setDate(addMonths(new Date(), 1), 1),
-	uforetidspunkt: setDate(addMonths(new Date(), -1), 1),
 	inntektForUforhet: 550000,
 	uforegrad: 100,
 	minimumInntektForUforhetType: null,
 	saksbehandler: null,
 	attesterer: null,
-	navEnhetId: '4403',
+	navEnhetId: null,
 	barnetilleggDetaljer: null,
 }
 

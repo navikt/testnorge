@@ -4,7 +4,6 @@ import { DollyTable } from '@/components/ui/dollyTable/DollyTable'
 import Loading from '@/components/ui/loading/Loading'
 import ContentContainer from '@/components/ui/contentContainer/ContentContainer'
 import { ManIconItem, UnknownIconItem, WomanIconItem } from '@/components/ui/icon/IconItem'
-
 import Icon from '@/components/ui/icon/Icon'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import useBoolean from '@/utils/hooks/useBoolean'
@@ -19,6 +18,7 @@ import { CypressSelector } from '../../../../cypress/mocks/Selectors'
 import PersonVisningConnector from '@/pages/gruppe/PersonVisning/PersonVisningConnector'
 import { DollyCopyButton } from '@/components/ui/button/CopyButton/DollyCopyButton'
 import { useGruppeById } from '@/utils/hooks/useGruppe'
+import { useLocation } from 'react-router-dom'
 
 const PersonIBrukButtonConnector = React.lazy(
 	() => import('@/components/ui/button/PersonIBrukButton/PersonIBrukButtonConnector'),
@@ -54,6 +54,8 @@ export default function PersonListe({
 	const dispatch = useDispatch()
 	const { bestillingerById: bestillingStatuser } = useBestillingerGruppe(gruppeId)
 	const { gruppe: gruppeInfo } = useGruppeById(gruppeId)
+
+	const location = useLocation()
 
 	const personListe = useMemo(
 		() => sokSelector(selectPersonListe(identer, bestillingStatuser, fagsystem), search),
@@ -284,7 +286,7 @@ export default function PersonListe({
 				data={personListe}
 				columns={columns}
 				gruppeDetaljer={{
-					antallElementer: gruppeInfo.antallIdenter,
+					antallElementer: gruppeInfo?.antallIdenter,
 					pageSize: sideStoerrelse,
 				}}
 				pagination
@@ -297,9 +299,9 @@ export default function PersonListe({
 						return <UnknownIconItem />
 					}
 				}}
-				visSide={sidetall}
-				visPerson={visPerson}
-				hovedperson={hovedperson}
+				visSide={location?.state?.sidetall || sidetall}
+				visPerson={location?.state?.visPerson || visPerson}
+				hovedperson={location?.state?.hovedperson || hovedperson}
 				onExpand={(bruker) => (
 					<Suspense fallback={<Loading label={'Laster ident...'} />}>
 						<PersonVisningConnector

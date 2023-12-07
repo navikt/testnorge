@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.bestilling.arenaforvalter.ArenaUtils.fixFormatUserDefinedError;
 import static no.nav.dolly.bestilling.arenaforvalter.utils.ArenaStatusUtil.getMessage;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 
@@ -59,13 +60,13 @@ public class ArenaAap115Service {
                                 .filter(status -> !status.is2xxSuccessful())
                                 .map(status -> errorStatusDecoder.getErrorText(response.getStatus(), getMessage(response.getFeilmelding()))),
                         Flux.fromIterable(response.getNyeAap115())
-                                .map(nyAap115 -> "JA".equals(nyAap115.getUtfall()) ?
+                                .map(nyAap115 -> "JA" .equals(nyAap115.getUtfall()) ?
                                         "OK" :
                                         encodeStatus(ArenaUtils.AVSLAG + nyAap115.getBegrunnelse()))
                                 .collect(Collectors.joining()),
                         Flux.fromIterable(response.getNyeAap115FeilList())
                                 .map(aap115Feil ->
-                                        encodeStatus(String.format(ArenaUtils.STATUS_FMT, aap115Feil.getNyAap115Feilstatus(), aap115Feil.getMelding())))
+                                        fixFormatUserDefinedError(encodeStatus(String.format(ArenaUtils.STATUS_FMT, aap115Feil.getNyAap115Feilstatus(), aap115Feil.getMelding()))))
                                 .collect(Collectors.joining()))
 
                 .collect(Collectors.joining());

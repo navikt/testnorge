@@ -25,6 +25,7 @@ type FamilieRelasjonerData = {
 	tmpPersoner?: Array<ForeldreBarnRelasjon>
 	ident?: string
 	identtype?: string
+	erRedigerbar?: boolean
 }
 
 type VisningData = {
@@ -36,7 +37,6 @@ const ForelderBarnRelasjonLes = ({
 	forelderBarnData,
 	redigertRelatertePersoner = null,
 	relasjoner,
-	idx,
 }: VisningData) => {
 	if (!forelderBarnData) {
 		return null
@@ -179,7 +179,6 @@ export const ForelderBarnRelasjonVisning = ({
 					forelderBarnData={forelderBarnValues}
 					redigertRelatertePersoner={redigertRelatertePersoner}
 					relasjoner={relasjoner}
-					idx={idx}
 				/>
 			}
 			initialValues={initialValues}
@@ -199,6 +198,7 @@ export const ForelderBarnRelasjon = ({
 	ident,
 	relasjoner,
 	identtype,
+	erRedigerbar = true,
 }: FamilieRelasjonerData) => {
 	if (!data || data.length < 1) {
 		return null
@@ -215,17 +215,24 @@ export const ForelderBarnRelasjon = ({
 		<div>
 			<SubOverskrift label="Barn/foreldre" iconKind="relasjoner" />
 			<DollyFieldArray data={forelderBarnData} nested>
-				{(forelderBarnRelasjon: ForeldreBarnRelasjon, idx: number) => (
-					<ForelderBarnRelasjonVisning
-						forelderBarnRelasjonData={forelderBarnRelasjon}
-						idx={idx}
-						data={forelderBarnData}
-						tmpPersoner={tmpPersoner}
-						ident={ident}
-						relasjoner={relasjoner}
-						identtype={identtype}
-					/>
-				)}
+				{(forelderBarnRelasjon: ForeldreBarnRelasjon, idx: number) =>
+					erRedigerbar ? (
+						<ForelderBarnRelasjonVisning
+							forelderBarnRelasjonData={forelderBarnRelasjon}
+							idx={idx}
+							data={forelderBarnData}
+							tmpPersoner={tmpPersoner}
+							ident={ident}
+							relasjoner={relasjoner}
+							identtype={identtype}
+						/>
+					) : (
+						<ForelderBarnRelasjonLes
+							forelderBarnData={forelderBarnRelasjon}
+							relasjoner={relasjoner}
+						/>
+					)
+				}
 			</DollyFieldArray>
 		</div>
 	)

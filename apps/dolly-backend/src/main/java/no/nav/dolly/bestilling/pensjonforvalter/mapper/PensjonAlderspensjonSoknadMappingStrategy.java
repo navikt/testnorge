@@ -3,7 +3,9 @@ package no.nav.dolly.bestilling.pensjonforvalter.mapper;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
-import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonSoknadRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonSoknadRequest.RelasjonType;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonSoknadRequest.SivilstandType;
 import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
@@ -24,17 +26,16 @@ import static no.nav.dolly.domain.PdlPerson.SivilstandType.SKILT;
 import static no.nav.dolly.domain.PdlPerson.SivilstandType.SKILT_PARTNER;
 
 @Component
-public class PensjonAlderspensjonMappingStrategy implements MappingStrategy {
+public class PensjonAlderspensjonSoknadMappingStrategy implements MappingStrategy {
 
-    private static String getRelasjonType(PdlPerson.SivilstandType sivilstandType) {
+    private static RelasjonType getRelasjonType(PdlPerson.SivilstandType sivilstandType) {
 
         if (isNull(sivilstandType)) {
             return null;
         }
         return switch (sivilstandType) {
-            case GIFT, SKILT, SEPARERT, ENKE_ELLER_ENKEMANN -> RelasjonType.EKTEF.name();
-            case REGISTRERT_PARTNER, SKILT_PARTNER, SEPARERT_PARTNER, GJENLEVENDE_PARTNER ->
-                    RelasjonType.PARTNER.name();
+            case GIFT, SKILT, SEPARERT, ENKE_ELLER_ENKEMANN -> RelasjonType.EKTEF;
+            case REGISTRERT_PARTNER, SKILT_PARTNER, SEPARERT_PARTNER, GJENLEVENDE_PARTNER -> RelasjonType.PARTNER;
             default -> null;
         };
     }
@@ -63,17 +64,24 @@ public class PensjonAlderspensjonMappingStrategy implements MappingStrategy {
 
     @Override
     public void register(MapperFactory factory) {
-        factory.classMap(PensjonData.Alderspensjon.class, AlderspensjonRequest.class)
+        factory.classMap(PensjonData.Alderspensjon.class, AlderspensjonSoknadRequest.class)
                 .customize(new CustomMapper<>() {
                     @Override
-                    public void mapAtoB(PensjonData.Alderspensjon alderspensjon, AlderspensjonRequest request, MappingContext context) {
+                    public void mapAtoB(PensjonData.Alderspensjon alderspensjon, AlderspensjonSoknadRequest request, MappingContext context) {
 
                         var hovedperson = (String) context.getProperty("ident");
                         request.setFnr(hovedperson);
                         request.setMiljoer((List<String>) context.getProperty("miljoer"));
-                        request.setStatsborgerskap("NOR");
 
                         var personer = (List<PdlPersonBolk.PersonBolk>) context.getProperty("relasjoner");
+                        request.setStatsborgerskap(personer.stream()
+                                .filter(person -> person.getIdent().equals(hovedperson))
+                                .map(PdlPersonBolk.PersonBolk::getPerson)
+                                .map(PdlPerson.Person::getStatsborgerskap)
+                                .flatMap(Collection::stream)
+                                .map(PdlPerson.Statsborgerskap::getLand)
+                                .findFirst()
+                                .orElse("NOR"));
 
                         var partner = new AtomicReference<String>();
                         personer.stream()
@@ -99,7 +107,7 @@ public class PensjonAlderspensjonMappingStrategy implements MappingStrategy {
                         if (personer.stream().anyMatch(person -> person.getIdent().equals(partner.get())) &&
                                 !alderspensjon.getRelasjoner().isEmpty()) {
 
-                            request.setRelasjonListe(mapperFacade.mapAsList(alderspensjon.getRelasjoner(), AlderspensjonRequest.SkjemaRelasjon.class));
+                            request.setRelasjonListe(mapperFacade.mapAsList(alderspensjon.getRelasjoner(), AlderspensjonSoknadRequest.SkjemaRelasjon.class));
                             personer.stream()
                                     .filter(personBolk -> personBolk.getIdent().equals(partner.get()))
                                     .forEach(partnerPerson -> {
@@ -138,10 +146,10 @@ public class PensjonAlderspensjonMappingStrategy implements MappingStrategy {
                 .byDefault()
                 .register();
 
-        factory.classMap(PensjonData.SkjemaRelasjon.class, AlderspensjonRequest.SkjemaRelasjon.class)
+        factory.classMap(PensjonData.SkjemaRelasjon.class, AlderspensjonSoknadRequest.SkjemaRelasjon.class)
                 .customize(new CustomMapper<>() {
                     @Override
-                    public void mapAtoB(PensjonData.SkjemaRelasjon relasjon, AlderspensjonRequest.SkjemaRelasjon request, MappingContext context) {
+                    public void mapAtoB(PensjonData.SkjemaRelasjon relasjon, AlderspensjonSoknadRequest.SkjemaRelasjon request, MappingContext context) {
 
                         request.setSumAvForventetArbeidKapitalPensjonInntekt(relasjon.getSumAvForvArbKapPenInntekt());
                     }
@@ -150,24 +158,22 @@ public class PensjonAlderspensjonMappingStrategy implements MappingStrategy {
                 .register();
     }
 
-    public enum RelasjonType {EKTEF, PARTNER, SAMBO}
-
-    private static String mapSivilstand(PdlPerson.SivilstandType sivilstandType) {
+    private static SivilstandType mapSivilstand(PdlPerson.SivilstandType sivilstandType) {
 
         if (isNull(sivilstandType)) {
             return null;
         }
 
         return switch (sivilstandType) {
-            case UGIFT, UOPPGITT -> SivilstandRelasjoner.UGIF.name();
-            case GIFT -> SivilstandRelasjoner.GIFT.name();
-            case ENKE_ELLER_ENKEMANN -> SivilstandRelasjoner.ENKE.name();
-            case SKILT -> SivilstandRelasjoner.SKIL.name();
-            case SEPARERT -> SivilstandRelasjoner.SEPR.name();
-            case REGISTRERT_PARTNER -> SivilstandRelasjoner.REPA.name();
-            case SEPARERT_PARTNER -> SivilstandRelasjoner.SEPA.name();
-            case SKILT_PARTNER -> SivilstandRelasjoner.SKPA.name();
-            case GJENLEVENDE_PARTNER -> SivilstandRelasjoner.GJPA.name();
+            case UGIFT, UOPPGITT -> SivilstandType.UGIF;
+            case GIFT -> SivilstandType.GIFT;
+            case ENKE_ELLER_ENKEMANN -> SivilstandType.ENKE;
+            case SKILT -> SivilstandType.SKIL;
+            case SEPARERT -> SivilstandType.SEPR;
+            case REGISTRERT_PARTNER -> SivilstandType.REPA;
+            case SEPARERT_PARTNER -> SivilstandType.SEPA;
+            case SKILT_PARTNER -> SivilstandType.SKPA;
+            case GJENLEVENDE_PARTNER -> SivilstandType.GJPA;
         };
     }
 
