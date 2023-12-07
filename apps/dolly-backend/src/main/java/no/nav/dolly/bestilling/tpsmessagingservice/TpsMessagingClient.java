@@ -36,6 +36,7 @@ import static no.nav.dolly.bestilling.kontoregisterservice.util.BankkontoGenerat
 import static no.nav.dolly.bestilling.kontoregisterservice.util.BankkontoGenerator.tilfeldigUtlandskBankkonto;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
@@ -77,7 +78,7 @@ public class TpsMessagingClient implements ClientRegister {
         return Flux.from(tpsMiljoerConsumer.getTpsMiljoer()
                         .flatMap(miljoer -> {
 
-                            if (!dollyPerson.isOrdre()) {
+                            if (!dollyPerson.isOrdre() && isTpsMessage(bestilling)) {
                                 transactionHelperService.persister(progress, BestillingProgress::getTpsMessagingStatus,
                                         BestillingProgress::setTpsMessagingStatus,
                                         prepTpsMessagingStatus(miljoer));
@@ -114,6 +115,16 @@ public class TpsMessagingClient implements ClientRegister {
                                     .collect(Collectors.joining("$"));
                         }))
                 .map(status -> futurePersist(dollyPerson, progress, status));
+    }
+
+    private boolean isTpsMessage(RsDollyUtvidetBestilling bestilling) {
+
+        return isNotBlank(bestilling.getTpsMessaging().getSpraakKode()) ||
+                nonNull(bestilling.getBankkonto()) ||
+                nonNull(bestilling.getSkjerming()) ||
+                (nonNull(bestilling.getPdldata()) &&
+                        nonNull(bestilling.getPdldata().getPerson()) &&
+                        !bestilling.getPdldata().getPerson().getSikkerhetstiltak().isEmpty());
     }
 
     private ClientFuture futurePersist(DollyPerson dollyPerson, BestillingProgress progress, String status) {
@@ -190,7 +201,6 @@ public class TpsMessagingClient implements ClientRegister {
     private Mono<List<TpsMeldingResponseDTO>> sendSpraakkode(RsDollyUtvidetBestilling bestilling, String ident) {
 
         return nonNull(bestilling.getTpsMessaging()) && nonNull(bestilling.getTpsMessaging().getSpraakKode()) ?
-
 
                 tpsMessagingConsumer.sendSpraakkodeRequest(ident, null,
                                 mapperFacade.map(bestilling.getTpsMessaging().getSpraakKode(), SpraakDTO.class))
