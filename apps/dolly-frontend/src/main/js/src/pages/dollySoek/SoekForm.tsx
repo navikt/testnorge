@@ -129,7 +129,7 @@ const Header = ({ title, antall }) => (
 export const SoekForm = () => {
 	const [request, setRequest] = useState(null)
 	const { result, loading, error, mutate } = useSoekIdenter(request)
-
+	console.log('result: ', result) //TODO - SLETT MEG
 	const handleSubmit = (request: SoekRequest) => {
 		setRequest(request)
 		mutate()
@@ -624,6 +624,11 @@ export const SoekForm = () => {
 										>
 											Nullstill søk
 										</Button>
+										{result && (
+											<p style={{ marginRight: 0, marginLeft: 'auto' }}>
+												Viser {result.identer?.length} av totalt {result.totalHits} treff
+											</p>
+										)}
 									</Buttons>
 								</>
 							)
