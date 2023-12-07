@@ -1885,7 +1885,7 @@ const mapPensjon = (bestillingData, data) => {
 			)?.label
 
 			const pensjonforvalterAlderspensjon = {
-				header: 'Alderspensjon',
+				header: 'Alderspensjon: ' + (ap.soknad ? 'Søknad' : 'Vedtak'),
 				items: [
 					obj('KravFremsattDato', formatDate(ap.kravFremsattDato)),
 					obj('Iverksettelsesdato', formatDate(ap.iverksettelsesdato)),
@@ -1893,6 +1893,7 @@ const mapPensjon = (bestillingData, data) => {
 					obj('Attesterer', ap.attesterer),
 					obj('Uttaksgrad', `${ap.uttaksgrad}%`),
 					obj('NAV-kontor', navEnhetLabel || ap.navEnhetId),
+					obj('Ektefelle/partners inntekt', ap.relasjoner?.[0]?.sumAvForvArbKapPenInntekt),
 				],
 			}
 			data.push(pensjonforvalterAlderspensjon)

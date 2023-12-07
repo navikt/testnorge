@@ -1,17 +1,13 @@
-import React, { useContext } from 'react'
+import React, {useContext} from 'react'
 import Panel from '@/components/ui/panel/Panel'
-import { Attributt, AttributtKategori } from '../Attributt'
-import {
-	fetchTpOrdninger,
-	initialOrdning,
-	tpPath,
-} from '@/components/fagsystem/tjenestepensjon/form/Form'
-import { harValgtAttributt } from '@/components/ui/form/formUtils'
-import { pensjonPath } from '@/components/fagsystem/pensjon/form/Form'
-import { initialAlderspensjon } from '@/components/fagsystem/alderspensjon/form/initialValues'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
-import { initialUforetrygd } from '@/components/fagsystem/uforetrygd/initialValues'
-import { runningCypressE2E } from '@/service/services/Request'
+import {Attributt, AttributtKategori} from '../Attributt'
+import {fetchTpOrdninger, initialOrdning, tpPath,} from '@/components/fagsystem/tjenestepensjon/form/Form'
+import {harValgtAttributt} from '@/components/ui/form/formUtils'
+import {pensjonPath} from '@/components/fagsystem/pensjon/form/Form'
+import {genInitialAlderspensjonVedtak} from '@/components/fagsystem/alderspensjon/form/initialValues'
+import {BestillingsveilederContext} from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {initialUforetrygd} from '@/components/fagsystem/uforetrygd/initialValues'
+import {runningCypressE2E} from '@/service/services/Request'
 import * as _ from 'lodash-es'
 
 export const PensjonPanel = ({ stateModifier, formikBag }: any) => {
@@ -145,7 +141,7 @@ PensjonPanel.initialValues = ({ set, del, has }: any) => {
 			label: 'Har alderspensjon',
 			checked: has(paths.alderspensjon),
 			add: () => {
-				set(paths.alderspensjon, initialAlderspensjon)
+				set(paths.alderspensjon, genInitialAlderspensjonVedtak)
 			},
 			remove: () => del(paths.alderspensjon),
 		},
