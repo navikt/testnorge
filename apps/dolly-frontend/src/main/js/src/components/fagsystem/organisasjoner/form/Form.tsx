@@ -75,5 +75,5 @@ const organisasjon: any = Yup.object().shape({
 })
 
 OrganisasjonForm.validation = {
-	organisasjon: ifPresent('$organisasjon', organisasjon),
+	organisasjon: organisasjon,
 }

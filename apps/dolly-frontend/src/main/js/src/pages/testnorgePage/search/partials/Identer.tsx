@@ -48,16 +48,16 @@ export const Identer: React.FC<IdentSearchProps> = ({
 								/>
 							)}
 						</div>
-						<Button
-							onClick={() => fieldMethods.append({ fnr: '' })}
-							kind="add-circle"
-							style={{ margin: '0 0 10px 5px' }}
-						>
-							Legg til flere
-						</Button>
 					</div>
 				)
 			})}
+			<Button
+				onClick={() => fieldMethods.append({ fnr: '' })}
+				kind="add-circle"
+				style={{ margin: '0 0 10px 5px' }}
+			>
+				Legg til flere
+			</Button>
 		</section>
 	)
 }

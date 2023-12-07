@@ -45,6 +45,7 @@ export const Detaljer = ({
 	useEffect(() => {
 		if (level === 0 && !_.get(formMethods.getValues(), `${path}.underenheter`)) {
 			formMethods.setValue(`${path}.underenheter`, underenheter || [initialValues])
+			formMethods.trigger(`${path}.underenheter`)
 		}
 	}, [])
 
@@ -66,6 +67,7 @@ export const Detaljer = ({
 			formMethods.setValue(`${path}.underenheter`, [initialValues])
 			sektorkodeErValgt && formMethods.setValue(`${path}.sektorkode`, '')
 		}
+		formMethods.trigger(`${path}`)
 	}
 
 	return (
