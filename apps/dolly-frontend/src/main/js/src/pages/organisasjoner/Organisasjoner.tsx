@@ -129,7 +129,7 @@ export default () => {
 
 				{startBestillingAktiv && (
 					<OrganisasjonBestillingsveilederModal
-						onSubmit={() => startBestilling}
+						onSubmit={startBestilling}
 						onAvbryt={skjulStartBestilling}
 						brukernavn={brukernavn}
 					/>

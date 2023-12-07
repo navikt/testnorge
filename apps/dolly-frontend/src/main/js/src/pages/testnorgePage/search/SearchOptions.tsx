@@ -11,6 +11,7 @@ import { UseFormReturn } from 'react-hook-form/dist/types'
 
 export type SearchOptionsProps = {
 	formMethods: UseFormReturn
+	onSubmit: any
 }
 
 export const getCount = (paths: string[], formMethods: UseFormReturn) => {
@@ -46,7 +47,7 @@ export const SearchOptions: React.FC<SearchOptionsProps> = (props: SearchOptions
 				startOpen
 				numSelected={getCount(IdenterPaths, props.formMethods)}
 			>
-				<Identer formMethods={props.formMethods} />
+				<Identer formMethods={props.formMethods} onSubmit={props.onSubmit} />
 			</OptionsPanel>
 			<OptionsPanel
 				heading={'Identifikasjon'}

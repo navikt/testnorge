@@ -95,9 +95,16 @@ export default ({ gruppe }: TestnorgePageProps) => {
 				<Form control={formMethods.control} onSubmit={() => formMethods.handleSubmit(onSubmit)}>
 					<Fragment>
 						{devEnabled && <DisplayFormikState {...formMethods} />}
-						{devEnabled && <DisplayFormikErrors errors={formMethods.formState.errors} />}
+						{devEnabled && (
+							<DisplayFormikErrors errors={formMethods.formState.errors} label={'Vis errors'} />
+						)}
 						<SearchContainer
-							left={<SearchOptions formMethods={formMethods} />}
+							left={
+								<SearchOptions
+									formMethods={formMethods}
+									onSubmit={formMethods.handleSubmit(onSubmit)}
+								/>
+							}
 							right={
 								<>
 									{error && <ContentContainer>{error}</ContentContainer>}

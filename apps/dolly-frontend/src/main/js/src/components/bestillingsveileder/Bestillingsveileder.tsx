@@ -13,6 +13,7 @@ export const Bestillingsveileder = ({ error, sendBestilling }) => {
 	const navigate = useNavigate()
 	const [navigateRoot, setNavigateRoot] = useState(false)
 	const { gruppeId, personId } = useParams()
+	const erOrganisasjon = location?.state?.opprettOrganisasjon
 
 	useEffect(() => {
 		if (navigateRoot) {
@@ -29,7 +30,7 @@ export const Bestillingsveileder = ({ error, sendBestilling }) => {
 		}
 	}
 
-	if (!gruppeId) {
+	if (!erOrganisasjon && !gruppeId) {
 		setNavigateRoot(true)
 		return null
 	}

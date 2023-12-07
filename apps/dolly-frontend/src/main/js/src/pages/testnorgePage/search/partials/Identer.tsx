@@ -7,11 +7,15 @@ import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 
 interface IdentSearchProps {
 	formMethods: UseFormReturn
+	onSubmit: any
 }
 
 const identerPath = 'identer'
 
-export const Identer: React.FC<IdentSearchProps> = ({ formMethods }: IdentSearchProps) => {
+export const Identer: React.FC<IdentSearchProps> = ({
+	formMethods,
+	onSubmit,
+}: IdentSearchProps) => {
 	// @ts-ignore
 	const fieldMethods = useFieldArray({ control: formMethods.control, name: identerPath })
 
@@ -23,17 +27,16 @@ export const Identer: React.FC<IdentSearchProps> = ({ formMethods }: IdentSearch
 						<div className="flexbox--align-start" key={index}>
 							<div className="skjemaelement">
 								<DollyTextInput
+									name={`${identerPath}.${index}.fnr`}
 									data-cy={CypressSelector.INPUT_TESTNORGE_FNR}
 									placeholder={'Ikke spesifisert'}
 									label={'Fødselsnummer eller D-dummer'}
 									style={{ width: '220px' }}
 									onKeyDown={(event: BaseSyntheticEvent<KeyboardEvent>) => {
-										formMethods.trigger(`${identerPath}.${index}`)
 										event.nativeEvent.key === 'Enter' &&
 											!Object.keys(formMethods.formState.errors).length &&
-											formMethods.handleSubmit()
+											onSubmit()
 									}}
-									{...formMethods.register(`${identerPath}.${index}.fnr`)}
 								/>
 							</div>
 							{fieldMethods.fields.length > 1 && (

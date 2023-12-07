@@ -14,7 +14,7 @@ import {
 	NyBestillingProps,
 } from '@/components/bestillingsveileder/startModal/NyIdent/NyIdent'
 import { CypressSelector } from '../../../../cypress/mocks/Selectors'
-import { FormProvider, useForm } from 'react-hook-form'
+import { Form, FormProvider, useForm } from 'react-hook-form'
 
 const initialValues = {
 	mal: null as unknown as string,
@@ -52,7 +52,7 @@ export const NyOrganisasjon = ({ onAvbryt, onSubmit, brukernavn }: NyBestillingP
 
 	return (
 		<FormProvider {...formMethods}>
-			<form onSubmit={() => preSubmit(formMethods.getValues())}>
+			<Form control={formMethods.control} onSubmit={() => preSubmit(formMethods.getValues())}>
 				<div className="ny-bestilling-form">
 					<div className="ny-bestilling-form_maler">
 						<div>
@@ -102,7 +102,7 @@ export const NyOrganisasjon = ({ onAvbryt, onSubmit, brukernavn }: NyBestillingP
 						center
 					/>
 				</div>
-			</form>
+			</Form>
 		</FormProvider>
 	)
 }
