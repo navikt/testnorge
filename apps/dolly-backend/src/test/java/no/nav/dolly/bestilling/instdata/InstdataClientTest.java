@@ -100,7 +100,7 @@ class InstdataClientTest {
                         .map(ClientFuture::get))
                 .assertNext(status -> {
                     verify(transactionHelperService)
-                            .persister(any(BestillingProgress.class), any(), statusCaptor.capture());
+                            .persister(any(BestillingProgress.class), any(), any(), statusCaptor.capture());
                     assertThat(statusCaptor.getValue(), is(equalTo("q2:opphold=1$OK")));
                 })
                 .verifyComplete();
@@ -131,7 +131,7 @@ class InstdataClientTest {
                         .map(ClientFuture::get))
                 .assertNext(status -> {
                     verify(transactionHelperService)
-                            .persister(any(BestillingProgress.class), any(), statusCaptor.capture());
+                            .persister(any(BestillingProgress.class), any(), any(), statusCaptor.capture());
                     assertThat(statusCaptor.getValue(), is(equalTo("q2:opphold=1$OK")));
                 })
                 .verifyComplete();

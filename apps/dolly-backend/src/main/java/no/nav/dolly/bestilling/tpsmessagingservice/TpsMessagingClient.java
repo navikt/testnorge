@@ -76,7 +76,8 @@ public class TpsMessagingClient implements ClientRegister {
                         .flatMap(miljoer -> {
 
                             if (!dollyPerson.isOrdre()) {
-                                transactionHelperService.persister(progress, BestillingProgress::setTpsMessagingStatus,
+                                transactionHelperService.persister(progress, BestillingProgress::getTpsMessagingStatus,
+                                        BestillingProgress::setTpsMessagingStatus,
                                         prepTpsMessagingStatus(miljoer));
                             }
 
@@ -117,7 +118,8 @@ public class TpsMessagingClient implements ClientRegister {
 
         return () -> {
             if (!dollyPerson.isOrdre()) {
-                transactionHelperService.persister(progress, BestillingProgress::setTpsMessagingStatus, status);
+                transactionHelperService.persister(progress, BestillingProgress::getTpsMessagingStatus,
+                        BestillingProgress::setTpsMessagingStatus, status);
             }
             return progress;
         };
