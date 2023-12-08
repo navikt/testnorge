@@ -43,6 +43,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @RequiredArgsConstructor
 public class TpsMessagingClient implements ClientRegister {
 
+    private static final String SEP = "$";
     private static final String STATUS_FMT = "%s:%s";
     private static final String TPS_MESSAGING = "TPS";
 
@@ -81,7 +82,7 @@ public class TpsMessagingClient implements ClientRegister {
                             if (!dollyPerson.isOrdre() && isTpsMessage(bestilling)) {
                                 transactionHelperService.persister(progress, BestillingProgress::getTpsMessagingStatus,
                                         BestillingProgress::setTpsMessagingStatus,
-                                        prepTpsMessagingStatus(miljoer));
+                                        prepTpsMessagingStatus(miljoer), SEP);
                             }
 
                             return getIdenterHovedpersonOgPartner(dollyPerson.getIdent())
@@ -112,7 +113,7 @@ public class TpsMessagingClient implements ClientRegister {
                                             .toList())
                                     .flatMap(Flux::fromIterable)
                                     .filter(StringUtils::isNotBlank)
-                                    .collect(Collectors.joining("$"));
+                                    .collect(Collectors.joining(SEP));
                         }))
                 .map(status -> futurePersist(dollyPerson, progress, status));
     }
@@ -135,7 +136,7 @@ public class TpsMessagingClient implements ClientRegister {
         return () -> {
             if (!dollyPerson.isOrdre()) {
                 transactionHelperService.persister(progress, BestillingProgress::getTpsMessagingStatus,
-                        BestillingProgress::setTpsMessagingStatus, status);
+                        BestillingProgress::setTpsMessagingStatus, status, SEP);
             }
             return progress;
         };
