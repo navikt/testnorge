@@ -32,6 +32,7 @@ import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.util.DollyTextUtil.getSyncTextSystem;
 
 @Slf4j
 @Service
@@ -39,7 +40,6 @@ import static java.util.Objects.nonNull;
 public class TpsPersonService {
 
     private static final List<String> PENSJON_MILJOER = List.of("q1", "q2");
-    private static final String TPS_SYNC_START = "Info: Synkronisering mot TPS startet ... %d ms";
     private static final long TIMEOUT_MILLIES = 839;
 
     @Value("${tps.person.service.wait}")
@@ -126,9 +126,10 @@ public class TpsPersonService {
 
         } else {
 
-            transactionHelperService.persister(progress, BestillingProgress::setTpsSyncStatus,
+            transactionHelperService.persister(progress, BestillingProgress::getTpsSyncStatus,
+                    BestillingProgress::setTpsSyncStatus,
                     miljoer.stream()
-                            .map(miljoe -> String.format("%s:%s", miljoe, String.format(TPS_SYNC_START,
+                            .map(miljoe -> "%s:%s".formatted(miljoe, getSyncTextSystem("TPS",
                                     System.currentTimeMillis() - starttid)))
                             .collect(Collectors.joining(",")));
 
@@ -173,7 +174,8 @@ public class TpsPersonService {
                     .map(PersonMiljoeDTO::getMiljoe)
                     .toList());
 
-            transactionHelperService.persister(progress, BestillingProgress::setTpsSyncStatus,
+            transactionHelperService.persister(progress, BestillingProgress::getTpsSyncStatus,
+                    BestillingProgress::setTpsSyncStatus,
                     status.stream()
                             .filter(detalj -> ident.equals(detalj.getIdent()))
                             .map(detalj -> String.format("%s:%s", detalj.getMiljoe(),
