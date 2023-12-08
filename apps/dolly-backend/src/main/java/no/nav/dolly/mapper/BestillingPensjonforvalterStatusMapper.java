@@ -37,7 +37,7 @@ public final class BestillingPensjonforvalterStatusMapper {
     public static List<RsStatusRapport> buildPensjonforvalterStatusMap(List<BestillingProgress> progressList) {
 
         //  melding     status     miljo       ident
-        Map<String, Map<String, Map<String, Set<String>>>> meldStatusMiljoeIdents = new HashMap();
+        Map<String, Map<String, Map<String, Set<String>>>> meldStatusMiljoeIdents = new HashMap<>();
 
         progressList.forEach(progress -> {
             if (isNotBlank(progress.getPensjonforvalterStatus()) && progress.getPensjonforvalterStatus().split("#").length > 1) {
@@ -86,7 +86,7 @@ public final class BestillingPensjonforvalterStatusMapper {
             }
         } else {
             Map<String, Map<String, Set<String>>> statusMap = new HashMap<>();
-            Map<String, Set<String>> miljoeIdent = new HashMap();
+            Map<String, Set<String>> miljoeIdent = new HashMap<>();
             miljoeIdent.put(miljoe, new HashSet<>(Set.of(ident)));
             statusMap.put(status, miljoeIdent);
             msgStatusIdents.put(melding, statusMap);

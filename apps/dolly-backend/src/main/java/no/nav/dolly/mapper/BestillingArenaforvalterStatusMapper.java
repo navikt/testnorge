@@ -62,18 +62,7 @@ public final class BestillingArenaforvalterStatusMapper {
     private static void insertArtifact(Map<String, Map<String, Map<String, Set<String>>>> msgStatusIdents,
                                        String status, String miljoe, String ident) {
 
-        String melding;
-        if (status.contains(BRUKER)) {
-            melding = BRUKER;
-        } else if (status.contains(AAP115)) { // må komme før sjekk på aap
-            melding = AAP115;
-        } else if (status.contains(AAP)) {
-            melding = AAP;
-        } else if (status.contains(DAGPENGER)) {
-            melding = DAGPENGER;
-        } else {
-            melding = ARENA_FAGSYSTEM;
-        }
+        String melding = getMelding(status);
 
         if (status.contains("OK")) {
             status = "OK";
@@ -99,6 +88,21 @@ public final class BestillingArenaforvalterStatusMapper {
             miljoeIdent.put(miljoe, new HashSet<>(Set.of(ident)));
             statusMap.put(status, miljoeIdent);
             msgStatusIdents.put(melding, statusMap);
+        }
+    }
+
+    private static String getMelding(String status) {
+
+        if (status.contains(BRUKER)) {
+            return BRUKER;
+        } else if (status.contains(AAP115)) { // må komme før sjekk på aap
+            return AAP115;
+        } else if (status.contains(AAP)) {
+            return AAP;
+        } else if (status.contains(DAGPENGER)) {
+            return DAGPENGER;
+        } else {
+            return ARENA_FAGSYSTEM;
         }
     }
 
