@@ -12,6 +12,7 @@ import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
+import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.data.pdlforvalter.v1.SikkerhetstiltakDTO;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.SpraakDTO;
@@ -35,12 +36,14 @@ import static no.nav.dolly.bestilling.kontoregisterservice.util.BankkontoGenerat
 import static no.nav.dolly.bestilling.kontoregisterservice.util.BankkontoGenerator.tilfeldigUtlandskBankkonto;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class TpsMessagingClient implements ClientRegister {
 
+    private static final String SEP = "$";
     private static final String STATUS_FMT = "%s:%s";
     private static final String TPS_MESSAGING = "TPS";
 
@@ -52,7 +55,8 @@ public class TpsMessagingClient implements ClientRegister {
 
     private static String getResultat(TpsMeldingResponseDTO respons) {
 
-        return "OK".equals(respons.getStatus()) ? "OK" : "FEIL= " + respons.getUtfyllendeMelding();
+        return "OK".equals(respons.getStatus()) ? "OK" :
+                ErrorStatusDecoder.encodeStatus("FEIL: " + respons.getUtfyllendeMelding());
     }
 
     private static String getStatus(String melding, List<TpsMeldingResponseDTO> statuser) {
@@ -75,9 +79,10 @@ public class TpsMessagingClient implements ClientRegister {
         return Flux.from(tpsMiljoerConsumer.getTpsMiljoer()
                         .flatMap(miljoer -> {
 
-                            if (!dollyPerson.isOrdre()) {
-                                transactionHelperService.persister(progress, BestillingProgress::setTpsMessagingStatus,
-                                        prepTpsMessagingStatus(miljoer));
+                            if (!dollyPerson.isOrdre() && isTpsMessage(bestilling)) {
+                                transactionHelperService.persister(progress, BestillingProgress::getTpsMessagingStatus,
+                                        BestillingProgress::setTpsMessagingStatus,
+                                        prepTpsMessagingStatus(miljoer), SEP);
                             }
 
                             return getIdenterHovedpersonOgPartner(dollyPerson.getIdent())
@@ -108,16 +113,30 @@ public class TpsMessagingClient implements ClientRegister {
                                             .toList())
                                     .flatMap(Flux::fromIterable)
                                     .filter(StringUtils::isNotBlank)
-                                    .collect(Collectors.joining("$"));
+                                    .collect(Collectors.joining(SEP));
                         }))
                 .map(status -> futurePersist(dollyPerson, progress, status));
+    }
+
+    private boolean isTpsMessage(RsDollyUtvidetBestilling bestilling) {
+
+        return (nonNull(bestilling.getTpsMessaging()) &&
+                isNotBlank(bestilling.getTpsMessaging().getSpraakKode())) ||
+
+                nonNull(bestilling.getBankkonto()) ||
+                nonNull(bestilling.getSkjerming()) ||
+
+                (nonNull(bestilling.getPdldata()) &&
+                        nonNull(bestilling.getPdldata().getPerson()) &&
+                        !bestilling.getPdldata().getPerson().getSikkerhetstiltak().isEmpty());
     }
 
     private ClientFuture futurePersist(DollyPerson dollyPerson, BestillingProgress progress, String status) {
 
         return () -> {
             if (!dollyPerson.isOrdre()) {
-                transactionHelperService.persister(progress, BestillingProgress::setTpsMessagingStatus, status);
+                transactionHelperService.persister(progress, BestillingProgress::getTpsMessagingStatus,
+                        BestillingProgress::setTpsMessagingStatus, status, SEP);
             }
             return progress;
         };
@@ -186,7 +205,6 @@ public class TpsMessagingClient implements ClientRegister {
     private Mono<List<TpsMeldingResponseDTO>> sendSpraakkode(RsDollyUtvidetBestilling bestilling, String ident) {
 
         return nonNull(bestilling.getTpsMessaging()) && nonNull(bestilling.getTpsMessaging().getSpraakKode()) ?
-
 
                 tpsMessagingConsumer.sendSpraakkodeRequest(ident, null,
                                 mapperFacade.map(bestilling.getTpsMessaging().getSpraakKode(), SpraakDTO.class))

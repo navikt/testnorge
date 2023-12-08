@@ -7,7 +7,6 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.BAFeilkoder;
 import no.nav.dolly.domain.resultset.RsStatusRapport;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -52,7 +51,7 @@ public final class BestillingAaregStatusMapper {
                                                 .detaljert(status.getValue().entrySet().stream().map(miljo ->
                                                                 RsStatusRapport.Detaljert.builder()
                                                                         .miljo(miljo.getKey())
-                                                                        .identer(new ArrayList<>(miljo.getValue()))
+                                                                        .identer(miljo.getValue())
                                                                         .build())
                                                         .toList())
                                                 .build())

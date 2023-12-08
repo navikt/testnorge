@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.TextNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.TransaksjonMapping;
 import no.nav.dolly.domain.resultset.SystemTyper;
 import no.nav.dolly.repository.TransaksjonMappingRepository;
@@ -25,7 +24,6 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 public class TransaksjonMappingService {
 
     private final TransaksjonMappingRepository transaksjonMappingRepository;
-    private final MapperFacade mapperFacade;
     private final ObjectMapper objectMapper;
 
     @Transactional(readOnly = true)
@@ -41,7 +39,7 @@ public class TransaksjonMappingService {
     public List<RsTransaksjonMapping> getTransaksjonMapping(String ident) {
 
         return transaksjonMappingRepository.findAllByBestillingIdAndIdent(null, ident).stream()
-                .map(transasjon -> mapperFacade.map(transasjon, RsTransaksjonMapping.class))
+                .map(this::toDTO)
                 .toList();
     }
 

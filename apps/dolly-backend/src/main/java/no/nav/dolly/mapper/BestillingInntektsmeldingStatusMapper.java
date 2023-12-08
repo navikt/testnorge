@@ -5,7 +5,6 @@ import lombok.NoArgsConstructor;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsStatusRapport;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,7 +44,7 @@ public final class BestillingInntektsmeldingStatusMapper {
                                         .melding(status.getKey())
                                         .detaljert(status.getValue().entrySet().stream().map(envIdent -> RsStatusRapport.Detaljert.builder()
                                                         .miljo(envIdent.getKey())
-                                                        .identer(new ArrayList<>(envIdent.getValue()))
+                                                        .identer(envIdent.getValue())
                                                         .build())
                                                 .toList())
                                         .build())

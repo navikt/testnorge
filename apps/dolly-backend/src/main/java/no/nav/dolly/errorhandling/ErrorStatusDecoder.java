@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static no.nav.dolly.util.DollyTextUtil.getInfoTextSystem;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -21,8 +22,6 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @Service
 @RequiredArgsConstructor
 public class ErrorStatusDecoder {
-
-    private static final String INFO_VENTER = "Info: Oppretting startet mot %s ...";
 
     private static final String TEKNISK_FEIL = "Teknisk feil {} mottatt fra system";
     private static final String TEKNISK_FEIL_SE_LOGG = "Teknisk feil. Se logg! ";
@@ -36,7 +35,7 @@ public class ErrorStatusDecoder {
 
     public static String getInfoVenter(String system) {
 
-        return encodeStatus(String.format(INFO_VENTER, system));
+        return encodeStatus(getInfoTextSystem(system));
     }
 
     public static String encodeStatus(String toBeEncoded) {

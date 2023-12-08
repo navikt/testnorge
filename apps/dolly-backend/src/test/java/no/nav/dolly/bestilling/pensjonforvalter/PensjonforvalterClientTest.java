@@ -327,7 +327,7 @@ class PensjonforvalterClientTest {
                         .map(ClientFuture::get))
                 .assertNext(status -> {
                     verify(transactionHelperService, times(2))
-                            .persister(any(BestillingProgress.class), any(), statusCaptor.capture());
+                            .persister(any(BestillingProgress.class), any(), any(), statusCaptor.capture(), anyString());
                     assertThat(statusCaptor.getAllValues().get(0).split("#")[0], is(equalTo("PensjonForvalter")));
                     assertThat(Arrays.asList(statusCaptor.getAllValues().get(0).split("#")[1].split(",")),
                             containsInAnyOrder("TEST1:Info= Oppretting startet mot PESYS ...", "TEST2:Info= Oppretting startet mot PESYS ..."));
@@ -419,7 +419,7 @@ class PensjonforvalterClientTest {
                         .map(ClientFuture::get))
                 .assertNext(status -> {
                     verify(transactionHelperService, times(2))
-                            .persister(any(BestillingProgress.class), any(), statusCaptor.capture());
+                            .persister(any(BestillingProgress.class), any(), any(), statusCaptor.capture(), anyString());
                     assertThat(statusCaptor.getAllValues().get(0).split("#")[0], is(equalTo("PensjonForvalter")));
                     assertThat(Arrays.asList(statusCaptor.getAllValues().get(0).split("#")[1].split(",")),
                             containsInAnyOrder("TEST1:Info= Oppretting startet mot PESYS ...", "TEST2:Info= Oppretting startet mot PESYS ..."));
@@ -510,7 +510,7 @@ class PensjonforvalterClientTest {
                         .map(ClientFuture::get))
                 .assertNext(status -> {
                     verify(transactionHelperService, times(2))
-                            .persister(any(BestillingProgress.class), any(), statusCaptor.capture());
+                            .persister(any(BestillingProgress.class), any(), any(), statusCaptor.capture(), anyString());
                     assertThat(statusCaptor.getAllValues().get(0).split("#")[0], is(equalTo("PensjonForvalter")));
                     assertThat(Arrays.asList(statusCaptor.getAllValues().get(0).split("#")[1].split(",")),
                             containsInAnyOrder("TEST1:Info= Oppretting startet mot PESYS ...", "TEST2:Info= Oppretting startet mot PESYS ..."));

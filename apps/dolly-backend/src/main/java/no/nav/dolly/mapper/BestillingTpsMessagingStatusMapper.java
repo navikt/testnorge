@@ -11,7 +11,6 @@ import no.nav.dolly.domain.resultset.RsStatusRapport;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -89,7 +88,7 @@ public final class BestillingTpsMessagingStatusMapper {
                                     .detaljert(status.getValue().entrySet().stream()
                                             .map(miljoIdenter -> RsStatusRapport.Detaljert.builder()
                                                     .miljo(miljoIdenter.getKey())
-                                                    .identer(new ArrayList<>(miljoIdenter.getValue()))
+                                                    .identer(miljoIdenter.getValue())
                                                     .build())
                                             .toList())
                                     .build())

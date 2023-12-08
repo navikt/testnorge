@@ -68,7 +68,7 @@ public class OpensearchImport implements ApplicationListener<ContextRefreshedEve
             var jsonParser = jsonFactory.createParser(indexSetting);
             var jsonNode = (JsonNode) objectMapper.readTree(jsonParser);
             elasticParamsConsumer.oppdaterParametre(jsonNode)
-                    .subscribe(status -> log.info("OpenSearch oppdatering av indeks status: {}", status));
+                    .subscribe(status -> log.info("OpenSearch oppdatering av indeks, status: {}", status));
 
         } catch (IOException e) {
             log.error("Feilet å gjøre setting for indekser {}", INDEX_SETTING, e);

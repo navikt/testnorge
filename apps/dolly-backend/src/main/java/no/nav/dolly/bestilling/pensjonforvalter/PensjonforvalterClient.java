@@ -71,6 +71,7 @@ import static org.apache.poi.util.StringUtil.isNotBlank;
 @RequiredArgsConstructor
 public class PensjonforvalterClient implements ClientRegister {
 
+    private static final String SEP = "$";
     private static final String IDENT = "ident";
     private static final String MILJOER = "miljoer";
     private static final String NAV_ENHET = "navEnhet";
@@ -139,8 +140,10 @@ public class PensjonforvalterClient implements ClientRegister {
                     return Flux.just(bestilling)
                             .doOnNext(bestilling1 -> {
                                 if (!dollyPerson.isOrdre()) {
-                                    transactionHelperService.persister(progress, BestillingProgress::setPensjonforvalterStatus,
-                                            prepInitStatus(tilgjengeligeMiljoer));
+                                    transactionHelperService.persister(progress,
+                                            BestillingProgress::getPensjonforvalterStatus,
+                                            BestillingProgress::setPensjonforvalterStatus,
+                                            prepInitStatus(tilgjengeligeMiljoer), SEP);
                                 }
                             })
                             .flatMap(bestilling1 -> getIdenterRelasjoner(dollyPerson.getIdent())
@@ -194,7 +197,7 @@ public class PensjonforvalterClient implements ClientRegister {
 
                             .flatMap(Flux::from)
                             .filter(StringUtils::isNotBlank)
-                            .collect(Collectors.joining("$"));
+                            .collect(Collectors.joining(SEP));
                 })
                 .map(status -> futurePersist(dollyPerson, progress, status));
     }
@@ -211,8 +214,10 @@ public class PensjonforvalterClient implements ClientRegister {
     private Mono<String> getNavEnhetNr(Flux<PdlPersonBolk.Data> persondata) {
 
         return persondata
+                .filter(data -> nonNull(data.getHentGeografiskTilknytningBolk()))
                 .map(PdlPersonBolk.Data::getHentGeografiskTilknytningBolk)
                 .flatMap(Flux::fromIterable)
+                .filter(data -> nonNull(data.getGeografiskTilknytning()))
                 .map(PdlPersonBolk.GeografiskTilknytningBolk::getGeografiskTilknytning)
                 .map(PensjonforvalterClient::getGeografiskTilknytning)
                 .flatMap(norg2Consumer::getNorgEnhet)
@@ -272,7 +277,8 @@ public class PensjonforvalterClient implements ClientRegister {
 
         return () -> {
             if (!dollyPerson.isOrdre()) {
-                transactionHelperService.persister(progress, BestillingProgress::setPensjonforvalterStatus, status);
+                transactionHelperService.persister(progress, BestillingProgress::getPensjonforvalterStatus,
+                        BestillingProgress::setPensjonforvalterStatus, status, SEP);
             }
             return progress;
         };
@@ -365,15 +371,15 @@ public class PensjonforvalterClient implements ClientRegister {
 
                                     var finalPensjonRequest = new AtomicReference<>(pensjonRequest);
                                     return pensjonforvalterConsumer.lagreAlderspensjon(pensjonRequest)
-                                                    .map(response -> {
-                                                        response.getStatus().forEach(status -> {
-                                                            if (status.getResponse().isResponse2xx()) {
-                                                                saveAPTransaksjonId(ident, status.getMiljo(), bestillingId,
-                                                                        PEN_AP, finalPensjonRequest);
-                                                            }
-                                                        });
-                                                        return response;
-                                                    });
+                                            .map(response -> {
+                                                response.getStatus().forEach(status -> {
+                                                    if (status.getResponse().isResponse2xx()) {
+                                                        saveAPTransaksjonId(ident, status.getMiljo(), bestillingId,
+                                                                PEN_AP, finalPensjonRequest);
+                                                    }
+                                                });
+                                                return response;
+                                            });
 
                                 } else {
                                     return getStatus(miljoe, 503, TPS_NOT_READY);
@@ -520,7 +526,7 @@ public class PensjonforvalterClient implements ClientRegister {
                 .collect(Collectors.joining(","));
     }
 
-     String getError(PensjonforvalterResponse.ResponseEnvironment entry) {
+    String getError(PensjonforvalterResponse.ResponseEnvironment entry) {
 
         var response = entry.getResponse();
         var httpStatus = response.getHttpStatus();
@@ -534,7 +540,7 @@ public class PensjonforvalterClient implements ClientRegister {
             }
 
         } else {
-           return errorStatusDecoder.getErrorText(HttpStatus.valueOf(httpStatus.getStatus()), httpStatus.getReasonPhrase());
+            return errorStatusDecoder.getErrorText(HttpStatus.valueOf(httpStatus.getStatus()), httpStatus.getReasonPhrase());
         }
     }
 
