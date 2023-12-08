@@ -56,7 +56,7 @@ class BestillingPensjonforvalterStatusMapperTest {
     void buildPoppInntektsStatusMap() {
 
         BestillingProgress progress = BestillingProgress.builder()
-                .pensjonforvalterStatus(PENSJON_FORVALTER + "#q2:OK,$" + POPP_INNTEKTSREGISTER + "#q1:Feil i system,q2:OK,")
+                .pensjonforvalterStatus(POPP_INNTEKTSREGISTER + "#q1:Feil i system,q2:OK,")
                 .ident(IDENT)
                 .build();
 
@@ -77,7 +77,7 @@ class BestillingPensjonforvalterStatusMapperTest {
     void buildTpForholdStatusMap() {
 
         BestillingProgress progress = BestillingProgress.builder()
-                .pensjonforvalterStatus(PENSJON_FORVALTER + "#q2:OK,$" + TP_FORHOLD + "#q1:Feil i system,q2:OK,")
+                .pensjonforvalterStatus(TP_FORHOLD + "#q1:Feil i system,q2:OK,")
                 .ident(IDENT)
                 .build();
 
