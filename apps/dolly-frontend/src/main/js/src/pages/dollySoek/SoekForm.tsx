@@ -139,6 +139,27 @@ export const SoekForm = () => {
 
 	const initialValuesClone = _.cloneDeep(initialValues)
 
+	const requestIsEmpty = (updatedRequest) => {
+		let isEmpty = true
+		const flatten = (obj) => {
+			for (const i in obj) {
+				if (typeof obj[i] === 'object' && !Array.isArray(obj[i])) {
+					flatten(obj[i])
+				} else {
+					if (Array.isArray(obj[i])) {
+						if (obj[i].length > 0) {
+							isEmpty = false
+						}
+					} else if (obj[i] !== null && obj[i] !== false && obj[i] !== '') {
+						isEmpty = false
+					}
+				}
+			}
+		}
+		flatten(updatedRequest)
+		return isEmpty
+	}
+
 	return (
 		<>
 			<SoekefeltWrapper>
@@ -150,7 +171,11 @@ export const SoekForm = () => {
 						{(formikBag) => {
 							const handleChange = (value: any, path: string) => {
 								const updatedRequest = _.set(formikBag.values, path, value)
-								setRequest(updatedRequest)
+								if (requestIsEmpty(updatedRequest)) {
+									setRequest(null)
+								} else {
+									setRequest(updatedRequest)
+								}
 								formikBag.setFieldValue(path, value)
 								mutate()
 							}
@@ -158,7 +183,11 @@ export const SoekForm = () => {
 							const handleChangeList = (value: any, path: string) => {
 								const list = value.map((item: any) => item.value)
 								const updatedRequest = _.set(formikBag.values, path, list)
-								setRequest(updatedRequest)
+								if (requestIsEmpty(updatedRequest)) {
+									setRequest(null)
+								} else {
+									setRequest(updatedRequest)
+								}
 								mutate()
 							}
 
@@ -624,6 +653,11 @@ export const SoekForm = () => {
 										>
 											Nullstill søk
 										</Button>
+										{result && (
+											<p style={{ marginRight: 0, marginLeft: 'auto' }}>
+												Viser {result.identer?.length} av totalt {result.totalHits} treff
+											</p>
+										)}
 									</Buttons>
 								</>
 							)
