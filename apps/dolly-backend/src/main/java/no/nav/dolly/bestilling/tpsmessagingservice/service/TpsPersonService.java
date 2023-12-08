@@ -11,7 +11,6 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.SystemTyper;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
-import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.service.TransaksjonMappingService;
 import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.PersonMiljoeDTO;
@@ -32,7 +31,9 @@ import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static no.nav.dolly.util.DollyTextUtil.getSyncTextSystem;
+import static org.apache.commons.lang3.StringUtils.trimToEmpty;
 
 @Slf4j
 @Service
@@ -67,7 +68,7 @@ public class TpsPersonService {
                                         penMiljoer, Collections.emptyList(), progress)
                                         .map(status -> prepareResult(relasjon, status, bestilling.getEnvironments(), startTime)))))
                 .collectList()
-                .flatMapIterable(list -> list)
+                .flatMapIterable(Function.identity())
                 .map(status -> futurePersist(progress, dollyPerson.getIdent(), status));
     }
 
@@ -126,10 +127,12 @@ public class TpsPersonService {
 
         } else {
 
-            transactionHelperService.persisterTpsProgress(progress,
+            transactionHelperService.persisterDynamicProgress(progress,
+                    BestillingProgress::getTpsSyncStatus,
+                    BestillingProgress::setTpsSyncStatus,
                     miljoer.stream()
-                            .map(miljoe -> "%s:%s".formatted(miljoe, getSyncTextSystem("TPS",
-                                    System.currentTimeMillis() - starttid)))
+                            .map(miljoe -> "%s:%s".formatted(miljoe, encodeStatus(getSyncTextSystem("TPS",
+                                    System.currentTimeMillis() - starttid))))
                             .collect(Collectors.joining(",")));
 
             return Flux.just(1)
@@ -173,12 +176,14 @@ public class TpsPersonService {
                     .map(PersonMiljoeDTO::getMiljoe)
                     .toList());
 
-            transactionHelperService.persisterTpsProgress(progress,
+            transactionHelperService.persisterDynamicProgress(progress,
+                    BestillingProgress::getTpsSyncStatus,
+                    BestillingProgress::setTpsSyncStatus,
                     status.stream()
                             .filter(detalj -> ident.equals(detalj.getIdent()))
-                            .map(detalj -> String.format("%s:%s", detalj.getMiljoe(),
-                                    ErrorStatusDecoder.encodeStatus(detalj.isOk() ? detalj.getStatus() :
-                                            StringUtils.trimToEmpty(String.format("FEIL: %s", detalj.getUtfyllendeMelding())))))
+                            .map(detalj -> "%s:%s".formatted(detalj.getMiljoe(),
+                                    encodeStatus(detalj.isOk() ? detalj.getStatus() :
+                                            trimToEmpty("Feil: %s".formatted(detalj.getUtfyllendeMelding())))))
                             .collect(Collectors.joining(",")));
             return progress;
         };

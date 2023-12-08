@@ -117,7 +117,10 @@ public class TransactionHelperService {
     }
 
     @Retryable
-    public BestillingProgress persisterTpsProgress(BestillingProgress bestillingProgress, String status) {
+    public BestillingProgress persisterDynamicProgress(BestillingProgress bestillingProgress,
+                                                       Function<BestillingProgress, String> getter,
+                                                       BiConsumer<BestillingProgress, String> setter,
+                                                       String status) {
 
         return transactionTemplate.execute(status1 -> {
 
@@ -125,9 +128,9 @@ public class TransactionHelperService {
 
             bestillingProgressRepository.findByIdAndLock(bestillingProgress.getId())
                     .ifPresent(progress -> {
-                        var value = progress.getTpsSyncStatus();
+                        var value = getter.apply(progress);
                         var result = applyChanges(value, status);
-                        progress.setTpsSyncStatus(result);
+                        setter.accept(progress, result);
                         akkumulert.set(bestillingProgressRepository.save(progress));
                         clearCache();
                     });
