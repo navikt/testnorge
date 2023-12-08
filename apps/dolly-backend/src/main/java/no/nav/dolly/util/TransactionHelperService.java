@@ -14,6 +14,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -115,6 +116,26 @@ public class TransactionHelperService {
         });
     }
 
+    @Retryable
+    public BestillingProgress persisterTpsProgress(BestillingProgress bestillingProgress, String status) {
+
+        return transactionTemplate.execute(status1 -> {
+
+            var akkumulert = new AtomicReference<>(bestillingProgress);
+
+            bestillingProgressRepository.findByIdAndLock(bestillingProgress.getId())
+                    .ifPresent(progress -> {
+                        var value = progress.getTpsSyncStatus();
+                        var result = applyChanges(value, status);
+                        progress.setTpsSyncStatus(result);
+                        akkumulert.set(bestillingProgressRepository.save(progress));
+                        clearCache();
+                    });
+
+            return akkumulert.get();
+        });
+    }
+
     private String applyChanges(String value, String status, String separator) {
 
         if (isBlank(value)) {
@@ -129,6 +150,27 @@ public class TransactionHelperService {
                     .filter(text -> !text.contains(getInfoText()))
                     .distinct()
                     .collect(Collectors.joining(regex));
+        }
+    }
+
+    private String applyChanges(String gmlStatus, String nyStatus) {
+
+        if (isBlank(gmlStatus)) {
+            return nyStatus;
+
+        } else {
+
+            var nyeStatuser = Arrays.stream(nyStatus.split(","))
+                    .collect(Collectors.toMap(data -> data.split(":")[0], data -> data.split(":")[1]));
+            var gamleStatuser = Arrays.stream(gmlStatus.split(","))
+                    .collect(Collectors.toMap(data -> data.split(":")[0], data -> data.split(":")[1]));
+
+            var resultater = new HashMap<>(gamleStatuser);
+            resultater.putAll(nyeStatuser);
+
+            return resultater.entrySet().stream()
+                    .map(data -> "%s:%s".formatted(data.getKey(), data.getValue()))
+                            .collect(Collectors.joining(","));
         }
     }
 

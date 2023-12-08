@@ -126,8 +126,7 @@ public class TpsPersonService {
 
         } else {
 
-            transactionHelperService.persister(progress, BestillingProgress::getTpsSyncStatus,
-                    BestillingProgress::setTpsSyncStatus,
+            transactionHelperService.persisterTpsProgress(progress,
                     miljoer.stream()
                             .map(miljoe -> "%s:%s".formatted(miljoe, getSyncTextSystem("TPS",
                                     System.currentTimeMillis() - starttid)))
@@ -174,8 +173,7 @@ public class TpsPersonService {
                     .map(PersonMiljoeDTO::getMiljoe)
                     .toList());
 
-            transactionHelperService.persister(progress, BestillingProgress::getTpsSyncStatus,
-                    BestillingProgress::setTpsSyncStatus,
+            transactionHelperService.persisterTpsProgress(progress,
                     status.stream()
                             .filter(detalj -> ident.equals(detalj.getIdent()))
                             .map(detalj -> String.format("%s:%s", detalj.getMiljoe(),

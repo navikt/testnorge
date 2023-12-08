@@ -94,7 +94,7 @@ class TpsPersonServiceTest {
                         .map(ClientFuture::get))
                 .assertNext(status -> {
                     verify(transactionHelperService, times(2))
-                            .persister(any(BestillingProgress.class), any(), statusCaptor.capture());
+                            .persisterTpsProgress(any(BestillingProgress.class), statusCaptor.capture());
                     assertThat(statusCaptor.getAllValues().get(0), containsString("q1:Info: Synkronisering mot TPS startet ..."));
                     assertThat(statusCaptor.getAllValues().get(0), containsString("q2:Info: Synkronisering mot TPS startet ..."));
                     assertThat(statusCaptor.getAllValues().get(1), containsString("q1:OK"));
@@ -148,7 +148,7 @@ class TpsPersonServiceTest {
                         .map(ClientFuture::get))
                 .assertNext(status -> {
                     verify(transactionHelperService, times(2))
-                            .persister(any(BestillingProgress.class), any(), statusCaptor.capture());
+                            .persisterTpsProgress(any(BestillingProgress.class), statusCaptor.capture());
                     assertThat(statusCaptor.getAllValues().get(0), containsString(miljoe + ":Info: Synkronisering mot TPS startet ..."));
                     assertThat(statusCaptor.getAllValues().get(1), containsString(miljoe + ":OK"));
                     assertThat(progress.getIsTpsSyncEnv(), contains(miljoe));
@@ -175,7 +175,7 @@ class TpsPersonServiceTest {
                         .map(ClientFuture::get))
                 .assertNext(status -> {
                     verify(transactionHelperService, Mockito.atLeastOnce())
-                            .persister(any(BestillingProgress.class), any(), statusCaptor.capture());
+                            .persisterTpsProgress(any(BestillingProgress.class), statusCaptor.capture());
                     assertThat(statusCaptor.getAllValues().get(0), containsString("q1:Info: Synkronisering mot TPS startet ..."));
                     assertThat(statusCaptor.getAllValues().get(0), containsString("q2:Info: Synkronisering mot TPS startet ..."));
                     assertThat(statusCaptor.getAllValues().get(statusCaptor.getAllValues().size() - 1), containsString("q1:FEIL= Synkronisering mot TPS gitt opp"));
@@ -208,7 +208,7 @@ class TpsPersonServiceTest {
                         .map(ClientFuture::get))
                 .assertNext(status -> {
                     verify(transactionHelperService, Mockito.atLeastOnce())
-                            .persister(any(BestillingProgress.class), any(), statusCaptor.capture());
+                            .persisterTpsProgress(any(BestillingProgress.class), statusCaptor.capture());
                     assertThat(statusCaptor.getAllValues().get(0), containsString("q1:Info: Synkronisering mot TPS startet ..."));
                     assertThat(statusCaptor.getAllValues().get(0), containsString("q2:Info: Synkronisering mot TPS startet ..."));
                     assertThat(statusCaptor.getAllValues().get(statusCaptor.getAllValues().size() - 1), containsString(miljoeSomSvarer + ":OK"));
@@ -243,7 +243,7 @@ class TpsPersonServiceTest {
                         .map(ClientFuture::get))
                 .assertNext(status -> {
                     verify(transactionHelperService, Mockito.atLeastOnce())
-                            .persister(any(BestillingProgress.class), any(), statusCaptor.capture());
+                            .persisterTpsProgress(any(BestillingProgress.class), statusCaptor.capture());
                     assertThat(statusCaptor.getAllValues().get(0), containsString("q1:Info: Synkronisering mot TPS startet ..."));
                     assertThat(statusCaptor.getAllValues().get(0), containsString("q2:Info: Synkronisering mot TPS startet ..."));
                     assertThat(statusCaptor.getAllValues().get(statusCaptor.getAllValues().size() - 1), containsString(miljoeSomHarData + ":OK"));
