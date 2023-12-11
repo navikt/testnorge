@@ -88,6 +88,11 @@ export const MiljoVelger = ({
 	const disableAllEnvironments = erMiljouavhengig(bestillingsdata)
 	const filteredEnvironments = filterEnvironments(dollyEnvironments, bankIdBruker)
 	const order = ['T', 'Q']
+	const values = formMethods.watch('environments')
+
+	if (disableAllEnvironments) {
+		formMethods.setValue('environments', [])
+	}
 
 	return (
 		<div className="miljo-velger">
@@ -101,11 +106,11 @@ export const MiljoVelger = ({
 				</>
 			)}
 
-			{fieldMethods.fields.map((field, index) => {
-				if (disableAllEnvironments) {
-					formMethods.setValue('environments', [])
+			{order.map((type) => {
+				const category = filteredEnvironments[type]
+				if (!category) {
+					return null
 				}
-				const values = formMethods.getValues('environments')
 
 				const isChecked = (id) => values.includes(id)
 
@@ -116,17 +121,13 @@ export const MiljoVelger = ({
 					}
 				}
 
-				return order.map((type) => {
-					const category = filteredEnvironments[type]
-					if (!category) {
-						return null
-					}
-
-					return (
-						<fieldset key={type} name={`Liste over ${type}-miljøer`}>
-							<StyledH3>{type}-miljøer </StyledH3>
-							<div className="miljo-velger_checkboxes">
-								{category.map((env) => (
+				return (
+					<fieldset key={type} name={`Liste over ${type}-miljøer`}>
+						<StyledH3>{type}-miljøer </StyledH3>
+						<div className="miljo-velger_checkboxes">
+							{category.map((env) => {
+								console.log('env: ', env) //TODO - SLETT MEG
+								return (
 									<DollyCheckbox
 										key={env.id}
 										id={env.id}
@@ -140,11 +141,11 @@ export const MiljoVelger = ({
 										onClick={onClick}
 										size={'small'}
 									/>
-								))}
-							</div>
-						</fieldset>
-					)
-				})
+								)
+							})}
+						</div>
+					</fieldset>
+				)
 			})}
 
 			<ErrorMessageWithFocus name="environments" className="error-message" component="div" />

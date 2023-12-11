@@ -25,26 +25,24 @@ export const Identer: React.FC<IdentSearchProps> = ({
 				return (
 					<div key={field.id} style={{ marginTop: '10px' }}>
 						<div className="flexbox--align-start" key={index}>
-							<div className="skjemaelement">
-								<DollyTextInput
-									name={`${identerPath}.${index}.fnr`}
-									data-cy={CypressSelector.INPUT_TESTNORGE_FNR}
-									placeholder={'Ikke spesifisert'}
-									label={'Fødselsnummer eller D-nummer'}
-									style={{ width: '220px' }}
-									onKeyDown={(event: BaseSyntheticEvent<KeyboardEvent>) => {
-										event.nativeEvent.key === 'Enter' &&
-											!Object.keys(formMethods.formState.errors).length &&
-											onSubmit()
-									}}
-								/>
-							</div>
+							<DollyTextInput
+								name={`${identerPath}.${index}.fnr`}
+								data-cy={CypressSelector.INPUT_TESTNORGE_FNR}
+								placeholder={'Ikke spesifisert'}
+								// label={'Fødselsnummer eller D-nummer'}
+								style={{ width: '220px', marginBottom: '-10px' }}
+								onKeyDown={(event: BaseSyntheticEvent<KeyboardEvent>) => {
+									event.nativeEvent.key === 'Enter' &&
+										!Object.keys(formMethods.formState.errors).length &&
+										onSubmit()
+								}}
+							/>
 							{fieldMethods.fields.length > 1 && (
 								<Button
 									onClick={() => fieldMethods.remove(index)}
 									kind="trashcan"
 									fontSize={'1.5rem'}
-									style={{ marginLeft: '10px' }}
+									style={{ marginLeft: '20px' }}
 								/>
 							)}
 						</div>

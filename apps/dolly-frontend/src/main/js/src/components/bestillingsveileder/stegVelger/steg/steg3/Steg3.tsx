@@ -81,7 +81,7 @@ export const Steg3 = () => {
 		}
 	}, [])
 
-	const visMiljoeVelger = formMethods.getValues().hasOwnProperty('environments')
+	const visMiljoeVelger = formMethods.getValues('environments')
 	return (
 		<div>
 			{harAvhukedeAttributter(formMethods.getValues()) && (

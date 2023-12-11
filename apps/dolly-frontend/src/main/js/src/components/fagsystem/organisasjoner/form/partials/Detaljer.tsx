@@ -39,11 +39,11 @@ export const Detaljer = ({
 	maaHaUnderenhet = true,
 }: DetaljerProps) => {
 	const initialValues = _.omit(formMethods.getValues().organisasjon, ['underenheter', 'sektorkode'])
-	const underenheter = formMethods.getValues()?.organisasjon?.underenheter
-	const sektorkodeErValgt = formMethods.getValues().organisasjon.hasOwnProperty('sektorkode')
+	const underenheter = formMethods.getValues('organisasjon.underenheter')
+	const sektorkodeErValgt = formMethods.getValues('organisasjon.sektorkode')
 
 	useEffect(() => {
-		if (level === 0 && !_.get(formMethods.getValues(), `${path}.underenheter`)) {
+		if (level === 0 && _.isEmpty(formMethods.getValues(`${path}.underenheter`))) {
 			formMethods.setValue(`${path}.underenheter`, underenheter || [initialValues])
 			formMethods.trigger(`${path}.underenheter`)
 		}

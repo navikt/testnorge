@@ -11,7 +11,6 @@ import * as _ from 'lodash'
 import { useNavEnheter } from '@/utils/hooks/useNorg2'
 import { BarnetilleggForm } from '@/components/fagsystem/uforetrygd/form/partials/BarnetilleggForm'
 import { validation } from '@/components/fagsystem/uforetrygd/form/validation'
-import _get from 'lodash/get'
 import { Monthpicker } from '@/components/ui/form/inputs/monthpicker/Monthpicker'
 
 const uforetrygdPath = 'pensjonforvalter.uforetrygd'
@@ -46,9 +45,9 @@ export const UforetrygdForm = ({ formMethods }) => {
 					<Monthpicker
 						name={`${uforetrygdPath}.onsketVirkningsDato`}
 						label="Ønsket virkningsdato"
-						date={_get(formikBag.values, `${uforetrygdPath}.onsketVirkningsDato`)}
+						date={formMethods.getValues(`${uforetrygdPath}.onsketVirkningsDato`)}
 						handleDateChange={(dato: string) =>
-							formikBag.setFieldValue(`${uforetrygdPath}.onsketVirkningsDato`, dato)
+							formMethods.setValue(`${uforetrygdPath}.onsketVirkningsDato`, dato)
 						}
 					/>
 					<FormikTextInput

@@ -79,7 +79,7 @@ export const Steg2 = () => {
 			<UdistubForm formMethods={formMethods} />
 			<DokarkivForm formMethods={formMethods} />
 			<HistarkForm formMethods={formMethods} />
-			<OrganisasjonForm formMethods={formMethods} />
+			<OrganisasjonForm />
 		</div>
 	)
 }
