@@ -58,6 +58,7 @@ const DefaultBackground = styled.div`
 		return Default
 	}});
 	background-size: 100%;
+	overflow: hidden;
 	background-repeat: no-repeat;
 	background-position: center bottom;
 	background-color: ${() => {

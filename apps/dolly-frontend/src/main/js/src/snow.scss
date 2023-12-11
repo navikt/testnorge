@@ -15,7 +15,7 @@
 		transform: translate3d(var(--left-ini), 5vh, 0);
 	}
 	100% {
-		transform: translate3d(var(--left-end), 105vh, 0);
+		transform: translate3d(var(--left-end), 99vh, 0);
 	}
 }
 
@@ -24,7 +24,7 @@
 		--size: #{(random(2) + 0.02) * 0.1}vw;
 		--left-ini: #{random(20) - 10}vw;
 		--left-end: #{random(20) - 10}vw;
-		left: #{random(93)}vw;
+		left: #{random(89)}vw;
 		animation: snowfall #{5 + random(10)}s linear infinite;
 		animation-delay: -#{random(10)}s;
 	}
