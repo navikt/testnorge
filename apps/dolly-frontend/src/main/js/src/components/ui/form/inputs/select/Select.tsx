@@ -55,8 +55,8 @@ export const Select = ({
 	...rest
 }: SelectProps) => {
 	let _value = isMulti
-		? options?.filter?.((o) => value?.some((el) => el === o.value))
-		: options?.filter?.((o) => o.value === value)
+		? options?.filter?.((o) => value?.some((el) => el === o?.value))
+		: options?.filter?.((o) => o?.value === value)
 
 	return (
 		<ReactSelect
