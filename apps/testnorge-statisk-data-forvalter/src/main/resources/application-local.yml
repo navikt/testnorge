@@ -24,7 +24,5 @@ consumers:
   testnav-bruker-service:
     name: testnav-bruker-service-dev
     url: https://testnav-bruker-service-dev.intern.dev.nav.no
-  testnorge-hodejegeren:
-    url: https://testnorge-hodejegeren.intern.dev.nav.no
   synthdata-aareg:
     url: https://nais-synthdata-aareg.dev.intern.nav.no

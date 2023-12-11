@@ -38,12 +38,6 @@ kafka:
   groupid: organisasjon-forvalter-v1
 
 consumers:
-  person:
-    url: https://testnav-person-service.intern.dev.nav.no
-    threads: 5
-    cluster: dev-gcp
-    namespace: dolly
-    name: testnav-person-service
   generer-navn-service:
     url: https://generer-navn-service.intern.dev.nav.no
     cluster: dev-gcp
@@ -64,11 +58,6 @@ consumers:
     url: https://testnav-person-faste-data-service.intern.dev.nav.no
     name: testnav-person-faste-data-service
     cluster: dev-gcp
-    namespace: dolly
-  testnorge-hodejegeren:
-    url: http://testnorge-hodejegeren.dolly.svc.nais.local
-    name: testnorge-hodejegeren
-    cluster: dev-fss
     namespace: dolly
   krr-stub:
     url: https://krr-stub-%s.dev.intern.nav.no/api
