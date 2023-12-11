@@ -154,7 +154,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 	const { personFoerLeggTil, identtype } = opts
 
 	const fjernIdFoerLeggTil = (path: string) => {
-		const pdlDataElement = _.get(personFoerLeggTil, `pdlforvalter[0].person.${path}`)
+		const pdlDataElement = _.get(personFoerLeggTil, `pdlforvalter.person.${path}`)
 		return pdlDataElement.map(({ id, ...restProperties }: { id: string }) => restProperties)
 	}
 
@@ -309,7 +309,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 			label: 'Telefonnummer',
 			checked: has(paths.telefonnummer.pdl),
 			add() {
-				_.has(personFoerLeggTil, 'pdlforvalter[0].person.telefonnummer')
+				_.has(personFoerLeggTil, 'pdlforvalter.person.telefonnummer')
 					? setMulti(
 							[paths.telefonnummer.pdl, fjernIdFoerLeggTil('telefonnummer')],
 							[paths.telefonnummer.tpsM, _.get(personFoerLeggTil, 'tpsMessaging.telefonnumre')],

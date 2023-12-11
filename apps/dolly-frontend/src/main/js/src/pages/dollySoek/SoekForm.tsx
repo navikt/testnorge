@@ -655,7 +655,8 @@ export const SoekForm = () => {
 										</Button>
 										{result && (
 											<p style={{ marginRight: 0, marginLeft: 'auto' }}>
-												Viser {result.identer?.length} av totalt {result.totalHits} treff
+												Viser {result.identer?.length} identer fra totalt {result.totalHits}{' '}
+												bestillinger
 											</p>
 										)}
 									</Buttons>

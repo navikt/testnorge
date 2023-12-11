@@ -27,7 +27,6 @@ export const TpsfVisning = ({ data }) => {
 			<TpsfBoadresse boadresse={data?.boadresse} />
 			<Postadresse postadresse={data?.postadresse} />
 			<MidlertidigAdresse midlertidigAdresse={data?.midlertidigAdresse} />
-			<Telefonnummer data={data?.telefonnumre} />
 			<UtenlandskBankkonto data={data?.bankkontonrUtland} />
 			<NorskBankkonto data={data?.bankkontonrNorsk} />
 			<TpsfIdenthistorikk identhistorikk={data?.identHistorikk} />
@@ -51,7 +50,7 @@ TpsfVisning.filterValues = (data, bestillingsListe) => {
 			...data,
 			innvandretUtvandret: data?.innvandretUtvandret?.filter(
 				(element, idx) =>
-					idx !== data.innvandretUtvandret.length - 1 || element?.innutvandret === 'UTVANDRET'
+					idx !== data.innvandretUtvandret.length - 1 || element?.innutvandret === 'UTVANDRET',
 			),
 		}
 	return data
