@@ -10,10 +10,19 @@ import { getAlder } from '@/ducks/fagsystem'
 import { formatAlder } from '@/utils/DataFormatter'
 import { NavigerTilPerson } from '@/pages/dollySoek/NavigerTilPerson'
 import { PersonVisning } from '@/pages/dollySoek/PersonVisning'
+import { usePdlPersonbolk } from '@/utils/hooks/usePdlPerson'
+import { runningCypressE2E } from '@/service/services/Request'
 
 export const ResultatVisning = ({ resultat, soekError }) => {
 	const identString = resultat?.identer?.join(',')
-	const { personer, loading, error } = usePdlfPersoner(identString)
+	const { pdlfPersoner, loading: loadingPdlf, error: errorPdlf } = usePdlfPersoner(identString)
+	const { pdlPersoner, loading: loadingPdl, error: errorPdl } = usePdlPersonbolk(identString)
+
+	const personer = resultat?.identer?.map((ident) => {
+		const pdlfPerson = pdlfPersoner?.find((p) => p.person?.ident === ident)
+		const pdlPerson = pdlPersoner?.hentPersonBolk?.find((p) => p.ident === ident)
+		return pdlfPerson || pdlPerson
+	})
 
 	if (!resultat) {
 		return (
@@ -25,11 +34,11 @@ export const ResultatVisning = ({ resultat, soekError }) => {
 		)
 	}
 
-	if (resultat?.error || error || soekError) {
+	if (resultat?.error || (errorPdlf && errorPdl) || soekError) {
 		return (
 			<ContentContainer>
 				<Alert variant={'error'} size={'small'} inline>
-					Feil: {resultat.error || error?.message || soekError?.message}
+					Feil: {resultat.error || errorPdl?.message || errorPdlf?.message || soekError?.message}
 				</Alert>
 			</ContentContainer>
 		)
@@ -50,7 +59,7 @@ export const ResultatVisning = ({ resultat, soekError }) => {
 			text: 'Ident',
 			width: '20',
 			formatter: (_cell: any, row: any) => {
-				const ident = row.person?.ident
+				const ident = row.person?.ident || row.ident
 				return <DollyCopyButton displayText={ident} copyText={ident} tooltipText={'Kopier ident'} />
 			},
 		},
@@ -100,18 +109,18 @@ export const ResultatVisning = ({ resultat, soekError }) => {
 			text: 'Gruppe',
 			width: '20',
 			formatter: (_cell: any, row: any) => {
-				return <NavigerTilPerson ident={row.person?.ident} />
+				return <NavigerTilPerson ident={row.person?.ident || row.ident} />
 			},
 		},
 	]
 
-	if (loading) {
+	if (loadingPdlf || loadingPdl) {
 		return <Loading label={'Laster personer...'} />
 	}
 
 	return (
 		<DollyTable
-			data={personer}
+			data={runningCypressE2E() ? pdlfPersoner : personer}
 			columns={columns}
 			iconItem={(person) => {
 				const kjoenn = person.person?.kjoenn?.[0]?.kjoenn
@@ -124,7 +133,7 @@ export const ResultatVisning = ({ resultat, soekError }) => {
 				}
 			}}
 			onExpand={(person) => {
-				return <PersonVisning person={person} loading={loading} />
+				return <PersonVisning person={person} loading={loadingPdlf || loadingPdl} />
 			}}
 		/>
 	)

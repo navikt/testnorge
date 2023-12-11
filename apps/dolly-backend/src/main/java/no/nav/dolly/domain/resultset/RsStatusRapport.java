@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
@@ -39,6 +40,6 @@ public class RsStatusRapport {
     public static class Detaljert {
 
         private String miljo;
-        private List<String> identer;
+        private Set<String> identer;
     }
 }

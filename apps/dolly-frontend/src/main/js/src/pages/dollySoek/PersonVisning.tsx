@@ -6,15 +6,16 @@ import { NavigerTilPerson } from '@/pages/dollySoek/NavigerTilPerson'
 import React from 'react'
 
 export const PersonVisning = ({ person, loading }: any) => {
-	const { bestillinger } = useBestillingerPaaIdent(person.person?.ident)
+	const ident = person.person?.ident || person.ident
+	const { bestillinger } = useBestillingerPaaIdent(ident)
 
 	return (
 		<>
 			{bestillinger?.data?.length > 0 && (
 				<StyledAlert variant={'info'} size={'small'} style={{ marginTop: '10px' }}>
-					Søket er gjort mot bestillinger foretatt i Dolly, og denne personenen ble returnert fordi
-					én eller flere av bestillingene samsvarer med søket. Fordi det er mulig å gjøre endringer
-					på personer i etterkant av bestilling er det ikke sikkert at personen stemmer overens med
+					Søket er gjort mot bestillinger foretatt i Dolly, og denne personen ble returnert fordi én
+					eller flere av bestillingene samsvarer med søket. Fordi det er mulig å gjøre endringer på
+					personer i etterkant av bestilling er det ikke sikkert at personen stemmer overens med
 					alle søkekriteriene. Se bestillingen(e) knyttet til personen her:
 					<BestillingVisningListe bestillinger={bestillinger?.data} />
 				</StyledAlert>
@@ -26,8 +27,8 @@ export const PersonVisning = ({ person, loading }: any) => {
 			/>
 			<StyledAlert variant={'info'} size={'small'} inline style={{ marginTop: '20px' }}>
 				Viser kun egenskaper fra PDL,{' '}
-				<NavigerTilPerson ident={person.person.ident} linkTekst={'vis person i gruppe'} /> for å se
-				egenskaper fra alle fagsystemer.
+				<NavigerTilPerson ident={ident} linkTekst={'vis person i gruppe'} /> for å se egenskaper fra
+				alle fagsystemer.
 			</StyledAlert>
 		</>
 	)
