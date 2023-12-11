@@ -1,9 +1,0 @@
-spring:
-  r2dbc:
-    url: r2dbc:postgresql://localhost:3306/testnav-app-tilgang-analyse-service-db
-    username: testnav-app-tilgang-analyse-service
-    password: ${DB_PASSWORD}
-  flyway:
-    url: jdbc:postgresql://localhost:3306/testnav-app-tilgang-analyse-service-db
-    username: testnav-app-tilgang-analyse-service
-    password: ${DB_PASSWORD}
