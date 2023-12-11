@@ -1,0 +1,5 @@
+spring:
+  flyway:
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password:

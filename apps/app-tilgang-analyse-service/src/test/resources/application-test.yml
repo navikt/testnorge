@@ -1,0 +1,7 @@
+DOLLY_READER_TOKEN: test
+
+spring:
+  flyway:
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password:

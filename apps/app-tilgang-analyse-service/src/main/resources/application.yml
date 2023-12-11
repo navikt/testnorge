@@ -1,0 +1,51 @@
+AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
+
+spring:
+  cloud:
+    vault:
+      enabled: false
+  application:
+    version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
+    name: testnav-app-tilgang-analyse-service
+    description: API for å app tilgang analyse
+  security:
+    oauth2:
+      resourceserver:
+        aad:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+        tokenx:
+          issuer-uri: https://tokenx.dev-gcp.nav.cloud.nais.io 
+          jwk-set-uri: https://tokenx.dev-gcp.nav.cloud.nais.io/jwks
+          accepted-audience: dev-gcp:dolly:testnav-app-tilgang-analyse-service
+
+springdoc:
+  swagger-ui:
+    disable-swagger-default-url: true
+    url: /v3/api-docs
+
+consumers:
+  github:
+    url: https://api.github.com
+    token: ${DOLLY_READER_TOKEN}
+
+management:
+  endpoints:
+    enabled-by-default: true
+    web:
+      base-path: /internal
+      exposure.include: prometheus,heapdump,health
+      path-mapping:
+        prometheus: metrics
+  endpoint:
+    prometheus.enabled: true
+    heapdump.enabled: true
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
