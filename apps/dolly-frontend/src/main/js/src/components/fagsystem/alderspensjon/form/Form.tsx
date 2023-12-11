@@ -147,8 +147,8 @@ export const AlderspensjonForm = ({ formMethods }) => {
 		return !gjeldendeAdresse || !gjeldendeAdresse?.adressetype
 			? null
 			: gjeldendeAdresse?.adressetype === 'UTENLANDSK_ADRESSE'
-			  ? adressetyper.utland
-			  : adressetyper.norge
+				? adressetyper.utland
+				: adressetyper.norge
 	}
 
 	const harNorskAdresse = () => {

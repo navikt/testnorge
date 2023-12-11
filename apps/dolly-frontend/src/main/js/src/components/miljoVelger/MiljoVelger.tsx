@@ -125,24 +125,21 @@ export const MiljoVelger = ({
 					<fieldset key={type} name={`Liste over ${type}-miljøer`}>
 						<StyledH3>{type}-miljøer </StyledH3>
 						<div className="miljo-velger_checkboxes">
-							{category.map((env) => {
-								console.log('env: ', env) //TODO - SLETT MEG
-								return (
-									<DollyCheckbox
-										key={env.id}
-										id={env.id}
-										disabled={
-											env.disabled ||
-											(disableAllEnvironments && values.length < 1) ||
-											alleredeValgtMiljoe.some((miljoe) => miljoe === env.id)
-										}
-										label={env?.id?.toUpperCase()}
-										checked={values.includes(env.id)}
-										onClick={onClick}
-										size={'small'}
-									/>
-								)
-							})}
+							{category.map((env) => (
+								<DollyCheckbox
+									key={env.id}
+									id={env.id}
+									disabled={
+										env.disabled ||
+										(disableAllEnvironments && values.length < 1) ||
+										alleredeValgtMiljoe.some((miljoe) => miljoe === env.id)
+									}
+									label={env?.id?.toUpperCase()}
+									checked={values.includes(env.id)}
+									onClick={onClick}
+									size={'small'}
+								/>
+							))}
 						</div>
 					</fieldset>
 				)

@@ -142,8 +142,8 @@ export const Detaljer = ({
 					level > 3
 						? 'Du kan maksimalt lage fire nivåer av underenheter'
 						: typeUnderenhet === TypeUnderenhet.VIRKSOMHET
-						  ? 'Du kan ikke legge til underenheter på enhet av type virksomhet'
-						  : null
+							? 'Du kan ikke legge til underenheter på enhet av type virksomhet'
+							: null
 				}
 				canBeEmpty={
 					!maaHaUnderenhet || _.get(formMethods.getValues(), `${path}.enhetstype`) === 'ENK'
