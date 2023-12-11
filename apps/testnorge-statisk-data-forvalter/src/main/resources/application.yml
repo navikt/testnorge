@@ -65,19 +65,9 @@ consumers:
     name: testnav-person-faste-data-service
     cluster: dev-gcp
     namespace: dolly
-  tps-forvalteren-proxy:
-    url: http://tps-forvalteren-proxy.dolly.svc.nais.local
-    cluster: dev-fss
-    namespace: dolly
-    name: tps-forvalteren-proxy
   testnorge-hodejegeren:
     url: http://testnorge-hodejegeren.dolly.svc.nais.local
     name: testnorge-hodejegeren
-    cluster: dev-fss
-    namespace: dolly
-  testnorge-tp:
-    url: http://testnorge-tp.dolly.svc.nais.local
-    name: testnorge-tp
     cluster: dev-fss
     namespace: dolly
   krr-stub:

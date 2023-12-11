@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureWireMock(port = 0)
 @AutoConfigureMockMvc(addFilters = false)
 @DirtiesContext
-class OrkestreringsControllerKrrIntegrationTest {
+class OrkestreringControllerKrrIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -44,16 +44,6 @@ class OrkestreringsControllerKrrIntegrationTest {
     public void cleanUp() {
         reset();
         repository.deleteAll();
-    }
-
-    private KrrModel createKrr(String fnr) {
-        KrrModel model = new KrrModel();
-        model.setFnr(fnr);
-        return model;
-    }
-
-    private KrrRequest createKrrRequest(KrrModel model) {
-        return new KrrRequest(new Krr(model));
     }
 
     @Test

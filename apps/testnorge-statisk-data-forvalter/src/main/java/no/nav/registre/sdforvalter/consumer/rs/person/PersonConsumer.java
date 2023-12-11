@@ -3,11 +3,7 @@ package no.nav.registre.sdforvalter.consumer.rs.person;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.sdforvalter.config.Consumers;
-import no.nav.registre.sdforvalter.domain.TpsIdent;
-import no.nav.registre.sdforvalter.domain.TpsIdentListe;
 import no.nav.registre.sdforvalter.domain.person.Person;
-import no.nav.registre.sdforvalter.exception.UgyldigIdentException;
-import no.nav.testnav.libs.commands.CreatePersonCommand;
 import no.nav.testnav.libs.commands.GetPersonCommand;
 import no.nav.testnav.libs.dto.person.v1.Persondatasystem;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
@@ -22,10 +18,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -86,33 +80,5 @@ public class PersonConsumer {
             }
         }
         return personer;
-    }
-
-    public void opprettPersoner(TpsIdentListe identer) {
-        AccessToken accessToken = tokenExchange.exchange(serverProperties).block();
-        List<CompletableFuture<TpsIdent>> futures = identer.stream().map(ident -> CompletableFuture.supplyAsync(() -> {
-                    try {
-                        new CreatePersonCommand(webClient, ident.toDTO(), accessToken.getTokenValue(), ident.getOpprinnelse()).call().block();
-                        return ident;
-                    } catch (Exception e) {
-                        log.error("Kunne ikke opprette ident {}", ident.getFnr(), e);
-                        return null;
-                    }
-                }, executor)
-        ).toList();
-
-        List<TpsIdent> opprettedeIdenter = futures.stream().map(future -> {
-            try {
-                return future.get();
-            } catch (InterruptedException | ExecutionException e) {
-                log.error("Noe gikk galt ved henting av resultat fra tråd", e);
-                Thread.currentThread().interrupt();
-                return null;
-            }
-        }).toList();
-
-        if (opprettedeIdenter.stream().anyMatch(Objects::isNull)) {
-            throw new UgyldigIdentException("Klarte ikke å opprette alle identer");
-        }
     }
 }

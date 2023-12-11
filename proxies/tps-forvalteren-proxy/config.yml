@@ -40,8 +40,6 @@ spec:
           cluster: dev-gcp
         - application: testnorge-hodejegeren
           cluster: dev-fss
-        - application: testnorge-statisk-data-forvalter
-          cluster: dev-fss
   liveness:
     path: /internal/isAlive
     initialDelay: 4

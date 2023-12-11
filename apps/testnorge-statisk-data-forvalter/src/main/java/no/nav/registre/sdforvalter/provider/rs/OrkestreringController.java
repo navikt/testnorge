@@ -4,51 +4,34 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.sdforvalter.adapter.TpsIdenterAdapter;
-import no.nav.registre.sdforvalter.consumer.rs.person.PersonConsumer;
-import no.nav.registre.sdforvalter.domain.TpsIdentListe;
 import no.nav.registre.sdforvalter.provider.rs.dto.Orgnummer;
 import no.nav.registre.sdforvalter.service.EnvironmentInitializationService;
 import no.nav.testnav.libs.dto.organisasjonfastedataservice.v1.Gruppe;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/orkestrering")
 @Tag(
-        name = "OrkestreingController",
+        name = "OrkestreringController",
         description = "Initialiserer ulike miljøer med statiske data."
 )
-public class OrkestreringsController {
+public class OrkestreringController {
 
     private final EnvironmentInitializationService environmentInitializationService;
-    private final TpsIdenterAdapter tpsIdenterAdapter;
-    private final PersonConsumer personConsumer;
 
     @PostMapping(value = "/{miljoe}")
     @Operation(
-            description = "Orkestrerer testdata i TPS/PDL, testnorge-tp, KRR, AAREG, EREG."
+            description = "Orkestrerer testdata i KRR, AAREG, EREG."
     )
     public void initializeInEnvironment(@PathVariable String miljoe, @RequestParam(name = "gruppe", required = false) Gruppe gruppe) {
         environmentInitializationService.initializeEnvironmentWithStaticData(miljoe, gruppe != null ? gruppe.name() : null);
-    }
-
-    @PostMapping(value = "/tps/{miljoe}")
-    @Operation(
-            description = "Identisk med POST /{miljoe}."
-    )
-    public void initializeTps(@PathVariable String miljoe, @RequestParam(name = "gruppe", required = false) Gruppe gruppe) {
-        environmentInitializationService.initializeIdent(miljoe, gruppe != null ? gruppe.name() : null);
-    }
-
-    @PostMapping(value = "/pdl")
-    @Operation(
-            description = "Oppretter personer i TPS basert på angitt gruppe."
-    )
-    public void initializePdlGruppe(@RequestParam(name = "gruppe") Gruppe gruppe) {
-        TpsIdentListe liste = tpsIdenterAdapter.fetchBy(gruppe.name());
-        personConsumer.opprettPersoner(liste);
     }
 
     @PostMapping(value = "/aareg/{miljoe}")

@@ -55,8 +55,6 @@ spec:
       rules:
         - application: testnorge-hodejegeren
           cluster: dev-fss
-        - application: testnorge-tp
-          cluster: dev-fss
         - application: testnav-person-service
           cluster: dev-gcp
         - application: generer-navn-service

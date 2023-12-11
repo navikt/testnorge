@@ -1,22 +1,19 @@
 package no.nav.registre.sdforvalter.provider.rs;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.reset;
-import static no.nav.registre.sdforvalter.ResourceUtils.getResourceFileContent;
-import static org.mockito.Mockito.when;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.registre.sdforvalter.consumer.rs.aareg.request.RsAaregSyntetiseringsRequest;
 import no.nav.registre.sdforvalter.consumer.rs.kodeverk.response.KodeverkResponse;
+import no.nav.registre.sdforvalter.database.model.AaregModel;
+import no.nav.registre.sdforvalter.database.repository.AaregRepository;
 import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.testing.JsonWiremockHelper;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,18 +26,18 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
-import com.fasterxml.jackson.core.type.TypeReference;
-
+import reactor.core.publisher.Mono;
 
 import java.util.Collections;
 import java.util.List;
 
-import no.nav.registre.sdforvalter.database.model.AaregModel;
-import no.nav.registre.sdforvalter.database.repository.AaregRepository;
-import no.nav.testnav.libs.testing.JsonWiremockHelper;
-import reactor.core.publisher.Mono;
-
+import static com.github.tomakehurst.wiremock.client.WireMock.reset;
+import static no.nav.registre.sdforvalter.ResourceUtils.getResourceFileContent;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -48,7 +45,7 @@ import static org.mockito.ArgumentMatchers.any;
 @AutoConfigureMockMvc
 @TestPropertySource(locations = "classpath:application-test.yml")
 @ActiveProfiles("test")
-class OrkestreringsControllerAaregIntegrationTest {
+class OrkestreringControllerAaregIntegrationTest {
 
     @Autowired
     private MockMvc mvc;
@@ -69,7 +66,7 @@ class OrkestreringsControllerAaregIntegrationTest {
     private final String tokenResponse = "{\"access_token\": \"dummy\"}";
     private final KodeverkResponse kodeverkResponse = new KodeverkResponse(Collections.singletonList("yrke"));
     private static String syntString;
-    private TypeReference<List<RsAaregSyntetiseringsRequest>> SYNT_RESPONSE = new TypeReference<>() {
+    private final TypeReference<List<RsAaregSyntetiseringsRequest>> SYNT_RESPONSE = new TypeReference<>() {
     };
 
     @BeforeAll
