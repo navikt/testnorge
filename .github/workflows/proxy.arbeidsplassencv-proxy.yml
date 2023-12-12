@@ -14,9 +14,8 @@ jobs:
   workflow:
     uses: ./.github/workflows/common.workflow.backend.yml
     with:
-      cluster: "dev-fss"
       working-directory: "proxies/arbeidsplassencv-proxy"
-      deploy-tag: "#deploy-proxy"
+      deploy-tag: "#deploy-arbeidsplassencv-proxy"
     permissions:
       contents: read
       id-token: write

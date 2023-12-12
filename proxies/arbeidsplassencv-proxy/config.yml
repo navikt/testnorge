@@ -56,4 +56,4 @@ spec:
     limits:
       memory: 2048Mi
   ingresses:
-    - "https://testnav-arbeidsplassencv-proxy.dev-fss-pub.nais.io"
+    - "https://testnav-arbeidsplassencv-proxy.intern.dev.nav.no"

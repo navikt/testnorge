@@ -14,7 +14,7 @@ spring:
         tokenx:
           issuer-uri: https://tokenx.dev-gcp.nav.cloud.nais.io 
           jwk-set-uri: https://tokenx.dev-gcp.nav.cloud.nais.io/jwks
-          accepted-audience: dev-fss:dolly:testnav-arbeidsplassencv-proxy
+          accepted-audience: dev-gcp:dolly:testnav-arbeidsplassencv-proxy
   cloud:
     gateway:
       httpclient:
@@ -26,5 +26,5 @@ consumers:
   arbeidsplassencv:
     name: pam-cv-api
     namespace: teampam
-    url: http://pam-cv-api.teampam.svc.nais.local
+    url: http://pam-cv-api-gcp.teampam.svc.nais.local
     cluster: dev-fss
