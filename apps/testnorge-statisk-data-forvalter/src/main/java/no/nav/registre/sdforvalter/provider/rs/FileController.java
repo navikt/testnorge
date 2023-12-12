@@ -59,14 +59,4 @@ public class FileController {
         eregAdapter.save(new EregListe(list));
         return ResponseEntity.ok().build();
     }
-
-    private Reader cleanInput(InputStream inputStream) {
-        String character = "\uFEFF";
-        return new StringReader(
-                new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))
-                        .lines()
-                        .collect(Collectors.joining("\n")).replace(character, "")
-        );
-    }
-
 }
