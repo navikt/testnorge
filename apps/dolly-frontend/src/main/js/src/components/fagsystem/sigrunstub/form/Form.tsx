@@ -38,20 +38,12 @@ SigrunstubForm.validation = {
 							}),
 						}),
 					)
-					.test('is-required', 'Legg til minst én inntekt', function checkTjenesteGrunnlag(_val) {
-						const values = this.options.context
-						const path = this.options.path
-						const index = path.charAt(path.indexOf('[') + 1)
-						if (values.sigrunstub[index].tjeneste === 'BEREGNET_SKATT') {
-							return values.sigrunstub[index].grunnlag.length > 0
-						} else if (values.sigrunstub[index].tjeneste === 'SUMMERT_SKATTEGRUNNLAG') {
-							return (
-								values.sigrunstub[index].grunnlag.length > 0 ||
-								values.sigrunstub[index].svalbardGrunnlag.length > 0
-							)
-						} else {
+					.test('is-required', 'Legg til minst én inntekt', (_val, context) => {
+						const values = context.parent
+						if (!values.tjeneste) {
 							return true
 						}
+						return values.grunnlag?.length > 0 || values.svalbardGrunnlag?.length > 0
 					}),
 				inntektsaar: Yup.number().integer('Ugyldig årstall').required('Tast inn et gyldig år'),
 				svalbardGrunnlag: Yup.array().of(

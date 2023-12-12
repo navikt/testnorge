@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { VelgGruppeToggle } from '@/components/velgGruppe/VelgGruppeToggle'
 import { ifPresent } from '@/utils/YupValidations'
 import * as _ from 'lodash'
-import { ErrorMessageWithFocus } from '@/utils/ErrorMessageWithFocus'
+import { DollyErrorMessage } from '@/utils/DollyErrorMessage'
 import * as Yup from 'yup'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 
@@ -31,7 +31,7 @@ export const VelgGruppe = ({ formMethods, title, fraGruppe = null }: VelgGruppeP
 				setValgtGruppe={setValgtGruppe}
 				fraGruppe={fraGruppe}
 			/>
-			<ErrorMessageWithFocus name="gruppeId" className="error-message" component="div" />
+			<DollyErrorMessage name="gruppeId" />
 		</div>
 	)
 }

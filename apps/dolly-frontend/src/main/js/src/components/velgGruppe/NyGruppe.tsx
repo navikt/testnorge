@@ -57,7 +57,7 @@ export default ({ setValgtGruppe }: NyGruppe) => {
 			<Form
 				className={'ny-gruppe'}
 				autoComplete={'off'}
-				onSubmit={() => formMethods.handleSubmit(onHandleSubmit)}
+				onSubmit={formMethods.handleSubmit(onHandleSubmit)}
 			>
 				<div className="flexbox--flex-wrap">
 					<FormikTextInput name="navn" label="NAVN" size="small" autoFocus />

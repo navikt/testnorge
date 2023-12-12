@@ -5,9 +5,9 @@ import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { EnkeltinntektForm } from './enkeltinntektForm'
 import { getYearRangeOptions } from '@/utils/DataFormatter'
-import { ErrorMessageWithFocus } from '@/utils/ErrorMessageWithFocus'
 import React from 'react'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import { ErrorMessage } from '@hookform/error-message'
 
 const initialValues = {
 	inntektsaar: new Date().getFullYear(),
@@ -26,6 +26,7 @@ export const InntektsaarForm = ({ formMethods }) => {
 		formMethods.setValue(`${path}.tjeneste`, target.value)
 		formMethods.setValue(`${path}.grunnlag`, [])
 		formMethods.setValue(`${path}.svalbardGrunnlag`, [])
+		formMethods.trigger(path)
 	}
 
 	return (
@@ -75,13 +76,13 @@ export const InntektsaarForm = ({ formMethods }) => {
 							)}
 
 							<div style={{ marginTop: '20px' }}>
-								{_.isString(_.get(formMethods.formState.errors, `${path}.grunnlag`)) && (
-									<ErrorMessageWithFocus
-										name={`${path}.grunnlag`}
-										className="error-message"
-										component="div"
-									/>
-								)}
+								<ErrorMessage
+									errors={formMethods.formState.errors}
+									name={`${path}.grunnlag`}
+									render={({ message }) => (
+										<span style={{ color: '#ba3a26', fontStyle: 'italic' }}>{message}</span>
+									)}
+								/>
 							</div>
 						</React.Fragment>
 					</React.Fragment>

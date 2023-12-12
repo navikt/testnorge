@@ -1,13 +1,11 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Navigation } from './Navigation/Navigation'
 import { stateModifierFns } from '../stateModifier'
-import { validate } from '@/utils/YupValidations'
 import { BestillingsveilederHeader } from '../BestillingsveilederHeader'
 
 import { Steg1 } from './steg/steg1/Steg1'
 import { Steg2 } from './steg/steg2/Steg2'
 import { Steg3 } from './steg/steg3/Steg3'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import DisplayFormikState from '@/utils/DisplayFormikState'
 import {
 	REGEX_BACKEND_BESTILLINGER,
@@ -23,17 +21,6 @@ import DisplayFormikErrors from '@/utils/DisplayFormikErrors'
 const STEPS = [Steg1, Steg2, Steg3]
 
 export const StegVelger = ({ initialValues, onSubmit }) => {
-	const _validate = (values) => {
-		return validate(
-			{
-				...values,
-				personFoerLeggTil: personFoerLeggTil,
-				tidligereBestillinger: tidligereBestillinger,
-				leggTilPaaGruppe: leggTilPaaGruppe,
-			},
-			CurrentStepComponent.validation,
-		)
-	}
 	const [step, setStep] = useState(0)
 	const CurrentStepComponent: any = STEPS[step]
 	const formMethods = useForm({
@@ -46,9 +33,7 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 		formMethods.trigger().catch((e) => /* ignore */ e)
 	}, [formMethods.watch, step])
 
-	const opts: any = useContext(BestillingsveilederContext)
 	const mutate = useMatchMutate()
-	const { personFoerLeggTil, tidligereBestillinger, leggTilPaaGruppe } = opts
 
 	const isLastStep = () => step === STEPS.length - 1
 	const handleNext = () => setStep(step + 1)

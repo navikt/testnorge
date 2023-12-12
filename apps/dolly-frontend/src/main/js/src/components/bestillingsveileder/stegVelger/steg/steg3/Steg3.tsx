@@ -81,7 +81,7 @@ export const Steg3 = () => {
 		}
 	}, [])
 
-	const visMiljoeVelger = formMethods.getValues('environments')
+	const visMiljoeVelger = formMethods.watch('environments')
 	return (
 		<div>
 			{harAvhukedeAttributter(formMethods.getValues()) && (

@@ -5,6 +5,7 @@ import Request from '@/service/services/Request'
 const elasticUrl = '/dolly-backend/api/v1/elastic'
 
 export const useSoekIdenter = (request: SoekRequest) => {
+	console.log('request: ', request) //TODO - SLETT MEG
 	const { data, isLoading, error, mutate } = useSWR<ResponseIdenter, Error>(
 		request ? [`${elasticUrl}/identer`, request] : null,
 		([url, headers]) => Request.post(url, headers),

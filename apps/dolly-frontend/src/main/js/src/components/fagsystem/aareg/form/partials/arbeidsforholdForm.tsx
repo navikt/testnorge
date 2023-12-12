@@ -120,6 +120,7 @@ export const ArbeidsforholdForm = ({
 					? fixTimezone(field)
 					: field?.value || field?.target?.value || null
 				setFieldValue(`${path}.${fieldPath}`, value)
+				trigger(`${path}.${fieldPath}`)
 			}
 		} else {
 			return (field) => {
@@ -200,7 +201,7 @@ export const ArbeidsforholdForm = ({
 				? {
 						year: navArbeidsforholdPeriode.getFullYear(),
 						monthValue: navArbeidsforholdPeriode.getMonth(),
-				  }
+					}
 				: undefined,
 		)
 	}, [navArbeidsforholdPeriode])

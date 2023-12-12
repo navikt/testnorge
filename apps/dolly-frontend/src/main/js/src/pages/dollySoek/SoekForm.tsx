@@ -162,7 +162,7 @@ export const SoekForm = () => {
 					flatten(obj[i])
 				} else {
 					if (Array.isArray(obj[i])) {
-						if (obj[i].length > 0) {
+						if (obj[i]?.length > 0) {
 							isEmpty = false
 						}
 					} else if (obj[i] !== null && obj[i] !== false && obj[i] !== '') {
@@ -611,7 +611,7 @@ export const SoekForm = () => {
 										data-cy={CypressSelector.BUTTON_NULLSTILL_SOEK}
 										onClick={() => {
 											setRequest(null)
-											reset(initialValuesClone)
+											reset(null)
 										}}
 										variant="secondary"
 										disabled={!result}
@@ -620,7 +620,7 @@ export const SoekForm = () => {
 									</Button>
 									{result && (
 										<p style={{ marginRight: 0, marginLeft: 'auto' }}>
-											Viser {result.identer?.length} av totalt {result.totalHits} treff
+											Viser {result?.identer?.length} av totalt {result?.totalHits} treff
 										</p>
 									)}
 								</Buttons>

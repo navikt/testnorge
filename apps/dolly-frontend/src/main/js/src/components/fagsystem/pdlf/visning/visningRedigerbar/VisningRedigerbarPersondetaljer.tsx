@@ -256,11 +256,11 @@ export const VisningRedigerbarPersondetaljer = ({
 
 	const harNavn = redigertAttributt?.pdlf
 		? redigertAttributt?.pdlf?.navn?.[0]?.fornavn ||
-		  redigertAttributt?.pdlf?.navn?.[0]?.mellomnavn ||
-		  redigertAttributt?.pdlf?.navn?.[0]?.etternavn
+			redigertAttributt?.pdlf?.navn?.[0]?.mellomnavn ||
+			redigertAttributt?.pdlf?.navn?.[0]?.etternavn
 		: initialValues?.navn?.[0]?.fornavn ||
-		  initialValues?.navn?.[0]?.mellomnavn ||
-		  initialValues?.navn?.[0]?.etternavn
+			initialValues?.navn?.[0]?.mellomnavn ||
+			initialValues?.navn?.[0]?.etternavn
 
 	const harKjoenn = redigertAttributt?.pdlf
 		? redigertAttributt?.pdlf?.kjoenn?.[0]?.kjoenn
@@ -402,7 +402,7 @@ export const VisningRedigerbarPersondetaljer = ({
 			)}
 			{visningModus === Modus.Skriv && (
 				<FormProvider {...formMethods}>
-					<Form onSubmit={() => formMethods.handleSubmit(handleSubmit)}>
+					<Form onSubmit={formMethods.handleSubmit(handleSubmit)}>
 						<>
 							<FieldArrayEdit>
 								<div className="flexbox--flex-wrap">

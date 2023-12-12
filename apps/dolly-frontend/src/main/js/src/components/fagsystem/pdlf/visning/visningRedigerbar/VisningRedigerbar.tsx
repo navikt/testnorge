@@ -22,7 +22,6 @@ import {
 	AdressebeskyttelseForm,
 	getIdenttype,
 } from '@/components/fagsystem/pdlf/form/partials/adresser/adressebeskyttelse/Adressebeskyttelse'
-import { validate } from '@/utils/YupValidations'
 import {
 	Modus,
 	RedigerLoading,
@@ -51,6 +50,9 @@ type VisningTypes = {
 	identtype?: string
 	disableSlett?: boolean
 	personFoerLeggTil?: any
+	personValues: any
+	relasjoner: any
+	relatertPersonInfo: any
 }
 
 enum Attributt {
@@ -118,17 +120,6 @@ export const VisningRedigerbar = ({
 	relasjoner = null,
 	relatertPersonInfo = null,
 }: VisningTypes) => {
-	//TODO: Sjekk om denne validerer riktig
-	const _validate = (values: any) =>
-		validate(
-			{
-				...values,
-				personFoerLeggTil: personFoerLeggTil,
-				personValues: personValues,
-			},
-			visningRedigerbarValidation,
-		)
-
 	const [visningModus, setVisningModus] = useState(Modus.Les)
 	const [errorMessagePdlf, setErrorMessagePdlf] = useState(null)
 	const [errorMessagePdl, setErrorMessagePdl] = useState(null)
@@ -136,7 +127,7 @@ export const VisningRedigerbar = ({
 	const formMethods = useForm({
 		mode: 'onBlur',
 		defaultValues: redigertAttributt ? redigertAttributt : initialValues,
-		resolver: yupResolver(_validate),
+		resolver: yupResolver(visningRedigerbarValidation),
 	})
 
 	const pdlfError = (error: any) => {

@@ -34,8 +34,8 @@ export const Navigation = ({ step, onPrevious, isLastStep, handleSubmit }) => {
 		return 'Opprett'
 	}
 
-	const hasErrors = step === 1 && !_.isEmpty(errors)
-	const disabledVidere = step === 1 && opts?.is?.leggTil && !harAvhukedeAttributter(getValues())
+	const hasErrors = step !== 0 && !_.isEmpty(errors)
+	const disabledVidere = step !== 0 && opts?.is?.leggTil && !harAvhukedeAttributter(getValues())
 
 	return (
 		<div className="step-navknapper-wrapper">
@@ -58,8 +58,8 @@ export const Navigation = ({ step, onPrevious, isLastStep, handleSubmit }) => {
 						<NavButton
 							data-cy={CypressSelector.BUTTON_VIDERE}
 							variant={'primary'}
-							disabled={isSubmitting || disabledVidere}
-							onClick={hasErrors ? () => console.error('Feil i skjemaet') : handleSubmit}
+							disabled={hasErrors || isSubmitting || disabledVidere}
+							onClick={handleSubmit}
 						>
 							Videre
 						</NavButton>
@@ -69,7 +69,7 @@ export const Navigation = ({ step, onPrevious, isLastStep, handleSubmit }) => {
 							data-cy={CypressSelector.BUTTON_FULLFOER_BESTILLING}
 							variant={'primary'}
 							onClick={handleSubmit}
-							disabled={isSubmitting}
+							disabled={!_.isEmpty(errors) || isSubmitting}
 						>
 							{getLastButtonText()}
 						</NavButton>

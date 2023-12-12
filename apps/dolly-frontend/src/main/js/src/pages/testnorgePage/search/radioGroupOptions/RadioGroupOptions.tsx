@@ -35,6 +35,7 @@ export const RadioGroupOptions = ({
 	const selected = _.get(formMethods.getValues(), `${path}`) || null
 	const setSelected = (valg: string) => {
 		formMethods.setValue(`${path}`, valg)
+		formMethods.trigger(`${path}`)
 	}
 	return (
 		<div className="radio-group">

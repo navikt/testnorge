@@ -9,7 +9,7 @@ import { DollyApi, PdlforvalterApi } from '@/service/Api'
 import Icon from '@/components/ui/icon/Icon'
 import DollyModal from '@/components/ui/modal/DollyModal'
 import useBoolean from '@/utils/hooks/useBoolean'
-import { ifPresent, validate } from '@/utils/YupValidations'
+import { ifPresent } from '@/utils/YupValidations'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { telefonnummer } from '@/components/fagsystem/pdlf/form/validation/partials'
 import { TelefonnummerFormRedigering } from '@/components/fagsystem/pdlf/form/partials/telefonnummer/Telefonnummer'
@@ -31,6 +31,13 @@ type VisningTypes = {
 	alleSlettet: boolean
 	disableSlett: Function
 }
+
+const validationSchema = Yup.object().shape(
+	{
+		telefonnummer: ifPresent('telefonnummer', Yup.array().of(telefonnummer)),
+	},
+	[['telefonnummer', 'telefonnummer']],
+)
 
 enum Attributt {
 	Telefonnummer = 'telefonnummer',
@@ -73,8 +80,6 @@ export const VisningRedigerbarSamlet = ({
 	alleSlettet,
 	disableSlett,
 }: VisningTypes) => {
-	const _validate = (values: any) => validate(values, validationSchema)
-
 	const getRedigertAttributtListe = () => {
 		const liste = [] as Array<any>
 		initialValuesListe.forEach((item: any) => {
@@ -103,7 +108,7 @@ export const VisningRedigerbarSamlet = ({
 	const formMethods = useForm({
 		mode: 'onBlur',
 		defaultValues: redigertAttributt ? redigertAttributtListe : initialValues,
-		resolver: yupResolver(_validate),
+		resolver: yupResolver(validationSchema),
 	})
 
 	const openDeleteModal = (idx: number) => {
@@ -190,13 +195,6 @@ export const VisningRedigerbarSamlet = ({
 		}
 		return null
 	}
-
-	const validationSchema = Yup.object().shape(
-		{
-			telefonnummer: ifPresent('telefonnummer', Yup.array().of(telefonnummer)),
-		},
-		[['telefonnummer', 'telefonnummer']],
-	)
 
 	return (
 		<>
@@ -285,7 +283,7 @@ export const VisningRedigerbarSamlet = ({
 				</DollyFieldArray>
 			)}
 			{visningModus === Modus.Skriv && (
-				<Form onSubmit={() => formMethods.handleSubmit(handleSubmit)} enableReinitialize>
+				<Form onSubmit={formMethods.handleSubmit(handleSubmit)} enableReinitialize>
 					<>
 						<DollyFieldArray
 							data={_.get(redigertAttributtListe, path) || initialValuesListe}

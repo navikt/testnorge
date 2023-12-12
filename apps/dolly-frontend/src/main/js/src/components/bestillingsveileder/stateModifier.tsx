@@ -5,13 +5,12 @@ import { UseFormReturn } from 'react-hook-form/dist/types'
 export const stateModifierFns = (formMethods: UseFormReturn, opts = null) => {
 	const dispatch = useDispatch()
 	const set = (path, value) => {
-		return formMethods.setValue(path, value)
+		formMethods.setValue(path, value)
 	}
 	const has = (path) => {
 		return formMethods.watch(path) !== undefined
 	}
 	const del = (path) => {
-		// methods.resetField(path)
 		if (isArray(path)) {
 			path.forEach((p) => {
 				formMethods.setValue(p, undefined)
@@ -20,7 +19,6 @@ export const stateModifierFns = (formMethods: UseFormReturn, opts = null) => {
 		} else {
 			formMethods.setValue(path, undefined)
 			formMethods.resetField(path)
-			formMethods.watch(path)
 		}
 		let newObj = _.omit(formMethods.getValues(), path)
 
@@ -37,7 +35,6 @@ export const stateModifierFns = (formMethods: UseFormReturn, opts = null) => {
 			const [path, val] = curr
 			formMethods.setValue(path, val)
 		})
-		// methods.setValue(newInitial)
 	}
 
 	const allCheckedLabels = (attrs) =>

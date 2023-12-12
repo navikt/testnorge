@@ -77,6 +77,7 @@ export const ArbeidsforholdToggle = (): ReactElement => {
 		} else if (value === ArbeidsgiverTyper.egen) {
 			formMethods.setValue('aareg', [initialValues])
 		}
+		formMethods.trigger('aareg')
 	}
 
 	const warningMessage = (

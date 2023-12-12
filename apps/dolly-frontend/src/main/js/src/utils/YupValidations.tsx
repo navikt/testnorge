@@ -3,25 +3,6 @@ import * as _ from 'lodash'
 import { parseDate } from '@/utils/DataFormatter'
 import { isDate } from 'date-fns'
 
-/*
-For custom validation der vi kan bruke f.eks. context.
-*/
-export const validate = async (values, schema) => {
-	if (!schema) return
-	try {
-		await schema.validate(values, { abortEarly: false, context: values })
-		return {}
-	} catch (err) {
-		if (err.name === 'ValidationError') {
-			console.warn('Validation error: ', err)
-			// return yupToFormErrors(err)
-		} else {
-			console.info('Validation error')
-			throw err
-		}
-	}
-}
-
 /**
  * Valideringsmeldinger
  */

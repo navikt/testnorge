@@ -7,7 +7,7 @@ import { ifPresent } from '@/utils/YupValidations'
 import * as Yup from 'yup'
 import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 import Loading from '@/components/ui/loading/Loading'
-import { ErrorMessageWithFocus } from '@/utils/ErrorMessageWithFocus'
+import { DollyErrorMessage } from '@/utils/DollyErrorMessage'
 import { Alert } from '@navikt/ds-react'
 import { useFieldArray, useFormContext } from 'react-hook-form'
 
@@ -144,8 +144,7 @@ export const MiljoVelger = ({
 					</fieldset>
 				)
 			})}
-
-			<ErrorMessageWithFocus name="environments" className="error-message" component="div" />
+			<DollyErrorMessage name="environments" />
 		</div>
 	)
 }
@@ -153,8 +152,8 @@ export const MiljoVelger = ({
 MiljoVelger.validation = {
 	environments: ifPresent(
 		'$environments',
-		Yup.array().test('har-miljoe-nar-pakrevd', 'Velg minst ett miljø', function miljoetest() {
-			const values = this.options.context
+		Yup.array().test('har-miljoe-nar-pakrevd', 'Velg minst ett miljø', (_val, context) => {
+			const values = context.parent
 			const miljoeNotRequired = erMiljouavhengig(values)
 			const hasEnvironments = values.environments.length > 0
 			return miljoeNotRequired || hasEnvironments

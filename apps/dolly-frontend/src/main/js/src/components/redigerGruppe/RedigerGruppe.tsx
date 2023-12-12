@@ -69,7 +69,7 @@ const RedigerGruppe = ({
 		erRedigering
 			? await updateGruppe(gruppe.id, groupValues).then(() => {
 					return mutate(REGEX_BACKEND_GRUPPER)
-			  })
+				})
 			: await createGruppe(groupValues).then(
 					(response: {
 						value: {
@@ -83,7 +83,7 @@ const RedigerGruppe = ({
 							navigate(`/gruppe/${gruppeId}`)
 						}
 					},
-			  )
+				)
 		return !error && onCancel()
 	}
 
@@ -108,7 +108,7 @@ const RedigerGruppe = ({
 				control={formMethods.control}
 				className={'opprett-tabellrad'}
 				autoComplete={'off'}
-				onSubmit={() => formMethods.handleSubmit(onHandleSubmit)}
+				onSubmit={formMethods.handleSubmit(onHandleSubmit)}
 			>
 				<div className="fields">
 					<FormikTextInput

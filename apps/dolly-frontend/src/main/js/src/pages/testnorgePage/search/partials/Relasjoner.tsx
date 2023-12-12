@@ -47,6 +47,7 @@ export const Relasjoner = ({ formMethods }: RelasjonerProps) => {
 
 	useEffect(() => {
 		formMethods.setValue(paths.forelderBarnRelasjoner, foreldre)
+		formMethods.trigger(paths.forelderBarnRelasjoner)
 	}, [foreldre])
 
 	return (

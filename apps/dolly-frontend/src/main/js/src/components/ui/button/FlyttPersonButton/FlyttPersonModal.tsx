@@ -10,7 +10,7 @@ import styled from 'styled-components'
 import { VelgGruppe } from '@/components/bestillingsveileder/stegVelger/steg/steg3/VelgGruppe'
 import { useNavigate } from 'react-router-dom'
 import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import { ErrorMessageWithFocus } from '@/utils/ErrorMessageWithFocus'
+import { DollyErrorMessage } from '@/utils/DollyErrorMessage'
 import Loading from '@/components/ui/loading/Loading'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 import Icon from '@/components/ui/icon/Icon'
@@ -123,7 +123,7 @@ const PersonSoek = styled.div`
 	}
 `
 
-const StyledErrorMessageWithFocus = styled(ErrorMessageWithFocus)`
+const StyledErrorMessageWithFocus = styled(DollyErrorMessage)`
 	margin-top: 10px;
 `
 
@@ -252,7 +252,7 @@ export const FlyttPersonModal = ({ gruppeId, modalIsOpen, closeModal }: FlyttPer
 						title={'Velg hvilken gruppe du ønsker å flytte personer til'}
 						fraGruppe={gruppeId}
 					/>
-					<StyledErrorMessageWithFocus name="gruppe" className="error-message" component="div" />
+					<StyledErrorMessageWithFocus name="gruppe" />
 				</GruppeVelger>
 				<PersonVelger>
 					<PersonKolonne>
@@ -313,7 +313,7 @@ export const FlyttPersonModal = ({ gruppeId, modalIsOpen, closeModal }: FlyttPer
 							</Button>
 							<Button onClick={() => formMethods.setValue('identer', [])}>NULLSTILL</Button>
 						</div>
-						<StyledErrorMessageWithFocus name="identer" className="error-message" component="div" />
+						<StyledErrorMessageWithFocus name="identer" />
 					</PersonKolonne>
 					<PersonKolonne>
 						<h2 style={{ marginLeft: '20px' }}>Valgte personer</h2>

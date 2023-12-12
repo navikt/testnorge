@@ -92,7 +92,7 @@ export default ({ gruppe }: TestnorgePageProps) => {
 			</div>
 
 			<FormProvider {...formMethods}>
-				<Form control={formMethods.control} onSubmit={() => formMethods.handleSubmit(onSubmit)}>
+				<Form control={formMethods.control} onSubmit={formMethods.handleSubmit(onSubmit)}>
 					<Fragment>
 						{devEnabled && <DisplayFormikState {...formMethods} />}
 						{devEnabled && (
