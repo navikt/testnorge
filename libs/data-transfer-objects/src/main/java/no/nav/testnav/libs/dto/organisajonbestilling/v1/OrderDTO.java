@@ -1,4 +1,4 @@
-package no.nav.testnav.libs.dto.v1;
+package no.nav.testnav.libs.dto.organisajonbestilling.v1;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,10 +9,7 @@ import lombok.Value;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class AdresseDTO {
-
-    String gatenavn;
-    String postnummer;
-    String poststed;
-    String kommunenummer;
+public class OrderDTO {
+    String miljo;
+    Long batchId;
 }

@@ -12,8 +12,8 @@ import java.util.stream.StreamSupport;
 import no.nav.testnav.apps.organisasjonbestillingservice.consumer.EregBatchStatusConsumer;
 import no.nav.testnav.apps.organisasjonbestillingservice.repository.v1.OrderRepository;
 import no.nav.testnav.apps.organisasjonbestillingservice.repository.v1.model.OrderModel;
-import no.nav.testnav.libs.dto.organiasjonbestilling.v1.ItemDTO;
-import no.nav.testnav.libs.dto.organiasjonbestilling.v1.Status;
+import no.nav.testnav.libs.dto.organisajonbestilling.v1.ItemDTO;
+import no.nav.testnav.libs.dto.organisajonbestilling.v1.Status;
 import no.nav.testnav.apps.organisasjonbestillingservice.domain.v1.Order;
 
 @Slf4j

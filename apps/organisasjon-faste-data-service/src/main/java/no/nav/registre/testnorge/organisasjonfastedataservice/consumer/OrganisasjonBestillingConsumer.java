@@ -2,7 +2,7 @@ package no.nav.registre.testnorge.organisasjonfastedataservice.consumer;
 
 import no.nav.registre.testnorge.organisasjonfastedataservice.config.Consumers;
 import no.nav.registre.testnorge.organisasjonfastedataservice.consumer.command.GetOrdreCommand;
-import no.nav.testnav.libs.dto.organiasjonbestilling.v1.ItemDTO;
+import no.nav.testnav.libs.dto.organisajonbestilling.v1.ItemDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;

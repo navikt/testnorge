@@ -1,4 +1,5 @@
-package no.nav.testnav.libs.dto.applikasjonsanalyseservice.v1;
+package no.nav.testnav.libs.dto.organisajonbestilling.v1;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,8 +10,7 @@ import lombok.Value;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class DependencyDTO {
-    String name;
-    String cluster;
-    String namespace;
+public class ItemDTO {
+    Long id;
+    Status status;
 }

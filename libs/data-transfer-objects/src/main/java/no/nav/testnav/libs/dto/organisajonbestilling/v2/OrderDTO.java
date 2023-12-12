@@ -1,4 +1,4 @@
-package no.nav.testnav.libs.dto.identpool.v1;
+package no.nav.testnav.libs.dto.organisajonbestilling.v2;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -10,9 +10,17 @@ import lombok.Value;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-public class FiktiveNavnDTO {
+public class OrderDTO {
     @JsonProperty
-    String fornavn;
+    Long id;
     @JsonProperty
-    String etternavn;
+    Long queueId;
+    @JsonProperty
+    Long buildId;
+    @JsonProperty
+    Long batchId;
+    @JsonProperty
+    String miljo;
+    @JsonProperty
+    String uuid;
 }

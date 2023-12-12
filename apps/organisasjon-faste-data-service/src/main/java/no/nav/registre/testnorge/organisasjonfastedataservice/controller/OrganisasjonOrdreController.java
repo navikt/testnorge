@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.organisasjonfastedataservice.service.OrganisasjonOrdreService;
 import no.nav.registre.testnorge.organisasjonfastedataservice.service.OrganisasjonService;
-import no.nav.testnav.libs.dto.organiasjonbestilling.v1.ItemDTO;
+import no.nav.testnav.libs.dto.organisajonbestilling.v1.ItemDTO;
 import no.nav.testnav.libs.dto.organisasjonfastedataservice.v1.Gruppe;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

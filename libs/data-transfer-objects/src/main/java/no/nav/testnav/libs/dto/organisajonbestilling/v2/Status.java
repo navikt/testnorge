@@ -1,4 +1,4 @@
-package no.nav.testnav.libs.dto.organiasjonbestilling.v2;
+package no.nav.testnav.libs.dto.organisajonbestilling.v2;
 
 
 public enum Status {
