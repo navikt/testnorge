@@ -25,6 +25,8 @@ import _has from 'lodash/has'
 import { MedlKodeverk } from '@/components/fagsystem/medl/MedlConstants'
 import { useNavEnheter } from '@/utils/hooks/useNorg2'
 import { kodeverkKeyToLabel } from '@/components/fagsystem/sigrunstubPensjonsgivende/utils'
+import { useContext } from 'react'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 // TODO: Flytte til selector?
 // - Denne kan forminskes ved bruk av hjelpefunksjoner
@@ -82,9 +84,14 @@ const mapBestillingsinformasjon = (bestillingsinformasjon: any, data: any[], ide
 	}
 }
 
-const mapPdlNyPerson = (bestillingData, data) => {
+const mapPdlNyPerson = (bestillingData, data, bestilling) => {
 	const pdlNyPersonKriterier = bestillingData.pdldata?.opprettNyPerson
-	if (pdlNyPersonKriterier) {
+	if (
+		pdlNyPersonKriterier &&
+		(bestilling
+			? _.has(pdlNyPersonKriterier, 'alder')
+			: !isEmpty(pdlNyPersonKriterier, ['identtype', 'syntetisk']))
+	) {
 		const { alder, foedtEtter, foedtFoer } = pdlNyPersonKriterier
 		const nyPersonData = {
 			header: 'Persondetaljer',
@@ -92,11 +99,13 @@ const mapPdlNyPerson = (bestillingData, data) => {
 				obj('Alder', alder),
 				obj('Født etter', formatDate(foedtEtter)),
 				obj('Født før', formatDate(foedtFoer)),
+				obj(
+					'Persondetaljer',
+					!alder && !foedtEtter && !foedtFoer && bestilling ? ingenVerdierSatt : null,
+				),
 			],
 		}
-		if (alder || foedtEtter || foedtFoer) {
-			data.push(nyPersonData)
-		}
+		data.push(nyPersonData)
 	}
 }
 
@@ -143,14 +152,16 @@ const mapFoedsel = (foedsel, data) => {
 		const foedselData = {
 			header: 'Fødsel',
 			itemRows: foedsel.map((item, idx) => {
-				return [
-					{ numberHeader: `Fødsel ${idx + 1}` },
-					obj('Fødselsdato', formatDate(item.foedselsdato)),
-					obj('Fødselsår', item.foedselsaar),
-					obj('Fødested', item.foedested),
-					obj('Fødekommune', item.foedekommune, AdresseKodeverk.Kommunenummer),
-					obj('Fødeland', item.foedeland, AdresseKodeverk.InnvandretUtvandretLand),
-				]
+				return isEmpty(item, ['kilde', 'master'])
+					? [obj('Fødsel', ingenVerdierSatt)]
+					: [
+							{ numberHeader: `Fødsel ${idx + 1}` },
+							obj('Fødselsdato', formatDate(item.foedselsdato)),
+							obj('Fødselsår', item.foedselsaar),
+							obj('Fødested', item.foedested),
+							obj('Fødekommune', item.foedekommune, AdresseKodeverk.Kommunenummer),
+							obj('Fødeland', item.foedeland, AdresseKodeverk.InnvandretUtvandretLand),
+					  ]
 			}),
 		}
 		data.push(foedselData)
@@ -806,18 +817,20 @@ const mapNyIdent = (nyident, data) => {
 		const nyidentData = {
 			header: 'Ny identitet',
 			itemRows: nyident.map((item, idx) => {
-				return [
-					{
-						numberHeader: `Ny identitet ${idx + 1}`,
-					},
-					obj('Eksisterende ident', item.eksisterendeIdent),
-					obj('Identtype', item.identtype),
-					obj('Kjønn', item.kjoenn),
-					obj('Født etter', formatDate(item.foedtEtter)),
-					obj('Født før', formatDate(item.foedtFoer)),
-					obj('Alder', item.alder),
-					obj('Har mellomnavn', item.nyttNavn?.hasMellomnavn && 'JA'),
-				]
+				return isEmpty(item, ['kilde', 'master', 'syntetisk'])
+					? [obj('Ny identitet', ingenVerdierSatt)]
+					: [
+							{
+								numberHeader: `Ny identitet ${idx + 1}`,
+							},
+							obj('Eksisterende ident', item.eksisterendeIdent),
+							obj('Identtype', item.identtype),
+							obj('Kjønn', item.kjoenn),
+							obj('Født etter', formatDate(item.foedtEtter)),
+							obj('Født før', formatDate(item.foedtFoer)),
+							obj('Alder', item.alder),
+							obj('Har mellomnavn', item.nyttNavn?.hasMellomnavn && 'JA'),
+					  ]
 			}),
 		}
 		data.push(nyidentData)
@@ -1819,7 +1832,7 @@ const mapUdiStub = (bestillingData, data) => {
 	}
 }
 
-const mapPensjon = (bestillingData, data) => {
+const mapPensjon = (bestillingData, data, navEnheter) => {
 	const pensjonKriterier = bestillingData.pensjonforvalter
 
 	if (pensjonKriterier) {
@@ -1879,10 +1892,8 @@ const mapPensjon = (bestillingData, data) => {
 		if (pensjonKriterier.alderspensjon) {
 			const ap = pensjonKriterier.alderspensjon
 
-			const { navEnheter } = useNavEnheter()
-			const navEnhetLabel = navEnheter?.find(
-				(enhet) => enhet.value === ap.navEnhetId?.toString(),
-			)?.label
+			const navEnhetLabel = navEnheter?.find((enhet) => enhet.value === ap.navEnhetId?.toString())
+				?.label
 
 			const pensjonforvalterAlderspensjon = {
 				header: 'Alderspensjon: ' + (ap.soknad ? 'Søknad' : 'Vedtak'),
@@ -1902,7 +1913,6 @@ const mapPensjon = (bestillingData, data) => {
 		if (pensjonKriterier.uforetrygd) {
 			const uforetrygd = pensjonKriterier.uforetrygd
 
-			const { navEnheter } = useNavEnheter()
 			const navEnhetLabel = navEnheter?.find(
 				(enhet) => enhet.value === uforetrygd.navEnhetId?.toString(),
 			)?.label
@@ -2162,8 +2172,11 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 	const data = []
 	const identtype = bestillingData.pdldata?.opprettNyPerson?.identtype
 
+	const bestilling = useContext(BestillingsveilederContext)
+	const { navEnheter } = useNavEnheter()
+
 	mapBestillingsinformasjon(bestillingsinformasjon, data, identtype)
-	mapPdlNyPerson(bestillingData, data)
+	mapPdlNyPerson(bestillingData, data, bestilling)
 
 	const pdldataKriterier = bestillingData.pdldata?.person
 	if (pdldataKriterier) {
@@ -2233,7 +2246,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 	mapArena(bestillingData, data)
 	mapInst(bestillingData, data)
 	mapUdiStub(bestillingData, data)
-	mapPensjon(bestillingData, data)
+	mapPensjon(bestillingData, data, navEnheter)
 	mapInntektsmelding(bestillingData, data)
 	mapDokarkiv(bestillingData, data)
 	mapHistark(bestillingData, data)
