@@ -33,10 +33,6 @@ spec:
       rules:
         - application: team-dolly-lokal-app
           cluster: dev-gcp
-        - application: testnorge-tp
-          cluster: dev-fss
-        - application: testnorge-statisk-data-forvalter
-          cluster: dev-fss
         - application: testnav-hodejegeren-proxy
           cluster: dev-fss
         - application: mn-synt-arbeidsforhold-service

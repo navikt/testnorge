@@ -18,12 +18,6 @@ spring:
 AAD_ISSUER_URI: http://localhost:${wiremock.server.port:0}/token
 
 consumers:
-  person:
-    url: http://localhost:${wiremock.server.port:0}/person
-    cluster: dummy
-    namespace: dummy
-    name: testnav-person-service-test
-    threads: 5
   generer-navn-service:
     url: http://localhost:${wiremock.server.port:0}/generer-navn
     cluster: dummy
@@ -45,15 +39,6 @@ consumers:
     name: testnav-person-faste-data-service
     cluster: dummy
     namespace: dolly
-  tps-forvalteren-proxy:
-    url: http://localhost:${wiremock.server.port:0}/tpsf
-    cluster: dev-fss
-    namespace: dummy
-    name: tps-forvalteren-proxy
-  testnorge-hodejegeren:
-    url: http://localhost:${wiremock.server.port:0}/hodejegeren
-  testnorge-tp:
-    url: http://localhost:${wiremock.server.port:0}/testnorge-tp
   krr-stub:
     url: http://localhost:${wiremock.server.port:0}/krr-stub/api
   synthdata-aareg:
@@ -68,8 +53,6 @@ consumers:
 
 aareg:
   pageSize: 2
-
-tps.statisk.avspillergruppeId: 1
 
 controller.staticdata.cache.hours: 24
 azure.app.client.id: dummy
