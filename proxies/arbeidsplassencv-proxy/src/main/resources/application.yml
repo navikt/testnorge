@@ -24,7 +24,7 @@ spring:
 
 consumers:
   arbeidsplassencv:
-    name: pam-cv-api
+    name: pam-cv-api-gcp
     namespace: teampam
     url: http://pam-cv-api-gcp.teampam.svc.nais.local
-    cluster: dev-fss
+    cluster: dev-gcp
