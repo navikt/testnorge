@@ -206,8 +206,8 @@ consumers:
   testnav-arbeidsplassencv-proxy:
     name: testnav-arbeidsplassencv-proxy
     namespace: dolly
-    url: https://testnav-arbeidsplassencv-proxy.dev-fss-pub.nais.io
-    cluster: dev-fss
+    url: http://testnav-arbeidsplassencv-proxy.dolly.svc.cluster.local
+    cluster: dev-gcp
   testnav-histark-proxy:
     name: testnav-histark-proxy
     namespace: dolly
