@@ -20,22 +20,18 @@ spec:
     inbound:
       rules:
         - application: team-dolly-lokal-app
-          cluster: dev-gcp
         - application: dolly-frontend
-          cluster: dev-gcp
         - application: dolly-idporten
-          cluster: dev-gcp
         - application: dolly-frontend-dev
-          cluster: dev-gcp
         - application: dolly-backend
-          cluster: dev-gcp
         - application: dolly-backend-dev
-          cluster: dev-gcp
         - application: testnav-oversikt-frontend
-          cluster: dev-gcp
         - application: app-1
           namespace: plattformsikkerhet
-          cluster: dev-gcp
+    outbound:
+      rules:
+        - application: pam-cv-api-gcp
+          namespace: teampam
   liveness:
     path: /internal/isAlive
     initialDelay: 4
