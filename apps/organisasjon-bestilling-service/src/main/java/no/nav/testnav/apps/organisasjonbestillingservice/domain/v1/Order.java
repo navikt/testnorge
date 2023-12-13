@@ -1,7 +1,7 @@
 package no.nav.testnav.apps.organisasjonbestillingservice.domain.v1;
 
 import no.nav.testnav.apps.organisasjonbestillingservice.repository.v1.model.OrderModel;
-import no.nav.testnav.libs.dto.organiasjonbestilling.v1.OrderDTO;
+import no.nav.testnav.libs.dto.organisajonbestilling.v1.OrderDTO;
 
 public class Order {
     private final Long batchId;

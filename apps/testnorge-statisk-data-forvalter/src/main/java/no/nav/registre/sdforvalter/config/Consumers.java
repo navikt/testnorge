@@ -26,13 +26,8 @@ public class Consumers {
 
     private ServerProperties testnavAaregProxy;
     private ServerProperties genererNavnService;
-    private ServerProperties testnorgeHodejegeren;
     private ServerProperties kodeverk;
     private ServerProperties testnavOrganisasjonFasteDataService;
     private ServerProperties testnavOrganisasjonService;
     private ServerProperties testnavPersonFasteDataService;
-    private ServerProperties person;
-    private ServerProperties testnorgeTp;
-    private ServerProperties tpsForvalterenProxy;
-
 }

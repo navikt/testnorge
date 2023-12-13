@@ -3,7 +3,7 @@ package no.nav.registre.testnorge.organisasjonmottak.consumer;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.organisasjonmottak.config.Consumers;
 import no.nav.registre.testnorge.organisasjonmottak.consumer.command.RegisterBestillingCommand;
-import no.nav.testnav.libs.dto.organiasjonbestilling.v2.OrderDTO;
+import no.nav.testnav.libs.dto.organisajonbestilling.v2.OrderDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;

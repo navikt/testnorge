@@ -70,7 +70,9 @@ public class DokarkivClient implements ClientRegister {
     private ClientFuture futurePersist(BestillingProgress progress, String status) {
 
         return () -> {
-            transactionHelperService.persister(progress, BestillingProgress::setDokarkivStatus, status);
+            transactionHelperService.persister(progress,
+                    BestillingProgress::getDokarkivStatus,
+                    BestillingProgress::setDokarkivStatus, status);
             return progress;
         };
     }
