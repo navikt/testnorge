@@ -26,5 +26,5 @@ consumers:
   arbeidsplassencv:
     name: pam-cv-api-gcp
     namespace: teampam
-    url: http://pam-cv-api-gcp.teampam.svc.nais.local
+    url: http://pam-cv-api-gcp.teampam.svc.cluster.local
     cluster: dev-gcp
