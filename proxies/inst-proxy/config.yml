@@ -51,7 +51,7 @@ spec:
           cluster: dev-gcp
     outbound:
       rules:
-        - application: inst2
+        - application: opphold-testdata
           namespace: team-rocket
   liveness:
     path: /internal/isAlive
