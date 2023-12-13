@@ -2,17 +2,16 @@ package no.nav.registre.sdforvalter.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-
 import no.nav.registre.sdforvalter.adapter.AaregAdapter;
 import no.nav.registre.sdforvalter.adapter.EregAdapter;
 import no.nav.registre.sdforvalter.adapter.KrrAdapter;
-import no.nav.registre.sdforvalter.consumer.rs.organisasjon.OrganisasjonMottakServiceConsumer;
 import no.nav.registre.sdforvalter.consumer.rs.krr.KrrConsumer;
+import no.nav.registre.sdforvalter.consumer.rs.organisasjon.OrganisasjonMottakServiceConsumer;
 import no.nav.registre.sdforvalter.domain.EregListe;
 import no.nav.registre.sdforvalter.domain.status.ereg.OrganisasjonStatusMap;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Slf4j
 @Service
@@ -27,23 +26,13 @@ public class EnvironmentInitializationService {
     private final EregAdapter eregAdapter;
     private final KrrAdapter krrAdapter;
     private final AaregAdapter aaregAdapter;
-    private final IdentService identService;
-
 
     public void initializeEnvironmentWithStaticData(String environment, String gruppe) {
         log.info("Start init of all static data sets...");
-        initializeIdent(environment, gruppe);
         initializeKrr(gruppe);
         initializeAareg(environment, gruppe);
         initializeEreg(environment, gruppe);
         log.info("Completed init of all static data sets.");
-    }
-
-
-    public void initializeIdent(String environment, String gruppe) {
-        log.info("Start init av identer...");
-        identService.send(environment, gruppe);
-        log.info("Init av identer er ferdig.");
     }
 
     public void initializeAareg(String environment, String gruppe) {

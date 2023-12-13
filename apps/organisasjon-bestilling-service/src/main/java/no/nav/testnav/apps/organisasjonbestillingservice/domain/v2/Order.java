@@ -3,7 +3,7 @@ package no.nav.testnav.apps.organisasjonbestillingservice.domain.v2;
 
 import lombok.Value;
 
-import no.nav.testnav.libs.dto.organiasjonbestilling.v2.OrderDTO;
+import no.nav.testnav.libs.dto.organisajonbestilling.v2.OrderDTO;
 import no.nav.testnav.apps.organisasjonbestillingservice.repository.v2.entity.OrderEntity;
 
 @Value

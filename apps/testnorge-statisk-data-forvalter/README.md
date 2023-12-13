@@ -10,7 +10,7 @@ Statisk data forvalter er en applikasjon som har som ansvar å forvalte faste te
 Denne applikasjonen belager seg på flere andre applikasjoner for å kunne legge inn data.
  
 ## Statiske data
-
+Integrasjonen mot TPSF og TPS er fjernet men ikke oppdatert i figur:
 ![Faste data flowchart](./doc/images/Faste%20data%20flowchart.png "Faste data flowchart")
 
 
@@ -53,11 +53,5 @@ Ha naisdevice kjørende og kjør StatiskDataForvalterApplicationStarter med føl
 -Dspring.cloud.vault.token=[kopier token fra vault]
 -Dspring.profiles.active=local
 ```
-NB! Applikasjonen starter på port 4390. Swagger på [http://localhost:4390/swagger](http://localhost:4390/swagger).
+Swagger på [http://localhost:8080/swagger](http://localhost:4390/swagger).
 
-### Utviklerimage
-I utviklerimage brukes ikke naisdevice og du må legge til følgende ekstra argumenter:
-```
--Djavax.net.ssl.trustStore=[path til lokal truststore]
--Djavax.net.ssl.trustStorePassword=[passord til lokal truststore]
-```
