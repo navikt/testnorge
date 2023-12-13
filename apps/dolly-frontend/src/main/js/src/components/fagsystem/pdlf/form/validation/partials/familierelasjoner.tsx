@@ -167,7 +167,7 @@ const testSivilstandsdatoBekreftelsesdato = (value) => {
 			feilmelding = 'Master PDL krever at enten sivilstandsdato eller bekreftelsesdato er satt'
 		}
 
-		return feilmelding ? this.createError({ message: feilmelding }) : true
+		return feilmelding ? this?.createError({ message: feilmelding }) : true
 	})
 }
 

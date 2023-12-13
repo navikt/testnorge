@@ -10,7 +10,6 @@ import {
 	TpsfPersoninfo,
 	TpsfVergemaal,
 } from './partials'
-import { Telefonnummer } from '@/components/fagsystem/pdlf/visning/partials/Telefonnummer'
 import { NorskBankkonto, UtenlandskBankkonto } from '@/components/fagsystem/bankkonto/visning'
 
 export const TpsfVisning = ({ data }) => {

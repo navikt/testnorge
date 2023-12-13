@@ -84,8 +84,7 @@ const mapBestillingsinformasjon = (bestillingsinformasjon: any, data: any[], ide
 	}
 }
 
-const mapPdlNyPerson = (bestillingData, data) => {
-	const bestilling = useContext(BestillingsveilederContext)
+const mapPdlNyPerson = (bestillingData, data, bestilling) => {
 	const pdlNyPersonKriterier = bestillingData.pdldata?.opprettNyPerson
 	if (
 		pdlNyPersonKriterier &&
@@ -1833,7 +1832,7 @@ const mapUdiStub = (bestillingData, data) => {
 	}
 }
 
-const mapPensjon = (bestillingData, data) => {
+const mapPensjon = (bestillingData, data, navEnheter) => {
 	const pensjonKriterier = bestillingData.pensjonforvalter
 
 	if (pensjonKriterier) {
@@ -1893,7 +1892,6 @@ const mapPensjon = (bestillingData, data) => {
 		if (pensjonKriterier.alderspensjon) {
 			const ap = pensjonKriterier.alderspensjon
 
-			const { navEnheter } = useNavEnheter()
 			const navEnhetLabel = navEnheter?.find((enhet) => enhet.value === ap.navEnhetId?.toString())
 				?.label
 
@@ -1915,7 +1913,6 @@ const mapPensjon = (bestillingData, data) => {
 		if (pensjonKriterier.uforetrygd) {
 			const uforetrygd = pensjonKriterier.uforetrygd
 
-			const { navEnheter } = useNavEnheter()
 			const navEnhetLabel = navEnheter?.find(
 				(enhet) => enhet.value === uforetrygd.navEnhetId?.toString(),
 			)?.label
@@ -2175,8 +2172,11 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 	const data = []
 	const identtype = bestillingData.pdldata?.opprettNyPerson?.identtype
 
+	const bestilling = useContext(BestillingsveilederContext)
+	const { navEnheter } = useNavEnheter()
+
 	mapBestillingsinformasjon(bestillingsinformasjon, data, identtype)
-	mapPdlNyPerson(bestillingData, data)
+	mapPdlNyPerson(bestillingData, data, bestilling)
 
 	const pdldataKriterier = bestillingData.pdldata?.person
 	if (pdldataKriterier) {
@@ -2246,7 +2246,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 	mapArena(bestillingData, data)
 	mapInst(bestillingData, data)
 	mapUdiStub(bestillingData, data)
-	mapPensjon(bestillingData, data)
+	mapPensjon(bestillingData, data, navEnheter)
 	mapInntektsmelding(bestillingData, data)
 	mapDokarkiv(bestillingData, data)
 	mapHistark(bestillingData, data)
