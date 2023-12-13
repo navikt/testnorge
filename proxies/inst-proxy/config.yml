@@ -1,4 +1,17 @@
-﻿apiVersion: "nais.io/v1alpha1"
+﻿---
+apiVersion: nais.io/v1
+kind: AzureAdApplication
+metadata:
+  name: testnav-inst-proxy-trygdeetaten
+  namespace: dolly
+  labels:
+    team: dolly
+spec:
+  secretName: azure-trygdeetaten-testnav-inst-proxy-trygdeetaten
+  secretKeyPrefix: "AZURE_TRYGDEETATEN"
+  tenant: trygdeetaten.no
+---
+apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
   name: testnav-inst-proxy
@@ -36,6 +49,10 @@ spec:
         - application: app-1
           namespace: plattformsikkerhet
           cluster: dev-gcp
+    outbound:
+      rules:
+        - application: inst2
+          namespace: team-rocket
   liveness:
     path: /internal/isAlive
     initialDelay: 4
