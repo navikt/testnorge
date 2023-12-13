@@ -155,6 +155,22 @@ const testDeltBostedAdressetype = (value) => {
 	})
 }
 
+const testSivilstandsdatoBekreftelsesdato = (value) => {
+	return value.test('har-gyldig-sivilstandsdato', function harGyldigSivilstandsdato() {
+		let feilmelding = null
+		const parent = this?.parent
+		const master = parent?.master
+		const sivilstandsdato = parent?.sivilstandsdato
+		const bekreftelsesdato = parent?.bekreftelsesdato
+
+		if (master === 'PDL' && !sivilstandsdato && !bekreftelsesdato) {
+			feilmelding = 'Master PDL krever at enten sivilstandsdato eller bekreftelsesdato er satt'
+		}
+
+		return feilmelding ? this.createError({ message: feilmelding }) : true
+	})
+}
+
 export const nyPerson = Yup.object({
 	identtype: Yup.string().nullable(),
 	kjoenn: Yup.string().nullable(),
@@ -181,10 +197,14 @@ export const sivilstand = Yup.object({
 	sivilstandsdato: Yup.mixed().when('type', {
 		is: (type) => type === 'SAMBOER',
 		then: () => requiredDate,
-		otherwise: () => Yup.mixed().notRequired(),
+		otherwise: () => testSivilstandsdatoBekreftelsesdato(Yup.mixed().nullable()),
 	}),
 	relatertVedSivilstand: Yup.string().nullable(),
-	bekreftelsesdato: Yup.mixed().nullable(),
+	bekreftelsesdato: Yup.mixed().when('type', {
+		is: (type) => type === 'SAMBOER',
+		then: () => Yup.mixed().notRequired(),
+		otherwise: () => testSivilstandsdatoBekreftelsesdato(Yup.mixed().nullable()),
+	}),
 	borIkkeSammen: Yup.boolean().nullable(),
 	nyRelatertPerson: nyPerson,
 })

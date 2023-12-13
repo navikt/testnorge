@@ -59,7 +59,7 @@ export const SelectOptionsOppslag = {
 			response?.data?.forEach((id: Person) => {
 				const navn =
 					id.person.navn?.length > 0
-						? `- ${id.person.navn[0].fornavn} ${id.person.navn[0].etternavn}`
+						? `- ${id.person.navn?.[0]?.fornavn} ${id.person.navn?.[0]?.etternavn}`
 						: ''
 				personListe.push({
 					value: id.person.ident,
