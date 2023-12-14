@@ -72,5 +72,7 @@ spec:
       memory: 1024Mi
     limits:
       memory: 2048Mi
+  envFrom:
+    - secret: azure-trygdeetaten-testnav-inst-proxy-trygdeetaten
   ingresses:
     - "https://testnav-inst-proxy.dev-fss-pub.nais.io"
