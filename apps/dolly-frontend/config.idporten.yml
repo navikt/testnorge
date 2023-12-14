@@ -46,7 +46,6 @@ spec:
         - application: dolly-backend
         - application: testnav-person-service
         - application: generer-navn-service
-        - application: idporten.no
       external:
         - host: testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
         - host: testnav-sigrunstub-proxy.dev-fss-pub.nais.io
@@ -63,6 +62,7 @@ spec:
         - host: testnav-norg2-proxy.dev-fss-pub.nais.io
         - host: testnav-brregstub-proxy.dev-fss-pub.nais.io
         - host: testnav-dokarkiv-proxy.dev-fss-pub.nais.io
+        - host: idporten.no
 
   liveness:
     path: /internal/isAlive
