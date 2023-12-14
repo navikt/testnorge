@@ -31,7 +31,7 @@ public class IdportenSecurityConfig {
     private final String postLogoutRedirectUri;
 
     public IdportenSecurityConfig(
-            @Value("${spring.security.oauth2.client.provider.idporten.issuer-uri}.well-known/openid-configuration") String wellKnownUrl,
+            @Value("${spring.security.oauth2.client.provider.idporten.issuer-uri}/.well-known/openid-configuration") String wellKnownUrl,
             @Value("${spring.security.oauth2.client.registration.idporten.post-logout-redirect-uri}") String postLogoutRedirectUri,
             @Value("${IDPORTEN_CLIENT_JWK}") String jwk
     ) {
