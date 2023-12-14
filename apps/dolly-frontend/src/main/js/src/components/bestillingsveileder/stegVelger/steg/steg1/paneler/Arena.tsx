@@ -15,10 +15,10 @@ export const ArenaPanel = ({ stateModifier, formValues }) => {
 
 	const infoTekst = syntetisk
 		? 'Arbeidsytelser sendes til Arena for valgt(e) miljø(er). ' +
-		  'For å ha rett på dagpenger kreves det opptjening på minimum 1,5G ' +
-		  'de siste 12 måneder, eller 3G de siste 36 måneder. '
+			'For å ha rett på dagpenger kreves det opptjening på minimum 1,5G ' +
+			'de siste 12 måneder, eller 3G de siste 36 måneder. '
 		: 'Arena har sluttet å støtte ikke-syntetiske identer, ' +
-		  'og disse kan ikke benyttes mer for arbeidsytelser.'
+			'og disse kan ikke benyttes mer for arbeidsytelser.'
 
 	return (
 		<Panel
@@ -85,7 +85,8 @@ export const ArenaPanel = ({ stateModifier, formValues }) => {
 
 ArenaPanel.heading = 'Arbeidsytelser'
 
-ArenaPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
+ArenaPanel.initialValues = ({ set, setMulti, del, has }) => {
+	const opts = useContext(BestillingsveilederContext)
 	const getServiceBehov = () => {
 		const okArenaBestillinger = opts?.tidligereBestillinger?.filter((bestilling) => {
 			const arenaStatus = bestilling?.status?.find(

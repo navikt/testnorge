@@ -78,6 +78,7 @@ export const ForeldreansvarForm = ({
 		}
 
 		formMethods.setValue(path, foreldreansvarClone)
+		formMethods.trigger(path)
 	}
 
 	const handleChangeAnsvar = (target: Target, path: string) => {
@@ -93,6 +94,7 @@ export const ForeldreansvarForm = ({
 		}
 
 		formMethods.setValue(path, foreldreansvarClone)
+		formMethods.trigger(path)
 	}
 
 	const ansvar = _.get(formMethods.getValues(), `${path}.ansvar`)
@@ -116,6 +118,7 @@ export const ForeldreansvarForm = ({
 	useEffect(() => {
 		if (!_.get(formMethods.getValues(), `${path}.typeAnsvarlig`)) {
 			formMethods.setValue(`${path}.typeAnsvarlig`, getTypeAnsvarlig())
+			formMethods.trigger(path)
 		}
 	}, [])
 

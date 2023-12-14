@@ -118,6 +118,7 @@ export const PdlEksisterendePerson = ({
 	}
 
 	const getFilteredOptionList = () => {
+		const opts = useContext(BestillingsveilederContext)
 		const eksisterendeIdent = opts?.personFoerLeggTil?.pdlforvalter?.person?.ident
 		let tmpOptions = []
 		// @ts-ignore

@@ -1,5 +1,5 @@
 import * as Yup from 'yup'
-import { ifNotBlank, ifPresent, requiredDate, requiredString } from '@/utils/YupValidations'
+import { ifPresent, requiredDate, requiredString } from '@/utils/YupValidations'
 import {
 	adressebeskyttelse,
 	bostedsadresse,
@@ -27,13 +27,13 @@ import { testDatoFom, testDatoTom } from '@/components/fagsystem/utils'
 import { isSameDay } from 'date-fns'
 
 const testGyldigFom = (val) => {
-	return val.test('is-unique', function datoErUnik(selected) {
+	return val.test('is-unique', (selected: string, testContext: any) => {
+		const fullForm = testContext.from && testContext.from[testContext.from.length - 1]?.value
 		if (selected === null || selected === '') {
 			return true
 		}
-		const values = this?.options?.context
-		const navn = values?.navn ? [values.navn] : values?.pdldata?.person?.navn
-		const navnFoerLeggTil = values?.personFoerLeggTil?.pdlforvalter?.person?.navn
+		const navn = fullForm?.navn ? [fullForm.navn] : fullForm?.pdldata?.person?.navn
+		const navnFoerLeggTil = fullForm?.personFoerLeggTil?.pdlforvalter?.person?.navn
 		let antallLike = 0
 		navn?.concat(navnFoerLeggTil)?.forEach((navn) => {
 			if (isSameDay(new Date(navn?.gyldigFraOgMed), new Date(selected))) {
@@ -41,23 +41,23 @@ const testGyldigFom = (val) => {
 			}
 		})
 		return antallLike > 1
-			? this.createError({ message: 'Denne datoen er valgt for et annet navn' })
+			? testContext.createError({ message: 'Denne datoen er valgt for et annet navn' })
 			: true
 	})
 }
 
 const testGyldigAlder = (val) => {
-	return val.test('is-valid', function alderErGyldig(alder: string) {
+	return val.test('is-valid', (alder, testContext) => {
 		if (alder === null || alder === '') {
 			return true
 		}
 		if (parseInt(alder) < 0) {
-			return this.createError({ message: 'Alder må være minst 0 år' })
+			return testContext.createError({ message: 'Alder må være minst 0 år' })
 		}
-		const identtype = this?.options?.parent?.identtype
+		const identtype = testContext.parent?.identtype
 		const minYear = identtype === 'NPID' ? 1870 : 1900
 		if (new Date().getFullYear() - parseInt(alder) < minYear) {
-			return this.createError({
+			return testContext.createError({
 				message: `Alder må være mindre enn ${new Date().getFullYear() - (minYear - 1)} år`,
 			})
 		}

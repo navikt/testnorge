@@ -3,20 +3,20 @@ import { ifPresent, requiredDate, requiredNumber, requiredString } from '@/utils
 import { testDatoFom, testDatoTom } from '@/components/fagsystem/utils'
 
 const testHarArbeidsforhold = (val) => {
-	return val.test('har-arbeidsforhold', function harArbeidsforhold(selected) {
+	return val.test('har-arbeidsforhold', (selected, testContext) => {
+		const fullForm = testContext.from && testContext.from[testContext.from.length - 1]?.value
 		if (!selected) {
 			return true
 		}
-		const values = this?.options?.context
-		const detaljertSykemelding = values?.sykemelding?.detaljertSykemelding
+		const detaljertSykemelding = fullForm?.sykemelding?.detaljertSykemelding
 
 		const valgtArbeidsgiver = detaljertSykemelding
 			? detaljertSykemelding?.mottaker?.orgNr
 			: selected
 
-		const arbeidsgivere = values?.aareg?.map((arbforh) => arbforh?.arbeidsgiver?.orgnummer) || []
+		const arbeidsgivere = fullForm?.aareg?.map((arbforh) => arbforh?.arbeidsgiver?.orgnummer) || []
 
-		values?.personFoerLeggTil?.aareg?.forEach((miljo) => {
+		fullForm?.personFoerLeggTil?.aareg?.forEach((miljo) => {
 			miljo?.data?.forEach((arbforh) => {
 				const orgnr = arbforh?.arbeidsgiver?.organisasjonsnummer
 				if (orgnr && !arbeidsgivere?.includes(orgnr?.toString())) {
@@ -26,7 +26,7 @@ const testHarArbeidsforhold = (val) => {
 		})
 
 		if (!arbeidsgivere?.includes(valgtArbeidsgiver?.toString())) {
-			return this.createError({
+			return testContext.createError({
 				message: 'Personen må ha et arbeidsforhold i valgt organisasjon',
 			})
 		}

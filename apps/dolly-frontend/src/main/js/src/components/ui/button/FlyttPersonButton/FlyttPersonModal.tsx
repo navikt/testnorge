@@ -18,8 +18,8 @@ import { Alert } from '@navikt/ds-react'
 import { usePdlOptions, useTestnorgeOptions } from '@/utils/hooks/useSelectOptions'
 import { useGruppeIdenter } from '@/utils/hooks/useGruppe'
 import { CypressSelector } from '../../../../../cypress/mocks/Selectors'
-import { Form, useFieldArray, useFormContext } from 'react-hook-form'
-import { UseFormReturn } from 'react-hook-form/dist/types'
+import { Form, FormProvider, useFieldArray, useForm, useFormContext } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
 
 type FlyttPersonButtonTypes = {
 	gruppeId: number
@@ -37,6 +37,11 @@ type Option = {
 	label: string
 	relasjoner: Array<string>
 }
+
+const validation = Yup.object().shape({
+	identer: Yup.array().min(1, 'Velg minst én person').required(),
+	gruppeId: Yup.string().required('Velg eksisterende gruppe eller opprett ny gruppe'),
+})
 
 const PersonvelgerCheckboxes = styled.div`
 	overflow-y: auto;
@@ -128,7 +133,10 @@ const StyledErrorMessageWithFocus = styled(DollyErrorMessage)`
 `
 
 export const FlyttPersonModal = ({ gruppeId, modalIsOpen, closeModal }: FlyttPersonButtonTypes) => {
-	const formMethods = useFormContext()
+	const formMethods = useForm({
+		defaultValues: { identer: [], gruppeId: null },
+		resolver: yupResolver(validation),
+	})
 	const [loading, setLoading] = useState(false)
 	const [error, setError] = useState(null)
 
@@ -228,12 +236,8 @@ export const FlyttPersonModal = ({ gruppeId, modalIsOpen, closeModal }: FlyttPer
 		setLoading(false)
 	}
 
-	const validation = Yup.object().shape({
-		identer: Yup.array().min(1, 'Velg minst én person').required(),
-		gruppeId: Yup.string().required('Velg eksisterende gruppe eller opprett ny gruppe'),
-	})
-
-	const FlyttPersonForm = ({ formMethods }: { formMethods: UseFormReturn }) => {
+	const FlyttPersonForm = () => {
+		const formMethods = useFormContext()
 		const [searchText, setSearchText] = useState('')
 		const fieldMethods = useFieldArray({ control: formMethods.control, name: 'identer' })
 		const values = fieldMethods.fields.values?.identer
@@ -369,13 +373,11 @@ export const FlyttPersonModal = ({ gruppeId, modalIsOpen, closeModal }: FlyttPer
 		<>
 			<DollyModal isOpen={modalIsOpen} closeModal={handleClose} minWidth="50%" overflow="auto">
 				<ModalContent>
-					<Form
-						initialValues={{ identer: [], gruppeId: null }}
-						onSubmit={handleSubmit}
-						validationSchema={validation}
-					>
-						<FlyttPersonForm formMethods={formMethods} />
-					</Form>
+					<FormProvider {...formMethods}>
+						<Form onSubmit={handleSubmit}>
+							<FlyttPersonForm />
+						</Form>
+					</FormProvider>
 				</ModalContent>
 			</DollyModal>
 		</>

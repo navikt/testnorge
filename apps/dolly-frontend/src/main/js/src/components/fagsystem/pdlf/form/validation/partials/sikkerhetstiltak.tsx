@@ -16,16 +16,16 @@ export const sikkerhetstiltak = Yup.array().of(
 			.test(
 				'is-after-startdato',
 				'Dato må være etter startdato, og ikke mer enn 12 uker etter startdato',
-				function validDate(dato) {
-					const values = this.options.context
+				(dato, testContext) => {
+					const fullForm = testContext.from && testContext.from[testContext.from.length - 1]?.value
 					return (
 						isAfter(
 							new Date(dato),
-							new Date(_.get(values, 'pdldata.person.sikkerhetstiltak[0].gyldigFraOgMed')),
+							new Date(_.get(fullForm, 'pdldata.person.sikkerhetstiltak[0].gyldigFraOgMed')),
 						) &&
 						differenceInWeeks(
 							new Date(dato),
-							new Date(_.get(values, 'pdldata.person.sikkerhetstiltak[0].gyldigFraOgMed')),
+							new Date(_.get(fullForm, 'pdldata.person.sikkerhetstiltak[0].gyldigFraOgMed')),
 						) <= 12
 					)
 				},

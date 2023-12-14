@@ -7,9 +7,9 @@ const erIkkeLik = () => {
 	return Yup.string().test(
 		'er-ikke-lik',
 		'Saksbehandler og attesterer kan ikke være samme person',
-		function testIdenter() {
-			const values = this.options.context
-			const { saksbehandler, attesterer } = values?.pensjonforvalter?.uforetrygd
+		(_value, testContext) => {
+			const fullForm = testContext.from && testContext.from[testContext.from.length - 1]?.value
+			const { saksbehandler, attesterer } = fullForm?.pensjonforvalter?.uforetrygd
 			if (!saksbehandler || !attesterer) {
 				return true
 			}
@@ -49,11 +49,12 @@ export const validation = {
 				.test(
 					'er-foer-virkningsdato',
 					'Dato må være etter uføretidspunkt og før ønsket virkningsdato',
-					function validDate(kravFremsattDato) {
-						const virkningsdato =
-							this.options.context?.pensjonforvalter?.uforetrygd?.onsketVirkningsDato
-						const uforetidspunkt =
-							this.options.context?.pensjonforvalter?.uforetrygd?.uforetidspunkt
+					(kravFremsattDato, testContext) => {
+						const context = testContext.options.context
+						const fullForm =
+							testContext.from && testContext.from[testContext.from.length - 1]?.value
+						const virkningsdato = fullForm?.pensjonforvalter?.uforetrygd?.onsketVirkningsDato
+						const uforetidspunkt = fullForm?.pensjonforvalter?.uforetrygd?.uforetidspunkt
 						return (
 							isBefore(new Date(kravFremsattDato), new Date(virkningsdato)) &&
 							isAfter(new Date(kravFremsattDato), new Date(uforetidspunkt))
@@ -65,13 +66,13 @@ export const validation = {
 				.test(
 					'er-foer-virkningsdato',
 					'Dato må være etter dato for fremsettelse av krav (og tidligst 1. januar 2015)',
-					function validDate(onsketVirkningsDato) {
-						const kravFremsattDato =
-							this.options.context?.pensjonforvalter?.uforetrygd?.kravFremsattDato
+					(onsketVirkningsDato, testContext) => {
+						const fullForm =
+							testContext.from && testContext.from[testContext.from.length - 1]?.value
+						const kravFremsattDato = fullForm?.pensjonforvalter?.uforetrygd?.kravFremsattDato
 						return (
 							isAfter(new Date(onsketVirkningsDato), new Date(kravFremsattDato)) &&
 							isAfter(new Date(onsketVirkningsDato), new Date('2015-01-01'))
-
 						)
 					},
 				)

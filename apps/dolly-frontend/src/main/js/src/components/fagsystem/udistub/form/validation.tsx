@@ -74,10 +74,10 @@ const oppholdStatus = Yup.object()
 	.nullable()
 	// Sjekker om oppholdStatus er et tomt objekt. Objektet blir satt ved å fylle i feltene
 	// 'Oppholdsstatus' og 'Type opphold', men disse er ikke en del av selve formet.
-	.test('is-not-empty', function () {
-		const values = this.options.context
-		if (_.isEmpty(values.udistub.oppholdStatus)) {
-			return values.udistub.harOppholdsTillatelse === false
+	.test('is-not-empty', (value, context) => {
+		const values = context.parent
+		if (_.isEmpty(values.oppholdStatus)) {
+			return values.harOppholdsTillatelse === false
 		}
 		return true
 	})

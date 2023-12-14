@@ -25,39 +25,36 @@ export const Datepicker = ({
 	onChange,
 	onBlur,
 	disabled = false,
-	feil,
 	excludeDates,
 	minDate,
 	maxDate,
 	...props
-}) => {
-	return (
-		<ReactDatepicker
-			locale="nb"
-			dateFormat="dd.MM.yyyy"
-			placeholderText={placeholder}
-			selected={(value && new Date(value)) || null}
-			onChange={onChange}
-			showMonthDropdown
-			showYearDropdown
-			minDate={minDate || subYears(new Date(), 125)}
-			maxDate={maxDate || addYears(new Date(), 5)}
-			dropdownMode="select"
-			disabled={disabled}
-			onBlur={onBlur}
-			name={name}
-			id={name}
-			autoComplete="off"
-			customInput={<TextInput icon="calendar" feil={feil} />}
-			excludeDates={excludeDates}
-			{...props}
-		/>
-	)
-}
+}) => (
+	<ReactDatepicker
+		locale="nb"
+		dateFormat="dd.MM.yyyy"
+		placeholderText={placeholder}
+		selected={(value && new Date(value)) || null}
+		onChange={onChange}
+		showMonthDropdown
+		showYearDropdown
+		minDate={minDate || subYears(new Date(), 125)}
+		maxDate={maxDate || addYears(new Date(), 5)}
+		dropdownMode="select"
+		disabled={disabled}
+		onBlur={onBlur}
+		name={name}
+		id={name}
+		autoComplete="off"
+		customInput={<TextInput icon="calendar" isDatepicker={true} />}
+		excludeDates={excludeDates}
+		{...props}
+	/>
+)
 
 export const DollyDatepicker = (props) => (
 	<InputWrapper {...props}>
-		<Label name={props.name} label={props.label} feil={props.feil}>
+		<Label name={props.name} label={props.label}>
 			<Datepicker {...props} />
 		</Label>
 	</InputWrapper>
@@ -75,18 +72,12 @@ const P_FormikDatepicker = ({ addHour = false, ...props }) => {
 				.substring(0, 19)
 		}
 		formMethods.setValue(props.name, val)
-		formMethods.trigger(props.name)
+		formMethods.trigger()
 	}
 	const handleBlur = () => props?.onBlur?.(SyntEvent(props.name, value))
 	return (
 		<FormikField name={props.name}>
-			<DollyDatepicker
-				value={value}
-				onChange={handleChange}
-				onBlur={handleBlur}
-				feil={formMethods.getFieldState(props.name)?.error}
-				{...props}
-			/>
+			<DollyDatepicker value={value} onChange={handleChange} onBlur={handleBlur} {...props} />
 		</FormikField>
 	)
 }

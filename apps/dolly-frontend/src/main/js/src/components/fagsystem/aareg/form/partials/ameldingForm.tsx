@@ -90,8 +90,8 @@ export const AmeldingForm = ({ warningMessage }: AmeldingFormProps): JSX.Element
 						arbeidsforhold: currMaaned
 							? currMaaned.arbeidsforhold
 							: arbeidsforholdstype === 'forenkletOppgjoersordning'
-							  ? [initialForenkletOppgjoersordningOrg]
-							  : [initialArbeidsforholdOrg],
+								? [initialForenkletOppgjoersordningOrg]
+								: [initialArbeidsforholdOrg],
 					})
 					if (arbeidsforholdstype === 'maritimtArbeidsforhold') {
 						formMethods.setValue(
@@ -102,6 +102,7 @@ export const AmeldingForm = ({ warningMessage }: AmeldingFormProps): JSX.Element
 				})
 			}
 		}
+		formMethods.trigger()
 	}
 
 	const handleArbeidsforholdstypeChange = (event: KodeverkValue) => {
@@ -130,8 +131,7 @@ export const AmeldingForm = ({ warningMessage }: AmeldingFormProps): JSX.Element
 		}
 		formMethods.setValue(paths.amelding, ameldingClone)
 		formMethods.setValue(paths.arbeidsforholdstype, event.value)
-		formMethods.trigger(paths.amelding)
-		formMethods.trigger(paths.arbeidsforholdstype)
+		formMethods.trigger()
 	}
 
 	const handleNewEntry = () => {
@@ -147,13 +147,14 @@ export const AmeldingForm = ({ warningMessage }: AmeldingFormProps): JSX.Element
 				arbeidsforholdstype === 'forenkletOppgjoersordning'
 					? initialForenkletOppgjoersordningOrg
 					: arbeidsforholdstype === 'maritimtArbeidsforhold'
-					  ? { ...initialArbeidsforholdOrg, fartoy: initialFartoy }
-					  : initialArbeidsforholdOrg
+						? { ...initialArbeidsforholdOrg, fartoy: initialFartoy }
+						: initialArbeidsforholdOrg
 			formMethods.setValue(`${paths.amelding}[${idMaaned}].arbeidsforhold`, [
 				...currArbeidsforhold,
 				nyttArbeidsforhold,
 			])
 		})
+		formMethods.trigger()
 	}
 
 	const handleRemoveEntry = (idArbeidsforhold: number) => {
@@ -167,6 +168,7 @@ export const AmeldingForm = ({ warningMessage }: AmeldingFormProps): JSX.Element
 			)
 			currArbeidsforhold?.splice(idArbeidsforhold, 1)
 			formMethods.setValue(`${paths.amelding}[${idMaaned}].arbeidsforhold`, currArbeidsforhold)
+			formMethods.trigger()
 		})
 	}
 
@@ -186,6 +188,7 @@ export const AmeldingForm = ({ warningMessage }: AmeldingFormProps): JSX.Element
 		} else {
 			setSelectedIndex(selectedIndex)
 		}
+		formMethods.trigger()
 	}
 
 	return (

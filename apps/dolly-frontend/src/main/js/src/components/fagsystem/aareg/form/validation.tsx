@@ -11,20 +11,17 @@ const innenforAnsettelsesforholdTest = (periodeValidation, validateFomMonth) => 
 	return periodeValidation.test(
 		'range',
 		validateFomMonth ? errorMsgMonth : errorMsg,
-		function isWithinTest(val) {
+		(val, testContext) => {
 			if (!val) return true
+			const context = testContext.options.context
+			const fullForm = testContext.from && testContext.from[testContext.from.length - 1]?.value
 
 			// Husk at dato som kommer fra en Mal kan være av typen String
 			const dateValue = new Date(val)
-			const path = this.path
-			const values = this.options.context
-			const aaregIndex = parseInt(path.match(/\d+/g)[0])
-			const ameldingIndex = parseInt(path.match(/\d+/g)[1])
-			const arbeidsforholdIndex = this.options.index
 
 			if (validateFomMonth) {
-				const fomPath = path.replace('.tom', '.fom')
-				const fomMonth = _.get(values, fomPath)
+				const fomPath = testContext.path.replace('.tom', '.fom')
+				const fomMonth = _.get(fullForm, fomPath)
 				if (
 					getMonth(dateValue) !== getMonth(new Date(fomMonth)) ||
 					getYear(dateValue) !== getYear(new Date(fomMonth))
@@ -32,14 +29,8 @@ const innenforAnsettelsesforholdTest = (periodeValidation, validateFomMonth) => 
 					return false
 			}
 
-			const amelding = _.get(values, 'aareg[0].amelding')
-			const arrayPos =
-				amelding && amelding?.length > 0
-					? `aareg[0].amelding[${ameldingIndex}].arbeidsforhold[${arbeidsforholdIndex}]`
-					: `aareg[${aaregIndex}]`
-
-			const ansattFom = _.get(values, `${arrayPos}.ansettelsesPeriode.fom`)
-			const ansattTom = _.get(values, `${arrayPos}.ansettelsesPeriode.tom`)
+			const ansattFom = _.get(testContext.parent, `ansettelsesPeriode.fom`)
+			const ansattTom = _.get(testContext.parent, `ansettelsesPeriode.tom`)
 
 			return isWithinInterval(dateValue, {
 				start: new Date(ansattFom),
@@ -51,20 +42,16 @@ const innenforAnsettelsesforholdTest = (periodeValidation, validateFomMonth) => 
 
 const fullArbeidsforholdTest = (arbeidsforholdValidation) => {
 	const fullArbeidsforholdTyper = ['', 'ordinaertArbeidsforhold', 'maritimtArbeidsforhold']
-	return arbeidsforholdValidation.test(
-		'isRequired',
-		'Feltet er påkrevd',
-		function checkRequired(val) {
-			let gyldig = true
-			const values = this.options.context
-			const index = this.options.index
-			const arbeidsforholdType = _.get(values, `aareg[${index}].arbeidsforholdstype`)
-			if (fullArbeidsforholdTyper.some((value) => value === arbeidsforholdType) && !val) {
-				gyldig = false
-			}
-			return gyldig
-		},
-	)
+	return arbeidsforholdValidation.test('isRequired', 'Feltet er påkrevd', (val, testContext) => {
+		let gyldig = true
+		const fullForm = testContext.from && testContext.from[testContext.from.length - 1]?.value
+		const index = testContext.options.index
+		const arbeidsforholdType = _.get(fullForm, `aareg[${index}].arbeidsforholdstype`)
+		if (fullArbeidsforholdTyper.some((value) => value === arbeidsforholdType) && !val) {
+			gyldig = false
+		}
+		return gyldig
+	})
 }
 
 const ansettelsesPeriode = Yup.object({

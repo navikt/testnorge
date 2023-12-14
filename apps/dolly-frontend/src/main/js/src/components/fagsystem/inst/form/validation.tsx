@@ -1,23 +1,21 @@
 import * as Yup from 'yup'
 import { requiredDate, requiredString } from '@/utils/YupValidations'
-import * as _ from 'lodash'
 
 const datoOverlapperIkkeAndreOppholdTest = (oppholdValidation, validerStart) => {
 	const errorMsgAge =
 		'Startdato må være før sluttdato og tidsrommet for et opphold kan ikke overlappe et annet.'
 
-	return oppholdValidation.test('range', errorMsgAge, function isWithinTest(val) {
+	return oppholdValidation.test('range', errorMsgAge, (val, testContext) => {
 		if (!val && validerStart) return true
+		const fullForm = testContext.from && testContext.from[testContext.from.length - 1]?.value
 
 		const selectedDate = new Date(val)
-		const path = this.path.split('[')[0]
-		const values = this.options.context
-		const arrayPos = parseInt(this.path.match(/\d+/)[0])
-		const alleOpphold = _.get(values, `${path}`) || []
+		const arrayPos = parseInt(testContext.path.match(/\d+/)[0])
+		const alleOpphold = fullForm.instdata || []
 
 		for (let i = 0; i < alleOpphold.length; i++) {
-			const sluttDatoValue = _.get(values, `${path}[${i}].sluttdato`)
-			const startDatoValue = _.get(values, `${path}[${i}].startdato`)
+			const sluttDatoValue = alleOpphold[i].sluttdato
+			const startDatoValue = alleOpphold[i].startdato
 			const sluttDato = new Date(sluttDatoValue)
 			const startDato = new Date(startDatoValue)
 
@@ -30,7 +28,7 @@ const datoOverlapperIkkeAndreOppholdTest = (oppholdValidation, validerStart) => 
 					} else if (selectedDate >= startDato) return false
 				}
 			} else {
-				const selectedStartValue = _.get(values, `${path}[${arrayPos}].startdato`)
+				const selectedStartValue = alleOpphold[arrayPos]?.startdato
 				if (!val) {
 					if (i < arrayPos && selectedStartValue !== '') {
 						if (sluttDatoValue === '') return false

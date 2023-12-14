@@ -105,6 +105,7 @@ export const ArbeidsforholdForm = ({
 				return aaregBestilling
 			}),
 		)
+		trigger()
 	}, [getValues('aareg')])
 
 	const gjeldendeArbeidsgiver = _.get(getValues(), `${path}.arbeidsgiver`)
@@ -120,7 +121,7 @@ export const ArbeidsforholdForm = ({
 					? fixTimezone(field)
 					: field?.value || field?.target?.value || null
 				setFieldValue(`${path}.${fieldPath}`, value)
-				trigger(`${path}.${fieldPath}`)
+				trigger()
 			}
 		} else {
 			return (field) => {
@@ -140,6 +141,7 @@ export const ArbeidsforholdForm = ({
 					}
 				})
 				setFieldValue('aareg[0].amelding', amelding)
+				trigger()
 			}
 		}
 	}
@@ -204,6 +206,7 @@ export const ArbeidsforholdForm = ({
 					}
 				: undefined,
 		)
+		trigger()
 	}, [navArbeidsforholdPeriode])
 
 	const checkAktiveArbeidsforhold = () => {

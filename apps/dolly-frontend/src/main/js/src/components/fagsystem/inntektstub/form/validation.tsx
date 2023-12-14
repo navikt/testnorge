@@ -1,5 +1,4 @@
 import * as Yup from 'yup'
-import * as _ from 'lodash'
 import { addDays, areIntervalsOverlapping, subMonths } from 'date-fns'
 import {
 	ifPresent,
@@ -10,18 +9,14 @@ import {
 } from '@/utils/YupValidations'
 import { testDatoFom, testDatoTom } from '@/components/fagsystem/utils'
 
-const unikOrgMndTest = (unikValidation) => {
+const unikOrgMndTest = (unikValidation: Yup.StringSchema<string, Yup.AnyObject>) => {
 	const errorMsg = 'Kombinasjonen av år, måned og virksomhet er ikke unik'
-	return unikValidation.test('unikhet', errorMsg, function isUniqueCombination(orgnr) {
+	return unikValidation.test('unikhet', errorMsg, (orgnr, testContext) => {
 		if (!orgnr) return true
+		const fullForm = testContext.from && testContext.from[testContext.from.length - 1]?.value
 
-		const values = this.options.context
-		const path = this.options.path
-		const currInntektsinformasjonPath = path.split('.', 2).join('.')
-		const inntektsinformasjonPath = currInntektsinformasjonPath.split('[')[0]
-
-		const alleInntekter = _.get(values, inntektsinformasjonPath)
-		const currInntektsinformasjon = _.get(values, currInntektsinformasjonPath)
+		const alleInntekter = fullForm.inntektstub?.inntektsinformasjon
+		const currInntektsinformasjon = testContext.parent
 		if (!currInntektsinformasjon?.sisteAarMaaned) return true
 
 		return !nyeInntekterOverlapper(alleInntekter, currInntektsinformasjon)
@@ -63,11 +58,11 @@ const getInterval = (inntektsinformasjon) => {
 		? {
 				start: subMonths(currDato, inntektsinformasjon.antallMaaneder - 1),
 				end: currDato,
-		  }
+			}
 		: {
 				start: currDato,
 				end: addDays(currDato, 1),
-		  }
+			}
 }
 
 const finnesOverlappendeDato = (tidsrom, index) => {

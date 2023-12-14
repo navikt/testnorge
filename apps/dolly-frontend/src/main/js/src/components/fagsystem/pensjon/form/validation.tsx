@@ -66,8 +66,8 @@ const invalidAlderFom = (inntektFom, values) => {
 }
 
 const invalidAlderTom = (inntektTom, values) => {
-	const personFoerLeggTil = values.personFoerLeggTil
-	const importPersoner = values.importPersoner
+	const personFoerLeggTil = values?.personFoerLeggTil
+	const importPersoner = values?.importPersoner
 
 	const alder = getAlder(values, personFoerLeggTil, importPersoner)
 	const foedtFoer = _.get(values, 'pdldata.opprettNyPerson.foedtFoer')
@@ -119,48 +119,46 @@ const invalidDoedsdato = (inntektTom, values) => {
 	return false
 }
 
-const validFomDateTest = (val) => {
-	return val.test('gyldig-fom-aar', function isWithinTest(value) {
+const validFomDateTest = (val: Yup.NumberSchema<number, Yup.AnyObject>) => {
+	return val.test('gyldig-fom-aar', 'Feil', (value, context) => {
 		if (!value) return true
 		const inntektFom = value
 
-		const path = this.path.substring(0, this.path.lastIndexOf('.'))
-		const values = this.options.context
+		const values = context.parent
 
 		if (invalidAlderFom(inntektFom, values)) {
-			return this.createError({ message: 'F.o.m kan tidligst være året personen fyller 17 år' })
+			return context.createError({ message: 'F.o.m kan tidligst være året personen fyller 17 år' })
 		}
 
-		let inntektTom = _.get(values, `${path}.tomAar`)
+		let inntektTom = values?.tomAar
 		if (!_.isNil(inntektTom) && inntektFom > inntektTom) {
-			return this.createError({ message: 'F.o.m. dato må være før t.o.m. dato' })
+			return context.createError({ message: 'F.o.m. dato må være før t.o.m. dato' })
 		}
 
 		return true
 	})
 }
 
-const validTomDateTest = (val) => {
-	return val.test('gyldig-tom-aar', function isWithinTest(value) {
+const validTomDateTest = (val: Yup.NumberSchema<number, Yup.AnyObject>) => {
+	return val.test('gyldig-tom-aar', 'Feil', (value, context) => {
 		if (!value) return true
 		let inntektTom = value
 
-		const path = this.path.substring(0, this.path.lastIndexOf('.'))
-		const values = this.options.context
+		const values = context.parent
 
 		if (invalidAlderTom(inntektTom, values)) {
-			return this.createError({
+			return context.createError({
 				message: 'T.o.m kan ikke være etter året personen fyller 75',
 			})
 		}
 
 		if (invalidDoedsdato(inntektTom, values)) {
-			return this.createError({ message: 'T.o.m kan ikke være etter at person har dødd' })
+			return context.createError({ message: 'T.o.m kan ikke være etter at person har dødd' })
 		}
 
-		const inntektFom = _.get(values, `${path}.fomAar`)
+		const inntektFom = values?.fomAar
 		if (!_.isNil(inntektFom) && inntektTom < inntektFom) {
-			return this.createError({ message: 'T.o.m. dato må være etter f.o.m. dato' })
+			return context.createError({ message: 'T.o.m. dato må være etter f.o.m. dato' })
 		}
 
 		return true

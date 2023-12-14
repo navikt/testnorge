@@ -62,15 +62,16 @@ const validFradato = () => {
 		.test(
 			'gyldig-fra-dato',
 			'Periode kan ikke overlappe med en annen bostedadresse',
-			function validFraData(val) {
+			(val, testContext) => {
 				if (!val) {
 					return true
 				}
-				const values = this.options.context
+				const context = testContext.options.context
+				const fullForm = testContext.from && testContext.from[testContext.from.length - 1]?.value
 
-				const nyeAdresser = values?.pdldata?.person?.bostedsadresse
-					? [...values.pdldata.person.bostedsadresse]
-					: [values.bostedsadresse]
+				const nyeAdresser = fullForm?.pdldata?.person?.bostedsadresse
+					? [...fullForm.pdldata.person.bostedsadresse]
+					: [fullForm.bostedsadresse]
 				let tildato = null
 				let adresseIndex = null
 				for (let i = 0; i < nyeAdresser.length; i++) {
@@ -85,7 +86,7 @@ const validFradato = () => {
 
 				nyeAdresser.splice(adresseIndex, 1)
 				const tidligereAdresser =
-					values.personFoerLeggTil?.pdlforvalter?.person?.bostedsadresse || []
+					fullForm.personFoerLeggTil?.pdlforvalter?.person?.bostedsadresse || []
 
 				return !(
 					overlapperMedAdresse(val, tildato, nyeAdresser, true) ||

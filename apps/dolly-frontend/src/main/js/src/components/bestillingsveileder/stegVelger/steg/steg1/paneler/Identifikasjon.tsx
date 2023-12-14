@@ -38,7 +38,8 @@ export const IdentifikasjonPanel = ({ stateModifier, formValues }) => {
 
 IdentifikasjonPanel.heading = 'Identifikasjon'
 
-IdentifikasjonPanel.initialValues = ({ set, del, has, opts }) => {
+IdentifikasjonPanel.initialValues = ({ set, del, has }) => {
+	const opts = useContext(BestillingsveilederContext)
 	const { identtype } = opts
 	return {
 		falskIdentitet: {

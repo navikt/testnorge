@@ -32,11 +32,11 @@ const testSektorkode = (schema: any) => {
 	return schema.test(
 		'sektorkode',
 		'Juridisk enhet må ha sektorkode hvis valgt',
-		function harSektorkode(value: string) {
+		(value: string, testContext: any) => {
 			if (value === undefined || value !== '') {
 				return true
 			}
-			return this.createError({
+			return testContext.createError({
 				message: 'Feltet er påkrevd',
 			})
 		},

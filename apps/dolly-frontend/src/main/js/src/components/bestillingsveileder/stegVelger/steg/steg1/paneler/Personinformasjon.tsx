@@ -150,7 +150,8 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 PersoninformasjonPanel.heading = 'Personinformasjon'
 
 // @ts-ignore
-PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
+PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has }) => {
+	const opts = useContext(BestillingsveilederContext)
 	const { personFoerLeggTil, identtype } = opts
 
 	const fjernIdFoerLeggTil = (path: string) => {
@@ -223,7 +224,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 					? set(paths.statsborgerskap, fjernIdFoerLeggTil('statsborgerskap'))
 					: set(paths.statsborgerskap, [
 							getInitialStatsborgerskap(identtype === 'NPID' ? 'PDL' : 'FREG'),
-					  ])
+						])
 			},
 			remove() {
 				del([paths.statsborgerskap])
@@ -243,7 +244,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 								master: 'FREG',
 								kilde: 'Dolly',
 							},
-					  ])
+						])
 			},
 			remove() {
 				del(paths.innflytting)
@@ -263,7 +264,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 								master: 'FREG',
 								kilde: 'Dolly',
 							},
-					  ])
+						])
 			},
 			remove() {
 				del(paths.utflytting)
@@ -313,7 +314,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 					? setMulti(
 							[paths.telefonnummer.pdl, fjernIdFoerLeggTil('telefonnummer')],
 							[paths.telefonnummer.tpsM, _.get(personFoerLeggTil, 'tpsMessaging.telefonnumre')],
-					  )
+						)
 					: setMulti(
 							[
 								paths.telefonnummer.pdl,
@@ -337,7 +338,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 									},
 								],
 							],
-					  )
+						)
 			},
 			remove() {
 				del([paths.telefonnummer.pdl, paths.telefonnummer.tpsM])

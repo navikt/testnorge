@@ -156,7 +156,7 @@ export const DokarkivForm = ({ formMethods }: DokarkivFormProps) => {
 												formMethods.formState.errors,
 												`dokarkiv.journalfoerendeEnhet`,
 											),
-									  }
+										}
 									: null
 							}
 							name="dokarkiv.journalfoerendeEnhet"
@@ -257,9 +257,10 @@ DokarkivForm.validation = {
 					brevkode: Yup.string().test(
 						'is-valid-brevkode',
 						'Feltet er påkrevd',
-						function validBrevkode() {
-							const values = this.options.context
-							const brevkode = _.get(values, 'dokarkiv.dokumenter[0].brevkode')
+						(_val, testContext) => {
+							const fullForm =
+								testContext.from && testContext.from[testContext.from.length - 1]?.value
+							const brevkode = _.get(fullForm, 'dokarkiv.dokumenter[0].brevkode')
 							return brevkode !== ''
 						},
 					),

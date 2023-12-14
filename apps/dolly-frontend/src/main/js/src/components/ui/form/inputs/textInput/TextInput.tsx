@@ -19,6 +19,7 @@ export const TextInput = React.forwardRef(
 	(
 		{
 			placeholder = 'Ikke spesifisert',
+			isDatepicker = false,
 			name,
 			fieldName,
 			className,
@@ -32,6 +33,7 @@ export const TextInput = React.forwardRef(
 			icon?: string
 			placeholder?: string
 			isDisabled?: boolean
+			isDatepicker?: boolean
 			onChange?: any
 		},
 		ref,
@@ -49,7 +51,7 @@ export const TextInput = React.forwardRef(
 					id={name}
 					className={css}
 					placeholder={placeholder}
-					{...(name && register(name))}
+					{...(name && !isDatepicker && register(name))}
 					{...props}
 				/>
 				{icon && <StyledIcon fontSize={'1.5rem'} kind={icon} />}

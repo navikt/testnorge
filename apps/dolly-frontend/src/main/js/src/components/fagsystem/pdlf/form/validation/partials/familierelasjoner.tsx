@@ -4,39 +4,41 @@ import { matrikkeladresse, vegadresse } from '@/components/fagsystem/pdlf/form/v
 import { testDatoFom, testDatoTom } from '@/components/fagsystem/utils'
 import * as _ from 'lodash'
 
-const testForeldreansvar = (val) => {
-	return val.test('er-gyldig-foreldreansvar', function erGyldigForeldreansvar(selected) {
+const testForeldreansvar = (val: Yup.StringSchema<string, Yup.AnyObject>) => {
+	return val.test('er-gyldig-foreldreansvar', (selected, testContext) => {
 		let feilmelding = null
-		const values = this.options.context
-		if (values.leggTilPaaGruppe) return true
+		const context = testContext.options.context
+		const fullForm = testContext.from && testContext.from[testContext.from.length - 1]?.value
+
+		if (context.leggTilPaaGruppe) return true
 
 		const foreldrerelasjoner = []
 			.concat(
-				_.get(values, 'pdldata.person.forelderBarnRelasjon'),
-				_.get(values, 'personFoerLeggTil.pdl.hentPerson.forelderBarnRelasjon'),
+				_.get(fullForm, 'pdldata.person.forelderBarnRelasjon'),
+				_.get(context, 'personFoerLeggTil.pdl.hentPerson.forelderBarnRelasjon'),
 			)
 			?.map((a) => a?.minRolleForPerson)
 			?.filter((a) => a)
 
 		const sivilstander = []
 			.concat(
-				_.get(values, 'pdldata.person.sivilstand'),
-				_.get(values, 'personFoerLeggTil.pdl.hentPerson.sivilstand'),
+				_.get(fullForm, 'pdldata.person.sivilstand'),
+				_.get(context, 'personFoerLeggTil.pdl.hentPerson.sivilstand'),
 			)
 			?.map((a) => a?.type)
 			?.filter((a) => a)
 
 		const barn = []
 			.concat(
-				_.get(values, 'pdldata.person.forelderBarnRelasjon'),
-				_.get(values, 'personFoerLeggTil.pdl.hentPerson.forelderBarnRelasjon'),
+				_.get(fullForm, 'pdldata.person.forelderBarnRelasjon'),
+				_.get(context, 'personFoerLeggTil.pdl.hentPerson.forelderBarnRelasjon'),
 			)
 			?.filter((a) => a?.relatertPersonsRolle === 'BARN')
 
 		const kjoennListe = []
 			.concat(
-				_.get(values, 'pdldata.person.kjoenn'),
-				_.get(values, 'pdldata.person.personFoerLeggTil.pdl.hentPerson.kjoenn'),
+				_.get(fullForm, 'pdldata.person.kjoenn'),
+				_.get(context, 'pdldata.person.personFoerLeggTil.pdl.hentPerson.kjoenn'),
 			)
 			?.filter((a) => a)
 
@@ -82,54 +84,52 @@ const testForeldreansvar = (val) => {
 				feilmelding = 'Partner er ikke forelder'
 			}
 		}
-		return feilmelding ? this.createError({ message: feilmelding }) : true
+		return feilmelding ? testContext.createError({ message: feilmelding }) : true
 	})
 }
 
 const testForeldreansvarForBarn = (val) => {
-	return val.test(
-		'er-gyldig-foreldreansvar-for-barn',
-		function erGyldigForeldreansvarForBarn(selected) {
-			let feilmelding = null
-			const values = this.options.context
+	return val.test('er-gyldig-foreldreansvar-for-barn', (selected, testContext) => {
+		let feilmelding = null
+		const fullForm = testContext.from && testContext.from[testContext.from.length - 1]?.value
 
-			const foreldrerelasjoner = _.get(values, 'personValues.forelderBarnRelasjon')
-				?.map((a) => a?.relatertPersonsRolle)
-				?.filter((a) => {
-					return a && a !== 'BARN'
-				})
+		const foreldrerelasjoner = _.get(fullForm, 'personValues.forelderBarnRelasjon')
+			?.map((a) => a?.relatertPersonsRolle)
+			?.filter((a) => {
+				return a && a !== 'BARN'
+			})
 
-			if (!foreldrerelasjoner || foreldrerelasjoner?.length < 1) {
-				return true
-			}
+		if (!foreldrerelasjoner || foreldrerelasjoner?.length < 1) {
+			return true
+		}
 
-			if (
-				(selected === 'MOR' || selected === 'MEDMOR') &&
-				!foreldrerelasjoner.includes('MOR') &&
-				!foreldrerelasjoner.includes('MEDMOR')
-			) {
-				feilmelding = 'Forelder med rolle mor eller medmor finnes ikke'
-			}
-			if (selected === 'FAR' && !foreldrerelasjoner.includes('FAR')) {
-				feilmelding = 'Forelder med rolle far finnes ikke'
-			}
-			if (selected === 'FELLES' && foreldrerelasjoner.length < 2) {
-				feilmelding = 'Barn har færre enn to foreldre'
-			}
+		if (
+			(selected === 'MOR' || selected === 'MEDMOR') &&
+			!foreldrerelasjoner.includes('MOR') &&
+			!foreldrerelasjoner.includes('MEDMOR')
+		) {
+			feilmelding = 'Forelder med rolle mor eller medmor finnes ikke'
+		}
+		if (selected === 'FAR' && !foreldrerelasjoner.includes('FAR')) {
+			feilmelding = 'Forelder med rolle far finnes ikke'
+		}
+		if (selected === 'FELLES' && foreldrerelasjoner.length < 2) {
+			feilmelding = 'Barn har færre enn to foreldre'
+		}
 
-			return feilmelding ? this.createError({ message: feilmelding }) : true
-		},
-	)
+		return feilmelding ? testContext.createError({ message: feilmelding }) : true
+	})
 }
 
-const testDeltBostedAdressetype = (value) => {
-	return value.test('har-gyldig-adressetype', function harGyldigAdressetype(selected) {
+const testDeltBostedAdressetype = (value: Yup.StringSchema<string, Yup.AnyObject>) => {
+	return value.test('har-gyldig-adressetype', (selected, testContext) => {
 		let feilmelding = null
+		const context = testContext.options.context
+		const fullForm = testContext.from && testContext.from[testContext.from.length - 1]?.value
 		if (selected === 'PARTNER_ADRESSE') {
-			const values = this.options.context
-			const personFoerLeggTil = values.personFoerLeggTil
+			const personFoerLeggTil = context?.personFoerLeggTil
 			let fantPartner = false
-			const nyePartnere = _.get(values, 'pdldata.person.sivilstand')
+			const nyePartnere = _.get(fullForm, 'pdldata.person.sivilstand')
 
 			if (nyePartnere?.length > 0) {
 				fantPartner = nyePartnere.find((partner) => partner.borIkkeSammen)
@@ -151,7 +151,7 @@ const testDeltBostedAdressetype = (value) => {
 			feilmelding = fantPartner ? null : 'Fant ikke gyldig partner for delt bosted'
 		}
 
-		return feilmelding ? this.createError({ message: feilmelding }) : true
+		return feilmelding ? testContext.createError({ message: feilmelding }) : true
 	})
 }
 

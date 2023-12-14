@@ -227,6 +227,7 @@ export const FormikDollyFieldArray = ({
 	const { append, fields, remove } = useFieldArray({ control: formMethods.control, name: name })
 	const addNewEntry = () => {
 		handleNewEntry ? handleNewEntry() : append(newEntry)
+		formMethods.trigger(name)
 	}
 
 	return (

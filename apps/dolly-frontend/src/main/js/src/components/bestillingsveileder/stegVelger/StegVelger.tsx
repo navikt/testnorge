@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Navigation } from './Navigation/Navigation'
 import { stateModifierFns } from '../stateModifier'
 import { BestillingsveilederHeader } from '../BestillingsveilederHeader'
@@ -17,16 +17,19 @@ import { Stepper } from '@navikt/ds-react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import DisplayFormikErrors from '@/utils/DisplayFormikErrors'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 const STEPS = [Steg1, Steg2, Steg3]
 
 export const StegVelger = ({ initialValues, onSubmit }) => {
+	const context = useContext(BestillingsveilederContext)
 	const [step, setStep] = useState(0)
 	const CurrentStepComponent: any = STEPS[step]
 	const formMethods = useForm({
 		mode: 'onChange',
 		defaultValues: initialValues,
 		resolver: yupResolver(CurrentStepComponent.validation),
+		context: context,
 	})
 
 	useEffect(() => {
@@ -59,7 +62,7 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 
 	const labels = STEPS.map((v) => ({ label: v.label }))
 
-	const stateModifier = stateModifierFns(formMethods, opts)
+	const stateModifier = stateModifierFns(formMethods)
 	const devEnabled =
 		window.location.hostname.includes('localhost') ||
 		window.location.hostname.includes('dolly-frontend-dev')
