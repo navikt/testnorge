@@ -8,7 +8,6 @@ import './App.less'
 import { Forbedring } from '@/components/feedback/Forbedring'
 import ToastConnector from '@/components/ui/toast/ToastConnector'
 import { Breadcrumbs } from '@/components/layout/breadcrumb/Breadcrumb'
-import { InfoStripe } from '@/components/infostripe/InfoStripe'
 import { useBrukerProfil, useCurrentBruker } from '@/utils/hooks/useBruker'
 import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 import {
@@ -18,6 +17,7 @@ import {
 import { runningCypressE2E } from '@/service/services/Request'
 import { navigateToLogin } from '@/components/utlogging/navigateToLogin'
 import { FaroErrorBoundary } from '@grafana/faro-react'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 
 const logout = (feilmelding: string) => {
 	if (!runningCypressE2E()) {
@@ -44,6 +44,7 @@ export const App = () => {
 
 	useEffect(() => {
 		if (criticalError && !runningCypressE2E()) {
+			console.error(criticalError)
 			logout(criticalError.stack)
 		}
 	}, [criticalError])
@@ -59,17 +60,19 @@ export const App = () => {
 			<Breadcrumbs />
 			{/*<InfoStripe />*/}
 			<main>
-				<Suspense fallback={<Loading label="Laster inn" />}>
-					<Routes>
-						{allRoutes.map((route: { element: any; path: string }, idx: React.Key) =>
-							route.element ? (
-								<Route key={idx} path={route.path} element={<route.element />} />
-							) : (
-								<React.Fragment key={idx} />
-							),
-						)}
-					</Routes>
-				</Suspense>
+				<ErrorBoundary>
+					<Suspense fallback={<Loading label="Laster inn" />}>
+						<Routes>
+							{allRoutes.map((route: { element: any; path: string }, idx: React.Key) =>
+								route.element ? (
+									<Route key={idx} path={route.path} element={<route.element />} />
+								) : (
+									<React.Fragment key={idx} />
+								),
+							)}
+						</Routes>
+					</Suspense>
+				</ErrorBoundary>
 			</main>
 			<Forbedring />
 			<ToastConnector />
