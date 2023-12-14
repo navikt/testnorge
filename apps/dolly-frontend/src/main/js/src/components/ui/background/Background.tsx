@@ -64,7 +64,9 @@ const DefaultBackground = styled.div`
 	background-color: ${() => {
 		if (isHalloween) {
 			return '#c0b2d2'
-		} else if (isWinter || isChristmas) {
+		} else if (isWinter) {
+			return '#0C6B99'
+		} else if (isChristmas) {
 			return '#005077'
 		}
 		return '#cce4ee'
