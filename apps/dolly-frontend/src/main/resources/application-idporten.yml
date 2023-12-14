@@ -1,5 +1,5 @@
 POST_LOGOUT_REDIRECT_URI: https://dolly-idporten.ekstern.dev.nav.no/login
-IDPORTEN_ISSUER_PROD: https://idporten.no/idporten-oidc-provider/
+IDPORTEN_ISSUER_PROD: https://idporten.no/
 
 spring:
   session:
