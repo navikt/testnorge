@@ -5,6 +5,8 @@ metadata:
   namespace: dolly
   labels:
     team: dolly
+  annotations:
+    config.linkerd.io/proxy-log-level: trace
 spec:
   image: {{image}}
   port: 8080
@@ -34,6 +36,10 @@ spec:
         - application: app-1
           namespace: plattformsikkerhet
           cluster: dev-gcp
+    outbound:
+      rules:
+       - application: skjermede-personer
+         namespace: nom
   liveness:
     path: /internal/isAlive
     initialDelay: 4
