@@ -23,6 +23,7 @@ import java.util.List;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
@@ -64,6 +65,7 @@ public class SkjermingsRegisterConsumer implements ConsumerStatus {
         return tokenService.exchange(serverProperties)
                 .flatMap(token -> new SkjermingsregisterGetCommand(webClient, skjerming.getPersonident(), token.getTokenValue()).call()
                         .flatMap(response -> {
+                            if (isNotBlank(response.getError())) {
                             if (response.isEksistererIkke()) {
                                 return new SkjermingsregisterPostCommand(webClient, List.of(skjerming),
                                         token.getTokenValue()).call()
