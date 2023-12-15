@@ -51,7 +51,7 @@ export const PersonrollerForm = ({ formikBag, path }) => {
 							onChange={(egenskapen) => formikBag.setFieldValue(egenskap, egenskapen.value)}
 							value={_.get(formikBag.values, egenskap)}
 							placeholder={
-								_.get(formikBag.values, egenskap) ? _.get(formikBag.values, egenskap) : 'Velg...'
+								_.get(formikBag.values, egenskap) ? _.get(formikBag.values, egenskap) : 'Velg ...'
 							}
 							isClearable={false}
 							feil={

@@ -12,7 +12,7 @@ interface VelgGruppeToggleProps {
 	fraGruppe?: number
 }
 
-enum Gruppevalg {
+export enum Gruppevalg {
 	MINE = 'Mine',
 	ALLE = 'Alle',
 	NY = 'Ny',
@@ -26,9 +26,9 @@ export const VelgGruppeToggle = ({
 	setValgtGruppe,
 	valgtGruppe,
 	fraGruppe = null,
+	gruppevalg,
+	setGruppevalg,
 }: VelgGruppeToggleProps) => {
-	const [gruppevalg, setGruppevalg] = useState(Gruppevalg.MINE)
-
 	const handleToggleChange = (value: Gruppevalg) => {
 		setGruppevalg(value)
 		setValgtGruppe('')

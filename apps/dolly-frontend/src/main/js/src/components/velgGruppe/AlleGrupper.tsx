@@ -42,10 +42,6 @@ export default ({ setValgtGruppe, valgtGruppe, fraGruppe = null }: AlleGrupper) 
 		}
 	})
 
-	if (loadingBrukere) {
-		return <Loading label="Laster brukere" />
-	}
-
 	return (
 		<div className="flexbox--flex-wrap">
 			<DollySelect
@@ -55,20 +51,20 @@ export default ({ setValgtGruppe, valgtGruppe, fraGruppe = null }: AlleGrupper) 
 				size="medium"
 				onChange={(bruker) => setValgtBruker(bruker?.value || null)}
 				value={valgtBruker}
+				isDisabled={loadingBrukere}
+				placeholder={loadingBrukere ? 'Laster brukere ...' : 'Velg bruker ...'}
 			/>
-			{loadingGrupper ? (
-				<Loading label="Laster grupper" />
-			) : (
-				<DollySelect
-					name="Gruppe"
-					label="Gruppe"
-					options={gruppeOptions}
-					onChange={(gruppe: Options) => setValgtGruppe(gruppe?.value)}
-					value={valgtGruppe}
-					size={fraGruppe ? 'grow' : 'large'}
-					isClearable={false}
-				/>
-			)}
+			<DollySelect
+				name="Gruppe"
+				label="Gruppe"
+				options={gruppeOptions}
+				onChange={(gruppe: Options) => setValgtGruppe(gruppe?.value)}
+				value={valgtGruppe}
+				size={fraGruppe ? 'grow' : 'large'}
+				isClearable={false}
+				isDisabled={loadingGrupper || !valgtBruker}
+				placeholder={loadingGrupper ? 'Laster grupper ...' : 'Velg gruppe ...'}
+			/>
 		</div>
 	)
 }
