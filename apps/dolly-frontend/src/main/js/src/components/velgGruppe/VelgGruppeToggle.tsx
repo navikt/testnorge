@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import NyGruppe from './NyGruppe'
 import EksisterendeGruppe from '@/components/velgGruppe/EksisterendeGruppe'
 import { ToggleGroup } from '@navikt/ds-react'

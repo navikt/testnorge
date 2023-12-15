@@ -51,7 +51,7 @@ export default ({ setValgtGruppe, valgtGruppe, fraGruppe = null }: AlleGrupper) 
 				size="medium"
 				onChange={(bruker) => setValgtBruker(bruker?.value || null)}
 				value={valgtBruker}
-				isDisabled={loadingBrukere}
+				isLoading={loadingBrukere}
 				placeholder={loadingBrukere ? 'Laster brukere ...' : 'Velg bruker ...'}
 			/>
 			<DollySelect
@@ -62,7 +62,8 @@ export default ({ setValgtGruppe, valgtGruppe, fraGruppe = null }: AlleGrupper) 
 				value={valgtGruppe}
 				size={fraGruppe ? 'grow' : 'large'}
 				isClearable={false}
-				isDisabled={loadingGrupper || !valgtBruker}
+				isDisabled={!valgtBruker}
+				isLoading={loadingGrupper}
 				placeholder={loadingGrupper ? 'Laster grupper ...' : 'Velg gruppe ...'}
 			/>
 		</div>
