@@ -6,6 +6,7 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.exceptions.NotFoundException;
+import no.nav.dolly.mapper.strategy.BestillingMapper;
 import no.nav.dolly.repository.BestillingKontrollRepository;
 import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.repository.BestillingRepository;
@@ -64,46 +65,40 @@ public class SplittGruppeService {
 
     private Bestilling moveBestillinger(Bestilling bestilling, Set<String> identer, Testgruppe testgruppe) {
 
-        var nyeProgresser = bestilling.getProgresser().stream()
+        var progresser = bestilling.getProgresser().stream()
                 .filter(progress -> identer.contains(progress.getIdent()))
-                .map(SerializationUtils::clone)
                 .toList();
-        var nyeTransaksjonMappinger = bestilling.getTransaksjonmapping().stream()
+        var transaksjonMappinger = bestilling.getTransaksjonmapping().stream()
                 .filter(mapping -> identer.contains(mapping.getIdent()))
-                .map(SerializationUtils::clone)
                 .toList();
 
-        var nyBestilling = SerializationUtils.clone(bestilling);
+        var nyBestilling = BestillingMapper.shallowCopyBestilling(bestilling);
         nyBestilling.setId(null);
         nyBestilling.setGruppe(testgruppe);
-        nyBestilling.setProgresser(null);
-        nyBestilling.setTransaksjonmapping(null);
-        nyBestilling.setKontroller(null);
-        nyBestilling.setAntallIdenter(nyeProgresser.size());
-        nyBestilling.setFerdig(true);
-        nyBestilling.setStoppet(false);
 
         var oppdatertBestilling = bestillingRepository.save(nyBestilling);
 
-        nyeProgresser
+        progresser
                 .forEach(progress -> {
-                    bestillingProgressRepository.findById(progress.getId())
-                            .ifPresent(bestillingProgressRepository::delete);
-                    progress.setId(null);
-                    progress.setBestilling(oppdatertBestilling);
-                    bestillingProgressRepository.save(progress);
+                    var nyProgress = SerializationUtils.clone(progress);
+                    bestillingProgressRepository.deleteById(progress.getId());
+
+                    nyProgress.setId(null);
+                    nyProgress.setBestilling(oppdatertBestilling);
+                    bestillingProgressRepository.save(nyProgress);
                 });
 
-        nyeTransaksjonMappinger
+        transaksjonMappinger
                 .forEach(transaksjonMapping -> {
-                    transaksjonMappingRepository.findById(transaksjonMapping.getId())
-                            .ifPresent(transaksjonMappingRepository::delete);
-                    transaksjonMapping.setId(null);
-                    transaksjonMapping.setBestillingId(oppdatertBestilling.getId());
-                    transaksjonMappingRepository.save(transaksjonMapping);
+                    var nyTransaksjonMapping = SerializationUtils.clone(transaksjonMapping);
+                    transaksjonMappingRepository.deleteById(transaksjonMapping.getId());
+
+                    nyTransaksjonMapping.setId(null);
+                    nyTransaksjonMapping.setBestillingId(oppdatertBestilling.getId());
+                    transaksjonMappingRepository.save(nyTransaksjonMapping);
                 });
 
-        deleteKildeBestilling(bestilling, nyeProgresser);
+        deleteKildeBestilling(bestilling, progresser);
 
         return oppdatertBestilling;
     }

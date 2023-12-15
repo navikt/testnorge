@@ -98,17 +98,17 @@ public class Bestilling implements Serializable {
     private Boolean navSyntetiskIdent;
 
     @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "bestilling_id")
+    @JoinColumn(name = "bestilling_id", updatable = false)
     @Builder.Default
     private List<BestillingProgress> progresser = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "bestilling_id")
+    @JoinColumn(name = "bestilling_id", updatable = false)
     @Builder.Default
     private List<BestillingKontroll> kontroller = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "bestilling_id")
+    @JoinColumn(name = "bestilling_id", updatable = false)
     @Builder.Default
     private List<TransaksjonMapping> transaksjonmapping = new ArrayList<>();
 
