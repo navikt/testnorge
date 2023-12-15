@@ -19,6 +19,7 @@ import { Alert } from '@navikt/ds-react'
 import { usePdlOptions, useTestnorgeOptions } from '@/utils/hooks/useSelectOptions'
 import { useGruppeIdenter } from '@/utils/hooks/useGruppe'
 import { CypressSelector } from '../../../../../cypress/mocks/Selectors'
+import { Gruppevalg } from '@/components/velgGruppe/VelgGruppeToggle'
 
 type FlyttPersonButtonTypes = {
 	gruppeId: number
@@ -134,6 +135,7 @@ const StyledErrorMessageWithFocus = styled(ErrorMessageWithFocus)`
 export const FlyttPersonModal = ({ gruppeId, modalIsOpen, closeModal }: FlyttPersonButtonTypes) => {
 	const [loading, setLoading] = useState(false)
 	const [error, setError] = useState(null)
+	const [gruppevalg, setGruppevalg] = useState(Gruppevalg.MINE)
 
 	const { identer: gruppeIdenter, loading: gruppeLoading } = useGruppeIdenter(gruppeId)
 
@@ -247,6 +249,8 @@ export const FlyttPersonModal = ({ gruppeId, modalIsOpen, closeModal }: FlyttPer
 						formikBag={formikBag}
 						title={'Velg hvilken gruppe du ønsker å flytte personer til'}
 						fraGruppe={gruppeId}
+						gruppevalg={gruppevalg}
+						setGruppevalg={setGruppevalg}
 					/>
 					<StyledErrorMessageWithFocus name="gruppe" className="error-message" component="div" />
 				</GruppeVelger>

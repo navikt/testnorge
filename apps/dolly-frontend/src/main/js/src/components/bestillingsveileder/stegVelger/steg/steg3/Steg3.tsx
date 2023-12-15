@@ -1,4 +1,4 @@
-import React, { Suspense, useContext, useEffect } from 'react'
+import React, { Suspense, useContext, useEffect, useState } from 'react'
 import * as Yup from 'yup'
 import { harAvhukedeAttributter } from '@/components/bestillingsveileder/utils'
 import { MiljoVelger } from '@/components/miljoVelger/MiljoVelger'
@@ -11,6 +11,7 @@ import { MalFormOrganisasjon } from '@/pages/organisasjoner/MalFormOrganisasjon'
 import { useFormikContext } from 'formik'
 import { useCurrentBruker, useOrganisasjonTilgang } from '@/utils/hooks/useBruker'
 import Loading from '@/components/ui/loading/Loading'
+import { Gruppevalg } from '@/components/velgGruppe/VelgGruppeToggle'
 
 const Bestillingskriterier = React.lazy(
 	() => import('@/components/bestilling/sammendrag/kriterier/Bestillingskriterier'),
@@ -20,6 +21,8 @@ export const Steg3 = () => {
 	const opts = useContext(BestillingsveilederContext)
 	const formikBag = useFormikContext()
 	const { currentBruker } = useCurrentBruker()
+
+	const [gruppevalg, setGruppevalg] = useState(Gruppevalg.MINE)
 
 	const { organisasjonTilgang } = useOrganisasjonTilgang()
 	const tilgjengeligMiljoe = organisasjonTilgang?.miljoe
@@ -101,7 +104,12 @@ export const Steg3 = () => {
 				/>
 			)}
 			{importTestnorge && !opts.gruppe && (
-				<VelgGruppe formikBag={formikBag} title={'Hvilken gruppe vil du importere til?'} />
+				<VelgGruppe
+					formikBag={formikBag}
+					title={'Hvilken gruppe vil du importere til?'}
+					gruppevalg={gruppevalg}
+					setGruppevalg={setGruppevalg}
+				/>
 			)}
 			{importTestnorge && opts.gruppe && (
 				<div className="oppsummering">
