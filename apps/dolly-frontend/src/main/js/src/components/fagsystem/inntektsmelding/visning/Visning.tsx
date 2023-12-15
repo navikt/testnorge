@@ -58,7 +58,7 @@ export const InntektsmeldingVisning = ({
 	const harTransaksjonsidData = data?.every((inntekt) => inntekt?.data?.request)
 
 	const setTransaksjonsidData = () => {
-		return data.map((miljo) => {
+		return data?.map((miljo) => {
 			const request = miljo?.data?.request
 			const dokument = miljo?.data?.dokument
 			return {
@@ -84,7 +84,7 @@ export const InntektsmeldingVisning = ({
 
 	const mergeData = () => {
 		const mergeMiljo = []
-		data.forEach((item) => {
+		data?.forEach((item) => {
 			const indexOfMiljo = mergeMiljo.findIndex((inntekt) => inntekt?.miljo === item?.miljo)
 			if (indexOfMiljo >= 0) {
 				mergeMiljo[indexOfMiljo].data?.push(item.data)

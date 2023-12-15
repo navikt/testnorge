@@ -14,6 +14,10 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.oauth2.client.registration.ReactiveClientRegistrationRepository;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestCustomizers;
+import org.springframework.security.oauth2.client.web.server.DefaultServerOAuth2AuthorizationRequestResolver;
+import org.springframework.security.oauth2.client.web.server.ServerOAuth2AuthorizationRequestResolver;
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.util.matcher.ServerWebExchangeMatchers;
 
@@ -31,7 +35,7 @@ public class IdportenSecurityConfig {
     private final String postLogoutRedirectUri;
 
     public IdportenSecurityConfig(
-            @Value("${spring.security.oauth2.client.provider.idporten.issuer-uri}.well-known/openid-configuration") String wellKnownUrl,
+            @Value("${spring.security.oauth2.client.provider.idporten.issuer-uri}/.well-known/openid-configuration") String wellKnownUrl,
             @Value("${spring.security.oauth2.client.registration.idporten.post-logout-redirect-uri}") String postLogoutRedirectUri,
             @Value("${IDPORTEN_CLIENT_JWK}") String jwk
     ) {
@@ -40,11 +44,18 @@ public class IdportenSecurityConfig {
         this.postLogoutRedirectUri = postLogoutRedirectUri;
     }
 
+    @Bean
+    public ServerOAuth2AuthorizationRequestResolver pkceResolver(ReactiveClientRegistrationRepository repo) {
+        var resolver = new DefaultServerOAuth2AuthorizationRequestResolver(repo);
+        resolver.setAuthorizationRequestCustomizer(OAuth2AuthorizationRequestCustomizers.withPkce());
+        return resolver;
+    }
+
     @SneakyThrows
     @Bean
-    public SecurityWebFilterChain configure(ServerHttpSecurity http) {
+    public SecurityWebFilterChain configure(ServerHttpSecurity http, ServerOAuth2AuthorizationRequestResolver requestResolver) {
         var authenticationSuccessHandler = new DollyAuthenticationSuccessHandler();
-        var authenticationManger = new AuthorizationCodeReactiveAuthenticationManger(JWK.parse(jwk));
+        var authenticationManager = new AuthorizationCodeReactiveAuthenticationManger(JWK.parse(jwk));
         var logoutSuccessHandler = new LogoutSuccessHandler();
         logoutSuccessHandler.applyOn("idporten", new IdportenOcidLogoutUrlResolver(wellKnownUrl, postLogoutRedirectUri));
 
@@ -67,7 +78,8 @@ public class IdportenSecurityConfig {
                         ).permitAll()
                         .anyExchange().authenticated())
                 .oauth2Login(oAuth2LoginSpec -> oAuth2LoginSpec
-                        .authenticationManager(authenticationManger)
+                        .authenticationManager(authenticationManager)
+                        .authorizationRequestResolver(requestResolver)
                         .authenticationSuccessHandler(authenticationSuccessHandler))
                 .formLogin(formLoginSpec -> formLoginSpec.loginPage(LOGIN))
                 .logout(logoutSpec -> logoutSpec

@@ -18,24 +18,11 @@ spring:
 
 ereg.api: dummy
 
-tps:
-  statisk:
-    avspillergruppeId: 1
-
 VAULT_URL: dummy
-
-server:
-  port: 4390
 
 consumers:
   testnav-bruker-service:
     name: testnav-bruker-service-dev
     url: https://testnav-bruker-service-dev.intern.dev.nav.no
-  tps-forvalteren-proxy:
-    url: https://tps-forvalteren-proxy.dev-fss-pub.nais.io
-  testnorge-hodejegeren:
-    url: https://testnorge-hodejegeren.intern.dev.nav.no
-  testnorge-tp:
-    url: https://testnorge-tp.intern.dev.nav.no
   synthdata-aareg:
     url: https://nais-synthdata-aareg.dev.intern.nav.no

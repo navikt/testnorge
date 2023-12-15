@@ -119,6 +119,10 @@ export const OppholdsadresseForm = ({
 		formMethods.setValue(path, adresseClone)
 	}
 
+	const adressetypeOptions = Options('adressetypeOppholdsadresse')?.filter((option) =>
+		erNPID ? option.value !== 'MATRIKKELADRESSE' : option.value,
+	)
+
 	const { navnInfo, loading } = useGenererNavn()
 	const navnOptions = SelectOptionsFormat.formatOptions('personnavn', navnInfo)
 
@@ -128,7 +132,7 @@ export const OppholdsadresseForm = ({
 				<FormikSelect
 					name={`${path}.adressetype`}
 					label="Adressetype"
-					options={Options('adressetypeOppholdsadresse')}
+					options={adressetypeOptions}
 					onChange={(target: Target) => handleChangeAdressetype(target, path)}
 					size="large"
 				/>

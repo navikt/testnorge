@@ -36,11 +36,7 @@ spec:
           cluster: dev-gcp
         - application: dolly-backend
           cluster: dev-gcp
-        - application: testnav-person-export-api
-          cluster: dev-gcp
         - application: testnorge-hodejegeren
-          cluster: dev-fss
-        - application: testnorge-statisk-data-forvalter
           cluster: dev-fss
   liveness:
     path: /internal/isAlive

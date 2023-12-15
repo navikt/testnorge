@@ -9,7 +9,7 @@ import no.nav.testnav.apps.organisasjonbestillingservice.repository.v2.OrderRepo
 import no.nav.testnav.apps.organisasjonbestillingservice.repository.v2.entity.OrderEntity;
 import no.nav.testnav.apps.organisasjonbestillingservice.retry.RetryConfig;
 import no.nav.testnav.apps.organisasjonbestillingservice.service.RetryService;
-import no.nav.testnav.libs.dto.organiasjonbestilling.v2.Status;
+import no.nav.testnav.libs.dto.organisajonbestilling.v2.Status;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 

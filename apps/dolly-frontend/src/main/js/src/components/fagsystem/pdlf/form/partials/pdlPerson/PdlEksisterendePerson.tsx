@@ -144,10 +144,8 @@ export const PdlEksisterendePerson = ({
 	}, [])
 
 	useEffect(() => {
-		if (formMethods) {
-			getFilteredOptionList()
-		}
-	}, [formMethods])
+		getFilteredOptionList()
+	}, [formMethods.watch])
 
 	const hasNyPersonValues = nyIdentValg
 		? !isEmpty(nyIdentValg, ['syntetisk'])
