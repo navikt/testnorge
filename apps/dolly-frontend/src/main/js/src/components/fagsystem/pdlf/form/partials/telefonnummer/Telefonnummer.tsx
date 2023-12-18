@@ -77,6 +77,7 @@ export const TelefonnummerForm = ({ path, formMethods, idx }: TelefonnummerProps
 		if (tlfListe && tlfListe.length === 1) {
 			formMethods.setValue(`${paths.pdlTelefonnummer}[0].prioritet`, 1)
 			formMethods.setValue(`${paths.tpsMTelefonnummer}[0].telefontype`, 'MOBI')
+			formMethods.trigger()
 		}
 	}, [tlfListe])
 
@@ -98,11 +99,13 @@ export const TelefonnummerForm = ({ path, formMethods, idx }: TelefonnummerProps
 	const handleChangeLandkode = (value: string) => {
 		formMethods.setValue(`${path}.landskode`, value)
 		formMethods.setValue(`${paths.tpsMTelefonnummer}[${idx}].landkode`, value)
+		formMethods.trigger()
 	}
 
 	const handleChangeNummer = (target: { value: string }) => {
 		formMethods.setValue(`${path}.nummer`, target.value)
 		formMethods.setValue(`${paths.tpsMTelefonnummer}[${idx}].telefonnummer`, target.value)
+		formMethods.trigger()
 	}
 
 	const handleChangePrioritet = (value: number) => {
@@ -111,6 +114,7 @@ export const TelefonnummerForm = ({ path, formMethods, idx }: TelefonnummerProps
 			`${paths.tpsMTelefonnummer}[${idx}].telefontype`,
 			value === 2 ? 'HJET' : 'MOBI',
 		)
+		formMethods.trigger()
 	}
 
 	return (
@@ -130,11 +134,6 @@ export const TelefonnummerForm = ({ path, formMethods, idx }: TelefonnummerProps
 				value={_.get(formMethods.getValues(), `${path}.nummer`)}
 				/*@ts-ignore*/
 				size="large"
-				feil={
-					_.get(formMethods.formState.errors, `${path}.nummer`)
-						? { feilmelding: _.get(formMethods.formState.errors, `${path}.nummer`) }
-						: null
-				}
 			/>
 			<FormikSelect
 				name={`${path}.prioritet`}
@@ -160,6 +159,7 @@ export const Telefonnummer = ({ formMethods, path }: TelefonnummerProps) => {
 	const handleNewEntry = () => {
 		formMethods.setValue(paths.pdlTelefonnummer, [...tlfListe, initialTelefonnummer])
 		formMethods.setValue(paths.tpsMTelefonnummer, [...tlfListeTps, initialTpsTelefonnummer])
+		formMethods.trigger()
 	}
 
 	const handleRemoveEntry = (idx: number) => {
@@ -169,6 +169,7 @@ export const Telefonnummer = ({ formMethods, path }: TelefonnummerProps) => {
 		formMethods.setValue(paths.tpsMTelefonnummer, tlfListeTps)
 		formMethods.setValue(`${paths.pdlTelefonnummer}[0].prioritet`, 1)
 		formMethods.setValue(`${paths.tpsMTelefonnummer}[0].telefontype`, 'MOBI')
+		formMethods.trigger()
 	}
 
 	return (

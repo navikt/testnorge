@@ -208,7 +208,6 @@ const validFradato = (vedtakType) => {
 			'har-gjeldende-vedtak',
 			'AAP- og Dagpenger-vedtak kan ikke overlappe hverandre',
 			(val, testContext) => {
-				const context = testContext.options.context
 				const fullForm = testContext.from && testContext.from[testContext.from.length - 1]?.value
 				const naavaerendeVerdier = {}
 				for (let key of ikkeOverlappendeVedtak) {

@@ -90,7 +90,7 @@ export const MiljoVelger = ({
 	const order = ['T', 'Q']
 	const values = formMethods.watch('environments')
 
-	if (disableAllEnvironments) {
+	if (disableAllEnvironments && values.length > 0) {
 		formMethods.setValue('environments', [])
 	}
 

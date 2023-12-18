@@ -34,7 +34,6 @@ export const Navigation = ({ step, onPrevious, isLastStep, handleSubmit }) => {
 		return 'Opprett'
 	}
 
-	const hasErrors = step !== 0 && !_.isEmpty(errors)
 	const disabledVidere = step !== 0 && opts?.is?.leggTil && !harAvhukedeAttributter(getValues())
 
 	return (
@@ -58,7 +57,7 @@ export const Navigation = ({ step, onPrevious, isLastStep, handleSubmit }) => {
 						<NavButton
 							data-cy={CypressSelector.BUTTON_VIDERE}
 							variant={'primary'}
-							disabled={hasErrors || isSubmitting || disabledVidere}
+							disabled={isSubmitting || disabledVidere}
 							onClick={handleSubmit}
 						>
 							Videre
