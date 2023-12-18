@@ -2,8 +2,12 @@ import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { ArbeidKodeverk } from '@/config/kodeverk'
+import { useFormContext } from 'react-hook-form'
 
 export const ArbeidsavtaleForm = ({ path, onChangeLenket, ...props }) => {
+	const { watch } = useFormContext()
+	const yrke = watch(`${path}.yrke`)
+	console.log('yrke: ', yrke) //TODO - SLETT MEG
 	return (
 		<div>
 			<h3>Ansettelsesdetaljer</h3>

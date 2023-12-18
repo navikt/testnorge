@@ -16,7 +16,7 @@ const validInputOrCheckboxTest = (val, checkboxPath, feilmelding, inputValidatio
 			return true
 		}
 
-		const path = testContext.path.substring(0, this.path.lastIndexOf('.'))
+		const path = testContext.path.substring(0, testContext.path.lastIndexOf('.'))
 
 		const checkbox = _.get(fullForm, `${path}.${checkboxPath}`)
 
@@ -30,7 +30,7 @@ const validInputOrCheckboxTest = (val, checkboxPath, feilmelding, inputValidatio
 
 // from - begynner med 0
 const replaceSubstringAtPos = (str, from, to, replaceWith) => {
-	return str.substring(0, from) + replaceWith + str.substr(to + 1)
+	return str.substring(0, from) + replaceWith + str.substring(to + 1)
 }
 
 const validateIban = (kontonummer, form) => {

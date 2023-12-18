@@ -158,12 +158,14 @@ export const ArbeidsforholdForm = ({
 						arbeidsforholdstype: event.value,
 						arbeidsgiver: gjeldendeArbeidsgiver,
 					})
+					trigger()
 				} else if (arbeidsgiverType === ArbeidsgiverTyper.privat) {
 					setFieldValue(path, {
 						...initialForenkletOppgjoersordningPers,
 						arbeidsforholdstype: event.value,
 						arbeidsgiver: gjeldendeArbeidsgiver,
 					})
+					trigger()
 				}
 			}
 		} else {
@@ -177,23 +179,27 @@ export const ArbeidsforholdForm = ({
 						arbeidsforholdstype: event.value,
 						arbeidsgiver: gjeldendeArbeidsgiver,
 					})
+					trigger()
 				} else if (arbeidsgiverType === ArbeidsgiverTyper.privat) {
 					setFieldValue(path, {
 						...initialArbeidsforholdPers,
 						arbeidsforholdstype: event.value,
 						arbeidsgiver: gjeldendeArbeidsgiver,
 					})
+					trigger
 				}
 			} else {
 				setFieldValue(`${path}.arbeidsforholdstype`, event.value)
+				trigger
 			}
 			if (event.value === 'maritimtArbeidsforhold') {
 				setFieldValue(`${path}.fartoy`, initialFartoy)
+				trigger()
 			} else {
 				setFieldValue(`${path}.fartoy`, undefined)
+				trigger()
 			}
 		}
-		trigger(path)
 	}
 
 	useEffect(() => {

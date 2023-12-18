@@ -18,6 +18,7 @@ import { runningCypressE2E } from '@/service/services/Request'
 import { navigateToLogin } from '@/components/utlogging/navigateToLogin'
 import { FaroErrorBoundary } from '@grafana/faro-react'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import { InfoStripe } from '@/components/infostripe/InfoStripe'
 
 const logout = (feilmelding: string) => {
 	if (!runningCypressE2E()) {

@@ -227,8 +227,9 @@ export const EgneOrganisasjoner = ({
 					onChange={(event) => {
 						setOrgnr(event.value)
 						handleChange(event)
+						formMethods.trigger()
 					}}
-					value={_.get(formMethods.getValues(), path)}
+					value={formMethods.watch(path)}
 					feil={sjekkOrganisasjoner()}
 					isClearable={false}
 				/>
