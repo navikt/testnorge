@@ -12,6 +12,7 @@ import { useFormikContext } from 'formik'
 import { useCurrentBruker, useOrganisasjonTilgang } from '@/utils/hooks/useBruker'
 import Loading from '@/components/ui/loading/Loading'
 import { Gruppevalg } from '@/components/velgGruppe/VelgGruppeToggle'
+import { Bestillingsdata } from '@/components/bestilling/sammendrag/Bestillingsdata'
 
 const Bestillingskriterier = React.lazy(
 	() => import('@/components/bestilling/sammendrag/kriterier/Bestillingskriterier'),
@@ -90,6 +91,8 @@ export const Steg3 = () => {
 			{harAvhukedeAttributter(formikBag.values) && (
 				<div className="oppsummering">
 					<Suspense fallback={<Loading label={'Laster bestillingskriterier...'} />}>
+						<Bestillingsdata bestilling={formikBag.values} />
+						{/*//TODO: Fjernes naar bestillingsdata er klar*/}
 						<Bestillingskriterier bestilling={formikBag.values} />
 					</Suspense>
 				</div>

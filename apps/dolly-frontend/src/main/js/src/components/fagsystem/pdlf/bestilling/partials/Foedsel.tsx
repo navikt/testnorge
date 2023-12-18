@@ -1,0 +1,50 @@
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import { formatDate } from '@/utils/DataFormatter'
+import { AdresseKodeverk } from '@/config/kodeverk'
+import React from 'react'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { BestillingTitle, EmptyObject } from '@/components/bestilling/sammendrag/Bestillingsdata'
+import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
+import { FoedselData } from '@/components/fagsystem/pdlf/PdlTypes'
+
+type FoedselTypes = {
+	foedselListe: Array<FoedselData>
+}
+
+export const Foedsel = ({ foedselListe }: FoedselTypes) => {
+	return (
+		<div className="person-visning">
+			<ErrorBoundary>
+				<BestillingTitle>Fødsel</BestillingTitle>
+				<DollyFieldArray header="Fødsel" data={foedselListe}>
+					{(foedsel: FoedselData, idx: number) => {
+						return (
+							<React.Fragment key={idx}>
+								{isEmpty(foedsel, ['kilde', 'master']) ? (
+									<EmptyObject />
+								) : (
+									<>
+										<TitleValue title="Fødselsdato" value={formatDate(foedsel.foedselsdato)} />
+										<TitleValue title="Fødselsår" value={foedsel.foedselsaar} />
+										<TitleValue title="Fødested" value={foedsel.foedested} />
+										<TitleValue
+											title="Fødekommune"
+											value={foedsel.foedekommune}
+											kodeverk={AdresseKodeverk.Kommunenummer}
+										/>
+										<TitleValue
+											title="Fødeland"
+											value={foedsel.foedeland}
+											kodeverk={AdresseKodeverk.StatsborgerskapLand}
+										/>
+									</>
+								)}
+							</React.Fragment>
+						)
+					}}
+				</DollyFieldArray>
+			</ErrorBoundary>
+		</div>
+	)
+}

@@ -51,7 +51,7 @@ export type FoedselData = {
 	foedested: string
 	foedekommune: string
 	foedeland: string
-	metadata: Metadata
+	metadata?: Metadata
 	id?: number
 }
 
