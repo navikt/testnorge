@@ -2,6 +2,7 @@ package no.nav.dolly.elastic.consumer;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.elastic.consumer.command.ElasticDeleteCommand;
 import no.nav.dolly.elastic.consumer.command.ElasticPutCommand;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -36,5 +37,11 @@ public class ElasticParamsConsumer {
 
         log.info("OpenSearch oppdaterer indeks \"{}\" ...", index);
         return new ElasticPutCommand(webClient, username, password, index, parametere).call();
+    }
+
+    public Mono<JsonNode> deleteIndex() {
+
+        log.warn("OpenSearch sletter indeks \"{}\" ...", index);
+        return new ElasticDeleteCommand(webClient, username, password, index).call();
     }
 }

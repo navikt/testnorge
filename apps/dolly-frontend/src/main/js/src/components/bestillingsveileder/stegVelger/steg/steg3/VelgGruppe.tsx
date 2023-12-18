@@ -12,7 +12,13 @@ type VelgGruppeProps = {
 	fraGruppe?: number
 }
 
-export const VelgGruppe = ({ formikBag, title, fraGruppe = null }: VelgGruppeProps) => {
+export const VelgGruppe = ({
+	formikBag,
+	title,
+	fraGruppe = null,
+	gruppevalg,
+	setGruppevalg,
+}: VelgGruppeProps) => {
 	const [valgtGruppe, setValgtGruppe] = useState(_.get(formikBag.values, `gruppeId`))
 
 	useEffect(() => {
@@ -30,6 +36,8 @@ export const VelgGruppe = ({ formikBag, title, fraGruppe = null }: VelgGruppePro
 				valgtGruppe={valgtGruppe}
 				setValgtGruppe={setValgtGruppe}
 				fraGruppe={fraGruppe}
+				gruppevalg={gruppevalg}
+				setGruppevalg={setGruppevalg}
 			/>
 			<ErrorMessageWithFocus name="gruppeId" className="error-message" component="div" />
 		</div>
@@ -40,7 +48,7 @@ VelgGruppe.validation = {
 	gruppeId: ifPresent(
 		'$gruppeId',
 		Yup.string().required(
-			'Velg eksisterende gruppe eller opprett ny gruppe for å importere personen(e)'
-		)
+			'Velg eksisterende gruppe eller opprett ny gruppe for å importere personen(e)',
+		),
 	),
 }

@@ -34,27 +34,28 @@ spec:
   accessPolicy:
     outbound:
       rules:
-        - application: testnorge-tilbakemelding-api
-        - application: testnav-adresse-service
-        - application: testnav-miljoer-service
-        - application: testnav-organisasjon-service
-        - application: oppsummeringsdokument-service
-        - application: testnav-organisasjon-forvalter
-        - application: testnorge-profil-api
-        - application: testnav-organisasjon-tilgang-service
-        - application: testnav-joark-dokument-service
-        - application: testnav-organisasjon-faste-data-service
-        - application: testnav-tps-messaging-service
-        - application: testnav-varslinger-service
-        - application: dolly-redis-session
-        - application: testnav-person-organisasjon-tilgang-service
-        - application: testnav-pdl-forvalter
-        - application: testnav-bruker-service
-        - application: testnav-person-search-service
-        - application: testnav-helsepersonell-service
-        - application: dolly-backend
-        - application: testnav-person-service
+        - application: testnav-arbeidsplassencv-proxy
         - application: generer-navn-service
+        - application: testnav-person-service
+        - application: dolly-backend
+        - application: testnav-helsepersonell-service
+        - application: testnav-person-search-service
+        - application: testnav-bruker-service
+        - application: testnav-pdl-forvalter
+        - application: testnav-person-organisasjon-tilgang-service
+        - application: dolly-redis-session
+        - application: testnav-varslinger-service
+        - application: testnav-tps-messaging-service
+        - application: testnav-organisasjon-faste-data-service
+        - application: testnav-joark-dokument-service
+        - application: testnav-organisasjon-tilgang-service
+        - application: testnorge-profil-api
+        - application: testnav-organisasjon-forvalter
+        - application: oppsummeringsdokument-service
+        - application: testnav-organisasjon-service
+        - application: testnav-miljoer-service
+        - application: testnav-adresse-service
+        - application: testnorge-tilbakemelding-api
       external:
         - host: testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
         - host: testnav-sigrunstub-proxy.dev-fss-pub.nais.io
@@ -71,7 +72,6 @@ spec:
         - host: testnav-norg2-proxy.dev-fss-pub.nais.io
         - host: testnav-brregstub-proxy.dev-fss-pub.nais.io
         - host: testnav-dokarkiv-proxy.dev-fss-pub.nais.io
-        - host: testnav-arbeidsplassencv-proxy.dev-fss-pub.nais.io
   liveness:
     path: /internal/isAlive
     initialDelay: 20

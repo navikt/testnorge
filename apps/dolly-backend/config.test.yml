@@ -34,19 +34,19 @@ spec:
     outbound:
       rules:
         - application: testnav-amelding-service
-        - application: testnav-arbeidsforhold-service
-        - application: testnav-inntektsmelding-service
-        - application: testnav-miljoer-service
-        - application: testnav-organisasjon-forvalter
-        - application: testnav-organisasjon-service
-        - application: testnav-pdl-forvalter-dev
-        - application: testnav-person-service
-        - application: testnav-synt-sykemelding-api
-        - application: testnav-sykemelding-api
-        - application: testnav-tps-messaging-service
+        - application: testnav-arbeidsplassencv-proxy
         - application: testnorge-profil-api-dev
+        - application: testnav-tps-messaging-service
+        - application: testnav-sykemelding-api
+        - application: testnav-synt-sykemelding-api
+        - application: testnav-person-service
+        - application: testnav-pdl-forvalter-dev
+        - application: testnav-organisasjon-service
+        - application: testnav-organisasjon-forvalter
+        - application: testnav-miljoer-service
+        - application: testnav-inntektsmelding-service
+        - application: testnav-arbeidsforhold-service
       external:
-        - host: testnav-arbeidsplassencv-proxy.dev-fss-pub.nais.io
         - host: testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io
         - host: testnav-brregstub-proxy.dev-fss-pub.nais.io
         - host: testnav-dokarkiv-proxy.dev-fss-pub.nais.io

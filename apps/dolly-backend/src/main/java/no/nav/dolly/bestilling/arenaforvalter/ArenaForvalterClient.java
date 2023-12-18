@@ -62,7 +62,8 @@ public class ArenaForvalterClient implements ClientRegister {
                             var initStatus = miljoer.stream()
                                     .map(miljo -> String.format(MILJOE_FMT, miljo, getInfoVenter(SYSTEM)))
                                     .collect(Collectors.joining(","));
-                            transactionHelperService.persister(progress, BestillingProgress::setArenaforvalterStatus, initStatus);
+                            transactionHelperService.persister(progress, BestillingProgress::getArenaforvalterStatus,
+                                    BestillingProgress::setArenaforvalterStatus, initStatus);
                         })
                         .flatMap(miljoer -> doArenaOpprett(ordre, dollyPerson.getIdent(), miljoer)
                                 .map(status -> futurePersist(progress, status))));
@@ -103,7 +104,8 @@ public class ArenaForvalterClient implements ClientRegister {
     private ClientFuture futurePersist(BestillingProgress progress, String status) {
 
         return () -> {
-            transactionHelperService.persister(progress, BestillingProgress::setArenaforvalterStatus, StringUtils.left(status, 4000));
+            transactionHelperService.persister(progress, BestillingProgress::getArenaforvalterStatus,
+                    BestillingProgress::setArenaforvalterStatus, StringUtils.left(status, 4000));
             return progress;
         };
     }

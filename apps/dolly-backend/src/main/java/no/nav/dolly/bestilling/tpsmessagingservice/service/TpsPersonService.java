@@ -11,11 +11,11 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.SystemTyper;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
-import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.service.TransaksjonMappingService;
 import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.PersonMiljoeDTO;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -31,6 +31,9 @@ import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
+import static no.nav.dolly.util.DollyTextUtil.getSyncTextSystem;
+import static org.apache.commons.lang3.StringUtils.trimToEmpty;
 
 @Slf4j
 @Service
@@ -38,9 +41,10 @@ import static java.util.Objects.nonNull;
 public class TpsPersonService {
 
     private static final List<String> PENSJON_MILJOER = List.of("q1", "q2");
-    private static final String TPS_SYNC_START = "Info: Synkronisering mot TPS startet ... %d ms";
     private static final long TIMEOUT_MILLIES = 839;
-    private static final long MAX_MILLIES = 45_000;
+
+    @Value("${tps.person.service.wait}")
+    private long awaitMaxMillies;
 
     private final TpsMessagingConsumer tpsMessagingConsumer;
     private final TransactionHelperService transactionHelperService;
@@ -64,7 +68,7 @@ public class TpsPersonService {
                                         penMiljoer, Collections.emptyList(), progress)
                                         .map(status -> prepareResult(relasjon, status, bestilling.getEnvironments(), startTime)))))
                 .collectList()
-                .flatMapIterable(list -> list)
+                .flatMapIterable(Function.identity())
                 .map(status -> futurePersist(progress, dollyPerson.getIdent(), status));
     }
 
@@ -116,17 +120,19 @@ public class TpsPersonService {
     private Mono<List<PersonMiljoeDTO>> getTpsPerson(Long starttid, String ident, List<String> miljoer,
                                                      List<PersonMiljoeDTO> status, BestillingProgress progress) {
 
-        if (System.currentTimeMillis() - (starttid + MAX_MILLIES) > 0 ||
+        if (System.currentTimeMillis() - (starttid + awaitMaxMillies) > 0 ||
                 (status.size() == miljoer.size() &&
                         status.stream().allMatch(PersonMiljoeDTO::isOk))) {
             return Mono.just(status);
 
         } else {
 
-            transactionHelperService.persister(progress, BestillingProgress::setTpsSyncStatus,
+            transactionHelperService.persisterDynamicProgress(progress,
+                    BestillingProgress::getTpsSyncStatus,
+                    BestillingProgress::setTpsSyncStatus,
                     miljoer.stream()
-                            .map(miljoe -> String.format("%s:%s", miljoe, String.format(TPS_SYNC_START,
-                                    System.currentTimeMillis() - starttid)))
+                            .map(miljoe -> "%s:%s".formatted(miljoe, encodeStatus(getSyncTextSystem("TPS",
+                                    System.currentTimeMillis() - starttid))))
                             .collect(Collectors.joining(",")));
 
             return Flux.just(1)
@@ -154,7 +160,7 @@ public class TpsPersonService {
                                         .ident(ident)
                                         .miljoe(miljoe)
                                         .status("NOK")
-                                        .utfyllendeMelding(String.format("Feil: Synkronisering mot TPS gitt opp etter %d sekunder.", MAX_MILLIES / 1000))
+                                        .utfyllendeMelding(String.format("Synkronisering mot TPS gitt opp etter %d sekunder.", awaitMaxMillies / 1000))
                                         .build()))
                 .flatMap(Function.identity())
                 .toList();
@@ -170,12 +176,14 @@ public class TpsPersonService {
                     .map(PersonMiljoeDTO::getMiljoe)
                     .toList());
 
-            transactionHelperService.persister(progress, BestillingProgress::setTpsSyncStatus,
+            transactionHelperService.persisterDynamicProgress(progress,
+                    BestillingProgress::getTpsSyncStatus,
+                    BestillingProgress::setTpsSyncStatus,
                     status.stream()
                             .filter(detalj -> ident.equals(detalj.getIdent()))
-                            .map(detalj -> String.format("%s:%s", detalj.getMiljoe(),
-                                    ErrorStatusDecoder.encodeStatus(detalj.isOk() ? detalj.getStatus() :
-                                            StringUtils.trimToEmpty(String.format("FEIL: %s", detalj.getUtfyllendeMelding())))))
+                            .map(detalj -> "%s:%s".formatted(detalj.getMiljoe(),
+                                    encodeStatus(detalj.isOk() ? detalj.getStatus() :
+                                            trimToEmpty("Feil: %s".formatted(detalj.getUtfyllendeMelding())))))
                             .collect(Collectors.joining(",")));
             return progress;
         };

@@ -35,6 +35,7 @@ type VergemaalTypes = {
 	ident?: string
 	erPdlVisning?: boolean
 	relasjoner: Array<Relasjon>
+	erRedigerbar?: boolean
 }
 
 type VergemaalLesTypes = {
@@ -175,6 +176,7 @@ export const Vergemaal = ({
 	ident,
 	erPdlVisning = false,
 	relasjoner,
+	erRedigerbar = true,
 }: VergemaalTypes) => {
 	if (!data || data.length < 1) {
 		return null
@@ -186,17 +188,21 @@ export const Vergemaal = ({
 			<div className="person-visning_content">
 				<ErrorBoundary>
 					<DollyFieldArray data={data} nested>
-						{(vergemaal: VergemaalValues, idx: number) => (
-							<VergemaalVisning
-								vergemaalData={vergemaal}
-								idx={idx}
-								data={data}
-								tmpPersoner={tmpPersoner}
-								ident={ident}
-								erPdlVisning={erPdlVisning}
-								relasjoner={relasjoner}
-							/>
-						)}
+						{(vergemaal: VergemaalValues, idx: number) =>
+							erRedigerbar ? (
+								<VergemaalVisning
+									vergemaalData={vergemaal}
+									idx={idx}
+									data={data}
+									tmpPersoner={tmpPersoner}
+									ident={ident}
+									erPdlVisning={erPdlVisning}
+									relasjoner={relasjoner}
+								/>
+							) : (
+								<VergemaalLes vergemaalData={vergemaal} relasjoner={relasjoner} idx={idx} />
+							)
+						}
 					</DollyFieldArray>
 				</ErrorBoundary>
 			</div>

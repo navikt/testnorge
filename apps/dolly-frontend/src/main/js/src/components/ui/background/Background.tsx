@@ -58,12 +58,15 @@ const DefaultBackground = styled.div`
 		return Default
 	}});
 	background-size: 100%;
+	overflow: hidden;
 	background-repeat: no-repeat;
 	background-position: center bottom;
 	background-color: ${() => {
 		if (isHalloween) {
 			return '#c0b2d2'
-		} else if (isWinter || isChristmas) {
+		} else if (isWinter) {
+			return '#0C6B99'
+		} else if (isChristmas) {
 			return '#005077'
 		}
 		return '#cce4ee'

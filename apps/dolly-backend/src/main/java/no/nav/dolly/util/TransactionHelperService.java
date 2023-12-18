@@ -13,16 +13,22 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.time.LocalDateTime.now;
 import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
+import static no.nav.dolly.util.DollyTextUtil.getInfoText;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
 @Service
@@ -71,7 +77,37 @@ public class TransactionHelperService {
 
             bestillingProgressRepository.findByIdAndLock(bestillingProgress.getId())
                     .ifPresent(progress -> {
-                        this.setField(progress, status, setter);
+                        setter.accept(progress, status);
+                        akkumulert.set(bestillingProgressRepository.save(progress));
+                        clearCache();
+                    });
+
+            return akkumulert.get();
+        });
+    }
+
+    public BestillingProgress persister(BestillingProgress bestillingProgress,
+                                        Function<BestillingProgress, String> getter,
+                                        BiConsumer<BestillingProgress, String> setter, String status) {
+
+        return persister(bestillingProgress, getter, setter, status, null);
+    }
+
+    @Retryable
+    public BestillingProgress persister(BestillingProgress bestillingProgress,
+                                        Function<BestillingProgress, String> getter,
+                                        BiConsumer<BestillingProgress, String> setter, String status,
+                                        String separator) {
+
+        return transactionTemplate.execute(status1 -> {
+
+            var akkumulert = new AtomicReference<>(bestillingProgress);
+
+            bestillingProgressRepository.findByIdAndLock(bestillingProgress.getId())
+                    .ifPresent(progress -> {
+                        var value = getter.apply(progress);
+                        var result = applyChanges(value, status, separator);
+                        setter.accept(progress, result);
                         akkumulert.set(bestillingProgressRepository.save(progress));
                         clearCache();
                     });
@@ -81,11 +117,72 @@ public class TransactionHelperService {
     }
 
     @Retryable
+    public BestillingProgress persisterDynamicProgress(BestillingProgress bestillingProgress,
+                                                       Function<BestillingProgress, String> getter,
+                                                       BiConsumer<BestillingProgress, String> setter,
+                                                       String status) {
+
+        return transactionTemplate.execute(status1 -> {
+
+            var akkumulert = new AtomicReference<>(bestillingProgress);
+
+            bestillingProgressRepository.findByIdAndLock(bestillingProgress.getId())
+                    .ifPresent(progress -> {
+                        var value = getter.apply(progress);
+                        var result = applyChanges(value, status);
+                        setter.accept(progress, result);
+                        akkumulert.set(bestillingProgressRepository.save(progress));
+                        clearCache();
+                    });
+
+            return akkumulert.get();
+        });
+    }
+
+    private String applyChanges(String value, String status, String separator) {
+
+        if (isBlank(value)) {
+            return status;
+
+        } else {
+            var regex = nonNull(separator) ? separator : ",";
+
+            return Stream.of(status.split(regex),
+                            value.split(regex))
+                    .flatMap(Arrays::stream)
+                    .filter(text -> !text.contains(getInfoText()))
+                    .distinct()
+                    .collect(Collectors.joining(regex));
+        }
+    }
+
+    private String applyChanges(String gmlStatus, String nyStatus) {
+
+        if (isBlank(gmlStatus)) {
+            return nyStatus;
+
+        } else {
+
+            var nyeStatuser = Arrays.stream(nyStatus.split(","))
+                    .collect(Collectors.toMap(data -> data.split(":")[0], data -> data.split(":")[1]));
+            var gamleStatuser = Arrays.stream(gmlStatus.split(","))
+                    .collect(Collectors.toMap(data -> data.split(":")[0], data -> data.split(":")[1]));
+
+            var resultater = new HashMap<>(gamleStatuser);
+            resultater.putAll(nyeStatuser);
+
+            return resultater.entrySet().stream()
+                    .map(data -> "%s:%s".formatted(data.getKey(), data.getValue()))
+                            .collect(Collectors.joining(","));
+        }
+    }
+
+    @Retryable
     public String getProgress(BestillingProgress bestillingProgress, Function<BestillingProgress, String> getter) {
 
         var status = new AtomicReference<String>(null);
         bestillingProgressRepository.findById(bestillingProgress.getId())
-                    .ifPresent(progress ->
+                .ifPresent(progress ->
                         status.set(getter.apply(progress)));
 
         return status.get();
@@ -134,10 +231,5 @@ public class TransactionHelperService {
         if (nonNull(cacheManager.getCache(CACHE_GRUPPE))) {
             requireNonNull(cacheManager.getCache(CACHE_GRUPPE)).clear();
         }
-    }
-
-    private <T, R> void setField(T object, R value, BiConsumer<T, R> setter) {
-
-        setter.accept(object, value);
     }
 }

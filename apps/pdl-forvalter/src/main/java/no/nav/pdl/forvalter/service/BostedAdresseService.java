@@ -126,13 +126,6 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
                 person.setBostedsadresse(null);
                 return;
             }
-
-        } else {
-
-            person.setBostedsadresse(new ArrayList(person.getBostedsadresse().stream()
-                    .filter(adresse -> isTrue(adresse.getIsNew()))
-                    .toList()));
-            return;
         }
 
         buildBoadresse(bostedadresse, person);

@@ -51,7 +51,7 @@ public class HistarkClient implements ClientRegister {
             var bestillingId = progress.getBestilling().getId();
             return Flux.just(dollyPerson.getIdent())
                     .map(person -> buildRequest(bestilling.getHistark(), person))
-                    .filter(env -> !transaksjonMappingService.existAlready(HISTARK,
+                    .filter(request -> !transaksjonMappingService.existAlready(HISTARK,
                             dollyPerson.getIdent(), "NA", bestilling.getId()) || isOpprettEndre)
                     .flatMap(request -> histarkConsumer.postHistark(request)
                             .mapNotNull(status -> getStatus(dollyPerson.getIdent(), bestillingId, status)))

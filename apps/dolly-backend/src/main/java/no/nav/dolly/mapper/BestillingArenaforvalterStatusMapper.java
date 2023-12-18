@@ -9,8 +9,10 @@ import no.nav.dolly.domain.resultset.SystemTyper;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static no.nav.dolly.bestilling.arenaforvalter.ArenaUtils.fixFormatUserDefinedError;
 import static no.nav.dolly.domain.resultset.SystemTyper.ARENA;
@@ -33,7 +35,7 @@ public final class BestillingArenaforvalterStatusMapper {
     public static List<RsStatusRapport> buildArenaStatusMap(List<BestillingProgress> progressList) {
 
         //melding    // status    environment    ident
-        Map<String, Map<String, Map<String, List<String>>>> meldStatusMiljoeIdents = new HashMap<>();
+        Map<String, Map<String, Map<String, Set<String>>>> meldStatusMiljoeIdents = new HashMap<>();
 
         progressList.forEach(progress -> {
             if (isNotBlank(progress.getArenaforvalterStatus())) {
@@ -57,21 +59,10 @@ public final class BestillingArenaforvalterStatusMapper {
         return statusRapporter;
     }
 
-    private static void insertArtifact(Map<String, Map<String, Map<String, List<String>>>> msgStatusIdents,
+    private static void insertArtifact(Map<String, Map<String, Map<String, Set<String>>>> msgStatusIdents,
                                        String status, String miljoe, String ident) {
 
-        String melding;
-        if (status.contains(BRUKER)) {
-            melding = BRUKER;
-        } else if (status.contains(AAP115)) { // må komme før sjekk på aap
-            melding = AAP115;
-        } else if (status.contains(AAP)) {
-            melding = AAP;
-        } else if (status.contains(DAGPENGER)) {
-            melding = DAGPENGER;
-        } else {
-            melding = ARENA_FAGSYSTEM;
-        }
+        String melding = getMelding(status);
 
         if (status.contains("OK")) {
             status = "OK";
@@ -84,23 +75,38 @@ public final class BestillingArenaforvalterStatusMapper {
                         msgStatusIdents.get(melding).get(status).get(miljoe).add(ident);
                     }
                 } else {
-                    msgStatusIdents.get(melding).get(status).put(miljoe, new ArrayList<>(List.of(ident)));
+                    msgStatusIdents.get(melding).get(status).put(miljoe, new HashSet<>(Set.of(ident)));
                 }
             } else {
-                Map<String, List<String>> miljoeIdent = new HashMap<>();
-                miljoeIdent.put(miljoe, new ArrayList<>(List.of(ident)));
+                Map<String, Set<String>> miljoeIdent = new HashMap<>();
+                miljoeIdent.put(miljoe, new HashSet<>(Set.of(ident)));
                 msgStatusIdents.get(melding).put(status, miljoeIdent);
             }
         } else {
-            Map<String, Map<String, List<String>>> statusMap = new HashMap<>();
-            Map<String, List<String>> miljoeIdent = new HashMap<>();
-            miljoeIdent.put(miljoe, new ArrayList<>(List.of(ident)));
+            Map<String, Map<String, Set<String>>> statusMap = new HashMap<>();
+            Map<String, Set<String>> miljoeIdent = new HashMap<>();
+            miljoeIdent.put(miljoe, new HashSet<>(Set.of(ident)));
             statusMap.put(status, miljoeIdent);
             msgStatusIdents.put(melding, statusMap);
         }
     }
 
-    private static List<RsStatusRapport> extractStatus(Map<String, Map<String, Map<String, List<String>>>> meldStatusMiljoeIdents, String clientid, SystemTyper type) {
+    private static String getMelding(String status) {
+
+        if (status.contains(BRUKER)) {
+            return BRUKER;
+        } else if (status.contains(AAP115)) { // må komme før sjekk på aap
+            return AAP115;
+        } else if (status.contains(AAP)) {
+            return AAP;
+        } else if (status.contains(DAGPENGER)) {
+            return DAGPENGER;
+        } else {
+            return ARENA_FAGSYSTEM;
+        }
+    }
+
+    private static List<RsStatusRapport> extractStatus(Map<String, Map<String, Map<String, Set<String>>>> meldStatusMiljoeIdents, String clientid, SystemTyper type) {
 
         if (meldStatusMiljoeIdents.containsKey(clientid)) {
             return Collections.singletonList(RsStatusRapport.builder()

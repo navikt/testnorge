@@ -68,7 +68,8 @@ public class AaregClient implements ClientRegister {
             var initStatus = miljoer.stream()
                     .map(miljo -> String.format("%s:%s", miljo, getInfoVenter(SYSTEM)))
                     .collect(Collectors.joining(","));
-            transactionHelperService.persister(progress, BestillingProgress::setAaregStatus, initStatus);
+            transactionHelperService.persister(progress, BestillingProgress::getAaregStatus,
+                    BestillingProgress::setAaregStatus, initStatus);
 
             return Flux.just(1)
                     .flatMap(index -> {
@@ -89,7 +90,8 @@ public class AaregClient implements ClientRegister {
     private ClientFuture futurePersist(BestillingProgress progress, String status) {
 
         return () -> {
-            transactionHelperService.persister(progress, BestillingProgress::setAaregStatus, status);
+            transactionHelperService.persister(progress, BestillingProgress::getAaregStatus,
+                    BestillingProgress::setAaregStatus, status);
             return progress;
         };
     }
@@ -160,5 +162,4 @@ public class AaregClient implements ClientRegister {
                 isNull(reply.getError()) ? "OK" : errorStatusDecoder.decodeThrowable(reply.getError())
         );
     }
-
 }

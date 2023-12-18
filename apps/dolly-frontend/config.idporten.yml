@@ -26,6 +26,7 @@ spec:
       rules:
         - application: testnorge-tilbakemelding-api
         - application: testnav-adresse-service
+        - application: testnav-arbeidsplassencv-proxy
         - application: testnav-miljoer-service
         - application: testnav-organisasjon-service
         - application: testnav-organisasjon-forvalter
@@ -61,8 +62,8 @@ spec:
         - host: testnav-norg2-proxy.dev-fss-pub.nais.io
         - host: testnav-brregstub-proxy.dev-fss-pub.nais.io
         - host: testnav-dokarkiv-proxy.dev-fss-pub.nais.io
-        - host: testnav-arbeidsplassencv-proxy.dev-fss-pub.nais.io
-  
+        - host: idporten.no
+
   liveness:
     path: /internal/isAlive
     initialDelay: 20

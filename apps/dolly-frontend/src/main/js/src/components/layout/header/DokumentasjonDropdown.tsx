@@ -12,7 +12,7 @@ const DropdownToggle = () => {
 	return (
 		<Dropdown.Toggle
 			className={isOpen ? 'dropdown-toggle active' : 'dropdown-toggle'}
-			style={{ margin: '0 10px', padding: '20px 10px' }}
+			style={{ margin: 0, padding: '19px 10px' }}
 		>
 			Dokumentasjon
 		</Dropdown.Toggle>
@@ -42,7 +42,7 @@ export const DokumentasjonDropdown = () => {
 		<div style={{ color: 'white', fontSize: '1.2em', margin: '0 10px' }}>
 			<Dropdown>
 				<DropdownToggle />
-				<Dropdown.Menu placement="bottom-end">
+				<Dropdown.Menu placement="bottom-start">
 					<Dropdown.Menu.List>
 						<Dropdown.Menu.List.Item
 							onClick={() =>

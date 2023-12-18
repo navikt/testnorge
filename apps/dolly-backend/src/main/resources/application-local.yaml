@@ -74,3 +74,5 @@ consumers:
     url: http://testnav-sykemelding-api.intern.dev.nav.no
   testnav-miljoer-service:
     url: https://testnav-miljoer-service.intern.dev.nav.no
+  testnav-arbeidsplassencv-proxy:
+    url: https://testnav-arbeidsplassencv-proxy.intern.dev.nav.no

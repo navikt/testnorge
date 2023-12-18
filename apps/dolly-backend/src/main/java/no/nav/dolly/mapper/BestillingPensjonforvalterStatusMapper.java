@@ -9,8 +9,10 @@ import no.nav.dolly.domain.resultset.SystemTyper;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.PEN_AP;
@@ -35,7 +37,7 @@ public final class BestillingPensjonforvalterStatusMapper {
     public static List<RsStatusRapport> buildPensjonforvalterStatusMap(List<BestillingProgress> progressList) {
 
         //  melding     status     miljo       ident
-        Map<String, Map<String, Map<String, List<String>>>> meldStatusMiljoeIdents = new HashMap();
+        Map<String, Map<String, Map<String, Set<String>>>> meldStatusMiljoeIdents = new HashMap<>();
 
         progressList.forEach(progress -> {
             if (isNotBlank(progress.getPensjonforvalterStatus()) && progress.getPensjonforvalterStatus().split("#").length > 1) {
@@ -57,17 +59,17 @@ public final class BestillingPensjonforvalterStatusMapper {
         });
 
         var statusRapporter = new ArrayList<RsStatusRapport>();
+        statusRapporter.addAll(extractStatus(meldStatusMiljoeIdents, PENSJON_FORVALTER, PEN_FORVALTER));
+        statusRapporter.addAll(extractStatus(meldStatusMiljoeIdents, SAMBOER, PEN_SAMBOER));
         statusRapporter.addAll(extractStatus(meldStatusMiljoeIdents, POPP_INNTEKTSREGISTER, PEN_INNTEKT));
         statusRapporter.addAll(extractStatus(meldStatusMiljoeIdents, TP_FORHOLD, TP_FORVALTER));
-        statusRapporter.addAll(extractStatus(meldStatusMiljoeIdents, PENSJON_FORVALTER, PEN_FORVALTER));
-        statusRapporter.addAll(extractStatus(meldStatusMiljoeIdents, ALDERSPENSJON, PEN_AP));
         statusRapporter.addAll(extractStatus(meldStatusMiljoeIdents, UFORETRYGD, PEN_UT));
-        statusRapporter.addAll(extractStatus(meldStatusMiljoeIdents, SAMBOER, PEN_SAMBOER));
+        statusRapporter.addAll(extractStatus(meldStatusMiljoeIdents, ALDERSPENSJON, PEN_AP));
 
         return statusRapporter;
     }
 
-    private static void insertArtifact(Map<String, Map<String, Map<String, List<String>>>> msgStatusIdents,
+    private static void insertArtifact(Map<String, Map<String, Map<String, Set<String>>>> msgStatusIdents,
                                        String melding, String status, String miljoe, String ident) {
 
         if (msgStatusIdents.containsKey(melding)) {
@@ -75,23 +77,23 @@ public final class BestillingPensjonforvalterStatusMapper {
                 if (msgStatusIdents.get(melding).get(status).containsKey(miljoe)) {
                     msgStatusIdents.get(melding).get(status).get(miljoe).add(ident);
                 } else {
-                    msgStatusIdents.get(melding).get(status).put(miljoe, new ArrayList<>(List.of(ident)));
+                    msgStatusIdents.get(melding).get(status).put(miljoe, new HashSet<>(Set.of(ident)));
                 }
             } else {
-                Map<String, List<String>> miljoeIdent = new HashMap<>();
-                miljoeIdent.put(miljoe, new ArrayList<>(List.of(ident)));
+                Map<String, Set<String>> miljoeIdent = new HashMap<>();
+                miljoeIdent.put(miljoe, new HashSet<>(Set.of(ident)));
                 msgStatusIdents.get(melding).put(status, miljoeIdent);
             }
         } else {
-            Map<String, Map<String, List<String>>> statusMap = new HashMap<>();
-            Map<String, List<String>> miljoeIdent = new HashMap();
-            miljoeIdent.put(miljoe, new ArrayList<>(List.of(ident)));
+            Map<String, Map<String, Set<String>>> statusMap = new HashMap<>();
+            Map<String, Set<String>> miljoeIdent = new HashMap<>();
+            miljoeIdent.put(miljoe, new HashSet<>(Set.of(ident)));
             statusMap.put(status, miljoeIdent);
             msgStatusIdents.put(melding, statusMap);
         }
     }
 
-    private static List<RsStatusRapport> extractStatus(Map<String, Map<String, Map<String, List<String>>>> meldStatusMiljoeIdents, String clientid, SystemTyper type) {
+    private static List<RsStatusRapport> extractStatus(Map<String, Map<String, Map<String, Set<String>>>> meldStatusMiljoeIdents, String clientid, SystemTyper type) {
 
         if (meldStatusMiljoeIdents.containsKey(clientid)) {
             return Collections.singletonList(RsStatusRapport.builder()

@@ -115,7 +115,8 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
 
         log.info("Pensjon lagre alderspensjon {}", request);
         return tokenService.exchange(serverProperties)
-                .flatMapMany(token -> new LagreAlderspensjonCommand(webClient, token.getTokenValue(), request).call());
+                .flatMapMany(token ->
+                        new LagreAlderspensjonCommand(webClient, token.getTokenValue(), request).call());
     }
 
     @Timed(name = "providers", tags = {"operation", "pen_lagreUforetrygd"})

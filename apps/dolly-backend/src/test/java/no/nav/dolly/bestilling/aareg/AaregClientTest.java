@@ -179,7 +179,7 @@ class AaregClientTest {
                         .map(ClientFuture::get))
                 .assertNext(status -> {
                     verify(transactionHelperService, times(2))
-                            .persister(any(BestillingProgress.class), any(), statusCaptor.capture());
+                            .persister(any(BestillingProgress.class), any(), any(), statusCaptor.capture());
                     assertThat(statusCaptor.getAllValues().get(0), is(equalTo("u2:Info= Oppretting startet mot AAREG ...")));
                     assertThat(statusCaptor.getAllValues().get(1), is(equalTo("u2: arbforhold=1$OK")));
                 })
@@ -215,7 +215,7 @@ class AaregClientTest {
                         .map(ClientFuture::get))
                 .assertNext(status -> {
                     verify(transactionHelperService, times(2))
-                            .persister(any(BestillingProgress.class), any(), statusCaptor.capture());
+                            .persister(any(BestillingProgress.class), any(), any(), statusCaptor.capture());
                     assertThat(statusCaptor.getAllValues().get(0), is(equalTo("u2:Info= Oppretting startet mot AAREG ...")));
                     assertThat(statusCaptor.getAllValues().get(1), is(equalTo("u2: arbforhold=1$OK")));
                 })

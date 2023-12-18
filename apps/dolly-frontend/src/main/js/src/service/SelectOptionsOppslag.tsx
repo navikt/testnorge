@@ -57,9 +57,13 @@ export const SelectOptionsOppslag = {
 			}
 			const personListe: Array<PersonListe> = []
 			response?.data?.forEach((id: Person) => {
+				const navn =
+					id.person.navn?.length > 0
+						? `- ${id.person.navn?.[0]?.fornavn} ${id.person.navn?.[0]?.etternavn}`
+						: ''
 				personListe.push({
 					value: id.person.ident,
-					label: `${id.person.ident} - ${id.person.navn[0].fornavn} ${id.person.navn[0].etternavn}`,
+					label: `${id.person.ident} ${navn}`,
 					alder: getAlder(id.person.foedsel?.[0]?.foedselsdato),
 					sivilstand: id.person.sivilstand?.[0]?.type,
 					vergemaal: id.person.vergemaal?.length > 0,
