@@ -23,7 +23,7 @@ import java.util.List;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
 @Service
@@ -65,27 +65,30 @@ public class SkjermingsRegisterConsumer implements ConsumerStatus {
         return tokenService.exchange(serverProperties)
                 .flatMap(token -> new SkjermingsregisterGetCommand(webClient, skjerming.getPersonident(), token.getTokenValue()).call()
                         .flatMap(response -> {
-                            if (isNotBlank(response.getError())) {
-                            if (response.isEksistererIkke()) {
-                                return new SkjermingsregisterPostCommand(webClient, List.of(skjerming),
-                                        token.getTokenValue()).call()
-                                        .collectList()
-                                        .map(status -> {
-                                            log.info("Opprettet skjerming på ident {} fraDato {} tilDato {}",
-                                                    status.get(0).getPersonident(), status.get(0).getSkjermetFra(), status.get(0).getSkjermetTil());
-                                            return status.get(0);
-                                        });
+                            if (isBlank(response.getError())) {
+                                if (response.isEksistererIkke()) {
+                                    return new SkjermingsregisterPostCommand(webClient, List.of(skjerming),
+                                            token.getTokenValue()).call()
+                                            .collectList()
+                                            .map(status -> {
+                                                log.info("Opprettet skjerming på ident {} fraDato {} tilDato {}",
+                                                        status.get(0).getPersonident(), status.get(0).getSkjermetFra(), status.get(0).getSkjermetTil());
+                                                return status.get(0);
+                                            });
+                                } else {
+                                    return nonNull(skjerming.getSkjermetTil()) ?
+
+                                            new SkjermingsregisterPutCommand(webClient, skjerming.getPersonident(),
+                                                    skjerming.getSkjermetTil(), token.getTokenValue()).call()
+                                                    .map(status -> {
+                                                        log.info("Oppdatert skjerming for ident {}, ny tilDato {}", skjerming.getPersonident(), skjerming.getSkjermetTil());
+                                                        return status;
+                                                    }) :
+
+                                            Mono.just(new SkjermingDataResponse());
+                                }
                             } else {
-                                return nonNull(skjerming.getSkjermetTil()) ?
-
-                                        new SkjermingsregisterPutCommand(webClient, skjerming.getPersonident(),
-                                        skjerming.getSkjermetTil(), token.getTokenValue()).call()
-                                                .map(status -> {
-                                                    log.info("Oppdatert skjerming for ident {}, ny tilDato {}", skjerming.getPersonident(), skjerming.getSkjermetTil());
-                                                    return status;
-                                                }) :
-
-                                        Mono.just(new SkjermingDataResponse());
+                                return Mono.just(response);
                             }
                         }));
     }

@@ -35,6 +35,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.SYKEMELDING;
+import static no.nav.dolly.util.DollyTextUtil.getGenereringStartet;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -66,7 +67,7 @@ public class SykemeldingClient implements ClientRegister {
                         return Mono.empty();
 
                     } else {
-                        setProgress(progress, "Info: Venter på generering av sykemelding ...");
+                        setProgress(progress, getGenereringStartet());
                         long bestillingId = progress.getBestilling().getId();
 
                         return getPerson(dollyPerson.getIdent())
@@ -85,7 +86,8 @@ public class SykemeldingClient implements ClientRegister {
     private ClientFuture futurePersist(BestillingProgress progress, String status) {
 
         return () -> {
-            transactionHelperService.persister(progress, BestillingProgress::setSykemeldingStatus, status);
+            transactionHelperService.persister(progress, BestillingProgress::getSykemeldingStatus,
+                    BestillingProgress::setSykemeldingStatus, status);
             return progress;
         };
     }
@@ -105,7 +107,8 @@ public class SykemeldingClient implements ClientRegister {
 
     private void setProgress(BestillingProgress progress, String status) {
 
-        transactionHelperService.persister(progress, BestillingProgress::setSykemeldingStatus, status);
+        transactionHelperService.persister(progress, BestillingProgress::getSykemeldingStatus,
+                BestillingProgress::setSykemeldingStatus, status);
     }
 
     private Flux<PdlPersonBolk.Data> getPerson(String ident) {

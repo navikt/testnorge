@@ -27,7 +27,7 @@ import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
-import static no.nav.dolly.util.DollyTextUtil.getInfoText;
+import static no.nav.dolly.util.DollyTextUtil.containsInfoText;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
@@ -150,7 +150,7 @@ public class TransactionHelperService {
             return Stream.of(status.split(regex),
                             value.split(regex))
                     .flatMap(Arrays::stream)
-                    .filter(text -> !text.contains(getInfoText()))
+                    .filter(text -> !containsInfoText(text))
                     .distinct()
                     .collect(Collectors.joining(regex));
         }
