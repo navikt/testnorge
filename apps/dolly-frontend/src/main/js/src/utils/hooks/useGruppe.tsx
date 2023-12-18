@@ -13,7 +13,7 @@ const getPaginertGruppeUrl = (
 	pageNo: number,
 	pageSize: number,
 	sortKolonne?: string,
-	sortRetning?: string
+	sortRetning?: string,
 ) => {
 	const sorting =
 		sortKolonne && sortRetning ? `&sortRetning=${sortRetning}&sortKolonne=${sortKolonne}` : ''
@@ -51,7 +51,7 @@ export const useGruppeById = (
 	pageSize = 10,
 	autoRefresh = false,
 	sortKolonne = null,
-	sortRetning = null
+	sortRetning = null,
 ) => {
 	if (!gruppeId) {
 		return {
@@ -65,7 +65,7 @@ export const useGruppeById = (
 		{
 			refreshInterval: autoRefresh ? 2000 : null,
 			dedupingInterval: autoRefresh ? 2000 : null,
-		}
+		},
 	)
 
 	return {
@@ -83,7 +83,7 @@ export const useGruppeById = (
 export const useGruppeIdenter = (gruppeId) => {
 	const { data, isLoading, error } = useSWR<Gruppe, Error>(
 		gruppeId ? getHelGruppeUrl(gruppeId) : null,
-		fetcher
+		fetcher,
 	)
 
 	return {
@@ -101,7 +101,7 @@ export const useGruppeIdenter = (gruppeId) => {
 export const useGrupper = (pageNo, pageSize, brukerId?: string) => {
 	const { data, isLoading, error } = useSWR<PaginertGruppe, Error>(
 		getGrupperUrl(pageNo, pageSize, brukerId),
-		fetcher
+		fetcher,
 	)
 
 	return {
@@ -113,8 +113,8 @@ export const useGrupper = (pageNo, pageSize, brukerId?: string) => {
 
 export const useEgneGrupper = (brukerId: string) => {
 	const { data, isLoading, error } = useSWR<PaginertGruppe, Error>(
-		getEgneGrupperUrl(brukerId),
-		fetcher
+		brukerId ? getEgneGrupperUrl(brukerId) : null,
+		fetcher,
 	)
 
 	return {

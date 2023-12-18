@@ -7,7 +7,7 @@ import React from 'react'
 interface EksisterendeGruppe {
 	setValgtGruppe: React.Dispatch<React.SetStateAction<string>>
 	valgtGruppe: string
-	fraGruppe?: number
+	fraGruppe?: number | null
 }
 
 type Options = {
