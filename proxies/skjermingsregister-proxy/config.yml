@@ -18,8 +18,6 @@ metadata:
   namespace: dolly
   labels:
     team: dolly
-  annotations:
-    config.linkerd.io/proxy-log-level: trace
 spec:
   image: {{image}}
   port: 8080
