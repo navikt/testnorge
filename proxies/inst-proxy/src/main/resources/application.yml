@@ -21,3 +21,10 @@ spring:
     gateway:
       httpclient:
         response-timeout: 180s
+
+consumers:
+  inst:
+    name: opphold-testdata
+    namespace: team-rocket
+    url: http://opphold-testdata.team-rocket.svc.nais.local
+    cluster: dev-fss
