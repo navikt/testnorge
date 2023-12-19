@@ -22,6 +22,7 @@ spec:
         - application: dolly-idporten
         - application: testnav-bruker-service
         - application: testnorge-profil-api
+        - application: testnav-oversikt-frontend
         - application: team-dolly-lokal-app
         - application: testnorge-profil-api
         - application: app-1
