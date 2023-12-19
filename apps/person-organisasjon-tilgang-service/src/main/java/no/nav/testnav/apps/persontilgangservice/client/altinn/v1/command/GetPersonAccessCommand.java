@@ -37,7 +37,7 @@ public class GetPersonAccessCommand implements Callable<Mono<AccessDTO[]>> {
                 .header("ApiKey", apiKey)
                 .retrieve()
                 .bodyToMono(AccessDTO[].class)
-                .doOnError(error -> log.error("Henting av \"/reportees\" feilet {}", error.getMessage(), error))
+                .doOnError(error -> log.error("Henting av \"/reportees\" feilet: {}", WebClientFilter.getMessage(error), error))
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException));
     }
