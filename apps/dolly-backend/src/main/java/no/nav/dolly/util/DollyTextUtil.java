@@ -15,7 +15,7 @@ public class DollyTextUtil {
         return INFO_VENTER_SYSTEM.formatted(system);
     }
 
-    public boolean containsInfoText(String text) {
+    public static boolean containsInfoText(String text) {
 
         return text.contains(INFO_STARTET) ||
                 text.contains(INFO_GENERERING_STARTET);
