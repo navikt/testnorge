@@ -4,6 +4,7 @@ import React from 'react'
 import { Persondetaljer } from '@/components/fagsystem/pdlf/bestilling/partials/Persondetaljer'
 import { Doedsfall } from '@/components/fagsystem/pdlf/bestilling/partials/Doedsfall'
 import { Statsborgerskap } from '@/components/fagsystem/pdlf/bestilling/partials/Statsborgerskap'
+import { Innvandring } from '@/components/fagsystem/pdlf/bestilling/partials/Innvandring'
 
 export const BestillingTitle = styled.h4`
 	margin: 10px 0;
@@ -23,6 +24,7 @@ export const Bestillingsdata = ({ bestilling }: any) => {
 			<Foedsel foedselListe={bestilling.pdldata?.person?.foedsel} />
 			<Doedsfall doedsfallListe={bestilling.pdldata?.person?.doedsfall} />
 			<Statsborgerskap statsborgerskapListe={bestilling.pdldata?.person?.statsborgerskap} />
+			<Innvandring innvandringListe={bestilling.pdldata?.person?.innflytting} />
 		</>
 	)
 }
