@@ -63,7 +63,7 @@ export type FoedselData = {
 
 export type DoedsfallData = {
 	doedsdato: string
-	metadata: Metadata
+	metadata?: Metadata
 	id?: number
 }
 

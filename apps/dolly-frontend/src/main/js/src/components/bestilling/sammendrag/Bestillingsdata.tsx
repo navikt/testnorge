@@ -2,6 +2,7 @@ import { Foedsel } from '@/components/fagsystem/pdlf/bestilling/partials/Foedsel
 import styled from 'styled-components'
 import React from 'react'
 import { Persondetaljer } from '@/components/fagsystem/pdlf/bestilling/partials/Persondetaljer'
+import { Doedsfall } from '@/components/fagsystem/pdlf/bestilling/partials/Doedsfall'
 
 export const BestillingTitle = styled.h4`
 	margin: 10px 0;
@@ -19,6 +20,7 @@ export const Bestillingsdata = ({ bestilling }: any) => {
 		<>
 			<Persondetaljer opprettNyPerson={bestilling.pdldata?.opprettNyPerson} />
 			<Foedsel foedselListe={bestilling.pdldata?.person?.foedsel} />
+			<Doedsfall doedsfallListe={bestilling.pdldata?.person?.doedsfall} />
 		</>
 	)
 }

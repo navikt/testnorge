@@ -5,12 +5,13 @@ import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { formatDate } from '@/utils/DataFormatter'
 import { OpprettNyPerson } from '@/components/fagsystem/pdlf/PdlTypes'
+import * as _ from 'lodash-es'
 
 type PersondetaljerTypes = {
 	opprettNyPerson: OpprettNyPerson
 }
 export const Persondetaljer = ({ opprettNyPerson }: PersondetaljerTypes) => {
-	if (!opprettNyPerson) {
+	if (!opprettNyPerson || !_.has(opprettNyPerson, 'alder')) {
 		return null
 	}
 
