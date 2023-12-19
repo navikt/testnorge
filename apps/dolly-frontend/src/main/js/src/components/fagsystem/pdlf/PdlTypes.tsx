@@ -5,6 +5,12 @@ export type Person = {
 	relasjoner?: Array<Relasjon>
 }
 
+export type OpprettNyPerson = {
+	alder: number
+	foedtEtter: string
+	foedtFoer: string
+}
+
 export type Relasjon = {
 	id: number
 	relasjonType: string

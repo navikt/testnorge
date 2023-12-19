@@ -13,6 +13,10 @@ type FoedselTypes = {
 }
 
 export const Foedsel = ({ foedselListe }: FoedselTypes) => {
+	if (!foedselListe || foedselListe.length < 1) {
+		return null
+	}
+
 	return (
 		<div className="person-visning">
 			<ErrorBoundary>

@@ -26,7 +26,7 @@ export const setValue = (value, path, setFieldValue) => {
 	setFieldValue(`${path}`, value.value)
 }
 
-export const isEmpty = (attributt, excludeList = []) => {
+export const isEmpty = (attributt: any, excludeList = [] as Array<string>) => {
 	const flattenData = (objekt) => {
 		let result = {}
 		for (const i in objekt) {
