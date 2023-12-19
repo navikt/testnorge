@@ -23,7 +23,7 @@ export const Persondetaljer = ({ opprettNyPerson }: PersondetaljerTypes) => {
 					{isEmpty(opprettNyPerson, ['identtype', 'syntetisk']) ? (
 						<EmptyObject />
 					) : (
-						<div className="flexbox--flex-wrap">
+						<div className="flexbox--flex-wrap" style={{ marginBottom: '10px' }}>
 							<TitleValue title="Alder" value={opprettNyPerson.alder} />
 							<TitleValue title="Fødselsdato" value={formatDate(opprettNyPerson.foedtEtter)} />
 							<TitleValue title="Fødselsdato" value={formatDate(opprettNyPerson.foedtFoer)} />

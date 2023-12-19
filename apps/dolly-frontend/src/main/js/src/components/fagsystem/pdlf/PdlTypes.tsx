@@ -71,6 +71,7 @@ export type StatsborgerskapData = {
 	landkode: string
 	gyldigFraOgMed: string
 	gyldigTilOgMed: string
+	bekreftelsesdato?: string
 	id?: number
 }
 
