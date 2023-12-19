@@ -68,13 +68,12 @@ public class SykemeldingClient implements ClientRegister {
 
                     } else {
                         setProgress(progress, getGenereringStartet());
-                        long bestillingId = progress.getBestilling().getId();
 
                         return getPerson(dollyPerson.getIdent())
                                 .flatMap(persondata -> Flux.concat(postSyntSykemelding(sykemelding, persondata),
                                                 postDetaljertSykemelding(sykemelding, persondata))
                                         .filter(Objects::nonNull)
-                                        .doOnNext(status -> saveTransaksjonId(status, bestillingId))
+                                        .doOnNext(status -> saveTransaksjonId(status, bestilling.getId()))
                                         .map(this::getStatus)
                                         .collect(Collectors.joining()))
                                 .collect(Collectors.joining())
