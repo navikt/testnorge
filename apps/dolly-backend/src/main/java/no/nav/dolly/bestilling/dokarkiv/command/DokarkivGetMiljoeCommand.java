@@ -42,6 +42,7 @@ public class DokarkivGetMiljoeCommand implements Callable<Mono<List<String>>> {
                 .bodyToMono(String[].class)
                 .map(Arrays::asList)
                 .doOnError(WebClientFilter::logErrorMessage)
+                .onErrorResume(error -> Mono.just(List.of("q1", "q2", "q4")))
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException));
     }

@@ -23,6 +23,7 @@ import no.nav.dolly.service.TransaksjonMappingService;
 import no.nav.dolly.util.TransactionHelperService;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -58,11 +59,17 @@ public class DokarkivClient implements ClientRegister {
                                 .flatMap(request -> dokarkivConsumer.getEnvironments()
                                         .flatMapIterable(env -> env)
                                         .filter(env -> bestilling.getEnvironments().contains(env))
-                                        .filter(env -> !transaksjonMappingService.existAlready(DOKARKIV,
-                                                dollyPerson.getIdent(), env, bestilling.getId()) || isOpprettEndre)
-                                        .flatMap(env -> dokarkivConsumer.postDokarkiv(env, request)
-                                                .map(status ->
-                                                        getStatus(dollyPerson.getIdent(), progress.getBestilling().getId(), status))))
+                                        .flatMap(env ->
+                                                !transaksjonMappingService.existAlready(DOKARKIV,
+                                                        dollyPerson.getIdent(), env, bestilling.getId()) || isOpprettEndre ?
+
+                                                        dokarkivConsumer.postDokarkiv(env, request)
+                                                                .map(status ->
+                                                                        getStatus(dollyPerson.getIdent(),
+                                                                                bestilling.getId(), status)) :
+
+                                                        Mono.just(env + ":OK")
+                                        ))
                                 .collect(Collectors.joining(",")))
                         .map(status -> futurePersist(progress, status)));
     }
@@ -78,6 +85,8 @@ public class DokarkivClient implements ClientRegister {
     }
 
     private String getStatus(String ident, Long bestillingId, DokarkivResponse response) {
+
+        log.info("Dokarkiv response {} for ident {}", response, ident);
 
         if (isNull(response)) {
             return null;
@@ -122,6 +131,8 @@ public class DokarkivClient implements ClientRegister {
     }
 
     private void saveTransaksjonId(DokarkivResponse response, String ident, Long bestillingId, String miljoe) {
+
+        log.info("Lagrer transaksjon for {} i {} ", ident, miljoe);
 
         transaksjonMappingService.save(
                 TransaksjonMapping.builder()
