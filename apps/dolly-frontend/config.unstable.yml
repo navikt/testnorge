@@ -92,7 +92,7 @@ spec:
       memory: 1024Mi
     limits:
       memory: 2048Mi
-  image: {{image}}
+  image: "{{image}}"
   env:
     - name: SPRING_PROFILES_ACTIVE
       value: dev

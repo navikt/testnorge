@@ -6,7 +6,7 @@ metadata:
   labels:
     team: dolly
 spec:
-  image: {{ image }}
+  image: "{{ image }}"
   port: 8080
   azure:
     application:
@@ -24,24 +24,15 @@ spec:
     inbound:
       rules:
         - application: dolly-frontend-dev
-          cluster: dev-gcp
         - application: dolly-idporten
-          cluster: dev-gcp
         - application: dolly-frontend-dev-unstable
-          cluster: dev-gcp
         - application: team-dolly-lokal-app
-          cluster: dev-gcp
         - application: testnav-oversikt-frontend
-          cluster: dev-gcp
         - application: testnav-bruker-service-dev
-          cluster: dev-gcp
         - application: testnorge-profil-api-dev
-          cluster: dev-gcp
+        - application: testnorge-profil-api-dev
         - application: app-1
-          cluster: dev-gcp
           namespace: plattformsikkerhet
-        - application: testnorge-profil-api-dev
-          cluster: dev-gcp
     outbound:
       external:
         - host: tt02.altinn.no
