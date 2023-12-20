@@ -164,8 +164,10 @@ public class TransactionHelperService {
         } else {
 
             var nyeStatuser = Arrays.stream(nyStatus.split(","))
+                    .filter(status -> status.split(":").length > 1)
                     .collect(Collectors.toMap(data -> data.split(":")[0], data -> data.split(":")[1]));
             var gamleStatuser = Arrays.stream(gmlStatus.split(","))
+                    .filter(status -> status.split(":").length > 1)
                     .collect(Collectors.toMap(data -> data.split(":")[0], data -> data.split(":")[1]));
 
             var resultater = new HashMap<>(gamleStatuser);
@@ -173,7 +175,7 @@ public class TransactionHelperService {
 
             return resultater.entrySet().stream()
                     .map(data -> "%s:%s".formatted(data.getKey(), data.getValue()))
-                            .collect(Collectors.joining(","));
+                    .collect(Collectors.joining(","));
         }
     }
 
