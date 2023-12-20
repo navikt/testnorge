@@ -70,7 +70,7 @@ spec:
       allowAllUsers: true
       enabled: true
       tenant: nav.no
-  image: {{image}}
+  image: "{{image}}"
   openSearch:
     instance: bestillinger
     access: admin

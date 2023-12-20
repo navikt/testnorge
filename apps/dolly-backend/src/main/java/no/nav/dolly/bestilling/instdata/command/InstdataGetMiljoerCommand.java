@@ -13,7 +13,6 @@ import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import static java.util.Collections.emptyList;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
@@ -37,7 +36,7 @@ public class InstdataGetMiljoerCommand implements Callable<Mono<List<String>>> {
                 .bodyToMono(MiljoerResponse.class)
                 .map(MiljoerResponse::getInstitusjonsoppholdEnvironments)
                 .doOnError(WebClientFilter::logErrorMessage)
-                .onErrorResume(error -> Mono.just(emptyList()))
+                .onErrorResume(error -> Mono.just(List.of("q1", "q2")))
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException));
     }
