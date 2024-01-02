@@ -35,6 +35,9 @@ public class SkjermingsregisterGetCommand implements Callable<Mono<SkjermingData
                         error -> Mono.just(SkjermingDataResponse.builder()
                                 .eksistererIkke(true)
                                 .build()))
+                .onErrorResume(error -> Mono.just(SkjermingDataResponse.builder()
+                        .error(WebClientFilter.getMessage(error))
+                        .build()))
                 .doOnError(WebClientFilter::logErrorMessage)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException));

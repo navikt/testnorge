@@ -172,70 +172,78 @@ public class BestillingProgress implements Serializable {
         this.dokarkivStatus = StringUtils.left(dokarkivStatus, MAX_DOKARKIV_STATUS_LENGTH);
     }
 
-    //Husk å regenerere disse når nye systemer legges til
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
 
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof BestillingProgress that)) return false;
 
-        BestillingProgress that = (BestillingProgress) o;
-
-        return new EqualsBuilder().append(id, that.id)
-                .append(versjon, that.versjon)
-                .append(bestilling, that.bestilling)
-                .append(ident, that.ident)
-                .append(sigrunstubStatus, that.sigrunstubStatus)
-                .append(krrstubStatus, that.krrstubStatus)
-                .append(medlStatus, that.medlStatus)
-                .append(udistubStatus, that.udistubStatus)
-                .append(aaregStatus, that.aaregStatus)
-                .append(arenaforvalterStatus, that.arenaforvalterStatus)
-                .append(instdataStatus, that.instdataStatus)
-                .append(inntektstubStatus, that.inntektstubStatus)
-                .append(pensjonforvalterStatus, that.pensjonforvalterStatus)
-                .append(inntektsmeldingStatus, that.inntektsmeldingStatus)
-                .append(brregstubStatus, that.brregstubStatus)
-                .append(dokarkivStatus, that.dokarkivStatus)
-                .append(histarkStatus, that.histarkStatus)
-                .append(sykemeldingStatus, that.sykemeldingStatus)
-                .append(skjermingsregisterStatus, that.skjermingsregisterStatus)
-                .append(tpsMessagingStatus, that.tpsMessagingStatus)
-                .append(pdlImportStatus, that.pdlImportStatus)
-                .append(pdlForvalterStatus, that.pdlForvalterStatus)
-                .append(pdlOrdreStatus, that.pdlOrdreStatus)
-                .append(kontoregisterStatus, that.kontoregisterStatus)
-                .append(pdlPersonStatus, that.pdlPersonStatus)
-                .append(arbeidsplassenCVStatus, that.arbeidsplassenCVStatus)
-                .append(master, that.master)
-                .append(feil, that.feil)
+        return new EqualsBuilder()
+                .append(getId(), that.getId())
+                .append(getVersjon(), that.getVersjon())
+                .append(getBestilling(), that.getBestilling())
+                .append(getIdent(), that.getIdent())
+                .append(getSigrunstubStatus(), that.getSigrunstubStatus())
+                .append(getKrrstubStatus(), that.getKrrstubStatus())
+                .append(getMedlStatus(), that.getMedlStatus())
+                .append(getUdistubStatus(), that.getUdistubStatus())
+                .append(getAaregStatus(), that.getAaregStatus())
+                .append(getArenaforvalterStatus(), that.getArenaforvalterStatus())
+                .append(getInstdataStatus(), that.getInstdataStatus())
+                .append(getInntektstubStatus(), that.getInntektstubStatus())
+                .append(getPensjonforvalterStatus(), that.getPensjonforvalterStatus())
+                .append(getInntektsmeldingStatus(), that.getInntektsmeldingStatus())
+                .append(getBrregstubStatus(), that.getBrregstubStatus())
+                .append(getDokarkivStatus(), that.getDokarkivStatus())
+                .append(getHistarkStatus(), that.getHistarkStatus())
+                .append(getSykemeldingStatus(), that.getSykemeldingStatus())
+                .append(getSkjermingsregisterStatus(), that.getSkjermingsregisterStatus())
+                .append(getTpsMessagingStatus(), that.getTpsMessagingStatus())
+                .append(getPdlImportStatus(), that.getPdlImportStatus())
+                .append(getPdlForvalterStatus(), that.getPdlForvalterStatus())
+                .append(getPdlOrdreStatus(), that.getPdlOrdreStatus())
+                .append(getKontoregisterStatus(), that.getKontoregisterStatus())
+                .append(getPdlPersonStatus(), that.getPdlPersonStatus())
+                .append(getTpsSyncStatus(), that.getTpsSyncStatus())
+                .append(getArbeidsplassenCVStatus(), that.getArbeidsplassenCVStatus())
+                .append(getMaster(), that.getMaster())
+                .append(getFeil(), that.getFeil())
                 .isEquals();
     }
 
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
-                .append(id)
-                .append(versjon)
-                .append(bestilling)
-                .append(ident).append(sigrunstubStatus).append(krrstubStatus)
-                .append(medlStatus)
-                .append(udistubStatus).append(aaregStatus)
-                .append(arenaforvalterStatus).append(instdataStatus)
-                .append(inntektstubStatus)
-                .append(pensjonforvalterStatus)
-                .append(inntektsmeldingStatus).append(brregstubStatus)
-                .append(dokarkivStatus)
-                .append(histarkStatus)
-                .append(sykemeldingStatus)
-                .append(skjermingsregisterStatus)
-                .append(tpsMessagingStatus)
-                .append(pdlImportStatus)
-                .append(pdlForvalterStatus)
-                .append(pdlOrdreStatus)
-                .append(kontoregisterStatus)
-                .append(pdlPersonStatus).append(arbeidsplassenCVStatus)
-                .append(master).append(feil).toHashCode();
+                .append(getId())
+                .append(getVersjon())
+                .append(getBestilling())
+                .append(getIdent())
+                .append(getSigrunstubStatus())
+                .append(getKrrstubStatus())
+                .append(getMedlStatus())
+                .append(getUdistubStatus())
+                .append(getAaregStatus())
+                .append(getArenaforvalterStatus())
+                .append(getInstdataStatus())
+                .append(getInntektstubStatus())
+                .append(getPensjonforvalterStatus())
+                .append(getInntektsmeldingStatus())
+                .append(getBrregstubStatus())
+                .append(getDokarkivStatus())
+                .append(getHistarkStatus())
+                .append(getSykemeldingStatus())
+                .append(getSkjermingsregisterStatus())
+                .append(getTpsMessagingStatus())
+                .append(getPdlImportStatus())
+                .append(getPdlForvalterStatus())
+                .append(getPdlOrdreStatus())
+                .append(getKontoregisterStatus())
+                .append(getPdlPersonStatus())
+                .append(getTpsSyncStatus())
+                .append(getArbeidsplassenCVStatus())
+                .append(getMaster())
+                .append(getFeil())
+                .toHashCode();
     }
 
     @Override
@@ -243,8 +251,7 @@ public class BestillingProgress implements Serializable {
         return "BestillingProgress{" +
                 "id=" + id +
                 ", versjon=" + versjon +
-                ", bestilling=" + bestilling.getId() +
-                ", gruppe=" + bestilling.getGruppe().getId() +
+                ", bestilling=" + bestilling +
                 ", ident='" + ident + '\'' +
                 ", sigrunstubStatus='" + sigrunstubStatus + '\'' +
                 ", krrstubStatus='" + krrstubStatus + '\'' +
@@ -267,9 +274,11 @@ public class BestillingProgress implements Serializable {
                 ", pdlOrdreStatus='" + pdlOrdreStatus + '\'' +
                 ", kontoregisterStatus='" + kontoregisterStatus + '\'' +
                 ", pdlPersonStatus='" + pdlPersonStatus + '\'' +
+                ", tpsSyncStatus='" + tpsSyncStatus + '\'' +
                 ", arbeidsplassenCVStatus='" + arbeidsplassenCVStatus + '\'' +
                 ", master=" + master +
                 ", isPdlSync=" + isPdlSync +
+                ", isTpsSyncEnv=" + isTpsSyncEnv +
                 ", feil='" + feil + '\'' +
                 '}';
     }

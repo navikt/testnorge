@@ -53,7 +53,7 @@ export const PersonrollerForm = ({ formMethods, path }) => {
 							placeholder={
 								_.get(formMethods.getValues(), egenskap)
 									? _.get(formMethods.getValues(), egenskap)
-									: 'Velg...'
+									: 'Velg ...'
 							}
 							isClearable={false}
 							styles={_.get(formMethods.getValues(), egenskap) ? colorStyles : null}

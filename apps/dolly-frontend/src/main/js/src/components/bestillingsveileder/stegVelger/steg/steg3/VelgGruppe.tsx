@@ -12,7 +12,13 @@ type VelgGruppeProps = {
 	fraGruppe?: number
 }
 
-export const VelgGruppe = ({ formMethods, title, fraGruppe = null }: VelgGruppeProps) => {
+export const VelgGruppe = ({
+	formMethods,
+	title,
+	fraGruppe = null,
+	gruppevalg,
+	setGruppevalg,
+}: VelgGruppeProps) => {
 	const [valgtGruppe, setValgtGruppe] = useState(_.get(formMethods.getValues(), `gruppeId`))
 
 	useEffect(() => {
@@ -30,6 +36,8 @@ export const VelgGruppe = ({ formMethods, title, fraGruppe = null }: VelgGruppeP
 				valgtGruppe={valgtGruppe}
 				setValgtGruppe={setValgtGruppe}
 				fraGruppe={fraGruppe}
+				gruppevalg={gruppevalg}
+				setGruppevalg={setGruppevalg}
 			/>
 			<DollyErrorMessage name="gruppeId" />
 		</div>

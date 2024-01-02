@@ -30,7 +30,7 @@ public class PersonOrganisasjonTilgangConsumer {
             ObjectMapper objectMapper) {
 
         this.accessService = accessService;
-        serverProperties = consumers.getTestnavOrganisasjonTilgangService();
+        serverProperties = consumers.getTestnavPersonOrganisasjonTilgangService();
         ExchangeStrategies jacksonStrategy = ExchangeStrategies.builder()
                 .codecs(config -> {
                     config.defaultCodecs()

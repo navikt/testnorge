@@ -121,7 +121,7 @@ export const Sikkerhetstiltak = ({ formMethods }: SikkerhetstiltakProps) => {
 									}
 									isClearable={false}
 									name={`${path}.kontaktperson.personident`}
-									placeholder={'Velg...'}
+									placeholder={'Velg ...'}
 									label={'Kontaktperson'}
 								/>
 								<FormikSelect

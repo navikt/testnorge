@@ -6,7 +6,7 @@ metadata:
   labels:
     team: dolly
 spec:
-  image: {{image}}
+  image: "{{image}}"
   port: 8080
   azure:
     application:
@@ -19,18 +19,17 @@ spec:
     inbound:
       rules:
         - application: dolly-frontend
-          cluster: dev-gcp
         - application: dolly-idporten
-          cluster: dev-gcp
-        - application: dolly-frontend-dev-unstable
-          cluster: dev-gcp
         - application: testnav-bruker-service
-          cluster: dev-gcp
         - application: testnorge-profil-api
-          cluster: dev-gcp
+        - application: team-dolly-lokal-app
+        - application: testnorge-profil-api
+        - application: app-1
+          namespace: plattformsikkerhet
     outbound:
       external:
         - host: altinn.no
+        - host: maskinporten.no
   liveness:
     path: /internal/isAlive
     initialDelay: 4

@@ -27,7 +27,7 @@ import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
-import static no.nav.dolly.util.DollyTextUtil.getInfoText;
+import static no.nav.dolly.util.DollyTextUtil.containsInfoText;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
@@ -150,7 +150,7 @@ public class TransactionHelperService {
             return Stream.of(status.split(regex),
                             value.split(regex))
                     .flatMap(Arrays::stream)
-                    .filter(text -> !text.contains(getInfoText()))
+                    .filter(text -> !containsInfoText(text))
                     .distinct()
                     .collect(Collectors.joining(regex));
         }
@@ -164,8 +164,10 @@ public class TransactionHelperService {
         } else {
 
             var nyeStatuser = Arrays.stream(nyStatus.split(","))
+                    .filter(status -> status.split(":").length > 1)
                     .collect(Collectors.toMap(data -> data.split(":")[0], data -> data.split(":")[1]));
             var gamleStatuser = Arrays.stream(gmlStatus.split(","))
+                    .filter(status -> status.split(":").length > 1)
                     .collect(Collectors.toMap(data -> data.split(":")[0], data -> data.split(":")[1]));
 
             var resultater = new HashMap<>(gamleStatuser);
@@ -173,7 +175,7 @@ public class TransactionHelperService {
 
             return resultater.entrySet().stream()
                     .map(data -> "%s:%s".formatted(data.getKey(), data.getValue()))
-                            .collect(Collectors.joining(","));
+                    .collect(Collectors.joining(","));
         }
     }
 

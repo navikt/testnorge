@@ -21,7 +21,7 @@ export const NorskBankkonto = ({ formMethods }: { formMethods: UseFormReturn }) 
 		<Vis attributt={path} formik>
 			<div className="flexbox--flex-wrap">
 				<FormikSelect
-					placeholder={'Velg...'}
+					placeholder={'Velg ...'}
 					options={validKontoOptions}
 					isClearable={true}
 					name={`${path}.kontonummer`}

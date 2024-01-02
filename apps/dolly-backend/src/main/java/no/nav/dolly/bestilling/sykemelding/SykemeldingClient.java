@@ -35,6 +35,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.SYKEMELDING;
+import static no.nav.dolly.util.DollyTextUtil.getGenereringStartet;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -66,14 +67,13 @@ public class SykemeldingClient implements ClientRegister {
                         return Mono.empty();
 
                     } else {
-                        setProgress(progress, "Info: Venter på generering av sykemelding ...");
-                        long bestillingId = progress.getBestilling().getId();
+                        setProgress(progress, getGenereringStartet());
 
                         return getPerson(dollyPerson.getIdent())
                                 .flatMap(persondata -> Flux.concat(postSyntSykemelding(sykemelding, persondata),
                                                 postDetaljertSykemelding(sykemelding, persondata))
                                         .filter(Objects::nonNull)
-                                        .doOnNext(status -> saveTransaksjonId(status, bestillingId))
+                                        .doOnNext(status -> saveTransaksjonId(status, bestilling.getId()))
                                         .map(this::getStatus)
                                         .collect(Collectors.joining()))
                                 .collect(Collectors.joining())
@@ -85,7 +85,8 @@ public class SykemeldingClient implements ClientRegister {
     private ClientFuture futurePersist(BestillingProgress progress, String status) {
 
         return () -> {
-            transactionHelperService.persister(progress, BestillingProgress::setSykemeldingStatus, status);
+            transactionHelperService.persister(progress, BestillingProgress::getSykemeldingStatus,
+                    BestillingProgress::setSykemeldingStatus, status);
             return progress;
         };
     }
@@ -105,7 +106,8 @@ public class SykemeldingClient implements ClientRegister {
 
     private void setProgress(BestillingProgress progress, String status) {
 
-        transactionHelperService.persister(progress, BestillingProgress::setSykemeldingStatus, status);
+        transactionHelperService.persister(progress, BestillingProgress::getSykemeldingStatus,
+                BestillingProgress::setSykemeldingStatus, status);
     }
 
     private Flux<PdlPersonBolk.Data> getPerson(String ident) {

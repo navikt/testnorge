@@ -52,7 +52,7 @@ export const Select = ({
 	isLoading = false,
 	isSearchable = true,
 	isClearable = true,
-	placeholder = 'Velg...',
+	placeholder = 'Velg ...',
 	options = [],
 	isMulti = false,
 	styles,

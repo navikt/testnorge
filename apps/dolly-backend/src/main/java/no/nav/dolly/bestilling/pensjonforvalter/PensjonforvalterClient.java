@@ -151,7 +151,7 @@ public class PensjonforvalterClient implements ClientRegister {
                                     .map(this::getPersonData)
                                     .flatMap(persondata -> Mono.zip(
                                             getPdlPerson(persondata),
-                                            getNavEnhetNr(persondata)))
+                                            getNavEnhetNr(persondata, dollyPerson.getIdent())))
                                     .doOnNext(utvidetPersondata -> {
                                         if (utvidetPersondata.getT1().isEmpty()) {
                                             log.warn("Persondata for {} gir tom response fra PDL", dollyPerson.getIdent());
@@ -211,9 +211,17 @@ public class PensjonforvalterClient implements ClientRegister {
                 .collectList();
     }
 
-    private Mono<String> getNavEnhetNr(Flux<PdlPersonBolk.Data> persondata) {
+    private Mono<String> getNavEnhetNr(Flux<PdlPersonBolk.Data> persondata, String ident) {
 
         return persondata
+                .doOnNext(data -> {
+                    if (isNull(data.getHentGeografiskTilknytningBolk()) ||
+                            data.getHentGeografiskTilknytningBolk().stream()
+                                    .anyMatch(bolk -> isNull(bolk.getGeografiskTilknytning()))) {
+
+                        log.warn("GT for {} gir tom response fra PDL", ident);
+                    }
+                })
                 .filter(data -> nonNull(data.getHentGeografiskTilknytningBolk()))
                 .map(PdlPersonBolk.Data::getHentGeografiskTilknytningBolk)
                 .flatMap(Flux::fromIterable)
