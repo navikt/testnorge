@@ -28,6 +28,7 @@ export const BarnRelasjon = ({ formMethods, path }: BarnRelasjonValues) => {
 		} else if (!deltBosted) {
 			formMethods.setValue(`${path}.deltBosted`, null)
 		}
+		formMethods.trigger()
 	}, [deltBosted])
 
 	return (

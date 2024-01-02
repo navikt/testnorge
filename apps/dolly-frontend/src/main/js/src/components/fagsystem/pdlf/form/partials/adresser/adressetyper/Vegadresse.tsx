@@ -40,6 +40,7 @@ export const Vegadresse = ({ formMethods, path }: VegadresseValues) => {
 			bruksenhetsnummer: adresse.bruksenhetsnummer,
 			vegadresseType: _.get(formMethods.getValues(), `${path}.vegadresseType`),
 		})
+		formMethods.trigger()
 	}
 
 	const renderAdresse = (postnummerListe: Postnummer) => {

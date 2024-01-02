@@ -62,7 +62,7 @@ export default ({
 								content: { base64: binaryStr },
 							},
 							...files,
-					  ])
+						])
 					: setFiles([
 							// @ts-ignore
 							{
@@ -70,7 +70,7 @@ export default ({
 								name: file.path,
 								content: { base64: binaryStr },
 							},
-					  ])
+						])
 			}
 			reader.readAsDataURL(file)
 		})

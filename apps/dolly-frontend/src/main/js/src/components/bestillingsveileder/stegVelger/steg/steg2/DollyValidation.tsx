@@ -1,7 +1,4 @@
-import React, { useContext } from 'react'
 import * as Yup from 'yup'
-import { harAvhukedeAttributter } from '@/components/bestillingsveileder/utils'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { SigrunstubForm } from '@/components/fagsystem/sigrunstub/form/Form'
 import { InntektstubForm } from '@/components/fagsystem/inntektstub/form/Form'
 import { InntektsmeldingForm } from '@/components/fagsystem/inntektsmelding/form/Form'
@@ -18,7 +15,6 @@ import { SykdomForm } from '@/components/fagsystem/sykdom/form/Form'
 import { OrganisasjonForm } from '@/components/fagsystem/organisasjoner/form/Form'
 import { TjenestepensjonForm } from '@/components/fagsystem/tjenestepensjon/form/Form'
 import { ifPresent } from '@/utils/YupValidations'
-import { Alert } from '@navikt/ds-react'
 import { AlderspensjonForm } from '@/components/fagsystem/alderspensjon/form/Form'
 import { SkjermingForm } from '@/components/fagsystem/skjermingsregister/form/SkjermingForm'
 import { ArbeidsplassenForm } from '@/components/fagsystem/arbeidsplassen/form/Form'
@@ -26,70 +22,11 @@ import { HistarkForm } from '@/components/fagsystem/histark/form/HistarkForm'
 import { UforetrygdForm } from '@/components/fagsystem/uforetrygd/form/Form'
 import { SigrunstubPensjonsgivendeForm } from '@/components/fagsystem/sigrunstubPensjonsgivende/form/Form'
 import { KrrstubForm } from '@/components/fagsystem/krrstub/form/KrrForm'
-import { useFormContext } from 'react-hook-form'
 import { MiljoVelger } from '@/components/miljoVelger/MiljoVelger'
 import { MalForm } from '@/components/bestillingsveileder/stegVelger/steg/steg3/MalForm'
 import { VelgGruppe } from '@/components/bestillingsveileder/stegVelger/steg/steg3/VelgGruppe'
 
-const gruppeNavn = (gruppe) => <span style={{ fontWeight: 'bold' }}>{gruppe.navn}</span>
-
-const getEmptyMessage = (leggTil, importTestnorge, gruppe = null) => {
-	if (leggTil) {
-		return 'Du har ikke lagt til flere egenskaper. Vennligst gå tilbake og velg nye egenskaper.'
-	} else if (importTestnorge) {
-		return (
-			<span>
-				Du har ikke lagt til egenskaper. Dolly vil importere valgt Test-Norge person(er) til
-				{gruppe === null && <> gruppe du velger i neste steg.</>}
-				{gruppe !== null && <> gruppen {gruppeNavn(gruppe)}.</>}
-			</span>
-		)
-	}
-	return 'Du har ikke valgt noen egenskaper. Dolly oppretter personer med tilfeldige verdier.'
-}
-
-export const Steg2 = () => {
-	const opts: any = useContext(BestillingsveilederContext)
-	const formMethods = useFormContext()
-
-	const leggTil = opts.is.leggTil
-	const importTestnorge = opts.is.importTestnorge
-	const gruppe = opts.gruppe
-
-	if (!harAvhukedeAttributter(formMethods.getValues())) {
-		return <Alert variant={'info'}>{getEmptyMessage(leggTil, importTestnorge, gruppe)}</Alert>
-	}
-
-	return (
-		<div>
-			<PdlfForm />
-			<AaregForm />
-			<ArbeidsplassenForm />
-			<SigrunstubForm />
-			<SigrunstubPensjonsgivendeForm />
-			<InntektstubForm />
-			<InntektsmeldingForm />
-			<PensjonForm />
-			<TjenestepensjonForm />
-			<AlderspensjonForm />
-			<UforetrygdForm />
-			<ArenaForm />
-			<SykdomForm />
-			<BrregstubForm />
-			<InstForm />
-			<KrrstubForm />
-			<MedlForm />
-			<UdistubForm />
-			<DokarkivForm />
-			<HistarkForm />
-			<OrganisasjonForm />
-		</div>
-	)
-}
-
-Steg2.label = 'Velg verdier'
-
-Steg2.validation = Yup.object({
+export const DollyValidation = Yup.object({
 	...PdlfForm.validation,
 	...AaregForm.validation,
 	...ArbeidsplassenForm.validation,

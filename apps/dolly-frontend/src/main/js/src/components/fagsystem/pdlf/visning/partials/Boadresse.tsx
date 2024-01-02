@@ -77,7 +77,7 @@ const BoadresseVisning = ({
 					_.cloneDeep(getInitialBostedsadresse()),
 					redigertBoadressePdlf,
 				),
-		  }
+			}
 		: null
 
 	const filtrertData = [...data]

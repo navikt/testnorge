@@ -10,10 +10,12 @@ import { AlertInntektskomponentenRequired } from '@/components/ui/brukerAlert/Al
 import { validation } from '@/components/fagsystem/arena/form/validation'
 import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import { useFormContext } from 'react-hook-form'
 
 export const arenaPath = 'arenaforvalter'
 
-export const ArenaForm = ({ formMethods }) => {
+export const ArenaForm = () => {
+	const formMethods = useFormContext()
 	const opts = useContext(BestillingsveilederContext)
 	const { leggTilPaaGruppe } = opts?.is
 
@@ -32,7 +34,7 @@ export const ArenaForm = ({ formMethods }) => {
 		<Vis attributt={arenaPath}>
 			<Panel
 				heading="Arbeidsytelser"
-				hasErrors={panelError(formMethods.formState.errors, arenaPath)}
+				hasErrors={panelError(arenaPath)}
 				iconType="arena"
 				startOpen={erForsteEllerTest(formMethods.getValues(), [arenaPath])}
 			>

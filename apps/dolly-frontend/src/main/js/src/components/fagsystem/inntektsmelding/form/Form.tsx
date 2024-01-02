@@ -31,11 +31,7 @@ import { InputWarning } from '@/components/ui/form/inputWarning/inputWarning'
 import { OrgnrToggle } from '@/components/fagsystem/inntektsmelding/form/partials/orgnrToogle'
 import { testDatoFom, testDatoTom } from '@/components/fagsystem/utils'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
-import { UseFormReturn } from 'react-hook-form/dist/types'
-
-interface InntektsmeldingFormProps {
-	formMethods: UseFormReturn
-}
+import { useFormContext } from 'react-hook-form'
 
 enum TypeArbeidsgiver {
 	VIRKSOMHET = 'VIRKSOMHET',
@@ -48,13 +44,13 @@ export const initialValues = (type: string) => ({
 		type === TypeArbeidsgiver.VIRKSOMHET
 			? {
 					virksomhetsnummer: '',
-			  }
+				}
 			: undefined,
 	arbeidsgiverPrivat:
 		type === TypeArbeidsgiver.PRIVATPERSON
 			? {
 					arbeidsgiverFnr: '',
-			  }
+				}
 			: undefined,
 	arbeidsforhold: {
 		arbeidsforholdId: '',
@@ -77,14 +73,15 @@ export const initialValues = (type: string) => ({
 export const inntektsmeldingAttributt = 'inntektsmelding'
 const informasjonstekst = 'Personen må ha et arbeidsforhold knyttet til den valgte virksomheten.'
 
-export const InntektsmeldingForm = ({ formMethods }: InntektsmeldingFormProps) => {
+export const InntektsmeldingForm = () => {
+	const formMethods = useFormContext()
 	const [typeArbeidsgiver, setTypeArbeidsgiver] = useState(
 		_.get(formMethods.getValues(), 'inntektsmelding.inntekter[0].arbeidsgiverPrivat')
 			? TypeArbeidsgiver.PRIVATPERSON
 			: TypeArbeidsgiver.VIRKSOMHET,
 	)
 
-	const { personFoerLeggTil, leggTilPaaGruppe } = useContext(BestillingsveilederContext)
+	const { personFoerLeggTil, leggTilPaaGruppe }: any = useContext(BestillingsveilederContext)
 
 	const handleArbeidsgiverChange = (type: TypeArbeidsgiver) => {
 		setTypeArbeidsgiver(type)
@@ -114,7 +111,7 @@ export const InntektsmeldingForm = ({ formMethods }: InntektsmeldingFormProps) =
 		<Vis attributt={inntektsmeldingAttributt}>
 			<Panel
 				heading="Inntektsmelding (fra Altinn)"
-				hasErrors={panelError(formMethods.formState.errors, inntektsmeldingAttributt)}
+				hasErrors={panelError(inntektsmeldingAttributt)}
 				iconType="inntektsmelding"
 				informasjonstekst={informasjonstekst}
 				startOpen={erForsteEllerTest(formMethods.getValues(), [inntektsmeldingAttributt])}
@@ -237,38 +234,41 @@ export const InntektsmeldingForm = ({ formMethods }: InntektsmeldingFormProps) =
 }
 
 InntektsmeldingForm.validation = {
-	inntektsmelding: Yup.object({
-		inntekter: Yup.array().of(
-			Yup.object({
-				aarsakTilInnsending: requiredString,
-				arbeidsgiver: Yup.object({
-					virksomhetsnummer: ifPresent(
-						'$inntektsmelding.inntekter[0].arbeidsgiver.virksomhetsnummer',
-						requiredString.matches(/^\d{9}$/, 'Orgnummer må være et tall med 9 siffer'),
-					),
-				}),
-				arbeidsgiverPrivat: Yup.object({
-					arbeidsgiverFnr: ifPresent(
-						'$inntektsmelding.inntekter[0].arbeidsgiverPrivat.arbeidsgiverFnr',
-						requiredString.matches(/^\d{11}$/, 'Ident må være et tall med 11 siffer'),
-					),
-				}),
-				arbeidsforhold: Yup.object({
-					beregnetInntekt: Yup.object({
-						beloep: requiredNumber.typeError(messages.required),
+	inntektsmelding: ifPresent(
+		'$inntektsmelding',
+		Yup.object({
+			inntekter: Yup.array().of(
+				Yup.object({
+					aarsakTilInnsending: requiredString,
+					arbeidsgiver: Yup.object({
+						virksomhetsnummer: ifPresent(
+							'$inntektsmelding.inntekter[0].arbeidsgiver.virksomhetsnummer',
+							requiredString.matches(/^\d{9}$/, 'Orgnummer må være et tall med 9 siffer'),
+						),
 					}),
-					avtaltFerieListe: Yup.array().of(
-						Yup.object({
-							fom: testDatoFom(Yup.string(), 'tom'),
-							tom: testDatoTom(Yup.string(), 'fom'),
+					arbeidsgiverPrivat: Yup.object({
+						arbeidsgiverFnr: ifPresent(
+							'$inntektsmelding.inntekter[0].arbeidsgiverPrivat.arbeidsgiverFnr',
+							requiredString.matches(/^\d{11}$/, 'Ident må være et tall med 11 siffer'),
+						),
+					}),
+					arbeidsforhold: Yup.object({
+						beregnetInntekt: Yup.object({
+							beloep: requiredNumber.typeError(messages.required),
 						}),
-					),
+						avtaltFerieListe: Yup.array().of(
+							Yup.object({
+								fom: testDatoFom(Yup.string(), 'tom'),
+								tom: testDatoTom(Yup.string(), 'fom'),
+							}),
+						),
+					}),
+					avsendersystem: Yup.object({
+						innsendingstidspunkt: requiredDate.nullable(),
+					}),
+					ytelse: requiredString,
 				}),
-				avsendersystem: Yup.object({
-					innsendingstidspunkt: requiredDate.nullable(),
-				}),
-				ytelse: requiredString,
-			}),
-		),
-	}),
+			),
+		}),
+	),
 }

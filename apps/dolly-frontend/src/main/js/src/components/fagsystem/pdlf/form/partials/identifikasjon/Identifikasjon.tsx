@@ -25,7 +25,7 @@ export const Identifikasjon = ({ formMethods }: IdentifikasjonValues) => {
 		<Vis attributt={identifikasjonAttributter}>
 			<Panel
 				heading="Identifikasjon"
-				hasErrors={panelError(formMethods.formState.errors, identifikasjonAttributter)}
+				hasErrors={panelError(identifikasjonAttributter)}
 				iconType="identifikasjon"
 				startOpen={erForsteEllerTest(formMethods.getValues(), identifikasjonAttributter)}
 			>

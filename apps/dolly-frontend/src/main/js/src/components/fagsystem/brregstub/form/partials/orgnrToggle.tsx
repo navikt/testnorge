@@ -58,11 +58,6 @@ export const OrgnrToggle = ({
 					path={`${path}.orgNr`}
 					handleChange={handleChange}
 					value={_.get(formMethods.getValues(), `${path}.orgNr`)}
-					feil={
-						_.get(formMethods.getValues(), path) === '' && {
-							feilmelding: 'Feltet er påkrevd',
-						}
-					}
 				/>
 			)}
 			{inputType === inputValg.fraEgenListe && (

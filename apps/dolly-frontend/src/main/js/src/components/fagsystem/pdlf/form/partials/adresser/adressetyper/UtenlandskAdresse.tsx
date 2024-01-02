@@ -25,6 +25,7 @@ export const UtenlandskAdresse = ({ formMethods, path, master }: UtenlandskAdres
 			formMethods.setValue(`${path}.bygningEtasjeLeilighet`, null)
 			formMethods.setValue(`${path}.regionDistriktOmraade`, null)
 		}
+		formMethods.trigger()
 	}, [master])
 
 	return (

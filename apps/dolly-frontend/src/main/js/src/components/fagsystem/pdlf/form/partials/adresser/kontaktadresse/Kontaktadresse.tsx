@@ -63,6 +63,7 @@ export const KontaktadresseForm = ({
 		) {
 			formMethods.setValue(`${path}.adressetype`, Adressetype.Postboks)
 		}
+		formMethods.trigger()
 	}, [])
 
 	const valgtAdressetype = _.get(formMethods.getValues(), `${path}.adressetype`)
@@ -95,6 +96,7 @@ export const KontaktadresseForm = ({
 		}
 
 		formMethods.setValue(path, adresseClone)
+		formMethods.trigger()
 	}
 
 	const { navnInfo, loading } = useGenererNavn()

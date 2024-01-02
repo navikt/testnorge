@@ -11,6 +11,7 @@ import * as _ from 'lodash'
 import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { UseFormReturn } from 'react-hook-form/dist/types'
+import { useFormContext } from 'react-hook-form'
 
 const Digitalinnsending = React.lazy(
 	() => import('@/components/fagsystem/dokarkiv/form/partials/Digitalinnsending'),
@@ -51,7 +52,8 @@ enum Kodeverk {
 
 export const dokarkivAttributt = 'dokarkiv'
 
-export const DokarkivForm = ({ formMethods }: DokarkivFormProps) => {
+export const DokarkivForm = () => {
+	const formMethods = useFormContext()
 	if (!_.has(formMethods.getValues(), dokarkivAttributt)) {
 		return null
 	}
@@ -114,7 +116,7 @@ export const DokarkivForm = ({ formMethods }: DokarkivFormProps) => {
 		<Vis attributt={dokarkivAttributt}>
 			<Panel
 				heading="Dokumenter (Joark)"
-				hasErrors={panelError(formMethods.formState.errors, dokarkivAttributt)}
+				hasErrors={panelError(dokarkivAttributt)}
 				iconType="dokarkiv"
 				// @ts-ignore
 				startOpen={erForsteEllerTest(formMethods.getValues(), [dokarkivAttributt])}
@@ -149,16 +151,6 @@ export const DokarkivForm = ({ formMethods }: DokarkivFormProps) => {
 									event.target.value === '' ? undefined : event.target.value,
 								)
 							}}
-							feil={
-								_.get(formMethods.formState.errors, `dokarkiv.journalfoerendeEnhet`)
-									? {
-											feilmelding: _.get(
-												formMethods.formState.errors,
-												`dokarkiv.journalfoerendeEnhet`,
-											),
-										}
-									: null
-							}
 							name="dokarkiv.journalfoerendeEnhet"
 							label="Journalførende enhet"
 							size="large"

@@ -102,15 +102,11 @@ export const NavnForm = ({ formMethods, path, identtype }: NavnTypes) => {
 							const fornavn = change?.map((option: Option) => option.value)
 							setSelectedFornavn(fornavn)
 							formMethods.setValue(`${path}.fornavn`, fornavn?.join(' '))
+							formMethods.trigger()
 						}}
 						isMulti={true}
 						size="grow"
 						isClearable={false}
-						feil={
-							_.get(errors, `${path}.fornavn`) && {
-								feilmelding: _.get(errors, `${path}.fornavn`),
-							}
-						}
 					/>
 					{getRefreshButton()}
 				</div>
@@ -124,6 +120,7 @@ export const NavnForm = ({ formMethods, path, identtype }: NavnTypes) => {
 							const mellomnavn = change?.map((option: Option) => option.value)
 							setSelectedMellomnavn(mellomnavn)
 							formMethods.setValue(`${path}.mellomnavn`, mellomnavn?.join(' '))
+							formMethods.trigger()
 						}}
 						isDisabled={_.get(formMethods.getValues(), `${path}.hasMellomnavn`)}
 						isMulti={true}
@@ -142,15 +139,11 @@ export const NavnForm = ({ formMethods, path, identtype }: NavnTypes) => {
 							const etternavn = change?.map((option: Option) => option.value)
 							setSelectedEtternavn(etternavn)
 							formMethods.setValue(`${path}.etternavn`, etternavn.join(' '))
+							formMethods.trigger()
 						}}
 						isMulti={true}
 						size="grow"
 						isClearable={false}
-						feil={
-							_.get(errors, `${path}.etternavn`) && {
-								feilmelding: _.get(errors, `${path}.etternavn`),
-							}
-						}
 					/>
 					{getRefreshButton()}
 				</div>

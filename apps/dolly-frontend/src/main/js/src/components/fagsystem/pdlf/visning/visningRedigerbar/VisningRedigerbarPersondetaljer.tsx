@@ -418,7 +418,6 @@ export const VisningRedigerbarPersondetaljer = ({
 										variant={'secondary'}
 										onClick={() => setVisningModus(Modus.Les)}
 										disabled={formMethods.formState.isSubmitting}
-										style={{ top: '1.75px' }}
 									>
 										Avbryt
 									</NavButton>

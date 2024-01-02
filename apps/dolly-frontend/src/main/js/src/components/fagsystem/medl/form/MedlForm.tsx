@@ -20,9 +20,9 @@ import { useFormContext } from 'react-hook-form'
 
 export const MedlForm = () => {
 	const {
+		trigger,
 		setValue,
 		formState: { errors },
-		watch,
 		getValues,
 	} = useFormContext()
 	const [aktivKilde, setAktivKilde] = useState(getValues('medl.kilde') || MEDL_KILDER.SRVMELOSYS)
@@ -49,7 +49,7 @@ export const MedlForm = () => {
 		<Vis attributt={MedlAttributt}>
 			<Panel
 				heading="Medlemskap (MEDL)"
-				hasErrors={panelError(errors, MedlAttributt)}
+				hasErrors={panelError(MedlAttributt)}
 				iconType="calendar"
 				// @ts-ignore
 				startOpen={erForsteEllerTest(getValues(), [MedlAttributt])}
@@ -66,6 +66,7 @@ export const MedlForm = () => {
 								afterChange={(selected) => {
 									setAktivKilde(selected?.value)
 									setValue('medl', getInitialValue(selected?.value))
+									trigger()
 								}}
 							/>
 							<MedlSelect

@@ -66,6 +66,7 @@ export const FormikCheckbox = ({
 	const value = formMethods.watch(props.name)
 	const handleChange = (event: { target: { checked: any } }) => {
 		formMethods.setValue(props.name, event.target.checked)
+		formMethods.trigger()
 		if (afterChange) afterChange(event.target.checked)
 	}
 

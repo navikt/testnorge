@@ -4,15 +4,19 @@ import { Adresser } from '@/components/fagsystem/pdlf/form/partials/adresser/Adr
 import { Personinformasjon } from '@/components/fagsystem/pdlf/form/partials/personinformasjon/Personinformasjon'
 import { Identifikasjon } from '@/components/fagsystem/pdlf/form/partials/identifikasjon/Identifikasjon'
 import { Familierelasjoner } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/Familierelasjoner'
+import { useFormContext } from 'react-hook-form'
 
-export const PdlfForm = ({ formMethods }) => (
-	<>
-		<Personinformasjon formMethods={formMethods} />
-		<Adresser formMethods={formMethods} />
-		<Familierelasjoner formMethods={formMethods} />
-		<Identifikasjon formMethods={formMethods} />
-		<KontaktinformasjonForDoedsbo formMethods={formMethods} />
-	</>
-)
+export const PdlfForm = () => {
+	const formMethods = useFormContext()
+	return (
+		<>
+			<Personinformasjon formMethods={formMethods} />
+			<Adresser formMethods={formMethods} />
+			<Familierelasjoner formMethods={formMethods} />
+			<Identifikasjon formMethods={formMethods} />
+			<KontaktinformasjonForDoedsbo formMethods={formMethods} />
+		</>
+	)
+}
 
 PdlfForm.validation = validation

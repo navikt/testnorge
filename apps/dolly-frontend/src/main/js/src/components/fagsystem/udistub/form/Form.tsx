@@ -7,6 +7,7 @@ import { Oppholdsstatus } from './partials/Oppholdsstatus'
 import { Arbeidsadgang } from './partials/Arbeidsadgang'
 import { Alias } from './partials/Alias'
 import { Annet } from './partials/Annet'
+import { useFormContext } from 'react-hook-form'
 
 const attrPaths = [
 	'udistub.oppholdStatus',
@@ -18,24 +19,27 @@ const attrPaths = [
 
 export const udiAttributt = 'udistub'
 
-export const UdistubForm = ({ formMethods }) => (
-	<Vis attributt={attrPaths}>
-		<Panel
-			heading="UDI"
-			hasErrors={panelError(formMethods.formState.errors, attrPaths)}
-			iconType="udi"
-			startOpen={erForsteEllerTest(formMethods.getValues(), [udiAttributt])}
-		>
-			<Kategori title="Gjeldende oppholdsstatus" vis="udistub.oppholdStatus">
-				<Oppholdsstatus formMethods={formMethods} />
-			</Kategori>
-			<Arbeidsadgang formMethods={formMethods} />
-			<Kategori title="Alias" vis="udistub.aliaser" flex={false}>
-				<Alias />
-			</Kategori>
-			<Annet />
-		</Panel>
-	</Vis>
-)
+export const UdistubForm = () => {
+	const formMethods = useFormContext()
+	return (
+		<Vis attributt={attrPaths}>
+			<Panel
+				heading="UDI"
+				hasErrors={panelError(attrPaths)}
+				iconType="udi"
+				startOpen={erForsteEllerTest(formMethods.getValues(), [udiAttributt])}
+			>
+				<Kategori title="Gjeldende oppholdsstatus" vis="udistub.oppholdStatus">
+					<Oppholdsstatus formMethods={formMethods} />
+				</Kategori>
+				<Arbeidsadgang formMethods={formMethods} />
+				<Kategori title="Alias" vis="udistub.aliaser" flex={false}>
+					<Alias />
+				</Kategori>
+				<Annet />
+			</Panel>
+		</Vis>
+	)
+}
 
 UdistubForm.validation = validation

@@ -65,7 +65,7 @@ const createInntektForm = (kodeverk, skatteordning, path) => {
 
 export const PensjonsgivendeInntektForm = ({ path, formMethods, kodeverk, skatteordning }) => {
 	const newEntry = getInitialInntekt(kodeverk, skatteordning)
-	const inntektError = _.get(formMethods.formState.errors, path)
+	const inntektError = _.get(formMethods.formState.errors, path)?.message
 
 	return (
 		<FormikDollyFieldArray

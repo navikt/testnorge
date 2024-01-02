@@ -23,6 +23,7 @@ export const VegadresseVelger = ({ formMethods, path }: VegadressevelgerValues) 
 
 	const handleRadioChange = (valg: string) => {
 		formMethods.setValue(path, { ...initialVegadresse, vegadresseType: valg })
+		formMethods.trigger()
 	}
 
 	return (

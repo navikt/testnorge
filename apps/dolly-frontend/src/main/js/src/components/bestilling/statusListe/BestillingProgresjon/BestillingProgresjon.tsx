@@ -56,7 +56,7 @@ export const BestillingProgresjon = ({
 			return erOrganisasjon
 				? `AKTIV BESTILLING (${
 						orgStatus || 'Bestillingen tar opptil flere minutter per valgte miljø'
-				  })`
+					})`
 				: 'AKTIV BESTILLING'
 		}
 	}
@@ -124,7 +124,7 @@ export const BestillingProgresjon = ({
 			setDetaljertOrgStatus(bestillingStatus)
 		}
 		harBestillingFeilet(sistOppdatert)
-	}, [bestillingStatus])
+	}, [bestillingStatus, bestilling])
 
 	if (loading) {
 		return null

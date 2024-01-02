@@ -10,6 +10,7 @@ import { validation } from '@/components/fagsystem/inst/form/validation'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { getExcludedDatesAndMaxDate } from './utils'
 import { addYears } from 'date-fns'
+import { useFormContext } from 'react-hook-form'
 
 export const initialValues = {
 	institusjonstype: '',
@@ -18,9 +19,10 @@ export const initialValues = {
 }
 export const instAttributt = 'instdata'
 
-export const InstForm = ({ formMethods }) => {
+export const InstForm = () => {
+	const formMethods = useFormContext()
 	const opts = useContext(BestillingsveilederContext)
-	const { personFoerLeggTil } = opts
+	const { personFoerLeggTil }: any = opts
 
 	let excludeDates = []
 	let maxDate = addYears(new Date(), 5)
@@ -34,7 +36,7 @@ export const InstForm = ({ formMethods }) => {
 		<Vis attributt={instAttributt}>
 			<Panel
 				heading="Institusjonsopphold"
-				hasErrors={panelError(formMethods.formState.errors, instAttributt)}
+				hasErrors={panelError(instAttributt)}
 				iconType="institusjon"
 				startOpen={erForsteEllerTest(formMethods.getValues(), [instAttributt])}
 			>

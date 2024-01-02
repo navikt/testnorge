@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { Navigation } from './Navigation/Navigation'
 import { stateModifierFns } from '../stateModifier'
 import { BestillingsveilederHeader } from '../BestillingsveilederHeader'
@@ -18,28 +18,37 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import DisplayFormikErrors from '@/utils/DisplayFormikErrors'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import {
+	ShowErrorContext,
+	ShowErrorContextType,
+} from '@/components/bestillingsveileder/ShowErrorContext'
+import { DollyValidation } from './steg/steg2/DollyValidation'
 
 const STEPS = [Steg1, Steg2, Steg3]
 
 export const StegVelger = ({ initialValues, onSubmit }) => {
 	const context = useContext(BestillingsveilederContext)
+	const errorContext: ShowErrorContextType = useContext(ShowErrorContext)
 	const [step, setStep] = useState(0)
 	const CurrentStepComponent: any = STEPS[step]
 	const formMethods = useForm({
 		mode: 'onChange',
 		defaultValues: initialValues,
-		resolver: yupResolver(CurrentStepComponent.validation),
+		resolver: yupResolver(DollyValidation),
 		context: context,
 	})
-
-	useEffect(() => {
-		formMethods.trigger().catch((e) => /* ignore */ e)
-	}, [formMethods.watch, step])
 
 	const mutate = useMatchMutate()
 
 	const isLastStep = () => step === STEPS.length - 1
-	const handleNext = () => setStep(step + 1)
+	const handleNext = () => {
+		if (!formMethods.formState.isValid && step === 1) {
+			console.warn('Feil i form, stopper navigering videre')
+			errorContext?.setShowError(true)
+			return
+		}
+		setStep(step + 1)
+	}
 
 	const handleBack = () => {
 		if (step !== 0) setStep(step - 1)
@@ -52,6 +61,7 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 		}
 
 		sessionStorage.clear()
+		errorContext?.setShowError(false)
 		formMethods.reset()
 
 		formMethods.handleSubmit(onSubmit(values))
@@ -90,7 +100,12 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 				step={step}
 				onPrevious={handleBack}
 				isLastStep={isLastStep()}
-				handleSubmit={() => _handleSubmit(formMethods.getValues())}
+				handleSubmit={() => {
+					formMethods.trigger().catch((error) => {
+						console.warn(error)
+					})
+					return _handleSubmit(formMethods.getValues())
+				}}
 			/>
 		</FormProvider>
 	)

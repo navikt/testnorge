@@ -37,6 +37,7 @@ export const FalskIdentitet = ({ formMethods }) => {
 				...advancedValues,
 			})
 		}
+		formMethods.trigger()
 		return e.value
 	}
 

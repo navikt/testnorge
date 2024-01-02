@@ -16,14 +16,16 @@ import { KursForm } from '@/components/fagsystem/arbeidsplassen/form/partials/Ku
 import { SammendragForm } from '@/components/fagsystem/arbeidsplassen/form/partials/SammendragForm'
 import { validation } from '@/components/fagsystem/arbeidsplassen/form/validation'
 import { HjemmelForm } from '@/components/fagsystem/arbeidsplassen/form/partials/HjemmelForm'
+import { useFormContext } from 'react-hook-form'
 
 export const arbeidsplassenAttributt = 'arbeidsplassenCV'
-export const ArbeidsplassenForm = ({ formMethods }) => {
+export const ArbeidsplassenForm = () => {
+	const formMethods = useFormContext()
 	return (
 		<Vis attributt={arbeidsplassenAttributt}>
 			<Panel
 				heading="Arbeidsplassen (CV)"
-				hasErrors={panelError(formMethods.formState.errors, arbeidsplassenAttributt)}
+				hasErrors={panelError(arbeidsplassenAttributt)}
 				iconType="cv"
 				startOpen={erForsteEllerTest(formMethods.getValues(), [arbeidsplassenAttributt])}
 			>

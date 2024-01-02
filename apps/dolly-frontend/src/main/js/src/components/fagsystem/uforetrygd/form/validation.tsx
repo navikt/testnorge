@@ -19,7 +19,7 @@ const erIkkeLik = () => {
 }
 
 const datoErFremtidig = () => {
-	return Yup.date().test('er-fremtidig', 'Dato må være frem i tid', function validDate(dato) {
+	return Yup.date().test('er-fremtidig', 'Dato må være frem i tid', (dato) => {
 		if (!dato) {
 			return true
 		}
@@ -41,7 +41,7 @@ export const validation = {
 		'$pensjonforvalter.uforetrygd',
 		Yup.object({
 			uforetidspunkt: Yup.date()
-				.test('er-historisk', 'Dato må være historisk', function validDate(dato) {
+				.test('er-historisk', 'Dato må være historisk', (dato) => {
 					return isPast(dato)
 				})
 				.nullable(),

@@ -66,14 +66,14 @@ const arbeidsgiver = Yup.object({
 		then: () =>
 			Yup.string()
 				.matches(/^\d*$/, 'Orgnummer må være et tall med 9 sifre')
-				.test('len', 'Orgnummer må være et tall med 9 sifre', (val) => val && val.length === 9),
+				.test('len', 'Orgnummer må være et tall med 9 sifre', (val) => val?.length === 9),
 	}),
 	ident: Yup.string().when('aktoertype', {
 		is: 'PERS',
 		then: () =>
 			Yup.string()
 				.matches(/^\d*$/, 'Ident må være et tall med 11 sifre')
-				.test('len', 'Ident må være et tall med 11 sifre', (val) => val && val.length === 11),
+				.test('len', 'Ident må være et tall med 11 sifre', (val) => val?.length === 11),
 	}),
 })
 
@@ -118,130 +118,133 @@ const requiredPeriode = Yup.mixed()
 	.nullable()
 
 export const validation = {
-	aareg: Yup.array().of(
-		Yup.object({
-			ansettelsesPeriode: ifPresent('$aareg[0].arbeidsgiver.aktoertype', ansettelsesPeriode),
-			arbeidsforholdstype: requiredString,
-			arbeidsforholdID: Yup.string().nullable(),
-			arbeidsgiver: ifPresent('$aareg[0].arbeidsgiver.aktoertype', arbeidsgiver),
-			arbeidsavtale: ifPresent('$aareg[0].arbeidsgiver.aktoertype', arbeidsavtale),
-			fartoy: Yup.mixed().when({
-				is: (exists) => !!exists,
-				then: () => fartoy,
-			}),
-			antallTimerForTimeloennet: Yup.array().of(
-				Yup.object({
-					periode: Yup.object({
-						fom: innenforAnsettelsesforholdTest(requiredDate),
-						tom: innenforAnsettelsesforholdTest(requiredDate, true),
-					}),
-					antallTimer: Yup.number()
-						.min(1, 'Kan ikke være mindre enn ${min}')
-						.typeError(messages.required),
+	aareg: ifPresent(
+		'$aareg',
+		Yup.array().of(
+			Yup.object({
+				ansettelsesPeriode: ifPresent('$aareg[0].arbeidsgiver.aktoertype', ansettelsesPeriode),
+				arbeidsforholdstype: requiredString,
+				arbeidsforholdID: Yup.string().nullable(),
+				arbeidsgiver: ifPresent('$aareg[0].arbeidsgiver.aktoertype', arbeidsgiver),
+				arbeidsavtale: ifPresent('$aareg[0].arbeidsgiver.aktoertype', arbeidsavtale),
+				fartoy: Yup.mixed().when({
+					is: (exists) => !!exists,
+					then: () => fartoy,
 				}),
-			),
-			utenlandsopphold: Yup.array().of(
-				Yup.object({
-					periode: Yup.object({
-						fom: innenforAnsettelsesforholdTest(requiredDate),
-						tom: innenforAnsettelsesforholdTest(requiredDate, true),
-					}),
-					land: requiredString,
-				}),
-			),
-			permisjon: Yup.array().of(
-				Yup.object({
-					permisjonsPeriode: Yup.object({
-						fom: innenforAnsettelsesforholdTest(requiredDate),
-						tom: innenforAnsettelsesforholdTest(Yup.date().nullable()),
-					}),
-					permisjonsprosent: Yup.number()
-						.min(1, 'Kan ikke være mindre enn ${min}')
-						.max(100, 'Kan ikke være større enn ${max}')
-						.typeError(messages.required),
-					permisjon: requiredString,
-				}),
-			),
-			permittering: Yup.array().of(
-				Yup.object({
-					permitteringsPeriode: Yup.object({
-						fom: innenforAnsettelsesforholdTest(requiredDate),
-						tom: innenforAnsettelsesforholdTest(Yup.date().nullable()),
-					}),
-					permitteringsprosent: Yup.number()
-						.min(1, 'Kan ikke være mindre enn ${min}')
-						.max(100, 'Kan ikke være større enn ${max}')
-						.typeError(messages.required),
-				}),
-			),
-			amelding: ifPresent(
-				'$aareg[0].amelding',
-				Yup.array().of(
+				antallTimerForTimeloennet: Yup.array().of(
 					Yup.object({
-						arbeidsforhold: Yup.array().of(
-							Yup.object({
-								ansettelsesPeriode: ansettelsesPeriode,
-								arbeidsforholdID: Yup.string().nullable(),
-								arbeidsgiver: arbeidsgiver,
-								arbeidsavtale: arbeidsavtale,
-								fartoy: fartoy,
-								antallTimerForTimeloennet: Yup.array().of(
-									Yup.object({
-										periode: Yup.object({
-											fom: requiredDate,
-											tom: requiredDate,
-										}),
-										antallTimer: Yup.number()
-											.min(1, 'Kan ikke være mindre enn ${min}')
-											.typeError(messages.required),
-									}),
-								),
-								utenlandsopphold: Yup.array().of(
-									Yup.object({
-										periode: Yup.object({
-											fom: requiredDate,
-											tom: requiredDate,
-										}),
-										land: requiredString,
-									}),
-								),
-								permisjon: Yup.array().of(
-									Yup.object({
-										permisjonsPeriode: Yup.object({
-											fom: requiredDate,
-											tom: Yup.date().nullable(),
-										}),
-										permisjonsprosent: Yup.number()
-											.min(1, 'Kan ikke være mindre enn ${min}')
-											.max(100, 'Kan ikke være større enn ${max}')
-											.typeError(messages.required),
-										permisjon: requiredString,
-									}),
-								),
-								permittering: Yup.array().of(
-									Yup.object({
-										permitteringsPeriode: Yup.object({
-											fom: requiredDate,
-											tom: Yup.date().nullable(),
-										}),
-										permitteringsprosent: Yup.number()
-											.min(1, 'Kan ikke være mindre enn ${min}')
-											.max(100, 'Kan ikke være større enn ${max}')
-											.typeError(messages.required),
-									}),
-								),
-							}),
-						),
+						periode: Yup.object({
+							fom: innenforAnsettelsesforholdTest(requiredDate),
+							tom: innenforAnsettelsesforholdTest(requiredDate, true),
+						}),
+						antallTimer: Yup.number()
+							.min(1, 'Kan ikke være mindre enn ${min}')
+							.typeError(messages.required),
 					}),
 				),
-			),
-			genererPeriode: ifPresent(
-				'$aareg[0].amelding[0]',
-				Yup.object({
-					fom: testDatoFom(requiredPeriode, 'tom'),
-					tom: testDatoTom(requiredPeriode, 'fom'),
-				}),
-			),
-		}),
+				utenlandsopphold: Yup.array().of(
+					Yup.object({
+						periode: Yup.object({
+							fom: innenforAnsettelsesforholdTest(requiredDate),
+							tom: innenforAnsettelsesforholdTest(requiredDate, true),
+						}),
+						land: requiredString,
+					}),
+				),
+				permisjon: Yup.array().of(
+					Yup.object({
+						permisjonsPeriode: Yup.object({
+							fom: innenforAnsettelsesforholdTest(requiredDate),
+							tom: innenforAnsettelsesforholdTest(Yup.date().nullable()),
+						}),
+						permisjonsprosent: Yup.number()
+							.min(1, 'Kan ikke være mindre enn ${min}')
+							.max(100, 'Kan ikke være større enn ${max}')
+							.typeError(messages.required),
+						permisjon: requiredString,
+					}),
+				),
+				permittering: Yup.array().of(
+					Yup.object({
+						permitteringsPeriode: Yup.object({
+							fom: innenforAnsettelsesforholdTest(requiredDate),
+							tom: innenforAnsettelsesforholdTest(Yup.date().nullable()),
+						}),
+						permitteringsprosent: Yup.number()
+							.min(1, 'Kan ikke være mindre enn ${min}')
+							.max(100, 'Kan ikke være større enn ${max}')
+							.typeError(messages.required),
+					}),
+				),
+				amelding: ifPresent(
+					'$aareg[0].amelding',
+					Yup.array().of(
+						Yup.object({
+							arbeidsforhold: Yup.array().of(
+								Yup.object({
+									ansettelsesPeriode: ansettelsesPeriode,
+									arbeidsforholdID: Yup.string().nullable(),
+									arbeidsgiver: arbeidsgiver,
+									arbeidsavtale: arbeidsavtale,
+									fartoy: fartoy,
+									antallTimerForTimeloennet: Yup.array().of(
+										Yup.object({
+											periode: Yup.object({
+												fom: requiredDate,
+												tom: requiredDate,
+											}),
+											antallTimer: Yup.number()
+												.min(1, 'Kan ikke være mindre enn ${min}')
+												.typeError(messages.required),
+										}),
+									),
+									utenlandsopphold: Yup.array().of(
+										Yup.object({
+											periode: Yup.object({
+												fom: requiredDate,
+												tom: requiredDate,
+											}),
+											land: requiredString,
+										}),
+									),
+									permisjon: Yup.array().of(
+										Yup.object({
+											permisjonsPeriode: Yup.object({
+												fom: requiredDate,
+												tom: Yup.date().nullable(),
+											}),
+											permisjonsprosent: Yup.number()
+												.min(1, 'Kan ikke være mindre enn ${min}')
+												.max(100, 'Kan ikke være større enn ${max}')
+												.typeError(messages.required),
+											permisjon: requiredString,
+										}),
+									),
+									permittering: Yup.array().of(
+										Yup.object({
+											permitteringsPeriode: Yup.object({
+												fom: requiredDate,
+												tom: Yup.date().nullable(),
+											}),
+											permitteringsprosent: Yup.number()
+												.min(1, 'Kan ikke være mindre enn ${min}')
+												.max(100, 'Kan ikke være større enn ${max}')
+												.typeError(messages.required),
+										}),
+									),
+								}),
+							),
+						}),
+					),
+				),
+				genererPeriode: ifPresent(
+					'$aareg[0].amelding[0]',
+					Yup.object({
+						fom: testDatoFom(requiredPeriode, 'tom'),
+						tom: testDatoTom(requiredPeriode, 'fom'),
+					}),
+				),
+			}),
+		),
 	),
 }

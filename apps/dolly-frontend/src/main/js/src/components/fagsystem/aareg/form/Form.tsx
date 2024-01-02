@@ -13,7 +13,7 @@ export const AaregForm = () => {
 		<Vis attributt={aaregAttributt}>
 			<Panel
 				heading="Arbeidsforhold (Aareg)"
-				hasErrors={panelError(formMethods.formState.errors, aaregAttributt)}
+				hasErrors={panelError(aaregAttributt)}
 				iconType="arbeid"
 				startOpen={erForsteEllerTest(formMethods.getValues(), [aaregAttributt])}
 			>

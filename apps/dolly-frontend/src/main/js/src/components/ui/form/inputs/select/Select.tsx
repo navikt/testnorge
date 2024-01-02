@@ -10,6 +10,11 @@ import Option from '@/components/ui/form/inputs/select/Option'
 import * as _ from 'lodash'
 import { useKodeverk } from '@/utils/hooks/useKodeverk'
 import { useController, useFormContext } from 'react-hook-form'
+import { useContext } from 'react'
+import {
+	ShowErrorContext,
+	ShowErrorContextType,
+} from '@/components/bestillingsveileder/ShowErrorContext'
 
 type SelectProps = {
 	id?: string
@@ -107,13 +112,7 @@ export const SelectMedKodeverk = ({ kodeverk, label, isLoading, ...rest }: Selec
 
 export const DollySelect = (props: SelectProps) => (
 	<InputWrapper {...props}>
-		<Label
-			containerClass="dollyselect"
-			name={props.name}
-			label={props.label}
-			feil={props.feil}
-			info={props.info}
-		>
+		<Label containerClass="dollyselect" name={props.name} label={props.label} info={props.info}>
 			{props.kodeverk ? <SelectMedKodeverk {...props} /> : <Select {...props} />}
 		</Label>
 	</InputWrapper>
@@ -121,7 +120,10 @@ export const DollySelect = (props: SelectProps) => (
 
 const P_FormikSelect = ({ feil, ...props }: SelectProps) => {
 	const { field } = useController(props)
+	const errorContext: ShowErrorContextType = useContext(ShowErrorContext)
 	const formMethods = useFormContext()
+	const touchedFields = formMethods.formState.touchedFields
+	const isTouched = _.has(touchedFields, props.name)
 	const handleChange = (selected, meta) => {
 		let value
 		if (props.isMulti) {
@@ -149,7 +151,10 @@ const P_FormikSelect = ({ feil, ...props }: SelectProps) => {
 			value={field.value}
 			onChange={handleChange}
 			onBlur={handleBlur}
-			feil={feil || formMethods.getFieldState(props.name)?.error}
+			feil={
+				(errorContext?.showError || isTouched) &&
+				(feil || formMethods.getFieldState(props.name)?.error)
+			}
 			{...props}
 		/>
 	)

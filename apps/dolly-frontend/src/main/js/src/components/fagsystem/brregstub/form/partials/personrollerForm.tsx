@@ -56,11 +56,6 @@ export const PersonrollerForm = ({ formMethods, path }) => {
 									: 'Velg...'
 							}
 							isClearable={false}
-							feil={
-								_.get(formMethods.getValues(), egenskap) === '' && {
-									feilmelding: 'Feltet er påkrevd',
-								}
-							}
 							styles={_.get(formMethods.getValues(), egenskap) ? colorStyles : null}
 						/>
 						<FormikCheckbox name={`${path}.fratraadt`} label="Har fratrådt" checkboxMargin />

@@ -92,6 +92,10 @@ export const Sikkerhetstiltak = ({ formMethods }: SikkerhetstiltakProps) => {
 				>
 					{(path: string, idx: number) => {
 						const personident = _.get(formMethods.getValues(), `${path}.kontaktperson.personident`)
+						const gyldigFraOgMed = _.get(
+							formMethods.getValues(),
+							`pdldata.person.sikkerhetstiltak[${idx}].gyldigFraOgMed`,
+						)
 						return (
 							<>
 								<DollySelect
@@ -102,17 +106,12 @@ export const Sikkerhetstiltak = ({ formMethods }: SikkerhetstiltakProps) => {
 											? Options('sikkerhetstiltakType')
 											: Options('sikkerhetstiltakType').filter(
 													(option) => option.label !== 'Opphørt',
-											  )
+												)
 									}
 									size="large"
 									onChange={(option: Option) => handleSikkerhetstiltakChange(option, idx)}
 									value={_.get(formMethods.getValues(), `${path}.tiltakstype`)}
 									isClearable={false}
-									feil={
-										_.get(formMethods.getValues(), `${path}.tiltakstype`) === '' && {
-											feilmelding: 'Feltet er påkrevd',
-										}
-									}
 								/>
 								<FormikSelect
 									options={
@@ -132,14 +131,7 @@ export const Sikkerhetstiltak = ({ formMethods }: SikkerhetstiltakProps) => {
 									options={navEnheter}
 								/>
 								<InputWarning
-									visWarning={
-										!isToday(
-											_.get(
-												formMethods.getValues(),
-												`pdldata.person.sikkerhetstiltak[${idx}].gyldigFraOgMed`,
-											),
-										)
-									}
+									visWarning={gyldigFraOgMed && !isToday(gyldigFraOgMed)}
 									warningText="TPS støtter kun sikkerhetstiltak fra gjeldende dato. Endre til dagens dato dersom et
 							gyldig sikkerhetstiltak fra TPS er ønsket."
 								>

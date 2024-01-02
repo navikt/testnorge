@@ -43,13 +43,24 @@ const InntektStub = ({ inntektPath }) => {
 
 	useEffect(() => {
 		Object.entries(fields).forEach((entry) => {
+			const fieldName = entry[0]
+			const fieldState = formMethods.getFieldState(`${inntektPath}.${fieldName}`)
+			fieldState.invalid &&
+				!fieldState.isDirty &&
+				formMethods.getValues(`${inntektPath}.${fieldName}`) !== null &&
+				formMethods.setValue(`${inntektPath}.${fieldName}`, null)
 			removeEmptyFieldsFromFormik(entry)
 		})
+		if (
+			!tilleggsinformasjonstype &&
+			formMethods.getValues(`${inntektPath}.tilleggsinformasjon`) !== undefined
+		) {
+			formMethods.setValue(`${inntektPath}.tilleggsinformasjon`, undefined)
+		}
 	}, [fields])
 
 	useEffect(() => {
 		if (!tilleggsinformasjonstype) {
-			formMethods.setValue(`${inntektPath}.tilleggsinformasjon`, undefined)
 			return
 		}
 		formMethods.setValue(`${inntektPath}.tilleggsinformasjon`, {
@@ -81,9 +92,10 @@ const InntektStub = ({ inntektPath }) => {
 		if (
 			valueArray.length === 1 &&
 			valueArray[0] === '<TOM>' &&
-			_.get(formMethods.getValues(), `${inntektPath}.${name}`)
+			formMethods.getValues(`${inntektPath}.${name}`) !== undefined
 		) {
 			formMethods.setValue(`${inntektPath}.${name}`, undefined)
+			formMethods.clearErrors(`${inntektPath}.${name}`)
 		}
 	}
 

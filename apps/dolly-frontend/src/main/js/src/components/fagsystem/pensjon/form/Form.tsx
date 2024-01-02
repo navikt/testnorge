@@ -12,6 +12,7 @@ import StyledAlert from '@/components/ui/alert/StyledAlert'
 import * as _ from 'lodash'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { UseFormReturn } from 'react-hook-form/dist/types'
+import { useFormContext } from 'react-hook-form'
 
 export const pensjonPath = 'pensjonforvalter.inntekt'
 
@@ -19,7 +20,8 @@ const hjelpetekst =
 	'Hvis nedjuster med grunnbeløp er valgt skal beløp angis som årsbeløp i dagens kroneverdi, ' +
 	'og vil nedjusteres basert på snitt grunnbeløp i inntektsåret.'
 
-export const PensjonForm = ({ formMethods }) => {
+export const PensjonForm = () => {
+	const formMethods = useFormContext()
 	const opts = useContext(BestillingsveilederContext)
 	const { nyBestilling, nyBestillingFraMal } = opts?.is
 
@@ -29,8 +31,8 @@ export const PensjonForm = ({ formMethods }) => {
 			_.has(values, 'pdldata.opprettNyPerson.foedtFoer') &&
 			_.get(values, 'pdldata.opprettNyPerson.foedtFoer') !== null
 				? curDate.getFullYear() -
-				  // @ts-ignore
-				  new Date(_.get(values, 'pdldata.opprettNyPerson.foedtFoer')).getFullYear()
+					// @ts-ignore
+					new Date(_.get(values, 'pdldata.opprettNyPerson.foedtFoer')).getFullYear()
 				: _.get(values, 'pdldata.opprettNyPerson.alder')
 		return alder && curDate.getFullYear() - alder + 17
 	}
@@ -43,7 +45,7 @@ export const PensjonForm = ({ formMethods }) => {
 		<Vis attributt={pensjonPath}>
 			<Panel
 				heading="Pensjonsgivende inntekt (POPP)"
-				hasErrors={panelError(formMethods.formState.errors, pensjonPath)}
+				hasErrors={panelError(pensjonPath)}
 				iconType="pensjon"
 				startOpen={erForsteEllerTest(formMethods.getValues(), [pensjonPath])}
 				informasjonstekst={hjelpetekst}

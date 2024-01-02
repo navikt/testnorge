@@ -20,6 +20,7 @@ export const MatrikkeladresseVelger = ({ formMethods, path }) => {
 			...initialMatrikkeladresse,
 			matrikkeladresseType: valg,
 		})
+		formMethods.trigger()
 	}
 
 	return (

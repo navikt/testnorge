@@ -57,7 +57,7 @@ export default ({ left, right, formMethods, onSubmit, onEmpty }: Props) => {
 				<Button
 					variant={'primary'}
 					onClick={() => onSubmit()}
-					disabled={Object.keys(formMethods.formState.errors).length > 0}
+					disabled={!formMethods.formState.isValid}
 				>
 					{'Søk'}
 				</Button>

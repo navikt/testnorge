@@ -33,8 +33,8 @@ export const Identer: React.FC<IdentSearchProps> = ({
 								style={{ width: '220px', marginBottom: '-10px' }}
 								onKeyDown={(event: BaseSyntheticEvent<KeyboardEvent>) => {
 									event.nativeEvent.key === 'Enter' &&
-										!Object.keys(formMethods.formState.errors).length &&
-										onSubmit()
+										formMethods.formState.isValid &&
+										formMethods.handleSubmit(onSubmit)
 								}}
 							/>
 							{fieldMethods.fields.length > 1 && (

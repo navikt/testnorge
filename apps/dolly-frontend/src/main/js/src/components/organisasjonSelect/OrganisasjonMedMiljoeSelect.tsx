@@ -40,11 +40,6 @@ export const OrganisasjonMedMiljoeSelect = ({
 				size="xlarge"
 				label={'Organisasjonsnummer'}
 				onBlur={onTextBlur}
-				feil={
-					error && {
-						feilmelding: error,
-					}
-				}
 			/>
 			<DollySelect
 				name={path}

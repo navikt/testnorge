@@ -5,8 +5,13 @@ import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import Icon from '@/components/ui/icon/Icon'
 import FormikFieldInput from '@/components/ui/form/inputs/textInput/FormikFieldInput'
 import styled from 'styled-components'
-import React from 'react'
+import React, { useContext } from 'react'
 import { useFormContext } from 'react-hook-form'
+import {
+	ShowErrorContext,
+	ShowErrorContextType,
+} from '@/components/bestillingsveileder/ShowErrorContext'
+import * as _ from 'lodash'
 
 const StyledIcon = styled(Icon)`
 	pointer-events: none;
@@ -38,10 +43,16 @@ export const TextInput = React.forwardRef(
 		},
 		ref,
 	) => {
-		const { register, getFieldState } = useFormContext()
+		const {
+			register,
+			formState: { touchedFields },
+			getFieldState,
+		} = useFormContext()
+		const errorContext: ShowErrorContextType = useContext(ShowErrorContext)
+		const isTouched = _.has(touchedFields, name)
 		const feil = getFieldState(fieldName)?.error || getFieldState(name)?.error
 		const css = cn('skjemaelement__input', className, {
-			'skjemaelement__input--harFeil': feil,
+			'skjemaelement__input--harFeil': feil && (errorContext?.showError || isTouched),
 		})
 
 		return (

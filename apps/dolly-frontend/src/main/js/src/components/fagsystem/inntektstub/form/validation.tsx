@@ -88,6 +88,7 @@ const inntektsliste = Yup.array().of(
 			inngaarIGrunnlagForTrekk: Yup.boolean().required(messages.required),
 			utloeserArbeidsgiveravgift: Yup.boolean().required(messages.required),
 			fordel: ifPresent('fordel', requiredString),
+			antall: ifPresent('$antall', requiredString),
 			beskrivelse: ifPresent('beskrivelse', requiredString),
 		},
 		[
@@ -137,26 +138,29 @@ const arbeidsforholdsliste = Yup.array().of(
 )
 
 export const validation = {
-	inntektstub: Yup.object({
-		inntektsinformasjon: Yup.array().of(
-			Yup.object({
-				sisteAarMaaned: requiredString.matches(/^\d{4}-(0[1-9]|1[012])$/, {
-					message: 'Dato må være på formatet yyyy-MM',
-					excludeEmptyString: true,
+	inntektstub: ifPresent(
+		'$inntektstub',
+		Yup.object({
+			inntektsinformasjon: Yup.array().of(
+				Yup.object({
+					sisteAarMaaned: requiredString.matches(/^\d{4}-(0[1-9]|1[012])$/, {
+						message: 'Dato må være på formatet yyyy-MM',
+						excludeEmptyString: true,
+					}),
+					antallMaaneder: Yup.number()
+						.integer('Kan ikke være et desimaltall')
+						.transform((i, j) => (j === '' ? null : i))
+						.min(1, 'Antall måneder må være et positivt tall')
+						.max(500, 'Antall måneder kan maksimalt være 500')
+						.nullable(),
+					virksomhet: unikOrgMndTest(requiredString.typeError(messages.required)).nullable(),
+					opplysningspliktig: requiredString,
+					inntektsliste: inntektsliste,
+					fradragsliste: fradragsliste,
+					forskuddstrekksliste: forskuddstrekksliste,
+					arbeidsforholdsliste: arbeidsforholdsliste,
 				}),
-				antallMaaneder: Yup.number()
-					.integer('Kan ikke være et desimaltall')
-					.transform((i, j) => (j === '' ? null : i))
-					.min(1, 'Antall måneder må være et positivt tall')
-					.max(500, 'Antall måneder kan maksimalt være 500')
-					.nullable(),
-				virksomhet: unikOrgMndTest(requiredString.typeError(messages.required)).nullable(),
-				opplysningspliktig: requiredString,
-				inntektsliste: inntektsliste,
-				fradragsliste: fradragsliste,
-				forskuddstrekksliste: forskuddstrekksliste,
-				arbeidsforholdsliste: arbeidsforholdsliste,
-			}),
-		),
-	}),
+			),
+		}),
+	),
 }

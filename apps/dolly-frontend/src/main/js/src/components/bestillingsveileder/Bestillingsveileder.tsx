@@ -7,10 +7,12 @@ import './bestillingsveileder.less'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import { ShowErrorContext } from '@/components/bestillingsveileder/ShowErrorContext'
 
 export const Bestillingsveileder = ({ error, sendBestilling }) => {
 	const location = useLocation()
 	const navigate = useNavigate()
+	const [showError, setShowError] = useState(false)
 	const [navigateRoot, setNavigateRoot] = useState(false)
 	const { gruppeId, personId } = useParams()
 	const erOrganisasjon = location?.state?.opprettOrganisasjon
@@ -43,14 +45,16 @@ export const Bestillingsveileder = ({ error, sendBestilling }) => {
 	if (error) {
 		return <AppError title="Det skjedde en feil ved bestilling" message={error.message} />
 	}
-	return renderBestillingsVeileder(options.initialValues, options, handleSubmit)
+
+	return (
+		<div className="bestillingsveileder">
+			<ErrorBoundary>
+				<ShowErrorContext.Provider value={{ showError, setShowError }}>
+					<BestillingsveilederContext.Provider value={options}>
+						<StegVelger initialValues={options.initialValues} onSubmit={handleSubmit} />
+					</BestillingsveilederContext.Provider>
+				</ShowErrorContext.Provider>
+			</ErrorBoundary>
+		</div>
+	)
 }
-const renderBestillingsVeileder = (initialValues, options, handleSubmit) => (
-	<div className="bestillingsveileder">
-		<ErrorBoundary>
-			<BestillingsveilederContext.Provider value={options}>
-				<StegVelger initialValues={initialValues} onSubmit={handleSubmit} />
-			</BestillingsveilederContext.Provider>
-		</ErrorBoundary>
-	</div>
-)

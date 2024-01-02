@@ -45,7 +45,7 @@ export const KontaktinformasjonForDoedsbo = ({ formMethods }) => {
 		<Vis attributt={doedsboAttributt}>
 			<Panel
 				heading="Kontaktinformasjon for dødsbo"
-				hasErrors={panelError(formMethods.formState.errors, doedsboAttributt)}
+				hasErrors={panelError(doedsboAttributt)}
 				iconType="doedsbo"
 				startOpen={erForsteEllerTest(formMethods.getValues(), [doedsboAttributt])}
 			>

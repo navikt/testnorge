@@ -312,10 +312,22 @@ export const FlyttPersonModal = ({ gruppeId, modalIsOpen, closeModal }: FlyttPer
 							</PersonvelgerCheckboxes>
 						)}
 						<div className="flexbox--flex-wrap" style={{ marginTop: '10px' }}>
-							<Button onClick={() => formMethods.setValue('identer', gruppeIdenterListe)}>
+							<Button
+								onClick={() => {
+									formMethods.setValue('identer', gruppeIdenterListe)
+									formMethods.trigger()
+								}}
+							>
 								VELG ALLE
 							</Button>
-							<Button onClick={() => formMethods.setValue('identer', [])}>NULLSTILL</Button>
+							<Button
+								onClick={() => {
+									formMethods.setValue('identer', [])
+									formMethods.trigger()
+								}}
+							>
+								NULLSTILL
+							</Button>
 						</div>
 						<StyledErrorMessageWithFocus name="identer" />
 					</PersonKolonne>

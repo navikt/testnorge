@@ -67,6 +67,7 @@ export const BostedsadresseForm = ({
 		} else if (_.get(boadresse, 'ukjentBosted') && _.get(boadresse, 'ukjentBosted') !== null) {
 			formMethods.setValue(`${path}.adressetype`, Adressetype.Ukjent)
 		}
+		formMethods.trigger()
 	}, [])
 
 	const valgtAdressetype = _.get(formMethods.getValues(), `${path}.adressetype`)
@@ -120,6 +121,7 @@ export const BostedsadresseForm = ({
 		}
 
 		formMethods.setValue(path, adresseClone)
+		formMethods.trigger()
 	}
 
 	const { navnInfo, loading } = useGenererNavn()

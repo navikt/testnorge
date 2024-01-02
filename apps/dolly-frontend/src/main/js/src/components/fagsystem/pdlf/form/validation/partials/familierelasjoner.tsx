@@ -156,9 +156,9 @@ const testDeltBostedAdressetype = (value: Yup.StringSchema<string, Yup.AnyObject
 }
 
 const testSivilstandsdatoBekreftelsesdato = (value) => {
-	return value.test('har-gyldig-sivilstandsdato', function harGyldigSivilstandsdato() {
+	return value.test('har-gyldig-sivilstandsdato', (value, testContext) => {
 		let feilmelding = null
-		const parent = this?.parent
+		const parent = testContext.parent
 		const master = parent?.master
 		const sivilstandsdato = parent?.sivilstandsdato
 		const bekreftelsesdato = parent?.bekreftelsesdato
@@ -167,7 +167,7 @@ const testSivilstandsdatoBekreftelsesdato = (value) => {
 			feilmelding = 'Master PDL krever at enten sivilstandsdato eller bekreftelsesdato er satt'
 		}
 
-		return feilmelding ? this?.createError({ message: feilmelding }) : true
+		return feilmelding ? testContext.createError({ message: feilmelding }) : true
 	})
 }
 

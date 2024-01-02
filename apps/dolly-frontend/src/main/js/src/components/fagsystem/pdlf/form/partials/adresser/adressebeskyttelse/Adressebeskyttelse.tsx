@@ -44,7 +44,7 @@ const getAdressebeskyttelseOptions = (identtype: string) => {
 		? Options('gradering')
 		: Options('gradering').filter(
 				(v: Target) => !['STRENGT_FORTROLIG', 'FORTROLIG'].includes(v.value),
-		  )
+			)
 }
 
 export const AdressebeskyttelseForm = ({
@@ -60,6 +60,7 @@ export const AdressebeskyttelseForm = ({
 		const selectedOption = _.get(formMethods.getValues(), `${path}.gradering`)
 		if (selectedOption && !newOptions.map((opt) => opt.value).includes(selectedOption)) {
 			formMethods.setValue(`${path}.gradering`, null)
+			formMethods.trigger()
 		}
 		setOptions(newOptions)
 	}, [identtype])
@@ -74,6 +75,7 @@ export const AdressebeskyttelseForm = ({
 			identtype !== 'NPID' && _.set(adressebeskyttelseClone, 'master', 'FREG')
 		}
 		formMethods.setValue(path, adressebeskyttelseClone)
+		formMethods.trigger()
 	}
 	return (
 		<React.Fragment key={idx}>

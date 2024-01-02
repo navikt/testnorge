@@ -16,6 +16,7 @@ import {
 import { getInitialInntekt } from '@/components/fagsystem/sigrunstubPensjonsgivende/utils'
 import * as _ from 'lodash'
 import { validation } from '@/components/fagsystem/sigrunstubPensjonsgivende/form/validation'
+import { useFormContext } from 'react-hook-form'
 
 export const getInitialSigrunstubPensjonsgivende = (kodeverk = null, skatteordning = null) => {
 	return {
@@ -28,7 +29,8 @@ export const getInitialSigrunstubPensjonsgivende = (kodeverk = null, skatteordni
 
 export const sigrunstubPensjonsgivendeAttributt = 'sigrunstubPensjonsgivende'
 
-export const SigrunstubPensjonsgivendeForm = ({ formMethods }) => {
+export const SigrunstubPensjonsgivendeForm = () => {
+	const formMethods = useFormContext()
 	const { kodeverk } = usePensjonsgivendeInntektKodeverk()
 	const { skatteordning } = usePensjonsgivendeInntektSkatteordning()
 
@@ -49,7 +51,7 @@ export const SigrunstubPensjonsgivendeForm = ({ formMethods }) => {
 		<Vis attributt={sigrunstubPensjonsgivendeAttributt}>
 			<Panel
 				heading="Pensjonsgivende inntekt (Sigrun)"
-				hasErrors={panelError(formMethods.formState.errors, sigrunstubPensjonsgivendeAttributt)}
+				hasErrors={panelError(sigrunstubPensjonsgivendeAttributt)}
 				iconType="sigrun"
 				startOpen={erForsteEllerTest(formMethods.getValues(), [sigrunstubPensjonsgivendeAttributt])}
 			>

@@ -13,21 +13,15 @@ type Props = {
 }
 
 export default ({ name, useOnChange = false, useControlled = false, ...props }: Props) => {
-	const { getFieldState, getValues } = useFormContext()
+	const { getValues } = useFormContext()
 	return (
 		<FormikField name={name}>
 			{useControlled ? (
-				<DollyTextInput
-					name={name}
-					value={_.get(getValues(), name)}
-					feil={getFieldState(name)?.error}
-					{...props}
-				/>
+				<DollyTextInput name={name} value={_.get(getValues(), name)} {...props} />
 			) : (
 				<DollyTextInput
 					defaultValue={props.defaultValue || _.get(getValues(), name)}
 					name={name}
-					feil={getFieldState(name)?.error}
 					{...props}
 				/>
 			)}

@@ -23,7 +23,7 @@ export const Adresser = ({ formMethods }: AdresserValues) => {
 		<Vis attributt={adresseAttributter}>
 			<Panel
 				heading="Adresser"
-				hasErrors={panelError(formMethods.formState.errors, adresseAttributter)}
+				hasErrors={panelError(adresseAttributter)}
 				iconType="adresse"
 				startOpen={erForsteEllerTest(formMethods.getValues(), adresseAttributter)}
 			>

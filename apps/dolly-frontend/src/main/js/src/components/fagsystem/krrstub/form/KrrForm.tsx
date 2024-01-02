@@ -9,11 +9,7 @@ import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import { SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
 import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
 import { KrrValidation } from '@/components/fagsystem/krrstub/form/KrrValidation'
-import { FieldValues, UseFormReturn } from 'react-hook-form/dist/types'
-
-type KrrstubFormProps = {
-	formMethods: UseFormReturn<FieldValues, any, undefined>
-}
+import { useFormContext } from 'react-hook-form'
 
 type Change = {
 	value: boolean
@@ -21,7 +17,8 @@ type Change = {
 
 export const krrAttributt = 'krrstub'
 
-export const KrrstubForm = ({ formMethods }: KrrstubFormProps) => {
+export const KrrstubForm = () => {
+	const formMethods = useFormContext()
 	const leverandoerer = SelectOptionsOppslag.hentKrrLeverandoerer()
 	//@ts-ignore
 	const leverandoerOptions = SelectOptionsFormat.formatOptions('sdpLeverandoer', leverandoerer)
@@ -49,7 +46,7 @@ export const KrrstubForm = ({ formMethods }: KrrstubFormProps) => {
 		<Vis attributt={krrAttributt}>
 			<Panel
 				heading="Kontakt- og reservasjonsregisteret"
-				hasErrors={panelError(formMethods.formState.errors, krrAttributt)}
+				hasErrors={panelError(krrAttributt)}
 				iconType="krr"
 				startOpen={erForsteEllerTest(formMethods.getValues(), [krrAttributt])}
 			>
@@ -61,7 +58,6 @@ export const KrrstubForm = ({ formMethods }: KrrstubFormProps) => {
 						onChange={handleRegistrertChange}
 						value={registrert}
 						isClearable={false}
-						feil={registrert === null && { feilmelding: 'Feltet er påkrevd' }}
 					/>
 					{registrert && (
 						<>

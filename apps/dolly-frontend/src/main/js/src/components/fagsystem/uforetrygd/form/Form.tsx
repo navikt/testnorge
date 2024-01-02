@@ -12,10 +12,12 @@ import { useNavEnheter } from '@/utils/hooks/useNorg2'
 import { BarnetilleggForm } from '@/components/fagsystem/uforetrygd/form/partials/BarnetilleggForm'
 import { validation } from '@/components/fagsystem/uforetrygd/form/validation'
 import { Monthpicker } from '@/components/ui/form/inputs/monthpicker/Monthpicker'
+import { useFormContext } from 'react-hook-form'
 
 const uforetrygdPath = 'pensjonforvalter.uforetrygd'
 
-export const UforetrygdForm = ({ formMethods }) => {
+export const UforetrygdForm = () => {
+	const formMethods = useFormContext()
 	const saksbehandler = _.get(formMethods.getValues(), `${uforetrygdPath}.saksbehandler`)
 	const attesterer = _.get(formMethods.getValues(), `${uforetrygdPath}.attesterer`)
 
@@ -32,7 +34,7 @@ export const UforetrygdForm = ({ formMethods }) => {
 		<Vis attributt={uforetrygdPath}>
 			<Panel
 				heading="Uføretrygd"
-				hasErrors={panelError(formMethods.formState.errors, uforetrygdPath)}
+				hasErrors={panelError(uforetrygdPath)}
 				iconType="pensjon"
 				startOpen={erForsteEllerTest(formMethods.getValues(), [uforetrygdPath])}
 			>

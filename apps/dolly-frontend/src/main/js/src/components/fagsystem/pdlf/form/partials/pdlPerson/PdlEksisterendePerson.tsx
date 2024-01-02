@@ -33,7 +33,7 @@ export const PdlEksisterendePerson = ({
 	nyIdentValg = null,
 	eksisterendeNyPerson = null,
 }: PdlEksisterendePersonValues) => {
-	const opts = useContext(BestillingsveilederContext)
+	const opts: any = useContext(BestillingsveilederContext)
 	const antall = opts?.antall || 1
 	const { gruppeId } = useParams()
 
@@ -117,8 +117,7 @@ export const PdlEksisterendePerson = ({
 		return true
 	}
 
-	const getFilteredOptionList = () => {
-		const opts = useContext(BestillingsveilederContext)
+	const getFilteredOptionList = (opts) => {
 		const eksisterendeIdent = opts?.personFoerLeggTil?.pdlforvalter?.person?.ident
 		let tmpOptions = []
 		// @ts-ignore
@@ -139,12 +138,12 @@ export const PdlEksisterendePerson = ({
 
 	useEffect(() => {
 		if (!isTestnorgeIdent && gruppeId) {
-			getFilteredOptionList()
+			getFilteredOptionList(opts)
 		}
 	}, [])
 
 	useEffect(() => {
-		getFilteredOptionList()
+		getFilteredOptionList(opts)
 	}, [formMethods.watch])
 
 	const hasNyPersonValues = nyIdentValg

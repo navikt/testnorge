@@ -26,6 +26,7 @@ export const FoedselForm = ({ formMethods, path }: FoedselTypes) => {
 		if (selected?.value !== 'NOR') {
 			formMethods.setValue(`${foedselPath}.foedekommune`, null)
 		}
+		formMethods.trigger()
 	}
 
 	const foedselsaar = _.get(formMethods.getValues(), `${path}.foedselsaar`)
@@ -57,9 +58,10 @@ export const FoedselForm = ({ formMethods, path }: FoedselTypes) => {
 					name={`${path}.foedselsaar`}
 					label="Fødselsår"
 					date={foedselsaar ? new Date(foedselsaar, 0) : null}
-					handleDateChange={(val) =>
+					handleDateChange={(val) => {
 						formMethods.setValue(`${path}.foedselsaar`, val ? new Date(val).getFullYear() : null)
-					}
+						formMethods.trigger()
+					}}
 					maxDate={new Date()}
 					minDate={minDateFoedsel}
 					// @ts-ignore

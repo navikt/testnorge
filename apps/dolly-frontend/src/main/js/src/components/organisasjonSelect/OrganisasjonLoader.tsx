@@ -76,7 +76,6 @@ export const OrganisasjonLoader = ({
 			isLoading={loading}
 			onChange={handleChange}
 			value={value}
-			feil={feil}
 			isClearable={isClearable}
 			{...props}
 		/>

@@ -16,23 +16,12 @@ import { FormikDateTimepicker } from '@/components/ui/form/inputs/timepicker/Tim
 import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { Yearpicker } from '@/components/ui/form/inputs/yearpicker/Yearpicker'
 import { testDatoFom } from '@/components/fagsystem/utils'
-import { UseFormReturn } from 'react-hook-form/dist/types'
+import { useFormContext } from 'react-hook-form'
 
 const DokumentInfoListe = React.lazy(
 	() => import('@/components/fagsystem/dokarkiv/modal/DokumentInfoListe'),
 )
 const FileUploader = React.lazy(() => import('@/utils/FileUploader/FileUploader'))
-
-interface HistarkFormProps {
-	formMethods: UseFormReturn
-}
-
-type Skjema = {
-	data: string
-	label: string
-	lowercaseLabel: string
-	value: string
-}
 
 enum Kodeverk {
 	TEMA = 'Tema',
@@ -40,7 +29,8 @@ enum Kodeverk {
 
 export const histarkAttributt = 'histark'
 
-export const HistarkForm = ({ formMethods }: HistarkFormProps) => {
+export const HistarkForm = () => {
+	const formMethods = useFormContext()
 	if (!_.has(formMethods.getValues(), histarkAttributt)) {
 		return null
 	}
@@ -77,7 +67,7 @@ export const HistarkForm = ({ formMethods }: HistarkFormProps) => {
 		<Vis attributt={histarkAttributt}>
 			<Panel
 				heading="Dokumenter (Histark)"
-				hasErrors={panelError(formMethods.formState.errors, histarkAttributt)}
+				hasErrors={panelError(histarkAttributt)}
 				iconType="dokarkiv"
 				// @ts-ignore
 				startOpen={erForsteEllerTest(formMethods.getValues(), [histarkAttributt])}
@@ -114,11 +104,6 @@ export const HistarkForm = ({ formMethods }: HistarkFormProps) => {
 										label={'NAV-enhet'}
 										size={'xlarge'}
 										options={navEnheter}
-										feil={
-											_.has(formMethods.formState.errors, `${path}.enhetsnavn`)
-												? { feilmelding: 'Velg en NAV-enhet' }
-												: null
-										}
 										isLoading={_.isEmpty(navEnheter)}
 									/>
 									<Yearpicker
@@ -164,16 +149,7 @@ export const HistarkForm = ({ formMethods }: HistarkFormProps) => {
 										size={'xsmall'}
 									/>
 									<Kategori title={'Vedlegg'}>
-										<FileUploader
-											files={files}
-											setFiles={setFiles}
-											isMultiple={false}
-											feil={
-												_.has(formMethods.formState.errors, `${path}.tittel`)
-													? { feilmelding: 'Fil er påkrevd' }
-													: null
-											}
-										/>
+										<FileUploader files={files} setFiles={setFiles} isMultiple={false} />
 										{files.length > 0 && (
 											<DokumentInfoListe
 												handleChange={handleVedleggChange}
@@ -200,7 +176,7 @@ HistarkForm.validation = {
 				Yup.object({
 					tittel: requiredString,
 					temakoder: Yup.array().required().min(1, 'Velg minst en temakode'),
-					enhetsnavn: requiredString,
+					enhetsnavn: Yup.string().required('Velg en NAV-enhet'),
 					enhetsnummer: requiredString,
 					skanner: requiredString,
 					skannested: requiredString,

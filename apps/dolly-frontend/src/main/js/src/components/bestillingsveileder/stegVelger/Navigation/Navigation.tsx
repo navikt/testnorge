@@ -12,7 +12,7 @@ import _ from 'lodash'
 
 export const Navigation = ({ step, onPrevious, isLastStep, handleSubmit }) => {
 	const showPrevious = step > 0
-	const opts = useContext(BestillingsveilederContext)
+	const opts: any = useContext(BestillingsveilederContext)
 	const importTestnorge = opts?.is?.importTestnorge
 
 	const navigate = useNavigate()
@@ -48,7 +48,7 @@ export const Navigation = ({ step, onPrevious, isLastStep, handleSubmit }) => {
 						<NavButton
 							data-cy={CypressSelector.BUTTON_TILBAKE}
 							variant={'secondary'}
-							onClick={() => onPrevious()}
+							onClick={onPrevious}
 						>
 							Tilbake
 						</NavButton>

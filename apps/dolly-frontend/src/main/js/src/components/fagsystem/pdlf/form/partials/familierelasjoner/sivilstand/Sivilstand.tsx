@@ -50,6 +50,7 @@ export const SivilstandForm = ({
 		if (selected.value === 'SAMBOER') {
 			formMethods.setValue(`${path}.bekreftelsesdato`, null)
 		}
+		formMethods.trigger()
 	}
 
 	const kanHaRelatertPerson = gyldigeSivilstander.includes(

@@ -20,7 +20,7 @@ export const Familierelasjoner = ({ formMethods }: { formMethods: UseFormReturn 
 		<Vis attributt={relasjonerAttributter}>
 			<Panel
 				heading="Familierelasjoner"
-				hasErrors={panelError(formMethods.formState.errors, relasjonerAttributter)}
+				hasErrors={panelError(relasjonerAttributter)}
 				iconType={'relasjoner'}
 				startOpen={erForsteEllerTest(formMethods.getValues(), relasjonerAttributter)}
 				checkAttributeArray={undefined}

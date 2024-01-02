@@ -58,7 +58,7 @@ export const TimePicker = ({
 
 export const DollyTimepicker = (props) => (
 	<InputWrapper {...props}>
-		<Label name={props.name} label={props.label} feil={props.feil}>
+		<Label name={props.name} label={props.label}>
 			<TimePicker {...props} />
 		</Label>
 	</InputWrapper>
@@ -77,13 +77,7 @@ const P_FormikTimepicker = ({ ...props }) => {
 	const handleBlur = () => props?.onBlur?.(SyntEvent(props.name, value))
 	return (
 		<FormikField name={props.name}>
-			<DollyTimepicker
-				value={value}
-				onChange={handleChange}
-				onBlur={handleBlur}
-				feil={formMethods.getFieldState(props.name)?.error}
-				{...props}
-			/>
+			<DollyTimepicker value={value} onChange={handleChange} onBlur={handleBlur} {...props} />
 		</FormikField>
 	)
 }

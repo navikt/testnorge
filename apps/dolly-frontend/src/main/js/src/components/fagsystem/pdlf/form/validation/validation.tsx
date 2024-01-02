@@ -99,62 +99,69 @@ export const folkeregisterpersonstatus = Yup.object({
 })
 
 export const validation = {
-	pdldata: Yup.object({
-		opprettNyPerson: Yup.object({
-			alder: testGyldigAlder(Yup.string().nullable()),
-			foedtEtter: testDatoFom(Yup.date().nullable(), 'foedtFoer', 'Dato må være før født før-dato'),
-			foedtFoer: testDatoTom(
-				Yup.date().nullable(),
-				'foedtEtter',
-				'Dato må være etter født etter-dato',
-			),
-		}).nullable(),
-		person: Yup.object({
-			bostedsadresse: ifPresent('$pdldata.person.bostedsadresse', Yup.array().of(bostedsadresse)),
-			oppholdsadresse: ifPresent(
-				'$pdldata.person.oppholdsadresse',
-				Yup.array().of(oppholdsadresse),
-			),
-			kontaktadresse: ifPresent('$pdldata.person.kontaktadresse', Yup.array().of(kontaktadresse)),
-			adressebeskyttelse: ifPresent(
-				'$pdldata.person.adressebeskyttelse',
-				Yup.array().of(adressebeskyttelse),
-			),
-			fullmakt: ifPresent('$pdldata.person.fullmakt', Yup.array().of(fullmakt)),
-			sikkerhetstiltak: ifPresent('$pdldata.person.sikkerhetstiltak', sikkerhetstiltak),
-			tilrettelagtKommunikasjon: ifPresent(
-				'$pdldata.person.tilrettelagtKommunikasjon',
-				tilrettelagtKommunikasjon,
-			),
-			falskIdentitet: ifPresent('$pdldata.person.falskIdentitet', falskIdentitet),
-			telefonnummer: ifPresent('$pdldata.person.telefonnummer', Yup.array().of(telefonnummer)),
-			statsborgerskap: ifPresent(
-				'$pdldata.person.statsborgerskap',
-				Yup.array().of(statsborgerskap),
-			),
-			doedsfall: ifPresent('$pdldata.person.doedsfall', Yup.array().of(doedsfall)),
-			doedfoedtBarn: ifPresent('$pdldata.person.doedfoedtBarn', Yup.array().of(doedfoedtBarn)),
-			innflytting: ifPresent('$pdldata.person.innflytting', Yup.array().of(innflytting)),
-			utflytting: ifPresent('$pdldata.person.utflytting', Yup.array().of(utflytting)),
-			utenlandskIdentifikasjonsnummer: ifPresent(
-				'$pdldata.person.utenlandskIdentifikasjonsnummer',
-				Yup.array().of(utenlandskId),
-			),
-			kontaktinformasjonForDoedsbo: ifPresent(
-				'$pdldata.person.kontaktinformasjonForDoedsbo',
-				Yup.array().of(kontaktDoedsbo),
-			),
-			forelderBarnRelasjon: ifPresent(
-				'$pdldata.person.forelderBarnRelasjon',
-				Yup.array().of(forelderBarnRelasjon),
-			),
-			sivilstand: ifPresent('$pdldata.person.sivilstand', Yup.array().of(sivilstand)),
-			kjoenn: ifPresent('$pdldata.person.kjoenn', Yup.array().of(kjoenn)),
-			navn: ifPresent('$pdldata.person.navn', Yup.array().of(navn)),
-			vergemaal: ifPresent('$pdldata.person.vergemaal', Yup.array().of(vergemaal)),
-			foreldreansvar: ifPresent('$pdldata.person.foreldreansvar', Yup.array().of(foreldreansvar)),
-		}).nullable(),
-	}),
+	pdldata: ifPresent(
+		'$pdldata',
+		Yup.object({
+			opprettNyPerson: Yup.object({
+				alder: testGyldigAlder(Yup.string().nullable()),
+				foedtEtter: testDatoFom(
+					Yup.date().nullable(),
+					'foedtFoer',
+					'Dato må være før født før-dato',
+				),
+				foedtFoer: testDatoTom(
+					Yup.date().nullable(),
+					'foedtEtter',
+					'Dato må være etter født etter-dato',
+				),
+			}).nullable(),
+			person: Yup.object({
+				bostedsadresse: ifPresent('$pdldata.person.bostedsadresse', Yup.array().of(bostedsadresse)),
+				oppholdsadresse: ifPresent(
+					'$pdldata.person.oppholdsadresse',
+					Yup.array().of(oppholdsadresse),
+				),
+				kontaktadresse: ifPresent('$pdldata.person.kontaktadresse', Yup.array().of(kontaktadresse)),
+				adressebeskyttelse: ifPresent(
+					'$pdldata.person.adressebeskyttelse',
+					Yup.array().of(adressebeskyttelse),
+				),
+				fullmakt: ifPresent('$pdldata.person.fullmakt', Yup.array().of(fullmakt)),
+				sikkerhetstiltak: ifPresent('$pdldata.person.sikkerhetstiltak', sikkerhetstiltak),
+				tilrettelagtKommunikasjon: ifPresent(
+					'$pdldata.person.tilrettelagtKommunikasjon',
+					tilrettelagtKommunikasjon,
+				),
+				falskIdentitet: ifPresent('$pdldata.person.falskIdentitet', falskIdentitet),
+				telefonnummer: ifPresent('$pdldata.person.telefonnummer', Yup.array().of(telefonnummer)),
+				statsborgerskap: ifPresent(
+					'$pdldata.person.statsborgerskap',
+					Yup.array().of(statsborgerskap),
+				),
+				doedsfall: ifPresent('$pdldata.person.doedsfall', Yup.array().of(doedsfall)),
+				doedfoedtBarn: ifPresent('$pdldata.person.doedfoedtBarn', Yup.array().of(doedfoedtBarn)),
+				innflytting: ifPresent('$pdldata.person.innflytting', Yup.array().of(innflytting)),
+				utflytting: ifPresent('$pdldata.person.utflytting', Yup.array().of(utflytting)),
+				utenlandskIdentifikasjonsnummer: ifPresent(
+					'$pdldata.person.utenlandskIdentifikasjonsnummer',
+					Yup.array().of(utenlandskId),
+				),
+				kontaktinformasjonForDoedsbo: ifPresent(
+					'$pdldata.person.kontaktinformasjonForDoedsbo',
+					Yup.array().of(kontaktDoedsbo),
+				),
+				forelderBarnRelasjon: ifPresent(
+					'$pdldata.person.forelderBarnRelasjon',
+					Yup.array().of(forelderBarnRelasjon),
+				),
+				sivilstand: ifPresent('$pdldata.person.sivilstand', Yup.array().of(sivilstand)),
+				kjoenn: ifPresent('$pdldata.person.kjoenn', Yup.array().of(kjoenn)),
+				navn: ifPresent('$pdldata.person.navn', Yup.array().of(navn)),
+				vergemaal: ifPresent('$pdldata.person.vergemaal', Yup.array().of(vergemaal)),
+				foreldreansvar: ifPresent('$pdldata.person.foreldreansvar', Yup.array().of(foreldreansvar)),
+			}).nullable(),
+		}),
+	),
 	...tpsMessagingValidation,
 	...bankkontoValidation,
 }

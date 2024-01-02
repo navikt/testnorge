@@ -71,6 +71,7 @@ export const OppholdsadresseForm = ({
 		) {
 			formMethods.setValue(`${path}.adressetype`, Adressetype.Annet)
 		}
+		formMethods.trigger()
 	}, [])
 
 	const valgtAdressetype = _.get(formMethods.getValues(), `${path}.adressetype`)
@@ -117,6 +118,7 @@ export const OppholdsadresseForm = ({
 		}
 
 		formMethods.setValue(path, adresseClone)
+		formMethods.trigger()
 	}
 
 	const adressetypeOptions = Options('adressetypeOppholdsadresse')?.filter((option) =>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import * as yup from 'yup'
+import * as Yup from 'yup'
 import { useToggle } from 'react-use'
 import { NavLink } from 'react-router-dom'
 import Button from '@/components/ui/button/Button'
@@ -35,14 +35,13 @@ const InputDiv = styled.div`
 	margin-top: 10px;
 `
 
-const validationSchema = yup.object({
-	antall: yup
-		.number()
+const validationSchema = Yup.object({
+	antall: Yup.number()
 		.positive('Må være et positivt tall')
 		.min(1, 'Må minst opprette ${min} person')
 		.max(50, 'Kan kun bestille max 50 identer om gangen.')
 		.required('Oppgi antall personer'),
-	identtype: yup.string().required('Velg en identtype'),
+	identtype: Yup.string().required('Velg en identtype'),
 })
 
 export const NyIdent = ({ brukernavn, onAvbryt, onSubmit }: NyBestillingProps) => {

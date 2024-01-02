@@ -4,20 +4,24 @@ import Panel from '@/components/ui/panel/Panel'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
 import { InntektsaarForm } from './partials/inntektsaarForm'
 import { ifPresent, requiredDate } from '@/utils/YupValidations'
+import { useFormContext } from 'react-hook-form'
 
 export const sigrunAttributt = 'sigrunstub'
-export const SigrunstubForm = ({ formMethods }) => (
-	<Vis attributt={sigrunAttributt}>
-		<Panel
-			heading="Lignet inntekt (Sigrun)"
-			hasErrors={panelError(formMethods.formState.errors, sigrunAttributt)}
-			iconType="sigrun"
-			startOpen={erForsteEllerTest(formMethods.getValues(), [sigrunAttributt])}
-		>
-			<InntektsaarForm formMethods={formMethods} />
-		</Panel>
-	</Vis>
-)
+export const SigrunstubForm = () => {
+	const formMethods = useFormContext()
+	return (
+		<Vis attributt={sigrunAttributt}>
+			<Panel
+				heading="Lignet inntekt (Sigrun)"
+				hasErrors={panelError(sigrunAttributt)}
+				iconType="sigrun"
+				startOpen={erForsteEllerTest(formMethods.getValues(), [sigrunAttributt])}
+			>
+				<InntektsaarForm formMethods={formMethods} />
+			</Panel>
+		</Vis>
+	)
+}
 
 SigrunstubForm.validation = {
 	sigrunstub: ifPresent(

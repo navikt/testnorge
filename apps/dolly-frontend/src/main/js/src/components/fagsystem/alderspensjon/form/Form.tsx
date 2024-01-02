@@ -21,6 +21,7 @@ import {
 	genInitialAlderspensjonSoknad,
 	genInitialAlderspensjonVedtak,
 } from '@/components/fagsystem/alderspensjon/form/initialValues'
+import { useFormContext } from 'react-hook-form'
 
 const StyledAlert = styled(Alert)`
 	margin-bottom: 20px;
@@ -34,7 +35,8 @@ const StyledAlert = styled(Alert)`
 
 const alderspensjonPath = 'pensjonforvalter.alderspensjon'
 
-export const AlderspensjonForm = ({ formMethods }) => {
+export const AlderspensjonForm = () => {
+	const formMethods = useFormContext()
 	const { navEnheter } = useNavEnheter()
 
 	const saksbehandler = formMethods.watch(`${alderspensjonPath}.saksbehandler`)
@@ -93,7 +95,7 @@ export const AlderspensjonForm = ({ formMethods }) => {
 		if (foedsel) {
 			const foedselsaar =
 				foedsel[foedsel.length - 1]?.foedselsaar ||
-				getYear(parseISO(foedsel[foedsel.length - 1]?.foedselsdato))
+				getYear(foedsel[foedsel.length - 1]?.foedselsdato)
 			if (foedselsaar < 1944) {
 				ugyldigFoedselsaar = true
 			} else if (foedselsaar >= 1944) {
@@ -142,7 +144,7 @@ export const AlderspensjonForm = ({ formMethods }) => {
 			adresseUtenTilDato ||
 			_get(formMethods.getValues(), 'pdldata.person.bostedsadresse')?.reduce((prev, curr) => {
 				if (!prev.gyldigTilOgMed || !curr.gyldigTilOgMed) return null
-				return isAfter(prev.gyldigTilOgMed, curr.gyldigTilOgMed) ? prev : curr
+				return isAfter(parseISO(prev.gyldigTilOgMed), parseISO(curr.gyldigTilOgMed)) ? prev : curr
 			})
 		return !gjeldendeAdresse || !gjeldendeAdresse?.adressetype
 			? null
@@ -180,7 +182,7 @@ export const AlderspensjonForm = ({ formMethods }) => {
 		<Vis attributt={alderspensjonPath}>
 			<Panel
 				heading="Alderspensjon"
-				hasErrors={panelError(formMethods.formState.errors, alderspensjonPath)}
+				hasErrors={panelError(alderspensjonPath)}
 				iconType="pensjon"
 				startOpen={erForsteEllerTest(formMethods.getValues(), [alderspensjonPath])}
 			>

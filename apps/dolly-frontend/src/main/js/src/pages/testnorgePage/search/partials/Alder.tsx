@@ -21,10 +21,9 @@ export const Alder = ({ formMethods }: Props) => (
 			label="Alder fra"
 			visHvisAvhuket={false}
 			size="medium"
-			useControlled
 			onKeyPress={(event: BaseSyntheticEvent<KeyboardEvent>) => {
 				event.nativeEvent.code === 'Enter' &&
-					!Object.keys(formMethods.formState.errors).length &&
+					formMethods.formState.isValid &&
 					formMethods.handleSubmit()
 			}}
 		/>
@@ -33,10 +32,9 @@ export const Alder = ({ formMethods }: Props) => (
 			label="Alder til"
 			visHvisAvhuket={false}
 			size="medium"
-			useControlled
 			onKeyPress={(event: BaseSyntheticEvent<KeyboardEvent>) => {
 				event.nativeEvent.code === 'Enter' &&
-					!Object.keys(formMethods.formState.errors).length &&
+					formMethods.formState.isValid &&
 					formMethods.handleSubmit()
 			}}
 		/>

@@ -13,11 +13,9 @@ export const stateModifierFns = (formMethods: UseFormReturn) => {
 	const del = (path) => {
 		if (isArray(path)) {
 			path.forEach((p) => {
-				formMethods.setValue(p, undefined)
 				formMethods.resetField(p)
 			})
 		} else {
-			formMethods.setValue(path, undefined)
 			formMethods.resetField(path)
 		}
 		let newObj = _.omit(formMethods.getValues(), path)

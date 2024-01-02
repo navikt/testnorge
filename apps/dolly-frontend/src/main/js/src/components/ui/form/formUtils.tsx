@@ -3,9 +3,9 @@ import { runningCypressE2E } from '@/service/services/Request'
 import { isDate } from 'date-fns'
 import { useFormContext } from 'react-hook-form'
 
-export const panelError = (errors, attributtPath) => {
+export const panelError = (attributtPath) => {
 	const {
-		formState: { errors: panelErrors },
+		formState: { errors },
 	} = useFormContext()
 	// Ignore if values ikke er satt
 	if (_.isNil(attributtPath)) return false

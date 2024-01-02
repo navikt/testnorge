@@ -1,5 +1,4 @@
 import React, { Suspense, useContext, useEffect } from 'react'
-import * as Yup from 'yup'
 import { harAvhukedeAttributter } from '@/components/bestillingsveileder/utils'
 import { MiljoVelger } from '@/components/miljoVelger/MiljoVelger'
 import { MalForm } from './MalForm'
@@ -139,7 +138,3 @@ export const Steg3 = () => {
 }
 
 Steg3.label = 'Oppsummering'
-
-Steg3.validation = Yup.object(
-	Object.assign({}, MiljoVelger.validation, MalForm.validation, VelgGruppe.validation),
-)

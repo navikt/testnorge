@@ -1,5 +1,5 @@
 import * as Yup from 'yup'
-import { requiredDate, requiredString } from '@/utils/YupValidations'
+import { ifPresent, requiredDate, requiredString } from '@/utils/YupValidations'
 
 const datoOverlapperIkkeAndreOppholdTest = (oppholdValidation, validerStart) => {
 	const errorMsgAge =
@@ -48,11 +48,14 @@ const datoOverlapperIkkeAndreOppholdTest = (oppholdValidation, validerStart) => 
 }
 
 export const validation = {
-	instdata: Yup.array().of(
-		Yup.object({
-			institusjonstype: requiredString,
-			startdato: datoOverlapperIkkeAndreOppholdTest(requiredDate, true),
-			sluttdato: datoOverlapperIkkeAndreOppholdTest(Yup.string().nullable(), false),
-		}),
+	instdata: ifPresent(
+		'$instdata',
+		Yup.array().of(
+			Yup.object({
+				institusjonstype: requiredString,
+				startdato: datoOverlapperIkkeAndreOppholdTest(requiredDate, true),
+				sluttdato: datoOverlapperIkkeAndreOppholdTest(Yup.string().nullable(), false),
+			}),
+		),
 	),
 }

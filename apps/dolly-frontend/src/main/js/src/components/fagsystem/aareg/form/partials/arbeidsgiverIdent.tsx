@@ -26,12 +26,8 @@ export const ArbeidsgiverIdent = ({ path, isDisabled }: ArbeidsgiverIdentProps) 
 
 		const personnr = event.target.value
 
-		// TODO: move to frontend validation
 		if (personnr.match(/^\d{11}$/) != null) {
 			handleManualPersonnrChange(personnr)
-		} else {
-			setError('Ident må være et tall med 11 siffer')
-			formMethods.setValue(`${path}`, '')
 		}
 	}
 
@@ -66,11 +62,6 @@ export const ArbeidsgiverIdent = ({ path, isDisabled }: ArbeidsgiverIdentProps) 
 				label={'Arbeidsgiver ident'}
 				onBlur={handleChange}
 				isDisabled={loading || isDisabled}
-				feil={
-					error && {
-						feilmelding: error,
-					}
-				}
 			/>
 			{success && (
 				<div className="flexbox" style={{ marginTop: '-5px' }}>
@@ -79,6 +70,7 @@ export const ArbeidsgiverIdent = ({ path, isDisabled }: ArbeidsgiverIdentProps) 
 				</div>
 			)}
 			{loading && <Loading label="Sjekker arbeidsgiver ident." />}
+			{error && <div className="skjemaelement__feilmelding">{error}</div>}
 		</div>
 	)
 }

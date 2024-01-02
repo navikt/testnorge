@@ -11,7 +11,7 @@ import { MalOppsummering } from '@/components/bestillingsveileder/stegVelger/ste
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const MalFormOrganisasjon = ({
 	brukerId,
-	formMethods: { setValue },
+	formMethods: { trigger, setValue },
 	opprettetFraMal,
 }: MalerFormProps) => {
 	const [typeMal, setTypeMal] = useState(MalTyper.OPPRETT)
@@ -29,11 +29,13 @@ export const MalFormOrganisasjon = ({
 		} else if (value === MalTyper.ENDRE) {
 			setValue('malBestillingNavn', opprettetFraMal || '')
 		}
+		trigger()
 	}
 
 	const handleCheckboxChange = (value: BaseSyntheticEvent) => {
 		setValue('malBestillingNavn', value.target?.checked ? '' : undefined)
 		setOpprettMal(value.target?.checked)
+		trigger()
 	}
 
 	return (

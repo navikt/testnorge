@@ -35,7 +35,7 @@ import { DeltBostedForm } from '@/components/fagsystem/pdlf/form/partials/famili
 import { DoedfoedtBarnForm } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/doedfoedtBarn/DoedfoedtBarn'
 import { UtenlandsIdForm } from '@/components/fagsystem/pdlf/form/partials/identifikasjon/utenlandsId/UtenlandsId'
 import { UseFormReturn } from 'react-hook-form/dist/types'
-import { Form, useForm } from 'react-hook-form'
+import { Form, FormProvider, useForm } from 'react-hook-form'
 import { visningRedigerbarValidation } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarValidation'
 import { yupResolver } from '@hookform/resolvers/yup'
 
@@ -125,7 +125,7 @@ export const VisningRedigerbar = ({
 	const [errorMessagePdl, setErrorMessagePdl] = useState(null)
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 	const formMethods = useForm({
-		mode: 'onBlur',
+		mode: 'onChange',
 		defaultValues: redigertAttributt ? redigertAttributt : initialValues,
 		resolver: yupResolver(visningRedigerbarValidation),
 	})
@@ -326,80 +326,82 @@ export const VisningRedigerbar = ({
 
 	return (
 		<>
-			<RedigerLoading visningModus={visningModus} />
-			{visningModus === Modus.Les && (
-				<>
-					{dataVisning}
-					<EditDeleteKnapper>
-						<Button kind="edit" onClick={() => setVisningModus(Modus.Skriv)} title="Endre" />
-						<Button
-							kind="trashcan"
-							fontSize={'1.4rem'}
-							onClick={() => openModal()}
-							title="Slett"
-							disabled={disableSlett}
-						/>
-						<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="40%" overflow="auto">
-							<div className="slettModal">
-								<div className="slettModal slettModal-content">
-									<Icon size={50} kind="report-problem-circle" />
-									<h1>Sletting</h1>
-									<h4>Er du sikker på at du vil slette denne opplysningen fra personen?</h4>
+			<FormProvider {...formMethods}>
+				<RedigerLoading visningModus={visningModus} />
+				{visningModus === Modus.Les && (
+					<>
+						{dataVisning}
+						<EditDeleteKnapper>
+							<Button kind="edit" onClick={() => setVisningModus(Modus.Skriv)} title="Endre" />
+							<Button
+								kind="trashcan"
+								fontSize={'1.4rem'}
+								onClick={() => openModal()}
+								title="Slett"
+								disabled={disableSlett}
+							/>
+							<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="40%" overflow="auto">
+								<div className="slettModal">
+									<div className="slettModal slettModal-content">
+										<Icon size={50} kind="report-problem-circle" />
+										<h1>Sletting</h1>
+										<h4>Er du sikker på at du vil slette denne opplysningen fra personen?</h4>
+									</div>
+									<div className="slettModal-actions">
+										<NavButton onClick={closeModal} variant="secondary">
+											Nei
+										</NavButton>
+										<NavButton
+											onClick={() => {
+												closeModal()
+												return relatertPersonInfo ? handleDeleteRelatertPerson() : handleDelete()
+											}}
+											variant="primary"
+										>
+											Ja, jeg er sikker
+										</NavButton>
+									</div>
 								</div>
-								<div className="slettModal-actions">
-									<NavButton onClick={closeModal} variant="secondary">
-										Nei
+							</DollyModal>
+						</EditDeleteKnapper>
+						<div className="flexbox--full-width">
+							{errorMessagePdlf && <div className="error-message">{errorMessagePdlf}</div>}
+							{errorMessagePdl && <div className="error-message">{errorMessagePdl}</div>}
+						</div>
+					</>
+				)}
+				{visningModus === Modus.Skriv && (
+					<Form
+						onSubmit={(data) =>
+							relatertPersonInfo?.ident
+								? handleSubmitRelatertPerson(data, relatertPersonInfo.ident)
+								: handleSubmit(data)
+						}
+					>
+						<>
+							<FieldArrayEdit>
+								<div className="flexbox--flex-wrap">{getForm(formMethods)}</div>
+								<Knappegruppe>
+									<NavButton
+										variant="secondary"
+										onClick={() => setVisningModus(Modus.Les)}
+										disabled={formMethods.formState.isSubmitting}
+									>
+										Avbryt
 									</NavButton>
 									<NavButton
-										onClick={() => {
-											closeModal()
-											return relatertPersonInfo ? handleDeleteRelatertPerson() : handleDelete()
-										}}
 										variant="primary"
+										onClick={() => formMethods.handleSubmit()}
+										disabled={formMethods.formState.isSubmitting}
 									>
-										Ja, jeg er sikker
+										Endre
 									</NavButton>
-								</div>
-							</div>
-						</DollyModal>
-					</EditDeleteKnapper>
-					<div className="flexbox--full-width">
-						{errorMessagePdlf && <div className="error-message">{errorMessagePdlf}</div>}
-						{errorMessagePdl && <div className="error-message">{errorMessagePdl}</div>}
-					</div>
-				</>
-			)}
-			{visningModus === Modus.Skriv && (
-				<Form
-					onSubmit={(data) =>
-						relatertPersonInfo?.ident
-							? handleSubmitRelatertPerson(data, relatertPersonInfo.ident)
-							: handleSubmit(data)
-					}
-				>
-					<>
-						<FieldArrayEdit>
-							<div className="flexbox--flex-wrap">{getForm(formMethods)}</div>
-							<Knappegruppe>
-								<NavButton
-									variant="secondary"
-									onClick={() => setVisningModus(Modus.Les)}
-									disabled={formMethods.formState.isSubmitting}
-								>
-									Avbryt
-								</NavButton>
-								<NavButton
-									variant="primary"
-									onClick={() => formMethods.handleSubmit()}
-									disabled={formMethods.formState.isSubmitting}
-								>
-									Endre
-								</NavButton>
-							</Knappegruppe>
-						</FieldArrayEdit>
-					</>
-				</Form>
-			)}
+								</Knappegruppe>
+							</FieldArrayEdit>
+						</>
+					</Form>
+				)}
+			</FormProvider>
 		</>
 	)
 }

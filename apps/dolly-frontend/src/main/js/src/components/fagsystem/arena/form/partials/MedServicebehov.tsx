@@ -23,7 +23,7 @@ const getFeilmelding = (formMethods) => {
 	let har25Feil = false
 	let har67Feil = false
 	for (let path of errorPaths) {
-		const feil = _.get(formMethods.formState.errors, path)
+		const feil = _.get(formMethods.formState.errors, path)?.message
 		if (feil && !har25Feil && feil.includes('25')) {
 			har25Feil = true
 			melding += feilmelding25

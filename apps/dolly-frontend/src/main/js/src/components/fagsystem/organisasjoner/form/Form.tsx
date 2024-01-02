@@ -17,7 +17,7 @@ export const OrganisasjonForm = () => {
 			<Vis attributt={detaljerPaths}>
 				<Panel
 					heading="Detaljer"
-					hasErrors={panelError(formMethods.formState.errors, detaljerPaths)}
+					hasErrors={panelError('organisasjon')}
 					iconType={'personinformasjon'}
 					startOpen={erForsteEllerTest(formMethods.getValues(), detaljerPaths)}
 				>

@@ -81,7 +81,7 @@ export const Personinformasjon = ({ formMethods }) => {
 		<Vis attributt={panelPaths}>
 			<Panel
 				heading="Personinformasjon"
-				hasErrors={panelError(formMethods.formState.errors, panelPaths)}
+				hasErrors={panelError(panelPaths)}
 				iconType={'personinformasjon'}
 				startOpen={erForsteEllerTest(formMethods.getValues(), panelPaths)}
 			>
