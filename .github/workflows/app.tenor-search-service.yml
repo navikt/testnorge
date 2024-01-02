@@ -7,15 +7,15 @@ on:
       - libs/reactive-core
       - libs/reactive-security
       - libs/security-core
-      - apps/tenor-search-service-service/**
+      - apps/tenor-search-service/**
       - .github/workflows/app.tenor-search-service.yml
 
 jobs:
   workflow:
     uses: ./.github/workflows/common.workflow.backend.yml
     with:
-      working-directory: "apps/tenor-search-service-service"
-      deploy-tag: "#deploy-tenor-search-service-service"
+      working-directory: "apps/tenor-search-service"
+      deploy-tag: "#deploy-tenor-search-service"
     permissions:
       contents: read
       id-token: write

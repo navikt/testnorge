@@ -1,8 +1,6 @@
-ACCEPTED_AUDIENCE: dev-gcp:dolly:testnav-person-tilgang-service-dev
-ALTINN_URL: https://tt02.altinn.no
+ACCEPTED_AUDIENCE: dev-gcp:dolly:testnav-tenor-search-service
 
 TOKENDINGS_URL: dummy
-ALTINN_API_KEY: dummy
 
 MASKINPORTEN_CLIENT_ID: dummy
 MASKINPORTEN_CLIENT_JWK: dummy
