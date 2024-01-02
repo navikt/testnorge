@@ -2,7 +2,6 @@ package no.nav.pdl.forvalter.consumer.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.pdl.forvalter.utils.Kor2024KommuneEndringer;
 import no.nav.pdl.forvalter.utils.WebClientFilter;
 import no.nav.testnav.libs.dto.adresseservice.v1.MatrikkeladresseDTO;
 import org.springframework.http.HttpHeaders;
@@ -16,7 +15,6 @@ import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -69,13 +67,6 @@ public class MatrikkeladresseServiceCommand implements Callable<Mono<Matrikkelad
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToMono(MatrikkeladresseDTO[].class)
-                .doOnNext(matrikkeladresser -> Arrays.stream(matrikkeladresser)
-                        .forEach(matrikkeladresse -> {
-                            matrikkeladresse.setKommunenummer(isNotBlank(query.getKommunenummer()) ?
-                                    query.getKommunenummer() : matrikkeladresse.getKommunenummer());
-                            matrikkeladresse.setMatrikkelId(Kor2024KommuneEndringer.isGmlKommune(query, matrikkeladresse) ?
-                                    matrikkeladresse.getMatrikkelId() : null);
-                        }))
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException))
                 .onErrorResume(throwable -> throwable instanceof WebClientResponseException.NotFound ||
@@ -88,13 +79,10 @@ public class MatrikkeladresseServiceCommand implements Callable<Mono<Matrikkelad
         return new LinkedMultiValueMap<>(
                 new LinkedHashMap<>(
                         Map.of("matrikkelId", filterArtifact(matrikkelId),
-                                        "kommunenummer", filterArtifact(isNotBlank(query.getKommunenummer()) ?
-                                                Kor2024KommuneEndringer.getKommuneNummer(query.getKommunenummer()) : null),
+                                        "kommunenummer", filterArtifact(query.getKommunenummer()),
                                         "gaardsnummer", filterArtifact(nullcheck(query.getGaardsnummer())),
                                         "bruksnummer", filterArtifact(nullcheck(query.getBruksnummer())),
-                                        "postnummer", filterArtifact(isNotBlank(query.getKommunenummer()) ?
-                                                Kor2024KommuneEndringer.getRandomPostnummer(query.getKommunenummer()) :
-                                                query.getPostnummer()),
+                                        "postnummer", filterArtifact(query.getPostnummer()),
                                         "tilleggsnavn", filterArtifact(query.getTilleggsnavn()))
                                 .entrySet().stream()
                                 .filter(entry -> isNotBlank(entry.getValue()))
