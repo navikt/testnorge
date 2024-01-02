@@ -1,0 +1,48 @@
+
+spring:
+  application:
+    version: 1
+    name: testnav-tenor-search-service
+    desciption: Tjeneste som formidler søk til Tenor testdata hos Skatteetaten
+  security:
+    oauth2:
+      resourceserver:
+        tokenx:
+          issuer-uri: ${TOKENDINGS_URL}
+          jwk-set-uri: ${TOKENDINGS_URL}/jwks
+          accepted-audience: ${ACCEPTED_AUDIENCE}
+  jackson:
+    serialization:
+      write_dates_as_timestamps: false
+  cloud:
+    vault:
+      enabled: false
+
+springdoc:
+  swagger-ui:
+    disable-swagger-default-url: true
+    url: /v3/api-docs
+
+management:
+  endpoints:
+    enabled-by-default: true
+    web:
+      base-path: /internal
+      exposure.include: prometheus,heapdump,health
+      path-mapping:
+        prometheus: metrics
+  endpoint:
+    prometheus.enabled: true
+    heapdump.enabled: true
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
+
+consumers:
+  tenor-search-service:
+    url: https://testdata.api.skatteetaten.no
