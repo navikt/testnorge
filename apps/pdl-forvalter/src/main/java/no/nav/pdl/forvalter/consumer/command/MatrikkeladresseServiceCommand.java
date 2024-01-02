@@ -92,9 +92,7 @@ public class MatrikkeladresseServiceCommand implements Callable<Mono<Matrikkelad
                                                 Kor2024KommuneEndringer.getKommuneNummer(query.getKommunenummer()) : null),
                                         "gaardsnummer", filterArtifact(nullcheck(query.getGaardsnummer())),
                                         "bruksnummer", filterArtifact(nullcheck(query.getBruksnummer())),
-                                        "postnummer", filterArtifact(isNotBlank(query.getKommunenummer()) ?
-                                                Kor2024KommuneEndringer.getRandomPostnummer(query.getKommunenummer()) :
-                                                query.getPostnummer()),
+                                        "postnummer", filterArtifact(query.getPostnummer()),
                                         "tilleggsnavn", filterArtifact(query.getTilleggsnavn()))
                                 .entrySet().stream()
                                 .filter(entry -> isNotBlank(entry.getValue()))
