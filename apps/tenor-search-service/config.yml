@@ -15,6 +15,11 @@ spec:
       tenant: nav.no
   tokenx:
     enabled: true
+  maskinporten:
+    enabled: true
+    scope:
+      consumes:
+        - name: skatteetaten:tjenestepensjonsavtale
   accessPolicy:
     inbound:
       rules:
