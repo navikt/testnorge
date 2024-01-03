@@ -14,11 +14,10 @@ public class MaskinportenConfig {
     public MaskinportenConfig(
             @Value("${MASKINPORTEN_CLIENT_ID}") String clientId,
             @Value("${MASKINPORTEN_CLIENT_JWK}") String jwkPrivate,
-            @Value("${MASKINPORTEN_SCOPES}") String scope,
             @Value("${MASKINPORTEN_WELL_KNOWN_URL}") String wellKnownUrl
     ) {
         this.clientId = clientId;
-        this.scope = scope;
+        this.scope = "skatteetaten:tjenestepensjonsavtale";
         this.jwkPrivate = jwkPrivate;
         this.wellKnownUrl = wellKnownUrl;
     }
