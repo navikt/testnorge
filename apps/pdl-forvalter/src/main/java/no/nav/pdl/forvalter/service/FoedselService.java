@@ -46,7 +46,7 @@ public class FoedselService implements BiValidation<FoedselDTO, PersonDTO> {
         }
 
         person.setFoedsel(new ArrayList<>(person.getFoedsel()));
-        person.getFoedsel().sort(Comparator.comparing(FoedselDTO::getFoedselsdato).reversed());
+        person.getFoedsel().sort(Comparator.comparing(FoedselDTO::getFoedselsaar).reversed());
 
         renumberId(person.getFoedsel());
 
