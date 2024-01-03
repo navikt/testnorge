@@ -17,7 +17,7 @@ spec:
     enabled: true
   maskinporten:
     enabled: true
-    scope:
+    scopes:
       consumes:
         - name: skatteetaten:tjenestepensjonsavtale
   accessPolicy:
