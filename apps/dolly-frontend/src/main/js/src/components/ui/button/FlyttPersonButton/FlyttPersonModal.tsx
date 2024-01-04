@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react'
+import React, { useState } from 'react'
 import * as Yup from 'yup'
 import Button from '@/components/ui/button/Button'
 import DollyModal from '@/components/ui/modal/DollyModal'
@@ -135,7 +135,7 @@ const StyledErrorMessageWithFocus = styled(DollyErrorMessage)`
 
 export const FlyttPersonModal = ({ gruppeId, modalIsOpen, closeModal }: FlyttPersonButtonTypes) => {
 	const formMethods = useForm({
-		defaultValues: { identer: [], gruppeId: null },
+		defaultValues: { identer: [], gruppeId: '' },
 		resolver: yupResolver(validation),
 	})
 	const [loading, setLoading] = useState(false)
@@ -169,7 +169,10 @@ export const FlyttPersonModal = ({ gruppeId, modalIsOpen, closeModal }: FlyttPer
 	const gruppeOptions = getGruppeOptions()
 
 	const gruppeIdenterListe = Array.isArray(gruppeOptions)
-		? gruppeOptions?.map((person) => person?.value).filter((person) => person)
+		? gruppeOptions
+				?.map((person) => person?.value)
+				.filter((person) => person)
+				.map((person) => ({ fnr: person }))
 		: []
 
 	const getRelatertePersoner = (identer: Array<string>, identerHentet = [] as Array<string>) => {
@@ -182,7 +185,7 @@ export const FlyttPersonModal = ({ gruppeId, modalIsOpen, closeModal }: FlyttPer
 			)
 			if (funnetIdent) {
 				relatertePersonerHentet.push(funnetIdent.value)
-				identerNye.push(...funnetIdent.relasjoner)
+				funnetIdent.relasjoner && identerNye.push(...funnetIdent.relasjoner)
 			}
 		})
 		if (identerNye.length > 0) {
@@ -206,31 +209,22 @@ export const FlyttPersonModal = ({ gruppeId, modalIsOpen, closeModal }: FlyttPer
 		return relatert
 	}
 
-	const mountedRef = useRef(true)
-
-	const handleSubmit = useCallback(
-		(formMethods: any) => {
-			const submit = async () => {
-				setLoading(true)
-				const { gruppeId, identer } = formMethods
-				const relasjoner = getRelatertePersoner(identer)
-				const identerSamlet = Array.from(new Set([...identer, ...relasjoner]))
-				await DollyApi.flyttPersonerTilGruppe(gruppeId, identerSamlet)
-					.then(() => {
-						closeModal()
-						setLoading(false)
-						navigate(`../gruppe/${gruppeId}`)
-					})
-					.catch((e: Error) => {
-						setError(e.message)
-						setLoading(false)
-					})
-			}
-			mountedRef.current = false
-			return submit()
-		},
-		[gruppeOptions],
-	)
+	const handleSubmit = () => {
+		const { identer, gruppeId } = formMethods.getValues()
+		const identerFormatert = identer.map((ident) => ident.fnr)
+		const relasjoner = getRelatertePersoner(identerFormatert)
+		const identerSamlet = Array.from(new Set([...identerFormatert, ...relasjoner]))
+		DollyApi.flyttPersonerTilGruppe(gruppeId, identerSamlet)
+			.then(() => {
+				closeModal()
+				setLoading(false)
+				navigate(`../gruppe/${gruppeId}`)
+			})
+			.catch((e: Error) => {
+				setError(e.message)
+				setLoading(false)
+			})
+	}
 
 	const handleClose = () => {
 		closeModal()
@@ -241,12 +235,16 @@ export const FlyttPersonModal = ({ gruppeId, modalIsOpen, closeModal }: FlyttPer
 	const FlyttPersonForm = () => {
 		const formMethods = useFormContext()
 		const [searchText, setSearchText] = useState('')
-		const fieldMethods = useFieldArray({ control: formMethods.control, name: 'identer' })
-		const values = fieldMethods.fields.values?.identer
-		const isChecked = (id: string) => values?.includes(id)
+		const fieldMethods = useFieldArray({
+			control: formMethods.control,
+			name: 'identer',
+		})
+		const isChecked = (id: string) => fieldMethods.fields?.find((i) => i.fnr === id)
 		const onClick = (e: { target: any }) => {
-			const { id } = e.target
-			isChecked(id) ? fieldMethods.remove(values?.indexOf(id)) : fieldMethods.append(id)
+			const id = e.target.id
+			isChecked(id)
+				? fieldMethods.remove(fieldMethods.fields?.map((value) => value.fnr).indexOf(id))
+				: fieldMethods.append({ fnr: id })
 		}
 
 		return (
@@ -301,7 +299,9 @@ export const FlyttPersonModal = ({ gruppeId, modalIsOpen, closeModal }: FlyttPer
 													key={person.value}
 													id={person.value}
 													label={person.label}
-													checked={values?.includes(person.value)}
+													checked={fieldMethods.fields
+														.map((val) => val.fnr)
+														?.includes(person.value)}
 													onChange={onClick}
 													size="small"
 													attributtCheckbox
@@ -325,6 +325,7 @@ export const FlyttPersonModal = ({ gruppeId, modalIsOpen, closeModal }: FlyttPer
 								VELG ALLE
 							</Button>
 							<Button
+								data-cy={CypressSelector.BUTTON_FLYTT_PERSONER_NULLSTILL}
 								onClick={() => {
 									formMethods.setValue('identer', [])
 									formMethods.trigger()
@@ -343,12 +344,12 @@ export const FlyttPersonModal = ({ gruppeId, modalIsOpen, closeModal }: FlyttPer
 								flyttes.
 							</Alert>
 						)}
-						<ValgtePersonerList>
-							{_.get(formMethods.getValues(), 'identer')?.length > 0 ? (
+						<ValgtePersonerList data-cy={CypressSelector.CONTAINER_VALGTE_PERSONER}>
+							{fieldMethods.fields.length > 0 ? (
 								<ul>
-									{_.get(formMethods.getValues(), 'identer')?.map((ident: string) => (
-										<li key={ident}>
-											{gruppeOptions?.find((person: Option) => person?.value === ident)?.label}
+									{fieldMethods.fields?.map((field) => (
+										<li key={field.id}>
+											{gruppeOptions?.find((person: Option) => person?.value === field.fnr)?.label}
 										</li>
 									))}
 								</ul>

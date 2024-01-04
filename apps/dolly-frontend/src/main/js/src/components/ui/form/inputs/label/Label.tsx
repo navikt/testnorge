@@ -3,7 +3,7 @@ import * as _ from 'lodash'
 import styled from 'styled-components'
 import './Label.less'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
-import { useFormContext } from 'react-hook-form'
+import { useForm, useFormContext } from 'react-hook-form'
 import { useContext } from 'react'
 import {
 	ShowErrorContext,
@@ -19,7 +19,7 @@ export const Label = ({ name, label, info = null, containerClass = null, childre
 	const {
 		getFieldState,
 		formState: { touchedFields },
-	} = useFormContext()
+	} = useFormContext() || useForm()
 	const { error } = getFieldState(name)
 	const isTouched = _.has(touchedFields, name)
 	const errorContext: ShowErrorContextType = useContext(ShowErrorContext)

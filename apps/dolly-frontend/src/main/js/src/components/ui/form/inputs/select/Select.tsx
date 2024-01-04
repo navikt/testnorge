@@ -18,6 +18,7 @@ import {
 
 type SelectProps = {
 	id?: string
+	'data-cy'?: string
 	name: string
 	value?: any
 	className?: any
@@ -122,7 +123,7 @@ const P_FormikSelect = ({ feil, ...props }: SelectProps) => {
 	const { field } = useController(props)
 	const errorContext: ShowErrorContextType = useContext(ShowErrorContext)
 	const formMethods = useFormContext()
-	const touchedFields = formMethods.formState.touchedFields
+	const touchedFields = formMethods?.formState.touchedFields
 	const isTouched = _.has(touchedFields, props.name)
 	const handleChange = (selected, meta) => {
 		let value
@@ -153,7 +154,7 @@ const P_FormikSelect = ({ feil, ...props }: SelectProps) => {
 			onBlur={handleBlur}
 			feil={
 				(errorContext?.showError || isTouched) &&
-				(feil || formMethods.getFieldState(props.name)?.error)
+				(feil || formMethods?.getFieldState(props.name)?.error)
 			}
 			{...props}
 		/>

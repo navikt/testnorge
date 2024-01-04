@@ -35,6 +35,7 @@ import {
 	personFragmentSearchMock,
 	sigrunstubMock,
 	skjermingMock,
+	tagsMock,
 	tpsMessagingMock,
 	udistubMock,
 } from '../mocks/BasicMocks'
@@ -120,7 +121,7 @@ beforeEach(() => {
 	cy.intercept({ method: 'GET', url: pdlPersonEnkelt }, pdlPersonEnkeltMock)
 	cy.intercept({ method: 'GET', url: pdlForvalter }, pdlForvalterMock)
 	cy.intercept({ method: 'POST', url: kontoregister }, kontoregisterMock)
-	cy.intercept({ method: 'GET', url: tags }, { body: {} })
+	cy.intercept({ method: 'GET', url: tags }, tagsMock)
 	cy.intercept({ method: 'GET', url: backendTransaksjon }, backendTransaksjonMock)
 	cy.intercept({ method: 'GET', url: brukerMaler }, brukerMalerMock)
 	cy.intercept({ method: 'GET', url: oppsummeringsdokService }, oppsummeringsdokumentServiceMock)

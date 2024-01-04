@@ -1,51 +1,41 @@
 import React, { useState } from 'react'
-import NavButton from '@/components/ui/button/NavButton/NavButton'
-import * as yup from 'yup'
-import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { DollyApi } from '@/service/Api'
 import styled from 'styled-components'
-import { Form, useForm } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
+import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import NavButton from '@/components/ui/button/NavButton/NavButton'
+import { CypressSelector } from '../../../cypress/mocks/Selectors'
 
 interface NyGruppe {
 	setValgtGruppe: React.Dispatch<React.SetStateAction<string>>
-}
-
-const initialValues = {
-	navn: '',
-	hensikt: '',
 }
 
 const FeedbackText = styled.div`
 	margin-top: 10px;
 `
 
-const validation = () =>
-	yup.object().shape({
-		navn: yup.string().trim().required('Navn er et påkrevd felt').max(30, 'Maksimalt 30 bokstaver'),
-		hensikt: yup
-			.string()
-			.trim()
-			.required('Gi en liten beskrivelse av hensikten med gruppen')
-			.max(200, 'Maksimalt 200 bokstaver'),
-	})
-
 export default ({ setValgtGruppe }: NyGruppe) => {
 	const [nyGruppe, setNyGruppe] = useState('')
 	const [feilmelding, setFeilmelding] = useState('')
-	const formMethods = useForm({
-		mode: 'onBlur',
-		defaultValues: initialValues,
-		resolver: yupResolver(validation()),
-	})
+	const [navn, setNavn] = useState('')
+	const [hensikt, setHensikt] = useState('')
 
-	const onHandleSubmit = async (values: any) => {
-		await DollyApi.createGruppe({
-			navn: values.navn,
-			hensikt: values.hensikt,
+	const onHandleSubmit = () => {
+		if (navn.length === 0 || hensikt.length === 0) {
+			setFeilmelding('Navn og hensikt må fylles ut')
+			return
+		}
+		if (navn.length > 30 || hensikt.length > 200) {
+			setFeilmelding('Navn kan maks være 30 bokstaver og hensikt kan maks være 200 bokstaver')
+			return
+		}
+		DollyApi.createGruppe({
+			navn: navn,
+			hensikt: hensikt,
 		}).then((response: any) => {
 			if (response.error) {
 				setFeilmelding('Noe gikk galt under oppretting av gruppe: ' + response.error)
+			} else {
+				setFeilmelding('')
 			}
 			const { data } = response
 			setValgtGruppe(data.id)
@@ -53,24 +43,35 @@ export default ({ setValgtGruppe }: NyGruppe) => {
 		})
 	}
 	return (
-		<>
-			<Form
-				className={'ny-gruppe'}
-				autoComplete={'off'}
-				onSubmit={formMethods.handleSubmit(onHandleSubmit)}
+		<div className={'ny-gruppe'}>
+			<div className="flexbox--flex-wrap">
+				<DollyTextInput
+					data-cy={CypressSelector.INPUT_NY_GRUPPE_NAVN}
+					onChange={(event) => setNavn(event.target.value)}
+					label="NAVN"
+					size="large"
+				/>
+				<DollyTextInput
+					data-cy={CypressSelector.INPUT_NY_GRUPPE_HENSIKT}
+					onChange={(event) => setHensikt(event.target.value)}
+					label="HENSIKT"
+					size="large"
+				/>
+			</div>
+			<NavButton
+				data-cy={CypressSelector.BUTTON_NY_GRUPPE_OPPRETT}
+				variant="primary"
+				onClick={(event) => {
+					event.preventDefault()
+					return onHandleSubmit()
+				}}
 			>
-				<div className="flexbox--flex-wrap">
-					<FormikTextInput name="navn" label="NAVN" size="large" autoFocus />
-					<FormikTextInput name="hensikt" label="HENSIKT" size="large" />
-				</div>
-				<NavButton variant="primary" type="submit">
-					Opprett
-				</NavButton>
-			</Form>
+				Opprett
+			</NavButton>
 			<FeedbackText>
 				{nyGruppe.length > 0 && <div>Gruppe ble opprettet: {nyGruppe}</div>}
 				{feilmelding && <div className="error-message">{feilmelding}</div>}
 			</FeedbackText>
-		</>
+		</div>
 	)
 }

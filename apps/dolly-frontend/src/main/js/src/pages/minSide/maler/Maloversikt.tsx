@@ -8,7 +8,7 @@ import {
 import { Tabs } from '@navikt/ds-react'
 import { MalPanel } from '@/pages/minSide/maler/MalPanel'
 import { CypressSelector } from '../../../../cypress/mocks/Selectors'
-import { PersonGroupIcon, Buldings3Icon } from '@navikt/aksel-icons'
+import { Buldings3Icon, PersonGroupIcon } from '@navikt/aksel-icons'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
 
 export default ({ brukerId }: { brukerId: string }) => {
@@ -48,8 +48,18 @@ export default ({ brukerId }: { brukerId: string }) => {
 			) : (
 				<Tabs defaultValue={'personer'}>
 					<Tabs.List>
-						<Tabs.Tab value={'personer'} label={'Personer'} icon={<PersonGroupIcon />} />
-						<Tabs.Tab value={'organisasjoner'} label={'Organisasjoner'} icon={<Buldings3Icon />} />
+						<Tabs.Tab
+							data-cy={CypressSelector.TOGGLE_MIN_SIDE_PERSONER_MALER}
+							value={'personer'}
+							label={'Personer'}
+							icon={<PersonGroupIcon />}
+						/>
+						<Tabs.Tab
+							data-cy={CypressSelector.TOGGLE_MIN_SIDE_ORGANISASJON_MALER}
+							value={'organisasjoner'}
+							label={'Organisasjoner'}
+							icon={<Buldings3Icon />}
+						/>
 					</Tabs.List>
 					<Tabs.Panel value={'personer'}>
 						<MalPanel

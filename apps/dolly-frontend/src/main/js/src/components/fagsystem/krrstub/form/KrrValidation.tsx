@@ -7,7 +7,10 @@ export const KrrValidation = {
 		Yup.object({
 			epost: Yup.string(),
 			gyldigFra: Yup.date().nullable(),
-			mobil: Yup.string().matches(/^\+?\d*$/, 'Ugyldig mobilnummer'),
+			mobil: Yup.string().matches(/^\+?\d{8,14}$/, {
+				message: 'Ugyldig telefonnummer',
+				excludeEmptyString: true,
+			}),
 			sdpAdresse: Yup.string(),
 			sdpLeverandoer: Yup.string().nullable(),
 			spraak: Yup.string(),
