@@ -18,12 +18,12 @@ jacocoTestReport {
 
 sonarqube {
     properties {
-        property "sonar.coverage.jacoco.xmlReportPaths", "${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml"
+        property "sonar.coverage.jacoco.xmlReportPaths", "${project.layout.buildDirectory}/reports/jacoco/test/jacocoTestReport.xml"
         property "sonar.dynamicAnalysis", "reuseReports"
         property "sonar.host.url", "https://sonarcloud.io"
         property "sonar.java.coveragePlugin", "jacoco"
         property "sonar.language", "java"
-        property "sonar.login", System.getenv("SONAR_TOKEN")
+        property "sonar.token", System.getenv("SONAR_TOKEN")
         property "sonar.organization", "navikt"
         property "sonar.project.monorepo.enabled", true
         property "sonar.projectKey", "testnav-organisasjon-tilgang-frontend"
