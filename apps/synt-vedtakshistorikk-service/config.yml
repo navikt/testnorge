@@ -33,7 +33,7 @@ spec:
       memory: 1024Mi
     limits:
       memory: 2048Mi
-  image: {{ image }}
+  image: "{{image}}"
   accessPolicy:
     inbound:
       rules:
