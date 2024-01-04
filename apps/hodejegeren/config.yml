@@ -35,8 +35,6 @@ spec:
           cluster: dev-gcp
         - application: testnav-hodejegeren-proxy
           cluster: dev-fss
-        - application: mn-synt-arbeidsforhold-service
-          cluster: dev-fss
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
     outbound:
