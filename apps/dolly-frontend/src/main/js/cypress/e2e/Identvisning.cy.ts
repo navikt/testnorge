@@ -8,13 +8,6 @@ describe('Åpne bestilt ident med knytning mot alle fagsystem', () => {
 
 		cy.get('div').contains('Testytest').click()
 
-		cy.dollyGet(CypressSelector.BUTTON_FLYTT_PERSONER).click()
-
-		cy.dollyGet(CypressSelector.TOGGLE_NY_GRUPPE).click()
-		cy.dollyGet(CypressSelector.TOGGLE_EKSISTERENDE_GRUPPE).click()
-
-		cy.dollyGet(CypressSelector.BUTTON_FLYTT_PERSONER_AVBRYT).click()
-
 		cy.dollyGet(CypressSelector.TOGGLE_VISNING_BESTILLINGER).click()
 		cy.wait(200)
 

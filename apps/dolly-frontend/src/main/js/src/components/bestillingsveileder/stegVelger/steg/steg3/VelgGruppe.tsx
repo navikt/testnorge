@@ -22,11 +22,10 @@ export const VelgGruppe = ({
 	const [valgtGruppe, setValgtGruppe] = useState(_.get(formMethods.getValues(), `gruppeId`))
 
 	useEffect(() => {
-		setValgtGruppe(valgtGruppe || '') // for å vise feilmeldingsvisning
-	})
-
-	useEffect(() => {
-		formMethods.setValue('gruppeId', valgtGruppe)
+		if (formMethods.getValues('gruppeId') !== valgtGruppe) {
+			formMethods.setValue('gruppeId', valgtGruppe)
+			formMethods.trigger('gruppeId')
+		}
 	}, [valgtGruppe])
 
 	return (

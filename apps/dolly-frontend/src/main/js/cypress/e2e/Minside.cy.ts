@@ -28,6 +28,9 @@ describe('Minside mal testing', () => {
 
 		cy.dollyGet(CypressSelector.INPUT_MINSIDE_SOEK_MAL).type('mal')
 		cy.dollyGet(CypressSelector.INPUT_MINSIDE_SOEK_MAL).clear()
+
+		cy.dollyGet(CypressSelector.TOGGLE_MIN_SIDE_ORGANISASJON_MALER).click()
+		cy.dollyGet(CypressSelector.TOGGLE_MIN_SIDE_PERSONER_MALER).click()
 		cy.dollyGet(CypressSelector.BUTTON_MALER_SLETT).click()
 		cy.dollyGet(CypressSelector.BUTTON_MALER_SLETT_BEKREFT).click()
 

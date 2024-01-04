@@ -1,5 +1,4 @@
 import React, { useContext } from 'react'
-import * as Yup from 'yup'
 import { harAvhukedeAttributter } from '@/components/bestillingsveileder/utils'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { SigrunstubForm } from '@/components/fagsystem/sigrunstub/form/Form'
@@ -17,19 +16,14 @@ import { MedlForm } from '@/components/fagsystem/medl/form/MedlForm'
 import { SykdomForm } from '@/components/fagsystem/sykdom/form/Form'
 import { OrganisasjonForm } from '@/components/fagsystem/organisasjoner/form/Form'
 import { TjenestepensjonForm } from '@/components/fagsystem/tjenestepensjon/form/Form'
-import { ifPresent } from '@/utils/YupValidations'
 import { Alert } from '@navikt/ds-react'
 import { AlderspensjonForm } from '@/components/fagsystem/alderspensjon/form/Form'
-import { SkjermingForm } from '@/components/fagsystem/skjermingsregister/form/SkjermingForm'
 import { ArbeidsplassenForm } from '@/components/fagsystem/arbeidsplassen/form/Form'
 import { HistarkForm } from '@/components/fagsystem/histark/form/HistarkForm'
 import { UforetrygdForm } from '@/components/fagsystem/uforetrygd/form/Form'
 import { SigrunstubPensjonsgivendeForm } from '@/components/fagsystem/sigrunstubPensjonsgivende/form/Form'
 import { KrrstubForm } from '@/components/fagsystem/krrstub/form/KrrForm'
 import { useFormContext } from 'react-hook-form'
-import { MiljoVelger } from '@/components/miljoVelger/MiljoVelger'
-import { MalForm } from '@/components/bestillingsveileder/stegVelger/steg/steg3/MalForm'
-import { VelgGruppe } from '@/components/bestillingsveileder/stegVelger/steg/steg3/VelgGruppe'
 
 const gruppeNavn = (gruppe) => <span style={{ fontWeight: 'bold' }}>{gruppe.navn}</span>
 
@@ -88,36 +82,3 @@ export const Steg2 = () => {
 }
 
 Steg2.label = 'Velg verdier'
-
-Steg2.validation = Yup.object({
-	...PdlfForm.validation,
-	...AaregForm.validation,
-	...ArbeidsplassenForm.validation,
-	...SigrunstubForm.validation,
-	...SigrunstubPensjonsgivendeForm.validation,
-	...InntektstubForm.validation,
-	...InntektsmeldingForm.validation,
-	...SykdomForm.validation,
-	...BrregstubForm.validation,
-	...InstForm.validation,
-	...KrrstubForm.validation,
-	...MedlForm.validation,
-	...ArenaForm.validation,
-	...UdistubForm.validation,
-	...SkjermingForm.validation,
-	...DokarkivForm.validation,
-	...HistarkForm.validation,
-	...OrganisasjonForm.validation,
-	...MiljoVelger.validation,
-	...MalForm.validation,
-	...VelgGruppe.validation,
-	pensjonforvalter: ifPresent(
-		'$pensjonforvalter',
-		Yup.object({
-			...PensjonForm.validation,
-			...TjenestepensjonForm.validation,
-			...AlderspensjonForm.validation,
-			...UforetrygdForm.validation,
-		}),
-	),
-})

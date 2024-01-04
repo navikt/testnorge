@@ -44,7 +44,11 @@ export const VelgGruppeToggle = ({
 				>
 					Mine grupper
 				</ToggleGroup.Item>
-				<ToggleGroup.Item key={Gruppevalg.ALLE} value={Gruppevalg.ALLE}>
+				<ToggleGroup.Item
+					data-cy={CypressSelector.TOGGLE_ALLE_GRUPPER}
+					key={Gruppevalg.ALLE}
+					value={Gruppevalg.ALLE}
+				>
 					Alle grupper
 				</ToggleGroup.Item>
 				<ToggleGroup.Item
