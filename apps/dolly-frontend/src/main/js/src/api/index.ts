@@ -111,7 +111,7 @@ export const multiFetcherDokarkiv = (miljoUrlListe) =>
 				? fetcher(obj.url, { miljo: obj.miljo }).then((result) => ({
 						miljo: obj.miljo,
 						data: result,
-				  }))
+					}))
 				: { miljo: obj.miljo, data: null },
 		),
 	)

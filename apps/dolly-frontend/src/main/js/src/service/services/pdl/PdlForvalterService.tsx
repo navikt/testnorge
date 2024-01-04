@@ -2,30 +2,13 @@ import Request from '@/service/services/Request'
 
 const getPdlUrl = () => '/testnav-pdl-forvalter/api/v1'
 
-const sliceIdentListe = (identListe: string[]) => {
-	const maxAntall = 150
-	if (identListe.length <= maxAntall) return [identListe]
-	const identer = []
-	for (let i = 0; i < identListe.length; i += maxAntall) {
-		identer.push(identListe.slice(i, i + maxAntall))
-	}
-	return identer
-}
-
 export default {
 	getPersoner(identListe: string[]) {
 		if (!identListe) {
 			return
 		}
-		const identerDelt = sliceIdentListe(identListe)
-		const promises = identerDelt.map((identer) => {
-			const endpoint = `${getPdlUrl()}/personer?identer=${identer}`
-			return Request.get(endpoint)
-		})
-		return Promise.all(promises).then((responses) => {
-			const data = responses.map((response: any) => response?.data).flat()
-			return { data }
-		})
+		const endpoint = `${getPdlUrl()}/personer?identer=${identListe}`
+		return Request.get(endpoint)
 	},
 	soekPersoner(fragment: string) {
 		if (!fragment || fragment.length > 11) {
