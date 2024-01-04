@@ -44,7 +44,7 @@ konverteres til ANSI for å vise korrekte tegn i Excel.
 For å opprette et nytt domene må en POJO og repository opprettes. Det er sterkt anbefalt å eksponere dette nye domenet i APIet.
 
 Nåværende domener belager seg på eksisterende applikasjoner som ikke er direkte tilknyttet fast data. Denne modellen er også
-sterkt anbefalt å følge. Disse applikasjonen er ansvarlige for å opprette manglende data og gjøre disse tilgjengelige for søk i hodejegeren. 
+sterkt anbefalt å følge. Disse applikasjonen er ansvarlige for å opprette manglende data.
 
 
 ## Lokal kjøring
