@@ -9,7 +9,7 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-read-timeout: "900"
     nginx.ingress.kubernetes.io/proxy-send-timeout: "900"
 spec:
-  image: {{image}}
+  image: "{{image}}"
   port: 8080
   tokenx:
     enabled: true

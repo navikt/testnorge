@@ -6,7 +6,7 @@ metadata:
   labels:
     team: dolly
 spec:
-  image: {{ image }}
+  image: "{{image}}"
   port: 8080
   tokenx:
     enabled: true
@@ -44,8 +44,6 @@ spec:
           cluster: dev-gcp
         - application: testnav-generer-arbeidsforhold-populasjon-service
           cluster: dev-gcp
-        - application: mn-synt-arbeidsforhold-service
-          cluster: dev-fss
         - application: app-1
           namespace: plattformsikkerhet
           cluster: dev-gcp

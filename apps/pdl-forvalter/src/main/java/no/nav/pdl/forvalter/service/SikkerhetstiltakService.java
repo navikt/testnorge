@@ -7,11 +7,14 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.SikkerhetstiltakDTO;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
+import static no.nav.pdl.forvalter.utils.ArtifactUtils.renumberId;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -38,6 +41,11 @@ public class SikkerhetstiltakService implements Validation<SikkerhetstiltakDTO> 
                 type.setMaster(Master.PDL);
             }
         }
+
+        person.setSikkerhetstiltak(new ArrayList<>(person.getSikkerhetstiltak()));
+        person.getSikkerhetstiltak().sort(Comparator.comparing(SikkerhetstiltakDTO::getGyldigFraOgMed).reversed());
+        renumberId(person.getSikkerhetstiltak());
+
         return person.getSikkerhetstiltak();
     }
 
@@ -59,8 +67,7 @@ public class SikkerhetstiltakService implements Validation<SikkerhetstiltakDTO> 
             throw new InvalidRequestException(VALIDATION_GYLDIGTOM_ERROR);
         }
 
-        if (nonNull(sikkerhetstiltak.getGyldigFraOgMed()) && nonNull(sikkerhetstiltak.getGyldigTilOgMed()) &&
-                sikkerhetstiltak.getGyldigFraOgMed().isAfter(sikkerhetstiltak.getGyldigTilOgMed())) {
+        if (sikkerhetstiltak.getGyldigFraOgMed().isAfter(sikkerhetstiltak.getGyldigTilOgMed())) {
             throw new InvalidRequestException(VALIDATION_UGYLDIG_INTERVAL_ERROR);
         }
 
@@ -68,7 +75,7 @@ public class SikkerhetstiltakService implements Validation<SikkerhetstiltakDTO> 
             throw new InvalidRequestException(VALIDATION_KONTAKTPERSON_ERROR);
         }
 
-        if (nonNull(sikkerhetstiltak.getKontaktperson()) && isBlank(sikkerhetstiltak.getKontaktperson().getPersonident())) {
+        if (isBlank(sikkerhetstiltak.getKontaktperson().getPersonident())) {
             throw new InvalidRequestException(VALIDATION_PERSONIDENT_ERROR);
         }
 
