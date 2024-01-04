@@ -58,7 +58,7 @@ export type HentPerson = {
 	doedsfall: [Doedsfall]
 	folkeregisterpersonstatus?: [Folkeregisterpersonstatus]
 	folkeregisterPersonstatus?: [Folkeregisterpersonstatus]
-	kjoenn: [Kjoenn]
+	kjoenn: [KjoennValues]
 	navn: [Navn]
 }
 
@@ -318,7 +318,7 @@ export type Folkeregisterpersonstatus = {
 	metadata: Metadata
 }
 
-type Kjoenn = {
+export type KjoennValues = {
 	kjoenn: string
 	metadata: Metadata
 }

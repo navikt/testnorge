@@ -6,6 +6,7 @@ import { Doedsfall } from '@/components/fagsystem/pdlf/bestilling/partials/Doeds
 import { Statsborgerskap } from '@/components/fagsystem/pdlf/bestilling/partials/Statsborgerskap'
 import { Innvandring } from '@/components/fagsystem/pdlf/bestilling/partials/Innvandring'
 import { Utvandring } from '@/components/fagsystem/pdlf/bestilling/partials/Utvandring'
+import { Kjoenn } from '@/components/fagsystem/pdlf/bestilling/partials/Kjoenn'
 
 export const BestillingTitle = styled.h4`
 	margin: 10px 0;
@@ -27,6 +28,7 @@ export const Bestillingsdata = ({ bestilling }: any) => {
 			<Statsborgerskap statsborgerskapListe={bestilling.pdldata?.person?.statsborgerskap} />
 			<Innvandring innvandringListe={bestilling.pdldata?.person?.innflytting} />
 			<Utvandring utvandringListe={bestilling.pdldata?.person?.utflytting} />
+			<Kjoenn kjoennListe={bestilling.pdldata?.person?.kjoenn} />
 		</>
 	)
 }
