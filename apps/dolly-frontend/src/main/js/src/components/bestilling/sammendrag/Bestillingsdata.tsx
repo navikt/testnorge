@@ -8,6 +8,7 @@ import { Innvandring } from '@/components/fagsystem/pdlf/bestilling/partials/Inn
 import { Utvandring } from '@/components/fagsystem/pdlf/bestilling/partials/Utvandring'
 import { Kjoenn } from '@/components/fagsystem/pdlf/bestilling/partials/Kjoenn'
 import { Navn } from '@/components/fagsystem/pdlf/bestilling/partials/Navn'
+import { Spraak } from '@/components/fagsystem/pdlf/bestilling/partials/Spraak'
 
 export const BestillingTitle = styled.h4`
 	margin: 10px 0;
@@ -31,6 +32,7 @@ export const Bestillingsdata = ({ bestilling }: any) => {
 			<Utvandring utvandringListe={bestilling.pdldata?.person?.utflytting} />
 			<Kjoenn kjoennListe={bestilling.pdldata?.person?.kjoenn} />
 			<Navn navnListe={bestilling.pdldata?.person?.navn} />
+			<Spraak spraakKode={bestilling.tpsMessaging?.spraakKode} />
 		</>
 	)
 }
