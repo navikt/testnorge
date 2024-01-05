@@ -44,6 +44,6 @@ spec:
     requests:
       cpu: 300m
       memory: 1024Mi
-  image: {{ image }}
+  image: "{{image}}"
   ingresses:
     - "https://testnav-faste-data.intern.dev.nav.no"

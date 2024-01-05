@@ -1,16 +1,16 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext } from 'react'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import Loading from '@/components/ui/loading/Loading'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import * as _ from 'lodash'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
-import { identFraTestnorge } from '@/components/bestillingsveileder/stegVelger/steg/steg1/Steg1Person'
-import { Option, SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
-import { useBoolean } from 'react-use'
-import { ForeldreBarnRelasjon, NyIdent, Sivilstand } from '@/components/fagsystem/pdlf/PdlTypes'
+import { Option } from '@/service/SelectOptionsOppslag'
+import { ForeldreBarnRelasjon, NyIdent } from '@/components/fagsystem/pdlf/PdlTypes'
 import { Alert } from '@navikt/ds-react'
 import { useParams } from 'react-router-dom'
+import { useGruppeIdenter } from '@/utils/hooks/useGruppe'
 import { UseFormReturn } from 'react-hook-form/dist/types'
+import { usePdlOptions } from '@/utils/hooks/useSelectOptions'
 
 interface PdlEksisterendePersonValues {
 	nyPersonPath?: string
@@ -37,10 +37,8 @@ export const PdlEksisterendePerson = ({
 	const antall = opts?.antall || 1
 	const { gruppeId } = useParams()
 
-	const isTestnorgeIdent = identFraTestnorge(opts)
-
-	const [identOptions, setIdentOptions] = useState<Array<Option>>([])
-	const [loadingIdentOptions, setLoadingIdentOptions] = useBoolean(true)
+	const { identer, loading: gruppeLoading, error: gruppeError } = useGruppeIdenter(gruppeId)
+	const { data: pdlOptions, loading: pdlLoading, error: pdlError } = usePdlOptions(identer)
 
 	const harSivilstand = eksisterendePersonPath?.includes('sivilstand')
 	const harNyIdent = eksisterendePersonPath?.includes('nyident')
@@ -71,7 +69,7 @@ export const PdlEksisterendePerson = ({
 	const getAntallForeldre = (eksisterendeForeldre: Array<string>) => {
 		const partnerErForelder = () =>
 			_.get(formMethods.getValues(), 'pdldata.person.sivilstand')?.find(
-				(partner: Sivilstand) =>
+				(partner) =>
 					partner.type && !gyldigeSivilstanderForPartner.includes(partner.type),
 			) &&
 			!_.get(
@@ -119,32 +117,17 @@ export const PdlEksisterendePerson = ({
 
 	const getFilteredOptionList = (opts) => {
 		const eksisterendeIdent = opts?.personFoerLeggTil?.pdlforvalter?.person?.ident
-		let tmpOptions = []
-		// @ts-ignore
-		SelectOptionsOppslag.hentGruppeIdentOptions(gruppeId).then((response: [Option]) => {
-			tmpOptions = response?.filter((person) => {
-				return person.value !== eksisterendeIdent && filterOptions(person)
-			})
-			if (
-				eksisterendeNyPerson &&
-				!tmpOptions.find((person) => person.value === eksisterendeNyPerson.value)
-			) {
-				tmpOptions.push(eksisterendeNyPerson)
-			}
-			setIdentOptions(tmpOptions)
-			setLoadingIdentOptions(false)
-		})
-	}
-
-	useEffect(() => {
-		if (!isTestnorgeIdent && gruppeId) {
-			getFilteredOptionList(opts)
+		const tmpOptions = pdlOptions?.filter(
+			(person) => person.value !== eksisterendeIdent && filterOptions(person),
+		)
+		if (
+			eksisterendeNyPerson &&
+			!tmpOptions.find((person) => person.value === eksisterendeNyPerson.value)
+		) {
+			tmpOptions.push(eksisterendeNyPerson)
 		}
-	}, [])
-
-	useEffect(() => {
-		getFilteredOptionList(opts)
-	}, [formMethods.watch])
+		return tmpOptions
+	}
 
 	const hasNyPersonValues = nyIdentValg
 		? !isEmpty(nyIdentValg, ['syntetisk'])
@@ -152,19 +135,26 @@ export const PdlEksisterendePerson = ({
 
 	const bestillingFlerePersoner = parseInt(antall) > 1 && (harSivilstand || harNyIdent)
 
+	const filteredOptions = getFilteredOptionList()
+
 	return (
 		<div className={'flexbox--full-width'}>
-			{loadingIdentOptions && <Loading label="Henter valg for eksisterende ident..." />}
-			{identOptions?.length > 0 ? (
+			{(pdlLoading || gruppeLoading) && <Loading label="Henter valg for eksisterende ident..." />}
+			{filteredOptions?.length > 0 ? (
 				<FormikSelect
 					name={eksisterendePersonPath}
 					label={label}
-					options={identOptions}
+					options={filteredOptions}
 					size={'xlarge'}
 					isDisabled={hasNyPersonValues || bestillingFlerePersoner || disabled}
 				/>
+			) : pdlError || gruppeError ? (
+				<Alert variant="error" size="small" style={{ marginBottom: '15px' }}>
+					{pdlError?.message || gruppeError?.message || 'Feil ved henting av personer'}
+				</Alert>
 			) : (
-				!loadingIdentOptions && (
+				!pdlLoading &&
+				!gruppeLoading && (
 					<Alert variant="info" size="small" style={{ marginBottom: '15px' }}>
 						Det finnes ingen eksisterende gyldige personer i denne gruppen.
 					</Alert>

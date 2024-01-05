@@ -5,6 +5,9 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.Identtype;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
 
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -46,5 +49,12 @@ public class ArtifactUtils {
     public static String getKilde(DbVersjonDTO artifact) {
 
         return isNotBlank(artifact.getKilde()) ? artifact.getKilde() : "Dolly";
+    }
+
+    public static void renumberId(List<? extends DbVersjonDTO> artifact) {
+
+        var size = new AtomicInteger(artifact.size());
+
+        artifact.forEach(entry -> entry.setId(size.getAndDecrement()));
     }
 }

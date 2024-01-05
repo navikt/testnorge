@@ -41,6 +41,6 @@ spec:
     requests:
       cpu: 300m
       memory: 1024Mi
-  image: {{ image }}
+  image: "{{image}}"
   ingresses:
     - "https://testnav-endringsmelding.intern.dev.nav.no"

@@ -18,7 +18,7 @@ spec:
       allowAllUsers: true
       enabled: true
       tenant: nav.no
-  image: {{image}}
+  image: "{{image}}"
   port: 8080
   liveness:
     path: /internal/isAlive
