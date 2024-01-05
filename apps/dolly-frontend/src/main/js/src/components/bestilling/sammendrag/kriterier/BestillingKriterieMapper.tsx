@@ -161,7 +161,7 @@ const mapFoedsel = (foedsel, data) => {
 							obj('Fødested', item.foedested),
 							obj('Fødekommune', item.foedekommune, AdresseKodeverk.Kommunenummer),
 							obj('Fødeland', item.foedeland, AdresseKodeverk.InnvandretUtvandretLand),
-					  ]
+						]
 			}),
 		}
 		data.push(foedselData)
@@ -830,7 +830,7 @@ const mapNyIdent = (nyident, data) => {
 							obj('Født før', formatDate(item.foedtFoer)),
 							obj('Alder', item.alder),
 							obj('Har mellomnavn', item.nyttNavn?.hasMellomnavn && 'JA'),
-					  ]
+						]
 			}),
 		}
 		data.push(nyidentData)
