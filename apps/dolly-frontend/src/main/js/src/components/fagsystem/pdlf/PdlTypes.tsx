@@ -47,6 +47,14 @@ type Navn = {
 	etternavn: string
 }
 
+export type NavnBestilling = {
+	fornavn: string
+	mellomnavn?: string
+	etternavn: string
+	hasMellomnavn: boolean
+	gyldigFraOgMed?: string
+}
+
 type Kjoenn = {
 	kjoenn: string
 }
