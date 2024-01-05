@@ -27,6 +27,7 @@ import static java.util.Objects.isNull;
 import static no.nav.pdl.forvalter.consumer.command.VegadresseServiceCommand.defaultAdresse;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
+import static no.nav.pdl.forvalter.utils.ArtifactUtils.renumberId;
 import static no.nav.pdl.forvalter.utils.SyntetiskFraIdentUtility.isSyntetisk;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.SivilstandDTO.Sivilstand.SAMBOER;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.SivilstandDTO.Sivilstand.UGIFT;
@@ -48,11 +49,7 @@ public class SivilstandService implements Validation<SivilstandDTO> {
 
     public List<SivilstandDTO> convert(PersonDTO person) {
 
-        var iterator = person.getSivilstand().iterator();
-
-        while (iterator.hasNext()) {
-
-            var type = iterator.next();
+        for (var type : person.getSivilstand()) {
 
             if (isTrue(type.getIsNew())) {
 
@@ -63,7 +60,10 @@ public class SivilstandService implements Validation<SivilstandDTO> {
             }
         }
 
-        return enforceIntegrity(person);
+        var oppdatertSivilstand = enforceIntegrity(person);
+        renumberId(oppdatertSivilstand);
+
+        return oppdatertSivilstand;
     }
 
     @Override
@@ -126,7 +126,7 @@ public class SivilstandService implements Validation<SivilstandDTO> {
                     fellesAdresse.setId(relatertPerson.getBostedsadresse().stream()
                             .map(BostedadresseDTO::getId).findFirst()
                             .orElse(0) + 1);
-                    relatertPerson.getBostedsadresse().add(0, fellesAdresse);
+                    relatertPerson.getBostedsadresse().addFirst(fellesAdresse);
                 }
 
                 sivilstand.setBorIkkeSammen(null);
@@ -152,7 +152,7 @@ public class SivilstandService implements Validation<SivilstandDTO> {
                 .max(Comparator.comparing(SivilstandDTO::getId))
                 .map(SivilstandDTO::getId)
                 .orElse(0) + 1);
-        relatertPerson.getPerson().getSivilstand().add(0, relatertSivilstand);
+        relatertPerson.getPerson().getSivilstand().addFirst(relatertSivilstand);
 
         relatertPerson.getPerson().setSivilstand(enforceIntegrity(relatertPerson.getPerson()));
         personRepository.save(relatertPerson);

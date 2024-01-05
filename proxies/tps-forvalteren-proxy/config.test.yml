@@ -9,7 +9,7 @@ spec:
   env:
     - name: PROXY_URL
       value: https://tps-forvalteren-dev.dev.adeo.no
-  image: {{ image }}
+  image: "{{image}}"
   port: 8080
   webproxy: true
   tokenx:

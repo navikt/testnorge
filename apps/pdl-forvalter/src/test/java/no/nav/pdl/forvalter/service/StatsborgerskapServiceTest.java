@@ -1,6 +1,7 @@
 package no.nav.pdl.forvalter.service;
 
 import no.nav.pdl.forvalter.consumer.GeografiskeKodeverkConsumer;
+import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.InnflyttingDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.StatsborgerskapDTO;
@@ -38,9 +39,9 @@ class StatsborgerskapServiceTest {
     void whenUgyldigLandkode_thenThrowExecption() {
 
         var request = StatsborgerskapDTO.builder()
-                        .landkode("Uruguay")
-                        .isNew(true)
-                        .build();
+                .landkode("Uruguay")
+                .isNew(true)
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
                 statsborgerskapService.validate(request));
@@ -52,10 +53,10 @@ class StatsborgerskapServiceTest {
     void whenInvalidDateInterval_thenThrowExecption() {
 
         var request = StatsborgerskapDTO.builder()
-                        .gyldigFraOgMed(LocalDate.of(2020, 1, 1).atStartOfDay())
-                        .gyldigTilOgMed(LocalDate.of(2018, 1, 1).atStartOfDay())
-                        .isNew(true)
-                        .build();
+                .gyldigFraOgMed(LocalDate.of(2020, 1, 1).atStartOfDay())
+                .gyldigTilOgMed(LocalDate.of(2018, 1, 1).atStartOfDay())
+                .isNew(true)
+                .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
                 statsborgerskapService.validate(request));
@@ -67,14 +68,14 @@ class StatsborgerskapServiceTest {
     void whenLandkodeIsEmptyAndAvailFromInnflytting_thenPickLandkodeFromInnflytting() {
 
         var target = statsborgerskapService.convert(PersonDTO.builder()
-                .statsborgerskap(List.of(StatsborgerskapDTO.builder()
-                        .isNew(true)
-                        .build()))
-                .ident(FNR_IDENT)
-                .innflytting(List.of(InnflyttingDTO.builder()
-                        .fraflyttingsland("GER")
-                        .build()))
-                .build())
+                        .statsborgerskap(List.of(StatsborgerskapDTO.builder()
+                                .isNew(true)
+                                .build()))
+                        .ident(FNR_IDENT)
+                        .innflytting(List.of(InnflyttingDTO.builder()
+                                .fraflyttingsland("GER")
+                                .build()))
+                        .build())
                 .get(0);
 
         assertThat(target.getLandkode(), is(equalTo("GER")));
@@ -84,11 +85,11 @@ class StatsborgerskapServiceTest {
     void whenLandkodeIsEmptyAndUnavailFromInnflyttingAndIdenttypeFNR_thenSetLandkodeNorge() {
 
         var target = statsborgerskapService.convert(PersonDTO.builder()
-                .statsborgerskap(List.of(StatsborgerskapDTO.builder()
-                        .isNew(true)
-                        .build()))
-                .ident(FNR_IDENT)
-                .build())
+                        .statsborgerskap(List.of(StatsborgerskapDTO.builder()
+                                .isNew(true)
+                                .build()))
+                        .ident(FNR_IDENT)
+                        .build())
                 .get(0);
 
         assertThat(target.getLandkode(), is(equalTo("NOR")));
@@ -100,11 +101,11 @@ class StatsborgerskapServiceTest {
         when(geografiskeKodeverkConsumer.getTilfeldigLand()).thenReturn("CHL");
 
         var target = statsborgerskapService.convert(PersonDTO.builder()
-                .statsborgerskap(List.of(StatsborgerskapDTO.builder()
-                        .isNew(true)
-                        .build()))
-                .ident(DNR_IDENT)
-                .build())
+                        .statsborgerskap(List.of(StatsborgerskapDTO.builder()
+                                .isNew(true)
+                                .build()))
+                        .ident(DNR_IDENT)
+                        .build())
                 .get(0);
 
         verify(geografiskeKodeverkConsumer).getTilfeldigLand();
@@ -116,11 +117,12 @@ class StatsborgerskapServiceTest {
     void whenGyldigFomNotProvided_thenDeriveGyldigFomFromBirthdate() {
 
         var target = statsborgerskapService.convert(PersonDTO.builder()
-                .statsborgerskap(List.of(StatsborgerskapDTO.builder()
-                        .isNew(true)
-                        .build()))
-                .ident(FNR_IDENT)
-                .build())
+                        .statsborgerskap(List.of(StatsborgerskapDTO.builder()
+                                .isNew(true)
+                                .master(DbVersjonDTO.Master.PDL)
+                                .build()))
+                        .ident(FNR_IDENT)
+                        .build())
                 .get(0);
 
         assertThat(target.getGyldigFraOgMed(), is(equalTo(LocalDate.of(1956, 4, 12).atStartOfDay())));

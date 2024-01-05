@@ -11,7 +11,7 @@ spec:
       value: testnav-person-organisasjon-tilgang-service-dev
     - name: PERSON_ORG_TILGANG_URL
       value: http://testnav-person-organisasjon-tilgang-service-dev.dolly.svc.cluster.local
-  image: {{ image }}
+  image: "{{image}}"
   tokenx:
     enabled: true
   azure:

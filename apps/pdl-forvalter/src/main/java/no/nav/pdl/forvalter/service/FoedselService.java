@@ -10,6 +10,8 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.InnflyttingDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import static java.util.Objects.isNull;
@@ -17,6 +19,7 @@ import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.NORGE;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
+import static no.nav.pdl.forvalter.utils.ArtifactUtils.renumberId;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.Identtype.FNR;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -41,6 +44,12 @@ public class FoedselService implements BiValidation<FoedselDTO, PersonDTO> {
                 type.setMaster(getMaster(type, person));
             }
         }
+
+        person.setFoedsel(new ArrayList<>(person.getFoedsel()));
+        person.getFoedsel().sort(Comparator.comparing(FoedselDTO::getFoedselsaar).reversed());
+
+        renumberId(person.getFoedsel());
+
         return person.getFoedsel();
     }
 

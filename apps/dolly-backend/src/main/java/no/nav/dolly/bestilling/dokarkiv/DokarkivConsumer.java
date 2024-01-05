@@ -44,7 +44,7 @@ public class DokarkivConsumer implements ConsumerStatus {
     @Timed(name = "providers", tags = { "operation", "dokarkiv-opprett" })
     public Flux<DokarkivResponse> postDokarkiv(String environment, DokarkivRequest dokarkivRequest) {
 
-        log.info("Sender dokarkiv melding for ident {} miljoe {} request {}",
+        log.info("Dokarkiv sender melding for ident {} miljoe {} request {}",
                 dokarkivRequest.getBruker().getId(), environment, dokarkivRequest);
 
         return tokenService.exchange(serverProperties)

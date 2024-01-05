@@ -5,6 +5,7 @@ import no.nav.pdl.forvalter.consumer.GeografiskeKodeverkConsumer;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
 import no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility;
+import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.InnflyttingDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.StatsborgerskapDTO;
@@ -37,9 +38,9 @@ public class StatsborgerskapService implements Validation<StatsborgerskapDTO> {
 
             if (isTrue(type.getIsNew())) {
 
-                handle(type, person, person.getInnflytting().stream().reduce((a, b) -> b).orElse(null));
                 type.setKilde(getKilde(type));
                 type.setMaster(getMaster(type, person));
+                handle(type, person, person.getInnflytting().stream().reduce((a, b) -> b).orElse(null));
             }
         }
         return person.getStatsborgerskap();
@@ -70,7 +71,9 @@ public class StatsborgerskapService implements Validation<StatsborgerskapDTO> {
             }
         }
 
-        if (isNull(statsborgerskap.getGyldigFraOgMed())) {
+        if (isNull(statsborgerskap.getGyldigFraOgMed()) &&
+                isNull(statsborgerskap.getBekreftelsesdato()) &&
+                statsborgerskap.getMaster() == DbVersjonDTO.Master.PDL) {
             statsborgerskap.setGyldigFraOgMed(FoedselsdatoUtility.getFoedselsdato(person));
         }
     }

@@ -9,6 +9,9 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.KontaktadresseDTO;
 import org.springframework.stereotype.Component;
 
+import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
 @Component
 public class KontaktadresseMappingStrategy implements MappingStrategy {
 
@@ -21,12 +24,13 @@ public class KontaktadresseMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(KontaktadresseDTO kildeAdresse, PdlKontaktadresse kontaktadresse, MappingContext context) {
 
-                        if (kildeAdresse.getMaster() == DbVersjonDTO.Master.FREG) {
+                        if (isNotBlank(kontaktadresse.getAdresseIdentifikatorFraMatrikkelen())) {
+                            kontaktadresse.setMaster(DbVersjonDTO.Master.FREG);
                             kontaktadresse.setVegadresseForPost(
                                     mapperFacade.map(kildeAdresse.getVegadresse(), VegadresseForPost.class));
                             kontaktadresse.setVegadresse(null);
-                        } else {
-                            kontaktadresse.setAdresseIdentifikatorFraMatrikkelen(null);
+                        } else if (nonNull(kontaktadresse.getVegadresse())) {
+                            kontaktadresse.setMaster(DbVersjonDTO.Master.PDL);
                         }
                     }
                 })

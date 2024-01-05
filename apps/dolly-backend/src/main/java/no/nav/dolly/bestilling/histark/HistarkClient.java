@@ -21,6 +21,7 @@ import no.nav.dolly.service.TransaksjonMappingService;
 import no.nav.dolly.util.TransactionHelperService;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -48,13 +49,16 @@ public class HistarkClient implements ClientRegister {
 
         if (nonNull(bestilling.getHistark())) {
 
-            var bestillingId = progress.getBestilling().getId();
             return Flux.just(dollyPerson.getIdent())
                     .map(person -> buildRequest(bestilling.getHistark(), person))
-                    .filter(request -> !transaksjonMappingService.existAlready(HISTARK,
-                            dollyPerson.getIdent(), "NA", bestilling.getId()) || isOpprettEndre)
-                    .flatMap(request -> histarkConsumer.postHistark(request)
-                            .mapNotNull(status -> getStatus(dollyPerson.getIdent(), bestillingId, status)))
+                    .flatMap(request -> !transaksjonMappingService.existAlready(HISTARK,
+                            dollyPerson.getIdent(), "NA", bestilling.getId()) || isOpprettEndre ?
+
+                            histarkConsumer.postHistark(request)
+                                    .mapNotNull(status -> getStatus(dollyPerson.getIdent(), bestilling.getId(), status)) :
+
+                            Mono.just("OK")
+                    )
                     .map(status -> futurePersist(progress, status));
         }
 
@@ -76,6 +80,8 @@ public class HistarkClient implements ClientRegister {
     }
 
     private String getStatus(String ident, Long bestillingId, HistarkResponse response) {
+
+        log.info("Histark response {} mottatt for ident {}", response, ident);
 
         if (isNull(response)) {
             return null;
@@ -104,6 +110,8 @@ public class HistarkClient implements ClientRegister {
     }
 
     private void saveTransaksjonId(String histarkId, String ident, Long bestillingId) {
+
+        log.info("Lagrer transaksjon for ident {}", ident);
 
         transaksjonMappingService.save(
                 TransaksjonMapping.builder()
