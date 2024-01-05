@@ -1,7 +1,7 @@
 import { Foedsel } from '@/components/fagsystem/pdlf/bestilling/partials/Foedsel'
 import styled from 'styled-components'
 import React from 'react'
-import { Persondetaljer } from '@/components/fagsystem/pdlf/bestilling/partials/Persondetaljer'
+import { Alder } from '@/components/fagsystem/pdlf/bestilling/partials/Alder'
 import { Doedsfall } from '@/components/fagsystem/pdlf/bestilling/partials/Doedsfall'
 import { Statsborgerskap } from '@/components/fagsystem/pdlf/bestilling/partials/Statsborgerskap'
 import { Innvandring } from '@/components/fagsystem/pdlf/bestilling/partials/Innvandring'
@@ -23,7 +23,7 @@ export const Bestillingsdata = ({ bestilling }: any) => {
 	console.log('bestilling: ', bestilling) //TODO - SLETT MEG
 	return (
 		<>
-			<Persondetaljer opprettNyPerson={bestilling.pdldata?.opprettNyPerson} />
+			<Alder opprettNyPerson={bestilling.pdldata?.opprettNyPerson} />
 			<Foedsel foedselListe={bestilling.pdldata?.person?.foedsel} />
 			<Doedsfall doedsfallListe={bestilling.pdldata?.person?.doedsfall} />
 			<Statsborgerskap statsborgerskapListe={bestilling.pdldata?.person?.statsborgerskap} />

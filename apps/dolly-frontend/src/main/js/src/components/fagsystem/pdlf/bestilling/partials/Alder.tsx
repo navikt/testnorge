@@ -7,10 +7,10 @@ import { formatDate } from '@/utils/DataFormatter'
 import { OpprettNyPerson } from '@/components/fagsystem/pdlf/PdlTypes'
 import * as _ from 'lodash-es'
 
-type PersondetaljerTypes = {
+type AlderTypes = {
 	opprettNyPerson: OpprettNyPerson
 }
-export const Persondetaljer = ({ opprettNyPerson }: PersondetaljerTypes) => {
+export const Alder = ({ opprettNyPerson }: AlderTypes) => {
 	if (!opprettNyPerson || !_.has(opprettNyPerson, 'alder')) {
 		return null
 	}
@@ -18,15 +18,15 @@ export const Persondetaljer = ({ opprettNyPerson }: PersondetaljerTypes) => {
 	return (
 		<div className="person-visning">
 			<ErrorBoundary>
-				<BestillingTitle>Persondetaljer</BestillingTitle>
+				<BestillingTitle>Alder</BestillingTitle>
 				<>
 					{isEmpty(opprettNyPerson, ['identtype', 'syntetisk']) ? (
 						<EmptyObject />
 					) : (
 						<div className="flexbox--flex-wrap" style={{ marginBottom: '10px' }}>
 							<TitleValue title="Alder" value={opprettNyPerson.alder} />
-							<TitleValue title="Fødselsdato" value={formatDate(opprettNyPerson.foedtEtter)} />
-							<TitleValue title="Fødselsdato" value={formatDate(opprettNyPerson.foedtFoer)} />
+							<TitleValue title="Født etter" value={formatDate(opprettNyPerson.foedtEtter)} />
+							<TitleValue title="Født før" value={formatDate(opprettNyPerson.foedtFoer)} />
 						</div>
 					)}
 				</>
