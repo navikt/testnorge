@@ -9,7 +9,7 @@ describe('Minside mal testing', () => {
 		cy.intercept('PUT', '*', cy.spy().as('endre_malnavn'))
 		cy.intercept('POST', '*', cy.spy().as('send_oenske'))
 
-		cy.visit('http://localhost:5678')
+		cy.visit('')
 
 		cy.dollyGet(CypressSelector.BUTTON_PROFIL).click()
 		cy.dollyGet(CypressSelector.BUTTON_PROFIL_MINSIDE).click()

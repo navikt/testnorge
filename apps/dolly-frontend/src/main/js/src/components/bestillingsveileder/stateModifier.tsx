@@ -1,9 +1,7 @@
-import { useDispatch } from 'react-redux'
 import _, { isArray } from 'lodash'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 
 export const stateModifierFns = (formMethods: UseFormReturn) => {
-	const dispatch = useDispatch()
 	const set = (path, value) => {
 		formMethods.setValue(path, value)
 	}
@@ -56,12 +54,10 @@ export const stateModifierFns = (formMethods: UseFormReturn) => {
 			setMulti: (...arrays: any[]) => void
 			del: (path: any) => void
 			has: (path: any) => boolean
-			dispatch: null
-			opts: null
 			methods: any
 		}) => {},
 	) => {
-		const attrs = fn({ set, setMulti, del, has, dispatch, methods: formMethods }) || {}
+		const attrs = fn({ set, setMulti, del, has, methods: formMethods }) || {}
 		const checked = allCheckedLabels(attrs)
 		return {
 			attrs,

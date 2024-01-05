@@ -1,5 +1,4 @@
 import { InputWrapper } from '@/components/ui/form/inputWrapper/InputWrapper'
-import { FormikField } from '@/components/ui/form/FormikField'
 import { Checkbox as NavCheckbox, Switch } from '@navikt/ds-react'
 
 import './Checkbox.less'
@@ -71,14 +70,12 @@ export const FormikCheckbox = ({
 	}
 
 	return (
-		<FormikField name={props.name}>
-			<DollyCheckbox
-				size={size}
-				checked={value}
-				onChange={handleChange}
-				checkboxMargin={checkboxMargin}
-				{...props}
-			/>
-		</FormikField>
+		<DollyCheckbox
+			size={size}
+			checked={value}
+			onChange={handleChange}
+			checkboxMargin={checkboxMargin}
+			{...props}
+		/>
 	)
 }

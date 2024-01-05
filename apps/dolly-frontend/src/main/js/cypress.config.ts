@@ -11,6 +11,7 @@ export default defineConfig({
 	},
 
 	e2e: {
+		baseUrl: 'http://localhost:5678',
 		setupNodeEvents() {},
 		experimentalRunAllSpecs: true,
 		specPattern: 'cypress/e2e/**/*.cy.{js,ts,jsx,tsx}',

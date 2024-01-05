@@ -3,7 +3,6 @@ import { Label } from '@/components/ui/form/inputs/label/Label'
 import { InputWrapper } from '@/components/ui/form/inputWrapper/InputWrapper'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import Icon from '@/components/ui/icon/Icon'
-import FormikFieldInput from '@/components/ui/form/inputs/textInput/FormikFieldInput'
 import styled from 'styled-components'
 import React, { useContext } from 'react'
 import { useFormContext } from 'react-hook-form'
@@ -12,6 +11,7 @@ import {
 	ShowErrorContextType,
 } from '@/components/bestillingsveileder/ShowErrorContext'
 import * as _ from 'lodash'
+import FormFieldInput from '@/components/ui/form/inputs/textInput/FormFieldInput'
 
 const StyledIcon = styled(Icon)`
 	pointer-events: none;
@@ -114,8 +114,8 @@ export const FormikTextInput = ({
 }) =>
 	visHvisAvhuket ? (
 		<Vis attributt={props.name}>
-			<FormikFieldInput {...props} />
+			<FormFieldInput {...props} />
 		</Vis>
 	) : (
-		<FormikFieldInput {...props} />
+		<FormFieldInput {...props} />
 	)

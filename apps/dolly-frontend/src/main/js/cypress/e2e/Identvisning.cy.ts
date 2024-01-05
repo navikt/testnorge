@@ -4,7 +4,7 @@ describe('Åpne bestilt ident med knytning mot alle fagsystem', () => {
 	it('passes', () => {
 		cy.intercept('PUT', '*', cy.spy().as('toggle_brukt'))
 
-		cy.visit('http://localhost:5678/gruppe')
+		cy.visit('gruppe')
 
 		cy.get('div').contains('Testytest').click()
 

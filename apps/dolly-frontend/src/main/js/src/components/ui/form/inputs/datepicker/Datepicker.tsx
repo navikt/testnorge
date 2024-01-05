@@ -1,5 +1,4 @@
 import ReactDatepicker, { registerLocale } from 'react-datepicker'
-import { FormikField } from '@/components/ui/form/FormikField'
 import { addYears, subYears } from 'date-fns'
 import locale_nb from 'date-fns/locale/nb'
 import { TextInput } from '@/components/ui/form/inputs/textInput/TextInput'
@@ -75,11 +74,7 @@ const P_FormikDatepicker = ({ addHour = false, ...props }) => {
 		formMethods.trigger()
 	}
 	const handleBlur = () => props?.onBlur?.(SyntEvent(props.name, value))
-	return (
-		<FormikField name={props.name}>
-			<DollyDatepicker value={value} onChange={handleChange} onBlur={handleBlur} {...props} />
-		</FormikField>
-	)
+	return <DollyDatepicker value={value} onChange={handleChange} onBlur={handleBlur} {...props} />
 }
 
 export const FormikDatepicker = ({ visHvisAvhuket = true, ...props }) => {

@@ -11,7 +11,7 @@ const personFragmentNaviger = new RegExp(/dolly-backend\/api\/v1\/ident\/naviger
 
 describe('Opprett gruppe og start bestilling med alle mulige tilvalg', () => {
 	it('passes', () => {
-		cy.visit('http://localhost:5678/gruppe')
+		cy.visit('gruppe')
 
 		// Naviger mellom tabs
 		cy.dollyGet(CypressSelector.TOGGLE_FAVORITTER).click()

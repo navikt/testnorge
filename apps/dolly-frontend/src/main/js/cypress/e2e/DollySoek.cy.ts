@@ -3,7 +3,7 @@ import { CypressSelector } from '../mocks/Selectors'
 describe('Dolly-søk testing', () => {
 	const dollySoekIdenter = new RegExp(/dolly-backend\/api\/v1\/elastic\/identer/)
 	it('passes', () => {
-		cy.visit('http://localhost:5678')
+		cy.visit('')
 
 		cy.dollyGet(CypressSelector.BUTTON_HEADER_FINNPERSON).click()
 		cy.dollyGet(CypressSelector.BUTTON_HEADER_DOLLYSOEK).click()

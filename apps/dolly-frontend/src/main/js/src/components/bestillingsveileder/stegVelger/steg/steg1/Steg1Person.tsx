@@ -30,6 +30,7 @@ export const Steg1Person = ({ stateModifier }: any) => {
 	const opts = useContext(BestillingsveilederContext)
 	const { getValues } = useFormContext()
 	const testnorgeIdent = identFraTestnorge(opts)
+
 	const checked = [
 		PersoninformasjonPanel,
 		AdressePanel,

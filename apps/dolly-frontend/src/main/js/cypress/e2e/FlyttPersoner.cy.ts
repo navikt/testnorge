@@ -2,7 +2,7 @@ import { CypressSelector } from '../mocks/Selectors'
 
 describe('Dolly flyttPersoner testing', () => {
 	it('passes', () => {
-		cy.visit('http://localhost:5678/gruppe')
+		cy.visit('gruppe')
 
 		cy.get('div').contains('Testytest').click()
 
