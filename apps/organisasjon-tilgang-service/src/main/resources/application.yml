@@ -13,8 +13,8 @@ spring:
           jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
           accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
         tokenx:
-          issuer-uri: ${TOKENDINGS_URL}
-          jwk-set-uri: ${TOKENDINGS_URL}/jwks
+          issuer-uri: ${TOKEN_X_ISSUER}
+          jwk-set-uri: ${TOKEN_X_JWKS_URI}
           accepted-audience: ${ACCEPTED_AUDIENCE}
   jackson:
     serialization:

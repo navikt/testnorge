@@ -1,6 +1,6 @@
 
 ALTINN_URL: https://tt02.altinn.no
-TOKENDINGS_URL: ${TOKEN_X_ISSUER}
+ACCEPTED_AUDIENCE: dev-gcp:dolly:testnav-organisasjon-tilgang-service
 
 altinn.api.key: dummy
 
