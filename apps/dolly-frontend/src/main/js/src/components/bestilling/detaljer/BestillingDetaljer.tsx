@@ -9,6 +9,7 @@ import * as _ from 'lodash'
 import { SlettButton } from '@/components/ui/button/SlettButton/SlettButton'
 import React from 'react'
 import { DollyApi } from '@/service/Api'
+import { CypressSelector } from '../../../../cypress/mocks/Selectors'
 
 export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId, brukertype }) {
 	const [isGjenopprettModalOpen, openGjenopprettModal, closeGjenoprettModal] = useBoolean(false)
@@ -33,8 +34,8 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId,
 	const gjenopprettTitle = gjenopprettingsId
 		? 'Kan ikke gjenopprette gjenoppretting av bestilling'
 		: harLevertPersoner
-		  ? 'Gjenopprett bestilling'
-		  : 'Kan ikke gjenopprette bestilling fordi den har ingen leverte identer'
+			? 'Gjenopprett bestilling'
+			: 'Kan ikke gjenopprette bestilling fordi den har ingen leverte identer'
 
 	return (
 		<div className="bestilling-detaljer">
@@ -44,6 +45,7 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId,
 				<div className="flexbox--align-center--justify-end info-block">
 					{!iLaastGruppe && (
 						<Button
+							data-cy={CypressSelector.BUTTON_BESTILLINGDETALJER_GJENOPPRETT}
 							onClick={openGjenopprettModal}
 							kind="synchronize"
 							disabled={!harLevertPersoner || gjenopprettingsId}
@@ -57,7 +59,12 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId,
 						!harEksisterendeNyIdent &&
 						!harRelatertPersonBarn &&
 						!gjenopprettingsId && (
-							<Button onClick={openMalModal} kind={'maler'} className="svg-icon-blue">
+							<Button
+								data-cy={CypressSelector.BUTTON_BESTILLINGDETALJER_OPPRETT_MAL}
+								onClick={openMalModal}
+								kind={'maler'}
+								className="svg-icon-blue"
+							>
 								OPPRETT NY MAL
 							</Button>
 						)}

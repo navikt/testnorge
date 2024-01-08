@@ -11,6 +11,7 @@ import {
 	useMatchMutate,
 } from '@/utils/hooks/useMutate'
 import { FormProvider, useForm } from 'react-hook-form'
+import { CypressSelector } from '../../../../cypress/mocks/Selectors'
 
 export const MalModal = ({ id, erOrganisasjon, closeModal }) => {
 	const [nyttMalnavn, setMalnavn] = useState('')
@@ -42,6 +43,7 @@ export const MalModal = ({ id, erOrganisasjon, closeModal }) => {
 							/>
 						</Label>
 						<ModalActionKnapper
+							data-cy={CypressSelector.BUTTON_MALMODAL_LAGRE}
 							submitknapp="Lagre mal"
 							disabled={nyttMalnavn === ''}
 							onSubmit={formMethods.handleSubmit(lagreMal)}

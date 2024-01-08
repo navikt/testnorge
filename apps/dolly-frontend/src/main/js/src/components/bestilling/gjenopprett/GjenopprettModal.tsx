@@ -8,6 +8,7 @@ import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 import { FormProvider, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { CypressSelector } from '../../../../cypress/mocks/Selectors'
 
 type GjenopprettModalProps = {
 	gjenopprettHeader: any
@@ -53,7 +54,11 @@ export const GjenopprettModal = ({
 							<NavButton variant={'danger'} onClick={closeModal}>
 								Avbryt
 							</NavButton>
-							<NavButton variant={'primary'} onClick={formMethods.handleSubmit(submitFormik)}>
+							<NavButton
+								data-cy={CypressSelector.BUTTON_BESTILLINGDETALJER_GJENOPPRETT_UTFOER}
+								variant={'primary'}
+								onClick={formMethods.handleSubmit(submitFormik)}
+							>
 								Utfør
 							</NavButton>
 						</div>
