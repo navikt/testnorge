@@ -41,7 +41,13 @@ const Button = ({
 	) : null
 
 	return (
-		<button className={cssClass} onClick={handleClick} disabled={disabled || loading} {...rest}>
+		<button
+			type={type}
+			className={cssClass}
+			onClick={handleClick}
+			disabled={disabled || loading}
+			{...rest}
+		>
 			{renderIcon}
 			{children && <span>{children}</span>}
 		</button>
