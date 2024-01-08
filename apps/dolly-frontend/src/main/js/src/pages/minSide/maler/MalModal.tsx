@@ -10,43 +10,47 @@ import {
 	REGEX_BACKEND_ORGANISASJONER,
 	useMatchMutate,
 } from '@/utils/hooks/useMutate'
+import { FormProvider, useForm } from 'react-hook-form'
 
 export const MalModal = ({ id, erOrganisasjon, closeModal }) => {
 	const [nyttMalnavn, setMalnavn] = useState('')
 	const matchMutate = useMatchMutate()
+	const formMethods = useForm()
 	const lagreMal = () => {
 		erOrganisasjon
 			? DollyApi.lagreOrganisasjonMalFraBestillingId(id, nyttMalnavn).then(() =>
-					matchMutate(REGEX_BACKEND_ORGANISASJONER)
-			  )
+					matchMutate(REGEX_BACKEND_ORGANISASJONER),
+				)
 			: DollyApi.lagreMalFraBestillingId(id, nyttMalnavn).then(() =>
-					matchMutate(REGEX_BACKEND_BESTILLINGER)
-			  )
+					matchMutate(REGEX_BACKEND_BESTILLINGER),
+				)
 		closeModal()
 	}
 
 	return (
 		<ErrorBoundary>
-			<DollyModal isOpen closeModal={closeModal} width="40%" overflow="auto">
-				<div className="modal">
-					<h1>Opprett ny mal</h1>
-					<br />
-					<Label name={'MalNavn'} label={'Navn på mal'}>
-						<TextInput
-							name="malnavn"
-							onChange={(e) => setMalnavn(e.target.value)}
-							className="input--fullbredde"
+			<FormProvider {...formMethods}>
+				<DollyModal isOpen closeModal={closeModal} width="40%" overflow="auto">
+					<div className="modal">
+						<h1>Opprett ny mal</h1>
+						<br />
+						<Label name={'MalNavn'} label={'Navn på mal'}>
+							<TextInput
+								name="malnavn"
+								onChange={(e) => setMalnavn(e.target.value)}
+								className="input--fullbredde"
+							/>
+						</Label>
+						<ModalActionKnapper
+							submitknapp="Lagre mal"
+							disabled={nyttMalnavn === ''}
+							onSubmit={formMethods.handleSubmit(lagreMal)}
+							onAvbryt={closeModal}
+							center
 						/>
-					</Label>
-					<ModalActionKnapper
-						submitknapp="Lagre mal"
-						disabled={nyttMalnavn === ''}
-						onSubmit={lagreMal}
-						onAvbryt={closeModal}
-						center
-					/>
-				</div>
-			</DollyModal>
+					</div>
+				</DollyModal>
+			</FormProvider>
 		</ErrorBoundary>
 	)
 }

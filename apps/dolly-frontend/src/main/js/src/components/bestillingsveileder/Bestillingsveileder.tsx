@@ -16,6 +16,7 @@ export const Bestillingsveileder = ({ error, sendBestilling }) => {
 	const [navigateRoot, setNavigateRoot] = useState(false)
 	const { gruppeId, personId } = useParams()
 	const erOrganisasjon = location?.state?.opprettOrganisasjon
+	const importPersoner = location?.state?.importPersoner
 
 	useEffect(() => {
 		if (navigateRoot) {
@@ -32,7 +33,7 @@ export const Bestillingsveileder = ({ error, sendBestilling }) => {
 		}
 	}
 
-	if (!erOrganisasjon && !gruppeId) {
+	if (!erOrganisasjon && !gruppeId && !importPersoner) {
 		setNavigateRoot(true)
 		return null
 	}

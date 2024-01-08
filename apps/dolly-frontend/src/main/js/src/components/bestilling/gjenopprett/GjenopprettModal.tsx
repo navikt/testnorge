@@ -6,7 +6,7 @@ import NavButton from '@/components/ui/button/NavButton/NavButton'
 import * as yup from 'yup'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
-import { useForm } from 'react-hook-form'
+import { FormProvider, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 
 type GjenopprettModalProps = {
@@ -37,27 +37,29 @@ export const GjenopprettModal = ({
 	})
 
 	return (
-		<DollyModal isOpen={true} closeModal={closeModal} width="50%" overflow="auto">
-			<ErrorBoundary>
-				{gjenopprettHeader}
-				<Fragment>
-					<MiljoVelger
-						bestillingsdata={bestilling ? bestilling.bestilling : null}
-						heading="Velg miljø å gjenopprette i"
-						bankIdBruker={brukertype && brukertype === 'BANKID'}
-						alleredeValgtMiljoe={[]}
-					/>
+		<FormProvider {...formMethods}>
+			<DollyModal isOpen={true} closeModal={closeModal} width="50%" overflow="auto">
+				<ErrorBoundary>
+					{gjenopprettHeader}
+					<Fragment>
+						<MiljoVelger
+							bestillingsdata={bestilling ? bestilling.bestilling : null}
+							heading="Velg miljø å gjenopprette i"
+							bankIdBruker={brukertype && brukertype === 'BANKID'}
+							alleredeValgtMiljoe={[]}
+						/>
 
-					<div className="dollymodal_buttons">
-						<NavButton variant={'danger'} onClick={closeModal}>
-							Avbryt
-						</NavButton>
-						<NavButton variant={'primary'} onClick={() => formMethods.handleSubmit(submitFormik)}>
-							Utfør
-						</NavButton>
-					</div>
-				</Fragment>
-			</ErrorBoundary>
-		</DollyModal>
+						<div className="dollymodal_buttons">
+							<NavButton variant={'danger'} onClick={closeModal}>
+								Avbryt
+							</NavButton>
+							<NavButton variant={'primary'} onClick={formMethods.handleSubmit(submitFormik)}>
+								Utfør
+							</NavButton>
+						</div>
+					</Fragment>
+				</ErrorBoundary>
+			</DollyModal>
+		</FormProvider>
 	)
 }
