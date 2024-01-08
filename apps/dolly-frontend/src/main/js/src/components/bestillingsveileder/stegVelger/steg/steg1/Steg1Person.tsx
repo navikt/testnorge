@@ -27,9 +27,10 @@ export const identFraTestnorge = (opts: any) => {
 }
 
 export const Steg1Person = ({ stateModifier }: any) => {
-	const opts = useContext(BestillingsveilederContext)
+	const opts: any = useContext(BestillingsveilederContext)
 	const { getValues } = useFormContext()
 	const testnorgeIdent = identFraTestnorge(opts)
+	const personFoerLeggTil = opts?.personFoerLeggTil
 
 	const checked = [
 		PersoninformasjonPanel,
@@ -52,6 +53,10 @@ export const Steg1Person = ({ stateModifier }: any) => {
 		.map((panel) => ({
 			label: panel.heading,
 			values: stateModifier(panel.initialValues).checked,
+		}))
+		.map((v) => ({
+			...v,
+			values: v?.values.filter((val) => !personFoerLeggTil || val !== 'Alder'),
 		}))
 		.filter((v) => v.values.length)
 

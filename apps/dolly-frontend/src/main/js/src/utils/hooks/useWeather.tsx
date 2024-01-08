@@ -17,7 +17,7 @@ export const useWeatherFyrstikkAlleen = () => {
 	const millimeterNedboer =
 		data?.properties?.timeseries?.[0]?.data?.next_6_hours?.details?.precipitation_amount
 
-	const nedBoerType = data?.properties?.timeseries?.[0]?.data?.next_6_hours?.summary?.symbol_code
+	const nedBoerType = data?.properties?.timeseries?.[0]?.data?.next_6_hou
 
 	return {
 		millimeterNedboer: millimeterNedboer ? millimeterNedboer * 10 : 0,

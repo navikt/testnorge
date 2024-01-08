@@ -42,7 +42,9 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 
 	const isLastStep = () => step === STEPS.length - 1
 	const handleNext = () => {
-		if (!formMethods.formState.isValid && step === 1) {
+		const errorFelter = Object.keys(formMethods.formState.errors)
+		const kunEnvironmentError = errorFelter.length === 1 && errorFelter[0] === 'environments'
+		if (!formMethods.formState.isValid && step === 1 && !kunEnvironmentError) {
 			console.warn('Feil i form, stopper navigering videre')
 			errorContext?.setShowError(true)
 			return
