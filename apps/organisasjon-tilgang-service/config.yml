@@ -74,7 +74,7 @@ spec:
     - name: ACCEPTED_AUDIENCE
       value: dev-gcp:dolly:testnav-organisasjon-tilgang-service
     - name: TOKENDINGS_URL
-      value: https://tokenx.dev-gcp.nav.cloud.nais.io 
+      value: ${TOKEN_X_ISSUER} 
   gcp:
     sqlInstances:
       - type: POSTGRES_15

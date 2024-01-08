@@ -3,7 +3,6 @@ remote_theme: pmarsceill/just-the-docs
 logo: "assets/logo.ico"
 
 exclude: [
-    "applications/avhengighetsanalyse.md",
     "applications/endringsmelding.md",
     "applications/oppsummeringsdokument.md",
     "solution-description/index.md",
