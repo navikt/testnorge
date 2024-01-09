@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -24,6 +23,7 @@ public class GetTenorTestdata implements Callable<Mono<JsonNode>> {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder.path(TENOR_QUERY_URL)
                         .queryParam("kql",query)
+                        .queryParam("nokkelinformasjon",true)
                         .build())
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
