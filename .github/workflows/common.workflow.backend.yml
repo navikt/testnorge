@@ -103,6 +103,10 @@ jobs:
           build-root-directory: ${{ inputs.working-directory }}
           arguments: build --scan
           cache-read-only: false
+      - name: Publish results (unit test)
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        with:
+          junit_files: "**/build/test-results/test/TEST-*.xml"
       - name: "Docker"
         id: docker-build-push
         if: |
