@@ -15,6 +15,11 @@ spec:
       tenant: nav.no
   tokenx:
     enabled: true
+  maskinporten:
+    enabled: true
+    scopes:
+      consumes:
+        - name: "skatteetaten:testnorge/testdata.read"
   accessPolicy:
     inbound:
       rules:
@@ -28,7 +33,6 @@ spec:
     outbound:
       external:
         - host: testdata.api.skatteetaten.no
-        - host: maskinporten.no
   liveness:
     path: /internal/isAlive
     initialDelay: 4
@@ -58,5 +62,3 @@ spec:
   env:
     - name: SPRING_PROFILES_ACTIVE
       value: prod
-    - name: MASKINPORTEN_TENOR_SCOPE
-      value: "skatteetaten:testnorge/testdata.read"

@@ -14,7 +14,7 @@ public class MaskinportenConfig {
     @Value("${MASKINPORTEN_CLIENT_JWK}")
     private String jwkPrivate;
 
-    @Value("${MASKINPORTEN_TENOR_SCOPE}")
+    @Value("${MASKINPORTEN_SCOPES}")
     private String scope;
 
     @Value("${MASKINPORTEN_WELL_KNOWN_URL}")
