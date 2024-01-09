@@ -79,6 +79,8 @@ export enum CypressSelector {
 	BUTTON_BESTILLINGDETALJER_GJENOPPRETT_UTFOER = 'button-bestillingdetaljer-gjenopprett-utfoer',
 	BUTTON_LEGGTILPAAALLE = 'button-leggtilpaagruppe',
 	BUTTON_MALMODAL_LAGRE = 'button-malmodal-lagre',
+	BUTTON_GJENOPPRETT_GRUPPE = 'button-gjenopprett-gruppe',
+	BUTTON_REDIGER_GRUPPE = 'button-rediger-gruppe',
 	SELECT_PERSON_SEARCH = 'select-person-search',
 	SELECT_TAGS = 'select-tags',
 	HOVER_MILJOE = 'hover-miljoe',
