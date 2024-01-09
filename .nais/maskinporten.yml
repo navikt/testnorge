@@ -9,4 +9,5 @@ spec:
   scopes:
     consumes:
       - name: altinn:serviceowner
+      - name: skatteetaten:testnorge/testdata.read
   secretName: maskinporten-dolly-prod # deployes til prod. secret kopieres manuelt til dev.
