@@ -25,7 +25,6 @@ jobs:
           config-file: .github/workflows/scheduled.scan.markdown.json
           use-quiet-mode: yes
       - name: "Slack"
-        if: ${{ failure() }}
         uses: slackapi/slack-github-action@v1.24.0
         with:
           payload: |
