@@ -374,8 +374,8 @@ export const VisningRedigerbar = ({
 					<Form
 						onSubmit={(data) =>
 							relatertPersonInfo?.ident
-								? handleSubmitRelatertPerson(data, relatertPersonInfo.ident)
-								: handleSubmit(data)
+								? handleSubmitRelatertPerson(data?.data, relatertPersonInfo.ident)
+								: handleSubmit(data?.data)
 						}
 					>
 						<>

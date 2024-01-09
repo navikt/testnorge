@@ -19,7 +19,7 @@ export const VelgGruppe = ({
 	gruppevalg,
 	setGruppevalg,
 }: VelgGruppeProps) => {
-	const [valgtGruppe, setValgtGruppe] = useState(_.get(formMethods.getValues(), `gruppeId`) || '')
+	const [valgtGruppe] = useState(_.get(formMethods.getValues(), `gruppeId`) || '')
 
 	useEffect(() => {
 		if (formMethods.getValues('gruppeId') !== valgtGruppe) {
@@ -32,8 +32,6 @@ export const VelgGruppe = ({
 		<div className="input-oppsummering">
 			<h2>{title}</h2>
 			<VelgGruppeToggle
-				valgtGruppe={valgtGruppe}
-				setValgtGruppe={setValgtGruppe}
 				fraGruppe={fraGruppe}
 				gruppevalg={gruppevalg}
 				setGruppevalg={setGruppevalg}

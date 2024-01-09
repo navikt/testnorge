@@ -5,15 +5,11 @@ import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 import { CypressSelector } from '../../../cypress/mocks/Selectors'
 
-interface NyGruppe {
-	setValgtGruppe: React.Dispatch<React.SetStateAction<string>>
-}
-
 const FeedbackText = styled.div`
 	margin-top: 10px;
 `
 
-export default ({ setValgtGruppe }: NyGruppe) => {
+export default () => {
 	const [nyGruppe, setNyGruppe] = useState('')
 	const [feilmelding, setFeilmelding] = useState('')
 	const [navn, setNavn] = useState('')
@@ -38,7 +34,6 @@ export default ({ setValgtGruppe }: NyGruppe) => {
 				setFeilmelding('')
 			}
 			const { data } = response
-			setValgtGruppe(data.id)
 			setNyGruppe(`${data.id} - ${data.navn}`)
 		})
 	}

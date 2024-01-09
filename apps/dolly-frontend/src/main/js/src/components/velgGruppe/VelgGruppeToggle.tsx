@@ -7,8 +7,6 @@ import { CypressSelector } from '../../../cypress/mocks/Selectors'
 import AlleGrupper from '@/components/velgGruppe/AlleGrupper'
 
 interface VelgGruppeToggleProps {
-	setValgtGruppe: React.Dispatch<React.SetStateAction<string>>
-	valgtGruppe: string
 	fraGruppe?: number
 }
 
@@ -23,15 +21,12 @@ const StyledToggleGroup = styled(ToggleGroup)`
 `
 
 export const VelgGruppeToggle = ({
-	setValgtGruppe,
-	valgtGruppe,
 	fraGruppe = null,
 	gruppevalg,
 	setGruppevalg,
 }: VelgGruppeToggleProps) => {
 	const handleToggleChange = (value: Gruppevalg) => {
 		setGruppevalg(value)
-		setValgtGruppe('')
 	}
 	return (
 		<div className="toggle--wrapper">
@@ -60,21 +55,9 @@ export const VelgGruppeToggle = ({
 				</ToggleGroup.Item>
 			</StyledToggleGroup>
 
-			{gruppevalg === Gruppevalg.MINE && (
-				<EksisterendeGruppe
-					setValgtGruppe={setValgtGruppe}
-					valgtGruppe={valgtGruppe}
-					fraGruppe={fraGruppe}
-				/>
-			)}
-			{gruppevalg === Gruppevalg.ALLE && (
-				<AlleGrupper
-					setValgtGruppe={setValgtGruppe}
-					valgtGruppe={valgtGruppe}
-					fraGruppe={fraGruppe}
-				/>
-			)}
-			{gruppevalg === Gruppevalg.NY && <NyGruppe setValgtGruppe={setValgtGruppe} />}
+			{gruppevalg === Gruppevalg.MINE && <EksisterendeGruppe fraGruppe={fraGruppe} />}
+			{gruppevalg === Gruppevalg.ALLE && <AlleGrupper fraGruppe={fraGruppe} />}
+			{gruppevalg === Gruppevalg.NY && <NyGruppe />}
 		</div>
 	)
 }
