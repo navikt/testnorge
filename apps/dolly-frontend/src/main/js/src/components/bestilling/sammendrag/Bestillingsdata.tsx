@@ -13,6 +13,7 @@ import { Skjerming } from '@/components/fagsystem/pdlf/bestilling/partials/Skjer
 import { NorskBankkonto } from '@/components/fagsystem/pdlf/bestilling/partials/NorskBankkonto'
 import { UtenlandskBankkonto } from '@/components/fagsystem/pdlf/bestilling/partials/UtenlandskBankkonto'
 import { Telefonnummer } from '@/components/fagsystem/pdlf/bestilling/partials/Telefonnummer'
+import { Vergemaal } from '@/components/fagsystem/pdlf/bestilling/partials/Vergemaal'
 
 export const BestillingTitle = styled.h4`
 	margin: 5px 0 15px 0;
@@ -62,6 +63,7 @@ export const Bestillingsdata = ({ bestilling }: any) => {
 			<NorskBankkonto norskBankkonto={bestilling.bankkonto?.norskBankkonto} />
 			<UtenlandskBankkonto utenlandskBankkonto={bestilling.bankkonto?.utenlandskBankkonto} />
 			<Telefonnummer telefonnummerListe={bestilling.pdldata?.person?.telefonnummer} />
+			<Vergemaal vergemaalListe={bestilling.pdldata?.person?.vergemaal} />
 		</>
 	)
 }
