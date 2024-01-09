@@ -9,7 +9,7 @@ on:
         default: "."
         required: true
     secrets:
-      SLACK_WEBHOOK:
+      DOLLY_ALERTS_SLACK_WEBHOOK_URL:
         required: true
 
 jobs:
@@ -26,10 +26,11 @@ jobs:
           use-quiet-mode: yes
       - name: "Slack"
         if: ${{ failure() }}
-        uses: rtCamp/action-slack-notify@v2
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          payload: |
+            {
+              "message": "Markdown Link Check feilet. Sjekk <https://github.com/navikt/testnorge/actions/workflows/scheduled.scan.markdown.yml|GitHub Actions>."
+            }
         env:
-          SLACK_CHANNEL: "dolly-alerts"
-          SLACK_USERNAME: "GitHub Actions"
-          SLACK_COLOR: ${{ job.status }}
-          SLACK_MESSAGE: "Markdown Link Check feilet. Sjekk <https://github.com/navikt/testnorge/actions/workflows/scheduled.scan.markdown.yml|GitHub Actions>."
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_WEBHOOK_URL: ${{ secrets.DOLLY_ALERTS_SLACK_WEBHOOK_URL }}
