@@ -31,6 +31,7 @@ export const Steg1Person = ({ stateModifier }: any) => {
 	const { watch } = useFormContext()
 	const testnorgeIdent = identFraTestnorge(opts)
 	const personFoerLeggTil = opts?.personFoerLeggTil
+	const leggTil = opts?.is?.leggTil || opts?.is?.leggTilPaaGruppe
 
 	const checked = [
 		PersoninformasjonPanel,
@@ -56,7 +57,7 @@ export const Steg1Person = ({ stateModifier }: any) => {
 		}))
 		.map((v) => ({
 			...v,
-			values: v?.values.filter((val) => !personFoerLeggTil || val !== 'Alder'),
+			values: v?.values.filter((val) => !personFoerLeggTil && !leggTil && val !== 'Alder'),
 		}))
 		.filter((v) => v.values.length)
 

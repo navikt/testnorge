@@ -40,7 +40,7 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 	const sm = stateModifier(PersoninformasjonPanel.initialValues)
 	const opts = useContext(BestillingsveilederContext)
 	const opprettFraEksisterende = opts.is.opprettFraIdenter
-	const leggTil = opts.is.leggTil
+	const leggTil = opts.is.leggTil || opts.is.leggTilPaaGruppe
 
 	const harFnr = opts.identtype === 'FNR'
 	// Noen egenskaper kan ikke endres når personen opprettes fra eksisterende eller videreføres med legg til
