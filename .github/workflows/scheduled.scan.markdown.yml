@@ -27,5 +27,10 @@ jobs:
       - name: "Slack"
         if: ${{ failure() }}
         uses: slackapi/slack-github-action@v1.24.0
+        with:
+          payload: |
+            {
+              "text": "Payload"
+            }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.DOLLY_ALERTS_SLACK_WEBHOOK_URL }}
