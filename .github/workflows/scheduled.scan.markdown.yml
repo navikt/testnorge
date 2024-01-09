@@ -30,7 +30,7 @@ jobs:
         with:
           payload: |
             {
-              "text": "Sjekk på døde URLer feilet, se https://github.com/navikt/testnorge/actions/workflows/scheduled.scan.markdown.yml."
+              "text": "Sjekk på døde URLer feilet, se https://github.com/navikt/testnorge/actions/workflows/scheduled.scan.markdown.yml for logg."
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.DOLLY_ALERTS_SLACK_WEBHOOK_URL }}
