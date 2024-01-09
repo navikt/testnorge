@@ -1,5 +1,6 @@
 import useSWR from 'swr'
 import { fetcher, multiFetcherAll } from '@/api'
+import { getAlder } from '@/ducks/fagsystem'
 
 const sliceGruppe = (gruppe, maxAntall, url) => {
 	let urlListe = []
@@ -12,20 +13,23 @@ const sliceGruppe = (gruppe, maxAntall, url) => {
 
 const multiplePdlforvalterUrl = (gruppe) => {
 	if (!gruppe) return null
-	const maxAntall = 40
+	const maxAntall = 150
 	const url = '/testnav-pdl-forvalter/api/v1/personer?'
 	return sliceGruppe(gruppe, maxAntall, url)
 }
 
 const multiplePdlPersonUrl = (gruppe) => {
 	if (!gruppe) return null
-	const maxAntall = 40
+	const maxAntall = 150
 	const url = '/person-service/api/v2/personer/identer?'
 	return sliceGruppe(gruppe, maxAntall, url)
 }
 
 export const usePdlOptions = (gruppe) => {
-	const { data, error } = useSWR<any, Error>([multiplePdlforvalterUrl(gruppe)], multiFetcherAll)
+	const { data, isLoading, error } = useSWR<any, Error>(
+		multiplePdlforvalterUrl(gruppe),
+		multiFetcherAll,
+	)
 
 	const personData = []
 	data?.flat().forEach((id) => {
@@ -37,18 +41,28 @@ export const usePdlOptions = (gruppe) => {
 			value: id?.person?.ident,
 			label: `${id?.person?.ident} - ${fornavn} ${mellomnavn} ${etternavn}`,
 			relasjoner: id?.relasjoner?.map((r) => r?.relatertPerson?.ident),
+			alder: getAlder(id.person.foedsel?.[0]?.foedselsdato),
+			sivilstand: id.person.sivilstand?.[0]?.type,
+			vergemaal: id.person.vergemaal?.length > 0,
+			doedsfall: id.person.doedsfall?.length > 0,
+			foreldre: id.relasjoner
+				?.filter((relasjon) => relasjon.relasjonType === 'FAMILIERELASJON_FORELDER')
+				?.map((relasjon) => relasjon.relatertPerson?.ident),
+			foreldreansvar: id.relasjoner
+				?.filter((relasjon) => relasjon.relasjonType === 'FORELDREANSVAR_BARN')
+				?.map((relasjon) => relasjon.relatertPerson?.ident),
 		})
 	})
 
 	return {
 		data: personData,
-		loading: false,
+		loading: isLoading,
 		error: gruppe ? error : undefined,
 	}
 }
 
 export const useTestnorgeOptions = (gruppe) => {
-	const { data, error } = useSWR<any, Error>([multiplePdlPersonUrl(gruppe)], multiFetcherAll)
+	const { data, error } = useSWR<any, Error>(multiplePdlPersonUrl(gruppe), multiFetcherAll)
 
 	const getRelatertePersoner = (person) => {
 		if (!person) {

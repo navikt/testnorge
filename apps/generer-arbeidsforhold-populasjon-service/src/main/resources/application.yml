@@ -30,11 +30,6 @@ consumers:
     cluster: dev-gcp
     namespace: dolly
     name: synthdata-amelding
-  testnav-hodejegeren-proxy:
-    cluster: dev-fss
-    namespace: dolly
-    name: testnav-hodejegeren-proxy
-    url: https://testnav-hodejegeren-proxy.dev-fss-pub.nais.io
   oppsummeringsdokument-service:
     cluster: dev-gcp
     namespace: dolly

@@ -8,7 +8,7 @@ metadata:
   labels:
     team: dolly
 spec:
-  image: {{ image }}
+  image: "{{image}}"
   port: 8080
   tokenx:
     enabled: true
@@ -30,8 +30,6 @@ spec:
         - application: testnav-generer-organisasjon-populasjon-service
         - application: testnav-organisasjon-service
         - application: synthdata-amelding
-      external:
-        - host: testnav-hodejegeren-proxy.dev-fss-pub.nais.io
   liveness:
     path: /internal/isAlive
     initialDelay: 4

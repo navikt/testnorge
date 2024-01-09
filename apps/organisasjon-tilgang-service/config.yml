@@ -8,7 +8,7 @@ metadata:
 spec:
   tokenx:
     enabled: true
-  image: {{ image }}
+  image: "{{image}}"
   port: 8080
   webproxy: true
   azure:
