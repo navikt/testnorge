@@ -27,10 +27,5 @@ jobs:
       - name: "Slack"
         if: ${{ failure() }}
         uses: slackapi/slack-github-action@v1.24.0
-        with:
-          payload: |
-            {
-              "message": "Markdown Link Check feilet. Sjekk <https:\/\/github.com\/navikt\/testnorge\/actions\/workflows\/scheduled.scan.markdown.yml|GitHub Actions>."
-            }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.DOLLY_ALERTS_SLACK_WEBHOOK_URL }}
