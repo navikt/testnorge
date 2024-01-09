@@ -46,8 +46,6 @@ spec:
   prometheus:
     enabled: true
     path: /internal/metrics
-  envFrom:
-    - secret: maskinporten-dolly-prod
   replicas:
     min: 1
     max: 1
