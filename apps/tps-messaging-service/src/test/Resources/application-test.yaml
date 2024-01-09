@@ -13,3 +13,5 @@ consumers:
       cluster: dev-gcp
       namespace: dolly
       name: testnav-miljoer-service
+
+TOKEN_X_ISSUER: dummy

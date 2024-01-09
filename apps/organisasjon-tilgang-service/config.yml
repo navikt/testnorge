@@ -71,8 +71,6 @@ spec:
   env:
     - name: SPRING_PROFILES_ACTIVE
       value: prod
-    - name: ACCEPTED_AUDIENCE
-      value: dev-gcp:dolly:testnav-organisasjon-tilgang-service
   gcp:
     sqlInstances:
       - type: POSTGRES_15

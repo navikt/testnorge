@@ -19,7 +19,7 @@ spring:
         tokenx:
           issuer-uri: ${TOKEN_X_ISSUER} 
           jwk-set-uri: ${TOKEN_X_JWKS_URI}
-          accepted-audience: dev-gcp:dolly:testnav-generer-synt-amelding-service
+          accepted-audience: ${TOKEN_X_CLIENT_ID}
 
 springdoc:
   swagger-ui:

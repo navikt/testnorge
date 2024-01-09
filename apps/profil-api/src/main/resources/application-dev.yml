@@ -1,12 +1,4 @@
 
-spring:
-  security:
-    oauth2:
-      resourceserver:
-        tokenx:
-          accepted-audience: dev-gcp:dolly:testnorge-profil-api-dev
-
-
 consumers:
   testnav-person-organisasjon-tilgang-service:
     cluster: dev-gcp

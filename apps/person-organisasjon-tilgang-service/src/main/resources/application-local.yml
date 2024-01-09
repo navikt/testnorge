@@ -1,7 +1,8 @@
-ACCEPTED_AUDIENCE: dev-gcp:dolly:testnav-person-tilgang-service-dev
 ALTINN_URL: https://tt02.altinn.no
 
-TOKENDINGS_URL: dummy
+TOKEN_X_ISSUER: dummy
+OKEN_X_JWKS_URI: dummy
+TOKEN_X_CLIENT_ID: dummy
 ALTINN_API_KEY: dummy
 
 MASKINPORTEN_CLIENT_ID: dummy

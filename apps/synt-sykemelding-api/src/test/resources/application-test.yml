@@ -2,19 +2,7 @@ wiremock:
   server:
     port: 0
 
-spring:
-  cloud:
-    vault:
-      enabled: false
-      token: dummy
-
-azure:
-  app:
-    client:
-      id: dummy
-      secret: dummy
-
-TOKEN_X_CLIENT_ID: test
+TOKEN_X_ISSUER: dummy
 
 consumers:
   synt-sykemelding:

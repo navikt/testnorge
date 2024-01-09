@@ -65,7 +65,5 @@ spec:
   env:
     - name: SPRING_PROFILES_ACTIVE
       value: prod
-    - name: ACCEPTED_AUDIENCE
-      value: dev-gcp:dolly:testnav-person-organisasjon-tilgang-service-dev
     - name: ALTINN_URL
       value: https://tt02.altinn.no
