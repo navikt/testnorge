@@ -1,5 +1,9 @@
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import { BestillingTitle, EmptyObject } from '@/components/bestilling/sammendrag/Bestillingsdata'
+import {
+	BestillingData,
+	BestillingTitle,
+	EmptyObject,
+} from '@/components/bestilling/sammendrag/Bestillingsdata'
 import React from 'react'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
@@ -23,11 +27,11 @@ export const Alder = ({ opprettNyPerson }: AlderTypes) => {
 					{isEmpty(opprettNyPerson, ['identtype', 'syntetisk']) ? (
 						<EmptyObject />
 					) : (
-						<div className="flexbox--flex-wrap" style={{ marginBottom: '10px' }}>
+						<BestillingData>
 							<TitleValue title="Alder" value={opprettNyPerson.alder} />
 							<TitleValue title="Født etter" value={formatDate(opprettNyPerson.foedtEtter)} />
 							<TitleValue title="Født før" value={formatDate(opprettNyPerson.foedtFoer)} />
-						</div>
+						</BestillingData>
 					)}
 				</>
 			</ErrorBoundary>

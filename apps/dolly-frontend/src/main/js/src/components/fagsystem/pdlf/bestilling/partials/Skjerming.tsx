@@ -1,5 +1,5 @@
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import { BestillingTitle } from '@/components/bestilling/sammendrag/Bestillingsdata'
+import { BestillingData, BestillingTitle } from '@/components/bestilling/sammendrag/Bestillingsdata'
 import React from 'react'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { formatDate } from '@/utils/DataFormatter'
@@ -19,10 +19,10 @@ export const Skjerming = ({ skjerming }: SkjermingTypes) => {
 		<div className="person-visning">
 			<ErrorBoundary>
 				<BestillingTitle>Skjerming</BestillingTitle>
-				<div className="flexbox--flex-wrap" style={{ marginBottom: '10px' }}>
+				<BestillingData>
 					<TitleValue title="Skjerming fra" value={formatDate(skjerming.egenAnsattDatoFom)} />
 					<TitleValue title="Skjerming til" value={formatDate(skjerming.egenAnsattDatoTom)} />
-				</div>
+				</BestillingData>
 			</ErrorBoundary>
 		</div>
 	)
