@@ -8,6 +8,9 @@ on:
         description: "Directory to scan, e.g. apps/dolly-backend. Defaults to whole repo."
         default: "."
         required: true
+    secrets:
+      SLACK_WEBHOOK:
+        required: true
 
 jobs:
   markdown:
@@ -21,3 +24,12 @@ jobs:
           folder-path: ${{ inputs.working-directory }}
           config-file: .github/workflows/scheduled.scan.markdown.json
           use-quiet-mode: yes
+      - name: "Slack"
+        if: ${{ failure() }}
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_CHANNEL: "dolly-alerts"
+          SLACK_USERNAME: "GitHub Actions"
+          SLACK_COLOR: ${{ job.status }}
+          SLACK_MESSAGE: "Markdown Link Check feilet. Sjekk <https://github.com/navikt/testnorge/actions/workflows/scheduled.scan.markdown.yml|GitHub Actions>."
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
