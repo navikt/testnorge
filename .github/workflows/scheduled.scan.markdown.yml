@@ -30,7 +30,7 @@ jobs:
         with:
           payload: |
             {
-              "message": "Markdown Link Check feilet. Sjekk <https://github.com/navikt/testnorge/actions/workflows/scheduled.scan.markdown.yml|GitHub Actions>."
+              "message": "Markdown Link Check feilet. Sjekk <https:\/\/github.com\/navikt\/testnorge\/actions\/workflows\/scheduled.scan.markdown.yml|GitHub Actions>."
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.DOLLY_ALERTS_SLACK_WEBHOOK_URL }}
