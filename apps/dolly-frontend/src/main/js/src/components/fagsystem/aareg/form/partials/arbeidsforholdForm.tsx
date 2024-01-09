@@ -85,7 +85,7 @@ export const ArbeidsforholdForm = ({
 		return !_.isEqual(getValues('aareg'), [initialArbeidsforholdOrg])
 	}
 
-	const { setError, getValues, setValue: setFieldValue, trigger } = useFormContext()
+	const { setError, watch, getValues, setValue: setFieldValue, trigger } = useFormContext()
 	const [navArbeidsforholdPeriode, setNavArbeidsforholdPeriode] = useState(null as unknown as Date)
 	const { tidligereBestillinger } = useContext(BestillingsveilederContext)
 	const tidligereAaregBestillinger = hentUnikeAaregBestillinger(tidligereBestillinger)
@@ -108,7 +108,7 @@ export const ArbeidsforholdForm = ({
 		trigger()
 	}, [getValues('aareg')])
 
-	const gjeldendeArbeidsgiver = _.get(getValues(), `${path}.arbeidsgiver`)
+	const gjeldendeArbeidsgiver = watch(`${path}.arbeidsgiver`)
 
 	const arbeidsforholdstype =
 		typeof ameldingIndex !== 'undefined'
@@ -128,7 +128,7 @@ export const ArbeidsforholdForm = ({
 				const value = isDate(field)
 					? fixTimezone(field)
 					: field?.value || field?.target?.value || null
-				const amelding = _.get(getValues(), 'aareg[0].amelding') || []
+				const amelding = watch('aareg[0].amelding') || []
 				amelding.forEach((_maaned, idx) => {
 					if (!erLenket && idx < ameldingIndex) {
 						return null
@@ -141,7 +141,7 @@ export const ArbeidsforholdForm = ({
 					}
 				})
 				setFieldValue('aareg[0].amelding', amelding)
-				trigger()
+				trigger('aareg[0].amelding')
 			}
 		}
 	}
@@ -308,6 +308,7 @@ export const ArbeidsforholdForm = ({
 				/>
 				{arbeidsforholdstype === 'forenkletOppgjoersordning' && (
 					<FormikSelect
+						value={watch(`${path}.arbeidsavtale.yrke`)}
 						name={`${path}.arbeidsavtale.yrke`}
 						label="Yrke"
 						kodeverk={ArbeidKodeverk.Yrker}

@@ -202,6 +202,10 @@ const getUpdatedPdldata = (pdldata: any) => {
 		newPdldata.opprettNyPerson = {}
 	}
 	const person = newPdldata?.person
+	if (!person) {
+		newPdldata.person = undefined
+		return newPdldata
+	}
 	if (person?.bostedsadresse) {
 		newPdldata.person.bostedsadresse = person.bostedsadresse.map((adresse: BostedData) => {
 			return updateAdressetyper(adresse, false)

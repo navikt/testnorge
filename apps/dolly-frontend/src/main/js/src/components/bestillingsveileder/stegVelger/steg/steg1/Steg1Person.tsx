@@ -28,7 +28,7 @@ export const identFraTestnorge = (opts: any) => {
 
 export const Steg1Person = ({ stateModifier }: any) => {
 	const opts: any = useContext(BestillingsveilederContext)
-	const { getValues } = useFormContext()
+	const { watch } = useFormContext()
 	const testnorgeIdent = identFraTestnorge(opts)
 	const personFoerLeggTil = opts?.personFoerLeggTil
 
@@ -60,7 +60,7 @@ export const Steg1Person = ({ stateModifier }: any) => {
 		}))
 		.filter((v) => v.values.length)
 
-	const formValues = getValues()
+	const formValues = watch()
 
 	return (
 		<AttributtVelger checked={checked}>

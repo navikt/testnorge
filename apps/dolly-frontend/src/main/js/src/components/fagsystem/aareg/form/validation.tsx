@@ -240,9 +240,9 @@ export const validation = {
 				genererPeriode: ifPresent(
 					'$aareg[0].amelding[0]',
 					Yup.object({
-						fom: testDatoFom(requiredPeriode, 'tom'),
-						tom: testDatoTom(requiredPeriode, 'fom'),
-					}),
+						fom: testDatoFom(requiredDate.nullable(), 'tom'),
+						tom: testDatoTom(requiredDate.nullable(), 'fom'),
+					}).nullable(),
 				),
 			}),
 		),

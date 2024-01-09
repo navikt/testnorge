@@ -19,7 +19,7 @@ export const VelgGruppe = ({
 	gruppevalg,
 	setGruppevalg,
 }: VelgGruppeProps) => {
-	const [valgtGruppe, setValgtGruppe] = useState(_.get(formMethods.getValues(), `gruppeId`))
+	const [valgtGruppe, setValgtGruppe] = useState(_.get(formMethods.getValues(), `gruppeId`) || '')
 
 	useEffect(() => {
 		if (formMethods.getValues('gruppeId') !== valgtGruppe) {
