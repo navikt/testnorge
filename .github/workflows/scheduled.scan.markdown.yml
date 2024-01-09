@@ -30,7 +30,7 @@ jobs:
         with:
           payload: |
             {
-              "text": "Payload"
+              "text": "Markdown Scan feilet, se https://github.com/navikt/testnorge/actions/workflows/scheduled.scan.markdown.yml"
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.DOLLY_ALERTS_SLACK_WEBHOOK_URL }}
