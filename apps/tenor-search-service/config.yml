@@ -15,11 +15,6 @@ spec:
       tenant: nav.no
   tokenx:
     enabled: true
-  maskinporten:
-    enabled: true
-    scopes:
-      consumes:
-        - name: skatteetaten:tjenestepensjonsavtale
   accessPolicy:
     inbound:
       rules:
@@ -63,7 +58,5 @@ spec:
   env:
     - name: SPRING_PROFILES_ACTIVE
       value: prod
-    - name: ACCEPTED_AUDIENCE
-      value: dev-gcp:dolly:testnav-tenor-search-service
-    - name: TOKENDINGS_URL
-      value: https://tokenx.dev-gcp.nav.cloud.nais.io 
+    - name: MASKINPORTEN_TENOR_SCOPE
+      value: "skatteetaten:testnorge/testdata.read"
