@@ -29,7 +29,10 @@ spring:
       application-name: preprod/fss/brreg-stub
       database:
         enabled: true
+        role: brreg-stub-admin
         backend: postgresql/preprod-fss
+        username-property: spring.datasource.username
+        password-property: spring.datasource.password
 
 server:
   servlet:
