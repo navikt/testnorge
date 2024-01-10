@@ -69,16 +69,6 @@ jobs:
           echo "env: ${{ toJSON(env) }}"
           echo "commit: ${{ github.event.head.commit_message }}"
 
-  sonar:
-    needs: start
-    if: inputs.sonar-enabled
-    secrets:
-      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-    uses: ./.github/workflows/common.scan.sonar.yml
-    with:
-      working-directory: ${{ inputs.working-directory }}
-
   build:
     needs: start
     if: github.actor != 'dependabot[bot]'
@@ -103,6 +93,21 @@ jobs:
           build-root-directory: ${{ inputs.working-directory }}
           arguments: build --scan
           cache-read-only: false
+
+  sonar:
+    needs: build
+    if: inputs.sonar-enabled
+    secrets:
+      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    uses: ./.github/workflows/common.scan.sonar.yml
+    with:
+      working-directory: ${{ inputs.working-directory }}
+
+  assemble:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
       - name: "Docker"
         id: docker-build-push
         if: |
@@ -122,8 +127,8 @@ jobs:
       do-deploy: ${{ env.do-deploy }}
 
   deploy:
-    needs: build
-    if: needs.build.outputs.do-deploy == 'true'
+    needs: assemble
+    if: needs.assemble.outputs.do-deploy == 'true'
     concurrency: ${{ inputs.image-suffix }}
     runs-on: ubuntu-latest
     steps:
@@ -135,11 +140,11 @@ jobs:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: ${{ inputs.cluster }}
           RESOURCE: ${{ inputs.working-directory }}/${{ inputs.nais-manifest }}
-          VAR: image=${{ needs.build.outputs.image }}
+          VAR: image=${{ needs.assemble.outputs.image }}
 
   deploy-test:
-    needs: build
-    if: needs.build.outputs.do-deploy-test == 'true'
+    needs: assemble
+    if: needs.assemble.outputs.do-deploy-test == 'true'
     concurrency: ${{ inputs.image-suffix }}-test
     runs-on: ubuntu-latest
     steps:
@@ -151,4 +156,4 @@ jobs:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: ${{ inputs.cluster }}
           RESOURCE: ${{ inputs.working-directory }}/config.test.yml
-          VAR: image=${{ needs.build.outputs.image }}
+          VAR: image=${{ needs.assemble.outputs.image }}
