@@ -2,9 +2,13 @@ package no.nav.testnav.apps.tenorsearchservice.provider;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
+import no.nav.testnav.apps.tenorsearchservice.domain.TenorRequest;
 import no.nav.testnav.apps.tenorsearchservice.service.TenorSearchService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.Mapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,8 +26,17 @@ public class TenorSearchController {
 
     private final TenorSearchService tenorSearchService;
 
-    @GetMapping("/testdata")
+    @GetMapping("/testdata/raw")
     public Mono<JsonNode> getTestdata(@RequestParam(required = false) String searchData) {
+
+        return tenorSearchService
+                .getTestdata(searchData)
+                .switchIfEmpty(Mono.error(new NotFoundException("Spørring " + searchData + " ga ingen treff")));
+    }
+
+    @PostMapping("/testdata")
+    public Mono<JsonNode> getTestdata(@RequestBody TenorRequest searchData) {
+
         return tenorSearchService
                 .getTestdata(searchData)
                 .switchIfEmpty(Mono.error(new NotFoundException("Spørring " + searchData + " ga ingen treff")));
