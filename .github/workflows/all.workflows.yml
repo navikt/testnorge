@@ -37,10 +37,6 @@ on:
         description: "Deploy to test? Make sure the effective working directory contains a config.test.yml! Note: For dolly-frontend, this will also deploy with config.unstable.yml."
         default: false
 
-permissions:
-  contents: read
-  id-token: write
-
 jobs:
 
   start:
