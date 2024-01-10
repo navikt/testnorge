@@ -39,16 +39,15 @@ on:
 
 jobs:
 
-  start:
-    runs-on: ubuntu-latest
-    steps:
-      - name: "Log inputs"
-        run: |
-          echo "branch: ${{ github.ref_name }}"
-          echo "inputs: ${{ toJSON(inputs) }}"
+#  start:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: "Log inputs"
+#        run: |
+#          echo "branch: ${{ github.ref_name }}"
+#          echo "inputs: ${{ toJSON(inputs) }}"
 
   backend:
-    needs: start
     if: inputs.workflow == 'backend'
     uses: ./.github/workflows/common.workflow.backend.yml
     with:
@@ -68,7 +67,6 @@ jobs:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   frontend:
-    needs: start
     if: inputs.workflow == 'frontend'
     uses: ./.github/workflows/common.workflow.frontend.yml
     with:
