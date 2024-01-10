@@ -16,8 +16,12 @@ public class TenorRequest {
     public enum IdentifikatorType {FNR, DNR, FNR_TIDLIGERE_DNR}
     public enum Kjoenn {Mann, Kvinne}
     public enum Roller {DAGLIG_LEDER}
-    public enum Personstatus {Bosatt, Doed, Forsvunnet, Foedselsregistrert, IkkeBosatt, Inaktiv, Midlertidig, Opphørt, Utflyttet}
-    public enum Sivilstand {EnkeEllerEnkemann, Gift, GjenlevendePartner, RegistrertPartner, Separert, SeparertPartner, Skilt, SkiltPartner, Ugift, Uoppgitt}
+    public enum Personstatus {Bosatt, Doed, Forsvunnet, Foedselsregistrert, IkkeBosatt, Inaktiv, Midlertidig, Opphoert, Utflyttet}
+    public enum Sivilstatus {EnkeEllerEnkemann, Gift, GjenlevendePartner, RegistrertPartner, Separert, SeparertPartner, Skilt, SkiltPartner, Ugift, Uoppgitt}
+    public enum UtenlandskPersonIdentifikasjon{UtenlandskIdentifikasjonsnummer, TaxIdentificationNumber, SocialSecurityNumber, UtlendingsmyndighetenesIdentifikasjonsnummer}
+    public enum IdentitetsgrunnlagStatus {IkkeKontrollert, IngenStatus, Kontrollert}
+    public enum Adressebeskyttelse {Fortrolig, StrengtFortrolig}
+
 
     private List<Roller> roller;
 
@@ -25,8 +29,25 @@ public class TenorRequest {
     private DatoIntervall foedselsdato;
     private DatoIntervall doedsdato;
     private Kjoenn kjoenn;
-    public Personstatus personstatus;
-    public Sivilstand sivilstand;
+    private Personstatus personstatus;
+    private Sivilstatus sivilstatus;
+    private List<UtenlandskPersonIdentifikasjon> utenlandskPersonIdentifikasjon;
+    private IdentitetsgrunnlagStatus identitetsgrunnlagStatus;
+    private Adressebeskyttelse adressebeskyttelse;
+    private Boolean legitimasjonsdokument;
+    private Boolean falskIdentitet;
+    private Boolean norskStatsborgerskap;
+    private Boolean flereStatsborgerskap;
+    private Navn navn;
+
+
+    public List<UtenlandskPersonIdentifikasjon> getUtenlandskPersonIdentifikasjon() {
+
+        if (isNull(utenlandskPersonIdentifikasjon)) {
+            utenlandskPersonIdentifikasjon = new ArrayList<>();
+        }
+        return utenlandskPersonIdentifikasjon;
+    }
 
     public List<Roller> getRoller() {
 
@@ -44,5 +65,23 @@ public class TenorRequest {
 
         private LocalDate fra;
         private LocalDate til;
+    }
+
+    @Data
+    @NoArgsConstructor
+    public static class Navn {
+
+        private NavnLengde navnLengde;
+        private Boolean flereFornavn;
+        private Boolean harMellomnavn;
+        private Boolean navnSpesialtegn;
+    }
+
+    @Data
+    @NoArgsConstructor
+    public static class NavnLengde {
+
+        private Integer fraOgMed;
+        private Integer tilOgMed;
     }
 }

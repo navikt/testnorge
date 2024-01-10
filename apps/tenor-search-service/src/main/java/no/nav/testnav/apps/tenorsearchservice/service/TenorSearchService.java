@@ -8,8 +8,11 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
@@ -25,18 +28,55 @@ public class TenorSearchService {
 
     public Mono<TenorResponse> getTestdata(TenorRequest searchData) {
 
-        var builder = new StringBuilder();
-        builder.append(getFoedselsdato(searchData.getFoedselsdato()));
-        builder.append(getDoedsdato(searchData.getDoedsdato()));
-        builder.append(getIdentifikatorType(searchData.getIdentifikatorType()));
-        builder.append(getKjoenn(searchData.getKjoenn()));
-        builder.append(getPersonstatus(searchData.getPersonstatus()));
-        builder.append(getSivilstand(searchData.getSivilstand()));
-
+        var builder = new StringBuilder()
+                .append(convertDatoer("foedselsdato", searchData.getFoedselsdato()))
+                .append(convertDatoer("doedsdato", searchData.getDoedsdato()))
+                .append(getIdentifikatorType(searchData.getIdentifikatorType()))
+                .append(convertEnum("kjoenn", searchData.getKjoenn()))
+                .append(convertEnum("personstatus", searchData.getPersonstatus()))
+                .append(convertEnum("sivilstatus", searchData.getSivilstatus()))
+                .append(getUtenlandskPersonidentifikasjon(searchData.getUtenlandskPersonIdentifikasjon()))
+                .append(convertEnum("identitetsgrunnlagStatus", searchData.getIdentitetsgrunnlagStatus()))
+                .append(convertEnum("adressebeskyttelse", searchData.getAdressebeskyttelse()))
+                .append(convertBoolean("legitimasjonsdokument", searchData.getLegitimasjonsdokument()))
+                .append(convertBoolean("falskIdentitet", searchData.getFalskIdentitet()))
+                .append(convertBoolean("norskStatsborgerskap", searchData.getNorskStatsborgerskap()))
+                .append(convertBoolean("flereStatsborgerskap", searchData.getFlereStatsborgerskap()));
+        if (nonNull(searchData.getNavn())) {
+            builder.append(convertBoolean("flereFornavn", searchData.getNavn().getFlereFornavn()))
+                    .append(getNavnLengde(searchData.getNavn().getNavnLengde()))
+                    .append(getHarMellomnavn(searchData.getNavn().getHarMellomnavn()))
+                    .append(convertBoolean("navnSpesialtegn", searchData.getNavn().getNavnSpesialtegn()));
+        }
 
         builder.append(getRoller(searchData.getRoller()));
 
         return tenorClient.getTestdata(!builder.isEmpty() ? builder.substring(5) : "");
+    }
+
+    private String getHarMellomnavn(Boolean harMellomnavn) {
+
+        return isNotTrue(harMellomnavn) ? "" : "+and+harMellomnavn:*";
+    }
+
+    private String getNavnLengde(TenorRequest.NavnLengde navnLengde) {
+
+        return isNull(navnLengde) ? "" : "+and+navnLengde:[%s+to+%s]"
+                .formatted(isNull(navnLengde.getFraOgMed()) ? "*" : navnLengde.getFraOgMed(),
+                        isNull(navnLengde.getTilOgMed()) ? "*" : navnLengde.getTilOgMed());
+    }
+
+    private String convertBoolean(String booleanNavn, Boolean booleanVerdi) {
+
+        return isNull(booleanVerdi) ? "" : "+and+%s:%s".formatted(booleanNavn, booleanVerdi);
+    }
+
+    private String getUtenlandskPersonidentifikasjon(List<TenorRequest.UtenlandskPersonIdentifikasjon> utenlandskPersonIdentifikasjon) {
+
+        return (utenlandskPersonIdentifikasjon.isEmpty()) ? "" : "+data+utenlandskPersonidentifikasjon:(%s)"
+                .formatted(utenlandskPersonIdentifikasjon.stream()
+                        .map(Enum::name)
+                        .collect(Collectors.joining("+and+")));
     }
 
     private String getRoller(List<TenorRequest.Roller> roller) {
@@ -44,72 +84,17 @@ public class TenorSearchService {
         return (roller.isEmpty()) ? "" : "+and+tenorRelasjoner.brreg-er-fr:{dagligLeder:*}";
     }
 
-    private String getSivilstand(TenorRequest.Sivilstand sivilstand) {
+    private String convertEnum(String enumNavn, Enum<?> enumVerdi) {
 
-            if (isNull(sivilstand)) {
-                return "";
-            }
-
-            return "+and+sivilstand:" + switch (sivilstand) {
-                case EnkeEllerEnkemann -> "enkeEllerEnkemann";
-                case Gift -> "gift";
-                case GjenlevendePartner -> "gjenlevendePartner";
-                case RegistrertPartner -> "registrertPartner";
-                case Separert -> "separert";
-                case SeparertPartner -> "separertPartner";
-                case Skilt -> "skilt";
-                case SkiltPartner -> "skiltPartner";
-                case Ugift -> "ugift";
-                case Uoppgitt -> "uoppgitt";
-            };
+        return isNull(enumVerdi) ? "" : "+and+%s:%s%s".formatted(enumNavn,
+                enumVerdi.name().substring(0, 1).toUpperCase(),
+                enumVerdi.name().substring(1));
     }
 
-    private String getPersonstatus(TenorRequest.Personstatus personstatus) {
+    private String convertDatoer(String datoNavn, TenorRequest.DatoIntervall datoIntervall) {
 
-            if (isNull(personstatus)) {
-                return "";
-            }
-
-            return "+and+personstatus:" + switch (personstatus) {
-                case Bosatt -> "bosatt";
-                case Doed -> "doed";
-                case Forsvunnet -> "forsvunnet";
-                case Foedselsregistrert -> "foedselsregistrert";
-                case IkkeBosatt -> "ikkeBosatt";
-                case Inaktiv -> "inaktiv";
-                case Midlertidig -> "midlertidig";
-                case Opphørt -> "opphørt";
-                case Utflyttet -> "utflyttet";
-            };
-    }
-
-    private String getKjoenn(TenorRequest.Kjoenn kjoenn) {
-
-            if (isNull(kjoenn)) {
-                return "";
-            }
-
-            return "+and+kjoenn:" + switch (kjoenn) {
-                case Mann -> "mann";
-                case Kvinne -> "kvinne";
-            };
-    }
-
-    private String getFoedselsdato(TenorRequest.DatoIntervall foedselsdato) {
-
-        if (isNull(foedselsdato)) {
-            return "";
-        }
-
-        return "+and+foedselsdato:[" + foedselsdato.getFra() + "+to+" + foedselsdato.getTil() + "]";
-    }
-    private String getDoedsdato(TenorRequest.DatoIntervall doedsdato) {
-
-        if (isNull(doedsdato)) {
-            return "";
-        }
-
-        return "+and+doedsdato:[" + doedsdato.getFra() + "+to+" + doedsdato.getTil() + "]";
+        return isNull(datoIntervall) ? "" :
+                "+and+%s:[%s+to+%s]".formatted(datoNavn, datoIntervall.getFra(), datoIntervall.getTil());
     }
 
     private String getIdentifikatorType(TenorRequest.IdentifikatorType identifikatorType) {
