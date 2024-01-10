@@ -118,6 +118,9 @@ jobs:
         uses: actions/checkout@v3
       - name: "Cache"
         uses: gradle/gradle-build-action@v2
+        with:
+          build-root-directory: ${{ inputs.working-directory }}
+          #arguments: --refresh-dependencies
       - name: "Docker"
         id: docker-build-push
         uses: nais/docker-build-push@v0
