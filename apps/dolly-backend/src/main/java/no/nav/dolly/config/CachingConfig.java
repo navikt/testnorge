@@ -24,7 +24,7 @@ public class CachingConfig {
     public static final String CACHE_KODEVERK_2 = "kodeverk2";
 
     @Bean
-    @Profile({"dev", "prod"})
+    @Profile({ "dev", "prod" })
     public CacheManager cacheManager(Caffeine caffeine) {
         var caffeineCacheManager = new CaffeineCacheManager(CACHE_BESTILLING,
                 CACHE_BRUKER,
@@ -44,7 +44,7 @@ public class CachingConfig {
     }
 
     @Bean
-    public Caffeine caffeineConfig() {
+    public Caffeine<Object, Object> caffeineConfig() {
         return Caffeine.newBuilder().expireAfterWrite(8, TimeUnit.HOURS);
     }
 }
