@@ -54,7 +54,7 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-annotations'
     implementation 'com.fasterxml.jackson.core:jackson-databind'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml'
-    implementation 'io.swagger.core.v3:swagger-annotations-jakarta:2.2.16'
+    implementation 'io.swagger.core.v3:swagger-annotations-jakarta:2.2.20'
     implementation 'jakarta.validation:jakarta.validation-api'
     implementation 'jakarta.xml.bind:jakarta.xml.bind-api'
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
