@@ -109,9 +109,9 @@ jobs:
 
   assemble:
     needs: [start, build]
-    if: |
-      needs.start.outputs.do-deploy-test == 'true' ||
-      needs.start.outputs.do-deploy == 'true'
+    #if: |
+    #  needs.start.outputs.do-deploy-test == 'true' ||
+    #  needs.start.outputs.do-deploy == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: "Docker"
