@@ -82,12 +82,12 @@ jobs:
     steps:
       - name: "Checkout"
         uses: actions/checkout@v3
-      - name: "Java"
+      - name: "Setup"
         uses: actions/setup-java@v3
         with:
           distribution: temurin
           java-version: 21
-      - name: "Gradle"
+      - name: "Build"
         env:
           GITHUB_USERNAME: token
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
@@ -116,10 +116,11 @@ jobs:
     steps:
       - name: "Checkout"
         uses: actions/checkout@v3
-      - name: "Cache"
+      - name: "Build"
         uses: gradle/gradle-build-action@v2
         with:
           build-root-directory: ${{ inputs.working-directory }}
+          arguments: build -x test
           #arguments: --refresh-dependencies
       - name: "Docker"
         id: docker-build-push
