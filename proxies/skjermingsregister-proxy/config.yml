@@ -1,18 +1,5 @@
-﻿---
-apiVersion: nais.io/v1
-kind: AzureAdApplication
-metadata:
-  name: testnav-skjermingsregister-proxy-trygdeetaten
-  namespace: dolly
-  labels:
-    team: dolly
-spec:
-  secretName: azure-trygdeetaten-testnav-skjermingsregister-proxy-trygdeetaten
-  secretKeyPrefix: "AZURE_TRYGDEETATEN"
-  tenant: trygdeetaten.no
----
-apiVersion: nais.io/v1alpha1
-kind: Application
+﻿apiVersion: "nais.io/v1alpha1"
+kind: "Application"
 metadata:
   name: testnav-skjermingsregister-proxy
   namespace: dolly
@@ -22,8 +9,6 @@ spec:
   image: "{{image}}"
   port: 8080
   webproxy: true
-  tokenx:
-    enabled: true
   azure:
     application:
       allowAllUsers: true
@@ -49,10 +34,6 @@ spec:
         - application: app-1
           namespace: plattformsikkerhet
           cluster: dev-gcp
-    outbound:
-      rules:
-        - application: skjermede-personer
-          namespace: nom
   liveness:
     path: /internal/isAlive
     initialDelay: 4
@@ -74,7 +55,5 @@ spec:
       memory: 1024Mi
     limits:
       memory: 2048Mi
-  envFrom:
-    - secret: azure-trygdeetaten-testnav-skjermingsregister-proxy-trygdeetaten
   ingresses:
     - "https://testnav-skjermingsregister-proxy.dev-fss-pub.nais.io"
