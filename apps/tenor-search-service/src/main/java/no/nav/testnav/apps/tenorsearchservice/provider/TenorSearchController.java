@@ -3,6 +3,7 @@ package no.nav.testnav.apps.tenorsearchservice.provider;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.tenorsearchservice.domain.TenorRequest;
+import no.nav.testnav.apps.tenorsearchservice.domain.TenorResponse;
 import no.nav.testnav.apps.tenorsearchservice.service.TenorSearchService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,7 +28,7 @@ public class TenorSearchController {
     private final TenorSearchService tenorSearchService;
 
     @GetMapping("/testdata/raw")
-    public Mono<JsonNode> getTestdata(@RequestParam(required = false) String searchData) {
+    public Mono<TenorResponse> getTestdata(@RequestParam(required = false) String searchData) {
 
         return tenorSearchService
                 .getTestdata(searchData)
@@ -35,7 +36,7 @@ public class TenorSearchController {
     }
 
     @PostMapping("/testdata")
-    public Mono<JsonNode> getTestdata(@RequestBody TenorRequest searchData) {
+    public Mono<TenorResponse> getTestdata(@RequestBody TenorRequest searchData) {
 
         return tenorSearchService
                 .getTestdata(searchData)

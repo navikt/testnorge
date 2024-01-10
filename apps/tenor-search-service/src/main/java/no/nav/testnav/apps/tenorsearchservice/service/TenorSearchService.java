@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.tenorsearchservice.consumers.TenorClient;
 import no.nav.testnav.apps.tenorsearchservice.domain.TenorRequest;
+import no.nav.testnav.apps.tenorsearchservice.domain.TenorResponse;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
@@ -18,12 +19,12 @@ public class TenorSearchService {
 
     private final TenorClient tenorClient;
 
-    public Mono<JsonNode> getTestdata(String testDataQuery) {
+    public Mono<TenorResponse> getTestdata(String testDataQuery) {
 
         return tenorClient.getTestdata(isNotBlank(testDataQuery) ? testDataQuery : "");
     }
 
-    public Mono<JsonNode> getTestdata(TenorRequest searchData) {
+    public Mono<TenorResponse> getTestdata(TenorRequest searchData) {
 
         var builder = new StringBuilder();
         builder.append(getFoedselsdato(searchData.getFoedselsdato()));
@@ -41,7 +42,7 @@ public class TenorSearchService {
 
     private String getRoller(List<TenorRequest.Roller> roller) {
 
-        return (roller.isEmpty()) ? "" : "+and+tenorRelasjoner.brreg-er-fr:{dagligLeder}";
+        return (roller.isEmpty()) ? "" : "+and+tenorRelasjoner.brreg-er-fr:{dagligLeder:*}";
     }
 
     private String getSivilstand(TenorRequest.Sivilstand sivilstand) {

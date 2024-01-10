@@ -3,6 +3,7 @@ package no.nav.testnav.apps.tenorsearchservice.consumers;
 import com.fasterxml.jackson.databind.JsonNode;
 import no.nav.testnav.apps.tenorsearchservice.config.Consumers;
 import no.nav.testnav.apps.tenorsearchservice.consumers.command.GetTenorTestdata;
+import no.nav.testnav.apps.tenorsearchservice.domain.TenorResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -22,7 +23,7 @@ public class TenorClient {
         this.maskinportenClient = maskinportenClient;
     }
 
-    public Mono<JsonNode> getTestdata(String query) {
+    public Mono<TenorResponse> getTestdata(String query) {
 
         return maskinportenClient.getAccessToken()
                 .flatMap(token -> new GetTenorTestdata(webClient, query, token.value()).call());
