@@ -68,6 +68,9 @@ jobs:
           echo "inputs: ${{ toJSON(inputs) }}"
           echo "env: ${{ toJSON(env) }}"
           echo "commit: ${{ github.event.head.commit_message }}"
+    outputs:
+      do-deploy-test: ${{ env.do-deploy-test }}
+      do-deploy: ${{ env.do-deploy }}
 
   build:
     needs: start
@@ -105,14 +108,14 @@ jobs:
       working-directory: ${{ inputs.working-directory }}
 
   assemble:
-    needs: build
+    needs: [start, build]
+    if: |
+      needs.start.outputs.do-deploy-test == 'true' ||
+      needs.start.outputs.do-deploy == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: "Docker"
         id: docker-build-push
-        if: |
-          env.do-deploy-test == 'true' ||
-          env.do-deploy == 'true'
         uses: nais/docker-build-push@v0
         with:
           team: dolly
@@ -123,12 +126,10 @@ jobs:
           image_suffix: ${{ inputs.image-suffix }}
     outputs:
       image: ${{ steps.docker-build-push.outputs.image }}
-      do-deploy-test: ${{ env.do-deploy-test }}
-      do-deploy: ${{ env.do-deploy }}
 
   deploy:
-    needs: assemble
-    if: needs.assemble.outputs.do-deploy == 'true'
+    needs: [start, assemble, sonar]
+    if: needs.start.outputs.do-deploy == 'true'
     concurrency: ${{ inputs.image-suffix }}
     runs-on: ubuntu-latest
     steps:
@@ -143,8 +144,8 @@ jobs:
           VAR: image=${{ needs.assemble.outputs.image }}
 
   deploy-test:
-    needs: assemble
-    if: needs.assemble.outputs.do-deploy-test == 'true'
+    needs: [start, assemble, sonar]
+    if: needs.start.outputs.do-deploy-test == 'true'
     concurrency: ${{ inputs.image-suffix }}-test
     runs-on: ubuntu-latest
     steps:
