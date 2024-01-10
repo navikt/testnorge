@@ -93,14 +93,14 @@ jobs:
         env:
           GITHUB_USERNAME: token
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-        run: gradlew build ${{ inputs.sonar-enabled && '-x test' || '' }} --scan
+        run: ./gradlew build ${{ inputs.sonar-enabled && '-x test' || '' }} --scan
       - name: "Sonar"
         if: inputs.sonar-enabled
         env:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gradlew test jacocoTestReport sonar --scan
+        run: ./gradlew test jacocoTestReport sonar --scan
 
 #  sonar:
 #    needs: build
