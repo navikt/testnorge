@@ -45,6 +45,6 @@ publishing {
 }
 
 dependencies {
-    implementation 'org.apache.avro:avro-compiler:1.11.1'
-    implementation 'org.apache.avro:avro-maven-plugin:1.11.1'
+    implementation 'org.apache.avro:avro-compiler:1.11.3'
+    implementation 'org.apache.avro:avro-maven-plugin:1.11.3'
 }
