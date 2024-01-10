@@ -35,7 +35,6 @@ public class GetTenorTestdata implements Callable<Mono<TenorResponse>> {
                         .build())
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
                 .retrieve()
                 .bodyToMono(JsonNode.class)
                 .map(response -> TenorResponse.builder()

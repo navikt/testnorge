@@ -1,6 +1,5 @@
 package no.nav.testnav.apps.tenorsearchservice.service;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.tenorsearchservice.consumers.TenorClient;
 import no.nav.testnav.apps.tenorsearchservice.domain.TenorRequest;
