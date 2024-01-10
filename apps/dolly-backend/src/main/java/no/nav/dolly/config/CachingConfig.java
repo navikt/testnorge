@@ -34,6 +34,7 @@ public class CachingConfig {
                 CACHE_KODEVERK_2
         );
         caffeineCacheManager.setCaffeine(caffeine);
+        caffeineCacheManager.setAsyncCacheMode(true);
         return caffeineCacheManager;
     }
 
