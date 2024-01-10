@@ -114,6 +114,8 @@ jobs:
     #  needs.start.outputs.do-deploy == 'true'
     runs-on: ubuntu-latest
     steps:
+      - name: "Cache"
+        uses: gradle/gradle-build-action@v2
       - name: "Docker"
         id: docker-build-push
         uses: nais/docker-build-push@v0
