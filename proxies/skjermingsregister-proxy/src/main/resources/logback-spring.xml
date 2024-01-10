@@ -38,10 +38,4 @@
 
     <logger level="TRACE" name="no.nav.testnav.libs.reactivecore.filter.RequestLogger" />
 
-    <logger level="TRACE" name="org.springframework.cloud.gateway" />
-    <logger level="TRACE" name="org.springframework.http.server.reactive" />
-    <logger level="TRACE" name="org.springframework.web.reactive" />
-    <logger level="TRACE" name="org.springframework.boot.autoconfigure.web" />
-    <logger level="TRACE" name="reactor.netty" />
-    <logger level="TRACE" name="redisratelimiter" />
 </configuration>
