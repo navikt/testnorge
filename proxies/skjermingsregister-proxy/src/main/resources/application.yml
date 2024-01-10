@@ -12,7 +12,7 @@ spring:
           jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
           accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
         tokenx:
-          issuer-uri: https://tokenx.dev-gcp.nav.cloud.nais.io 
+          issuer-uri: https://tokenx.dev-gcp.nav.cloud.nais.io
           jwk-set-uri: https://tokenx.dev-gcp.nav.cloud.nais.io/jwks
           accepted-audience: ${TOKEN_X_CLIENT_ID}
   cloud:
@@ -20,9 +20,9 @@ spring:
       httpclient:
         response-timeout: 30s
 
-sts:
-  token:
-    provider:
-      url: https://security-token-service.dev.adeo.no/rest/v1/sts/token
-      username: ${STS_TOKEN_PROVIDER_USERNAME}
-      password: ${STS_TOKEN_PROVIDER_PASSWORD}
+consumers:
+  skjermingsregister:
+    name: skjermede-personer
+    namespace: nom
+    url: https://skjermede-personer.dev.adeo.no
+    cluster: dev-fss
