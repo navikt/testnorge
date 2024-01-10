@@ -2,6 +2,8 @@ package no.nav.testnav.apps.tenorsearchservice.provider;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
+import no.nav.testnav.apps.tenorsearchservice.consumers.MaskinportenClient;
+import no.nav.testnav.apps.tenorsearchservice.domain.AccessToken;
 import no.nav.testnav.apps.tenorsearchservice.domain.TenorRequest;
 import no.nav.testnav.apps.tenorsearchservice.domain.TenorResponse;
 import no.nav.testnav.apps.tenorsearchservice.service.TenorSearchService;
@@ -26,6 +28,7 @@ import reactor.core.publisher.Mono;
 public class TenorSearchController {
 
     private final TenorSearchService tenorSearchService;
+    private final MaskinportenClient maskinportenClient;
 
     @GetMapping("/testdata/raw")
     public Mono<TenorResponse> getTestdata(@RequestParam(required = false) String searchData) {
@@ -41,6 +44,13 @@ public class TenorSearchController {
         return tenorSearchService
                 .getTestdata(searchData)
                 .switchIfEmpty(Mono.error(new NotFoundException("Spørring " + searchData + " ga ingen treff")));
+    }
+
+    @GetMapping("/testdata/token")
+    public Mono<String> getToken() {
+
+        return maskinportenClient.getAccessToken()
+                .map(AccessToken::toString);
     }
 
     @Bean
