@@ -125,7 +125,8 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           build-root-directory: ${{ inputs.working-directory }}
-          #arguments: build -x test
+          arguments: build -x test
+          #arguments: --refresh-dependencies
       - name: "Docker"
         id: docker-build-push
         uses: nais/docker-build-push@v0
