@@ -84,25 +84,33 @@ jobs:
         with:
           distribution: temurin
           java-version: 21
+      - name: "Gradle"
+        uses: gradle/gradle-build-action@v2
+        with:
+          build-root-directory: ${{ inputs.working-directory }}
+          cache-read-only: false
       - name: "Build"
         env:
           GITHUB_USERNAME: token
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-        uses: gradle/gradle-build-action@v2
-        with:
-          build-root-directory: ${{ inputs.working-directory }}
-          arguments: build ${{ inputs.sonar-enabled && '-x test' || '' }} --scan
-          cache-read-only: false
+        run: gradlew build ${{ inputs.sonar-enabled && '-x test' || '' }} --scan
+      - name: "Sonar"
+        if: inputs.sonar-enabled
+        env:
+          NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gradlew test jacocoTestReport sonar --scan
 
-  sonar:
-    needs: build
-    if: inputs.sonar-enabled
-    secrets:
-      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-    uses: ./.github/workflows/common.scan.sonar.yml
-    with:
-      working-directory: ${{ inputs.working-directory }}
+#  sonar:
+#    needs: build
+#    if: inputs.sonar-enabled
+#    secrets:
+#      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+#      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+#    uses: ./.github/workflows/common.scan.sonar.yml
+#    with:
+#      working-directory: ${{ inputs.working-directory }}
 
   assemble:
     needs: [start, build]
@@ -141,7 +149,7 @@ jobs:
       image: ${{ steps.docker-build-push.outputs.image }}
 
   deploy:
-    needs: [start, assemble, sonar]
+    needs: [start, assemble]
     if: needs.start.outputs.do-deploy == 'true'
     concurrency: ${{ inputs.image-suffix }}
     runs-on: ubuntu-latest
@@ -157,7 +165,7 @@ jobs:
           VAR: image=${{ needs.assemble.outputs.image }}
 
   deploy-test:
-    needs: [start, assemble, sonar]
+    needs: [start, assemble]
     if: needs.start.outputs.do-deploy-test == 'true'
     concurrency: ${{ inputs.image-suffix }}-test
     runs-on: ubuntu-latest
