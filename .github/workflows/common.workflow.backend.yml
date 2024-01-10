@@ -94,7 +94,7 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           build-root-directory: ${{ inputs.working-directory }}
-          arguments: build --scan
+          arguments: build ${{ inputs.sonar-enabled && '-x test' || '' }} --scan
           cache-read-only: false
 
   sonar:
