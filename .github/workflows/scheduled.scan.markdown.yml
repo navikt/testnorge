@@ -9,7 +9,7 @@ on:
         default: "."
         required: true
     secrets:
-      DOLLY_ALERTS_SLACK_WEBHOOK_URL:
+      SLACK_DEAD_URLS_WEBHOOK_URL:
         required: true
 
 jobs:
@@ -25,12 +25,12 @@ jobs:
           config-file: .github/workflows/scheduled.scan.markdown.json
           use-quiet-mode: yes
       - name: "Slack"
-        if: ${{ failure() }}
+        #if: ${{ failure() }}
         uses: slackapi/slack-github-action@v1.24.0
         with:
           payload: |
             {
-              "text": "Sjekk på døde URLer feilet, se https://github.com/navikt/testnorge/actions/workflows/scheduled.scan.markdown.yml for logg."
+              "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
             }
         env:
-          SLACK_WEBHOOK_URL: ${{ secrets.DOLLY_ALERTS_SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_DEAD_URLS_WEBHOOK_URL }}
