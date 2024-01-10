@@ -89,7 +89,7 @@ dependencies {
     implementation 'org.apache.cxf:cxf-rt-transports-http'
     implementation 'org.apache.cxf:cxf-rt-ws-security'
     implementation 'jakarta.servlet:jakarta.servlet-api'
-    
+
     implementation 'org.postgresql:postgresql'
     implementation 'com.zaxxer:HikariCP'
 
