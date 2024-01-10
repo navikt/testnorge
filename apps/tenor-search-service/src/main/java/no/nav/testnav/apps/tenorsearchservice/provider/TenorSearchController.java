@@ -50,7 +50,7 @@ public class TenorSearchController {
     public Mono<String> getToken() {
 
         return maskinportenClient.getAccessToken()
-                .map(AccessToken::toString);
+                .map(AccessToken::value);
     }
 
     @Bean
