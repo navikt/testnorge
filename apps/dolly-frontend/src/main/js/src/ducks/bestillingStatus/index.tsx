@@ -42,8 +42,10 @@ export const sokSelector = (bestillingerById, searchStr) => {
 	if (!searchStr || !items) return items
 
 	return items.filter(({ listedata }) => {
-		const searchValues = listedata.filter((v) => !_.isNil(v)).map((v) => v.toString().toLowerCase())
-		return searchValues.some((v) => v.includes(searchStr.toLowerCase()))
+		const searchValues = listedata
+			?.filter((v) => !_.isNil(v))
+			.map((v) => v.toString().toLowerCase())
+		return searchValues?.some((v) => v.includes(searchStr.toLowerCase()))
 	})
 }
 
