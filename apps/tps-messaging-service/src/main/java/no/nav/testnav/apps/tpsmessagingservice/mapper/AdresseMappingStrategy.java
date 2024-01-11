@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import static java.lang.String.format;
 import static java.util.Objects.nonNull;
 import static no.nav.testnav.libs.data.tpsmessagingservice.v1.AdresseDTO.Adressetype.GATE;
 import static no.nav.testnav.libs.data.tpsmessagingservice.v1.AdresseDTO.Adressetype.MATR;
@@ -52,7 +51,7 @@ public class AdresseMappingStrategy implements MappingStrategy {
 
                         if (POST_NORGE.equals(source.getAdresseType())) {
 
-                            target.setPostLinje3(format("%s %s", source.getPostnr(), source.getPoststed()));
+                            target.setPostLinje3("%s %s".formatted(source.getPostnr(), source.getPoststed()));
                             target.setPostLand(NORGE);
 
                         } else {

@@ -34,7 +34,7 @@ public class CachedConnectionFactoryFactory implements ConnectionFactoryFactory 
         factory.setChannel(queueManager.channel());
 
         if (log.isInfoEnabled()) {
-            log.info(String.format("Creating connection factory '%s@%s:%d' on channel '%s' using transport type '%d'",
+            log.info("Creating connection factory '%s@%s:%d' on channel '%s' using transport type '%d'".formatted(
                     factory.getQueueManager(),
                     factory.getHostName(),
                     factory.getPort(),

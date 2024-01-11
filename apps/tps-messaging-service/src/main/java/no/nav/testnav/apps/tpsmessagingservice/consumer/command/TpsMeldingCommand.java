@@ -63,14 +63,14 @@ public class TpsMeldingCommand implements Callable<String> {
                         producer.send(requestMessage);
                     }
                 } catch (JMSException e) {
-                    log.warn(String.format("%s: %s", FEIL_KOENAVN, e.getMessage()), e);
+                    log.warn("%s: %s".formatted(FEIL_KOENAVN, e.getMessage()), e);
                     return e.getMessage();
                 }
 
                 TextMessage responseMessage;
 
                 /* Wait for response */
-                String attributes = String.format("JMSCorrelationID='%s'", requestMessage.getJMSMessageID());
+                String attributes = "JMSCorrelationID='%s'".formatted(requestMessage.getJMSMessageID());
 
                 try (MessageConsumer consumer = session.createConsumer(responseDestination, attributes)) {
 
