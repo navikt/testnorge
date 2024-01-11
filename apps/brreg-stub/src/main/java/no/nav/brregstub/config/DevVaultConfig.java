@@ -26,7 +26,7 @@ public class DevVaultConfig extends AbstractVaultConfiguration {
         }
         var token = System.getProperty(TOKEN);
         if (StringUtils.isBlank(token)) {
-            throw new IllegalArgumentException(String.format("Påkrevet property '%s' er ikke satt.", TOKEN));
+            throw new IllegalArgumentException("Påkrevet property '%s' er ikke satt.".formatted(TOKEN));
         }
         return new TokenAuthentication(System.getProperty(TOKEN));
     }

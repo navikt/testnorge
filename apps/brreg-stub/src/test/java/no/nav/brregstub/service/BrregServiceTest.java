@@ -49,7 +49,7 @@ class BrregServiceTest {
     private BrregService brregService;
 
     @BeforeEach
-    public void onSetup() {
+    void onSetup() {
         rolleoversiktRepositoryMock.deleteAll();
         hentRolleRepositoryMock.deleteAll();
         brregService = new BrregService(rolleoversiktRepositoryMock, hentRolleRepositoryMock, objectMapper);
