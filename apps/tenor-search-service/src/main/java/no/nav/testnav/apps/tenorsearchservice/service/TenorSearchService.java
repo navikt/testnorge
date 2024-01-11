@@ -38,15 +38,34 @@ public class TenorSearchService {
                 .append(getUtenlandskPersonidentifikasjon(searchData.getUtenlandskPersonIdentifikasjon()))
                 .append(convertEnum("identitetsgrunnlagStatus", searchData.getIdentitetsgrunnlagStatus()))
                 .append(convertEnum("adressebeskyttelse", searchData.getAdressebeskyttelse()))
-                .append(convertBoolean("legitimasjonsdokument", searchData.getLegitimasjonsdokument()))
-                .append(convertBoolean("falskIdentitet", searchData.getFalskIdentitet()))
-                .append(convertBoolean("norskStatsborgerskap", searchData.getNorskStatsborgerskap()))
-                .append(convertBoolean("flereStatsborgerskap", searchData.getFlereStatsborgerskap()));
+                .append(convertBoolean("legitimasjonsdokument", searchData.getHarLegitimasjonsdokument()))
+                .append(convertBoolean("falskIdentitet", searchData.getHarFalskIdentitet()))
+                .append(convertBoolean("norskStatsborgerskap", searchData.getHarNorskStatsborgerskap()))
+                .append(convertBoolean("flereStatsborgerskap", searchData.getHarFlereStatsborgerskap()));
+
         if (nonNull(searchData.getNavn())) {
-            builder.append(convertBoolean("flereFornavn", searchData.getNavn().getFlereFornavn()))
-                    .append(getNavnLengde(searchData.getNavn().getNavnLengde()))
-                    .append(getHarMellomnavn(searchData.getNavn().getHarMellomnavn()))
-                    .append(convertBoolean("navnSpesialtegn", searchData.getNavn().getNavnSpesialtegn()));
+            builder.append(convertBoolean("flereFornavn", searchData.getNavn().getHarFlereFornavn()))
+                    .append(getIntervall("navnLengde", searchData.getNavn().getNavnLengde()))
+                    .append(convertBooleanWildcard("mellomnavn", searchData.getNavn().getHarMellomnavn()))
+                    .append(convertBoolean("navnSpesialtegn", searchData.getNavn().getHarNavnSpesialtegn()));
+        }
+
+        if (nonNull(searchData.getAdresser())) {
+            builder.append(convertBooleanWildcard("bostedsadresse", searchData.getAdresser().getHarBostedsadresse()))
+                    .append(convertBooleanWildcard("oppholdAnnetSted", searchData.getAdresser().getHarOppholdAnnetSted()))
+                    .append(convertBooleanWildcard("postadresse", searchData.getAdresser().getHarPostadresseNorge()))
+                    .append(convertBooleanWildcard("postadresseUtland", searchData.getAdresser().getHarPostadresseUtland()))
+                    .append(convertBooleanWildcard("kontaktinfoDoedsbo", searchData.getAdresser().getHarKontaktadresseDoedsbo()))
+                    .append(convertBoolean("adresseSpesialtegn", searchData.getAdresser().getHarAdresseSpesialtegn()));
+        }
+
+        if (nonNull(searchData.getRelasjoner())) {
+            builder.append(getRelasjon(searchData.getRelasjoner().getRelasjon()))
+                    .append(getIntervall("antallBarn", searchData.getRelasjoner().getAntallBarn()))
+                    .append(convertBooleanWildcard("foreldreansvar", searchData.getRelasjoner().getHarForeldreAnsvar()))
+                    .append(getRelasjonMedFoedselsdato(searchData.getRelasjoner().getRelasjonMedFoedselsaar()))
+                    .append(convertBooleanWildcard("deltBosted", searchData.getRelasjoner().getHarDeltBosted()))
+                    .append(convertBooleanWildcard("vergemaalType", searchData.getRelasjoner().getHarVergemaalEllerFremtidsfullmakt()));
         }
 
         builder.append(getRoller(searchData.getRoller()));
@@ -54,21 +73,35 @@ public class TenorSearchService {
         return tenorClient.getTestdata(!builder.isEmpty() ? builder.substring(5) : "");
     }
 
-    private String getHarMellomnavn(Boolean harMellomnavn) {
+    private String getRelasjonMedFoedselsdato(TenorRequest.Intervall relasjonMedFoedselsaar) {
 
-        return isNotTrue(harMellomnavn) ? "" : "+and+harMellomnavn:*";
+        return isNull(relasjonMedFoedselsaar) ? "" : "+and+tenorRelasjoner.freg:{foedselsdato:[%s+to+%s]}"
+                .formatted(
+                        isNull(relasjonMedFoedselsaar.getFraOgMed()) ? "*" : relasjonMedFoedselsaar.getFraOgMed(),
+                        isNull(relasjonMedFoedselsaar.getTilOgMed()) ? "*" : relasjonMedFoedselsaar.getTilOgMed());
     }
 
-    private String getNavnLengde(TenorRequest.NavnLengde navnLengde) {
+    private String getRelasjon(TenorRequest.Relasjon relasjon) {
 
-        return isNull(navnLengde) ? "" : "+and+navnLengde:[%s+to+%s]"
-                .formatted(isNull(navnLengde.getFraOgMed()) ? "*" : navnLengde.getFraOgMed(),
-                        isNull(navnLengde.getTilOgMed()) ? "*" : navnLengde.getTilOgMed());
+        return isNull(relasjon) ? "" : "+and+tenorRelasjoner.freg:{tenorRelasjonsnavn:%s}".formatted(relasjon.name());
     }
 
     private String convertBoolean(String booleanNavn, Boolean booleanVerdi) {
 
         return isNull(booleanVerdi) ? "" : "+and+%s:%s".formatted(booleanNavn, booleanVerdi);
+    }
+
+    private String convertBooleanWildcard(String booleanNavn, Boolean booleanVerdi) {
+
+        return isNotTrue(booleanVerdi) ? "" : "+and+%s:*".formatted(booleanNavn);
+    }
+
+    private String getIntervall(String intervallNavn, TenorRequest.Intervall intervall) {
+
+        return isNull(intervall) ? "" : "+and+%s:[%s+to+%s]"
+                .formatted(intervallNavn,
+                        isNull(intervall.getFraOgMed()) ? "*" : intervall.getFraOgMed(),
+                        isNull(intervall.getTilOgMed()) ? "*" : intervall.getTilOgMed());
     }
 
     private String getUtenlandskPersonidentifikasjon(List<TenorRequest.UtenlandskPersonIdentifikasjon> utenlandskPersonIdentifikasjon) {

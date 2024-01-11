@@ -21,7 +21,18 @@ public class TenorRequest {
     public enum UtenlandskPersonIdentifikasjon{UtenlandskIdentifikasjonsnummer, TaxIdentificationNumber, SocialSecurityNumber, UtlendingsmyndighetenesIdentifikasjonsnummer}
     public enum IdentitetsgrunnlagStatus {IkkeKontrollert, IngenStatus, Kontrollert}
     public enum Adressebeskyttelse {Fortrolig, StrengtFortrolig}
-
+    public enum AdresseGradering {Ugradert, Klientadresse, Fortrolig}
+    public enum Relasjon {Barn, Far, Medmor, Mor, Partner}
+    public enum Hendelser {EndringIAdressebeskyttelse, EndringIBostedsadresse, EndringIBostedsadresseUtenFlytting,
+    EndringIBrukAvSamiskSpraak, EndringIDeltBosted, EndringIDoedsfall, EndringIFalskIdentitet, EndringIFamilierelasjon,
+        EndringIForeldreansvar, EndringIFratattRettsligHandleevne, EndringIFoedsel, EndringIFoedselINorge,
+        EndringIIdentifikasjonsnummer, EndringIIdentitetsgrunnlag, EndringIInnflytting, EndringIKjoenn,
+        EndringIKontaktinformasjon, EndringIKontaktopplysningerForDoedsbo, EndringILegitimasjonsdokument,
+        EndringINavn, EndringIOpphold, EndringIOppholdPaaSvalbard, EndringIOppholdsadresse, EndringIPerson,
+        EndringIRettsligHandleevne, EndringISametingetsValgmanntall, EndringISivilstand, EndringIStatsborgerskap,
+        EndringIStatus, EndringIUtenlandskPersonidentifikasjon, EndringIUtflytting,
+        EndringIUtlendingsmyndighetenesIdentifikasjonsnummer,
+    }
 
     private List<Roller> roller;
 
@@ -34,12 +45,14 @@ public class TenorRequest {
     private List<UtenlandskPersonIdentifikasjon> utenlandskPersonIdentifikasjon;
     private IdentitetsgrunnlagStatus identitetsgrunnlagStatus;
     private Adressebeskyttelse adressebeskyttelse;
-    private Boolean legitimasjonsdokument;
-    private Boolean falskIdentitet;
-    private Boolean norskStatsborgerskap;
-    private Boolean flereStatsborgerskap;
+    private Boolean harLegitimasjonsdokument;
+    private Boolean harFalskIdentitet;
+    private Boolean harNorskStatsborgerskap;
+    private Boolean harFlereStatsborgerskap;
     private Navn navn;
-
+    private Adresser adresser;
+    private Relasjoner relasjoner;
+    private Hendelser hendelser;
 
     public List<UtenlandskPersonIdentifikasjon> getUtenlandskPersonIdentifikasjon() {
 
@@ -69,19 +82,52 @@ public class TenorRequest {
 
     @Data
     @NoArgsConstructor
+    public static class Intervall {
+
+        private Integer fraOgMed;
+
+        private Integer tilOgMed;
+    }
+    @Data
+    @NoArgsConstructor
     public static class Navn {
 
-        private NavnLengde navnLengde;
-        private Boolean flereFornavn;
+        private Intervall navnLengde;
+        private Boolean harFlereFornavn;
         private Boolean harMellomnavn;
-        private Boolean navnSpesialtegn;
+        private Boolean harNavnSpesialtegn;
     }
 
     @Data
     @NoArgsConstructor
-    public static class NavnLengde {
+    public static class Adresser {
 
-        private Integer fraOgMed;
-        private Integer tilOgMed;
+        private AdresseGradering adresseGradering;
+        private Integer kommunenummer;
+        private Boolean harBostedsadresse;
+        private Boolean harOppholdAnnetSted;
+        private Boolean harPostadresseNorge;
+        private Boolean harPostadresseUtland;
+        private Boolean harKontaktadresseDoedsbo;
+        private Boolean harAdresseSpesialtegn;
+    }
+
+    @Data
+    @NoArgsConstructor
+    public static class Relasjoner {
+
+       private Relasjon relasjon;
+       private Intervall antallBarn;
+       private Boolean harForeldreAnsvar;
+       private Intervall relasjonMedFoedselsaar;
+       private Boolean harDeltBosted;
+       private Boolean harVergemaalEllerFremtidsfullmakt;
+    }
+
+    @Data
+    @NoArgsConstructor
+    public static class Hendelser {
+
+        private Hendelser hendelse;
     }
 }
