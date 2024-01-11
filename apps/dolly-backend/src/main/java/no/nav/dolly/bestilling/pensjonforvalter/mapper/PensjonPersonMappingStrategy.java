@@ -53,6 +53,7 @@ public class PensjonPersonMappingStrategy implements MappingStrategy {
 
                         if (person.getPerson().getUtflyttingFraNorge().stream()
                                 .noneMatch(utflytting -> person.getPerson().getInnflyttingTilNorge().stream()
+                                        .filter(innflytting -> nonNull(innflytting.getFolkeregistermetadata()))
                                         .anyMatch(innflytting -> innflytting.getFolkeregistermetadata().getGyldighetstidspunkt()
                                                 .isAfter(utflytting.getUtflyttingsdato())))) {
 
