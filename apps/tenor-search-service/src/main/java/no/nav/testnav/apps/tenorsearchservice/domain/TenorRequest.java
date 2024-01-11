@@ -1,5 +1,6 @@
 package no.nav.testnav.apps.tenorsearchservice.domain;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -47,9 +48,13 @@ public class TenorRequest {
         PersonErOpphoertSomDublett, PersonErOpprettet, PersonErReaktivert, PersonErUtflyttet,
         PersonErViderefoertSomGjeldendeVedSammenslaaing
     }
+    private enum BostedsadresseType {Vegadresse, Matrikkeladresse, Ukjent}
+    private enum CoAdresseType {Bostedsadresse, DeltBosted, Oppholdsadresse, Postadresse, PostadresseIUtlandet}
 
     private List<Roller> roller;
 
+    @Schema(description = "Personidentifikator, fødselsnummer eller d-nummer")
+    private String identifikator;
     private IdentifikatorType identifikatorType;
     private DatoIntervall foedselsdato;
     private DatoIntervall doedsdato;
@@ -84,8 +89,6 @@ public class TenorRequest {
         return roller;
     }
 
-    private String adresseNavn;
-
     @Data
     @NoArgsConstructor
     public static class DatoIntervall {
@@ -117,6 +120,8 @@ public class TenorRequest {
     @NoArgsConstructor
     public static class Adresser {
 
+        @Schema(description = "Adressesøk, fritekst")
+        private String bostedsadresseFritekst;
         private AdresseGradering adresseGradering;
         private Integer kommunenummer;
         private Boolean harBostedsadresse;
@@ -125,6 +130,8 @@ public class TenorRequest {
         private Boolean harPostadresseUtland;
         private Boolean harKontaktadresseDoedsbo;
         private Boolean harAdresseSpesialtegn;
+        private BostedsadresseType bostedsadresseType;
+        private CoAdresseType coAdresseType;
     }
 
     @Data
@@ -137,6 +144,9 @@ public class TenorRequest {
         private Intervall relasjonMedFoedselsaar;
         private Boolean harDeltBosted;
         private Boolean harVergemaalEllerFremtidsfullmakt;
+        private Boolean borMedMor;
+        private Boolean borMedFar;
+        private Boolean borMedMedmor;
     }
 
     @Data
@@ -144,5 +154,6 @@ public class TenorRequest {
     public static class Hendelser {
 
         private Hendelse hendelse;
+        private Hendelse sisteHendelse;
     }
 }

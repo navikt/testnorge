@@ -1,6 +1,7 @@
 package no.nav.testnav.apps.tenorsearchservice.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.tenorsearchservice.consumers.TenorClient;
 import no.nav.testnav.apps.tenorsearchservice.domain.TenorRequest;
 import no.nav.testnav.apps.tenorsearchservice.domain.TenorResponse;
@@ -13,8 +14,10 @@ import java.util.stream.Collectors;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TenorSearchService {
@@ -29,6 +32,7 @@ public class TenorSearchService {
     public Mono<TenorResponse> getTestdata(TenorRequest searchData) {
 
         var builder = new StringBuilder()
+                .append(convertString("identifikator", searchData.getIdentifikator()))
                 .append(convertDatoer("foedselsdato", searchData.getFoedselsdato()))
                 .append(convertDatoer("doedsdato", searchData.getDoedsdato()))
                 .append(getIdentifikatorType(searchData.getIdentifikatorType()))
@@ -51,12 +55,15 @@ public class TenorSearchService {
         }
 
         if (nonNull(searchData.getAdresser())) {
-            builder.append(convertBooleanWildcard("bostedsadresse", searchData.getAdresser().getHarBostedsadresse()))
+            builder.append(convertString("bostedsadresse", searchData.getAdresser().getBostedsadresseFritekst()))
+                    .append(convertBooleanWildcard("bostedsadresse", searchData.getAdresser().getHarBostedsadresse()))
                     .append(convertBooleanWildcard("oppholdAnnetSted", searchData.getAdresser().getHarOppholdAnnetSted()))
                     .append(convertBooleanWildcard("postadresse", searchData.getAdresser().getHarPostadresseNorge()))
                     .append(convertBooleanWildcard("postadresseUtland", searchData.getAdresser().getHarPostadresseUtland()))
                     .append(convertBooleanWildcard("kontaktinfoDoedsbo", searchData.getAdresser().getHarKontaktadresseDoedsbo()))
-                    .append(convertBoolean("adresseSpesialtegn", searchData.getAdresser().getHarAdresseSpesialtegn()));
+                    .append(convertBoolean("adresseSpesialtegn", searchData.getAdresser().getHarAdresseSpesialtegn()))
+                    .append(convertEnum("bostedsadresseType", searchData.getAdresser().getBostedsadresseType()))
+                    .append(convertEnum("coAdressenavnType", searchData.getAdresser().getCoAdresseType()));
         }
 
         if (nonNull(searchData.getRelasjoner())) {
@@ -65,12 +72,25 @@ public class TenorSearchService {
                     .append(convertBooleanWildcard("foreldreansvar", searchData.getRelasjoner().getHarForeldreAnsvar()))
                     .append(getRelasjonMedFoedselsdato(searchData.getRelasjoner().getRelasjonMedFoedselsaar()))
                     .append(convertBooleanWildcard("deltBosted", searchData.getRelasjoner().getHarDeltBosted()))
-                    .append(convertBooleanWildcard("vergemaalType", searchData.getRelasjoner().getHarVergemaalEllerFremtidsfullmakt()));
+                    .append(convertBooleanWildcard("vergemaalType", searchData.getRelasjoner().getHarVergemaalEllerFremtidsfullmakt()))
+                    .append(convertBoolean("borMedFar", searchData.getRelasjoner().getBorMedFar()))
+                    .append(convertBoolean("borMedMor", searchData.getRelasjoner().getBorMedMor()))
+                    .append(convertBoolean("borMedMedMor", searchData.getRelasjoner().getBorMedMedmor()));
         }
 
+        if (nonNull(searchData.getHendelser())) {
+            builder.append(convertEnum("hendelserMedSekvens.hendelse", searchData.getHendelser().getHendelse()))
+                    .append(convertEnum("sisteHendelse", searchData.getHendelser().getSisteHendelse()));
+        }
         builder.append(getRoller(searchData.getRoller()));
 
+        log.info("Søker med query: {}", builder.substring(5));
         return tenorClient.getTestdata(!builder.isEmpty() ? builder.substring(5) : "");
+    }
+
+    private String convertString(String navn, String verdi) {
+
+        return isBlank(verdi) ? "" : "+and+%s:%s".formatted(navn, verdi);
     }
 
     private String getRelasjonMedFoedselsdato(TenorRequest.Intervall relasjonMedFoedselsaar) {
