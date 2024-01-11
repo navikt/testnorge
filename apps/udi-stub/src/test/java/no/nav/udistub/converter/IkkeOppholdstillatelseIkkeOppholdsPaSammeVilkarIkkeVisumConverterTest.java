@@ -6,7 +6,6 @@ import no.udi.mt_1067_nav_data.v1.EOSellerEFTAGrunnlagskategoriOppholdsrett;
 import no.udi.mt_1067_nav_data.v1.EOSellerEFTAGrunnlagskategoriOppholdstillatelse;
 import no.udi.mt_1067_nav_data.v1.IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisum;
 import no.udi.mt_1067_nav_data.v1.OppholdsgrunnlagKategori;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -28,10 +27,10 @@ class IkkeOppholdstillatelseIkkeOppholdsPaSammeVilkarIkkeVisumConverterTest exte
                 defaultTestPerson.getOppholdStatus().getIkkeOppholdstilatelseIkkeVilkaarIkkeVisum());
 
         assertNotNull(result);
-        Assertions.assertEquals(DefaultTestData.TEST_ovrigIkkeOppholdsKategori, result.getOvrigIkkeOpphold().getArsak());
+        assertEquals(DefaultTestData.TEST_ovrigIkkeOppholdsKategori, result.getOvrigIkkeOpphold().getArsak());
 
-        Assertions.assertEquals(DefaultTestData.TEST_INNREISEFORBUD, result.getUtvistMedInnreiseForbud().getInnreiseForbud());
-        Assertions.assertEquals(DefaultTestData.TEST_VARIGHET_UDI, result.getUtvistMedInnreiseForbud().getVarighet());
+        assertEquals(DefaultTestData.TEST_INNREISEFORBUD, result.getUtvistMedInnreiseForbud().getInnreiseForbud());
+        assertEquals(DefaultTestData.TEST_VARIGHET_UDI, result.getUtvistMedInnreiseForbud().getVarighet());
 
         AvslagEllerBortfallAvPOBOSellerTilbakekallEllerFormeltVedtak avslagEllerBortfall = result.getAvslagEllerBortfallAvPOBOSellerTilbakekallEllerFormeltVedtak();
         assertEquals(EOSellerEFTAGrunnlagskategoriOppholdsrett.FAMILIE, avslagEllerBortfall.getAvslagPaSoknadOmOppholdsrettRealitetsBehandlet().getAvslagsGrunnlagEOS());
