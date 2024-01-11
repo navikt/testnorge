@@ -14,24 +14,38 @@ import static java.util.Objects.isNull;
 public class TenorRequest {
 
     public enum IdentifikatorType {FNR, DNR, FNR_TIDLIGERE_DNR}
+
     public enum Kjoenn {Mann, Kvinne}
+
     public enum Roller {DAGLIG_LEDER}
+
     public enum Personstatus {Bosatt, Doed, Forsvunnet, Foedselsregistrert, IkkeBosatt, Inaktiv, Midlertidig, Opphoert, Utflyttet}
+
     public enum Sivilstatus {EnkeEllerEnkemann, Gift, GjenlevendePartner, RegistrertPartner, Separert, SeparertPartner, Skilt, SkiltPartner, Ugift, Uoppgitt}
-    public enum UtenlandskPersonIdentifikasjon{UtenlandskIdentifikasjonsnummer, TaxIdentificationNumber, SocialSecurityNumber, UtlendingsmyndighetenesIdentifikasjonsnummer}
+
+    public enum UtenlandskPersonIdentifikasjon {UtenlandskIdentifikasjonsnummer, TaxIdentificationNumber, SocialSecurityNumber, UtlendingsmyndighetenesIdentifikasjonsnummer}
+
     public enum IdentitetsgrunnlagStatus {IkkeKontrollert, IngenStatus, Kontrollert}
+
     public enum Adressebeskyttelse {Fortrolig, StrengtFortrolig}
+
     public enum AdresseGradering {Ugradert, Klientadresse, Fortrolig}
+
     public enum Relasjon {Barn, Far, Medmor, Mor, Partner}
-    public enum Hendelser {EndringIAdressebeskyttelse, EndringIBostedsadresse, EndringIBostedsadresseUtenFlytting,
-    EndringIBrukAvSamiskSpraak, EndringIDeltBosted, EndringIDoedsfall, EndringIFalskIdentitet, EndringIFamilierelasjon,
+
+    public enum Hendelse {
+        EndringIAdressebeskyttelse, EndringIBostedsadresse, EndringIBostedsadresseUtenFlytting,
+        EndringIBrukAvSamiskSpraak, EndringIDeltBosted, EndringIDoedsfall, EndringIFalskIdentitet, EndringIFamilierelasjon,
         EndringIForeldreansvar, EndringIFratattRettsligHandleevne, EndringIFoedsel, EndringIFoedselINorge,
         EndringIIdentifikasjonsnummer, EndringIIdentitetsgrunnlag, EndringIInnflytting, EndringIKjoenn,
         EndringIKontaktinformasjon, EndringIKontaktopplysningerForDoedsbo, EndringILegitimasjonsdokument,
         EndringINavn, EndringIOpphold, EndringIOppholdPaaSvalbard, EndringIOppholdsadresse, EndringIPerson,
         EndringIRettsligHandleevne, EndringISametingetsValgmanntall, EndringISivilstand, EndringIStatsborgerskap,
         EndringIStatus, EndringIUtenlandskPersonidentifikasjon, EndringIUtflytting,
-        EndringIUtlendingsmyndighetenesIdentifikasjonsnummer,
+        EndringIUtlendingsmyndighetenesIdentifikasjonsnummer, EndringIVergemaal, PersonErBosatt, PersonErDod,
+        PersonErEndretVedSplitting, PersonErGjenopprettetVedSplitting, PersonErOppdatert, PersonErOpphoert,
+        PersonErOpphoertSomDublett, PersonErOpprettet, PersonErReaktivert, PersonErUtflyttet,
+        PersonErViderefoertSomGjeldendeVedSammenslaaing
     }
 
     private List<Roller> roller;
@@ -88,6 +102,7 @@ public class TenorRequest {
 
         private Integer tilOgMed;
     }
+
     @Data
     @NoArgsConstructor
     public static class Navn {
@@ -116,18 +131,18 @@ public class TenorRequest {
     @NoArgsConstructor
     public static class Relasjoner {
 
-       private Relasjon relasjon;
-       private Intervall antallBarn;
-       private Boolean harForeldreAnsvar;
-       private Intervall relasjonMedFoedselsaar;
-       private Boolean harDeltBosted;
-       private Boolean harVergemaalEllerFremtidsfullmakt;
+        private Relasjon relasjon;
+        private Intervall antallBarn;
+        private Boolean harForeldreAnsvar;
+        private Intervall relasjonMedFoedselsaar;
+        private Boolean harDeltBosted;
+        private Boolean harVergemaalEllerFremtidsfullmakt;
     }
 
     @Data
     @NoArgsConstructor
     public static class Hendelser {
 
-        private Hendelser hendelse;
+        private Hendelse hendelse;
     }
 }
