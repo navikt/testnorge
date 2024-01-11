@@ -6,7 +6,6 @@ import no.nav.testnav.apps.tenorsearchservice.domain.TenorResponse;
 import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
@@ -30,10 +29,9 @@ public class GetTenorTestdata implements Callable<Mono<TenorResponse>> {
 
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder.path(TENOR_QUERY_URL)
-                        .queryParam("kql", query)
+                        .queryParam("kql", URLEncoder.encode(query, StandardCharsets.UTF_8))
                         .queryParam("nokkelinformasjon", true)
                         .build())
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToMono(JsonNode.class)
