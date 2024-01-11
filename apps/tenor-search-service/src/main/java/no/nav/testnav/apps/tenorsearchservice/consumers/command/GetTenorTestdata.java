@@ -32,6 +32,7 @@ public class GetTenorTestdata implements Callable<Mono<TenorResponse>> {
                         .queryParam("kql", URLEncoder.encode(query, StandardCharsets.UTF_8))
                         .queryParam("nokkelinformasjon", true)
                         .build())
+                .header("User-Agent", "test")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToMono(JsonNode.class)
