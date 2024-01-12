@@ -1,6 +1,5 @@
 package no.nav.testnav.apps.tenorsearchservice.consumers;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import no.nav.testnav.apps.tenorsearchservice.config.Consumers;
 import no.nav.testnav.apps.tenorsearchservice.consumers.command.GetTenorTestdata;
 import no.nav.testnav.apps.tenorsearchservice.domain.TenorResponse;
@@ -26,6 +25,9 @@ public class TenorClient {
     public Mono<TenorResponse> getTestdata(String query) {
 
         return maskinportenClient.getAccessToken()
-                .flatMap(token -> new GetTenorTestdata(webClient, query, token.value()).call());
+                .flatMap(token -> new GetTenorTestdata(webClient,
+                        query.replace("{", "%7b")
+                                .replace("}", "%7d"),
+                        token.value()).call());
     }
 }
