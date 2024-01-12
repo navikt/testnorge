@@ -54,7 +54,7 @@ jobs:
       deploy-tag: ""
       force-deploy: ${{ inputs.force-deploy }}
       force-deploy-test: ${{ inputs.force-deploy-test }}
-      sonar-enabled: ${{ inputs.sonar.enabled }}
+      sonar-enabled: ${{ inputs.sonar-enabled }}
     permissions:
       contents: read
       id-token: write
@@ -77,7 +77,7 @@ jobs:
       force-deploy-test: ${{ inputs.force-deploy-test }}
       force-deploy-idporten: ${{ inputs.name == 'dolly-frontend' && inputs.force-deploy }}
       force-deploy-unstable: ${{ inputs.name == 'dolly-frontend' && inputs.force-deploy-test }}
-      sonar-enabled: ${{ inputs.sonar.enabled }}
+      sonar-enabled: ${{ inputs.sonar-enabled }}
     permissions:
       contents: read
       id-token: write
