@@ -7,12 +7,11 @@ import no.nav.testnav.apps.tenorsearchservice.domain.TenorResponse;
 import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.concurrent.Callable;
 
@@ -37,6 +36,7 @@ public class GetTenorTestdata implements Callable<Mono<TenorResponse>> {
                         .queryParam("nokkelinformasjon", true)
                         .build())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .retrieve()
                 .bodyToMono(JsonNode.class)
                 .map(response -> TenorResponse.builder()
