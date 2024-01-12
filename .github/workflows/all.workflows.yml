@@ -28,6 +28,7 @@ on:
         type: boolean
         description: "Deploy? Make sure the effective working directory contains a NAIS manifest as named below! Note: For dolly-frontend, this will also deploy with config.idporten.yml."
         default: false
+      # TODO: Remove as unused?
       nais-manifest:
         type: string
         description: "Custom NAIS manifest filename."
@@ -38,14 +39,6 @@ on:
         default: false
 
 jobs:
-
-#  start:
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: "Log inputs"
-#        run: |
-#          echo "branch: ${{ github.ref_name }}"
-#          echo "inputs: ${{ toJSON(inputs) }}"
 
   backend:
     if: inputs.workflow == 'backend'
