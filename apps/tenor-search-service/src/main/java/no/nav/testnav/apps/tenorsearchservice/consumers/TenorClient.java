@@ -25,9 +25,6 @@ public class TenorClient {
     public Mono<TenorResponse> getTestdata(String query) {
 
         return maskinportenClient.getAccessToken()
-                .flatMap(token -> new GetTenorTestdata(webClient,
-                        query.replace("{", "%7b")
-                                .replace("}", "%7d"),
-                        token.value()).call());
+                .flatMap(token -> new GetTenorTestdata(webClient, query, token.value()).call());
     }
 }

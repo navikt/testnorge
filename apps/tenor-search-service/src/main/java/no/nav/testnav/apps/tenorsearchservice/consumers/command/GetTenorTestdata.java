@@ -2,7 +2,6 @@ package no.nav.testnav.apps.tenorsearchservice.consumers.command;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.tenorsearchservice.domain.TenorResponse;
 import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
@@ -13,7 +12,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
-import java.net.URI;
 import java.time.Duration;
 import java.util.concurrent.Callable;
 
@@ -21,20 +19,22 @@ import java.util.concurrent.Callable;
 @RequiredArgsConstructor
 public class GetTenorTestdata implements Callable<Mono<TenorResponse>> {
 
-    private static final String TENOR_QUERY_URL = "/api/testnorge/v2/soek/freg?kql=";
+    private static final String TENOR_QUERY_URL = "/api/testnorge/v2/soek/freg";
 
     private final WebClient webClient;
     private final String query;
     private final String token;
 
     @Override
-    @SneakyThrows
     public Mono<TenorResponse> call() {
 
         log.info("Query-parameter: {}", query);
 
         return webClient.get()
-                .uri(new URI(TENOR_QUERY_URL+query+"nokkelinformasjon:true"))
+                .uri(uriBuilder -> uriBuilder.path(TENOR_QUERY_URL)
+                        .queryParam("kql", query)
+                        .queryParam("nokkelinformasjon", true)
+                        .build())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .retrieve()
