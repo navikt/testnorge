@@ -60,7 +60,7 @@ public class BrukerController {
     }
 
     @Transactional
-    @CacheEvict(value = {CACHE_BRUKER, CACHE_GRUPPE}, allEntries = true)
+    @CacheEvict(value = { CACHE_BRUKER, CACHE_GRUPPE }, allEntries = true)
     @PutMapping("/leggTilFavoritt")
     @Operation(description = "Legg til Favoritt-testgruppe til pålogget Bruker")
     public RsBruker leggTilFavoritt(@RequestBody RsBrukerUpdateFavoritterReq request) {
@@ -68,7 +68,7 @@ public class BrukerController {
     }
 
     @Transactional
-    @CacheEvict(value = {CACHE_BRUKER, CACHE_GRUPPE}, allEntries = true)
+    @CacheEvict(value = { CACHE_BRUKER, CACHE_GRUPPE }, allEntries = true)
     @PutMapping("/fjernFavoritt")
     @Operation(description = "Fjern Favoritt-testgruppe fra pålogget Bruker")
     public RsBruker fjernFavoritt(@RequestBody RsBrukerUpdateFavoritterReq request) {

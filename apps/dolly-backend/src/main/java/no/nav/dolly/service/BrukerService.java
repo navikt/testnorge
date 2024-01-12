@@ -10,6 +10,7 @@ import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.config.CachingConfig.CACHE_BRUKER;
 import static no.nav.dolly.util.CurrentAuthentication.getAuthUser;
 import static no.nav.dolly.util.CurrentAuthentication.getUserId;
 
@@ -53,8 +55,13 @@ public class BrukerService {
             return bruker;
 
         } catch (NotFoundException e) {
-            return brukerRepository.save(getAuthUser(getUserInfo));
+            return createBruker();
         }
+    }
+
+    @CacheEvict(value = { CACHE_BRUKER }, allEntries = true)
+    public Bruker createBruker() {
+        return brukerRepository.save(getAuthUser(getUserInfo));
     }
 
     @Transactional
@@ -112,14 +119,14 @@ public class BrukerService {
                 .toList();
     }
 
-    public int sletteBrukerFavoritterByGroupId(Long groupId) {
-        return brukerRepository.deleteBrukerFavoritterByGroupId(groupId);
+    public void sletteBrukerFavoritterByGroupId(Long groupId) {
+        brukerRepository.deleteBrukerFavoritterByGroupId(groupId);
     }
 
-    public Bruker saveBrukerTilDB(Bruker b) {
+    public void saveBrukerTilDB(Bruker b) {
 
         try {
-            return brukerRepository.save(b);
+            brukerRepository.save(b);
         } catch (DataIntegrityViolationException e) {
             throw new ConstraintViolationException("En Bruker DB constraint er brutt! Kan ikke lagre bruker. Error: " + e.getMessage(), e);
         } catch (NonTransientDataAccessException e) {
@@ -144,10 +151,10 @@ public class BrukerService {
         return testgruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException("Finner ikke gruppe basert på gruppeID: " + gruppeId));
     }
 
-    private Testgruppe saveGruppe(Testgruppe testgruppe) {
+    private void saveGruppe(Testgruppe testgruppe) {
 
         try {
-            return testgruppeRepository.save(testgruppe);
+            testgruppeRepository.save(testgruppe);
         } catch (DataIntegrityViolationException e) {
             throw new ConstraintViolationException("En Testgruppe DB constraint er brutt! Kan ikke lagre testgruppe. Error: " + e.getMessage(), e);
         } catch (NonTransientDataAccessException e) {
