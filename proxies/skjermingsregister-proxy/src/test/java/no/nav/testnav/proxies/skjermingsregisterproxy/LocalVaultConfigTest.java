@@ -1,0 +1,45 @@
+package no.nav.testnav.proxies.skjermingsregisterproxy;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.vault.authentication.TokenAuthentication;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+
+@ActiveProfiles("test")
+class LocalVaultConfigTest {
+
+    @Test
+    void missingSystemPropertyShouldFail() {
+        assertThatThrownBy(new LocalVaultConfig()::clientAuthentication)
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void environmentPropertyShouldTakePrecedenceOverSystemProperty() {
+        try {
+            System.setProperty(LocalVaultConfig.TOKEN_PROPERTY_NAME, "<some-token-here>");
+            assertThat(new LocalVaultConfig())
+                    .isNotNull()
+                    .satisfies(
+                            config -> assertThat(config.clientAuthentication())
+                                    .isNotNull()
+                                    .isInstanceOf(TokenAuthentication.class)
+                    );
+        } finally {
+            System.clearProperty(LocalVaultConfig.TOKEN_PROPERTY_NAME);
+        }
+    }
+
+    @Test
+    void vaultEndpointShouldBeKnown() {
+        assertThat(new LocalVaultConfig().vaultEndpoint())
+                .isNotNull()
+                .satisfies(endpoint -> {
+                    assertThat(endpoint.getHost()).isEqualTo("vault.adeo.no");
+                    assertThat(endpoint.getPort()).isEqualTo(443);
+                });
+    }
+
+}
