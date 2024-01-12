@@ -68,7 +68,7 @@ export const SelectOptionsFormat = {
 				)
 			return options
 		} else if (type === 'arbeidsforholdstyper') {
-			const options = kodeverk || []
+			const options = kodeverk?.koder || kodeverk || []
 			options?.length > 0 &&
 				options.forEach((option: Option) => {
 					if (option.value === 'frilanserOppdragstakerHonorarPersonerMm') {

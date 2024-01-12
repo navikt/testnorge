@@ -86,8 +86,8 @@ dependencies {
 
     implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
     implementation 'org.springframework.kafka:spring-kafka'
-    implementation 'org.apache.kafka:kafka-clients:7.0.0-ce'
-    implementation 'io.confluent:kafka-avro-serializer:7.3.2'
+    implementation 'org.apache.kafka:kafka-clients:3.6.1'
+    implementation 'io.confluent:kafka-avro-serializer:7.5.1'
 
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
     implementation 'io.swagger.core.v3:swagger-annotations-jakarta:2.2.16'
