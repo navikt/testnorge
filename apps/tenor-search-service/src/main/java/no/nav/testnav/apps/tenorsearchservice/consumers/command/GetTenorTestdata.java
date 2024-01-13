@@ -9,9 +9,12 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.util.DefaultUriBuilderFactory;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.concurrent.Callable;
 
@@ -30,11 +33,16 @@ public class GetTenorTestdata implements Callable<Mono<TenorResponse>> {
 
         log.info("Query-parameter: {}", query);
 
+        var uri = new DefaultUriBuilderFactory(TENOR_QUERY_URL);
+        uri.setEncodingMode(DefaultUriBuilderFactory.EncodingMode.NONE);
+        var ui = uri.builder()
+                .queryParam("kql", URLEncoder.encode(query, StandardCharsets.UTF_8))
+                .queryParam("nokkelinformasjon", true)
+                .build();
+        log.info("URI output: {}", ui);
+
         return webClient.get()
-                .uri(uriBuilder -> uriBuilder.path(TENOR_QUERY_URL)
-                        .queryParam("kql", query)
-                        .queryParam("nokkelinformasjon", true)
-                        .build())
+                .uri(ui)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .retrieve()
