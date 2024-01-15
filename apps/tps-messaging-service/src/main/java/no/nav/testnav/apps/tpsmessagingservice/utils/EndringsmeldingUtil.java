@@ -7,8 +7,8 @@ import no.nav.testnav.apps.tpsmessagingservice.dto.EndringsmeldingRequest;
 import no.nav.testnav.apps.tpsmessagingservice.dto.EndringsmeldingResponse;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsMeldingResponse;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
 import java.io.StringReader;
 import java.io.StringWriter;
 
