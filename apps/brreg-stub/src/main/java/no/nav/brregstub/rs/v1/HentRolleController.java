@@ -42,8 +42,8 @@ public class HentRolleController {
     @GetMapping("/{orgnr}")
     public ResponseEntity<RsOrganisasjon> hentGrunndata(@NotNull @PathVariable Integer orgnr) {
         var grunndata = service.hentRolle(orgnr)
-                .orElseThrow(() -> new NotFoundException(String.format("Kunne ikke finne roller for :%s",
-                        orgnr)));
+                .orElseThrow(() -> new NotFoundException("Kunne ikke finne roller for :%s".formatted(
+                orgnr)));
         return ResponseEntity.status(HttpStatus.OK).body(grunndata);
     }
 

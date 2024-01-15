@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 
-import static java.lang.String.format;
 import static java.util.Objects.isNull;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -70,7 +69,7 @@ public class BankkontonrNorskMappingStrategy implements MappingStrategy {
                     public void mapAtoB(BankkontoNorgeType source, BankkontonrNorskDTO target, MappingContext context) {
 
                         target.setKontonummer(isBlank(source.getKontoNummer()) ? null :
-                                format("%s.%s.%s", source.getKontoNummer().substring(0, 4),
+                                "%s.%s.%s".formatted(source.getKontoNummer().substring(0, 4),
                                         source.getKontoNummer().substring(4, 6), source.getKontoNummer().substring(6)));
 
                         target.setKontoRegdato(isBlank(source.getRegTidspunkt()) ? null :

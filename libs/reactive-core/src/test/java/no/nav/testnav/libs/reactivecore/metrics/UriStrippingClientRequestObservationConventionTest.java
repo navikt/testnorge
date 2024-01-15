@@ -26,13 +26,9 @@ class UriStrippingClientRequestObservationConventionTest {
     void testUriStripping()
             throws URISyntaxException {
 
-        var context = new ClientRequestObservationContext();
+        var context = new ClientRequestObservationContext(ClientRequest
+                .create(GET, new URI(BASE_URI + PATH_AND_PARAMETERS)));
         context.setUriTemplate(BASE_URI + PATH_AND_PARAMETERS_AND_TEMPLATE);
-        context.setRequest(
-                ClientRequest
-                        .create(GET, new URI(BASE_URI + PATH_AND_PARAMETERS))
-                        .build()
-        );
         context.setResponse(
                 ClientResponse
                         .create(HttpStatusCode.valueOf(200))

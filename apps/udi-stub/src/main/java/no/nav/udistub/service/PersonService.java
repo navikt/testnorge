@@ -45,14 +45,14 @@ public class PersonService {
 
         return personRepository.findByIdent(ident)
                 .map(person -> mapperFacade.map(person, UdiPerson.class))
-                .orElseThrow(() -> new NotFoundException(String.format(IKKE_FUNNET, ident)));
+                .orElseThrow(() -> new NotFoundException(IKKE_FUNNET.formatted(ident)));
     }
 
     @Transactional
     public void deletePerson(String ident) {
 
         var slettePerson = personRepository.findByIdent(ident)
-                .orElseThrow(() -> new NotFoundException(String.format(IKKE_FUNNET, ident)));
+                .orElseThrow(() -> new NotFoundException(IKKE_FUNNET.formatted(ident)));
         personRepository.deleteById(slettePerson.getId());
     }
 }

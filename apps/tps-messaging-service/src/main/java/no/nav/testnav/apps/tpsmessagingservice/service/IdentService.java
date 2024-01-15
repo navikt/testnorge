@@ -1,6 +1,8 @@
 package no.nav.testnav.apps.tpsmessagingservice.service;
 
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.tpsmessagingservice.consumer.ServicerutineConsumer;
@@ -15,8 +17,6 @@ import no.nav.tps.ctg.m201.domain.TpsPersonData;
 import no.nav.tps.ctg.m201.domain.TpsServiceRutineType;
 import org.springframework.stereotype.Service;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.List;
@@ -39,15 +39,15 @@ public class IdentService {
     private final ServicerutineConsumer servicerutineConsumer;
     private final JAXBContext requestContext;
     private final TestmiljoerServiceConsumer testmiljoerServiceConsumer;
-    private final XmlMapper xmlMapper;
+    private final ObjectMapper objectMapper;
 
     public IdentService(ServicerutineConsumer servicerutineConsumer,
                         TestmiljoerServiceConsumer testmiljoerServiceConsumer,
-                        XmlMapper xmlMapper) throws JAXBException {
+                        ObjectMapper objectMapper) throws JAXBException {
         this.servicerutineConsumer = servicerutineConsumer;
         this.testmiljoerServiceConsumer = testmiljoerServiceConsumer;
         this.requestContext = JAXBContext.newInstance(TpsPersonData.class);
-        this.xmlMapper = xmlMapper;
+        this.objectMapper = objectMapper;
     }
 
     @SneakyThrows
@@ -125,7 +125,7 @@ public class IdentService {
                     .build();
         } else {
 
-            return xmlMapper.readValue(endringsmeldingResponse, TpsServicerutineM201Response.class);
+            return objectMapper.readValue(endringsmeldingResponse, TpsServicerutineM201Response.class);
         }
     }
 
