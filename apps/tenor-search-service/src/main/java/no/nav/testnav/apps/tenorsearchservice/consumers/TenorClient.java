@@ -19,12 +19,11 @@ public class TenorClient {
 
     public TenorClient(Consumers consumers, MaskinportenClient maskinportenClient) {
 
-        var uriFactory = new DefaultUriBuilderFactory();
+        var uriFactory = new DefaultUriBuilderFactory(consumers.getTenorSearchService().getUrl());
         uriFactory.setEncodingMode(DefaultUriBuilderFactory.EncodingMode.NONE);
 
         this.webClient = WebClient
                 .builder()
-                .baseUrl(consumers.getTenorSearchService().getUrl())
                 .filters(exchangeFilterFunctions -> exchangeFilterFunctions.add(logRequest()))
                 .uriBuilderFactory(uriFactory)
                 .build();
@@ -54,9 +53,6 @@ public class TenorClient {
     }
 
     public Mono<TenorResponse> getTestdata(String query) {
-
-//        var token = "";
-//        return new GetTenorTestdata(webClient, query, token).call();
 
         return maskinportenClient.getAccessToken()
                 .flatMap(token -> new GetTenorTestdata(webClient, query, token.value()).call());
