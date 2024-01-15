@@ -3,7 +3,6 @@ import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { getInitialFoedsel } from '@/components/fagsystem/pdlf/form/initialValues'
 import { Yearpicker } from '@/components/ui/form/inputs/yearpicker/Yearpicker'
-import * as _ from 'lodash'
 import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
@@ -29,17 +28,17 @@ export const FoedselForm = ({ formMethods, path }: FoedselTypes) => {
 		formMethods.trigger()
 	}
 
-	const foedselsaar = _.get(formMethods.getValues(), `${path}.foedselsaar`)
-	const foedselsdato = _.get(formMethods.getValues(), `${path}.foedselsdato`)
+	const foedselsaar = formMethods.watch(`${path}.foedselsaar`)
+	const foedselsdato = formMethods.watch(`${path}.foedselsdato`)
 
 	const minDateFoedsel =
 		opts?.identtype === 'NPID' ? new Date('01.01.1870') : new Date('01.01.1900')
 
 	const harAlder = () => {
 		return (
-			_.get(formMethods.getValues(), 'pdldata.opprettNyPerson.alder') ||
-			_.get(formMethods.getValues(), 'pdldata.opprettNyPerson.foedtEtter') ||
-			_.get(formMethods.getValues(), 'pdldata.opprettNyPerson.foedtFoer')
+			formMethods.watch('pdldata.opprettNyPerson.alder') ||
+			formMethods.watch('pdldata.opprettNyPerson.foedtEtter') ||
+			formMethods.watch('pdldata.opprettNyPerson.foedtFoer')
 		)
 	}
 
@@ -75,8 +74,8 @@ export const FoedselForm = ({ formMethods, path }: FoedselTypes) => {
 				kodeverk={AdresseKodeverk.Kommunenummer}
 				size="large"
 				isDisabled={
-					_.get(formMethods.getValues(), `${path}.foedeland`) !== 'NOR' &&
-					_.get(formMethods.getValues(), `${path}.foedeland`) !== null
+					formMethods.watch(`${path}.foedeland`) !== 'NOR' &&
+					formMethods.watch(`${path}.foedeland`) !== null
 				}
 			/>
 			<FormikSelect

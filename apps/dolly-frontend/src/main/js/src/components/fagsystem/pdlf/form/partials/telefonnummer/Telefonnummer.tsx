@@ -4,7 +4,6 @@ import { DollyTextInput, FormikTextInput } from '@/components/ui/form/inputs/tex
 import { PersoninformasjonKodeverk } from '@/config/kodeverk'
 import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
-import * as _ from 'lodash'
 import {
 	initialTelefonnummer,
 	initialTpsTelefonnummer,
@@ -71,7 +70,7 @@ export const TelefonnummerFormRedigering = ({ path }: TelefonnummerProps) => {
 }
 
 export const TelefonnummerForm = ({ path, formMethods, idx }: TelefonnummerProps) => {
-	const tlfListe = _.get(formMethods.getValues(), path || 'pdldata.person.telefonnummer')
+	const tlfListe = formMethods.watch(path || 'pdldata.person.telefonnummer')
 
 	useEffect(() => {
 		if (tlfListe && tlfListe.length === 1) {
@@ -131,7 +130,7 @@ export const TelefonnummerForm = ({ path, formMethods, idx }: TelefonnummerProps
 				name={`${path}.nummer`}
 				label="Telefonnummer"
 				onChange={({ target }: { target: { value: string } }) => handleChangeNummer(target)}
-				value={_.get(formMethods.getValues(), `${path}.nummer`)}
+				value={formMethods.watch(`${path}.nummer`)}
 				/*@ts-ignore*/
 				size="large"
 			/>
@@ -149,8 +148,8 @@ export const TelefonnummerForm = ({ path, formMethods, idx }: TelefonnummerProps
 }
 
 export const Telefonnummer = ({ formMethods, path }: TelefonnummerProps) => {
-	const tlfListe = _.get(formMethods.getValues(), path || paths.pdlTelefonnummer)
-	const tlfListeTps = _.get(formMethods.getValues(), path || paths.tpsMTelefonnummer)
+	const tlfListe = formMethods.watch(path || paths.pdlTelefonnummer)
+	const tlfListeTps = formMethods.watch(path || paths.tpsMTelefonnummer)
 
 	if (!tlfListe) {
 		return null

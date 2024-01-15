@@ -19,10 +19,9 @@ export const ArenaForm = () => {
 	const opts = useContext(BestillingsveilederContext)
 	const { leggTilPaaGruppe } = opts?.is
 
-	const servicebehovAktiv =
-		_.get(formMethods.getValues(), `${arenaPath}.arenaBrukertype`) === 'MED_SERVICEBEHOV'
+	const servicebehovAktiv = formMethods.watch(`${arenaPath}.arenaBrukertype`) === 'MED_SERVICEBEHOV'
 
-	const dagpengerAktiv = _.get(formMethods.getValues(), `${arenaPath}.dagpenger[0]`)
+	const dagpengerAktiv = formMethods.watch(`${arenaPath}.dagpenger[0]`)
 
 	const personFoerLeggTilInntektstub = _.get(opts.personFoerLeggTil, 'inntektstub')
 

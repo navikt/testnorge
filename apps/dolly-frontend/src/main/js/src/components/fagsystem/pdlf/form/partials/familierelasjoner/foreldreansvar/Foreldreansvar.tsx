@@ -52,7 +52,7 @@ export const ForeldreansvarForm = ({
 	const nyAnsvarlig = 'nyAnsvarlig'
 	const typeAnsvarlig = 'typeAnsvarlig'
 	const handleChangeTypeAnsvarlig = (target: Target, path: string) => {
-		const foreldreansvar = _.get(formMethods.getValues(), path)
+		const foreldreansvar = formMethods.watch(path)
 		const foreldreansvarClone = _.cloneDeep(foreldreansvar)
 
 		_.set(foreldreansvarClone, typeAnsvarlig, target?.value || null)
@@ -82,7 +82,7 @@ export const ForeldreansvarForm = ({
 	}
 
 	const handleChangeAnsvar = (target: Target, path: string) => {
-		const foreldreansvar = _.get(formMethods.getValues(), path)
+		const foreldreansvar = formMethods.watch(path)
 		const foreldreansvarClone = _.cloneDeep(foreldreansvar)
 
 		_.set(foreldreansvarClone, 'ansvar', target?.value || null)
@@ -97,26 +97,26 @@ export const ForeldreansvarForm = ({
 		formMethods.trigger(path)
 	}
 
-	const ansvar = _.get(formMethods.getValues(), `${path}.ansvar`)
+	const ansvar = formMethods.watch(`${path}.ansvar`)
 
 	const getTypeAnsvarlig = () => {
 		if (ansvar !== 'ANDRE') {
 			return null
 		}
-		const type = _.get(formMethods.getValues(), `${path}.typeAnsvarlig`)
+		const type = formMethods.watch(`${path}.typeAnsvarlig`)
 		if (type) {
 			return type
-		} else if (_.get(formMethods.getValues(), `${path}.ansvarlig`)) {
+		} else if (formMethods.watch(`${path}.ansvarlig`)) {
 			return TypeAnsvarlig.EKSISTERENDE
-		} else if (_.get(formMethods.getValues(), `${path}.nyAnsvarlig`)) {
+		} else if (formMethods.watch(`${path}.nyAnsvarlig`)) {
 			return TypeAnsvarlig.NY
-		} else if (_.get(formMethods.getValues(), `${path}.ansvarligUtenIdentifikator`)) {
+		} else if (formMethods.watch(`${path}.ansvarligUtenIdentifikator`)) {
 			return TypeAnsvarlig.UTEN_ID
 		} else return null
 	}
 
 	useEffect(() => {
-		if (!_.get(formMethods.getValues(), `${path}.typeAnsvarlig`)) {
+		if (!formMethods.watch(`${path}.typeAnsvarlig`)) {
 			formMethods.setValue(`${path}.typeAnsvarlig`, getTypeAnsvarlig())
 			formMethods.trigger(path)
 		}
@@ -173,7 +173,7 @@ export const ForeldreansvarForm = ({
 export const Foreldreansvar = ({ formMethods }: ForeldreansvarForm) => {
 	const { personFoerLeggTil, leggTilPaaGruppe } = useContext(BestillingsveilederContext)
 
-	const relasjoner = _.get(formMethods.getValues(), 'pdldata.person.forelderBarnRelasjon')
+	const relasjoner = formMethods.watch('pdldata.person.forelderBarnRelasjon')
 	const eksisterendeRelasjoner = _.get(personFoerLeggTil, 'pdl.hentPerson.forelderBarnRelasjon')
 
 	const harBarn = () => {

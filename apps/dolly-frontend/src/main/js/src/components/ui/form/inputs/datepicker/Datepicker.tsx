@@ -70,10 +70,14 @@ const P_FormikDatepicker = ({ addHour = false, ...props }) => {
 				.toISOString()
 				.substring(0, 19)
 		}
-		formMethods.setValue(props.name, val)
+		formMethods.setValue(props.name, val, { shouldTouch: true })
 		formMethods.trigger()
 	}
-	const handleBlur = () => props?.onBlur?.(SyntEvent(props.name, value))
+	const handleBlur = () => {
+		props?.onBlur?.(SyntEvent(props.name, value))
+		formMethods.setValue(props.name, value, { shouldTouch: true })
+		formMethods.trigger()
+	}
 	return <DollyDatepicker value={value} onChange={handleChange} onBlur={handleBlur} {...props} />
 }
 

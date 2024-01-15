@@ -74,7 +74,7 @@ export const NyIdent = ({ brukernavn, onAvbryt, onSubmit }: NyBestillingProps) =
 		return onSubmit(values, formMethods)
 	}
 
-	const valgtMal = malOptions.find((mal) => mal.value === _.get(formMethods.getValues(), 'mal'))
+	const valgtMal = malOptions.find((mal) => mal.value === formMethods.watch('mal'))
 	const valgtMalTpsfValues = _.get(valgtMal, 'data.bestilling.tpsf')
 	const erTpsfMal = tpsfAttributter.some((a) => _.has(valgtMalTpsfValues, a))
 

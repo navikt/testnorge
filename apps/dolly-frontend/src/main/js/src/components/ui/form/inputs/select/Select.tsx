@@ -57,11 +57,23 @@ export const Select = ({
 	options = [],
 	isMulti = false,
 	styles,
+	onChange,
 	...rest
 }: SelectProps) => {
+	const formMethods = useFormContext()
+	const val = value || formMethods?.watch(name)
 	let _value = isMulti
-		? options?.filter?.((o) => value?.some((el) => el === o?.value))
-		: options?.filter?.((o) => o?.value === value)
+		? options?.filter?.((o) => val?.some((el) => el === o?.value))
+		: options?.filter?.((o) => {
+				return o?.value === val
+			})
+
+	if (!onChange) {
+		onChange = (selected, meta) => {
+			formMethods?.setValue(name, selected?.value)
+			formMethods?.trigger(name)
+		}
+	}
 
 	return (
 		<ReactSelect
@@ -82,6 +94,7 @@ export const Select = ({
 			isLoading={isLoading}
 			isClearable={isClearable}
 			isMulti={isMulti}
+			onChange={onChange}
 			styles={styles ? styles : { menuPortal: (base) => ({ ...base, zIndex: 99999 }) }}
 			menuPortalTarget={document.getElementById('react-select-root')}
 			{...rest}

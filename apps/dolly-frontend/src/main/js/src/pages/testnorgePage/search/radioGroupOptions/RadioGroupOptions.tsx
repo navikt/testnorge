@@ -1,7 +1,6 @@
 import Icon from '@/components/ui/icon/Icon'
 import { Radio, RadioGroup } from '@navikt/ds-react'
 import styled from 'styled-components'
-import * as _ from 'lodash'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 
 type Option = {
@@ -32,7 +31,7 @@ export const RadioGroupOptions = ({
 	hideLegend = true,
 	options,
 }: RadioOptionsProps) => {
-	const selected = _.get(formMethods.getValues(), `${path}`) || null
+	const selected = formMethods.watch(`${path}`) || null
 	const setSelected = (valg: string) => {
 		formMethods.setValue(`${path}`, valg)
 		formMethods.trigger(`${path}`)

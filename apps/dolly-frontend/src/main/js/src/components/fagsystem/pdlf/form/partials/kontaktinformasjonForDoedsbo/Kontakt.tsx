@@ -40,20 +40,20 @@ export const Kontakt = ({ formMethods, path, eksisterendeNyPerson = null }: Kont
 	const personPath = `${path}.personSomKontakt`
 
 	const getKontakttype = () => {
-		const kontaktType = _.get(formMethods.getValues(), `${path}.kontaktType`)
+		const kontaktType = formMethods.watch(`${path}.kontaktType`)
 		if (kontaktType) {
 			return kontaktType
-		} else if (_.get(formMethods.getValues(), `${path}.advokatSomKontakt`)) {
+		} else if (formMethods.watch(`${path}.advokatSomKontakt`)) {
 			return 'ADVOKAT'
-		} else if (_.get(formMethods.getValues(), `${path}.organisasjonSomKontakt`)) {
+		} else if (formMethods.watch(`${path}.organisasjonSomKontakt`)) {
 			return 'ORGANISASJON'
 		} else if (
 			eksisterendeNyPerson ||
-			_.get(formMethods.getValues(), `${path}.personSomKontakt.identifikasjonsnummer`) ||
-			_.get(formMethods.getValues(), `${path}.personSomKontakt.foedselsdato`)
+			formMethods.watch(`${path}.personSomKontakt.identifikasjonsnummer`) ||
+			formMethods.watch(`${path}.personSomKontakt.foedselsdato`)
 		) {
 			return 'PERSON_FDATO'
-		} else if (_.get(formMethods.getValues(), `${path}.personSomKontakt.nyKontaktperson`)) {
+		} else if (formMethods.watch(`${path}.personSomKontakt.nyKontaktperson`)) {
 			return 'NY_PERSON'
 		} else return null
 	}
@@ -62,14 +62,14 @@ export const Kontakt = ({ formMethods, path, eksisterendeNyPerson = null }: Kont
 	const navnOptions = SelectOptionsFormat.formatOptions('personnavn', navnInfo)
 
 	useEffect(() => {
-		if (!_.get(formMethods.getValues(), `${path}.kontaktType`)) {
+		if (!formMethods.watch(`${path}.kontaktType`)) {
 			formMethods.setValue(`${path}.kontaktType`, getKontakttype())
 		}
 	}, [])
 
 	const handleAfterChange = (type: TypeValues) => {
 		const { value } = type
-		const kontaktinfo = _.get(formMethods.getValues(), path)
+		const kontaktinfo = formMethods.watch(path)
 		const kontaktinfoClone = _.cloneDeep(kontaktinfo)
 
 		if (value !== getKontakttype()) {
@@ -101,10 +101,10 @@ export const Kontakt = ({ formMethods, path, eksisterendeNyPerson = null }: Kont
 	}
 
 	const disableIdent =
-		_.get(formMethods.getValues(), `${personPath}.foedselsdato`) ||
-		_.get(formMethods.getValues(), `${personPath}.navn.fornavn`)
+		formMethods.watch(`${personPath}.foedselsdato`) ||
+		formMethods.watch(`${personPath}.navn.fornavn`)
 
-	const disablePersoninfo = _.get(formMethods.getValues(), `${personPath}.identifikasjonsnummer`)
+	const disablePersoninfo = formMethods.watch(`${personPath}.identifikasjonsnummer`)
 
 	return (
 		<Kategori title="Kontakt">
@@ -134,7 +134,7 @@ export const Kontakt = ({ formMethods, path, eksisterendeNyPerson = null }: Kont
 						onChange={(navn: string) =>
 							setNavn(navn, `${advokatPath}.kontaktperson`, formMethods.setValue)
 						}
-						value={_.get(formMethods.getValues(), `${advokatPath}.kontaktperson.fornavn`)}
+						value={formMethods.watch(`${advokatPath}.kontaktperson.fornavn`)}
 					/>
 				</div>
 			)}
@@ -158,7 +158,7 @@ export const Kontakt = ({ formMethods, path, eksisterendeNyPerson = null }: Kont
 						onChange={(navn: string) =>
 							setNavn(navn, `${organisasjonPath}.kontaktperson`, formMethods.setValue)
 						}
-						value={_.get(formMethods.getValues(), `${organisasjonPath}.kontaktperson.fornavn`)}
+						value={formMethods.watch(`${organisasjonPath}.kontaktperson.fornavn`)}
 					/>
 				</div>
 			)}
@@ -188,7 +188,7 @@ export const Kontakt = ({ formMethods, path, eksisterendeNyPerson = null }: Kont
 						placeholder={getPlaceholder(formMethods.getValues(), `${personPath}.navn`)}
 						isLoading={loading}
 						onChange={(navn: string) => setNavn(navn, `${personPath}.navn`, formMethods.setValue)}
-						value={_.get(formMethods.getValues(), `${personPath}.navn.fornavn`)}
+						value={formMethods.watch(`${personPath}.navn.fornavn`)}
 						isDisabled={disablePersoninfo}
 					/>
 				</div>

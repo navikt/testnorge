@@ -1,4 +1,3 @@
-import * as _ from 'lodash'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
@@ -26,7 +25,7 @@ export const Arbeidsadgang = ({ formMethods }) => {
 		}
 	`
 
-	const harArbeidsAdgang = _.get(formMethods.getValues(), 'udistub.arbeidsadgang.harArbeidsAdgang')
+	const harArbeidsAdgang = formMethods.watch('udistub.arbeidsadgang.harArbeidsAdgang')
 
 	const endreArbeidsadgang = (v) => {
 		formMethods.setValue('udistub.arbeidsadgang.harArbeidsAdgang', v.value)
@@ -40,7 +39,7 @@ export const Arbeidsadgang = ({ formMethods }) => {
 		}
 	}
 
-	const forklaring = _.get(formMethods.getValues(), 'udistub.arbeidsadgang.forklaring')
+	const forklaring = formMethods.watch('udistub.arbeidsadgang.forklaring')
 
 	const endreForklaring = (text) => {
 		formMethods.setValue('udistub.arbeidsadgang.forklaring', text === '' ? null : text)

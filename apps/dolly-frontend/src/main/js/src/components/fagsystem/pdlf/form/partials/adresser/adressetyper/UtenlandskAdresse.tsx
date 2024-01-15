@@ -1,7 +1,6 @@
 import { DollyTextInput, FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { GtKodeverk } from '@/config/kodeverk'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
-import * as _ from 'lodash'
 import { useEffect } from 'react'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 
@@ -13,12 +12,12 @@ interface UtenlandskAdresseForm {
 
 export const UtenlandskAdresse = ({ formMethods, path, master }: UtenlandskAdresseForm) => {
 	const harAdressenavn =
-		_.get(formMethods.getValues(), `${path}.adressenavnNummer`) !== '' &&
-		_.get(formMethods.getValues(), `${path}.adressenavnNummer`) !== null
+		formMethods.watch(`${path}.adressenavnNummer`) !== '' &&
+		formMethods.watch(`${path}.adressenavnNummer`) !== null
 
 	const harPostboksnummer =
-		_.get(formMethods.getValues(), `${path}.postboksNummerNavn`) !== '' &&
-		_.get(formMethods.getValues(), `${path}.postboksNummerNavn`) !== null
+		formMethods.watch(`${path}.postboksNummerNavn`) !== '' &&
+		formMethods.watch(`${path}.postboksNummerNavn`) !== null
 
 	useEffect(() => {
 		if (master !== 'PDL') {

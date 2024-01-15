@@ -45,14 +45,14 @@ const concatNavnMedTidligereValgt = (type, navnInfo, selectedNavn) => {
 export const NavnForm = ({ formMethods, path, identtype }: NavnTypes) => {
 	const errors = formMethods.formState.errors
 	const [selectedFornavn, setSelectedFornavn] = useState(
-		_.get(formMethods.getValues(), `${path}.alleFornavn`) || [],
+		formMethods.watch(`${path}.alleFornavn`) || [],
 	)
 
 	const [selectedMellomnavn, setSelectedMellomnavn] = useState(
-		_.get(formMethods.getValues(), `${path}.alleMellomnavn`) || [],
+		formMethods.watch(`${path}.alleMellomnavn`) || [],
 	)
 	const [selectedEtternavn, setSelectedEtternavn] = useState(
-		_.get(formMethods.getValues(), `${path}.alleEtternavn`) || [],
+		formMethods.watch(`${path}.alleEtternavn`) || [],
 	)
 	const [fornavnOptions, setFornavnOptions] = useState([])
 
@@ -60,7 +60,7 @@ export const NavnForm = ({ formMethods, path, identtype }: NavnTypes) => {
 	const [etternavnOptions, setetternavnOptions] = useState([])
 	const { data, navnInfo, mutate } = useGenererNavn()
 
-	if (!_.get(formMethods.getValues(), path)) {
+	if (!formMethods.watch(path)) {
 		return null
 	}
 
@@ -74,11 +74,12 @@ export const NavnForm = ({ formMethods, path, identtype }: NavnTypes) => {
 		setetternavnOptions(concatNavnMedTidligereValgt('etternavn', navnInfo, selectedEtternavn))
 	}, [data])
 
-	const { fornavn, mellomnavn, etternavn } = _.get(formMethods.getValues(), path)
+	const { fornavn, mellomnavn, etternavn } = formMethods.watch(path)
 
 	function getRefreshButton() {
 		return (
 			<RefreshButton
+				type="button"
 				title={'Hent nye navn'}
 				size={'small'}
 				onClick={refreshNavn}
@@ -122,7 +123,7 @@ export const NavnForm = ({ formMethods, path, identtype }: NavnTypes) => {
 							formMethods.setValue(`${path}.mellomnavn`, mellomnavn?.join(' '))
 							formMethods.trigger()
 						}}
-						isDisabled={_.get(formMethods.getValues(), `${path}.hasMellomnavn`)}
+						isDisabled={formMethods.watch(`${path}.hasMellomnavn`)}
 						isMulti={true}
 						size="grow"
 						isClearable={true}

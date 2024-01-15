@@ -26,13 +26,11 @@ type Target = {
 }
 
 export const getIdenttype = (formMethods: any, identtype: string) => {
-	const nyIdenttype = _.get(formMethods.getValues(), 'pdldata.person.nyident[0].identtype')
+	const nyIdenttype = formMethods.watch('pdldata.person.nyident[0].identtype')
 	if (nyIdenttype) {
 		return nyIdenttype
 	} else {
-		return identtype
-			? identtype
-			: _.get(formMethods.getValues(), 'pdldata.opprettNyPerson.identtype')
+		return identtype ? identtype : formMethods.watch('pdldata.opprettNyPerson.identtype')
 	}
 }
 
@@ -57,7 +55,7 @@ export const AdressebeskyttelseForm = ({
 
 	useEffect(() => {
 		const newOptions = getAdressebeskyttelseOptions(identtype)
-		const selectedOption = _.get(formMethods.getValues(), `${path}.gradering`)
+		const selectedOption = formMethods.watch(`${path}.gradering`)
 		if (selectedOption && !newOptions.map((opt) => opt.value).includes(selectedOption)) {
 			formMethods.setValue(`${path}.gradering`, null)
 			formMethods.trigger()
@@ -66,7 +64,7 @@ export const AdressebeskyttelseForm = ({
 	}, [identtype])
 
 	const handleChangeGradering = (target: Target) => {
-		const adressebeskyttelse = _.get(formMethods.getValues(), path)
+		const adressebeskyttelse = formMethods.watch(path)
 		const adressebeskyttelseClone = _.cloneDeep(adressebeskyttelse)
 		_.set(adressebeskyttelseClone, 'gradering', target?.value || null)
 		if (target?.value === 'STRENGT_FORTROLIG_UTLAND') {

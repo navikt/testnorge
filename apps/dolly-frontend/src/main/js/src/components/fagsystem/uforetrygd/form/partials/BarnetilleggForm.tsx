@@ -3,7 +3,6 @@ import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import React, { useState } from 'react'
 import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
-import * as _ from 'lodash'
 import {
 	barnetilleggDetaljer,
 	forventedeInntekterSokerOgEP,
@@ -35,7 +34,7 @@ export const BarnetilleggForm = ({ formMethods }) => {
 	const barnetilleggPath = 'pensjonforvalter.uforetrygd.barnetilleggDetaljer'
 
 	const [harBarnetillegg, setHarBarnetillegg] = useState(
-		_.get(formMethods.getValues(), barnetilleggPath) !== null,
+		formMethods.watch(barnetilleggPath) !== null,
 	)
 
 	const handleBarnetilleggChange = (value) => {

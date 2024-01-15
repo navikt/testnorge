@@ -1,4 +1,3 @@
-import * as _ from 'lodash'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
@@ -10,7 +9,7 @@ const initialValues = {
 }
 
 export const PersonrollerForm = ({ formMethods, path }) => {
-	const personroller = _.get(formMethods.getValues(), `${path}.personroller`)
+	const personroller = formMethods.watch(`${path}.personroller`)
 
 	const getEgenskapOptions = () => {
 		const valgteOptions = []
@@ -49,14 +48,10 @@ export const PersonrollerForm = ({ formMethods, path }) => {
 							label="Egenskap"
 							options={egenskapOptions}
 							onChange={(egenskapen) => formMethods.setValue(egenskap, egenskapen.value)}
-							value={_.get(formMethods.getValues(), egenskap)}
-							placeholder={
-								_.get(formMethods.getValues(), egenskap)
-									? _.get(formMethods.getValues(), egenskap)
-									: 'Velg ...'
-							}
+							value={formMethods.watch(egenskap)}
+							placeholder={formMethods.watch(egenskap) ? formMethods.watch(egenskap) : 'Velg ...'}
 							isClearable={false}
-							styles={_.get(formMethods.getValues(), egenskap) ? colorStyles : null}
+							styles={formMethods.watch(egenskap) ? colorStyles : null}
 						/>
 						<FormikCheckbox name={`${path}.fratraadt`} label="Har fratrådt" checkboxMargin />
 					</>

@@ -4,7 +4,6 @@ import { getInitialNyIdent } from '@/components/fagsystem/pdlf/form/initialValue
 import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { PdlPersonExpander } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonExpander'
-import * as _ from 'lodash'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { UseFormReturn } from 'react-hook-form/dist/types'
@@ -24,10 +23,10 @@ export const NyIdent = ({ formMethods }: NyIdentForm) => {
 			canBeEmpty={false}
 		>
 			{(path: string) => {
-				const nyIdentValg = Object.keys(_.get(formMethods.getValues(), path))
+				const nyIdentValg = Object.keys(formMethods.watch(path))
 					.filter((key) => key !== 'eksisterendeIdent' && key !== 'kilde' && key !== 'master')
 					.reduce((obj, key) => {
-						obj[key] = _.get(formMethods.getValues(), path)[key]
+						obj[key] = formMethods.watch(path)[key]
 						return obj
 					}, {})
 
@@ -41,7 +40,7 @@ export const NyIdent = ({ formMethods }: NyIdentForm) => {
 							nyIdentValg={nyIdentValg}
 							isExpanded={
 								!isEmpty(nyIdentValg, ['syntetisk']) ||
-								_.get(formMethods.getValues(), `${path}.eksisterendeIdent`) !== null
+								formMethods.watch(`${path}.eksisterendeIdent`) !== null
 							}
 						/>
 						<AvansertForm path={path} kanVelgeMaster={opts?.identtype !== 'NPID'} />

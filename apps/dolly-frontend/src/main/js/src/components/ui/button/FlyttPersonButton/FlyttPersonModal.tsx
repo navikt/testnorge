@@ -4,7 +4,6 @@ import Button from '@/components/ui/button/Button'
 import DollyModal from '@/components/ui/modal/DollyModal'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 import { DollyApi } from '@/service/Api'
-import * as _ from 'lodash'
 import { DollyCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import styled from 'styled-components'
 import { VelgGruppe } from '@/components/bestillingsveileder/stegVelger/steg/steg3/VelgGruppe'
@@ -245,6 +244,7 @@ export const FlyttPersonModal = ({ gruppeId, modalIsOpen, closeModal }: FlyttPer
 			isChecked(id)
 				? fieldMethods.remove(fieldMethods.fields?.map((value) => value.fnr).indexOf(id))
 				: fieldMethods.append({ fnr: id })
+			formMethods.trigger('identer')
 		}
 
 		return (
@@ -338,7 +338,7 @@ export const FlyttPersonModal = ({ gruppeId, modalIsOpen, closeModal }: FlyttPer
 					</PersonKolonne>
 					<PersonKolonne>
 						<h2 style={{ marginLeft: '20px' }}>Valgte personer</h2>
-						{harRelatertePersoner(_.get(formMethods.getValues(), 'identer')) && (
+						{harRelatertePersoner(formMethods.watch('identer')) && (
 							<Alert variant="info" size="small" inline>
 								Du har valgt én eller flere personer som har relaterte personer. Disse vil også
 								flyttes.

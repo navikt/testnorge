@@ -163,7 +163,7 @@ export const EgneOrganisasjoner = ({
 	}
 
 	const sjekkOrganisasjoner = () => {
-		if (_.get(formMethods.getValues(), path) === '') {
+		if (formMethods.watch(path) === '') {
 			if (!_.has(formMethods.formState.errors, path)) {
 				formMethods.setError(path, { message: 'Feltet er påkrevd' })
 			}
@@ -172,8 +172,8 @@ export const EgneOrganisasjoner = ({
 			//@ts-ignore
 			const valgtOrgnr = formMethods
 				.getValues()
-				?.aareg?.[0]?.amelding?.flatMap(
-					(a) => a.arbeidsforhold?.flatMap((f) => f.arbeidsgiver?.orgnummer),
+				?.aareg?.[0]?.amelding?.flatMap((a) =>
+					a.arbeidsforhold?.flatMap((f) => f.arbeidsgiver?.orgnummer),
 				)
 			const valgtJuridiskEnhet = valgtOrgnr?.map((org) =>
 				getOversteJuridiskEnhet(org, organisasjoner),

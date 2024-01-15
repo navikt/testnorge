@@ -76,7 +76,7 @@ const informasjonstekst = 'Personen må ha et arbeidsforhold knyttet til den val
 export const InntektsmeldingForm = () => {
 	const formMethods = useFormContext()
 	const [typeArbeidsgiver, setTypeArbeidsgiver] = useState(
-		_.get(formMethods.getValues(), 'inntektsmelding.inntekter[0].arbeidsgiverPrivat')
+		formMethods.watch('inntektsmelding.inntekter[0].arbeidsgiverPrivat')
 			? TypeArbeidsgiver.PRIVATPERSON
 			: TypeArbeidsgiver.VIRKSOMHET,
 	)
@@ -86,24 +86,19 @@ export const InntektsmeldingForm = () => {
 	const handleArbeidsgiverChange = (type: TypeArbeidsgiver) => {
 		setTypeArbeidsgiver(type)
 
-		_.get(formMethods.getValues(), 'inntektsmelding.inntekter').forEach(
-			(_inntekt: Inntekt, idx: number) => {
-				if (type === TypeArbeidsgiver.VIRKSOMHET) {
-					formMethods.setValue(
-						`inntektsmelding.inntekter[${idx}].arbeidsgiver.virksomhetsnummer`,
-						'',
-					)
-					formMethods.setValue(`inntektsmelding.inntekter[${idx}].arbeidsgiverPrivat`, undefined)
-				} else if (type === TypeArbeidsgiver.PRIVATPERSON) {
-					formMethods.setValue(`inntektsmelding.inntekter[${idx}].arbeidsgiver`, undefined)
-					formMethods.setValue(
-						`inntektsmelding.inntekter[${idx}].arbeidsgiverPrivat.arbeidsgiverFnr`,
-						'',
-					)
-				}
-				formMethods.trigger(`inntektsmelding.inntekter[${idx}]`)
-			},
-		)
+		formMethods.watch('inntektsmelding.inntekter').forEach((_inntekt: Inntekt, idx: number) => {
+			if (type === TypeArbeidsgiver.VIRKSOMHET) {
+				formMethods.setValue(`inntektsmelding.inntekter[${idx}].arbeidsgiver.virksomhetsnummer`, '')
+				formMethods.setValue(`inntektsmelding.inntekter[${idx}].arbeidsgiverPrivat`, undefined)
+			} else if (type === TypeArbeidsgiver.PRIVATPERSON) {
+				formMethods.setValue(`inntektsmelding.inntekter[${idx}].arbeidsgiver`, undefined)
+				formMethods.setValue(
+					`inntektsmelding.inntekter[${idx}].arbeidsgiverPrivat.arbeidsgiverFnr`,
+					'',
+				)
+			}
+			formMethods.trigger(`inntektsmelding.inntekter[${idx}]`)
+		})
 	}
 
 	return (
@@ -141,7 +136,7 @@ export const InntektsmeldingForm = () => {
 					canBeEmpty={false}
 				>
 					{(path: string, idx: number) => {
-						const ytelse = _.get(formMethods.getValues(), `${path}.ytelse`)
+						const ytelse = formMethods.watch(`${path}.ytelse`)
 						return (
 							<div className="flexbox--column">
 								<div className="flexbox--flex-wrap">
@@ -197,9 +192,7 @@ export const InntektsmeldingForm = () => {
 								{ytelse === Ytelser.Foreldrepenger && (
 									<Kategori title="Foreldrepenger">
 										<InputWarning
-											visWarning={
-												!_.get(formMethods.getValues(), `${path}.startdatoForeldrepengeperiode`)
-											}
+											visWarning={!formMethods.watch(`${path}.startdatoForeldrepengeperiode`)}
 											warningText="For automatisk behandling av inntektsmelding må dette feltet fylles ut"
 										>
 											<FormikDatepicker

@@ -1,4 +1,3 @@
-import * as _ from 'lodash'
 import LoadableComponent, { Feilmelding } from '@/components/ui/loading/LoadableComponent'
 import { DollySelect } from '@/components/ui/form/inputs/select/Select'
 import { Option, SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
@@ -44,7 +43,7 @@ export default ({
 						label={label}
 						options={data}
 						size={size}
-						value={_.get(formMethods.getValues(), ytelsePath)}
+						value={formMethods.watch(ytelsePath)}
 						onChange={(e: Option) => {
 							setYtelseOgTema(e, formMethods, path, idx)
 						}}
@@ -75,7 +74,7 @@ const setYtelseOgTema = (value: Option, formMethods: UseFormReturn, path: string
 		pleiepengerPerioder,
 		omsorgspenger,
 		...rest
-	} = _.get(formMethods.getValues(), path)
+	} = formMethods.watch(path)
 
 	if (value.value === Ytelser.Omsorgspenger) {
 		formMethods.setValue(path, {

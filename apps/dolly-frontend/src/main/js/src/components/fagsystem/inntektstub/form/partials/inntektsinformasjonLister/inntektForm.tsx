@@ -4,7 +4,6 @@ import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import InntektStub from '@/components/inntektStub/validerInntekt'
 import { useBoolean } from 'react-use'
-import * as _ from 'lodash'
 import { ToggleGroup } from '@navikt/ds-react'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 
@@ -73,7 +72,7 @@ export const InntektForm = ({ formMethods, inntektsinformasjonPath }: data) => {
 
 		const restValues = eventValueSimple && { ...simpleValues }
 
-		const inntektsListe = _.get(formMethods.getValues(), `${inntektsinformasjonPath}.inntektsliste`)
+		const inntektsListe = formMethods.watch(`${inntektsinformasjonPath}.inntektsliste`)
 		const newInntektArray =
 			inntektsListe &&
 			inntektsListe.map((inntekt: inntekt) => ({

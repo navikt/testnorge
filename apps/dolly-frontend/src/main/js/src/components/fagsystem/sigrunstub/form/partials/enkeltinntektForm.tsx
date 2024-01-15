@@ -2,7 +2,6 @@ import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { SigrunKodeverk } from '@/config/kodeverk'
-import * as _ from 'lodash'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import React from 'react'
 import { useKodeverk } from '@/utils/hooks/useKodeverk'
@@ -28,7 +27,7 @@ export const EnkeltinntektForm = ({
 	return (
 		<FormikDollyFieldArray name={path} header={header} newEntry={initialGrunnlag} nested>
 			{(path, idx) => {
-				const typeInntekt = _.get(formMethods.getValues(), `${path}.tekniskNavn`)
+				const typeInntekt = formMethods.watch(`${path}.tekniskNavn`)
 				return (
 					<React.Fragment key={idx}>
 						<FormikSelect

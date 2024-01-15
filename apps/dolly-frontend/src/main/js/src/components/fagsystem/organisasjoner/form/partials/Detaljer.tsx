@@ -52,7 +52,7 @@ export const Detaljer = ({
 	const [typeUnderenhet, setTypeUnderenhet] = useState(
 		level === 0 ||
 			(_.has(formMethods.getValues(), `${path}.underenheter`) &&
-				_.get(formMethods.getValues(), `${path}.underenheter`))
+				formMethods.watch(`${path}.underenheter`))
 			? TypeUnderenhet.JURIDISKENHET
 			: TypeUnderenhet.VIRKSOMHET,
 	)
@@ -145,9 +145,7 @@ export const Detaljer = ({
 							? 'Du kan ikke legge til underenheter på enhet av type virksomhet'
 							: null
 				}
-				canBeEmpty={
-					!maaHaUnderenhet || _.get(formMethods.getValues(), `${path}.enhetstype`) === 'ENK'
-				}
+				canBeEmpty={!maaHaUnderenhet || formMethods.watch(`${path}.enhetstype`) === 'ENK'}
 				tag={number}
 				isOrganisasjon={true}
 			>
@@ -161,7 +159,7 @@ export const Detaljer = ({
 							number={number ? number : (level + 1).toString()}
 							maaHaUnderenhet={
 								typeUnderenhet === 'JURIDISKENHET' &&
-								_.get(formMethods.getValues(), `${path}.enhetstype`) !== 'ENK'
+								formMethods.watch(`${path}.enhetstype`) !== 'ENK'
 							}
 						/>
 					)

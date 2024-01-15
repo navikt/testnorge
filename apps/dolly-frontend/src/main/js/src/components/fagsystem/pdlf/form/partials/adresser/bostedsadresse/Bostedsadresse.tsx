@@ -51,7 +51,7 @@ export const BostedsadresseForm = ({
 }: BostedsadresseFormValues) => {
 	useEffect(() => {
 		formMethods.setValue(`${path}.adresseIdentifikatorFraMatrikkelen`, undefined)
-		const boadresse = _.get(formMethods.getValues(), path)
+		const boadresse = formMethods.watch(path)
 		if (_.get(boadresse, 'vegadresse') && _.get(boadresse, 'vegadresse') !== null) {
 			formMethods.setValue(`${path}.adressetype`, Adressetype.Veg)
 		} else if (
@@ -70,7 +70,7 @@ export const BostedsadresseForm = ({
 		formMethods.trigger()
 	}, [])
 
-	const valgtAdressetype = _.get(formMethods.getValues(), `${path}.adressetype`)
+	const valgtAdressetype = formMethods.watch(`${path}.adressetype`)
 
 	const getAdresseOptions = () => {
 		if (identtype && identtype !== 'FNR') {
@@ -80,7 +80,7 @@ export const BostedsadresseForm = ({
 	}
 
 	const handleChangeAdressetype = (target: Target, path: string) => {
-		const adresse = _.get(formMethods.getValues(), path)
+		const adresse = formMethods.watch(path)
 		const adresseClone = _.cloneDeep(adresse)
 
 		_.set(adresseClone, 'adressetype', target?.value || null)
@@ -121,7 +121,7 @@ export const BostedsadresseForm = ({
 		}
 
 		formMethods.setValue(path, adresseClone)
-		formMethods.trigger()
+		formMethods.trigger(path)
 	}
 
 	const { navnInfo, loading } = useGenererNavn()
@@ -152,7 +152,7 @@ export const BostedsadresseForm = ({
 				<UtenlandskAdresse
 					formMethods={formMethods}
 					path={`${path}.utenlandskAdresse`}
-					master={_.get(formMethods.getValues(), `${path}.master`)}
+					master={formMethods.watch(`${path}.master`)}
 				/>
 			)}
 			{valgtAdressetype === 'UKJENT_BOSTED' && <UkjentBosted path={`${path}.ukjentBosted`} />}
@@ -172,7 +172,7 @@ export const BostedsadresseForm = ({
 					onChange={(navn: Target) =>
 						setNavn(navn, `${path}.opprettCoAdresseNavn`, formMethods.setValue)
 					}
-					value={_.get(formMethods.getValues(), `${path}.opprettCoAdresseNavn.fornavn`)}
+					value={formMethods.watch(`${path}.opprettCoAdresseNavn.fornavn`)}
 				/>
 			</div>
 			<AvansertForm

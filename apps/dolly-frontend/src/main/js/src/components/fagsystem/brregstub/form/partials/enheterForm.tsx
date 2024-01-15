@@ -1,4 +1,3 @@
-import * as _ from 'lodash'
 import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
@@ -22,7 +21,7 @@ export const EnheterForm = ({ formMethods }) => {
 	const rollerOptions = SelectOptionsFormat.formatOptions('roller', roller)
 
 	const setEnhetsinfo = (org, path) => {
-		const currentValues = _.get(formMethods.getValues(), path)
+		const currentValues = formMethods.watch(path)
 		currentValues['orgNr'] = org.value
 		currentValues['foretaksNavn'] = { navn1: org.navn }
 		if (org.forretningsAdresse) {

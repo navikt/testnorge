@@ -35,12 +35,12 @@ export const HistarkForm = () => {
 		return null
 	}
 
-	const sessionDokumenter = _.get(formMethods.getValues(), 'histark.vedlegg')
+	const sessionDokumenter = formMethods.watch('histark.vedlegg')
 	const [files, setFiles] = useState(sessionDokumenter || [])
 	const [startAar, setStartAar] = useState(new Date())
 	const [sluttAar, setSluttAar] = useState(new Date())
 	const [selectedNavEnhet, setSelectedNavEnhet] = useState(
-		_.get(formMethods.getValues(), 'histark.dokumenter.0.enhetsnummer'),
+		formMethods.watch('histark.dokumenter.0.enhetsnummer'),
 	)
 
 	const { navEnheter = [] } = useNavEnheter()

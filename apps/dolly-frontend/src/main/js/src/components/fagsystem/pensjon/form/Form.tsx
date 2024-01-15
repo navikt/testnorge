@@ -39,7 +39,7 @@ export const PensjonForm = () => {
 
 	const syttenFraOgMedAar = kalkulerIdentFyltSyttenAar(formMethods.getValues())
 	const minAar = new Date().getFullYear() - 17
-	const valgtAar = _.get(formMethods.getValues(), `${pensjonPath}.fomAar`)
+	const valgtAar = formMethods.watch(`${pensjonPath}.fomAar`)
 
 	return (
 		<Vis attributt={pensjonPath}>

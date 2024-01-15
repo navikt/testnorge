@@ -7,7 +7,6 @@ import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { genererTilfeldigeNavPersonidenter } from '@/utils/GenererTilfeldigeNavPersonidenter'
-import * as _ from 'lodash'
 import { useNavEnheter } from '@/utils/hooks/useNorg2'
 import { BarnetilleggForm } from '@/components/fagsystem/uforetrygd/form/partials/BarnetilleggForm'
 import { validation } from '@/components/fagsystem/uforetrygd/form/validation'
@@ -18,8 +17,8 @@ const uforetrygdPath = 'pensjonforvalter.uforetrygd'
 
 export const UforetrygdForm = () => {
 	const formMethods = useFormContext()
-	const saksbehandler = _.get(formMethods.getValues(), `${uforetrygdPath}.saksbehandler`)
-	const attesterer = _.get(formMethods.getValues(), `${uforetrygdPath}.attesterer`)
+	const saksbehandler = formMethods.watch(`${uforetrygdPath}.saksbehandler`)
+	const attesterer = formMethods.watch(`${uforetrygdPath}.attesterer`)
 
 	const [randomSaksbehandlere, setRandomSaksbehandlere] = useState([])
 	const [randomAttesterere, setRandomAttesterere] = useState([])

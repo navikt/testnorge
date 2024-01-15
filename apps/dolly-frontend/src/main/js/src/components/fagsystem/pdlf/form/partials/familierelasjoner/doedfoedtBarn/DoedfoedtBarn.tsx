@@ -1,7 +1,6 @@
 import * as React from 'react'
 import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { initialDoedfoedtBarn } from '@/components/fagsystem/pdlf/form/initialValues'
-import * as _ from 'lodash'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
@@ -20,7 +19,7 @@ export const DoedfoedtBarnForm = ({ formMethods, path }: DoedfoedtBarnProps) => 
 			</DatepickerWrapper>
 			<AvansertForm
 				path={path}
-				kanVelgeMaster={_.get(formMethods.getValues(), `${path}.bekreftelsesdato`) === null}
+				kanVelgeMaster={formMethods.watch(`${path}.bekreftelsesdato`) === null}
 			/>
 		</div>
 	)

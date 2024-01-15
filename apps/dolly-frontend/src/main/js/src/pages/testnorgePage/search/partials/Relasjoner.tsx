@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { RadioGroupOptions } from '@/pages/testnorgePage/search/radioGroupOptions/RadioGroupOptions'
 import { DollyCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
-import * as _ from 'lodash'
 import { yesNoOptions } from '@/pages/testnorgePage/utils'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { UseFormReturn } from 'react-hook-form/dist/types'
@@ -32,9 +31,7 @@ const barnOptions = [
 ]
 
 export const Relasjoner = ({ formMethods }: RelasjonerProps) => {
-	const [foreldre, setForeldre] = useState(
-		_.get(formMethods.getValues(), paths.forelderBarnRelasjoner),
-	)
+	const [foreldre, setForeldre] = useState(formMethods.watch(paths.forelderBarnRelasjoner))
 	const handleForelderChange = (relasjon: string) => {
 		let nyeForeldre = [...foreldre]
 		if (foreldre.includes(relasjon)) {
@@ -84,25 +81,19 @@ export const Relasjoner = ({ formMethods }: RelasjonerProps) => {
 			<div className="options-title">Har forelder</div>
 			<DollyCheckbox
 				label={'Far'}
-				checked={_.get(formMethods.getValues(), paths.forelderBarnRelasjoner).includes(
-					foreldreRoller.FAR,
-				)}
+				checked={formMethods.watch(paths.forelderBarnRelasjoner).includes(foreldreRoller.FAR)}
 				onChange={() => handleForelderChange(foreldreRoller.FAR)}
 				size="small"
 			/>
 			<DollyCheckbox
 				label={'Mor'}
-				checked={_.get(formMethods.getValues(), paths.forelderBarnRelasjoner).includes(
-					foreldreRoller.MOR,
-				)}
+				checked={formMethods.watch(paths.forelderBarnRelasjoner).includes(foreldreRoller.MOR)}
 				onChange={() => handleForelderChange(foreldreRoller.MOR)}
 				size="small"
 			/>
 			<DollyCheckbox
 				label={'Medmor'}
-				checked={_.get(formMethods.getValues(), paths.forelderBarnRelasjoner).includes(
-					foreldreRoller.MEDMOR,
-				)}
+				checked={formMethods.watch(paths.forelderBarnRelasjoner).includes(foreldreRoller.MEDMOR)}
 				onChange={() => handleForelderChange(foreldreRoller.MEDMOR)}
 				size="small"
 			/>

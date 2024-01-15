@@ -5,7 +5,6 @@ import { MalForm } from './MalForm'
 import { VelgGruppe } from '@/components/bestillingsveileder/stegVelger/steg/steg3/VelgGruppe'
 import { OppsummeringKommentarForm } from '@/components/bestillingsveileder/stegVelger/steg/steg3/OppsummeringKommentarForm'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
-import * as _ from 'lodash'
 import { MalFormOrganisasjon } from '@/pages/organisasjoner/MalFormOrganisasjon'
 import { useCurrentBruker, useOrganisasjonTilgang } from '@/utils/hooks/useBruker'
 import Loading from '@/components/ui/loading/Loading'
@@ -30,21 +29,21 @@ export const Steg3 = () => {
 
 	const erOrganisasjon = formMethods.getValues('organisasjon')
 	const erQ2MiljoeAvhengig =
-		_.get(formMethods.getValues(), 'pdldata.person.fullmakt') ||
-		_.get(formMethods.getValues(), 'pdldata.person.falskIdentitet') ||
-		_.get(formMethods.getValues(), 'pdldata.person.falskIdentitet') ||
-		_.get(formMethods.getValues(), 'pdldata.person.utenlandskIdentifikasjonsnummer') ||
-		_.get(formMethods.getValues(), 'pdldata.person.kontaktinformasjonForDoedsbo')
+		formMethods.watch('pdldata.person.fullmakt') ||
+		formMethods.watch('pdldata.person.falskIdentitet') ||
+		formMethods.watch('pdldata.person.falskIdentitet') ||
+		formMethods.watch('pdldata.person.utenlandskIdentifikasjonsnummer') ||
+		formMethods.watch('pdldata.person.kontaktinformasjonForDoedsbo')
 
 	const bankIdBruker = currentBruker?.brukertype === 'BANKID'
 
-	const sivilstand = _.get(formMethods.getValues(), 'pdldata.person.sivilstand')
+	const sivilstand = formMethods.watch('pdldata.person.sivilstand')
 	const harRelatertPersonVedSivilstand = sivilstand?.some((item) => item.relatertVedSivilstand)
 
-	const nyIdent = _.get(formMethods.getValues(), 'pdldata.person.nyident')
+	const nyIdent = formMethods.watch('pdldata.person.nyident')
 	const harEksisterendeNyIdent = nyIdent?.some((item) => item.eksisterendeIdent)
 
-	const forelderBarnRelasjon = _.get(formMethods.getValues(), 'pdldata.person.forelderBarnRelasjon')
+	const forelderBarnRelasjon = formMethods.watch('pdldata.person.forelderBarnRelasjon')
 	const harRelatertPersonBarn = forelderBarnRelasjon?.some((item) => item.relatertPerson)
 
 	const alleredeValgtMiljoe = () => {

@@ -63,6 +63,7 @@ export default ({ fraGruppe = null }: AlleGrupper) => {
 				value={formMethods?.watch('gruppeId')}
 				onChange={(gruppe: Options) => {
 					formMethods?.setValue('gruppeId', gruppe?.value)
+					formMethods.trigger('gruppeId')
 				}}
 				size={fraGruppe ? 'grow' : 'large'}
 				isClearable={false}

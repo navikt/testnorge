@@ -7,7 +7,6 @@ import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert
 import { PdlPersonExpander } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonExpander'
 import { initialFullmakt } from '@/components/fagsystem/pdlf/form/initialValues'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
-import * as _ from 'lodash'
 import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
 import { UseFormReturn } from 'react-hook-form/dist/types'
@@ -44,8 +43,8 @@ export const FullmaktForm = ({ formMethods, path, eksisterendeNyPerson = null }:
 				label={'FULLMEKTIG'}
 				formMethods={formMethods}
 				isExpanded={
-					!isEmpty(_.get(formMethods.getValues(), `${path}.nyFullmektig`), ['syntetisk']) ||
-					_.get(formMethods.getValues(), `${path}.motpartsPersonident`) !== null
+					!isEmpty(formMethods.watch(`${path}.nyFullmektig`), ['syntetisk']) ||
+					formMethods.watch(`${path}.motpartsPersonident`) !== null
 				}
 				eksisterendeNyPerson={eksisterendeNyPerson}
 			/>

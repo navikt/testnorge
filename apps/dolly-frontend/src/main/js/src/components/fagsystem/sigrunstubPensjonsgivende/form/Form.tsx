@@ -36,7 +36,7 @@ export const SigrunstubPensjonsgivendeForm = () => {
 
 	useEffect(() => {
 		const pensjonsgivendeInntektPath = 'sigrunstubPensjonsgivende[0].pensjonsgivendeInntekt'
-		const forstePensjonsgivendeInntekt = _.get(formMethods.getValues(), pensjonsgivendeInntektPath)
+		const forstePensjonsgivendeInntekt = formMethods.watch(pensjonsgivendeInntektPath)
 		if (
 			_.has(formMethods.getValues(), 'sigrunstubPensjonsgivende') &&
 			kodeverk &&

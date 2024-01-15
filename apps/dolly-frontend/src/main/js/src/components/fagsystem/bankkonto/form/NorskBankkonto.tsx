@@ -3,15 +3,14 @@ import { useEffect, useState } from 'react'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { generateValidKontoOptions } from '@/utils/GenererGyldigNorskBankkonto'
-import * as _ from 'lodash'
 import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 
 export const NorskBankkonto = ({ formMethods }: { formMethods: UseFormReturn }) => {
 	const [validKontoOptions, setValidKontoOptions] = useState([])
 	const path = 'bankkonto.norskBankkonto'
-	const harTilfeldig = _.get(formMethods.getValues(), `${path}.tilfeldigKontonummer`)
-	const kontonummer = _.get(formMethods.getValues(), `${path}.kontonummer`)
+	const harTilfeldig = formMethods.watch(`${path}.tilfeldigKontonummer`)
+	const kontonummer = formMethods.watch(`${path}.kontonummer`)
 
 	useEffect(() => {
 		setValidKontoOptions(generateValidKontoOptions(kontonummer))

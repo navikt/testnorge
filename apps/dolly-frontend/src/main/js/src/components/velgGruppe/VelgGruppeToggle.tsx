@@ -5,6 +5,7 @@ import { ToggleGroup } from '@navikt/ds-react'
 import styled from 'styled-components'
 import { CypressSelector } from '../../../cypress/mocks/Selectors'
 import AlleGrupper from '@/components/velgGruppe/AlleGrupper'
+import { useFormContext } from 'react-hook-form'
 
 interface VelgGruppeToggleProps {
 	fraGruppe?: number
@@ -25,8 +26,10 @@ export const VelgGruppeToggle = ({
 	gruppevalg,
 	setGruppevalg,
 }: VelgGruppeToggleProps) => {
+	const formMethods = useFormContext()
 	const handleToggleChange = (value: Gruppevalg) => {
 		setGruppevalg(value)
+		formMethods.setValue('gruppeId', '')
 	}
 	return (
 		<div className="toggle--wrapper">

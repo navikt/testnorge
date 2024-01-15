@@ -2,7 +2,6 @@ import React, { useContext } from 'react'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import Loading from '@/components/ui/loading/Loading'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
-import * as _ from 'lodash'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { Option } from '@/service/SelectOptionsOppslag'
 import { ForeldreBarnRelasjon, NyIdent } from '@/components/fagsystem/pdlf/PdlTypes'
@@ -54,7 +53,8 @@ export const PdlEksisterendePerson = ({
 
 	const harForeldreansvarForValgteBarn = (foreldreansvar: Array<string>) => {
 		let harEksisterendeAnsvar = false
-		const valgteBarn = _.get(formMethods.getValues(), 'pdldata.person.forelderBarnRelasjon')
+		const valgteBarn = formMethods
+			.watch('pdldata.person.forelderBarnRelasjon')
 			?.filter((relasjon: ForeldreBarnRelasjon) => relasjon.relatertPersonsRolle === 'BARN')
 			?.map((relasjon: ForeldreBarnRelasjon) => relasjon.relatertPerson)
 
@@ -68,14 +68,11 @@ export const PdlEksisterendePerson = ({
 
 	const getAntallForeldre = (eksisterendeForeldre: Array<string>) => {
 		const partnerErForelder = () =>
-			_.get(formMethods.getValues(), 'pdldata.person.sivilstand')?.find(
-				(partner) =>
-					partner.type && !gyldigeSivilstanderForPartner.includes(partner.type),
-			) &&
-			!_.get(
-				formMethods.getValues(),
-				`pdldata.person.forelderBarnRelasjon[${idx}].partnerErIkkeForelder`,
-			)
+			formMethods
+				.watch('pdldata.person.sivilstand')
+				?.find(
+					(partner) => partner.type && !gyldigeSivilstanderForPartner.includes(partner.type),
+				) && !formMethods.watch(`pdldata.person.forelderBarnRelasjon[${idx}].partnerErIkkeForelder`)
 		const antallEksisterendeForeldre = eksisterendeForeldre.length
 		const antallNyeForeldre = parseInt(antall) + (partnerErForelder() ? parseInt(antall) : 0)
 		return antallEksisterendeForeldre + antallNyeForeldre
@@ -93,17 +90,17 @@ export const PdlEksisterendePerson = ({
 			return person.alder > 17
 		} else if (
 			eksisterendePersonPath?.includes('forelderBarnRelasjon') &&
-			_.get(
-				formMethods.getValues(),
-				`pdldata.person.forelderBarnRelasjon[${idx}].relatertPersonsRolle`,
-			) === 'BARN'
+			formMethods.watch(`pdldata.person.forelderBarnRelasjon[${idx}].relatertPersonsRolle`) ===
+				'BARN'
 		) {
 			return (
 				getAntallForeldre(person.foreldre) < 3 &&
-				!_.get(formMethods.getValues(), 'pdldata.person.forelderBarnRelasjon').some(
-					(relasjon: ForeldreBarnRelasjon, relasjonId: number) =>
-						relasjon.relatertPerson === person.value && relasjonId !== idx,
-				)
+				formMethods
+					.watch('pdldata.person.forelderBarnRelasjon')
+					.some(
+						(relasjon: ForeldreBarnRelasjon, relasjonId: number) =>
+							relasjon.relatertPerson === person.value && relasjonId !== idx,
+					)
 			)
 		} else if (eksisterendePersonPath?.includes('foreldreansvar')) {
 			return (
@@ -131,7 +128,7 @@ export const PdlEksisterendePerson = ({
 
 	const hasNyPersonValues = nyIdentValg
 		? !isEmpty(nyIdentValg, ['syntetisk'])
-		: nyPersonPath && !isEmpty(_.get(formMethods.getValues(), nyPersonPath), ['syntetisk'])
+		: nyPersonPath && !isEmpty(formMethods.watch(nyPersonPath), ['syntetisk'])
 
 	const bestillingFlerePersoner = parseInt(antall) > 1 && (harSivilstand || harNyIdent)
 

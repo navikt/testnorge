@@ -38,8 +38,8 @@ export const Sikkerhetstiltak = ({ formMethods }: SikkerhetstiltakProps) => {
 		tpsMessagingRootPath: 'tpsMessaging.sikkerhetstiltak',
 	}
 
-	const sikkerhetstiltakListe = _.get(formMethods.getValues(), paths.rootPath)
-	const sikkerhetstiltakListeTps = _.get(formMethods.getValues(), paths.tpsMessagingRootPath)
+	const sikkerhetstiltakListe = formMethods.watch(paths.rootPath)
+	const sikkerhetstiltakListeTps = formMethods.watch(paths.tpsMessagingRootPath)
 
 	if (!sikkerhetstiltakListe) {
 		return null
@@ -91,9 +91,8 @@ export const Sikkerhetstiltak = ({ formMethods }: SikkerhetstiltakProps) => {
 					handleRemoveEntry={handleRemoveEntry}
 				>
 					{(path: string, idx: number) => {
-						const personident = _.get(formMethods.getValues(), `${path}.kontaktperson.personident`)
-						const gyldigFraOgMed = _.get(
-							formMethods.getValues(),
+						const personident = formMethods.watch(`${path}.kontaktperson.personident`)
+						const gyldigFraOgMed = formMethods.watch(
 							`pdldata.person.sikkerhetstiltak[${idx}].gyldigFraOgMed`,
 						)
 						return (
@@ -110,7 +109,7 @@ export const Sikkerhetstiltak = ({ formMethods }: SikkerhetstiltakProps) => {
 									}
 									size="large"
 									onChange={(option: Option) => handleSikkerhetstiltakChange(option, idx)}
-									value={_.get(formMethods.getValues(), `${path}.tiltakstype`)}
+									value={formMethods.watch(`${path}.tiltakstype`)}
 									isClearable={false}
 								/>
 								<FormikSelect

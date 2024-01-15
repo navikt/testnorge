@@ -49,14 +49,14 @@ export const AmeldingForm = ({ warningMessage }: AmeldingFormProps): JSX.Element
 		amelding: 'aareg[0].amelding',
 	}
 
-	const arbeidsforholdstype = _.get(formMethods.getValues(), paths.arbeidsforholdstype)
+	const arbeidsforholdstype = formMethods.watch(paths.arbeidsforholdstype)
 
-	const fom = _.get(formMethods.getValues(), 'aareg[0].genererPeriode.fom')
+	const fom = formMethods.watch('aareg[0].genererPeriode.fom')
 	const fomDate = isDate(fom) ? fixTimezone(fom) : fom
-	const tom = _.get(formMethods.getValues(), 'aareg[0].genererPeriode.tom')
+	const tom = formMethods.watch('aareg[0].genererPeriode.tom')
 	const tomDate = isDate(tom) ? fixTimezone(tom) : tom
-	const periode = _.get(formMethods.getValues(), paths.periode)
-	const ameldinger = _.get(formMethods.getValues(), paths.amelding)
+	const periode = formMethods.watch(paths.periode)
+	const ameldinger = formMethods.watch(paths.amelding)
 
 	const [erLenket, setErLenket, setErIkkeLenket] = useBoolean(true)
 	const [selectedIndex, setSelectedIndex] = useState(0)
@@ -66,7 +66,7 @@ export const AmeldingForm = ({ warningMessage }: AmeldingFormProps): JSX.Element
 		formMethods.setValue(`aareg[0].genererPeriode.${type}`, fixedDato)
 
 		if ((type === 'tom' && fom) || (type === 'fom' && tom)) {
-			const maanederPrev: Array<Amelding> = _.get(formMethods.getValues(), paths.amelding)
+			const maanederPrev: Array<Amelding> = formMethods.watch(paths.amelding)
 			const maaneder: Array<string> = []
 			const maanederTmp = eachMonthOfInterval({
 				start: new Date(type === 'fom' ? dato : fomDate),
@@ -82,9 +82,9 @@ export const AmeldingForm = ({ warningMessage }: AmeldingFormProps): JSX.Element
 				formMethods.setValue(paths.amelding, maanederFiltered)
 			} else {
 				maaneder.forEach((mnd, idx) => {
-					const currMaaned = _.get(formMethods.getValues(), paths.amelding).find(
-						(element: Amelding) => element.maaned === mnd,
-					)
+					const currMaaned = formMethods
+						.watch(paths.amelding)
+						.find((element: Amelding) => element.maaned === mnd)
 					formMethods.setValue(`${paths.amelding}[${idx}]`, {
 						maaned: mnd,
 						arbeidsforhold: currMaaned
@@ -106,7 +106,7 @@ export const AmeldingForm = ({ warningMessage }: AmeldingFormProps): JSX.Element
 	}
 
 	const handleArbeidsforholdstypeChange = (event: KodeverkValue) => {
-		const amelding = _.get(formMethods.getValues(), paths.amelding)
+		const amelding = formMethods.watch(paths.amelding)
 		const ameldingClone = _.cloneDeep(amelding)
 
 		if (event.value === 'forenkletOppgjoersordning') {
@@ -173,7 +173,7 @@ export const AmeldingForm = ({ warningMessage }: AmeldingFormProps): JSX.Element
 	}
 
 	const handleFjernMaaned = () => {
-		const currAmelding = _.get(formMethods.getValues(), paths.amelding)
+		const currAmelding = formMethods.watch(paths.amelding)
 		currAmelding.splice(selectedIndex, 1)
 		formMethods.setValue(paths.amelding, currAmelding)
 

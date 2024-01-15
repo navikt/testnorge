@@ -52,7 +52,7 @@ export const OppholdsadresseForm = ({
 	const erNPID = identtype === 'NPID'
 	useEffect(() => {
 		formMethods.setValue(`${path}.adresseIdentifikatorFraMatrikkelen`, undefined)
-		const oppholdsadresse = _.get(formMethods.getValues(), path)
+		const oppholdsadresse = formMethods.watch(path)
 		if (_.get(oppholdsadresse, 'vegadresse') && _.get(oppholdsadresse, 'vegadresse') !== null) {
 			formMethods.setValue(`${path}.adressetype`, Adressetype.Veg)
 		} else if (
@@ -74,10 +74,10 @@ export const OppholdsadresseForm = ({
 		formMethods.trigger()
 	}, [])
 
-	const valgtAdressetype = _.get(formMethods.getValues(), `${path}.adressetype`)
+	const valgtAdressetype = formMethods.watch(`${path}.adressetype`)
 
 	const handleChangeAdressetype = (target: Target, path: string) => {
-		const adresse = _.get(formMethods.getValues(), path)
+		const adresse = formMethods.watch(path)
 		const adresseClone = _.cloneDeep(adresse)
 
 		_.set(adresseClone, 'adressetype', target?.value || null)
@@ -118,7 +118,7 @@ export const OppholdsadresseForm = ({
 		}
 
 		formMethods.setValue(path, adresseClone)
-		formMethods.trigger()
+		formMethods.trigger(path)
 	}
 
 	const adressetypeOptions = Options('adressetypeOppholdsadresse')?.filter((option) =>
@@ -153,7 +153,7 @@ export const OppholdsadresseForm = ({
 				<UtenlandskAdresse
 					formMethods={formMethods}
 					path={`${path}.utenlandskAdresse`}
-					master={_.get(formMethods.getValues(), `${path}.master`)}
+					master={formMethods.watch(`${path}.master`)}
 				/>
 			)}
 			{valgtAdressetype === 'OPPHOLD_ANNET_STED' && (
@@ -174,7 +174,7 @@ export const OppholdsadresseForm = ({
 					onChange={(navn: Target) =>
 						setNavn(navn, `${path}.opprettCoAdresseNavn`, formMethods.setValue)
 					}
-					value={_.get(formMethods.getValues(), `${path}.opprettCoAdresseNavn.fornavn`)}
+					value={formMethods.watch(`${path}.opprettCoAdresseNavn.fornavn`)}
 				/>
 			</div>
 			<AvansertForm

@@ -4,7 +4,6 @@ import LoadableComponent from '@/components/ui/loading/LoadableComponent'
 import { DollyApi } from '@/service/Api'
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import * as _ from 'lodash'
 import styled from 'styled-components'
 import { Adresse } from '@/components/adresseVelger/AdresseVelger'
 import { UseFormReturn } from 'react-hook-form/dist/types'
@@ -38,13 +37,13 @@ export const Vegadresse = ({ formMethods, path }: VegadresseValues) => {
 			husbokstav: adresse.husbokstav,
 			kommunenummer: adresse.kommunenummer,
 			bruksenhetsnummer: adresse.bruksenhetsnummer,
-			vegadresseType: _.get(formMethods.getValues(), `${path}.vegadresseType`),
+			vegadresseType: formMethods.watch(`${path}.vegadresseType`),
 		})
 		formMethods.trigger()
 	}
 
 	const renderAdresse = (postnummerListe: Postnummer) => {
-		const { adressenavn, husnummer, postnummer } = _.get(formMethods.getValues(), path)
+		const { adressenavn, husnummer, postnummer } = formMethods.watch(path)
 		if (!adressenavn) {
 			return ''
 		}

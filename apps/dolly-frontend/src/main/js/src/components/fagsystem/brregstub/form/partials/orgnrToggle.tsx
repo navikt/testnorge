@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import * as _ from 'lodash'
 import { OrganisasjonTextSelect } from '@/components/fagsystem/brregstub/form/partials/organisasjonTextSelect'
 import {
 	inputValg,
@@ -32,7 +31,7 @@ export const OrgnrToggle = ({
 	}
 
 	const clearEnhetsinfo = () => {
-		const oldValues = _.get(formMethods.getValues(), path) || {}
+		const oldValues = formMethods.watch(path) || {}
 		if (oldValues.hasOwnProperty('foretaksNavn')) {
 			delete oldValues['foretaksNavn']
 		}
@@ -57,7 +56,7 @@ export const OrgnrToggle = ({
 				<OrganisasjonLoader
 					path={`${path}.orgNr`}
 					handleChange={handleChange}
-					value={_.get(formMethods.getValues(), `${path}.orgNr`)}
+					value={formMethods.watch(`${path}.orgNr`)}
 				/>
 			)}
 			{inputType === inputValg.fraEgenListe && (

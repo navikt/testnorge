@@ -58,12 +58,10 @@ export const DokarkivForm = () => {
 		return null
 	}
 
-	const sessionDokumenter = _.get(formMethods.getValues(), 'dokarkiv.vedlegg')
-	const digitalInnsending = _.get(formMethods.getValues(), 'dokarkiv.avsenderMottaker')
+	const sessionDokumenter = formMethods.watch('dokarkiv.vedlegg')
+	const digitalInnsending = formMethods.watch('dokarkiv.avsenderMottaker')
 	const [files, setFiles] = useState(sessionDokumenter || [])
-	const [skjemaValues, setSkjemaValues] = useState(
-		_.get(formMethods.getValues(), 'dokarkiv.skjema'),
-	)
+	const [skjemaValues, setSkjemaValues] = useState(formMethods.watch('dokarkiv.skjema'))
 
 	useEffect(() => {
 		handleSkjemaChange(skjemaValues)
@@ -109,7 +107,7 @@ export const DokarkivForm = () => {
 		}
 	}
 
-	const harFagsak = _.get(formMethods.getValues(), 'dokarkiv.sak.sakstype') === 'FAGSAK'
+	const harFagsak = formMethods.watch('dokarkiv.sak.sakstype') === 'FAGSAK'
 
 	return (
 		// @ts-ignore

@@ -45,13 +45,16 @@ export const ForelderBarnRelasjonForm = ({
 	eksisterendeNyPerson = null,
 	identtype,
 }: ForelderForm) => {
+	const [erBarn, setErBarn] = React.useState(
+		formMethods.watch(`${path}.relatertPersonsRolle`) === RELASJON_BARN,
+	)
 	const relatertPerson = 'relatertPerson'
 	const nyRelatertPerson = 'nyRelatertPerson'
 	const relatertPersonUtenFolkeregisteridentifikator =
 		'relatertPersonUtenFolkeregisteridentifikator'
 
 	const handleChangeTypeForelderBarn = (target: Target, path: string) => {
-		const forelderBarnRelasjon = _.get(formMethods.getValues(), path)
+		const forelderBarnRelasjon = formMethods.watch(path)
 		const forelderBarnClone = _.cloneDeep(forelderBarnRelasjon)
 
 		_.set(forelderBarnClone, 'typeForelderBarn', target?.value || null)
@@ -77,33 +80,30 @@ export const ForelderBarnRelasjonForm = ({
 		}
 
 		formMethods.setValue(path, forelderBarnClone)
+		formMethods.trigger(path)
 	}
 
 	const relatertPersonsRolle = forelderTyper.includes(
-		_.get(formMethods.getValues(), `${path}.relatertPersonsRolle`),
+		formMethods.watch(`${path}.relatertPersonsRolle`),
 	)
 		? RELASJON_FORELDER
 		: RELASJON_BARN
 
-	const erBarn = relatertPersonsRolle === RELASJON_BARN
-
-	const id = _.get(formMethods.getValues(), `${path}.id`)
+	const id = formMethods.watch(`${path}.id`)
 
 	const getForelderBarnType = () => {
-		const forelderBarnType = _.get(formMethods.getValues(), `${path}.typeForelderBarn`)
+		const forelderBarnType = formMethods.watch(`${path}.typeForelderBarn`)
 		if (forelderBarnType) {
 			return forelderBarnType
-		} else if (_.get(formMethods.getValues(), `${path}.relatertPerson`)) {
+		} else if (formMethods.watch(`${path}.relatertPerson`)) {
 			return 'EKSISTERENDE'
-		} else if (
-			_.get(formMethods.getValues(), `${path}.relatertPersonUtenFolkeregisteridentifikator`)
-		) {
+		} else if (formMethods.watch(`${path}.relatertPersonUtenFolkeregisteridentifikator`)) {
 			return 'UTEN_ID'
 		} else return null
 	}
 
 	useEffect(() => {
-		if (!_.get(formMethods.getValues(), `${path}.typeForelderBarn`)) {
+		if (!formMethods.watch(`${path}.typeForelderBarn`)) {
 			formMethods.setValue(`${path}.typeForelderBarn`, getForelderBarnType())
 		}
 	}, [])
@@ -119,6 +119,8 @@ export const ForelderBarnRelasjonForm = ({
 								? { ...getInitialBarn(identtype === 'NPID' ? 'PDL' : 'FREG'), id: id }
 								: { ...getInitialForelder(identtype === 'NPID' ? 'PDL' : 'FREG'), id: id },
 						)
+						setErBarn(value === RELASJON_BARN)
+						formMethods.trigger(path)
 					}}
 					size={'small'}
 					defaultValue={relatertPersonsRolle || RELASJON_BARN}
@@ -174,7 +176,7 @@ export const ForelderBarnRelasjonForm = ({
 				<PdlNyPerson nyPersonPath={`${path}.nyRelatertPerson`} formMethods={formMethods} />
 			)}
 
-			{!path?.includes('pdldata') && erBarn && _.get(formMethods.getValues(), 'harDeltBosted') && (
+			{!path?.includes('pdldata') && erBarn && formMethods.watch('harDeltBosted') && (
 				<div className="flexbox--full-width">
 					<Alert
 						variant={'info'}
@@ -187,7 +189,7 @@ export const ForelderBarnRelasjonForm = ({
 				</div>
 			)}
 
-			{!path?.includes('pdldata') && _.get(formMethods.getValues(), 'harForeldreansvar') && (
+			{!path?.includes('pdldata') && formMethods.watch('harForeldreansvar') && (
 				<div className="flexbox--full-width">
 					<Alert
 						variant={'info'}

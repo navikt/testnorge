@@ -64,8 +64,8 @@ export const FalskIdentitet = ({ formMethods }) => {
 
 				const advancedValues = {
 					erFalsk: true,
-					kilde: _.get(formMethods.getValues(), `${path}.kilde`),
-					master: _.get(formMethods.getValues(), `${path}.master`),
+					kilde: formMethods.watch(`${path}.kilde`),
+					master: formMethods.watch(`${path}.master`),
 				}
 
 				return (

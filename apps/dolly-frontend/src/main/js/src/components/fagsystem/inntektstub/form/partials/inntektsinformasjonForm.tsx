@@ -3,7 +3,6 @@ import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput
 import { InntektstubVirksomhetToggle } from './inntektstubVirksomhetToggle'
 import InntektsinformasjonLister from './inntektsinformasjonLister/inntektsinformasjonLister'
 import InntektsendringForm from './inntektsendringForm'
-import * as _ from 'lodash'
 import { Monthpicker } from '@/components/ui/form/inputs/monthpicker/Monthpicker'
 import { FormikDateTimepicker } from '@/components/ui/form/inputs/timepicker/Timepicker'
 import { useFormContext } from 'react-hook-form'
@@ -15,14 +14,14 @@ interface InntektsinformasjonForm {
 export default ({ path }: InntektsinformasjonForm) => {
 	const formMethods = useFormContext()
 	const [date, setDate] = useState(
-		_.get(formMethods.getValues(), `${path}.sisteAarMaaned`) !== ''
-			? Date.parse(_.get(formMethods.getValues(), `${path}.sisteAarMaaned`))
+		formMethods.watch(`${path}.sisteAarMaaned`) !== ''
+			? Date.parse(formMethods.watch(`${path}.sisteAarMaaned`))
 			: null,
 	)
 
 	const [rapporteringsdate, setRapporteringsdato] = useState(
-		_.get(formMethods.getValues(), `${path}.rapporteringsdato`) !== ''
-			? Date.parse(_.get(formMethods.getValues(), `${path}.rapporteringsdato`))
+		formMethods.watch(`${path}.rapporteringsdato`) !== ''
+			? Date.parse(formMethods.watch(`${path}.rapporteringsdato`))
 			: null,
 	)
 

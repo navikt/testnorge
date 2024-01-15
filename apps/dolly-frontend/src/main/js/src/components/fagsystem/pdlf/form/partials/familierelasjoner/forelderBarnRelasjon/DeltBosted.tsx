@@ -58,14 +58,14 @@ export const DeltBostedForm = ({
 	personValues,
 }: DeltBostedValues) => {
 	const getAdressetype = () => {
-		const type = _.get(formMethods.getValues(), `${path}.adressetype`)
+		const type = formMethods.watch(`${path}.adressetype`)
 		if (type) {
 			return type
-		} else if (_.get(formMethods.getValues(), `${path}.vegadresse`)) {
+		} else if (formMethods.watch(`${path}.vegadresse`)) {
 			return 'VEGADRESSE'
-		} else if (_.get(formMethods.getValues(), `${path}.matrikkeladresse`)) {
+		} else if (formMethods.watch(`${path}.matrikkeladresse`)) {
 			return 'MATRIKKELADRESSE'
-		} else if (_.get(formMethods.getValues(), `${path}.ukjentBosted`)) {
+		} else if (formMethods.watch(`${path}.ukjentBosted`)) {
 			return 'UKJENT_BOSTED'
 		}
 	}
@@ -73,13 +73,13 @@ export const DeltBostedForm = ({
 	const [adressetype, setAdressetype] = useState(getAdressetype())
 
 	useEffect(() => {
-		if (!_.get(formMethods.getValues(), `${path}.adressetype`)) {
+		if (!formMethods.watch(`${path}.adressetype`)) {
 			formMethods.setValue(`${path}.adressetype`, getAdressetype())
 		}
 	}, [])
 
 	const handleChangeAdressetype = (target: Target, adressePath: string) => {
-		const adresse = _.get(formMethods.getValues(), adressePath)
+		const adresse = formMethods.watch(adressePath)
 		const adresseClone = _.cloneDeep(adresse)
 
 		if (!target || target?.value === 'PARTNER_ADRESSE') {

@@ -1,5 +1,4 @@
 import { subYears } from 'date-fns'
-import * as _ from 'lodash'
 import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
@@ -46,9 +45,7 @@ export const InntektsaarForm = ({ formMethods }) => {
 									name={`${path}.tjeneste`}
 									label="Tjeneste"
 									options={Options('tjeneste')}
-									isDisabled={
-										_.get(formMethods.getValues(), `${path}.svalbardGrunnlag`, []).length > 0
-									}
+									isDisabled={formMethods.watch(`${path}.svalbardGrunnlag`, []).length > 0}
 									isClearable={false}
 									size="large"
 									onChange={(target) => handleTjenesteChange(target, path)}
@@ -59,18 +56,18 @@ export const InntektsaarForm = ({ formMethods }) => {
 									path={`${path}.grunnlag`}
 									header="Grunnlag fra Fastlands-Norge"
 									initialGrunnlag={initialGrunnlag}
-									tjeneste={_.get(formMethods.getValues(), `${path}.tjeneste`)}
-									inntektsaar={_.get(formMethods.getValues(), `${path}.inntektsaar`)}
+									tjeneste={formMethods.watch(`${path}.tjeneste`)}
+									inntektsaar={formMethods.watch(`${path}.inntektsaar`)}
 									formMethods={formMethods}
 								/>
 							)}
-							{_.get(formMethods.getValues(), `${path}.tjeneste`) === 'SUMMERT_SKATTEGRUNNLAG' && (
+							{formMethods.watch(`${path}.tjeneste`) === 'SUMMERT_SKATTEGRUNNLAG' && (
 								<EnkeltinntektForm
 									path={`${path}.svalbardGrunnlag`}
 									header="Grunnlag fra Svalbard"
 									initialGrunnlag={initialGrunnlag}
-									tjeneste={_.get(formMethods.getValues(), `${path}.tjeneste`)}
-									inntektsaar={_.get(formMethods.getValues(), `${path}.inntektsaar`)}
+									tjeneste={formMethods.watch(`${path}.tjeneste`)}
+									inntektsaar={formMethods.watch(`${path}.inntektsaar`)}
 									formMethods={formMethods}
 								/>
 							)}
@@ -93,5 +90,5 @@ export const InntektsaarForm = ({ formMethods }) => {
 }
 
 const tjenesteErValgt = (formMethods, path) => {
-	return _.get(formMethods.getValues(), `${path}.tjeneste`)
+	return formMethods.watch(`${path}.tjeneste`)
 }

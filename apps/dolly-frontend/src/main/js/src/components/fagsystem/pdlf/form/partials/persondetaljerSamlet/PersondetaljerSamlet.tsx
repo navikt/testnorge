@@ -3,7 +3,6 @@ import { KjoennForm } from '@/components/fagsystem/pdlf/form/partials/kjoenn/Kjo
 import { PersonstatusForm } from '@/components/fagsystem/pdlf/form/partials/personstatus/Personstatus'
 import { Alert } from '@navikt/ds-react'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
-import * as _ from 'lodash'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 
 type PersondetaljerSamletTypes = {
@@ -40,7 +39,7 @@ export const PersondetaljerSamlet = ({
 					size={'small'}
 				>{`Identnummer${getTekst()} kan ikke endres her.`}</Alert>
 
-				{_.get(formMethods.getValues(), 'navn') && (
+				{formMethods.watch('navn') && (
 					<>
 						<h3>Navn</h3>
 						<div className="flexbox--flex-wrap">

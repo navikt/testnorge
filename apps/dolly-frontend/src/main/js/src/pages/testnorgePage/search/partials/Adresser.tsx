@@ -1,4 +1,3 @@
-import * as _ from 'lodash'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { AdresseKodeverk, GtKodeverk } from '@/config/kodeverk'
 import { RadioGroupOptions } from '@/pages/testnorgePage/search/radioGroupOptions/RadioGroupOptions'
@@ -37,9 +36,9 @@ export const Adresser = ({ formMethods }: AdresserProps) => {
 			value: 'N',
 			label: 'Nei',
 			disabled:
-				_.get(formMethods.getValues(), paths.kommunenummer) ||
-				_.get(formMethods.getValues(), paths.postnummer) ||
-				_.get(formMethods.getValues(), paths.bydelsnummer),
+				formMethods.watch(paths.kommunenummer) ||
+				formMethods.watch(paths.postnummer) ||
+				formMethods.watch(paths.bydelsnummer),
 		},
 	]
 	return (
@@ -62,7 +61,7 @@ export const Adresser = ({ formMethods }: AdresserProps) => {
 				name={paths.postnummer}
 				label="Postnummer"
 				kodeverk={AdresseKodeverk.Postnummer}
-				isDisabled={_.get(formMethods.getValues(), paths.borINorge) === 'N'}
+				isDisabled={formMethods.watch(paths.borINorge) === 'N'}
 				optionHeight={50}
 				size="medium"
 			/>
@@ -70,7 +69,7 @@ export const Adresser = ({ formMethods }: AdresserProps) => {
 				name={paths.bydelsnummer}
 				label="Bydel"
 				kodeverk={GtKodeverk.BYDEL}
-				isDisabled={_.get(formMethods.getValues(), paths.borINorge) === 'N'}
+				isDisabled={formMethods.watch(paths.borINorge) === 'N'}
 				optionHeight={50}
 				size="medium"
 			/>
@@ -78,7 +77,7 @@ export const Adresser = ({ formMethods }: AdresserProps) => {
 				name={paths.kommunenummer}
 				label="Kommunenummer"
 				kodeverk={AdresseKodeverk.Kommunenummer}
-				isDisabled={_.get(formMethods.getValues(), paths.borINorge) === 'N'}
+				isDisabled={formMethods.watch(paths.borINorge) === 'N'}
 				optionHeight={50}
 				size="medium"
 			/>

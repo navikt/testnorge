@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { VelgGruppeToggle } from '@/components/velgGruppe/VelgGruppeToggle'
 import { ifPresent } from '@/utils/YupValidations'
-import * as _ from 'lodash'
 import { DollyErrorMessage } from '@/utils/DollyErrorMessage'
 import * as Yup from 'yup'
 import { UseFormReturn } from 'react-hook-form/dist/types'
@@ -19,7 +18,7 @@ export const VelgGruppe = ({
 	gruppevalg,
 	setGruppevalg,
 }: VelgGruppeProps) => {
-	const [valgtGruppe] = useState(_.get(formMethods.getValues(), `gruppeId`) || '')
+	const [valgtGruppe] = useState(formMethods.watch(`gruppeId`) || '')
 
 	useEffect(() => {
 		if (formMethods.getValues('gruppeId') !== valgtGruppe) {

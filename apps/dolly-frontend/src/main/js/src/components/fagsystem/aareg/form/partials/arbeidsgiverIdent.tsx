@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { useBoolean } from 'react-use'
-import * as _ from 'lodash'
 import Icon from '@/components/ui/icon/Icon'
 import Loading from '@/components/ui/loading/Loading'
 import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
@@ -15,7 +14,7 @@ type ArbeidsgiverIdentProps = {
 export const ArbeidsgiverIdent = ({ path, isDisabled }: ArbeidsgiverIdentProps) => {
 	const formMethods = useFormContext()
 	const [error, setError] = useState(null)
-	const [personnummer, setPersonnummer] = useState(_.get(formMethods.getValues(), path))
+	const [personnummer, setPersonnummer] = useState(formMethods.watch(path))
 	const [success, setSuccess] = useBoolean(false)
 	const [loading, setLoading] = useBoolean(false)
 

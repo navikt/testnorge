@@ -10,9 +10,7 @@ export const DollyErrorMessage = ({ name }: { name: string }) => {
 		<ErrorMessage
 			name={name}
 			errors={errors}
-			render={({ message }) => (
-				<span style={{ color: '#ba3a26', fontStyle: 'italic' }}>{message}</span>
-			)}
+			render={({ message }) => <p style={{ color: '#ba3a26', fontStyle: 'italic' }}>{message}</p>}
 		/>
 	)
 }

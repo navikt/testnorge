@@ -11,7 +11,6 @@ import {
 	initialPdlPerson,
 } from '@/components/fagsystem/pdlf/form/initialValues'
 import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
-import * as _ from 'lodash'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
@@ -53,9 +52,7 @@ export const SivilstandForm = ({
 		formMethods.trigger()
 	}
 
-	const kanHaRelatertPerson = gyldigeSivilstander.includes(
-		_.get(formMethods.getValues(), `${path}.type`),
-	)
+	const kanHaRelatertPerson = gyldigeSivilstander.includes(formMethods.watch(`${path}.type`))
 
 	return (
 		<div className="flexbox--flex-wrap">
@@ -66,7 +63,7 @@ export const SivilstandForm = ({
 				onChange={(selected: any) => handleTypeChange(selected, path)}
 				isClearable={false}
 			/>
-			{_.get(formMethods.getValues(), `${path}.type`) === 'SAMBOER' && (
+			{formMethods.watch(`${path}.type`) === 'SAMBOER' && (
 				<div style={{ marginLeft: '-20px', marginRight: '20px', paddingTop: '27px' }}>
 					<Hjelpetekst>
 						Samboer eksisterer verken i PDL eller TPS. Personer med denne typen sisvilstand vil
@@ -78,15 +75,15 @@ export const SivilstandForm = ({
 				<FormikDatepicker
 					name={`${path}.sivilstandsdato`}
 					label="Gyldig fra og med"
-					disabled={_.get(formMethods.getValues(), `${path}.bekreftelsesdato`) != null}
+					disabled={formMethods.watch(`${path}.bekreftelsesdato`) != null}
 				/>
 				<FormikDatepicker
 					name={`${path}.bekreftelsesdato`}
 					label="Bekreftelsesdato"
 					disabled={
-						_.get(formMethods.getValues(), `${path}.sivilstandsdato`) != null ||
-						_.get(formMethods.getValues(), `${path}.master`) !== 'PDL' ||
-						_.get(formMethods.getValues(), `${path}.type`) === 'SAMBOER'
+						formMethods.watch(`${path}.sivilstandsdato`) != null ||
+						formMethods.watch(`${path}.master`) !== 'PDL' ||
+						formMethods.watch(`${path}.type`) === 'SAMBOER'
 					}
 				/>
 			</DatepickerWrapper>
@@ -104,16 +101,15 @@ export const SivilstandForm = ({
 					label={'PERSON RELATERT TIL'}
 					formMethods={formMethods}
 					isExpanded={
-						!isEmpty(_.get(formMethods.getValues(), `${path}.nyRelatertPerson`), ['syntetisk']) ||
-						_.get(formMethods.getValues(), `${path}.relatertVedSivilstand`) !== null
+						!isEmpty(formMethods.watch(`${path}.nyRelatertPerson`), ['syntetisk']) ||
+						formMethods.watch(`${path}.relatertVedSivilstand`) !== null
 					}
 				/>
 			)}
 			<AvansertForm
 				path={path}
 				kanVelgeMaster={
-					_.get(formMethods.getValues(), `${path}.bekreftelsesdato`) === null &&
-					identtype !== 'NPID'
+					formMethods.watch(`${path}.bekreftelsesdato`) === null && identtype !== 'NPID'
 				}
 			/>
 		</div>

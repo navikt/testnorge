@@ -23,7 +23,7 @@ export const MatrikkeladresseTilfeldig = ({ formMethods, path }: Matrikkeladress
 			postnummer: adresse.postnummer,
 			bruksenhetsnummer: adresse.bruksenhetsnummer,
 			tilleggsnavn: adresse.tilleggsnavn,
-			matrikkeladresseType: _.get(formMethods.getValues(), `${path}.matrikkeladresseType`),
+			matrikkeladresseType: formMethods.watch(`${path}.matrikkeladresseType`),
 		})
 		formMethods.trigger()
 	}

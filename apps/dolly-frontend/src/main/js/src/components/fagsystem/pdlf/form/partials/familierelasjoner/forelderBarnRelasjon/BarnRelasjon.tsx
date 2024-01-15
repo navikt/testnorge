@@ -4,7 +4,6 @@ import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { DollyCheckbox, FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { initialDeltBosted } from '@/components/fagsystem/pdlf/form/initialValues'
 import { DeltBosted } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/forelderBarnRelasjon/DeltBosted'
-import * as _ from 'lodash'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 
@@ -17,12 +16,10 @@ export const BarnRelasjon = ({ formMethods, path }: BarnRelasjonValues) => {
 	const opts = useContext(BestillingsveilederContext)
 	const erRedigering = !path?.includes('pdldata')
 
-	const [deltBosted, setDeltBosted] = useState(
-		_.get(formMethods.getValues(), `${path}.deltBosted`) !== null,
-	)
+	const [deltBosted, setDeltBosted] = useState(formMethods.watch(`${path}.deltBosted`) !== null)
 
 	useEffect(() => {
-		const currentValues = _.get(formMethods.getValues(), `${path}.deltBosted`)
+		const currentValues = formMethods.watch(`${path}.deltBosted`)
 		if (deltBosted && currentValues === null) {
 			formMethods.setValue(`${path}.deltBosted`, initialDeltBosted)
 		} else if (!deltBosted) {

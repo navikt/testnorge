@@ -16,7 +16,6 @@ import {
 import { useKodeverk } from '@/utils/hooks/useKodeverk'
 import { getRandomValue } from '@/components/fagsystem/utils'
 import { useEffect } from 'react'
-import * as _ from 'lodash'
 import { useHelsepersonellOptions } from '@/utils/hooks/useSelectOptions'
 
 type DiagnoseSelect = {
@@ -77,7 +76,7 @@ export const DetaljertSykemelding = ({ formMethods }: SykemeldingForm) => {
 
 	useEffect(() => {
 		const yrkePath = 'sykemelding.detaljertSykemelding.arbeidsgiver.yrkesbetegnelse'
-		if (_.get(formMethods.getValues(), yrkePath) === '') {
+		if (formMethods.watch(yrkePath) === '') {
 			formMethods.setValue(yrkePath, randomYrke?.value || '')
 		}
 	}, [randomYrke])
@@ -87,8 +86,7 @@ export const DetaljertSykemelding = ({ formMethods }: SykemeldingForm) => {
 
 	useEffect(() => {
 		if (
-			_.get(formMethods.getValues(), 'sykemelding.detaljertSykemelding.helsepersonell.ident') ===
-				'' &&
+			formMethods.watch('sykemelding.detaljertSykemelding.helsepersonell.ident') === '' &&
 			randomHelsepersonell
 		) {
 			handleLegeChange(randomHelsepersonell)

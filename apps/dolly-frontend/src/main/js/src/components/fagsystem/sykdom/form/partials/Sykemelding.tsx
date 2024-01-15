@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import * as _ from 'lodash'
 import { SyntSykemelding } from './SyntSykemelding'
 import { DetaljertSykemelding } from './DetaljertSykemelding'
 import { Diagnose, SykemeldingForm } from '@/components/fagsystem/sykdom/SykemeldingTypes'
@@ -80,7 +79,7 @@ enum SykemeldingTyper {
 
 export const Sykemelding = ({ formMethods }: SykemeldingForm) => {
 	const [typeSykemelding, setTypeSykemelding] = useState(
-		_.get(formMethods.getValues(), 'sykemelding').hasOwnProperty('detaljertSykemelding')
+		formMethods.watch('sykemelding').hasOwnProperty('detaljertSykemelding')
 			? SykemeldingTyper.detaljert
 			: SykemeldingTyper.synt,
 	)

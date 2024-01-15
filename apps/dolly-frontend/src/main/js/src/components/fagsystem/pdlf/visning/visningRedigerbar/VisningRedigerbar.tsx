@@ -230,6 +230,11 @@ export const VisningRedigerbar = ({
 		return slett()
 	}, [])
 
+	const onNavButtonClick = useCallback(() => {
+		formMethods.reset()
+		setVisningModus(Modus.Les)
+	}, [])
+
 	const getForm = (formMethods: UseFormReturn) => {
 		switch (path) {
 			case Attributt.Navn:
@@ -384,7 +389,7 @@ export const VisningRedigerbar = ({
 								<Knappegruppe>
 									<NavButton
 										variant="secondary"
-										onClick={() => setVisningModus(Modus.Les)}
+										onClick={onNavButtonClick}
 										disabled={formMethods.formState.isSubmitting}
 									>
 										Avbryt

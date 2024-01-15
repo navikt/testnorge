@@ -2,7 +2,6 @@ import { initialVegadresse } from '@/components/fagsystem/pdlf/form/initialValue
 import { Vegadresse } from '@/components/fagsystem/pdlf/form/partials/adresser/adressetyper'
 import { AdresseKodeverk, GtKodeverk } from '@/config/kodeverk'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
-import * as _ from 'lodash'
 import { Radio, RadioGroup } from '@navikt/ds-react'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 
@@ -19,7 +18,7 @@ export const VegadresseVelger = ({ formMethods, path }: VegadressevelgerValues) 
 		DETALJERT: 'DETALJERT',
 	}
 
-	const vegadresseType = _.get(formMethods.getValues(), `${path}.vegadresseType`) || null
+	const vegadresseType = formMethods.watch(`${path}.vegadresseType`) || null
 
 	const handleRadioChange = (valg: string) => {
 		formMethods.setValue(path, { ...initialVegadresse, vegadresseType: valg })

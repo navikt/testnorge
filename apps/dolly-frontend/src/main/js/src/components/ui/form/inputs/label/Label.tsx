@@ -18,10 +18,11 @@ const StyledLabel = styled.label`
 export const Label = ({ name, label, info = null, containerClass = null, children }) => {
 	const {
 		getFieldState,
-		formState: { touchedFields },
+		formState: { touchedFields, dirtyFields },
 	} = useFormContext() || useForm()
 	const { error } = getFieldState(name)
 	const isTouched = _.has(touchedFields, name)
+	const isDirtied = _.has(dirtyFields, name)
 	const errorContext: ShowErrorContextType = useContext(ShowErrorContext)
 	const feilmelding = error?.message
 	const wrapClass = cn('skjemaelement', containerClass, {
@@ -46,7 +47,7 @@ export const Label = ({ name, label, info = null, containerClass = null, childre
 				</StyledLabel>
 			)}
 			{children}
-			{!_.isEmpty(feilmelding) && (errorContext?.showError || isTouched) && (
+			{!_.isEmpty(feilmelding) && (errorContext?.showError || isTouched || isDirtied) && (
 				<div role="alert" aria-live="assertive">
 					<div className="skjemaelement__feilmelding">{feilmelding}</div>
 				</div>
