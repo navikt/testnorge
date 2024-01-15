@@ -98,8 +98,7 @@ public class PensjonforvalterClient implements ClientRegister {
     public static PensjonforvalterResponse mergePensjonforvalterResponses(List<PensjonforvalterResponse> responser) {
 
         var status = new HashMap<String, PensjonforvalterResponse.Response>();
-        responser.stream()
-                .forEach(respons -> respons.getStatus().stream()
+        responser.forEach(respons -> respons.getStatus()
                         .forEach(detalj -> {
                             if (detalj.getResponse().isResponse2xx()) {
                                 status.putIfAbsent(detalj.getMiljo(), detalj.getResponse());
@@ -164,13 +163,14 @@ public class PensjonforvalterClient implements ClientRegister {
                                             lagreSamboer(dollyPerson.getIdent(), tilgjengeligeMiljoer)
                                                     .map(response -> SAMBOER_REGISTER + decodeStatus(response, dollyPerson.getIdent())),
 
+                                            lagreInntekt(bestilling1.getPensjonforvalter(), dollyPerson.getIdent(), bestilteMiljoer.get(),
+                                                    progress.getIsTpsSyncEnv())
+                                                    .map(response -> POPP_INNTEKTSREGISTER + decodeStatus(response, dollyPerson.getIdent())),
+
                                             Flux.just(bestilling1)
-                                                    .filter(bestilling2 -> nonNull(bestilling2.getPensjonforvalter()))
-                                                    .map(RsDollyUtvidetBestilling::getPensjonforvalter)
-                                                    .flatMap(pensjon -> Flux.merge(
-                                                            lagreInntekt(pensjon, dollyPerson.getIdent(), bestilteMiljoer.get(),
-                                                                    progress.getIsTpsSyncEnv())
-                                                                    .map(response -> POPP_INNTEKTSREGISTER + decodeStatus(response, dollyPerson.getIdent())),
+                                            .filter(bestilling2 -> nonNull(bestilling2.getPensjonforvalter()))
+                                            .map(RsDollyUtvidetBestilling::getPensjonforvalter)
+                                            .flatMap(pensjon -> Flux.merge(
 
                                                             lagreTpForhold(pensjon, dollyPerson.getIdent(), bestilteMiljoer.get())
                                                                     .map(response -> TP_FORHOLD + decodeStatus(response, dollyPerson.getIdent())),
@@ -233,7 +233,7 @@ public class PensjonforvalterClient implements ClientRegister {
                 .map(Norg2EnhetResponse::getEnhetNr)
                 .collectList()
                 .doOnNext(norgdata -> log.info("Mottatt norgdata: {}", norgdata))
-                .map(norgdata -> !norgdata.isEmpty() ? norgdata.get(0) : "0315");
+                .map(norgdata -> !norgdata.isEmpty() ? norgdata.getFirst() : "0315");
     }
 
     private Flux<PensjonforvalterResponse> lagreSamboer(String ident, Set<String> tilgjengeligeMiljoer) {
@@ -363,7 +363,7 @@ public class PensjonforvalterClient implements ClientRegister {
 
                                 if (isTpsSyncEnv.contains(miljoe)) {
 
-                                    AlderspensjonRequest pensjonRequest = null;
+                                    AlderspensjonRequest pensjonRequest;
                                     var context = new MappingContext.Factory().getContext();
                                     context.setProperty(IDENT, ident);
                                     context.setProperty(MILJOER, List.of(miljoe));
@@ -472,6 +472,10 @@ public class PensjonforvalterClient implements ClientRegister {
 
     private Flux<PensjonforvalterResponse> lagreInntekt(PensjonData pensjonData, String ident,
                                                         Set<String> miljoer, List<String> isTpsSyncEnv) {
+
+        if (isNull(pensjonData)) {
+            return Flux.empty();
+        }
 
         return Flux.just(pensjonData)
                 .filter(PensjonData::hasInntekt)
