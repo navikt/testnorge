@@ -9,11 +9,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.time.Duration;
 import java.util.concurrent.Callable;
 
 @Slf4j
@@ -34,7 +32,7 @@ public class GetTenorTestdata implements Callable<Mono<TenorResponse>> {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path(TENOR_QUERY_URL)
-                        .queryParam("kql", URLEncoder.encode(query, StandardCharsets.UTF_8))
+                        .queryParam("kql", URLEncoder.encode(query, StandardCharsets.US_ASCII))
                         .queryParam("nokkelinformasjon", true)
                         .build())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
@@ -45,8 +43,8 @@ public class GetTenorTestdata implements Callable<Mono<TenorResponse>> {
                         .data(response)
                         .build())
                 .doOnError(WebClientFilter::logErrorMessage)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
+//                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+//                        .filter(WebClientFilter::is5xxException))
                 .onErrorResume(error -> Mono.just(TenorResponse.builder()
                         .status(WebClientFilter.getStatus(error))
                         .error(WebClientFilter.getMessage(error))

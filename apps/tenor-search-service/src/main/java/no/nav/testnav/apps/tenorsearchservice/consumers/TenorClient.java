@@ -5,6 +5,7 @@ import no.nav.testnav.apps.tenorsearchservice.config.Consumers;
 import no.nav.testnav.apps.tenorsearchservice.consumers.command.GetTenorTestdata;
 import no.nav.testnav.apps.tenorsearchservice.domain.TenorResponse;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import reactor.core.publisher.Mono;
@@ -24,12 +25,38 @@ public class TenorClient {
         this.webClient = WebClient
                 .builder()
                 .baseUrl(consumers.getTenorSearchService().getUrl())
+                .filters(exchangeFilterFunctions -> exchangeFilterFunctions.add(logRequest()))
                 .uriBuilderFactory(uriFactory)
                 .build();
         this.maskinportenClient = maskinportenClient;
     }
 
+    private ExchangeFilterFunction logRequest() {
+
+        return (clientRequest, next) -> {
+            var buffer = new StringBuilder(250)
+                    .append("Request: ")
+                    .append(clientRequest.method())
+                    .append(' ')
+                    .append(clientRequest.url())
+                    .append(System.lineSeparator());
+
+            clientRequest.headers()
+                    .forEach((name, values) -> values
+                            .forEach(value -> buffer.append('\t')
+                                    .append(name)
+                                    .append('=')
+                                    .append(value.contains("Bearer ") ? "Bearer token" : value)
+                                    .append(System.lineSeparator())));
+            log.trace(buffer.substring(0, buffer.length() - 1));
+            return next.exchange(clientRequest);
+        };
+    }
+
     public Mono<TenorResponse> getTestdata(String query) {
+
+//        var token = "";
+//        return new GetTenorTestdata(webClient, query, token).call();
 
         return maskinportenClient.getAccessToken()
                 .flatMap(token -> new GetTenorTestdata(webClient, query, token.value()).call());
