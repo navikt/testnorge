@@ -2,6 +2,7 @@ package no.nav.testnav.apps.tpsmessagingservice.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBElement;
 import jakarta.xml.bind.JAXBException;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +18,7 @@ import no.nav.tps.ctg.m201.domain.TpsPersonData;
 import no.nav.tps.ctg.m201.domain.TpsServiceRutineType;
 import org.springframework.stereotype.Service;
 
+import javax.xml.namespace.QName;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.List;
@@ -50,17 +52,6 @@ public class IdentService {
         this.objectMapper = objectMapper;
     }
 
-    @SneakyThrows
-    public static String marshallToXML(JAXBContext requestContext, TpsPersonData endringsmelding) {
-
-        var marshaller = requestContext.createMarshaller();
-
-        var writer = new StringWriter();
-        marshaller.marshal(endringsmelding, writer);
-
-        return writer.toString();
-    }
-
     public List<TpsIdentStatusDTO> getIdenter(List<String> identer, List<String> miljoer, Boolean includeProd) {
 
         if (identer.size() > MAX_LIMIT) {
@@ -87,6 +78,18 @@ public class IdentService {
                                 .toList())
                         .build())
                 .toList();
+    }
+
+    @SneakyThrows
+    public static String marshallToXML(JAXBContext requestContext, TpsPersonData endringsmelding) {
+
+        var marshaller = requestContext.createMarshaller();
+
+        var writer = new StringWriter();
+        JAXBElement<TpsPersonData> element = new JAXBElement<>(new QName("", "tpsPersonData"), TpsPersonData.class, endringsmelding);
+        marshaller.marshal(element, writer);
+
+        return writer.toString();
     }
 
     private boolean exists(String ident, TpsServicerutineM201Response response) {

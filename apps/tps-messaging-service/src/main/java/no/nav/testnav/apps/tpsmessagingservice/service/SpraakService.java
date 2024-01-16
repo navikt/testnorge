@@ -1,5 +1,7 @@
 package no.nav.testnav.apps.tpsmessagingservice.service;
 
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
@@ -12,8 +14,6 @@ import no.nav.testnav.apps.tpsmessagingservice.dto.TpsMeldingResponse;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.SpraakDTO;
 import org.springframework.stereotype.Service;
 
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.JAXBException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
