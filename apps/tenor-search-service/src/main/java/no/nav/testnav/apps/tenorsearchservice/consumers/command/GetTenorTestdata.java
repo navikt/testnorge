@@ -8,12 +8,12 @@ import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.util.DefaultUriBuilderFactory;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 @Slf4j
@@ -29,14 +29,17 @@ public class GetTenorTestdata implements Callable<Mono<TenorResponse>> {
     @Override
     public Mono<TenorResponse> call() {
 
-        log.info("Query-parameter: {}", query);
+        var requestParams = Map.of("tenorQuery", query);
+        var uri = new DefaultUriBuilderFactory(TENOR_QUERY_URL)
+                .builder()
+                .queryParam("kql", "{tenorQuery}")
+                .queryParam("nokkelinformasjon", true)
+                .build(requestParams);
+
+        log.info("Query-parameter: {}", uri);
 
         return webClient.get()
-                .uri(uriBuilder -> uriBuilder
-                        .path(TENOR_QUERY_URL)
-                        .queryParam("kql", URLEncoder.encode(query, StandardCharsets.US_ASCII))
-                        .queryParam("nokkelinformasjon", true)
-                        .build())
+                .uri(uri)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToMono(JsonNode.class)
