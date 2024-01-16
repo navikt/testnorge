@@ -1,6 +1,9 @@
 package no.nav.testnav.apps.tpsmessagingservice.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBElement;
 import jakarta.xml.bind.JAXBException;
@@ -41,15 +44,24 @@ public class IdentService {
     private final ServicerutineConsumer servicerutineConsumer;
     private final JAXBContext requestContext;
     private final TestmiljoerServiceConsumer testmiljoerServiceConsumer;
-    private final ObjectMapper objectMapper;
+    private final XmlMapper xmlMapper;
 
     public IdentService(ServicerutineConsumer servicerutineConsumer,
-                        TestmiljoerServiceConsumer testmiljoerServiceConsumer,
-                        ObjectMapper objectMapper) throws JAXBException {
+                        TestmiljoerServiceConsumer testmiljoerServiceConsumer)
+            throws JAXBException {
         this.servicerutineConsumer = servicerutineConsumer;
         this.testmiljoerServiceConsumer = testmiljoerServiceConsumer;
         this.requestContext = JAXBContext.newInstance(TpsPersonData.class);
-        this.objectMapper = objectMapper;
+        this.xmlMapper = XmlMapper
+                .builder()
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                .configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true)
+                .configure(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_AS_NULL, true)
+                .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+                .configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true)
+                .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
+                .build();
+        ;
     }
 
     public List<TpsIdentStatusDTO> getIdenter(List<String> identer, List<String> miljoer, Boolean includeProd) {
@@ -128,7 +140,7 @@ public class IdentService {
                     .build();
         } else {
 
-            return objectMapper.readValue(endringsmeldingResponse, TpsServicerutineM201Response.class);
+            return xmlMapper.readValue(endringsmeldingResponse, TpsServicerutineM201Response.class);
         }
     }
 
