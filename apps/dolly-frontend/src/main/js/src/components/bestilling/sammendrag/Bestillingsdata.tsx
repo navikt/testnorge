@@ -14,6 +14,7 @@ import { NorskBankkonto } from '@/components/fagsystem/pdlf/bestilling/partials/
 import { UtenlandskBankkonto } from '@/components/fagsystem/pdlf/bestilling/partials/UtenlandskBankkonto'
 import { Telefonnummer } from '@/components/fagsystem/pdlf/bestilling/partials/Telefonnummer'
 import { Vergemaal } from '@/components/fagsystem/pdlf/bestilling/partials/Vergemaal'
+import { Fullmakt } from '@/components/fagsystem/pdlf/bestilling/partials/Fullmakt'
 
 export const BestillingTitle = styled.h4`
 	margin: 5px 0 15px 0;
@@ -64,6 +65,7 @@ export const Bestillingsdata = ({ bestilling }: any) => {
 			<UtenlandskBankkonto utenlandskBankkonto={bestilling.bankkonto?.utenlandskBankkonto} />
 			<Telefonnummer telefonnummerListe={bestilling.pdldata?.person?.telefonnummer} />
 			<Vergemaal vergemaalListe={bestilling.pdldata?.person?.vergemaal} />
+			<Fullmakt fullmaktListe={bestilling.pdldata?.person?.fullmakt} />
 		</>
 	)
 }

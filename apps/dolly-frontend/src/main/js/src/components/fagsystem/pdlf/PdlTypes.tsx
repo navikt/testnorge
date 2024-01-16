@@ -175,6 +175,10 @@ export type VergemaalValues = {
 }
 
 export type FullmaktValues = {
+	omraader?: Array<string>
+	gyldigFraOgMed?: string
+	gyldigTilOgMed?: string
+	motpartsPersonident?: string
 	nyFullmektig?: NyIdent
 	id: number
 }
