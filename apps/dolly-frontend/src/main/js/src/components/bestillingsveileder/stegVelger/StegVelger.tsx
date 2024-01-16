@@ -42,17 +42,22 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 
 	const isLastStep = () => step === STEPS.length - 1
 	const handleNext = () => {
-		const errorFelter = Object.keys(formMethods.formState.errors)
-		const kunEnvironmentError = errorFelter.length === 1 && errorFelter[0] === 'environments'
-		if (!formMethods.formState.isValid && step === 1 && !kunEnvironmentError) {
-			console.warn('Feil i form, stopper navigering videre')
-			errorContext?.setShowError(true)
-			return
-		}
-		setStep(step + 1)
+		formMethods.trigger().then((valid) => {
+			const errorFelter = Object.keys(formMethods.formState.errors)
+			const kunEnvironmentError = errorFelter.length === 1 && errorFelter[0] === 'environments'
+			const kunGruppeIdError = errorFelter.length === 1 && errorFelter[0] === 'gruppeId'
+			if (!valid && step === 1 && !kunEnvironmentError && !kunGruppeIdError) {
+				console.warn('Feil i form, stopper navigering videre')
+				console.error(formMethods.formState.errors)
+				errorContext?.setShowError(true)
+				return
+			}
+			setStep(step + 1)
+		})
 	}
 
 	const handleBack = () => {
+		errorContext?.setShowError(false)
 		if (step !== 0) setStep(step - 1)
 	}
 

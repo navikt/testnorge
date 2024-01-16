@@ -1,6 +1,9 @@
 import * as Yup from 'yup'
 import * as _ from 'lodash'
 import { ifPresent, requiredNumber } from '@/utils/YupValidations'
+import { TjenestepensjonForm } from '@/components/fagsystem/tjenestepensjon/form/Form'
+import { AlderspensjonForm } from '@/components/fagsystem/alderspensjon/form/Form'
+import { UforetrygdForm } from '@/components/fagsystem/uforetrygd/form/Form'
 
 function calculate_age(dob) {
 	const diff_ms = Date.now() - dob.getTime()
@@ -166,13 +169,23 @@ const validTomDateTest = (val: Yup.NumberSchema<number, Yup.AnyObject>) => {
 }
 
 export const validation = {
-	inntekt: ifPresent(
-		'$pensjonforvalter.inntekt',
+	pensjonforvalter: ifPresent(
+		'$pensjonforvalter',
 		Yup.object({
-			fomAar: validFomDateTest(requiredNumber),
-			tomAar: validTomDateTest(requiredNumber).typeError('Velg et gyldig år'),
-			belop: Yup.number().min(0, 'Tast inn et gyldig beløp').typeError('Tast inn et gyldig beløp'),
-			redusertMedGrunnbelop: Yup.boolean(),
+			inntekt: ifPresent(
+				'$pensjonforvalter.inntekt',
+				Yup.object({
+					fomAar: validFomDateTest(requiredNumber),
+					tomAar: validTomDateTest(requiredNumber).typeError('Velg et gyldig år'),
+					belop: Yup.number()
+						.min(0, 'Tast inn et gyldig beløp')
+						.typeError('Tast inn et gyldig beløp'),
+					redusertMedGrunnbelop: Yup.boolean(),
+				}),
+			),
+			...TjenestepensjonForm.validation,
+			...AlderspensjonForm.validation,
+			...UforetrygdForm.validation,
 		}),
 	),
 }

@@ -8,17 +8,22 @@ import { useNavigate } from 'react-router-dom'
 import { CypressSelector } from '../../../../../cypress/mocks/Selectors'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { useFormContext } from 'react-hook-form'
-import _ from 'lodash'
+import {
+	ShowErrorContext,
+	ShowErrorContextType,
+} from '@/components/bestillingsveileder/ShowErrorContext'
 
 export const Navigation = ({ step, onPrevious, isLastStep, handleSubmit }) => {
 	const showPrevious = step > 0
+	const errorContext: ShowErrorContextType = useContext(ShowErrorContext)
 	const opts: any = useContext(BestillingsveilederContext)
 	const importTestnorge = opts?.is?.importTestnorge
 
 	const navigate = useNavigate()
+	const formMethods = useFormContext()
 	const {
 		getValues,
-		formState: { errors, isSubmitting },
+		formState: { isSubmitting },
 	} = useFormContext()
 
 	const onAbort = () => navigate(-1)
@@ -67,8 +72,18 @@ export const Navigation = ({ step, onPrevious, isLastStep, handleSubmit }) => {
 						<NavButton
 							data-cy={CypressSelector.BUTTON_FULLFOER_BESTILLING}
 							variant={'primary'}
-							onClick={handleSubmit}
-							disabled={!_.isEmpty(errors) || isSubmitting}
+							onClick={() => {
+								errorContext?.setShowError(true)
+								formMethods.trigger().then((valid) => {
+									if (!valid) {
+										console.warn('Feil i form')
+										console.error(formMethods.formState.errors)
+										return
+									}
+									handleSubmit()
+								})
+							}}
+							disabled={isSubmitting}
 						>
 							{getLastButtonText()}
 						</NavButton>

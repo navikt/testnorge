@@ -11,7 +11,6 @@ import React, { useContext } from 'react'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
 import * as _ from 'lodash'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
-import { UseFormReturn } from 'react-hook-form/dist/types'
 import { useFormContext } from 'react-hook-form'
 
 export const pensjonPath = 'pensjonforvalter.inntekt'
@@ -25,19 +24,19 @@ export const PensjonForm = () => {
 	const opts = useContext(BestillingsveilederContext)
 	const { nyBestilling, nyBestillingFraMal } = opts?.is
 
-	function kalkulerIdentFyltSyttenAar(values: UseFormReturn['getValues']) {
+	function kalkulerIdentFyltSyttenAar() {
 		const curDate = new Date()
 		const alder =
-			_.has(values, 'pdldata.opprettNyPerson.foedtFoer') &&
-			_.get(values, 'pdldata.opprettNyPerson.foedtFoer') !== null
+			formMethods.watch('pdldata.opprettNyPerson.foedtFoer') &&
+			formMethods.watch('pdldata.opprettNyPerson.foedtFoer') !== null
 				? curDate.getFullYear() -
 					// @ts-ignore
-					new Date(_.get(values, 'pdldata.opprettNyPerson.foedtFoer')).getFullYear()
-				: _.get(values, 'pdldata.opprettNyPerson.alder')
+					new Date(formMethods.watch('pdldata.opprettNyPerson.foedtFoer')).getFullYear()
+				: formMethods.watch('pdldata.opprettNyPerson.alder')
 		return alder && curDate.getFullYear() - alder + 17
 	}
 
-	const syttenFraOgMedAar = kalkulerIdentFyltSyttenAar(formMethods.getValues())
+	const syttenFraOgMedAar = kalkulerIdentFyltSyttenAar()
 	const minAar = new Date().getFullYear() - 17
 	const valgtAar = formMethods.watch(`${pensjonPath}.fomAar`)
 

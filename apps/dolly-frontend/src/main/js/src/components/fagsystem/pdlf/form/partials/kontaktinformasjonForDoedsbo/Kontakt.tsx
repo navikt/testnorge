@@ -64,6 +64,7 @@ export const Kontakt = ({ formMethods, path, eksisterendeNyPerson = null }: Kont
 	useEffect(() => {
 		if (!formMethods.watch(`${path}.kontaktType`)) {
 			formMethods.setValue(`${path}.kontaktType`, getKontakttype())
+			formMethods.trigger(`${path}.kontaktType`)
 		}
 	}, [])
 
@@ -93,11 +94,13 @@ export const Kontakt = ({ formMethods, path, eksisterendeNyPerson = null }: Kont
 			}
 		}
 		formMethods.setValue(path, kontaktinfoClone)
+		formMethods.trigger(path)
 	}
 
 	const organisasjonHandleChange = (values: OrgValues, orgPath: string) => {
 		formMethods.setValue(`${orgPath}.organisasjonsnummer`, values.orgnr)
 		formMethods.setValue(`${orgPath}.organisasjonsnavn`, values.navn)
+		formMethods.trigger(orgPath)
 	}
 
 	const disableIdent =

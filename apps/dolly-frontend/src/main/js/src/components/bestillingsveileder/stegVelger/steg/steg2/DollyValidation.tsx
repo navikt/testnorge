@@ -13,13 +13,9 @@ import { DokarkivForm } from '@/components/fagsystem/dokarkiv/form/DokarkivForm'
 import { MedlForm } from '@/components/fagsystem/medl/form/MedlForm'
 import { SykdomForm } from '@/components/fagsystem/sykdom/form/Form'
 import { OrganisasjonForm } from '@/components/fagsystem/organisasjoner/form/Form'
-import { TjenestepensjonForm } from '@/components/fagsystem/tjenestepensjon/form/Form'
-import { ifPresent } from '@/utils/YupValidations'
-import { AlderspensjonForm } from '@/components/fagsystem/alderspensjon/form/Form'
 import { SkjermingForm } from '@/components/fagsystem/skjermingsregister/form/SkjermingForm'
 import { ArbeidsplassenForm } from '@/components/fagsystem/arbeidsplassen/form/Form'
 import { HistarkForm } from '@/components/fagsystem/histark/form/HistarkForm'
-import { UforetrygdForm } from '@/components/fagsystem/uforetrygd/form/Form'
 import { SigrunstubPensjonsgivendeForm } from '@/components/fagsystem/sigrunstubPensjonsgivende/form/Form'
 import { KrrstubForm } from '@/components/fagsystem/krrstub/form/KrrForm'
 import { MiljoVelger } from '@/components/miljoVelger/MiljoVelger'
@@ -46,15 +42,7 @@ export const DollyValidation = Yup.object({
 	...HistarkForm.validation,
 	...OrganisasjonForm.validation,
 	...MiljoVelger.validation,
+	...PensjonForm.validation,
 	...MalForm.validation,
 	...VelgGruppe.validation,
-	pensjonforvalter: ifPresent(
-		'$pensjonforvalter',
-		Yup.object({
-			...PensjonForm.validation,
-			...TjenestepensjonForm.validation,
-			...AlderspensjonForm.validation,
-			...UforetrygdForm.validation,
-		}),
-	),
 })

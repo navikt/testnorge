@@ -338,7 +338,7 @@ export const FlyttPersonModal = ({ gruppeId, modalIsOpen, closeModal }: FlyttPer
 					</PersonKolonne>
 					<PersonKolonne>
 						<h2 style={{ marginLeft: '20px' }}>Valgte personer</h2>
-						{harRelatertePersoner(formMethods.watch('identer')) && (
+						{harRelatertePersoner(formMethods.getValues('identer')) && (
 							<Alert variant="info" size="small" inline>
 								Du har valgt én eller flere personer som har relaterte personer. Disse vil også
 								flyttes.

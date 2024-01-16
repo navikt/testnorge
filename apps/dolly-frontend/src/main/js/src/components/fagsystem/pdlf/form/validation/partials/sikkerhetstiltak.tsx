@@ -1,6 +1,6 @@
 import * as Yup from 'yup'
 import { requiredDate, requiredString } from '@/utils/YupValidations'
-import { differenceInWeeks, isAfter, parseISO } from 'date-fns'
+import { differenceInWeeks, isAfter } from 'date-fns'
 import * as _ from 'lodash'
 
 export const sikkerhetstiltak = Yup.array().of(
@@ -22,9 +22,7 @@ export const sikkerhetstiltak = Yup.array().of(
 						_.get(fullForm, 'pdldata.person.sikkerhetstiltak[0].gyldigFraOgMed'),
 					)
 					return (
-						!_.isEmpty(dato) &&
-						isAfter(new Date(parseISO(dato)), gyldigFraOgMed) &&
-						differenceInWeeks(new Date(parseISO(dato)), gyldigFraOgMed) <= 12
+						isAfter(new Date(dato), gyldigFraOgMed) && differenceInWeeks(dato, gyldigFraOgMed) <= 12
 					)
 				},
 			)

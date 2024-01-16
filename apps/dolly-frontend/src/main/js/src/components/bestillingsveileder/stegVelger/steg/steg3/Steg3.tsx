@@ -65,7 +65,6 @@ export const Steg3 = () => {
 			if (harAvhukedeAttributter(formMethods.getValues())) {
 				formMethods.setValue('environments', alleredeValgtMiljoe())
 			}
-			formMethods.setValue('gruppeId', opts.gruppe?.id)
 		} else if (bankIdBruker) {
 			formMethods.setValue('environments', alleredeValgtMiljoe())
 		} else if (erQ1EllerQ2MiljoeAvhengig(formMethods.getValues())) {
