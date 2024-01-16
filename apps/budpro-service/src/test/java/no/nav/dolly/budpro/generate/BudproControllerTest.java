@@ -43,7 +43,7 @@ class BudproControllerTest {
     private AutoCloseable closeable;
 
     @BeforeEach
-    public void before() {
+    void before() {
         closeable = MockitoAnnotations.openMocks(this);
 
         var names = new ArrayList<String>(100);
@@ -56,12 +56,12 @@ class BudproControllerTest {
     }
 
     @AfterEach
-    public void after() throws Exception {
+    void after() throws Exception {
         closeable.close();
     }
 
     @Test
-    void testThatNoSeedGivesDifferentResults()
+    void thatNoSeedGivesDifferentResults()
             throws Exception {
         var result1 = mockMvc
                 .perform(get("/api/random?limit={limit}", 50))
@@ -80,7 +80,7 @@ class BudproControllerTest {
     }
 
     @Test
-    void testThatSameSeedGivesSameResults()
+    void thatSameSeedGivesSameResults()
             throws Exception {
         var result1 = mockMvc
                 .perform(get("/api/random?seed={seed}&limit={limit}", 123L, 50))
@@ -99,7 +99,7 @@ class BudproControllerTest {
     }
 
     @Test
-    void testThatOverrideWorksAsIntended()
+    void thatOverrideWorksAsIntended()
             throws Exception {
         var override = new BudproRecord(
                 "OVERRIDE",

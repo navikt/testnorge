@@ -111,7 +111,7 @@ public class ArtifactUpdateService {
         artifact.setMaster(nonNull(artifact.getMaster()) ? artifact.getMaster() : DbVersjonDTO.Master.FREG);
 
         if (id.equals(0)) {
-            artifacter.add(0, initOpprett(artifacter, artifact));
+            artifacter.addFirst(initOpprett(artifacter, artifact));
             return artifacter;
 
         } else {
@@ -599,6 +599,7 @@ public class ArtifactUpdateService {
                 deletePerson(slettePerson, vergemaal.isEksisterendePerson());
 
                 oppdatertVergemaal.setId(id);
+                oppdatertVergemaal.setVergeIdent(null);
                 person.getPerson().getVergemaal().add(oppdatertVergemaal);
                 person.getPerson().getVergemaal().sort(Comparator.comparing(VergemaalDTO::getId).reversed());
             }

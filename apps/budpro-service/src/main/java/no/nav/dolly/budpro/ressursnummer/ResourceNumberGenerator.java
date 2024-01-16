@@ -20,7 +20,7 @@ public class ResourceNumberGenerator {
             var a = random.nextInt(99);
             var b = random.nextInt(99);
             var c = random.nextInt(99);
-            generated = String.format("%02d%02d%02d", a, b, c);
+            generated = "%02d%02d%02d".formatted(a, b, c);
         } while (assigned.contains(generated));
         assigned.add(generated);
         return generated;

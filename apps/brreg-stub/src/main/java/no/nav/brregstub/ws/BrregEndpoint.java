@@ -9,7 +9,6 @@ import no.nav.brregstub.tjenestekontrakter.ws.HentRolleutskrift;
 import no.nav.brregstub.tjenestekontrakter.ws.HentRolleutskriftResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
@@ -28,7 +27,6 @@ public class BrregEndpoint {
 
     private final BrregService brregService;
 
-    @Autowired
     public BrregEndpoint(BrregService brregService) {
         this.brregService = brregService;
     }
