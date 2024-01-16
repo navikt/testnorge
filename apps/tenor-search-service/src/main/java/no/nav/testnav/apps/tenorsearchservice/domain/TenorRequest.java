@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,10 +49,26 @@ public class TenorRequest {
         PersonErOpphoertSomDublett, PersonErOpprettet, PersonErReaktivert, PersonErUtflyttet,
         PersonErViderefoertSomGjeldendeVedSammenslaaing
     }
-    private enum BostedsadresseType {Vegadresse, Matrikkeladresse, Ukjent}
-    private enum CoAdresseType {Bostedsadresse, DeltBosted, Oppholdsadresse, Postadresse, PostadresseIUtlandet}
 
-    private List<Roller> roller;
+    public enum BostedsadresseType {Vegadresse, Matrikkeladresse, Ukjent}
+
+    public enum CoAdresseType {Bostedsadresse, DeltBosted, Oppholdsadresse, Postadresse, PostadresseIUtlandet}
+
+    public enum Skattemeldingstype {KunUtkast, UtkastOgFastsatt}
+
+    public enum Inntektstype {Loennsinntekt, Naeringsinntekt, PensjonEllerTrygd, YtelseFraOffentlige}
+
+    public enum AOrdningBeskrivelse {
+        Alderspensjon, AlderspensjonSkjermingstillegg, AndreBeskrivelser,
+        Arbeidsavklaringspenger, AvtalefestetPensjon, Bil, Bonus, DagpengerVedArbeidsloeshet, Ektefelletillegg,
+        ElektroniskKommunikasjon, Fagforeningskontingent, FastBilgodtgjoerelse, Fastloenn, FastTillegg, Feriepenger,
+        Foreldrepenger, IpaEllerIpsPeriodiskeYtelser, Kvalifiseringsstoenad, NyAvtalefestetPensjonPrivatSektor,
+        PensjonOgLivrenterIArbeidsforhold, ReiseKostMedOvernattingPaaHybelMedKokEllerPrivat,
+        ReiseKostMedOvernattingPaaHybelUtenKokEllerPensjonatEllerBrakke, Sykepenger, Timeloenn, Ufoeretrygd
+    }
+
+    public enum Forskuddstrekk {OrdinaertForskuddstrekk, Barnepensjon, KildeskattPaaPensjon, Svalbard,
+        JanMayenOgBilandene, BetaltTrygdeavgiftTilJanMayen}
 
     @Schema(description = "Personidentifikator, fødselsnummer eller d-nummer")
     private String identifikator;
@@ -72,6 +89,11 @@ public class TenorRequest {
     private Adresser adresser;
     private Relasjoner relasjoner;
     private Hendelser hendelser;
+
+    private List<Roller> roller;
+    private Tjenestepensjonsavtale tjenestepensjonsavtale;
+    private Skattemelding skattemelding;
+    private InntektAordningen inntektAordningen;
 
     public List<UtenlandskPersonIdentifikasjon> getUtenlandskPersonIdentifikasjon() {
 
@@ -102,7 +124,6 @@ public class TenorRequest {
     public static class Intervall {
 
         private Integer fraOgMed;
-
         private Integer tilOgMed;
     }
 
@@ -155,5 +176,60 @@ public class TenorRequest {
 
         private Hendelse hendelse;
         private Hendelse sisteHendelse;
+    }
+
+    @Data
+    @NoArgsConstructor
+    public static class Tjenestepensjonsavtale {
+
+        @Schema(description = "Pensjonsinnretningen organisasjonsnummer, 9 siffre")
+        private String pensjonsinnretningOrgnr;
+        @Schema(description = "Periode, format: YYYY-MM")
+        private YearMonth periode;
+    }
+
+    @Data
+    @NoArgsConstructor
+    public static class Skattemelding {
+
+        @Schema(description = "Inntektsår, 4 siffre, årene 2018, 2019, 2020, 2021, 2022 ... osv opptil i forfjor")
+        private Integer Inntektsaar;
+        private Skattemeldingstype skattemeldingstype;
+    }
+
+    @Data
+    @NoArgsConstructor
+    public static class InntektAordningen {
+
+        private MonthInterval periode;
+        private String opplysningspliktig;
+        private List<Inntektstype> inntektstyper;
+        private AOrdningBeskrivelse beskrivelse;
+        private List<Forskuddstrekk> forskuddstrekk;
+        private Boolean harHistorikk;
+
+        public List<Inntektstype> getInntektstyper() {
+
+            if (isNull(inntektstyper)) {
+                inntektstyper = new ArrayList<>();
+            }
+            return inntektstyper;
+        }
+
+        public List<Forskuddstrekk> getForskuddstrekk() {
+
+            if (isNull(forskuddstrekk)) {
+                forskuddstrekk = new ArrayList<>();
+            }
+            return forskuddstrekk;
+        }
+    }
+
+    @Data
+    @NoArgsConstructor
+    public static class MonthInterval {
+
+        private YearMonth fraOgMed;
+        private YearMonth tilOgMed;
     }
 }

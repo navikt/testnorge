@@ -11,9 +11,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 @Slf4j
@@ -30,13 +29,14 @@ public class GetTenorTestdata implements Callable<Mono<TenorResponse>> {
     public Mono<TenorResponse> call() {
 
         log.info("Query-parameter: {}", query);
+        var requestParams = Map.of("tenorQuery", query);
 
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path(TENOR_QUERY_URL)
-                        .queryParam("kql", URLEncoder.encode(query, StandardCharsets.US_ASCII))
+                        .queryParam("kql", "{tenorQuery}")
                         .queryParam("nokkelinformasjon", true)
-                        .build())
+                        .build(requestParams))
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToMono(JsonNode.class)
