@@ -9,6 +9,7 @@ on:
       - libs/security-core
       - proxies/kontoregister-person-proxy/**
       - .github/workflows/proxy.kontoregister-person-proxy.yml
+      - .github/workflows/common.workflow.backend.yml
 
 jobs:
   workflow:

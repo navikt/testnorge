@@ -10,6 +10,7 @@ on:
       - libs/servlet-security
       - apps/profil-api/**
       - .github/workflows/app.profil-api.yml
+      - .github/workflows/common.workflow.backend.yml
 
 jobs:
   workflow:
