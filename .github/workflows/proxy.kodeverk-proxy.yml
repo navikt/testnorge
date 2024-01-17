@@ -7,6 +7,7 @@ on:
       - libs/reactive-proxy
       - proxies/kodeverk-proxy/**
       - .github/workflows/proxy.kodeverk-proxy.yml
+      - .github/workflows/common.workflow.backend.yml
 
 jobs:
   workflow:

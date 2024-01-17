@@ -7,6 +7,7 @@ on:
       - libs/reactive-proxy
       - proxies/brregstub-proxy/**
       - .github/workflows/proxy.brregstub-proxy.yml
+      - .github/workflows/common.workflow.backend.yml
 
 jobs:
   workflow:

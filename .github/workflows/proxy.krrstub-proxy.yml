@@ -9,6 +9,7 @@ on:
       - libs/security-core
       - proxies/krrstub-proxy/**
       - .github/workflows/proxy.krrstub-proxy.yml
+      - .github/workflows/common.workflow.backend.yml
 
 jobs:
   workflow:

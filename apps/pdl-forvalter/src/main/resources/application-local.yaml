@@ -1,3 +1,5 @@
+ACCEPTED_AUDIENCE: dev-gcp:dolly:testnav-pdl-forvalter-dev
+
 spring:
   application:
     name: testnav-pdl-forvalter
@@ -25,17 +27,6 @@ spring:
       hibernate:
         default-schema: public
         dialect: org.hibernate.dialect.PostgreSQLDialect
-  security:
-    oauth2:
-      resourceserver:
-        aad:
-          issuer-uri: ${AAD_ISSUER_URI}/v2.0
-          jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
-          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
-        tokenx:
-          issuer-uri: https://tokenx.dev-gcp.nav.cloud.nais.io 
-          jwk-set-uri: https://tokenx.dev-gcp.nav.cloud.nais.io/jwks
-          accepted-audience: dev-gcp:dolly:testnav-pdl-forvalter-dev
 
 consumers:
   adresse-service:

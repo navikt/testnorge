@@ -12,6 +12,7 @@ on:
       - libs/servlet-security
       - apps/dolly-backend/**
       - .github/workflows/app.dolly-backend.yml
+      - .github/workflows/common.workflow.backend.yml
 
 jobs:
   workflow:

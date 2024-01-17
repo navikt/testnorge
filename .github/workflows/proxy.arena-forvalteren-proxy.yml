@@ -7,6 +7,7 @@ on:
       - libs/reactive-proxy
       - proxies/arena-forvalteren-proxy/**
       - .github/workflows/proxy.arena-forvalteren-proxy.yml
+      - .github/workflows/common.workflow.backend.yml
 
 jobs:
   workflow:

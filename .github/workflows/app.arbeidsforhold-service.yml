@@ -11,6 +11,7 @@ on:
       - libs/servlet-security
       - apps/arbeidsforhold-service/**
       - .github/workflows/app.arbeidsforhold-service.yml
+      - .github/workflows/common.workflow.backend.yml
 
 jobs:
   workflow:

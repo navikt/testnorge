@@ -13,6 +13,8 @@ spec:
   env:
     - name: SPRING_PROFILES_ACTIVE
       value: prod
+    - name: ACCEPTED_AUDIENCE
+      value: dev-gcp:dolly:testnav-pdl-forvalter
   image: "{{image}}"
   webproxy: true
   tokenx:

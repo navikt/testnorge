@@ -1,13 +1,4 @@
-spring:
-  cloud:
-    vault:
-      token: dummy
-
-azure:
-  app:
-    client:
-      id: dummy
-      secret: dummy
+TOKEN_X_ISSUER: dummy
 
 elasticsearch:
   client:
