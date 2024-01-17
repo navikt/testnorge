@@ -8,6 +8,7 @@ on:
       - libs/reactive-security
       - apps/app-tilgang-analyse-service/**
       - .github/workflows/app.app-tilgang-analyse-service.yml
+      - .github/workflows/common.workflow.backend.yml
 
 jobs:
   workflow:

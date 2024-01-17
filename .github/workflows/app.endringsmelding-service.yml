@@ -9,6 +9,7 @@ on:
       - libs/security-core
       - apps/endringsmelding-service/**
       - .github/workflows/app.endringsmelding-service.yml
+      - .github/workflows/common.workflow.backend.yml
 
 jobs:
   workflow:
