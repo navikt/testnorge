@@ -53,9 +53,9 @@ public class TranslittereringUtil {
             return null;
         }
 
-        val prepared = preprocess(str);
-        val normalized = pattern.matcher(Normalizer.normalize(prepared, Normalizer.Form.NFD)).replaceAll("");
-        val processed = postprocess(normalized);
+        final var prepared = preprocess(str);
+        final var normalized = pattern.matcher(Normalizer.normalize(prepared, Normalizer.Form.NFD)).replaceAll("");
+        final var processed = postprocess(normalized);
         String text = convertKnownCharactersNotHandledByNormalization(processed);
         return cyrillicToLatinTrans.transliterate(text);
     }

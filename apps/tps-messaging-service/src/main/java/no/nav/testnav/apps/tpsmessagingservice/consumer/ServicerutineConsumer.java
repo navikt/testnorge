@@ -6,8 +6,8 @@ import no.nav.testnav.apps.tpsmessagingservice.dto.TpsPersonDataErrorResponse;
 import no.nav.testnav.apps.tpsmessagingservice.factory.ConnectionFactoryFactory;
 import org.springframework.stereotype.Service;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
 import java.io.StringWriter;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -28,7 +28,7 @@ public class ServicerutineConsumer extends TpsConsumer {
     protected String getQueueName(String queue, String miljoe) {
 
         return isBlank(queue) ?
-                String.format("%s%s_%s", PREFIX_MQ_QUEUES, miljoe.toUpperCase(),
+                "%s%s_%s".formatted(PREFIX_MQ_QUEUES, miljoe.toUpperCase(),
                         XML_REQUEST_QUEUE_SERVICE_RUTINE_ALIAS) :
                 queue;
     }
