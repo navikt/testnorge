@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.BooleanUtils.isFalse;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -89,20 +90,36 @@ public class TenorSearchService {
                 .append(getSkatteplikt(searchData.getSkatteplikt()))
                 .append(getTilleggsskatt(searchData.getTilleggsskatt()))
                 .append(getArbeidsforhold(searchData.getArbeidsforhold()))
-                .append(getBeregnetSkatt(searchData.getBeregnetSkatt()));
+                .append(getBeregnetSkatt(searchData.getBeregnetSkatt()))
+                .append(getOpplysningerFraSkatteetatensInnsendingsMiljoe(searchData.getOpplysningerFraSkatteetatensInnsendingsmiljoe()));
 
         log.info("Søker med query: {}", builder.substring(5));
         return tenorClient.getTestdata(!builder.isEmpty() ? builder.substring(5) : "");
     }
 
+    private String getOpplysningerFraSkatteetatensInnsendingsMiljoe(TenorRequest.OpplysningerFraSkatteetatensInnsendingsmiljoe opplysningerFraSkatteetatensInnsendingsmiljoe) {
+
+        return isNull(opplysningerFraSkatteetatensInnsendingsmiljoe) ? "" :
+                "+and+tenorRelasjoner.testinnsendingSkattPerson:{%s}".formatted(new StringBuilder()
+                        .append(convertObject("inntektsaar", opplysningerFraSkatteetatensInnsendingsmiljoe.getInntektsaar()))
+                        .append(convertBooleanSpecial("harSkattemeldingUtkast", opplysningerFraSkatteetatensInnsendingsmiljoe.getHarSkattemeldingUtkast()))
+                        .append(convertBooleanSpecial("harSkattemeldingFastsatt", opplysningerFraSkatteetatensInnsendingsmiljoe.getHarSkattemeldingFastsatt()))
+                        .substring(5));
+    }
+
+    private String convertBooleanSpecial(String navn, Boolean verdi) {
+
+        return isNull(verdi) ? "" : "+%sand+%s:*".formatted((isFalse(verdi) ? "not+" : ""), navn);
+    }
+
     private String getBeregnetSkatt(TenorRequest.BeregnetSkatt beregnetSkatt) {
 
         return isNull(beregnetSkatt) ? "" :
-            "+and+tenorRelasjoner.beregnetSkatt:{%s}".formatted(new StringBuilder()
-                    .append(convertObject("inntektsaar", beregnetSkatt.getInntektsaar()))
-                    .append(convertEnum("typeOppgjoer", beregnetSkatt.getOppgjoerstype()))
-                    .append(convertObject("pensjonsgivendeInntekt", beregnetSkatt.getPensjonsgivendeInntekt()))
-                    .substring(5));
+                "+and+tenorRelasjoner.beregnetSkatt:{%s}".formatted(new StringBuilder()
+                        .append(convertObject("inntektsaar", beregnetSkatt.getInntektsaar()))
+                        .append(convertEnum("typeOppgjoer", beregnetSkatt.getOppgjoerstype()))
+                        .append(convertObject("pensjonsgivendeInntekt", beregnetSkatt.getPensjonsgivendeInntekt()))
+                        .substring(5));
     }
 
     private String getArbeidsforhold(TenorRequest.Arbeidsforhold arbeidsforhold) {

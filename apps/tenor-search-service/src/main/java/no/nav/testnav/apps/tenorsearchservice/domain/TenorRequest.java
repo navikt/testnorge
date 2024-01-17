@@ -120,8 +120,8 @@ public class TenorRequest {
     private Tilleggsskatt tilleggsskatt;
     private Arbeidsforhold arbeidsforhold;
     private BeregnetSkatt beregnetSkatt;
-    private SummertSkattegrunnlag summertSkattegrunnlag;
     private OpplysningerFraSkatteetatensInnsendingsmiljoe opplysningerFraSkatteetatensInnsendingsmiljoe;
+    private SummertSkattegrunnlag summertSkattegrunnlag;
     private SamletReskontroInnsyn samletReskontroInnsyn;
     private SpesisfisertSummertSkattegrunnlag spesisfisertSummertSkattegrunnlag;
 
@@ -328,12 +328,20 @@ public class TenorRequest {
 
     @Data
     @NoArgsConstructor
-    public static class SummertSkattegrunnlag {
+    public static class OpplysningerFraSkatteetatensInnsendingsmiljoe {
+
+        @Schema(description = "Inntektsår, 4 siffre, årene 2020, 2021, 2022, 2023 ... osv opptil i fjor")
+        private Integer inntektsaar;
+        @Schema(description = "Skattemelding utkast, merk at false indikerer har ikke skatteMeldingUtkast")
+        private Boolean harSkattemeldingUtkast;
+        @Schema(description = "Skattemelding fastsatt, merk at false indikerer har ikke skatteMeldingFastsatt")
+        private Boolean harSkattemeldingFastsatt;
     }
 
     @Data
     @NoArgsConstructor
-    public static class OpplysningerFraSkatteetatensInnsendingsmiljoe {
+    public static class SummertSkattegrunnlag {
+
     }
 
     @Data
