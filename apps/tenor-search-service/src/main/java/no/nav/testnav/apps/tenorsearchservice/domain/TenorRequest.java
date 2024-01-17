@@ -86,6 +86,12 @@ public class TenorRequest {
         TilleggsskattFraManglendeInnlevering, SkjerpetTilleggsskattFraManglendeInnlevering
     }
 
+    public enum Arbeidsforholdstype {
+        OrdinaertArbeidsforhold, MaritimtArbeidsforhold, FrilanserOppdragstakerHonorarPersonerMm
+    }
+
+    public enum Oppgjoerstype {Fastland, Svalbard, KildeskattPaaLoenn}
+
     @Schema(description = "Personidentifikator, fødselsnummer eller d-nummer")
     private String identifikator;
     private IdentifikatorType identifikatorType;
@@ -139,8 +145,10 @@ public class TenorRequest {
     @NoArgsConstructor
     public static class DatoIntervall {
 
-        private LocalDate fra;
-        private LocalDate til;
+        @Schema(type = "string", format = "YYYY-MM-DD", example = "2018-07-01")
+        private LocalDate fraOgMed;
+        @Schema(type = "string", format = "YYYY-MM-DD", example = "2020-07-01")
+        private LocalDate tilOgMed;
     }
 
     @Data
@@ -263,6 +271,7 @@ public class TenorRequest {
     @NoArgsConstructor
     public static class Skatteplikt {
 
+        @Schema(description = "Inntektsår, 4 siffre, årene 2019, 2019, 2020, 2021, 2022, 2023 ... osv opptil i fjor")
         private Integer inntektsaar;
         private List<Skattepliktstype> Skattepliktstyper;
         private SaerskiltSkatteplikt saerskiltSkatteplikt;
@@ -295,11 +304,26 @@ public class TenorRequest {
     @Data
     @NoArgsConstructor
     public static class Arbeidsforhold {
+
+        private DatoIntervall startDatoPeriode;
+        private DatoIntervall sluttDatoPeriode;
+        private Boolean harPermisjoner;
+        private Boolean harPermitteringer;
+        private Boolean harArbeidsgiver;
+        private Boolean harTimerMedTimeloenn;
+        private Boolean harUtenlandsopphold;
+        private Boolean harHistorikk;
+        private Arbeidsforholdstype arbeidsforholdstype;
     }
 
     @Data
     @NoArgsConstructor
     public static class BeregnetSkatt {
+
+        @Schema(description = "Inntektsår, 4 siffre, årene 2018, 2019, 2020, 2021, 2022, 2023 ... osv opptil i fjor")
+        private Integer inntektsaar;
+        private Oppgjoerstype oppgjoerstype;
+        private Boolean pensjonsgivendeInntekt;
     }
 
     @Data
