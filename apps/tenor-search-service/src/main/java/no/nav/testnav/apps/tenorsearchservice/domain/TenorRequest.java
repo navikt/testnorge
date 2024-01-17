@@ -67,8 +67,24 @@ public class TenorRequest {
         ReiseKostMedOvernattingPaaHybelUtenKokEllerPensjonatEllerBrakke, Sykepenger, Timeloenn, Ufoeretrygd
     }
 
-    public enum Forskuddstrekk {OrdinaertForskuddstrekk, Barnepensjon, KildeskattPaaPensjon, Svalbard,
-        JanMayenOgBilandene, BetaltTrygdeavgiftTilJanMayen}
+    public enum Forskuddstrekk {
+        OrdinaertForskuddstrekk, Barnepensjon, KildeskattPaaPensjon, Svalbard,
+        JanMayenOgBilandene, BetaltTrygdeavgiftTilJanMayen
+    }
+
+    public enum Skattepliktstype {SkattepliktTilNorge, SkattepliktTilSvalbard}
+
+    public enum SaerskiltSkatteplikt {
+        KildeskattepliktPaaLoenn, KildeskattepliktPaaPensjon,
+        SkattepliktAvNaeringsdriftEiendomMv, SkattepliktEtterPetroleumsskatteloven,
+        SkattepliktPaaLoennFraDenNorskeStatOpptjentIUtlandet, SkattepliktSomSjoemann,
+        SkattepliktSomUtenrikstjenestemann, SkattepliktVedUtenriksoppholdINorskStatstjenesteEllerNato
+    }
+
+    public enum TilleggsskattType {
+        FradragForTvangsmulkt, SkjerpetTilleggsskattFraUriktigeOpplysninger, TilleggsskattFraUriktigeOpplysninger,
+        TilleggsskattFraManglendeInnlevering, SkjerpetTilleggsskattFraManglendeInnlevering
+    }
 
     @Schema(description = "Personidentifikator, fødselsnummer eller d-nummer")
     private String identifikator;
@@ -94,6 +110,14 @@ public class TenorRequest {
     private Tjenestepensjonsavtale tjenestepensjonsavtale;
     private Skattemelding skattemelding;
     private InntektAordningen inntektAordningen;
+    private Skatteplikt skatteplikt;
+    private Tilleggsskatt tilleggsskatt;
+    private Arbeidsforhold arbeidsforhold;
+    private BeregnetSkatt beregnetSkatt;
+    private SummertSkattegrunnlag summertSkattegrunnlag;
+    private OpplysningerFraSkatteetatensInnsendingsmiljoe opplysningerFraSkatteetatensInnsendingsmiljoe;
+    private SamletReskontroInnsyn samletReskontroInnsyn;
+    private SpesisfisertSummertSkattegrunnlag spesisfisertSummertSkattegrunnlag;
 
     public List<UtenlandskPersonIdentifikasjon> getUtenlandskPersonIdentifikasjon() {
 
@@ -184,7 +208,7 @@ public class TenorRequest {
 
         @Schema(description = "Pensjonsinnretningen organisasjonsnummer, 9 siffre")
         private String pensjonsinnretningOrgnr;
-        @Schema(description = "Periode, format: YYYY-MM")
+        @Schema(type = "string", format = "YYYY-MM", example = "2020-07")
         private YearMonth periode;
     }
 
@@ -193,7 +217,7 @@ public class TenorRequest {
     public static class Skattemelding {
 
         @Schema(description = "Inntektsår, 4 siffre, årene 2018, 2019, 2020, 2021, 2022 ... osv opptil i forfjor")
-        private Integer Inntektsaar;
+        private Integer inntektsaar;
         private Skattemeldingstype skattemeldingstype;
     }
 
@@ -229,7 +253,72 @@ public class TenorRequest {
     @NoArgsConstructor
     public static class MonthInterval {
 
+        @Schema(type = "string", format = "YYYY-MM", example = "2020-07")
         private YearMonth fraOgMed;
+        @Schema(type = "string", format = "YYYY-MM", example = "2020-07")
         private YearMonth tilOgMed;
+    }
+
+    @Data
+    @NoArgsConstructor
+    public static class Skatteplikt {
+
+        private Integer inntektsaar;
+        private List<Skattepliktstype> Skattepliktstyper;
+        private SaerskiltSkatteplikt saerskiltSkatteplikt;
+
+        public List<Skattepliktstype> getSkattepliktstyper() {
+
+            if (isNull(Skattepliktstyper)) {
+                Skattepliktstyper = new ArrayList<>();
+            }
+            return Skattepliktstyper;
+        }
+    }
+
+    @Data
+    @NoArgsConstructor
+    public static class Tilleggsskatt {
+
+        private Integer inntektsaar;
+        private List<TilleggsskattType> tilleggsskattTyper;
+
+        public List<TilleggsskattType> getTilleggsskattTyper() {
+
+            if (isNull(tilleggsskattTyper)) {
+                tilleggsskattTyper = new ArrayList<>();
+            }
+            return tilleggsskattTyper;
+        }
+    }
+
+    @Data
+    @NoArgsConstructor
+    public static class Arbeidsforhold {
+    }
+
+    @Data
+    @NoArgsConstructor
+    public static class BeregnetSkatt {
+    }
+
+    @Data
+    @NoArgsConstructor
+    public static class SummertSkattegrunnlag {
+    }
+
+    @Data
+    @NoArgsConstructor
+    public static class OpplysningerFraSkatteetatensInnsendingsmiljoe {
+    }
+
+    @Data
+    @NoArgsConstructor
+    public static class SamletReskontroInnsyn {
+    }
+
+    @Data
+    @NoArgsConstructor
+    public static class SpesisfisertSummertSkattegrunnlag {
     }
 }

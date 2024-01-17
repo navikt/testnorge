@@ -82,13 +82,53 @@ public class TenorSearchService {
             builder.append(convertEnum("hendelserMedSekvens.hendelse", searchData.getHendelser().getHendelse()))
                     .append(convertEnum("sisteHendelse", searchData.getHendelser().getSisteHendelse()));
         }
-        builder.append(getRoller(searchData.getRoller()));
-        builder.append(getTjenestepensjonsavtale(searchData.getTjenestepensjonsavtale()));
-        builder.append(getSkattemelding(searchData.getSkattemelding()));
-        builder.append(getInntektAordningen(searchData.getInntektAordningen()));
+        builder.append(getRoller(searchData.getRoller()))
+                .append(getTjenestepensjonsavtale(searchData.getTjenestepensjonsavtale()))
+                .append(getSkattemelding(searchData.getSkattemelding()))
+                .append(getInntektAordningen(searchData.getInntektAordningen()))
+                .append(getSkatteplikt(searchData.getSkatteplikt()))
+                .append(getTilleggsskatt(searchData.getTilleggsskatt());
 
         log.info("Søker med query: {}", builder.substring(5));
         return tenorClient.getTestdata(!builder.isEmpty() ? builder.substring(5) : "");
+    }
+
+    private String getTilleggsskatt(TenorRequest.Tilleggsskatt tilleggsskatt) {
+
+        return isNull(tilleggsskatt) ? "" :
+                "+and+tenorRelasjoner.tilleggsskatt:{%s}".formatted(
+                        new StringBuilder()
+                                .append(convertObject("inntektsaar", tilleggsskatt.getInntektsaar()))
+                                .append(getTilleggsskattTyper(tilleggsskatt.getTilleggsskattTyper()))
+                                .substring(5));
+    }
+
+    private String getTilleggsskattTyper(List<TenorRequest.TilleggsskattType> tilleggsskattTyper) {
+
+        return tilleggsskattTyper.isEmpty() ? "" : "+and+tilleggsskattstype:(%s)"
+                .formatted(tilleggsskattTyper.stream()
+                        .map(Enum::name)
+                        .collect(Collectors.joining("+and+")));
+    }
+
+    private String getSkatteplikt(TenorRequest.Skatteplikt skatteplikt) {
+
+        return isNull(skatteplikt) ? "" :
+                "+and+tenorRelasjoner.skatteplikt:{%s}".formatted(
+                        new StringBuilder()
+                                .append(convertObject("inntektsaar", skatteplikt.getInntektsaar()))
+                                .append(getSkattepliktstyper(skatteplikt.getSkattepliktstyper()))
+                                .append(convertEnum("saerskiltSkatteplikt", skatteplikt.getSaerskiltSkatteplikt()))
+                                .substring(5));
+    }
+
+    private String getSkattepliktstyper(List<TenorRequest.Skattepliktstype> skattepliktstyper) {
+
+        return skattepliktstyper.isEmpty() ? "" : "+and+"
+                .formatted(skattepliktstyper.stream()
+                        .map(Enum::name)
+                        .map(type -> "%s%s:*".formatted(type.substring(0, 1).toLowerCase(), type.substring(1)))
+                        .collect(Collectors.joining("+and+")));
     }
 
     private String getInntektAordningen(TenorRequest.InntektAordningen inntektAordningen) {
