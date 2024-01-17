@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import useBoolean from '@/utils/hooks/useBoolean'
 import * as _ from 'lodash'
-import { add, eachMonthOfInterval, format, isDate } from 'date-fns'
+import { add, eachMonthOfInterval, format, isAfter, isDate } from 'date-fns'
 import { DollySelect } from '@/components/ui/form/inputs/select/Select'
 import { ArbeidKodeverk } from '@/config/kodeverk'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
@@ -63,15 +63,19 @@ export const AmeldingForm = ({ warningMessage }: AmeldingFormProps): JSX.Element
 
 	const handlePeriodeChange = (dato: string, type: string) => {
 		const fixedDato = fixTimezone(dato)
-		formMethods.setValue(`aareg[0].genererPeriode.${type}`, fixedDato)
+		formMethods.setValue(`aareg[0].genererPeriode.${type}`, fixedDato, { shouldTouch: true })
 
 		if ((type === 'tom' && fom) || (type === 'fom' && tom)) {
 			const maanederPrev: Array<Amelding> = formMethods.watch(paths.amelding)
 			const maaneder: Array<string> = []
-			const maanederTmp = eachMonthOfInterval({
-				start: new Date(type === 'fom' ? dato : fomDate),
-				end: new Date(type === 'tom' ? dato : tomDate),
-			})
+			const startDate = dato && new Date(type === 'fom' ? dato : fomDate)
+			const endDate = dato && new Date(type === 'tom' ? dato : tomDate)
+			const maanederTmp = isAfter(endDate, startDate)
+				? eachMonthOfInterval({
+						start: startDate,
+						end: endDate,
+					})
+				: []
 			maanederTmp.forEach((maaned) => {
 				maaneder.push(format(maaned, 'yyyy-MM'))
 			})
@@ -102,7 +106,7 @@ export const AmeldingForm = ({ warningMessage }: AmeldingFormProps): JSX.Element
 				})
 			}
 		}
-		formMethods.trigger()
+		formMethods.trigger('aareg')
 	}
 
 	const handleArbeidsforholdstypeChange = (event: KodeverkValue) => {

@@ -190,7 +190,11 @@ export const Kontakt = ({ formMethods, path, eksisterendeNyPerson = null }: Kont
 						size="xlarge"
 						placeholder={getPlaceholder(formMethods.getValues(), `${personPath}.navn`)}
 						isLoading={loading}
-						onChange={(navn: string) => setNavn(navn, `${personPath}.navn`, formMethods.setValue)}
+						onChange={(navn: string) => {
+							setNavn(navn, `${personPath}.navn`, formMethods.setValue)
+							formMethods.setValue(`${personPath}.identifikasjonsnummer`, undefined)
+							formMethods.trigger(personPath)
+						}}
 						value={formMethods.watch(`${personPath}.navn.fornavn`)}
 						isDisabled={disablePersoninfo}
 					/>

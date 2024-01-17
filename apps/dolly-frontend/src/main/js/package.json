@@ -74,7 +74,7 @@
     "@hookform/error-message": "^2.0.1",
     "@navikt/ds-css": "^5.0.3",
     "@navikt/ds-icons": "^3.4.3",
-    "@navikt/ds-react": "^5.0.3",
+    "@navikt/ds-react": "^5.15.0",
     "@redux-devtools/extension": "^3.2.3",
     "@reduxjs/toolkit": "^1.8.4",
     "@rollup/plugin-terser": "^0.4.1",

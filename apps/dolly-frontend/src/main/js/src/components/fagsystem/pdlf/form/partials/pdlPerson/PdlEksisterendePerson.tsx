@@ -140,6 +140,10 @@ export const PdlEksisterendePerson = ({
 			{filteredOptions?.length > 0 ? (
 				<FormikSelect
 					name={eksisterendePersonPath}
+					onChange={(person) => {
+						formMethods.setValue(eksisterendePersonPath, person?.value || null)
+						formMethods.trigger('pdldata.person.kontaktinformasjonForDoedsbo')
+					}}
 					label={label}
 					options={filteredOptions}
 					size={'xlarge'}

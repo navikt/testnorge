@@ -47,7 +47,7 @@ const initialValuesDetaljertSykemelding = {
 		manglendeTilretteleggingPaaArbeidsplassen: false,
 		mottaker: {
 			navn: '',
-			orgNr: '',
+			orgNr: null,
 			adresse: {
 				by: '',
 				gate: '',

@@ -39,6 +39,7 @@ export const KrrstubForm = () => {
 		} else {
 			formMethods.setValue('krrstub.registrert', true)
 		}
+		formMethods.trigger('krrstub')
 	}
 
 	return (

@@ -49,10 +49,11 @@ export const TextInput = React.forwardRef(
 			getFieldState,
 		} = useFormContext()
 		const errorContext: ShowErrorContextType = useContext(ShowErrorContext)
-		const isTouched = _.has(touchedFields, name)
+		const isTouched = _.has(touchedFields, name) || _.has(touchedFields, fieldName)
 		const feil = getFieldState(fieldName)?.error || getFieldState(name)?.error
+		const visFeil = feil && (errorContext?.showError || isTouched)
 		const css = cn('skjemaelement__input', className, {
-			'skjemaelement__input--harFeil': feil && (errorContext?.showError || isTouched),
+			'skjemaelement__input--harFeil': visFeil,
 		})
 
 		return (

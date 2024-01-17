@@ -61,7 +61,7 @@ export const Select = ({
 	...rest
 }: SelectProps) => {
 	const formMethods = useFormContext()
-	const val = value || formMethods?.watch(name)
+	const val = formMethods?.watch(name)
 	let _value = isMulti
 		? options?.filter?.((o) => val?.some((el) => el === o?.value))
 		: options?.filter?.((o) => {

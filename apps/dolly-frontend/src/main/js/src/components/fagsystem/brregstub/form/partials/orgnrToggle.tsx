@@ -41,7 +41,7 @@ export const OrgnrToggle = ({
 		if (oldValues.hasOwnProperty('postAdresse')) {
 			delete oldValues['postAdresse']
 		}
-		oldValues['orgNr'] = ''
+		oldValues['orgNr'] = null
 		formMethods.setValue(path, oldValues)
 	}
 

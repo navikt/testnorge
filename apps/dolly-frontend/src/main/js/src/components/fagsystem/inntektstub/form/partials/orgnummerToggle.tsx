@@ -40,6 +40,7 @@ export const OrgnummerToggle = ({ formMethods, opplysningspliktigPath, path }: P
 		setInputType(value)
 		sessionStorage.setItem(ORGANISASJONSTYPE_TOGGLE, value)
 		formMethods.setValue(path, '')
+		formMethods.clearErrors(path)
 	}
 
 	const handleChange = (value: { juridiskEnhet: string; orgnr: string }) => {

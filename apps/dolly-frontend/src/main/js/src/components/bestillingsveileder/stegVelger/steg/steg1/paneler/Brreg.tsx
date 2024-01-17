@@ -37,7 +37,7 @@ BrregPanel.initialValues = ({ set, del, has }) => ({
 						foretaksNavn: {
 							navn1: '',
 						},
-						orgNr: '',
+						orgNr: null,
 						personroller: [],
 					},
 				],

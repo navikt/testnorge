@@ -12,7 +12,7 @@ const initialValues = {
 	foretaksNavn: {
 		navn1: '',
 	},
-	orgNr: '',
+	orgNr: null,
 	personroller: [],
 }
 
@@ -49,6 +49,7 @@ export const EnheterForm = ({ formMethods }) => {
 		}
 
 		formMethods.setValue(path, currentValues)
+		formMethods.trigger(path)
 	}
 
 	return (

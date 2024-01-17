@@ -13,7 +13,7 @@ export const SkjermingForm = ({ formMethods }) => {
 				? isAfter(
 						new Date(personFoerLeggTil?.skjermingsregister?.skjermetTil?.substring(0, 10)),
 						new Date(),
-				  )
+					)
 				: false
 		} else {
 			return personFoerLeggTil?.skjermingsregister?.hasOwnProperty('skjermetFra')
@@ -22,6 +22,7 @@ export const SkjermingForm = ({ formMethods }) => {
 
 	const settFormikDate = (value, path) => {
 		formMethods.setValue(`skjerming.${path}`, value)
+		formMethods.trigger(`skjerming.${path}`)
 	}
 
 	const harSkjerming = HarAktivSkjerming()

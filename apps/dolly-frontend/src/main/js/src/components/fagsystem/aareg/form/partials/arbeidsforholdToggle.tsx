@@ -67,13 +67,13 @@ export const ArbeidsforholdToggle = (): ReactElement => {
 	const handleToggleChange = (value: ArbeidsgiverTyper) => {
 		setTypeArbeidsgiver(value)
 		if (value === ArbeidsgiverTyper.privat) {
-			formMethods.setValue('aareg', [initialAaregPers])
+			formMethods.resetField('aareg', { defaultValue: [initialAaregPers] })
 		} else if (value === ArbeidsgiverTyper.felles || value === ArbeidsgiverTyper.fritekst) {
-			formMethods.setValue('aareg', [initialAaregOrg])
+			formMethods.resetField('aareg', { defaultValue: [initialAaregOrg] })
 		} else if (value === ArbeidsgiverTyper.egen) {
-			formMethods.setValue('aareg', [initialValues])
+			formMethods.resetField('aareg', { defaultValue: [initialValues] })
 		}
-		formMethods.trigger('aareg')
+		formMethods.clearErrors('aareg')
 	}
 
 	const warningMessage = (

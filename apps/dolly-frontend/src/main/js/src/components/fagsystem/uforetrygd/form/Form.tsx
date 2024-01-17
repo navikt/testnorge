@@ -47,9 +47,10 @@ export const UforetrygdForm = () => {
 						name={`${uforetrygdPath}.onsketVirkningsDato`}
 						label="Ønsket virkningsdato"
 						date={formMethods.getValues(`${uforetrygdPath}.onsketVirkningsDato`)}
-						handleDateChange={(dato: string) =>
+						handleDateChange={(dato: string) => {
 							formMethods.setValue(`${uforetrygdPath}.onsketVirkningsDato`, dato)
-						}
+							formMethods.trigger(`${uforetrygdPath}`)
+						}}
 					/>
 					<FormikTextInput
 						name={`${uforetrygdPath}.inntektForUforhet`}
