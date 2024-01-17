@@ -11,6 +11,7 @@ on:
       - libs/testing
       - apps/synt-sykemelding-api/**
       - .github/workflows/app.synt-sykemelding-api.yml
+      - .github/workflows/common.workflow.backend.yml
 
 jobs:
   workflow:

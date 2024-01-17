@@ -12,6 +12,7 @@ on:
       - libs/servlet-security
       - apps/batch-bestilling-service/**
       - .github/workflows/app.batch-bestilling-service.yml
+      - .github/workflows/common.workflow.backend.yml
 
 jobs:
   workflow:

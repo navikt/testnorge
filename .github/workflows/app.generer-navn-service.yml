@@ -11,6 +11,7 @@ on:
       - libs/testing
       - apps/generer-navn-service/**
       - .github/workflows/app.generer-navn-service.yml
+      - .github/workflows/common.workflow.backend.yml
 
 jobs:
   workflow:

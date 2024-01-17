@@ -10,6 +10,7 @@ on:
       - xsd/arbeidsforhold-xsd
       - apps/oppsummeringsdokument-service/**
       - .github/workflows/app.oppsummeringsdokument-service.yml
+      - .github/workflows/common.workflow.backend.yml
 
 jobs:
   workflow:

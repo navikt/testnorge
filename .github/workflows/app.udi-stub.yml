@@ -9,6 +9,7 @@ on:
       - libs/servlet-security
       - apps/udi-stub/**
       - .github/workflows/app.udi-stub.yml
+      - .github/workflows/common.workflow.backend.yml
 
 jobs:
   workflow:

@@ -15,6 +15,7 @@ on:
       - libs/servlet-security
       - apps/organisasjon-faste-data-service/**
       - .github/workflows/app.organisasjon-faste-data-service.yml
+      - .github/workflows/common.workflow.backend.yml
 
 jobs:
   workflow:

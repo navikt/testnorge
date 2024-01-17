@@ -11,6 +11,7 @@ on:
       - libs/testing
       - apps/helsepersonell-service/**
       - .github/workflows/app.helsepersonell-service.yml
+      - .github/workflows/common.workflow.backend.yml
 
 jobs:
   workflow:

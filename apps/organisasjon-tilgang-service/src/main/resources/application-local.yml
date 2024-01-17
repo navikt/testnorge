@@ -1,6 +1,6 @@
+TOKEN_X_ISSUER: dummy
 
 ALTINN_URL: https://tt02.altinn.no
-TOKENDINGS_URL: https://tokenx.dev-gcp.nav.cloud.nais.io
 
 altinn.api.key: dummy
 
@@ -14,8 +14,3 @@ spring:
     url: jdbc:h2:mem:testdb
     username: sa
     password:
-  security:
-    oauth2:
-      resourceserver:
-        tokenx:
-          accepted-audience: dev-gcp:dolly:testnav-organisasjon-tilgang-service

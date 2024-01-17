@@ -1,10 +1,7 @@
 APP_NAME: dolly
 APP_VERSION: ${application.version}
 environment: localhost
-CLIENT_ID: dummy
-CLIENT_SECRET: dummy
-
-TOKEN_X_CLIENT_ID: test
+TOKEN_X_ISSUER: dummy
 
 jira:
   host: http://localhost:${wiremock.server.port:0}/jira

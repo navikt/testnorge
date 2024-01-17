@@ -12,6 +12,7 @@ on:
       - libs/servlet-security
       - apps/budpro-service/**
       - .github/workflows/app.budpro-service.yml
+      - .github/workflows/common.workflow.backend.yml
 
 jobs:
   workflow:

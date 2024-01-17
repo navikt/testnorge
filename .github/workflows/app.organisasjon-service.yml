@@ -12,6 +12,7 @@ on:
       - libs/testing
       - apps/organisasjon-service/**
       - .github/workflows/app.organisasjon-service.yml
+      - .github/workflows/common.workflow.backend.yml
 
 jobs:
   workflow:

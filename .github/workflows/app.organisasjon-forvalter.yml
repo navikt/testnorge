@@ -15,6 +15,7 @@ on:
       - libs/testing
       - apps/organisasjon-forvalter/**
       - .github/workflows/app.organisasjon-forvalter.yml
+      - .github/workflows/common.workflow.backend.yml
 
 jobs:
   workflow:
