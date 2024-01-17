@@ -110,4 +110,4 @@ spec:
         name: testnav-dolly-backend-dev
         databases:
           - name: testnav-dolly-backend-dev
-        autoBackupTime: "01:00"
+        autoBackupHour: 3
