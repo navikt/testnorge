@@ -118,4 +118,4 @@ spec:
         databases:
           - name: testnav-dolly-backend
         tier: db-custom-2-3840
-        autoBackupTime: "01:00"
+        autoBackupHour: 2

@@ -20,8 +20,6 @@ spec:
       enabled: true
       tenant: nav.no
   port: 8080
-  tracing:
-    enabled: true
   envFrom:
     - secret: user-encryption-prod
   accessPolicy:

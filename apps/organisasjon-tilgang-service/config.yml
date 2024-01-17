@@ -77,4 +77,4 @@ spec:
         name: testnav-organisasjon-tilganger
         databases:
           - name: testnav-organisasjon-tilganger
-        autoBackupTime: "02:30"
+        autoBackupHour: 2
