@@ -29,7 +29,7 @@ public class TenorConverterUtility {
 
     public static String convertIntervall(String intervallNavn, TenorRequest.Intervall intervall) {
 
-        return isNull(intervall) ? "" : " and %s:[%sto%s]"
+        return isNull(intervall) ? "" : " and %s:[%s to %s]"
                 .formatted(intervallNavn,
                         isNull(intervall.getFraOgMed()) ? "*" : intervall.getFraOgMed(),
                         isNull(intervall.getTilOgMed()) ? "*" : intervall.getTilOgMed());
@@ -37,7 +37,7 @@ public class TenorConverterUtility {
 
     public static String convertPeriode(TenorRequest.MonthInterval intervall) {
 
-        return isNull(intervall) ? "" : " and periode:[%sto%s]"
+        return isNull(intervall) ? "" : " and periode:[%s to %s]"
                 .formatted(
                         isNull(intervall.getFraOgMed()) ? "*" : intervall.getFraOgMed(),
                         isNull(intervall.getTilOgMed()) ? "*" : intervall.getTilOgMed());
@@ -51,7 +51,7 @@ public class TenorConverterUtility {
     public static String convertDatoer(String datoNavn, TenorRequest.DatoIntervall datoIntervall) {
 
         return isNull(datoIntervall) ? "" :
-                " and %s:[%sto%s]".formatted(datoNavn, datoIntervall.getFraOgMed(), datoIntervall.getTilOgMed());
+                " and %s:[%s to %s]".formatted(datoNavn, datoIntervall.getFraOgMed(), datoIntervall.getTilOgMed());
     }
 
     public static String convertBooleanWildcard(String booleanNavn, Boolean booleanVerdi) {

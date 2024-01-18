@@ -1,5 +1,6 @@
 package no.nav.testnav.apps.tenorsearchservice.domain;
 
+@SuppressWarnings("java:S115")
 public enum TekniskNavn {
     AaretsFremfoerbareNegativPersoninntekt,
     AarsavgiftForKontoIVerdipapirregister,
