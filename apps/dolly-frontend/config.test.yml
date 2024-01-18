@@ -17,7 +17,7 @@ spec:
       autoLogin: true
       autoLoginIgnorePaths:
         - /login
-        - /assets
+        - /assets/*
     application:
       allowAllUsers: true
       enabled: true
