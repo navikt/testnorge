@@ -61,7 +61,7 @@ public class TenorEksterneRelasjonerUtility {
         return isNull(summertSkattegrunnlag) ? "" :
                 " and tenorRelasjoner.summertSkattegrunnlag:{%s}".formatted(new StringBuilder()
                         .append(convertObject(INNTEKTSAAR, summertSkattegrunnlag.getInntektsaar()))
-                        .append(convertEnumWildcard(summertSkattegrunnlag.getStadietype()))
+                        .append(convertEnum("stadie", summertSkattegrunnlag.getStadietype()))
                         .append(convertEnum("typeOppgjoer", summertSkattegrunnlag.getOppgjoerstype()))
                         .append(convertEnumWildcard(summertSkattegrunnlag.getTekniskNavn()))
                         .append(convertIntervall("alminneligInntektFoerSaerfradragBeloep",
@@ -72,7 +72,7 @@ public class TenorEksterneRelasjonerUtility {
     private String getSamletReskontroInnsyn(TenorRequest.SamletReskontroInnsyn samletReskontroInnsyn) {
 
         return isNull(samletReskontroInnsyn) ? "" :
-                " and tenorRelasjoner.samletReskontroinnsyn{%s}".formatted(new StringBuilder()
+                " and tenorRelasjoner.samletReskontroinnsyn:{%s}".formatted(new StringBuilder()
                         .append(convertBooleanWildcard("harKrav", samletReskontroInnsyn.getHarKrav()))
                         .append(convertBooleanWildcard("harInnbetaling", samletReskontroInnsyn.getHarInnbetaling()))
                         .substring(5));
