@@ -13,6 +13,7 @@ import static java.util.Objects.isNull;
 
 @Data
 @NoArgsConstructor
+@SuppressWarnings("java:S115")
 public class TenorRequest {
 
     public enum IdentifikatorType {FNR, DNR, FNR_TIDLIGERE_DNR}
@@ -91,6 +92,41 @@ public class TenorRequest {
     }
 
     public enum Oppgjoerstype {Fastland, Svalbard, KildeskattPaaLoenn}
+    public enum Stadietype {Utkast, Fastsatt, Oppjoer}
+
+    public enum TekniskNavn {
+        AlderspensjonFraFolketrygden, alderspensjonFraIPAOgIPS, AlminneligInntektFoerSaerfradrag,
+        AndelAvFellesgjeldISDF, AndelAvUnderskuddFraTidligereAarVedDriftAvVaaningshusSomAnvendesIAaret,
+        AndelIFellesTapVedSalgAvAndelISDF, AndelIFellesTilleggIAlminneligInntektFraSDF,
+        AndelIFellesTilleggIAlminneligInntektFraSDFInnenAnnenNaering,
+        AndelIFellesTilleggIAlminneligInntektFraSDFInnenBarnepassIBarnepasserensHjem,
+        AndreFradragsberettigedeKostnader, AnnenArbeidsinntekt, AnnenGjeld, AnnenPensjonFoerAlderspensjon,
+        AnnenSkattepliktigKapitalinntektFraAnnetFinansprodukt, AnnenSkattepliktigKapitalinntektFraVirtuellValuta,
+        AnnetInntektsfradrag, Arbeidsavklaringspenger, ArbeidsinntektFraKompensasjonsytelseUtbetaltAvNav,
+        AvkortetFordelVedElektroniskKommunikasjon, BarnepensjonFraAndreEnnFolketrygden, BarnepensjonFraFolketrygden,
+        BarnepensjonFraIPAOgIPS, BetalteForsinkelsesrenter, BetaltPremieTilSykeOgUlykkesforsikringForNaeringsdrivende,
+        BetaltUnderholdsbidrag, BruttoFormue, DagpengerForFisker, DagpengerForNaeringsdrivende,
+        DagpengerForNaeringsdrivendeOgFiske, DagpengerVedSykehusoppholdMvFraBarneforsikring, EktefelletilleggTilPensjon,
+        EktefelletilleggTilUfoeretrygd, EngangsutbetalingFraIPSIPA, EtterlattepensjonFraFolketrygden, Foederaad,
+        FormuesverdiAvPrivatUtestaaendeFordring, FormuesverdiAvUtestaaendeFordring,
+        FormuesverdiForAndelIRentedelIVerdipapirfond, FormuesverdiForAnnenFastEiendom,
+        FormuesverdiForAnnenFastEiendomInnenforInntektsgivendeAktivitet,
+        FormuesverdiForAnnenFastEiendomUtenforInntektsgivendeAktivitet, FormuesverdiForAnnetFinansprodukt,
+        FormuesverdiForBorett, FormuesverdiForBuskap, FormuesverdiForEgenFritaksbehandletBolig,
+        FormuesverdiForFormuesobjekterINaeringIkkeOmfattetAvVerdsettingsrabatt,
+        FormuesverdiForFritidsbaatMedSalgsverdiOverSalgsverdigrense, FormuesverdiForGaardsbruk,
+        FormuesverdiForInnboLoesoereOgFritidsbaatUnderSalgsverdigrense, FormuesverdiForKjoeretoey,
+        FormuesverdiForKontanterIAksjesparekonto, FormuesverdiForKontanterMvIFondskonto, FormuesverdiForNaeringseiendom,
+        FormuesverdiForObligasjon, FormuesverdiForObligasjonerOpsjonerMvIkkeRegistrertIVerdipapirsentralen,
+        FormuesverdiForObligasjonerOpsjonerMvRegistrertIVerdipapirsentralen, FormuesverdiForPrimaerbolig,
+        FormuesverdiForRegnskapsbehandletBolig, FormuesverdiForSekundaerbolig, FormuesverdiForSkogeiendom,
+        FormuesverdiForTomt, FormuesverdiForUbetingetOpsjonIArbeidsforhold, FormuesverdiForUtestaaendeFordringerINaering,
+        FormuesverdiForUtleidFlerboligbygning, FormuesverdiForVarelager, FormuesverdiForVirtuellValuta,
+        Fortsettelsesforsikring, ForvaltningskostnaderFinans,
+
+
+    }
+
 
     @Schema(description = "Personidentifikator, fødselsnummer eller d-nummer")
     private String identifikator;
@@ -121,8 +157,8 @@ public class TenorRequest {
     private Arbeidsforhold arbeidsforhold;
     private BeregnetSkatt beregnetSkatt;
     private OpplysningerFraSkatteetatensInnsendingsmiljoe opplysningerFraSkatteetatensInnsendingsmiljoe;
-    private SummertSkattegrunnlag summertSkattegrunnlag;
     private SamletReskontroInnsyn samletReskontroInnsyn;
+    private SummertSkattegrunnlag summertSkattegrunnlag;
     private SpesisfisertSummertSkattegrunnlag spesisfisertSummertSkattegrunnlag;
 
     public List<UtenlandskPersonIdentifikasjon> getUtenlandskPersonIdentifikasjon() {
@@ -340,13 +376,21 @@ public class TenorRequest {
 
     @Data
     @NoArgsConstructor
-    public static class SummertSkattegrunnlag {
+    public static class SamletReskontroInnsyn {
 
+        private Boolean harKrav;
+        private Boolean harInnbetaling;
     }
 
     @Data
     @NoArgsConstructor
-    public static class SamletReskontroInnsyn {
+    public static class SummertSkattegrunnlag {
+
+        @Schema(description = "Inntektsår, 4 siffre, årene 2019, 2020, 2021, 2022, 2023 ... osv opptil i fjor")
+        private Integer inntektsaar;
+        private Stadietype stadietype;
+        private Oppgjoerstype oppgjoerstype;
+        private TekniskNavn tekniskNavn;
     }
 
     @Data

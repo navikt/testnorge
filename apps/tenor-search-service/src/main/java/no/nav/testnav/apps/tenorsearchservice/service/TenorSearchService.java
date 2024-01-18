@@ -153,7 +153,6 @@ public class TenorSearchService {
         return tilleggsskattTyper.isEmpty() ? "" : " and " +
                 tilleggsskattTyper.stream()
                         .map(Enum::name)
-                        .map(type -> "%s%s:*".formatted(type.substring(0, 1).toLowerCase(), type.substring(1)))
                         .collect(Collectors.joining(" and "));
     }
 
@@ -173,7 +172,6 @@ public class TenorSearchService {
         return skattepliktstyper.isEmpty() ? "" : " and " +
                 skattepliktstyper.stream()
                         .map(Enum::name)
-                        .map(type -> "%s%s:*".formatted(type.substring(0, 1).toLowerCase(), type.substring(1)))
                         .collect(Collectors.joining(" and "));
     }
 
@@ -284,9 +282,7 @@ public class TenorSearchService {
 
     private String convertEnum(String enumNavn, Enum<?> enumVerdi) {
 
-        return isNull(enumVerdi) ? "" : " and %s:%s%s".formatted(enumNavn,
-                enumVerdi.name().substring(0, 1).toUpperCase(),
-                enumVerdi.name().substring(1));
+        return isNull(enumVerdi) ? "" : " and %s:%s".formatted(enumNavn, enumVerdi);
     }
 
     private String convertDatoer(String datoNavn, TenorRequest.DatoIntervall datoIntervall) {
