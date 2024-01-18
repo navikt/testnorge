@@ -79,7 +79,7 @@ public class TenorRequest {
 
     public enum Oppgjoerstype {Fastland, Svalbard, KildeskattPaaLoenn}
 
-    public enum Stadietype {Utkast, Fastsatt, Oppjoer}
+    public enum Stadietype {Utkast, Fastsatt, Oppgjoer}
 
     @Schema(description = "Personidentifikator, fødselsnummer eller d-nummer")
     private String identifikator;

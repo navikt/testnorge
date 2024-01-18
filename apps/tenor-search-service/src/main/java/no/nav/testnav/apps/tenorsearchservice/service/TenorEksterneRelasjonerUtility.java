@@ -63,7 +63,7 @@ public class TenorEksterneRelasjonerUtility {
                         .append(convertObject(INNTEKTSAAR, summertSkattegrunnlag.getInntektsaar()))
                         .append(convertEnum("stadie", summertSkattegrunnlag.getStadietype()))
                         .append(convertEnum("typeOppgjoer", summertSkattegrunnlag.getOppgjoerstype()))
-                        .append(convertEnumWildcard(summertSkattegrunnlag.getTekniskNavn()))
+                        .append(convertEnum("tekniskNavn", summertSkattegrunnlag.getTekniskNavn()))
                         .append(convertIntervall("alminneligInntektFoerSaerfradragBeloep",
                                 summertSkattegrunnlag.getAlminneligInntektFoerSaerfradragBeloep()))
                         .substring(5));
