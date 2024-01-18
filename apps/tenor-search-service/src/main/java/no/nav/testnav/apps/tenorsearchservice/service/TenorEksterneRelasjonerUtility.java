@@ -18,6 +18,10 @@ import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtili
 
 @UtilityClass
 public class TenorEksterneRelasjonerUtility {
+    
+    private static final String INNTEKTSAAR = "inntektsaar";
+    private static final String AND = " and ";
+
 
     public static String getEksterneRelasjoner(TenorRequest searchData) {
 
@@ -42,7 +46,7 @@ public class TenorEksterneRelasjonerUtility {
 
         return isNull(spesisfisertSummertSkattegrunnlag) ? "" :
                 " and tenorRelasjoner.spesifisertSummertSkattegrunnlag:{%s}".formatted(new StringBuilder()
-                        .append(convertObject("inntektsaar", spesisfisertSummertSkattegrunnlag.getInntektsaar()))
+                        .append(convertObject(INNTEKTSAAR, spesisfisertSummertSkattegrunnlag.getInntektsaar()))
                         .append(convertEnumWildcard(spesisfisertSummertSkattegrunnlag.getStadietype()))
                         .append(convertEnumWildcard(spesisfisertSummertSkattegrunnlag.getOppgjoerstype()))
                         .append(convertEnum("tekniskNavn", spesisfisertSummertSkattegrunnlag.getTekniskNavn()))
@@ -56,7 +60,7 @@ public class TenorEksterneRelasjonerUtility {
 
         return isNull(summertSkattegrunnlag) ? "" :
                 " and tenorRelasjoner.summertSkattegrunnlag:{%s}".formatted(new StringBuilder()
-                        .append(convertObject("inntektsaar", summertSkattegrunnlag.getInntektsaar()))
+                        .append(convertObject(INNTEKTSAAR, summertSkattegrunnlag.getInntektsaar()))
                         .append(convertEnumWildcard(summertSkattegrunnlag.getStadietype()))
                         .append(convertEnum("typeOppgjoer", summertSkattegrunnlag.getOppgjoerstype()))
                         .append(convertEnumWildcard(summertSkattegrunnlag.getTekniskNavn()))
@@ -78,7 +82,7 @@ public class TenorEksterneRelasjonerUtility {
 
         return isNull(opplysningerFraSkatteetatensInnsendingsmiljoe) ? "" :
                 " and tenorRelasjoner.testinnsendingSkattPerson:{%s}".formatted(new StringBuilder()
-                        .append(convertObject("inntektsaar", opplysningerFraSkatteetatensInnsendingsmiljoe.getInntektsaar()))
+                        .append(convertObject(INNTEKTSAAR, opplysningerFraSkatteetatensInnsendingsmiljoe.getInntektsaar()))
                         .append(convertBooleanSpecial("harSkattemeldingUtkast", opplysningerFraSkatteetatensInnsendingsmiljoe.getHarSkattemeldingUtkast()))
                         .append(convertBooleanSpecial("harSkattemeldingFastsatt", opplysningerFraSkatteetatensInnsendingsmiljoe.getHarSkattemeldingFastsatt()))
                         .substring(5));
@@ -88,7 +92,7 @@ public class TenorEksterneRelasjonerUtility {
 
         return isNull(beregnetSkatt) ? "" :
                 " and tenorRelasjoner.beregnetSkatt:{%s}".formatted(new StringBuilder()
-                        .append(convertObject("inntektsaar", beregnetSkatt.getInntektsaar()))
+                        .append(convertObject(INNTEKTSAAR, beregnetSkatt.getInntektsaar()))
                         .append(convertEnum("typeOppgjoer", beregnetSkatt.getOppgjoerstype()))
                         .append(convertObject("pensjonsgivendeInntekt", beregnetSkatt.getPensjonsgivendeInntekt()))
                         .substring(5));
@@ -115,7 +119,7 @@ public class TenorEksterneRelasjonerUtility {
         return isNull(tilleggsskatt) ? "" :
                 " and tenorRelasjoner.tilleggsskatt:{%s}".formatted(
                         new StringBuilder()
-                                .append(convertObject("inntektsaar", tilleggsskatt.getInntektsaar()))
+                                .append(convertObject(INNTEKTSAAR, tilleggsskatt.getInntektsaar()))
                                 .append(getTilleggsskattTyper(tilleggsskatt.getTilleggsskattTyper()))
                                 .substring(5));
     }
@@ -138,7 +142,7 @@ public class TenorEksterneRelasjonerUtility {
         return forskuddstrekk1.isEmpty() ? "" : " and forskuddstrekk:(%s)"
                 .formatted(forskuddstrekk1.stream()
                         .map(Enum::name)
-                        .collect(Collectors.joining(" and ")));
+                        .collect(Collectors.joining(AND)));
     }
 
     private String getInntektstyper(List<TenorRequest.Inntektstype> inntektstyper) {
@@ -146,14 +150,14 @@ public class TenorEksterneRelasjonerUtility {
         return inntektstyper.isEmpty() ? "" : " and inntektstype:(%s)"
                 .formatted(inntektstyper.stream()
                         .map(Enum::name)
-                        .collect(Collectors.joining(" and ")));
+                        .collect(Collectors.joining(AND)));
     }
 
     private String getSkattemelding(TenorRequest.Skattemelding skattemelding) {
 
         return isNull(skattemelding) ? "" :
                 " and tenorRelasjoner.skattemelding:{%s}".formatted(new StringBuilder()
-                        .append(convertObject("inntektsaar", skattemelding.getInntektsaar()))
+                        .append(convertObject(INNTEKTSAAR, skattemelding.getInntektsaar()))
                         .append(convertEnum("skattemeldingstype", skattemelding.getSkattemeldingstype()))
                         .substring(5));
     }
@@ -177,7 +181,7 @@ public class TenorEksterneRelasjonerUtility {
         return isNull(skatteplikt) ? "" :
                 " and tenorRelasjoner.skatteplikt:{%s}".formatted(
                         new StringBuilder()
-                                .append(convertObject("inntektsaar", skatteplikt.getInntektsaar()))
+                                .append(convertObject(INNTEKTSAAR, skatteplikt.getInntektsaar()))
                                 .append(getSkattepliktstyper(skatteplikt.getSkattepliktstyper()))
                                 .append(convertEnumWildcard(skatteplikt.getSaerskiltSkatteplikt()))
                                 .substring(5));
@@ -185,17 +189,18 @@ public class TenorEksterneRelasjonerUtility {
 
     private String getTilleggsskattTyper(List<TenorRequest.TilleggsskattType> tilleggsskattTyper) {
 
-        return tilleggsskattTyper.isEmpty() ? "" : " and " +
+        return tilleggsskattTyper.isEmpty() ? "" : AND +
                 tilleggsskattTyper.stream()
                         .map(Enum::name)
-                        .collect(Collectors.joining(" and "));
+                        .collect(Collectors.joining(AND));
     }
 
     private String getSkattepliktstyper(List<TenorRequest.Skattepliktstype> skattepliktstyper) {
 
-        return skattepliktstyper.isEmpty() ? "" : " and " +
+        return skattepliktstyper.isEmpty() ? "" : AND +
                 skattepliktstyper.stream()
                         .map(Enum::name)
-                        .collect(Collectors.joining(" and "));
+                        .map("%s:*"::formatted)
+                        .collect(Collectors.joining(AND));
     }
 }
