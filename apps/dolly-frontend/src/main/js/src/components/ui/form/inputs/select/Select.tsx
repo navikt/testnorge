@@ -62,10 +62,16 @@ export const Select = ({
 }: SelectProps) => {
 	const formMethods = useFormContext()
 	const val = formMethods?.watch(name)
-	let _value = isMulti
+	let formValue = isMulti
 		? options?.filter?.((o) => val?.some((el) => el === o?.value))
 		: options?.filter?.((o) => {
 				return o?.value === val
+			})
+
+	let propValue = isMulti
+		? options?.filter?.((o) => value?.some((el) => el === o?.value))
+		: options?.filter?.((o) => {
+				return o?.value === value
 			})
 
 	if (!onChange) {
@@ -77,7 +83,7 @@ export const Select = ({
 
 	return (
 		<ReactSelect
-			value={_value}
+			value={!_.isEmpty(formValue) ? formValue : propValue}
 			options={options}
 			name={name}
 			inputId={id || name}

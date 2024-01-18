@@ -19,7 +19,6 @@ export const OrganisasjonMedMiljoeSelect = ({
 	path,
 	environment,
 	miljoeOptions,
-	error,
 	success,
 	loading = false,
 	onTextBlur,
@@ -42,18 +41,12 @@ export const OrganisasjonMedMiljoeSelect = ({
 				onBlur={onTextBlur}
 			/>
 			<DollySelect
-				name={path}
 				size={'small'}
 				isClearable={false}
 				label={'Organisasjon Miljø'}
 				options={options}
 				value={environment}
 				onChange={onMiljoeChange}
-				feil={
-					!environment && {
-						feilmelding: 'Må velge miljø',
-					}
-				}
 			/>
 			{loading && (
 				<div className={'flexbox--align-center'} style={{ marginTop: '20px' }}>

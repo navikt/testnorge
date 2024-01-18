@@ -4,9 +4,13 @@ import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { EnkeltinntektForm } from './enkeltinntektForm'
 import { getYearRangeOptions } from '@/utils/DataFormatter'
-import React from 'react'
+import React, { useContext } from 'react'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { ErrorMessage } from '@hookform/error-message'
+import {
+	ShowErrorContext,
+	ShowErrorContextType,
+} from '@/components/bestillingsveileder/ShowErrorContext'
 
 const initialValues = {
 	inntektsaar: new Date().getFullYear(),
@@ -16,6 +20,7 @@ const initialValues = {
 }
 
 export const InntektsaarForm = ({ formMethods }) => {
+	const errorContext: ShowErrorContextType = useContext(ShowErrorContext)
 	const initialGrunnlag = {
 		tekniskNavn: '',
 		verdi: '',
@@ -76,9 +81,11 @@ export const InntektsaarForm = ({ formMethods }) => {
 								<ErrorMessage
 									errors={formMethods.formState.errors}
 									name={`${path}.grunnlag`}
-									render={({ message }) => (
-										<span style={{ color: '#ba3a26', fontStyle: 'italic' }}>{message}</span>
-									)}
+									render={({ message }) =>
+										errorContext.showError && (
+											<span style={{ color: '#ba3a26', fontStyle: 'italic' }}>{message}</span>
+										)
+									}
 								/>
 							</div>
 						</React.Fragment>

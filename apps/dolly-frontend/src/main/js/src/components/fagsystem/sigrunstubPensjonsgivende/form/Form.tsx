@@ -14,15 +14,22 @@ import {
 	usePensjonsgivendeInntektSkatteordning,
 } from '@/utils/hooks/useSigrunstub'
 import { getInitialInntekt } from '@/components/fagsystem/sigrunstubPensjonsgivende/utils'
-import * as _ from 'lodash'
 import { validation } from '@/components/fagsystem/sigrunstubPensjonsgivende/form/validation'
 import { useFormContext } from 'react-hook-form'
 
 export const getInitialSigrunstubPensjonsgivende = (kodeverk = null, skatteordning = null) => {
 	return {
 		inntektsaar: new Date().getFullYear(),
-		pensjonsgivendeInntekt:
-			kodeverk && skatteordning ? [getInitialInntekt(kodeverk, skatteordning)] : [],
+		pensjonsgivendeInntekt: [
+			{
+				skatteordning: 'FASTLAND',
+				datoForFastsetting: new Date(),
+				pensjonsgivendeInntektAvLoennsinntekt: null,
+				pensjonsgivendeInntektAvLoennsinntektBarePensjonsdel: null,
+				pensjonsgivendeInntektAvNaeringsinntekt: null,
+				pensjonsgivendeInntektAvNaeringsinntektFraFiskeFangstEllerFamiliebarnehage: null,
+			},
+		],
 		testdataEier: '',
 	}
 }
@@ -38,12 +45,13 @@ export const SigrunstubPensjonsgivendeForm = () => {
 		const pensjonsgivendeInntektPath = 'sigrunstubPensjonsgivende[0].pensjonsgivendeInntekt'
 		const forstePensjonsgivendeInntekt = formMethods.watch(pensjonsgivendeInntektPath)
 		if (
-			_.has(formMethods.getValues(), 'sigrunstubPensjonsgivende') &&
+			formMethods.watch('sigrunstubPensjonsgivende') &&
 			kodeverk &&
 			skatteordning &&
 			(!forstePensjonsgivendeInntekt || forstePensjonsgivendeInntekt.length < 1)
 		) {
 			formMethods.setValue(pensjonsgivendeInntektPath, [getInitialInntekt(kodeverk, skatteordning)])
+			formMethods.trigger(pensjonsgivendeInntektPath)
 		}
 	}, [kodeverk, skatteordning])
 

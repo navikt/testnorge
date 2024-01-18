@@ -32,7 +32,8 @@ export const OrgnummerToggle = ({ formMethods, opplysningspliktigPath, path }: P
 	const [success, setSuccess] = useBoolean(false)
 	const [loading, setLoading] = useBoolean(false)
 	const [environment, setEnvironment] = useState(null)
-	const [orgnummer, setOrgnummer] = useState(null)
+	const [orgnummer, setOrgnummer] = useState(formMethods.watch(path) || null)
+	console.log('path: ', path) //TODO - SLETT MEG
 
 	const { organisasjon } = useFasteDataOrganisasjon(orgnummer)
 
@@ -48,12 +49,12 @@ export const OrgnummerToggle = ({ formMethods, opplysningspliktigPath, path }: P
 		formMethods.trigger(opplysningspliktigPath)
 		formMethods.setValue(`${path}`, value.orgnr)
 	}
+	//TODO: Fikse henting fra testnav-org-service
 
 	const handleManualOrgChange = (org: string, miljo: string) => {
 		if (!org || !miljo) {
 			return
 		}
-		formMethods.setValue(path, '')
 		setError(null)
 		setLoading(true)
 		setSuccess(false)
@@ -113,11 +114,14 @@ export const OrgnummerToggle = ({ formMethods, opplysningspliktigPath, path }: P
 					loading={loading}
 					success={success}
 					onTextBlur={(event) => {
+						console.log('event: ', event) //TODO - SLETT MEG
 						const org = event.target.value
 						setOrgnummer(org)
 						handleManualOrgChange(org, environment)
 					}}
 					onMiljoeChange={(event) => {
+						console.log('orgnummer: ', orgnummer) //TODO - SLETT MEG
+						console.log('event2: ', event) //TODO - SLETT MEG
 						setEnvironment(event.value)
 						handleManualOrgChange(orgnummer, event.value)
 					}}
