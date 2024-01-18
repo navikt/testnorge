@@ -36,20 +36,6 @@ public class TenorRequest {
 
     public enum Relasjon {Barn, Far, Medmor, Mor, Partner}
 
-    public enum Hendelse {
-        EndringIAdressebeskyttelse, EndringIBostedsadresse, EndringIBostedsadresseUtenFlytting,
-        EndringIBrukAvSamiskSpraak, EndringIDeltBosted, EndringIDoedsfall, EndringIFalskIdentitet, EndringIFamilierelasjon,
-        EndringIForeldreansvar, EndringIFratattRettsligHandleevne, EndringIFoedsel, EndringIFoedselINorge,
-        EndringIIdentifikasjonsnummer, EndringIIdentitetsgrunnlag, EndringIInnflytting, EndringIKjoenn,
-        EndringIKontaktinformasjon, EndringIKontaktopplysningerForDoedsbo, EndringILegitimasjonsdokument,
-        EndringINavn, EndringIOpphold, EndringIOppholdPaaSvalbard, EndringIOppholdsadresse, EndringIPerson,
-        EndringIRettsligHandleevne, EndringISametingetsValgmanntall, EndringISivilstand, EndringIStatsborgerskap,
-        EndringIStatus, EndringIUtenlandskPersonidentifikasjon, EndringIUtflytting,
-        EndringIUtlendingsmyndighetenesIdentifikasjonsnummer, EndringIVergemaal, PersonErBosatt, PersonErDod,
-        PersonErEndretVedSplitting, PersonErGjenopprettetVedSplitting, PersonErOppdatert, PersonErOpphoert,
-        PersonErOpphoertSomDublett, PersonErOpprettet, PersonErReaktivert, PersonErUtflyttet,
-        PersonErViderefoertSomGjeldendeVedSammenslaaing
-    }
 
     public enum BostedsadresseType {Vegadresse, Matrikkeladresse, Ukjent}
 
@@ -92,41 +78,8 @@ public class TenorRequest {
     }
 
     public enum Oppgjoerstype {Fastland, Svalbard, KildeskattPaaLoenn}
+
     public enum Stadietype {Utkast, Fastsatt, Oppjoer}
-
-    public enum TekniskNavn {
-        AlderspensjonFraFolketrygden, alderspensjonFraIPAOgIPS, AlminneligInntektFoerSaerfradrag,
-        AndelAvFellesgjeldISDF, AndelAvUnderskuddFraTidligereAarVedDriftAvVaaningshusSomAnvendesIAaret,
-        AndelIFellesTapVedSalgAvAndelISDF, AndelIFellesTilleggIAlminneligInntektFraSDF,
-        AndelIFellesTilleggIAlminneligInntektFraSDFInnenAnnenNaering,
-        AndelIFellesTilleggIAlminneligInntektFraSDFInnenBarnepassIBarnepasserensHjem,
-        AndreFradragsberettigedeKostnader, AnnenArbeidsinntekt, AnnenGjeld, AnnenPensjonFoerAlderspensjon,
-        AnnenSkattepliktigKapitalinntektFraAnnetFinansprodukt, AnnenSkattepliktigKapitalinntektFraVirtuellValuta,
-        AnnetInntektsfradrag, Arbeidsavklaringspenger, ArbeidsinntektFraKompensasjonsytelseUtbetaltAvNav,
-        AvkortetFordelVedElektroniskKommunikasjon, BarnepensjonFraAndreEnnFolketrygden, BarnepensjonFraFolketrygden,
-        BarnepensjonFraIPAOgIPS, BetalteForsinkelsesrenter, BetaltPremieTilSykeOgUlykkesforsikringForNaeringsdrivende,
-        BetaltUnderholdsbidrag, BruttoFormue, DagpengerForFisker, DagpengerForNaeringsdrivende,
-        DagpengerForNaeringsdrivendeOgFiske, DagpengerVedSykehusoppholdMvFraBarneforsikring, EktefelletilleggTilPensjon,
-        EktefelletilleggTilUfoeretrygd, EngangsutbetalingFraIPSIPA, EtterlattepensjonFraFolketrygden, Foederaad,
-        FormuesverdiAvPrivatUtestaaendeFordring, FormuesverdiAvUtestaaendeFordring,
-        FormuesverdiForAndelIRentedelIVerdipapirfond, FormuesverdiForAnnenFastEiendom,
-        FormuesverdiForAnnenFastEiendomInnenforInntektsgivendeAktivitet,
-        FormuesverdiForAnnenFastEiendomUtenforInntektsgivendeAktivitet, FormuesverdiForAnnetFinansprodukt,
-        FormuesverdiForBorett, FormuesverdiForBuskap, FormuesverdiForEgenFritaksbehandletBolig,
-        FormuesverdiForFormuesobjekterINaeringIkkeOmfattetAvVerdsettingsrabatt,
-        FormuesverdiForFritidsbaatMedSalgsverdiOverSalgsverdigrense, FormuesverdiForGaardsbruk,
-        FormuesverdiForInnboLoesoereOgFritidsbaatUnderSalgsverdigrense, FormuesverdiForKjoeretoey,
-        FormuesverdiForKontanterIAksjesparekonto, FormuesverdiForKontanterMvIFondskonto, FormuesverdiForNaeringseiendom,
-        FormuesverdiForObligasjon, FormuesverdiForObligasjonerOpsjonerMvIkkeRegistrertIVerdipapirsentralen,
-        FormuesverdiForObligasjonerOpsjonerMvRegistrertIVerdipapirsentralen, FormuesverdiForPrimaerbolig,
-        FormuesverdiForRegnskapsbehandletBolig, FormuesverdiForSekundaerbolig, FormuesverdiForSkogeiendom,
-        FormuesverdiForTomt, FormuesverdiForUbetingetOpsjonIArbeidsforhold, FormuesverdiForUtestaaendeFordringerINaering,
-        FormuesverdiForUtleidFlerboligbygning, FormuesverdiForVarelager, FormuesverdiForVirtuellValuta,
-        Fortsettelsesforsikring, ForvaltningskostnaderFinans,
-
-
-    }
-
 
     @Schema(description = "Personidentifikator, fødselsnummer eller d-nummer")
     private String identifikator;
@@ -391,10 +344,19 @@ public class TenorRequest {
         private Stadietype stadietype;
         private Oppgjoerstype oppgjoerstype;
         private TekniskNavn tekniskNavn;
+        private Intervall alminneligInntektFoerSaerfradragBeloep;
     }
 
     @Data
     @NoArgsConstructor
     public static class SpesisfisertSummertSkattegrunnlag {
+
+        @Schema(description = "Inntektsår, 4 siffre, årene 2019, 2020, 2021, 2022, 2023 ... osv opptil i fjor")
+        private Integer inntektsaar;
+        private Stadietype stadietype;
+        private Oppgjoerstype oppgjoerstype;
+        private TekniskNavn tekniskNavn;
+        private Spesifiseringstype spesifiseringstype;
+        private Intervall alminneligInntektFoerSaerfradragBeloep;
     }
 }
