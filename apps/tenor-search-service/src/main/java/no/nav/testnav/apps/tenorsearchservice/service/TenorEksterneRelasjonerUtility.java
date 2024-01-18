@@ -107,7 +107,7 @@ public class TenorEksterneRelasjonerUtility {
                         .append(convertObject("harPermisjoner", arbeidsforhold.getHarPermisjoner()))
                         .append(convertObject("harPermitteringer", arbeidsforhold.getHarPermitteringer()))
                         .append(convertObject("harArbeidsgiver", arbeidsforhold.getHarArbeidsgiver()))
-                        .append(convertObject("harTimerMedLoenn", arbeidsforhold.getHarTimerMedTimeloenn()))
+                        .append(convertObject("harTimerMedTimeloenn", arbeidsforhold.getHarTimerMedTimeloenn()))
                         .append(convertObject("harUtenlandsopphold", arbeidsforhold.getHarUtenlandsopphold()))
                         .append(convertObject("harHistorikk", arbeidsforhold.getHarHistorikk()))
                         .append(convertEnum("arbeidsforholdtype", arbeidsforhold.getArbeidsforholdstype()))

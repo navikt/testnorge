@@ -262,15 +262,15 @@ public class TenorRequest {
 
         @Schema(description = "Inntektsår, 4 siffre, årene 2019, 2019, 2020, 2021, 2022, 2023 ... osv opptil i fjor")
         private Integer inntektsaar;
-        private List<Skattepliktstype> Skattepliktstyper;
+        private List<Skattepliktstype> skattepliktstyper;
         private SaerskiltSkatteplikt saerskiltSkatteplikt;
 
         public List<Skattepliktstype> getSkattepliktstyper() {
 
-            if (isNull(Skattepliktstyper)) {
-                Skattepliktstyper = new ArrayList<>();
+            if (isNull(skattepliktstyper)) {
+                skattepliktstyper = new ArrayList<>();
             }
-            return Skattepliktstyper;
+            return skattepliktstyper;
         }
     }
 

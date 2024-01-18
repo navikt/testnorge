@@ -18,8 +18,7 @@ public class TenorConverterUtility {
 
     public static String convertEnumWildcard(Enum<?> type) {
 
-        return isNull(type) ? "" : " and %s%s:*".formatted(type.name().substring(0, 1).toLowerCase(),
-                type.name().substring(1));
+        return isNull(type) ? "" : " and %s:*".formatted(type.name());
     }
 
     public static String convertObject(String navn, Object verdi) {
@@ -45,7 +44,7 @@ public class TenorConverterUtility {
 
     public static String convertEnum(String enumNavn, Enum<?> enumVerdi) {
 
-        return isNull(enumVerdi) ? "" : " and %s:%s".formatted(enumNavn, enumVerdi);
+        return isNull(enumVerdi) ? "" : " and %s:%s".formatted(enumNavn, enumVerdi.name());
     }
 
     public static String convertDatoer(String datoNavn, TenorRequest.DatoIntervall datoIntervall) {
