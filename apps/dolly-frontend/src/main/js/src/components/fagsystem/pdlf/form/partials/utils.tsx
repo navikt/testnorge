@@ -50,6 +50,8 @@ export const isEmpty = (attributt: any, excludeList = [] as Array<string>) => {
 	}
 	return (
 		attributt?.empty ||
-		Object.values(flattenData(attributt)).every((x) => x === null || x === '' || x === false)
+		Object.values(flattenData(attributt)).every(
+			(x) => x === null || x === '' || x === false || x === undefined,
+		)
 	)
 }

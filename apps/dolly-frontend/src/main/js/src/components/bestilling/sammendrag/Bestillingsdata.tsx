@@ -17,6 +17,7 @@ import { Vergemaal } from '@/components/fagsystem/pdlf/bestilling/partials/Verge
 import { Fullmakt } from '@/components/fagsystem/pdlf/bestilling/partials/Fullmakt'
 import { Sikkerhetstiltak } from '@/components/fagsystem/pdlf/bestilling/partials/Sikkerhetstiltak'
 import { TilrettelagtKommunikasjon } from '@/components/fagsystem/pdlf/bestilling/partials/TilrettelagtKommunikasjon'
+import { Bostedsadresse } from '@/components/fagsystem/pdlf/bestilling/partials/Bostedsadresse'
 
 export const BestillingTitle = styled.h4`
 	margin: 5px 0 15px 0;
@@ -72,6 +73,7 @@ export const Bestillingsdata = ({ bestilling }: any) => {
 			<TilrettelagtKommunikasjon
 				tilrettelagtKommunikasjonListe={bestilling.pdldata?.person?.tilrettelagtKommunikasjon}
 			/>
+			<Bostedsadresse bostedsadresseListe={bestilling.pdldata?.person?.bostedsadresse} />
 		</>
 	)
 }

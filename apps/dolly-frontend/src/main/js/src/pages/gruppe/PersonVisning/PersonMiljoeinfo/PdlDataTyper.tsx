@@ -63,14 +63,15 @@ export type HentPerson = {
 }
 
 export type BostedData = {
+	adressetype?: string
 	angittFlyttedato?: Date
 	coAdressenavn?: string
 	gyldigFraOgMed?: Date
 	gyldigTilOgMed?: Date
-	vegadresse?: Vegadresse
-	matrikkeladresse?: Matrikkeladresse
-	ukjentBosted?: UkjentBosted
-	utenlandskAdresse?: UtenlandskAdresse
+	vegadresse?: VegadresseData
+	matrikkeladresse?: MatrikkeladresseData
+	ukjentBosted?: UkjentBostedData
+	utenlandskAdresse?: UtenlandskAdresseTypes
 	metadata?: Metadata
 	id?: number
 }
@@ -79,16 +80,16 @@ export type DeltBosted = {
 	startdatoForKontrakt?: Date
 	sluttdatoForKontrakt?: Date
 	coAdressenavn?: string
-	vegadresse?: Vegadresse
-	matrikkeladresse?: Matrikkeladresse
-	ukjentBosted?: UkjentBosted
+	vegadresse?: VegadresseData
+	matrikkeladresse?: MatrikkeladresseData
+	ukjentBosted?: UkjentBostedData
 	metadata?: Metadata
 }
 
 export type OppholdsadresseData = {
-	utenlandskAdresse?: UtenlandskAdresse
-	vegadresse?: Vegadresse
-	matrikkeladresse?: Matrikkeladresse
+	utenlandskAdresse?: UtenlandskAdresseTypes
+	vegadresse?: VegadresseData
+	matrikkeladresse?: MatrikkeladresseData
 	oppholdAnnetSted?: string
 	coAdressenavn?: string
 	gyldigFraOgMed?: Date
@@ -102,9 +103,9 @@ export type KontaktadresseData = {
 	type?: string
 	coAdressenavn?: string
 	postboksadresse?: Postboksadresse
-	vegadresse?: Vegadresse
+	vegadresse?: VegadresseData
 	postadresseIFrittFormat?: PostadresseIFrittFormat
-	utenlandskAdresse?: UtenlandskAdresse
+	utenlandskAdresse?: UtenlandskAdresseTypes
 	utenlandskAdresseIFrittFormat?: UtenlandskAdresseIFrittFormat
 	metadata?: Metadata
 	id?: number
@@ -132,7 +133,7 @@ type UtenlandskAdresseIFrittFormat = {
 	landkode?: string
 }
 
-type Vegadresse = {
+export type VegadresseData = {
 	matrikkelId?: string
 	husbokstav?: string
 	husnummer?: string
@@ -143,15 +144,18 @@ type Vegadresse = {
 	kommunenummer?: string
 	bydelsnummer?: string
 	koordinater?: Koordinater
+	adressekode?: string
 }
 
-type Matrikkeladresse = {
+export type MatrikkeladresseData = {
 	matrikkelId?: string
 	bruksenhetsnummer?: string
 	tilleggsnavn?: string
 	postnummer?: string
 	kommunenummer?: string
 	koordinater?: Koordinater
+	gaardsnummer?: string
+	bruksnummer?: string
 }
 
 type Koordinater = {
@@ -161,11 +165,11 @@ type Koordinater = {
 	kvalitet?: string
 }
 
-type UkjentBosted = {
+export type UkjentBostedData = {
 	bostedskommune?: string
 }
 
-type UtenlandskAdresse = {
+export type UtenlandskAdresseTypes = {
 	adressenavnNummer?: string
 	postboksNummerNavn?: string
 	postkode?: string
@@ -195,7 +199,7 @@ export type OppholdData = {
 }
 
 export type UtenlandskAdresseData = {
-	utenlandskAdresse?: UtenlandskAdresse
+	utenlandskAdresse?: UtenlandskAdresseTypes
 }
 
 export type TelefonData = {
