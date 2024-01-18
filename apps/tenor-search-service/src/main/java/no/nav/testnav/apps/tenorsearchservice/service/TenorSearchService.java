@@ -100,7 +100,7 @@ public class TenorSearchService {
     private String getOpplysningerFraSkatteetatensInnsendingsMiljoe(TenorRequest.OpplysningerFraSkatteetatensInnsendingsmiljoe opplysningerFraSkatteetatensInnsendingsmiljoe) {
 
         return isNull(opplysningerFraSkatteetatensInnsendingsmiljoe) ? "" :
-                "+and+tenorRelasjoner.testinnsendingSkattPerson:{%s}".formatted(new StringBuilder()
+                " and tenorRelasjoner.testinnsendingSkattPerson:{%s}".formatted(new StringBuilder()
                         .append(convertObject("inntektsaar", opplysningerFraSkatteetatensInnsendingsmiljoe.getInntektsaar()))
                         .append(convertBooleanSpecial("harSkattemeldingUtkast", opplysningerFraSkatteetatensInnsendingsmiljoe.getHarSkattemeldingUtkast()))
                         .append(convertBooleanSpecial("harSkattemeldingFastsatt", opplysningerFraSkatteetatensInnsendingsmiljoe.getHarSkattemeldingFastsatt()))
@@ -109,13 +109,13 @@ public class TenorSearchService {
 
     private String convertBooleanSpecial(String navn, Boolean verdi) {
 
-        return isNull(verdi) ? "" : "+%sand+%s:*".formatted((isFalse(verdi) ? "not+" : ""), navn);
+        return isNull(verdi) ? "" : " and %s%s:*".formatted((isFalse(verdi) ? " not " : ""), navn);
     }
 
     private String getBeregnetSkatt(TenorRequest.BeregnetSkatt beregnetSkatt) {
 
         return isNull(beregnetSkatt) ? "" :
-                "+and+tenorRelasjoner.beregnetSkatt:{%s}".formatted(new StringBuilder()
+                " and tenorRelasjoner.beregnetSkatt:{%s}".formatted(new StringBuilder()
                         .append(convertObject("inntektsaar", beregnetSkatt.getInntektsaar()))
                         .append(convertEnum("typeOppgjoer", beregnetSkatt.getOppgjoerstype()))
                         .append(convertObject("pensjonsgivendeInntekt", beregnetSkatt.getPensjonsgivendeInntekt()))
@@ -125,7 +125,7 @@ public class TenorSearchService {
     private String getArbeidsforhold(TenorRequest.Arbeidsforhold arbeidsforhold) {
 
         return isNull(arbeidsforhold) ? "" :
-                "+and+tenorRelasjoner.arbeidsforhold:{%s}".formatted(new StringBuilder()
+                " and tenorRelasjoner.arbeidsforhold:{%s}".formatted(new StringBuilder()
                         .append(convertDatoer("startDato", arbeidsforhold.getStartDatoPeriode()))
                         .append(convertDatoer("sluttDato", arbeidsforhold.getSluttDatoPeriode()))
                         .append(convertObject("harPermisjoner", arbeidsforhold.getHarPermisjoner()))
@@ -141,7 +141,7 @@ public class TenorSearchService {
     private String getTilleggsskatt(TenorRequest.Tilleggsskatt tilleggsskatt) {
 
         return isNull(tilleggsskatt) ? "" :
-                "+and+tenorRelasjoner.tilleggsskatt:{%s}".formatted(
+                " and tenorRelasjoner.tilleggsskatt:{%s}".formatted(
                         new StringBuilder()
                                 .append(convertObject("inntektsaar", tilleggsskatt.getInntektsaar()))
                                 .append(getTilleggsskattTyper(tilleggsskatt.getTilleggsskattTyper()))
@@ -150,17 +150,17 @@ public class TenorSearchService {
 
     private String getTilleggsskattTyper(List<TenorRequest.TilleggsskattType> tilleggsskattTyper) {
 
-        return tilleggsskattTyper.isEmpty() ? "" : "+and+" +
+        return tilleggsskattTyper.isEmpty() ? "" : " and " +
                 tilleggsskattTyper.stream()
                         .map(Enum::name)
                         .map(type -> "%s%s:*".formatted(type.substring(0, 1).toLowerCase(), type.substring(1)))
-                        .collect(Collectors.joining("+and+"));
+                        .collect(Collectors.joining(" and "));
     }
 
     private String getSkatteplikt(TenorRequest.Skatteplikt skatteplikt) {
 
         return isNull(skatteplikt) ? "" :
-                "+and+tenorRelasjoner.skatteplikt:{%s}".formatted(
+                " and tenorRelasjoner.skatteplikt:{%s}".formatted(
                         new StringBuilder()
                                 .append(convertObject("inntektsaar", skatteplikt.getInntektsaar()))
                                 .append(getSkattepliktstyper(skatteplikt.getSkattepliktstyper()))
@@ -170,74 +170,74 @@ public class TenorSearchService {
 
     private String getSkattepliktstyper(List<TenorRequest.Skattepliktstype> skattepliktstyper) {
 
-        return skattepliktstyper.isEmpty() ? "" : "+and+" +
+        return skattepliktstyper.isEmpty() ? "" : " and " +
                 skattepliktstyper.stream()
                         .map(Enum::name)
                         .map(type -> "%s%s:*".formatted(type.substring(0, 1).toLowerCase(), type.substring(1)))
-                        .collect(Collectors.joining("+and+"));
+                        .collect(Collectors.joining(" and "));
     }
 
     private String convertEnumWildcard(Enum<?> type) {
 
-        return isNull(type) ? "" : "+and+%s%s:*".formatted(type.name().substring(0, 1).toLowerCase(),
+        return isNull(type) ? "" : " and %s%s:*".formatted(type.name().substring(0, 1).toLowerCase(),
                 type.name().substring(1));
     }
 
     private String getInntektAordningen(TenorRequest.InntektAordningen inntektAordningen) {
 
         return (isNull(inntektAordningen)) ? "" :
-                "+and+tenorRelasjoner.inntekt:{" + new StringBuilder()
+                " and tenorRelasjoner.inntekt:{%s}".formatted(new StringBuilder()
                         .append(getPeriode(inntektAordningen.getPeriode()))
                         .append(convertObject("opplysningspliktig", inntektAordningen.getOpplysningspliktig()))
                         .append(getInntektstyper(inntektAordningen.getInntektstyper()))
                         .append(convertEnum("beskrivelse", inntektAordningen.getBeskrivelse()))
                         .append(getForskuddstrekk(inntektAordningen.getForskuddstrekk()))
                         .append(convertObject("harHistorikk", inntektAordningen.getHarHistorikk()))
-                        .substring(5) + "}";
+                        .substring(5));
     }
 
     private String getForskuddstrekk(List<TenorRequest.Forskuddstrekk> forskuddstrekk1) {
 
-        return forskuddstrekk1.isEmpty() ? "" : "+and+forskuddstrekk:(%s)"
+        return forskuddstrekk1.isEmpty() ? "" : " and forskuddstrekk:(%s)"
                 .formatted(forskuddstrekk1.stream()
                         .map(Enum::name)
-                        .collect(Collectors.joining("+and+")));
+                        .collect(Collectors.joining(" and ")));
     }
 
     private String getInntektstyper(List<TenorRequest.Inntektstype> inntektstyper) {
 
-        return inntektstyper.isEmpty() ? "" : "+and+inntektstype:(%s)"
+        return inntektstyper.isEmpty() ? "" : " and inntektstype:(%s)"
                 .formatted(inntektstyper.stream()
                         .map(Enum::name)
-                        .collect(Collectors.joining("+and+")));
+                        .collect(Collectors.joining(" and ")));
     }
 
     private String getSkattemelding(TenorRequest.Skattemelding skattemelding) {
 
         return isNull(skattemelding) ? "" :
-                "+and+tenorRelasjoner.skattemelding:{" + new StringBuilder()
-                        .append(convertObject("inntektsaar", skattemelding.getInntektsaar()))
-                        .append(convertEnum("skattemeldingstype", skattemelding.getSkattemeldingstype()))
-                        .substring(5) + "}";
+                " and tenorRelasjoner.skattemelding:{%s}".formatted(new StringBuilder()
+                .append(convertObject("inntektsaar", skattemelding.getInntektsaar()))
+                .append(convertEnum("skattemeldingstype", skattemelding.getSkattemeldingstype()))
+                .substring(5));
     }
 
     private String getTjenestepensjonsavtale(TenorRequest.Tjenestepensjonsavtale tjenestepensjonsavtale) {
 
         return isNull(tjenestepensjonsavtale) ? "" :
-                "+and+tenorRelasjoner.tjenestepensjonavtale:{" + new StringBuilder()
+                " and tenorRelasjoner.tjenestepensjonavtale:{%s}".formatted(new StringBuilder()
                         .append(convertObject("pensjonsinnretningOrgnr", tjenestepensjonsavtale.getPensjonsinnretningOrgnr()))
                         .append(convertObject("periode", tjenestepensjonsavtale.getPeriode()))
-                        .substring(5) + "}";
+                        .substring(5));
     }
 
     private String convertObject(String navn, Object verdi) {
 
-        return isNull(verdi) || verdi instanceof String string && isBlank(string) ? "" : "+and+%s:%s".formatted(navn, verdi);
+        return isNull(verdi) || verdi instanceof String string && isBlank(string) ? "" : " and %s:%s".formatted(navn, verdi);
     }
 
     private String getRelasjonMedFoedselsdato(TenorRequest.Intervall relasjonMedFoedselsaar) {
 
-        return isNull(relasjonMedFoedselsaar) ? "" : "+and+tenorRelasjoner.freg:{foedselsdato:[%s+to+%s]}"
+        return isNull(relasjonMedFoedselsaar) ? "" : " and tenorRelasjoner.freg:{foedselsdato:[%sto%s]}"
                 .formatted(
                         isNull(relasjonMedFoedselsaar.getFraOgMed()) ? "*" : relasjonMedFoedselsaar.getFraOgMed(),
                         isNull(relasjonMedFoedselsaar.getTilOgMed()) ? "*" : relasjonMedFoedselsaar.getTilOgMed());
@@ -245,17 +245,17 @@ public class TenorSearchService {
 
     private String getRelasjon(TenorRequest.Relasjon relasjon) {
 
-        return isNull(relasjon) ? "" : "+and+tenorRelasjoner.freg:{tenorRelasjonsnavn:%s}".formatted(relasjon.name());
+        return isNull(relasjon) ? "" : " and tenorRelasjoner.freg:{tenorRelasjonsnavn:%s}".formatted(relasjon.name());
     }
 
     private String convertBooleanWildcard(String booleanNavn, Boolean booleanVerdi) {
 
-        return isNotTrue(booleanVerdi) ? "" : "+and+%s:*".formatted(booleanNavn);
+        return isNotTrue(booleanVerdi) ? "" : " and %s:*".formatted(booleanNavn);
     }
 
     private String getIntervall(String intervallNavn, TenorRequest.Intervall intervall) {
 
-        return isNull(intervall) ? "" : "+and+%s:[%s+to+%s]"
+        return isNull(intervall) ? "" : " and %s:[%sto%s]"
                 .formatted(intervallNavn,
                         isNull(intervall.getFraOgMed()) ? "*" : intervall.getFraOgMed(),
                         isNull(intervall.getTilOgMed()) ? "*" : intervall.getTilOgMed());
@@ -263,7 +263,7 @@ public class TenorSearchService {
 
     private String getPeriode(TenorRequest.MonthInterval intervall) {
 
-        return isNull(intervall) ? "" : "+and+periode:[%s+to+%s]"
+        return isNull(intervall) ? "" : " and periode:[%sto%s]"
                 .formatted(
                         isNull(intervall.getFraOgMed()) ? "*" : intervall.getFraOgMed(),
                         isNull(intervall.getTilOgMed()) ? "*" : intervall.getTilOgMed());
@@ -271,20 +271,20 @@ public class TenorSearchService {
 
     private String getUtenlandskPersonidentifikasjon(List<TenorRequest.UtenlandskPersonIdentifikasjon> utenlandskPersonIdentifikasjon) {
 
-        return (utenlandskPersonIdentifikasjon.isEmpty()) ? "" : "+and+utenlandskPersonidentifikasjon:(%s)"
+        return (utenlandskPersonIdentifikasjon.isEmpty()) ? "" : " and utenlandskPersonidentifikasjon:(%s)"
                 .formatted(utenlandskPersonIdentifikasjon.stream()
                         .map(Enum::name)
-                        .collect(Collectors.joining("+and+")));
+                        .collect(Collectors.joining(" and ")));
     }
 
     private String getRoller(List<TenorRequest.Roller> roller) {
 
-        return (roller.isEmpty()) ? "" : "+and+tenorRelasjoner.brreg-er-fr:{dagligLeder:*}";
+        return (roller.isEmpty()) ? "" : " and tenorRelasjoner.brreg-er-fr:{dagligLeder:*}";
     }
 
     private String convertEnum(String enumNavn, Enum<?> enumVerdi) {
 
-        return isNull(enumVerdi) ? "" : "+and+%s:%s%s".formatted(enumNavn,
+        return isNull(enumVerdi) ? "" : " and %s:%s%s".formatted(enumNavn,
                 enumVerdi.name().substring(0, 1).toUpperCase(),
                 enumVerdi.name().substring(1));
     }
@@ -292,16 +292,16 @@ public class TenorSearchService {
     private String convertDatoer(String datoNavn, TenorRequest.DatoIntervall datoIntervall) {
 
         return isNull(datoIntervall) ? "" :
-                "+and+%s:[%s+to+%s]".formatted(datoNavn, datoIntervall.getFraOgMed(), datoIntervall.getTilOgMed());
+                " and %s:[%sto%s]".formatted(datoNavn, datoIntervall.getFraOgMed(), datoIntervall.getTilOgMed());
     }
 
     private String getIdentifikatorType(TenorRequest.IdentifikatorType identifikatorType) {
 
         return isNull(identifikatorType) ? "" :
-                "+and+identifikatorType:" + switch (identifikatorType) {
+                " and identifikatorType:%s".formatted(switch (identifikatorType) {
                     case FNR -> "foedselsnummer";
                     case DNR -> "dNummer";
                     case FNR_TIDLIGERE_DNR -> "foedselsnummerOgTidligereDNummer";
-                };
+                });
     }
 }
