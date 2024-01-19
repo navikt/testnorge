@@ -23,11 +23,6 @@ public class TenorConverterUtility {
         return isFalse(verdi) ? NOT_OPERATOR : "";
     }
 
-    public static String convertEnumWildcard(Enum<?> type) {
-
-        return isNull(type) ? "" : " and %s:*".formatted(type.name());
-    }
-
     public static String convertObject(String navn, Object verdi) {
 
         return isNull(verdi) || verdi instanceof String string && isBlank(string) ? "" : " and %s:%s".formatted(navn, verdi);
@@ -37,29 +32,31 @@ public class TenorConverterUtility {
 
         return isNull(intervall) ? "" : " and %s:[%s to %s]"
                 .formatted(intervallNavn,
-                        convertObject(intervall.getFraOgMed()),
-                        convertObject(intervall.getTilOgMed()));
+                        convertObjectWildCard(intervall.getFraOgMed()),
+                        convertObjectWildCard(intervall.getTilOgMed()));
     }
 
     public static String convertPeriode(TenorRequest.MonthInterval intervall) {
 
         return isNull(intervall) ? "" : " and periode:[%s to %s]"
                 .formatted(
-                        convertObject(intervall.getFraOgMed()),
-                        convertObject(intervall.getTilOgMed()));
+                        convertObjectWildCard(intervall.getFraOgMed()),
+                        convertObjectWildCard(intervall.getTilOgMed()));
     }
 
     public static String convertEnum(String enumNavn, Enum<?> enumVerdi) {
 
-        return isNull(enumVerdi) ? "" : " and %s:%s".formatted(enumNavn, enumVerdi.name());
+        return isNull(enumVerdi) ? "" : " and %s:%s%s".formatted(enumNavn,
+                enumVerdi.name().substring(0,1).toLowerCase(),
+                enumVerdi.name().substring(1));
     }
 
     public static String convertDatoer(String datoNavn, TenorRequest.DatoIntervall datoIntervall) {
 
         return isNull(datoIntervall) ? "" :
                 " and %s:[%s to %s]".formatted(datoNavn,
-                        convertObject(datoIntervall.getFraOgMed()),
-                        convertObject(datoIntervall.getTilOgMed()));
+                        convertObjectWildCard(datoIntervall.getFraOgMed()),
+                        convertObjectWildCard(datoIntervall.getTilOgMed()));
     }
 
     public static String convertBooleanWildcard(String booleanNavn, Boolean booleanVerdi) {
@@ -67,7 +64,7 @@ public class TenorConverterUtility {
         return isNotTrue(booleanVerdi) ? "" : " and %s:*".formatted(booleanNavn);
     }
 
-    private static String convertObject(Object object) {
+    public static String convertObjectWildCard(Object object) {
 
         return isNull(object) ? "*" : object.toString();
     }

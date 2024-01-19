@@ -18,6 +18,7 @@ import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtili
 import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.convertEnum;
 import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.convertIntervall;
 import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.convertObject;
+import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.convertObjectWildCard;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -91,8 +92,8 @@ public class TenorSearchService {
 
         return isNull(relasjonMedFoedselsaar) ? "" : " and tenorRelasjoner.freg:{foedselsdato:[%s to %s]}"
                 .formatted(
-                        isNull(relasjonMedFoedselsaar.getFraOgMed()) ? "*" : relasjonMedFoedselsaar.getFraOgMed(),
-                        isNull(relasjonMedFoedselsaar.getTilOgMed()) ? "*" : relasjonMedFoedselsaar.getTilOgMed());
+                        convertObjectWildCard(relasjonMedFoedselsaar.getFraOgMed()),
+                        convertObjectWildCard(relasjonMedFoedselsaar.getTilOgMed()));
     }
     private String getRelasjon(TenorRequest.Relasjon relasjon) {
 

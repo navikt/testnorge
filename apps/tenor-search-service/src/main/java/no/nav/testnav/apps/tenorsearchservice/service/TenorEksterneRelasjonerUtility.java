@@ -11,14 +11,13 @@ import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtili
 import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.convertBooleanWildcard;
 import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.convertDatoer;
 import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.convertEnum;
-import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.convertEnumWildcard;
 import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.convertIntervall;
 import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.convertObject;
 import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.convertPeriode;
 
 @UtilityClass
 public class TenorEksterneRelasjonerUtility {
-    
+
     private static final String INNTEKTSAAR = "inntektsaar";
     private static final String TYPE_OPPGJOER = "typeOppgjoer";
     private static final String AND = " and ";
@@ -184,7 +183,7 @@ public class TenorEksterneRelasjonerUtility {
                         new StringBuilder()
                                 .append(convertObject(INNTEKTSAAR, skatteplikt.getInntektsaar()))
                                 .append(getSkattepliktstyper(skatteplikt.getSkattepliktstyper()))
-                                .append(convertEnumWildcard(skatteplikt.getSaerskiltSkatteplikt()))
+                                .append(convertEnum("saerskiltSkatteplikt", skatteplikt.getSaerskiltSkatteplikt()))
                                 .substring(5));
     }
 
@@ -201,6 +200,7 @@ public class TenorEksterneRelasjonerUtility {
         return skattepliktstyper.isEmpty() ? "" : AND +
                 skattepliktstyper.stream()
                         .map(Enum::name)
+                        .map(type -> "%s%s".formatted(type.substring(0,1).toLowerCase(), type.substring(1)))
                         .map("%s:*"::formatted)
                         .collect(Collectors.joining(AND));
     }
