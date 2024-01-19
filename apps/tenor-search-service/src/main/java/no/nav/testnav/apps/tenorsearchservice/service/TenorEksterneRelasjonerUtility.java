@@ -196,6 +196,8 @@ public class TenorEksterneRelasjonerUtility {
         return tilleggsskattTyper.isEmpty() ? "" : AND +
                 tilleggsskattTyper.stream()
                         .map(Enum::name)
+                        .map(type -> "%s%s".formatted(type.substring(0,1).toLowerCase(), type.substring(1)))
+                        .map("%s:*"::formatted)
                         .collect(Collectors.joining(AND));
     }
 
