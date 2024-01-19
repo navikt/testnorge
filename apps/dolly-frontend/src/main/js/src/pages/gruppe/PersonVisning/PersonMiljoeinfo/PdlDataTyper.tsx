@@ -87,6 +87,7 @@ export type DeltBosted = {
 }
 
 export type OppholdsadresseData = {
+	adressetype?: string
 	utenlandskAdresse?: UtenlandskAdresseTypes
 	vegadresse?: VegadresseData
 	matrikkeladresse?: MatrikkeladresseData
