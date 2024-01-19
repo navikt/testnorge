@@ -16,7 +16,7 @@ import static java.util.Objects.isNull;
 @SuppressWarnings("java:S115")
 public class TenorRequest {
 
-    public enum IdentifikatorType {FNR, DNR, FNR_TIDLIGERE_DNR}
+    public enum IdentifikatorType {Foedselsnummer, DNummer, FoedselsnummerOgTidligereDNummer}
 
     public enum Kjoenn {Mann, Kvinne}
 

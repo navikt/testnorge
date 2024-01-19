@@ -36,7 +36,7 @@ public class TenorSearchService {
                 .append(convertObject("identifikator", searchData.getIdentifikator()))
                 .append(convertDatoer("foedselsdato", searchData.getFoedselsdato()))
                 .append(convertDatoer("doedsdato", searchData.getDoedsdato()))
-                .append(getIdentifikatorType(searchData.getIdentifikatorType()))
+                .append(convertEnum("identifikatorType", searchData.getIdentifikatorType()))
                 .append(convertEnum("kjoenn", searchData.getKjoenn()))
                 .append(convertEnum("personstatus", searchData.getPersonstatus()))
                 .append(convertEnum("sivilstatus", searchData.getSivilstatus()))
@@ -85,8 +85,8 @@ public class TenorSearchService {
         }
         builder.append(TenorEksterneRelasjonerUtility.getEksterneRelasjoner(searchData));
 
-        log.info("Søker med query: {}", builder.substring(5));
-        return tenorClient.getTestdata(!builder.isEmpty() ? builder.substring(5) : "");
+        var query = builder.substring(0, builder.isEmpty() ? 0 : 5);
+        return tenorClient.getTestdata(query);
     }
     private String getRelasjonMedFoedselsdato(TenorRequest.Intervall relasjonMedFoedselsaar) {
 
@@ -105,14 +105,5 @@ public class TenorSearchService {
                 .formatted(utenlandskPersonIdentifikasjon.stream()
                         .map(Enum::name)
                         .collect(Collectors.joining(" and ")));
-    }
-    private String getIdentifikatorType(TenorRequest.IdentifikatorType identifikatorType) {
-
-        return isNull(identifikatorType) ? "" :
-                " and identifikatorType:%s".formatted(switch (identifikatorType) {
-                    case FNR -> "foedselsnummer";
-                    case DNR -> "dNummer";
-                    case FNR_TIDLIGERE_DNR -> "foedselsnummerOgTidligereDNummer";
-                });
     }
 }
