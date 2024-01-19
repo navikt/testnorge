@@ -34,8 +34,8 @@ public class OrderServiceV2 {
             log.info("Finner build id for ordre {} med uuid {}...", saved.getId(), saved.getUuid());
 
             var retryConfig = new RetryConfig.Builder()
-                    .setRetryAttempts(60 * 5)
-                    .setSleepSeconds(2)
+                    .setRetryAttempts(5)
+                    .setSleepSeconds(10)
                     .build();
             retryService.execute(retryConfig, () -> {
                 var buildId = jenkinsConsumer.getBuildId(order.getQueueId()).block();
