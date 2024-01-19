@@ -24,7 +24,7 @@
     "path-browserify": "^1.0.1",
     "prettier": "^3.0.1",
     "typescript": "^5.0.2",
-    "vite": "^5.0.8",
+    "vite": "^5.0.12",
     "vite-plugin-html": "^3.2.0",
     "vite-plugin-svgr": "^4.0.0",
     "vite-tsconfig-paths": "^4.0.5"
