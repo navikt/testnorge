@@ -1,14 +1,14 @@
 import React from 'react'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import { UtenlandskAdresseTypes } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import { UtenlandskAdresseData } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { AdresseKodeverk } from '@/config/kodeverk'
 
-type UtenlandskAdresseData = {
-	utenlandskAdresse?: UtenlandskAdresseTypes
+type UtenlandskAdresseTypes = {
+	utenlandskAdresse?: UtenlandskAdresseData
 }
 
-export const UtenlandskAdresse = ({ utenlandskAdresse }: UtenlandskAdresseData) => {
+export const UtenlandskAdresse = ({ utenlandskAdresse }: UtenlandskAdresseTypes) => {
 	if (!utenlandskAdresse) {
 		return null
 	}

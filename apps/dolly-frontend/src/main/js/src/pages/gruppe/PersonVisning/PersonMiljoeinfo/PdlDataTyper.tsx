@@ -71,7 +71,7 @@ export type BostedData = {
 	vegadresse?: VegadresseData
 	matrikkeladresse?: MatrikkeladresseData
 	ukjentBosted?: UkjentBostedData
-	utenlandskAdresse?: UtenlandskAdresseTypes
+	utenlandskAdresse?: UtenlandskAdresseData
 	metadata?: Metadata
 	id?: number
 }
@@ -88,7 +88,7 @@ export type DeltBosted = {
 
 export type OppholdsadresseData = {
 	adressetype?: string
-	utenlandskAdresse?: UtenlandskAdresseTypes
+	utenlandskAdresse?: UtenlandskAdresseData
 	vegadresse?: VegadresseData
 	matrikkeladresse?: MatrikkeladresseData
 	oppholdAnnetSted?: string
@@ -99,20 +99,21 @@ export type OppholdsadresseData = {
 }
 
 export type KontaktadresseData = {
+	adressetype?: string
 	gyldigFraOgMed?: Date
 	gyldigTilOgMed?: Date
 	type?: string
 	coAdressenavn?: string
-	postboksadresse?: Postboksadresse
+	postboksadresse?: PostboksadresseData
 	vegadresse?: VegadresseData
 	postadresseIFrittFormat?: PostadresseIFrittFormat
-	utenlandskAdresse?: UtenlandskAdresseTypes
+	utenlandskAdresse?: UtenlandskAdresseData
 	utenlandskAdresseIFrittFormat?: UtenlandskAdresseIFrittFormat
 	metadata?: Metadata
 	id?: number
 }
 
-type Postboksadresse = {
+export type PostboksadresseData = {
 	postbokseier?: string
 	postboks?: string
 	postnummer?: string
@@ -170,7 +171,7 @@ export type UkjentBostedData = {
 	bostedskommune?: string
 }
 
-export type UtenlandskAdresseTypes = {
+export type UtenlandskAdresseData = {
 	adressenavnNummer?: string
 	postboksNummerNavn?: string
 	postkode?: string
@@ -197,10 +198,6 @@ export type OppholdData = {
 	oppholdTil: Date
 	type: string
 	id: number
-}
-
-export type UtenlandskAdresseData = {
-	utenlandskAdresse?: UtenlandskAdresseTypes
 }
 
 export type TelefonData = {

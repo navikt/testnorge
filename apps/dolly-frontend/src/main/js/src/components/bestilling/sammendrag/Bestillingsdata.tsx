@@ -19,6 +19,7 @@ import { Sikkerhetstiltak } from '@/components/fagsystem/pdlf/bestilling/partial
 import { TilrettelagtKommunikasjon } from '@/components/fagsystem/pdlf/bestilling/partials/TilrettelagtKommunikasjon'
 import { Bostedsadresse } from '@/components/fagsystem/pdlf/bestilling/partials/Bostedsadresse'
 import { Oppholdsadresse } from '@/components/fagsystem/pdlf/bestilling/partials/Oppholdsadresse'
+import { Kontaktadresse } from '@/components/fagsystem/pdlf/bestilling/partials/Kontaktadresse'
 
 export const BestillingTitle = styled.h4`
 	margin: 5px 0 15px 0;
@@ -76,6 +77,7 @@ export const Bestillingsdata = ({ bestilling }: any) => {
 			/>
 			<Bostedsadresse bostedsadresseListe={bestilling.pdldata?.person?.bostedsadresse} />
 			<Oppholdsadresse oppholdsadresseListe={bestilling.pdldata?.person?.oppholdsadresse} />
+			<Kontaktadresse kontaktadresseListe={bestilling.pdldata?.person?.kontaktadresse} />
 		</>
 	)
 }

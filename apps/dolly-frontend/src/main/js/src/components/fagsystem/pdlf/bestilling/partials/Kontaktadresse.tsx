@@ -1,0 +1,50 @@
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import { BestillingTitle, EmptyObject } from '@/components/bestilling/sammendrag/Bestillingsdata'
+import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import React from 'react'
+import { KontaktadresseData } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import { uppercaseAndUnderscoreToCapitalized } from '@/utils/DataFormatter'
+import { Vegadresse } from '@/components/fagsystem/pdlf/bestilling/partials/Vegadresse'
+import { Adresseinfo } from '@/components/fagsystem/pdlf/bestilling/partials/Adresseinfo'
+import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
+import { UtenlandskAdresse } from '@/components/fagsystem/pdlf/bestilling/partials/UtenlandskAdresse'
+import { Postboksadresse } from '@/components/fagsystem/pdlf/bestilling/partials/Postboksadresse'
+
+type KontaktadresseTypes = {
+	kontaktadresseListe: Array<KontaktadresseData>
+}
+
+const getHeader = (kontaktadresse: KontaktadresseData) => {
+	return uppercaseAndUnderscoreToCapitalized(kontaktadresse?.adressetype) || 'Adresse'
+}
+export const Kontaktadresse = ({ kontaktadresseListe }: KontaktadresseTypes) => {
+	if (!kontaktadresseListe || kontaktadresseListe.length < 1) {
+		return null
+	}
+
+	return (
+		<div className="person-visning">
+			<ErrorBoundary>
+				<BestillingTitle>Kontaktadresse</BestillingTitle>
+				<DollyFieldArray header="Adresse" getHeader={getHeader} data={kontaktadresseListe}>
+					{(kontaktadresse: KontaktadresseData, idx: number) => {
+						return (
+							<React.Fragment key={idx}>
+								{isEmpty(kontaktadresse, ['kilde', 'master']) ? (
+									<EmptyObject />
+								) : (
+									<>
+										<Vegadresse vegadresse={kontaktadresse.vegadresse} />
+										<UtenlandskAdresse utenlandskAdresse={kontaktadresse.utenlandskAdresse} />
+										<Postboksadresse postboksadresse={kontaktadresse.postboksadresse} />
+										<Adresseinfo adresseinfo={kontaktadresse} />
+									</>
+								)}
+							</React.Fragment>
+						)
+					}}
+				</DollyFieldArray>
+			</ErrorBoundary>
+		</div>
+	)
+}
