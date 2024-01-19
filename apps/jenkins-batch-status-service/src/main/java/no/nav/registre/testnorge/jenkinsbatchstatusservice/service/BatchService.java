@@ -23,8 +23,8 @@ public class BatchService {
 
         var id = organisasjonBestillingConsumer.save(uuid);
         var retryConfig = new RetryConfig.Builder()
-                .setRetryAttempts(60 * 5)
-                .setSleepSeconds(3)
+                .setRetryAttempts(5)
+                .setSleepSeconds(10)
                 .build();
 
 
