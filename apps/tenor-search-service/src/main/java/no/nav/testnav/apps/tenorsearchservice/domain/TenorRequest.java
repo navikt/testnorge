@@ -223,7 +223,7 @@ public class TenorRequest {
     public static class InntektAordningen {
 
         private MonthInterval periode;
-        private String opplysningspliktig;
+        private Integer opplysningspliktig;
         private List<Inntektstype> inntektstyper;
         private AOrdningBeskrivelse beskrivelse;
         private List<Forskuddstrekk> forskuddstrekk;

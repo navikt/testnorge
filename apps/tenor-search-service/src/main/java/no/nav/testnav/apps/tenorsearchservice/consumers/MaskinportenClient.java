@@ -15,8 +15,10 @@ import no.nav.testnav.apps.tenorsearchservice.config.MaskinportenConfig;
 import no.nav.testnav.apps.tenorsearchservice.consumers.command.GetAccessTokenCommand;
 import no.nav.testnav.apps.tenorsearchservice.consumers.command.GetWellKnownCommand;
 import no.nav.testnav.apps.tenorsearchservice.consumers.dto.AccessToken;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 
 import java.time.Duration;
@@ -84,8 +86,7 @@ public class MaskinportenClient {
             signedJWT.sign(signer);
             return signedJWT;
         } catch (JOSEException e) {
-            throw new RuntimeException(e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to sign JWT", e);
         }
     }
-
 }

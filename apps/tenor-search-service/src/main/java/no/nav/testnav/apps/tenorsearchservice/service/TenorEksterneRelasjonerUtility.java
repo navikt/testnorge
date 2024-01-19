@@ -14,6 +14,7 @@ import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtili
 import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.convertIntervall;
 import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.convertObject;
 import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.convertPeriode;
+import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 
 @UtilityClass
 public class TenorEksterneRelasjonerUtility {
@@ -71,7 +72,8 @@ public class TenorEksterneRelasjonerUtility {
 
     private String getSamletReskontroInnsyn(TenorRequest.SamletReskontroInnsyn samletReskontroInnsyn) {
 
-        return isNull(samletReskontroInnsyn) ? "" :
+        return isNull(samletReskontroInnsyn) ||
+                (isNotTrue(samletReskontroInnsyn.getHarKrav()) && isNotTrue(samletReskontroInnsyn.getHarInnbetaling())) ? "" :
                 " and tenorRelasjoner.samletReskontroinnsyn:{%s}".formatted(new StringBuilder()
                         .append(convertBooleanWildcard("harKrav", samletReskontroInnsyn.getHarKrav()))
                         .append(convertBooleanWildcard("harInnbetaling", samletReskontroInnsyn.getHarInnbetaling()))
@@ -142,6 +144,7 @@ public class TenorEksterneRelasjonerUtility {
         return forskuddstrekk1.isEmpty() ? "" : " and forskuddstrekk:(%s)"
                 .formatted(forskuddstrekk1.stream()
                         .map(Enum::name)
+                        .map(type -> "%s%s".formatted(type.substring(0,1).toLowerCase(), type.substring(1)))
                         .collect(Collectors.joining(AND)));
     }
 
@@ -150,6 +153,7 @@ public class TenorEksterneRelasjonerUtility {
         return inntektstyper.isEmpty() ? "" : " and inntektstype:(%s)"
                 .formatted(inntektstyper.stream()
                         .map(Enum::name)
+                        .map(type -> "%s%s".formatted(type.substring(0,1).toLowerCase(), type.substring(1)))
                         .collect(Collectors.joining(AND)));
     }
 
