@@ -73,6 +73,7 @@ export const TextInput = React.forwardRef(
 )
 
 export const DollyTextInput = (props: {
+	fieldName?: string
 	name: string
 	label?: string
 	value?: any

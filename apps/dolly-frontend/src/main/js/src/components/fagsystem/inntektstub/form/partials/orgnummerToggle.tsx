@@ -28,12 +28,10 @@ export const OrgnummerToggle = ({ formMethods, opplysningspliktigPath, path }: P
 	const [inputType, setInputType] = useState(
 		sessionStorage.getItem(ORGANISASJONSTYPE_TOGGLE) || inputValg.fraFellesListe,
 	)
-	const [error, setError] = useState(null)
 	const [success, setSuccess] = useBoolean(false)
 	const [loading, setLoading] = useBoolean(false)
 	const [environment, setEnvironment] = useState(null)
 	const [orgnummer, setOrgnummer] = useState(formMethods.watch(path) || null)
-	console.log('path: ', path) //TODO - SLETT MEG
 
 	const { organisasjon } = useFasteDataOrganisasjon(orgnummer)
 
@@ -47,22 +45,21 @@ export const OrgnummerToggle = ({ formMethods, opplysningspliktigPath, path }: P
 	const handleChange = (value: { juridiskEnhet: string; orgnr: string }) => {
 		opplysningspliktigPath && formMethods.setValue(`${opplysningspliktigPath}`, value.juridiskEnhet)
 		formMethods.trigger(opplysningspliktigPath)
-		formMethods.setValue(`${path}`, value.orgnr)
+		formMethods.setValue(path, value.orgnr)
 	}
-	//TODO: Fikse henting fra testnav-org-service
 
 	const handleManualOrgChange = (org: string, miljo: string) => {
 		if (!org || !miljo) {
 			return
 		}
-		setError(null)
+		formMethods.clearErrors(path)
 		setLoading(true)
 		setSuccess(false)
 		OrgserviceApi.getOrganisasjonInfo(org, miljo)
 			.then((response: { data: { enhetType: string; juridiskEnhet: any; orgnummer: any } }) => {
 				setLoading(false)
 				if (!validEnhetstyper.includes(response.data.enhetType)) {
-					setError('Organisasjonen må være av type BEDR eller AAFY')
+					formMethods.setError(path, { message: 'Organisasjonen må være av type BEDR eller AAFY' })
 					return
 				}
 				if (!response.data.juridiskEnhet) {
@@ -70,7 +67,7 @@ export const OrgnummerToggle = ({ formMethods, opplysningspliktigPath, path }: P
 						opplysningspliktigPath &&
 							formMethods.setValue(`${opplysningspliktigPath}`, organisasjon.overenhet)
 					} else {
-						setError('Organisasjonen mangler juridisk enhet')
+						formMethods.setError(path, { message: 'Organisasjonen mangler juridisk enhet' })
 						return
 					}
 				}
@@ -82,7 +79,7 @@ export const OrgnummerToggle = ({ formMethods, opplysningspliktigPath, path }: P
 			})
 			.catch(() => {
 				setLoading(false)
-				setError('Fant ikke organisasjonen i ' + miljo)
+				formMethods.setError(path, { message: 'Fant ikke organisasjonen i ' + miljo })
 			})
 	}
 
@@ -110,18 +107,14 @@ export const OrgnummerToggle = ({ formMethods, opplysningspliktigPath, path }: P
 					path={path}
 					environment={environment}
 					miljoeOptions={aktiveMiljoer}
-					error={error}
 					loading={loading}
 					success={success}
 					onTextBlur={(event) => {
-						console.log('event: ', event) //TODO - SLETT MEG
 						const org = event.target.value
 						setOrgnummer(org)
 						handleManualOrgChange(org, environment)
 					}}
 					onMiljoeChange={(event) => {
-						console.log('orgnummer: ', orgnummer) //TODO - SLETT MEG
-						console.log('event2: ', event) //TODO - SLETT MEG
 						setEnvironment(event.value)
 						handleManualOrgChange(orgnummer, event.value)
 					}}

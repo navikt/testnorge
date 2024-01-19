@@ -161,6 +161,7 @@ const P_FormikSelect = ({ feil, ...props }: SelectProps) => {
 		}
 		field.onChange(SyntEvent(field.name, value))
 		if (props.afterChange) props.afterChange(selected)
+		formMethods.trigger(props.name)
 	}
 
 	const handleBlur = () => field?.onBlur?.(SyntEvent(field.name))
@@ -168,7 +169,6 @@ const P_FormikSelect = ({ feil, ...props }: SelectProps) => {
 	return (
 		<DollySelect
 			name={field.name}
-			value={field.value}
 			onChange={handleChange}
 			onBlur={handleBlur}
 			feil={

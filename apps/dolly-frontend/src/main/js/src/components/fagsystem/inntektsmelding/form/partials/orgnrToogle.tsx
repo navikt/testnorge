@@ -7,6 +7,7 @@ import {
 } from '@/components/organisasjonSelect/OrganisasjonToogleGruppe'
 import { EgneOrganisasjoner } from '@/components/fagsystem/brregstub/form/partials/EgneOrganisasjoner'
 import { UseFormReturn } from 'react-hook-form/dist/types'
+import { ORGANISASJONSTYPE_TOGGLE } from '@/components/fagsystem/inntektstub/form/partials/orgnummerToggle'
 
 interface OrgnrToggleProps {
 	path: string
@@ -14,9 +15,12 @@ interface OrgnrToggleProps {
 }
 
 export const OrgnrToggle = ({ path, formMethods }: OrgnrToggleProps) => {
-	const [inputType, setInputType] = useState(inputValg.fraFellesListe)
+	const [inputType, setInputType] = useState(
+		sessionStorage.getItem(ORGANISASJONSTYPE_TOGGLE) || inputValg.fraFellesListe,
+	)
 
 	const handleToggleChange = (value: string) => {
+		sessionStorage.setItem(ORGANISASJONSTYPE_TOGGLE, value)
 		setInputType(value)
 		formMethods.setValue(path, '')
 	}

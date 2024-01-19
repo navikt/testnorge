@@ -8,6 +8,7 @@ import { EgneOrganisasjoner } from '@/components/fagsystem/brregstub/form/partia
 import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 import { OrganisasjonLoader } from '@/components/organisasjonSelect/OrganisasjonLoader'
 import { UseFormReturn } from 'react-hook-form/dist/types'
+import { ORGANISASJONSTYPE_TOGGLE } from '@/components/fagsystem/inntektstub/form/partials/orgnummerToggle'
 
 interface OrgnrToggleProps {
 	path: string
@@ -22,10 +23,13 @@ export const OrgnrToggle = ({
 	setEnhetsinfo,
 	warningMessage,
 }: OrgnrToggleProps) => {
-	const [inputType, setInputType] = useState(inputValg.fraFellesListe)
+	const [inputType, setInputType] = useState(
+		sessionStorage.getItem(ORGANISASJONSTYPE_TOGGLE) || inputValg.fraFellesListe,
+	)
 	const { dollyEnvironments: aktiveMiljoer } = useDollyEnvironments()
 
 	const handleToggleChange = (value: string) => {
+		sessionStorage.setItem(ORGANISASJONSTYPE_TOGGLE, value)
 		setInputType(value)
 		clearEnhetsinfo()
 	}
@@ -43,6 +47,7 @@ export const OrgnrToggle = ({
 		}
 		oldValues['orgNr'] = null
 		formMethods.setValue(path, oldValues)
+		formMethods.trigger(path)
 	}
 
 	const handleChange = (event: React.ChangeEvent<any>) => {

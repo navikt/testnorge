@@ -7,7 +7,7 @@ import { useBoolean } from 'react-use'
 import { ToggleGroup } from '@navikt/ds-react'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 
-const INNTEKTSTYPE_TOGGLE = 'INNTEKTSTYPE_TOGGLE'
+const INNTEKTSTYPE_FORENKLET_TOGGLE = 'INNTEKTSTYPE_FORENKLET_TOGGLE'
 
 export enum FormType {
 	STANDARD = 'standard',
@@ -58,7 +58,7 @@ const simpleValues = {
 
 export const InntektForm = ({ formMethods, inntektsinformasjonPath }: data) => {
 	const [formSimple, setFormSimple] = useBoolean(
-		sessionStorage.getItem(INNTEKTSTYPE_TOGGLE) === FormType.FORENKLET,
+		sessionStorage.getItem(INNTEKTSTYPE_FORENKLET_TOGGLE) === FormType.FORENKLET,
 	)
 
 	useEffect(() => {
@@ -67,7 +67,7 @@ export const InntektForm = ({ formMethods, inntektsinformasjonPath }: data) => {
 
 	const changeFormType = (type: FormType) => {
 		const eventValueSimple = type === FormType.FORENKLET
-		sessionStorage.setItem(INNTEKTSTYPE_TOGGLE, type)
+		sessionStorage.setItem(INNTEKTSTYPE_FORENKLET_TOGGLE, type)
 		setFormSimple(eventValueSimple)
 
 		const restValues = eventValueSimple && { ...simpleValues }
@@ -90,7 +90,7 @@ export const InntektForm = ({ formMethods, inntektsinformasjonPath }: data) => {
 		<>
 			<div className="toggle--wrapper">
 				<ToggleGroup
-					defaultValue={FormType.STANDARD}
+					defaultValue={formSimple ? FormType.FORENKLET : FormType.STANDARD}
 					onChange={(value: FormType) => changeFormType(value)}
 					size={'small'}
 					style={{ backgroundColor: '#ffffff' }}

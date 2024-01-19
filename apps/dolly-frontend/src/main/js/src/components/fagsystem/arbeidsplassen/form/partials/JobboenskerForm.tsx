@@ -1,7 +1,6 @@
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import * as React from 'react'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
-import _get from 'lodash/get'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { EraseFillButtons } from '@/components/fagsystem/arbeidsplassen/form/partials/EraseFillButtons'
 import {
@@ -20,6 +19,7 @@ export const JobboenskerForm = ({ formMethods }) => {
 			}
 		})
 		formMethods.setValue(`${jobboenskerPath}.occupations`, yrker)
+		formMethods.trigger(`${jobboenskerPath}.occupations`)
 	}
 
 	const setOmraader = (options) => {
@@ -30,6 +30,7 @@ export const JobboenskerForm = ({ formMethods }) => {
 			}
 		})
 		formMethods.setValue(`${jobboenskerPath}.locations`, omraader)
+		formMethods.trigger(`${jobboenskerPath}.locations`)
 	}
 
 	return (
@@ -43,9 +44,7 @@ export const JobboenskerForm = ({ formMethods }) => {
 					size="grow"
 					isClearable={false}
 					isMulti={true}
-					value={_get(formMethods.getValues(), `${jobboenskerPath}.occupations`)?.map(
-						(y) => y.styrk08,
-					)}
+					value={formMethods.getValues(`${jobboenskerPath}.occupations`)?.map((y) => y.styrk08)}
 					onChange={(options) => setYrker(options)}
 				/>
 				<FormikSelect
@@ -55,7 +54,7 @@ export const JobboenskerForm = ({ formMethods }) => {
 					size="grow"
 					isClearable={false}
 					isMulti={true}
-					value={_get(formMethods.getValues(), `${jobboenskerPath}.locations`)?.map((o) => o.code)}
+					value={formMethods.getValues(`${jobboenskerPath}.locations`)?.map((o) => o.code)}
 					onChange={(options) => setOmraader(options)}
 				/>
 			</div>

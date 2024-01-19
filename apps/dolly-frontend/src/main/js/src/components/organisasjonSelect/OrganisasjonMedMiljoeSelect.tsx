@@ -8,7 +8,6 @@ interface OrgProps {
 	path: string
 	environment: string
 	miljoeOptions: string[]
-	error: string
 	success: boolean
 	loading?: boolean
 	onTextBlur: (event: React.ChangeEvent<any>) => void
@@ -30,10 +29,12 @@ export const OrganisasjonMedMiljoeSelect = ({
 			value: value.id,
 			label: value.label,
 		}))
+	const parentPath = path.substring(0, path.lastIndexOf('.'))
 
 	return (
 		<div className={'flexbox--align-start'}>
 			<DollyTextInput
+				fieldName={`${parentPath}.opplysningspliktig`}
 				name={path}
 				type="number"
 				size="xlarge"

@@ -31,7 +31,7 @@ const InntektStub = ({ inntektPath }) => {
 	} = inntektValues
 
 	useEffect(() => {
-		if (inntektstype !== '') {
+		if (!_.isEmpty(inntektstype)) {
 			InntektstubService.validate(_.omitBy(inntektValues, (value) => value === '' || !value)).then(
 				(response) => {
 					setFields(response)
