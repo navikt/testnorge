@@ -20,6 +20,7 @@ import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtili
 public class TenorEksterneRelasjonerUtility {
     
     private static final String INNTEKTSAAR = "inntektsaar";
+    private static final String TYPE_OPPGJOER = "typeOppgjoer";
     private static final String AND = " and ";
 
 
@@ -48,7 +49,7 @@ public class TenorEksterneRelasjonerUtility {
                 " and tenorRelasjoner.spesifisertSummertSkattegrunnlag:{%s}".formatted(new StringBuilder()
                         .append(convertObject(INNTEKTSAAR, spesisfisertSummertSkattegrunnlag.getInntektsaar()))
                         .append(convertEnum("stadie", spesisfisertSummertSkattegrunnlag.getStadietype()))
-                        .append(convertEnum("typeOppgjoer", spesisfisertSummertSkattegrunnlag.getOppgjoerstype()))
+                        .append(convertEnum(TYPE_OPPGJOER, spesisfisertSummertSkattegrunnlag.getOppgjoerstype()))
                         .append(convertEnum("tekniskNavn", spesisfisertSummertSkattegrunnlag.getTekniskNavn()))
                         .append(convertEnum("spesifiseringstype", spesisfisertSummertSkattegrunnlag.getSpesifiseringstype()))
                         .append(convertIntervall("alminneligInntektFoerSaerfradragBeloep",
@@ -62,7 +63,7 @@ public class TenorEksterneRelasjonerUtility {
                 " and tenorRelasjoner.summertSkattegrunnlag:{%s}".formatted(new StringBuilder()
                         .append(convertObject(INNTEKTSAAR, summertSkattegrunnlag.getInntektsaar()))
                         .append(convertEnum("stadie", summertSkattegrunnlag.getStadietype()))
-                        .append(convertEnum("typeOppgjoer", summertSkattegrunnlag.getOppgjoerstype()))
+                        .append(convertEnum(TYPE_OPPGJOER, summertSkattegrunnlag.getOppgjoerstype()))
                         .append(convertEnum("tekniskNavn", summertSkattegrunnlag.getTekniskNavn()))
                         .append(convertIntervall("alminneligInntektFoerSaerfradragBeloep",
                                 summertSkattegrunnlag.getAlminneligInntektFoerSaerfradragBeloep()))
@@ -93,7 +94,7 @@ public class TenorEksterneRelasjonerUtility {
         return isNull(beregnetSkatt) ? "" :
                 " and tenorRelasjoner.beregnetSkatt:{%s}".formatted(new StringBuilder()
                         .append(convertObject(INNTEKTSAAR, beregnetSkatt.getInntektsaar()))
-                        .append(convertEnum("typeOppgjoer", beregnetSkatt.getOppgjoerstype()))
+                        .append(convertEnum(TYPE_OPPGJOER, beregnetSkatt.getOppgjoerstype()))
                         .append(convertObject("pensjonsgivendeInntekt", beregnetSkatt.getPensjonsgivendeInntekt()))
                         .substring(5));
     }

@@ -11,9 +11,16 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 @UtilityClass
 public class TenorConverterUtility {
 
+    private static final String NOT_OPERATOR = " not ";
+
     public static String convertBooleanSpecial(String navn, Boolean verdi) {
 
-        return isNull(verdi) ? "" : " and %s%s:*".formatted((isFalse(verdi) ? " not " : ""), navn);
+        return isNull(verdi) ? "" : " and %s%s:*".formatted(convertNotOperator(verdi), navn);
+    }
+
+    private static String convertNotOperator(Boolean verdi) {
+
+        return isFalse(verdi) ? NOT_OPERATOR : "";
     }
 
     public static String convertEnumWildcard(Enum<?> type) {
