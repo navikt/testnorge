@@ -85,7 +85,7 @@ public class TenorSearchService {
         }
         builder.append(TenorEksterneRelasjonerUtility.getEksterneRelasjoner(searchData));
 
-        var query = builder.substring(0, builder.isEmpty() ? 0 : 5);
+        var query = builder.substring(builder.isEmpty() ? 0 : 5, builder.length());
         return tenorClient.getTestdata(query);
     }
     private String getRelasjonMedFoedselsdato(TenorRequest.Intervall relasjonMedFoedselsaar) {
