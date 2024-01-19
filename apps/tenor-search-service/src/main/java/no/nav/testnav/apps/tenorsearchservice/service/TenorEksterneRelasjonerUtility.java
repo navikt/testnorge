@@ -47,8 +47,8 @@ public class TenorEksterneRelasjonerUtility {
         return isNull(spesisfisertSummertSkattegrunnlag) ? "" :
                 " and tenorRelasjoner.spesifisertSummertSkattegrunnlag:{%s}".formatted(new StringBuilder()
                         .append(convertObject(INNTEKTSAAR, spesisfisertSummertSkattegrunnlag.getInntektsaar()))
-                        .append(convertEnumWildcard(spesisfisertSummertSkattegrunnlag.getStadietype()))
-                        .append(convertEnumWildcard(spesisfisertSummertSkattegrunnlag.getOppgjoerstype()))
+                        .append(convertEnum("stadie", spesisfisertSummertSkattegrunnlag.getStadietype()))
+                        .append(convertEnum("typeOppgjoer", spesisfisertSummertSkattegrunnlag.getOppgjoerstype()))
                         .append(convertEnum("tekniskNavn", spesisfisertSummertSkattegrunnlag.getTekniskNavn()))
                         .append(convertEnum("spesifiseringstype", spesisfisertSummertSkattegrunnlag.getSpesifiseringstype()))
                         .append(convertIntervall("alminneligInntektFoerSaerfradragBeloep",
