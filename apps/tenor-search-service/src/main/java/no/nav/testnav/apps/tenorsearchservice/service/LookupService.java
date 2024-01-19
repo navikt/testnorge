@@ -13,7 +13,6 @@ public class LookupService {
 
         return Arrays.stream(lookup.getValue().getEnumConstants())
                 .map(Object::toString)
-                .sorted()
                 .toList();
     }
 }
