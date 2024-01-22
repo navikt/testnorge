@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.skjermingsregister.command;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.dolly.bestilling.skjermingsregister.domain.SkjermingDataRequest;
 import no.nav.dolly.util.CallIdUtil;
 import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
@@ -20,22 +21,22 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @RequiredArgsConstructor
 public class SkjermingsregisterDeleteCommand implements Callable<Flux<Void>> {
 
-    private static final String SKJERMINGSREGISTER_URL = "/api/v1/skjermingdata";
+    private static final String SKJERMINGSREGISTER_URL = "/api/v1/skjerming/dolly";
 
     private final WebClient webClient;
-    private final String ident;
+    private final SkjermingDataRequest skjermingDataRequest;
     private final String token;
 
     public Flux<Void> call() {
 
-        return webClient.delete().uri(uriBuilder -> uriBuilder
+        return webClient.put().uri(uriBuilder -> uriBuilder
                         .path(SKJERMINGSREGISTER_URL)
-                        .pathSegment(ident)
                         .build())
                 .header(AUTHORIZATION, "Bearer " + token)
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .header(HEADER_NAV_CALL_ID, CallIdUtil.generateCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
+                .bodyValue(skjermingDataRequest)
                 .retrieve()
                 .bodyToFlux(Void.class)
                 .doOnError(WebClientFilter::logErrorMessage)

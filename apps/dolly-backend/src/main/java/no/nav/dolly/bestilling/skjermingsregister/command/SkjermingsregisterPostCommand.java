@@ -17,10 +17,10 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @RequiredArgsConstructor
 public class SkjermingsregisterPostCommand implements Callable<Flux<SkjermingDataResponse>> {
 
-    private static final String SKJERMINGSREGISTER_URL = "/api/v1/skjermingdata";
+    private static final String SKJERMINGSREGISTER_URL = "/api/v1/skjerming/dolly";
 
     private final WebClient webClient;
-    private final List<SkjermingDataRequest> skjermingsDataRequest;
+    private final SkjermingDataRequest skjermingsDataRequest;
     private final String token;
 
     @Override

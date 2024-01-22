@@ -16,6 +16,9 @@ spring:
           jwk-set-uri: ${TOKEN_X_JWKS_URI}
           accepted-audience: ${TOKEN_X_CLIENT_ID}
   cloud:
+    vault:
+      kv:
+        enabled: false
     gateway:
       httpclient:
         response-timeout: 30s
