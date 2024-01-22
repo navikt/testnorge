@@ -17,8 +17,7 @@ spring:
           accepted-audience: ${TOKEN_X_CLIENT_ID}
   cloud:
     vault:
-      kv:
-        enabled: false
+      enabled: false
     gateway:
       httpclient:
         response-timeout: 30s
