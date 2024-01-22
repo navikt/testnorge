@@ -245,7 +245,7 @@ export type Relasjon = {
 		}>
 	}
 }
-type AdressebeskyttelseData = {
+export type AdressebeskyttelseData = {
 	gradering: string
 }
 
