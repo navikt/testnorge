@@ -12,8 +12,6 @@ public enum Lookups {
     AdresseGradering(TenorRequest.AdresseGradering.class),
     Adressebeskyttelse(TenorRequest.Adressebeskyttelse.class),
     Arbeidsforholdstype(TenorRequest.Arbeidsforholdstype.class),
-    BostedsadresseType(TenorRequest.BostedsadresseType.class),
-    CoAdresseType(TenorRequest.CoAdresseType.class),
     Forskuddstrekk(TenorRequest.Forskuddstrekk.class),
     Hendelse(no.nav.testnav.apps.tenorsearchservice.domain.Hendelse.class),
     IdentifikatorType(TenorRequest.IdentifikatorType.class),

@@ -36,11 +36,6 @@ public class TenorRequest {
 
     public enum Relasjon {Barn, Far, Medmor, Mor, Partner}
 
-
-    public enum BostedsadresseType {Vegadresse, Matrikkeladresse, Ukjent}
-
-    public enum CoAdresseType {Bostedsadresse, DeltBosted, Oppholdsadresse, Postadresse, PostadresseIUtlandet}
-
     public enum Skattemeldingstype {KunUtkast, UtkastOgFastsatt}
 
     public enum Inntektstype {Loennsinntekt, Naeringsinntekt, PensjonEllerTrygd, YtelseFraOffentlige}
@@ -171,8 +166,6 @@ public class TenorRequest {
         private Boolean harPostadresseUtland;
         private Boolean harKontaktadresseDoedsbo;
         private Boolean harAdresseSpesialtegn;
-        private BostedsadresseType bostedsadresseType;
-        private CoAdresseType coAdresseType;
     }
 
     @Data
@@ -188,6 +181,7 @@ public class TenorRequest {
         private Boolean borMedMor;
         private Boolean borMedFar;
         private Boolean borMedMedmor;
+        private Boolean foreldreHarSammeAdresse;
     }
 
     @Data

@@ -63,9 +63,7 @@ public class TenorSearchService {
                     .append(convertBooleanWildcard("postadresse", searchData.getAdresser().getHarPostadresseNorge()))
                     .append(convertBooleanWildcard("postadresseUtland", searchData.getAdresser().getHarPostadresseUtland()))
                     .append(convertBooleanWildcard("kontaktinfoDoedsbo", searchData.getAdresser().getHarKontaktadresseDoedsbo()))
-                    .append(convertObject("adresseSpesialtegn", searchData.getAdresser().getHarAdresseSpesialtegn()))
-                    .append(convertEnum("bostedsadresseType", searchData.getAdresser().getBostedsadresseType()))
-                    .append(convertEnum("coAdressenavnType", searchData.getAdresser().getCoAdresseType()));
+                    .append(convertObject("adresseSpesialtegn", searchData.getAdresser().getHarAdresseSpesialtegn()));
         }
 
         if (nonNull(searchData.getRelasjoner())) {
@@ -77,7 +75,8 @@ public class TenorSearchService {
                     .append(convertBooleanWildcard("vergemaalType", searchData.getRelasjoner().getHarVergemaalEllerFremtidsfullmakt()))
                     .append(convertObject("borMedFar", searchData.getRelasjoner().getBorMedFar()))
                     .append(convertObject("borMedMor", searchData.getRelasjoner().getBorMedMor()))
-                    .append(convertObject("borMedMedMor", searchData.getRelasjoner().getBorMedMedmor()));
+                    .append(convertObject("borMedMedmor", searchData.getRelasjoner().getBorMedMedmor()))
+                    .append(convertObject("foreldreHarSammeAdresse", searchData.getRelasjoner().getForeldreHarSammeAdresse()));
         }
 
         if (nonNull(searchData.getHendelser())) {
