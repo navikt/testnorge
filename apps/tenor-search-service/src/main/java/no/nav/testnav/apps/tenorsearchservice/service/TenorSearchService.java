@@ -42,8 +42,8 @@ public class TenorSearchService {
                 .append(convertEnum("sivilstatus", searchData.getSivilstatus()))
                 .append(getUtenlandskPersonidentifikasjon(searchData.getUtenlandskPersonIdentifikasjon()))
                 .append(convertEnum("identitetsgrunnlagStatus", searchData.getIdentitetsgrunnlagStatus()))
-                .append(convertEnum("adressebeskyttelse", searchData.getAdressebeskyttelse()))
-                .append(convertObject("legitimasjonsdokument", searchData.getHarLegitimasjonsdokument()))
+                .append(convertEnum("adresseBeskyttelse", searchData.getAdressebeskyttelse()))
+                .append(convertBooleanWildcard("legitimasjonsdokument", searchData.getHarLegitimasjonsdokument()))
                 .append(convertObject("falskIdentitet", searchData.getHarFalskIdentitet()))
                 .append(convertObject("norskStatsborgerskap", searchData.getHarNorskStatsborgerskap()))
                 .append(convertObject("flereStatsborgerskap", searchData.getHarFlereStatsborgerskap()));
@@ -56,7 +56,8 @@ public class TenorSearchService {
         }
 
         if (nonNull(searchData.getAdresser())) {
-            builder.append(convertObject("bostedsadresse", searchData.getAdresser().getBostedsadresseFritekst()))
+            builder.append(convertEnum("adresseGradering", searchData.getAdresser().getAdresseGradering()))
+                    .append(convertObject("kommunenr", searchData.getAdresser().getKommunenummer()))
                     .append(convertBooleanWildcard("bostedsadresse", searchData.getAdresser().getHarBostedsadresse()))
                     .append(convertBooleanWildcard("oppholdAnnetSted", searchData.getAdresser().getHarOppholdAnnetSted()))
                     .append(convertBooleanWildcard("postadresse", searchData.getAdresser().getHarPostadresseNorge()))

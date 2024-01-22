@@ -163,7 +163,6 @@ public class TenorRequest {
     public static class Adresser {
 
         @Schema(description = "Adressesøk, fritekst")
-        private String bostedsadresseFritekst;
         private AdresseGradering adresseGradering;
         private Integer kommunenummer;
         private Boolean harBostedsadresse;
