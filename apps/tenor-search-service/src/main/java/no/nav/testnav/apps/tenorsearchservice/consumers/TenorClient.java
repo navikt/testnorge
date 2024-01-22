@@ -3,6 +3,7 @@ package no.nav.testnav.apps.tenorsearchservice.consumers;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.tenorsearchservice.config.Consumers;
 import no.nav.testnav.apps.tenorsearchservice.consumers.command.GetTenorTestdata;
+import no.nav.testnav.apps.tenorsearchservice.consumers.dto.InfoType;
 import no.nav.testnav.apps.tenorsearchservice.domain.TenorResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -24,9 +25,9 @@ public class TenorClient {
         this.maskinportenClient = maskinportenClient;
     }
 
-    public Mono<TenorResponse> getTestdata(String query) {
+    public Mono<TenorResponse> getTestdata(String query, InfoType type) {
 
         return maskinportenClient.getAccessToken()
-                .flatMap(token -> new GetTenorTestdata(webClient, query, token.value()).call());
+                .flatMap(token -> new GetTenorTestdata(webClient, query, type, token.value()).call());
     }
 }

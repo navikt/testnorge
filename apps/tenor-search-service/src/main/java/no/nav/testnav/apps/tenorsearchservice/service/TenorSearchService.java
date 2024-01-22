@@ -3,6 +3,7 @@ package no.nav.testnav.apps.tenorsearchservice.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.tenorsearchservice.consumers.TenorClient;
+import no.nav.testnav.apps.tenorsearchservice.consumers.dto.InfoType;
 import no.nav.testnav.apps.tenorsearchservice.domain.TenorRequest;
 import no.nav.testnav.apps.tenorsearchservice.domain.TenorResponse;
 import org.springframework.stereotype.Service;
@@ -26,11 +27,11 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @RequiredArgsConstructor
 public class TenorSearchService {
     private final TenorClient tenorClient;
-    public Mono<TenorResponse> getTestdata(String testDataQuery) {
+    public Mono<TenorResponse> getTestdata(String testDataQuery, InfoType type) {
 
-        return tenorClient.getTestdata(isNotBlank(testDataQuery) ? testDataQuery : "");
+        return tenorClient.getTestdata(isNotBlank(testDataQuery) ? testDataQuery : "", type);
     }
-    public Mono<TenorResponse> getTestdata(TenorRequest searchData) {
+    public Mono<TenorResponse> getTestdata(TenorRequest searchData, InfoType type) {
 
         var builder = new StringBuilder()
                 .append(convertObject("identifikator", searchData.getIdentifikator()))
@@ -86,7 +87,7 @@ public class TenorSearchService {
         builder.append(TenorEksterneRelasjonerUtility.getEksterneRelasjoner(searchData));
 
         var query = builder.substring(builder.isEmpty() ? 0 : 5, builder.length());
-        return tenorClient.getTestdata(query);
+        return tenorClient.getTestdata(query, type);
     }
     private String getRelasjonMedFoedselsdato(TenorRequest.Intervall relasjonMedFoedselsaar) {
 

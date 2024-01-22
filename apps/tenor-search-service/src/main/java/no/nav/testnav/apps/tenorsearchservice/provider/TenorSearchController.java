@@ -2,6 +2,7 @@ package no.nav.testnav.apps.tenorsearchservice.provider;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.tenorsearchservice.consumers.MaskinportenClient;
+import no.nav.testnav.apps.tenorsearchservice.consumers.dto.InfoType;
 import no.nav.testnav.apps.tenorsearchservice.domain.AccessToken;
 import no.nav.testnav.apps.tenorsearchservice.domain.Lookups;
 import no.nav.testnav.apps.tenorsearchservice.domain.TenorRequest;
@@ -28,17 +29,19 @@ public class TenorSearchController {
     private final LookupService lookupService;
 
     @GetMapping("/testdata/raw")
-    public Mono<TenorResponse> getTestdata(@RequestParam(required = false) String searchData) {
+    public Mono<TenorResponse> getTestdata(@RequestParam(required = false) String searchData,
+                                           @RequestParam(required = false) InfoType type) {
 
         return tenorSearchService
-                .getTestdata(searchData);
+                .getTestdata(searchData, type);
     }
 
     @PostMapping("/testdata")
-    public Mono<TenorResponse> getTestdata(@RequestBody TenorRequest searchData) {
+    public Mono<TenorResponse> getTestdata(@RequestBody TenorRequest searchData,
+                                           @RequestParam(required = false) InfoType type) {
 
         return tenorSearchService
-                .getTestdata(searchData);
+                .getTestdata(searchData, type);
     }
 
     @GetMapping("/testdata/domain")
