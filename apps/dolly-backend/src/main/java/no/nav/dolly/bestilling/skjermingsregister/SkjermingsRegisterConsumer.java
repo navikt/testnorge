@@ -3,7 +3,6 @@ package no.nav.dolly.bestilling.skjermingsregister;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
-import no.nav.dolly.bestilling.skjermingsregister.command.SkjermingsregisterDeleteCommand;
 import no.nav.dolly.bestilling.skjermingsregister.command.SkjermingsregisterGetCommand;
 import no.nav.dolly.bestilling.skjermingsregister.command.SkjermingsregisterPostCommand;
 import no.nav.dolly.bestilling.skjermingsregister.command.SkjermingsregisterPutCommand;
@@ -49,12 +48,12 @@ public class SkjermingsRegisterConsumer implements ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = { "operation", "skjermingsdata-slett" })
-    public Mono<List<Void>> deleteSkjerming(List<String> identer) {
+    public Mono<List<SkjermingDataResponse>> deleteSkjerming(List<String> identer) {
 
         return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> Flux.range(0, identer.size())
                         .delayElements(Duration.ofMillis(100))
-                        .map(index -> new SkjermingsregisterDeleteCommand(webClient,
+                        .map(index -> new SkjermingsregisterPutCommand(webClient,
                                 SkjermingDataRequest.builder()
                                         .personident(identer.get(index))
                                         .skjermetTil(LocalDateTime.now())
