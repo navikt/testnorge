@@ -109,6 +109,7 @@ export type SivilstandData = {
 	bekreftelsesdato?: string
 	id?: number
 	sivilstandsdato?: string
+	borIkkeSammen?: boolean
 	nyRelatertPerson?: NyIdent
 	metadata: Metadata
 }

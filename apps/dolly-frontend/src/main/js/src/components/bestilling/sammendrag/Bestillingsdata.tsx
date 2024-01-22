@@ -21,6 +21,7 @@ import { Bostedsadresse } from '@/components/fagsystem/pdlf/bestilling/partials/
 import { Oppholdsadresse } from '@/components/fagsystem/pdlf/bestilling/partials/Oppholdsadresse'
 import { Kontaktadresse } from '@/components/fagsystem/pdlf/bestilling/partials/Kontaktadresse'
 import { Adressebeskyttelse } from '@/components/fagsystem/pdlf/bestilling/partials/Adressebeskyttelse'
+import { Sivilstand } from '@/components/fagsystem/pdlf/bestilling/partials/Sivilstand'
 
 export const BestillingTitle = styled.h4`
 	margin: 5px 0 15px 0;
@@ -82,6 +83,7 @@ export const Bestillingsdata = ({ bestilling }: any) => {
 			<Adressebeskyttelse
 				adressebeskyttelseListe={bestilling.pdldata?.person?.adressebeskyttelse}
 			/>
+			<Sivilstand sivilstandListe={bestilling.pdldata?.person?.sivilstand} />
 		</>
 	)
 }

@@ -1,6 +1,6 @@
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import React from 'react'
-import { formatDate } from '@/utils/DataFormatter'
+import { formatDate, showLabel } from '@/utils/DataFormatter'
 import { AdresseKodeverk } from '@/config/kodeverk'
 
 export const RelatertPerson = ({ personData }: any) => {
@@ -21,11 +21,11 @@ export const RelatertPerson = ({ personData }: any) => {
 				value={personData.statsborgerskapLandkode || personData.statsborgerskap}
 				kodeverk={AdresseKodeverk.StatsborgerskapLand}
 			/>
-			<TitleValue title="Gradering" value={personData.gradering} />
-			<TitleValue title="Har mellomnavn" value={personData.hasMellomnavn && 'JA'} />
-			<TitleValue title="Fornavn" value={personData.fornavn} />
-			<TitleValue title="Mellomnavn" value={personData.mellomnavn} />
-			<TitleValue title="Etternavn" value={personData.etternavn} />
+			<TitleValue title="Gradering" value={showLabel('gradering', personData.gradering)} />
+			<TitleValue title="Har mellomnavn" value={personData.nyttNavn?.hasMellomnavn && 'JA'} />
+			<TitleValue title="Fornavn" value={personData.navn?.fornavn} />
+			<TitleValue title="Mellomnavn" value={personData.navn?.mellomnavn} />
+			<TitleValue title="Etternavn" value={personData.navn?.etternavn} />
 		</>
 	)
 }
