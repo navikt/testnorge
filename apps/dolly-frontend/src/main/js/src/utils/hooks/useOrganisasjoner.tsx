@@ -1,9 +1,9 @@
 import useSWR from 'swr'
-import { fetcher, multiFetcherAareg, multiFetcherAmelding } from '@/api'
-import { Organisasjon, OrganisasjonFasteData } from '@/service/services/organisasjonforvalter/types'
-import { Bestillingsinformasjon } from '@/components/bestilling/sammendrag/miljoeStatus/MiljoeStatus'
-import { Arbeidsforhold } from '@/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
-import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
+import {fetcher, multiFetcherAareg, multiFetcherAmelding} from '@/api'
+import {Organisasjon, OrganisasjonFasteData} from '@/service/services/organisasjonforvalter/types'
+import {Bestillingsinformasjon} from '@/components/bestilling/sammendrag/miljoeStatus/MiljoeStatus'
+import {Arbeidsforhold} from '@/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
+import {useDollyEnvironments} from '@/utils/hooks/useEnvironments'
 
 type MiljoDataListe = {
 	miljo: string
@@ -215,7 +215,7 @@ export const useOrganisasjonBestillingStatus = (
 
 export const useArbeidsforhold = (ident: string, harAaregBestilling: boolean, miljoe?: string) => {
 	const { dollyEnvironmentList } = useDollyEnvironments()
-	const unsupportedEnvironments = ['t13', 'qx', 't3']
+	const unsupportedEnvironments = ['t13', 'qx']
 	const filteredEnvironments = dollyEnvironmentList
 		?.map((miljoe) => miljoe.id)
 		?.filter((miljoe) => !unsupportedEnvironments.includes(miljoe))

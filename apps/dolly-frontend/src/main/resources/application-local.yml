@@ -1,5 +1,6 @@
 POST_LOGOUT_REDIRECT_URI: 'http://localhost:3000/login'
 REDIS_HOST: localhost
+TOKEN_X_ISSUER: dummy
 
 server:
   port: 8020

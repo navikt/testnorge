@@ -1,16 +1,8 @@
-import {
-  Form,
-  InputFormItem,
-  Knapp,
-  Line,
-  Page,
-  Pageable,
-  SelectFormItem,
-} from '@navikt/dolly-komponenter';
-import React, { useEffect, useState } from 'react';
-import { PersonFasteDataService, PersonService } from '@/service';
-import { CompareTable } from '@/components/compare-table';
-import { PersonComperator } from '@/comperator';
+import {Form, InputFormItem, Knapp, Line, Page, Pageable, SelectFormItem,} from '@navikt/dolly-komponenter';
+import React, {useEffect, useState} from 'react';
+import {PersonFasteDataService, PersonService} from '@/service';
+import {CompareTable} from '@/components/compare-table';
+import {PersonComperator} from '@/comperator';
 
 const grupper = [
   'DOLLY',
@@ -28,9 +20,7 @@ const miljoer = [
   'q1',
   'q2',
   'q4',
-  'q5',
   'qx',
-  't3',
   't13',
 ];
 
