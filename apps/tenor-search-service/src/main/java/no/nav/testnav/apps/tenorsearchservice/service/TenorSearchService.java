@@ -29,12 +29,12 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 public class TenorSearchService {
     private final TenorClient tenorClient;
 
-    public Mono<TenorResponse> getTestdata(String testDataQuery, Kilde kilde, InfoType type, Integer seed) {
+    public Mono<TenorResponse> getTestdata(String testDataQuery, Kilde kilde, InfoType type, String fields, Integer seed) {
 
-        return tenorClient.getTestdata(isNotBlank(testDataQuery) ? testDataQuery : "", kilde, type, seed);
+        return tenorClient.getTestdata(isNotBlank(testDataQuery) ? testDataQuery : "", kilde, type, fields, seed);
     }
 
-    public Mono<TenorResponse> getTestdata(TenorRequest searchData, Kilde kilde, InfoType type, Integer seed) {
+    public Mono<TenorResponse> getTestdata(TenorRequest searchData, Kilde kilde, InfoType type, String fields, Integer seed) {
 
         var builder = new StringBuilder()
                 .append(convertObject("identifikator", searchData.getIdentifikator()))
@@ -90,7 +90,7 @@ public class TenorSearchService {
         builder.append(TenorEksterneRelasjonerUtility.getEksterneRelasjoner(searchData));
 
         var query = builder.substring(builder.isEmpty() ? 0 : 5, builder.length());
-        return tenorClient.getTestdata(query, kilde, type, seed);
+        return tenorClient.getTestdata(query, kilde, type, fields, seed);
     }
 
     private String getRelasjonMedFoedselsdato(TenorRequest.Intervall relasjonMedFoedselsaar) {

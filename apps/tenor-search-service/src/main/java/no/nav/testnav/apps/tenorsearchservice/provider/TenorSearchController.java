@@ -33,20 +33,22 @@ public class TenorSearchController {
     public Mono<TenorResponse> getTestdata(@RequestParam(required = false) String searchData,
                                            @RequestParam(required = false) Kilde kilde,
                                            @RequestParam(required = false) InfoType type,
+                                           @RequestParam(required = false) String fields,
                                            @RequestParam(required = false) Integer seed) {
 
         return tenorSearchService
-                .getTestdata(searchData, kilde, type, seed);
+                .getTestdata(searchData, kilde, type, fields, seed);
     }
 
     @PostMapping("/testdata")
     public Mono<TenorResponse> getTestdata(@RequestBody TenorRequest searchData,
                                            @RequestParam(required = false) Kilde kilde,
                                            @RequestParam(required = false) InfoType type,
+                                           @RequestParam(required = false) String fields,
                                            @RequestParam(required = false) Integer seed) {
 
         return tenorSearchService
-                .getTestdata(searchData, kilde, type, seed);
+                .getTestdata(searchData, kilde, type, fields, seed);
     }
 
     @GetMapping("/testdata/domain")

@@ -26,12 +26,12 @@ import static java.util.Objects.nonNull;
 public class GetTenorTestdata implements Callable<Mono<TenorResponse>> {
 
     private static final String TENOR_QUERY_URL = "/api/testnorge/v2/soek/{kilde}";
-    private static final String TENOR_UTVIDET_QUERY_URL = "/api/testnorge/v2/soek/{kilde}/utvidet";
 
     private final WebClient webClient;
     private final String query;
     private final Kilde kilde;
     private final InfoType type;
+    private final String fields;
     private final Integer seed;
     private final String token;
 
@@ -39,15 +39,17 @@ public class GetTenorTestdata implements Callable<Mono<TenorResponse>> {
     public Mono<TenorResponse> call() {
 
         log.info("Query-parameter: {}", query);
-        var requestParams = Map.of("tenorQuery", query,
-                "kilde", getKilde(kilde).getKilde());
+        var requestParams = Map.of(
+                "kilde", getKilde(kilde).getKilde(),
+                "query", query);
 
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
-                        .path(getUrl(type))
-                        .queryParam("kql", "{tenorQuery}")
+                        .path(TENOR_QUERY_URL)
+                        .queryParam("kql", "{query}")
                         .queryParam("nokkelinformasjon", isNoekkelinfo(type))
                         .queryParamIfPresent("seed", Optional.ofNullable(seed))
+                        .queryParamIfPresent("vis", Optional.ofNullable(getVisning(type)))
                         .build(requestParams))
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
@@ -65,14 +67,23 @@ public class GetTenorTestdata implements Callable<Mono<TenorResponse>> {
                         .build()));
     }
 
+    private String getVisning(InfoType type) {
+
+        if (nonNull(type)) {
+            return switch (type) {
+                case Kildedata -> "tenorMetadata.kildedata";
+                case AlleFelter -> "*";
+                case Spesifikt -> fields;
+                default -> null;
+            };
+        } else {
+            return null;
+        }
+    }
+
     private Kilde getKilde(Kilde kilde) {
 
         return isNull(kilde) ? Kilde.FREG : kilde;
-    }
-
-    private String getUrl(InfoType type) {
-
-        return isNull(type) || type != InfoType.Kildedokument ? TENOR_QUERY_URL : TENOR_UTVIDET_QUERY_URL;
     }
 
     private boolean isNoekkelinfo(InfoType type) {

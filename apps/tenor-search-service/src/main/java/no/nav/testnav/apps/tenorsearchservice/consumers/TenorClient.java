@@ -26,9 +26,9 @@ public class TenorClient {
         this.maskinportenClient = maskinportenClient;
     }
 
-    public Mono<TenorResponse> getTestdata(String query, Kilde kilde, InfoType type, Integer seed) {
+    public Mono<TenorResponse> getTestdata(String query, Kilde kilde, InfoType type, String fields, Integer seed) {
 
         return maskinportenClient.getAccessToken()
-                .flatMap(token -> new GetTenorTestdata(webClient, query, kilde, type, seed, token.value()).call());
+                .flatMap(token -> new GetTenorTestdata(webClient, query, kilde, type, fields, seed, token.value()).call());
     }
 }
