@@ -1,8 +1,16 @@
-import {Form, InputFormItem, Knapp, Line, Page, Pageable, SelectFormItem,} from '@navikt/dolly-komponenter';
-import React, {useEffect, useState} from 'react';
-import {PersonFasteDataService, PersonService} from '@/service';
-import {CompareTable} from '@/components/compare-table';
-import {PersonComperator} from '@/comperator';
+import {
+  Form,
+  InputFormItem,
+  Knapp,
+  Line,
+  Page,
+  Pageable,
+  SelectFormItem,
+} from '@navikt/dolly-komponenter';
+import React, { useEffect, useState } from 'react';
+import { PersonFasteDataService, PersonService } from '@/service';
+import { CompareTable } from '@/components/compare-table';
+import { PersonComperator } from '@/comperator';
 
 const grupper = [
   'DOLLY',
@@ -16,13 +24,7 @@ const grupper = [
   'WIP',
 ];
 
-const miljoer = [
-  'q1',
-  'q2',
-  'q4',
-  'qx',
-  't13',
-];
+const miljoer = ['q1', 'q2', 'q4', 'qx', 't13'];
 
 const toOptions = (options: string[]) =>
   options.map((value) => ({
@@ -43,7 +45,7 @@ const FastePersonDataPage = () => {
     PersonFasteDataService.fetchPersoner(
       value,
       !tag ? null : tag,
-      !opprinnelse ? null : opprinnelse
+      !opprinnelse ? null : opprinnelse,
     )
       .then((response) => {
         setPersoner(response);
@@ -115,7 +117,7 @@ const FastePersonDataPage = () => {
                 miljo={miljo}
                 fetchCompare={(_miljo, item) =>
                   PersonService.fetchPerson(item.ident, _miljo).then(
-                    (response) => !PersonComperator.compare(item, response).isMismatch
+                    (response) => !PersonComperator.compare(item, response).isMismatch,
                   )
                 }
                 items={items}

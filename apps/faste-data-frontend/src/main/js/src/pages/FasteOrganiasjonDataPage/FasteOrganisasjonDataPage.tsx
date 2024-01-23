@@ -1,10 +1,18 @@
-import {Form, InputFormItem, Knapp, Line, Page, Pageable, SelectFormItem,} from '@navikt/dolly-komponenter';
-import React, {useEffect, useState} from 'react';
-import {OrganisasjonFasteDataService, OrganisasjonService} from '@/service';
-import {Organisasjon as FasteDataOrganisasjon} from '@/service/OrganisasjonFasteDataService';
-import {CompareTable} from '@/components/compare-table';
-import {OrganisasjonComperator} from '@/comperator';
-import {CodeSearch} from '@/components/CodeSearch';
+import {
+  Form,
+  InputFormItem,
+  Knapp,
+  Line,
+  Page,
+  Pageable,
+  SelectFormItem,
+} from '@navikt/dolly-komponenter';
+import React, { useEffect, useState } from 'react';
+import { OrganisasjonFasteDataService, OrganisasjonService } from '@/service';
+import { Organisasjon as FasteDataOrganisasjon } from '@/service/OrganisasjonFasteDataService';
+import { CompareTable } from '@/components/compare-table';
+import { OrganisasjonComperator } from '@/comperator';
+import { CodeSearch } from '@/components/CodeSearch';
 
 const grupper = [
   'DOLLY',
@@ -39,7 +47,7 @@ const FasteOrganisasjonDataPage = () => {
     OrganisasjonFasteDataService.fetchOrganisasjoner(
       value,
       !tag ? null : tag,
-      !opprinnelse ? null : opprinnelse
+      !opprinnelse ? null : opprinnelse,
     )
       .then((response) => {
         setOrganisasjoner(response);
@@ -62,7 +70,7 @@ const FasteOrganisasjonDataPage = () => {
         }}
         onSearch={(value) =>
           OrganisasjonFasteDataService.fetchOrganisasjon(value).then((response) =>
-            JSON.stringify(response, null, 2)
+            JSON.stringify(response, null, 2),
           )
         }
       />
@@ -123,7 +131,7 @@ const FasteOrganisasjonDataPage = () => {
                 miljo={miljo}
                 fetchCompare={(_miljo, item) =>
                   OrganisasjonService.fetchOrganisasjon(item.orgnummer, _miljo).then(
-                    (response) => !OrganisasjonComperator.compare(item, response).isMismatch
+                    (response) => !OrganisasjonComperator.compare(item, response).isMismatch,
                   )
                 }
                 items={items}

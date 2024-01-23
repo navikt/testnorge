@@ -1,4 +1,4 @@
-import {fetcher} from '@/api'
+import { fetcher } from '@/api'
 import useSWRImmutable from 'swr/immutable'
 import useSWR from 'swr'
 
@@ -51,7 +51,7 @@ export const useArenaEnvironments = () => {
 		([url, headers]) => fetcher(url, headers),
 		{
 			fallbackData: prefetchedArenaMiljoer,
-		}
+		},
 	)
 
 	return {
@@ -79,7 +79,7 @@ export const useDokarkivEnvironments = () => {
 		([url, headers]) => fetcher(url, headers),
 		{
 			fallbackData: prefetchedDokarkivMiljoer,
-		}
+		},
 	)
 
 	return {
@@ -120,7 +120,7 @@ export const _getEnvironmentsSortedByType = (envArray: any[]) => {
 
 		sorterteEnvs.map((_current: any, idx: number) => (envs[idx].id = sorterteEnvs[idx]))
 		sorterteEnvs.map(
-			(_current: any, idx: number) => (envs[idx].label = sorterteEnvs[idx].toUpperCase())
+			(_current: any, idx: number) => (envs[idx].label = sorterteEnvs[idx].toUpperCase()),
 		)
 	})
 	return sortedByType

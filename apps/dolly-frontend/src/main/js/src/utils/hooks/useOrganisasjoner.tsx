@@ -1,9 +1,9 @@
 import useSWR from 'swr'
-import {fetcher, multiFetcherAareg, multiFetcherAmelding} from '@/api'
-import {Organisasjon, OrganisasjonFasteData} from '@/service/services/organisasjonforvalter/types'
-import {Bestillingsinformasjon} from '@/components/bestilling/sammendrag/miljoeStatus/MiljoeStatus'
-import {Arbeidsforhold} from '@/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
-import {useDollyEnvironments} from '@/utils/hooks/useEnvironments'
+import { fetcher, multiFetcherAareg, multiFetcherAmelding } from '@/api'
+import { Organisasjon, OrganisasjonFasteData } from '@/service/services/organisasjonforvalter/types'
+import { Bestillingsinformasjon } from '@/components/bestilling/sammendrag/miljoeStatus/MiljoeStatus'
+import { Arbeidsforhold } from '@/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
+import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 
 type MiljoDataListe = {
 	miljo: string
