@@ -20,6 +20,7 @@ type SelectProps = {
 	id?: string
 	'data-cy'?: string
 	name: string
+	fieldName?: string
 	value?: any
 	className?: any
 	classNamePrefix?: string
@@ -132,7 +133,13 @@ export const SelectMedKodeverk = ({ kodeverk, label, isLoading, ...rest }: Selec
 
 export const DollySelect = (props: SelectProps) => (
 	<InputWrapper {...props}>
-		<Label containerClass="dollyselect" name={props.name} label={props.label} info={props.info}>
+		<Label
+			containerClass="dollyselect"
+			fieldName={props.fieldName}
+			name={props.name}
+			label={props.label}
+			info={props.info}
+		>
 			{props.kodeverk ? <SelectMedKodeverk {...props} /> : <Select {...props} />}
 		</Label>
 	</InputWrapper>
@@ -153,7 +160,6 @@ const P_FormikSelect = ({ feil, ...props }: SelectProps) => {
 					: [meta.option.value]
 			}
 			if (meta.action === 'remove-value') {
-				// When removing last value, value is null
 				value = selected ? selected.map((v) => v.value) : []
 			}
 		} else {
@@ -173,7 +179,9 @@ const P_FormikSelect = ({ feil, ...props }: SelectProps) => {
 			onBlur={handleBlur}
 			feil={
 				(errorContext?.showError || isTouched) &&
-				(feil || formMethods?.getFieldState(props.name)?.error)
+				(feil ||
+					formMethods?.getFieldState(props.name)?.error ||
+					formMethods?.getFieldState(props.fieldName)?.error)
 			}
 			{...props}
 		/>

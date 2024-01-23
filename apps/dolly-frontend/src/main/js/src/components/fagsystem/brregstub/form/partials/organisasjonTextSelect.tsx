@@ -3,6 +3,8 @@ import { OrganisasjonMedMiljoeSelect } from '@/components/organisasjonSelect/Org
 import { useBoolean } from 'react-use'
 import { OrgserviceApi } from '@/service/Api'
 import { OrgInfoAdresse } from '@/service/services/organisasjonservice/types'
+import _ from 'lodash'
+import { useFormContext } from 'react-hook-form'
 
 interface OrgnanisasjonTextSelectProps {
 	path: string
@@ -28,19 +30,18 @@ export const OrganisasjonTextSelect = ({
 	path,
 	aktiveMiljoer,
 	setEnhetsinfo,
-	clearEnhetsinfo,
 }: OrgnanisasjonTextSelectProps) => {
+	const formMethods = useFormContext()
 	const [error, setError] = useState(null)
 	const [success, setSuccess] = useBoolean(false)
 	const [loading, setLoading] = useBoolean(false)
 	const [environment, setEnvironment] = useState(null)
-	const [orgnummer, setOrgnummer] = useState(null)
+	const [orgnummer, setOrgnummer] = useState(formMethods.watch(path) || null)
 
 	const handleChange = (org: string, miljoe: string) => {
 		if (!org || !miljoe) {
 			return
 		}
-		clearEnhetsinfo()
 		setError(null)
 		setLoading(true)
 		setSuccess(false)
@@ -72,8 +73,10 @@ export const OrganisasjonTextSelect = ({
 			success={success}
 			loading={loading}
 			onTextBlur={(event) => {
-				setOrgnummer(event.target.value)
-				handleChange(event.target.value, environment)
+				if (!_.isEmpty(event?.target?.value)) {
+					setOrgnummer(event.target.value)
+					handleChange(event.target.value, environment)
+				}
 			}}
 			onMiljoeChange={(event) => {
 				setEnvironment(event.value)

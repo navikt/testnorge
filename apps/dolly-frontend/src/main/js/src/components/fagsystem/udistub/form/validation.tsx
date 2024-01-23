@@ -74,7 +74,7 @@ const oppholdStatus = Yup.object()
 	.nullable()
 	// Sjekker om oppholdStatus er et tomt objekt. Objektet blir satt ved å fylle i feltene
 	// 'Oppholdsstatus' og 'Type opphold', men disse er ikke en del av selve formet.
-	.test('is-not-empty', (value, context) => {
+	.test('is-not-empty', 'Feltet er påkrevd', (value, context) => {
 		const values = context.parent
 		if (_.isEmpty(values.oppholdStatus)) {
 			return values.harOppholdsTillatelse === false
@@ -88,7 +88,7 @@ export const validation = {
 		Yup.object({
 			aliaser: ifPresent('$udistub.aliaser', aliaser),
 			arbeidsadgang: ifPresent('$udistub.arbeidsadgang', arbeidsadgang),
-			flyktning: ifPresent('$udistub.flyktning', requiredBoolean.nullable()),
+			flyktning: requiredBoolean,
 			oppholdStatus: ifPresent('$udistub.oppholdStatus', oppholdStatus),
 			soeknadOmBeskyttelseUnderBehandling: ifPresent(
 				'$udistub.soeknadOmBeskyttelseUnderBehandling',

@@ -37,6 +37,7 @@ export const Arbeidsadgang = ({ formMethods }) => {
 			})
 			formMethods.setValue('udistub.arbeidsadgang.typeArbeidsadgang', null)
 		}
+		formMethods.trigger('udistub.arbeidsadgang')
 	}
 
 	const forklaring = formMethods.watch('udistub.arbeidsadgang.forklaring')

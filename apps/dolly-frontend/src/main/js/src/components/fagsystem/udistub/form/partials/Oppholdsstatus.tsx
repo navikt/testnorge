@@ -64,6 +64,7 @@ export const Oppholdsstatus = ({ formMethods }: { formMethods: UseFormReturn }) 
 		setEosEllerEFTAtypeOpphold('')
 		setTredjelandsBorgereValg('')
 		formMethods.setValue(basePath, {})
+		formMethods.clearErrors('udistub.oppholdStatus')
 		setPdlInitialValues(formMethods)
 	}
 
@@ -105,22 +106,15 @@ export const Oppholdsstatus = ({ formMethods }: { formMethods: UseFormReturn }) 
 		}
 	}
 
-	const feilmelding = (felt: string) => {
-		if (!felt) {
-			return { feilmelding: 'Feltet er påkrevd' }
-		}
-	}
-
 	return (
 		<div className="flexbox--flex-wrap">
 			<DollySelect
-				name="oppholdsstatus"
+				name="udistub.oppholdStatus"
 				label="Innenfor eller utenfor EØS"
 				value={oppholdsstatus}
 				size="large"
 				options={Options('oppholdsstatus')}
 				onChange={(option: Option) => endreOppholdsstatus(option.value)}
-				feil={feilmelding(oppholdsstatus)}
 				isClearable={false}
 			/>
 			{oppholdsstatus === 'eosEllerEFTAOpphold' && (
@@ -132,7 +126,6 @@ export const Oppholdsstatus = ({ formMethods }: { formMethods: UseFormReturn }) 
 						options={Options('eosEllerEFTAtypeOpphold')}
 						onChange={(option: Option) => endreEosEllerEFTAtypeOpphold(option.value)}
 						size="xxlarge"
-						feil={feilmelding(eosEllerEFTAtypeOpphold)}
 						isClearable={false}
 					/>
 					<FormikDatepicker
@@ -173,7 +166,6 @@ export const Oppholdsstatus = ({ formMethods }: { formMethods: UseFormReturn }) 
 						size="xxlarge"
 						options={Options('tredjelandsBorgereValg')}
 						onChange={(option: Option) => endreTredjelandsBorgereValg(option.value)}
-						feil={feilmelding(tredjelandsBorgereValg)}
 						isClearable={false}
 					/>
 					{tredjelandsBorgereValg === 'oppholdSammeVilkaar' && (

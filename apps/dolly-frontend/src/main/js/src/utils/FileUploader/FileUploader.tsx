@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React from 'react'
 import { useDropzone } from 'react-dropzone'
 import styled from 'styled-components'
 import * as _ from 'lodash'
@@ -35,17 +35,17 @@ const Container = styled.div`
 	transition: border 0.24s ease-in-out;
 `
 export default ({
-	files,
-	setFiles,
+	filer,
+	setFiler,
 	feil,
 	isMultiple = true,
 }: {
-	files: File[]
-	setFiles: any
+	filer: File[]
+	setFiler: any
 	feil?: { feilmelding: string } | null
 	isMultiple?: boolean
 }) => {
-	const handleDrop = useCallback((acceptedFiles: File[]) => {
+	const handleDrop = (acceptedFiles: File[]) => {
 		const reader = new FileReader()
 
 		acceptedFiles.forEach((file: File) => {
@@ -54,16 +54,16 @@ export default ({
 			reader.onload = () => {
 				const binaryStr = reader.result?.slice(28)
 				isMultiple
-					? setFiles([
+					? setFiler([
 							// @ts-ignore
 							{
 								id: new Date().getTime(),
 								name: file.path,
 								content: { base64: binaryStr },
 							},
-							...files,
+							...filer,
 						])
-					: setFiles([
+					: setFiler([
 							// @ts-ignore
 							{
 								id: new Date().getTime(),
@@ -74,9 +74,10 @@ export default ({
 			}
 			reader.readAsDataURL(file)
 		})
-	}, [])
+	}
+
 	const { getRootProps, getInputProps, isFocused, isDragAccept, isDragReject } = useDropzone({
-		disabled: !isMultiple && files?.length > 0,
+		disabled: !isMultiple && filer?.length > 0,
 		multiple: isMultiple,
 		onDrop: handleDrop,
 		accept: {

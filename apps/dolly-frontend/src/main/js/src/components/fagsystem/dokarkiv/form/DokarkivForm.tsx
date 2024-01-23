@@ -92,11 +92,13 @@ export const DokarkivForm = () => {
 		dokumentVarianter.length > 0
 			? formMethods.setValue('dokarkiv.dokumenter', dokumentVarianter)
 			: formMethods.setValue('dokarkiv.dokumenter[0].tittel', skjema.data)
+		formMethods.trigger('dokarkiv.dokumenter')
 	}
 
 	const handleVedleggChange = (filer: [Vedlegg]) => {
 		setFiles(filer)
 		formMethods.setValue('dokarkiv.vedlegg', filer)
+		formMethods.trigger('dokarkiv.vedlegg')
 	}
 
 	const handleSakstypeChange = (target) => {
@@ -105,6 +107,7 @@ export const DokarkivForm = () => {
 			formMethods.setValue('dokarkiv.sak.fagsaksystem', '')
 			formMethods.setValue('dokarkiv.sak.fagsakId', '')
 		}
+		formMethods.trigger('dokarkiv.sak')
 	}
 
 	const harFagsak = formMethods.watch('dokarkiv.sak.sakstype') === 'FAGSAK'
@@ -148,6 +151,7 @@ export const DokarkivForm = () => {
 									'dokarkiv.journalfoerendeEnhet',
 									event.target.value === '' ? undefined : event.target.value,
 								)
+								formMethods.trigger('dokarkiv.journalfoerendeEnhet')
 							}}
 							name="dokarkiv.journalfoerendeEnhet"
 							label="Journalførende enhet"
@@ -175,7 +179,7 @@ export const DokarkivForm = () => {
 					<FormikCheckbox name={`dokarkiv.ferdigstill`} label="Ferdigstill journalpost" />
 					{digitalInnsending ? <Digitalinnsending /> : null}
 					<Kategori title={'Vedlegg'}>
-						<FileUploader files={files} setFiles={setFiles} />
+						<FileUploader filer={files} setFiler={setFiles} />
 						{files.length > 0 && (
 							<DokumentInfoListe handleChange={handleVedleggChange} filer={files} />
 						)}

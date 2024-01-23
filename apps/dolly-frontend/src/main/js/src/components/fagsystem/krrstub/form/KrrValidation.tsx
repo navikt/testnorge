@@ -13,7 +13,7 @@ export const KrrValidation = {
 			}),
 			sdpAdresse: Yup.string(),
 			sdpLeverandoer: Yup.string().nullable(),
-			spraak: Yup.string(),
+			spraak: Yup.string().notRequired().nullable(),
 			registrert: ifPresent('$krrstub.registrert', requiredBoolean),
 			reservert: Yup.boolean().nullable(),
 		}),

@@ -16,9 +16,7 @@ export const validation = {
 								'Dato må være før iverksettelsesdato.',
 								(kravFremsattDato, context) => {
 									const iverksettelsesdato: Date = context.parent?.iverksettelsesdato
-									return (
-										kravFremsattDato && isBefore(kravFremsattDato, new Date(iverksettelsesdato))
-									)
+									return kravFremsattDato && isBefore(kravFremsattDato, iverksettelsesdato)
 								},
 							)
 							.nullable(),
@@ -39,7 +37,7 @@ export const validation = {
 							'Dato må være etter krav fremsatt.',
 							(iverksettelsesdato, context) => {
 								const kravFremsattDato: Date = context?.parent?.kravFremsattDato
-								return iverksettelsesdato && isAfter(iverksettelsesdato, new Date(kravFremsattDato))
+								return iverksettelsesdato && isAfter(iverksettelsesdato, kravFremsattDato)
 							},
 						)
 						.nullable(),

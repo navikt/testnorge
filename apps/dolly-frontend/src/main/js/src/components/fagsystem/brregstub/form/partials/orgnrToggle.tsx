@@ -74,7 +74,7 @@ export const OrgnrToggle = ({
 			)}
 			{inputType === inputValg.skrivSelv && (
 				<OrganisasjonTextSelect
-					path={path}
+					path={`${path}.orgNr`}
 					aktiveMiljoer={aktiveMiljoer}
 					setEnhetsinfo={setEnhetsinfo}
 					clearEnhetsinfo={clearEnhetsinfo}

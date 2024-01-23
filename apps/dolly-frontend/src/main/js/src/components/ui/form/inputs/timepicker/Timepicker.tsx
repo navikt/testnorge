@@ -69,9 +69,15 @@ const P_FormikTimepicker = ({ ...props }) => {
 
 	const handleChange = (date) => {
 		const fixedDate = fixTimezone(date)
+		const onChange =
+			props.onChange ||
+			((event) => {
+				formMethods.setValue(props.name, event?.target?.value, { shouldTouch: true })
+				formMethods.trigger(props.name)
+			})
 		if (props.afterChange) props.afterChange(fixedDate)
 
-		return props.onChange(SyntEvent(props.name, fixedDate))
+		return onChange(SyntEvent(props.name, fixedDate))
 	}
 	const handleBlur = () => props?.onBlur?.(SyntEvent(props.name, value))
 	return <DollyTimepicker value={value} onChange={handleChange} onBlur={handleBlur} {...props} />

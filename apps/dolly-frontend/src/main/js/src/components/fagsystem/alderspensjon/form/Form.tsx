@@ -270,9 +270,12 @@ export const AlderspensjonForm = () => {
 						name={`${alderspensjonPath}.iverksettelsesdato`}
 						label="Iverksettelsesdato"
 						date={formMethods.getValues(`${alderspensjonPath}.iverksettelsesdato`)}
-						handleDateChange={(dato: string) =>
-							formMethods.setValue(`${alderspensjonPath}.iverksettelsesdato`, dato)
-						}
+						handleDateChange={(dato: string) => {
+							formMethods.setValue(`${alderspensjonPath}.iverksettelsesdato`, dato, {
+								shouldTouch: true,
+							})
+							formMethods.trigger(`${alderspensjonPath}.iverksettelsesdato`)
+						}}
 					/>
 					{!soknad && (
 						<FormikSelect

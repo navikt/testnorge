@@ -15,7 +15,7 @@ import { Option } from '@/service/SelectOptionsOppslag'
 import { FormikDateTimepicker } from '@/components/ui/form/inputs/timepicker/Timepicker'
 import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { Yearpicker } from '@/components/ui/form/inputs/yearpicker/Yearpicker'
-import { testDatoFom } from '@/components/fagsystem/utils'
+import { testDatoFom, testDatoTom } from '@/components/fagsystem/utils'
 import { useFormContext } from 'react-hook-form'
 
 const DokumentInfoListe = React.lazy(
@@ -60,6 +60,8 @@ export const HistarkForm = () => {
 			formMethods.setValue(`histark.dokumenter.${index}.antallSider`, 1)
 			formMethods.setValue(`histark.dokumenter.${index}.fysiskDokument`, fil.content.base64)
 		})
+		formMethods.trigger('histark.dokumenter')
+		formMethods.trigger('histark.vedlegg')
 	}
 
 	return (
@@ -95,11 +97,13 @@ export const HistarkForm = () => {
 									</div>
 									<FormikSelect
 										name={'navenhet'}
+										fieldName={`${path}.enhetsnavn`}
 										value={selectedNavEnhet}
 										onChange={(selected: Option) => {
-											formMethods.setValue(`${path}.enhetsnummer`, selected.value)
-											formMethods.setValue(`${path}.enhetsnavn`, selected.label)
+											formMethods.setValue(`${path}.enhetsnummer`, selected?.value || null)
+											formMethods.setValue(`${path}.enhetsnavn`, selected?.label || null)
 											setSelectedNavEnhet(selected?.value)
+											formMethods.trigger(path)
 										}}
 										label={'NAV-enhet'}
 										size={'xlarge'}
@@ -114,7 +118,11 @@ export const HistarkForm = () => {
 										handleDateChange={(val) => {
 											const time = val ? new Date(val) : null
 											setStartAar(time)
-											formMethods.setValue(`${path}.startAar`, val ? new Date(val) : null)
+											formMethods.setValue(`${path}.startAar`, val ? new Date(val) : null, {
+												shouldTouch: true,
+											})
+											formMethods.trigger(`${path}.startAar`)
+											formMethods.trigger(`${path}.sluttAar`)
 										}}
 										maxDate={new Date()}
 									/>
@@ -126,7 +134,9 @@ export const HistarkForm = () => {
 										handleDateChange={(val) => {
 											const time = val ? new Date(val) : null
 											setSluttAar(time)
-											formMethods.setValue(`${path}.sluttAar`, time)
+											formMethods.setValue(`${path}.sluttAar`, time, { shouldTouch: true })
+											formMethods.trigger(`${path}.sluttAar`)
+											formMethods.trigger(`${path}.startAar`)
 										}}
 										maxDate={new Date()}
 									/>
@@ -149,7 +159,7 @@ export const HistarkForm = () => {
 										size={'xsmall'}
 									/>
 									<Kategori title={'Vedlegg'}>
-										<FileUploader files={files} setFiles={setFiles} isMultiple={false} />
+										<FileUploader filer={files} setFiler={setFiles} isMultiple={false} />
 										{files.length > 0 && (
 											<DokumentInfoListe
 												handleChange={handleVedleggChange}
@@ -182,7 +192,11 @@ HistarkForm.validation = {
 					skannested: requiredString,
 					skanningsTidspunkt: requiredDate.nullable(),
 					startAar: testDatoFom(requiredDate.nullable(), 'sluttAar', 'Startår må være før sluttår'),
-					sluttAar: requiredDate.nullable(),
+					sluttAar: testDatoTom(
+						requiredDate.nullable(),
+						'startAar',
+						'Sluttår må være etter startår',
+					),
 				}),
 			),
 		}),
