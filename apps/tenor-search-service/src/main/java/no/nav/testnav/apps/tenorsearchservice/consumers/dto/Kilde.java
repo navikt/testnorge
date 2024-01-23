@@ -8,9 +8,9 @@ public enum Kilde {
     FREG("freg"),
     FORETAKSREGISTRET("brreg-er-fr");
 
-    private final String kilde;
+    private final String tenorKilde;
 
-    Kilde(String kilde) {
-        this.kilde = kilde;
+    Kilde(String tenorKilde) {
+        this.tenorKilde = tenorKilde;
     }
 }

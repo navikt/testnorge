@@ -41,7 +41,7 @@ public class GetTenorTestdata implements Callable<Mono<TenorResponse>> {
 
         log.info("Query-parameter: {}", query);
         var requestParams = Map.of(
-                "kilde", getKilde(kilde).getKilde(),
+                "kilde", getKilde(kilde).getTenorKilde(),
                 "query", query,
                 "alle", "*");
 

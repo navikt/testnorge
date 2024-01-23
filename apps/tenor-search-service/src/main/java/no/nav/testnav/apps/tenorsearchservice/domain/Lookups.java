@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
+@SuppressWarnings("java:S115")
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public enum Lookups {
 
