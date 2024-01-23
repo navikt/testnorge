@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.tenorsearchservice.consumers.TenorClient;
 import no.nav.testnav.apps.tenorsearchservice.consumers.dto.InfoType;
+import no.nav.testnav.apps.tenorsearchservice.consumers.dto.Kilde;
 import no.nav.testnav.apps.tenorsearchservice.domain.TenorRequest;
 import no.nav.testnav.apps.tenorsearchservice.domain.TenorResponse;
 import org.springframework.stereotype.Service;
@@ -27,11 +28,13 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @RequiredArgsConstructor
 public class TenorSearchService {
     private final TenorClient tenorClient;
-    public Mono<TenorResponse> getTestdata(String testDataQuery, InfoType type) {
 
-        return tenorClient.getTestdata(isNotBlank(testDataQuery) ? testDataQuery : "", type);
+    public Mono<TenorResponse> getTestdata(String testDataQuery, Kilde kilde, InfoType type, Integer seed) {
+
+        return tenorClient.getTestdata(isNotBlank(testDataQuery) ? testDataQuery : "", kilde, type, seed);
     }
-    public Mono<TenorResponse> getTestdata(TenorRequest searchData, InfoType type) {
+
+    public Mono<TenorResponse> getTestdata(TenorRequest searchData, Kilde kilde, InfoType type, Integer seed) {
 
         var builder = new StringBuilder()
                 .append(convertObject("identifikator", searchData.getIdentifikator()))
@@ -87,8 +90,9 @@ public class TenorSearchService {
         builder.append(TenorEksterneRelasjonerUtility.getEksterneRelasjoner(searchData));
 
         var query = builder.substring(builder.isEmpty() ? 0 : 5, builder.length());
-        return tenorClient.getTestdata(query, type);
+        return tenorClient.getTestdata(query, kilde, type, seed);
     }
+
     private String getRelasjonMedFoedselsdato(TenorRequest.Intervall relasjonMedFoedselsaar) {
 
         return isNull(relasjonMedFoedselsaar) ? "" : " and tenorRelasjoner.freg:{foedselsdato:[%s to %s]}"
@@ -96,10 +100,12 @@ public class TenorSearchService {
                         convertObjectWildCard(relasjonMedFoedselsaar.getFraOgMed()),
                         convertObjectWildCard(relasjonMedFoedselsaar.getTilOgMed()));
     }
+
     private String getRelasjon(TenorRequest.Relasjon relasjon) {
 
         return isNull(relasjon) ? "" : " and tenorRelasjoner.freg:{tenorRelasjonsnavn:%s}".formatted(relasjon.name());
     }
+
     private String getUtenlandskPersonidentifikasjon(List<TenorRequest.UtenlandskPersonIdentifikasjon> utenlandskPersonIdentifikasjon) {
 
         return (utenlandskPersonIdentifikasjon.isEmpty()) ? "" : " and utenlandskPersonidentifikasjon:(%s)"

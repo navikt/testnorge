@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.tenorsearchservice.consumers.dto.InfoType;
+import no.nav.testnav.apps.tenorsearchservice.consumers.dto.Kilde;
 import no.nav.testnav.apps.tenorsearchservice.domain.TenorResponse;
 import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.http.HttpHeaders;
@@ -14,6 +15,7 @@ import reactor.util.retry.Retry;
 
 import java.time.Duration;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 
 import static java.util.Objects.isNull;
@@ -28,7 +30,9 @@ public class GetTenorTestdata implements Callable<Mono<TenorResponse>> {
 
     private final WebClient webClient;
     private final String query;
+    private final Kilde kilde;
     private final InfoType type;
+    private final Integer seed;
     private final String token;
 
     @Override
@@ -36,13 +40,14 @@ public class GetTenorTestdata implements Callable<Mono<TenorResponse>> {
 
         log.info("Query-parameter: {}", query);
         var requestParams = Map.of("tenorQuery", query,
-                "kilde", "freg");
+                "kilde", getKilde(kilde).getKilde());
 
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path(getUrl(type))
                         .queryParam("kql", "{tenorQuery}")
                         .queryParam("nokkelinformasjon", isNoekkelinfo(type))
+                        .queryParamIfPresent("seed", Optional.ofNullable(seed))
                         .build(requestParams))
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
@@ -58,6 +63,11 @@ public class GetTenorTestdata implements Callable<Mono<TenorResponse>> {
                         .status(WebClientFilter.getStatus(error))
                         .error(WebClientFilter.getMessage(error))
                         .build()));
+    }
+
+    private Kilde getKilde(Kilde kilde) {
+
+        return isNull(kilde) ? Kilde.FREG : kilde;
     }
 
     private String getUrl(InfoType type) {
