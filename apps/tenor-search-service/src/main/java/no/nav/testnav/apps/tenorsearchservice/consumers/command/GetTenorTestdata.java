@@ -20,6 +20,7 @@ import java.util.concurrent.Callable;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -41,7 +42,8 @@ public class GetTenorTestdata implements Callable<Mono<TenorResponse>> {
         log.info("Query-parameter: {}", query);
         var requestParams = Map.of(
                 "kilde", getKilde(kilde).getKilde(),
-                "query", query);
+                "query", query,
+                "alle", "*");
 
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
@@ -72,8 +74,8 @@ public class GetTenorTestdata implements Callable<Mono<TenorResponse>> {
         if (nonNull(type)) {
             return switch (type) {
                 case Kildedata -> "tenorMetadata.kildedata";
-                case AlleFelter -> "*";
-                case Spesifikt -> fields;
+                case AlleFelter -> "{alle}";
+                case Spesifikt -> isNotBlank(fields) ? fields : "id";
                 default -> null;
             };
         } else {
