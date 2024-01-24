@@ -126,8 +126,8 @@ consumers:
   kodeverk-api:
     name: kodeverk-api
     namespace: team-rocket
-    url: http://kodeverk-api.team-rocket.svc.cluster.local
-    cluster: dev-gcp
+    url: https://kodeverk-api.nav.no
+    cluster: prod-gcp
   testnav-dokarkiv-proxy:
     name: testnav-dokarkiv-proxy
     namespace: dolly

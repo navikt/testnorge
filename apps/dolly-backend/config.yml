@@ -53,8 +53,6 @@ spec:
         - application: testnav-miljoer-service
         - application: testnav-inntektsmelding-service
         - application: testnav-arbeidsforhold-service
-        - application: kodeverk-api
-          namespace: team-rocket
       external:
         - host: testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io
         - host: testnav-brregstub-proxy.dev-fss-pub.nais.io
@@ -65,6 +63,7 @@ spec:
         - host: testnav-inst-proxy.dev-fss-pub.nais.io
         - host: testnav-kontoregister-person-proxy.dev-fss-pub.nais.io
         - host: testnav-krrstub-proxy.dev-fss-pub.nais.io
+        - host: kodeverk-api.nav.no
         - host: testnav-norg2-proxy.dev-fss-pub.nais.io
         - host: testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
         - host: testnav-pdl-proxy.dev-fss-pub.nais.io
