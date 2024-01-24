@@ -142,6 +142,8 @@ export type ForeldreBarnRelasjon = {
 	relatertPersonsRolle: Rolle
 	deltBosted?: any
 	typeForelderBarn?: string
+	borIkkeSammen?: boolean
+	partnerErIkkeForelder?: boolean
 }
 
 export type DoedfoedtBarnData = {

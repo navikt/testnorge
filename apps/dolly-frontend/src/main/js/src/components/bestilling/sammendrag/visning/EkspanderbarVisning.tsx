@@ -1,17 +1,16 @@
 import useBoolean from '@/utils/hooks/useBoolean'
 import Button from '@/components/ui/button/Button'
 import React from 'react'
-import { RelatertPerson } from '@/components/bestilling/sammendrag/visning/RelatertPerson'
-import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 
 type EkspanderbarVisningTypes = {
-	data: any
+	vis: boolean
 	header: string
+	children?: any
 }
-export const EkspanderbarVisning = ({ data, header }: EkspanderbarVisningTypes) => {
+export const EkspanderbarVisning = ({ vis, header, children }: EkspanderbarVisningTypes) => {
 	const [visPersonValg, setVisPersonValg, setSkjulPersonValg] = useBoolean(false)
 
-	if (!data || isEmpty(data, ['syntetisk'])) {
+	if (!vis) {
 		return null
 	}
 
@@ -26,7 +25,7 @@ export const EkspanderbarVisning = ({ data, header }: EkspanderbarVisningTypes) 
 			</Button>
 			{visPersonValg && (
 				<div className={'flexbox--align-start flexbox--wrap'} style={{ margin: '10px 0 10px 0' }}>
-					<RelatertPerson personData={data} />
+					{children}
 				</div>
 			)}
 		</div>
