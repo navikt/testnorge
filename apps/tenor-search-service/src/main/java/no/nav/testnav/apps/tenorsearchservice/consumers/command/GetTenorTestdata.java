@@ -52,6 +52,7 @@ public class GetTenorTestdata implements Callable<Mono<TenorResponse>> {
                         .queryParam("nokkelinformasjon", isNoekkelinfo(type))
                         .queryParamIfPresent("seed", Optional.ofNullable(seed))
                         .queryParamIfPresent("vis", Optional.ofNullable(getVisning(type)))
+                        .queryParamIfPresent("skjul", Optional.ofNullable(getSkjul(type)))
                         .build(requestParams))
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
@@ -59,6 +60,7 @@ public class GetTenorTestdata implements Callable<Mono<TenorResponse>> {
                 .map(response -> TenorResponse.builder()
                         .status(HttpStatus.OK)
                         .data(response)
+                        .query(query)
                         .build())
                 .doOnError(WebClientFilter::logErrorMessage)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
@@ -66,14 +68,21 @@ public class GetTenorTestdata implements Callable<Mono<TenorResponse>> {
                 .onErrorResume(error -> Mono.just(TenorResponse.builder()
                         .status(WebClientFilter.getStatus(error))
                         .error(WebClientFilter.getMessage(error))
+                        .query(query)
                         .build()));
+    }
+
+    private String getSkjul(InfoType type) {
+
+        return isNull(type) || type != InfoType.Kildedata ?
+                "*.kildedata" : null;
     }
 
     private String getVisning(InfoType type) {
 
         if (nonNull(type)) {
             return switch (type) {
-                case Kildedata -> "tenorMetadata.kildedata";
+                case Kildedata -> "*.kildedata";
                 case AlleFelter -> "{alle}";
                 case Spesifikt -> isNotBlank(fields) ? fields : "id";
                 default -> null;

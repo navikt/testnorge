@@ -20,7 +20,6 @@ import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtili
 import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.convertEnum;
 import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.convertIntervall;
 import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.convertObject;
-import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.convertObjectWildCard;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -71,10 +70,9 @@ public class TenorSearchService {
         }
 
         if (nonNull(searchData.getRelasjoner())) {
-            builder.append(getRelasjon(searchData.getRelasjoner().getRelasjon()))
+            builder.append(getFregRelasjoner(searchData.getRelasjoner()))
                     .append(convertIntervall("antallBarn", searchData.getRelasjoner().getAntallBarn()))
                     .append(convertBooleanWildcard("foreldreansvar", searchData.getRelasjoner().getHarForeldreAnsvar()))
-                    .append(getRelasjonMedFoedselsdato(searchData.getRelasjoner().getRelasjonMedFoedselsaar()))
                     .append(convertBooleanWildcard("deltBosted", searchData.getRelasjoner().getHarDeltBosted()))
                     .append(convertBooleanWildcard("vergemaalType", searchData.getRelasjoner().getHarVergemaalEllerFremtidsfullmakt()))
                     .append(convertObject("borMedFar", searchData.getRelasjoner().getBorMedFar()))
@@ -93,17 +91,14 @@ public class TenorSearchService {
         return tenorClient.getTestdata(query, kilde, type, fields, seed);
     }
 
-    private String getRelasjonMedFoedselsdato(TenorRequest.Intervall relasjonMedFoedselsaar) {
+    private String getFregRelasjoner(TenorRequest.Relasjoner relasjoner) {
 
-        return isNull(relasjonMedFoedselsaar) ? "" : " and tenorRelasjoner.freg:{foedselsdato:[%s to %s]}"
-                .formatted(
-                        convertObjectWildCard(relasjonMedFoedselsaar.getFraOgMed()),
-                        convertObjectWildCard(relasjonMedFoedselsaar.getTilOgMed()));
-    }
-
-    private String getRelasjon(TenorRequest.Relasjon relasjon) {
-
-        return isNull(relasjon) ? "" : " and tenorRelasjoner.freg:{tenorRelasjonsnavn:%s}".formatted(relasjon.name());
+        return isNull(relasjoner.getRelasjon()) && isNull(relasjoner.getRelasjonMedFoedselsaar()) ? "" :
+                " and tenorRelasjoner.freg:{%s}"
+                        .formatted(new StringBuilder()
+                                .append(convertObject("tenorRelasjonsnavn", relasjoner.getRelasjon()))
+                                .append(convertIntervall("foedselsdato", relasjoner.getRelasjonMedFoedselsaar()))
+                                .substring(5));
     }
 
     private String getUtenlandskPersonidentifikasjon(List<TenorRequest.UtenlandskPersonIdentifikasjon> utenlandskPersonIdentifikasjon) {

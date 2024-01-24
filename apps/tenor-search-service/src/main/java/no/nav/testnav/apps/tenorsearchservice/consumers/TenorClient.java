@@ -1,6 +1,5 @@
 package no.nav.testnav.apps.tenorsearchservice.consumers;
 
-import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.tenorsearchservice.config.Consumers;
 import no.nav.testnav.apps.tenorsearchservice.consumers.command.GetTenorTestdata;
 import no.nav.testnav.apps.tenorsearchservice.consumers.dto.InfoType;
@@ -10,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-@Slf4j
 @Service
 public class TenorClient {
 
@@ -22,6 +20,8 @@ public class TenorClient {
         this.webClient = WebClient
                 .builder()
                 .baseUrl(consumers.getTenorSearchService().getUrl())
+                .codecs(configurer -> configurer.defaultCodecs()
+                        .maxInMemorySize(32 * 1024 * 1024))
                 .build();
         this.maskinportenClient = maskinportenClient;
     }

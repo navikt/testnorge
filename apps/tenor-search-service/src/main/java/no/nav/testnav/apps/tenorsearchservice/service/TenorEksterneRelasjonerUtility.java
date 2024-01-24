@@ -177,7 +177,10 @@ public class TenorEksterneRelasjonerUtility {
 
     private String getRoller(List<TenorRequest.Roller> roller) {
 
-        return (roller.isEmpty()) ? "" : " and tenorRelasjoner.brreg-er-fr:{dagligLeder:*}";
+        return (roller.isEmpty()) ? "" : " and tenorRelasjoner.brreg-er-fr:{%s}".formatted(roller.stream()
+                .map(Enum::name)
+                .map(type -> "%s%s:*".formatted(type.substring(0,1).toLowerCase(), type.substring(1)))
+                .collect(Collectors.joining(AND)));
     }
 
     private String getSkatteplikt(TenorRequest.Skatteplikt skatteplikt) {

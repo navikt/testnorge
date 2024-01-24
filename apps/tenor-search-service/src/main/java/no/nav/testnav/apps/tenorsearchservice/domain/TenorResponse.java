@@ -15,5 +15,6 @@ public class TenorResponse {
 
     private HttpStatus status;
     private JsonNode data;
+    private String query;
     private String error;
 }

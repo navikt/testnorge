@@ -20,7 +20,7 @@ public class TenorRequest {
 
     public enum Kjoenn {Mann, Kvinne}
 
-    public enum Roller {DAGLIG_LEDER}
+    public enum Roller {DagligLeder}
 
     public enum Personstatus {Bosatt, Doed, Forsvunnet, Foedselsregistrert, IkkeBosatt, Inaktiv, Midlertidig, Opphoert, Utflyttet}
 
