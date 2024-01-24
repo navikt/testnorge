@@ -38,9 +38,11 @@ spec:
           cluster: dev-gcp
     outbound:
       rules:
-        - application: kodeverk-dev
-          cluster: dev-fss
+        - application: kodeverk-api
+          cluster: dev-gcp
           namespace: team-rocket
+      external:
+        - host: kodeverk-api.nav.no
   liveness:
     path: /internal/isAlive
     initialDelay: 4

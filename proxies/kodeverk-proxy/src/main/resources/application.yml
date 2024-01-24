@@ -24,7 +24,7 @@ spring:
 
 consumers:
   kodeverk:
-    name: kodeverk-dev
+    name: kodeverk-api
     namespace: team-rocket
-    url: http://kodeverk.org.svc.nais.local
-    cluster: dev-fss
+    url: https://kodeverk-api.nav.no
+    cluster: dev-gcp
