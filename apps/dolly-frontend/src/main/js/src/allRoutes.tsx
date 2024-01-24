@@ -12,6 +12,7 @@ const UI = lazy(() => import('@/pages/ui/index'))
 const TestnorgePage = lazy(() => import('@/pages/testnorgePage/index'))
 const Endringsmelding = lazy(() => import('@/pages/endringsmelding/Endringsmelding'))
 const DollySoekPage = lazy(() => import('@/pages/dollySoek/DollySoekPage'))
+const TenorSoekPage = lazy(() => import('@/pages/tenorSoek/TenorSoekPage'))
 
 const GruppeBreadcrumb = (props) => <span>Gruppe #{props.match?.params?.gruppeId}</span>
 
@@ -45,8 +46,9 @@ const allRoutes = [
 	},
 	{ path: '/minside', breadcrumb: 'Min side', element: () => <MinSide /> },
 	{ path: '/ui', breadcrumb: 'UI demo', element: () => <UI /> },
-	{ path: '/testnorge', breadcrumb: 'Søk i Test-Norge', element: () => <TestnorgePage /> },
 	{ path: '/dollysoek', breadcrumb: 'Søk i Dolly', element: () => <DollySoekPage /> },
+	{ path: '/testnorge', breadcrumb: 'Søk i Test-Norge', element: () => <TestnorgePage /> },
+	{ path: '/tenor', breadcrumb: 'Søk i Tenor', element: () => <TenorSoekPage /> },
 	{
 		path: '/importer',
 		breadcrumb: 'Importer',
