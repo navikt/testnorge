@@ -19,6 +19,7 @@ import StyledAlert from '@/components/ui/alert/StyledAlert'
 
 type AaregVisningProps = {
 	ident?: string
+	master?: string
 	liste?: Array<MiljoDataListe>
 	ameldinger?: Array<any>
 	loading?: boolean
@@ -262,6 +263,7 @@ const Arbeidsforhold = ({ data }: ArbeidsforholdArray) => {
 
 export const AaregVisning = ({
 	ident,
+	master,
 	liste,
 	ameldinger,
 	loading,
@@ -309,7 +311,10 @@ export const AaregVisning = ({
 			...item,
 			data: item?.data
 				?.map((data) => {
-					return data?.sporingsinformasjon?.opprettetAv?.includes('testnav') ? data : null
+					return data?.sporingsinformasjon?.opprettetAv?.includes('testnav') ||
+						data?.sporingsinformasjon?.opprettetAv?.includes('srvappserver')
+						? data
+						: null
 				})
 				?.filter((data) => data),
 		}
@@ -387,7 +392,7 @@ export const AaregVisning = ({
 
 	return (
 		<>
-			{harArbeidsforholdBestilling && getArbeidsforhold()}
+			{(harArbeidsforholdBestilling || master === 'PDL') && getArbeidsforhold()}
 			{harAmeldingBestilling && getAmelding(ident)}
 		</>
 	)
