@@ -85,8 +85,7 @@ export const ArenaPanel = ({ stateModifier, formValues }) => {
 
 ArenaPanel.heading = 'Arbeidsytelser'
 
-ArenaPanel.initialValues = ({ set, setMulti, del, has }) => {
-	const opts = useContext(BestillingsveilederContext)
+ArenaPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 	const getServiceBehov = () => {
 		const okArenaBestillinger = opts?.tidligereBestillinger?.filter((bestilling) => {
 			const arenaStatus = bestilling?.status?.find(

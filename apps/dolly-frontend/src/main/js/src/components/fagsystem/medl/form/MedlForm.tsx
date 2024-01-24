@@ -19,12 +19,7 @@ import { MedlValidation } from '@/components/fagsystem/medl/form/MedlValidation'
 import { useFormContext } from 'react-hook-form'
 
 export const MedlForm = () => {
-	const {
-		trigger,
-		setValue,
-		formState: { errors },
-		getValues,
-	} = useFormContext()
+	const { trigger, setValue, getValues } = useFormContext()
 	const [aktivKilde, setAktivKilde] = useState(getValues('medl.kilde') || MEDL_KILDER.SRVMELOSYS)
 
 	if (!getValues(MedlAttributt)) {

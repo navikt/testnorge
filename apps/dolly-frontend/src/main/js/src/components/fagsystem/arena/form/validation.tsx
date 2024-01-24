@@ -326,7 +326,6 @@ export const validation = Yup.object({
 	arenaBrukertype: requiredString,
 	aktiveringDato: Yup.mixed()
 		.test('er-paakrevd', 'Feltet er påkrevd', (dato, testContext) => {
-			const context = testContext.options.context
 			const fullForm = testContext.from && testContext.from[testContext.from.length - 1]?.value
 			if (fullForm.personFoerLeggTil && fullForm.personFoerLeggTil.arenaforvalteren) return true
 			const { arenaforvalter } = fullForm

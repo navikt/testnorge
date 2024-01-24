@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react'
 import { Navigation } from './Navigation/Navigation'
-import { stateModifierFns } from '../stateModifier'
+import { useStateModifierFns } from '../stateModifier'
 import { BestillingsveilederHeader } from '../BestillingsveilederHeader'
 
 import { Steg1 } from './steg/steg1/Steg1'
@@ -37,6 +37,7 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 		resolver: yupResolver(DollyValidation),
 		context: context,
 	})
+	const stateModifier = useStateModifierFns(formMethods)
 
 	const mutate = useMatchMutate()
 
@@ -79,7 +80,6 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 
 	const labels = STEPS.map((v) => ({ label: v.label }))
 
-	const stateModifier = stateModifierFns(formMethods)
 	const devEnabled =
 		window.location.hostname.includes('localhost') ||
 		window.location.hostname.includes('dolly-frontend-dev')

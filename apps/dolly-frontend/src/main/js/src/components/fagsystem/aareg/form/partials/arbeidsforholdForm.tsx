@@ -186,11 +186,11 @@ export const ArbeidsforholdForm = ({
 						arbeidsforholdstype: event.value,
 						arbeidsgiver: gjeldendeArbeidsgiver,
 					})
-					trigger
+					trigger()
 				}
 			} else {
 				setFieldValue(`${path}.arbeidsforholdstype`, event.value)
-				trigger
+				trigger()
 			}
 			if (event.value === 'maritimtArbeidsforhold') {
 				setFieldValue(`${path}.fartoy`, initialFartoy)

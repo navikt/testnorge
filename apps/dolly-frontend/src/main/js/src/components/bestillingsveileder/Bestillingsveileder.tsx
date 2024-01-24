@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { StegVelger } from './stegVelger/StegVelger'
 import { AppError } from '@/components/ui/appError/AppError'
 import { BVOptions } from './options/options'
@@ -17,6 +17,14 @@ export const Bestillingsveileder = ({ error, sendBestilling }) => {
 	const { gruppeId, personId } = useParams()
 	const erOrganisasjon = location?.state?.opprettOrganisasjon
 	const importPersoner = location?.state?.importPersoner
+
+	const contextValue = useMemo(
+		() => ({
+			showError,
+			setShowError,
+		}),
+		[showError, setShowError],
+	)
 
 	useEffect(() => {
 		if (navigateRoot) {
@@ -50,7 +58,7 @@ export const Bestillingsveileder = ({ error, sendBestilling }) => {
 	return (
 		<div className="bestillingsveileder">
 			<ErrorBoundary>
-				<ShowErrorContext.Provider value={{ showError, setShowError }}>
+				<ShowErrorContext.Provider value={contextValue}>
 					<BestillingsveilederContext.Provider value={options}>
 						<StegVelger initialValues={options.initialValues} onSubmit={handleSubmit} />
 					</BestillingsveilederContext.Provider>

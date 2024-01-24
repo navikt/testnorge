@@ -43,7 +43,6 @@ const concatNavnMedTidligereValgt = (type, navnInfo, selectedNavn) => {
 }
 
 export const NavnForm = ({ formMethods, path, identtype }: NavnTypes) => {
-	const errors = formMethods.formState.errors
 	const [selectedFornavn, setSelectedFornavn] = useState(
 		formMethods.watch(`${path}.alleFornavn`) || [],
 	)

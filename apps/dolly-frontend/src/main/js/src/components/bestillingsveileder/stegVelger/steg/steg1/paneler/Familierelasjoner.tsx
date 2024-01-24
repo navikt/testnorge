@@ -58,8 +58,7 @@ export const FamilierelasjonPanel = ({ stateModifier, formValues }) => {
 
 FamilierelasjonPanel.heading = 'Familierelasjoner'
 
-FamilierelasjonPanel.initialValues = ({ set, del, has }: any) => {
-	const opts = useContext(BestillingsveilederContext)
+FamilierelasjonPanel.initialValues = ({ set, opts, del, has }: any) => {
 	const { identtype } = opts
 
 	return {

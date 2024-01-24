@@ -54,14 +54,14 @@ export const dokarkivAttributt = 'dokarkiv'
 
 export const DokarkivForm = () => {
 	const formMethods = useFormContext()
-	if (!_.has(formMethods.getValues(), dokarkivAttributt)) {
-		return null
-	}
-
 	const sessionDokumenter = formMethods.watch('dokarkiv.vedlegg')
 	const digitalInnsending = formMethods.watch('dokarkiv.avsenderMottaker')
 	const [files, setFiles] = useState(sessionDokumenter || [])
 	const [skjemaValues, setSkjemaValues] = useState(formMethods.watch('dokarkiv.skjema'))
+
+	if (!_.has(formMethods.getValues(), dokarkivAttributt)) {
+		return null
+	}
 
 	useEffect(() => {
 		handleSkjemaChange(skjemaValues)

@@ -11,8 +11,6 @@ import {
 } from '@/components/fagsystem/pdlf/form/initialValues'
 import { harValgtAttributt } from '@/components/ui/form/formUtils'
 import { adresseAttributter } from '@/components/fagsystem/pdlf/form/partials/adresser/Adresser'
-import { useContext } from 'react'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 export const AdressePanel = ({ stateModifier, formValues }: any) => {
 	const sm = stateModifier(AdressePanel.initialValues)
@@ -40,8 +38,7 @@ export const AdressePanel = ({ stateModifier, formValues }: any) => {
 
 AdressePanel.heading = 'Adresser'
 
-AdressePanel.initialValues = ({ set, del, has }: any) => {
-	const opts = useContext(BestillingsveilederContext)
+AdressePanel.initialValues = ({ set, opts, del, has }: any) => {
 	const { identtype } = opts
 
 	const paths = {

@@ -66,7 +66,6 @@ const validFradato = () => {
 				if (!val) {
 					return true
 				}
-				const context = testContext.options.context
 				const fullForm = testContext.from && testContext.from[testContext.from.length - 1]?.value
 
 				const nyeAdresser = fullForm?.pdldata?.person?.bostedsadresse

@@ -23,11 +23,10 @@ export const InntektstubVirksomhetToggle = ({
 	const orgnummerLength = 9
 
 	const [inputType, setInputType] = useState(
-		formMethods.watch(virksomhetPath)
-			? formMethods.watch(virksomhetPath).length === orgnummerLength
-				? ToggleValg.ORGANISASJON
-				: ToggleValg.PRIVAT
-			: ToggleValg.ORGANISASJON,
+		!formMethods.watch(virksomhetPath) ||
+			formMethods.watch(virksomhetPath).length === orgnummerLength
+			? ToggleValg.ORGANISASJON
+			: ToggleValg.PRIVAT,
 	)
 
 	const handleToggleChange = (value: ToggleValg) => {

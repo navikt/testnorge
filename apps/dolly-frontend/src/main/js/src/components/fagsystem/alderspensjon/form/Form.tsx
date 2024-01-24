@@ -53,14 +53,19 @@ export const AlderspensjonForm = () => {
 	const opts = useContext(BestillingsveilederContext)
 	const { nyBestilling, leggTil, importTestnorge, leggTilPaaGruppe } = opts?.is
 
-	const harAlder =
-		_has(formMethods.getValues(), 'pdldata.opprettNyPerson.alder') &&
-		_has(formMethods.getValues(), 'pdldata.opprettNyPerson.foedtFoer')
-	const alderNyPerson = _get(formMethods.getValues(), 'pdldata.opprettNyPerson.alder')
-	const foedtFoer = _get(formMethods.getValues(), 'pdldata.opprettNyPerson.foedtFoer')
-	const harUgyldigAlder =
-		(alderNyPerson && alderNyPerson < 62) ||
-		(isDate(foedtFoer) && add(foedtFoer, { years: 62 }) > new Date())
+	function sjekkAlderFelt() {
+		const harAlder =
+			_has(formMethods.getValues(), 'pdldata.opprettNyPerson.alder') &&
+			_has(formMethods.getValues(), 'pdldata.opprettNyPerson.foedtFoer')
+		const alderNyPerson = _get(formMethods.getValues(), 'pdldata.opprettNyPerson.alder')
+		const foedtFoer = _get(formMethods.getValues(), 'pdldata.opprettNyPerson.foedtFoer')
+		const harUgyldigAlder =
+			(alderNyPerson && alderNyPerson < 62) ||
+			(isDate(foedtFoer) && add(foedtFoer, { years: 62 }) > new Date())
+		return { harAlder, alderNyPerson, foedtFoer, harUgyldigAlder }
+	}
+
+	const { harAlder, alderNyPerson, foedtFoer, harUgyldigAlder } = sjekkAlderFelt()
 
 	const alderLeggTilPerson = getAlder(
 		_get(opts, 'personFoerLeggTil.pdl.hentPerson.foedsel[0].foedselsdato'),

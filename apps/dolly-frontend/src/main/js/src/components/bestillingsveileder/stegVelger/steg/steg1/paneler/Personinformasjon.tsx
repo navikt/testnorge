@@ -150,8 +150,7 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 PersoninformasjonPanel.heading = 'Personinformasjon'
 
 // @ts-ignore
-PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has }) => {
-	const opts = useContext(BestillingsveilederContext)
+PersoninformasjonPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 	const { personFoerLeggTil, identtype } = opts
 
 	const fjernIdFoerLeggTil = (path: string) => {

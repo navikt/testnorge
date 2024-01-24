@@ -21,8 +21,6 @@ import {
 import _get from 'lodash/get'
 import _has from 'lodash/has'
 import { isBoolean } from 'lodash'
-import { useContext } from 'react'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 export const ArbeidsplassenPanel = ({ stateModifier, formValues }) => {
 	const sm = stateModifier(ArbeidsplassenPanel.initialValues)
@@ -55,8 +53,7 @@ export const ArbeidsplassenPanel = ({ stateModifier, formValues }) => {
 
 ArbeidsplassenPanel.heading = 'Arbeidsplassen (CV)'
 
-ArbeidsplassenPanel.initialValues = ({ setMulti, del, has, initial }) => {
-	const opts = useContext(BestillingsveilederContext)
+ArbeidsplassenPanel.initialValues = ({ setMulti, opts, del, has, initial }) => {
 	const { personFoerLeggTil } = opts
 	const personFoerLeggTilHarHjemmel = personFoerLeggTil?.arbeidsplassenCV?.harHjemmel
 

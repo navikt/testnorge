@@ -1,7 +1,10 @@
 import _, { isArray } from 'lodash'
 import { UseFormReturn } from 'react-hook-form/dist/types'
+import { useContext } from 'react'
+import { BestillingsveilederContext } from './BestillingsveilederContext'
 
-export const stateModifierFns = (formMethods: UseFormReturn) => {
+export const useStateModifierFns = (formMethods: UseFormReturn) => {
+	const opts = useContext(BestillingsveilederContext)
 	const set = (path, value) => {
 		formMethods.setValue(path, value)
 	}
@@ -52,12 +55,13 @@ export const stateModifierFns = (formMethods: UseFormReturn) => {
 		fn: (arg0: {
 			set: (path: any, value: any) => any
 			setMulti: (...arrays: any[]) => void
+			opts: any
 			del: (path: any) => void
 			has: (path: any) => boolean
 			methods: any
 		}) => {},
 	) => {
-		const attrs = fn({ set, setMulti, del, has, methods: formMethods }) || {}
+		const attrs = fn({ set, setMulti, opts, del, has, methods: formMethods }) || {}
 		const checked = allCheckedLabels(attrs)
 		return {
 			attrs,

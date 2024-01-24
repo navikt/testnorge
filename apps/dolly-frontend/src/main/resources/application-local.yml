@@ -1,5 +1,4 @@
 POST_LOGOUT_REDIRECT_URI: 'http://localhost:3000/login'
-TOKEN_X_ISSUER: dummy
 REDIS_HOST: localhost
 TOKEN_X_ISSUER: dummy
 

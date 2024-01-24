@@ -50,7 +50,6 @@ export const validation = {
 					'er-foer-virkningsdato',
 					'Dato må være etter uføretidspunkt og før ønsket virkningsdato',
 					(kravFremsattDato, testContext) => {
-						const context = testContext.options.context
 						const fullForm =
 							testContext.from && testContext.from[testContext.from.length - 1]?.value
 						const virkningsdato = fullForm?.pensjonforvalter?.uforetrygd?.onsketVirkningsDato
