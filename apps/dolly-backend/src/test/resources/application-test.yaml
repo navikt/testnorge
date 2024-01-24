@@ -27,7 +27,7 @@ consumers:
     name: kodeverk-api
     namespace: team-rocket
     url: http://localhost:${wiremock.server.port:0}/kodeverk
-    cluster: dev-fss
+    cluster: prod-gcp
   testnav-tps-messaging-service:
     name: tps-messaging-mock
     namespace: dolly
