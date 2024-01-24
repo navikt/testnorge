@@ -63,11 +63,11 @@ consumers:
     url: https://krr-stub-%s.dev.intern.nav.no/api
   synthdata-aareg:
     url: http://nais-synthdata-aareg.dolly.svc.nais.local
-  kodeverk:
-    cluster: dev-fss
-    name: testnav-kodeverk-proxy
-    namespace: dolly
-    url: https://kodeverk.dev.intern.nav.no
+  kodeverk-api:
+    name: kodeverk-api
+    namespace: team-rocket
+    url: http://kodeverk-api.team-rocket.svc.cluster.local
+    cluster: dev-gcp
   testnav-aareg-proxy:
     name: testnav-aareg-proxy
     namespace: dolly

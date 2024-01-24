@@ -23,9 +23,9 @@ open:
     index: dummy
 
 consumers:
-  testnav-kodeverk-proxy:
-    name: kodeverk-mock
-    namespace: dolly
+  kodeverk-api:
+    name: kodeverk-api
+    namespace: team-rocket
     url: http://localhost:${wiremock.server.port:0}/kodeverk
     cluster: dev-fss
   testnav-tps-messaging-service:
