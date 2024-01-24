@@ -14,10 +14,10 @@ spec:
   azure:
     sidecar:
       enabled: true
-      autologin: true
-      autologinignorepaths:
+      autoLogin: true
+      autoLoginIgnorePaths:
         - /login
-      errorPath: /login
+        - /assets/*
     application:
       allowAllUsers: true
       enabled: true

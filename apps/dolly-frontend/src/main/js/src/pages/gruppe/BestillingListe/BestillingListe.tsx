@@ -96,7 +96,7 @@ export default function BestillingListe({
 			<DollyTable
 				pagination
 				gruppeDetaljer={{
-					antallElementer: gruppeInfo.antallBestillinger,
+					antallElementer: gruppeInfo?.antallBestillinger,
 					pageSize: sideStoerrelse,
 				}}
 				data={statusBestillinger}

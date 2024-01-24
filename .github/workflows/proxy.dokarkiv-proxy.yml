@@ -9,6 +9,7 @@ on:
       - libs/security-core
       - proxies/dokarkiv-proxy/**
       - .github/workflows/proxy.dokarkiv-proxy.yml
+      - .github/workflows/common.workflow.backend.yml
 
 jobs:
   workflow:

@@ -30,7 +30,7 @@ public class KodeverkService {
     public Kodeverk finnMedKode(String kode) {
         return kodeverkRepository.findByKode(kode).orElseThrow(() ->
                 new HttpClientErrorException(HttpStatus.NOT_FOUND,
-                        String.format("Kunne ikke finne kode: %s i kodeverket", kode))
+                        "Kunne ikke finne kode: %s i kodeverket".formatted(kode))
         );
     }
 

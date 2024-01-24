@@ -9,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -17,10 +18,10 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @SpringBootTest
+@ActiveProfiles("test")
 @AutoConfigureMockMvc(addFilters = false)
 class KodeverkControllerTest {
 
@@ -265,7 +266,7 @@ class KodeverkControllerTest {
 
     private List<Kodeverk> readResponse(MvcResult result) throws Exception {
         Kodeverk[] array = objectMapper.readValue(result.getResponse().getContentAsString(), Kodeverk[].class);
-        return Arrays.stream(array).collect(Collectors.toUnmodifiableList());
+        return Arrays.stream(array).toList();
     }
 
 }

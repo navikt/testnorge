@@ -12,6 +12,7 @@ on:
       - libs/servlet-security
       - apps/orgnummer-service/**
       - .github/workflows/app.orgnummer-service.yml
+      - .github/workflows/common.workflow.backend.yml
 
 jobs:
   workflow:

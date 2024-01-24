@@ -11,6 +11,7 @@ on:
       - libs/testing
       - apps/testnav-ident-pool/**
       - .github/workflows/app.testnav-ident-pool.yml
+      - .github/workflows/common.workflow.backend.yml
 
 jobs:
   workflow:

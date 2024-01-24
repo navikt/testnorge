@@ -71,14 +71,10 @@ spec:
   env:
     - name: SPRING_PROFILES_ACTIVE
       value: prod
-    - name: ACCEPTED_AUDIENCE
-      value: dev-gcp:dolly:testnav-organisasjon-tilgang-service
-    - name: TOKENDINGS_URL
-      value: https://tokenx.dev-gcp.nav.cloud.nais.io 
   gcp:
     sqlInstances:
       - type: POSTGRES_15
         name: testnav-organisasjon-tilganger
         databases:
           - name: testnav-organisasjon-tilganger
-        autoBackupTime: "02:30"
+        autoBackupHour: 2

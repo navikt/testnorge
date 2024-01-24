@@ -9,3 +9,5 @@ proxy:
 
 username: dummy
 password: dummy
+
+TOKEN_X_ISSUER: dummy

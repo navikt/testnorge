@@ -1,9 +1,4 @@
-spring.cloud.vault.token: dummy
-
-CLIENT_SECRET: dummy
-CLIENT_ID: dummy
-
-azure.app.client.id: dummy
+TOKEN_X_ISSUER: dummy
 
 consumers:
   testnav-person-organisasjon-tilgang-service:

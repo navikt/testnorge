@@ -55,19 +55,19 @@ public class SkjermingsRegisterClient implements ClientRegister {
         return Flux.empty();
     }
 
+    @Override
+    public void release(List<String> identer) {
+
+        skjermingsRegisterConsumer.deleteSkjerming(identer)
+                .subscribe(response -> log.info("Slettet identer fra Skjermingsregisteret"));
+    }
+
     private ClientFuture futurePersist(BestillingProgress progress, String status) {
 
         return () -> {
             transactionHelperService.persister(progress, BestillingProgress::setSkjermingsregisterStatus, status);
             return progress;
         };
-    }
-
-    @Override
-    public void release(List<String> identer) {
-
-        skjermingsRegisterConsumer.deleteSkjerming(identer)
-                .subscribe(response -> log.info("Slettet identer fra Skjermingsregisteret"));
     }
 
     private String getStatus(SkjermingDataResponse resultat) {

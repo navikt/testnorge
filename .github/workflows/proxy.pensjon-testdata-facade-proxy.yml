@@ -9,6 +9,7 @@ on:
       - libs/security-core
       - proxies/pensjon-testdata-facade-proxy/**
       - .github/workflows/proxy.pensjon-testdata-facade-proxy.yml
+      - .github/workflows/common.workflow.backend.yml
 
 jobs:
   workflow:

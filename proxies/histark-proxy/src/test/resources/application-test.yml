@@ -1,2 +1,1 @@
-azure.app.client.id: dummy
-azure.app.client.secret: dummy
+TOKEN_X_ISSUER: dummy

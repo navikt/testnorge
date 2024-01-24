@@ -5,3 +5,5 @@ app:
       namespace: teamarenanais
       url: http://arena-dummy.dummy.no
       cluster: dev-fss
+
+TOKEN_X_ISSUER: dummy

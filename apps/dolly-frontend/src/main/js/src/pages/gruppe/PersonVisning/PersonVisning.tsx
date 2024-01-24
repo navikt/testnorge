@@ -418,6 +418,7 @@ export default ({
 				{visArbeidsforhold && (
 					<AaregVisning
 						ident={ident.ident}
+						master={ident.master}
 						liste={arbeidsforhold}
 						ameldinger={ameldinger}
 						loading={loadingAareg || loadingAmelding}
