@@ -15,8 +15,7 @@ export default function GjenopprettBestilling(props) {
 	const mutate = useMatchMutate()
 
 	const submitFormik = async (values) => {
-		const filteredEnvs = values.environments?.filter((env) => env !== 'q5')
-		const envsQuery = arrayToString(filteredEnvs).replace(/ /g, '').toLowerCase()
+		const envsQuery = arrayToString(values.environments).replace(/ /g, '').toLowerCase()
 		erOrganisasjon
 			? await props.gjenopprettOrganisasjonBestilling(envsQuery)
 			: await props.gjenopprettBestilling(envsQuery)
