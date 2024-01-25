@@ -113,11 +113,11 @@ jobs:
         with:
           distribution: temurin
           java-version: 21
-      - name: "Download"
-        uses: actions/download-artifact@v4
-        with:
-          name: ${{ needs.start.outputs.artifact }}
-          path: ${{ inputs.working-directory }}/build
+#      - name: "Download"
+#        uses: actions/download-artifact@v4
+#        with:
+#          name: ${{ needs.start.outputs.artifact }}
+#          path: ${{ inputs.working-directory }}/build
       - name: "Sonar"
         uses: gradle/gradle-build-action@v2
         with:
