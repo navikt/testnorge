@@ -119,11 +119,11 @@ consumers:
     namespace: dolly
     url: http://testnav-person-service.dolly.svc.cluster.local
     cluster: dev-gcp
-  testnav-kodeverk-proxy:
-    name: testnav-kodeverk-proxy
-    namespace: dolly
-    url: https://testnav-kodeverk-proxy.dev-fss-pub.nais.io
-    cluster: dev-fss
+  kodeverk-api:
+    name: kodeverk-api
+    namespace: team-rocket
+    url: https://kodeverk-api.nav.no
+    cluster: prod-gcp
   testnav-dokarkiv-proxy:
     name: testnav-dokarkiv-proxy
     namespace: dolly

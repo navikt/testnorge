@@ -34,7 +34,7 @@ public class Consumers {
     private ServerProperties testnavInntektsmeldingService;
     private ServerProperties testnavInntektstubProxy;
     private ServerProperties testnavInstProxy;
-    private ServerProperties testnavKodeverkProxy;
+    private ServerProperties kodeverkApi;
     private ServerProperties testnavKontoregisterPersonProxy;
     private ServerProperties testnavKrrstubProxy;
     private ServerProperties testnavMedlProxy;

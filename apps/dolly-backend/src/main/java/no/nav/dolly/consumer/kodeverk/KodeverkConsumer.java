@@ -48,7 +48,7 @@ public class KodeverkConsumer {
             WebClient.Builder webClientBuilder
     ) {
         this.tokenService = tokenService;
-        serverProperties = consumers.getTestnavKodeverkProxy();
+        serverProperties = consumers.getKodeverkApi();
         this.webClient = webClientBuilder
                 .exchangeStrategies(
                         ExchangeStrategies
