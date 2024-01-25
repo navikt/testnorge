@@ -44,7 +44,10 @@ consumers:
   synthdata-aareg:
     url: http://localhost:${wiremock.server.port:0}/synt-aareg
   kodeverk:
-    url: http://localhost:${wiremock.server.port:0}/kodeverk
+    url: http://localhost:${wiremock.server.port:0}/kodeverk-api
+    name: kodeverk-api
+    namespace: team-rocket
+    cluster: dummy
   testnav-aareg-proxy:
     url: http://localhost:${wiremock.server.port:0}/aareg
     name: testnav-aareg-proxy
