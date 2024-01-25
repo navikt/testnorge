@@ -39,8 +39,8 @@ public class HentRolleoversiktController {
     @GetMapping
     public ResponseEntity<RolleoversiktTo> hentRolleoversikt(@NotNull @RequestHeader(name = "Nav-Personident") String ident) {
         var grunndata = service.hentRolleoversiktV1(ident)
-                .orElseThrow(() -> new NotFoundException(String.format("Kunne ikke finne person med fnr:%s",
-                        ident)));
+                .orElseThrow(() -> new NotFoundException("Kunne ikke finne person med fnr:%s".formatted(
+                ident)));
         return ResponseEntity.status(HttpStatus.OK).body(grunndata);
     }
 

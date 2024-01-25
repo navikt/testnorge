@@ -1,7 +1,4 @@
-spring.cloud.vault.token: dummy
-
-azure.app.client.id: dummy
-azure.app.client.secret: dummy
+TOKEN_X_ISSUER: dummy
 
 IDPORTEN_CLIENT_ID: dummy
 IDPORTEN_CLIENT_JWK: "{}"

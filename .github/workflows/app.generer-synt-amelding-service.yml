@@ -10,6 +10,7 @@ on:
       - libs/servlet-security
       - apps/generer-synt-amelding-service/**
       - .github/workflows/app.generer-synt-amelding-service.yml
+      - .github/workflows/common.workflow.backend.yml
 
 jobs:
   workflow:

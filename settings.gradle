@@ -21,7 +21,6 @@ gradleEnterprise {
     }
 }
 
-includeBuild './proxies/kodeverk-proxy'
 includeBuild './proxies/udistub-proxy'
 includeBuild './proxies/skjermingsregister-proxy'
 includeBuild './proxies/batch-adeo-proxy'
@@ -119,6 +118,7 @@ includeBuild './apps/tps-messaging-service'
 includeBuild './apps/organisasjon-tilgang-frontend'
 includeBuild './apps/synt-vedtakshistorikk-service'
 includeBuild './apps/testnav-ident-pool'
+includeBuild './apps/tenor-search-service'
 includeBuild './apps/dollystatus'
 
 includeBuild './xsd/arbeidsforhold-xsd'

@@ -11,6 +11,7 @@ on:
       - libs/slack
       - apps/tilbakemelding-api/**
       - .github/workflows/app.tilbakemelding-api.yml
+      - .github/workflows/common.workflow.backend.yml
 
 jobs:
   workflow:

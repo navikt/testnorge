@@ -14,6 +14,7 @@ on:
       - libs/servlet-insecure-security
       - apps/organisasjon-mottak-service/**
       - .github/workflows/app.organisasjon-mottak-service.yml
+      - .github/workflows/common.workflow.backend.yml
 
 jobs:
   workflow:

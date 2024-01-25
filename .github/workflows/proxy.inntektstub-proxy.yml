@@ -7,6 +7,7 @@ on:
       - libs/reactive-proxy
       - proxies/inntektstub-proxy/**
       - .github/workflows/proxy.inntektstub-proxy.yml
+      - .github/workflows/common.workflow.backend.yml
 
 jobs:
   workflow:

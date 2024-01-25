@@ -9,6 +9,7 @@ on:
       - libs/security-core
       - proxies/pdl-proxy/**
       - .github/workflows/proxy.pdl-proxy.yml
+      - .github/workflows/common.workflow.backend.yml
 
 jobs:
   workflow:

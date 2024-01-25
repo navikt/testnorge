@@ -3,7 +3,6 @@ package no.nav.dolly.bestilling.skjermingsregister;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
-import no.nav.dolly.bestilling.skjermingsregister.command.SkjermingsregisterDeleteCommand;
 import no.nav.dolly.bestilling.skjermingsregister.command.SkjermingsregisterGetCommand;
 import no.nav.dolly.bestilling.skjermingsregister.command.SkjermingsregisterPostCommand;
 import no.nav.dolly.bestilling.skjermingsregister.command.SkjermingsregisterPutCommand;
@@ -19,6 +18,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static java.util.Objects.nonNull;
@@ -47,19 +47,23 @@ public class SkjermingsRegisterConsumer implements ConsumerStatus {
                 .build();
     }
 
-    @Timed(name = "providers", tags = {"operation", "skjermingsdata-slett"})
-    public Mono<List<Void>> deleteSkjerming(List<String> identer) {
+    @Timed(name = "providers", tags = { "operation", "skjermingsdata-slett" })
+    public Mono<List<SkjermingDataResponse>> deleteSkjerming(List<String> identer) {
 
         return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> Flux.range(0, identer.size())
                         .delayElements(Duration.ofMillis(100))
-                        .map(index -> new SkjermingsregisterDeleteCommand(webClient,
-                                identer.get(index), token.getTokenValue()).call())
+                        .map(index -> new SkjermingsregisterPutCommand(webClient,
+                                SkjermingDataRequest.builder()
+                                        .personident(identer.get(index))
+                                        .skjermetTil(LocalDateTime.now())
+                                        .build(),
+                                token.getTokenValue()).call())
                         .flatMap(Flux::from))
                 .collectList();
     }
 
-    @Timed(name = "providers", tags = {"operation", "skjermingsdata-oppdater"})
+    @Timed(name = "providers", tags = { "operation", "skjermingsdata-oppdater" })
     public Mono<SkjermingDataResponse> oppdaterPerson(SkjermingDataRequest skjerming) {
 
         return tokenService.exchange(serverProperties)
@@ -67,24 +71,23 @@ public class SkjermingsRegisterConsumer implements ConsumerStatus {
                         .flatMap(response -> {
                             if (isBlank(response.getError())) {
                                 if (response.isEksistererIkke()) {
-                                    return new SkjermingsregisterPostCommand(webClient, List.of(skjerming),
+                                    return new SkjermingsregisterPostCommand(webClient, skjerming,
                                             token.getTokenValue()).call()
                                             .collectList()
                                             .map(status -> {
                                                 log.info("Opprettet skjerming på ident {} fraDato {} tilDato {}",
-                                                        status.get(0).getPersonident(), status.get(0).getSkjermetFra(), status.get(0).getSkjermetTil());
-                                                return status.get(0);
+                                                        status.getFirst().getPersonident(), status.getFirst().getSkjermetFra(), status.getFirst().getSkjermetTil());
+                                                return status.getFirst();
                                             });
                                 } else {
                                     return nonNull(skjerming.getSkjermetTil()) ?
 
-                                            new SkjermingsregisterPutCommand(webClient, skjerming.getPersonident(),
-                                                    skjerming.getSkjermetTil(), token.getTokenValue()).call()
+                                            new SkjermingsregisterPutCommand(webClient, skjerming, token.getTokenValue())
+                                                    .call()
                                                     .map(status -> {
                                                         log.info("Oppdatert skjerming for ident {}, ny tilDato {}", skjerming.getPersonident(), skjerming.getSkjermetTil());
                                                         return status;
                                                     }) :
-
                                             Mono.just(new SkjermingDataResponse());
                                 }
                             } else {

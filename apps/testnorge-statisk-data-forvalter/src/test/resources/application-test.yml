@@ -59,3 +59,5 @@ azure.app.client.id: dummy
 
 KAFKA_SCHEMA_REGISTRY: http://localhost:9009
 kafka.groupid: organisasjon-forvalter-v1
+
+TOKEN_X_ISSUER: dummy

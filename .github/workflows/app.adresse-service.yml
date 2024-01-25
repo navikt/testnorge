@@ -9,6 +9,7 @@ on:
       - libs/servlet-security
       - apps/adresse-service/**
       - .github/workflows/app.adresse-service.yml
+      - .github/workflows/common.workflow.backend.yml
 
 jobs:
   workflow:

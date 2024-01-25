@@ -9,6 +9,7 @@ on:
       - libs/security-core
       - proxies/udistub-proxy/**
       - .github/workflows/proxy.udistub-proxy.yml
+      - .github/workflows/common.workflow.backend.yml
 
 jobs:
   workflow:

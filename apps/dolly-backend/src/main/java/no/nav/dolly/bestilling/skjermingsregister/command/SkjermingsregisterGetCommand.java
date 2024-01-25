@@ -16,7 +16,8 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @RequiredArgsConstructor
 public class SkjermingsregisterGetCommand implements Callable<Mono<SkjermingDataResponse>> {
 
-    private static final String SKJERMINGSREGISTER_URL = "/api/v1/skjermingdata";
+    private static final String SKJERMINGSREGISTER_URL = "/api/v1/skjerming/dolly";
+    private static final String PERSONIDENT_HEADER = "personident";
 
     private final WebClient webClient;
     private final String ident;
@@ -26,9 +27,9 @@ public class SkjermingsregisterGetCommand implements Callable<Mono<SkjermingData
     public Mono<SkjermingDataResponse> call() {
         return webClient.get().uri(uriBuilder -> uriBuilder
                         .path(SKJERMINGSREGISTER_URL)
-                        .pathSegment(ident)
                         .build())
                 .header(AUTHORIZATION, "Bearer " + token)
+                .header(PERSONIDENT_HEADER, ident)
                 .retrieve()
                 .bodyToMono(SkjermingDataResponse.class)
                 .onErrorResume(WebClientResponseException.NotFound.class::isInstance,

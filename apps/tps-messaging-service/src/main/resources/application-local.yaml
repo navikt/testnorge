@@ -1,4 +1,4 @@
-TOKEN_X_CLIENT_ID: dev-gcp:dolly:testnav-tps-messaging-service
+TOKEN_X_ISSUER: dummy
 
 config:
   mq:

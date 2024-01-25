@@ -6,7 +6,6 @@ import no.nav.brregstub.database.repository.HentRolleRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,7 +15,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDate;
 import java.util.Map;
@@ -26,7 +24,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ExtendWith(SpringExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class HentRollerControllerTest {
 
@@ -39,7 +36,7 @@ public class HentRollerControllerTest {
 
     @Test
     @DisplayName("GET rolle returnerer 404 hvis ikke eksisterer")
-    public void skalKasteNotFoundHvisRolleIkkeEksister() {
+    void skalKasteNotFoundHvisRolleIkkeEksister() {
         var response = restTemplate.getForEntity(API_V_1_ROLLER + "0",
                 String.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
@@ -47,7 +44,7 @@ public class HentRollerControllerTest {
 
     @Test
     @DisplayName("GET rolle returnerer 200 hvis ikke eksisterer")
-    public void skalHenteRolleutskriftFraDatabase() {
+    void skalHenteRolleutskriftFraDatabase() {
         var nyRolle = new HentRolle();
         nyRolle.setOrgnr(1);
         nyRolle.setJson("{\"orgnr\": 1}");
@@ -62,7 +59,7 @@ public class HentRollerControllerTest {
 
     @Test
     @DisplayName("DELETE rolle skal slettes fra database")
-    public void skalSletteRolleutskrift() {
+    void skalSletteRolleutskrift() {
         var rolleSomSkalSlettes = new HentRolle();
         rolleSomSkalSlettes.setOrgnr(3);
         rolleSomSkalSlettes.setJson("{}");
@@ -81,7 +78,7 @@ public class HentRollerControllerTest {
 
     @Test
     @DisplayName("POST rolle skal opprette ny databaseinnslag")
-    public void skalLagreRequestIDatabase() {
+    void skalLagreRequestIDatabase() {
         var to = new RsOrganisasjon();
         to.setOrgnr(4);
         to.setRegistreringsdato(LocalDate.now());
@@ -96,7 +93,7 @@ public class HentRollerControllerTest {
 
     @Test
     @DisplayName("POST rolle returnere bad request ved manglende feilt")
-    public void skalReturnereBadRequestVedValideringsFeil() {
+    void skalReturnereBadRequestVedValideringsFeil() {
         var to = new RsOrganisasjon();
 
         var response =

@@ -9,8 +9,6 @@ spec:
   image: "{{image}}"
   port: 8080
   webproxy: true
-  tracing:
-    enabled: true
   accessPolicy:
     inbound:
       rules:

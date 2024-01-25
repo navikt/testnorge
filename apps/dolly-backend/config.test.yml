@@ -54,7 +54,6 @@ spec:
         - host: testnav-inntektstub-proxy.dev-fss-pub.nais.io
         - host: testnav-inst-proxy.dev-fss-pub.nais.io
         - host: testnav-medl-proxy.dev-fss-pub.nais.io
-        - host: testnav-kodeverk-proxy.dev-fss-pub.nais.io
         - host: testnav-kontoregister-person-proxy.dev-fss-pub.nais.io
         - host: testnav-krrstub-proxy.dev-fss-pub.nais.io
         - host: testnav-norg2-proxy.dev-fss-pub.nais.io
@@ -62,6 +61,7 @@ spec:
         - host: testnav-pdl-proxy.dev-fss-pub.nais.io
         - host: testnav-sigrunstub-proxy.dev-fss-pub.nais.io
         - host: testnav-skjermingsregister-proxy.dev-fss-pub.nais.io
+        - host: kodeverk-api.nav.no
         - host: testnav-udistub-proxy.dev-fss-pub.nais.io
         - host: tps-forvalteren-dev-proxy.dev-fss-pub.nais.io
   webproxy: true
@@ -110,4 +110,4 @@ spec:
         name: testnav-dolly-backend-dev
         databases:
           - name: testnav-dolly-backend-dev
-        autoBackupTime: "01:00"
+        autoBackupHour: 3

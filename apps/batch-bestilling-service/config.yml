@@ -11,8 +11,6 @@ spec:
   webproxy: true
   tokenx:
     enabled: true
-  tracing:
-    enabled: true
   accessPolicy:
     inbound:
       rules:
