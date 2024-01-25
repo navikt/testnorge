@@ -87,7 +87,7 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           build-root-directory: ${{ inputs.working-directory }}
-          arguments: build ${{ inputs.sonar-enabled && '' || '-x test' }} --scan
+          arguments: build --scan
           cache-read-only: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -122,7 +122,7 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           build-root-directory: ${{ inputs.working-directory }}
-          arguments: jacocoTestReport sonar
+          arguments: jacocoTestReport sonar -Dsonar.gradle.skipCompile=true
           cache-read-only: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
