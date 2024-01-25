@@ -37,6 +37,7 @@ export const RelatertPersonImportButton = ({
 	const [fullfoert, setFullfoert] = useState(false)
 	const mutate = useMatchMutate()
 	const formMethods = useForm({ mode: 'onBlur', defaultValues: { identer: [] } })
+	const fieldMethods = useFieldArray({ control: formMethods.control, name: 'identer' })
 
 	if (!relatertPersonIdenter) {
 		return null
@@ -105,8 +106,7 @@ export const RelatertPersonImportButton = ({
 		)
 	}
 
-	const identForm = () => {
-		const fieldMethods = useFieldArray({ control: formMethods.control, name: 'identer' })
+	const identForm = (fieldMethods: any) => {
 		const values = fieldMethods.fields?.values?.identer
 		const isChecked = (id: string) => values?.includes(id)
 		const onClick = (e: { target: RelatertPersonProps }) => {
@@ -160,7 +160,7 @@ export const RelatertPersonImportButton = ({
 							<>
 								<h1>Importer relaterte personer</h1>
 								<h4>Velg hvilke relaterte personer du ønsker å importere</h4>
-								{identForm()}
+								{identForm(fieldMethods)}
 							</>
 						) : (
 							<>

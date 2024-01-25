@@ -18,7 +18,7 @@ const StyledLabel = styled.label`
 export const Label = ({ name, fieldName, label, info = null, containerClass = null, children }) => {
 	const {
 		getFieldState,
-		formState: { touchedFields, dirtyFields },
+		formState: { touchedFields },
 	} = useFormContext() || useForm()
 	const isTouched = _.has(touchedFields, name) || _.has(touchedFields, fieldName)
 	const error = getFieldState(fieldName)?.error || getFieldState(name)?.error
