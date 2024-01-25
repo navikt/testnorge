@@ -72,9 +72,6 @@ jobs:
     needs: start
     if: github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      id-token: write
     steps:
       - name: "Checkout"
         uses: actions/checkout@v3
@@ -96,6 +93,28 @@ jobs:
           build-root-directory: ${{ inputs.working-directory }}
           arguments: build ${{ inputs.sonar-enabled && 'jacocoTestReport sonar' || '-x test' }} #--scan
           cache-read-only: false
+      - name: "Upload"
+        id: upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.image-suffix}}
+          path: ${{ inputs.working-directory }}/build
+          retention-days: 1
+  
+  docker:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v3
+      - name: "Download"
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.image-suffix }}
+          path: ${{ inputs.working-directory }}/build
       - name: "Docker"
         id: docker-build-push
         uses: nais/docker-build-push@v0
@@ -110,7 +129,7 @@ jobs:
       image: ${{ steps.docker-build-push.outputs.image }}
 
   deploy:
-    needs: [start, build]
+    needs: [start, docker]
     if: needs.start.outputs.do-deploy == 'true'
     concurrency: ${{ inputs.image-suffix }}
     runs-on: ubuntu-latest
@@ -123,10 +142,10 @@ jobs:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: ${{ inputs.cluster }}
           RESOURCE: ${{ inputs.working-directory }}/${{ inputs.nais-manifest }}
-          VAR: image=${{ needs.build.outputs.image }}
+          VAR: image=${{ needs.docker.outputs.image }}
 
   deploy-test:
-    needs: [start, build]
+    needs: [start, docker]
     if: needs.start.outputs.do-deploy-test == 'true'
     concurrency: ${{ inputs.image-suffix }}-test
     runs-on: ubuntu-latest
@@ -139,4 +158,4 @@ jobs:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: ${{ inputs.cluster }}
           RESOURCE: ${{ inputs.working-directory }}/config.test.yml
-          VAR: image=${{ needs.build.outputs.image }}
+          VAR: image=${{ needs.docker.outputs.image }}
