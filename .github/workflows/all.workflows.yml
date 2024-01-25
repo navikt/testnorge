@@ -39,7 +39,7 @@ on:
         default: false
       sonar-enabled:
         type: boolean
-        description: "Run Sonar scan? If not, will skip Gradle test task."
+        description: "Run Sonar scan?"
         default: true
 
 jobs:
