@@ -213,6 +213,11 @@ consumers:
     namespace: dolly
     url: https://testnav-histark-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
+  testnav-tenor-search-service:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-tenor-search-service
+    url: http://testnav-tenor-search-service.dolly.svc.cluster.local
 
 management:
   endpoints:
