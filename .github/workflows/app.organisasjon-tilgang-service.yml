@@ -7,7 +7,6 @@ on:
       - libs/reactive-security
       - apps/organisasjon-tilgang-service/**
       - .github/workflows/app.organisasjon-tilgang-service.yml
-      - .github/workflows/common.workflow.backend.yml
 
 jobs:
   workflow:

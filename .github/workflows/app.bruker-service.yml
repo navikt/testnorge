@@ -10,7 +10,6 @@ on:
       - libs/security-core
       - apps/bruker-service/**
       - .github/workflows/app.bruker-service.yml
-      - .github/workflows/common.workflow.backend.yml
 
 jobs:
   workflow:

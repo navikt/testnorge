@@ -10,7 +10,6 @@ on:
       - libs/servlet-security
       - apps/person-search-service/**
       - .github/workflows/app.person-search-service.yml
-      - .github/workflows/common.workflow.backend.yml
 
 jobs:
   workflow:

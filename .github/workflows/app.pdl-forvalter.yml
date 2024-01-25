@@ -11,7 +11,6 @@ on:
       - libs/testing
       - apps/pdl-forvalter/**
       - .github/workflows/app.pdl-forvalter.yml
-      - .github/workflows/common.workflow.backend.yml
 
 jobs:
   workflow:
