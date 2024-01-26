@@ -20,6 +20,7 @@ public class RsDigitalKontaktdata {
     private LocalDateTime gyldigFra;
     private boolean reservert;
     private String mobil;
+    private String landkode;
     private String epost;
     private boolean registrert;
     private String sdpAdresse;
