@@ -94,7 +94,6 @@ export const SelectOptionsFormat = {
 			})
 			return options
 		} else if (type === 'telefonLandkoder') {
-			console.log('kodeverk: ', kodeverk) //TODO - SLETT MEG
 			const landkoder =
 				kodeverk?.sort((land1, land2) => {
 					if (land1.label > land2.label) return 1
