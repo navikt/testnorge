@@ -1864,7 +1864,7 @@ export const paginerteGrupperMock = {
 	favoritter: [nyGruppeMock],
 }
 
-export const miljoeMock = '["q1","q2","q4","q5","t3"]'
+export const miljoeMock = '["q1","q2","q4"]'
 export const personFragmentNavigerMock = {
 	gruppe: eksisterendeGruppeMock,
 	identHovedperson: '12345678912',

@@ -16,7 +16,6 @@ on:
       - libs/testing
       - apps/testnorge-statisk-data-forvalter/**
       - .github/workflows/app.testnorge-statisk-data-forvalter.yml
-      - .github/workflows/common.workflow.backend.yml
 
 jobs:
   workflow:

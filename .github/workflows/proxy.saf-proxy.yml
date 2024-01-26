@@ -9,7 +9,6 @@ on:
       - libs/security-core
       - proxies/saf-proxy/**
       - .github/workflows/proxy.saf-proxy.yml
-      - .github/workflows/common.workflow.backend.yml
 
 jobs:
   workflow:

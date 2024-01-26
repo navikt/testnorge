@@ -9,7 +9,6 @@ on:
       - libs/security-core
       - proxies/synthdata-meldekort-proxy/**
       - .github/workflows/proxy.synthdata-meldekort-proxy.yml
-      - .github/workflows/common.workflow.backend.yml
 
 jobs:
   workflow:

@@ -9,7 +9,6 @@ on:
       - libs/servlet-security
       - apps/inntektsmelding-service/**
       - .github/workflows/app.inntektsmelding-service.yml
-      - .github/workflows/common.workflow.backend.yml
 
 jobs:
   workflow:

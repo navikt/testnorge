@@ -7,7 +7,6 @@ on:
       - libs/reactive-proxy
       - proxies/ereg-proxy/**
       - .github/workflows/proxy.ereg-proxy.yml
-      - .github/workflows/common.workflow.backend.yml
 
 jobs:
   workflow:

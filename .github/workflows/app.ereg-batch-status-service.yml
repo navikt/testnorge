@@ -9,7 +9,6 @@ on:
       - libs/servlet-security
       - apps/ereg-batch-status-service/**
       - .github/workflows/app.ereg-batch-status-service.yml
-      - .github/workflows/common.workflow.backend.yml
 
 jobs:
   workflow:

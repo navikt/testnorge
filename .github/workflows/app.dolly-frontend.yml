@@ -14,7 +14,6 @@ on:
       - apps/dolly-frontend/**
       - .github/workflows/app.dolly-frontend.yml
       - .github/workflows/common.cypress.yml
-      - .github/workflows/common.workflow.frontend.yml
 
 jobs:
 

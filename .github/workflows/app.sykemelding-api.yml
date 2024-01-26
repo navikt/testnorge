@@ -8,7 +8,6 @@ on:
       - libs/servlet-core
       - apps/sykemelding-api/**
       - .github/workflows/app.sykemelding-api.yml
-      - .github/workflows/common.workflow.backend.yml
 
 jobs:
   workflow:
