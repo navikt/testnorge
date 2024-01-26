@@ -21,6 +21,7 @@ public class RsDigitalKontaktdata {
     private boolean reservert;
     private String mobil;
     private String landkode;
+    private String land;
     private String epost;
     private boolean registrert;
     private String sdpAdresse;
