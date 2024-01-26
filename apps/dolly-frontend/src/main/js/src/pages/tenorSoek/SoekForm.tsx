@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { Accordion } from '@navikt/ds-react'
 import { InntektAordningen } from '@/pages/tenorSoek/soekFormPartials/InntektAordningen'
 import { useState } from 'react'
-import { useTenorSoek } from '@/utils/hooks/useTenorSoek'
+import { useTenorOversikt, useTenorSoek } from '@/utils/hooks/useTenorSoek'
 import { SoekRequest } from '@/pages/dollySoek/DollySoekTypes'
 import * as _ from 'lodash-es'
 import { TreffListe } from '@/pages/tenorSoek/resultatVisning/TreffListe'
@@ -25,8 +25,9 @@ const Soekefelt = styled.div`
 // export const SoekForm = ({request, setRequest, mutate}) => {
 export const SoekForm = () => {
 	const [request, setRequest] = useState(null)
-	const { response, loading, error, mutate } = useTenorSoek('Noekkelinfo', request)
-	// console.log('response: ', response) //TODO - SLETT MEG
+	// const { response, loading, error, mutate } = useTenorSoek('Noekkelinfo', request)
+	const { response, loading, error, mutate } = useTenorOversikt(request)
+	console.log('response: ', response) //TODO - SLETT MEG
 	const handleSubmit = (request: SoekRequest) => {
 		setRequest(request)
 		mutate()

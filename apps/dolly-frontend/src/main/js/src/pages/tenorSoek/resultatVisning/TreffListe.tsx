@@ -9,7 +9,7 @@ export const TreffListe = ({ response }: any) => {
 	if (!response) {
 		return null
 	}
-	// console.log('response: ', response) //TODO - SLETT MEG
+	console.log('response: ', response) //TODO - SLETT MEG
 
 	const [valgtPerson, setValgtPerson] = useState(null)
 	console.log('valgtPerson: ', valgtPerson) //TODO - SLETT MEG
@@ -20,7 +20,7 @@ export const TreffListe = ({ response }: any) => {
 				<h2>{antallTreff} treff</h2>
 				{/*<p>{response}</p>*/}
 				<VStack gap="4">
-					{response?.data?.dokumentListe.map((person: any) => (
+					{response?.data?.personer?.map((person: any) => (
 						// <Box key={person.identifikator} padding="2" border="1" borderColor="navds-color-gray-20">
 						<Box
 							key={person.identifikator}
@@ -33,11 +33,21 @@ export const TreffListe = ({ response }: any) => {
 							// background={'surface-alt-3-subtle'}
 							onClick={() => setValgtPerson(person)}
 						>
-							<h3>{person.visningnavn}</h3>
+							{/*<h3>{person.visningnavn}</h3>*/}
+							<h3>
+								{person.fornavn} {person.etternavn}
+							</h3>
 							<p>{person.identifikator}</p>
-							<Tag size="small" variant="neutral">
-								Attributt
-							</Tag>
+							{person.tenorRelasjoner?.map((relasjon: any, idx: number) => (
+								<Tag
+									size="small"
+									variant="neutral"
+									key={person.identifikator + idx}
+									style={{ margin: '0 5px 5px 0' }}
+								>
+									{relasjon}
+								</Tag>
+							))}
 						</Box>
 					))}
 				</VStack>

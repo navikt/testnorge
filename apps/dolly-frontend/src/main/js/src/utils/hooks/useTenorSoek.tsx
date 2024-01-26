@@ -23,6 +23,20 @@ export const useTenorSoek = (
 	}
 }
 
+export const useTenorOversikt = (request: any, antall?: number, side?: number, seed?: number) => {
+	const { data, isLoading, error, mutate } = useSWR(
+		request ? [`${tenorSearchUrl}/oversikt`, request] : null,
+		([url, headers]) => Request.post(url, headers),
+	)
+
+	return {
+		response: data,
+		loading: isLoading,
+		error: error,
+		mutate: mutate,
+	}
+}
+
 export const useTenorDomain = (lookup: string) => {
 	const { data, isLoading, error } = useSWR(
 		lookup ? `${tenorSearchUrl}/domain?lookup=${lookup}` : null,
