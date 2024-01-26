@@ -17,7 +17,6 @@ jacocoTestReport {
 
 sonarqube {
     properties {
-        property "sonar.coverage.jacoco.xmlReportPaths", "${project.layout.buildDirectory}/reports/jacoco/test/jacocoTestReport.xml"
         property "sonar.dynamicAnalysis", "reuseReports"
         property "sonar.host.url", "https://sonarcloud.io"
         property "sonar.java.coveragePlugin", "jacoco"
