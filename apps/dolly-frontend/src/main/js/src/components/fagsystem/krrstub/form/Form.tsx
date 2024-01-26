@@ -13,7 +13,9 @@ import { Option, SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
 import { FormikProps } from 'formik'
 import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
 import { useState } from 'react'
-import { countries } from 'country-data-list'
+import { lookup } from 'country-data-list'
+import { useKodeverk } from '@/utils/hooks/useKodeverk'
+import { AdresseKodeverk } from '@/config/kodeverk'
 
 type KrrstubFormProps = {
 	formikBag: FormikProps<{}>
@@ -26,13 +28,22 @@ type Change = {
 export const krrAttributt = 'krrstub'
 
 export const KrrstubForm = ({ formikBag }: KrrstubFormProps) => {
-	const leverandoerer = SelectOptionsOppslag.hentKrrLeverandoerer()
-	const landListe = countries.all
-	const telefonLandkoder = SelectOptionsFormat.formatOptions('telefonLandkoder', landListe)
-	const leverandoerOptions = SelectOptionsFormat.formatOptions('sdpLeverandoer', leverandoerer)
-	const registrert = _.get(formikBag, 'values.krrstub.registrert')
+	const { kodeverk: landkoder, loading } = useKodeverk(AdresseKodeverk.ArbeidOgInntektLand)
 	const [land, setLand] = useState({ landkode: '+47', value: 'NO' })
 	const [mobilnummer, setMobilnummer] = useState(_.get(formikBag, 'values.krrstub.mobil') || '')
+	const leverandoerer = SelectOptionsOppslag.hentKrrLeverandoerer()
+
+	const mergedeLandkoder = landkoder?.map((landkode: Option) => {
+		const lookupLand = lookup.countries({ alpha2: landkode.value })?.[0]
+		return {
+			countryCallingCodes: lookupLand?.countryCallingCodes[0],
+			emoji: lookupLand?.emoji,
+			...landkode,
+		}
+	})
+	const telefonLandkoder = SelectOptionsFormat.formatOptions('telefonLandkoder', mergedeLandkoder)
+	const leverandoerOptions = SelectOptionsFormat.formatOptions('sdpLeverandoer', leverandoerer)
+	const registrert = _.get(formikBag, 'values.krrstub.registrert')
 
 	const handleRegistrertChange = (newRegistrert: Change) => {
 		if (!newRegistrert.value) {
@@ -89,6 +100,8 @@ export const KrrstubForm = ({ formikBag }: KrrstubFormProps) => {
 								<DollySelect
 									name="krrstub.landkode"
 									value={land.value}
+									isLoading={loading}
+									fastfield={false}
 									options={telefonLandkoder}
 									label={'Landkode'}
 									onChange={(option: Option) => {
