@@ -8,7 +8,6 @@ on:
       - libs/reactive-security
       - apps/person-faste-data-service/**
       - .github/workflows/app.person-faste-data-service.yml
-      - .github/workflows/common.workflow.backend.yml
 
 jobs:
   workflow:

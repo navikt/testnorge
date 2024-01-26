@@ -9,7 +9,6 @@ on:
       - libs/security-core
       - apps/organisasjon-tilgang-frontend/**
       - .github/workflows/app.organisasjon-tilgang-frontend.yml
-      - .github/workflows/common.workflow.frontend.yml
 
 jobs:
   workflow:

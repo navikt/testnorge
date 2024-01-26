@@ -8,7 +8,6 @@ on:
       - libs/security-token-service
       - proxies/skjermingsregister-proxy/**
       - .github/workflows/proxy.skjermingsregister-proxy.yml
-      - .github/workflows/common.workflow.backend.yml
 
 jobs:
   workflow:

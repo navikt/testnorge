@@ -11,7 +11,6 @@ on:
       - libs/servlet-security
       - apps/synt-vedtakshistorikk-service/**
       - .github/workflows/app.synt-vedtakshistorikk-service.yml
-      - .github/workflows/common.workflow.backend.yml
 
 jobs:
   workflow:

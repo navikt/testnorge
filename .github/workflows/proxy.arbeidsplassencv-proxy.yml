@@ -9,7 +9,6 @@ on:
       - libs/security-core
       - proxies/arbeidsplassencv-proxy/**
       - .github/workflows/proxy.arbeidsplassencv-proxy.yml
-      - .github/workflows/common.workflow.backend.yml
 
 jobs:
   workflow:

@@ -7,7 +7,6 @@ on:
       - libs/reactive-proxy
       - proxies/aareg-synt-services-proxy/**
       - .github/workflows/proxy.aareg-synt-services-proxy.yml
-      - .github/workflows/common.workflow.backend.yml
 
 jobs:
   workflow:

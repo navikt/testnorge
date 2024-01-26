@@ -9,7 +9,6 @@ on:
       - libs/security-core
       - apps/person-organisasjon-tilgang-service/**
       - .github/workflows/app.person-organisasjon-tilgang-service.yml
-      - .github/workflows/common.workflow.backend.yml
 
 jobs:
   workflow:
