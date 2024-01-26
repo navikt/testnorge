@@ -117,11 +117,11 @@ public class TenorSearchService {
                         .collect(Collectors.joining(" and ")));
     }
 
-    public Mono<TenorOversiktResponse> getTestdata(TenorRequest searchData, Integer seed) {
+    public Mono<TenorOversiktResponse> getTestdata(TenorRequest searchData, Integer antall, Integer side, Integer seed) {
 
         var query = getQuery(searchData);
 
-        return tenorClient.getTestdata(query, Kilde.FREG, InfoType.IdentOgNavn, null, seed)
+        return tenorClient.getTestdata(query, Kilde.FREG, InfoType.IdentOgNavn, antall, side, seed)
                 .flatMap(resultat -> Mono.just(tenorResultMapperService.map(resultat, query)));
     }
 }

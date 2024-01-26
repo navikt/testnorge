@@ -46,8 +46,8 @@ public class TenorRawResponse {
         private List<Freg> freg;
         private List<Inntekt> inntekt;
         private List<InntektAordningen> inntektAordningen;
-        private List<OpplysningerFraSkatteetatensInnsendingsmiljoe> opplysningerFraSkatteetatensInnsendingsmiljoe;
-        private List<SamletReskontroInnsyn> samletReskontroInnsyn;
+        private List<TestinnsendingSkattPerson> testinnsendingSkattPerson;
+        private List<SamletReskontroInnsyn> samletReskontroinnsyn;
         private List<Skattemelding> skattemelding;
         private List<Skatteplikt> skatteplikt;
         private List<SpesifisertSummertSkattegrunnlag> spesifisertSummertSkattegrunnlag;
@@ -55,7 +55,6 @@ public class TenorRawResponse {
         private List<Tilleggsskatt> tilleggsskatt;
         private List<Tjenestepensjonsavtale> tjenestepensjonsavtale;
     }
-
 
     @Data
     @NoArgsConstructor
@@ -143,7 +142,7 @@ public class TenorRawResponse {
 
     @Data
     @NoArgsConstructor
-    public static class OpplysningerFraSkatteetatensInnsendingsmiljoe {
+    public static class TestinnsendingSkattPerson {
 
         private String tenorRelasjonsnavn;
     }

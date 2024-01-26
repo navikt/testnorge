@@ -32,9 +32,11 @@ public class TenorSearchController {
 
     @PostMapping("/testdata/oversikt")
     public Mono<TenorOversiktResponse> getTestdata(@RequestBody TenorRequest searchData,
-                                                            @RequestParam(required = false) Integer seed) {
+                                                   @RequestParam(required = false) Integer antall,
+                                                   @RequestParam(required = false) Integer side,
+                                                   @RequestParam(required = false) Integer seed) {
 
-        return tenorSearchService.getTestdata(searchData, seed);
+        return tenorSearchService.getTestdata(searchData, antall, side, seed);
     }
 
     @GetMapping("/testdata/raw")

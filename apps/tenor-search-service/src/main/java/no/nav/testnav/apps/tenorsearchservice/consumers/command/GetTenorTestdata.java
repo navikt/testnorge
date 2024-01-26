@@ -33,6 +33,8 @@ public class GetTenorTestdata implements Callable<Mono<TenorResponse>> {
     private final Kilde kilde;
     private final InfoType type;
     private final String fields;
+    private final Integer antall;
+    private final Integer side;
     private final Integer seed;
     private final String token;
 
@@ -53,7 +55,8 @@ public class GetTenorTestdata implements Callable<Mono<TenorResponse>> {
                         .queryParamIfPresent("seed", Optional.ofNullable(seed))
                         .queryParamIfPresent("vis", Optional.ofNullable(getVisning(type)))
                         .queryParamIfPresent("skjul", Optional.ofNullable(getSkjul(type)))
-                        .queryParamIfPresent("antall", Optional.ofNullable(getAntall(type)))
+                        .queryParamIfPresent("antall", Optional.ofNullable(getAntall(antall, type)))
+                        .queryParamIfPresent("side", Optional.ofNullable(side))
                         .build(requestParams))
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
@@ -73,7 +76,11 @@ public class GetTenorTestdata implements Callable<Mono<TenorResponse>> {
                         .build()));
     }
 
-    private Integer getAntall(InfoType type) {
+    private Integer getAntall(Integer antall, InfoType type) {
+
+        if (nonNull(antall)) {
+            return antall;
+        }
 
         if (nonNull(type)) {
             return switch (type) {
