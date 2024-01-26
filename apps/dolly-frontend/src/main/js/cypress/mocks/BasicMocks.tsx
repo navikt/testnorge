@@ -1290,6 +1290,7 @@ export const backendBestillingerMock = [
 		bestilling: {
 			krrstub: {
 				reservert: false,
+				landkode: '+47',
 				mobil: '12345678',
 				epost: 'jiodjawsd@jidwa.no',
 				registrert: true,

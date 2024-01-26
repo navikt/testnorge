@@ -377,7 +377,7 @@ export const initialOpphold = {
 }
 
 export const initialTelefonnummer = {
-	landskode: '',
+	landskode: '+47',
 	nummer: '',
 	prioritet: 2,
 	kilde: 'Dolly',
@@ -385,7 +385,7 @@ export const initialTelefonnummer = {
 }
 
 export const initialTpsTelefonnummer = {
-	landkode: '',
+	landkode: '+47',
 	telefonnummer: '',
 	telefontype: 'HJET',
 }

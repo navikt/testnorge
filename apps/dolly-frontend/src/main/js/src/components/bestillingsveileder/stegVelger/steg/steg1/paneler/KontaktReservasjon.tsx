@@ -37,6 +37,7 @@ KontaktReservasjonsPanel.initialValues = ({ set, del, has }) => ({
 			set('krrstub', {
 				epost: '',
 				gyldigFra: null,
+				landkode: '+47',
 				mobil: '',
 				sdpAdresse: '',
 				sdpLeverandoer: '',
