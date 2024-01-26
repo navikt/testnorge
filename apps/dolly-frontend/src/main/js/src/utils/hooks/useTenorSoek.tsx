@@ -10,7 +10,7 @@ export const useTenorSoek = (
 	fields?: string,
 	seed?: number,
 ) => {
-	const { data, isLoading, error } = useSWR(
+	const { data, isLoading, error, mutate } = useSWR(
 		request ? [`${tenorSearchUrl}?type=${type}`, request] : null,
 		([url, headers]) => Request.post(url, headers),
 	)
@@ -19,6 +19,7 @@ export const useTenorSoek = (
 		response: data,
 		loading: isLoading,
 		error: error,
+		mutate: mutate,
 	}
 }
 
@@ -27,6 +28,7 @@ export const useTenorDomain = (lookup: string) => {
 		lookup ? `${tenorSearchUrl}/domain?lookup=${lookup}` : null,
 		(url) => Request.get(url),
 	)
+	// console.log('data: ', data) //TODO - SLETT MEG
 
 	return {
 		domain: data,
