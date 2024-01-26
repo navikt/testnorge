@@ -29,7 +29,7 @@ export const krrAttributt = 'krrstub'
 
 export const KrrstubForm = ({ formikBag }: KrrstubFormProps) => {
 	const { kodeverk: landkoder, loading } = useKodeverk(AdresseKodeverk.ArbeidOgInntektLand)
-	const [land, setLand] = useState({ landkode: '+47', value: 'NO' })
+	const [land, setLand] = useState(_.get(formikBag.values, 'krrstub.land') || 'NO')
 	const [mobilnummer, setMobilnummer] = useState(_.get(formikBag, 'values.krrstub.mobil') || '')
 	const leverandoerer = SelectOptionsOppslag.hentKrrLeverandoerer()
 
@@ -99,14 +99,15 @@ export const KrrstubForm = ({ formikBag }: KrrstubFormProps) => {
 							>
 								<DollySelect
 									name="krrstub.landkode"
-									value={land.value}
+									value={land}
 									isLoading={loading}
 									fastfield={false}
 									options={telefonLandkoder}
 									label={'Landkode'}
 									onChange={(option: Option) => {
-										setLand(option)
+										setLand(option.value)
 										formikBag.setFieldValue('krrstub.landkode', option.landkode)
+										formikBag.setFieldValue('krrstub.land', option.value)
 									}}
 									isClearable={false}
 									size={'xlarge'}
@@ -116,6 +117,7 @@ export const KrrstubForm = ({ formikBag }: KrrstubFormProps) => {
 									label="Mobilnummer"
 									placeholder={'12345678'}
 									value={mobilnummer}
+									size={'medium'}
 									feil={
 										//TODO: Fjerne denne feil prop når react hook form er implementert
 										_.isEmpty(mobilnummer) ||
@@ -164,18 +166,21 @@ export const KrrstubForm = ({ formikBag }: KrrstubFormProps) => {
 }
 
 KrrstubForm.validation = {
-	krrstub: Yup.object({
-		epost: Yup.string(),
-		gyldigFra: Yup.date().nullable(),
-		landkode: requiredString,
-		mobil: Yup.string().matches(/^\d{4,11}$/, {
-			message: 'Ugyldig telefonnummer',
-			excludeEmptyString: true,
+	krrstub: ifPresent(
+		'$krrstub',
+		Yup.object({
+			epost: Yup.string(),
+			gyldigFra: Yup.date().nullable(),
+			landkode: requiredString,
+			mobil: Yup.string().matches(/^\d{4,11}$/, {
+				message: 'Ugyldig telefonnummer',
+				excludeEmptyString: true,
+			}),
+			sdpAdresse: Yup.string(),
+			sdpLeverandoer: Yup.string().nullable(),
+			spraak: Yup.string(),
+			registrert: ifPresent('$krrstub.registrert', requiredBoolean),
+			reservert: Yup.boolean().nullable(),
 		}),
-		sdpAdresse: Yup.string(),
-		sdpLeverandoer: Yup.string().nullable(),
-		spraak: Yup.string(),
-		registrert: ifPresent('$krrstub.registrert', requiredBoolean),
-		reservert: Yup.boolean().nullable(),
-	}),
+	),
 }

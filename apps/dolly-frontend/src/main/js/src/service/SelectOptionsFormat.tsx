@@ -1,5 +1,6 @@
 import { Option } from '@/service/SelectOptionsOppslag'
 import * as _ from 'lodash'
+import { toTitleCase } from '@/utils/DataFormatter'
 
 type Data = {
 	label: string
@@ -26,7 +27,6 @@ export const SelectOptionsFormat = {
 			return []
 		}
 		if (!data?.value && _.isEmpty(data)) {
-			console.error('Fant ingen kodeverk for type: ' + type)
 			return []
 		}
 		const kodeverk = data?.value?.data || data
@@ -106,7 +106,7 @@ export const SelectOptionsFormat = {
 				options.push({
 					landkode: telefonLandkode.replaceAll(' ', ''),
 					value: landData.value,
-					label: `${landData.emoji} ${landData.label} (${telefonLandkode})`,
+					label: `${landData.emoji} ${toTitleCase(landData.label)} (${telefonLandkode})`,
 				})
 			})
 			return options
