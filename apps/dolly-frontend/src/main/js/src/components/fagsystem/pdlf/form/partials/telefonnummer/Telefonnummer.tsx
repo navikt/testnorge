@@ -11,7 +11,8 @@ import {
 	initialTpsTelefonnummer,
 } from '@/components/fagsystem/pdlf/form/initialValues'
 import styled from 'styled-components'
-import countryData from '@navikt/land-verktoy/src/components/CountryData'
+import { countries } from 'country-data-list'
+
 import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
 import { Option } from '@/service/SelectOptionsOppslag'
 
@@ -75,7 +76,7 @@ export const TelefonnummerFormRedigering = ({ path }: TelefonnummerProps) => {
 
 export const TelefonnummerForm = ({ path, formikBag, idx }: TelefonnummerProps) => {
 	const tlfListe = _.get(formikBag.values, path || 'pdldata.person.telefonnummer')
-	const landListe = countryData.getCountryInstance('nb')
+	const landListe = countries.all
 	const telefonLandkoder = SelectOptionsFormat.formatOptions('telefonLandkoder', landListe)
 	const [land, setLand] = useState({ landkode: '+47', value: 'NO' })
 

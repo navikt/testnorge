@@ -12,7 +12,7 @@
     "lint": "eslint . --ext .ts,.tsx",
     "prettier": "prettier --write '**/*.{ts,tsx,js,css,html}'",
     "test:cy": "cypress run --browser chrome",
-    "test:run-cypress": "start-server-and-test start-cypress http://localhost:5678 test:cy"
+    "test:run-cypress": "start-server-and-test preview http://localhost:5678 test:cy"
   },
   "author": "",
   "license": "ISC",
@@ -23,9 +23,9 @@
     "@navikt/ds-css-internal": "^3.4.3",
     "@navikt/ds-react-internal": "^3.4.3",
     "@navikt/fnrvalidator": "^1.3.0",
-    "@navikt/land-verktoy": "^3.2.15",
     "axios": "^1.1.3",
     "classnames": "^2.3.1",
+    "country-data-list": "^1.3.0",
     "date-fns": "^2.29.1",
     "eslint-import-resolver-typescript": "^3.5.2",
     "eslint-plugin-import": "^2.26.0",

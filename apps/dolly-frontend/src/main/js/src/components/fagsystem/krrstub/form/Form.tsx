@@ -13,7 +13,7 @@ import { Option, SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
 import { FormikProps } from 'formik'
 import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
 import { useState } from 'react'
-import countryData from '@navikt/land-verktoy/src/components/CountryData'
+import { countries } from 'country-data-list'
 
 type KrrstubFormProps = {
 	formikBag: FormikProps<{}>
@@ -27,7 +27,7 @@ export const krrAttributt = 'krrstub'
 
 export const KrrstubForm = ({ formikBag }: KrrstubFormProps) => {
 	const leverandoerer = SelectOptionsOppslag.hentKrrLeverandoerer()
-	const landListe = countryData.getCountryInstance('nb')
+	const landListe = countries.all
 	const telefonLandkoder = SelectOptionsFormat.formatOptions('telefonLandkoder', landListe)
 	const leverandoerOptions = SelectOptionsFormat.formatOptions('sdpLeverandoer', leverandoerer)
 	const registrert = _.get(formikBag, 'values.krrstub.registrert')

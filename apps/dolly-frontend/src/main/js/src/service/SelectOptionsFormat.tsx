@@ -94,19 +94,22 @@ export const SelectOptionsFormat = {
 			})
 			return options
 		} else if (type === 'telefonLandkoder') {
+			console.log('kodeverk: ', kodeverk) //TODO - SLETT MEG
 			const landkoder =
-				kodeverk?.countries?.sort((land1, land2) => {
-					if (land1.label > land2.label) return 1
-					else if (land1.label < land2.label) return -1
-				}) || []
+				kodeverk
+					?.filter((land: any) => land.status !== 'DELETED')
+					.sort((land1, land2) => {
+						if (land1.name > land2.name) return 1
+						else if (land1.name < land2.name) return -1
+					}) || []
 			const options: Option[] = []
 			landkoder.forEach((landData: any) => {
 				const telefonLandkode = landData?.countryCallingCodes?.[0]
 				if (!telefonLandkode) return
 				options.push({
 					landkode: telefonLandkode.replaceAll(' ', ''),
-					value: landData.value,
-					label: `${landData.emoji} ${landData.label} (${telefonLandkode})`,
+					value: landData.alpha2,
+					label: `${landData.emoji} ${landData.name} (${telefonLandkode})`,
 				})
 			})
 			return options
