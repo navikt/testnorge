@@ -93,6 +93,23 @@ export const SelectOptionsFormat = {
 				options.push({ value: rolle[0], label: rolle[1] })
 			})
 			return options
+		} else if (type === 'telefonLandkoder') {
+			const landkoder =
+				kodeverk?.countries?.sort((land1, land2) => {
+					if (land1.label > land2.label) return 1
+					else if (land1.label < land2.label) return -1
+				}) || []
+			const options: Option[] = []
+			landkoder.forEach((landData: any) => {
+				const telefonLandkode = landData?.countryCallingCodes?.[0]
+				if (!telefonLandkode) return
+				options.push({
+					landkode: telefonLandkode.replaceAll(' ', ''),
+					value: landData.value,
+					label: `${landData.emoji} ${landData.label} (${telefonLandkode})`,
+				})
+			})
+			return options
 		} else if (type === 'sdpLeverandoer') {
 			const leverandoerer = kodeverk ? Object.entries(kodeverk) : []
 			const options: Option[] = []

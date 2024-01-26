@@ -1,17 +1,19 @@
 import * as Yup from 'yup'
-import { ifPresent, requiredBoolean } from '@/utils/YupValidations'
+import { ifPresent, requiredBoolean, requiredString } from '@/utils/YupValidations'
 import * as _ from 'lodash-es'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { DollySelect, FormikSelect } from '@/components/ui/form/inputs/select/Select'
-import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { DollyTextInput, FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import Panel from '@/components/ui/panel/Panel'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
-import { SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
+import { Option, SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
 import { FormikProps } from 'formik'
 import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
+import { useState } from 'react'
+import countryData from '@navikt/land-verktoy/src/components/CountryData'
 
 type KrrstubFormProps = {
 	formikBag: FormikProps<{}>
@@ -25,15 +27,19 @@ export const krrAttributt = 'krrstub'
 
 export const KrrstubForm = ({ formikBag }: KrrstubFormProps) => {
 	const leverandoerer = SelectOptionsOppslag.hentKrrLeverandoerer()
-	//@ts-ignore
+	const landListe = countryData.getCountryInstance('nb')
+	const telefonLandkoder = SelectOptionsFormat.formatOptions('telefonLandkoder', landListe)
 	const leverandoerOptions = SelectOptionsFormat.formatOptions('sdpLeverandoer', leverandoerer)
 	const registrert = _.get(formikBag, 'values.krrstub.registrert')
+	const [land, setLand] = useState({ landkode: '+47', value: 'NO' })
+	const [mobilnummer, setMobilnummer] = useState(_.get(formikBag, 'values.krrstub.mobil') || '')
 
 	const handleRegistrertChange = (newRegistrert: Change) => {
 		if (!newRegistrert.value) {
 			formikBag.setFieldValue('krrstub', {
 				epost: '',
 				gyldigFra: null,
+				landkode: '+47',
 				mobil: '',
 				sdpAdresse: '',
 				sdpLeverandoer: '',
@@ -74,11 +80,44 @@ export const KrrstubForm = ({ formikBag }: KrrstubFormProps) => {
 								fastfield={false}
 							/>
 							<FormikTextInput name="krrstub.epost" label="E-post" />
-							<FormikTextInput
-								name="krrstub.mobil"
-								label="Mobilnummer (+47)"
-								placeholder={'+4712345678'}
-							/>
+							<div
+								style={{
+									display: 'flex',
+									width: '-webkit-fill-available',
+								}}
+							>
+								<DollySelect
+									name="krrstub.landkode"
+									value={land.value}
+									options={telefonLandkoder}
+									label={'Landkode'}
+									onChange={(option: Option) => {
+										setLand(option)
+										formikBag.setFieldValue('krrstub.landkode', option.landkode)
+									}}
+									isClearable={false}
+									size={'xlarge'}
+								/>
+								<DollyTextInput
+									name="krrstub.mobil"
+									label="Mobilnummer"
+									placeholder={'12345678'}
+									value={mobilnummer}
+									feil={
+										//TODO: Fjerne denne feil prop når react hook form er implementert
+										_.isEmpty(mobilnummer) ||
+										(mobilnummer.length > 3 &&
+											mobilnummer.length < 12 &&
+											mobilnummer.match('^[0-9]+$')) // Kun tall tillatt
+											? null
+											: { feilmelding: 'Ugyldig telefonnummer' }
+									}
+									onChange={(event) => {
+										setMobilnummer(event.target.value)
+										formikBag.setFieldValue('krrstub.mobil', event.target.value)
+									}}
+								/>
+							</div>
 							<FormikSelect
 								name="krrstub.spraak"
 								label="Språk"
@@ -115,7 +154,8 @@ KrrstubForm.validation = {
 	krrstub: Yup.object({
 		epost: Yup.string(),
 		gyldigFra: Yup.date().nullable(),
-		mobil: Yup.string().matches(/^\+?\d{8,14}$/, {
+		landkode: requiredString,
+		mobil: Yup.string().matches(/^\d{4,11}$/, {
 			message: 'Ugyldig telefonnummer',
 			excludeEmptyString: true,
 		}),
