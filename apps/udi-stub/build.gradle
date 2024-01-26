@@ -13,12 +13,6 @@ test {
     jvmArgs '--add-opens', 'java.base/java.lang=ALL-UNNAMED'
 }
 
-jacocoTestReport {
-    reports {
-        xml.required = true
-    }
-}
-
 rewrite {
     activeRecipe("org.openrewrite.java.spring.boot3.UpgradeSpringBoot_3_2")
 }

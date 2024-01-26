@@ -90,12 +90,6 @@ test {
     jvmArgs '--add-opens', 'java.base/java.lang=ALL-UNNAMED'
 }
 
-jacocoTestReport {
-    reports {
-        xml.required = true
-    }
-}
-
 sonarqube {
     properties {
         property "sonar.dynamicAnalysis", "reuseReports"

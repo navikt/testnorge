@@ -21,12 +21,6 @@ def iTest = tasks.register("iTest", Test) {
     shouldRunAfter test
 }
 
-jacocoTestReport {
-    reports {
-        xml.required = true
-    }
-}
-
 sonarqube {
     properties {
         property "sonar.dynamicAnalysis", "reuseReports"

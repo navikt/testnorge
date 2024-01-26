@@ -16,12 +16,6 @@ rewrite {
     activeRecipe("org.openrewrite.java.spring.boot3.UpgradeSpringBoot_3_2")
 }
 
-jacocoTestReport {
-    reports {
-        xml.required = true
-    }
-}
-
 sonarqube {
     properties {
         property "sonar.dynamicAnalysis", "reuseReports"

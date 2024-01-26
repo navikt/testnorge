@@ -5,12 +5,6 @@ plugins {
     id "jacoco"
 }
 
-jacocoTestReport {
-    reports {
-        xml.required = true
-    }
-}
-
 sonarqube {
     properties {
         property "sonar.dynamicAnalysis", "reuseReports"

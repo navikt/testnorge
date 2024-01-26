@@ -10,12 +10,6 @@ test {
     useJUnitPlatform()
 }
 
-jacocoTestReport {
-    reports {
-        xml.required = true
-    }
-}
-
 sonarqube {
     properties {
         property "sonar.sourceEncoding", "UTF-8"
