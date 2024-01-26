@@ -53,6 +53,7 @@ public class GetTenorTestdata implements Callable<Mono<TenorResponse>> {
                         .queryParamIfPresent("seed", Optional.ofNullable(seed))
                         .queryParamIfPresent("vis", Optional.ofNullable(getVisning(type)))
                         .queryParamIfPresent("skjul", Optional.ofNullable(getSkjul(type)))
+                        .queryParamIfPresent("antall", Optional.ofNullable(getAntall(type)))
                         .build(requestParams))
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
@@ -72,6 +73,19 @@ public class GetTenorTestdata implements Callable<Mono<TenorResponse>> {
                         .build()));
     }
 
+    private Integer getAntall(InfoType type) {
+
+        if (nonNull(type)) {
+            return switch (type) {
+                case AlleFelter -> 10;
+                case IdentOgNavn -> 100;
+                default -> null;
+            };
+        } else {
+            return 10;
+        }
+    }
+
     private String getSkjul(InfoType type) {
 
         return isNull(type) || type != InfoType.Kildedata ?
@@ -82,13 +96,14 @@ public class GetTenorTestdata implements Callable<Mono<TenorResponse>> {
 
         if (nonNull(type)) {
             return switch (type) {
+                case IdentOgNavn -> "identifikator,fornavn,etternavn,tenorRelasjoner.*.tenorRelasjonsnavn";
                 case Kildedata -> "*.kildedata";
                 case AlleFelter -> "{alle}";
                 case Spesifikt -> isNotBlank(fields) ? fields : "id";
-                default -> null;
+                default -> "identifikator";
             };
         } else {
-            return null;
+            return "identifikator";
         }
     }
 

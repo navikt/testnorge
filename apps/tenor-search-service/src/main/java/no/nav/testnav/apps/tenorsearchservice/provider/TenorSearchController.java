@@ -6,6 +6,7 @@ import no.nav.testnav.apps.tenorsearchservice.consumers.dto.InfoType;
 import no.nav.testnav.apps.tenorsearchservice.consumers.dto.Kilde;
 import no.nav.testnav.apps.tenorsearchservice.domain.AccessToken;
 import no.nav.testnav.apps.tenorsearchservice.domain.Lookups;
+import no.nav.testnav.apps.tenorsearchservice.domain.TenorOversiktResponse;
 import no.nav.testnav.apps.tenorsearchservice.domain.TenorRequest;
 import no.nav.testnav.apps.tenorsearchservice.domain.TenorResponse;
 import no.nav.testnav.apps.tenorsearchservice.service.LookupService;
@@ -28,6 +29,13 @@ public class TenorSearchController {
     private final TenorSearchService tenorSearchService;
     private final MaskinportenClient maskinportenClient;
     private final LookupService lookupService;
+
+    @PostMapping("/testdata/oversikt")
+    public Mono<TenorOversiktResponse> getTestdata(@RequestBody TenorRequest searchData,
+                                                            @RequestParam(required = false) Integer seed) {
+
+        return tenorSearchService.getTestdata(searchData, seed);
+    }
 
     @GetMapping("/testdata/raw")
     public Mono<TenorResponse> getTestdata(@RequestParam(required = false) String searchData,

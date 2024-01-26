@@ -5,8 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.tenorsearchservice.consumers.TenorClient;
 import no.nav.testnav.apps.tenorsearchservice.consumers.dto.InfoType;
 import no.nav.testnav.apps.tenorsearchservice.consumers.dto.Kilde;
+import no.nav.testnav.apps.tenorsearchservice.domain.TenorOversiktResponse;
 import no.nav.testnav.apps.tenorsearchservice.domain.TenorRequest;
 import no.nav.testnav.apps.tenorsearchservice.domain.TenorResponse;
+import no.nav.testnav.apps.tenorsearchservice.service.mapper.TenorResultMapperService;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
@@ -26,7 +28,9 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @Service
 @RequiredArgsConstructor
 public class TenorSearchService {
+
     private final TenorClient tenorClient;
+    private final TenorResultMapperService tenorResultMapperService;
 
     public Mono<TenorResponse> getTestdata(String testDataQuery, Kilde kilde, InfoType type, String fields, Integer seed) {
 
@@ -35,6 +39,11 @@ public class TenorSearchService {
 
     public Mono<TenorResponse> getTestdata(TenorRequest searchData, Kilde kilde, InfoType type, String fields, Integer seed) {
 
+        var query = getQuery(searchData);
+        return tenorClient.getTestdata(query, kilde, type, fields, seed);
+    }
+
+    private String getQuery(TenorRequest searchData) {
         var builder = new StringBuilder()
                 .append(convertObject("identifikator", searchData.getIdentifikator()))
                 .append(convertDatoer("foedselsdato", searchData.getFoedselsdato()))
@@ -87,8 +96,7 @@ public class TenorSearchService {
         }
         builder.append(TenorEksterneRelasjonerUtility.getEksterneRelasjoner(searchData));
 
-        var query = builder.substring(builder.isEmpty() ? 0 : 5, builder.length());
-        return tenorClient.getTestdata(query, kilde, type, fields, seed);
+        return builder.substring(builder.isEmpty() ? 0 : 5, builder.length());
     }
 
     private String getFregRelasjoner(TenorRequest.Relasjoner relasjoner) {
@@ -107,5 +115,13 @@ public class TenorSearchService {
                 .formatted(utenlandskPersonIdentifikasjon.stream()
                         .map(Enum::name)
                         .collect(Collectors.joining(" and ")));
+    }
+
+    public Mono<TenorOversiktResponse> getTestdata(TenorRequest searchData, Integer seed) {
+
+        var query = getQuery(searchData);
+
+        return tenorClient.getTestdata(query, Kilde.FREG, InfoType.IdentOgNavn, null, seed)
+                .flatMap(resultat -> Mono.just(tenorResultMapperService.map(resultat, query)));
     }
 }

@@ -20,7 +20,7 @@ public class TenorRequest {
 
     public enum Kjoenn {Mann, Kvinne}
 
-    public enum Roller {DagligLeder}
+    public enum Rolle {DagligLeder}
 
     public enum Personstatus {Bosatt, Doed, Forsvunnet, Foedselsregistrert, IkkeBosatt, Inaktiv, Midlertidig, Opphoert, Utflyttet}
 
@@ -96,7 +96,7 @@ public class TenorRequest {
     private Relasjoner relasjoner;
     private Hendelser hendelser;
 
-    private List<Roller> roller;
+    private List<Rolle> roller;
     private Tjenestepensjonsavtale tjenestepensjonsavtale;
     private Skattemelding skattemelding;
     private InntektAordningen inntektAordningen;
@@ -107,7 +107,7 @@ public class TenorRequest {
     private OpplysningerFraSkatteetatensInnsendingsmiljoe opplysningerFraSkatteetatensInnsendingsmiljoe;
     private SamletReskontroInnsyn samletReskontroInnsyn;
     private SummertSkattegrunnlag summertSkattegrunnlag;
-    private SpesisfisertSummertSkattegrunnlag spesisfisertSummertSkattegrunnlag;
+    private SpesisfisertSummertSkattegrunnlag spesifisertSummertSkattegrunnlag;
 
     public List<UtenlandskPersonIdentifikasjon> getUtenlandskPersonIdentifikasjon() {
 
@@ -117,7 +117,7 @@ public class TenorRequest {
         return utenlandskPersonIdentifikasjon;
     }
 
-    public List<Roller> getRoller() {
+    public List<Rolle> getRoller() {
 
         if (isNull(roller)) {
             roller = new ArrayList<>();

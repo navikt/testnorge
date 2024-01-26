@@ -22,7 +22,7 @@ public enum Lookups {
     Oppgjoerstype(TenorRequest.Oppgjoerstype.class),
     Personstatus(TenorRequest.Personstatus.class),
     Relasjon(TenorRequest.Relasjon.class),
-    Roller(TenorRequest.Roller.class),
+    Roller(TenorRequest.Rolle.class),
     SaerskiltSkatteplikt(TenorRequest.SaerskiltSkatteplikt.class),
     Sivilstatus(TenorRequest.Sivilstatus.class),
     Skattemeldingstype(TenorRequest.Skattemeldingstype.class),

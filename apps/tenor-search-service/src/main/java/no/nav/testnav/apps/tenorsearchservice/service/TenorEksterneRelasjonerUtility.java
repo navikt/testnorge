@@ -38,7 +38,7 @@ public class TenorEksterneRelasjonerUtility {
                 .append(getOpplysningerFraSkatteetatensInnsendingsMiljoe(searchData.getOpplysningerFraSkatteetatensInnsendingsmiljoe()))
                 .append(getSamletReskontroInnsyn(searchData.getSamletReskontroInnsyn()))
                 .append(getSummertSkattegrunnlag(searchData.getSummertSkattegrunnlag()))
-                .append(getSpesifisertSummertSkattegrunnlag(searchData.getSpesisfisertSummertSkattegrunnlag()));
+                .append(getSpesifisertSummertSkattegrunnlag(searchData.getSpesifisertSummertSkattegrunnlag()));
 
         return builder.toString();
     }
@@ -175,7 +175,7 @@ public class TenorEksterneRelasjonerUtility {
                         .substring(5));
     }
 
-    private String getRoller(List<TenorRequest.Roller> roller) {
+    private String getRoller(List<TenorRequest.Rolle> roller) {
 
         return (roller.isEmpty()) ? "" : " and tenorRelasjoner.brreg-er-fr:{%s}".formatted(roller.stream()
                 .map(Enum::name)
