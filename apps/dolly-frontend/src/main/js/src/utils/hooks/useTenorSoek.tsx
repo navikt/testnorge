@@ -23,6 +23,27 @@ export const useTenorSoek = (
 	}
 }
 
+export const useTenorIdent = (ident: string) => {
+	const { data, isLoading, error, mutate } = useSWR(
+		ident
+			? [
+					`${tenorSearchUrl}?kilde=FREG&type=AlleFelter`,
+					{
+						identifikator: ident,
+					},
+				]
+			: null,
+		([url, headers]) => Request.post(url, headers),
+	)
+
+	return {
+		person: data,
+		loading: isLoading,
+		error: error,
+		mutate: mutate,
+	}
+}
+
 export const useTenorOversikt = (request: any, antall?: number, side?: number, seed?: number) => {
 	const { data, isLoading, error, mutate } = useSWR(
 		request ? [`${tenorSearchUrl}/oversikt`, request] : null,

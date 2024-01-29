@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { Accordion } from '@navikt/ds-react'
 import { InntektAordningen } from '@/pages/tenorSoek/soekFormPartials/InntektAordningen'
 import { useState } from 'react'
-import { useTenorOversikt, useTenorSoek } from '@/utils/hooks/useTenorSoek'
+import { useTenorIdent, useTenorOversikt, useTenorSoek } from '@/utils/hooks/useTenorSoek'
 import { SoekRequest } from '@/pages/dollySoek/DollySoekTypes'
 import * as _ from 'lodash-es'
 import { TreffListe } from '@/pages/tenorSoek/resultatVisning/TreffListe'
@@ -28,6 +28,9 @@ export const SoekForm = () => {
 	// const { response, loading, error, mutate } = useTenorSoek('Noekkelinfo', request)
 	const { response, loading, error, mutate } = useTenorOversikt(request)
 	console.log('response: ', response) //TODO - SLETT MEG
+
+	// const { person: valgtPersonData } = useTenorIdent('22866198962')
+	// console.log('valgtPersonData: ', valgtPersonData) //TODO - SLETT MEG
 	const handleSubmit = (request: SoekRequest) => {
 		setRequest(request)
 		mutate()
