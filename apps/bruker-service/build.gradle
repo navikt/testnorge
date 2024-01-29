@@ -19,15 +19,8 @@ def iTest = tasks.register("iTest", Test) {
     shouldRunAfter test
 }
 
-jacocoTestReport {
-    reports {
-        xml.required = true
-    }
-}
-
 sonarqube {
     properties {
-        property "sonar.coverage.jacoco.xmlReportPaths", "${project.layout.buildDirectory}/reports/jacoco/test/jacocoTestReport.xml"
         property "sonar.dynamicAnalysis", "reuseReports"
         property "sonar.host.url", "https://sonarcloud.io"
         property "sonar.java.coveragePlugin", "jacoco"

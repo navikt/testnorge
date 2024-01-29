@@ -9,7 +9,6 @@ on:
       - libs/servlet-security
       - apps/tps-messaging-service/**
       - .github/workflows/app.tps-messaging-service.yml
-      - .github/workflows/common.workflow.backend.yml
 
 jobs:
   workflow:

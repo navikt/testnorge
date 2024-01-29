@@ -7,7 +7,6 @@ on:
       - libs/reactive-proxy
       - proxies/tps-forvalteren-proxy/**
       - .github/workflows/proxy.tps-forvalteren-proxy.yml
-      - .github/workflows/common.workflow.backend.yml
 
 jobs:
   workflow:

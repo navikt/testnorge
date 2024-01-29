@@ -1290,6 +1290,7 @@ export const backendBestillingerMock = [
 		bestilling: {
 			krrstub: {
 				reservert: false,
+				landkode: '+47',
 				mobil: '12345678',
 				epost: 'jiodjawsd@jidwa.no',
 				registrert: true,
@@ -1864,7 +1865,7 @@ export const paginerteGrupperMock = {
 	favoritter: [nyGruppeMock],
 }
 
-export const miljoeMock = '["q1","q2","q4","q5","t3"]'
+export const miljoeMock = '["q1","q2","q4"]'
 export const personFragmentNavigerMock = {
 	gruppe: eksisterendeGruppeMock,
 	identHovedperson: '12345678912',

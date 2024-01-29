@@ -1,5 +1,6 @@
 import { Option } from '@/service/SelectOptionsOppslag'
 import * as _ from 'lodash'
+import { toTitleCase } from '@/utils/DataFormatter'
 
 type Data = {
 	label: string
@@ -26,7 +27,6 @@ export const SelectOptionsFormat = {
 			return []
 		}
 		if (!data?.value && _.isEmpty(data)) {
-			console.error('Fant ingen kodeverk for type: ' + type)
 			return []
 		}
 		const kodeverk = data?.value?.data || data
@@ -91,6 +91,23 @@ export const SelectOptionsFormat = {
 			const options: Option[] = []
 			roller.forEach((rolle: [string, string]) => {
 				options.push({ value: rolle[0], label: rolle[1] })
+			})
+			return options
+		} else if (type === 'telefonLandkoder') {
+			const landkoder =
+				kodeverk?.sort((land1, land2) => {
+					if (land1.label > land2.label) return 1
+					else if (land1.label < land2.label) return -1
+				}) || []
+			const options: Option[] = []
+			landkoder?.forEach((landData: any) => {
+				const telefonLandkode = landData?.countryCallingCodes
+				if (!telefonLandkode) return
+				options.push({
+					landkode: telefonLandkode.replaceAll(' ', ''),
+					value: landData.value,
+					label: `${landData.emoji} ${toTitleCase(landData.label)} (${telefonLandkode})`,
+				})
 			})
 			return options
 		} else if (type === 'sdpLeverandoer') {

@@ -8,7 +8,7 @@ const getArenaMiljoerUrl = '/testnav-arena-forvalteren-proxy/api/v1/miljoe'
 const getInstMiljoerUrl = '/testnav-inst-proxy/api/v1/environment'
 const getDokarkivMiljoerUrl = '/testnav-dokarkiv-proxy/rest/miljoe'
 
-const prefetchedMiljoer = ['t3', 't13', 'q1', 'q2', 'q4', 'q5', 'qx']
+const prefetchedMiljoer = ['t13', 'q1', 'q2', 'q4', 'qx']
 const prefetchedPensjonMiljoer = ['q1', 'q2']
 const prefetchedArenaMiljoer = ['q1', 'q2', 'q4']
 const prefetchedInstMiljoer = { institusjonsoppholdEnvironments: ['q1', 'q2'] }
@@ -51,7 +51,7 @@ export const useArenaEnvironments = () => {
 		([url, headers]) => fetcher(url, headers),
 		{
 			fallbackData: prefetchedArenaMiljoer,
-		}
+		},
 	)
 
 	return {
@@ -79,7 +79,7 @@ export const useDokarkivEnvironments = () => {
 		([url, headers]) => fetcher(url, headers),
 		{
 			fallbackData: prefetchedDokarkivMiljoer,
-		}
+		},
 	)
 
 	return {
@@ -120,7 +120,7 @@ export const _getEnvironmentsSortedByType = (envArray: any[]) => {
 
 		sorterteEnvs.map((_current: any, idx: number) => (envs[idx].id = sorterteEnvs[idx]))
 		sorterteEnvs.map(
-			(_current: any, idx: number) => (envs[idx].label = sorterteEnvs[idx].toUpperCase())
+			(_current: any, idx: number) => (envs[idx].label = sorterteEnvs[idx].toUpperCase()),
 		)
 	})
 	return sortedByType

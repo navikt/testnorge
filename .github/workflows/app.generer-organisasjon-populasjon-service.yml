@@ -15,7 +15,6 @@ on:
       - libs/servlet-security
       - apps/generer-organisasjon-populasjon-service/**
       - .github/workflows/app.generer-organisasjon-populasjon-service.yml
-      - .github/workflows/common.workflow.backend.yml
 
 jobs:
   workflow:

@@ -26,7 +26,7 @@ const grupper = [
   'WIP',
 ];
 
-const miljoer = ['q1', 'q2', 'q4', 'q5', 't3'];
+const miljoer = ['q1', 'q2', 'q4'];
 
 const toOptions = (options: string[]) =>
   options.map((value) => ({
@@ -47,7 +47,7 @@ const FasteOrganisasjonDataPage = () => {
     OrganisasjonFasteDataService.fetchOrganisasjoner(
       value,
       !tag ? null : tag,
-      !opprinnelse ? null : opprinnelse
+      !opprinnelse ? null : opprinnelse,
     )
       .then((response) => {
         setOrganisasjoner(response);
@@ -70,7 +70,7 @@ const FasteOrganisasjonDataPage = () => {
         }}
         onSearch={(value) =>
           OrganisasjonFasteDataService.fetchOrganisasjon(value).then((response) =>
-            JSON.stringify(response, null, 2)
+            JSON.stringify(response, null, 2),
           )
         }
       />
@@ -131,7 +131,7 @@ const FasteOrganisasjonDataPage = () => {
                 miljo={miljo}
                 fetchCompare={(_miljo, item) =>
                   OrganisasjonService.fetchOrganisasjon(item.orgnummer, _miljo).then(
-                    (response) => !OrganisasjonComperator.compare(item, response).isMismatch
+                    (response) => !OrganisasjonComperator.compare(item, response).isMismatch,
                   )
                 }
                 items={items}

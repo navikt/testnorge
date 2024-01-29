@@ -7,7 +7,6 @@ on:
       - libs/reactive-proxy
       - proxies/norg2-proxy/**
       - .github/workflows/proxy.norg2-proxy.yml
-      - .github/workflows/common.workflow.backend.yml
 
 jobs:
   workflow:
