@@ -104,10 +104,6 @@ jobs:
           dockerfile: ${{ inputs.working-directory }}/Dockerfile
           docker_context: ${{ inputs.working-directory }}
           image_suffix: ${{ inputs.image-suffix }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_USERNAME: token
-          NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
     outputs:
       image: ${{ steps.docker-build-push.outputs.image }}
 
