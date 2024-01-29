@@ -1,5 +1,9 @@
 package no.nav.testnav.apps.tenorsearchservice.provider;
 
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.tenorsearchservice.consumers.MaskinportenClient;
 import no.nav.testnav.apps.tenorsearchservice.consumers.dto.InfoType;
@@ -13,7 +17,6 @@ import no.nav.testnav.apps.tenorsearchservice.service.LookupService;
 import no.nav.testnav.apps.tenorsearchservice.service.TenorSearchService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,19 +34,28 @@ public class TenorSearchController {
     private final LookupService lookupService;
 
     @PostMapping("/testdata/oversikt")
-    public Mono<TenorOversiktResponse> getTestdata(@RequestBody TenorRequest searchData,
+    public Mono<TenorOversiktResponse> getTestdata(@RequestBody(description = "Søkekriterier",
+            content = @Content(schema = @Schema(implementation = TenorRequest.class))) TenorRequest searchData,
+                                                   @Schema(description = "Antall resultater per side")
                                                    @RequestParam(required = false) Integer antall,
+                                                   @Schema(description = "Sidenummer")
                                                    @RequestParam(required = false) Integer side,
+                                                   @Schema(description = "Seed for paginering")
                                                    @RequestParam(required = false) Integer seed) {
 
         return tenorSearchService.getTestdata(searchData, antall, side, seed);
     }
 
     @GetMapping("/testdata/raw")
-    public Mono<TenorResponse> getTestdata(@RequestParam(required = false) String searchData,
+    public Mono<TenorResponse> getTestdata(@Schema(description = "Søkekriterier")
+                                           @RequestParam(required = false) String searchData,
+                                           @Parameter(description = "Kilde, hvor data skal hentes fra")
                                            @RequestParam(required = false) Kilde kilde,
+                                           @Parameter(description = "InfoType, kategori av felter som skal returneres")
                                            @RequestParam(required = false) InfoType type,
+                                           @Schema(description = "Felter (kommaseparert liste) som skal returneres, når InfoType er 'Spesifikt'")
                                            @RequestParam(required = false) String fields,
+                                           @Schema(description = "Seed for paginering")
                                            @RequestParam(required = false) Integer seed) {
 
         return tenorSearchService
@@ -51,12 +63,19 @@ public class TenorSearchController {
     }
 
     @PostMapping("/testdata")
-    public Mono<TenorResponse> getTestdata(@RequestBody TenorRequest searchData,
+    public Mono<TenorResponse> getTestdata(@RequestBody(description = "Søkekriterier",
+            content = @Content(schema = @Schema(implementation = TenorRequest.class))) TenorRequest searchData,
+                                           @Parameter(description = "Kilde, hvor data skal hentes fra")
                                            @RequestParam(required = false) Kilde kilde,
+                                           @Parameter(description = "InfoType, kategori felter som skal returneres")
                                            @RequestParam(required = false) InfoType type,
+                                           @Schema(description = "Felter (kommaseparert liste) som skal returneres, når InfoType er 'Spesifikt'")
                                            @RequestParam(required = false) String fields,
+                                           @Schema(description = "Antall resultater per side")
                                            @RequestParam(required = false) Integer antall,
+                                           @Schema(description = "Sidenummer")
                                            @RequestParam(required = false) Integer side,
+                                           @Schema(description = "Seed for paginering")
                                            @RequestParam(required = false) Integer seed) {
 
         return tenorSearchService
@@ -64,7 +83,8 @@ public class TenorSearchController {
     }
 
     @GetMapping("/testdata/domain")
-    public List<String> getTestdataDomain(@RequestParam Lookups lookup) {
+    public List<String> getTestdataDomain(@Parameter(description = "Velg liste av verdier for oppslag")
+                                          @RequestParam Lookups lookup) {
 
         return lookupService.getLookup(lookup);
     }
