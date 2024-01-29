@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.StringTokenizer;
 
+import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
 
 @Slf4j
@@ -102,6 +103,6 @@ public class TenorResultMapperService {
                         .sorted()
                         .map(TenorOversiktResponse.TenorRelasjon::valueOf)
                         .toList() :
-                null;
+                emptyList();
     }
 }
