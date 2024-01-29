@@ -55,9 +55,6 @@ jobs:
       force-deploy: ${{ inputs.force-deploy }}
       force-deploy-test: ${{ inputs.force-deploy-test }}
       sonar-enabled: ${{ inputs.sonar-enabled }}
-    permissions:
-      contents: read
-      id-token: write
     secrets:
       NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
       NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
@@ -78,9 +75,6 @@ jobs:
       force-deploy-idporten: ${{ inputs.name == 'dolly-frontend' && inputs.force-deploy }}
       force-deploy-unstable: ${{ inputs.name == 'dolly-frontend' && inputs.force-deploy-test }}
       sonar-enabled: ${{ inputs.sonar-enabled }}
-    permissions:
-      contents: read
-      id-token: write
     secrets:
       NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
       NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
