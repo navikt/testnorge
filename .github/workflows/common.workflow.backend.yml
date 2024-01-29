@@ -93,6 +93,9 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       - name: "Docker"
         id: docker-build-push
+        if: |
+          needs.start.outputs.do-deploy == 'true' ||
+          needs.start.outputs.do-deploy-test == 'true'
         uses: nais/docker-build-push@v0
         with:
           team: dolly
