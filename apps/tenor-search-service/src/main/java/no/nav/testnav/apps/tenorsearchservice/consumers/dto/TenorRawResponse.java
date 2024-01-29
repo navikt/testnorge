@@ -46,7 +46,7 @@ public class TenorRawResponse {
         private List<Freg> freg;
         private List<Inntekt> inntekt;
         private List<InntektAordningen> inntektAordningen;
-        private List<SamletReskontroInnsyn> samletReskontroinnsyn;
+        private List<SamletReskontroinnsyn> samletReskontroinnsyn;
         private List<Skattemelding> skattemelding;
         private List<Skatteplikt> skatteplikt;
         private List<SpesifisertSummertSkattegrunnlag> spesifisertSummertSkattegrunnlag;
@@ -149,7 +149,7 @@ public class TenorRawResponse {
 
     @Data
     @NoArgsConstructor
-    public static class SamletReskontroInnsyn {
+    public static class SamletReskontroinnsyn {
 
         private String tenorRelasjonsnavn;
     }
