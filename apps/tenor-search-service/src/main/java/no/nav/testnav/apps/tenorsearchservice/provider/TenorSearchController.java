@@ -55,10 +55,12 @@ public class TenorSearchController {
                                            @RequestParam(required = false) Kilde kilde,
                                            @RequestParam(required = false) InfoType type,
                                            @RequestParam(required = false) String fields,
+                                           @RequestParam(required = false) Integer antall,
+                                           @RequestParam(required = false) Integer side,
                                            @RequestParam(required = false) Integer seed) {
 
         return tenorSearchService
-                .getTestdata(searchData, kilde, type, fields, seed);
+                .getTestdata(searchData, kilde, type, fields, antall, side, seed);
     }
 
     @GetMapping("/testdata/domain")

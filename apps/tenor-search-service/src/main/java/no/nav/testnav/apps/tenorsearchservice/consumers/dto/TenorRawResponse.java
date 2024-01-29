@@ -46,12 +46,12 @@ public class TenorRawResponse {
         private List<Freg> freg;
         private List<Inntekt> inntekt;
         private List<InntektAordningen> inntektAordningen;
-        private List<TestinnsendingSkattPerson> testinnsendingSkattPerson;
         private List<SamletReskontroInnsyn> samletReskontroinnsyn;
         private List<Skattemelding> skattemelding;
         private List<Skatteplikt> skatteplikt;
         private List<SpesifisertSummertSkattegrunnlag> spesifisertSummertSkattegrunnlag;
         private List<SummertSkattegrunnlag> summertSkattegrunnlag;
+        private List<TestinnsendingSkattPerson> testinnsendingSkattPerson;
         private List<Tilleggsskatt> tilleggsskatt;
         private List<Tjenestepensjonsavtale> tjenestepensjonsavtale;
     }

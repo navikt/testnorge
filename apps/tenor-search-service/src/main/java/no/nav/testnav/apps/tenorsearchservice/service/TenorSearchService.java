@@ -37,10 +37,11 @@ public class TenorSearchService {
         return tenorClient.getTestdata(isNotBlank(testDataQuery) ? testDataQuery : "", kilde, type, fields, seed);
     }
 
-    public Mono<TenorResponse> getTestdata(TenorRequest searchData, Kilde kilde, InfoType type, String fields, Integer seed) {
+    public Mono<TenorResponse> getTestdata(TenorRequest searchData, Kilde kilde, InfoType type, String fields,
+                                           Integer antall, Integer side,  Integer seed) {
 
         var query = getQuery(searchData);
-        return tenorClient.getTestdata(query, kilde, type, fields, seed);
+        return tenorClient.getTestdata(query, kilde, type, fields, antall, side, seed);
     }
 
     private String getQuery(TenorRequest searchData) {

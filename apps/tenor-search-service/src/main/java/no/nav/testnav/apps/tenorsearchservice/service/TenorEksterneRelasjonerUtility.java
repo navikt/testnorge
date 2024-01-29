@@ -35,7 +35,7 @@ public class TenorEksterneRelasjonerUtility {
                 .append(getTilleggsskatt(searchData.getTilleggsskatt()))
                 .append(getArbeidsforhold(searchData.getArbeidsforhold()))
                 .append(getBeregnetSkatt(searchData.getBeregnetSkatt()))
-                .append(getOpplysningerFraSkatteetatensInnsendingsMiljoe(searchData.getOpplysningerFraSkatteetatensInnsendingsmiljoe()))
+                .append(getTestinnsendingSkattPerson(searchData.getTestinnsendingSkattPerson()))
                 .append(getSamletReskontroInnsyn(searchData.getSamletReskontroInnsyn()))
                 .append(getSummertSkattegrunnlag(searchData.getSummertSkattegrunnlag()))
                 .append(getSpesifisertSummertSkattegrunnlag(searchData.getSpesifisertSummertSkattegrunnlag()));
@@ -80,13 +80,13 @@ public class TenorEksterneRelasjonerUtility {
                         .substring(5));
     }
 
-    private String getOpplysningerFraSkatteetatensInnsendingsMiljoe(TenorRequest.OpplysningerFraSkatteetatensInnsendingsmiljoe opplysningerFraSkatteetatensInnsendingsmiljoe) {
+    private String getTestinnsendingSkattPerson(TenorRequest.TestinnsendingSkattPerson testinnsendingSkattPerson) {
 
-        return isNull(opplysningerFraSkatteetatensInnsendingsmiljoe) ? "" :
+        return isNull(testinnsendingSkattPerson) ? "" :
                 " and tenorRelasjoner.testinnsendingSkattPerson:{%s}".formatted(new StringBuilder()
-                        .append(convertObject(INNTEKTSAAR, opplysningerFraSkatteetatensInnsendingsmiljoe.getInntektsaar()))
-                        .append(convertBooleanSpecial("harSkattemeldingUtkast", opplysningerFraSkatteetatensInnsendingsmiljoe.getHarSkattemeldingUtkast()))
-                        .append(convertBooleanSpecial("harSkattemeldingFastsatt", opplysningerFraSkatteetatensInnsendingsmiljoe.getHarSkattemeldingFastsatt()))
+                        .append(convertObject(INNTEKTSAAR, testinnsendingSkattPerson.getInntektsaar()))
+                        .append(convertBooleanSpecial("harSkattemeldingUtkast", testinnsendingSkattPerson.getHarSkattemeldingUtkast()))
+                        .append(convertBooleanSpecial("harSkattemeldingFastsatt", testinnsendingSkattPerson.getHarSkattemeldingFastsatt()))
                         .substring(5));
     }
 
