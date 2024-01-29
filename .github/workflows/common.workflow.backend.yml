@@ -73,6 +73,9 @@ jobs:
     needs: start
     if: github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - name: "Checkout"
         uses: actions/checkout@v4
@@ -87,63 +90,10 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           build-root-directory: ${{ inputs.working-directory }}
-          arguments: build --scan
+          arguments: build ${{ inputs.sonar-enabled && 'jacocoTestReport sonar' || ''}} --scan
           cache-read-only: false
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_USERNAME: token
-          NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-      - name: "Upload"
-        id: upload
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ needs.start.outputs.artifact}}
-          path: ${{ inputs.working-directory }}/build
-          retention-days: 1
-
-  sonar:
-    needs: [start, build]
-    if: ${{ inputs.sonar-enabled }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: "Checkout"
-        uses: actions/checkout@v4
-      - name: "Setup"
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: 21
-      - name: "Download"
-        uses: actions/download-artifact@v4
-        with:
-          name: ${{ needs.start.outputs.artifact }}
-          path: ${{ inputs.working-directory }}/build
-      - name: "Sonar"
-        uses: gradle/gradle-build-action@v2
-        with:
-          build-root-directory: ${{ inputs.working-directory }}
-          arguments: jacocoTestReport sonar -Dsonar.gradle.skipCompile=true
-          cache-read-only: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_USERNAME: token
-          NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-  
-  docker:
-    needs: [start, build]
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      id-token: write
-    steps:
-      - name: "Checkout"
-        uses: actions/checkout@v4
-      - name: "Download"
-        uses: actions/download-artifact@v4
-        with:
-          name: ${{ needs.start.outputs.artifact }}
-          path: ${{ inputs.working-directory }}/build
       - name: "Docker"
         id: docker-build-push
         uses: nais/docker-build-push@v0
@@ -162,7 +112,7 @@ jobs:
       image: ${{ steps.docker-build-push.outputs.image }}
 
   deploy:
-    needs: [start, sonar, docker]
+    needs: [start, build]
     if: needs.start.outputs.do-deploy == 'true'
     concurrency: ${{ inputs.image-suffix }}
     runs-on: ubuntu-latest
@@ -170,15 +120,15 @@ jobs:
       - name: "Checkout"
         uses: actions/checkout@v4
       - name: "Deploy"
-        uses: nais/deploy/actions/deploy@v1
+        uses: nais/deploy/actions/deploy@v2
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: ${{ inputs.cluster }}
           RESOURCE: ${{ inputs.working-directory }}/${{ inputs.nais-manifest }}
-          VAR: image=${{ needs.docker.outputs.image }}
+          VAR: image=${{ needs.build.outputs.image }}
 
   deploy-test:
-    needs: [start, sonar, docker]
+    needs: [start, build]
     if: needs.start.outputs.do-deploy-test == 'true'
     concurrency: ${{ inputs.image-suffix }}-test
     runs-on: ubuntu-latest
@@ -186,9 +136,9 @@ jobs:
       - name: "Checkout"
         uses: actions/checkout@v4
       - name: "Deploy (test)"
-        uses: nais/deploy/actions/deploy@v1
+        uses: nais/deploy/actions/deploy@v2
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: ${{ inputs.cluster }}
           RESOURCE: ${{ inputs.working-directory }}/config.test.yml
-          VAR: image=${{ needs.docker.outputs.image }}
+          VAR: image=${{ needs.build.outputs.image }}
