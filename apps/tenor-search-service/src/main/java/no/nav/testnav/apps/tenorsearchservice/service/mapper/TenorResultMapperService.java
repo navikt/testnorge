@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.StringTokenizer;
 
+import static java.util.Objects.nonNull;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -26,11 +28,11 @@ public class TenorResultMapperService {
     public TenorOversiktResponse map(TenorResponse resultat, String query) {
 
         return TenorOversiktResponse.builder()
-                        .status(resultat.getStatus())
-                        .error(resultat.getError())
-                        .data(convert(resultat))
-                        .query(query)
-                        .build();
+                .status(resultat.getStatus())
+                .error(resultat.getError())
+                .data(convert(resultat))
+                .query(query)
+                .build();
     }
 
     private TenorOversiktResponse.Data convert(TenorResponse tenorResponse) {
@@ -81,23 +83,25 @@ public class TenorResultMapperService {
 
     private static List<TenorOversiktResponse.TenorRelasjon> map(TenorRawResponse.TenorRelasjoner tenorRelasjoner) {
 
-        return Arrays.stream(tenorRelasjoner.getClass().getMethods())
-                .filter(metode -> metode.getName().startsWith("get"))
-                .filter(metode -> metode.getReturnType().equals(List.class))
-                .map(metode -> {
-                    try {
-                        return (List<?>) metode.invoke(tenorRelasjoner);
-                    } catch (IllegalAccessException | InvocationTargetException e) {
-                        log.error("Kunne ikke hente relasjoner", e);
-                        return null;
-                    }
-                })
-                .filter(Objects::nonNull)
-                .flatMap(List::stream)
-                .map(tenorRelasjon -> tenorRelasjon.getClass().getSimpleName())
-                .distinct()
-                .sorted()
-                .map(TenorOversiktResponse.TenorRelasjon::valueOf)
-                .toList();
+        return nonNull(tenorRelasjoner) ?
+                Arrays.stream(tenorRelasjoner.getClass().getMethods())
+                        .filter(metode -> metode.getName().startsWith("get"))
+                        .filter(metode -> metode.getReturnType().equals(List.class))
+                        .map(metode -> {
+                            try {
+                                return (List<?>) metode.invoke(tenorRelasjoner);
+                            } catch (IllegalAccessException | InvocationTargetException e) {
+                                log.error("Kunne ikke hente relasjoner", e);
+                                return null;
+                            }
+                        })
+                        .filter(Objects::nonNull)
+                        .flatMap(List::stream)
+                        .map(tenorRelasjon -> tenorRelasjon.getClass().getSimpleName())
+                        .distinct()
+                        .sorted()
+                        .map(TenorOversiktResponse.TenorRelasjon::valueOf)
+                        .toList() :
+                null;
     }
 }
