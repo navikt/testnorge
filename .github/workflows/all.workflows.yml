@@ -42,6 +42,10 @@ on:
         description: "Run Sonar scan?"
         default: true
 
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
 
   backend:
@@ -55,11 +59,7 @@ jobs:
       force-deploy: ${{ inputs.force-deploy }}
       force-deploy-test: ${{ inputs.force-deploy-test }}
       sonar-enabled: ${{ inputs.sonar-enabled }}
-    secrets:
-      NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
-      NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
-      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    secrets: inherit
 
   frontend:
     if: inputs.workflow == 'frontend'
@@ -75,9 +75,4 @@ jobs:
       force-deploy-idporten: ${{ inputs.name == 'dolly-frontend' && inputs.force-deploy }}
       force-deploy-unstable: ${{ inputs.name == 'dolly-frontend' && inputs.force-deploy-test }}
       sonar-enabled: ${{ inputs.sonar-enabled }}
-    secrets:
-      NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
-      NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
-      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-      READER_TOKEN: ${{ secrets.READER_TOKEN }}
-      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    secrets: inherit
