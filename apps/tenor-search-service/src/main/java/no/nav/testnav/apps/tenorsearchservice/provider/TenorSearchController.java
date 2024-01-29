@@ -1,9 +1,7 @@
 package no.nav.testnav.apps.tenorsearchservice.provider;
 
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.tenorsearchservice.consumers.MaskinportenClient;
 import no.nav.testnav.apps.tenorsearchservice.consumers.dto.InfoType;
@@ -17,6 +15,7 @@ import no.nav.testnav.apps.tenorsearchservice.service.LookupService;
 import no.nav.testnav.apps.tenorsearchservice.service.TenorSearchService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,9 +32,8 @@ public class TenorSearchController {
     private final MaskinportenClient maskinportenClient;
     private final LookupService lookupService;
 
-    @PostMapping("/testdata/oversikt")
-    public Mono<TenorOversiktResponse> getTestdata(@RequestBody(description = "Søkekriterier",
-            content = @Content(schema = @Schema(implementation = TenorRequest.class))) TenorRequest searchData,
+    @PostMapping(path = "/testdata/oversikt", produces = "application/json", consumes = "application/json")
+    public Mono<TenorOversiktResponse> getTestdata(@RequestBody TenorRequest searchData,
                                                    @Schema(description = "Antall resultater per side")
                                                    @RequestParam(required = false) Integer antall,
                                                    @Schema(description = "Sidenummer")
@@ -62,9 +60,8 @@ public class TenorSearchController {
                 .getTestdata(searchData, kilde, type, fields, seed);
     }
 
-    @PostMapping("/testdata")
-    public Mono<TenorResponse> getTestdata(@RequestBody(description = "Søkekriterier",
-            content = @Content(schema = @Schema(implementation = TenorRequest.class))) TenorRequest searchData,
+    @PostMapping(path ="/testdata", produces = "application/json", consumes = "application/json")
+    public Mono<TenorResponse> getTestdata(@RequestBody TenorRequest searchData,
                                            @Parameter(description = "Kilde, hvor data skal hentes fra")
                                            @RequestParam(required = false) Kilde kilde,
                                            @Parameter(description = "InfoType, kategori felter som skal returneres")
