@@ -84,8 +84,8 @@ public class GetTenorTestdata implements Callable<Mono<TenorResponse>> {
 
         if (nonNull(type)) {
             return switch (type) {
-                case DataFelter, AlleFelter -> 1;
-                case IdentOgNavn -> 100;
+                case DataFelter, AlleFelter, Kildedata -> 1;
+                case IdentOgNavn -> 10;
                 default -> null;
             };
         } else {
