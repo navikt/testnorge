@@ -89,7 +89,7 @@ jobs:
       do-deploy-test: ${{ inputs.force-deploy-test || (!contains(github.event.head_commit.message, '#nodeploy') && inputs.deploy-tag-test != '' && (github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-test))) }}
       do-deploy-idporten: ${{ inputs.force-deploy-idporten || (!contains(github.event.head_commit.message, '#nodeploy') && inputs.deploy-tag-idporten != '' && (github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-idporten))) }}
       do-deploy-unstable: ${{ inputs.force-deploy-unstable || (!contains(github.event.head_commit.message, '#nodeploy') && (inputs.deploy-tag-unstable != '') && (github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-unstable))) }}
-      artifact: ${{ inputs.image-suffix }}-${{ github.run_number}}-artifact
+      artifact: ${{ inputs.image-suffix }}-${{ github.run_number}}-failure
 
   build:
     needs: start
@@ -121,14 +121,23 @@ jobs:
           distribution: 'temurin'
           java-version: 21
       - name: "Gradle"
+        id: gradle
         uses: gradle/gradle-build-action@v3
         with:
           build-root-directory: ${{ inputs.working-directory }}
-          arguments: build ${{ inputs.sonar-enabled && 'jacocoTestReport sonar' || '' }} --scan
+          arguments: build ${{ inputs.sonar-enabled && 'jacocoTestReport sonar -Dsonar.gradle.skipCompile=true' || '' }} --scan
           cache-read-only: false
         env:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: "Reporting"
+        if: failure() && steps.gradle.outcome == 'failure'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ needs.start.outputs.artifact}}
+          path: ${{ inputs.working-directory }}/build/reports
+          retention-days: 7
+        
       - name: "Docker"
         id: docker-build-push
         if: |
