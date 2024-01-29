@@ -137,7 +137,6 @@ jobs:
           name: ${{ needs.start.outputs.artifact}}
           path: ${{ inputs.working-directory }}/build/reports
           retention-days: 7
-        
       - name: "Docker"
         id: docker-build-push
         if: |

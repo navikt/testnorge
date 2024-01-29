@@ -6,9 +6,10 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 class IntentionallyFailingTest {
 
-/*    @Test
+    @Test
     void shouldAlwaysFail() {
+        if (syntaxError)
         fail();
-    }*/
+    }
 
 }
