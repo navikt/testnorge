@@ -2,6 +2,7 @@ import { Box } from '@navikt/ds-react'
 import React from 'react'
 import { FolkeregisteretVisning } from '@/pages/tenorSoek/resultatVisning/FolkeregisteretVisning'
 import styled from 'styled-components'
+import { InntektVisning } from '@/pages/tenorSoek/resultatVisning/InntektVisning'
 
 const NavnHeader = styled.h2`
 	margin: 5px 0 15px 0;
@@ -20,6 +21,7 @@ export const PersonVisning = ({ person }) => {
 		<Box background="surface-default" padding="3">
 			<NavnHeader>{personData?.visningnavn}</NavnHeader>
 			<FolkeregisteretVisning data={personData} />
+			<InntektVisning data={personData?.tenorRelasjoner?.inntekt} />
 		</Box>
 	)
 }
