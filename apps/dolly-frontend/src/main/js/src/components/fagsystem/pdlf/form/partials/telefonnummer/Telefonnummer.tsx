@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import React, { useEffect, useState } from 'react'
+import { DollySelect, FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { DollyTextInput, FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import { PersoninformasjonKodeverk } from '@/config/kodeverk'
+import { AdresseKodeverk, PersoninformasjonKodeverk } from '@/config/kodeverk'
 import { FormikProps } from 'formik'
 import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
@@ -11,6 +11,11 @@ import {
 	initialTpsTelefonnummer,
 } from '@/components/fagsystem/pdlf/form/initialValues'
 import styled from 'styled-components'
+import { lookup } from 'country-data-list'
+
+import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
+import { Option } from '@/service/SelectOptionsOppslag'
+import { useKodeverk } from '@/utils/hooks/useKodeverk'
 
 export interface TelefonnummerArray {
 	person: {
@@ -71,7 +76,18 @@ export const TelefonnummerFormRedigering = ({ path }: TelefonnummerProps) => {
 }
 
 export const TelefonnummerForm = ({ path, formikBag, idx }: TelefonnummerProps) => {
+	const { kodeverk: landkoder, loading } = useKodeverk(AdresseKodeverk.ArbeidOgInntektLand)
+	const [land, setLand] = useState(_.get(formikBag.values, `${path}.land`) || 'NO')
 	const tlfListe = _.get(formikBag.values, path || 'pdldata.person.telefonnummer')
+	const mergedeLandkoder = landkoder?.map((landkode: Option) => {
+		const lookupLand = lookup.countries({ alpha2: landkode.value })?.[0]
+		return {
+			countryCallingCodes: lookupLand?.countryCallingCodes[0],
+			emoji: lookupLand?.emoji,
+			...landkode,
+		}
+	})
+	const telefonLandkoder = SelectOptionsFormat.formatOptions('telefonLandkoder', mergedeLandkoder)
 
 	useEffect(() => {
 		if (tlfListe && tlfListe.length === 1) {
@@ -95,9 +111,11 @@ export const TelefonnummerForm = ({ path, formikBag, idx }: TelefonnummerProps) 
 		}
 	}
 
-	const handleChangeLandkode = (value: string) => {
-		formikBag.setFieldValue(`${path}.landskode`, value)
-		formikBag.setFieldValue(`${paths.tpsMTelefonnummer}[${idx}].landkode`, value)
+	const handleChangeLandkode = (option) => {
+		setLand(option.value)
+		formikBag.setFieldValue(`${path}.landskode`, option.landkode)
+		formikBag.setFieldValue(`${path}.land`, option.value)
+		formikBag.setFieldValue(`${paths.tpsMTelefonnummer}[${idx}].landkode`, option.landkode)
 	}
 
 	const handleChangeNummer = (target: { value: string }) => {
@@ -109,18 +127,20 @@ export const TelefonnummerForm = ({ path, formikBag, idx }: TelefonnummerProps) 
 		formikBag.setFieldValue(`${path}.prioritet`, value)
 		formikBag.setFieldValue(
 			`${paths.tpsMTelefonnummer}[${idx}].telefontype`,
-			value === 2 ? 'HJET' : 'MOBI'
+			value === 2 ? 'HJET' : 'MOBI',
 		)
 	}
 
 	return (
 		<>
-			<FormikSelect
+			<DollySelect
 				name={`${path}.landskode`}
 				label="Landkode"
-				kodeverk={PersoninformasjonKodeverk.Retningsnumre}
-				onChange={({ value }: { value: string }) => handleChangeLandkode(value)}
-				size="large"
+				isLoading={loading}
+				value={land}
+				options={telefonLandkoder}
+				onChange={(option: Option) => handleChangeLandkode(option)}
+				size="xlarge"
 				isClearable={false}
 			/>
 			<DollyTextInput
@@ -128,8 +148,8 @@ export const TelefonnummerForm = ({ path, formikBag, idx }: TelefonnummerProps) 
 				label="Telefonnummer"
 				onChange={({ target }: { target: { value: string } }) => handleChangeNummer(target)}
 				value={_.get(formikBag.values, `${path}.nummer`)}
+				size="medium"
 				/*@ts-ignore*/
-				size="large"
 				feil={
 					_.get(formikBag.errors, `${path}.nummer`)
 						? { feilmelding: _.get(formikBag.errors, `${path}.nummer`) }
