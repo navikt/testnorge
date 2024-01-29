@@ -6,10 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import static java.util.Objects.isNull;
 
 @Data
 @Builder
@@ -17,6 +14,7 @@ import static java.util.Objects.isNull;
 @AllArgsConstructor
 public class TenorOversiktResponse {
 
+    @SuppressWarnings("java:S115")
     public enum TenorRelasjon {
         Arbeidsforhold,
         BeregnetSkatt,
@@ -63,13 +61,5 @@ public class TenorOversiktResponse {
         private String fornavn;
         private String etternavn;
         private List<TenorRelasjon> tenorRelasjoner;
-
-        public List<TenorRelasjon> getTenorRelasjoner() {
-
-            if (isNull(tenorRelasjoner)) {
-                tenorRelasjoner = new ArrayList<>();
-            }
-            return tenorRelasjoner;
-        }
     }
 }
