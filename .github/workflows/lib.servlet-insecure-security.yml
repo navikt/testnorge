@@ -20,5 +20,4 @@ jobs:
     uses: ./.github/workflows/common.java-build.yml
     with:
       working-directory: 'libs/servlet-insecure-security/'
-    secrets:
-      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+    secrets: inherit
