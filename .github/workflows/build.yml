@@ -28,7 +28,7 @@ jobs:
         env:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_USERNAME: ${{ secrets.GITHUB_USERNAME }}
+          GITHUB_USERNAME: token
         uses: gradle/gradle-build-action@v2
         with:
           arguments: build --scan
