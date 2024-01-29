@@ -91,16 +91,6 @@ jobs:
       do-deploy-unstable: ${{ inputs.force-deploy-unstable || (!contains(github.event.head_commit.message, '#nodeploy') && (inputs.deploy-tag-unstable != '') && (github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-unstable))) }}
       artifact: ${{ inputs.image-suffix }}-${{ github.run_number}}-artifact
 
-  sonar:
-    needs: start
-    if: inputs.sonar-enabled
-    secrets:
-      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-    uses: ./.github/workflows/common.scan.sonar.yml
-    with:
-      working-directory: ${{ inputs.working-directory }}
-
   build:
     needs: start
     if: github.actor != 'dependabot[bot]'
@@ -137,7 +127,7 @@ jobs:
           arguments: build ${{ inputs.sonar-enabled && 'jacocoTestReport sonar' || '' }} --scan
           cache-read-only: false
         env:
-          NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       - name: "Docker"
         id: docker-build-push
         if: |
