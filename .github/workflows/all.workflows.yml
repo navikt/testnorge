@@ -28,11 +28,6 @@ on:
         type: boolean
         description: "Deploy? Make sure the effective working directory contains a NAIS manifest as named below! Note: For dolly-frontend, this will also deploy with config.idporten.yml."
         default: false
-      # TODO: Remove as unused?
-      nais-manifest:
-        type: string
-        description: "Custom NAIS manifest filename."
-        default: "config.yml"
       force-deploy-test:
         type: boolean
         description: "Deploy to test? Make sure the effective working directory contains a config.test.yml! Note: For dolly-frontend, this will also deploy with config.unstable.yml."
@@ -69,7 +64,6 @@ jobs:
       working-directory: "${{ inputs.type }}/${{ inputs.name }}"
       image-suffix: ${{ inputs.name }}
       deploy-tag: ""
-      nais-manifest: ${{ inputs.nais-manifest }}
       force-deploy: ${{ inputs.force-deploy }}
       force-deploy-test: ${{ inputs.force-deploy-test }}
       force-deploy-idporten: ${{ inputs.name == 'dolly-frontend' && inputs.force-deploy }}
