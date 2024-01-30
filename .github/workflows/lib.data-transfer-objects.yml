@@ -1,4 +1,4 @@
-name: Lib data-transfer-objects
+name: data-transfer-objects
 
 on:
   push:

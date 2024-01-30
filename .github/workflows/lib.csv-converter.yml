@@ -1,4 +1,4 @@
-name: Lib csv-converter
+name: csv-converter
 
 on:
   push:

@@ -1,4 +1,4 @@
-name: Lib domain
+name: domain
 
 on:
   push:

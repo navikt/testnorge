@@ -28,7 +28,7 @@ jobs:
           echo "env: ${{ toJSON(env) }}"
           echo "commit: ${{ github.event.head.commit_message }}"
     outputs:
-      artifact: ${{ inputs.working-directory }}-${{ github.run_number}}-failure
+      artifact: ${{ github.run_id }}-failure
 
   build:
     needs: start

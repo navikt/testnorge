@@ -67,7 +67,7 @@ jobs:
     outputs:
       do-deploy-test: ${{ inputs.force-deploy-test || (!contains(github.event.head_commit.message, '#nodeploy') && (inputs.deploy-tag-test != '') && (github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-test))) }}
       do-deploy: ${{ inputs.force-deploy || (!contains(github.event.head_commit.message, '#nodeploy') && (inputs.deploy-tag != '') && (github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag))) }}
-      artifact: ${{ inputs.image-suffix }}-${{ github.run_number}}-failure
+      artifact: ${{ github.run_id }}-failure
 
   build:
     needs: start
