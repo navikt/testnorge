@@ -6,8 +6,6 @@ on:
         description: "The working directory for the job, e.g. libs/commands (without leading/trailing slash)."
         required: true
     secrets:
-      GITHUB_TOKEN:
-        required: true
       READER_TOKEN:
         required: true
 
