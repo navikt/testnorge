@@ -82,11 +82,12 @@ public class GetTenorTestdata implements Callable<Mono<TenorResponse>> {
             return antall;
         }
 
-        return switch (type) {
-            case DataFelter, AlleFelter, Kildedata -> 1;
-            case IdentOgNavn -> 10;
-            default -> null;
-        };
+        return nonNull(type) ?
+                switch (type) {
+                    case DataFelter, AlleFelter, Kildedata -> 1;
+                    case IdentOgNavn -> 10;
+                    default -> null;
+                } : null;
     }
 
     private String getSkjul(InfoType type) {
