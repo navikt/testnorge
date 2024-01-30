@@ -1,4 +1,4 @@
-name: Lib kafka-config
+name: kafka-config
 
 on:
   push:
@@ -7,17 +7,8 @@ on:
       - .github/workflows/lib.kafka-config.yml
 
 jobs:
-  scan:
-    name: Scan
-    uses: ./.github/workflows/common.scan.sonar.yml
+  workflow:
+    uses: ./.github/workflows/common.workflow.lib.yml
     with:
-      working-directory: 'libs/kafka-config/'
-    secrets:
-      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-  build:
-    name: Build
-    uses: ./.github/workflows/common.java-build.yml
-    with:
-      working-directory: 'libs/kafka-config/'
+      working-directory: 'libs/kafka-config'
     secrets: inherit
