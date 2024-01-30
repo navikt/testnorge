@@ -1,6 +1,7 @@
 package no.nav.dolly.service;
 
 import no.nav.dolly.MockedJwtAuthenticationTokenUtils;
+import no.nav.dolly.bestilling.tpsmessagingservice.MiljoerConsumer;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingKontroll;
 import no.nav.dolly.domain.jpa.Bruker;
@@ -24,12 +25,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import org.springframework.dao.DataIntegrityViolationException;
+import reactor.core.publisher.Mono;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import static java.util.Collections.singletonList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
@@ -43,8 +45,6 @@ import static org.mockito.Mockito.when;
 class BestillingServiceTest {
 
     private final static String BRUKERID = "123";
-    private final static String BRUKERNAVN = "BRUKER";
-    private final static String EPOST = "@@@@";
 
     private static final long BEST_ID = 1L;
 
@@ -55,13 +55,13 @@ class BestillingServiceTest {
     private BestillingKontrollRepository bestillingKontrollRepository;
 
     @Mock
-    private BestillingMalService bestillingMalService;
-
-    @Mock
     private TestgruppeRepository testgruppeRepository;
 
     @Mock
     private BrukerService brukerService;
+
+    @Mock
+    private MiljoerConsumer miljoerConsumer;
 
     @InjectMocks
     private BestillingService bestillingService;
@@ -96,15 +96,6 @@ class BestillingServiceTest {
     }
 
     @Test
-    void fetchBestillingerByGruppeIdBlirKaltMedGittFunnetTestgruppeOgReturnererBestillinger() {
-        Testgruppe gruppe = mock(Testgruppe.class);
-        when(testgruppeRepository.findById(any())).thenReturn(Optional.of(gruppe));
-
-        bestillingService.fetchBestillingerByGruppeId(1L, 0, 10);
-        verify(testgruppeRepository).findById(1L);
-    }
-
-    @Test
     void saveBestillingByGruppeIdAndAntallIdenterInkludererAlleMiljoerOgIdenterIBestilling() {
         long gruppeId = 1L;
         Testgruppe gruppe = mock(Testgruppe.class);
@@ -112,6 +103,7 @@ class BestillingServiceTest {
         int antallIdenter = 4;
 
         when(testgruppeRepository.findById(gruppeId)).thenReturn(Optional.of(gruppe));
+        when(miljoerConsumer.getMiljoer()).thenReturn(Mono.just(new ArrayList<>(miljoer)));
 
         bestillingService.saveBestilling(gruppeId, RsDollyBestilling.builder().environments(miljoer).build(),
                 antallIdenter, null, null, null);
@@ -127,10 +119,6 @@ class BestillingServiceTest {
                 Set.of(bes.getMiljoer().split(",")),
                 containsInAnyOrder("a1", "b2", "c3", "d4")
         );
-    }
-
-    private static Set<String> setOf(String s) {
-        return Set.of(s.split(","));
     }
 
     @Test
@@ -161,7 +149,9 @@ class BestillingServiceTest {
                 .ferdig(true).build()));
         when(brukerService.fetchOrCreateBruker(BRUKERID)).thenReturn(Bruker.builder().build());
 
-        bestillingService.createBestillingForGjenopprettFraBestilling(BEST_ID, singletonList("u1"));
+        when(miljoerConsumer.getMiljoer()).thenReturn(Mono.just(List.of("u1")));
+
+        bestillingService.createBestillingForGjenopprettFraBestilling(BEST_ID, "u1");
 
         verify(bestillingRepository).save(any(Bestilling.class));
     }
@@ -172,7 +162,7 @@ class BestillingServiceTest {
         when(bestillingRepository.findById(BEST_ID)).thenReturn(Optional.of(Bestilling.builder().build()));
 
         Assertions.assertThrows(DollyFunctionalException.class, () ->
-                bestillingService.createBestillingForGjenopprettFraBestilling(BEST_ID, singletonList("u1")));
+                bestillingService.createBestillingForGjenopprettFraBestilling(BEST_ID, "u1"));
     }
 
     @Test
@@ -184,7 +174,7 @@ class BestillingServiceTest {
                         .build()));
 
         Assertions.assertThrows(NotFoundException.class, () ->
-                bestillingService.createBestillingForGjenopprettFraBestilling(BEST_ID, singletonList("u1")));
+                bestillingService.createBestillingForGjenopprettFraBestilling(BEST_ID, "u1"));
     }
 
     @BeforeEach
