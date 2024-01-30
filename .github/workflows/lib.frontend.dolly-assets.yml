@@ -1,4 +1,4 @@
-name: Frontend lib dolly-assets
+name: dolly-assets
 
 on:
   push:
@@ -10,7 +10,7 @@ jobs:
   workflow:
     uses: ./.github/workflows/common.workflow.libs.frontend.yml
     with:
-      working-directory: 'libs/dolly-assets'
+      working-directory: 'navikt/dolly-assets'
     permissions:
       contents: write
       packages: write
