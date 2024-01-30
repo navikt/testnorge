@@ -1,4 +1,4 @@
-name: Frontend lib dolly-lib
+name: dolly-lib
 
 on:
   push:
@@ -7,20 +7,11 @@ on:
       - .github/workflows/lib.frontend.dolly-lib.yml
 
 jobs:
-  build:
-    name: Build
+  workflow:
+    uses: ./.github/workflows/common.workflow.libs.frontend.yml
+    with:
+      working-directory: 'navikt/dolly-lib'
     permissions:
       contents: write
       packages: write
-    uses: ./.github/workflows/common.js.build.yml
-    with:
-      working-directory: 'navikt/dolly-lib/'
-  publish:
-    name: Publish
-    permissions:
-      contents: write
-      packages: write
-    uses: ./.github/workflows/common.js.publish.yml
-    if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, '#publish-libs') }}
-    with:
-      working-directory: 'navikt/dolly-lib/'
+    secrets: inherit
