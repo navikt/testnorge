@@ -1,5 +1,3 @@
-name: Lib commands
-
 on:
   push:
     paths:
@@ -7,17 +5,8 @@ on:
       - .github/workflows/lib.commands.yml
 
 jobs:
-  scan:
-    name: Scan
-    uses: ./.github/workflows/common.scan.sonar.yml
+  workflow:
+    uses: ./.github/workflows/common.workflow.lib.yml
     with:
-      working-directory: 'libs/commands/'
-    secrets:
-      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-  build:
-    name: Build
-    uses: ./.github/workflows/common.java-build.yml
-    with:
-      working-directory: 'libs/commands/'
+      working-directory: 'libs/commands'
     secrets: inherit
