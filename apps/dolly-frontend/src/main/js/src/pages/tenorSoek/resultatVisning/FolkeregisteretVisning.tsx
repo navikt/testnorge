@@ -4,7 +4,7 @@ import React from 'react'
 import { formatDate, showLabel } from '@/utils/DataFormatter'
 
 export const FolkeregisteretVisning = ({ data }) => {
-	console.log('data: ', data) //TODO - SLETT MEG
+	// console.log('data: ', data) //TODO - SLETT MEG
 	if (!data) {
 		return null
 	}

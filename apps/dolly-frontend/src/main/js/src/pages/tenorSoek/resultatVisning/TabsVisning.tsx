@@ -5,7 +5,6 @@ import styled from 'styled-components'
 
 const TabsVisningFormatter = styled.div`
 	width: 100%;
-	//word-break: break-word;
 	&& {
 		.navds-tabs__tablist-wrapper {
 			margin-bottom: 20px;
@@ -31,7 +30,7 @@ export const TabsVisning = ({ children, kildedata }: any) => {
 				<Tabs.Panel value="nokkelinfo">
 					<div className="person-visning_content">{children}</div>
 				</Tabs.Panel>
-				<Tabs.Panel value="kildedata">
+				<Tabs.Panel value="kildedata" style={{ display: 'inline-grid', width: '100%' }}>
 					<CodeView code={kildedataPretty} language="json" />
 				</Tabs.Panel>
 			</Tabs>

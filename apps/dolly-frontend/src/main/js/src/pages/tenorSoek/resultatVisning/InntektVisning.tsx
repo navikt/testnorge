@@ -6,7 +6,7 @@ import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray
 import { TabsVisning } from '@/pages/tenorSoek/resultatVisning/TabsVisning'
 
 export const InntektVisning = ({ data }) => {
-	console.log('data: ', data) //TODO - SLETT MEG
+	// console.log('data: ', data) //TODO - SLETT MEG
 	if (!data || data.length < 1) {
 		return null
 	}

@@ -27,7 +27,7 @@ export const SoekForm = () => {
 	const [request, setRequest] = useState(null)
 	// const { response, loading, error, mutate } = useTenorSoek('Noekkelinfo', request)
 	const { response, loading, error, mutate } = useTenorOversikt(request)
-	console.log('response: ', response) //TODO - SLETT MEG
+	// console.log('response: ', response) //TODO - SLETT MEG
 
 	// const { person: valgtPersonData } = useTenorIdent('22866198962')
 	// console.log('valgtPersonData: ', valgtPersonData) //TODO - SLETT MEG

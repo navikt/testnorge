@@ -7,7 +7,7 @@ import { createOptions } from '@/pages/tenorSoek/utils'
 
 export const InntektAordningen = ({ formikBag, handleChange, getValue }: any) => {
 	const { domain: beskrivelseOptions, loading, error } = useTenorDomain('AOrdningBeskrivelse')
-	console.log('formikBag: ', formikBag.values) //TODO - SLETT MEG
+	// console.log('formikBag: ', formikBag.values) //TODO - SLETT MEG
 	return (
 		<Accordion size="small" headingSize="xsmall" className="flexbox--full-width">
 			<Accordion.Item defaultOpen={true}>
