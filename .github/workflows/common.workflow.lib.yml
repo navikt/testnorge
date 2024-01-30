@@ -27,6 +27,8 @@ jobs:
           echo "inputs: ${{ toJSON(inputs) }}"
           echo "env: ${{ toJSON(env) }}"
           echo "commit: ${{ github.event.head.commit_message }}"
+    outputs:
+      artifact: ${{ inputs.working-directory }}-${{ github.run_number}}-failure
 
   build:
     needs: start
@@ -43,6 +45,7 @@ jobs:
           distribution: temurin
           java-version: 21
       - name: "Gradle"
+        id: gradle
         uses: gradle/gradle-build-action@v3
         with:
           build-root-directory: ${{ inputs.working-directory }}
@@ -51,3 +54,10 @@ jobs:
         env:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: "Reporting"
+        #if: failure() && steps.gradle.outcome == 'failure'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ needs.start.outputs.artifact}}
+          path: ${{ inputs.working-directory }}/build/reports
+          retention-days: 7
