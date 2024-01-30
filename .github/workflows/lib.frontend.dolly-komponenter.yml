@@ -10,7 +10,7 @@ jobs:
   workflow:
     uses: ./.github/workflows/common.workflow.libs.frontend.yml
     with:
-      working-directory: 'libs/dolly-komponenter'
+      working-directory: 'navikt/dolly-komponenter'
     permissions:
       contents: write
       packages: write
