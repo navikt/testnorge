@@ -8,7 +8,7 @@ on:
 
 jobs:
   workflow:
-    uses: ./.github/workflows/common.workflow.lib.yml
+    uses: ./.github/workflows/common.workflow.libs.backend.yml
     with:
       working-directory: 'libs/security-token-service'
     secrets: inherit

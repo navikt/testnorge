@@ -74,7 +74,7 @@ jobs:
   
   libs:
     if: inputs.workflow == 'libs'
-    uses: ./.github/workflows/common.workflow.lib.yml
+    uses: ./.github/workflows/common.workflow.libs.backend.yml
     with:
       sonar-enabled: ${{ inputs.sonar-enabled }}
       working-directory: "${{ inputs.type }}/${{ inputs.name }}"
