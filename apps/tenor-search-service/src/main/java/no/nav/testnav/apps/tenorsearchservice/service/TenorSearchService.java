@@ -22,6 +22,7 @@ import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtili
 import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.convertEnum;
 import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.convertIntervall;
 import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.convertObject;
+import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.guard;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -38,13 +39,14 @@ public class TenorSearchService {
     }
 
     public Mono<TenorResponse> getTestdata(TenorRequest searchData, Kilde kilde, InfoType type, String fields,
-                                           Integer antall, Integer side,  Integer seed) {
+                                           Integer antall, Integer side, Integer seed) {
 
         var query = getQuery(searchData);
         return tenorClient.getTestdata(query, kilde, type, fields, antall, side, seed);
     }
 
     private String getQuery(TenorRequest searchData) {
+
         var builder = new StringBuilder()
                 .append(convertObject("identifikator", searchData.getIdentifikator()))
                 .append(convertDatoer("foedselsdato", searchData.getFoedselsdato()))
@@ -95,19 +97,20 @@ public class TenorSearchService {
             builder.append(convertEnum("hendelserMedSekvens.hendelse", searchData.getHendelser().getHendelse()))
                     .append(convertEnum("sisteHendelse", searchData.getHendelser().getSisteHendelse()));
         }
+
         builder.append(TenorEksterneRelasjonerUtility.getEksterneRelasjoner(searchData));
 
-        return builder.substring(builder.isEmpty() ? 0 : 5, builder.length());
+        return guard(builder);
     }
 
     private String getFregRelasjoner(TenorRequest.Relasjoner relasjoner) {
 
         return isNull(relasjoner.getRelasjon()) && isNull(relasjoner.getRelasjonMedFoedselsaar()) ? "" :
                 " and tenorRelasjoner.freg:{%s}"
-                        .formatted(new StringBuilder()
+                        .formatted(guard(new StringBuilder()
                                 .append(convertObject("tenorRelasjonsnavn", relasjoner.getRelasjon()))
                                 .append(convertIntervall("foedselsdato", relasjoner.getRelasjonMedFoedselsaar()))
-                                .substring(5));
+                        ));
     }
 
     private String getUtenlandskPersonidentifikasjon(List<TenorRequest.UtenlandskPersonIdentifikasjon> utenlandskPersonIdentifikasjon) {
