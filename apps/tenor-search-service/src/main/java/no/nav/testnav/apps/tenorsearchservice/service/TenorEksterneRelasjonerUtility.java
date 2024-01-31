@@ -30,7 +30,7 @@ public class TenorEksterneRelasjonerUtility {
                 .append(getRoller(searchData.getRoller()))
                 .append(getTjenestepensjonsavtale(searchData.getTjenestepensjonsavtale()))
                 .append(getSkattemelding(searchData.getSkattemelding()))
-                .append(getInntektAordningen(searchData.getInntektAordningen()))
+                .append(getInntektAordningen(searchData.getInntekt()))
                 .append(getSkatteplikt(searchData.getSkatteplikt()))
                 .append(getTilleggsskatt(searchData.getTilleggsskatt()))
                 .append(getArbeidsforhold(searchData.getArbeidsforhold()))
@@ -131,17 +131,17 @@ public class TenorEksterneRelasjonerUtility {
                         ));
     }
 
-    private String getInntektAordningen(TenorRequest.InntektAordningen inntektAordningen) {
+    private String getInntektAordningen(TenorRequest.Inntekt inntekt) {
 
-        return (isNull(inntektAordningen)) ? "" :
+        return (isNull(inntekt)) ? "" :
                 " and tenorRelasjoner.inntekt:{%s}"
                         .formatted(guard(new StringBuilder()
-                                .append(convertPeriode(inntektAordningen.getPeriode()))
-                                .append(convertObject("opplysningspliktig", inntektAordningen.getOpplysningspliktig()))
-                                .append(getInntektstyper(inntektAordningen.getInntektstyper()))
-                                .append(convertEnum("beskrivelse", inntektAordningen.getBeskrivelse()))
-                                .append(getForskuddstrekk(inntektAordningen.getForskuddstrekk()))
-                                .append(convertObject("harHistorikk", inntektAordningen.getHarHistorikk()))
+                                .append(convertPeriode(inntekt.getPeriode()))
+                                .append(convertObject("opplysningspliktig", inntekt.getOpplysningspliktig()))
+                                .append(getInntektstyper(inntekt.getInntektstyper()))
+                                .append(convertEnum("beskrivelse", inntekt.getBeskrivelse()))
+                                .append(getForskuddstrekk(inntekt.getForskuddstrekk()))
+                                .append(convertObject("harHistorikk", inntekt.getHarHistorikk()))
                         ));
     }
 

@@ -21,7 +21,6 @@ public class TenorOversiktResponse {
         BrregErFr,
         Freg,
         Inntekt,
-        InntektAordningen,
         TestinnsendingSkattPerson,
         SamletReskontroinnsyn,
         Skattemelding,

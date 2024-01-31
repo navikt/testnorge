@@ -99,7 +99,7 @@ public class TenorRequest {
     private List<Rolle> roller;
     private Tjenestepensjonsavtale tjenestepensjonsavtale;
     private Skattemelding skattemelding;
-    private InntektAordningen inntektAordningen;
+    private Inntekt inntekt;
     private Skatteplikt skatteplikt;
     private Tilleggsskatt tilleggsskatt;
     private Arbeidsforhold arbeidsforhold;
@@ -213,7 +213,7 @@ public class TenorRequest {
 
     @Data
     @NoArgsConstructor
-    public static class InntektAordningen {
+    public static class Inntekt {
 
         private MonthInterval periode;
         private Integer opplysningspliktig;
