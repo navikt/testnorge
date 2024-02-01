@@ -10,6 +10,7 @@ import * as _ from 'lodash-es'
 import { TreffListe } from '@/pages/tenorSoek/resultatVisning/TreffListe'
 import { Header, requestIsEmpty } from '@/components/ui/soekForm/SoekForm'
 import DisplayFormikState from '@/utils/DisplayFormikState'
+import { EnhetsregisteretForetaksregisteret } from '@/pages/tenorSoek/soekFormPartials/EnhetsregisteretForetaksregisteret'
 
 const SoekefeltWrapper = styled.div`
 	display: flex;
@@ -31,111 +32,92 @@ export const SoekForm = ({ request, setRequest, mutate }) => {
 	// }
 
 	return (
-		<>
-			<SoekefeltWrapper>
-				<Soekefelt>
-					{/*<Formik initialValues={initialValues} onSubmit={(request) => handleSubmit(request)}>*/}
-					<Formik initialValues={{}} onSubmit={() => console.log('submit...')}>
-						{(formikBag) => {
-							const handleChangeGammel = (value: any, path: string) => {
-								console.log('value: ', value) //TODO - SLETT MEG
-								const updatedRequest = value
+		<SoekefeltWrapper>
+			<Soekefelt>
+				{/*<Formik initialValues={initialValues} onSubmit={(request) => handleSubmit(request)}>*/}
+				<Formik initialValues={{}} onSubmit={() => console.log('submit...')}>
+					{(formikBag) => {
+						const handleChange = (value: any, path: string) => {
+							console.log('value: ', value === '') //TODO - SLETT MEG
+							const kategori = path.split('.')[0]
+							const updatedRequest =
+								value !== null && value !== ''
 									? _.set(formikBag.values, path, value)
 									: _.omit(formikBag.values, path)
-								// console.log('formikBag.values: ', formikBag.values) //TODO - SLETT MEG
-								// console.log('updatedRequest: ', updatedRequest) //TODO - SLETT MEG
+							if (Object.keys(_.get(updatedRequest, kategori))?.length === 0) {
+								setRequest(_.omit(updatedRequest, kategori))
+								formikBag.setFieldValue(kategori, undefined)
+							} else {
 								setRequest(updatedRequest)
-								if (value) {
+								if (value !== null && value !== '') {
 									formikBag.setFieldValue(path, value)
 								} else {
 									formikBag.setFieldValue(path, undefined)
 								}
-								mutate()
 							}
+							mutate()
+							// TODO: sjekk om alle verdier OG underkategorier er tomme
+						}
 
-							const handleChange = (value: any, path: string) => {
-								console.log('value: ', value === '') //TODO - SLETT MEG
-								const kategori = path.split('.')[0]
-								const updatedRequest =
-									value !== null && value !== ''
-										? _.set(formikBag.values, path, value)
-										: _.omit(formikBag.values, path)
-								if (Object.keys(_.get(updatedRequest, kategori))?.length === 0) {
-									setRequest(_.omit(updatedRequest, kategori))
-									formikBag.setFieldValue(kategori, undefined)
-								} else {
-									setRequest(updatedRequest)
-									if (value !== null && value !== '') {
-										formikBag.setFieldValue(path, value)
-									} else {
-										formikBag.setFieldValue(path, undefined)
-									}
-								}
-								mutate()
-								// TODO: sjekk om alle verdier OG inderkategorier er tomme
-							}
-
-							// const handleChange = (value: any, path: string, kategori: string) => {
-							// 	if (value || value === false) {
-							// 		formikBag.setFieldValue(path, value)
-							// 	} else {
-							// 		formikBag.setFieldValue(path, undefined)
-							// 	}
-							// 	if (Object.keys(_.get(formikBag.values, kategori))?.length === 0) {
-							// 		formikBag.setFieldValue(kategori, undefined)
-							// 	}
-							// 	setRequest(formikBag.values)
-							// 	console.log('request: ', request) //TODO - SLETT MEG
-							// 	mutate()
+						const handleChangeList = (value: any, path: string) => {
+							// console.log('value: ', value) //TODO - SLETT MEG
+							const list = value.map((item: any) => item.value)
+							const updatedRequest = _.set(formikBag.values, path, list)
+							// if (requestIsEmpty(updatedRequest)) {
+							// 	setRequest(null)
+							// } else {
+							setRequest(updatedRequest)
 							// }
+							mutate()
+							// TODO: tilpass denne også
+						}
 
-							const handleChangeList = (value: any, path: string) => {
-								// console.log('value: ', value) //TODO - SLETT MEG
-								const list = value.map((item: any) => item.value)
-								const updatedRequest = _.set(formikBag.values, path, list)
-								// if (requestIsEmpty(updatedRequest)) {
-								// 	setRequest(null)
-								// } else {
-								setRequest(updatedRequest)
-								// }
-								mutate()
-							}
+						const getValue = (path: string) => {
+							return _.get(formikBag.values, path)
+						}
 
-							const getValue = (path: string) => {
-								return _.get(formikBag.values, path)
-							}
+						const devEnabled =
+							window.location.hostname.includes('localhost') ||
+							window.location.hostname.includes('dolly-frontend-dev')
 
-							const devEnabled =
-								window.location.hostname.includes('localhost') ||
-								window.location.hostname.includes('dolly-frontend-dev')
-
-							return (
-								<>
-									<Form className="flexbox--flex-wrap" autoComplete="off">
-										<Accordion size="small" headingSize="xsmall" className="flexbox--full-width">
-											<Accordion.Item defaultOpen={true}>
-												<Accordion.Header>
-													<Header title="Inntekt A-ordningen" antall={0} />
-												</Accordion.Header>
-												<Accordion.Content>
-													<InntektAordningen
-														formikBag={formikBag}
-														handleChange={handleChange}
-														handleChangeList={handleChangeList}
-														getValue={getValue}
-													/>
-												</Accordion.Content>
-											</Accordion.Item>
-										</Accordion>
-									</Form>
-									{devEnabled && <DisplayFormikState {...formikBag} />}
-								</>
-								// TODO sett inn chips her?
-							)
-						}}
-					</Formik>
-				</Soekefelt>
-			</SoekefeltWrapper>
-		</>
+						return (
+							<>
+								<Form className="flexbox--flex-wrap" autoComplete="off">
+									<Accordion size="small" headingSize="xsmall" className="flexbox--full-width">
+										<Accordion.Item defaultOpen={true}>
+											<Accordion.Header>
+												<Header title="Inntekt A-ordningen" antall={0} />
+											</Accordion.Header>
+											<Accordion.Content>
+												<InntektAordningen
+													formikBag={formikBag}
+													handleChange={handleChange}
+													handleChangeList={handleChangeList}
+													getValue={getValue}
+												/>
+											</Accordion.Content>
+										</Accordion.Item>
+										<Accordion.Item>
+											<Accordion.Header>
+												<Header title="Enhetsregisteret og Foretaksregisteret" antall={0} />
+											</Accordion.Header>
+											<Accordion.Content>
+												<EnhetsregisteretForetaksregisteret
+													formikBag={formikBag}
+													handleChangeList={handleChangeList}
+													getValue={getValue}
+												/>
+											</Accordion.Content>
+										</Accordion.Item>
+									</Accordion>
+								</Form>
+								{devEnabled && <DisplayFormikState {...formikBag} />}
+							</>
+							// TODO sett inn chips her?
+						)
+					}}
+				</Formik>
+			</Soekefelt>
+		</SoekefeltWrapper>
 	)
 }

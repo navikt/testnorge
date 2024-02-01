@@ -1,12 +1,11 @@
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import { arrayToString } from '@/utils/DataFormatter'
+import { arrayToString, oversettBoolean } from '@/utils/DataFormatter'
 import React from 'react'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { TabsVisning } from '@/pages/tenorSoek/resultatVisning/TabsVisning'
 
 export const InntektVisning = ({ data }) => {
-	// console.log('data: ', data) //TODO - SLETT MEG
 	if (!data || data.length < 1) {
 		return null
 	}
@@ -24,7 +23,7 @@ export const InntektVisning = ({ data }) => {
 								<TitleValue title="Inntektstype" value={arrayToString(inntekt.inntektstype)} />
 								<TitleValue title="Beskrivelse" value={arrayToString(inntekt.beskrivelse)} />
 								<TitleValue title="Forskuddstrekk" value={arrayToString(inntekt.forskuddstrekk)} />
-								{/*Historikk: 0*/}
+								<TitleValue title="Har historikk" value={oversettBoolean(inntekt.harHistorikk)} />
 								{/* Relasjoner:*/}
 							</TabsVisning>
 						)
