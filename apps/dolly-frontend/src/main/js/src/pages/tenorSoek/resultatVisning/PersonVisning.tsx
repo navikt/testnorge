@@ -1,4 +1,4 @@
-import { Box } from '@navikt/ds-react'
+import { Alert, Box } from '@navikt/ds-react'
 import React from 'react'
 import { FolkeregisteretVisning } from '@/pages/tenorSoek/resultatVisning/FolkeregisteretVisning'
 import styled from 'styled-components'
@@ -11,7 +11,11 @@ const NavnHeader = styled.h2`
 export const PersonVisning = ({ person, loading, error }) => {
 	// console.log('person: ', person) //TODO - SLETT MEG
 	if (loading) {
-		return <Loading label="Laster person..." />
+		return <Loading label="Laster person ..." />
+	}
+
+	if (error) {
+		return <Alert variant="error">{`Feil ved henting av person: ${error}`}</Alert>
 	}
 
 	if (!person) {

@@ -1,12 +1,25 @@
-import { Box, VStack, Tag } from '@navikt/ds-react'
+import { Box, VStack, Tag, Alert } from '@navikt/ds-react'
 import React, { useEffect, useState } from 'react'
 import { useTenorIdent } from '@/utils/hooks/useTenorSoek'
 import { PersonVisning } from '@/pages/tenorSoek/resultatVisning/PersonVisning'
-export const TreffListe = ({ response }: any) => {
+import Loading from '@/components/ui/loading/Loading'
+export const TreffListe = ({ response, loading, error }: any) => {
+	if (loading) {
+		return <Loading label="Laster treff ..." />
+	}
+
+	if (error || response?.error) {
+		return (
+			<Alert variant="error" size="small">{`Feil ved henting av personer: ${
+				error || response?.error
+			}`}</Alert>
+		)
+	}
+
 	if (!response) {
 		return null
 	}
-	console.log('response: ', response?.data?.personer) //TODO - SLETT MEG
+	// console.log('response: ', response?.data?.personer) //TODO - SLETT MEG
 
 	const [valgtPerson, setValgtPerson] = useState(null)
 	const {
