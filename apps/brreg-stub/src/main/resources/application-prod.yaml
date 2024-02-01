@@ -6,20 +6,13 @@ spring:
   datasource:
     url: "jdbc:postgresql://b27dbvl032.preprod.local:5432/testnav-brregstub?autoReconnect=true&useSSL=false"
     hikari:
-      maximum-pool-size: 2
+      maximum-pool-size: 3
       connection-test-query: "select 1"
-      connection-timeout: 30000
-      initialization-fail-timeout: 10000
       minimum-idle: 1
-      jdbc-url: "jdbc:postgresql://b27dbvl032.preprod.local:5432/testnav-brregstub?autoReconnect=true&useSSL=false"
-    jpa:
-      hibernate:
-        ddl-auto: none
-      properties:
-        hibernate:
-          dialect: org.hibernate.dialect.PostgreSQLDialect
   jpa:
-    open-in-view: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
   cloud:
     vault:
       host: vault.adeo.no
@@ -33,8 +26,6 @@ spring:
         role: testnav-brregstub-admin
         backend: postgresql/preprod-fss
       fail-fast: true
-  config:
-    import: vault://
 
 server:
   servlet:
