@@ -1,19 +1,17 @@
-app.db.flyway.role: brreg-stub-admin
-app.db.flyway.backend: postgresql/preprod-fss/creds
 
 spring:
   flyway:
     locations: "classpath:db/migration/postgresql"
   main.banner-mode: "off"
   datasource:
-    url: "jdbc:postgresql://b27dbvl013.preprod.local:5432/brreg-stub?autoReconnect=true&useSSL=false"
+    url: "jdbc:postgresql://b27dbvl032.preprod.local:5432/testnav-brregstub?autoReconnect=true&useSSL=false"
     hikari:
       maximum-pool-size: 2
       connection-test-query: "select 1"
       connection-timeout: 30000
       initialization-fail-timeout: 10000
       minimum-idle: 1
-      jdbc-url: "jdbc:postgresql://b27dbvl013.preprod.local:5432/brreg-stub?autoReconnect=true&useSSL=false"
+      jdbc-url: "jdbc:postgresql://b27dbvl032.preprod.local:5432/testnav-brregstub?autoReconnect=true&useSSL=false"
     jpa:
       hibernate:
         ddl-auto: none
@@ -32,7 +30,7 @@ spring:
         enabled: false
       database:
         enabled: true
-        role: brreg-stub-admin
+        role: testnav-brregstub-admin
         backend: postgresql/preprod-fss
       fail-fast: true
   config:
