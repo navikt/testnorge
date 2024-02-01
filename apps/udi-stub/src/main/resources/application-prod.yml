@@ -1,12 +1,12 @@
 spring:
   datasource:
-    url: jdbc:postgresql://b27dbvl007.preprod.local:5432/udi-stub?autoReconnect=true&useSSL=false
+    url: jdbc:postgresql://dev-pg.intern.nav.no:5432/testnav-udistub?autoReconnect=true&useSSL=false
     hikari:
       maximum-pool-size: 3
       minimum-idle: 1
       connection-timeout: 30000
       initialization-fail-timeout: 10000
-      jdbc-url: jdbc:postgresql://b27dbvl007.preprod.local:5432/udi-stub?autoReconnect=true&useSSL=false
+      jdbc-url: jdbc:postgresql://dev-pg.intern.nav.no:5432/testnav-udistub?autoReconnect=true&useSSL=false
   cloud:
     vault:
       kv:
@@ -18,7 +18,14 @@ spring:
       read-timeout: 30000
       database:
         backend: postgresql/preprod-fss
-        role: udi-stub-admin
+        role: testnav-udistub-admin
         enabled: true
   config:
     import: vault://
+  security:
+    oauth2:
+      resourceserver:
+        tokenx:
+          issuer-uri: ${TOKEN_X_ISSUER}
+          jwk-set-uri: ${TOKEN_X_JWKS_URI}
+          accepted-audience: ${TOKEN_X_CLIENT_ID}
