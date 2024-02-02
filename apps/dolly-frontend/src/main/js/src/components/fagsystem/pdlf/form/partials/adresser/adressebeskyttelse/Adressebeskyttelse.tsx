@@ -40,9 +40,7 @@ const getAdressebeskyttelseOptions = (identtype: string) => {
 	}
 	return identtype === 'FNR'
 		? Options('gradering')
-		: Options('gradering').filter(
-				(v: Target) => !['STRENGT_FORTROLIG', 'FORTROLIG'].includes(v.value),
-		  )
+		: Options('gradering').filter((v: Target) => v.value !== 'FORTROLIG')
 }
 
 export const AdressebeskyttelseForm = ({

@@ -29,7 +29,6 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
-import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
@@ -120,7 +119,7 @@ public class BestillingController {
     @Operation(description = "Gjenopprett en bestilling med bestillingsId, for en liste med miljoer")
     @Transactional
     public RsBestillingStatus gjenopprettBestilling(@PathVariable("bestillingId") Long bestillingId, @RequestParam(value = "miljoer", required = false) String miljoer) {
-        Bestilling bestilling = bestillingService.createBestillingForGjenopprettFraBestilling(bestillingId, nonNull(miljoer) ? asList(miljoer.split(",")) : emptyList());
+        Bestilling bestilling = bestillingService.createBestillingForGjenopprettFraBestilling(bestillingId, miljoer);
         gjenopprettBestillingService.executeAsync(bestilling);
         return mapperFacade.map(bestilling, RsBestillingStatus.class);
     }
