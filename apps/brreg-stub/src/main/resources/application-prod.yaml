@@ -1,25 +1,21 @@
 
 spring:
   flyway:
-    locations: "classpath:db/migration/postgresql"
-  main.banner-mode: "off"
+    locations: classpath:db/migration/postgresql
+  main:
+    banner-mode: off
   datasource:
-    url: "jdbc:postgresql://b27dbvl032.preprod.local:5432/testnav-brregstub?autoReconnect=true&useSSL=false"
+    url: jdbc:postgresql://b27dbvl032.preprod.local:5432/testnav-brregstub?useUnicode=yes&characterEncoding=UTF-8
     hikari:
-      maximum-pool-size: 2
-      connection-test-query: "select 1"
+      maximum-pool-size: 3
+      minimum-idle: 1
+      max-lifetime: 30000
       connection-timeout: 30000
       initialization-fail-timeout: 10000
-      minimum-idle: 1
-      jdbc-url: "jdbc:postgresql://b27dbvl032.preprod.local:5432/testnav-brregstub?autoReconnect=true&useSSL=false"
-    jpa:
-      hibernate:
-        ddl-auto: none
-      properties:
-        hibernate:
-          dialect: org.hibernate.dialect.PostgreSQLDialect
   jpa:
-    open-in-view: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
   cloud:
     vault:
       host: vault.adeo.no
@@ -35,8 +31,3 @@ spring:
       fail-fast: true
   config:
     import: vault://
-
-server:
-  servlet:
-    encoding:
-      charset: UTF-8
