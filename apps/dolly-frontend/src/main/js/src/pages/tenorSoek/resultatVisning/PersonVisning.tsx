@@ -23,7 +23,6 @@ export const PersonVisning = ({ person, loading, error }) => {
 	if (!person) {
 		return null
 	}
-	// TODO check for errors
 
 	const personData = person.data?.dokumentListe?.[0]
 	// TODO maa kanskje ta med flere personer hvis lista er lengre?

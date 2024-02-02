@@ -30,7 +30,16 @@ export const TabsVisning = ({ children, kildedata }: any) => {
 				<Tabs.Panel value="nokkelinfo">
 					<div className="person-visning_content">{children}</div>
 				</Tabs.Panel>
-				<Tabs.Panel value="kildedata" style={{ display: 'inline-grid', width: '100%' }}>
+				<Tabs.Panel
+					value="kildedata"
+					style={{
+						display: 'inline-grid',
+						width: '100%',
+						maxHeight: '600px',
+						overflowX: 'auto',
+						marginBottom: '15px',
+					}}
+				>
 					<CodeView code={kildedataPretty} language="json" />
 				</Tabs.Panel>
 			</Tabs>

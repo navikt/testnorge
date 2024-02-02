@@ -18,6 +18,7 @@ export const SoekKategori = styled.div`
 	display: flex;
 	flex-wrap: wrap;
 	font-size: medium;
+
 	&& {
 		.dolly-form-input {
 			min-width: 0;

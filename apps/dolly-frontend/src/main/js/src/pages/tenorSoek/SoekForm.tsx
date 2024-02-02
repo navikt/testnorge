@@ -11,6 +11,7 @@ import { TreffListe } from '@/pages/tenorSoek/resultatVisning/TreffListe'
 import { Header, requestIsEmpty } from '@/components/ui/soekForm/SoekForm'
 import DisplayFormikState from '@/utils/DisplayFormikState'
 import { EnhetsregisteretForetaksregisteret } from '@/pages/tenorSoek/soekFormPartials/EnhetsregisteretForetaksregisteret'
+import { Folkeregisteret } from '@/pages/tenorSoek/soekFormPartials/Folkeregisteret'
 
 const SoekefeltWrapper = styled.div`
 	display: flex;
@@ -86,9 +87,22 @@ export const SoekForm = ({ request, setRequest, mutate }) => {
 									<Accordion size="small" headingSize="xsmall" className="flexbox--full-width">
 										<Accordion.Item defaultOpen={true}>
 											<Accordion.Header>
+												<Header title="Folkeregisteret" antall={0} />
+											</Accordion.Header>
+											<Accordion.Content style={{ paddingRight: '0' }}>
+												<Folkeregisteret
+													formikBag={formikBag}
+													handleChange={handleChange}
+													handleChangeList={handleChangeList}
+													getValue={getValue}
+												/>
+											</Accordion.Content>
+										</Accordion.Item>
+										<Accordion.Item>
+											<Accordion.Header>
 												<Header title="Inntekt A-ordningen" antall={0} />
 											</Accordion.Header>
-											<Accordion.Content>
+											<Accordion.Content style={{ paddingRight: '0' }}>
 												<InntektAordningen
 													formikBag={formikBag}
 													handleChange={handleChange}
@@ -101,7 +115,7 @@ export const SoekForm = ({ request, setRequest, mutate }) => {
 											<Accordion.Header>
 												<Header title="Enhetsregisteret og Foretaksregisteret" antall={0} />
 											</Accordion.Header>
-											<Accordion.Content>
+											<Accordion.Content style={{ paddingRight: '0' }}>
 												<EnhetsregisteretForetaksregisteret
 													formikBag={formikBag}
 													handleChangeList={handleChangeList}

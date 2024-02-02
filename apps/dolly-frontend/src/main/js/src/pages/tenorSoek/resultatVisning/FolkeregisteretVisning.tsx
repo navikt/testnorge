@@ -2,6 +2,7 @@ import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import React from 'react'
 import { formatDate, showLabel } from '@/utils/DataFormatter'
+import { TabsVisning } from '@/pages/tenorSoek/resultatVisning/TabsVisning'
 
 export const FolkeregisteretVisning = ({ data }) => {
 	// console.log('data: ', data) //TODO - SLETT MEG
@@ -12,7 +13,7 @@ export const FolkeregisteretVisning = ({ data }) => {
 	return (
 		<>
 			<SubOverskrift label="Folkeregisteret" iconKind="personinformasjon" />
-			<div className="person-visning_content">
+			<TabsVisning kildedata={data.tenorMetadata?.kildedata}>
 				<TitleValue title="Identifikator" value={data.identifikator} />
 				<TitleValue title="Navn" value={data.visningnavn} />
 				<TitleValue title="Fødselsdato" value={formatDate(data.foedselsdato)} />
@@ -23,12 +24,10 @@ export const FolkeregisteretVisning = ({ data }) => {
 					title="Adressebeskyttelse"
 					value={showLabel('gradering', data.adresseBeskyttelse)}
 				/>
-				{/*// evt adresseGradering som er en array?*/}
 				<TitleValue title="Bostedsadresse" value={data.bostedsadresse} />
 				<TitleValue title="Siste hendelse" value={data.sisteHendelse} />
 				{/*// Relasjoner:*/}
-				{/*// Kildedata:*/}
-			</div>
+			</TabsVisning>
 		</>
 	)
 }
