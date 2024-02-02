@@ -9,6 +9,9 @@ spring:
     hikari:
       maximum-pool-size: 3
       minimum-idle: 1
+      max-lifetime: 30000
+      connection-timeout: 30000
+      initialization-fail-timeout: 10000
   jpa:
     properties:
       hibernate:
@@ -26,8 +29,5 @@ spring:
         role: testnav-brregstub-admin
         backend: postgresql/preprod-fss
       fail-fast: true
-
-server:
-  servlet:
-    encoding:
-      charset: UTF-8
+  config:
+    import: vault://
