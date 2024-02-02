@@ -51,7 +51,7 @@ public class TpsMessagingClient implements ClientRegister {
     private final MapperFacade mapperFacade;
     private final PersonServiceConsumer personServiceConsumer;
     private final TransactionHelperService transactionHelperService;
-    private final TpsMiljoerConsumer tpsMiljoerConsumer;
+    private final MiljoerConsumer miljoerConsumer;
 
     private static String getResultat(TpsMeldingResponseDTO respons) {
 
@@ -76,7 +76,7 @@ public class TpsMessagingClient implements ClientRegister {
     @SuppressWarnings("S1144")
     public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        return Flux.from(tpsMiljoerConsumer.getTpsMiljoer()
+        return Flux.from(miljoerConsumer.getMiljoer()
                         .flatMap(miljoer -> {
 
                             if (!dollyPerson.isOrdre() && isTpsMessage(bestilling)) {
