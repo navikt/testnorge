@@ -68,4 +68,9 @@ public class TenorConverterUtility {
 
         return isNull(object) ? "*" : object.toString();
     }
+
+    public static String guard(StringBuilder builder) {
+
+        return builder.substring(builder.isEmpty() ? 0 : 5, builder.length());
+    }
 }
