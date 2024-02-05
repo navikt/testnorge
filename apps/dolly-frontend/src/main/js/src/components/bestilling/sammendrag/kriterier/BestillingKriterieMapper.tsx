@@ -1582,7 +1582,7 @@ const mapMedlemskapsperiode = (bestillingData, data) => {
 }
 
 const jaNeiNull = (verdi) => {
-	if (null === verdi) {
+	if (verdi === null || verdi === undefined) {
 		return null
 	}
 	return verdi ? 'JA' : 'NEI'
@@ -1602,7 +1602,10 @@ const mapKrr = (bestillingData, data) => {
 					width: 'medium',
 				},
 				obj('Epost', krrKriterier.epost),
-				obj('Mobilnummer', `${krrKriterier.landkode} ${krrKriterier.mobil}`),
+				obj(
+					'Mobilnummer',
+					krrKriterier.registrert && `${krrKriterier.landkode} ${krrKriterier.mobil}`,
+				),
 				obj('Språk', showLabel('spraaktype', krrKriterier.spraak)),
 				obj('Gyldig fra', formatDate(krrKriterier.gyldigFra)),
 				obj('Adresse', krrKriterier.sdpAdresse),
