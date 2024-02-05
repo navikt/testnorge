@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
@@ -13,8 +13,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+@Data
 @Builder
-@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 public class RsInntektsmelding {
