@@ -29,7 +29,7 @@ export const krrAttributt = 'krrstub'
 
 export const KrrstubForm = ({ formikBag }: KrrstubFormProps) => {
 	const { kodeverk: landkoder, loading } = useKodeverk(AdresseKodeverk.ArbeidOgInntektLand)
-	const [land, setLand] = useState(_.get(formikBag.values, 'krrstub.land') || 'NO')
+	const [land, setLand] = useState(_.get(formikBag.values, 'krrstub.land'))
 	const [mobilnummer, setMobilnummer] = useState(_.get(formikBag, 'values.krrstub.mobil') || '')
 	const leverandoerer = SelectOptionsOppslag.hentKrrLeverandoerer()
 
@@ -48,20 +48,54 @@ export const KrrstubForm = ({ formikBag }: KrrstubFormProps) => {
 	const handleRegistrertChange = (newRegistrert: Change) => {
 		if (!newRegistrert.value) {
 			formikBag.setFieldValue('krrstub', {
+				registrert: newRegistrert.value,
+			})
+		} else {
+			formikBag.setFieldValue('krrstub', {
 				epost: '',
 				gyldigFra: null,
 				landkode: '+47',
-				mobil: '',
+				mobil: null,
 				sdpAdresse: '',
 				sdpLeverandoer: '',
 				spraak: '',
 				registrert: newRegistrert.value,
 				reservert: null,
+				land: 'NO',
 			})
-		} else {
-			formikBag.setFieldValue('krrstub.registrert', true)
+			setLand('NO')
 		}
 	}
+
+	const gyldigMobilnummer = () => {
+		const landkode = _.get(formikBag.values, 'krrstub.landkode')
+		if (!landkode) {
+			return null
+		}
+		if (!mobilnummer || mobilnummer?.length === 0) {
+			return { feilmelding: 'Feltet er påkrevd' }
+		}
+		if (landkode === '+47') {
+			return mobilnummer?.length === 8 && mobilnummer?.match('^[0-9]+$')
+				? null
+				: { feilmelding: 'Telefonnummer må ha 8 siffer' }
+		} else {
+			return mobilnummer?.length > 3 && mobilnummer?.length < 12 && mobilnummer?.match('^[0-9]+$')
+				? null
+				: { feilmelding: 'Telefonnummer må ha mellom 4 og 11 siffer' }
+		}
+	}
+
+	const mobilnummerFeil = gyldigMobilnummer()
+
+	const gyldigLandkode = () => {
+		if (!mobilnummer || mobilnummer?.length === 0) {
+			return null
+		}
+		return _.get(formikBag.values, 'krrstub.landkode') ? null : { feilmelding: 'Feltet er påkrevd' }
+	}
+
+	const landkodeFeil = gyldigLandkode()
 
 	return (
 		//@ts-ignore
@@ -104,32 +138,24 @@ export const KrrstubForm = ({ formikBag }: KrrstubFormProps) => {
 									fastfield={false}
 									options={telefonLandkoder}
 									label={'Landkode'}
+									feil={landkodeFeil}
 									onChange={(option: Option) => {
-										setLand(option.value)
-										formikBag.setFieldValue('krrstub.landkode', option.landkode)
-										formikBag.setFieldValue('krrstub.land', option.value)
+										setLand(option?.value)
+										formikBag.setFieldValue('krrstub.landkode', option?.landkode || null)
+										formikBag.setFieldValue('krrstub.land', option?.value || null)
 									}}
-									isClearable={false}
 									size={'xlarge'}
 								/>
 								<DollyTextInput
 									name="krrstub.mobil"
 									label="Mobilnummer"
-									placeholder={'12345678'}
 									value={mobilnummer}
 									size={'medium'}
-									feil={
-										//TODO: Fjerne denne feil prop når react hook form er implementert
-										_.isEmpty(mobilnummer) ||
-										(mobilnummer.length > 3 &&
-											mobilnummer.length < 12 &&
-											mobilnummer.match('^[0-9]+$')) // Kun tall tillatt
-											? null
-											: { feilmelding: 'Ugyldig telefonnummer' }
-									}
+									//TODO: Naar React Hook Form er implementert, flytt gyldigMobilnummer() til Yup-validering
+									feil={mobilnummerFeil}
 									onChange={(event) => {
-										setMobilnummer(event.target.value)
-										formikBag.setFieldValue('krrstub.mobil', event.target.value)
+										setMobilnummer(event.target.value || null)
+										formikBag.setFieldValue('krrstub.mobil', event.target.value || null)
 									}}
 								/>
 							</div>
@@ -165,17 +191,37 @@ export const KrrstubForm = ({ formikBag }: KrrstubFormProps) => {
 	)
 }
 
+const testMobil = (val) => {
+	return val.test('gyldig-mobil', 'Ugyldig telefonnummer', function isValid(mobil) {
+		const values = this.options.context
+		const registrert = _.get(values, 'krrstub.registrert')
+		const landkode = _.get(values, 'krrstub.landkode')
+		if (!registrert || !landkode) {
+			return true
+		}
+		if (landkode && mobil?.length === 0) {
+			return false
+		}
+		if (landkode === '+47') {
+			return mobil?.length === 8 && mobil?.match('^[0-9]+$')
+		} else {
+			return mobil?.length > 3 && mobil?.length < 12 && mobil.match('^[0-9]+$')
+		}
+	})
+}
+
 KrrstubForm.validation = {
 	krrstub: ifPresent(
 		'$krrstub',
 		Yup.object({
 			epost: Yup.string(),
 			gyldigFra: Yup.date().nullable(),
-			landkode: requiredString,
-			mobil: Yup.string().matches(/^\d{4,11}$/, {
-				message: 'Ugyldig telefonnummer',
-				excludeEmptyString: true,
+			landkode: Yup.mixed().when(['registrert', 'mobil'], {
+				is: (registrert, mobil) => registrert && mobil,
+				then: () => requiredString,
+				otherwise: () => Yup.mixed().nullable(),
 			}),
+			mobil: testMobil(Yup.string().nullable()),
 			sdpAdresse: Yup.string(),
 			sdpLeverandoer: Yup.string().nullable(),
 			spraak: Yup.string(),
