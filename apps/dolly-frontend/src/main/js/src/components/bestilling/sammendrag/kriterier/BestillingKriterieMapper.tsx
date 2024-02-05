@@ -1604,7 +1604,9 @@ const mapKrr = (bestillingData, data) => {
 				obj('Epost', krrKriterier.epost),
 				obj(
 					'Mobilnummer',
-					krrKriterier.registrert && `${krrKriterier.landkode} ${krrKriterier.mobil}`,
+					krrKriterier.registrert &&
+						krrKriterier.mobil &&
+						`${krrKriterier.landkode} ${krrKriterier.mobil}`,
 				),
 				obj('Språk', showLabel('spraaktype', krrKriterier.spraak)),
 				obj('Gyldig fra', formatDate(krrKriterier.gyldigFra)),
