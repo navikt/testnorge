@@ -67,7 +67,7 @@ dependencies {
     implementation 'org.apache.commons:commons-text:1.10.0'
 
     implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
-    implementation 'no.nav.tjenestespesifikasjoner:nav-altinn-inntektsmelding:1.2019.08.16-13.46-35cbdfd492d4'
+    implementation 'no.nav.tjenestespesifikasjoner:nav-altinn-inntektsmelding:1.2019.09.25-00.21-49b69f0625e0'
 
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
