@@ -37,6 +37,4 @@ public class RsArbeidsforhold {
     public List<RsGraderingIForeldrepenger> getGraderingIForeldrepengerListe() {
         return Objects.requireNonNullElse(graderingIForeldrepengerListe, Collections.emptyList());
     }
-
-
 }
