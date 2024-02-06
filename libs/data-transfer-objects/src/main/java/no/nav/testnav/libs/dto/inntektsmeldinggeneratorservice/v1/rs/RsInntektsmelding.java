@@ -11,7 +11,6 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Data
 @Builder
@@ -54,22 +53,6 @@ public class RsInntektsmelding {
     @JsonProperty
     private List<RsPeriode> pleiepengerPerioder;
 
-    public Optional<RsArbeidsgiver> getArbeidsgiver() {
-        return Optional.ofNullable(arbeidsgiver);
-    }
-
-    public Optional<RsArbeidsgiverPrivat> getArbeidsgiverPrivat() {
-        return Optional.ofNullable(arbeidsgiverPrivat);
-    }
-
-    public Optional<RsRefusjon> getRefusjon() {
-        return Optional.ofNullable(refusjon);
-    }
-
-    public Optional<RsOmsorgspenger> getOmsorgspenger() {
-        return Optional.ofNullable(omsorgspenger);
-    }
-
     public RsAvsendersystem getAvsendersystem() {
         return Objects.requireNonNullElse(avsendersystem, new RsAvsendersystem());
     }
@@ -84,13 +67,5 @@ public class RsInntektsmelding {
 
     public List<RsPeriode> getPleiepengerPerioder() {
         return Objects.requireNonNullElse(pleiepengerPerioder, Collections.emptyList());
-    }
-
-    public Optional<RsSykepengerIArbeidsgiverperioden> getSykepengerIArbeidsgiverPerioden() {
-        return Optional.ofNullable(sykepengerIArbeidsgiverperioden);
-    }
-
-    public Optional<LocalDate> getStartdatoForeldrepengeperiode() {
-        return Optional.ofNullable(startdatoForeldrepengeperiode);
     }
 }

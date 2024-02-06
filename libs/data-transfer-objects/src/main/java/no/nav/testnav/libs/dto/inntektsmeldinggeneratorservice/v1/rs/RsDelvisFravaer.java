@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.Optional;
 
 @Data
 @NoArgsConstructor
@@ -15,12 +14,4 @@ public class RsDelvisFravaer {
     private LocalDate dato;
     @JsonProperty
     private Double timer;
-
-    public Optional<LocalDate> getDato() {
-        return Optional.ofNullable(dato);
-    }
-
-    public Optional<Double> getTimer() {
-        return Optional.ofNullable(timer);
-    }
 }

@@ -2,6 +2,7 @@ package no.nav.registre.inntektsmeldinggeneratorservice.util;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.inntektsmeldinggeneratorservice.exception.JaxbToXmlException;
+import org.apache.commons.text.CaseUtils;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -10,6 +11,10 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
+import static java.util.Objects.nonNull;
 
 @Slf4j
 public class XmlConverter {
@@ -61,5 +66,20 @@ public class XmlConverter {
         } catch (JAXBException e) {
             throw new JaxbToXmlException("klarte ikke å konvertere Jaxb element til Objekt", e);
         }
+    }
+
+    public static BigDecimal toBigDecimal(Double value) {
+
+        return nonNull(value) ? BigDecimal.valueOf(value) : null;
+    }
+
+    public static BigInteger toBigInteger(Integer value) {
+
+        return nonNull(value) ? BigInteger.valueOf(value) : null;
+    }
+
+    public static String toCamelCase(String value) {
+
+        return nonNull(value) ? CaseUtils.toCamelCase(value, true, '_') : null;
     }
 }

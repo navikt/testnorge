@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Objects.isNull;
+
 @Component
 public class XML201809Validator {
 
@@ -18,7 +20,7 @@ public class XML201809Validator {
 
         Map<String, Boolean> rules = new HashMap<>();
 
-        rules.put("Må ha en arbeidsgiver.", inntektsmelding.getArbeidsgiver().isEmpty());
+        rules.put("Må ha en arbeidsgiver.", isNull(inntektsmelding.getArbeidsgiver()));
 
         List<String> errors = rules.entrySet().stream()
                 .filter(s -> s.getValue().equals(true))
