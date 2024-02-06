@@ -35,7 +35,7 @@ public class InntektsmeldingController {
             @RequestHeader("Nav-Call-Id") String navCallId,
             @RequestBody InntektsmeldingRequest request
     ) {
-        log.info("Oppretter inntektsmelding for {} i {}.", request.getArbeidstakerFnr(), request.getMiljoe());
+        log.info("Oppretter inntektsmelding for {} i {} melding {}.", request.getArbeidstakerFnr(), request.getMiljoe(), request);
 
         validerInntektsmelding(request);
 

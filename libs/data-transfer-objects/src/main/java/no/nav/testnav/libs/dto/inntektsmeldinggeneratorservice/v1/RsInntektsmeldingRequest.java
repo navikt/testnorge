@@ -3,8 +3,8 @@ package no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Value;
 import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.enums.AarsakInnsendingKodeListe;
 import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.enums.YtelseKodeListe;
 import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsArbeidsforhold;
@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Objects;
 
 
-@Value
+@Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
