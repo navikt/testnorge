@@ -8,7 +8,6 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Data
 @NoArgsConstructor
@@ -27,18 +26,6 @@ public class RsArbeidsforhold {
     @JsonProperty
     private List<RsGraderingIForeldrepenger> graderingIForeldrepengerListe;
 
-    public Optional<String> getArbeidsforholdId() {
-        return Optional.ofNullable(arbeidsforholdId);
-    }
-
-    public Optional<LocalDate> getFoersteFravaersdag() {
-        return Optional.ofNullable(foersteFravaersdag);
-    }
-
-    public Optional<RsInntekt> getBeregnetInntekt() {
-        return Optional.ofNullable(beregnetInntekt);
-    }
-
     public List<RsPeriode> getAvtaltFerieListe() {
         return Objects.requireNonNullElse(avtaltFerieListe, Collections.emptyList());
     }
@@ -50,6 +37,4 @@ public class RsArbeidsforhold {
     public List<RsGraderingIForeldrepenger> getGraderingIForeldrepengerListe() {
         return Objects.requireNonNullElse(graderingIForeldrepengerListe, Collections.emptyList());
     }
-
-
 }

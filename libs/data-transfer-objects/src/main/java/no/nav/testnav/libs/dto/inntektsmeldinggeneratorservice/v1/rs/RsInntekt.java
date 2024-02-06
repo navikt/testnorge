@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Optional;
-
 @Data
 @NoArgsConstructor
 public class RsInntekt {
@@ -14,12 +12,4 @@ public class RsInntekt {
     private Double beloep;
     @JsonProperty
     private String aarsakVedEndring;
-
-    public Optional<Double> getBeloep() {
-        return Optional.ofNullable(beloep);
-    }
-
-    public Optional<String> getAarsakVedEndring() {
-        return Optional.ofNullable(aarsakVedEndring);
-    }
 }

@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.Optional;
 
 @Data
 @NoArgsConstructor
@@ -17,12 +16,4 @@ public class RsEndringIRefusjon {
     private LocalDate endringsdato;
     @JsonProperty
     private Double refusjonsbeloepPrMnd;
-
-    public Optional<LocalDate> getEndringsdato() {
-        return Optional.ofNullable(endringsdato);
-    }
-
-    public Optional<Double> getRefusjonsbeloepPrMnd() {
-        return Optional.ofNullable(refusjonsbeloepPrMnd);
-    }
 }

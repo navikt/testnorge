@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Data
 @NoArgsConstructor
@@ -19,10 +18,6 @@ public class RsOmsorgspenger {
     private List<RsPeriode> fravaersPerioder;
     @JsonProperty
     private List<RsDelvisFravaer> delvisFravaersListe;
-
-    public Optional<Boolean> getHarUtbetaltPliktigeDager() {
-        return Optional.ofNullable(harUtbetaltPliktigeDager);
-    }
 
     public List<RsPeriode> getFravaersPerioder() {
         return Objects.requireNonNullElse(fravaersPerioder, Collections.emptyList());

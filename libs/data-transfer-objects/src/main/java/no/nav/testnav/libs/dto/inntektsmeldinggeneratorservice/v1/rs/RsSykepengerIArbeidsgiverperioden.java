@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
-import java.util.Optional;
 
 @Data
 @NoArgsConstructor
@@ -17,16 +16,4 @@ public class RsSykepengerIArbeidsgiverperioden {
     private Double bruttoUtbetalt;
     @JsonProperty
     private String begrunnelseForReduksjonEllerIkkeUtbetalt;
-
-    public Optional<List<RsPeriode>> getArbeidsgiverperiodeListe() {
-        return Optional.ofNullable(arbeidsgiverperiodeListe);
-    }
-
-    public Optional<Double> getBruttoUtbetalt() {
-        return Optional.ofNullable(bruttoUtbetalt);
-    }
-
-    public Optional<String> getBegrunnelseForReduksjonEllerIkkeUtbetalt() {
-        return Optional.ofNullable(begrunnelseForReduksjonEllerIkkeUtbetalt);
-    }
 }

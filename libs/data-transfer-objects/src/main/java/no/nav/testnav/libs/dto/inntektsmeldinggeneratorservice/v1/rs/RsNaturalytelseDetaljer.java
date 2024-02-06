@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.Optional;
 
 @Data
 @NoArgsConstructor
@@ -17,16 +16,4 @@ public class RsNaturalytelseDetaljer {
     private LocalDate fom;
     @JsonProperty
     private Double beloepPrMnd;
-
-    public Optional<String> getNaturaytelseType() {
-        return Optional.ofNullable(naturaytelseType);
-    }
-
-    public Optional<LocalDate> getFom() {
-        return Optional.ofNullable(fom);
-    }
-
-    public Optional<Double> getBeloepPrMnd() {
-        return Optional.ofNullable(beloepPrMnd);
-    }
 }

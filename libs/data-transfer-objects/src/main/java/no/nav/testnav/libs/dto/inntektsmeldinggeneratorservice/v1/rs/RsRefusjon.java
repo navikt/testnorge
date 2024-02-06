@@ -8,7 +8,6 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Data
 @NoArgsConstructor
@@ -20,14 +19,6 @@ public class RsRefusjon {
     private LocalDate refusjonsopphoersdato;
     @JsonProperty
     private List<RsEndringIRefusjon> endringIRefusjonListe;
-
-    public Optional<Double> getRefusjonsbeloepPrMnd() {
-        return Optional.ofNullable(refusjonsbeloepPrMnd);
-    }
-
-    public Optional<LocalDate> getRefusjonsopphoersdato() {
-        return Optional.ofNullable(refusjonsopphoersdato);
-    }
 
     public List<RsEndringIRefusjon> getEndringIRefusjonListe() {
         return Objects.requireNonNullElse(endringIRefusjonListe, Collections.emptyList());
