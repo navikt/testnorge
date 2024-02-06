@@ -42,7 +42,7 @@ public class InntektsmeldingConsumer implements ConsumerStatus {
     public Flux<InntektsmeldingResponse> postInntektsmelding(InntektsmeldingRequest inntekstsmelding) {
 
         var callId = getNavCallId();
-        log.info("Inntektsmelding med callId {} sendt", callId);
+        log.info("Inntektsmelding med callId {} sendt {}", callId, inntekstsmelding);
 
         return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> new OpprettInntektsmeldingCommand(webClient,
