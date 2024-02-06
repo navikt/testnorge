@@ -1,5 +1,6 @@
 package no.nav.dolly.bestilling.inntektsmelding;
 
+import io.swagger.v3.core.util.Json;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.inntektsmelding.command.OpprettInntektsmeldingCommand;
@@ -42,7 +43,8 @@ public class InntektsmeldingConsumer implements ConsumerStatus {
     public Flux<InntektsmeldingResponse> postInntektsmelding(InntektsmeldingRequest inntekstsmelding) {
 
         var callId = getNavCallId();
-        log.info("Inntektsmelding med ident {} callId {} sendt {}", inntekstsmelding.getArbeidstakerFnr(), callId, inntekstsmelding);
+        log.info("Inntektsmelding med ident {} callId {} sendt {}", inntekstsmelding.getArbeidstakerFnr(), callId,
+                Json.pretty(inntekstsmelding));
 
         return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> new OpprettInntektsmeldingCommand(webClient,
