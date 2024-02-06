@@ -68,10 +68,6 @@ const mockedBestilling = {
 							miljo: 'qx',
 							identer: ['25457315050', '21417327018'],
 						},
-						{
-							miljo: 't3',
-							identer: ['25457315050', '21417327018'],
-						},
 					],
 				},
 			],

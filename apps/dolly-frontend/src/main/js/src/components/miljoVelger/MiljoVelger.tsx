@@ -77,15 +77,11 @@ export const MiljoVelger = ({
 			if (tilgjengeligMiljo === 'q2') return bankIdQ2
 			return bankIdQ1
 		}
-		return {
-			Q: miljoer.Q.filter((env) => env.id !== 'qx' && env.id !== 'q5'),
-			T: miljoer.T.filter((env) => env.id !== 't13'),
-		}
+		return miljoer.Q.filter((env: any) => env.id !== 'qx')
 	}
 
 	const disableAllEnvironments = erMiljouavhengig(bestillingsdata)
 	const filteredEnvironments = filterEnvironments(dollyEnvironments, bankIdBruker)
-	const order = ['T', 'Q']
 
 	return (
 		<div className="miljo-velger">
@@ -115,35 +111,28 @@ export const MiljoVelger = ({
 						}
 					}
 
-					return order.map((type) => {
-						const category = filteredEnvironments[type]
-						if (!category) {
-							return null
-						}
-
-						return (
-							<fieldset key={type} name={`Liste over ${type}-miljøer`}>
-								<StyledH3>{type}-miljøer </StyledH3>
-								<div className="miljo-velger_checkboxes">
-									{category.map((env) => (
-										<DollyCheckbox
-											key={env.id}
-											id={env.id}
-											disabled={
-												env.disabled ||
-												(disableAllEnvironments && values.length < 1) ||
-												alleredeValgtMiljoe.some((miljoe) => miljoe === env.id)
-											}
-											label={env?.id?.toUpperCase()}
-											checked={values.includes(env.id)}
-											onClick={onClick}
-											size={'small'}
-										/>
-									))}
-								</div>
-							</fieldset>
-						)
-					})
+					return (
+						<fieldset name={`Liste over miljøer`}>
+							<StyledH3>Miljøer </StyledH3>
+							<div className="miljo-velger_checkboxes">
+								{filteredEnvironments.map((env) => (
+									<DollyCheckbox
+										key={env.id}
+										id={env.id}
+										disabled={
+											env.disabled ||
+											(disableAllEnvironments && values.length < 1) ||
+											alleredeValgtMiljoe.some((miljoe) => miljoe === env.id)
+										}
+										label={env?.id?.toUpperCase()}
+										checked={values.includes(env.id)}
+										onClick={onClick}
+										size={'small'}
+									/>
+								))}
+							</div>
+						</fieldset>
+					)
 				}}
 			</FieldArray>
 

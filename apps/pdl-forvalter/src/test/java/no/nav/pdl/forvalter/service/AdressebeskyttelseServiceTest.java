@@ -14,6 +14,7 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 
+import static no.nav.testnav.libs.data.pdlforvalter.v1.AdressebeskyttelseDTO.AdresseBeskyttelse.FORTROLIG;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.AdressebeskyttelseDTO.AdresseBeskyttelse.STRENGT_FORTROLIG;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.AdressebeskyttelseDTO.AdresseBeskyttelse.STRENGT_FORTROLIG_UTLAND;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -52,7 +53,7 @@ class AdressebeskyttelseServiceTest {
     void whenStrengtFortroligOrFortroligAndIdentypeDnr_thenThrowExecption() {
 
         var request = AdressebeskyttelseDTO.builder()
-                .gradering(STRENGT_FORTROLIG)
+                .gradering(FORTROLIG)
                 .isNew(true)
                 .build();
 
@@ -61,7 +62,7 @@ class AdressebeskyttelseServiceTest {
                         .ident(DNR_IDENT)
                         .build()));
 
-        assertThat(exception.getMessage(), containsString("Adressebeskyttelse: Gradering STRENGT_FORTROLIG eller " +
+        assertThat(exception.getMessage(), containsString("Adressebeskyttelse: Gradering " +
                 "FORTROLIG kan kun settes på personer med fødselsnummer"));
     }
 
@@ -75,7 +76,7 @@ class AdressebeskyttelseServiceTest {
                         .build()))
                 .build();
 
-        var target = adressebeskyttelseService.convert(request).get(0);
+        var target = adressebeskyttelseService.convert(request).getFirst();
 
         assertThat(target.getMaster(), is(equalTo(Master.PDL)));
     }
@@ -93,13 +94,13 @@ class AdressebeskyttelseServiceTest {
                 .kontaktadresse(List.of(new KontaktadresseDTO()))
                 .build();
 
-        var target = adressebeskyttelseService.convert(request).get(0);
+        var target = adressebeskyttelseService.convert(request).getFirst();
 
         assertThat(target.getMaster(), is(equalTo(Master.FREG)));
         assertThat(request.getBostedsadresse(), is(empty()));
         assertThat(request.getOppholdsadresse(), is(empty()));
-        assertThat(request.getKontaktadresse().get(0).getPostboksadresse().getPostboks(), is("2094"));
-        assertThat(request.getKontaktadresse().get(0).getPostboksadresse().getPostbokseier(), is("SOT6 Vika"));
-        assertThat(request.getKontaktadresse().get(0).getPostboksadresse().getPostnummer(), is("0125"));
+        assertThat(request.getKontaktadresse().getFirst().getPostboksadresse().getPostboks(), is("2094"));
+        assertThat(request.getKontaktadresse().getFirst().getPostboksadresse().getPostbokseier(), is("SOT6 Vika"));
+        assertThat(request.getKontaktadresse().getFirst().getPostboksadresse().getPostnummer(), is("0125"));
     }
 }

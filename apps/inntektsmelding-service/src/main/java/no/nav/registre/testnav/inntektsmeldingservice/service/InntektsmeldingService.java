@@ -1,6 +1,5 @@
 package no.nav.registre.testnav.inntektsmeldingservice.service;
 
-import io.swagger.v3.core.util.Json;
 import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -50,9 +49,8 @@ public class InntektsmeldingService {
             String ident
     ) {
         var xmlString = genererInntektsmeldingConsumer.getInntektsmeldingXml201812(RsAltinnInntektsmeldingFactory.create(rsInntektsmelding, ident));
-        log.trace(xmlString);
-        InntektsmeldingModel model = repository.save(new InntektsmeldingModel());
-        log.info("Inntektsmelding generert med id: {}.\n{}", model.getId(), Json.pretty(xmlString));
+        var model = repository.save(new InntektsmeldingModel());
+        log.info("Inntektsmelding generert med id: {}.\n{}", model.getId(), xmlString);
 
         return InntektDokument.builder()
                 .arbeidstakerFnr(ident)

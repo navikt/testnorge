@@ -1,18 +1,14 @@
 package no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-@Getter
-@Builder
+@Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class RsAvsendersystem {
 
     private static final String DEFAULT_SYSTEMNAVN = "ORKESTRATOREN";

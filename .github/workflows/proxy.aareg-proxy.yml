@@ -9,7 +9,6 @@ on:
       - libs/security-core
       - proxies/aareg-proxy/**
       - .github/workflows/proxy.aareg-proxy.yml
-      - .github/workflows/common.workflow.backend.yml
 
 jobs:
   workflow:

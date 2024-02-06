@@ -41,6 +41,7 @@ type Data = {
 	reservert: boolean
 	epost: string
 	mobil: string
+	landkode: string
 	spraak: string
 	gyldigFra: string
 	sdpAdresse: string
@@ -72,7 +73,7 @@ export const Visning = ({ data }: VisningProps) => {
 					data.sdpLeverandoer
 						? KrrApi.getSdpLeverandoer(data.sdpLeverandoer).then((leverandoer: SdpLeverandoer) => {
 								return leverandoer.data
-						  })
+							})
 						: Promise.resolve()
 				}
 				render={(response) =>

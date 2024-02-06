@@ -10,7 +10,6 @@ on:
       - libs/servlet-insecure-security
       - apps/generer-arbeidsforhold-populasjon-service/**
       - .github/workflows/app.generer-arbeidsforhold-populasjon-service.yml
-      - .github/workflows/common.workflow.backend.yml
 
 jobs:
   workflow:

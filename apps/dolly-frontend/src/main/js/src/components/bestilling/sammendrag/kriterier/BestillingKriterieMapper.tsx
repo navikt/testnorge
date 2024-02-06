@@ -161,7 +161,7 @@ const mapFoedsel = (foedsel, data) => {
 							obj('Fødested', item.foedested),
 							obj('Fødekommune', item.foedekommune, AdresseKodeverk.Kommunenummer),
 							obj('Fødeland', item.foedeland, AdresseKodeverk.InnvandretUtvandretLand),
-					  ]
+						]
 			}),
 		}
 		data.push(foedselData)
@@ -830,7 +830,7 @@ const mapNyIdent = (nyident, data) => {
 							obj('Født før', formatDate(item.foedtFoer)),
 							obj('Alder', item.alder),
 							obj('Har mellomnavn', item.nyttNavn?.hasMellomnavn && 'JA'),
-					  ]
+						]
 			}),
 		}
 		data.push(nyidentData)
@@ -1582,7 +1582,7 @@ const mapMedlemskapsperiode = (bestillingData, data) => {
 }
 
 const jaNeiNull = (verdi) => {
-	if (null === verdi) {
+	if (verdi === null || verdi === undefined) {
 		return null
 	}
 	return verdi ? 'JA' : 'NEI'
@@ -1602,7 +1602,12 @@ const mapKrr = (bestillingData, data) => {
 					width: 'medium',
 				},
 				obj('Epost', krrKriterier.epost),
-				obj('Mobilnummer', krrKriterier.mobil),
+				obj(
+					'Mobilnummer',
+					krrKriterier.registrert &&
+						krrKriterier.mobil &&
+						`${krrKriterier.landkode} ${krrKriterier.mobil}`,
+				),
 				obj('Språk', showLabel('spraaktype', krrKriterier.spraak)),
 				obj('Gyldig fra', formatDate(krrKriterier.gyldigFra)),
 				obj('Adresse', krrKriterier.sdpAdresse),
@@ -1892,8 +1897,9 @@ const mapPensjon = (bestillingData, data, navEnheter) => {
 		if (pensjonKriterier.alderspensjon) {
 			const ap = pensjonKriterier.alderspensjon
 
-			const navEnhetLabel = navEnheter?.find((enhet) => enhet.value === ap.navEnhetId?.toString())
-				?.label
+			const navEnhetLabel = navEnheter?.find(
+				(enhet) => enhet.value === ap.navEnhetId?.toString(),
+			)?.label
 
 			const pensjonforvalterAlderspensjon = {
 				header: 'Alderspensjon: ' + (ap.soknad ? 'Søknad' : 'Vedtak'),

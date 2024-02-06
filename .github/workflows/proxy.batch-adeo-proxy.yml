@@ -7,7 +7,6 @@ on:
       - libs/reactive-proxy
       - proxies/batch-adeo-proxy/**
       - .github/workflows/proxy.batch-adeo-proxy.yml
-      - .github/workflows/common.workflow.backend.yml
 
 jobs:
   workflow:

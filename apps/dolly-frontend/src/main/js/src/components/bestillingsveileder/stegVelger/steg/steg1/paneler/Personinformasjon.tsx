@@ -223,7 +223,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 					? set(paths.statsborgerskap, fjernIdFoerLeggTil('statsborgerskap'))
 					: set(paths.statsborgerskap, [
 							getInitialStatsborgerskap(identtype === 'NPID' ? 'PDL' : 'FREG'),
-					  ])
+						])
 			},
 			remove() {
 				del([paths.statsborgerskap])
@@ -243,7 +243,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 								master: 'FREG',
 								kilde: 'Dolly',
 							},
-					  ])
+						])
 			},
 			remove() {
 				del(paths.innflytting)
@@ -263,7 +263,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 								master: 'FREG',
 								kilde: 'Dolly',
 							},
-					  ])
+						])
 			},
 			remove() {
 				del(paths.utflytting)
@@ -313,13 +313,13 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 					? setMulti(
 							[paths.telefonnummer.pdl, fjernIdFoerLeggTil('telefonnummer')],
 							[paths.telefonnummer.tpsM, _.get(personFoerLeggTil, 'tpsMessaging.telefonnumre')],
-					  )
+						)
 					: setMulti(
 							[
 								paths.telefonnummer.pdl,
 								[
 									{
-										landskode: '',
+										landskode: '+47',
 										nummer: '',
 										prioritet: 1,
 										kilde: 'Dolly',
@@ -332,12 +332,12 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 								[
 									{
 										telefonnummer: '',
-										landkode: '',
+										landskode: '+47',
 										telefontype: 'MOBI',
 									},
 								],
 							],
-					  )
+						)
 			},
 			remove() {
 				del([paths.telefonnummer.pdl, paths.telefonnummer.tpsM])

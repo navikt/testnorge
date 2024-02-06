@@ -34,6 +34,7 @@ public class DigitalKontaktMappingStrategy implements MappingStrategy {
                         if (isNotBlank(digitalKontaktdata.getMobil())) {
                             kontaktdataRequest.setMobilOppdatert(getDato(digitalKontaktdata));
                             kontaktdataRequest.setMobilVerifisert(getDato(digitalKontaktdata));
+                            kontaktdataRequest.setMobil(digdirFormatertTlfNummer(digitalKontaktdata.getMobil(), digitalKontaktdata.getLandkode()));
                         }
                         if (isNotBlank(digitalKontaktdata.getEpost())) {
                             kontaktdataRequest.setEpostOppdatert(getDato(digitalKontaktdata));
@@ -43,18 +44,23 @@ public class DigitalKontaktMappingStrategy implements MappingStrategy {
                             kontaktdataRequest.setSpraakOppdatert(getDato(digitalKontaktdata));
                         }
 
-                        kontaktdataRequest.setMobil(digdirFormatertTlfNummer(digitalKontaktdata.getMobil()));
                         kontaktdataRequest.setEpost(isBlank(digitalKontaktdata.getEpost()) ? null : digitalKontaktdata.getEpost());
                         kontaktdataRequest.setSpraak(isBlank(digitalKontaktdata.getSpraak()) ? null : digitalKontaktdata.getSpraak());
                         kobleMaalformTilSpraak((RsDollyUtvidetBestilling) context.getProperty("bestilling"), kontaktdataRequest);
                     }
 
-                    private String digdirFormatertTlfNummer(String mobil) {
+                    private String digdirFormatertTlfNummer(String mobil, String landkode) {
                         if (isBlank(mobil)) {
                             return null;
                         }
                         var nummerUtenSpace = mobil.replace(" ", "");
-                        return nummerUtenSpace.contains("+47") ? nummerUtenSpace : "+47%s".formatted(nummerUtenSpace);
+                        if (nummerUtenSpace.contains("+")) {
+                            return nummerUtenSpace;
+                        } else if (isBlank(landkode)) {
+                            return "+47%s".formatted(nummerUtenSpace);
+                        } else {
+                            return "%s%s".formatted(landkode, nummerUtenSpace);
+                        }
                     }
 
                     private ZonedDateTime getDato(RsDigitalKontaktdata digitalKontaktdata) {

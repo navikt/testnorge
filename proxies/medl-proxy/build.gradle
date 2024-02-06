@@ -10,19 +10,12 @@ test {
     useJUnitPlatform()
 }
 
-jacocoTestReport {
-    reports {
-        xml.required = true
-    }
-}
-
 sonarqube {
     properties {
         property "sonar.sourceEncoding", "UTF-8"
         property "sonar.projectKey", "testnav-medl-proxy"
         property "sonar.projectName", "testnav-medl-proxy"
         property "sonar.organization", "navikt"
-        property "sonar.coverage.jacoco.xmlReportPaths", "${project.layout.buildDirectory}/reports/jacoco/test/jacocoTestReport.xml"
         property "sonar.dynamicAnalysis", "reuseReports"
         property "sonar.host.url", "https://sonarcloud.io"
         property "sonar.java.coveragePlugin", "jacoco"

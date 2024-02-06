@@ -8,7 +8,6 @@ on:
       - libs/servlet-security
       - apps/inntektsmelding-generator-service/**
       - .github/workflows/app.inntektsmelding-generator-service.yml
-      - .github/workflows/common.workflow.backend.yml
 
 jobs:
   workflow:

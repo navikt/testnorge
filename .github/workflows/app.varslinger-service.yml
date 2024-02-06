@@ -10,7 +10,6 @@ on:
       - libs/servlet-security
       - apps/varslinger-service/**
       - .github/workflows/app.varslinger-service.yml
-      - .github/workflows/common.workflow.backend.yml
 
 jobs:
   workflow:

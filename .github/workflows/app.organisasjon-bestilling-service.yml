@@ -11,7 +11,6 @@ on:
       - libs/servlet-security
       - apps/organisasjon-bestilling-service/**
       - .github/workflows/app.organisasjon-bestilling-service.yml
-      - .github/workflows/common.workflow.backend.yml
 
 jobs:
   workflow:

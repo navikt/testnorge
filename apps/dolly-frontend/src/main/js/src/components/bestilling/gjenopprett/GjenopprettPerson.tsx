@@ -47,10 +47,9 @@ export const GjenopprettPerson = ({ ident }: GjenopprettProps) => {
 	const bestilteMiljoer = getBestilteMiljoer()
 
 	const handleSubmit = async (values: Values) => {
-		const filteredEnvs = values.environments?.filter((env: string) => env !== 'q5')
 
 		let miljoerString = ''
-		filteredEnvs.forEach((env: string, i: number) => {
+		values.environments.forEach((env: string, i: number) => {
 			if (i === 0) {
 				miljoerString += `?miljoer=${env}`
 			} else {
