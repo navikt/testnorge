@@ -24,7 +24,7 @@ public enum Lookups {
     Relasjon(TenorRequest.Relasjon.class),
     Roller(TenorRequest.Rolle.class),
     SaerskiltSkatteplikt(TenorRequest.SaerskiltSkatteplikt.class),
-    Sivilstatus(TenorRequest.Sivilstatus.class),
+    Sivilstatus(TenorRequest.Sivilstand.class),
     Skattemeldingstype(TenorRequest.Skattemeldingstype.class),
     Skattepliktstype(TenorRequest.Skattepliktstype.class),
     Spesifiseringstype(no.nav.testnav.apps.tenorsearchservice.domain.Spesifiseringstype.class),

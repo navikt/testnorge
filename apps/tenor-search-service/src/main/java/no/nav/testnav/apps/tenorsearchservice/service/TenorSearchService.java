@@ -54,7 +54,7 @@ public class TenorSearchService {
                 .append(convertEnum("identifikatorType", searchData.getIdentifikatorType()))
                 .append(convertEnum("kjoenn", searchData.getKjoenn()))
                 .append(convertEnum("personstatus", searchData.getPersonstatus()))
-                .append(convertEnum("sivilstatus", searchData.getSivilstatus()))
+                .append(convertEnum("sivilstand", searchData.getSivilstand()))
                 .append(getUtenlandskPersonidentifikasjon(searchData.getUtenlandskPersonIdentifikasjon()))
                 .append(convertEnum("identitetsgrunnlagStatus", searchData.getIdentitetsgrunnlagStatus()))
                 .append(convertEnum("adresseBeskyttelse", searchData.getAdressebeskyttelse()))
