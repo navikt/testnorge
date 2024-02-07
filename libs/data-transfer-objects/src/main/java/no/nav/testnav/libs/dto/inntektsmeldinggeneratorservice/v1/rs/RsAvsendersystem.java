@@ -1,5 +1,7 @@
 package no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -7,7 +9,9 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Data
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class RsAvsendersystem {
 
     private static final String DEFAULT_SYSTEMNAVN = "ORKESTRATOREN";

@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
-import no.nav.dolly.bestilling.inntektsmelding.domain.InntektsmeldingRequest;
 import no.nav.dolly.bestilling.inntektsmelding.domain.TransaksjonMappingDTO;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.TransaksjonMapping;
@@ -17,6 +16,7 @@ import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.mapper.MappingContextUtils;
 import no.nav.dolly.service.TransaksjonMappingService;
 import no.nav.dolly.util.TransactionHelperService;
+import no.nav.testnav.libs.dto.inntektsmeldingservice.v1.requests.InntektsmeldingRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -53,12 +53,10 @@ public class InntektsmeldingClient implements ClientRegister {
             var context = MappingContextUtils.getMappingContext();
             context.setProperty("ident", dollyPerson.getIdent());
 
-            var inntektsmeldingRequest = mapperFacade.map(bestilling.getInntektsmelding(), InntektsmeldingRequest.class, context);
-
             return Flux.from(
                     Flux.fromIterable(bestilling.getEnvironments())
                             .flatMap(environment -> {
-                                var request = mapperFacade.map(inntektsmeldingRequest, InntektsmeldingRequest.class);
+                                var request = mapperFacade.map(bestilling.getInntektsmelding(), InntektsmeldingRequest.class, context);
                                 request.setMiljoe(environment);
                                 return postInntektsmelding(isOpprettEndre ||
                                                 !transaksjonMappingService.existAlready(INNTKMELD, dollyPerson.getIdent(), environment, bestilling.getId()),

@@ -1,14 +1,10 @@
 package no.nav.testnav.libs.dto.dokarkiv.v1;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Builder
-@Getter
+@Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class RsJoarkMetadata {
 
     private String journalpostType;
