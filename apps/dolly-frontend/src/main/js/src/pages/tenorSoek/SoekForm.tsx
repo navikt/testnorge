@@ -11,7 +11,12 @@ import { TreffListe } from '@/pages/tenorSoek/resultatVisning/TreffListe'
 import { Header, requestIsEmpty } from '@/components/ui/soekForm/SoekForm'
 import DisplayFormikState from '@/utils/DisplayFormikState'
 import { EnhetsregisteretForetaksregisteret } from '@/pages/tenorSoek/soekFormPartials/EnhetsregisteretForetaksregisteret'
-import { Folkeregisteret } from '@/pages/tenorSoek/soekFormPartials/Folkeregisteret'
+import { FolkeregisteretIdentifikasjonStatus } from '@/pages/tenorSoek/soekFormPartials/FolkeregisteretIdentifikasjonStatus'
+import { FolkeregisteretStatsborgerskap } from '@/pages/tenorSoek/soekFormPartials/FolkeregisteretStatsborgerskap'
+import { FolkeregisteretNavn } from '@/pages/tenorSoek/soekFormPartials/FolkeregisteretNavn'
+import { FolkeregisteretAdresse } from '@/pages/tenorSoek/soekFormPartials/FolkeregisteretAdresse'
+import { FolkeregisteretRelasjoner } from '@/pages/tenorSoek/soekFormPartials/FolkeregisteretRelasjoner'
+import { FolkeregisteretHendelser } from '@/pages/tenorSoek/soekFormPartials/FolkeregisteretHendelser'
 
 const SoekefeltWrapper = styled.div`
 	display: flex;
@@ -56,6 +61,8 @@ export const SoekForm = ({ request, setRequest, mutate }) => {
 									formikBag.setFieldValue(path, undefined)
 								}
 							}
+							console.log('updatedRequest: ', updatedRequest) //TODO - SLETT MEG
+							console.log('formikBag.values: ', formikBag.values) //TODO - SLETT MEG
 							mutate()
 							// TODO: sjekk om alle verdier OG underkategorier er tomme
 						}
@@ -73,6 +80,13 @@ export const SoekForm = ({ request, setRequest, mutate }) => {
 							// TODO: tilpass denne også
 						}
 
+						const handleChangeBoolean = (value: boolean, path: string) => {
+							const updatedRequest = _.set(formikBag.values, path, value)
+							setRequest(updatedRequest)
+							formikBag.setFieldValue(path, value)
+							mutate()
+						}
+
 						const getValue = (path: string) => {
 							return _.get(formikBag.values, path)
 						}
@@ -87,13 +101,77 @@ export const SoekForm = ({ request, setRequest, mutate }) => {
 									<Accordion size="small" headingSize="xsmall" className="flexbox--full-width">
 										<Accordion.Item defaultOpen={true}>
 											<Accordion.Header>
-												<Header title="Folkeregisteret" antall={0} />
+												<Header title="Folkeregisteret - identifikasjon og status" antall={0} />
 											</Accordion.Header>
 											<Accordion.Content style={{ paddingRight: '0' }}>
-												<Folkeregisteret
+												<FolkeregisteretIdentifikasjonStatus
 													formikBag={formikBag}
 													handleChange={handleChange}
 													handleChangeList={handleChangeList}
+													handleChangeBoolean={handleChangeBoolean}
+													getValue={getValue}
+												/>
+											</Accordion.Content>
+										</Accordion.Item>
+										<Accordion.Item>
+											<Accordion.Header>
+												<Header title="Folkeregisteret - statsborgerskap" antall={0} />
+											</Accordion.Header>
+											<Accordion.Content style={{ paddingRight: '0' }}>
+												<FolkeregisteretStatsborgerskap
+													formikBag={formikBag}
+													handleChangeBoolean={handleChangeBoolean}
+													getValue={getValue}
+												/>
+											</Accordion.Content>
+										</Accordion.Item>
+										<Accordion.Item>
+											<Accordion.Header>
+												<Header title="Folkeregisteret - navn" antall={0} />
+											</Accordion.Header>
+											<Accordion.Content style={{ paddingRight: '0' }}>
+												<FolkeregisteretNavn
+													formikBag={formikBag}
+													handleChange={handleChange}
+													handleChangeBoolean={handleChangeBoolean}
+													getValue={getValue}
+												/>
+											</Accordion.Content>
+										</Accordion.Item>
+										<Accordion.Item>
+											<Accordion.Header>
+												<Header title="Folkeregisteret - adresser" antall={0} />
+											</Accordion.Header>
+											<Accordion.Content style={{ paddingRight: '0' }}>
+												<FolkeregisteretAdresse
+													formikBag={formikBag}
+													handleChange={handleChange}
+													handleChangeBoolean={handleChangeBoolean}
+													getValue={getValue}
+												/>
+											</Accordion.Content>
+										</Accordion.Item>
+										<Accordion.Item>
+											<Accordion.Header>
+												<Header title="Folkeregisteret - relasjoner" antall={0} />
+											</Accordion.Header>
+											<Accordion.Content style={{ paddingRight: '0' }}>
+												<FolkeregisteretRelasjoner
+													formikBag={formikBag}
+													handleChange={handleChange}
+													handleChangeBoolean={handleChangeBoolean}
+													getValue={getValue}
+												/>
+											</Accordion.Content>
+										</Accordion.Item>
+										<Accordion.Item>
+											<Accordion.Header>
+												<Header title="Folkeregisteret - hendelser" antall={0} />
+											</Accordion.Header>
+											<Accordion.Content style={{ paddingRight: '0' }}>
+												<FolkeregisteretHendelser
+													formikBag={formikBag}
+													handleChange={handleChange}
 													getValue={getValue}
 												/>
 											</Accordion.Content>

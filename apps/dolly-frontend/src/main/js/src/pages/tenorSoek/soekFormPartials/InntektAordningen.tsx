@@ -14,7 +14,7 @@ export const InntektAordningen = ({ formikBag, handleChange, handleChangeList, g
 	const { domain: inntektstypeOptions } = useTenorDomain('Inntektstype')
 	const { domain: beskrivelseOptions } = useTenorDomain('AOrdningBeskrivelse')
 	const { domain: forskuddstrekkOptions } = useTenorDomain('Forskuddstrekk')
-	console.log('formikBag: ', formikBag.values) //TODO - SLETT MEG
+	// console.log('formikBag: ', formikBag.values) //TODO - SLETT MEG
 	return (
 		<SoekKategori>
 			<Monthpicker
