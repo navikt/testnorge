@@ -1,6 +1,5 @@
 package no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,11 +12,8 @@ import java.util.Objects;
 @NoArgsConstructor
 public class RsRefusjon {
 
-    @JsonProperty
     private Double refusjonsbeloepPrMnd;
-    @JsonProperty
     private LocalDate refusjonsopphoersdato;
-    @JsonProperty
     private List<RsEndringIRefusjon> endringIRefusjonListe;
 
     public List<RsEndringIRefusjon> getEndringIRefusjonListe() {

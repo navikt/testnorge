@@ -1,6 +1,5 @@
 package no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -29,46 +28,32 @@ import java.util.Objects;
 @NoArgsConstructor(force = true)
 public class RsInntektsmeldingRequest {
 
-    @JsonProperty
     private YtelseKodeListe ytelse;
 
-    @JsonProperty
     private AarsakInnsendingKodeListe aarsakTilInnsending;
 
-    @JsonProperty
     private boolean naerRelasjon;
 
-    @JsonProperty
     private RsAvsendersystem avsendersystem;
 
-    @JsonProperty
     private RsArbeidsgiver arbeidsgiver;
 
-    @JsonProperty
     private RsArbeidsgiverPrivat arbeidsgiverPrivat;
 
-    @JsonProperty
     private RsArbeidsforhold arbeidsforhold;
 
-    @JsonProperty
     private RsRefusjon refusjon;
 
-    @JsonProperty
     private RsOmsorgspenger omsorgspenger;
 
-    @JsonProperty
     private RsSykepengerIArbeidsgiverperioden sykepengerIArbeidsgiverperioden;
 
-    @JsonProperty
     private LocalDate startdatoForeldrepengeperiode;
 
-    @JsonProperty
     private List<RsNaturalytelseDetaljer> opphoerAvNaturalytelseListe;
 
-    @JsonProperty
     private List<RsNaturalytelseDetaljer> gjenopptakelseNaturalytelseListe;
 
-    @JsonProperty
     private List<RsPeriode> pleiepengerPerioder;
 
     public List<RsNaturalytelseDetaljer> getOpphoerAvNaturalytelseListe() {
