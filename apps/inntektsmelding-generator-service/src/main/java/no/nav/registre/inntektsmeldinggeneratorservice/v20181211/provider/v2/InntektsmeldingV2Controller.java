@@ -24,7 +24,7 @@ public class InntektsmeldingV2Controller {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_XML_VALUE)
     public ResponseEntity<String> create(@RequestBody InntektsmeldingDTO inntektsmeldingDTO) {
-        log.info("Mottok inntektsmeldingDTO: {}", Json.pretty(inntektsmeldingDTO.toMelding()));
+        log.info("Mottok inntektsmeldingDTO: {}", Json.pretty(inntektsmeldingDTO));
         JAXBElement<XMLInntektsmeldingM> melding = inntektsmeldingDTO.toMelding();
         String xml = XmlConverter.toXml(melding, XMLInntektsmeldingM.class);
 
