@@ -57,8 +57,6 @@ on:
         required: false
         default: true
     secrets:
-      NAIS_DOLLY_DEPLOY_API_KEY:
-        required: true
       NAIS_WORKLOAD_IDENTITY_PROVIDER:
         required: true
       NAV_TOKEN:
@@ -161,7 +159,6 @@ jobs:
       - name: "Deploy"
         uses: nais/deploy/actions/deploy@v2
         env:
-          APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: ${{ inputs.cluster }}
           RESOURCE: ${{ inputs.working-directory }}/config.yml
           VAR: image=${{ needs.build.outputs.image }}
@@ -177,7 +174,6 @@ jobs:
       - name: "Deploy (test)"
         uses: nais/deploy/actions/deploy@v2
         env:
-          APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: ${{ inputs.cluster }}
           RESOURCE: ${{ inputs.working-directory }}/config.test.yml
           VAR: image=${{ needs.build.outputs.image }}
@@ -194,7 +190,6 @@ jobs:
       - name: "Deploy (idporten)"
         uses: nais/deploy/actions/deploy@v2
         env:
-          APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: ${{ inputs.cluster }}
           RESOURCE: ${{ inputs.working-directory }}/config.idporten.yml
           VAR: image=${{ needs.build.outputs.image }}
@@ -211,7 +206,6 @@ jobs:
       - name: "Deploy (unstable)"
         uses: nais/deploy/actions/deploy@v2
         env:
-          APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: ${{ inputs.cluster }}
           RESOURCE: ${{ inputs.working-directory }}/config.unstable.yml
           VAR: image=${{ needs.build.outputs.image }}
