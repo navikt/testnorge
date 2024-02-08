@@ -15,11 +15,6 @@ on:
         description: "The Docker image suffix used for this particular workflow, e.g. dolly-frontend. Defaults to the workflow name."
         required: false
         default: ${{ github.workflow }}
-      nais-manifest:
-        type: string
-        description: "The NAIS manifest file. Make sure it exists in the working-directory. Defaults to config.yml."
-        required: false
-        default: "config.yml"
       deploy-tag:
         type: string
         description: "The commit message tag that will trigger a deployment on a commit to a non-master branch, e.g. #deploy-frontend. Make sure it is not a substring of other deploy tags."
@@ -62,8 +57,6 @@ on:
         required: false
         default: true
     secrets:
-      NAIS_DOLLY_DEPLOY_API_KEY:
-        required: true
       NAIS_WORKLOAD_IDENTITY_PROVIDER:
         required: true
       NAV_TOKEN:
@@ -72,12 +65,6 @@ on:
         required: true
       SONAR_TOKEN:
         required: true
-
-env:
-  do-deploy: ${{ inputs.force-deploy || (!contains(github.event.head_commit.message, '#nodeploy') && (inputs.deploy-tag != '') && (github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag))) }}
-  do-deploy-test: ${{ inputs.force-deploy-test || (!contains(github.event.head_commit.message, '#nodeploy') && inputs.deploy-tag-test != '' && (github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-test))) }}
-  do-deploy-idporten: ${{ inputs.force-deploy-idporten || (!contains(github.event.head_commit.message, '#nodeploy') && inputs.deploy-tag-idporten != '' && (github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-idporten))) }}
-  do-deploy-unstable: ${{ inputs.force-deploy-unstable || (!contains(github.event.head_commit.message, '#nodeploy') && (inputs.deploy-tag-unstable != '') && (github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-unstable))) }}
 
 jobs:
 
@@ -90,16 +77,12 @@ jobs:
           echo "inputs: ${{ toJSON(inputs) }}"
           echo "env: ${{ toJSON(env) }}"
           echo "commit: ${{ github.event.head.commit_message }}"
-
-  sonar:
-    needs: start
-    if: inputs.sonar-enabled
-    secrets:
-      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-    uses: ./.github/workflows/common.scan.sonar.yml
-    with:
-      working-directory: ${{ inputs.working-directory }}
+    outputs:
+      do-deploy: ${{ inputs.force-deploy || (!contains(github.event.head_commit.message, '#nodeploy') && (inputs.deploy-tag != '') && (github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag))) }}
+      do-deploy-test: ${{ inputs.force-deploy-test || (!contains(github.event.head_commit.message, '#nodeploy') && inputs.deploy-tag-test != '' && (github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-test))) }}
+      do-deploy-idporten: ${{ inputs.force-deploy-idporten || (!contains(github.event.head_commit.message, '#nodeploy') && inputs.deploy-tag-idporten != '' && (github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-idporten))) }}
+      do-deploy-unstable: ${{ inputs.force-deploy-unstable || (!contains(github.event.head_commit.message, '#nodeploy') && (inputs.deploy-tag-unstable != '') && (github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-unstable))) }}
+      artifact: ${{ github.run_id }}-failure
 
   build:
     needs: start
@@ -107,18 +90,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: "Setup (Node)"
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '20.x'
           registry-url: 'https://npm.pkg.github.com'
           scope: '@navikt'
       - name: "Install (Node)"
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
         working-directory: ${{ inputs.working-directory }}/src/main/js
         run: npm ci
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
       - name: "Build (Node)"
         working-directory: ${{ inputs.working-directory }}/src/main/js
         run: npm run build
@@ -126,26 +109,34 @@ jobs:
         working-directory: ${{ inputs.working-directory }}/src/main/js
         run: mv build ../resources/static
       - name: "Java"
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: 21
       - name: "Gradle"
-        env:
-          GITHUB_USERNAME: token
-          NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-        uses: gradle/gradle-build-action@v2
+        id: gradle
+        uses: gradle/gradle-build-action@v3
         with:
           build-root-directory: ${{ inputs.working-directory }}
-          arguments: build --scan
+          arguments: build ${{ inputs.sonar-enabled && 'jacocoTestReport sonar -Dsonar.gradle.skipCompile=true' || '' }} --scan
           cache-read-only: false
+        env:
+          NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: "Reporting"
+        if: failure() && steps.gradle.outcome == 'failure'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ needs.start.outputs.artifact}}
+          path: ${{ inputs.working-directory }}/build/reports
+          retention-days: 7
       - name: "Docker"
         id: docker-build-push
         if: |
-          env.do-deploy-unstable == 'true' ||
-          env.do-deploy-idporten == 'true' ||
-          env.do-deploy-test == 'true' ||
-          env.do-deploy == 'true'
+          needs.start.outputs.do-deploy-unstable == 'true' ||
+          needs.start.outputs.do-deploy-idporten == 'true' ||
+          needs.start.outputs.do-deploy-test == 'true' ||
+          needs.start.outputs.do-deploy == 'true'
         uses: nais/docker-build-push@v0
         with:
           team: dolly
@@ -156,73 +147,65 @@ jobs:
           image_suffix: ${{ inputs.image-suffix }}
     outputs:
       image: ${{ steps.docker-build-push.outputs.image }}
-      do-deploy-unstable: ${{ env.do-deploy-unstable }}
-      do-deploy-idporten: ${{ env.do-deploy-idporten }}
-      do-deploy-test: ${{ env.do-deploy-test }}
-      do-deploy: ${{ env.do-deploy }}
 
   deploy:
-    needs: build
-    if: needs.build.outputs.do-deploy == 'true'
+    needs: [start, build]
+    if: needs.start.outputs.do-deploy == 'true'
     concurrency: ${{ inputs.image-suffix }}
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: "Deploy"
-        uses: nais/deploy/actions/deploy@v1
+        uses: nais/deploy/actions/deploy@v2
         env:
-          APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: ${{ inputs.cluster }}
-          RESOURCE: ${{ inputs.working-directory }}/${{ inputs.nais-manifest }}
+          RESOURCE: ${{ inputs.working-directory }}/config.yml
           VAR: image=${{ needs.build.outputs.image }}
 
   deploy-test:
-    needs: build
-    if: needs.build.outputs.do-deploy-test == 'true'
+    needs: [start, build]
+    if: needs.start.outputs.do-deploy-test == 'true'
     concurrency: ${{ inputs.image-suffix }}-test
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: "Deploy (test)"
-        uses: nais/deploy/actions/deploy@v1
+        uses: nais/deploy/actions/deploy@v2
         env:
-          APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: ${{ inputs.cluster }}
           RESOURCE: ${{ inputs.working-directory }}/config.test.yml
           VAR: image=${{ needs.build.outputs.image }}
 
   # Only used by dolly-frontend.
   deploy-idporten:
-    needs: build
-    if: needs.build.outputs.do-deploy-idporten == 'true'
+    needs: [start, build]
+    if: needs.start.outputs.do-deploy-idporten == 'true'
     concurrency: ${{ inputs.image-suffix }}-idporten
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: "Deploy (idporten)"
-        uses: nais/deploy/actions/deploy@v1
+        uses: nais/deploy/actions/deploy@v2
         env:
-          APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: ${{ inputs.cluster }}
           RESOURCE: ${{ inputs.working-directory }}/config.idporten.yml
           VAR: image=${{ needs.build.outputs.image }}
 
   # Only used by dolly-frontend.
   deploy-unstable:
-    needs: build
-    if: needs.build.outputs.do-deploy-unstable == 'true'
+    needs: [start, build]
+    if: needs.start.outputs.do-deploy-unstable == 'true'
     concurrency: ${{ inputs.image-suffix }}-unstable
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: "Deploy (unstable)"
-        uses: nais/deploy/actions/deploy@v1
+        uses: nais/deploy/actions/deploy@v2
         env:
-          APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: ${{ inputs.cluster }}
           RESOURCE: ${{ inputs.working-directory }}/config.unstable.yml
           VAR: image=${{ needs.build.outputs.image }}
