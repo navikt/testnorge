@@ -13,6 +13,8 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static java.util.Objects.nonNull;
 
@@ -81,5 +83,10 @@ public class XmlConverter {
     public static String toCamelCase(String value) {
 
         return nonNull(value) ? CaseUtils.toCamelCase(value, true, '_') : null;
+    }
+
+    public static LocalDate toLocalDate(LocalDateTime localDateTime) {
+
+        return nonNull(localDateTime) ? localDateTime.toLocalDate() : null;
     }
 }
