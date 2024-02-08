@@ -11,12 +11,12 @@ jobs:
   deploy-maskinporten:
     name: Deploy maskinporten
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - uses: actions/checkout@v4
       - uses: nais/deploy/actions/deploy@v2
-        with:
-          team: dolly
         env:
-          APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: prod-gcp
           RESOURCE: .nais/maskinporten.yml

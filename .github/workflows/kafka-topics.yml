@@ -13,11 +13,13 @@ jobs:
   deploy-kafka-topics-dev:
     name: Deploy to Aiven Dev
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - uses: actions/checkout@v4
       - uses: nais/deploy/actions/deploy@v2
         env:
-          APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-gcp
           VAR: kafka-pool=nav-dev
           RESOURCE: .nais/topics.yml
