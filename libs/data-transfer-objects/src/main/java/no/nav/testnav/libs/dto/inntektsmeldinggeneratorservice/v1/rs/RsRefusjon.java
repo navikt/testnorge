@@ -3,7 +3,7 @@ package no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -13,7 +13,7 @@ import java.util.Objects;
 public class RsRefusjon {
 
     private Double refusjonsbeloepPrMnd;
-    private LocalDate refusjonsopphoersdato;
+    private LocalDateTime refusjonsopphoersdato;
     private List<RsEndringIRefusjon> endringIRefusjonListe;
 
     public List<RsEndringIRefusjon> getEndringIRefusjonListe() {
