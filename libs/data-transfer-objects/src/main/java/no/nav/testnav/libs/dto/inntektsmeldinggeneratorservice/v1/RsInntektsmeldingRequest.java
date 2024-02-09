@@ -16,7 +16,7 @@ import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsPeriode;
 import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsRefusjon;
 import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsSykepengerIArbeidsgiverperioden;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -48,7 +48,7 @@ public class RsInntektsmeldingRequest {
 
     private RsSykepengerIArbeidsgiverperioden sykepengerIArbeidsgiverperioden;
 
-    private LocalDate startdatoForeldrepengeperiode;
+    private LocalDateTime startdatoForeldrepengeperiode;
 
     private List<RsNaturalytelseDetaljer> opphoerAvNaturalytelseListe;
 

@@ -56,6 +56,7 @@ import java.util.stream.Collectors;
 import static java.util.Objects.isNull;
 import static no.nav.registre.inntektsmeldinggeneratorservice.util.XmlConverter.toBigDecimal;
 import static no.nav.registre.inntektsmeldinggeneratorservice.util.XmlConverter.toBigInteger;
+import static no.nav.registre.inntektsmeldinggeneratorservice.util.XmlConverter.toLocalDate;
 
 public class XmlInntektsmelding201809 {
 
@@ -81,7 +82,7 @@ public class XmlInntektsmelding201809 {
                         XMLSykepengerIArbeidsgiverperioden.class,
                         createSykepengerIArbeidsgiverperioden(melding.getSykepengerIArbeidsgiverperioden())),
                 new JAXBElement<>(new QName(NAMESPACE_URI, "startdatoForeldrepengerperiode"),
-                        LocalDate.class, melding.getStartdatoForeldrepengeperiode()),
+                        LocalDate.class, toLocalDate(melding.getStartdatoForeldrepengeperiode())),
                 new JAXBElement<>(new QName(NAMESPACE_URI, "opphoerAvNaturalyrelseListe"),
                         XMLOpphoerAvNaturalytelseListe.class,
                         createOpphoerAvNaturalytelseListe(melding.getOpphoerAvNaturalytelseListe())),
@@ -132,7 +133,7 @@ public class XmlInntektsmelding201809 {
     private static XMLDelvisFravaer createDelvisFravaer(RsDelvisFravaer delvisFravaer) {
 
         return new XMLDelvisFravaer(
-                new JAXBElement<>(new QName(NAMESPACE_URI, "dato"), LocalDate.class, delvisFravaer.getDato()),
+                new JAXBElement<>(new QName(NAMESPACE_URI, "dato"), LocalDate.class, toLocalDate(delvisFravaer.getDato())),
                 new JAXBElement<>(new QName(NAMESPACE_URI, "timer"), BigDecimal.class, toBigDecimal(delvisFravaer.getTimer()))
         );
     }
@@ -178,8 +179,8 @@ public class XmlInntektsmelding201809 {
     private static XMLNaturalytelseDetaljer createNaturalytelse(RsNaturalytelseDetaljer detaljer) {
 
         return new XMLNaturalytelseDetaljer(
-                new JAXBElement<>(new QName(NAMESPACE_URI, "naturalytelseType"), String.class, detaljer.getNaturaytelseType()),
-                new JAXBElement<>(new QName(NAMESPACE_URI, "fom"), LocalDate.class, detaljer.getFom()),
+                new JAXBElement<>(new QName(NAMESPACE_URI, "naturalytelseType"), String.class, detaljer.getNaturalytelseType()),
+                new JAXBElement<>(new QName(NAMESPACE_URI, "fom"), LocalDate.class, toLocalDate(detaljer.getFom())),
                 new JAXBElement<>(new QName(NAMESPACE_URI, "beloepPrMnd"), BigDecimal.class, toBigDecimal(detaljer.getBeloepPrMnd())));
     }
 
@@ -219,7 +220,8 @@ public class XmlInntektsmelding201809 {
         return new XMLRefusjon(
                 new JAXBElement<>(new QName(NAMESPACE_URI, "refusjonsbeloepPrMnd"), BigDecimal.class,
                         toBigDecimal(refusjon.getRefusjonsbeloepPrMnd())),
-                new JAXBElement<>(new QName(NAMESPACE_URI, "refusjonsopphoersdato"), LocalDate.class, refusjon.getRefusjonsopphoersdato()),
+                new JAXBElement<>(new QName(NAMESPACE_URI, "refusjonsopphoersdato"), LocalDate.class,
+                        toLocalDate(refusjon.getRefusjonsopphoersdato())),
                 new JAXBElement<>(
                         new QName(NAMESPACE_URI, "endringIRefusjonListe"),
                         XMLEndringIRefusjonsListe.class,
@@ -241,7 +243,7 @@ public class XmlInntektsmelding201809 {
         }
 
         return new XMLEndringIRefusjon(
-                new JAXBElement<>(new QName(NAMESPACE_URI, "endringsdato"), LocalDate.class, endring.getEndringsdato()),
+                new JAXBElement<>(new QName(NAMESPACE_URI, "endringsdato"), LocalDate.class, toLocalDate(endring.getEndringsdato())),
                 new JAXBElement<>(new QName(NAMESPACE_URI, "refusjonsbeloepPrMnd"), BigDecimal.class, toBigDecimal(endring.getRefusjonsbeloepPrMnd()))
         );
     }
@@ -250,7 +252,7 @@ public class XmlInntektsmelding201809 {
 
         return new XMLArbeidsforhold(
                 new JAXBElement<>(new QName(NAMESPACE_URI, "arbeidsforholdId"), String.class, arbeidsforhold.getArbeidsforholdId()),
-                new JAXBElement<>(new QName(NAMESPACE_URI, "foersteFravaersdag"), LocalDate.class, arbeidsforhold.getFoersteFravaersdag()),
+                new JAXBElement<>(new QName(NAMESPACE_URI, "foersteFravaersdag"), LocalDate.class, toLocalDate(arbeidsforhold.getFoersteFravaersdag())),
                 new JAXBElement<>(new QName(NAMESPACE_URI, "beregnetInntekt"), XMLInntekt.class, createInntekt(arbeidsforhold.getBeregnetInntekt())),
                 new JAXBElement<>(new QName(NAMESPACE_URI, "avtaltFerieListe"), XMLAvtaltFerieListe.class, createAvtaltFerieListe(arbeidsforhold.getAvtaltFerieListe())),
                 new JAXBElement<>(
@@ -305,8 +307,8 @@ public class XmlInntektsmelding201809 {
             return null;
         }
         return new XMLPeriode(
-                new JAXBElement<>(new QName(NAMESPACE_URI, "fom"), LocalDate.class, periode.getFom()),
-                new JAXBElement<>(new QName(NAMESPACE_URI, "tom"), LocalDate.class, periode.getTom())
+                new JAXBElement<>(new QName(NAMESPACE_URI, "fom"), LocalDate.class, toLocalDate(periode.getFom())),
+                new JAXBElement<>(new QName(NAMESPACE_URI, "tom"), LocalDate.class, toLocalDate(periode.getTom()))
         );
     }
 
