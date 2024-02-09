@@ -1228,23 +1228,23 @@ const mapInntektStub = (bestillingData, data) => {
 					obj('Opplysningspliktig (orgnr/id)', inntektsinfo.opplysningspliktig),
 					obj(
 						'Antall registrerte inntekter',
-						inntektsinfo.inntektsliste && inntektsinfo.inntektsliste.length,
+						inntektsinfo.inntektsliste && inntektsinfo.inntektsliste?.length,
 					),
 					obj(
 						'Antall registrerte fradrag',
-						inntektsinfo.fradragsliste && inntektsinfo.fradragsliste.length,
+						inntektsinfo.fradragsliste && inntektsinfo.fradragsliste?.length,
 					),
 					obj(
 						'Antall registrerte forskuddstrekk',
-						inntektsinfo.forskuddstrekksliste && inntektsinfo.forskuddstrekksliste.length,
+						inntektsinfo.forskuddstrekksliste && inntektsinfo.forskuddstrekksliste?.length,
 					),
 					obj(
 						'Antall registrerte arbeidsforhold',
-						inntektsinfo.arbeidsforholdsliste && inntektsinfo.arbeidsforholdsliste.length,
+						inntektsinfo.arbeidsforholdsliste && inntektsinfo.arbeidsforholdsliste?.length,
 					),
 					obj(
 						'Antall registrerte inntektsendringer (historikk)',
-						inntektsinfo.historikk && inntektsinfo.historikk.length,
+						inntektsinfo.historikk && inntektsinfo.historikk?.length,
 					),
 				])
 			})
@@ -1467,7 +1467,7 @@ const mapSykemelding = (bestillingData, data) => {
 				obj(
 					'Antall registrerte bidiagnoser',
 					sykemeldingKriterier.detaljertSykemelding.biDiagnoser &&
-						sykemeldingKriterier.detaljertSykemelding.biDiagnoser.length,
+						sykemeldingKriterier.detaljertSykemelding.biDiagnoser?.length,
 				),
 				obj(
 					'Helsepersonell navn',
@@ -1497,7 +1497,7 @@ const mapSykemelding = (bestillingData, data) => {
 				),
 				obj(
 					'Antall registrerte perioder',
-					sykemeldingKriterier.detaljertSykemelding.perioder.length,
+					sykemeldingKriterier.detaljertSykemelding.perioder?.length,
 				),
 				obj(
 					'Tiltak fra NAV',
@@ -1540,7 +1540,7 @@ const mapBrregstub = (bestillingData, data) => {
 				obj('Registreringsdato', formatDate(enhet.registreringsdato)),
 				obj('Organisasjonsnummer', enhet.orgNr),
 				obj('Foretaksnavn', enhet.foretaksNavn.navn1),
-				obj('Antall registrerte personroller', enhet.personroller && enhet.personroller.length),
+				obj('Antall registrerte personroller', enhet.personroller && enhet.personroller?.length),
 			])
 		})
 
@@ -1825,7 +1825,7 @@ const mapUdiStub = (bestillingData, data) => {
 				obj('Arbeidsadgang til dato', formatDate(_.get(arbeidsadgangKriterier, 'periode.til'))),
 				obj('Hjemmel', _.get(arbeidsadgangKriterier, 'hjemmel')),
 				obj('Forklaring', _.get(arbeidsadgangKriterier, 'forklaring')),
-				obj('Alias', aliaserListe.length > 0 && aliaserListe),
+				obj('Alias', aliaserListe?.length > 0 && aliaserListe),
 				obj('Flyktningstatus', oversettBoolean(udiStubKriterier.flyktning)),
 				obj(
 					'Asylsøker',
@@ -1858,9 +1858,9 @@ const mapPensjon = (bestillingData, data, navEnheter) => {
 			data.push(pensjonforvalterPopp)
 		}
 
-		if (pensjonKriterier.tp && pensjonKriterier.tp.length > 0) {
+		if (pensjonKriterier.tp && pensjonKriterier.tp?.length > 0) {
 			const hentTpOrdningNavn = (tpnr) => {
-				if (Options('tpOrdninger').length) {
+				if (Options('tpOrdninger')?.length) {
 					return Options('tpOrdninger').find((ordning) => ordning.value === tpnr)?.label
 				}
 				return tpnr
@@ -1983,7 +1983,7 @@ const mapInntektsmelding = (bestillingData, data) => {
 			obj('Første fraværsdag', formatDate(inntekt.arbeidsforhold.foersteFravaersdag)),
 			obj(
 				'Avtalte ferier',
-				inntekt.arbeidsforhold.avtaltFerieListe && inntekt.arbeidsforhold.avtaltFerieListe.length,
+				inntekt.arbeidsforhold.avtaltFerieListe && inntekt.arbeidsforhold.avtaltFerieListe?.length,
 			),
 			//Refusjon
 			obj('Refusjonsbeløp per måned', inntekt.refusjon.refusjonsbeloepPrMnd),
@@ -1991,19 +1991,19 @@ const mapInntektsmelding = (bestillingData, data) => {
 			obj(
 				'Endringer i refusjon',
 				_.has(inntekt, 'refusjon.endringIRefusjonListe') &&
-					inntekt.refusjon.endringIRefusjonListe.length,
+					inntekt.refusjon.endringIRefusjonListe?.length,
 			),
 			//Omsorg
 			obj('Har utbetalt pliktige dager', _.get(inntekt, 'omsorgspenger.harUtbetaltPliktigeDager')),
 			obj(
 				'Fraværsperioder',
 				_.has(inntekt, 'omsorgspenger.fravaersPerioder') &&
-					inntekt.omsorgspenger.fravaersPerioder.length,
+					inntekt.omsorgspenger.fravaersPerioder?.length,
 			),
 			obj(
 				'Delvis fravær',
 				_.has(inntekt, 'omsorgspenger.delvisFravaersListe') &&
-					inntekt.omsorgspenger.delvisFravaersListe.length,
+					inntekt.omsorgspenger.delvisFravaersListe?.length,
 			),
 			//Sykepenger
 			obj('Brutto utbetalt', _.get(inntekt, 'sykepengerIArbeidsgiverperioden.bruttoUtbetalt')),
@@ -2019,20 +2019,24 @@ const mapInntektsmelding = (bestillingData, data) => {
 			obj(
 				'Arbeidsgiverperioder',
 				_.has(inntekt, 'sykepengerIArbeidsgiverperioden.arbeidsgiverperiodeListe') &&
-					inntekt.sykepengerIArbeidsgiverperioden.arbeidsgiverperiodeListe.length,
+					inntekt.sykepengerIArbeidsgiverperioden.arbeidsgiverperiodeListe?.length,
 			),
 			//Foreldrepenger
 			obj('Startdato foreldrepenger', formatDate(inntekt.startdatoForeldrepengeperiode)),
 			//Pleiepenger
-			obj('Pleiepengerperioder', inntekt.pleiepengerPerioder && inntekt.pleiepengerPerioder.length),
+			obj(
+				'Pleiepengerperioder',
+				inntekt.pleiepengerPerioder && inntekt.pleiepengerPerioder?.length,
+			),
 			//Naturalytelse
 			obj(
 				'Gjenopptagelse Naturalytelse',
-				inntekt.gjenopptakelseNaturalytelseListe && inntekt.gjenopptakelseNaturalytelseListe.length,
+				inntekt.gjenopptakelseNaturalytelseListe &&
+					inntekt.gjenopptakelseNaturalytelseListe?.length,
 			),
 			obj(
 				'Opphør av Naturalytelse',
-				inntekt.opphoerAvNaturalytelseListe && inntekt.opphoerAvNaturalytelseListe.length,
+				inntekt.opphoerAvNaturalytelseListe && inntekt.opphoerAvNaturalytelseListe?.length,
 			),
 		]),
 	})
@@ -2067,7 +2071,7 @@ const mapDokarkiv = (bestillingData, data) => {
 				obj('Sakstype', showLabel('sakstype', dokarkivKriterier.sak?.sakstype)),
 				obj('Fagsaksystem', showLabel('fagsaksystem', dokarkivKriterier.sak?.fagsaksystem)),
 				obj('Fagsak-ID', dokarkivKriterier.sak?.fagsakId),
-				obj('Antall vedlegg', dokarkivKriterier.dokumenter.length),
+				obj('Antall vedlegg', dokarkivKriterier.dokumenter?.length),
 			],
 		}
 

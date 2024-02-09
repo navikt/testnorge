@@ -1,11 +1,11 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useBoolean } from 'react-use'
 import * as _ from 'lodash-es'
 import Icon from '@/components/ui/icon/Icon'
 import Loading from '@/components/ui/loading/Loading'
 import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import { PdlforvalterApi } from '@/service/Api'
 import { useFormikContext } from 'formik'
+import { useNaviger } from '@/utils/hooks/useNaviger'
 
 type ArbeidsgiverIdentProps = {
 	path: string
@@ -15,47 +15,53 @@ type ArbeidsgiverIdentProps = {
 export const ArbeidsgiverIdent = ({ path, isDisabled }: ArbeidsgiverIdentProps) => {
 	const formikBag = useFormikContext()
 	const [error, setError] = useState(null)
-	const [personnummer, setPersonnummer] = useState(_.get(formikBag.values, path))
 	const [success, setSuccess] = useBoolean(false)
-	const [loading, setLoading] = useBoolean(false)
+	const [personnummer, setPersonnummer] = useState(_.get(formikBag.values, path))
+	const { result, loading: loadingNaviger, error: errorNaviger } = useNaviger(personnummer)
+
+	useEffect(() => {
+		if (personnummer) {
+			if (result?.identNavigerTil) {
+				setSuccess(true)
+				setError(null)
+			} else {
+				setError('Fant ikke arbeidsgiver-ident')
+			}
+		}
+	}, [result, errorNaviger])
+
+	useEffect(() => {
+		if (error) {
+			formikBag.setFieldError(path, error)
+		} else {
+			formikBag.setFieldError(path, undefined)
+		}
+	}, [error, formikBag.errors, personnummer])
 
 	const handleChange = (event: React.ChangeEvent<any>) => {
-		event.preventDefault()
 		setError(null)
 		setSuccess(false)
-
 		const personnr = event.target.value
-
-		// TODO: move to frontend validation
+		formikBag.setFieldValue(`${path}`, personnr)
 		if (personnr.match(/^\d{11}$/) != null) {
-			handleManualPersonnrChange(personnr)
+			setPersonnummer(personnr)
 		} else {
 			setError('Ident må være et tall med 11 siffer')
-			formikBag.setFieldValue(`${path}`, '')
 		}
 	}
 
-	const handleManualPersonnrChange = (personnr: string) => {
-		setLoading(true)
-
-		PdlforvalterApi.getPersoner([personnr])
-			.then((response: any) => {
-				if (!response?.data || response?.data?.length < 1) {
-					setError('Fant ikke arbeidsgiver-ident')
-					setLoading(false)
-					formikBag.setFieldValue(`${path}`, '')
-					return
-				}
-
-				setError(null)
-				setSuccess(true)
-				setLoading(false)
-				setPersonnummer(personnr)
-
-				formikBag.setFieldValue(`${path}`, personnr)
-			})
-			.catch(() => setError('Fant ikke arbeidsgiver-ident'))
+	const getFeilmelding = () => {
+		if (error) {
+			return {
+				feilmelding: error,
+			}
+		} else if (!_.get(formikBag.values, path)) {
+			return { feilmelding: 'Feltet er påkrevd' }
+		}
+		return null
 	}
+
+	const feilmelding = getFeilmelding()
 
 	return (
 		<div>
@@ -65,12 +71,8 @@ export const ArbeidsgiverIdent = ({ path, isDisabled }: ArbeidsgiverIdentProps) 
 				defaultValue={personnummer}
 				label={'Arbeidsgiver ident'}
 				onBlur={handleChange}
-				isDisabled={loading || isDisabled}
-				feil={
-					error && {
-						feilmelding: error,
-					}
-				}
+				isDisabled={loadingNaviger || isDisabled}
+				feil={feilmelding}
 			/>
 			{success && (
 				<div className="flexbox" style={{ marginTop: '-5px' }}>
@@ -78,7 +80,7 @@ export const ArbeidsgiverIdent = ({ path, isDisabled }: ArbeidsgiverIdentProps) 
 					funnet
 				</div>
 			)}
-			{loading && <Loading label="Sjekker arbeidsgiver ident." />}
+			{loadingNaviger && <Loading label="Sjekker arbeidsgiver-ident" />}
 		</div>
 	)
 }
