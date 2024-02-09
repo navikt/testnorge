@@ -4,7 +4,6 @@ import * as _ from 'lodash-es'
 import Icon from '@/components/ui/icon/Icon'
 import Loading from '@/components/ui/loading/Loading'
 import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import { PdlforvalterApi } from '@/service/Api'
 import { useFormikContext } from 'formik'
 import { useNaviger } from '@/utils/hooks/useNaviger'
 
@@ -16,10 +15,9 @@ type ArbeidsgiverIdentProps = {
 export const ArbeidsgiverIdent = ({ path, isDisabled }: ArbeidsgiverIdentProps) => {
 	const formikBag = useFormikContext()
 	const [error, setError] = useState(null)
-	// const [success, setSuccess] = useBoolean(false)
+	const [success, setSuccess] = useBoolean(false)
 	const [personnummer, setPersonnummer] = useState(_.get(formikBag.values, path))
-	const [success, setSuccess] = useBoolean(personnummer && !error)
-	const { result, loading: loadingNaviger, error: errorNaviger, mutate } = useNaviger(personnummer)
+	const { result, loading: loadingNaviger, error: errorNaviger } = useNaviger(personnummer)
 
 	useEffect(() => {
 		if (personnummer) {
@@ -41,20 +39,14 @@ export const ArbeidsgiverIdent = ({ path, isDisabled }: ArbeidsgiverIdentProps) 
 	}, [error, formikBag.errors, personnummer])
 
 	const handleChange = (event: React.ChangeEvent<any>) => {
-		// event.preventDefault()
 		setError(null)
 		setSuccess(false)
-
 		const personnr = event.target.value
 		formikBag.setFieldValue(`${path}`, personnr)
-
 		if (personnr.match(/^\d{11}$/) != null) {
 			setPersonnummer(personnr)
-			// formikBag.setFieldValue(`${path}`, personnr)
-			// setValgtIdent(personnr)
 		} else {
 			setError('Ident må være et tall med 11 siffer')
-			// formikBag.setFieldValue(path, '')
 		}
 	}
 
@@ -88,7 +80,7 @@ export const ArbeidsgiverIdent = ({ path, isDisabled }: ArbeidsgiverIdentProps) 
 					funnet
 				</div>
 			)}
-			{loadingNaviger && <Loading label="Sjekker arbeidsgiver ident." />}
+			{loadingNaviger && <Loading label="Sjekker arbeidsgiver-ident" />}
 		</div>
 	)
 }
