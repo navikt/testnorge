@@ -91,6 +91,17 @@ export const SoekForm = ({ request, setRequest, mutate }) => {
 							return _.get(formikBag.values, path)
 						}
 
+						const getAntallRequest = (liste: Array<string>) => {
+							let antall = 0
+							liste.forEach((item) => {
+								const attr = _.get(formikBag.values, item)
+								if (attr || attr === false) {
+									antall++
+								}
+							})
+							return antall
+						}
+
 						const devEnabled =
 							window.location.hostname.includes('localhost') ||
 							window.location.hostname.includes('dolly-frontend-dev')
@@ -115,7 +126,13 @@ export const SoekForm = ({ request, setRequest, mutate }) => {
 										</Accordion.Item>
 										<Accordion.Item>
 											<Accordion.Header>
-												<Header title="Folkeregisteret - statsborgerskap" antall={0} />
+												<Header
+													title="Folkeregisteret - statsborgerskap"
+													antall={getAntallRequest([
+														'harNorskStatsborgerskap',
+														'harFlereStatsborgerskap',
+													])}
+												/>
 											</Accordion.Header>
 											<Accordion.Content style={{ paddingRight: '0' }}>
 												<FolkeregisteretStatsborgerskap

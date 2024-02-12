@@ -54,6 +54,7 @@ export const TreffListe = ({ response, loading, error }: any) => {
 							}
 							// background={'surface-alt-3-subtle'}
 							onClick={() => setValgtPerson(person)}
+							style={{ cursor: 'pointer' }}
 						>
 							{/*<h3>{person.visningnavn}</h3>*/}
 							<h3>
