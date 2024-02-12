@@ -13,7 +13,6 @@ import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.pdldata.dto.PdlResponse;
 import no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterClient;
 import no.nav.dolly.bestilling.tagshendelseslager.TagsHendelseslagerClient;
-import no.nav.dolly.bestilling.tpsmessagingservice.service.TpsPersonService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Bruker;
@@ -63,7 +62,6 @@ public class DollyBestillingService {
     protected final PdlDataConsumer pdlDataConsumer;
     protected final ErrorStatusDecoder errorStatusDecoder;
     protected final TransactionHelperService transactionHelperService;
-    protected final TpsPersonService tpsPersonService;
     protected final BestillingElasticRepository bestillingElasticRepository;
 
     public static Set<String> getEnvironments(String miljoer) {
