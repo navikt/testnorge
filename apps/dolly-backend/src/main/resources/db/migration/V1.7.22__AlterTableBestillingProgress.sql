@@ -2,5 +2,5 @@
 -- A L T E R   T A B L E S --
 -----------------------------
 
-alter table transaksjon_mapping
-alter column transaksjon_id type varchar(2000);
+alter table bestilling_progress
+drop column tps_sync_status;
