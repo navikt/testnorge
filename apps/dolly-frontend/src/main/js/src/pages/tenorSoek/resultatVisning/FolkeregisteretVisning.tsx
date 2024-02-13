@@ -3,11 +3,20 @@ import React from 'react'
 import { formatDate, showLabel } from '@/utils/DataFormatter'
 import { TabsVisning } from '@/pages/tenorSoek/resultatVisning/TabsVisning'
 import SubOverskriftExpandable from '@/components/ui/subOverskrift/SubOverskriftExpandable'
+import styled from 'styled-components'
 
+const RelasjonerTittel = styled.h3`
+	width: 100%;
+	border-top: 1px solid #ccc;
+	margin-top: 5px;
+	padding-top: 15px;
+`
 export const FolkeregisteretVisning = ({ data }) => {
 	if (!data) {
 		return null
 	}
+
+	const relasjoner = data.tenorRelasjoner?.freg
 
 	return (
 		<SubOverskriftExpandable label="Folkeregisteret" iconKind="personinformasjon" isExpanded={true}>
@@ -24,7 +33,18 @@ export const FolkeregisteretVisning = ({ data }) => {
 				/>
 				<TitleValue title="Bostedsadresse" value={data.bostedsadresse} />
 				<TitleValue title="Siste hendelse" value={data.sisteHendelse} />
-				{/*// Relasjoner:*/}
+				{relasjoner?.length > 0 && (
+					<>
+						<RelasjonerTittel>Relasjoner</RelasjonerTittel>
+						{relasjoner.map((relasjon) => (
+							<div className="title-value title-value_small">
+								<h4>{relasjon.tenorRelasjonsnavn}</h4>
+								<div>{`${relasjon.identifikator} -`}</div>
+								<div>{relasjon.visningnavn}</div>
+							</div>
+						))}
+					</>
+				)}
 			</TabsVisning>
 		</SubOverskriftExpandable>
 	)
