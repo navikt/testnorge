@@ -7,12 +7,7 @@ import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput
 import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 
-export const FolkeregisteretRelasjoner = ({
-	formikBag,
-	handleChange,
-	handleChangeBoolean,
-	getValue,
-}: any) => {
+export const FolkeregisteretRelasjoner = ({ formikBag, handleChange, getValue }: any) => {
 	const { domain: relasjonOptions } = useTenorDomain('Relasjon')
 
 	return (
@@ -49,7 +44,7 @@ export const FolkeregisteretRelasjoner = ({
 				name="relasjoner.harForeldreAnsvar"
 				label="Har foreldreansvar"
 				onChange={(val: SyntheticEvent) =>
-					handleChangeBoolean(val?.target?.checked, 'relasjoner.harForeldreAnsvar')
+					handleChange(val?.target?.checked, 'relasjoner.harForeldreAnsvar')
 				}
 				value={getValue('relasjoner.harForeldreAnsvar')}
 			/>
@@ -77,7 +72,7 @@ export const FolkeregisteretRelasjoner = ({
 				name="relasjoner.harDeltBosted"
 				label="Har delt bosted"
 				onChange={(val: SyntheticEvent) =>
-					handleChangeBoolean(val?.target?.checked, 'relasjoner.harDeltBosted')
+					handleChange(val?.target?.checked, 'relasjoner.harDeltBosted')
 				}
 				value={getValue('relasjoner.harDeltBosted')}
 			/>
@@ -85,7 +80,7 @@ export const FolkeregisteretRelasjoner = ({
 				name="relasjoner.harVergemaalEllerFremtidsfullmakt"
 				label="Har vergemål eller fremtidsfullmakt"
 				onChange={(val: SyntheticEvent) =>
-					handleChangeBoolean(val?.target?.checked, 'relasjoner.harVergemaalEllerFremtidsfullmakt')
+					handleChange(val?.target?.checked, 'relasjoner.harVergemaalEllerFremtidsfullmakt')
 				}
 				value={getValue('relasjoner.harVergemaalEllerFremtidsfullmakt')}
 			/>
@@ -93,7 +88,7 @@ export const FolkeregisteretRelasjoner = ({
 				name="relasjoner.borMedMor"
 				label="Bor med mor"
 				onChange={(val: SyntheticEvent) =>
-					handleChangeBoolean(val?.target?.checked, 'relasjoner.borMedMor')
+					handleChange(val?.target?.checked, 'relasjoner.borMedMor')
 				}
 				value={getValue('relasjoner.borMedMor')}
 			/>
@@ -101,7 +96,7 @@ export const FolkeregisteretRelasjoner = ({
 				name="relasjoner.borMedFar"
 				label="Bor med far"
 				onChange={(val: SyntheticEvent) =>
-					handleChangeBoolean(val?.target?.checked, 'relasjoner.borMedFar')
+					handleChange(val?.target?.checked, 'relasjoner.borMedFar')
 				}
 				value={getValue('relasjoner.borMedFar')}
 			/>
@@ -109,7 +104,7 @@ export const FolkeregisteretRelasjoner = ({
 				name="relasjoner.borMedMedmor"
 				label="Bor med medmor"
 				onChange={(val: SyntheticEvent) =>
-					handleChangeBoolean(val?.target?.checked, 'relasjoner.borMedMedmor')
+					handleChange(val?.target?.checked, 'relasjoner.borMedMedmor')
 				}
 				value={getValue('relasjoner.borMedMedmor')}
 			/>
@@ -117,7 +112,7 @@ export const FolkeregisteretRelasjoner = ({
 				name="relasjoner.foreldreHarSammeAdresse"
 				label="Foleldre har samme adresse"
 				onChange={(val: SyntheticEvent) =>
-					handleChangeBoolean(val?.target?.checked, 'relasjoner.foreldreHarSammeAdresse')
+					handleChange(val?.target?.checked, 'relasjoner.foreldreHarSammeAdresse')
 				}
 				value={getValue('relasjoner.foreldreHarSammeAdresse')}
 			/>

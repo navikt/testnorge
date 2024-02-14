@@ -3,11 +3,7 @@ import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import React from 'react'
 import { SoekKategori } from '@/components/ui/soekForm/SoekForm'
 
-export const FolkeregisteretStatsborgerskap = ({
-	formikBag,
-	handleChangeBoolean,
-	getValue,
-}: any) => {
+export const FolkeregisteretStatsborgerskap = ({ formikBag, handleChange, getValue }: any) => {
 	return (
 		<SoekKategori>
 			<FormikSelect
@@ -15,7 +11,7 @@ export const FolkeregisteretStatsborgerskap = ({
 				options={Options('boolean')}
 				size="small"
 				label="Har norsk statsborgerskap"
-				onChange={(val: boolean) => handleChangeBoolean(val?.value, 'harNorskStatsborgerskap')}
+				onChange={(val: boolean) => handleChange(val?.value, 'harNorskStatsborgerskap')}
 				value={getValue('harNorskStatsborgerskap')}
 			/>
 			<FormikSelect
@@ -23,7 +19,7 @@ export const FolkeregisteretStatsborgerskap = ({
 				options={Options('boolean')}
 				size="small"
 				label="Har flere statsborgerskap"
-				onChange={(val: boolean) => handleChangeBoolean(val?.value, 'harFlereStatsborgerskap')}
+				onChange={(val: boolean) => handleChange(val?.value, 'harFlereStatsborgerskap')}
 				value={getValue('harFlereStatsborgerskap')}
 			/>
 		</SoekKategori>

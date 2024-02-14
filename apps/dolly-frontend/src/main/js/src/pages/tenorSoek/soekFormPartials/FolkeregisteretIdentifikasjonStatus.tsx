@@ -13,7 +13,6 @@ export const FolkeregisteretIdentifikasjonStatus = ({
 	formikBag,
 	handleChange,
 	handleChangeList,
-	handleChangeBoolean,
 	getValue,
 }: any) => {
 	const { domain: identifikatorTypeOptions } = useTenorDomain('IdentifikatorType')
@@ -144,7 +143,7 @@ export const FolkeregisteretIdentifikasjonStatus = ({
 				options={Options('boolean')}
 				size="small"
 				label="Har legitimasjonsdokument"
-				onChange={(val: boolean) => handleChangeBoolean(val?.value, 'harLegitimasjonsdokument')}
+				onChange={(val: boolean) => handleChange(val?.value, 'harLegitimasjonsdokument')}
 				value={getValue('harLegitimasjonsdokument')}
 			/>
 			{/*<FormikCheckbox*/}
@@ -160,7 +159,7 @@ export const FolkeregisteretIdentifikasjonStatus = ({
 				options={Options('boolean')}
 				size="small"
 				label="Har falsk identitet"
-				onChange={(val: boolean) => handleChangeBoolean(val?.value, 'harFalskIdentitet')}
+				onChange={(val: boolean) => handleChange(val?.value, 'harFalskIdentitet')}
 				value={getValue('harFalskIdentitet')}
 			/>
 			{/*<FormikCheckbox*/}

@@ -7,12 +7,7 @@ import { useTenorDomain } from '@/utils/hooks/useTenorSoek'
 import { createOptions } from '@/pages/tenorSoek/utils'
 import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 
-export const FolkeregisteretAdresse = ({
-	formikBag,
-	handleChange,
-	handleChangeBoolean,
-	getValue,
-}: any) => {
+export const FolkeregisteretAdresse = ({ formikBag, handleChange, getValue }: any) => {
 	const { domain: adresseGraderingOptions } = useTenorDomain('AdresseGradering')
 
 	return (
@@ -41,7 +36,7 @@ export const FolkeregisteretAdresse = ({
 				name="adresser.harBostedsadresse"
 				label="Har bostedsadresse"
 				onChange={(val: SyntheticEvent) =>
-					handleChangeBoolean(val?.target?.checked, 'adresser.harBostedsadresse')
+					handleChange(val?.target?.checked, 'adresser.harBostedsadresse')
 				}
 				value={getValue('adresser.harBostedsadresse')}
 			/>
@@ -49,7 +44,7 @@ export const FolkeregisteretAdresse = ({
 				name="adresser.harOppholdAnnetSted"
 				label="Har opphold annet sted"
 				onChange={(val: SyntheticEvent) =>
-					handleChangeBoolean(val?.target?.checked, 'adresser.harOppholdAnnetSted')
+					handleChange(val?.target?.checked, 'adresser.harOppholdAnnetSted')
 				}
 				value={getValue('adresser.harOppholdAnnetSted')}
 			/>
@@ -57,7 +52,7 @@ export const FolkeregisteretAdresse = ({
 				name="adresser.harPostadresseNorge"
 				label="Har postadresse i Norge"
 				onChange={(val: SyntheticEvent) =>
-					handleChangeBoolean(val?.target?.checked, 'adresser.harPostadresseNorge')
+					handleChange(val?.target?.checked, 'adresser.harPostadresseNorge')
 				}
 				value={getValue('adresser.harPostadresseNorge')}
 			/>
@@ -65,7 +60,7 @@ export const FolkeregisteretAdresse = ({
 				name="adresser.harPostadresseUtland"
 				label="Har postadresse i utlandet"
 				onChange={(val: SyntheticEvent) =>
-					handleChangeBoolean(val?.target?.checked, 'adresser.harPostadresseUtland')
+					handleChange(val?.target?.checked, 'adresser.harPostadresseUtland')
 				}
 				value={getValue('adresser.harPostadresseUtland')}
 			/>
@@ -73,7 +68,7 @@ export const FolkeregisteretAdresse = ({
 				name="adresser.harKontaktadresseDoedsbo"
 				label="Har kontaktadresse for dødsbo"
 				onChange={(val: SyntheticEvent) =>
-					handleChangeBoolean(val?.target?.checked, 'adresser.harKontaktadresseDoedsbo')
+					handleChange(val?.target?.checked, 'adresser.harKontaktadresseDoedsbo')
 				}
 				value={getValue('adresser.harKontaktadresseDoedsbo')}
 			/>
@@ -82,9 +77,7 @@ export const FolkeregisteretAdresse = ({
 				options={Options('boolean')}
 				size="small"
 				label="Har spesialtegn i adresse"
-				onChange={(val: boolean) =>
-					handleChangeBoolean(val?.value, 'adresser.harAdresseSpesialtegn')
-				}
+				onChange={(val: boolean) => handleChange(val?.value, 'adresser.harAdresseSpesialtegn')}
 				value={getValue('adresser.harAdresseSpesialtegn')}
 			/>
 		</SoekKategori>

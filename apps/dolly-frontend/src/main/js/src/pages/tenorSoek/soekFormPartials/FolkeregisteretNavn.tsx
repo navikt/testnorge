@@ -4,12 +4,7 @@ import React, { SyntheticEvent } from 'react'
 import { SoekKategori } from '@/components/ui/soekForm/SoekForm'
 import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 
-export const FolkeregisteretNavn = ({
-	formikBag,
-	handleChange,
-	handleChangeBoolean,
-	getValue,
-}: any) => {
+export const FolkeregisteretNavn = ({ formikBag, handleChange, getValue }: any) => {
 	return (
 		<SoekKategori>
 			<FormikTextInput
@@ -37,7 +32,7 @@ export const FolkeregisteretNavn = ({
 				options={Options('boolean')}
 				size="small"
 				label="Har flere fornnavn"
-				onChange={(val: boolean) => handleChangeBoolean(val?.value, 'navn.harFlereFornavn')}
+				onChange={(val: boolean) => handleChange(val?.value, 'navn.harFlereFornavn')}
 				value={getValue('navn.harFlereFornavn')}
 			/>
 			<FormikSelect
@@ -45,7 +40,7 @@ export const FolkeregisteretNavn = ({
 				options={Options('boolean')}
 				size="small"
 				label="Har mellomnavn"
-				onChange={(val: boolean) => handleChangeBoolean(val?.value, 'navn.harMellomnavn')}
+				onChange={(val: boolean) => handleChange(val?.value, 'navn.harMellomnavn')}
 				value={getValue('navn.harMellomnavn')}
 			/>
 			<FormikSelect
@@ -53,7 +48,7 @@ export const FolkeregisteretNavn = ({
 				options={Options('boolean')}
 				size="small"
 				label="Har spesialtegn i navn"
-				onChange={(val: boolean) => handleChangeBoolean(val?.value, 'navn.harNavnSpesialtegn')}
+				onChange={(val: boolean) => handleChange(val?.value, 'navn.harNavnSpesialtegn')}
 				value={getValue('navn.harNavnSpesialtegn')}
 			/>
 		</SoekKategori>
