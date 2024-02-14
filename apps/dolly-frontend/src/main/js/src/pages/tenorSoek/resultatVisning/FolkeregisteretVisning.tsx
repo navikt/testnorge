@@ -36,8 +36,8 @@ export const FolkeregisteretVisning = ({ data }) => {
 				{relasjoner?.length > 0 && (
 					<>
 						<RelasjonerTittel>Relasjoner</RelasjonerTittel>
-						{relasjoner.map((relasjon) => (
-							<div className="title-value title-value_small">
+						{relasjoner.map((relasjon, idx) => (
+							<div className="title-value title-value_small" key={idx}>
 								<h4>{relasjon.tenorRelasjonsnavn}</h4>
 								<div>{`${relasjon.identifikator} -`}</div>
 								<div>{relasjon.visningnavn}</div>

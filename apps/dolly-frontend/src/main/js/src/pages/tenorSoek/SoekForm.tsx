@@ -17,6 +17,7 @@ import { FolkeregisteretNavn } from '@/pages/tenorSoek/soekFormPartials/Folkereg
 import { FolkeregisteretAdresse } from '@/pages/tenorSoek/soekFormPartials/FolkeregisteretAdresse'
 import { FolkeregisteretRelasjoner } from '@/pages/tenorSoek/soekFormPartials/FolkeregisteretRelasjoner'
 import { FolkeregisteretHendelser } from '@/pages/tenorSoek/soekFormPartials/FolkeregisteretHendelser'
+import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 
 const SoekefeltWrapper = styled.div`
 	display: flex;
@@ -37,6 +38,53 @@ export const SoekForm = ({ request, setRequest, mutate }) => {
 	// 	mutate()
 	// }
 
+	// const getUpdatedRequest = (request: any) => {
+	// 	let updatedRequest = {}
+	// 	for (const i in request) {
+	// 		if (
+	// 			typeof request[i] === 'object' &&
+	// 			!(request[i] instanceof Date) &&
+	// 			!Array.isArray(request[i])
+	// 		) {
+	// 			const temp = getUpdatedRequest(request[i])
+	// 			for (const j in temp) {
+	// 				updatedRequest[i + '.' + j] = temp[j]
+	// 			}
+	// 		} else {
+	// 			updatedRequest[i] = request[i]
+	// 		}
+	// 	}
+	// 	return updatedRequest
+	// }
+
+	// const getUpdatedRequest = (request: any) => {
+	// 	for (const i in request) {
+	// 		if (!request[i] || typeof request[i] !== 'object') {
+	// 			continue
+	// 		}
+	// 		getUpdatedRequest(request[i])
+	// 		if (
+	// 			Object.keys(request[i]).length === 0 ||
+	// 			Object.values(request[i]).every((x) => x === null || x === '')
+	// 		) {
+	// 			delete request[i]
+	// 		}
+	// 	}
+	// 	return request
+	// }
+
+	function getUpdatedRequest(request: any) {
+		for (let key of Object.keys(request)) {
+			if (request[key] === '' || request[key] === null) {
+				delete request[key]
+			} else if (typeof request[key] === 'object' && !(request[key] instanceof Date)) {
+				request[key] = getUpdatedRequest(request[key])
+				if (Object.keys(request[key]).length === 0) delete request[key]
+			}
+		}
+		return Array.isArray(request) ? request.filter((val) => val) : request
+	}
+
 	return (
 		<SoekefeltWrapper>
 			<Soekefelt>
@@ -44,15 +92,35 @@ export const SoekForm = ({ request, setRequest, mutate }) => {
 				<Formik initialValues={{}} onSubmit={() => console.log('submit...')}>
 					{(formikBag) => {
 						const handleChange = (value: any, path: string) => {
-							console.log('value: ', value === '') //TODO - SLETT MEG
+							// const kategori = path.split('.')[0]
+							const request = _.set(formikBag.values, path, value)
+							getUpdatedRequest(request)
+							setRequest(request)
+							formikBag.setValues(request)
+							mutate()
+						}
+
+						const handleChangeGammel = (value: any, path: string) => {
+							// console.log('value: ', value) //TODO - SLETT MEG
+							const testitest = getUpdatedRequest(formikBag.values)
+							console.log('testitest: ', testitest) //TODO - SLETT MEG
+
 							const kategori = path.split('.')[0]
 							const updatedRequest =
 								value !== null && value !== ''
 									? _.set(formikBag.values, path, value)
 									: _.omit(formikBag.values, path)
-							if (Object.keys(_.get(updatedRequest, kategori))?.length === 0) {
+							const kategoriData = _.get(updatedRequest, kategori)
+							// console.log('isEmpty(updatedRequest): ', isEmpty(updatedRequest)) //TODO - SLETT MEG
+							if (isEmpty(updatedRequest)) {
+								setRequest({})
+								formikBag.setValues({})
+							} else if (kategoriData && Object.keys(kategoriData)?.length === 0) {
+								// if (isEmpty(updatedRequest)) {
 								setRequest(_.omit(updatedRequest, kategori))
+								// setRequest(_.omit(updatedRequest, path))
 								formikBag.setFieldValue(kategori, undefined)
+								// formikBag.setFieldValue(path, undefined)
 							} else {
 								setRequest(updatedRequest)
 								if (value !== null && value !== '') {
@@ -61,8 +129,11 @@ export const SoekForm = ({ request, setRequest, mutate }) => {
 									formikBag.setFieldValue(path, undefined)
 								}
 							}
-							console.log('updatedRequest: ', updatedRequest) //TODO - SLETT MEG
-							console.log('formikBag.values: ', formikBag.values) //TODO - SLETT MEG
+							//TODO: Funker ish, men om vi har objekt på flere nivåer + ande kategorier så blir det feil
+							//TODO: Lag en slags findEmptyObjects, som går igjennom hele requesten?
+							// console.log('isEmpty(updatedRequest): ', isEmpty(updatedRequest)) //TODO - SLETT MEG
+							// console.log('updatedRequest: ', updatedRequest) //TODO - SLETT MEG
+							// console.log('formikBag.values: ', formikBag.values) //TODO - SLETT MEG
 							mutate()
 							// TODO: sjekk om alle verdier OG underkategorier er tomme
 						}
@@ -70,11 +141,20 @@ export const SoekForm = ({ request, setRequest, mutate }) => {
 						const handleChangeList = (value: any, path: string) => {
 							// console.log('value: ', value) //TODO - SLETT MEG
 							const list = value.map((item: any) => item.value)
-							const updatedRequest = _.set(formikBag.values, path, list)
+							console.log('list: ', list) //TODO - SLETT MEG
+							const updatedRequest =
+								list?.length > 0
+									? _.set(formikBag.values, path, list)
+									: _.omit(formikBag.values, path)
 							// if (requestIsEmpty(updatedRequest)) {
 							// 	setRequest(null)
 							// } else {
 							setRequest(updatedRequest)
+							if (list?.length > 0) {
+								formikBag.setFieldValue(path, list)
+							} else {
+								formikBag.setFieldValue(path, undefined)
+							}
 							// }
 							mutate()
 							// TODO: tilpass denne også

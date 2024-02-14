@@ -33,7 +33,7 @@ export const FolkeregisteretIdentifikasjonStatus = ({
 				label="Fødselsnummer / D-nummer"
 				onBlur={(val: SyntheticEvent) => handleChange(val?.target?.value || null, 'identifikator')}
 				visHvisAvhuket={false}
-				fastfield={false}
+				// fastfield={false}
 			/>
 			<FormikSelect
 				name="identifikatorType"

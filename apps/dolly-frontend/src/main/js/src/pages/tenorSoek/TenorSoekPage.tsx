@@ -9,7 +9,7 @@ import { useState } from 'react'
 export default () => {
 	const [request, setRequest] = useState({}) // Evt. bruk null for aa ikke hente data ved oppstart
 	const { response, loading, error, mutate } = useTenorOversikt(request)
-	console.log('request: ', request) //TODO - SLETT MEG
+	// console.log('request: ', request) //TODO - SLETT MEG
 	return (
 		<div>
 			<div className="flexbox--align-center--justify-start">

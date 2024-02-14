@@ -20,7 +20,7 @@ export const FolkeregisteretNavn = ({
 					handleChange(val?.target?.value || null, 'navn.navnLengde.fraOgMed')
 				}
 				visHvisAvhuket={false}
-				fastfield={false}
+				// fastfield={false}
 			/>
 			<FormikTextInput
 				name="navn.navnLengde.tilOgMed"
@@ -30,7 +30,7 @@ export const FolkeregisteretNavn = ({
 					handleChange(val?.target?.value || null, 'navn.navnLengde.tilOgMed')
 				}
 				visHvisAvhuket={false}
-				fastfield={false}
+				// fastfield={false}
 			/>
 			<FormikSelect
 				name="navn.harFlereFornavn"
