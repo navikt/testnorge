@@ -6,7 +6,7 @@ import { showLabel } from '@/utils/DataFormatter'
 import { RelatertPerson } from '@/components/fagsystem/pdlf/visning/partials/RelatertPerson'
 import { ForeldreBarnRelasjon, Relasjon } from '@/components/fagsystem/pdlf/PdlTypes'
 import { RelatertPersonUtenId } from '@/components/fagsystem/pdlf/visning/partials/RelatertPersonUtenId'
-import * as _ from 'lodash'
+import _ from 'lodash'
 import {
 	getInitialBarn,
 	getInitialForelder,
@@ -121,18 +121,18 @@ export const ForelderBarnRelasjonVisning = ({
 					),
 					redigertForelderBarnPdlf,
 				),
-		  }
+			}
 		: null
 
 	const eksisterendeNyPerson = redigertRelatertePersoner
 		? getEksisterendeNyPerson(redigertRelatertePersoner, forelderBarnValues?.relatertPerson, [
 				'FAMILIERELASJON_BARN',
 				'FAMILIERELASJON_FORELDER',
-		  ])
+			])
 		: getEksisterendeNyPerson(relasjoner, forelderBarnValues?.relatertPerson, [
 				'FAMILIERELASJON_BARN',
 				'FAMILIERELASJON_FORELDER',
-		  ])
+			])
 
 	if (eksisterendeNyPerson && initialValues?.forelderBarnRelasjon?.nyRelatertPerson) {
 		initialValues.forelderBarnRelasjon.nyRelatertPerson = initialPdlPerson
@@ -169,7 +169,7 @@ export const ForelderBarnRelasjonVisning = ({
 	const relatertPersonInfo = erIGruppe
 		? {
 				ident: initialValues?.forelderBarnRelasjon?.relatertPerson,
-		  }
+			}
 		: null
 
 	return (

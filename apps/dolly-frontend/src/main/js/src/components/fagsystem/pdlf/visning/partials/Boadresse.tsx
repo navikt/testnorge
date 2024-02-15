@@ -1,5 +1,5 @@
 import React from 'react'
-import * as _ from 'lodash'
+import _ from 'lodash'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'

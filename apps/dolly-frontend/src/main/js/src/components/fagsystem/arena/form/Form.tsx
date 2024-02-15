@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import * as _ from 'lodash'
+import _ from 'lodash'
 import { ifPresent } from '@/utils/YupValidations'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import Panel from '@/components/ui/panel/Panel'

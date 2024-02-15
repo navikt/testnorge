@@ -3,7 +3,7 @@ import { FoedselForm } from '@/components/fagsystem/pdlf/form/partials/foedsel/F
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 import styled from 'styled-components'
 import Button from '@/components/ui/button/Button'
-import * as _ from 'lodash'
+import _ from 'lodash'
 import { DollyApi, PdlforvalterApi } from '@/service/Api'
 import Icon from '@/components/ui/icon/Icon'
 import DollyModal from '@/components/ui/modal/DollyModal'

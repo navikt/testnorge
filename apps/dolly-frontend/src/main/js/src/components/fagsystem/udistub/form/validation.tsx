@@ -1,5 +1,5 @@
 import * as Yup from 'yup'
-import * as _ from 'lodash'
+import _ from 'lodash'
 import { ifPresent, requiredBoolean, requiredString } from '@/utils/YupValidations'
 import { testDatoFom, testDatoTom } from '@/components/fagsystem/utils'
 

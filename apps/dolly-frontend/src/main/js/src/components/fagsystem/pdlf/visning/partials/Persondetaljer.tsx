@@ -3,7 +3,7 @@ import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { formatDate, showLabel } from '@/utils/DataFormatter'
-import * as _ from 'lodash'
+import _ from 'lodash'
 import {
 	getInitialKjoenn,
 	getInitialNavn,
@@ -138,7 +138,7 @@ export const Persondetaljer = ({
 						? redigertPersonPdlf?.folkeregisterPersonstatus?.[0]
 						: initialPersonstatus,
 				],
-		  }
+			}
 		: null
 
 	const redigertPersonValues = {

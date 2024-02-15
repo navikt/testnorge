@@ -1,7 +1,7 @@
 import * as Yup from 'yup'
 import { messages, requiredString } from '@/utils/YupValidations'
 import { isAfter, isBefore, isEqual } from 'date-fns'
-import * as _ from 'lodash'
+import _ from 'lodash'
 
 const ikkeOverlappendeVedtak = ['aap', 'dagpenger']
 

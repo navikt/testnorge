@@ -1,5 +1,5 @@
 import * as Yup from 'yup'
-import * as _ from 'lodash'
+import _ from 'lodash'
 import { getMonth, getYear, isWithinInterval } from 'date-fns'
 import { ifPresent, messages, requiredDate, requiredString } from '@/utils/YupValidations'
 import { testDatoFom, testDatoTom } from '@/components/fagsystem/utils'

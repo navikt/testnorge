@@ -76,7 +76,7 @@ export const TelefonnummerFormRedigering = ({ path }: TelefonnummerProps) => {
 
 export const TelefonnummerForm = ({ path, formMethods, idx }: TelefonnummerProps) => {
 	const { kodeverk: landkoder, loading } = useKodeverk(AdresseKodeverk.ArbeidOgInntektLand)
-	const [land, setLand] = useState(_.get(formikBag.values, `${path}.land`) || 'NO')
+	const [land, setLand] = useState(formMethods.watch(`${path}.land`) || 'NO')
 	const tlfListe = formMethods.watch(path || 'pdldata.person.telefonnummer')
 	const mergedeLandkoder = landkoder?.map((landkode: Option) => {
 		const lookupLand = lookup.countries({ alpha2: landkode.value })?.[0]

@@ -1,5 +1,5 @@
 import { Option } from '@/service/SelectOptionsOppslag'
-import * as _ from 'lodash'
+import _ from 'lodash'
 import { toTitleCase } from '@/utils/DataFormatter'
 
 type Data = {

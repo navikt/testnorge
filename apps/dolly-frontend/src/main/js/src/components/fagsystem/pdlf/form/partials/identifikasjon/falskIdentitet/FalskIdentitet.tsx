@@ -1,4 +1,4 @@
-import * as _ from 'lodash'
+import _ from 'lodash'
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { DollySelect, FormikSelect } from '@/components/ui/form/inputs/select/Select'
@@ -106,8 +106,7 @@ export const FalskIdentitet = ({ formMethods }) => {
 												formMethods.setValue,
 											)
 										}
-										value={_.get(
-											formMethods.getValues(),
+										value={formMethods.watch(
 											`${path}.rettIdentitetVedOpplysninger.personnavn.fornavn`,
 										)}
 									/>

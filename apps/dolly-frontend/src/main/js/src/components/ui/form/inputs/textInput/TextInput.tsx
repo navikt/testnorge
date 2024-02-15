@@ -10,7 +10,7 @@ import {
 	ShowErrorContext,
 	ShowErrorContextType,
 } from '@/components/bestillingsveileder/ShowErrorContext'
-import * as _ from 'lodash'
+import _ from 'lodash'
 import FormFieldInput from '@/components/ui/form/inputs/textInput/FormFieldInput'
 
 const StyledIcon = styled(Icon)`

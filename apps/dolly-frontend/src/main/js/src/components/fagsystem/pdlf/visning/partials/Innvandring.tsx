@@ -9,7 +9,7 @@ import {
 	UtvandringValues,
 } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import { initialInnvandring } from '@/components/fagsystem/pdlf/form/initialValues'
-import * as _ from 'lodash'
+import _ from 'lodash'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
 import { PersonData } from '@/components/fagsystem/pdlf/PdlTypes'
 import { getSisteDato } from '@/components/bestillingsveileder/utils'
@@ -102,7 +102,7 @@ const InnvandringVisning = ({
 	const redigertInnvandringValues = redigertInnvandringPdlf
 		? {
 				innflytting: Object.assign(_.cloneDeep(initialInnvandring), redigertInnvandringPdlf),
-		  }
+			}
 		: null
 	return erPdlVisning ? (
 		<InnvandringLes innvandringData={innvandringData} idx={idx} />

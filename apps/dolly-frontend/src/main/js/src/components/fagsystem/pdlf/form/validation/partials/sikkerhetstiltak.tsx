@@ -1,7 +1,7 @@
 import * as Yup from 'yup'
 import { requiredDate, requiredString } from '@/utils/YupValidations'
 import { differenceInWeeks, isAfter } from 'date-fns'
-import * as _ from 'lodash'
+import _ from 'lodash'
 
 export const sikkerhetstiltak = Yup.array().of(
 	Yup.object({

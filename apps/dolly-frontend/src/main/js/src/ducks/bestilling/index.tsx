@@ -1,6 +1,6 @@
 import { createActions } from 'redux-actions'
 import { DollyApi } from '@/service/Api'
-import * as _ from 'lodash'
+import _ from 'lodash'
 import _set from 'lodash/fp/set'
 import { handleActions } from '@/ducks/utils/immerHandleActions'
 import { getLeggTilIdent, rootPaths } from '@/components/bestillingsveileder/utils'

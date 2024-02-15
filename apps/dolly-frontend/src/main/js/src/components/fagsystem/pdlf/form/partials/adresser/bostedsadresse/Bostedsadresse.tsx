@@ -12,7 +12,7 @@ import {
 import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
-import * as _ from 'lodash'
+import _ from 'lodash'
 import {
 	MatrikkeladresseVelger,
 	UkjentBosted,

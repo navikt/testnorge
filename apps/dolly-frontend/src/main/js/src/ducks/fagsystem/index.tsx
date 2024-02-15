@@ -14,7 +14,7 @@ import { onSuccess } from '@/ducks/utils/requestActions'
 import { successMiljoSelector } from '@/ducks/bestillingStatus'
 import { handleActions } from '@/ducks/utils/immerHandleActions'
 import { formatAlder, formatKjonn } from '@/utils/DataFormatter'
-import * as _ from 'lodash'
+import _ from 'lodash'
 
 export const actions = createActions(
 	{

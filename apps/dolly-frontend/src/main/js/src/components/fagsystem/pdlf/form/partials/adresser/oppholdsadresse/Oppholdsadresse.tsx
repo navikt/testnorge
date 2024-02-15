@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react'
-import * as _ from 'lodash'
+import _ from 'lodash'
 import {
 	getInitialOppholdsadresse,
 	initialMatrikkeladresse,

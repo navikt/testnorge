@@ -1,4 +1,4 @@
-import * as _ from 'lodash'
+import _ from 'lodash'
 
 import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { useFormContext } from 'react-hook-form'

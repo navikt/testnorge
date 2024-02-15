@@ -1,7 +1,7 @@
 import React from 'react'
 import { useDropzone } from 'react-dropzone'
 import styled from 'styled-components'
-import * as _ from 'lodash'
+import _ from 'lodash'
 
 const getColor = (props: any) => {
 	if (props.isDragAccept) {

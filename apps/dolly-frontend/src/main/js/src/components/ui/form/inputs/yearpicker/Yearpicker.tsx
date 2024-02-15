@@ -1,4 +1,4 @@
-import * as _ from 'lodash'
+import _ from 'lodash'
 import { InputWrapper } from '@/components/ui/form/inputWrapper/InputWrapper'
 import { Label } from '@/components/ui/form/inputs/label/Label'
 import ReactDatepicker from 'react-datepicker'

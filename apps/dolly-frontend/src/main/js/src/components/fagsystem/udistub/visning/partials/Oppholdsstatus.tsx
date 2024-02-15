@@ -1,4 +1,4 @@
-import * as _ from 'lodash'
+import _ from 'lodash'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { formatStringDates, showLabel } from '@/utils/DataFormatter'
 import { AvslagEllerBortfall, AvslagEllerBortfallVisning } from './AvslagEllerBortfallVisning'
@@ -52,8 +52,8 @@ export const Oppholdsstatus = ({ oppholdsstatus, oppholdstillatelse }: Opphold) 
 						oppholdsrett
 							? 'EØS- eller EFTA-opphold'
 							: tredjelandsborger
-							  ? 'Tredjelandsborger'
-							  : null
+								? 'Tredjelandsborger'
+								: null
 					}
 				/>
 				<TitleValue

@@ -1,4 +1,4 @@
-import * as _ from 'lodash'
+import _ from 'lodash'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import Loading from '@/components/ui/loading/Loading'
 import { Oppholdsstatus } from './partials/Oppholdsstatus'

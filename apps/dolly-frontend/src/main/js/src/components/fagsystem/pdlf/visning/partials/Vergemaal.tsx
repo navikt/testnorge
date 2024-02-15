@@ -6,7 +6,7 @@ import { formatDate } from '@/utils/DataFormatter'
 import { RelatertPerson } from '@/components/fagsystem/pdlf/visning/partials/RelatertPerson'
 import { PersonData, Relasjon, VergemaalValues } from '@/components/fagsystem/pdlf/PdlTypes'
 import { VergemaalKodeverk } from '@/config/kodeverk'
-import * as _ from 'lodash'
+import _ from 'lodash'
 import { initialPdlPerson, initialVergemaal } from '@/components/fagsystem/pdlf/form/initialValues'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
 import { getEksisterendeNyPerson } from '@/components/fagsystem/utils'
@@ -139,7 +139,7 @@ const VergemaalVisning = ({
 	let redigertVergemaalValues = redigertVergemaalPdlf
 		? {
 				vergemaal: Object.assign(_.cloneDeep(initialVergemaal), redigertVergemaalPdlf),
-		  }
+			}
 		: null
 	if (redigertVergemaalValues) {
 		redigertVergemaalValues.vergemaal.nyVergeIdent = initialPdlPerson

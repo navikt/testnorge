@@ -3,7 +3,7 @@ import { initialForeldreansvar } from '@/components/fagsystem/pdlf/form/initialV
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import * as React from 'react'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import * as _ from 'lodash'
+import _ from 'lodash'
 import { formatDate } from '@/utils/DataFormatter'
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { getEksisterendeNyPerson } from '@/components/fagsystem/utils'
@@ -134,16 +134,16 @@ export const ForeldreansvarEnkeltvisning = ({
 					_.cloneDeep(initialForeldreansvar),
 					redigertForeldreansvarPdlf,
 				),
-		  }
+			}
 		: null
 
 	const eksisterendeNyPerson = redigertRelatertePersoner
 		? getEksisterendeNyPerson(redigertRelatertePersoner, foreldreansvarValues?.ansvarlig, [
 				'FORELDREANSVAR_FORELDER',
-		  ])
+			])
 		: getEksisterendeNyPerson(relasjoner, foreldreansvarValues?.ansvarlig, [
 				'FORELDREANSVAR_FORELDER',
-		  ])
+			])
 
 	let personValuesMedRedigert = _.cloneDeep(personValues)
 	if (redigertForelderBarnRelasjonPdlf && personValuesMedRedigert) {
@@ -156,7 +156,7 @@ export const ForeldreansvarEnkeltvisning = ({
 	const relatertPersonInfo = erIGruppe
 		? {
 				ident: initialValues?.foreldreansvar?.ansvarlig,
-		  }
+			}
 		: null
 
 	return (

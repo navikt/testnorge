@@ -5,7 +5,7 @@ import GjenopprettConnector from '@/components/bestilling/gjenopprett/Gjenoppret
 
 import './BestillingDetaljer.less'
 import { MalModal } from '@/pages/minSide/maler/MalModal'
-import * as _ from 'lodash'
+import _ from 'lodash'
 import { SlettButton } from '@/components/ui/button/SlettButton/SlettButton'
 import React from 'react'
 import { DollyApi } from '@/service/Api'

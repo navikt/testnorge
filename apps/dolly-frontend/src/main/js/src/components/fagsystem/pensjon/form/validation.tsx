@@ -1,5 +1,5 @@
 import * as Yup from 'yup'
-import * as _ from 'lodash'
+import _ from 'lodash'
 import { ifPresent, requiredNumber } from '@/utils/YupValidations'
 import { TjenestepensjonForm } from '@/components/fagsystem/tjenestepensjon/form/Form'
 import { AlderspensjonForm } from '@/components/fagsystem/alderspensjon/form/Form'

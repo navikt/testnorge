@@ -8,7 +8,7 @@ import { Accordion, Button } from '@navikt/ds-react'
 import { AdresseKodeverk, GtKodeverk } from '@/config/kodeverk'
 import { useSoekIdenter } from '@/utils/hooks/usePersonSoek'
 import { ResultatVisning } from '@/pages/dollySoek/ResultatVisning'
-import * as _ from 'lodash'
+import _ from 'lodash'
 import { CypressSelector } from '../../../cypress/mocks/Selectors'
 import { Form, FormProvider, useForm } from 'react-hook-form'
 

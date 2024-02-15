@@ -1,4 +1,4 @@
-import * as _ from 'lodash'
+import _ from 'lodash'
 
 export const getPlaceholder = (values, selectedValuePath) => {
 	const fornavn = _.get(values, `${selectedValuePath}.fornavn`)

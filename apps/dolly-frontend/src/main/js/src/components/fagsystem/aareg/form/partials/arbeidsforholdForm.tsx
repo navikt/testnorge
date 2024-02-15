@@ -22,7 +22,7 @@ import { ArbeidsgiverIdent } from '@/components/fagsystem/aareg/form/partials/ar
 import { isDate } from 'date-fns'
 import { EgneOrganisasjoner } from '@/components/fagsystem/brregstub/form/partials/EgneOrganisasjoner'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
-import * as _ from 'lodash'
+import _ from 'lodash'
 import { Monthpicker } from '@/components/ui/form/inputs/monthpicker/Monthpicker'
 import { fixTimezone } from '@/components/ui/form/formUtils'
 import { useFormContext } from 'react-hook-form'

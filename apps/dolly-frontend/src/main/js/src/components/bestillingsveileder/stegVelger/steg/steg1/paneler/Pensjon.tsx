@@ -1,14 +1,18 @@
-import React, {useContext} from 'react'
+import React, { useContext } from 'react'
 import Panel from '@/components/ui/panel/Panel'
-import {Attributt, AttributtKategori} from '../Attributt'
-import {fetchTpOrdninger, initialOrdning, tpPath,} from '@/components/fagsystem/tjenestepensjon/form/Form'
-import {harValgtAttributt} from '@/components/ui/form/formUtils'
-import {pensjonPath} from '@/components/fagsystem/pensjon/form/Form'
-import {genInitialAlderspensjonVedtak} from '@/components/fagsystem/alderspensjon/form/initialValues'
-import {BestillingsveilederContext} from '@/components/bestillingsveileder/BestillingsveilederContext'
-import {initialUforetrygd} from '@/components/fagsystem/uforetrygd/initialValues'
-import {runningCypressE2E} from '@/service/services/Request'
-import * as _ from 'lodash'
+import { Attributt, AttributtKategori } from '../Attributt'
+import {
+	fetchTpOrdninger,
+	initialOrdning,
+	tpPath,
+} from '@/components/fagsystem/tjenestepensjon/form/Form'
+import { harValgtAttributt } from '@/components/ui/form/formUtils'
+import { pensjonPath } from '@/components/fagsystem/pensjon/form/Form'
+import { genInitialAlderspensjonVedtak } from '@/components/fagsystem/alderspensjon/form/initialValues'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import { initialUforetrygd } from '@/components/fagsystem/uforetrygd/initialValues'
+import { runningCypressE2E } from '@/service/services/Request'
+import _ from 'lodash'
 
 export const PensjonPanel = ({ stateModifier, formValues }: any) => {
 	const sm = stateModifier(PensjonPanel.initialValues)
@@ -17,20 +21,16 @@ export const PensjonPanel = ({ stateModifier, formValues }: any) => {
 	const harValgtAp = _.has(formValues, 'pensjonforvalter.alderspensjon')
 	const harValgtUforetrygd = _.has(formValues, 'pensjonforvalter.uforetrygd')
 
-	const harGyldigApBestilling = opts?.tidligereBestillinger?.some(
-		(bestilling) =>
-			bestilling.status?.some(
-				(status) =>
-					status.id === 'PEN_AP' && status.statuser?.some((item) => item?.melding === 'OK'),
-			),
+	const harGyldigApBestilling = opts?.tidligereBestillinger?.some((bestilling) =>
+		bestilling.status?.some(
+			(status) => status.id === 'PEN_AP' && status.statuser?.some((item) => item?.melding === 'OK'),
+		),
 	)
 
-	const harGyldigUforetrygdBestilling = opts?.tidligereBestillinger?.some(
-		(bestilling) =>
-			bestilling.status?.some(
-				(status) =>
-					status.id === 'PEN_UT' && status.statuser?.some((item) => item.melding === 'OK'),
-			),
+	const harGyldigUforetrygdBestilling = opts?.tidligereBestillinger?.some((bestilling) =>
+		bestilling.status?.some(
+			(status) => status.id === 'PEN_UT' && status.statuser?.some((item) => item.melding === 'OK'),
+		),
 	)
 
 	const getTitleAlderspensjon = () => {

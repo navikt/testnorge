@@ -4,7 +4,7 @@ import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import KodeverkConnector from '@/components/kodeverk/KodeverkConnector'
 import { Historikk } from '@/components/ui/historikk/Historikk'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import * as _ from 'lodash'
+import _ from 'lodash'
 
 type AlleMidlertidigeAdresser = {
 	midlertidigAdresse: Array<MidlertidigAdresseType>

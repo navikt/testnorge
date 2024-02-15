@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import * as _ from 'lodash'
+import _ from 'lodash'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import {

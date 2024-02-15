@@ -1,6 +1,6 @@
 import * as Yup from 'yup'
 import { ifPresent, requiredBoolean, requiredString } from '@/utils/YupValidations'
-import * as _ from 'lodash-es'
+import _ from 'lodash'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { DollySelect, FormikSelect } from '@/components/ui/form/inputs/select/Select'

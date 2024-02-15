@@ -5,7 +5,7 @@ import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { Personnavn } from '@/components/fagsystem/pdlf/visning/partials/Personnavn'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { RelatertPerson } from '@/components/fagsystem/pdlf/visning/partials/RelatertPerson'
-import * as _ from 'lodash'
+import _ from 'lodash'
 import { initialKontaktinfoForDoedebo } from '@/components/fagsystem/pdlf/form/initialValues'
 import { getEksisterendeNyPerson } from '@/components/fagsystem/utils'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
@@ -146,7 +146,7 @@ export const KontaktinformasjonForDoedsboVisning = ({
 					_.cloneDeep(initialKontaktinfoForDoedebo),
 					redigertKontaktinfoPdlf,
 				),
-		  }
+			}
 		: null
 
 	const eksisterendeNyPerson = redigertRelatertePersoner
@@ -154,12 +154,12 @@ export const KontaktinformasjonForDoedsboVisning = ({
 				redigertRelatertePersoner,
 				kontaktinfoValues?.personSomKontakt?.identifikasjonsnummer,
 				['KONTAKT_FOR_DOEDSBO'],
-		  )
+			)
 		: getEksisterendeNyPerson(
 				relasjoner,
 				kontaktinfoValues?.personSomKontakt?.identifikasjonsnummer,
 				['KONTAKT_FOR_DOEDSBO'],
-		  )
+			)
 
 	if (eksisterendeNyPerson && initialValues?.kontaktinformasjonForDoedsbo?.personSomKontakt) {
 		const filteredPerson = Object.fromEntries(

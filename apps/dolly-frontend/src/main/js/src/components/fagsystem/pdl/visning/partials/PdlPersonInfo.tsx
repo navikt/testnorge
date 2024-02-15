@@ -3,7 +3,7 @@ import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { formatDate, showLabel } from '@/utils/DataFormatter'
 import { TpsMPersonInfo } from '@/components/fagsystem/pdl/visning/partials/tpsMessaging/TpsMPersonInfo'
-import * as _ from 'lodash'
+import _ from 'lodash'
 import React from 'react'
 import { ArrayHistorikk } from '@/components/ui/historikk/ArrayHistorikk'
 

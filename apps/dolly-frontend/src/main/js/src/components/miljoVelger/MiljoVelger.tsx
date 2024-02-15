@@ -84,11 +84,18 @@ export const MiljoVelger = ({
 
 	const disableAllEnvironments = erMiljouavhengig(bestillingsdata)
 	const filteredEnvironments = filterEnvironments(dollyEnvironments, bankIdBruker)
-	const order = ['Q']
 	const values = formMethods.watch('environments')
 
 	if (disableAllEnvironments && values.length > 0) {
 		formMethods.setValue('environments', [])
+	}
+	const isChecked = (id) => values.includes(id)
+
+	const onClick = (e) => {
+		const { id } = e.target
+		if (!alleredeValgtMiljoe?.includes(id)) {
+			isChecked(id) ? fieldMethods.remove(values.indexOf(id)) : fieldMethods.append(id)
+		}
 	}
 
 	return (
@@ -102,45 +109,26 @@ export const MiljoVelger = ({
 					<MiljoeInfo bestillingsdata={bestillingsdata} dollyEnvironments={filteredEnvironments} />
 				</>
 			)}
-
-			{order.map((type) => {
-				const category = filteredEnvironments[type]
-				if (!category) {
-					return null
-				}
-
-				const isChecked = (id) => values.includes(id)
-
-				const onClick = (e) => {
-					const { id } = e.target
-					if (!alleredeValgtMiljoe?.includes(id)) {
-						isChecked(id) ? fieldMethods.remove(values.indexOf(id)) : fieldMethods.append(id)
-					}
-				}
-
-				return (
-					<fieldset key={type} name={`Liste over ${type}-miljøer`}>
-						<StyledH3>{type}-miljøer </StyledH3>
-						<div className="miljo-velger_checkboxes">
-							{category.map((env) => (
-								<DollyCheckbox
-									key={env.id}
-									id={env.id}
-									disabled={
-										env.disabled ||
-										(disableAllEnvironments && values.length < 1) ||
-										alleredeValgtMiljoe.some((miljoe) => miljoe === env.id)
-									}
-									label={env?.id?.toUpperCase()}
-									checked={values.includes(env.id)}
-									onClick={onClick}
-									size={'small'}
-								/>
-							))}
-						</div>
-					</fieldset>
-				)
-			})}
+			<fieldset name={`Liste over miljøer`}>
+				<StyledH3>Miljøer </StyledH3>
+				<div className="miljo-velger_checkboxes">
+					{filteredEnvironments.map((env) => (
+						<DollyCheckbox
+							key={env.id}
+							id={env.id}
+							disabled={
+								env.disabled ||
+								(disableAllEnvironments && values.length < 1) ||
+								alleredeValgtMiljoe.some((miljoe) => miljoe === env.id)
+							}
+							label={env?.id?.toUpperCase()}
+							checked={values.includes(env.id)}
+							onClick={onClick}
+							size={'small'}
+						/>
+					))}
+				</div>
+			</fieldset>
 			<DollyErrorMessage name="environments" />
 		</div>
 	)

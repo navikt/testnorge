@@ -13,7 +13,7 @@ import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { MiljoTabs } from '@/components/ui/miljoTabs/MiljoTabs'
 import { useBestilteMiljoer } from '@/utils/hooks/useBestilling'
 import { arrayToString, formatDate } from '@/utils/DataFormatter'
-import * as _ from 'lodash'
+import _ from 'lodash'
 import React from 'react'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
 

@@ -1,5 +1,5 @@
 import { format, isDate } from 'date-fns'
-import * as _ from 'lodash'
+import _ from 'lodash'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { useKodeverk } from '@/utils/hooks/useKodeverk'
 
