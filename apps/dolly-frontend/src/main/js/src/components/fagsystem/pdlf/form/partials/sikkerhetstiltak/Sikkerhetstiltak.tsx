@@ -12,10 +12,7 @@ import { isToday } from 'date-fns'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { InputWarning } from '@/components/ui/form/inputWarning/inputWarning'
 import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
-import {
-	initialSikkerhetstiltak,
-	initialTpsSikkerhetstiltak,
-} from '@/components/fagsystem/pdlf/form/initialValues'
+import { initialSikkerhetstiltak } from '@/components/fagsystem/pdlf/form/initialValues'
 import { useNavEnheter } from '@/utils/hooks/useNorg2'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 
@@ -28,7 +25,7 @@ interface SikkerhetstiltakValues {
 }
 
 interface SikkerhetstiltakProps {
-	formikBag: FormikProps<{ tpsf: SikkerhetstiltakValues }>
+	formikBag: FormikProps<SikkerhetstiltakValues>
 }
 
 export const Sikkerhetstiltak = ({ formikBag }: SikkerhetstiltakProps) => {
@@ -41,13 +38,9 @@ export const Sikkerhetstiltak = ({ formikBag }: SikkerhetstiltakProps) => {
 		setRandomNavUsers(genererTilfeldigeNavPersonidenter())
 	}, [])
 
-	const paths = {
-		rootPath: 'pdldata.person.sikkerhetstiltak',
-		tpsMessagingRootPath: 'tpsMessaging.sikkerhetstiltak',
-	}
+	const rootPath = 'pdldata.person.sikkerhetstiltak'
 
-	const sikkerhetstiltakListe = _.get(formikBag.values, paths.rootPath)
-	const sikkerhetstiltakListeTps = _.get(formikBag.values, paths.tpsMessagingRootPath)
+	const sikkerhetstiltakListe = _.get(formikBag.values, rootPath)
 
 	if (!sikkerhetstiltakListe) {
 		return null
@@ -64,36 +57,18 @@ export const Sikkerhetstiltak = ({ formikBag }: SikkerhetstiltakProps) => {
 		)
 	}
 
-	const handleNewEntry = () => {
-		formikBag.setFieldValue(paths.rootPath, [...sikkerhetstiltakListe, initialSikkerhetstiltak])
-		formikBag.setFieldValue(paths.tpsMessagingRootPath, [
-			...sikkerhetstiltakListeTps,
-			initialTpsSikkerhetstiltak,
-		])
-	}
-
 	const handleValueChange = (value: string, name: string, idx: number) => {
-		formikBag.setFieldValue(`${paths.rootPath}[${idx}].${name}`, value)
-		formikBag.setFieldValue(`${paths.tpsMessagingRootPath}[${idx}].${name}`, value)
-	}
-
-	const handleRemoveEntry = (idx: number) => {
-		sikkerhetstiltakListe.splice(idx, 1)
-		sikkerhetstiltakListeTps.splice(idx, 1)
-		formikBag.setFieldValue(paths.rootPath, sikkerhetstiltakListe)
-		formikBag.setFieldValue(paths.tpsMessagingRootPath, sikkerhetstiltakListeTps)
+		formikBag.setFieldValue(`${rootPath}[${idx}].${name}`, value)
 	}
 
 	return (
-		<Vis attributt={Object.values(paths)} formik>
+		<Vis attributt={rootPath} formik>
 			<div className="flexbox--flex-wrap">
 				<FormikDollyFieldArray
-					name={paths.rootPath}
+					name={rootPath}
 					header="Sikkerhetstiltak"
 					newEntry={initialSikkerhetstiltak}
 					canBeEmpty={false}
-					handleNewEntry={handleNewEntry}
-					handleRemoveEntry={handleRemoveEntry}
 				>
 					{(path: string, idx: number) => {
 						const personident = _.get(formikBag.values, `${path}.kontaktperson.personident`)
@@ -107,7 +82,7 @@ export const Sikkerhetstiltak = ({ formikBag }: SikkerhetstiltakProps) => {
 											? Options('sikkerhetstiltakType')
 											: Options('sikkerhetstiltakType').filter(
 													(option) => option.label !== 'Opphørt',
-											  )
+												)
 									}
 									size="large"
 									onChange={(option: Option) => handleSikkerhetstiltakChange(option, idx)}
