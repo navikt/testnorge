@@ -12,7 +12,6 @@ import {
 	initialFullmakt,
 	initialSikkerhetstiltak,
 	initialTilrettelagtKommunikasjon,
-	initialTpsSikkerhetstiltak,
 	initialVergemaal,
 } from '@/components/fagsystem/pdlf/form/initialValues'
 
@@ -187,10 +186,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 		},
 		vergemaal: 'pdldata.person.vergemaal',
 		fullmakt: 'pdldata.person.fullmakt',
-		sikkerhetstiltak: {
-			pdl: 'pdldata.person.sikkerhetstiltak',
-			tpsM: 'tpsMessaging.sikkerhetstiltak',
-		},
+		sikkerhetstiltak: 'pdldata.person.sikkerhetstiltak',
 		tilrettelagtKommunikasjon: 'pdldata.person.tilrettelagtKommunikasjon',
 		utenlandskBankkonto: 'bankkonto.utenlandskBankkonto',
 		norskBankkonto: 'bankkonto.norskBankkonto',
@@ -357,13 +353,9 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 		},
 		sikkerhetstiltak: {
 			label: 'Sikkerhetstiltak',
-			checked: has(paths.sikkerhetstiltak.pdl),
-			add: () =>
-				setMulti(
-					[paths.sikkerhetstiltak.pdl, [initialSikkerhetstiltak]],
-					[paths.sikkerhetstiltak.tpsM, [initialTpsSikkerhetstiltak]],
-				),
-			remove: () => del([paths.sikkerhetstiltak.pdl, paths.sikkerhetstiltak.tpsM]),
+			checked: has(paths.sikkerhetstiltak),
+			add: () => set(paths.sikkerhetstiltak, [initialSikkerhetstiltak]),
+			remove: () => del(paths.sikkerhetstiltak),
 		},
 		tilrettelagtKommunikasjon: {
 			label: 'Tilrettelagt komm.',
