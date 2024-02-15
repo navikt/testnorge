@@ -9,6 +9,8 @@ import { EnhetsregisteretForetaksregisteretVisning } from '@/pages/tenorSoek/res
 
 const NavnHeader = styled.h2`
 	margin: 5px 0 15px 0;
+	word-break: break-word;
+	hyphens: auto;
 `
 export const PersonVisning = ({ person, loading, error }) => {
 	// console.log('person: ', person) //TODO - SLETT MEG

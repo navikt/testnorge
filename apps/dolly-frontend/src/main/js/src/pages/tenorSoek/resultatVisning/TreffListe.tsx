@@ -57,7 +57,7 @@ export const TreffListe = ({ response, loading, error }: any) => {
 							style={{ cursor: 'pointer' }}
 						>
 							{/*<h3>{person.visningnavn}</h3>*/}
-							<h3>
+							<h3 style={{ wordBreak: 'break-word', hyphens: 'auto' }}>
 								{person.fornavn} {person.etternavn}
 							</h3>
 							<p>{person.identifikator}</p>
