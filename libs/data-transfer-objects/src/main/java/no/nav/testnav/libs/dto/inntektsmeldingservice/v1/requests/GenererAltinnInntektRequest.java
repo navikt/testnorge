@@ -1,26 +1,17 @@
 package no.nav.testnav.libs.dto.inntektsmeldingservice.v1.requests;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class GenererAltinnInntektRequest {
 
-    @JsonProperty("avspillergruppeId")
     private Long avspillergruppeId;
 
-    @JsonProperty("miljoe")
     private String miljoe;
 
-    @JsonProperty("antallIdenter")
     private Integer antallIdenter;
 
-    @JsonProperty("prosentSomStemmerMedInntektskomponenten")
     private Integer prosentSomStemmerMedInntektskomponenten;
 }

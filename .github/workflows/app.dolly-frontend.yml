@@ -14,7 +14,6 @@ on:
       - apps/dolly-frontend/**
       - .github/workflows/app.dolly-frontend.yml
       - .github/workflows/common.cypress.yml
-      - .github/workflows/common.workflow.frontend.yml
 
 jobs:
 
@@ -36,9 +35,4 @@ jobs:
     permissions:
       contents: read
       id-token: write
-    secrets:
-      NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
-      NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
-      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-      READER_TOKEN: ${{ secrets.READER_TOKEN }}
-      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    secrets: inherit

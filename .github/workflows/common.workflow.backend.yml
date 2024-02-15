@@ -44,18 +44,12 @@ on:
         required: false
         default: true
     secrets:
-      NAIS_DOLLY_DEPLOY_API_KEY:
-        required: true
       NAIS_WORKLOAD_IDENTITY_PROVIDER:
         required: true
       NAV_TOKEN:
         required: true
       SONAR_TOKEN:
         required: true
-
-env:
-  do-deploy-test: ${{ inputs.force-deploy-test || (!contains(github.event.head_commit.message, '#nodeploy') && (inputs.deploy-tag-test != '') && (github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-test))) }}
-  do-deploy: ${{ inputs.force-deploy || (!contains(github.event.head_commit.message, '#nodeploy') && (inputs.deploy-tag != '') && (github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag))) }}
 
 jobs:
 
@@ -68,46 +62,47 @@ jobs:
           echo "inputs: ${{ toJSON(inputs) }}"
           echo "env: ${{ toJSON(env) }}"
           echo "commit: ${{ github.event.head.commit_message }}"
-
-  sonar:
-    needs: start
-    if: inputs.sonar-enabled
-    secrets:
-      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-    uses: ./.github/workflows/common.scan.sonar.yml
-    with:
-      working-directory: ${{ inputs.working-directory }}
+    outputs:
+      do-deploy-test: ${{ inputs.force-deploy-test || (!contains(github.event.head_commit.message, '#nodeploy') && (inputs.deploy-tag-test != '') && (github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-test))) }}
+      do-deploy: ${{ inputs.force-deploy || (!contains(github.event.head_commit.message, '#nodeploy') && (inputs.deploy-tag != '') && (github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag))) }}
+      artifact: ${{ github.run_id }}-failure
 
   build:
     needs: start
     if: github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      id-token: write
     steps:
       - name: "Checkout"
-        uses: actions/checkout@v3
-      - name: "Java"
-        uses: actions/setup-java@v3
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: "Setup"
+        uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 21
       - name: "Gradle"
-        env:
-          GITHUB_USERNAME: token
-          NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-        uses: gradle/gradle-build-action@v2
+        id: gradle
+        uses: gradle/gradle-build-action@v3
         with:
           build-root-directory: ${{ inputs.working-directory }}
-          arguments: build --scan
+          arguments: build ${{ inputs.sonar-enabled && 'jacocoTestReport sonar -Dsonar.gradle.skipCompile=true' || ''}} --scan
           cache-read-only: false
+        env:
+          NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: "Reporting"
+        if: failure() && steps.gradle.outcome == 'failure'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ needs.start.outputs.artifact}}
+          path: ${{ inputs.working-directory }}/build/reports
+          retention-days: 7
       - name: "Docker"
         id: docker-build-push
         if: |
-          env.do-deploy-test == 'true' ||
-          env.do-deploy == 'true'
+          needs.start.outputs.do-deploy == 'true' ||
+          needs.start.outputs.do-deploy-test == 'true'
         uses: nais/docker-build-push@v0
         with:
           team: dolly
@@ -118,37 +113,33 @@ jobs:
           image_suffix: ${{ inputs.image-suffix }}
     outputs:
       image: ${{ steps.docker-build-push.outputs.image }}
-      do-deploy-test: ${{ env.do-deploy-test }}
-      do-deploy: ${{ env.do-deploy }}
 
   deploy:
-    needs: build
-    if: needs.build.outputs.do-deploy == 'true'
+    needs: [start, build]
+    if: needs.start.outputs.do-deploy == 'true'
     concurrency: ${{ inputs.image-suffix }}
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: "Deploy"
-        uses: nais/deploy/actions/deploy@v1
+        uses: nais/deploy/actions/deploy@v2
         env:
-          APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: ${{ inputs.cluster }}
           RESOURCE: ${{ inputs.working-directory }}/${{ inputs.nais-manifest }}
           VAR: image=${{ needs.build.outputs.image }}
 
   deploy-test:
-    needs: build
-    if: needs.build.outputs.do-deploy-test == 'true'
+    needs: [start, build]
+    if: needs.start.outputs.do-deploy-test == 'true'
     concurrency: ${{ inputs.image-suffix }}-test
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout"
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: "Deploy (test)"
-        uses: nais/deploy/actions/deploy@v1
+        uses: nais/deploy/actions/deploy@v2
         env:
-          APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: ${{ inputs.cluster }}
           RESOURCE: ${{ inputs.working-directory }}/config.test.yml
           VAR: image=${{ needs.build.outputs.image }}

@@ -71,7 +71,7 @@ const arbeidsgiver = Yup.object({
 	ident: Yup.string().when('aktoertype', {
 		is: 'PERS',
 		then: () =>
-			Yup.string()
+			requiredString
 				.matches(/^\d*$/, 'Ident må være et tall med 11 sifre')
 				.test('len', 'Ident må være et tall med 11 sifre', (val) => val?.length === 11),
 	}),

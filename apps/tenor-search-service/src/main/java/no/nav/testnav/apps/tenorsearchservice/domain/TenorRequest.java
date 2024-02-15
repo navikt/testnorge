@@ -20,11 +20,11 @@ public class TenorRequest {
 
     public enum Kjoenn {Mann, Kvinne}
 
-    public enum Roller {DagligLeder}
+    public enum Rolle {DagligLeder}
 
     public enum Personstatus {Bosatt, Doed, Forsvunnet, Foedselsregistrert, IkkeBosatt, Inaktiv, Midlertidig, Opphoert, Utflyttet}
 
-    public enum Sivilstatus {EnkeEllerEnkemann, Gift, GjenlevendePartner, RegistrertPartner, Separert, SeparertPartner, Skilt, SkiltPartner, Ugift, Uoppgitt}
+    public enum Sivilstand {EnkeEllerEnkemann, Gift, GjenlevendePartner, RegistrertPartner, Separert, SeparertPartner, Skilt, SkiltPartner, Ugift, Uoppgitt}
 
     public enum UtenlandskPersonIdentifikasjon {UtenlandskIdentifikasjonsnummer, TaxIdentificationNumber, SocialSecurityNumber, UtlendingsmyndighetenesIdentifikasjonsnummer}
 
@@ -83,7 +83,7 @@ public class TenorRequest {
     private DatoIntervall doedsdato;
     private Kjoenn kjoenn;
     private Personstatus personstatus;
-    private Sivilstatus sivilstatus;
+    private Sivilstand sivilstand;
     private List<UtenlandskPersonIdentifikasjon> utenlandskPersonIdentifikasjon;
     private IdentitetsgrunnlagStatus identitetsgrunnlagStatus;
     private Adressebeskyttelse adressebeskyttelse;
@@ -96,18 +96,18 @@ public class TenorRequest {
     private Relasjoner relasjoner;
     private Hendelser hendelser;
 
-    private List<Roller> roller;
+    private List<Rolle> roller;
     private Tjenestepensjonsavtale tjenestepensjonsavtale;
     private Skattemelding skattemelding;
-    private InntektAordningen inntektAordningen;
+    private Inntekt inntekt;
     private Skatteplikt skatteplikt;
     private Tilleggsskatt tilleggsskatt;
     private Arbeidsforhold arbeidsforhold;
     private BeregnetSkatt beregnetSkatt;
-    private OpplysningerFraSkatteetatensInnsendingsmiljoe opplysningerFraSkatteetatensInnsendingsmiljoe;
+    private TestinnsendingSkattPerson testinnsendingSkattPerson;
     private SamletReskontroInnsyn samletReskontroInnsyn;
     private SummertSkattegrunnlag summertSkattegrunnlag;
-    private SpesisfisertSummertSkattegrunnlag spesisfisertSummertSkattegrunnlag;
+    private SpesisfisertSummertSkattegrunnlag spesifisertSummertSkattegrunnlag;
 
     public List<UtenlandskPersonIdentifikasjon> getUtenlandskPersonIdentifikasjon() {
 
@@ -117,7 +117,7 @@ public class TenorRequest {
         return utenlandskPersonIdentifikasjon;
     }
 
-    public List<Roller> getRoller() {
+    public List<Rolle> getRoller() {
 
         if (isNull(roller)) {
             roller = new ArrayList<>();
@@ -213,7 +213,7 @@ public class TenorRequest {
 
     @Data
     @NoArgsConstructor
-    public static class InntektAordningen {
+    public static class Inntekt {
 
         private MonthInterval periode;
         private Integer opplysningspliktig;
@@ -310,7 +310,8 @@ public class TenorRequest {
 
     @Data
     @NoArgsConstructor
-    public static class OpplysningerFraSkatteetatensInnsendingsmiljoe {
+    @Schema(description = "Opplysninger fra skatteetatens innsendingsmiljoe")
+    public static class TestinnsendingSkattPerson {
 
         @Schema(description = "Inntektsår, 4 siffre, årene 2020, 2021, 2022, 2023 ... osv opptil i fjor")
         private Integer inntektsaar;

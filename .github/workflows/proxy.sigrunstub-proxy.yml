@@ -7,7 +7,6 @@ on:
       - libs/reactive-proxy
       - proxies/sigrunstub-proxy/**
       - .github/workflows/proxy.sigrunstub-proxy.yml
-      - .github/workflows/common.workflow.backend.yml
 
 jobs:
   workflow:
@@ -19,8 +18,4 @@ jobs:
     permissions:
       contents: read
       id-token: write
-    secrets:
-      NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
-      NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
-      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    secrets: inherit

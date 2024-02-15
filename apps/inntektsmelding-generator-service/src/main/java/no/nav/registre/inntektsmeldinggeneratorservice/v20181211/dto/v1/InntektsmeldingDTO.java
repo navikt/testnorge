@@ -1,8 +1,8 @@
 package no.nav.registre.inntektsmeldinggeneratorservice.v20181211.dto.v1;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Value;
 import no.seres.xsd.nav.inntektsmelding_m._20181211.ObjectFactory;
 import no.seres.xsd.nav.inntektsmelding_m._20181211.XMLGjenopptakelseNaturalytelseListe;
 import no.seres.xsd.nav.inntektsmelding_m._20181211.XMLInntektsmeldingM;
@@ -17,7 +17,7 @@ import java.util.List;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
-@Value
+@Data
 @NoArgsConstructor(force = true)
 public class InntektsmeldingDTO implements ToXmlElement<XMLInntektsmeldingM> {
 

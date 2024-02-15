@@ -70,8 +70,6 @@ spec:
       external:
         - host: mqls04.preprod.local
           ports:
-            - name: mq
-              port: 1413
-              protocol: TCP
+            - port: 1413
   ingresses:
     - "https://testnav-sykemelding-api.intern.dev.nav.no"

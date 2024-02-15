@@ -1,10 +1,10 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useBoolean } from 'react-use'
 import Icon from '@/components/ui/icon/Icon'
 import Loading from '@/components/ui/loading/Loading'
 import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import { PdlforvalterApi } from '@/service/Api'
 import { useFormContext } from 'react-hook-form'
+import { useNaviger } from '@/utils/hooks/useNaviger'
 
 type ArbeidsgiverIdentProps = {
 	path: string
@@ -13,43 +13,33 @@ type ArbeidsgiverIdentProps = {
 
 export const ArbeidsgiverIdent = ({ path, isDisabled }: ArbeidsgiverIdentProps) => {
 	const formMethods = useFormContext()
-	const [error, setError] = useState(null)
 	const [personnummer, setPersonnummer] = useState(formMethods.watch(path))
 	const [success, setSuccess] = useBoolean(false)
-	const [loading, setLoading] = useBoolean(false)
+	const { result, loading: loadingNaviger, error: errorNaviger } = useNaviger(personnummer)
+
+	useEffect(() => {
+		if (personnummer) {
+			if (result?.identNavigerTil) {
+				setSuccess(true)
+				formMethods.clearErrors(path)
+			} else {
+				formMethods.setError(path, { message: 'Fant ikke arbeidsgiver-ident' })
+			}
+		}
+	}, [result, errorNaviger])
 
 	const handleChange = (event: React.ChangeEvent<any>) => {
-		event.preventDefault()
-		setError(null)
+		formMethods.clearErrors(path)
 		setSuccess(false)
-
 		const personnr = event.target.value
-
+		formMethods.setValue(`${path}`, personnr)
 		if (personnr.match(/^\d{11}$/) != null) {
-			handleManualPersonnrChange(personnr)
-		}
-	}
-
-	const handleManualPersonnrChange = (personnr: string) => {
-		setLoading(true)
-
-		PdlforvalterApi.getPersoner([personnr])
-			.then((response: any) => {
-				if (!response?.data || response?.data?.length < 1) {
-					setError('Fant ikke arbeidsgiver-ident')
-					setLoading(false)
-					formMethods.setValue(`${path}`, '')
-					return
-				}
-
-				setError(null)
-				setSuccess(true)
-				setLoading(false)
-				setPersonnummer(personnr)
-
-				formMethods.setValue(`${path}`, personnr)
+			setPersonnummer(personnr)
+		} else {
+			formMethods.setError(path, {
+				message: 'Ident må være et tall med 11 siffer',
 			})
-			.catch(() => setError('Fant ikke arbeidsgiver-ident'))
+		}
 	}
 
 	return (
@@ -60,7 +50,7 @@ export const ArbeidsgiverIdent = ({ path, isDisabled }: ArbeidsgiverIdentProps) 
 				defaultValue={personnummer}
 				label={'Arbeidsgiver ident'}
 				onBlur={handleChange}
-				isDisabled={loading || isDisabled}
+				isDisabled={loadingNaviger || isDisabled}
 			/>
 			{success && (
 				<div className="flexbox" style={{ marginTop: '-5px' }}>
@@ -68,8 +58,7 @@ export const ArbeidsgiverIdent = ({ path, isDisabled }: ArbeidsgiverIdentProps) 
 					funnet
 				</div>
 			)}
-			{loading && <Loading label="Sjekker arbeidsgiver ident." />}
-			{error && <div className="skjemaelement__feilmelding">{error}</div>}
+			{loadingNaviger && <Loading label="Sjekker arbeidsgiver-ident" />}
 		</div>
 	)
 }

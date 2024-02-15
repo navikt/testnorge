@@ -319,7 +319,7 @@ PersoninformasjonPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 								paths.telefonnummer.pdl,
 								[
 									{
-										landskode: '',
+										landskode: '+47',
 										nummer: '',
 										prioritet: 1,
 										kilde: 'Dolly',
@@ -332,7 +332,7 @@ PersoninformasjonPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 								[
 									{
 										telefonnummer: '',
-										landkode: '',
+										landskode: '+47',
 										telefontype: 'MOBI',
 									},
 								],

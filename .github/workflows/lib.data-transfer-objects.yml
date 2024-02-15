@@ -1,4 +1,4 @@
-name: Lib data-transfer-objects
+name: data-transfer-objects
 
 on:
   push:
@@ -7,18 +7,8 @@ on:
       - .github/workflows/lib.data-transfer-objects.yml
 
 jobs:
-  scan:
-    name: Scan
-    uses: ./.github/workflows/common.scan.sonar.yml
+  workflow:
+    uses: ./.github/workflows/common.workflow.libs.backend.yml
     with:
-      working-directory: 'libs/data-transfer-objects/'
-    secrets:
-      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-  build:
-    name: Build
-    uses: ./.github/workflows/common.java-build.yml
-    with:
-      working-directory: 'libs/data-transfer-objects/'
-    secrets:
-      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+      working-directory: 'libs/data-transfer-objects'
+    secrets: inherit

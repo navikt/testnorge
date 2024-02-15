@@ -138,6 +138,16 @@ export const allCapsToCapitalized = (value) => {
 	return _.capitalize(value)
 }
 
+export const toTitleCase = (value) => {
+	return value
+		.split(' ')
+		.map(_.capitalize)
+		.join(' ')
+		.split('-')
+		.map((str) => str.charAt(0).toUpperCase() + str.slice(1))
+		.join('-')
+}
+
 export const codeToNorskLabel = (value) => {
 	if (!value) {
 		return null

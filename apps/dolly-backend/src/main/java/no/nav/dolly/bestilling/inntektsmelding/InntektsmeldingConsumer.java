@@ -1,12 +1,13 @@
 package no.nav.dolly.bestilling.inntektsmelding;
 
+import io.swagger.v3.core.util.Json;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.inntektsmelding.command.OpprettInntektsmeldingCommand;
-import no.nav.dolly.bestilling.inntektsmelding.domain.InntektsmeldingRequest;
 import no.nav.dolly.bestilling.inntektsmelding.domain.InntektsmeldingResponse;
 import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
+import no.nav.testnav.libs.dto.inntektsmeldingservice.v1.requests.InntektsmeldingRequest;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
@@ -42,7 +43,8 @@ public class InntektsmeldingConsumer implements ConsumerStatus {
     public Flux<InntektsmeldingResponse> postInntektsmelding(InntektsmeldingRequest inntekstsmelding) {
 
         var callId = getNavCallId();
-        log.info("Inntektsmelding med callId {} sendt", callId);
+        log.info("Inntektsmelding med ident {} callId {} sendt {}", inntekstsmelding.getArbeidstakerFnr(), callId,
+                Json.pretty(inntekstsmelding));
 
         return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> new OpprettInntektsmeldingCommand(webClient,

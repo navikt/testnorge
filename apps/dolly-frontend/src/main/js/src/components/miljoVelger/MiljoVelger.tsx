@@ -79,15 +79,12 @@ export const MiljoVelger = ({
 			if (tilgjengeligMiljo === 'q2') return bankIdQ2
 			return bankIdQ1
 		}
-		return {
-			Q: miljoer.Q.filter((env) => env.id !== 'qx' && env.id !== 'q5'),
-			T: miljoer.T.filter((env) => env.id !== 't13'),
-		}
+		return miljoer.Q.filter((env: any) => env.id !== 'qx')
 	}
 
 	const disableAllEnvironments = erMiljouavhengig(bestillingsdata)
 	const filteredEnvironments = filterEnvironments(dollyEnvironments, bankIdBruker)
-	const order = ['T', 'Q']
+	const order = ['Q']
 	const values = formMethods.watch('environments')
 
 	if (disableAllEnvironments && values.length > 0) {

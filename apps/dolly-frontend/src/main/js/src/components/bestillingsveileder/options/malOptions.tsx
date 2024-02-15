@@ -68,6 +68,22 @@ export const initialValuesBasedOnMal = (mal: any) => {
 			initialValuesMal.pensjonforvalter.uforetrygd,
 		)
 	}
+	if (initialValuesMal.tpsMessaging?.norskBankkonto) {
+		_.set(
+			initialValuesMal,
+			'bankkonto.norskBankkonto',
+			initialValuesMal.tpsMessaging.norskBankkonto,
+		)
+		delete initialValuesMal.tpsMessaging.norskBankkonto
+	}
+	if (initialValuesMal.tpsMessaging?.utenlandskBankkonto) {
+		_.set(
+			initialValuesMal,
+			'bankkonto.utenlandskBankkonto',
+			initialValuesMal.tpsMessaging.utenlandskBankkonto,
+		)
+		delete initialValuesMal.tpsMessaging.utenlandskBankkonto
+	}
 
 	initialValuesMal.environments = filterMiljoe(dollyEnvironments, mal.bestilling.environments)
 	return initialValuesMal

@@ -16,13 +16,13 @@ import java.util.List;
 
 @Slf4j
 @Service
-public class TpsMiljoerConsumer implements ConsumerStatus {
+public class MiljoerConsumer implements ConsumerStatus {
 
     private final WebClient webClient;
     private final TokenExchange tokenService;
     private final ServerProperties serverProperties;
 
-    public TpsMiljoerConsumer(
+    public MiljoerConsumer(
             TokenExchange tokenService,
             Consumers consumers,
             WebClient.Builder webClientBuilder
@@ -39,8 +39,8 @@ public class TpsMiljoerConsumer implements ConsumerStatus {
         return tokenService.exchange(serverProperties);
     }
 
-    @Timed(name = "providers", tags = {"operation", "get_tps_miljoer"})
-    public Mono<List<String>> getTpsMiljoer() {
+    @Timed(name = "providers", tags = {"operation", "get_miljoer"})
+    public Mono<List<String>> getMiljoer() {
 
         return tokenService.exchange(serverProperties)
                 .flatMap(token -> new MiljoerGetCommand(webClient, token.getTokenValue()).call());
