@@ -16,3 +16,7 @@ Applikasjonen kan nås fra [/swagger](https://oppsummeringsdokument-service.inte
 ```
 -Dspring.cloud.vault.token={VAULT_TOKEN} -Dspring.profiles.active=dev
 ```
+
+For å kjøre lokalt med opensearch:
+
+docker run -p 9200:9200 -p 9600:9600 -e "discovery.type=single-node" -e "plugins.security.disabled=true" --name opensearch-node -d opensearchproject/opensearch:latest
