@@ -14,7 +14,7 @@ export const InntektAordningen = ({ formikBag, handleChange, handleChangeList, g
 	const { domain: inntektstypeOptions } = useTenorDomain('Inntektstype')
 	const { domain: beskrivelseOptions } = useTenorDomain('AOrdningBeskrivelse')
 	const { domain: forskuddstrekkOptions } = useTenorDomain('Forskuddstrekk')
-	// console.log('formikBag: ', formikBag.values) //TODO - SLETT MEG
+
 	return (
 		<SoekKategori>
 			<Monthpicker
@@ -43,7 +43,6 @@ export const InntektAordningen = ({ formikBag, handleChange, handleChangeList, g
 				onBlur={(val: SyntheticEvent) =>
 					handleChange(val?.target?.value || null, 'inntekt.opplysningspliktig')
 				}
-				// value={getValue('inntekt.opplysningspliktig')}
 				visHvisAvhuket={false}
 				fastfield={false}
 			/>
@@ -54,7 +53,6 @@ export const InntektAordningen = ({ formikBag, handleChange, handleChangeList, g
 					isMulti={true}
 					size="grow"
 					label="Inntektstyper"
-					// placeholder="Velg beskrivelse ..."
 					onChange={(val: SyntheticEvent) => handleChangeList(val || null, 'inntekt.inntektstyper')}
 					value={getValue('inntekt.inntektstyper')}
 				/>
@@ -64,7 +62,6 @@ export const InntektAordningen = ({ formikBag, handleChange, handleChangeList, g
 					isMulti={true}
 					size="grow"
 					label="Forskuddstrekk"
-					// placeholder="Velg beskrivelse ..."
 					onChange={(val: SyntheticEvent) =>
 						handleChangeList(val || null, 'inntekt.forskuddstrekk')
 					}
@@ -74,22 +71,16 @@ export const InntektAordningen = ({ formikBag, handleChange, handleChangeList, g
 			<FormikSelect
 				name="inntekt.beskrivelse"
 				options={createOptions(beskrivelseOptions?.data)}
-				size="large"
+				size="xlarge"
 				label="Beskrivelse"
-				// placeholder="Velg beskrivelse ..."
-				// onChange={(val: SyntheticEvent) => handleChange(val?.value || null, 'inntekt.beskrivelse')}
 				onChange={(val: SyntheticEvent) => handleChange(val?.value || null, 'inntekt.beskrivelse')}
 				value={getValue('inntekt.beskrivelse')}
 			/>
-			{/*<div className="flexbox--full-width" style={{ fontSize: 'medium' }}>*/}
-			{/*	*/}
-			{/*</div>*/}
 			<FormikSelect
 				name="inntekt.harHistorikk"
 				options={Options('boolean')}
 				size="small"
 				label="Har historikk"
-				// placeholder="Velg beskrivelse ..."
 				onChange={(val: boolean) => handleChange(val?.value, 'inntekt.harHistorikk')}
 				value={getValue('inntekt.harHistorikk')}
 			/>

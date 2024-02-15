@@ -98,19 +98,6 @@ export const FolkeregisteretIdentifikasjonStatus = ({
 				onChange={(val: SyntheticEvent) => handleChange(val?.value || null, 'sivilstand')}
 				value={getValue('sivilstand')}
 			/>
-			<div className="flexbox--full-width" style={{ fontSize: 'medium' }}>
-				<FormikSelect
-					name="utenlandskPersonIdentifikasjon"
-					options={createOptions(utenlandskPersonIdentifikasjonOptions?.data)}
-					isMulti={true}
-					size="grow"
-					label="Utenlandsk identifikasjonsnummertype"
-					onChange={(val: SyntheticEvent) =>
-						handleChangeList(val || null, 'utenlandskPersonIdentifikasjon')
-					}
-					value={getValue('utenlandskPersonIdentifikasjon')}
-				/>
-			</div>
 			<FormikSelect
 				name="identitetsgrunnlagStatus"
 				options={createOptions(identitetsgrunnlagStatusOptions?.data)}
@@ -129,31 +116,6 @@ export const FolkeregisteretIdentifikasjonStatus = ({
 				onChange={(val: SyntheticEvent) => handleChange(val?.value || null, 'adressebeskyttelse')}
 				value={getValue('adressebeskyttelse')}
 			/>
-			{/*<FormikCheckbox*/}
-			{/*	name="harLegitimasjonsdokument"*/}
-			{/*	label="Har legitimasjonsdokument"*/}
-			{/*	onChange={(val: SyntheticEvent) =>*/}
-			{/*		handleChangeBoolean(val?.target?.checked, 'harLegitimasjonsdokument')*/}
-			{/*	}*/}
-			{/*	value={getValue('harLegitimasjonsdokument')}*/}
-			{/*/>*/}
-			{/*TODO: checkbox???*/}
-			<FormikSelect
-				name="harLegitimasjonsdokument"
-				options={Options('boolean')}
-				size="small"
-				label="Har legitimasjonsdokument"
-				onChange={(val: boolean) => handleChange(val?.value, 'harLegitimasjonsdokument')}
-				value={getValue('harLegitimasjonsdokument')}
-			/>
-			{/*<FormikCheckbox*/}
-			{/*	name="harFalskIdentitet"*/}
-			{/*	label="Har falsk identitet"*/}
-			{/*	onChange={(val: SyntheticEvent) =>*/}
-			{/*		handleChangeBoolean(val?.target?.checked, 'harFalskIdentitet')*/}
-			{/*	}*/}
-			{/*	value={getValue('harFalskIdentitet')}*/}
-			{/*/>*/}
 			<FormikSelect
 				name="harFalskIdentitet"
 				options={Options('boolean')}
@@ -162,14 +124,27 @@ export const FolkeregisteretIdentifikasjonStatus = ({
 				onChange={(val: boolean) => handleChange(val?.value, 'harFalskIdentitet')}
 				value={getValue('harFalskIdentitet')}
 			/>
-			{/*<FormikCheckbox*/}
-			{/*	name="harNorskStatsborgerskap"*/}
-			{/*	label="Har norsk statsborgerskap"*/}
-			{/*	onChange={(val: SyntheticEvent) =>*/}
-			{/*		handleChangeBoolean(val?.target?.checked, 'harNorskStatsborgerskap')*/}
-			{/*	}*/}
-			{/*	value={getValue('harNorskStatsborgerskap')}*/}
-			{/*/>*/}
+			<div className="flexbox--full-width">
+				<FormikSelect
+					name="utenlandskPersonIdentifikasjon"
+					options={createOptions(utenlandskPersonIdentifikasjonOptions?.data)}
+					isMulti={true}
+					size="grow"
+					label="Utenlandsk identifikasjonsnummertype"
+					onChange={(val: SyntheticEvent) =>
+						handleChangeList(val || null, 'utenlandskPersonIdentifikasjon')
+					}
+					value={getValue('utenlandskPersonIdentifikasjon')}
+				/>
+			</div>
+			<FormikCheckbox
+				name="harLegitimasjonsdokument"
+				label="Har legitimasjonsdokument"
+				onChange={(val: SyntheticEvent) =>
+					handleChange(val?.target?.checked || undefined, 'harLegitimasjonsdokument')
+				}
+				value={getValue('harLegitimasjonsdokument')}
+			/>
 		</SoekKategori>
 	)
 }

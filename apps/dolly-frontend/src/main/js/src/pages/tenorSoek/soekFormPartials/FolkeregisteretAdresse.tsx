@@ -32,46 +32,6 @@ export const FolkeregisteretAdresse = ({ formikBag, handleChange, getValue }: an
 				visHvisAvhuket={false}
 				fastfield={false}
 			/>
-			<FormikCheckbox
-				name="adresser.harBostedsadresse"
-				label="Har bostedsadresse"
-				onChange={(val: SyntheticEvent) =>
-					handleChange(val?.target?.checked, 'adresser.harBostedsadresse')
-				}
-				value={getValue('adresser.harBostedsadresse')}
-			/>
-			<FormikCheckbox
-				name="adresser.harOppholdAnnetSted"
-				label="Har opphold annet sted"
-				onChange={(val: SyntheticEvent) =>
-					handleChange(val?.target?.checked, 'adresser.harOppholdAnnetSted')
-				}
-				value={getValue('adresser.harOppholdAnnetSted')}
-			/>
-			<FormikCheckbox
-				name="adresser.harPostadresseNorge"
-				label="Har postadresse i Norge"
-				onChange={(val: SyntheticEvent) =>
-					handleChange(val?.target?.checked, 'adresser.harPostadresseNorge')
-				}
-				value={getValue('adresser.harPostadresseNorge')}
-			/>
-			<FormikCheckbox
-				name="adresser.harPostadresseUtland"
-				label="Har postadresse i utlandet"
-				onChange={(val: SyntheticEvent) =>
-					handleChange(val?.target?.checked, 'adresser.harPostadresseUtland')
-				}
-				value={getValue('adresser.harPostadresseUtland')}
-			/>
-			<FormikCheckbox
-				name="adresser.harKontaktadresseDoedsbo"
-				label="Har kontaktadresse for dødsbo"
-				onChange={(val: SyntheticEvent) =>
-					handleChange(val?.target?.checked, 'adresser.harKontaktadresseDoedsbo')
-				}
-				value={getValue('adresser.harKontaktadresseDoedsbo')}
-			/>
 			<FormikSelect
 				name="adresser.harAdresseSpesialtegn"
 				options={Options('boolean')}
@@ -80,6 +40,48 @@ export const FolkeregisteretAdresse = ({ formikBag, handleChange, getValue }: an
 				onChange={(val: boolean) => handleChange(val?.value, 'adresser.harAdresseSpesialtegn')}
 				value={getValue('adresser.harAdresseSpesialtegn')}
 			/>
+			<div className="flexbox--flex-wrap">
+				<FormikCheckbox
+					name="adresser.harBostedsadresse"
+					label="Har bostedsadresse"
+					onChange={(val: SyntheticEvent) =>
+						handleChange(val?.target?.checked || undefined, 'adresser.harBostedsadresse')
+					}
+					value={getValue('adresser.harBostedsadresse')}
+				/>
+				<FormikCheckbox
+					name="adresser.harOppholdAnnetSted"
+					label="Har opphold annet sted"
+					onChange={(val: SyntheticEvent) =>
+						handleChange(val?.target?.checked || undefined, 'adresser.harOppholdAnnetSted')
+					}
+					value={getValue('adresser.harOppholdAnnetSted')}
+				/>
+				<FormikCheckbox
+					name="adresser.harPostadresseNorge"
+					label="Har postadresse i Norge"
+					onChange={(val: SyntheticEvent) =>
+						handleChange(val?.target?.checked || undefined, 'adresser.harPostadresseNorge')
+					}
+					value={getValue('adresser.harPostadresseNorge')}
+				/>
+				<FormikCheckbox
+					name="adresser.harPostadresseUtland"
+					label="Har postadresse i utlandet"
+					onChange={(val: SyntheticEvent) =>
+						handleChange(val?.target?.checked || undefined, 'adresser.harPostadresseUtland')
+					}
+					value={getValue('adresser.harPostadresseUtland')}
+				/>
+				<FormikCheckbox
+					name="adresser.harKontaktadresseDoedsbo"
+					label="Har kontaktadresse for dødsbo"
+					onChange={(val: SyntheticEvent) =>
+						handleChange(val?.target?.checked || undefined, 'adresser.harKontaktadresseDoedsbo')
+					}
+					value={getValue('adresser.harKontaktadresseDoedsbo')}
+				/>
+			</div>
 		</SoekKategori>
 	)
 }
