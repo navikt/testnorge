@@ -42,7 +42,6 @@ import static no.nav.dolly.mapper.BestillingSigrunStubStatusMapper.buildSigrunSt
 import static no.nav.dolly.mapper.BestillingSkjermingsRegisterStatusMapper.buildSkjermingsRegisterStatusMap;
 import static no.nav.dolly.mapper.BestillingSykemeldingStatusMapper.buildSykemeldingStatusMap;
 import static no.nav.dolly.mapper.BestillingTpsMessagingStatusMapper.buildTpsMessagingStatusMap;
-import static no.nav.dolly.mapper.BestillingTpsPersonStatusMapper.buildTpsPersonStatusMap;
 import static no.nav.dolly.mapper.BestillingUdiStubStatusMapper.buildUdiStubStatusMap;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -79,7 +78,6 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                         bestillingStatus.getStatus().addAll(buildPdlOrdreStatusMap(progresser, objectMapper));
                         bestillingStatus.getStatus().addAll(buildImportFraPdlStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildPdlPersonStatusMap(progresser));
-                        bestillingStatus.getStatus().addAll(buildTpsPersonStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildPensjonforvalterStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildInntektstubStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildTpsMessagingStatusMap(progresser));

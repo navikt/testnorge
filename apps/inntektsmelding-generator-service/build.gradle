@@ -62,6 +62,7 @@ dependencies {
     implementation 'javax.activation:activation:1.1.1'
     implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.8'
     implementation 'com.sun.xml.bind:jaxb-core:2.3.0.1'
+    implementation 'ma.glasnost.orika:orika-core:1.5.4'
 
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml'
     implementation 'org.apache.commons:commons-text:1.10.0'

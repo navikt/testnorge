@@ -24,5 +24,4 @@ jobs:
     with:
       working-directory: 'apps/person-organisasjon-tilgang-service/'
       healthcheck: 'http://localhost:8001/internal/isAlive'
-    secrets:
-      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+    secrets: inherit

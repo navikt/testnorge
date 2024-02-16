@@ -84,7 +84,6 @@ public class PensjonforvalterClient implements ClientRegister {
     private static final String PEN_ALDERSPENSJON = "AP#";
     private static final String PEN_UFORETRYGD = "Ufoer#";
     private static final String PERIODE = "/periode/";
-    private static final String TPS_NOT_READY = "Oppretting ikke utført da TPS mangler persondata.";
 
     private final PensjonforvalterConsumer pensjonforvalterConsumer;
     private final MapperFacade mapperFacade;
@@ -173,8 +172,7 @@ public class PensjonforvalterClient implements ClientRegister {
                                                     .flatMap(pensjon -> Flux.merge(
 
                                                                     lagreInntekt(pensjon,
-                                                                            dollyPerson.getIdent(), bestilteMiljoer.get(),
-                                                                            progress.getIsTpsSyncEnv())
+                                                                            dollyPerson.getIdent(), bestilteMiljoer.get())
                                                                             .map(response -> POPP_INNTEKTSREGISTER + decodeStatus(response, dollyPerson.getIdent())),
 
                                                                     lagreTpForhold(pensjon, dollyPerson.getIdent(), bestilteMiljoer.get())
@@ -192,8 +190,7 @@ public class PensjonforvalterClient implements ClientRegister {
                                                                                                     dollyPerson.getIdent(),
                                                                                                     bestilteMiljoer.get(),
                                                                                                     isOpprettEndre,
-                                                                                                    bestillingId,
-                                                                                                    progress.getIsTpsSyncEnv())
+                                                                                                    bestillingId)
                                                                                                     .map(response -> PEN_ALDERSPENSJON + decodeStatus(response, dollyPerson.getIdent())),
 
                                                                                             lagreUforetrygd(
@@ -202,8 +199,7 @@ public class PensjonforvalterClient implements ClientRegister {
                                                                                                     dollyPerson.getIdent(),
                                                                                                     bestilteMiljoer.get(),
                                                                                                     isOpprettEndre,
-                                                                                                    bestillingId,
-                                                                                                    progress.getIsTpsSyncEnv())
+                                                                                                    bestillingId)
                                                                                                     .map(response -> PEN_UFORETRYGD + decodeStatus(response, dollyPerson.getIdent()))
                                                                                     )
                                                                                     .collectList()
@@ -368,8 +364,7 @@ public class PensjonforvalterClient implements ClientRegister {
     private Flux<PensjonforvalterResponse> lagreAlderspensjon(PensjonData pensjonData,
                                                               Tuple2<List<PdlPersonBolk.PersonBolk>, String> utvidetPersondata,
                                                               String ident, Set<String> miljoer,
-                                                              boolean isOpprettEndre, Long bestillingId,
-                                                              List<String> isTpsSyncEnv) {
+                                                              boolean isOpprettEndre, Long bestillingId) {
 
         return Flux.just(pensjonData)
                 .filter(PensjonData::hasAlderspensjon)
@@ -379,37 +374,31 @@ public class PensjonforvalterClient implements ClientRegister {
 
                             if (isOpprettEndre || !transaksjonMappingService.existAlready(PEN_AP, ident, miljoe, null)) {
 
-                                if (isTpsSyncEnv.contains(miljoe)) {
+                                AlderspensjonRequest pensjonRequest;
+                                var context = new MappingContext.Factory().getContext();
+                                context.setProperty(IDENT, ident);
+                                context.setProperty(MILJOER, List.of(miljoe));
 
-                                    AlderspensjonRequest pensjonRequest;
-                                    var context = new MappingContext.Factory().getContext();
-                                    context.setProperty(IDENT, ident);
-                                    context.setProperty(MILJOER, List.of(miljoe));
-
-                                    if (isTrue(alderspensjon.getSoknad())) {
-                                        context.setProperty("relasjoner", utvidetPersondata.getT1());
-                                        pensjonRequest = mapperFacade.map(alderspensjon, AlderspensjonSoknadRequest.class, context);
-
-                                    } else {
-                                        context.setProperty(NAV_ENHET, utvidetPersondata.getT2());
-                                        pensjonRequest = mapperFacade.map(alderspensjon, AlderspensjonVedtakRequest.class, context);
-                                    }
-
-                                    var finalPensjonRequest = new AtomicReference<>(pensjonRequest);
-                                    return pensjonforvalterConsumer.lagreAlderspensjon(pensjonRequest)
-                                            .map(response -> {
-                                                response.getStatus().forEach(status -> {
-                                                    if (status.getResponse().isResponse2xx()) {
-                                                        saveAPTransaksjonId(ident, status.getMiljo(), bestillingId,
-                                                                PEN_AP, finalPensjonRequest);
-                                                    }
-                                                });
-                                                return response;
-                                            });
+                                if (isTrue(alderspensjon.getSoknad())) {
+                                    context.setProperty("relasjoner", utvidetPersondata.getT1());
+                                    pensjonRequest = mapperFacade.map(alderspensjon, AlderspensjonSoknadRequest.class, context);
 
                                 } else {
-                                    return getStatus(miljoe, 503, TPS_NOT_READY);
+                                    context.setProperty(NAV_ENHET, utvidetPersondata.getT2());
+                                    pensjonRequest = mapperFacade.map(alderspensjon, AlderspensjonVedtakRequest.class, context);
                                 }
+
+                                var finalPensjonRequest = new AtomicReference<>(pensjonRequest);
+                                return pensjonforvalterConsumer.lagreAlderspensjon(pensjonRequest)
+                                        .map(response -> {
+                                            response.getStatus().forEach(status -> {
+                                                if (status.getResponse().isResponse2xx()) {
+                                                    saveAPTransaksjonId(ident, status.getMiljo(), bestillingId,
+                                                            PEN_AP, finalPensjonRequest);
+                                                }
+                                            });
+                                            return response;
+                                        });
 
                             } else {
                                 return getStatus(miljoe, 200, "OK");
@@ -419,7 +408,7 @@ public class PensjonforvalterClient implements ClientRegister {
 
     private Flux<PensjonforvalterResponse> lagreUforetrygd(PensjonData pensjondata, String navEnhetNr,
                                                            String ident, Set<String> miljoer, boolean isOpprettEndre,
-                                                           Long bestillingId, List<String> isTpsSyncEnv) {
+                                                           Long bestillingId) {
 
         return Flux.just(pensjondata)
                 .filter(PensjonData::hasUforetrygd)
@@ -428,8 +417,6 @@ public class PensjonforvalterClient implements ClientRegister {
                         .flatMap(miljoe -> {
 
                             if (isOpprettEndre || !transaksjonMappingService.existAlready(PEN_UT, ident, miljoe, null)) {
-
-                                if (isTpsSyncEnv.contains(miljoe)) {
 
                                     var context = MappingContextUtils.getMappingContext();
                                     context.setProperty(IDENT, ident);
@@ -445,10 +432,6 @@ public class PensjonforvalterClient implements ClientRegister {
                                                                                 PEN_UT, new AtomicReference<>(request)));
                                                         return response;
                                                     }));
-
-                                } else {
-                                    return getStatus(miljoe, 503, TPS_NOT_READY);
-                                }
 
                             } else {
                                 return getStatus(miljoe, 200, "OK");
@@ -490,7 +473,7 @@ public class PensjonforvalterClient implements ClientRegister {
     }
 
     private Flux<PensjonforvalterResponse> lagreInntekt(PensjonData pensjonData, String ident,
-                                                        Set<String> miljoer, List<String> isTpsSyncEnv) {
+                                                        Set<String> miljoer) {
 
         return Flux.just(pensjonData)
                 .filter(PensjonData::hasInntekt)
@@ -498,16 +481,10 @@ public class PensjonforvalterClient implements ClientRegister {
                 .flatMap(inntekt -> Flux.fromIterable(miljoer)
                         .flatMap(miljoe -> {
 
-                            if (isTpsSyncEnv.stream().anyMatch(sync -> sync.equals(miljoe))) {
-
-                                var request = mapperFacade.map(inntekt, PensjonPoppInntektRequest.class);
-                                request.setFnr(ident);
-                                request.setMiljoer(List.of(miljoe));
-                                return pensjonforvalterConsumer.lagreInntekter(request);
-
-                            } else {
-                                return getStatus(miljoe, 503, TPS_NOT_READY);
-                            }
+                            var request = mapperFacade.map(inntekt, PensjonPoppInntektRequest.class);
+                            request.setFnr(ident);
+                            request.setMiljoer(List.of(miljoe));
+                            return pensjonforvalterConsumer.lagreInntekter(request);
                         }));
     }
 

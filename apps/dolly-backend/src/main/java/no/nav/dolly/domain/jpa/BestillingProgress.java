@@ -24,10 +24,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
-import static java.util.Objects.isNull;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
 @Entity
@@ -118,9 +115,6 @@ public class BestillingProgress implements Serializable {
     @Column(name = "PDL_PERSON_STATUS")
     private String pdlPersonStatus;
 
-    @Column(name = "TPS_SYNC_STATUS")
-    private String tpsSyncStatus;
-
     @Column(name = "ARBEIDSPLASSENCV_STATUS")
     private String arbeidsplassenCVStatus;
 
@@ -130,17 +124,6 @@ public class BestillingProgress implements Serializable {
 
     @Transient
     private boolean isPdlSync;
-
-    @Transient
-    private List<String> isTpsSyncEnv;
-
-    public List<String> getIsTpsSyncEnv() {
-
-        if (isNull(isTpsSyncEnv)) {
-            isTpsSyncEnv = new ArrayList<>();
-        }
-        return isTpsSyncEnv;
-    }
 
     private String feil;
 
@@ -204,7 +187,6 @@ public class BestillingProgress implements Serializable {
                 .append(getPdlOrdreStatus(), that.getPdlOrdreStatus())
                 .append(getKontoregisterStatus(), that.getKontoregisterStatus())
                 .append(getPdlPersonStatus(), that.getPdlPersonStatus())
-                .append(getTpsSyncStatus(), that.getTpsSyncStatus())
                 .append(getArbeidsplassenCVStatus(), that.getArbeidsplassenCVStatus())
                 .append(getMaster(), that.getMaster())
                 .append(getFeil(), that.getFeil())
@@ -239,7 +221,6 @@ public class BestillingProgress implements Serializable {
                 .append(getPdlOrdreStatus())
                 .append(getKontoregisterStatus())
                 .append(getPdlPersonStatus())
-                .append(getTpsSyncStatus())
                 .append(getArbeidsplassenCVStatus())
                 .append(getMaster())
                 .append(getFeil())
@@ -274,11 +255,9 @@ public class BestillingProgress implements Serializable {
                 ", pdlOrdreStatus='" + pdlOrdreStatus + '\'' +
                 ", kontoregisterStatus='" + kontoregisterStatus + '\'' +
                 ", pdlPersonStatus='" + pdlPersonStatus + '\'' +
-                ", tpsSyncStatus='" + tpsSyncStatus + '\'' +
                 ", arbeidsplassenCVStatus='" + arbeidsplassenCVStatus + '\'' +
                 ", master=" + master +
                 ", isPdlSync=" + isPdlSync +
-                ", isTpsSyncEnv=" + isTpsSyncEnv +
                 ", feil='" + feil + '\'' +
                 '}';
     }

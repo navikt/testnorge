@@ -1,5 +1,6 @@
 package no.nav.registre.inntektsmeldinggeneratorservice;
 
+import ma.glasnost.orika.MapperFacade;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -12,6 +13,9 @@ public class ApplicationContextTest {
 
     @MockBean
     public JwtDecoder jwtDecoder;
+
+    @MockBean
+    public MapperFacade mapperFacade;
 
     @Test
     @SuppressWarnings("java:S2699")

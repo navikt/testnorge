@@ -1,18 +1,15 @@
 package no.nav.testnav.libs.dto.inntektsmeldingservice.v1.response;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.RequiredArgsConstructor;
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Value
-@RequiredArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class InntektDokumentResponse {
-    @JsonProperty
+
     String journalpostId;
-    @JsonProperty
     String dokumentInfoId;
-    @JsonProperty
     String xml;
 }

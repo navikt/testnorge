@@ -24,7 +24,7 @@ public class TenorRequest {
 
     public enum Personstatus {Bosatt, Doed, Forsvunnet, Foedselsregistrert, IkkeBosatt, Inaktiv, Midlertidig, Opphoert, Utflyttet}
 
-    public enum Sivilstatus {EnkeEllerEnkemann, Gift, GjenlevendePartner, RegistrertPartner, Separert, SeparertPartner, Skilt, SkiltPartner, Ugift, Uoppgitt}
+    public enum Sivilstand {EnkeEllerEnkemann, Gift, GjenlevendePartner, RegistrertPartner, Separert, SeparertPartner, Skilt, SkiltPartner, Ugift, Uoppgitt}
 
     public enum UtenlandskPersonIdentifikasjon {UtenlandskIdentifikasjonsnummer, TaxIdentificationNumber, SocialSecurityNumber, UtlendingsmyndighetenesIdentifikasjonsnummer}
 
@@ -83,7 +83,7 @@ public class TenorRequest {
     private DatoIntervall doedsdato;
     private Kjoenn kjoenn;
     private Personstatus personstatus;
-    private Sivilstatus sivilstatus;
+    private Sivilstand sivilstand;
     private List<UtenlandskPersonIdentifikasjon> utenlandskPersonIdentifikasjon;
     private IdentitetsgrunnlagStatus identitetsgrunnlagStatus;
     private Adressebeskyttelse adressebeskyttelse;
