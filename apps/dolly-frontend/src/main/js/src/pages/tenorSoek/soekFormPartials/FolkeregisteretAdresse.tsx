@@ -30,7 +30,7 @@ export const FolkeregisteretAdresse = ({ formikBag, handleChange, getValue }: an
 					handleChange(val?.target?.value || null, 'adresser.kommunenummer')
 				}
 				visHvisAvhuket={false}
-				fastfield={false}
+				// fastfield={false}
 			/>
 			<FormikSelect
 				name="adresser.harAdresseSpesialtegn"

@@ -44,7 +44,7 @@ export const InntektAordningen = ({ formikBag, handleChange, handleChangeList, g
 					handleChange(val?.target?.value || null, 'inntekt.opplysningspliktig')
 				}
 				visHvisAvhuket={false}
-				fastfield={false}
+				// fastfield={false}
 			/>
 			<div className="flexbox--full-width" style={{ fontSize: 'medium' }}>
 				<FormikSelect

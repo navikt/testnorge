@@ -77,7 +77,9 @@ export const SoekForm = ({ request, setRequest, mutate }) => {
 							let antall = 0
 							liste.forEach((item) => {
 								const attr = _.get(formikBag.values, item)
-								if (attr || attr === false) {
+								if (Array.isArray(attr)) {
+									antall += attr.length
+								} else if (attr || attr === false) {
 									antall++
 								}
 							})
@@ -94,7 +96,25 @@ export const SoekForm = ({ request, setRequest, mutate }) => {
 									<Accordion size="small" headingSize="xsmall" className="flexbox--full-width">
 										<Accordion.Item defaultOpen={true}>
 											<Accordion.Header>
-												<Header title="Folkeregisteret - identifikasjon og status" antall={0} />
+												<Header
+													title="Folkeregisteret - identifikasjon og status"
+													antall={getAntallRequest([
+														'identifikator',
+														'identifikatorType',
+														'foedselsdato.fraOgMed',
+														'foedselsdato.tilOgMed',
+														'doedsdato.fraOgMed',
+														'doedsdato.tilOgMed',
+														'kjoenn',
+														'personstatus',
+														'sivilstand',
+														'identitetsgrunnlagStatus',
+														'adressebeskyttelse',
+														'harFalskIdentitet',
+														'utenlandskPersonIdentifikasjon',
+														'harLegitimasjonsdokument',
+													])}
+												/>
 											</Accordion.Header>
 											<Accordion.Content style={{ paddingRight: '0' }}>
 												<FolkeregisteretIdentifikasjonStatus
@@ -125,7 +145,16 @@ export const SoekForm = ({ request, setRequest, mutate }) => {
 										</Accordion.Item>
 										<Accordion.Item>
 											<Accordion.Header>
-												<Header title="Folkeregisteret - navn" antall={0} />
+												<Header
+													title="Folkeregisteret - navn"
+													antall={getAntallRequest([
+														'navn.navnLengde.fraOgMed',
+														'navn.navnLengde.tilOgMed',
+														'navn.harFlereFornavn',
+														'navn.harNavnSpesialtegn',
+														'navn.harMellomnavn',
+													])}
+												/>
 											</Accordion.Header>
 											<Accordion.Content style={{ paddingRight: '0' }}>
 												<FolkeregisteretNavn
@@ -137,7 +166,19 @@ export const SoekForm = ({ request, setRequest, mutate }) => {
 										</Accordion.Item>
 										<Accordion.Item>
 											<Accordion.Header>
-												<Header title="Folkeregisteret - adresser" antall={0} />
+												<Header
+													title="Folkeregisteret - adresser"
+													antall={getAntallRequest([
+														'adresser.adresseGradering',
+														'adresser.kommunenummer',
+														'adresser.harAdresseSpesialtegn',
+														'adresser.harBostedsadresse',
+														'adresser.harOppholdAnnetSted',
+														'adresser.harPostadresseNorge',
+														'adresser.harPostadresseUtland',
+														'adresser.harKontaktadresseDoedsbo',
+													])}
+												/>
 											</Accordion.Header>
 											<Accordion.Content style={{ paddingRight: '0' }}>
 												<FolkeregisteretAdresse
@@ -149,7 +190,23 @@ export const SoekForm = ({ request, setRequest, mutate }) => {
 										</Accordion.Item>
 										<Accordion.Item>
 											<Accordion.Header>
-												<Header title="Folkeregisteret - relasjoner" antall={0} />
+												<Header
+													title="Folkeregisteret - relasjoner"
+													antall={getAntallRequest([
+														'relasjoner.relasjon',
+														'relasjoner.antallBarn.fraOgMed',
+														'relasjoner.antallBarn.tilOgMed',
+														'relasjoner.relasjonMedFoedselsaar.fraOgMed',
+														'relasjoner.relasjonMedFoedselsaar.tilOgMed',
+														'relasjoner.harForeldreAnsvar',
+														'relasjoner.harDeltBosted',
+														'relasjoner.harVergemaalEllerFremtidsfullmakt',
+														'relasjoner.borMedMor',
+														'relasjoner.borMedFar',
+														'relasjoner.borMedMedmor',
+														'relasjoner.foreldreHarSammeAdresse',
+													])}
+												/>
 											</Accordion.Header>
 											<Accordion.Content style={{ paddingRight: '0' }}>
 												<FolkeregisteretRelasjoner
@@ -161,7 +218,13 @@ export const SoekForm = ({ request, setRequest, mutate }) => {
 										</Accordion.Item>
 										<Accordion.Item>
 											<Accordion.Header>
-												<Header title="Folkeregisteret - hendelser" antall={0} />
+												<Header
+													title="Folkeregisteret - hendelser"
+													antall={getAntallRequest([
+														'hendelser.hendelse',
+														'hendelser.sisteHendelse',
+													])}
+												/>
 											</Accordion.Header>
 											<Accordion.Content style={{ paddingRight: '0' }}>
 												<FolkeregisteretHendelser
@@ -173,7 +236,18 @@ export const SoekForm = ({ request, setRequest, mutate }) => {
 										</Accordion.Item>
 										<Accordion.Item>
 											<Accordion.Header>
-												<Header title="Inntekt A-ordningen" antall={0} />
+												<Header
+													title="Inntekt A-ordningen"
+													antall={getAntallRequest([
+														'inntekt.periode.fraOgMed',
+														'inntekt.periode.tilOgMed',
+														'inntekt.opplysningspliktig',
+														'inntekt.inntektstyper',
+														'inntekt.forskuddstrekk',
+														'inntekt.beskrivelse',
+														'inntekt.harHistorikk',
+													])}
+												/>
 											</Accordion.Header>
 											<Accordion.Content style={{ paddingRight: '0' }}>
 												<InntektAordningen
@@ -186,7 +260,10 @@ export const SoekForm = ({ request, setRequest, mutate }) => {
 										</Accordion.Item>
 										<Accordion.Item>
 											<Accordion.Header>
-												<Header title="Enhetsregisteret og Foretaksregisteret" antall={0} />
+												<Header
+													title="Enhetsregisteret og Foretaksregisteret"
+													antall={getAntallRequest(['roller'])}
+												/>
 											</Accordion.Header>
 											<Accordion.Content style={{ paddingRight: '0' }}>
 												<EnhetsregisteretForetaksregisteret

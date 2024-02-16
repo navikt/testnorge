@@ -29,7 +29,7 @@ export const FolkeregisteretRelasjoner = ({ formikBag, handleChange, getValue }:
 						handleChange(val?.target?.value || null, 'relasjoner.antallBarn.fraOgMed')
 					}
 					visHvisAvhuket={false}
-					fastfield={false}
+					// fastfield={false}
 				/>
 				<FormikTextInput
 					name="relasjoner.antallBarn.tilOgMed"
@@ -39,7 +39,7 @@ export const FolkeregisteretRelasjoner = ({ formikBag, handleChange, getValue }:
 						handleChange(val?.target?.value || null, 'relasjoner.antallBarn.tilOgMed')
 					}
 					visHvisAvhuket={false}
-					fastfield={false}
+					// fastfield={false}
 				/>
 			</div>
 			<div className="flexbox--flex-wrap">
@@ -51,7 +51,7 @@ export const FolkeregisteretRelasjoner = ({ formikBag, handleChange, getValue }:
 						handleChange(val?.target?.value || null, 'relasjoner.relasjonMedFoedselsaar.fraOgMed')
 					}
 					visHvisAvhuket={false}
-					fastfield={false}
+					// fastfield={false}
 				/>
 				<FormikTextInput
 					name="relasjoner.relasjonMedFoedselsaar.tilOgMed"
@@ -61,7 +61,7 @@ export const FolkeregisteretRelasjoner = ({ formikBag, handleChange, getValue }:
 						handleChange(val?.target?.value || null, 'relasjoner.relasjonMedFoedselsaar.tilOgMed')
 					}
 					visHvisAvhuket={false}
-					fastfield={false}
+					// fastfield={false}
 				/>
 			</div>
 			<div className="flexbox--flex-wrap">
