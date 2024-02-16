@@ -24,10 +24,9 @@ jobs:
       - name: "Run"
         env:
           NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
-        uses: cypress-io/github-action@v5
+        uses: cypress-io/github-action@v6
         with:
           config: video=false
           working-directory: ${{ inputs.working-directory }}/src/main/js
           browser: chrome
-          build: npm run build
-          start: npm run preview
+          start: npm run start-cypress
