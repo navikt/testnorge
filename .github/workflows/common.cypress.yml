@@ -29,4 +29,5 @@ jobs:
           config: video=false
           working-directory: ${{ inputs.working-directory }}/src/main/js
           browser: chrome
-          start: npm run start-cypress
+          build: npm run build
+          start: npm run preview
