@@ -29,7 +29,7 @@ const SoekefeltWrapper = styled.div`
 `
 
 const Soekefelt = styled.div`
-	padding: 20px 15px 5px 15px;
+	padding: 20px 15px;
 `
 
 export const SoekForm = ({ request, setRequest, mutate }) => {

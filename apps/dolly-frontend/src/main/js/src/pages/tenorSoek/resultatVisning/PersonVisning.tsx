@@ -30,7 +30,7 @@ export const PersonVisning = ({ person, loading, error }) => {
 	// TODO maa kanskje ta med flere personer hvis lista er lengre?
 
 	return (
-		<Box background="surface-default" padding="3">
+		<Box background="surface-default" padding="3" borderRadius="medium">
 			<NavnHeader>{personData?.visningnavn}</NavnHeader>
 			<FolkeregisteretVisning data={personData} />
 			<EnhetsregisteretForetaksregisteretVisning

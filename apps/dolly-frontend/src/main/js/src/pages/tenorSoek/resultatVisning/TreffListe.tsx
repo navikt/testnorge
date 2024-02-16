@@ -3,6 +3,17 @@ import React, { useEffect, useState } from 'react'
 import { useTenorIdent } from '@/utils/hooks/useTenorSoek'
 import { PersonVisning } from '@/pages/tenorSoek/resultatVisning/PersonVisning'
 import Loading from '@/components/ui/loading/Loading'
+import styled from 'styled-components'
+
+const PersonNavn = styled.h3`
+	word-break: break-word;
+	hyphens: auto;
+	margin: 5px 0;
+`
+
+const PersonIdent = styled.p`
+	margin: 5px 0 15px 0;
+`
 export const TreffListe = ({ response, loading, error }: any) => {
 	if (loading) {
 		return <Loading label="Laster treff ..." />
@@ -19,31 +30,27 @@ export const TreffListe = ({ response, loading, error }: any) => {
 	if (!response) {
 		return null
 	}
-	// console.log('response: ', response?.data?.personer) //TODO - SLETT MEG
 
 	const [valgtPerson, setValgtPerson] = useState(null)
+
 	const {
 		person: valgtPersonData,
 		loading: valgtPersonLoading,
 		error: valgtPersonError,
 	} = useTenorIdent(valgtPerson?.identifikator)
 
-	// console.log('valgtPerson: ', valgtPerson) //TODO - SLETT MEG
-	// console.log('person: ', valgtPersonData) //TODO - SLETT MEG
-
 	useEffect(() => {
 		setValgtPerson(response?.data?.personer?.[0] || null)
 	}, [response])
 
 	const antallTreff = response?.data?.treff
+
 	return (
 		<div className="flexbox--flex-wrap">
 			<div style={{ width: '30%' }}>
 				<h2>{antallTreff} treff</h2>
-				{/*<p>{response}</p>*/}
 				<VStack gap="4">
 					{response?.data?.personer?.map((person: any) => (
-						// <Box key={person.identifikator} padding="2" border="1" borderColor="navds-color-gray-20">
 						<Box
 							key={person.identifikator}
 							padding="2"
@@ -52,15 +59,14 @@ export const TreffListe = ({ response, loading, error }: any) => {
 									? 'surface-alt-3-moderate'
 									: 'surface-alt-3-subtle'
 							}
-							// background={'surface-alt-3-subtle'}
+							borderRadius="medium"
 							onClick={() => setValgtPerson(person)}
 							style={{ cursor: 'pointer' }}
 						>
-							{/*<h3>{person.visningnavn}</h3>*/}
-							<h3 style={{ wordBreak: 'break-word', hyphens: 'auto' }}>
+							<PersonNavn>
 								{person.fornavn} {person.etternavn}
-							</h3>
-							<p>{person.identifikator}</p>
+							</PersonNavn>
+							<PersonIdent>{person.identifikator}</PersonIdent>
 							{person.tenorRelasjoner?.map((relasjon: any, idx: number) => (
 								<Tag
 									size="small"
@@ -82,9 +88,6 @@ export const TreffListe = ({ response, loading, error }: any) => {
 						loading={valgtPersonLoading}
 						error={valgtPersonError}
 					/>
-					// <div className="dolly-panel-content">
-
-					// </div>
 				)}
 			</div>
 		</div>
