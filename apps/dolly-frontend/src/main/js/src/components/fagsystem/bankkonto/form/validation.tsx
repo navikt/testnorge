@@ -8,7 +8,7 @@ const validInputOrCheckboxTest = (val, checkboxPath, feilmelding, inputValidatio
 		const fullForm = testContext.from && testContext.from[testContext.from.length - 1]?.value
 		if (value) {
 			if (inputValidation) {
-				const inputError = inputValidation(value, this)
+				const inputError = inputValidation(value, testContext)
 				if (inputError) {
 					return testContext.createError({ message: inputError })
 				}

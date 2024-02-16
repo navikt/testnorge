@@ -34,7 +34,7 @@ export const UtenlandskBankkonto = ({ formMethods }: any) => {
 	}
 
 	return (
-		<Vis attributt={path} formik>
+		<Vis attributt={path}>
 			<div className="flexbox--flex-wrap">
 				<div className="flexbox--flex-wrap">
 					<FormikTextInput

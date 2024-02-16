@@ -49,12 +49,13 @@ export const Sikkerhetstiltak = ({ formMethods }: SikkerhetstiltakProps) => {
 		)
 	}
 
-	const handleValueChange = (value: string, name: string, idx: number) => {
+	const handleValueChange = (value: Date | string, name: string, idx: number) => {
 		formMethods.setValue(`${rootPath}[${idx}].${name}`, value)
+		formMethods.trigger(rootPath)
 	}
 
 	return (
-		<Vis attributt={rootPath} formik>
+		<Vis attributt={rootPath}>
 			<div className="flexbox--flex-wrap">
 				<FormikDollyFieldArray
 					name={rootPath}
@@ -110,7 +111,6 @@ export const Sikkerhetstiltak = ({ formMethods }: SikkerhetstiltakProps) => {
 										name={`${path}.gyldigFraOgMed`}
 										label="Sikkerhetstiltak starter"
 										onChange={(date: Date) => {
-											// @ts-ignore
 											handleValueChange(date, 'gyldigFraOgMed', idx)
 										}}
 									/>
@@ -119,7 +119,6 @@ export const Sikkerhetstiltak = ({ formMethods }: SikkerhetstiltakProps) => {
 									name={`${path}.gyldigTilOgMed`}
 									label="Sikkerhetstiltak opphører"
 									onChange={(date: Date) => {
-										// @ts-ignore
 										handleValueChange(date, 'gyldigTilOgMed', idx)
 									}}
 								/>

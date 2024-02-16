@@ -17,7 +17,7 @@ export const NorskBankkonto = ({ formMethods }: { formMethods: UseFormReturn }) 
 	}, [])
 
 	return (
-		<Vis attributt={path} formik>
+		<Vis attributt={path}>
 			<div className="flexbox--flex-wrap">
 				<FormikSelect
 					placeholder={'Velg ...'}
