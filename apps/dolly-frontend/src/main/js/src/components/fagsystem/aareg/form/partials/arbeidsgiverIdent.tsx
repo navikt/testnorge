@@ -20,8 +20,10 @@ export const ArbeidsgiverIdent = ({ path, isDisabled }: ArbeidsgiverIdentProps) 
 	useEffect(() => {
 		if (personnummer) {
 			if (result?.identNavigerTil) {
-				setSuccess(true)
+				formMethods.setValue(path, personnummer, { shouldTouch: true })
+				formMethods.trigger(path)
 				formMethods.clearErrors(path)
+				setSuccess(true)
 			} else {
 				formMethods.setError(path, { message: 'Fant ikke arbeidsgiver-ident' })
 			}
@@ -29,17 +31,11 @@ export const ArbeidsgiverIdent = ({ path, isDisabled }: ArbeidsgiverIdentProps) 
 	}, [result, errorNaviger])
 
 	const handleChange = (event: React.ChangeEvent<any>) => {
-		formMethods.clearErrors(path)
 		setSuccess(false)
 		const personnr = event.target.value
-		formMethods.setValue(`${path}`, personnr)
-		if (personnr.match(/^\d{11}$/) != null) {
-			setPersonnummer(personnr)
-		} else {
-			formMethods.setError(path, {
-				message: 'Ident må være et tall med 11 siffer',
-			})
-		}
+		formMethods.setValue(path, '123', { shouldTouch: true })
+		formMethods.trigger(path)
+		setPersonnummer(personnr)
 	}
 
 	return (
@@ -47,9 +43,9 @@ export const ArbeidsgiverIdent = ({ path, isDisabled }: ArbeidsgiverIdentProps) 
 			<DollyTextInput
 				name={path}
 				// @ts-ignore
-				defaultValue={personnummer}
+				value={personnummer}
 				label={'Arbeidsgiver ident'}
-				onBlur={handleChange}
+				onChange={handleChange}
 				isDisabled={loadingNaviger || isDisabled}
 			/>
 			{success && (
