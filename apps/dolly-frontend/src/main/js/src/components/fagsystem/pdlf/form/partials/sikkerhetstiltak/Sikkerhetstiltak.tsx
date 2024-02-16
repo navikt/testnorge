@@ -11,10 +11,7 @@ import { isToday } from 'date-fns'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { InputWarning } from '@/components/ui/form/inputWarning/inputWarning'
 import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
-import {
-	initialSikkerhetstiltak,
-	initialTpsSikkerhetstiltak,
-} from '@/components/fagsystem/pdlf/form/initialValues'
+import { initialSikkerhetstiltak } from '@/components/fagsystem/pdlf/form/initialValues'
 import { useNavEnheter } from '@/utils/hooks/useNorg2'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { UseFormReturn } from 'react-hook-form/dist/types'
@@ -33,13 +30,9 @@ export const Sikkerhetstiltak = ({ formMethods }: SikkerhetstiltakProps) => {
 		setRandomNavUsers(genererTilfeldigeNavPersonidenter())
 	}, [])
 
-	const paths = {
-		rootPath: 'pdldata.person.sikkerhetstiltak',
-		tpsMessagingRootPath: 'tpsMessaging.sikkerhetstiltak',
-	}
+	const rootPath = 'pdldata.person.sikkerhetstiltak'
 
-	const sikkerhetstiltakListe = formMethods.watch(paths.rootPath)
-	const sikkerhetstiltakListeTps = formMethods.watch(paths.tpsMessagingRootPath)
+	const sikkerhetstiltakListe = formMethods.watch(rootPath)
 
 	if (!sikkerhetstiltakListe) {
 		return null
@@ -56,39 +49,18 @@ export const Sikkerhetstiltak = ({ formMethods }: SikkerhetstiltakProps) => {
 		)
 	}
 
-	const handleNewEntry = () => {
-		formMethods.setValue(paths.rootPath, [...sikkerhetstiltakListe, initialSikkerhetstiltak])
-		formMethods.setValue(paths.tpsMessagingRootPath, [
-			...sikkerhetstiltakListeTps,
-			initialTpsSikkerhetstiltak,
-		])
-		formMethods.trigger(paths.rootPath)
-	}
-
 	const handleValueChange = (value: string, name: string, idx: number) => {
-		formMethods.setValue(`${paths.rootPath}[${idx}].${name}`, value)
-		formMethods.setValue(`${paths.tpsMessagingRootPath}[${idx}].${name}`, value)
-		formMethods.trigger(`${paths.rootPath}[${idx}].${name}`)
-	}
-
-	const handleRemoveEntry = (idx: number) => {
-		sikkerhetstiltakListe.splice(idx, 1)
-		sikkerhetstiltakListeTps.splice(idx, 1)
-		formMethods.setValue(paths.rootPath, sikkerhetstiltakListe)
-		formMethods.setValue(paths.tpsMessagingRootPath, sikkerhetstiltakListeTps)
-		formMethods.trigger(paths.rootPath)
+		formMethods.setValue(`${rootPath}[${idx}].${name}`, value)
 	}
 
 	return (
-		<Vis attributt={Object.values(paths)} formik>
+		<Vis attributt={rootPath} formik>
 			<div className="flexbox--flex-wrap">
 				<FormikDollyFieldArray
-					name={paths.rootPath}
+					name={rootPath}
 					header="Sikkerhetstiltak"
 					newEntry={initialSikkerhetstiltak}
 					canBeEmpty={false}
-					handleNewEntry={handleNewEntry}
-					handleRemoveEntry={handleRemoveEntry}
 				>
 					{(path: string, idx: number) => {
 						const personident = formMethods.watch(`${path}.kontaktperson.personident`)
