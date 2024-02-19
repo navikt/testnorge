@@ -61,7 +61,6 @@ public class IdentService {
                 .configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true)
                 .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
                 .build();
-        ;
     }
 
     public List<TpsIdentStatusDTO> getIdenter(List<String> identer, List<String> miljoer, Boolean includeProd) {
@@ -117,11 +116,11 @@ public class IdentService {
 
         var request = prepareRequest(identer, isProd);
         var xmlRequest = marshallToXML(requestContext, request);
+        log.info("M201 request: {}", xmlRequest);
 
         var miljoerResponse = servicerutineConsumer.sendMessage(xmlRequest, miljoer);
 
-        miljoerResponse.entrySet().stream()
-                .forEach(entry -> log.info("Miljø: {} XML: {}", entry.getKey(), entry.getValue()));
+        miljoerResponse.forEach((key, value) -> log.info("Miljø: {} XML: {}", key, value));
 
         return miljoerResponse.entrySet().parallelStream()
                 .collect(Collectors.toMap(Map.Entry::getKey,
