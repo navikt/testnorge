@@ -36,6 +36,8 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 @Service
 public class IdentService {
 
+    private static final String SERVICE_NAME_OLD = "FS_03_FDLISTER_DISKNAVN_M";
+    private static final String SERVICE_NAME_NEW = "FS03-FDLISTER-DISKNAVN-M";
     private static final int MAX_LIMIT = 80;
     private static final String BAD_REQUEST = "Antall identer kan ikke være større enn " + MAX_LIMIT;
     private static final String PROD = "p";
@@ -115,12 +117,19 @@ public class IdentService {
     private Map<String, TpsServicerutineM201Response> readFromTps(List<String> identer, List<String> miljoer, boolean isProd) {
 
         var request = prepareRequest(identer, isProd);
-        var xmlRequest = marshallToXML(requestContext, request);
-        log.info("M201 request: {}", xmlRequest);
+        var xmlRequest = marshallToXML(requestContext, request)
+                .replace(SERVICE_NAME_OLD, SERVICE_NAME_NEW);
 
         var miljoerResponse = servicerutineConsumer.sendMessage(xmlRequest, miljoer);
 
-        miljoerResponse.forEach((key, value) -> log.info("Miljø: {} XML: {}", key, value));
+        miljoerResponse.forEach((key, value) -> {
+            if (value.contains("<returStatus>00</returStatus>") ||
+                    value.contains("<returStatus>04</returStatus>")) {
+                log.info("Miljø: {} XML: {}", key, value);
+            } else {
+                log.error("Miljø: {} XML: {}", key, value);
+            }
+        });
 
         return miljoerResponse.entrySet().parallelStream()
                 .collect(Collectors.toMap(Map.Entry::getKey,

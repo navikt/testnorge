@@ -68,16 +68,12 @@ public class PersonService {
 
     private static String mapRelasjonType(RelasjonType relasjonType) {
 
-        switch (relasjonType) {
-            case MORA:
-                return MOR.name();
-            case FARA:
-                return FAR.name();
-            case EKTE, ENKE, SKIL, SEPR, REPA, SEPA, SKPA, GJPA, GLAD:
-                return PARTNER.name();
-            default:
-                return relasjonType.name();
-        }
+        return switch (relasjonType) {
+            case MORA -> MOR.name();
+            case FARA -> FAR.name();
+            case EKTE, ENKE, SKIL, SEPR, REPA, SEPA, SKPA, GJPA, GLAD -> PARTNER.name();
+            default -> relasjonType.name();
+        };
     }
 
     private static boolean isStatusOK(TpsMeldingResponse response) {
@@ -181,7 +177,14 @@ public class PersonService {
 
         var miljoerResponse = servicerutineConsumer.sendMessage(xmlRequest, miljoer);
 
-        miljoerResponse.forEach((key, value) -> log.info("Miljø: {} XML: {}", key, value));
+        miljoerResponse.forEach((key, value) -> {
+            if (value.contains("<returStatus>00</returStatus>") ||
+                    value.contains("<returStatus>04</returStatus>")) {
+                log.info("Miljø: {} XML: {}", key, value);
+            } else {
+                log.error("Miljø: {} XML: {}", key, value);
+            }
+        });
 
         return miljoerResponse.entrySet().stream()
                 .collect(Collectors.toMap(Entry::getKey,
