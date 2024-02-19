@@ -1,5 +1,5 @@
 import * as Yup from 'yup'
-import * as _ from 'lodash-es'
+import _ from 'lodash'
 import { ifPresent, requiredBoolean, requiredString } from '@/utils/YupValidations'
 import { testDatoFom, testDatoTom } from '@/components/fagsystem/utils'
 
@@ -19,7 +19,7 @@ const aliaser = Yup.array().of(
 				then: () => requiredString,
 			})
 			.nullable(),
-	})
+	}),
 )
 
 const arbeidsadgang = Yup.object({
@@ -32,7 +32,7 @@ const arbeidsadgang = Yup.object({
 	typeArbeidsadgang: Yup.string().nullable(),
 	hjemmel: ifPresent(
 		'$udistub.arbeidsadgang.hjemmel',
-		requiredString.max(255, 'Hjemmel kan ikke være lenger enn 255 tegn').nullable()
+		requiredString.max(255, 'Hjemmel kan ikke være lenger enn 255 tegn').nullable(),
 	),
 	forklaring: Yup.string().max(4000).nullable(),
 })
@@ -74,10 +74,10 @@ const oppholdStatus = Yup.object()
 	.nullable()
 	// Sjekker om oppholdStatus er et tomt objekt. Objektet blir satt ved å fylle i feltene
 	// 'Oppholdsstatus' og 'Type opphold', men disse er ikke en del av selve formet.
-	.test('is-not-empty', function () {
-		const values = this.options.context
-		if (_.isEmpty(values.udistub.oppholdStatus)) {
-			return values.udistub.harOppholdsTillatelse === false
+	.test('is-not-empty', 'Feltet er påkrevd', (value, context) => {
+		const values = context.parent
+		if (_.isEmpty(values.oppholdStatus)) {
+			return values.harOppholdsTillatelse === false
 		}
 		return true
 	})
@@ -88,12 +88,12 @@ export const validation = {
 		Yup.object({
 			aliaser: ifPresent('$udistub.aliaser', aliaser),
 			arbeidsadgang: ifPresent('$udistub.arbeidsadgang', arbeidsadgang),
-			flyktning: ifPresent('$udistub.flyktning', requiredBoolean.nullable()),
+			flyktning: requiredBoolean,
 			oppholdStatus: ifPresent('$udistub.oppholdStatus', oppholdStatus),
 			soeknadOmBeskyttelseUnderBehandling: ifPresent(
 				'$udistub.soeknadOmBeskyttelseUnderBehandling',
-				requiredString
+				requiredString,
 			),
-		})
+		}),
 	),
 }

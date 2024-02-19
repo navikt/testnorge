@@ -81,11 +81,6 @@ export default ({ organisasjon, addToSession }: BrukernavnVelgerProps) => {
 					size="xlarge"
 					onChange={(e: any) => onChange(e.target.value)}
 					isDisabled={loading}
-					feil={
-						error && {
-							feilmelding: error,
-						}
-					}
 				/>
 				<NavButton
 					onClick={() => onSubmit()}

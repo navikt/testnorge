@@ -7,9 +7,9 @@ const erIkkeLik = () => {
 	return Yup.string().test(
 		'er-ikke-lik',
 		'Saksbehandler og attesterer kan ikke være samme person',
-		function testIdenter() {
-			const values = this.options.context
-			const { saksbehandler, attesterer } = values?.pensjonforvalter?.uforetrygd
+		(_value, testContext) => {
+			const fullForm = testContext.from && testContext.from[testContext.from.length - 1]?.value
+			const { saksbehandler, attesterer } = fullForm?.pensjonforvalter?.uforetrygd
 			if (!saksbehandler || !attesterer) {
 				return true
 			}
@@ -19,7 +19,7 @@ const erIkkeLik = () => {
 }
 
 const datoErFremtidig = () => {
-	return Yup.date().test('er-fremtidig', 'Dato må være frem i tid', function validDate(dato) {
+	return Yup.date().test('er-fremtidig', 'Dato må være frem i tid', (dato) => {
 		if (!dato) {
 			return true
 		}
@@ -41,7 +41,7 @@ export const validation = {
 		'$pensjonforvalter.uforetrygd',
 		Yup.object({
 			uforetidspunkt: Yup.date()
-				.test('er-historisk', 'Dato må være historisk', function validDate(dato) {
+				.test('er-historisk', 'Dato må være historisk', (dato) => {
 					return isPast(dato)
 				})
 				.nullable(),
@@ -49,11 +49,11 @@ export const validation = {
 				.test(
 					'er-foer-virkningsdato',
 					'Dato må være etter uføretidspunkt og før ønsket virkningsdato',
-					function validDate(kravFremsattDato) {
-						const virkningsdato =
-							this.options.context?.pensjonforvalter?.uforetrygd?.onsketVirkningsDato
-						const uforetidspunkt =
-							this.options.context?.pensjonforvalter?.uforetrygd?.uforetidspunkt
+					(kravFremsattDato, testContext) => {
+						const fullForm =
+							testContext.from && testContext.from[testContext.from.length - 1]?.value
+						const virkningsdato = fullForm?.pensjonforvalter?.uforetrygd?.onsketVirkningsDato
+						const uforetidspunkt = fullForm?.pensjonforvalter?.uforetrygd?.uforetidspunkt
 						return (
 							isBefore(new Date(kravFremsattDato), new Date(virkningsdato)) &&
 							isAfter(new Date(kravFremsattDato), new Date(uforetidspunkt))
@@ -65,13 +65,13 @@ export const validation = {
 				.test(
 					'er-foer-virkningsdato',
 					'Dato må være etter dato for fremsettelse av krav (og tidligst 1. januar 2015)',
-					function validDate(onsketVirkningsDato) {
-						const kravFremsattDato =
-							this.options.context?.pensjonforvalter?.uforetrygd?.kravFremsattDato
+					(onsketVirkningsDato, testContext) => {
+						const fullForm =
+							testContext.from && testContext.from[testContext.from.length - 1]?.value
+						const kravFremsattDato = fullForm?.pensjonforvalter?.uforetrygd?.kravFremsattDato
 						return (
 							isAfter(new Date(onsketVirkningsDato), new Date(kravFremsattDato)) &&
 							isAfter(new Date(onsketVirkningsDato), new Date('2015-01-01'))
-
 						)
 					},
 				)

@@ -1,3 +1,5 @@
+import _ from 'lodash'
+
 const CHECK_DIGIT_1 = [3, 7, 6, 1, 8, 9, 4, 5, 2]
 const CHECK_DIGIT_2 = [5, 4, 3, 2, 7, 6, 5, 4, 3, 2]
 
@@ -14,10 +16,10 @@ const kontrollsiffer = (kontonummer: string, kontrollsifferliste: number[]) => {
 const createValidBankkontoNummer = () => {
 	const bankkontoNrWithoutCheckDigits = `00${Math.floor(Math.random() * 8999999) + 1000000}`
 	const bankkontoNrWithFirstCheckDigit = bankkontoNrWithoutCheckDigits.concat(
-		String(kontrollsiffer(bankkontoNrWithoutCheckDigits, CHECK_DIGIT_1))
+		String(kontrollsiffer(bankkontoNrWithoutCheckDigits, CHECK_DIGIT_1)),
 	)
 	return bankkontoNrWithFirstCheckDigit.concat(
-		String(kontrollsiffer(bankkontoNrWithFirstCheckDigit, CHECK_DIGIT_2))
+		String(kontrollsiffer(bankkontoNrWithFirstCheckDigit, CHECK_DIGIT_2)),
 	)
 }
 
@@ -36,8 +38,8 @@ const gyldigKontonummerMod11 = (kontonummer: string) => {
 	}
 }
 
-export const generateValidKontoOptions = () => {
-	const kontoArray = []
+export const generateValidKontoOptions = (kontonummer?: string) => {
+	const kontoArray = _.isEmpty(kontonummer) ? [] : [{ value: kontonummer, label: kontonummer }]
 	let numIterations = 0
 	while (kontoArray.length < 10 && numIterations < 100) {
 		const kontoNummer = createValidBankkontoNummer()

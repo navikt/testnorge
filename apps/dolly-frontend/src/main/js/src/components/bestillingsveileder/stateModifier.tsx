@@ -1,16 +1,25 @@
-import * as _ from 'lodash-es'
-import _set from 'lodash/fp/set'
-import { useDispatch } from 'react-redux'
+import _, { isArray } from 'lodash'
+import { UseFormReturn } from 'react-hook-form/dist/types'
+import { useContext } from 'react'
+import { BestillingsveilederContext } from './BestillingsveilederContext'
 
-export const stateModifierFns = (initial, setInitial, options = null, dispatch = null) => {
-	if (dispatch == null) {
-		dispatch = useDispatch()
+export const useStateModifierFns = (formMethods: UseFormReturn) => {
+	const opts = useContext(BestillingsveilederContext)
+	const set = (path, value) => {
+		formMethods.setValue(path, value)
 	}
-	const opts = options
-	const set = (path, value) => setInitial(_set(path, value, initial))
-	const has = (path) => _.has(initial, path)
+	const has = (path) => {
+		return formMethods.watch(path) !== undefined
+	}
 	const del = (path) => {
-		let newObj = _.omit(initial, path)
+		if (isArray(path)) {
+			path.forEach((p) => {
+				formMethods.resetField(p)
+			})
+		} else {
+			formMethods.resetField(path)
+		}
+		let newObj = _.omit(formMethods.getValues(), path)
 
 		// Ingen tomme objekter guard
 		let rootPath = Array.isArray(path) ? path[0].split('.')[0] : path.split('.')[0]
@@ -18,14 +27,13 @@ export const stateModifierFns = (initial, setInitial, options = null, dispatch =
 			rootPath = 'pdldata.person'
 		if (_.isEmpty(_.get(newObj, rootPath))) newObj = _.omit(newObj, rootPath)
 
-		setInitial(newObj)
+		formMethods.reset(newObj)
 	}
 	const setMulti = (...arrays) => {
-		const newInitial = arrays.reduce((acc, curr) => {
+		arrays.forEach((curr) => {
 			const [path, val] = curr
-			return _set(path, val, acc)
-		}, initial)
-		setInitial(newInitial)
+			formMethods.setValue(path, val)
+		})
 	}
 
 	const allCheckedLabels = (attrs) =>
@@ -33,43 +41,33 @@ export const stateModifierFns = (initial, setInitial, options = null, dispatch =
 			.filter((a) => a.checked)
 			.map((b) => b.label)
 
-	const batchUpdate = (attrs, fn, ignoreKeys = [], key = 'add') => {
-		const state = Object.keys(attrs).reduce(
-			(acc, curr) => {
-				// Handle ignored keys
-				const ignores = Array.isArray(ignoreKeys) ? ignoreKeys : [ignoreKeys]
-				if (ignores.includes(curr)) return acc
-
-				const sm_local = stateModifierFns(acc, (newState) => (acc = newState), opts, dispatch)(fn)
-				sm_local.attrs[curr][key]()
-				return acc
-			},
-			Object.assign({}, initial),
-		)
-
-		setInitial(state)
+	const batchUpdate = (attrs, ignoreKeys = [], key = 'add') => {
+		Object.entries(attrs)
+			.filter(([name, value]) => {
+				return !ignoreKeys?.includes(name)
+			})
+			.forEach(([_name, value]: [name: string, value: any]) => {
+				value[key]() // Call add or remove method
+			})
 	}
 
 	return (
 		fn: (arg0: {
 			set: (path: any, value: any) => any
 			setMulti: (...arrays: any[]) => void
+			opts: any
 			del: (path: any) => void
 			has: (path: any) => boolean
-			dispatch: null
-			opts: null
-			initial: any
-			setInitial: any
+			methods: any
 		}) => {},
 	) => {
-		const attrs = fn({ set, setMulti, del, has, dispatch, opts, initial, setInitial }) || {}
+		const attrs = fn({ set, setMulti, opts, del, has, methods: formMethods }) || {}
 		const checked = allCheckedLabels(attrs)
 		return {
 			attrs,
 			checked,
-			batchAdd: (ignoreKeys: never[] | undefined) => batchUpdate(attrs, fn, ignoreKeys, 'add'),
-			batchRemove: (ignoreKeys: never[] | undefined) =>
-				batchUpdate(attrs, fn, ignoreKeys, 'remove'),
+			batchAdd: (ignoreKeys: never[] | undefined) => batchUpdate(attrs, ignoreKeys, 'add'),
+			batchRemove: (ignoreKeys: never[] | undefined) => batchUpdate(attrs, ignoreKeys, 'remove'),
 		}
 	}
 }

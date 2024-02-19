@@ -16,7 +16,7 @@ jobs:
       - name: "Checkout"
         uses: actions/checkout@v4
       - name: "Setup"
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 20.x
           registry-url: https://npm.pkg.github.com/
@@ -24,7 +24,7 @@ jobs:
       - name: "Run"
         env:
           NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
-        uses: cypress-io/github-action@v5
+        uses: cypress-io/github-action@v6
         with:
           config: video=false
           working-directory: ${{ inputs.working-directory }}/src/main/js

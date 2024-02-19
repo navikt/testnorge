@@ -1,6 +1,7 @@
 import * as Yup from 'yup'
 import { requiredDate, requiredString } from '@/utils/YupValidations'
 import { nyPerson } from '@/components/fagsystem/pdlf/form/validation/partials'
+import _ from 'lodash'
 
 export const kontaktDoedsbo = Yup.object().shape({
 	skifteform: requiredString,
@@ -53,14 +54,18 @@ export const kontaktDoedsbo = Yup.object().shape({
 				Yup.object().shape(
 					{
 						identifikasjonsnummer: Yup.mixed()
-							.when('foedselsdato', {
+							.when('navn', {
 								is: null,
 								then: () => requiredString,
 							})
 							.nullable(),
 						foedselsdato: Yup.mixed()
 							.when('identifikasjonsnummer', {
-								is: null,
+								is: undefined || null,
+								then: () => requiredDate.nullable(),
+							})
+							.when('navn', {
+								is: (v) => !_.isEmpty(v),
 								then: () => requiredDate.nullable(),
 							})
 							.nullable(),
@@ -70,7 +75,7 @@ export const kontaktDoedsbo = Yup.object().shape({
 							etternavn: Yup.string().nullable(),
 						}).nullable(),
 					},
-					['identifikasjonsnummer', 'foedselsdato']
+					['identifikasjonsnummer', 'navn'],
 				),
 		})
 		.nullable()

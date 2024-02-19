@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { useBoolean } from 'react-use'
-import * as _ from 'lodash-es'
 import Icon from '@/components/ui/icon/Icon'
 import Loading from '@/components/ui/loading/Loading'
 import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import { useFormikContext } from 'formik'
+import { useFormContext } from 'react-hook-form'
 import { useNaviger } from '@/utils/hooks/useNaviger'
 
 type ArbeidsgiverIdentProps = {
@@ -13,66 +12,41 @@ type ArbeidsgiverIdentProps = {
 }
 
 export const ArbeidsgiverIdent = ({ path, isDisabled }: ArbeidsgiverIdentProps) => {
-	const formikBag = useFormikContext()
-	const [error, setError] = useState(null)
+	const formMethods = useFormContext()
+	const [personnummer, setPersonnummer] = useState(formMethods.watch(path))
 	const [success, setSuccess] = useBoolean(false)
-	const [personnummer, setPersonnummer] = useState(_.get(formikBag.values, path))
 	const { result, loading: loadingNaviger, error: errorNaviger } = useNaviger(personnummer)
 
 	useEffect(() => {
 		if (personnummer) {
 			if (result?.identNavigerTil) {
+				formMethods.setValue(path, personnummer, { shouldTouch: true })
+				formMethods.trigger(path)
+				formMethods.clearErrors(path)
 				setSuccess(true)
-				setError(null)
 			} else {
-				setError('Fant ikke arbeidsgiver-ident')
+				formMethods.setError(path, { message: 'Fant ikke arbeidsgiver-ident' })
 			}
 		}
 	}, [result, errorNaviger])
 
-	useEffect(() => {
-		if (error) {
-			formikBag.setFieldError(path, error)
-		} else {
-			formikBag.setFieldError(path, undefined)
-		}
-	}, [error, formikBag.errors, personnummer])
-
 	const handleChange = (event: React.ChangeEvent<any>) => {
-		setError(null)
 		setSuccess(false)
 		const personnr = event.target.value
-		formikBag.setFieldValue(`${path}`, personnr)
-		if (personnr.match(/^\d{11}$/) != null) {
-			setPersonnummer(personnr)
-		} else {
-			setError('Ident må være et tall med 11 siffer')
-		}
+		formMethods.setValue(path, '123', { shouldTouch: true })
+		formMethods.trigger(path)
+		setPersonnummer(personnr)
 	}
-
-	const getFeilmelding = () => {
-		if (error) {
-			return {
-				feilmelding: error,
-			}
-		} else if (!_.get(formikBag.values, path)) {
-			return { feilmelding: 'Feltet er påkrevd' }
-		}
-		return null
-	}
-
-	const feilmelding = getFeilmelding()
 
 	return (
 		<div>
 			<DollyTextInput
 				name={path}
 				// @ts-ignore
-				defaultValue={personnummer}
+				value={personnummer}
 				label={'Arbeidsgiver ident'}
-				onBlur={handleChange}
+				onChange={handleChange}
 				isDisabled={loadingNaviger || isDisabled}
-				feil={feilmelding}
 			/>
 			{success && (
 				<div className="flexbox" style={{ marginTop: '-5px' }}>

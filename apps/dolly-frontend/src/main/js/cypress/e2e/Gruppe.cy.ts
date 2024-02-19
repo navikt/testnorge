@@ -1,47 +1,17 @@
 import { CypressSelector } from '../mocks/Selectors'
 import {
 	avbruttBestillingMock,
-	personFragmentNavigerMock,
 	uferdigBestillingMock,
 	uferdigeBestillingerMock,
 } from '../mocks/BasicMocks'
-import { ERROR_NAVIGATE_IDENT } from '../../src/ducks/errors/ErrorMessages'
 
 const uferdigBestilling = new RegExp(/dolly-backend\/api\/v1\/bestilling\/2$/)
 const uferdigeBestillinger = new RegExp(/dolly-backend\/api\/v1\/bestilling\/gruppe\/2\/ikkeferdig/)
 const personFragmentNaviger = new RegExp(/dolly-backend\/api\/v1\/ident\/naviger\/12345678912/)
 
-describe('Navigering, Opprett gruppe og start bestilling med alle mulige tilvalg', () => {
+describe('Opprett gruppe og start bestilling med alle mulige tilvalg', () => {
 	it('passes', () => {
-		cy.visit('http://localhost:5678/gruppe')
-
-		//Midlertidig not found på navigering til ident etter søk
-		cy.intercept({ method: 'GET', url: personFragmentNaviger }, { statusCode: 404 })
-
-		cy.dollyType(CypressSelector.INPUT_DOLLY_SOEK, '12345')
-		cy.dollyGet(CypressSelector.BUTTON_NAVIGER_DOLLY).click()
-		cy.wait(400)
-
-		cy.dollyGet(CypressSelector.ERROR_MESSAGE_NAVIGERING).should(
-			'contains.text',
-			ERROR_NAVIGATE_IDENT,
-		)
-
-		//Korrekt navigering igjen
-		cy.intercept({ method: 'GET', url: personFragmentNaviger }, personFragmentNavigerMock)
-
-		cy.dollyGet(CypressSelector.TOGGLE_SEARCH_BESTILLING).click()
-		cy.dollyType(CypressSelector.INPUT_DOLLY_SOEK, '1')
-		cy.dollyGet(CypressSelector.BUTTON_NAVIGER_DOLLY).click()
-		cy.dollyGet(CypressSelector.TOGGLE_SEARCH_PERSON).click()
-
-		cy.dollyType(CypressSelector.INPUT_DOLLY_SOEK, '12345')
-		cy.dollyGet(CypressSelector.BUTTON_NAVIGER_DOLLY).click()
-		cy.wait(400)
-
-		cy.url().should('include', '/gruppe/1')
-
-		cy.dollyGet(CypressSelector.BUTTON_HEADER_PERSONER).click()
+		cy.visit('gruppe')
 
 		// Naviger mellom tabs
 		cy.dollyGet(CypressSelector.TOGGLE_FAVORITTER).click()

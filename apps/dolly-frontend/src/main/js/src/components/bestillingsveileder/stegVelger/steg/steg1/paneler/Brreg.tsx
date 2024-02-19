@@ -3,7 +3,7 @@ import { Attributt, AttributtKategori } from '../Attributt'
 import { harValgtAttributt } from '@/components/ui/form/formUtils'
 import { brregAttributt } from '@/components/fagsystem/brregstub/form/Form'
 
-export const BrregPanel = ({ stateModifier, formikBag }) => {
+export const BrregPanel = ({ stateModifier, formValues }) => {
 	const sm = stateModifier(BrregPanel.initialValues)
 
 	return (
@@ -12,7 +12,7 @@ export const BrregPanel = ({ stateModifier, formikBag }) => {
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType="brreg"
-			startOpen={harValgtAttributt(formikBag.values, [brregAttributt])}
+			startOpen={harValgtAttributt(formValues, [brregAttributt])}
 		>
 			<AttributtKategori attr={sm.attrs}>
 				<Attributt attr={sm.attrs.brregstub} />
@@ -37,7 +37,7 @@ BrregPanel.initialValues = ({ set, del, has }) => ({
 						foretaksNavn: {
 							navn1: '',
 						},
-						orgNr: '',
+						orgNr: null,
 						personroller: [],
 					},
 				],

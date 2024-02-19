@@ -35,6 +35,7 @@ import {
 	personFragmentSearchMock,
 	sigrunstubMock,
 	skjermingMock,
+	tagsMock,
 	tpsMessagingMock,
 	udistubMock,
 } from '../mocks/BasicMocks'
@@ -52,6 +53,7 @@ const bestillingFragmentSearch = new RegExp(
 	/\/dolly-backend\/api\/v1\/bestilling\/soekBestilling\?fragment/,
 )
 const personFragmentNaviger = new RegExp(/dolly-backend\/api\/v1\/ident\/naviger\/12345678912/)
+const dollySoekIdenter = new RegExp(/dolly-backend\/api\/v1\/elastic\/identer/)
 const bestillingFragmentNaviger = new RegExp(/dolly-backend\/api\/v1\/bestilling\/naviger\/1/)
 const hentGruppeEn = new RegExp(/\/api\/v1\/gruppe\/1/)
 const hentGruppeTo = new RegExp(/\/api\/v1\/gruppe\/2/)
@@ -119,7 +121,7 @@ beforeEach(() => {
 	cy.intercept({ method: 'GET', url: pdlPersonEnkelt }, pdlPersonEnkeltMock)
 	cy.intercept({ method: 'GET', url: pdlForvalter }, pdlForvalterMock)
 	cy.intercept({ method: 'POST', url: kontoregister }, kontoregisterMock)
-	cy.intercept({ method: 'GET', url: tags }, { body: {} })
+	cy.intercept({ method: 'GET', url: tags }, tagsMock)
 	cy.intercept({ method: 'GET', url: backendTransaksjon }, backendTransaksjonMock)
 	cy.intercept({ method: 'GET', url: brukerMaler }, brukerMalerMock)
 	cy.intercept({ method: 'GET', url: oppsummeringsdokService }, oppsummeringsdokumentServiceMock)
@@ -143,6 +145,7 @@ beforeEach(() => {
 	cy.intercept({ method: 'GET', url: udistub }, udistubMock)
 	cy.intercept({ method: 'GET', url: kodeverk }, kodeverkMock)
 	cy.intercept({ method: 'GET', url: dokarkivMiljoer }, ['q1', 'q2'])
+	cy.intercept({ method: 'POST', url: dollySoekIdenter }, ['12345678912'])
 	cy.intercept({ method: 'GET', url: arenaMiljoer }, ['q1', 'q2', 'q4'])
 	cy.intercept({ method: 'GET', url: organisasjonFraMiljoe }, organisasjonFraMiljoeMock)
 	cy.intercept({ method: 'GET', url: organisasjonerForBruker }, organisasjonerForBrukerMock)

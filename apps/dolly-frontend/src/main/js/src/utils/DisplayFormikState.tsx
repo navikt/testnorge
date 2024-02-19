@@ -1,8 +1,9 @@
 import { useToggle } from 'react-use'
+import { useFormContext } from 'react-hook-form'
 
-const FormikState = (props) => (
+const FormState = ({ values }) => (
 	<pre>
-		<strong>props</strong> = {JSON.stringify(props, replacer, 2)}
+		<strong>props</strong> = {JSON.stringify(values, replacer, 2)}
 	</pre>
 )
 
@@ -13,7 +14,8 @@ const replacer = (key: string, value: any) => {
 	} else return value
 }
 
-export default function DisplayFormikState({ visState = false, ...props }) {
+export default function DisplayFormikState({ visState = false, label = 'Vis form' }) {
+	const { getValues } = useFormContext()
 	const [showState, toggleShowState] = useToggle(visState)
 
 	return (
@@ -33,8 +35,8 @@ export default function DisplayFormikState({ visState = false, ...props }) {
 				zIndex: 99,
 			}}
 		>
-			{showState && <FormikState {...props} />}
-			{!showState && <span>Vis state</span>}
+			{showState && <>{<FormState values={getValues()} />}</>}
+			{!showState && <span style={{ zIndex: 1 }}>{label}</span>}
 		</div>
 	)
 }

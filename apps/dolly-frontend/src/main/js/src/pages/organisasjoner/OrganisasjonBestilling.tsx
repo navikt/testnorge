@@ -1,4 +1,4 @@
-import * as _ from 'lodash-es'
+import _ from 'lodash'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { DollyTable } from '@/components/ui/dollyTable/DollyTable'
 import { OrganisasjonItem } from '@/components/ui/icon/IconItem'
@@ -27,7 +27,6 @@ export default function OrganisasjonBestilling({
 	brukerId,
 	brukertype,
 	bestillinger,
-	sidetall,
 }: OrganisasjonBestillingProps) {
 	if (!bestillinger) {
 		return null
@@ -92,7 +91,6 @@ export default function OrganisasjonBestilling({
 			<DollyTable
 				data={bestillingStatuser}
 				columns={columns}
-				visSide={sidetall}
 				pagination
 				iconItem={<OrganisasjonItem />}
 				onExpand={(bestilling: OrgStatus) => {

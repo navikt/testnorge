@@ -2,7 +2,7 @@ import { CypressSelector } from '../mocks/Selectors'
 
 describe('Test-Norge søk testing', () => {
 	it('passes', () => {
-		cy.visit('http://localhost:5678')
+		cy.visit('')
 
 		cy.dollyGet(CypressSelector.BUTTON_HEADER_FINNPERSON).click()
 		cy.dollyGet(CypressSelector.BUTTON_HEADER_TESTNORGE).click()

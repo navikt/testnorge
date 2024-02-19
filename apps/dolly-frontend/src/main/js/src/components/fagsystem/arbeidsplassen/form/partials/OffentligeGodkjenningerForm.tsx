@@ -12,7 +12,7 @@ import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { EraseFillButtons } from '@/components/fagsystem/arbeidsplassen/form/partials/EraseFillButtons'
 import _get from 'lodash/get'
 
-export const OffentligeGodkjenningerForm = ({ formikBag }) => {
+export const OffentligeGodkjenningerForm = ({ formMethods }) => {
 	const offentligeGodkjenningerListePath = 'arbeidsplassenCV.offentligeGodkjenninger'
 
 	return (
@@ -38,13 +38,16 @@ export const OffentligeGodkjenningerForm = ({ formikBag }) => {
 								name={`${offentligGodkjenningPath}.issuer`}
 								label="Utsteder"
 								size="large"
-								key={`issuer_${_get(formikBag.values, `${offentligGodkjenningPath}.issuer`)}`}
+								key={`issuer_${_get(
+									formMethods.getValues(),
+									`${offentligGodkjenningPath}.issuer`,
+								)}`}
 							/>
 							<FormikDatepicker name={`${offentligGodkjenningPath}.fromDate`} label="Fullført" />
 							<FormikDatepicker name={`${offentligGodkjenningPath}.toDate`} label="Utløper" />
 						</div>
 						<EraseFillButtons
-							formikBag={formikBag}
+							formMethods={formMethods}
 							path={offentligGodkjenningPath}
 							initialErase={initialOffentligeGodkjenninger}
 							initialFill={initialOffentligeGodkjenningerVerdier}

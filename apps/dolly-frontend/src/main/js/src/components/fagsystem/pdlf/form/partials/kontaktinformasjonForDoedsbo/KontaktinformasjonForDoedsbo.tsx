@@ -15,7 +15,7 @@ import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/Datepi
 export const doedsboAttributt = 'pdldata.person.kontaktinformasjonForDoedsbo'
 
 export const KontaktinformasjonForDoedsboForm = ({
-	formikBag,
+	formMethods,
 	path,
 	eksisterendeNyPerson = null,
 }) => {
@@ -33,21 +33,21 @@ export const KontaktinformasjonForDoedsboForm = ({
 					label="Utstedelsesdato skifteattest"
 				/>
 			</DatepickerWrapper>
-			<Kontakt formikBag={formikBag} path={path} eksisterendeNyPerson={eksisterendeNyPerson} />
-			<Adresse formikBag={formikBag} path={`${path}.adresse`} />
+			<Kontakt formMethods={formMethods} path={path} eksisterendeNyPerson={eksisterendeNyPerson} />
+			<Adresse formMethods={formMethods} path={`${path}.adresse`} />
 			<AvansertForm path={path} kanVelgeMaster={false} />
 		</>
 	)
 }
 
-export const KontaktinformasjonForDoedsbo = ({ formikBag }) => {
+export const KontaktinformasjonForDoedsbo = ({ formMethods }) => {
 	return (
 		<Vis attributt={doedsboAttributt}>
 			<Panel
 				heading="Kontaktinformasjon for dødsbo"
-				hasErrors={panelError(formikBag, doedsboAttributt)}
+				hasErrors={panelError(doedsboAttributt)}
 				iconType="doedsbo"
-				startOpen={erForsteEllerTest(formikBag.values, [doedsboAttributt])}
+				startOpen={erForsteEllerTest(formMethods.getValues(), [doedsboAttributt])}
 			>
 				<FormikDollyFieldArray
 					name="pdldata.person.kontaktinformasjonForDoedsbo"
@@ -55,7 +55,7 @@ export const KontaktinformasjonForDoedsbo = ({ formikBag }) => {
 					newEntry={initialKontaktinfoForDoedebo}
 					canBeEmpty={false}
 				>
-					{(path) => <KontaktinformasjonForDoedsboForm formikBag={formikBag} path={path} />}
+					{(path) => <KontaktinformasjonForDoedsboForm formMethods={formMethods} path={path} />}
 				</FormikDollyFieldArray>
 			</Panel>
 		</Vis>

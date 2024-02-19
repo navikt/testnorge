@@ -9,7 +9,7 @@ import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import useBoolean from '@/utils/hooks/useBoolean'
 import { KommentarModal } from '@/pages/gruppe/PersonListe/modal/KommentarModal'
 import { selectPersonListe, sokSelector } from '@/ducks/fagsystem'
-import * as _ from 'lodash-es'
+import _ from 'lodash'
 import DollyTooltip from '@/components/ui/button/DollyTooltip'
 import { setSorting } from '@/ducks/finnPerson'
 import { useDispatch } from 'react-redux'
@@ -224,7 +224,7 @@ export default function PersonListe({
 			brukertype === 'BANKID'
 				? 'Trykk på "Importer personer"-knappen for å kunne søke opp og importere identer til gruppen.'
 				: 'Trykk på "Opprett personer"-knappen for å starte en bestilling eller "Importer personer"-knappen å kunne ' +
-				  'søke opp og importere identer til gruppen.'
+					'søke opp og importere identer til gruppen.'
 		return <ContentContainer>{infoTekst}</ContentContainer>
 	}
 

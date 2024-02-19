@@ -2,16 +2,15 @@ import { initialVegadresse } from '@/components/fagsystem/pdlf/form/initialValue
 import { Vegadresse } from '@/components/fagsystem/pdlf/form/partials/adresser/adressetyper'
 import { AdresseKodeverk, GtKodeverk } from '@/config/kodeverk'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
-import * as _ from 'lodash-es'
-import { FormikProps } from 'formik'
 import { Radio, RadioGroup } from '@navikt/ds-react'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface VegadressevelgerValues {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 	path: string
 }
 
-export const VegadresseVelger = ({ formikBag, path }: VegadressevelgerValues) => {
+export const VegadresseVelger = ({ formMethods, path }: VegadressevelgerValues) => {
 	const vegadresseValg = {
 		POSTNUMMER: 'POSTNUMMER',
 		KOMMUNENUMMER: 'KOMMUNENUMMER',
@@ -19,10 +18,11 @@ export const VegadresseVelger = ({ formikBag, path }: VegadressevelgerValues) =>
 		DETALJERT: 'DETALJERT',
 	}
 
-	const vegadresseType = _.get(formikBag.values, `${path}.vegadresseType`) || null
+	const vegadresseType = formMethods.watch(`${path}.vegadresseType`) || null
 
 	const handleRadioChange = (valg: string) => {
-		formikBag.setFieldValue(path, { ...initialVegadresse, vegadresseType: valg })
+		formMethods.setValue(path, { ...initialVegadresse, vegadresseType: valg })
+		formMethods.trigger()
 	}
 
 	return (
@@ -81,7 +81,7 @@ export const VegadresseVelger = ({ formikBag, path }: VegadressevelgerValues) =>
 				/>
 			)}
 			{vegadresseType === vegadresseValg.DETALJERT && (
-				<Vegadresse formikBag={formikBag} path={path} />
+				<Vegadresse formMethods={formMethods} path={path} />
 			)}
 		</div>
 	)

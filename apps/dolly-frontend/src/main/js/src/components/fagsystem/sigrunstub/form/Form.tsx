@@ -4,20 +4,24 @@ import Panel from '@/components/ui/panel/Panel'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
 import { InntektsaarForm } from './partials/inntektsaarForm'
 import { ifPresent, requiredDate } from '@/utils/YupValidations'
+import { useFormContext } from 'react-hook-form'
 
 export const sigrunAttributt = 'sigrunstub'
-export const SigrunstubForm = ({ formikBag }) => (
-	<Vis attributt={sigrunAttributt}>
-		<Panel
-			heading="Lignet inntekt (Sigrun)"
-			hasErrors={panelError(formikBag, sigrunAttributt)}
-			iconType="sigrun"
-			startOpen={erForsteEllerTest(formikBag.values, [sigrunAttributt])}
-		>
-			<InntektsaarForm formikBag={formikBag} />
-		</Panel>
-	</Vis>
-)
+export const SigrunstubForm = () => {
+	const formMethods = useFormContext()
+	return (
+		<Vis attributt={sigrunAttributt}>
+			<Panel
+				heading="Lignet inntekt (Sigrun)"
+				hasErrors={panelError(sigrunAttributt)}
+				iconType="sigrun"
+				startOpen={erForsteEllerTest(formMethods.getValues(), [sigrunAttributt])}
+			>
+				<InntektsaarForm formMethods={formMethods} />
+			</Panel>
+		</Vis>
+	)
+}
 
 SigrunstubForm.validation = {
 	sigrunstub: ifPresent(
@@ -38,20 +42,12 @@ SigrunstubForm.validation = {
 							}),
 						}),
 					)
-					.test('is-required', 'Legg til minst én inntekt', function checkTjenesteGrunnlag(_val) {
-						const values = this.options.context
-						const path = this.options.path
-						const index = path.charAt(path.indexOf('[') + 1)
-						if (values.sigrunstub[index].tjeneste === 'BEREGNET_SKATT') {
-							return values.sigrunstub[index].grunnlag.length > 0
-						} else if (values.sigrunstub[index].tjeneste === 'SUMMERT_SKATTEGRUNNLAG') {
-							return (
-								values.sigrunstub[index].grunnlag.length > 0 ||
-								values.sigrunstub[index].svalbardGrunnlag.length > 0
-							)
-						} else {
+					.test('is-required', 'Legg til minst én inntekt', (_val, context) => {
+						const values = context.parent
+						if (!values.tjeneste) {
 							return true
 						}
+						return values.grunnlag?.length > 0 || values.svalbardGrunnlag?.length > 0
 					}),
 				inntektsaar: Yup.number().integer('Ugyldig årstall').required('Tast inn et gyldig år'),
 				svalbardGrunnlag: Yup.array().of(

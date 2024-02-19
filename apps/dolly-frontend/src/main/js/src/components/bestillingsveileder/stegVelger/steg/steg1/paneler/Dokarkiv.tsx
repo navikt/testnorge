@@ -9,7 +9,7 @@ import {
 } from '@/components/fagsystem/arbeidsplassen/form/initialValues'
 import { histarkAttributt } from '@/components/fagsystem/histark/form/HistarkForm'
 
-export const DokarkivPanel = ({ stateModifier, formikBag }: any) => {
+export const DokarkivPanel = ({ stateModifier, formValues }: any) => {
 	const sm = stateModifier(DokarkivPanel.initialValues)
 
 	return (
@@ -19,7 +19,7 @@ export const DokarkivPanel = ({ stateModifier, formikBag }: any) => {
 			checkAttributeArray={() => sm.batchAdd(['digitalInnsending', 'histark'])}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType="dokarkiv"
-			startOpen={harValgtAttributt(formikBag.values, [dokarkivAttributt, histarkAttributt])}
+			startOpen={harValgtAttributt(formValues, [dokarkivAttributt, histarkAttributt])}
 		>
 			<AttributtKategori title="Oppretting av dokument" attr={sm.attrs}>
 				<Attributt

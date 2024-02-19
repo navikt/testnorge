@@ -102,11 +102,16 @@ const GruppeHeader = ({
 						{!erLaast && <LeggTilPaaGruppe antallPersoner={antallPersoner} gruppeId={gruppe.id} />}
 						{!erLaast && <FlyttPersonButton gruppeId={gruppe?.id} disabled={antallPersoner < 1} />}
 						{gruppe.erEierAvGruppe && !erLaast && (
-							<Button kind="edit" onClick={visRediger}>
+							<Button
+								data-cy={CypressSelector.BUTTON_REDIGER_GRUPPE}
+								kind="edit"
+								onClick={visRediger}
+							>
 								REDIGER
 							</Button>
 						)}
 						<Button
+							data-cy={CypressSelector.BUTTON_GJENOPPRETT_GRUPPE}
 							onClick={visGjenopprettModal}
 							kind="synchronize"
 							disabled={antallPersoner < 1}

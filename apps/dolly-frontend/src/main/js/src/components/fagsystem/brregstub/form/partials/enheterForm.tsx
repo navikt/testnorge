@@ -1,4 +1,3 @@
-import * as _ from 'lodash-es'
 import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
@@ -13,16 +12,16 @@ const initialValues = {
 	foretaksNavn: {
 		navn1: '',
 	},
-	orgNr: '',
+	orgNr: null,
 	personroller: [],
 }
 
-export const EnheterForm = ({ formikBag }) => {
+export const EnheterForm = ({ formMethods }) => {
 	const roller = SelectOptionsOppslag.hentRollerFraBrregstub()
 	const rollerOptions = SelectOptionsFormat.formatOptions('roller', roller)
 
 	const setEnhetsinfo = (org, path) => {
-		const currentValues = _.get(formikBag.values, path)
+		const currentValues = formMethods.watch(path)
 		currentValues['orgNr'] = org.value
 		currentValues['foretaksNavn'] = { navn1: org.navn }
 		if (org.forretningsAdresse) {
@@ -49,7 +48,8 @@ export const EnheterForm = ({ formikBag }) => {
 			delete currentValues['postAdresse']
 		}
 
-		formikBag.setFieldValue(path, currentValues)
+		formMethods.setValue(path, currentValues)
+		formMethods.trigger(path)
 	}
 
 	return (
@@ -68,11 +68,10 @@ export const EnheterForm = ({ formikBag }) => {
 						isLoading={roller.loading}
 						size="large"
 						isClearable={false}
-						fastfield={false}
 					/>
 					<FormikDatepicker name={`${path}.registreringsdato`} label="Registreringsdato" />
-					<OrgnrToggle path={path} formikBag={formikBag} setEnhetsinfo={setEnhetsinfo} />
-					<PersonrollerForm formikBag={formikBag} path={path} />
+					<OrgnrToggle path={path} formMethods={formMethods} setEnhetsinfo={setEnhetsinfo} />
+					<PersonrollerForm formMethods={formMethods} path={path} />
 				</>
 			)}
 		</FormikDollyFieldArray>

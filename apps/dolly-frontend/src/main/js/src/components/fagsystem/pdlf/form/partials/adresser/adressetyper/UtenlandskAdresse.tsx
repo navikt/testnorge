@@ -1,30 +1,30 @@
 import { DollyTextInput, FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { GtKodeverk } from '@/config/kodeverk'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
-import * as _ from 'lodash-es'
-import { FormikProps } from 'formik'
 import { useEffect } from 'react'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface UtenlandskAdresseForm {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 	path: string
 	master?: string | unknown
 }
 
-export const UtenlandskAdresse = ({ formikBag, path, master }: UtenlandskAdresseForm) => {
+export const UtenlandskAdresse = ({ formMethods, path, master }: UtenlandskAdresseForm) => {
 	const harAdressenavn =
-		_.get(formikBag.values, `${path}.adressenavnNummer`) !== '' &&
-		_.get(formikBag.values, `${path}.adressenavnNummer`) !== null
+		formMethods.watch(`${path}.adressenavnNummer`) !== '' &&
+		formMethods.watch(`${path}.adressenavnNummer`) !== null
 
 	const harPostboksnummer =
-		_.get(formikBag.values, `${path}.postboksNummerNavn`) !== '' &&
-		_.get(formikBag.values, `${path}.postboksNummerNavn`) !== null
+		formMethods.watch(`${path}.postboksNummerNavn`) !== '' &&
+		formMethods.watch(`${path}.postboksNummerNavn`) !== null
 
 	useEffect(() => {
 		if (master !== 'PDL') {
-			formikBag.setFieldValue(`${path}.bygningEtasjeLeilighet`, null)
-			formikBag.setFieldValue(`${path}.regionDistriktOmraade`, null)
+			formMethods.setValue(`${path}.bygningEtasjeLeilighet`, null)
+			formMethods.setValue(`${path}.regionDistriktOmraade`, null)
 		}
+		formMethods.trigger()
 	}, [master])
 
 	return (

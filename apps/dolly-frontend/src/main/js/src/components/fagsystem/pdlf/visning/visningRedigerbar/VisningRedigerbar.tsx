@@ -1,11 +1,9 @@
 import React, { useCallback, useRef, useState } from 'react'
-import * as Yup from 'yup'
-import { Formik, FormikProps } from 'formik'
 import { FoedselForm } from '@/components/fagsystem/pdlf/form/partials/foedsel/Foedsel'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 import styled from 'styled-components'
 import Button from '@/components/ui/button/Button'
-import * as _ from 'lodash-es'
+import _ from 'lodash'
 import { DollyApi, PdlforvalterApi } from '@/service/Api'
 import Icon from '@/components/ui/icon/Icon'
 import DollyModal from '@/components/ui/modal/DollyModal'
@@ -24,24 +22,6 @@ import {
 	AdressebeskyttelseForm,
 	getIdenttype,
 } from '@/components/fagsystem/pdlf/form/partials/adresser/adressebeskyttelse/Adressebeskyttelse'
-import { doedsfall, navn } from '@/components/fagsystem/pdlf/form/validation/validation'
-import {
-	adressebeskyttelse,
-	bostedsadresse,
-	doedfoedtBarn,
-	forelderBarnRelasjon,
-	fullmakt,
-	innflytting,
-	kontaktadresse,
-	kontaktDoedsbo,
-	oppholdsadresse,
-	sivilstand,
-	statsborgerskap,
-	utenlandskId,
-	utflytting,
-	vergemaal,
-} from '@/components/fagsystem/pdlf/form/validation/partials'
-import { ifPresent, validate } from '@/utils/YupValidations'
 import {
 	Modus,
 	RedigerLoading,
@@ -51,13 +31,13 @@ import { KontaktinformasjonForDoedsboForm } from '@/components/fagsystem/pdlf/fo
 import { NavnForm } from '@/components/fagsystem/pdlf/form/partials/navn/Navn'
 import { ForelderBarnRelasjonForm } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/forelderBarnRelasjon/ForelderBarnRelasjon'
 import { ForeldreansvarForm } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/foreldreansvar/Foreldreansvar'
-import {
-	deltBosted,
-	foreldreansvarForBarn,
-} from '@/components/fagsystem/pdlf/form/validation/partials/familierelasjoner'
 import { DeltBostedForm } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/forelderBarnRelasjon/DeltBosted'
 import { DoedfoedtBarnForm } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/doedfoedtBarn/DoedfoedtBarn'
 import { UtenlandsIdForm } from '@/components/fagsystem/pdlf/form/partials/identifikasjon/utenlandsId/UtenlandsId'
+import { UseFormReturn } from 'react-hook-form/dist/types'
+import { Form, FormProvider, useForm } from 'react-hook-form'
+import { visningRedigerbarValidation } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarValidation'
+import { yupResolver } from '@hookform/resolvers/yup'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -70,6 +50,9 @@ type VisningTypes = {
 	identtype?: string
 	disableSlett?: boolean
 	personFoerLeggTil?: any
+	personValues: any
+	relasjoner: any
+	relatertPersonInfo: any
 }
 
 enum Attributt {
@@ -141,6 +124,11 @@ export const VisningRedigerbar = ({
 	const [errorMessagePdlf, setErrorMessagePdlf] = useState(null)
 	const [errorMessagePdl, setErrorMessagePdl] = useState(null)
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
+	const formMethods = useForm({
+		mode: 'onChange',
+		defaultValues: redigertAttributt ? redigertAttributt : initialValues,
+		resolver: yupResolver(visningRedigerbarValidation),
+	})
 
 	const pdlfError = (error: any) => {
 		error &&
@@ -242,12 +230,17 @@ export const VisningRedigerbar = ({
 		return slett()
 	}, [])
 
-	const getForm = (formikBag: FormikProps<{}>) => {
+	const onNavButtonClick = useCallback(() => {
+		formMethods.reset()
+		setVisningModus(Modus.Les)
+	}, [])
+
+	const getForm = (formMethods: UseFormReturn) => {
 		switch (path) {
 			case Attributt.Navn:
-				return <NavnForm formikBag={formikBag} path={path} />
+				return <NavnForm formMethods={formMethods} path={path} />
 			case Attributt.Foedsel:
-				return <FoedselForm formikBag={formikBag} path={path} />
+				return <FoedselForm formMethods={formMethods} path={path} />
 			case Attributt.Doedsfall:
 				return <DoedsfallForm path={path} />
 			case Attributt.Statsborgerskap:
@@ -259,7 +252,7 @@ export const VisningRedigerbar = ({
 			case Attributt.Vergemaal:
 				return (
 					<VergemaalForm
-						formikBag={formikBag}
+						formMethods={formMethods}
 						path={path}
 						eksisterendeNyPerson={eksisterendeNyPerson}
 					/>
@@ -267,29 +260,29 @@ export const VisningRedigerbar = ({
 			case Attributt.Fullmakt:
 				return (
 					<FullmaktForm
-						formikBag={formikBag}
+						formMethods={formMethods}
 						path={path}
 						eksisterendeNyPerson={eksisterendeNyPerson}
 					/>
 				)
 			case Attributt.Boadresse:
-				return <BostedsadresseForm formikBag={formikBag} path={path} identtype={identtype} />
+				return <BostedsadresseForm formMethods={formMethods} path={path} identtype={identtype} />
 			case Attributt.Oppholdsadresse:
-				return <OppholdsadresseForm formikBag={formikBag} path={path} identtype={identtype} />
+				return <OppholdsadresseForm formMethods={formMethods} path={path} identtype={identtype} />
 			case Attributt.Kontaktadresse:
-				return <KontaktadresseForm formikBag={formikBag} path={path} identtype={identtype} />
+				return <KontaktadresseForm formMethods={formMethods} path={path} identtype={identtype} />
 			case Attributt.Adressebeskyttelse:
 				return (
 					<AdressebeskyttelseForm
-						formikBag={formikBag}
+						formMethods={formMethods}
 						path={path}
-						identtype={getIdenttype(formikBag, identtype)}
+						identtype={getIdenttype(formMethods, identtype)}
 					/>
 				)
 			case Attributt.DeltBosted:
 				return (
 					<DeltBostedForm
-						formikBag={formikBag}
+						formMethods={formMethods}
 						path={path}
 						relasjoner={relasjoner}
 						personValues={personValues}
@@ -299,7 +292,7 @@ export const VisningRedigerbar = ({
 				return (
 					<SivilstandForm
 						path={path}
-						formikBag={formikBag}
+						formMethods={formMethods}
 						eksisterendeNyPerson={eksisterendeNyPerson}
 						identtype={identtype}
 					/>
@@ -307,7 +300,7 @@ export const VisningRedigerbar = ({
 			case Attributt.KontaktinformasjonForDoedsbo:
 				return (
 					<KontaktinformasjonForDoedsboForm
-						formikBag={formikBag}
+						formMethods={formMethods}
 						path={path}
 						eksisterendeNyPerson={eksisterendeNyPerson}
 					/>
@@ -315,7 +308,7 @@ export const VisningRedigerbar = ({
 			case Attributt.ForelderBarnRelasjon:
 				return (
 					<ForelderBarnRelasjonForm
-						formikBag={formikBag}
+						formMethods={formMethods}
 						path={path}
 						eksisterendeNyPerson={eksisterendeNyPerson}
 						identtype={identtype}
@@ -324,161 +317,96 @@ export const VisningRedigerbar = ({
 			case Attributt.Foreldreansvar:
 				return (
 					<ForeldreansvarForm
-						formikBag={formikBag}
+						formMethods={formMethods}
 						path={path}
 						eksisterendeNyPerson={eksisterendeNyPerson}
 					/>
 				)
 			case Attributt.DoedfoedtBarn:
-				return <DoedfoedtBarnForm formikBag={formikBag} path={path} />
+				return <DoedfoedtBarnForm formMethods={formMethods} path={path} />
 			case Attributt.UtenlandskIdentifikasjonsnummer:
 				return <UtenlandsIdForm path={path} identtype={identtype} />
 		}
 	}
 
-	const validationSchema = Yup.object().shape(
-		{
-			navn: ifPresent('navn', navn),
-			doedsfall: ifPresent('doedsfall', doedsfall),
-			statsborgerskap: ifPresent('statsborgerskap', statsborgerskap),
-			innflytting: ifPresent('innflytting', innflytting),
-			utflytting: ifPresent('utflytting', utflytting),
-			vergemaal: ifPresent('vergemaal', vergemaal),
-			fullmakt: ifPresent('fullmakt', fullmakt),
-			bostedsadresse: ifPresent('bostedsadresse', bostedsadresse),
-			oppholdsadresse: ifPresent('oppholdsadresse', oppholdsadresse),
-			kontaktadresse: ifPresent('kontaktadresse', kontaktadresse),
-			adressebeskyttelse: ifPresent('adressebeskyttelse', adressebeskyttelse),
-			deltBosted: ifPresent('deltBosted', deltBosted),
-			sivilstand: ifPresent('sivilstand', sivilstand),
-			kontaktinformasjonForDoedsbo: ifPresent('kontaktinformasjonForDoedsbo', kontaktDoedsbo),
-			forelderBarnRelasjon: ifPresent('forelderBarnRelasjon', forelderBarnRelasjon),
-			foreldreansvar: ifPresent(
-				'foreldreansvar',
-				Yup.mixed().when('foreldreansvar', {
-					is: (foreldreansvar) => Array.isArray(foreldreansvar),
-					then: () => Yup.array().of(foreldreansvarForBarn),
-					otherwise: () => foreldreansvarForBarn,
-				}),
-			),
-			doedfoedtBarn: ifPresent('doedfoedtBarn', doedfoedtBarn),
-			utenlandskIdentifikasjonsnummer: ifPresent('utenlandskIdentifikasjonsnummer', utenlandskId),
-		},
-		[
-			['navn', 'navn'],
-			['doedsfall', 'doedsfall'],
-			['statsborgerskap', 'statsborgerskap'],
-			['innflytting', 'innflytting'],
-			['utflytting', 'utflytting'],
-			['vergemaal', 'vergemaal'],
-			['fullmakt', 'fullmakt'],
-			['bostedsadresse', 'bostedsadresse'],
-			['oppholdsadresse', 'oppholdsadresse'],
-			['kontaktadresse', 'kontaktadresse'],
-			['adressebeskyttelse', 'adressebeskyttelse'],
-			['deltBosted', 'deltBosted'],
-			['sivilstand', 'sivilstand'],
-			['kontaktinformasjonForDoedsbo', 'kontaktinformasjonForDoedsbo'],
-			['forelderBarnRelasjon', 'forelderBarnRelasjon'],
-			['foreldreansvar', 'foreldreansvar'],
-			['doedfoedtBarn', 'doedfoedtBarn'],
-			['utenlandskIdentifikasjonsnummer', 'utenlandskIdentifikasjonsnummer'],
-		],
-	)
-
-	const _validate = (values: any) =>
-		validate(
-			{
-				...values,
-				personFoerLeggTil: personFoerLeggTil,
-				personValues: personValues,
-			},
-			validationSchema,
-		)
-
 	return (
 		<>
-			<RedigerLoading visningModus={visningModus} />
-			{visningModus === Modus.Les && (
-				<>
-					{dataVisning}
-					<EditDeleteKnapper>
-						<Button kind="edit" onClick={() => setVisningModus(Modus.Skriv)} title="Endre" />
-						<Button
-							kind="trashcan"
-							fontSize={'1.4rem'}
-							onClick={() => openModal()}
-							title="Slett"
-							disabled={disableSlett}
-						/>
-						<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="40%" overflow="auto">
-							<div className="slettModal">
-								<div className="slettModal slettModal-content">
-									<Icon size={50} kind="report-problem-circle" />
-									<h1>Sletting</h1>
-									<h4>Er du sikker på at du vil slette denne opplysningen fra personen?</h4>
+			<FormProvider {...formMethods}>
+				<RedigerLoading visningModus={visningModus} />
+				{visningModus === Modus.Les && (
+					<>
+						{dataVisning}
+						<EditDeleteKnapper>
+							<Button kind="edit" onClick={() => setVisningModus(Modus.Skriv)} title="Endre" />
+							<Button
+								kind="trashcan"
+								fontSize={'1.4rem'}
+								onClick={() => openModal()}
+								title="Slett"
+								disabled={disableSlett}
+							/>
+							<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="40%" overflow="auto">
+								<div className="slettModal">
+									<div className="slettModal slettModal-content">
+										<Icon size={50} kind="report-problem-circle" />
+										<h1>Sletting</h1>
+										<h4>Er du sikker på at du vil slette denne opplysningen fra personen?</h4>
+									</div>
+									<div className="slettModal-actions">
+										<NavButton onClick={closeModal} variant="secondary">
+											Nei
+										</NavButton>
+										<NavButton
+											onClick={() => {
+												closeModal()
+												return relatertPersonInfo ? handleDeleteRelatertPerson() : handleDelete()
+											}}
+											variant="primary"
+										>
+											Ja, jeg er sikker
+										</NavButton>
+									</div>
 								</div>
-								<div className="slettModal-actions">
-									<NavButton onClick={closeModal} variant="secondary">
-										Nei
+							</DollyModal>
+						</EditDeleteKnapper>
+						<div className="flexbox--full-width">
+							{errorMessagePdlf && <div className="error-message">{errorMessagePdlf}</div>}
+							{errorMessagePdl && <div className="error-message">{errorMessagePdl}</div>}
+						</div>
+					</>
+				)}
+				{visningModus === Modus.Skriv && (
+					<Form
+						onSubmit={(data) =>
+							relatertPersonInfo?.ident
+								? handleSubmitRelatertPerson(data?.data, relatertPersonInfo.ident)
+								: handleSubmit(data?.data)
+						}
+					>
+						<>
+							<FieldArrayEdit>
+								<div className="flexbox--flex-wrap">{getForm(formMethods)}</div>
+								<Knappegruppe>
+									<NavButton
+										variant="secondary"
+										onClick={onNavButtonClick}
+										disabled={formMethods.formState.isSubmitting}
+									>
+										Avbryt
 									</NavButton>
 									<NavButton
-										onClick={() => {
-											closeModal()
-											return relatertPersonInfo ? handleDeleteRelatertPerson() : handleDelete()
-										}}
 										variant="primary"
+										onClick={() => formMethods.handleSubmit()}
+										disabled={formMethods.formState.isSubmitting}
 									>
-										Ja, jeg er sikker
+										Endre
 									</NavButton>
-								</div>
-							</div>
-						</DollyModal>
-					</EditDeleteKnapper>
-					<div className="flexbox--full-width">
-						{errorMessagePdlf && <div className="error-message">{errorMessagePdlf}</div>}
-						{errorMessagePdl && <div className="error-message">{errorMessagePdl}</div>}
-					</div>
-				</>
-			)}
-			{visningModus === Modus.Skriv && (
-				<Formik
-					initialValues={redigertAttributt ? redigertAttributt : initialValues}
-					onSubmit={(data) =>
-						relatertPersonInfo?.ident
-							? handleSubmitRelatertPerson(data, relatertPersonInfo.ident)
-							: handleSubmit(data)
-					}
-					enableReinitialize
-					validate={_validate}
-				>
-					{(formikBag) => {
-						return (
-							<>
-								<FieldArrayEdit>
-									<div className="flexbox--flex-wrap">{getForm(formikBag)}</div>
-									<Knappegruppe>
-										<NavButton
-											variant="secondary"
-											onClick={() => setVisningModus(Modus.Les)}
-											disabled={formikBag.isSubmitting}
-										>
-											Avbryt
-										</NavButton>
-										<NavButton
-											variant="primary"
-											onClick={() => formikBag.handleSubmit()}
-											disabled={!formikBag.isValid || formikBag.isSubmitting}
-										>
-											Endre
-										</NavButton>
-									</Knappegruppe>
-								</FieldArrayEdit>
-							</>
-						)
-					}}
-				</Formik>
-			)}
+								</Knappegruppe>
+							</FieldArrayEdit>
+						</>
+					</Form>
+				)}
+			</FormProvider>
 		</>
 	)
 }

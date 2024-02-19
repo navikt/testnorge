@@ -1,5 +1,5 @@
 import { initialValues } from './utils'
-import * as _ from 'lodash-es'
+import _ from 'lodash'
 import { filterMiljoe } from '@/components/miljoVelger/MiljoeInfo'
 import {
 	BostedData,
@@ -85,7 +85,7 @@ export const initialValuesBasedOnMal = (mal: any) => {
 		delete initialValuesMal.tpsMessaging.utenlandskBankkonto
 	}
 
-	initialValuesMal.environments = filterMiljoe(dollyEnvironments, mal.bestilling.environments)
+	initialValuesMal.environments = filterMiljoe(dollyEnvironments, mal.bestilling?.environments)
 	return initialValuesMal
 }
 
@@ -218,6 +218,10 @@ const getUpdatedPdldata = (pdldata: any) => {
 		newPdldata.opprettNyPerson = {}
 	}
 	const person = newPdldata?.person
+	if (!person) {
+		newPdldata.person = undefined
+		return newPdldata
+	}
 	if (person?.bostedsadresse) {
 		newPdldata.person.bostedsadresse = person.bostedsadresse.map((adresse: BostedData) => {
 			return updateAdressetyper(adresse, false)

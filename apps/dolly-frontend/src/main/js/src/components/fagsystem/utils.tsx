@@ -1,22 +1,22 @@
-import * as _ from 'lodash-es'
+import _ from 'lodash'
 import { isAfter, isBefore, isEqual } from 'date-fns'
 import { Relasjon } from '@/components/fagsystem/pdlf/PdlTypes'
 
 export const testDatoFom = (val, tomPath, feilmelding = 'Dato må være før til-dato') => {
-	return val.test('is-before-tom', feilmelding, function isBeforeTom(value) {
-		const datoTom = _.get(this, `parent.${tomPath}`)
+	return val.test('is-before-tom', feilmelding, (value, testContext) => {
+		const datoTom = _.get(testContext.parent, tomPath)
 		if (!value || !datoTom) return true
-		if (isEqual(new Date(value), new Date(datoTom))) return true
-		return isBefore(new Date(value), new Date(datoTom))
+		if (isEqual(value, datoTom)) return true
+		return isBefore(value, datoTom)
 	})
 }
 
 export const testDatoTom = (val, fomPath, feilmelding = 'Dato må være etter fra-dato') => {
-	return val.test('is-after-fom', feilmelding, function isAfterFom(value) {
-		const datoFom = _.get(this, `parent.${fomPath}`)
+	return val.test('is-after-fom', feilmelding, (value, testContext) => {
+		const datoFom = _.get(testContext.parent, fomPath)
 		if (!value || !datoFom) return true
-		if (isEqual(new Date(value), new Date(datoFom))) return true
-		return isAfter(new Date(value), new Date(datoFom))
+		if (isEqual(value, datoFom)) return true
+		return isAfter(value, datoFom)
 	})
 }
 

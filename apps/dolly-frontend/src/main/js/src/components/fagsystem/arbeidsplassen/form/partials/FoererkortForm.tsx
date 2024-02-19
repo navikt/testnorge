@@ -10,7 +10,7 @@ import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepic
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { EraseFillButtons } from '@/components/fagsystem/arbeidsplassen/form/partials/EraseFillButtons'
 
-export const FoererkortForm = ({ formikBag }) => {
+export const FoererkortForm = ({ formMethods }) => {
 	const foererkortTyperListePath = 'arbeidsplassenCV.foererkort'
 
 	return (
@@ -35,7 +35,7 @@ export const FoererkortForm = ({ formikBag }) => {
 							<FormikDatepicker name={`${foererkortPath}.expiryDate`} label="Gyldig til" />
 						</div>
 						<EraseFillButtons
-							formikBag={formikBag}
+							formMethods={formMethods}
 							path={foererkortPath}
 							initialErase={initialFoererkort}
 							initialFill={initialFoererkortVerdier}

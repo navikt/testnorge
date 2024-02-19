@@ -3,7 +3,7 @@ import { Navigate } from 'react-router-dom'
 import GruppeConnector from '@/pages/gruppe/GruppeConnector'
 
 const GruppeOversikt = lazy(() => import('@/pages/gruppeOversikt/GruppeOversiktConnector'))
-const Organisasjon = lazy(() => import('@/pages/organisasjoner/OrganisasjonerConnector'))
+const Organisasjon = lazy(() => import('@/pages/organisasjoner/Organisasjoner'))
 const BestillingsveilederConnector = lazy(
 	() => import('@/components/bestillingsveileder/BestillingsveilederConnector'),
 )

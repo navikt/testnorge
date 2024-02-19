@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { useContext } from 'react'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
@@ -9,18 +10,16 @@ import {
 	getInitialSivilstand,
 	initialPdlPerson,
 } from '@/components/fagsystem/pdlf/form/initialValues'
-import { FormikProps } from 'formik'
 import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
-import * as _ from 'lodash-es'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 import { Option } from '@/service/SelectOptionsOppslag'
-import { useContext } from 'react'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface SivilstandFormTypes {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 	path?: string
 	eksisterendeNyPerson?: Option | null
 	identtype?: string
@@ -36,23 +35,24 @@ const gyldigeSivilstander = [
 
 export const SivilstandForm = ({
 	path,
-	formikBag,
+	formMethods,
 	eksisterendeNyPerson = null,
 	identtype,
 }: SivilstandFormTypes) => {
 	const handleTypeChange = (selected: any, path: string) => {
-		formikBag.setFieldValue(`${path}.type`, selected.value)
+		formMethods.setValue(`${path}.type`, selected.value)
 		if (!gyldigeSivilstander.includes(selected.value)) {
-			formikBag.setFieldValue(`${path}.borIkkeSammen`, false)
-			formikBag.setFieldValue(`${path}.relatertVedSivilstand`, null)
-			formikBag.setFieldValue(`${path}.nyRelatertPerson`, initialPdlPerson)
+			formMethods.setValue(`${path}.borIkkeSammen`, false)
+			formMethods.setValue(`${path}.relatertVedSivilstand`, null)
+			formMethods.setValue(`${path}.nyRelatertPerson`, initialPdlPerson)
 		}
 		if (selected.value === 'SAMBOER') {
-			formikBag.setFieldValue(`${path}.bekreftelsesdato`, null)
+			formMethods.setValue(`${path}.bekreftelsesdato`, null)
 		}
+		formMethods.trigger()
 	}
 
-	const kanHaRelatertPerson = gyldigeSivilstander.includes(_.get(formikBag.values, `${path}.type`))
+	const kanHaRelatertPerson = gyldigeSivilstander.includes(formMethods.watch(`${path}.type`))
 
 	return (
 		<div className="flexbox--flex-wrap">
@@ -63,7 +63,7 @@ export const SivilstandForm = ({
 				onChange={(selected: any) => handleTypeChange(selected, path)}
 				isClearable={false}
 			/>
-			{_.get(formikBag.values, `${path}.type`) === 'SAMBOER' && (
+			{formMethods.watch(`${path}.type`) === 'SAMBOER' && (
 				<div style={{ marginLeft: '-20px', marginRight: '20px', paddingTop: '27px' }}>
 					<Hjelpetekst>
 						Samboer eksisterer verken i PDL eller TPS. Personer med denne typen sisvilstand vil
@@ -75,18 +75,16 @@ export const SivilstandForm = ({
 				<FormikDatepicker
 					name={`${path}.sivilstandsdato`}
 					label="Gyldig fra og med"
-					disabled={_.get(formikBag.values, `${path}.bekreftelsesdato`) != null}
-					fastfield={false}
+					disabled={formMethods.watch(`${path}.bekreftelsesdato`) != null}
 				/>
 				<FormikDatepicker
 					name={`${path}.bekreftelsesdato`}
 					label="Bekreftelsesdato"
 					disabled={
-						_.get(formikBag.values, `${path}.sivilstandsdato`) != null ||
-						_.get(formikBag.values, `${path}.master`) !== 'PDL' ||
-						_.get(formikBag.values, `${path}.type`) === 'SAMBOER'
+						formMethods.watch(`${path}.sivilstandsdato`) != null ||
+						formMethods.watch(`${path}.master`) !== 'PDL' ||
+						formMethods.watch(`${path}.type`) === 'SAMBOER'
 					}
-					fastfield={false}
 				/>
 			</DatepickerWrapper>
 			<FormikCheckbox
@@ -101,26 +99,25 @@ export const SivilstandForm = ({
 					eksisterendePersonPath={`${path}.relatertVedSivilstand`}
 					eksisterendeNyPerson={eksisterendeNyPerson}
 					label={'PERSON RELATERT TIL'}
-					formikBag={formikBag}
+					formMethods={formMethods}
 					isExpanded={
-						!isEmpty(_.get(formikBag.values, `${path}.nyRelatertPerson`), ['syntetisk']) ||
-						_.get(formikBag.values, `${path}.relatertVedSivilstand`) !== null
+						!isEmpty(formMethods.watch(`${path}.nyRelatertPerson`), ['syntetisk']) ||
+						formMethods.watch(`${path}.relatertVedSivilstand`) !== null
 					}
 				/>
 			)}
 			<AvansertForm
 				path={path}
 				kanVelgeMaster={
-					_.get(formikBag.values, `${path}.bekreftelsesdato`) === null && identtype !== 'NPID'
+					formMethods.watch(`${path}.bekreftelsesdato`) === null && identtype !== 'NPID'
 				}
 			/>
 		</div>
 	)
 }
 
-export const Sivilstand = ({ formikBag }: SivilstandFormTypes) => {
+export const Sivilstand = ({ formMethods }: SivilstandFormTypes) => {
 	const opts = useContext(BestillingsveilederContext)
-
 	return (
 		<FormikDollyFieldArray
 			name="pdldata.person.sivilstand"
@@ -129,7 +126,7 @@ export const Sivilstand = ({ formikBag }: SivilstandFormTypes) => {
 			canBeEmpty={false}
 		>
 			{(path: string) => (
-				<SivilstandForm path={path} formikBag={formikBag} identtype={opts?.identtype} />
+				<SivilstandForm path={path} formMethods={formMethods} identtype={opts?.identtype} />
 			)}
 		</FormikDollyFieldArray>
 	)
