@@ -1,11 +1,21 @@
 import { useToggle } from 'react-use'
 import ExpandButton from '@/components/ui/button/ExpandButton/ExpandButton'
+import { navigerTilPerson } from '@/ducks/finnPerson'
+import { useDispatch } from 'react-redux'
+import Button from '@/components/ui/button/Button'
 
 function IdentList({ identer }: { identer: string[] }) {
+	const dispatch = useDispatch()
 	return (
 		<ul>
 			{identer.map((ident, idx) => (
-				<li key={idx}>{ident}</li>
+				<Button
+					style={{ alignContent: 'center' }}
+					onClick={() => dispatch(navigerTilPerson(ident))}
+					key={idx}
+				>
+					{ident}
+				</Button>
 			))}
 		</ul>
 	)
