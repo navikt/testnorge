@@ -3,20 +3,30 @@ import ExpandButton from '@/components/ui/button/ExpandButton/ExpandButton'
 import { navigerTilPerson } from '@/ducks/finnPerson'
 import { useDispatch } from 'react-redux'
 import Button from '@/components/ui/button/Button'
+import { useState } from 'react'
+import Loading from '@/components/ui/loading/Loading'
 
 function IdentList({ identer }: { identer: string[] }) {
 	const dispatch = useDispatch()
+	const [loading, setLoading] = useState(false)
 	return (
 		<ul>
-			{identer.map((ident, idx) => (
-				<Button
-					style={{ alignContent: 'center' }}
-					onClick={() => dispatch(navigerTilPerson(ident))}
-					key={idx}
-				>
-					{ident}
-				</Button>
-			))}
+			{identer.map((ident, idx) =>
+				loading ? (
+					<Loading label={'Navigerer...'} key={idx} />
+				) : (
+					<Button
+						style={{ alignContent: 'center' }}
+						onClick={() => {
+							setLoading(true)
+							return dispatch(navigerTilPerson(ident))
+						}}
+						key={idx}
+					>
+						{ident}
+					</Button>
+				),
+			)}
 		</ul>
 	)
 }
