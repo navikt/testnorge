@@ -80,10 +80,6 @@ a {
   z-index: unset;
 }
 
-.navds-checkbox--small .navds-checkbox__input:checked + .navds-checkbox__label > .navds-checkbox__icon {
-  transform: translate(0.22rem, 1%)
-}
-
 .miljo-velger {
   .navds-body-short {
     font-size: var(--navds-font-size-small)
@@ -115,6 +111,13 @@ a {
     width: 100%;
     height: 38px;
     padding: 7px 10px;
+    border-radius: var(--a-border-radius-medium);
+    border: 1px solid var(--ac-textfield-border, var(--__ac-textfield-border, var(--a-border-default)));
+
+    &--harFeil {
+      border-color: var(--ac-textfield-error-border, var(--__ac-textfield-error-border, var(--a-border-danger)));
+      box-shadow: 0 0 0 1px var(--ac-textfield-error-border, var(--__ac-textfield-error-border, var(--a-border-danger)));
+    }
 
     &:read-only {
       background-color: #f2f2f2;

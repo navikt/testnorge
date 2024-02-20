@@ -1,22 +1,23 @@
-import { FormikProps } from 'formik'
-import * as _ from 'lodash-es'
+import _ from 'lodash'
 import { InputWrapper } from '@/components/ui/form/inputWrapper/InputWrapper'
 import { Label } from '@/components/ui/form/inputs/label/Label'
 import ReactDatepicker from 'react-datepicker'
 import { TextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface YearpickerProps {
-	formikBag: FormikProps<any>
+	formMethods: UseFormReturn
 	name: string
 	label: string
 	date: Date
 	handleDateChange: (dato: string, type: string) => void
 	minDate?: Date
 	maxDate?: Date
+	disabled?: boolean
 }
 
 export const Yearpicker = ({
-	formikBag,
+	formMethods,
 	name,
 	label,
 	date,
@@ -25,14 +26,14 @@ export const Yearpicker = ({
 	minDate = null,
 	disabled = false,
 }: YearpickerProps) => {
-	const getFeilmelding = (formikProps: FormikProps<any>, formikPath: string) => {
-		const feilmelding = _.get(formikProps.errors, formikPath)
+	const getFeilmelding = (formMethods: UseFormReturn, formikPath: string) => {
+		const feilmelding = _.get(formMethods.formState.errors, formikPath)
 		return feilmelding ? { feilmelding: feilmelding } : null
 	}
 
 	return (
 		<InputWrapper>
-			<Label name={name} label={label} feil={getFeilmelding(formikBag, name)}>
+			<Label name={name} label={label} feil={getFeilmelding(formMethods, name)}>
 				<ReactDatepicker
 					className={'skjemaelement__input'}
 					dateFormat="yyyy"
@@ -40,7 +41,7 @@ export const Yearpicker = ({
 					onChange={handleDateChange}
 					placeholderText={'Ikke spesifisert'}
 					showYearPicker
-					customInput={<TextInput icon="calendar" feil={getFeilmelding(formikBag, name)} />}
+					customInput={<TextInput icon="calendar" feil={getFeilmelding(formMethods, name)} />}
 					maxDate={maxDate}
 					minDate={minDate}
 					disabled={disabled}

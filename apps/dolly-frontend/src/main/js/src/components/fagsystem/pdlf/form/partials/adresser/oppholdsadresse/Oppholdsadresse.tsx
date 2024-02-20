@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react'
-import * as _ from 'lodash-es'
+import _ from 'lodash'
 import {
 	getInitialOppholdsadresse,
 	initialMatrikkeladresse,
@@ -19,20 +19,20 @@ import {
 } from '@/components/fagsystem/pdlf/form/partials/adresser/adressetyper'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
-import { FormikProps } from 'formik'
 import { Adressetype } from '@/components/fagsystem/pdlf/PdlTypes'
 import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 import { getPlaceholder, setNavn } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { useGenererNavn } from '@/utils/hooks/useGenererNavn'
 import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface OppholdsadresseValues {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 }
 
 type OppholdsadresseFormValues = {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 	path: string
 	idx?: number
 	identtype?: string
@@ -44,40 +44,40 @@ type Target = {
 }
 
 export const OppholdsadresseForm = ({
-	formikBag,
+	formMethods,
 	path,
 	idx,
 	identtype,
 }: OppholdsadresseFormValues) => {
 	const erNPID = identtype === 'NPID'
-
 	useEffect(() => {
-		formikBag.setFieldValue(`${path}.adresseIdentifikatorFraMatrikkelen`, undefined)
-		const oppholdsadresse = _.get(formikBag.values, path)
+		formMethods.setValue(`${path}.adresseIdentifikatorFraMatrikkelen`, undefined)
+		const oppholdsadresse = formMethods.watch(path)
 		if (_.get(oppholdsadresse, 'vegadresse') && _.get(oppholdsadresse, 'vegadresse') !== null) {
-			formikBag.setFieldValue(`${path}.adressetype`, Adressetype.Veg)
+			formMethods.setValue(`${path}.adressetype`, Adressetype.Veg)
 		} else if (
 			_.get(oppholdsadresse, 'matrikkeladresse') &&
 			_.get(oppholdsadresse, 'matrikkeladresse') !== null
 		) {
-			formikBag.setFieldValue(`${path}.adressetype`, Adressetype.Matrikkel)
+			formMethods.setValue(`${path}.adressetype`, Adressetype.Matrikkel)
 		} else if (
 			_.get(oppholdsadresse, 'utenlandskAdresse') &&
 			_.get(oppholdsadresse, 'utenlandskAdresse') !== null
 		) {
-			formikBag.setFieldValue(`${path}.adressetype`, Adressetype.Utenlandsk)
+			formMethods.setValue(`${path}.adressetype`, Adressetype.Utenlandsk)
 		} else if (
 			_.get(oppholdsadresse, 'oppholdAnnetSted') &&
 			_.get(oppholdsadresse, 'oppholdAnnetSted') !== null
 		) {
-			formikBag.setFieldValue(`${path}.adressetype`, Adressetype.Annet)
+			formMethods.setValue(`${path}.adressetype`, Adressetype.Annet)
 		}
+		formMethods.trigger()
 	}, [])
 
-	const valgtAdressetype = _.get(formikBag.values, `${path}.adressetype`)
+	const valgtAdressetype = formMethods.watch(`${path}.adressetype`)
 
 	const handleChangeAdressetype = (target: Target, path: string) => {
-		const adresse = _.get(formikBag.values, path)
+		const adresse = formMethods.watch(path)
 		const adresseClone = _.cloneDeep(adresse)
 
 		_.set(adresseClone, 'adressetype', target?.value || null)
@@ -117,7 +117,8 @@ export const OppholdsadresseForm = ({
 			!erNPID && _.set(adresseClone, 'master', 'PDL')
 		}
 
-		formikBag.setFieldValue(path, adresseClone)
+		formMethods.setValue(path, adresseClone)
+		formMethods.trigger(path)
 	}
 
 	const adressetypeOptions = Options('adressetypeOppholdsadresse')?.filter((option) =>
@@ -139,20 +140,24 @@ export const OppholdsadresseForm = ({
 				/>
 			</div>
 			{valgtAdressetype === 'VEGADRESSE' && (
-				<VegadresseVelger formikBag={formikBag} path={`${path}.vegadresse`} key={`veg_${idx}`} />
+				<VegadresseVelger
+					formMethods={formMethods}
+					path={`${path}.vegadresse`}
+					key={`veg_${idx}`}
+				/>
 			)}
 			{valgtAdressetype === 'MATRIKKELADRESSE' && (
-				<MatrikkeladresseVelger formikBag={formikBag} path={`${path}.matrikkeladresse`} />
+				<MatrikkeladresseVelger formMethods={formMethods} path={`${path}.matrikkeladresse`} />
 			)}
 			{valgtAdressetype === 'UTENLANDSK_ADRESSE' && (
 				<UtenlandskAdresse
-					formikBag={formikBag}
+					formMethods={formMethods}
 					path={`${path}.utenlandskAdresse`}
-					master={_.get(formikBag.values, `${path}.master`)}
+					master={formMethods.watch(`${path}.master`)}
 				/>
 			)}
 			{valgtAdressetype === 'OPPHOLD_ANNET_STED' && (
-				<OppholdAnnetSted formikBag={formikBag} path={`${path}.oppholdAnnetSted`} />
+				<OppholdAnnetSted path={`${path}.oppholdAnnetSted`} />
 			)}
 			<div className="flexbox--flex-wrap">
 				<DatepickerWrapper>
@@ -164,12 +169,12 @@ export const OppholdsadresseForm = ({
 					label="C/O adressenavn"
 					options={navnOptions}
 					size="xlarge"
-					placeholder={getPlaceholder(formikBag.values, `${path}.opprettCoAdresseNavn`)}
+					placeholder={getPlaceholder(formMethods.getValues(), `${path}.opprettCoAdresseNavn`)}
 					isLoading={loading}
 					onChange={(navn: Target) =>
-						setNavn(navn, `${path}.opprettCoAdresseNavn`, formikBag.setFieldValue)
+						setNavn(navn, `${path}.opprettCoAdresseNavn`, formMethods.setValue)
 					}
-					value={_.get(formikBag.values, `${path}.opprettCoAdresseNavn.fornavn`)}
+					value={formMethods.watch(`${path}.opprettCoAdresseNavn.fornavn`)}
 				/>
 			</div>
 			<AvansertForm
@@ -184,9 +189,8 @@ export const OppholdsadresseForm = ({
 	)
 }
 
-export const Oppholdsadresse = ({ formikBag }: OppholdsadresseValues) => {
+export const Oppholdsadresse = ({ formMethods }: OppholdsadresseValues) => {
 	const opts = useContext(BestillingsveilederContext)
-
 	return (
 		<Kategori title="Oppholdsadresse">
 			<FormikDollyFieldArray
@@ -197,7 +201,7 @@ export const Oppholdsadresse = ({ formikBag }: OppholdsadresseValues) => {
 			>
 				{(path: string, idx: number) => (
 					<OppholdsadresseForm
-						formikBag={formikBag}
+						formMethods={formMethods}
 						path={path}
 						idx={idx}
 						identtype={opts?.identtype}

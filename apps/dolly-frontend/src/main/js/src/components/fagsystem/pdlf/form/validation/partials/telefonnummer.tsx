@@ -1,23 +1,24 @@
 import * as Yup from 'yup'
 import { requiredString } from '@/utils/YupValidations'
-import * as _ from 'lodash-es'
+import _ from 'lodash'
 
 const testTelefonnummer = () =>
 	Yup.string()
 		.max(20, 'Telefonnummer kan ikke ha mer enn 20 sifre')
 		.when('landskode', {
 			is: '+47',
-			then: () => Yup.string().length(8, 'Norsk telefonnummer må ha 8 sifre'),
+			then: () => Yup.string().length(8, 'Norske telefonnummer må ha 8 sifre'),
 		})
 		.required('Feltet er påkrevd')
 		.matches(/^[1-9]\d*$/, 'Telefonnummer må være numerisk, og kan ikke starte med 0')
 
 const testPrioritet = (val) => {
-	return val.test('prioritet', 'Ugyldig prioritet', function erEgenPrio() {
-		const values = this?.options?.context
-		if (!values || Object.keys(values).length < 1) return true
-		const index = this?.options?.index || 0
-		const tlfListe = _.get(values, 'pdldata.person.telefonnummer') || _.get(values, 'telefonnummer')
+	return val.test('prioritet', 'Ugyldig prioritet', (val, testContext) => {
+		const fullForm = testContext.from && testContext.from[testContext.from.length - 1]?.value
+		if (Object.keys(testContext.parent).length < 1) return true
+		const index = testContext.index || 0
+		const tlfListe =
+			_.get(fullForm, 'pdldata.person.telefonnummer') || _.get(fullForm, 'telefonnummer')
 		if (tlfListe?.length < 2) {
 			return tlfListe?.[index]?.prioritet === 1
 		}

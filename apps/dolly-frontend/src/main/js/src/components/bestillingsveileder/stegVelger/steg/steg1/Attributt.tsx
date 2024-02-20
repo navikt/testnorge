@@ -36,7 +36,7 @@ export const AttributtKategori = ({ title, children, attr }) => {
 
 	const attributter = Array.isArray(children) ? children : [children]
 	const attributterSomSkalVises = attributter.some(
-		(attr) => attr.props.vis || !attr.props.hasOwnProperty('vis')
+		(attr) => attr.props.vis || !attr.props.hasOwnProperty('vis'),
 	)
 	if (!attributterSomSkalVises) {
 		return null

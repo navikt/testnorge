@@ -8,10 +8,10 @@ import Loading from '@/components/ui/loading/Loading'
 import { DollyApi } from '@/service/Api'
 import './RelatertPersonImportButton.less'
 import { DollyCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
-import { FieldArray, Formik } from 'formik'
 import { allCapsToCapitalized } from '@/utils/DataFormatter'
-import * as _ from 'lodash-es'
+import _ from 'lodash'
 import { REGEX_BACKEND_GRUPPER, useMatchMutate } from '@/utils/hooks/useMutate'
+import { FormProvider, useFieldArray, useForm } from 'react-hook-form'
 
 type RelatertPersonProps = {
 	type: string
@@ -36,6 +36,8 @@ export const RelatertPersonImportButton = ({
 	const [feilmelding, setFeilmelding] = useState(null)
 	const [fullfoert, setFullfoert] = useState(false)
 	const mutate = useMatchMutate()
+	const formMethods = useForm({ mode: 'onBlur', defaultValues: { identer: [] } })
+	const fieldMethods = useFieldArray({ control: formMethods.control, name: 'identer' })
 
 	if (!relatertPersonIdenter) {
 		return null
@@ -104,99 +106,91 @@ export const RelatertPersonImportButton = ({
 		)
 	}
 
-	const identForm = () => {
+	const identForm = (fieldMethods: any) => {
+		const values = fieldMethods.fields?.values?.identer
+		const isChecked = (id: string) => values?.includes(id)
+		const onClick = (e: { target: RelatertPersonProps }) => {
+			const { id } = e.target
+			isChecked(id) ? fieldMethods.remove(values?.indexOf(id)) : fieldMethods.append(id)
+		}
 		return (
-			<Formik initialValues={{ identer: [] }} onSubmit={null}>
-				{(formikBag) => (
-					<>
-						<div className="relatertPersonImportModal-content">
-							<FieldArray name="identer">
-								{({ push, remove, form }) => {
-									const values = form.values?.identer
-									const isChecked = (id: string) => values?.includes(id)
-									const onClick = (e: { target: RelatertPersonProps }) => {
-										const { id } = e.target
-										isChecked(id) ? remove(values?.indexOf(id)) : push(id)
-									}
-									return identCheckbox(values, onClick)
-								}}
-							</FieldArray>
-						</div>
-						<div className="relatertPersonImportModal-actions">
-							<NavButton onClick={closeModal} variant={'secondary'}>
-								Avbryt
-							</NavButton>
-							<NavButton
-								onClick={() => {
-									closeModal()
-									handleImport(formikBag.values?.identer)
-								}}
-								variant={'primary'}
-							>
-								Importer
-							</NavButton>
-						</div>
-					</>
-				)}
-			</Formik>
+			<>
+				<div className="relatertPersonImportModal-content">{identCheckbox(values, onClick)}</div>
+				<div className="relatertPersonImportModal-actions">
+					<NavButton onClick={closeModal} variant={'secondary'}>
+						Avbryt
+					</NavButton>
+					<NavButton
+						onClick={() => {
+							closeModal()
+							handleImport(formMethods.getValues()?.identer)
+						}}
+						variant={'primary'}
+					>
+						Importer
+					</NavButton>
+				</div>
+			</>
 		)
 	}
 
 	return (
-		<div>
-			<Button
-				onClick={openModal}
-				disabled={disabled}
-				title={disabled ? 'Relaterte personer er allerede i gruppen' : ''}
-				kind="relasjoner"
-				className="svg-icon-blue"
-			>
-				{relatertPersonIdenter.length > 1
-					? 'IMPORTER RELATERTE PERSONER'
-					: `IMPORTER ${relatertPersonIdenter[0]?.type}`}
-			</Button>
-			{feilmelding && (
-				<div className="error-message" style={{ margin: '5px 0 0 30px' }}>
-					{feilmelding}
-				</div>
-			)}
-			<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="40%" overflow="auto">
-				<div className="relatertPersonImportModal">
-					<Icon size={50} kind="personinformasjon" />
-					{relatertPersonIdenter.length > 1 ? (
-						<>
-							<h1>Importer relaterte personer</h1>
-							<h4>Velg hvilke relaterte personer du ønsker å importere</h4>
-							{identForm()}
-						</>
-					) : (
-						<>
-							<div className="relatertPersonImportModal-content-center">
-								<h1>{`Importer ${foersteRelatertPersonType}`}</h1>
-								<h4>
-									{`Er du sikker på at du vil importere og legge til valgt persons ${
-										foersteRelatertPersonType || 'relaterte person'
-									} i gruppen?`}
-								</h4>
-							</div>
-							<div className="relatertPersonImportModal-actions">
-								<NavButton onClick={closeModal} variant={'secondary'}>
-									Nei
-								</NavButton>
-								<NavButton
-									onClick={() => {
-										closeModal()
-										handleImport([relatertPersonIdenter[0]?.id])
-									}}
-									variant={'primary'}
-								>
-									Ja
-								</NavButton>
-							</div>
-						</>
-					)}
-				</div>
-			</DollyModal>
-		</div>
+		<FormProvider {...formMethods}>
+			<div>
+				<Button
+					onClick={openModal}
+					disabled={disabled}
+					title={disabled ? 'Relaterte personer er allerede i gruppen' : ''}
+					kind="relasjoner"
+					className="svg-icon-blue"
+				>
+					{relatertPersonIdenter.length > 1
+						? 'IMPORTER RELATERTE PERSONER'
+						: `IMPORTER ${relatertPersonIdenter[0]?.type}`}
+				</Button>
+				{feilmelding && (
+					<div className="error-message" style={{ margin: '5px 0 0 30px' }}>
+						{feilmelding}
+					</div>
+				)}
+				<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="40%" overflow="auto">
+					<div className="relatertPersonImportModal">
+						<Icon size={50} kind="personinformasjon" />
+						{relatertPersonIdenter.length > 1 ? (
+							<>
+								<h1>Importer relaterte personer</h1>
+								<h4>Velg hvilke relaterte personer du ønsker å importere</h4>
+								{identForm(fieldMethods)}
+							</>
+						) : (
+							<>
+								<div className="relatertPersonImportModal-content-center">
+									<h1>{`Importer ${foersteRelatertPersonType}`}</h1>
+									<h4>
+										{`Er du sikker på at du vil importere og legge til valgt persons ${
+											foersteRelatertPersonType || 'relaterte person'
+										} i gruppen?`}
+									</h4>
+								</div>
+								<div className="relatertPersonImportModal-actions">
+									<NavButton onClick={closeModal} variant={'secondary'}>
+										Nei
+									</NavButton>
+									<NavButton
+										onClick={() => {
+											closeModal()
+											handleImport([relatertPersonIdenter[0]?.id])
+										}}
+										variant={'primary'}
+									>
+										Ja
+									</NavButton>
+								</div>
+							</>
+						)}
+					</div>
+				</DollyModal>
+			</div>
+		</FormProvider>
 	)
 }

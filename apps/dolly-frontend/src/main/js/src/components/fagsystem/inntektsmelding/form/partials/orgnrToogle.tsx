@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { FormikProps } from 'formik'
 import { OrganisasjonMedArbeidsforholdSelect } from '@/components/organisasjonSelect'
 import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import {
@@ -7,22 +6,27 @@ import {
 	OrganisasjonToogleGruppe,
 } from '@/components/organisasjonSelect/OrganisasjonToogleGruppe'
 import { EgneOrganisasjoner } from '@/components/fagsystem/brregstub/form/partials/EgneOrganisasjoner'
+import { UseFormReturn } from 'react-hook-form/dist/types'
+import { ORGANISASJONSTYPE_TOGGLE } from '@/components/fagsystem/inntektstub/form/partials/orgnummerToggle'
 
 interface OrgnrToggleProps {
 	path: string
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 }
 
-export const OrgnrToggle = ({ path, formikBag }: OrgnrToggleProps) => {
-	const [inputType, setInputType] = useState(inputValg.fraFellesListe)
+export const OrgnrToggle = ({ path, formMethods }: OrgnrToggleProps) => {
+	const [inputType, setInputType] = useState(
+		sessionStorage.getItem(ORGANISASJONSTYPE_TOGGLE) || inputValg.fraFellesListe,
+	)
 
 	const handleToggleChange = (value: string) => {
+		sessionStorage.setItem(ORGANISASJONSTYPE_TOGGLE, value)
 		setInputType(value)
-		formikBag.setFieldValue(path, '')
+		formMethods.setValue(path, '')
 	}
 
 	const handleChangeEgne = (value: { orgnr: string }) => {
-		formikBag.setFieldValue(`${path}`, value.orgnr)
+		formMethods.setValue(`${path}`, value.orgnr)
 	}
 
 	return (
@@ -45,7 +49,7 @@ export const OrgnrToggle = ({ path, formikBag }: OrgnrToggleProps) => {
 				<EgneOrganisasjoner
 					path={path}
 					label="Arbeidsgiver (orgnr)"
-					formikBag={formikBag}
+					formMethods={formMethods}
 					filterValidEnhetstyper={true}
 					// @ts-ignore
 					handleChange={handleChangeEgne}

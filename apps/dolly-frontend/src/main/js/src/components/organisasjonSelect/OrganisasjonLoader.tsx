@@ -69,14 +69,13 @@ export const OrganisasjonLoader = ({
 		/>
 	) : (
 		<DollySelect
-			name={`${path}.orgNr`}
+			name={path}
 			label="Organisasjonsnummer"
 			options={organisasjonerSorted}
 			size="xlarge"
 			isLoading={loading}
 			onChange={handleChange}
 			value={value}
-			feil={feil}
 			isClearable={isClearable}
 			{...props}
 		/>

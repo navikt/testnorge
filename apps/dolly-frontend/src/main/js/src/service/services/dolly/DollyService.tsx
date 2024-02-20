@@ -220,31 +220,21 @@ export default {
 	},
 
 	lagreMalFraBestillingId(bestillingId, malNavn) {
-		return Request.post(Endpoints.malBestillingMedBestillingId(bestillingId, malNavn))
-			.then((response) => {
-				if (!response.ok) {
-					throw new Error(response.statusText)
-				}
-				return response
-			})
-			.catch((error) => {
+		return Request.post(Endpoints.malBestillingMedBestillingId(bestillingId, malNavn)).catch(
+			(error) => {
 				console.error(error)
 				throw error
-			})
+			},
+		)
 	},
 
 	lagreOrganisasjonMalFraBestillingId(bestillingId, malNavn) {
-		return Request.post(Endpoints.organisasjonMalBestillingMedBestillingId(bestillingId, malNavn))
-			.then((response) => {
-				if (!response.data) {
-					throw new Error(response.statusText)
-				}
-				return response
-			})
-			.catch((error) => {
-				console.error(error)
-				throw error
-			})
+		return Request.post(
+			Endpoints.organisasjonMalBestillingMedBestillingId(bestillingId, malNavn),
+		).catch((error) => {
+			console.error(error)
+			throw error
+		})
 	},
 
 	slettMalOrganisasjon(malId) {

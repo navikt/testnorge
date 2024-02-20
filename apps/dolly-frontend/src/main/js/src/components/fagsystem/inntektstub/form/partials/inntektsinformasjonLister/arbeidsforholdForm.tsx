@@ -1,4 +1,3 @@
-import * as _ from 'lodash-es'
 import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
@@ -21,7 +20,7 @@ const initialValues = {
 	sisteDatoForStillingsprosentendring: undefined,
 }
 
-export const ArbeidsforholdForm = ({ formikBag, inntektsinformasjonPath }) => {
+export const ArbeidsforholdForm = ({ formMethods, inntektsinformasjonPath }) => {
 	const arbeidsforholdstyper = SelectOptionsOppslag.hentArbeidsforholdstyperInntektstub()
 	const arbeidsforholdstyperFormatted = SelectOptionsFormat.formatOptions(
 		'arbeidsforholdstyper',
@@ -42,9 +41,9 @@ export const ArbeidsforholdForm = ({ formikBag, inntektsinformasjonPath }) => {
 						options={arbeidsforholdstyperFormatted}
 						isLoading={arbeidsforholdstyper.loading}
 						onChange={(forhold) =>
-							formikBag.setFieldValue(`${path}.arbeidsforholdstype`, forhold.value)
+							formMethods.setValue(`${path}.arbeidsforholdstype`, forhold.value)
 						}
-						value={_.get(formikBag.values, `${path}.arbeidsforholdstype`)}
+						value={formMethods.watch(`${path}.arbeidsforholdstype`)}
 						size="xlarge"
 						isClearable={false}
 					/>

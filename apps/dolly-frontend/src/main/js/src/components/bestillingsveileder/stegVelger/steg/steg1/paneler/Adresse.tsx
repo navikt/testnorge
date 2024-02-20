@@ -12,7 +12,7 @@ import {
 import { harValgtAttributt } from '@/components/ui/form/formUtils'
 import { adresseAttributter } from '@/components/fagsystem/pdlf/form/partials/adresser/Adresser'
 
-export const AdressePanel = ({ stateModifier, formikBag }: any) => {
+export const AdressePanel = ({ stateModifier, formValues }: any) => {
 	const sm = stateModifier(AdressePanel.initialValues)
 	return (
 		// @ts-ignore
@@ -21,7 +21,7 @@ export const AdressePanel = ({ stateModifier, formikBag }: any) => {
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType="adresse"
-			startOpen={harValgtAttributt(formikBag.values, adresseAttributter)}
+			startOpen={harValgtAttributt(formValues, adresseAttributter)}
 		>
 			<AttributtKategori title="Adresser" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.bostedsadresse} />
@@ -38,7 +38,7 @@ export const AdressePanel = ({ stateModifier, formikBag }: any) => {
 
 AdressePanel.heading = 'Adresser'
 
-AdressePanel.initialValues = ({ set, del, has, opts }: any) => {
+AdressePanel.initialValues = ({ set, opts, del, has }: any) => {
 	const { identtype } = opts
 
 	const paths = {

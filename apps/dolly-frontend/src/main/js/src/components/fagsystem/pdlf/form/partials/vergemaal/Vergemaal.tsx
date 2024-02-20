@@ -4,21 +4,20 @@ import { initialVergemaal } from '@/components/fagsystem/pdlf/form/initialValues
 import { VergemaalKodeverk } from '@/config/kodeverk'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
-import * as _ from 'lodash-es'
 import { PdlPersonExpander } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonExpander'
-import { FormikProps } from 'formik'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 import { Option } from '@/service/SelectOptionsOppslag'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface VergemaalFormTypes {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 	path?: string
 	eksisterendeNyPerson?: Option
 }
 
 export const VergemaalForm = ({
-	formikBag,
+	formMethods,
 	path,
 	eksisterendeNyPerson = null,
 }: VergemaalFormTypes) => {
@@ -41,7 +40,7 @@ export const VergemaalForm = ({
 				name={`${path}.mandatType`}
 				label="Mandattype"
 				kodeverk={VergemaalKodeverk.Mandattype}
-				size="xxlarge"
+				size="fullWidth"
 				optionHeight={50}
 			/>
 			<DatepickerWrapper>
@@ -53,10 +52,10 @@ export const VergemaalForm = ({
 				eksisterendePersonPath={`${path}.vergeIdent`}
 				eksisterendeNyPerson={eksisterendeNyPerson}
 				label={'VERGE'}
-				formikBag={formikBag}
+				formMethods={formMethods}
 				isExpanded={
-					!isEmpty(_.get(formikBag.values, `${path}.nyVergeIdent`), ['syntetisk']) ||
-					_.get(formikBag.values, `${path}.vergeIdent`) !== null
+					!isEmpty(formMethods.watch(`${path}.nyVergeIdent`), ['syntetisk']) ||
+					formMethods.watch(`${path}.vergeIdent`) !== null
 				}
 			/>
 			<AvansertForm path={path} kanVelgeMaster={false} />
@@ -64,7 +63,7 @@ export const VergemaalForm = ({
 	)
 }
 
-export const Vergemaal = ({ formikBag }: VergemaalFormTypes) => {
+export const Vergemaal = ({ formMethods }: VergemaalFormTypes) => {
 	return (
 		<div className="flexbox--flex-wrap">
 			<FormikDollyFieldArray
@@ -73,7 +72,7 @@ export const Vergemaal = ({ formikBag }: VergemaalFormTypes) => {
 				newEntry={initialVergemaal}
 				canBeEmpty={false}
 			>
-				{(path: string, _idx: number) => <VergemaalForm formikBag={formikBag} path={path} />}
+				{(path: string, _idx: number) => <VergemaalForm formMethods={formMethods} path={path} />}
 			</FormikDollyFieldArray>
 		</div>
 	)

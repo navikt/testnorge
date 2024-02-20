@@ -5,16 +5,16 @@ import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFiel
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
-import { FormikProps } from 'formik'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
-import * as _ from 'lodash-es'
+import _ from 'lodash'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface AdressebeskyttelseValues {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 }
 
 type AdressebeskyttelseFormValues = {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 	path: string
 	idx?: number
 	identtype?: string
@@ -25,12 +25,12 @@ type Target = {
 	value: string
 }
 
-export const getIdenttype = (formikBag: any, identtype: string) => {
-	const nyIdenttype = _.get(formikBag.values, 'pdldata.person.nyident[0].identtype')
+export const getIdenttype = (formMethods: any, identtype: string) => {
+	const nyIdenttype = formMethods.watch('pdldata.person.nyident[0].identtype')
 	if (nyIdenttype) {
 		return nyIdenttype
 	} else {
-		return identtype ? identtype : _.get(formikBag.values, 'pdldata.opprettNyPerson.identtype')
+		return identtype ? identtype : formMethods.watch('pdldata.opprettNyPerson.identtype')
 	}
 }
 
@@ -44,7 +44,7 @@ const getAdressebeskyttelseOptions = (identtype: string) => {
 }
 
 export const AdressebeskyttelseForm = ({
-	formikBag,
+	formMethods,
 	path,
 	idx,
 	identtype,
@@ -53,15 +53,16 @@ export const AdressebeskyttelseForm = ({
 
 	useEffect(() => {
 		const newOptions = getAdressebeskyttelseOptions(identtype)
-		const selectedOption = _.get(formikBag.values, `${path}.gradering`)
+		const selectedOption = formMethods.watch(`${path}.gradering`)
 		if (selectedOption && !newOptions.map((opt) => opt.value).includes(selectedOption)) {
-			formikBag.setFieldValue(`${path}.gradering`, null)
+			formMethods.setValue(`${path}.gradering`, null)
+			formMethods.trigger()
 		}
 		setOptions(newOptions)
 	}, [identtype])
 
 	const handleChangeGradering = (target: Target) => {
-		const adressebeskyttelse = _.get(formikBag.values, path)
+		const adressebeskyttelse = formMethods.watch(path)
 		const adressebeskyttelseClone = _.cloneDeep(adressebeskyttelse)
 		_.set(adressebeskyttelseClone, 'gradering', target?.value || null)
 		if (target?.value === 'STRENGT_FORTROLIG_UTLAND') {
@@ -69,7 +70,8 @@ export const AdressebeskyttelseForm = ({
 		} else {
 			identtype !== 'NPID' && _.set(adressebeskyttelseClone, 'master', 'FREG')
 		}
-		formikBag.setFieldValue(path, adressebeskyttelseClone)
+		formMethods.setValue(path, adressebeskyttelseClone)
+		formMethods.trigger()
 	}
 	return (
 		<React.Fragment key={idx}>
@@ -87,9 +89,9 @@ export const AdressebeskyttelseForm = ({
 	)
 }
 
-export const Adressebeskyttelse = ({ formikBag }: AdressebeskyttelseValues) => {
+export const Adressebeskyttelse = ({ formMethods }: AdressebeskyttelseValues) => {
 	const opts = useContext(BestillingsveilederContext)
-	const identtype = getIdenttype(formikBag, opts.identtype)
+	const identtype = getIdenttype(formMethods, opts.identtype)
 	return (
 		<Kategori title="Adressebeskyttelse">
 			<FormikDollyFieldArray
@@ -100,7 +102,7 @@ export const Adressebeskyttelse = ({ formikBag }: AdressebeskyttelseValues) => {
 			>
 				{(path: string, idx: number) => (
 					<AdressebeskyttelseForm
-						formikBag={formikBag}
+						formMethods={formMethods}
 						path={path}
 						idx={idx}
 						identtype={identtype}

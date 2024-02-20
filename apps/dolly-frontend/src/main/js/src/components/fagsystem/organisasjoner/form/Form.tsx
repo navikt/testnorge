@@ -5,27 +5,23 @@ import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { adressePaths, kontaktPaths, organisasjonPaths } from './paths'
 import Panel from '@/components/ui/panel/Panel'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
-import { FormikProps } from 'formik'
-import { EnhetBestilling } from '@/components/fagsystem/organisasjoner/types'
-
-type OrganisasjonFormProps = {
-	formikBag: FormikProps<{ organisasjon: EnhetBestilling }>
-}
+import { useFormContext } from 'react-hook-form'
 
 const detaljerPaths = [organisasjonPaths, kontaktPaths, adressePaths].flat()
 
-export const OrganisasjonForm = ({ formikBag }: OrganisasjonFormProps) => {
+export const OrganisasjonForm = () => {
+	const formMethods = useFormContext()
 	return (
 		<>
 			{/* @ts-ignore */}
 			<Vis attributt={detaljerPaths}>
 				<Panel
 					heading="Detaljer"
-					hasErrors={panelError(formikBag, detaljerPaths)}
+					hasErrors={panelError('organisasjon')}
 					iconType={'personinformasjon'}
-					startOpen={erForsteEllerTest(formikBag.values, detaljerPaths)}
+					startOpen={erForsteEllerTest(formMethods.getValues(), detaljerPaths)}
 				>
-					<Detaljer formikBag={formikBag} path="organisasjon" level={0} />
+					<Detaljer formMethods={formMethods} path="organisasjon" level={0} />
 				</Panel>
 			</Vis>
 		</>
@@ -36,11 +32,11 @@ const testSektorkode = (schema: any) => {
 	return schema.test(
 		'sektorkode',
 		'Juridisk enhet må ha sektorkode hvis valgt',
-		function harSektorkode(value: string) {
+		(value: string, testContext: any) => {
 			if (value === undefined || value !== '') {
 				return true
 			}
-			return this.createError({
+			return testContext.createError({
 				message: 'Feltet er påkrevd',
 			})
 		},

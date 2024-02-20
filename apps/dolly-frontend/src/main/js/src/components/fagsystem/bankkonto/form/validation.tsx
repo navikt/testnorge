@@ -1,27 +1,27 @@
 import * as Yup from 'yup'
 import { ifPresent, messages, requiredString } from '@/utils/YupValidations'
-import * as _ from 'lodash-es'
+import _ from 'lodash'
 import { landkodeIsoMapping, landkoder } from '@/service/services/kontoregister/landkoder'
 
 const validInputOrCheckboxTest = (val, checkboxPath, feilmelding, inputValidation) => {
-	return val.test('is-input-or-checkbox', function isInputOrCheckbox(value) {
+	return val.test('is-input-or-checkbox', (value, testContext) => {
+		const fullForm = testContext.from && testContext.from[testContext.from.length - 1]?.value
 		if (value) {
 			if (inputValidation) {
-				const inputError = inputValidation(value, this)
+				const inputError = inputValidation(value, testContext)
 				if (inputError) {
-					return this.createError({ message: inputError })
+					return testContext.createError({ message: inputError })
 				}
 			}
 			return true
 		}
 
-		const path = this.path.substring(0, this.path.lastIndexOf('.'))
-		const values = this.options.context
+		const path = testContext.path.substring(0, testContext.path.lastIndexOf('.'))
 
-		const checkbox = _.get(values, `${path}.${checkboxPath}`)
+		const checkbox = _.get(fullForm, `${path}.${checkboxPath}`)
 
 		if (!checkbox) {
-			return this.createError({ message: feilmelding })
+			return testContext.createError({ message: feilmelding })
 		}
 
 		return true
@@ -30,7 +30,7 @@ const validInputOrCheckboxTest = (val, checkboxPath, feilmelding, inputValidatio
 
 // from - begynner med 0
 const replaceSubstringAtPos = (str, from, to, replaceWith) => {
-	return str.substring(0, from) + replaceWith + str.substr(to + 1)
+	return str.substring(0, from) + replaceWith + str.substring(to + 1)
 }
 
 const validateIban = (kontonummer, form) => {
@@ -70,10 +70,9 @@ const validateIban = (kontonummer, form) => {
 }
 
 const validateSwift = (val) => {
-	return val.test('swift-validering', function isSwiftValid() {
-		const path = this.path.substring(0, this.path.lastIndexOf('.'))
-		const values = this.options.context
-		const landkode = _.get(values, `${path}.landkode`)
+	return val.test('swift-validering', (val, testContext) => {
+		const context = testContext.options.context
+		const landkode = context.parent?.landkode
 
 		let mappedLandkode = null
 
@@ -82,12 +81,12 @@ const validateSwift = (val) => {
 			mappedLandkode = isoLandkode ? isoLandkode : landkode.substring(0, 2)
 		}
 
-		const value = _.get(values, `${path}.swift`) // henter siste verdi for swift å unngå gammel swift validering når land endres
+		const value = context.parent?.swift
 		if (!value) {
 			if (mappedLandkode) {
 				const kontoregisterLandkode = landkoder.find((k) => k.landkode === mappedLandkode)
-				if (kontoregisterLandkode.kreverIban) {
-					return this.createError({ message: messages.required })
+				if (kontoregisterLandkode?.kreverIban) {
+					return testContext.createError({ message: messages.required })
 				}
 			}
 
@@ -95,26 +94,26 @@ const validateSwift = (val) => {
 		}
 
 		if (value.length !== 11 && value.length !== 8) {
-			return this.createError({ message: 'Må være enten 8 eller 11 tegn' })
+			return testContext.createError({ message: 'Må være enten 8 eller 11 tegn' })
 		}
 
 		const swiftFormatExplain =
 			'BBBBLLCCDDD - hvor BBBB er bankkode (4 tegn fra A-Z), LL er landkode (2 tegn), CC er sted (2 tegn fra 0-9, A-Z), og DDD er bransjekode 3 tegn fra 0-9, A-Z.'
 
 		if (!/^[A-Z]{6}[0-9A-Z]{2}([0-9A-Z]{3})?$/.test(value)) {
-			return this.createError({
+			return testContext.createError({
 				message: `Ugyldig format. ${swiftFormatExplain}`,
 			})
 		}
 
 		if (mappedLandkode && value.substring(4, 6) !== mappedLandkode) {
-			return this.createError({
+			return testContext.createError({
 				message:
 					`Feil landkode i SWIFT. Den bør være ${mappedLandkode} (${replaceSubstringAtPos(
 						value,
 						4,
 						5,
-						mappedLandkode
+						mappedLandkode,
 					)}). \n\n` + `Swift format: ${swiftFormatExplain}`,
 			})
 		}
@@ -133,7 +132,7 @@ export const bankkontoValidation = {
 						Yup.string(),
 						'tilfeldigKontonummer',
 						messages.required,
-						validateIban
+						validateIban,
 					),
 					tilfeldigKontonummer: Yup.string().nullable(),
 					swift: validateSwift(Yup.string()),
@@ -142,7 +141,7 @@ export const bankkontoValidation = {
 					valuta: requiredString
 						.nullable()
 						.test('length', 'Valutakode kan kun bestå av tre store bokstaver', (val) =>
-							/^[A-Z]{3}$/.test(val)
+							/^[A-Z]{3}$/.test(val),
 						),
 					banknavn: Yup.string().nullable().optional(),
 					bankAdresse1: Yup.string()
@@ -151,7 +150,7 @@ export const bankkontoValidation = {
 						.test(
 							'length',
 							'Bankadresse må være mellom 1 og 34 tegn',
-							(val) => !val || val.length <= 34
+							(val) => !val || val.length <= 34,
 						),
 					bankAdresse2: Yup.string()
 						.nullable()
@@ -159,7 +158,7 @@ export const bankkontoValidation = {
 						.test(
 							'length',
 							'Bankadresse må være mellom 1 og 34 tegn',
-							(val) => !val || val.length <= 34
+							(val) => !val || val.length <= 34,
 						),
 					bankAdresse3: Yup.string()
 						.nullable()
@@ -167,9 +166,9 @@ export const bankkontoValidation = {
 						.test(
 							'length',
 							'Bankadresse må være mellom 1 og 34 tegn',
-							(val) => !val || val.length <= 34
+							(val) => !val || val.length <= 34,
 						),
-				})
+				}),
 			),
 			norskBankkonto: ifPresent(
 				'$bankkonto.norskBankkonto',
@@ -178,11 +177,11 @@ export const bankkontoValidation = {
 						Yup.string().nullable(),
 						'tilfeldigKontonummer',
 						messages.required,
-						null
+						null,
 					),
 					tilfeldigKontonummer: Yup.string().nullable(),
-				})
+				}),
 			),
-		})
+		}),
 	),
 }

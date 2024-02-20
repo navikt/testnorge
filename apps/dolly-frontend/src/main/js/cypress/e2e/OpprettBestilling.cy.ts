@@ -2,7 +2,7 @@ import { CypressSelector } from '../mocks/Selectors'
 
 describe('Oppretter bestilling med alle artifakter som er avhengige av Q1 eller Q2 og sjekker at disse blir huket av', () => {
 	it('passes', () => {
-		cy.visit('http://localhost:5678/gruppe/1')
+		cy.visit('gruppe/1')
 
 		cy.dollyGet(CypressSelector.BUTTON_OPPRETT_PERSONER).click()
 		cy.dollyGet(CypressSelector.BUTTON_START_BESTILLING).click()

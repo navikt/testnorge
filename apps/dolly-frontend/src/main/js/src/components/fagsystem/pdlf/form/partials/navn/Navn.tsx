@@ -4,9 +4,7 @@ import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert
 import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { Option } from '@/service/SelectOptionsOppslag'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
-import * as _ from 'lodash-es'
-import { FormikProps } from 'formik'
-import { isEmpty } from 'lodash'
+import _, { isEmpty } from 'lodash'
 import { useContext, useEffect, useState } from 'react'
 import { ArrowCirclepathIcon } from '@navikt/aksel-icons'
 import { Button } from '@navikt/ds-react'
@@ -18,7 +16,7 @@ import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 type NavnTypes = {
-	formikBag: FormikProps<{}>
+	formMethods: any
 	path?: string
 	identtype?: string
 }
@@ -43,16 +41,16 @@ const concatNavnMedTidligereValgt = (type, navnInfo, selectedNavn) => {
 	return _.uniqBy(navnOptions, 'label')
 }
 
-export const NavnForm = ({ formikBag, path, identtype }: NavnTypes) => {
+export const NavnForm = ({ formMethods, path, identtype }: NavnTypes) => {
 	const [selectedFornavn, setSelectedFornavn] = useState(
-		_.get(formikBag?.values, `${path}.alleFornavn`) || [],
+		formMethods.watch(`${path}.alleFornavn`) || [],
 	)
 
 	const [selectedMellomnavn, setSelectedMellomnavn] = useState(
-		_.get(formikBag?.values, `${path}.alleMellomnavn`) || [],
+		formMethods.watch(`${path}.alleMellomnavn`) || [],
 	)
 	const [selectedEtternavn, setSelectedEtternavn] = useState(
-		_.get(formikBag?.values, `${path}.alleEtternavn`) || [],
+		formMethods.watch(`${path}.alleEtternavn`) || [],
 	)
 	const [fornavnOptions, setFornavnOptions] = useState([])
 
@@ -60,7 +58,7 @@ export const NavnForm = ({ formikBag, path, identtype }: NavnTypes) => {
 	const [etternavnOptions, setetternavnOptions] = useState([])
 	const { data, navnInfo, mutate } = useGenererNavn()
 
-	if (!_.get(formikBag?.values, path)) {
+	if (!formMethods.watch(path)) {
 		return null
 	}
 
@@ -74,11 +72,12 @@ export const NavnForm = ({ formikBag, path, identtype }: NavnTypes) => {
 		setetternavnOptions(concatNavnMedTidligereValgt('etternavn', navnInfo, selectedEtternavn))
 	}, [data])
 
-	const { fornavn, mellomnavn, etternavn } = _.get(formikBag?.values, path)
+	const { fornavn, mellomnavn, etternavn } = formMethods.watch(path)
 
 	function getRefreshButton() {
 		return (
 			<RefreshButton
+				type="button"
 				title={'Hent nye navn'}
 				size={'small'}
 				onClick={refreshNavn}
@@ -101,17 +100,12 @@ export const NavnForm = ({ formikBag, path, identtype }: NavnTypes) => {
 						afterChange={(change) => {
 							const fornavn = change?.map((option: Option) => option.value)
 							setSelectedFornavn(fornavn)
-							formikBag.setFieldValue(`${path}.fornavn`, fornavn?.join(' '))
+							formMethods.setValue(`${path}.fornavn`, fornavn?.join(' '))
+							formMethods.trigger()
 						}}
 						isMulti={true}
 						size="grow"
 						isClearable={false}
-						fastfield={false}
-						feil={
-							_.get(formikBag.errors, `${path}.fornavn`) && {
-								feilmelding: _.get(formikBag.errors, `${path}.fornavn`),
-							}
-						}
 					/>
 					{getRefreshButton()}
 				</div>
@@ -124,13 +118,13 @@ export const NavnForm = ({ formikBag, path, identtype }: NavnTypes) => {
 						afterChange={(change) => {
 							const mellomnavn = change?.map((option: Option) => option.value)
 							setSelectedMellomnavn(mellomnavn)
-							formikBag.setFieldValue(`${path}.mellomnavn`, mellomnavn?.join(' '))
+							formMethods.setValue(`${path}.mellomnavn`, mellomnavn?.join(' '))
+							formMethods.trigger()
 						}}
-						isDisabled={_.get(formikBag?.values, `${path}.hasMellomnavn`)}
+						isDisabled={formMethods.watch(`${path}.hasMellomnavn`)}
 						isMulti={true}
 						size="grow"
 						isClearable={true}
-						fastfield={false}
 					/>
 					{getRefreshButton()}
 				</div>
@@ -143,17 +137,12 @@ export const NavnForm = ({ formikBag, path, identtype }: NavnTypes) => {
 						afterChange={(change) => {
 							const etternavn = change?.map((option: Option) => option.value)
 							setSelectedEtternavn(etternavn)
-							formikBag.setFieldValue(`${path}.etternavn`, etternavn.join(' '))
+							formMethods.setValue(`${path}.etternavn`, etternavn.join(' '))
+							formMethods.trigger()
 						}}
 						isMulti={true}
 						size="grow"
 						isClearable={false}
-						fastfield={false}
-						feil={
-							_.get(formikBag.errors, `${path}.etternavn`) && {
-								feilmelding: _.get(formikBag.errors, `${path}.etternavn`),
-							}
-						}
 					/>
 					{getRefreshButton()}
 				</div>
@@ -166,11 +155,7 @@ export const NavnForm = ({ formikBag, path, identtype }: NavnTypes) => {
 					checkboxMargin
 				/>
 				<DatepickerWrapper>
-					<FormikDatepicker
-						name={`${path}.gyldigFraOgMed`}
-						label="Gyldig f.o.m. dato"
-						fastfield={false}
-					/>
+					<FormikDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig f.o.m. dato" />
 				</DatepickerWrapper>
 			</div>
 			<AvansertForm path={path} kanVelgeMaster={identtype !== 'NPID'} />
@@ -178,9 +163,8 @@ export const NavnForm = ({ formikBag, path, identtype }: NavnTypes) => {
 	)
 }
 
-export const Navn = ({ formikBag }: NavnTypes) => {
+export const Navn = ({ formMethods }: NavnTypes) => {
 	const opts = useContext(BestillingsveilederContext)
-
 	return (
 		<div className="flexbox--flex-wrap">
 			<FormikDollyFieldArray
@@ -190,7 +174,7 @@ export const Navn = ({ formikBag }: NavnTypes) => {
 				canBeEmpty={false}
 			>
 				{(path: string) => (
-					<NavnForm formikBag={formikBag} path={path} identtype={opts?.identtype} />
+					<NavnForm formMethods={formMethods} path={path} identtype={opts?.identtype} />
 				)}
 			</FormikDollyFieldArray>
 		</div>

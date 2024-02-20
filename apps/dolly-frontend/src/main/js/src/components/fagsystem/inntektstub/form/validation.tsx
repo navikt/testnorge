@@ -1,5 +1,4 @@
 import * as Yup from 'yup'
-import * as _ from 'lodash-es'
 import { addDays, areIntervalsOverlapping, subMonths } from 'date-fns'
 import {
 	ifPresent,
@@ -10,19 +9,15 @@ import {
 } from '@/utils/YupValidations'
 import { testDatoFom, testDatoTom } from '@/components/fagsystem/utils'
 
-const unikOrgMndTest = (unikValidation) => {
+const unikOrgMndTest = (unikValidation: Yup.StringSchema<string, Yup.AnyObject>) => {
 	const errorMsg = 'Kombinasjonen av år, måned og virksomhet er ikke unik'
-	return unikValidation.test('unikhet', errorMsg, function isUniqueCombination(orgnr) {
+	return unikValidation.test('unikhet', errorMsg, (orgnr, testContext) => {
 		if (!orgnr) return true
+		const fullForm = testContext.from && testContext.from[testContext.from.length - 1]?.value
 
-		const values = this.options.context
-		const path = this.options.path
-		const currInntektsinformasjonPath = path.split('.', 2).join('.')
-		const inntektsinformasjonPath = currInntektsinformasjonPath.split('[')[0]
-
-		const alleInntekter = _.get(values, inntektsinformasjonPath)
-		const currInntektsinformasjon = _.get(values, currInntektsinformasjonPath)
-		if (!currInntektsinformasjon.sisteAarMaaned) return true
+		const alleInntekter = fullForm.inntektstub?.inntektsinformasjon
+		const currInntektsinformasjon = testContext.parent
+		if (!currInntektsinformasjon?.sisteAarMaaned) return true
 
 		return !nyeInntekterOverlapper(alleInntekter, currInntektsinformasjon)
 	})
@@ -63,11 +58,11 @@ const getInterval = (inntektsinformasjon) => {
 		? {
 				start: subMonths(currDato, inntektsinformasjon.antallMaaneder - 1),
 				end: currDato,
-		  }
+			}
 		: {
 				start: currDato,
 				end: addDays(currDato, 1),
-		  }
+			}
 }
 
 const finnesOverlappendeDato = (tidsrom, index) => {
@@ -78,7 +73,7 @@ const finnesOverlappendeDato = (tidsrom, index) => {
 		if (idx === 0) return //Tester mot første tidsrom
 		return areIntervalsOverlapping(
 			{ start: firstInterval.start, end: addDays(firstInterval.end, 1) },
-			{ start: t.start, end: t.end }
+			{ start: t.start, end: t.end },
 		)
 	})
 }
@@ -90,30 +85,31 @@ const inntektsliste = Yup.array().of(
 			inntektstype: requiredString,
 			startOpptjeningsperiode: testDatoFom(Yup.string().nullable(), 'sluttOpptjeningsperiode'),
 			sluttOpptjeningsperiode: testDatoTom(Yup.string().nullable(), 'startOpptjeningsperiode'),
-			inngaarIGrunnlagForTrekk: Yup.boolean().required(),
-			utloeserArbeidsgiveravgift: Yup.boolean().required(),
+			inngaarIGrunnlagForTrekk: Yup.boolean().required(messages.required),
+			utloeserArbeidsgiveravgift: Yup.boolean().required(messages.required),
 			fordel: ifPresent('fordel', requiredString),
+			antall: ifPresent('$antall', requiredString),
 			beskrivelse: ifPresent('beskrivelse', requiredString),
 		},
 		[
 			['fordel', 'fordel'],
 			['beskrivelse', 'beskrivelse'],
-		]
-	)
+		],
+	),
 )
 
 const fradragsliste = Yup.array().of(
 	Yup.object({
 		beloep: requiredNumber.typeError(messages.required),
 		beskrivelse: requiredString,
-	})
+	}),
 )
 
 const forskuddstrekksliste = Yup.array().of(
 	Yup.object({
 		beloep: requiredNumber.typeError(messages.required),
 		beskrivelse: Yup.string().nullable(),
-	})
+	}),
 )
 
 const arbeidsforholdsliste = Yup.array().of(
@@ -124,7 +120,7 @@ const arbeidsforholdsliste = Yup.array().of(
 				is: (val) => val !== undefined,
 				then: () => requiredDate,
 			}),
-			'sluttdato'
+			'sluttdato',
 		),
 		sluttdato: testDatoTom(Yup.string().nullable(), 'startdato'),
 		antallTimerPerUkeSomEnFullStillingTilsvarer: Yup.number()
@@ -138,30 +134,33 @@ const arbeidsforholdsliste = Yup.array().of(
 			.nullable(),
 		sisteLoennsendringsdato: Yup.string().nullable(),
 		sisteDatoForStillingsprosentendring: Yup.string().nullable(),
-	})
+	}),
 )
 
 export const validation = {
-	inntektstub: Yup.object({
-		inntektsinformasjon: Yup.array().of(
-			Yup.object({
-				sisteAarMaaned: requiredString.matches(/^\d{4}-(0[1-9]|1[012])$/, {
-					message: 'Dato må være på formatet yyyy-MM',
-					excludeEmptyString: true,
+	inntektstub: ifPresent(
+		'$inntektstub',
+		Yup.object({
+			inntektsinformasjon: Yup.array().of(
+				Yup.object({
+					sisteAarMaaned: requiredString.matches(/^\d{4}-(0[1-9]|1[012])$/, {
+						message: 'Dato må være på formatet yyyy-MM',
+						excludeEmptyString: true,
+					}),
+					antallMaaneder: Yup.number()
+						.integer('Kan ikke være et desimaltall')
+						.transform((i, j) => (j === '' ? null : i))
+						.min(1, 'Antall måneder må være et positivt tall')
+						.max(500, 'Antall måneder kan maksimalt være 500')
+						.nullable(),
+					virksomhet: unikOrgMndTest(requiredString.typeError(messages.required)).nullable(),
+					opplysningspliktig: requiredString,
+					inntektsliste: inntektsliste,
+					fradragsliste: fradragsliste,
+					forskuddstrekksliste: forskuddstrekksliste,
+					arbeidsforholdsliste: arbeidsforholdsliste,
 				}),
-				antallMaaneder: Yup.number()
-					.integer('Kan ikke være et desimaltall')
-					.transform((i, j) => (j === '' ? null : i))
-					.min(1, 'Antall måneder må være et positivt tall')
-					.max(500, 'Antall måneder kan maksimalt være 500')
-					.nullable(),
-				virksomhet: unikOrgMndTest(requiredString.typeError(messages.required)).nullable(),
-				opplysningspliktig: requiredString,
-				inntektsliste: inntektsliste,
-				fradragsliste: fradragsliste,
-				forskuddstrekksliste: forskuddstrekksliste,
-				arbeidsforholdsliste: arbeidsforholdsliste,
-			})
-		),
-	}),
+			),
+		}),
+	),
 }

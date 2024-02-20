@@ -11,7 +11,7 @@ import {
 	sigrunstubPensjonsgivendeAttributt,
 } from '@/components/fagsystem/sigrunstubPensjonsgivende/form/Form'
 
-export const ArbeidInntektPanel = ({ stateModifier, formikBag }) => {
+export const ArbeidInntektPanel = ({ stateModifier, formValues }) => {
 	const sm = stateModifier(ArbeidInntektPanel.initialValues)
 
 	const infoTekst =
@@ -25,7 +25,7 @@ export const ArbeidInntektPanel = ({ stateModifier, formikBag }) => {
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType="arbeid"
-			startOpen={harValgtAttributt(formikBag.values, [
+			startOpen={harValgtAttributt(formValues, [
 				aaregAttributt,
 				sigrunAttributt,
 				inntektstubAttributt,

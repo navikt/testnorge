@@ -10,7 +10,7 @@ import {
 	getInitialSivilstand,
 	initialPdlPerson,
 } from '@/components/fagsystem/pdlf/form/initialValues'
-import * as _ from 'lodash-es'
+import _ from 'lodash'
 import React from 'react'
 import { getEksisterendeNyPerson } from '@/components/fagsystem/utils'
 import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
@@ -114,7 +114,7 @@ const SivilstandVisning = ({
 	let redigertSivilstandValues = redigertSivilstandPdlf
 		? {
 				sivilstand: Object.assign(_.cloneDeep(getInitialSivilstand()), redigertSivilstandPdlf),
-		  }
+			}
 		: null
 	if (redigertSivilstandValues) {
 		redigertSivilstandValues.sivilstand.nyRelatertPerson = initialPdlPerson
@@ -123,10 +123,10 @@ const SivilstandVisning = ({
 	const eksisterendeNyPerson = redigertRelatertePersoner
 		? getEksisterendeNyPerson(redigertRelatertePersoner, sivilstandValues?.relatertVedSivilstand, [
 				'EKTEFELLE_PARTNER',
-		  ])
+			])
 		: getEksisterendeNyPerson(relasjoner, sivilstandValues?.relatertVedSivilstand, [
 				'EKTEFELLE_PARTNER',
-		  ])
+			])
 
 	const erIGruppe = gruppeIdenter?.some(
 		(person) => person.ident === initialValues?.sivilstand?.relatertVedSivilstand,
@@ -134,7 +134,7 @@ const SivilstandVisning = ({
 	const relatertPersonInfo = erIGruppe
 		? {
 				ident: initialValues?.sivilstand?.relatertVedSivilstand,
-		  }
+			}
 		: null
 
 	return (

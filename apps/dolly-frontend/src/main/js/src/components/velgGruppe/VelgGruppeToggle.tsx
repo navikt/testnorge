@@ -5,10 +5,9 @@ import { ToggleGroup } from '@navikt/ds-react'
 import styled from 'styled-components'
 import { CypressSelector } from '../../../cypress/mocks/Selectors'
 import AlleGrupper from '@/components/velgGruppe/AlleGrupper'
+import { useFormContext } from 'react-hook-form'
 
 interface VelgGruppeToggleProps {
-	setValgtGruppe: React.Dispatch<React.SetStateAction<string>>
-	valgtGruppe: string
 	fraGruppe?: number
 }
 
@@ -23,15 +22,14 @@ const StyledToggleGroup = styled(ToggleGroup)`
 `
 
 export const VelgGruppeToggle = ({
-	setValgtGruppe,
-	valgtGruppe,
 	fraGruppe = null,
 	gruppevalg,
 	setGruppevalg,
 }: VelgGruppeToggleProps) => {
+	const formMethods = useFormContext()
 	const handleToggleChange = (value: Gruppevalg) => {
 		setGruppevalg(value)
-		setValgtGruppe('')
+		formMethods.setValue('gruppeId', '')
 	}
 	return (
 		<div className="toggle--wrapper">
@@ -44,7 +42,11 @@ export const VelgGruppeToggle = ({
 				>
 					Mine grupper
 				</ToggleGroup.Item>
-				<ToggleGroup.Item key={Gruppevalg.ALLE} value={Gruppevalg.ALLE}>
+				<ToggleGroup.Item
+					data-cy={CypressSelector.TOGGLE_ALLE_GRUPPER}
+					key={Gruppevalg.ALLE}
+					value={Gruppevalg.ALLE}
+				>
 					Alle grupper
 				</ToggleGroup.Item>
 				<ToggleGroup.Item
@@ -56,21 +58,9 @@ export const VelgGruppeToggle = ({
 				</ToggleGroup.Item>
 			</StyledToggleGroup>
 
-			{gruppevalg === Gruppevalg.MINE && (
-				<EksisterendeGruppe
-					setValgtGruppe={setValgtGruppe}
-					valgtGruppe={valgtGruppe}
-					fraGruppe={fraGruppe}
-				/>
-			)}
-			{gruppevalg === Gruppevalg.ALLE && (
-				<AlleGrupper
-					setValgtGruppe={setValgtGruppe}
-					valgtGruppe={valgtGruppe}
-					fraGruppe={fraGruppe}
-				/>
-			)}
-			{gruppevalg === Gruppevalg.NY && <NyGruppe setValgtGruppe={setValgtGruppe} />}
+			{gruppevalg === Gruppevalg.MINE && <EksisterendeGruppe fraGruppe={fraGruppe} />}
+			{gruppevalg === Gruppevalg.ALLE && <AlleGrupper fraGruppe={fraGruppe} />}
+			{gruppevalg === Gruppevalg.NY && <NyGruppe />}
 		</div>
 	)
 }

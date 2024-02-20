@@ -1,4 +1,4 @@
-import React, { ReactChildren } from 'react'
+import React from 'react'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 import useBoolean from '@/utils/hooks/useBoolean'
 import DollyModal from '@/components/ui/modal/DollyModal'
@@ -8,7 +8,7 @@ import './AvbrytModal.less'
 
 type Props = {
 	action: Function
-	children: ReactChildren
+	children: string
 }
 
 export const AvbrytButton = ({ action, children }: Props) => {

@@ -1,13 +1,13 @@
 import ReactDatepicker, { registerLocale } from 'react-datepicker'
-import { FormikField } from '@/components/ui/form/FormikField'
 import { addYears, subYears } from 'date-fns'
 import locale_nb from 'date-fns/locale/nb'
 import { TextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { Label } from '@/components/ui/form/inputs/label/Label'
 import { InputWrapper } from '@/components/ui/form/inputWrapper/InputWrapper'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
-import { fieldError, fixTimezone, SyntEvent } from '@/components/ui/form/formUtils'
+import { fixTimezone, SyntEvent } from '@/components/ui/form/formUtils'
 import 'react-datepicker/dist/react-datepicker.css'
+import { useFormContext } from 'react-hook-form'
 
 registerLocale('nb', locale_nb)
 
@@ -25,7 +25,6 @@ export const TimePicker = ({
 	onChange,
 	onBlur,
 	disabled = false,
-	feil,
 	excludeDates,
 	minDate,
 	maxDate,
@@ -50,7 +49,7 @@ export const TimePicker = ({
 			name={name}
 			id={name}
 			autoComplete="off"
-			customInput={<TextInput icon="calendar" feil={feil} />}
+			customInput={<TextInput fieldName={name} icon="calendar" />}
 			excludeDates={excludeDates}
 		/>
 	)
@@ -58,37 +57,31 @@ export const TimePicker = ({
 
 export const DollyTimepicker = (props) => (
 	<InputWrapper {...props}>
-		<Label name={props.name} label={props.label} feil={props.feil}>
+		<Label name={props.name} label={props.label}>
 			<TimePicker {...props} />
 		</Label>
 	</InputWrapper>
 )
 
-const P_FormikTimepicker = ({ fastfield, ...props }) => (
-	<FormikField name={props.name} fastfield={fastfield}>
-		{({ field, form, meta }) => {
-			const handleChange = (date) => {
-				const fixedDate = fixTimezone(date)
-				form.setFieldTouched(props.name) // Need to trigger touched manually for Datepicker
+const P_FormikTimepicker = ({ ...props }) => {
+	const formMethods = useFormContext()
+	const value = formMethods.watch(props.name)
 
-				if (props.afterChange) props.afterChange(fixedDate)
+	const handleChange = (date) => {
+		const fixedDate = fixTimezone(date)
+		const onChange =
+			props.onChange ||
+			((event) => {
+				formMethods.setValue(props.name, event?.target?.value, { shouldTouch: true })
+				formMethods.trigger(props.name)
+			})
+		if (props.afterChange) props.afterChange(fixedDate)
 
-				return field.onChange(SyntEvent(field.name, fixedDate))
-			}
-			const handleBlur = () => field.onBlur(SyntEvent(field.name, field.value))
-
-			return (
-				<DollyTimepicker
-					value={field.value}
-					onChange={handleChange}
-					onBlur={handleBlur}
-					feil={fieldError(meta)}
-					{...props}
-				/>
-			)
-		}}
-	</FormikField>
-)
+		return onChange(SyntEvent(props.name, fixedDate))
+	}
+	const handleBlur = () => props?.onBlur?.(SyntEvent(props.name, value))
+	return <DollyTimepicker value={value} onChange={handleChange} onBlur={handleBlur} {...props} />
+}
 
 export const FormikDateTimepicker = ({ visHvisAvhuket = true, ...props }) => {
 	const component = <P_FormikTimepicker {...props} />

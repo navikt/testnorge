@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from 'react'
-import * as _ from 'lodash-es'
+import _ from 'lodash'
 import { Adresse, Organisasjon } from '@/service/services/organisasjonforvalter/types'
 import { Alert } from '@navikt/ds-react'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import { EgneOrgSelect } from '@/components/ui/form/inputs/select/EgneOrgSelect'
 import { useOrganisasjoner } from '@/utils/hooks/useOrganisasjoner'
-import { useFormikContext } from 'formik'
 import { OrgforvalterApi } from '@/service/Api'
 import { OrgMiljoeInfoVisning } from '@/components/fagsystem/brregstub/form/partials/OrgMiljoeInfoVisning'
+import { useFormContext } from 'react-hook-form'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface OrgProps {
+	formMethods: UseFormReturn
 	path: string
 	label?: string
 	handleChange: (event: React.ChangeEvent<any>) => void
@@ -119,7 +121,7 @@ export const EgneOrganisasjoner = ({
 	const [miljoeLoading, setMiljoeLoading] = useState(false)
 
 	const { currentBruker } = useCurrentBruker()
-	const formikBag = useFormikContext()
+	const formMethods = useFormContext()
 
 	useEffect(() => {
 		if (orgnr) {
@@ -150,7 +152,7 @@ export const EgneOrganisasjoner = ({
 		return organisasjoner
 			.filter(
 				(virksomhet) =>
-					validEnhetstyper.includes(virksomhet.enhetstype) || !virksomhet.juridiskEnhet
+					validEnhetstyper.includes(virksomhet.enhetstype) || !virksomhet.juridiskEnhet,
 			)
 			.map((virksomhet) => {
 				return {
@@ -161,18 +163,20 @@ export const EgneOrganisasjoner = ({
 	}
 
 	const sjekkOrganisasjoner = () => {
-		if (_.get(formikBag.values, path) === '') {
-			if (!_.has(formikBag.errors, path)) {
-				formikBag.setFieldError(path, 'Feltet er påkrevd')
+		if (formMethods.watch(path) === '') {
+			if (!_.has(formMethods.formState.errors, path)) {
+				formMethods.setError(path, { message: 'Feltet er påkrevd' })
 			}
 			return { feilmelding: 'Feltet er påkrevd' }
 		} else if (path.includes('amelding')) {
 			//@ts-ignore
-			const valgtOrgnr = formikBag.values?.aareg?.[0]?.amelding?.flatMap((a) =>
-				a.arbeidsforhold?.flatMap((f) => f.arbeidsgiver?.orgnummer)
-			)
+			const valgtOrgnr = formMethods
+				.getValues()
+				?.aareg?.[0]?.amelding?.flatMap((a) =>
+					a.arbeidsforhold?.flatMap((f) => f.arbeidsgiver?.orgnummer),
+				)
 			const valgtJuridiskEnhet = valgtOrgnr?.map((org) =>
-				getOversteJuridiskEnhet(org, organisasjoner)
+				getOversteJuridiskEnhet(org, organisasjoner),
 			)
 			const valgtJuridiskEnhetFiltrert = valgtJuridiskEnhet?.filter((org) => org !== '')
 			const juridiskEnhetErLik = valgtJuridiskEnhetFiltrert?.every((org) => {
@@ -180,8 +184,10 @@ export const EgneOrganisasjoner = ({
 					return true
 				}
 			})
-			if (!juridiskEnhetErLik && !_.has(formikBag.errors, path)) {
-				formikBag.setFieldError(path, 'Alle organisasjoner må tilhøre samme overordnet enhet')
+			if (!juridiskEnhetErLik && !_.has(formMethods.formState.errors, path)) {
+				formMethods.setError(path, {
+					message: 'Alle organisasjoner må tilhøre samme overordnet enhet',
+				})
 			}
 			return juridiskEnhetErLik
 				? null
@@ -221,8 +227,9 @@ export const EgneOrganisasjoner = ({
 					onChange={(event) => {
 						setOrgnr(event.value)
 						handleChange(event)
+						formMethods.trigger()
 					}}
-					value={_.get(formikBag.values, path)}
+					value={formMethods.watch(path)}
 					feil={sjekkOrganisasjoner()}
 					isClearable={false}
 				/>

@@ -3,7 +3,6 @@ import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import React, { useState } from 'react'
 import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
-import * as _ from 'lodash-es'
 import {
 	barnetilleggDetaljer,
 	forventedeInntekterSokerOgEP,
@@ -22,13 +21,7 @@ const ForventedeInntekterForm = ({ path, header, initialValues }) => {
 						size="xlarge"
 						options={Options('inntektType')}
 					/>
-					<FormikTextInput
-						name={`${path}.belop`}
-						label="Beløp"
-						type="number"
-						size="medium"
-						fastfield="false"
-					/>
+					<FormikTextInput name={`${path}.belop`} label="Beløp" type="number" size="medium" />
 					<FormikDatepicker name={`${path}.datoFom`} label="Dato f.o.m." />
 					<FormikDatepicker name={`${path}.datoTom`} label="Dato t.o.m." />
 				</>
@@ -37,20 +30,20 @@ const ForventedeInntekterForm = ({ path, header, initialValues }) => {
 	)
 }
 
-export const BarnetilleggForm = ({ formikBag }) => {
+export const BarnetilleggForm = ({ formMethods }) => {
 	const barnetilleggPath = 'pensjonforvalter.uforetrygd.barnetilleggDetaljer'
 
 	const [harBarnetillegg, setHarBarnetillegg] = useState(
-		_.get(formikBag.values, barnetilleggPath) !== null,
+		formMethods.watch(barnetilleggPath) !== null,
 	)
 
 	const handleBarnetilleggChange = (value) => {
 		const checked = value?.target?.checked
 		setHarBarnetillegg(checked)
 		if (checked) {
-			formikBag.setFieldValue(barnetilleggPath, barnetilleggDetaljer)
+			formMethods.setValue(barnetilleggPath, barnetilleggDetaljer)
 		} else {
-			formikBag.setFieldValue(barnetilleggPath, null)
+			formMethods.setValue(barnetilleggPath, null)
 		}
 	}
 

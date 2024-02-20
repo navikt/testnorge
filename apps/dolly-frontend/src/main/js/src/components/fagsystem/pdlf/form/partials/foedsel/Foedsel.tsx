@@ -3,42 +3,42 @@ import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { getInitialFoedsel } from '@/components/fagsystem/pdlf/form/initialValues'
 import { Yearpicker } from '@/components/ui/form/inputs/yearpicker/Yearpicker'
-import * as _ from 'lodash-es'
 import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
-import { FormikProps } from 'formik'
 import { SelectedValue } from '@/components/fagsystem/pdlf/PdlTypes'
 import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 import { useContext } from 'react'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 type FoedselTypes = {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 	path?: string
 }
 
-export const FoedselForm = ({ formikBag, path }: FoedselTypes) => {
+export const FoedselForm = ({ formMethods, path }: FoedselTypes) => {
 	const opts = useContext(BestillingsveilederContext)
 
 	const handleLandChange = (selected: SelectedValue, foedselPath: string) => {
-		formikBag.setFieldValue(`${foedselPath}.foedeland`, selected?.value || null)
+		formMethods.setValue(`${foedselPath}.foedeland`, selected?.value || null)
 		if (selected?.value !== 'NOR') {
-			formikBag.setFieldValue(`${foedselPath}.foedekommune`, null)
+			formMethods.setValue(`${foedselPath}.foedekommune`, null)
 		}
+		formMethods.trigger()
 	}
 
-	const foedselsaar = _.get(formikBag.values, `${path}.foedselsaar`)
-	const foedselsdato = _.get(formikBag.values, `${path}.foedselsdato`)
+	const foedselsaar = formMethods.watch(`${path}.foedselsaar`)
+	const foedselsdato = formMethods.watch(`${path}.foedselsdato`)
 
 	const minDateFoedsel =
 		opts?.identtype === 'NPID' ? new Date('01.01.1870') : new Date('01.01.1900')
 
 	const harAlder = () => {
 		return (
-			_.get(formikBag.values, 'pdldata.opprettNyPerson.alder') ||
-			_.get(formikBag.values, 'pdldata.opprettNyPerson.foedtEtter') ||
-			_.get(formikBag.values, 'pdldata.opprettNyPerson.foedtFoer')
+			formMethods.watch('pdldata.opprettNyPerson.alder') ||
+			formMethods.watch('pdldata.opprettNyPerson.foedtEtter') ||
+			formMethods.watch('pdldata.opprettNyPerson.foedtFoer')
 		)
 	}
 
@@ -51,16 +51,16 @@ export const FoedselForm = ({ formikBag, path }: FoedselTypes) => {
 					disabled={(foedselsaar !== null && foedselsdato === null) || harAlder()}
 					maxDate={new Date()}
 					minDate={minDateFoedsel}
-					fastfield={false}
 				/>
 				<Yearpicker
-					formikBag={formikBag}
+					formMethods={formMethods}
 					name={`${path}.foedselsaar`}
 					label="Fødselsår"
 					date={foedselsaar ? new Date(foedselsaar, 0) : null}
-					handleDateChange={(val) =>
-						formikBag.setFieldValue(`${path}.foedselsaar`, val ? new Date(val).getFullYear() : null)
-					}
+					handleDateChange={(val) => {
+						formMethods.setValue(`${path}.foedselsaar`, val ? new Date(val).getFullYear() : null)
+						formMethods.trigger()
+					}}
 					maxDate={new Date()}
 					minDate={minDateFoedsel}
 					// @ts-ignore
@@ -74,8 +74,8 @@ export const FoedselForm = ({ formikBag, path }: FoedselTypes) => {
 				kodeverk={AdresseKodeverk.Kommunenummer}
 				size="large"
 				isDisabled={
-					_.get(formikBag.values, `${path}.foedeland`) !== 'NOR' &&
-					_.get(formikBag.values, `${path}.foedeland`) !== null
+					formMethods.watch(`${path}.foedeland`) !== 'NOR' &&
+					formMethods.watch(`${path}.foedeland`) !== null
 				}
 			/>
 			<FormikSelect
@@ -90,9 +90,8 @@ export const FoedselForm = ({ formikBag, path }: FoedselTypes) => {
 	)
 }
 
-export const Foedsel = ({ formikBag }: FoedselTypes) => {
+export const Foedsel = ({ formMethods }: FoedselTypes) => {
 	const opts = useContext(BestillingsveilederContext)
-
 	return (
 		<div className="flexbox--flex-wrap">
 			<FormikDollyFieldArray
@@ -102,7 +101,7 @@ export const Foedsel = ({ formikBag }: FoedselTypes) => {
 				canBeEmpty={false}
 			>
 				{(path: string, _idx: number) => {
-					return <FoedselForm formikBag={formikBag} path={path} />
+					return <FoedselForm formMethods={formMethods} path={path} />
 				}}
 			</FormikDollyFieldArray>
 		</div>

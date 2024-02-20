@@ -4,7 +4,7 @@ import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bes
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { validation } from '@/components/fagsystem/skjermingsregister/form/validation'
 
-export const SkjermingForm = ({ formikBag }) => {
+export const SkjermingForm = ({ formMethods }) => {
 	const { personFoerLeggTil } = useContext(BestillingsveilederContext)
 
 	const HarAktivSkjerming = () => {
@@ -12,8 +12,8 @@ export const SkjermingForm = ({ formikBag }) => {
 			return personFoerLeggTil?.skjermingsregister?.skjermetFra
 				? isAfter(
 						new Date(personFoerLeggTil?.skjermingsregister?.skjermetTil?.substring(0, 10)),
-						new Date()
-				  )
+						new Date(),
+					)
 				: false
 		} else {
 			return personFoerLeggTil?.skjermingsregister?.hasOwnProperty('skjermetFra')
@@ -21,7 +21,8 @@ export const SkjermingForm = ({ formikBag }) => {
 	}
 
 	const settFormikDate = (value, path) => {
-		formikBag.setFieldValue(`skjerming.${path}`, value)
+		formMethods.setValue(`skjerming.${path}`, value)
+		formMethods.trigger(`skjerming.${path}`)
 	}
 
 	const harSkjerming = HarAktivSkjerming()

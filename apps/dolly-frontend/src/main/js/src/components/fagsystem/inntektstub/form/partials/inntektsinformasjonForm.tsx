@@ -1,45 +1,46 @@
 import React, { useState } from 'react'
-import { FormikProps } from 'formik'
 import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { InntektstubVirksomhetToggle } from './inntektstubVirksomhetToggle'
 import InntektsinformasjonLister from './inntektsinformasjonLister/inntektsinformasjonLister'
 import InntektsendringForm from './inntektsendringForm'
-import * as _ from 'lodash-es'
 import { Monthpicker } from '@/components/ui/form/inputs/monthpicker/Monthpicker'
 import { FormikDateTimepicker } from '@/components/ui/form/inputs/timepicker/Timepicker'
+import { useFormContext } from 'react-hook-form'
 
 interface InntektsinformasjonForm {
 	path: string
-	formikBag: FormikProps<{}>
 }
 
-export default ({ path, formikBag }: InntektsinformasjonForm) => {
+export default ({ path }: InntektsinformasjonForm) => {
+	const formMethods = useFormContext()
 	const [date, setDate] = useState(
-		_.get(formikBag.values, `${path}.sisteAarMaaned`) !== ''
-			? Date.parse(_.get(formikBag.values, `${path}.sisteAarMaaned`))
+		formMethods.watch(`${path}.sisteAarMaaned`) !== ''
+			? Date.parse(formMethods.watch(`${path}.sisteAarMaaned`))
 			: null,
 	)
 
 	const [rapporteringsdate, setRapporteringsdato] = useState(
-		_.get(formikBag.values, `${path}.rapporteringsdato`) !== ''
-			? Date.parse(_.get(formikBag.values, `${path}.rapporteringsdato`))
+		formMethods.watch(`${path}.rapporteringsdato`) !== ''
+			? Date.parse(formMethods.watch(`${path}.rapporteringsdato`))
 			: null,
 	)
 
 	const handleDateChange = (selectedDate: Date) => {
 		setDate(selectedDate)
-		formikBag.setFieldValue(
+		formMethods.setValue(
 			`${path}.sisteAarMaaned`,
-			selectedDate ? selectedDate.toISOString().substr(0, 7) : '',
+			selectedDate ? selectedDate.toISOString().substring(0, 7) : '',
 		)
+		formMethods.trigger(`${path}.sisteAarMaaned`)
 	}
 
 	const handleRapporteringDateChange = (selectedDate: Date) => {
 		setRapporteringsdato(selectedDate)
-		formikBag.setFieldValue(
+		formMethods.setValue(
 			`${path}.rapporteringsdato`,
 			selectedDate ? selectedDate.toISOString().substring(0, 19) : null,
 		)
+		formMethods.trigger(`${path}.rapporteringsdato`)
 	}
 
 	return (
@@ -57,16 +58,16 @@ export default ({ path, formikBag }: InntektsinformasjonForm) => {
 					type="number"
 				/>
 				<FormikDateTimepicker
-					formikBag={formikBag}
+					formMethods={formMethods}
 					name={`${path}.rapporteringsdato`}
 					label="Rapporteringstidspunkt"
 					date={rapporteringsdate}
 					onChange={handleRapporteringDateChange}
 				/>
 			</div>
-			<InntektstubVirksomhetToggle formikBag={formikBag} path={path} />
-			<InntektsinformasjonLister formikBag={formikBag} path={path} />
-			<InntektsendringForm formikBag={formikBag} path={path} />
+			<InntektstubVirksomhetToggle formMethods={formMethods} path={path} />
+			<InntektsinformasjonLister formMethods={formMethods} path={path} />
+			<InntektsendringForm formMethods={formMethods} path={path} />
 		</div>
 	)
 }

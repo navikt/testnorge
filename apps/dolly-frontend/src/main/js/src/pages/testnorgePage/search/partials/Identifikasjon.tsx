@@ -1,10 +1,10 @@
-import { FormikProps } from 'formik'
 import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { RadioGroupOptions } from '@/pages/testnorgePage/search/radioGroupOptions/RadioGroupOptions'
 import React from 'react'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface IdentifikasjonProps {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 }
 
 const options = {
@@ -32,12 +32,12 @@ const paths = {
 }
 
 export const Identifikasjon: React.FC<IdentifikasjonProps> = ({
-	formikBag,
+	formMethods,
 }: IdentifikasjonProps) => {
 	return (
 		<section>
 			<RadioGroupOptions
-				formikBag={formikBag}
+				formMethods={formMethods}
 				name={'Identifikatortype'}
 				path={paths.identtype}
 				legend={'Velg identifikatortype'}
@@ -48,7 +48,7 @@ export const Identifikasjon: React.FC<IdentifikasjonProps> = ({
 			<FormikCheckbox name={paths.utenlandsk} label="Har utenlandsk identitet" />
 			<FormikCheckbox name={paths.historikk} label="Har identhistorikk" />
 			<RadioGroupOptions
-				formikBag={formikBag}
+				formMethods={formMethods}
 				name={paths.kjoenn}
 				path={paths.kjoenn}
 				legend={'Velg kjønn'}

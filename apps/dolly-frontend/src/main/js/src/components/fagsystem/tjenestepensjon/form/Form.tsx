@@ -9,6 +9,7 @@ import { subDays } from 'date-fns'
 import { PensjonApi } from '@/service/Api'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { useFormContext } from 'react-hook-form'
 
 export const tpPath = 'pensjonforvalter.tp'
 const hjelpetekst = 'Ordningen som personen skal ha et forhold til.'
@@ -36,7 +37,8 @@ export const fetchTpOrdninger = () => {
 	}
 }
 
-export const TjenestepensjonForm = ({ formikBag }) => {
+export const TjenestepensjonForm = () => {
+	const formMethods = useFormContext()
 	useEffect(() => {
 		fetchTpOrdninger()
 	}, [Options('tpOrdninger')])
@@ -45,9 +47,9 @@ export const TjenestepensjonForm = ({ formikBag }) => {
 		<Vis attributt={tpPath}>
 			<Panel
 				heading="Tjenestepensjon"
-				hasErrors={panelError(formikBag, tpPath)}
+				hasErrors={panelError(tpPath)}
 				iconType="pensjon"
-				startOpen={erForsteEllerTest(formikBag.values, [tpPath])}
+				startOpen={erForsteEllerTest(formMethods.getValues(), [tpPath])}
 				informasjonstekst={hjelpetekst}
 			>
 				{/*// @ts-ignore*/}

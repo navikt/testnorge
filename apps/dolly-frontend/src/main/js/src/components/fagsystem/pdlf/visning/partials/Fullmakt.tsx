@@ -8,7 +8,7 @@ import styled from 'styled-components'
 import { FullmaktData, Relasjon } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import { RelatertPerson } from '@/components/fagsystem/pdlf/visning/partials/RelatertPerson'
 import { FullmaktValues, PersonData } from '@/components/fagsystem/pdlf/PdlTypes'
-import * as _ from 'lodash-es'
+import _ from 'lodash'
 import { initialFullmakt, initialPdlPerson } from '@/components/fagsystem/pdlf/form/initialValues'
 import { getEksisterendeNyPerson } from '@/components/fagsystem/utils'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
@@ -108,13 +108,13 @@ export const FullmaktVisning = ({
 	let redigertFullmaktValues = redigertFullmaktPdlf
 		? {
 				fullmakt: Object.assign(_.cloneDeep(initialFullmakt), redigertFullmaktPdlf),
-		  }
+			}
 		: null
 
 	const eksisterendeNyPerson = redigertRelatertePersoner
 		? getEksisterendeNyPerson(redigertRelatertePersoner, fullmaktValues?.motpartsPersonident, [
 				'FULLMEKTIG',
-		  ])
+			])
 		: getEksisterendeNyPerson(relasjoner, fullmaktValues?.motpartsPersonident, ['FULLMEKTIG'])
 
 	if (eksisterendeNyPerson && initialValues?.fullmakt?.nyFullmektig) {

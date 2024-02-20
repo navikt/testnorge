@@ -1,7 +1,6 @@
 import useSWR from 'swr'
 import { fetcher } from '@/api'
-import * as _ from 'lodash'
-import { toLower } from 'lodash'
+import _, { toLower } from 'lodash'
 import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
 import { SortKodeverkArray } from '@/service/services/dolly/Utils'
 

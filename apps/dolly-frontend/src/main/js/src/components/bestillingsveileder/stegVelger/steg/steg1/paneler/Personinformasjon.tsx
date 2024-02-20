@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import * as _ from 'lodash-es'
+import _ from 'lodash'
 import Panel from '@/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
@@ -12,7 +12,6 @@ import {
 	initialFullmakt,
 	initialSikkerhetstiltak,
 	initialTilrettelagtKommunikasjon,
-	initialTpsSikkerhetstiltak,
 	initialVergemaal,
 } from '@/components/fagsystem/pdlf/form/initialValues'
 
@@ -40,7 +39,7 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 	const sm = stateModifier(PersoninformasjonPanel.initialValues)
 	const opts = useContext(BestillingsveilederContext)
 	const opprettFraEksisterende = opts.is.opprettFraIdenter
-	const leggTil = opts.is.leggTil
+	const leggTil = opts.is.leggTil || opts.is.leggTilPaaGruppe
 
 	const harFnr = opts.identtype === 'FNR'
 	// Noen egenskaper kan ikke endres når personen opprettes fra eksisterende eller videreføres med legg til
@@ -150,7 +149,7 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 PersoninformasjonPanel.heading = 'Personinformasjon'
 
 // @ts-ignore
-PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
+PersoninformasjonPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 	const { personFoerLeggTil, identtype } = opts
 
 	const fjernIdFoerLeggTil = (path: string) => {
@@ -187,10 +186,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 		},
 		vergemaal: 'pdldata.person.vergemaal',
 		fullmakt: 'pdldata.person.fullmakt',
-		sikkerhetstiltak: {
-			pdl: 'pdldata.person.sikkerhetstiltak',
-			tpsM: 'tpsMessaging.sikkerhetstiltak',
-		},
+		sikkerhetstiltak: 'pdldata.person.sikkerhetstiltak',
 		tilrettelagtKommunikasjon: 'pdldata.person.tilrettelagtKommunikasjon',
 		utenlandskBankkonto: 'bankkonto.utenlandskBankkonto',
 		norskBankkonto: 'bankkonto.norskBankkonto',
@@ -357,13 +353,9 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 		},
 		sikkerhetstiltak: {
 			label: 'Sikkerhetstiltak',
-			checked: has(paths.sikkerhetstiltak.pdl),
-			add: () =>
-				setMulti(
-					[paths.sikkerhetstiltak.pdl, [initialSikkerhetstiltak]],
-					[paths.sikkerhetstiltak.tpsM, [initialTpsSikkerhetstiltak]],
-				),
-			remove: () => del([paths.sikkerhetstiltak.pdl, paths.sikkerhetstiltak.tpsM]),
+			checked: has(paths.sikkerhetstiltak),
+			add: () => set(paths.sikkerhetstiltak, [initialSikkerhetstiltak]),
+			remove: () => del(paths.sikkerhetstiltak),
 		},
 		tilrettelagtKommunikasjon: {
 			label: 'Tilrettelagt komm.',

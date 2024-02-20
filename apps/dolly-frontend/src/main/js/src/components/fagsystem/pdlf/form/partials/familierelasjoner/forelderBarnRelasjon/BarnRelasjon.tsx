@@ -1,33 +1,31 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
-import { FormikProps } from 'formik'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { DollyCheckbox, FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { initialDeltBosted } from '@/components/fagsystem/pdlf/form/initialValues'
 import { DeltBosted } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/forelderBarnRelasjon/DeltBosted'
-import * as _ from 'lodash-es'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface BarnRelasjonValues {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 	path: string
 }
 
-export const BarnRelasjon = ({ formikBag, path }: BarnRelasjonValues) => {
+export const BarnRelasjon = ({ formMethods, path }: BarnRelasjonValues) => {
 	const opts = useContext(BestillingsveilederContext)
 	const erRedigering = !path?.includes('pdldata')
 
-	const [deltBosted, setDeltBosted] = useState(
-		_.get(formikBag.values, `${path}.deltBosted`) !== null,
-	)
+	const [deltBosted, setDeltBosted] = useState(formMethods.watch(`${path}.deltBosted`) !== null)
 
 	useEffect(() => {
-		const currentValues = _.get(formikBag.values, `${path}.deltBosted`)
+		const currentValues = formMethods.watch(`${path}.deltBosted`)
 		if (deltBosted && currentValues === null) {
-			formikBag.setFieldValue(`${path}.deltBosted`, initialDeltBosted)
+			formMethods.setValue(`${path}.deltBosted`, initialDeltBosted)
 		} else if (!deltBosted) {
-			formikBag.setFieldValue(`${path}.deltBosted`, null)
+			formMethods.setValue(`${path}.deltBosted`, null)
 		}
+		formMethods.trigger()
 	}, [deltBosted])
 
 	return (
@@ -61,7 +59,7 @@ export const BarnRelasjon = ({ formikBag, path }: BarnRelasjonValues) => {
 				)}
 			</div>
 			{deltBosted && !erRedigering && (
-				<DeltBosted formikBag={formikBag} path={`${path}.deltBosted`} />
+				<DeltBosted formMethods={formMethods} path={`${path}.deltBosted`} />
 			)}
 		</>
 	)
