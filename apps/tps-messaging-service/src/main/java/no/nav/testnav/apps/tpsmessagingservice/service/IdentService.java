@@ -120,6 +120,8 @@ public class IdentService {
         var xmlRequest = marshallToXML(requestContext, request)
                 .replace(SERVICE_NAME_OLD, SERVICE_NAME_NEW);
 
+        log.info("M201 request: {}", xmlRequest);
+
         var miljoerResponse = servicerutineConsumer.sendMessage(xmlRequest, miljoer);
 
         miljoerResponse.forEach((key, value) -> {
