@@ -1,22 +1,22 @@
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
-import { FormikProps } from 'formik'
 import { Option } from '@/service/SelectOptionsOppslag'
 import React from 'react'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 const pdlBasePath = 'pdldata.person.opphold'
 
-export const OppholdSammeVilkaar = ({ formikBag }: { formikBag: FormikProps<any> }) => (
+export const OppholdSammeVilkaar = ({ formMethods }: { formMethods: UseFormReturn }) => (
 	<React.Fragment>
 		<FormikDatepicker
 			name="udistub.oppholdStatus.oppholdSammeVilkaar.oppholdSammeVilkaarPeriode.fra"
-			afterChange={(dato: Date) => formikBag.setFieldValue(`${pdlBasePath}[0].oppholdFra`, dato)}
+			afterChange={(dato: Date) => formMethods.setValue(`${pdlBasePath}[0].oppholdFra`, dato)}
 			label="Oppholdstillatelse fra dato"
 		/>
 		<FormikDatepicker
 			name="udistub.oppholdStatus.oppholdSammeVilkaar.oppholdSammeVilkaarPeriode.til"
-			afterChange={(dato: Date) => formikBag.setFieldValue(`${pdlBasePath}[0].oppholdTil`, dato)}
+			afterChange={(dato: Date) => formMethods.setValue(`${pdlBasePath}[0].oppholdTil`, dato)}
 			label="Oppholdstillatelse til dato"
 		/>
 		<FormikDatepicker
@@ -27,10 +27,7 @@ export const OppholdSammeVilkaar = ({ formikBag }: { formikBag: FormikProps<any>
 			name="udistub.oppholdStatus.oppholdSammeVilkaar.oppholdstillatelseType"
 			label="Type oppholdstillatelse"
 			afterChange={(option: Option) =>
-				formikBag.setFieldValue(
-					`${pdlBasePath}[0].type`,
-					option ? option.value : 'OPPLYSNING_MANGLER',
-				)
+				formMethods.setValue(`${pdlBasePath}[0].type`, option ? option.value : 'OPPLYSNING_MANGLER')
 			}
 			options={Options('oppholdstillatelseType')}
 		/>

@@ -9,7 +9,7 @@ import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { EraseFillButtons } from '@/components/fagsystem/arbeidsplassen/form/partials/EraseFillButtons'
 
-export const KompetanserForm = ({ formikBag }) => {
+export const KompetanserForm = ({ formMethods }) => {
 	const kompetanseListePath = 'arbeidsplassenCV.kompetanser'
 
 	return (
@@ -31,7 +31,7 @@ export const KompetanserForm = ({ formikBag }) => {
 							isClearable={false}
 						/>
 						<EraseFillButtons
-							formikBag={formikBag}
+							formMethods={formMethods}
 							path={kompetansePath}
 							initialFill={initialKompetanserVerdier}
 							initialErase={initialKompetanser}

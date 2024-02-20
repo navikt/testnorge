@@ -9,8 +9,8 @@ import no.nav.dolly.domain.resultset.inntektsmeldingstub.NaturalytelseType;
 import no.nav.dolly.domain.resultset.inntektsmeldingstub.RsInntektsmelding;
 import no.nav.dolly.domain.resultset.inntektsmeldingstub.YtelseType;
 import no.nav.dolly.mapper.MappingContextUtils;
-import no.nav.dolly.mapper.strategy.LocalDateCustomMapping;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
+import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.enums.AarsakBeregnetInntektEndringKodeListe;
 import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.enums.AarsakInnsendingKodeListe;
 import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.enums.YtelseKodeListe;
 import no.nav.testnav.libs.dto.inntektsmeldingservice.v1.requests.InntektsmeldingRequest;
@@ -41,7 +41,7 @@ public class InntektsmeldingMappingStrategyTest {
 
     @BeforeEach
     void setup() {
-        mapperFacade = MapperTestUtils.createMapperFacadeForMappingStrategy(new LocalDateCustomMapping(), new InntektsmeldingMappingStrategy());
+        mapperFacade = MapperTestUtils.createMapperFacadeForMappingStrategy(new InntektsmeldingMappingStrategy());
     }
 
     @Test
@@ -90,6 +90,63 @@ public class InntektsmeldingMappingStrategyTest {
         assertThat(target.getGjenopptakelseNaturalytelseListe().getFirst().getNaturalytelseType(), is(equalTo("BEDRIFTSBARNEHAGEPLASS")));
     }
 
+    @Test
+    void mapSykepengerIArbeidsgiverperioden() {
+
+        var target = mapperFacade.map(populateRsInntektsmelding(), InntektsmeldingRequest.class)
+                .getInntekter().getFirst().getSykepengerIArbeidsgiverperioden();
+        assertThat(target.getArbeidsgiverperiodeListe().getFirst().getFom(),
+                is(equalTo(START_DATO.atStartOfDay())));
+        assertThat(target.getArbeidsgiverperiodeListe().getFirst().getTom(),
+                is(equalTo(SLUTT_DATO.atStartOfDay())));
+        assertThat(target.getBruttoUtbetalt(), is(equalTo(100.0)));
+        assertThat(target.getBegrunnelseForReduksjonEllerIkkeUtbetalt(),
+                is(equalTo(BegrunnelseForReduksjonEllerIkkeUtbetaltType.BETVILER_ARBEIDSUFOERHET.name())));
+    }
+
+    @Test
+    void mapRefusjon() {
+
+        var target = mapperFacade.map(populateRsInntektsmelding(), InntektsmeldingRequest.class)
+                .getInntekter().getFirst().getRefusjon();
+        assertThat(target.getEndringIRefusjonListe().getFirst().getEndringsdato(), is(equalTo(START_DATO.atStartOfDay())));
+        assertThat(target.getEndringIRefusjonListe().getFirst().getRefusjonsbeloepPrMnd(), is(equalTo(1000.0)));
+        assertThat(target.getRefusjonsbeloepPrMnd(), is(equalTo(500.0)));
+        assertThat(target.getRefusjonsopphoersdato(), is(equalTo(SLUTT_DATO.atStartOfDay())));
+    }
+
+    @Test
+    void mapOmsorgspenger() {
+
+        var target = mapperFacade.map(populateRsInntektsmelding(), InntektsmeldingRequest.class)
+                .getInntekter().getFirst().getOmsorgspenger();
+        assertThat(target.getFravaersPerioder().getFirst().getFom(), is(equalTo(START_DATO.atStartOfDay())));
+        assertThat(target.getFravaersPerioder().getFirst().getTom(), is(equalTo(SLUTT_DATO.atStartOfDay())));
+        assertThat(target.getDelvisFravaersListe().getFirst().getDato(), is(equalTo(START_DATO.atStartOfDay())));
+        assertThat(target.getDelvisFravaersListe().getFirst().getTimer(), is(equalTo(100.0)));
+        assertThat(target.getHarUtbetaltPliktigeDager(), is(true));
+    }
+
+    @Test
+    void mapArbeidsforhold() {
+        var target = mapperFacade.map(populateRsInntektsmelding(), InntektsmeldingRequest.class)
+                .getInntekter().getFirst().getArbeidsforhold();
+
+        assertThat(target.getArbeidsforholdId(), is(equalTo("1")));
+        assertThat(target.getAvtaltFerieListe().getFirst().getFom(), is(equalTo(START_DATO.atStartOfDay())));
+        assertThat(target.getAvtaltFerieListe().getFirst().getTom(), is(equalTo(SLUTT_DATO.atStartOfDay())));
+        assertThat(target.getBeregnetInntekt().getAarsakVedEndring(),
+                is(equalTo(AarsakBeregnetInntektEndringKodeListe.TARIFFENDRING.name())));
+        assertThat(target.getBeregnetInntekt().getBeloep(), is(equalTo(1.0)));
+        assertThat(target.getFoersteFravaersdag(), is(equalTo(START_DATO.atStartOfDay())));
+        assertThat(target.getGraderingIForeldrepengerListe().getFirst().getArbeidstidprosent(), is(equalTo(100)));
+        assertThat(target.getGraderingIForeldrepengerListe().getFirst().getPeriode().getFom(), is(equalTo(START_DATO.atStartOfDay())));
+        assertThat(target.getGraderingIForeldrepengerListe().getFirst().getPeriode().getTom(), is(equalTo(SLUTT_DATO.atStartOfDay())));
+        assertThat(target.getUtsettelseAvForeldrepengerListe().getFirst().getAarsakTilUtsettelse(),
+                is(equalTo(AarsakTilUtsettelseType.LOVBESTEMT_FERIE.name())));
+        assertThat(target.getUtsettelseAvForeldrepengerListe().getFirst().getPeriode().getFom(), is(equalTo(START_DATO.atStartOfDay())));
+        assertThat(target.getUtsettelseAvForeldrepengerListe().getFirst().getPeriode().getTom(), is(equalTo(SLUTT_DATO.atStartOfDay())));
+    }
 
     private RsInntektsmelding populateRsInntektsmelding() {
 

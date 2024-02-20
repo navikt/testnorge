@@ -8,7 +8,6 @@ interface OrgProps {
 	path: string
 	environment: string
 	miljoeOptions: string[]
-	error: string
 	success: boolean
 	loading?: boolean
 	onTextBlur: (event: React.ChangeEvent<any>) => void
@@ -19,7 +18,6 @@ export const OrganisasjonMedMiljoeSelect = ({
 	path,
 	environment,
 	miljoeOptions,
-	error,
 	success,
 	loading = false,
 	onTextBlur,
@@ -31,35 +29,25 @@ export const OrganisasjonMedMiljoeSelect = ({
 			value: value.id,
 			label: value.label,
 		}))
+	const parentPath = path.substring(0, path.lastIndexOf('.'))
 
 	return (
 		<div className={'flexbox--align-start'}>
 			<DollyTextInput
+				fieldName={`${parentPath}.opplysningspliktig`}
 				name={path}
 				type="number"
 				size="xlarge"
 				label={'Organisasjonsnummer'}
 				onBlur={onTextBlur}
-				feil={
-					error && {
-						feilmelding: error,
-					}
-				}
 			/>
 			<DollySelect
-				name={path}
 				size={'small'}
 				isClearable={false}
-				fastfield={false}
 				label={'Organisasjon Miljø'}
 				options={options}
 				value={environment}
 				onChange={onMiljoeChange}
-				feil={
-					!environment && {
-						feilmelding: 'Må velge miljø',
-					}
-				}
 			/>
 			{loading && (
 				<div className={'flexbox--align-center'} style={{ marginTop: '20px' }}>

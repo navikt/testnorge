@@ -5,7 +5,7 @@ import { sykdomAttributt } from '@/components/fagsystem/sykdom/form/Form'
 import { useContext } from 'react'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 
-export const SykdomPanel = ({ stateModifier, formikBag }: any) => {
+export const SykdomPanel = ({ stateModifier, formValues }: any) => {
 	const sm = stateModifier(SykdomPanel.initialValues)
 	const opts = useContext(BestillingsveilederContext)
 
@@ -24,7 +24,7 @@ export const SykdomPanel = ({ stateModifier, formikBag }: any) => {
 			checkAttributeArray={() => sm.batchAdd(harGyldigSykemeldingBestilling ? ['sykemelding'] : [])}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType="sykdom"
-			startOpen={harValgtAttributt(formikBag.values, [sykdomAttributt])}
+			startOpen={harValgtAttributt(formValues, [sykdomAttributt])}
 		>
 			<AttributtKategori title={null} attr={sm.attrs}>
 				<Attributt

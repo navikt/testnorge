@@ -6,7 +6,7 @@ import { Matrikkeladresse } from '@/components/fagsystem/pdlf/visning/partials/M
 import { UkjentBosted } from '@/components/fagsystem/pdlf/visning/partials/UkjentBosted'
 import { DeltBostedValues, PersonData } from '@/components/fagsystem/pdlf/PdlTypes'
 import { initialDeltBosted } from '@/components/fagsystem/pdlf/form/initialValues'
-import * as _ from 'lodash-es'
+import _ from 'lodash'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
 import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
 
@@ -64,7 +64,7 @@ export const DeltBostedVisning = ({
 	let redigertBostedValues = redigertBostedPdlf
 		? {
 				deltBosted: Object.assign(_.cloneDeep(initialDeltBosted), redigertBostedPdlf),
-		  }
+			}
 		: null
 
 	if (redigertBostedValues) {

@@ -7,18 +7,18 @@ import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { genererTilfeldigeNavPersonidenter } from '@/utils/GenererTilfeldigeNavPersonidenter'
-import * as _ from 'lodash-es'
 import { useNavEnheter } from '@/utils/hooks/useNorg2'
 import { BarnetilleggForm } from '@/components/fagsystem/uforetrygd/form/partials/BarnetilleggForm'
 import { validation } from '@/components/fagsystem/uforetrygd/form/validation'
-import _get from 'lodash/get'
 import { Monthpicker } from '@/components/ui/form/inputs/monthpicker/Monthpicker'
+import { useFormContext } from 'react-hook-form'
 
 const uforetrygdPath = 'pensjonforvalter.uforetrygd'
 
-export const UforetrygdForm = ({ formikBag }) => {
-	const saksbehandler = _.get(formikBag.values, `${uforetrygdPath}.saksbehandler`)
-	const attesterer = _.get(formikBag.values, `${uforetrygdPath}.attesterer`)
+export const UforetrygdForm = () => {
+	const formMethods = useFormContext()
+	const saksbehandler = formMethods.watch(`${uforetrygdPath}.saksbehandler`)
+	const attesterer = formMethods.watch(`${uforetrygdPath}.attesterer`)
 
 	const [randomSaksbehandlere, setRandomSaksbehandlere] = useState([])
 	const [randomAttesterere, setRandomAttesterere] = useState([])
@@ -33,9 +33,9 @@ export const UforetrygdForm = ({ formikBag }) => {
 		<Vis attributt={uforetrygdPath}>
 			<Panel
 				heading="Uføretrygd"
-				hasErrors={panelError(formikBag, uforetrygdPath)}
+				hasErrors={panelError(uforetrygdPath)}
 				iconType="pensjon"
-				startOpen={erForsteEllerTest(formikBag.values, [uforetrygdPath])}
+				startOpen={erForsteEllerTest(formMethods.getValues(), [uforetrygdPath])}
 			>
 				<div className="flexbox--flex-wrap">
 					<FormikDatepicker name={`${uforetrygdPath}.uforetidspunkt`} label="Uføretidspunkt" />
@@ -46,19 +46,19 @@ export const UforetrygdForm = ({ formikBag }) => {
 					<Monthpicker
 						name={`${uforetrygdPath}.onsketVirkningsDato`}
 						label="Ønsket virkningsdato"
-						date={_get(formikBag.values, `${uforetrygdPath}.onsketVirkningsDato`)}
-						handleDateChange={(dato: string) =>
-							formikBag.setFieldValue(`${uforetrygdPath}.onsketVirkningsDato`, dato)
-						}
+						date={formMethods.getValues(`${uforetrygdPath}.onsketVirkningsDato`)}
+						handleDateChange={(dato: string) => {
+							formMethods.setValue(`${uforetrygdPath}.onsketVirkningsDato`, dato)
+							formMethods.trigger(`${uforetrygdPath}`)
+						}}
 					/>
 					<FormikTextInput
 						name={`${uforetrygdPath}.inntektForUforhet`}
 						label="Inntekt før uførhet"
 						type="number"
-						fastfield="false"
 					/>
 				</div>
-				<BarnetilleggForm formikBag={formikBag} />
+				<BarnetilleggForm formMethods={formMethods} />
 				<div className="flexbox--flex-wrap">
 					<FormikSelect
 						name={`${uforetrygdPath}.minimumInntektForUforhetType`}
@@ -67,23 +67,16 @@ export const UforetrygdForm = ({ formikBag }) => {
 						options={Options('minimumInntektForUforhetType')}
 					/>
 
-					<FormikTextInput
-						name={`${uforetrygdPath}.uforegrad`}
-						label="Uføregrad"
-						type="number"
-						fastfield="false"
-					/>
+					<FormikTextInput name={`${uforetrygdPath}.uforegrad`} label="Uføregrad" type="number" />
 					<FormikSelect
 						options={randomSaksbehandlere}
 						name={`${uforetrygdPath}.saksbehandler`}
 						label={'Saksbehandler'}
-						fastfield={false}
 					/>
 					<FormikSelect
 						options={randomAttesterere}
 						name={`${uforetrygdPath}.attesterer`}
 						label={'Attesterer'}
-						fastfield={false}
 					/>
 					<FormikSelect
 						name={`${uforetrygdPath}.navEnhetId`}

@@ -8,14 +8,19 @@ import no.nav.dolly.mapper.MappingStrategy;
 import no.nav.testnav.libs.dto.dokarkiv.v1.RsJoarkMetadata;
 import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.RsInntektsmeldingRequest;
 import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.enums.AarsakInnsendingKodeListe;
+import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.enums.YtelseKodeListe;
 import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsArbeidsforhold;
+import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsArbeidsgiver;
+import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsArbeidsgiverPrivat;
 import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsAvsendersystem;
 import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsDelvisFravaer;
 import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsEndringIRefusjon;
 import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsKontaktinformasjon;
 import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsNaturalytelseDetaljer;
+import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsOmsorgspenger;
 import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsPeriode;
 import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsRefusjon;
+import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsSykepengerIArbeidsgiverperioden;
 import no.nav.testnav.libs.dto.inntektsmeldingservice.v1.requests.InntektsmeldingRequest;
 import org.springframework.stereotype.Component;
 
@@ -26,6 +31,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.inntektsmelding.domain.InntektsmeldingRequest.Avsendertype;
 import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Component
 public class InntektsmeldingMappingStrategy implements MappingStrategy {
@@ -71,16 +77,30 @@ public class InntektsmeldingMappingStrategy implements MappingStrategy {
                         inntektsmelding.setAarsakTilInnsending(
                                 nullcheckSetDefaultValue(inntektsmelding.getAarsakTilInnsending(), AarsakInnsendingKodeListe.NY));
 
-                        if (nonNull(inntektsmelding.getArbeidsgiver()) &&
-                                isNull(inntektsmelding.getArbeidsgiver().getKontaktinformasjon())) {
-                            inntektsmelding.getArbeidsgiver().setKontaktinformasjon(
-                                    getFiktivKontaktinformasjon());
+                        if (nonNull(rsInntektsmelding.getArbeidsgiver())) {
+
+                            inntektsmelding.setArbeidsgiver(RsArbeidsgiver.builder()
+                                    .kontaktinformasjon(
+                                            nullcheckSetDefaultValue(
+                                                    mapperFacade.map(rsInntektsmelding.getArbeidsgiver().getKontaktinformasjon(),
+                                                            RsKontaktinformasjon.class),
+                                                    getFiktivKontaktinformasjon()))
+                                    .virksomhetsnummer(rsInntektsmelding.getArbeidsgiver().getVirksomhetsnummer())
+                                    .build());
                         }
-                        if (nonNull(inntektsmelding.getArbeidsgiverPrivat()) &&
-                                isNull(inntektsmelding.getArbeidsgiverPrivat().getKontaktinformasjon())) {
-                            inntektsmelding.getArbeidsgiverPrivat().setKontaktinformasjon(
-                                    getFiktivKontaktinformasjon());
+
+                        if (nonNull(rsInntektsmelding.getArbeidsgiverPrivat())) {
+
+                            inntektsmelding.setArbeidsgiverPrivat(RsArbeidsgiverPrivat.builder()
+                                    .kontaktinformasjon(
+                                            nullcheckSetDefaultValue(
+                                                    mapperFacade.map(rsInntektsmelding.getArbeidsgiverPrivat().getKontaktinformasjon(),
+                                                            RsKontaktinformasjon.class),
+                                                    getFiktivKontaktinformasjon()))
+                                    .arbeidsgiverFnr(rsInntektsmelding.getArbeidsgiverPrivat().getArbeidsgiverFnr())
+                                    .build());
                         }
+
                         if (isNull(inntektsmelding.getAvsendersystem())) {
                             inntektsmelding.setAvsendersystem(RsAvsendersystem.builder()
                                     .innsendingstidspunkt(LocalDateTime.now())
@@ -90,11 +110,29 @@ public class InntektsmeldingMappingStrategy implements MappingStrategy {
                         inntektsmelding.getAvsendersystem().setSystemversjon("2.0");
 
                         inntektsmelding.setStartdatoForeldrepengeperiode(toLocalDateTime(rsInntektsmelding.getStartdatoForeldrepengeperiode()));
+
+                        inntektsmelding.setArbeidsforhold(mapperFacade.map(rsInntektsmelding.getArbeidsforhold(), RsArbeidsforhold.class));
+                        inntektsmelding.setGjenopptakelseNaturalytelseListe(rsInntektsmelding.getGjenopptakelseNaturalytelseListe().stream()
+                                .map(ytelse -> mapperFacade.map(ytelse, RsNaturalytelseDetaljer.class))
+                                .toList());
+
+                        inntektsmelding.setNaerRelasjon(isTrue(rsInntektsmelding.getNaerRelasjon()));
+                        inntektsmelding.setOmsorgspenger(mapperFacade.map(rsInntektsmelding.getOmsorgspenger(), RsOmsorgspenger.class));
+                        inntektsmelding.setOpphoerAvNaturalytelseListe(rsInntektsmelding.getOpphoerAvNaturalytelseListe().stream()
+                                .map(ytelse -> mapperFacade.map(ytelse, RsNaturalytelseDetaljer.class))
+                                .toList());
+
+                        inntektsmelding.setPleiepengerPerioder(rsInntektsmelding.getPleiepengerPerioder().stream()
+                                .map(periode -> mapperFacade.map(periode, RsPeriode.class))
+                                .toList());
+
+                        inntektsmelding.setRefusjon(mapperFacade.map(rsInntektsmelding.getRefusjon(), RsRefusjon.class));
+                        inntektsmelding.setSykepengerIArbeidsgiverperioden(
+                                mapperFacade.map(rsInntektsmelding.getSykepengerIArbeidsgiverperioden(),
+                                        RsSykepengerIArbeidsgiverperioden.class));
+                        inntektsmelding.setYtelse(mapperFacade.map(rsInntektsmelding.getYtelse(), YtelseKodeListe.class));
                     }
                 })
-
-                .exclude("startdatoForeldrepengeperiode")
-                .byDefault()
                 .register();
 
         factory.classMap(RsInntektsmelding.RsArbeidsforhold.class, RsArbeidsforhold.class)
@@ -117,10 +155,9 @@ public class InntektsmeldingMappingStrategy implements MappingStrategy {
                                         RsDelvisFravaer delvisFravaer, MappingContext context) {
 
                         delvisFravaer.setDato(toLocalDateTime(rsDelvisFravaer.getDato()));
+                        delvisFravaer.setTimer(rsDelvisFravaer.getTimer());
                     }
                 })
-                .exclude("dato")
-                .byDefault()
                 .register();
 
         factory.classMap(RsInntektsmelding.RsNaturalYtelseDetaljer.class, RsNaturalytelseDetaljer.class)
@@ -143,10 +180,12 @@ public class InntektsmeldingMappingStrategy implements MappingStrategy {
                                         RsRefusjon refusjon, MappingContext context) {
 
                         refusjon.setRefusjonsopphoersdato(toLocalDateTime(rsRefusjon.getRefusjonsopphoersdato()));
+                        refusjon.setEndringIRefusjonListe(rsRefusjon.getEndringIRefusjonListe().stream()
+                                .map(refusjon1 -> mapperFacade.map(refusjon1, RsEndringIRefusjon.class))
+                                .toList());
+                        refusjon.setRefusjonsbeloepPrMnd(rsRefusjon.getRefusjonsbeloepPrMnd());
                     }
                 })
-                .exclude("refusjonsopphoersdato")
-                .byDefault()
                 .register();
 
         factory.classMap(RsInntektsmelding.RsEndringIRefusjon.class, RsEndringIRefusjon.class)
@@ -156,10 +195,9 @@ public class InntektsmeldingMappingStrategy implements MappingStrategy {
                                         RsEndringIRefusjon refusjon, MappingContext context) {
 
                         refusjon.setEndringsdato(toLocalDateTime(rsRefusjon.getEndringsdato()));
+                        refusjon.setRefusjonsbeloepPrMnd(rsRefusjon.getRefusjonsbeloepPrMnd());
                     }
                 })
-                .exclude("endringsdato")
-                .byDefault()
                 .register();
 
         factory.classMap(RsInntektsmelding.RsPeriode.class, RsPeriode.class)

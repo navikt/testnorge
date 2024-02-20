@@ -14,36 +14,44 @@ import {
 	usePensjonsgivendeInntektSkatteordning,
 } from '@/utils/hooks/useSigrunstub'
 import { getInitialInntekt } from '@/components/fagsystem/sigrunstubPensjonsgivende/utils'
-import * as _ from 'lodash-es'
 import { validation } from '@/components/fagsystem/sigrunstubPensjonsgivende/form/validation'
+import { useFormContext } from 'react-hook-form'
 
 export const getInitialSigrunstubPensjonsgivende = (kodeverk = null, skatteordning = null) => {
 	return {
 		inntektsaar: new Date().getFullYear(),
-		pensjonsgivendeInntekt:
-			kodeverk && skatteordning ? [getInitialInntekt(kodeverk, skatteordning)] : [],
+		pensjonsgivendeInntekt: [
+			{
+				skatteordning: 'FASTLAND',
+				datoForFastsetting: new Date(),
+				pensjonsgivendeInntektAvLoennsinntekt: null,
+				pensjonsgivendeInntektAvLoennsinntektBarePensjonsdel: null,
+				pensjonsgivendeInntektAvNaeringsinntekt: null,
+				pensjonsgivendeInntektAvNaeringsinntektFraFiskeFangstEllerFamiliebarnehage: null,
+			},
+		],
 		testdataEier: '',
 	}
 }
 
 export const sigrunstubPensjonsgivendeAttributt = 'sigrunstubPensjonsgivende'
 
-export const SigrunstubPensjonsgivendeForm = ({ formikBag }) => {
+export const SigrunstubPensjonsgivendeForm = () => {
+	const formMethods = useFormContext()
 	const { kodeverk } = usePensjonsgivendeInntektKodeverk()
 	const { skatteordning } = usePensjonsgivendeInntektSkatteordning()
 
 	useEffect(() => {
 		const pensjonsgivendeInntektPath = 'sigrunstubPensjonsgivende[0].pensjonsgivendeInntekt'
-		const forstePensjonsgivendeInntekt = _.get(formikBag.values, pensjonsgivendeInntektPath)
+		const forstePensjonsgivendeInntekt = formMethods.watch(pensjonsgivendeInntektPath)
 		if (
-			_.has(formikBag.values, 'sigrunstubPensjonsgivende') &&
+			formMethods.watch('sigrunstubPensjonsgivende') &&
 			kodeverk &&
 			skatteordning &&
 			(!forstePensjonsgivendeInntekt || forstePensjonsgivendeInntekt.length < 1)
 		) {
-			formikBag.setFieldValue(pensjonsgivendeInntektPath, [
-				getInitialInntekt(kodeverk, skatteordning),
-			])
+			formMethods.setValue(pensjonsgivendeInntektPath, [getInitialInntekt(kodeverk, skatteordning)])
+			formMethods.trigger(pensjonsgivendeInntektPath)
 		}
 	}, [kodeverk, skatteordning])
 
@@ -51,9 +59,9 @@ export const SigrunstubPensjonsgivendeForm = ({ formikBag }) => {
 		<Vis attributt={sigrunstubPensjonsgivendeAttributt}>
 			<Panel
 				heading="Pensjonsgivende inntekt (Sigrun)"
-				hasErrors={panelError(formikBag, sigrunstubPensjonsgivendeAttributt)}
+				hasErrors={panelError(sigrunstubPensjonsgivendeAttributt)}
 				iconType="sigrun"
-				startOpen={erForsteEllerTest(formikBag.values, [sigrunstubPensjonsgivendeAttributt])}
+				startOpen={erForsteEllerTest(formMethods.getValues(), [sigrunstubPensjonsgivendeAttributt])}
 			>
 				<ErrorBoundary>
 					<FormikDollyFieldArray
@@ -75,7 +83,7 @@ export const SigrunstubPensjonsgivendeForm = ({ formikBag }) => {
 								</div>
 								<PensjonsgivendeInntektForm
 									path={`${path}.pensjonsgivendeInntekt`}
-									formikBag={formikBag}
+									formMethods={formMethods}
 									kodeverk={kodeverk}
 									skatteordning={skatteordning}
 								/>

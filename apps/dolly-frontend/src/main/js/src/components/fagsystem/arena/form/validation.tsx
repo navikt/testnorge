@@ -1,7 +1,7 @@
 import * as Yup from 'yup'
 import { messages, requiredString } from '@/utils/YupValidations'
 import { isAfter, isBefore, isEqual } from 'date-fns'
-import * as _ from 'lodash-es'
+import _ from 'lodash'
 
 const ikkeOverlappendeVedtak = ['aap', 'dagpenger']
 
@@ -207,13 +207,13 @@ const validFradato = (vedtakType) => {
 		.test(
 			'har-gjeldende-vedtak',
 			'AAP- og Dagpenger-vedtak kan ikke overlappe hverandre',
-			function validVedtak() {
-				const values = this.options.context
+			(val, testContext) => {
+				const fullForm = testContext.from && testContext.from[testContext.from.length - 1]?.value
 				const naavaerendeVerdier = {}
 				for (let key of ikkeOverlappendeVedtak) {
 					naavaerendeVerdier[key] = {
-						fraDato: values.arenaforvalter[key]?.[0]?.fraDato,
-						tilDato: values.arenaforvalter[key]?.[0]?.tilDato,
+						fraDato: fullForm.arenaforvalter[key]?.[0]?.fraDato,
+						tilDato: fullForm.arenaforvalter[key]?.[0]?.tilDato,
 					}
 				}
 				// Hvis det bare er en type vedtak trengs det ikke å sjekkes videre
@@ -229,9 +229,9 @@ const validFradato = (vedtakType) => {
 		.test(
 			'tiltak-fra-etter-doedsdato',
 			'Ident kan ikke ha tiltak etter dødsfall',
-			function validDate(value) {
-				const values = this.options.context
-				return !invalidDoedsdato(value, values)
+			(value, testContext) => {
+				const fullForm = testContext.from && testContext.from[testContext.from.length - 1]?.value
+				return !invalidDoedsdato(value, fullForm)
 			},
 		)
 		.nullable()
@@ -260,34 +260,38 @@ export const validation = Yup.object({
 		Yup.object({
 			fraDato: validFradato('aap'),
 			tilDato: Yup.string()
-				.test('etter-fradato', 'Til-dato må være etter fra-dato', function validDate(tildato) {
-					const fradato = this.options.context.arenaforvalter.aap[0]?.fraDato
+				.test('etter-fradato', 'Til-dato må være etter fra-dato', (tildato, testContext) => {
+					const fullForm = testContext.from && testContext.from[testContext.from.length - 1]?.value
+					const fradato = fullForm.arenaforvalter.aap[0]?.fraDato
 					return validTildato(fradato, tildato)
 				})
 				.test(
 					'overlapper-ikke-25',
 					'Vedtak kan ikke overlappe dato person fyller 25',
-					function validDate(tildato) {
-						const values = this.options.context
-						const fradato = this.options.context.arenaforvalter.aap[0]?.fraDato
-						return !overlapp25aarsdag(new Date(fradato), new Date(tildato), values)
+					(tildato, testContext) => {
+						const fullForm =
+							testContext.from && testContext.from[testContext.from.length - 1]?.value
+						const fradato = fullForm.arenaforvalter.aap[0]?.fraDato
+						return !overlapp25aarsdag(new Date(fradato), new Date(tildato), fullForm)
 					},
 				)
 				.test(
 					'avslutter-ved-67',
 					'Person kan ikke ha vedtak etter fylte 67 år',
-					function validDate(tildato) {
-						const values = this.options.context
-						const fradato = this.options.context.arenaforvalter.aap[0]?.fraDato
-						return !erEtter67aarsdag(new Date(fradato), new Date(tildato), values)
+					(tildato, testContext) => {
+						const fullForm =
+							testContext.from && testContext.from[testContext.from.length - 1]?.value
+						const fradato = fullForm.arenaforvalter.aap[0]?.fraDato
+						return !erEtter67aarsdag(new Date(fradato), new Date(tildato), fullForm)
 					},
 				)
 				.test(
 					'tiltak-til-etter-doedsdato',
 					'Ident kan ikke ha tiltak etter dødsfall',
-					function validDate(value) {
-						const values = this.options.context
-						return !invalidDoedsdato(value, values)
+					(value, testContext) => {
+						const fullForm =
+							testContext.from && testContext.from[testContext.from.length - 1]?.value
+						return !invalidDoedsdato(value, fullForm)
 					},
 				)
 				.nullable()
@@ -300,17 +304,19 @@ export const validation = Yup.object({
 				.test(
 					'avslutter-ved-67',
 					'Person kan ikke ha vedtak etter fylte 67 år',
-					function validDate(fradato) {
-						const values = this.options.context
-						return !erEtter67aarsdag(new Date(fradato), null, values)
+					(fradato, testContext) => {
+						const fullForm =
+							testContext.from && testContext.from[testContext.from.length - 1]?.value
+						return !erEtter67aarsdag(new Date(fradato), null, fullForm)
 					},
 				)
 				.test(
 					'tiltak-fra-etter-doedsdato',
 					'Ident kan ikke ha tiltak etter dødsfall',
-					function validDate(value) {
-						const values = this.options.context
-						return !invalidDoedsdato(value, values)
+					(value, testContext) => {
+						const fullForm =
+							testContext.from && testContext.from[testContext.from.length - 1]?.value
+						return !invalidDoedsdato(value, fullForm)
 					},
 				)
 				.nullable()
@@ -319,10 +325,10 @@ export const validation = Yup.object({
 	),
 	arenaBrukertype: requiredString,
 	aktiveringDato: Yup.mixed()
-		.test('er-paakrevd', 'Feltet er påkrevd', function isRequired(dato) {
-			const values = this.options.context
-			if (values.personFoerLeggTil && values.personFoerLeggTil.arenaforvalteren) return true
-			const { arenaforvalter } = values
+		.test('er-paakrevd', 'Feltet er påkrevd', (dato, testContext) => {
+			const fullForm = testContext.from && testContext.from[testContext.from.length - 1]?.value
+			if (fullForm.personFoerLeggTil && fullForm.personFoerLeggTil.arenaforvalteren) return true
+			const { arenaforvalter } = fullForm
 			const ingenYtelser =
 				arenaforvalter?.arenaBrukertype === 'MED_SERVICEBEHOV' &&
 				!arenaforvalter?.aap115 &&
@@ -333,42 +339,39 @@ export const validation = Yup.object({
 		.test(
 			'aktivert-etter-doedsdato',
 			'Ident kan ikke aktiveres etter dødsfall',
-			function validDate(value) {
-				const values = this.options.context
-				return !invalidDoedsdato(value, values)
+			(value, testContext) => {
+				const fullForm = testContext.from && testContext.from[testContext.from.length - 1]?.value
+				return !invalidDoedsdato(value, fullForm)
 			},
 		)
 		.nullable(),
 	inaktiveringDato: Yup.mixed()
-		.test(
-			'er-etter-aktiveringsdato',
-			'Dato må være etter aktiveringsdato',
-			function isAfterAktivering(dato) {
-				const arenaValues = this.options.context?.arenaforvalter
-				if (arenaValues.inaktiveringDato === undefined) {
-					return true
-				}
-				if (arenaValues?.arenaBrukertype === 'UTEN_SERVICEBEHOV' && !dato) {
-					return this.createError({
-						message: 'Feltet er påkrevd',
-					})
-				}
-				return (
-					!arenaValues?.aktiveringDato ||
-					isEqual(new Date(dato), new Date(arenaValues.aktiveringDato)) ||
-					isAfter(new Date(dato), new Date(arenaValues.aktiveringDato))
-				)
-			},
-		)
+		.test('er-etter-aktiveringsdato', 'Dato må være etter aktiveringsdato', (dato, testContext) => {
+			const fullForm = testContext.from && testContext.from[testContext.from.length - 1]?.value
+			const arenaValues = fullForm?.arenaforvalter
+			if (arenaValues.inaktiveringDato === undefined) {
+				return true
+			}
+			if (arenaValues?.arenaBrukertype === 'UTEN_SERVICEBEHOV' && !dato) {
+				return testContext.createError({
+					message: 'Feltet er påkrevd',
+				})
+			}
+			return (
+				!arenaValues?.aktiveringDato ||
+				isEqual(new Date(dato), new Date(arenaValues.aktiveringDato)) ||
+				isAfter(new Date(dato), new Date(arenaValues.aktiveringDato))
+			)
+		})
 		.nullable(),
 	automatiskInnsendingAvMeldekort: Yup.boolean().nullable(),
 	kvalifiseringsgruppe: Yup.string()
-		.test('har-verdi', messages.required, function validKvalifiseringsgruppe(gruppe) {
-			const values = this.options.context
-			if (values.arenaforvalter.arenaBrukertype === 'UTEN_SERVICEBEHOV') return true
-			if (values.personFoerLeggTil && values.personFoerLeggTil.arenaforvalteren) return true
+		.test('har-verdi', messages.required, (gruppe, testContext) => {
+			const fullForm = testContext.from && testContext.from[testContext.from.length - 1]?.value
+			if (fullForm.arenaforvalter.arenaBrukertype === 'UTEN_SERVICEBEHOV') return true
+			if (fullForm.personFoerLeggTil && fullForm.personFoerLeggTil.arenaforvalteren) return true
 
-			return gruppe
+			return !_.isEmpty(gruppe)
 		})
 		.nullable(),
 	dagpenger: Yup.array().of(
@@ -376,53 +379,59 @@ export const validation = Yup.object({
 			rettighetKode: Yup.string().required(messages.required),
 			fraDato: validFradato('dagpenger'),
 			tilDato: Yup.string()
-				.test('etter-fradato', 'Til-dato må være etter fra-dato', function validDate(tildato) {
+				.test('etter-fradato', 'Til-dato må være etter fra-dato', (tildato, testContext) => {
+					const fullForm = testContext.from && testContext.from[testContext.from.length - 1]?.value
 					if (!tildato) {
 						return true
 					}
-					const fradato = this.options.context.arenaforvalter.dagpenger[0]?.fraDato
+					const fradato = fullForm.arenaforvalter.dagpenger[0]?.fraDato
 					return validTildato(fradato, tildato)
 				})
 				.test(
 					'skaper-ikke-overlapp',
 					'Manglende til-dato skaper overlapp med annet vedtak',
-					function validDate(tildato) {
+					(tildato, testContext) => {
+						const fullForm =
+							testContext.from && testContext.from[testContext.from.length - 1]?.value
 						if (!tildato) {
 							return true
 						}
-						return ingenOverlappFraTildato(tildato, this.options.context)
+						return ingenOverlappFraTildato(tildato, fullForm)
 					},
 				)
 				.test(
 					'overlapper-ikke-25',
 					'Vedtak kan ikke overlappe dato person fyller 25',
-					function validDate(tildato) {
+					(tildato, testContext) => {
+						const fullForm =
+							testContext.from && testContext.from[testContext.from.length - 1]?.value
 						if (!tildato) {
 							return true
 						}
-						const values = this.options.context
-						const fradato = this.options.context.arenaforvalter.dagpenger[0]?.fraDato
-						return !overlapp25aarsdag(new Date(fradato), new Date(tildato), values)
+						const fradato = fullForm.arenaforvalter.dagpenger[0]?.fraDato
+						return !overlapp25aarsdag(new Date(fradato), new Date(tildato), fullForm)
 					},
 				)
 				.test(
 					'avslutter-ved-67',
 					'Person kan ikke ha vedtak etter fylte 67 år',
-					function validDate(tildato) {
+					(tildato, testContext) => {
+						const fullForm =
+							testContext.from && testContext.from[testContext.from.length - 1]?.value
 						if (!tildato) {
 							return true
 						}
-						const values = this.options.context
-						const fradato = this.options.context.arenaforvalter.dagpenger[0]?.fraDato
-						return !erEtter67aarsdag(new Date(fradato), new Date(tildato), values)
+						const fradato = fullForm.arenaforvalter.dagpenger[0]?.fraDato
+						return !erEtter67aarsdag(new Date(fradato), new Date(tildato), fullForm)
 					},
 				)
 				.test(
 					'tiltak-fra-etter-doedsdato',
 					'Ident kan ikke ha tiltak etter dødsfall',
-					function validDate(value) {
-						const values = this.options.context
-						return !invalidDoedsdato(value, values)
+					(value, testContext) => {
+						const fullForm =
+							testContext.from && testContext.from[testContext.from.length - 1]?.value
+						return !invalidDoedsdato(value, fullForm)
 					},
 				)
 				.nullable(),

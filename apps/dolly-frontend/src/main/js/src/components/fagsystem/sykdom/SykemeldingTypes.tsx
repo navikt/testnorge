@@ -1,7 +1,7 @@
-import { FormikProps } from 'formik'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 export interface SykemeldingForm {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 }
 
 export type Sykemelding = {

@@ -1,6 +1,6 @@
 import React from 'react'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import { Panel, Button, Table } from '@navikt/ds-react'
+import { Button, Panel, Table } from '@navikt/ds-react'
 import { Mal } from '@/utils/hooks/useMaler'
 import { EndreMalnavn } from './EndreMalnavn'
 import { CypressSelector } from '../../../../cypress/mocks/Selectors'

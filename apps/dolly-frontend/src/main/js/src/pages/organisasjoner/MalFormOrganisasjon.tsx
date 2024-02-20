@@ -2,13 +2,16 @@ import React, { BaseSyntheticEvent, useState } from 'react'
 import { ifPresent, requiredString } from '@/utils/YupValidations'
 import { useDollyOrganisasjonMalerBrukerOgMalnavn } from '@/utils/hooks/useMaler'
 import Loading from '@/components/ui/loading/Loading'
-import { MalerFormProps, MalTyper } from '@/components/bestillingsveileder/stegVelger/steg/steg3/MalForm'
+import {
+	MalerFormProps,
+	MalTyper,
+} from '@/components/bestillingsveileder/stegVelger/steg/steg3/MalForm'
 import { MalOppsummering } from '@/components/bestillingsveileder/stegVelger/steg/steg3/MalOppsummering'
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const MalFormOrganisasjon = ({
 	brukerId,
-	formikBag: { setFieldValue },
+	formMethods: { trigger, setValue },
 	opprettetFraMal,
 }: MalerFormProps) => {
 	const [typeMal, setTypeMal] = useState(MalTyper.OPPRETT)
@@ -22,15 +25,17 @@ export const MalFormOrganisasjon = ({
 	const handleToggleChange = (value: MalTyper) => {
 		setTypeMal(value)
 		if (value === MalTyper.OPPRETT) {
-			setFieldValue('malBestillingNavn', '')
+			setValue('malBestillingNavn', '')
 		} else if (value === MalTyper.ENDRE) {
-			setFieldValue('malBestillingNavn', opprettetFraMal || '')
+			setValue('malBestillingNavn', opprettetFraMal || '')
 		}
+		trigger()
 	}
 
 	const handleCheckboxChange = (value: BaseSyntheticEvent) => {
-		setFieldValue('malBestillingNavn', value.target?.checked ? '' : undefined)
+		setValue('malBestillingNavn', value.target?.checked ? '' : undefined)
 		setOpprettMal(value.target?.checked)
+		trigger()
 	}
 
 	return (

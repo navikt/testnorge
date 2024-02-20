@@ -171,13 +171,6 @@ export const initialMedlAvgangssystem = {
 	dekning: '',
 }
 
-export const initialTpsSikkerhetstiltak = {
-	tiltakstype: '',
-	beskrivelse: '',
-	gyldigFraOgMed: new Date(),
-	gyldigTilOgMed: null as unknown as string,
-}
-
 export const getInitialStatsborgerskap = (master = 'FREG') => ({
 	landkode: null as unknown as string,
 	gyldigFraOgMed: null as unknown as string,

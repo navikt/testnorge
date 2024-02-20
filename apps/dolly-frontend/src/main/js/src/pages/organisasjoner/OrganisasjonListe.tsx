@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import * as _ from 'lodash-es'
+import _ from 'lodash'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import 'rc-tooltip/assets/bootstrap.css'
 import { OrganisasjonItem } from '@/components/ui/icon/IconItem'
@@ -12,10 +12,10 @@ import { useOrganisasjoner } from '@/utils/hooks/useOrganisasjoner'
 import Loading from '@/components/ui/loading/Loading'
 import { Organisasjon } from '@/service/services/organisasjonforvalter/types'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
+import { useReduxSelector } from '@/utils/hooks/useRedux'
 
 type OrganisasjonListeProps = {
 	bestillinger: Array<EnhetBestilling>
-	search: string
 	setAntallOrg: Function
 	sidetall: number
 }
@@ -29,13 +29,13 @@ const ikonTypeMap = {
 
 export default function OrganisasjonListe({
 	bestillinger,
-	search,
 	setAntallOrg,
 	sidetall,
 }: OrganisasjonListeProps) {
 	const {
 		currentBruker: { brukerId },
 	} = useCurrentBruker()
+	const search = useReduxSelector((state) => state.search)
 
 	const sokSelectorOrg = (
 		items: {
@@ -125,7 +125,7 @@ export default function OrganisasjonListe({
 		setAntallOrg(organisasjoner?.length)
 		const sortedOrgliste = _.orderBy(organisasjoner, ['id'], ['desc'])
 		setfiltrertOrgListe(sokSelectorOrg(mergeList(sortedOrgliste, bestillinger), search))
-	}, [organisasjoner, bestillinger])
+	}, [organisasjoner, bestillinger, search])
 
 	if (loading) {
 		return <Loading label="Laster organisasjoner" panel />

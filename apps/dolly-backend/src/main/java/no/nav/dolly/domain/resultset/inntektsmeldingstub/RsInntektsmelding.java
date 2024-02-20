@@ -82,6 +82,22 @@ public class RsInntektsmelding {
             }
             return pleiepengerPerioder;
         }
+
+        public List<RsNaturalYtelseDetaljer> getGjenopptakelseNaturalytelseListe() {
+
+            if (isNull(gjenopptakelseNaturalytelseListe)) {
+                gjenopptakelseNaturalytelseListe = new ArrayList<>();
+            }
+            return gjenopptakelseNaturalytelseListe;
+        }
+
+        public List<RsNaturalYtelseDetaljer> getOpphoerAvNaturalytelseListe() {
+
+            if (isNull(opphoerAvNaturalytelseListe)) {
+                opphoerAvNaturalytelseListe = new ArrayList<>();
+            }
+            return opphoerAvNaturalytelseListe;
+        }
     }
 
     @Data
@@ -106,6 +122,14 @@ public class RsInntektsmelding {
         private Double refusjonsbeloepPrMnd;
         @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
         private LocalDate refusjonsopphoersdato;
+
+        public List<RsEndringIRefusjon> getEndringIRefusjonListe() {
+
+            if (isNull(endringIRefusjonListe)) {
+                endringIRefusjonListe = new ArrayList<>();
+            }
+            return endringIRefusjonListe;
+        }
     }
 
     @Data

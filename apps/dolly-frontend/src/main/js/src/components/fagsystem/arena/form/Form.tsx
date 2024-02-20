@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import * as _ from 'lodash-es'
+import _ from 'lodash'
 import { ifPresent } from '@/utils/YupValidations'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import Panel from '@/components/ui/panel/Panel'
@@ -10,17 +10,18 @@ import { AlertInntektskomponentenRequired } from '@/components/ui/brukerAlert/Al
 import { validation } from '@/components/fagsystem/arena/form/validation'
 import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import { useFormContext } from 'react-hook-form'
 
 export const arenaPath = 'arenaforvalter'
 
-export const ArenaForm = ({ formikBag }) => {
+export const ArenaForm = () => {
+	const formMethods = useFormContext()
 	const opts = useContext(BestillingsveilederContext)
 	const { leggTilPaaGruppe } = opts?.is
 
-	const servicebehovAktiv =
-		_.get(formikBag.values, `${arenaPath}.arenaBrukertype`) === 'MED_SERVICEBEHOV'
+	const servicebehovAktiv = formMethods.watch(`${arenaPath}.arenaBrukertype`) === 'MED_SERVICEBEHOV'
 
-	const dagpengerAktiv = _.get(formikBag.values, `${arenaPath}.dagpenger[0]`)
+	const dagpengerAktiv = formMethods.watch(`${arenaPath}.dagpenger[0]`)
 
 	const personFoerLeggTilInntektstub = _.get(opts.personFoerLeggTil, 'inntektstub')
 
@@ -32,14 +33,14 @@ export const ArenaForm = ({ formikBag }) => {
 		<Vis attributt={arenaPath}>
 			<Panel
 				heading="Arbeidsytelser"
-				hasErrors={panelError(formikBag, arenaPath)}
+				hasErrors={panelError(arenaPath)}
 				iconType="arena"
-				startOpen={erForsteEllerTest(formikBag.values, [arenaPath])}
+				startOpen={erForsteEllerTest(formMethods.getValues(), [arenaPath])}
 			>
 				{!leggTilPaaGruppe &&
 					dagpengerAktiv &&
 					!personFoerLeggTilInntektstub &&
-					!formikBag.values.hasOwnProperty('inntektstub') && (
+					!formMethods.getValues().hasOwnProperty('inntektstub') && (
 						<AlertInntektskomponentenRequired vedtak={'dagpengevedtak'} />
 					)}
 				{!servicebehovAktiv && (
@@ -59,7 +60,7 @@ export const ArenaForm = ({ formikBag }) => {
 						)}
 					</div>
 				)}
-				{servicebehovAktiv && <MedServicebehov formikBag={formikBag} path={arenaPath} />}
+				{servicebehovAktiv && <MedServicebehov formMethods={formMethods} path={arenaPath} />}
 				<FormikCheckbox
 					name={`${arenaPath}.automatiskInnsendingAvMeldekort`}
 					label="Automatisk innsending av meldekort"

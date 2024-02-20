@@ -4,13 +4,13 @@ import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput
 import { ArbeidKodeverk, GtKodeverk } from '@/config/kodeverk'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
-import * as _ from 'lodash-es'
+import _ from 'lodash'
 import { landkodeIsoMapping } from '@/service/services/kontoregister/landkoder'
 
 const path = 'bankkonto.utenlandskBankkonto'
 
-export const UtenlandskBankkonto = ({ formikBag }: any) => {
-	const values = formikBag?.values
+export const UtenlandskBankkonto = ({ formMethods }: any) => {
+	const values = formMethods.getValues()
 	const disableKontonummer = _.get(values, `${path}.tilfeldigKontonummer`)
 	const disableTilfeldigKontonummer = _.get(values, `${path}.kontonummer`)
 
@@ -29,13 +29,12 @@ export const UtenlandskBankkonto = ({ formikBag }: any) => {
 			} else {
 				swift = 'BANK' + mappedLandkode + '11222'
 			}
-			formikBag.setFieldValue(`${path}.swift`, swift, false)
-			formikBag.setFieldTouched(`${path}.swift`, true)
+			formMethods.setValue(`${path}.swift`, swift, false)
 		}
 	}
 
 	return (
-		<Vis attributt={path} formik>
+		<Vis attributt={path}>
 			<div className="flexbox--flex-wrap">
 				<div className="flexbox--flex-wrap">
 					<FormikTextInput

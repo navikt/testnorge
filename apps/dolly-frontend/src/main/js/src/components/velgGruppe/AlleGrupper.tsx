@@ -1,12 +1,10 @@
 import { DollySelect } from '@/components/ui/form/inputs/select/Select'
-import Loading from '@/components/ui/loading/Loading'
 import { useAlleBrukere, useCurrentBruker } from '@/utils/hooks/useBruker'
-import { Gruppe, useEgneGrupper, useGrupper } from '@/utils/hooks/useGruppe'
+import { Gruppe, useEgneGrupper } from '@/utils/hooks/useGruppe'
 import React, { useState } from 'react'
+import { useFormContext } from 'react-hook-form'
 
 interface AlleGrupper {
-	setValgtGruppe: React.Dispatch<React.SetStateAction<string>>
-	valgtGruppe: string
 	fraGruppe?: number | null
 }
 
@@ -15,10 +13,11 @@ type Options = {
 	label: string
 }
 
-export default ({ setValgtGruppe, valgtGruppe, fraGruppe = null }: AlleGrupper) => {
+export default ({ fraGruppe = null }: AlleGrupper) => {
+	const formMethods = useFormContext()
 	const { currentBruker } = useCurrentBruker()
 	const { brukere, loading: loadingBrukere } = useAlleBrukere()
-	const [valgtBruker, setValgtBruker] = useState(null)
+	const [valgtBruker, setValgtBruker] = useState(formMethods?.watch('bruker') || null)
 
 	const filteredBrukerliste = brukere?.filter(
 		(bruker) => bruker.brukerId !== currentBruker.brukerId,
@@ -45,21 +44,27 @@ export default ({ setValgtGruppe, valgtGruppe, fraGruppe = null }: AlleGrupper) 
 	return (
 		<div className="flexbox--flex-wrap">
 			<DollySelect
-				name={'Bruker'}
+				name={'bruker'}
 				label={'Bruker'}
 				options={brukerOptions}
 				size="medium"
-				onChange={(bruker) => setValgtBruker(bruker?.value || null)}
-				value={valgtBruker}
+				onChange={(bruker) => {
+					formMethods.setValue('bruker', bruker?.value)
+					setValgtBruker(bruker?.value || null)
+				}}
+				value={valgtBruker || formMethods?.watch('bruker')}
 				isLoading={loadingBrukere}
 				placeholder={loadingBrukere ? 'Laster brukere ...' : 'Velg bruker ...'}
 			/>
 			<DollySelect
-				name="Gruppe"
+				name="gruppeId"
 				label="Gruppe"
 				options={gruppeOptions}
-				onChange={(gruppe: Options) => setValgtGruppe(gruppe?.value)}
-				value={valgtGruppe}
+				value={formMethods?.watch('gruppeId')}
+				onChange={(gruppe: Options) => {
+					formMethods?.setValue('gruppeId', gruppe?.value)
+					formMethods.trigger('gruppeId')
+				}}
 				size={fraGruppe ? 'grow' : 'large'}
 				isClearable={false}
 				isDisabled={!valgtBruker}

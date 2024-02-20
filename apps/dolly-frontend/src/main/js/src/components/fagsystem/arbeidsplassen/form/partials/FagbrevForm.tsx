@@ -9,13 +9,13 @@ import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { EraseFillButtons } from '@/components/fagsystem/arbeidsplassen/form/partials/EraseFillButtons'
 
-export const FagbrevForm = ({ formikBag }) => {
+export const FagbrevForm = ({ formMethods }) => {
 	const setFagbrev = (selected, path) => {
 		const fagbrev = {
 			title: selected.value,
 			type: selected.type,
 		}
-		formikBag.setFieldValue(path, fagbrev)
+		formMethods.setValue(path, fagbrev)
 	}
 
 	const fagbrevListePath = 'arbeidsplassenCV.fagbrev'
@@ -39,7 +39,7 @@ export const FagbrevForm = ({ formikBag }) => {
 							onChange={(selected) => setFagbrev(selected, fagbrevPath)}
 						/>
 						<EraseFillButtons
-							formikBag={formikBag}
+							formMethods={formMethods}
 							path={fagbrevPath}
 							initialErase={initialFagbrev}
 							initialFill={initialFagbrevVerdier}

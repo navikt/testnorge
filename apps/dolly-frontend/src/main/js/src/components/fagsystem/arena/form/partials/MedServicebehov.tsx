@@ -3,7 +3,7 @@ import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
-import * as _ from 'lodash-es'
+import _ from 'lodash'
 import { Alert } from '@navikt/ds-react'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 
@@ -18,12 +18,12 @@ const feilmelding67 = 'Person kan ikke ha vedtak etter fylte 67 år. '
 const feilmeldingFiks =
 	'Vennligst endre vedtaksperioden eller sett en spesifikk alder/fødsel på person for å unngå denne feilen.'
 
-const getFeilmelding = (formikBag) => {
+const getFeilmelding = (formMethods) => {
 	let melding = ''
 	let har25Feil = false
 	let har67Feil = false
 	for (let path of errorPaths) {
-		const feil = _.get(formikBag.errors, path)
+		const feil = _.get(formMethods.formState.errors, path)?.message
 		if (feil && !har25Feil && feil.includes('25')) {
 			har25Feil = true
 			melding += feilmelding25
@@ -35,10 +35,10 @@ const getFeilmelding = (formikBag) => {
 	return melding ? melding + feilmeldingFiks : null
 }
 
-export const MedServicebehov = ({ formikBag, path }) => {
+export const MedServicebehov = ({ formMethods, path }) => {
 	const opts = useContext(BestillingsveilederContext)
-	const { arenaforvalter } = formikBag.values
-	const feilmelding = getFeilmelding(formikBag)
+	const { arenaforvalter } = formMethods.getValues()
+	const feilmelding = getFeilmelding(formMethods)
 
 	return (
 		<React.Fragment>

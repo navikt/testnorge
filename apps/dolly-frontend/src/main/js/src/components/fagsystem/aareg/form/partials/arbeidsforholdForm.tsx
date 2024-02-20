@@ -22,10 +22,10 @@ import { ArbeidsgiverIdent } from '@/components/fagsystem/aareg/form/partials/ar
 import { isDate } from 'date-fns'
 import { EgneOrganisasjoner } from '@/components/fagsystem/brregstub/form/partials/EgneOrganisasjoner'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
-import { FormikErrors, FormikTouched, FormikValues, useFormikContext } from 'formik'
-import * as _ from 'lodash-es'
+import _ from 'lodash'
 import { Monthpicker } from '@/components/ui/form/inputs/monthpicker/Monthpicker'
 import { fixTimezone } from '@/components/ui/form/formUtils'
+import { useFormContext } from 'react-hook-form'
 
 type Arbeidsforhold = {
 	isOppdatering?: boolean
@@ -82,20 +82,10 @@ export const ArbeidsforholdForm = ({
 		if (formValues.length > 1) {
 			return true
 		}
-		return !_.isEqual(values.aareg, [initialArbeidsforholdOrg])
+		return !_.isEqual(getValues('aareg'), [initialArbeidsforholdOrg])
 	}
 
-	const {
-		touched,
-		values,
-		errors,
-		setFieldValue,
-	}: {
-		touched: FormikTouched<any>
-		values: FormikValues
-		errors: FormikErrors<any>
-		setFieldValue: any
-	} = useFormikContext()
+	const { setError, watch, getValues, setValue: setFieldValue, trigger } = useFormContext()
 	const [navArbeidsforholdPeriode, setNavArbeidsforholdPeriode] = useState(null as unknown as Date)
 	const { tidligereBestillinger } = useContext(BestillingsveilederContext)
 	const tidligereAaregBestillinger = hentUnikeAaregBestillinger(tidligereBestillinger)
@@ -105,7 +95,7 @@ export const ArbeidsforholdForm = ({
 		arbeidsforholdIndex < tidligereAaregBestillinger?.length
 
 	useEffect(() => {
-		if (_.isEmpty(tidligereAaregBestillinger) || harGjortFormEndringer(values.aareg)) {
+		if (_.isEmpty(tidligereAaregBestillinger) || harGjortFormEndringer(getValues('aareg'))) {
 			return
 		}
 		setFieldValue(
@@ -115,14 +105,15 @@ export const ArbeidsforholdForm = ({
 				return aaregBestilling
 			}),
 		)
-	}, [values.aareg])
+		trigger()
+	}, [getValues('aareg')])
 
-	const gjeldendeArbeidsgiver = _.get(values, `${path}.arbeidsgiver`)
+	const gjeldendeArbeidsgiver = watch(`${path}.arbeidsgiver`)
 
 	const arbeidsforholdstype =
 		typeof ameldingIndex !== 'undefined'
-			? _.get(values, 'aareg[0].arbeidsforholdstype')
-			: _.get(values, `${path}.arbeidsforholdstype`)
+			? _.get(getValues(), 'aareg[0].arbeidsforholdstype')
+			: _.get(getValues(), `${path}.arbeidsforholdstype`)
 	const onChangeLenket = (fieldPath: string) => {
 		if (arbeidsgiverType !== ArbeidsgiverTyper.egen) {
 			return (field) => {
@@ -130,13 +121,14 @@ export const ArbeidsforholdForm = ({
 					? fixTimezone(field)
 					: field?.value || field?.target?.value || null
 				setFieldValue(`${path}.${fieldPath}`, value)
+				trigger()
 			}
 		} else {
 			return (field) => {
 				const value = isDate(field)
 					? fixTimezone(field)
 					: field?.value || field?.target?.value || null
-				const amelding = _.get(values, 'aareg[0].amelding') || []
+				const amelding = watch('aareg[0].amelding') || []
 				amelding.forEach((_maaned, idx) => {
 					if (!erLenket && idx < ameldingIndex) {
 						return null
@@ -149,6 +141,7 @@ export const ArbeidsforholdForm = ({
 					}
 				})
 				setFieldValue('aareg[0].amelding', amelding)
+				trigger('aareg[0].amelding')
 			}
 		}
 	}
@@ -165,12 +158,14 @@ export const ArbeidsforholdForm = ({
 						arbeidsforholdstype: event.value,
 						arbeidsgiver: gjeldendeArbeidsgiver,
 					})
+					trigger()
 				} else if (arbeidsgiverType === ArbeidsgiverTyper.privat) {
 					setFieldValue(path, {
 						...initialForenkletOppgjoersordningPers,
 						arbeidsforholdstype: event.value,
 						arbeidsgiver: gjeldendeArbeidsgiver,
 					})
+					trigger()
 				}
 			}
 		} else {
@@ -184,20 +179,25 @@ export const ArbeidsforholdForm = ({
 						arbeidsforholdstype: event.value,
 						arbeidsgiver: gjeldendeArbeidsgiver,
 					})
+					trigger()
 				} else if (arbeidsgiverType === ArbeidsgiverTyper.privat) {
 					setFieldValue(path, {
 						...initialArbeidsforholdPers,
 						arbeidsforholdstype: event.value,
 						arbeidsgiver: gjeldendeArbeidsgiver,
 					})
+					trigger()
 				}
 			} else {
 				setFieldValue(`${path}.arbeidsforholdstype`, event.value)
+				trigger()
 			}
 			if (event.value === 'maritimtArbeidsforhold') {
 				setFieldValue(`${path}.fartoy`, initialFartoy)
+				trigger()
 			} else {
 				setFieldValue(`${path}.fartoy`, undefined)
+				trigger()
 			}
 		}
 	}
@@ -209,23 +209,14 @@ export const ArbeidsforholdForm = ({
 				? {
 						year: navArbeidsforholdPeriode.getFullYear(),
 						monthValue: navArbeidsforholdPeriode.getMonth(),
-				  }
+					}
 				: undefined,
 		)
+		trigger()
 	}, [navArbeidsforholdPeriode])
 
-	const feilmelding = () => {
-		if (
-			!_.get(values, `${path}.arbeidsforholdstype`) &&
-			_.has(touched, `${path}.arbeidsforholdstype`)
-		) {
-			return {
-				feilmelding: _.get(errors, `${path}.arbeidsforholdstype`),
-			}
-		}
-	}
-
-	const checkAktiveArbeidsforhold = (aaregValues) => {
+	const checkAktiveArbeidsforhold = () => {
+		const aaregValues = getValues('aareg')
 		const aktiveArbeidsforhold = aaregValues.map((arbeidsforhold) => {
 			const orgnummer = arbeidsforhold?.arbeidsgiver?.orgnummer
 			if (!arbeidsforhold?.ansettelsesPeriode?.sluttaarsak) {
@@ -235,11 +226,11 @@ export const ArbeidsforholdForm = ({
 		const dupliserteAktiveArbeidsforhold = aktiveArbeidsforhold
 			.filter((arbeidsforhold, index) => index !== aktiveArbeidsforhold.indexOf(arbeidsforhold))
 			.filter((arbeidsforhold) => !_.isEmpty(arbeidsforhold))
-		return _.isEmpty(dupliserteAktiveArbeidsforhold)
-			? null
-			: {
-					feilmelding: `Identen har allerede pågående arbeidsforhold i org: ${dupliserteAktiveArbeidsforhold.toString()}`,
-			  }
+		if (!_.isEmpty(dupliserteAktiveArbeidsforhold)) {
+			setError(`${path}.arbeidsgiver.orgnummer`, {
+				message: `Identen har allerede pågående arbeidsforhold i org: ${dupliserteAktiveArbeidsforhold.toString()}`,
+			})
+		}
 	}
 
 	return (
@@ -259,7 +250,7 @@ export const ArbeidsforholdForm = ({
 					<OrganisasjonMedArbeidsforholdSelect
 						path={`${path}.arbeidsgiver.orgnummer`}
 						label={'Organisasjonsnummer'}
-						feil={checkAktiveArbeidsforhold(values.aareg)}
+						afterChange={() => checkAktiveArbeidsforhold()}
 						isDisabled={erLaastArbeidsforhold}
 					/>
 				)}
@@ -268,7 +259,7 @@ export const ArbeidsforholdForm = ({
 						name={`${path}.arbeidsgiver.orgnummer`}
 						label={'Organisasjonsnummer'}
 						size="xlarge"
-						feil={checkAktiveArbeidsforhold(values.aareg)}
+						onKeyPress={() => checkAktiveArbeidsforhold()}
 						defaultValue={gjeldendeArbeidsgiver?.orgnummer}
 						isDisabled={erLaastArbeidsforhold}
 					/>
@@ -281,7 +272,6 @@ export const ArbeidsforholdForm = ({
 						size="xlarge"
 						isClearable={false}
 						onChange={handleArbeidsforholdstypeChange}
-						feil={feilmelding()}
 						isDisabled={erLaastArbeidsforhold}
 					/>
 				)}
@@ -295,13 +285,11 @@ export const ArbeidsforholdForm = ({
 					name={`${path}.ansettelsesPeriode.fom`}
 					label="Ansatt fra"
 					onChange={onChangeLenket('ansettelsesPeriode.fom')}
-					fastfield={false}
 				/>
 				<FormikDatepicker
 					name={`${path}.ansettelsesPeriode.tom`}
 					label="Ansatt til"
 					onChange={onChangeLenket('ansettelsesPeriode.tom')}
-					fastfield={false}
 				/>
 				<FormikSelect
 					name={`${path}.ansettelsesPeriode.sluttaarsak`}
@@ -309,7 +297,7 @@ export const ArbeidsforholdForm = ({
 					kodeverk={ArbeidKodeverk.SluttaarsakAareg}
 					size="xlarge"
 					onChange={onChangeLenket('ansettelsesPeriode.sluttaarsak')}
-					isDisabled={!_.get(values, `${path}.ansettelsesPeriode.tom`)}
+					isDisabled={!_.get(getValues(), `${path}.ansettelsesPeriode.tom`)}
 				/>
 				<Monthpicker
 					name={`${path}.navArbeidsforholdPeriode`}
@@ -320,6 +308,7 @@ export const ArbeidsforholdForm = ({
 				/>
 				{arbeidsforholdstype === 'forenkletOppgjoersordning' && (
 					<FormikSelect
+						value={watch(`${path}.arbeidsavtale.yrke`)}
 						name={`${path}.arbeidsavtale.yrke`}
 						label="Yrke"
 						kodeverk={ArbeidKodeverk.Yrker}

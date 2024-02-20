@@ -3,12 +3,12 @@ import { Oppholdsadresse } from '@/components/fagsystem/pdlf/form/partials/adres
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { Kontaktadresse } from '@/components/fagsystem/pdlf/form/partials/adresser/kontaktadresse/Kontaktadresse'
 import { Adressebeskyttelse } from '@/components/fagsystem/pdlf/form/partials/adresser/adressebeskyttelse/Adressebeskyttelse'
-import { FormikProps } from 'formik'
 import Panel from '@/components/ui/panel/Panel'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface AdresserValues {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 }
 
 export const adresseAttributter = [
@@ -18,26 +18,26 @@ export const adresseAttributter = [
 	'pdldata.person.adressebeskyttelse',
 ]
 
-export const Adresser = ({ formikBag }: AdresserValues) => {
+export const Adresser = ({ formMethods }: AdresserValues) => {
 	return (
 		<Vis attributt={adresseAttributter}>
 			<Panel
 				heading="Adresser"
-				hasErrors={panelError(formikBag, adresseAttributter)}
+				hasErrors={panelError(adresseAttributter)}
 				iconType="adresse"
-				startOpen={erForsteEllerTest(formikBag.values, adresseAttributter)}
+				startOpen={erForsteEllerTest(formMethods.getValues(), adresseAttributter)}
 			>
 				<Vis attributt={'pdldata.person.bostedsadresse'}>
-					<Bostedsadresse formikBag={formikBag} />
+					<Bostedsadresse formMethods={formMethods} />
 				</Vis>
 				<Vis attributt={'pdldata.person.oppholdsadresse'}>
-					<Oppholdsadresse formikBag={formikBag} />
+					<Oppholdsadresse formMethods={formMethods} />
 				</Vis>
 				<Vis attributt={'pdldata.person.kontaktadresse'}>
-					<Kontaktadresse formikBag={formikBag} />
+					<Kontaktadresse formMethods={formMethods} />
 				</Vis>
 				<Vis attributt={'pdldata.person.adressebeskyttelse'}>
-					<Adressebeskyttelse formikBag={formikBag} />
+					<Adressebeskyttelse formMethods={formMethods} />
 				</Vis>
 			</Panel>
 		</Vis>

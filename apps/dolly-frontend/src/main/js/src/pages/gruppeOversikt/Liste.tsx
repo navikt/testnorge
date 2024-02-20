@@ -14,7 +14,6 @@ export default function Liste({
 	searchActive,
 	isFetching,
 	gruppeDetaljer,
-	visSide,
 	visningType = null,
 }) {
 	const navigate = useNavigate()
@@ -105,7 +104,6 @@ export default function Liste({
 				onRowClick={(row) => () => navigate(`/gruppe/${row.id}`)}
 				iconItem={<GruppeIconItem />}
 				gruppeDetaljer={gruppeDetaljer}
-				visSide={visSide}
 			/>
 		</ErrorBoundary>
 	)

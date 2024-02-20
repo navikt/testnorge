@@ -57,11 +57,7 @@ export const Feedback = ({ label, feedbackFor }: FeedbackProps) => {
 								placeholder={'(Valgfritt) ' + label}
 								maxLength={MAX_LENGTH}
 								onChange={(event) => setText(event.target.value)}
-								feil={
-									text.length > MAX_LENGTH
-										? { feilmelding: 'Tilbakemelding inneholder for mange tegn' }
-										: null
-								}
+								error={text.length > MAX_LENGTH && 'Tilbakemelding inneholder for mange tegn'}
 							/>
 							{/* @ts-ignore */}
 							<Checkbox label="Jeg ønsker å være anonym" onChange={toggleAnonym}>

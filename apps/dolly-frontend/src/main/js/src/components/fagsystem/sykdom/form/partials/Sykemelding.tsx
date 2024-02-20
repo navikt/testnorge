@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import * as _ from 'lodash-es'
 import { SyntSykemelding } from './SyntSykemelding'
 import { DetaljertSykemelding } from './DetaljertSykemelding'
 import { Diagnose, SykemeldingForm } from '@/components/fagsystem/sykdom/SykemeldingTypes'
@@ -48,7 +47,7 @@ const initialValuesDetaljertSykemelding = {
 		manglendeTilretteleggingPaaArbeidsplassen: false,
 		mottaker: {
 			navn: '',
-			orgNr: '',
+			orgNr: null,
 			adresse: {
 				by: '',
 				gate: '',
@@ -78,9 +77,9 @@ enum SykemeldingTyper {
 	synt = 'SYNT',
 }
 
-export const Sykemelding = ({ formikBag }: SykemeldingForm) => {
+export const Sykemelding = ({ formMethods }: SykemeldingForm) => {
 	const [typeSykemelding, setTypeSykemelding] = useState(
-		_.get(formikBag.values, 'sykemelding').hasOwnProperty('detaljertSykemelding')
+		formMethods.watch('sykemelding').hasOwnProperty('detaljertSykemelding')
 			? SykemeldingTyper.detaljert
 			: SykemeldingTyper.synt,
 	)
@@ -88,9 +87,9 @@ export const Sykemelding = ({ formikBag }: SykemeldingForm) => {
 	const handleToggleChange = (value: SykemeldingTyper) => {
 		setTypeSykemelding(value)
 		if (value === SykemeldingTyper.detaljert) {
-			formikBag.setFieldValue('sykemelding', initialValuesDetaljertSykemelding)
+			formMethods.setValue('sykemelding', initialValuesDetaljertSykemelding)
 		} else {
-			formikBag.setFieldValue('sykemelding', initialValuesSyntSykemelding)
+			formMethods.setValue('sykemelding', initialValuesSyntSykemelding)
 		}
 	}
 
@@ -121,7 +120,7 @@ export const Sykemelding = ({ formikBag }: SykemeldingForm) => {
 			</ToggleGroup>
 			{typeSykemelding === SykemeldingTyper.synt && <SyntSykemelding />}
 			{typeSykemelding === SykemeldingTyper.detaljert && (
-				<DetaljertSykemelding formikBag={formikBag} />
+				<DetaljertSykemelding formMethods={formMethods} />
 			)}
 		</div>
 	)
