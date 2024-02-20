@@ -81,6 +81,7 @@ export enum CypressSelector {
 	BUTTON_MALMODAL_LAGRE = 'button-malmodal-lagre',
 	BUTTON_GJENOPPRETT_GRUPPE = 'button-gjenopprett-gruppe',
 	BUTTON_REDIGER_GRUPPE = 'button-rediger-gruppe',
+	BUTTON_TIDLIGEREBESTILLINGER_NAVIGER = 'button-tidligerebestillinger-naviger',
 	SELECT_PERSON_SEARCH = 'select-person-search',
 	SELECT_TAGS = 'select-tags',
 	HOVER_MILJOE = 'hover-miljoe',

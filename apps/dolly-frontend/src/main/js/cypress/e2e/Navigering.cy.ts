@@ -4,6 +4,31 @@ import { ERROR_NAVIGATE_IDENT } from '../../src/ducks/errors/ErrorMessages'
 
 const personFragmentNaviger = new RegExp(/dolly-backend\/api\/v1\/ident\/naviger\/12345678912/)
 
+describe('Navigering til ident som finnes i bestilling og tilbake igjen til bestillingen', () => {
+	it('passes', () => {
+		cy.visit('gruppe')
+
+		cy.get('div').contains('Testytest').click()
+
+		cy.dollyGet(CypressSelector.TOGGLE_VISNING_BESTILLINGER).click()
+
+		cy.dollyGet(CypressSelector.BUTTON_OPEN_BESTILLING).each((element) => {
+			cy.wrap(element).click()
+		})
+
+		cy.get('Button').contains('12345678912').click()
+
+		cy.dollyGet(CypressSelector.TOGGLE_VISNING_PERSONER).should('have.attr', 'aria-checked', 'true')
+		cy.dollyGet(CypressSelector.BUTTON_TIDLIGEREBESTILLINGER_NAVIGER).click()
+
+		cy.dollyGet(CypressSelector.TOGGLE_VISNING_BESTILLINGER).should(
+			'have.attr',
+			'aria-checked',
+			'true',
+		)
+	})
+})
+
 describe('Navigering til ident som finnes i gruppe 1', () => {
 	it('passes', () => {
 		cy.visit('gruppe')

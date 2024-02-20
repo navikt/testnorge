@@ -5,6 +5,18 @@ import { useDispatch } from 'react-redux'
 import Button from '@/components/ui/button/Button'
 import { useState } from 'react'
 import Loading from '@/components/ui/loading/Loading'
+import styled from 'styled-components'
+
+const NavigerTilIdentButton = styled(Button)`
+	&&& {
+		margin-left: unset;
+	}
+
+	span {
+		margin-top: 0;
+		padding-left: 0;
+	}
+`
 
 function IdentList({ identer }: { identer: string[] }) {
 	const dispatch = useDispatch()
@@ -15,8 +27,7 @@ function IdentList({ identer }: { identer: string[] }) {
 				loading ? (
 					<Loading label={'Navigerer...'} key={idx} />
 				) : (
-					<Button
-						style={{ alignContent: 'center' }}
+					<NavigerTilIdentButton
 						onClick={() => {
 							setLoading(true)
 							return dispatch(navigerTilPerson(ident))
@@ -24,7 +35,7 @@ function IdentList({ identer }: { identer: string[] }) {
 						key={idx}
 					>
 						{ident}
-					</Button>
+					</NavigerTilIdentButton>
 				),
 			)}
 		</ul>

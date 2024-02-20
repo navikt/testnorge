@@ -3,6 +3,7 @@ import Button from '@/components/ui/button/Button'
 import styled from 'styled-components'
 import { useDispatch } from 'react-redux'
 import { navigerTilBestilling } from '@/ducks/finnPerson'
+import { CypressSelector } from '../../../../../cypress/mocks/Selectors'
 
 const NavigerTilBestillingButton = styled(Button)`
 	align-self: center;
@@ -11,15 +12,14 @@ const NavigerTilBestillingButton = styled(Button)`
 export const TidligereBestillinger = ({ ids }) => {
 	const dispatch = useDispatch()
 
-	if (ids.length <= 1) return false
-
 	return (
 		<div className="tidligere-bestilling-panel">
-			<h4>Bestilling-IDer</h4>
+			<h4>{`Bestilling-ID${ids.length > 1 ? 'er' : ''}`}</h4>
 			{ids
 				.map((numId) => numId.toString())
 				.map((id) => (
 					<NavigerTilBestillingButton
+						data-cy={CypressSelector.BUTTON_TIDLIGEREBESTILLINGER_NAVIGER}
 						key={id}
 						onClick={() => {
 							dispatch(navigerTilBestilling(id))
