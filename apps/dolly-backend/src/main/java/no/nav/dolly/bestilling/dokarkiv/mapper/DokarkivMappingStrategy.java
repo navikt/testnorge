@@ -38,7 +38,7 @@ public class DokarkivMappingStrategy implements MappingStrategy {
                     public void mapAtoB(RsDokarkiv rsDokarkiv, DokarkivRequest dokarkivRequest, MappingContext context) {
 
                         dokarkivRequest.setTittel(rsDokarkiv.getTittel());
-                        dokarkivRequest.setJournalfoerendeEnhet(rsDokarkiv.getJournalfoerendeEnhet());
+                        dokarkivRequest.setJournalfoerendeEnhet(isBlank(rsDokarkiv.getJournalfoerendeEnhet()) ? null : rsDokarkiv.getJournalfoerendeEnhet());
                         dokarkivRequest.setTema(rsDokarkiv.getTema());
 
                         dokarkivRequest.setKanal(isBlank(rsDokarkiv.getKanal()) ? KANAL : rsDokarkiv.getKanal());
@@ -58,6 +58,11 @@ public class DokarkivMappingStrategy implements MappingStrategy {
                                     .build());
                         }
                         dokarkivRequest.setSak(mapperFacade.map(rsDokarkiv.getSak(), DokarkivRequest.Sak.class));
+
+                        if (!isNull(dokarkivRequest.getSak()) && (isBlank(dokarkivRequest.getSak().getFagsakId()))) {
+                            dokarkivRequest.getSak().setFagsakId(null);
+                        }
+
                         dokarkivRequest.setBruker(DokarkivRequest.Bruker.builder()
                                 .idType(FNR)
                                 .id(((PdlPersonBolk.PersonBolk) context.getProperty(PERSON_BOLK)).getIdent())
