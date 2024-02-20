@@ -36,14 +36,6 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 @Component
 public class InntektsmeldingMappingStrategy implements MappingStrategy {
 
-    private static RsKontaktinformasjon getFiktivKontaktinformasjon() {
-
-        return RsKontaktinformasjon.builder()
-                .kontaktinformasjonNavn("Dolly Dollesen")
-                .telefonnummer("99999999")
-                .build();
-    }
-
     @Override
     public void register(MapperFactory factory) {
 
@@ -135,6 +127,21 @@ public class InntektsmeldingMappingStrategy implements MappingStrategy {
                 })
                 .register();
 
+        factory.classMap(RsInntektsmelding.RsSykepengerIArbeidsgiverperioden.class, RsSykepengerIArbeidsgiverperioden.class)
+                .customize(new CustomMapper<>() {
+                    @Override
+                    public void mapAtoB(RsInntektsmelding.RsSykepengerIArbeidsgiverperioden rsSykepengerIArbeidsgiverperioden,
+                                        RsSykepengerIArbeidsgiverperioden sykepengerIArbeidsgiverperioden, MappingContext context) {
+
+                        if (rsSykepengerIArbeidsgiverperioden.getArbeidsgiverperiodeListe().isEmpty()) {
+                            sykepengerIArbeidsgiverperioden.setArbeidsgiverperiodeListe(null);
+                        }
+                    }
+                })
+                .exclude("arbeidsgiverperiodeListe")
+                .byDefault()
+                .register();
+
         factory.classMap(RsInntektsmelding.RsArbeidsforhold.class, RsArbeidsforhold.class)
                 .customize(new CustomMapper<>() {
                     @Override
@@ -211,6 +218,14 @@ public class InntektsmeldingMappingStrategy implements MappingStrategy {
                     }
                 })
                 .register();
+    }
+
+    private static RsKontaktinformasjon getFiktivKontaktinformasjon() {
+
+        return RsKontaktinformasjon.builder()
+                .kontaktinformasjonNavn("Dolly Dollesen")
+                .telefonnummer("99999999")
+                .build();
     }
 
     private static LocalDateTime toLocalDateTime(LocalDate localDate) {

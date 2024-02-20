@@ -152,8 +152,6 @@ export const TelefonnummerForm = ({ path, formMethods, idx }: TelefonnummerProps
 				onChange={({ target }: { target: { value: string } }) => handleChangeNummer(target)}
 				value={formMethods.watch(`${path}.nummer`)}
 				size="medium"
-				/*@ts-ignore*/
-				size="large"
 			/>
 			<FormikSelect
 				name={`${path}.prioritet`}
