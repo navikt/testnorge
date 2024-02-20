@@ -29,7 +29,7 @@ import static org.hamcrest.Matchers.is;
 
 
 @ExtendWith(MockitoExtension.class)
-public class InntektsmeldingMappingStrategyTest {
+class InntektsmeldingMappingStrategyTest {
 
     private static final LocalDate START_DATO = LocalDate.of(2020, 1, 1);
     private static final LocalDate SLUTT_DATO = LocalDate.of(2023, 12, 31);
@@ -38,6 +38,112 @@ public class InntektsmeldingMappingStrategyTest {
     private static final String DUMMY = "dummy";
 
     private MapperFacade mapperFacade;
+
+    private RsInntektsmelding populateRsInntektsmelding() {
+
+        return RsInntektsmelding.builder()
+                .joarkMetadata(RsInntektsmelding.JoarkMetadata.builder()
+                        .avsenderMottakerIdType(DUMMY)
+                        .brevkategori(DUMMY)
+                        .brevkode(DUMMY)
+                        .brukerIdType(DUMMY)
+                        .eksternReferanseId(DUMMY)
+                        .filtypeArkiv(DUMMY)
+                        .filtypeOriginal(DUMMY)
+                        .journalpostType(DUMMY)
+                        .kanal(DUMMY)
+                        .tema(DUMMY)
+                        .tittel(DUMMY)
+                        .variantformatArkiv(DUMMY)
+                        .variantformatOriginal(DUMMY)
+                        .build())
+                .inntekter(List.of(RsInntektsmelding.Inntektsmelding.builder()
+                        .aarsakTilInnsending(AarsakTilInnsendingType.NY)
+                        .arbeidsforhold(RsInntektsmelding.RsArbeidsforhold.builder()
+                                .arbeidsforholdId("1")
+                                .avtaltFerieListe(List.of(getPeriode()))
+                                .beregnetInntekt(RsInntektsmelding.RsAltinnInntekt.builder()
+                                        .aarsakVedEndring(AarsakVedEndringType.TARIFFENDRING)
+                                        .beloep(1.0)
+                                        .build())
+                                .foersteFravaersdag(START_DATO)
+                                .graderingIForeldrepengerListe(List.of(RsInntektsmelding.RsGraderingIForeldrepenger.builder()
+                                        .arbeidstidprosent(100)
+                                        .periode(getPeriode())
+                                        .build()))
+                                .utsettelseAvForeldrepengerListe(List.of(RsInntektsmelding.RsUtsettelseAvForeldrepenger.builder()
+                                        .aarsakTilUtsettelse(AarsakTilUtsettelseType.LOVBESTEMT_FERIE)
+                                        .periode(getPeriode())
+                                        .build()))
+                                .build())
+                        .arbeidsgiver(RsInntektsmelding.RsArbeidsgiver.builder()
+                                .kontaktinformasjon(getKontaktinformasjon())
+                                .virksomhetsnummer(DUMMY)
+                                .build())
+                        .arbeidsgiverPrivat(RsInntektsmelding.RsArbeidsgiverPrivat.builder()
+                                .kontaktinformasjon(getKontaktinformasjon())
+                                .arbeidsgiverFnr(DUMMY)
+                                .build())
+                        .avsendersystem(RsInntektsmelding.RsAvsendersystem.builder()
+                                .innsendingstidspunkt(INNSENDING_TIDSPUNKT)
+                                .systemnavn(DUMMY)
+                                .systemversjon("1")
+                                .build())
+                        .gjenopptakelseNaturalytelseListe(List.of(getNaturalYtelser()))
+                        .naerRelasjon(true)
+                        .omsorgspenger(RsInntektsmelding.RsOmsorgspenger.builder()
+                                .delvisFravaersListe(List.of(RsInntektsmelding.RsDelvisFravaer.builder()
+                                        .dato(START_DATO)
+                                        .timer(100.0)
+                                        .build()))
+                                .fravaersPerioder(List.of(getPeriode()))
+                                .harUtbetaltPliktigeDager(true)
+                                .build())
+                        .opphoerAvNaturalytelseListe(List.of(getNaturalYtelser()))
+                        .pleiepengerPerioder(List.of(getPeriode()))
+                        .refusjon(RsInntektsmelding.RsRefusjon.builder()
+                                .endringIRefusjonListe(List.of(RsInntektsmelding.RsEndringIRefusjon.builder()
+                                        .endringsdato(START_DATO)
+                                        .refusjonsbeloepPrMnd(1000.0)
+                                        .build()))
+                                .refusjonsbeloepPrMnd(500.0)
+                                .refusjonsopphoersdato(SLUTT_DATO)
+                                .build())
+                        .startdatoForeldrepengeperiode(START_DATO)
+                        .sykepengerIArbeidsgiverperioden(RsInntektsmelding.RsSykepengerIArbeidsgiverperioden.builder()
+                                .arbeidsgiverperiodeListe(List.of(getPeriode()))
+                                .bruttoUtbetalt(100.0)
+                                .begrunnelseForReduksjonEllerIkkeUtbetalt(BegrunnelseForReduksjonEllerIkkeUtbetaltType.BETVILER_ARBEIDSUFOERHET)
+                                .build())
+                        .ytelse(YtelseType.OPPLAERINGSPENGER)
+                        .build()))
+                .build();
+    }
+
+    private static RsInntektsmelding.RsPeriode getPeriode() {
+
+        return RsInntektsmelding.RsPeriode.builder()
+                .fom(START_DATO)
+                .tom(SLUTT_DATO)
+                .build();
+    }
+
+    private static RsInntektsmelding.RsKontaktinformasjon getKontaktinformasjon() {
+
+        return RsInntektsmelding.RsKontaktinformasjon.builder()
+                .kontaktinformasjonNavn(DUMMY)
+                .telefonnummer(DUMMY)
+                .build();
+    }
+
+    private static RsInntektsmelding.RsNaturalYtelseDetaljer getNaturalYtelser() {
+
+        return RsInntektsmelding.RsNaturalYtelseDetaljer.builder()
+                .beloepPrMnd(1000.0)
+                .naturalytelseType(NaturalytelseType.BEDRIFTSBARNEHAGEPLASS)
+                .fom(START_DATO)
+                .build();
+    }
 
     @BeforeEach
     void setup() {
@@ -146,111 +252,5 @@ public class InntektsmeldingMappingStrategyTest {
                 is(equalTo(AarsakTilUtsettelseType.LOVBESTEMT_FERIE.name())));
         assertThat(target.getUtsettelseAvForeldrepengerListe().getFirst().getPeriode().getFom(), is(equalTo(START_DATO.atStartOfDay())));
         assertThat(target.getUtsettelseAvForeldrepengerListe().getFirst().getPeriode().getTom(), is(equalTo(SLUTT_DATO.atStartOfDay())));
-    }
-
-    private RsInntektsmelding populateRsInntektsmelding() {
-
-        return RsInntektsmelding.builder()
-                .joarkMetadata(RsInntektsmelding.JoarkMetadata.builder()
-                        .avsenderMottakerIdType(DUMMY)
-                        .brevkategori(DUMMY)
-                        .brevkode(DUMMY)
-                        .brukerIdType(DUMMY)
-                        .eksternReferanseId(DUMMY)
-                        .filtypeArkiv(DUMMY)
-                        .filtypeOriginal(DUMMY)
-                        .journalpostType(DUMMY)
-                        .kanal(DUMMY)
-                        .tema(DUMMY)
-                        .tittel(DUMMY)
-                        .variantformatArkiv(DUMMY)
-                        .variantformatOriginal(DUMMY)
-                        .build())
-                .inntekter(List.of(RsInntektsmelding.Inntektsmelding.builder()
-                        .aarsakTilInnsending(AarsakTilInnsendingType.NY)
-                        .arbeidsforhold(RsInntektsmelding.RsArbeidsforhold.builder()
-                                .arbeidsforholdId("1")
-                                .avtaltFerieListe(List.of(getPeriode()))
-                                .beregnetInntekt(RsInntektsmelding.RsAltinnInntekt.builder()
-                                        .aarsakVedEndring(AarsakVedEndringType.TARIFFENDRING)
-                                        .beloep(1.0)
-                                        .build())
-                                .foersteFravaersdag(START_DATO)
-                                .graderingIForeldrepengerListe(List.of(RsInntektsmelding.RsGraderingIForeldrepenger.builder()
-                                        .arbeidstidprosent(100)
-                                        .periode(getPeriode())
-                                        .build()))
-                                .utsettelseAvForeldrepengerListe(List.of(RsInntektsmelding.RsUtsettelseAvForeldrepenger.builder()
-                                        .aarsakTilUtsettelse(AarsakTilUtsettelseType.LOVBESTEMT_FERIE)
-                                        .periode(getPeriode())
-                                        .build()))
-                                .build())
-                        .arbeidsgiver(RsInntektsmelding.RsArbeidsgiver.builder()
-                                .kontaktinformasjon(getKontaktinformasjon())
-                                .virksomhetsnummer(DUMMY)
-                                .build())
-                        .arbeidsgiverPrivat(RsInntektsmelding.RsArbeidsgiverPrivat.builder()
-                                .kontaktinformasjon(getKontaktinformasjon())
-                                .arbeidsgiverFnr(DUMMY)
-                                .build())
-                        .avsendersystem(RsInntektsmelding.RsAvsendersystem.builder()
-                                .innsendingstidspunkt(INNSENDING_TIDSPUNKT)
-                                .systemnavn(DUMMY)
-                                .systemversjon("1")
-                                .build())
-                        .gjenopptakelseNaturalytelseListe(List.of(getNaturalYtelser()))
-                        .naerRelasjon(true)
-                        .omsorgspenger(RsInntektsmelding.RsOmsorgspenger.builder()
-                                .delvisFravaersListe(List.of(RsInntektsmelding.RsDelvisFravaer.builder()
-                                        .dato(START_DATO)
-                                        .timer(100.0)
-                                        .build()))
-                                .fravaersPerioder(List.of(getPeriode()))
-                                .harUtbetaltPliktigeDager(true)
-                                .build())
-                        .opphoerAvNaturalytelseListe(List.of(getNaturalYtelser()))
-                        .pleiepengerPerioder(List.of(getPeriode()))
-                        .refusjon(RsInntektsmelding.RsRefusjon.builder()
-                                .endringIRefusjonListe(List.of(RsInntektsmelding.RsEndringIRefusjon.builder()
-                                        .endringsdato(START_DATO)
-                                        .refusjonsbeloepPrMnd(1000.0)
-                                        .build()))
-                                .refusjonsbeloepPrMnd(500.0)
-                                .refusjonsopphoersdato(SLUTT_DATO)
-                                .build())
-                        .startdatoForeldrepengeperiode(START_DATO)
-                        .sykepengerIArbeidsgiverperioden(RsInntektsmelding.RsSykepengerIArbeidsgiverperioden.builder()
-                                .arbeidsgiverperiodeListe(List.of(getPeriode()))
-                                .bruttoUtbetalt(100.0)
-                                .begrunnelseForReduksjonEllerIkkeUtbetalt(BegrunnelseForReduksjonEllerIkkeUtbetaltType.BETVILER_ARBEIDSUFOERHET)
-                                .build())
-                        .ytelse(YtelseType.OPPLAERINGSPENGER)
-                        .build()))
-                .build();
-    }
-
-    private static RsInntektsmelding.RsPeriode getPeriode() {
-
-        return RsInntektsmelding.RsPeriode.builder()
-                .fom(START_DATO)
-                .tom(SLUTT_DATO)
-                .build();
-    }
-
-    private static RsInntektsmelding.RsKontaktinformasjon getKontaktinformasjon() {
-
-        return RsInntektsmelding.RsKontaktinformasjon.builder()
-                .kontaktinformasjonNavn(DUMMY)
-                .telefonnummer(DUMMY)
-                .build();
-    }
-
-    private static RsInntektsmelding.RsNaturalYtelseDetaljer getNaturalYtelser() {
-
-        return RsInntektsmelding.RsNaturalYtelseDetaljer.builder()
-                .beloepPrMnd(1000.0)
-                .naturalytelseType(NaturalytelseType.BEDRIFTSBARNEHAGEPLASS)
-                .fom(START_DATO)
-                .build();
     }
 }

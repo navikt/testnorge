@@ -132,10 +132,10 @@ public class InntektsmeldingMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(RsInntektsmelding.RsSykepengerIArbeidsgiverperioden rsSykepengerIArbeidsgiverperioden,
                                         RsSykepengerIArbeidsgiverperioden sykepengerIArbeidsgiverperioden, MappingContext context) {
-
-                        if (rsSykepengerIArbeidsgiverperioden.getArbeidsgiverperiodeListe().isEmpty()) {
+                        if (isNull(rsSykepengerIArbeidsgiverperioden.getArbeidsgiverperiodeListe()) || rsSykepengerIArbeidsgiverperioden.getArbeidsgiverperiodeListe().isEmpty()) {
                             sykepengerIArbeidsgiverperioden.setArbeidsgiverperiodeListe(null);
-                        }
+                        } else
+                            sykepengerIArbeidsgiverperioden.setArbeidsgiverperiodeListe(mapperFacade.mapAsList(rsSykepengerIArbeidsgiverperioden.getArbeidsgiverperiodeListe(), RsPeriode.class));
                     }
                 })
                 .exclude("arbeidsgiverperiodeListe")
