@@ -7,6 +7,7 @@ import { CypressSelector } from '../../../../../cypress/mocks/Selectors'
 
 const NavigerTilBestillingButton = styled(Button)`
 	align-self: center;
+	font-size: 15px;
 `
 
 export const TidligereBestillinger = ({ ids }) => {

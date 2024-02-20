@@ -10,6 +10,7 @@ import styled from 'styled-components'
 const NavigerTilIdentButton = styled(Button)`
 	&&& {
 		margin-left: unset;
+		font-size: 15px;
 	}
 
 	span {
