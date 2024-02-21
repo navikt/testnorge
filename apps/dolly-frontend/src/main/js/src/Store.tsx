@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux'
-import thunkMiddleware from 'redux-thunk'
+import { thunk } from 'redux-thunk'
 import { createPromise } from 'redux-promise-middleware'
 import gruppeReducer from '@/ducks/gruppe'
 import fagsystemReducer from '@/ducks/fagsystem'
@@ -14,7 +14,7 @@ import redigertePersonerReducer from '@/ducks/redigertePersoner'
 import commonReducer from '@/ducks/common'
 import { createReduxHistoryContext, LOCATION_CHANGE } from 'redux-first-history'
 import { createBrowserHistory } from 'history'
-import { configureStore } from '@reduxjs/toolkit'
+import { configureStore, Tuple } from '@reduxjs/toolkit'
 
 const locationMiddleware = (reduxStore) => (next) => (action) => {
 	if (action.type === LOCATION_CHANGE) {
@@ -34,7 +34,7 @@ const { createReduxHistory, routerMiddleware, routerReducer } = createReduxHisto
 const allMiddleware = [
 	routerMiddleware,
 	locationMiddleware,
-	thunkMiddleware,
+	thunk,
 	createPromise({ promiseTypeSuffixes: ['REQUEST', 'SUCCESS', 'FAILURE'] }),
 ]
 
@@ -56,7 +56,7 @@ const rootReducer = () =>
 
 export const store = configureStore({
 	reducer: rootReducer(),
-	middleware: allMiddleware,
+	middleware: () => new Tuple(...allMiddleware),
 })
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
