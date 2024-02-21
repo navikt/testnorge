@@ -78,14 +78,17 @@ export const ArbeidsforholdForm = ({
 		)
 	}
 
-	const harGjortFormEndringer = (formValues) => {
-		if (formValues.length > 1) {
+	const harGjortFormEndringer = () => {
+		if (watch('aareg').length > 1) {
 			return true
 		}
-		return !_.isEqual(getValues('aareg'), [initialArbeidsforholdOrg])
+		return !_.isEqual(
+			_.omit(watch('aareg')?.[0], ['ansettelsesPeriode']),
+			_.omit(initialArbeidsforholdOrg, ['ansettelsesPeriode']),
+		)
 	}
 
-	const { setError, watch, getValues, setValue: setFieldValue, trigger } = useFormContext()
+	const { setError, watch, getValues, setValue, trigger } = useFormContext()
 	const [navArbeidsforholdPeriode, setNavArbeidsforholdPeriode] = useState(null as unknown as Date)
 	const { tidligereBestillinger } = useContext(BestillingsveilederContext)
 	const tidligereAaregBestillinger = hentUnikeAaregBestillinger(tidligereBestillinger)
@@ -95,18 +98,18 @@ export const ArbeidsforholdForm = ({
 		arbeidsforholdIndex < tidligereAaregBestillinger?.length
 
 	useEffect(() => {
-		if (_.isEmpty(tidligereAaregBestillinger) || harGjortFormEndringer(getValues('aareg'))) {
+		if (_.isEmpty(tidligereAaregBestillinger) || harGjortFormEndringer()) {
 			return
 		}
-		setFieldValue(
+		setValue(
 			'aareg',
-			tidligereAaregBestillinger.map((aaregBestilling) => {
+			tidligereAaregBestillinger?.map((aaregBestilling) => {
 				aaregBestilling.isOppdatering = true
 				return aaregBestilling
 			}),
 		)
-		trigger()
-	}, [getValues('aareg')])
+		trigger('aareg')
+	}, [watch('aareg')])
 
 	const gjeldendeArbeidsgiver = watch(`${path}.arbeidsgiver`)
 
@@ -120,7 +123,7 @@ export const ArbeidsforholdForm = ({
 				const value = isDate(field)
 					? fixTimezone(field)
 					: field?.value || field?.target?.value || null
-				setFieldValue(`${path}.${fieldPath}`, value)
+				setValue(`${path}.${fieldPath}`, value)
 				trigger()
 			}
 		} else {
@@ -140,7 +143,7 @@ export const ArbeidsforholdForm = ({
 						_.set(amelding[idx], `arbeidsforhold[${arbeidsforholdIndex}]`, arbeidsforholdClone)
 					}
 				})
-				setFieldValue('aareg[0].amelding', amelding)
+				setValue('aareg[0].amelding', amelding)
 				trigger('aareg[0].amelding')
 			}
 		}
@@ -153,14 +156,14 @@ export const ArbeidsforholdForm = ({
 					arbeidsgiverType === ArbeidsgiverTyper.felles ||
 					arbeidsgiverType === ArbeidsgiverTyper.fritekst
 				) {
-					setFieldValue(path, {
+					setValue(path, {
 						...initialForenkletOppgjoersordningOrg,
 						arbeidsforholdstype: event.value,
 						arbeidsgiver: gjeldendeArbeidsgiver,
 					})
 					trigger()
 				} else if (arbeidsgiverType === ArbeidsgiverTyper.privat) {
-					setFieldValue(path, {
+					setValue(path, {
 						...initialForenkletOppgjoersordningPers,
 						arbeidsforholdstype: event.value,
 						arbeidsgiver: gjeldendeArbeidsgiver,
@@ -174,14 +177,14 @@ export const ArbeidsforholdForm = ({
 					arbeidsgiverType === ArbeidsgiverTyper.felles ||
 					arbeidsgiverType === ArbeidsgiverTyper.fritekst
 				) {
-					setFieldValue(path, {
+					setValue(path, {
 						...initialArbeidsforholdOrg,
 						arbeidsforholdstype: event.value,
 						arbeidsgiver: gjeldendeArbeidsgiver,
 					})
 					trigger()
 				} else if (arbeidsgiverType === ArbeidsgiverTyper.privat) {
-					setFieldValue(path, {
+					setValue(path, {
 						...initialArbeidsforholdPers,
 						arbeidsforholdstype: event.value,
 						arbeidsgiver: gjeldendeArbeidsgiver,
@@ -189,21 +192,21 @@ export const ArbeidsforholdForm = ({
 					trigger()
 				}
 			} else {
-				setFieldValue(`${path}.arbeidsforholdstype`, event.value)
+				setValue(`${path}.arbeidsforholdstype`, event.value)
 				trigger()
 			}
 			if (event.value === 'maritimtArbeidsforhold') {
-				setFieldValue(`${path}.fartoy`, initialFartoy)
+				setValue(`${path}.fartoy`, initialFartoy)
 				trigger()
 			} else {
-				setFieldValue(`${path}.fartoy`, undefined)
+				setValue(`${path}.fartoy`, undefined)
 				trigger()
 			}
 		}
 	}
 
 	useEffect(() => {
-		setFieldValue(
+		setValue(
 			`${path}.navArbeidsforholdPeriode`,
 			navArbeidsforholdPeriode
 				? {
