@@ -44,9 +44,14 @@ export const useTenorIdent = (ident: string) => {
 	}
 }
 
-export const useTenorOversikt = (request: any, antall?: number, side?: number, seed?: number) => {
+export const useTenorOversikt = (request: any, antall = 10, side = 0, seed?: number | null) => {
 	const { data, isLoading, error, mutate } = useSWR(
-		request ? [`${tenorSearchUrl}/oversikt`, request] : null,
+		request
+			? [
+					`${tenorSearchUrl}/oversikt?antall=${antall}&side=${side}${seed ? '&seed=' + seed : ''}`,
+					request,
+				]
+			: null,
 		([url, headers]) => Request.post(url, headers),
 	)
 
