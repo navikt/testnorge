@@ -15,7 +15,6 @@ public record InntektsmeldingRequest(
         List<RsInntektsmeldingRequest> inntekter
 ) {
 
-    @Override
     public List<RsInntektsmeldingRequest> inntekter() {
         return (isNull(inntekter)) ? new ArrayList<>(0) : inntekter;
     }

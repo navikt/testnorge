@@ -17,13 +17,15 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Slf4j
+@RestController
+@RequestScope
 @RequestMapping(value = "/api/v1/inntektsmelding", produces = "application/json;charset=utf-8")
 @RequiredArgsConstructor
 public class InntektsmeldingController {
 
     private final InntektsmeldingService inntektsmeldingService;
 
-    @PostMapping(produces = "application/json;charset=utf-8")
+    @PostMapping
     public InntektsmeldingResponse genererMeldingForIdent(
             @RequestHeader("Nav-Call-Id") String navCallId,
             @RequestBody InntektsmeldingRequest request
@@ -60,4 +62,5 @@ public class InntektsmeldingController {
             }
         }
     }
+
 }
