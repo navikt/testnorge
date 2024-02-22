@@ -9,8 +9,8 @@ import no.nav.testnav.libs.servletcore.logging.LogApiRequestInterceptor;
 
 @Configuration
 public class LoggingWebConfig implements WebMvcConfigurer {
-/*    @Override
+    @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new LogApiRequestInterceptor());
-    }*/
+    }
 }
