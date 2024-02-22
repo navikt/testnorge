@@ -7,18 +7,11 @@ import org.slf4j.MDC;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
 public abstract class LogRequestInterceptor implements HandlerInterceptor {
-
-    /**
-     * If the request contains this header, log body of request (if present).
-     */
-    public static final String HEADER_SHOULD_LOG_BODY = "dolly-log-body";
-
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         if (log.isTraceEnabled() && shouldLogRequest(request)) {
@@ -40,11 +33,7 @@ public abstract class LogRequestInterceptor implements HandlerInterceptor {
                 contextMap.put("URI", uri);
 
                 MDC.setContextMap(contextMap);
-                if (shouldLogBodyOfRequest(request)) {
-                    log.trace("[Request ] {} {}{}\n{}", method, host, uri, getBody(request));
-                } else {
-                    log.trace("[Request ] {} {}{}", method, host, uri);
-                }
+                log.trace("[Request ] {} {}{}", method, host, uri);
             } catch (Exception e) {
                 log.warn("Feil med logging av requests", e);
             }
@@ -53,14 +42,4 @@ public abstract class LogRequestInterceptor implements HandlerInterceptor {
     }
 
     abstract boolean shouldLogRequest(HttpServletRequest request);
-
-    boolean shouldLogBodyOfRequest(HttpServletRequest request) {
-        return request.getHeader(HEADER_SHOULD_LOG_BODY) != null;
-    }
-
-    String getBody(HttpServletRequest request)
-        throws IOException {
-        return request.getReader().lines().reduce("", (accumulator, line) -> accumulator + line);
-    }
-
 }
