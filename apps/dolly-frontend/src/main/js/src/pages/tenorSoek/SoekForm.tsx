@@ -1,14 +1,10 @@
 import { Form, Formik } from 'formik'
-import { initialValues } from '@/pages/tenorSoek/InitialValues'
 import styled from 'styled-components'
 import { Accordion } from '@navikt/ds-react'
 import { InntektAordningen } from '@/pages/tenorSoek/soekFormPartials/InntektAordningen'
-import React, { useState } from 'react'
-import { useTenorIdent, useTenorOversikt, useTenorSoek } from '@/utils/hooks/useTenorSoek'
-import { SoekRequest } from '@/pages/dollySoek/DollySoekTypes'
+import React from 'react'
 import * as _ from 'lodash-es'
-import { TreffListe } from '@/pages/tenorSoek/resultatVisning/TreffListe'
-import { Header, requestIsEmpty } from '@/components/ui/soekForm/SoekForm'
+import { Header } from '@/components/ui/soekForm/SoekForm'
 import DisplayFormikState from '@/utils/DisplayFormikState'
 import { EnhetsregisteretForetaksregisteret } from '@/pages/tenorSoek/soekFormPartials/EnhetsregisteretForetaksregisteret'
 import { FolkeregisteretIdentifikasjonStatus } from '@/pages/tenorSoek/soekFormPartials/FolkeregisteretIdentifikasjonStatus'
@@ -17,7 +13,6 @@ import { FolkeregisteretNavn } from '@/pages/tenorSoek/soekFormPartials/Folkereg
 import { FolkeregisteretAdresse } from '@/pages/tenorSoek/soekFormPartials/FolkeregisteretAdresse'
 import { FolkeregisteretRelasjoner } from '@/pages/tenorSoek/soekFormPartials/FolkeregisteretRelasjoner'
 import { FolkeregisteretHendelser } from '@/pages/tenorSoek/soekFormPartials/FolkeregisteretHendelser'
-import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 
 const SoekefeltWrapper = styled.div`
 	display: flex;
@@ -34,7 +29,6 @@ const Soekefelt = styled.div`
 
 export const SoekForm = ({ request, setRequest, mutate }) => {
 	function getUpdatedRequest(request: any) {
-		console.log('request: ', request) //TODO - SLETT MEG
 		for (let key of Object.keys(request)) {
 			if (request[key] === '' || request[key] === null || request[key] === undefined) {
 				delete request[key]
@@ -49,8 +43,7 @@ export const SoekForm = ({ request, setRequest, mutate }) => {
 	return (
 		<SoekefeltWrapper>
 			<Soekefelt>
-				{/*<Formik initialValues={initialValues} onSubmit={(request) => handleSubmit(request)}>*/}
-				<Formik initialValues={{}} onSubmit={() => console.log('submit...')}>
+				<Formik initialValues={{}} onSubmit={() => console.log('submit ...')}>
 					{(formikBag) => {
 						const handleChange = (value: any, path: string) => {
 							const request = _.set(formikBag.values, path, value)
