@@ -10,6 +10,7 @@ import no.nav.testnav.libs.dto.inntektsmeldingservice.v1.requests.Inntektsmeldin
 import no.nav.testnav.libs.dto.inntektsmeldingservice.v1.response.InntektsmeldingResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -18,6 +19,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
+@RequestScope
 @RequestMapping(value = "/api/v1/inntektsmelding", produces = "application/json;charset=utf-8")
 @RequiredArgsConstructor
 public class InntektsmeldingController {
