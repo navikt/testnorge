@@ -56,7 +56,7 @@ public class TenorOversiktResponse {
     @AllArgsConstructor
     public static class Person {
 
-        private String identifikator;
+        private List<String> identifikator;
         private String fornavn;
         private String etternavn;
         private List<TenorRelasjon> tenorRelasjoner;

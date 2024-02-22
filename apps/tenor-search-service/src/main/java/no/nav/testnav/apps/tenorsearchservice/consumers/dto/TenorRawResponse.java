@@ -31,7 +31,7 @@ public class TenorRawResponse {
     @NoArgsConstructor
     public static class Dokument {
         private String etternavn;
-        private String identifikator;
+        private List<String> identifikator;
         private TenorRelasjoner tenorRelasjoner;
         private String fornavn;
     }
