@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnav.inntektsmeldingservice.service.InntektsmeldingService;
 import no.nav.testnav.libs.dto.dokarkiv.v1.ProsessertInntektDokument;
-import no.nav.testnav.libs.dto.inntektsmeldingservice.v1.requests.InntektsmeldingRequest;
 import no.nav.testnav.libs.dto.inntektsmeldingservice.v1.response.InntektsmeldingResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -18,8 +17,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Slf4j
-@RestController
-@RequestScope
 @RequestMapping(value = "/api/v1/inntektsmelding", produces = "application/json;charset=utf-8")
 @RequiredArgsConstructor
 public class InntektsmeldingController {
@@ -31,14 +28,14 @@ public class InntektsmeldingController {
             @RequestHeader("Nav-Call-Id") String navCallId,
             @RequestBody InntektsmeldingRequest request
     ) {
-        log.info("Oppretter inntektsmelding for {} i {} melding {}.", request.getArbeidstakerFnr(), request.getMiljoe(), Json.pretty(request));
+        log.info("Oppretter inntektsmelding for {} i {} melding {}.", request.arbeidstakerFnr(), request.miljoe(), Json.pretty(request));
 
         validerInntektsmelding(request);
 
         try {
             List<ProsessertInntektDokument> prosessertInntektDokuments = inntektsmeldingService.opprettInntektsmelding(navCallId, request);
             return new InntektsmeldingResponse(
-                    request.getArbeidstakerFnr(),
+                    request.arbeidstakerFnr(),
                     prosessertInntektDokuments
                             .stream()
                             .map(ProsessertInntektDokument::toResponse)
@@ -51,7 +48,7 @@ public class InntektsmeldingController {
     }
 
     private void validerInntektsmelding(InntektsmeldingRequest dollyRequest) {
-        for (var inntekt : dollyRequest.getInntekter()) {
+        for (var inntekt : dollyRequest.inntekter()) {
             var arbeidsgiver = inntekt.getArbeidsgiver();
             var arbeidsgiverPrivat = inntekt.getArbeidsgiverPrivat();
 
