@@ -244,7 +244,7 @@ InntektsmeldingForm.validation = {
 							'$inntektsmelding.inntekter[0].arbeidsgiverPrivat.arbeidsgiverFnr',
 							requiredString.matches(/^\d{11}$/, 'Ident må være et tall med 11 siffer'),
 						),
-					}),
+					}).nullable(),
 					arbeidsforhold: Yup.object({
 						beregnetInntekt: Yup.object({
 							beloep: requiredNumber.typeError(messages.required),
