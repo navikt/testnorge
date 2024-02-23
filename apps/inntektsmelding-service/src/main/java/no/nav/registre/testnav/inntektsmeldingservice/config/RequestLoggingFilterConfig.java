@@ -12,7 +12,7 @@ import org.springframework.web.filter.CommonsRequestLoggingFilter;
 class RequestLoggingFilterConfig {
 
     @Bean
-    PostOnlyRequestLoggingFilter logFilter(FilterChainProxy filterChainProxy) {
+    CommonsRequestLoggingFilter logFilter(FilterChainProxy filterChainProxy) {
 
         log.info("Filter chain: {}", filterChainProxy.getFilterChains());
 
