@@ -14,16 +14,17 @@ import no.nav.testnav.libs.dto.dokarkiv.v1.InntektDokument;
 import no.nav.testnav.libs.dto.dokarkiv.v1.ProsessertInntektDokument;
 import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.RsInntektsmeldingRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.annotation.RequestScope;
 
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
 
 @Slf4j
 @Service
+@RequestScope
 @RequiredArgsConstructor
 public class InntektsmeldingService {
 
@@ -35,12 +36,11 @@ public class InntektsmeldingService {
             String navCallId,
             InntektsmeldingRequest request
     ) {
-
-        List<InntektDokument> dokumentListe = request.inntekter()
+        var dokumentListe = request
+                .inntekter()
                 .stream()
                 .map(melding -> lagInntektDokument(melding, request.arbeidstakerFnr()))
-                .collect(Collectors.toList());
-
+                .toList();
         return dokmotConsumer.opprettJournalpost(request.miljoe(), dokumentListe, navCallId);
     }
 
@@ -51,8 +51,8 @@ public class InntektsmeldingService {
         var xmlString = genererInntektsmeldingConsumer.getInntektsmeldingXml201812(RsAltinnInntektsmeldingFactory.create(rsInntektsmelding, ident));
         var model = repository.save(new InntektsmeldingModel());
         log.info("Inntektsmelding generert med id: {}.\n{}", model.getId(), xmlString);
-
-        return InntektDokument.builder()
+        return InntektDokument
+                .builder()
                 .arbeidstakerFnr(ident)
                 .datoMottatt(Date.from(rsInntektsmelding.getAvsendersystem().getInnsendingstidspunkt().atZone(ZoneId.systemDefault()).toInstant()))
                 .virksomhetsnavn(getVirksomhetsnavn(rsInntektsmelding))
@@ -69,7 +69,6 @@ public class InntektsmeldingService {
         if (nonNull(inntekt.getArbeidsgiverPrivat())) {
             return inntekt.getArbeidsgiverPrivat().getKontaktinformasjon().getKontaktinformasjonNavn();
         }
-
         throw new ValidationException("Ingen arbeidsgiver med kontaktinformasjon oppgitt. Avbryter.");
     }
 
@@ -77,11 +76,9 @@ public class InntektsmeldingService {
         if (nonNull(inntekt.getArbeidsgiver())) {
             return inntekt.getArbeidsgiver().getVirksomhetsnummer();
         }
-
         if (nonNull(inntekt.getArbeidsgiverPrivat())) {
             return inntekt.getArbeidsgiverPrivat().getArbeidsgiverFnr();
         }
-
         throw new ValidationException("Virksomhetsnummer for arbeidsgiver ikke oppgitt. Avbryter.");
     }
 }
