@@ -2,7 +2,8 @@ package no.nav.testnav.apps.oppsummeringsdokumentservice.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.apps.oppsummeringsdokumentservice.adapter.OppsummeringsdokumentAdapter;
+import no.nav.testnav.apps.oppsummeringsdokumentservice.domain.QueryRequest;
+import no.nav.testnav.apps.oppsummeringsdokumentservice.service.OppsummeringsdokumentService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,43 +23,45 @@ import java.time.LocalDate;
 public class OppsummeringsdokumentetRawController {
     private static final String NUMBER_OF_ELEMENTS_HEADER = "Number-Of-Elements";
     private static final String ELEMENT_ID_HEADER = "Element-Id";
-    private final OppsummeringsdokumentAdapter adapter;
+    private final OppsummeringsdokumentService adapter;
 
     @GetMapping(produces = MediaType.APPLICATION_XML_VALUE)
     public ResponseEntity<String> getAllOpplysningspliktig(
             @RequestHeader("miljo") String miljo,
             @RequestParam("page") Integer page,
-            @RequestParam(value = "ident",required = false) String ident,
+            @RequestParam(value = "ident", required = false) String ident,
             @RequestParam(value = "typeArbeidsforhold", required = false) String typeArbeidsforhold,
             @RequestParam(value = "fom", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fom,
-            @RequestParam(value = "tom", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate tom
-    ) {
-        var pages = adapter.getAllCurrentDocumentsBy(miljo, fom, tom, ident, typeArbeidsforhold, page);
-        var document = pages.stream().findFirst();
+            @RequestParam(value = "tom", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate tom) {
 
-        if(document.isEmpty()){
-            return ResponseEntity
-                    .noContent()
-                    .header(NUMBER_OF_ELEMENTS_HEADER, "0")
-                    .build();
-        }
+        var response = adapter.getAllCurrentDocumentsBy(QueryRequest.builder()
+                .miljo(miljo)
+                .fom(fom)
+                .tom(tom)
+                .ident(ident)
+                .typeArbeidsforhold(typeArbeidsforhold)
+                .page(page)
+                .pageSize(1)
+                .build());
 
-        var oppsummeringsdokument = document.get();
-        return ResponseEntity
-                .ok()
-                .header(NUMBER_OF_ELEMENTS_HEADER, String.valueOf(pages.getTotalElements()))
-                .header(ELEMENT_ID_HEADER, oppsummeringsdokument.getId())
-                .body(oppsummeringsdokument.toXml());
+        return response.getDokumenter().isEmpty() ?
+                ResponseEntity
+                        .noContent()
+                        .header(NUMBER_OF_ELEMENTS_HEADER, "0")
+                        .build() :
+
+                ResponseEntity.ok()
+                        .header(NUMBER_OF_ELEMENTS_HEADER, String.valueOf(response.getResponse().getHits().getTotalHits()))
+                        .header(ELEMENT_ID_HEADER, response.getDokumenter().getFirst().getId())
+                        .body(response.getDokumenter().getFirst().toXml());
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_XML_VALUE)
     public ResponseEntity<String> getItem(@PathVariable("id") String id) {
-        var document = adapter.get(id);
 
-        if (document == null) {
-            return ResponseEntity.notFound().build();
-        }
+        var document = adapter.getCurrentDocumentsBy(id);
 
-        return ResponseEntity.ok(document.toXml());
+        return document.map(value -> ResponseEntity.ok().body(value.toXml()))
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

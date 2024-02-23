@@ -20,3 +20,21 @@ Applikasjonen kan nås fra [/swagger](https://oppsummeringsdokument-service.inte
 For å kjøre lokalt med opensearch:
 
 docker run -p 9200:9200 -p 9600:9600 -e "discovery.type=single-node" -e "plugins.security.disabled=true" --name opensearch-node -d opensearchproject/opensearch:latest
+
+lister alle indekser:
+
+http://localhost:9200/_cat/indices?v
+
+curl kommandoer for å søke lokalt:
+
+curl -X GET "localhost:9200/oppsummeringsdokument-8/_search?pretty" -H 'Content-Type: application/json' -d'
+{
+"query": {
+"match": {"miljo": "q1"}
+}
+}
+'
+
+For å kjøre lokalt med opensearch:
+
+docker run -p 9200:9200 -p 9600:9600 -e "discovery.type=single-node" -e "plugins.security.disabled=true" --name opensearch-node -d opensearchproject/opensearch:latest
