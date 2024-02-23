@@ -41,8 +41,8 @@ consumers:
   oppsummeringsdokument-service:
     cluster: dev-gcp
     namespace: dolly
-    name: oppsummeringsdokument-service
-    url: http://oppsummeringsdokument-service.dolly.svc.cluster.local
+    name: testnav-oppsummeringsdokument-service
+    url: http://testnav-oppsummeringsdokument-service.dolly.svc.cluster.local
   testnav-joark-dokument-service:
     cluster: dev-gcp
     namespace: dolly

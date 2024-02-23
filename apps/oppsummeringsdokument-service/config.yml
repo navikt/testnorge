@@ -1,7 +1,7 @@
 ﻿apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: oppsummeringsdokument-service
+  name: testnav-oppsummeringsdokument-service
   namespace: dolly
   annotations:
     nginx.ingress.kubernetes.io/proxy-read-timeout: "1200"
@@ -71,4 +71,4 @@ spec:
   envFrom:
     - secret: teamdolly-opensearch
   ingresses:
-    - "https://oppsummeringsdokument-service.intern.dev.nav.no"
+    - "https://testnav-oppsummeringsdokument-service.intern.dev.nav.no"
