@@ -80,7 +80,7 @@ class InntektsmeldingControllerTest {
               "dokumenter" : [ ]
             }
             """;
-    private static final String NAV_CALL_ID = "123";
+    private static final String NAV_CALL_ID = "navCallId";
 
     @Autowired
     private MockMvc mockMvc;
