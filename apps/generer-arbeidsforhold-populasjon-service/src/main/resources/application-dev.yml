@@ -1,6 +1,6 @@
 consumers:
   oppsummeringsdokument-service:
-    url: https://oppsummeringsdokument-service.dev.intern.nav.no
+    url: https://testnav-oppsummeringsdokument-service.dev.intern.nav.no
   testnav-generer-organisasjon-populasjon-service:
     url: https://testnav-generer-organisasjon-populasjon-service.dev.intern.nav.no
   testnav-organisasjon-service:
