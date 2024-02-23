@@ -14,7 +14,6 @@ import no.nav.testnav.libs.dto.dokarkiv.v1.InntektDokument;
 import no.nav.testnav.libs.dto.dokarkiv.v1.ProsessertInntektDokument;
 import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.RsInntektsmeldingRequest;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.annotation.RequestScope;
 
 import java.time.ZoneId;
 import java.util.Date;
@@ -24,7 +23,6 @@ import static java.util.Objects.nonNull;
 
 @Slf4j
 @Service
-@RequestScope
 @RequiredArgsConstructor
 public class InntektsmeldingService {
 

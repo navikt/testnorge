@@ -9,7 +9,7 @@ import no.nav.testnav.libs.dto.inntektsmeldingservice.v1.response.Inntektsmeldin
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.annotation.RequestScope;
+import org.springframework.web.context.annotation.SessionScope;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -17,7 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @RestController
-@RequestScope
+@SessionScope
 @RequestMapping(
         value = "/api/v1/inntektsmelding",
         produces = MediaType.APPLICATION_JSON_VALUE
