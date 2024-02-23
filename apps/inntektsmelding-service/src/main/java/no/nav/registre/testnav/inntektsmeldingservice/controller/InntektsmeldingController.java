@@ -2,14 +2,13 @@ package no.nav.registre.testnav.inntektsmeldingservice.controller;
 
 import io.swagger.v3.core.util.Json;
 import jakarta.validation.ValidationException;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnav.inntektsmeldingservice.service.InntektsmeldingService;
 import no.nav.testnav.libs.dto.dokarkiv.v1.ProsessertInntektDokument;
 import no.nav.testnav.libs.dto.inntektsmeldingservice.v1.response.InntektsmeldingResponse;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -18,15 +17,20 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestScope
-@RequestMapping(value = "/api/v1/inntektsmelding", produces = "application/json;charset=utf-8")
-@RequiredArgsConstructor
+@RequestMapping(
+        value = "/api/v1/inntektsmelding",
+        produces = MediaType.APPLICATION_JSON_VALUE
+)
 public class InntektsmeldingController {
 
     private final InntektsmeldingService inntektsmeldingService;
 
+    public InntektsmeldingController(InntektsmeldingService inntektsmeldingService) {
+        this.inntektsmeldingService = inntektsmeldingService;
+    }
+
     @PostMapping
-    public InntektsmeldingResponse genererMeldingForIdent(
+    InntektsmeldingResponse genererMeldingForIdent(
             @RequestHeader("Nav-Call-Id") String navCallId,
             @RequestBody InntektsmeldingRequest request
     ) {
