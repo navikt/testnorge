@@ -23,6 +23,7 @@ import {
 	ReactIntegration,
 	ReactRouterVersion,
 } from '@grafana/faro-react'
+import RefreshSessionPage from '@/pages/RefreshSessionPage'
 
 initializeFaro({
 	paused: window.location.hostname.includes('localhost'),
@@ -59,6 +60,7 @@ export const RootComponent = () => (
 					<FaroRoutes>
 						<Route path="/bruker" element={<BrukerPage />} />
 						<Route path="/login" element={<LoginPage />} />
+						<Route path="/refreshSession" element={<RefreshSessionPage />} />
 						<Route path="*" element={<App />} />
 					</FaroRoutes>
 				</SWRConfig>
