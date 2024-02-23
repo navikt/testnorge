@@ -23,7 +23,8 @@ import java.time.LocalDate;
 public class OppsummeringsdokumentetRawController {
     private static final String NUMBER_OF_ELEMENTS_HEADER = "Number-Of-Elements";
     private static final String ELEMENT_ID_HEADER = "Element-Id";
-    private final OppsummeringsdokumentService adapter;
+    private final OppsummeringsdokumentService oppsummeringsdokumentService
+            ;
 
     @GetMapping(produces = MediaType.APPLICATION_XML_VALUE)
     public ResponseEntity<String> getAllOpplysningspliktig(
@@ -34,7 +35,7 @@ public class OppsummeringsdokumentetRawController {
             @RequestParam(value = "fom", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fom,
             @RequestParam(value = "tom", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate tom) {
 
-        var response = adapter.getAllCurrentDocumentsBy(QueryRequest.builder()
+        var response = oppsummeringsdokumentService.getAllCurrentDocumentsBy(QueryRequest.builder()
                 .miljo(miljo)
                 .fom(fom)
                 .tom(tom)
@@ -59,7 +60,7 @@ public class OppsummeringsdokumentetRawController {
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_XML_VALUE)
     public ResponseEntity<String> getItem(@PathVariable("id") String id) {
 
-        var document = adapter.getCurrentDocumentsBy(id);
+        var document = oppsummeringsdokumentService.getCurrentDocumentsBy(id);
 
         return document.map(value -> ResponseEntity.ok().body(value.toXml()))
                 .orElseGet(() -> ResponseEntity.notFound().build());

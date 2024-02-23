@@ -11,7 +11,6 @@ import no.nav.testnav.apps.oppsummeringsdokumentservice.domain.QueryRequest;
 import no.nav.testnav.apps.oppsummeringsdokumentservice.domain.QueryResponse;
 import no.nav.testnav.apps.oppsummeringsdokumentservice.repository.OppsummeringsdokumentRepository;
 import no.nav.testnav.apps.oppsummeringsdokumentservice.repository.model.OppsummeringsdokumentModel;
-import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.Populasjon;
 import org.opensearch.action.search.SearchRequest;
 import org.opensearch.action.search.SearchResponse;
 import org.opensearch.client.RequestOptions;
@@ -49,14 +48,6 @@ public class OppsummeringsdokumentService {
 
     @Value("${open.search.index}")
     private String DOCUMENT_INDEX;
-
-    public void deleteAllBy(String miljo, Populasjon populasjon) {
-        repository.deleteAllByMiljoAndPopulasjon(miljo, populasjon);
-    }
-
-    public void deleteAllBy(String miljo) {
-        repository.deleteAllByMiljo(miljo);
-    }
 
     @SneakyThrows
     public String save(Oppsummeringsdokument oppsummeringsdokument, String miljo, String origin) {
@@ -129,7 +120,7 @@ public class OppsummeringsdokumentService {
                 .getDokumenter();
     }
 
-    private QueryResponse getAllCurrentDocumentsBy(QueryRequest request) {
+    public QueryResponse getAllCurrentDocumentsBy(QueryRequest request) {
 
         var query = prepareQuery(request);
         var response = execQuery(query, request.getPage(), request.getPageSize());
