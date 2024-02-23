@@ -31,9 +31,10 @@ public class InntektsmeldingController {
 
     @PostMapping
     InntektsmeldingResponse genererMeldingForIdent(
-            @RequestHeader("Nav-Call-Id") String navCallId,
+            //@RequestHeader("Nav-Call-Id") String navCallId,
             @RequestBody InntektsmeldingRequest request
     ) {
+        var navCallId = "navCallId";
         log.info("Oppretter inntektsmelding for {} i {} melding {}.", request.arbeidstakerFnr(), request.miljoe(), Json.pretty(request));
 
         validerInntektsmelding(request);
