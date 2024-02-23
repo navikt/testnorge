@@ -57,15 +57,21 @@ export const AlderspensjonForm = () => {
 		const harAlder =
 			_has(formMethods.getValues(), 'pdldata.opprettNyPerson.alder') &&
 			_has(formMethods.getValues(), 'pdldata.opprettNyPerson.foedtFoer')
-		const alderNyPerson = _get(formMethods.getValues(), 'pdldata.opprettNyPerson.alder')
-		const foedtFoer = _get(formMethods.getValues(), 'pdldata.opprettNyPerson.foedtFoer')
-		const harUgyldigAlder =
-			(alderNyPerson && alderNyPerson < 62) ||
-			(isDate(foedtFoer) && add(foedtFoer, { years: 62 }) > new Date())
-		return { harAlder, alderNyPerson, foedtFoer, harUgyldigAlder }
+		const alderNyPerson = formMethods.watch('pdldata.opprettNyPerson.alder')
+		const foedtFoer =
+			formMethods.watch('pdldata.opprettNyPerson.foedtFoer') &&
+			new Date(formMethods.watch('pdldata.opprettNyPerson.foedtFoer'))
+		const iverksettelsesdato =
+			formMethods.watch('pensjonforvalter.alderspensjon.iverksettelsesdato') &&
+			new Date(formMethods.watch('pensjonforvalter.alderspensjon.iverksettelsesdato'))
+		const harGyldigAlder =
+			(alderNyPerson && alderNyPerson > 61) ||
+			(isDate(foedtFoer) && add(foedtFoer, { years: 62 }) < new Date()) ||
+			(isDate(foedtFoer) && add(foedtFoer, { years: 62 }) < iverksettelsesdato)
+		return { harAlder, alderNyPerson, foedtFoer, harGyldigAlder }
 	}
 
-	const { harAlder, alderNyPerson, foedtFoer, harUgyldigAlder } = sjekkAlderFelt()
+	const { harAlder, alderNyPerson, foedtFoer, harGyldigAlder } = sjekkAlderFelt()
 
 	const alderLeggTilPerson = getAlder(
 		_get(opts, 'personFoerLeggTil.pdl.hentPerson.foedsel[0].foedselsdato'),
@@ -191,10 +197,10 @@ export const AlderspensjonForm = () => {
 				iconType="pensjon"
 				startOpen={erForsteEllerTest(formMethods.getValues(), [alderspensjonPath])}
 			>
-				{nyBestilling && (!harAlder || harUgyldigAlder) && (
+				{nyBestilling && (!harAlder || !harGyldigAlder) && (
 					<StyledAlert variant={'warning'} size={'small'}>
 						For å sikre at personen har rett på alderspensjon må alder settes til 62 år eller
-						høyere.
+						høyere. Eventuelt må iverksettelsesdato settes til etter personen har fylt 62 år.
 					</StyledAlert>
 				)}
 				{((leggTil && alderLeggTilPerson < 62) ||
