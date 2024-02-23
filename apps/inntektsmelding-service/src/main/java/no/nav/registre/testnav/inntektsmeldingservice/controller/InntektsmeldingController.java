@@ -1,5 +1,7 @@
 package no.nav.registre.testnav.inntektsmeldingservice.controller;
 
+import com.fasterxml.jackson.core.JacksonException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.core.util.Json;
 import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
@@ -24,12 +26,20 @@ import java.util.List;
 public class InntektsmeldingController {
 
     private final InntektsmeldingService inntektsmeldingService;
+    private final ObjectMapper objectMapper;
 
     @PostMapping
     public InntektsmeldingResponse genererMeldingForIdent(
             @RequestHeader("Nav-Call-Id") String navCallId,
-            @RequestBody InntektsmeldingRequest request
+            @RequestBody String json
     ) {
+
+        InntektsmeldingRequest request;
+        try {
+            request = objectMapper.readValue(json, InntektsmeldingRequest.class);
+        } catch(JacksonException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
         log.info("Oppretter inntektsmelding for {} i {} melding {}.", request.arbeidstakerFnr(), request.miljoe(), Json.pretty(request));
 
         validerInntektsmelding(request);
