@@ -61,10 +61,9 @@ management:
     heapdump.enabled: true
     health:
       show-details: always
-  management:
-    health:
-      elasticsearch:
-        enabled: false
+  health:
+    elasticsearch:
+      enabled: false
   prometheus:
     metrics:
       export:

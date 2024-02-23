@@ -177,14 +177,7 @@ public class PersonService {
 
         var miljoerResponse = servicerutineConsumer.sendMessage(xmlRequest, miljoer);
 
-        miljoerResponse.forEach((key, value) -> {
-            if (value.contains("<returStatus>00</returStatus>") ||
-                    value.contains("<returStatus>04</returStatus>")) {
-                log.info("Miljø: {} XML: {}", key, value);
-            } else {
-                log.error("Miljø: {} XML: {}", key, value);
-            }
-        });
+        miljoerResponse.forEach((key, value) -> log.info("Miljø: {} XML: {}", key, value));
 
         return miljoerResponse.entrySet().stream()
                 .collect(Collectors.toMap(Entry::getKey,

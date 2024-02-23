@@ -3,12 +3,12 @@ import ReactDatepicker, { registerLocale } from 'react-datepicker';
 // @ts-ignore
 import { addYears, subYears } from 'date-fns';
 // @ts-ignore
-import locale_nb from 'date-fns/locale/nb';
+import { nb } from 'date-fns/locale';
 import 'react-datepicker/dist/react-datepicker.css';
 import styled from 'styled-components';
 import { InputFormItem } from '../form';
 
-registerLocale('nb', locale_nb);
+registerLocale('nb', nb);
 
 type Props = {
   label?: string;
