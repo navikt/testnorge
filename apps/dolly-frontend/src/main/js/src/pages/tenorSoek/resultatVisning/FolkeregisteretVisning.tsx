@@ -4,6 +4,7 @@ import { formatDate, showLabel } from '@/utils/DataFormatter'
 import { TabsVisning } from '@/pages/tenorSoek/resultatVisning/TabsVisning'
 import SubOverskriftExpandable from '@/components/ui/subOverskrift/SubOverskriftExpandable'
 import styled from 'styled-components'
+import { arrayToString } from '@/utils/DataFormatter'
 
 const RelasjonerTittel = styled.h3`
 	width: 100%;
@@ -21,7 +22,7 @@ export const FolkeregisteretVisning = ({ data }) => {
 	return (
 		<SubOverskriftExpandable label="Folkeregisteret" iconKind="personinformasjon" isExpanded={true}>
 			<TabsVisning kildedata={data.tenorMetadata?.kildedata}>
-				<TitleValue title="Identifikator" value={data.identifikator} />
+				<TitleValue title="Identifikator" value={arrayToString(data.identifikator, ', ')} />
 				<TitleValue title="Navn" value={data.visningnavn} />
 				<TitleValue title="Fødselsdato" value={formatDate(data.foedselsdato)} />
 				<TitleValue title="Kjønn" value={showLabel('kjoenn', data.kjoenn)} />

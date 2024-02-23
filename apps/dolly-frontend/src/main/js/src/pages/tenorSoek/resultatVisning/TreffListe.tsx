@@ -46,7 +46,7 @@ export const TreffListe = ({ response, personListe, loading, error }: any) => {
 		person: valgtPersonData,
 		loading: valgtPersonLoading,
 		error: valgtPersonError,
-	} = useTenorIdent(valgtPerson?.identifikator?.[0])
+	} = useTenorIdent(valgtPerson?.id)
 	//TODO endres tilbake når vi faar ident som ikke er array
 
 	useEffect(() => {
@@ -66,12 +66,10 @@ export const TreffListe = ({ response, personListe, loading, error }: any) => {
 				<VStack gap="4">
 					{personListe?.map((person: any) => (
 						<Box
-							key={person?.identifikator}
+							key={person?.id}
 							padding="2"
 							background={
-								person?.identifikator === valgtPerson?.identifikator
-									? 'surface-alt-3-moderate'
-									: 'surface-alt-3-subtle'
+								person?.id === valgtPerson?.id ? 'surface-alt-3-moderate' : 'surface-alt-3-subtle'
 							}
 							borderRadius="medium"
 							onClick={() => setValgtPerson(person)}
@@ -80,12 +78,12 @@ export const TreffListe = ({ response, personListe, loading, error }: any) => {
 							<PersonNavn>
 								{person?.fornavn} {person?.etternavn}
 							</PersonNavn>
-							<PersonIdent>{person?.identifikator}</PersonIdent>
+							<PersonIdent>{person?.id}</PersonIdent>
 							{person?.tenorRelasjoner?.map((relasjon: any, idx: number) => (
 								<Tag
 									size="small"
 									variant="neutral"
-									key={person?.identifikator + idx}
+									key={person?.id + idx}
 									style={{ margin: '0 5px 5px 0' }}
 								>
 									{relasjon}
@@ -94,7 +92,11 @@ export const TreffListe = ({ response, personListe, loading, error }: any) => {
 						</Box>
 					))}
 				</VStack>
-				{loading && <Loading label="Laster treff ..." />}
+				{loading && (
+					<div style={{ margin: '10px 0' }}>
+						<Loading label="Laster treff ..." />
+					</div>
+				)}
 			</div>
 			<div
 				style={{
