@@ -24,6 +24,8 @@ import {
 	ReactRouterVersion,
 } from '@grafana/faro-react'
 import RefreshSessionPage from '@/pages/RefreshSessionPage'
+import { useRouteError } from 'react-router'
+import { AppError } from '@/components/ui/appError/AppError'
 
 initializeFaro({
 	paused: window.location.hostname.includes('localhost'),
@@ -47,6 +49,20 @@ initializeFaro({
 	],
 })
 
+const ErrorView = () => {
+	const error = useRouteError()
+	console.error(error)
+
+	const errors = ['Failed to fetch dynamically imported module', 'Unable to preload CSS']
+
+	if (errors.some((e) => error.message.includes(e))) {
+		window.location.reload()
+	} else {
+		throw error
+	}
+	return <AppError error={error} stackTrace={error.stackTrace} />
+}
+
 export const RootComponent = () => (
 	<Provider store={store}>
 		<Router history={history}>
@@ -58,10 +74,10 @@ export const RootComponent = () => (
 					}}
 				>
 					<FaroRoutes>
-						<Route path="/bruker" element={<BrukerPage />} />
 						<Route path="/login" element={<LoginPage />} />
 						<Route path="/refreshSession" element={<RefreshSessionPage />} />
-						<Route path="*" element={<App />} />
+						<Route errorElement={<ErrorView />} path="/bruker" element={<BrukerPage />} />
+						<Route errorElement={<ErrorView />} path="*" element={<App />} />
 					</FaroRoutes>
 				</SWRConfig>
 			</ErrorBoundary>
