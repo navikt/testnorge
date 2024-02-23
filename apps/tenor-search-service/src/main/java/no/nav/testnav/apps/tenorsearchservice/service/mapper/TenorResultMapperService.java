@@ -78,7 +78,7 @@ public class TenorResultMapperService {
     private static TenorOversiktResponse.Person map(TenorRawResponse.Dokument dokument) {
 
         return TenorOversiktResponse.Person.builder()
-                .identifikator(dokument.getIdentifikator())
+                .id(dokument.getId())
                 .fornavn(dokument.getFornavn())
                 .etternavn(dokument.getEtternavn())
                 .tenorRelasjoner(map(dokument.getTenorRelasjoner()))
