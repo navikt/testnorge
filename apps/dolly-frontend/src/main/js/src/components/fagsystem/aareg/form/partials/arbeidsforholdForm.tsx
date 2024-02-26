@@ -88,7 +88,7 @@ export const ArbeidsforholdForm = ({
 		)
 	}
 
-	const { setError, watch, getValues, setValue, trigger } = useFormContext()
+	const { setError, watch, control, getValues, setValue, trigger, resetField } = useFormContext()
 	const [navArbeidsforholdPeriode, setNavArbeidsforholdPeriode] = useState(null as unknown as Date)
 	const { tidligereBestillinger } = useContext(BestillingsveilederContext)
 	const tidligereAaregBestillinger = hentUnikeAaregBestillinger(tidligereBestillinger)
@@ -101,13 +101,12 @@ export const ArbeidsforholdForm = ({
 		if (_.isEmpty(tidligereAaregBestillinger) || harGjortFormEndringer()) {
 			return
 		}
-		setValue(
-			'aareg',
-			tidligereAaregBestillinger?.map((aaregBestilling) => {
+		resetField('aareg', {
+			defaultValue: tidligereAaregBestillinger?.map((aaregBestilling) => {
 				aaregBestilling.isOppdatering = true
 				return aaregBestilling
 			}),
-		)
+		})
 		trigger('aareg')
 	}, [watch('aareg')])
 

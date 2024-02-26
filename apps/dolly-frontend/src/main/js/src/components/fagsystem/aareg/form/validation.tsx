@@ -17,6 +17,10 @@ const innenforAnsettelsesforholdTest = (periodeValidation, validateFomMonth) => 
 
 			// Husk at dato som kommer fra en Mal kan være av typen String
 			const dateValue = new Date(val)
+			const gjeldendeArbeidsforholdPath = testContext.path.substring(
+				0,
+				testContext.path.indexOf('.'),
+			)
 
 			if (validateFomMonth) {
 				const fomPath = testContext.path.replace('.tom', '.fom')
@@ -28,8 +32,8 @@ const innenforAnsettelsesforholdTest = (periodeValidation, validateFomMonth) => 
 					return false
 			}
 
-			const ansattFom = _.get(testContext.parent, `ansettelsesPeriode.fom`)
-			const ansattTom = _.get(testContext.parent, `ansettelsesPeriode.tom`)
+			const ansattFom = _.get(fullForm, `${gjeldendeArbeidsforholdPath}.ansettelsesPeriode.fom`)
+			const ansattTom = _.get(fullForm, `${gjeldendeArbeidsforholdPath}.ansettelsesPeriode.tom`)
 
 			return isWithinInterval(dateValue, {
 				start: new Date(ansattFom),
