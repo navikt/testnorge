@@ -18,6 +18,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
@@ -42,7 +43,8 @@ public class JsonMapperConfig {
                 .addDeserializer(YearMonth.class, new DollyYearMonthDeserializer())
                 .addSerializer(YearMonth.class, new YearMonthSerializer(DateTimeFormatter.ofPattern(YEAR_MONTH)))
                 .addDeserializer(ZonedDateTime.class, new DollyZonedDateTimeDeserializer())
-                .addSerializer(ZonedDateTime.class, new ZonedDateTimeSerializer(DateTimeFormatter.ISO_DATE_TIME));
+                .addSerializer(ZonedDateTime.class, new ZonedDateTimeSerializer(DateTimeFormatter.ISO_DATE_TIME))
+                .addDeserializer(Instant.class, new DollyInstantDeserializer());
         return JsonMapper
                 .builder()
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
@@ -90,7 +92,7 @@ public class JsonMapperConfig {
             }
             var dateTime = node.asText().length() > 10 ? node.asText().substring(0, 10) : node.asText();
             if (!dateTime.contains("-")) {
-                dateTime = "%s-%s-%s".formatted(dateTime.substring(0,4), dateTime.substring(4,6), dateTime.substring(6,8));
+                dateTime = "%s-%s-%s".formatted(dateTime.substring(0, 4), dateTime.substring(4, 6), dateTime.substring(6, 8));
             }
             return LocalDate.parse(dateTime);
         }
@@ -106,6 +108,28 @@ public class JsonMapperConfig {
             }
             var dateTime = node.asText().length() > 19 ? node.asText().substring(0, 19) : node.asText();
             return dateTime.length() > 10 ? LocalDateTime.parse(dateTime) : LocalDate.parse(dateTime).atStartOfDay();
+        }
+    }
+
+    private static class DollyInstantDeserializer extends JsonDeserializer<Instant> {
+
+        /**
+         * Input format 20210831T101647.269Z or 2021-08-31T10:16:47.269Z
+         *
+         */
+        @Override
+        public Instant deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
+
+            JsonNode node = jsonParser.getCodec().readTree(jsonParser);
+            if (isBlank(node.asText())) {
+                return null;
+            }
+            var instant = node.asText();
+            if (!instant.contains("-") && instant.length() > 15) {
+                instant = "%s-%s-%s:%s:%s".formatted(instant.substring(0, 4), instant.substring(4, 6),
+                        instant.substring(6, 11), instant.substring(11, 13), instant.substring(13));
+            }
+            return Instant.parse(instant);
         }
     }
 }
