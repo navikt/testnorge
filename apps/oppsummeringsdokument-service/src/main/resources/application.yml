@@ -1,14 +1,6 @@
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
 
 spring:
-  data:
-    elasticsearch:
-      client:
-        reactive:
-          username: ${OPEN_SEARCH_USERNAME}
-          password: ${OPEN_SEARCH_PASSWORD}
-          endpoints: ${OPEN_SEARCH_URI}
-          use-ssl: true
   security:
     oauth2:
       resourceserver:
@@ -16,19 +8,10 @@ spring:
           issuer-uri: ${AAD_ISSUER_URI}/v2.0
           jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
           accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
-        tokenx:
-          issuer-uri: ${TOKEN_X_ISSUER} 
-          jwk-set-uri: ${TOKEN_X_JWKS_URI}
-          accepted-audience: ${TOKEN_X_CLIENT_ID}
   application:
     name: oppsummeringsdokument-service
     version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
     description: Tjeneste for å sende inn oppsummeringsdokument til aareg og søke i innsendte oppsummeringsdokumenter.
-  elasticsearch:
-    rest:
-      username: ${OPEN_SEARCH_USERNAME}
-      password: ${OPEN_SEARCH_PASSWORD}
-      uris: ${OPEN_SEARCH_URI}
   cloud:
     vault:
       enabled: false

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { harAvhukedeAttributter } from '@/components/bestillingsveileder/utils'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { SigrunstubForm } from '@/components/fagsystem/sigrunstub/form/Form'
@@ -45,6 +45,12 @@ const getEmptyMessage = (leggTil, importTestnorge, gruppe = null) => {
 export const Steg2 = () => {
 	const opts: any = useContext(BestillingsveilederContext)
 	const formMethods = useFormContext()
+
+	useEffect(() => {
+		if (opts.gruppe?.id) {
+			formMethods.setValue('gruppeId', opts.gruppe?.id)
+		}
+	}, [])
 
 	const leggTil = opts.is.leggTil
 	const importTestnorge = opts.is.importTestnorge

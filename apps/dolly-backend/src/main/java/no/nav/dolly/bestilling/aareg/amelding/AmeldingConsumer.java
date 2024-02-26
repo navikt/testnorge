@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.aareg.amelding;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.v3.core.util.Json;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.aareg.command.AmeldingPutCommand;
 import no.nav.dolly.config.Consumers;
@@ -64,8 +65,9 @@ public class AmeldingConsumer {
                                                 .collect(Collectors.joining(",")))));
                             } else {
                                 log.info("Sender Amelding {} til miljø {}: {}",
-                                        amelding.getKalendermaaned().format(YEAR_MONTH), miljoe, amelding);
+                                        amelding.getKalendermaaned().format(YEAR_MONTH), miljoe, Json.pretty(amelding));
                                 return new AmeldingPutCommand(webClient, amelding, miljoe, token.getTokenValue()).call()
+                                        .doOnNext(status -> log.info("Ameldingstatus: {}", status.getStatusCode()))
                                         .map(status -> status.getStatusCode().is2xxSuccessful() ? "OK" :
                                                 errorStatusDecoder.getErrorText(HttpStatus.valueOf(status.getStatusCode().value()), status.getBody()));
                             }

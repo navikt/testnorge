@@ -124,6 +124,8 @@ public class IdentService {
                         .map("<fnr>%s</fnr>"::formatted)
                         .collect(Collectors.joining(""))));
 
+        log.info("M201 request: {}", xmlRequest);
+
         var miljoerResponse = servicerutineConsumer.sendMessage(xmlRequest, miljoer);
 
         miljoerResponse.forEach((key, value) -> {
