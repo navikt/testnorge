@@ -8,3 +8,14 @@ describe('<AppError />', () => {
 		)
 	})
 })
+
+describe('<AppError />', () => {
+	it('renders', () => {
+		cy.mount(
+			<AppError
+				error={'Failed to fetch dynamically imported module'}
+				stackTrace={'Dynamic import feilet'}
+			/>,
+		)
+	})
+})
