@@ -51,6 +51,7 @@ public class JsonMapperConfig {
                 .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS)
                 .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
                 .build()
+                .findAndRegisterModules()
                 .registerModule(simpleModule);
 
     }
