@@ -36,10 +36,6 @@ export const TreffListe = ({ response, personListe, loading, error }: any) => {
 		)
 	}
 
-	if (!personListe || personListe?.length === 0) {
-		return null
-	}
-
 	const [valgtPerson, setValgtPerson] = useState(null)
 
 	const {
@@ -47,7 +43,6 @@ export const TreffListe = ({ response, personListe, loading, error }: any) => {
 		loading: valgtPersonLoading,
 		error: valgtPersonError,
 	} = useTenorIdent(valgtPerson?.id)
-	//TODO endres tilbake når vi faar ident som ikke er array
 
 	useEffect(() => {
 		if (!valgtPerson) {
@@ -60,7 +55,9 @@ export const TreffListe = ({ response, personListe, loading, error }: any) => {
 	return (
 		<div className="flexbox--flex-wrap">
 			<div className="flexbox--full-width">
-				{antallTreff && <h2 style={{ marginTop: '5px' }}>{antallTreff} treff</h2>}
+				<h2 style={{ marginTop: '5px' }}>
+					{antallTreff || antallTreff === 0 ? `${antallTreff} treff` : ''}
+				</h2>
 			</div>
 			<div style={{ width: '30%' }}>
 				<VStack gap="4">

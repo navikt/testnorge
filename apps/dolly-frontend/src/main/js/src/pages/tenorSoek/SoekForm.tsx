@@ -27,7 +27,7 @@ const Soekefelt = styled.div`
 	padding: 20px 15px;
 `
 
-export const SoekForm = ({ request, setRequest, setPersonListe, setSeed, setSide, mutate }) => {
+export const SoekForm = ({ setRequest, mutate }) => {
 	function getUpdatedRequest(request: any) {
 		for (let key of Object.keys(request)) {
 			if (request[key] === '' || request[key] === null || request[key] === undefined) {
@@ -48,12 +48,6 @@ export const SoekForm = ({ request, setRequest, setPersonListe, setSeed, setSide
 						const handleChange = (value: any, path: string) => {
 							const request = _.set(formikBag.values, path, value)
 							getUpdatedRequest(request)
-							// setPersonListe([])
-							// setSeed(null)
-							// setSide(0)
-							// const test = { ...request }
-							// console.log('request: ', request) //TODO - SLETT MEG
-							// console.log('test: ', test) //TODO - SLETT MEG
 							setRequest({ ...request })
 							formikBag.setValues(request)
 							mutate()
@@ -63,9 +57,6 @@ export const SoekForm = ({ request, setRequest, setPersonListe, setSeed, setSide
 							const list = value.map((item: any) => item.value)
 							const request = _.set(formikBag.values, path, list)
 							getUpdatedRequest(request)
-							// setPersonListe([])
-							// setSeed(null)
-							// setSide(0)
 							setRequest({ ...request })
 							formikBag.setValues(request)
 							mutate()
