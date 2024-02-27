@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react'
-import * as _ from 'lodash-es'
+import _ from 'lodash'
 import {
 	getInitialKontaktadresse,
 	initialPostboksadresse,
@@ -17,20 +17,20 @@ import {
 } from '@/components/fagsystem/pdlf/form/partials/adresser/adressetyper'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
-import { FormikProps } from 'formik'
 import { Adressetype } from '@/components/fagsystem/pdlf/PdlTypes'
 import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 import { getPlaceholder, setNavn } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { useGenererNavn } from '@/utils/hooks/useGenererNavn'
 import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 interface KontaktadresseValues {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 }
 
 type KontaktadresseFormValues = {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 	path: string
 	idx?: number
 	identtype?: string
@@ -42,33 +42,34 @@ type Target = {
 }
 
 export const KontaktadresseForm = ({
-	formikBag,
+	formMethods,
 	path,
 	idx,
 	identtype,
 }: KontaktadresseFormValues) => {
 	useEffect(() => {
-		formikBag.setFieldValue(`${path}.adresseIdentifikatorFraMatrikkelen`, undefined)
-		const kontaktadresse = _.get(formikBag.values, path)
+		formMethods.setValue(`${path}.adresseIdentifikatorFraMatrikkelen`, undefined)
+		const kontaktadresse = formMethods.watch(path)
 		if (_.get(kontaktadresse, 'vegadresse') && _.get(kontaktadresse, 'vegadresse') !== null) {
-			formikBag.setFieldValue(`${path}.adressetype`, Adressetype.Veg)
+			formMethods.setValue(`${path}.adressetype`, Adressetype.Veg)
 		} else if (
 			_.get(kontaktadresse, 'utenlandskAdresse') &&
 			_.get(kontaktadresse, 'utenlandskAdresse') !== null
 		) {
-			formikBag.setFieldValue(`${path}.adressetype`, Adressetype.Utenlandsk)
+			formMethods.setValue(`${path}.adressetype`, Adressetype.Utenlandsk)
 		} else if (
 			_.get(kontaktadresse, 'postboksadresse') &&
 			_.get(kontaktadresse, 'postboksadresse') !== null
 		) {
-			formikBag.setFieldValue(`${path}.adressetype`, Adressetype.Postboks)
+			formMethods.setValue(`${path}.adressetype`, Adressetype.Postboks)
 		}
+		formMethods.trigger()
 	}, [])
 
-	const valgtAdressetype = _.get(formikBag.values, `${path}.adressetype`)
+	const valgtAdressetype = formMethods.watch(`${path}.adressetype`)
 
 	const handleChangeAdressetype = (target: Target, path: string) => {
-		const adresse = _.get(formikBag.values, path)
+		const adresse = formMethods.watch(path)
 		const adresseClone = _.cloneDeep(adresse)
 
 		_.set(adresseClone, 'adressetype', target?.value || null)
@@ -94,7 +95,8 @@ export const KontaktadresseForm = ({
 			_.set(adresseClone, 'utenlandskAdresse', undefined)
 		}
 
-		formikBag.setFieldValue(path, adresseClone)
+		formMethods.setValue(path, adresseClone)
+		formMethods.trigger(path)
 	}
 
 	const { navnInfo, loading } = useGenererNavn()
@@ -112,17 +114,21 @@ export const KontaktadresseForm = ({
 				/>
 			</div>
 			{valgtAdressetype === 'VEGADRESSE' && (
-				<VegadresseVelger formikBag={formikBag} path={`${path}.vegadresse`} key={`veg_${idx}`} />
+				<VegadresseVelger
+					formMethods={formMethods}
+					path={`${path}.vegadresse`}
+					key={`veg_${idx}`}
+				/>
 			)}
 			{valgtAdressetype === 'UTENLANDSK_ADRESSE' && (
 				<UtenlandskAdresse
-					formikBag={formikBag}
+					formMethods={formMethods}
 					path={`${path}.utenlandskAdresse`}
-					master={_.get(formikBag.values, `${path}.master`)}
+					master={formMethods.watch(`${path}.master`)}
 				/>
 			)}
 			{valgtAdressetype === 'POSTBOKSADRESSE' && (
-				<Postboksadresse formikBag={formikBag} path={`${path}.postboksadresse`} />
+				<Postboksadresse path={`${path}.postboksadresse`} />
 			)}
 			<div className="flexbox--flex-wrap">
 				<DatepickerWrapper>
@@ -134,12 +140,12 @@ export const KontaktadresseForm = ({
 					label="C/O adressenavn"
 					options={navnOptions}
 					size="xlarge"
-					placeholder={getPlaceholder(formikBag.values, `${path}.opprettCoAdresseNavn`)}
+					placeholder={getPlaceholder(formMethods.getValues(), `${path}.opprettCoAdresseNavn`)}
 					isLoading={loading}
 					onChange={(navn: Target) =>
-						setNavn(navn, `${path}.opprettCoAdresseNavn`, formikBag.setFieldValue)
+						setNavn(navn, `${path}.opprettCoAdresseNavn`, formMethods.setValue)
 					}
-					value={_.get(formikBag.values, `${path}.opprettCoAdresseNavn.fornavn`)}
+					value={formMethods.watch(`${path}.opprettCoAdresseNavn.fornavn`)}
 				/>
 			</div>
 			<AvansertForm path={path} kanVelgeMaster={identtype !== 'NPID'} />
@@ -147,9 +153,8 @@ export const KontaktadresseForm = ({
 	)
 }
 
-export const Kontaktadresse = ({ formikBag }: KontaktadresseValues) => {
+export const Kontaktadresse = ({ formMethods }: KontaktadresseValues) => {
 	const opts = useContext(BestillingsveilederContext)
-
 	return (
 		<Kategori title="Kontaktadresse">
 			<FormikDollyFieldArray
@@ -160,7 +165,7 @@ export const Kontaktadresse = ({ formikBag }: KontaktadresseValues) => {
 			>
 				{(path: string, idx: number) => (
 					<KontaktadresseForm
-						formikBag={formikBag}
+						formMethods={formMethods}
 						path={path}
 						idx={idx}
 						identtype={opts?.identtype}

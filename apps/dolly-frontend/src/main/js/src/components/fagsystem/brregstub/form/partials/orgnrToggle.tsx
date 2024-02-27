@@ -1,6 +1,4 @@
 import React, { useState } from 'react'
-import * as _ from 'lodash-es'
-import { FormikProps } from 'formik'
 import { OrganisasjonTextSelect } from '@/components/fagsystem/brregstub/form/partials/organisasjonTextSelect'
 import {
 	inputValg,
@@ -9,30 +7,35 @@ import {
 import { EgneOrganisasjoner } from '@/components/fagsystem/brregstub/form/partials/EgneOrganisasjoner'
 import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 import { OrganisasjonLoader } from '@/components/organisasjonSelect/OrganisasjonLoader'
+import { UseFormReturn } from 'react-hook-form/dist/types'
+import { ORGANISASJONSTYPE_TOGGLE } from '@/components/fagsystem/inntektstub/form/partials/orgnummerToggle'
 
 interface OrgnrToggleProps {
 	path: string
-	formikBag: FormikProps<any>
+	formMethods: UseFormReturn
 	setEnhetsinfo: (org: any, path: string) => Record<string, unknown>
 	warningMessage?: any
 }
 
 export const OrgnrToggle = ({
 	path,
-	formikBag,
+	formMethods,
 	setEnhetsinfo,
 	warningMessage,
 }: OrgnrToggleProps) => {
-	const [inputType, setInputType] = useState(inputValg.fraFellesListe)
+	const [inputType, setInputType] = useState(
+		sessionStorage.getItem(ORGANISASJONSTYPE_TOGGLE) || inputValg.fraFellesListe,
+	)
 	const { dollyEnvironments: aktiveMiljoer } = useDollyEnvironments()
 
 	const handleToggleChange = (value: string) => {
+		sessionStorage.setItem(ORGANISASJONSTYPE_TOGGLE, value)
 		setInputType(value)
 		clearEnhetsinfo()
 	}
 
 	const clearEnhetsinfo = () => {
-		const oldValues = _.get(formikBag.values, path) || {}
+		const oldValues = formMethods.watch(path) || {}
 		if (oldValues.hasOwnProperty('foretaksNavn')) {
 			delete oldValues['foretaksNavn']
 		}
@@ -42,8 +45,9 @@ export const OrgnrToggle = ({
 		if (oldValues.hasOwnProperty('postAdresse')) {
 			delete oldValues['postAdresse']
 		}
-		oldValues['orgNr'] = ''
-		formikBag.setFieldValue(path, oldValues)
+		oldValues['orgNr'] = null
+		formMethods.setValue(path, oldValues)
+		formMethods.trigger(path)
 	}
 
 	const handleChange = (event: React.ChangeEvent<any>) => {
@@ -57,25 +61,20 @@ export const OrgnrToggle = ({
 				<OrganisasjonLoader
 					path={`${path}.orgNr`}
 					handleChange={handleChange}
-					value={_.get(formikBag.values, `${path}.orgNr`)}
-					feil={
-						_.get(formikBag.values, path) === '' && {
-							feilmelding: 'Feltet er påkrevd',
-						}
-					}
+					value={formMethods.watch(`${path}.orgNr`)}
 				/>
 			)}
 			{inputType === inputValg.fraEgenListe && (
 				<EgneOrganisasjoner
 					path={`${path}.orgNr`}
-					formikBag={formikBag}
+					formMethods={formMethods}
 					handleChange={handleChange}
 					warningMessage={warningMessage}
 				/>
 			)}
 			{inputType === inputValg.skrivSelv && (
 				<OrganisasjonTextSelect
-					path={path}
+					path={`${path}.orgNr`}
 					aktiveMiljoer={aktiveMiljoer}
 					setEnhetsinfo={setEnhetsinfo}
 					clearEnhetsinfo={clearEnhetsinfo}

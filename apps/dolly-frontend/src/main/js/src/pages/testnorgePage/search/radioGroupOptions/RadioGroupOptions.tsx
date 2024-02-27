@@ -1,8 +1,7 @@
 import Icon from '@/components/ui/icon/Icon'
 import { Radio, RadioGroup } from '@navikt/ds-react'
-import { FormikProps } from 'formik'
 import styled from 'styled-components'
-import * as _ from 'lodash-es'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 type Option = {
 	value: string
@@ -11,7 +10,7 @@ type Option = {
 }
 
 type RadioOptionsProps = {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 	name: string
 	path: string
 	legend?: string
@@ -25,16 +24,17 @@ const IconContainer = styled.div`
 `
 
 export const RadioGroupOptions = ({
-	formikBag,
+	formMethods,
 	name,
 	path,
 	legend = 'Velg',
 	hideLegend = true,
 	options,
 }: RadioOptionsProps) => {
-	const selected = _.get(formikBag.values, `${path}`) || null
+	const selected = formMethods.watch(`${path}`) || null
 	const setSelected = (valg: string) => {
-		formikBag.setFieldValue(`${path}`, valg)
+		formMethods.setValue(`${path}`, valg)
+		formMethods.trigger(`${path}`)
 	}
 	return (
 		<div className="radio-group">

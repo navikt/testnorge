@@ -1,5 +1,8 @@
 package no.nav.testnav.apps.oppsummeringsdokumentservice.domain;
 
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.bind.Marshaller;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Alvorlighetsgrad;
@@ -36,9 +39,6 @@ import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.PersonDTO;
 import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.Populasjon;
 import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.VirksomhetDTO;
 
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.JAXBElement;
-import jakarta.xml.bind.Marshaller;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.StringWriter;
@@ -159,7 +159,7 @@ public class Oppsummeringsdokument {
 
         leveranseinformasjon.setInnleveringstidspunkt(xmlGregorianCalendar);
         leveranseinformasjon.setMeldingsId(UUID.randomUUID().toString());
-        leveranseinformasjon.setKildesystem("oppsummeringsdokument-service");
+        leveranseinformasjon.setKildesystem("testnav-oppsummeringsdokument-service");
         leveranseinformasjon.setMeldingsId(UUID.randomUUID().toString());
 
         leveranse.getLeveranseinformasjon().add(leveranseinformasjon);
@@ -334,17 +334,17 @@ public class Oppsummeringsdokument {
                             personDTO.getArbeidsforhold()
                                     .stream()
                                     .map(Oppsummeringsdokument::create)
-                                    .collect(Collectors.toList())
+                                    .toList()
                     );
                     inntektsmottaker.getInntekt().addAll(
                             personDTO.getArbeidsforhold()
                                     .stream()
                                     .map(Oppsummeringsdokument::createInntekter)
                                     .flatMap(Collection::stream)
-                                    .collect(Collectors.toList())
+                                    .toList()
                     );
                     return inntektsmottaker;
-                }).collect(Collectors.toList())
+                }).toList()
         );
 
         return virksomhet;
@@ -368,9 +368,9 @@ public class Oppsummeringsdokument {
             inntekt.setLoennsinntekt(loennsinntekt);
             inntekt.setSluttdatoOpptjeningsperiode(toXMLGregorianCalendar(value.getSluttdatoOpptjeningsperiode()));
             inntekt.setStartdatoOpptjeningsperiode(toXMLGregorianCalendar(value.getStartdatoOpptjeningsperiode()));
-            inntekt.getAvvik().addAll(value.getAvvik().stream().map(mapDTOToAvvik()).collect(Collectors.toList()));
+            inntekt.getAvvik().addAll(value.getAvvik().stream().map(mapDTOToAvvik()).toList());
             return inntekt;
-        }).collect(Collectors.toList());
+        }).toList();
     }
 
     private static Function<AvvikDTO, Avvik> mapDTOToAvvik() {
@@ -394,7 +394,7 @@ public class Oppsummeringsdokument {
         arbeidsforhold.setArbeidstidsordning(dto.getArbeidstidsordning());
         arbeidsforhold.setStillingsprosent(dto.getStillingsprosent() != null ? BigDecimal.valueOf(dto.getStillingsprosent()) : null);
         arbeidsforhold.setSisteLoennsendringsdato(toXMLGregorianCalendar(dto.getSisteLoennsendringsdato()));
-        arbeidsforhold.getAvvik().addAll(dto.getAvvik().stream().map(mapDTOToAvvik()).collect(Collectors.toList()));
+        arbeidsforhold.getAvvik().addAll(dto.getAvvik().stream().map(mapDTOToAvvik()).toList());
         if (dto.getPermisjoner() != null) {
             var permisjoner = dto.getPermisjoner().stream().map(permisjonDTO -> {
                 Permisjon permisjon = new Permisjon();
@@ -403,9 +403,9 @@ public class Oppsummeringsdokument {
                 permisjon.setPermisjonsprosent(permisjonDTO.getPermisjonsprosent() != null ? BigDecimal.valueOf(permisjonDTO.getPermisjonsprosent()) : null);
                 permisjon.setSluttdato(toXMLGregorianCalendar(permisjonDTO.getSluttdato()));
                 permisjon.setStartdato(toXMLGregorianCalendar(permisjonDTO.getStartdato()));
-                permisjon.getAvvik().addAll(permisjonDTO.getAvvik().stream().map(mapDTOToAvvik()).collect(Collectors.toList()));
+                permisjon.getAvvik().addAll(permisjonDTO.getAvvik().stream().map(mapDTOToAvvik()).toList());
                 return permisjon;
-            }).collect(Collectors.toList());
+            }).toList();
             arbeidsforhold.getPermisjon().addAll(permisjoner);
         }
 

@@ -1,6 +1,6 @@
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
-import * as _ from 'lodash-es'
+import _ from 'lodash'
 import { formatDate } from '@/utils/DataFormatter'
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { Foreldreansvar } from '@/components/fagsystem/pdlf/PdlTypes'

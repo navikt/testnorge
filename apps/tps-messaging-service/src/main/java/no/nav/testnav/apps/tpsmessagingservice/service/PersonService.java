@@ -1,6 +1,8 @@
 package no.nav.testnav.apps.tpsmessagingservice.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,8 +28,6 @@ import no.nav.tps.ctg.s610.domain.S610PersonType;
 import org.json.XML;
 import org.springframework.stereotype.Service;
 
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.JAXBException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -68,16 +68,12 @@ public class PersonService {
 
     private static String mapRelasjonType(RelasjonType relasjonType) {
 
-        switch (relasjonType) {
-            case MORA:
-                return MOR.name();
-            case FARA:
-                return FAR.name();
-            case EKTE, ENKE, SKIL, SEPR, REPA, SEPA, SKPA, GJPA, GLAD:
-                return PARTNER.name();
-            default:
-                return relasjonType.name();
-        }
+        return switch (relasjonType) {
+            case MORA -> MOR.name();
+            case FARA -> FAR.name();
+            case EKTE, ENKE, SKIL, SEPR, REPA, SEPA, SKPA, GJPA, GLAD -> PARTNER.name();
+            default -> relasjonType.name();
+        };
     }
 
     private static boolean isStatusOK(TpsMeldingResponse response) {
@@ -181,8 +177,7 @@ public class PersonService {
 
         var miljoerResponse = servicerutineConsumer.sendMessage(xmlRequest, miljoer);
 
-        miljoerResponse.entrySet().stream()
-                .forEach(entry -> log.info("Miljø: {} XML: {}", entry.getKey(), entry.getValue()));
+        miljoerResponse.forEach((key, value) -> log.info("Miljø: {} XML: {}", key, value));
 
         return miljoerResponse.entrySet().stream()
                 .collect(Collectors.toMap(Entry::getKey,

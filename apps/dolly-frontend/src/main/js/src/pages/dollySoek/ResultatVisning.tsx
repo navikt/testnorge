@@ -12,6 +12,7 @@ import { NavigerTilPerson } from '@/pages/dollySoek/NavigerTilPerson'
 import { PersonVisning } from '@/pages/dollySoek/PersonVisning'
 import { usePdlPersonbolk } from '@/utils/hooks/usePdlPerson'
 import { runningCypressE2E } from '@/service/services/Request'
+import _ from 'lodash'
 
 export const ResultatVisning = ({ resultat, soekError }) => {
 	const identString = resultat?.identer?.join(',')
@@ -24,7 +25,7 @@ export const ResultatVisning = ({ resultat, soekError }) => {
 		return pdlfPerson || pdlPerson
 	})
 
-	if (!resultat) {
+	if (_.isEmpty(resultat)) {
 		return (
 			<ContentContainer>
 				<Alert variant="info" size="small" inline>
@@ -38,7 +39,7 @@ export const ResultatVisning = ({ resultat, soekError }) => {
 		return (
 			<ContentContainer>
 				<Alert variant={'error'} size={'small'} inline>
-					Feil: {resultat.error || errorPdlf || errorPdl || soekError}
+					Feil: {resultat.error || errorPdl?.message || errorPdlf?.message || soekError?.message}
 				</Alert>
 			</ContentContainer>
 		)

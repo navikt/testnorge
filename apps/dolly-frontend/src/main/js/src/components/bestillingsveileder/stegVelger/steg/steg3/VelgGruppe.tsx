@@ -1,45 +1,39 @@
 import React, { useEffect, useState } from 'react'
 import { VelgGruppeToggle } from '@/components/velgGruppe/VelgGruppeToggle'
 import { ifPresent } from '@/utils/YupValidations'
-import { FormikProps } from 'formik'
-import * as _ from 'lodash-es'
-import { ErrorMessageWithFocus } from '@/utils/ErrorMessageWithFocus'
 import * as Yup from 'yup'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 type VelgGruppeProps = {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 	title: string
 	fraGruppe?: number
 }
 
 export const VelgGruppe = ({
-	formikBag,
+	formMethods,
 	title,
 	fraGruppe = null,
 	gruppevalg,
 	setGruppevalg,
 }: VelgGruppeProps) => {
-	const [valgtGruppe, setValgtGruppe] = useState(_.get(formikBag.values, `gruppeId`))
+	const [valgtGruppe] = useState(formMethods.watch(`gruppeId`) || '')
 
 	useEffect(() => {
-		setValgtGruppe(valgtGruppe || '') // for å vise feilmeldingsvisning
-	})
-
-	useEffect(() => {
-		formikBag.setFieldValue('gruppeId', valgtGruppe)
+		if (formMethods.getValues('gruppeId') !== valgtGruppe) {
+			formMethods.setValue('gruppeId', valgtGruppe)
+			formMethods.trigger('gruppeId')
+		}
 	}, [valgtGruppe])
 
 	return (
 		<div className="input-oppsummering">
 			<h2>{title}</h2>
 			<VelgGruppeToggle
-				valgtGruppe={valgtGruppe}
-				setValgtGruppe={setValgtGruppe}
 				fraGruppe={fraGruppe}
 				gruppevalg={gruppevalg}
 				setGruppevalg={setGruppevalg}
 			/>
-			<ErrorMessageWithFocus name="gruppeId" className="error-message" component="div" />
 		</div>
 	)
 }

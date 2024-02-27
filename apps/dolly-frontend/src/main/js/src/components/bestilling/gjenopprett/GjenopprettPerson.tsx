@@ -47,7 +47,6 @@ export const GjenopprettPerson = ({ ident }: GjenopprettProps) => {
 	const bestilteMiljoer = getBestilteMiljoer()
 
 	const handleSubmit = async (values: Values) => {
-
 		let miljoerString = ''
 		values.environments.forEach((env: string, i: number) => {
 			if (i === 0) {

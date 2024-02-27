@@ -22,11 +22,7 @@ import useBoolean from '@/utils/hooks/useBoolean'
 import { OrganisasjonBestillingsveilederModal } from '@/pages/organisasjoner/OrganisasjonBestillingsveilederModal'
 import OrganisasjonHeaderConnector from '@/pages/organisasjoner/OrgansisasjonHeader/OrganisasjonHeaderConnector'
 import { CypressSelector } from '../../../cypress/mocks/Selectors'
-
-type OrganisasjonerProps = {
-	search?: string
-	sidetall: number
-}
+import { useReduxSelector } from '@/utils/hooks/useRedux'
 
 enum BestillingType {
 	NY = 'NY',
@@ -36,13 +32,14 @@ enum BestillingType {
 const VISNING_ORGANISASJONER = 'organisasjoner'
 const VISNING_BESTILLINGER = 'bestillinger'
 
-export default ({ search, sidetall }: OrganisasjonerProps) => {
+export default () => {
 	const {
 		currentBruker: { brukerId, brukertype, brukernavn },
 	} = useCurrentBruker()
 
 	const [visning, setVisning] = useState(VISNING_ORGANISASJONER)
 	const [startBestillingAktiv, visStartBestilling, skjulStartBestilling] = useBoolean(false)
+	const searchStr = useReduxSelector((state) => state.search)
 
 	const [antallOrg, setAntallOrg] = useState(null)
 	const navigate = useNavigate()
@@ -66,7 +63,7 @@ export default ({ search, sidetall }: OrganisasjonerProps) => {
 
 	const antallBest = bestillinger?.length
 
-	const startBestilling = (values: Record<string, unknown>) => {
+	const startBestilling = (values) => {
 		navigate('/organisasjoner/bestilling', {
 			state: { opprettOrganisasjon: BestillingType.NY, ...values },
 		})
@@ -142,15 +139,10 @@ export default ({ search, sidetall }: OrganisasjonerProps) => {
 					(isFetching ? (
 						<Loading label="Laster organisasjoner" panel />
 					) : antallOrg !== 0 ? (
-						<OrganisasjonListe
-							bestillinger={bestillinger}
-							search={search}
-							setAntallOrg={setAntallOrg}
-							sidetall={sidetall}
-						/>
+						<OrganisasjonListe bestillinger={bestillinger} setAntallOrg={setAntallOrg} />
 					) : (
 						<TomOrgListe
-							startBestilling={startBestilling}
+							startBestilling={() => startBestilling}
 							bestillingstype={BestillingType.STANDARD}
 						/>
 					))}
@@ -159,14 +151,13 @@ export default ({ search, sidetall }: OrganisasjonerProps) => {
 						<Loading label="Laster bestillinger" panel />
 					) : antallBest > 0 ? (
 						<OrganisasjonBestilling
-							sidetall={sidetall}
 							brukerId={brukerId}
 							brukertype={brukertype}
-							bestillinger={sokSelector(bestillingerById, search)}
+							bestillinger={sokSelector(bestillingerById, searchStr)}
 						/>
 					) : (
 						<TomOrgListe
-							startBestilling={startBestilling}
+							startBestilling={() => startBestilling}
 							bestillingstype={BestillingType.STANDARD}
 						/>
 					))}

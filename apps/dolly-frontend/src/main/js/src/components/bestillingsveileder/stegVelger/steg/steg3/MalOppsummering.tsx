@@ -68,7 +68,6 @@ export const MalOppsummering = ({
 						size={'xlarge'}
 						label="Malnavn"
 						options={getMalOptions(malbestillinger)}
-						fastfield={false}
 					/>
 				) : (
 					<FormikTextInput

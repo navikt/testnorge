@@ -4,7 +4,7 @@ import { harValgtAttributt } from '@/components/ui/form/formUtils'
 import { initialMedl } from '@/components/fagsystem/pdlf/form/initialValues'
 import { MedlAttributt } from '@/components/fagsystem/medl/MedlConstants'
 
-export const MedlPanel = ({ stateModifier, formikBag }: any) => {
+export const MedlPanel = ({ stateModifier, formValues }: any) => {
 	const sm = stateModifier(MedlPanel.initialValues)
 	return (
 		// @ts-ignore
@@ -13,7 +13,7 @@ export const MedlPanel = ({ stateModifier, formikBag }: any) => {
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType="calendar"
-			startOpen={harValgtAttributt(formikBag.values, [MedlAttributt])}
+			startOpen={harValgtAttributt(formValues, [MedlAttributt])}
 		>
 			<AttributtKategori title={null} attr={sm.attrs}>
 				<Attributt attr={sm.attrs.medl} />

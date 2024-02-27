@@ -4,13 +4,12 @@ import LoadableComponent from '@/components/ui/loading/LoadableComponent'
 import { DollyApi } from '@/service/Api'
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import * as _ from 'lodash-es'
 import styled from 'styled-components'
-import { FormikProps } from 'formik'
 import { Adresse } from '@/components/adresseVelger/AdresseVelger'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface VegadresseValues {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 	path: string
 }
 
@@ -19,7 +18,7 @@ type Postnummer = {
 		{
 			value: string
 			label: string
-		}
+		},
 	]
 }
 
@@ -27,9 +26,9 @@ const StyledVegadresse = styled.div`
 	width: 100%;
 `
 
-export const Vegadresse = ({ formikBag, path }: VegadresseValues) => {
+export const Vegadresse = ({ formMethods, path }: VegadresseValues) => {
 	const settVegadresse = (adresse: Adresse) => {
-		formikBag.setFieldValue(path, {
+		formMethods.setValue(path, {
 			postnummer: adresse.postnummer,
 			adressenavn: adresse.adressenavn,
 			adressekode: adresse.adressekode,
@@ -38,12 +37,13 @@ export const Vegadresse = ({ formikBag, path }: VegadresseValues) => {
 			husbokstav: adresse.husbokstav,
 			kommunenummer: adresse.kommunenummer,
 			bruksenhetsnummer: adresse.bruksenhetsnummer,
-			vegadresseType: _.get(formikBag.values, `${path}.vegadresseType`),
+			vegadresseType: formMethods.watch(`${path}.vegadresseType`),
 		})
+		formMethods.trigger()
 	}
 
 	const renderAdresse = (postnummerListe: Postnummer) => {
-		const { adressenavn, husnummer, postnummer } = _.get(formikBag.values, path)
+		const { adressenavn, husnummer, postnummer } = formMethods.watch(path)
 		if (!adressenavn) {
 			return ''
 		}

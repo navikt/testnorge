@@ -30,10 +30,10 @@ public class TenorRawResponse {
     @Data
     @NoArgsConstructor
     public static class Dokument {
-        private String etternavn;
-        private String identifikator;
-        private TenorRelasjoner tenorRelasjoner;
+        private String id;
         private String fornavn;
+        private String etternavn;
+        private TenorRelasjoner tenorRelasjoner;
     }
 
     @Data

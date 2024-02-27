@@ -1,26 +1,7 @@
 import * as Yup from 'yup'
-import * as _ from 'lodash-es'
-import { yupToFormErrors } from 'formik'
+import _ from 'lodash'
 import { parseDate } from '@/utils/DataFormatter'
 import { isDate } from 'date-fns'
-
-/*
-For custom validation der vi kan bruke f.eks. context.
-*/
-export const validate = async (values, schema) => {
-	if (!schema) return
-	try {
-		await schema.validate(values, { abortEarly: false, context: values })
-		return {}
-	} catch (err) {
-		if (err.name === 'ValidationError') {
-			return yupToFormErrors(err)
-		} else {
-			console.info('Validation error')
-			throw err
-		}
-	}
-}
 
 /**
  * Valideringsmeldinger
@@ -42,22 +23,13 @@ export const requiredBoolean = Yup.boolean().required(messages.required)
 export const requiredNumber = Yup.number().required(messages.required)
 
 export const ifPresent = (key, schema) =>
-	Yup.mixed().when(key, {
-		is: (v) => !_.isUndefined(v),
-		then: () => schema,
-		otherwise: () => Yup.mixed().notRequired(),
+	Yup.mixed().when(key, (_val, _foo, resolveOptions) => {
+		return _.isUndefined(resolveOptions.value) ? Yup.mixed().notRequired() : schema
 	})
 
 export const ifNotBlank = (key, schema) =>
 	Yup.mixed().when(key, {
 		is: (v) => !_.isNull(v) && !_.isEmpty(v),
-		then: () => schema,
-		otherwise: () => Yup.mixed().notRequired(),
-	})
-
-export const ifKeyHasValue = (key, values, schema) =>
-	Yup.mixed().when(key, {
-		is: (v) => values.includes(v),
 		then: () => schema,
 		otherwise: () => Yup.mixed().notRequired(),
 	})

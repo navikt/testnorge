@@ -1,13 +1,16 @@
 import { subYears } from 'date-fns'
-import * as _ from 'lodash-es'
 import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { EnkeltinntektForm } from './enkeltinntektForm'
 import { getYearRangeOptions } from '@/utils/DataFormatter'
-import { ErrorMessageWithFocus } from '@/utils/ErrorMessageWithFocus'
-import React from 'react'
+import React, { useContext } from 'react'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import { ErrorMessage } from '@hookform/error-message'
+import {
+	ShowErrorContext,
+	ShowErrorContextType,
+} from '@/components/bestillingsveileder/ShowErrorContext'
 
 const initialValues = {
 	inntektsaar: new Date().getFullYear(),
@@ -16,16 +19,18 @@ const initialValues = {
 	svalbardGrunnlag: [],
 }
 
-export const InntektsaarForm = ({ formikBag }) => {
+export const InntektsaarForm = ({ formMethods }) => {
+	const errorContext: ShowErrorContextType = useContext(ShowErrorContext)
 	const initialGrunnlag = {
 		tekniskNavn: '',
 		verdi: '',
 	}
 
 	const handleTjenesteChange = (target, path) => {
-		formikBag.setFieldValue(`${path}.tjeneste`, target.value)
-		formikBag.setFieldValue(`${path}.grunnlag`, [])
-		formikBag.setFieldValue(`${path}.svalbardGrunnlag`, [])
+		formMethods.setValue(`${path}.tjeneste`, target.value)
+		formMethods.setValue(`${path}.grunnlag`, [])
+		formMethods.setValue(`${path}.svalbardGrunnlag`, [])
+		formMethods.trigger(path)
 	}
 
 	return (
@@ -45,42 +50,43 @@ export const InntektsaarForm = ({ formikBag }) => {
 									name={`${path}.tjeneste`}
 									label="Tjeneste"
 									options={Options('tjeneste')}
-									isDisabled={_.get(formikBag.values, `${path}.svalbardGrunnlag`, []).length > 0}
-									fastfield={false}
+									isDisabled={formMethods.watch(`${path}.svalbardGrunnlag`, []).length > 0}
 									isClearable={false}
 									size="large"
 									onChange={(target) => handleTjenesteChange(target, path)}
 								/>
 							</div>
-							{tjenesteErValgt(formikBag, path) && (
+							{tjenesteErValgt(formMethods, path) && (
 								<EnkeltinntektForm
 									path={`${path}.grunnlag`}
 									header="Grunnlag fra Fastlands-Norge"
 									initialGrunnlag={initialGrunnlag}
-									tjeneste={_.get(formikBag.values, `${path}.tjeneste`)}
-									inntektsaar={_.get(formikBag.values, `${path}.inntektsaar`)}
-									formikBag={formikBag}
+									tjeneste={formMethods.watch(`${path}.tjeneste`)}
+									inntektsaar={formMethods.watch(`${path}.inntektsaar`)}
+									formMethods={formMethods}
 								/>
 							)}
-							{_.get(formikBag.values, `${path}.tjeneste`) === 'SUMMERT_SKATTEGRUNNLAG' && (
+							{formMethods.watch(`${path}.tjeneste`) === 'SUMMERT_SKATTEGRUNNLAG' && (
 								<EnkeltinntektForm
 									path={`${path}.svalbardGrunnlag`}
 									header="Grunnlag fra Svalbard"
 									initialGrunnlag={initialGrunnlag}
-									tjeneste={_.get(formikBag.values, `${path}.tjeneste`)}
-									inntektsaar={_.get(formikBag.values, `${path}.inntektsaar`)}
-									formikBag={formikBag}
+									tjeneste={formMethods.watch(`${path}.tjeneste`)}
+									inntektsaar={formMethods.watch(`${path}.inntektsaar`)}
+									formMethods={formMethods}
 								/>
 							)}
 
 							<div style={{ marginTop: '20px' }}>
-								{_.isString(_.get(formikBag.errors, `${path}.grunnlag`)) && (
-									<ErrorMessageWithFocus
-										name={`${path}.grunnlag`}
-										className="error-message"
-										component="div"
-									/>
-								)}
+								<ErrorMessage
+									errors={formMethods.formState.errors}
+									name={`${path}.grunnlag`}
+									render={({ message }) =>
+										errorContext.showError && (
+											<span style={{ color: '#ba3a26', fontStyle: 'italic' }}>{message}</span>
+										)
+									}
+								/>
 							</div>
 						</React.Fragment>
 					</React.Fragment>
@@ -90,6 +96,6 @@ export const InntektsaarForm = ({ formikBag }) => {
 	)
 }
 
-const tjenesteErValgt = (formikBag, path) => {
-	return _.get(formikBag.values, `${path}.tjeneste`)
+const tjenesteErValgt = (formMethods, path) => {
+	return formMethods.watch(`${path}.tjeneste`)
 }

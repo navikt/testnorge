@@ -16,7 +16,6 @@ import {
 import { useKodeverk } from '@/utils/hooks/useKodeverk'
 import { getRandomValue } from '@/components/fagsystem/utils'
 import { useEffect } from 'react'
-import * as _ from 'lodash-es'
 import { useHelsepersonellOptions } from '@/utils/hooks/useSelectOptions'
 
 type DiagnoseSelect = {
@@ -42,14 +41,14 @@ const initialValuesPeriode = {
 
 const KODESYSTEM = '2.16.578.1.12.4.1.1.7170'
 
-export const DetaljertSykemelding = ({ formikBag }: SykemeldingForm) => {
+export const DetaljertSykemelding = ({ formMethods }: SykemeldingForm) => {
 	const handleDiagnoseChange = (v: DiagnoseSelect, path: string) => {
-		formikBag.setFieldValue(`${path}.diagnose`, v.diagnoseNavn)
-		formikBag.setFieldValue(`${path}.system`, KODESYSTEM)
+		formMethods.setValue(`${path}.diagnose`, v.diagnoseNavn)
+		formMethods.setValue(`${path}.system`, KODESYSTEM)
 	}
 
 	const handleLegeChange = (v: Helsepersonell) => {
-		formikBag.setFieldValue('sykemelding.detaljertSykemelding.helsepersonell', {
+		formMethods.setValue('sykemelding.detaljertSykemelding.helsepersonell', {
 			etternavn: v.etternavn,
 			fornavn: v.fornavn,
 			hprId: v.hprId,
@@ -60,7 +59,7 @@ export const DetaljertSykemelding = ({ formikBag }: SykemeldingForm) => {
 	}
 
 	const handleArbeidsgiverChange = (v: Arbeidsgiver) => {
-		formikBag.setFieldValue('sykemelding.detaljertSykemelding.mottaker', {
+		formMethods.setValue('sykemelding.detaljertSykemelding.mottaker', {
 			navn: v?.navn || null,
 			orgNr: v?.orgnr || null,
 			adresse: {
@@ -77,8 +76,8 @@ export const DetaljertSykemelding = ({ formikBag }: SykemeldingForm) => {
 
 	useEffect(() => {
 		const yrkePath = 'sykemelding.detaljertSykemelding.arbeidsgiver.yrkesbetegnelse'
-		if (_.get(formikBag.values, yrkePath) === '') {
-			formikBag.setFieldValue(yrkePath, randomYrke?.value || '')
+		if (formMethods.watch(yrkePath) === '') {
+			formMethods.setValue(yrkePath, randomYrke?.value || '')
 		}
 	}, [randomYrke])
 
@@ -87,7 +86,7 @@ export const DetaljertSykemelding = ({ formikBag }: SykemeldingForm) => {
 
 	useEffect(() => {
 		if (
-			_.get(formikBag.values, 'sykemelding.detaljertSykemelding.helsepersonell.ident') === '' &&
+			formMethods.watch('sykemelding.detaljertSykemelding.helsepersonell.ident') === '' &&
 			randomHelsepersonell
 		) {
 			handleLegeChange(randomHelsepersonell)

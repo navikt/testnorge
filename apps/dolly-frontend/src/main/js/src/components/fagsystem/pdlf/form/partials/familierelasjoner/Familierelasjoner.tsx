@@ -2,11 +2,11 @@ import Panel from '@/components/ui/panel/Panel'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
-import { FormikProps } from 'formik'
 import { DoedfoedtBarn } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/doedfoedtBarn/DoedfoedtBarn'
 import { ForelderBarnRelasjon } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/forelderBarnRelasjon/ForelderBarnRelasjon'
 import { Sivilstand } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/sivilstand/Sivilstand'
 import { Foreldreansvar } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/foreldreansvar/Foreldreansvar'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 export const relasjonerAttributter = [
 	'pdldata.person.sivilstand',
@@ -15,28 +15,28 @@ export const relasjonerAttributter = [
 	'pdldata.person.doedfoedtBarn',
 ]
 
-export const Familierelasjoner = ({ formikBag }: { formikBag: FormikProps<any> }) => {
+export const Familierelasjoner = ({ formMethods }: { formMethods: UseFormReturn }) => {
 	return (
 		<Vis attributt={relasjonerAttributter}>
 			<Panel
 				heading="Familierelasjoner"
-				hasErrors={panelError(formikBag, relasjonerAttributter)}
+				hasErrors={panelError(relasjonerAttributter)}
 				iconType={'relasjoner'}
-				startOpen={erForsteEllerTest(formikBag.values, relasjonerAttributter)}
+				startOpen={erForsteEllerTest(formMethods.getValues(), relasjonerAttributter)}
 				checkAttributeArray={undefined}
 				uncheckAttributeArray={undefined}
 			>
 				<Kategori title="Sivilstand (partner)" vis="pdldata.person.sivilstand">
-					<Sivilstand formikBag={formikBag} />
+					<Sivilstand formMethods={formMethods} />
 				</Kategori>
 				<Kategori title="Barn/foreldre" vis="pdldata.person.forelderBarnRelasjon">
-					<ForelderBarnRelasjon formikBag={formikBag} />
+					<ForelderBarnRelasjon formMethods={formMethods} />
 				</Kategori>
 				<Kategori title="Foreldreansvar" vis="pdldata.person.foreldreansvar">
-					<Foreldreansvar formikBag={formikBag} />
+					<Foreldreansvar formMethods={formMethods} />
 				</Kategori>
 				<Kategori title="Dødfødt barn" vis="pdldata.person.doedfoedtBarn">
-					<DoedfoedtBarn formikBag={formikBag} />
+					<DoedfoedtBarn formMethods={formMethods} />
 				</Kategori>
 			</Panel>
 		</Vis>

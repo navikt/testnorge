@@ -1,4 +1,3 @@
-import * as _ from 'lodash-es'
 import { initialMatrikkeladresse } from '@/components/fagsystem/pdlf/form/initialValues'
 import {
 	Matrikkeladresse,
@@ -6,19 +5,20 @@ import {
 } from '@/components/fagsystem/pdlf/form/partials/adresser/adressetyper'
 import { Radio, RadioGroup } from '@navikt/ds-react'
 
-export const MatrikkeladresseVelger = ({ formikBag, path }) => {
+export const MatrikkeladresseVelger = ({ formMethods, path }) => {
 	const matrikkeladresseValg = {
 		TILFELDIG: 'TILFELDIG',
 		DETALJERT: 'DETALJERT',
 	}
 
-	const matrikkeladresseType = _.get(formikBag.values, `${path}.matrikkeladresseType`) || null
+	const matrikkeladresseType = formMethods.watch(`${path}.matrikkeladresseType`) || null
 
 	const handleRadioChange = (valg) => {
-		formikBag.setFieldValue(path, {
+		formMethods.setValue(path, {
 			...initialMatrikkeladresse,
 			matrikkeladresseType: valg,
 		})
+		formMethods.trigger()
 	}
 
 	return (
@@ -43,11 +43,11 @@ export const MatrikkeladresseVelger = ({ formikBag, path }) => {
 			</RadioGroup>
 
 			{matrikkeladresseType === matrikkeladresseValg.TILFELDIG && (
-				<MatrikkeladresseTilfeldig formikBag={formikBag} path={path} />
+				<MatrikkeladresseTilfeldig formMethods={formMethods} path={path} />
 			)}
 
 			{matrikkeladresseType === matrikkeladresseValg.DETALJERT && (
-				<Matrikkeladresse formikBag={formikBag} path={path} />
+				<Matrikkeladresse formMethods={formMethods} path={path} />
 			)}
 		</div>
 	)

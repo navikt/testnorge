@@ -9,9 +9,9 @@ import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput
 import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import React, { useContext } from 'react'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
-import * as _ from 'lodash-es'
+import _ from 'lodash'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
-import { FormikProps } from 'formik'
+import { useFormContext } from 'react-hook-form'
 
 export const pensjonPath = 'pensjonforvalter.inntekt'
 
@@ -19,37 +19,38 @@ const hjelpetekst =
 	'Hvis nedjuster med grunnbeløp er valgt skal beløp angis som årsbeløp i dagens kroneverdi, ' +
 	'og vil nedjusteres basert på snitt grunnbeløp i inntektsåret.'
 
-export const PensjonForm = ({ formikBag }) => {
+export const PensjonForm = () => {
+	const formMethods = useFormContext()
 	const opts = useContext(BestillingsveilederContext)
 	const { nyBestilling, nyBestillingFraMal } = opts?.is
 
-	function kalkulerIdentFyltSyttenAar(values: FormikProps<any>) {
+	function kalkulerIdentFyltSyttenAar() {
 		const curDate = new Date()
 		const alder =
-			_.has(values, 'pdldata.opprettNyPerson.foedtFoer') &&
-			_.get(values, 'pdldata.opprettNyPerson.foedtFoer') !== null
+			formMethods.watch('pdldata.opprettNyPerson.foedtFoer') &&
+			formMethods.watch('pdldata.opprettNyPerson.foedtFoer') !== null
 				? curDate.getFullYear() -
-				  // @ts-ignore
-				  new Date(_.get(values, 'pdldata.opprettNyPerson.foedtFoer')).getFullYear()
-				: _.get(values, 'pdldata.opprettNyPerson.alder')
+					// @ts-ignore
+					new Date(formMethods.watch('pdldata.opprettNyPerson.foedtFoer')).getFullYear()
+				: formMethods.watch('pdldata.opprettNyPerson.alder')
 		return alder && curDate.getFullYear() - alder + 17
 	}
 
-	const syttenFraOgMedAar = kalkulerIdentFyltSyttenAar(formikBag.values)
+	const syttenFraOgMedAar = kalkulerIdentFyltSyttenAar()
 	const minAar = new Date().getFullYear() - 17
-	const valgtAar = _.get(formikBag.values, `${pensjonPath}.fomAar`)
+	const valgtAar = formMethods.watch(`${pensjonPath}.fomAar`)
 
 	return (
 		<Vis attributt={pensjonPath}>
 			<Panel
 				heading="Pensjonsgivende inntekt (POPP)"
-				hasErrors={panelError(formikBag, pensjonPath)}
+				hasErrors={panelError(pensjonPath)}
 				iconType="pensjon"
-				startOpen={erForsteEllerTest(formikBag.values, [pensjonPath])}
+				startOpen={erForsteEllerTest(formMethods.getValues(), [pensjonPath])}
 				informasjonstekst={hjelpetekst}
 			>
 				{/*// @ts-ignore*/}
-				{!_.has(formikBag.values, 'pdldata.opprettNyPerson.alder') &&
+				{!_.has(formMethods.getValues(), 'pdldata.opprettNyPerson.alder') &&
 					valgtAar < minAar &&
 					(nyBestilling || nyBestillingFraMal) && (
 						<StyledAlert variant={'info'} size={'small'}>
@@ -73,12 +74,7 @@ export const PensjonForm = ({ formikBag }) => {
 							isClearable={false}
 						/>
 
-						<FormikTextInput
-							name={`${pensjonPath}.belop`}
-							label="Beløp"
-							type="number"
-							fastfield="false"
-						/>
+						<FormikTextInput name={`${pensjonPath}.belop`} label="Beløp" type="number" />
 
 						<FormikCheckbox
 							name={`${pensjonPath}.redusertMedGrunnbelop`}

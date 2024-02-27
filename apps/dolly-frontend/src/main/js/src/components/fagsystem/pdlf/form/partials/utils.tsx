@@ -1,4 +1,4 @@
-import * as _ from 'lodash-es'
+import _ from 'lodash'
 
 export const getPlaceholder = (values, selectedValuePath) => {
 	const fornavn = _.get(values, `${selectedValuePath}.fornavn`)
@@ -20,10 +20,6 @@ export const setNavn = (navn, path, setFieldValue) => {
 			etternavn: deltNavn[deltNavn.length - 1],
 		})
 	}
-}
-
-export const setValue = (value, path, setFieldValue) => {
-	setFieldValue(`${path}`, value.value)
 }
 
 export const isEmpty = (attributt, excludeList = []) => {

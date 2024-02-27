@@ -51,7 +51,7 @@ spec:
         - application: testnav-organisasjon-tilgang-service
         - application: testnorge-profil-api
         - application: testnav-organisasjon-forvalter
-        - application: oppsummeringsdokument-service
+        - application: testnav-oppsummeringsdokument-service
         - application: testnav-organisasjon-service
         - application: testnav-miljoer-service
         - application: testnav-adresse-service

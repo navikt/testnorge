@@ -6,7 +6,7 @@ import { runningCypressE2E } from '@/service/services/Request'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { useContext } from 'react'
 
-export const ArenaPanel = ({ stateModifier, formikBag }) => {
+export const ArenaPanel = ({ stateModifier, formValues }) => {
 	const sm = stateModifier(ArenaPanel.initialValues)
 
 	const veileder = useContext(BestillingsveilederContext)
@@ -15,10 +15,10 @@ export const ArenaPanel = ({ stateModifier, formikBag }) => {
 
 	const infoTekst = syntetisk
 		? 'Arbeidsytelser sendes til Arena for valgt(e) miljø(er). ' +
-		  'For å ha rett på dagpenger kreves det opptjening på minimum 1,5G ' +
-		  'de siste 12 måneder, eller 3G de siste 36 måneder. '
+			'For å ha rett på dagpenger kreves det opptjening på minimum 1,5G ' +
+			'de siste 12 måneder, eller 3G de siste 36 måneder. '
 		: 'Arena har sluttet å støtte ikke-syntetiske identer, ' +
-		  'og disse kan ikke benyttes mer for arbeidsytelser.'
+			'og disse kan ikke benyttes mer for arbeidsytelser.'
 
 	return (
 		<Panel
@@ -34,7 +34,7 @@ export const ArenaPanel = ({ stateModifier, formikBag }) => {
 			}}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType="arena"
-			startOpen={harValgtAttributt(formikBag.values, [arenaPath])}
+			startOpen={harValgtAttributt(formValues, [arenaPath])}
 		>
 			<AttributtKategori title={'Aktiv bruker'} attr={sm.attrs}>
 				<Attributt
@@ -85,7 +85,7 @@ export const ArenaPanel = ({ stateModifier, formikBag }) => {
 
 ArenaPanel.heading = 'Arbeidsytelser'
 
-ArenaPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
+ArenaPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 	const getServiceBehov = () => {
 		const okArenaBestillinger = opts?.tidligereBestillinger?.filter((bestilling) => {
 			const arenaStatus = bestilling?.status?.find(

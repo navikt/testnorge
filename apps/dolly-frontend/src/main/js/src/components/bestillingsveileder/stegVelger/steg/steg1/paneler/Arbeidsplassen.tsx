@@ -20,9 +20,9 @@ import {
 } from '@/components/fagsystem/arbeidsplassen/form/initialValues'
 import _get from 'lodash/get'
 import _has from 'lodash/has'
-import { isBoolean } from 'lodash-es'
+import { isBoolean } from 'lodash'
 
-export const ArbeidsplassenPanel = ({ stateModifier, formikBag }) => {
+export const ArbeidsplassenPanel = ({ stateModifier, formValues }) => {
 	const sm = stateModifier(ArbeidsplassenPanel.initialValues)
 
 	return (
@@ -31,7 +31,7 @@ export const ArbeidsplassenPanel = ({ stateModifier, formikBag }) => {
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType="cv"
-			startOpen={harValgtAttributt(formikBag.values, ['arbeidsplassenCV'])}
+			startOpen={harValgtAttributt(formValues, ['arbeidsplassenCV'])}
 		>
 			<AttributtKategori title={null} attr={sm.attrs}>
 				<Attributt attr={sm.attrs.jobboensker} />
@@ -53,7 +53,7 @@ export const ArbeidsplassenPanel = ({ stateModifier, formikBag }) => {
 
 ArbeidsplassenPanel.heading = 'Arbeidsplassen (CV)'
 
-ArbeidsplassenPanel.initialValues = ({ setMulti, del, has, initial, opts }) => {
+ArbeidsplassenPanel.initialValues = ({ setMulti, opts, del, has, initial }) => {
 	const { personFoerLeggTil } = opts
 	const personFoerLeggTilHarHjemmel = personFoerLeggTil?.arbeidsplassenCV?.harHjemmel
 

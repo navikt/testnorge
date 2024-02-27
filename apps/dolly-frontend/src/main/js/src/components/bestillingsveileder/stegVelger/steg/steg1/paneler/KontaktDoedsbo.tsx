@@ -6,7 +6,7 @@ import { doedsboAttributt } from '@/components/fagsystem/pdlf/form/partials/kont
 import { useContext } from 'react'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 
-export const KontaktDoedsboPanel = ({ stateModifier, formikBag }) => {
+export const KontaktDoedsboPanel = ({ stateModifier, formValues }) => {
 	const sm = stateModifier(KontaktDoedsboPanel.initialValues)
 	const opts = useContext(BestillingsveilederContext)
 
@@ -23,7 +23,7 @@ export const KontaktDoedsboPanel = ({ stateModifier, formikBag }) => {
 			checkAttributeArray={() => sm.batchAdd(getIgnoreKeys())}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType="doedsbo"
-			startOpen={harValgtAttributt(formikBag.values, [doedsboAttributt])}
+			startOpen={harValgtAttributt(formValues, [doedsboAttributt])}
 		>
 			<AttributtKategori attr={sm.attrs}>
 				<Attributt

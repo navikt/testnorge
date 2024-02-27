@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react'
 import * as Yup from 'yup'
-import * as _ from 'lodash-es'
+import _ from 'lodash'
 import Panel from '@/components/ui/panel/Panel'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
@@ -17,7 +17,6 @@ import {
 	requiredNumber,
 	requiredString,
 } from '@/utils/YupValidations'
-import { FormikProps } from 'formik'
 import { Inntekt, Kodeverk, Ytelser } from '../InntektsmeldingTypes'
 import InntektsmeldingSelect from './partials/InntektsmeldingSelect'
 import InntektsmeldingYtelseSelect from './partials/InntektsmeldingYtelseSelect'
@@ -32,10 +31,7 @@ import { InputWarning } from '@/components/ui/form/inputWarning/inputWarning'
 import { OrgnrToggle } from '@/components/fagsystem/inntektsmelding/form/partials/orgnrToogle'
 import { testDatoFom, testDatoTom } from '@/components/fagsystem/utils'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
-
-interface InntektsmeldingFormProps {
-	formikBag: FormikProps<{}>
-}
+import { useFormContext } from 'react-hook-form'
 
 enum TypeArbeidsgiver {
 	VIRKSOMHET = 'VIRKSOMHET',
@@ -48,13 +44,13 @@ export const initialValues = (type: string) => ({
 		type === TypeArbeidsgiver.VIRKSOMHET
 			? {
 					virksomhetsnummer: '',
-			  }
+				}
 			: undefined,
 	arbeidsgiverPrivat:
 		type === TypeArbeidsgiver.PRIVATPERSON
 			? {
 					arbeidsgiverFnr: '',
-			  }
+				}
 			: undefined,
 	arbeidsforhold: {
 		arbeidsforholdId: '',
@@ -77,35 +73,32 @@ export const initialValues = (type: string) => ({
 export const inntektsmeldingAttributt = 'inntektsmelding'
 const informasjonstekst = 'Personen må ha et arbeidsforhold knyttet til den valgte virksomheten.'
 
-export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingFormProps) => {
+export const InntektsmeldingForm = () => {
+	const formMethods = useFormContext()
 	const [typeArbeidsgiver, setTypeArbeidsgiver] = useState(
-		_.get(formikBag.values, 'inntektsmelding.inntekter[0].arbeidsgiverPrivat')
+		formMethods.watch('inntektsmelding.inntekter[0].arbeidsgiverPrivat')
 			? TypeArbeidsgiver.PRIVATPERSON
 			: TypeArbeidsgiver.VIRKSOMHET,
 	)
 
-	const { personFoerLeggTil, leggTilPaaGruppe } = useContext(BestillingsveilederContext)
+	const { personFoerLeggTil, leggTilPaaGruppe }: any = useContext(BestillingsveilederContext)
 
 	const handleArbeidsgiverChange = (type: TypeArbeidsgiver) => {
 		setTypeArbeidsgiver(type)
 
-		_.get(formikBag.values, 'inntektsmelding.inntekter').forEach(
-			(_inntekt: Inntekt, idx: number) => {
-				if (type === TypeArbeidsgiver.VIRKSOMHET) {
-					formikBag.setFieldValue(
-						`inntektsmelding.inntekter[${idx}].arbeidsgiver.virksomhetsnummer`,
-						'',
-					)
-					formikBag.setFieldValue(`inntektsmelding.inntekter[${idx}].arbeidsgiverPrivat`, undefined)
-				} else if (type === TypeArbeidsgiver.PRIVATPERSON) {
-					formikBag.setFieldValue(`inntektsmelding.inntekter[${idx}].arbeidsgiver`, undefined)
-					formikBag.setFieldValue(
-						`inntektsmelding.inntekter[${idx}].arbeidsgiverPrivat.arbeidsgiverFnr`,
-						'',
-					)
-				}
-			},
-		)
+		formMethods.watch('inntektsmelding.inntekter').forEach((_inntekt: Inntekt, idx: number) => {
+			if (type === TypeArbeidsgiver.VIRKSOMHET) {
+				formMethods.setValue(`inntektsmelding.inntekter[${idx}].arbeidsgiver.virksomhetsnummer`, '')
+				formMethods.setValue(`inntektsmelding.inntekter[${idx}].arbeidsgiverPrivat`, undefined)
+			} else if (type === TypeArbeidsgiver.PRIVATPERSON) {
+				formMethods.setValue(`inntektsmelding.inntekter[${idx}].arbeidsgiver`, undefined)
+				formMethods.setValue(
+					`inntektsmelding.inntekter[${idx}].arbeidsgiverPrivat.arbeidsgiverFnr`,
+					'',
+				)
+			}
+			formMethods.trigger(`inntektsmelding.inntekter[${idx}]`)
+		})
 	}
 
 	return (
@@ -113,13 +106,13 @@ export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingFormProps) => 
 		<Vis attributt={inntektsmeldingAttributt}>
 			<Panel
 				heading="Inntektsmelding (fra Altinn)"
-				hasErrors={panelError(formikBag, inntektsmeldingAttributt)}
+				hasErrors={panelError(inntektsmeldingAttributt)}
 				iconType="inntektsmelding"
 				informasjonstekst={informasjonstekst}
-				startOpen={erForsteEllerTest(formikBag.values, [inntektsmeldingAttributt])}
+				startOpen={erForsteEllerTest(formMethods.getValues(), [inntektsmeldingAttributt])}
 			>
 				{!leggTilPaaGruppe &&
-					!_.has(formikBag.values, 'aareg') &&
+					!_.has(formMethods.getValues(), 'aareg') &&
 					!_.has(personFoerLeggTil, 'aareg') && (
 						<AlertAaregRequired meldingSkjema="Inntektsmeldingen" />
 					)}
@@ -143,7 +136,7 @@ export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingFormProps) => 
 					canBeEmpty={false}
 				>
 					{(path: string, idx: number) => {
-						const ytelse = _.get(formikBag.values, `${path}.ytelse`)
+						const ytelse = formMethods.watch(`${path}.ytelse`)
 						return (
 							<div className="flexbox--column">
 								<div className="flexbox--flex-wrap">
@@ -157,7 +150,7 @@ export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingFormProps) => 
 										idx={idx}
 										label="Ytelse"
 										kodeverk={Kodeverk.Ytelse}
-										formikBag={formikBag}
+										formMethods={formMethods}
 									/>
 									<FormikDatepicker
 										name={`${path}.avsendersystem.innsendingstidspunkt`}
@@ -181,7 +174,7 @@ export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingFormProps) => 
 										<div className={'flexbox'}>
 											<OrgnrToggle
 												path={`${path}.arbeidsgiver.virksomhetsnummer`}
-												formikBag={formikBag}
+												formMethods={formMethods}
 											/>
 											<div style={{ margin: '70px 0 0 30px' }}>
 												<FormikCheckbox name={`${path}.naerRelasjon`} label="Nær relasjon" />
@@ -199,7 +192,7 @@ export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingFormProps) => 
 								{ytelse === Ytelser.Foreldrepenger && (
 									<Kategori title="Foreldrepenger">
 										<InputWarning
-											visWarning={!_.get(formikBag.values, `${path}.startdatoForeldrepengeperiode`)}
+											visWarning={!formMethods.watch(`${path}.startdatoForeldrepengeperiode`)}
 											warningText="For automatisk behandling av inntektsmelding må dette feltet fylles ut"
 										>
 											<FormikDatepicker
@@ -234,38 +227,41 @@ export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingFormProps) => 
 }
 
 InntektsmeldingForm.validation = {
-	inntektsmelding: Yup.object({
-		inntekter: Yup.array().of(
-			Yup.object({
-				aarsakTilInnsending: requiredString,
-				arbeidsgiver: Yup.object({
-					virksomhetsnummer: ifPresent(
-						'$inntektsmelding.inntekter[0].arbeidsgiver.virksomhetsnummer',
-						requiredString.matches(/^\d{9}$/, 'Orgnummer må være et tall med 9 siffer'),
-					),
-				}),
-				arbeidsgiverPrivat: Yup.object({
-					arbeidsgiverFnr: ifPresent(
-						'$inntektsmelding.inntekter[0].arbeidsgiverPrivat.arbeidsgiverFnr',
-						requiredString.matches(/^\d{11}$/, 'Ident må være et tall med 11 siffer'),
-					),
-				}),
-				arbeidsforhold: Yup.object({
-					beregnetInntekt: Yup.object({
-						beloep: requiredNumber.typeError(messages.required),
+	inntektsmelding: ifPresent(
+		'$inntektsmelding',
+		Yup.object({
+			inntekter: Yup.array().of(
+				Yup.object({
+					aarsakTilInnsending: requiredString,
+					arbeidsgiver: Yup.object({
+						virksomhetsnummer: ifPresent(
+							'$inntektsmelding.inntekter[0].arbeidsgiver.virksomhetsnummer',
+							requiredString.matches(/^\d{9}$/, 'Orgnummer må være et tall med 9 siffer'),
+						),
 					}),
-					avtaltFerieListe: Yup.array().of(
-						Yup.object({
-							fom: testDatoFom(Yup.string(), 'tom'),
-							tom: testDatoTom(Yup.string(), 'fom'),
+					arbeidsgiverPrivat: Yup.object({
+						arbeidsgiverFnr: ifPresent(
+							'$inntektsmelding.inntekter[0].arbeidsgiverPrivat.arbeidsgiverFnr',
+							requiredString.matches(/^\d{11}$/, 'Ident må være et tall med 11 siffer'),
+						),
+					}).nullable(),
+					arbeidsforhold: Yup.object({
+						beregnetInntekt: Yup.object({
+							beloep: requiredNumber.typeError(messages.required),
 						}),
-					),
+						avtaltFerieListe: Yup.array().of(
+							Yup.object({
+								fom: testDatoFom(Yup.string(), 'tom'),
+								tom: testDatoTom(Yup.string(), 'fom'),
+							}),
+						),
+					}),
+					avsendersystem: Yup.object({
+						innsendingstidspunkt: requiredDate.nullable(),
+					}),
+					ytelse: requiredString,
 				}),
-				avsendersystem: Yup.object({
-					innsendingstidspunkt: requiredDate.nullable(),
-				}),
-				ytelse: requiredString,
-			}),
-		),
-	}),
+			),
+		}),
+	),
 }

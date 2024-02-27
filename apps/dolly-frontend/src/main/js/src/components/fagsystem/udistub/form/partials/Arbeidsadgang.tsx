@@ -1,4 +1,3 @@
-import * as _ from 'lodash-es'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
@@ -8,7 +7,7 @@ import { Textarea } from '@navikt/ds-react'
 import styled from 'styled-components'
 import React from 'react'
 
-export const Arbeidsadgang = ({ formikBag }) => {
+export const Arbeidsadgang = ({ formMethods }) => {
 	const StyledTextArea = styled(Textarea)`
 		margin-bottom: 1rem;
 
@@ -26,24 +25,25 @@ export const Arbeidsadgang = ({ formikBag }) => {
 		}
 	`
 
-	const harArbeidsAdgang = _.get(formikBag.values, 'udistub.arbeidsadgang.harArbeidsAdgang')
+	const harArbeidsAdgang = formMethods.watch('udistub.arbeidsadgang.harArbeidsAdgang')
 
 	const endreArbeidsadgang = (v) => {
-		formikBag.setFieldValue('udistub.arbeidsadgang.harArbeidsAdgang', v.value)
+		formMethods.setValue('udistub.arbeidsadgang.harArbeidsAdgang', v.value)
 		if (v.value !== 'JA') {
-			formikBag.setFieldValue('udistub.arbeidsadgang.arbeidsOmfang', null)
-			formikBag.setFieldValue('udistub.arbeidsadgang.periode', {
+			formMethods.setValue('udistub.arbeidsadgang.arbeidsOmfang', null)
+			formMethods.setValue('udistub.arbeidsadgang.periode', {
 				fra: null,
 				til: null,
 			})
-			formikBag.setFieldValue('udistub.arbeidsadgang.typeArbeidsadgang', null)
+			formMethods.setValue('udistub.arbeidsadgang.typeArbeidsadgang', null)
 		}
+		formMethods.trigger('udistub.arbeidsadgang')
 	}
 
-	const forklaring = _.get(formikBag.values, 'udistub.arbeidsadgang.forklaring')
+	const forklaring = formMethods.watch('udistub.arbeidsadgang.forklaring')
 
 	const endreForklaring = (text) => {
-		formikBag.setFieldValue('udistub.arbeidsadgang.forklaring', text === '' ? null : text)
+		formMethods.setValue('udistub.arbeidsadgang.forklaring', text === '' ? null : text)
 	}
 
 	const MAX_LENGTH = 4000

@@ -54,9 +54,7 @@ export const ForbedringModal = ({ closeModal }) => {
 							placeholder={'Forsøk å være så spesifikk som mulig'}
 							maxLength={MAX_LENGTH}
 							onChange={(event) => setForbedring(event.target.value)}
-							feil={
-								forbedring.length > MAX_LENGTH ? 'Tilbakemelding inneholder for mange tegn' : null
-							}
+							error={forbedring.length > MAX_LENGTH && 'Tilbakemelding inneholder for mange tegn'}
 						/>
 						<div className="skjemaelement textarea__container">
 							<DollyCheckbox

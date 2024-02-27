@@ -4,7 +4,7 @@ import { harValgtAttributt } from '@/components/ui/form/formUtils'
 import { instAttributt } from '@/components/fagsystem/inst/form/Form'
 import { runningCypressE2E } from '@/service/services/Request'
 
-export const InstitusjonsoppholdPanel = ({ stateModifier, formikBag }) => {
+export const InstitusjonsoppholdPanel = ({ stateModifier, formValues }) => {
 	const sm = stateModifier(InstitusjonsoppholdPanel.initialValues)
 
 	return (
@@ -13,7 +13,7 @@ export const InstitusjonsoppholdPanel = ({ stateModifier, formikBag }) => {
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType="institusjon"
-			startOpen={harValgtAttributt(formikBag.values, [instAttributt])}
+			startOpen={harValgtAttributt(formValues, [instAttributt])}
 		>
 			<AttributtKategori attr={sm.attrs}>
 				<Attributt attr={sm.attrs.instdata} />

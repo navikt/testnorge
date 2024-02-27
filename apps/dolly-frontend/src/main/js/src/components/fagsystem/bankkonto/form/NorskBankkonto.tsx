@@ -3,26 +3,24 @@ import { useEffect, useState } from 'react'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { generateValidKontoOptions } from '@/utils/GenererGyldigNorskBankkonto'
-import * as _ from 'lodash-es'
-import { FormikProps } from 'formik'
 import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
-export const NorskBankkonto = ({ formikBag }: { formikBag: FormikProps<{}> }) => {
+export const NorskBankkonto = ({ formMethods }: { formMethods: UseFormReturn }) => {
 	const [validKontoOptions, setValidKontoOptions] = useState([])
+	const path = 'bankkonto.norskBankkonto'
+	const harTilfeldig = formMethods.watch(`${path}.tilfeldigKontonummer`)
+	const kontonummer = formMethods.watch(`${path}.kontonummer`)
 
 	useEffect(() => {
-		setValidKontoOptions(generateValidKontoOptions())
+		setValidKontoOptions(generateValidKontoOptions(kontonummer))
 	}, [])
 
-	const path = 'bankkonto.norskBankkonto'
-	const harTilfeldig = _.get(formikBag?.values, `${path}.tilfeldigKontonummer`)
-	const kontonummer = _.get(formikBag?.values, `${path}.kontonummer`)
-
 	return (
-		<Vis attributt={path} formik>
+		<Vis attributt={path}>
 			<div className="flexbox--flex-wrap">
 				<FormikSelect
-					placeholder={kontonummer ? kontonummer : 'Velg ...'}
+					placeholder={'Velg ...'}
 					options={validKontoOptions}
 					isClearable={true}
 					name={`${path}.kontonummer`}

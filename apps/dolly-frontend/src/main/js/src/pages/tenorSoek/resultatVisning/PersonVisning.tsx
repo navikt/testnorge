@@ -1,6 +1,6 @@
 import { Alert, Box } from '@navikt/ds-react'
 import React from 'react'
-import * as _ from 'lodash-es'
+import _ from 'lodash'
 import { FolkeregisteretVisning } from '@/pages/tenorSoek/resultatVisning/FolkeregisteretVisning'
 import styled from 'styled-components'
 import { InntektVisning } from '@/pages/tenorSoek/resultatVisning/InntektVisning'

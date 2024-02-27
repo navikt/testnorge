@@ -52,7 +52,11 @@ export const initialArbeidsforholdOrg = {
 		arbeidstidsordning: 'ikkeSkift',
 		avtaltArbeidstimerPerUke: 37.5,
 	},
-	navArbeidsforholdPeriode: null,
+	navArbeidsforholdPeriode: undefined,
+	antallTimerForTimeloennet: [],
+	utenlandsopphold: [],
+	permisjon: [],
+	permittering: [],
 }
 
 export const initialArbeidsforholdPers = {

@@ -1,7 +1,6 @@
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import * as React from 'react'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
-import _get from 'lodash/get'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { EraseFillButtons } from '@/components/fagsystem/arbeidsplassen/form/partials/EraseFillButtons'
 import {
@@ -9,7 +8,7 @@ import {
 	initialJobboenskerVerdier,
 } from '@/components/fagsystem/arbeidsplassen/form/initialValues'
 
-export const JobboenskerForm = ({ formikBag }) => {
+export const JobboenskerForm = ({ formMethods }) => {
 	const jobboenskerPath = 'arbeidsplassenCV.jobboensker'
 
 	const setYrker = (options) => {
@@ -19,7 +18,8 @@ export const JobboenskerForm = ({ formikBag }) => {
 				styrk08: opt.value,
 			}
 		})
-		formikBag.setFieldValue(`${jobboenskerPath}.occupations`, yrker)
+		formMethods.setValue(`${jobboenskerPath}.occupations`, yrker)
+		formMethods.trigger(`${jobboenskerPath}.occupations`)
 	}
 
 	const setOmraader = (options) => {
@@ -29,7 +29,8 @@ export const JobboenskerForm = ({ formikBag }) => {
 				code: opt.value,
 			}
 		})
-		formikBag.setFieldValue(`${jobboenskerPath}.locations`, omraader)
+		formMethods.setValue(`${jobboenskerPath}.locations`, omraader)
+		formMethods.trigger(`${jobboenskerPath}.locations`)
 	}
 
 	return (
@@ -43,8 +44,7 @@ export const JobboenskerForm = ({ formikBag }) => {
 					size="grow"
 					isClearable={false}
 					isMulti={true}
-					fastfield={false}
-					value={_get(formikBag.values, `${jobboenskerPath}.occupations`)?.map((y) => y.styrk08)}
+					value={formMethods.getValues(`${jobboenskerPath}.occupations`)?.map((y) => y.styrk08)}
 					onChange={(options) => setYrker(options)}
 				/>
 				<FormikSelect
@@ -54,8 +54,7 @@ export const JobboenskerForm = ({ formikBag }) => {
 					size="grow"
 					isClearable={false}
 					isMulti={true}
-					fastfield={false}
-					value={_get(formikBag.values, `${jobboenskerPath}.locations`)?.map((o) => o.code)}
+					value={formMethods.getValues(`${jobboenskerPath}.locations`)?.map((o) => o.code)}
 					onChange={(options) => setOmraader(options)}
 				/>
 			</div>
@@ -67,7 +66,6 @@ export const JobboenskerForm = ({ formikBag }) => {
 					size="medium"
 					isClearable={false}
 					isMulti={true}
-					fastfield={false}
 				/>
 				<FormikSelect
 					name={`${jobboenskerPath}.workScheduleTypes`}
@@ -75,7 +73,6 @@ export const JobboenskerForm = ({ formikBag }) => {
 					options={Options('arbeidstid')}
 					size="xxxlarge"
 					isMulti={true}
-					fastfield={false}
 				/>
 			</div>
 			<div className="flexbox--flex-wrap">
@@ -85,7 +82,6 @@ export const JobboenskerForm = ({ formikBag }) => {
 					options={Options('ansettelsestype')}
 					size="xxlarge"
 					isMulti={true}
-					fastfield={false}
 				/>
 				<FormikSelect
 					name={`${jobboenskerPath}.startOption`}
@@ -95,7 +91,7 @@ export const JobboenskerForm = ({ formikBag }) => {
 				/>
 			</div>
 			<EraseFillButtons
-				formikBag={formikBag}
+				formMethods={formMethods}
 				path={jobboenskerPath}
 				initialErase={initialJobboensker}
 				initialFill={initialJobboenskerVerdier}

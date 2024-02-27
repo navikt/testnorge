@@ -1,8 +1,6 @@
-import React, { useContext } from 'react'
-import * as Yup from 'yup'
+import React, { useContext, useEffect } from 'react'
 import { harAvhukedeAttributter } from '@/components/bestillingsveileder/utils'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
-import { KrrstubForm } from '@/components/fagsystem/krrstub/form/Form'
 import { SigrunstubForm } from '@/components/fagsystem/sigrunstub/form/Form'
 import { InntektstubForm } from '@/components/fagsystem/inntektstub/form/Form'
 import { InntektsmeldingForm } from '@/components/fagsystem/inntektsmelding/form/Form'
@@ -18,15 +16,14 @@ import { MedlForm } from '@/components/fagsystem/medl/form/MedlForm'
 import { SykdomForm } from '@/components/fagsystem/sykdom/form/Form'
 import { OrganisasjonForm } from '@/components/fagsystem/organisasjoner/form/Form'
 import { TjenestepensjonForm } from '@/components/fagsystem/tjenestepensjon/form/Form'
-import { ifPresent } from '@/utils/YupValidations'
 import { Alert } from '@navikt/ds-react'
-import { useFormikContext } from 'formik'
 import { AlderspensjonForm } from '@/components/fagsystem/alderspensjon/form/Form'
-import { SkjermingForm } from '@/components/fagsystem/skjermingsregister/form/SkjermingForm'
 import { ArbeidsplassenForm } from '@/components/fagsystem/arbeidsplassen/form/Form'
 import { HistarkForm } from '@/components/fagsystem/histark/form/HistarkForm'
 import { UforetrygdForm } from '@/components/fagsystem/uforetrygd/form/Form'
 import { SigrunstubPensjonsgivendeForm } from '@/components/fagsystem/sigrunstubPensjonsgivende/form/Form'
+import { KrrstubForm } from '@/components/fagsystem/krrstub/form/KrrForm'
+import { useFormContext } from 'react-hook-form'
 
 const gruppeNavn = (gruppe) => <span style={{ fontWeight: 'bold' }}>{gruppe.navn}</span>
 
@@ -46,72 +43,48 @@ const getEmptyMessage = (leggTil, importTestnorge, gruppe = null) => {
 }
 
 export const Steg2 = () => {
-	const opts = useContext(BestillingsveilederContext)
-	const formikBag = useFormikContext()
+	const opts: any = useContext(BestillingsveilederContext)
+	const formMethods = useFormContext()
+
+	useEffect(() => {
+		if (opts.gruppe?.id) {
+			formMethods.setValue('gruppeId', opts.gruppe?.id)
+		}
+	}, [])
 
 	const leggTil = opts.is.leggTil
 	const importTestnorge = opts.is.importTestnorge
 	const gruppe = opts.gruppe
 
-	if (!harAvhukedeAttributter(formikBag.values)) {
+	if (!harAvhukedeAttributter(formMethods.getValues())) {
 		return <Alert variant={'info'}>{getEmptyMessage(leggTil, importTestnorge, gruppe)}</Alert>
 	}
 
 	return (
 		<div>
-			<PdlfForm formikBag={formikBag} />
+			<PdlfForm />
 			<AaregForm />
-			<ArbeidsplassenForm formikBag={formikBag} />
-			<SigrunstubForm formikBag={formikBag} />
-			<SigrunstubPensjonsgivendeForm formikBag={formikBag} />
-			<InntektstubForm formikBag={formikBag} />
-			<InntektsmeldingForm formikBag={formikBag} />
-			<PensjonForm formikBag={formikBag} />
-			<TjenestepensjonForm formikBag={formikBag} />
-			<AlderspensjonForm formikBag={formikBag} />
-			<UforetrygdForm formikBag={formikBag} />
-			<ArenaForm formikBag={formikBag} />
-			<SykdomForm formikBag={formikBag} />
-			<BrregstubForm formikBag={formikBag} />
-			<InstForm formikBag={formikBag} />
-			<KrrstubForm formikBag={formikBag} />
-			<MedlForm formikBag={formikBag} />
-			<UdistubForm formikBag={formikBag} />
-			<DokarkivForm formikBag={formikBag} />
-			<HistarkForm formikBag={formikBag} />
-			<OrganisasjonForm formikBag={formikBag} />
+			<ArbeidsplassenForm />
+			<SigrunstubForm />
+			<SigrunstubPensjonsgivendeForm />
+			<InntektstubForm />
+			<InntektsmeldingForm />
+			<PensjonForm />
+			<TjenestepensjonForm />
+			<AlderspensjonForm />
+			<UforetrygdForm />
+			<ArenaForm />
+			<SykdomForm />
+			<BrregstubForm />
+			<InstForm />
+			<KrrstubForm />
+			<MedlForm />
+			<UdistubForm />
+			<DokarkivForm />
+			<HistarkForm />
+			<OrganisasjonForm />
 		</div>
 	)
 }
 
 Steg2.label = 'Velg verdier'
-
-Steg2.validation = Yup.object({
-	...PdlfForm.validation,
-	...AaregForm.validation,
-	...ArbeidsplassenForm.validation,
-	...SigrunstubForm.validation,
-	...SigrunstubPensjonsgivendeForm.validation,
-	...InntektstubForm.validation,
-	...InntektsmeldingForm.validation,
-	...SykdomForm.validation,
-	...BrregstubForm.validation,
-	...InstForm.validation,
-	...KrrstubForm.validation,
-	...MedlForm.validation,
-	...ArenaForm.validation,
-	...UdistubForm.validation,
-	...SkjermingForm.validation,
-	...DokarkivForm.validation,
-	...HistarkForm.validation,
-	...OrganisasjonForm.validation,
-	pensjonforvalter: ifPresent(
-		'$pensjonforvalter',
-		Yup.object({
-			...PensjonForm.validation,
-			...TjenestepensjonForm.validation,
-			...AlderspensjonForm.validation,
-			...UforetrygdForm.validation,
-		}),
-	),
-})

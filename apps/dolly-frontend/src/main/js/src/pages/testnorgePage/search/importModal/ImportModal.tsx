@@ -20,7 +20,7 @@ type Props = {
 		valgtePersoner: ImportPerson[],
 		mal: any,
 		navigate: Function,
-		gruppe?: Gruppe
+		gruppe?: Gruppe,
 	) => void
 	gruppe?: Gruppe
 }
@@ -33,7 +33,7 @@ const getPdlPersoner = async (identer: string[]) => {
 					...map,
 					[person.ident]: person.identer,
 				}),
-				{}
+				{},
 			)
 			return response.data?.data?.hentPersonBolk?.map((ident: any) => {
 				return {
@@ -74,12 +74,12 @@ export const ImportModal = ({ valgtePersoner, importerPersoner, gruppe }: Props)
 			.map((person) => person?.hentPerson?.sivilstand)
 			.map((sivilstand) => {
 				return sivilstand.filter(
-					(siv) => !siv?.metadata?.historisk && partnerSivilstander.includes(siv?.type)
+					(siv) => !siv?.metadata?.historisk && partnerSivilstander.includes(siv?.type),
 				)?.[0]?.relatertVedSivilstand
 			})
 			.filter(
 				(partnerIdent) =>
-					partnerIdent && !valgtePersoner.map((person) => person.ident).includes(partnerIdent)
+					partnerIdent && !valgtePersoner.map((person) => person.ident).includes(partnerIdent),
 			)
 	}
 
@@ -128,6 +128,7 @@ export const ImportModal = ({ valgtePersoner, importerPersoner, gruppe }: Props)
 				</div>
 
 				<NavButton
+					type={'button'}
 					variant={'primary'}
 					onClick={() => {
 						if (importMedMal) {
@@ -150,7 +151,11 @@ export const ImportModal = ({ valgtePersoner, importerPersoner, gruppe }: Props)
 					</div>
 					<MalValg valgtMal={(mal: any) => setMalData(mal)} />
 					<div className="importModal-actions">
-						<NavButton onClick={() => importer(valgtePersoner, malData)} variant={'primary'}>
+						<NavButton
+							type={'button'}
+							onClick={() => importer(valgtePersoner, malData)}
+							variant={'primary'}
+						>
 							Importer
 						</NavButton>
 					</div>

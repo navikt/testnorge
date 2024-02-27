@@ -1,4 +1,4 @@
-import * as _ from 'lodash-es'
+import _ from 'lodash'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import {
 	Bestilling,
@@ -71,7 +71,7 @@ export const InntektsmeldingVisning = ({
 									(bestilling) => bestilling?.data.inntektsmelding.inntekter,
 								),
 								miljoe: miljo.miljo,
-						  },
+							},
 				},
 				miljo: miljo.miljo,
 			}

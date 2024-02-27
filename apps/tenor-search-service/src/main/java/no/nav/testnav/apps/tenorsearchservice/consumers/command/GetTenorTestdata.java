@@ -100,7 +100,7 @@ public class GetTenorTestdata implements Callable<Mono<TenorResponse>> {
 
         if (nonNull(type)) {
             return switch (type) {
-                case IdentOgNavn -> "identifikator,fornavn,etternavn,tenorRelasjoner.*.tenorRelasjonsnavn";
+                case IdentOgNavn -> "id,fornavn,etternavn,tenorRelasjoner.*.tenorRelasjonsnavn";
                 case Kildedata -> "*.kildedata";
                 case AlleFelter, DataFelter -> "{alle}";
                 case Spesifikt -> isNotBlank(fields) ? fields : "id";

@@ -6,6 +6,11 @@ import LinkButton from '@/components/ui/button/LinkButton/LinkButton'
 
 import './Panel.less'
 import { CypressSelector } from '../../../../cypress/mocks/Selectors'
+import {
+	ShowErrorContext,
+	ShowErrorContextType,
+} from '@/components/bestillingsveileder/ShowErrorContext'
+import { useContext } from 'react'
 
 export default function Panel({
 	startOpen = false,
@@ -20,6 +25,7 @@ export default function Panel({
 	forceOpen = false,
 	setPanelOpen = null,
 }) {
+	const errorContext: ShowErrorContextType = useContext(ShowErrorContext)
 	const [isOpen, toggleOpen] = useToggle(startOpen)
 	const shouldOpen = isOpen || forceOpen
 
@@ -58,7 +64,7 @@ export default function Panel({
 				<h2>{heading}</h2>
 
 				{informasjonstekst && <Hjelpetekst>{informasjonstekst}</Hjelpetekst>}
-				{hasErrors && (
+				{hasErrors && errorContext.showError && (
 					<div className="dolly-panel-heading_error">
 						<Icon size={16} kind="report-problem-triangle" />
 						Feil i felter

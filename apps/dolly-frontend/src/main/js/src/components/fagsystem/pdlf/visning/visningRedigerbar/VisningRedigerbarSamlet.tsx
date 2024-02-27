@@ -1,16 +1,15 @@
 import React, { useCallback, useRef, useState } from 'react'
 import * as Yup from 'yup'
 import Loading from '@/components/ui/loading/Loading'
-import { Formik } from 'formik'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 import styled from 'styled-components'
 import Button from '@/components/ui/button/Button'
-import * as _ from 'lodash-es'
+import _ from 'lodash'
 import { DollyApi, PdlforvalterApi } from '@/service/Api'
 import Icon from '@/components/ui/icon/Icon'
 import DollyModal from '@/components/ui/modal/DollyModal'
 import useBoolean from '@/utils/hooks/useBoolean'
-import { ifPresent, validate } from '@/utils/YupValidations'
+import { ifPresent } from '@/utils/YupValidations'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { telefonnummer } from '@/components/fagsystem/pdlf/form/validation/partials'
 import { TelefonnummerFormRedigering } from '@/components/fagsystem/pdlf/form/partials/telefonnummer/Telefonnummer'
@@ -20,6 +19,8 @@ import {
 	RedigerLoading,
 } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/RedigerLoading'
 import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
+import { Form, FormProvider, useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -30,6 +31,13 @@ type VisningTypes = {
 	alleSlettet: boolean
 	disableSlett: Function
 }
+
+const validationSchema = Yup.object().shape(
+	{
+		telefonnummer: ifPresent('telefonnummer', Yup.array().of(telefonnummer)),
+	},
+	[['telefonnummer', 'telefonnummer']],
+)
 
 enum Attributt {
 	Telefonnummer = 'telefonnummer',
@@ -72,11 +80,36 @@ export const VisningRedigerbarSamlet = ({
 	alleSlettet,
 	disableSlett,
 }: VisningTypes) => {
+	const getRedigertAttributtListe = () => {
+		const liste = [] as Array<any>
+		initialValuesListe.forEach((item: any) => {
+			const found = _.get(redigertAttributt, path)?.find(
+				(redigertItem: any) => redigertItem.id === item.id,
+			)
+			if (found) {
+				liste.push(found)
+			} else {
+				liste.push(null)
+			}
+		})
+		return { [path]: liste }
+	}
+
+	const initialValuesListe = _.get(initialValues, path)
+	const redigertAttributtListe = redigertAttributt && getRedigertAttributtListe()
+
+	const disableIdx = disableSlett(_.get(redigertAttributtListe, path) || initialValuesListe)
+
 	const [visningModus, setVisningModus] = useState(Modus.Les)
 	const [errorMessagePdlf, setErrorMessagePdlf] = useState(null)
 	const [errorMessagePdl, setErrorMessagePdl] = useState(null)
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 	const [slettId, setSlettId] = useState(null)
+	const formMethods = useForm({
+		mode: 'onBlur',
+		defaultValues: redigertAttributt ? redigertAttributtListe : initialValues,
+		resolver: yupResolver(validationSchema),
+	})
 
 	const openDeleteModal = (idx: number) => {
 		setSlettId(idx)
@@ -163,164 +196,127 @@ export const VisningRedigerbarSamlet = ({
 		return null
 	}
 
-	const validationSchema = Yup.object().shape(
-		{
-			telefonnummer: ifPresent('telefonnummer', Yup.array().of(telefonnummer)),
-		},
-		[['telefonnummer', 'telefonnummer']],
-	)
-
-	const _validate = (values: any) => validate(values, validationSchema)
-
-	const initialValuesListe = _.get(initialValues, path)
-
-	const getRedigertAttributtListe = () => {
-		const liste = [] as Array<any>
-		initialValuesListe.forEach((item: any) => {
-			const found = _.get(redigertAttributt, path)?.find(
-				(redigertItem: any) => redigertItem.id === item.id,
-			)
-			if (found) {
-				liste.push(found)
-			} else {
-				liste.push(null)
-			}
-		})
-		return { [path]: liste }
-	}
-	const redigertAttributtListe = redigertAttributt && getRedigertAttributtListe()
-
-	const disableIdx = disableSlett(_.get(redigertAttributtListe, path) || initialValuesListe)
-
 	return (
 		<>
-			<RedigerLoading visningModus={visningModus} />
-			{[Modus.Les, Modus.LoadingPdlfSlett, Modus.LoadingPdlSlett].includes(visningModus) && (
-				<DollyFieldArray data={initialValuesListe} header="" nested>
-					{(item: any, idx: number) => {
-						const redigertItem = _.get(redigertAttributtListe, `${path}.[${idx}]`)
-						const slettetItem = redigertAttributtListe && !redigertItem
+			<FormProvider {...formMethods}>
+				<RedigerLoading visningModus={visningModus} />
+				{[Modus.Les, Modus.LoadingPdlfSlett, Modus.LoadingPdlSlett].includes(visningModus) && (
+					<DollyFieldArray data={initialValuesListe} header="" nested>
+						{(item: any, idx: number) => {
+							const redigertItem = _.get(redigertAttributtListe, `${path}.[${idx}]`)
+							const slettetItem = redigertAttributtListe && !redigertItem
 
-						return (
-							<React.Fragment key={idx}>
-								{visningModus === Modus.LoadingPdlfSlett && slettId === idx && (
-									<Loading label={'Oppdaterer personinfo...'} />
-								)}
-								{visningModus === Modus.LoadingPdlSlett && slettId === idx && (
-									<Loading label={'Oppdaterer PDL...'} />
-								)}
-								{(visningModus === Modus.Les || slettId !== idx) && (
-									<>
-										{slettetItem || alleSlettet ? (
-											<OpplysningSlettet />
-										) : (
-											getVisning(redigertItem || item, idx)
-										)}
-										{!slettetItem && !alleSlettet && (
-											<EditDeleteKnapper>
-												<Button
-													kind="edit"
-													onClick={() => setVisningModus(Modus.Skriv)}
-													title="Endre"
-												/>
-												<Button
-													kind="trashcan"
-													onClick={() => openDeleteModal(idx)}
-													title="Slett"
-													disabled={disableIdx === idx}
-												/>
-
-												<DollyModal
-													isOpen={modalIsOpen && slettId === idx}
-													closeModal={closeModal}
-													width="40%"
-													overflow="auto"
-												>
-													<div className="slettModal">
-														<div className="slettModal slettModal-content">
-															<Icon size={50} kind="report-problem-circle" />
-															<h1>Sletting</h1>
-															<h4>
-																Er du sikker på at du vil slette denne opplysningen fra personen?
-															</h4>
-														</div>
-														<div className="slettModal-actions">
-															<NavButton onClick={closeModal} variant={'secondary'}>
-																Nei
-															</NavButton>
-
-															<NavButton
-																onClick={() => {
-																	closeModal()
-																	return handleDelete(idx)
-																}}
-																variant={'primary'}
-															>
-																Ja, jeg er sikker
-															</NavButton>
-														</div>
-													</div>
-												</DollyModal>
-											</EditDeleteKnapper>
-										)}
-										<div className="flexbox--full-width">
-											{errorMessagePdlf && !slettetItem && (
-												<div className="error-message">{errorMessagePdlf}</div>
+							return (
+								<React.Fragment key={idx}>
+									{visningModus === Modus.LoadingPdlfSlett && slettId === idx && (
+										<Loading label={'Oppdaterer personinfo...'} />
+									)}
+									{visningModus === Modus.LoadingPdlSlett && slettId === idx && (
+										<Loading label={'Oppdaterer PDL...'} />
+									)}
+									{(visningModus === Modus.Les || slettId !== idx) && (
+										<>
+											{slettetItem || alleSlettet ? (
+												<OpplysningSlettet />
+											) : (
+												getVisning(redigertItem || item, idx)
 											)}
-											{errorMessagePdl && !slettetItem && (
-												<div className="error-message">{errorMessagePdl}</div>
+											{!slettetItem && !alleSlettet && (
+												<EditDeleteKnapper>
+													<Button
+														kind="edit"
+														onClick={() => setVisningModus(Modus.Skriv)}
+														title="Endre"
+													/>
+													<Button
+														kind="trashcan"
+														onClick={() => openDeleteModal(idx)}
+														title="Slett"
+														disabled={disableIdx === idx}
+													/>
+
+													<DollyModal
+														isOpen={modalIsOpen && slettId === idx}
+														closeModal={closeModal}
+														width="40%"
+														overflow="auto"
+													>
+														<div className="slettModal">
+															<div className="slettModal slettModal-content">
+																<Icon size={50} kind="report-problem-circle" />
+																<h1>Sletting</h1>
+																<h4>
+																	Er du sikker på at du vil slette denne opplysningen fra personen?
+																</h4>
+															</div>
+															<div className="slettModal-actions">
+																<NavButton onClick={closeModal} variant={'secondary'}>
+																	Nei
+																</NavButton>
+
+																<NavButton
+																	onClick={() => {
+																		closeModal()
+																		return handleDelete(idx)
+																	}}
+																	variant={'primary'}
+																>
+																	Ja, jeg er sikker
+																</NavButton>
+															</div>
+														</div>
+													</DollyModal>
+												</EditDeleteKnapper>
 											)}
-										</div>
-									</>
-								)}
-							</React.Fragment>
-						)
-					}}
-				</DollyFieldArray>
-			)}
-			{visningModus === Modus.Skriv && (
-				<Formik
-					initialValues={redigertAttributt ? redigertAttributtListe : initialValues}
-					onSubmit={handleSubmit}
-					enableReinitialize
-					validate={_validate}
-				>
-					{(formikBag) => {
-						return (
-							<>
-								<DollyFieldArray
-									data={_.get(redigertAttributtListe, path) || initialValuesListe}
-									header=""
-									nested
-								>
-									{(item: any, idx: number) =>
-										item ? getForm(`${path}[${idx}]`) : <OpplysningSlettet />
-									}
-								</DollyFieldArray>
-								<FieldArrayEdit>
-									<Knappegruppe>
-										<NavButton
-											variant={'secondary'}
-											onClick={() => setVisningModus(Modus.Les)}
-											disabled={formikBag.isSubmitting}
-											style={{ top: '1.75px' }}
-										>
-											Avbryt
-										</NavButton>
-										<NavButton
-											variant={'primary'}
-											onClick={() => formikBag.handleSubmit()}
-											disabled={!formikBag.isValid || formikBag.isSubmitting}
-										>
-											Endre
-										</NavButton>
-									</Knappegruppe>
-								</FieldArrayEdit>
-							</>
-						)
-					}}
-				</Formik>
-			)}
+											<div className="flexbox--full-width">
+												{errorMessagePdlf && !slettetItem && (
+													<div className="error-message">{errorMessagePdlf}</div>
+												)}
+												{errorMessagePdl && !slettetItem && (
+													<div className="error-message">{errorMessagePdl}</div>
+												)}
+											</div>
+										</>
+									)}
+								</React.Fragment>
+							)
+						}}
+					</DollyFieldArray>
+				)}
+				{visningModus === Modus.Skriv && (
+					<Form onSubmit={formMethods.handleSubmit(handleSubmit)} enableReinitialize>
+						<>
+							<DollyFieldArray
+								data={_.get(redigertAttributtListe, path) || initialValuesListe}
+								header=""
+								nested
+							>
+								{(item: any, idx: number) =>
+									item ? getForm(`${path}[${idx}]`) : <OpplysningSlettet />
+								}
+							</DollyFieldArray>
+							<FieldArrayEdit>
+								<Knappegruppe>
+									<NavButton
+										variant={'secondary'}
+										onClick={() => setVisningModus(Modus.Les)}
+										disabled={formMethods.formState.isSubmitting}
+									>
+										Avbryt
+									</NavButton>
+									<NavButton
+										variant={'primary'}
+										onClick={() => formMethods.handleSubmit()}
+										disabled={!formMethods.formState.isValid || formMethods.formState.isSubmitting}
+									>
+										Endre
+									</NavButton>
+								</Knappegruppe>
+							</FieldArrayEdit>
+						</>
+					</Form>
+				)}
+			</FormProvider>
 		</>
 	)
 }

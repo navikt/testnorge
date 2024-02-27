@@ -1,11 +1,10 @@
 import * as React from 'react'
 import { useContext, useEffect, useState } from 'react'
-import { FormikProps } from 'formik'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { DollySelect, FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
-import * as _ from 'lodash-es'
+import _ from 'lodash'
 import { genererTilfeldigeNavPersonidenter } from '@/utils/GenererTilfeldigeNavPersonidenter'
 import { Option } from '@/service/SelectOptionsOppslag'
 import { isToday } from 'date-fns'
@@ -15,20 +14,13 @@ import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFiel
 import { initialSikkerhetstiltak } from '@/components/fagsystem/pdlf/form/initialValues'
 import { useNavEnheter } from '@/utils/hooks/useNorg2'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
-
-interface SikkerhetstiltakValues {
-	tiltakstype: string
-	beskrivelse: string
-	kontaktperson: Object
-	gyldigFraOgMed: Date
-	gyldigTilOgMed: Date
-}
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface SikkerhetstiltakProps {
-	formikBag: FormikProps<SikkerhetstiltakValues>
+	formMethods: UseFormReturn
 }
 
-export const Sikkerhetstiltak = ({ formikBag }: SikkerhetstiltakProps) => {
+export const Sikkerhetstiltak = ({ formMethods }: SikkerhetstiltakProps) => {
 	const opts = useContext(BestillingsveilederContext)
 	const [randomNavUsers, setRandomNavUsers] = useState([])
 
@@ -40,7 +32,7 @@ export const Sikkerhetstiltak = ({ formikBag }: SikkerhetstiltakProps) => {
 
 	const rootPath = 'pdldata.person.sikkerhetstiltak'
 
-	const sikkerhetstiltakListe = _.get(formikBag.values, rootPath)
+	const sikkerhetstiltakListe = formMethods.watch(rootPath)
 
 	if (!sikkerhetstiltakListe) {
 		return null
@@ -57,12 +49,13 @@ export const Sikkerhetstiltak = ({ formikBag }: SikkerhetstiltakProps) => {
 		)
 	}
 
-	const handleValueChange = (value: string, name: string, idx: number) => {
-		formikBag.setFieldValue(`${rootPath}[${idx}].${name}`, value)
+	const handleValueChange = (value: Date | string, name: string, idx: number) => {
+		formMethods.setValue(`${rootPath}[${idx}].${name}`, value)
+		formMethods.trigger(rootPath)
 	}
 
 	return (
-		<Vis attributt={rootPath} formik>
+		<Vis attributt={rootPath}>
 			<div className="flexbox--flex-wrap">
 				<FormikDollyFieldArray
 					name={rootPath}
@@ -71,7 +64,10 @@ export const Sikkerhetstiltak = ({ formikBag }: SikkerhetstiltakProps) => {
 					canBeEmpty={false}
 				>
 					{(path: string, idx: number) => {
-						const personident = _.get(formikBag.values, `${path}.kontaktperson.personident`)
+						const personident = formMethods.watch(`${path}.kontaktperson.personident`)
+						const gyldigFraOgMed = formMethods.watch(
+							`pdldata.person.sikkerhetstiltak[${idx}].gyldigFraOgMed`,
+						)
 						return (
 							<>
 								<DollySelect
@@ -86,21 +82,19 @@ export const Sikkerhetstiltak = ({ formikBag }: SikkerhetstiltakProps) => {
 									}
 									size="large"
 									onChange={(option: Option) => handleSikkerhetstiltakChange(option, idx)}
-									value={_.get(formikBag.values, `${path}.tiltakstype`)}
+									value={formMethods.watch(`${path}.tiltakstype`)}
 									isClearable={false}
-									feil={
-										_.get(formikBag.values, `${path}.tiltakstype`) === '' && {
-											feilmelding: 'Feltet er påkrevd',
-										}
-									}
 								/>
 								<FormikSelect
-									options={randomNavUsers}
+									options={
+										_.isEmpty(personident)
+											? randomNavUsers
+											: randomNavUsers.concat({ value: personident, label: personident })
+									}
 									isClearable={false}
 									name={`${path}.kontaktperson.personident`}
-									placeholder={personident ? personident : 'Velg ...'}
+									placeholder={'Velg ...'}
 									label={'Kontaktperson'}
-									fastfield={false}
 								/>
 								<FormikSelect
 									name={`${path}.kontaktperson.enhet`}
@@ -109,14 +103,7 @@ export const Sikkerhetstiltak = ({ formikBag }: SikkerhetstiltakProps) => {
 									options={navEnheter}
 								/>
 								<InputWarning
-									visWarning={
-										!isToday(
-											_.get(
-												formikBag.values,
-												`pdldata.person.sikkerhetstiltak[${idx}].gyldigFraOgMed`,
-											),
-										)
-									}
+									visWarning={gyldigFraOgMed && !isToday(gyldigFraOgMed)}
 									warningText="TPS støtter kun sikkerhetstiltak fra gjeldende dato. Endre til dagens dato dersom et
 							gyldig sikkerhetstiltak fra TPS er ønsket."
 								>
@@ -124,7 +111,6 @@ export const Sikkerhetstiltak = ({ formikBag }: SikkerhetstiltakProps) => {
 										name={`${path}.gyldigFraOgMed`}
 										label="Sikkerhetstiltak starter"
 										onChange={(date: Date) => {
-											// @ts-ignore
 											handleValueChange(date, 'gyldigFraOgMed', idx)
 										}}
 									/>
@@ -133,7 +119,6 @@ export const Sikkerhetstiltak = ({ formikBag }: SikkerhetstiltakProps) => {
 									name={`${path}.gyldigTilOgMed`}
 									label="Sikkerhetstiltak opphører"
 									onChange={(date: Date) => {
-										// @ts-ignore
 										handleValueChange(date, 'gyldigTilOgMed', idx)
 									}}
 								/>

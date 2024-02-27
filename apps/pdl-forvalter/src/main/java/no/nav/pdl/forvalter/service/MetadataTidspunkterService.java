@@ -25,11 +25,11 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.SivilstandDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.StatsborgerskapDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.UtflyttingDTO;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Comparator;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -40,69 +40,69 @@ public class MetadataTidspunkterService {
 
     private final PersonRepository personRepository;
 
-    @Transactional
     public void updateMetadata(String ident) {
 
-        var person = personRepository.findByIdent(ident);
-
-        if (person.isPresent()) {
-
-            fixPerson(person.get().getPerson());
-            person.get().getRelasjoner().stream()
-                    .map(DbRelasjon::getPerson)
-                    .map(DbPerson::getPerson)
-                    .forEach(this::fixPerson);
-        }
+        fixPerson(ident);
+        personRepository.findByIdent(ident)
+                .ifPresent(dbPerson -> dbPerson.getRelasjoner().stream()
+                        .map(DbRelasjon::getRelatertPerson)
+                        .map(DbPerson::getIdent)
+                        .forEach(this::fixPerson));
     }
 
-    private void fixPerson(PersonDTO person) {
+    private void fixPerson(String ident) {
 
-        person.getAdressebeskyttelse()
-                .forEach(this::fixVersioning);
-        person.getBostedsadresse()
-                .forEach(this::fixAdresser);
-        person.getDeltBosted()
-                .forEach(this::fixDeltBosted);
-        person.getDoedfoedtBarn()
-                .forEach(this::fixVersioning);
-        person.getDoedsfall()
-                .forEach(this::fixDoedsfall);
-        person.getFoedsel()
-                .forEach(foedsel -> fixFoedsel(foedsel, person));
-        person.getFalskIdentitet()
-                .forEach(this::fixFalskIdentitet);
-        person.getFolkeregisterPersonstatus()
-                .forEach(this::fixFolkerregisterPersonstatus);
-        person.getForelderBarnRelasjon()
-                .forEach(this::fixVersioning);
-        person.getForeldreansvar()
-                .forEach(this::fixForeldreansvar);
-        person.getFullmakt()
-                .forEach(this::fixFullmakt);
-        person.getInnflytting()
-                .forEach(this::fixInnflytting);
-        person.getKjoenn()
-                .forEach(kjoenn -> fixKjoenn(kjoenn, person));
-        person.getKontaktinformasjonForDoedsbo()
-                .forEach(this::fixVersioning);
-        fixNavn(person);
-        person.getOpphold()
-                .forEach(this::fixOpphold);
-        person.getSikkerhetstiltak()
-                .forEach(this::fixSikkerhetstiltak);
-        fixSivilstand(person);
-        person.getStatsborgerskap()
-                .forEach(this::fixStatsborgerskap);
-        person.getTelefonnummer()
-                .forEach(this::fixVersioning);
-        person.getTilrettelagtKommunikasjon()
-                .forEach(this::fixVersioning);
-        person.getUtenlandskIdentifikasjonsnummer()
-                .forEach(this::fixVersioning);
-        person.getUtflytting()
-                .forEach(this::fixUtflytting);
-        person.getVergemaal()
-                .forEach(this::fixVersioning);
+        personRepository.findByIdent(ident)
+                .ifPresent(dbPerson -> {
+                    var person = dbPerson.getPerson();
+
+                    person.getAdressebeskyttelse()
+                            .forEach(this::fixVersioning);
+                    person.getBostedsadresse()
+                            .forEach(this::fixAdresser);
+                    person.getDeltBosted()
+                            .forEach(this::fixDeltBosted);
+                    person.getDoedfoedtBarn()
+                            .forEach(this::fixVersioning);
+                    person.getDoedsfall()
+                            .forEach(this::fixDoedsfall);
+                    person.getFoedsel()
+                            .forEach(foedsel -> fixFoedsel(foedsel, person));
+                    person.getFalskIdentitet()
+                            .forEach(this::fixFalskIdentitet);
+                    person.getFolkeregisterPersonstatus()
+                            .forEach(this::fixFolkerregisterPersonstatus);
+                    person.getForelderBarnRelasjon()
+                            .forEach(this::fixVersioning);
+                    person.getForeldreansvar()
+                            .forEach(this::fixForeldreansvar);
+                    person.getFullmakt()
+                            .forEach(this::fixFullmakt);
+                    person.getInnflytting()
+                            .forEach(this::fixInnflytting);
+                    person.getKjoenn()
+                            .forEach(kjoenn -> fixKjoenn(kjoenn, person));
+                    person.getKontaktinformasjonForDoedsbo()
+                            .forEach(this::fixVersioning);
+                    fixNavn(person);
+                    person.getOpphold()
+                            .forEach(this::fixOpphold);
+                    person.getSikkerhetstiltak()
+                            .forEach(this::fixSikkerhetstiltak);
+                    fixSivilstand(person);
+                    person.getStatsborgerskap()
+                            .forEach(this::fixStatsborgerskap);
+                    person.getTelefonnummer()
+                            .forEach(this::fixVersioning);
+                    person.getTilrettelagtKommunikasjon()
+                            .forEach(this::fixVersioning);
+                    person.getUtenlandskIdentifikasjonsnummer()
+                            .forEach(this::fixVersioning);
+                    person.getUtflytting()
+                            .forEach(this::fixUtflytting);
+                    person.getVergemaal()
+                            .forEach(this::fixVersioning);
+                });
     }
 
     private void fixKjoenn(KjoennDTO kjoennDTO, PersonDTO personDTO) {
@@ -191,31 +191,27 @@ public class MetadataTidspunkterService {
 
         person.getSivilstand().sort(Comparator.comparing(SivilstandDTO::getId).reversed());
 
-        for (int i = 0; i < person.getSivilstand().size(); i++) {
+        var counter = new AtomicInteger(0);
+        person.getSivilstand().stream()
+                .forEachOrdered(sivilstand -> {
+                    fixFolkeregisterMetadata(sivilstand);
+                    if (isNull(sivilstand.getFolkeregistermetadata().getGyldighetstidspunkt())) {
 
-            fixFolkeregisterMetadata(person.getSivilstand().get(i));
-
-            person.getSivilstand().get(i).getFolkeregistermetadata().setGyldighetstidspunkt(
-                    nonNull(getSivilstandDato(person.getSivilstand().get(i))) ?
-                            getSivilstandDato(person.getSivilstand().get(i)) :
-                            getRelatertDato(person, i));
-
-            person.getSivilstand().get(i).getFolkeregistermetadata().setAjourholdstidspunkt(
-                    person.getSivilstand().get(i).getFolkeregistermetadata().getGyldighetstidspunkt());
-        }
-    }
-
-    private static LocalDateTime getRelatertDato(PersonDTO person, int i) {
-
-        return i == 0 ? LocalDateTime.now() :
-                person.getSivilstand().get(i - 1)
-                        .getFolkeregistermetadata().getGyldighetstidspunkt().minusYears(1);
-    }
-
-    private LocalDateTime getSivilstandDato(SivilstandDTO sivilstand) {
-
-        return nonNull(sivilstand.getSivilstandsdato()) ?
-                sivilstand.getSivilstandsdato() : sivilstand.getBekreftelsesdato();
+                        LocalDateTime gyldighetstidspunkt;
+                        if (nonNull(sivilstand.getSivilstandsdato())) {
+                            gyldighetstidspunkt = sivilstand.getSivilstandsdato();
+                        } else if (nonNull(sivilstand.getBekreftelsesdato())) {
+                            gyldighetstidspunkt = sivilstand.getBekreftelsesdato();
+                        } else {
+                            gyldighetstidspunkt = LocalDateTime.now().minusYears(counter.incrementAndGet());
+                        }
+                        sivilstand.getFolkeregistermetadata().setGyldighetstidspunkt(gyldighetstidspunkt);
+                    }
+                    if (isNull(sivilstand.getFolkeregistermetadata().getAjourholdstidspunkt())) {
+                        sivilstand.getFolkeregistermetadata().setAjourholdstidspunkt(
+                                sivilstand.getFolkeregistermetadata().getGyldighetstidspunkt());
+                    }
+                });
     }
 
     private void fixStatsborgerskap(StatsborgerskapDTO statsborgerskapDTO) {
