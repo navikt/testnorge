@@ -53,7 +53,8 @@ const ErrorView = () => {
 	const error = useRouteError()
 	console.error(error)
 
-	const errors = ['Failed to fetch dynamically imported module', 'Unable to preload CSS']
+	const errors = ['Failed to fetch dynamically imported module', 'Unable to preload CSS', 
+			"Cannot destructure property of 'register'"]
 
 	if (errors.some((e) => error.message.includes(e))) {
 		window.location.reload()
