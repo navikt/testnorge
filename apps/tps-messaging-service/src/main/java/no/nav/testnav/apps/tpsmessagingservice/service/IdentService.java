@@ -40,6 +40,7 @@ public class IdentService {
     private static final String SERVICE_NAME_OLD = "FS_03_FDLISTER_DISKNAVN_M";
     private static final String SERVICE_NAME_NEW = "FS03-FDLISTER-DISKNAVN-M";
     private static final String EMPTY_FNR = "<NFnr/>";
+    private static final String ZERO_COUNT = "<antallFnr>0</antallFnr>";
     private static final int MAX_LIMIT = 80;
     private static final String BAD_REQUEST = "Antall identer kan ikke være større enn " + MAX_LIMIT;
     private static final String PROD = "p";
@@ -120,10 +121,14 @@ public class IdentService {
 
         var request = prepareRequest(identer, isProd);
         var xmlRequest = marshallToXML(requestContext, request)
-                .replace(SERVICE_NAME_OLD, SERVICE_NAME_NEW)
-                .replace(EMPTY_FNR, "<nFnr>%s</nFnr>".formatted(identer.stream()
-                        .map("<fnr>%s</fnr>"::formatted)
-                        .collect(Collectors.joining(""))));
+                .replace(SERVICE_NAME_OLD, SERVICE_NAME_NEW);
+
+        if (xmlRequest.contains(EMPTY_FNR) && !xmlRequest.contains(ZERO_COUNT)) {
+            xmlRequest = xmlRequest
+                    .replace(EMPTY_FNR, "<nFnr>%s</nFnr>".formatted(identer.stream()
+                            .map("<fnr>%s</fnr>"::formatted)
+                            .collect(Collectors.joining(""))));
+        }
 
         log.info("M201 request: {}", xmlRequest);
 
