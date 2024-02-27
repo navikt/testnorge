@@ -12,6 +12,7 @@
 
 import { arrayToString, formatDateTimeWithSeconds } from '@/utils/DataFormatter'
 import { Bestilling } from '@/utils/hooks/useBestilling'
+import _ from 'lodash'
 
 export type System = {
 	id: string
@@ -24,9 +25,9 @@ export type System = {
 				{
 					miljo: string
 					identer: string[]
-				}
+				},
 			]
-		}
+		},
 	]
 }
 
@@ -70,7 +71,7 @@ const antallIdenterOpprettetPaaBestilling = (statusListe: [System]) => {
 const extractBestillingstatusKode = (
 	bestilling: Bestilling,
 	harAvvik: boolean,
-	antallIdenterOpprettet: number
+	antallIdenterOpprettet: number,
 ) => {
 	if (bestilling.stoppet) {
 		return 'Stoppet'
@@ -82,6 +83,16 @@ const extractBestillingstatusKode = (
 	return harAvvik ? 'Avvik' : 'Ferdig'
 }
 
+function getBestillingTag(data: Bestilling) {
+	if (!_.isEmpty(data?.bestilling?.pdldata?.opprettNyPerson)) {
+		return 'Ny bestilling'
+	} else if (_.has(data, 'opprettetFraId')) {
+		return 'Gjenopprett'
+	} else {
+		return 'Legg til/endre'
+	}
+}
+
 /**
  * Lager et String[] med verdier som vises i bestillingsliste
  * slik at man kan enkelt søke i verdier og samtidig liste de ut
@@ -89,12 +100,15 @@ const extractBestillingstatusKode = (
 const extractValuesForBestillingListe = (
 	data: Bestilling,
 	identer: string[],
-	statusKode: string
+	statusKode: string,
 ) => {
+	const bestillingTag = getBestillingTag(data)
+
 	const values = {
 		id: data.id.toString(),
 		antallIdenter: data.antallIdenter ? data.antallIdenter.toString() : null,
 		sistOppdatert: formatDateTimeWithSeconds(data.sistOppdatert),
+		variant: bestillingTag,
 		environments: arrayToString(data.environments),
 		statusKode,
 		identer: arrayToString(identer),
@@ -103,13 +117,13 @@ const extractValuesForBestillingListe = (
 	return Object.values(values)
 }
 
-export default function bestillingStatusMapper(data: [Object]) {
+export default function bestillingStatusMapper(data: any) {
 	return data.map((bestilling: Bestilling) => {
 		const alleIdenter = [
 			...new Set(
 				bestilling.status?.flatMap(
-					(status: System) => status?.statuser?.[0]?.detaljert?.[0]?.identer
-				)
+					(status: System) => status?.statuser?.[0]?.detaljert?.[0]?.identer,
+				),
 			),
 		]?.filter((ident) => ident !== undefined)
 		const harAvvik = finnesDetAvvikForBestillinger(bestilling.status)
