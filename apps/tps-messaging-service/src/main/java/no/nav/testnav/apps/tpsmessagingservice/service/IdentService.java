@@ -19,6 +19,7 @@ import no.nav.testnav.libs.data.tpsmessagingservice.v1.TpsIdentStatusDTO;
 import no.nav.tps.ctg.m201.domain.SRnavn;
 import no.nav.tps.ctg.m201.domain.TpsPersonData;
 import no.nav.tps.ctg.m201.domain.TpsServiceRutineType;
+import org.slf4j.event.Level;
 import org.springframework.stereotype.Service;
 
 import javax.xml.namespace.QName;
@@ -128,14 +129,12 @@ public class IdentService {
 
         var miljoerResponse = servicerutineConsumer.sendMessage(xmlRequest, miljoer);
 
-        miljoerResponse.forEach((key, value) -> {
-            if (value.contains("<returStatus>00</returStatus>") ||
-                    value.contains("<returStatus>04</returStatus>")) {
-                log.info("Miljø: {} XML: {}", key, value);
-            } else {
-                log.error("Miljø: {} XML: {}", key, value);
-            }
-        });
+        miljoerResponse.forEach((key, value) ->
+                log.atLevel(value.contains("<returStatus>00</returStatus>") ||
+                                value.contains("<returStatus>04</returStatus>") ?
+                                Level.INFO :
+                                Level.ERROR)
+                        .log("Miljø: {} XML: {}", key, value));
 
         return miljoerResponse.entrySet().parallelStream()
                 .collect(Collectors.toMap(Map.Entry::getKey,
