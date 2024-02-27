@@ -6,7 +6,6 @@ import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.tpsmessagingservice.command.EgenansattDeleteCommand;
 import no.nav.dolly.bestilling.tpsmessagingservice.command.EgenansattPostCommand;
 import no.nav.dolly.bestilling.tpsmessagingservice.command.PersonGetCommand;
-import no.nav.dolly.bestilling.tpsmessagingservice.command.SikkerhetstiltakDeleteCommand;
 import no.nav.dolly.bestilling.tpsmessagingservice.command.TpsMessagingPostCommand;
 import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
@@ -33,7 +32,6 @@ public class TpsMessagingConsumer implements ConsumerStatus {
     private static final String BASE_URL = "/api/v1/personer/{ident}";
     private static final String UTENLANDSK_BANKKONTO_URL = BASE_URL + "/bankkonto-utenlandsk";
     private static final String NORSK_BANKKONTO_URL = BASE_URL + "/bankkonto-norsk";
-    private static final String SIKKERHETSTILTAK_URL = BASE_URL + "/sikkerhetstiltak";
     private static final String SPRAAKKODE_URL = BASE_URL + "/spraakkode";
 
     private final WebClient webClient;
@@ -69,21 +67,6 @@ public class TpsMessagingConsumer implements ConsumerStatus {
         return tokenService.exchange(serverProperties)
                 .flatMapMany(token ->
                         new TpsMessagingPostCommand(webClient, ident, miljoer, body, NORSK_BANKKONTO_URL, token.getTokenValue()).call());
-    }
-
-    @Timed(name = "providers", tags = {"operation", "tps_messaging_deleteSikkerhetstiltak"})
-    public Flux<TpsMeldingResponseDTO> deleteSikkerhetstiltakRequest(String ident, List<String> miljoer) {
-
-        return tokenService.exchange(serverProperties)
-                .flatMapMany(token -> new SikkerhetstiltakDeleteCommand(webClient, ident, miljoer, token.getTokenValue()).call());
-    }
-
-    @Timed(name = "providers", tags = {"operation", "tps_messaging_createSikkerhetstiltak"})
-    public Flux<TpsMeldingResponseDTO> sendSikkerhetstiltakRequest(String ident, List<String> miljoer, Object body) {
-
-        return tokenService.exchange(serverProperties)
-                .flatMapMany(token ->
-                        new TpsMessagingPostCommand(webClient, ident, miljoer, body, SIKKERHETSTILTAK_URL, token.getTokenValue()).call());
     }
 
     @Timed(name = "providers", tags = {"operation", "tps_messaging_createSkjerming"})

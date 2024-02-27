@@ -6,12 +6,10 @@ import no.nav.testnav.apps.tpsmessagingservice.service.BankkontoNorskService;
 import no.nav.testnav.apps.tpsmessagingservice.service.BankkontoUtlandService;
 import no.nav.testnav.apps.tpsmessagingservice.service.EgenansattService;
 import no.nav.testnav.apps.tpsmessagingservice.service.PersonService;
-import no.nav.testnav.apps.tpsmessagingservice.service.SikkerhetstiltakService;
 import no.nav.testnav.apps.tpsmessagingservice.service.SpraakService;
 import no.nav.testnav.libs.data.kontoregister.v1.BankkontonrNorskDTO;
 import no.nav.testnav.libs.data.kontoregister.v1.BankkontonrUtlandDTO;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.PersonMiljoeDTO;
-import no.nav.testnav.libs.data.tpsmessagingservice.v1.SikkerhetTiltakDTO;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.SpraakDTO;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.TpsMeldingResponseDTO;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -41,7 +39,6 @@ public class PersonController {
     private final SpraakService spraakService;
     private final BankkontoUtlandService bankkontoUtlandService;
     private final BankkontoNorskService bankkontoNorskService;
-    private final SikkerhetstiltakService sikkerhetstiltakService;
 
     private static List<TpsMeldingResponseDTO> convert(Map<String, TpsMeldingResponse> tpsMeldingDTO) {
 
@@ -115,21 +112,6 @@ public class PersonController {
                                                                 @RequestParam(required = false) List<String> miljoer) {
 
         return convert(bankkontoUtlandService.opphoerBankkontonrUtland(ident, miljoer));
-    }
-
-    @PostMapping("/{ident}/sikkerhetstiltak")
-    public List<TpsMeldingResponseDTO> endreSikkerhetstiltak(@PathVariable String ident,
-                                                             @RequestBody SikkerhetTiltakDTO sikkerhetstiltak,
-                                                             @RequestParam(required = false) List<String> miljoer) {
-
-        return convert(sikkerhetstiltakService.endreSikkerhetstiltak(ident, sikkerhetstiltak, miljoer));
-    }
-
-    @DeleteMapping("/{ident}/sikkerhetstiltak")
-    public List<TpsMeldingResponseDTO> opphoerSikkerhetstiltak(@PathVariable String ident,
-                                                               @RequestParam(required = false) List<String> miljoer) {
-
-        return convert(sikkerhetstiltakService.opphoerSikkerhetstiltak(ident, miljoer));
     }
 }
 
