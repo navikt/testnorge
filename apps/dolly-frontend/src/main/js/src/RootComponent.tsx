@@ -50,6 +50,7 @@ initializeFaro({
 })
 
 const ErrorView = () => {
+	console.error('Applikasjonen har støtt på en feil')
 	const error = useRouteError()
 	console.error(error)
 
@@ -57,8 +58,6 @@ const ErrorView = () => {
 
 	if (errors.some((e) => error.message.includes(e))) {
 		window.location.reload()
-	} else {
-		throw error
 	}
 	return <AppError error={error} stackTrace={error.stackTrace} />
 }
