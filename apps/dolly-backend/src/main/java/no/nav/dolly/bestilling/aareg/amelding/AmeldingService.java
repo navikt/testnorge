@@ -4,18 +4,21 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
+import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.aareg.RsAmeldingRequest;
 import no.nav.dolly.domain.resultset.aareg.RsArbeidsforholdAareg;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.testnav.libs.dto.ameldingservice.v1.AMeldingDTO;
+import no.nav.testnav.libs.dto.ameldingservice.v1.ArbeidsforholdDTO;
 import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -25,14 +28,14 @@ import java.util.stream.Collectors;
 @Slf4j
 public class AmeldingService {
 
-    private static final String STATUS_ELEMENT = "%s: arbforhold=1$%s";
+    private static final String STATUS_ELEMENT = "%s: arbforhold=%s$%s";
 
     private final AmeldingConsumer ameldingConsumer;
     private final MapperFacade mapperFacade;
     private final OrganisasjonServiceConsumer organisasjonServiceConsumer;
 
     public Mono<String> sendAmelding(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson,
-                                     Set<String> miljoer) {
+                                     Set<String> miljoer, BestillingProgress progress) {
 
         var orgnumre = bestilling.getAareg().get(0).getAmelding().stream()
                 .map(RsAmeldingRequest::getArbeidsforhold)
@@ -47,13 +50,14 @@ public class AmeldingService {
                         .collect(Collectors.toMap(OrganisasjonDTO::getOrgnummer, OrganisasjonDTO::getJuridiskEnhet))
                         .flatMapMany(organisasjon ->
                                 prepareAmeldinger(bestilling.getAareg().get(0), dollyPerson.getIdent(),
-                                        organisasjon, miljoe))
+                                        organisasjon, miljoe, progress))
                         .collect(Collectors.joining(",")))
                 .flatMap(Flux::from)
                 .collect(Collectors.joining(","));
     }
 
-    private Flux<String> prepareAmeldinger(RsAareg aareg, String ident, Map<String, String> organisasjon, String miljoe) {
+    private Flux<String> prepareAmeldinger(RsAareg aareg, String ident, Map<String, String> organisasjon,
+                                           String miljoe, BestillingProgress progress) {
 
         var context = new MappingContext.Factory().getContext();
         context.setProperty("personIdent", ident);
@@ -62,9 +66,17 @@ public class AmeldingService {
 
         return Flux.fromIterable(aareg.getAmelding())
                 .map(aamelding -> mapperFacade.map(aamelding, AMeldingDTO.class, context))
-                .collectList()
-                .flatMapMany(reultat -> ameldingConsumer.sendAmeldinger(reultat, miljoe)
-                        .distinct()
-                        .map(status -> String.format(STATUS_ELEMENT, miljoe, status)));
+                .sort(Comparator.comparing(AMeldingDTO::getKalendermaaned))
+                .collect(Collectors.groupingBy(aMeldingDTO -> aMeldingDTO.getVirksomheter().stream()
+                        .flatMap(virksomhet -> virksomhet.getPersoner().stream())
+                        .flatMap(personDTO -> personDTO.getArbeidsforhold().stream())
+                        .map(ArbeidsforholdDTO::getArbeidsforholdId)
+                        .collect(Collectors.joining())))
+                .map(liste -> liste.entrySet().stream()
+                        .map(entry -> ameldingConsumer.sendAmeldinger(entry.getValue(), miljoe, progress)
+                                .distinct()
+                                .map(status -> STATUS_ELEMENT.formatted(miljoe, entry.getKey(), status))))
+                .flatMapMany(Flux::fromStream)
+                .flatMap(Flux::from);
     }
 }

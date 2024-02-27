@@ -5,12 +5,15 @@ import io.swagger.v3.core.util.Json;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.aareg.command.AmeldingPutCommand;
 import no.nav.dolly.config.Consumers;
+import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.Timed;
+import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.dto.ameldingservice.v1.AMeldingDTO;
 import no.nav.testnav.libs.dto.ameldingservice.v1.VirksomhetDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
+import org.slf4j.event.Level;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -35,14 +38,16 @@ public class AmeldingConsumer {
     private final WebClient webClient;
     private final ServerProperties serverProperties;
     private final ErrorStatusDecoder errorStatusDecoder;
+    private final TransactionHelperService transactionHelperService;
 
     public AmeldingConsumer(
             TokenExchange tokenService,
             Consumers consumers,
             ObjectMapper objectMapper,
             ErrorStatusDecoder errorStatusDecoder,
-            WebClient.Builder webClientBuilder
-    ) {
+            WebClient.Builder webClientBuilder,
+            TransactionHelperService transactionHelperService) {
+
         this.tokenService = tokenService;
         serverProperties = consumers.getTestnavAmeldingService();
         this.webClient = webClientBuilder
@@ -50,10 +55,11 @@ public class AmeldingConsumer {
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .build();
         this.errorStatusDecoder = errorStatusDecoder;
+        this.transactionHelperService = transactionHelperService;
     }
 
-    @Timed(name = "providers", tags = { "operation", "amelding_put" })
-    public Flux<String> sendAmeldinger(List<AMeldingDTO> ameldinger, String miljoe) {
+    @Timed(name = "providers", tags = {"operation", "amelding_put"})
+    public Flux<String> sendAmeldinger(List<AMeldingDTO> ameldinger, String miljoe, BestillingProgress progress) {
 
         return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> Flux.fromIterable(ameldinger)
@@ -67,9 +73,16 @@ public class AmeldingConsumer {
                                 log.info("Sender Amelding {} til miljø {}: {}",
                                         amelding.getKalendermaaned().format(YEAR_MONTH), miljoe, Json.pretty(amelding));
                                 return new AmeldingPutCommand(webClient, amelding, miljoe, token.getTokenValue()).call()
-                                        .doOnNext(status -> log.info("Ameldingstatus: {}", status.getStatusCode()))
                                         .map(status -> status.getStatusCode().is2xxSuccessful() ? "OK" :
-                                                errorStatusDecoder.getErrorText(HttpStatus.valueOf(status.getStatusCode().value()), status.getBody()));
+                                                errorStatusDecoder.getErrorText(HttpStatus.valueOf(status.getStatusCode().value()), status.getBody()))
+                                        .doOnNext(status ->
+                                                log.atLevel("OK".equals(status) ? Level.INFO : Level.ERROR)
+                                                        .log("Ameldingstatus: {}, miljoe: {}, kalendermåned: {}, organisasjon: {}",
+                                                                status, miljoe, amelding.getKalendermaaned(),
+                                                                amelding.getOpplysningspliktigOrganisajonsnummer()))
+                                                        .doOnNext(status -> transactionHelperService.persisterDynamicProgress(progress,
+                                        BestillingProgress::getAaregStatus, BestillingProgress::setAaregStatus,
+                                        "%s:%s %s".formatted(miljoe, amelding.getKalendermaaned(), status)));
                             }
                         }));
     }

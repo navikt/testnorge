@@ -17,6 +17,7 @@ public class OrganisasjonServiceConsumer {
     private final TokenExchange tokenService;
     private final WebClient webClient;
     private final ServerProperties serverProperties;
+    private static final String STATUS_ELEMENT = "%s: arbforhold=1$%s";
 
     public OrganisasjonServiceConsumer(
             TokenExchange tokenService,
