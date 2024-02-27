@@ -136,6 +136,11 @@ class ArtifactGjeldendeServiceTest {
                                 .build()))
                         .build()));
 
+        when(personRepository.findByIdent(TEST_IDENT_2))
+                .thenReturn(Optional.of(DbPerson.builder()
+                        .person(person2)
+                        .build()));
+
         artifactGjeldendeService.setGjeldendeForRelasjon(TEST_IDENT_1);
 
         assertThat(person1.getNavn().get(0).getGjeldende(), is(equalTo(true)));
