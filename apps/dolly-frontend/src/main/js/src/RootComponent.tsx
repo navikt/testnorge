@@ -23,7 +23,6 @@ import {
 	ReactIntegration,
 	ReactRouterVersion,
 } from '@grafana/faro-react'
-import RefreshSessionPage from '@/pages/RefreshSessionPage'
 import { useRouteError } from 'react-router'
 import { AppError } from '@/components/ui/appError/AppError'
 
@@ -74,7 +73,6 @@ export const RootComponent = () => (
 				>
 					<FaroRoutes>
 						<Route path="/login" element={<LoginPage />} />
-						<Route path="/refreshSession" element={<RefreshSessionPage />} />
 						<Route errorElement={<ErrorView />} path="/bruker" element={<BrukerPage />} />
 						<Route errorElement={<ErrorView />} path="*" element={<App />} />
 					</FaroRoutes>
