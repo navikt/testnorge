@@ -11,7 +11,6 @@ import no.nav.dolly.domain.resultset.aareg.RsAmeldingRequest;
 import no.nav.dolly.domain.resultset.aareg.RsArbeidsforholdAareg;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.testnav.libs.dto.ameldingservice.v1.AMeldingDTO;
-import no.nav.testnav.libs.dto.ameldingservice.v1.ArbeidsforholdDTO;
 import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -28,7 +27,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class AmeldingService {
 
-    private static final String STATUS_ELEMENT = "%s: arbforhold=%s$%s";
+    private static final String STATUS_ELEMENT = "%s: amelding$%s";
 
     private final AmeldingConsumer ameldingConsumer;
     private final MapperFacade mapperFacade;
@@ -37,7 +36,7 @@ public class AmeldingService {
     public Mono<String> sendAmelding(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson,
                                      Set<String> miljoer, BestillingProgress progress) {
 
-        var orgnumre = bestilling.getAareg().get(0).getAmelding().stream()
+        var orgnumre = bestilling.getAareg().getFirst().getAmelding().stream()
                 .map(RsAmeldingRequest::getArbeidsforhold)
                 .flatMap(Collection::stream)
                 .map(RsArbeidsforholdAareg::getArbeidsgiver)
@@ -49,7 +48,7 @@ public class AmeldingService {
                         .filter(OrganisasjonDTO::isFunnet)
                         .collect(Collectors.toMap(OrganisasjonDTO::getOrgnummer, OrganisasjonDTO::getJuridiskEnhet))
                         .flatMapMany(organisasjon ->
-                                prepareAmeldinger(bestilling.getAareg().get(0), dollyPerson.getIdent(),
+                                prepareAmeldinger(bestilling.getAareg().getFirst(), dollyPerson.getIdent(),
                                         organisasjon, miljoe, progress))
                         .collect(Collectors.joining(",")))
                 .flatMap(Flux::from)
@@ -67,16 +66,9 @@ public class AmeldingService {
         return Flux.fromIterable(aareg.getAmelding())
                 .map(aamelding -> mapperFacade.map(aamelding, AMeldingDTO.class, context))
                 .sort(Comparator.comparing(AMeldingDTO::getKalendermaaned))
-                .collect(Collectors.groupingBy(aMeldingDTO -> aMeldingDTO.getVirksomheter().stream()
-                        .flatMap(virksomhet -> virksomhet.getPersoner().stream())
-                        .flatMap(personDTO -> personDTO.getArbeidsforhold().stream())
-                        .map(ArbeidsforholdDTO::getArbeidsforholdId)
-                        .collect(Collectors.joining())))
-                .map(liste -> liste.entrySet().stream()
-                        .map(entry -> ameldingConsumer.sendAmeldinger(entry.getValue(), miljoe, progress)
-                                .distinct()
-                                .map(status -> STATUS_ELEMENT.formatted(miljoe, entry.getKey(), status))))
-                .flatMapMany(Flux::fromStream)
-                .flatMap(Flux::from);
+                .collectList()
+                .flatMapMany(ameldinger -> ameldingConsumer.sendAmeldinger(ameldinger, miljoe, progress)
+                        .distinct()
+                        .map(status -> STATUS_ELEMENT.formatted(miljoe, status)));
     }
 }
