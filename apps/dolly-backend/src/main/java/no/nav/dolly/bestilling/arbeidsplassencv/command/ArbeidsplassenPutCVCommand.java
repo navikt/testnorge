@@ -20,7 +20,7 @@ import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 @RequiredArgsConstructor
 public class ArbeidsplassenPutCVCommand implements Callable<Flux<ArbeidsplassenCVStatusDTO>> {
 
-    private static final String ARBEIDSPLASSEN_CV_URL = "/rest/v2/cv";
+    private static final String ARBEIDSPLASSEN_CV_URL = "/rest/v3/cv";
     private static final String FNR = "fnr";
 
     private final WebClient webClient;
