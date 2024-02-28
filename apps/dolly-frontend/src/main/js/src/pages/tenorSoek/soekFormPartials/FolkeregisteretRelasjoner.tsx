@@ -7,7 +7,7 @@ import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput
 import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 
-export const FolkeregisteretRelasjoner = ({ formikBag, handleChange, getValue }: any) => {
+export const FolkeregisteretRelasjoner = ({ handleChange }: any) => {
 	const { domain: relasjonOptions } = useTenorDomain('Relasjon')
 
 	return (
@@ -15,10 +15,8 @@ export const FolkeregisteretRelasjoner = ({ formikBag, handleChange, getValue }:
 			<FormikSelect
 				name="relasjoner.relasjon"
 				options={createOptions(relasjonOptions?.data)}
-				// size="medium"
 				label="Relasjon"
 				onChange={(val: SyntheticEvent) => handleChange(val?.value || null, 'relasjoner.relasjon')}
-				value={getValue('relasjoner.relasjon')}
 			/>
 			<div className="flexbox--flex-wrap">
 				<FormikTextInput
@@ -29,7 +27,6 @@ export const FolkeregisteretRelasjoner = ({ formikBag, handleChange, getValue }:
 						handleChange(val?.target?.value || null, 'relasjoner.antallBarn.fraOgMed')
 					}
 					visHvisAvhuket={false}
-					// fastfield={false}
 				/>
 				<FormikTextInput
 					name="relasjoner.antallBarn.tilOgMed"
@@ -39,7 +36,6 @@ export const FolkeregisteretRelasjoner = ({ formikBag, handleChange, getValue }:
 						handleChange(val?.target?.value || null, 'relasjoner.antallBarn.tilOgMed')
 					}
 					visHvisAvhuket={false}
-					// fastfield={false}
 				/>
 			</div>
 			<div className="flexbox--flex-wrap">
@@ -51,7 +47,6 @@ export const FolkeregisteretRelasjoner = ({ formikBag, handleChange, getValue }:
 						handleChange(val?.target?.value || null, 'relasjoner.relasjonMedFoedselsaar.fraOgMed')
 					}
 					visHvisAvhuket={false}
-					// fastfield={false}
 				/>
 				<FormikTextInput
 					name="relasjoner.relasjonMedFoedselsaar.tilOgMed"
@@ -61,7 +56,6 @@ export const FolkeregisteretRelasjoner = ({ formikBag, handleChange, getValue }:
 						handleChange(val?.target?.value || null, 'relasjoner.relasjonMedFoedselsaar.tilOgMed')
 					}
 					visHvisAvhuket={false}
-					// fastfield={false}
 				/>
 			</div>
 			<div className="flexbox--flex-wrap">
@@ -71,7 +65,6 @@ export const FolkeregisteretRelasjoner = ({ formikBag, handleChange, getValue }:
 					onChange={(val: SyntheticEvent) =>
 						handleChange(val?.target?.checked || undefined, 'relasjoner.harForeldreAnsvar')
 					}
-					value={getValue('relasjoner.harForeldreAnsvar')}
 				/>
 				<FormikCheckbox
 					name="relasjoner.harDeltBosted"
@@ -79,7 +72,6 @@ export const FolkeregisteretRelasjoner = ({ formikBag, handleChange, getValue }:
 					onChange={(val: SyntheticEvent) =>
 						handleChange(val?.target?.checked || undefined, 'relasjoner.harDeltBosted')
 					}
-					value={getValue('relasjoner.harDeltBosted')}
 				/>
 				<FormikCheckbox
 					name="relasjoner.harVergemaalEllerFremtidsfullmakt"
@@ -90,7 +82,6 @@ export const FolkeregisteretRelasjoner = ({ formikBag, handleChange, getValue }:
 							'relasjoner.harVergemaalEllerFremtidsfullmakt',
 						)
 					}
-					value={getValue('relasjoner.harVergemaalEllerFremtidsfullmakt')}
 				/>
 				<FormikCheckbox
 					name="relasjoner.borMedMor"
@@ -98,7 +89,6 @@ export const FolkeregisteretRelasjoner = ({ formikBag, handleChange, getValue }:
 					onChange={(val: SyntheticEvent) =>
 						handleChange(val?.target?.checked || undefined, 'relasjoner.borMedMor')
 					}
-					value={getValue('relasjoner.borMedMor')}
 				/>
 				<FormikCheckbox
 					name="relasjoner.borMedFar"
@@ -106,7 +96,6 @@ export const FolkeregisteretRelasjoner = ({ formikBag, handleChange, getValue }:
 					onChange={(val: SyntheticEvent) =>
 						handleChange(val?.target?.checked || undefined, 'relasjoner.borMedFar')
 					}
-					value={getValue('relasjoner.borMedFar')}
 				/>
 				<FormikCheckbox
 					name="relasjoner.borMedMedmor"
@@ -114,7 +103,6 @@ export const FolkeregisteretRelasjoner = ({ formikBag, handleChange, getValue }:
 					onChange={(val: SyntheticEvent) =>
 						handleChange(val?.target?.checked || undefined, 'relasjoner.borMedMedmor')
 					}
-					value={getValue('relasjoner.borMedMedmor')}
 				/>
 				<FormikCheckbox
 					name="relasjoner.foreldreHarSammeAdresse"
@@ -122,7 +110,6 @@ export const FolkeregisteretRelasjoner = ({ formikBag, handleChange, getValue }:
 					onChange={(val: SyntheticEvent) =>
 						handleChange(val?.target?.checked || undefined, 'relasjoner.foreldreHarSammeAdresse')
 					}
-					value={getValue('relasjoner.foreldreHarSammeAdresse')}
 				/>
 			</div>
 		</SoekKategori>

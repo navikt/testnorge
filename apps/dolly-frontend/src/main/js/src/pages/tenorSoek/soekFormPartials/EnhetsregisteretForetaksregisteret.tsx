@@ -4,11 +4,7 @@ import { createOptions } from '@/pages/tenorSoek/utils'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { useTenorDomain } from '@/utils/hooks/useTenorSoek'
 
-export const EnhetsregisteretForetaksregisteret = ({
-	formikBag,
-	handleChangeList,
-	getValue,
-}: any) => {
+export const EnhetsregisteretForetaksregisteret = ({ handleChangeList }: any) => {
 	const { domain: rollerOptions } = useTenorDomain('Roller')
 	return (
 		<SoekKategori>
@@ -20,7 +16,6 @@ export const EnhetsregisteretForetaksregisteret = ({
 					size="grow"
 					label="Roller"
 					onChange={(val: SyntheticEvent) => handleChangeList(val || null, 'roller')}
-					value={getValue('roller')}
 				/>
 			</div>
 		</SoekKategori>

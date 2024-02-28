@@ -1,5 +1,4 @@
 import '@/styles/variables.less'
-import styled from 'styled-components'
 import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import React, { SyntheticEvent, useState } from 'react'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'

@@ -4,7 +4,7 @@ import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { createOptions } from '@/pages/tenorSoek/utils'
 import React, { SyntheticEvent } from 'react'
 
-export const FolkeregisteretHendelser = ({ formikBag, handleChange, getValue }: any) => {
+export const FolkeregisteretHendelser = ({ handleChange }: any) => {
 	const { domain: hendelseOptions } = useTenorDomain('Hendelse')
 
 	return (
@@ -15,7 +15,6 @@ export const FolkeregisteretHendelser = ({ formikBag, handleChange, getValue }: 
 				size="xlarge"
 				label="Har hatt hendelse"
 				onChange={(val: SyntheticEvent) => handleChange(val?.value || null, 'hendelser.hendelse')}
-				value={getValue('hendelser.hendelse')}
 			/>
 			<FormikSelect
 				name="hendelser.sisteHendelse"
@@ -25,7 +24,6 @@ export const FolkeregisteretHendelser = ({ formikBag, handleChange, getValue }: 
 				onChange={(val: SyntheticEvent) =>
 					handleChange(val?.value || null, 'hendelser.sisteHendelse')
 				}
-				value={getValue('hendelser.sisteHendelse')}
 			/>
 		</SoekKategori>
 	)

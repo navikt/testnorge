@@ -40,7 +40,7 @@ export const FolkeregisteretVisning = ({ data }) => {
 						{relasjoner.map((relasjon, idx) => (
 							<div className="title-value title-value_small" key={idx}>
 								<h4>{relasjon.tenorRelasjonsnavn}</h4>
-								<div>{`${relasjon.identifikator} -`}</div>
+								<div>{`${arrayToString(relasjon.identifikator, ', ')} -`}</div>
 								<div>{relasjon.visningnavn}</div>
 							</div>
 						))}

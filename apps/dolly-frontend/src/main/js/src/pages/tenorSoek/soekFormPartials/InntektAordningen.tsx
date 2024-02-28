@@ -10,7 +10,7 @@ import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepic
 import { Monthpicker } from '@/components/ui/form/inputs/monthpicker/Monthpicker'
 import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 
-export const InntektAordningen = ({ formikBag, handleChange, handleChangeList, getValue }: any) => {
+export const InntektAordningen = ({ handleChange, handleChangeList, getValue }: any) => {
 	const { domain: inntektstypeOptions } = useTenorDomain('Inntektstype')
 	const { domain: beskrivelseOptions } = useTenorDomain('AOrdningBeskrivelse')
 	const { domain: forskuddstrekkOptions } = useTenorDomain('Forskuddstrekk')
@@ -24,8 +24,6 @@ export const InntektAordningen = ({ formikBag, handleChange, handleChangeList, g
 					handleChange(val ? val.toISOString().substr(0, 7) : '', 'inntekt.periode.fraOgMed')
 				}}
 				date={getValue('inntekt.periode.fraOgMed')}
-				visHvisAvhuket={false}
-				fastfield={false}
 			/>
 			<Monthpicker
 				name="inntekt.periode.tilOgMed"
@@ -34,8 +32,6 @@ export const InntektAordningen = ({ formikBag, handleChange, handleChangeList, g
 					handleChange(val ? val.toISOString().substr(0, 7) : '', 'inntekt.periode.tilOgMed')
 				}}
 				date={getValue('inntekt.periode.tilOgMed')}
-				visHvisAvhuket={false}
-				fastfield={false}
 			/>
 			<FormikTextInput
 				name="inntekt.opplysningspliktig"
@@ -44,7 +40,6 @@ export const InntektAordningen = ({ formikBag, handleChange, handleChangeList, g
 					handleChange(val?.target?.value || null, 'inntekt.opplysningspliktig')
 				}
 				visHvisAvhuket={false}
-				// fastfield={false}
 			/>
 			<div className="flexbox--full-width" style={{ fontSize: 'medium' }}>
 				<FormikSelect
@@ -54,7 +49,6 @@ export const InntektAordningen = ({ formikBag, handleChange, handleChangeList, g
 					size="grow"
 					label="Inntektstyper"
 					onChange={(val: SyntheticEvent) => handleChangeList(val || null, 'inntekt.inntektstyper')}
-					value={getValue('inntekt.inntektstyper')}
 				/>
 				<FormikSelect
 					name="inntekt.forskuddstrekk"
@@ -65,7 +59,6 @@ export const InntektAordningen = ({ formikBag, handleChange, handleChangeList, g
 					onChange={(val: SyntheticEvent) =>
 						handleChangeList(val || null, 'inntekt.forskuddstrekk')
 					}
-					value={getValue('inntekt.forskuddstrekk')}
 				/>
 			</div>
 			<FormikSelect
@@ -74,7 +67,6 @@ export const InntektAordningen = ({ formikBag, handleChange, handleChangeList, g
 				size="xlarge"
 				label="Beskrivelse"
 				onChange={(val: SyntheticEvent) => handleChange(val?.value || null, 'inntekt.beskrivelse')}
-				value={getValue('inntekt.beskrivelse')}
 			/>
 			<FormikSelect
 				name="inntekt.harHistorikk"
@@ -82,7 +74,6 @@ export const InntektAordningen = ({ formikBag, handleChange, handleChangeList, g
 				size="small"
 				label="Har historikk"
 				onChange={(val: boolean) => handleChange(val?.value, 'inntekt.harHistorikk')}
-				value={getValue('inntekt.harHistorikk')}
 			/>
 		</SoekKategori>
 	)

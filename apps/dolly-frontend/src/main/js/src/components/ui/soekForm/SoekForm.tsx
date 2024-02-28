@@ -25,11 +25,6 @@ export const SoekKategori = styled.div`
 			flex-grow: 0;
 		}
 	}
-	&& {
-		.navds-checkbox__icon {
-			margin-top: -4px;
-		}
-	}
 `
 
 export const Buttons = styled.div`
