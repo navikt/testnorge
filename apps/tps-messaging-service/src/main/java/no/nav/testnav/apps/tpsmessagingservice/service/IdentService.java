@@ -13,7 +13,6 @@ import no.nav.testnav.apps.tpsmessagingservice.dto.TpsServicerutineM201Response;
 import no.nav.testnav.apps.tpsmessagingservice.exception.BadRequestException;
 import no.nav.testnav.apps.tpsmessagingservice.utils.EndringsmeldingUtil;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.TpsIdentStatusDTO;
-import org.slf4j.event.Level;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -95,16 +94,11 @@ public class IdentService {
 
         var xmlRequest = prepareRequest(identer, isProd);
 
-        log.info("M201 request: {}", xmlRequest);
+        log.trace("M201 request: {}", xmlRequest);
 
         var miljoerResponse = servicerutineConsumer.sendMessage(xmlRequest, miljoer);
 
-        miljoerResponse.forEach((key, value) ->
-                log.atLevel(value.contains("<returStatus>00</returStatus>") ||
-                                value.contains("<returStatus>04</returStatus>") ?
-                                Level.INFO :
-                                Level.ERROR)
-                        .log("Miljø: {} XML: {}", key, value));
+        miljoerResponse.forEach((key, value) -> log.trace("Miljø: {} XML: {}", key, value));
 
         return miljoerResponse.entrySet().parallelStream()
                 .collect(Collectors.toMap(Map.Entry::getKey,
