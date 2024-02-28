@@ -134,11 +134,8 @@ public class IdentService {
                 "<tpsServiceRutine>" +
                 "<serviceRutinenavn>FS03-FDLISTER-DISKNAVN-M</serviceRutinenavn>" +
                 "<aksjonsKode>A</aksjonsKode>" +
-                "<aksjonsKode2>%s</aksjonsKode2>" +
-                "<antallFnr>%s</antallFnr>" +
-                "<nFnr>%s</nFnr>" +
-                "</tpsServiceRutine>" +
-                "</tpsPersonData>".formatted(isProd ? "2" : "0",
+                "<aksjonsKode2>%s</aksjonsKode2><antallFnr>%s</antallFnr><nFnr>%s</nFnr></tpsServiceRutine></tpsPersonData>"
+                        .formatted(isProd ? "2" : "0",
                         Integer.toString(identer.size()),
                         identer.stream()
                                 .map("<fnr>%s</fnr>"::formatted)
