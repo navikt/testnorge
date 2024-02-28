@@ -5,6 +5,7 @@ import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { Bruker, Organisasjon } from '@/pages/brukerPage/types'
 import { BrukerApi } from '@/service/Api'
 import { FormProvider, useForm } from 'react-hook-form'
+import { navigateToLogin } from '@/components/utlogging/navigateToLogin'
 
 type BrukernavnVelgerProps = {
 	organisasjon: Organisasjon
@@ -13,7 +14,7 @@ type BrukernavnVelgerProps = {
 
 const Selector = styled.div`
 	display: flexbox;
-	text-align: left;
+	text-align: -webkit-center;
 	justify-content: center;
 	margin-bottom: 20px;
 `
@@ -92,6 +93,13 @@ export default ({ organisasjon, addToSession }: BrukernavnVelgerProps) => {
 						disabled={error}
 					>
 						Gå videre til Dolly
+					</NavButton>
+					<NavButton
+						className="tilbake-button"
+						onClick={() => navigateToLogin()}
+						variant={'secondary'}
+					>
+						Tilbake til innlogging
 					</NavButton>
 				</Selector>
 			</FormProvider>
