@@ -33,7 +33,7 @@ public class AmeldingConsumer {
 
     private static final String JURIDISK_ENHET_IKKE_FUNNET = "Feil= Juridisk enhet for organisasjon(ene): %s ble ikke funnet i miljø";
     private static final DateTimeFormatter YEAR_MONTH = DateTimeFormatter.ofPattern("yyyy-MM");
-
+    private static final String STATUS_ELEMENT = "%s: amelding$%s %s";
     private final TokenExchange tokenService;
     private final WebClient webClient;
     private final ServerProperties serverProperties;
@@ -82,7 +82,7 @@ public class AmeldingConsumer {
                                                                 amelding.getOpplysningspliktigOrganisajonsnummer()))
                                                         .doOnNext(status -> transactionHelperService.persisterDynamicProgress(progress,
                                         BestillingProgress::getAaregStatus, BestillingProgress::setAaregStatus,
-                                        "%s:%s %s".formatted(miljoe, amelding.getKalendermaaned(), status)));
+                                        STATUS_ELEMENT.formatted(miljoe, amelding.getKalendermaaned(), status)));
                             }
                         }));
     }
