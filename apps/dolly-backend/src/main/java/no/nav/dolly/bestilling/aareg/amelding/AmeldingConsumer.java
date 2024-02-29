@@ -33,7 +33,7 @@ public class AmeldingConsumer {
 
     private static final String JURIDISK_ENHET_IKKE_FUNNET = "Feil= Juridisk enhet for organisasjon(ene): %s ble ikke funnet i miljø";
     private static final DateTimeFormatter YEAR_MONTH = DateTimeFormatter.ofPattern("yyyy-MM");
-    private static final String STATUS_ELEMENT = "%s: amelding$%s %s";
+    private static final String STATUS_ELEMENT = "%s:Amelding$%s %s";
     private final TokenExchange tokenService;
     private final WebClient webClient;
     private final ServerProperties serverProperties;

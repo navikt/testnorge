@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class AmeldingService {
 
-    private static final String STATUS_ELEMENT = "%s: amelding$%s";
+    private static final String STATUS_ELEMENT = "%s:Amelding$%s";
 
     private final AmeldingConsumer ameldingConsumer;
     private final MapperFacade mapperFacade;
