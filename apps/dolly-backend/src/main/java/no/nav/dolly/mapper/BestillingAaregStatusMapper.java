@@ -8,13 +8,11 @@ import no.nav.dolly.domain.resultset.BAFeilkoder;
 import no.nav.dolly.domain.resultset.RsStatusRapport;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static java.util.Collections.singletonList;
 import static no.nav.dolly.domain.resultset.SystemTyper.AAREG;
@@ -26,6 +24,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 public final class BestillingAaregStatusMapper {
 
     private static final String OKAY = "OK";
+
     public static List<RsStatusRapport> buildAaregStatusMap(List<BestillingProgress> progressList) {
         //  status     miljø       ident
         Map<String, Map<String, Set<String>>> errorEnvIdents = new HashMap<>();
@@ -58,24 +57,27 @@ public final class BestillingAaregStatusMapper {
                                 .build())
                 .toList();
 
-        var okMiljoer = statuser.stream()
-                .filter(status -> OKAY.equals(status.getMelding()))
-                .map(RsStatusRapport.Status::getDetaljert)
-                .flatMap(Collection::stream)
-                .map(RsStatusRapport.Detaljert::getMiljo)
-                .collect(Collectors.toSet());
-
         return statuser.isEmpty() ? Collections.emptyList() :
                 singletonList(RsStatusRapport.builder()
                 .navn(AAREG.getBeskrivelse())
                 .id(AAREG)
                 .statuser(statuser.stream()
                         .filter(status -> !status.getMelding().contains(OKAY) ||
-                                "OK".equals(status.getMelding()) ||
+                                OKAY.equals(status.getMelding()) &&
+                                        status.getDetaljert().stream()
+                                                .noneMatch(detaljert -> statuser.stream()
+                                                        .anyMatch(status2 -> !status2.getMelding().contains(OKAY) &&
+                                                        status2.getDetaljert().stream()
+                                                                .anyMatch(detaljert2 ->
+                                                                        detaljert.getMiljo().equals(detaljert2.getMiljo())))) ||
                                 status.getMelding().contains(" OK") &&
                                         status.getDetaljert().stream()
-                                                .noneMatch(detaljert -> okMiljoer.stream()
-                                                        .anyMatch(miljoe -> miljoe.equals(detaljert.getMiljo()))))
+                                                .noneMatch(detaljert -> statuser.stream()
+                                                        .anyMatch(status2 -> !OKAY.equals(status2.getMelding()) &&
+                                                                        !status.getMelding().contains("Feil") &&
+                                                                status2.getDetaljert().stream()
+                                                                        .anyMatch(detaljert2 ->
+                                                                                detaljert.getMiljo().equals(detaljert2.getMiljo())))))
                         .toList())
                 .build());
     }
