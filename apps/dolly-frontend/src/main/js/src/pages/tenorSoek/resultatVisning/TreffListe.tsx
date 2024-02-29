@@ -4,6 +4,7 @@ import { useTenorIdent } from '@/utils/hooks/useTenorSoek'
 import { PersonVisning } from '@/pages/tenorSoek/resultatVisning/PersonVisning'
 import Loading from '@/components/ui/loading/Loading'
 import styled from 'styled-components'
+import { NavigerTilPerson } from '@/pages/tenorSoek/resultatVisning/NavigerTilPerson'
 
 const PersonNavn = styled.h3`
 	word-break: break-word;
@@ -86,6 +87,7 @@ export const TreffListe = ({ response, personListe, loading, error }: any) => {
 									{relasjon}
 								</Tag>
 							))}
+							{/*<NavigerTilPerson ident={person?.id} />*/}
 						</Box>
 					))}
 				</VStack>
@@ -105,6 +107,7 @@ export const TreffListe = ({ response, personListe, loading, error }: any) => {
 					<PersonVisningWrapper>
 						<PersonVisning
 							person={valgtPersonData?.data}
+							ident={valgtPerson?.id}
 							loading={valgtPersonLoading}
 							error={valgtPersonError}
 						/>
