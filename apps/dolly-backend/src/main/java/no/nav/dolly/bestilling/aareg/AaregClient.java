@@ -69,15 +69,14 @@ public class AaregClient implements ClientRegister {
                     .map(miljo -> String.format("%s:%s", miljo, getInfoVenter(SYSTEM)))
                     .collect(Collectors.joining(","));
 
-            transactionHelperService.persister(progress, BestillingProgress::getAaregStatus,
-                    BestillingProgress::setAaregStatus, initStatus);
-
             return Flux.just(1)
                     .flatMap(index -> {
                         if (bestilling.getAareg().stream()
                                 .map(RsAareg::getAmelding)
                                 .allMatch(List::isEmpty)) {
 
+                            transactionHelperService.persister(progress, BestillingProgress::getAaregStatus,
+                                    BestillingProgress::setAaregStatus, initStatus);
                             return sendArbeidsforhold(bestilling, dollyPerson, miljoerTrygg.get(), isOpprettEndre);
                         } else {
                             return ameldingService.sendAmelding(bestilling, dollyPerson, miljoerTrygg.get(), progress);
