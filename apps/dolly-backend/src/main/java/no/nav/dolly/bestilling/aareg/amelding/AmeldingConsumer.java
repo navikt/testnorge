@@ -8,18 +8,21 @@ import no.nav.dolly.config.Consumers;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.Timed;
-import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.dto.ameldingservice.v1.AMeldingDTO;
 import no.nav.testnav.libs.dto.ameldingservice.v1.VirksomhetDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.slf4j.event.Level;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.netty.http.client.HttpClient;
+import reactor.netty.resources.ConnectionProvider;
 
+import java.time.Duration;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,29 +36,35 @@ public class AmeldingConsumer {
 
     private static final String JURIDISK_ENHET_IKKE_FUNNET = "Feil= Juridisk enhet for organisasjon(ene): %s ble ikke funnet i miljø";
     private static final DateTimeFormatter YEAR_MONTH = DateTimeFormatter.ofPattern("yyyy-MM");
-    private static final String STATUS_ELEMENT = "%s:Amelding$%s %s";
     private final TokenExchange tokenService;
     private final WebClient webClient;
     private final ServerProperties serverProperties;
     private final ErrorStatusDecoder errorStatusDecoder;
-    private final TransactionHelperService transactionHelperService;
 
     public AmeldingConsumer(
             TokenExchange tokenService,
             Consumers consumers,
             ObjectMapper objectMapper,
             ErrorStatusDecoder errorStatusDecoder,
-            WebClient.Builder webClientBuilder,
-            TransactionHelperService transactionHelperService) {
+            WebClient.Builder webClientBuilder) {
 
         this.tokenService = tokenService;
         serverProperties = consumers.getTestnavAmeldingService();
         this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
+                .clientConnector(
+                        new ReactorClientHttpConnector(
+                                HttpClient
+                                        .create(ConnectionProvider.builder("Testnorge connection pool")
+                                                .maxConnections(5)
+                                                .pendingAcquireMaxCount(10000)
+                                                .pendingAcquireTimeout(Duration.ofMinutes(30))
+                                                .build())
+                                        .responseTimeout(Duration.ofSeconds(3))
+                        ))
                 .build();
         this.errorStatusDecoder = errorStatusDecoder;
-        this.transactionHelperService = transactionHelperService;
     }
 
     @Timed(name = "providers", tags = {"operation", "amelding_put"})
@@ -79,10 +88,7 @@ public class AmeldingConsumer {
                                                 log.atLevel("OK".equals(status) ? Level.INFO : Level.ERROR)
                                                         .log("Ameldingstatus: {}, miljoe: {}, kalendermåned: {}, organisasjon: {}",
                                                                 status, miljoe, amelding.getKalendermaaned(),
-                                                                amelding.getOpplysningspliktigOrganisajonsnummer()))
-                                                        .doOnNext(status -> transactionHelperService.persisterDynamicProgress(progress,
-                                        BestillingProgress::getAaregStatus, BestillingProgress::setAaregStatus,
-                                        STATUS_ELEMENT.formatted(miljoe, amelding.getKalendermaaned(), status)));
+                                                                amelding.getOpplysningspliktigOrganisajonsnummer()));
                             }
                         }));
     }
