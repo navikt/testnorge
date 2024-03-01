@@ -30,11 +30,21 @@ public class PersonhistorikkDTO {
         UTVA
     }
 
-    private String identType;
-    private List<PersonstatusType> personStatus;
-    private List<BoAdresseType> bostedsAdresse;
-    private List<PostAdresseType> postAdresse;
-    private List<NavTilleggType> tilleggAdresseNAV;
+    private String miljoe;
+    private String status;
+    private PersonData persondata;
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class PersonData {
+        private String identType;
+        private List<PersonstatusType> personStatus;
+        private List<BoAdresseType> bostedsAdresse;
+        private List<PostAdresseType> postAdresse;
+        private List<NavTilleggType> tilleggAdresseNAV;
+    }
 
     @Data
     @Builder
