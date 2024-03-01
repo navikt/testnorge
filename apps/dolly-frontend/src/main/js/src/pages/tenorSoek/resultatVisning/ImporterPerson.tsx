@@ -4,33 +4,25 @@ import { Button } from '@navikt/ds-react'
 import { CypressSelector } from '../../../../cypress/mocks/Selectors'
 import { ArrowRightIcon } from '@navikt/aksel-icons'
 
-export const NavigerTilPerson = ({ ident }) => {
+export const ImporterPerson = ({ valgtPerson }) => {
 	const navigate = useNavigate()
-	const { result, loading } = useNaviger(ident)
+	const { result, loading } = useNaviger(valgtPerson)
 
 	// TODO vis loading?
-	if (!result) {
+	if (result) {
 		return null
 	}
 
 	const handleClick = (event) => {
 		event.stopPropagation()
-		// setValgtIdent(ident)
-		if (result?.gruppe?.id && !window.location.pathname.includes(`/${result?.gruppe?.id}`)) {
-			navigate(`/gruppe/${result?.gruppe?.id}`, {
-				replace: true,
-				state: {
-					hovedperson: result.identHovedperson,
-					visPerson: result.identNavigerTil,
-					sidetall: result.sidetall,
-				},
-			})
-		}
+		navigate(`/importer`, {
+			state: {
+				importPersoner: [valgtPerson],
+				// mal: mal,
+				// gruppe: gruppe,
+			},
+		})
 	}
-	//
-	// if (linkTekst) {
-	//     return <StyledButton onClick={handleClick}>{linkTekst}</StyledButton>
-	// }
 
 	return (
 		<Button
@@ -41,7 +33,7 @@ export const NavigerTilPerson = ({ ident }) => {
 			loading={loading}
 			onClick={handleClick}
 		>
-			Vis i gruppe
+			Importer til gruppe
 		</Button>
 	)
 }

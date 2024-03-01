@@ -7,6 +7,7 @@ import { InntektVisning } from '@/pages/tenorSoek/resultatVisning/InntektVisning
 import Loading from '@/components/ui/loading/Loading'
 import { EnhetsregisteretForetaksregisteretVisning } from '@/pages/tenorSoek/resultatVisning/EnhetsregisteretForetaksregisteretVisning'
 import { NavigerTilPerson } from '@/pages/tenorSoek/resultatVisning/NavigerTilPerson'
+import { ImporterPerson } from '@/pages/tenorSoek/resultatVisning/ImporterPerson'
 
 const NavnHeader = styled.h2`
 	margin: 5px 0 15px 0;
@@ -33,6 +34,7 @@ export const PersonVisning = ({ person, ident, loading, error }) => {
 			<div className="flexbox--space">
 				<NavnHeader>{personData?.visningnavn}</NavnHeader>
 				<NavigerTilPerson ident={ident} />
+				<ImporterPerson valgtPerson={ident} />
 			</div>
 			<FolkeregisteretVisning data={personData} />
 			<EnhetsregisteretForetaksregisteretVisning
