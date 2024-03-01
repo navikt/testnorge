@@ -57,29 +57,36 @@ public final class BestillingAaregStatusMapper {
                                 .build())
                 .toList();
 
+//        return statuser.isEmpty() ? Collections.emptyList() :
+//                singletonList(RsStatusRapport.builder()
+//                .navn(AAREG.getBeskrivelse())
+//                .id(AAREG)
+//                .statuser(statuser.stream()
+//                        .filter(status -> !status.getMelding().contains(OKAY) ||
+//                                OKAY.equals(status.getMelding()) &&
+//                                        status.getDetaljert().stream()
+//                                                .noneMatch(detaljert -> statuser.stream()
+//                                                        .anyMatch(status2 -> !status2.getMelding().contains(OKAY) &&
+//                                                        status2.getDetaljert().stream()
+//                                                                .anyMatch(detaljert2 ->
+//                                                                        detaljert.getMiljo().equals(detaljert2.getMiljo())))) ||
+//                                status.getMelding().contains(" OK") &&
+//                                        status.getDetaljert().stream()
+//                                                .noneMatch(detaljert -> statuser.stream()
+//                                                        .anyMatch(status2 -> !OKAY.equals(status2.getMelding()) &&
+//                                                                        !status.getMelding().contains("Feil") &&
+//                                                                status2.getDetaljert().stream()
+//                                                                        .anyMatch(detaljert2 ->
+//                                                                                detaljert.getMiljo().equals(detaljert2.getMiljo())))))
+//                        .toList())
+//                .build());
+
         return statuser.isEmpty() ? Collections.emptyList() :
                 singletonList(RsStatusRapport.builder()
-                .navn(AAREG.getBeskrivelse())
-                .id(AAREG)
-                .statuser(statuser.stream()
-                        .filter(status -> !status.getMelding().contains(OKAY) ||
-                                OKAY.equals(status.getMelding()) &&
-                                        status.getDetaljert().stream()
-                                                .noneMatch(detaljert -> statuser.stream()
-                                                        .anyMatch(status2 -> !status2.getMelding().contains(OKAY) &&
-                                                        status2.getDetaljert().stream()
-                                                                .anyMatch(detaljert2 ->
-                                                                        detaljert.getMiljo().equals(detaljert2.getMiljo())))) ||
-                                status.getMelding().contains(" OK") &&
-                                        status.getDetaljert().stream()
-                                                .noneMatch(detaljert -> statuser.stream()
-                                                        .anyMatch(status2 -> !OKAY.equals(status2.getMelding()) &&
-                                                                        !status.getMelding().contains("Feil") &&
-                                                                status2.getDetaljert().stream()
-                                                                        .anyMatch(detaljert2 ->
-                                                                                detaljert.getMiljo().equals(detaljert2.getMiljo())))))
-                        .toList())
-                .build());
+                        .navn(AAREG.getBeskrivelse())
+                        .id(AAREG)
+                        .statuser(statuser)
+                        .build());
     }
 
     public static String konverterBAfeilkodeTilFeilmelding(String baKode) {
