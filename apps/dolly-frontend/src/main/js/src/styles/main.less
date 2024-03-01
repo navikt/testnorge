@@ -49,6 +49,10 @@ a {
 
 }
 
+.navds-date__field-input {
+  margin-top: -8px;
+}
+
 .navds-copybutton__icon {
 
   svg {
@@ -62,6 +66,26 @@ a {
 
 .navds-checkbox--medium > .navds-checkbox__input + .navds-checkbox__label > .navds-checkbox__icon {
   margin-top: 2px;
+}
+
+.navds-form-field--small {
+
+  gap: unset;
+
+  .navds-date__field-input {
+    min-height: 38px;
+    width: 190px;
+    margin-top: 0;
+  }
+}
+
+
+.navds-text-field__input:focus-visible {
+  outline: -webkit-focus-ring-color auto 1px;;
+  outline-offset: 0;
+  box-shadow: unset;
+  border-radius: var(--a-border-radius-medium);
+  border: 1px solid var(--ac-textfield-border, var(--__ac-textfield-border, var(--a-border-default)));
 }
 
 .navds-checkboxes {

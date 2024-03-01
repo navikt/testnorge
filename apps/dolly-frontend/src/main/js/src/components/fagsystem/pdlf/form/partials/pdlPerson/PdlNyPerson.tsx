@@ -6,7 +6,6 @@ import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepic
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
-import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 import { Option } from '@/service/SelectOptionsOppslag'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 
@@ -69,20 +68,18 @@ export const PdlNyPerson = ({
 				label="Alder"
 				isDisabled={disableAlder || hasEksisterendePerson}
 			/>
-			<DatepickerWrapper>
-				<FormikDatepicker
-					name={`${nyPersonPath}.foedtEtter`}
-					label="Født etter"
-					disabled={disableFoedtDato || hasEksisterendePerson}
-					maxDate={new Date()}
-				/>
-				<FormikDatepicker
-					name={`${nyPersonPath}.foedtFoer`}
-					label="Født før"
-					disabled={disableFoedtDato || hasEksisterendePerson}
-					maxDate={new Date()}
-				/>
-			</DatepickerWrapper>
+			<FormikDatepicker
+				name={`${nyPersonPath}.foedtEtter`}
+				label="Født etter"
+				disabled={disableFoedtDato || hasEksisterendePerson}
+				maxDate={new Date()}
+			/>
+			<FormikDatepicker
+				name={`${nyPersonPath}.foedtFoer`}
+				label="Født før"
+				disabled={disableFoedtDato || hasEksisterendePerson}
+				maxDate={new Date()}
+			/>
 			{!erNyIdent && (
 				<FormikSelect
 					name={`${nyPersonPath}.statsborgerskapLandkode`}

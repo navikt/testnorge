@@ -3,7 +3,6 @@ import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFiel
 import { initialDoedfoedtBarn } from '@/components/fagsystem/pdlf/form/initialValues'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
-import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface DoedfoedtBarnProps {
@@ -14,9 +13,7 @@ interface DoedfoedtBarnProps {
 export const DoedfoedtBarnForm = ({ formMethods, path }: DoedfoedtBarnProps) => {
 	return (
 		<div className="flexbox--flex-wrap">
-			<DatepickerWrapper>
-				<FormikDatepicker name={`${path}.dato`} label="Dødsdato" maxDate={new Date()} />
-			</DatepickerWrapper>
+			<FormikDatepicker name={`${path}.dato`} label="Dødsdato" maxDate={new Date()} />
 			<AvansertForm
 				path={path}
 				kanVelgeMaster={formMethods.watch(`${path}.bekreftelsesdato`) === null}

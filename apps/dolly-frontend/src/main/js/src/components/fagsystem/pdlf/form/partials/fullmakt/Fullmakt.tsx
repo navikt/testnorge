@@ -7,7 +7,6 @@ import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert
 import { PdlPersonExpander } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonExpander'
 import { initialFullmakt } from '@/components/fagsystem/pdlf/form/initialValues'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
-import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 
@@ -33,10 +32,8 @@ export const FullmaktForm = ({ formMethods, path, eksisterendeNyPerson = null }:
 					isClearable={false}
 				/>
 			</div>
-			<DatepickerWrapper>
-				<FormikDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig fra og med" />
-				<FormikDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig til og med" />
-			</DatepickerWrapper>
+			<FormikDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig fra og med" />
+			<FormikDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig til og med" />
 			<PdlPersonExpander
 				nyPersonPath={`${path}.nyFullmektig`}
 				eksisterendePersonPath={`${path}.motpartsPersonident`}

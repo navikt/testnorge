@@ -6,7 +6,6 @@ import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { PdlPersonExpander } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonExpander'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
-import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 import { Option } from '@/service/SelectOptionsOppslag'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 
@@ -43,10 +42,8 @@ export const VergemaalForm = ({
 				size="fullWidth"
 				optionHeight={50}
 			/>
-			<DatepickerWrapper>
-				<FormikDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig f.o.m." />
-				<FormikDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig t.o.m." />
-			</DatepickerWrapper>
+			<FormikDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig f.o.m." />
+			<FormikDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig t.o.m." />
 			<PdlPersonExpander
 				nyPersonPath={`${path}.nyVergeIdent`}
 				eksisterendePersonPath={`${path}.vergeIdent`}

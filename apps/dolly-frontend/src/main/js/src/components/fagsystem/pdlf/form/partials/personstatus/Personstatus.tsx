@@ -1,7 +1,6 @@
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
-import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 
 type PersonstatusTypes = {
@@ -17,10 +16,8 @@ export const PersonstatusForm = ({ path }: PersonstatusTypes) => {
 				options={Options('personstatus')}
 				isClearable={false}
 			/>
-			<DatepickerWrapper>
-				<FormikDatepicker name={`${path}.gyldigFraOgMed`} label="Personstatus gyldig f.o.m." />
-				<FormikDatepicker name={`${path}.gyldigTilOgMed`} label="Personstatus gyldig t.o.m." />
-			</DatepickerWrapper>
+			<FormikDatepicker name={`${path}.gyldigFraOgMed`} label="Personstatus gyldig f.o.m." />
+			<FormikDatepicker name={`${path}.gyldigTilOgMed`} label="Personstatus gyldig t.o.m." />
 			<AvansertForm path={path} kanVelgeMaster={false} />
 		</>
 	)

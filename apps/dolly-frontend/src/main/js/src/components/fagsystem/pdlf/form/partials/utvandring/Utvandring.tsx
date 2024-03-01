@@ -5,7 +5,6 @@ import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert
 import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { AdresseKodeverk } from '@/config/kodeverk'
-import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 
 type UtvandringTypes = {
 	path: string
@@ -24,13 +23,11 @@ export const UtvandringForm = ({ path }: UtvandringTypes) => {
 				isClearable={false}
 			/>
 			<FormikTextInput name={`${path}.tilflyttingsstedIUtlandet`} label="Tilflyttingssted" />
-			<DatepickerWrapper>
-				<FormikDatepicker
-					name={`${path}.utflyttingsdato`}
-					label="Utflyttingsdato"
-					maxDate={new Date()}
-				/>
-			</DatepickerWrapper>
+			<FormikDatepicker
+				name={`${path}.utflyttingsdato`}
+				label="Utflyttingsdato"
+				maxDate={new Date()}
+			/>
 			<AvansertForm path={path} kanVelgeMaster={false} />
 		</>
 	)

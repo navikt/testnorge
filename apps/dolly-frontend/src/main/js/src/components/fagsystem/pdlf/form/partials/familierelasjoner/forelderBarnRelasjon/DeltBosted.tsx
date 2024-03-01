@@ -14,7 +14,6 @@ import {
 	initialUkjentBosted,
 	initialVegadresse,
 } from '@/components/fagsystem/pdlf/form/initialValues'
-import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface DeltBostedValues {
@@ -146,10 +145,8 @@ export const DeltBostedForm = ({
 			)}
 			{adressetype === 'UKJENT_BOSTED' && <UkjentBosted path={`${path}.ukjentBosted`} />}
 			<div className="flexbox--flex-wrap">
-				<DatepickerWrapper>
-					<FormikDatepicker name={`${path}.startdatoForKontrakt`} label="Startdato for kontrakt" />
-					<FormikDatepicker name={`${path}.sluttdatoForKontrakt`} label="Sluttdato for kontrakt" />
-				</DatepickerWrapper>
+				<FormikDatepicker name={`${path}.startdatoForKontrakt`} label="Startdato for kontrakt" />
+				<FormikDatepicker name={`${path}.sluttdatoForKontrakt`} label="Sluttdato for kontrakt" />
 			</div>
 		</>
 	)

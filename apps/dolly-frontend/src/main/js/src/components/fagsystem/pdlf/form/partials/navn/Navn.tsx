@@ -9,7 +9,6 @@ import { useContext, useEffect, useState } from 'react'
 import { ArrowCirclepathIcon } from '@navikt/aksel-icons'
 import { Button } from '@navikt/ds-react'
 import styled from 'styled-components'
-import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { useGenererNavn } from '@/utils/hooks/useGenererNavn'
 import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
@@ -154,9 +153,7 @@ export const NavnForm = ({ formMethods, path, identtype }: NavnTypes) => {
 					isDisabled={!isEmpty(selectedMellomnavn)}
 					checkboxMargin
 				/>
-				<DatepickerWrapper>
-					<FormikDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig f.o.m. dato" />
-				</DatepickerWrapper>
+				<FormikDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig f.o.m. dato" />
 			</div>
 			<AvansertForm path={path} kanVelgeMaster={identtype !== 'NPID'} />
 		</>

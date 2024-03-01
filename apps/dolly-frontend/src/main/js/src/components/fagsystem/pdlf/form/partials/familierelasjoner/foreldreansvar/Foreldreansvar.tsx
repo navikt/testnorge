@@ -18,7 +18,6 @@ import { PdlPersonUtenIdentifikator } from '@/components/fagsystem/pdlf/form/par
 import { Alert } from '@navikt/ds-react'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import styled from 'styled-components'
-import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface ForeldreansvarForm {
@@ -130,10 +129,8 @@ export const ForeldreansvarForm = ({
 				options={Options('foreldreansvar')}
 				onChange={(target: Target) => handleChangeAnsvar(target, path)}
 			/>
-			<DatepickerWrapper>
-				<FormikDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig fra og med" />
-				<FormikDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig til og med" />
-			</DatepickerWrapper>
+			<FormikDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig fra og med" />
+			<FormikDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig til og med" />
 
 			{ansvar === 'ANDRE' && (
 				<FormikSelect

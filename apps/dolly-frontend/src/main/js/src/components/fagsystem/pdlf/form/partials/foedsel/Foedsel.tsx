@@ -7,7 +7,6 @@ import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectedValue } from '@/components/fagsystem/pdlf/PdlTypes'
-import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 import { useContext } from 'react'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { UseFormReturn } from 'react-hook-form/dist/types'
@@ -44,29 +43,27 @@ export const FoedselForm = ({ formMethods, path }: FoedselTypes) => {
 
 	return (
 		<>
-			<DatepickerWrapper>
-				<FormikDatepicker
-					name={`${path}.foedselsdato`}
-					label="Fødselsdato"
-					disabled={(foedselsaar !== null && foedselsdato === null) || harAlder()}
-					maxDate={new Date()}
-					minDate={minDateFoedsel}
-				/>
-				<Yearpicker
-					formMethods={formMethods}
-					name={`${path}.foedselsaar`}
-					label="Fødselsår"
-					date={foedselsaar ? new Date(foedselsaar, 0) : null}
-					handleDateChange={(val) => {
-						formMethods.setValue(`${path}.foedselsaar`, val ? new Date(val).getFullYear() : null)
-						formMethods.trigger()
-					}}
-					maxDate={new Date()}
-					minDate={minDateFoedsel}
-					// @ts-ignore
-					disabled={(foedselsdato !== null && foedselsaar === null) || harAlder()}
-				/>
-			</DatepickerWrapper>
+			<FormikDatepicker
+				name={`${path}.foedselsdato`}
+				label="Fødselsdato"
+				disabled={(foedselsaar !== null && foedselsdato === null) || harAlder()}
+				maxDate={new Date()}
+				minDate={minDateFoedsel}
+			/>
+			<Yearpicker
+				formMethods={formMethods}
+				name={`${path}.foedselsaar`}
+				label="Fødselsår"
+				date={foedselsaar ? new Date(foedselsaar, 0) : null}
+				handleDateChange={(val) => {
+					formMethods.setValue(`${path}.foedselsaar`, val ? new Date(val).getFullYear() : null)
+					formMethods.trigger()
+				}}
+				maxDate={new Date()}
+				minDate={minDateFoedsel}
+				// @ts-ignore
+				disabled={(foedselsdato !== null && foedselsaar === null) || harAlder()}
+			/>
 			<FormikTextInput name={`${path}.foedested`} label="Fødested" size="large" />
 			<FormikSelect
 				name={`${path}.foedekommune`}

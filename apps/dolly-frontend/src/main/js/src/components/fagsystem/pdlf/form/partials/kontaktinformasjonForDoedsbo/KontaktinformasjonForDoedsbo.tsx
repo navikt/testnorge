@@ -10,7 +10,6 @@ import Panel from '@/components/ui/panel/Panel'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import React from 'react'
-import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 
 export const doedsboAttributt = 'pdldata.person.kontaktinformasjonForDoedsbo'
 
@@ -27,12 +26,10 @@ export const KontaktinformasjonForDoedsboForm = ({
 				options={Options('skifteform')}
 				isClearable={false}
 			/>
-			<DatepickerWrapper>
-				<FormikDatepicker
-					name={`${path}.attestutstedelsesdato`}
-					label="Utstedelsesdato skifteattest"
-				/>
-			</DatepickerWrapper>
+			<FormikDatepicker
+				name={`${path}.attestutstedelsesdato`}
+				label="Utstedelsesdato skifteattest"
+			/>
 			<Kontakt formMethods={formMethods} path={path} eksisterendeNyPerson={eksisterendeNyPerson} />
 			<Adresse formMethods={formMethods} path={`${path}.adresse`} />
 			<AvansertForm path={path} kanVelgeMaster={false} />

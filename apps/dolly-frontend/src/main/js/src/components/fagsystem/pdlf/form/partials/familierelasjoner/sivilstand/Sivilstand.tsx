@@ -13,7 +13,6 @@ import {
 import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
-import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 import { Option } from '@/service/SelectOptionsOppslag'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { UseFormReturn } from 'react-hook-form/dist/types'
@@ -71,22 +70,20 @@ export const SivilstandForm = ({
 					</Hjelpetekst>
 				</div>
 			)}
-			<DatepickerWrapper>
-				<FormikDatepicker
-					name={`${path}.sivilstandsdato`}
-					label="Gyldig fra og med"
-					disabled={formMethods.watch(`${path}.bekreftelsesdato`) != null}
-				/>
-				<FormikDatepicker
-					name={`${path}.bekreftelsesdato`}
-					label="Bekreftelsesdato"
-					disabled={
-						formMethods.watch(`${path}.sivilstandsdato`) != null ||
-						formMethods.watch(`${path}.master`) !== 'PDL' ||
-						formMethods.watch(`${path}.type`) === 'SAMBOER'
-					}
-				/>
-			</DatepickerWrapper>
+			<FormikDatepicker
+				name={`${path}.sivilstandsdato`}
+				label="Gyldig fra og med"
+				disabled={formMethods.watch(`${path}.bekreftelsesdato`) != null}
+			/>
+			<FormikDatepicker
+				name={`${path}.bekreftelsesdato`}
+				label="Bekreftelsesdato"
+				disabled={
+					formMethods.watch(`${path}.sivilstandsdato`) != null ||
+					formMethods.watch(`${path}.master`) !== 'PDL' ||
+					formMethods.watch(`${path}.type`) === 'SAMBOER'
+				}
+			/>
 			<FormikCheckbox
 				name={`${path}.borIkkeSammen`}
 				label="Bor ikke sammen"

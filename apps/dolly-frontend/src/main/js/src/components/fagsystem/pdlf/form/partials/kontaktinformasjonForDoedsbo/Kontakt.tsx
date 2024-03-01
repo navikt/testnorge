@@ -13,7 +13,6 @@ import { OrganisasjonSelect } from '@/components/organisasjonSelect'
 import { PdlNyPerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlNyPerson'
 import { PdlEksisterendePerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlEksisterendePerson'
 import { useEffect } from 'react'
-import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 import { useGenererNavn } from '@/utils/hooks/useGenererNavn'
 import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
 import { UseFormReturn } from 'react-hook-form/dist/types'
@@ -175,14 +174,12 @@ export const Kontakt = ({ formMethods, path, eksisterendeNyPerson = null }: Kont
 						eksisterendeNyPerson={eksisterendeNyPerson}
 						formMethods={formMethods}
 					/>
-					<DatepickerWrapper>
-						<FormikDatepicker
-							name={`${personPath}.foedselsdato`}
-							label="Fødselsdato"
-							disabled={disablePersoninfo}
-							maxDate={new Date()}
-						/>
-					</DatepickerWrapper>
+					<FormikDatepicker
+						name={`${personPath}.foedselsdato`}
+						label="Fødselsdato"
+						disabled={disablePersoninfo}
+						maxDate={new Date()}
+					/>
 					<DollySelect
 						name={`${personPath}.navn.fornavn`}
 						label="Kontaktperson navn"

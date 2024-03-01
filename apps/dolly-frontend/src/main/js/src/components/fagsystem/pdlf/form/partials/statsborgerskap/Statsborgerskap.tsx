@@ -4,7 +4,6 @@ import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFiel
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { getInitialStatsborgerskap } from '@/components/fagsystem/pdlf/form/initialValues'
-import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 import { useContext } from 'react'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 
@@ -23,14 +22,12 @@ export const StatsborgerskapForm = ({ path, identtype }: StatsborgerskapTypes) =
 				size="large"
 				isClearable={false}
 			/>
-			<DatepickerWrapper>
-				<FormikDatepicker
-					name={`${path}.gyldigFraOgMed`}
-					label="Statsborgerskap fra"
-					maxDate={new Date()}
-				/>
-				<FormikDatepicker name={`${path}.gyldigTilOgMed`} label="Statsborgerskap til" />
-			</DatepickerWrapper>
+			<FormikDatepicker
+				name={`${path}.gyldigFraOgMed`}
+				label="Statsborgerskap fra"
+				maxDate={new Date()}
+			/>
+			<FormikDatepicker name={`${path}.gyldigTilOgMed`} label="Statsborgerskap til" />
 			<AvansertForm path={path} kanVelgeMaster={identtype !== 'NPID'} />
 		</>
 	)

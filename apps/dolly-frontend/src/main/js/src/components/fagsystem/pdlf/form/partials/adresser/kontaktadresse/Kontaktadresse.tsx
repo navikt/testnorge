@@ -18,7 +18,6 @@ import {
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { Adressetype } from '@/components/fagsystem/pdlf/PdlTypes'
-import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 import { getPlaceholder, setNavn } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { useGenererNavn } from '@/utils/hooks/useGenererNavn'
 import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
@@ -131,10 +130,8 @@ export const KontaktadresseForm = ({
 				<Postboksadresse path={`${path}.postboksadresse`} />
 			)}
 			<div className="flexbox--flex-wrap">
-				<DatepickerWrapper>
-					<FormikDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig f.o.m." />
-					<FormikDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig t.o.m." />
-				</DatepickerWrapper>
+				<FormikDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig f.o.m." />
+				<FormikDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig t.o.m." />
 				<DollySelect
 					name={`${path}.opprettCoAdresseNavn.fornavn`}
 					label="C/O adressenavn"
