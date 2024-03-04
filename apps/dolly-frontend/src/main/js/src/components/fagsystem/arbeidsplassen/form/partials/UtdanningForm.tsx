@@ -5,7 +5,6 @@ import {
 } from '@/components/fagsystem/arbeidsplassen/form/initialValues'
 import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import * as React from 'react'
 import { Fritekstfelt } from '@/components/fagsystem/arbeidsplassen/form/styles'
 import _get from 'lodash/get'
@@ -13,6 +12,7 @@ import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { EraseFillButtons } from '@/components/fagsystem/arbeidsplassen/form/partials/EraseFillButtons'
+import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 
 export const UtdanningForm = ({ formMethods }) => {
 	const utdanningListePath = 'arbeidsplassenCV.utdanning'
