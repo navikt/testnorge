@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import NavButton from '@/components/ui/button/NavButton/NavButton'
 import Loading from '@/components/ui/loading/Loading'
 import BrukernavnVelger from '@/pages/brukerPage/BrukernavnVelger'
 import OrganisasjonVelger from '@/pages/brukerPage/OrganisasjonVelger'
@@ -72,13 +71,6 @@ export default () => {
 				{organisasjon && !loading && (
 					<BrukernavnVelger organisasjon={organisasjon} addToSession={addToSession} />
 				)}
-				<NavButton
-					className="tilbake-button"
-					onClick={() => navigateToLogin()}
-					variant={'secondary'}
-				>
-					Tilbake til innlogging
-				</NavButton>
 			</div>
 		</div>
 	)
