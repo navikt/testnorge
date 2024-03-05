@@ -1,34 +1,28 @@
 import { useNavigate } from 'react-router-dom'
-import { useNaviger } from '@/utils/hooks/useNaviger'
+import { usePdlPersonbolk } from '@/utils/hooks/usePdlPerson'
 import { Button } from '@navikt/ds-react'
 import { CypressSelector } from '../../../../cypress/mocks/Selectors'
 import { ArrowRightIcon } from '@navikt/aksel-icons'
-import { usePdlPersonbolk } from '@/utils/hooks/usePdlPerson'
+import React from 'react'
 
-export const ImporterPerson = ({ ident }) => {
+export const ImporterValgtePersoner = ({ identer }) => {
 	const navigate = useNavigate()
-	// const { result, loading } = useNaviger(ident)
-	const { pdlPersoner, loading, error } = usePdlPersonbolk(ident)
+	const { pdlPersoner, loading, error } = usePdlPersonbolk(identer)
 
 	// TODO vis loading?
-	// if (result) {
-	// 	return null
-	// }
-	// console.log('ident: ', ident) //TODO - SLETT MEG
-	// console.log('pdlPersoner: ', pdlPersoner) //TODO - SLETT MEG
 	const handleClick = (event) => {
 		// event.stopPropagation()
 		navigate(`/importer`, {
 			state: {
-				importPersoner: [
-					{
+				importPersoner: identer.map((ident) => {
+					return {
 						ident: ident,
 						data: {
 							hentPerson: pdlPersoner?.hentPersonBolk?.find((p) => p.ident === ident)?.person,
 							hentIdenter: pdlPersoner?.hentIdenterBolk?.find((p) => p.ident === ident)?.identer,
 						},
-					},
-				],
+					}
+				}),
 				// mal: mal,
 				// gruppe: gruppe,
 			},
@@ -37,15 +31,13 @@ export const ImporterPerson = ({ ident }) => {
 
 	return (
 		<Button
-			data-cy={CypressSelector.BUTTON_VIS_I_GRUPPE}
-			variant="tertiary"
-			size="xsmall"
-			icon={<ArrowRightIcon />}
+			variant="primary"
+			size="small"
+			disabled={identer?.length < 1}
 			loading={loading}
 			onClick={handleClick}
-			style={{ minWidth: '150px' }}
 		>
-			Importer til gruppe
+			Importer {identer?.length} valgte personer
 		</Button>
 	)
 }

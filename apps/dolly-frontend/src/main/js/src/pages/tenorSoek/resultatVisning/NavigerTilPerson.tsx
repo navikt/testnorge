@@ -3,6 +3,7 @@ import { useNaviger } from '@/utils/hooks/useNaviger'
 import { Button } from '@navikt/ds-react'
 import { CypressSelector } from '../../../../cypress/mocks/Selectors'
 import { ArrowRightIcon } from '@navikt/aksel-icons'
+import { useFinnesIDolly } from '@/utils/hooks/useIdent'
 
 export const NavigerTilPerson = ({ ident }) => {
 	const navigate = useNavigate()
