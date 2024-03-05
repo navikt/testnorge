@@ -31,7 +31,6 @@ export const Datepicker = ({
 }) => {
 	const formMethods = useFormContext()
 	const eksisterendeVerdi = formMethods.watch(name)
-	console.log('eksisterendeVerdi: ', eksisterendeVerdi) //TODO - SLETT MEG
 	const { datepickerProps, inputProps, selectedDay } = useDatepicker({
 		fromDate: minDate || subYears(new Date(), 125),
 		toDate: maxDate || addYears(new Date(), 5),
