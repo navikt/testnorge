@@ -78,7 +78,7 @@ export const PensjonsgivendeInntektForm = ({ path, formMethods, kodeverk, skatte
 		>
 			{(path, idx) => {
 				return (
-					<div className="flexbox--flex-wrap" key={idx}>
+					<div className="flexbox--flex-wrap sigrun-form" key={idx}>
 						{createInntektForm(kodeverk, skatteordning, path)}
 					</div>
 				)

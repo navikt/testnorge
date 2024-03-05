@@ -29,7 +29,7 @@ export const EnkeltinntektForm = ({
 			{(path, idx) => {
 				const typeInntekt = formMethods.watch(`${path}.tekniskNavn`)
 				return (
-					<React.Fragment key={idx}>
+					<div className={'flexbox--space sigrun-form'} key={idx}>
 						<FormikSelect
 							name={`${path}.tekniskNavn`}
 							label="Type inntekt"
@@ -43,7 +43,7 @@ export const EnkeltinntektForm = ({
 						) : (
 							<FormikTextInput name={`${path}.verdi`} label="Verdi" type="number" />
 						)}
-					</React.Fragment>
+					</div>
 				)
 			}}
 		</FormikDollyFieldArray>

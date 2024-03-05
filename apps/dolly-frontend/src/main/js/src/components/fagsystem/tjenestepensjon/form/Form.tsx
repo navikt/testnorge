@@ -10,6 +10,7 @@ import { PensjonApi } from '@/service/Api'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { useFormContext } from 'react-hook-form'
+import './TPForm.less'
 
 export const tpPath = 'pensjonforvalter.tp'
 const hjelpetekst = 'Ordningen som personen skal ha et forhold til.'

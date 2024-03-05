@@ -9,6 +9,7 @@ import 'react-datepicker/dist/react-datepicker.css'
 import './Datepicker.less'
 import { useFormContext } from 'react-hook-form'
 import { DatePicker, useDatepicker } from '@navikt/ds-react'
+import _ from 'lodash'
 
 registerLocale('nb', locale_nb)
 
@@ -30,26 +31,23 @@ export const Datepicker = ({
 }) => {
 	const formMethods = useFormContext()
 	const eksisterendeVerdi = formMethods.watch(name)
+	console.log('eksisterendeVerdi: ', eksisterendeVerdi) //TODO - SLETT MEG
 	const { datepickerProps, inputProps, selectedDay } = useDatepicker({
 		fromDate: minDate || subYears(new Date(), 125),
 		toDate: maxDate || addYears(new Date(), 5),
 		onDateChange: onChange || onBlur,
-		defaultSelected: eksisterendeVerdi && new Date(eksisterendeVerdi),
+		defaultSelected: !_.isEmpty(eksisterendeVerdi) ? new Date(eksisterendeVerdi) : undefined,
 		disabled: excludeDates,
 	})
 
 	return (
-		<DatePicker
-			{...datepickerProps}
-			dropdownCaption={true}
-			selected={(value && new Date(value)) || null}
-		>
+		<DatePicker {...datepickerProps} dropdownCaption={true} selected={selectedDay}>
 			<DatePicker.Input
 				placeholder={placeholder}
 				size={'small'}
-				{...inputProps}
 				disabled={disabled}
 				label={null}
+				{...inputProps}
 			/>
 		</DatePicker>
 	)
