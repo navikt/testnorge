@@ -4,9 +4,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.JAXBElement;
-import jakarta.xml.bind.JAXBException;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.tpsmessagingservice.consumer.ServicerutineConsumer;
@@ -16,13 +13,8 @@ import no.nav.testnav.apps.tpsmessagingservice.dto.TpsServicerutineM201Response;
 import no.nav.testnav.apps.tpsmessagingservice.exception.BadRequestException;
 import no.nav.testnav.apps.tpsmessagingservice.utils.EndringsmeldingUtil;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.TpsIdentStatusDTO;
-import no.nav.tps.ctg.m201.domain.SRnavn;
-import no.nav.tps.ctg.m201.domain.TpsPersonData;
-import no.nav.tps.ctg.m201.domain.TpsServiceRutineType;
 import org.springframework.stereotype.Service;
 
-import javax.xml.namespace.QName;
-import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,25 +28,20 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 @Service
 public class IdentService {
 
-    private static final String SERVICE_NAME_OLD = "FS_03_FDLISTER_DISKNAVN_M";
-    private static final String SERVICE_NAME_NEW = "FS03-FDLISTER-DISKNAVN-M";
-    private static final String EMPTY_FNR = "<NFnr/>";
     private static final int MAX_LIMIT = 80;
     private static final String BAD_REQUEST = "Antall identer kan ikke være større enn " + MAX_LIMIT;
     private static final String PROD = "p";
     private static final String PROD_LIKE_ENV = "q2";
 
     private final ServicerutineConsumer servicerutineConsumer;
-    private final JAXBContext requestContext;
     private final TestmiljoerServiceConsumer testmiljoerServiceConsumer;
     private final XmlMapper xmlMapper;
 
     public IdentService(ServicerutineConsumer servicerutineConsumer,
-                        TestmiljoerServiceConsumer testmiljoerServiceConsumer)
-            throws JAXBException {
+                        TestmiljoerServiceConsumer testmiljoerServiceConsumer) {
+
         this.servicerutineConsumer = servicerutineConsumer;
         this.testmiljoerServiceConsumer = testmiljoerServiceConsumer;
-        this.requestContext = JAXBContext.newInstance(TpsPersonData.class);
         this.xmlMapper = XmlMapper
                 .builder()
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
@@ -94,18 +81,6 @@ public class IdentService {
                 .toList();
     }
 
-    @SneakyThrows
-    public static String marshallToXML(JAXBContext requestContext, TpsPersonData endringsmelding) {
-
-        var marshaller = requestContext.createMarshaller();
-
-        var writer = new StringWriter();
-        JAXBElement<TpsPersonData> element = new JAXBElement<>(new QName("", "tpsPersonData"), TpsPersonData.class, endringsmelding);
-        marshaller.marshal(element, writer);
-
-        return writer.toString();
-    }
-
     private boolean exists(String ident, TpsServicerutineM201Response response) {
 
         return nonNull(response.getTpsSvar()) &&
@@ -117,25 +92,13 @@ public class IdentService {
 
     private Map<String, TpsServicerutineM201Response> readFromTps(List<String> identer, List<String> miljoer, boolean isProd) {
 
-        var request = prepareRequest(identer, isProd);
-        var xmlRequest = marshallToXML(requestContext, request)
-                .replace(SERVICE_NAME_OLD, SERVICE_NAME_NEW)
-                .replace(EMPTY_FNR, "<nFnr>%s</nFnr>".formatted(identer.stream()
-                        .map("<fnr>%s</fnr>"::formatted)
-                        .collect(Collectors.joining(""))));
+        var xmlRequest = prepareRequest(identer, isProd);
 
-        log.info("M201 request: {}", xmlRequest);
+        log.trace("M201 request: {}", xmlRequest);
 
         var miljoerResponse = servicerutineConsumer.sendMessage(xmlRequest, miljoer);
 
-        miljoerResponse.forEach((key, value) -> {
-            if (value.contains("<returStatus>00</returStatus>") ||
-                    value.contains("<returStatus>04</returStatus>")) {
-                log.info("Miljø: {} XML: {}", key, value);
-            } else {
-                log.error("Miljø: {} XML: {}", key, value);
-            }
-        });
+        miljoerResponse.forEach((key, value) -> log.trace("Miljø: {} XML: {}", key, value));
 
         return miljoerResponse.entrySet().parallelStream()
                 .collect(Collectors.toMap(Map.Entry::getKey,
@@ -158,17 +121,18 @@ public class IdentService {
         }
     }
 
-    private TpsPersonData prepareRequest(List<String> identer, boolean isProd) {
+    private String prepareRequest(List<String> identer, boolean isProd) {
 
-        var request = new TpsPersonData();
-        request.setTpsServiceRutine(new TpsServiceRutineType());
-        request.getTpsServiceRutine().setServiceRutinenavn(SRnavn.FS_03_FDLISTER_DISKNAVN_M);
-        request.getTpsServiceRutine().setAksjonsKode("A");
-        request.getTpsServiceRutine().setAksjonsKode2(isProd ? "2" : "0");
-        request.getTpsServiceRutine().setAntallFnr(Integer.toString(identer.size()));
-        request.getTpsServiceRutine().setNFnr(new TpsServiceRutineType.NFnr());
-        request.getTpsServiceRutine().getNFnr().getFnr().addAll(identer);
-
-        return request;
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" +
+                "<tpsPersonData>" +
+                "<tpsServiceRutine>" +
+                "<serviceRutinenavn>FS03-FDLISTER-DISKNAVN-M</serviceRutinenavn>" +
+                "<aksjonsKode>A</aksjonsKode>" +
+                "<aksjonsKode2>%s</aksjonsKode2><antallFnr>%s</antallFnr><nFnr>%s</nFnr></tpsServiceRutine></tpsPersonData>"
+                        .formatted(isProd ? "2" : "0",
+                        Integer.toString(identer.size()),
+                        identer.stream()
+                                .map("<fnr>%s</fnr>"::formatted)
+                                .collect(Collectors.joining()));
     }
 }

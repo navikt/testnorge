@@ -3,6 +3,7 @@ import Profil from './Profil'
 
 import './MinSide.less'
 import { useBrukerProfil, useCurrentBruker } from '@/utils/hooks/useBruker'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 
 export default () => {
 	const { brukerProfil } = useBrukerProfil()
@@ -11,8 +12,10 @@ export default () => {
 	return (
 		<>
 			<h1>Min side</h1>
-			<Profil />
-			{brukerProfil && <Maler brukerId={currentBruker?.brukerId} />}
+			<ErrorBoundary>
+				<Profil />
+				{brukerProfil && <Maler brukerId={currentBruker?.brukerId} />}
+			</ErrorBoundary>
 		</>
 	)
 }

@@ -63,7 +63,7 @@ export const TextInput = React.forwardRef(
 					id={name}
 					className={css}
 					placeholder={placeholder}
-					{...(name && !isDatepicker && register(name))}
+					{...(name && !isDatepicker && register?.(name))}
 					{...props}
 				/>
 				{icon && <StyledIcon fontSize={'1.5rem'} kind={icon} />}
