@@ -2,7 +2,7 @@ package no.nav.testnav.apps.tpsmessagingservice.service.skd;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.apps.tpsmessagingservice.consumer.TpsConsumer;
+import no.nav.testnav.apps.tpsmessagingservice.consumer.EndringsmeldingConsumer;
 import org.springframework.http.HttpStatus;
 import org.springframework.jms.JmsException;
 import org.springframework.stereotype.Service;
@@ -16,12 +16,12 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class SendSkdMeldinger {
 
-    private final TpsConsumer tpsConsumer;
+    private final EndringsmeldingConsumer endringsmeldingConsumer;
 
     public Map<String, String> sendMeldinger(String skdMelding , List<String> environments) {
 
         try {
-            return tpsConsumer.sendMessage(skdMelding, environments);
+            return endringsmeldingConsumer.sendMessage(skdMelding, environments);
 
         } catch (JmsException jmsException) {
             log.error(jmsException.getMessage(), jmsException);

@@ -1,9 +1,6 @@
 package no.nav.testnav.apps.tpsmessagingservice.service;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.MapperFeature;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.tpsmessagingservice.consumer.ServicerutineConsumer;
@@ -13,6 +10,7 @@ import no.nav.testnav.apps.tpsmessagingservice.dto.TpsServicerutineM201Response;
 import no.nav.testnav.apps.tpsmessagingservice.exception.BadRequestException;
 import no.nav.testnav.apps.tpsmessagingservice.utils.EndringsmeldingUtil;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.TpsIdentStatusDTO;
+import org.json.XML;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -35,22 +33,15 @@ public class IdentService {
 
     private final ServicerutineConsumer servicerutineConsumer;
     private final TestmiljoerServiceConsumer testmiljoerServiceConsumer;
-    private final XmlMapper xmlMapper;
+    private final ObjectMapper objectMapper;
 
     public IdentService(ServicerutineConsumer servicerutineConsumer,
-                        TestmiljoerServiceConsumer testmiljoerServiceConsumer) {
+                        TestmiljoerServiceConsumer testmiljoerServiceConsumer,
+                        ObjectMapper objectMapper) {
 
         this.servicerutineConsumer = servicerutineConsumer;
         this.testmiljoerServiceConsumer = testmiljoerServiceConsumer;
-        this.xmlMapper = XmlMapper
-                .builder()
-                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-                .configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true)
-                .configure(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_AS_NULL, true)
-                .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
-                .configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true)
-                .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
-                .build();
+        this.objectMapper = objectMapper;
     }
 
     public List<TpsIdentStatusDTO> getIdenter(List<String> identer, List<String> miljoer, Boolean includeProd) {
@@ -117,7 +108,8 @@ public class IdentService {
                     .build();
         } else {
 
-            return xmlMapper.readValue(endringsmeldingResponse, TpsServicerutineM201Response.class);
+            var jsonRoot = XML.toJSONObject(endringsmeldingResponse);
+            return objectMapper.readValue(jsonRoot.toString(), TpsServicerutineM201Response.class);
         }
     }
 
@@ -130,9 +122,9 @@ public class IdentService {
                 "<aksjonsKode>A</aksjonsKode>" +
                 "<aksjonsKode2>%s</aksjonsKode2><antallFnr>%s</antallFnr><nFnr>%s</nFnr></tpsServiceRutine></tpsPersonData>"
                         .formatted(isProd ? "2" : "0",
-                        Integer.toString(identer.size()),
-                        identer.stream()
-                                .map("<fnr>%s</fnr>"::formatted)
-                                .collect(Collectors.joining()));
+                                Integer.toString(identer.size()),
+                                identer.stream()
+                                        .map("<fnr>%s</fnr>"::formatted)
+                                        .collect(Collectors.joining()));
     }
 }

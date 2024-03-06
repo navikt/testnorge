@@ -1,6 +1,6 @@
 package no.nav.testnav.apps.tpsmessagingservice.service;
 
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import lombok.SneakyThrows;
@@ -9,14 +9,13 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.testnav.apps.tpsmessagingservice.consumer.ServicerutineConsumer;
 import no.nav.testnav.apps.tpsmessagingservice.consumer.TestmiljoerServiceConsumer;
 import no.nav.testnav.apps.tpsmessagingservice.consumer.command.TpsMeldingCommand;
-import no.nav.testnav.apps.tpsmessagingservice.dto.TpsServiceRutine;
-import no.nav.testnav.apps.tpsmessagingservice.dto.TpsServicerutineRequest;
+import no.nav.testnav.apps.tpsmessagingservice.dto.TpsServicerutineAksjonsdatoRequest;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsServicerutineS018Response;
-import no.nav.testnav.apps.tpsmessagingservice.dto.TpsServicerutineS610Response;
 import no.nav.testnav.apps.tpsmessagingservice.utils.EndringsmeldingUtil;
 import no.nav.testnav.apps.tpsmessagingservice.utils.ServiceRutineUtil;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.PersonhistorikkDTO;
 import no.nav.tps.xjc.ctg.domain.s018.SRnavnType;
+import org.json.XML;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -32,19 +31,19 @@ public class PersonHistorikkService {
     private final TestmiljoerServiceConsumer testmiljoerServiceConsumer;
     private final JAXBContext requestContext;
     private final ServicerutineConsumer servicerutineConsumer;
-    private final XmlMapper xmlMapper;
     private final MapperFacade mapperFacade;
+    private final ObjectMapper objectMapper;
 
     public PersonHistorikkService(TestmiljoerServiceConsumer testmiljoerServiceConsumer,
                                   ServicerutineConsumer servicerutineConsumer,
-                                  XmlMapper xmlMapper,
-                                  MapperFacade mapperFacade) throws JAXBException {
+                                  MapperFacade mapperFacade,
+                                  ObjectMapper objectMapper) throws JAXBException {
 
         this.testmiljoerServiceConsumer = testmiljoerServiceConsumer;
-        this.requestContext = JAXBContext.newInstance(TpsServicerutineRequest.class);
+        this.requestContext = JAXBContext.newInstance(TpsServicerutineAksjonsdatoRequest.class);
         this.servicerutineConsumer = servicerutineConsumer;
-        this.xmlMapper = xmlMapper;
         this.mapperFacade = mapperFacade;
+        this.objectMapper = objectMapper;
     }
 
     public List<PersonhistorikkDTO> hentIdent(String ident, LocalDate aksjonsdato, List<String> miljoer) {
@@ -58,15 +57,18 @@ public class PersonHistorikkService {
         return tpsPersoner.entrySet().stream()
                 .map(entry -> PersonhistorikkDTO.builder()
                         .miljoe(entry.getKey())
-                        .persondata(mapperFacade.map(entry.getValue(), PersonhistorikkDTO.PersonData.class))
+                        .status(mapperFacade.map(entry.getValue().getTpsSvar(), PersonhistorikkDTO.TpsMeldingResponse.class))
+                        .persondata("OK".equals(entry.getValue().getTpsSvar().getSvarStatus().getReturStatus()) ?
+                                mapperFacade.map(entry.getValue().getTpsSvar().getPersondataS018(), PersonhistorikkDTO.PersonData.class) :
+                                null)
                         .build())
                 .toList();
     }
 
     private Map<String, TpsServicerutineS018Response> readFromTps(String ident, LocalDate foedselsdato, List<String> miljoer) {
 
-        var request = TpsServicerutineRequest.builder()
-                .tpsServiceRutine(TpsServiceRutine.builder()
+        var request = TpsServicerutineAksjonsdatoRequest.builder()
+                .tpsServiceRutine(TpsServicerutineAksjonsdatoRequest.TpsServiceRutineMedAksjonsdato.builder()
                         .serviceRutinenavn(SRnavnType.FS_03_FDNUMMER_PADRHIST_O.name())
                         .fnr(ident)
                         .aksjonsKode("A")
@@ -92,15 +94,15 @@ public class PersonHistorikkService {
         if (TpsMeldingCommand.NO_RESPONSE.equals(endringsmeldingResponse)) {
 
             return TpsServicerutineS018Response.builder()
-                    .tpsPersonData(TpsServicerutineS018Response.TpsPersonData.builder()
-                            .tpsSvar(TpsServicerutineS610Response.TpsSvar.builder()
+                            .tpsSvar(TpsServicerutineS018Response.TpsSvar.builder()
                                     .svarStatus(EndringsmeldingUtil.getNoAnswerStatus())
                                     .build())
-                            .build())
-                    .build();
+                            .build();
+
         } else {
 
-            return xmlMapper.readValue(endringsmeldingResponse, TpsServicerutineS018Response.class);
+            var jsonRoot = XML.toJSONObject(endringsmeldingResponse);
+            return objectMapper.readValue(jsonRoot.toString(), TpsServicerutineS018Response.class);
         }
     }
 }

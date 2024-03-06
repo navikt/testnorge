@@ -14,20 +14,22 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @XmlRootElement(name = "tpsPersonData")
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class TpsServicerutineRequest implements TpsRequest {
+public class TpsServicerutineAksjonsdatoRequest implements TpsRequest {
 
-    private TpsServiceRutine tpsServiceRutine;
+    private TpsServiceRutineMedAksjonsdato tpsServiceRutine;
 
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @XmlType(propOrder = {"serviceRutinenavn", "fnr", "aksjonsKode", "aksjonsKode2"})
-    public static class TpsServiceRutine {
+    @XmlType(propOrder = {"serviceRutinenavn", "fnr", "aksjonsDato", "aksjonsKode", "aksjonsKode2", "buffNr"})
+    public static class TpsServiceRutineMedAksjonsdato {
 
         private String serviceRutinenavn;
         private String fnr;
+        private String aksjonsDato;
         private String aksjonsKode;
         private String aksjonsKode2;
+        private String buffNr;
     }
 }

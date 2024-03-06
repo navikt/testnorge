@@ -14,7 +14,6 @@ import no.nav.testnav.apps.tpsmessagingservice.consumer.ServicerutineConsumer;
 import no.nav.testnav.apps.tpsmessagingservice.consumer.TestmiljoerServiceConsumer;
 import no.nav.testnav.apps.tpsmessagingservice.consumer.command.TpsMeldingCommand;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsMeldingResponse;
-import no.nav.testnav.apps.tpsmessagingservice.dto.TpsServiceRutine;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsServicerutineRequest;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsServicerutineS610Response;
 import no.nav.testnav.apps.tpsmessagingservice.utils.EndringsmeldingUtil;
@@ -57,8 +56,11 @@ public class PersonService {
     private final ObjectMapper objectMapper;
     private final MapperFacade mapperFacade;
 
-    public PersonService(ServicerutineConsumer servicerutineConsumer, ObjectMapper objectMapper,
-                         MapperFacade mapperFacade, TestmiljoerServiceConsumer testmiljoerServiceConsumer) throws JAXBException {
+    public PersonService(ServicerutineConsumer servicerutineConsumer,
+                         ObjectMapper objectMapper,
+                         MapperFacade mapperFacade,
+                         TestmiljoerServiceConsumer testmiljoerServiceConsumer) throws JAXBException {
+
         this.servicerutineConsumer = servicerutineConsumer;
         this.objectMapper = objectMapper;
         this.mapperFacade = mapperFacade;
@@ -165,7 +167,7 @@ public class PersonService {
     private Map<String, TpsServicerutineS610Response> readFromTps(String ident, List<String> miljoer) {
 
         var request = TpsServicerutineRequest.builder()
-                .tpsServiceRutine(TpsServiceRutine.builder()
+                .tpsServiceRutine(TpsServicerutineRequest.TpsServiceRutine.builder()
                         .serviceRutinenavn(PERSON_KERNINFO_SERVICE_ROUTINE)
                         .fnr(ident)
                         .aksjonsKode("D")

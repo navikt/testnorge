@@ -1,5 +1,6 @@
 package no.nav.testnav.libs.data.tpsmessagingservice.v1;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -31,7 +32,7 @@ public class PersonhistorikkDTO {
     }
 
     private String miljoe;
-    private String status;
+    private TpsMeldingResponse status;
     private PersonData persondata;
 
     @Data
@@ -168,5 +169,17 @@ public class PersonhistorikkDTO {
         protected String bruksnr;
         protected String festenr;
         protected String undernr;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    public static class TpsMeldingResponse {
+
+        private String returStatus;
+        private String returMelding;
+        private String utfyllendeMelding;
     }
 }
