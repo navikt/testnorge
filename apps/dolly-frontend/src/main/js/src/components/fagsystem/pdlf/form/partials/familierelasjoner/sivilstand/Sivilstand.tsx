@@ -54,7 +54,7 @@ export const SivilstandForm = ({
 	const kanHaRelatertPerson = gyldigeSivilstander.includes(formMethods.watch(`${path}.type`))
 
 	return (
-		<div className="flexbox--flex-wrap">
+		<div className="flexbox--flex-wrap sivilstand-form">
 			<FormikSelect
 				name={`${path}.type`}
 				label="Type sivilstand"

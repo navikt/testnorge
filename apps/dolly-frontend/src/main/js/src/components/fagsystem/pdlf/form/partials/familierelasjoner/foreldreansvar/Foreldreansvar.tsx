@@ -122,7 +122,7 @@ export const ForeldreansvarForm = ({
 	}, [])
 
 	return (
-		<div className="flexbox--flex-wrap">
+		<div className="flexbox--flex-wrap foreldre-form">
 			<FormikSelect
 				name={`${path}.ansvar`}
 				label="Hvem har ansvaret"
