@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 
 import static java.util.Collections.emptyList;
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 @RestController
@@ -130,14 +131,14 @@ public class PersonController {
                                                     @RequestParam(required = false) LocalDate aksjonsdato,
                                                     @RequestParam(required = false) List<String> miljoer) {
 
-        return personhistorikkService.hentIdent(ident, aksjonsdato, miljoer);
+        return personhistorikkService.hentIdent(ident, aksjonsdato, isNull(miljoer) ? emptyList() : miljoer);
     }
 
     @PostMapping("/foedselsmelding")
     public FoedselsmeldingResponse sendFoedselsmelding(@RequestParam(required = false) List<String> miljoer,
                                                        @RequestBody FoedselsmeldingRequest persondata) {
 
-        return foedselsmeldingService.sendFoedselsmelding(persondata, miljoer);
+        return foedselsmeldingService.sendFoedselsmelding(persondata, isNull(miljoer) ? emptyList() : miljoer);
     }
 
     @PostMapping("{ident}/doedsmelding")
@@ -145,14 +146,14 @@ public class PersonController {
                                                  @RequestParam LocalDate doedsdato,
                                                  @RequestParam(required = false) List<String> miljoer) {
 
-        return doedsmeldingService.sendDoedsmelding(ident, doedsdato, miljoer);
+        return doedsmeldingService.sendDoedsmelding(ident, doedsdato, isNull(miljoer) ? emptyList() : miljoer);
     }
 
     @DeleteMapping("/doedsmelding")
     public DoedsmeldingResponse annulerDoedsmelding(@RequestParam(required = false) List<String> miljoer,
                                                     @RequestBody PersonDTO persondata) {
 
-        return doedsmeldingService.annulerDoedsmelding(persondata, miljoer);
+        return doedsmeldingService.annulerDoedsmelding(persondata, isNull(miljoer) ? emptyList() : miljoer);
     }
 }
 

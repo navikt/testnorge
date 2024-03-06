@@ -1,6 +1,7 @@
 package no.nav.testnav.apps.tpsmessagingservice.service;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.testnav.apps.tpsmessagingservice.consumer.TestmiljoerServiceConsumer;
 import no.nav.testnav.apps.tpsmessagingservice.service.skd.DoedsmeldingAnnulleringBuilderService;
 import no.nav.testnav.apps.tpsmessagingservice.service.skd.DoedsmeldingBuilderService;
 import no.nav.testnav.apps.tpsmessagingservice.service.skd.SendSkdMeldinger;
@@ -20,8 +21,13 @@ public class DoedsmeldingService {
     private final SendSkdMeldinger sendSkdMeldinger;
     private final DoedsmeldingBuilderService doedsmeldingBuilderService;
     private final DoedsmeldingAnnulleringBuilderService doedsmeldingAnnulleringBuilderService;
+    private final TestmiljoerServiceConsumer testmiljoerServiceConsumer;
 
     public DoedsmeldingResponse sendDoedsmelding(String ident, LocalDate doedsdato, List<String> miljoer) {
+
+        if (miljoer.isEmpty()) {
+            miljoer = testmiljoerServiceConsumer.getMiljoer();
+        }
 
         var melding = doedsmeldingBuilderService.build(ident, doedsdato);
         var skdMelding = melding.toString();
@@ -36,6 +42,10 @@ public class DoedsmeldingService {
     }
 
     public DoedsmeldingResponse annulerDoedsmelding(PersonDTO person, List<String> miljoer) {
+
+        if (miljoer.isEmpty()) {
+            miljoer = testmiljoerServiceConsumer.getMiljoer();
+        }
 
         var melding = doedsmeldingAnnulleringBuilderService.execute(person);
         var skdMelding = melding.toString();

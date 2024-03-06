@@ -1,6 +1,7 @@
 package no.nav.testnav.apps.tpsmessagingservice.service;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.testnav.apps.tpsmessagingservice.consumer.TestmiljoerServiceConsumer;
 import no.nav.testnav.apps.tpsmessagingservice.dto.endringsmeldinger.SkdMeldingTrans1;
 import no.nav.testnav.apps.tpsmessagingservice.service.skd.FoedselsmeldingBuilderService;
 import no.nav.testnav.apps.tpsmessagingservice.service.skd.SendSkdMeldinger;
@@ -18,8 +19,13 @@ public class FoedselsmeldingService {
 
     private final SendSkdMeldinger sendSkdMeldinger;
     private final FoedselsmeldingBuilderService foedselsmeldingBuilderService;
+    private final TestmiljoerServiceConsumer testmiljoerServiceConsumer;
 
     public FoedselsmeldingResponse sendFoedselsmelding(FoedselsmeldingRequest persondata, List<String> miljoer) {
+
+        if (miljoer.isEmpty()) {
+            miljoer = testmiljoerServiceConsumer.getMiljoer();
+        }
 
         SkdMeldingTrans1 melding = foedselsmeldingBuilderService.build(persondata);
         var skdMelding = melding.toString();

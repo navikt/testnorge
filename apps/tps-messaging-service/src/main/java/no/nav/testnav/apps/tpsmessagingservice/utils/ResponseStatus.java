@@ -14,7 +14,7 @@ public final class ResponseStatus {
         if (nonNull(status) && status.contains("FEIL")) {
             return status;
         } else if (nonNull(status) && status.length() > 3) {
-            return format("FEIL: %s", status.substring(3).replaceAll("\\d*%[A-Z]\\d*%","").replaceAll("%; *", ""));
+            return format("FEIL: %s", status.substring(3).replaceAll("\\d*%[A-Z]\\d*%", "").replaceAll("%; *", ""));
         } else {
             return "STATUS: TIDSAVBRUDD";
         }
@@ -22,10 +22,16 @@ public final class ResponseStatus {
 
     public static TpsMeldingResponse decodeStatus(TpsMeldingResponse response) {
 
-        return TpsMeldingResponse.builder()
-                .returStatus("00".equals(response.getReturStatus()) || "04".equals(response.getReturStatus()) ? "OK" : "FEIL")
-                .returMelding(response.getReturMelding())
-                .utfyllendeMelding(response.getUtfyllendeMelding())
-                .build();
+        return nonNull(response) ?
+                TpsMeldingResponse.builder()
+                        .returStatus("00".equals(response.getReturStatus()) || "04".equals(response.getReturStatus()) ? "OK" : "FEIL")
+                        .returMelding(response.getReturMelding())
+                        .utfyllendeMelding(response.getUtfyllendeMelding())
+                        .build() :
+                TpsMeldingResponse.builder()
+                        .returStatus("FEIL")
+                        .returMelding("Ingen data")
+                        .utfyllendeMelding("Melding fra TPS er tom")
+                        .build();
     }
 }

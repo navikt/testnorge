@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static java.util.Objects.nonNull;
+
 @Slf4j
 @Service
 public class PersonHistorikkService {
@@ -53,11 +55,12 @@ public class PersonHistorikkService {
             miljoer = testmiljoerServiceConsumer.getMiljoer();
         }
 
-        var tpsPersoner = readFromTps(ident, aksjonsdato, miljoer);
+        var tpsPersoner = readFromTps(ident, nonNull(aksjonsdato) ? aksjonsdato : LocalDate.now(), miljoer);
 
         return tpsPersoner.entrySet().stream()
                 .map(entry -> {
-                    var status = ResponseStatus.decodeStatus(entry.getValue().getTpsSvar().getSvarStatus());
+                    var status = ResponseStatus.decodeStatus(nonNull(entry.getValue().getTpsSvar()) ?
+                            entry.getValue().getTpsSvar().getSvarStatus() : null);
                     return PersonhistorikkDTO.builder()
                             .miljoe(entry.getKey())
                             .status(mapperFacade.map(status, PersonhistorikkDTO.TpsMeldingResponse.class))
