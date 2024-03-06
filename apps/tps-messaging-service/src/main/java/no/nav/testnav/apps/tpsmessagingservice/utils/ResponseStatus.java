@@ -1,14 +1,16 @@
 package no.nav.testnav.apps.tpsmessagingservice.utils;
 
 import lombok.experimental.UtilityClass;
+import no.nav.testnav.apps.tpsmessagingservice.dto.TpsMeldingResponse;
 
 import static java.lang.String.format;
 import static java.util.Objects.nonNull;
 
 @UtilityClass
-public final class ExtractErrorStatus {
+public final class ResponseStatus {
 
     public static String extract(String status) {
+
         if (nonNull(status) && status.contains("FEIL")) {
             return status;
         } else if (nonNull(status) && status.length() > 3) {
@@ -16,5 +18,14 @@ public final class ExtractErrorStatus {
         } else {
             return "STATUS: TIDSAVBRUDD";
         }
+    }
+
+    public static TpsMeldingResponse decodeStatus(TpsMeldingResponse response) {
+
+        return TpsMeldingResponse.builder()
+                .returStatus("00".equals(response.getReturStatus()) || "04".equals(response.getReturStatus()) ? "OK" : "FEIL")
+                .returMelding(response.getReturMelding())
+                .utfyllendeMelding(response.getUtfyllendeMelding())
+                .build();
     }
 }

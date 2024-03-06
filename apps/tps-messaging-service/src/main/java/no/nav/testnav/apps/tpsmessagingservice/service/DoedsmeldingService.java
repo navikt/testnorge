@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.tpsmessagingservice.service.skd.DoedsmeldingAnnulleringBuilderService;
 import no.nav.testnav.apps.tpsmessagingservice.service.skd.DoedsmeldingBuilderService;
 import no.nav.testnav.apps.tpsmessagingservice.service.skd.SendSkdMeldinger;
-import no.nav.testnav.apps.tpsmessagingservice.utils.ExtractErrorStatus;
+import no.nav.testnav.apps.tpsmessagingservice.utils.ResponseStatus;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.DoedsmeldingResponse;
 import org.springframework.stereotype.Service;
@@ -51,6 +51,6 @@ public class DoedsmeldingService {
 
     private void prepareStatus(Map<String, String> sentStatus) {
 
-        sentStatus.replaceAll((env, status) -> status.matches("^00.*") ? "OK" : ExtractErrorStatus.extract(status));
+        sentStatus.replaceAll((env, status) -> status.matches("^00.*") ? "OK" : ResponseStatus.extract(status));
     }
 }

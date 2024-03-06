@@ -12,6 +12,7 @@ import no.nav.testnav.apps.tpsmessagingservice.consumer.command.TpsMeldingComman
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsServicerutineAksjonsdatoRequest;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsServicerutineS018Response;
 import no.nav.testnav.apps.tpsmessagingservice.utils.EndringsmeldingUtil;
+import no.nav.testnav.apps.tpsmessagingservice.utils.ResponseStatus;
 import no.nav.testnav.apps.tpsmessagingservice.utils.ServiceRutineUtil;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.PersonhistorikkDTO;
 import no.nav.tps.xjc.ctg.domain.s018.SRnavnType;
@@ -55,13 +56,16 @@ public class PersonHistorikkService {
         var tpsPersoner = readFromTps(ident, aksjonsdato, miljoer);
 
         return tpsPersoner.entrySet().stream()
-                .map(entry -> PersonhistorikkDTO.builder()
-                        .miljoe(entry.getKey())
-                        .status(mapperFacade.map(entry.getValue().getTpsSvar(), PersonhistorikkDTO.TpsMeldingResponse.class))
-                        .persondata("OK".equals(entry.getValue().getTpsSvar().getSvarStatus().getReturStatus()) ?
-                                mapperFacade.map(entry.getValue().getTpsSvar().getPersondataS018(), PersonhistorikkDTO.PersonData.class) :
-                                null)
-                        .build())
+                .map(entry -> {
+                    var status = ResponseStatus.decodeStatus(entry.getValue().getTpsSvar().getSvarStatus());
+                    return PersonhistorikkDTO.builder()
+                            .miljoe(entry.getKey())
+                            .status(mapperFacade.map(status, PersonhistorikkDTO.TpsMeldingResponse.class))
+                            .persondata("OK".equals(status.getReturStatus()) ?
+                                    mapperFacade.map(entry.getValue().getTpsSvar().getPersondataS018(), PersonhistorikkDTO.PersonData.class) :
+                                    null)
+                            .build();
+                })
                 .toList();
     }
 
@@ -94,10 +98,10 @@ public class PersonHistorikkService {
         if (TpsMeldingCommand.NO_RESPONSE.equals(endringsmeldingResponse)) {
 
             return TpsServicerutineS018Response.builder()
-                            .tpsSvar(TpsServicerutineS018Response.TpsSvar.builder()
-                                    .svarStatus(EndringsmeldingUtil.getNoAnswerStatus())
-                                    .build())
-                            .build();
+                    .tpsSvar(TpsServicerutineS018Response.TpsSvar.builder()
+                            .svarStatus(EndringsmeldingUtil.getNoAnswerStatus())
+                            .build())
+                    .build();
 
         } else {
 
