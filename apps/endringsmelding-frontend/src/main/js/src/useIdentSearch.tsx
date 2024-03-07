@@ -28,7 +28,7 @@ const fetcher = (...args: Argument[]) =>
 
 export const useIdentSearch = (ident: string) => {
   const { data, isLoading, error } = useSWR<IdentSearchResponse, Error>(
-    ident && `/endringsmelding-service/api/v1/ident/miljoer?ident=${ident}`,
+    ident && `/api/v1/ident/miljoer?ident=${ident}`,
     fetcher,
   );
 
