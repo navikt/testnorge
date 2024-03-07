@@ -220,7 +220,7 @@ public class SkdMeldingTrans1 implements SkdMelding {
 	
 	public String getMeldingsverdien(SkdFeltDefinisjonerTrans1 skdFeltDefinisjon) {
 		try {
-			return ((String) getClass().getMethod("get" + StringUtils.uncapitalize(skdFeltDefinisjon.getVariabelNavn()))
+			return ((String) getClass().getMethod("get" + StringUtils.capitalize(skdFeltDefinisjon.getVariabelNavn()))
 					.invoke(this));
 		} catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
 			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
