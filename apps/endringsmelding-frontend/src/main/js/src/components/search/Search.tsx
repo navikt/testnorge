@@ -9,8 +9,8 @@ import {
   WarningAlert,
   WarningAlertstripe,
 } from '@navikt/dolly-komponenter';
-import { Action } from '@/pages/endringsmelding-page/form/endringsmelding-form/EndringsmeldingReducer';
 import _ from 'lodash';
+import { Api } from '@navikt/dolly-lib';
 
 const Search = styled.div`
   display: flex;
@@ -57,7 +57,7 @@ const StyledWarning = styled(WarningAlertstripe)`
   width: -webkit-fill-available;
 `;
 
-export default <T extends unknown>({ labels, onChange, setMiljoer, dispatch }: Props<T>) => {
+export default <T extends unknown>({ labels, onChange, setMiljoer }: Props<T>) => {
   const [value, setValue] = useState('');
   const [search, setSearch] = useState(null);
   const [response, setResponse] = useState(null);
@@ -67,13 +67,18 @@ export default <T extends unknown>({ labels, onChange, setMiljoer, dispatch }: P
   const hentMiljoeInfo = async (ident: string) => {
     setError(false);
     setLoading(true);
-    return fetch(`/endringsmelding-service/api/v1/ident/miljoer`, {
-      method: 'POST',
-      body: JSON.stringify({ ident }),
-    })
+    return Api.fetchJson(
+      `/endringsmelding-service/api/v1/ident/miljoer`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      },
+      JSON.stringify({ ident }),
+    )
       .then((res) => {
+        console.log('res: ', res); //TODO - SLETT MEG
         setLoading(false);
-        setResponse(res.json());
+        setResponse(res);
       })
       .catch((reason) => {
         setLoading(false);
@@ -93,6 +98,8 @@ export default <T extends unknown>({ labels, onChange, setMiljoer, dispatch }: P
   useEffect(() => {
     if (search && search.length === 11) {
       hentMiljoeInfo(search);
+    } else {
+      setError('Ident må være 11 siffer.');
     }
   }, [search]);
 
