@@ -3,6 +3,7 @@ package no.nav.testnav.endringsmeldingservice.consumer.command;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.PersonMiljoeDTO;
+import no.nav.testnav.libs.data.tpsmessagingservice.v1.TpsIdentStatusDTO;
 import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -20,7 +21,7 @@ public class GetIdentEnvironmentsCommand implements Callable<Flux<PersonMiljoeDT
     private final String token;
 
     @Override
-    public Flux<PersonMiljoeDTO> call() {
+    public Flux<TpsIdentStatusDTO> call() {
         return webClient
                 .get()
                 .uri(builder -> builder.path("/api/v1/identer")
@@ -28,7 +29,7 @@ public class GetIdentEnvironmentsCommand implements Callable<Flux<PersonMiljoeDT
                         .build())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
-                .bodyToFlux(PersonMiljoeDTO.class)
+                .bodyToFlux(TpsIdentStatusDTO.class)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException));
     }

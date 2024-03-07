@@ -3,7 +3,7 @@ package no.nav.testnav.endringsmeldingservice.consumer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.testnav.endringsmeldingservice.config.Consumers;
 import no.nav.testnav.endringsmeldingservice.consumer.command.GetIdentEnvironmentsCommand;
-import no.nav.testnav.libs.data.tpsmessagingservice.v1.PersonMiljoeDTO;
+import no.nav.testnav.libs.data.tpsmessagingservice.v1.TpsIdentStatusDTO;
 import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.http.MediaType;
@@ -44,7 +44,7 @@ public class TpsMessagingConsumer {
                 .build();
     }
 
-    public Flux<PersonMiljoeDTO> hentMiljoer(String ident) {
+    public Flux<TpsIdentStatusDTO> hentMiljoer(String ident) {
         return accessTokenService
                 .exchange(serverProperties)
                 .flatMapMany(accessToken -> new GetIdentEnvironmentsCommand(webClient, ident, accessToken.getTokenValue()).call());
