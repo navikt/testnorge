@@ -9,7 +9,6 @@ import {
   WarningAlert,
   WarningAlertstripe,
 } from '@navikt/dolly-komponenter';
-import { useIdentSearch } from '@/useIdentSearch';
 import { Action } from '@/pages/endringsmelding-page/form/endringsmelding-form/EndringsmeldingReducer';
 import _ from 'lodash';
 
@@ -61,15 +60,48 @@ const StyledWarning = styled(WarningAlertstripe)`
 export default <T extends unknown>({ labels, onChange, setMiljoer, dispatch }: Props<T>) => {
   const [value, setValue] = useState('');
   const [search, setSearch] = useState(null);
+  const [response, setResponse] = useState(null);
+  const [loading, setLoading] = useState(null);
+  const [error, setError] = useState(null);
 
-  const { error, miljoer, loading } = useIdentSearch(search);
+  const hentMiljoeInfo = async (ident: string) => {
+    setError(false);
+    setLoading(true);
+    return fetch(`/endringsmelding-service/api/v1/ident/miljoer`, {
+      method: 'POST',
+      body: JSON.stringify({ ident }),
+    })
+      .then((res) => {
+        setLoading(false);
+        setResponse(res.json());
+      })
+      .catch((reason) => {
+        setLoading(false);
+        setError(true);
+        if (reason?.response?.status === 401 || reason?.response?.status === 403) {
+          console.error('Auth feilet');
+        }
+        if (reason.status === 404 || reason.response?.status === 404) {
+          if (reason.response?.data?.error) {
+            throw new Error(reason.response?.data?.error);
+          }
+        }
+        throw new Error(`Henting av data fra endringsmelding-service feilet.`);
+      });
+  };
 
   useEffect(() => {
-    setMiljoer(miljoer);
+    if (search && search.length === 11) {
+      hentMiljoeInfo(search);
+    }
+  }, [search]);
+
+  useEffect(() => {
+    setMiljoer(response?.miljoer);
     error
       ? dispatch({ type: Action.SET_HENT_MILJOER_ERROR_ACTION })
       : dispatch({ type: Action.SET_HENT_MILJOER_SUCCESS_ACTION });
-  }, [miljoer, error]);
+  }, [response, error]);
 
   return (
     <Search>
@@ -92,7 +124,7 @@ export default <T extends unknown>({ labels, onChange, setMiljoer, dispatch }: P
       </StyledKnapp>
       {isSyntheticIdent(value) && <StyledWarning label={labels.syntIdent} />}
       <Alert>
-        {!_.isEmpty(miljoer) ? null : miljoer.length === 0 ? (
+        {!_.isEmpty(response?.miljoer) ? null : response?.miljoer.length === 0 ? (
           error ? (
             <ErrorAlert label={labels.onError} />
           ) : (

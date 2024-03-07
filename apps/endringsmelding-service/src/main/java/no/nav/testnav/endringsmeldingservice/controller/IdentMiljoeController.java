@@ -4,9 +4,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.endringsmeldingservice.consumer.TpsMessagingConsumer;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.TpsIdentStatusDTO;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 
@@ -16,9 +16,9 @@ import reactor.core.publisher.Flux;
 public class IdentMiljoeController {
     private final TpsMessagingConsumer tpsMessagingConsumer;
 
-    @GetMapping("/miljoer")
+    @PostMapping("/miljoer")
     @Operation(description = "Sjekk om ident finnes i miljøer")
-    public Flux<TpsIdentStatusDTO> identFinnesIMiljoer(@RequestParam String ident) {
+    public Flux<TpsIdentStatusDTO> identFinnesIMiljoer(@RequestBody String ident) {
         return tpsMessagingConsumer.hentMiljoer(ident);
     }
 
