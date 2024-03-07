@@ -1,6 +1,7 @@
 package no.nav.testnav.apps.tpsmessagingservice.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.tpsmessagingservice.consumer.TestmiljoerServiceConsumer;
 import no.nav.testnav.apps.tpsmessagingservice.dto.endringsmeldinger.SkdMeldingsheader;
 import no.nav.testnav.apps.tpsmessagingservice.service.skd.DoedsmeldingAnnulleringBuilderService;
@@ -15,6 +16,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class DoedsmeldingService {
@@ -61,6 +63,8 @@ public class DoedsmeldingService {
     }
 
     private void prepareStatus(Map<String, String> sentStatus) {
+
+        sentStatus.forEach((env, status) -> log.info("Doedsmelding i miljø {} status {} ", env, status));
 
         sentStatus.replaceAll((env, status) -> status.matches("^00.*") ? "OK" : ResponseStatus.extract(status));
     }

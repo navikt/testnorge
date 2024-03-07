@@ -25,19 +25,15 @@ public class SkdMeldingsheader {
         var transType = extractTranstype(skdMelding);
         var tildelingsKode = extractTildelingskode(skdMelding);
 
-        var headerSkdMelding = new StringBuilder()
+        return new StringBuilder()
                 .append(MQ_HANDLE)
                 .append(KODE_SYSTEM)
                 .append(KJORE_NUMMER)
                 .append(aarsakskode)
                 .append(transType)
                 .append(tildelingsKode)
-                .append(SKD_REFERANSE);
-
-        return new StringBuilder(skdMelding)
-                .reverse()
-                .append(headerSkdMelding.reverse())
-                .reverse()
+                .append(SKD_REFERANSE)
+                .append(skdMelding)
                 .toString();
     }
 
