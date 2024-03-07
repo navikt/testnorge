@@ -98,10 +98,7 @@ export default <T extends unknown>({ labels, onChange, setMiljoer, dispatch }: P
 
   useEffect(() => {
     setMiljoer(response?.miljoer);
-    error
-      ? dispatch({ type: Action.SET_HENT_MILJOER_ERROR_ACTION })
-      : dispatch({ type: Action.SET_HENT_MILJOER_SUCCESS_ACTION });
-  }, [response, error]);
+  }, [response]);
 
   return (
     <Search>
