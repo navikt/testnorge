@@ -11,6 +11,7 @@ import {
 } from '@navikt/dolly-komponenter';
 import { useIdentSearch } from '@/useIdentSearch';
 import { Action } from '@/pages/endringsmelding-page/form/endringsmelding-form/EndringsmeldingReducer';
+import _ from 'lodash';
 
 const Search = styled.div`
   display: flex;
@@ -61,14 +62,14 @@ export default <T extends unknown>({ labels, onChange, setMiljoer, dispatch }: P
   const [value, setValue] = useState('');
   const [search, setSearch] = useState(null);
 
-  const { error, identer, loading } = useIdentSearch(search);
+  const { error, miljoer, loading } = useIdentSearch(search);
 
   useEffect(() => {
-    setMiljoer(identer?.map((ident) => ident.miljoe));
+    setMiljoer(miljoer);
     error
       ? dispatch({ type: Action.SET_HENT_MILJOER_ERROR_ACTION })
       : dispatch({ type: Action.SET_HENT_MILJOER_SUCCESS_ACTION });
-  }, [identer, error]);
+  }, [miljoer, error]);
 
   return (
     <Search>
@@ -91,7 +92,7 @@ export default <T extends unknown>({ labels, onChange, setMiljoer, dispatch }: P
       </StyledKnapp>
       {isSyntheticIdent(value) && <StyledWarning label={labels.syntIdent} />}
       <Alert>
-        {!identer ? null : identer.length === 0 ? (
+        {!_.isEmpty(miljoer) ? null : miljoer.length === 0 ? (
           error ? (
             <ErrorAlert label={labels.onError} />
           ) : (

@@ -1,6 +1,6 @@
 {
   "name": "endringsmelding-frontend",
-  "version": "1.2.11",
+  "version": "1.2.13",
   "private": true,
   "type": "module",
   "homepage": "/",
@@ -9,9 +9,9 @@
     "@navikt/ds-icons": "^3.4.3",
     "@navikt/ds-react": "^6.0.0",
     "@navikt/fnrvalidator": "^1.3.0",
+    "axios": "^1.1.3",
     "classnames": "^2.3.1",
     "dayjs": "^1.11.4",
-    "axios": "^1.1.3",
     "lodash.throttle": "^4.1.1",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
@@ -21,18 +21,20 @@
     "styled-components": "^6.0.0"
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.202",
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6",
     "@types/react-router-dom": "^5.3.3",
+    "@vitejs/plugin-react": "^4.0.0",
     "babel-plugin-styled-components": "^2.0.7",
     "less": "^4.1.3",
+    "lodash": "^4.17.21",
     "mini-css-extract-plugin": "^2.6.1",
     "prettier": "^3.0.1",
+    "swr": "^2.0.0",
     "typescript": "^5.0.2",
-    "@vitejs/plugin-react": "^4.0.0",
     "vite": "^5.0.12",
     "vite-plugin-svgr": "^4.0.0",
-    "swr": "^2.0.0",
     "vite-tsconfig-paths": "^4.0.0"
   },
   "scripts": {

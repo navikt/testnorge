@@ -1,6 +1,13 @@
 import useSWR from 'swr';
 import axios from 'axios';
+import _ from 'lodash';
 
+type IdentSearchResponse = [
+  {
+    ident: string;
+    miljoer: string[];
+  },
+];
 const fetcher = (url, headers) =>
   axios
     .get(url, { headers: headers })
@@ -19,14 +26,14 @@ const fetcher = (url, headers) =>
       throw new Error(`Henting av data fra ${url} feilet.`);
     });
 
-export const useIdentSearch = (ident) => {
-  const { data, isLoading, error } = useSWR<any, Error>(
+export const useIdentSearch = (ident: string) => {
+  const { data, isLoading, error } = useSWR<IdentSearchResponse, Error>(
     ident && `/endringsmelding-service/api/v1/ident/miljoer?ident=${ident}`,
     fetcher,
   );
 
   return {
-    identer: data,
+    miljoer: _.isEmpty(data) ? [] : data[0]?.miljoer,
     loading: isLoading,
     error: error,
   };
