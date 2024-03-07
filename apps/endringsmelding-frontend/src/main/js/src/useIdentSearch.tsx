@@ -1,6 +1,7 @@
 import useSWR from 'swr';
-import axios from 'axios';
 import _ from 'lodash';
+import originalFetch from 'isomorphic-fetch';
+import { Argument } from 'classnames';
 
 type IdentSearchResponse = [
   {
@@ -8,9 +9,8 @@ type IdentSearchResponse = [
     miljoer: string[];
   },
 ];
-const fetcher = (url: string) =>
-  axios
-    .get(url)
+const fetcher = (...args: Argument[]) =>
+  originalFetch(...args)
     .then((res) => {
       return res.data;
     })
@@ -23,7 +23,7 @@ const fetcher = (url: string) =>
           throw new Error(reason.response?.data?.error);
         }
       }
-      throw new Error(`Henting av data fra ${url} feilet.`);
+      throw new Error(`Henting av data fra endringsmelding-service feilet.`);
     });
 
 export const useIdentSearch = (ident: string) => {
