@@ -1,6 +1,9 @@
 package no.nav.testnav.apps.tpsmessagingservice.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.tpsmessagingservice.consumer.ServicerutineConsumer;
@@ -10,7 +13,6 @@ import no.nav.testnav.apps.tpsmessagingservice.dto.TpsServicerutineM201Response;
 import no.nav.testnav.apps.tpsmessagingservice.exception.BadRequestException;
 import no.nav.testnav.apps.tpsmessagingservice.utils.EndringsmeldingUtil;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.TpsIdentStatusDTO;
-import org.json.XML;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -33,15 +35,22 @@ public class IdentService {
 
     private final ServicerutineConsumer servicerutineConsumer;
     private final TestmiljoerServiceConsumer testmiljoerServiceConsumer;
-    private final ObjectMapper objectMapper;
+    private final XmlMapper xmlMapper;
 
     public IdentService(ServicerutineConsumer servicerutineConsumer,
-                        TestmiljoerServiceConsumer testmiljoerServiceConsumer,
-                        ObjectMapper objectMapper) {
+                        TestmiljoerServiceConsumer testmiljoerServiceConsumer) {
 
         this.servicerutineConsumer = servicerutineConsumer;
         this.testmiljoerServiceConsumer = testmiljoerServiceConsumer;
-        this.objectMapper = objectMapper;
+        this.xmlMapper = XmlMapper
+                .builder()
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                .configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true)
+                .configure(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_AS_NULL, true)
+                .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+                .configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true)
+                .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
+                .build();
     }
 
     public List<TpsIdentStatusDTO> getIdenter(List<String> identer, List<String> miljoer, Boolean includeProd) {
@@ -74,10 +83,10 @@ public class IdentService {
 
     private boolean exists(String ident, TpsServicerutineM201Response response) {
 
-        return nonNull(response.getTpsPersonData()) && nonNull(response.getTpsPersonData().getTpsSvar()) &&
-                nonNull(response.getTpsPersonData().getTpsSvar().getPersonDataM201()) &&
-                nonNull(response.getTpsPersonData().getTpsSvar().getPersonDataM201().getAFnr()) &&
-                response.getTpsPersonData().getTpsSvar().getPersonDataM201().getAFnr().getEFnr().stream()
+        return nonNull(response.getTpsSvar()) &&
+                nonNull(response.getTpsSvar().getPersonDataM201()) &&
+                nonNull(response.getTpsSvar().getPersonDataM201().getAFnr()) &&
+                response.getTpsSvar().getPersonDataM201().getAFnr().getEFnr().stream()
                         .anyMatch(eFnr -> ident.equals(eFnr.getFnr()) && isNull(eFnr.getSvarStatus()));
     }
 
@@ -102,16 +111,13 @@ public class IdentService {
         if (TpsMeldingCommand.NO_RESPONSE.equals(endringsmeldingResponse)) {
 
             return TpsServicerutineM201Response.builder()
-                    .tpsPersonData(TpsServicerutineM201Response.TpsPersonData.builder()
-                            .tpsSvar(TpsServicerutineM201Response.TpsSvar.builder()
-                                    .svarStatus(EndringsmeldingUtil.getNoAnswerStatus())
-                                    .build())
+                    .tpsSvar(TpsServicerutineM201Response.TpsSvar.builder()
+                            .svarStatus(EndringsmeldingUtil.getNoAnswerStatus())
                             .build())
                     .build();
         } else {
 
-            var jsonRoot = XML.toJSONObject(endringsmeldingResponse);
-            return objectMapper.readValue(jsonRoot.toString(), TpsServicerutineM201Response.class);
+            return xmlMapper.readValue(endringsmeldingResponse, TpsServicerutineM201Response.class);
         }
     }
 

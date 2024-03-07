@@ -3,6 +3,9 @@ package no.nav.testnav.apps.tpsmessagingservice.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlCData;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,26 +21,19 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
+@XmlRootElement(name = "tpsPersonData")
+@XmlType(propOrder = {"tpsServiceRutine", "tpsSvar"})
 public class TpsServicerutineM201Response {
 
-    private TpsPersonData tpsPersonData;
+    private TpsServiceRutineType tpsServiceRutine;
+    private TpsSvar tpsSvar;
 
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    public static class TpsPersonData {
-
-        private TpsServiceRutineType tpsServiceRutine;
-        private TpsSvar tpsSvar;
-    }
-
-    @Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @XmlType(propOrder = {"svarStatus", "personDataM201"})
     public static class TpsSvar {
 
         private TpsMeldingResponse svarStatus;
@@ -49,10 +45,11 @@ public class TpsServicerutineM201Response {
     @NoArgsConstructor
     @AllArgsConstructor
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @XmlType(propOrder = {"antallFM201", "AFnr"})
     public static class PersondataFraTpsM201 {
 
         private int antallFM201;
-        private AFnr AFnr;
+        private AFnr aFnr;
     }
 
     @Data
@@ -60,17 +57,19 @@ public class TpsServicerutineM201Response {
     @NoArgsConstructor
     @AllArgsConstructor
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @XmlType(propOrder = "EFnr")
     public static class AFnr {
 
         @JacksonXmlCData
         @JacksonXmlElementWrapper(useWrapping = false)
-        private List<EFnr> EFnr;
+        @JacksonXmlProperty(localName = "eFnr")
+        private List<EFnr> eFnr;
 
         public List<EFnr> getEFnr() {
-            if (Objects.isNull(EFnr)) {
-                EFnr = new ArrayList<>();
+            if (Objects.isNull(eFnr)) {
+                eFnr = new ArrayList<>();
             }
-            return EFnr;
+            return eFnr;
         }
     }
 
@@ -79,6 +78,7 @@ public class TpsServicerutineM201Response {
     @NoArgsConstructor
     @AllArgsConstructor
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @XmlType(propOrder = {"fnr", "sp", "kn", "fn", "mn", "en", "svarStatus"})
     public static class EFnr {
 
         private String fnr;
