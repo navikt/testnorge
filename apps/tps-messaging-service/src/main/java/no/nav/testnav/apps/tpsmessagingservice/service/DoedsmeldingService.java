@@ -2,6 +2,7 @@ package no.nav.testnav.apps.tpsmessagingservice.service;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.tpsmessagingservice.consumer.TestmiljoerServiceConsumer;
+import no.nav.testnav.apps.tpsmessagingservice.dto.endringsmeldinger.SkdMeldingsheader;
 import no.nav.testnav.apps.tpsmessagingservice.service.skd.DoedsmeldingAnnulleringBuilderService;
 import no.nav.testnav.apps.tpsmessagingservice.service.skd.DoedsmeldingBuilderService;
 import no.nav.testnav.apps.tpsmessagingservice.service.skd.SendSkdMeldinger;
@@ -29,10 +30,10 @@ public class DoedsmeldingService {
             miljoer = testmiljoerServiceConsumer.getMiljoer();
         }
 
-        var melding = doedsmeldingBuilderService.build(ident, doedsdato);
-        var skdMelding = melding.toString();
+        var skdMelding = doedsmeldingBuilderService.build(ident, doedsdato);
+        var skdMeldingMedHeader = SkdMeldingsheader.appendHeader(skdMelding.toString());
 
-        var miljoerStatus = sendSkdMeldinger.sendMeldinger(skdMelding, miljoer);
+        var miljoerStatus = sendSkdMeldinger.sendMeldinger(skdMeldingMedHeader, miljoer);
         prepareStatus(miljoerStatus);
 
         return DoedsmeldingResponse.builder()
@@ -47,10 +48,10 @@ public class DoedsmeldingService {
             miljoer = testmiljoerServiceConsumer.getMiljoer();
         }
 
-        var melding = doedsmeldingAnnulleringBuilderService.execute(person);
-        var skdMelding = melding.toString();
+        var skdMelding = doedsmeldingAnnulleringBuilderService.execute(person);
+        var skdMeldingMedHeader = SkdMeldingsheader.appendHeader(skdMelding.toString());
 
-        var miljoerStatus = sendSkdMeldinger.sendMeldinger(skdMelding, miljoer);
+        var miljoerStatus = sendSkdMeldinger.sendMeldinger(skdMeldingMedHeader, miljoer);
         prepareStatus(miljoerStatus);
 
         return DoedsmeldingResponse.builder()
