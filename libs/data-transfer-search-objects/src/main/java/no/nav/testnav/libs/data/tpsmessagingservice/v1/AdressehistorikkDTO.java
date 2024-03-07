@@ -14,7 +14,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PersonhistorikkDTO {
+public class AdressehistorikkDTO {
 
     public enum PersonStatus {
         ABNR,

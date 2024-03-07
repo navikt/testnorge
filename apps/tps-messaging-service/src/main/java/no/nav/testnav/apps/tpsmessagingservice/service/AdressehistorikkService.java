@@ -14,7 +14,7 @@ import no.nav.testnav.apps.tpsmessagingservice.dto.TpsServicerutineS018Response;
 import no.nav.testnav.apps.tpsmessagingservice.utils.EndringsmeldingUtil;
 import no.nav.testnav.apps.tpsmessagingservice.utils.ResponseStatus;
 import no.nav.testnav.apps.tpsmessagingservice.utils.ServiceRutineUtil;
-import no.nav.testnav.libs.data.tpsmessagingservice.v1.PersonhistorikkDTO;
+import no.nav.testnav.libs.data.tpsmessagingservice.v1.AdressehistorikkDTO;
 import no.nav.tps.xjc.ctg.domain.s018.SRnavnType;
 import org.json.XML;
 import org.springframework.stereotype.Service;
@@ -29,7 +29,7 @@ import static java.util.Objects.nonNull;
 
 @Slf4j
 @Service
-public class PersonHistorikkService {
+public class AdressehistorikkService {
 
     private final TestmiljoerServiceConsumer testmiljoerServiceConsumer;
     private final JAXBContext requestContext;
@@ -37,10 +37,10 @@ public class PersonHistorikkService {
     private final MapperFacade mapperFacade;
     private final ObjectMapper objectMapper;
 
-    public PersonHistorikkService(TestmiljoerServiceConsumer testmiljoerServiceConsumer,
-                                  ServicerutineConsumer servicerutineConsumer,
-                                  MapperFacade mapperFacade,
-                                  ObjectMapper objectMapper) throws JAXBException {
+    public AdressehistorikkService(TestmiljoerServiceConsumer testmiljoerServiceConsumer,
+                                   ServicerutineConsumer servicerutineConsumer,
+                                   MapperFacade mapperFacade,
+                                   ObjectMapper objectMapper) throws JAXBException {
 
         this.testmiljoerServiceConsumer = testmiljoerServiceConsumer;
         this.requestContext = JAXBContext.newInstance(TpsServicerutineAksjonsdatoRequest.class);
@@ -49,7 +49,7 @@ public class PersonHistorikkService {
         this.objectMapper = objectMapper;
     }
 
-    public List<PersonhistorikkDTO> hentIdent(String ident, LocalDate aksjonsdato, List<String> miljoer) {
+    public List<AdressehistorikkDTO> hentIdent(String ident, LocalDate aksjonsdato, List<String> miljoer) {
 
         if (miljoer.isEmpty()) {
             miljoer = testmiljoerServiceConsumer.getMiljoer();
@@ -59,13 +59,13 @@ public class PersonHistorikkService {
 
         return tpsPersoner.entrySet().stream()
                 .map(entry -> {
-                    var status = ResponseStatus.decodeStatus(nonNull(entry.getValue().getTpsSvar()) ?
-                            entry.getValue().getTpsSvar().getSvarStatus() : null);
-                    return PersonhistorikkDTO.builder()
+                    var status = ResponseStatus.decodeStatus(nonNull(entry.getValue()) && nonNull(entry.getValue().getTpsPersonData().getTpsSvar()) ?
+                            entry.getValue().getTpsPersonData().getTpsSvar().getSvarStatus() : null);
+                    return AdressehistorikkDTO.builder()
                             .miljoe(entry.getKey())
-                            .status(mapperFacade.map(status, PersonhistorikkDTO.TpsMeldingResponse.class))
+                            .status(mapperFacade.map(status, AdressehistorikkDTO.TpsMeldingResponse.class))
                             .persondata("OK".equals(status.getReturStatus()) ?
-                                    mapperFacade.map(entry.getValue().getTpsSvar().getPersondataS018(), PersonhistorikkDTO.PersonData.class) :
+                                    mapperFacade.map(entry.getValue().getTpsPersonData().getTpsSvar().getPersonDataS018(), AdressehistorikkDTO.PersonData.class) :
                                     null)
                             .build();
                 })
@@ -76,7 +76,7 @@ public class PersonHistorikkService {
 
         var request = TpsServicerutineAksjonsdatoRequest.builder()
                 .tpsServiceRutine(TpsServicerutineAksjonsdatoRequest.TpsServiceRutineMedAksjonsdato.builder()
-                        .serviceRutinenavn(SRnavnType.FS_03_FDNUMMER_PADRHIST_O.name())
+                        .serviceRutinenavn(SRnavnType.FS_03_FDNUMMER_PADRHIST_O.value())
                         .fnr(ident)
                         .aksjonsKode("A")
                         .aksjonsKode2("0")
@@ -101,8 +101,10 @@ public class PersonHistorikkService {
         if (TpsMeldingCommand.NO_RESPONSE.equals(endringsmeldingResponse)) {
 
             return TpsServicerutineS018Response.builder()
-                    .tpsSvar(TpsServicerutineS018Response.TpsSvar.builder()
-                            .svarStatus(EndringsmeldingUtil.getNoAnswerStatus())
+                    .tpsPersonData(TpsServicerutineS018Response.TpsPersonData.builder()
+                            .tpsSvar(TpsServicerutineS018Response.TpsSvar.builder()
+                                    .svarStatus(EndringsmeldingUtil.getNoAnswerStatus())
+                                    .build())
                             .build())
                     .build();
 
