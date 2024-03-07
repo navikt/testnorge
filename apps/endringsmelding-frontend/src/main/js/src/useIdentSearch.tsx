@@ -12,8 +12,7 @@ type IdentSearchResponse = [
 const fetcher = (...args: Argument[]) =>
   originalFetch(...args)
     .then((res) => {
-      console.log('res: ', res); //TODO - SLETT MEG
-      return res.data;
+      return res.json();
     })
     .catch((reason) => {
       if (reason?.response?.status === 401 || reason?.response?.status === 403) {
