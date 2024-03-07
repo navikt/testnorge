@@ -81,6 +81,7 @@ export default <T extends unknown>({ labels, onChange, setMiljoer }: Props<T>) =
         setResponse(res);
       })
       .catch((reason) => {
+        console.error(reason);
         setLoading(false);
         setError(true);
         if (reason?.response?.status === 401 || reason?.response?.status === 403) {
