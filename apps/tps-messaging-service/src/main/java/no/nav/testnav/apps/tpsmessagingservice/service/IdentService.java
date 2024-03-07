@@ -74,10 +74,10 @@ public class IdentService {
 
     private boolean exists(String ident, TpsServicerutineM201Response response) {
 
-        return nonNull(response.getTpsSvar()) &&
-                nonNull(response.getTpsSvar().getPersonDataM201()) &&
-                nonNull(response.getTpsSvar().getPersonDataM201().getAFnr()) &&
-                response.getTpsSvar().getPersonDataM201().getAFnr().getEFnr().stream()
+        return nonNull(response.getTpsPersonData()) && nonNull(response.getTpsPersonData().getTpsSvar()) &&
+                nonNull(response.getTpsPersonData().getTpsSvar().getPersonDataM201()) &&
+                nonNull(response.getTpsPersonData().getTpsSvar().getPersonDataM201().getAFnr()) &&
+                response.getTpsPersonData().getTpsSvar().getPersonDataM201().getAFnr().getEFnr().stream()
                         .anyMatch(eFnr -> ident.equals(eFnr.getFnr()) && isNull(eFnr.getSvarStatus()));
     }
 
@@ -85,11 +85,11 @@ public class IdentService {
 
         var xmlRequest = prepareRequest(identer, isProd);
 
-        log.trace("M201 request: {}", xmlRequest);
+        log.info("M201 request: {}", xmlRequest);
 
         var miljoerResponse = servicerutineConsumer.sendMessage(xmlRequest, miljoer);
 
-        miljoerResponse.forEach((key, value) -> log.trace("Miljø: {} XML: {}", key, value));
+        miljoerResponse.forEach((key, value) -> log.info("Miljø: {} XML: {}", key, value));
 
         return miljoerResponse.entrySet().parallelStream()
                 .collect(Collectors.toMap(Map.Entry::getKey,
@@ -102,8 +102,10 @@ public class IdentService {
         if (TpsMeldingCommand.NO_RESPONSE.equals(endringsmeldingResponse)) {
 
             return TpsServicerutineM201Response.builder()
-                    .tpsSvar(TpsServicerutineM201Response.TpsSvar.builder()
-                            .svarStatus(EndringsmeldingUtil.getNoAnswerStatus())
+                    .tpsPersonData(TpsServicerutineM201Response.TpsPersonData.builder()
+                            .tpsSvar(TpsServicerutineM201Response.TpsSvar.builder()
+                                    .svarStatus(EndringsmeldingUtil.getNoAnswerStatus())
+                                    .build())
                             .build())
                     .build();
         } else {
