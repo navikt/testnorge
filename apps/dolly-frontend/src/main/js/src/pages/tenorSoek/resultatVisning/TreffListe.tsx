@@ -16,7 +16,13 @@ const PersonNavn = styled.h3`
 `
 
 const PersonIdent = styled.p`
-	margin: 5px 0 15px 0;
+	margin: 5px 0 0 0;
+	//margin: 5px 0 10px 0;
+	//margin-top: 5px;
+`
+
+const TagsWrapper = styled.div`
+	margin: 10px 0;
 `
 
 const PersonVisningWrapper = styled.div`
@@ -62,7 +68,7 @@ export const TreffListe = ({ response, personListe, loading, error }: any) => {
 		<div className="flexbox--flex-wrap">
 			<div
 				className="flexbox--full-width"
-				style={{ marginBottom: '20px', position: 'sticky', top: '10px' }}
+				style={{ marginBottom: '20px', position: 'sticky', top: '10px', zIndex: 1 }}
 			>
 				<Box background="surface-default" padding="3" borderRadius="medium">
 					<div className="flexbox--space">
@@ -99,16 +105,18 @@ export const TreffListe = ({ response, personListe, loading, error }: any) => {
 									{person?.fornavn} {person?.etternavn}
 								</PersonNavn>
 								<PersonIdent>{person?.id}</PersonIdent>
-								{person?.tenorRelasjoner?.map((relasjon: any, idx: number) => (
-									<Tag
-										size="small"
-										variant="neutral"
-										key={person?.id + idx}
-										style={{ margin: '0 5px 5px 0' }}
-									>
-										{relasjon}
-									</Tag>
-								))}
+								<TagsWrapper>
+									{person?.tenorRelasjoner?.map((relasjon: any, idx: number) => (
+										<Tag
+											size="small"
+											variant="neutral"
+											key={person?.id + idx}
+											style={{ margin: '0 5px 5px 0' }}
+										>
+											{relasjon}
+										</Tag>
+									))}
+								</TagsWrapper>
 								<ListeValg
 									ident={person?.id}
 									isMultiple={true}

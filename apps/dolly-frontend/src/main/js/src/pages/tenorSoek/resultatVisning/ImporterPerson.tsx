@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom'
 import { useNaviger } from '@/utils/hooks/useNaviger'
 import { Button } from '@navikt/ds-react'
 import { CypressSelector } from '../../../../cypress/mocks/Selectors'
-import { ArrowRightIcon } from '@navikt/aksel-icons'
+import { ArrowRightIcon, EnterIcon } from '@navikt/aksel-icons'
 import { usePdlPersonbolk } from '@/utils/hooks/usePdlPerson'
 
 export const ImporterPerson = ({ ident }) => {
@@ -37,10 +37,10 @@ export const ImporterPerson = ({ ident }) => {
 
 	return (
 		<Button
-			data-cy={CypressSelector.BUTTON_VIS_I_GRUPPE}
+			// data-cy={CypressSelector.BUTTON_VIS_I_GRUPPE}
 			variant="tertiary"
 			size="xsmall"
-			icon={<ArrowRightIcon />}
+			icon={<EnterIcon />}
 			loading={loading}
 			onClick={handleClick}
 			style={{ minWidth: '150px' }}

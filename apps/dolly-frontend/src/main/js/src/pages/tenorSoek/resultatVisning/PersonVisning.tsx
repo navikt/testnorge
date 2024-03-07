@@ -11,7 +11,7 @@ import { ImporterPerson } from '@/pages/tenorSoek/resultatVisning/ImporterPerson
 import { ListeValg } from '@/pages/tenorSoek/resultatVisning/ListeValg'
 
 const NavnHeader = styled.h2`
-	margin: 5px 0 15px 0;
+	margin: 10px 0 15px 0;
 	word-break: break-word;
 	hyphens: auto;
 `
