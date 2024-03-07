@@ -8,9 +8,9 @@ type IdentSearchResponse = [
     miljoer: string[];
   },
 ];
-const fetcher = (url, headers) =>
+const fetcher = (url: string) =>
   axios
-    .get(url, { headers: headers })
+    .get(url)
     .then((res) => {
       return res.data;
     })
