@@ -1,5 +1,6 @@
 package no.nav.testnav.endringsmeldingservice.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.endringsmeldingservice.consumer.TpsMessagingConsumer;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.PersonMiljoeDTO;
@@ -15,7 +16,8 @@ import reactor.core.publisher.Flux;
 public class IdentMiljoeController {
     private final TpsMessagingConsumer tpsMessagingConsumer;
 
-    @PostMapping
+    @PostMapping("/miljoer")
+    @Operation(description = "Sjekk om ident finnes i miljøer")
     public Flux<PersonMiljoeDTO> identFinnesIMiljoer(@RequestBody String ident) {
         return tpsMessagingConsumer.hentMiljoer(ident);
     }
