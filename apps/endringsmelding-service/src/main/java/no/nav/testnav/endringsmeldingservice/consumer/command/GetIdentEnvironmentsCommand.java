@@ -23,8 +23,9 @@ public class GetIdentEnvironmentsCommand implements Callable<Flux<PersonMiljoeDT
     public Flux<PersonMiljoeDTO> call() {
         return webClient
                 .get()
-                .uri(builder -> builder.path("/api/v1/personer/{ident}")
-                        .build(ident))
+                .uri(builder -> builder.path("/api/v1/identer")
+                        .queryParam("ident", ident)
+                        .build())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToFlux(PersonMiljoeDTO.class)
