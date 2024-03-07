@@ -28,7 +28,7 @@ public class FoedselsmeldingBuilderService {
 
     public SkdMeldingTrans1 build(FoedselsmeldingRequest request) {
 
-        SkdMeldingTrans1 skdMeldingTrans1 = new SkdMeldingTrans1();
+        var skdMeldingTrans1 = new SkdMeldingTrans1();
         skdMeldingTrans1.setTildelingskode(TILDELINGSKODE_FOEDSELSMELDING);
 
         addSkdParametersExtractedFromPerson(skdMeldingTrans1, request.getBarn());

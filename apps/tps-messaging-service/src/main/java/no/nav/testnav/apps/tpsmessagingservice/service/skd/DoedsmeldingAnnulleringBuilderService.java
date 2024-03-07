@@ -21,7 +21,7 @@ public class DoedsmeldingAnnulleringBuilderService {
 
     public SkdMeldingTrans1 execute(PersonDTO person) {
 
-        SkdMeldingTrans1 skdMeldingTrans1 = new SkdMeldingTrans1();
+        var skdMeldingTrans1 = new SkdMeldingTrans1();
         skdMeldingTrans1.setTildelingskode(TILDELINGS_KO_DE_DOEDSMELDING_ANNULERING);
 
         addSkdParametersExtractedFromPerson(skdMeldingTrans1, person);
@@ -36,8 +36,8 @@ public class DoedsmeldingAnnulleringBuilderService {
         skdMeldingTrans1.setFodselsdato(person.getIdent().substring(0, 6));
         skdMeldingTrans1.setPersonnummer(person.getIdent().substring(6, 11));
 
-        String yyyyMMdd = ConvertDateToStringUtility.yyyyMMdd(LocalDateTime.now());
-        String hhMMss = ConvertDateToStringUtility.hhMMss(LocalDateTime.now());
+        var yyyyMMdd = ConvertDateToStringUtility.yyyyMMdd(LocalDateTime.now());
+        var hhMMss = ConvertDateToStringUtility.hhMMss(LocalDateTime.now());
 
         skdMeldingTrans1.setMaskintid(hhMMss);
         skdMeldingTrans1.setMaskindato(yyyyMMdd);

@@ -21,7 +21,7 @@ import static java.lang.Math.min;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class SkdMeldingTrans1 implements SkdMelding {
+public class SkdMeldingTrans1 {
 	private static final int MELDINGSLENGDE_UTEN_HEADER = 1500;
 
 	private String header;
@@ -170,28 +170,6 @@ public class SkdMeldingTrans1 implements SkdMelding {
 	private String mandatTekst;
 	private String reserverFramtidigBruk;
 	
-	/**
-	 * This method unmarshals the string and constructs a new, java-represented SkdMeldingTrans1.
-	 */
-	public static SkdMeldingTrans1 unmarshal(String skdMeldingInStringFormat) { //constructFromString()
-		SkdMeldingTrans1 skdMeldingTrans1 = new SkdMeldingTrans1();
-		if (skdMeldingInStringFormat.length() > MELDINGSLENGDE_UTEN_HEADER) {
-			int headerlength = skdMeldingInStringFormat.length() - MELDINGSLENGDE_UTEN_HEADER;
-			skdMeldingTrans1.setHeader(skdMeldingInStringFormat.substring(0, headerlength));
-			skdMeldingInStringFormat = skdMeldingInStringFormat.substring(headerlength);
-		}
-		final String skdMeldingString = skdMeldingInStringFormat;
-		SkdFeltDefinisjonerTrans1.getAllFeltDefinisjonerInSortedList()
-				.forEach(skdFeltDef ->
-						skdMeldingTrans1.setMeldingsVerdi(skdFeltDef, skdFeltDef.extractMeldingsfeltverdiFromString(skdMeldingString)));
-		return skdMeldingTrans1;
-	}
-	
-	
-	public String getFodselsnummer() {
-		return getFodselsdato() + getPersonnummer();
-	}
-	
 	@Override
 	public String toString() {
 		StringBuilder skdMelding = new StringBuilder();
@@ -226,14 +204,4 @@ public class SkdMeldingTrans1 implements SkdMelding {
 			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
 		}
 	}
-	
-	public void setMeldingsVerdi(SkdFeltDefinisjonerTrans1 skdFeltDefinisjon, String feltverdi) {
-		try {
-			getClass().getMethod("set" + StringUtils.capitalize(skdFeltDefinisjon.getVariabelNavn()), String.class)
-					.invoke(this, feltverdi);
-		} catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
-			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
-		}
-	}
-	
 }

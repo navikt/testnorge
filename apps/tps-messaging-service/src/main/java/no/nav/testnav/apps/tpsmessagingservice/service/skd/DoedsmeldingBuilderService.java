@@ -22,7 +22,7 @@ public class DoedsmeldingBuilderService {
 
     public SkdMeldingTrans1 build(String ident, LocalDate doedsdato) {
 
-        SkdMeldingTrans1 skdMeldingTrans1 = new SkdMeldingTrans1();
+        var skdMeldingTrans1 = new SkdMeldingTrans1();
         skdMeldingTrans1.setTildelingskode(TILDELINGSKODE_DOEDSMELDING);
 
         addSkdParametersExtractedFromPerson(skdMeldingTrans1, ident, doedsdato);
