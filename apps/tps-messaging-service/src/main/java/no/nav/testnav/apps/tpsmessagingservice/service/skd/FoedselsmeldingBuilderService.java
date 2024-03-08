@@ -4,15 +4,13 @@ import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.tpsmessagingservice.dto.endringsmeldinger.SkdMeldingTrans1;
 import no.nav.testnav.apps.tpsmessagingservice.utils.ConvertDateToStringUtility;
 import no.nav.testnav.apps.tpsmessagingservice.utils.HentDatoFraIdentUtility;
-import no.nav.testnav.libs.data.pdlforvalter.v1.AdressebeskyttelseDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.FoedselsmeldingRequest;
+import no.nav.testnav.libs.data.tpsmessagingservice.v1.PersonDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -52,32 +50,17 @@ public class FoedselsmeldingBuilderService {
         skdMeldingTrans1.setFoedekommLand("0301");
         skdMeldingTrans1.setFoedested("Sykehus");
 
-        skdMeldingTrans1.setFornavn(barn.getNavn().getFirst().getFornavn());
-        skdMeldingTrans1.setSlektsnavn(barn.getNavn().getFirst().getEtternavn());
-        skdMeldingTrans1.setKjoenn(barn.getKjoenn().getFirst().getKjoenn().name().substring(0,1));
+        skdMeldingTrans1.setFornavn(barn.getFornavn());
+        skdMeldingTrans1.setSlektsnavn(barn.getEtternavn());
+        skdMeldingTrans1.setKjoenn(barn.getKjonn());
 
         skdMeldingTrans1.setRegdatoAdr(regdato);
         skdMeldingTrans1.setPersonkode("3");
         skdMeldingTrans1.setLevendeDoed("1");
         skdMeldingTrans1.setStatuskode("1");
 
-        skdMeldingTrans1.setSpesRegType(getSpesregType(barn.getAdressebeskyttelse()));
+        skdMeldingTrans1.setSpesRegType(barn.getSpesreg());
         skdMeldingTrans1.setDatoSpesRegType(regdato);
-    }
-
-    private String getSpesregType(List<AdressebeskyttelseDTO> adressebeskyttelse) {
-
-        if (adressebeskyttelse.isEmpty()) {
-            return null;
-        }
-
-        return switch (adressebeskyttelse.getFirst().getGradering()) {
-
-            case STRENGT_FORTROLIG -> "6";
-            case FORTROLIG -> "7";
-            case STRENGT_FORTROLIG_UTLAND -> "19";
-            default -> null;
-        };
     }
 
     private void addSkdParametersExtractedFromForeldre(SkdMeldingTrans1 skdMeldingTrans1, FoedselsmeldingRequest request) {
@@ -88,7 +71,7 @@ public class FoedselsmeldingBuilderService {
 
         skdMeldingTrans1.setMorsFodselsdato(getDato(request.getMor()));
         skdMeldingTrans1.setMorsPersonnummer(getPersonnr(request.getMor()));
-        skdMeldingTrans1.setSlektsnavn(request.getBarn().getNavn().getFirst().getEtternavn());
+        skdMeldingTrans1.setSlektsnavn(request.getBarn().getEtternavn());
         skdMeldingTrans1.setFamilienummer(request.getMor().getIdent());
         skdMeldingTrans1.setRegdatoFamnr(
                 ConvertDateToStringUtility.yyyyMMdd(HentDatoFraIdentUtility.extract(request.getBarn().getIdent())));

@@ -3,16 +3,15 @@ package no.nav.testnav.apps.tpsmessagingservice.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.tpsmessagingservice.consumer.TestmiljoerServiceConsumer;
-import no.nav.testnav.apps.tpsmessagingservice.dto.endringsmeldinger.SkdMeldingsheader;
 import no.nav.testnav.apps.tpsmessagingservice.service.skd.DoedsmeldingAnnulleringBuilderService;
 import no.nav.testnav.apps.tpsmessagingservice.service.skd.DoedsmeldingBuilderService;
 import no.nav.testnav.apps.tpsmessagingservice.service.skd.SendSkdMeldinger;
 import no.nav.testnav.apps.tpsmessagingservice.utils.ResponseStatus;
-import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
+import no.nav.testnav.libs.data.tpsmessagingservice.v1.DoedsmeldingRequest;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.DoedsmeldingResponse;
+import no.nav.testnav.libs.data.tpsmessagingservice.v1.PersonDTO;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -26,20 +25,19 @@ public class DoedsmeldingService {
     private final DoedsmeldingAnnulleringBuilderService doedsmeldingAnnulleringBuilderService;
     private final TestmiljoerServiceConsumer testmiljoerServiceConsumer;
 
-    public DoedsmeldingResponse sendDoedsmelding(String ident, LocalDate doedsdato, List<String> miljoer) {
+    public DoedsmeldingResponse sendDoedsmelding(DoedsmeldingRequest request, List<String> miljoer) {
 
         if (miljoer.isEmpty()) {
             miljoer = testmiljoerServiceConsumer.getMiljoer();
         }
 
-        var skdMelding = doedsmeldingBuilderService.build(ident, doedsdato);
-        var skdMeldingMedHeader = SkdMeldingsheader.appendHeader(skdMelding.toString());
+        var skdMelding = doedsmeldingBuilderService.build(request);
 
-        var miljoerStatus = sendSkdMeldinger.sendMeldinger(skdMeldingMedHeader, miljoer);
+        var miljoerStatus = sendSkdMeldinger.sendMeldinger(skdMelding.toString(), miljoer);
         prepareStatus(miljoerStatus);
 
         return DoedsmeldingResponse.builder()
-                .ident(ident)
+                .ident(request.getIdent())
                 .miljoStatus(miljoerStatus)
                 .build();
     }
@@ -51,9 +49,8 @@ public class DoedsmeldingService {
         }
 
         var skdMelding = doedsmeldingAnnulleringBuilderService.execute(person);
-        var skdMeldingMedHeader = SkdMeldingsheader.appendHeader(skdMelding.toString());
 
-        var miljoerStatus = sendSkdMeldinger.sendMeldinger(skdMeldingMedHeader, miljoer);
+        var miljoerStatus = sendSkdMeldinger.sendMeldinger(skdMelding.toString(), miljoer);
         prepareStatus(miljoerStatus);
 
         return DoedsmeldingResponse.builder()

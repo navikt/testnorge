@@ -12,11 +12,13 @@ import no.nav.testnav.apps.tpsmessagingservice.service.PersonService;
 import no.nav.testnav.apps.tpsmessagingservice.service.SpraakService;
 import no.nav.testnav.libs.data.kontoregister.v1.BankkontonrNorskDTO;
 import no.nav.testnav.libs.data.kontoregister.v1.BankkontonrUtlandDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.AdressehistorikkDTO;
+import no.nav.testnav.libs.data.tpsmessagingservice.v1.AdressehistorikkRequest;
+import no.nav.testnav.libs.data.tpsmessagingservice.v1.DoedsmeldingRequest;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.DoedsmeldingResponse;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.FoedselsmeldingRequest;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.FoedselsmeldingResponse;
+import no.nav.testnav.libs.data.tpsmessagingservice.v1.PersonDTO;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.PersonMiljoeDTO;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.SpraakDTO;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.TpsMeldingResponseDTO;
@@ -126,12 +128,11 @@ public class PersonController {
         return convert(bankkontoUtlandService.opphoerBankkontonrUtland(ident, miljoer));
     }
 
-    @GetMapping("/{ident}/adressehistorikk")
-    public List<AdressehistorikkDTO> personhistorikk(@PathVariable String ident,
-                                                     @RequestParam(required = false) LocalDate aksjonsdato,
+    @GetMapping("/adressehistorikk")
+    public List<AdressehistorikkDTO> personhistorikk(@RequestBody AdressehistorikkRequest request,
                                                      @RequestParam(required = false) List<String> miljoer) {
 
-        return adressehistorikkService.hentIdent(ident, aksjonsdato, isNull(miljoer) ? emptyList() : miljoer);
+        return adressehistorikkService.hentHistorikk(request, isNull(miljoer) ? emptyList() : miljoer);
     }
 
     @PostMapping("/foedselsmelding")
@@ -141,12 +142,11 @@ public class PersonController {
         return foedselsmeldingService.sendFoedselsmelding(persondata, isNull(miljoer) ? emptyList() : miljoer);
     }
 
-    @PostMapping("{ident}/doedsmelding")
-    public DoedsmeldingResponse sendDoedsmelding(@PathVariable String ident,
-                                                 @RequestParam LocalDate doedsdato,
+    @PostMapping("/doedsmelding")
+    public DoedsmeldingResponse sendDoedsmelding(@RequestBody DoedsmeldingRequest request,
                                                  @RequestParam(required = false) List<String> miljoer) {
 
-        return doedsmeldingService.sendDoedsmelding(ident, doedsdato, isNull(miljoer) ? emptyList() : miljoer);
+        return doedsmeldingService.sendDoedsmelding(request, isNull(miljoer) ? emptyList() : miljoer);
     }
 
     @DeleteMapping("/doedsmelding")

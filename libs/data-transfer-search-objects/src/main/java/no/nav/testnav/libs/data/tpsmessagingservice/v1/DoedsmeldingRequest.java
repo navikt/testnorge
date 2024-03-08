@@ -5,13 +5,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class FoedselsmeldingRequest {
+public class DoedsmeldingRequest {
 
-    private PersonDTO barn;
-    private PersonDTO mor;
-    private PersonDTO far;
+    private String ident;
+    private LocalDate doedsdato;
 }

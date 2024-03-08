@@ -40,6 +40,7 @@ public class AdressehistorikkDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class PersonData {
+        private String Ident;
         private String identType;
         private List<PersonstatusType> personStatus;
         private List<BoAdresseType> bostedsAdresse;
