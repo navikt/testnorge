@@ -2,6 +2,7 @@ package no.nav.testnav.endringsmeldingservice.consumer.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.endringsmeldingservice.domain.IdenterRequest;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.TpsIdentStatusDTO;
 import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.http.HttpHeaders;
@@ -16,16 +17,16 @@ import java.util.concurrent.Callable;
 @RequiredArgsConstructor
 public class GetIdentEnvironmentsCommand implements Callable<Flux<TpsIdentStatusDTO>> {
     private final WebClient webClient;
-    private final String ident;
+    private final IdenterRequest body;
     private final String token;
 
     @Override
     public Flux<TpsIdentStatusDTO> call() {
         return webClient
-                .get()
-                .uri(builder -> builder.path("/api/v1/identer")
-                        .queryParam("identer", ident)
+                .post()
+                .uri(builder -> builder.path("/api/v2/identer")
                         .build())
+                .bodyValue(body)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToFlux(TpsIdentStatusDTO.class)

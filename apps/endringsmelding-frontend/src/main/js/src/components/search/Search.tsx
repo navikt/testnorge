@@ -73,7 +73,7 @@ export default <T extends unknown>({ labels, onChange, setMiljoer }: Props<T>) =
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
       },
-      JSON.stringify({ ident }),
+      JSON.stringify({ ident: ident }),
     )
       .then((res) => {
         console.log('res: ', res); //TODO - SLETT MEG
