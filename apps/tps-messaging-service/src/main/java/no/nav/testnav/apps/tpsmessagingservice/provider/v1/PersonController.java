@@ -128,7 +128,7 @@ public class PersonController {
         return convert(bankkontoUtlandService.opphoerBankkontonrUtland(ident, miljoer));
     }
 
-    @GetMapping("/adressehistorikk")
+    @PostMapping("/adressehistorikk")
     public List<AdressehistorikkDTO> personhistorikk(@RequestBody AdressehistorikkRequest request,
                                                      @RequestParam(required = false) List<String> miljoer) {
 
