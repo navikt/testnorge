@@ -130,7 +130,10 @@ export default <T extends unknown>({ labels, onChange, setMiljoer }: Props<T>) =
         }}
       />
       <StyledKnapp
-        onClick={() => setSearch(value)}
+        onClick={(event: any) => {
+          event.preventDefault();
+          setSearch(value);
+        }}
         disabled={loading || isSyntheticIdent(value)}
         loading={loading}
       >
