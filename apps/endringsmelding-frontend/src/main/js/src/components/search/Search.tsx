@@ -84,9 +84,9 @@ export default <T extends unknown>({ labels, onChange, setMiljoer }: Props<T>) =
       body: JSON.stringify({ ident: ident }),
     })
       .then(async (res) => {
-        console.log('res: ', res); //TODO - SLETT MEG
         setLoading(false);
         const jsonResponse = await res.json();
+        console.log('jsonResponse: ', jsonResponse); //TODO - SLETT MEG
         setResponse(jsonResponse);
       })
       .catch((reason) => {
