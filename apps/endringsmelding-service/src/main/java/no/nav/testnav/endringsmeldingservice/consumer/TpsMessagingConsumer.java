@@ -48,6 +48,6 @@ public class TpsMessagingConsumer {
     public Flux<TpsIdentStatusDTO> hentMiljoer(IdenterRequest body) {
         return accessTokenService
                 .exchange(serverProperties)
-                .flatMapMany(accessToken -> new GetIdentEnvironmentsCommand(webClient, body, accessToken.getTokenValue()).call());
+                .flatMapMany(accessToken -> new GetIdentEnvironmentsCommand(webClient, body.ident(), accessToken.getTokenValue()).call());
     }
 }
