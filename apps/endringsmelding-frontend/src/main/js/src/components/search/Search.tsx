@@ -63,6 +63,18 @@ export default <T extends unknown>({ labels, onChange, setMiljoer }: Props<T>) =
   const [loading, setLoading] = useState(null);
   const [error, setError] = useState(null);
 
+  const renderAlert = () => {
+    if (_.isEmpty(response?.miljoer)) {
+      return null;
+    } else if (error) {
+      return <ErrorAlert label={labels.onError} />;
+    } else if (response.miljoer.length === 0) {
+      return <WarningAlert label={labels.onNotFound} />;
+    } else {
+      return <SuccessAlert label={labels.onFound} />;
+    }
+  };
+
   const hentMiljoeInfo = async (ident: string) => {
     setError(false);
     setLoading(true);
@@ -71,10 +83,11 @@ export default <T extends unknown>({ labels, onChange, setMiljoer }: Props<T>) =
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ident: ident }),
     })
-      .then((res) => {
+      .then(async (res) => {
         console.log('res: ', res); //TODO - SLETT MEG
         setLoading(false);
-        setResponse(res.json());
+        const jsonResponse = await res.json();
+        setResponse(jsonResponse);
       })
       .catch((reason) => {
         console.error(reason);
@@ -124,17 +137,7 @@ export default <T extends unknown>({ labels, onChange, setMiljoer }: Props<T>) =
         {labels.button}
       </StyledKnapp>
       {isSyntheticIdent(value) && <StyledWarning label={labels.syntIdent} />}
-      <Alert>
-        {!_.isEmpty(response?.miljoer) ? null : response?.miljoer.length === 0 ? (
-          error ? (
-            <ErrorAlert label={labels.onError} />
-          ) : (
-            <WarningAlert label={labels.onNotFound} />
-          )
-        ) : (
-          <SuccessAlert label={labels.onFound} />
-        )}
-      </Alert>
+      <Alert>{renderAlert()}</Alert>
     </Search>
   );
 };
