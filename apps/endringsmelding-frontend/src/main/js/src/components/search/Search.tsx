@@ -10,7 +10,6 @@ import {
   WarningAlertstripe,
 } from '@navikt/dolly-komponenter';
 import _ from 'lodash';
-import { Api } from '@navikt/dolly-lib';
 
 const Search = styled.div`
   display: flex;
@@ -67,18 +66,15 @@ export default <T extends unknown>({ labels, onChange, setMiljoer }: Props<T>) =
   const hentMiljoeInfo = async (ident: string) => {
     setError(false);
     setLoading(true);
-    return Api.fetchJson(
-      `/endringsmelding-service/api/v1/ident/miljoer`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-      },
-      JSON.stringify({ ident: ident }),
-    )
+    return fetch(`/endringsmelding-service/api/v1/ident/miljoer`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ident: ident }),
+    })
       .then((res) => {
         console.log('res: ', res); //TODO - SLETT MEG
         setLoading(false);
-        setResponse(res);
+        setResponse(res.json());
       })
       .catch((reason) => {
         console.error(reason);
