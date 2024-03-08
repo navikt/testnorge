@@ -23,7 +23,8 @@ public class GetIdentEnvironmentsCommand implements Callable<Flux<TpsIdentStatus
     public Flux<TpsIdentStatusDTO> call() {
         return webClient
                 .get()
-                .uri(builder -> builder.path("/api/v1/personer/{ident}")
+                .uri(builder -> builder.path("/api/v1/identer")
+                        .queryParam("ident", ident)
                         .build(ident))
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
