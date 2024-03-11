@@ -28,7 +28,7 @@ public class SendSkdMeldinger {
             return endringsmeldingConsumer.sendMessage(skdMeldingMedHeader, environments)
                     .entrySet().stream()
                     .collect(Collectors.toMap(Map.Entry::getKey, respone -> respone.getValue()
-                            .replace(TpsMeldingCommand.NO_RESPONSE, "TPS svarer ikke")));
+                            .replace(TpsMeldingCommand.NO_RESPONSE, "FEIL: TPS svarer ikke")));
 
         } catch (JmsException jmsException) {
             log.error(jmsException.getMessage(), jmsException);
