@@ -1,4 +1,4 @@
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 
 interface OppholdAnnetStedValues {
@@ -8,7 +8,7 @@ interface OppholdAnnetStedValues {
 export const OppholdAnnetSted = ({ path }: OppholdAnnetStedValues) => {
 	return (
 		<div className="flexbox--flex-wrap">
-			<FormikSelect name={path} label="Opphold annet sted" options={Options('oppholdAnnetSted')} />
+			<FormSelect name={path} label="Opphold annet sted" options={Options('oppholdAnnetSted')} />
 		</div>
 	)
 }

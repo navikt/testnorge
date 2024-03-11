@@ -1,7 +1,7 @@
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
-import { DollySelect, FormikSelect } from '@/components/ui/form/inputs/select/Select'
-import { DollyTextInput, FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { DollySelect, FormSelect } from '@/components/ui/form/inputs/select/Select'
+import { DollyTextInput, FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import Panel from '@/components/ui/panel/Panel'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
@@ -82,12 +82,12 @@ export const KrrstubForm = () => {
 					/>
 					{registrert && (
 						<>
-							<FormikSelect
+							<FormSelect
 								name="krrstub.reservert"
 								label="Reservert"
 								options={Options('boolean')}
 							/>
-							<FormikTextInput name="krrstub.epost" label="E-post" />
+							<FormTextInput name="krrstub.epost" label="E-post" />
 							<div
 								style={{
 									display: 'flex',
@@ -121,16 +121,16 @@ export const KrrstubForm = () => {
 									}}
 								/>
 							</div>
-							<FormikSelect name="krrstub.spraak" label="Språk" options={Options('spraaktype')} />
-							<FormikDatepicker name="krrstub.gyldigFra" label="Kontaktinfo gjelder fra" />
+							<FormSelect name="krrstub.spraak" label="Språk" options={Options('spraaktype')} />
+							<FormDatepicker name="krrstub.gyldigFra" label="Kontaktinfo gjelder fra" />
 						</>
 					)}
 				</div>
 				{registrert && (
 					<Kategori title={'Sikker digital postkasse'}>
 						<div className="flexbox--flex-wrap">
-							<FormikTextInput name="krrstub.sdpAdresse" label="Adresse" />
-							<FormikSelect
+							<FormTextInput name="krrstub.sdpAdresse" label="Adresse" />
+							<FormSelect
 								name="krrstub.sdpLeverandoer"
 								label="Leverandør"
 								options={leverandoerOptions}

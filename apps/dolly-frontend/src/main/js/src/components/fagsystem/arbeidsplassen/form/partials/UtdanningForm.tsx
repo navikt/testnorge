@@ -1,25 +1,25 @@
-import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import {
 	initialUtdanning,
 	initialUtdanningVerdier,
 } from '@/components/fagsystem/arbeidsplassen/form/initialValues'
-import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
+import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import * as React from 'react'
 import { Fritekstfelt } from '@/components/fagsystem/arbeidsplassen/form/styles'
 import _get from 'lodash/get'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { EraseFillButtons } from '@/components/fagsystem/arbeidsplassen/form/partials/EraseFillButtons'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 
 export const UtdanningForm = ({ formMethods }) => {
 	const utdanningListePath = 'arbeidsplassenCV.utdanning'
 
 	return (
 		<Vis attributt={utdanningListePath}>
-			<FormikDollyFieldArray
+			<FormDollyFieldArray
 				name={utdanningListePath}
 				header="Utdanninger"
 				newEntry={initialUtdanningVerdier}
@@ -33,20 +33,20 @@ export const UtdanningForm = ({ formMethods }) => {
 					return (
 						<>
 							<div key={idx} className="flexbox--flex-wrap">
-								<FormikSelect
+								<FormSelect
 									name={`${utdanningPath}.nuskode`}
 									label="Utdanningsnivå"
 									options={Options('nusKoder')}
 									size="large"
 									isClearable={false}
 								/>
-								<FormikTextInput
+								<FormTextInput
 									name={`${utdanningPath}.field`}
 									label="Grad og utdanningsretning"
 									size="medium"
 									key={`field_${fieldPath}`}
 								/>
-								<FormikTextInput
+								<FormTextInput
 									name={`${utdanningPath}.institution`}
 									label="Skole/studiested"
 									size="medium"
@@ -63,13 +63,13 @@ export const UtdanningForm = ({ formMethods }) => {
 									key={`description_${beskrivelsePath}`}
 									resize
 								/>
-								<FormikDatepicker name={`${utdanningPath}.startDate`} label="Startdato" />
-								<FormikDatepicker
+								<FormDatepicker name={`${utdanningPath}.startDate`} label="Startdato" />
+								<FormDatepicker
 									name={`${utdanningPath}.endDate`}
 									label="Sluttdato"
 									disabled={_get(formMethods.getValues(), `${utdanningPath}.ongoing`)}
 								/>
-								<FormikCheckbox
+								<FormCheckbox
 									id={`${utdanningPath}.ongoing`}
 									name={`${utdanningPath}.ongoing`}
 									label="Pågående utdanning"
@@ -87,7 +87,7 @@ export const UtdanningForm = ({ formMethods }) => {
 						</>
 					)
 				}}
-			</FormikDollyFieldArray>
+			</FormDollyFieldArray>
 		</Vis>
 	)
 }

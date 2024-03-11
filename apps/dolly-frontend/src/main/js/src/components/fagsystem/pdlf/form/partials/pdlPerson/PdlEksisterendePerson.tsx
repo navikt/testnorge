@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import Loading from '@/components/ui/loading/Loading'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
@@ -138,7 +138,7 @@ export const PdlEksisterendePerson = ({
 		<div className={'flexbox--full-width'}>
 			{(pdlLoading || gruppeLoading) && <Loading label="Henter valg for eksisterende ident..." />}
 			{filteredOptions?.length > 0 ? (
-				<FormikSelect
+				<FormSelect
 					name={eksisterendePersonPath}
 					onChange={(person) => {
 						formMethods.setValue(eksisterendePersonPath, person?.value || null)

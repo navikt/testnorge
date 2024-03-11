@@ -1,7 +1,7 @@
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
-import { DollySelect, FormikSelect } from '@/components/ui/form/inputs/select/Select'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { DollySelect, FormSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { getPlaceholder, setNavn } from '../utils'
 import _ from 'lodash'
 import {
@@ -110,7 +110,7 @@ export const Kontakt = ({ formMethods, path, eksisterendeNyPerson = null }: Kont
 
 	return (
 		<Kategori title="Kontakt">
-			<FormikSelect
+			<FormSelect
 				name={`${path}.kontaktType`}
 				label="Kontakttype"
 				value={getKontakttype()}
@@ -174,7 +174,7 @@ export const Kontakt = ({ formMethods, path, eksisterendeNyPerson = null }: Kont
 						eksisterendeNyPerson={eksisterendeNyPerson}
 						formMethods={formMethods}
 					/>
-					<FormikDatepicker
+					<FormDatepicker
 						name={`${personPath}.foedselsdato`}
 						label="Fødselsdato"
 						disabled={disablePersoninfo}

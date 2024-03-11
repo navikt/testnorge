@@ -1,6 +1,6 @@
 import _ from 'lodash'
-import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import React, { useContext } from 'react'
 import _get from 'lodash/get'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
@@ -36,21 +36,21 @@ export const Alder = ({ formMethods }) => {
 
 	return (
 		<div className="flexbox--flex-wrap">
-			<FormikTextInput
+			<FormTextInput
 				name={paths.alder}
 				type="number"
 				onKeyPress={onlyNumberKeyPressHandler}
 				label="Alder"
 				isDisabled={disableAlder}
 			/>
-			<FormikDatepicker
+			<FormDatepicker
 				name={paths.foedtEtter}
 				label="Født etter"
 				disabled={disableFoedtDato}
 				maxDate={new Date()}
 				minDate={minDateAlder}
 			/>
-			<FormikDatepicker
+			<FormDatepicker
 				name={paths.foedtFoer}
 				label="Født før"
 				disabled={disableFoedtDato}

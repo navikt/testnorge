@@ -1,13 +1,13 @@
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
-import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { OrganisasjonMedArbeidsforholdSelect } from '@/components/organisasjonSelect'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 
 export const SyntSykemelding = () => {
 	return (
 		<div className="flexbox--flex-wrap">
-			<FormikDatepicker name="sykemelding.syntSykemelding.startDato" label="Startdato" />
-			<FormikTextInput
+			<FormDatepicker name="sykemelding.syntSykemelding.startDato" label="Startdato" />
+			<FormTextInput
 				name="sykemelding.syntSykemelding.arbeidsforholdId"
 				label="Arbeidsforhold-ID"
 				type="number"

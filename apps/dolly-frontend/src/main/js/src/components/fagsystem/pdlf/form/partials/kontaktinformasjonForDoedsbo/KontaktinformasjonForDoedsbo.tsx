@@ -1,9 +1,9 @@
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { Kontakt } from '@/components/fagsystem/pdlf/form/partials/kontaktinformasjonForDoedsbo/Kontakt'
 import { Adresse } from '@/components/fagsystem/pdlf/form/partials/kontaktinformasjonForDoedsbo/Adresse'
-import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { initialKontaktinfoForDoedebo } from '@/components/fagsystem/pdlf/form/initialValues'
 import Panel from '@/components/ui/panel/Panel'
@@ -20,13 +20,13 @@ export const KontaktinformasjonForDoedsboForm = ({
 }) => {
 	return (
 		<>
-			<FormikSelect
+			<FormSelect
 				name={`${path}.skifteform`}
 				label="Skifteform"
 				options={Options('skifteform')}
 				isClearable={false}
 			/>
-			<FormikDatepicker
+			<FormDatepicker
 				name={`${path}.attestutstedelsesdato`}
 				label="Utstedelsesdato skifteattest"
 			/>
@@ -46,14 +46,14 @@ export const KontaktinformasjonForDoedsbo = ({ formMethods }) => {
 				iconType="doedsbo"
 				startOpen={erForsteEllerTest(formMethods.getValues(), [doedsboAttributt])}
 			>
-				<FormikDollyFieldArray
+				<FormDollyFieldArray
 					name="pdldata.person.kontaktinformasjonForDoedsbo"
 					header="Kontaktinformasjon for dødsbo"
 					newEntry={initialKontaktinfoForDoedebo}
 					canBeEmpty={false}
 				>
 					{(path) => <KontaktinformasjonForDoedsboForm formMethods={formMethods} path={path} />}
-				</FormikDollyFieldArray>
+				</FormDollyFieldArray>
 			</Panel>
 		</Vis>
 	)

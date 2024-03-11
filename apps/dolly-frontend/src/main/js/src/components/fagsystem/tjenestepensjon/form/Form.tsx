@@ -3,12 +3,12 @@ import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import Panel from '@/components/ui/panel/Panel'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
 import { validation } from '@/components/fagsystem/tjenestepensjon/form/validation'
-import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { YtelseForm } from '@/components/fagsystem/tjenestepensjon/form/partials/ytelseForm'
 import { subDays } from 'date-fns'
 import { PensjonApi } from '@/service/Api'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { useFormContext } from 'react-hook-form'
 import './TPForm.less'
 
@@ -54,12 +54,12 @@ export const TjenestepensjonForm = () => {
 				informasjonstekst={hjelpetekst}
 			>
 				{/*// @ts-ignore*/}
-				<FormikDollyFieldArray name={tpPath} header="Ordning" newEntry={initialOrdning}>
+				<FormDollyFieldArray name={tpPath} header="Ordning" newEntry={initialOrdning}>
 					{(formPath, idx) => (
 						<React.Fragment key={idx}>
 							<React.Fragment>
 								<div className="flexbox--flex-wrap">
-									<FormikSelect
+									<FormSelect
 										name={`${formPath}.ordning`}
 										label="tp-nr"
 										size="grow"
@@ -75,7 +75,7 @@ export const TjenestepensjonForm = () => {
 							</React.Fragment>
 						</React.Fragment>
 					)}
-				</FormikDollyFieldArray>
+				</FormDollyFieldArray>
 			</Panel>
 		</Vis>
 	)

@@ -1,5 +1,5 @@
 import { AdresseKodeverk } from '@/config/kodeverk'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 
 interface UkjentBostedValues {
 	path: string
@@ -8,7 +8,7 @@ interface UkjentBostedValues {
 export const UkjentBosted = ({ path }: UkjentBostedValues) => {
 	return (
 		<div className="flexbox--flex-wrap">
-			<FormikSelect
+			<FormSelect
 				name={`${path}.bostedskommune`}
 				label="Bostedskommune"
 				kodeverk={AdresseKodeverk.Kommunenummer}

@@ -6,10 +6,10 @@ import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import { DollySelect } from '@/components/ui/form/inputs/select/Select'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
-import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
-import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
-import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
+import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import {
 	ifPresent,
 	messages,
@@ -129,7 +129,7 @@ export const InntektsmeldingForm = () => {
 					isClearable={false}
 				/>
 
-				<FormikDollyFieldArray
+				<FormDollyFieldArray
 					name="inntektsmelding.inntekter"
 					header="Inntekt"
 					newEntry={initialValues(typeArbeidsgiver)}
@@ -152,17 +152,17 @@ export const InntektsmeldingForm = () => {
 										kodeverk={Kodeverk.Ytelse}
 										formMethods={formMethods}
 									/>
-									<FormikDatepicker
+									<FormDatepicker
 										name={`${path}.avsendersystem.innsendingstidspunkt`}
 										label="Innsendingstidspunkt"
 									/>
 									{typeArbeidsgiver === TypeArbeidsgiver.PRIVATPERSON && (
 										<>
-											<FormikTextInput
+											<FormTextInput
 												name={`${path}.arbeidsgiverPrivat.arbeidsgiverFnr`}
 												label="Arbeidsgiver (fnr/dnr/npid)"
 											/>
-											<FormikCheckbox
+											<FormCheckbox
 												name={`${path}.naerRelasjon`}
 												label="Nær relasjon"
 												checkboxMargin
@@ -177,7 +177,7 @@ export const InntektsmeldingForm = () => {
 												formMethods={formMethods}
 											/>
 											<div style={{ margin: '70px 0 0 30px' }}>
-												<FormikCheckbox name={`${path}.naerRelasjon`} label="Nær relasjon" />
+												<FormCheckbox name={`${path}.naerRelasjon`} label="Nær relasjon" />
 											</div>
 										</div>
 									)}
@@ -195,7 +195,7 @@ export const InntektsmeldingForm = () => {
 											visWarning={!formMethods.watch(`${path}.startdatoForeldrepengeperiode`)}
 											warningText="For automatisk behandling av inntektsmelding må dette feltet fylles ut"
 										>
-											<FormikDatepicker
+											<FormDatepicker
 												name={`${path}.startdatoForeldrepengeperiode`}
 												label="Startdato for periode"
 											/>
@@ -220,7 +220,7 @@ export const InntektsmeldingForm = () => {
 							</div>
 						)
 					}}
-				</FormikDollyFieldArray>
+				</FormDollyFieldArray>
 			</Panel>
 		</Vis>
 	)

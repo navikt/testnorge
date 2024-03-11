@@ -63,7 +63,7 @@ export const DollyTimepicker = (props) => (
 	</InputWrapper>
 )
 
-const P_FormikTimepicker = ({ ...props }) => {
+const P_FormTimepicker = ({ ...props }) => {
 	const formMethods = useFormContext()
 	const value = formMethods.watch(props.name)
 
@@ -83,7 +83,7 @@ const P_FormikTimepicker = ({ ...props }) => {
 	return <DollyTimepicker value={value} onChange={handleChange} onBlur={handleBlur} {...props} />
 }
 
-export const FormikDateTimepicker = ({ visHvisAvhuket = true, ...props }) => {
-	const component = <P_FormikTimepicker {...props} />
+export const FormDateTimepicker = ({ visHvisAvhuket = true, ...props }) => {
+	const component = <P_FormTimepicker {...props} />
 	return visHvisAvhuket ? <Vis attributt={props.name}>{component}</Vis> : component
 }

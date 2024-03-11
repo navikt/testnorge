@@ -1,15 +1,15 @@
-import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { getInitialNavn } from '@/components/fagsystem/pdlf/form/initialValues'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
-import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
+import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { Option } from '@/service/SelectOptionsOppslag'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import _, { isEmpty } from 'lodash'
 import { useContext, useEffect, useState } from 'react'
 import { ArrowCirclepathIcon } from '@navikt/aksel-icons'
 import { Button } from '@navikt/ds-react'
 import styled from 'styled-components'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { useGenererNavn } from '@/utils/hooks/useGenererNavn'
 import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
@@ -90,7 +90,7 @@ export const NavnForm = ({ formMethods, path, identtype }: NavnTypes) => {
 		<>
 			<div className="flexbox--full-width">
 				<div style={{ display: 'flex', alignItems: 'center' }}>
-					<FormikSelect
+					<FormSelect
 						name={`${path}.alleFornavn`}
 						label="Fornavn"
 						placeholder={fornavn || 'Velg ...'}
@@ -109,7 +109,7 @@ export const NavnForm = ({ formMethods, path, identtype }: NavnTypes) => {
 					{getRefreshButton()}
 				</div>
 				<div style={{ display: 'flex', alignItems: 'center' }}>
-					<FormikSelect
+					<FormSelect
 						name={`${path}.alleMellomnavn`}
 						label="Mellomnavn"
 						placeholder={mellomnavn || 'Velg ...'}
@@ -128,7 +128,7 @@ export const NavnForm = ({ formMethods, path, identtype }: NavnTypes) => {
 					{getRefreshButton()}
 				</div>
 				<div style={{ display: 'flex', alignItems: 'center' }}>
-					<FormikSelect
+					<FormSelect
 						name={`${path}.alleEtternavn`}
 						label="Etternavn"
 						placeholder={etternavn || 'Velg ...'}
@@ -147,13 +147,13 @@ export const NavnForm = ({ formMethods, path, identtype }: NavnTypes) => {
 				</div>
 			</div>
 			<div className="flexbox--flex-wrap">
-				<FormikCheckbox
+				<FormCheckbox
 					name={`${path}.hasMellomnavn`}
 					label="Har tilfeldig mellomnavn"
 					isDisabled={!isEmpty(selectedMellomnavn)}
 					checkboxMargin
 				/>
-				<FormikDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig f.o.m. dato" />
+				<FormDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig f.o.m. dato" />
 			</div>
 			<AvansertForm path={path} kanVelgeMaster={identtype !== 'NPID'} />
 		</>
@@ -164,7 +164,7 @@ export const Navn = ({ formMethods }: NavnTypes) => {
 	const opts = useContext(BestillingsveilederContext)
 	return (
 		<div className="flexbox--flex-wrap">
-			<FormikDollyFieldArray
+			<FormDollyFieldArray
 				name={'pdldata.person.navn'}
 				header="Navn"
 				newEntry={getInitialNavn(opts?.identtype === 'NPID' ? 'PDL' : 'FREG')}
@@ -173,7 +173,7 @@ export const Navn = ({ formMethods }: NavnTypes) => {
 				{(path: string) => (
 					<NavnForm formMethods={formMethods} path={path} identtype={opts?.identtype} />
 				)}
-			</FormikDollyFieldArray>
+			</FormDollyFieldArray>
 		</div>
 	)
 }

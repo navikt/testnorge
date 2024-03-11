@@ -1,10 +1,10 @@
 import _ from 'lodash'
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
-import { DollySelect, FormikSelect } from '@/components/ui/form/inputs/select/Select'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { DollySelect, FormSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { getPlaceholder, setNavn } from '../../utils'
-import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { initialFalskIdentitetValues } from '@/components/fagsystem/pdlf/form/initialValues'
 import { PdlEksisterendePerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlEksisterendePerson'
@@ -42,7 +42,7 @@ export const FalskIdentitet = ({ formMethods }) => {
 	}
 
 	return (
-		<FormikDollyFieldArray
+		<FormDollyFieldArray
 			name="pdldata.person.falskIdentitet"
 			header="Falsk identitet"
 			newEntry={initialFalskIdentitetValues}
@@ -71,7 +71,7 @@ export const FalskIdentitet = ({ formMethods }) => {
 				return (
 					<>
 						<div className="flexbox--flex-wrap" key={idx}>
-							<FormikSelect
+							<FormSelect
 								name={`${path}.identitetType`}
 								label="Opplysninger om rett identitet"
 								options={Options('identitetType')}
@@ -110,17 +110,17 @@ export const FalskIdentitet = ({ formMethods }) => {
 											`${path}.rettIdentitetVedOpplysninger.personnavn.fornavn`,
 										)}
 									/>
-									<FormikDatepicker
+									<FormDatepicker
 										name={`${path}.rettIdentitetVedOpplysninger.foedselsdato`}
 										label="Fødselsdato"
 										maxDate={new Date()}
 									/>
-									<FormikSelect
+									<FormSelect
 										name={`${path}.rettIdentitetVedOpplysninger.kjoenn`}
 										label="Kjønn"
 										options={Options('kjoenn')}
 									/>
-									<FormikSelect
+									<FormSelect
 										name={`${path}.rettIdentitetVedOpplysninger.statsborgerskap`}
 										label="Statsborgerskap"
 										kodeverk={AdresseKodeverk.StatsborgerskapLand}
@@ -135,6 +135,6 @@ export const FalskIdentitet = ({ formMethods }) => {
 					</>
 				)
 			}}
-		</FormikDollyFieldArray>
+		</FormDollyFieldArray>
 	)
 }

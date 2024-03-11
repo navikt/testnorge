@@ -1,29 +1,32 @@
 import { useToggle } from 'react-use'
-import { useFormContext } from 'react-hook-form'
 
-const FormState = ({ values }) => (
-	<pre>
-		<strong>props</strong> = {JSON.stringify(values, replacer, 2)}
-	</pre>
-)
+const FormErrors = ({ errors }) => {
+	return (
+		<pre>
+			<strong>Errors</strong> = {JSON.stringify(errors, replacer, 2)}
+		</pre>
+	)
+}
 
 const replacer = (key: string, value: any) => {
-	const exludedProperties = ['fysiskDokument', 'base64']
+	const exludedProperties = ['ref']
 	if (exludedProperties.some((excludedKey) => excludedKey === key)) {
-		return '**Forkortet verdi**'
+		return '**Fjernet**'
 	} else return value
 }
 
-export default function DisplayFormikState({ visState = false, label = 'Vis form' }) {
-	const { getValues } = useFormContext()
+export default function DisplayFormErrors({
+	visState = false,
+	errors = null as any,
+	label = 'Vis state',
+}) {
 	const [showState, toggleShowState] = useToggle(visState)
-
 	return (
 		<div
 			onClick={toggleShowState}
 			style={{
 				position: 'absolute',
-				top: 0,
+				top: 40,
 				right: 0,
 				background: '#f6f8fa',
 				fontSize: '.7rem',
@@ -32,11 +35,11 @@ export default function DisplayFormikState({ visState = false, label = 'Vis form
 				borderBottom: '1px solid',
 				borderLeft: '1px solid',
 				borderColor: '#ccc',
-				zIndex: 99,
+				zIndex: 10,
 			}}
 		>
-			{showState && <>{<FormState values={getValues()} />}</>}
-			{!showState && <span style={{ zIndex: 1 }}>{label}</span>}
+			{showState && <FormErrors errors={errors} />}
+			{!showState && <span>{label}</span>}
 		</div>
 	)
 }

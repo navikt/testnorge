@@ -1,6 +1,6 @@
-import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
-import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { initialTimeloennet } from '../initialValues'
 
 const infotekst =
@@ -8,7 +8,7 @@ const infotekst =
 
 export const TimeloennetForm = ({ path }) => {
 	return (
-		<FormikDollyFieldArray
+		<FormDollyFieldArray
 			name={path}
 			header="Timer med timelønnet"
 			hjelpetekst={infotekst}
@@ -17,15 +17,15 @@ export const TimeloennetForm = ({ path }) => {
 		>
 			{(partialPath, idx) => (
 				<div key={idx} className="flexbox">
-					<FormikTextInput
+					<FormTextInput
 						name={`${partialPath}.antallTimer`}
 						label="Antall timer for timelønnet"
 						type="number"
 					/>
-					<FormikDatepicker name={`${partialPath}.periode.fom`} label="Periode fra" />
-					<FormikDatepicker name={`${partialPath}.periode.tom`} label="Periode til" />
+					<FormDatepicker name={`${partialPath}.periode.fom`} label="Periode fra" />
+					<FormDatepicker name={`${partialPath}.periode.tom`} label="Periode til" />
 				</div>
 			)}
-		</FormikDollyFieldArray>
+		</FormDollyFieldArray>
 	)
 }

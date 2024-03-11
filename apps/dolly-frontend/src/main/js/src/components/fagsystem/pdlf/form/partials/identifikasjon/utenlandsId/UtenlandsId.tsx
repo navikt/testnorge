@@ -1,9 +1,9 @@
 import { AdresseKodeverk } from '@/config/kodeverk'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
-import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
-import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
+import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { getInitialUtenlandskIdentifikasjonsnummer } from '@/components/fagsystem/pdlf/form/initialValues'
 import React, { useContext } from 'react'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
@@ -11,15 +11,15 @@ import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bes
 export const UtenlandsIdForm = ({ path, idx, identtype }) => {
 	return (
 		<React.Fragment key={idx}>
-			<FormikTextInput name={`${path}.identifikasjonsnummer`} label="Identifikasjonsnummer" />
-			<FormikSelect
+			<FormTextInput name={`${path}.identifikasjonsnummer`} label="Identifikasjonsnummer" />
+			<FormSelect
 				name={`${path}.utstederland`}
 				label="Utstederland"
 				kodeverk={AdresseKodeverk.Utstederland}
 				isClearable={false}
 				size="large"
 			/>
-			<FormikCheckbox
+			<FormCheckbox
 				name={`${path}.opphoert`}
 				id={`${path}.opphoert`}
 				label="Er opphørt"
@@ -34,7 +34,7 @@ export const UtenlandsId = () => {
 	const opts = useContext(BestillingsveilederContext)
 
 	return (
-		<FormikDollyFieldArray
+		<FormDollyFieldArray
 			name="pdldata.person.utenlandskIdentifikasjonsnummer"
 			header="Utenlandsk ID"
 			newEntry={getInitialUtenlandskIdentifikasjonsnummer(
@@ -45,6 +45,6 @@ export const UtenlandsId = () => {
 			{(path: string, idx: number) => (
 				<UtenlandsIdForm path={path} idx={idx} identtype={opts?.identtype} />
 			)}
-		</FormikDollyFieldArray>
+		</FormDollyFieldArray>
 	)
 }

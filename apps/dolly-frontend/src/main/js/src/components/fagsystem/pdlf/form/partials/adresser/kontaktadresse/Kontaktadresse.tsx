@@ -7,8 +7,8 @@ import {
 	initialVegadresse,
 } from '@/components/fagsystem/pdlf/form/initialValues'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
-import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
-import { DollySelect, FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { DollySelect, FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import {
 	Postboksadresse,
@@ -16,7 +16,7 @@ import {
 	VegadresseVelger,
 } from '@/components/fagsystem/pdlf/form/partials/adresser/adressetyper'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { Adressetype } from '@/components/fagsystem/pdlf/PdlTypes'
 import { getPlaceholder, setNavn } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { useGenererNavn } from '@/utils/hooks/useGenererNavn'
@@ -104,7 +104,7 @@ export const KontaktadresseForm = ({
 	return (
 		<React.Fragment key={idx}>
 			<div className="flexbox--full-width">
-				<FormikSelect
+				<FormSelect
 					name={`${path}.adressetype`}
 					label="Adressetype"
 					options={Options('adressetypeKontaktadresse')}
@@ -130,8 +130,8 @@ export const KontaktadresseForm = ({
 				<Postboksadresse path={`${path}.postboksadresse`} />
 			)}
 			<div className="flexbox--flex-wrap">
-				<FormikDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig f.o.m." />
-				<FormikDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig t.o.m." />
+				<FormDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig f.o.m." />
+				<FormDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig t.o.m." />
 				<DollySelect
 					name={`${path}.opprettCoAdresseNavn.fornavn`}
 					label="C/O adressenavn"
@@ -154,7 +154,7 @@ export const Kontaktadresse = ({ formMethods }: KontaktadresseValues) => {
 	const opts = useContext(BestillingsveilederContext)
 	return (
 		<Kategori title="Kontaktadresse">
-			<FormikDollyFieldArray
+			<FormDollyFieldArray
 				name="pdldata.person.kontaktadresse"
 				header="Kontaktadresse"
 				newEntry={getInitialKontaktadresse(opts?.identtype === 'NPID' ? 'PDL' : 'FREG')}
@@ -168,7 +168,7 @@ export const Kontaktadresse = ({ formMethods }: KontaktadresseValues) => {
 						identtype={opts?.identtype}
 					/>
 				)}
-			</FormikDollyFieldArray>
+			</FormDollyFieldArray>
 		</Kategori>
 	)
 }

@@ -6,10 +6,10 @@ import {
 	initialPdlPerson,
 } from '@/components/fagsystem/pdlf/form/initialValues'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
-import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import _ from 'lodash'
 import { ForeldreBarnRelasjon, TypeAnsvarlig } from '@/components/fagsystem/pdlf/PdlTypes'
 import { PdlEksisterendePerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlEksisterendePerson'
@@ -123,17 +123,17 @@ export const ForeldreansvarForm = ({
 
 	return (
 		<div className="flexbox--flex-wrap foreldre-form">
-			<FormikSelect
+			<FormSelect
 				name={`${path}.ansvar`}
 				label="Hvem har ansvaret"
 				options={Options('foreldreansvar')}
 				onChange={(target: Target) => handleChangeAnsvar(target, path)}
 			/>
-			<FormikDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig fra og med" />
-			<FormikDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig til og med" />
+			<FormDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig fra og med" />
+			<FormDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig til og med" />
 
 			{ansvar === 'ANDRE' && (
-				<FormikSelect
+				<FormSelect
 					name={`${path}.typeAnsvarlig`}
 					label="Type ansvarlig"
 					options={Options('typeAnsvarlig')}
@@ -215,7 +215,7 @@ export const Foreldreansvar = ({ formMethods }: ForeldreansvarForm) => {
 				</StyledAlert>
 			)}
 
-			<FormikDollyFieldArray
+			<FormDollyFieldArray
 				name="pdldata.person.foreldreansvar"
 				header={'Foreldreansvar'}
 				newEntry={initialForeldreansvar}
@@ -224,7 +224,7 @@ export const Foreldreansvar = ({ formMethods }: ForeldreansvarForm) => {
 				{(path: string, _idx: number) => {
 					return <ForeldreansvarForm formMethods={formMethods} path={path} />
 				}}
-			</FormikDollyFieldArray>
+			</FormDollyFieldArray>
 		</>
 	)
 }

@@ -1,10 +1,10 @@
 import React, { useContext } from 'react'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
-import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { AdresseKodeverk } from '@/config/kodeverk'
-import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
+import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { Option } from '@/service/SelectOptionsOppslag'
 import { UseFormReturn } from 'react-hook-form/dist/types'
@@ -50,38 +50,38 @@ export const PdlNyPerson = ({
 
 	return (
 		<div className={'flexbox--flex-wrap'} style={{ marginTop: '10px' }}>
-			<FormikSelect
+			<FormSelect
 				name={`${nyPersonPath}.identtype`}
 				label="Identtype"
 				options={identtypeOptions}
 				isDisabled={hasEksisterendePerson}
 			/>
-			<FormikSelect
+			<FormSelect
 				name={`${nyPersonPath}.kjoenn`}
 				label="Kjønn"
 				options={Options('kjoenn')}
 				isDisabled={hasEksisterendePerson}
 			/>
-			<FormikTextInput
+			<FormTextInput
 				name={`${nyPersonPath}.alder`}
 				type="number"
 				label="Alder"
 				isDisabled={disableAlder || hasEksisterendePerson}
 			/>
-			<FormikDatepicker
+			<FormDatepicker
 				name={`${nyPersonPath}.foedtEtter`}
 				label="Født etter"
 				disabled={disableFoedtDato || hasEksisterendePerson}
 				maxDate={new Date()}
 			/>
-			<FormikDatepicker
+			<FormDatepicker
 				name={`${nyPersonPath}.foedtFoer`}
 				label="Født før"
 				disabled={disableFoedtDato || hasEksisterendePerson}
 				maxDate={new Date()}
 			/>
 			{!erNyIdent && (
-				<FormikSelect
+				<FormSelect
 					name={`${nyPersonPath}.statsborgerskapLandkode`}
 					label="Statsborgerskap"
 					kodeverk={AdresseKodeverk.StatsborgerskapLand}
@@ -90,14 +90,14 @@ export const PdlNyPerson = ({
 				/>
 			)}
 			{!erNyIdent && (
-				<FormikSelect
+				<FormSelect
 					name={`${nyPersonPath}.gradering`}
 					label="Gradering"
 					options={Options('gradering')}
 					isDisabled={hasEksisterendePerson}
 				/>
 			)}
-			<FormikCheckbox
+			<FormCheckbox
 				name={`${nyPersonPath}.nyttNavn.hasMellomnavn`}
 				label="Har mellomnavn"
 				isDisabled={hasEksisterendePerson}

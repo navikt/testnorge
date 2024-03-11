@@ -1,7 +1,7 @@
 import * as React from 'react'
-import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
-import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { Ytelser } from '@/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
 
 interface RefusjonForm {
@@ -16,31 +16,31 @@ const initialEndringIRefusjon = {
 
 export default ({ path, ytelse }: RefusjonForm) => (
 	<div className="flexbox--flex-wrap">
-		<FormikTextInput
+		<FormTextInput
 			name={`${path}.refusjonsbeloepPrMnd`}
 			label="Samlet månedlig refusjonsbeløp"
 			type="number"
 			size="medium"
 		/>
-		<FormikDatepicker name={`${path}.refusjonsopphoersdato`} label="Opphørsdato for refusjon" />
+		<FormDatepicker name={`${path}.refusjonsopphoersdato`} label="Opphørsdato for refusjon" />
 		{/* Endring i refusjon gjelder sykepenger, foreldrepenger, svangerskapspenger, pleiepenger, opplæring */}
 		{ytelse !== Ytelser.Omsorgspenger && (
-			<FormikDollyFieldArray
+			<FormDollyFieldArray
 				name={`${path}.endringIRefusjonListe`}
 				header="Endring i refusjon"
 				newEntry={initialEndringIRefusjon}
 			>
 				{(path: string) => (
 					<>
-						<FormikDatepicker name={`${path}.endringsdato`} label="Endringsdato" />
-						<FormikTextInput
+						<FormDatepicker name={`${path}.endringsdato`} label="Endringsdato" />
+						<FormTextInput
 							name={`${path}.refusjonsbeloepPrMnd`}
 							label="Nytt refusjonsbeløp per måned"
 							type="number"
 						/>
 					</>
 				)}
-			</FormikDollyFieldArray>
+			</FormDollyFieldArray>
 		)}
 	</div>
 )

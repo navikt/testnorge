@@ -1,9 +1,9 @@
 import React from 'react'
 // @ts-ignore
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
-import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { AdresseKodeverk } from '@/config/kodeverk'
 
 type InnvandringTypes = {
@@ -15,15 +15,15 @@ type InnvandringTypes = {
 export const InnvandringForm = ({ path }: InnvandringTypes) => {
 	return (
 		<>
-			<FormikSelect
+			<FormSelect
 				name={`${path}.fraflyttingsland`}
 				label="Innvandret fra"
 				kodeverk={AdresseKodeverk.InnvandretUtvandretLand}
 				size="large"
 				isClearable={false}
 			/>
-			<FormikTextInput name={`${path}.fraflyttingsstedIUtlandet`} label="Fraflyttingssted" />
-			<FormikDatepicker
+			<FormTextInput name={`${path}.fraflyttingsstedIUtlandet`} label="Fraflyttingssted" />
+			<FormDatepicker
 				name={`${path}.innflyttingsdato`}
 				label="Innflyttingsdato"
 				maxDate={new Date()}

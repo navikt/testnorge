@@ -1,8 +1,8 @@
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
-import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { Textarea } from '@navikt/ds-react'
 import styled from 'styled-components'
 import React from 'react'
@@ -51,7 +51,7 @@ export const Arbeidsadgang = ({ formMethods }) => {
 		<>
 			<Kategori title="Arbeidsadgang" vis="udistub.arbeidsadgang">
 				<div className="flexbox--flex-wrap">
-					<FormikSelect
+					<FormSelect
 						name="udistub.arbeidsadgang.harArbeidsAdgang"
 						label="Har arbeidsadgang"
 						options={Options('jaNeiUavklart')}
@@ -61,23 +61,23 @@ export const Arbeidsadgang = ({ formMethods }) => {
 					/>
 					{harArbeidsAdgang === 'JA' && (
 						<React.Fragment>
-							<FormikSelect
+							<FormSelect
 								name="udistub.arbeidsadgang.typeArbeidsadgang"
 								label="Type arbeidsadgang"
 								options={Options('typeArbeidsadgang')}
 								size="xxlarge"
 							/>
-							<FormikSelect
+							<FormSelect
 								name="udistub.arbeidsadgang.arbeidsOmfang"
 								label="Arbeidsomfang"
 								options={Options('arbeidsOmfang')}
 								size="medium"
 							/>
-							<FormikDatepicker
+							<FormDatepicker
 								name="udistub.arbeidsadgang.periode.fra"
 								label="Arbeidsadgang fra dato"
 							/>
-							<FormikDatepicker
+							<FormDatepicker
 								name="udistub.arbeidsadgang.periode.til"
 								label="Arbeidsadgang til dato"
 							/>
@@ -86,7 +86,7 @@ export const Arbeidsadgang = ({ formMethods }) => {
 				</div>
 			</Kategori>
 			<Kategori title="Innhent vedtakshjemmel" vis="udistub.arbeidsadgang.hjemmel">
-				<FormikTextInput name="udistub.arbeidsadgang.hjemmel" label="Hjemmel" size="xxlarge" />
+				<FormTextInput name="udistub.arbeidsadgang.hjemmel" label="Hjemmel" size="xxlarge" />
 				<div className="flexbox--full-width">
 					<StyledTextArea
 						defaultValue={forklaring ? forklaring : ''}

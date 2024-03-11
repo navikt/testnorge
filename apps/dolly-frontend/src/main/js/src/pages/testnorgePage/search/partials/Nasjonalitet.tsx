@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { AdresseKodeverk, GtKodeverk } from '@/config/kodeverk'
 import { DollyApi } from '@/service/Api'
 
@@ -36,14 +36,14 @@ export const Nasjonalitet = () => {
 
 	return (
 		<section>
-			<FormikSelect
+			<FormSelect
 				name={paths.statsborgerskap}
 				label="Statsborgerskap"
 				kodeverk={AdresseKodeverk.StatsborgerskapLand}
 				optionHeight={50}
 				size="medium"
 			/>
-			<FormikSelect
+			<FormSelect
 				name={paths.fraflyttingsland}
 				label="Innvandret til Norge fra"
 				options={landOptions}
@@ -51,7 +51,7 @@ export const Nasjonalitet = () => {
 				size="medium"
 				isLoading={loading}
 			/>
-			<FormikSelect
+			<FormSelect
 				name={paths.tilflyttingsland}
 				label="Utflyttet fra Norge til"
 				options={landOptions}

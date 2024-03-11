@@ -1,4 +1,4 @@
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { ArbeidKodeverk } from '@/config/kodeverk'
 
 type MaritimtArbeidsforhold = {
@@ -17,7 +17,7 @@ export const MaritimtArbeidsforholdForm = ({
 		<div>
 			<h3>Fartøy</h3>
 			<div className="flexbox--flex-wrap">
-				<FormikSelect
+				<FormSelect
 					name={`${path}.skipsregister`}
 					label="Skipsregister"
 					kodeverk={ArbeidKodeverk.Skipsregistre}
@@ -25,7 +25,7 @@ export const MaritimtArbeidsforholdForm = ({
 					isClearable={false}
 					{...props}
 				/>
-				<FormikSelect
+				<FormSelect
 					name={`${path}.skipstype`}
 					label="Fartøystype"
 					kodeverk={ArbeidKodeverk.Skipstyper}
@@ -33,7 +33,7 @@ export const MaritimtArbeidsforholdForm = ({
 					isClearable={false}
 					{...props}
 				/>
-				<FormikSelect
+				<FormSelect
 					name={`${path}.fartsomraade`}
 					label="Fartsområde"
 					kodeverk={ArbeidKodeverk.Fartsomraader}

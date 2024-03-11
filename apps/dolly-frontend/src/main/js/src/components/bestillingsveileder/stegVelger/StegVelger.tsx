@@ -6,7 +6,7 @@ import { BestillingsveilederHeader } from '../BestillingsveilederHeader'
 import { Steg1 } from './steg/steg1/Steg1'
 import { Steg2 } from './steg/steg2/Steg2'
 import { Steg3 } from './steg/steg3/Steg3'
-import DisplayFormikState from '@/utils/DisplayFormikState'
+import DisplayFormState from '@/utils/DisplayFormState'
 import {
 	REGEX_BACKEND_BESTILLINGER,
 	REGEX_BACKEND_GRUPPER,
@@ -16,7 +16,7 @@ import {
 import { Stepper } from '@navikt/ds-react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import DisplayFormikErrors from '@/utils/DisplayFormikErrors'
+import DisplayFormErrors from '@/utils/DisplayFormErrors'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import {
 	ShowErrorContext,
@@ -98,8 +98,8 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 
 			{devEnabled && (
 				<>
-					<DisplayFormikState />
-					<DisplayFormikErrors errors={formMethods.formState.errors} label={'Vis errors'} />
+					<DisplayFormState />
+					<DisplayFormErrors errors={formMethods.formState.errors} label={'Vis errors'} />
 				</>
 			)}
 

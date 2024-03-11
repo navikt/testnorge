@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { MEDL_KILDER } from '@/components/fagsystem/medl/MedlConstants'
 import { StylesConfig } from 'react-select/dist/declarations/src/styles'
 
@@ -49,7 +49,7 @@ export const MedlSelect = ({
 
 	const aktiveFelter = hentAktiveFelter(aktivKilde)
 	return aktiveFelter?.some((felt) => `medl.${felt}` === name) ? (
-		<FormikSelect
+		<FormSelect
 			label={label}
 			afterChange={afterChange}
 			size={size}

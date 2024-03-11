@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { OrgnummerToggle } from '@/components/fagsystem/inntektstub/form/partials/orgnummerToggle'
 import { ToggleGroup } from '@navikt/ds-react'
 import { UseFormReturn } from 'react-hook-form/dist/types'
@@ -59,8 +59,8 @@ export const InntektstubVirksomhetToggle = ({
 				/>
 			) : (
 				<div className="flexbox--flex-wrap">
-					<FormikTextInput name={virksomhetPath} label="Virksomhet (fnr/dnr/npid)" size="medium" />
-					<FormikTextInput name={opplysningspliktigPath} label="Opplysningspliktig" size="medium" />
+					<FormTextInput name={virksomhetPath} label="Virksomhet (fnr/dnr/npid)" size="medium" />
+					<FormTextInput name={opplysningspliktigPath} label="Opplysningspliktig" size="medium" />
 				</div>
 			)}
 		</div>

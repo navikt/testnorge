@@ -1,8 +1,8 @@
 import * as React from 'react'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
-import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { PdlPersonExpander } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonExpander'
 import { initialFullmakt } from '@/components/fagsystem/pdlf/form/initialValues'
@@ -23,7 +23,7 @@ export const FullmaktForm = ({ formMethods, path, eksisterendeNyPerson = null }:
 	return (
 		<div className="flexbox--flex-wrap">
 			<div className="flexbox--full-width">
-				<FormikSelect
+				<FormSelect
 					name={`${path}.omraader`}
 					label="Områder"
 					options={fullmaktOptions}
@@ -32,8 +32,8 @@ export const FullmaktForm = ({ formMethods, path, eksisterendeNyPerson = null }:
 					isClearable={false}
 				/>
 			</div>
-			<FormikDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig fra og med" />
-			<FormikDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig til og med" />
+			<FormDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig fra og med" />
+			<FormDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig til og med" />
 			<PdlPersonExpander
 				nyPersonPath={`${path}.nyFullmektig`}
 				eksisterendePersonPath={`${path}.motpartsPersonident`}
@@ -52,13 +52,13 @@ export const FullmaktForm = ({ formMethods, path, eksisterendeNyPerson = null }:
 
 export const Fullmakt = ({ formMethods }: FullmaktProps) => {
 	return (
-		<FormikDollyFieldArray
+		<FormDollyFieldArray
 			name="pdldata.person.fullmakt"
 			header="Fullmakt"
 			newEntry={initialFullmakt}
 			canBeEmpty={false}
 		>
 			{(path: string) => <FullmaktForm formMethods={formMethods} path={path} />}
-		</FormikDollyFieldArray>
+		</FormDollyFieldArray>
 	)
 }

@@ -1,8 +1,8 @@
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
-import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { SigrunKodeverk } from '@/config/kodeverk'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import React from 'react'
 import { useKodeverk } from '@/utils/hooks/useKodeverk'
 import { getYear } from 'date-fns'
@@ -25,12 +25,12 @@ export const EnkeltinntektForm = ({
 	const filteredTekniskNavnOptions = getFilteredTekniskNavnOptions()
 
 	return (
-		<FormikDollyFieldArray name={path} header={header} newEntry={initialGrunnlag} nested>
+		<FormDollyFieldArray name={path} header={header} newEntry={initialGrunnlag} nested>
 			{(path, idx) => {
 				const typeInntekt = formMethods.watch(`${path}.tekniskNavn`)
 				return (
 					<div className={'flexbox--space sigrun-form'} key={idx}>
-						<FormikSelect
+						<FormSelect
 							name={`${path}.tekniskNavn`}
 							label="Type inntekt"
 							options={filteredTekniskNavnOptions || []}
@@ -39,13 +39,13 @@ export const EnkeltinntektForm = ({
 							optionHeight={50}
 						/>
 						{typeInntekt === 'skatteoppgjoersdato' ? (
-							<FormikDatepicker name={`${path}.verdi`} label="Oppgjørsdato" />
+							<FormDatepicker name={`${path}.verdi`} label="Oppgjørsdato" />
 						) : (
-							<FormikTextInput name={`${path}.verdi`} label="Verdi" type="number" />
+							<FormTextInput name={`${path}.verdi`} label="Verdi" type="number" />
 						)}
 					</div>
 				)
 			}}
-		</FormikDollyFieldArray>
+		</FormDollyFieldArray>
 	)
 }

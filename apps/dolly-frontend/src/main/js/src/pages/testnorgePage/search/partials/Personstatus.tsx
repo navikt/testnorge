@@ -1,11 +1,11 @@
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 
 const personstatusPath = 'personstatus.status'
 
 export const Personstatus = () => (
 	<section>
-		<FormikSelect
+		<FormSelect
 			name={personstatusPath}
 			label="Folkeregisterpersonstatus"
 			options={Options('personstatus')}
