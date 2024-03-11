@@ -1,6 +1,5 @@
 package no.nav.registre.testnav.inntektsmeldingservice.config;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,7 +15,7 @@ class RequestLoggingFilterConfig {
 
         log.info("Filter chain: {}", filterChainProxy.getFilterChains());
 
-        var filter = new PostOnlyRequestLoggingFilter();
+        var filter = new CommonsRequestLoggingFilter();
         filter.setIncludeClientInfo(true);
         filter.setIncludeHeaders(true);
         filter.setIncludePayload(true);
@@ -24,15 +23,6 @@ class RequestLoggingFilterConfig {
         filter.setMaxPayloadLength(10000);
         filter.setAfterMessagePrefix("REQUEST: ");
         return filter;
-    }
-
-    private static class PostOnlyRequestLoggingFilter extends CommonsRequestLoggingFilter {
-
-        @Override
-        protected boolean shouldLog(HttpServletRequest request) {
-            return "POST".equalsIgnoreCase(request.getMethod());
-        }
-
     }
 
 }
