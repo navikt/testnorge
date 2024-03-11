@@ -5,6 +5,7 @@ import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
 import { InntektsaarForm } from './partials/inntektsaarForm'
 import { ifPresent, requiredDate } from '@/utils/YupValidations'
 import { useFormContext } from 'react-hook-form'
+import './SigrunForm.less'
 
 export const sigrunAttributt = 'sigrunstub'
 export const SigrunstubForm = () => {

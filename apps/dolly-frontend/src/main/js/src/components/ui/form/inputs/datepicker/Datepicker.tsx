@@ -1,7 +1,6 @@
-import ReactDatepicker, { registerLocale } from 'react-datepicker'
+import { registerLocale } from 'react-datepicker'
 import { addYears, subYears } from 'date-fns'
 import locale_nb from 'date-fns/locale/nb'
-import { TextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { Label } from '@/components/ui/form/inputs/label/Label'
 import { InputWrapper } from '@/components/ui/form/inputWrapper/InputWrapper'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
@@ -9,6 +8,8 @@ import { fixTimezone, SyntEvent } from '@/components/ui/form/formUtils'
 import 'react-datepicker/dist/react-datepicker.css'
 import './Datepicker.less'
 import { useFormContext } from 'react-hook-form'
+import { DatePicker, useDatepicker } from '@navikt/ds-react'
+import _ from 'lodash'
 
 registerLocale('nb', locale_nb)
 
@@ -27,29 +28,29 @@ export const Datepicker = ({
 	excludeDates,
 	minDate,
 	maxDate,
-	...props
-}) => (
-	<ReactDatepicker
-		locale="nb"
-		dateFormat="dd.MM.yyyy"
-		placeholderText={placeholder}
-		selected={(value && new Date(value)) || null}
-		onChange={onChange}
-		showMonthDropdown
-		showYearDropdown
-		minDate={minDate || subYears(new Date(), 125)}
-		maxDate={maxDate || addYears(new Date(), 5)}
-		dropdownMode="select"
-		disabled={disabled}
-		onBlur={onBlur}
-		name={name}
-		id={name}
-		autoComplete="off"
-		customInput={<TextInput icon="calendar" isDatepicker={true} />}
-		excludeDates={excludeDates}
-		{...props}
-	/>
-)
+}) => {
+	const formMethods = useFormContext()
+	const eksisterendeVerdi = formMethods.watch(name)
+	const { datepickerProps, inputProps, selectedDay } = useDatepicker({
+		fromDate: minDate || subYears(new Date(), 125),
+		toDate: maxDate || addYears(new Date(), 5),
+		onDateChange: onChange || onBlur,
+		defaultSelected: !_.isEmpty(eksisterendeVerdi) ? new Date(eksisterendeVerdi) : undefined,
+		disabled: excludeDates,
+	})
+
+	return (
+		<DatePicker {...datepickerProps} dropdownCaption={true} selected={selectedDay}>
+			<DatePicker.Input
+				placeholder={placeholder}
+				size={'small'}
+				disabled={disabled}
+				label={null}
+				{...inputProps}
+			/>
+		</DatePicker>
+	)
+}
 
 export const DollyDatepicker = (props) => (
 	<InputWrapper {...props}>
@@ -59,7 +60,7 @@ export const DollyDatepicker = (props) => (
 	</InputWrapper>
 )
 
-const P_FormikDatepicker = ({ addHour = false, ...props }) => {
+const P_FormDatepicker = ({ addHour = false, ...props }) => {
 	const formMethods = useFormContext()
 	const value = formMethods.watch(props.name)
 	const handleChange = (date) => {
@@ -81,7 +82,7 @@ const P_FormikDatepicker = ({ addHour = false, ...props }) => {
 	return <DollyDatepicker value={value} onChange={handleChange} onBlur={handleBlur} {...props} />
 }
 
-export const FormikDatepicker = ({ visHvisAvhuket = true, ...props }) => {
-	const component = <P_FormikDatepicker {...props} />
+export const FormDatepicker = ({ visHvisAvhuket = true, ...props }) => {
+	const component = <P_FormDatepicker {...props} />
 	return visHvisAvhuket ? <Vis attributt={props.name}>{component}</Vis> : component
 }

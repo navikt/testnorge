@@ -1,6 +1,6 @@
 import { subYears } from 'date-fns'
-import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { EnkeltinntektForm } from './enkeltinntektForm'
 import { getYearRangeOptions } from '@/utils/DataFormatter'
@@ -35,18 +35,18 @@ export const InntektsaarForm = ({ formMethods }) => {
 
 	return (
 		<ErrorBoundary>
-			<FormikDollyFieldArray name="sigrunstub" header="Inntekt" newEntry={initialValues}>
+			<FormDollyFieldArray name="sigrunstub" header="Inntekt" newEntry={initialValues}>
 				{(path) => (
 					<React.Fragment>
 						<React.Fragment>
 							<div className="flexbox--flex-wrap">
-								<FormikSelect
+								<FormSelect
 									name={`${path}.inntektsaar`}
 									label="År"
 									options={getYearRangeOptions(1968, subYears(new Date(), -5).getFullYear())}
 									isClearable={false}
 								/>
-								<FormikSelect
+								<FormSelect
 									name={`${path}.tjeneste`}
 									label="Tjeneste"
 									options={Options('tjeneste')}
@@ -91,7 +91,7 @@ export const InntektsaarForm = ({ formMethods }) => {
 						</React.Fragment>
 					</React.Fragment>
 				)}
-			</FormikDollyFieldArray>
+			</FormDollyFieldArray>
 		</ErrorBoundary>
 	)
 }

@@ -145,7 +145,7 @@ export const DollySelect = (props: SelectProps) => (
 	</InputWrapper>
 )
 
-const P_FormikSelect = ({ feil, ...props }: SelectProps) => {
+const P_FormSelect = ({ feil, ...props }: SelectProps) => {
 	const { field } = useController(props)
 	const errorContext: ShowErrorContextType = useContext(ShowErrorContext)
 	const formMethods = useFormContext()
@@ -188,7 +188,7 @@ const P_FormikSelect = ({ feil, ...props }: SelectProps) => {
 	)
 }
 
-export const FormikSelect = ({ visHvisAvhuket = false, ...props }: SelectProps) => {
-	const component = <P_FormikSelect {...props} />
+export const FormSelect = ({ visHvisAvhuket = false, ...props }: SelectProps) => {
+	const component = <P_FormSelect {...props} />
 	return visHvisAvhuket ? <Vis attributt={props.name}>{component}</Vis> : component
 }

@@ -1,10 +1,10 @@
-import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import {
 	initialFagbrev,
 	initialFagbrevVerdier,
 } from '@/components/fagsystem/arbeidsplassen/form/initialValues'
 import * as React from 'react'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { EraseFillButtons } from '@/components/fagsystem/arbeidsplassen/form/partials/EraseFillButtons'
@@ -22,7 +22,7 @@ export const FagbrevForm = ({ formMethods }) => {
 
 	return (
 		<Vis attributt={fagbrevListePath}>
-			<FormikDollyFieldArray
+			<FormDollyFieldArray
 				name={fagbrevListePath}
 				header="Fagbrev"
 				newEntry={initialFagbrevVerdier}
@@ -30,7 +30,7 @@ export const FagbrevForm = ({ formMethods }) => {
 			>
 				{(fagbrevPath) => (
 					<>
-						<FormikSelect
+						<FormSelect
 							name={`${fagbrevPath}.title`}
 							label="Fagdokumentasjon"
 							options={Options('fagbrev')}
@@ -46,7 +46,7 @@ export const FagbrevForm = ({ formMethods }) => {
 						/>
 					</>
 				)}
-			</FormikDollyFieldArray>
+			</FormDollyFieldArray>
 		</Vis>
 	)
 }

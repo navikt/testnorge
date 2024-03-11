@@ -38,6 +38,7 @@ import { UseFormReturn } from 'react-hook-form/dist/types'
 import { Form, FormProvider, useForm } from 'react-hook-form'
 import { visningRedigerbarValidation } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarValidation'
 import { yupResolver } from '@hookform/resolvers/yup'
+import './VisningRedigerbarForm.less'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -385,7 +386,9 @@ export const VisningRedigerbar = ({
 					>
 						<>
 							<FieldArrayEdit>
-								<div className="flexbox--flex-wrap">{getForm(formMethods)}</div>
+								<div className="flexbox--flex-wrap visning-redigerbar-form">
+									{getForm(formMethods)}
+								</div>
 								<Knappegruppe>
 									<NavButton
 										variant="secondary"

@@ -1,5 +1,5 @@
 import LoadableComponent, { Feilmelding } from '@/components/ui/loading/LoadableComponent'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { Option, SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
 import { codeToNorskLabel } from '@/utils/DataFormatter'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
@@ -21,7 +21,7 @@ export default ({ path, label, kodeverk, size = 'medium' }: InntektsmeldingSelec
 					)
 				}
 				render={(data: Array<Option>, feilmelding: Feilmelding) => (
-					<FormikSelect
+					<FormSelect
 						name={path}
 						label={label}
 						options={data}

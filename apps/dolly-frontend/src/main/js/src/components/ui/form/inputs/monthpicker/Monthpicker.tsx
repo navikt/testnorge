@@ -1,7 +1,9 @@
-import ReactDatepicker from 'react-datepicker'
 import { Label } from '@/components/ui/form/inputs/label/Label'
-import { TextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { InputWrapper } from '@/components/ui/form/inputWrapper/InputWrapper'
+import { MonthPicker, useMonthpicker } from '@navikt/ds-react'
+import { addYears, subYears } from 'date-fns'
+import { useFormContext } from 'react-hook-form'
+import _ from 'lodash'
 
 interface MonthpickerProps {
 	name: string
@@ -25,26 +27,24 @@ export const Monthpicker = ({
 	maxDate = null,
 	...props
 }: MonthpickerProps) => {
+	const formMethods = useFormContext()
+	const eksisterendeVerdi = formMethods.watch(name)
+
 	const formattedDate = date instanceof Date || date === null ? date : new Date(date)
 
+	const { monthpickerProps, inputProps, selectedMonth } = useMonthpicker({
+		fromDate: minDate || subYears(new Date(), 125),
+		toDate: maxDate || addYears(new Date(), 5),
+		onMonthChange: onChange ? onChange : handleDateChange,
+		defaultSelected: !_.isEmpty(eksisterendeVerdi) ? new Date(eksisterendeVerdi) : undefined,
+	})
+
 	return (
-		<InputWrapper size={'medium'}>
-			<Label name={name} label={label} containerClass={null}>
-				<ReactDatepicker
-					className={'skjemaelement__input'}
-					locale="nb"
-					dateFormat="yyyy-MM"
-					selected={formattedDate}
-					onChange={onChange ? onChange : handleDateChange}
-					placeholderText={'yyyy-mm'}
-					showMonthYearPicker
-					customInput={<TextInput fieldName={name} icon="calendar" />}
-					dropdownMode="select"
-					autoComplete="off"
-					minDate={minDate}
-					maxDate={maxDate}
-					{...props}
-				/>
+		<InputWrapper size={'small'}>
+			<Label name={name} label={label}>
+				<MonthPicker dropdownCaption={true} selected={formattedDate} {...monthpickerProps}>
+					<MonthPicker.Input label={null} size={'small'} placeholder={'yyyy-mm'} {...inputProps} />
+				</MonthPicker>
 			</Label>
 		</InputWrapper>
 	)

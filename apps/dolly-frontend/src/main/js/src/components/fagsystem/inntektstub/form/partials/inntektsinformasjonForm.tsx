@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
-import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { InntektstubVirksomhetToggle } from './inntektstubVirksomhetToggle'
 import InntektsinformasjonLister from './inntektsinformasjonLister/inntektsinformasjonLister'
 import InntektsendringForm from './inntektsendringForm'
 import { Monthpicker } from '@/components/ui/form/inputs/monthpicker/Monthpicker'
-import { FormikDateTimepicker } from '@/components/ui/form/inputs/timepicker/Timepicker'
+import { FormDateTimepicker } from '@/components/ui/form/inputs/timepicker/Timepicker'
 import { useFormContext } from 'react-hook-form'
 
 interface InntektsinformasjonForm {
@@ -26,6 +26,7 @@ export default ({ path }: InntektsinformasjonForm) => {
 	)
 
 	const handleDateChange = (selectedDate: Date) => {
+		selectedDate.setHours(6)
 		setDate(selectedDate)
 		formMethods.setValue(
 			`${path}.sisteAarMaaned`,
@@ -52,12 +53,12 @@ export default ({ path }: InntektsinformasjonForm) => {
 					date={date}
 					handleDateChange={handleDateChange}
 				/>
-				<FormikTextInput
+				<FormTextInput
 					name={`${path}.antallMaaneder`}
 					label="Generer x mnd tilbake i tid"
 					type="number"
 				/>
-				<FormikDateTimepicker
+				<FormDateTimepicker
 					formMethods={formMethods}
 					name={`${path}.rapporteringsdato`}
 					label="Rapporteringstidspunkt"

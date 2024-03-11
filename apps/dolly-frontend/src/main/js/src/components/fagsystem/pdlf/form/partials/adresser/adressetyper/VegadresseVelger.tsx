@@ -1,7 +1,7 @@
 import { initialVegadresse } from '@/components/fagsystem/pdlf/form/initialValues'
 import { Vegadresse } from '@/components/fagsystem/pdlf/form/partials/adresser/adressetyper'
 import { AdresseKodeverk, GtKodeverk } from '@/config/kodeverk'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { Radio, RadioGroup } from '@navikt/ds-react'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 
@@ -54,7 +54,7 @@ export const VegadresseVelger = ({ formMethods, path }: VegadressevelgerValues) 
 			</RadioGroup>
 
 			{vegadresseType === vegadresseValg.POSTNUMMER && (
-				<FormikSelect
+				<FormSelect
 					name={`${path}.postnummer`}
 					label="Postnummer"
 					kodeverk={AdresseKodeverk.PostnummerUtenPostboks}
@@ -63,7 +63,7 @@ export const VegadresseVelger = ({ formMethods, path }: VegadressevelgerValues) 
 				/>
 			)}
 			{vegadresseType === vegadresseValg.BYDELSNUMMER && (
-				<FormikSelect
+				<FormSelect
 					name={`${path}.bydelsnummer`}
 					label="Bydelsnummer"
 					kodeverk={GtKodeverk.BYDEL}
@@ -72,7 +72,7 @@ export const VegadresseVelger = ({ formMethods, path }: VegadressevelgerValues) 
 				/>
 			)}
 			{vegadresseType === vegadresseValg.KOMMUNENUMMER && (
-				<FormikSelect
+				<FormSelect
 					name={`${path}.kommunenummer`}
 					label="Kommunenummer"
 					kodeverk={AdresseKodeverk.Kommunenummer}

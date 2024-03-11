@@ -8,7 +8,7 @@ import { ImportPerson } from '@/pages/testnorgePage/search/SearchView'
 import { DollyApi } from '@/service/Api'
 import { PdlData } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import { MalValg } from '@/pages/testnorgePage/search/importModal/MalValg'
-import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
+import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import './ImportModal.less'
 import { Gruppe } from '@/utils/hooks/useGruppe'
 import { top } from '@popperjs/core'
@@ -106,7 +106,7 @@ export const ImportModal = ({ valgtePersoner, importerPersoner, gruppe }: Props)
 			<div className="flexbox--baseline--justify-end import-knapper">
 				{visPartnereImport && (
 					<span className="flexbox--baseline--justify-end">
-						<FormikCheckbox
+						<FormCheckbox
 							id="import-modal-import-med-partner"
 							checked={importMedPartner}
 							onChange={toggleImportMedPartner}
@@ -119,7 +119,7 @@ export const ImportModal = ({ valgtePersoner, importerPersoner, gruppe }: Props)
 					</span>
 				)}
 				<div>
-					<FormikCheckbox
+					<FormCheckbox
 						id="import-modal-import-med-mal"
 						checked={importMedMal}
 						onChange={toggleImportMedMal}

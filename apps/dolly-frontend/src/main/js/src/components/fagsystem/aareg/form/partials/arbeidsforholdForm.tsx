@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
-import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { TimeloennetForm } from './timeloennetForm'
 import { PermisjonForm } from './permisjonForm'
 import { PermitteringForm } from './permitteringForm'
@@ -257,7 +257,7 @@ export const ArbeidsforholdForm = ({
 					/>
 				)}
 				{arbeidsgiverType === ArbeidsgiverTyper.fritekst && (
-					<FormikTextInput
+					<FormTextInput
 						name={`${path}.arbeidsgiver.orgnummer`}
 						label={'Organisasjonsnummer'}
 						size="xlarge"
@@ -267,7 +267,7 @@ export const ArbeidsforholdForm = ({
 					/>
 				)}
 				{arbeidsgiverType !== ArbeidsgiverTyper.egen && (
-					<FormikSelect
+					<FormSelect
 						name={`${path}.arbeidsforholdstype`}
 						label="Type arbeidsforhold"
 						kodeverk={ArbeidKodeverk.Arbeidsforholdstyper}
@@ -283,17 +283,17 @@ export const ArbeidsforholdForm = ({
 						isDisabled={erLaastArbeidsforhold}
 					/>
 				)}
-				<FormikDatepicker
+				<FormDatepicker
 					name={`${path}.ansettelsesPeriode.fom`}
 					label="Ansatt fra"
 					onChange={onChangeLenket('ansettelsesPeriode.fom')}
 				/>
-				<FormikDatepicker
+				<FormDatepicker
 					name={`${path}.ansettelsesPeriode.tom`}
 					label="Ansatt til"
 					onChange={onChangeLenket('ansettelsesPeriode.tom')}
 				/>
-				<FormikSelect
+				<FormSelect
 					name={`${path}.ansettelsesPeriode.sluttaarsak`}
 					label="Sluttårsak"
 					kodeverk={ArbeidKodeverk.SluttaarsakAareg}
@@ -309,7 +309,7 @@ export const ArbeidsforholdForm = ({
 					isClearable={true}
 				/>
 				{arbeidsforholdstype === 'forenkletOppgjoersordning' && (
-					<FormikSelect
+					<FormSelect
 						value={watch(`${path}.arbeidsavtale.yrke`)}
 						name={`${path}.arbeidsavtale.yrke`}
 						label="Yrke"

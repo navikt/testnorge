@@ -1,4 +1,4 @@
-import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
+import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 
@@ -14,7 +14,7 @@ export const HjemmelForm = () => {
 				</Hjelpetekst>
 			</div>
 			<div className="flexbox--full-width">
-				<FormikCheckbox name={hjemmelPath} label="Godta hjemmel" size="small" />
+				<FormCheckbox name={hjemmelPath} label="Godta hjemmel" size="small" />
 			</div>
 		</Vis>
 	)

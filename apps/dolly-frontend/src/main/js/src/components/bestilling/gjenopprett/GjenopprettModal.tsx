@@ -13,7 +13,7 @@ import { CypressSelector } from '../../../../cypress/mocks/Selectors'
 type GjenopprettModalProps = {
 	gjenopprettHeader: any
 	environments?: Array<string>
-	submitFormik: any
+	submitForm: any
 	closeModal: any
 	bestilling?: any
 	brukertype?: string
@@ -22,7 +22,7 @@ type GjenopprettModalProps = {
 export const GjenopprettModal = ({
 	gjenopprettHeader,
 	environments,
-	submitFormik,
+	submitForm,
 	closeModal,
 	bestilling,
 	brukertype,
@@ -57,7 +57,7 @@ export const GjenopprettModal = ({
 							<NavButton
 								data-cy={CypressSelector.BUTTON_BESTILLINGDETALJER_GJENOPPRETT_UTFOER}
 								variant={'primary'}
-								onClick={formMethods.handleSubmit(submitFormik)}
+								onClick={formMethods.handleSubmit(submitForm)}
 							>
 								Utfør
 							</NavButton>

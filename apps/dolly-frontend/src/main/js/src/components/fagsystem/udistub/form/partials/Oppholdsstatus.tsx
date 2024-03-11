@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { DollySelect, FormikSelect } from '@/components/ui/form/inputs/select/Select'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { DollySelect, FormSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { OppholdSammeVilkaar } from '@/components/fagsystem/udistub/form/partials/OppholdSammeVilkaar'
 import { IkkeOppholdSammeVilkaar } from '@/components/fagsystem/udistub/form/partials/IkkeOppholdSammeVilkaar'
@@ -128,26 +128,26 @@ export const Oppholdsstatus = ({ formMethods }: { formMethods: UseFormReturn }) 
 						size="xxlarge"
 						isClearable={false}
 					/>
-					<FormikDatepicker
+					<FormDatepicker
 						name={`udistub.oppholdStatus.${eosEllerEFTAtypeOpphold}Periode.fra`}
 						afterChange={(dato: Date) =>
 							formMethods.setValue(`${pdlBasePath}[0].oppholdFra`, fixTimezone(dato))
 						}
 						label="Oppholdstillatelse fra dato"
 					/>
-					<FormikDatepicker
+					<FormDatepicker
 						name={`udistub.oppholdStatus.${eosEllerEFTAtypeOpphold}Periode.til`}
 						afterChange={(dato: Date) =>
 							formMethods.setValue(`${pdlBasePath}[0].oppholdTil`, fixTimezone(dato))
 						}
 						label="Oppholdstillatelse til dato"
 					/>
-					<FormikDatepicker
+					<FormDatepicker
 						name={`udistub.oppholdStatus.${eosEllerEFTAtypeOpphold}Effektuering`}
 						label="Effektueringsdato"
 					/>
 					{eosEllerEFTAtypeOpphold && (
-						<FormikSelect
+						<FormSelect
 							name={`udistub.oppholdStatus.${eosEllerEFTAtypeOpphold}`}
 							label="Grunnlag for opphold"
 							options={Options(eosEllerEFTAtypeOpphold)}

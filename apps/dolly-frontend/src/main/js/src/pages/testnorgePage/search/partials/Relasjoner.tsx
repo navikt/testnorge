@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { RadioGroupOptions } from '@/pages/testnorgePage/search/radioGroupOptions/RadioGroupOptions'
 import { DollyCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { yesNoOptions } from '@/pages/testnorgePage/utils'
@@ -49,7 +49,7 @@ export const Relasjoner = ({ formMethods }: RelasjonerProps) => {
 
 	return (
 		<section>
-			<FormikSelect
+			<FormSelect
 				name={paths.sivistand}
 				label="Sivilstand"
 				options={[
@@ -97,7 +97,7 @@ export const Relasjoner = ({ formMethods }: RelasjonerProps) => {
 				onChange={() => handleForelderChange(foreldreRoller.MEDMOR)}
 				size="small"
 			/>
-			<FormikSelect
+			<FormSelect
 				name={paths.foreldreansvar}
 				label="Hvem har foreldreansvar"
 				options={Options('foreldreansvar')}

@@ -1,19 +1,18 @@
 import * as React from 'react'
 import { useContext } from 'react'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
-import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { PdlPersonExpander } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonExpander'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import {
 	getInitialSivilstand,
 	initialPdlPerson,
 } from '@/components/fagsystem/pdlf/form/initialValues'
-import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
+import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
-import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 import { Option } from '@/service/SelectOptionsOppslag'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { UseFormReturn } from 'react-hook-form/dist/types'
@@ -55,8 +54,8 @@ export const SivilstandForm = ({
 	const kanHaRelatertPerson = gyldigeSivilstander.includes(formMethods.watch(`${path}.type`))
 
 	return (
-		<div className="flexbox--flex-wrap">
-			<FormikSelect
+		<div className="flexbox--flex-wrap sivilstand-form">
+			<FormSelect
 				name={`${path}.type`}
 				label="Type sivilstand"
 				options={Options('sivilstandType')}
@@ -71,23 +70,21 @@ export const SivilstandForm = ({
 					</Hjelpetekst>
 				</div>
 			)}
-			<DatepickerWrapper>
-				<FormikDatepicker
-					name={`${path}.sivilstandsdato`}
-					label="Gyldig fra og med"
-					disabled={formMethods.watch(`${path}.bekreftelsesdato`) != null}
-				/>
-				<FormikDatepicker
-					name={`${path}.bekreftelsesdato`}
-					label="Bekreftelsesdato"
-					disabled={
-						formMethods.watch(`${path}.sivilstandsdato`) != null ||
-						formMethods.watch(`${path}.master`) !== 'PDL' ||
-						formMethods.watch(`${path}.type`) === 'SAMBOER'
-					}
-				/>
-			</DatepickerWrapper>
-			<FormikCheckbox
+			<FormDatepicker
+				name={`${path}.sivilstandsdato`}
+				label="Gyldig fra og med"
+				disabled={formMethods.watch(`${path}.bekreftelsesdato`) != null}
+			/>
+			<FormDatepicker
+				name={`${path}.bekreftelsesdato`}
+				label="Bekreftelsesdato"
+				disabled={
+					formMethods.watch(`${path}.sivilstandsdato`) != null ||
+					formMethods.watch(`${path}.master`) !== 'PDL' ||
+					formMethods.watch(`${path}.type`) === 'SAMBOER'
+				}
+			/>
+			<FormCheckbox
 				name={`${path}.borIkkeSammen`}
 				label="Bor ikke sammen"
 				isDisabled={!kanHaRelatertPerson}
@@ -119,7 +116,7 @@ export const SivilstandForm = ({
 export const Sivilstand = ({ formMethods }: SivilstandFormTypes) => {
 	const opts = useContext(BestillingsveilederContext)
 	return (
-		<FormikDollyFieldArray
+		<FormDollyFieldArray
 			name="pdldata.person.sivilstand"
 			header="Sivilstand"
 			newEntry={getInitialSivilstand(opts?.identtype === 'NPID' ? 'PDL' : 'FREG')}
@@ -128,6 +125,6 @@ export const Sivilstand = ({ formMethods }: SivilstandFormTypes) => {
 			{(path: string) => (
 				<SivilstandForm path={path} formMethods={formMethods} identtype={opts?.identtype} />
 			)}
-		</FormikDollyFieldArray>
+		</FormDollyFieldArray>
 	)
 }

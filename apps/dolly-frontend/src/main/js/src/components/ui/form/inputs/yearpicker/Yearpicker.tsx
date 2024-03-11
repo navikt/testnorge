@@ -26,8 +26,8 @@ export const Yearpicker = ({
 	minDate = null,
 	disabled = false,
 }: YearpickerProps) => {
-	const getFeilmelding = (formMethods: UseFormReturn, formikPath: string) => {
-		const feilmelding = _.get(formMethods.formState.errors, formikPath)
+	const getFeilmelding = (formMethods: UseFormReturn, formPath: string) => {
+		const feilmelding = _.get(formMethods.formState.errors, formPath)
 		return feilmelding ? { feilmelding: feilmelding } : null
 	}
 

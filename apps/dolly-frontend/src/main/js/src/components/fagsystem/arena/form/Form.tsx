@@ -4,11 +4,11 @@ import { ifPresent } from '@/utils/YupValidations'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import Panel from '@/components/ui/panel/Panel'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { MedServicebehov } from './partials/MedServicebehov'
 import { AlertInntektskomponentenRequired } from '@/components/ui/brukerAlert/AlertInntektskomponentenRequired'
 import { validation } from '@/components/fagsystem/arena/form/validation'
-import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
+import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { useFormContext } from 'react-hook-form'
 
@@ -45,14 +45,14 @@ export const ArenaForm = () => {
 					)}
 				{!servicebehovAktiv && (
 					<div className={'flexbox--flex-wrap'}>
-						<FormikDatepicker
+						<FormDatepicker
 							name={`${arenaPath}.inaktiveringDato`}
 							label="Inaktiv fra dato"
 							disabled={servicebehovAktiv}
 							minDate={registrertDato ? new Date(registrertDato) : null}
 						/>
 						{!opts.personFoerLeggTil?.arenaforvalteren && (
-							<FormikDatepicker
+							<FormDatepicker
 								name={`${arenaPath}.aktiveringDato`}
 								label="Aktiveringsdato"
 								minDate={new Date('2002-12-30')}
@@ -61,7 +61,7 @@ export const ArenaForm = () => {
 					</div>
 				)}
 				{servicebehovAktiv && <MedServicebehov formMethods={formMethods} path={arenaPath} />}
-				<FormikCheckbox
+				<FormCheckbox
 					name={`${arenaPath}.automatiskInnsendingAvMeldekort`}
 					label="Automatisk innsending av meldekort"
 					size="small"

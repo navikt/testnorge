@@ -1,6 +1,6 @@
-import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
 import { PersonrollerForm } from '@/components/fagsystem/brregstub/form/partials/personrollerForm'
 import { OrgnrToggle } from '@/components/fagsystem/brregstub/form/partials/orgnrToggle'
@@ -53,7 +53,7 @@ export const EnheterForm = ({ formMethods }) => {
 	}
 
 	return (
-		<FormikDollyFieldArray
+		<FormDollyFieldArray
 			name="brregstub.enheter"
 			header="Enhet"
 			newEntry={initialValues}
@@ -61,7 +61,7 @@ export const EnheterForm = ({ formMethods }) => {
 		>
 			{(path) => (
 				<>
-					<FormikSelect
+					<FormSelect
 						name={`${path}.rolle`}
 						label="Rolle"
 						options={rollerOptions}
@@ -69,11 +69,11 @@ export const EnheterForm = ({ formMethods }) => {
 						size="large"
 						isClearable={false}
 					/>
-					<FormikDatepicker name={`${path}.registreringsdato`} label="Registreringsdato" />
+					<FormDatepicker name={`${path}.registreringsdato`} label="Registreringsdato" />
 					<OrgnrToggle path={path} formMethods={formMethods} setEnhetsinfo={setEnhetsinfo} />
 					<PersonrollerForm formMethods={formMethods} path={path} />
 				</>
 			)}
-		</FormikDollyFieldArray>
+		</FormDollyFieldArray>
 	)
 }

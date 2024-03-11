@@ -47,7 +47,7 @@ export const GjenopprettGruppe = ({ onClose, gruppeId }: GjenopprettGruppeProps)
 		</div>
 	)
 
-	const submitFormik = async (values: any) => {
+	const submitForm = async (values: any) => {
 		const envsQuery = arrayToString(values.environments).replace(/ /g, '').toLowerCase()
 		await DollyApi.gjenopprettGruppe(gruppe.id, envsQuery)
 		dispatch(setUpdateNow())
@@ -57,7 +57,7 @@ export const GjenopprettGruppe = ({ onClose, gruppeId }: GjenopprettGruppeProps)
 	return (
 		<GjenopprettModal
 			gjenopprettHeader={gjenopprettHeader}
-			submitFormik={submitFormik}
+			submitForm={submitForm}
 			closeModal={onClose}
 			environments={miljoer}
 			brukertype={brukertype}

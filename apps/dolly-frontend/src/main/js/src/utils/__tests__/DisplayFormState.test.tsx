@@ -1,8 +1,8 @@
 import { shallow } from 'enzyme'
-import DisplayFormikState from '../DisplayFormikState'
+import DisplayFormState from '../DisplayFormState'
 
-describe('DisplayFormikState.js', () => {
-	const wrapper = shallow(<DisplayFormikState />)
+describe('DisplayFormState.js', () => {
+	const wrapper = shallow(<DisplayFormState />)
 
 	it('should render pre', () => {
 		expect(wrapper.find('pre').exists()).toBeTruthy()

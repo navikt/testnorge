@@ -3,10 +3,10 @@ import Panel from '@/components/ui/panel/Panel'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
 import { validation } from '@/components/fagsystem/pensjon/form/validation'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { getYearRangeOptions } from '@/utils/DataFormatter'
-import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
+import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import React, { useContext } from 'react'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
 import _ from 'lodash'
@@ -60,23 +60,23 @@ export const PensjonForm = () => {
 					)}
 				<Kategori title="Pensjonsgivende inntekt" vis={pensjonPath}>
 					<div className="flexbox--flex-wrap">
-						<FormikSelect
+						<FormSelect
 							name={`${pensjonPath}.fomAar`}
 							label="Fra og med år"
 							options={getYearRangeOptions(syttenFraOgMedAar || 1968, new Date().getFullYear() - 1)}
 							isClearable={false}
 						/>
 
-						<FormikSelect
+						<FormSelect
 							name={`${pensjonPath}.tomAar`}
 							label="Til og med år"
 							options={getYearRangeOptions(1968, new Date().getFullYear() - 1)}
 							isClearable={false}
 						/>
 
-						<FormikTextInput name={`${pensjonPath}.belop`} label="Beløp" type="number" />
+						<FormTextInput name={`${pensjonPath}.belop`} label="Beløp" type="number" />
 
-						<FormikCheckbox
+						<FormCheckbox
 							name={`${pensjonPath}.redusertMedGrunnbelop`}
 							label="Nedjuster med grunnbeløp"
 							size="small"

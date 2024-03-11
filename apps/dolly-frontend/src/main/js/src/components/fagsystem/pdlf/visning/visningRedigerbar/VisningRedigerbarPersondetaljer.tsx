@@ -53,6 +53,13 @@ const validationSchema = Yup.object().shape(
 
 const FieldArrayEdit = styled.div`
 	&&& {
+		.navds-date__field-button {
+			position: absolute;
+			top: 19px;
+			right: 1px;
+			margin-right: 0;
+		}
+
 		button {
 			position: relative;
 			top: 0;
