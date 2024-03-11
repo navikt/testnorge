@@ -60,7 +60,6 @@ public class FoedselsmeldingRequestMapper {
     private static AdresseDTO mapAdresse(VegadresseDTO vegadresse) {
 
         return GateadresseDTO.builder()
-                .adressetype(AdresseDTO.Adressetype.GATE)
                 .adresse(vegadresse.getAdressenavn())
                 .gatekode(vegadresse.getAdressekode())
                 .husnummer(vegadresse.getHusnummer().toString())
