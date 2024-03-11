@@ -90,19 +90,19 @@ public class TpsMessagingConsumer {
                         new GetAdressehistorikkCommand(webClient, request, miljoer, accessToken.getTokenValue()).call());
     }
 
-    public Flux<DoedsmeldingResponse> sendKansellerDoedsmelding(PersonDTO person, Set<String> miljoer) {
+    public Mono<DoedsmeldingResponse> sendKansellerDoedsmelding(PersonDTO person, Set<String> miljoer) {
 
         return accessTokenService
                 .exchange(serverProperties)
-                .flatMapMany(accessToken ->
+                .flatMap(accessToken ->
                         new SendKansellerDoedsmeldingCommand(webClient, person, miljoer, accessToken.getTokenValue()).call());
     }
 
-    public Flux<DoedsmeldingResponse> sendDoedsmelding(DoedsmeldingRequest request, Set<String> miljoer) {
+    public Mono<DoedsmeldingResponse> sendDoedsmelding(DoedsmeldingRequest request, Set<String> miljoer) {
 
         return accessTokenService
                 .exchange(serverProperties)
-                .flatMapMany(accessToken ->
+                .flatMap(accessToken ->
                         new SendDoedsmeldingCommand(webClient, request, miljoer, accessToken.getTokenValue()).call());
     }
 

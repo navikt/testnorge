@@ -8,10 +8,12 @@ import no.nav.testnav.libs.data.tpsmessagingservice.v1.DoedsmeldingRequest;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.DoedsmeldingResponse;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.PersonMiljoeDTO;
 import no.nav.testnav.libs.dto.endringsmelding.v2.DoedsmeldingDTO;
+import no.nav.testnav.libs.dto.endringsmelding.v2.DoedsmeldingResponseDTO;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static no.nav.testnav.endringsmeldingservice.mapper.AdressehistorikkMapper.buildAdresseRequest;
 
@@ -21,20 +23,7 @@ public class DoedsmeldingService {
 
     private final TpsMessagingConsumer tpsMessagingConsumer;
 
-    public Flux<DoedsmeldingResponse> sendKansellerDoedsmelding(String ident, Set<String> miljoer) {
-
-       return tpsMessagingConsumer.getPersondata(ident, miljoer)
-                .filter(PersonMiljoeDTO::isOk)
-                .filter(persondata -> persondata.getPerson().isDoed())
-                .flatMap(persondata -> tpsMessagingConsumer.getAdressehistorikk(buildAdresseRequest(persondata),
-                                Set.of(persondata.getMiljoe()))
-                        .map(AdressehistorikkDTO::getPersondata)
-                        .map(AdressehistorikkMapper::mapHistorikk)
-                        .flatMap(person ->
-                                tpsMessagingConsumer.sendKansellerDoedsmelding(person, Set.of(persondata.getMiljoe()))));
-    }
-
-    public Flux<DoedsmeldingResponse> sendDoedsmelding(DoedsmeldingDTO doedsmelding, Set<String> miljoer) {
+    public Mono<DoedsmeldingResponseDTO> sendDoedsmelding(DoedsmeldingDTO doedsmelding, Set<String> miljoer) {
 
         return tpsMessagingConsumer.getPersondata(doedsmelding.getIdent(), miljoer)
                 .filter(PersonMiljoeDTO::isOk)
@@ -48,9 +37,9 @@ public class DoedsmeldingService {
                                 .flatMap(person ->
                                         tpsMessagingConsumer.sendKansellerDoedsmelding(person, Set.of(persondata.getMiljoe())))
                                 .flatMap(response -> tpsMessagingConsumer.sendDoedsmelding(DoedsmeldingRequest.builder()
-                                                .ident(doedsmelding.getIdent())
-                                                .doedsdato(doedsmelding.getDoedsdato())
-                                                .build(), Set.of(persondata.getMiljoe())));
+                                        .ident(doedsmelding.getIdent())
+                                        .doedsdato(doedsmelding.getDoedsdato())
+                                        .build(), Set.of(persondata.getMiljoe())));
 
                     } else {
                         return tpsMessagingConsumer.sendDoedsmelding(DoedsmeldingRequest.builder()
@@ -59,6 +48,35 @@ public class DoedsmeldingService {
                                 .build(), Set.of(persondata.getMiljoe()));
 
                     }
-                });
+                })
+                .map(DoedsmeldingResponse::getMiljoStatus)
+                .reduce((firstMap, secondMap) -> {
+                    firstMap.putAll(secondMap);
+                    return firstMap;
+                })
+                .map(status -> DoedsmeldingResponseDTO.builder()
+                        .ident(doedsmelding.getIdent())
+                        .miljoStatus(status)
+                        .build());
+    }
+
+    public Mono<DoedsmeldingResponseDTO> sendKansellerDoedsmelding(String ident, Set<String> miljoer) {
+
+        return tpsMessagingConsumer.getPersondata(ident, miljoer)
+                        .filter(PersonMiljoeDTO::isOk)
+                        .filter(persondata -> persondata.getPerson().isDoed())
+                        .collectList()
+                        .flatMap(persondata -> tpsMessagingConsumer.getAdressehistorikk(buildAdresseRequest(persondata.getFirst()),
+                                        persondata.stream().map(PersonMiljoeDTO::getMiljoe).collect(Collectors.toSet()))
+                                .map(AdressehistorikkDTO::getPersondata)
+                                .map(AdressehistorikkMapper::mapHistorikk)
+                                .collectList()
+                                .flatMap(personer ->
+                                        tpsMessagingConsumer.sendKansellerDoedsmelding(personer.getFirst(),
+                                                persondata.stream().map(PersonMiljoeDTO::getMiljoe).collect(Collectors.toSet()))))
+                .map(response -> DoedsmeldingResponseDTO.builder()
+                        .ident(ident)
+                        .miljoStatus(response.getMiljoStatus())
+                        .build());
     }
 }

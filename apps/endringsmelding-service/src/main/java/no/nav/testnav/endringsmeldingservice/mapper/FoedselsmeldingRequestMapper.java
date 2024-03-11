@@ -51,7 +51,8 @@ public class FoedselsmeldingRequestMapper {
 
             case LAG_NY_ADRESSE -> mapAdresse(vegadresse.getFirst());
             case ARV_FRA_MORS -> mapBoadresse(morsadresser.getFirst().getPersondata());
-            case ARV_FRA_FARS -> nonNull(farsadresser) && !farsadresser.isEmpty() ?
+            case ARV_FRA_FARS -> nonNull(farsadresser) && !farsadresser.isEmpty() &&
+                    nonNull(farsadresser.getFirst().getPersondata()) ?
                     mapBoadresse(farsadresser.getFirst().getPersondata()) :
                     mapAdresse(vegadresse.getFirst());
         };
