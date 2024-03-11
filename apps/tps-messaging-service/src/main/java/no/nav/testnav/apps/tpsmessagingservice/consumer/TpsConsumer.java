@@ -1,5 +1,6 @@
 package no.nav.testnav.apps.tpsmessagingservice.consumer;
 
+import jakarta.xml.bind.JAXBException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,7 +12,6 @@ import no.nav.testnav.apps.tpsmessagingservice.factory.ConnectionFactoryFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import jakarta.xml.bind.JAXBException;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -78,6 +78,8 @@ public abstract class TpsConsumer {
     protected abstract String getErrorMessage(Exception e) throws JAXBException;
 
     public Map<String, String> sendMessage(String melding, List<String> miljoer) {
+
+        log.info("SKD-melding til miljøer {} {} ", melding, String.join(",", miljoer));
 
         return miljoer.parallelStream()
                 .map(miljoe -> {
