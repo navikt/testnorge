@@ -1,4 +1,4 @@
-package no.nav.testnav.libs.dto.endringsmelding.v1;
+package no.nav.testnav.libs.dto.endringsmelding.v2;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,7 +15,7 @@ public class FoedselsmeldingDTO {
 
     String identFar;
     String identMor;
-    String identtype;
+    Identtype identtype;
     LocalDate foedselsdato;
     Kjoenn kjoenn;
     AdresseFra adresseFra;

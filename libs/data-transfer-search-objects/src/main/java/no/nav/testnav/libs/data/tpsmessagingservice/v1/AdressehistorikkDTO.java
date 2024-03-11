@@ -8,7 +8,10 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+
+import static java.util.Objects.isNull;
 
 @Data
 @Builder
@@ -46,6 +49,38 @@ public class AdressehistorikkDTO {
         private List<BoAdresseType> bostedsAdresse;
         private List<PostAdresseType> postAdresse;
         private List<NavTilleggType> tilleggAdresseNAV;
+
+        public List<PersonstatusType> getPersonStatus() {
+
+            if (isNull(personStatus)) {
+                personStatus = new ArrayList<>();
+            }
+            return personStatus;
+        }
+
+        public List<BoAdresseType> getBostedsAdresse() {
+
+            if (isNull(bostedsAdresse)) {
+                bostedsAdresse = new ArrayList<>();
+            }
+            return bostedsAdresse;
+        }
+
+        public List<PostAdresseType> getPostAdresse() {
+
+            if (isNull(postAdresse)) {
+                postAdresse = new ArrayList<>();
+            }
+            return postAdresse;
+        }
+
+        public List<NavTilleggType> getTilleggAdresseNAV() {
+
+            if (isNull(tilleggAdresseNAV)) {
+                tilleggAdresseNAV = new ArrayList<>();
+            }
+            return tilleggAdresseNAV;
+        }
     }
 
     @Data
