@@ -22,4 +22,9 @@ public class GateadresseDTO extends AdresseDTO {
     private String husbokstav;
 
     private String gatekode;
+
+    @Override
+    public Adressetype getAdressetype() {
+        return Adressetype.GATE;
+    }
 }

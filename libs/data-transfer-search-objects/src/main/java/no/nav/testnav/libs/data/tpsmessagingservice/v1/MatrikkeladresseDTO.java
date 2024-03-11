@@ -24,4 +24,9 @@ public class MatrikkeladresseDTO extends AdresseDTO {
     private String festenr;
 
     private String undernr;
+
+    @Override
+    public Adressetype getAdressetype() {
+        return Adressetype.MATR;
+    }
 }

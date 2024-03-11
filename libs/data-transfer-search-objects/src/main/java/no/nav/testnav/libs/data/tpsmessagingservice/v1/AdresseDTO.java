@@ -28,7 +28,7 @@ public abstract class AdresseDTO {
     private String bolignr;
     private Boolean deltAdresse;
     private String matrikkelId;
-    private Adressetype adressetype;
 
+    public abstract Adressetype getAdressetype();
     public enum Adressetype {GATE, MATR}
 }

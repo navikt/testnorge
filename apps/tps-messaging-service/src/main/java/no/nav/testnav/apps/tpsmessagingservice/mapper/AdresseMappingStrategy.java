@@ -17,8 +17,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static java.util.Objects.nonNull;
-import static no.nav.testnav.libs.data.tpsmessagingservice.v1.AdresseDTO.Adressetype.GATE;
-import static no.nav.testnav.libs.data.tpsmessagingservice.v1.AdresseDTO.Adressetype.MATR;
 
 @Component
 public class AdresseMappingStrategy implements MappingStrategy {
@@ -70,7 +68,6 @@ public class AdresseMappingStrategy implements MappingStrategy {
                         target.setHusnummer(skipLeadZeros(source.getOffAdresse().getHusnr()));
                         target.setGatekode(source.getOffAdresse().getGatekode());
                         target.setFlyttedato(getDate(source.getDatoFom()));
-                        target.setAdressetype(GATE);
                     }
                 })
                 .byDefault()
@@ -87,7 +84,6 @@ public class AdresseMappingStrategy implements MappingStrategy {
                         target.setFestenr(skipLeadZeros(source.getMatrAdresse().getFestenr()));
                         target.setUndernr(skipLeadZeros(source.getMatrAdresse().getUndernr()));
                         target.setFlyttedato(getDate(source.getDatoFom()));
-                        target.setAdressetype(MATR);
                     }
                 })
                 .byDefault()
