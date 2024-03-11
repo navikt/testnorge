@@ -83,6 +83,7 @@ export default ({
 	}
 	console.log('valgtePersoner: ', valgtePersoner) //TODO - SLETT MEG
 	//TODO se paa denne!!
+	console.log('importerPersoner: ', importerPersoner) //TODO - SLETT MEG
 
 	const columns = [
 		{

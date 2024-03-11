@@ -42,6 +42,7 @@ type SelectProps = {
 	info?: any
 	visHvisAvhuket?: any
 	afterChange?: any
+	isInDialog?: boolean
 }
 
 export const Select = ({
@@ -59,6 +60,7 @@ export const Select = ({
 	isMulti = false,
 	styles,
 	onChange,
+	isInDialog = false,
 	...rest
 }: SelectProps) => {
 	const formMethods = useFormContext()
@@ -103,7 +105,13 @@ export const Select = ({
 			isMulti={isMulti}
 			onChange={onChange}
 			styles={styles ? styles : { menuPortal: (base) => ({ ...base, zIndex: 99999 }) }}
-			menuPortalTarget={document.getElementById('react-select-root')}
+			// Naar vi bruker modal fra Aksel maa vi referere til modalens className for at dropdowns ikke skal forsvinne bak modalen
+			menuPortalTarget={
+				isInDialog
+					? (document.getElementsByClassName('navds-modal')[0] as HTMLElement)
+					: document.getElementById('react-select-root')
+			}
+			menuPosition={isInDialog ? 'fixed' : undefined}
 			{...rest}
 		/>
 	)
