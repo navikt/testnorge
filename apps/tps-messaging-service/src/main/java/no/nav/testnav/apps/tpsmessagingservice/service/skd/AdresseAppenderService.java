@@ -33,21 +33,7 @@ public class AdresseAppenderService {
         /* Boadresse */
         if (nonNull(person.getBoadresse())) {
 
-            if (AdresseDTO.Adressetype.GATE == person.getBoadresse().getAdressetype()) {
-
-                var gateadresse = (GateadresseDTO) person.getBoadresse();
-                skdMeldingTrans1.setAdressetype("O");
-                skdMeldingTrans1.setGateGaard(fixGatekode(gateadresse.getGatekode()));
-                addHusBrukAndBokstavFestenr(skdMeldingTrans1, gateadresse);
-                skdMeldingTrans1.setAdressenavn(StringUtils.abbreviate(gateadresse.getAdresse(), 25));
-                skdMeldingTrans1.setKommunenummer(gateadresse.getKommunenr());
-                skdMeldingTrans1.setPostnummer(gateadresse.getPostnr());
-                skdMeldingTrans1.setTilleggsadresse(gateadresse.getTilleggsadresse());
-                skdMeldingTrans1.setFlyttedatoAdr(ConvertDateToStringUtility.yyyyMMdd(
-                        enforceValidTpsDate(NullcheckUtil.nullcheckSetDefaultValue(gateadresse.getFlyttedato(),
-                                HentDatoFraIdentUtility.extract(person.getIdent())))));
-
-            } else if (AdresseDTO.Adressetype.MATR == person.getBoadresse().getAdressetype()) {
+            if (AdresseDTO.Adressetype.MATR == person.getBoadresse().getAdressetype()) {
 
                 var matrikkeladresse = (MatrikkeladresseDTO) person.getBoadresse();
                 skdMeldingTrans1.setAdressetype("M");
@@ -60,7 +46,19 @@ public class AdresseAppenderService {
                 skdMeldingTrans1.setFlyttedatoAdr(ConvertDateToStringUtility.yyyyMMdd(
                         enforceValidTpsDate(NullcheckUtil.nullcheckSetDefaultValue(matrikkeladresse.getFlyttedato(),
                                 HentDatoFraIdentUtility.extract(person.getIdent())))));
+            } else {
 
+                var gateadresse = (GateadresseDTO) person.getBoadresse();
+                skdMeldingTrans1.setAdressetype("O");
+                skdMeldingTrans1.setGateGaard(fixGatekode(gateadresse.getGatekode()));
+                addHusBrukAndBokstavFestenr(skdMeldingTrans1, gateadresse);
+                skdMeldingTrans1.setAdressenavn(StringUtils.abbreviate(gateadresse.getAdresse(), 25));
+                skdMeldingTrans1.setKommunenummer(gateadresse.getKommunenr());
+                skdMeldingTrans1.setPostnummer(gateadresse.getPostnr());
+                skdMeldingTrans1.setTilleggsadresse(gateadresse.getTilleggsadresse());
+                skdMeldingTrans1.setFlyttedatoAdr(ConvertDateToStringUtility.yyyyMMdd(
+                        enforceValidTpsDate(NullcheckUtil.nullcheckSetDefaultValue(gateadresse.getFlyttedato(),
+                                HentDatoFraIdentUtility.extract(person.getIdent())))));
             }
 
         } else {
