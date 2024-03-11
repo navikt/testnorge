@@ -10,6 +10,7 @@ import {
   WarningAlertstripe,
 } from '@navikt/dolly-komponenter';
 import _ from 'lodash';
+import { Action } from '@/pages/endringsmelding-page/form/endringsmelding-form/EndringsmeldingReducer';
 
 const Search = styled.div`
   display: flex;
@@ -56,7 +57,7 @@ const StyledWarning = styled(WarningAlertstripe)`
   width: -webkit-fill-available;
 `;
 
-export default <T extends unknown>({ labels, onChange, setMiljoer }: Props<T>) => {
+export default <T extends unknown>({ labels, onChange, dispatch, setMiljoer }: Props<T>) => {
   const [value, setValue] = useState('');
   const [search, setSearch] = useState(null);
   const [response, setResponse] = useState(null);
@@ -114,7 +115,10 @@ export default <T extends unknown>({ labels, onChange, setMiljoer }: Props<T>) =
 
   useEffect(() => {
     setMiljoer(response?.miljoer);
-  }, [response]);
+    error
+      ? dispatch({ type: Action.SET_HENT_MILJOER_ERROR_ACTION })
+      : dispatch({ type: Action.SET_HENT_MILJOER_SUCCESS_ACTION });
+  }, [response, error]);
 
   return (
     <Search>
