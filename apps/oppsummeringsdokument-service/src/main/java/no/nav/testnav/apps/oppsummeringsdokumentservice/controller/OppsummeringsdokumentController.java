@@ -1,7 +1,7 @@
 package no.nav.testnav.apps.oppsummeringsdokumentservice.controller;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.testnav.apps.oppsummeringsdokumentservice.adapter.OppsummeringsdokumentAdapter;
+import no.nav.testnav.apps.oppsummeringsdokumentservice.service.OppsummeringsdokumentService;
 import no.nav.testnav.apps.oppsummeringsdokumentservice.domain.Oppsummeringsdokument;
 import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.OppsummeringsdokumentDTO;
 import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.Populasjon;
@@ -30,37 +30,36 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/v1/oppsummeringsdokumenter")
 public class OppsummeringsdokumentController {
 
-    private final OppsummeringsdokumentAdapter adapter;
+    private final OppsummeringsdokumentService adapter;
 
     @GetMapping
-    public ResponseEntity<List<OppsummeringsdokumentDTO>> getAll(
+    public List<OppsummeringsdokumentDTO> getAll(
             @RequestHeader("miljo") String miljo,
             @RequestParam("page") Integer page) {
+
         var documents = adapter.getAllCurrentDocumentsBy(miljo, page);
-        return ResponseEntity.ok(documents.stream().map(Oppsummeringsdokument::toDTO).collect(Collectors.toList()));
+        return documents.stream()
+                .map(Oppsummeringsdokument::toDTO)
+                .toList();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<OppsummeringsdokumentDTO> get(@PathVariable("id") String id) {
-        var oppsummeringsdokument = adapter.get(id);
-        if (oppsummeringsdokument == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(oppsummeringsdokument.toDTO());
-    }
 
+        var oppsummeringsdokument = adapter.getCurrentDocumentsBy(id);
+        return oppsummeringsdokument.map(value -> ResponseEntity.ok(value.toDTO()))
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
 
     @GetMapping("/{orgnummer}/{kalendermaaned}")
     public ResponseEntity<OppsummeringsdokumentDTO> getOpplysningspliktigFromKalendermaaned(
             @PathVariable("orgnummer") String orgnummer,
             @PathVariable("kalendermaaned") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate kalendermaaned,
-            @RequestHeader("miljo") String miljo
-    ) {
+            @RequestHeader("miljo") String miljo) {
+
         var oppsummeringsdokument = adapter.getCurrentDocumentBy(kalendermaaned, orgnummer, miljo);
-        if (oppsummeringsdokument == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(oppsummeringsdokument.toDTO());
+        return oppsummeringsdokument.map(value -> ResponseEntity.ok().body(value.toDTO()))
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PutMapping
@@ -68,11 +67,12 @@ public class OppsummeringsdokumentController {
             @RequestBody OppsummeringsdokumentDTO dto,
             @RequestHeader("miljo") String miljo,
             @RequestHeader("origin") String origin,
-            @RequestHeader Populasjon populasjon
+            @RequestHeader(required = false) Populasjon populasjon
     ) {
         var previous = adapter.getCurrentDocumentBy(dto.getKalendermaaned(), dto.getOpplysningspliktigOrganisajonsnummer(), miljo);
 
-        if(previous != null && previous.getVersion().equals(dto.getVersion())) {
+        if (previous.isPresent() && previous.get().getVersion().equals(dto.getVersion())) {
+
             return ResponseEntity
                     .badRequest()
                     .body(String.format(
@@ -83,6 +83,7 @@ public class OppsummeringsdokumentController {
                             miljo
                     ));
         }
+
         var opplysningspliktig = new Oppsummeringsdokument(dto, populasjon);
 
         var id = adapter.save(opplysningspliktig, miljo, origin);
@@ -96,33 +97,23 @@ public class OppsummeringsdokumentController {
     }
 
     @GetMapping("/identer/{ident}")
-    public ResponseEntity<List<OppsummeringsdokumentDTO>> getIdent(@RequestHeader("miljo") String miljo, @PathVariable("ident") String ident) {
+    public List<OppsummeringsdokumentDTO> getIdent(@RequestHeader("miljo") String miljo,
+                                                   @PathVariable("ident") String ident) {
+
         var documents = adapter.getAllCurrentDocumentsBy(miljo, ident);
-        return ResponseEntity.ok(documents.stream().map(Oppsummeringsdokument::toDTO).collect(Collectors.toList()));
+        return documents.stream()
+                .map(Oppsummeringsdokument::toDTO)
+                .toList();
     }
 
     @GetMapping("/identer")
-    public ResponseEntity<Set<String>> getIdenter(
+    public Set<String> getIdenter(
             @RequestHeader("miljo") String miljo,
-            @RequestHeader Populasjon populasjon
-    ) {
-        var collect = adapter.getAllCurrentDocumentsBy(miljo)
+            @RequestHeader(required = false) Populasjon populasjon) {
+
+        return adapter.getAllCurrentDocumentsBy(miljo)
                 .stream()
                 .flatMap(document -> document.getIdenter().stream())
                 .collect(Collectors.toSet());
-        return ResponseEntity.ok(collect);
-    }
-
-    @DeleteMapping
-    public ResponseEntity<HttpStatus> delete(
-            @RequestHeader("miljo") String miljo,
-            @RequestHeader(required = false) Populasjon populasjon
-    ) {
-        if (populasjon == null) {
-            adapter.deleteAllBy(miljo);
-        }
-
-        adapter.deleteAllBy(miljo, populasjon);
-        return ResponseEntity.noContent().build();
     }
 }

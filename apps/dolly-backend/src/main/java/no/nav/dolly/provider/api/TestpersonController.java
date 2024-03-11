@@ -136,6 +136,13 @@ public class TestpersonController {
         return navigasjonService.navigerTilIdent(ident);
     }
 
+    @Operation(description = "Sjekk om ønsket testperson finnes i Dolly")
+    @GetMapping("/finnes/{ident}")
+    public Boolean finnesTestident(@PathVariable String ident) {
+
+        return identService.exists(ident);
+    }
+
     @Operation(description = "Send ønsket testperson til miljø")
     @Transactional
     @PostMapping("/ident/{ident}/ordre")

@@ -6,6 +6,7 @@ import './dollyFieldArray.less'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import styled from 'styled-components'
 import { useFieldArray, useFormContext } from 'react-hook-form'
+import { useEffect } from 'react'
 
 const numberColor = {
 	ARRAY_LEVEL_ONE: '#CCE3ED',
@@ -224,7 +225,20 @@ export const FormikDollyFieldArray = ({
 	errorText = null,
 }) => {
 	const formMethods = useFormContext()
-	const { append, fields, remove } = useFieldArray({ control: formMethods.control, name: name })
+	const { append, update, fields, remove } = useFieldArray({
+		control: formMethods.control,
+		name: name,
+	})
+
+	useEffect(() => {
+		// Noen ganger blir formet oppdatert utenfra via setValue,
+		// da vil denne sjekken sørge for at vi oppdaterer fields også
+		if (formMethods.watch(name).length !== fields.length) {
+			formMethods.watch(name).forEach((entry, idx) => {
+				update(idx, entry)
+			})
+		}
+	}, [fields])
 	const addNewEntry = () => {
 		handleNewEntry ? handleNewEntry() : append(newEntry)
 		formMethods.trigger(name)

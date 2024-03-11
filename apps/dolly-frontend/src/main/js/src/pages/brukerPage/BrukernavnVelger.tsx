@@ -4,6 +4,8 @@ import NavButton from '@/components/ui/button/NavButton/NavButton'
 import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { Bruker, Organisasjon } from '@/pages/brukerPage/types'
 import { BrukerApi } from '@/service/Api'
+import { FormProvider, useForm } from 'react-hook-form'
+import { navigateToLogin } from '@/components/utlogging/navigateToLogin'
 
 type BrukernavnVelgerProps = {
 	organisasjon: Organisasjon
@@ -12,7 +14,7 @@ type BrukernavnVelgerProps = {
 
 const Selector = styled.div`
 	display: flexbox;
-	text-align: left;
+	text-align: -webkit-center;
 	justify-content: center;
 	margin-bottom: 20px;
 `
@@ -25,6 +27,7 @@ const feilmeldinger = {
 }
 
 export default ({ organisasjon, addToSession }: BrukernavnVelgerProps) => {
+	const formMethods = useForm()
 	const [brukernavn, setBrukernavn] = useState<string>('')
 	const [loading, setLoading] = useState(false)
 	const [error, setError] = useState(null)
@@ -67,30 +70,39 @@ export default ({ organisasjon, addToSession }: BrukernavnVelgerProps) => {
 
 	return (
 		<React.Fragment>
-			<h3>
-				Lag ditt eget brukernavn som brukes når du representerer <b>{organisasjon.navn}</b>. Neste
-				gang du logger inn for denne organisasjonen skjer det automatisk med dette brukernavnet.
-			</h3>
+			<FormProvider {...formMethods}>
+				<h3>
+					Lag ditt eget brukernavn som brukes når du representerer <b>{organisasjon.navn}</b>. Neste
+					gang du logger inn for denne organisasjonen skjer det automatisk med dette brukernavnet.
+				</h3>
 
-			<Selector>
-				<DollyTextInput
-					name="brukernavn"
-					label="Brukernavn"
-					value={brukernavn}
-					// @ts-ignore
-					size="xlarge"
-					onChange={(e: any) => onChange(e.target.value)}
-					isDisabled={loading}
-				/>
-				<NavButton
-					onClick={() => onSubmit()}
-					variant={'primary'}
-					className="videre-button"
-					disabled={error}
-				>
-					Gå videre til Dolly
-				</NavButton>
-			</Selector>
+				<Selector>
+					<DollyTextInput
+						name="brukernavn"
+						label="Brukernavn"
+						value={brukernavn}
+						// @ts-ignore
+						size="xlarge"
+						onChange={(e: any) => onChange(e.target.value)}
+						isDisabled={loading}
+					/>
+					<NavButton
+						onClick={() => onSubmit()}
+						variant={'primary'}
+						className="videre-button"
+						disabled={error}
+					>
+						Gå videre til Dolly
+					</NavButton>
+					<NavButton
+						className="tilbake-button"
+						onClick={() => navigateToLogin()}
+						variant={'secondary'}
+					>
+						Tilbake til innlogging
+					</NavButton>
+				</Selector>
+			</FormProvider>
 		</React.Fragment>
 	)
 }

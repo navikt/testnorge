@@ -8,7 +8,9 @@ import no.nav.testnav.apps.tenorsearchservice.consumers.dto.TenorRawResponse;
 import no.nav.testnav.apps.tenorsearchservice.domain.TenorOversiktResponse;
 import no.nav.testnav.apps.tenorsearchservice.domain.TenorResponse;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
@@ -57,8 +59,9 @@ public class TenorResultMapperService {
                         .build();
 
             } catch (JsonProcessingException e) {
-                log.error("Feil ved konvertering av tenor respons", e);
-                return null;
+                log.error("Feil ved konvertering av tenor respons {}", e.getMessage(), e);
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                        "Feil ved konvertering av tenor response: %s".formatted(e.getMessage()), e);
             }
         } else {
             return null;
@@ -75,7 +78,7 @@ public class TenorResultMapperService {
     private static TenorOversiktResponse.Person map(TenorRawResponse.Dokument dokument) {
 
         return TenorOversiktResponse.Person.builder()
-                .identifikator(dokument.getIdentifikator())
+                .id(dokument.getId())
                 .fornavn(dokument.getFornavn())
                 .etternavn(dokument.getEtternavn())
                 .tenorRelasjoner(map(dokument.getTenorRelasjoner()))

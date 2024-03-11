@@ -71,13 +71,6 @@ public class OpenSearchQueryBuilder {
         return queryBuilder;
     }
 
-    public static BoolQueryBuilder buildSearchQuery(String ident) {
-
-        return QueryBuilders.boolQuery()
-                .must(getRandomScoreQueryBuilder())
-                .must(QueryBuilders.matchQuery("identer", ident));
-    }
-
     private void setPersonQuery(BoolQueryBuilder queryBuilder, SearchRequest request) {
 
         Optional.ofNullable(request.getPersonRequest())

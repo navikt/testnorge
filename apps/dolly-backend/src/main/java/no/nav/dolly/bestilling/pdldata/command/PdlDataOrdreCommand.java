@@ -22,7 +22,6 @@ import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 public class PdlDataOrdreCommand implements Callable<Flux<PdlResponse>> {
 
     private static final String PDL_FORVALTER_ORDRE_URL = "/api/v1/personer/{ident}/ordre";
-    private static final String IS_TPS_MASTER = "isTpsMaster";
     private static final String EXCLUDE_EKSTERNE_PERSONER = "ekskluderEksternePersoner";
 
     private final WebClient webClient;
@@ -35,7 +34,6 @@ public class PdlDataOrdreCommand implements Callable<Flux<PdlResponse>> {
         return webClient
                 .post()
                 .uri(uriBuilder -> uriBuilder.path(PDL_FORVALTER_ORDRE_URL)
-                        .queryParam(IS_TPS_MASTER, false)
                         .queryParam(EXCLUDE_EKSTERNE_PERSONER, ekskluderEksternePersoner)
                         .build(ident))
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
