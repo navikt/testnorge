@@ -1,14 +1,16 @@
 import { useNavigate } from 'react-router-dom'
 import { usePdlPersonbolk } from '@/utils/hooks/usePdlPerson'
 import { Button, Checkbox, Modal } from '@navikt/ds-react'
-import React, { useRef, useState } from 'react'
+import React, { useState } from 'react'
 import { MalValg } from '@/pages/tenorSoek/resultatVisning/MalValg'
+import { EnterIcon } from '@navikt/aksel-icons'
+import useBoolean from '@/utils/hooks/useBoolean'
+import DollyModal from '@/components/ui/modal/DollyModal'
 
-export const ImporterValgtePersoner = ({ identer }) => {
+export const ImporterValgtePersoner = ({ identer, isMultiple }) => {
 	const navigate = useNavigate()
 	const { pdlPersoner, loading, error } = usePdlPersonbolk(identer)
-
-	const ref = useRef<HTMLDialogElement>(null)
+	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 	const [valgtMal, setValgtMal] = useState(null)
 
 	const handleClick = () => {
@@ -31,29 +33,45 @@ export const ImporterValgtePersoner = ({ identer }) => {
 
 	return (
 		<>
-			<Button
-				variant="primary"
-				size="small"
-				disabled={identer?.length < 1}
-				loading={loading}
-				onClick={() => ref.current?.showModal()}
-			>
-				{identer?.length === 1
-					? 'Importer 1 valgt person'
-					: `Importer ${identer?.length} valgte personer`}
-			</Button>
-			<Modal ref={ref} header={{ heading: 'Importer personer' }} width={750} closeOnBackdropClick>
-				<Modal.Body>
-					<Checkbox>Inkluder partnere</Checkbox>
+			{isMultiple ? (
+				<Button
+					variant="primary"
+					size="small"
+					disabled={identer?.length < 1}
+					loading={loading}
+					onClick={openModal}
+				>
+					{identer?.length === 1
+						? 'Importer 1 valgt person'
+						: `Importer ${identer?.length} valgte personer`}
+				</Button>
+			) : (
+				<Button
+					variant="tertiary"
+					size="xsmall"
+					icon={<EnterIcon />}
+					loading={loading}
+					onClick={openModal}
+					style={{ minWidth: '150px' }}
+				>
+					Importer person
+				</Button>
+			)}
+			<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="60%" overflow="auto">
+				<div>
+					<h1>{identer?.length === 1 ? 'Importer person' : 'Importer personer'}</h1>
+					<div style={{ margin: '20px 0' }}>
+						<Checkbox size="small">Inkluder partnere</Checkbox>
+					</div>
 					<MalValg setValgtMal={setValgtMal} />
-				</Modal.Body>
-				<Modal.Footer>
-					<Button onClick={() => handleClick()}>Importer</Button>
-					<Button variant="secondary" onClick={() => ref.current?.close()}>
-						Avbryt
-					</Button>
-				</Modal.Footer>
-			</Modal>
+					<div className="dollymodal_buttons dollymodal_buttons--center">
+						<Button onClick={() => handleClick()}>Importer</Button>
+						<Button variant="secondary" onClick={closeModal}>
+							Avbryt
+						</Button>
+					</div>
+				</div>
+			</DollyModal>
 		</>
 	)
 }

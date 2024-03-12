@@ -26,8 +26,8 @@ export const MalValg = ({ setValgtMal }) => {
 	const [benyttMal, setBenyttMal] = useBoolean(false)
 	const [malValue, setMalValue] = useState(null)
 
-	const { maler, loading } = useDollyMaler()
-	const { brukerProfil } = useBrukerProfil()
+	const { maler, loading: loadingMaler } = useDollyMaler()
+	const { brukerProfil, loading: loadingBruker } = useBrukerProfil()
 
 	const [malBruker, setMalBruker] = useState(brukerProfil?.visningsNavn)
 
@@ -36,37 +36,35 @@ export const MalValg = ({ setValgtMal }) => {
 
 	return (
 		<>
-			<Switch checked={benyttMal} onChange={() => setBenyttMal()}>
+			<Switch size="small" checked={benyttMal} onChange={() => setBenyttMal()}>
 				Benytt mal
 			</Switch>
-			<div className="flexbox--align-center--justify-start">
+			<div className="flexbox--align-center--justify-start" style={{ marginTop: '5px' }}>
 				<DollySelect
 					name="zIdent"
 					label="Bruker"
-					isLoading={loading}
+					isLoading={loadingBruker}
 					options={brukerOptions}
-					size="large"
+					size="medium"
 					onChange={(e: any) => {
 						setMalBruker(e.value)
 					}}
 					value={malBruker}
 					isDisabled={!benyttMal}
 					isClearable={false}
-					isInDialog={true}
 				/>
 				<DollySelect
 					name="mal"
 					label="Maler"
-					isLoading={loading}
+					isLoading={loadingMaler}
 					options={malOptions}
 					size="grow"
 					onChange={(e: any) => {
-						setValgtMal(e.data)
-						setMalValue(e.value)
+						setValgtMal(e?.data || null)
+						setMalValue(e?.value || null)
 					}}
 					isDisabled={!benyttMal}
 					value={malValue}
-					isInDialog={true}
 				/>
 			</div>
 		</>

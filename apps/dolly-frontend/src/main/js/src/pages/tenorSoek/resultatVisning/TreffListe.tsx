@@ -1,11 +1,9 @@
-import { Box, VStack, Tag, Alert, Button } from '@navikt/ds-react'
+import { Box, VStack, Tag, Alert } from '@navikt/ds-react'
 import React, { useEffect, useState } from 'react'
 import { useTenorIdent } from '@/utils/hooks/useTenorSoek'
 import { PersonVisning } from '@/pages/tenorSoek/resultatVisning/PersonVisning'
 import Loading from '@/components/ui/loading/Loading'
 import styled from 'styled-components'
-import { NavigerTilPerson } from '@/pages/tenorSoek/resultatVisning/NavigerTilPerson'
-import { useFinnesIDolly } from '@/utils/hooks/useIdent'
 import { ListeValg } from '@/pages/tenorSoek/resultatVisning/ListeValg'
 import { ImporterValgtePersoner } from '@/pages/tenorSoek/resultatVisning/ImporterValgtePersoner'
 
@@ -75,15 +73,7 @@ export const TreffListe = ({ response, personListe, loading, error }: any) => {
 						<h2 style={{ margin: '0', alignSelf: 'center' }}>
 							{antallTreff || antallTreff === 0 ? `${antallTreff} treff` : ''}
 						</h2>
-						<ImporterValgtePersoner identer={markertePersoner} />
-						{/*<Button*/}
-						{/*	variant="primary"*/}
-						{/*	size="small"*/}
-						{/*	disabled={markertePersoner?.length < 1}*/}
-						{/*	onClick={() => console.log('Importerer personer', markertePersoner)}*/}
-						{/*>*/}
-						{/*	Importer {markertePersoner?.length} valgte personer*/}
-						{/*</Button>*/}
+						<ImporterValgtePersoner identer={markertePersoner} isMultiple={true} />
 					</div>
 				</Box>
 			</div>
@@ -119,7 +109,6 @@ export const TreffListe = ({ response, personListe, loading, error }: any) => {
 								</TagsWrapper>
 								<ListeValg
 									ident={person?.id}
-									isMultiple={true}
 									markertePersoner={markertePersoner}
 									setMarkertePersoner={setMarkertePersoner}
 								/>

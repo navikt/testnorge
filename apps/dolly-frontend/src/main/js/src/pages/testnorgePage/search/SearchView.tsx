@@ -81,9 +81,6 @@ export default ({
 			</ContentContainer>
 		)
 	}
-	console.log('valgtePersoner: ', valgtePersoner) //TODO - SLETT MEG
-	//TODO se paa denne!!
-	console.log('importerPersoner: ', importerPersoner) //TODO - SLETT MEG
 
 	const columns = [
 		{
