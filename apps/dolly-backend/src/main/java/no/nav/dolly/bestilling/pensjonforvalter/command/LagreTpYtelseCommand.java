@@ -17,7 +17,6 @@ import java.util.concurrent.Callable;
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
-import static no.nav.dolly.util.CallIdUtil.generateCallId;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
@@ -31,6 +30,7 @@ public class LagreTpYtelseCommand implements Callable<Flux<PensjonforvalterRespo
     private final String token;
 
     private final PensjonTpYtelseRequest pensjonTpYtelseRequest;
+    private final String callId;
 
     public Flux<PensjonforvalterResponse> call() {
         return webClient
@@ -40,7 +40,7 @@ public class LagreTpYtelseCommand implements Callable<Flux<PensjonforvalterRespo
                         .build())
                 .header(AUTHORIZATION, "Bearer " + token)
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
-                .header(HEADER_NAV_CALL_ID, generateCallId())
+                .header(HEADER_NAV_CALL_ID, callId)
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .bodyValue(pensjonTpYtelseRequest)
                 .retrieve()
