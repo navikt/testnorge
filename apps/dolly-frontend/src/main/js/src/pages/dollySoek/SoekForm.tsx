@@ -36,12 +36,6 @@ const SoekKategori = styled.div`
 			flex-grow: 0;
 		}
 	}
-
-	&& {
-		.navds-checkbox__icon {
-			margin-top: -4px;
-		}
-	}
 `
 
 const Buttons = styled.div`
@@ -130,7 +124,7 @@ const Header = ({ title, antall }) => (
 )
 
 export const SoekForm = () => {
-	const [request, setRequest] = useState(null)
+	const [request, setRequest] = useState(null as any)
 	const { result, loading, error, mutate } = useSoekIdenter(request)
 
 	const personPath = 'personRequest'
@@ -140,17 +134,21 @@ export const SoekForm = () => {
 		mode: 'onChange',
 		defaultValues: initialValuesClone,
 	})
-	const { trigger, getValues, handleSubmit, reset, control, setValue } = formMethods
+	const { trigger, watch, handleSubmit, reset, control, setValue } = formMethods
 
 	const preSubmit = () => {
-		setRequest(getValues())
+		setRequest(watch())
 		mutate()
 	}
 	const handleChange = (value: any, path: string) => {
-		const updatedRequest = _.set(getValues(), path, value)
 		setValue(path, value)
 		trigger(path)
-		setRequest(updatedRequest)
+		const updatedRequest = watch()
+		if (requestIsEmpty(updatedRequest)) {
+			setRequest(null)
+		} else {
+			setRequest(updatedRequest)
+		}
 		mutate()
 	}
 
@@ -177,9 +175,9 @@ export const SoekForm = () => {
 
 	const handleChangeList = (value: any, path: string) => {
 		const list = value.map((item: any) => item.value)
-		const updatedRequest = _.set(getValues(), path, list)
 		setValue(path, list)
 		trigger(path)
+		const updatedRequest = watch()
 		if (requestIsEmpty(updatedRequest)) {
 			setRequest(null)
 		} else {
@@ -188,12 +186,12 @@ export const SoekForm = () => {
 		mutate()
 	}
 
-	const antallFagsystemer = getValues('typer')?.length
+	const antallFagsystemer = watch('typer')?.length
 
 	const getAntallRequest = (liste: Array<string>) => {
 		let antall = 0
 		liste.forEach((item) => {
-			_.get(getValues()?.personRequest, item) && antall++
+			watch(`personRequest.${item}`) && antall++
 		})
 		return antall
 	}
