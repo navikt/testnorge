@@ -35,7 +35,10 @@ export const Monthpicker = ({
 	const { monthpickerProps, inputProps, selectedMonth } = useMonthpicker({
 		fromDate: minDate || subYears(new Date(), 125),
 		toDate: maxDate || addYears(new Date(), 5),
-		onMonthChange: onChange ? onChange : handleDateChange,
+		onMonthChange: (selectedDate) => {
+			selectedDate?.setHours(12, 0, 0, 0)
+			onChange ? onChange(selectedDate) : handleDateChange(selectedDate)
+		},
 		defaultSelected: !_.isEmpty(eksisterendeVerdi) ? new Date(eksisterendeVerdi) : undefined,
 	})
 
