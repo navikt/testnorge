@@ -60,11 +60,13 @@ export const DollyDatepicker = (props) => (
 	</InputWrapper>
 )
 
-const P_FormDatepicker = ({ addHour = false, ...props }) => {
+const P_FormDatepicker = ({ addHour = true, ...props }) => {
 	const formMethods = useFormContext()
 	const value = formMethods.watch(props.name)
 	const handleChange = (date) => {
-		if (props.afterChange) props.afterChange(date)
+		if (props.afterChange) {
+			props.afterChange(date)
+		}
 		let val = fixTimezone(date)?.toISOString().substring(0, 19) || null
 		if (addHour) {
 			val = addHours(new Date(fixTimezone(date)), 3)
