@@ -1,11 +1,28 @@
 import { useNavigate } from 'react-router-dom'
 import { usePdlPersonbolk } from '@/utils/hooks/usePdlPerson'
-import { Button, Checkbox, Modal } from '@navikt/ds-react'
-import React, { useState } from 'react'
+import { Button, Checkbox } from '@navikt/ds-react'
+import React, { useEffect, useState } from 'react'
 import { MalValg } from '@/pages/tenorSoek/resultatVisning/MalValg'
 import { EnterIcon } from '@navikt/aksel-icons'
 import useBoolean from '@/utils/hooks/useBoolean'
 import DollyModal from '@/components/ui/modal/DollyModal'
+import { top } from '@popperjs/core'
+import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
+import styled from 'styled-components'
+
+const CheckboxWrapper = styled.div`
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	margin-top: 20px;
+	border-bottom: 1px solid #ccc;
+
+	&& {
+		.navds-checkbox {
+			margin-bottom: 20px;
+		}
+	}
+`
 
 export const ImporterValgtePersoner = ({ identer, isMultiple }) => {
 	const navigate = useNavigate()
@@ -13,10 +30,29 @@ export const ImporterValgtePersoner = ({ identer, isMultiple }) => {
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 	const [valgtMal, setValgtMal] = useState(null)
 
+	const [partnere, setPartnere] = useState([])
+	const [valgtePartnere, setValgtePartnere] = useState([])
+
+	const partnerSivilstander = ['GIFT', 'REGISTRERT_PARTNER', 'SEPARERT', 'SEPARERT_PARTNER']
+
+	useEffect(() => {
+		const partnerListe = []
+		pdlPersoner?.hentPersonBolk?.map((ident) => {
+			const partner = ident.person?.sivilstand?.filter(
+				(sivilstand) =>
+					!sivilstand?.metadata?.historisk && partnerSivilstander.includes(sivilstand?.type),
+			)?.[0]?.relatertVedSivilstand
+			if (partner) {
+				partnerListe.push(partner)
+			}
+		})
+		setPartnere(partnerListe)
+	}, [pdlPersoner])
+
 	const handleClick = () => {
 		navigate(`/importer`, {
 			state: {
-				importPersoner: identer.map((ident) => {
+				importPersoner: identer.concat(valgtePartnere).map((ident) => {
 					return {
 						ident: ident,
 						data: {
@@ -29,6 +65,14 @@ export const ImporterValgtePersoner = ({ identer, isMultiple }) => {
 				// gruppe: gruppe,
 			},
 		})
+	}
+
+	const handleClickPartnere = (event) => {
+		if (event.target.checked) {
+			setValgtePartnere(partnere)
+		} else {
+			setValgtePartnere([])
+		}
 	}
 
 	return (
@@ -60,9 +104,21 @@ export const ImporterValgtePersoner = ({ identer, isMultiple }) => {
 			<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="60%" overflow="auto">
 				<div>
 					<h1>{identer?.length === 1 ? 'Importer person' : 'Importer personer'}</h1>
-					<div style={{ margin: '20px 0' }}>
-						<Checkbox size="small">Inkluder partnere</Checkbox>
-					</div>
+					{partnere.length > 0 && (
+						<CheckboxWrapper>
+							<Checkbox
+								size="small"
+								onChange={(event) => handleClickPartnere(event)}
+								style={{ marginBottom: '20px' }}
+							>
+								Inkluder partner
+							</Checkbox>
+							<Hjelpetekst placement={top}>
+								En eller flere av de valgte personene har en partner. <br /> Vil du inkludere
+								partner(e) i importen?
+							</Hjelpetekst>
+						</CheckboxWrapper>
+					)}
 					<MalValg setValgtMal={setValgtMal} />
 					<div className="dollymodal_buttons dollymodal_buttons--center">
 						<Button onClick={() => handleClick()}>Importer</Button>

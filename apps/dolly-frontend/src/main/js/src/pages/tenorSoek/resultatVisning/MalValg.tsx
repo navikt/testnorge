@@ -4,6 +4,11 @@ import { useBrukerProfil } from '@/utils/hooks/useBruker'
 import { DollySelect } from '@/components/ui/form/inputs/select/Select'
 import { Switch } from '@navikt/ds-react'
 import { useBoolean } from 'react-use'
+import styled from 'styled-components'
+
+const MalValgWrapper = styled.div`
+	margin-top: 20px;
+`
 
 const getBrukerOptions = (malbestillinger: any) =>
 	Object.keys(malbestillinger).map((ident) => ({
@@ -35,7 +40,7 @@ export const MalValg = ({ setValgtMal }) => {
 	const malOptions = maler && malBruker ? getMalOptions(maler, malBruker) : []
 
 	return (
-		<>
+		<MalValgWrapper>
 			<Switch size="small" checked={benyttMal} onChange={() => setBenyttMal()}>
 				Benytt mal
 			</Switch>
@@ -67,6 +72,6 @@ export const MalValg = ({ setValgtMal }) => {
 					value={malValue}
 				/>
 			</div>
-		</>
+		</MalValgWrapper>
 	)
 }
