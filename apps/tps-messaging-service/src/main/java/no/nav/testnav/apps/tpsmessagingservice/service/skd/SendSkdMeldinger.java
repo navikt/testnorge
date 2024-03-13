@@ -25,6 +25,8 @@ public class SendSkdMeldinger {
 
         try {
             var skdMeldingMedHeader = SkdMeldingsheader.appendHeader(skdMelding);
+            log.info("SKD-melding til miljøer {} {}", environments, skdMeldingMedHeader);
+
             return endringsmeldingConsumer.sendMessage(skdMeldingMedHeader, environments)
                     .entrySet().stream()
                     .collect(Collectors.toMap(Map.Entry::getKey, respone -> respone.getValue()

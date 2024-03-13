@@ -8,13 +8,14 @@ import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
 @Slf4j
 @Service
 public class TestmiljoerServiceConsumer {
 
+    private final static List<String> EXTRA_ENV = List.of("q5");
     private final WebClient webClient;
     private final ServerProperties serverProperties;
     private final TokenExchange tokenExchange;
@@ -33,8 +34,10 @@ public class TestmiljoerServiceConsumer {
 
     public List<String> getMiljoer() {
 
-        return Arrays.asList(tokenExchange.exchange(serverProperties)
+        return tokenExchange.exchange(serverProperties)
                 .flatMap(token -> new TestmiljoerServiceCommand(webClient, token.getTokenValue()).call())
-                .block());
+                .map(miljoer -> Stream.concat(miljoer.stream(), EXTRA_ENV.stream())
+                        .toList())
+                .block();
     }
 }

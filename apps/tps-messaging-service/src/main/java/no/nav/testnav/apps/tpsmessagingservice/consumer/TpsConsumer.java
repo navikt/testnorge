@@ -79,8 +79,6 @@ public abstract class TpsConsumer {
 
     public Map<String, String> sendMessage(String melding, List<String> miljoer) {
 
-        log.info("SKD-melding til miljøer {} \"{}\" ", String.join(",", miljoer), melding);
-
         return miljoer.parallelStream()
                 .map(miljoe -> {
                     try {
