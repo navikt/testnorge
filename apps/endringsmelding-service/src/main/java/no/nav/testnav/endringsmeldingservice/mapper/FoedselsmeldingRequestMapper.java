@@ -14,6 +14,7 @@ import reactor.util.function.Tuple5;
 
 import java.util.List;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.testnav.endringsmeldingservice.mapper.AdressehistorikkMapper.mapBoadresse;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -46,6 +47,10 @@ public class FoedselsmeldingRequestMapper {
 
     private static AdresseDTO mapAdresse(FoedselsmeldingDTO foedselsmelding, List<VegadresseDTO> vegadresse,
                                          List<AdressehistorikkDTO> morsadresser, List<AdressehistorikkDTO> farsadresser) {
+
+        if (isNull(foedselsmelding.getAdresseFra())) {
+            return mapAdresse(vegadresse.getFirst());
+        }
 
         return switch (foedselsmelding.getAdresseFra()) {
 

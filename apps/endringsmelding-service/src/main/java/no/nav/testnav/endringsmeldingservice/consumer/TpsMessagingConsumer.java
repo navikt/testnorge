@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.endringsmeldingservice.config.Consumers;
 import no.nav.testnav.endringsmeldingservice.consumer.command.GetAdressehistorikkCommand;
+import no.nav.testnav.endringsmeldingservice.consumer.command.GetEksistererPersonCommand;
 import no.nav.testnav.endringsmeldingservice.consumer.command.GetIdentEnvironmentsCommand;
 import no.nav.testnav.endringsmeldingservice.consumer.command.GetPersondataCommand;
 import no.nav.testnav.endringsmeldingservice.consumer.command.SendDoedsmeldingCommand;
@@ -15,6 +16,7 @@ import no.nav.testnav.libs.data.tpsmessagingservice.v1.DoedsmeldingRequest;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.DoedsmeldingResponse;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.FoedselsmeldingRequest;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.FoedselsmeldingResponse;
+import no.nav.testnav.libs.data.tpsmessagingservice.v1.IdentMiljoeDTO;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.PersonDTO;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.PersonMiljoeDTO;
 import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
@@ -62,10 +64,18 @@ public class TpsMessagingConsumer {
                 .build();
     }
 
-    public Flux<PersonMiljoeDTO> hentMiljoer(String ident) {
+    public Flux<PersonMiljoeDTO> hentMiljoer(String ident) { // Skal ryddes til slutt
         return accessTokenService
                 .exchange(serverProperties)
                 .flatMapMany(accessToken -> new GetIdentEnvironmentsCommand(webClient, ident, accessToken.getTokenValue()).call());
+    }
+
+    public Flux<IdentMiljoeDTO> getEksistererPerson(Set<String> identer, Set<String> miljoer) {
+
+        return accessTokenService
+                .exchange(serverProperties)
+                .flatMapMany(accessToken -> new GetEksistererPersonCommand(webClient, identer, miljoer, accessToken.getTokenValue()).call())
+                .doOnNext(resultat -> log.info("Get eksisterende resultat {}", resultat));
     }
 
     public Flux<PersonMiljoeDTO> getPersondata(String ident, Set<String> miljoer) {
@@ -109,11 +119,14 @@ public class TpsMessagingConsumer {
                         new SendDoedsmeldingCommand(webClient, request, miljoer, accessToken.getTokenValue()).call());
     }
 
-    public Mono<FoedselsmeldingResponse> sendFoedselsmelding(FoedselsmeldingRequest person, Set<String> miljoer) {
+    public Mono<FoedselsmeldingResponse> sendFoedselsmelding(FoedselsmeldingRequest request, Set<String> miljoer) {
+
+        log.info("Sender fødselsmelding til miljøer {} {}", miljoer, request);
 
         return accessTokenService
                 .exchange(serverProperties)
                 .flatMap(accessToken ->
-                        new SendFoedselsmeldingCommand(webClient, person, miljoer, accessToken.getTokenValue()).call());
+                        new SendFoedselsmeldingCommand(webClient, request, miljoer, accessToken.getTokenValue()).call())
+                .doOnNext(response -> log.info("Mottatt status for fødselsmelding {}", response));
     }
 }
