@@ -1,6 +1,7 @@
 package no.nav.testnav.endringsmeldingservice.consumer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.endringsmeldingservice.config.Consumers;
 import no.nav.testnav.endringsmeldingservice.consumer.command.GetAdressehistorikkCommand;
 import no.nav.testnav.endringsmeldingservice.consumer.command.GetIdentEnvironmentsCommand;
@@ -30,6 +31,7 @@ import reactor.core.publisher.Mono;
 import java.time.LocalDate;
 import java.util.Set;
 
+@Slf4j
 @Component
 public class TpsMessagingConsumer {
     private final WebClient webClient;
@@ -87,7 +89,8 @@ public class TpsMessagingConsumer {
         return accessTokenService
                 .exchange(serverProperties)
                 .flatMapMany(accessToken ->
-                        new GetAdressehistorikkCommand(webClient, request, miljoer, accessToken.getTokenValue()).call());
+                        new GetAdressehistorikkCommand(webClient, request, miljoer, accessToken.getTokenValue()).call())
+                .doOnNext(response -> log.info("Adressehistorikk mottatt: {}", response));
     }
 
     public Mono<DoedsmeldingResponse> sendKansellerDoedsmelding(PersonDTO person, Set<String> miljoer) {

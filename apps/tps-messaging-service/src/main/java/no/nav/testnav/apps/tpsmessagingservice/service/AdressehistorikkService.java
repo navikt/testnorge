@@ -64,7 +64,7 @@ public class AdressehistorikkService {
         return tpsPersoner.entrySet().stream()
                 .map(entry -> {
                     var status = ResponseStatus.decodeStatus(nonNull(entry.getValue()) &&
-                            nonNull(entry.getValue().getTpsPersonData().getTpsSvar()) ?
+                            nonNull(entry.getValue().getTpsPersonData()) ?
                             entry.getValue().getTpsPersonData().getTpsSvar().getSvarStatus() : null);
                     return AdressehistorikkDTO.builder()
                             .miljoe(entry.getKey())

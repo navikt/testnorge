@@ -32,6 +32,7 @@ public class DoedsmeldingService {
                     if (persondata.getPerson().isDoed()) {
                         return tpsMessagingConsumer.getAdressehistorikk(buildAdresseRequest(persondata),
                                         Set.of(persondata.getMiljoe()))
+                                .filter(AdressehistorikkDTO::isOk)
                                 .map(AdressehistorikkDTO::getPersondata)
                                 .map(AdressehistorikkMapper::mapHistorikk)
                                 .flatMap(person ->
@@ -68,6 +69,7 @@ public class DoedsmeldingService {
                         .collectList()
                         .flatMap(persondata -> tpsMessagingConsumer.getAdressehistorikk(buildAdresseRequest(persondata.getFirst()),
                                         persondata.stream().map(PersonMiljoeDTO::getMiljoe).collect(Collectors.toSet()))
+                                .filter(AdressehistorikkDTO::isOk)
                                 .map(AdressehistorikkDTO::getPersondata)
                                 .map(AdressehistorikkMapper::mapHistorikk)
                                 .collectList()

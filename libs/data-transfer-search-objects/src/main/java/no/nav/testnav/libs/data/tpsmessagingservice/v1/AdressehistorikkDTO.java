@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 @Data
 @Builder
@@ -217,5 +218,10 @@ public class AdressehistorikkDTO {
         private String returStatus;
         private String returMelding;
         private String utfyllendeMelding;
+    }
+
+    public boolean isOk() {
+
+        return nonNull(status) && "OK".equals(status.getReturStatus());
     }
 }
