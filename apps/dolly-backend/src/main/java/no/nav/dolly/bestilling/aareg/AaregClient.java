@@ -68,6 +68,7 @@ public class AaregClient implements ClientRegister {
             var initStatus = miljoer.stream()
                     .map(miljo -> String.format("%s:%s", miljo, getInfoVenter(SYSTEM)))
                     .collect(Collectors.joining(","));
+
             transactionHelperService.persister(progress, BestillingProgress::getAaregStatus,
                     BestillingProgress::setAaregStatus, initStatus);
 
@@ -79,7 +80,7 @@ public class AaregClient implements ClientRegister {
 
                             return sendArbeidsforhold(bestilling, dollyPerson, miljoerTrygg.get(), isOpprettEndre);
                         } else {
-                            return ameldingService.sendAmelding(bestilling, dollyPerson, miljoerTrygg.get());
+                            return ameldingService.sendAmelding(bestilling, dollyPerson, miljoerTrygg.get(), progress);
                         }
                     })
                     .map(status -> futurePersist(progress, status));

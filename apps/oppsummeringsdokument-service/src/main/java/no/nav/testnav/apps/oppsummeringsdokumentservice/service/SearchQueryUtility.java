@@ -23,8 +23,8 @@ public class SearchQueryUtility {
 
         matchString(query, "_id", request.getId());
         matchString(query, "miljo", request.getMiljo());
+        matchString(query, "opplysningspliktigOrganisajonsnummer", request.getOrgnummer());
         matchString(query, "virksomheter.personer.ident", request.getIdent());
-        matchString(query, "virksomheter.organisajonsnummer", request.getOrgnummer());
         matchString(query, "virksomheter.personer.arbeidsforhold.typeArbeidsforhold", request.getTypeArbeidsforhold());
 
         if (nonNull(request.getFom())) {

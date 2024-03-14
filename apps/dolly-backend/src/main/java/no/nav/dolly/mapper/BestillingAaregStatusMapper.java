@@ -8,12 +8,12 @@ import no.nav.dolly.domain.resultset.BAFeilkoder;
 import no.nav.dolly.domain.resultset.RsStatusRapport;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static no.nav.dolly.domain.resultset.SystemTyper.AAREG;
 import static no.nav.dolly.mapper.AbstractRsStatusMiljoeIdentForhold.checkAndUpdateStatus;
@@ -43,22 +43,25 @@ public final class BestillingAaregStatusMapper {
             }
         });
 
-        return errorEnvIdents.isEmpty() ? emptyList() :
-                singletonList(RsStatusRapport.builder().id(AAREG).navn(AAREG.getBeskrivelse())
-                        .statuser(errorEnvIdents.entrySet().stream().map(status ->
-                                        RsStatusRapport.Status.builder()
-                                                .melding(status.getKey().replace(";", ","))
-                                                .detaljert(status.getValue().entrySet().stream().map(miljo ->
-                                                                RsStatusRapport.Detaljert.builder()
-                                                                        .miljo(miljo.getKey())
-                                                                        .identer(miljo.getValue())
-                                                                        .build())
-                                                        .toList())
-                                                .build())
-                                .toList())
+        var statuser = errorEnvIdents.entrySet().stream().map(status ->
+                        RsStatusRapport.Status.builder()
+                                .melding(status.getKey().replace(";", ","))
+                                .detaljert(status.getValue().entrySet().stream().map(miljo ->
+                                                RsStatusRapport.Detaljert.builder()
+                                                        .miljo(miljo.getKey())
+                                                        .identer(miljo.getValue())
+                                                        .build())
+                                        .toList())
+                                .build())
+                .toList();
+
+        return statuser.isEmpty() ? Collections.emptyList() :
+                singletonList(RsStatusRapport.builder()
+                        .navn(AAREG.getBeskrivelse())
+                        .id(AAREG)
+                        .statuser(statuser)
                         .build());
     }
-
 
     public static String konverterBAfeilkodeTilFeilmelding(String baKode) {
         var baFeilkode = getBaFeilkodeFromFeilmelding(baKode);
