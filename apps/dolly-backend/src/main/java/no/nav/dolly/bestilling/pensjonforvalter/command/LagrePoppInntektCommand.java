@@ -16,7 +16,6 @@ import java.util.concurrent.Callable;
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
-import static no.nav.dolly.util.CallIdUtil.generateCallId;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Slf4j
@@ -28,6 +27,7 @@ public class LagrePoppInntektCommand implements Callable<Flux<PensjonforvalterRe
     private final WebClient webClient;
     private final String token;
     private final PensjonPoppInntektRequest pensjonPoppInntektRequest;
+    private final String callId;
 
     public Flux<PensjonforvalterResponse> call() {
         return webClient
@@ -36,7 +36,7 @@ public class LagrePoppInntektCommand implements Callable<Flux<PensjonforvalterRe
                         .path(POPP_INNTEKT_URL)
                         .build())
                 .header(AUTHORIZATION, "Bearer " + token)
-                .header(HEADER_NAV_CALL_ID, generateCallId())
+                .header(HEADER_NAV_CALL_ID, callId)
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .bodyValue(pensjonPoppInntektRequest)
                 .retrieve()

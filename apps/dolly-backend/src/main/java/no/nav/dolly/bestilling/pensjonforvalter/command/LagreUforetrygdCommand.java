@@ -16,7 +16,6 @@ import java.util.concurrent.Callable;
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
-import static no.nav.dolly.util.CallIdUtil.generateCallId;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Slf4j
@@ -30,6 +29,7 @@ public class LagreUforetrygdCommand implements Callable<Flux<PensjonforvalterRes
     private final String token;
 
     private final PensjonUforetrygdRequest uforetrygdRequest;
+    private final String callId;
 
     public Flux<PensjonforvalterResponse> call() {
         return webClient
@@ -38,7 +38,7 @@ public class LagreUforetrygdCommand implements Callable<Flux<PensjonforvalterRes
                         .path(PENSJON_UT_URL)
                         .build())
                 .header(AUTHORIZATION, "Bearer " + token)
-                .header(HEADER_NAV_CALL_ID, generateCallId())
+                .header(HEADER_NAV_CALL_ID, callId)
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .bodyValue(uforetrygdRequest)
                 .retrieve()

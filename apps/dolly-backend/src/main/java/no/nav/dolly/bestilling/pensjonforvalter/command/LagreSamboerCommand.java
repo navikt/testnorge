@@ -15,7 +15,6 @@ import java.util.concurrent.Callable;
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
-import static no.nav.dolly.util.CallIdUtil.generateCallId;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Slf4j
@@ -27,6 +26,7 @@ public class LagreSamboerCommand implements Callable<Mono<PensjonforvalterRespon
     private final PensjonSamboerRequest pensjonSamboerRequest;
     private final String miljoe;
     private final String token;
+    private final String callId;
 
     public Mono<PensjonforvalterResponse> call() {
         return webClient
@@ -35,7 +35,7 @@ public class LagreSamboerCommand implements Callable<Mono<PensjonforvalterRespon
                         .path(PEN_SAMBOER_URL)
                         .build(miljoe))
                 .header(AUTHORIZATION, "Bearer " + token)
-                .header(HEADER_NAV_CALL_ID, generateCallId())
+                .header(HEADER_NAV_CALL_ID, callId)
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .bodyValue(pensjonSamboerRequest)
                 .retrieve()

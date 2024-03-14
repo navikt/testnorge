@@ -14,7 +14,6 @@ import java.util.concurrent.Callable;
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
-import static no.nav.dolly.util.CallIdUtil.generateCallId;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Slf4j
@@ -29,6 +28,7 @@ public class HentPoppInntekterCommand implements Callable<Mono<JsonNode>> {
     private final String token;
     private final String ident;
     private final String miljoe;
+    private final String callId;
 
     public Mono<JsonNode> call() {
         return webClient
@@ -38,7 +38,7 @@ public class HentPoppInntekterCommand implements Callable<Mono<JsonNode>> {
                         .queryParam(FNR_PARAM, ident)
                         .build())
                 .header(AUTHORIZATION, "Bearer " + token)
-                .header(HEADER_NAV_CALL_ID, generateCallId())
+                .header(HEADER_NAV_CALL_ID, callId)
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .header(MILJO_HEADER, miljoe)
                 .retrieve()
