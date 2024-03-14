@@ -206,6 +206,7 @@ public class PersonService {
 
         var personerMedRelasjoner = buildMiljoePersonWithRelasjon(relasjoner).entrySet().stream()
                 .map(entry -> PersonMiljoeDTO.builder()
+                        .ident(ident)
                         .miljoe(entry.getKey())
                         .status("OK")
                         .person(entry.getValue())

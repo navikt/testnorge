@@ -108,7 +108,8 @@ public class TpsMessagingConsumer {
         return accessTokenService
                 .exchange(serverProperties)
                 .flatMap(accessToken ->
-                        new SendKansellerDoedsmeldingCommand(webClient, person, miljoer, accessToken.getTokenValue()).call());
+                        new SendKansellerDoedsmeldingCommand(webClient, person, miljoer, accessToken.getTokenValue()).call())
+                .doOnNext(response -> log.info("Mottatt status for kanseller dødsmelding {}", response));
     }
 
     public Mono<DoedsmeldingResponse> sendDoedsmelding(DoedsmeldingRequest request, Set<String> miljoer) {
@@ -116,7 +117,8 @@ public class TpsMessagingConsumer {
         return accessTokenService
                 .exchange(serverProperties)
                 .flatMap(accessToken ->
-                        new SendDoedsmeldingCommand(webClient, request, miljoer, accessToken.getTokenValue()).call());
+                        new SendDoedsmeldingCommand(webClient, request, miljoer, accessToken.getTokenValue()).call())
+                .doOnNext(response -> log.info("Mottatt status for dødsmelding {}", response));
     }
 
     public Mono<FoedselsmeldingResponse> sendFoedselsmelding(FoedselsmeldingRequest request, Set<String> miljoer) {
