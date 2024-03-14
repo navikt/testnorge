@@ -19,7 +19,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static java.util.Objects.isNull;
 import static no.nav.testnav.endringsmeldingservice.mapper.AdressehistorikkMapper.buildAdresseRequest;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +31,13 @@ public class DoedsmeldingService {
     private final TpsMessagingConsumer tpsMessagingConsumer;
 
     public Mono<DoedsmeldingResponseDTO> sendDoedsmelding(DoedsmeldingDTO doedsmelding, Set<String> miljoer) {
+
+        if (isNotBlank(validate(doedsmelding))) {
+
+            return Mono.just(DoedsmeldingResponseDTO.builder()
+                    .error(validate(doedsmelding))
+                    .build());
+        }
 
         return tpsMessagingConsumer.getEksistererPerson(Set.of(doedsmelding.getIdent()), miljoer)
                 .collectList()
@@ -100,6 +110,13 @@ public class DoedsmeldingService {
 
     public Mono<DoedsmeldingResponseDTO> sendKansellerDoedsmelding(String ident, Set<String> miljoer) {
 
+        if (isBlank(ident)) {
+
+            return Mono.just(DoedsmeldingResponseDTO.builder()
+                    .error("FEIL: ident mangler")
+                    .build());
+        }
+
         return tpsMessagingConsumer.getEksistererPerson(Set.of(ident), miljoer)
                 .collectList()
                 .flatMap(resultater -> {
@@ -116,6 +133,7 @@ public class DoedsmeldingService {
                                 .filter(PersonMiljoeDTO::isOk)
                                 .filter(persondata -> persondata.getPerson().isDoed())
                                 .collectList()
+                                .filter(persondata -> !persondata.isEmpty())
                                 .flatMap(persondata -> tpsMessagingConsumer.getAdressehistorikk(buildAdresseRequest(persondata.getFirst()),
                                                 persondata.stream().map(PersonMiljoeDTO::getMiljoe).collect(Collectors.toSet()))
                                         .filter(AdressehistorikkDTO::isOk)
@@ -131,5 +149,17 @@ public class DoedsmeldingService {
                                         .build());
                     }
                 });
+    }
+
+    private static String validate(DoedsmeldingDTO doedsmelding) {
+
+        if (isBlank(doedsmelding.getIdent())) {
+            return "FEIL: ident mangler";
+
+        } else if (isNull(doedsmelding.getDoedsdato())) {
+            return "FEIL: dødsdato mangler";
+
+        }
+        return null;
     }
 }

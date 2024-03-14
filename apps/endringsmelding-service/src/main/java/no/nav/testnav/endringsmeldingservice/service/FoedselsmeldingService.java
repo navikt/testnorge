@@ -88,7 +88,7 @@ public class FoedselsmeldingService {
                 });
     }
 
-    private String validate(FoedselsmeldingDTO request) {
+    private static String validate(FoedselsmeldingDTO request) {
 
         if (isBlank(request.getIdentMor())) {
             return "FEIL: mors ident mangler";
@@ -102,7 +102,7 @@ public class FoedselsmeldingService {
         } else return null;
     }
 
-    private Set<String> getForeldre(FoedselsmeldingDTO request) {
+    private static Set<String> getForeldre(FoedselsmeldingDTO request) {
 
         return Stream.of(List.of(request.getIdentMor()),
                         isNotBlank(request.getIdentFar()) ? List.of(request.getIdentFar()) : Collections.<String>emptyList())
