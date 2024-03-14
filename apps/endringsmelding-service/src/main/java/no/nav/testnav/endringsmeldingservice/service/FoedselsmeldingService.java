@@ -76,6 +76,7 @@ public class FoedselsmeldingService {
                                         genererNavnServiceConsumer.getNavn(),
                                         adresseServiceConsumer.getVegadresse(),
                                         tpsMessagingConsumer.getAdressehistorikk(request.getIdentMor(), request.getFoedselsdato(), miljoer).collectList(),
+                                        isBlank(request.getIdentFar()) ? Mono.just(Collections.<AdressehistorikkDTO>emptyList()) :
                                         tpsMessagingConsumer.getAdressehistorikk(request.getIdentFar(), request.getFoedselsdato(), miljoer).collectList())
                                 .flatMap(opplysninger -> Mono.just(FoedselsmeldingRequestMapper.map(request, opplysninger))
                                         .flatMap(foedselsmelding -> tpsMessagingConsumer.sendFoedselsmelding(foedselsmelding,

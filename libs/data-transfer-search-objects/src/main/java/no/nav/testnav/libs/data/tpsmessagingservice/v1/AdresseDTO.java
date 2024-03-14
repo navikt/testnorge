@@ -21,9 +21,11 @@ import java.time.LocalDateTime;
 public abstract class AdresseDTO {
 
     private String kommunenr;
+    private String kommuneNavn;
     private LocalDateTime flyttedato;
     private LocalDateTime gyldigTilDato;
     private String postnr;
+    private String poststed;
     private String tilleggsadresse;
     private String bolignr;
     private Boolean deltAdresse;

@@ -71,6 +71,32 @@ public class AdressehistorikkMapper {
                 .orElse(null);
     }
 
+    public static PostadresseDTO mapPostBoadresse(AdressehistorikkDTO.PersonData person) {
+
+        return (PostadresseDTO) person.getBostedsAdresse().stream()
+                .map(boadresse -> {
+
+                    if ("OFFA".equals(boadresse.getAdresseType())) {
+                        return PostadresseDTO.builder()
+                                .postLinje1("%s %s%s".formatted(boadresse.getOffAdresse().getGateNavn(),
+                                        boadresse.getOffAdresse().getHusnr(),
+                                        boadresse.getOffAdresse().getBokstav()))
+                                .postLinje2("%s %s".formatted(boadresse.getPostnr(), boadresse.getPoststed()))
+                                .postLand("NOR")
+                                .build();
+                    } else {
+
+                        return PostadresseDTO.builder()
+                                .postLinje1("Gardsnummer: " + boadresse.getMatrAdresse().getGardsnr())
+                                .postLinje2("Bruksnummer: " + boadresse.getMatrAdresse().getBruksnr())
+                                .postLinje3("Kommunenummer: " + boadresse.getKommunenr())
+                                .postLand("NOR");
+                    }
+                })
+                .findFirst()
+                .orElse(null);
+    }
+
     public static AdressehistorikkRequest buildAdresseRequest(PersonMiljoeDTO person) {
 
         return AdressehistorikkRequest.builder()
