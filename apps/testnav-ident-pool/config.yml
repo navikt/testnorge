@@ -61,6 +61,8 @@ spec:
         - application: app-1
           namespace: plattformsikkerhet
           cluster: dev-gcp
+        - application: testnav-endringsmelding-service
+          cluster: dev-gcp
     outbound:
       rules:
         - application: testnav-tps-messaging-service

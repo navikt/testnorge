@@ -2,13 +2,15 @@ package no.nav.testnav.libs.data.tpsmessagingservice.v1;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 
 @Data
-@Builder
+@ToString(callSuper = true)
+@SuperBuilder
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
@@ -24,4 +26,9 @@ public class MatrikkeladresseDTO extends AdresseDTO {
     private String festenr;
 
     private String undernr;
+
+    @Override
+    public Adressetype getAdressetype() {
+        return Adressetype.MATR;
+    }
 }

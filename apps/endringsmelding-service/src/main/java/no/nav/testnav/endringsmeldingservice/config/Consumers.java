@@ -26,5 +26,7 @@ public class Consumers {
 
     private ServerProperties tpsForvalterenProxy;
     private ServerProperties tpsMessagingService;
-
+    private ServerProperties adresseService;
+    private ServerProperties genererNavnService;
+    private ServerProperties identPool;
 }
