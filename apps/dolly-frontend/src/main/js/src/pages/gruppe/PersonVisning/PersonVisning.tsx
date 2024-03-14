@@ -86,6 +86,8 @@ import {
 import { usePensjonEnvironments } from '@/utils/hooks/useEnvironments'
 import { SigrunstubPensjonsgivendeVisning } from '@/components/fagsystem/sigrunstubPensjonsgivende/visning/Visning'
 import { useUdistub } from '@/utils/hooks/useUdistub'
+import { useTenorOversikt } from '@/utils/hooks/useTenorSoek'
+import { SkatteetatenVisning } from '@/components/fagsystem/skatteetaten/visning/SkatteetatenVisning'
 
 const getIdenttype = (ident) => {
 	if (parseInt(ident.charAt(0)) > 3) {
@@ -227,6 +229,11 @@ export default ({
 		ident.ident,
 	)
 
+	const { response: tenorData, loading: loadingTenorData } = useTenorOversikt(
+		ident?.master === 'PDL' ? { identifikator: ident.ident } : null,
+		1,
+	)
+
 	const getGruppeIdenter = () => {
 		return useAsync(async () => DollyApi.getGruppeById(gruppeId), [DollyApi.getGruppeById])
 	}
@@ -333,8 +340,8 @@ export default ({
 
 	const relatertePersoner = pdlRelatertPerson()?.filter((ident) => ident.id)
 	const harPdlRelatertPerson = relatertePersoner?.length > 0
-	const importerteRelatertePersoner = relatertePersoner?.filter(
-		(ident) => gruppeIdenter?.includes(ident.id),
+	const importerteRelatertePersoner = relatertePersoner?.filter((ident) =>
+		gruppeIdenter?.includes(ident.id),
 	)
 
 	const getArbeidsplassencvHjemmel = () => {
@@ -508,6 +515,10 @@ export default ({
 					tilgjengeligMiljoe={tilgjengeligMiljoe}
 				/>
 				<HistarkVisning data={histarkData} loading={loadingHistarkData} />
+				<SkatteetatenVisning
+					data={tenorData?.data?.data?.personer?.find((person) => person?.id === ident.ident)}
+					loading={loadingTenorData}
+				/>
 				<PersonMiljoeinfo
 					bankIdBruker={brukertype === 'BANKID'}
 					ident={ident.ident}
