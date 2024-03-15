@@ -112,11 +112,7 @@ export const MiljoVelger = ({
 						<DollyCheckbox
 							key={env.id}
 							id={env.id}
-							disabled={
-								env.disabled ||
-								(disableAllEnvironments && values.length < 1) ||
-								alleredeValgtMiljoe.some((miljoe) => miljoe === env.id)
-							}
+							disabled={env.disabled || (disableAllEnvironments && values.length < 1)}
 							label={env?.id?.toUpperCase()}
 							checked={values.includes(env.id)}
 							onClick={onClick}
