@@ -41,6 +41,7 @@ import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 @Service
 public class PensjonforvalterConsumer implements ConsumerStatus {
 
+    public static final int REQUEST_DURATION = 30000;
     private final TokenExchange tokenService;
     private final WebClient webClient;
     private final ServerProperties serverProperties;

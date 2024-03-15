@@ -8,11 +8,13 @@ import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.netty.http.client.HttpClientRequest;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
 import java.util.concurrent.Callable;
 
+import static no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterConsumer.REQUEST_DURATION;
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
@@ -37,6 +39,10 @@ public class LagreUforetrygdCommand implements Callable<Flux<PensjonforvalterRes
                 .uri(uriBuilder -> uriBuilder
                         .path(PENSJON_UT_URL)
                         .build())
+                .httpRequest(httpRequest -> {
+                    HttpClientRequest reactorRequest = httpRequest.getNativeRequest();
+                    reactorRequest.responseTimeout(Duration.ofSeconds(REQUEST_DURATION));
+                })
                 .header(AUTHORIZATION, "Bearer " + token)
                 .header(HEADER_NAV_CALL_ID, generateCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
