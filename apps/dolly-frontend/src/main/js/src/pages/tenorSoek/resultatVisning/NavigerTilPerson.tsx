@@ -3,35 +3,32 @@ import { useNaviger } from '@/utils/hooks/useNaviger'
 import { Button } from '@navikt/ds-react'
 import { CypressSelector } from '../../../../cypress/mocks/Selectors'
 import { ArrowRightIcon } from '@navikt/aksel-icons'
-import { useFinnesIDolly } from '@/utils/hooks/useIdent'
+import { useEffect, useState } from 'react'
 
 export const NavigerTilPerson = ({ ident }) => {
 	const navigate = useNavigate()
-	const { result, loading } = useNaviger(ident)
+	const [navigateIdent, setNavigateIdent] = useState(null)
+	const { result, loading, mutate } = useNaviger(navigateIdent)
 
-	// TODO vis loading?
-	if (!result) {
-		return null
-	}
+	useEffect(() => {
+		mutate().then((result) => {
+			if (result?.gruppe?.id && !window.location.pathname.includes(`/${result?.gruppe?.id}`)) {
+				navigate(`/gruppe/${result?.gruppe?.id}`, {
+					replace: true,
+					state: {
+						hovedperson: result.identHovedperson,
+						visPerson: result.identNavigerTil,
+						sidetall: result.sidetall,
+					},
+				})
+			}
+		})
+	}, [navigateIdent])
 
 	const handleClick = (event) => {
 		event.stopPropagation()
-		// setValgtIdent(ident)
-		if (result?.gruppe?.id && !window.location.pathname.includes(`/${result?.gruppe?.id}`)) {
-			navigate(`/gruppe/${result?.gruppe?.id}`, {
-				replace: true,
-				state: {
-					hovedperson: result.identHovedperson,
-					visPerson: result.identNavigerTil,
-					sidetall: result.sidetall,
-				},
-			})
-		}
+		setNavigateIdent(ident)
 	}
-	//
-	// if (linkTekst) {
-	//     return <StyledButton onClick={handleClick}>{linkTekst}</StyledButton>
-	// }
 
 	return (
 		<Button

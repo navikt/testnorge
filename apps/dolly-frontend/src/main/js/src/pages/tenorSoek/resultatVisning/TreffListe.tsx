@@ -26,7 +26,7 @@ const TagsWrapper = styled.div`
 const PersonVisningWrapper = styled.div`
 	position: sticky;
 	top: 80px;
-	max-height: 96vh;
+	max-height: 92vh;
 	overflow: auto;
 	scrollbar-width: none;
 `
