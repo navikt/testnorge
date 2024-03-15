@@ -72,8 +72,8 @@ export const MiljoVelger = ({
 	const filterEnvironments = (miljoer, erBankIdBruker) => {
 		if (erBankIdBruker) {
 			const tilgjengeligMiljo = orgTilgang?.miljoe
-			if (tilgjengeligMiljo === 'q2') return bankIdQ2
-			return bankIdQ1
+			if (tilgjengeligMiljo === 'q1') return bankIdQ1
+			return bankIdQ2
 		}
 		return miljoer.Q.filter((env: any) => env.id !== 'qx')
 	}
