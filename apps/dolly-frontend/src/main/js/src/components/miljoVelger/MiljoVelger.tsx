@@ -17,23 +17,19 @@ const StyledH3 = styled.h3`
 	align-items: center;
 `
 
-const bankIdQ1 = {
-	Q: [
-		{
-			id: 'q1',
-			label: 'Q1',
-		},
-	],
-}
+const bankIdQ1 = [
+	{
+		id: 'q1',
+		label: 'Q1',
+	},
+]
 
-const bankIdQ2 = {
-	Q: [
-		{
-			id: 'q2',
-			label: 'Q2',
-		},
-	],
-}
+const bankIdQ2 = [
+	{
+		id: 'q2',
+		label: 'Q2',
+	},
+]
 
 const miljoeavhengig = [
 	'aareg',
