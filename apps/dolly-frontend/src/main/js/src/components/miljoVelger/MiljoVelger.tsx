@@ -89,6 +89,9 @@ export const MiljoVelger = ({
 
 	const onClick = (e) => {
 		const { id } = e.target
+		console.log('id: ', id) //TODO - SLETT MEG
+		console.log('alleredeValgtMiljoe: ', alleredeValgtMiljoe) //TODO - SLETT MEG
+		console.log('fieldMethods.fields: ', fieldMethods.fields) //TODO - SLETT MEG
 		if (!alleredeValgtMiljoe?.includes(id)) {
 			isChecked(id) ? fieldMethods.remove(values.indexOf(id)) : fieldMethods.append(id)
 		}
