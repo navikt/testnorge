@@ -1,0 +1,83 @@
+
+apply plugin: 'java'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+def generatedSourcesOutput = "$buildDir/generated/main/java"
+
+sourceSets {
+    main {
+        java.srcDirs "$generatedSourcesOutput"
+    }
+}
+
+configurations {
+    jaxb // Only for generation purpose
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+    maven {
+        name = "GitHubPackages"
+        url = uri('https://maven.pkg.github.com/navikt/maven-release')
+        credentials(PasswordCredentials) {
+            password System.getenv("NAV_TOKEN")
+            username 'token'
+        }
+    }
+}
+
+task generateSources() {
+    doLast {
+        def jaxbTargetDir = file("$buildDir/generated/src/main/java")
+
+        if (!jaxbTargetDir.exists()) {
+            jaxbTargetDir.mkdirs()
+        }
+
+        ant.taskdef(name: 'xjc', classname: 'com.sun.tools.xjc.XJCTask', classpath: configurations.jaxb.asPath)
+
+        ant.xjc(
+                destdir: "${jaxbTargetDir}",
+                schema(dir: "${projectDir}/src/main/resources/schema", includes: '*.xsd'),
+                binding: "${projectDir}/src/main/resources/xjb/global-binding.xjb",
+//                catalog: "${projectDir}/src/main/resources/catalog.xml",
+                removeOldOutput: 'yes', extension: 'true'
+        )
+                {
+                    arg(line: '-nv -disableXmlSecurity')
+                }
+    }
+}
+
+System.setProperty('javax.xml.accessExternalSchema', 'all')
+
+dependencies {
+    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:3.0.0-RC3'
+    jaxb 'com.sun.xml.bind:jaxb-xjc:2.2.7'
+    jaxb "org.jvnet.jaxb2_commons:jaxb2-basics-ant:0.6.5"
+    jaxb "org.jvnet.jaxb2_commons:jaxb2-basics:0.6.4"
+    jaxb "org.jvnet.jaxb2_commons:jaxb2-basics-annotate:0.6.4"
+
+//    implementation 'jakarta.activation:jakarta.activation-api:2.0.1'
+//
+//    jaxb  'javax.xml.bind:jaxb-api:2.2.11'
+//    jaxb  'com.sun.xml.bind:jaxb-xjc:2.2.11'
+//    jaxb  'com.sun.xml.bind:jaxb-impl:2.2.11'
+//    jaxb  'com.sun.xml.bind:jaxb-osgi:2.2.11'
+//
+//    implementation 'com.sun.xml.bind:jaxb-xjc:2.2.11'
+//    implementation 'com.sun.xml.bind:jaxb-impl:2.2.11'
+//    implementation 'javax.xml.bind:jaxb-api:2.2.11'
+
+}
+
+compileJava {
+    dependsOn generateSources
+}
+

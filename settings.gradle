@@ -120,6 +120,7 @@ includeBuild './apps/synt-vedtakshistorikk-service'
 includeBuild './apps/testnav-ident-pool'
 includeBuild './apps/tenor-search-service'
 includeBuild './apps/dollystatus'
+includeBuild './apps/skattekort-service'
 
 includeBuild './xsd/arbeidsforhold-xsd'
 
