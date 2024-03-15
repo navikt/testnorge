@@ -1,7 +1,7 @@
 import { Label } from '@/components/ui/form/inputs/label/Label'
 import { InputWrapper } from '@/components/ui/form/inputWrapper/InputWrapper'
 import { MonthPicker, useMonthpicker } from '@navikt/ds-react'
-import { addYears, subYears } from 'date-fns'
+import { addYears, isDate, subYears } from 'date-fns'
 import { useFormContext } from 'react-hook-form'
 import _ from 'lodash'
 
@@ -28,24 +28,42 @@ export const Monthpicker = ({
 	...props
 }: MonthpickerProps) => {
 	const formMethods = useFormContext()
-	const eksisterendeVerdi = formMethods.watch(name)
+	const val = formMethods.watch(name)
 
-	const formattedDate = date instanceof Date || date === null ? date : new Date(date)
+	function getEksisterendeVerdi() {
+		if (name.includes('navArbeidsforholdPeriode')) {
+			return val?.year ? new Date(val?.year, val?.monthValue) : null
+		}
+		return val
+	}
 
-	const { monthpickerProps, inputProps, selectedMonth } = useMonthpicker({
+	const eksisterendeVerdi = getEksisterendeVerdi()
+
+	const formattedDate =
+		eksisterendeVerdi instanceof Date
+			? eksisterendeVerdi
+			: date instanceof Date || date === null
+				? date
+				: new Date(date)
+
+	const { monthpickerProps, inputProps } = useMonthpicker({
 		fromDate: minDate || subYears(new Date(), 125),
 		toDate: maxDate || addYears(new Date(), 5),
 		onMonthChange: (selectedDate) => {
-			selectedDate?.setHours(12, 0, 0, 0)
+			selectedDate?.setHours(12)
 			onChange ? onChange(selectedDate) : handleDateChange(selectedDate)
 		},
-		defaultSelected: !_.isEmpty(eksisterendeVerdi) ? new Date(eksisterendeVerdi) : undefined,
+		defaultSelected: !_.isNil(formattedDate)
+			? isDate(formattedDate)
+				? formattedDate
+				: new Date(formattedDate)
+			: undefined,
 	})
 
 	return (
 		<InputWrapper size={'small'}>
 			<Label name={name} label={label}>
-				<MonthPicker dropdownCaption={true} selected={formattedDate} {...monthpickerProps}>
+				<MonthPicker {...monthpickerProps} dropdownCaption={true} selected={formattedDate}>
 					<MonthPicker.Input label={null} size={'small'} placeholder={'yyyy-mm'} {...inputProps} />
 				</MonthPicker>
 			</Label>
