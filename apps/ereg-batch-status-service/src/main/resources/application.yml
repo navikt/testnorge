@@ -27,7 +27,7 @@ springdoc:
 ereg:
   envHostMap:
     q1: https://ereg-services-q1.dev.intern.nav.no
-    q2: https://ereg-services-q2.dev.intern.nav.no
+    q2: https://modapp-q2.adeo.no
     q4: https://ereg-services-q4.dev.intern.nav.no
     q5: https://ereg-services-q5.dev.intern.nav.no
     t3: https://ereg-services-t3.dev.intern.nav.no
