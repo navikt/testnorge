@@ -1,9 +1,4 @@
 spring:
-  datasource:
-    url: jdbc:postgresql://dev-pg.intern.nav.no:5432/udi-stub-dev
-    hikari:
-      maximum-pool-size: 3
-      minimum-idle: 1
   cloud:
     vault:
       database:

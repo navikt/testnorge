@@ -1,5 +1,39 @@
+plugins {
+    id 'java'
+    id "org.sonarqube" version "4.4.1.3373"
+    id 'org.springframework.boot' version "3.2.1"
+    id 'io.spring.dependency-management' version "1.1.4"
+    id "jacoco"
+    id 'org.unbroken-dome.xjc' version '2.0.0'
+}
 
-apply plugin: 'java'
+sonarqube {
+    properties {
+        property "sonar.dynamicAnalysis", "reuseReports"
+        property "sonar.host.url", "https://sonarcloud.io"
+        property "sonar.java.coveragePlugin", "jacoco"
+        property "sonar.language", "java"
+        property "sonar.token", System.getenv("SONAR_TOKEN")
+        property "sonar.organization", "navikt"
+        property "sonar.project.monorepo.enabled", true
+        property "sonar.projectKey", "testnav-dolly-backend"
+        property "sonar.projectName", "testnav-dolly-backend"
+        property "sonar.sourceEncoding", "UTF-8"
+    }
+}
+
+bootJar {
+    archiveFileName = "app.jar"
+    mainClass = 'no.nav.skattekortservice.SkattekortServiceApplicationStarter'
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+dependencyManagement {
+    applyMavenExclusions = false
+    imports {
+        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2023.0.0'
+    }
+}
 
 java {
     toolchain {
@@ -7,21 +41,20 @@ java {
     }
 }
 
-def generatedSourcesOutput = "$buildDir/generated/main/java"
-
 sourceSets {
     main {
-        java.srcDirs "$generatedSourcesOutput"
+        xjcBinding.srcDirs = ['resources/xjb']
     }
 }
 
-configurations {
-    jaxb // Only for generation purpose
+xjc {
+    xjcVersion = '3.0'
+    srcDirName = 'resources/schema'
+    extension = true
 }
 
 repositories {
     mavenCentral()
-    mavenLocal()
     maven {
         name = "GitHubPackages"
         url = uri('https://maven.pkg.github.com/navikt/maven-release')
@@ -32,52 +65,35 @@ repositories {
     }
 }
 
-task generateSources() {
-    doLast {
-        def jaxbTargetDir = file("$buildDir/generated/src/main/java")
-
-        if (!jaxbTargetDir.exists()) {
-            jaxbTargetDir.mkdirs()
-        }
-
-        ant.taskdef(name: 'xjc', classname: 'com.sun.tools.xjc.XJCTask', classpath: configurations.jaxb.asPath)
-
-        ant.xjc(
-                destdir: "${jaxbTargetDir}",
-                schema(dir: "${projectDir}/src/main/resources/schema", includes: '*.xsd'),
-                binding: "${projectDir}/src/main/resources/xjb/global-binding.xjb",
-//                catalog: "${projectDir}/src/main/resources/catalog.xml",
-                removeOldOutput: 'yes', extension: 'true'
-        )
-                {
-                    arg(line: '-nv -disableXmlSecurity')
-                }
-    }
-}
-
-System.setProperty('javax.xml.accessExternalSchema', 'all')
-
 dependencies {
+    // XJC 3.0 requires a different JAXB API artifact
     implementation 'jakarta.xml.bind:jakarta.xml.bind-api:3.0.0-RC3'
-    jaxb 'com.sun.xml.bind:jaxb-xjc:2.2.7'
-    jaxb "org.jvnet.jaxb2_commons:jaxb2-basics-ant:0.6.5"
-    jaxb "org.jvnet.jaxb2_commons:jaxb2-basics:0.6.4"
-    jaxb "org.jvnet.jaxb2_commons:jaxb2-basics-annotate:0.6.4"
 
-//    implementation 'jakarta.activation:jakarta.activation-api:2.0.1'
-//
-//    jaxb  'javax.xml.bind:jaxb-api:2.2.11'
-//    jaxb  'com.sun.xml.bind:jaxb-xjc:2.2.11'
-//    jaxb  'com.sun.xml.bind:jaxb-impl:2.2.11'
-//    jaxb  'com.sun.xml.bind:jaxb-osgi:2.2.11'
-//
-//    implementation 'com.sun.xml.bind:jaxb-xjc:2.2.11'
-//    implementation 'com.sun.xml.bind:jaxb-impl:2.2.11'
-//    implementation 'javax.xml.bind:jaxb-api:2.2.11'
+    xjcTool 'javax.xml.bind:jaxb-api:2.3.1'
+    xjcTool 'com.sun.xml.bind:jaxb-xjc:2.3.3'
+    xjcTool  'com.sun.xml.bind:jaxb-impl:2.3.3'
+
+    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:2.3.2'
+    implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.2'
+
+    implementation 'no.nav.testnav.libs:servlet-core'
+    implementation 'no.nav.testnav.libs:servlet-security'
+    implementation 'no.nav.testnav.libs:data-transfer-objects'
+
+    implementation 'org.springframework.cloud:spring-cloud-vault-config-databases'
+    implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
+
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0'
+    implementation 'io.swagger.core.v3:swagger-annotations-jakarta:2.2.20'
+
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    implementation 'org.springframework.ws:spring-ws-security'
 
 }
-
-compileJava {
-    dependsOn generateSources
-}
-
