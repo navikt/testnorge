@@ -4,14 +4,12 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.eregbatchstatusservice.config.Consumers;
 import no.nav.registre.testnorge.eregbatchstatusservice.config.EregProperties;
 import no.nav.registre.testnorge.eregbatchstatusservice.consumer.command.GetBatchStatusCommand;
-import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -44,12 +42,12 @@ public class EregConsumer {
     }
 
     public Long getStatusKode(String miljo, Long id) {
-        var token = tokenService.exchange(serverProperties).block();
+//        var token = tokenService.exchange(serverProperties).block();
         if (!envWebClientMap.containsKey(miljo)) {
             throw new RuntimeException("Stotter ikke miljo: " + miljo + " i EREG.");
         } else {
-            String tokenValue = Optional.ofNullable(token).map(AccessToken::getTokenValue).orElse(null);
-            return new GetBatchStatusCommand(envWebClientMap.get(miljo), id, tokenValue).call();
+//            String tokenValue = Optional.ofNullable("").map(AccessToken::getTokenValue).orElse(null);
+            return new GetBatchStatusCommand(envWebClientMap.get(miljo), id, "temp").call();
         }
     }
 }
