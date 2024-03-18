@@ -34,7 +34,7 @@ export const Datepicker = ({
 
 	const getSelectedDay = () => {
 		const selected = formMethods.watch(name)
-		if (_.isNil(selected) || _.isEmpty(selected)) {
+		if (_.isNil(selected) || (!isDate(selected) && _.isEmpty(selected))) {
 			return undefined
 		} else if (isDate(selected)) {
 			return fixTimezone(selected)
