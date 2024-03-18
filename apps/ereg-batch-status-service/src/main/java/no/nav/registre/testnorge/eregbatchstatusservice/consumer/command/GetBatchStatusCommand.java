@@ -31,10 +31,9 @@ public class GetBatchStatusCommand implements Callable<Long> {
                 .retrieve()
                 .onStatus(HttpStatusCode::is4xxClientError, clientResponse -> {
                     if (clientResponse.statusCode().equals(HttpStatus.UNAUTHORIZED)) {
-                        clientResponse.headers().asHttpHeaders().forEach((name, values) -> {
-                            log.info("Header: " + name + " Values: " + values);
-                        });
                         log.error("Unauthorized error occurred when calling EREG");
+                        String wwwAuthenticateHeader = clientResponse.headers().asHttpHeaders().getFirst("WWW-Authenticate");
+                        log.info("WWW-Authenticate Header: " + wwwAuthenticateHeader);
                         return Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource not found"));
                     }
                     log.error("Client error occurred when calling EREG");
