@@ -3,6 +3,7 @@ package no.nav.registre.testnorge.eregbatchstatusservice.consumer.command;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.eregbatchstatusservice.util.WebClientFilter;
+import org.apache.hc.core5.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -22,6 +23,9 @@ public class GetBatchStatusCommand implements Callable<Long> {
     @Override
     public Long call() {
         Long response = webClient
+                .mutate() // Create a new WebClient instance with the same settings
+                .defaultHeaders(headers -> headers.remove(HttpHeaders.AUTHORIZATION)) // Remove the Authorization header
+                .build()
                 .get()
                 .uri(builder -> builder.path("/ereg/internal/batch/poll/{id}").build(id))
                 .retrieve()
