@@ -22,9 +22,12 @@ public class EregConsumer {
                 .stream()
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
-                        entry -> WebClient.builder()
-                                .baseUrl(entry.getValue())
-                                .build()
+                        entry -> {
+                            log.info("Registrerer WebClient for miljo: " + entry.getKey() + " med url: " + entry.getValue());
+                            return WebClient.builder()
+                                    .baseUrl(entry.getValue())
+                                    .build();
+                        }
                 ));
     }
 
