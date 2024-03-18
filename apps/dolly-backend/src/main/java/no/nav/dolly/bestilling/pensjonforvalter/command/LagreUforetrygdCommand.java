@@ -14,11 +14,11 @@ import reactor.util.retry.Retry;
 import java.time.Duration;
 import java.util.concurrent.Callable;
 
-import static no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterConsumer.REQUEST_DURATION;
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 import static no.nav.dolly.util.CallIdUtil.generateCallId;
+import static no.nav.dolly.util.RequestTimeout.REQUEST_DURATION;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Slf4j
