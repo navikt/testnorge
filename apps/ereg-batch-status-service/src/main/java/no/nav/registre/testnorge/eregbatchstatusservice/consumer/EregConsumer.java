@@ -35,7 +35,7 @@ public class EregConsumer {
         if (!envWebClientMap.containsKey(miljo)) {
             throw new RuntimeException("Stotter ikke miljo: " + miljo + " i EREG.");
         } else {
-            return new GetBatchStatusCommand(envWebClientMap.get(miljo), id).call();
+            return new GetBatchStatusCommand(envWebClientMap.get(miljo), id, "123").call();
         }
     }
 }
