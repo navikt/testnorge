@@ -1,7 +1,7 @@
 import { SoekKategori } from '@/components/ui/soekForm/SoekForm'
 import React, { SyntheticEvent } from 'react'
 import { createOptions } from '@/pages/tenorSoek/utils'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { useTenorDomain } from '@/utils/hooks/useTenorSoek'
 
 export const EnhetsregisteretForetaksregisteret = ({ handleChangeList }: any) => {
@@ -9,7 +9,7 @@ export const EnhetsregisteretForetaksregisteret = ({ handleChangeList }: any) =>
 	return (
 		<SoekKategori>
 			<div className="flexbox--full-width" style={{ fontSize: 'medium' }}>
-				<FormikSelect
+				<FormSelect
 					name="roller"
 					options={createOptions(rollerOptions?.data)}
 					isMulti={true}

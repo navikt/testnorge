@@ -1,4 +1,4 @@
-import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
+import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { RadioGroupOptions } from '@/pages/testnorgePage/search/radioGroupOptions/RadioGroupOptions'
 import React from 'react'
 import { UseFormReturn } from 'react-hook-form/dist/types'
@@ -44,9 +44,9 @@ export const Identifikasjon: React.FC<IdentifikasjonProps> = ({
 				options={options.identtype}
 			/>
 			<div className="options-title">Identitet</div>
-			<FormikCheckbox name={paths.falsk} label="Har falsk identitet" />
-			<FormikCheckbox name={paths.utenlandsk} label="Har utenlandsk identitet" />
-			<FormikCheckbox name={paths.historikk} label="Har identhistorikk" />
+			<FormCheckbox name={paths.falsk} label="Har falsk identitet" />
+			<FormCheckbox name={paths.utenlandsk} label="Har utenlandsk identitet" />
+			<FormCheckbox name={paths.historikk} label="Har identhistorikk" />
 			<RadioGroupOptions
 				formMethods={formMethods}
 				name={paths.kjoenn}

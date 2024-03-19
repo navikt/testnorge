@@ -1,4 +1,4 @@
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { AdresseKodeverk, GtKodeverk } from '@/config/kodeverk'
 import { RadioGroupOptions } from '@/pages/testnorgePage/search/radioGroupOptions/RadioGroupOptions'
 import { yesNoOptions } from '@/pages/testnorgePage/utils'
@@ -44,7 +44,7 @@ export const Adresser = ({ formMethods }: AdresserProps) => {
 	return (
 		<section>
 			<div className="options-title-bold">Adressebeskyttelse</div>
-			<FormikSelect
+			<FormSelect
 				name={paths.adressebeskyttelse}
 				label="Velg type"
 				options={adressebeskyttelseOptions}
@@ -57,7 +57,7 @@ export const Adresser = ({ formMethods }: AdresserProps) => {
 				path={paths.borINorge}
 				options={bostedOptions}
 			/>
-			<FormikSelect
+			<FormSelect
 				name={paths.postnummer}
 				label="Postnummer"
 				kodeverk={AdresseKodeverk.Postnummer}
@@ -65,7 +65,7 @@ export const Adresser = ({ formMethods }: AdresserProps) => {
 				optionHeight={50}
 				size="medium"
 			/>
-			<FormikSelect
+			<FormSelect
 				name={paths.bydelsnummer}
 				label="Bydel"
 				kodeverk={GtKodeverk.BYDEL}
@@ -73,7 +73,7 @@ export const Adresser = ({ formMethods }: AdresserProps) => {
 				optionHeight={50}
 				size="medium"
 			/>
-			<FormikSelect
+			<FormSelect
 				name={paths.kommunenummer}
 				label="Kommunenummer"
 				kodeverk={AdresseKodeverk.Kommunenummer}
@@ -82,7 +82,7 @@ export const Adresser = ({ formMethods }: AdresserProps) => {
 				size="medium"
 			/>
 			<AdvancedOptions>
-				<FormikSelect
+				<FormSelect
 					name={paths.hPostnummer}
 					label="Har tidligere hatt postnummer"
 					kodeverk={AdresseKodeverk.Postnummer}
@@ -90,7 +90,7 @@ export const Adresser = ({ formMethods }: AdresserProps) => {
 					size="medium"
 					info="Velg postnummer tilknyttet tidligere bostedsadresse."
 				/>
-				<FormikSelect
+				<FormSelect
 					name={paths.hBydelsnummer}
 					label="Har tidligere bodd i bydel"
 					kodeverk={GtKodeverk.BYDEL}
@@ -98,7 +98,7 @@ export const Adresser = ({ formMethods }: AdresserProps) => {
 					size="medium"
 					info="Velg bydel tilknyttet tidligere bostedsadresse."
 				/>
-				<FormikSelect
+				<FormSelect
 					name={paths.hKommunenummer}
 					label="Har tidligere bodd i kommune"
 					kodeverk={AdresseKodeverk.Kommunenummer}

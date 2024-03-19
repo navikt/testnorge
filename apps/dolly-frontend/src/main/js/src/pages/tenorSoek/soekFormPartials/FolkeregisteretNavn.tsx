@@ -1,14 +1,14 @@
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import React, { SyntheticEvent } from 'react'
 import { SoekKategori } from '@/components/ui/soekForm/SoekForm'
-import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
+import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 
 export const FolkeregisteretNavn = ({ handleChange, handleChangeTextInput }: any) => {
 	return (
 		<SoekKategori>
-			<FormikTextInput
+			<FormTextInput
 				name="navn.navnLengde.fraOgMed"
 				label="Lengde på navn f.o.m."
 				type="number"
@@ -17,7 +17,7 @@ export const FolkeregisteretNavn = ({ handleChange, handleChangeTextInput }: any
 				}
 				visHvisAvhuket={false}
 			/>
-			<FormikTextInput
+			<FormTextInput
 				name="navn.navnLengde.tilOgMed"
 				label="Lengde på navn t.o.m."
 				type="number"
@@ -26,19 +26,19 @@ export const FolkeregisteretNavn = ({ handleChange, handleChangeTextInput }: any
 				}
 				visHvisAvhuket={false}
 			/>
-			<FormikSelect
+			<FormSelect
 				name="navn.harFlereFornavn"
 				options={Options('boolean')}
 				label="Har flere fornnavn"
 				onChange={(val: boolean) => handleChange(val?.value, 'navn.harFlereFornavn')}
 			/>
-			<FormikSelect
+			<FormSelect
 				name="navn.harNavnSpesialtegn"
 				options={Options('boolean')}
 				label="Har spesialtegn i navn"
 				onChange={(val: boolean) => handleChange(val?.value, 'navn.harNavnSpesialtegn')}
 			/>
-			<FormikCheckbox
+			<FormCheckbox
 				name="navn.harMellomnavn"
 				label="Har mellomnavn"
 				onChange={(val: SyntheticEvent) =>

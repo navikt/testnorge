@@ -1,6 +1,6 @@
 import { useTenorDomain } from '@/utils/hooks/useTenorSoek'
 import { SoekKategori } from '@/components/ui/soekForm/SoekForm'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { createOptions } from '@/pages/tenorSoek/utils'
 import React, { SyntheticEvent } from 'react'
 
@@ -9,14 +9,14 @@ export const FolkeregisteretHendelser = ({ handleChange }: any) => {
 
 	return (
 		<SoekKategori>
-			<FormikSelect
+			<FormSelect
 				name="hendelser.hendelse"
 				options={createOptions(hendelseOptions?.data)}
 				size="xlarge"
 				label="Har hatt hendelse"
 				onChange={(val: SyntheticEvent) => handleChange(val?.value || null, 'hendelser.hendelse')}
 			/>
-			<FormikSelect
+			<FormSelect
 				name="hendelser.sisteHendelse"
 				options={createOptions(hendelseOptions?.data)}
 				size="xlarge"

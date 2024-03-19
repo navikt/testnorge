@@ -7,7 +7,7 @@ import { DollySelect } from '@/components/ui/form/inputs/select/Select'
 import { ArbeidKodeverk } from '@/config/kodeverk'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 import Button from '@/components/ui/button/Button'
-import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import {
 	initialArbeidsforholdOrg,
 	initialFartoy,
@@ -277,7 +277,7 @@ export const AmeldingForm = ({ warningMessage }: AmeldingFormProps): JSX.Element
 										Fjern måned
 									</Slettknapp>
 								)}
-							<FormikDollyFieldArray
+							<FormDollyFieldArray
 								name={`${paths.amelding}[${selectedIndex}].arbeidsforhold`}
 								header="Arbeidsforhold"
 								newEntry={
@@ -300,7 +300,7 @@ export const AmeldingForm = ({ warningMessage }: AmeldingFormProps): JSX.Element
 										warningMessage={warningMessage}
 									/>
 								)}
-							</FormikDollyFieldArray>
+							</FormDollyFieldArray>
 						</>
 					)}
 				</>

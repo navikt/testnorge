@@ -1,7 +1,7 @@
 import useBoolean from '@/utils/hooks/useBoolean'
 import Button from '@/components/ui/button/Button'
-import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 
 interface AvansertFormValues {
@@ -25,15 +25,15 @@ export const AvansertForm = ({ path, kanVelgeMaster = true }: AvansertFormValues
 			)}
 			{visAvansert && (
 				<div className={'flexbox--flex-wrap'} style={{ marginTop: '10px' }}>
-					<FormikTextInput name={`${path}.kilde`} label="Kilde" />
-					<FormikSelect
+					<FormTextInput name={`${path}.kilde`} label="Kilde" />
+					<FormSelect
 						name={`${path}.master`}
 						label="Master"
 						options={Options('master')}
 						isDisabled={!kanVelgeMaster}
 					/>
 					{/*Gjeldende skjules frem til vi finner en måte å håndtere den på*/}
-					{/*<FormikCheckbox name={`${path}.gjeldende`} label="Er gjeldende" checkboxMargin />*/}
+					{/*<FormCheckbox name={`${path}.gjeldende`} label="Er gjeldende" checkboxMargin />*/}
 				</div>
 			)}
 		</div>

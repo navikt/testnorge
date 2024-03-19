@@ -1,6 +1,6 @@
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
-import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
-import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
+import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { DollySelect } from '@/components/ui/form/inputs/select/Select'
 
 const initialValues = {
@@ -32,7 +32,7 @@ export const PersonrollerForm = ({ formMethods, path }) => {
 	}
 
 	return (
-		<FormikDollyFieldArray
+		<FormDollyFieldArray
 			name={`${path}.personroller`}
 			header="Personrolle"
 			newEntry={initialValues}
@@ -53,10 +53,10 @@ export const PersonrollerForm = ({ formMethods, path }) => {
 							isClearable={false}
 							styles={formMethods.watch(egenskap) ? colorStyles : null}
 						/>
-						<FormikCheckbox name={`${path}.fratraadt`} label="Har fratrådt" checkboxMargin />
+						<FormCheckbox name={`${path}.fratraadt`} label="Har fratrådt" checkboxMargin />
 					</>
 				)
 			}}
-		</FormikDollyFieldArray>
+		</FormDollyFieldArray>
 	)
 }

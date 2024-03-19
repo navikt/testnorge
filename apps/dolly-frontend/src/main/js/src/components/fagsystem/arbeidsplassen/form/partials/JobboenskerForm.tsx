@@ -1,4 +1,4 @@
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import * as React from 'react'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
@@ -37,7 +37,7 @@ export const JobboenskerForm = ({ formMethods }) => {
 		<Vis attributt={jobboenskerPath}>
 			<h3>Jobbønsker</h3>
 			<div className="flexbox--full-width">
-				<FormikSelect
+				<FormSelect
 					name={`${jobboenskerPath}.occupations`}
 					label="Jobber og yrker"
 					options={Options('jobbYrke')}
@@ -47,7 +47,7 @@ export const JobboenskerForm = ({ formMethods }) => {
 					value={formMethods.getValues(`${jobboenskerPath}.occupations`)?.map((y) => y.styrk08)}
 					onChange={(options) => setYrker(options)}
 				/>
-				<FormikSelect
+				<FormSelect
 					name={`${jobboenskerPath}.locations`}
 					label="Områder"
 					options={Options('omraade')}
@@ -59,7 +59,7 @@ export const JobboenskerForm = ({ formMethods }) => {
 				/>
 			</div>
 			<div className="flexbox--flex-wrap">
-				<FormikSelect
+				<FormSelect
 					name={`${jobboenskerPath}.workLoadTypes`}
 					label="Arbeidsmengde"
 					options={Options('arbeidsmengde')}
@@ -67,7 +67,7 @@ export const JobboenskerForm = ({ formMethods }) => {
 					isClearable={false}
 					isMulti={true}
 				/>
-				<FormikSelect
+				<FormSelect
 					name={`${jobboenskerPath}.workScheduleTypes`}
 					label="Arbeidstider"
 					options={Options('arbeidstid')}
@@ -76,14 +76,14 @@ export const JobboenskerForm = ({ formMethods }) => {
 				/>
 			</div>
 			<div className="flexbox--flex-wrap">
-				<FormikSelect
+				<FormSelect
 					name={`${jobboenskerPath}.occupationTypes`}
 					label="Ansettelsestyper"
 					options={Options('ansettelsestype')}
 					size="xxlarge"
 					isMulti={true}
 				/>
-				<FormikSelect
+				<FormSelect
 					name={`${jobboenskerPath}.startOption`}
 					label="Oppstart"
 					options={Options('oppstart')}

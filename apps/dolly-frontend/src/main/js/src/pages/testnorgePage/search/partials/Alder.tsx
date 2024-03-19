@@ -1,6 +1,6 @@
 import React, { BaseSyntheticEvent } from 'react'
-import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 
 const paths = {
@@ -16,7 +16,7 @@ type Props = {
 
 export const Alder = ({ formMethods }: Props) => (
 	<section>
-		<FormikTextInput
+		<FormTextInput
 			name={paths.fra}
 			label="Alder fra"
 			visHvisAvhuket={false}
@@ -27,7 +27,7 @@ export const Alder = ({ formMethods }: Props) => (
 					formMethods.handleSubmit()
 			}}
 		/>
-		<FormikTextInput
+		<FormTextInput
 			name={paths.til}
 			label="Alder til"
 			visHvisAvhuket={false}
@@ -38,13 +38,13 @@ export const Alder = ({ formMethods }: Props) => (
 					formMethods.handleSubmit()
 			}}
 		/>
-		<FormikDatepicker
+		<FormDatepicker
 			name={paths.fom}
 			label="Fødselsdato fom"
 			visHvisAvhuket={false}
 			size="medium"
 		/>
-		<FormikDatepicker
+		<FormDatepicker
 			name={paths.tom}
 			label="Fødselsdato tom"
 			visHvisAvhuket={false}

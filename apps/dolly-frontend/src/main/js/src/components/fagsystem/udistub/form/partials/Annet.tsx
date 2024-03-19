@@ -1,6 +1,6 @@
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 
 export const Annet = () => (
@@ -10,7 +10,7 @@ export const Annet = () => (
 	>
 		<div className="flexbox--flex-wrap">
 			<Vis attributt="udistub.flyktning">
-				<FormikSelect
+				<FormSelect
 					name="udistub.flyktning"
 					label="Flyktningstatus"
 					options={Options('boolean')}
@@ -18,7 +18,7 @@ export const Annet = () => (
 				/>
 			</Vis>
 			<Vis attributt="udistub.soeknadOmBeskyttelseUnderBehandling">
-				<FormikSelect
+				<FormSelect
 					name="udistub.soeknadOmBeskyttelseUnderBehandling"
 					label="Asylsøker"
 					options={Options('jaNeiUavklart')}

@@ -1,13 +1,12 @@
 import { useTenorDomain } from '@/utils/hooks/useTenorSoek'
 import { SoekKategori } from '@/components/ui/soekForm/SoekForm'
-import { Monthpicker } from '@/components/ui/form/inputs/monthpicker/Monthpicker'
-import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import React, { SyntheticEvent } from 'react'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { createOptions } from '@/pages/tenorSoek/utils'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
-import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 
 export const FolkeregisteretIdentifikasjonStatus = ({ handleChange, handleChangeList }: any) => {
 	const { domain: identifikatorTypeOptions } = useTenorDomain('IdentifikatorType')
@@ -22,61 +21,61 @@ export const FolkeregisteretIdentifikasjonStatus = ({ handleChange, handleChange
 
 	return (
 		<SoekKategori>
-			<FormikTextInput
+			<FormTextInput
 				name="identifikator"
 				label="Fødselsnummer / D-nummer"
 				onBlur={(val: SyntheticEvent) => handleChange(val?.target?.value || null, 'identifikator')}
 				visHvisAvhuket={false}
 			/>
-			<FormikSelect
+			<FormSelect
 				name="identifikatorType"
 				options={createOptions(identifikatorTypeOptions?.data)}
 				label="Identifikatortype"
 				onChange={(val: SyntheticEvent) => handleChange(val?.value || null, 'identifikatorType')}
 			/>
-			<FormikDatepicker
+			<FormDatepicker
 				name="foedselsdato.fraOgMed"
 				label="Fødselsdato f.o.m."
 				onChange={(val: SyntheticEvent) => handleChange(val || null, 'foedselsdato.fraOgMed')}
 				visHvisAvhuket={false}
 			/>
-			<FormikDatepicker
+			<FormDatepicker
 				name="foedselsdato.tilOgMed"
 				label="Fødselsdato t.o.m."
 				onChange={(val: SyntheticEvent) => handleChange(val || null, 'foedselsdato.tilOgMed')}
 				visHvisAvhuket={false}
 			/>
-			<FormikDatepicker
+			<FormDatepicker
 				name="doedsdato.fraOgMed"
 				label="Dødsdato f.o.m."
 				onChange={(val: SyntheticEvent) => handleChange(val || null, 'doedsdato.fraOgMed')}
 				visHvisAvhuket={false}
 			/>
-			<FormikDatepicker
+			<FormDatepicker
 				name="doedsdato.tilOgMed"
 				label="Dødsdato t.o.m."
 				onChange={(val: SyntheticEvent) => handleChange(val || null, 'doedsdato.tilOgMed')}
 				visHvisAvhuket={false}
 			/>
-			<FormikSelect
+			<FormSelect
 				name="kjoenn"
 				options={createOptions(kjoennOptions?.data)}
 				label="Kjønn"
 				onChange={(val: SyntheticEvent) => handleChange(val?.value || null, 'kjoenn')}
 			/>
-			<FormikSelect
+			<FormSelect
 				name="personstatus"
 				options={createOptions(personstatusOptions?.data)}
 				label="Personstatus"
 				onChange={(val: SyntheticEvent) => handleChange(val?.value || null, 'personstatus')}
 			/>
-			<FormikSelect
+			<FormSelect
 				name="sivilstand"
 				options={createOptions(sivilstatusOptions?.data)}
 				label="Sivilstand"
 				onChange={(val: SyntheticEvent) => handleChange(val?.value || null, 'sivilstand')}
 			/>
-			<FormikSelect
+			<FormSelect
 				name="identitetsgrunnlagStatus"
 				options={createOptions(identitetsgrunnlagStatusOptions?.data)}
 				label="Identitetsgrunnlagsstatus"
@@ -84,20 +83,20 @@ export const FolkeregisteretIdentifikasjonStatus = ({ handleChange, handleChange
 					handleChange(val?.value || null, 'identitetsgrunnlagStatus')
 				}
 			/>
-			<FormikSelect
+			<FormSelect
 				name="adressebeskyttelse"
 				options={createOptions(adressebeskyttelseOptions?.data)}
 				label="Adressebeskyttelse"
 				onChange={(val: SyntheticEvent) => handleChange(val?.value || null, 'adressebeskyttelse')}
 			/>
-			<FormikSelect
+			<FormSelect
 				name="harFalskIdentitet"
 				options={Options('boolean')}
 				label="Har falsk identitet"
 				onChange={(val: boolean) => handleChange(val?.value, 'harFalskIdentitet')}
 			/>
 			<div className="flexbox--full-width">
-				<FormikSelect
+				<FormSelect
 					name="utenlandskPersonIdentifikasjon"
 					options={createOptions(utenlandskPersonIdentifikasjonOptions?.data)}
 					isMulti={true}
@@ -108,7 +107,7 @@ export const FolkeregisteretIdentifikasjonStatus = ({ handleChange, handleChange
 					}
 				/>
 			</div>
-			<FormikCheckbox
+			<FormCheckbox
 				name="harLegitimasjonsdokument"
 				label="Har legitimasjonsdokument"
 				onChange={(val: SyntheticEvent) =>

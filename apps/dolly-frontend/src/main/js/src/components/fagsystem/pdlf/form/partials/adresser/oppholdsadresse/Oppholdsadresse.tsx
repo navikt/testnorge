@@ -8,8 +8,8 @@ import {
 	initialVegadresse,
 } from '@/components/fagsystem/pdlf/form/initialValues'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
-import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
-import { DollySelect, FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { DollySelect, FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import {
 	MatrikkeladresseVelger,
@@ -18,9 +18,8 @@ import {
 	VegadresseVelger,
 } from '@/components/fagsystem/pdlf/form/partials/adresser/adressetyper'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { Adressetype } from '@/components/fagsystem/pdlf/PdlTypes'
-import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 import { getPlaceholder, setNavn } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { useGenererNavn } from '@/utils/hooks/useGenererNavn'
 import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
@@ -131,7 +130,7 @@ export const OppholdsadresseForm = ({
 	return (
 		<React.Fragment key={idx}>
 			<div className="flexbox--full-width">
-				<FormikSelect
+				<FormSelect
 					name={`${path}.adressetype`}
 					label="Adressetype"
 					options={adressetypeOptions}
@@ -160,10 +159,8 @@ export const OppholdsadresseForm = ({
 				<OppholdAnnetSted path={`${path}.oppholdAnnetSted`} />
 			)}
 			<div className="flexbox--flex-wrap">
-				<DatepickerWrapper>
-					<FormikDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig f.o.m." />
-					<FormikDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig t.o.m." />
-				</DatepickerWrapper>
+				<FormDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig f.o.m." />
+				<FormDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig t.o.m." />
 				<DollySelect
 					name={`${path}.opprettCoAdresseNavn.fornavn`}
 					label="C/O adressenavn"
@@ -193,7 +190,7 @@ export const Oppholdsadresse = ({ formMethods }: OppholdsadresseValues) => {
 	const opts = useContext(BestillingsveilederContext)
 	return (
 		<Kategori title="Oppholdsadresse">
-			<FormikDollyFieldArray
+			<FormDollyFieldArray
 				name="pdldata.person.oppholdsadresse"
 				header="Oppholdsadresse"
 				newEntry={getInitialOppholdsadresse(opts?.identtype === 'NPID' ? 'PDL' : 'FREG')}
@@ -207,7 +204,7 @@ export const Oppholdsadresse = ({ formMethods }: OppholdsadresseValues) => {
 						identtype={opts?.identtype}
 					/>
 				)}
-			</FormikDollyFieldArray>
+			</FormDollyFieldArray>
 		</Kategori>
 	)
 }

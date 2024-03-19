@@ -29,8 +29,8 @@ type ResultatProps = {
 }
 
 const bestillingHarFeil = (bestilling: Bestillingsstatus) => {
-	const statuser = bestilling?.status?.map(
-		(fagsystem) => fagsystem.statuser?.some((status) => status?.melding !== 'OK'),
+	const statuser = bestilling?.status?.map((fagsystem) =>
+		fagsystem.statuser?.some((status) => status?.melding !== 'OK'),
 	)
 	return statuser?.some((value) => value)
 }

@@ -3,12 +3,12 @@ import * as Yup from 'yup'
 import { ifPresent, requiredString } from '@/utils/YupValidations'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
-import { DollyTextInput, FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
+import { DollyTextInput, FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import Panel from '@/components/ui/panel/Panel'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
 import _ from 'lodash'
-import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
+import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 import { useFormContext } from 'react-hook-form'
@@ -127,7 +127,7 @@ export const DokarkivForm = () => {
 					vis={dokarkivAttributt}
 				>
 					<div className="flexbox--full-width">
-						<FormikSelect
+						<FormSelect
 							name="dokarkiv.dokumenter[0].brevkode"
 							label="Skjema"
 							afterChange={handleSkjemaChange}
@@ -138,7 +138,7 @@ export const DokarkivForm = () => {
 						/>
 					</div>
 					<div className="flexbox--flex-wrap">
-						<FormikSelect
+						<FormSelect
 							name="dokarkiv.tema"
 							label="Tema"
 							kodeverk={Kodeverk.TEMA}
@@ -157,7 +157,7 @@ export const DokarkivForm = () => {
 							label="Journalførende enhet"
 							size="large"
 						/>
-						<FormikSelect
+						<FormSelect
 							name="dokarkiv.sak.sakstype"
 							label="Sakstype"
 							options={Options('sakstype')}
@@ -166,17 +166,17 @@ export const DokarkivForm = () => {
 						/>
 						{harFagsak && (
 							<>
-								<FormikSelect
+								<FormSelect
 									name="dokarkiv.sak.fagsaksystem"
 									label="Fagsaksystem"
 									options={Options('fagsaksystem')}
 									size="large"
 								/>
-								<FormikTextInput name="dokarkiv.sak.fagsakId" label="Fagsak-ID" />
+								<FormTextInput name="dokarkiv.sak.fagsakId" label="Fagsak-ID" />
 							</>
 						)}
 					</div>
-					<FormikCheckbox name={`dokarkiv.ferdigstill`} label="Ferdigstill journalpost" />
+					<FormCheckbox name={`dokarkiv.ferdigstill`} label="Ferdigstill journalpost" />
 					{digitalInnsending ? <Digitalinnsending /> : null}
 					<Kategori title={'Vedlegg'}>
 						<FileUploader filer={files} setFiler={setFiles} />

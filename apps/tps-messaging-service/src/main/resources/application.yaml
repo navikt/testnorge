@@ -3,6 +3,9 @@ AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535
 spring:
   application:
     name: testnav-tps-messaging-service
+  cloud:
+    vault:
+      enabled: false
   flyway:
     enabled: false
   security:
@@ -12,13 +15,6 @@ spring:
           issuer-uri: ${AAD_ISSUER_URI}/v2.0
           jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
           accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
-        tokenx:
-          issuer-uri: ${TOKEN_X_ISSUER} 
-          jwk-set-uri: ${TOKEN_X_JWKS_URI}
-          accepted-audience: ${TOKEN_X_CLIENT_ID}
-  cloud:
-    vault:
-      enabled: false
 
 springdoc:
   swagger-ui:
@@ -68,6 +64,7 @@ management:
     metrics:
       export:
         enabled: true
+
 server:
   servlet:
     encoding:

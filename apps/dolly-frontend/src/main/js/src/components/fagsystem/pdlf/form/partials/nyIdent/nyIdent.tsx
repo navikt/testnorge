@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { useContext } from 'react'
 import { getInitialNyIdent } from '@/components/fagsystem/pdlf/form/initialValues'
-import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { PdlPersonExpander } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonExpander'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
@@ -16,7 +16,7 @@ export const NyIdent = ({ formMethods }: NyIdentForm) => {
 	const opts = useContext(BestillingsveilederContext)
 
 	return (
-		<FormikDollyFieldArray
+		<FormDollyFieldArray
 			name="pdldata.person.nyident"
 			header="Ny identitet"
 			newEntry={getInitialNyIdent(opts?.identtype === 'NPID' ? 'PDL' : 'FREG')}
@@ -47,6 +47,6 @@ export const NyIdent = ({ formMethods }: NyIdentForm) => {
 					</div>
 				)
 			}}
-		</FormikDollyFieldArray>
+		</FormDollyFieldArray>
 	)
 }

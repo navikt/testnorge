@@ -4,7 +4,7 @@ import { Accordion } from '@navikt/ds-react'
 import { InntektAordningen } from '@/pages/tenorSoek/soekFormPartials/InntektAordningen'
 import React from 'react'
 import { Header } from '@/components/ui/soekForm/SoekForm'
-import DisplayFormikState from '@/utils/DisplayFormikState'
+import DisplayFormState from '@/utils/DisplayFormState'
 import { EnhetsregisteretForetaksregisteret } from '@/pages/tenorSoek/soekFormPartials/EnhetsregisteretForetaksregisteret'
 import { FolkeregisteretIdentifikasjonStatus } from '@/pages/tenorSoek/soekFormPartials/FolkeregisteretIdentifikasjonStatus'
 import { FolkeregisteretStatsborgerskap } from '@/pages/tenorSoek/soekFormPartials/FolkeregisteretStatsborgerskap'
@@ -249,7 +249,7 @@ export const SoekForm = ({ setRequest, mutate }) => {
 								</Accordion.Item>
 							</Accordion>
 						</Form>
-						{devEnabled && <DisplayFormikState />}
+						{devEnabled && <DisplayFormState />}
 					</>
 					{/*// TODO sett inn chips her?*/}
 				</FormProvider>

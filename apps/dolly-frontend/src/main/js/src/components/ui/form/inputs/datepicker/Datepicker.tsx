@@ -1,7 +1,6 @@
-import ReactDatepicker, { registerLocale } from 'react-datepicker'
-import { addYears, subYears } from 'date-fns'
+import { registerLocale } from 'react-datepicker'
+import { addYears, isDate, subYears } from 'date-fns'
 import locale_nb from 'date-fns/locale/nb'
-import { TextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { Label } from '@/components/ui/form/inputs/label/Label'
 import { InputWrapper } from '@/components/ui/form/inputWrapper/InputWrapper'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
@@ -9,11 +8,14 @@ import { fixTimezone, SyntEvent } from '@/components/ui/form/formUtils'
 import 'react-datepicker/dist/react-datepicker.css'
 import './Datepicker.less'
 import { useFormContext } from 'react-hook-form'
+import { DatePicker, useDatepicker } from '@navikt/ds-react'
+import _ from 'lodash'
+import { formatDate } from '@/utils/DataFormatter'
 
 registerLocale('nb', locale_nb)
 
 function addHours(date, amount) {
-	date.setHours(amount, 0, 0)
+	date.setHours(amount)
 	return date
 }
 
@@ -27,29 +29,42 @@ export const Datepicker = ({
 	excludeDates,
 	minDate,
 	maxDate,
-	...props
-}) => (
-	<ReactDatepicker
-		locale="nb"
-		dateFormat="dd.MM.yyyy"
-		placeholderText={placeholder}
-		selected={(value && new Date(value)) || null}
-		onChange={onChange}
-		showMonthDropdown
-		showYearDropdown
-		minDate={minDate || subYears(new Date(), 125)}
-		maxDate={maxDate || addYears(new Date(), 5)}
-		dropdownMode="select"
-		disabled={disabled}
-		onBlur={onBlur}
-		name={name}
-		id={name}
-		autoComplete="off"
-		customInput={<TextInput icon="calendar" isDatepicker={true} />}
-		excludeDates={excludeDates}
-		{...props}
-	/>
-)
+}) => {
+	const formMethods = useFormContext()
+
+	const getSelectedDay = () => {
+		const selected = formMethods.watch(name)
+		if (_.isNil(selected) || (!isDate(selected) && _.isEmpty(selected))) {
+			return undefined
+		} else if (isDate(selected)) {
+			return fixTimezone(selected)
+		} else {
+			return fixTimezone(new Date(selected))
+		}
+	}
+
+	const { datepickerProps, inputProps } = useDatepicker({
+		fromDate: minDate || subYears(new Date(), 125),
+		toDate: maxDate || addYears(new Date(), 5),
+		onDateChange: onChange || onBlur,
+		disabled: excludeDates,
+		defaultSelected: getSelectedDay(),
+	})
+	const selectedDay = getSelectedDay()
+
+	return (
+		<DatePicker {...datepickerProps} dropdownCaption={true} selected={selectedDay}>
+			<DatePicker.Input
+				{...inputProps}
+				value={selectedDay ? formatDate(selectedDay) : ''}
+				placeholder={placeholder}
+				size={'small'}
+				disabled={disabled}
+				label={null}
+			/>
+		</DatePicker>
+	)
+}
 
 export const DollyDatepicker = (props) => (
 	<InputWrapper {...props}>
@@ -59,11 +74,13 @@ export const DollyDatepicker = (props) => (
 	</InputWrapper>
 )
 
-const P_FormikDatepicker = ({ addHour = false, ...props }) => {
+const P_FormDatepicker = ({ addHour = true, ...props }) => {
 	const formMethods = useFormContext()
 	const value = formMethods.watch(props.name)
 	const handleChange = (date) => {
-		if (props.afterChange) props.afterChange(date)
+		if (props.afterChange) {
+			props.afterChange(date)
+		}
 		let val = fixTimezone(date)?.toISOString().substring(0, 19) || null
 		if (addHour) {
 			val = addHours(new Date(fixTimezone(date)), 3)
@@ -81,7 +98,7 @@ const P_FormikDatepicker = ({ addHour = false, ...props }) => {
 	return <DollyDatepicker value={value} onChange={handleChange} onBlur={handleBlur} {...props} />
 }
 
-export const FormikDatepicker = ({ visHvisAvhuket = true, ...props }) => {
-	const component = <P_FormikDatepicker {...props} />
+export const FormDatepicker = ({ visHvisAvhuket = true, ...props }) => {
+	const component = <P_FormDatepicker {...props} />
 	return visHvisAvhuket ? <Vis attributt={props.name}>{component}</Vis> : component
 }

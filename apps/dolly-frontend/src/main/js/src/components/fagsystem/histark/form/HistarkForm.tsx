@@ -3,17 +3,17 @@ import * as Yup from 'yup'
 import { ifPresent, requiredDate, requiredString } from '@/utils/YupValidations'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import Panel from '@/components/ui/panel/Panel'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
 import { Vedlegg } from '@/components/fagsystem/dokarkiv/form/DokarkivForm'
-import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { initialHistark } from '@/components/fagsystem/arbeidsplassen/form/initialValues'
 import { useNavEnheter } from '@/utils/hooks/useNorg2'
 import _ from 'lodash'
 import { Option } from '@/service/SelectOptionsOppslag'
-import { FormikDateTimepicker } from '@/components/ui/form/inputs/timepicker/Timepicker'
-import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormDateTimepicker } from '@/components/ui/form/inputs/timepicker/Timepicker'
+import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { Yearpicker } from '@/components/ui/form/inputs/yearpicker/Yearpicker'
 import { testDatoFom, testDatoTom } from '@/components/fagsystem/utils'
 import { useFormContext } from 'react-hook-form'
@@ -75,7 +75,7 @@ export const HistarkForm = () => {
 				startOpen={erForsteEllerTest(formMethods.getValues(), [histarkAttributt])}
 			>
 				<Kategori title={`Oppretting av saksmappe for histark`} vis={histarkAttributt}>
-					<FormikDollyFieldArray
+					<FormDollyFieldArray
 						name="histark.dokumenter"
 						header="Dokumenter"
 						newEntry={initialHistark}
@@ -86,7 +86,7 @@ export const HistarkForm = () => {
 							<div className="flexbox--column">
 								<div className="flexbox--flex-wrap">
 									<div className="flexbox--full-width">
-										<FormikSelect
+										<FormSelect
 											name={`${path}.temakoder`}
 											label="Temakoder"
 											kodeverk={Kodeverk.TEMA}
@@ -95,7 +95,7 @@ export const HistarkForm = () => {
 											isMulti={true}
 										/>
 									</div>
-									<FormikSelect
+									<FormSelect
 										name={'navenhet'}
 										fieldName={`${path}.enhetsnavn`}
 										value={selectedNavEnhet}
@@ -140,19 +140,19 @@ export const HistarkForm = () => {
 										}}
 										maxDate={new Date()}
 									/>
-									<FormikDateTimepicker
+									<FormDateTimepicker
 										name={`${path}.skanningsTidspunkt`}
 										label="Skanningstidspunkt"
 										visHvisAvhuket={false}
 										size="medium"
 									/>
-									<FormikTextInput
+									<FormTextInput
 										name={`${path}.skanner`}
 										label="Skanner"
 										visHvisAvhuket={false}
 										size={'xsmall'}
 									/>
-									<FormikTextInput
+									<FormTextInput
 										name={`${path}.skannested`}
 										label="Skannested"
 										visHvisAvhuket={false}
@@ -171,7 +171,7 @@ export const HistarkForm = () => {
 								</div>
 							</div>
 						)}
-					</FormikDollyFieldArray>
+					</FormDollyFieldArray>
 				</Kategori>
 			</Panel>
 		</Vis>

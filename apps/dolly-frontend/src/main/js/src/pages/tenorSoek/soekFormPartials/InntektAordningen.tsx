@@ -1,14 +1,11 @@
-import Accordion from '@navikt/ds-react/src/accordion/Accordion'
 import React, { SyntheticEvent } from 'react'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { useTenorDomain } from '@/utils/hooks/useTenorSoek'
 import { createOptions } from '@/pages/tenorSoek/utils'
-import { Header, SoekKategori } from '@/components/ui/soekForm/SoekForm'
-import * as _ from 'lodash-es'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { SoekKategori } from '@/components/ui/soekForm/SoekForm'
 import { Monthpicker } from '@/components/ui/form/inputs/monthpicker/Monthpicker'
-import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 
 export const InntektAordningen = ({ handleChange, handleChangeList, getValue }: any) => {
 	const { domain: inntektstypeOptions } = useTenorDomain('Inntektstype')
@@ -33,7 +30,7 @@ export const InntektAordningen = ({ handleChange, handleChangeList, getValue }: 
 				}}
 				date={getValue('inntekt.periode.tilOgMed')}
 			/>
-			<FormikTextInput
+			<FormTextInput
 				name="inntekt.opplysningspliktig"
 				label="Opplysningspliktig org.nr."
 				onBlur={(val: SyntheticEvent) =>
@@ -42,7 +39,7 @@ export const InntektAordningen = ({ handleChange, handleChangeList, getValue }: 
 				visHvisAvhuket={false}
 			/>
 			<div className="flexbox--full-width" style={{ fontSize: 'medium' }}>
-				<FormikSelect
+				<FormSelect
 					name="inntekt.inntektstyper"
 					options={createOptions(inntektstypeOptions?.data)}
 					isMulti={true}
@@ -50,7 +47,7 @@ export const InntektAordningen = ({ handleChange, handleChangeList, getValue }: 
 					label="Inntektstyper"
 					onChange={(val: SyntheticEvent) => handleChangeList(val || null, 'inntekt.inntektstyper')}
 				/>
-				<FormikSelect
+				<FormSelect
 					name="inntekt.forskuddstrekk"
 					options={createOptions(forskuddstrekkOptions?.data)}
 					isMulti={true}
@@ -61,14 +58,14 @@ export const InntektAordningen = ({ handleChange, handleChangeList, getValue }: 
 					}
 				/>
 			</div>
-			<FormikSelect
+			<FormSelect
 				name="inntekt.beskrivelse"
 				options={createOptions(beskrivelseOptions?.data)}
 				size="xlarge"
 				label="Beskrivelse"
 				onChange={(val: SyntheticEvent) => handleChange(val?.value || null, 'inntekt.beskrivelse')}
 			/>
-			<FormikSelect
+			<FormSelect
 				name="inntekt.harHistorikk"
 				options={Options('boolean')}
 				size="small"

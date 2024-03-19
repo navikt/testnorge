@@ -68,6 +68,7 @@ public class AaregClient implements ClientRegister {
             var initStatus = miljoer.stream()
                     .map(miljo -> String.format("%s:%s", miljo, getInfoVenter(SYSTEM)))
                     .collect(Collectors.joining(","));
+
             transactionHelperService.persister(progress, BestillingProgress::getAaregStatus,
                     BestillingProgress::setAaregStatus, initStatus);
 

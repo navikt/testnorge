@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { useContext, useEffect } from 'react'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
-import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import {
 	getInitialBarn,
 	getInitialForelder,
@@ -10,8 +10,8 @@ import {
 } from '@/components/fagsystem/pdlf/form/initialValues'
 import _ from 'lodash'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
-import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { BarnRelasjon } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/forelderBarnRelasjon/BarnRelasjon'
 import { TypeAnsvarlig } from '@/components/fagsystem/pdlf/PdlTypes'
 import { PdlEksisterendePerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlEksisterendePerson'
@@ -138,16 +138,16 @@ export const ForelderBarnRelasjonForm = ({
 				{erBarn && <BarnRelasjon formMethods={formMethods} path={path} />}
 				{!erBarn && (
 					<>
-						<FormikSelect
+						<FormSelect
 							name={`${path}.relatertPersonsRolle`}
 							label="Foreldretype"
 							options={Options('foreldreTypePDL')}
 							isClearable={false}
 						/>
-						<FormikCheckbox name={`${path}.borIkkeSammen`} label="Bor ikke sammen" checkboxMargin />
+						<FormCheckbox name={`${path}.borIkkeSammen`} label="Bor ikke sammen" checkboxMargin />
 					</>
 				)}
-				<FormikSelect
+				<FormSelect
 					name={`${path}.typeForelderBarn`}
 					label={erBarn ? 'Type barn' : 'Type forelder'}
 					options={Options('typeAnsvarlig')}
@@ -210,7 +210,7 @@ export const ForelderBarnRelasjonForm = ({
 export const ForelderBarnRelasjon = ({ formMethods }: ForelderForm) => {
 	const opts = useContext(BestillingsveilederContext)
 	return (
-		<FormikDollyFieldArray
+		<FormDollyFieldArray
 			name="pdldata.person.forelderBarnRelasjon"
 			header={'Relasjon'}
 			newEntry={getInitialBarn(opts?.identtype === 'NPID' ? 'PDL' : 'FREG')}
@@ -225,6 +225,6 @@ export const ForelderBarnRelasjon = ({ formMethods }: ForelderForm) => {
 					/>
 				)
 			}}
-		</FormikDollyFieldArray>
+		</FormDollyFieldArray>
 	)
 }
