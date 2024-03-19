@@ -7,6 +7,7 @@ import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 @Slf4j
 @Component
@@ -27,11 +28,10 @@ public class EregConsumer {
                 .build();
     }
 
-    public Long getStatusKode(String miljo, Long id) {
+    public Mono<Long> getStatusKode(String miljo, Long id) {
         return tokenService
                 .exchange(serverProperties)
                 .flatMap(accessToken ->
-                        new GetBatchStatusCommand(webClient, miljo, id, accessToken.getTokenValue()).call())
-                .block();
+                        new GetBatchStatusCommand(webClient, miljo, id, accessToken.getTokenValue()).call());
     }
 }
