@@ -29,7 +29,7 @@ import java.util.function.Function;
 @SpringBootApplication
 public class ModappEregProxyApplicationStarter {
 
-    private static final String[] miljoer = new String[]{"q1", "q2", "q4", "q5", "t3"};
+    private static final String[] miljoer = new String[]{ "q1", "q2", "q4", "q5", "t3" };
 
     @Bean
     public RouteLocator customRouteLocator(
@@ -73,5 +73,4 @@ public class ModappEregProxyApplicationStarter {
                 original.getUrl().replace("MILJOE", env)
         );
     }
-
 }
