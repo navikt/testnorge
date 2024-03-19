@@ -119,6 +119,11 @@ export const TreffListe = ({ response, personListe, loading, error }: any) => {
 						<Loading label="Laster treff ..." />
 					</div>
 				)}
+				{personListe?.length === 200 && antallTreff > 200 && (
+					<Alert variant="info" size="small" inline style={{ marginTop: '20px' }}>
+						Viser kun de 200 første treffene. <br /> Gjør et nytt søk for å se andre treff.
+					</Alert>
+				)}
 			</div>
 			<div
 				style={{
