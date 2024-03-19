@@ -11,8 +11,8 @@ spec:
   secretKeyPrefix: "AZURE_TRYGDEETATEN"
   tenant: trygdeetaten.no
 ---
-apiVersion: nais.io/v1
-kind: AzureAdApplication
+apiVersion: "nais.io/v1alpha1"
+kind: "Application"
 metadata:
   name: ereg-batch-status-service
   namespace: dolly
