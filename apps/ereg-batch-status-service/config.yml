@@ -1,5 +1,18 @@
-﻿apiVersion: "nais.io/v1alpha1"
-kind: "Application"
+﻿---
+apiVersion: nais.io/v1
+kind: AzureAdApplication
+metadata:
+  name: ereg-batch-status-service-trygdeetaten
+  namespace: dolly
+  labels:
+    team: dolly
+spec:
+  secretName: azure-trygdeetaten-ereg-batch-status-service-trygdeetaten
+  secretKeyPrefix: "AZURE_TRYGDEETATEN"
+  tenant: trygdeetaten.no
+---
+apiVersion: nais.io/v1
+kind: AzureAdApplication
 metadata:
   name: ereg-batch-status-service
   namespace: dolly
@@ -47,5 +60,7 @@ spec:
       memory: 1024Mi
     limits:
       memory: 2048Mi
+  envFrom:
+    - secret: azure-trygdeetaten-ereg-batch-status-service-trygdeetaten
   ingresses:
     - "https://ereg-batch-status-service.dev-fss-pub.nais.io"
