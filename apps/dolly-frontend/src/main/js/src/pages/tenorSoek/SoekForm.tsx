@@ -12,6 +12,8 @@ import { FolkeregisteretNavn } from '@/pages/tenorSoek/soekFormPartials/Folkereg
 import { FolkeregisteretAdresse } from '@/pages/tenorSoek/soekFormPartials/FolkeregisteretAdresse'
 import { FolkeregisteretRelasjoner } from '@/pages/tenorSoek/soekFormPartials/FolkeregisteretRelasjoner'
 import { FolkeregisteretHendelser } from '@/pages/tenorSoek/soekFormPartials/FolkeregisteretHendelser'
+import { isDate } from 'date-fns'
+import { fixTimezone } from '@/components/ui/form/formUtils'
 
 const SoekefeltWrapper = styled.div`
 	display: flex;
@@ -49,6 +51,9 @@ export const SoekForm = ({ setRequest, mutate }) => {
 		// if (watch(path) === value) {
 		// 	return
 		// } else {
+		if (isDate(value)) {
+			value = fixTimezone(value)
+		}
 		setValue(path, value)
 		const request = getUpdatedRequest(watch())
 		setRequest({ ...request })
