@@ -53,9 +53,7 @@ export const TreffListe = ({ response, personListe, loading, error }: any) => {
 	} = useTenorIdent(valgtPerson?.id)
 
 	useEffect(() => {
-		if (!valgtPerson) {
-			setValgtPerson(personListe?.[0] || null)
-		}
+		setValgtPerson(personListe?.[0] || null)
 	}, [personListe?.[0]])
 
 	const antallTreff = response?.data?.treff

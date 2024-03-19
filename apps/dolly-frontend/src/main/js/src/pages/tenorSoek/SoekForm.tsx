@@ -46,9 +46,20 @@ export const SoekForm = ({ setRequest, mutate }) => {
 	}
 
 	const handleChange = (value: any, path: string) => {
+		// if (watch(path) === value) {
+		// 	return
+		// } else {
 		setValue(path, value)
 		const request = getUpdatedRequest(watch())
 		setRequest({ ...request })
+		mutate()
+		// }
+	}
+
+	const handleChangeTextInput = (value: any, path: string) => {
+		setValue(path, value)
+		const request = getUpdatedRequest(watch())
+		setRequest(request)
 		mutate()
 	}
 
@@ -141,7 +152,10 @@ export const SoekForm = ({ setRequest, mutate }) => {
 										/>
 									</Accordion.Header>
 									<Accordion.Content style={{ paddingRight: '0' }}>
-										<FolkeregisteretNavn handleChange={handleChange} />
+										<FolkeregisteretNavn
+											handleChange={handleChange}
+											// handleChangeTextInput={handleChangeTextInput}
+										/>
 									</Accordion.Content>
 								</Accordion.Item>
 								<Accordion.Item>

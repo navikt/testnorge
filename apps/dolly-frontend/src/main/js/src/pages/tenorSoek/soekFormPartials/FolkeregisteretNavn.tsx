@@ -5,7 +5,7 @@ import { SoekKategori } from '@/components/ui/soekForm/SoekForm'
 import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 
-export const FolkeregisteretNavn = ({ handleChange }: any) => {
+export const FolkeregisteretNavn = ({ handleChange, handleChangeTextInput }: any) => {
 	return (
 		<SoekKategori>
 			<FormikTextInput
