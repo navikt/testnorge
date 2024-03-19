@@ -1,9 +1,9 @@
 import * as React from 'react'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
-import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { ArbeidKodeverk, GtKodeverk } from '@/config/kodeverk'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
-import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
+import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import _ from 'lodash'
 import { landkodeIsoMapping } from '@/service/services/kontoregister/landkoder'
 
@@ -37,13 +37,13 @@ export const UtenlandskBankkonto = ({ formMethods }: any) => {
 		<Vis attributt={path}>
 			<div className="flexbox--flex-wrap">
 				<div className="flexbox--flex-wrap">
-					<FormikTextInput
+					<FormTextInput
 						name={`${path}.kontonummer`}
 						label={'Kontonummer'}
 						isDisabled={disableKontonummer}
 					/>
 					<div style={{ marginTop: '17px' }}>
-						<FormikCheckbox
+						<FormCheckbox
 							name={`${path}.tilfeldigKontonummer`}
 							label="Har tilfeldig kontonummer"
 							size="medium"
@@ -52,22 +52,22 @@ export const UtenlandskBankkonto = ({ formMethods }: any) => {
 					</div>
 				</div>
 				<div className="flexbox--flex-wrap">
-					<FormikTextInput
+					<FormTextInput
 						name={`${path}.swift`}
 						label={'Swift kode'}
 						size={'small'}
 						useControlled={true}
 					/>
-					<FormikSelect
+					<FormSelect
 						name={`${path}.landkode`}
 						label={'Land'}
 						kodeverk={GtKodeverk.LAND}
 						size={'large'}
 						afterChange={updateSwiftLandkode}
 					/>
-					<FormikTextInput name={`${path}.banknavn`} label={'Banknavn'} size={'small'} />
-					<FormikTextInput name={`${path}.iban`} label={'Bankkode'} />
-					<FormikSelect
+					<FormTextInput name={`${path}.banknavn`} label={'Banknavn'} size={'small'} />
+					<FormTextInput name={`${path}.iban`} label={'Bankkode'} />
+					<FormSelect
 						name={`${path}.valuta`}
 						label="Valuta"
 						kodeverk={ArbeidKodeverk.Valutaer}
@@ -75,9 +75,9 @@ export const UtenlandskBankkonto = ({ formMethods }: any) => {
 					/>
 				</div>
 				<div className="flexbox--flex-wrap">
-					<FormikTextInput name={`${path}.bankAdresse1`} label={'Adresselinje 1'} />
-					<FormikTextInput name={`${path}.bankAdresse2`} label={'Adresselinje 2'} />
-					<FormikTextInput name={`${path}.bankAdresse3`} label={'Adresselinje 3'} />
+					<FormTextInput name={`${path}.bankAdresse1`} label={'Adresselinje 1'} />
+					<FormTextInput name={`${path}.bankAdresse2`} label={'Adresselinje 2'} />
+					<FormTextInput name={`${path}.bankAdresse3`} label={'Adresselinje 3'} />
 				</div>
 			</div>
 		</Vis>

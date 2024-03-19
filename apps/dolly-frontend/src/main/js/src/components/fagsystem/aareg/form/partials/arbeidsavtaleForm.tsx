@@ -1,13 +1,13 @@
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
-import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { ArbeidKodeverk } from '@/config/kodeverk'
 
 export const ArbeidsavtaleForm = ({ path, onChangeLenket, ...props }) => (
 	<div>
 		<h3>Ansettelsesdetaljer</h3>
 		<div className="flexbox--flex-wrap">
-			<FormikSelect
+			<FormSelect
 				name={`${path}.yrke`}
 				label="Yrke"
 				kodeverk={ArbeidKodeverk.Yrker}
@@ -17,7 +17,7 @@ export const ArbeidsavtaleForm = ({ path, onChangeLenket, ...props }) => (
 				onChange={onChangeLenket('arbeidsavtale.yrke')}
 				{...props}
 			/>
-			<FormikSelect
+			<FormSelect
 				name={`${path}.ansettelsesform`}
 				label="Ansettelsesform"
 				kodeverk={ArbeidKodeverk.AnsettelsesformAareg}
@@ -25,7 +25,7 @@ export const ArbeidsavtaleForm = ({ path, onChangeLenket, ...props }) => (
 				isClearable={false}
 				{...props}
 			/>
-			<FormikTextInput
+			<FormTextInput
 				key={`${path}.stillingsprosent`}
 				name={`${path}.stillingsprosent`}
 				label="Stillingsprosent"
@@ -33,19 +33,19 @@ export const ArbeidsavtaleForm = ({ path, onChangeLenket, ...props }) => (
 				onBlur={onChangeLenket('arbeidsavtale.stillingsprosent')}
 				{...props}
 			/>
-			<FormikDatepicker
+			<FormDatepicker
 				name={`${path}.endringsdatoStillingsprosent`}
 				label="Endringsdato stillingsprosent"
 				onChange={onChangeLenket('arbeidsavtale.endringsdatoStillingsprosent')}
 				{...props}
 			/>
-			<FormikDatepicker
+			<FormDatepicker
 				name={`${path}.sisteLoennsendringsdato`}
 				label="Endringsdato lønn"
 				onChange={onChangeLenket('arbeidsavtale.sisteLoennsendringsdato')}
 				{...props}
 			/>
-			<FormikSelect
+			<FormSelect
 				name={`${path}.arbeidstidsordning`}
 				label="Arbeidstidsordning"
 				kodeverk={ArbeidKodeverk.Arbeidstidsordninger}
@@ -54,7 +54,7 @@ export const ArbeidsavtaleForm = ({ path, onChangeLenket, ...props }) => (
 				onChange={onChangeLenket('arbeidsavtale.arbeidstidsordning')}
 				{...props}
 			/>
-			<FormikTextInput
+			<FormTextInput
 				key={`${path}.avtaltArbeidstimerPerUke`}
 				name={`${path}.avtaltArbeidstimerPerUke`}
 				label="Avtalte arbeidstimer per uke"

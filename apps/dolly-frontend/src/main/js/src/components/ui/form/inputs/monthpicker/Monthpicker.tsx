@@ -1,7 +1,9 @@
-import ReactDatepicker from 'react-datepicker'
 import { Label } from '@/components/ui/form/inputs/label/Label'
-import { TextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { InputWrapper } from '@/components/ui/form/inputWrapper/InputWrapper'
+import { MonthPicker, useMonthpicker } from '@navikt/ds-react'
+import { addYears, isDate, subYears } from 'date-fns'
+import { useFormContext } from 'react-hook-form'
+import _ from 'lodash'
 
 interface MonthpickerProps {
 	name: string
@@ -25,26 +27,45 @@ export const Monthpicker = ({
 	maxDate = null,
 	...props
 }: MonthpickerProps) => {
-	const formattedDate = date instanceof Date || date === null ? date : new Date(date)
+	const formMethods = useFormContext()
+	const val = formMethods.watch(name)
+
+	function getEksisterendeVerdi() {
+		if (name.includes('navArbeidsforholdPeriode')) {
+			return val?.year ? new Date(val?.year, val?.monthValue) : null
+		}
+		return val
+	}
+
+	const eksisterendeVerdi = getEksisterendeVerdi()
+
+	const formattedDate =
+		eksisterendeVerdi instanceof Date
+			? eksisterendeVerdi
+			: date instanceof Date || date === null
+				? date
+				: new Date(date)
+
+	const { monthpickerProps, inputProps } = useMonthpicker({
+		fromDate: minDate || subYears(new Date(), 125),
+		toDate: maxDate || addYears(new Date(), 5),
+		onMonthChange: (selectedDate) => {
+			selectedDate?.setHours(12)
+			onChange ? onChange(selectedDate) : handleDateChange(selectedDate)
+		},
+		defaultSelected: !_.isNil(formattedDate)
+			? isDate(formattedDate)
+				? formattedDate
+				: new Date(formattedDate)
+			: undefined,
+	})
 
 	return (
-		<InputWrapper size={'medium'}>
-			<Label name={name} label={label} containerClass={null}>
-				<ReactDatepicker
-					className={'skjemaelement__input'}
-					locale="nb"
-					dateFormat="yyyy-MM"
-					selected={formattedDate}
-					onChange={onChange ? onChange : handleDateChange}
-					placeholderText={'yyyy-mm'}
-					showMonthYearPicker
-					customInput={<TextInput fieldName={name} icon="calendar" />}
-					dropdownMode="select"
-					autoComplete="off"
-					minDate={minDate}
-					maxDate={maxDate}
-					{...props}
-				/>
+		<InputWrapper size={'small'}>
+			<Label name={name} label={label}>
+				<MonthPicker {...monthpickerProps} dropdownCaption={true} selected={formattedDate}>
+					<MonthPicker.Input label={null} size={'small'} placeholder={'yyyy-mm'} {...inputProps} />
+				</MonthPicker>
 			</Label>
 		</InputWrapper>
 	)

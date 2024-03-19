@@ -1,13 +1,13 @@
-import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import {
 	initialAnnenErfaring,
 	initialAnnenErfaringVerdier,
 } from '@/components/fagsystem/arbeidsplassen/form/initialValues'
-import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { Fritekstfelt } from '@/components/fagsystem/arbeidsplassen/form/styles'
 import _get from 'lodash/get'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
-import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import * as React from 'react'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { EraseFillButtons } from '@/components/fagsystem/arbeidsplassen/form/partials/EraseFillButtons'
@@ -17,7 +17,7 @@ export const AnnenErfaringForm = ({ formMethods }) => {
 
 	return (
 		<Vis attributt={annenErfaringListePath}>
-			<FormikDollyFieldArray
+			<FormDollyFieldArray
 				name={annenErfaringListePath}
 				header="Andre erfaringer"
 				newEntry={initialAnnenErfaringVerdier}
@@ -27,7 +27,7 @@ export const AnnenErfaringForm = ({ formMethods }) => {
 				{(annenErfaringPath, idx) => (
 					<>
 						<div key={idx} className="flexbox--flex-wrap">
-							<FormikTextInput
+							<FormTextInput
 								name={`${annenErfaringPath}.role`}
 								label="Rolle"
 								size="xlarge"
@@ -50,13 +50,13 @@ export const AnnenErfaringForm = ({ formMethods }) => {
 								)}`}
 								resize
 							/>
-							<FormikDatepicker name={`${annenErfaringPath}.fromDate`} label="Startdato" />
-							<FormikDatepicker
+							<FormDatepicker name={`${annenErfaringPath}.fromDate`} label="Startdato" />
+							<FormDatepicker
 								name={`${annenErfaringPath}.toDate`}
 								label="Sluttdato"
 								disabled={_get(formMethods.getValues(), `${annenErfaringPath}.ongoing`)}
 							/>
-							<FormikCheckbox
+							<FormCheckbox
 								id={`${annenErfaringPath}.ongoing`}
 								name={`${annenErfaringPath}.ongoing`}
 								label="Pågående"
@@ -73,7 +73,7 @@ export const AnnenErfaringForm = ({ formMethods }) => {
 						/>
 					</>
 				)}
-			</FormikDollyFieldArray>
+			</FormDollyFieldArray>
 		</Vis>
 	)
 }

@@ -1,6 +1,6 @@
-import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
-import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { initialPermittering } from '../initialValues'
 import React from 'react'
 
@@ -12,7 +12,7 @@ const infotekst = 'Start- og sluttdato må være innenfor perioden til arbeidsfo
 
 export const PermitteringForm = ({ path }: Permittering) => {
 	return (
-		<FormikDollyFieldArray
+		<FormDollyFieldArray
 			name={path}
 			header="Permittering"
 			hjelpetekst={infotekst}
@@ -21,21 +21,21 @@ export const PermitteringForm = ({ path }: Permittering) => {
 		>
 			{(partialPath: string, idx: number) => (
 				<React.Fragment key={idx}>
-					<FormikDatepicker
+					<FormDatepicker
 						name={`${partialPath}.permitteringsPeriode.fom`}
 						label="Permittering fra"
 					/>
-					<FormikDatepicker
+					<FormDatepicker
 						name={`${partialPath}.permitteringsPeriode.tom`}
 						label="Permittering til"
 					/>
-					<FormikTextInput
+					<FormTextInput
 						name={`${partialPath}.permitteringsprosent`}
 						label="Permitteringsprosent"
 						type="number"
 					/>
 				</React.Fragment>
 			)}
-		</FormikDollyFieldArray>
+		</FormDollyFieldArray>
 	)
 }

@@ -94,11 +94,11 @@ public class IdentService {
 
         var xmlRequest = prepareRequest(identer, isProd);
 
-        log.trace("M201 request: {}", xmlRequest);
+        log.info("M201 request: {}", xmlRequest);
 
         var miljoerResponse = servicerutineConsumer.sendMessage(xmlRequest, miljoer);
 
-        miljoerResponse.forEach((key, value) -> log.trace("Miljø: {} XML: {}", key, value));
+        miljoerResponse.forEach((key, value) -> log.info("Miljø: {} XML: {}", key, value));
 
         return miljoerResponse.entrySet().parallelStream()
                 .collect(Collectors.toMap(Map.Entry::getKey,
@@ -130,9 +130,9 @@ public class IdentService {
                 "<aksjonsKode>A</aksjonsKode>" +
                 "<aksjonsKode2>%s</aksjonsKode2><antallFnr>%s</antallFnr><nFnr>%s</nFnr></tpsServiceRutine></tpsPersonData>"
                         .formatted(isProd ? "2" : "0",
-                        Integer.toString(identer.size()),
-                        identer.stream()
-                                .map("<fnr>%s</fnr>"::formatted)
-                                .collect(Collectors.joining()));
+                                Integer.toString(identer.size()),
+                                identer.stream()
+                                        .map("<fnr>%s</fnr>"::formatted)
+                                        .collect(Collectors.joining()));
     }
 }

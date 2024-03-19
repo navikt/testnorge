@@ -1,8 +1,8 @@
 import _ from 'lodash'
 import { AdresseKodeverk } from '@/config/kodeverk'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
-import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import texts from '@/components/inntektStub/texts'
 import tilleggsinformasjonPaths from '@/components/inntektStub/paths'
 
@@ -58,7 +58,7 @@ const fieldResolver = (field, handleChange, formMethods, path, index, options = 
 
 	if (dateFields.includes(field)) {
 		return (
-			<FormikDatepicker
+			<FormDatepicker
 				key={index}
 				visHvisAvhuket={false}
 				name={`${path}.${fieldName}`}
@@ -69,7 +69,7 @@ const fieldResolver = (field, handleChange, formMethods, path, index, options = 
 		)
 	} else if (field === 'skattemessigBosattILand' || field === 'opptjeningsland') {
 		return (
-			<FormikSelect
+			<FormSelect
 				key={index}
 				name={`${path}.${fieldName}`}
 				label={texts(field)}
@@ -81,7 +81,7 @@ const fieldResolver = (field, handleChange, formMethods, path, index, options = 
 		)
 	} else if (optionsUtfylt(options)) {
 		return (
-			<FormikTextInput
+			<FormTextInput
 				key={index}
 				visHvisAvhuket={false}
 				name={`${path}.${fieldName}`}
@@ -97,7 +97,7 @@ const fieldResolver = (field, handleChange, formMethods, path, index, options = 
 	const fieldPath = `${path}.${tilleggsinformasjonPaths(field)}`
 
 	return (
-		<FormikSelect
+		<FormSelect
 			key={index}
 			name={`${path}.${fieldName}`}
 			value={_.get(values, fieldPath)}

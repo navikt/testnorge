@@ -12,6 +12,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class FoedselsmeldingDTO {
+
     String identFar;
     String identMor;
     String identtype;

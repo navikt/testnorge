@@ -1,10 +1,9 @@
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { AdresseKodeverk } from '@/config/kodeverk'
-import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { getInitialStatsborgerskap } from '@/components/fagsystem/pdlf/form/initialValues'
-import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 import { useContext } from 'react'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 
@@ -16,21 +15,19 @@ type StatsborgerskapTypes = {
 export const StatsborgerskapForm = ({ path, identtype }: StatsborgerskapTypes) => {
 	return (
 		<>
-			<FormikSelect
+			<FormSelect
 				name={`${path}.landkode`}
 				label="Statsborgerskap"
 				kodeverk={AdresseKodeverk.StatsborgerskapLand}
 				size="large"
 				isClearable={false}
 			/>
-			<DatepickerWrapper>
-				<FormikDatepicker
-					name={`${path}.gyldigFraOgMed`}
-					label="Statsborgerskap fra"
-					maxDate={new Date()}
-				/>
-				<FormikDatepicker name={`${path}.gyldigTilOgMed`} label="Statsborgerskap til" />
-			</DatepickerWrapper>
+			<FormDatepicker
+				name={`${path}.gyldigFraOgMed`}
+				label="Statsborgerskap fra"
+				maxDate={new Date()}
+			/>
+			<FormDatepicker name={`${path}.gyldigTilOgMed`} label="Statsborgerskap til" />
 			<AvansertForm path={path} kanVelgeMaster={identtype !== 'NPID'} />
 		</>
 	)
@@ -41,7 +38,7 @@ export const Statsborgerskap = () => {
 
 	return (
 		<div className="flexbox--flex-wrap">
-			<FormikDollyFieldArray
+			<FormDollyFieldArray
 				name={'pdldata.person.statsborgerskap'}
 				header="Statsborgerskap"
 				newEntry={getInitialStatsborgerskap(opts?.identtype === 'NPID' ? 'PDL' : 'FREG')}
@@ -50,7 +47,7 @@ export const Statsborgerskap = () => {
 				{(path: string, _idx: number) => (
 					<StatsborgerskapForm path={path} identtype={opts?.identtype} />
 				)}
-			</FormikDollyFieldArray>
+			</FormDollyFieldArray>
 		</div>
 	)
 }

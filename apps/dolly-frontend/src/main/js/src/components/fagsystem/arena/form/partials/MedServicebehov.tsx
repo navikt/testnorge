@@ -1,8 +1,8 @@
 import React, { useContext } from 'react'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import _ from 'lodash'
 import { Alert } from '@navikt/ds-react'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
@@ -48,14 +48,14 @@ export const MedServicebehov = ({ formMethods, path }) => {
 				</Alert>
 			)}
 			<div className="flexbox--flex-wrap">
-				<FormikSelect
+				<FormSelect
 					name={`${path}.kvalifiseringsgruppe`}
 					label="Servicebehov"
 					options={Options('kvalifiseringsgruppe')}
 					size="xlarge"
 				/>
 				{!opts.personFoerLeggTil?.arenaforvalteren && (
-					<FormikDatepicker
+					<FormDatepicker
 						name={`${path}.aktiveringDato`}
 						label="Aktiveringsdato"
 						minDate={new Date('2002-12-30')}
@@ -64,15 +64,15 @@ export const MedServicebehov = ({ formMethods, path }) => {
 			</div>
 			{arenaforvalter.aap115 && (
 				<Kategori title="11-5-vedtak">
-					<FormikDatepicker name={`${path}.aap115[0].fraDato`} label="Fra dato" />
+					<FormDatepicker name={`${path}.aap115[0].fraDato`} label="Fra dato" />
 				</Kategori>
 			)}
 
 			{arenaforvalter.aap && (
 				<Kategori title="AAP-vedtak UA - positivt utfall">
 					<div className="flexbox--flex-wrap">
-						<FormikDatepicker name={`${path}.aap[0].fraDato`} label="Fra dato" />
-						<FormikDatepicker name={`${path}.aap[0].tilDato`} label="Til dato" />
+						<FormDatepicker name={`${path}.aap[0].fraDato`} label="Fra dato" />
+						<FormDatepicker name={`${path}.aap[0].tilDato`} label="Til dato" />
 					</div>
 				</Kategori>
 			)}
@@ -83,7 +83,7 @@ export const MedServicebehov = ({ formMethods, path }) => {
 					title="Dagpengevedtak"
 				>
 					<div className="flexbox--flex-wrap">
-						<FormikSelect
+						<FormSelect
 							name={`${path}.dagpenger[0].rettighetKode`}
 							options={Options('rettighetKode')}
 							isDisabled={true}
@@ -91,9 +91,9 @@ export const MedServicebehov = ({ formMethods, path }) => {
 							label="Rettighetskode"
 							size={'xlarge'}
 						/>
-						<FormikDatepicker name={`${path}.dagpenger[0].fraDato`} label="Fra dato" />
-						<FormikDatepicker name={`${path}.dagpenger[0].tilDato`} label="Til dato" />
-						<FormikDatepicker name={`${path}.dagpenger[0].mottattDato`} label="Mottatt dato" />
+						<FormDatepicker name={`${path}.dagpenger[0].fraDato`} label="Fra dato" />
+						<FormDatepicker name={`${path}.dagpenger[0].tilDato`} label="Til dato" />
+						<FormDatepicker name={`${path}.dagpenger[0].mottattDato`} label="Mottatt dato" />
 					</div>
 				</Kategori>
 			)}

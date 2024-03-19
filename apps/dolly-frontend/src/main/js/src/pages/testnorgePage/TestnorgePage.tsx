@@ -9,14 +9,14 @@ import '@/pages/gruppe/PersonVisning/PersonVisning.less'
 import { PdlData } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import './TestnorgePage.less'
 import * as Yup from 'yup'
-import DisplayFormikState from '@/utils/DisplayFormikState'
+import DisplayFormState from '@/utils/DisplayFormState'
 import { Gruppe } from '@/utils/hooks/useGruppe'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 import { bottom } from '@popperjs/core'
 import { CypressSelector } from '../../../cypress/mocks/Selectors'
 import { Form, FormProvider, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
-import DisplayFormikErrors from '@/utils/DisplayFormikErrors'
+import DisplayFormErrors from '@/utils/DisplayFormErrors'
 import PersonSearch from '@/service/services/personsearch/PersonSearch'
 import { Exception } from '@opentelemetry/api'
 
@@ -94,9 +94,9 @@ export default ({ gruppe }: TestnorgePageProps) => {
 			<FormProvider {...formMethods}>
 				<Form control={formMethods.control} onSubmit={formMethods.handleSubmit(onSubmit)}>
 					<Fragment>
-						{devEnabled && <DisplayFormikState {...formMethods} />}
+						{devEnabled && <DisplayFormState {...formMethods} />}
 						{devEnabled && (
-							<DisplayFormikErrors errors={formMethods.formState.errors} label={'Vis errors'} />
+							<DisplayFormErrors errors={formMethods.formState.errors} label={'Vis errors'} />
 						)}
 						<SearchContainer
 							left={

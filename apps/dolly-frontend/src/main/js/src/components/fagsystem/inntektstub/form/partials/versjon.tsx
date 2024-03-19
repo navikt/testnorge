@@ -4,7 +4,7 @@ import { Inntektsinformasjon } from './inntektinformasjonTypes'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 
 type Versjonsoversikt = {
-	formikIdx?: number
+	formIdx?: number
 	underversjonerIdx?: Array<number>
 }
 
@@ -31,7 +31,7 @@ export default function versjonsinformasjon(
 	//Samler spesifikk versjoninformasjon for den inntekten (idx) som skal vise
 	const spesifikkVersjonsinfo: SpesifikkVersjon = versjonsliste.reduce(
 		(acc: SpesifikkVersjon, curr: Versjonsoversikt, kdx: number) => {
-			if (curr.formikIdx === idx) {
+			if (curr.formIdx === idx) {
 				return { ...acc, underversjonerIdx: curr.underversjonerIdx, gjeldendeIdx: kdx }
 			} else if (curr.underversjonerIdx.some((versjon) => versjon === idx)) {
 				return { ...acc, versjonAv: kdx, underVersjonerIdx: curr.underversjonerIdx }
@@ -56,10 +56,10 @@ const mapVersjonsliste = (
 	const versjonsoversikt: Array<Versjonsoversikt> = []
 	inntektValues.forEach((inntektinfo: Inntektsinformasjon, idx: number) => {
 		if (_.isNil(inntektinfo.versjon)) {
-			versjonsoversikt.push({ formikIdx: idx, underversjonerIdx: [] })
+			versjonsoversikt.push({ formIdx: idx, underversjonerIdx: [] })
 		} else {
 			versjonsoversikt.forEach((inntekt) => {
-				if (sjekkKombinasjon(inntektValues[inntekt.formikIdx], inntektinfo)) {
+				if (sjekkKombinasjon(inntektValues[inntekt.formIdx], inntektinfo)) {
 					inntekt.underversjonerIdx.push(idx)
 					if (inntektinfo.versjon !== inntekt.underversjonerIdx.length) {
 						//Endrer versjonsnr ved sletting av versjonsnr foran

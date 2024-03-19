@@ -1,6 +1,6 @@
-import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { getInitialKjoenn } from '@/components/fagsystem/pdlf/form/initialValues'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { useContext } from 'react'
@@ -14,7 +14,7 @@ type KjoennTypes = {
 export const KjoennForm = ({ path, identtype }: KjoennTypes) => {
 	return (
 		<>
-			<FormikSelect
+			<FormSelect
 				name={`${path}.kjoenn`}
 				label="Kjønn"
 				options={Options('kjoenn')}
@@ -31,14 +31,14 @@ export const Kjoenn = () => {
 
 	return (
 		<div className="flexbox--flex-wrap">
-			<FormikDollyFieldArray
+			<FormDollyFieldArray
 				name={'pdldata.person.kjoenn'}
 				header="Kjønn"
 				newEntry={getInitialKjoenn(opts?.identtype === 'NPID' ? 'PDL' : 'FREG')}
 				canBeEmpty={false}
 			>
 				{(path: string) => <KjoennForm path={path} identtype={opts?.identtype} />}
-			</FormikDollyFieldArray>
+			</FormDollyFieldArray>
 		</div>
 	)
 }

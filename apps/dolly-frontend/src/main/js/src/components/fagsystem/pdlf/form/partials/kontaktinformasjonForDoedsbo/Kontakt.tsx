@@ -1,7 +1,7 @@
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
-import { DollySelect, FormikSelect } from '@/components/ui/form/inputs/select/Select'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { DollySelect, FormSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { getPlaceholder, setNavn } from '../utils'
 import _ from 'lodash'
 import {
@@ -13,7 +13,6 @@ import { OrganisasjonSelect } from '@/components/organisasjonSelect'
 import { PdlNyPerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlNyPerson'
 import { PdlEksisterendePerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlEksisterendePerson'
 import { useEffect } from 'react'
-import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 import { useGenererNavn } from '@/utils/hooks/useGenererNavn'
 import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
 import { UseFormReturn } from 'react-hook-form/dist/types'
@@ -111,7 +110,7 @@ export const Kontakt = ({ formMethods, path, eksisterendeNyPerson = null }: Kont
 
 	return (
 		<Kategori title="Kontakt">
-			<FormikSelect
+			<FormSelect
 				name={`${path}.kontaktType`}
 				label="Kontakttype"
 				value={getKontakttype()}
@@ -175,14 +174,12 @@ export const Kontakt = ({ formMethods, path, eksisterendeNyPerson = null }: Kont
 						eksisterendeNyPerson={eksisterendeNyPerson}
 						formMethods={formMethods}
 					/>
-					<DatepickerWrapper>
-						<FormikDatepicker
-							name={`${personPath}.foedselsdato`}
-							label="Fødselsdato"
-							disabled={disablePersoninfo}
-							maxDate={new Date()}
-						/>
-					</DatepickerWrapper>
+					<FormDatepicker
+						name={`${personPath}.foedselsdato`}
+						label="Fødselsdato"
+						disabled={disablePersoninfo}
+						maxDate={new Date()}
+					/>
 					<DollySelect
 						name={`${personPath}.navn.fornavn`}
 						label="Kontaktperson navn"

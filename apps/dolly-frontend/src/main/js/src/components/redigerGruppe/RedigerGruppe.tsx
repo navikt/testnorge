@@ -2,7 +2,7 @@ import React from 'react'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 import * as yup from 'yup'
 import Loading from '@/components/ui/loading/Loading'
-import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 
 import './RedigerGruppe.less'
 import { useNavigate } from 'react-router-dom'
@@ -111,7 +111,7 @@ const RedigerGruppe = ({
 				onSubmit={formMethods.handleSubmit(onHandleSubmit)}
 			>
 				<div className="fields">
-					<FormikTextInput
+					<FormTextInput
 						data-cy={CypressSelector.INPUT_NAVN}
 						name="navn"
 						label="NAVN"
@@ -119,7 +119,7 @@ const RedigerGruppe = ({
 						useOnChange={true}
 						autoFocus
 					/>
-					<FormikTextInput
+					<FormTextInput
 						data-cy={CypressSelector.INPUT_HENSIKT}
 						name="hensikt"
 						label="HENSIKT"

@@ -1,8 +1,8 @@
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
-import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
-import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { OrganisasjonMedArbeidsforholdSelect } from '@/components/organisasjonSelect'
@@ -96,13 +96,13 @@ export const DetaljertSykemelding = ({ formMethods }: SykemeldingForm) => {
 	return (
 		<div className="flexbox--wrap">
 			<div className="flexbox--flex-wrap">
-				<FormikDatepicker name="sykemelding.detaljertSykemelding.startDato" label="Startdato" />
-				<FormikCheckbox
+				<FormDatepicker name="sykemelding.detaljertSykemelding.startDato" label="Startdato" />
+				<FormCheckbox
 					name="sykemelding.detaljertSykemelding.umiddelbarBistand"
 					checkboxMargin
 					label="Trenger umiddelbar bistand"
 				/>
-				<FormikCheckbox
+				<FormCheckbox
 					name="sykemelding.detaljertSykemelding.manglendeTilretteleggingPaaArbeidsplassen"
 					label="Manglende tilrettelegging på arbeidsplassen"
 					checkboxMargin
@@ -110,7 +110,7 @@ export const DetaljertSykemelding = ({ formMethods }: SykemeldingForm) => {
 			</div>
 			<Kategori title="Diagnose" vis="sykemelding">
 				<div className="flexbox--flex-wrap">
-					<FormikSelect
+					<FormSelect
 						name="sykemelding.detaljertSykemelding.hovedDiagnose.diagnosekode"
 						label="Diagnose"
 						options={SelectOptionsDiagnoser()}
@@ -122,13 +122,13 @@ export const DetaljertSykemelding = ({ formMethods }: SykemeldingForm) => {
 					/>
 				</div>
 			</Kategori>
-			<FormikDollyFieldArray
+			<FormDollyFieldArray
 				name="sykemelding.detaljertSykemelding.biDiagnoser"
 				header="Bidiagnose"
 				newEntry={initialValuesDiagnose}
 			>
 				{(path: string) => (
-					<FormikSelect
+					<FormSelect
 						name={`${path}.diagnosekode`}
 						label="Diagnose"
 						options={SelectOptionsDiagnoser()}
@@ -137,9 +137,9 @@ export const DetaljertSykemelding = ({ formMethods }: SykemeldingForm) => {
 						isClearable={false}
 					/>
 				)}
-			</FormikDollyFieldArray>
+			</FormDollyFieldArray>
 			<Kategori title="Helsepersonell" vis="sykemelding">
-				<FormikSelect
+				<FormSelect
 					name="sykemelding.detaljertSykemelding.helsepersonell.ident"
 					label="Helsepersonell"
 					options={helsepersonellOptions}
@@ -158,7 +158,7 @@ export const DetaljertSykemelding = ({ formMethods }: SykemeldingForm) => {
 						valueNavn={true}
 						isClearable={true}
 					/>
-					<FormikSelect
+					<FormSelect
 						name="sykemelding.detaljertSykemelding.arbeidsgiver.yrkesbetegnelse"
 						label="Yrkesbetegnelse"
 						kodeverk={ArbeidKodeverk.Yrker}
@@ -166,59 +166,59 @@ export const DetaljertSykemelding = ({ formMethods }: SykemeldingForm) => {
 						isClearable={false}
 						optionHeight={50}
 					/>
-					<FormikTextInput
+					<FormTextInput
 						name="sykemelding.detaljertSykemelding.arbeidsgiver.stillingsprosent"
 						label="Stillingsprosent"
 						type="number"
 					/>
 				</div>
 			</Kategori>
-			<FormikDollyFieldArray
+			<FormDollyFieldArray
 				name="sykemelding.detaljertSykemelding.perioder"
 				header="Periode"
 				newEntry={initialValuesPeriode}
 			>
 				{(path: string) => (
 					<>
-						<FormikDatepicker name={`${path}.fom`} label="F.o.m. dato" />
-						<FormikDatepicker name={`${path}.tom`} label="T.o.m. dato" />
-						<FormikSelect
+						<FormDatepicker name={`${path}.fom`} label="F.o.m. dato" />
+						<FormDatepicker name={`${path}.tom`} label="T.o.m. dato" />
+						<FormSelect
 							name={`${path}.aktivitet.aktivitet`}
 							label="Aktivitet"
 							options={Options('aktivitet')}
 						/>
-						<FormikTextInput
+						<FormTextInput
 							name={`${path}.aktivitet.behandlingsdager`}
 							label="Antall behandlingsdager"
 							type="number"
 						/>
-						<FormikTextInput name={`${path}.aktivitet.grad`} label="Grad" type="number" />
-						<FormikCheckbox
+						<FormTextInput name={`${path}.aktivitet.grad`} label="Grad" type="number" />
+						<FormCheckbox
 							name={`${path}.aktivitet.reisetilskudd`}
 							label="Har reisetilskudd"
 							checkboxMargin
 						/>
 					</>
 				)}
-			</FormikDollyFieldArray>
+			</FormDollyFieldArray>
 			<Kategori title="Detaljer" vis="sykemelding">
 				<div className="flexbox--flex-wrap">
-					<FormikTextInput
+					<FormTextInput
 						name="sykemelding.detaljertSykemelding.detaljer.tiltakNav"
 						label="Tiltak fra Nav"
 						size="xlarge"
 					/>
-					<FormikTextInput
+					<FormTextInput
 						name="sykemelding.detaljertSykemelding.detaljer.tiltakArbeidsplass"
 						label="Tiltak på arbeidsplass"
 						size="xlarge"
 					/>
-					<FormikTextInput
+					<FormTextInput
 						name="sykemelding.detaljertSykemelding.detaljer.beskrivHensynArbeidsplassen"
 						label="Hensyn på arbeidsplass"
 						size="xlarge"
 					/>
-					<FormikCheckbox
+					<FormCheckbox
 						name="sykemelding.detaljertSykemelding.detaljer.arbeidsforEtterEndtPeriode"
 						label="Arbeidsfør etter endt periode"
 						size="small"

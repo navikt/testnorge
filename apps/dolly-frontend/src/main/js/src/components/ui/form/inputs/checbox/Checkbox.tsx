@@ -55,7 +55,7 @@ export const DollyCheckbox = ({
 	</InputWrapper>
 )
 
-export const FormikCheckbox = ({
+export const FormCheckbox = ({
 	afterChange = null,
 	size = 'small',
 	checkboxMargin = false,

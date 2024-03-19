@@ -17,6 +17,7 @@ import { SammendragForm } from '@/components/fagsystem/arbeidsplassen/form/parti
 import { validation } from '@/components/fagsystem/arbeidsplassen/form/validation'
 import { HjemmelForm } from '@/components/fagsystem/arbeidsplassen/form/partials/HjemmelForm'
 import { useFormContext } from 'react-hook-form'
+import './CvForm.less'
 
 export const arbeidsplassenAttributt = 'arbeidsplassenCV'
 export const ArbeidsplassenForm = () => {
@@ -29,7 +30,7 @@ export const ArbeidsplassenForm = () => {
 				iconType="cv"
 				startOpen={erForsteEllerTest(formMethods.getValues(), [arbeidsplassenAttributt])}
 			>
-				<div className="flexbox--flex-wrap">
+				<div className="flexbox--flex-wrap cv-form">
 					<JobboenskerForm formMethods={formMethods} />
 					<UtdanningForm formMethods={formMethods} />
 					<FagbrevForm formMethods={formMethods} />

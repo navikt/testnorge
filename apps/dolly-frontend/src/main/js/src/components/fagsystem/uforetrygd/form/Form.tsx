@@ -2,10 +2,10 @@ import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
 import React, { useEffect, useState } from 'react'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import Panel from '@/components/ui/panel/Panel'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
-import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { genererTilfeldigeNavPersonidenter } from '@/utils/GenererTilfeldigeNavPersonidenter'
 import { useNavEnheter } from '@/utils/hooks/useNorg2'
 import { BarnetilleggForm } from '@/components/fagsystem/uforetrygd/form/partials/BarnetilleggForm'
@@ -38,11 +38,8 @@ export const UforetrygdForm = () => {
 				startOpen={erForsteEllerTest(formMethods.getValues(), [uforetrygdPath])}
 			>
 				<div className="flexbox--flex-wrap">
-					<FormikDatepicker name={`${uforetrygdPath}.uforetidspunkt`} label="Uføretidspunkt" />
-					<FormikDatepicker
-						name={`${uforetrygdPath}.kravFremsattDato`}
-						label="Krav fremsatt dato"
-					/>
+					<FormDatepicker name={`${uforetrygdPath}.uforetidspunkt`} label="Uføretidspunkt" />
+					<FormDatepicker name={`${uforetrygdPath}.kravFremsattDato`} label="Krav fremsatt dato" />
 					<Monthpicker
 						name={`${uforetrygdPath}.onsketVirkningsDato`}
 						label="Ønsket virkningsdato"
@@ -52,7 +49,7 @@ export const UforetrygdForm = () => {
 							formMethods.trigger(`${uforetrygdPath}`)
 						}}
 					/>
-					<FormikTextInput
+					<FormTextInput
 						name={`${uforetrygdPath}.inntektForUforhet`}
 						label="Inntekt før uførhet"
 						type="number"
@@ -60,25 +57,25 @@ export const UforetrygdForm = () => {
 				</div>
 				<BarnetilleggForm formMethods={formMethods} />
 				<div className="flexbox--flex-wrap">
-					<FormikSelect
+					<FormSelect
 						name={`${uforetrygdPath}.minimumInntektForUforhetType`}
 						label="Sats for minimum IFU"
 						size="xlarge"
 						options={Options('minimumInntektForUforhetType')}
 					/>
 
-					<FormikTextInput name={`${uforetrygdPath}.uforegrad`} label="Uføregrad" type="number" />
-					<FormikSelect
+					<FormTextInput name={`${uforetrygdPath}.uforegrad`} label="Uføregrad" type="number" />
+					<FormSelect
 						options={randomSaksbehandlere}
 						name={`${uforetrygdPath}.saksbehandler`}
 						label={'Saksbehandler'}
 					/>
-					<FormikSelect
+					<FormSelect
 						options={randomAttesterere}
 						name={`${uforetrygdPath}.attesterer`}
 						label={'Attesterer'}
 					/>
-					<FormikSelect
+					<FormSelect
 						name={`${uforetrygdPath}.navEnhetId`}
 						label={'NAV-kontor'}
 						size={'xxlarge'}

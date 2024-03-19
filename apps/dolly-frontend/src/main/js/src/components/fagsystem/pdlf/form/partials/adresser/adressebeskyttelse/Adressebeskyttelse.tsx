@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { getInitialAdressebeskyttelse } from '@/components/fagsystem/pdlf/form/initialValues'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
-import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
@@ -76,7 +76,7 @@ export const AdressebeskyttelseForm = ({
 	return (
 		<React.Fragment key={idx}>
 			<div className="flexbox--full-width">
-				<FormikSelect
+				<FormSelect
 					name={`${path}.gradering`}
 					label="Gradering"
 					options={options}
@@ -94,7 +94,7 @@ export const Adressebeskyttelse = ({ formMethods }: AdressebeskyttelseValues) =>
 	const identtype = getIdenttype(formMethods, opts.identtype)
 	return (
 		<Kategori title="Adressebeskyttelse">
-			<FormikDollyFieldArray
+			<FormDollyFieldArray
 				name="pdldata.person.adressebeskyttelse"
 				header="Adressebeskyttelse"
 				newEntry={getInitialAdressebeskyttelse(identtype === 'NPID' ? 'PDL' : 'FREG')}
@@ -108,7 +108,7 @@ export const Adressebeskyttelse = ({ formMethods }: AdressebeskyttelseValues) =>
 						identtype={identtype}
 					/>
 				)}
-			</FormikDollyFieldArray>
+			</FormDollyFieldArray>
 		</Kategori>
 	)
 }

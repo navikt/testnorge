@@ -5,10 +5,12 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 
 @Data
+@SuperBuilder
 @NoArgsConstructor
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "adressetype")
 @JsonSubTypes({
@@ -19,14 +21,16 @@ import java.time.LocalDateTime;
 public abstract class AdresseDTO {
 
     private String kommunenr;
+    private String kommuneNavn;
     private LocalDateTime flyttedato;
     private LocalDateTime gyldigTilDato;
     private String postnr;
+    private String poststed;
     private String tilleggsadresse;
     private String bolignr;
     private Boolean deltAdresse;
     private String matrikkelId;
-    private Adressetype adressetype;
 
+    public abstract Adressetype getAdressetype();
     public enum Adressetype {GATE, MATR}
 }

@@ -1,9 +1,9 @@
 import * as React from 'react'
 import { useEffect, useState } from 'react'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { generateValidKontoOptions } from '@/utils/GenererGyldigNorskBankkonto'
-import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
+import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 
 export const NorskBankkonto = ({ formMethods }: { formMethods: UseFormReturn }) => {
@@ -19,7 +19,7 @@ export const NorskBankkonto = ({ formMethods }: { formMethods: UseFormReturn }) 
 	return (
 		<Vis attributt={path}>
 			<div className="flexbox--flex-wrap">
-				<FormikSelect
+				<FormSelect
 					placeholder={'Velg ...'}
 					options={validKontoOptions}
 					isClearable={true}
@@ -28,7 +28,7 @@ export const NorskBankkonto = ({ formMethods }: { formMethods: UseFormReturn }) 
 					isDisabled={harTilfeldig}
 				/>
 				<div style={{ marginTop: '17px' }}>
-					<FormikCheckbox
+					<FormCheckbox
 						name={`${path}.tilfeldigKontonummer`}
 						label="Har tilfeldig kontonummer"
 						size="medium"

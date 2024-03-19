@@ -2,7 +2,7 @@ import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import Panel from '@/components/ui/panel/Panel'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
 import { validation } from './validation'
-import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import InntektsinformasjonForm from './partials/inntektsinformasjonForm'
 import { Inntektsinformasjon } from './partials/inntektstubTypes'
 import { useFormContext } from 'react-hook-form'
@@ -45,7 +45,7 @@ export const InntektstubForm = () => {
 				startOpen={erForsteEllerTest(formMethods.getValues(), [inntektstubAttributt])}
 			>
 				<div className="flexbox--flex-wrap">
-					<FormikDollyFieldArray
+					<FormDollyFieldArray
 						tag={undefined}
 						name={inntektstubPath}
 						header="Inntektsinformasjon"
@@ -54,7 +54,7 @@ export const InntektstubForm = () => {
 						canBeEmpty={false}
 					>
 						{(path: string) => <InntektsinformasjonForm path={path} />}
-					</FormikDollyFieldArray>
+					</FormDollyFieldArray>
 				</div>
 			</Panel>
 		</Vis>

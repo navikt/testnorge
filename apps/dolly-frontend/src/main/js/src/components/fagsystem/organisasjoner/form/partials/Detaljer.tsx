@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react'
 import _ from 'lodash'
 import { organisasjonPaths } from '../paths'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
-import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { OrganisasjonKodeverk } from '@/config/kodeverk'
 import { Kontaktdata } from './Kontaktdata'
@@ -87,7 +87,7 @@ export const Detaljer = ({
 							</ToggleGroup.Item>
 						</StyledToggleGroup>
 					)}
-					<FormikSelect
+					<FormSelect
 						name={`${path}.enhetstype`}
 						label="Enhetstype"
 						kodeverk={
@@ -99,7 +99,7 @@ export const Detaljer = ({
 						isClearable={false}
 					/>
 				</div>
-				<FormikSelect
+				<FormSelect
 					name={`${path}.naeringskode`}
 					label="Næringskode"
 					kodeverk={OrganisasjonKodeverk.Naeringskoder}
@@ -109,7 +109,7 @@ export const Detaljer = ({
 					visHvisAvhuket
 				/>
 				{typeUnderenhet === TypeUnderenhet.JURIDISKENHET && (
-					<FormikSelect
+					<FormSelect
 						name={`${path}.sektorkode`}
 						label="Sektorkode"
 						kodeverk={OrganisasjonKodeverk.Sektorkoder}
@@ -118,9 +118,9 @@ export const Detaljer = ({
 						visHvisAvhuket
 					/>
 				)}
-				<FormikTextInput name={`${path}.formaal`} label="Formål" size="xlarge" />
-				<FormikDatepicker name={`${path}.stiftelsesdato`} label="Stiftelsesdato" />
-				<FormikSelect
+				<FormTextInput name={`${path}.formaal`} label="Formål" size="xlarge" />
+				<FormDatepicker name={`${path}.stiftelsesdato`} label="Stiftelsesdato" />
+				<FormSelect
 					name={`${path}.maalform`}
 					label="Målform"
 					options={Options('maalform')}
@@ -133,7 +133,7 @@ export const Detaljer = ({
 
 			<Adresser formMethods={formMethods} path={path} />
 
-			<FormikDollyFieldArray
+			<FormDollyFieldArray
 				name={`${path}.underenheter`}
 				header="Underenhet"
 				newEntry={initialValues}
@@ -164,7 +164,7 @@ export const Detaljer = ({
 						/>
 					)
 				}}
-			</FormikDollyFieldArray>
+			</FormDollyFieldArray>
 		</>
 	)
 }

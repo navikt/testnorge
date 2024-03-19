@@ -3,9 +3,9 @@ import * as Yup from 'yup'
 import { useToggle } from 'react-use'
 import { NavLink } from 'react-router-dom'
 import Button from '@/components/ui/button/Button'
-import { DollySelect, FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { DollySelect, FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { DollyCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
-import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { Alert } from '@navikt/ds-react'
 import ModalActionKnapper from '@/components/ui/modal/ModalActionKnapper'
@@ -84,14 +84,14 @@ export const NyIdent = ({ brukernavn, onAvbryt, onSubmit }: NyBestillingProps) =
 				<div className="ny-bestilling-form">
 					<h3>Velg type og antall</h3>
 					<div className="ny-bestilling-form_selects">
-						<FormikSelect
+						<FormSelect
 							name="identtype"
 							label="Velg identtype"
 							size="medium"
 							options={Options('identtype')}
 							isClearable={false}
 						/>
-						<FormikTextInput name="antall" label="Antall" type="number" size="medium" />
+						<FormTextInput name="antall" label="Antall" type="number" size="medium" />
 					</div>
 					<div className="ny-bestilling-form_maler">
 						<div>
@@ -118,7 +118,7 @@ export const NyIdent = ({ brukernavn, onAvbryt, onSubmit }: NyBestillingProps) =
 								isClearable={false}
 								isDisabled={!malAktiv}
 							/>
-							<FormikSelect
+							<FormSelect
 								name="mal"
 								label="Maler"
 								isLoading={loading}

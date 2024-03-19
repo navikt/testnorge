@@ -205,7 +205,7 @@ export const DollyFieldArray = ({
 	)
 }
 
-export const FormikDollyFieldArray = ({
+export const FormDollyFieldArray = ({
 	name,
 	title = null,
 	header,

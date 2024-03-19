@@ -6,7 +6,7 @@ import {
 import { Arbeidsforhold, Forskudd, Fradrag, Inntekt } from './inntektstubTypes'
 import InntektsinformasjonLister from './inntektsinformasjonLister/inntektsinformasjonLister'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import { FormikDateTimepicker } from '@/components/ui/form/inputs/timepicker/Timepicker'
+import { FormDateTimepicker } from '@/components/ui/form/inputs/timepicker/Timepicker'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 import { useFieldArray } from 'react-hook-form'
 
@@ -60,7 +60,7 @@ export default ({ formMethods, path }: InntektendringForm) => {
 							header={`Inntektsendring (versjon ${idx + 1})`}
 							handleRemove={clickRemove}
 						>
-							<FormikDateTimepicker
+							<FormDateTimepicker
 								formMethods={formMethods}
 								name={`${listePath}.rapporteringsdato`}
 								label="Rapporteringsdato"
