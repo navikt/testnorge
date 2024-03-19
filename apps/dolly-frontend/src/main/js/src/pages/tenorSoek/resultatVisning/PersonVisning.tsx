@@ -10,6 +10,14 @@ import { NavigerTilPerson } from '@/pages/tenorSoek/resultatVisning/NavigerTilPe
 import { ImporterValgtePersoner } from '@/pages/tenorSoek/resultatVisning/ImporterValgtePersoner'
 import { useFinnesIDolly } from '@/utils/hooks/useIdent'
 
+const PersonVisningWrapper = styled.div`
+	position: sticky;
+	top: 80px;
+	max-height: 92vh;
+	overflow: auto;
+	scrollbar-width: thin;
+`
+
 const NavnHeader = styled.h2`
 	margin: 10px 0 15px 0;
 	word-break: break-word;
@@ -33,22 +41,24 @@ export const PersonVisning = ({ person, ident, loading, error }) => {
 	const personData = person.data?.dokumentListe?.[0]
 
 	return (
-		<Box background="surface-default" padding="3" borderRadius="medium">
-			<div className="flexbox--space">
-				<NavnHeader>{personData?.visningnavn}</NavnHeader>
-				{loadingFinnes && <Loading onlySpinner />}
-				{!loadingFinnes &&
-					(finnesIDolly ? (
-						<NavigerTilPerson ident={ident} />
-					) : (
-						<ImporterValgtePersoner identer={[ident]} isMultiple={false} />
-					))}
-			</div>
-			<FolkeregisteretVisning data={personData} />
-			<EnhetsregisteretForetaksregisteretVisning
-				data={_.get(personData, 'tenorRelasjoner.brreg-er-fr')}
-			/>
-			<InntektVisning data={personData?.tenorRelasjoner?.inntekt} />
-		</Box>
+		<PersonVisningWrapper>
+			<Box background="surface-default" padding="3" borderRadius="medium">
+				<div className="flexbox--space">
+					<NavnHeader>{personData?.visningnavn}</NavnHeader>
+					{loadingFinnes && <Loading onlySpinner />}
+					{!loadingFinnes &&
+						(finnesIDolly ? (
+							<NavigerTilPerson ident={ident} />
+						) : (
+							<ImporterValgtePersoner identer={[ident]} isMultiple={false} />
+						))}
+				</div>
+				<FolkeregisteretVisning data={personData} />
+				<EnhetsregisteretForetaksregisteretVisning
+					data={_.get(personData, 'tenorRelasjoner.brreg-er-fr')}
+				/>
+				<InntektVisning data={personData?.tenorRelasjoner?.inntekt} />
+			</Box>
+		</PersonVisningWrapper>
 	)
 }

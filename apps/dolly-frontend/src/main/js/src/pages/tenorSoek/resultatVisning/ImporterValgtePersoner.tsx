@@ -96,7 +96,7 @@ export const ImporterValgtePersoner = ({ identer, isMultiple }) => {
 					icon={<EnterIcon />}
 					loading={loading}
 					onClick={openModal}
-					style={{ minWidth: '150px' }}
+					style={{ minWidth: '155px', height: '24px', marginTop: '10px' }}
 				>
 					Importer person
 				</Button>

@@ -38,6 +38,7 @@ export const NavigerTilPerson = ({ ident }) => {
 			icon={<ArrowRightIcon />}
 			loading={loading}
 			onClick={handleClick}
+			style={{ minWidth: '118px' }}
 		>
 			Vis i gruppe
 		</Button>

@@ -23,14 +23,6 @@ const TagsWrapper = styled.div`
 	margin: 10px 0;
 `
 
-const PersonVisningWrapper = styled.div`
-	position: sticky;
-	top: 80px;
-	max-height: 92vh;
-	overflow: auto;
-	scrollbar-width: none;
-`
-
 export const TreffListe = ({ response, personListe, loading, error }: any) => {
 	if ((!personListe || personListe?.length === 0) && loading) {
 		return <Loading label="Laster treff ..." />
@@ -132,14 +124,12 @@ export const TreffListe = ({ response, personListe, loading, error }: any) => {
 				}}
 			>
 				{valgtPerson && (
-					<PersonVisningWrapper>
-						<PersonVisning
-							person={valgtPersonData?.data}
-							ident={valgtPerson?.id}
-							loading={valgtPersonLoading}
-							error={valgtPersonError}
-						/>
-					</PersonVisningWrapper>
+					<PersonVisning
+						person={valgtPersonData?.data}
+						ident={valgtPerson?.id}
+						loading={valgtPersonLoading}
+						error={valgtPersonError}
+					/>
 				)}
 			</div>
 		</div>
