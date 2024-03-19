@@ -50,7 +50,5 @@ spec:
       memory: 1024Mi
     limits:
       memory: 2048Mi
-  envFrom:
-    - secret: azure-trygdeetaten-ereg-batch-status-service-trygdeetaten
   ingresses:
-    - "https://ereg-batch-status-service.dev-fss-pub.nais.io"
+    - "https://testnav-ereg-batch-status-service.intern.dev.nav.no"
