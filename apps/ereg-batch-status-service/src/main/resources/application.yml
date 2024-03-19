@@ -9,7 +9,7 @@ spring:
     banner-mode: off
   application:
     name: ereg-batch-status-service
-    version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
+    version: application.version.todo
     description: Tjeneste for å hente ut batch status fra EREG.
   security:
     oauth2:
