@@ -1,17 +1,4 @@
-﻿---
-apiVersion: nais.io/v1
-kind: AzureAdApplication
-metadata:
-  name: ereg-batch-status-service-trygdeetaten
-  namespace: dolly
-  labels:
-    team: dolly
-spec:
-  secretName: azure-trygdeetaten-ereg-batch-status-service-trygdeetaten
-  secretKeyPrefix: "AZURE_TRYGDEETATEN"
-  tenant: trygdeetaten.no
----
-apiVersion: "nais.io/v1alpha1"
+﻿apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
   name: ereg-batch-status-service
@@ -31,6 +18,9 @@ spec:
           cluster: dev-gcp
         - application: organisasjon-bestilling-service
           cluster: dev-gcp
+    outbound:
+      external:
+        - host: testnav-modapp-ereg-proxy.dev-fss-pub.nais.io
   tokenx:
     enabled: true
   azure:

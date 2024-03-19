@@ -28,18 +28,11 @@ springdoc:
     url: /v3/api-docs
 
 consumers:
-  ereg-aura:
-    name: ereg-aura
-    namespace: arbeidsforhold
+  modapp-ereg-proxy:
+    name: testnav-modapp-ereg-proxy
+    namespace: dolly
+    url: https://testnav-modapp-ereg-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
-
-ereg:
-  envHostMap:
-    q1: https://modapp-q1.adeo.no
-    q2: https://modapp-q2.adeo.no
-    q4: https://modapp-q4.adeo.no
-    q5: https://modapp-q5.adeo.no
-    t3: https://modapp-t3.adeo.no
 
 management:
   endpoints:

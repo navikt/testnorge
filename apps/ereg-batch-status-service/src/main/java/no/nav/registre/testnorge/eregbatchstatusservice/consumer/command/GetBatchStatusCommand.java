@@ -17,33 +17,29 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @RequiredArgsConstructor
 @Slf4j
-public class GetBatchStatusCommand implements Callable<Long> {
+public class GetBatchStatusCommand implements Callable<Mono<Long>> {
     private final WebClient webClient;
+    private final String miljoe;
     private final Long id;
     private final String token;
 
     @Override
-    public Long call() {
-        Long response = webClient
+    public Mono<Long> call() {
+        return webClient
                 .get()
-                .uri(builder -> builder.path("/ereg/internal/batch/poll/{id}").build(id))
+                .uri(builder -> builder.path("/{miljoe}/ereg/internal/batch/poll/{id}").build(miljoe, id))
                 .header(AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .onStatus(HttpStatusCode::is4xxClientError, clientResponse -> {
                     if (clientResponse.statusCode().equals(HttpStatus.UNAUTHORIZED)) {
-                        log.error("Unauthorized error occurred when calling EREG");
-                        String wwwAuthenticateHeader = clientResponse.headers().asHttpHeaders().getFirst("WWW-Authenticate");
-                        log.info("WWW-Authenticate Header: " + wwwAuthenticateHeader);
+                        log.error("Unauthorized error occurred when calling modapp-ereg-proxy");
                         return Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Resource not found"));
                     }
-                    log.error("Client error occurred when calling EREG");
+                    log.error("Client error occurred when calling modapp-ereg-proxy");
                     return Mono.error(new ResponseStatusException(clientResponse.statusCode(), "Client error occurred"));
                 })
                 .bodyToMono(Long.class)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
-                .block();
-        log.info("Mottok statuskode fra Batch-Ereg: " + response);
-        return response;
+                        .filter(WebClientFilter::is5xxException));
     }
 }
