@@ -69,6 +69,7 @@ public abstract class AbstractControllerTest {
                         .builder()
                         .brukerId(UUID.randomUUID().toString())
                         .brukertype(AZURE)
+                        .brukernavn("brukernavn")
                         .build()
         );
     }
