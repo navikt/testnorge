@@ -28,7 +28,7 @@ public class ModappEregProxyApplicationStarter {
 
     private static final String[] miljoer = new String[]{ "q1", "q2", "q4" };
     private static final Map<String, String> miljoeUrlSegment = Map.of(
-            "q1", "02",
+            "q1", "05",
             "q2", "10",
             "q4", "09"
     );

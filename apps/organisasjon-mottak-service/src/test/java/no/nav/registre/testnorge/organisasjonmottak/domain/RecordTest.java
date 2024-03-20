@@ -26,17 +26,17 @@ class RecordTest {
     @Test
     void testCreate() {
         // Create mock objects
-        Line line = mock(Line.class);
-        String orgnummer = "123456789";
-        String enhetstype = "AS";
-        Date regDato = Date.from(LocalDate.of(2022, 1, 1).atStartOfDay().toInstant(ZoneOffset.UTC));
-        boolean update = false;
+        var line = mock(Line.class);
+        var orgnummer = "123456789";
+        var enhetstype = "AS";
+        var regDato = Date.from(LocalDate.of(2022, 1, 1).atStartOfDay().toInstant(ZoneOffset.UTC));
+        var update = false;
 
         // Call method under test
-        Record result = Record.create(Collections.singletonList(line), orgnummer, enhetstype, regDato, update);
+        var result = Record.create(Collections.singletonList(line), orgnummer, enhetstype, regDato, update);
 
         // Verify that the StringBuilder contains the correct date
-        String expectedDate = "20220101";
+        var expectedDate = "20220101";
         assertTrue(result.build().contains(expectedDate));
     }
 }
