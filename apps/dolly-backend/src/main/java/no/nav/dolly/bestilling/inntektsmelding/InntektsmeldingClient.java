@@ -91,13 +91,11 @@ public class InntektsmeldingClient implements ClientRegister {
             Long bestillingid
     ) {
         final var miljoe = inntektsmeldingRequest.getMiljoe();
-        log.info("Sender inntektsmelding for person: {} til miljø: {}", inntektsmeldingRequest.getArbeidstakerFnr(), miljoe);
         if (isSendMelding) {
             return inntektsmeldingConsumer
                     .postInntektsmelding(inntektsmeldingRequest)
                     .map(response -> {
                         if (isBlank(response.getError())) {
-                            log.info("Response har miljø {}", response.getMiljoe());
                             var entries = response
                                     .getDokumenter()
                                     .stream()
@@ -114,7 +112,6 @@ public class InntektsmeldingClient implements ClientRegister {
                                                 .request(gjeldendeInntektRequest)
                                                 .dokument(dokument)
                                                 .build());
-                                        log.info("Gjeldende inntektsmelding request for FNR {} har miljø {} og transaksjonId {}", gjeldendeInntektRequest.getArbeidstakerFnr(), gjeldendeInntektRequest.getMiljoe(), json);
                                         return TransaksjonMapping
                                                 .builder()
                                                 .ident(inntektsmeldingRequest.getArbeidstakerFnr())
@@ -126,22 +123,21 @@ public class InntektsmeldingClient implements ClientRegister {
                                                 .build();
                                     })
                                     .toList();
-                            log.info("Liste over requests for lagring: {}", entries);
                             transaksjonMappingService.saveAll(entries);
 
-                            return inntektsmeldingRequest.getMiljoe() + ":OK";
+                            return miljoe + ":OK";
 
                         } else {
                             log.error("Feilet å legge inn person: {} til Inntektsmelding miljø: {} feilmelding {}",
-                                    inntektsmeldingRequest.getArbeidstakerFnr(), inntektsmeldingRequest.getMiljoe(), response.getError());
+                                    inntektsmeldingRequest.getArbeidstakerFnr(), miljoe, response.getError());
 
-                            return String.format(STATUS_FMT, inntektsmeldingRequest.getMiljoe(),
+                            return String.format(STATUS_FMT, miljoe,
                                     errorStatusDecoder.getErrorText(response.getStatus(), response.getError()));
 
                         }
                     });
         } else {
-            return Flux.just(inntektsmeldingRequest.getMiljoe() + ":OK");
+            return Flux.just(miljoe + ":OK");
         }
     }
 

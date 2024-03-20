@@ -35,14 +35,6 @@ public class TransaksjonMappingService {
                 .toList();
     }
 
-    @Transactional(readOnly = true)
-    public List<RsTransaksjonMapping> getTransaksjonMapping(String ident) {
-
-        return transaksjonMappingRepository.findAllByBestillingIdAndIdent(null, ident).stream()
-                .map(this::toDTO)
-                .toList();
-    }
-
     public boolean existAlready(SystemTyper system, String ident, String miljoe, Long bestillingId) {
 
         return transaksjonMappingRepository.findAllBySystemAndIdent(system.name(), ident)
@@ -57,24 +49,11 @@ public class TransaksjonMappingService {
 
     @Transactional
     public void save(TransaksjonMapping entry) {
-        var existing = transaksjonMappingRepository.findAllByBestillingIdAndIdent(entry.getBestillingId(), entry.getIdent());
-        if (!existing.isEmpty()) {
-            existing.forEach(existingEntry -> {
-                if (existingEntry.getMiljoe() != null && existingEntry.getMiljoe().equals(entry.getMiljoe())) {
-                    logExistingEntriesExist(existingEntry, entry);
-                }
-            });
-        }
         transaksjonMappingRepository.save(entry);
-    }
-
-    void logExistingEntriesExist(TransaksjonMapping existingEntry, TransaksjonMapping newEntry) {
-        log.warn("TransaksjonMapping for ident {} og miljø {} finnes allerede i entry {}", newEntry.getIdent(), newEntry.getMiljoe(), existingEntry.getId(), new RuntimeException());
     }
 
     @Transactional
     public void slettTransaksjonMappingByTestident(String ident) {
-
         transaksjonMappingRepository.deleteAllByIdent(ident);
     }
 
