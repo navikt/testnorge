@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -194,7 +194,7 @@ class TestgruppeControllerPostTest extends AbstractControllerTest {
 
         var lagredeBestillinger = bestillingRepository.findByGruppenavnContaining("gruppe");
         assertThat(lagredeBestillinger).isNotNull();
-        assertThat(lagredeBestillinger.size()).isEqualTo(1);
+        assertThat(lagredeBestillinger).hasSize(1);
         var lagretBestilling = bestillingRepository
                 .findById(lagredeBestillinger.getFirst().getid())
                 .orElseThrow(() -> new NotFoundException("Finner ikke bestilling"));
