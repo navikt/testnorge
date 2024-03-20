@@ -7,7 +7,7 @@ spring:
     description: Service for å sende inn skattekort
   cloud:
     vault:
-      enabled: true
+      enabled: false
   security:
     oauth2:
       resourceserver:
