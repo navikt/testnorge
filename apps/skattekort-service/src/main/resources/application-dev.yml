@@ -1,7 +1,0 @@
-spring:
-  cloud:
-    vault:
-      database:
-        backend: postgresql/preprod-fss
-        role: udi-stub-dev-admin
-        enabled: true

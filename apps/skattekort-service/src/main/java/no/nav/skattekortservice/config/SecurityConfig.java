@@ -1,4 +1,4 @@
-package no.nav.udistub.config;
+package no.nav.skattekortservice.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

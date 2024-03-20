@@ -50,7 +50,6 @@ sourceSets {
 xjc {
     xjcVersion = '3.0'
     srcDirName = 'resources/schema'
-    extension = true
 }
 
 repositories {
@@ -66,15 +65,8 @@ repositories {
 }
 
 dependencies {
-    // XJC 3.0 requires a different JAXB API artifact
-    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:3.0.0-RC3'
-
-    xjcTool 'javax.xml.bind:jaxb-api:2.3.1'
-    xjcTool 'com.sun.xml.bind:jaxb-xjc:2.3.3'
-    xjcTool  'com.sun.xml.bind:jaxb-impl:2.3.3'
-
-    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:2.3.2'
-    implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.2'
+    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.0'
+    implementation 'org.glassfish.jaxb:jaxb-runtime:4.0.0'
 
     implementation 'no.nav.testnav.libs:servlet-core'
     implementation 'no.nav.testnav.libs:servlet-security'
@@ -94,6 +86,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
+    implementation 'ma.glasnost.orika:orika-core:1.5.4'
     implementation 'org.springframework.ws:spring-ws-security'
-
+    annotationProcessor 'org.projectlombok:lombok'
+    implementation 'org.projectlombok:lombok'
 }

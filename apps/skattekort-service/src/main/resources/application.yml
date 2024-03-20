@@ -5,6 +5,9 @@ spring:
     name: Testnav-Skattekort-Service
     version: 1.0
     description: Service for å sende inn skattekort
+  cloud:
+    vault:
+      enabled: true
   security:
     oauth2:
       resourceserver:
@@ -37,4 +40,6 @@ server:
   servlet:
     encoding:
       charset: UTF-8
+  error:
+    include-message: always
 
