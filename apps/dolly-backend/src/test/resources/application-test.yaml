@@ -3,6 +3,11 @@ APP_VERSION: ${application.version}
 environment: localhost
 TOKEN_X_ISSUER: dummy
 
+server:
+  tomcat:
+    threads:
+      max: 50
+
 jira:
   host: http://localhost:${wiremock.server.port:0}/jira
   username: dummy
