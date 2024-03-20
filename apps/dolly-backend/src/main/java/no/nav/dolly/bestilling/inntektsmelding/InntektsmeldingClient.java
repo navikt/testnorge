@@ -104,14 +104,15 @@ public class InntektsmeldingClient implements ClientRegister {
                                                         .joarkMetadata(inntektsmeldingRequest.getJoarkMetadata())
                                                         .miljoe(inntektsmeldingRequest.getMiljoe())
                                                         .build();
-
+                                                var json = toJson(TransaksjonMappingDTO.builder()
+                                                        .request(gjeldendeInntektRequest)
+                                                        .dokument(dokument)
+                                                        .build());
+                                                log.info("Gjeldended inntektsmelding request for FNR {} har miljø {} og transaksjonId {}", gjeldendeInntektRequest.getArbeidstakerFnr(), gjeldendeInntektRequest.getMiljoe(), json);
                                                 return TransaksjonMapping.builder()
                                                         .ident(inntektsmeldingRequest.getArbeidstakerFnr())
                                                         .bestillingId(bestillingid)
-                                                        .transaksjonId(toJson(TransaksjonMappingDTO.builder()
-                                                                .request(gjeldendeInntektRequest)
-                                                                .dokument(dokument)
-                                                                .build()))
+                                                        .transaksjonId(json)
                                                         .datoEndret(LocalDateTime.now())
                                                         .miljoe(inntektsmeldingRequest.getMiljoe())
                                                         .system(INNTKMELD.name())
