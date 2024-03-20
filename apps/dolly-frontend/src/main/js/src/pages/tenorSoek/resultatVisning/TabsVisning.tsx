@@ -1,8 +1,8 @@
 import { Tabs } from '@navikt/ds-react'
-import { CodeView } from '@/components/codeView'
 import React from 'react'
 import styled from 'styled-components'
 import { FileCodeIcon, KeyVerticalIcon } from '@navikt/aksel-icons'
+import SyntaxHighlighter from 'react-syntax-highlighter'
 
 const TabsVisningFormatter = styled.div`
 	width: 100%;
@@ -17,6 +17,13 @@ const TabsVisningFormatter = styled.div`
 		}
 	}
 `
+
+const StyledCodeView = styled(SyntaxHighlighter)`
+	font-size: 0.9em;
+	max-width: 820px;
+	margin: 0;
+`
+
 export const TabsVisning = ({ children, kildedata }: any) => {
 	const kildedataJson = JSON.parse(kildedata)
 	const kildedataPretty = JSON.stringify(kildedataJson, null, 2)
@@ -42,14 +49,14 @@ export const TabsVisning = ({ children, kildedata }: any) => {
 				<Tabs.Panel
 					value="kildedata"
 					style={{
-						display: 'inline-grid',
 						width: '100%',
 						maxHeight: '600px',
 						overflowX: 'auto',
+						scrollbarWidth: 'thin',
 						marginBottom: '15px',
 					}}
 				>
-					<CodeView code={kildedataPretty} language="json" />
+					<StyledCodeView language="json">{kildedataPretty}</StyledCodeView>
 				</Tabs.Panel>
 			</Tabs>
 		</TabsVisningFormatter>
