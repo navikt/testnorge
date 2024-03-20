@@ -88,6 +88,7 @@ public class InntektsmeldingClient implements ClientRegister {
     private Flux<String> postInntektsmelding(boolean isSendMelding,
                                              InntektsmeldingRequest inntektsmeldingRequest, Long bestillingid) {
 
+        log.info("Sender inntektsmelding for person: {} til miljø: {}", inntektsmeldingRequest.getArbeidstakerFnr(), inntektsmeldingRequest.getMiljoe());
         if (isSendMelding) {
             return inntektsmeldingConsumer.postInntektsmelding(inntektsmeldingRequest)
                     .map(response -> {
