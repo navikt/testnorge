@@ -49,4 +49,4 @@ spec:
       cpu: 200m
       memory: 1024Mi
   ingresses:
-    - "https://testnav-skattekort-service.intern.dev.nav.no
+    - "https://testnav-skattekort-service.intern.dev.nav.no"
