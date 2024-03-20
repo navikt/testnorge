@@ -3,11 +3,6 @@ APP_VERSION: ${application.version}
 environment: localhost
 TOKEN_X_ISSUER: dummy
 
-server:
-  tomcat:
-    threads:
-      max: 50
-
 jira:
   host: http://localhost:${wiremock.server.port:0}/jira
   username: dummy
@@ -101,6 +96,8 @@ spring:
       token: test
       enabled: false
   datasource:
+    hikari:
+      minimum-idle: 5
     url: jdbc:tc:postgresql:14.4:///dollyDB?TC_REUSABLE=true # 14.4 er versjon p.t. i dev-gcp.
     username: user
     password: pass
