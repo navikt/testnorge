@@ -85,14 +85,19 @@ public class InntektsmeldingClient implements ClientRegister {
         };
     }
 
-    private Flux<String> postInntektsmelding(boolean isSendMelding,
-                                             InntektsmeldingRequest inntektsmeldingRequest, Long bestillingid) {
-
-        log.info("Sender inntektsmelding for person: {} til miljø: {}", inntektsmeldingRequest.getArbeidstakerFnr(), inntektsmeldingRequest.getMiljoe());
+    private Flux<String> postInntektsmelding(
+            boolean isSendMelding,
+            InntektsmeldingRequest inntektsmeldingRequest,
+            Long bestillingid
+    ) {
+        final var miljoe = inntektsmeldingRequest.getMiljoe();
+        log.info("Sender inntektsmelding for person: {} til miljø: {}", inntektsmeldingRequest.getArbeidstakerFnr(), miljoe);
         if (isSendMelding) {
-            return inntektsmeldingConsumer.postInntektsmelding(inntektsmeldingRequest)
+            return inntektsmeldingConsumer
+                    .postInntektsmelding(inntektsmeldingRequest)
                     .map(response -> {
                         if (isBlank(response.getError())) {
+                            log.info("Response har miljø {}", response.getMiljoe());
                             var entries = response
                                     .getDokumenter()
                                     .stream()
@@ -102,21 +107,21 @@ public class InntektsmeldingClient implements ClientRegister {
                                                 .arbeidstakerFnr(inntektsmeldingRequest.getArbeidstakerFnr())
                                                 .inntekter(singletonList(inntektsmeldingRequest.getInntekter().get(response.getDokumenter().indexOf(dokument))))
                                                 .joarkMetadata(inntektsmeldingRequest.getJoarkMetadata())
-                                                .miljoe(inntektsmeldingRequest.getMiljoe())
+                                                .miljoe(miljoe)
                                                 .build();
                                         var json = toJson(TransaksjonMappingDTO
                                                 .builder()
                                                 .request(gjeldendeInntektRequest)
                                                 .dokument(dokument)
                                                 .build());
-                                        log.info("Gjeldended inntektsmelding request for FNR {} har miljø {} og transaksjonId {}", gjeldendeInntektRequest.getArbeidstakerFnr(), gjeldendeInntektRequest.getMiljoe(), json);
+                                        log.info("Gjeldende inntektsmelding request for FNR {} har miljø {} og transaksjonId {}", gjeldendeInntektRequest.getArbeidstakerFnr(), gjeldendeInntektRequest.getMiljoe(), json);
                                         return TransaksjonMapping
                                                 .builder()
                                                 .ident(inntektsmeldingRequest.getArbeidstakerFnr())
                                                 .bestillingId(bestillingid)
                                                 .transaksjonId(json)
                                                 .datoEndret(LocalDateTime.now())
-                                                .miljoe(inntektsmeldingRequest.getMiljoe())
+                                                .miljoe(miljoe)
                                                 .system(INNTKMELD.name())
                                                 .build();
                                     })
