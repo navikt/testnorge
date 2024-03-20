@@ -46,49 +46,65 @@ class TransaksjonsMappingServiceTest {
 
     @Test
     void testDuplicateLogged() {
-        var transaksjonsMapping = TransaksjonMapping
-                .builder()
-                .ident("12345678901")
-                .datoEndret(LocalDateTime.now())
-                .system("SYSTEM")
-                .miljoe("q1")
-                .transaksjonId("123")
-                .build();
-        transaksjonsMapping = transaksjonMappingRepository.save(transaksjonsMapping);
-        transaksjonsMappingService.save(transaksjonsMapping);
+        transaksjonMappingRepository.save(
+                TransaksjonMapping
+                        .builder()
+                        .ident("12345678901")
+                        .datoEndret(LocalDateTime.now())
+                        .system("SYSTEM")
+                        .miljoe("q1")
+                        .transaksjonId("123")
+                        .build());
+        transaksjonsMappingService.save(
+                TransaksjonMapping
+                        .builder()
+                        .ident("12345678901")
+                        .datoEndret(LocalDateTime.now())
+                        .system("SYSTEM")
+                        .miljoe("q1")
+                        .transaksjonId("123")
+                        .build());
 
-        verify(transaksjonsMappingService, times(1)).logExistingEntriesExist(any(), transaksjonsMapping);
+        verify(transaksjonsMappingService, times(1)).logExistingEntriesExist(any(), any());
     }
 
     @Test
     void testNonDuplicateNotLogged() {
-        var transaksjonsMapping = TransaksjonMapping
-                .builder()
-                .ident("12345678901")
-                .datoEndret(LocalDateTime.now())
-                .system("SYSTEM")
-                .miljoe("q1")
-                .transaksjonId("123")
-                .build();
-        transaksjonsMappingService.save(transaksjonsMapping);
+        transaksjonsMappingService.save(
+                TransaksjonMapping
+                        .builder()
+                        .ident("12345678901")
+                        .datoEndret(LocalDateTime.now())
+                        .system("SYSTEM")
+                        .miljoe("q1")
+                        .transaksjonId("123")
+                        .build());
 
-        verify(transaksjonsMappingService, times(0)).logExistingEntriesExist(any(), transaksjonsMapping);
+        verify(transaksjonsMappingService, times(0)).logExistingEntriesExist(any(), any());
     }
 
     @Test
     void testNullEnvironmentNotLogged() {
-        var transaksjonsMapping = TransaksjonMapping
-                .builder()
-                .ident("12345678901")
-                .datoEndret(LocalDateTime.now())
-                .system("SYSTEM")
-                .miljoe(null)
-                .transaksjonId("123")
-                .build();
-        transaksjonsMapping = transaksjonMappingRepository.save(transaksjonsMapping);
-        transaksjonsMappingService.save(transaksjonsMapping);
+        transaksjonMappingRepository.save(
+                TransaksjonMapping
+                        .builder()
+                        .ident("12345678901")
+                        .datoEndret(LocalDateTime.now())
+                        .system("SYSTEM")
+                        .miljoe(null)
+                        .transaksjonId("123")
+                        .build());
+        transaksjonsMappingService.save(
+                TransaksjonMapping
+                        .builder()
+                        .ident("12345678901")
+                        .datoEndret(LocalDateTime.now())
+                        .system("SYSTEM")
+                        .miljoe(null)
+                        .transaksjonId("123")
+                        .build());
 
-        verify(transaksjonsMappingService, times(0)).logExistingEntriesExist(any(), transaksjonsMapping);
+        verify(transaksjonsMappingService, times(0)).logExistingEntriesExist(any(), any());
     }
 
 }

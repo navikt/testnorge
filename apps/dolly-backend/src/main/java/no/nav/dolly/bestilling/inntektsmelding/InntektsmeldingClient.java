@@ -93,32 +93,36 @@ public class InntektsmeldingClient implements ClientRegister {
             return inntektsmeldingConsumer.postInntektsmelding(inntektsmeldingRequest)
                     .map(response -> {
                         if (isBlank(response.getError())) {
-
-                            transaksjonMappingService.saveAll(
-                                    response.getDokumenter().stream()
-                                            .map(dokument -> {
-                                                var gjeldendeInntektRequest = InntektsmeldingRequest.builder()
-                                                        .arbeidstakerFnr(inntektsmeldingRequest.getArbeidstakerFnr())
-                                                        .inntekter(singletonList(
-                                                                inntektsmeldingRequest.getInntekter().get(response.getDokumenter().indexOf(dokument))))
-                                                        .joarkMetadata(inntektsmeldingRequest.getJoarkMetadata())
-                                                        .miljoe(inntektsmeldingRequest.getMiljoe())
-                                                        .build();
-                                                var json = toJson(TransaksjonMappingDTO.builder()
-                                                        .request(gjeldendeInntektRequest)
-                                                        .dokument(dokument)
-                                                        .build());
-                                                log.info("Gjeldended inntektsmelding request for FNR {} har miljø {} og transaksjonId {}", gjeldendeInntektRequest.getArbeidstakerFnr(), gjeldendeInntektRequest.getMiljoe(), json);
-                                                return TransaksjonMapping.builder()
-                                                        .ident(inntektsmeldingRequest.getArbeidstakerFnr())
-                                                        .bestillingId(bestillingid)
-                                                        .transaksjonId(json)
-                                                        .datoEndret(LocalDateTime.now())
-                                                        .miljoe(inntektsmeldingRequest.getMiljoe())
-                                                        .system(INNTKMELD.name())
-                                                        .build();
-                                            })
-                                            .toList());
+                            var entries = response
+                                    .getDokumenter()
+                                    .stream()
+                                    .map(dokument -> {
+                                        var gjeldendeInntektRequest = InntektsmeldingRequest
+                                                .builder()
+                                                .arbeidstakerFnr(inntektsmeldingRequest.getArbeidstakerFnr())
+                                                .inntekter(singletonList(inntektsmeldingRequest.getInntekter().get(response.getDokumenter().indexOf(dokument))))
+                                                .joarkMetadata(inntektsmeldingRequest.getJoarkMetadata())
+                                                .miljoe(inntektsmeldingRequest.getMiljoe())
+                                                .build();
+                                        var json = toJson(TransaksjonMappingDTO
+                                                .builder()
+                                                .request(gjeldendeInntektRequest)
+                                                .dokument(dokument)
+                                                .build());
+                                        log.info("Gjeldended inntektsmelding request for FNR {} har miljø {} og transaksjonId {}", gjeldendeInntektRequest.getArbeidstakerFnr(), gjeldendeInntektRequest.getMiljoe(), json);
+                                        return TransaksjonMapping
+                                                .builder()
+                                                .ident(inntektsmeldingRequest.getArbeidstakerFnr())
+                                                .bestillingId(bestillingid)
+                                                .transaksjonId(json)
+                                                .datoEndret(LocalDateTime.now())
+                                                .miljoe(inntektsmeldingRequest.getMiljoe())
+                                                .system(INNTKMELD.name())
+                                                .build();
+                                    })
+                                    .toList();
+                            log.info("Liste over requests for lagring: {}", entries);
+                            transaksjonMappingService.saveAll(entries);
 
                             return inntektsmeldingRequest.getMiljoe() + ":OK";
 
