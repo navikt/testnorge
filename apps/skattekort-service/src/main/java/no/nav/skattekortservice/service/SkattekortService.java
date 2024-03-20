@@ -37,7 +37,7 @@ public class SkattekortService {
         log.info("XML Request: {}", xmlRequest);
 
         //TBD send melding
-        return "XML har blit generert og logget, men innsending av skattekort mangler i påvente av nytt API.";
+        return "XML har blit generert og logget, men innsending av skattekort mangler i påvente av nytt API hos team motta-og-beregne.";
     }
 
     @SneakyThrows
@@ -60,10 +60,10 @@ public class SkattekortService {
                 .forEach(trekktype -> {
                     if (trekktype.isAllEmpty()) {
                         throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                                "En av trekktypene Forskuddstrekk, Frikort, Trekkprosent og Trekktabell må angis");
+                                "En av Forskuddstrekk, Frikort, Trekkprosent og Trekktabell må angis per trekktype");
                     } else if (trekktype.isAmbiguous()) {
                         throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                                "Kun én av trekktypene Forskuddstrekk, Frikort, Trekkprosent og Trekktabell kan angis");
+                                "Kun én av Forskuddstrekk, Frikort, Trekkprosent og Trekktabell kan angis per trekktype");
                     }
                 });
     }
