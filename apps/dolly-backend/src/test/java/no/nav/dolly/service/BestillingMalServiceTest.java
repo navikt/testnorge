@@ -8,9 +8,7 @@ import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.elastic.BestillingElasticRepository;
 import no.nav.dolly.repository.BestillingMalRepository;
 import no.nav.dolly.repository.BestillingRepository;
-import no.nav.dolly.repository.BrukerFavoritterRepository;
 import no.nav.dolly.repository.BrukerRepository;
-import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.AfterEach;
@@ -32,14 +30,9 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -52,9 +45,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class BestillingMalServiceTest {
 
     @MockBean
+    @SuppressWarnings("unused")
     private BestillingElasticRepository bestillingElasticRepository;
 
     @MockBean
+    @SuppressWarnings("unused")
     private ElasticsearchOperations elasticsearchOperations;
 
     private final static String MALNAVN = "test";
@@ -87,11 +82,7 @@ class BestillingMalServiceTest {
     @Autowired
     private TestgruppeRepository testgruppeRepository;
     @Autowired
-    private BrukerFavoritterRepository brukerFavoritterRepository;
-    @Autowired
     private BrukerRepository brukerRepository;
-    @Autowired
-    private IdentRepository identRepository;
     @Autowired
     private Flyway flyway;
 
