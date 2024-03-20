@@ -6,20 +6,16 @@ parent: Applikasjoner
 
 # skattekort-service
 
-Tjeneste for å legge til skattekort i os-eskatt ved innsending på kø
+Tjeneste for å legge til skattekort i os-eskatt ved innsending til deres eget API for test.
 
 ## Bruk
 
-Applikasjonen eksponerer SOAP tjenesten 'person status' fra UDI, men med egne data.
-
-Data opprettes via REST-tjenesten
-
-For dokumentasjon av applikasjonen sine endepunkter:
+Applikasjonen omformer JSON-request til XML-request og sender inn på overnevnte endepunkt.
 
 
 ## Lokal kjøring
 
-Ha naisdevice kjørende og kjør UdiStubApplicationStarter med følgende argumenter:
+Ha naisdevice kjørende og kjør SkattekortServiceApplicationStarter med følgende argumenter:
 
 ```
 --add-opens java.base/java.lang=ALL-UNNAMED
