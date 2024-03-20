@@ -61,15 +61,15 @@ public class TransaksjonMappingService {
         if (!existing.isEmpty()) {
             existing.forEach(existingEntry -> {
                 if (existingEntry.getMiljoe() != null && existingEntry.getMiljoe().equals(entry.getMiljoe())) {
-                    logExistingEntriesExist(entry);
+                    logExistingEntriesExist(existingEntry, entry);
                 }
             });
         }
         transaksjonMappingRepository.save(entry);
     }
 
-    void logExistingEntriesExist(TransaksjonMapping entry) {
-        log.warn("TransaksjonMapping for ident {} og miljø {} finnes allerede i entry {}", entry.getIdent(), entry.getMiljoe(), entry.getId(), new RuntimeException());
+    void logExistingEntriesExist(TransaksjonMapping existingEntry, TransaksjonMapping newEntry) {
+        log.warn("TransaksjonMapping for ident {} og miljø {} finnes allerede i entry {}", newEntry.getIdent(), newEntry.getMiljoe(), existingEntry.getId(), new RuntimeException());
     }
 
     @Transactional

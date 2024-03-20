@@ -15,6 +15,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDateTime;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -56,7 +57,7 @@ class TransaksjonsMappingServiceTest {
         transaksjonsMapping = transaksjonMappingRepository.save(transaksjonsMapping);
         transaksjonsMappingService.save(transaksjonsMapping);
 
-        verify(transaksjonsMappingService, times(1)).logExistingEntriesExist(transaksjonsMapping);
+        verify(transaksjonsMappingService, times(1)).logExistingEntriesExist(any(), transaksjonsMapping);
     }
 
     @Test
@@ -71,7 +72,7 @@ class TransaksjonsMappingServiceTest {
                 .build();
         transaksjonsMappingService.save(transaksjonsMapping);
 
-        verify(transaksjonsMappingService, times(0)).logExistingEntriesExist(transaksjonsMapping);
+        verify(transaksjonsMappingService, times(0)).logExistingEntriesExist(any(), transaksjonsMapping);
     }
 
     @Test
@@ -87,7 +88,7 @@ class TransaksjonsMappingServiceTest {
         transaksjonsMapping = transaksjonMappingRepository.save(transaksjonsMapping);
         transaksjonsMappingService.save(transaksjonsMapping);
 
-        verify(transaksjonsMappingService, times(0)).logExistingEntriesExist(transaksjonsMapping);
+        verify(transaksjonsMappingService, times(0)).logExistingEntriesExist(any(), transaksjonsMapping);
     }
 
 }
