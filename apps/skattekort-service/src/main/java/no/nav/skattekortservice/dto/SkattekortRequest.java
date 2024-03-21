@@ -11,7 +11,8 @@ import java.util.List;
 
 import static java.util.Objects.isNull;
 
-@XmlRootElement
+@XmlRootElement(name = "skattekortTilArbeidsgiver",
+        namespace = "urn:no:skatteetaten:fastsetting:formueinntekt:forskudd:skattekorttilarbeidsgiver:v3")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "SkattekortTilArbeidsgiver", propOrder = {
         "arbeidsgiver"
