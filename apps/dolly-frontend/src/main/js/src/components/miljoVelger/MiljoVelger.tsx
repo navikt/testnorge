@@ -9,7 +9,7 @@ import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 import Loading from '@/components/ui/loading/Loading'
 import { DollyErrorMessage } from '@/utils/DollyErrorMessage'
 import { Alert } from '@navikt/ds-react'
-import { useFieldArray, useFormContext } from 'react-hook-form'
+import { useFormContext } from 'react-hook-form'
 
 const StyledH3 = styled.h3`
 	display: flex;
@@ -63,7 +63,6 @@ export const MiljoVelger = ({
 }) => {
 	const { dollyEnvironments, loading } = useDollyEnvironments()
 	const formMethods = useFormContext()
-	const fieldMethods = useFieldArray({ control: formMethods.control, name: 'environments' })
 
 	if (loading) {
 		return <Loading label={'Laster miljøer...'} />
@@ -85,10 +84,13 @@ export const MiljoVelger = ({
 	if (disableAllEnvironments && values.length > 0) {
 		formMethods.setValue('environments', [])
 	}
+	console.log('env: ', values) //TODO - SLETT MEG
 	const isChecked = (id) => values.includes(id)
 
 	const onClick = (e) => {
 		const { id } = e.target
+		console.log('id: ', id) //TODO - SLETT MEG
+		console.log('e: ', e) //TODO - SLETT MEG
 		if (!alleredeValgtMiljoe?.includes(id)) {
 			formMethods.setValue(
 				'environments',
