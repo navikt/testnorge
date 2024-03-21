@@ -47,9 +47,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class OrganisasjonBestillingMalServiceTest {
 
     @MockBean
+    @SuppressWarnings("unused")
     private BestillingElasticRepository bestillingElasticRepository;
 
     @MockBean
+    @SuppressWarnings("unused")
     private ElasticsearchOperations elasticsearchOperations;
 
     private final static String MALNAVN = "test";

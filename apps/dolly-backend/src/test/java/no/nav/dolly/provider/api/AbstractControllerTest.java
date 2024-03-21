@@ -47,9 +47,11 @@ public abstract class AbstractControllerTest {
     private Flyway flyway;
 
     @MockBean
+    @SuppressWarnings("unused")
     private BestillingElasticRepository bestillingElasticRepository;
 
     @MockBean
+    @SuppressWarnings("unused")
     private ElasticsearchOperations elasticsearchOperations;
 
     @BeforeEach
