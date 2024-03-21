@@ -1,13 +1,13 @@
-import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import {
 	initialArbeidserfaring,
 	initialArbeidserfaringVerdier,
 } from '@/components/fagsystem/arbeidsplassen/form/initialValues'
-import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
+import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import * as React from 'react'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import _get from 'lodash/get'
 import { Fritekstfelt } from '@/components/fagsystem/arbeidsplassen/form/styles'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
@@ -24,7 +24,7 @@ export const ArbeidserfaringForm = ({ formMethods }) => {
 
 	return (
 		<Vis attributt={arbeidserfaringListePath}>
-			<FormikDollyFieldArray
+			<FormDollyFieldArray
 				name={arbeidserfaringListePath}
 				header="Arbeidserfaring"
 				newEntry={initialArbeidserfaringVerdier}
@@ -34,7 +34,7 @@ export const ArbeidserfaringForm = ({ formMethods }) => {
 				{(arbeidsforholdPath, idx) => (
 					<>
 						<div key={idx} className="flexbox--flex-wrap">
-							<FormikSelect
+							<FormSelect
 								name={`${arbeidsforholdPath}.styrkkode`}
 								label="Stilling/yrke"
 								options={Options('jobbYrke')}
@@ -42,7 +42,7 @@ export const ArbeidserfaringForm = ({ formMethods }) => {
 								isClearable={false}
 								onChange={(valg) => setYrke(valg, arbeidsforholdPath)}
 							/>
-							<FormikTextInput
+							<FormTextInput
 								name={`${arbeidsforholdPath}.alternativeJobTitle`}
 								label="Alternativ tittel"
 								size="large"
@@ -51,13 +51,13 @@ export const ArbeidserfaringForm = ({ formMethods }) => {
 									`${arbeidsforholdPath}.alternativeJobTitle`,
 								)}`}
 							/>
-							<FormikTextInput
+							<FormTextInput
 								name={`${arbeidsforholdPath}.employer`}
 								label="Bedrift"
 								size="large"
 								key={`employer_${_get(formMethods.getValues(), `${arbeidsforholdPath}.employer`)}`}
 							/>
-							<FormikTextInput
+							<FormTextInput
 								name={`${arbeidsforholdPath}.location`}
 								label="Sted"
 								size="large"
@@ -80,13 +80,13 @@ export const ArbeidserfaringForm = ({ formMethods }) => {
 								)}`}
 								resize
 							/>
-							<FormikDatepicker name={`${arbeidsforholdPath}.fromDate`} label="Ansatt fra" />
-							<FormikDatepicker
+							<FormDatepicker name={`${arbeidsforholdPath}.fromDate`} label="Ansatt fra" />
+							<FormDatepicker
 								name={`${arbeidsforholdPath}.toDate`}
 								label="Ansatt til"
 								disabled={_get(formMethods.getValues(), `${arbeidsforholdPath}.ongoing`)}
 							/>
-							<FormikCheckbox
+							<FormCheckbox
 								id={`${arbeidsforholdPath}.ongoing`}
 								name={`${arbeidsforholdPath}.ongoing`}
 								label="Nåværende jobb"
@@ -103,7 +103,7 @@ export const ArbeidserfaringForm = ({ formMethods }) => {
 						/>
 					</>
 				)}
-			</FormikDollyFieldArray>
+			</FormDollyFieldArray>
 		</Vis>
 	)
 }

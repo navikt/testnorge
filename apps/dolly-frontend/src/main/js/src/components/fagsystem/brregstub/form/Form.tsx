@@ -1,7 +1,7 @@
 import * as Yup from 'yup'
 import { ifPresent, requiredDate, requiredNumber, requiredString } from '@/utils/YupValidations'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
 import Panel from '@/components/ui/panel/Panel'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
@@ -25,7 +25,7 @@ export const BrregstubForm = () => {
 				startOpen={erForsteEllerTest(formMethods.getValues(), [brregAttributt])}
 			>
 				<div className="flexbox--flex-wrap">
-					<FormikSelect
+					<FormSelect
 						name="brregstub.understatuser"
 						label="Understatuser"
 						options={understatuserOptions}

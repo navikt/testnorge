@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
-import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
-import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import InntektStub from '@/components/inntektStub/validerInntekt'
 import { useBoolean } from 'react-use'
 import { ToggleGroup } from '@navikt/ds-react'
@@ -99,7 +99,7 @@ export const InntektForm = ({ formMethods, inntektsinformasjonPath }: data) => {
 					<ToggleGroup.Item value={FormType.FORENKLET}>Forenklet</ToggleGroup.Item>
 				</ToggleGroup>
 			</div>
-			<FormikDollyFieldArray
+			<FormDollyFieldArray
 				name={`${inntektsinformasjonPath}.inntektsliste`}
 				header="Inntekt per måned"
 				newEntry={formSimple ? simpleInitialValues : initialValues}
@@ -107,19 +107,19 @@ export const InntektForm = ({ formMethods, inntektsinformasjonPath }: data) => {
 			>
 				{(path: string) => (
 					<>
-						<FormikTextInput name={`${path}.beloep`} label="Beløp" type="number" />
-						<FormikDatepicker
+						<FormTextInput name={`${path}.beloep`} label="Beløp" type="number" />
+						<FormDatepicker
 							name={`${path}.startOpptjeningsperiode`}
 							label="Start opptjeningsperiode"
 						/>
-						<FormikDatepicker
+						<FormDatepicker
 							name={`${path}.sluttOpptjeningsperiode`}
 							label="Slutt opptjeningsperiode"
 						/>
 						{!formSimple && <InntektStub inntektPath={path} />}
 					</>
 				)}
-			</FormikDollyFieldArray>
+			</FormDollyFieldArray>
 		</>
 	)
 }

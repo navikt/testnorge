@@ -49,7 +49,7 @@ const InntektStub = ({ inntektPath }) => {
 				!fieldState.isDirty &&
 				formMethods.getValues(`${inntektPath}.${fieldName}`) !== null &&
 				formMethods.setValue(`${inntektPath}.${fieldName}`, null)
-			removeEmptyFieldsFromFormik(entry)
+			removeEmptyFieldsFromForm(entry)
 		})
 		if (
 			!tilleggsinformasjonstype &&
@@ -86,7 +86,7 @@ const InntektStub = ({ inntektPath }) => {
 		}
 	}
 
-	const removeEmptyFieldsFromFormik = (entry) => {
+	const removeEmptyFieldsFromForm = (entry) => {
 		const name = entry[0]
 		const valueArray = entry[1]
 		if (

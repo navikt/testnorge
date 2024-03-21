@@ -1,12 +1,11 @@
-import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { initialVergemaal } from '@/components/fagsystem/pdlf/form/initialValues'
 import { VergemaalKodeverk } from '@/config/kodeverk'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { PdlPersonExpander } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonExpander'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
-import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 import { Option } from '@/service/SelectOptionsOppslag'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 
@@ -23,30 +22,28 @@ export const VergemaalForm = ({
 }: VergemaalFormTypes) => {
 	return (
 		<>
-			<FormikSelect
+			<FormSelect
 				name={`${path}.vergemaalEmbete`}
 				label="Fylkesmannsembete"
 				kodeverk={VergemaalKodeverk.Fylkesmannsembeter}
 				size="large"
 			/>
-			<FormikSelect
+			<FormSelect
 				name={`${path}.sakType`}
 				label="Sakstype"
 				kodeverk={VergemaalKodeverk.Sakstype}
 				size="xlarge"
 				optionHeight={50}
 			/>
-			<FormikSelect
+			<FormSelect
 				name={`${path}.mandatType`}
 				label="Mandattype"
 				kodeverk={VergemaalKodeverk.Mandattype}
 				size="fullWidth"
 				optionHeight={50}
 			/>
-			<DatepickerWrapper>
-				<FormikDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig f.o.m." />
-				<FormikDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig t.o.m." />
-			</DatepickerWrapper>
+			<FormDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig f.o.m." />
+			<FormDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig t.o.m." />
 			<PdlPersonExpander
 				nyPersonPath={`${path}.nyVergeIdent`}
 				eksisterendePersonPath={`${path}.vergeIdent`}
@@ -66,14 +63,14 @@ export const VergemaalForm = ({
 export const Vergemaal = ({ formMethods }: VergemaalFormTypes) => {
 	return (
 		<div className="flexbox--flex-wrap">
-			<FormikDollyFieldArray
+			<FormDollyFieldArray
 				name={'pdldata.person.vergemaal'}
 				header="Vergemål"
 				newEntry={initialVergemaal}
 				canBeEmpty={false}
 			>
 				{(path: string, _idx: number) => <VergemaalForm formMethods={formMethods} path={path} />}
-			</FormikDollyFieldArray>
+			</FormDollyFieldArray>
 		</div>
 	)
 }

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { DollySelect, FormikSelect } from '@/components/ui/form/inputs/select/Select'
-import { DollyTextInput, FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { DollySelect, FormSelect } from '@/components/ui/form/inputs/select/Select'
+import { DollyTextInput, FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { AdresseKodeverk, PersoninformasjonKodeverk } from '@/config/kodeverk'
-import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import {
 	initialTelefonnummer,
@@ -49,15 +49,15 @@ const paths = {
 export const TelefonnummerFormRedigering = ({ path }: TelefonnummerProps) => {
 	return (
 		<>
-			<FormikSelect
+			<FormSelect
 				name={`${path}.landskode`}
 				label="Landkode"
 				kodeverk={PersoninformasjonKodeverk.Retningsnumre}
 				size="large"
 				isClearable={false}
 			/>
-			<FormikTextInput name={`${path}.nummer`} label="Telefonnummer" size="large" />
-			<FormikSelect
+			<FormTextInput name={`${path}.nummer`} label="Telefonnummer" size="large" />
+			<FormSelect
 				name={`${path}.prioritet`}
 				label="Prioritet"
 				options={[
@@ -153,7 +153,7 @@ export const TelefonnummerForm = ({ path, formMethods, idx }: TelefonnummerProps
 				value={formMethods.watch(`${path}.nummer`)}
 				size="medium"
 			/>
-			<FormikSelect
+			<FormSelect
 				name={`${path}.prioritet`}
 				label="Prioritet"
 				options={optionsPrioritet()}
@@ -192,7 +192,7 @@ export const Telefonnummer = ({ formMethods, path }: TelefonnummerProps) => {
 
 	return (
 		<div className="flexbox--flex-wrap">
-			<FormikDollyFieldArray
+			<FormDollyFieldArray
 				name={path || paths.pdlTelefonnummer}
 				header="Telefonnummer"
 				newEntry={initialTelefonnummer}
@@ -205,7 +205,7 @@ export const Telefonnummer = ({ formMethods, path }: TelefonnummerProps) => {
 				{(tlfPath: string, idx: number) => (
 					<TelefonnummerForm path={tlfPath} formMethods={formMethods} idx={idx} />
 				)}
-			</FormikDollyFieldArray>
+			</FormDollyFieldArray>
 		</div>
 	)
 }

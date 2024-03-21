@@ -94,7 +94,7 @@ export const GjenopprettPerson = ({ ident }: GjenopprettProps) => {
 				<GjenopprettModal
 					gjenopprettHeader={gjenopprettHeader}
 					environments={bestilteMiljoer}
-					submitFormik={handleSubmit}
+					submitForm={handleSubmit}
 					closeModal={() => {
 						closeGjenoprettModal()
 						mutate(REGEX_BACKEND_GRUPPER)

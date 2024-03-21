@@ -15,7 +15,23 @@ const StyledLabel = styled.label`
 	text-transform: uppercase;
 `
 
-export const Label = ({ name, fieldName, label, info = null, containerClass = null, children }) => {
+type LabelProps = {
+	name: string
+	fieldName?: string
+	label: string
+	info?: string
+	containerClass?: string
+	children: React.ReactNode
+}
+
+export const Label = ({
+	name,
+	fieldName,
+	label,
+	info = null as unknown as string,
+	containerClass = null as unknown as string,
+	children,
+}: LabelProps) => {
 	const {
 		getFieldState,
 		formState: { touchedFields },

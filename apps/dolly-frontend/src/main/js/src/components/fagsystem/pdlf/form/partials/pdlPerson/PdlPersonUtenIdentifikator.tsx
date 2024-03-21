@@ -1,6 +1,6 @@
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { AdresseKodeverk } from '@/config/kodeverk'
 import * as React from 'react'
 import { useGenererNavn } from '@/utils/hooks/useGenererNavn'
@@ -28,29 +28,29 @@ export const PdlPersonUtenIdentifikator = ({
 
 	return (
 		<div className={'flexbox--flex-wrap'} style={{ marginTop: '10px' }}>
-			<FormikSelect name={`${path}.kjoenn`} label="Kjønn" options={Options('kjoenn')} />
-			<FormikDatepicker name={`${path}.foedselsdato`} label="Fødselsdato" maxDate={new Date()} />
-			<FormikSelect
+			<FormSelect name={`${path}.kjoenn`} label="Kjønn" options={Options('kjoenn')} />
+			<FormDatepicker name={`${path}.foedselsdato`} label="Fødselsdato" maxDate={new Date()} />
+			<FormSelect
 				name={`${path}.statsborgerskap`}
 				label="Statsborgerskap"
 				kodeverk={AdresseKodeverk.StatsborgerskapLand}
 				size="large"
 			/>
-			<FormikSelect
+			<FormSelect
 				name={`${path}.navn.fornavn`}
 				label="Fornavn"
 				placeholder={fornavn ? fornavn : 'Velg ...'}
 				options={fornavnOptions}
 				isLoading={loading}
 			/>
-			<FormikSelect
+			<FormSelect
 				name={`${path}.navn.mellomnavn`}
 				label="Mellomnavn"
 				placeholder={mellomnavn ? mellomnavn : 'Velg ...'}
 				options={mellomnavnOptions}
 				isLoading={loading}
 			/>
-			<FormikSelect
+			<FormSelect
 				name={`${path}.navn.etternavn`}
 				label="Etternavn"
 				placeholder={etternavn ? etternavn : 'Velg ...'}

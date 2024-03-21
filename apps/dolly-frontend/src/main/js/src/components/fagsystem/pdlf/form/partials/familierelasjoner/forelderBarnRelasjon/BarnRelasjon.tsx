@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
-import { DollyCheckbox, FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
+import { DollyCheckbox, FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { initialDeltBosted } from '@/components/fagsystem/pdlf/form/initialValues'
 import { DeltBosted } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/forelderBarnRelasjon/DeltBosted'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
@@ -31,13 +31,13 @@ export const BarnRelasjon = ({ formMethods, path }: BarnRelasjonValues) => {
 	return (
 		<>
 			<div className="flexbox--flex-wrap">
-				<FormikSelect
+				<FormSelect
 					name={`${path}.minRolleForPerson`}
 					label="Forelders rolle for barn"
 					options={Options('foreldreTypePDL')}
 					isClearable={false}
 				/>
-				<FormikCheckbox
+				<FormCheckbox
 					name={`${path}.partnerErIkkeForelder`}
 					label="Partner ikke forelder"
 					id={`${path}.partnerErIkkeForelder`}

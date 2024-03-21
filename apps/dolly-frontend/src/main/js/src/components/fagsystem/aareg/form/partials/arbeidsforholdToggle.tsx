@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { Alert, ToggleGroup } from '@navikt/ds-react'
 import { AmeldingForm } from './ameldingForm'
 import { ArbeidsforholdForm } from './arbeidsforholdForm'
-import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import {
 	initialAaregOrg,
 	initialAaregPers,
@@ -107,7 +107,7 @@ export const ArbeidsforholdToggle = (): ReactElement => {
 				</>
 			) : (
 				<>
-					<FormikDollyFieldArray
+					<FormDollyFieldArray
 						name="aareg"
 						header="Arbeidsforhold"
 						newEntry={
@@ -128,7 +128,7 @@ export const ArbeidsforholdToggle = (): ReactElement => {
 								warningMessage={undefined}
 							/>
 						)}
-					</FormikDollyFieldArray>
+					</FormDollyFieldArray>
 				</>
 			)}
 		</div>

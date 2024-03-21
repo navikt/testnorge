@@ -1,16 +1,16 @@
 import * as React from 'react'
 import { useContext, useEffect, useState } from 'react'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
-import { DollySelect, FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { DollySelect, FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import _ from 'lodash'
 import { genererTilfeldigeNavPersonidenter } from '@/utils/GenererTilfeldigeNavPersonidenter'
 import { Option } from '@/service/SelectOptionsOppslag'
 import { isToday } from 'date-fns'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { InputWarning } from '@/components/ui/form/inputWarning/inputWarning'
-import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { initialSikkerhetstiltak } from '@/components/fagsystem/pdlf/form/initialValues'
 import { useNavEnheter } from '@/utils/hooks/useNorg2'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
@@ -57,7 +57,7 @@ export const Sikkerhetstiltak = ({ formMethods }: SikkerhetstiltakProps) => {
 	return (
 		<Vis attributt={rootPath}>
 			<div className="flexbox--flex-wrap">
-				<FormikDollyFieldArray
+				<FormDollyFieldArray
 					name={rootPath}
 					header="Sikkerhetstiltak"
 					newEntry={initialSikkerhetstiltak}
@@ -85,7 +85,7 @@ export const Sikkerhetstiltak = ({ formMethods }: SikkerhetstiltakProps) => {
 									value={formMethods.watch(`${path}.tiltakstype`)}
 									isClearable={false}
 								/>
-								<FormikSelect
+								<FormSelect
 									options={
 										_.isEmpty(personident)
 											? randomNavUsers
@@ -96,7 +96,7 @@ export const Sikkerhetstiltak = ({ formMethods }: SikkerhetstiltakProps) => {
 									placeholder={'Velg ...'}
 									label={'Kontaktperson'}
 								/>
-								<FormikSelect
+								<FormSelect
 									name={`${path}.kontaktperson.enhet`}
 									label={'NAV kontor'}
 									size={'xxxlarge'}
@@ -107,7 +107,7 @@ export const Sikkerhetstiltak = ({ formMethods }: SikkerhetstiltakProps) => {
 									warningText="TPS støtter kun sikkerhetstiltak fra gjeldende dato. Endre til dagens dato dersom et
 							gyldig sikkerhetstiltak fra TPS er ønsket."
 								>
-									<FormikDatepicker
+									<FormDatepicker
 										name={`${path}.gyldigFraOgMed`}
 										label="Sikkerhetstiltak starter"
 										onChange={(date: Date) => {
@@ -115,7 +115,7 @@ export const Sikkerhetstiltak = ({ formMethods }: SikkerhetstiltakProps) => {
 										}}
 									/>
 								</InputWarning>
-								<FormikDatepicker
+								<FormDatepicker
 									name={`${path}.gyldigTilOgMed`}
 									label="Sikkerhetstiltak opphører"
 									onChange={(date: Date) => {
@@ -126,7 +126,7 @@ export const Sikkerhetstiltak = ({ formMethods }: SikkerhetstiltakProps) => {
 							</>
 						)
 					}}
-				</FormikDollyFieldArray>
+				</FormDollyFieldArray>
 			</div>
 		</Vis>
 	)

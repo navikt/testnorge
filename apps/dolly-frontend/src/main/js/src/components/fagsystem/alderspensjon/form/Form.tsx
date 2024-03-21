@@ -1,7 +1,7 @@
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
 import Panel from '@/components/ui/panel/Panel'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import React, { useContext, useEffect, useState } from 'react'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { Alert, ToggleGroup } from '@navikt/ds-react'
@@ -14,9 +14,9 @@ import { validation } from '@/components/fagsystem/alderspensjon/form/validation
 import { Monthpicker } from '@/components/ui/form/inputs/monthpicker/Monthpicker'
 import { getAlder } from '@/ducks/fagsystem'
 import { useNavEnheter } from '@/utils/hooks/useNorg2'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { genererTilfeldigeNavPersonidenter } from '@/utils/GenererTilfeldigeNavPersonidenter'
-import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import {
 	genInitialAlderspensjonSoknad,
 	genInitialAlderspensjonVedtak,
@@ -271,7 +271,7 @@ export const AlderspensjonForm = () => {
 						</ToggleGroup>
 					</div>
 					{!soknad && (
-						<FormikDatepicker
+						<FormDatepicker
 							name={`${alderspensjonPath}.kravFremsattDato`}
 							label="Krav fremsatt dato"
 							date={formMethods.getValues(`${alderspensjonPath}.kravFremsattDato`)}
@@ -289,27 +289,27 @@ export const AlderspensjonForm = () => {
 						}}
 					/>
 					{!soknad && (
-						<FormikSelect
+						<FormSelect
 							options={randomSaksbehandlere}
 							name={`${alderspensjonPath}.saksbehandler`}
 							label={'Saksbehandler'}
 						/>
 					)}
 					{!soknad && (
-						<FormikSelect
+						<FormSelect
 							options={randomAttesterere}
 							name={`${alderspensjonPath}.attesterer`}
 							label={'Attesterer'}
 						/>
 					)}
-					<FormikSelect
+					<FormSelect
 						name={`${alderspensjonPath}.uttaksgrad`}
 						label="Uttaksgrad"
 						options={Options('apUttaksgrad')}
 						isClearable={false}
 					/>
 					{!soknad && (
-						<FormikSelect
+						<FormSelect
 							name={`${alderspensjonPath}.navEnhetId`}
 							label="Nav-kontor"
 							size={'xxlarge'}
@@ -317,7 +317,7 @@ export const AlderspensjonForm = () => {
 						/>
 					)}
 					{soknad && (
-						<FormikTextInput
+						<FormTextInput
 							name={`${alderspensjonPath}.relasjoner[0].sumAvForvArbKapPenInntekt`}
 							label="Ektefelle/partners inntekt"
 							type="number"

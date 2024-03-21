@@ -1,6 +1,6 @@
-import { DollyTextInput, FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { DollyTextInput, FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { GtKodeverk } from '@/config/kodeverk'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { useEffect } from 'react'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 
@@ -29,21 +29,21 @@ export const UtenlandskAdresse = ({ formMethods, path, master }: UtenlandskAdres
 
 	return (
 		<div className="flexbox--flex-wrap">
-			<FormikTextInput
+			<FormTextInput
 				name={`${path}.adressenavnNummer`}
 				label="Gatenavn og husnummer"
 				// @ts-ignore
 				isDisabled={harPostboksnummer}
 			/>
-			<FormikTextInput
+			<FormTextInput
 				name={`${path}.postboksNummerNavn`}
 				label="Postboksnummer og -navn"
 				// @ts-ignore
 				isDisabled={harAdressenavn}
 			/>
-			<FormikTextInput name={`${path}.postkode`} label="Postkode" />
-			<FormikTextInput name={`${path}.bySted`} label="By eller sted" />
-			<FormikSelect
+			<FormTextInput name={`${path}.postkode`} label="Postkode" />
+			<FormTextInput name={`${path}.bySted`} label="By eller sted" />
+			<FormSelect
 				name={`${path}.landkode`}
 				label="Land"
 				kodeverk={GtKodeverk.LAND}
@@ -52,8 +52,8 @@ export const UtenlandskAdresse = ({ formMethods, path, master }: UtenlandskAdres
 			/>
 			{master === 'PDL' ? (
 				<>
-					<FormikTextInput name={`${path}.bygningEtasjeLeilighet`} label="Bygg-/leilighetsinfo" />
-					<FormikTextInput name={`${path}.regionDistriktOmraade`} label="Region/distrikt/område" />
+					<FormTextInput name={`${path}.bygningEtasjeLeilighet`} label="Bygg-/leilighetsinfo" />
+					<FormTextInput name={`${path}.regionDistriktOmraade`} label="Region/distrikt/område" />
 				</>
 			) : (
 				<>

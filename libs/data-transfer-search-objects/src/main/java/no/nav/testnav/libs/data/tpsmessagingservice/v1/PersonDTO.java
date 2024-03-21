@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 @Data
 @Builder
@@ -104,5 +105,10 @@ public class PersonDTO {
             telefonnumre = new ArrayList<>();
         }
         return telefonnumre;
+    }
+
+    public boolean isDoed() {
+
+        return nonNull(doedsdato);
     }
 }

@@ -24,6 +24,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -54,16 +55,21 @@ public class AmeldingRequestMappingStrategy implements MappingStrategy {
                         amelding.setKalendermaaned(LocalDate.of(Integer.parseInt(date[0]), Integer.parseInt(date[1]), 1));
                         var opplysningsPliktig = (Map<String, String>) context.getProperty("opplysningspliktig");
 
-                        amelding.setOpplysningspliktigOrganisajonsnummer(opplysningsPliktig.get(rsAmelding.getArbeidsforhold().get(0).getArbeidsgiver().getOrgnummer()));
+                        amelding.setOpplysningspliktigOrganisajonsnummer(opplysningsPliktig.get(rsAmelding.getArbeidsforhold()
+                                .getFirst().getArbeidsgiver().getOrgnummer()));
 
                         var virksomheter = mapperFacade.mapAsList(rsAmelding.getArbeidsforhold(), Virksomhet.class, context);
-                        virksomheter.forEach(virksomhet -> {
-                            var arbForholdId = new AtomicInteger(0);
-                            virksomhet.getPersoner()
-                                    .forEach(person -> person.getArbeidsforhold()
-                                            .forEach(arbeidsforhold -> arbeidsforhold
-                                                    .setArbeidsforholdId(Integer.toString(arbForholdId.incrementAndGet()))));
-                        });
+                        var arbeidsForholdIder = new HashMap<String, AtomicInteger>();
+                        virksomheter
+                                .forEach(virksomhet -> virksomhet.getPersoner().forEach(person ->
+                                        arbeidsForholdIder.put(virksomhet.getOrganisajonsnummer()+person.getIdent(),
+                                                new AtomicInteger(0))));
+                        virksomheter.forEach(virksomhet -> virksomhet.getPersoner()
+                                .forEach(person -> person.getArbeidsforhold()
+                                        .forEach(arbeidsforhold -> arbeidsforhold
+                                                .setArbeidsforholdId(Integer.toString(
+                                                        arbeidsForholdIder.get(virksomhet.getOrganisajonsnummer()+person.getIdent())
+                                                                .incrementAndGet())))));
                         var ameldingVirksomheter = virksomheter.stream().map(virksomhet ->
                                         VirksomhetDTO.builder()
                                                 .organisajonsnummer(virksomhet.getOrganisajonsnummer())
@@ -94,12 +100,14 @@ public class AmeldingRequestMappingStrategy implements MappingStrategy {
                                                         getDate(rsArbeidsforholdAareg.getAnsettelsesPeriode().getTom()) : null)
                                         .antallTimerPerUke(
                                                 !rsArbeidsforholdAareg.getAntallTimerForTimeloennet().isEmpty() ?
-                                                        rsArbeidsforholdAareg.getAntallTimerForTimeloennet().get(0).getAntallTimer().floatValue() :
+                                                        rsArbeidsforholdAareg.getAntallTimerForTimeloennet()
+                                                                .getFirst().getAntallTimer().floatValue() :
                                                         getAvtaltArbeidstidPerUke(rsArbeidsforholdAareg))
                                         .arbeidsforholdType((String) context.getProperty("arbeidsforholdstype"))
                                         .arbeidstidsordning(rsArbeidsforholdAareg.getArbeidsavtale().getArbeidstidsordning())
                                         .fartoey(nonNull(rsArbeidsforholdAareg.getFartoy()) && !rsArbeidsforholdAareg.getFartoy().isEmpty() ?
-                                                mapperFacade.map(rsArbeidsforholdAareg.getFartoy().get(0), FartoeyDTO.class) : null)
+                                                mapperFacade.map(rsArbeidsforholdAareg.getFartoy()
+                                                        .getFirst(), FartoeyDTO.class) : null)
                                         .inntekter(
                                                 (nonNull(rsArbeidsforholdAareg.getUtenlandsopphold()) &&
                                                         !rsArbeidsforholdAareg.getUtenlandsopphold().isEmpty()) ||

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { DollySelect, FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { DollySelect, FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { useDollyFasteDataOrganisasjoner } from '@/utils/hooks/useOrganisasjoner'
 
 type OrganisasjonLoaderProps = {
@@ -11,7 +11,7 @@ type OrganisasjonLoaderProps = {
 	afterChange?: (val) => void
 	value: any
 	feil?: any
-	useFormikSelect?: boolean
+	useFormSelect?: boolean
 	isClearable?: boolean
 }
 
@@ -21,7 +21,7 @@ export const OrganisasjonLoader = ({
 	label,
 	path,
 	handleChange,
-	useFormikSelect,
+	useFormSelect,
 	feil,
 	value,
 	isClearable = false,
@@ -55,8 +55,8 @@ export const OrganisasjonLoader = ({
 			postadresse: response.postadresse,
 		}))
 
-	return useFormikSelect ? (
-		<FormikSelect
+	return useFormSelect ? (
+		<FormSelect
 			name={path}
 			label={label || 'Organisasjonsnummer'}
 			type="text"

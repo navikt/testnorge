@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
-import { DollySelect, FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { DollySelect, FormSelect } from '@/components/ui/form/inputs/select/Select'
 import {
 	getInitialBostedsadresse,
 	initialMatrikkeladresse,
@@ -9,9 +9,9 @@ import {
 	initialUtenlandskAdresse,
 	initialVegadresse,
 } from '@/components/fagsystem/pdlf/form/initialValues'
-import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import _ from 'lodash'
 import {
 	MatrikkeladresseVelger,
@@ -20,7 +20,6 @@ import {
 	VegadresseVelger,
 } from '@/components/fagsystem/pdlf/form/partials/adresser/adressetyper'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
-import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 import { Adressetype } from '@/components/fagsystem/pdlf/PdlTypes'
 import { getPlaceholder, setNavn } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { useGenererNavn } from '@/utils/hooks/useGenererNavn'
@@ -130,7 +129,7 @@ export const BostedsadresseForm = ({
 	return (
 		<React.Fragment key={idx}>
 			<div className="flexbox--full-width">
-				<FormikSelect
+				<FormSelect
 					name={`${path}.adressetype`}
 					label="Adressetype"
 					options={getAdresseOptions()}
@@ -157,11 +156,9 @@ export const BostedsadresseForm = ({
 			)}
 			{valgtAdressetype === 'UKJENT_BOSTED' && <UkjentBosted path={`${path}.ukjentBosted`} />}
 			<div className="flexbox--flex-wrap">
-				<DatepickerWrapper>
-					<FormikDatepicker name={`${path}.angittFlyttedato`} label="Flyttedato" />
-					<FormikDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig f.o.m." addHour />
-					<FormikDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig t.o.m." />
-				</DatepickerWrapper>
+				<FormDatepicker name={`${path}.angittFlyttedato`} label="Flyttedato" />
+				<FormDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig f.o.m." addHour />
+				<FormDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig t.o.m." />
 				<DollySelect
 					name={`${path}.opprettCoAdresseNavn.fornavn`}
 					label="C/O adressenavn"
@@ -187,7 +184,7 @@ export const Bostedsadresse = ({ formMethods }: BostedsadresseValues) => {
 	const opts = useContext(BestillingsveilederContext)
 	return (
 		<Kategori title="Bostedsadresse">
-			<FormikDollyFieldArray
+			<FormDollyFieldArray
 				name="pdldata.person.bostedsadresse"
 				header="Bostedsadresse"
 				newEntry={getInitialBostedsadresse(opts?.identtype === 'NPID' ? 'PDL' : 'FREG')}
@@ -201,7 +198,7 @@ export const Bostedsadresse = ({ formMethods }: BostedsadresseValues) => {
 						identtype={opts?.identtype}
 					/>
 				)}
-			</FormikDollyFieldArray>
+			</FormDollyFieldArray>
 		</Kategori>
 	)
 }

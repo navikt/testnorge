@@ -1,13 +1,13 @@
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import Panel from '@/components/ui/panel/Panel'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
-import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import React, { useEffect } from 'react'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { getYearRangeOptions } from '@/utils/DataFormatter'
 import { subYears } from 'date-fns'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { PensjonsgivendeInntektForm } from '@/components/fagsystem/sigrunstubPensjonsgivende/form/PensjonsgivendeInntektForm'
 import {
 	usePensjonsgivendeInntektKodeverk,
@@ -64,7 +64,7 @@ export const SigrunstubPensjonsgivendeForm = () => {
 				startOpen={erForsteEllerTest(formMethods.getValues(), [sigrunstubPensjonsgivendeAttributt])}
 			>
 				<ErrorBoundary>
-					<FormikDollyFieldArray
+					<FormDollyFieldArray
 						name="sigrunstubPensjonsgivende"
 						header="Pensjonsgivende inntekt"
 						newEntry={getInitialSigrunstubPensjonsgivende(kodeverk, skatteordning)}
@@ -73,13 +73,13 @@ export const SigrunstubPensjonsgivendeForm = () => {
 						{(path) => (
 							<>
 								<div className="flexbox--flex-wrap">
-									<FormikSelect
+									<FormSelect
 										name={`${path}.inntektsaar`}
 										label="Inntektsår"
 										options={getYearRangeOptions(1968, subYears(new Date(), -5).getFullYear())}
 										isClearable={false}
 									/>
-									<FormikTextInput name={`${path}.testdataEier`} label="Testdataeier" />
+									<FormTextInput name={`${path}.testdataEier`} label="Testdataeier" />
 								</div>
 								<PensjonsgivendeInntektForm
 									path={`${path}.pensjonsgivendeInntekt`}
@@ -89,7 +89,7 @@ export const SigrunstubPensjonsgivendeForm = () => {
 								/>
 							</>
 						)}
-					</FormikDollyFieldArray>
+					</FormDollyFieldArray>
 				</ErrorBoundary>
 			</Panel>
 		</Vis>

@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useToggle } from 'react-use'
 import { NavLink } from 'react-router-dom'
 import Button from '@/components/ui/button/Button'
-import { DollySelect, FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { DollySelect, FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { DollyCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import ModalActionKnapper from '@/components/ui/modal/ModalActionKnapper'
 
@@ -78,7 +78,7 @@ export const NyOrganisasjon = ({ onAvbryt, onSubmit, brukernavn }: NyBestillingP
 								isClearable={false}
 								isDisabled={!malAktiv}
 							/>
-							<FormikSelect
+							<FormSelect
 								name="mal"
 								label="Maler"
 								isLoading={loading}

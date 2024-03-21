@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { OrganisasjonMedArbeidsforholdSelect } from '@/components/organisasjonSelect'
-import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import {
 	inputValg,
 	OrganisasjonToogleGruppe,
@@ -56,7 +56,7 @@ export const OrgnrToggle = ({ path, formMethods }: OrgnrToggleProps) => {
 				/>
 			)}
 			{inputType === inputValg.skrivSelv && (
-				<FormikTextInput type="number" name={path} label="Arbeidsgiver (orgnr)" size="xlarge" />
+				<FormTextInput type="number" name={path} label="Arbeidsgiver (orgnr)" size="xlarge" />
 			)}
 		</div>
 	)

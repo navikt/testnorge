@@ -1,13 +1,12 @@
-import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { getInitialFoedsel } from '@/components/fagsystem/pdlf/form/initialValues'
 import { Yearpicker } from '@/components/ui/form/inputs/yearpicker/Yearpicker'
-import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { AdresseKodeverk } from '@/config/kodeverk'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectedValue } from '@/components/fagsystem/pdlf/PdlTypes'
-import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 import { useContext } from 'react'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { UseFormReturn } from 'react-hook-form/dist/types'
@@ -44,31 +43,29 @@ export const FoedselForm = ({ formMethods, path }: FoedselTypes) => {
 
 	return (
 		<>
-			<DatepickerWrapper>
-				<FormikDatepicker
-					name={`${path}.foedselsdato`}
-					label="Fødselsdato"
-					disabled={(foedselsaar !== null && foedselsdato === null) || harAlder()}
-					maxDate={new Date()}
-					minDate={minDateFoedsel}
-				/>
-				<Yearpicker
-					formMethods={formMethods}
-					name={`${path}.foedselsaar`}
-					label="Fødselsår"
-					date={foedselsaar ? new Date(foedselsaar, 0) : null}
-					handleDateChange={(val) => {
-						formMethods.setValue(`${path}.foedselsaar`, val ? new Date(val).getFullYear() : null)
-						formMethods.trigger()
-					}}
-					maxDate={new Date()}
-					minDate={minDateFoedsel}
-					// @ts-ignore
-					disabled={(foedselsdato !== null && foedselsaar === null) || harAlder()}
-				/>
-			</DatepickerWrapper>
-			<FormikTextInput name={`${path}.foedested`} label="Fødested" size="large" />
-			<FormikSelect
+			<FormDatepicker
+				name={`${path}.foedselsdato`}
+				label="Fødselsdato"
+				disabled={(foedselsaar !== null && foedselsdato === null) || harAlder()}
+				maxDate={new Date()}
+				minDate={minDateFoedsel}
+			/>
+			<Yearpicker
+				formMethods={formMethods}
+				name={`${path}.foedselsaar`}
+				label="Fødselsår"
+				date={foedselsaar ? new Date(foedselsaar, 0) : null}
+				handleDateChange={(val) => {
+					formMethods.setValue(`${path}.foedselsaar`, val ? new Date(val).getFullYear() : null)
+					formMethods.trigger()
+				}}
+				maxDate={new Date()}
+				minDate={minDateFoedsel}
+				// @ts-ignore
+				disabled={(foedselsdato !== null && foedselsaar === null) || harAlder()}
+			/>
+			<FormTextInput name={`${path}.foedested`} label="Fødested" size="large" />
+			<FormSelect
 				name={`${path}.foedekommune`}
 				label="Fødekommune"
 				kodeverk={AdresseKodeverk.Kommunenummer}
@@ -78,7 +75,7 @@ export const FoedselForm = ({ formMethods, path }: FoedselTypes) => {
 					formMethods.watch(`${path}.foedeland`) !== null
 				}
 			/>
-			<FormikSelect
+			<FormSelect
 				name={`${path}.foedeland`}
 				label="Fødeland"
 				onChange={(selected: SelectedValue) => handleLandChange(selected, path)}
@@ -94,7 +91,7 @@ export const Foedsel = ({ formMethods }: FoedselTypes) => {
 	const opts = useContext(BestillingsveilederContext)
 	return (
 		<div className="flexbox--flex-wrap">
-			<FormikDollyFieldArray
+			<FormDollyFieldArray
 				name={'pdldata.person.foedsel'}
 				header="Fødsel"
 				newEntry={getInitialFoedsel(opts?.identtype === 'NPID' ? 'PDL' : 'FREG')}
@@ -103,7 +100,7 @@ export const Foedsel = ({ formMethods }: FoedselTypes) => {
 				{(path: string, _idx: number) => {
 					return <FoedselForm formMethods={formMethods} path={path} />
 				}}
-			</FormikDollyFieldArray>
+			</FormDollyFieldArray>
 		</div>
 	)
 }

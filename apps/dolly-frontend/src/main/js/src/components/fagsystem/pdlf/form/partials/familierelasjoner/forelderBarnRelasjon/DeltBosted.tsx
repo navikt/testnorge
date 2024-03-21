@@ -1,20 +1,19 @@
 import React, { useEffect, useState } from 'react'
 import _ from 'lodash'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import {
 	MatrikkeladresseVelger,
 	UkjentBosted,
 	VegadresseVelger,
 } from '@/components/fagsystem/pdlf/form/partials/adresser/adressetyper'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import {
 	initialMatrikkeladresse,
 	initialUkjentBosted,
 	initialVegadresse,
 } from '@/components/fagsystem/pdlf/form/initialValues'
-import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface DeltBostedValues {
@@ -124,7 +123,7 @@ export const DeltBostedForm = ({
 
 	return (
 		<>
-			<FormikSelect
+			<FormSelect
 				name={`${path}.adressetype`}
 				value={adressetype}
 				label="Adressetype"
@@ -146,10 +145,8 @@ export const DeltBostedForm = ({
 			)}
 			{adressetype === 'UKJENT_BOSTED' && <UkjentBosted path={`${path}.ukjentBosted`} />}
 			<div className="flexbox--flex-wrap">
-				<DatepickerWrapper>
-					<FormikDatepicker name={`${path}.startdatoForKontrakt`} label="Startdato for kontrakt" />
-					<FormikDatepicker name={`${path}.sluttdatoForKontrakt`} label="Sluttdato for kontrakt" />
-				</DatepickerWrapper>
+				<FormDatepicker name={`${path}.startdatoForKontrakt`} label="Startdato for kontrakt" />
+				<FormDatepicker name={`${path}.sluttdatoForKontrakt`} label="Sluttdato for kontrakt" />
 			</div>
 		</>
 	)

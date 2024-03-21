@@ -39,6 +39,8 @@ spec:
           cluster: dev-gcp
         - application: testnav-budpro-service
           cluster: dev-gcp
+        - application: testnav-endringsmelding-service
+          cluster: dev-gcp
   tokenx:
     enabled: true
   azure:

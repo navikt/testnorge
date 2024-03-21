@@ -2,13 +2,23 @@ package no.nav.testnav.apps.tpsmessagingservice.provider.v1;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsMeldingResponse;
+import no.nav.testnav.apps.tpsmessagingservice.service.AdressehistorikkService;
 import no.nav.testnav.apps.tpsmessagingservice.service.BankkontoNorskService;
 import no.nav.testnav.apps.tpsmessagingservice.service.BankkontoUtlandService;
+import no.nav.testnav.apps.tpsmessagingservice.service.DoedsmeldingService;
 import no.nav.testnav.apps.tpsmessagingservice.service.EgenansattService;
+import no.nav.testnav.apps.tpsmessagingservice.service.FoedselsmeldingService;
 import no.nav.testnav.apps.tpsmessagingservice.service.PersonService;
 import no.nav.testnav.apps.tpsmessagingservice.service.SpraakService;
 import no.nav.testnav.libs.data.kontoregister.v1.BankkontonrNorskDTO;
 import no.nav.testnav.libs.data.kontoregister.v1.BankkontonrUtlandDTO;
+import no.nav.testnav.libs.data.tpsmessagingservice.v1.AdressehistorikkDTO;
+import no.nav.testnav.libs.data.tpsmessagingservice.v1.AdressehistorikkRequest;
+import no.nav.testnav.libs.data.tpsmessagingservice.v1.DoedsmeldingRequest;
+import no.nav.testnav.libs.data.tpsmessagingservice.v1.DoedsmeldingResponse;
+import no.nav.testnav.libs.data.tpsmessagingservice.v1.FoedselsmeldingRequest;
+import no.nav.testnav.libs.data.tpsmessagingservice.v1.FoedselsmeldingResponse;
+import no.nav.testnav.libs.data.tpsmessagingservice.v1.PersonDTO;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.PersonMiljoeDTO;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.SpraakDTO;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.TpsMeldingResponseDTO;
@@ -27,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 
 import static java.util.Collections.emptyList;
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 @RestController
@@ -39,6 +50,9 @@ public class PersonController {
     private final SpraakService spraakService;
     private final BankkontoUtlandService bankkontoUtlandService;
     private final BankkontoNorskService bankkontoNorskService;
+    private final AdressehistorikkService adressehistorikkService;
+    private final FoedselsmeldingService foedselsmeldingService;
+    private final DoedsmeldingService doedsmeldingService;
 
     private static List<TpsMeldingResponseDTO> convert(Map<String, TpsMeldingResponse> tpsMeldingDTO) {
 
@@ -112,6 +126,34 @@ public class PersonController {
                                                                 @RequestParam(required = false) List<String> miljoer) {
 
         return convert(bankkontoUtlandService.opphoerBankkontonrUtland(ident, miljoer));
+    }
+
+    @PostMapping("/adressehistorikk")
+    public List<AdressehistorikkDTO> personhistorikk(@RequestBody AdressehistorikkRequest request,
+                                                     @RequestParam(required = false) List<String> miljoer) {
+
+        return adressehistorikkService.hentHistorikk(request, isNull(miljoer) ? emptyList() : miljoer);
+    }
+
+    @PostMapping("/foedselsmelding")
+    public FoedselsmeldingResponse sendFoedselsmelding(@RequestParam(required = false) List<String> miljoer,
+                                                       @RequestBody FoedselsmeldingRequest persondata) {
+
+        return foedselsmeldingService.sendFoedselsmelding(persondata, isNull(miljoer) ? emptyList() : miljoer);
+    }
+
+    @PostMapping("/doedsmelding")
+    public DoedsmeldingResponse sendDoedsmelding(@RequestBody DoedsmeldingRequest request,
+                                                 @RequestParam(required = false) List<String> miljoer) {
+
+        return doedsmeldingService.sendDoedsmelding(request, isNull(miljoer) ? emptyList() : miljoer);
+    }
+
+    @DeleteMapping("/doedsmelding")
+    public DoedsmeldingResponse annulerDoedsmelding(@RequestParam(required = false) List<String> miljoer,
+                                                    @RequestBody PersonDTO persondata) {
+
+        return doedsmeldingService.annulerDoedsmelding(persondata, isNull(miljoer) ? emptyList() : miljoer);
     }
 }
 

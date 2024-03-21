@@ -1,32 +1,32 @@
 import { DollyCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import React, { useState } from 'react'
-import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import {
 	barnetilleggDetaljer,
 	forventedeInntekterSokerOgEP,
 } from '@/components/fagsystem/uforetrygd/initialValues'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
-import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 
 const ForventedeInntekterForm = ({ path, header, initialValues }) => {
 	return (
-		<FormikDollyFieldArray name={path} header={header} newEntry={initialValues} nested>
+		<FormDollyFieldArray name={path} header={header} newEntry={initialValues} nested>
 			{(path: any, idx: React.Key) => (
 				<>
-					<FormikSelect
+					<FormSelect
 						name={`${path}.inntektType`}
 						label="Type inntekt"
 						size="xlarge"
 						options={Options('inntektType')}
 					/>
-					<FormikTextInput name={`${path}.belop`} label="Beløp" type="number" size="medium" />
-					<FormikDatepicker name={`${path}.datoFom`} label="Dato f.o.m." />
-					<FormikDatepicker name={`${path}.datoTom`} label="Dato t.o.m." />
+					<FormTextInput name={`${path}.belop`} label="Beløp" type="number" size="medium" />
+					<FormDatepicker name={`${path}.datoFom`} label="Dato f.o.m." />
+					<FormDatepicker name={`${path}.datoTom`} label="Dato t.o.m." />
 				</>
 			)}
-		</FormikDollyFieldArray>
+		</FormDollyFieldArray>
 	)
 }
 
@@ -58,7 +58,7 @@ export const BarnetilleggForm = ({ formMethods }) => {
 			/>
 			{harBarnetillegg && (
 				<div className="flexbox--flex-wrap" style={{ marginBottom: '15px' }}>
-					<FormikSelect
+					<FormSelect
 						name={`${barnetilleggPath}.barnetilleggType`}
 						label="Type barnetillegg"
 						options={Options('barnetilleggType')}

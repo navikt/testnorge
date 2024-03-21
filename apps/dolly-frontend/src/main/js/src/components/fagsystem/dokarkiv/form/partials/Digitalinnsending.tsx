@@ -1,6 +1,6 @@
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
-import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
 
 export default () => {
@@ -9,13 +9,13 @@ export default () => {
 		<div className="flexbox--space">
 			<Kategori title={'Avsender'}>
 				<div className="flexbox--flex-wrap">
-					<FormikSelect
+					<FormSelect
 						name={'dokarkiv.avsenderMottaker.idType'}
 						label={'Type'}
 						options={Options('avsenderType')}
 					/>
-					<FormikTextInput name="dokarkiv.avsenderMottaker.id" label="ID" size={'large'} />
-					<FormikTextInput name="dokarkiv.avsenderMottaker.navn" label="Navn" />
+					<FormTextInput name="dokarkiv.avsenderMottaker.id" label="ID" size={'large'} />
+					<FormTextInput name="dokarkiv.avsenderMottaker.navn" label="Navn" />
 				</div>
 			</Kategori>
 		</div>

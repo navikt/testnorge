@@ -98,7 +98,7 @@ export const DollyTextInput = (props: {
 	</InputWrapper>
 )
 
-export const FormikTextInput = ({
+export const FormTextInput = ({
 	visHvisAvhuket = true,
 	...props
 }: {
