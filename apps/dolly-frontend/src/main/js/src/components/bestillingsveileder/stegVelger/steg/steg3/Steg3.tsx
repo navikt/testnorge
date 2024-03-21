@@ -22,7 +22,7 @@ export const Steg3 = () => {
 
 	const [gruppevalg, setGruppevalg] = useState(Gruppevalg.MINE)
 
-	const { organisasjonTilgang } = useOrganisasjonTilgang()
+	const { organisasjonTilgang, loading } = useOrganisasjonTilgang()
 	const tilgjengeligMiljoe = organisasjonTilgang?.miljoe
 
 	const importTestnorge = opts.is.importTestnorge
@@ -47,7 +47,9 @@ export const Steg3 = () => {
 	const harRelatertPersonBarn = forelderBarnRelasjon?.some((item) => item.relatertPerson)
 
 	const alleredeValgtMiljoe = () => {
-		if (bankIdBruker) {
+		if (loading) {
+			return []
+		} else if (bankIdBruker) {
 			return tilgjengeligMiljoe ? [tilgjengeligMiljoe] : ['q1']
 		}
 		return erQ2MiljoeAvhengig ? ['q2'] : []

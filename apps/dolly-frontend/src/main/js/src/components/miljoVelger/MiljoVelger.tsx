@@ -90,6 +90,7 @@ export const MiljoVelger = ({
 	const onClick = (e) => {
 		const { id } = e.target
 		console.log('id: ', id) //TODO - SLETT MEG
+		console.log('alleredeValgtMiljoe: ', alleredeValgtMiljoe) //TODO - SLETT MEG
 		console.log('e: ', e) //TODO - SLETT MEG
 		if (!alleredeValgtMiljoe?.includes(id)) {
 			formMethods.setValue(
