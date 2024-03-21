@@ -27,6 +27,13 @@ spring:
           jwk-set-uri: ${TOKEN_X_JWKS_URI}
           accepted-audience: ${TOKEN_X_CLIENT_ID}
 
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
+  error:
+    include-message: always
+
 consumers:
   testnav-tps-messaging-service:
     cluster: dev-gcp

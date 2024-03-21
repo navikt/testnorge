@@ -62,3 +62,10 @@ consumers:
         cluster: dev-gcp
         namespace: dolly
         name: testnav-tps-messaging-service
+
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
+  error:
+    include-message: always
