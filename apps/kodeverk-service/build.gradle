@@ -40,7 +40,6 @@ repositories {
     mavenLocal()
 }
 
-
 dependencies {
 
     implementation 'no.nav.testnav.libs:servlet-core'

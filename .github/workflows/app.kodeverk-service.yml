@@ -4,6 +4,8 @@ on:
   push:
     paths:
       - libs/servlet-core
+      - libs/security-core
+      - libs/reactive-core
       - libs/servlet-security
       - libs/testing
       - apps/kodeverk-service/**
