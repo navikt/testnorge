@@ -96,6 +96,8 @@ spring:
       token: test
       enabled: false
   datasource:
+    hikari:
+      minimum-idle: 5
     url: jdbc:tc:postgresql:14.4:///dollyDB?TC_REUSABLE=true # 14.4 er versjon p.t. i dev-gcp.
     username: user
     password: pass
