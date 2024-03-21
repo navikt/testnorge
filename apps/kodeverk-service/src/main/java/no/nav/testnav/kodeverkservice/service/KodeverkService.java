@@ -5,16 +5,16 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.kodeverkservice.consumer.KodeverkConsumer;
 import no.nav.testnav.kodeverkservice.domain.KodeverkAdjusted;
 import no.nav.testnav.kodeverkservice.domain.KodeverkBetydningerResponse;
-import no.nav.testnav.kodeverkservice.mapping.KodeverkMapper;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.time.Duration;
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static java.util.Objects.nonNull;
 
 @Slf4j
 @Service
@@ -22,12 +22,20 @@ import java.util.stream.Collectors;
 public class KodeverkService {
 
     private final KodeverkConsumer kodeverkConsumer;
-    private final KodeverkMapper kodeverkMapper;
 
-    public Flux<KodeverkAdjusted> getKodeverkByName(String kodeverk) {
+    public Mono<KodeverkAdjusted> getKodeverkByName(String kodeverk) {
 
-        var response = kodeverkConsumer.getKodeverk(kodeverk);
-        return kodeverkMapper.mapBetydningToAdjustedKodeverk(kodeverk, response);
+        return kodeverkConsumer.getKodeverk(kodeverk)
+                .map(KodeverkBetydningerResponse::getBetydninger)
+                .map(Map::entrySet)
+                .map(betydninger -> KodeverkAdjusted.builder()
+                        .name(kodeverk)
+                        .koder(betydninger.stream()
+                                .filter(entry -> nonNull(entry.getValue()) && !entry.getValue().isEmpty())
+                                .map(KodeverkService::getKodeAdjusted)
+                                .sorted(Comparator.comparing(KodeverkAdjusted.KodeAdjusted::getLabel))
+                                .toList())
+                        .build());
     }
 
     public Mono<Map<String, String>> getKodeverkMap(String kodeverk) {
@@ -35,16 +43,30 @@ public class KodeverkService {
         return kodeverkConsumer.getKodeverk(kodeverk)
                 .map(KodeverkBetydningerResponse::getBetydninger)
                 .map(Map::entrySet)
-                .flatMap(Flux::fromIterable)
-                .filter(entry -> !entry.getValue().isEmpty())
-                .filter(entry -> LocalDate.now().isAfter(entry.getValue().getFirst().getGyldigFra()) &&
-                        LocalDate.now().isBefore(entry.getValue().getFirst().getGyldigTil()))
-                .collect(Collectors.toMap(Map.Entry::getKey, KodeverkService::getNorskBokmaal))
-                .cache(Duration.ofHours(9));
+                .map(betydninger -> betydninger.stream()
+                        .filter(entry -> !entry.getValue().isEmpty())
+                        .filter(entry -> LocalDate.now().isAfter(getBetydning(entry).getGyldigFra()) &&
+                                LocalDate.now().isBefore(getBetydning(entry).getGyldigTil()))
+                        .collect(Collectors.toMap(Map.Entry::getKey, KodeverkService::getNorskBokmaal)));
+    }
+
+    private static KodeverkAdjusted.KodeAdjusted getKodeAdjusted(Map.Entry<String, List<KodeverkBetydningerResponse.Betydning>> entry) {
+
+        return KodeverkAdjusted.KodeAdjusted.builder()
+                .label(entry.getKey())
+                .gyldigFra(getBetydning(entry).getGyldigFra())
+                .gyldigTil(getBetydning(entry).getGyldigTil())
+                .value(getNorskBokmaal(entry))
+                .build();
+    }
+
+    private static KodeverkBetydningerResponse.Betydning getBetydning(Map.Entry<String, List<KodeverkBetydningerResponse.Betydning>> entry) {
+
+        return entry.getValue().getFirst();
     }
 
     private static String getNorskBokmaal(Map.Entry<String, List<KodeverkBetydningerResponse.Betydning>> entry) {
 
-        return entry.getValue().getFirst().getBeskrivelser().get("nb").getTekst();
+        return getBetydning(entry).getBeskrivelser().get("nb").getTekst();
     }
 }

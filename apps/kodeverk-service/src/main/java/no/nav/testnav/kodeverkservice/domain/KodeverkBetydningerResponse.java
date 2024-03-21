@@ -21,6 +21,7 @@ public class KodeverkBetydningerResponse {
     private Map<String, List<Betydning>> betydninger;
 
     public Map<String, List<Betydning>> getBetydninger() {
+
         if (isNull(betydninger)) {
             betydninger = new HashMap<>();
         }

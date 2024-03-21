@@ -8,7 +8,7 @@ import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Service
 public class KodeverkConsumer {
@@ -36,9 +36,9 @@ public class KodeverkConsumer {
                 .build();
     }
 
-    public Flux<KodeverkBetydningerResponse> getKodeverk(String kodeverk) {
+    public Mono<KodeverkBetydningerResponse> getKodeverk(String kodeverk) {
 
         return tokenService.exchange(serverProperties)
-                .flatMapMany(token -> new KodeverkGetCommand(webClient, kodeverk, token.getTokenValue()).call());
+                .flatMap(token -> new KodeverkGetCommand(webClient, kodeverk, token.getTokenValue()).call());
     }
 }
