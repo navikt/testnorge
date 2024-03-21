@@ -84,7 +84,6 @@ export const MiljoVelger = ({
 	if (disableAllEnvironments && values.length > 0) {
 		formMethods.setValue('environments', [])
 	}
-	console.log('env: ', values) //TODO - SLETT MEG
 	const isChecked = (id) => values.includes(id)
 
 	const onClick = (e) => {
