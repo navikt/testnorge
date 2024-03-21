@@ -89,10 +89,9 @@ export const MiljoVelger = ({
 
 	const onClick = (e) => {
 		const { id } = e.target
-		console.log('id: ', id) //TODO - SLETT MEG
-		console.log('alleredeValgtMiljoe: ', alleredeValgtMiljoe) //TODO - SLETT MEG
-		console.log('e: ', e) //TODO - SLETT MEG
-		if (!alleredeValgtMiljoe?.includes(id)) {
+		if (alleredeValgtMiljoe?.includes(id) && values.includes(id)) {
+			console.warn('Miljøet er påkrevd')
+		} else {
 			formMethods.setValue(
 				'environments',
 				isChecked(id) ? values.filter((value) => value !== id) : values.concat(id),
