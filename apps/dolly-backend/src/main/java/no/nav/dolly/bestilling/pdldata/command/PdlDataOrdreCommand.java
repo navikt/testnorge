@@ -10,12 +10,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
+import reactor.netty.http.client.HttpClientRequest;
 import reactor.util.retry.Retry;
 
 import java.net.http.HttpTimeoutException;
 import java.time.Duration;
 import java.util.concurrent.Callable;
 
+import static no.nav.dolly.util.RequestTimeout.REQUEST_DURATION;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
@@ -36,6 +38,10 @@ public class PdlDataOrdreCommand implements Callable<Flux<PdlResponse>> {
                 .uri(uriBuilder -> uriBuilder.path(PDL_FORVALTER_ORDRE_URL)
                         .queryParam(EXCLUDE_EKSTERNE_PERSONER, ekskluderEksternePersoner)
                         .build(ident))
+                .httpRequest(httpRequest -> {
+                    HttpClientRequest reactorRequest = httpRequest.getNativeRequest();
+                    reactorRequest.responseTimeout(Duration.ofSeconds(REQUEST_DURATION));
+                })
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .contentType(MediaType.APPLICATION_JSON)

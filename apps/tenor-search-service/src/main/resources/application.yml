@@ -50,6 +50,8 @@ server:
       force: true
       force-request: true
       force-response: true
+  error:
+    include-message: always
 
 consumers:
   tenor-search-service:

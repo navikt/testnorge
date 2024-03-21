@@ -80,7 +80,7 @@ public class AaregClient implements ClientRegister {
 
                             return sendArbeidsforhold(bestilling, dollyPerson, miljoerTrygg.get(), isOpprettEndre);
                         } else {
-                            return ameldingService.sendAmelding(bestilling, dollyPerson, miljoerTrygg.get(), progress);
+                            return ameldingService.sendAmelding(bestilling, dollyPerson, miljoerTrygg.get());
                         }
                     })
                     .map(status -> futurePersist(progress, status));

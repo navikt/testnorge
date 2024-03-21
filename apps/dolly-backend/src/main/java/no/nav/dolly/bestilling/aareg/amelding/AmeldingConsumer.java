@@ -5,7 +5,6 @@ import io.swagger.v3.core.util.Json;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.aareg.command.AmeldingPutCommand;
 import no.nav.dolly.config.Consumers;
-import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.dto.ameldingservice.v1.AMeldingDTO;
@@ -14,15 +13,11 @@ import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.slf4j.event.Level;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.netty.http.client.HttpClient;
-import reactor.netty.resources.ConnectionProvider;
 
-import java.time.Duration;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -53,22 +48,12 @@ public class AmeldingConsumer {
         this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
-                .clientConnector(
-                        new ReactorClientHttpConnector(
-                                HttpClient
-                                        .create(ConnectionProvider.builder("Testnorge connection pool")
-                                                .maxConnections(5)
-                                                .pendingAcquireMaxCount(10000)
-                                                .pendingAcquireTimeout(Duration.ofMinutes(30))
-                                                .build())
-                                        .responseTimeout(Duration.ofSeconds(3))
-                        ))
                 .build();
         this.errorStatusDecoder = errorStatusDecoder;
     }
 
     @Timed(name = "providers", tags = {"operation", "amelding_put"})
-    public Flux<String> sendAmeldinger(List<AMeldingDTO> ameldinger, String miljoe, BestillingProgress progress) {
+    public Flux<String> sendAmeldinger(List<AMeldingDTO> ameldinger, String miljoe) {
 
         return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> Flux.fromIterable(ameldinger)
