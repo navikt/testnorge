@@ -36,7 +36,7 @@ export default () => {
         ident: state.ident.trim(),
         handling: state.handling,
       },
-      state.miljoer
+      state.miljoer,
     );
 
   const getSuccessMessage = () => {
@@ -61,6 +61,9 @@ export default () => {
       getSuccessMessage={getSuccessMessage}
       setMiljoer={(miljoer) => {
         dispatch({ type: Action.SET_MILJOER_OPTIONS_ACTION, value: miljoer });
+        if (miljoer.length > 0) {
+          dispatch({ type: Action.SET_MILJOER_ACTION, value: miljoer[0] });
+        }
       }}
     >
       <Line>

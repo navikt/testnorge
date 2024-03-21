@@ -14,7 +14,7 @@ type Actions =
     }
   | {
       type: SetMiljoerAction;
-      value: string[];
+      value: string;
     }
   | {
       type: SetHandlingAction;
