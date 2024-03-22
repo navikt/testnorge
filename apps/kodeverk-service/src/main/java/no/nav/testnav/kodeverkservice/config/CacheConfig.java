@@ -16,12 +16,14 @@ import java.util.concurrent.TimeUnit;
 public class CacheConfig {
 
     public static final String CACHE_KODEVERK = "kodeverk";
+    public static final String CACHE_KODEVERK_2 = "kodeverk-2";
 
     @Bean
     @Profile("prod")
     public CacheManager cacheManager(Caffeine caffeine) {
 
-        var caffeineCacheManager = new CaffeineCacheManager(CACHE_KODEVERK);
+        var caffeineCacheManager = new CaffeineCacheManager(CACHE_KODEVERK,
+                CACHE_KODEVERK_2);
         caffeineCacheManager.setCaffeine(caffeine);
         caffeineCacheManager.setAsyncCacheMode(true);
         return caffeineCacheManager;

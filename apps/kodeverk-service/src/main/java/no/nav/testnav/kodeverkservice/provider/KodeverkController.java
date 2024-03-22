@@ -16,6 +16,7 @@ import reactor.core.publisher.Mono;
 import java.util.Map;
 
 import static no.nav.testnav.kodeverkservice.config.CacheConfig.CACHE_KODEVERK;
+import static no.nav.testnav.kodeverkservice.config.CacheConfig.CACHE_KODEVERK_2;
 
 @RestController
 @RequestMapping("/api/v1/kodeverk")
@@ -33,7 +34,7 @@ public class KodeverkController {
         return kodeverkService.getKodeverkMap(kodeverk);
     }
 
-    @Cacheable(CACHE_KODEVERK)
+    @Cacheable(CACHE_KODEVERK_2)
     @GetMapping("/{kodeverkNavn}")
     @Operation(description = "Hent kodeverk etter kodeverkNavn")
     public Mono<KodeverkAdjusted> getKodeverkByName(@PathVariable("kodeverkNavn") String kodeverkNavn) {
