@@ -12,7 +12,7 @@ const App = () => (
     <Header title="Endringsmeldinger" profile={<ProfilLoader {...ProfilService} />} />
     <Routes>
       <Route path="/login" element={<LoginPage />} />
-      <Route path="/" element={<EndringsmeldingPage />} />
+      <Route path="*" element={<EndringsmeldingPage />} />
     </Routes>
   </Router>
 );

@@ -19,6 +19,8 @@ import no.nav.testnav.libs.data.tpsmessagingservice.v1.FoedselsmeldingResponse;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.IdentMiljoeDTO;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.PersonDTO;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.PersonMiljoeDTO;
+import no.nav.testnav.endringsmeldingservice.domain.IdenterRequest;
+import no.nav.testnav.libs.data.tpsmessagingservice.v1.TpsIdentStatusDTO;
 import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.http.MediaType;
@@ -64,10 +66,10 @@ public class TpsMessagingConsumer {
                 .build();
     }
 
-    public Flux<PersonMiljoeDTO> hentMiljoer(String ident) { // Skal ryddes til slutt
+    public Flux<TpsIdentStatusDTO> hentMiljoer(IdenterRequest body) { // Skal ryddes til slutt
         return accessTokenService
                 .exchange(serverProperties)
-                .flatMapMany(accessToken -> new GetIdentEnvironmentsCommand(webClient, ident, accessToken.getTokenValue()).call());
+                .flatMapMany(accessToken -> new GetIdentEnvironmentsCommand(webClient, body.ident(), accessToken.getTokenValue()).call());
     }
 
     public Flux<IdentMiljoeDTO> getEksistererPerson(Set<String> identer, Set<String> miljoer) {

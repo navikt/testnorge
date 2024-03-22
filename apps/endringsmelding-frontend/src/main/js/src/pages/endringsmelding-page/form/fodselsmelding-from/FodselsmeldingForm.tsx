@@ -39,7 +39,7 @@ export default () => {
         foedselsdato: state.foedselsdato,
         kjoenn: state.kjoenType,
       },
-      state.miljoer
+      state.miljoer,
     ).then((ident) => {
       dispatch({ type: Action.SET_BARNS_IDENT, value: ident.trim() });
       return Promise.resolve(ident);
@@ -60,6 +60,10 @@ export default () => {
       getSuccessMessage={getSuccessMessage}
       setMiljoer={(miljoer) => {
         dispatch({ type: Action.SET_MILJOER_OPTIONS_ACTION, value: miljoer });
+
+        if (miljoer?.length > 0) {
+          dispatch({ type: Action.SET_MILJOER_ACTION, value: [miljoer[0]] });
+        }
       }}
     >
       <Line>

@@ -36,5 +36,4 @@
         </root>
     </springProfile>
 
-    <logger level="TRACE" name="no.nav.testnav.libs.reactivecore.filter.RequestLogger" />
 </configuration>

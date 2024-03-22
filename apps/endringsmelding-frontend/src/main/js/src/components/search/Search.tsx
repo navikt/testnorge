@@ -9,7 +9,7 @@ import {
   WarningAlert,
   WarningAlertstripe,
 } from '@navikt/dolly-komponenter';
-import { useIdentSearch } from '@/useIdentSearch';
+import _ from 'lodash';
 import { Action } from '@/pages/endringsmelding-page/form/endringsmelding-form/EndringsmeldingReducer';
 
 const Search = styled.div`
@@ -57,18 +57,68 @@ const StyledWarning = styled(WarningAlertstripe)`
   width: -webkit-fill-available;
 `;
 
-export default <T extends unknown>({ labels, onChange, setMiljoer, dispatch }: Props<T>) => {
+export default <T extends unknown>({ labels, onChange, dispatch, setMiljoer }: Props<T>) => {
   const [value, setValue] = useState('');
   const [search, setSearch] = useState(null);
+  const [response, setResponse] = useState(null);
+  const [loading, setLoading] = useState(null);
+  const [error, setError] = useState(null);
 
-  const { error, identer, loading } = useIdentSearch(search);
+  const renderAlert = () => {
+    if (_.isEmpty(response?.miljoer)) {
+      return null;
+    } else if (error) {
+      return <ErrorAlert label={labels.onError} />;
+    } else if (response.miljoer.length === 0) {
+      return <WarningAlert label={labels.onNotFound} />;
+    } else {
+      return <SuccessAlert label={labels.onFound} />;
+    }
+  };
+
+  const hentMiljoeInfo = async (ident: string) => {
+    setError(false);
+    setLoading(true);
+    return fetch(`/endringsmelding-service/api/v1/ident/miljoer`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ident: ident }),
+    })
+      .then(async (res) => {
+        setLoading(false);
+        const jsonResponse = await res.json();
+        setResponse(jsonResponse?.[0]);
+      })
+      .catch((reason) => {
+        console.error(reason);
+        setLoading(false);
+        setError(true);
+        if (reason?.response?.status === 401 || reason?.response?.status === 403) {
+          console.error('Auth feilet');
+        }
+        if (reason.status === 404 || reason.response?.status === 404) {
+          if (reason.response?.data?.error) {
+            throw new Error(reason.response?.data?.error);
+          }
+        }
+        throw new Error(`Henting av data fra endringsmelding-service feilet.`);
+      });
+  };
 
   useEffect(() => {
-    setMiljoer(identer?.map((ident) => ident.miljoe));
+    if (search && search.length === 11) {
+      hentMiljoeInfo(search);
+    } else {
+      setError('Ident må være 11 siffer.');
+    }
+  }, [search]);
+
+  useEffect(() => {
+    setMiljoer(response?.miljoer);
     error
       ? dispatch({ type: Action.SET_HENT_MILJOER_ERROR_ACTION })
       : dispatch({ type: Action.SET_HENT_MILJOER_SUCCESS_ACTION });
-  }, [identer, error]);
+  }, [response, error]);
 
   return (
     <Search>
@@ -83,24 +133,17 @@ export default <T extends unknown>({ labels, onChange, setMiljoer, dispatch }: P
         }}
       />
       <StyledKnapp
-        onClick={() => setSearch(value)}
+        onClick={(event: any) => {
+          event.preventDefault();
+          setSearch(value);
+        }}
         disabled={loading || isSyntheticIdent(value)}
         loading={loading}
       >
         {labels.button}
       </StyledKnapp>
       {isSyntheticIdent(value) && <StyledWarning label={labels.syntIdent} />}
-      <Alert>
-        {!identer ? null : identer.length === 0 ? (
-          error ? (
-            <ErrorAlert label={labels.onError} />
-          ) : (
-            <WarningAlert label={labels.onNotFound} />
-          )
-        ) : (
-          <SuccessAlert label={labels.onFound} />
-        )}
-      </Alert>
+      <Alert>{renderAlert()}</Alert>
     </Search>
   );
 };
