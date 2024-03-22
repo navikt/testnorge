@@ -61,7 +61,7 @@ export default () => {
       setMiljoer={(miljoer) => {
         dispatch({ type: Action.SET_MILJOER_OPTIONS_ACTION, value: miljoer });
 
-        if (miljoer.length > 0) {
+        if (miljoer?.length > 0) {
           dispatch({ type: Action.SET_MILJOER_ACTION, value: miljoer[0] });
         }
       }}
