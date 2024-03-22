@@ -84,5 +84,4 @@ public class EndringsmeldingFrontendApplicationStarter {
                         .filters(filter)
                 ).uri(host);
     }
-
 }
