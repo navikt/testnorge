@@ -23,13 +23,12 @@ public class KodeverkService {
 
     private final KodeverkConsumer kodeverkConsumer;
 
-    public Mono<KodeverkAdjusted> getKodeverkByName(String kodeverk) {
+    public Mono<KodeverkAdjusted> getKodeverkByName(String kodeverknavn) {
 
-        return kodeverkConsumer.getKodeverk(kodeverk)
-                .map(KodeverkBetydningerResponse::getBetydninger)
-                .map(Map::entrySet)
+        return kodeverkConsumer.getKodeverk(kodeverknavn)
+                .map(kodeverk -> kodeverk.getBetydninger().entrySet())
                 .map(betydninger -> KodeverkAdjusted.builder()
-                        .name(kodeverk)
+                        .name(kodeverknavn)
                         .koder(betydninger.stream()
                                 .filter(entry -> nonNull(entry.getValue()) && !entry.getValue().isEmpty())
                                 .map(KodeverkService::getKodeAdjusted)
@@ -38,13 +37,11 @@ public class KodeverkService {
                         .build());
     }
 
-    public Mono<Map<String, String>> getKodeverkMap(String kodeverk) {
+    public Mono<Map<String, String>> getKodeverkMap(String kodeverknavn) {
 
-        return kodeverkConsumer.getKodeverk(kodeverk)
-                .map(KodeverkBetydningerResponse::getBetydninger)
-                .map(Map::entrySet)
-                .map(betydninger -> betydninger.stream()
-                        .filter(entry -> !entry.getValue().isEmpty())
+        return kodeverkConsumer.getKodeverk(kodeverknavn)
+                .map(kodeverk -> kodeverk.getBetydninger().entrySet().stream()
+                        .filter(entry -> nonNull(entry.getValue()) && !entry.getValue().isEmpty())
                         .filter(entry -> LocalDate.now().isAfter(getBetydning(entry).getGyldigFra()) &&
                                 LocalDate.now().isBefore(getBetydning(entry).getGyldigTil()))
                         .collect(Collectors.toMap(Map.Entry::getKey, KodeverkService::getNorskBokmaal)));
@@ -67,6 +64,6 @@ public class KodeverkService {
 
     private static String getNorskBokmaal(Map.Entry<String, List<KodeverkBetydningerResponse.Betydning>> entry) {
 
-        return getBetydning(entry).getBeskrivelser().get("nb").getTekst();
+        return getBetydning(entry).getBeskrivelser().get("nb").getTerm();
     }
 }
