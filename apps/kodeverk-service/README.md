@@ -6,4 +6,4 @@ Swagger finnes under [/swagger](https://testnav-kodeverk-service.intern.dev.nav.
 applikasjonen.
 
 ## Lokal kjøring
-Sett profile til local
+Sett profile til dev
