@@ -17,6 +17,8 @@ server:
       encoding:
         charset: UTF-8
     max-http-header-size: 70KB
+  error:
+    include-message: always
 
 spring:
   cloud:
@@ -82,11 +84,6 @@ open:
   search:
     total-fields: 1500
     index: bestilling
-
-tps:
-  person:
-    service:
-      wait: 30_000
 
 consumers:
   testnav-organisasjon-forvalter:
