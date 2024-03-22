@@ -1,7 +1,7 @@
 package no.nav.testnav.kodeverkservice.config;
 
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
-import no.nav.testnav.libs.servletsecurity.config.SecureOAuth2ServerToServerConfiguration;
+import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2ServerToServerConfiguration;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
