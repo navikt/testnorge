@@ -26,7 +26,7 @@ public class Consumers {
 
     private ServerProperties adresseService;
     private ServerProperties genererNavnService;
-    private ServerProperties geografiskeKodeverkService;
+    private ServerProperties kodeverkService;
     private ServerProperties identPool;
     private ServerProperties orgForvalter;
     private ServerProperties pdlService;
