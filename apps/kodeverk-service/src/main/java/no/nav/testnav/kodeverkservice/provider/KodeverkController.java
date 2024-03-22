@@ -26,7 +26,7 @@ public class KodeverkController {
     private final KodeverkService kodeverkService;
 
     @Cacheable(CACHE_KODEVERK)
-    @GetMapping("/kodeverk")
+    @GetMapping
     @Operation(description = "Hent kodeverk, returnerer map")
     public Mono<Map<String, String>> fetchKodeverk(@RequestParam String kodeverk) {
 
@@ -34,7 +34,7 @@ public class KodeverkController {
     }
 
     @Cacheable(CACHE_KODEVERK)
-    @GetMapping("/kodeverk/{kodeverkNavn}")
+    @GetMapping("/{kodeverkNavn}")
     @Operation(description = "Hent kodeverk etter kodeverkNavn")
     public Mono<KodeverkAdjusted> getKodeverkByName(@PathVariable("kodeverkNavn") String kodeverkNavn) {
 
