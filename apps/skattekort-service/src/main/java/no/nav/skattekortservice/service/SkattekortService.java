@@ -37,7 +37,7 @@ public class SkattekortService {
         log.info("XML Request: {}", xmlRequest);
 
         //TBD send melding
-        return "XML har blit generert og logget, men innsending av skattekort mangler i påvente av nytt API hos team motta-og-beregne.";
+        return "XML har blitt generert og logget, men innsending av skattekort mangler i påvente av nytt API hos team motta-og-beregne.";
     }
 
     @SneakyThrows
