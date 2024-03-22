@@ -10,11 +10,16 @@ import io.swagger.v3.oas.models.security.SecurityScheme;
 import no.nav.testnav.libs.reactivecore.config.ApplicationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
+import org.springframework.web.server.ServerWebExchange;
+import org.springframework.web.server.WebFilter;
+import org.springframework.web.server.WebFilterChain;
+import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
 
 @Configuration
-public class OpenApiConfig {
+public class OpenApiConfig implements WebFilter {
 
     @Bean
     public OpenAPI openApi(ApplicationProperties applicationProperties) {
@@ -24,7 +29,7 @@ public class OpenApiConfig {
                         .scheme("bearer")
                         .bearerFormat("JWT")
                         .in(SecurityScheme.In.HEADER)
-                        .name("Authorization")
+                        .name(HttpHeaders.AUTHORIZATION)
                 ))
                 .addSecurityItem(
                         new SecurityRequirement().addList("bearer-jwt", Arrays.asList("read", "write")))
@@ -43,5 +48,18 @@ public class OpenApiConfig {
                                 .url("https://opensource.org/licenses/MIT")
                         )
                 );
+    }
+
+    @Override
+    public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
+        if (exchange.getRequest().getURI().getPath().equals("/swagger")) {
+            return chain
+                    .filter(exchange.mutate()
+                            .request(exchange.getRequest()
+                                    .mutate().path("/swagger-ui.html").build())
+                            .build());
+        }
+
+        return chain.filter(exchange);
     }
 }
