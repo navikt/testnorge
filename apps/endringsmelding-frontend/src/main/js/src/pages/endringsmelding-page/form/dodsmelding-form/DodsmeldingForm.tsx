@@ -40,7 +40,7 @@ export default () => {
     );
 
   const getSuccessMessage = () => {
-    const miljoer = state.miljoer?.join(', ');
+    const miljoer = state.miljoer;
     if (state.handling === 'SETTE_DOEDSDATO') {
       return `Dødsmelding for ident ${state.ident} ble sendt til miljø ${miljoer}.`;
     }
@@ -62,7 +62,7 @@ export default () => {
       setMiljoer={(miljoer) => {
         dispatch({ type: Action.SET_MILJOER_OPTIONS_ACTION, value: miljoer });
         if (miljoer?.length > 0) {
-          dispatch({ type: Action.SET_MILJOER_ACTION, value: miljoer[0] });
+          dispatch({ type: Action.SET_MILJOER_ACTION, value: [miljoer[0]] });
         }
       }}
     >
