@@ -1,38 +1,37 @@
 package no.nav.registre.testnorge.eregbatchstatusservice.consumer;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.eregbatchstatusservice.config.EregProperties;
+import no.nav.registre.testnorge.eregbatchstatusservice.config.Consumers;
 import no.nav.registre.testnorge.eregbatchstatusservice.consumer.command.GetBatchStatusCommand;
+import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
-
-import java.util.Map;
-import java.util.stream.Collectors;
+import reactor.core.publisher.Mono;
 
 @Slf4j
 @Component
 public class EregConsumer {
-    private final Map<String, WebClient> envWebClientMap;
+    private final ServerProperties serverProperties;
+    private final WebClient webClient;
+    private final TokenExchange tokenService;
 
-    public EregConsumer(EregProperties eregProperties) {
 
-        this.envWebClientMap = eregProperties
-                .getEnvHostMap()
-                .entrySet()
-                .stream()
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        entry -> WebClient.builder()
-                                .baseUrl(entry.getValue())
-                                .build()
-                ));
+    public EregConsumer(TokenExchange tokenService,
+                        Consumers consumers
+    ) {
+
+        this.tokenService = tokenService;
+        this.serverProperties = consumers.getModappEregProxy();
+        this.webClient = WebClient.builder()
+                .baseUrl(consumers.getModappEregProxy().getUrl())
+                .build();
     }
 
-    public Long getStatusKode(String miljo, Long id) {
-        if (!envWebClientMap.containsKey(miljo)) {
-            throw new RuntimeException("Stotter ikke miljo: " + miljo + " i EREG.");
-        } else {
-            return new GetBatchStatusCommand(envWebClientMap.get(miljo), id).call();
-        }
+    public Mono<Long> getStatusKode(String miljo, Long id) {
+        return tokenService
+                .exchange(serverProperties)
+                .flatMap(accessToken ->
+                        new GetBatchStatusCommand(webClient, miljo, id, accessToken.getTokenValue()).call());
     }
 }

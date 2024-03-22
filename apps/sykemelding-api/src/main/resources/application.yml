@@ -48,6 +48,8 @@ server:
   servlet:
     encoding:
       charset: UTF-8
+  error:
+    include-message: always
 ibm:
   mq:
     queueManager: ${IBM_MQ_QUEUE_MANAGER}
