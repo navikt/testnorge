@@ -19,3 +19,10 @@ spring:
     gateway:
       httpclient:
         response-timeout: 120s
+
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
+  error:
+    include-message: always

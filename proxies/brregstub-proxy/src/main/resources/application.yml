@@ -21,3 +21,10 @@ spring:
         response-timeout: 30s
     vault:
       enabled: false
+
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
+  error:
+    include-message: always
