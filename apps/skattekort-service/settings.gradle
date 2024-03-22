@@ -4,8 +4,9 @@ plugins {
 
 rootProject.name = 'skattekort-service'
 
-includeBuild '../../libs/servlet-core'
-includeBuild '../../libs/servlet-security'
+includeBuild '../../libs/security-core'
+includeBuild '../../libs/reactive-core'
+includeBuild '../../libs/reactive-security'
 includeBuild '../../libs/data-transfer-objects'
 
 gradleEnterprise {
