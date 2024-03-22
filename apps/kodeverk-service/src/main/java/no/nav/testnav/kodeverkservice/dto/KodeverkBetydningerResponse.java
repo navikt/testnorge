@@ -1,4 +1,4 @@
-package no.nav.testnav.kodeverkservice.domain;
+package no.nav.testnav.kodeverkservice.dto;
 
 import static java.util.Objects.isNull;
 

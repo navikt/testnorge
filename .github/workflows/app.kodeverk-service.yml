@@ -6,6 +6,7 @@ on:
       - libs/security-core
       - libs/reactive-core
       - libs/reactive-security
+      - libs/data-transfer-objects
       - apps/kodeverk-service/**
       - .github/workflows/app.kodeverk-service.yml
 

@@ -1,4 +1,4 @@
-package no.nav.testnav.kodeverkservice.domain;
+package no.nav.testnav.libs.dto.kodeverkservice.v1;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,7 +15,7 @@ import static java.util.Objects.isNull;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class KodeverkAdjusted {
+public class KodeverkAdjustedDTO {
 
     private String name;
     private List<KodeAdjusted> koder;

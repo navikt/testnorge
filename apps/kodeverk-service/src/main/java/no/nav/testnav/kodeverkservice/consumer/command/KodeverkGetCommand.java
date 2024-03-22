@@ -1,7 +1,7 @@
 package no.nav.testnav.kodeverkservice.consumer.command;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.testnav.kodeverkservice.domain.KodeverkBetydningerResponse;
+import no.nav.testnav.kodeverkservice.dto.KodeverkBetydningerResponse;
 import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;

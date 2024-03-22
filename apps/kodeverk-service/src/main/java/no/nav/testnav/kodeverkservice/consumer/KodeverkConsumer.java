@@ -2,7 +2,7 @@ package no.nav.testnav.kodeverkservice.consumer;
 
 import no.nav.testnav.kodeverkservice.config.Consumers;
 import no.nav.testnav.kodeverkservice.consumer.command.KodeverkGetCommand;
-import no.nav.testnav.kodeverkservice.domain.KodeverkBetydningerResponse;
+import no.nav.testnav.kodeverkservice.dto.KodeverkBetydningerResponse;
 import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.stereotype.Service;

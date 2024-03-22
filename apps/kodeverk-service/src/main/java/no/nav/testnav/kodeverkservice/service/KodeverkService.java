@@ -3,8 +3,10 @@ package no.nav.testnav.kodeverkservice.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.kodeverkservice.consumer.KodeverkConsumer;
-import no.nav.testnav.kodeverkservice.domain.KodeverkAdjusted;
-import no.nav.testnav.kodeverkservice.domain.KodeverkBetydningerResponse;
+import no.nav.testnav.kodeverkservice.dto.KodeverkBetydningerResponse;
+import no.nav.testnav.libs.dto.kodeverkservice.v1.KodeverkAdjustedDTO;
+import no.nav.testnav.libs.dto.kodeverkservice.v1.KodeverkAdjustedDTO.KodeAdjusted;
+import no.nav.testnav.libs.dto.kodeverkservice.v1.KodeverkDTO;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
@@ -23,33 +25,37 @@ public class KodeverkService {
 
     private final KodeverkConsumer kodeverkConsumer;
 
-    public Mono<KodeverkAdjusted> getKodeverkByName(String kodeverknavn) {
+    public Mono<KodeverkAdjustedDTO> getKodeverkByName(String kodeverknavn) {
 
         return kodeverkConsumer.getKodeverk(kodeverknavn)
                 .map(kodeverk -> kodeverk.getBetydninger().entrySet())
-                .map(betydninger -> KodeverkAdjusted.builder()
+                .map(betydninger -> KodeverkAdjustedDTO.builder()
                         .name(kodeverknavn)
                         .koder(betydninger.stream()
                                 .filter(entry -> nonNull(entry.getValue()) && !entry.getValue().isEmpty())
                                 .map(KodeverkService::getKodeAdjusted)
-                                .sorted(Comparator.comparing(KodeverkAdjusted.KodeAdjusted::getLabel))
+                                .sorted(Comparator.comparing(KodeverkAdjustedDTO.KodeAdjusted::getLabel))
                                 .toList())
                         .build());
     }
 
-    public Mono<Map<String, String>> getKodeverkMap(String kodeverknavn) {
+    public Mono<KodeverkDTO> getKodeverkMap(String kodeverknavn) {
 
         return kodeverkConsumer.getKodeverk(kodeverknavn)
                 .map(kodeverk -> kodeverk.getBetydninger().entrySet().stream()
                         .filter(entry -> nonNull(entry.getValue()) && !entry.getValue().isEmpty())
                         .filter(entry -> LocalDate.now().isAfter(getBetydning(entry).getGyldigFra()) &&
                                 LocalDate.now().isBefore(getBetydning(entry).getGyldigTil()))
-                        .collect(Collectors.toMap(Map.Entry::getKey, KodeverkService::getNorskBokmaal)));
+                        .collect(Collectors.toMap(Map.Entry::getKey, KodeverkService::getNorskBokmaal)))
+                .map(resultat -> KodeverkDTO.builder()
+                        .kodeverknavn(kodeverknavn)
+                        .kodeverk(resultat)
+                        .build());
     }
 
-    private static KodeverkAdjusted.KodeAdjusted getKodeAdjusted(Map.Entry<String, List<KodeverkBetydningerResponse.Betydning>> entry) {
+    private static KodeAdjusted getKodeAdjusted(Map.Entry<String, List<KodeverkBetydningerResponse.Betydning>> entry) {
 
-        return KodeverkAdjusted.KodeAdjusted.builder()
+        return KodeAdjusted.builder()
                 .label(entry.getKey())
                 .gyldigFra(getBetydning(entry).getGyldigFra())
                 .gyldigTil(getBetydning(entry).getGyldigTil())
