@@ -1,0 +1,22 @@
+name: kodeverk-service
+
+on:
+  push:
+    paths:
+      - libs/security-core
+      - libs/reactive-core
+      - libs/reactive-security
+      - libs/data-transfer-objects
+      - apps/kodeverk-service/**
+      - .github/workflows/app.kodeverk-service.yml
+
+jobs:
+  workflow:
+    uses: ./.github/workflows/common.workflow.backend.yml
+    with:
+      working-directory: "apps/kodeverk-service"
+      deploy-tag: "#deploy-kodeverk-service"
+    permissions:
+      contents: read
+      id-token: write
+    secrets: inherit
