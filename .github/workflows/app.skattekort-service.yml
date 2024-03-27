@@ -1,0 +1,22 @@
+name: skattekort-service
+
+on:
+  push:
+    paths:
+      - libs/reactive-core
+      - libs/reactive-security
+      - libs/security-core
+      - libs/data-transfer-objects
+      - apps/skattekort-service/**
+      - .github/workflows/app.skattekort-service.yml
+
+jobs:
+  workflow:
+    uses: ./.github/workflows/common.workflow.backend.yml
+    with:
+      working-directory: "apps/skattekort-service"
+      deploy-tag: "#deploy-skattekort-service"
+    permissions:
+      contents: read
+      id-token: write
+    secrets: inherit
