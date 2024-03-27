@@ -7,12 +7,14 @@ import org.opensearch.data.client.orhlc.RestClients;
 import org.opensearch.testcontainers.OpensearchContainer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 import org.testcontainers.utility.DockerImageName;
 
 @Configuration
+@Profile("test")
 @EnableElasticsearchRepositories("no.nav.dolly.elastic")
-public class OpenSearchConfig extends AbstractOpenSearchConfiguration {
+public class TestOpenSearchConfig extends AbstractOpenSearchConfiguration {
 
     private static final DockerImageName OPENSEARCH_IMAGE = DockerImageName.parse("opensearchproject/opensearch:2.0.0");
 
