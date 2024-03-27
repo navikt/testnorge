@@ -35,14 +35,6 @@ public class TransaksjonMappingService {
                 .toList();
     }
 
-    @Transactional(readOnly = true)
-    public List<RsTransaksjonMapping> getTransaksjonMapping(String ident) {
-
-        return transaksjonMappingRepository.findAllByBestillingIdAndIdent(null, ident).stream()
-                .map(this::toDTO)
-                .toList();
-    }
-
     public boolean existAlready(SystemTyper system, String ident, String miljoe, Long bestillingId) {
 
         return transaksjonMappingRepository.findAllBySystemAndIdent(system.name(), ident)
@@ -52,19 +44,16 @@ public class TransaksjonMappingService {
     }
 
     public void saveAll(Collection<TransaksjonMapping> entries) {
-
         entries.forEach(this::save);
     }
 
     @Transactional
     public void save(TransaksjonMapping entry) {
-
         transaksjonMappingRepository.save(entry);
     }
 
     @Transactional
     public void slettTransaksjonMappingByTestident(String ident) {
-
         transaksjonMappingRepository.deleteAllByIdent(ident);
     }
 

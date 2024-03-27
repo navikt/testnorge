@@ -96,6 +96,7 @@ spring:
       token: test
       enabled: false
   datasource:
+    type: org.springframework.jdbc.datasource.SimpleDriverDataSource
     url: jdbc:tc:postgresql:14.4:///dollyDB?TC_REUSABLE=true # 14.4 er versjon p.t. i dev-gcp.
     username: user
     password: pass

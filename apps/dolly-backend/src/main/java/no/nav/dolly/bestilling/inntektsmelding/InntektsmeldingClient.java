@@ -85,52 +85,59 @@ public class InntektsmeldingClient implements ClientRegister {
         };
     }
 
-    private Flux<String> postInntektsmelding(boolean isSendMelding,
-                                             InntektsmeldingRequest inntektsmeldingRequest, Long bestillingid) {
-
+    private Flux<String> postInntektsmelding(
+            boolean isSendMelding,
+            InntektsmeldingRequest inntektsmeldingRequest,
+            Long bestillingid
+    ) {
+        final var miljoe = inntektsmeldingRequest.getMiljoe();
         if (isSendMelding) {
-            return inntektsmeldingConsumer.postInntektsmelding(inntektsmeldingRequest)
+            return inntektsmeldingConsumer
+                    .postInntektsmelding(inntektsmeldingRequest)
                     .map(response -> {
                         if (isBlank(response.getError())) {
+                            var entries = response
+                                    .getDokumenter()
+                                    .stream()
+                                    .map(dokument -> {
+                                        var gjeldendeInntektRequest = InntektsmeldingRequest
+                                                .builder()
+                                                .arbeidstakerFnr(inntektsmeldingRequest.getArbeidstakerFnr())
+                                                .inntekter(singletonList(inntektsmeldingRequest.getInntekter().get(response.getDokumenter().indexOf(dokument))))
+                                                .joarkMetadata(inntektsmeldingRequest.getJoarkMetadata())
+                                                .miljoe(miljoe)
+                                                .build();
+                                        var json = toJson(TransaksjonMappingDTO
+                                                .builder()
+                                                .request(gjeldendeInntektRequest)
+                                                .dokument(dokument)
+                                                .build());
+                                        return TransaksjonMapping
+                                                .builder()
+                                                .ident(inntektsmeldingRequest.getArbeidstakerFnr())
+                                                .bestillingId(bestillingid)
+                                                .transaksjonId(json)
+                                                .datoEndret(LocalDateTime.now())
+                                                .miljoe(miljoe)
+                                                .system(INNTKMELD.name())
+                                                .build();
+                                    })
+                                    .toList();
+                            transaksjonMappingService.saveAll(entries);
 
-                            transaksjonMappingService.saveAll(
-                                    response.getDokumenter().stream()
-                                            .map(dokument -> {
-                                                var gjeldendeInntektRequest = InntektsmeldingRequest.builder()
-                                                        .arbeidstakerFnr(inntektsmeldingRequest.getArbeidstakerFnr())
-                                                        .inntekter(singletonList(
-                                                                inntektsmeldingRequest.getInntekter().get(response.getDokumenter().indexOf(dokument))))
-                                                        .joarkMetadata(inntektsmeldingRequest.getJoarkMetadata())
-                                                        .miljoe(inntektsmeldingRequest.getMiljoe())
-                                                        .build();
-
-                                                return TransaksjonMapping.builder()
-                                                        .ident(inntektsmeldingRequest.getArbeidstakerFnr())
-                                                        .bestillingId(bestillingid)
-                                                        .transaksjonId(toJson(TransaksjonMappingDTO.builder()
-                                                                .request(gjeldendeInntektRequest)
-                                                                .dokument(dokument)
-                                                                .build()))
-                                                        .datoEndret(LocalDateTime.now())
-                                                        .miljoe(inntektsmeldingRequest.getMiljoe())
-                                                        .system(INNTKMELD.name())
-                                                        .build();
-                                            })
-                                            .toList());
-
-                            return inntektsmeldingRequest.getMiljoe() + ":OK";
+                            return miljoe + ":OK";
 
                         } else {
                             log.error("Feilet å legge inn person: {} til Inntektsmelding miljø: {} feilmelding {}",
-                                    inntektsmeldingRequest.getArbeidstakerFnr(), inntektsmeldingRequest.getMiljoe(), response.getError());
+                                    inntektsmeldingRequest.getArbeidstakerFnr(), miljoe, response.getError());
 
-                            return String.format(STATUS_FMT, inntektsmeldingRequest.getMiljoe(),
+                            return String.format(STATUS_FMT, miljoe,
                                     errorStatusDecoder.getErrorText(response.getStatus(), response.getError()));
 
                         }
                     });
         } else {
-            return Flux.just(inntektsmeldingRequest.getMiljoe() + ":OK");
+            return Flux.just(miljoe + ":OK");
         }
     }
 

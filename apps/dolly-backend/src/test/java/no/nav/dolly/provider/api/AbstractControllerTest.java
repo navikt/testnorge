@@ -31,7 +31,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @ActiveProfiles("test")
-@Testcontainers
+@Testcontainers(disabledWithoutDocker = true)
 @EnableAutoConfiguration
 @ComponentScan("no.nav.dolly")
 @AutoConfigureMockMvc(addFilters = false)
@@ -47,9 +47,11 @@ public abstract class AbstractControllerTest {
     private Flyway flyway;
 
     @MockBean
+    @SuppressWarnings("unused")
     private BestillingElasticRepository bestillingElasticRepository;
 
     @MockBean
+    @SuppressWarnings("unused")
     private ElasticsearchOperations elasticsearchOperations;
 
     @BeforeEach
@@ -69,6 +71,7 @@ public abstract class AbstractControllerTest {
                         .builder()
                         .brukerId(UUID.randomUUID().toString())
                         .brukertype(AZURE)
+                        .brukernavn("brukernavn")
                         .build()
         );
     }
