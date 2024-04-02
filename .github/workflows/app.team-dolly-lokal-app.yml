@@ -7,7 +7,7 @@ on:
       - .github/workflows/app.team-dolly-lokal-app.yml
 
 jobs:
-  deploy:
+  deploy-redis:
     name: Deploy team-dolly-lokal-app
     runs-on: ubuntu-latest
     permissions:
