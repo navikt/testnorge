@@ -38,7 +38,9 @@ export const PersonVisning = ({ person, ident, loading, error }) => {
 		return null
 	}
 
-	const personData = person.data?.dokumentListe?.[0]
+	const personData = person.data?.dokumentListe?.find((dokument) =>
+		dokument.identifikator?.includes(ident),
+	)
 
 	return (
 		<PersonVisningWrapper>

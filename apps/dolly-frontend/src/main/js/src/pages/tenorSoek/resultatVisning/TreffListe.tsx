@@ -6,6 +6,7 @@ import Loading from '@/components/ui/loading/Loading'
 import styled from 'styled-components'
 import { ListeValg } from '@/pages/tenorSoek/resultatVisning/ListeValg'
 import { ImporterValgtePersoner } from '@/pages/tenorSoek/resultatVisning/ImporterValgtePersoner'
+import { CypressSelector } from '../../../../cypress/mocks/Selectors'
 
 const PersonNavn = styled.h3`
 	word-break: break-word;
@@ -73,6 +74,7 @@ export const TreffListe = ({ response, personListe, loading, error }: any) => {
 						return (
 							<Box
 								key={person?.id}
+								data-cy={CypressSelector.BUTTON_PERSON_TENORSOEK}
 								padding="2"
 								background={
 									person?.id === valgtPerson?.id ? 'surface-alt-3-moderate' : 'surface-alt-3-subtle'

@@ -7,6 +7,7 @@ import { createOptions } from '@/pages/tenorSoek/utils'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
+import { CypressSelector } from '../../../../cypress/mocks/Selectors'
 
 export const FolkeregisteretIdentifikasjonStatus = ({ handleChange, handleChangeList }: any) => {
 	const { domain: identifikatorTypeOptions } = useTenorDomain('IdentifikatorType')
@@ -23,6 +24,7 @@ export const FolkeregisteretIdentifikasjonStatus = ({ handleChange, handleChange
 		<SoekKategori>
 			<FormTextInput
 				name="identifikator"
+				data-cy={CypressSelector.INPUT_TENORSOEK_FNR}
 				label="Fødselsnummer / D-nummer"
 				onBlur={(val: SyntheticEvent) => handleChange(val?.target?.value || null, 'identifikator')}
 				visHvisAvhuket={false}
@@ -109,6 +111,7 @@ export const FolkeregisteretIdentifikasjonStatus = ({ handleChange, handleChange
 			</div>
 			<FormCheckbox
 				name="harLegitimasjonsdokument"
+				data-cy={CypressSelector.CHECKBOX_TENORSOEK}
 				label="Har legitimasjonsdokument"
 				onChange={(val: SyntheticEvent) =>
 					handleChange(val?.target?.checked || undefined, 'harLegitimasjonsdokument')

@@ -9,6 +9,7 @@ import DollyModal from '@/components/ui/modal/DollyModal'
 import { top } from '@popperjs/core'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 import styled from 'styled-components'
+import { CypressSelector } from '../../../../cypress/mocks/Selectors'
 
 const CheckboxWrapper = styled.div`
 	display: flex;
@@ -91,6 +92,7 @@ export const ImporterValgtePersoner = ({ identer, isMultiple }) => {
 				</Button>
 			) : (
 				<Button
+					data-cy={CypressSelector.BUTTON_IMPORTER_PERSONER}
 					variant="tertiary"
 					size="xsmall"
 					icon={<EnterIcon />}
@@ -121,7 +123,9 @@ export const ImporterValgtePersoner = ({ identer, isMultiple }) => {
 					)}
 					<MalValg setValgtMal={setValgtMal} />
 					<div className="dollymodal_buttons dollymodal_buttons--center">
-						<Button onClick={() => handleClick()}>Importer</Button>
+						<Button data-cy={CypressSelector.BUTTON_IMPORTER} onClick={() => handleClick()}>
+							Importer
+						</Button>
 						<Button variant="secondary" onClick={closeModal}>
 							Avbryt
 						</Button>
