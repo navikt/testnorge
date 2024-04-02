@@ -23,7 +23,7 @@ public class TpsServicerutineS610Response {
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     public static class TpsPersonData {
 
-        private TpsServiceRutine tpsServiceRutine;
+        private TpsServicerutineRequest.TpsServiceRutine tpsServiceRutine;
         private TpsSvar tpsSvar;
     }
 

@@ -12,10 +12,6 @@ spring:
           issuer-uri: ${AAD_ISSUER_URI}/v2.0
           jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
           accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
-        tokenx:
-          issuer-uri: ${TOKEN_X_ISSUER} 
-          jwk-set-uri: ${TOKEN_X_JWKS_URI}
-          accepted-audience: ${TOKEN_X_CLIENT_ID}
 
 springdoc:
   swagger-ui:
@@ -33,6 +29,21 @@ consumers:
     cluster: dev-gcp
     namespace: dolly
     name: testnav-tps-messaging-service
+  ident-pool:
+    url: http://testnav-ident-pool.dolly.svc.cluster.local
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-ident-pool
+  adresse-service:
+    url: http://testnav-adresse-service.dolly.svc.cluster.local
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-adresse-service
+  generer-navn-service:
+    url: http://generer-navn-service.dolly.svc.cluster.local
+    cluster: dev-gcp
+    namespace: dolly
+    name: generer-navn-service
 
 management:
   endpoints:
@@ -56,3 +67,5 @@ server:
   servlet:
     encoding:
       charset: UTF-8
+  error:
+    include-message: always

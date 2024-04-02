@@ -22,6 +22,13 @@ spring:
     vault:
       enabled: false
 
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
+  error:
+    include-message: always
+
 consumers:
   arbeidsplassencv:
     name: pam-cv-api-gcp

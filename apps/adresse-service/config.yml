@@ -62,6 +62,8 @@ spec:
         - application: app-1
           namespace: plattformsikkerhet
           cluster: dev-gcp
+        - application: testnav-endringsmelding-service
+          cluster: dev-gcp
     outbound:
       external:
         - host: testnav-pdl-proxy.dev-fss-pub.nais.io

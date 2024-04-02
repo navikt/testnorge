@@ -1,7 +1,6 @@
 package no.nav.testnav.apps.tpsmessagingservice.consumer.command;
 
 import com.ibm.mq.jakarta.jms.MQQueue;
-import com.ibm.mq.jmqi.JmqiException;
 import com.ibm.msg.client.jakarta.wmq.compat.jms.internal.JMSC;
 import jakarta.jms.Connection;
 import jakarta.jms.ConnectionFactory;
@@ -33,7 +32,7 @@ public class TpsMeldingCommand implements Callable<String> {
     private final String password;
     private final String requestMessageContent;
 
-    public String call() throws JMSException, JmqiException {
+    public String call() throws JMSException {
 
         try (Connection connection = connectionFactory.createConnection(username, password)) {
             connection.start();

@@ -2,7 +2,7 @@
 App for å hente ut batch status.
 
 ## Swagger
-Swagger finnes under [/swagger](https://ereg-batch-status-service.dev.intern.nav.no/swagger) -endepunktet til applikasjonen.
+Swagger finnes under [/swagger](https://testnav-ereg-batch-status-service.intern.dev.nav.no/swagger) -endepunktet til applikasjonen.
 
 ## Lokal kjøring
 Ha naisdevice kjørende og kjør EregBatchServiceServiceApplicationStarter med følgende argumenter:
