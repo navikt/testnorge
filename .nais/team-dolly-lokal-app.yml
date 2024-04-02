@@ -6,9 +6,7 @@ metadata:
   name: team-dolly-lokal-app
   namespace: dolly
 spec:
-  azure:
-    application:
-      allowAllUsers: true
+  allowAllUsers: true
   logoutUrl: https://localhost:8080/oauth2/logout
   preAuthorizedApplications:
     - application: testnorge-oversikt-frontend
