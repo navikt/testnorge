@@ -1,18 +1,18 @@
 import { createActions, handleActions } from 'redux-actions'
-import { DollyApi } from '@/service/Api'
+import { KodeverkApi } from '@/service/Api'
 import { onRequest, onSuccess } from '@/ducks/utils/requestActions'
 import { SortKodeverkArray } from '@/service/services/dolly/Utils'
 
 export const { getKodeverk } = createActions(
 	{
 		getKodeverk: [
-			DollyApi.getKodeverkByNavn,
+			KodeverkApi.getKodeverkByNavn,
 			(kodeverkNavn) => ({
 				kodeverkNavn,
 			}),
 		],
 	},
-	{ prefix: 'kodeverk' }
+	{ prefix: 'kodeverk' },
 )
 
 const initialState = {
@@ -49,7 +49,7 @@ export default handleActions(
 			}
 		},
 	},
-	initialState
+	initialState,
 )
 
 /*** THUNKS */

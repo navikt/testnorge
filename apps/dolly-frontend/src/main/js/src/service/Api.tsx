@@ -14,6 +14,7 @@ import TpsMessagingService from '@/service/services/tpsmessaging/TpsMessagingSer
 import SessionService from '@/service/services/session/SessionService'
 import KontoregisterService from '@/service/services/kontoregister/KontoregisterService'
 import SkjermingService from '@/service/services/skjerming/SkjermingService'
+import KodeverkService from '@/service/services/kodeverk/KodeverkService'
 
 export const DollyApi = DollyService
 export const TpsMessagingApi = TpsMessagingService
@@ -31,6 +32,7 @@ export const PdlforvalterApi = PdlForvalterService
 export const SessionApi = SessionService
 export const BankkontoApi = KontoregisterService
 export const SkjermingApi = SkjermingService
+export const KodeverkApi = KodeverkService
 
 export default {
 	DollyApi: DollyService,
@@ -47,5 +49,5 @@ export default {
 	PdlforvalterApi: PdlForvalterService,
 	SessionApi: SessionService,
 	BankkontoApi: KontoregisterService,
-	SkjermingApi: SkjermingService
+	SkjermingApi: SkjermingService,
 }
