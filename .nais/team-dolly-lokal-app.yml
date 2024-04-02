@@ -9,7 +9,7 @@ spec:
   logoutUrl: https://localhost:8080/oauth2/logout
   preAuthorizedApplications:
     - application: testnorge-oversikt-frontend
-      cluster: dev-fss
+      cluster: dev-gcp
       namespace: dolly
   replyUrls:
     - url: http://localhost:8080/login/oauth2/code/aad
