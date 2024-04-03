@@ -33,9 +33,12 @@ public class LagreTpYtelseCommand implements Callable<Flux<PensjonforvalterRespo
     private final String token;
 
     private final PensjonTpYtelseRequest pensjonTpYtelseRequest;
-    private final String callId;
 
     public Flux<PensjonforvalterResponse> call() {
+
+        var callId = generateCallId();
+        log.info("Pensjon lagre TP-ytelse {}, callId: {}", pensjonTpYtelseRequest, callId);
+
         return webClient
                 .post()
                 .uri(uriBuilder -> uriBuilder

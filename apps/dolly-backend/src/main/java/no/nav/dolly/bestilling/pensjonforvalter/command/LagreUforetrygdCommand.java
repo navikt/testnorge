@@ -32,9 +32,12 @@ public class LagreUforetrygdCommand implements Callable<Flux<PensjonforvalterRes
     private final String token;
 
     private final PensjonUforetrygdRequest uforetrygdRequest;
-    private final String callId;
 
     public Flux<PensjonforvalterResponse> call() {
+
+        var callId = generateCallId();
+        log.info("Pensjon lagre uforetrygd {}, callId: {}", uforetrygdRequest, callId);
+        
         return webClient
                 .post()
                 .uri(uriBuilder -> uriBuilder

@@ -15,6 +15,7 @@ import java.util.concurrent.Callable;
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
+import static no.nav.dolly.util.CallIdUtil.generateCallId;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Slf4j
@@ -26,9 +27,12 @@ public class LagreSamboerCommand implements Callable<Mono<PensjonforvalterRespon
     private final PensjonSamboerRequest pensjonSamboerRequest;
     private final String miljoe;
     private final String token;
-    private final String callId;
 
     public Mono<PensjonforvalterResponse> call() {
+
+        var callId = generateCallId();
+        log.info("Pensjon samboer opprett i {} {}, callId: {}", miljoe, pensjonSamboerRequest, callId);
+       
         return webClient
                 .post()
                 .uri(uriBuilder -> uriBuilder

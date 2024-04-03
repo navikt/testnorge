@@ -34,9 +34,12 @@ public class LagreAlderspensjonCommand implements Callable<Flux<Pensjonforvalter
     private final String token;
 
     private final AlderspensjonRequest alderspensjonRequest;
-    private final String callId;
 
     public Flux<PensjonforvalterResponse> call() {
+
+        var callId = generateCallId();
+        log.info("Pensjon lagre alderspensjon {}, callId: {}", alderspensjonRequest, callId);
+        
         return webClient
                 .post()
                 .uri(uriBuilder -> uriBuilder

@@ -34,9 +34,12 @@ public class LagreTpForholdCommand implements Callable<Flux<PensjonforvalterResp
     private final String token;
 
     private final PensjonTpForholdRequest lagreTpForholdRequest;
-    private final String callId;
 
     public Flux<PensjonforvalterResponse> call() {
+
+        var callId = generateCallId();
+        log.info("Pensjon lagre TP-forhold {}, callId: {}", lagreTpForholdRequest, callId);
+        
         return webClient
                 .post()
                 .uri(uriBuilder -> uriBuilder

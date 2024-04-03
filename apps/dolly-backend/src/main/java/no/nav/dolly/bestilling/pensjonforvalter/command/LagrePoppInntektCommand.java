@@ -30,9 +30,11 @@ public class LagrePoppInntektCommand implements Callable<Flux<PensjonforvalterRe
     private final WebClient webClient;
     private final String token;
     private final PensjonPoppInntektRequest pensjonPoppInntektRequest;
-    private final String callId;
 
     public Flux<PensjonforvalterResponse> call() {
+
+        var callId = generateCallId();
+        log.info("Popp lagre inntekt {}, callId: {}", pensjonPoppInntektRequest, callId);
         return webClient
                 .post()
                 .uri(uriBuilder -> uriBuilder

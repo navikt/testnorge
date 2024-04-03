@@ -16,6 +16,7 @@ import java.util.concurrent.Callable;
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
+import static no.nav.dolly.util.CallIdUtil.generateCallId;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Slf4j
@@ -27,9 +28,12 @@ public class AnnullerSamboerCommand implements Callable<Mono<PensjonforvalterRes
     private final String periodeId;
     private final String miljoe;
     private final String token;
-    private final String callId;
 
     public Mono<PensjonforvalterResponse> call() {
+
+        var callId = generateCallId();
+        log.info("Pensjon samboer annuller periodeId {}, callId: {}", periodeId, callId);
+
         return webClient
                 .put()
                 .uri(uriBuilder -> uriBuilder
@@ -75,7 +79,7 @@ public class AnnullerSamboerCommand implements Callable<Mono<PensjonforvalterRes
                                 .reasonPhrase(WebClientFilter.getStatus(error).getReasonPhrase())
                                 .build())
                         .message(WebClientFilter.getMessage(error))
-                        .path(PEN_SAMBOER_URL.replace("{miljoe}", miljoe).replace("{periodeId}",  periodeId))
+                        .path(PEN_SAMBOER_URL.replace("{miljoe}", miljoe).replace("{periodeId}", periodeId))
                         .build())
                 .build();
 
