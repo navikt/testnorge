@@ -56,10 +56,10 @@ public class KodeverkService {
     private static KodeAdjusted getKodeAdjusted(Map.Entry<String, List<KodeverkBetydningerResponse.Betydning>> entry) {
 
         return KodeAdjusted.builder()
-                .label(entry.getKey())
+                .label(getNorskBokmaal(entry))
                 .gyldigFra(getBetydning(entry).getGyldigFra())
                 .gyldigTil(getBetydning(entry).getGyldigTil())
-                .value(getNorskBokmaal(entry))
+                .value(entry.getKey())
                 .build();
     }
 
