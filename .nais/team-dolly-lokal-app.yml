@@ -6,7 +6,6 @@ metadata:
   name: team-dolly-lokal-app
   namespace: dolly
 spec:
-  allowAllUsers: true
   logoutUrl: https://localhost:8080/oauth2/logout
   preAuthorizedApplications:
     - application: testnav-oversikt-frontend
