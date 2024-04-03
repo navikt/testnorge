@@ -29,13 +29,17 @@ public class LagreSamboerCommand implements Callable<Mono<PensjonforvalterRespon
     private final String token;
 
     public Mono<PensjonforvalterResponse> call() {
+
+        var callId = generateCallId();
+        log.info("Pensjon samboer opprett i {} {}, callId: {}", miljoe, pensjonSamboerRequest, callId);
+       
         return webClient
                 .post()
                 .uri(uriBuilder -> uriBuilder
                         .path(PEN_SAMBOER_URL)
                         .build(miljoe))
                 .header(AUTHORIZATION, "Bearer " + token)
-                .header(HEADER_NAV_CALL_ID, generateCallId())
+                .header(HEADER_NAV_CALL_ID, callId)
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .bodyValue(pensjonSamboerRequest)
                 .retrieve()

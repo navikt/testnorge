@@ -32,6 +32,10 @@ public class OpprettPersonCommand implements Callable<Flux<PensjonforvalterRespo
     private final String token;
 
     public Flux<PensjonforvalterResponse> call() {
+       
+        var callId = generateCallId();
+        log.info("Pensjon opprett person {}, callId: {}", pensjonPersonRequest, callId);
+
         return webClient
                 .post()
                 .uri(uriBuilder -> uriBuilder
@@ -39,7 +43,7 @@ public class OpprettPersonCommand implements Callable<Flux<PensjonforvalterRespo
                         .build())
                 .header(AUTHORIZATION, "Bearer " + token)
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
-                .header(HEADER_NAV_CALL_ID, generateCallId())
+                .header(HEADER_NAV_CALL_ID, callId)
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .bodyValue(pensjonPersonRequest)
                 .retrieve()
