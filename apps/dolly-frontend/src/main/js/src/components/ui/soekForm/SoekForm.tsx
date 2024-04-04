@@ -91,7 +91,3 @@ export const requestIsEmpty = (updatedRequest) => {
 	flatten(updatedRequest)
 	return isEmpty
 }
-
-// export const objectIsEmpty = (obj) => {
-// 	return Object.keys(obj).length === 0
-// }

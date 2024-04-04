@@ -27,7 +27,7 @@ const CheckboxWrapper = styled.div`
 
 export const ImporterValgtePersoner = ({ identer, isMultiple }) => {
 	const navigate = useNavigate()
-	const { pdlPersoner, loading, error } = usePdlPersonbolk(identer)
+	const { pdlPersoner, loading } = usePdlPersonbolk(identer)
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 	const [valgtMal, setValgtMal] = useState(null)
 

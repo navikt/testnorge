@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react'
 export const NavigerTilPerson = ({ ident }) => {
 	const navigate = useNavigate()
 	const [navigateIdent, setNavigateIdent] = useState(null)
-	const { result, loading, mutate } = useNaviger(navigateIdent)
+	const { loading, mutate } = useNaviger(navigateIdent)
 
 	useEffect(() => {
 		mutate().then((result) => {

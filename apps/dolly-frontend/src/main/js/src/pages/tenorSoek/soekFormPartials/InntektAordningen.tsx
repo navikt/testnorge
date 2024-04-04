@@ -18,7 +18,7 @@ export const InntektAordningen = ({ handleChange, handleChangeList, getValue }: 
 				name="inntekt.periode.fraOgMed"
 				label="Periode f.o.m. dato"
 				handleDateChange={(val: Date) => {
-					handleChange(val ? val.toISOString().substr(0, 7) : '', 'inntekt.periode.fraOgMed')
+					handleChange(val ? val.toISOString().substring(0, 7) : '', 'inntekt.periode.fraOgMed')
 				}}
 				date={getValue('inntekt.periode.fraOgMed')}
 			/>
@@ -26,7 +26,7 @@ export const InntektAordningen = ({ handleChange, handleChangeList, getValue }: 
 				name="inntekt.periode.tilOgMed"
 				label="Periode t.o.m. dato"
 				handleDateChange={(val: Date) => {
-					handleChange(val ? val.toISOString().substr(0, 7) : '', 'inntekt.periode.tilOgMed')
+					handleChange(val ? val.toISOString().substring(0, 7) : '', 'inntekt.periode.tilOgMed')
 				}}
 				date={getValue('inntekt.periode.tilOgMed')}
 			/>

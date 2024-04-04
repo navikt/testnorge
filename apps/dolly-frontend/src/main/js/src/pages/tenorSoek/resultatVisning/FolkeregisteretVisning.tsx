@@ -1,10 +1,9 @@
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import React from 'react'
-import { formatDate, showLabel } from '@/utils/DataFormatter'
+import { formatDate, showLabel, arrayToString } from '@/utils/DataFormatter'
 import { TabsVisning } from '@/pages/tenorSoek/resultatVisning/TabsVisning'
 import SubOverskriftExpandable from '@/components/ui/subOverskrift/SubOverskriftExpandable'
 import styled from 'styled-components'
-import { arrayToString } from '@/utils/DataFormatter'
 
 const RelasjonerTittel = styled.h3`
 	width: 100%;
@@ -38,7 +37,7 @@ export const FolkeregisteretVisning = ({ data }) => {
 					<>
 						<RelasjonerTittel>Relasjoner</RelasjonerTittel>
 						{relasjoner.map((relasjon, idx) => (
-							<div className="title-value title-value_small" key={idx}>
+							<div className="title-value title-value_small" key={idx + relasjon.identifikator}>
 								<h4>{relasjon.tenorRelasjonsnavn}</h4>
 								<div>{`${arrayToString(relasjon.identifikator, ', ')} -`}</div>
 								<div>{relasjon.visningnavn}</div>

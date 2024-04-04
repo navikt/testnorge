@@ -48,23 +48,12 @@ export const SoekForm = ({ setRequest, mutate }) => {
 	}
 
 	const handleChange = (value: any, path: string) => {
-		// if (watch(path) === value) {
-		// 	return
-		// } else {
 		if (isDate(value)) {
 			value = fixTimezone(value)
 		}
 		setValue(path, value)
 		const request = getUpdatedRequest(watch())
 		setRequest({ ...request })
-		mutate()
-		// }
-	}
-
-	const handleChangeTextInput = (value: any, path: string) => {
-		setValue(path, value)
-		const request = getUpdatedRequest(watch())
-		setRequest(request)
 		mutate()
 	}
 
@@ -256,7 +245,6 @@ export const SoekForm = ({ setRequest, mutate }) => {
 						</Form>
 						{devEnabled && <DisplayFormState />}
 					</>
-					{/*// TODO sett inn chips her?*/}
 				</FormProvider>
 			</Soekefelt>
 		</SoekefeltWrapper>

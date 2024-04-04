@@ -1,5 +1,4 @@
 import Title from '@/components/Title'
-import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 import { useTenorOversikt } from '@/utils/hooks/useTenorSoek'
 import { SoekForm } from '@/pages/tenorSoek/SoekForm'
 import { TreffListe } from '@/pages/tenorSoek/resultatVisning/TreffListe'
@@ -76,7 +75,6 @@ export default () => {
 		<div>
 			<div className="flexbox--align-center--justify-start">
 				<Title title="Søk etter personer i Tenor" />
-				{/*<Hjelpetekst placement={bottom}>Blablablah</Hjelpetekst>*/}
 			</div>
 			<SoekForm setRequest={setRequest} mutate={mutate} />
 			<TreffListe

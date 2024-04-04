@@ -16,8 +16,6 @@ const PersonNavn = styled.h3`
 
 const PersonIdent = styled.p`
 	margin: 5px 0 0 0;
-	//margin: 5px 0 10px 0;
-	//margin-top: 5px;
 `
 
 const TagsWrapper = styled.div`
@@ -25,18 +23,6 @@ const TagsWrapper = styled.div`
 `
 
 export const TreffListe = ({ response, personListe, loading, error }: any) => {
-	if ((!personListe || personListe?.length === 0) && loading) {
-		return <Loading label="Laster treff ..." />
-	}
-
-	if (error || response?.error) {
-		return (
-			<Alert variant="error" size="small">{`Feil ved henting av personer: ${
-				error || response?.error
-			}`}</Alert>
-		)
-	}
-
 	const [valgtPerson, setValgtPerson] = useState(null)
 
 	const {
@@ -49,9 +35,21 @@ export const TreffListe = ({ response, personListe, loading, error }: any) => {
 		setValgtPerson(personListe?.[0] || null)
 	}, [personListe?.[0]])
 
-	const antallTreff = response?.data?.treff
-
 	const [markertePersoner, setMarkertePersoner] = useState([])
+
+	if ((!personListe || personListe?.length === 0) && loading) {
+		return <Loading label="Laster treff ..." />
+	}
+
+	if (error || response?.error) {
+		return (
+			<Alert variant="error" size="small">{`Feil ved henting av personer: ${
+				error || response?.error
+			}`}</Alert>
+		)
+	}
+
+	const antallTreff = response?.data?.treff
 
 	return (
 		<div className="flexbox--flex-wrap">
