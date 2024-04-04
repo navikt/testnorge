@@ -12,6 +12,7 @@ import org.springframework.cloud.gateway.route.builder.PredicateSpec;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpHeaders;
 
 import java.util.function.Function;
 
@@ -29,8 +30,6 @@ public class EregProxyApplicationStarter {
                 .route(createRoute("q1"))
                 .route(createRoute("q2"))
                 .route(createRoute("q4"))
-                .route(createRoute("q5"))
-                .route(createRoute("t3"))
                 .build();
     }
 
@@ -43,6 +42,7 @@ public class EregProxyApplicationStarter {
                 .path("/api/" + miljo + "/**")
                 .filters(filterSpec -> filterSpec
                         .rewritePath("/api/" + miljo + "/(?<segment>.*)", "/${segment}")
+                        .removeRequestHeader(HttpHeaders.AUTHORIZATION)
                 ).uri("https://ereg-services-" + miljo + ".dev.intern.nav.no/");
     }
 }

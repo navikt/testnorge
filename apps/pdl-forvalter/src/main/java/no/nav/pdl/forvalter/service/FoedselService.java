@@ -1,7 +1,7 @@
 package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.pdl.forvalter.consumer.GeografiskeKodeverkConsumer;
+import no.nav.pdl.forvalter.consumer.KodeverkConsumer;
 import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
 import no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility;
 import no.nav.testnav.libs.data.pdlforvalter.v1.BostedadresseDTO;
@@ -23,12 +23,13 @@ import static no.nav.pdl.forvalter.utils.ArtifactUtils.renumberId;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.Identtype.FNR;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
 @RequiredArgsConstructor
 public class FoedselService implements BiValidation<FoedselDTO, PersonDTO> {
 
-    private final GeografiskeKodeverkConsumer geografiskeKodeverkConsumer;
+    private final KodeverkConsumer kodeverkConsumer;
 
     public List<FoedselDTO> convert(PersonDTO person) {
 
@@ -76,7 +77,7 @@ public class FoedselService implements BiValidation<FoedselDTO, PersonDTO> {
             } else if (nonNull(bostedadresse) && nonNull(bostedadresse.getUtenlandskAdresse())) {
                 foedsel.setFoedeland(bostedadresse.getUtenlandskAdresse().getLandkode());
             } else {
-                foedsel.setFoedeland(geografiskeKodeverkConsumer.getTilfeldigLand());
+                foedsel.setFoedeland(kodeverkConsumer.getTilfeldigLand());
             }
         }
     }
@@ -88,11 +89,14 @@ public class FoedselService implements BiValidation<FoedselDTO, PersonDTO> {
                     foedsel.setFoedekommune(bostedadresse.getVegadresse().getKommunenummer());
                 } else if (nonNull(bostedadresse.getMatrikkeladresse())) {
                     foedsel.setFoedekommune(bostedadresse.getMatrikkeladresse().getKommunenummer());
-                } else if (nonNull(bostedadresse.getUkjentBosted())) {
+                } else if (nonNull(bostedadresse.getUkjentBosted()) &&
+                        isNotBlank(bostedadresse.getUkjentBosted().getBostedskommune())) {
                     foedsel.setFoedekommune(bostedadresse.getUkjentBosted().getBostedskommune());
+                } else {
+                    foedsel.setFoedekommune(kodeverkConsumer.getTilfeldigKommune());
                 }
             } else {
-                foedsel.setFoedekommune(geografiskeKodeverkConsumer.getTilfeldigKommune());
+                foedsel.setFoedekommune(kodeverkConsumer.getTilfeldigKommune());
             }
         }
     }

@@ -1,0 +1,27 @@
+name: Integration Tests
+on:
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - 'navikt/**'
+      - '.github/**'
+      - '.nais/alerting-dolly.yml'
+  pull_request:
+    types: [ assigned, opened, synchronize, reopened ]
+  workflow_dispatch:
+
+jobs:
+  bruker-service:
+    uses: ./.github/workflows/common.integration-test.yml
+    with:
+      working-directory: 'apps/bruker-service/'
+      healthcheck: 'http://localhost:8002/internal/isAlive'
+    secrets:
+      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+  person-organisasjon-tilgang-service:
+    uses: ./.github/workflows/common.integration-test.yml
+    with:
+      working-directory: 'apps/person-organisasjon-tilgang-service/'
+      healthcheck: 'http://localhost:8001/internal/isAlive'
+    secrets: inherit

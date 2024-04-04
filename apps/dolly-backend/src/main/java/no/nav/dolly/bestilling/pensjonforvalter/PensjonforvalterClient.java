@@ -95,28 +95,6 @@ public class PensjonforvalterClient implements ClientRegister {
     private final ObjectMapper objectMapper;
     private final Norg2Consumer norg2Consumer;
 
-    public static PensjonforvalterResponse mergePensjonforvalterResponses(List<PensjonforvalterResponse> responser) {
-
-        var status = new HashMap<String, PensjonforvalterResponse.Response>();
-        responser.forEach(respons -> respons.getStatus()
-                .forEach(detalj -> {
-                    if (detalj.getResponse().isResponse2xx()) {
-                        status.putIfAbsent(detalj.getMiljo(), detalj.getResponse());
-                    } else {
-                        status.put(detalj.getMiljo(), detalj.getResponse());
-                    }
-                }));
-
-        return PensjonforvalterResponse.builder()
-                .status(status.entrySet().stream()
-                        .map(detalj -> PensjonforvalterResponse.ResponseEnvironment.builder()
-                                .miljo(detalj.getKey())
-                                .response(detalj.getValue())
-                                .build())
-                        .toList())
-                .build();
-    }
-
     @Override
     public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
@@ -216,13 +194,34 @@ public class PensjonforvalterClient implements ClientRegister {
                 .map(status2 -> futurePersist(dollyPerson, progress, status2)));
     }
 
-    private static Mono<List<PdlPersonBolk.PersonBolk>> getPdlPerson(Flux<PdlPersonBolk.Data> persondata) {
+    @Override
+    public void release(List<String> identer) {
 
-        return persondata
-                .map(PdlPersonBolk.Data::getHentPersonBolk)
-                .flatMap(Flux::fromIterable)
-                .filter(personBolk -> nonNull(personBolk.getPerson()))
-                .collectList();
+        // Pensjonforvalter / POPP støtter pt ikke sletting
+
+        pensjonforvalterConsumer.sletteTpForhold(identer);
+    }
+
+    public static PensjonforvalterResponse mergePensjonforvalterResponses(List<PensjonforvalterResponse> responser) {
+
+        var status = new HashMap<String, PensjonforvalterResponse.Response>();
+        responser.forEach(respons -> respons.getStatus()
+                .forEach(detalj -> {
+                    if (detalj.getResponse().isResponse2xx()) {
+                        status.putIfAbsent(detalj.getMiljo(), detalj.getResponse());
+                    } else {
+                        status.put(detalj.getMiljo(), detalj.getResponse());
+                    }
+                }));
+
+        return PensjonforvalterResponse.builder()
+                .status(status.entrySet().stream()
+                        .map(detalj -> PensjonforvalterResponse.ResponseEnvironment.builder()
+                                .miljo(detalj.getKey())
+                                .response(detalj.getValue())
+                                .build())
+                        .toList())
+                .build();
     }
 
     private Mono<String> getNavEnhetNr(Flux<PdlPersonBolk.Data> persondata, String ident) {
@@ -275,16 +274,11 @@ public class PensjonforvalterClient implements ClientRegister {
                                         .map(PensjonSamboerResponse.Samboerforhold::getPidSamboer)
                                         .flatMap(identSamboer -> pensjonforvalterConsumer.hentSamboer(identSamboer, miljoe)))
                                 .flatMap(samboerResponse -> Flux.fromIterable(samboerResponse.getSamboerforhold())
-                                        .flatMap(samboer -> pensjonforvalterConsumer.annullerSamboer(samboer.getPidBruker(),
+                                        .flatMap(samboer -> pensjonforvalterConsumer.annullerSamboer(
                                                         getPeriodeId(samboer.get_links().getAnnuller().getHref()), miljoe)
                                                 .filter(response1 -> samboer.getPidBruker().equals(ident) &&
                                                         response1.getStatus().stream()
                                                                 .noneMatch(status -> status.getResponse().getHttpStatus().getStatus() == 200))))));
-    }
-
-    private static String getPeriodeId(String lenke) {
-        return lenke.substring(lenke.indexOf(PERIODE) + PERIODE.length())
-                .replace("/annuller", "");
     }
 
     private String prepInitStatus(Set<String> miljoer) {
@@ -342,14 +336,6 @@ public class PensjonforvalterClient implements ClientRegister {
                 })
                 .filter(pdlPersonBolk -> nonNull(pdlPersonBolk.getData()))
                 .map(PdlPersonBolk::getData);
-    }
-
-    @Override
-    public void release(List<String> identer) {
-
-        // Pensjonforvalter / POPP støtter pt ikke sletting
-
-        pensjonforvalterConsumer.sletteTpForhold(identer);
     }
 
     private Flux<PensjonforvalterResponse> opprettPersoner(String hovedperson, Set<String> miljoer,
@@ -418,41 +404,25 @@ public class PensjonforvalterClient implements ClientRegister {
 
                             if (isOpprettEndre || !transaksjonMappingService.existAlready(PEN_UT, ident, miljoe, null)) {
 
-                                    var context = MappingContextUtils.getMappingContext();
-                                    context.setProperty(IDENT, ident);
-                                    context.setProperty(MILJOER, List.of(miljoe));
-                                    context.setProperty(NAV_ENHET, navEnhetNr);
-                                    return Flux.just(mapperFacade.map(uforetrygd, PensjonUforetrygdRequest.class, context))
-                                            .flatMap(request -> pensjonforvalterConsumer.lagreUforetrygd(request)
-                                                    .map(response -> {
-                                                        response.getStatus().stream()
-                                                                .filter(status -> status.getResponse().isResponse2xx())
-                                                                .forEach(status ->
-                                                                        saveAPTransaksjonId(ident, status.getMiljo(), bestillingId,
-                                                                                PEN_UT, new AtomicReference<>(request)));
-                                                        return response;
-                                                    }));
+                                var context = MappingContextUtils.getMappingContext();
+                                context.setProperty(IDENT, ident);
+                                context.setProperty(MILJOER, List.of(miljoe));
+                                context.setProperty(NAV_ENHET, navEnhetNr);
+                                return Flux.just(mapperFacade.map(uforetrygd, PensjonUforetrygdRequest.class, context))
+                                        .flatMap(request -> pensjonforvalterConsumer.lagreUforetrygd(request)
+                                                .map(response -> {
+                                                    response.getStatus().stream()
+                                                            .filter(status -> status.getResponse().isResponse2xx())
+                                                            .forEach(status ->
+                                                                    saveAPTransaksjonId(ident, status.getMiljo(), bestillingId,
+                                                                            PEN_UT, new AtomicReference<>(request)));
+                                                    return response;
+                                                }));
 
                             } else {
                                 return getStatus(miljoe, 200, "OK");
                             }
                         }));
-    }
-
-    private static Flux<PensjonforvalterResponse> getStatus(String miljoe, Integer status, String reasonPhrase) {
-
-        return Flux.just(PensjonforvalterResponse.builder()
-                .status(List.of(PensjonforvalterResponse.ResponseEnvironment.builder()
-                        .miljo(miljoe)
-                        .response(PensjonforvalterResponse.Response.builder()
-                                .httpStatus(PensjonforvalterResponse.HttpStatus.builder()
-                                        .status(status)
-                                        .reasonPhrase(reasonPhrase)
-                                        .build())
-                                .message(reasonPhrase)
-                                .build())
-                        .build()))
-                .build());
     }
 
     @SuppressWarnings("java:S3740")
@@ -531,6 +501,59 @@ public class PensjonforvalterClient implements ClientRegister {
                 .collect(Collectors.joining(","));
     }
 
+    private String toJson(Object object) {
+
+        try {
+            return objectMapper.writeValueAsString(object);
+        } catch (JsonProcessingException e) {
+            log.error("Feilet å konvertere transaksjonsId for pensjonForvalter", e);
+        }
+        return null;
+    }
+
+    private static Mono<List<PdlPersonBolk.PersonBolk>> getPdlPerson(Flux<PdlPersonBolk.Data> persondata) {
+
+        return persondata
+                .map(PdlPersonBolk.Data::getHentPersonBolk)
+                .flatMap(Flux::fromIterable)
+                .filter(personBolk -> nonNull(personBolk.getPerson()))
+                .collectList();
+    }
+
+    private static String getPeriodeId(String lenke) {
+        return lenke.substring(lenke.indexOf(PERIODE) + PERIODE.length())
+                .replace("/annuller", "");
+    }
+
+    private static Flux<PensjonforvalterResponse> getStatus(String miljoe, Integer status, String reasonPhrase) {
+
+        return Flux.just(PensjonforvalterResponse.builder()
+                .status(List.of(PensjonforvalterResponse.ResponseEnvironment.builder()
+                        .miljo(miljoe)
+                        .response(PensjonforvalterResponse.Response.builder()
+                                .httpStatus(PensjonforvalterResponse.HttpStatus.builder()
+                                        .status(status)
+                                        .reasonPhrase(reasonPhrase)
+                                        .build())
+                                .message(reasonPhrase)
+                                .build())
+                        .build()))
+                .build());
+    }
+
+    private static String getGeografiskTilknytning(PdlPersonBolk.GeografiskTilknytning tilknytning) {
+
+        if (isNotBlank(tilknytning.getGtKommune())) {
+            return tilknytning.getGtKommune();
+
+        } else if (isNotBlank(tilknytning.getGtBydel())) {
+            return tilknytning.getGtBydel();
+
+        } else {
+            return "030102";
+        }
+    }
+
     String getError(PensjonforvalterResponse.ResponseEnvironment entry) {
 
         var response = entry.getResponse();
@@ -546,29 +569,6 @@ public class PensjonforvalterClient implements ClientRegister {
 
         } else {
             return errorStatusDecoder.getErrorText(HttpStatus.valueOf(httpStatus.getStatus()), httpStatus.getReasonPhrase());
-        }
-    }
-
-    private String toJson(Object object) {
-
-        try {
-            return objectMapper.writeValueAsString(object);
-        } catch (JsonProcessingException e) {
-            log.error("Feilet å konvertere transaksjonsId for pensjonForvalter", e);
-        }
-        return null;
-    }
-
-    private static String getGeografiskTilknytning(PdlPersonBolk.GeografiskTilknytning tilknytning) {
-
-        if (isNotBlank(tilknytning.getGtKommune())) {
-            return tilknytning.getGtKommune();
-
-        } else if (isNotBlank(tilknytning.getGtBydel())) {
-            return tilknytning.getGtBydel();
-
-        } else {
-            return "030102";
         }
     }
 }

@@ -31,8 +31,6 @@ spec:
         - application: testnav-ident-pool
         - application: generer-navn-service
         - application: testnav-adresse-service
-      external:
-        - host: tps-forvalteren-proxy.dev-fss-pub.nais.io
   liveness:
     path: /internal/isAlive
     initialDelay: 4

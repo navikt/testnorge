@@ -4,9 +4,6 @@ REDIS_HOST: dolly-dev-redis-session.dolly.svc.cluster.local
 
 consumers:
   # Konsumenter for dev-miljø
-  tps-forvalteren-proxy:
-    name: tps-forvalteren-dev-proxy
-    url: https://tps-forvalteren-dev-proxy.dev-fss-pub.nais.io
   dolly-backend:
     name: dolly-backend-dev
     url: http://dolly-backend-dev.dolly.svc.cluster.local

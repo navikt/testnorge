@@ -32,6 +32,9 @@ public class LagrePoppInntektCommand implements Callable<Flux<PensjonforvalterRe
     private final PensjonPoppInntektRequest pensjonPoppInntektRequest;
 
     public Flux<PensjonforvalterResponse> call() {
+
+        var callId = generateCallId();
+        log.info("Popp lagre inntekt {}, callId: {}", pensjonPoppInntektRequest, callId);
         return webClient
                 .post()
                 .uri(uriBuilder -> uriBuilder
@@ -42,7 +45,7 @@ public class LagrePoppInntektCommand implements Callable<Flux<PensjonforvalterRe
                     reactorRequest.responseTimeout(Duration.ofSeconds(REQUEST_DURATION));
                 })
                 .header(AUTHORIZATION, "Bearer " + token)
-                .header(HEADER_NAV_CALL_ID, generateCallId())
+                .header(HEADER_NAV_CALL_ID, callId)
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .bodyValue(pensjonPoppInntektRequest)
                 .retrieve()

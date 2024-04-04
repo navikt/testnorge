@@ -20,6 +20,13 @@ spring:
       httpclient:
         response-timeout: 1200s
 
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
+  error:
+    include-message: always
+
 consumers:
   testnav-udistub:
     url: http://testnav-udi-stub.dolly.svc.nais.local

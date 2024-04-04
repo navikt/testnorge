@@ -56,6 +56,7 @@ spec:
         - application: testnav-miljoer-service
         - application: testnav-adresse-service
         - application: testnorge-tilbakemelding-api
+        - application: testnav-kodeverk-service
         - application: testnav-tenor-search-service
       external:
         - host: testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
@@ -67,8 +68,6 @@ spec:
         - host: testnav-medl-proxy.dev-fss-pub.nais.io
         - host: testnav-histark-proxy.dev-fss-pub.nais.io
         - host: testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io
-        - host: kodeverk-api.nav.no
-        - host: tps-forvalteren-proxy.dev-fss-pub.nais.io
         - host: testnav-inntektstub-proxy.dev-fss-pub.nais.io
         - host: testnav-norg2-proxy.dev-fss-pub.nais.io
         - host: testnav-brregstub-proxy.dev-fss-pub.nais.io

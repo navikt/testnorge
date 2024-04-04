@@ -4,11 +4,11 @@ import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
-import no.nav.pdl.forvalter.consumer.GeografiskeKodeverkConsumer;
+import no.nav.pdl.forvalter.consumer.KodeverkConsumer;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
-import no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO.KontaktinformasjonForDoedsboAdresse;
+import no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -24,7 +24,7 @@ public class KontaktInformasjonForDoedsboMappingStrategy implements MappingStrat
 
     private static final String LANDKODE_NORGE = "NOR";
     private static final String ADRESSE_TYPE_NOT_SUPPORTED = "KontaktinformasjonForDoedsbo: Ukjent bosted er ikke støttet";
-    private final GeografiskeKodeverkConsumer geografiskeKodeverkConsumer;
+    private final KodeverkConsumer kodeverkConsumer;
 
     private static String blankCheck(String value, String defaultValue) {
         return isNotBlank(value) ? value : defaultValue;
@@ -43,7 +43,7 @@ public class KontaktInformasjonForDoedsboMappingStrategy implements MappingStrat
                             destinasjon.setAdresselinje1(format("%s %s", kilde.getVegadresse().getAdressenavn(),
                                     kilde.getVegadresse().getHusnummer()));
                             destinasjon.setPostnummer(kilde.getVegadresse().getPostnummer());
-                            destinasjon.setPoststedsnavn(geografiskeKodeverkConsumer.getPoststedNavn(kilde.getVegadresse().getPostnummer()));
+                            destinasjon.setPoststedsnavn(kodeverkConsumer.getPoststedNavn(kilde.getVegadresse().getPostnummer()));
                             destinasjon.setLandkode(LANDKODE_NORGE);
 
                         } else if (nonNull(kilde.getUtenlandskAdresse())) {
@@ -60,7 +60,7 @@ public class KontaktInformasjonForDoedsboMappingStrategy implements MappingStrat
                                     kilde.getMatrikkeladresse().getGaardsnummer(),
                                     kilde.getMatrikkeladresse().getBruksnummer()));
                             destinasjon.setPostnummer(kilde.getMatrikkeladresse().getPostnummer());
-                            destinasjon.setPoststedsnavn(geografiskeKodeverkConsumer.getPoststedNavn(kilde.getMatrikkeladresse().getPostnummer()));
+                            destinasjon.setPoststedsnavn(kodeverkConsumer.getPoststedNavn(kilde.getMatrikkeladresse().getPostnummer()));
                             destinasjon.setLandkode(LANDKODE_NORGE);
 
                         } else {
@@ -96,7 +96,7 @@ public class KontaktInformasjonForDoedsboMappingStrategy implements MappingStrat
                         destinasjon.setAdresselinje2(adresselinjer.size() > 1 ? adresselinjer.get(1) : null);
 
                         destinasjon.setPostnummer((String) kilde.get("postnr"));
-                        destinasjon.setPoststedsnavn(geografiskeKodeverkConsumer.getPoststedNavn(destinasjon.getPostnummer()));
+                        destinasjon.setPoststedsnavn(kodeverkConsumer.getPoststedNavn(destinasjon.getPostnummer()));
                         destinasjon.setLandkode((String) kilde.get("landkode"));
                     }
                 })

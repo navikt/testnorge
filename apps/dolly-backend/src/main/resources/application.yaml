@@ -17,6 +17,8 @@ server:
       encoding:
         charset: UTF-8
     max-http-header-size: 70KB
+  error:
+    include-message: always
 
 spring:
   cloud:
@@ -83,11 +85,6 @@ open:
     total-fields: 1500
     index: bestilling
 
-tps:
-  person:
-    service:
-      wait: 30_000
-
 consumers:
   testnav-organisasjon-forvalter:
     name: testnav-organisasjon-forvalter
@@ -119,11 +116,11 @@ consumers:
     namespace: dolly
     url: http://testnav-person-service.dolly.svc.cluster.local
     cluster: dev-gcp
-  kodeverk-api:
-    name: kodeverk-api
-    namespace: team-rocket
-    url: https://kodeverk-api.nav.no
-    cluster: prod-gcp
+  testnav-kodeverk-service:
+    name: testnav-kodeverk-service
+    namespace: dolly
+    url: http://testnav-kodeverk-service.dolly.svc.cluster.local
+    cluster: dev-gcp
   testnav-dokarkiv-proxy:
     name: testnav-dokarkiv-proxy
     namespace: dolly

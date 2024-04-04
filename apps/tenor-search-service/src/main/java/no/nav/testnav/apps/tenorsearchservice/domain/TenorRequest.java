@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.ArrayList;
@@ -139,8 +140,8 @@ public class TenorRequest {
     @NoArgsConstructor
     public static class Intervall {
 
-        private Integer fraOgMed;
-        private Integer tilOgMed;
+        private BigInteger fraOgMed;
+        private BigInteger tilOgMed;
     }
 
     @Data
@@ -159,7 +160,7 @@ public class TenorRequest {
 
         @Schema(description = "Adressesøk, fritekst")
         private AdresseGradering adresseGradering;
-        private Integer kommunenummer;
+        private BigInteger kommunenummer;
         private Boolean harBostedsadresse;
         private Boolean harOppholdAnnetSted;
         private Boolean harPostadresseNorge;
@@ -207,7 +208,7 @@ public class TenorRequest {
     public static class Skattemelding {
 
         @Schema(description = "Inntektsår, 4 siffre, årene 2018, 2019, 2020, 2021, 2022 ... osv opptil i forfjor")
-        private Integer inntektsaar;
+        private BigInteger inntektsaar;
         private Skattemeldingstype skattemeldingstype;
     }
 
@@ -216,7 +217,7 @@ public class TenorRequest {
     public static class Inntekt {
 
         private MonthInterval periode;
-        private Integer opplysningspliktig;
+        private BigInteger opplysningspliktig;
         private List<Inntektstype> inntektstyper;
         private AOrdningBeskrivelse beskrivelse;
         private List<Forskuddstrekk> forskuddstrekk;
@@ -254,7 +255,7 @@ public class TenorRequest {
     public static class Skatteplikt {
 
         @Schema(description = "Inntektsår, 4 siffre, årene 2019, 2019, 2020, 2021, 2022, 2023 ... osv opptil i fjor")
-        private Integer inntektsaar;
+        private BigInteger inntektsaar;
         private List<Skattepliktstype> skattepliktstyper;
         private SaerskiltSkatteplikt saerskiltSkatteplikt;
 
@@ -271,7 +272,7 @@ public class TenorRequest {
     @NoArgsConstructor
     public static class Tilleggsskatt {
 
-        private Integer inntektsaar;
+        private BigInteger inntektsaar;
         private List<TilleggsskattType> tilleggsskattTyper;
 
         public List<TilleggsskattType> getTilleggsskattTyper() {
@@ -303,7 +304,7 @@ public class TenorRequest {
     public static class BeregnetSkatt {
 
         @Schema(description = "Inntektsår, 4 siffre, årene 2018, 2019, 2020, 2021, 2022, 2023 ... osv opptil i fjor")
-        private Integer inntektsaar;
+        private BigInteger inntektsaar;
         private Oppgjoerstype oppgjoerstype;
         private Boolean pensjonsgivendeInntekt;
     }
@@ -314,7 +315,7 @@ public class TenorRequest {
     public static class TestinnsendingSkattPerson {
 
         @Schema(description = "Inntektsår, 4 siffre, årene 2020, 2021, 2022, 2023 ... osv opptil i fjor")
-        private Integer inntektsaar;
+        private BigInteger inntektsaar;
         @Schema(description = "Skattemelding utkast, merk at false indikerer har ikke skatteMeldingUtkast")
         private Boolean harSkattemeldingUtkast;
         @Schema(description = "Skattemelding fastsatt, merk at false indikerer har ikke skatteMeldingFastsatt")
@@ -334,7 +335,7 @@ public class TenorRequest {
     public static class SummertSkattegrunnlag {
 
         @Schema(description = "Inntektsår, 4 siffre, årene 2019, 2020, 2021, 2022, 2023 ... osv opptil i fjor")
-        private Integer inntektsaar;
+        private BigInteger inntektsaar;
         private Stadietype stadietype;
         private Oppgjoerstype oppgjoerstype;
         private TekniskNavn tekniskNavn;
@@ -346,7 +347,7 @@ public class TenorRequest {
     public static class SpesisfisertSummertSkattegrunnlag {
 
         @Schema(description = "Inntektsår, 4 siffre, årene 2019, 2020, 2021, 2022, 2023 ... osv opptil i fjor")
-        private Integer inntektsaar;
+        private BigInteger inntektsaar;
         private Stadietype stadietype;
         private Oppgjoerstype oppgjoerstype;
         private TekniskNavn tekniskNavn;

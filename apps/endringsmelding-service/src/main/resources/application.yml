@@ -19,11 +19,6 @@ springdoc:
     url: /v3/api-docs
 
 consumers:
-  tps-forvalteren-proxy:
-    url: https://tps-forvalteren-proxy.dev-fss-pub.nais.io
-    cluster: dev-fss
-    namespace: dolly
-    name: tps-forvalteren-proxy
   tps-messaging-service:
     url: http://testnav-tps-messaging-service.dolly.svc.cluster.local
     cluster: dev-gcp
@@ -67,3 +62,5 @@ server:
   servlet:
     encoding:
       charset: UTF-8
+  error:
+    include-message: always
