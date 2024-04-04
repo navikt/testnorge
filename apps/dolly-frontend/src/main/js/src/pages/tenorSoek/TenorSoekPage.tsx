@@ -22,23 +22,33 @@ export default () => {
 	}, [request])
 
 	useEffect(() => {
-		if (response && state.personListe?.length === 0) {
+		if (response?.data?.data?.personer?.length === 0) {
+			setState({
+				...state,
+				personListe: [],
+				nesteSide: response?.data?.data?.nesteSide,
+			})
+		} else if (response && state.personListe?.length === 0) {
 			setState({
 				...state,
 				personListe: response?.data?.data?.personer,
 				seed: response?.data?.data?.seed,
 				nesteSide: response?.data?.data?.nesteSide,
 			})
-		} else if (
-			state.personListe?.length > 0 &&
-			response?.data?.data?.personer?.length > 0 &&
-			state.side > 0
-		) {
-			setState({
-				...state,
-				personListe: [...state.personListe, ...response?.data?.data?.personer],
-				nesteSide: response?.data?.data?.nesteSide,
-			})
+		} else if (state.personListe?.length > 0 && response?.data?.data?.personer?.length > 0) {
+			if (state.side > 0) {
+				setState({
+					...state,
+					personListe: [...state.personListe, ...response?.data?.data?.personer],
+					nesteSide: response?.data?.data?.nesteSide,
+				})
+			} else {
+				setState({
+					...state,
+					personListe: response?.data?.data?.personer,
+					nesteSide: response?.data?.data?.nesteSide,
+				})
+			}
 		}
 	}, [response])
 
