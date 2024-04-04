@@ -6,9 +6,7 @@ metadata:
   name: team-dolly-lokal-app
   namespace: dolly
 spec:
-  claims:
-    groups:
-      - id: 9c7efec1-1599-4216-a67e-6fd53a6a951c
+  allowAllUsers: true
   logoutUrl: https://localhost:8080/oauth2/logout
   preAuthorizedApplications:
     - application: testnav-oversikt-frontend
