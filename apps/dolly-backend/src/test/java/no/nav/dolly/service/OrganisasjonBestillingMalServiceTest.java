@@ -40,16 +40,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @ActiveProfiles("test")
-@Testcontainers
+@Testcontainers(disabledWithoutDocker = true)
 @EnableAutoConfiguration
 @ComponentScan("no.nav.dolly")
 @AutoConfigureMockMvc(addFilters = false)
 class OrganisasjonBestillingMalServiceTest {
 
     @MockBean
+    @SuppressWarnings("unused")
     private BestillingElasticRepository bestillingElasticRepository;
 
     @MockBean
+    @SuppressWarnings("unused")
     private ElasticsearchOperations elasticsearchOperations;
 
     private final static String MALNAVN = "test";
