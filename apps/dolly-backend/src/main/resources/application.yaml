@@ -119,7 +119,7 @@ consumers:
   testnav-kodeverk-service:
     name: testnav-kodeverk-service
     namespace: dolly
-    url: http://testnav-kodeverk-service.dolly.svc.cluster.local
+    url: https://testnav-kodeverk-service.intern.dev.nav.no
     cluster: dev-gcp
   testnav-dokarkiv-proxy:
     name: testnav-dokarkiv-proxy
