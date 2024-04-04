@@ -28,6 +28,13 @@ springdoc:
     disable-swagger-default-url: true
     url: /v3/api-docs
 
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
+  error:
+    include-message: always
+
 consumers:
     aareg-services:
       name: aareg-services-nais-{env}

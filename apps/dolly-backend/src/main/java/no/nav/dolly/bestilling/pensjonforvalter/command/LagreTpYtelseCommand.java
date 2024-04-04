@@ -35,6 +35,10 @@ public class LagreTpYtelseCommand implements Callable<Flux<PensjonforvalterRespo
     private final PensjonTpYtelseRequest pensjonTpYtelseRequest;
 
     public Flux<PensjonforvalterResponse> call() {
+
+        var callId = generateCallId();
+        log.info("Pensjon lagre TP-ytelse {}, callId: {}", pensjonTpYtelseRequest, callId);
+
         return webClient
                 .post()
                 .uri(uriBuilder -> uriBuilder
@@ -46,7 +50,7 @@ public class LagreTpYtelseCommand implements Callable<Flux<PensjonforvalterRespo
                 })
                 .header(AUTHORIZATION, "Bearer " + token)
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
-                .header(HEADER_NAV_CALL_ID, generateCallId())
+                .header(HEADER_NAV_CALL_ID, callId)
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .bodyValue(pensjonTpYtelseRequest)
                 .retrieve()

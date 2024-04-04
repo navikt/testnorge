@@ -36,6 +36,10 @@ public class LagreTpForholdCommand implements Callable<Flux<PensjonforvalterResp
     private final PensjonTpForholdRequest lagreTpForholdRequest;
 
     public Flux<PensjonforvalterResponse> call() {
+
+        var callId = generateCallId();
+        log.info("Pensjon lagre TP-forhold {}, callId: {}", lagreTpForholdRequest, callId);
+        
         return webClient
                 .post()
                 .uri(uriBuilder -> uriBuilder
@@ -47,7 +51,7 @@ public class LagreTpForholdCommand implements Callable<Flux<PensjonforvalterResp
                 })
                 .header(AUTHORIZATION, "Bearer " + token)
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
-                .header(HEADER_NAV_CALL_ID, generateCallId())
+                .header(HEADER_NAV_CALL_ID, callId)
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .bodyValue(lagreTpForholdRequest)
                 .retrieve()

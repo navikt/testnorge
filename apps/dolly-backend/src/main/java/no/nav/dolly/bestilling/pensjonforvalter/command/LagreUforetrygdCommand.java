@@ -34,6 +34,10 @@ public class LagreUforetrygdCommand implements Callable<Flux<PensjonforvalterRes
     private final PensjonUforetrygdRequest uforetrygdRequest;
 
     public Flux<PensjonforvalterResponse> call() {
+
+        var callId = generateCallId();
+        log.info("Pensjon lagre uforetrygd {}, callId: {}", uforetrygdRequest, callId);
+        
         return webClient
                 .post()
                 .uri(uriBuilder -> uriBuilder
@@ -44,7 +48,7 @@ public class LagreUforetrygdCommand implements Callable<Flux<PensjonforvalterRes
                     reactorRequest.responseTimeout(Duration.ofSeconds(REQUEST_DURATION));
                 })
                 .header(AUTHORIZATION, "Bearer " + token)
-                .header(HEADER_NAV_CALL_ID, generateCallId())
+                .header(HEADER_NAV_CALL_ID, callId)
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .bodyValue(uforetrygdRequest)
                 .retrieve()
