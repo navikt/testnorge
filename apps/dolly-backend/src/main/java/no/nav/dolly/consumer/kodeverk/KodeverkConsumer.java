@@ -36,7 +36,8 @@ public class KodeverkConsumer {
 
         return tokenService.exchange(serverProperties)
                 .flatMap(token -> new KodeverkGetCommand(webClient, kodeverk, token.getTokenValue()).call())
-                .doOnNext(response -> log.info("Hentet kodeverk {}", response.getKodeverknavn()))
+                .doOnNext(response -> log.info("Hentet kodeverk {}, status {} melding {}",
+                        response.getKodeverknavn(), response.getStatus(), response.getMessage()))
                 .map(KodeverkDTO::getKodeverk);
     }
 }
