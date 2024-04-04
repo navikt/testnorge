@@ -1,6 +1,6 @@
 package no.nav.pdl.forvalter.service;
 
-import no.nav.pdl.forvalter.consumer.GeografiskeKodeverkConsumer;
+import no.nav.pdl.forvalter.consumer.KodeverkConsumer;
 import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.InnflyttingDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
@@ -30,7 +30,7 @@ class StatsborgerskapServiceTest {
     private static final String DNR_IDENT = "42045612301";
 
     @Mock
-    private GeografiskeKodeverkConsumer geografiskeKodeverkConsumer;
+    private KodeverkConsumer kodeverkConsumer;
 
     @InjectMocks
     private StatsborgerskapService statsborgerskapService;
@@ -76,7 +76,7 @@ class StatsborgerskapServiceTest {
                                 .fraflyttingsland("GER")
                                 .build()))
                         .build())
-                .get(0);
+                .getFirst();
 
         assertThat(target.getLandkode(), is(equalTo("GER")));
     }
@@ -90,7 +90,7 @@ class StatsborgerskapServiceTest {
                                 .build()))
                         .ident(FNR_IDENT)
                         .build())
-                .get(0);
+                .getFirst();
 
         assertThat(target.getLandkode(), is(equalTo("NOR")));
     }
@@ -98,7 +98,7 @@ class StatsborgerskapServiceTest {
     @Test
     void whenLandkodeIsEmptyAndUnavailFromInnflyttingAndIdenttypeDNR_thenGeografiskeKodeverkConsumerIsCalled() {
 
-        when(geografiskeKodeverkConsumer.getTilfeldigLand()).thenReturn("CHL");
+        when(kodeverkConsumer.getTilfeldigLand()).thenReturn("CHL");
 
         var target = statsborgerskapService.convert(PersonDTO.builder()
                         .statsborgerskap(List.of(StatsborgerskapDTO.builder()
@@ -106,9 +106,9 @@ class StatsborgerskapServiceTest {
                                 .build()))
                         .ident(DNR_IDENT)
                         .build())
-                .get(0);
+                .getFirst();
 
-        verify(geografiskeKodeverkConsumer).getTilfeldigLand();
+        verify(kodeverkConsumer).getTilfeldigLand();
 
         assertThat(target.getLandkode(), is(equalTo("CHL")));
     }
@@ -123,7 +123,7 @@ class StatsborgerskapServiceTest {
                                 .build()))
                         .ident(FNR_IDENT)
                         .build())
-                .get(0);
+                .getFirst();
 
         assertThat(target.getGyldigFraOgMed(), is(equalTo(LocalDate.of(1956, 4, 12).atStartOfDay())));
     }

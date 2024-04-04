@@ -20,8 +20,6 @@ public class CachingConfig {
     public static final String CACHE_BRUKER = "bruker";
     public static final String CACHE_GRUPPE = "gruppe";
     public static final String CACHE_HELSEPERSONELL = "helsepersonell";
-    public static final String CACHE_KODEVERK = "kodeverk";
-    public static final String CACHE_KODEVERK_2 = "kodeverk2";
 
     @Bean
     @Profile({ "dev", "prod" })
@@ -29,9 +27,7 @@ public class CachingConfig {
         var caffeineCacheManager = new CaffeineCacheManager(CACHE_BESTILLING,
                 CACHE_BRUKER,
                 CACHE_GRUPPE,
-                CACHE_HELSEPERSONELL,
-                CACHE_KODEVERK,
-                CACHE_KODEVERK_2
+                CACHE_HELSEPERSONELL
         );
         caffeineCacheManager.setCaffeine(caffeine);
         caffeineCacheManager.setAsyncCacheMode(true);

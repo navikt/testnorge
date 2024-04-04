@@ -69,3 +69,5 @@ consumers:
     url: https://testnav-miljoer-service.intern.dev.nav.no
   testnav-arbeidsplassencv-proxy:
     url: https://testnav-arbeidsplassencv-proxy.intern.dev.nav.no
+  testnav-kodeverk-service:
+    url: https://testnav-kodeverk-service.intern.dev.nav.no
