@@ -43,7 +43,6 @@ includeBuild './proxies/saf-proxy'
 includeBuild './proxies/sigrunstub-proxy'
 includeBuild './proxies/skjermingsregister-proxy'
 includeBuild './proxies/synthdata-meldekort-proxy'
-includeBuild './proxies/tps-forvalteren-proxy'
 includeBuild './proxies/udistub-proxy'
 
 includeBuild './libs/avro-schema'
