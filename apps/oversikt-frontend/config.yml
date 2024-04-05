@@ -31,6 +31,7 @@ spec:
         - application: ereg-batch-status-service
         - application: generer-navn-service
         - application: organisasjon-bestilling-service
+        - application: synthdata-amelding
         - application: testnav-app-tilgang-analyse-service
         - application: testnav-bruker-service-dev
         - application: testnav-person-organisasjon-tilgang-service-dev
