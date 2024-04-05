@@ -33,6 +33,7 @@ spec:
           cluster: dev-gcp
     outbound:
       rules:
+        - application: generer-navn-service
         - application: testnav-amelding-service
         - application: testnav-arbeidsforhold-service
         - application: testnav-arbeidsplassencv-proxy
