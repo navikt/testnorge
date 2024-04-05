@@ -5,6 +5,7 @@ import reducer, { Action, State } from './DodsmeldingReducer';
 import { sendDodsmelding } from '@/service/EndringsmeldingService';
 import { EndringsmeldingForm } from '../endringsmelding-form';
 import { format } from 'date-fns';
+import { Button } from '@navikt/ds-react';
 
 export const initState: State = {
   miljoOptions: [],
@@ -37,7 +38,11 @@ export default () => {
         handling: state.handling,
       },
       state.miljoer,
-    );
+    ).then((response) => {
+      console.log('MiljoeInfo: ', response.miljoeInfo); //TODO - SLETT MEG FØR MERGE
+      dispatch({ type: Action.SET_ERROR_LIST, value: response?.miljoeInfo });
+      return Promise.resolve(response);
+    });
 
   const getSuccessMessage = () => {
     const miljoer = state.miljoer;
@@ -116,6 +121,24 @@ export default () => {
           }
         />
       </Line>
+      {state.errorList?.size > 0 && (
+        <div>
+          <h3>Feil ved sending til miljø</h3>
+          <ul>
+            {Array.from(state.errorList).map(([key, value]) => (
+              <li key={key}>
+                {key}: {value}
+                <Button
+                  variant={'tertiary'}
+                  onClick={() => dispatch({ type: Action.REMOVE_ERROR_ITEM, value: key })}
+                >
+                  X
+                </Button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </EndringsmeldingForm>
   );
 };

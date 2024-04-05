@@ -3,7 +3,7 @@ type SetHentMiljoerErrorAction = 'SET_HENT_MILJOER_ERROR';
 type SubmitStartAction = 'SET_SUBMIT_START';
 type SubmitSuccessAction = 'SET_SUBMIT_SUCCESS';
 type SubmitErrorAction = 'SET_SUBMIT_ERROR';
-type SubmitWarringAction = 'SET_SUBMIT_WARRING';
+type SubmitWarningAction = 'SET_SUBMIT_WARNING';
 type SetIdentAction = 'SET_IDENT';
 
 type Actions =
@@ -25,7 +25,7 @@ type Actions =
       errorMessage: string;
     }
   | {
-      type: SubmitWarringAction;
+      type: SubmitWarningAction;
       warningMessages: string[];
     }
   | {
@@ -50,7 +50,7 @@ export class Action {
   public static SET_SUBMIT_START: SubmitStartAction = 'SET_SUBMIT_START';
   public static SET_SUBMIT_SUCCESS: SubmitSuccessAction = 'SET_SUBMIT_SUCCESS';
   public static SET_SUBMIT_ERROR: SubmitErrorAction = 'SET_SUBMIT_ERROR';
-  public static SET_SUBMIT_WARNING: SubmitWarringAction = 'SET_SUBMIT_WARRING';
+  public static SET_SUBMIT_WARNING: SubmitWarningAction = 'SET_SUBMIT_WARNING';
 }
 
 export const reducer = (state: State, action: Actions) => {

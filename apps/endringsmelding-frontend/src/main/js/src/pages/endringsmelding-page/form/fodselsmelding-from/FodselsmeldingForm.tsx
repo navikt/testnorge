@@ -5,6 +5,7 @@ import reducer, { Action, State } from './FodselsmeldingReducer';
 import { sendFodselsmelding } from '@/service/EndringsmeldingService';
 import { EndringsmeldingForm } from '../endringsmelding-form';
 import { format } from 'date-fns';
+import { Button } from '@navikt/ds-react';
 
 export const initState: State = {
   miljoOptions: [],
@@ -40,9 +41,11 @@ export default () => {
         kjoenn: state.kjoenType,
       },
       state.miljoer,
-    ).then((ident) => {
-      dispatch({ type: Action.SET_BARNS_IDENT, value: ident.trim() });
-      return Promise.resolve(ident);
+    ).then((response) => {
+      console.log('MiljoeInfo: ', response.miljoeInfo); //TODO - SLETT MEG FØR MERGE
+      dispatch({ type: Action.SET_BARNS_IDENT, value: response?.ident?.trim() });
+      dispatch({ type: Action.SET_ERROR_LIST, value: response?.miljoeInfo });
+      return Promise.resolve(response);
     });
 
   const getSuccessMessage = (value: string | null) =>
@@ -171,6 +174,24 @@ export default () => {
           required={true}
         />
       </Line>
+      {state.errorList?.size > 0 && (
+        <div>
+          <h3>Feil ved sending til miljø</h3>
+          <ul>
+            {Array.from(state.errorList).map(([key, value]) => (
+              <li key={key}>
+                {key}: {value}
+                <Button
+                  variant={'tertiary'}
+                  onClick={() => dispatch({ type: Action.REMOVE_ERROR_ITEM, value: key })}
+                >
+                  X
+                </Button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </EndringsmeldingForm>
   );
 };

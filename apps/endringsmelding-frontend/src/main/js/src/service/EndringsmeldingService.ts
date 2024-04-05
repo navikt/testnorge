@@ -6,6 +6,11 @@ type Dodsmelding = {
   doedsdato: string;
 };
 
+type EndringsmeldingResponse = {
+  ident: string;
+  miljoeInfo: Map<string, string>;
+};
+
 type Fodselsmelding = {
   identFar?: string;
   identMor: string;
@@ -15,19 +20,22 @@ type Fodselsmelding = {
   foedselsdato: string;
 };
 
-export const sendDodsmelding = (dodsmelding: Dodsmelding, miljoer: string[]) =>
+export const sendDodsmelding = (
+  dodsmelding: Dodsmelding,
+  miljoer: string[],
+): Promise<EndringsmeldingResponse> =>
   Api.fetch(
-    '/endringsmelding-service/api/v1/endringsmelding/doedsmelding',
+    '/endringsmelding-service/api/v2/endringsmelding/doedsmelding',
     { method: 'POST', headers: { miljoer: miljoer.join(','), 'Content-Type': 'application/json' } },
-    JSON.stringify(dodsmelding)
-  );
+    JSON.stringify(dodsmelding),
+  ).then((response) => response.json()) as Promise<EndringsmeldingResponse>;
 
 export const sendFodselsmelding = (
   fodselsmelding: Fodselsmelding,
-  miljoer: string[]
-): Promise<string> =>
+  miljoer: string[],
+): Promise<EndringsmeldingResponse> =>
   Api.fetch(
-    '/endringsmelding-service/api/v1/endringsmelding/foedeselsmelding',
+    '/endringsmelding-service/api/v2/endringsmelding/foedeselsmelding',
     { method: 'POST', headers: { miljoer: miljoer.join(','), 'Content-Type': 'application/json' } },
-    JSON.stringify(fodselsmelding)
-  ).then((response) => response.text() as Promise<string>);
+    JSON.stringify(fodselsmelding),
+  ).then((response) => response.json()) as Promise<EndringsmeldingResponse>;

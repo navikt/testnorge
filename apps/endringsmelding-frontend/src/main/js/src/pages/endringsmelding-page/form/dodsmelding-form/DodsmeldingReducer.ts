@@ -4,6 +4,8 @@ type SetMiljoerAction = 'SET_MILJOER';
 type SetHandlingAction = 'SET_HANDLING';
 type SetDoedsdatoAction = 'SET_DOEDSDATO';
 type SetValidateAction = 'SET_VALIDATE';
+type SetErrorListAction = 'SET_ERROR_LIST';
+type RemoveErrorItemAction = 'REMOVE_ERROR_ITEM';
 
 type Handling = 'SETTE_DOEDSDATO' | 'ENDRET_DOEDSDATO' | 'ANNULLERE_DOEDSDATO';
 
@@ -25,6 +27,14 @@ type Actions =
       value: string;
     }
   | {
+      type: SetErrorListAction;
+      value: Map<string, string>;
+    }
+  | {
+      type: RemoveErrorItemAction;
+      value: string;
+    }
+  | {
       type: SetMiljoerOptionsAction;
       value: string[];
     }
@@ -40,6 +50,7 @@ export type State = {
   doedsdato: string;
   miljoer: string[];
   validate: boolean;
+  errorList: Map<string, string>;
 };
 
 export class Action {
@@ -49,6 +60,8 @@ export class Action {
   public static SET_DOEDSDATO_ACTION: SetDoedsdatoAction = 'SET_DOEDSDATO';
   public static SET_MILJOER_ACTION: SetMiljoerAction = 'SET_MILJOER';
   public static SET_VALIDATE_ACTION: SetValidateAction = 'SET_VALIDATE';
+  public static SET_ERROR_LIST: SetErrorListAction = 'SET_ERROR_LIST';
+  public static REMOVE_ERROR_ITEM: RemoveErrorItemAction = 'REMOVE_ERROR_ITEM';
 }
 
 export default (state: State, action: Actions) => {
@@ -68,6 +81,12 @@ export default (state: State, action: Actions) => {
       return { ...state, validate: action.value };
     case Action.SET_MILJOER_OPTIONS_ACTION:
       return { ...state, miljoOptions: action.value };
+    case Action.SET_ERROR_LIST:
+      return { ...state, errorList: action.value };
+    case Action.REMOVE_ERROR_ITEM:
+      const newErrorList = new Map(state.errorList);
+      newErrorList.delete(action.value);
+      return { ...state, errorList: newErrorList };
     default:
       return state;
   }

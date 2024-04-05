@@ -8,6 +8,8 @@ type SetMorsIdentAction = 'SET_MORS_IDENT';
 type SetFoedselsdatoAction = 'SET_FOEDSELSDATO';
 type SetValidateAction = 'SET_VALIDATE';
 type SetBarnsIdentAction = 'SET_BARNS_IDENT';
+type SetErrorList = 'SET_ERROR_LIST';
+type RemoveErrorItemAction = 'REMOVE_ERROR_ITEM';
 
 type Actions =
   | {
@@ -43,6 +45,14 @@ type Actions =
       value: string;
     }
   | {
+      type: SetErrorList;
+      value: Map<string, string>;
+    }
+  | {
+      type: RemoveErrorItemAction;
+      value: string;
+    }
+  | {
       type: SetMiljoerOptionsAction;
       value: string[];
     }
@@ -62,6 +72,7 @@ export type State = {
   miljoer: string[];
   validate: boolean;
   barnsIdent?: string;
+  errorList?: Map<string, string>;
 };
 
 export class Action {
@@ -75,6 +86,8 @@ export class Action {
   public static SET_MILJOER_ACTION: SetMiljoerAction = 'SET_MILJOER';
   public static SET_VALIDATE_ACTION: SetValidateAction = 'SET_VALIDATE';
   public static SET_BARNS_IDENT: SetBarnsIdentAction = 'SET_BARNS_IDENT';
+  public static SET_ERROR_LIST: SetErrorList = 'SET_ERROR_LIST';
+  public static REMOVE_ERROR_ITEM: RemoveErrorItemAction = 'REMOVE_ERROR_ITEM';
 }
 
 export default (state: State, action: Actions) => {
@@ -99,6 +112,12 @@ export default (state: State, action: Actions) => {
       return { ...state, miljoOptions: action.value };
     case Action.SET_BARNS_IDENT:
       return { ...state, barnsIdent: action.value };
+    case Action.SET_ERROR_LIST:
+      return { ...state, errorList: action.value };
+    case Action.REMOVE_ERROR_ITEM:
+      const newErrorList = new Map(state.errorList);
+      newErrorList.delete(action.value);
+      return { ...state, errorList: newErrorList };
     default:
       return state;
   }
