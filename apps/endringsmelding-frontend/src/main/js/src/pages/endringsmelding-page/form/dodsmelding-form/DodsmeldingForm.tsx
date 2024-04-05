@@ -39,8 +39,8 @@ export default () => {
       },
       state.miljoer,
     ).then((response) => {
-      console.log('MiljoeInfo: ', response.miljoeInfo); //TODO - SLETT MEG FØR MERGE
-      dispatch({ type: Action.SET_ERROR_LIST, value: response?.miljoeInfo });
+      const error = response?.error && new Map([[state.miljoer?.[0], response.error]]);
+      dispatch({ type: Action.SET_ERROR_LIST, value: response?.miljoStatus || error });
       return Promise.resolve(response);
     });
 

@@ -42,9 +42,10 @@ export default () => {
       },
       state.miljoer,
     ).then((response) => {
-      console.log('MiljoeInfo: ', response.miljoeInfo); //TODO - SLETT MEG FØR MERGE
+      console.log('Response: ', response); //TODO - SLETT MEG FØR MERGE
+      const error = response?.error && new Map([[state.miljoer?.[0], response.error]]);
       dispatch({ type: Action.SET_BARNS_IDENT, value: response?.ident?.trim() });
-      dispatch({ type: Action.SET_ERROR_LIST, value: response?.miljoeInfo });
+      dispatch({ type: Action.SET_ERROR_LIST, value: response?.miljoStatus || error });
       return Promise.resolve(response);
     });
 

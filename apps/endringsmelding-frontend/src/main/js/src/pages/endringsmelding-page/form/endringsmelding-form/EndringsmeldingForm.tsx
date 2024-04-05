@@ -56,7 +56,7 @@ export default <T extends {}>({
         .then((response) =>
           dispatch({
             type: Action.SET_SUBMIT_SUCCESS,
-            successMessage: getSuccessMessage(response),
+            successMessage: getSuccessMessage(response?.ident),
           }),
         )
         .catch((e) => {

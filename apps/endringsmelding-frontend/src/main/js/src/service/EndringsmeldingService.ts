@@ -8,7 +8,8 @@ type Dodsmelding = {
 
 type EndringsmeldingResponse = {
   ident: string;
-  miljoeInfo: Map<string, string>;
+  miljoStatus?: Map<string, string>;
+  error?: string;
 };
 
 type Fodselsmelding = {
