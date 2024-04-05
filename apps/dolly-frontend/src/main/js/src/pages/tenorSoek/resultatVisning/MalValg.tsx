@@ -6,6 +6,10 @@ import { Switch } from '@navikt/ds-react'
 import { useBoolean } from 'react-use'
 import styled from 'styled-components'
 
+type MalValgProps = {
+	setValgtMal: Function
+}
+
 const MalValgWrapper = styled.div`
 	margin-top: 20px;
 `
@@ -27,7 +31,7 @@ const getMalOptions = (malbestillinger: any, bruker: any) => {
 	}))
 }
 
-export const MalValg = ({ setValgtMal }) => {
+export const MalValg = ({ setValgtMal }: MalValgProps) => {
 	const [benyttMal, setBenyttMal] = useBoolean(false)
 	const [malValue, setMalValue] = useState(null)
 

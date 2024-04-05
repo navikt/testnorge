@@ -516,7 +516,7 @@ export default ({
 				/>
 				<HistarkVisning data={histarkData} loading={loadingHistarkData} />
 				<SkatteetatenVisning
-					data={tenorData?.data?.data?.personer?.find((person) => person?.id === ident.ident)}
+					data={tenorData?.data?.data?.personer?.find((person: any) => person?.id === ident.ident)}
 					loading={loadingTenorData}
 				/>
 				<PersonMiljoeinfo

@@ -11,7 +11,7 @@ const RelasjonerTittel = styled.h3`
 	margin-top: 5px;
 	padding-top: 15px;
 `
-export const FolkeregisteretVisning = ({ data }) => {
+export const FolkeregisteretVisning = ({ data }: any) => {
 	if (!data) {
 		return null
 	}
@@ -36,7 +36,7 @@ export const FolkeregisteretVisning = ({ data }) => {
 				{relasjoner?.length > 0 && (
 					<>
 						<RelasjonerTittel>Relasjoner</RelasjonerTittel>
-						{relasjoner.map((relasjon, idx) => (
+						{relasjoner.map((relasjon: any, idx: number) => (
 							<div className="title-value title-value_small" key={idx + relasjon.identifikator}>
 								<h4>{relasjon.tenorRelasjonsnavn}</h4>
 								<div>{`${arrayToString(relasjon.identifikator, ', ')} -`}</div>

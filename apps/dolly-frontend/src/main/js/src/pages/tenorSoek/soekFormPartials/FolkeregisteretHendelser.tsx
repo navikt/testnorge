@@ -2,7 +2,7 @@ import { useTenorDomain } from '@/utils/hooks/useTenorSoek'
 import { SoekKategori } from '@/components/ui/soekForm/SoekForm'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { createOptions } from '@/pages/tenorSoek/utils'
-import React, { SyntheticEvent } from 'react'
+import React from 'react'
 
 export const FolkeregisteretHendelser = ({ handleChange }: any) => {
 	const { domain: hendelseOptions } = useTenorDomain('Hendelse')
@@ -14,16 +14,14 @@ export const FolkeregisteretHendelser = ({ handleChange }: any) => {
 				options={createOptions(hendelseOptions?.data)}
 				size="xlarge"
 				label="Har hatt hendelse"
-				onChange={(val: SyntheticEvent) => handleChange(val?.value || null, 'hendelser.hendelse')}
+				onChange={(val: any) => handleChange(val?.value || null, 'hendelser.hendelse')}
 			/>
 			<FormSelect
 				name="hendelser.sisteHendelse"
 				options={createOptions(hendelseOptions?.data)}
 				size="xlarge"
 				label="Siste hendelse"
-				onChange={(val: SyntheticEvent) =>
-					handleChange(val?.value || null, 'hendelser.sisteHendelse')
-				}
+				onChange={(val: any) => handleChange(val?.value || null, 'hendelser.sisteHendelse')}
 			/>
 		</SoekKategori>
 	)

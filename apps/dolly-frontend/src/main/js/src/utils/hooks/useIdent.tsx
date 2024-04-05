@@ -4,6 +4,7 @@ import { fetcher } from '@/api'
 export const useFinnesIDolly = (ident: string) => {
 	const { data, error, isLoading } = useSWR<boolean, Error>(
 		`dolly-backend/api/v1/ident/finnes/${ident}`,
+		// @ts-ignore
 		fetcher,
 	)
 

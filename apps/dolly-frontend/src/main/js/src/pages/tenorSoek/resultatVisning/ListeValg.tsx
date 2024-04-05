@@ -3,7 +3,14 @@ import { NavigerTilPerson } from '@/pages/tenorSoek/resultatVisning/NavigerTilPe
 import { Checkbox } from '@navikt/ds-react'
 import Loading from '@/components/ui/loading/Loading'
 import React from 'react'
-export const ListeValg = ({ ident, markertePersoner, setMarkertePersoner }) => {
+
+type ListeValgProps = {
+	ident: string
+	markertePersoner: Array<string>
+	setMarkertePersoner: Function
+}
+
+export const ListeValg = ({ ident, markertePersoner, setMarkertePersoner }: ListeValgProps) => {
 	const { finnesIDolly, loading: loadingFinnes } = useFinnesIDolly(ident)
 
 	if (loadingFinnes) {

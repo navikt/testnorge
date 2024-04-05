@@ -5,7 +5,7 @@ import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray
 import { TabsVisning } from '@/pages/tenorSoek/resultatVisning/TabsVisning'
 import SubOverskriftExpandable from '@/components/ui/subOverskrift/SubOverskriftExpandable'
 
-export const InntektVisning = ({ data }) => {
+export const InntektVisning = ({ data }: any) => {
 	if (!data || data.length < 1) {
 		return null
 	}
@@ -17,8 +17,8 @@ export const InntektVisning = ({ data }) => {
 				iconKind="inntektstub"
 			>
 				<div>
-					<DollyFieldArray data={data} header="" nested>
-						{(inntekt, idx: number) => {
+					<DollyFieldArray data={data} header={null} nested>
+						{(inntekt: any) => {
 							return (
 								<TabsVisning kildedata={inntekt.tenorMetadata?.kildedata}>
 									<TitleValue title="Periode" value={inntekt.periode} />
@@ -30,7 +30,6 @@ export const InntektVisning = ({ data }) => {
 										value={arrayToString(inntekt.forskuddstrekk)}
 									/>
 									<TitleValue title="Har historikk" value={oversettBoolean(inntekt.harHistorikk)} />
-									{/* Relasjoner:*/}
 								</TabsVisning>
 							)
 						}}

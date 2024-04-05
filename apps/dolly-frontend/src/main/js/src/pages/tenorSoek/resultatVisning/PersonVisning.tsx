@@ -10,6 +10,13 @@ import { NavigerTilPerson } from '@/pages/tenorSoek/resultatVisning/NavigerTilPe
 import { ImporterValgtePersoner } from '@/pages/tenorSoek/resultatVisning/ImporterValgtePersoner'
 import { useFinnesIDolly } from '@/utils/hooks/useIdent'
 
+type PersonVisningProps = {
+	person: any
+	ident: string
+	loading: boolean
+	error: any
+}
+
 const PersonVisningWrapper = styled.div`
 	position: sticky;
 	top: 80px;
@@ -23,7 +30,7 @@ const NavnHeader = styled.h2`
 	word-break: break-word;
 	hyphens: auto;
 `
-export const PersonVisning = ({ person, ident, loading, error }) => {
+export const PersonVisning = ({ person, ident, loading, error }: PersonVisningProps) => {
 	const { finnesIDolly, loading: loadingFinnes } = useFinnesIDolly(ident)
 
 	if (loading) {
@@ -38,7 +45,7 @@ export const PersonVisning = ({ person, ident, loading, error }) => {
 		return null
 	}
 
-	const personData = person.data?.dokumentListe?.find((dokument) =>
+	const personData = person.data?.dokumentListe?.find((dokument: any) =>
 		dokument.identifikator?.includes(ident),
 	)
 

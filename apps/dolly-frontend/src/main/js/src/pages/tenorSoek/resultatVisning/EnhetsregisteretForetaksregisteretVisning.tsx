@@ -5,7 +5,7 @@ import { arrayToString } from '@/utils/DataFormatter'
 import React from 'react'
 import SubOverskriftExpandable from '@/components/ui/subOverskrift/SubOverskriftExpandable'
 
-export const EnhetsregisteretForetaksregisteretVisning = ({ data }) => {
+export const EnhetsregisteretForetaksregisteretVisning = ({ data }: any) => {
 	if (!data || data.length < 1) {
 		return null
 	}
@@ -17,8 +17,8 @@ export const EnhetsregisteretForetaksregisteretVisning = ({ data }) => {
 				iconKind="brreg"
 			>
 				<div>
-					<DollyFieldArray data={data} header="" nested>
-						{(organisasjon, idx: number) => {
+					<DollyFieldArray data={data} header={null} nested>
+						{(organisasjon: any) => {
 							return (
 								<TabsVisning kildedata={organisasjon.tenorMetadata?.kildedata}>
 									<TitleValue
@@ -57,7 +57,6 @@ export const EnhetsregisteretForetaksregisteretVisning = ({ data }) => {
 										title="Næringsbeskrivelse"
 										value={arrayToString(organisasjon.naeringBeskrivelse)}
 									/>
-									{/* Relasjoner:*/}
 								</TabsVisning>
 							)
 						}}

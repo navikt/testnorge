@@ -23,7 +23,7 @@ const TagsWrapper = styled.div`
 `
 
 export const TreffListe = ({ response, personListe, loading, error }: any) => {
-	const [valgtPerson, setValgtPerson] = useState(null)
+	const [valgtPerson, setValgtPerson] = useState<any>(null)
 
 	const {
 		person: valgtPersonData,

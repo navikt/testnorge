@@ -10,13 +10,13 @@ export const FolkeregisteretStatsborgerskap = ({ handleChange }: any) => {
 				name="harNorskStatsborgerskap"
 				options={Options('boolean')}
 				label="Har norsk statsborgerskap"
-				onChange={(val: boolean) => handleChange(val?.value, 'harNorskStatsborgerskap')}
+				onChange={(val: any) => handleChange(val?.value, 'harNorskStatsborgerskap')}
 			/>
 			<FormSelect
 				name="harFlereStatsborgerskap"
 				options={Options('boolean')}
 				label="Har flere statsborgerskap"
-				onChange={(val: boolean) => handleChange(val?.value, 'harFlereStatsborgerskap')}
+				onChange={(val: any) => handleChange(val?.value, 'harFlereStatsborgerskap')}
 			/>
 		</SoekKategori>
 	)

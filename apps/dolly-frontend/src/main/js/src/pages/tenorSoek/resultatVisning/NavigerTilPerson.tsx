@@ -5,9 +5,13 @@ import { CypressSelector } from '../../../../cypress/mocks/Selectors'
 import { ArrowRightIcon } from '@navikt/aksel-icons'
 import { useEffect, useState } from 'react'
 
-export const NavigerTilPerson = ({ ident }) => {
+type NavigerTilPersonProps = {
+	ident: string
+}
+
+export const NavigerTilPerson = ({ ident }: NavigerTilPersonProps) => {
 	const navigate = useNavigate()
-	const [navigateIdent, setNavigateIdent] = useState(null)
+	const [navigateIdent, setNavigateIdent] = useState<string | null>(null)
 	const { loading, mutate } = useNaviger(navigateIdent)
 
 	useEffect(() => {
@@ -25,7 +29,7 @@ export const NavigerTilPerson = ({ ident }) => {
 		})
 	}, [navigateIdent])
 
-	const handleClick = (event) => {
+	const handleClick = (event: any) => {
 		event.stopPropagation()
 		setNavigateIdent(ident)
 	}

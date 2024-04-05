@@ -13,7 +13,7 @@ const initialState = {
 
 export default () => {
 	const [request, setRequest] = useState({})
-	const [state, setState] = useState(initialState)
+	const [state, setState] = useState<any>(initialState)
 	const { response, loading, error, mutate } = useTenorOversikt(request, 10, state.side, state.seed)
 
 	useEffect(() => {
@@ -63,7 +63,7 @@ export default () => {
 		) {
 			return
 		}
-		setState((state) => {
+		setState((state: any) => {
 			if (state.side < 19 && state.nesteSide) {
 				return { ...state, side: state.nesteSide }
 			}

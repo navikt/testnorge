@@ -26,14 +26,15 @@ export const FolkeregisteretIdentifikasjonStatus = ({ handleChange, handleChange
 				name="identifikator"
 				data-cy={CypressSelector.INPUT_TENORSOEK_FNR}
 				label="Fødselsnummer / D-nummer"
-				onBlur={(val: SyntheticEvent) => handleChange(val?.target?.value || null, 'identifikator')}
+				// @ts-ignore
+				onBlur={(val: any) => handleChange(val?.target?.value || null, 'identifikator')}
 				visHvisAvhuket={false}
 			/>
 			<FormSelect
 				name="identifikatorType"
 				options={createOptions(identifikatorTypeOptions?.data)}
 				label="Identifikatortype"
-				onChange={(val: SyntheticEvent) => handleChange(val?.value || null, 'identifikatorType')}
+				onChange={(val: any) => handleChange(val?.value || null, 'identifikatorType')}
 			/>
 			<FormDatepicker
 				name="foedselsdato.fraOgMed"
@@ -63,39 +64,37 @@ export const FolkeregisteretIdentifikasjonStatus = ({ handleChange, handleChange
 				name="kjoenn"
 				options={createOptions(kjoennOptions?.data)}
 				label="Kjønn"
-				onChange={(val: SyntheticEvent) => handleChange(val?.value || null, 'kjoenn')}
+				onChange={(val: any) => handleChange(val?.value || null, 'kjoenn')}
 			/>
 			<FormSelect
 				name="personstatus"
 				options={createOptions(personstatusOptions?.data)}
 				label="Personstatus"
-				onChange={(val: SyntheticEvent) => handleChange(val?.value || null, 'personstatus')}
+				onChange={(val: any) => handleChange(val?.value || null, 'personstatus')}
 			/>
 			<FormSelect
 				name="sivilstand"
 				options={createOptions(sivilstatusOptions?.data)}
 				label="Sivilstand"
-				onChange={(val: SyntheticEvent) => handleChange(val?.value || null, 'sivilstand')}
+				onChange={(val: any) => handleChange(val?.value || null, 'sivilstand')}
 			/>
 			<FormSelect
 				name="identitetsgrunnlagStatus"
 				options={createOptions(identitetsgrunnlagStatusOptions?.data)}
 				label="Identitetsgrunnlagsstatus"
-				onChange={(val: SyntheticEvent) =>
-					handleChange(val?.value || null, 'identitetsgrunnlagStatus')
-				}
+				onChange={(val: any) => handleChange(val?.value || null, 'identitetsgrunnlagStatus')}
 			/>
 			<FormSelect
 				name="adressebeskyttelse"
 				options={createOptions(adressebeskyttelseOptions?.data)}
 				label="Adressebeskyttelse"
-				onChange={(val: SyntheticEvent) => handleChange(val?.value || null, 'adressebeskyttelse')}
+				onChange={(val: any) => handleChange(val?.value || null, 'adressebeskyttelse')}
 			/>
 			<FormSelect
 				name="harFalskIdentitet"
 				options={Options('boolean')}
 				label="Har falsk identitet"
-				onChange={(val: boolean) => handleChange(val?.value, 'harFalskIdentitet')}
+				onChange={(val: any) => handleChange(val?.value, 'harFalskIdentitet')}
 			/>
 			<div className="flexbox--full-width">
 				<FormSelect
@@ -113,7 +112,7 @@ export const FolkeregisteretIdentifikasjonStatus = ({ handleChange, handleChange
 				name="harLegitimasjonsdokument"
 				data-cy={CypressSelector.CHECKBOX_TENORSOEK}
 				label="Har legitimasjonsdokument"
-				onChange={(val: SyntheticEvent) =>
+				onChange={(val: any) =>
 					handleChange(val?.target?.checked || undefined, 'harLegitimasjonsdokument')
 				}
 			/>

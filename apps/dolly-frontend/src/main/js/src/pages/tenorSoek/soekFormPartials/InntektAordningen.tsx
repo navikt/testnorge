@@ -17,6 +17,7 @@ export const InntektAordningen = ({ handleChange, handleChangeList, getValue }: 
 			<Monthpicker
 				name="inntekt.periode.fraOgMed"
 				label="Periode f.o.m. dato"
+				// @ts-ignore
 				handleDateChange={(val: Date) => {
 					handleChange(val ? val.toISOString().substring(0, 7) : '', 'inntekt.periode.fraOgMed')
 				}}
@@ -25,6 +26,7 @@ export const InntektAordningen = ({ handleChange, handleChangeList, getValue }: 
 			<Monthpicker
 				name="inntekt.periode.tilOgMed"
 				label="Periode t.o.m. dato"
+				// @ts-ignore
 				handleDateChange={(val: Date) => {
 					handleChange(val ? val.toISOString().substring(0, 7) : '', 'inntekt.periode.tilOgMed')
 				}}
@@ -33,7 +35,8 @@ export const InntektAordningen = ({ handleChange, handleChangeList, getValue }: 
 			<FormTextInput
 				name="inntekt.opplysningspliktig"
 				label="Opplysningspliktig org.nr."
-				onBlur={(val: SyntheticEvent) =>
+				// @ts-ignore
+				onBlur={(val: any) =>
 					handleChange(val?.target?.value || null, 'inntekt.opplysningspliktig')
 				}
 				visHvisAvhuket={false}
@@ -63,14 +66,14 @@ export const InntektAordningen = ({ handleChange, handleChangeList, getValue }: 
 				options={createOptions(beskrivelseOptions?.data)}
 				size="xlarge"
 				label="Beskrivelse"
-				onChange={(val: SyntheticEvent) => handleChange(val?.value || null, 'inntekt.beskrivelse')}
+				onChange={(val: any) => handleChange(val?.value || null, 'inntekt.beskrivelse')}
 			/>
 			<FormSelect
 				name="inntekt.harHistorikk"
 				options={Options('boolean')}
 				size="small"
 				label="Har historikk"
-				onChange={(val: boolean) => handleChange(val?.value, 'inntekt.harHistorikk')}
+				onChange={(val: any) => handleChange(val?.value, 'inntekt.harHistorikk')}
 			/>
 		</SoekKategori>
 	)

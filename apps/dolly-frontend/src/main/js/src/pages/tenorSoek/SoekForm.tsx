@@ -28,12 +28,12 @@ const Soekefelt = styled.div`
 	padding: 20px 15px;
 `
 
-export const SoekForm = ({ setRequest, mutate }) => {
+export const SoekForm = ({ setRequest, mutate }: any) => {
 	const formMethods = useForm({
 		mode: 'onChange',
 		defaultValues: {},
 	})
-	const { getValues, control, setValue, watch } = formMethods
+	const { getValues, control, setValue, watch }: any = formMethods
 
 	function getUpdatedRequest(request: any) {
 		for (let key of Object.keys(request)) {
@@ -146,10 +146,7 @@ export const SoekForm = ({ setRequest, mutate }) => {
 										/>
 									</Accordion.Header>
 									<Accordion.Content style={{ paddingRight: '0' }}>
-										<FolkeregisteretNavn
-											handleChange={handleChange}
-											// handleChangeTextInput={handleChangeTextInput}
-										/>
+										<FolkeregisteretNavn handleChange={handleChange} />
 									</Accordion.Content>
 								</Accordion.Item>
 								<Accordion.Item>

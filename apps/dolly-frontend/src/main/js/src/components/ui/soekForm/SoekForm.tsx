@@ -1,6 +1,11 @@
 import styled from 'styled-components'
 import React from 'react'
 
+type HeaderProps = {
+	title: string
+	antall: number
+}
+
 export const SoekefeltWrapper = styled.div`
 	display: flex;
 	flex-direction: column;
@@ -60,7 +65,7 @@ const KategoriCircle = styled.div`
 	}
 `
 
-export const Header = ({ title, antall }) => (
+export const Header = ({ title, antall }: HeaderProps) => (
 	<KategoriHeader>
 		<span>{title}</span>
 		{antall > 0 && (
@@ -71,9 +76,9 @@ export const Header = ({ title, antall }) => (
 	</KategoriHeader>
 )
 
-export const requestIsEmpty = (updatedRequest) => {
+export const requestIsEmpty = (updatedRequest: any) => {
 	let isEmpty = true
-	const flatten = (obj) => {
+	const flatten = (obj: any) => {
 		for (const i in obj) {
 			if (typeof obj[i] === 'object' && !Array.isArray(obj[i])) {
 				flatten(obj[i])

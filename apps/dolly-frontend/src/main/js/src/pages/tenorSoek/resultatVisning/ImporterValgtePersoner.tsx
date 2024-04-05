@@ -11,6 +11,11 @@ import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 import styled from 'styled-components'
 import { CypressSelector } from '../../../../cypress/mocks/Selectors'
 
+type ImporterValgtePersonerProps = {
+	identer: Array<string>
+	isMultiple: boolean
+}
+
 const CheckboxWrapper = styled.div`
 	display: flex;
 	flex-wrap: wrap;
@@ -25,7 +30,7 @@ const CheckboxWrapper = styled.div`
 	}
 `
 
-export const ImporterValgtePersoner = ({ identer, isMultiple }) => {
+export const ImporterValgtePersoner = ({ identer, isMultiple }: ImporterValgtePersonerProps) => {
 	const navigate = useNavigate()
 	const { pdlPersoner, loading } = usePdlPersonbolk(identer)
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
@@ -37,7 +42,7 @@ export const ImporterValgtePersoner = ({ identer, isMultiple }) => {
 	const partnerSivilstander = ['GIFT', 'REGISTRERT_PARTNER', 'SEPARERT', 'SEPARERT_PARTNER']
 
 	useEffect(() => {
-		const partnerListe = []
+		const partnerListe: Array<any> = []
 		pdlPersoner?.hentPersonBolk?.map((ident) => {
 			const partner = ident.person?.sivilstand?.filter(
 				(sivilstand) =>
@@ -47,6 +52,7 @@ export const ImporterValgtePersoner = ({ identer, isMultiple }) => {
 				partnerListe.push(partner)
 			}
 		})
+		// @ts-ignore
 		setPartnere(partnerListe)
 	}, [pdlPersoner])
 
@@ -63,12 +69,11 @@ export const ImporterValgtePersoner = ({ identer, isMultiple }) => {
 					}
 				}),
 				mal: valgtMal,
-				// gruppe: gruppe,
 			},
 		})
 	}
 
-	const handleClickPartnere = (event) => {
+	const handleClickPartnere = (event: any) => {
 		if (event.target.checked) {
 			setValgtePartnere(partnere)
 		} else {
@@ -103,6 +108,7 @@ export const ImporterValgtePersoner = ({ identer, isMultiple }) => {
 					Importer person
 				</Button>
 			)}
+			{/*// @ts-ignore*/}
 			<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="60%" overflow="auto">
 				<div>
 					<h1>{identer?.length === 1 ? 'Importer person' : 'Importer personer'}</h1>
