@@ -28,6 +28,7 @@ spec:
       rules:
         - application: dolly-backend
         - application: dolly-backend-dev
+        - application: ereg-batch-status-service
         - application: testnav-app-tilgang-analyse-service
         - application: testnav-bruker-service-dev
         - application: testnav-person-organisasjon-tilgang-service-dev
