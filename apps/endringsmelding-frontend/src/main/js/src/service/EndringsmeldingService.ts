@@ -35,7 +35,7 @@ export const sendFodselsmelding = (
   miljoer: string[],
 ): Promise<EndringsmeldingResponse> =>
   Api.fetch(
-    '/endringsmelding-service/api/v2/endringsmelding/foedeselsmelding',
+    '/endringsmelding-service/api/v2/endringsmelding/foedselsmelding',
     { method: 'POST', headers: { miljoer: miljoer.join(','), 'Content-Type': 'application/json' } },
     JSON.stringify(fodselsmelding),
   ).then((response) => response.json()) as Promise<EndringsmeldingResponse>;
