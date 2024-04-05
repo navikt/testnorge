@@ -12,9 +12,6 @@ import java.util.stream.Collectors;
 @UtilityClass
 public class KommunerUtility {
 
-    public static final String KOMMUNER = "Kommuner";
-    public static final String KOMMUNER2024 = "Kommuner2024";
-
     @Getter
     private static final Set<String> gamleKommunenummer = new HashSet<>();
 
