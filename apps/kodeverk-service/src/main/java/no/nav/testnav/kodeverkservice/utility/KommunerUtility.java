@@ -2,8 +2,7 @@ package no.nav.testnav.kodeverkservice.utility;
 
 import lombok.Getter;
 import lombok.experimental.UtilityClass;
-import no.nav.testnav.libs.dto.kodeverkservice.v1.KodeverkAdjustedDTO;
-import no.nav.testnav.libs.dto.kodeverkservice.v1.KodeverkDTO;
+import no.nav.testnav.kodeverkservice.dto.KodeverkBetydningerResponse;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -126,26 +125,12 @@ public class KommunerUtility {
         gamleKommunenummer.add("3019"); // Vestby
         gamleKommunenummer.add("3825"); // Vinje
     }
+    public static KodeverkBetydningerResponse filterKommuner2024(KodeverkBetydningerResponse response) {
 
-    public static KodeverkAdjustedDTO filterKommuner2024(KodeverkAdjustedDTO response) {
-
-        return KodeverkAdjustedDTO.builder()
-                .name(KOMMUNER2024)
-                .koder(
-                        response.getKoder().stream()
-                                .filter(kode -> !gamleKommunenummer.contains(kode.getValue()))
-                                .toList())
-                .build();
-    }
-
-    public static KodeverkDTO filterKommuner2024(KodeverkDTO response) {
-
-        return KodeverkDTO.builder()
-                .kodeverknavn(KOMMUNER2024)
-                .kodeverk(
-                        response.getKodeverk().entrySet().stream()
-                                .filter(entry ->!gamleKommunenummer.contains(entry.getKey()))
-                                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)))
+        return KodeverkBetydningerResponse.builder()
+                .betydninger(response.getBetydninger().entrySet().stream()
+                        .filter(entry -> !gamleKommunenummer.contains(entry.getKey()))
+                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)))
                 .build();
     }
 }
