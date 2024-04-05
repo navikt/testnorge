@@ -5,7 +5,6 @@ import { DollySelect } from '@/components/ui/form/inputs/select/Select'
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 import styled from 'styled-components'
-import { Search } from '@navikt/ds-react'
 import { Button } from '@navikt/ds-react'
 
 type Props = {
@@ -42,7 +41,7 @@ export default ({ onSubmit, loading = false }: Props) => {
 				<DollySelect
 					name="kommunenummer"
 					label="Kommunenummer"
-					kodeverk={AdresseKodeverk.Kommunenummer}
+					kodeverk={AdresseKodeverk.Kommunenummer2024}
 					size="grow"
 					value={kommunenummer}
 					onChange={(e: any) => setKommunenummer(e ? e.value : null)}
