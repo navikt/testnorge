@@ -26,10 +26,12 @@ spec:
   accessPolicy:
     outbound:
       rules:
-        - application: testnorge-profil-api-dev
+        - application: dolly-backend
+        - application: dolly-backend-dev
         - application: testnav-app-tilgang-analyse-service
-        - application: testnav-person-organisasjon-tilgang-service-dev
         - application: testnav-bruker-service-dev
+        - application: testnav-person-organisasjon-tilgang-service-dev
+        - application: testnorge-profil-api-dev
   liveness:
     path: /internal/isAlive
     initialDelay: 4

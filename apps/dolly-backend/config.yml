@@ -16,26 +16,17 @@ spec:
     inbound:
       rules:
         - application: dolly-frontend
-          cluster: dev-gcp
         - application: dolly-idporten
-          cluster: dev-gcp
-        - application: testnav-dollystatus
-          cluster: dev-gcp
-        - application: testnav-oversikt-frontend
-          cluster: dev-gcp
         - application: testnav-batch-bestilling-service
-          cluster: dev-gcp
-        - application: etterlatte-testdata
-          cluster: dev-gcp
-          namespace: etterlatte
-        - application: devtools
-          cluster: dev-gcp
-          namespace: aap
-        - application: bot
-          cluster: dev-gcp
-          namespace: aap
+        - application: testnav-dollystatus
         - application: testnav-helsepersonell-service
-          cluster: dev-gcp
+        - application: testnav-oversikt-frontend
+        - application: bot
+          namespace: aap
+        - application: devtools
+          namespace: aap
+        - application: etterlatte-testdata
+          namespace: etterlatte
         - application: statuspoll
           namespace: navdig
     outbound:
