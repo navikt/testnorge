@@ -32,6 +32,7 @@ spec:
         - application: generer-navn-service
         - application: organisasjon-bestilling-service
         - application: synthdata-amelding
+        - application: synthdata-arena-aap
         - application: testnav-app-tilgang-analyse-service
         - application: testnav-bruker-service-dev
         - application: testnav-person-organisasjon-tilgang-service-dev
