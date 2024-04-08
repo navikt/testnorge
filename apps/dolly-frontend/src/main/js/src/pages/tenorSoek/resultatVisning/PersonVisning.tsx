@@ -66,7 +66,8 @@ export const PersonVisning = ({ person, ident, loading, error }: PersonVisningPr
 				<EnhetsregisteretForetaksregisteretVisning
 					data={_.get(personData, 'tenorRelasjoner.brreg-er-fr')}
 				/>
-				<InntektVisning data={personData?.tenorRelasjoner?.inntekt} />
+				{/*TODO: Vis denne naar det er mulig aa importere og vise inntekt i Dolly*/}
+				{/*<InntektVisning data={personData?.tenorRelasjoner?.inntekt} />*/}
 			</Box>
 		</PersonVisningWrapper>
 	)
