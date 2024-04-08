@@ -11,14 +11,14 @@ export const FolkeregisteretHendelser = ({ handleChange }: any) => {
 		<SoekKategori>
 			<FormSelect
 				name="hendelser.hendelse"
-				options={createOptions(hendelseOptions?.data)}
+				options={createOptions(hendelseOptions?.data, true)}
 				size="xlarge"
 				label="Har hatt hendelse"
 				onChange={(val: any) => handleChange(val?.value || null, 'hendelser.hendelse')}
 			/>
 			<FormSelect
 				name="hendelser.sisteHendelse"
-				options={createOptions(hendelseOptions?.data)}
+				options={createOptions(hendelseOptions?.data, true)}
 				size="xlarge"
 				label="Siste hendelse"
 				onChange={(val: any) => handleChange(val?.value || null, 'hendelser.sisteHendelse')}

@@ -32,7 +32,7 @@ export const FolkeregisteretIdentifikasjonStatus = ({ handleChange, handleChange
 			/>
 			<FormSelect
 				name="identifikatorType"
-				options={createOptions(identifikatorTypeOptions?.data)}
+				options={createOptions(identifikatorTypeOptions?.data, true)}
 				label="Identifikatortype"
 				onChange={(val: any) => handleChange(val?.value || null, 'identifikatorType')}
 			/>

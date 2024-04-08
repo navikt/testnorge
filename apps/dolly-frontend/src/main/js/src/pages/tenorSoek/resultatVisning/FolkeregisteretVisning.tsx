@@ -1,9 +1,10 @@
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import React from 'react'
-import { formatDate, showLabel, arrayToString } from '@/utils/DataFormatter'
+import { formatDate, arrayToString, codeToNorskLabel } from '@/utils/DataFormatter'
 import { TabsVisning } from '@/pages/tenorSoek/resultatVisning/TabsVisning'
 import SubOverskriftExpandable from '@/components/ui/subOverskrift/SubOverskriftExpandable'
 import styled from 'styled-components'
+import { manualOptions } from '@/pages/tenorSoek/utils'
 
 const RelasjonerTittel = styled.h3`
 	width: 100%;
@@ -24,15 +25,15 @@ export const FolkeregisteretVisning = ({ data }: any) => {
 				<TitleValue title="Identifikator" value={arrayToString(data.identifikator, ', ')} />
 				<TitleValue title="Navn" value={data.visningnavn} />
 				<TitleValue title="Fødselsdato" value={formatDate(data.foedselsdato)} />
-				<TitleValue title="Kjønn" value={showLabel('kjoenn', data.kjoenn)} />
-				<TitleValue title="Personstatus" value={showLabel('personstatus', data.personstatus)} />
-				<TitleValue title="Sivilstand" value={showLabel('sivilstandType', data.sivilstand)} />
-				<TitleValue
-					title="Adressebeskyttelse"
-					value={showLabel('gradering', data.adresseBeskyttelse)}
-				/>
+				<TitleValue title="Kjønn" value={codeToNorskLabel(data.kjoenn)} />
+				<TitleValue title="Personstatus" value={codeToNorskLabel(data.personstatus)} />
+				<TitleValue title="Sivilstand" value={codeToNorskLabel(data.sivilstand)} />
+				<TitleValue title="Adressebeskyttelse" value={codeToNorskLabel(data.adresseBeskyttelse)} />
 				<TitleValue title="Bostedsadresse" value={data.bostedsadresse} />
-				<TitleValue title="Siste hendelse" value={data.sisteHendelse} />
+				<TitleValue
+					title="Siste hendelse"
+					value={manualOptions[data.sisteHendelse] || codeToNorskLabel(data.sisteHendelse)}
+				/>
 				{relasjoner?.length > 0 && (
 					<>
 						<RelasjonerTittel>Relasjoner</RelasjonerTittel>
