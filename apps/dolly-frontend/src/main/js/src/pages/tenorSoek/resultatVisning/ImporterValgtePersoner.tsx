@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { usePdlPersonbolk } from '@/utils/hooks/usePdlPerson'
 import { Button, Checkbox } from '@navikt/ds-react'
 import React, { useEffect, useState } from 'react'
@@ -32,6 +32,7 @@ const CheckboxWrapper = styled.div`
 
 export const ImporterValgtePersoner = ({ identer, isMultiple }: ImporterValgtePersonerProps) => {
 	const navigate = useNavigate()
+	const location = useLocation()
 	const { pdlPersoner, loading } = usePdlPersonbolk(identer)
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 	const [valgtMal, setValgtMal] = useState(null)
@@ -69,6 +70,7 @@ export const ImporterValgtePersoner = ({ identer, isMultiple }: ImporterValgtePe
 					}
 				}),
 				mal: valgtMal,
+				gruppe: location?.state?.gruppe,
 			},
 		})
 	}
