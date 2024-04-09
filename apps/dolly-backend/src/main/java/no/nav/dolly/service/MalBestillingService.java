@@ -36,7 +36,7 @@ import static no.nav.dolly.util.CurrentAuthentication.getUserId;
 
 @Service
 @RequiredArgsConstructor
-public class BestillingMalService {
+public class MalBestillingService {
 
     private static final String ANONYM = "FELLES";
     private static final String ALLE = "ALLE";

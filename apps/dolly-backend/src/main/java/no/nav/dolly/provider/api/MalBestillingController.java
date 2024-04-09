@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingMal;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestillingWrapper;
-import no.nav.dolly.service.BestillingMalService;
+import no.nav.dolly.service.MalBestillingService;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +25,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 @RequiredArgsConstructor
 public class MalBestillingController {
 
-    private final BestillingMalService bestillingMalService;
+    private final MalBestillingService malBestillingService;
 
     @CacheEvict(value = { CACHE_BESTILLING_MAL }, allEntries = true)
     @PostMapping(value = "/ident/{ident}")
@@ -33,7 +33,7 @@ public class MalBestillingController {
     public RsBestillingMal createTemplateFromIdent(@PathVariable String ident,
                                                    @RequestParam String malNavn) {
 
-        return bestillingMalService.createFromIdent(ident, malNavn);
+        return malBestillingService.createFromIdent(ident, malNavn);
     }
 
     @Cacheable(value = CACHE_BESTILLING_MAL)
@@ -42,7 +42,7 @@ public class MalBestillingController {
     public RsMalBestillingWrapper getMalBestillinger(@RequestParam(required = false) String brukerId) {
 
         return isBlank(brukerId) ?
-                bestillingMalService.getMalBestillinger() : bestillingMalService.getMalbestillingByUser(brukerId);
+                malBestillingService.getMalBestillinger() : malBestillingService.getMalbestillingByUser(brukerId);
     }
 
     @CacheEvict(value = { CACHE_BESTILLING_MAL }, allEntries = true)
@@ -51,7 +51,7 @@ public class MalBestillingController {
     @Transactional
     public void opprettMalbestilling(@RequestParam Long bestillingId, @RequestParam String malNavn) {
 
-        bestillingMalService.saveBestillingMalFromBestillingId(bestillingId, malNavn);
+        malBestillingService.saveBestillingMalFromBestillingId(bestillingId, malNavn);
     }
 
     @CacheEvict(value = { CACHE_BESTILLING_MAL }, allEntries = true)
@@ -60,7 +60,7 @@ public class MalBestillingController {
     @Transactional
     public void deleteMalBestilling(@PathVariable Long id) {
 
-        bestillingMalService.deleteMalBestillingByID(id);
+        malBestillingService.deleteMalBestillingByID(id);
     }
 
     @CacheEvict(value = { CACHE_BESTILLING_MAL }, allEntries = true)
@@ -69,6 +69,6 @@ public class MalBestillingController {
     @Transactional
     public void redigerMalBestilling(@PathVariable Long id, @RequestParam String malNavn) {
 
-        bestillingMalService.updateMalNavnById(id, malNavn);
+        malBestillingService.updateMalNavnById(id, malNavn);
     }
 }

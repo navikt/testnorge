@@ -44,7 +44,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @EnableAutoConfiguration
 @ComponentScan("no.nav.dolly")
 @AutoConfigureMockMvc(addFilters = false)
-class OrganisasjonBestillingMalServiceTest {
+class OrganisasjonMalBestillingServiceTest {
 
     @MockBean
     @SuppressWarnings("unused")
