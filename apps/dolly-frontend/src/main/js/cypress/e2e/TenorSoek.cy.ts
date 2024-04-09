@@ -50,5 +50,9 @@ describe('Tenor-søk testing', () => {
 		cy.dollyGet(CypressSelector.BUTTON_VIS_I_GRUPPE).first().click()
 		cy.wait(500)
 		cy.get('h1').contains('Testytest').should('exist')
+
+		// Gaa til soek fra gruppe
+		cy.dollyGet(CypressSelector.BUTTON_IMPORTER_PERSONER).click()
+		cy.get('h1').contains('Søk etter personer i Tenor').should('exist')
 	})
 })
