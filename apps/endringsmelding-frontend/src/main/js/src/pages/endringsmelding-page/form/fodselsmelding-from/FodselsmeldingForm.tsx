@@ -1,56 +1,50 @@
-import React, { useReducer } from 'react';
+import React, { useState } from 'react';
 
 import { DatePickerFormItem, InputFormItem, Line, SelectFormItem } from '@navikt/dolly-komponenter';
-import reducer, { Action, State } from './FodselsmeldingReducer';
 import { sendFodselsmelding } from '@/service/EndringsmeldingService';
-import { EndringsmeldingForm } from '../endringsmelding-form';
 import { format } from 'date-fns';
 import { Button } from '@navikt/ds-react';
-
-export const initState: State = {
-  miljoOptions: [],
-  kjoenType: 'GUTT',
-  identType: 'FNR',
-  farsIdent: '',
-  morsIdent: '',
-  foedselsdato: format(new Date(), 'y-MM-dd'),
-  address: 'LAG_NY_ADRESSE',
-  miljoer: [],
-  validate: false,
-};
+import { EndringsmeldingForm } from '@/pages/endringsmelding-page/form/endringsmelding-form/EndringsmeldingForm';
+import { Handling } from '@/pages/endringsmelding-page/form/dodsmelding-form/DodsmeldingForm';
 
 const notEmptyString = (value: string) => !!value && value !== '';
 const notEmptyList = (value: unknown[]) => !!value && value.length > 0;
 
-export default () => {
-  const [state, dispatch] = useReducer(reducer, initState);
+export const FodselsmeldingForm = () => {
+  const [miljoOptions, setMiljoOptions] = useState<string[]>([]);
+  const [kjoennType, setKjoennType] = useState<string>('GUTT');
+  const [identType, setIdentType] = useState<string>('FNR');
+  const [farsIdent, setFarsIdent] = useState<string>('');
+  const [morsIdent, setMorsIdent] = useState<string>('');
+  const [foedselsdato, setFoedselsdato] = useState<string>(format(new Date(), 'y-MM-dd'));
+  const [address, setAddress] = useState<string>('LAG_NY_ADRESSE');
+  const [miljoer, setMiljoer] = useState<string[]>([]);
+  const [validate, setValidate] = useState<boolean>(false);
+  const [error, setError] = useState<string>('');
 
   const onValidate = () => {
-    dispatch({ type: Action.SET_VALIDATE_ACTION, value: true });
-    return notEmptyString(state.foedselsdato) && notEmptyList(state.miljoer);
+    setValidate(true);
+    return notEmptyString(foedselsdato) && notEmptyList(miljoer);
   };
 
-  const onSend = () =>
+  const onSend = (handling: Handling) =>
     sendFodselsmelding(
       {
-        adresseFra: state.address,
-        identFar: state.farsIdent !== '' ? state.farsIdent.trim() : null,
-        identMor: state.morsIdent.trim(),
-        identtype: state.identType,
-        foedselsdato: state.foedselsdato,
-        kjoenn: state.kjoenType,
+        adresseFra: address,
+        identFar: farsIdent !== '' ? farsIdent.trim() : null,
+        identMor: morsIdent.trim(),
+        identtype: identType,
+        foedselsdato: foedselsdato,
+        kjoenn: kjoennType,
       },
-      state.miljoer,
+      miljoer,
     ).then((response) => {
-      console.log('Response: ', response); //TODO - SLETT MEG FØR MERGE
-      const error = response?.error && new Map([[state.miljoer?.[0], response.error]]);
-      dispatch({ type: Action.SET_BARNS_IDENT, value: response?.ident?.trim() });
-      dispatch({ type: Action.SET_ERROR_LIST, value: response?.miljoStatus || error });
+      setError(response?.error);
       return Promise.resolve(response);
     });
 
   const getSuccessMessage = (value: string | null) =>
-    `Gratulerer, person med ident ${value} ble født i miljø ${state.miljoer.join(', ')}.`;
+    `Gratulerer, person med ident ${value} ble født i miljø ${miljoer.join(', ')}.`;
 
   return (
     <EndringsmeldingForm
@@ -60,13 +54,13 @@ export default () => {
       }}
       onSend={onSend}
       valid={onValidate}
-      setIdent={(ident) => dispatch({ type: Action.SET_MORS_IDENT_ACTION, value: ident.trim() })}
+      setIdent={(ident) => setMorsIdent(ident?.trim())}
       getSuccessMessage={getSuccessMessage}
       setMiljoer={(miljoer) => {
-        dispatch({ type: Action.SET_MILJOER_OPTIONS_ACTION, value: miljoer });
+        setMiljoOptions(miljoer);
 
         if (miljoer?.length > 0) {
-          dispatch({ type: Action.SET_MILJOER_ACTION, value: [miljoer[0]] });
+          setMiljoer([miljoer[0]]);
         }
       }}
     >
@@ -74,17 +68,15 @@ export default () => {
         <InputFormItem
           label="Fars ident"
           defaultValue=""
-          onBlur={(e) => dispatch({ type: Action.SET_FARS_IDENT_ACTION, value: e.target.value })}
+          onBlur={(e) => {
+            setError(null);
+            setFarsIdent(e.target.value);
+          }}
         />
         <SelectFormItem
           label="Barnets identtype"
           htmlId="barnets-identtype-select"
-          onChange={(value) =>
-            dispatch({
-              type: Action.SET_IDENT_TYPE_ACTION,
-              value: value && value.length > 0 ? value[0] : '',
-            })
-          }
+          onChange={(value) => setIdentType(value && value.length > 0 ? value[0] : '')}
           options={[
             {
               value: 'FNR',
@@ -105,13 +97,7 @@ export default () => {
         <SelectFormItem
           label="Barnets kjønn"
           htmlId="barnets-kjoen-select"
-          onChange={(value) =>
-            // @ts-ignore
-            dispatch({
-              type: Action.SET_KJOEN_TYPE_ACTION,
-              value: value && value.length > 0 ? value[0] : 'GUTT',
-            })
-          }
+          onChange={(value) => setKjoennType(value && value.length > 0 ? value[0] : 'GUTT')}
           options={[
             {
               value: 'GUTT',
@@ -128,14 +114,14 @@ export default () => {
           ]}
         />
         <SelectFormItem
-          onChange={(value) => dispatch({ type: Action.SET_MILJOER_ACTION, value: value })}
+          onChange={(value) => setMiljoer(value)}
           htmlId="miljo-select"
           label="Send til miljo*"
-          error={state.validate && !notEmptyList(state.miljoer) ? 'Påkrevd' : null}
+          error={validate && !notEmptyList(miljoer) ? 'Påkrevd' : null}
           options={
-            !state.miljoOptions || state.miljoOptions?.length === 0
+            !miljoOptions || miljoOptions?.length === 0
               ? []
-              : state.miljoOptions?.map((value: string) => ({
+              : miljoOptions?.map((value: string) => ({
                   value: value,
                   label: value.toUpperCase(),
                 }))
@@ -144,13 +130,7 @@ export default () => {
         <SelectFormItem
           label="Adresse"
           htmlId="adresse-select"
-          onChange={(value) =>
-            // @ts-ignore
-            dispatch({
-              type: Action.SET_ADRESSE_ACTION,
-              value: value && value.length > 0 ? value[0] : '',
-            })
-          }
+          onChange={(value) => setAddress(value && value.length > 0 ? value[0] : '')}
           options={[
             {
               value: 'LAG_NY_ADRESSE',
@@ -171,26 +151,17 @@ export default () => {
         <DatePickerFormItem
           id="foedselsdato-field"
           label="Barnets fødselesdato*"
-          onBlur={(value) => dispatch({ type: Action.SET_FOEDSELSDATO_ACTION, value: value })}
+          onBlur={(value) => setFoedselsdato(value)}
           required={true}
         />
       </Line>
-      {state.errorList?.size > 0 && (
+      {error !== '' && (
         <div>
           <h3>Feil ved sending til miljø</h3>
-          <ul>
-            {Array.from(state.errorList).map(([key, value]) => (
-              <li key={key}>
-                {key}: {value}
-                <Button
-                  variant={'tertiary'}
-                  onClick={() => dispatch({ type: Action.REMOVE_ERROR_ITEM, value: key })}
-                >
-                  X
-                </Button>
-              </li>
-            ))}
-          </ul>
+          <p>{error}</p>
+          <Button variant={'tertiary'} onClick={() => setError('')}>
+            X
+          </Button>
         </div>
       )}
     </EndringsmeldingForm>
