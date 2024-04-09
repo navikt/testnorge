@@ -117,7 +117,7 @@ export const Search = <T extends unknown>({ labels, onChange, setShow, setMiljoe
 
   useEffect(() => {
     setMiljoer(response?.miljoer);
-  }, [error]);
+  }, [response]);
 
   return (
     <SearchDiv>

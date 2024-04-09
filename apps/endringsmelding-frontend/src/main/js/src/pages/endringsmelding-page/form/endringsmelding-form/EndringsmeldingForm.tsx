@@ -38,7 +38,7 @@ export const EndringsmeldingForm = <T extends {}>({
   getErrorMessage = () => 'Noe gikk galt.',
 }: Props<T>) => {
   const [loading, setLoading] = useState(false);
-  const [show, setShow] = useState(true);
+  const [show, setShow] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [warningMessages, setWarningMessages] = useState<string[]>([]);
