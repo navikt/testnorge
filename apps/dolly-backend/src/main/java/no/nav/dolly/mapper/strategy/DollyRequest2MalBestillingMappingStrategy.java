@@ -5,12 +5,16 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
+import no.nav.dolly.domain.resultset.inntektstub.InntektMultiplierWrapper;
+import no.nav.dolly.domain.resultset.kontoregister.BankkontoData;
+import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
 import no.nav.dolly.domain.resultset.pdldata.PdlPersondata;
+import no.nav.dolly.domain.resultset.pensjon.PensjonData;
+import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding;
 import no.nav.dolly.mapper.MappingStrategy;
+import no.nav.testnav.libs.data.arbeidsplassencv.v1.ArbeidsplassenCVDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
 import org.springframework.stereotype.Component;
-
-import java.util.Set;
 
 @Component
 public class DollyRequest2MalBestillingMappingStrategy implements MappingStrategy {
@@ -19,24 +23,125 @@ public class DollyRequest2MalBestillingMappingStrategy implements MappingStrateg
     public void register(MapperFactory factory) {
         factory.classMap(RsDollyBestillingRequest.class, RsDollyBestillingRequest.class)
                 .mapNulls(false)
+                .field("arbeidsplassenCV", "arbeidsplassenCV")
+                .field("arenaforvalter", "arenaforvalter")
+                .field("bankkonto", "bankkonto")
+                .field("brregstub", "brregstub")
+                .field("dokarkiv", "dokarkiv")
+                .field("histark", "histark")
+                .field("inntektsmelding", "inntektsmelding")
+                .field("inntektstub", "inntektstub")
+                .field("krrstub", "krrstub")
+                .field("medl", "medl")
+                .field("pdldata", "pdldata")
+                .field("pensjonforvalter", "pensjonforvalter")
+                .field("sigrunstub", "sigrunstub")
+                .field("sigrunstubPensjonsgivende", "sigrunstubPensjonsgivende")
+                .field("skjerming", "skjerming")
+                .field("sykemelding", "sykemelding")
+                .field("tpsMessaging", "tpsMessaging")
+                .field("udistub", "udistub")
+
                 .customize(new CustomMapper<>() {
                     @Override
-                    public void mapAtoB(RsDollyBestillingRequest rsDollyBestillingRequest, RsDollyBestillingRequest bestillingMal, MappingContext context) {
+                    public void mapAtoB(RsDollyBestillingRequest request, RsDollyBestillingRequest akkumulert, MappingContext context) {
 
-                        bestillingMal.setEnvironments(Set.of("q1"));
-
+                        akkumulert.getAareg().addAll(request.getAareg());
+                        akkumulert.getEnvironments().addAll(request.getEnvironments());
+                        akkumulert.getInstdata().addAll(request.getInstdata());
+                        akkumulert.getSigrunstub().addAll(request.getSigrunstub());
+                        akkumulert.getSigrunstubPensjonsgivende().addAll(request.getSigrunstubPensjonsgivende());
                     }
                 })
+                .register();
+
+        factory.classMap(ArbeidsplassenCVDTO.Jobboensker.class, ArbeidsplassenCVDTO.Jobboensker.class)
+                .mapNulls(false)
+                .field("active", "active")
+                .field("startOption", "startOption")
+                .customize(new CustomMapper<>() {
+                    @Override
+                    public void mapAtoB(ArbeidsplassenCVDTO.Jobboensker jobboensker, ArbeidsplassenCVDTO.Jobboensker akkumulert, MappingContext context) {
+                        akkumulert.getLocations().addAll(jobboensker.getLocations());
+                        akkumulert.getOccupationDrafts().addAll(jobboensker.getOccupationDrafts());
+                        akkumulert.getOccupationTypes().addAll(jobboensker.getOccupationTypes());
+                        akkumulert.getOccupations().addAll(jobboensker.getOccupations());
+                        akkumulert.getWorkLoadTypes().addAll(jobboensker.getWorkLoadTypes());
+                        akkumulert.getWorkScheduleTypes().addAll(jobboensker.getWorkScheduleTypes());
+                    }
+                })
+                .register();
+
+        factory.classMap(ArbeidsplassenCVDTO.class, ArbeidsplassenCVDTO.class)
+                .mapNulls(false)
+                .field("harHjemmel", "harHjemmel")
+                .field("harBil", "harBil")
+                .field("sammendrag", "sammendrag")
+                .field("jobboensker", "jobboensker")
+                .field("sistEndretAvNav", "sistEndretAvNav")
+                .field("sistEndret", "sistEndret")
+
+                .customize(new CustomMapper<>() {
+                    @Override
+                    public void mapAtoB(ArbeidsplassenCVDTO arbeidsplassenCV, ArbeidsplassenCVDTO akkumulert, MappingContext context) {
+                        akkumulert.getAndreGodkjenninger().addAll(arbeidsplassenCV.getAndreGodkjenninger());
+                        akkumulert.getAnnenErfaring().addAll(arbeidsplassenCV.getAnnenErfaring());
+                        akkumulert.getArbeidserfaring().addAll(arbeidsplassenCV.getArbeidserfaring());
+                        akkumulert.getFagbrev().addAll(arbeidsplassenCV.getFagbrev());
+                        akkumulert.getFoererkort().addAll(arbeidsplassenCV.getFoererkort());
+                        akkumulert.getKompetanser().addAll(arbeidsplassenCV.getKompetanser());
+                        akkumulert.getKurs().addAll(arbeidsplassenCV.getKurs());
+                        akkumulert.getOffentligeGodkjenninger().addAll(arbeidsplassenCV.getOffentligeGodkjenninger());
+                        akkumulert.getSpraak().addAll(arbeidsplassenCV.getSpraak());
+                        akkumulert.getUtdanning().addAll(arbeidsplassenCV.getUtdanning());
+                    }
+                })
+                .register();
+
+        factory.classMap(RsDigitalKontaktdata.class, RsDigitalKontaktdata.class)
+                .mapNulls(false)
                 .byDefault()
+                .register();
+
+        factory.classMap(RsSykemelding.class, RsSykemelding.class)
+                .mapNulls(false)
+                .byDefault()
+                .register();
+
+        factory.classMap(BankkontoData.class, BankkontoData.class)
+                .mapNulls(false)
+                .byDefault()
+                .register();
+
+        factory.classMap(InntektMultiplierWrapper.class, InntektMultiplierWrapper.class)
+                .customize(new CustomMapper<>() {
+                    @Override
+                    public void mapAtoB(InntektMultiplierWrapper inntekt, InntektMultiplierWrapper akkumlert, MappingContext context) {
+                        akkumlert.getInntektsinformasjon().addAll(inntekt.getInntektsinformasjon());
+                    }
+                })
+                .register();
+
+        factory.classMap(PensjonData.class, PensjonData.class)
+                .mapNulls(false)
+                .field("inntekt", "inntekt")
+                .field("alderspensjon", "alderspensjon")
+                .field("uforetrygd", "uforetrygd")
+                .customize(new CustomMapper<>() {
+                    @Override
+                    public void mapAtoB(PensjonData pensjonData, PensjonData akkumulert, MappingContext context) {
+                        akkumulert.getTp().addAll(pensjonData.getTp());
+                    }
+                })
                 .register();
 
         factory.classMap(Arenadata.class, Arenadata.class)
                 .mapNulls(false)
                 .field("aktiveringDato", "aktiveringDato")
                 .field("arenaBrukertype", "arenaBrukertype")
-                .field("kvalifiseringsgruppe", "kvalifiseringsgruppe")
                 .field("automatiskInnsendingAvMeldekort", "automatiskInnsendingAvMeldekort")
                 .field("inaktiveringDato", "inaktiveringDato")
+                .field("kvalifiseringsgruppe", "kvalifiseringsgruppe")
                 .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(Arenadata arenadata, Arenadata akkumulert, MappingContext context) {
@@ -59,36 +164,34 @@ public class DollyRequest2MalBestillingMappingStrategy implements MappingStrateg
                 .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(PersonDTO personDTO, PersonDTO akkumulertDTO, MappingContext context) {
-                        akkumulertDTO.setIdent(personDTO.getIdent());
-                        akkumulertDTO.setIdenttype(personDTO.getIdenttype());
-                        akkumulertDTO.setBostedsadresse(personDTO.getBostedsadresse());
-                        akkumulertDTO.setNyident(personDTO.getNyident());
-                        akkumulertDTO.getBostedsadresse().addAll(personDTO.getBostedsadresse());
-                        akkumulertDTO.getKontaktadresse().addAll(personDTO.getKontaktadresse());
-                        akkumulertDTO.getOppholdsadresse().addAll(personDTO.getOppholdsadresse());
-                        akkumulertDTO.getDeltBosted().addAll(personDTO.getDeltBosted());
-                        akkumulertDTO.getForelderBarnRelasjon().addAll(personDTO.getForelderBarnRelasjon());
                         akkumulertDTO.getAdressebeskyttelse().addAll(personDTO.getAdressebeskyttelse());
-                        akkumulertDTO.getFoedsel().addAll(personDTO.getFoedsel());
-                        akkumulertDTO.getDoedsfall().addAll(personDTO.getDoedsfall());
-                        akkumulertDTO.getKjoenn().addAll(personDTO.getKjoenn());
-                        akkumulertDTO.getNavn().addAll(personDTO.getNavn());
-                        akkumulertDTO.getFolkeregisterPersonstatus().addAll(personDTO.getFolkeregisterPersonstatus());
-                        akkumulertDTO.getFullmakt().addAll(personDTO.getFullmakt());
-                        akkumulertDTO.getStatsborgerskap().addAll(personDTO.getStatsborgerskap());
-                        akkumulertDTO.getOpphold().addAll(personDTO.getOpphold());
-                        akkumulertDTO.getSivilstand().addAll(personDTO.getSivilstand());
-                        akkumulertDTO.getTelefonnummer().addAll(personDTO.getTelefonnummer());
-                        akkumulertDTO.getInnflytting().addAll(personDTO.getInnflytting());
-                        akkumulertDTO.getUtflytting().addAll(personDTO.getUtflytting());
-                        akkumulertDTO.getForeldreansvar().addAll(personDTO.getForeldreansvar());
-                        akkumulertDTO.getVergemaal().addAll(personDTO.getVergemaal());
-                        akkumulertDTO.getKontaktinformasjonForDoedsbo().addAll(personDTO.getKontaktinformasjonForDoedsbo());
-                        akkumulertDTO.getUtenlandskIdentifikasjonsnummer().addAll(personDTO.getUtenlandskIdentifikasjonsnummer());
-                        akkumulertDTO.getFalskIdentitet().addAll(personDTO.getFalskIdentitet());
-                        akkumulertDTO.getTilrettelagtKommunikasjon().addAll(personDTO.getTilrettelagtKommunikasjon());
+                        akkumulertDTO.getBostedsadresse().addAll(personDTO.getBostedsadresse());
+                        akkumulertDTO.getBostedsadresse().addAll(personDTO.getBostedsadresse());
+                        akkumulertDTO.getDeltBosted().addAll(personDTO.getDeltBosted());
                         akkumulertDTO.getDoedfoedtBarn().addAll(personDTO.getDoedfoedtBarn());
+                        akkumulertDTO.getDoedsfall().addAll(personDTO.getDoedsfall());
+                        akkumulertDTO.getFalskIdentitet().addAll(personDTO.getFalskIdentitet());
+                        akkumulertDTO.getFoedsel().addAll(personDTO.getFoedsel());
+                        akkumulertDTO.getFolkeregisterPersonstatus().addAll(personDTO.getFolkeregisterPersonstatus());
+                        akkumulertDTO.getForelderBarnRelasjon().addAll(personDTO.getForelderBarnRelasjon());
+                        akkumulertDTO.getForeldreansvar().addAll(personDTO.getForeldreansvar());
+                        akkumulertDTO.getFullmakt().addAll(personDTO.getFullmakt());
+                        akkumulertDTO.getInnflytting().addAll(personDTO.getInnflytting());
+                        akkumulertDTO.getKjoenn().addAll(personDTO.getKjoenn());
+                        akkumulertDTO.getKontaktadresse().addAll(personDTO.getKontaktadresse());
+                        akkumulertDTO.getKontaktinformasjonForDoedsbo().addAll(personDTO.getKontaktinformasjonForDoedsbo());
+                        akkumulertDTO.getNavn().addAll(personDTO.getNavn());
+                        akkumulertDTO.getNyident().addAll(personDTO.getNyident());
+                        akkumulertDTO.getOpphold().addAll(personDTO.getOpphold());
+                        akkumulertDTO.getOppholdsadresse().addAll(personDTO.getOppholdsadresse());
                         akkumulertDTO.getSikkerhetstiltak().addAll(personDTO.getSikkerhetstiltak());
+                        akkumulertDTO.getSivilstand().addAll(personDTO.getSivilstand());
+                        akkumulertDTO.getStatsborgerskap().addAll(personDTO.getStatsborgerskap());
+                        akkumulertDTO.getTelefonnummer().addAll(personDTO.getTelefonnummer());
+                        akkumulertDTO.getTilrettelagtKommunikasjon().addAll(personDTO.getTilrettelagtKommunikasjon());
+                        akkumulertDTO.getUtenlandskIdentifikasjonsnummer().addAll(personDTO.getUtenlandskIdentifikasjonsnummer());
+                        akkumulertDTO.getUtflytting().addAll(personDTO.getUtflytting());
+                        akkumulertDTO.getVergemaal().addAll(personDTO.getVergemaal());
                     }
                 })
                 .register();

@@ -3,10 +3,12 @@ package no.nav.dolly.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import lombok.SneakyThrows;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.BestillingMal;
+import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
+import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingMal;
 import no.nav.dolly.repository.BestillingMalRepository;
 import no.nav.dolly.repository.BestillingRepository;
 import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
@@ -19,7 +21,6 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.util.CurrentAuthentication.getUserId;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MalBestillingService {
@@ -33,8 +34,9 @@ public class MalBestillingService {
     private final BrukerService brukerService;
     private final GetUserInfo getUserInfo;
 
+    @SneakyThrows
     @Transactional
-    public BestillingMal createFromIdent(String ident, String name) {
+    public RsBestillingMal createFromIdent(String ident, String name) {
 
         var bruker = brukerService.fetchOrCreateBruker(getUserId(getUserInfo));
 
@@ -59,11 +61,32 @@ public class MalBestillingService {
                         throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
                     }
                 })
-                .peek(dollyBestilling -> log.info("dollyBestilling: {}", dollyBestilling))
                 .forEach(dollyBestilling -> mapperFacade.map(dollyBestilling, aggregertRequest));
 
-//        nyMal.setMalNavn(name);
-//        return malBestillingRepository.save(nyMal);
-        return null;
+        var akkumulertMal =  malBestillingRepository.save(BestillingMal.builder()
+                .bruker(bruker)
+                .malNavn(name)
+                .miljoer(String.join(",", aggregertRequest.getEnvironments()))
+                .bestKriterier(objectMapper.writeValueAsString(aggregertRequest))
+                .build());
+
+        return RsBestillingMal.builder()
+                .id(akkumulertMal.getId())
+                .bruker(clone(bruker))
+                .malNavn(akkumulertMal.getMalNavn())
+                .miljoer(akkumulertMal.getMiljoer())
+                .bestKriterier(objectMapper.readTree(akkumulertMal.getBestKriterier()))
+                .sistOppdatert(akkumulertMal.getSistOppdatert())
+                .build();
+    }
+
+    private static Bruker clone(Bruker bruker) {
+
+        return Bruker.builder()
+                .brukerId(bruker.getBrukerId())
+                .brukertype(bruker.getBrukertype())
+                .brukernavn(bruker.getBrukernavn())
+                .epost(bruker.getEpost())
+                .build();
     }
 }
