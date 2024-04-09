@@ -40,11 +40,6 @@ public class MalBestillingService {
 
         var bruker = brukerService.fetchOrCreateBruker(getUserId(getUserInfo));
 
-        var malBestillinger = malBestillingRepository.findByBruker(bruker);
-        if (malBestillinger.stream().anyMatch(malbestilling -> name.equals(malbestilling.getMalNavn()))) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Navn \"%s\" eksisterer allerede.");
-        }
-
         var bestillinger = bestillingRepository.findBestillingerByIdent(ident);
         var aggregertRequest = new RsDollyBestillingRequest();
 
@@ -63,7 +58,7 @@ public class MalBestillingService {
                 })
                 .forEach(dollyBestilling -> mapperFacade.map(dollyBestilling, aggregertRequest));
 
-        var akkumulertMal =  malBestillingRepository.save(BestillingMal.builder()
+        var akkumulertMal = malBestillingRepository.save(BestillingMal.builder()
                 .bruker(bruker)
                 .malNavn(name)
                 .miljoer(String.join(",", aggregertRequest.getEnvironments()))
