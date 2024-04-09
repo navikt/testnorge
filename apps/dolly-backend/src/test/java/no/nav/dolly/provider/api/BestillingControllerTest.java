@@ -1,10 +1,8 @@
 package no.nav.dolly.provider.api;
 
 import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.bestilling.service.DollyBestillingService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
-import no.nav.dolly.service.BestillingMalService;
 import no.nav.dolly.service.BestillingService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,12 +32,6 @@ class BestillingControllerTest {
     @Mock
     private BestillingService bestillingService;
 
-    @Mock
-    private DollyBestillingService dollyBestillingService;
-
-    @Mock
-    private BestillingMalService bestillingMalService;
-
     @InjectMocks
     private BestillingController bestillingController;
 
@@ -60,7 +52,7 @@ class BestillingControllerTest {
         when(mapperFacade.mapAsList(anyList(), eq(RsBestillingStatus.class)))
                 .thenReturn(singletonList(RsBestillingStatus.builder().id(BESTILLING_ID).build()));
 
-        RsBestillingStatus bestilling = bestillingController.getBestillinger(GRUPPE_ID, 0, 10).get(0);
+        RsBestillingStatus bestilling = bestillingController.getBestillinger(GRUPPE_ID, 0, 10).getFirst();
 
         verify(bestillingService).getBestillingerFromGruppeIdPaginert(GRUPPE_ID, 0, 10);
         verify(mapperFacade).mapAsList(anyList(), eq(RsBestillingStatus.class));
@@ -75,13 +67,5 @@ class BestillingControllerTest {
 
         verify(bestillingService).cancelBestilling(BESTILLING_ID);
         verify(mapperFacade).map(any(Bestilling.class), eq(RsBestillingStatus.class));
-    }
-
-    @Test
-    void malBestillingNavnOk() {
-
-        bestillingController.getMalBestillinger(null);
-
-        verify(bestillingMalService).getMalBestillinger();
     }
 }

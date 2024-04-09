@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUtenFavoritter;
 
 import java.time.LocalDateTime;
 
@@ -19,6 +19,6 @@ public class RsBestillingMal {
     private JsonNode bestKriterier;
     private String miljoer;
     private String malNavn;
-    private Bruker bruker;
+    private RsBrukerUtenFavoritter bruker;
     private LocalDateTime sistOppdatert;
 }

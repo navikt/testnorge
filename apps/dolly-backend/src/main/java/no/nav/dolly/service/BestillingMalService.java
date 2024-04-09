@@ -1,10 +1,15 @@
 package no.nav.dolly.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingMal;
 import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
+import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingMal;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestillingWrapper;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestillingWrapper.RsBestilling;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestillingWrapper.RsMalBestilling;
@@ -14,7 +19,10 @@ import no.nav.dolly.repository.BestillingMalRepository;
 import no.nav.dolly.repository.BestillingRepository;
 import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
 import org.apache.commons.collections4.IterableUtils;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -32,12 +40,14 @@ public class BestillingMalService {
 
     private static final String ANONYM = "FELLES";
     private static final String ALLE = "ALLE";
+    private static final String EMPTY_JSON = "{}";
 
     private final BestillingMalRepository bestillingMalRepository;
     private final BestillingRepository bestillingRepository;
     private final BrukerService brukerService;
     private final MapperFacade mapperFacade;
     private final GetUserInfo getUserInfo;
+    private final ObjectMapper objectMapper;
 
     public RsMalBestillingWrapper getMalBestillinger() {
 
@@ -157,6 +167,50 @@ public class BestillingMalService {
         bestillingMalRepository.updateMalNavnById(id, nyttMalNavn);
     }
 
+    @SneakyThrows
+    @Transactional
+    public RsBestillingMal createFromIdent(String ident, String name) {
+
+        var bruker = brukerService.fetchOrCreateBruker(getUserId(getUserInfo));
+
+        var bestillinger = bestillingRepository.findBestillingerByIdent(ident);
+        if (bestillinger.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Ingen bestillinger funnet på ident %s".formatted(ident));
+        }
+        var aggregertRequest = new RsDollyBestillingRequest();
+
+        bestillinger.stream()
+                .filter(bestilling -> nonNull(bestilling.getBestKriterier()) &&
+                        !EMPTY_JSON.equals(bestilling.getBestKriterier()))
+                .filter(bestilling -> isNull(bestilling.getOpprettetFraGruppeId()) &&
+                        isNull(bestilling.getGjenopprettetFraIdent()) &&
+                        isNull(bestilling.getOpprettetFraId()))
+                .map(bestilling -> {
+                    try {
+                        return objectMapper.readValue(bestilling.getBestKriterier(), RsDollyBestillingRequest.class);
+                    } catch (JsonProcessingException e) {
+                        throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
+                    }
+                })
+                .forEach(dollyBestilling -> mapperFacade.map(dollyBestilling, aggregertRequest));
+
+        var akkumulertMal = bestillingMalRepository.save(BestillingMal.builder()
+                .bruker(bruker)
+                .malNavn(name)
+                .miljoer(String.join(",", aggregertRequest.getEnvironments()))
+                .bestKriterier(objectMapper.writeValueAsString(aggregertRequest))
+                .build());
+
+        return RsBestillingMal.builder()
+                .id(akkumulertMal.getId())
+                .bruker(mapperFacade.map(bruker, RsBrukerUtenFavoritter.class))
+                .malNavn(akkumulertMal.getMalNavn())
+                .miljoer(akkumulertMal.getMiljoer())
+                .bestKriterier(objectMapper.readTree(akkumulertMal.getBestKriterier()))
+                .sistOppdatert(akkumulertMal.getSistOppdatert())
+                .build();
+    }
+
     public static String getBruker(Bruker bruker) {
 
         if (isNull(bruker)) {
@@ -168,7 +222,7 @@ public class BestillingMalService {
         };
     }
 
-    void overskrivDuplikateMalbestillinger(String malNavn, Bruker bruker) {
+    private void overskrivDuplikateMalbestillinger(String malNavn, Bruker bruker) {
 
         var gamleMalBestillinger = getMalbestillingByUserAndNavn(bruker.getBrukerId(), malNavn);
         gamleMalBestillinger.forEach(malBestilling ->
