@@ -20,6 +20,7 @@ spec:
     outbound:
       rules:
         - application: testnorge-profil-api
+        - application: testnorge-profil-api-dev
       external:
         - host: slack.com
         - host: login.microsoftonline.com

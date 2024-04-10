@@ -26,6 +26,7 @@ spec:
         - application: testnav-person-faste-data-service
         - application: testnav-person-service
         - application: testnorge-profil-api
+        - application: testnorge-profil-api-dev
   liveness:
     path: /internal/isAlive
     periodSeconds: 30
