@@ -65,6 +65,7 @@ spec:
         - application: testnav-organisasjon-mottak-service
         - application: testnav-organisasjon-service
         - application: testnav-organisasjon-tilgang-service
+        - application: testnav-orgnummer-service
         - application: testnav-person-organisasjon-tilgang-service-dev
         - application: testnorge-profil-api-dev
   liveness:
