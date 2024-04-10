@@ -74,6 +74,7 @@ spec:
         - application: testnav-person-service
         - application: testnav-popp-testdata-proxy
         - application: testnav-skattekort-service
+        - application: testnav-sykemelding-api
         - application: testnorge-profil-api-dev
   liveness:
     path: /internal/isAlive
