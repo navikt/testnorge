@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class RsBestillingMal {
+public class RsMalBestilling {
 
     private Long id;
     private JsonNode bestKriterier;

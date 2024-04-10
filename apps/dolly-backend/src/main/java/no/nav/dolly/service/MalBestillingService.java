@@ -9,10 +9,8 @@ import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingMal;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
-import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingMal;
+import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestilling;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestillingWrapper;
-import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestillingWrapper.RsBestilling;
-import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestillingWrapper.RsMalBestilling;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUtenFavoritter;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BestillingMalRepository;
@@ -49,6 +47,7 @@ public class MalBestillingService {
     private final GetUserInfo getUserInfo;
     private final ObjectMapper objectMapper;
 
+    @Transactional(readOnly = true)
     public RsMalBestillingWrapper getMalBestillinger() {
 
         var malBestillingWrapper = new RsMalBestillingWrapper();
@@ -59,14 +58,20 @@ public class MalBestillingService {
                 .entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue()
                         .stream()
-                        .map(bestillingMal -> RsMalBestilling.builder()
-                                .bestilling(mapperFacade.map(bestillingMal, RsBestilling.class))
-                                .malNavn(bestillingMal.getMalNavn())
-                                .id(bestillingMal.getId())
-                                .bruker(mapperFacade.map(nonNull(bestillingMal.getBruker()) ?
-                                        bestillingMal.getBruker() :
-                                        Bruker.builder().brukerId(ANONYM).brukernavn(ANONYM).build(), RsBrukerUtenFavoritter.class))
-                                .build())
+                        .map(bestillingMal -> {
+                            try {
+                                return RsMalBestilling.builder()
+                                        .bestKriterier(objectMapper.readTree(bestillingMal.getBestKriterier()))
+                                        .malNavn(bestillingMal.getMalNavn())
+                                        .id(bestillingMal.getId())
+                                        .bruker(mapperFacade.map(nonNull(bestillingMal.getBruker()) ?
+                                                bestillingMal.getBruker() :
+                                                Bruker.builder().brukerId(ANONYM).brukernavn(ANONYM).build(), RsBrukerUtenFavoritter.class))
+                                        .build();
+                            } catch (JsonProcessingException e) {
+                                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+                            }
+                        })
                         .sorted(Comparator.comparing(RsMalBestilling::getMalNavn))
                         .toList()));
 
@@ -81,22 +86,31 @@ public class MalBestillingService {
 
     public List<RsMalBestilling> getMalbestillingByUserAndNavn(String brukerId, String malNavn) {
 
-        var bruker = brukerService.fetchOrCreateBruker(brukerId);
+        var bruker = brukerService.fetchBruker(brukerId);
 
         return bestillingMalRepository.findByBrukerAndMalNavn(bruker, malNavn)
                 .stream()
-                .map(bestilling -> RsMalBestilling.builder()
-                        .malNavn(bestilling.getMalNavn())
-                        .id(bestilling.getId())
-                        .bestilling(mapperFacade.map(bestilling, RsBestilling.class))
-                        .build())
+                .map(bestilling -> {
+                    try {
+                        return RsMalBestilling.builder()
+                                .id(bestilling.getId())
+                                .bruker(mapperFacade.map(bruker, RsBrukerUtenFavoritter.class))
+                                .malNavn(bestilling.getMalNavn())
+                                .bestKriterier(objectMapper.readTree(bestilling.getBestKriterier()))
+                                .sistOppdatert(bestilling.getSistOppdatert())
+                                .build();
+                    } catch (JsonProcessingException e) {
+                        throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+                    }
+                })
                 .sorted(Comparator.comparing(RsMalBestilling::getMalNavn))
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public RsMalBestillingWrapper getMalbestillingByUser(String brukerId) {
 
-        var bruker = brukerService.fetchOrCreateBruker(brukerId);
+        var bruker = brukerService.fetchBruker(brukerId);
 
         var malBestillinger = bestillingMalRepository.findByBruker(bruker)
                 .stream()
@@ -104,14 +118,20 @@ public class MalBestillingService {
                 .entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue()
                         .stream()
-                        .map(bestillingMal -> RsMalBestilling.builder()
-                                .bestilling(mapperFacade.map(bestillingMal, RsBestilling.class))
-                                .malNavn(bestillingMal.getMalNavn())
-                                .id(bestillingMal.getId())
-                                .bruker(mapperFacade.map(nonNull(bestillingMal.getBruker()) ?
-                                        bestillingMal.getBruker() :
-                                        Bruker.builder().brukerId(ANONYM).brukernavn(ANONYM).build(), RsBrukerUtenFavoritter.class))
-                                .build())
+                        .map(bestillingMal -> {
+                            try {
+                                return RsMalBestilling.builder()
+                                        .bestKriterier(objectMapper.readTree(bestillingMal.getBestKriterier()))
+                                        .malNavn(bestillingMal.getMalNavn())
+                                        .id(bestillingMal.getId())
+                                        .bruker(mapperFacade.map(nonNull(bestillingMal.getBruker()) ?
+                                                bestillingMal.getBruker() :
+                                                Bruker.builder().brukerId(ANONYM).brukernavn(ANONYM).build(), RsBrukerUtenFavoritter.class))
+                                        .build();
+                            } catch (JsonProcessingException e) {
+                                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
+                            }
+                        })
                         .sorted(Comparator.comparing(RsMalBestilling::getMalNavn))
                         .toList()));
 
@@ -143,7 +163,7 @@ public class MalBestillingService {
 
     public void saveBestillingMalFromBestillingId(Long bestillingId, String malNavn) {
 
-        Bruker bruker = brukerService.fetchOrCreateBruker(getUserId(getUserInfo));
+        var bruker = brukerService.fetchOrCreateBruker(getUserId(getUserInfo));
 
         var bestilling = bestillingRepository.findById(bestillingId)
                 .orElseThrow(() -> new NotFoundException(bestillingId + " finnes ikke"));
@@ -169,9 +189,9 @@ public class MalBestillingService {
 
     @SneakyThrows
     @Transactional
-    public RsBestillingMal createFromIdent(String ident, String name) {
+    public RsMalBestilling createFromIdent(String ident, String name) {
 
-        var bruker = brukerService.fetchOrCreateBruker(getUserId(getUserInfo));
+        var bruker = brukerService.fetchBruker(getUserId(getUserInfo));
 
         var bestillinger = bestillingRepository.findBestillingerByIdent(ident);
         if (bestillinger.isEmpty()) {
@@ -201,7 +221,7 @@ public class MalBestillingService {
                 .bestKriterier(objectMapper.writeValueAsString(aggregertRequest))
                 .build());
 
-        return RsBestillingMal.builder()
+        return RsMalBestilling.builder()
                 .id(akkumulertMal.getId())
                 .bruker(mapperFacade.map(bruker, RsBrukerUtenFavoritter.class))
                 .malNavn(akkumulertMal.getMalNavn())

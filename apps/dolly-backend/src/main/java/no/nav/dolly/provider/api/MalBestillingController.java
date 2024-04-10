@@ -2,7 +2,7 @@ package no.nav.dolly.provider.api;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
-import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingMal;
+import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestilling;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestillingWrapper;
 import no.nav.dolly.service.MalBestillingService;
 import org.springframework.cache.annotation.CacheEvict;
@@ -30,7 +30,7 @@ public class MalBestillingController {
     @CacheEvict(value = { CACHE_BESTILLING_MAL }, allEntries = true)
     @PostMapping(value = "/ident/{ident}")
     @Operation(description = "Opprett ny mal-bestilling fra ident")
-    public RsBestillingMal createTemplateFromIdent(@PathVariable String ident,
+    public RsMalBestilling createTemplateFromIdent(@PathVariable String ident,
                                                    @RequestParam String malNavn) {
 
         return malBestillingService.createFromIdent(ident, malNavn);
