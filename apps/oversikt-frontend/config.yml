@@ -40,6 +40,7 @@ spec:
         - application: synthdata-arena-vedtakshistorikk
         - application: synthdata-elsam-gcp
         - application: testnav-adresse-service
+        - application: testnav-amelding-service
         - application: testnav-app-tilgang-analyse-service
         - application: testnav-bruker-service-dev
         - application: testnav-person-organisasjon-tilgang-service-dev
