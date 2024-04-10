@@ -46,6 +46,7 @@ spec:
         - application: testnav-pdl-forvalter
         - application: testnav-person-faste-data-service
         - application: testnav-person-organisasjon-tilgang-service
+        - application: testnav-person-organisasjon-tilgang-service-dev
         - application: testnav-person-search-service
         - application: testnav-person-service
         - application: testnav-tps-messaging-service
