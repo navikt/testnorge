@@ -68,6 +68,7 @@ spec:
         - application: testnav-orgnummer-service
         - application: testnav-pdl-forvalter
         - application: testnav-pdl-forvalter-dev
+        - application: testnav-person-faste-data-service
         - application: testnav-person-organisasjon-tilgang-service-dev
         - application: testnorge-profil-api-dev
   liveness:
