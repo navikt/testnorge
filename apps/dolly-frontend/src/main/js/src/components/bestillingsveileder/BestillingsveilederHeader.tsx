@@ -9,7 +9,7 @@ export const BestillingsveilederHeader = () => {
 	const opts = useContext(BestillingsveilederContext)
 	const ident = getLeggTilIdent(opts.personFoerLeggTil, opts.identMaster)
 	const importFra = opts.is.leggTil && opts.identMaster === 'PDL' ? 'Test-Norge' : undefined
-	const { gruppe } = useGruppeById(opts?.gruppeId)
+	const { gruppe } = useGruppeById(opts?.gruppeId || opts?.gruppe?.id)
 
 	if (opts.is.nyOrganisasjon || opts.is.nyStandardOrganisasjon || opts.is.nyOrganisasjonFraMal) {
 		const titleValue = opts.is.nyStandardOrganisasjon ? 'Standard organisasjon' : 'Organisasjon'

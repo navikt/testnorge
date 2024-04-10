@@ -61,4 +61,6 @@ public class Consumers {
     private ServerProperties testnavVarslingerService;
     private ServerProperties testnorgeProfilApi;
     private ServerProperties testnorgeTilbakemeldingApi;
+    private ServerProperties testnavTenorSearchService;
+
 }
