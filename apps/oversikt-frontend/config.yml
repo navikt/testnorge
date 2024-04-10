@@ -49,6 +49,7 @@ spec:
         - application: testnav-bruker-service-dev
         - application: testnav-endringsmelding-service
         - application: testnav-generer-arbeidsforhold-populasjon-service
+        - application: testnav-generer-organisasjon-populasjon-service
         - application: testnav-person-organisasjon-tilgang-service-dev
         - application: testnorge-profil-api-dev
   liveness:
