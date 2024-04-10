@@ -25,24 +25,14 @@ spec:
   accessPolicy:
     inbound:
       rules:
-        - application: team-dolly-lokal-app
-          cluster: dev-gcp
-        - application: testnav-endringsmelding-frontend
-          cluster: dev-gcp
         - application: dolly-backend
-          cluster: dev-gcp
-        - application: testnorge-tilbakemelding-api
-          cluster: dev-gcp
         - application: dolly-frontend
-          cluster: dev-gcp
         - application: dolly-idporten
-          cluster: dev-gcp
+        - application: team-dolly-lokal-app
+        - application: testnav-endringsmelding-frontend
         - application: testnav-faste-data-frontend
-          cluster: dev-gcp
-        - application: testnav-applikasjonsanalyse-frontend
-          cluster: dev-gcp
         - application: testnav-oversikt-frontend
-          cluster: dev-gcp
+        - application: testnorge-tilbakemelding-api
     outbound:
       rules:
         - application: testnav-person-organisasjon-tilgang-service
