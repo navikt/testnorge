@@ -83,6 +83,7 @@ spec:
         - application: testnav-varslinger-service-dev
         - application: testnorge-profil-api
         - application: testnorge-profil-api-dev
+        - application: testnorge-tilbakemelding-api
   liveness:
     path: /internal/isAlive
     initialDelay: 4
