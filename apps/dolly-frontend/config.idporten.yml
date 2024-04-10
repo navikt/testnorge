@@ -32,6 +32,7 @@ spec:
         - application: testnav-amelding-service
         - application: testnav-arbeidsplassencv-proxy
         - application: testnav-bruker-service
+        - application: testnav-bruker-service-dev
         - application: testnav-helsepersonell-service
         - application: testnav-joark-dokument-service
         - application: testnav-kodeverk-service
