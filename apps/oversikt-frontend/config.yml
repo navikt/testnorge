@@ -44,6 +44,7 @@ spec:
         - application: testnav-app-tilgang-analyse-service
         - application: testnav-arbeidsforhold-service
         - application: testnav-arbeidsplassencv-proxy
+        - application: testnav-batch-bestilling-service
         - application: testnav-bruker-service-dev
         - application: testnav-person-organisasjon-tilgang-service-dev
         - application: testnorge-profil-api-dev
