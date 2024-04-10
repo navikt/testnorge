@@ -14,7 +14,7 @@ import java.util.List;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
 
-@RestController
+@RestController("personControllerV2")
 @RequestMapping("/api/v2/personer")
 @RequiredArgsConstructor
 public class PersonController {
