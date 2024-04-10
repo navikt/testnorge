@@ -71,6 +71,7 @@ spec:
         - application: testnav-person-faste-data-service
         - application: testnav-person-organisasjon-tilgang-service-dev
         - application: testnav-person-search-service
+        - application: testnav-person-service
         - application: testnorge-profil-api-dev
   liveness:
     path: /internal/isAlive
