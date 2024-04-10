@@ -57,6 +57,7 @@ spec:
         - application: testnav-inntektsmelding-service
         - application: testnav-jenkins-batch-status-service
         - application: testnav-joark-dokument-service
+        - application: testnav-kodeverk-service
         - application: testnav-person-organisasjon-tilgang-service-dev
         - application: testnorge-profil-api-dev
   liveness:
