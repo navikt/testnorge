@@ -50,6 +50,7 @@ export const SortKodeverkArray = (data) => {
 		data.name === 'Postnummer' ||
 		data.name === 'Postnummer vegadresser' ||
 		data.name === 'Kommuner' ||
+		data.name === 'Kommuner2024' ||
 		data.name === 'Bydeler' ||
 		data.name === 'Næringskoder' ||
 		data.name === 'Sektorkoder'

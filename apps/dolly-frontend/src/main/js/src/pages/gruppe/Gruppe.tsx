@@ -135,7 +135,7 @@ export default ({
 						data-cy={CypressSelector.BUTTON_IMPORTER_PERSONER}
 						variant={bankIdBruker ? 'primary' : 'secondary'}
 						onClick={() =>
-							navigate(`/testnorge`, {
+							navigate(`/tenor`, {
 								state: {
 									gruppe: gruppe,
 								},

@@ -44,6 +44,7 @@ export const isEmpty = (attributt, excludeList = []) => {
 		}
 		return result
 	}
+
 	return (
 		attributt?.empty ||
 		Object.values(flattenData(attributt)).every((x) => x === null || x === '' || x === false)
