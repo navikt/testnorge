@@ -49,6 +49,7 @@ spec:
         - application: testnav-person-organisasjon-tilgang-service-dev
         - application: testnav-person-search-service
         - application: testnav-person-service
+        - application: testnav-skattekort-service
         - application: testnav-tps-messaging-service
         - application: testnav-varslinger-service
         - application: testnorge-profil-api

@@ -43,6 +43,7 @@ spec:
         - application: testnav-pdl-forvalter
         - application: testnav-person-service
         - application: testnav-popp-testdata-proxy
+        - application: testnav-skattekort-service
         - application: testnav-sykemelding-api
         - application: testnav-synt-sykemelding-api
         - application: testnav-tps-messaging-service
