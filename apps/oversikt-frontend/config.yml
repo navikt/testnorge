@@ -79,6 +79,7 @@ spec:
         - application: testnav-synt-vedtakshistorikk-service
         - application: testnav-tenor-search-service
         - application: testnav-tps-messaging-service
+        - application: testnav-varslinger-service
         - application: testnorge-profil-api-dev
   liveness:
     path: /internal/isAlive
