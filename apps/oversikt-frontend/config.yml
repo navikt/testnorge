@@ -80,6 +80,7 @@ spec:
         - application: testnav-tenor-search-service
         - application: testnav-tps-messaging-service
         - application: testnav-varslinger-service
+        - application: testnav-varslinger-service-dev
         - application: testnorge-profil-api-dev
   liveness:
     path: /internal/isAlive
