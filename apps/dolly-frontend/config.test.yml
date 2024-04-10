@@ -53,6 +53,7 @@ spec:
         - application: testnav-person-service
         - application: testnav-popp-testdata-proxy
         - application: testnav-sykemelding-api
+        - application: testnav-tenor-search-service
         - application: testnav-tps-messaging-service
         - application: testnav-varslinger-service
         - application: testnav-varslinger-service-dev

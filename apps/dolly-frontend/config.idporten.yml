@@ -51,6 +51,7 @@ spec:
         - application: testnav-person-service
         - application: testnav-skattekort-service
         - application: testnav-sykemelding-api
+        - application: testnav-tenor-search-service
         - application: testnav-tps-messaging-service
         - application: testnav-varslinger-service
         - application: testnorge-profil-api
