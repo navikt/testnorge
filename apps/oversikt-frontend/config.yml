@@ -42,6 +42,7 @@ spec:
         - application: testnav-adresse-service
         - application: testnav-amelding-service
         - application: testnav-app-tilgang-analyse-service
+        - application: testnav-arbeidsforhold-service
         - application: testnav-bruker-service-dev
         - application: testnav-person-organisasjon-tilgang-service-dev
         - application: testnorge-profil-api-dev
