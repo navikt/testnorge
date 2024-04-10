@@ -47,6 +47,7 @@ spec:
         - application: testnav-batch-bestilling-service
         - application: testnav-bruker-service
         - application: testnav-bruker-service-dev
+        - application: testnav-endringsmelding-service
         - application: testnav-person-organisasjon-tilgang-service-dev
         - application: testnorge-profil-api-dev
   liveness:
