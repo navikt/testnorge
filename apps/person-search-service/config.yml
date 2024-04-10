@@ -26,8 +26,6 @@ spec:
         - application: team-dolly-lokal-app
         - application: testnav-oversikt-frontend
         - application: testnav-synt-vedtakshistorikk-service
-        - application: app-1
-          namespace: plattformsikkerhet
     outbound:
       external:
         - host: testnav-pdl-proxy.dev-fss-pub.nais.io

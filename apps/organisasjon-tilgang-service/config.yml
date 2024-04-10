@@ -26,8 +26,6 @@ spec:
         - application: team-dolly-lokal-app
         - application: testnav-organisasjon-tilgang-frontend
         - application: testnav-oversikt-frontend
-        - application: app-1
-          namespace: plattformsikkerhet
     outbound:
       external:
         - host: altinn.no

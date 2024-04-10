@@ -32,8 +32,6 @@ spec:
         - application: testnav-synt-vedtakshistorikk-service
         - application: testnorge-statisk-data-forvalter
           cluster: dev-fss
-        - application: app-1
-          namespace: plattformsikkerhet
     outbound:
       rules:
         - application: organisasjon-bestilling-service

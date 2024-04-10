@@ -34,8 +34,6 @@ spec:
         - application: testnav-pdl-forvalter-dev
         - application: testnorge-statisk-data-forvalter
           cluster: dev-fss
-        - application: app-1
-          namespace: plattformsikkerhet
     outbound:
       rules:
         - application: organisasjon-bestilling-service

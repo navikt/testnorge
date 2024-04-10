@@ -44,6 +44,7 @@ spec:
         - application: dolly-frontend-dev-unstable
         - application: dolly-idporten
         - application: team-dolly-lokal-app
+        - application: testnav-endringsmelding-service
         - application: testnav-organisasjon-forvalter
         - application: testnav-oversikt-frontend
         - application: testnav-pdl-forvalter
@@ -52,9 +53,6 @@ spec:
           cluster: dev-fss
         - application: tps-forvalteren-dev
           cluster: dev-fss
-        - application: app-1
-          namespace: plattformsikkerhet
-        - application: testnav-endringsmelding-service
     outbound:
       external:
         - host: testnav-pdl-proxy.dev-fss-pub.nais.io

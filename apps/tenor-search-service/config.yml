@@ -23,13 +23,11 @@ spec:
   accessPolicy:
     inbound:
       rules:
-        - application: testnav-oversikt-frontend
         - application: dolly-frontend
         - application: dolly-frontend-dev
         - application: dolly-idporten
         - application: team-dolly-lokal-app
-        - application: app-1
-          namespace: plattformsikkerhet
+        - application: testnav-oversikt-frontend
     outbound:
       external:
         - host: testdata.api.skatteetaten.no

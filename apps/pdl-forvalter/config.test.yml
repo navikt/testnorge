@@ -54,8 +54,6 @@ spec:
         - application: dolly-frontend-dev-unstable
         - application: team-dolly-lokal-app
         - application: testnav-oversikt-frontend
-        - application: app-1
-          namespace: plattformsikkerhet
     outbound:
       rules:
         - application: generer-navn-service

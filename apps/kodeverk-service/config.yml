@@ -21,8 +21,6 @@ spec:
         - application: testnav-oversikt-frontend
         - application: testnav-pdl-forvalter
         - application: testnav-pdl-forvalter-dev
-        - application: app-1
-          namespace: plattformsikkerhet
     outbound:
       external:
         - host: kodeverk-api.nav.no

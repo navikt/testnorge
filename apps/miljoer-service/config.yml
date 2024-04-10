@@ -24,8 +24,6 @@ spec:
         - application: testnav-orgnummer-service
         - application: testnav-oversikt-frontend
         - application: testnav-tps-messaging-service
-        - application: app-1
-          namespace: plattformsikkerhet
   tokenx:
     enabled: true
   azure:
