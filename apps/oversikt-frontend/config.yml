@@ -54,6 +54,7 @@ spec:
         - application: testnav-helsepersonell-service
         - application: testnav-ident-pool
         - application: testnav-inntektsmelding-generator-service
+        - application: testnav-inntektsmelding-service
         - application: testnav-person-organisasjon-tilgang-service-dev
         - application: testnorge-profil-api-dev
   liveness:
