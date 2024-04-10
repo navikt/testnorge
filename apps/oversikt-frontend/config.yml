@@ -51,6 +51,7 @@ spec:
         - application: testnav-generer-arbeidsforhold-populasjon-service
         - application: testnav-generer-organisasjon-populasjon-service
         - application: testnav-generer-synt-amelding-service
+        - application: testnav-helsepersonell-service
         - application: testnav-person-organisasjon-tilgang-service-dev
         - application: testnorge-profil-api-dev
   liveness:
