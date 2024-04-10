@@ -35,6 +35,7 @@ spec:
         - application: synthdata-arena-aap
         - application: synthdata-arena-dagpenger
         - application: synthdata-arena-meldekort
+        - application: synthdata-arena-tilleggsstonad
         - application: testnav-app-tilgang-analyse-service
         - application: testnav-bruker-service-dev
         - application: testnav-person-organisasjon-tilgang-service-dev
