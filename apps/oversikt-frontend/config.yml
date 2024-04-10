@@ -60,6 +60,7 @@ spec:
         - application: testnav-kodeverk-service
         - application: testnav-miljoer-service
         - application: testnav-oppsummeringsdokument-service
+        - application: testnav-organisasjon-faste-data-service
         - application: testnav-person-organisasjon-tilgang-service-dev
         - application: testnorge-profil-api-dev
   liveness:
