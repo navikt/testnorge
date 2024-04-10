@@ -56,6 +56,7 @@ spec:
         - application: testnav-person-organisasjon-tilgang-service
         - application: testnav-person-search-service
         - application: testnav-person-service
+        - application: testnav-popp-testdata-proxy
         - application: testnav-tps-messaging-service
         - application: testnav-varslinger-service
         - application: testnorge-profil-api

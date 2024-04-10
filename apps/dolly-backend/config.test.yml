@@ -36,6 +36,7 @@ spec:
         - application: testnav-organisasjon-service
         - application: testnav-pdl-forvalter-dev
         - application: testnav-person-service
+        - application: testnav-popp-testdata-proxy
         - application: testnav-sykemelding-api
         - application: testnav-synt-sykemelding-api
         - application: testnav-tps-messaging-service
