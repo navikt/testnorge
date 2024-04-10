@@ -37,6 +37,7 @@ spec:
         - application: synthdata-arena-meldekort
         - application: synthdata-arena-tilleggsstonad
         - application: synthdata-arena-tiltak
+        - application: synthdata-arena-vedtakshistorikk
         - application: testnav-app-tilgang-analyse-service
         - application: testnav-bruker-service-dev
         - application: testnav-person-organisasjon-tilgang-service-dev
