@@ -76,6 +76,7 @@ spec:
         - application: testnav-skattekort-service
         - application: testnav-sykemelding-api
         - application: testnav-synt-sykemelding-api
+        - application: testnav-synt-vedtakshistorikk-service
         - application: testnorge-profil-api-dev
   liveness:
     path: /internal/isAlive
