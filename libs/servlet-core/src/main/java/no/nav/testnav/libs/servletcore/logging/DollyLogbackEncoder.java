@@ -1,4 +1,4 @@
-package no.nav.testnav.libs.commands.utils;
+package no.nav.testnav.libs.servletcore.logging;
 
 import ch.qos.logback.classic.PatternLayout;
 import ch.qos.logback.classic.spi.ILoggingEvent;
