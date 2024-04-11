@@ -33,7 +33,7 @@ public class MalBestillingMappingStrategy implements MappingStrategy {
                             destinasjon.setId(kilde.getId());
                             destinasjon.setMiljoer(kilde.getMiljoer());
                             destinasjon.setMalNavn(kilde.getMalNavn());
-                            destinasjon.setBestKriterier(objectMapper.readTree(kilde.getBestKriterier()));
+                            destinasjon.setBestilling(objectMapper.readTree(kilde.getBestKriterier()));
                             destinasjon.setBruker(mapperFacade.map(kilde.getBruker(), RsBrukerUtenFavoritter.class));
                             destinasjon.setSistOppdatert(kilde.getSistOppdatert());
 

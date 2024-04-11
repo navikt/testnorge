@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 public class RsMalBestilling {
 
     private Long id;
-    private JsonNode bestKriterier;
+    private JsonNode bestilling;
     private String miljoer;
     private String malNavn;
     private RsBrukerUtenFavoritter bruker;

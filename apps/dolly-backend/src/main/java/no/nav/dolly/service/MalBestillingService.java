@@ -61,7 +61,7 @@ public class MalBestillingService {
                         .map(bestillingMal -> {
                             try {
                                 return RsMalBestilling.builder()
-                                        .bestKriterier(objectMapper.readTree(bestillingMal.getBestKriterier()))
+                                        .bestilling(objectMapper.readTree(bestillingMal.getBestKriterier()))
                                         .malNavn(bestillingMal.getMalNavn())
                                         .id(bestillingMal.getId())
                                         .bruker(mapperFacade.map(nonNull(bestillingMal.getBruker()) ?
@@ -98,7 +98,7 @@ public class MalBestillingService {
                         .map(bestillingMal -> {
                             try {
                                 return RsMalBestilling.builder()
-                                        .bestKriterier(objectMapper.readTree(bestillingMal.getBestKriterier()))
+                                        .bestilling(objectMapper.readTree(bestillingMal.getBestKriterier()))
                                         .malNavn(bestillingMal.getMalNavn())
                                         .id(bestillingMal.getId())
                                         .bruker(mapperFacade.map(nonNull(bestillingMal.getBruker()) ?
