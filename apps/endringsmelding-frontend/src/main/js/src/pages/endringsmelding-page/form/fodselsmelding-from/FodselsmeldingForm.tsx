@@ -155,7 +155,7 @@ export const FodselsmeldingForm = () => {
           required={true}
         />
       </Line>
-      {error !== '' && (
+      {error && error !== '' && (
         <div>
           <h3>Feil ved sending til miljø</h3>
           <p>{error}</p>

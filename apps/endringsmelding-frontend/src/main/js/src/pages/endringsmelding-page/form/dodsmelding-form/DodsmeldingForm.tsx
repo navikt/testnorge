@@ -48,13 +48,10 @@ export const DodsmeldingForm = () => {
   };
 
   const getSuccessMessage = (handling: Handling) => {
-    if (handling === 'SETTE_DOEDSDATO') {
-      return `Dødsmelding for ident ${ident} ble sendt til miljø ${valgteMiljoer}.`;
+    if (handling === 'ANNULLERE_DOEDSDATO') {
+      return `Dødsmelding annulert for ident ${ident} i miljø ${valgteMiljoer}.`;
     }
-    if (handling === 'ENDRET_DOEDSDATO') {
-      return `Dødsdato endret til ${doedsdato} for ident ${ident} i miljø ${valgteMiljoer}.`;
-    }
-    return `Dødsmelding annulert for ident ${ident} i miljø ${valgteMiljoer}.`;
+    return `Dødsmelding for ident ${ident} ble sendt til miljø ${valgteMiljoer}.`;
   };
   return (
     <EndringsmeldingForm
@@ -97,7 +94,7 @@ export const DodsmeldingForm = () => {
           }
         />
       </Line>
-      {error !== '' && (
+      {error && error !== '' && (
         <div>
           <h3>Feil ved sending til miljø</h3>
           <p>{error}</p>

@@ -43,7 +43,7 @@ export const EndringsmeldingForm = <T extends {}>({
   const [errorMessage, setErrorMessage] = useState('');
   const [warningMessages, setWarningMessages] = useState<string[]>([]);
 
-  if (warningMessages) {
+  if (warningMessages && warningMessages.length > 0) {
     console.log(warningMessages);
   }
 
