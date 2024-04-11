@@ -371,6 +371,9 @@ export default ({
 								if (arbeidsplassencvData) {
 									personData.arbeidsplassenCV = { harHjemmel: getArbeidsplassencvHjemmel() }
 								}
+								if (arenaData) {
+									personData.arenaforvalteren = arenaData
+								}
 								leggTilPaaPerson(
 									personData,
 									bestillingListe,
