@@ -86,6 +86,7 @@ import {
 import { usePensjonEnvironments } from '@/utils/hooks/useEnvironments'
 import { SigrunstubPensjonsgivendeVisning } from '@/components/fagsystem/sigrunstubPensjonsgivende/visning/Visning'
 import { useUdistub } from '@/utils/hooks/useUdistub'
+import { OpprettMalFraPerson } from '@/components/bestilling/gjenopprett/OpprettMalFraPerson'
 
 const getIdenttype = (ident) => {
 	if (parseInt(ident.charAt(0)) > 3) {
@@ -333,8 +334,8 @@ export default ({
 
 	const relatertePersoner = pdlRelatertPerson()?.filter((ident) => ident.id)
 	const harPdlRelatertPerson = relatertePersoner?.length > 0
-	const importerteRelatertePersoner = relatertePersoner?.filter(
-		(ident) => gruppeIdenter?.includes(ident.id),
+	const importerteRelatertePersoner = relatertePersoner?.filter((ident) =>
+		gruppeIdenter?.includes(ident.id),
 	)
 
 	const getArbeidsplassencvHjemmel = () => {
@@ -387,6 +388,8 @@ export default ({
 							master={ident?.master}
 						/>
 					)}
+					<OpprettMalFraPerson ident={ident} />
+
 					<BestillingSammendragModal bestilling={bestilling} />
 					{!iLaastGruppe && ident.master !== 'PDL' && (
 						<SlettButton action={slettPerson} loading={loading.slettPerson}>
