@@ -159,10 +159,10 @@ const ingenOverlappFraTildato = (tildato, values) => {
 
 	if (values.tidligereBestillinger) {
 		const arenaBestillinger = values.tidligereBestillinger.filter((bestilling) =>
-			bestilling.data.hasOwnProperty('arenaforvalter'),
+			bestilling.data?.hasOwnProperty('arenaforvalter'),
 		)
 		for (let bestilling of arenaBestillinger) {
-			let arenaInfo = bestilling.data.arenaforvalter
+			let arenaInfo = bestilling.data?.arenaforvalter
 			for (let key of ikkeOverlappendeVedtak) {
 				if (arenaInfo[key]?.length > 0) {
 					const fraDatoBestilling = arenaInfo[key]?.[0]?.fraDato
