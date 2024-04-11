@@ -24,8 +24,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
@@ -84,29 +84,6 @@ public class MalBestillingService {
         return malBestillingWrapper;
     }
 
-    public List<RsMalBestilling> getMalbestillingByUserAndNavn(String brukerId, String malNavn) {
-
-        var bruker = brukerService.fetchBruker(brukerId);
-
-        return bestillingMalRepository.findByBrukerAndMalNavn(bruker, malNavn)
-                .stream()
-                .map(bestilling -> {
-                    try {
-                        return RsMalBestilling.builder()
-                                .id(bestilling.getId())
-                                .bruker(mapperFacade.map(bruker, RsBrukerUtenFavoritter.class))
-                                .malNavn(bestilling.getMalNavn())
-                                .bestKriterier(objectMapper.readTree(bestilling.getBestKriterier()))
-                                .sistOppdatert(bestilling.getSistOppdatert())
-                                .build();
-                    } catch (JsonProcessingException e) {
-                        throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-                    }
-                })
-                .sorted(Comparator.comparing(RsMalBestilling::getMalNavn))
-                .toList();
-    }
-
     @Transactional(readOnly = true)
     public RsMalBestillingWrapper getMalbestillingByUser(String brukerId) {
 
@@ -143,6 +120,7 @@ public class MalBestillingService {
     public void saveBestillingMal(Bestilling bestilling, String malNavn, Bruker bruker) {
 
         var eksisterende = bestillingMalRepository.findByBrukerAndMalNavn(bruker, malNavn);
+
         if (eksisterende.isEmpty()) {
             bestillingMalRepository.save(BestillingMal.builder()
 
@@ -152,39 +130,60 @@ public class MalBestillingService {
                     .miljoer(bestilling.getMiljoer())
                     .build());
         } else {
-            eksisterende.stream()
-                    .findFirst()
-                    .ifPresent(malbestilling -> {
-                        malbestilling.setBestKriterier(bestilling.getBestKriterier());
-                        malbestilling.setMiljoer(bestilling.getMiljoer());
-                    });
+
+            var oppdateEksisterende = eksisterende.getFirst();
+            oppdateEksisterende.setBestKriterier(bestilling.getBestKriterier());
+            oppdateEksisterende.setMiljoer(bestilling.getMiljoer());
         }
     }
 
-    public void saveBestillingMalFromBestillingId(Long bestillingId, String malNavn) {
+    @Transactional
+    public RsMalBestilling saveBestillingMalFromBestillingId(Long bestillingId, String malNavn) {
 
-        var bruker = brukerService.fetchOrCreateBruker(getUserId(getUserInfo));
+        var bruker = brukerService.fetchBruker(getUserId(getUserInfo));
 
         var bestilling = bestillingRepository.findById(bestillingId)
                 .orElseThrow(() -> new NotFoundException(bestillingId + " finnes ikke"));
 
-        overskrivDuplikateMalbestillinger(malNavn, bruker);
-        bestillingMalRepository.save(BestillingMal.builder()
-                .bestKriterier(bestilling.getBestKriterier())
-                .bruker(bruker)
-                .malNavn(malNavn)
-                .miljoer(bestilling.getMiljoer())
-                .build());
+        BestillingMal malbestilling;
+        var maler = bestillingMalRepository.findByBrukerAndMalNavn(bruker, malNavn);
+        if (maler.isEmpty()) {
+            malbestilling = bestillingMalRepository.save(BestillingMal.builder()
+                    .bestKriterier(bestilling.getBestKriterier())
+                    .bruker(bruker)
+                    .malNavn(malNavn)
+                    .miljoer(bestilling.getMiljoer())
+                    .build());
+        } else {
+            malbestilling = maler.getFirst();
+        }
+
+        return mapperFacade.map(malbestilling, RsMalBestilling.class);
     }
 
+    @Transactional
     public void deleteMalBestillingByID(Long id) {
 
+        bestillingMalRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResponseStatusException(HttpStatus.NOT_FOUND, "Malbestilling med id %d ble ikke funnet".formatted(id)));
         bestillingMalRepository.deleteById(id);
     }
 
-    public void updateMalNavnById(Long id, String nyttMalNavn) {
+    @Transactional
+    public RsMalBestilling updateMalNavnById(Long id, String nyttMalNavn) {
+
+        bestillingMalRepository.findById(id)
+                .orElseThrow(() ->
+                        new ResponseStatusException(HttpStatus.NOT_FOUND, "Malbestilling med id %d ble ikke funnet".formatted(id)));
 
         bestillingMalRepository.updateMalNavnById(id, nyttMalNavn);
+        var oppdatertMalBestilling = new AtomicReference<RsMalBestilling>();
+
+        bestillingMalRepository.findById(id)
+                .ifPresentOrElse(malBestilling ->
+                        oppdatertMalBestilling.set(mapperFacade.map(malBestilling, RsMalBestilling.class)), null);
+        return oppdatertMalBestilling.get();
     }
 
     @SneakyThrows
@@ -197,6 +196,7 @@ public class MalBestillingService {
         if (bestillinger.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Ingen bestillinger funnet på ident %s".formatted(ident));
         }
+
         var aggregertRequest = new RsDollyBestillingRequest();
 
         bestillinger.stream()
@@ -214,21 +214,25 @@ public class MalBestillingService {
                 })
                 .forEach(dollyBestilling -> mapperFacade.map(dollyBestilling, aggregertRequest));
 
-        var akkumulertMal = bestillingMalRepository.save(BestillingMal.builder()
-                .bruker(bruker)
-                .malNavn(name)
-                .miljoer(String.join(",", aggregertRequest.getEnvironments()))
-                .bestKriterier(objectMapper.writeValueAsString(aggregertRequest))
-                .build());
+        BestillingMal akkumulertMal;
 
-        return RsMalBestilling.builder()
-                .id(akkumulertMal.getId())
-                .bruker(mapperFacade.map(bruker, RsBrukerUtenFavoritter.class))
-                .malNavn(akkumulertMal.getMalNavn())
-                .miljoer(akkumulertMal.getMiljoer())
-                .bestKriterier(objectMapper.readTree(akkumulertMal.getBestKriterier()))
-                .sistOppdatert(akkumulertMal.getSistOppdatert())
-                .build();
+        var maler = bestillingMalRepository.findByBrukerAndMalNavn(bruker, name);
+        if (maler.isEmpty()) {
+
+            akkumulertMal = bestillingMalRepository.save(BestillingMal.builder()
+                    .bruker(bruker)
+                    .malNavn(name)
+                    .miljoer(String.join(",", aggregertRequest.getEnvironments()))
+                    .bestKriterier(objectMapper.writeValueAsString(aggregertRequest))
+                    .build());
+        } else {
+
+            akkumulertMal = maler.getFirst();
+            akkumulertMal.setMiljoer(String.join(",", aggregertRequest.getEnvironments()));
+            akkumulertMal.setBestKriterier(objectMapper.writeValueAsString(aggregertRequest));
+        }
+
+        return mapperFacade.map(akkumulertMal, RsMalBestilling.class);
     }
 
     public static String getBruker(Bruker bruker) {
@@ -240,12 +244,5 @@ public class MalBestillingService {
             case AZURE, BANKID -> bruker.getBrukernavn();
             case BASIC -> bruker.getNavIdent();
         };
-    }
-
-    private void overskrivDuplikateMalbestillinger(String malNavn, Bruker bruker) {
-
-        var gamleMalBestillinger = getMalbestillingByUserAndNavn(bruker.getBrukerId(), malNavn);
-        gamleMalBestillinger.forEach(malBestilling ->
-                bestillingMalRepository.deleteById(malBestilling.getId()));
     }
 }

@@ -49,9 +49,9 @@ public class MalBestillingController {
     @PostMapping
     @Operation(description = "Opprett ny mal-bestilling fra bestillingId")
     @Transactional
-    public void opprettMalbestilling(@RequestParam Long bestillingId, @RequestParam String malNavn) {
+    public RsMalBestilling opprettMalbestilling(@RequestParam Long bestillingId, @RequestParam String malNavn) {
 
-        malBestillingService.saveBestillingMalFromBestillingId(bestillingId, malNavn);
+        return malBestillingService.saveBestillingMalFromBestillingId(bestillingId, malNavn);
     }
 
     @CacheEvict(value = { CACHE_BESTILLING_MAL }, allEntries = true)
@@ -67,8 +67,8 @@ public class MalBestillingController {
     @PutMapping("/id/{id}")
     @Operation(description = "Rediger mal-bestilling")
     @Transactional
-    public void redigerMalBestilling(@PathVariable Long id, @RequestParam String malNavn) {
+    public RsMalBestilling redigerMalBestilling(@PathVariable Long id, @RequestParam String malNavn) {
 
-        malBestillingService.updateMalNavnById(id, malNavn);
+        return malBestillingService.updateMalNavnById(id, malNavn);
     }
 }

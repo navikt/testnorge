@@ -1,4 +1,4 @@
-package no.nav.dolly.service;
+package no.nav.dolly.provider.api;
 
 import no.nav.dolly.MockedJwtAuthenticationTokenUtils;
 import no.nav.dolly.domain.jpa.Bestilling;
@@ -32,7 +32,6 @@ import java.time.LocalDateTime;
 
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -47,7 +46,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @EnableAutoConfiguration
 @ComponentScan("no.nav.dolly")
 @AutoConfigureMockMvc(addFilters = false)
-class MalBestillingServiceTest {
+class MalBestillingControllerTest {
 
     @MockBean
     @SuppressWarnings("unused")
@@ -59,7 +58,7 @@ class MalBestillingServiceTest {
 
     private final static String MALNAVN = "test";
     private final static String NYTT_MALNAVN = "nyttMalnavn";
-    private final static String BEST_KRITERIER = "Testeteste";
+    private final static String BEST_KRITERIER = "{\"test\":true}";
     private static final Bruker DUMMY_EN = Bruker.builder()
             .brukerId("testbruker_en")
             .brukernavn("test_en")
@@ -71,6 +70,12 @@ class MalBestillingServiceTest {
             .brukernavn("test_to")
             .brukertype(Bruker.Brukertype.AZURE)
             .epost("epost@test_to")
+            .build();
+    private static final Bruker DUMMY_TRE = Bruker.builder()
+            .brukerId("123")
+            .brukernavn("test_tre")
+            .brukertype(Bruker.Brukertype.AZURE)
+            .epost("epost@test_tre")
             .build();
     private static final String IDENT = "12345678912";
     private static final String BESKRIVELSE = "Teste";
@@ -97,6 +102,7 @@ class MalBestillingServiceTest {
         flyway.migrate();
         saveDummyBruker(DUMMY_EN);
         saveDummyBruker(DUMMY_TO);
+        saveDummyBruker(DUMMY_TRE);
         MockedJwtAuthenticationTokenUtils.setJwtAuthenticationToken();
     }
 
@@ -116,14 +122,13 @@ class MalBestillingServiceTest {
         saveDummyBestillingMal(bruker_en);
         saveDummyBestillingMal(bruker_to);
 
-        mockMvc.perform(get("/api/v1/bestilling/malbestilling"))
+        mockMvc.perform(get("/api/v1/malbestilling"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.malbestillinger.ALLE", hasSize(2)))
                 .andExpect(jsonPath("$.malbestillinger.test_en", hasSize(1)))
                 .andExpect(jsonPath("$.malbestillinger.test_to", hasSize(1)))
                 .andExpect(jsonPath("$.malbestillinger.test_en[0].malNavn").value(MALNAVN))
                 .andExpect(jsonPath("$.malbestillinger.test_en[0].bruker.brukerId").value(bruker_en.getBrukerId()))
-                .andExpect(jsonPath("$.malbestillinger.test_en[0].bestilling.navSyntetiskIdent", is(true)))
                 .andExpect(jsonPath("$.malbestillinger.test_to[0].bruker.brukerId").value(bruker_to.getBrukerId()));
     }
 
@@ -137,12 +142,12 @@ class MalBestillingServiceTest {
         var testgruppe = saveDummyGruppe();
         var bestilling = saveDummyBestilling(bruker_en, testgruppe);
 
-        mockMvc.perform(post("/api/v1/bestilling/malbestilling")
+        mockMvc.perform(post("/api/v1/malbestilling")
                         .queryParam("bestillingId", String.valueOf(bestilling.getId()))
                         .queryParam("malNavn", MALNAVN))
                 .andExpect(status().isOk());
 
-        mockMvc.perform(post("/api/v1/bestilling/malbestilling")
+        mockMvc.perform(post("/api/v1/malbestilling")
                         .queryParam("bestillingId", UGYLDIG_BESTILLINGID)
                         .queryParam("malNavn", MALNAVN))
                 .andExpect(status().is4xxClientError());
@@ -157,18 +162,18 @@ class MalBestillingServiceTest {
         var bruker_en = brukerRepository.findBrukerByBrukerId(DUMMY_EN.getBrukerId()).orElseThrow();
         var bestillingMal = saveDummyBestillingMal(bruker_en);
 
-        mockMvc.perform(put("/api/v1/bestilling/malbestilling/{id}", bestillingMal.getId())
+        mockMvc.perform(put("/api/v1/malbestilling/id/{id}", bestillingMal.getId())
                         .queryParam("malNavn", NYTT_MALNAVN))
                 .andExpect(status().isOk());
 
-        mockMvc.perform(get("/api/v1/bestilling/malbestilling"))
+        mockMvc.perform(get("/api/v1/malbestilling"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.malbestillinger.test_en", hasSize(1)));
 
-        mockMvc.perform(delete("/api/v1/bestilling/malbestilling/{id}", bestillingMal.getId()))
+        mockMvc.perform(delete("/api/v1/malbestilling/id/{id}", bestillingMal.getId()))
                 .andExpect(status().isOk());
 
-        mockMvc.perform(get("/api/v1/bestilling/malbestilling"))
+        mockMvc.perform(get("/api/v1/malbestilling"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.malbestillinger.ALLE", empty()));
     }

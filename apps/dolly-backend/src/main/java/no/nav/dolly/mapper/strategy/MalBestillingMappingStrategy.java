@@ -30,17 +30,18 @@ public class MalBestillingMappingStrategy implements MappingStrategy {
                     public void mapAtoB(BestillingMal kilde, RsMalBestilling destinasjon, MappingContext context) {
 
                         try {
+                            destinasjon.setId(kilde.getId());
+                            destinasjon.setMiljoer(kilde.getMiljoer());
+                            destinasjon.setMalNavn(kilde.getMalNavn());
                             destinasjon.setBestKriterier(objectMapper.readTree(kilde.getBestKriterier()));
                             destinasjon.setBruker(mapperFacade.map(kilde.getBruker(), RsBrukerUtenFavoritter.class));
+                            destinasjon.setSistOppdatert(kilde.getSistOppdatert());
 
                         } catch (JsonProcessingException e) {
                             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
                         }
                     }
                 })
-                .exclude("bestkriterier")
-                .exclude("bruker")
-                .byDefault()
                 .register();
     }
 }
