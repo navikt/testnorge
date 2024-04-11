@@ -86,7 +86,8 @@ import {
 import { usePensjonEnvironments } from '@/utils/hooks/useEnvironments'
 import { SigrunstubPensjonsgivendeVisning } from '@/components/fagsystem/sigrunstubPensjonsgivende/visning/Visning'
 import { useUdistub } from '@/utils/hooks/useUdistub'
-import { OpprettMalFraPerson } from '@/components/bestilling/gjenopprett/OpprettMalFraPerson'
+import useBoolean from '@/utils/hooks/useBoolean'
+import { MalModal, malTyper } from '@/pages/minSide/maler/MalModal'
 
 const getIdenttype = (ident) => {
 	if (parseInt(ident.charAt(0)) > 3) {
@@ -112,6 +113,8 @@ export default ({
 	tmpPersoner,
 }) => {
 	const { gruppeId } = ident
+
+	const [isMalModalOpen, openMalModal, closeMalModal] = useBoolean(false)
 
 	const { organisasjonTilgang } = useOrganisasjonTilgang()
 	const tilgjengeligMiljoe = organisasjonTilgang?.miljoe
@@ -388,8 +391,11 @@ export default ({
 							master={ident?.master}
 						/>
 					)}
-					<OpprettMalFraPerson ident={ident} />
-
+					{bestillingIdListe?.length > 0 && (
+						<Button onClick={openMalModal} kind={'maler'} className="svg-icon-blue">
+							OPPRETT MAL FRA PERSON
+						</Button>
+					)}
 					<BestillingSammendragModal bestilling={bestilling} />
 					{!iLaastGruppe && ident.master !== 'PDL' && (
 						<SlettButton action={slettPerson} loading={loading.slettPerson}>
@@ -523,6 +529,9 @@ export default ({
 				/>
 				<TidligereBestillinger ids={ident.bestillingId} />
 				<BeskrivelseConnector ident={ident} />
+				{isMalModalOpen && (
+					<MalModal id={ident.ident} malType={malTyper.PERSON} closeModal={closeMalModal} />
+				)}
 			</div>
 		</ErrorBoundary>
 	)

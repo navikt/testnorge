@@ -4,7 +4,7 @@ import BestillingSammendrag from '@/components/bestilling/sammendrag/BestillingS
 import GjenopprettConnector from '@/components/bestilling/gjenopprett/GjenopprettBestillingConnector'
 
 import './BestillingDetaljer.less'
-import { MalModal } from '@/pages/minSide/maler/MalModal'
+import { MalModal, malTyper } from '@/pages/minSide/maler/MalModal'
 import _ from 'lodash'
 import { SlettButton } from '@/components/ui/button/SlettButton/SlettButton'
 import React from 'react'
@@ -109,7 +109,11 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId,
 			)}
 
 			{isMalModalOpen && (
-				<MalModal id={bestilling.id} erOrganisasjon={erOrganisasjon} closeModal={closeMalModal} />
+				<MalModal
+					id={bestilling.id}
+					malType={erOrganisasjon ? malTyper.ORGANISASJON : malTyper.BESTILLING}
+					closeModal={closeMalModal}
+				/>
 			)}
 		</div>
 	)
