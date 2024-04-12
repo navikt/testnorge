@@ -18,35 +18,21 @@ spec:
   accessPolicy:
     inbound:
       rules:
+        - application: dolly-backend
+        - application: dolly-backend-dev
+        - application: dolly-frontend
+        - application: dolly-frontend-dev
+        - application: dolly-frontend-dev-unstable
+        - application: dolly-idporten
         - application: team-dolly-lokal-app
-          cluster: dev-gcp
+        - application: testnav-faste-data-frontend
+        - application: testnav-generer-arbeidsforhold-populasjon-service
+        - application: testnav-organisasjon-forvalter
+        - application: testnav-orgnummer-service
+        - application: testnav-oversikt-frontend
+        - application: testnav-synt-sykemelding-api
         - application: testnorge-statisk-data-forvalter
           cluster: dev-fss
-        - application: testnav-orgnummer-service
-          cluster: dev-gcp
-        - application: testnav-synt-sykemelding-api
-          cluster: dev-gcp
-        - application: testnav-organisasjon-forvalter
-          cluster: dev-gcp
-        - application: testnav-oversikt-frontend
-          cluster: dev-gcp
-        - application: dolly-backend
-          cluster: dev-gcp
-        - application: dolly-backend-dev
-          cluster: dev-gcp
-        - application: dolly-frontend
-          cluster: dev-gcp
-        - application: dolly-idporten
-          cluster: dev-gcp
-        - application: dolly-frontend-dev
-          cluster: dev-gcp
-        - application: testnav-faste-data-frontend
-          cluster: dev-gcp
-        - application: testnav-generer-arbeidsforhold-populasjon-service
-          cluster: dev-gcp
-        - application: app-1
-          namespace: plattformsikkerhet
-          cluster: dev-gcp
     outbound:
       external:
         - host: testnav-ereg-proxy.dev-fss-pub.nais.io

@@ -13,6 +13,7 @@ spec:
       rules:
         - application: dolly-backend
         - application: dolly-backend-dev
+        - application: testnav-budpro-service
   liveness:
     path: /internal/isAlive
     initialDelay: 4
