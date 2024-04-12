@@ -9,6 +9,7 @@ import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingMal;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
+import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestilling;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestillingWrapper;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUtenFavoritter;
@@ -197,7 +198,7 @@ public class MalBestillingService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Ingen bestillinger funnet på ident %s".formatted(ident));
         }
 
-        var aggregertRequest = new RsDollyBestillingRequest();
+        var aggregertRequest = new RsDollyUtvidetBestilling();
 
         bestillinger.stream()
                 .filter(bestilling -> nonNull(bestilling.getBestKriterier()) &&
