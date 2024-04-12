@@ -21,10 +21,6 @@ spec:
         - application: testnav-dollystatus
         - application: testnav-helsepersonell-service
         - application: testnav-oversikt-frontend
-        - application: bot
-          namespace: aap
-        - application: devtools
-          namespace: aap
         - application: etterlatte-testdata
           namespace: etterlatte
         - application: statuspoll
