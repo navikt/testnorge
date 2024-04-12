@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 
+import static java.util.Objects.isNull;
 import static no.nav.dolly.bestilling.service.DollyBestillingService.getEnvironments;
 import static no.nav.dolly.mapper.AnnenFeilStatusMapper.buildAnnenFeilStatusMap;
 import static no.nav.dolly.mapper.ArbeidsplassenCVStatusMapper.buildArbeidsplassenCVStatusMap;
@@ -48,6 +49,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 @RequiredArgsConstructor
 public class BestillingStatusMappingStrategy implements MappingStrategy {
 
+    private static final String EMPTY_JSON = "{}";
     private final ObjectMapper objectMapper;
 
     @Override
@@ -59,7 +61,10 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
 
                         var ident = (String) context.getProperty("ident");
                         try {
-                            bestillingStatus.setBestilling(objectMapper.readTree(bestilling.getBestKriterier()));
+                            bestillingStatus.setBestilling(
+                                    objectMapper.readTree(isNull(bestilling.getBestKriterier()) ||
+                                            EMPTY_JSON.equals(bestilling.getBestKriterier()) ? EMPTY_JSON :
+                                            bestilling.getBestKriterier()));
                         } catch (JsonProcessingException e) {
                             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
                         }
