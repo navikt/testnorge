@@ -1,6 +1,5 @@
 package no.nav.dolly.domain.resultset.entity.bestilling;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,7 +19,6 @@ import static java.util.Objects.isNull;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
 @Builder
 public class RsBestillingStatus {
 
