@@ -182,11 +182,11 @@ export default class DollyEndpoints {
 	}
 
 	static malBestillingMedId(malId, malNavn) {
-		return `${bestillingBase}/malbestilling/${malId}?malNavn=${malNavn}`
+		return `${uri}/malbestilling/id/${malId}?malNavn=${malNavn}`
 	}
 
 	static malBestillingMedBestillingId(bestillingId, malNavn) {
-		return `${bestillingBase}/malbestilling?bestillingId=${bestillingId}&malNavn=${malNavn}`
+		return `${uri}/malbestilling?bestillingId=${bestillingId}&malNavn=${malNavn}`
 	}
 
 	static organisasjonMalBestillingMedBestillingId(bestillingId, malNavn) {

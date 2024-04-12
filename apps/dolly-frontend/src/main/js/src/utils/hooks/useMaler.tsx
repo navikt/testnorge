@@ -1,7 +1,7 @@
 import useSWR from 'swr'
 import { fetcher } from '@/api'
 
-const getMalerUrl = '/dolly-backend/api/v1/bestilling/malbestilling'
+const getMalerUrl = '/dolly-backend/api/v1/malbestilling'
 const getOrganisasjonMalerUrl = '/dolly-backend/api/v1/organisasjon/bestilling/malbestilling'
 
 export type Mal = {
