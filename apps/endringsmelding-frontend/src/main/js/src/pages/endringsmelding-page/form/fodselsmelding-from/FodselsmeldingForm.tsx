@@ -22,8 +22,6 @@ export const FodselsmeldingForm = () => {
   const [validate, setValidate] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
 
-  console.log('miljoer: ', miljoer); //TODO - SLETT MEG
-
   const onValidate = () => {
     setValidate(true);
     return notEmptyString(foedselsdato) && notEmptyList(miljoer);
@@ -121,7 +119,6 @@ export const FodselsmeldingForm = () => {
         />
         <SelectFormItem
           onChange={(value) => {
-            console.log('value: ', value); //TODO - SLETT MEG
             setMiljoer([value]);
           }}
           htmlId="miljo-select"
