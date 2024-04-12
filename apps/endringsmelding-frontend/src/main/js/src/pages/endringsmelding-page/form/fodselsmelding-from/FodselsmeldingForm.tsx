@@ -43,7 +43,7 @@ export const FodselsmeldingForm = () => {
       return Promise.resolve(response);
     });
 
-  const getSuccessMessage = (value: string | null) =>
+  const getSuccessMessage = (value: string | null, handling?: Handling) =>
     `Gratulerer, person med ident ${value} ble født i miljø ${miljoer.join(', ')}.`;
 
   return (

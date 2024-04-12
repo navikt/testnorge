@@ -19,7 +19,7 @@ type Props<T> = {
     submit: string;
     delete?: string;
   };
-  getSuccessMessage: (value?: T) => string;
+  getSuccessMessage: (value?: string, handling?: Handling) => string;
   getErrorMessage?: () => string;
   onSend: (handling: Handling) => Promise<any>;
   valid: (handling: Handling) => boolean;
@@ -55,7 +55,7 @@ export const EndringsmeldingForm = <T extends {}>({
         .then((response) => {
           setLoading(false);
           if (!response?.error) {
-            setSuccessMessage(getSuccessMessage(response?.ident));
+            setSuccessMessage(getSuccessMessage(response?.ident, handling));
           }
         })
         .catch((e) => {

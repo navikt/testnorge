@@ -47,11 +47,11 @@ export const DodsmeldingForm = () => {
     });
   };
 
-  const getSuccessMessage = (handling: Handling) => {
+  const getSuccessMessage = (value: string, handling?: Handling) => {
     if (handling === 'ANNULLERE_DOEDSDATO') {
-      return `Dødsmelding annulert for ident ${ident} i miljø ${valgteMiljoer}.`;
+      return `Dødsmelding annulert for ident ${value} i miljø ${valgteMiljoer}.`;
     }
-    return `Dødsmelding for ident ${ident} ble sendt til miljø ${valgteMiljoer}.`;
+    return `Dødsmelding for ident ${value} ble sendt til miljø ${valgteMiljoer}.`;
   };
   return (
     <EndringsmeldingForm
