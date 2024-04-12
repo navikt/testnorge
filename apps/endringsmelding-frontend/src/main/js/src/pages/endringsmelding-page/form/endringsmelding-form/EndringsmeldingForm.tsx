@@ -53,8 +53,10 @@ export const EndringsmeldingForm = <T extends {}>({
       setLoading(true);
       onSend(handling)
         .then((response) => {
-          setSuccessMessage(getSuccessMessage(response?.ident));
           setLoading(false);
+          if (!response?.error) {
+            setSuccessMessage(getSuccessMessage(response?.ident));
+          }
         })
         .catch((e) => {
           setLoading(false);

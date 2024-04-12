@@ -22,6 +22,8 @@ export const FodselsmeldingForm = () => {
   const [validate, setValidate] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
 
+  console.log('miljoer: ', miljoer); //TODO - SLETT MEG
+
   const onValidate = () => {
     setValidate(true);
     return notEmptyString(foedselsdato) && notEmptyList(miljoer);
@@ -54,7 +56,11 @@ export const FodselsmeldingForm = () => {
       }}
       onSend={onSend}
       valid={onValidate}
-      setIdent={(ident) => setMorsIdent(ident?.trim())}
+      setIdent={(ident) => {
+        setError(null);
+        setMiljoer([]);
+        setMorsIdent(ident?.trim());
+      }}
       getSuccessMessage={getSuccessMessage}
       setMiljoer={(miljoer) => {
         setMiljoOptions(miljoer);
@@ -114,7 +120,10 @@ export const FodselsmeldingForm = () => {
           ]}
         />
         <SelectFormItem
-          onChange={(value) => setMiljoer(value)}
+          onChange={(value) => {
+            console.log('value: ', value); //TODO - SLETT MEG
+            setMiljoer([value]);
+          }}
           htmlId="miljo-select"
           label="Send til miljo*"
           error={validate && !notEmptyList(miljoer) ? 'Påkrevd' : null}

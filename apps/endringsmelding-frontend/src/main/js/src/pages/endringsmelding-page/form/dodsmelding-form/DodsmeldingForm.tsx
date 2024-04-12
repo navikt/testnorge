@@ -62,7 +62,11 @@ export const DodsmeldingForm = () => {
       }}
       onSend={onSend}
       valid={onValidate}
-      setIdent={(ident) => setIdent(ident)}
+      setIdent={(ident) => {
+        setError(null);
+        setMiljoOptions([]);
+        setIdent(ident);
+      }}
       getSuccessMessage={getSuccessMessage}
       setMiljoer={(miljoer) => {
         setMiljoOptions(miljoer);
