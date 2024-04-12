@@ -46,9 +46,6 @@ spec:
           cluster: dev-gcp
         - application: dolly-backend-dev
           cluster: dev-gcp
-        - application: app-1
-          namespace: plattformsikkerhet
-          cluster: dev-gcp
     outbound:
       external:
         - host: medlemskap-medl-testdata.intern.dev.nav.no
