@@ -74,3 +74,5 @@ consumers:
     url: https://testnav-person-service.intern.dev.nav.no
   testnav-kodeverk-service:
     url: https://testnav-kodeverk-service.intern.dev.nav.no/
+  testnav-tenor-search-service:
+    url: https://testnav-tenor-search-service.intern.dev.nav.no

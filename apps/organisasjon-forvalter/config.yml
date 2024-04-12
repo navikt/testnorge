@@ -22,37 +22,27 @@ spec:
   accessPolicy:
     inbound:
       rules:
-        - application: testnav-oversikt-frontend
-          cluster: dev-gcp
         - application: dolly-backend
-          cluster: dev-gcp
         - application: dolly-backend-dev
-          cluster: dev-gcp
         - application: dolly-frontend
-          cluster: dev-gcp
-        - application: dolly-idporten
-          cluster: dev-gcp
         - application: dolly-frontend-dev
-          cluster: dev-gcp
+        - application: dolly-frontend-dev-unstable
+        - application: dolly-idporten
+        - application: team-dolly-lokal-app
+        - application: testnav-oversikt-frontend
+        - application: testnav-pdl-forvalter
+        - application: testnav-pdl-forvalter-dev
         - application: testnorge-statisk-data-forvalter
           cluster: dev-fss
-        - application: team-dolly-lokal-app
-          cluster: dev-gcp
-        - application: testnav-pdl-forvalter
-          cluster: dev-gcp
-        - application: testnav-pdl-forvalter-dev
-          cluster: dev-gcp
-        - application: app-1
-          namespace: plattformsikkerhet
-          cluster: dev-gcp
     outbound:
       rules:
-        - application: organisasjon-bestilling-service
         - application: generer-navn-service
+        - application: organisasjon-bestilling-service
         - application: testnav-adresse-service
-        - application: testnav-organisasjon-service
         - application: testnav-miljoer-service
+        - application: testnav-organisasjon-service
         - application: testnav-orgnummer-service
+        - application: testnav-tps-messaging-service
   gcp:
     sqlInstances:
       - type: POSTGRES_12

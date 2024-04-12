@@ -49,19 +49,19 @@ spec:
   accessPolicy:
     inbound:
       rules:
-        - application: testnav-oversikt-frontend
-        - application: team-dolly-lokal-app
         - application: dolly-backend-dev
         - application: dolly-frontend-dev
-        - application: app-1
-          namespace: plattformsikkerhet
+        - application: dolly-frontend-dev-unstable
+        - application: team-dolly-lokal-app
+        - application: testnav-oversikt-frontend
     outbound:
       rules:
         - application: generer-navn-service
         - application: testnav-adresse-service
-        - application: testnav-organisasjon-forvalter
-        - application: testnav-kodeverk-service
         - application: testnav-ident-pool
+        - application: testnav-kodeverk-service
+        - application: testnav-organisasjon-forvalter
+        - application: testnav-tps-messaging-service
       external:
         - host: testnav-pdl-proxy.dev-fss-pub.nais.io
   gcp:

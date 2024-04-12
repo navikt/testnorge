@@ -88,6 +88,8 @@ import { SigrunstubPensjonsgivendeVisning } from '@/components/fagsystem/sigruns
 import { useUdistub } from '@/utils/hooks/useUdistub'
 import useBoolean from '@/utils/hooks/useBoolean'
 import { MalModal, malTyper } from '@/pages/minSide/maler/MalModal'
+import { useTenorOversikt } from '@/utils/hooks/useTenorSoek'
+import { SkatteetatenVisning } from '@/components/fagsystem/skatteetaten/visning/SkatteetatenVisning'
 
 const getIdenttype = (ident) => {
 	if (parseInt(ident.charAt(0)) > 3) {
@@ -229,6 +231,11 @@ export default ({
 	const inntektsmeldingBestilling = InntektsmeldingVisning.filterValues(
 		bestillingListe,
 		ident.ident,
+	)
+
+	const { response: tenorData, loading: loadingTenorData } = useTenorOversikt(
+		ident?.master === 'PDL' ? { identifikator: ident.ident } : null,
+		1,
 	)
 
 	const getGruppeIdenter = () => {
@@ -517,6 +524,10 @@ export default ({
 					tilgjengeligMiljoe={tilgjengeligMiljoe}
 				/>
 				<HistarkVisning data={histarkData} loading={loadingHistarkData} />
+				<SkatteetatenVisning
+					data={tenorData?.data?.data?.personer?.find((person: any) => person?.id === ident.ident)}
+					loading={loadingTenorData}
+				/>
 				<PersonMiljoeinfo
 					bankIdBruker={brukertype === 'BANKID'}
 					ident={ident.ident}

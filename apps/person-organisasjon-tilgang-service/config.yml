@@ -20,12 +20,10 @@ spec:
       rules:
         - application: dolly-frontend
         - application: dolly-idporten
+        - application: team-dolly-lokal-app
         - application: testnav-bruker-service
         - application: testnorge-profil-api
-        - application: team-dolly-lokal-app
         - application: testnorge-profil-api
-        - application: app-1
-          namespace: plattformsikkerhet
     outbound:
       external:
         - host: altinn.no
