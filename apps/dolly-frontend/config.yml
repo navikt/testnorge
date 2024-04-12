@@ -56,7 +56,6 @@ spec:
         - application: testnav-person-organisasjon-tilgang-service
         - application: testnav-person-search-service
         - application: testnav-person-service
-        - application: testnav-popp-testdata-proxy
         - application: testnav-skattekort-service
         - application: testnav-sykemelding-api
         - application: testnav-tenor-search-service
