@@ -3,7 +3,6 @@ package no.nav.dolly.mapper.strategy;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
-import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
 import no.nav.dolly.domain.resultset.inntektstub.InntektMultiplierWrapper;
@@ -22,7 +21,7 @@ public class DollyRequest2MalBestillingMappingStrategy implements MappingStrateg
 
     @Override
     public void register(MapperFactory factory) {
-        factory.classMap(RsDollyUtvidetBestilling.class, RsDollyBestillingRequest.class)
+        factory.classMap(RsDollyUtvidetBestilling.class, RsDollyUtvidetBestilling.class)
                 .mapNulls(false)
                 .field("arbeidsplassenCV", "arbeidsplassenCV")
                 .field("arenaforvalter", "arenaforvalter")
@@ -47,7 +46,7 @@ public class DollyRequest2MalBestillingMappingStrategy implements MappingStrateg
 
                 .customize(new CustomMapper<>() {
                     @Override
-                    public void mapAtoB(RsDollyUtvidetBestilling request, RsDollyBestillingRequest akkumulert, MappingContext context) {
+                    public void mapAtoB(RsDollyUtvidetBestilling request, RsDollyUtvidetBestilling akkumulert, MappingContext context) {
 
                         akkumulert.getAareg().addAll(request.getAareg());
                         akkumulert.getEnvironments().addAll(request.getEnvironments());

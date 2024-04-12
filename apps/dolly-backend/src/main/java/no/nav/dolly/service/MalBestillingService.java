@@ -3,12 +3,10 @@ package no.nav.dolly.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingMal;
 import no.nav.dolly.domain.jpa.Bruker;
-import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestilling;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestillingWrapper;
@@ -18,14 +16,18 @@ import no.nav.dolly.repository.BestillingMalRepository;
 import no.nav.dolly.repository.BestillingRepository;
 import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
 import org.apache.commons.collections4.IterableUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
@@ -187,7 +189,6 @@ public class MalBestillingService {
         return oppdatertMalBestilling.get();
     }
 
-    @SneakyThrows
     @Transactional
     public RsMalBestilling createFromIdent(String ident, String name) {
 
@@ -206,17 +207,14 @@ public class MalBestillingService {
                 .filter(bestilling -> isNull(bestilling.getOpprettetFraGruppeId()) &&
                         isNull(bestilling.getGjenopprettetFraIdent()) &&
                         isNull(bestilling.getOpprettetFraId()))
-                .map(bestilling -> {
-                    try {
-                        return objectMapper.readValue(bestilling.getBestKriterier(), RsDollyBestillingRequest.class);
-                    } catch (JsonProcessingException e) {
-                        throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
-                    }
-                })
-                .forEach(dollyBestilling -> mapperFacade.map(dollyBestilling, aggregertRequest));
+                .forEach(bestilling -> {
+                    var dollyBestilling = fromJson(bestilling.getBestKriterier());
+                    dollyBestilling.getEnvironments().addAll(toSet(bestilling.getMiljoer()));
+                    dollyBestilling.setNavSyntetiskIdent(bestilling.getNavSyntetiskIdent());
+                    mapperFacade.map(dollyBestilling, aggregertRequest);
+                });
 
         BestillingMal akkumulertMal;
-
         var maler = bestillingMalRepository.findByBrukerAndMalNavn(bruker, name);
         if (maler.isEmpty()) {
 
@@ -224,13 +222,13 @@ public class MalBestillingService {
                     .bruker(bruker)
                     .malNavn(name)
                     .miljoer(String.join(",", aggregertRequest.getEnvironments()))
-                    .bestKriterier(objectMapper.writeValueAsString(aggregertRequest))
+                    .bestKriterier(toJson(aggregertRequest))
                     .build());
         } else {
 
             akkumulertMal = maler.getFirst();
             akkumulertMal.setMiljoer(String.join(",", aggregertRequest.getEnvironments()));
-            akkumulertMal.setBestKriterier(objectMapper.writeValueAsString(aggregertRequest));
+            akkumulertMal.setBestKriterier(toJson(aggregertRequest));
         }
 
         return mapperFacade.map(akkumulertMal, RsMalBestilling.class);
@@ -245,5 +243,31 @@ public class MalBestillingService {
             case AZURE, BANKID -> bruker.getBrukernavn();
             case BASIC -> bruker.getNavIdent();
         };
+    }
+
+    private static Set<String> toSet(String miljoer) {
+
+        return StringUtils.isNotBlank(miljoer) ?
+                Arrays.stream(miljoer.split(","))
+                        .collect(Collectors.toSet()) :
+                Collections.emptySet();
+    }
+
+    private String toJson(RsDollyUtvidetBestilling bestilling) {
+
+        try {
+            return objectMapper.writeValueAsString(bestilling);
+        } catch (JsonProcessingException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
+        }
+    }
+
+    private RsDollyUtvidetBestilling fromJson(String json) {
+
+        try {
+            return objectMapper.readValue(json, RsDollyUtvidetBestilling.class);
+        } catch (JsonProcessingException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
+        }
     }
 }
