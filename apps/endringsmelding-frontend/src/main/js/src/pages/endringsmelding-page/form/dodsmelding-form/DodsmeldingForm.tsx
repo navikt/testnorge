@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { DatePickerFormItem, Line, SelectFormItem } from '@navikt/dolly-komponenter';
 import { sendDodsmelding, slettDodsmelding } from '@/service/EndringsmeldingService';
 import { format } from 'date-fns';
-import { Button } from '@navikt/ds-react';
+import { Alert } from '@navikt/ds-react';
 import { EndringsmeldingForm } from '@/pages/endringsmelding-page/form/endringsmelding-form/EndringsmeldingForm';
 
 export type Handling = 'SETTE_DOEDSDATO' | 'ENDRET_DOEDSDATO' | 'ANNULLERE_DOEDSDATO';
@@ -65,6 +65,7 @@ export const DodsmeldingForm = () => {
       setIdent={(ident) => {
         setError(null);
         setMiljoOptions([]);
+        setValgteMiljoer([]);
         setIdent(ident);
       }}
       getSuccessMessage={getSuccessMessage}
@@ -98,13 +99,11 @@ export const DodsmeldingForm = () => {
           }
         />
       </Line>
-      {error && error !== '' && (
-        <div>
-          <h3>Feil ved sending til miljø</h3>
-          <p>{error}</p>
-          <Button variant={'tertiary'} onClick={() => setError('')}>
-            X
-          </Button>
+      {notEmptyString(error) && (
+        <div style={{ marginTop: '20px' }}>
+          <Alert variant={'error'} closeButton onClose={() => setError('')}>
+            {error}
+          </Alert>
         </div>
       )}
     </EndringsmeldingForm>

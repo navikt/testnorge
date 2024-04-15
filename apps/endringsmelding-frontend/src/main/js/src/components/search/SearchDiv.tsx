@@ -86,6 +86,7 @@ export const Search = <T extends unknown>({ labels, onChange, setShow, setMiljoe
     })
       .then(async (res) => {
         setLoading(false);
+        setError(false);
         const jsonResponse = await res.json();
         setResponse(jsonResponse?.[0]);
         setShow(true);
@@ -125,6 +126,8 @@ export const Search = <T extends unknown>({ labels, onChange, setShow, setMiljoe
         label={labels.label}
         defaultValue=""
         onChange={(e) => {
+          setShow(false);
+          setMiljoer([]);
           if (onChange) {
             onChange(e.target.value);
           }
