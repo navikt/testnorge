@@ -49,7 +49,7 @@ export const MalModal = ({ id, malType, closeModal }) => {
 		}
 	}
 
-	var topic
+	let topic
 	switch (malType) {
 		case malTyper.ORGANISASJON:
 			topic = 'organisasjon'
