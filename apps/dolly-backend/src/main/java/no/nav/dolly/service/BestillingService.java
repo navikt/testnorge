@@ -68,7 +68,7 @@ public class BestillingService {
     private static final String SEARCH_STRING = "info:";
     private static final String DEFAULT_VALUE = null;
     private final BestillingRepository bestillingRepository;
-    private final BestillingMalService bestillingMalService;
+    private final MalBestillingService malBestillingService;
     private final BestillingKontrollRepository bestillingKontrollRepository;
     private final IdentRepository identRepository;
     private final BestillingProgressRepository bestillingProgressRepository;
@@ -209,7 +209,7 @@ public class BestillingService {
                 .build();
 
         if (isNotBlank(request.getMalBestillingNavn())) {
-            bestillingMalService.saveBestillingMal(bestilling, request.getMalBestillingNavn(), bruker);
+            malBestillingService.saveBestillingMal(bestilling, request.getMalBestillingNavn(), bruker);
         }
         return saveBestillingToDB(bestilling);
     }
@@ -245,7 +245,7 @@ public class BestillingService {
                 .build();
         fixAaregAbstractClassProblem(request.getAareg());
         if (isNotBlank(request.getMalBestillingNavn())) {
-            bestillingMalService.saveBestillingMal(bestilling, request.getMalBestillingNavn(), bruker);
+            malBestillingService.saveBestillingMal(bestilling, request.getMalBestillingNavn(), bruker);
         }
         return saveBestillingToDB(bestilling);
     }
@@ -331,7 +331,7 @@ public class BestillingService {
 
         fixAaregAbstractClassProblem(request.getAareg());
         if (isNotBlank(request.getMalBestillingNavn())) {
-            bestillingMalService.saveBestillingMal(bestilling, request.getMalBestillingNavn(), bruker);
+            malBestillingService.saveBestillingMal(bestilling, request.getMalBestillingNavn(), bruker);
         }
         return saveBestillingToDB(bestilling);
     }

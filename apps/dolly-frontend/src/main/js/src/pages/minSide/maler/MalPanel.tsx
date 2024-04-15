@@ -38,7 +38,6 @@ export const MalPanel = ({
 	}
 
 	const maler = malerFiltrert(malListe, searchText)
-
 	const DataCells = ({ id, malNavn, bestilling }) => (
 		<>
 			<Table.DataCell scope="row">
@@ -97,7 +96,9 @@ export const MalPanel = ({
 							</Table.Header>
 							<Table.Body>
 								{maler.map(({ malNavn, id, bestilling }) => {
-									const bestillingBasedOnMal = initialValuesBasedOnMal({ bestilling: bestilling })
+									const bestillingBasedOnMal = initialValuesBasedOnMal({
+										bestilling: bestilling,
+									})
 									return (
 										<Table.ExpandableRow
 											key={id}

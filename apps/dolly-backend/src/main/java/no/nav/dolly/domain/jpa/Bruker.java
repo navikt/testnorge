@@ -1,5 +1,6 @@
 package no.nav.dolly.domain.jpa;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -36,6 +37,7 @@ import static no.nav.dolly.domain.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATO
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "BRUKER")
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Bruker implements Serializable {
 
     @Id

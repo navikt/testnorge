@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
-import static no.nav.dolly.service.BestillingMalService.getBruker;
+import static no.nav.dolly.service.MalBestillingService.getBruker;
 import static no.nav.dolly.util.CurrentAuthentication.getUserId;
 
 @Service
