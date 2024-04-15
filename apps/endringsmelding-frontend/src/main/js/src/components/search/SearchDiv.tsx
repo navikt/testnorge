@@ -127,6 +127,7 @@ export const Search = <T extends unknown>({ labels, onChange, setShow, setMiljoe
         defaultValue=""
         onChange={(e) => {
           setShow(false);
+          setResponse(null);
           setMiljoer([]);
           if (onChange) {
             onChange(e.target.value);
