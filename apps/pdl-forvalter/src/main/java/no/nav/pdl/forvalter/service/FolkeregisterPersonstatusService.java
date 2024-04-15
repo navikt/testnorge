@@ -13,6 +13,7 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.UtflyttingDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
@@ -37,6 +38,8 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
 
     public List<FolkeregisterPersonstatusDTO> convert(PersonDTO person) {
 
+        var touched = new AtomicBoolean(false);
+
         person.getFolkeregisterPersonstatus()
                 .forEach(status -> {
 
@@ -45,6 +48,7 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
                         handle(status, person);
                         status.setKilde(getKilde(status));
                         status.setMaster(getMaster(status, person));
+                        touched.set(true);
                     }
                 });
 
@@ -59,6 +63,12 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
                             .build(),
                     person)
             );
+            touched.set(true);
+        }
+
+        if (!touched.get() && !person.getFolkeregisterPersonstatus().isEmpty()) {
+
+            handle(person.getFolkeregisterPersonstatus().getFirst(), person);
         }
 
         return person.getFolkeregisterPersonstatus();
@@ -113,18 +123,18 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
 
         } else if (!person.getBostedsadresse().isEmpty()) {
 
-            if (person.getBostedsadresse().get(0).isAdresseUtland()) {
+            if (person.getBostedsadresse().getFirst().isAdresseUtland()) {
                 personstatus.setStatus(IKKE_BOSATT);
 
-            } else if (nonNull(person.getBostedsadresse().get(0).getUkjentBosted())) {
+            } else if (nonNull(person.getBostedsadresse().getFirst().getUkjentBosted())) {
                 personstatus.setStatus(FOEDSELSREGISTRERT);
 
             } else {
                 personstatus.setStatus(BOSATT);
             }
 
-            personstatus.setGyldigFraOgMed(nonNull(person.getBostedsadresse().get(0).getGyldigFraOgMed()) ?
-                    person.getBostedsadresse().get(0).getGyldigFraOgMed() :
+            personstatus.setGyldigFraOgMed(nonNull(person.getBostedsadresse().getFirst().getGyldigFraOgMed()) ?
+                    person.getBostedsadresse().getFirst().getGyldigFraOgMed() :
                     DatoFraIdentUtility.getDato(person.getIdent()).atStartOfDay());
 
         } else if (FNR != getIdenttype(person.getIdent()) &&
