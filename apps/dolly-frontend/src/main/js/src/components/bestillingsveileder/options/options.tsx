@@ -1,4 +1,5 @@
 import { initialValuesBasedOnMal } from '@/components/bestillingsveileder/options/malOptions'
+import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 
 const TYPE = Object.freeze({
 	NY_BESTILLING: 'NY_BESTILLING',
@@ -28,6 +29,8 @@ export const BVOptions = (
 	} = {},
 	gruppeId,
 ) => {
+	const { dollyEnvironments } = useDollyEnvironments()
+
 	let initialValues = {
 		antall: antall || 1,
 		beskrivelse: null,
@@ -98,7 +101,7 @@ export const BVOptions = (
 
 	if (mal) {
 		bestType = TYPE.NY_BESTILLING_FRA_MAL
-		initialValues = Object.assign(initialValues, initialValuesBasedOnMal(mal))
+		initialValues = Object.assign(initialValues, initialValuesBasedOnMal(mal, dollyEnvironments))
 	}
 
 	if (opprettFraIdenter) {
@@ -130,7 +133,10 @@ export const BVOptions = (
 			initialValues = initialValuesStandardOrganisasjon
 		} else if (mal) {
 			bestType = TYPE.NY_ORGANISASJON_FRA_MAL
-			initialValues = Object.assign(initialValuesOrganisasjon, initialValuesBasedOnMal(mal))
+			initialValues = Object.assign(
+				initialValuesOrganisasjon,
+				initialValuesBasedOnMal(mal, dollyEnvironments),
+			)
 		} else {
 			bestType = TYPE.NY_ORGANISASJON
 			initialValues = initialValuesOrganisasjon

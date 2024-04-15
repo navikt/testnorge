@@ -14,11 +14,9 @@ import {
 	SivilstandData,
 	VergemaalValues,
 } from '@/components/fagsystem/pdlf/PdlTypes'
-import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 import { addMonths, isAfter, setDate } from 'date-fns'
 
-export const initialValuesBasedOnMal = (mal: any) => {
-	const { dollyEnvironments } = useDollyEnvironments()
+export const initialValuesBasedOnMal = (mal: any, environments: any) => {
 	const initialValuesMal = Object.assign({}, mal.bestilling)
 
 	if (initialValuesMal.aareg) {
@@ -85,7 +83,7 @@ export const initialValuesBasedOnMal = (mal: any) => {
 		delete initialValuesMal.tpsMessaging.utenlandskBankkonto
 	}
 
-	initialValuesMal.environments = filterMiljoe(dollyEnvironments, mal.bestilling?.environments)
+	initialValuesMal.environments = filterMiljoe(environments, mal.bestilling?.environments)
 	return initialValuesMal
 }
 
