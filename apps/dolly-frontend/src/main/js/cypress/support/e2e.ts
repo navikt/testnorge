@@ -81,8 +81,8 @@ const udistub = new RegExp(/testnav-udistub-proxy\/api\/v1/)
 const brregstub = new RegExp(/testnav-brregstub/)
 const medl = new RegExp(/testnav-medl-proxy/)
 const sigrunstub = new RegExp(/testnav-sigrunstub-proxy\/api\/v1\/lignetinntekt/)
-const alleMaler = new RegExp(/dolly-backend\/api\/v1\/bestilling\/malbestilling$/)
-const brukerMaler = new RegExp(/dolly-backend\/api\/v1\/bestilling\/malbestilling\?brukerId/)
+const alleMaler = new RegExp(/dolly-backend\/api\/v1\/malbestilling$/)
+const brukerMaler = new RegExp(/dolly-backend\/api\/v1\/malbestilling\?brukerId/)
 const oppsummeringsdokService = new RegExp(
 	/oppsummeringsdokument-service\/api\/v1\/oppsummeringsdokumenter/,
 )

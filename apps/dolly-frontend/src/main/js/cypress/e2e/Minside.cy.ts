@@ -1,7 +1,7 @@
 import { CypressSelector } from '../mocks/Selectors'
 import { brukerMalerEndretMock } from '../mocks/BasicMocks'
 
-const brukerMaler = new RegExp(/dolly-backend\/api\/v1\/bestilling\/malbestilling\?brukerId/)
+const brukerMaler = new RegExp(/dolly-backend\/api\/v1\/malbestilling\?brukerId/)
 
 describe('Minside mal testing', () => {
 	it('passes', () => {

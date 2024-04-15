@@ -305,7 +305,32 @@ public class ArbeidsplassenCVDTO {
         private List<Omfang> workLoadTypes;
         private List<Arbeidstid> workScheduleTypes;
 
+        public List<OccupationType> getOccupationTypes() {
+
+            if(isNull(occupationTypes)) {
+                occupationTypes = new ArrayList<>();
+            }
+            return occupationTypes;
+        }
+
+        public List<Omfang> getWorkLoadTypes() {
+
+            if (isNull(workLoadTypes)) {
+                workLoadTypes = new ArrayList<>();
+            }
+            return workLoadTypes;
+        }
+
+        public List<Arbeidstid> getWorkScheduleTypes() {
+
+            if (isNull(workScheduleTypes)) {
+                workScheduleTypes = new ArrayList<>();
+            }
+            return workScheduleTypes;
+        }
+
         public List<Occupation> getOccupations() {
+
             if (isNull(occupations)) {
                 occupations = new ArrayList<>();
             }
@@ -313,6 +338,7 @@ public class ArbeidsplassenCVDTO {
         }
 
         public List<OccupationDraft> getOccupationDrafts() {
+
             if (isNull(occupationDrafts)) {
                 occupationDrafts = new ArrayList<>();
             }
@@ -320,6 +346,7 @@ public class ArbeidsplassenCVDTO {
         }
 
         public List<Location> getLocations() {
+
             if (isNull(locations)) {
                 locations = new ArrayList<>();
             }
@@ -347,7 +374,7 @@ public class ArbeidsplassenCVDTO {
     }
 
     public enum Omfang {
-        HELTID, DELTID;
+        HELTID, DELTID
     }
 
     public enum Arbeidstid {
@@ -359,7 +386,7 @@ public class ArbeidsplassenCVDTO {
         SOENDAG,
         SKIFT,
         VAKT,
-        TURNUS;
+        TURNUS
     }
 
     @Data

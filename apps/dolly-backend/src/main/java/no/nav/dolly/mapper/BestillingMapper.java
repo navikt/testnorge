@@ -1,4 +1,4 @@
-package no.nav.dolly.mapper.strategy;
+package no.nav.dolly.mapper;
 
 import lombok.experimental.UtilityClass;
 import no.nav.dolly.domain.jpa.Bestilling;

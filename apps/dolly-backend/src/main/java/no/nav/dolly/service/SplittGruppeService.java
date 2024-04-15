@@ -6,7 +6,7 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.exceptions.NotFoundException;
-import no.nav.dolly.mapper.strategy.BestillingMapper;
+import no.nav.dolly.mapper.BestillingMapper;
 import no.nav.dolly.repository.BestillingKontrollRepository;
 import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.repository.BestillingRepository;
