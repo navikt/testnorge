@@ -13,6 +13,7 @@ on:
 
 jobs:
   bruker-service:
+    if: github.event.pull_request.draft == false
     uses: ./.github/workflows/common.integration-test.yml
     with:
       working-directory: 'apps/bruker-service/'
@@ -20,6 +21,7 @@ jobs:
     secrets:
       NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
   person-organisasjon-tilgang-service:
+    if: github.event.pull_request.draft == false
     uses: ./.github/workflows/common.integration-test.yml
     with:
       working-directory: 'apps/person-organisasjon-tilgang-service/'
