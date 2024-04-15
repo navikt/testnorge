@@ -400,7 +400,7 @@ export default ({
 					)}
 					{bestillingIdListe?.length > 0 && (
 						<Button onClick={openMalModal} kind={'maler'} className="svg-icon-blue">
-							OPPRETT MAL FRA PERSON
+							OPPRETT MAL
 						</Button>
 					)}
 					<BestillingSammendragModal bestilling={bestilling} />

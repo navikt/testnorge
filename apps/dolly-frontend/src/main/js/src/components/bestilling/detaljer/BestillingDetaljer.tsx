@@ -65,7 +65,7 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId,
 								kind={'maler'}
 								className="svg-icon-blue"
 							>
-								OPPRETT NY MAL
+								OPPRETT MAL
 							</Button>
 						)}
 					<SlettButton
@@ -94,7 +94,7 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId,
 						GJENOPPRETT
 					</Button>
 					<Button onClick={openMalModal} kind={'maler'} className="svg-icon-blue">
-						OPPRETT NY MAL
+						OPPRETT MAL
 					</Button>
 				</div>
 			)}

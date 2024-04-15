@@ -49,12 +49,25 @@ export const MalModal = ({ id, malType, closeModal }) => {
 		}
 	}
 
+	var topic
+	switch (malType) {
+		case malTyper.ORGANISASJON:
+			topic = 'organisasjon'
+			break
+		case malTyper.BESTILLING:
+			topic = 'bestilling'
+			break
+		case malTyper.PERSON:
+			topic = 'person'
+			break
+	}
+
 	return (
 		<ErrorBoundary>
 			<FormProvider {...formMethods}>
 				<DollyModal isOpen closeModal={closeModal} width="40%" overflow="auto">
 					<div className="modal">
-						<h1>Opprett ny mal</h1>
+						<h1>Opprett mal fra {topic}</h1>
 						<br />
 						<Label name={'MalNavn'} label={'Navn på mal'}>
 							<TextInput
