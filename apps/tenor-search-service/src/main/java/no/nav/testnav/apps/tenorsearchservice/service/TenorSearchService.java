@@ -45,6 +45,18 @@ public class TenorSearchService {
         return tenorClient.getTestdata(query, kilde, type, fields, antall, side, seed);
     }
 
+    public Mono<TenorOversiktResponse> getTestdata(TenorRequest searchData, Kilde kilde, Integer antall, Integer side, Integer seed) {
+
+        var query = getQuery(searchData);
+        log.info("Henter oversikt fra tenor med query: {} og kilde: {}", query, kilde);
+       
+        var infoType = !isNull(kilde) && kilde.equals(Kilde.FORETAKSREGISTRET)
+                ? InfoType.Organisasjon : InfoType.IdentOgNavn;
+
+        return tenorClient.getTestdata(query, kilde, infoType, antall, side, seed)
+                .flatMap(resultat -> Mono.just(tenorResultMapperService.map(resultat, query)));
+    }
+
     private String getQuery(TenorRequest searchData) {
 
         var builder = new StringBuilder()
@@ -119,13 +131,5 @@ public class TenorSearchService {
                 .formatted(utenlandskPersonIdentifikasjon.stream()
                         .map(Enum::name)
                         .collect(Collectors.joining(" and ")));
-    }
-
-    public Mono<TenorOversiktResponse> getTestdata(TenorRequest searchData, Kilde kilde, Integer antall, Integer side, Integer seed) {
-
-        var query = getQuery(searchData);
-
-        return tenorClient.getTestdata(query, kilde, InfoType.IdentOgNavn, antall, side, seed)
-                .flatMap(resultat -> Mono.just(tenorResultMapperService.map(resultat, query)));
     }
 }
