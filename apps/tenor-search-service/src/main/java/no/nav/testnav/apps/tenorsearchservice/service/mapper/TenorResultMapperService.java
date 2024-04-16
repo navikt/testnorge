@@ -71,17 +71,35 @@ public class TenorResultMapperService {
         }
     }
 
+    private TenorOversiktResponse.Organisasjon mapOrganisasjon(TenorRawResponse.DokumentOrganisasjon dokument) {
+
+
+        try {
+            var organisasjon = objectMapper.readValue(dokument.getTenorMetadata().getKildedata(), TenorOversiktResponse.Organisasjon.class);
+
+            organisasjon.setNavn(dokument.getNavn());
+            organisasjon.setOrganisasjonsnummer(dokument.getTenorMetadata().getId());
+
+            return organisasjon;
+        } catch (JsonProcessingException e) {
+            log.error("Error while mapping JSON to Organisasjon object", e);
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                    "Error while mapping JSON to Organisasjon object: %s".formatted(e.getMessage()), e);
+        }
+
+    }
+
+    private List<TenorOversiktResponse.Organisasjon> mapOrganisasjoner(TenorRawResponse response) {
+
+        return response.getDokumentOrganisasjonListe().stream()
+                .map(this::mapOrganisasjon)
+                .toList();
+    }
+
     private static List<TenorOversiktResponse.Person> map(TenorRawResponse response) {
 
         return response.getDokumentListe().stream()
                 .map(TenorResultMapperService::map)
-                .toList();
-    }
-
-    private static List<TenorOversiktResponse.Organisasjon> mapOrganisasjoner(TenorRawResponse response) {
-
-        return response.getDokumentListe().stream()
-                .map(TenorResultMapperService::mapOrganisasjon)
                 .toList();
     }
 
@@ -91,15 +109,6 @@ public class TenorResultMapperService {
                 .id(dokument.getId())
                 .fornavn(dokument.getFornavn())
                 .etternavn(dokument.getEtternavn())
-                .tenorRelasjoner(map(dokument.getTenorRelasjoner()))
-                .build();
-    }
-
-    private static TenorOversiktResponse.Organisasjon mapOrganisasjon(TenorRawResponse.Dokument dokument) {
-
-        return TenorOversiktResponse.Organisasjon.builder()
-                .id(dokument.getId())
-                .navn("temp")
                 .tenorRelasjoner(map(dokument.getTenorRelasjoner()))
                 .build();
     }

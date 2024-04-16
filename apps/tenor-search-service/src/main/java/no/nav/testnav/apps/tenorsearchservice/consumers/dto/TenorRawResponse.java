@@ -18,6 +18,7 @@ public class TenorRawResponse {
     private Integer nesteSide;
     private Integer seed;
     private List<Dokument> dokumentListe;
+    private List<DokumentOrganisasjon> dokumentOrganisasjonListe;
 
     public List<Dokument> getDokumentListe() {
 
@@ -27,6 +28,14 @@ public class TenorRawResponse {
         return dokumentListe;
     }
 
+    public List<DokumentOrganisasjon> getDokumentOrganisasjonListe() {
+
+        if (isNull(dokumentOrganisasjonListe)) {
+            dokumentOrganisasjonListe = new ArrayList<>();
+        }
+        return dokumentOrganisasjonListe;
+    }
+
     @Data
     @NoArgsConstructor
     public static class Dokument {
@@ -34,6 +43,13 @@ public class TenorRawResponse {
         private String fornavn;
         private String etternavn;
         private TenorRelasjoner tenorRelasjoner;
+    }
+
+    @Data
+    @NoArgsConstructor
+    public static class DokumentOrganisasjon {
+        private String navn;
+        private TenorMetadata tenorMetadata;
     }
 
     @Data
@@ -144,5 +160,17 @@ public class TenorRawResponse {
     public static class SamletReskontroinnsyn {
 
         private String tenorRelasjonsnavn;
+    }
+
+    @Data
+    @NoArgsConstructor
+    public static class TenorMetadata {
+        private List<String> kilder;
+        private String kildedata;
+        private String oppdatert;
+        private Integer datasettVersjon;
+        private String opprettet;
+        private String id;
+        private String indeksert;
     }
 }
