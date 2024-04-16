@@ -37,7 +37,7 @@ export const EndringsmeldingForm = <T extends {}>({
   getSuccessMessage,
   getErrorMessage = () => 'Noe gikk galt.',
 }: Props<T>) => {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(null);
   const [show, setShow] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -50,16 +50,16 @@ export const EndringsmeldingForm = <T extends {}>({
   const onSubmit = (event: React.MouseEvent<HTMLButtonElement>, handling: Handling) => {
     event.preventDefault();
     if (valid(handling)) {
-      setLoading(true);
+      setLoading(handling || 'SETTE_DOEDSDATO');
       onSend(handling)
         .then((response) => {
-          setLoading(false);
+          setLoading(null);
           if (!response?.error) {
             setSuccessMessage(getSuccessMessage(response?.ident, handling));
           }
         })
         .catch((e) => {
-          setLoading(false);
+          setLoading(null);
           if (e instanceof BadRequestError) {
             return e.response.json().then((body: string[]) => setWarningMessages(body));
           }
@@ -72,6 +72,9 @@ export const EndringsmeldingForm = <T extends {}>({
     <Form>
       <Search
         onChange={(value) => {
+          setSuccessMessage('');
+          setErrorMessage('');
+          setWarningMessages([]);
           setIdent(value);
         }}
         setShow={setShow}
@@ -96,7 +99,7 @@ export const EndringsmeldingForm = <T extends {}>({
                 onSubmit(event, null)
               }
               disabled={loading}
-              loading={loading}
+              loading={loading === 'SETTE_DOEDSDATO'}
             >
               {labels.submit}
             </Knapp>
@@ -107,7 +110,7 @@ export const EndringsmeldingForm = <T extends {}>({
                   onSubmit(event, 'ANNULLERE_DOEDSDATO')
                 }
                 disabled={loading}
-                loading={loading}
+                loading={loading === 'ANNULLERE_DOEDSDATO'}
               >
                 {labels.delete}
               </Knapp>
