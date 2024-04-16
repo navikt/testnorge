@@ -2,6 +2,7 @@ package no.nav.testnav.apps.tenorsearchservice.service.mapper;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.tenorsearchservice.consumers.dto.TenorRawResponse;
@@ -41,6 +42,7 @@ public class TenorResultMapperService {
     private TenorOversiktResponse.Data convert(TenorResponse tenorResponse) {
 
         if (tenorResponse.getStatus().is2xxSuccessful()) {
+            log.info("Mottok tenor respons: {}", Json.pretty(tenorResponse.getData()));
             try {
                 var preamble = new StringBuilder();
                 var noHyphenCharsInValues = new StringTokenizer(tenorResponse.getData().toString(), "-");
@@ -56,6 +58,7 @@ public class TenorResultMapperService {
                         .nesteSide(response.getNesteSide())
                         .seed(response.getSeed())
                         .personer(map(response))
+                        .organisasjoner(mapOrganisasjoner(response))
                         .build();
 
             } catch (JsonProcessingException e) {
@@ -75,12 +78,28 @@ public class TenorResultMapperService {
                 .toList();
     }
 
+    private static List<TenorOversiktResponse.Organisasjon> mapOrganisasjoner(TenorRawResponse response) {
+
+        return response.getDokumentListe().stream()
+                .map(TenorResultMapperService::mapOrganisasjon)
+                .toList();
+    }
+
     private static TenorOversiktResponse.Person map(TenorRawResponse.Dokument dokument) {
 
         return TenorOversiktResponse.Person.builder()
                 .id(dokument.getId())
                 .fornavn(dokument.getFornavn())
                 .etternavn(dokument.getEtternavn())
+                .tenorRelasjoner(map(dokument.getTenorRelasjoner()))
+                .build();
+    }
+
+    private static TenorOversiktResponse.Organisasjon mapOrganisasjon(TenorRawResponse.Dokument dokument) {
+
+        return TenorOversiktResponse.Organisasjon.builder()
+                .id(dokument.getId())
+                .navn("temp")
                 .tenorRelasjoner(map(dokument.getTenorRelasjoner()))
                 .build();
     }
