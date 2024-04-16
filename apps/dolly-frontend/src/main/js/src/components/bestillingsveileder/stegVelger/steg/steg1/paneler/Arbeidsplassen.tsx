@@ -18,7 +18,6 @@ import {
 	initialSpraakVerdier,
 	initialUtdanningVerdier,
 } from '@/components/fagsystem/arbeidsplassen/form/initialValues'
-import _get from 'lodash/get'
 import _has from 'lodash/has'
 import { isBoolean } from 'lodash'
 
@@ -53,25 +52,26 @@ export const ArbeidsplassenPanel = ({ stateModifier, formValues }) => {
 
 ArbeidsplassenPanel.heading = 'Arbeidsplassen (CV)'
 
-ArbeidsplassenPanel.initialValues = ({ setMulti, opts, del, has, initial }) => {
+ArbeidsplassenPanel.initialValues = ({ setMulti, opts, del, has, values }) => {
 	const { personFoerLeggTil } = opts
 	const personFoerLeggTilHarHjemmel = personFoerLeggTil?.arbeidsplassenCV?.harHjemmel
 
 	const hjemmel = () => {
-		if (_has(initial, 'arbeidsplassenCV.harHjemmel')) {
-			return _get(initial, 'arbeidsplassenCV.harHjemmel')
+		if (has('arbeidsplassenCV.harHjemmel')) {
+			return values('arbeidsplassenCV.harHjemmel')
 		} else if (isBoolean(personFoerLeggTilHarHjemmel)) {
 			return personFoerLeggTilHarHjemmel
 		}
 		return true
 	}
 
-	const fjernHjemmelPath = (fjernPath) => {
+	const fjernHjemmelPath = (fjernPath: string) => {
+		const selected = values()
 		if (
-			initial?.arbeidsplassenCV &&
-			Object.keys(initial.arbeidsplassenCV)?.length === 2 &&
-			_has(initial, fjernPath) &&
-			_has(initial, 'arbeidsplassenCV.harHjemmel')
+			selected?.arbeidsplassenCV &&
+			Object.keys(selected?.arbeidsplassenCV)?.length === 2 &&
+			_has(selected, fjernPath) &&
+			_has(selected, 'arbeidsplassenCV.harHjemmel')
 		) {
 			return [fjernPath, 'arbeidsplassenCV.harHjemmel']
 		}

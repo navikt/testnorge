@@ -22,7 +22,7 @@ export default function DisplayFormState({ visState = false, label = 'Vis form' 
 		<div
 			onClick={toggleShowState}
 			style={{
-				position: 'absolute',
+				position: 'fixed',
 				top: 0,
 				right: 0,
 				background: '#f6f8fa',

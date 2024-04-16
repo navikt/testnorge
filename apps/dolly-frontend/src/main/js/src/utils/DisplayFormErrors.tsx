@@ -25,7 +25,7 @@ export default function DisplayFormErrors({
 		<div
 			onClick={toggleShowState}
 			style={{
-				position: 'absolute',
+				position: 'fixed',
 				top: 40,
 				right: 0,
 				background: '#f6f8fa',
