@@ -49,7 +49,7 @@ public class TenorSearchService {
 
         var query = getQuery(searchData);
         log.info("Henter oversikt fra tenor med query: {} og kilde: {}", query, kilde);
-       
+
         var infoType = !isNull(kilde) && kilde.equals(Kilde.FORETAKSREGISTRET)
                 ? InfoType.Organisasjon : InfoType.IdentOgNavn;
 

@@ -35,7 +35,7 @@ public class TenorSearchController {
     @PostMapping(path = "/testdata/oversikt", produces = "application/json", consumes = "application/json")
     public Mono<TenorOversiktResponse> getTestdata(@RequestBody TenorRequest searchData,
                                                    @Schema(description = "Kilde, hvor data skal hentes fra")
-                                                   @RequestParam(required = false, defaultValue = "freg") Kilde kilde,
+                                                   @RequestParam(required = false) Kilde kilde,
                                                    @Schema(description = "Antall resultater per side")
                                                    @RequestParam(required = false) Integer antall,
                                                    @Schema(description = "Sidenummer")
