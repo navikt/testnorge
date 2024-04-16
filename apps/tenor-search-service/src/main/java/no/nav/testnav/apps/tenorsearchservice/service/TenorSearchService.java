@@ -58,7 +58,7 @@ public class TenorSearchService {
         var query = getQuery(searchData);
 
         return tenorClient.getTestdata(query, Kilde.FORETAKSREGISTRET, InfoType.Organisasjon, antall, side, seed)
-                .flatMap(resultat -> Mono.just(tenorResultMapperService.map(resultat, query)));
+                .flatMap(resultat -> Mono.just(tenorResultMapperService.mapOrganisasjoner(resultat, query)));
     }
 
     private String getQuery(TenorRequest searchData) {

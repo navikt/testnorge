@@ -10,16 +10,16 @@ import static java.util.Objects.isNull;
 
 @Data
 @NoArgsConstructor
-public class TenorRawResponse {
+public class TenorOrganisasjonRawResponse {
 
     private Integer treff;
     private Integer rader;
     private Integer offset;
     private Integer nesteSide;
     private Integer seed;
-    private List<Dokument> dokumentListe;
+    private List<DokumentOrganisasjon> dokumentListe;
 
-    public List<Dokument> getDokumentListe() {
+    public List<DokumentOrganisasjon> getDokumentListe() {
 
         if (isNull(dokumentListe)) {
             dokumentListe = new ArrayList<>();
@@ -29,30 +29,9 @@ public class TenorRawResponse {
 
     @Data
     @NoArgsConstructor
-    public static class Dokument {
-        private String id;
-        private String fornavn;
-        private String etternavn;
-        private TenorRelasjoner tenorRelasjoner;
-    }
-
-    @Data
-    @NoArgsConstructor
-    public static class TenorRelasjoner {
-
-        private List<Arbeidsforhold> arbeidsforhold;
-        private List<BeregnetSkatt> beregnetSkatt;
-        private List<BrregErFr> brregErFr;
-        private List<Freg> freg;
-        private List<Inntekt> inntekt;
-        private List<SamletReskontroinnsyn> samletReskontroinnsyn;
-        private List<Skattemelding> skattemelding;
-        private List<Skatteplikt> skatteplikt;
-        private List<SpesifisertSummertSkattegrunnlag> spesifisertSummertSkattegrunnlag;
-        private List<SummertSkattegrunnlag> summertSkattegrunnlag;
-        private List<TestinnsendingSkattPerson> testinnsendingSkattPerson;
-        private List<Tilleggsskatt> tilleggsskatt;
-        private List<Tjenestepensjonsavtale> tjenestepensjonsavtale;
+    public static class DokumentOrganisasjon {
+        private String navn;
+        private TenorMetadata tenorMetadata;
     }
 
     @Data
@@ -144,5 +123,17 @@ public class TenorRawResponse {
     public static class SamletReskontroinnsyn {
 
         private String tenorRelasjonsnavn;
+    }
+
+    @Data
+    @NoArgsConstructor
+    public static class TenorMetadata {
+        private List<String> kilder;
+        private String kildedata;
+        private String oppdatert;
+        private Integer datasettVersjon;
+        private String opprettet;
+        private String id;
+        private String indeksert;
     }
 }

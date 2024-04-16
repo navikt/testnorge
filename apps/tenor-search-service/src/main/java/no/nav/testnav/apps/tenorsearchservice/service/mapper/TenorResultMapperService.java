@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.apps.tenorsearchservice.consumers.dto.TenorOrganisasjonRawResponse;
 import no.nav.testnav.apps.tenorsearchservice.consumers.dto.TenorRawResponse;
 import no.nav.testnav.apps.tenorsearchservice.domain.TenorOversiktResponse;
 import no.nav.testnav.apps.tenorsearchservice.domain.TenorResponse;
@@ -39,6 +40,16 @@ public class TenorResultMapperService {
                 .build();
     }
 
+    public TenorOversiktResponse mapOrganisasjoner(TenorResponse resultat, String query) {
+
+        return TenorOversiktResponse.builder()
+                .status(resultat.getStatus())
+                .error(resultat.getError())
+                .data(convertOrganisasjoner(resultat))
+                .query(query)
+                .build();
+    }
+
     private TenorOversiktResponse.Data convert(TenorResponse tenorResponse) {
 
         if (tenorResponse.getStatus().is2xxSuccessful()) {
@@ -58,6 +69,36 @@ public class TenorResultMapperService {
                         .nesteSide(response.getNesteSide())
                         .seed(response.getSeed())
                         .personer(map(response))
+                        .build();
+
+            } catch (JsonProcessingException e) {
+                log.error("Feil ved konvertering av tenor respons {}", e.getMessage(), e);
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                        "Feil ved konvertering av tenor response: %s".formatted(e.getMessage()), e);
+            }
+        } else {
+            return null;
+        }
+    }
+
+    private TenorOversiktResponse.Data convertOrganisasjoner(TenorResponse tenorResponse) {
+
+        if (tenorResponse.getStatus().is2xxSuccessful()) {
+            log.info("Mottok tenor respons: {}", Json.pretty(tenorResponse.getData()));
+            try {
+                var preamble = new StringBuilder();
+                var noHyphenCharsInValues = new StringTokenizer(tenorResponse.getData().toString(), "-");
+                while (noHyphenCharsInValues.hasMoreTokens()) {
+                    preamble.append(StringUtils.capitalize(noHyphenCharsInValues.nextToken()));
+                }
+
+                var response = objectMapper.readValue(preamble.toString(), TenorOrganisasjonRawResponse.class);
+                return TenorOversiktResponse.Data.builder()
+                        .rader(response.getRader())
+                        .treff(response.getTreff())
+                        .offset(response.getOffset())
+                        .nesteSide(response.getNesteSide())
+                        .seed(response.getSeed())
                         .organisasjoner(mapOrganisasjoner(response))
                         .build();
 
@@ -71,7 +112,7 @@ public class TenorResultMapperService {
         }
     }
 
-    private TenorOversiktResponse.Organisasjon mapOrganisasjon(TenorRawResponse.DokumentOrganisasjon dokument) {
+    private TenorOversiktResponse.Organisasjon mapOrganisasjon(TenorOrganisasjonRawResponse.DokumentOrganisasjon dokument) {
 
 
         try {
@@ -89,9 +130,9 @@ public class TenorResultMapperService {
 
     }
 
-    private List<TenorOversiktResponse.Organisasjon> mapOrganisasjoner(TenorRawResponse response) {
+    private List<TenorOversiktResponse.Organisasjon> mapOrganisasjoner(TenorOrganisasjonRawResponse response) {
 
-        return response.getDokumentOrganisasjonListe().stream()
+        return response.getDokumentListe().stream()
                 .map(this::mapOrganisasjon)
                 .toList();
     }
