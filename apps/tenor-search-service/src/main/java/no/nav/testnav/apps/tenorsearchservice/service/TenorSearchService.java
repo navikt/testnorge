@@ -45,15 +45,19 @@ public class TenorSearchService {
         return tenorClient.getTestdata(query, kilde, type, fields, antall, side, seed);
     }
 
-    public Mono<TenorOversiktResponse> getTestdata(TenorRequest searchData, Kilde kilde, Integer antall, Integer side, Integer seed) {
+    public Mono<TenorOversiktResponse> getTestdata(TenorRequest searchData, Integer antall, Integer side, Integer seed) {
 
         var query = getQuery(searchData);
-        log.info("Henter oversikt fra tenor med query: {} og kilde: {}", query, kilde);
 
-        var infoType = !isNull(kilde) && kilde.equals(Kilde.FORETAKSREGISTRET)
-                ? InfoType.Organisasjon : InfoType.IdentOgNavn;
+        return tenorClient.getTestdata(query, Kilde.FREG, InfoType.IdentOgNavn, antall, side, seed)
+                .flatMap(resultat -> Mono.just(tenorResultMapperService.map(resultat, query)));
+    }
 
-        return tenorClient.getTestdata(query, kilde, infoType, antall, side, seed)
+    public Mono<TenorOversiktResponse> getTestdataOrganisasjon(TenorRequest searchData, Integer antall, Integer side, Integer seed) {
+
+        var query = getQuery(searchData);
+
+        return tenorClient.getTestdata(query, Kilde.FORETAKSREGISTRET, InfoType.Organisasjon, antall, side, seed)
                 .flatMap(resultat -> Mono.just(tenorResultMapperService.map(resultat, query)));
     }
 

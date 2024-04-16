@@ -34,8 +34,6 @@ public class TenorSearchController {
 
     @PostMapping(path = "/testdata/oversikt", produces = "application/json", consumes = "application/json")
     public Mono<TenorOversiktResponse> getTestdata(@RequestBody TenorRequest searchData,
-                                                   @Schema(description = "Kilde, hvor data skal hentes fra")
-                                                   @RequestParam(required = false) Kilde kilde,
                                                    @Schema(description = "Antall resultater per side")
                                                    @RequestParam(required = false) Integer antall,
                                                    @Schema(description = "Sidenummer")
@@ -43,7 +41,19 @@ public class TenorSearchController {
                                                    @Schema(description = "Seed for paginering")
                                                    @RequestParam(required = false) Integer seed) {
 
-        return tenorSearchService.getTestdata(searchData, kilde, antall, side, seed);
+        return tenorSearchService.getTestdata(searchData, antall, side, seed);
+    }
+
+    @PostMapping(path = "/testdata/oversikt/organisasjoner", produces = "application/json", consumes = "application/json")
+    public Mono<TenorOversiktResponse> getTestdataOrganisasjon(@RequestBody TenorRequest searchData,
+                                                               @Schema(description = "Antall resultater per side")
+                                                               @RequestParam(required = false) Integer antall,
+                                                               @Schema(description = "Sidenummer")
+                                                               @RequestParam(required = false) Integer side,
+                                                               @Schema(description = "Seed for paginering")
+                                                               @RequestParam(required = false) Integer seed) {
+
+        return tenorSearchService.getTestdataOrganisasjon(searchData, antall, side, seed);
     }
 
     @GetMapping("/testdata/raw")
