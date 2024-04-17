@@ -7,15 +7,10 @@ import no.nav.testnav.apps.tenorsearchservice.consumers.dto.InfoType;
 import no.nav.testnav.apps.tenorsearchservice.consumers.dto.Kilde;
 import no.nav.testnav.apps.tenorsearchservice.domain.TenorOversiktResponse;
 import no.nav.testnav.apps.tenorsearchservice.domain.TenorRequest;
-import no.nav.testnav.apps.tenorsearchservice.domain.TenorResponse;
-import no.nav.testnav.apps.tenorsearchservice.service.mapper.TenorResultMapperService;
+import no.nav.testnav.apps.tenorsearchservice.service.mapper.TenorOrganisasjonResultMapperService;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.convertBooleanWildcard;
 import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.convertDatoer;
@@ -23,37 +18,24 @@ import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtili
 import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.convertIntervall;
 import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.convertObject;
 import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.guard;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class TenorSearchService {
+public class TenorOrganisasjonSearchService {
 
     private final TenorClient tenorClient;
-    private final TenorResultMapperService tenorResultMapperService;
+    private final TenorOrganisasjonResultMapperService tenorOrganisasjonResultMapperService;
 
-    public Mono<TenorResponse> getTestdata(String testDataQuery, Kilde kilde, InfoType type, String fields, Integer seed) {
+    public Mono<TenorOversiktResponse> getTestdataOrganisasjon(TenorRequest searchData, Integer antall, Integer side, Integer seed) {
 
-        return tenorClient.getTestdata(isNotBlank(testDataQuery) ? testDataQuery : "", kilde, type, fields, seed);
+        var query = getOrganisasjonQuery(searchData);
+
+        return tenorClient.getTestdata(query, Kilde.FORETAKSREGISTRET, InfoType.Organisasjon, antall, side, seed)
+                .flatMap(resultat -> Mono.just(tenorOrganisasjonResultMapperService.mapOrganisasjon(resultat, query)));
     }
 
-    public Mono<TenorResponse> getTestdata(TenorRequest searchData, Kilde kilde, InfoType type, String fields,
-                                           Integer antall, Integer side, Integer seed) {
-
-        var query = getQuery(searchData);
-        return tenorClient.getTestdata(query, kilde, type, fields, antall, side, seed);
-    }
-
-    public Mono<TenorOversiktResponse> getTestdata(TenorRequest searchData, Integer antall, Integer side, Integer seed) {
-
-        var query = getQuery(searchData);
-
-        return tenorClient.getTestdata(query, Kilde.FREG, InfoType.IdentOgNavn, antall, side, seed)
-                .flatMap(resultat -> Mono.just(tenorResultMapperService.map(resultat, query)));
-    }
-
-    private String getQuery(TenorRequest searchData) {
+    private String getOrganisasjonQuery(TenorRequest searchData) {
 
         var builder = new StringBuilder()
                 .append(convertObject("identifikator", searchData.getIdentifikator()))
@@ -63,7 +45,6 @@ public class TenorSearchService {
                 .append(convertEnum("kjoenn", searchData.getKjoenn()))
                 .append(convertEnum("personstatus", searchData.getPersonstatus()))
                 .append(convertEnum("sivilstand", searchData.getSivilstand()))
-                .append(getUtenlandskPersonidentifikasjon(searchData.getUtenlandskPersonIdentifikasjon()))
                 .append(convertEnum("identitetsgrunnlagStatus", searchData.getIdentitetsgrunnlagStatus()))
                 .append(convertEnum("adresseBeskyttelse", searchData.getAdressebeskyttelse()))
                 .append(convertBooleanWildcard("legitimasjonsdokument", searchData.getHarLegitimasjonsdokument()))
@@ -90,7 +71,7 @@ public class TenorSearchService {
         }
 
         if (nonNull(searchData.getRelasjoner())) {
-            builder.append(getFregRelasjoner(searchData.getRelasjoner()))
+            builder
                     .append(convertIntervall("antallBarn", searchData.getRelasjoner().getAntallBarn()))
                     .append(convertBooleanWildcard("foreldreansvar", searchData.getRelasjoner().getHarForeldreAnsvar()))
                     .append(convertBooleanWildcard("deltBosted", searchData.getRelasjoner().getHarDeltBosted()))
@@ -109,23 +90,5 @@ public class TenorSearchService {
         builder.append(TenorEksterneRelasjonerUtility.getEksterneRelasjoner(searchData));
 
         return guard(builder);
-    }
-
-    private String getFregRelasjoner(TenorRequest.Relasjoner relasjoner) {
-
-        return isNull(relasjoner.getRelasjon()) && isNull(relasjoner.getRelasjonMedFoedselsaar()) ? "" :
-                " and tenorRelasjoner.freg:{%s}"
-                        .formatted(guard(new StringBuilder()
-                                .append(convertObject("tenorRelasjonsnavn", relasjoner.getRelasjon()))
-                                .append(convertIntervall("foedselsdato", relasjoner.getRelasjonMedFoedselsaar()))
-                        ));
-    }
-
-    private String getUtenlandskPersonidentifikasjon(List<TenorRequest.UtenlandskPersonIdentifikasjon> utenlandskPersonIdentifikasjon) {
-
-        return (utenlandskPersonIdentifikasjon.isEmpty()) ? "" : " and utenlandskPersonidentifikasjon:(%s)"
-                .formatted(utenlandskPersonIdentifikasjon.stream()
-                        .map(Enum::name)
-                        .collect(Collectors.joining(" and ")));
     }
 }

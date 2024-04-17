@@ -44,18 +44,6 @@ public class TenorSearchController {
         return tenorSearchService.getTestdata(searchData, antall, side, seed);
     }
 
-    @PostMapping(path = "/testdata/oversikt/organisasjoner", produces = "application/json", consumes = "application/json")
-    public Mono<TenorOversiktResponse> getTestdataOrganisasjon(@RequestBody TenorRequest searchData,
-                                                               @Schema(description = "Antall resultater per side")
-                                                               @RequestParam(required = false) Integer antall,
-                                                               @Schema(description = "Sidenummer")
-                                                               @RequestParam(required = false) Integer side,
-                                                               @Schema(description = "Seed for paginering")
-                                                               @RequestParam(required = false) Integer seed) {
-
-        return tenorSearchService.getTestdataOrganisasjon(searchData, antall, side, seed);
-    }
-
     @GetMapping("/testdata/raw")
     public Mono<TenorResponse> getTestdata(@Schema(description = "Søkekriterier")
                                            @RequestParam(required = false) String searchData,

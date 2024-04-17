@@ -32,14 +32,12 @@ public class TenorOrganisasjonRawResponse {
     public static class DokumentOrganisasjon {
         private String navn;
         private TenorMetadata tenorMetadata;
-        private TenorRawResponse.TenorRelasjoner tenorRelasjoner;
     }
 
     @Data
     @NoArgsConstructor
     public static class TenorMetadata {
         private List<String> kilder;
-        private String kildedata;
         private String oppdatert;
         private Integer datasettVersjon;
         private String opprettet;
