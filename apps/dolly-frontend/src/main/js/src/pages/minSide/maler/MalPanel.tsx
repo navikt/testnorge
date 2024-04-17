@@ -44,7 +44,7 @@ export const MalPanel = ({
 
 	const DataCells = ({ id, malNavn, bestilling }) => (
 		<>
-			<Table.DataCell scope="row">
+			<Table.DataCell scope="row" width={'75%'}>
 				{erUnderRedigering(id) ? (
 					<EndreMalnavn
 						malNavn={malNavn}
@@ -59,7 +59,7 @@ export const MalPanel = ({
 					<span style={{ fontWeight: 'normal' }}>{malNavn}</span>
 				)}
 			</Table.DataCell>
-			<Table.DataCell align={'center'}>
+			<Table.DataCell align={'center'} width={'15%'}>
 				{erUnderRedigering(id) ? (
 					<Button variant={'secondary'} size={'small'} onClick={() => avsluttRedigering(id)}>
 						Avbryt
@@ -76,7 +76,7 @@ export const MalPanel = ({
 					/>
 				)}
 			</Table.DataCell>
-			<Table.DataCell>
+			<Table.DataCell width={'10%'}>
 				<SlettMal id={id} organisasjon={bestilling?.organisasjon} mutate={mutate} />
 			</Table.DataCell>
 		</>
