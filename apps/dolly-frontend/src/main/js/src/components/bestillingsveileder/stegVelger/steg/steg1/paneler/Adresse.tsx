@@ -40,6 +40,9 @@ AdressePanel.heading = 'Adresser'
 
 AdressePanel.initialValues = ({ set, opts, del, has }: any) => {
 	const { identtype } = opts
+	const { identMaster } = opts
+
+	const initialMaster = identMaster === 'PDL' || identtype === 'NPID' ? 'PDL' : 'FREG'
 
 	const paths = {
 		bostedadresse: 'pdldata.person.bostedsadresse',
@@ -53,7 +56,7 @@ AdressePanel.initialValues = ({ set, opts, del, has }: any) => {
 			label: 'Bostedsadresse',
 			checked: has(paths.bostedadresse),
 			add: () => {
-				set(paths.bostedadresse, [getInitialBostedsadresse(identtype === 'NPID' ? 'PDL' : 'FREG')])
+				set(paths.bostedadresse, [getInitialBostedsadresse(initialMaster)])
 			},
 			remove: () => {
 				del(paths.bostedadresse)
@@ -63,9 +66,7 @@ AdressePanel.initialValues = ({ set, opts, del, has }: any) => {
 			label: 'Oppholdsadresse',
 			checked: has(paths.oppholdsadresse),
 			add() {
-				set(paths.oppholdsadresse, [
-					getInitialOppholdsadresse(identtype === 'NPID' ? 'PDL' : 'FREG'),
-				])
+				set(paths.oppholdsadresse, [getInitialOppholdsadresse(initialMaster)])
 			},
 			remove() {
 				del(paths.oppholdsadresse)
@@ -75,7 +76,7 @@ AdressePanel.initialValues = ({ set, opts, del, has }: any) => {
 			label: 'Kontaktadresse',
 			checked: has(paths.kontaktadresse),
 			add() {
-				set(paths.kontaktadresse, [getInitialKontaktadresse(identtype === 'NPID' ? 'PDL' : 'FREG')])
+				set(paths.kontaktadresse, [getInitialKontaktadresse(initialMaster)])
 			},
 			remove() {
 				del(paths.kontaktadresse)
@@ -85,9 +86,7 @@ AdressePanel.initialValues = ({ set, opts, del, has }: any) => {
 			label: 'Adressebeskyttelse',
 			checked: has(paths.adressebeskyttelse),
 			add() {
-				set(paths.adressebeskyttelse, [
-					getInitialAdressebeskyttelse(identtype === 'NPID' ? 'PDL' : 'FREG'),
-				])
+				set(paths.adressebeskyttelse, [getInitialAdressebeskyttelse(initialMaster)])
 			},
 			remove() {
 				del(paths.adressebeskyttelse)

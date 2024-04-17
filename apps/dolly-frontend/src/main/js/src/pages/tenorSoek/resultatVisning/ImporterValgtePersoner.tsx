@@ -71,6 +71,7 @@ export const ImporterValgtePersoner = ({ identer, isMultiple }: ImporterValgtePe
 				}),
 				mal: valgtMal,
 				gruppe: location?.state?.gruppe,
+				identMaster: 'PDL',
 			},
 		})
 	}

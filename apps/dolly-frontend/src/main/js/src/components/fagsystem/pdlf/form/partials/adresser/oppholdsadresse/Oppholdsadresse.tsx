@@ -35,6 +35,7 @@ type OppholdsadresseFormValues = {
 	path: string
 	idx?: number
 	identtype?: string
+	identMaster?: string
 }
 
 type Target = {
@@ -47,6 +48,7 @@ export const OppholdsadresseForm = ({
 	path,
 	idx,
 	identtype,
+	identMaster,
 }: OppholdsadresseFormValues) => {
 	const erNPID = identtype === 'NPID'
 	useEffect(() => {
@@ -177,6 +179,7 @@ export const OppholdsadresseForm = ({
 			<AvansertForm
 				path={path}
 				kanVelgeMaster={
+					identMaster !== 'PDL' &&
 					valgtAdressetype !== 'MATRIKKELADRESSE' &&
 					valgtAdressetype !== 'OPPHOLD_ANNET_STED' &&
 					!erNPID
@@ -188,12 +191,14 @@ export const OppholdsadresseForm = ({
 
 export const Oppholdsadresse = ({ formMethods }: OppholdsadresseValues) => {
 	const opts = useContext(BestillingsveilederContext)
+	const initialPDLMaster = opts?.identMaster === 'PDL' || opts?.identtype === 'NPID'
+
 	return (
 		<Kategori title="Oppholdsadresse">
 			<FormDollyFieldArray
 				name="pdldata.person.oppholdsadresse"
 				header="Oppholdsadresse"
-				newEntry={getInitialOppholdsadresse(opts?.identtype === 'NPID' ? 'PDL' : 'FREG')}
+				newEntry={getInitialOppholdsadresse(initialPDLMaster ? 'PDL' : 'FREG')}
 				canBeEmpty={false}
 			>
 				{(path: string, idx: number) => (
@@ -202,6 +207,7 @@ export const Oppholdsadresse = ({ formMethods }: OppholdsadresseValues) => {
 						path={path}
 						idx={idx}
 						identtype={opts?.identtype}
+						identMaster={opts?.identMaster}
 					/>
 				)}
 			</FormDollyFieldArray>

@@ -18,6 +18,7 @@ type AdressebeskyttelseFormValues = {
 	path: string
 	idx?: number
 	identtype?: string
+	identMaster?: string
 }
 
 type Target = {
@@ -34,8 +35,8 @@ export const getIdenttype = (formMethods: any, identtype: string) => {
 	}
 }
 
-const getAdressebeskyttelseOptions = (identtype: string) => {
-	if (identtype === 'NPID') {
+const getAdressebeskyttelseOptions = (identtype: string, identMaster: string) => {
+	if (identtype === 'NPID' || identMaster === 'PDL') {
 		return [{ value: 'STRENGT_FORTROLIG_UTLAND', label: 'Strengt fortrolig utland' }]
 	}
 	return identtype === 'FNR'
@@ -48,11 +49,12 @@ export const AdressebeskyttelseForm = ({
 	path,
 	idx,
 	identtype,
+	identMaster,
 }: AdressebeskyttelseFormValues) => {
-	const [options, setOptions] = useState(getAdressebeskyttelseOptions(identtype))
+	const [options, setOptions] = useState(getAdressebeskyttelseOptions(identtype, identMaster))
 
 	useEffect(() => {
-		const newOptions = getAdressebeskyttelseOptions(identtype)
+		const newOptions = getAdressebeskyttelseOptions(identtype, identMaster)
 		const selectedOption = formMethods.watch(`${path}.gradering`)
 		if (selectedOption && !newOptions.map((opt) => opt.value).includes(selectedOption)) {
 			formMethods.setValue(`${path}.gradering`, null)
@@ -91,13 +93,14 @@ export const AdressebeskyttelseForm = ({
 
 export const Adressebeskyttelse = ({ formMethods }: AdressebeskyttelseValues) => {
 	const opts = useContext(BestillingsveilederContext)
-	const identtype = getIdenttype(formMethods, opts.identtype)
+	const initialPdlMaster = opts.identMaster !== 'PDLF' && opts?.identtype === 'NPID'
+
 	return (
 		<Kategori title="Adressebeskyttelse">
 			<FormDollyFieldArray
 				name="pdldata.person.adressebeskyttelse"
 				header="Adressebeskyttelse"
-				newEntry={getInitialAdressebeskyttelse(identtype === 'NPID' ? 'PDL' : 'FREG')}
+				newEntry={getInitialAdressebeskyttelse(initialPdlMaster ? 'PDL' : 'FREG')}
 				canBeEmpty={false}
 			>
 				{(path: string, idx: number) => (
@@ -105,7 +108,8 @@ export const Adressebeskyttelse = ({ formMethods }: AdressebeskyttelseValues) =>
 						formMethods={formMethods}
 						path={path}
 						idx={idx}
-						identtype={identtype}
+						identtype={opts?.identtype}
+						identMaster={opts?.identMaster}
 					/>
 				)}
 			</FormDollyFieldArray>
