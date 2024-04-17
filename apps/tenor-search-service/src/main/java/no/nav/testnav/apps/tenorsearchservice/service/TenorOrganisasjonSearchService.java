@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.tenorsearchservice.consumers.TenorClient;
 import no.nav.testnav.apps.tenorsearchservice.consumers.dto.InfoType;
 import no.nav.testnav.apps.tenorsearchservice.consumers.dto.Kilde;
+import no.nav.testnav.apps.tenorsearchservice.domain.TenorOversiktOrganisasjonResponse;
 import no.nav.testnav.apps.tenorsearchservice.domain.TenorOversiktResponse;
 import no.nav.testnav.apps.tenorsearchservice.domain.TenorRequest;
 import no.nav.testnav.apps.tenorsearchservice.service.mapper.TenorOrganisasjonResultMapperService;
@@ -27,7 +28,7 @@ public class TenorOrganisasjonSearchService {
     private final TenorClient tenorClient;
     private final TenorOrganisasjonResultMapperService tenorOrganisasjonResultMapperService;
 
-    public Mono<TenorOversiktResponse> getTestdataOrganisasjon(TenorRequest searchData, Integer antall, Integer side, Integer seed) {
+    public Mono<TenorOversiktOrganisasjonResponse> getTestdataOrganisasjon(TenorRequest searchData, Integer antall, Integer side, Integer seed) {
 
         var query = getOrganisasjonQuery(searchData);
 

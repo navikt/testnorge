@@ -6,7 +6,7 @@ import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.tenorsearchservice.consumers.dto.TenorOrganisasjonRawResponse;
-import no.nav.testnav.apps.tenorsearchservice.domain.TenorOversiktResponse;
+import no.nav.testnav.apps.tenorsearchservice.domain.TenorOversiktOrganisasjonResponse;
 import no.nav.testnav.apps.tenorsearchservice.domain.TenorResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
@@ -23,9 +23,9 @@ public class TenorOrganisasjonResultMapperService {
 
     private final ObjectMapper objectMapper;
 
-    public TenorOversiktResponse mapOrganisasjon(TenorResponse resultat, String query) {
+    public TenorOversiktOrganisasjonResponse mapOrganisasjon(TenorResponse resultat, String query) {
 
-        return TenorOversiktResponse.builder()
+        return TenorOversiktOrganisasjonResponse.builder()
                 .status(resultat.getStatus())
                 .error(resultat.getError())
                 .data(convertOrganisasjoner(resultat))
@@ -33,7 +33,7 @@ public class TenorOrganisasjonResultMapperService {
                 .build();
     }
 
-    private TenorOversiktResponse.Data convertOrganisasjoner(TenorResponse tenorResponse) {
+    private TenorOversiktOrganisasjonResponse.Data convertOrganisasjoner(TenorResponse tenorResponse) {
 
         if (tenorResponse.getStatus().is2xxSuccessful()) {
             log.info("Mottok tenor respons: {}", Json.pretty(tenorResponse.getData()));
@@ -45,7 +45,7 @@ public class TenorOrganisasjonResultMapperService {
                 }
 
                 var response = objectMapper.readValue(preamble.toString(), TenorOrganisasjonRawResponse.class);
-                return TenorOversiktResponse.Data.builder()
+                return TenorOversiktOrganisasjonResponse.Data.builder()
                         .rader(response.getRader())
                         .treff(response.getTreff())
                         .offset(response.getOffset())
@@ -64,16 +64,17 @@ public class TenorOrganisasjonResultMapperService {
         }
     }
 
-    private TenorOversiktResponse.Organisasjon mapOrganisasjon(TenorOrganisasjonRawResponse.DokumentOrganisasjon dokument) {
+    private TenorOversiktOrganisasjonResponse.Organisasjon mapOrganisasjon(TenorOrganisasjonRawResponse.DokumentOrganisasjon dokument) {
 
-        return TenorOversiktResponse.Organisasjon.builder()
+        return TenorOversiktOrganisasjonResponse.Organisasjon.builder()
                 .organisasjonsnummer(dokument.getTenorMetadata().getId())
+                .kilder(dokument.getTenorMetadata().getKilder())
                 .navn(dokument.getNavn())
                 .build();
 
     }
 
-    private List<TenorOversiktResponse.Organisasjon> mapOrganisasjon(TenorOrganisasjonRawResponse response) {
+    private List<TenorOversiktOrganisasjonResponse.Organisasjon> mapOrganisasjon(TenorOrganisasjonRawResponse response) {
 
         return response.getDokumentListe().stream()
                 .map(this::mapOrganisasjon)
