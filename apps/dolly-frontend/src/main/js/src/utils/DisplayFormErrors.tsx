@@ -26,6 +26,8 @@ export default function DisplayFormErrors({
 			onClick={toggleShowState}
 			style={{
 				position: 'fixed',
+				maxHeight: '100%',
+				overflow: 'auto',
 				top: 40,
 				right: 0,
 				background: '#f6f8fa',

@@ -138,7 +138,17 @@ const getUpdatedInntektstubData = (inntektstubData: any) => {
 
 const getUpdatedAaregData = (aaregData: any) => {
 	return aaregData.map((data: any) => {
+		console.log('initialValues: ', initialValues) //TODO - SLETT MEG
 		data = updateData(data, initialValues.aareg[0])
+		// data = updateData(data, initialValues.aareg)
+		//TODO: Funker, men proev aa skriv bedre ved hjelp av initialvalues
+		//TODO: Og sjekk om det funker paa alle andre typer arb.forh. ogsaa
+		if (data.amelding && data.amelding.length > 0) {
+			data.ansettelsesPeriode = undefined
+			data.arbeidsgiver = undefined
+			data.arbeidsavtale = undefined
+		}
+		console.log('data: ', data) //TODO - SLETT MEG
 		data.permisjon = data.permisjon?.map((permisjon: any) =>
 			updateData(permisjon, initialValues.permisjon),
 		)

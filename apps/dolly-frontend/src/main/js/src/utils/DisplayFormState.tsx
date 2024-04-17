@@ -23,6 +23,8 @@ export default function DisplayFormState({ visState = false, label = 'Vis form' 
 			onClick={toggleShowState}
 			style={{
 				position: 'fixed',
+				maxHeight: '100%',
+				overflow: 'auto',
 				top: 0,
 				right: 0,
 				background: '#f6f8fa',
