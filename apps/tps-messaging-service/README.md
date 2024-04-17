@@ -44,11 +44,3 @@ AMQ8450I: Display queue status details.
    MSGAGE( )                               OPPROCS(0)
    QTIME( , )                              UNCOM(NO)
 
-```
-
-### Utviklerimage
-I utviklerimage brukes ikke naisdevice og du må legge til følgende ekstra argumenter:
-```
--Djavax.net.ssl.trustStore=[path til lokal truststore]
--Djavax.net.ssl.trustStorePassword=[passord til lokal truststore]
-```

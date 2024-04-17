@@ -123,7 +123,7 @@ public class IdentService {
 
     private String prepareRequest(List<String> identer, boolean isProd) {
 
-        return "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" +
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" source=\"Dolly\"?>" +
                 "<tpsPersonData>" +
                 "<tpsServiceRutine>" +
                 "<serviceRutinenavn>FS03-FDLISTER-DISKNAVN-M</serviceRutinenavn>" +

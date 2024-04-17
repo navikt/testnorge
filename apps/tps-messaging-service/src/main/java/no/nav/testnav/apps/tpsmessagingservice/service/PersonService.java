@@ -175,7 +175,8 @@ public class PersonService {
                         .build())
                 .build();
 
-        var xmlRequest = ServiceRutineUtil.marshallToXML(requestContext, request);
+        var xmlRequest = ServiceRutineUtil.marshallToXML(requestContext, request)
+                .replace("standalone=\"yes\"", "standalone=\"yes\" source=\"Dolly\"");
 
         var miljoerResponse = servicerutineConsumer.sendMessage(xmlRequest, miljoer);
 
