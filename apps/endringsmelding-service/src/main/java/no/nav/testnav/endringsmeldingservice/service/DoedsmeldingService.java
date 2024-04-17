@@ -99,9 +99,8 @@ public class DoedsmeldingService {
                                 .ident(resultat.getIdent())
                                 .miljoStatus(resultat.getMiljoer().stream()
                                         .sorted()
-                                        .collect(Collectors.toMap(miljoe -> miljoe,
-                                                miljoe -> "finnes i %smiljø".formatted("p".equals(miljoe) ? "produksjons" : ""))))
-                                .error("FEIL: ident %s finnes ikke i alle forspurte miljøer/og eller i prod(p) %s".formatted(
+                                        .collect(Collectors.toMap(miljoe -> miljoe, miljoe -> "Ident finnes, men kansellering ikke utført")))
+                                .error("FEIL: ident %s finnes ikke i alle forspurte miljøer %s".formatted(
                                         resultat.getIdent(), miljoer))
                                 .build()))
                 .findFirst()
