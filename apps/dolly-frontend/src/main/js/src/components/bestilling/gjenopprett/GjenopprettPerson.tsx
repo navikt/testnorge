@@ -88,7 +88,7 @@ export const GjenopprettPerson = ({ ident }: GjenopprettProps) => {
 	return (
 		<>
 			<Button onClick={openGjenopprettModal} kind="synchronize">
-				GJENOPPRETT PERSON
+				GJENOPPRETT
 			</Button>
 			{isGjenopprettModalOpen && (
 				<GjenopprettModal
