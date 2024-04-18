@@ -6,10 +6,11 @@ import no.nav.testnav.endringsmeldingservice.config.Consumers;
 import no.nav.testnav.endringsmeldingservice.consumer.command.GetAdressehistorikkCommand;
 import no.nav.testnav.endringsmeldingservice.consumer.command.GetEksistererPersonCommand;
 import no.nav.testnav.endringsmeldingservice.consumer.command.GetIdentEnvironmentsCommand;
-import no.nav.testnav.endringsmeldingservice.consumer.command.GetPersondataCommand;
+import no.nav.testnav.endringsmeldingservice.consumer.command.HentPersondataCommand;
 import no.nav.testnav.endringsmeldingservice.consumer.command.SendDoedsmeldingCommand;
 import no.nav.testnav.endringsmeldingservice.consumer.command.SendFoedselsmeldingCommand;
 import no.nav.testnav.endringsmeldingservice.consumer.command.SendKansellerDoedsmeldingCommand;
+import no.nav.testnav.endringsmeldingservice.domain.IdenterRequest;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.AdressehistorikkDTO;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.AdressehistorikkRequest;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.DoedsmeldingRequest;
@@ -19,7 +20,6 @@ import no.nav.testnav.libs.data.tpsmessagingservice.v1.FoedselsmeldingResponse;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.IdentMiljoeDTO;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.PersonDTO;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.PersonMiljoeDTO;
-import no.nav.testnav.endringsmeldingservice.domain.IdenterRequest;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.TpsIdentStatusDTO;
 import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
@@ -84,7 +84,7 @@ public class TpsMessagingConsumer {
 
         return accessTokenService
                 .exchange(serverProperties)
-                .flatMapMany(accessToken -> new GetPersondataCommand(webClient, ident, miljoer, accessToken.getTokenValue()).call());
+                .flatMapMany(accessToken -> new HentPersondataCommand(webClient, ident, miljoer, accessToken.getTokenValue()).call());
     }
 
     public Flux<AdressehistorikkDTO> getAdressehistorikk(String ident, LocalDate aksjonsdato, Set<String> miljoer) {

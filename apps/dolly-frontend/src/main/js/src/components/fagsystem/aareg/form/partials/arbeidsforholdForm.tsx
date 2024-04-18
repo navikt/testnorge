@@ -68,7 +68,7 @@ export const ArbeidsforholdForm = ({
 
 		const aaregBestillinger = bestillinger
 			?.filter((bestilling) => bestilling?.data?.aareg)
-			?.flatMap((bestilling) => bestilling.data.aareg)
+			?.flatMap((bestilling) => bestilling.data?.aareg)
 			?.filter((bestilling) => _.isEmpty(bestilling?.amelding))
 
 		return _.uniqWith(
