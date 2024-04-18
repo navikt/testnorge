@@ -189,6 +189,10 @@ export default class DollyEndpoints {
 		return `${uri}/malbestilling?bestillingId=${bestillingId}&malNavn=${malNavn}`
 	}
 
+	static opprettMalFraPerson(ident, malNavn) {
+		return `${uri}/malbestilling/ident/${ident}?malNavn=${malNavn}`
+	}
+
 	static organisasjonMalBestillingMedBestillingId(bestillingId, malNavn) {
 		return `${organisasjonBase}/bestilling/malbestilling?bestillingId=${bestillingId}&malNavn=${malNavn}`
 	}

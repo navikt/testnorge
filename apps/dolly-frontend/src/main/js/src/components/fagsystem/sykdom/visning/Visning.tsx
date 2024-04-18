@@ -114,6 +114,6 @@ SykemeldingVisning.filterValues = (bestillinger: Array<Sykemelding>, ident: stri
 
 	return bestillinger.filter(
 		(bestilling: any) =>
-			bestilling.data.sykemelding && erGyldig(bestilling.id, 'SYKEMELDING', ident),
+			bestilling.data?.sykemelding && erGyldig(bestilling.id, 'SYKEMELDING', ident),
 	)
 }

@@ -86,6 +86,8 @@ import {
 import { usePensjonEnvironments } from '@/utils/hooks/useEnvironments'
 import { SigrunstubPensjonsgivendeVisning } from '@/components/fagsystem/sigrunstubPensjonsgivende/visning/Visning'
 import { useUdistub } from '@/utils/hooks/useUdistub'
+import useBoolean from '@/utils/hooks/useBoolean'
+import { MalModal, malTyper } from '@/pages/minSide/maler/MalModal'
 import { useTenorOversikt } from '@/utils/hooks/useTenorSoek'
 import { SkatteetatenVisning } from '@/components/fagsystem/skatteetaten/visning/SkatteetatenVisning'
 
@@ -113,6 +115,8 @@ export default ({
 	tmpPersoner,
 }) => {
 	const { gruppeId } = ident
+
+	const [isMalModalOpen, openMalModal, closeMalModal] = useBoolean(false)
 
 	const { organisasjonTilgang } = useOrganisasjonTilgang()
 	const tilgjengeligMiljoe = organisasjonTilgang?.miljoe
@@ -397,6 +401,11 @@ export default ({
 							master={ident?.master}
 						/>
 					)}
+					{bestillingIdListe?.length > 0 && (
+						<Button onClick={openMalModal} kind={'maler'} className="svg-icon-blue">
+							OPPRETT MAL
+						</Button>
+					)}
 					<BestillingSammendragModal bestilling={bestilling} />
 					{!iLaastGruppe && ident.master !== 'PDL' && (
 						<SlettButton action={slettPerson} loading={loading.slettPerson}>
@@ -508,7 +517,7 @@ export default ({
 				<KrrVisning data={krrstub} loading={loading.krrstub} />
 				<MedlVisning data={medl} loading={loadingMedl} />
 				<UdiVisning
-					data={UdiVisning.filterValues(udistub, bestilling?.bestilling.udistub)}
+					data={UdiVisning.filterValues(udistub, bestilling?.bestilling?.udistub)}
 					loading={loadingUdistub}
 				/>
 				<DokarkivVisning
@@ -534,6 +543,9 @@ export default ({
 				/>
 				<TidligereBestillinger ids={ident.bestillingId} />
 				<BeskrivelseConnector ident={ident} />
+				{isMalModalOpen && (
+					<MalModal id={ident.ident} malType={malTyper.PERSON} closeModal={closeMalModal} />
+				)}
 			</div>
 		</ErrorBoundary>
 	)

@@ -13,25 +13,14 @@ spec:
   accessPolicy:
     inbound:
       rules:
-        - application: team-dolly-lokal-app
-          cluster: dev-gcp
-        - application: testnav-oversikt-frontend
-          cluster: dev-gcp
-        - application: testnav-generer-arbeidsforhold-populasjon-service
-          cluster: dev-gcp
-        - application: testnav-amelding-service
-          cluster: dev-gcp
         - application: dolly-frontend
-          cluster: dev-gcp
-        - application: dolly-idporten
-          cluster: dev-gcp
         - application: dolly-frontend-dev
-          cluster: dev-gcp
         - application: dolly-frontend-dev-unstable
-          cluster: dev-gcp
-        - application: app-1
-          namespace: plattformsikkerhet
-          cluster: dev-gcp
+        - application: dolly-idporten
+        - application: team-dolly-lokal-app
+        - application: testnav-amelding-service
+        - application: testnav-generer-arbeidsforhold-populasjon-service
+        - application: testnav-oversikt-frontend
     outbound:
       external:
         - host: aareg-synt-services-proxy.dev-fss-pub.nais.io

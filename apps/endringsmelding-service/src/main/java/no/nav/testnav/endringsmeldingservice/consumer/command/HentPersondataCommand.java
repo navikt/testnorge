@@ -13,9 +13,9 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
-public class GetPersondataCommand implements Callable<Flux<PersonMiljoeDTO>> {
+public class HentPersondataCommand implements Callable<Flux<PersonMiljoeDTO>> {
 
-    private static final String PERSON_DATA_URL = "/api/v1/personer/{ident}";
+    private static final String PERSON_DATA_URL = "/api/v2/personer/ident";
     private static final String MILJOER = "miljoer";
 
     private final WebClient webClient;
@@ -27,10 +27,11 @@ public class GetPersondataCommand implements Callable<Flux<PersonMiljoeDTO>> {
     public Flux<PersonMiljoeDTO> call() {
 
         return webClient
-                .get()
+                .post()
                 .uri(builder -> builder.path(PERSON_DATA_URL)
                         .queryParam(MILJOER, miljoer)
-                        .build(ident))
+                        .build())
+                .bodyValue(ident)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToFlux(PersonMiljoeDTO.class)

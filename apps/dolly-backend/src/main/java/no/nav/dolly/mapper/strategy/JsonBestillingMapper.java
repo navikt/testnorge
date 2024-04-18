@@ -3,7 +3,6 @@ package no.nav.dolly.mapper.strategy;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.RsOrganisasjonBestilling.SyntetiskOrganisasjon;
 import org.springframework.stereotype.Component;
 
@@ -17,15 +16,6 @@ import static java.util.Objects.nonNull;
 public class JsonBestillingMapper {
 
     private final ObjectMapper objectMapper;
-
-    public RsDollyBestillingRequest mapBestillingRequest(Long bestillingId, String jsonInput) {
-        try {
-            return objectMapper.readValue(nonNull(jsonInput) ? jsonInput : "{}", RsDollyBestillingRequest.class);
-        } catch (IOException e) {
-            log.error("Mapping av JSON fra database bestKriterier, bestId: {} feilet. {}", bestillingId, e.getMessage(), e);
-        }
-        return new RsDollyBestillingRequest();
-    }
 
     public SyntetiskOrganisasjon mapOrganisasjonBestillingRequest(String jsonInput) {
         try {

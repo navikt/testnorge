@@ -41,7 +41,6 @@ export const MalPanel = ({
 	}
 
 	const maler = malerFiltrert(malListe, searchText)
-
 	const DataCells = ({ id, malNavn, bestilling }) => (
 		<>
 			<Table.DataCell scope="row" width={'75%'}>
@@ -101,7 +100,9 @@ export const MalPanel = ({
 							<Table.Body>
 								{maler.map(({ malNavn, id, bestilling }) => {
 									const bestillingBasedOnMal = initialValuesBasedOnMal(
-										{ bestilling: bestilling },
+										{
+											bestilling: bestilling,
+										},
 										dollyEnvironments,
 									)
 									return (
