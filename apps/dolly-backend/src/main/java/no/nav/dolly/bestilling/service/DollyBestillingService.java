@@ -237,9 +237,9 @@ public class DollyBestillingService {
         if (progress.getMaster() == PDL) {
 
             transactionHelperService.persister(progress, BestillingProgress::setPdlImportStatus, "OK");
-            return Flux.just(progress.getIdent());
+        }
 
-        } else if (isNull(forvalterStatus.getStatus()) || forvalterStatus.getStatus().is2xxSuccessful()) {
+        if (isNull(forvalterStatus.getStatus()) || forvalterStatus.getStatus().is2xxSuccessful()) {
 
             transactionHelperService.persister(progress, BestillingProgress::setPdlOrdreStatus,
                     "Info: Ordre til PDL startet ...");

@@ -66,9 +66,11 @@ public class OriginatorUtility {
 
         } else {
 
+            PdlMasterCleanerUtility.clean(bestillingRequest.getPdldata().getPerson());
             return Originator.builder()
-                    .master(Master.PDL)
+                    .pdlBestilling(mapperFacade.map(bestillingRequest.getPdldata(), BestillingRequestDTO.class))
                     .ident(nonNull(testident) ? testident.getIdent() : ident)
+                    .master(Master.PDL)
                     .build();
         }
     }
