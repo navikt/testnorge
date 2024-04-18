@@ -20,6 +20,15 @@ import static java.util.Objects.nonNull;
 @AllArgsConstructor
 public class AdressehistorikkDTO {
 
+    private String miljoe;
+    private TpsMeldingResponse status;
+    private PersonData persondata;
+
+    public boolean isOk() {
+
+        return nonNull(status) && "OK".equals(status.getReturStatus());
+    }
+
     public enum PersonStatus {
         ABNR,
         ADNR,
@@ -34,10 +43,6 @@ public class AdressehistorikkDTO {
         UFUL,
         UTVA
     }
-
-    private String miljoe;
-    private TpsMeldingResponse status;
-    private PersonData persondata;
 
     @Data
     @Builder
@@ -218,10 +223,5 @@ public class AdressehistorikkDTO {
         private String returStatus;
         private String returMelding;
         private String utfyllendeMelding;
-    }
-
-    public boolean isOk() {
-
-        return nonNull(status) && "OK".equals(status.getReturStatus());
     }
 }

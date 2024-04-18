@@ -10,9 +10,8 @@ import {
   WarningAlertstripe,
 } from '@navikt/dolly-komponenter';
 import _ from 'lodash';
-import { Action } from '@/pages/endringsmelding-page/form/endringsmelding-form/EndringsmeldingReducer';
 
-const Search = styled.div`
+const SearchDiv = styled.div`
   display: flex;
   flex-direction: row;
 `;
@@ -26,11 +25,12 @@ const StyledKnapp = styled(Knapp)`
 `;
 
 type Props<T> = {
-  dispatch: any;
   setMiljoer: any;
+  setShow: any;
   labels: {
     label: string;
     button: string;
+    delete: string;
     onFound: string;
     onNotFound: string;
     onError: string;
@@ -57,9 +57,9 @@ const StyledWarning = styled(WarningAlertstripe)`
   width: -webkit-fill-available;
 `;
 
-export default <T extends unknown>({ labels, onChange, dispatch, setMiljoer }: Props<T>) => {
+export const Search = <T extends unknown>({ labels, onChange, setShow, setMiljoer }: Props<T>) => {
   const [value, setValue] = useState('');
-  const [search, setSearch] = useState(null);
+  const [query, setQuery] = useState(null);
   const [response, setResponse] = useState(null);
   const [loading, setLoading] = useState(null);
   const [error, setError] = useState(null);
@@ -86,11 +86,14 @@ export default <T extends unknown>({ labels, onChange, dispatch, setMiljoer }: P
     })
       .then(async (res) => {
         setLoading(false);
+        setError(false);
         const jsonResponse = await res.json();
         setResponse(jsonResponse?.[0]);
+        setShow(true);
       })
       .catch((reason) => {
         console.error(reason);
+        setShow(false);
         setLoading(false);
         setError(true);
         if (reason?.response?.status === 401 || reason?.response?.status === 403) {
@@ -106,26 +109,26 @@ export default <T extends unknown>({ labels, onChange, dispatch, setMiljoer }: P
   };
 
   useEffect(() => {
-    if (search && search.length === 11) {
-      hentMiljoeInfo(search);
+    if (query && query.length === 11) {
+      hentMiljoeInfo(query);
     } else {
       setError('Ident må være 11 siffer.');
     }
-  }, [search]);
+  }, [query]);
 
   useEffect(() => {
     setMiljoer(response?.miljoer);
-    error
-      ? dispatch({ type: Action.SET_HENT_MILJOER_ERROR_ACTION })
-      : dispatch({ type: Action.SET_HENT_MILJOER_SUCCESS_ACTION });
-  }, [response, error]);
+  }, [response]);
 
   return (
-    <Search>
+    <SearchDiv>
       <Input
         label={labels.label}
         defaultValue=""
         onChange={(e) => {
+          setShow(false);
+          setResponse(null);
+          setMiljoer([]);
           if (onChange) {
             onChange(e.target.value);
           }
@@ -135,7 +138,7 @@ export default <T extends unknown>({ labels, onChange, dispatch, setMiljoer }: P
       <StyledKnapp
         onClick={(event: any) => {
           event.preventDefault();
-          setSearch(value);
+          setQuery(value);
         }}
         disabled={loading || isSyntheticIdent(value)}
         loading={loading}
@@ -144,6 +147,6 @@ export default <T extends unknown>({ labels, onChange, dispatch, setMiljoer }: P
       </StyledKnapp>
       {isSyntheticIdent(value) && <StyledWarning label={labels.syntIdent} />}
       <Alert>{renderAlert()}</Alert>
-    </Search>
+    </SearchDiv>
   );
 };

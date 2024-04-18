@@ -13,9 +13,12 @@ import no.nav.testnav.libs.dto.endringsmelding.v2.DoedsmeldingResponseDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -98,10 +101,8 @@ public class DoedsmeldingService {
                         Mono.just(DoedsmeldingResponseDTO.builder()
                                 .ident(resultat.getIdent())
                                 .miljoStatus(resultat.getMiljoer().stream()
-                                        .sorted()
-                                        .collect(Collectors.toMap(miljoe -> miljoe,
-                                                miljoe -> "finnes i %smiljø".formatted("p".equals(miljoe) ? "produksjons" : ""))))
-                                .error("FEIL: ident %s finnes ikke i alle forspurte miljøer/og eller i prod(p) %s".formatted(
+                                        .collect(Collectors.toMap(miljoe -> miljoe, miljoe -> "Ident finnes, men kansellering ikke utført")))
+                                .error("FEIL: ident %s finnes ikke i alle forspurte miljøer %s".formatted(
                                         resultat.getIdent(), miljoer))
                                 .build()))
                 .findFirst()
@@ -122,8 +123,7 @@ public class DoedsmeldingService {
                 .flatMap(resultater -> {
 
                     if (resultater.stream()
-                            .anyMatch(resultat -> resultat.getMiljoer().contains("p") ||
-                                    !resultat.getMiljoer().containsAll(miljoer))) {
+                            .anyMatch(resultat -> !resultat.getMiljoer().containsAll(miljoer))) {
 
                         return getDoedsmeldingResponseDTO(miljoer, resultater);
 
@@ -131,24 +131,38 @@ public class DoedsmeldingService {
 
                         return tpsMessagingConsumer.getPersondata(ident, miljoer)
                                 .filter(PersonMiljoeDTO::isOk)
-                                .filter(persondata -> persondata.getPerson().isDoed())
+                                .flatMap(persondata -> {
+                                    if (persondata.getPerson().isDoed()) {
+                                       return tpsMessagingConsumer.getAdressehistorikk(buildAdresseRequest(persondata),
+                                                        Set.of(persondata.getMiljoe()))
+                                                .filter(AdressehistorikkDTO::isOk)
+                                                .map(AdressehistorikkDTO::getPersondata)
+                                                .map(AdressehistorikkMapper::mapHistorikk)
+                                                .flatMap(person -> tpsMessagingConsumer.sendKansellerDoedsmelding(person,
+                                                        Set.of(persondata.getMiljoe())));
+                                    } else {
+                                        return Flux.just(DoedsmeldingResponse.builder()
+                                                .ident(ident)
+                                                .miljoStatus(Map.of(persondata.getMiljoe(), "OK"))
+                                                .build());
+                                    }
+                                })
                                 .collectList()
-                                .filter(persondata -> !persondata.isEmpty())
-                                .flatMap(persondata -> tpsMessagingConsumer.getAdressehistorikk(buildAdresseRequest(persondata.getFirst()),
-                                                persondata.stream().map(PersonMiljoeDTO::getMiljoe).collect(Collectors.toSet()))
-                                        .filter(AdressehistorikkDTO::isOk)
-                                        .map(AdressehistorikkDTO::getPersondata)
-                                        .map(AdressehistorikkMapper::mapHistorikk)
-                                        .collectList()
-                                        .flatMap(personer ->
-                                                tpsMessagingConsumer.sendKansellerDoedsmelding(personer.getFirst(),
-                                                        persondata.stream().map(PersonMiljoeDTO::getMiljoe).collect(Collectors.toSet()))))
-                                .map(response -> DoedsmeldingResponseDTO.builder()
-                                        .ident(ident)
-                                        .miljoStatus(response.getMiljoStatus())
-                                        .build());
+                                .map(resultat -> convertResult(ident, resultat));
                     }
                 });
+    }
+
+    private static DoedsmeldingResponseDTO convertResult(String ident, List<DoedsmeldingResponse> result) {
+
+        return DoedsmeldingResponseDTO.builder()
+                .ident(ident)
+                .miljoStatus(result.stream()
+                        .map(DoedsmeldingResponse::getMiljoStatus)
+                        .map(Map::entrySet)
+                        .flatMap(Collection::stream)
+                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)))
+                .build();
     }
 
     private static String validate(DoedsmeldingDTO doedsmelding) {
