@@ -29,6 +29,7 @@ public class OpprettJournalpostCommand implements Callable<Mono<DokmotResponse>>
 
     @Override
     public Mono<DokmotResponse> call() {
+
         return webClient.post()
                 .uri(builder -> builder.path("/api/{miljo}/v1/journalpost").build(miljo))
                 .header("Nav-Call-Id", navCallId)

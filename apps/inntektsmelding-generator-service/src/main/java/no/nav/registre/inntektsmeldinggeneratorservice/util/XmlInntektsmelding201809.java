@@ -1,5 +1,19 @@
 package no.nav.registre.inntektsmeldinggeneratorservice.util;
 
+import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsArbeidsforhold;
+import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsArbeidsgiver;
+import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsAvsendersystem;
+import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsDelvisFravaer;
+import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsEndringIRefusjon;
+import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsGraderingIForeldrepenger;
+import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsInntekt;
+import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsInntektsmelding;
+import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsNaturalytelseDetaljer;
+import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsOmsorgspenger;
+import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsPeriode;
+import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsRefusjon;
+import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsSykepengerIArbeidsgiverperioden;
+import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsUtsettelseAvForeldrepenger;
 import no.seres.xsd.nav.inntektsmelding_m._20180924.XMLArbeidsforhold;
 import no.seres.xsd.nav.inntektsmelding_m._20180924.XMLArbeidsgiver;
 import no.seres.xsd.nav.inntektsmelding_m._20180924.XMLArbeidsgiverperiodeListe;
@@ -37,23 +51,12 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
-import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsArbeidsforhold;
-import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsArbeidsgiver;
-import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsAvsendersystem;
-import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsDelvisFravaer;
-import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsEndringIRefusjon;
-import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsGraderingIForeldrepenger;
-import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsInntekt;
-import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsInntektsmelding;
-import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsNaturalytelseDetaljer;
-import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsOmsorgspenger;
-import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsPeriode;
-import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsRefusjon;
-import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsSykepengerIArbeidsgiverperioden;
-import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsUtsettelseAvForeldrepenger;
+import static java.util.Objects.isNull;
+import static no.nav.registre.inntektsmeldinggeneratorservice.util.XmlConverter.toBigDecimal;
+import static no.nav.registre.inntektsmeldinggeneratorservice.util.XmlConverter.toBigInteger;
+import static no.nav.registre.inntektsmeldinggeneratorservice.util.XmlConverter.toLocalDate;
 
 public class XmlInntektsmelding201809 {
 
@@ -66,7 +69,7 @@ public class XmlInntektsmelding201809 {
         return new XMLInntektsmeldingM(new XMLSkjemainnhold(
                 melding.getYtelse(),
                 melding.getAarsakTilInnsending(),
-                createArbeidsgiver(melding.getArbeidsgiver().orElse(null)),
+                createArbeidsgiver(melding.getArbeidsgiver()),
                 melding.getArbeidstakerFnr(),
                 melding.isNaerRelasjon(),
                 new JAXBElement<>(new QName(NAMESPACE_URI, "arbeidsforhold"),
@@ -74,12 +77,12 @@ public class XmlInntektsmelding201809 {
                         createArbeidsforhold(melding.getArbeidsforhold())),
                 new JAXBElement<>(new QName(NAMESPACE_URI, "refusjon"),
                         XMLRefusjon.class,
-                        createRefusjon(melding.getRefusjon().orElse(null))),
+                        createRefusjon(melding.getRefusjon())),
                 new JAXBElement<>(new QName(NAMESPACE_URI, "sykepengerIArbeidsgiverPerioden"),
                         XMLSykepengerIArbeidsgiverperioden.class,
-                        createSykepengerIArbeidsgiverperioden(melding.getSykepengerIArbeidsgiverPerioden().orElse(null))),
+                        createSykepengerIArbeidsgiverperioden(melding.getSykepengerIArbeidsgiverperioden())),
                 new JAXBElement<>(new QName(NAMESPACE_URI, "startdatoForeldrepengerperiode"),
-                        LocalDate.class, melding.getStartdatoForeldrepengeperiode().orElse(null)),
+                        LocalDate.class, toLocalDate(melding.getStartdatoForeldrepengeperiode())),
                 new JAXBElement<>(new QName(NAMESPACE_URI, "opphoerAvNaturalyrelseListe"),
                         XMLOpphoerAvNaturalytelseListe.class,
                         createOpphoerAvNaturalytelseListe(melding.getOpphoerAvNaturalytelseListe())),
@@ -92,14 +95,17 @@ public class XmlInntektsmelding201809 {
                         createPleiepengerPeriodeListe(melding.getPleiepengerPerioder())),
                 new JAXBElement<>(new QName(NAMESPACE_URI, "omsorgspenger"),
                         XMLOmsorgspenger.class,
-                        createOmsorgspenger(melding.getOmsorgspenger().orElse(null)))),
+                        createOmsorgspenger(melding.getOmsorgspenger()))),
                 Collections.emptyMap());
     }
 
     private static XMLOmsorgspenger createOmsorgspenger(RsOmsorgspenger omsorgspenger) {
-        if (Objects.isNull(omsorgspenger)) { return null; }
+
+        if (isNull(omsorgspenger)) {
+            return null;
+        }
         return new XMLOmsorgspenger(
-                new JAXBElement<>(new QName(NAMESPACE_URI, "harUtbetaltPliktigeDager"), Boolean.class, omsorgspenger.getHarUtbetaltPliktigeDager().orElse(null)),
+                new JAXBElement<>(new QName(NAMESPACE_URI, "harUtbetaltPliktigeDager"), Boolean.class, omsorgspenger.getHarUtbetaltPliktigeDager()),
                 new JAXBElement<>(new QName(NAMESPACE_URI, "fravaersPerioder"),
                         XMLFravaersPeriodeListe.class, createFravaersPeriodeListe(omsorgspenger.getFravaersPerioder())),
                 new JAXBElement<>(new QName(NAMESPACE_URI, "delvisFravaersListe"),
@@ -107,31 +113,43 @@ public class XmlInntektsmelding201809 {
     }
 
     private static XMLFravaersPeriodeListe createFravaersPeriodeListe(List<RsPeriode> perioder) {
-        if (Objects.isNull(perioder) || perioder.isEmpty()) { return null; }
+
+        if (isNull(perioder) || perioder.isEmpty()) {
+            return null;
+        }
         return new XMLFravaersPeriodeListe(
                 perioder.stream().map(XmlInntektsmelding201809::createPeriode).collect(Collectors.toList()));
     }
 
     private static XMLDelvisFravaersListe createDelvisFravaerListe(List<RsDelvisFravaer> delvisFravaerListe) {
-        if (Objects.isNull(delvisFravaerListe) || delvisFravaerListe.isEmpty()) { return null; }
+
+        if (isNull(delvisFravaerListe) || delvisFravaerListe.isEmpty()) {
+            return null;
+        }
         return new XMLDelvisFravaersListe(
                 delvisFravaerListe.stream().map(XmlInntektsmelding201809::createDelvisFravaer).collect(Collectors.toList()));
     }
 
     private static XMLDelvisFravaer createDelvisFravaer(RsDelvisFravaer delvisFravaer) {
-        BigDecimal timer = delvisFravaer.getTimer().map(BigDecimal::valueOf).orElse(null);
+
         return new XMLDelvisFravaer(
-                new JAXBElement<>(new QName(NAMESPACE_URI, "dato"), LocalDate.class, delvisFravaer.getDato().orElse(null)),
-                new JAXBElement<>(new QName(NAMESPACE_URI, "timer"), BigDecimal.class, timer));
+                new JAXBElement<>(new QName(NAMESPACE_URI, "dato"), LocalDate.class, toLocalDate(delvisFravaer.getDato())),
+                new JAXBElement<>(new QName(NAMESPACE_URI, "timer"), BigDecimal.class, toBigDecimal(delvisFravaer.getTimer()))
+        );
     }
 
     private static XMLPleiepengerPeriodeListe createPleiepengerPeriodeListe(List<RsPeriode> perioder) {
-        if (Objects.isNull(perioder) || perioder.isEmpty()) { return null; }
+
+        if (isNull(perioder) || perioder.isEmpty()) {
+            return null;
+        }
+
         return new XMLPleiepengerPeriodeListe(
                 perioder.stream().map(XmlInntektsmelding201809::createPeriode).collect(Collectors.toList()));
     }
 
     private static XMLAvsendersystem createAvsendersystem(RsAvsendersystem system) {
+
         return new XMLAvsendersystem(system.getSystemnavn(), system.getSystemversjon(),
                 new JAXBElement<>(new QName(NAMESPACE_URI, "innsendingstidspunkt"),
                         LocalDateTime.class,
@@ -139,51 +157,71 @@ public class XmlInntektsmelding201809 {
     }
 
     private static XMLGjenopptakelseNaturalytelseListe createGjenopptakelseNaturalytelseListe(List<RsNaturalytelseDetaljer> liste) {
-        if (Objects.isNull(liste) || liste.isEmpty()) { return null; }
+
+        if (isNull(liste) || liste.isEmpty()) {
+            return null;
+        }
+
         return new XMLGjenopptakelseNaturalytelseListe(
                 liste.stream().map(XmlInntektsmelding201809::createNaturalytelse).collect(Collectors.toList()));
     }
 
     private static XMLOpphoerAvNaturalytelseListe createOpphoerAvNaturalytelseListe(List<RsNaturalytelseDetaljer> liste) {
-        if (Objects.isNull(liste) || liste.isEmpty()) { return null; }
+
+        if (isNull(liste) || liste.isEmpty()) {
+            return null;
+        }
+
         return new XMLOpphoerAvNaturalytelseListe(
                 liste.stream().map(XmlInntektsmelding201809::createNaturalytelse).collect(Collectors.toList()));
     }
 
     private static XMLNaturalytelseDetaljer createNaturalytelse(RsNaturalytelseDetaljer detaljer) {
-        BigDecimal beloep = detaljer.getBeloepPrMnd().map(BigDecimal::valueOf).orElse(null);
+
         return new XMLNaturalytelseDetaljer(
-                new JAXBElement<>(new QName(NAMESPACE_URI, "naturalytelseType"), String.class, detaljer.getNaturaytelseType().orElse(null)),
-                new JAXBElement<>(new QName(NAMESPACE_URI, "fom"), LocalDate.class, detaljer.getFom().orElse(null)),
-                new JAXBElement<>(new QName(NAMESPACE_URI, "beloepPrMnd"), BigDecimal.class, beloep));
+                new JAXBElement<>(new QName(NAMESPACE_URI, "naturalytelseType"), String.class, detaljer.getNaturalytelseType()),
+                new JAXBElement<>(new QName(NAMESPACE_URI, "fom"), LocalDate.class, toLocalDate(detaljer.getFom())),
+                new JAXBElement<>(new QName(NAMESPACE_URI, "beloepPrMnd"), BigDecimal.class, toBigDecimal(detaljer.getBeloepPrMnd())));
     }
 
     private static XMLSykepengerIArbeidsgiverperioden createSykepengerIArbeidsgiverperioden(RsSykepengerIArbeidsgiverperioden sykepenger) {
-        if (Objects.isNull(sykepenger)) { return null; }
-        BigDecimal bruttoUtbetalt = sykepenger.getBruttoUtbetalt().map(BigDecimal::valueOf).orElse(null);
+
+        if (isNull(sykepenger)) {
+            return null;
+        }
+
         return new XMLSykepengerIArbeidsgiverperioden(
                 new JAXBElement<>(new QName(NAMESPACE_URI, "arbeidsgiverPeriodeListe"),
                         XMLArbeidsgiverperiodeListe.class,
-                        createArbeidsgiverperiodeListe(sykepenger.getArbeidsgiverperiodeListe().orElse(null))),
-                new JAXBElement<>(new QName(NAMESPACE_URI, "bruttoUtbetalt"), BigDecimal.class, bruttoUtbetalt),
+                        createArbeidsgiverperiodeListe(sykepenger.getArbeidsgiverperiodeListe())),
+                new JAXBElement<>(new QName(NAMESPACE_URI, "bruttoUtbetalt"), BigDecimal.class,
+                        toBigDecimal(sykepenger.getBruttoUtbetalt())),
                 new JAXBElement<>(new QName(NAMESPACE_URI, "begrunnelseForReduksjonEllerIkkeUtbetalt"),
                         String.class,
-                        sykepenger.getBegrunnelseForReduksjonEllerIkkeUtbetalt().orElse(null)));
+                        sykepenger.getBegrunnelseForReduksjonEllerIkkeUtbetalt()));
     }
 
     private static XMLArbeidsgiverperiodeListe createArbeidsgiverperiodeListe(List<RsPeriode> perioder) {
-        if (Objects.isNull(perioder) || perioder.isEmpty()) { return null; }
+
+        if (isNull(perioder) || perioder.isEmpty()) {
+            return null;
+        }
+
         return new XMLArbeidsgiverperiodeListe(
-                perioder.stream().map(XmlInntektsmelding201809::createPeriode).collect(Collectors.toList()));
+                perioder.stream().map(XmlInntektsmelding201809::createPeriode).toList());
     }
 
     private static XMLRefusjon createRefusjon(RsRefusjon refusjon) {
-        if (Objects.isNull(refusjon)) { return null; }
-        BigDecimal belop = refusjon.getRefusjonsbeloepPrMnd().map(BigDecimal::valueOf).orElse(null);
-        LocalDate opphoersdato = refusjon.getRefusjonsopphoersdato().orElse(null);
+
+        if (isNull(refusjon)) {
+            return null;
+        }
+
         return new XMLRefusjon(
-                new JAXBElement<>(new QName(NAMESPACE_URI, "refusjonsbeloepPrMnd"), BigDecimal.class, belop),
-                new JAXBElement<>(new QName(NAMESPACE_URI, "refusjonsopphoersdato"), LocalDate.class, opphoersdato),
+                new JAXBElement<>(new QName(NAMESPACE_URI, "refusjonsbeloepPrMnd"), BigDecimal.class,
+                        toBigDecimal(refusjon.getRefusjonsbeloepPrMnd())),
+                new JAXBElement<>(new QName(NAMESPACE_URI, "refusjonsopphoersdato"), LocalDate.class,
+                        toLocalDate(refusjon.getRefusjonsopphoersdato())),
                 new JAXBElement<>(
                         new QName(NAMESPACE_URI, "endringIRefusjonListe"),
                         XMLEndringIRefusjonsListe.class,
@@ -191,25 +229,31 @@ public class XmlInntektsmelding201809 {
     }
 
     private static XMLEndringIRefusjonsListe createEndringIRefusjonsListe(List<RsEndringIRefusjon> liste) {
-        if (Objects.isNull(liste) || liste.isEmpty()) { return null; }
-        return new XMLEndringIRefusjonsListe(liste.stream().map(XmlInntektsmelding201809::createEndringIRefusjon).collect(Collectors.toList()));
+
+        if (isNull(liste) || liste.isEmpty()) {
+            return null;
+        }
+        return new XMLEndringIRefusjonsListe(liste.stream().map(XmlInntektsmelding201809::createEndringIRefusjon).toList());
     }
 
     private static XMLEndringIRefusjon createEndringIRefusjon(RsEndringIRefusjon endring) {
-        if (Objects.isNull(endring)) { return null; }
-        LocalDate endringsdato = endring.getEndringsdato().orElse(null);
-        BigDecimal refusjonsbeloep = endring.getRefusjonsbeloepPrMnd().map(BigDecimal::valueOf).orElse(null);
+
+        if (isNull(endring)) {
+            return null;
+        }
+
         return new XMLEndringIRefusjon(
-                new JAXBElement<>(new QName(NAMESPACE_URI, "endringsdato"), LocalDate.class, endringsdato),
-                new JAXBElement<>(new QName(NAMESPACE_URI, "refusjonsbeloepPrMnd"), BigDecimal.class, refusjonsbeloep));
+                new JAXBElement<>(new QName(NAMESPACE_URI, "endringsdato"), LocalDate.class, toLocalDate(endring.getEndringsdato())),
+                new JAXBElement<>(new QName(NAMESPACE_URI, "refusjonsbeloepPrMnd"), BigDecimal.class, toBigDecimal(endring.getRefusjonsbeloepPrMnd()))
+        );
     }
 
-
     private static XMLArbeidsforhold createArbeidsforhold(RsArbeidsforhold arbeidsforhold) {
+
         return new XMLArbeidsforhold(
-                new JAXBElement<>(new QName(NAMESPACE_URI, "arbeidsforholdId"), String.class, arbeidsforhold.getArbeidsforholdId().orElse(null)),
-                new JAXBElement<>(new QName(NAMESPACE_URI, "foersteFravaersdag"), LocalDate.class, arbeidsforhold.getFoersteFravaersdag().orElse(null)),
-                new JAXBElement<>(new QName(NAMESPACE_URI, "beregnetInntekt"), XMLInntekt.class, createInntekt(arbeidsforhold.getBeregnetInntekt().orElse(null))),
+                new JAXBElement<>(new QName(NAMESPACE_URI, "arbeidsforholdId"), String.class, arbeidsforhold.getArbeidsforholdId()),
+                new JAXBElement<>(new QName(NAMESPACE_URI, "foersteFravaersdag"), LocalDate.class, toLocalDate(arbeidsforhold.getFoersteFravaersdag())),
+                new JAXBElement<>(new QName(NAMESPACE_URI, "beregnetInntekt"), XMLInntekt.class, createInntekt(arbeidsforhold.getBeregnetInntekt())),
                 new JAXBElement<>(new QName(NAMESPACE_URI, "avtaltFerieListe"), XMLAvtaltFerieListe.class, createAvtaltFerieListe(arbeidsforhold.getAvtaltFerieListe())),
                 new JAXBElement<>(
                         new QName(NAMESPACE_URI, "utsettelseAvForeldrepengerListe"),
@@ -222,58 +266,72 @@ public class XmlInntektsmelding201809 {
     }
 
     private static XMLGraderingIForeldrepengerListe createGraderingIForeldrepengerListe(List<RsGraderingIForeldrepenger> liste) {
-        if (Objects.isNull(liste) || liste.isEmpty()) { return null; }
-        return new XMLGraderingIForeldrepengerListe(liste.stream().map(XmlInntektsmelding201809::createGraderingIForeldrepenger).collect(Collectors.toList()));
+
+        if (isNull(liste) || liste.isEmpty()) {
+            return null;
+        }
+
+        return new XMLGraderingIForeldrepengerListe(liste.stream().map(XmlInntektsmelding201809::createGraderingIForeldrepenger).toList());
     }
 
     private static XMLGraderingIForeldrepenger createGraderingIForeldrepenger(RsGraderingIForeldrepenger gradering) {
-        BigInteger arbeidstidprosent = gradering.getArbeidstidprosent().map(BigInteger::valueOf).orElse(null);
+
         return new XMLGraderingIForeldrepenger(
-                new JAXBElement<>(new QName(NAMESPACE_URI, "periode"), XMLPeriode.class, createPeriode(gradering.getPeriode().orElse(null))),
-                new JAXBElement<>(new QName(NAMESPACE_URI, "arbeidstidprosent"), BigInteger.class, arbeidstidprosent));
+                new JAXBElement<>(new QName(NAMESPACE_URI, "periode"), XMLPeriode.class, createPeriode(gradering.getPeriode())),
+                new JAXBElement<>(new QName(NAMESPACE_URI, "arbeidstidprosent"), BigInteger.class, toBigInteger(gradering.getArbeidstidprosent())));
     }
 
     private static XMLUtsettelseAvForeldrepengerListe createUtsettelseAvForeldrepengerListe(List<RsUtsettelseAvForeldrepenger> liste) {
-        if (Objects.isNull(liste) || liste.isEmpty()) { return null; }
+        if (isNull(liste) || liste.isEmpty()) {
+            return null;
+        }
         return new XMLUtsettelseAvForeldrepengerListe(liste.stream().map(XmlInntektsmelding201809::createUtsettelseAvForeldrepenger).collect(Collectors.toList()));
     }
 
     private static XMLUtsettelseAvForeldrepenger createUtsettelseAvForeldrepenger(RsUtsettelseAvForeldrepenger utsettelse) {
         return new XMLUtsettelseAvForeldrepenger(
-                new JAXBElement<>(new QName(NAMESPACE_URI, "periode"), XMLPeriode.class, createPeriode(utsettelse.getPeriode().orElse(null))),
-                new JAXBElement<>(new QName(NAMESPACE_URI, "aarsakTilUtsettelse"), String.class, utsettelse.getAarsakTilUtsettelse().orElse(null)));
+                new JAXBElement<>(new QName(NAMESPACE_URI, "periode"), XMLPeriode.class, createPeriode(utsettelse.getPeriode())),
+                new JAXBElement<>(new QName(NAMESPACE_URI, "aarsakTilUtsettelse"), String.class, utsettelse.getAarsakTilUtsettelse()));
     }
 
     private static XMLAvtaltFerieListe createAvtaltFerieListe(List<RsPeriode> perioder) {
-        if (Objects.isNull(perioder) || perioder.isEmpty()) { return null; }
+        if (isNull(perioder) || perioder.isEmpty()) {
+            return null;
+        }
         return new XMLAvtaltFerieListe(perioder.stream().map(XmlInntektsmelding201809::createPeriode).collect(Collectors.toList()));
     }
 
     private static XMLPeriode createPeriode(RsPeriode periode) {
-        if (Objects.isNull(periode)) { return null; }
+
+        if (isNull(periode)) {
+            return null;
+        }
         return new XMLPeriode(
-                new JAXBElement<>(new QName(NAMESPACE_URI, "fom"), LocalDate.class, periode.getFom().orElse(null)),
-                new JAXBElement<>(new QName(NAMESPACE_URI, "tom"), LocalDate.class, periode.getTom().orElse(null)));
+                new JAXBElement<>(new QName(NAMESPACE_URI, "fom"), LocalDate.class, toLocalDate(periode.getFom())),
+                new JAXBElement<>(new QName(NAMESPACE_URI, "tom"), LocalDate.class, toLocalDate(periode.getTom()))
+        );
     }
 
     private static XMLInntekt createInntekt(RsInntekt inntekt) {
-        if (Objects.isNull(inntekt)) { return null; }
 
-        BigDecimal beloep = inntekt.getBeloep().map(BigDecimal::valueOf).orElse(null);
+        if (isNull(inntekt)) {
+            return null;
+        }
+
         return new XMLInntekt(
-                new JAXBElement<>(new QName(NAMESPACE_URI, "beloep"), BigDecimal.class, beloep),
-                new JAXBElement<>(new QName(NAMESPACE_URI, "aarsakVedEndring"), String.class, inntekt.getAarsakVedEndring().orElse(null))
+                new JAXBElement<>(new QName(NAMESPACE_URI, "beloep"), BigDecimal.class, toBigDecimal(inntekt.getBeloep())),
+                new JAXBElement<>(new QName(NAMESPACE_URI, "aarsakVedEndring"), String.class, inntekt.getAarsakVedEndring())
         );
     }
 
     private static XMLArbeidsgiver createArbeidsgiver(RsArbeidsgiver arbeidsgiver) {
-        if (Objects.isNull(arbeidsgiver)) {
+        if (isNull(arbeidsgiver)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Den forespurte meldingen har ingen arbeidsgiver.");
         }
         return new XMLArbeidsgiver(
-                        arbeidsgiver.getVirksomhetsnummer(),
-                        new XMLKontaktinformasjon(
-                                arbeidsgiver.getKontaktinformasjon().getKontaktinformasjonNavn(),
-                                arbeidsgiver.getKontaktinformasjon().getTelefonnummer()));
+                arbeidsgiver.getVirksomhetsnummer(),
+                new XMLKontaktinformasjon(
+                        arbeidsgiver.getKontaktinformasjon().getKontaktinformasjonNavn(),
+                        arbeidsgiver.getKontaktinformasjon().getTelefonnummer()));
     }
 }

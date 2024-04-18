@@ -1,31 +1,29 @@
-import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { AdresseKodeverk } from '@/config/kodeverk'
-import { FormikProps } from 'formik'
 
 interface MatrikkeladresseValues {
-	formikBag: FormikProps<{}>
 	path: string
 }
 
-export const Matrikkeladresse = ({ formikBag, path }: MatrikkeladresseValues) => {
+export const Matrikkeladresse = ({ path }: MatrikkeladresseValues) => {
 	return (
 		<div className="flexbox--flex-wrap" style={{ marginTop: '10px' }}>
-			<FormikTextInput name={`${path}.gaardsnummer`} label="Gårdsnummer" type="number" />
-			<FormikTextInput name={`${path}.bruksnummer`} label="Bruksnummer" type="number" />
-			<FormikTextInput name={`${path}.bruksenhetsnummer`} label="Bruksenhetsnummer" />
-			<FormikTextInput name={`${path}.tilleggsnavn`} label="Tilleggsnavn" />
-			<FormikSelect
+			<FormTextInput name={`${path}.gaardsnummer`} label="Gårdsnummer" type="number" />
+			<FormTextInput name={`${path}.bruksnummer`} label="Bruksnummer" type="number" />
+			<FormTextInput name={`${path}.bruksenhetsnummer`} label="Bruksenhetsnummer" />
+			<FormTextInput name={`${path}.tilleggsnavn`} label="Tilleggsnavn" />
+			<FormSelect
 				name={`${path}.postnummer`}
 				label="Postnummer"
 				kodeverk={AdresseKodeverk.PostnummerUtenPostboks}
 				size="large"
 				isClearable={false}
 			/>
-			<FormikSelect
+			<FormSelect
 				name={`${path}.kommunenummer`}
 				label="Kommunenummer"
-				kodeverk={AdresseKodeverk.Kommunenummer}
+				kodeverk={AdresseKodeverk.Kommunenummer2024}
 				size="large"
 				isClearable={false}
 			/>

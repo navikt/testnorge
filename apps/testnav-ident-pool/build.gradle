@@ -1,8 +1,8 @@
 plugins {
     id 'java'
-    id "org.sonarqube" version "4.0.0.2929"
-    id 'org.springframework.boot' version "3.1.4"
-    id 'io.spring.dependency-management' version "1.1.3"
+    id "org.sonarqube" version "4.4.1.3373"
+    id 'org.springframework.boot' version "3.2.1"
+    id 'io.spring.dependency-management' version "1.1.4"
     id "jacoco"
 }
 
@@ -11,15 +11,8 @@ test {
     jvmArgs '--add-opens', 'java.base/java.lang=ALL-UNNAMED'
 }
 
-jacocoTestReport {
-    reports {
-        xml.required = true
-    }
-}
-
 sonarqube {
     properties {
-        property "sonar.coverage.jacoco.xmlReportPaths", "${project.layout.buildDirectory}/reports/jacoco/test/jacocoTestReport.xml"
         property "sonar.dynamicAnalysis", "reuseReports"
         property "sonar.host.url", "https://sonarcloud.io"
         property "sonar.java.coveragePlugin", "jacoco"
@@ -40,7 +33,7 @@ bootJar {
 dependencyManagement {
     applyMavenExclusions = false
     imports {
-        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2022.0.4'
+        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2023.0.0'
     }
 }
 
@@ -101,7 +94,7 @@ dependencies {
     implementation 'org.postgresql:postgresql'
     implementation 'ma.glasnost.orika:orika-core:1.5.4'
 
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0'
     implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
 
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'

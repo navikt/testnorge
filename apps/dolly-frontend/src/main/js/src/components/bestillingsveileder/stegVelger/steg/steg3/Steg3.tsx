@@ -1,18 +1,16 @@
 import React, { Suspense, useContext, useEffect, useState } from 'react'
-import * as Yup from 'yup'
 import { harAvhukedeAttributter } from '@/components/bestillingsveileder/utils'
 import { MiljoVelger } from '@/components/miljoVelger/MiljoVelger'
 import { MalForm } from './MalForm'
 import { VelgGruppe } from '@/components/bestillingsveileder/stegVelger/steg/steg3/VelgGruppe'
 import { OppsummeringKommentarForm } from '@/components/bestillingsveileder/stegVelger/steg/steg3/OppsummeringKommentarForm'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
-import * as _ from 'lodash-es'
 import { MalFormOrganisasjon } from '@/pages/organisasjoner/MalFormOrganisasjon'
-import { useFormikContext } from 'formik'
 import { useCurrentBruker, useOrganisasjonTilgang } from '@/utils/hooks/useBruker'
 import Loading from '@/components/ui/loading/Loading'
 import { Gruppevalg } from '@/components/velgGruppe/VelgGruppeToggle'
 import { Bestillingsdata } from '@/components/bestilling/sammendrag/Bestillingsdata'
+import { useFormContext } from 'react-hook-form'
 
 const Bestillingskriterier = React.lazy(
 	() => import('@/components/bestilling/sammendrag/kriterier/Bestillingskriterier'),
@@ -20,37 +18,39 @@ const Bestillingskriterier = React.lazy(
 
 export const Steg3 = () => {
 	const opts = useContext(BestillingsveilederContext)
-	const formikBag = useFormikContext()
+	const formMethods = useFormContext()
 	const { currentBruker } = useCurrentBruker()
 
 	const [gruppevalg, setGruppevalg] = useState(Gruppevalg.MINE)
 
-	const { organisasjonTilgang } = useOrganisasjonTilgang()
+	const { organisasjonTilgang, loading } = useOrganisasjonTilgang()
 	const tilgjengeligMiljoe = organisasjonTilgang?.miljoe
 
 	const importTestnorge = opts.is.importTestnorge
 
-	const erOrganisasjon = formikBag.values.hasOwnProperty('organisasjon')
+	const erOrganisasjon = formMethods.getValues('organisasjon')
 	const erQ2MiljoeAvhengig =
-		_.get(formikBag.values, 'pdldata.person.fullmakt') ||
-		_.get(formikBag.values, 'pdldata.person.falskIdentitet') ||
-		_.get(formikBag.values, 'pdldata.person.falskIdentitet') ||
-		_.get(formikBag.values, 'pdldata.person.utenlandskIdentifikasjonsnummer') ||
-		_.get(formikBag.values, 'pdldata.person.kontaktinformasjonForDoedsbo')
+		formMethods.watch('pdldata.person.fullmakt') ||
+		formMethods.watch('pdldata.person.falskIdentitet') ||
+		formMethods.watch('pdldata.person.falskIdentitet') ||
+		formMethods.watch('pdldata.person.utenlandskIdentifikasjonsnummer') ||
+		formMethods.watch('pdldata.person.kontaktinformasjonForDoedsbo')
 
 	const bankIdBruker = currentBruker?.brukertype === 'BANKID'
 
-	const sivilstand = _.get(formikBag.values, 'pdldata.person.sivilstand')
+	const sivilstand = formMethods.watch('pdldata.person.sivilstand')
 	const harRelatertPersonVedSivilstand = sivilstand?.some((item) => item.relatertVedSivilstand)
 
-	const nyIdent = _.get(formikBag.values, 'pdldata.person.nyident')
+	const nyIdent = formMethods.watch('pdldata.person.nyident')
 	const harEksisterendeNyIdent = nyIdent?.some((item) => item.eksisterendeIdent)
 
-	const forelderBarnRelasjon = _.get(formikBag.values, 'pdldata.person.forelderBarnRelasjon')
+	const forelderBarnRelasjon = formMethods.watch('pdldata.person.forelderBarnRelasjon')
 	const harRelatertPersonBarn = forelderBarnRelasjon?.some((item) => item.relatertPerson)
 
 	const alleredeValgtMiljoe = () => {
-		if (bankIdBruker) {
+		if (loading) {
+			return []
+		} else if (bankIdBruker) {
 			return tilgjengeligMiljoe ? [tilgjengeligMiljoe] : ['q1']
 		}
 		return erQ2MiljoeAvhengig ? ['q2'] : []
@@ -65,41 +65,40 @@ export const Steg3 = () => {
 
 	useEffect(() => {
 		if (importTestnorge) {
-			if (harAvhukedeAttributter(formikBag.values)) {
-				formikBag.setFieldValue('environments', alleredeValgtMiljoe())
+			if (harAvhukedeAttributter(formMethods.getValues())) {
+				formMethods.setValue('environments', alleredeValgtMiljoe())
 			}
-			formikBag.setFieldValue('gruppeId', opts.gruppe?.id)
 		} else if (bankIdBruker) {
-			formikBag.setFieldValue('environments', alleredeValgtMiljoe())
-		} else if (erQ1EllerQ2MiljoeAvhengig(formikBag?.values)) {
-			formikBag.setFieldValue('environments', ['q1', 'q2'])
-		} else if (formikBag.values?.sykemelding) {
-			formikBag.setFieldValue('environments', ['q1'])
+			formMethods.setValue('environments', alleredeValgtMiljoe())
+		} else if (erQ1EllerQ2MiljoeAvhengig(formMethods.getValues())) {
+			formMethods.setValue('environments', ['q1', 'q2'])
+		} else if (formMethods.getValues()?.sykemelding) {
+			formMethods.setValue('environments', ['q1'])
 		} else if (erQ2MiljoeAvhengig) {
-			formikBag.setFieldValue('environments', alleredeValgtMiljoe())
-		} else if (!formikBag.values?.environments) {
-			formikBag.setFieldValue('environments', [])
+			formMethods.setValue('environments', alleredeValgtMiljoe())
+		} else if (!formMethods.getValues()?.environments) {
+			formMethods.setValue('environments', [])
 		}
 		if (harRelatertPersonVedSivilstand || harEksisterendeNyIdent || harRelatertPersonBarn) {
-			formikBag.setFieldValue('malBestillingNavn', undefined)
+			formMethods.setValue('malBestillingNavn', undefined)
 		}
 	}, [])
 
-	const visMiljoeVelger = formikBag.values.hasOwnProperty('environments')
+	const visMiljoeVelger = formMethods.watch('environments')
 	return (
 		<div>
-			{harAvhukedeAttributter(formikBag.values) && (
+			{harAvhukedeAttributter(formMethods.getValues()) && (
 				<div className="oppsummering">
 					<Suspense fallback={<Loading label={'Laster bestillingskriterier...'} />}>
-						<Bestillingsdata bestilling={formikBag.values} />
+						<Bestillingsdata bestilling={formMethods.getValues()} />
 						{/*//TODO: Fjernes naar bestillingsdata er klar*/}
-						<Bestillingskriterier bestilling={formikBag.values} />
+						<Bestillingskriterier bestilling={formMethods.getValues()} />
 					</Suspense>
 				</div>
 			)}
 			{visMiljoeVelger && (
 				<MiljoVelger
-					bestillingsdata={formikBag.values}
+					bestillingsdata={formMethods.getValues()}
 					heading="Hvilke miljøer vil du opprette i?"
 					bankIdBruker={bankIdBruker}
 					orgTilgang={organisasjonTilgang}
@@ -108,7 +107,7 @@ export const Steg3 = () => {
 			)}
 			{importTestnorge && !opts.gruppe && (
 				<VelgGruppe
-					formikBag={formikBag}
+					formMethods={formMethods}
 					title={'Hvilken gruppe vil du importere til?'}
 					gruppevalg={gruppevalg}
 					setGruppevalg={setGruppevalg}
@@ -130,7 +129,7 @@ export const Steg3 = () => {
 				!harEksisterendeNyIdent &&
 				!harRelatertPersonBarn && (
 					<MalForm
-						formikBag={formikBag}
+						formMethods={formMethods}
 						brukerId={currentBruker?.brukerId}
 						opprettetFraMal={opts?.mal?.malNavn}
 					/>
@@ -138,17 +137,15 @@ export const Steg3 = () => {
 			{erOrganisasjon && (
 				<MalFormOrganisasjon
 					brukerId={currentBruker?.brukerId}
-					formikBag={formikBag}
+					formMethods={formMethods}
 					opprettetFraMal={opts?.mal?.malNavn}
 				/>
 			)}
-			{!erOrganisasjon && !importTestnorge && <OppsummeringKommentarForm formikBag={formikBag} />}
+			{!erOrganisasjon && !importTestnorge && (
+				<OppsummeringKommentarForm formMethods={formMethods} />
+			)}
 		</div>
 	)
 }
 
 Steg3.label = 'Oppsummering'
-
-Steg3.validation = Yup.object(
-	Object.assign({}, MiljoVelger.validation, MalForm.validation, VelgGruppe.validation),
-)

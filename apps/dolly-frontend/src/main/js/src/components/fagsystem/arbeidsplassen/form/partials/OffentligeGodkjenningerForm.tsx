@@ -1,23 +1,23 @@
-import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import {
 	initialOffentligeGodkjenninger,
 	initialOffentligeGodkjenningerVerdier,
 } from '@/components/fagsystem/arbeidsplassen/form/initialValues'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
-import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import * as React from 'react'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { EraseFillButtons } from '@/components/fagsystem/arbeidsplassen/form/partials/EraseFillButtons'
 import _get from 'lodash/get'
 
-export const OffentligeGodkjenningerForm = ({ formikBag }) => {
+export const OffentligeGodkjenningerForm = ({ formMethods }) => {
 	const offentligeGodkjenningerListePath = 'arbeidsplassenCV.offentligeGodkjenninger'
 
 	return (
 		<Vis attributt={offentligeGodkjenningerListePath}>
-			<FormikDollyFieldArray
+			<FormDollyFieldArray
 				name={offentligeGodkjenningerListePath}
 				header="Offentlige godkjenninger"
 				newEntry={initialOffentligeGodkjenningerVerdier}
@@ -27,31 +27,34 @@ export const OffentligeGodkjenningerForm = ({ formikBag }) => {
 				{(offentligGodkjenningPath, idx) => (
 					<>
 						<div key={idx} className="flexbox--flex-wrap">
-							<FormikSelect
+							<FormSelect
 								name={`${offentligGodkjenningPath}.title`}
 								label="Offentlig godkjenning"
 								options={Options('offentligGodkjenning')}
 								size="xxlarge"
 								isClearable={false}
 							/>
-							<FormikTextInput
+							<FormTextInput
 								name={`${offentligGodkjenningPath}.issuer`}
 								label="Utsteder"
 								size="large"
-								key={`issuer_${_get(formikBag.values, `${offentligGodkjenningPath}.issuer`)}`}
+								key={`issuer_${_get(
+									formMethods.getValues(),
+									`${offentligGodkjenningPath}.issuer`,
+								)}`}
 							/>
-							<FormikDatepicker name={`${offentligGodkjenningPath}.fromDate`} label="Fullført" />
-							<FormikDatepicker name={`${offentligGodkjenningPath}.toDate`} label="Utløper" />
+							<FormDatepicker name={`${offentligGodkjenningPath}.fromDate`} label="Fullført" />
+							<FormDatepicker name={`${offentligGodkjenningPath}.toDate`} label="Utløper" />
 						</div>
 						<EraseFillButtons
-							formikBag={formikBag}
+							formMethods={formMethods}
 							path={offentligGodkjenningPath}
 							initialErase={initialOffentligeGodkjenninger}
 							initialFill={initialOffentligeGodkjenningerVerdier}
 						/>
 					</>
 				)}
-			</FormikDollyFieldArray>
+			</FormDollyFieldArray>
 		</Vis>
 	)
 }

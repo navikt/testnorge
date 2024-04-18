@@ -17,23 +17,22 @@ import java.util.concurrent.TimeUnit;
 public class CachingConfig {
 
     public static final String CACHE_BESTILLING = "bestilling";
+    public static final String CACHE_BESTILLING_MAL = "bestilling-mal";
     public static final String CACHE_BRUKER = "bruker";
     public static final String CACHE_GRUPPE = "gruppe";
     public static final String CACHE_HELSEPERSONELL = "helsepersonell";
-    public static final String CACHE_KODEVERK = "kodeverk";
-    public static final String CACHE_KODEVERK_2 = "kodeverk2";
 
     @Bean
-    @Profile({"dev", "prod"})
+    @Profile({ "dev", "prod" })
     public CacheManager cacheManager(Caffeine caffeine) {
         var caffeineCacheManager = new CaffeineCacheManager(CACHE_BESTILLING,
+                CACHE_BESTILLING_MAL,
                 CACHE_BRUKER,
                 CACHE_GRUPPE,
-                CACHE_HELSEPERSONELL,
-                CACHE_KODEVERK,
-                CACHE_KODEVERK_2
+                CACHE_HELSEPERSONELL
         );
         caffeineCacheManager.setCaffeine(caffeine);
+        caffeineCacheManager.setAsyncCacheMode(true);
         return caffeineCacheManager;
     }
 
@@ -44,7 +43,7 @@ public class CachingConfig {
     }
 
     @Bean
-    public Caffeine caffeineConfig() {
+    public Caffeine<Object, Object> caffeineConfig() {
         return Caffeine.newBuilder().expireAfterWrite(8, TimeUnit.HOURS);
     }
 }

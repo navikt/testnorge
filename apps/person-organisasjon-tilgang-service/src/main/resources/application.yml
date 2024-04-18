@@ -8,9 +8,9 @@ spring:
     oauth2:
       resourceserver:
         tokenx:
-          issuer-uri: ${TOKENDINGS_URL}
-          jwk-set-uri: ${TOKENDINGS_URL}/jwks
-          accepted-audience: ${ACCEPTED_AUDIENCE}
+          issuer-uri: ${TOKEN_X_ISSUER}
+          jwk-set-uri: ${TOKEN_X_JWKS_URI}
+          accepted-audience: ${TOKEN_X_CLIENT_ID}
   jackson:
     serialization:
       write_dates_as_timestamps: false
@@ -50,3 +50,5 @@ server:
   servlet:
     encoding:
       charset: UTF-8
+  error:
+    include-message: always

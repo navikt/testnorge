@@ -8,8 +8,6 @@ metadata:
 spec:
   image: "{{image}}"
   port: 8080
-  tracing:
-    enabled: true
   accessPolicy:
     inbound:
       rules:
@@ -40,6 +38,8 @@ spec:
         - application: testnav-generer-organisasjon-populasjon-service
           cluster: dev-gcp
         - application: testnav-budpro-service
+          cluster: dev-gcp
+        - application: testnav-endringsmelding-service
           cluster: dev-gcp
   tokenx:
     enabled: true

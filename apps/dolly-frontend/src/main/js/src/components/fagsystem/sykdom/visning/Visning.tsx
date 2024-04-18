@@ -1,4 +1,4 @@
-import * as _ from 'lodash-es'
+import _ from 'lodash'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { SyntSykemelding } from './partials/SyntSykemelding'
 import { DetaljertSykemelding } from './partials/DetaljertSykemelding'
@@ -114,6 +114,6 @@ SykemeldingVisning.filterValues = (bestillinger: Array<Sykemelding>, ident: stri
 
 	return bestillinger.filter(
 		(bestilling: any) =>
-			bestilling.data.sykemelding && erGyldig(bestilling.id, 'SYKEMELDING', ident),
+			bestilling.data?.sykemelding && erGyldig(bestilling.id, 'SYKEMELDING', ident),
 	)
 }

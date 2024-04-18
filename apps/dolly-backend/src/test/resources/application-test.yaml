@@ -1,10 +1,7 @@
 APP_NAME: dolly
 APP_VERSION: ${application.version}
 environment: localhost
-CLIENT_ID: dummy
-CLIENT_SECRET: dummy
-
-TOKEN_X_CLIENT_ID: test
+TOKEN_X_ISSUER: dummy
 
 jira:
   host: http://localhost:${wiremock.server.port:0}/jira
@@ -26,11 +23,11 @@ open:
     index: dummy
 
 consumers:
-  testnav-kodeverk-proxy:
-    name: kodeverk-mock
-    namespace: dolly
+  kodeverk-api:
+    name: kodeverk-api
+    namespace: team-rocket
     url: http://localhost:${wiremock.server.port:0}/kodeverk
-    cluster: dev-fss
+    cluster: prod-gcp
   testnav-tps-messaging-service:
     name: tps-messaging-mock
     namespace: dolly
@@ -60,11 +57,6 @@ consumers:
     name: pdl-mock
     namespace: dolly
     url: http://localhost:${wiremock.server.port:0}/pdl
-    cluster: dev-fss
-  tps-forvalteren-proxy:
-    name: tps-mock
-    namespace: dolly
-    url: http://localhost:${wiremock.server.port:0}/tpsf
     cluster: dev-fss
   testnav-arena-forvalteren-proxy:
     name: arena-forvalteren-mock
@@ -99,6 +91,7 @@ spring:
       token: test
       enabled: false
   datasource:
+    type: org.springframework.jdbc.datasource.SimpleDriverDataSource
     url: jdbc:tc:postgresql:14.4:///dollyDB?TC_REUSABLE=true # 14.4 er versjon p.t. i dev-gcp.
     username: user
     password: pass

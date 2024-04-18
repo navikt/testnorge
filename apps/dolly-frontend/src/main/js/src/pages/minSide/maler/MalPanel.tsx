@@ -1,6 +1,6 @@
 import React from 'react'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import { Panel, Button, Table } from '@navikt/ds-react'
+import { Button, Panel, Table } from '@navikt/ds-react'
 import { Mal } from '@/utils/hooks/useMaler'
 import { EndreMalnavn } from './EndreMalnavn'
 import { CypressSelector } from '../../../../cypress/mocks/Selectors'
@@ -8,6 +8,7 @@ import Bestillingskriterier from '@/components/bestilling/sammendrag/kriterier/B
 import StyledAlert from '@/components/ui/alert/StyledAlert'
 import { PencilWritingIcon } from '@navikt/aksel-icons'
 import { SlettMal } from '@/pages/minSide/maler/SlettMal'
+import { initialValuesBasedOnMal } from '@/components/bestillingsveileder/options/malOptions'
 
 type Props = {
 	antallEgneMaler: any
@@ -37,7 +38,6 @@ export const MalPanel = ({
 	}
 
 	const maler = malerFiltrert(malListe, searchText)
-
 	const DataCells = ({ id, malNavn, bestilling }) => (
 		<>
 			<Table.DataCell scope="row">
@@ -96,12 +96,17 @@ export const MalPanel = ({
 							</Table.Header>
 							<Table.Body>
 								{maler.map(({ malNavn, id, bestilling }) => {
+									const bestillingBasedOnMal = initialValuesBasedOnMal({
+										bestilling: bestilling,
+									})
 									return (
 										<Table.ExpandableRow
 											key={id}
-											content={<Bestillingskriterier bestilling={bestilling} erMalVisning />}
+											content={
+												<Bestillingskriterier bestilling={bestillingBasedOnMal} erMalVisning />
+											}
 										>
-											<DataCells id={id} bestilling={bestilling} malNavn={malNavn} />
+											<DataCells id={id} bestilling={bestillingBasedOnMal} malNavn={malNavn} />
 										</Table.ExpandableRow>
 									)
 								})}

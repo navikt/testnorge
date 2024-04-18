@@ -1,13 +1,13 @@
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { PersoninformasjonKodeverk } from '@/config/kodeverk'
-import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { initialTilrettelagtKommunikasjon } from '@/components/fagsystem/pdlf/form/initialValues'
 
 export const TilrettelagtKommunikasjon = () => {
 	return (
 		<div className="flexbox--flex-wrap">
-			<FormikDollyFieldArray
+			<FormDollyFieldArray
 				name={'pdldata.person.tilrettelagtKommunikasjon'}
 				header="Tolk"
 				newEntry={initialTilrettelagtKommunikasjon}
@@ -15,12 +15,12 @@ export const TilrettelagtKommunikasjon = () => {
 			>
 				{(path: string, _idx: number) => (
 					<>
-						<FormikSelect
+						<FormSelect
 							name={`${path}.spraakForTaletolk`}
 							label="Talespråk"
 							kodeverk={PersoninformasjonKodeverk.Spraak}
 						/>
-						<FormikSelect
+						<FormSelect
 							name={`${path}.spraakForTegnspraakTolk`}
 							label="Tegnspråk"
 							kodeverk={PersoninformasjonKodeverk.Spraak}
@@ -28,7 +28,7 @@ export const TilrettelagtKommunikasjon = () => {
 						<AvansertForm path={path} kanVelgeMaster={false} />
 					</>
 				)}
-			</FormikDollyFieldArray>
+			</FormDollyFieldArray>
 		</div>
 	)
 }

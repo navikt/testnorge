@@ -1,19 +1,19 @@
 import React, { useState } from 'react'
-import { DollySelect, FormikSelect } from '@/components/ui/form/inputs/select/Select'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { DollySelect, FormSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { OppholdSammeVilkaar } from '@/components/fagsystem/udistub/form/partials/OppholdSammeVilkaar'
 import { IkkeOppholdSammeVilkaar } from '@/components/fagsystem/udistub/form/partials/IkkeOppholdSammeVilkaar'
 import { Option } from '@/service/SelectOptionsOppslag'
-import { FormikProps } from 'formik'
 import { fixTimezone } from '@/components/ui/form/formUtils'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 const basePath = 'udistub.oppholdStatus'
 const pdlBasePath = 'pdldata.person.opphold'
 const harOppholdsTillatelsePath = 'udistub.harOppholdsTillatelse'
 
-const findInitialStatus = (formikBag: FormikProps<any>) => {
-	const oppholdsstatusObj = formikBag.values.udistub.oppholdStatus
+const findInitialStatus = (formMethods: UseFormReturn) => {
+	const oppholdsstatusObj = formMethods.getValues().udistub.oppholdStatus
 	const eosEllerEFTAOpphold = Object.keys(oppholdsstatusObj).some((key) =>
 		key.includes('eosEllerEFTA'),
 	)
@@ -33,7 +33,7 @@ const findInitialStatus = (formikBag: FormikProps<any>) => {
 	}
 	if (
 		oppholdsstatusObj.ikkeOppholdSammeVilkaar ||
-		formikBag.values.udistub.harOppholdsTillatelse === false
+		formMethods.getValues().udistub.harOppholdsTillatelse === false
 	) {
 		return ['tredjelandsBorgere', '', 'ikkeOppholdSammeVilkaar']
 	}
@@ -43,8 +43,8 @@ const findInitialStatus = (formikBag: FormikProps<any>) => {
 	return ['', '', '']
 }
 
-function setPdlInitialValues(formikBag: FormikProps<any>) {
-	formikBag.setFieldValue(`${pdlBasePath}`, [
+function setPdlInitialValues(formMethods: UseFormReturn) {
+	formMethods.setValue(`${pdlBasePath}`, [
 		{
 			type: 'OPPLYSNING_MANGLER',
 			oppholdFra: null,
@@ -53,8 +53,8 @@ function setPdlInitialValues(formikBag: FormikProps<any>) {
 	])
 }
 
-export const Oppholdsstatus = ({ formikBag }: { formikBag: FormikProps<any> }) => {
-	const initialStatus = findInitialStatus(formikBag)
+export const Oppholdsstatus = ({ formMethods }: { formMethods: UseFormReturn }) => {
+	const initialStatus = findInitialStatus(formMethods)
 	const [oppholdsstatus, setOppholdsstatus] = useState(initialStatus[0])
 	const [eosEllerEFTAtypeOpphold, setEosEllerEFTAtypeOpphold] = useState(initialStatus[1])
 	const [tredjelandsBorgereValg, setTredjelandsBorgereValg] = useState(initialStatus[2])
@@ -63,64 +63,58 @@ export const Oppholdsstatus = ({ formikBag }: { formikBag: FormikProps<any> }) =
 		setOppholdsstatus(value)
 		setEosEllerEFTAtypeOpphold('')
 		setTredjelandsBorgereValg('')
-		formikBag.setFieldValue(basePath, {})
-		setPdlInitialValues(formikBag)
+		formMethods.setValue(basePath, {})
+		formMethods.clearErrors('udistub.oppholdStatus')
+		setPdlInitialValues(formMethods)
 	}
 
 	const endreEosEllerEFTAtypeOpphold = (value: string) => {
 		setEosEllerEFTAtypeOpphold(value)
-		formikBag.setFieldValue(basePath, {})
-		formikBag.setFieldValue(`udistub.oppholdStatus.${value}Periode`, {
+		formMethods.setValue(basePath, {})
+		formMethods.setValue(`udistub.oppholdStatus.${value}Periode`, {
 			fra: null,
 			til: null,
 		})
-		setPdlInitialValues(formikBag)
-		formikBag.setFieldValue(`udistub.oppholdStatus.${value}Effektuering`, null)
-		formikBag.setFieldValue(`udistub.oppholdStatus.${value}`, '')
+		setPdlInitialValues(formMethods)
+		formMethods.setValue(`udistub.oppholdStatus.${value}Effektuering`, null)
+		formMethods.setValue(`udistub.oppholdStatus.${value}`, '')
 	}
 
 	const endreTredjelandsBorgereValg = (value: string) => {
 		setTredjelandsBorgereValg(value)
-		setPdlInitialValues(formikBag)
-		formikBag.setFieldValue(basePath, {})
+		setPdlInitialValues(formMethods)
+		formMethods.setValue(basePath, {})
 		if (value === 'oppholdSammeVilkaar') {
-			formikBag.setFieldValue(harOppholdsTillatelsePath, true)
-			formikBag.setFieldValue('udistub.oppholdStatus.oppholdSammeVilkaar', {
+			formMethods.setValue(harOppholdsTillatelsePath, true)
+			formMethods.setValue('udistub.oppholdStatus.oppholdSammeVilkaar', {
 				oppholdSammeVilkaarPeriode: { fra: null, til: null },
 				oppholdSammeVilkaarEffektuering: null,
 				oppholdstillatelseVedtaksDato: null,
 				oppholdstillatelseType: '',
 			})
 		} else if (value === 'ikkeOppholdSammeVilkaar') {
-			formikBag.setFieldValue(basePath, {})
-			formikBag.setFieldValue(harOppholdsTillatelsePath, false)
-			formikBag.setFieldValue('udistub.oppholdStatus.ikkeOppholdstilatelseIkkeVilkaarIkkeVisum', {
+			formMethods.setValue(basePath, {})
+			formMethods.setValue(harOppholdsTillatelsePath, false)
+			formMethods.setValue('udistub.oppholdStatus.ikkeOppholdstilatelseIkkeVilkaarIkkeVisum', {
 				avslagEllerBortfall: {
 					avgjorelsesDato: null,
 				},
 			})
 		} else if (value === 'UAVKLART') {
-			formikBag.setFieldValue(basePath, { uavklart: true })
-			formikBag.setFieldValue(harOppholdsTillatelsePath, undefined)
-		}
-	}
-
-	const feilmelding = (felt: string) => {
-		if (!felt) {
-			return { feilmelding: 'Feltet er påkrevd' }
+			formMethods.setValue(basePath, { uavklart: true })
+			formMethods.setValue(harOppholdsTillatelsePath, undefined)
 		}
 	}
 
 	return (
 		<div className="flexbox--flex-wrap">
 			<DollySelect
-				name="oppholdsstatus"
+				name="udistub.oppholdStatus"
 				label="Innenfor eller utenfor EØS"
 				value={oppholdsstatus}
 				size="large"
 				options={Options('oppholdsstatus')}
 				onChange={(option: Option) => endreOppholdsstatus(option.value)}
-				feil={feilmelding(oppholdsstatus)}
 				isClearable={false}
 			/>
 			{oppholdsstatus === 'eosEllerEFTAOpphold' && (
@@ -132,29 +126,28 @@ export const Oppholdsstatus = ({ formikBag }: { formikBag: FormikProps<any> }) =
 						options={Options('eosEllerEFTAtypeOpphold')}
 						onChange={(option: Option) => endreEosEllerEFTAtypeOpphold(option.value)}
 						size="xxlarge"
-						feil={feilmelding(eosEllerEFTAtypeOpphold)}
 						isClearable={false}
 					/>
-					<FormikDatepicker
+					<FormDatepicker
 						name={`udistub.oppholdStatus.${eosEllerEFTAtypeOpphold}Periode.fra`}
 						afterChange={(dato: Date) =>
-							formikBag.setFieldValue(`${pdlBasePath}[0].oppholdFra`, fixTimezone(dato))
+							formMethods.setValue(`${pdlBasePath}[0].oppholdFra`, fixTimezone(dato))
 						}
 						label="Oppholdstillatelse fra dato"
 					/>
-					<FormikDatepicker
+					<FormDatepicker
 						name={`udistub.oppholdStatus.${eosEllerEFTAtypeOpphold}Periode.til`}
 						afterChange={(dato: Date) =>
-							formikBag.setFieldValue(`${pdlBasePath}[0].oppholdTil`, fixTimezone(dato))
+							formMethods.setValue(`${pdlBasePath}[0].oppholdTil`, fixTimezone(dato))
 						}
 						label="Oppholdstillatelse til dato"
 					/>
-					<FormikDatepicker
+					<FormDatepicker
 						name={`udistub.oppholdStatus.${eosEllerEFTAtypeOpphold}Effektuering`}
 						label="Effektueringsdato"
 					/>
 					{eosEllerEFTAtypeOpphold && (
-						<FormikSelect
+						<FormSelect
 							name={`udistub.oppholdStatus.${eosEllerEFTAtypeOpphold}`}
 							label="Grunnlag for opphold"
 							options={Options(eosEllerEFTAtypeOpphold)}
@@ -173,15 +166,12 @@ export const Oppholdsstatus = ({ formikBag }: { formikBag: FormikProps<any> }) =
 						size="xxlarge"
 						options={Options('tredjelandsBorgereValg')}
 						onChange={(option: Option) => endreTredjelandsBorgereValg(option.value)}
-						feil={feilmelding(tredjelandsBorgereValg)}
 						isClearable={false}
 					/>
 					{tredjelandsBorgereValg === 'oppholdSammeVilkaar' && (
-						<OppholdSammeVilkaar formikBag={formikBag} />
+						<OppholdSammeVilkaar formMethods={formMethods} />
 					)}
-					{tredjelandsBorgereValg === 'ikkeOppholdSammeVilkaar' && (
-						<IkkeOppholdSammeVilkaar formikBag={formikBag} />
-					)}
+					{tredjelandsBorgereValg === 'ikkeOppholdSammeVilkaar' && <IkkeOppholdSammeVilkaar />}
 				</React.Fragment>
 			)}
 		</div>

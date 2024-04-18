@@ -1,5 +1,5 @@
 import { createActions } from 'redux-actions'
-import * as _ from 'lodash-es'
+import _ from 'lodash'
 import { DollyApi } from '@/service/Api'
 
 export const {
@@ -37,15 +37,12 @@ export const getBestillingsListe = (bestillinger, IDer) => {
 }
 
 // Filtrer bestillinger basert på søkestreng
-export const sokSelector = (bestillingerById, searchStr) => {
+export const sokSelector = (bestillingerById: any, searchStr: string) => {
 	const items = Object.values(bestillingerById)
-	if (!searchStr || !items) return items
+	if (_.isEmpty(searchStr) || _.isEmpty(items)) return items
 
-	return items.filter(({ listedata }) => {
-		const searchValues = listedata
-			?.filter((v) => !_.isNil(v))
-			.map((v) => v.toString().toLowerCase())
-		return searchValues?.some((v) => v.includes(searchStr.toLowerCase()))
+	return items.filter((item: any) => {
+		return item.id?.toString().includes(searchStr) || item.organisasjonNummer?.includes(searchStr)
 	})
 }
 

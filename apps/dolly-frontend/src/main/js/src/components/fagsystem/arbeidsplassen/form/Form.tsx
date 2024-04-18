@@ -16,30 +16,33 @@ import { KursForm } from '@/components/fagsystem/arbeidsplassen/form/partials/Ku
 import { SammendragForm } from '@/components/fagsystem/arbeidsplassen/form/partials/SammendragForm'
 import { validation } from '@/components/fagsystem/arbeidsplassen/form/validation'
 import { HjemmelForm } from '@/components/fagsystem/arbeidsplassen/form/partials/HjemmelForm'
+import { useFormContext } from 'react-hook-form'
+import './CvForm.less'
 
 export const arbeidsplassenAttributt = 'arbeidsplassenCV'
-export const ArbeidsplassenForm = ({ formikBag }) => {
+export const ArbeidsplassenForm = () => {
+	const formMethods = useFormContext()
 	return (
 		<Vis attributt={arbeidsplassenAttributt}>
 			<Panel
 				heading="Arbeidsplassen (CV)"
-				hasErrors={panelError(formikBag, arbeidsplassenAttributt)}
+				hasErrors={panelError(arbeidsplassenAttributt)}
 				iconType="cv"
-				startOpen={erForsteEllerTest(formikBag.values, [arbeidsplassenAttributt])}
+				startOpen={erForsteEllerTest(formMethods.getValues(), [arbeidsplassenAttributt])}
 			>
-				<div className="flexbox--flex-wrap">
-					<JobboenskerForm formikBag={formikBag} />
-					<UtdanningForm formikBag={formikBag} />
-					<FagbrevForm formikBag={formikBag} />
-					<ArbeidserfaringForm formikBag={formikBag} />
-					<AnnenErfaringForm formikBag={formikBag} />
-					<KompetanserForm formikBag={formikBag} />
-					<OffentligeGodkjenningerForm formikBag={formikBag} />
-					<AndreGodkjenningerForm formikBag={formikBag} />
-					<SpraakForm formikBag={formikBag} />
-					<FoererkortForm formikBag={formikBag} />
-					<KursForm formikBag={formikBag} />
-					<SammendragForm formikBag={formikBag} />
+				<div className="flexbox--flex-wrap cv-form">
+					<JobboenskerForm formMethods={formMethods} />
+					<UtdanningForm formMethods={formMethods} />
+					<FagbrevForm formMethods={formMethods} />
+					<ArbeidserfaringForm formMethods={formMethods} />
+					<AnnenErfaringForm formMethods={formMethods} />
+					<KompetanserForm formMethods={formMethods} />
+					<OffentligeGodkjenningerForm formMethods={formMethods} />
+					<AndreGodkjenningerForm formMethods={formMethods} />
+					<SpraakForm formMethods={formMethods} />
+					<FoererkortForm formMethods={formMethods} />
+					<KursForm formMethods={formMethods} />
+					<SammendragForm formMethods={formMethods} />
 					<HjemmelForm />
 				</div>
 			</Panel>

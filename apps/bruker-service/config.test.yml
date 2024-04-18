@@ -8,24 +8,23 @@ metadata:
 spec:
   image: "{{image}}"
   port: 8080
+  azure:
+    application:
+      enabled: true
+      tenant: nav.no
+      claims:
+        groups:
+          - id: 9c7efec1-1599-4216-a67e-6fd53a6a951c
   tokenx:
     enabled: true
   accessPolicy:
     inbound:
       rules:
-        - application: team-dolly-lokal-app
-          cluster: dev-gcp
-        - application: testnav-oversikt-frontend
-          cluster: dev-gcp
         - application: dolly-frontend-dev
-          cluster: dev-gcp
-        - application: dolly-idporten
-          cluster: dev-gcp
         - application: dolly-frontend-dev-unstable
-          cluster: dev-gcp
-        - application: app-1
-          namespace: plattformsikkerhet
-          cluster: dev-gcp
+        - application: dolly-idporten
+        - application: team-dolly-lokal-app
+        - application: testnav-oversikt-frontend
     outbound:
       rules:
         - application: testnav-person-organisasjon-tilgang-service-dev

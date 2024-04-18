@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
+import java.time.Instant;
 
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
@@ -35,6 +36,9 @@ public abstract class DbVersjonDTO implements Serializable {
 
     @JsonIgnore
     private Boolean isNew;
+
+    @Schema(description = "Angir timestamp for metadata")
+    private Instant opprettet;
 
     @Schema(description = "Denne kan også benyttes ved behov")
     private FolkeregistermetadataDTO folkeregistermetadata;

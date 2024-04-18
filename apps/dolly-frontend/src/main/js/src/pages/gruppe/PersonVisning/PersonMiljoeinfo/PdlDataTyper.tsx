@@ -15,6 +15,14 @@ export type PdlDataWrapper = {
 	}
 }
 
+export type PdlDataBolk = {
+	errors: any
+	data: {
+		hentPersonBolk: Array<{ person: HentPerson; ident: string }>
+		hentIdenterBolk: Array<{ identer: Array<Ident>; ident: string }>
+	}
+}
+
 export type PdlData = {
 	hentIdenter: { identer: [Ident] }
 	hentPerson: HentPerson

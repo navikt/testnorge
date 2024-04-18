@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import Inntekt from '@/components/inntektStub/validerInntekt/Inntekt'
-import { Formik } from 'formik'
 import InntektstubService from '@/service/services/inntektstub/InntektstubService'
-import * as _ from 'lodash-es'
+import _ from 'lodash'
+import { Form, useFormContext, useWatch } from 'react-hook-form'
+import _get from 'lodash/get'
 
 const tilleggsinformasjonAttributter = {
 	BilOgBaat: 'bilOgBaat',
@@ -16,73 +17,85 @@ const tilleggsinformasjonAttributter = {
 	ReiseKostOgLosji: 'reiseKostOgLosji',
 }
 
-const InntektStub = ({ formikBag, inntektPath }) => {
+const InntektStub = ({ inntektPath }) => {
+	const formMethods = useFormContext()
 	const [fields, setFields] = useState({})
-	const [inntektValues] = useState(_.get(formikBag.values, inntektPath))
-	const [currentInntektstype, setCurrentInntektstype] = useState(
-		_.get(formikBag.values, `${inntektPath}.inntektstype`)
-	)
-	const currentTilleggsinformasjonstype = _.get(
-		formikBag.values,
-		`${inntektPath}.tilleggsinformasjonstype`
-	)
+	const watched = useWatch()
+	const inntektValues = _get(watched, inntektPath)
+	const {
+		beloep,
+		startOpptjeningsperiode,
+		sluttOpptjeningsperiode,
+		inntektstype,
+		tilleggsinformasjonstype,
+	} = inntektValues
 
 	useEffect(() => {
-		setCurrentInntektstype(_.get(formikBag.values, `${inntektPath}.inntektstype`))
-	}, [formikBag.values])
-
-	useEffect(() => {
-		if (
-			inntektValues.inntektstype &&
-			inntektValues.inntektstype !== '' &&
-			Object.keys(fields).length < 1
-		) {
+		if (!_.isEmpty(inntektstype)) {
 			InntektstubService.validate(_.omitBy(inntektValues, (value) => value === '' || !value)).then(
-				(response) => setFields(response)
+				(response) => {
+					setFields(response)
+				},
 			)
 		}
-	}, [inntektValues, fields])
+		formMethods.trigger(`${inntektPath}.inntektstype`)
+	}, [inntektValues])
 
 	useEffect(() => {
 		Object.entries(fields).forEach((entry) => {
-			removeEmptyFieldsFromFormik(entry)
+			const fieldName = entry[0]
+			const fieldState = formMethods.getFieldState(`${inntektPath}.${fieldName}`)
+			fieldState.invalid &&
+				!fieldState.isDirty &&
+				formMethods.getValues(`${inntektPath}.${fieldName}`) !== null &&
+				formMethods.setValue(`${inntektPath}.${fieldName}`, null)
+			removeEmptyFieldsFromForm(entry)
 		})
+		if (
+			!tilleggsinformasjonstype &&
+			formMethods.getValues(`${inntektPath}.tilleggsinformasjon`) !== undefined
+		) {
+			formMethods.setValue(`${inntektPath}.tilleggsinformasjon`, undefined)
+		}
 	}, [fields])
 
 	useEffect(() => {
-		if (!currentTilleggsinformasjonstype) {
-			formikBag.setFieldValue(`${inntektPath}.tilleggsinformasjon`, undefined)
+		if (!tilleggsinformasjonstype) {
 			return
 		}
-		formikBag.setFieldValue(`${inntektPath}.tilleggsinformasjon`, {
-			[`${tilleggsinformasjonAttributter[currentTilleggsinformasjonstype]}`]: {},
+		formMethods.setValue(`${inntektPath}.tilleggsinformasjon`, {
+			[`${tilleggsinformasjonAttributter[tilleggsinformasjonstype]}`]: {},
 		})
-	}, [currentTilleggsinformasjonstype])
+	}, [tilleggsinformasjonstype])
 
-	const setFormikBag = (values) => {
+	const setForm = (values) => {
 		const nullstiltInntekt = {
-			beloep: _.get(formikBag.values, `${inntektPath}.beloep`),
-			startOpptjeningsperiode: _.get(formikBag.values, `${inntektPath}.startOpptjeningsperiode`),
-			sluttOpptjeningsperiode: _.get(formikBag.values, `${inntektPath}.sluttOpptjeningsperiode`),
-			inntektstype: values.inntektstype,
+			beloep: beloep,
+			startOpptjeningsperiode: startOpptjeningsperiode,
+			sluttOpptjeningsperiode: sluttOpptjeningsperiode,
+			inntektstype: inntektstype,
 		}
 
-		if (values.inntektstype !== currentInntektstype) {
-			formikBag.setFieldValue(inntektPath, nullstiltInntekt)
+		if (values.inntektstype !== inntektstype) {
+			formMethods.setValue(inntektPath, nullstiltInntekt)
 		} else {
-			formikBag.setFieldValue(inntektPath, { ..._.get(formikBag.values, inntektPath), ...values })
+			formMethods.setValue(inntektPath, {
+				...inntektValues,
+				...values,
+			})
 		}
 	}
 
-	const removeEmptyFieldsFromFormik = (entry) => {
+	const removeEmptyFieldsFromForm = (entry) => {
 		const name = entry[0]
 		const valueArray = entry[1]
 		if (
 			valueArray.length === 1 &&
 			valueArray[0] === '<TOM>' &&
-			_.get(formikBag.values, `${inntektPath}.${name}`)
+			formMethods.getValues(`${inntektPath}.${name}`) !== undefined
 		) {
-			formikBag.setFieldValue(`${inntektPath}.${name}`, undefined)
+			formMethods.setValue(`${inntektPath}.${name}`, undefined)
+			formMethods.clearErrors(`${inntektPath}.${name}`)
 		}
 	}
 
@@ -101,14 +114,13 @@ const InntektStub = ({ formikBag, inntektPath }) => {
 	}
 
 	return (
-		<Formik
-			initialValues={inntektValues.inntektstype !== '' ? inntektValues : {}}
+		<Form
 			onSubmit={(values) => {
-				if (currentInntektstype && values.inntektstype !== currentInntektstype) {
+				if (inntektstype && values.inntektstype !== inntektstype) {
 					values = { inntektstype: values.inntektstype }
 				}
 				const emptyableFields = Object.entries(fields).filter(
-					(field) => field?.[1]?.[0] === '<TOM>' && field?.[1]?.length > 2
+					(field) => field?.[1]?.[0] === '<TOM>' && field?.[1]?.length > 2,
 				)
 				for (const [key] of emptyableFields) {
 					if (!values[key] && key !== 'tilleggsinformasjonstype') {
@@ -116,22 +128,21 @@ const InntektStub = ({ formikBag, inntektPath }) => {
 					}
 				}
 				InntektstubService.validate(_.omitBy(values, (value) => value === '' || !value)).then(
-					(response) => setFields(response)
+					(response) => setFields(response),
 				)
 				clearEmptyValuesAndFields(values)
-				setFormikBag(values)
+				setForm(values)
 			}}
-			component={({ handleSubmit }) => (
-				<div>
-					<Inntekt
-						fields={fields}
-						onValidate={handleSubmit}
-						formikBag={formikBag}
-						path={inntektPath}
-					/>
-				</div>
-			)}
-		/>
+		>
+			<div>
+				<Inntekt
+					fields={fields}
+					onValidate={() => formMethods.trigger('inntekt')}
+					formMethods={formMethods}
+					path={inntektPath}
+				/>
+			</div>
+		</Form>
 	)
 }
 

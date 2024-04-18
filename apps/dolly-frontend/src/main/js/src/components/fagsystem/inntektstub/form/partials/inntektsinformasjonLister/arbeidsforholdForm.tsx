@@ -1,8 +1,7 @@
-import * as _ from 'lodash-es'
-import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
-import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import { DollySelect, FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { DollySelect, FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
 import { ArbeidKodeverk } from '@/config/kodeverk'
 import React from 'react'
@@ -21,7 +20,7 @@ const initialValues = {
 	sisteDatoForStillingsprosentendring: undefined,
 }
 
-export const ArbeidsforholdForm = ({ formikBag, inntektsinformasjonPath }) => {
+export const ArbeidsforholdForm = ({ formMethods, inntektsinformasjonPath }) => {
 	const arbeidsforholdstyper = SelectOptionsOppslag.hentArbeidsforholdstyperInntektstub()
 	const arbeidsforholdstyperFormatted = SelectOptionsFormat.formatOptions(
 		'arbeidsforholdstyper',
@@ -29,7 +28,7 @@ export const ArbeidsforholdForm = ({ formikBag, inntektsinformasjonPath }) => {
 	)
 
 	return (
-		<FormikDollyFieldArray
+		<FormDollyFieldArray
 			name={`${inntektsinformasjonPath}.arbeidsforholdsliste`}
 			header="Arbeidsforhold"
 			newEntry={initialValues}
@@ -42,55 +41,51 @@ export const ArbeidsforholdForm = ({ formikBag, inntektsinformasjonPath }) => {
 						options={arbeidsforholdstyperFormatted}
 						isLoading={arbeidsforholdstyper.loading}
 						onChange={(forhold) =>
-							formikBag.setFieldValue(`${path}.arbeidsforholdstype`, forhold.value)
+							formMethods.setValue(`${path}.arbeidsforholdstype`, forhold.value)
 						}
-						value={_.get(formikBag.values, `${path}.arbeidsforholdstype`)}
+						value={formMethods.watch(`${path}.arbeidsforholdstype`)}
 						size="xlarge"
 						isClearable={false}
 					/>
 
-					<FormikDatepicker name={`${path}.startdato`} label="Startdato" />
-					<FormikDatepicker name={`${path}.sluttdato`} label="Sluttdato" />
-					<FormikTextInput
+					<FormDatepicker name={`${path}.startdato`} label="Startdato" />
+					<FormDatepicker name={`${path}.sluttdato`} label="Sluttdato" />
+					<FormTextInput
 						name={`${path}.antallTimerPerUkeSomEnFullStillingTilsvarer`}
 						label="Timer per uke (full stilling)"
 						type="number"
 					/>
-					<FormikTextInput
-						name={`${path}.stillingsprosent`}
-						label="Stillingsprosent"
-						type="number"
-					/>
-					<FormikSelect
+					<FormTextInput name={`${path}.stillingsprosent`} label="Stillingsprosent" type="number" />
+					<FormSelect
 						name={`${path}.avloenningstype`}
 						label="Avlønningstype"
 						kodeverk={ArbeidKodeverk.Avloenningstyper}
 						size="medium"
 					/>
-					<FormikSelect
+					<FormSelect
 						name={`${path}.yrke`}
 						label="Yrke"
 						kodeverk={ArbeidKodeverk.Yrker}
 						size="xxxlarge"
 						optionHeight={50}
 					/>
-					<FormikSelect
+					<FormSelect
 						name={`${path}.arbeidstidsordning`}
 						label="Arbeidstidsordning"
 						kodeverk={ArbeidKodeverk.Arbeidstidsordninger}
 						size="xxlarge"
 					/>
 
-					<FormikDatepicker
+					<FormDatepicker
 						name={`${path}.sisteLoennsendringsdato`}
 						label="Siste lønnsendringsdato"
 					/>
-					<FormikDatepicker
+					<FormDatepicker
 						name={`${path}.sisteDatoForStillingsprosentendring`}
 						label="Stillingsprosentendring"
 					/>
 				</React.Fragment>
 			)}
-		</FormikDollyFieldArray>
+		</FormDollyFieldArray>
 	)
 }

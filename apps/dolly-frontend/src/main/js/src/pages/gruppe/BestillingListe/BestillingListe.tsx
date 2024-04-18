@@ -1,4 +1,4 @@
-import * as _ from 'lodash-es'
+import _ from 'lodash'
 import { DollyTable } from '@/components/ui/dollyTable/DollyTable'
 import ContentContainer from '@/components/ui/contentContainer/ContentContainer'
 import BestillingDetaljer from '@/components/bestilling/detaljer/BestillingDetaljer'
@@ -60,7 +60,7 @@ export default function BestillingListe({
 		},
 		{
 			text: 'Antall personer',
-			width: '15',
+			width: '10',
 			dataField: 'listedata[1]',
 		},
 		{
@@ -69,14 +69,19 @@ export default function BestillingListe({
 			dataField: 'listedata[2]',
 		},
 		{
-			text: 'Miljø',
-			width: '30',
+			text: 'Type',
+			width: '20',
 			dataField: 'listedata[3]',
+		},
+		{
+			text: 'Miljø',
+			width: '15',
+			dataField: 'listedata[4]',
 		},
 		{
 			text: 'Status',
 			width: '10',
-			dataField: 'listedata[4]',
+			dataField: 'listedata[5]',
 			formatter: (cell) => {
 				return cell === 'Pågår' ? (
 					<Spinner size={24} />

@@ -41,6 +41,7 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.TilrettelagtKommunikasjonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.UtenlandskIdentifikasjonsnummerDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.UtflyttingDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.VergemaalDTO;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -118,13 +119,12 @@ public class PersonController {
         return personService.updatePerson(ident, request, overwrite, relaxed);
     }
 
+    @Transactional
     @ResponseBody
     @PostMapping(value = "/{ident}/ordre")
     @Operation(description = "Send angitte testperson(er) med relasjoner til PDL")
     public OrdreResponseDTO sendPersonTilPdl(@Parameter(description = "Ident på hovedperson som skal sendes")
                                              @PathVariable String ident,
-                                             @Parameter(description = "Angir om TPS er master, true == hovedperson skal ikke slettes i PDL")
-                                             @RequestParam(required = false) Boolean isTpsMaster,
                                              @Parameter(description = "Angir om 3. personer (egne hovedpersoner i Dolly) skal ekskluderes")
                                              @RequestParam(required = false) Boolean ekskluderEksternePersoner) {
 

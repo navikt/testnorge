@@ -1,4 +1,4 @@
-import * as _ from 'lodash-es'
+import _ from 'lodash'
 import { Alert } from '@navikt/ds-react'
 import {
 	useArenaEnvironments,
@@ -121,8 +121,6 @@ export const filterMiljoe = (dollyMiljoe, utvalgteMiljoer) => {
 
 const flatDollyMiljoe = (dollymiljoe) => {
 	const miljoeArray = []
-	Object.values(dollymiljoe).forEach((miljoeKat) =>
-		miljoeKat.forEach((miljoe) => miljoeArray.push(miljoe.id)),
-	)
+	Object.values(dollymiljoe).forEach((miljoe) => miljoeArray.push(miljoe.id))
 	return miljoeArray
 }

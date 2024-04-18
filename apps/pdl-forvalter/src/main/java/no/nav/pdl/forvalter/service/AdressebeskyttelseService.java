@@ -23,7 +23,7 @@ public class AdressebeskyttelseService implements BiValidation<Adressebeskyttels
 
     private static final String VALIDATION_UTLAND_MASTER_ERROR = "Adressebeskyttelse: Gradering STRENGT_FORTROLIG_UTLAND " +
             "kan kun settes hvis master er PDL";
-    private static final String VALIDATION_INVALID_BESKYTTELSE = "Adressebeskyttelse: Gradering STRENGT_FORTROLIG eller " +
+    private static final String VALIDATION_INVALID_BESKYTTELSE = "Adressebeskyttelse: Gradering " +
             "FORTROLIG kan kun settes på personer med fødselsnummer";
 
     public List<AdressebeskyttelseDTO> convert(PersonDTO person) {
@@ -43,8 +43,7 @@ public class AdressebeskyttelseService implements BiValidation<Adressebeskyttels
     public void validate(AdressebeskyttelseDTO adressebeskyttelse, PersonDTO person) {
 
         if (FNR != IdenttypeFraIdentUtility.getIdenttype(person.getIdent()) &&
-                (STRENGT_FORTROLIG == adressebeskyttelse.getGradering() ||
-                FORTROLIG == adressebeskyttelse.getGradering())) {
+                FORTROLIG == adressebeskyttelse.getGradering()) {
             throw new InvalidRequestException(VALIDATION_INVALID_BESKYTTELSE);
         }
         if (STRENGT_FORTROLIG_UTLAND == adressebeskyttelse.getGradering() &&

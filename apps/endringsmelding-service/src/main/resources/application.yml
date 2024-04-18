@@ -12,10 +12,6 @@ spring:
           issuer-uri: ${AAD_ISSUER_URI}/v2.0
           jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
           accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
-        tokenx:
-          issuer-uri: https://tokenx.dev-gcp.nav.cloud.nais.io 
-          jwk-set-uri: https://tokenx.dev-gcp.nav.cloud.nais.io/jwks
-          accepted-audience: dev-gcp:dolly:testnav-endringsmelding-service
 
 springdoc:
   swagger-ui:
@@ -23,16 +19,26 @@ springdoc:
     url: /v3/api-docs
 
 consumers:
-  tps-forvalteren-proxy:
-    url: https://tps-forvalteren-proxy.dev-fss-pub.nais.io
-    cluster: dev-fss
-    namespace: dolly
-    name: tps-forvalteren-proxy
   tps-messaging-service:
     url: http://testnav-tps-messaging-service.dolly.svc.cluster.local
     cluster: dev-gcp
     namespace: dolly
     name: testnav-tps-messaging-service
+  ident-pool:
+    url: http://testnav-ident-pool.dolly.svc.cluster.local
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-ident-pool
+  adresse-service:
+    url: http://testnav-adresse-service.dolly.svc.cluster.local
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-adresse-service
+  generer-navn-service:
+    url: http://generer-navn-service.dolly.svc.cluster.local
+    cluster: dev-gcp
+    namespace: dolly
+    name: generer-navn-service
 
 management:
   endpoints:
@@ -56,3 +62,5 @@ server:
   servlet:
     encoding:
       charset: UTF-8
+  error:
+    include-message: always

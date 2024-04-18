@@ -9,6 +9,8 @@ spec:
   image: "{{image}}"
   port: 8080
   webproxy: true
+  tokenx:
+    enabled: true
   azure:
     application:
       allowAllUsers: true
@@ -30,9 +32,6 @@ spec:
         - application: dolly-backend-dev
           cluster: dev-gcp
         - application: testnav-oversikt-frontend
-          cluster: dev-gcp
-        - application: app-1
-          namespace: plattformsikkerhet
           cluster: dev-gcp
   liveness:
     path: /internal/isAlive

@@ -11,7 +11,7 @@ import { relasjonerAttributter } from '@/components/fagsystem/pdlf/form/partials
 import { useContext } from 'react'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 
-export const FamilierelasjonPanel = ({ stateModifier, formikBag }) => {
+export const FamilierelasjonPanel = ({ stateModifier, formValues }) => {
 	const sm = stateModifier(FamilierelasjonPanel.initialValues)
 	const opts = useContext(BestillingsveilederContext)
 
@@ -28,7 +28,7 @@ export const FamilierelasjonPanel = ({ stateModifier, formikBag }) => {
 			checkAttributeArray={() => sm.batchAdd(getIgnoreKeys())}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType={'relasjoner'}
-			startOpen={harValgtAttributt(formikBag.values, relasjonerAttributter)}
+			startOpen={harValgtAttributt(formValues, relasjonerAttributter)}
 		>
 			<AttributtKategori title="Sivilstand" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.sivilstand} />
@@ -58,7 +58,7 @@ export const FamilierelasjonPanel = ({ stateModifier, formikBag }) => {
 
 FamilierelasjonPanel.heading = 'Familierelasjoner'
 
-FamilierelasjonPanel.initialValues = ({ set, del, has, opts }: any) => {
+FamilierelasjonPanel.initialValues = ({ set, opts, del, has }: any) => {
 	const { identtype } = opts
 
 	return {

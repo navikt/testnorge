@@ -1,33 +1,32 @@
 import * as React from 'react'
-import { FormikProps } from 'formik'
+import { useContext } from 'react'
 import { getInitialNyIdent } from '@/components/fagsystem/pdlf/form/initialValues'
-import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { PdlPersonExpander } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonExpander'
-import * as _ from 'lodash-es'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
-import { useContext } from 'react'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface NyIdentForm {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 }
 
-export const NyIdent = ({ formikBag }: NyIdentForm) => {
+export const NyIdent = ({ formMethods }: NyIdentForm) => {
 	const opts = useContext(BestillingsveilederContext)
 
 	return (
-		<FormikDollyFieldArray
+		<FormDollyFieldArray
 			name="pdldata.person.nyident"
 			header="Ny identitet"
 			newEntry={getInitialNyIdent(opts?.identtype === 'NPID' ? 'PDL' : 'FREG')}
 			canBeEmpty={false}
 		>
 			{(path: string) => {
-				const nyIdentValg = Object.keys(_.get(formikBag.values, path))
+				const nyIdentValg = Object.keys(formMethods.watch(path))
 					.filter((key) => key !== 'eksisterendeIdent' && key !== 'kilde' && key !== 'master')
 					.reduce((obj, key) => {
-						obj[key] = _.get(formikBag.values, path)[key]
+						obj[key] = formMethods.watch(path)[key]
 						return obj
 					}, {})
 
@@ -37,17 +36,17 @@ export const NyIdent = ({ formikBag }: NyIdentForm) => {
 							nyPersonPath={path}
 							eksisterendePersonPath={`${path}.eksisterendeIdent`}
 							label="NY IDENTITET"
-							formikBag={formikBag}
+							formMethods={formMethods}
 							nyIdentValg={nyIdentValg}
 							isExpanded={
 								!isEmpty(nyIdentValg, ['syntetisk']) ||
-								_.get(formikBag.values, `${path}.eksisterendeIdent`) !== null
+								formMethods.watch(`${path}.eksisterendeIdent`) !== null
 							}
 						/>
 						<AvansertForm path={path} kanVelgeMaster={opts?.identtype !== 'NPID'} />
 					</div>
 				)
 			}}
-		</FormikDollyFieldArray>
+		</FormDollyFieldArray>
 	)
 }

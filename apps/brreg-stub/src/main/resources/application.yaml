@@ -1,4 +1,8 @@
 spring:
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
   application:
     name: brreg-stub
 
@@ -26,3 +30,5 @@ server:
   servlet:
     encoding:
       charset: UTF-8
+  error:
+    include-message: always

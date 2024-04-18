@@ -1,19 +1,17 @@
-import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { AdresseKodeverk } from '@/config/kodeverk'
-import { FormikProps } from 'formik'
 
 interface PostboksadresseValues {
-	formikBag: FormikProps<{}>
 	path: string
 }
 
-export const Postboksadresse = ({ formikBag, path }: PostboksadresseValues) => {
+export const Postboksadresse = ({ path }: PostboksadresseValues) => {
 	return (
 		<div className="flexbox--flex-wrap">
-			<FormikTextInput name={`${path}.postbokseier`} label="Postbokseier" size="large" />
-			<FormikTextInput name={`${path}.postboks`} label="Postboks" />
-			<FormikSelect
+			<FormTextInput name={`${path}.postbokseier`} label="Postbokseier" size="large" />
+			<FormTextInput name={`${path}.postboks`} label="Postboks" />
+			<FormSelect
 				name={`${path}.postnummer`}
 				label="Postnummer"
 				kodeverk={AdresseKodeverk.Postnummer}

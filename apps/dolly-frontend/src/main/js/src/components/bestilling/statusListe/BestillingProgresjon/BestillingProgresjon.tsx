@@ -56,7 +56,7 @@ export const BestillingProgresjon = ({
 			return erOrganisasjon
 				? `AKTIV BESTILLING (${
 						orgStatus || 'Bestillingen tar opptil flere minutter per valgte miljø'
-				  })`
+					})`
 				: 'AKTIV BESTILLING'
 		}
 	}
@@ -108,7 +108,7 @@ export const BestillingProgresjon = ({
 	}
 
 	const SECONDS_BEFORE_WARNING_MESSAGE = 120
-	const SECONDS_BEFORE_WARNING_MESSAGE_ORGANISASJON = 300
+	const SECONDS_BEFORE_WARNING_MESSAGE_ORGANISASJON = 200
 
 	const { bestilling, loading } = useBestillingById(bestillingID, erOrganisasjon, true)
 	const { bestillingStatus } = useOrganisasjonBestillingStatus(bestillingID, erOrganisasjon, true)
@@ -124,7 +124,7 @@ export const BestillingProgresjon = ({
 			setDetaljertOrgStatus(bestillingStatus)
 		}
 		harBestillingFeilet(sistOppdatert)
-	}, [bestilling, bestillingStatus])
+	}, [bestillingStatus, bestilling])
 
 	if (loading) {
 		return null

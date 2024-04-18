@@ -1,7 +1,6 @@
 import useSWR from 'swr'
 import { fetcher } from '@/api'
-import * as _ from 'lodash'
-import { toLower } from 'lodash'
+import _, { toLower } from 'lodash'
 import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
 import { SortKodeverkArray } from '@/service/services/dolly/Utils'
 
@@ -21,7 +20,7 @@ type KodeverkType = {
 const getKodeverkUrl = (kodeverkNavn) =>
 	kodeverkNavn.includes('Valuta')
 		? `/testnav-kontoregister-person-proxy/api/system/v1/hent-valutakoder`
-		: `/dolly-backend/api/v1/kodeverk/${kodeverkNavn}`
+		: `/testnav-kodeverk-service/api/v1/kodeverk/${kodeverkNavn}`
 
 export const useKodeverk = (kodeverkNavn) => {
 	const { data, isLoading, error } = useSWR<KodeverkListe, Error>(

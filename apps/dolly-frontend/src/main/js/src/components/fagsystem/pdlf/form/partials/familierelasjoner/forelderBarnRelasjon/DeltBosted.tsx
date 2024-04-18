@@ -1,24 +1,23 @@
 import React, { useEffect, useState } from 'react'
-import * as _ from 'lodash-es'
-import { FormikProps } from 'formik'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import _ from 'lodash'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import {
-	VegadresseVelger,
 	MatrikkeladresseVelger,
 	UkjentBosted,
+	VegadresseVelger,
 } from '@/components/fagsystem/pdlf/form/partials/adresser/adressetyper'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import {
 	initialMatrikkeladresse,
 	initialUkjentBosted,
 	initialVegadresse,
 } from '@/components/fagsystem/pdlf/form/initialValues'
-import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface DeltBostedValues {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 	path: string
 }
 
@@ -44,25 +43,28 @@ const endreAdressetypeBosted = (forelderBarnRelasjoner) => {
 	foreldrerelasjoner.forEach((forelder) => {
 		options.unshift({
 			value: forelder?.relatertPerson,
-			label: `Adresse fra ${forelder?.relatertPersonsRolle?.toLowerCase()} (${
-				forelder?.relatertPerson
-			})`,
+			label: `Adresse fra ${forelder?.relatertPersonsRolle?.toLowerCase()} (${forelder?.relatertPerson})`,
 		})
 	})
 
 	return options
 }
 
-export const DeltBostedForm = ({ formikBag, path, relasjoner, personValues }: DeltBostedValues) => {
+export const DeltBostedForm = ({
+	formMethods,
+	path,
+	relasjoner,
+	personValues,
+}: DeltBostedValues) => {
 	const getAdressetype = () => {
-		const type = _.get(formikBag.values, `${path}.adressetype`)
+		const type = formMethods.watch(`${path}.adressetype`)
 		if (type) {
 			return type
-		} else if (_.get(formikBag.values, `${path}.vegadresse`)) {
+		} else if (formMethods.watch(`${path}.vegadresse`)) {
 			return 'VEGADRESSE'
-		} else if (_.get(formikBag.values, `${path}.matrikkeladresse`)) {
+		} else if (formMethods.watch(`${path}.matrikkeladresse`)) {
 			return 'MATRIKKELADRESSE'
-		} else if (_.get(formikBag.values, `${path}.ukjentBosted`)) {
+		} else if (formMethods.watch(`${path}.ukjentBosted`)) {
 			return 'UKJENT_BOSTED'
 		}
 	}
@@ -70,13 +72,13 @@ export const DeltBostedForm = ({ formikBag, path, relasjoner, personValues }: De
 	const [adressetype, setAdressetype] = useState(getAdressetype())
 
 	useEffect(() => {
-		if (!_.get(formikBag.values, `${path}.adressetype`)) {
-			formikBag.setFieldValue(`${path}.adressetype`, getAdressetype())
+		if (!formMethods.watch(`${path}.adressetype`)) {
+			formMethods.setValue(`${path}.adressetype`, getAdressetype())
 		}
 	}, [])
 
 	const handleChangeAdressetype = (target: Target, adressePath: string) => {
-		const adresse = _.get(formikBag.values, adressePath)
+		const adresse = formMethods.watch(adressePath)
 		const adresseClone = _.cloneDeep(adresse)
 
 		if (!target || target?.value === 'PARTNER_ADRESSE') {
@@ -97,7 +99,7 @@ export const DeltBostedForm = ({ formikBag, path, relasjoner, personValues }: De
 			_.set(adresseClone, 'ukjentBosted', initialUkjentBosted)
 		} else if (target?.value && relasjoner?.length > 0) {
 			const foreldersAdresse = relasjoner.find(
-				(forelder) => forelder?.relatertPerson?.ident == target?.value
+				(forelder) => forelder?.relatertPerson?.ident == target?.value,
 			)?.relatertPerson?.bostedsadresse?.[0]
 			if (foreldersAdresse?.vegadresse) {
 				_.set(adresseClone, 'vegadresse', foreldersAdresse?.vegadresse)
@@ -116,12 +118,12 @@ export const DeltBostedForm = ({ formikBag, path, relasjoner, personValues }: De
 
 		setAdressetype(target?.value)
 		_.set(adresseClone, 'adressetype', target?.value || null)
-		formikBag.setFieldValue(path, adresseClone)
+		formMethods.setValue(path, adresseClone)
 	}
 
 	return (
 		<>
-			<FormikSelect
+			<FormSelect
 				name={`${path}.adressetype`}
 				value={adressetype}
 				label="Adressetype"
@@ -136,28 +138,24 @@ export const DeltBostedForm = ({ formikBag, path, relasjoner, personValues }: De
 			/>
 
 			{adressetype === 'VEGADRESSE' && (
-				<VegadresseVelger formikBag={formikBag} path={`${path}.vegadresse`} />
+				<VegadresseVelger formMethods={formMethods} path={`${path}.vegadresse`} />
 			)}
 			{adressetype === 'MATRIKKELADRESSE' && (
-				<MatrikkeladresseVelger formikBag={formikBag} path={`${path}.matrikkeladresse`} />
+				<MatrikkeladresseVelger formMethods={formMethods} path={`${path}.matrikkeladresse`} />
 			)}
-			{adressetype === 'UKJENT_BOSTED' && (
-				<UkjentBosted formikBag={formikBag} path={`${path}.ukjentBosted`} />
-			)}
+			{adressetype === 'UKJENT_BOSTED' && <UkjentBosted path={`${path}.ukjentBosted`} />}
 			<div className="flexbox--flex-wrap">
-				<DatepickerWrapper>
-					<FormikDatepicker name={`${path}.startdatoForKontrakt`} label="Startdato for kontrakt" />
-					<FormikDatepicker name={`${path}.sluttdatoForKontrakt`} label="Sluttdato for kontrakt" />
-				</DatepickerWrapper>
+				<FormDatepicker name={`${path}.startdatoForKontrakt`} label="Startdato for kontrakt" />
+				<FormDatepicker name={`${path}.sluttdatoForKontrakt`} label="Sluttdato for kontrakt" />
 			</div>
 		</>
 	)
 }
 
-export const DeltBosted = ({ formikBag, path }: DeltBostedValues) => {
+export const DeltBosted = ({ formMethods, path }: DeltBostedValues) => {
 	return (
 		<Kategori title="Delt bosted">
-			<DeltBostedForm formikBag={formikBag} path={path} />
+			<DeltBostedForm formMethods={formMethods} path={path} />
 		</Kategori>
 	)
 }

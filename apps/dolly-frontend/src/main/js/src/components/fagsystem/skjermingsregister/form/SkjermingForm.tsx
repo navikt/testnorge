@@ -1,10 +1,10 @@
 import React, { useContext } from 'react'
 import { isAfter } from 'date-fns'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { validation } from '@/components/fagsystem/skjermingsregister/form/validation'
 
-export const SkjermingForm = ({ formikBag }) => {
+export const SkjermingForm = ({ formMethods }) => {
 	const { personFoerLeggTil } = useContext(BestillingsveilederContext)
 
 	const HarAktivSkjerming = () => {
@@ -12,38 +12,39 @@ export const SkjermingForm = ({ formikBag }) => {
 			return personFoerLeggTil?.skjermingsregister?.skjermetFra
 				? isAfter(
 						new Date(personFoerLeggTil?.skjermingsregister?.skjermetTil?.substring(0, 10)),
-						new Date()
-				  )
+						new Date(),
+					)
 				: false
 		} else {
 			return personFoerLeggTil?.skjermingsregister?.hasOwnProperty('skjermetFra')
 		}
 	}
 
-	const settFormikDate = (value, path) => {
-		formikBag.setFieldValue(`skjerming.${path}`, value)
+	const settFormDate = (value, path) => {
+		formMethods.setValue(`skjerming.${path}`, value)
+		formMethods.trigger(`skjerming.${path}`)
 	}
 
 	const harSkjerming = HarAktivSkjerming()
 
 	return (
 		<div className="flexbox--flex-wrap">
-			<FormikDatepicker
+			<FormDatepicker
 				name="skjerming.egenAnsattDatoFom"
 				label="Skjerming fra"
 				disabled={harSkjerming}
 				onChange={(date) => {
-					settFormikDate(date, 'egenAnsattDatoFom')
+					settFormDate(date, 'egenAnsattDatoFom')
 				}}
 				maxDate={new Date()}
 				visHvisAvhuket
 			/>
 			{harSkjerming && (
-				<FormikDatepicker
+				<FormDatepicker
 					name="skjerming.egenAnsattDatoTom"
 					label="Skjerming til"
 					onChange={(date) => {
-						settFormikDate(date, 'egenAnsattDatoTom')
+						settFormDate(date, 'egenAnsattDatoTom')
 					}}
 					visHvisAvhuket
 				/>

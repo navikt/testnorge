@@ -1,5 +1,5 @@
 import { format, isDate } from 'date-fns'
-import * as _ from 'lodash-es'
+import _ from 'lodash'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { useKodeverk } from '@/utils/hooks/useKodeverk'
 
@@ -136,6 +136,16 @@ export const CapitalizedToUppercaseAndUnderscore = (value) => {
 
 export const allCapsToCapitalized = (value) => {
 	return _.capitalize(value)
+}
+
+export const toTitleCase = (value) => {
+	return value
+		.split(' ')
+		.map(_.capitalize)
+		.join(' ')
+		.split('-')
+		.map((str) => str.charAt(0).toUpperCase() + str.slice(1))
+		.join('-')
 }
 
 export const codeToNorskLabel = (value) => {

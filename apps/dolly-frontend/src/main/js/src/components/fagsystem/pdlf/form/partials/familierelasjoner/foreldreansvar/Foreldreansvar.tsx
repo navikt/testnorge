@@ -1,28 +1,29 @@
 import * as React from 'react'
-import { FormikProps } from 'formik'
+import { useContext, useEffect } from 'react'
 import {
 	initialForeldreansvar,
 	initialPdlBiPerson,
 	initialPdlPerson,
 } from '@/components/fagsystem/pdlf/form/initialValues'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
-import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
-import * as _ from 'lodash-es'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import _ from 'lodash'
 import { ForeldreBarnRelasjon, TypeAnsvarlig } from '@/components/fagsystem/pdlf/PdlTypes'
 import { PdlEksisterendePerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlEksisterendePerson'
 import { PdlNyPerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlNyPerson'
 import { PdlPersonUtenIdentifikator } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonUtenIdentifikator'
 import { Alert } from '@navikt/ds-react'
-import { useContext, useEffect } from 'react'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import styled from 'styled-components'
-import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface ForeldreansvarForm {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
+	path: string
+	eksisterendeNyPerson?: any
 }
 
 type Target = {
@@ -41,7 +42,7 @@ const StyledAlert = styled(Alert)`
 `
 
 export const ForeldreansvarForm = ({
-	formikBag,
+	formMethods,
 	path,
 	eksisterendeNyPerson = null,
 }: ForeldreansvarForm) => {
@@ -50,7 +51,7 @@ export const ForeldreansvarForm = ({
 	const nyAnsvarlig = 'nyAnsvarlig'
 	const typeAnsvarlig = 'typeAnsvarlig'
 	const handleChangeTypeAnsvarlig = (target: Target, path: string) => {
-		const foreldreansvar = _.get(formikBag.values, path)
+		const foreldreansvar = formMethods.watch(path)
 		const foreldreansvarClone = _.cloneDeep(foreldreansvar)
 
 		_.set(foreldreansvarClone, typeAnsvarlig, target?.value || null)
@@ -75,11 +76,12 @@ export const ForeldreansvarForm = ({
 			_.set(foreldreansvarClone, nyAnsvarlig, initialPdlPerson)
 		}
 
-		formikBag.setFieldValue(path, foreldreansvarClone)
+		formMethods.setValue(path, foreldreansvarClone)
+		formMethods.trigger(path)
 	}
 
 	const handleChangeAnsvar = (target: Target, path: string) => {
-		const foreldreansvar = _.get(formikBag.values, path)
+		const foreldreansvar = formMethods.watch(path)
 		const foreldreansvarClone = _.cloneDeep(foreldreansvar)
 
 		_.set(foreldreansvarClone, 'ansvar', target?.value || null)
@@ -90,48 +92,48 @@ export const ForeldreansvarForm = ({
 			_.set(foreldreansvarClone, nyAnsvarlig, undefined)
 		}
 
-		formikBag.setFieldValue(path, foreldreansvarClone)
+		formMethods.setValue(path, foreldreansvarClone)
+		formMethods.trigger(path)
 	}
 
-	const ansvar = _.get(formikBag.values, `${path}.ansvar`)
+	const ansvar = formMethods.watch(`${path}.ansvar`)
 
 	const getTypeAnsvarlig = () => {
 		if (ansvar !== 'ANDRE') {
 			return null
 		}
-		const type = _.get(formikBag.values, `${path}.typeAnsvarlig`)
+		const type = formMethods.watch(`${path}.typeAnsvarlig`)
 		if (type) {
 			return type
-		} else if (_.get(formikBag.values, `${path}.ansvarlig`)) {
+		} else if (formMethods.watch(`${path}.ansvarlig`)) {
 			return TypeAnsvarlig.EKSISTERENDE
-		} else if (_.get(formikBag.values, `${path}.nyAnsvarlig`)) {
+		} else if (formMethods.watch(`${path}.nyAnsvarlig`)) {
 			return TypeAnsvarlig.NY
-		} else if (_.get(formikBag.values, `${path}.ansvarligUtenIdentifikator`)) {
+		} else if (formMethods.watch(`${path}.ansvarligUtenIdentifikator`)) {
 			return TypeAnsvarlig.UTEN_ID
 		} else return null
 	}
 
 	useEffect(() => {
-		if (!_.get(formikBag.values, `${path}.typeAnsvarlig`)) {
-			formikBag.setFieldValue(`${path}.typeAnsvarlig`, getTypeAnsvarlig())
+		if (!formMethods.watch(`${path}.typeAnsvarlig`)) {
+			formMethods.setValue(`${path}.typeAnsvarlig`, getTypeAnsvarlig())
+			formMethods.trigger(path)
 		}
 	}, [])
 
 	return (
-		<div className="flexbox--flex-wrap">
-			<FormikSelect
+		<div className="flexbox--flex-wrap foreldre-form">
+			<FormSelect
 				name={`${path}.ansvar`}
 				label="Hvem har ansvaret"
 				options={Options('foreldreansvar')}
 				onChange={(target: Target) => handleChangeAnsvar(target, path)}
 			/>
-			<DatepickerWrapper>
-				<FormikDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig fra og med" />
-				<FormikDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig til og med" />
-			</DatepickerWrapper>
+			<FormDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig fra og med" />
+			<FormDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig til og med" />
 
 			{ansvar === 'ANDRE' && (
-				<FormikSelect
+				<FormSelect
 					name={`${path}.typeAnsvarlig`}
 					label="Type ansvarlig"
 					options={Options('typeAnsvarlig')}
@@ -144,20 +146,20 @@ export const ForeldreansvarForm = ({
 				<PdlEksisterendePerson
 					eksisterendePersonPath={`${path}.ansvarlig`}
 					label="Ansvarlig"
-					formikBag={formikBag}
+					formMethods={formMethods}
 					eksisterendeNyPerson={eksisterendeNyPerson}
 				/>
 			)}
 
 			{getTypeAnsvarlig() === TypeAnsvarlig.UTEN_ID && (
 				<PdlPersonUtenIdentifikator
-					formikBag={formikBag}
+					formMethods={formMethods}
 					path={`${path}.ansvarligUtenIdentifikator`}
 				/>
 			)}
 
 			{getTypeAnsvarlig() === TypeAnsvarlig.NY && (
-				<PdlNyPerson nyPersonPath={`${path}.nyAnsvarlig`} formikBag={formikBag} />
+				<PdlNyPerson nyPersonPath={`${path}.nyAnsvarlig`} formMethods={formMethods} />
 			)}
 
 			<AvansertForm path={path} kanVelgeMaster={false} />
@@ -165,19 +167,19 @@ export const ForeldreansvarForm = ({
 	)
 }
 
-export const Foreldreansvar = ({ formikBag }: ForeldreansvarForm) => {
+export const Foreldreansvar = ({ formMethods }: ForeldreansvarForm) => {
 	const { personFoerLeggTil, leggTilPaaGruppe } = useContext(BestillingsveilederContext)
 
-	const relasjoner = _.get(formikBag.values, 'pdldata.person.forelderBarnRelasjon')
+	const relasjoner = formMethods.watch('pdldata.person.forelderBarnRelasjon')
 	const eksisterendeRelasjoner = _.get(personFoerLeggTil, 'pdl.hentPerson.forelderBarnRelasjon')
 
 	const harBarn = () => {
 		return (
 			relasjoner?.some(
-				(relasjon: ForeldreBarnRelasjon) => relasjon.relatertPersonsRolle === 'BARN'
+				(relasjon: ForeldreBarnRelasjon) => relasjon.relatertPersonsRolle === 'BARN',
 			) ||
 			eksisterendeRelasjoner?.some(
-				(relasjon: ForeldreBarnRelasjon) => relasjon.relatertPersonsRolle === 'BARN'
+				(relasjon: ForeldreBarnRelasjon) => relasjon.relatertPersonsRolle === 'BARN',
 			)
 		)
 	}
@@ -187,12 +189,12 @@ export const Foreldreansvar = ({ formikBag }: ForeldreansvarForm) => {
 			relasjoner?.some(
 				(relasjon: ForeldreBarnRelasjon) =>
 					relasjon.relatertPersonsRolle === 'BARN' &&
-					relasjon.relatertPersonUtenFolkeregisteridentifikator
+					relasjon.relatertPersonUtenFolkeregisteridentifikator,
 			) ||
 			eksisterendeRelasjoner?.some(
 				(relasjon: ForeldreBarnRelasjon) =>
 					relasjon.relatertPersonsRolle === 'BARN' &&
-					relasjon.relatertPersonUtenFolkeregisteridentifikator
+					relasjon.relatertPersonUtenFolkeregisteridentifikator,
 			)
 		)
 	}
@@ -213,16 +215,16 @@ export const Foreldreansvar = ({ formikBag }: ForeldreansvarForm) => {
 				</StyledAlert>
 			)}
 
-			<FormikDollyFieldArray
+			<FormDollyFieldArray
 				name="pdldata.person.foreldreansvar"
 				header={'Foreldreansvar'}
 				newEntry={initialForeldreansvar}
 				canBeEmpty={false}
 			>
 				{(path: string, _idx: number) => {
-					return <ForeldreansvarForm formikBag={formikBag} path={path} />
+					return <ForeldreansvarForm formMethods={formMethods} path={path} />
 				}}
-			</FormikDollyFieldArray>
+			</FormDollyFieldArray>
 		</>
 	)
 }

@@ -19,23 +19,13 @@ spec:
   accessPolicy:
     inbound:
       rules:
-        - application: dolly-frontend-dev
-          cluster: dev-gcp
-        - application: team-dolly-lokal-app
-          cluster: dev-gcp
-        - application: testnav-oversikt-frontend
-          cluster: dev-gcp
         - application: dolly-frontend
-          cluster: dev-gcp
         - application: dolly-frontend-dev
-          cluster: dev-gcp
+        - application: dolly-frontend-dev-unstable
         - application: dolly-idporten
-          cluster: dev-gcp
+        - application: team-dolly-lokal-app
         - application: testnav-organisasjon-tilgang-frontend
-          cluster: dev-gcp
-        - application: app-1
-          namespace: plattformsikkerhet
-          cluster: dev-gcp
+        - application: testnav-oversikt-frontend
     outbound:
       external:
         - host: altinn.no
@@ -71,14 +61,10 @@ spec:
   env:
     - name: SPRING_PROFILES_ACTIVE
       value: prod
-    - name: ACCEPTED_AUDIENCE
-      value: dev-gcp:dolly:testnav-organisasjon-tilgang-service
-    - name: TOKENDINGS_URL
-      value: https://tokenx.dev-gcp.nav.cloud.nais.io 
   gcp:
     sqlInstances:
       - type: POSTGRES_15
         name: testnav-organisasjon-tilganger
         databases:
           - name: testnav-organisasjon-tilganger
-        autoBackupTime: "02:30"
+        autoBackupHour: 2

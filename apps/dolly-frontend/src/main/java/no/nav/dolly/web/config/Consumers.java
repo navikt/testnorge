@@ -26,11 +26,7 @@ public class Consumers {
 
     private ServerProperties dollyBackend;
     private ServerProperties genererNavnService;
-    private ServerProperties testnavKontoregisterPersonProxy;
     private ServerProperties oppsummeringsdokumentService;
-    private ServerProperties testnavPersonSearchService;
-    private ServerProperties testnavPersonService;
-    private ServerProperties testnavSkjermingsregisterProxy;
     private ServerProperties testnavAaregProxy;
     private ServerProperties testnavAdresseService;
     private ServerProperties testnavArbeidsplassenCVProxy;
@@ -43,6 +39,8 @@ public class Consumers {
     private ServerProperties testnavInntektstubProxy;
     private ServerProperties testnavInstProxy;
     private ServerProperties testnavJoarkDokumentService;
+    private ServerProperties testnavKodeverkService;
+    private ServerProperties testnavKontoregisterPersonProxy;
     private ServerProperties testnavKrrstubProxy;
     private ServerProperties testnavMedlProxy;
     private ServerProperties testnavMiljoerService;
@@ -54,11 +52,15 @@ public class Consumers {
     private ServerProperties testnavPdlForvalter;
     private ServerProperties testnavPensjonTestdataFacadeProxy;
     private ServerProperties testnavPersonOrganisasjonTilgangService;
+    private ServerProperties testnavPersonSearchService;
+    private ServerProperties testnavPersonService;
     private ServerProperties testnavSigrunstubProxy;
+    private ServerProperties testnavSkjermingsregisterProxy;
+    private ServerProperties testnavTpsMessagingService;
+    private ServerProperties testnavUdistubProxy;
     private ServerProperties testnavVarslingerService;
     private ServerProperties testnorgeProfilApi;
     private ServerProperties testnorgeTilbakemeldingApi;
-    private ServerProperties testnavTpsMessagingService;
-    private ServerProperties testnavUdistubProxy;
+    private ServerProperties testnavTenorSearchService;
 
 }

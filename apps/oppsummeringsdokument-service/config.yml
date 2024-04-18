@@ -1,7 +1,7 @@
 ﻿apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: oppsummeringsdokument-service
+  name: testnav-oppsummeringsdokument-service
   namespace: dolly
   annotations:
     nginx.ingress.kubernetes.io/proxy-read-timeout: "1200"
@@ -13,25 +13,14 @@ spec:
   accessPolicy:
     inbound:
       rules:
-        - application: team-dolly-lokal-app
-          cluster: dev-gcp
-        - application: testnav-oversikt-frontend
-          cluster: dev-gcp
-        - application: testnav-generer-arbeidsforhold-populasjon-service
-          cluster: dev-gcp
-        - application: testnav-amelding-service
-          cluster: dev-gcp
         - application: dolly-frontend
-          cluster: dev-gcp
-        - application: dolly-idporten
-          cluster: dev-gcp
         - application: dolly-frontend-dev
-          cluster: dev-gcp
         - application: dolly-frontend-dev-unstable
-          cluster: dev-gcp
-        - application: app-1
-          namespace: plattformsikkerhet
-          cluster: dev-gcp
+        - application: dolly-idporten
+        - application: team-dolly-lokal-app
+        - application: testnav-amelding-service
+        - application: testnav-generer-arbeidsforhold-populasjon-service
+        - application: testnav-oversikt-frontend
     outbound:
       external:
         - host: aareg-synt-services-proxy.dev-fss-pub.nais.io
@@ -64,11 +53,11 @@ spec:
     max: 1
   resources:
     requests:
-      cpu: 500m
+      cpu: 300m
       memory: 1024Mi
     limits:
       memory: 2048Mi
   envFrom:
     - secret: teamdolly-opensearch
   ingresses:
-    - "https://oppsummeringsdokument-service.intern.dev.nav.no"
+    - "https://testnav-oppsummeringsdokument-service.intern.dev.nav.no"

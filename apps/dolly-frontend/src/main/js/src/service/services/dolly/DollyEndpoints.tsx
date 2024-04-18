@@ -1,13 +1,14 @@
 import { arrayToString } from '@/utils/DataFormatter'
 
 const uri = `/dolly-backend/api/v1`
+const kodeverkUri = `/testnav-kodeverk-service/api/v1`
 const personUri = '/person-service/api/v2'
 
 const groupBase = `${uri}/gruppe`
 const tagsBase = `${uri}/tags`
 const identBase = `${uri}/ident`
 const brukerBase = `${uri}/bruker`
-const kodeverkBase = `${uri}/kodeverk`
+const kodeverkBase = `${kodeverkUri}/kodeverk`
 const bestillingBase = `${uri}/bestilling`
 const personoppslagBase = `${personUri}/personer`
 const organisasjonBase = `${uri}/organisasjon`
@@ -181,11 +182,15 @@ export default class DollyEndpoints {
 	}
 
 	static malBestillingMedId(malId, malNavn) {
-		return `${bestillingBase}/malbestilling/${malId}?malNavn=${malNavn}`
+		return `${uri}/malbestilling/id/${malId}?malNavn=${malNavn}`
 	}
 
 	static malBestillingMedBestillingId(bestillingId, malNavn) {
-		return `${bestillingBase}/malbestilling?bestillingId=${bestillingId}&malNavn=${malNavn}`
+		return `${uri}/malbestilling?bestillingId=${bestillingId}&malNavn=${malNavn}`
+	}
+
+	static opprettMalFraPerson(ident, malNavn) {
+		return `${uri}/malbestilling/ident/${ident}?malNavn=${malNavn}`
 	}
 
 	static organisasjonMalBestillingMedBestillingId(bestillingId, malNavn) {

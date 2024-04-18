@@ -1,4 +1,4 @@
-import * as _ from 'lodash-es'
+import _ from 'lodash'
 
 const getAllDatesBetween = (startdato, sluttdato) => {
 	const startDate = new Date(startdato)

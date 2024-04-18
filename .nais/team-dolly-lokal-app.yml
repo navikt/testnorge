@@ -1,0 +1,18 @@
+apiVersion: nais.io/v1
+kind: AzureAdApplication
+metadata:
+  labels:
+    team: dolly
+  name: team-dolly-lokal-app
+  namespace: dolly
+spec:
+  allowAllUsers: true
+  logoutUrl: https://localhost:8080/oauth2/logout
+  preAuthorizedApplications:
+    - application: testnav-oversikt-frontend
+      cluster: dev-gcp
+      namespace: dolly
+  replyUrls:
+    - url: http://localhost:8080/login/oauth2/code/aad
+  secretName: azuread-team-dolly-lokal-app
+  tenant: nav.no

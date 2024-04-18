@@ -1,10 +1,10 @@
-import { FormikProps } from 'formik'
-import * as _ from 'lodash-es'
+import _ from 'lodash'
 // @ts-ignore
 import { Inntektsinformasjon } from './inntektinformasjonTypes'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 type Versjonsoversikt = {
-	formikIdx?: number
+	formIdx?: number
 	underversjonerIdx?: Array<number>
 }
 
@@ -16,22 +16,22 @@ type SpesifikkVersjon = {
 }
 
 export default function versjonsinformasjon(
-	formikBag: FormikProps<{}>,
+	formMethods: UseFormReturn,
 	inntektstubPath: string,
 	inntektValues: Array<Inntektsinformasjon>,
-	idx: number
+	idx: number,
 ): SpesifikkVersjon {
-	// Skaffer oversikt over hvilke av inntektene i formikBag som er gjeldende og historikk
+	// Skaffer oversikt over hvilke av inntektene i formet som er gjeldende og historikk
 	const versjonsliste: Array<Versjonsoversikt> = mapVersjonsliste(
-		formikBag,
+		formMethods,
 		inntektstubPath,
-		inntektValues
+		inntektValues,
 	)
 
 	//Samler spesifikk versjoninformasjon for den inntekten (idx) som skal vise
 	const spesifikkVersjonsinfo: SpesifikkVersjon = versjonsliste.reduce(
 		(acc: SpesifikkVersjon, curr: Versjonsoversikt, kdx: number) => {
-			if (curr.formikIdx === idx) {
+			if (curr.formIdx === idx) {
 				return { ...acc, underversjonerIdx: curr.underversjonerIdx, gjeldendeIdx: kdx }
 			} else if (curr.underversjonerIdx.some((versjon) => versjon === idx)) {
 				return { ...acc, versjonAv: kdx, underVersjonerIdx: curr.underversjonerIdx }
@@ -39,7 +39,7 @@ export default function versjonsinformasjon(
 				return acc
 			}
 		},
-		{ versjonAv: -1, underversjonerIdx: [], gjeldendeIdx: -1 }
+		{ versjonAv: -1, underversjonerIdx: [], gjeldendeIdx: -1 },
 	)
 
 	const gjeldendeInntektMedHistorikk =
@@ -49,23 +49,23 @@ export default function versjonsinformasjon(
 }
 
 const mapVersjonsliste = (
-	formikBag: FormikProps<{}>,
+	formMethods: UseFormReturn,
 	inntektstubPath: string,
-	inntektValues: Array<Inntektsinformasjon>
+	inntektValues: Array<Inntektsinformasjon>,
 ): Array<Versjonsoversikt> => {
 	const versjonsoversikt: Array<Versjonsoversikt> = []
 	inntektValues.forEach((inntektinfo: Inntektsinformasjon, idx: number) => {
 		if (_.isNil(inntektinfo.versjon)) {
-			versjonsoversikt.push({ formikIdx: idx, underversjonerIdx: [] })
+			versjonsoversikt.push({ formIdx: idx, underversjonerIdx: [] })
 		} else {
 			versjonsoversikt.forEach((inntekt) => {
-				if (sjekkKombinasjon(inntektValues[inntekt.formikIdx], inntektinfo)) {
+				if (sjekkKombinasjon(inntektValues[inntekt.formIdx], inntektinfo)) {
 					inntekt.underversjonerIdx.push(idx)
 					if (inntektinfo.versjon !== inntekt.underversjonerIdx.length) {
 						//Endrer versjonsnr ved sletting av versjonsnr foran
-						formikBag.setFieldValue(
+						formMethods.setValue(
 							`${inntektstubPath}[${idx}].versjon`,
-							inntekt.underversjonerIdx.length
+							inntekt.underversjonerIdx.length,
 						)
 					}
 				}
@@ -78,7 +78,7 @@ const mapVersjonsliste = (
 
 const sjekkKombinasjon = (
 	startversjon: Inntektsinformasjon,
-	testinntekt: Inntektsinformasjon
+	testinntekt: Inntektsinformasjon,
 ): boolean =>
 	// De tre verdiene som må være like mellom gjeldende inntekt og historikk
 	startversjon.antallMaaneder === testinntekt.antallMaaneder &&

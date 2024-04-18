@@ -5,8 +5,6 @@ import { Gruppe, useEgneGrupper } from '@/utils/hooks/useGruppe'
 import React from 'react'
 
 interface EksisterendeGruppe {
-	setValgtGruppe: React.Dispatch<React.SetStateAction<string>>
-	valgtGruppe: string
 	fraGruppe?: number | null
 }
 
@@ -15,7 +13,7 @@ type Options = {
 	label: string
 }
 
-export default ({ setValgtGruppe, valgtGruppe, fraGruppe = null }: EksisterendeGruppe) => {
+export default ({ fraGruppe = null }: EksisterendeGruppe) => {
 	const {
 		currentBruker: { brukerId },
 	} = useCurrentBruker()
@@ -36,11 +34,9 @@ export default ({ setValgtGruppe, valgtGruppe, fraGruppe = null }: EksisterendeG
 
 	return (
 		<DollySelect
-			name="Gruppe"
+			name="gruppeId"
 			label="Gruppe"
 			options={gruppeOptions}
-			onChange={(gruppe: Options) => setValgtGruppe(gruppe.value)}
-			value={valgtGruppe}
 			size={fraGruppe ? 'grow' : 'large'}
 			isClearable={false}
 		/>

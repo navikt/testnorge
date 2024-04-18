@@ -1,6 +1,6 @@
 import { createActions } from 'redux-actions'
 import { DollyApi } from '@/service/Api'
-import * as _ from 'lodash-es'
+import _ from 'lodash'
 import _set from 'lodash/fp/set'
 import { handleActions } from '@/ducks/utils/immerHandleActions'
 import { getLeggTilIdent, rootPaths } from '@/components/bestillingsveileder/utils'
@@ -17,7 +17,7 @@ export const actions = createActions(
 		postTestnorgeBestilling: DollyApi.importerPersonerFraPdl,
 		bestillingFeilet: (error) => ({ error }),
 	},
-	{ prefix: 'bestveil' }
+	{ prefix: 'bestveil' },
 )
 
 const initialState = {
@@ -30,7 +30,7 @@ export default handleActions(
 			state.error = action.payload.error
 		},
 	},
-	initialState
+	initialState,
 )
 
 const trackBestilling = (values) => {
@@ -63,7 +63,7 @@ export const sendBestilling = (values, opts, gruppeId, navigate) => async (dispa
 		values = _set(
 			'identer',
 			opts.importPersoner.map((person) => person.ident),
-			values
+			values,
 		)
 		if (!values.environments) {
 			values = _set('environments', [], values)

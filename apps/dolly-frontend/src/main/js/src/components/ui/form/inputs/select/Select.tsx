@@ -1,19 +1,26 @@
-import { useField } from 'formik'
 import { createFilter, default as ReactSelect } from 'react-select'
 import cn from 'classnames'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { Label } from '@/components/ui/form/inputs/label/Label'
 import { InputWrapper } from '@/components/ui/form/inputWrapper/InputWrapper'
-import { fieldError, SyntEvent } from '@/components/ui/form/formUtils'
+import { SyntEvent } from '@/components/ui/form/formUtils'
 import './Select.less'
 import MenuList from '@/components/ui/form/inputs/select/MenuList'
 import Option from '@/components/ui/form/inputs/select/Option'
-import * as _ from 'lodash-es'
+import _ from 'lodash'
 import { useKodeverk } from '@/utils/hooks/useKodeverk'
+import { useController, useFormContext } from 'react-hook-form'
+import { useContext } from 'react'
+import {
+	ShowErrorContext,
+	ShowErrorContextType,
+} from '@/components/bestillingsveileder/ShowErrorContext'
 
 type SelectProps = {
 	id?: string
+	'data-cy'?: string
 	name: string
+	fieldName?: string
 	value?: any
 	className?: any
 	classNamePrefix?: string
@@ -35,7 +42,7 @@ type SelectProps = {
 	info?: any
 	visHvisAvhuket?: any
 	afterChange?: any
-	fastfield?: boolean
+	isInDialog?: boolean
 }
 
 export const Select = ({
@@ -52,15 +59,34 @@ export const Select = ({
 	options = [],
 	isMulti = false,
 	styles,
+	onChange,
+	isInDialog = false,
 	...rest
 }: SelectProps) => {
-	let _value = isMulti
+	const formMethods = useFormContext()
+	const val = formMethods?.watch(name)
+	let formValue = isMulti
+		? options?.filter?.((o) => val?.some((el) => el === o?.value))
+		: options?.filter?.((o) => {
+				return o?.value === val
+			})
+
+	let propValue = isMulti
 		? options?.filter?.((o) => value?.some((el) => el === o?.value))
-		: options?.filter?.((o) => o?.value === value)
+		: options?.filter?.((o) => {
+				return o?.value === value
+			})
+
+	if (!onChange) {
+		onChange = (selected, meta) => {
+			formMethods?.setValue(name, selected?.value)
+			formMethods?.trigger(name)
+		}
+	}
 
 	return (
 		<ReactSelect
-			value={_value}
+			value={!_.isEmpty(formValue) ? formValue : propValue}
 			options={options}
 			name={name}
 			inputId={id || name}
@@ -77,8 +103,15 @@ export const Select = ({
 			isLoading={isLoading}
 			isClearable={isClearable}
 			isMulti={isMulti}
+			onChange={onChange}
 			styles={styles ? styles : { menuPortal: (base) => ({ ...base, zIndex: 99999 }) }}
-			menuPortalTarget={document.getElementById('react-select-root')}
+			// Naar vi bruker modal fra Aksel maa vi referere til modalens className for at dropdowns ikke skal forsvinne bak modalen
+			menuPortalTarget={
+				isInDialog
+					? (document.getElementsByClassName('navds-modal')[0] as HTMLElement)
+					: document.getElementById('react-select-root')
+			}
+			menuPosition={isInDialog ? 'fixed' : undefined}
 			{...rest}
 		/>
 	)
@@ -110,9 +143,9 @@ export const DollySelect = (props: SelectProps) => (
 	<InputWrapper {...props}>
 		<Label
 			containerClass="dollyselect"
+			fieldName={props.fieldName}
 			name={props.name}
 			label={props.label}
-			feil={props.feil}
 			info={props.info}
 		>
 			{props.kodeverk ? <SelectMedKodeverk {...props} /> : <Select {...props} />}
@@ -120,8 +153,12 @@ export const DollySelect = (props: SelectProps) => (
 	</InputWrapper>
 )
 
-const P_FormikSelect = ({ feil, ...props }: SelectProps) => {
-	const [field, meta] = useField(props)
+const P_FormSelect = ({ feil, ...props }: SelectProps) => {
+	const { field } = useController(props)
+	const errorContext: ShowErrorContextType = useContext(ShowErrorContext)
+	const formMethods = useFormContext()
+	const touchedFields = formMethods?.formState.touchedFields
+	const isTouched = _.has(touchedFields, props.name)
 	const handleChange = (selected, meta) => {
 		let value
 		if (props.isMulti) {
@@ -131,7 +168,6 @@ const P_FormikSelect = ({ feil, ...props }: SelectProps) => {
 					: [meta.option.value]
 			}
 			if (meta.action === 'remove-value') {
-				// When removing last value, value is null
 				value = selected ? selected.map((v) => v.value) : []
 			}
 		} else {
@@ -139,23 +175,28 @@ const P_FormikSelect = ({ feil, ...props }: SelectProps) => {
 		}
 		field.onChange(SyntEvent(field.name, value))
 		if (props.afterChange) props.afterChange(selected)
+		formMethods.trigger(props.name)
 	}
 
-	const handleBlur = () => field.onBlur(SyntEvent(field.name))
+	const handleBlur = () => field?.onBlur?.(SyntEvent(field.name))
 
 	return (
 		<DollySelect
 			name={field.name}
-			value={field.value}
 			onChange={handleChange}
 			onBlur={handleBlur}
-			feil={feil || fieldError(meta)}
+			feil={
+				(errorContext?.showError || isTouched) &&
+				(feil ||
+					formMethods?.getFieldState(props.name)?.error ||
+					formMethods?.getFieldState(props.fieldName)?.error)
+			}
 			{...props}
 		/>
 	)
 }
 
-export const FormikSelect = ({ visHvisAvhuket = false, ...props }: SelectProps) => {
-	const component = <P_FormikSelect {...props} />
+export const FormSelect = ({ visHvisAvhuket = false, ...props }: SelectProps) => {
+	const component = <P_FormSelect {...props} />
 	return visHvisAvhuket ? <Vis attributt={props.name}>{component}</Vis> : component
 }

@@ -1,11 +1,8 @@
 CRYPTOGRAPHY_SECRET: DUMMY SUPER SECRET CRYPTOGRAPHY KEY THAT IS NOT SECURE
 JWT_SECRET: DUMMY SUPER SECRET JWT KEY THAT IS NOT SECURE
 
-azure.app.client.id: ${client_id}
-azure.app.client.secret: ${client_secret}
-
 TOKEN_X_CLIENT_ID: dev-gcp:dolly:testnav-bruker-service-dev
-TOKENDINGS_URL: https://tokenx.dev-gcp.nav.cloud.nais.io 
+TOKENDINGS_URL: ${TOKEN_X_ISSUER} 
 spring:
   application:
     name: testnav-bruker-service-dev

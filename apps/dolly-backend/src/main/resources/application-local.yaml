@@ -20,13 +20,6 @@ spring:
       maximum-pool-size: 3
       minimum-idle: 1
     driver-class-name: org.postgresql.Driver
-  security:
-    oauth2:
-      resourceserver:
-        aad:
-          issuer-uri: ${AAD_ISSUER_URI}/v2.0
-          jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
-          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
   jpa:
     properties:
       hibernate:
@@ -76,3 +69,5 @@ consumers:
     url: https://testnav-miljoer-service.intern.dev.nav.no
   testnav-arbeidsplassencv-proxy:
     url: https://testnav-arbeidsplassencv-proxy.intern.dev.nav.no
+  testnav-kodeverk-service:
+    url: https://testnav-kodeverk-service.intern.dev.nav.no

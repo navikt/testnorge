@@ -7,9 +7,7 @@ import no.nav.dolly.bestilling.service.GjenopprettBestillingService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingFragment;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
-import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestillingWrapper;
 import no.nav.dolly.domain.resultset.entity.testident.RsWhereAmI;
-import no.nav.dolly.service.BestillingMalService;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.NavigasjonService;
 import no.nav.dolly.service.OrganisasjonBestillingService;
@@ -21,7 +19,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,13 +26,11 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
-import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
-import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Transactional
 @RestController
@@ -47,7 +42,6 @@ public class BestillingController {
     private final BestillingService bestillingService;
     private final OrganisasjonBestillingService organisasjonBestillingService;
     private final NavigasjonService navigasjonService;
-    private final BestillingMalService bestillingMalService;
     private final GjenopprettBestillingService gjenopprettBestillingService;
 
     @Cacheable(value = CACHE_BESTILLING)
@@ -120,44 +114,8 @@ public class BestillingController {
     @Operation(description = "Gjenopprett en bestilling med bestillingsId, for en liste med miljoer")
     @Transactional
     public RsBestillingStatus gjenopprettBestilling(@PathVariable("bestillingId") Long bestillingId, @RequestParam(value = "miljoer", required = false) String miljoer) {
-        Bestilling bestilling = bestillingService.createBestillingForGjenopprettFraBestilling(bestillingId, nonNull(miljoer) ? asList(miljoer.split(",")) : emptyList());
+        Bestilling bestilling = bestillingService.createBestillingForGjenopprettFraBestilling(bestillingId, miljoer);
         gjenopprettBestillingService.executeAsync(bestilling);
         return mapperFacade.map(bestilling, RsBestillingStatus.class);
-    }
-
-    @Cacheable(value = CACHE_BESTILLING)
-    @GetMapping("/malbestilling")
-    @Operation(description = "Hent mal-bestilling, kan filtreses på en bruker")
-    public RsMalBestillingWrapper getMalBestillinger(@RequestParam(required = false, value = "brukerId") String brukerId) {
-
-        return isBlank(brukerId) ?
-                bestillingMalService.getMalBestillinger() : bestillingMalService.getMalbestillingByUser(brukerId);
-    }
-
-    @CacheEvict(value = { CACHE_BESTILLING }, allEntries = true)
-    @PostMapping("/malbestilling")
-    @Operation(description = "Opprett ny mal-bestilling fra bestillingId")
-    @Transactional
-    public void opprettMalbestilling(@RequestParam(value = "bestillingId") Long bestillingId, @RequestParam(value = "malNavn") String malNavn) {
-
-        bestillingMalService.saveBestillingMalFromBestillingId(bestillingId, malNavn);
-    }
-
-    @CacheEvict(value = { CACHE_BESTILLING }, allEntries = true)
-    @DeleteMapping("/malbestilling/{id}")
-    @Operation(description = "Slett mal-bestilling")
-    @Transactional
-    public void deleteMalBestilling(@PathVariable Long id) {
-
-        bestillingMalService.deleteMalBestillingByID(id);
-    }
-
-    @CacheEvict(value = { CACHE_BESTILLING }, allEntries = true)
-    @PutMapping("/malbestilling/{id}")
-    @Operation(description = "Rediger mal-bestilling")
-    @Transactional
-    public void redigerMalBestilling(@PathVariable Long id, @RequestParam(value = "malNavn") String malNavn) {
-
-        bestillingMalService.updateMalNavnById(id, malNavn);
     }
 }

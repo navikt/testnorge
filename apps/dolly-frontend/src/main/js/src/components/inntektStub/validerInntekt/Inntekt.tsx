@@ -1,24 +1,24 @@
-import * as _ from 'lodash-es'
+import _ from 'lodash'
 import { AdresseKodeverk } from '@/config/kodeverk'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
-import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import texts from '@/components/inntektStub/texts'
 import tilleggsinformasjonPaths from '@/components/inntektStub/paths'
 
-const sjekkFelt = (formik, field, options, values, path) => {
-	const fieldValue = _.get(values, path)
+const sjekkFelt = (formMethods, field, options, values, path) => {
+	const { watch, getFieldState, setError } = formMethods
+	const fieldValue = watch(path)
+	const existingError = getFieldState(`${path}.${field}`)?.error
 	const fieldPath = tilleggsinformasjonPaths(field)
 	const val = _.get(fieldValue, fieldPath)
 
 	if (
 		!options.includes('<TOM>') &&
+		!existingError &&
 		((fieldValue && !val && val !== false) || (!optionsUtfylt(options) && !options.includes(val)))
 	) {
-		if (fieldValue['inntektstype'] !== '' && !formik.errors?.hasOwnProperty('inntektstub')) {
-			formik.setFieldError(`inntektstub.${field}`, 'Feltet er påkrevd')
-		}
-		return { feilmelding: 'Feltet er påkrevd' }
+		setError(`${path}.${field}`, { message: 'Feltet er påkrevd' })
 	}
 	return null
 }
@@ -52,44 +52,43 @@ function optionsUtfylt(options) {
 	)
 }
 
-const fieldResolver = (field, handleChange, formik, path, index, options = []) => {
+const fieldResolver = (field, handleChange, formMethods, path, index, options = []) => {
 	const fieldName = tilleggsinformasjonPaths(field)
-	const values = formik.values
+	const values = formMethods.getValues()
 
 	if (dateFields.includes(field)) {
 		return (
-			<FormikDatepicker
+			<FormDatepicker
 				key={index}
 				visHvisAvhuket={false}
-				name={fieldName}
+				name={`${path}.${fieldName}`}
 				label={texts(field)}
 				afterChange={handleChange}
-				feil={sjekkFelt(formik, field, options, values, path)}
+				feil={sjekkFelt(formMethods, field, options, values, path)}
 			/>
 		)
 	} else if (field === 'skattemessigBosattILand' || field === 'opptjeningsland') {
 		return (
-			<FormikSelect
+			<FormSelect
 				key={index}
-				name={fieldName}
+				name={`${path}.${fieldName}`}
 				label={texts(field)}
 				kodeverk={AdresseKodeverk.ArbeidOgInntektLand}
-				fastfield={false}
 				afterChange={handleChange}
 				size="large"
-				feil={sjekkFelt(formik, field, options, values, path)}
+				feil={sjekkFelt(formMethods, field, options, values, path)}
 			/>
 		)
 	} else if (optionsUtfylt(options)) {
 		return (
-			<FormikTextInput
+			<FormTextInput
 				key={index}
 				visHvisAvhuket={false}
-				name={fieldName}
+				name={`${path}.${fieldName}`}
 				label={texts(field)}
 				onSubmit={handleChange}
 				size={numberFields.includes(field) ? 'medium' : 'large'}
-				feil={sjekkFelt(formik, field, options, values, path)}
+				feil={sjekkFelt(formMethods, field, options, values, path)}
 				type={numberFields.includes(field) ? 'number' : 'text'}
 			/>
 		)
@@ -98,35 +97,33 @@ const fieldResolver = (field, handleChange, formik, path, index, options = []) =
 	const fieldPath = `${path}.${tilleggsinformasjonPaths(field)}`
 
 	return (
-		<FormikSelect
+		<FormSelect
 			key={index}
-			name={fieldName}
+			name={`${path}.${fieldName}`}
 			value={_.get(values, fieldPath)}
 			label={texts(field)}
 			options={filteredOptions.filter((option) => option.value !== '<TOM>')}
-			fastfield={false}
 			afterChange={handleChange}
 			size={booleanField(options) ? 'small' : wideFields.includes(field) ? 'xxlarge' : 'large'}
-			feil={sjekkFelt(formik, field, options, values, path)}
+			feil={sjekkFelt(formMethods, field, options, values, path)}
 			isClearable={field !== 'inntektstype'}
 		/>
 	)
 }
 
-const Inntekt = ({ fields = {}, onValidate, formikBag, path }) => {
+const Inntekt = ({ fields = {}, onValidate, formMethods, path }) => {
 	return (
 		<div className="flexbox--flex-wrap">
-			{fieldResolver('inntektstype', onValidate, formikBag, path, `${path}.inntektstype`, [
+			{fieldResolver('inntektstype', onValidate, formMethods, path, `${path}.inntektstype`, [
 				'LOENNSINNTEKT',
 				'YTELSE_FRA_OFFENTLIGE',
 				'PENSJON_ELLER_TRYGD',
 				'NAERINGSINNTEKT',
 			])}
-
 			{Object.keys(fields)
 				.filter((field) => !(fields[field].length === 1 && fields[field][0] === '<TOM>'))
 				.map((field) =>
-					fieldResolver(field, onValidate, formikBag, path, `${path}.${field}`, fields[field])
+					fieldResolver(field, onValidate, formMethods, path, `${path}.${field}`, fields[field]),
 				)}
 		</div>
 	)

@@ -2,7 +2,7 @@ import { CypressSelector } from '../mocks/Selectors'
 
 describe('Åpne en organisasjon med alle tilvalg', () => {
 	it('passes', () => {
-		cy.visit('http://localhost:5678')
+		cy.visit('')
 
 		cy.dollyGet(CypressSelector.BUTTON_HEADER_ORGANISASJONER).click()
 

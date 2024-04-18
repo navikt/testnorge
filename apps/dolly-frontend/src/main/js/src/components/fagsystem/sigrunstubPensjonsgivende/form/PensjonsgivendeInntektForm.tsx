@@ -1,14 +1,14 @@
-import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import React from 'react'
-import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import {
 	getFieldSize,
 	getInitialInntekt,
 	kodeverkKeyToLabel,
 } from '@/components/fagsystem/sigrunstubPensjonsgivende/utils'
-import * as _ from 'lodash-es'
+import _ from 'lodash'
 
 const getSkatteordningOptions = (skatteordning) => {
 	return skatteordning?.map((item) => ({ value: item, label: _.capitalize(item) }))
@@ -26,7 +26,7 @@ const createInntektForm = (kodeverk, skatteordning, path) => {
 		const size = getFieldSize(label)
 		if (key === 'skatteordning') {
 			return (
-				<FormikSelect
+				<FormSelect
 					name={`${path}.${key}`}
 					key={`${path}.${key}`}
 					label={label}
@@ -38,7 +38,7 @@ const createInntektForm = (kodeverk, skatteordning, path) => {
 		}
 		if (value === 'Long') {
 			return (
-				<FormikTextInput
+				<FormTextInput
 					name={`${path}.${key}`}
 					key={`${path}.${key}`}
 					label={label}
@@ -49,7 +49,7 @@ const createInntektForm = (kodeverk, skatteordning, path) => {
 		}
 		if (value === 'Date') {
 			return (
-				<FormikDatepicker
+				<FormDatepicker
 					name={`${path}.${key}`}
 					key={`${path}.${key}`}
 					label={label}
@@ -58,17 +58,17 @@ const createInntektForm = (kodeverk, skatteordning, path) => {
 			)
 		}
 		return (
-			<FormikTextInput name={`${path}.${key}`} key={`${path}.${key}`} label={label} size={size} />
+			<FormTextInput name={`${path}.${key}`} key={`${path}.${key}`} label={label} size={size} />
 		)
 	})
 }
 
-export const PensjonsgivendeInntektForm = ({ path, formikBag, kodeverk, skatteordning }) => {
+export const PensjonsgivendeInntektForm = ({ path, formMethods, kodeverk, skatteordning }) => {
 	const newEntry = getInitialInntekt(kodeverk, skatteordning)
-	const inntektError = _.get(formikBag.errors, path)
+	const inntektError = _.get(formMethods.formState.errors, path)?.message
 
 	return (
-		<FormikDollyFieldArray
+		<FormDollyFieldArray
 			name={path}
 			header="Inntekter"
 			newEntry={newEntry}
@@ -78,11 +78,11 @@ export const PensjonsgivendeInntektForm = ({ path, formikBag, kodeverk, skatteor
 		>
 			{(path, idx) => {
 				return (
-					<div className="flexbox--flex-wrap" key={idx}>
+					<div className="flexbox--flex-wrap sigrun-form" key={idx}>
 						{createInntektForm(kodeverk, skatteordning, path)}
 					</div>
 				)
 			}}
-		</FormikDollyFieldArray>
+		</FormDollyFieldArray>
 	)
 }

@@ -3,15 +3,15 @@ import Panel from '@/components/ui/panel/Panel'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
 import { validation } from '@/components/fagsystem/pensjon/form/validation'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { getYearRangeOptions } from '@/utils/DataFormatter'
-import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
+import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import React, { useContext } from 'react'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
-import * as _ from 'lodash-es'
+import _ from 'lodash'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
-import { FormikProps } from 'formik'
+import { useFormContext } from 'react-hook-form'
 
 export const pensjonPath = 'pensjonforvalter.inntekt'
 
@@ -19,37 +19,38 @@ const hjelpetekst =
 	'Hvis nedjuster med grunnbeløp er valgt skal beløp angis som årsbeløp i dagens kroneverdi, ' +
 	'og vil nedjusteres basert på snitt grunnbeløp i inntektsåret.'
 
-export const PensjonForm = ({ formikBag }) => {
+export const PensjonForm = () => {
+	const formMethods = useFormContext()
 	const opts = useContext(BestillingsveilederContext)
 	const { nyBestilling, nyBestillingFraMal } = opts?.is
 
-	function kalkulerIdentFyltSyttenAar(values: FormikProps<any>) {
+	function kalkulerIdentFyltSyttenAar() {
 		const curDate = new Date()
 		const alder =
-			_.has(values, 'pdldata.opprettNyPerson.foedtFoer') &&
-			_.get(values, 'pdldata.opprettNyPerson.foedtFoer') !== null
+			formMethods.watch('pdldata.opprettNyPerson.foedtFoer') &&
+			formMethods.watch('pdldata.opprettNyPerson.foedtFoer') !== null
 				? curDate.getFullYear() -
-				  // @ts-ignore
-				  new Date(_.get(values, 'pdldata.opprettNyPerson.foedtFoer')).getFullYear()
-				: _.get(values, 'pdldata.opprettNyPerson.alder')
+					// @ts-ignore
+					new Date(formMethods.watch('pdldata.opprettNyPerson.foedtFoer')).getFullYear()
+				: formMethods.watch('pdldata.opprettNyPerson.alder')
 		return alder && curDate.getFullYear() - alder + 17
 	}
 
-	const syttenFraOgMedAar = kalkulerIdentFyltSyttenAar(formikBag.values)
+	const syttenFraOgMedAar = kalkulerIdentFyltSyttenAar()
 	const minAar = new Date().getFullYear() - 17
-	const valgtAar = _.get(formikBag.values, `${pensjonPath}.fomAar`)
+	const valgtAar = formMethods.watch(`${pensjonPath}.fomAar`)
 
 	return (
 		<Vis attributt={pensjonPath}>
 			<Panel
 				heading="Pensjonsgivende inntekt (POPP)"
-				hasErrors={panelError(formikBag, pensjonPath)}
+				hasErrors={panelError(pensjonPath)}
 				iconType="pensjon"
-				startOpen={erForsteEllerTest(formikBag.values, [pensjonPath])}
+				startOpen={erForsteEllerTest(formMethods.getValues(), [pensjonPath])}
 				informasjonstekst={hjelpetekst}
 			>
 				{/*// @ts-ignore*/}
-				{!_.has(formikBag.values, 'pdldata.opprettNyPerson.alder') &&
+				{!_.has(formMethods.getValues(), 'pdldata.opprettNyPerson.alder') &&
 					valgtAar < minAar &&
 					(nyBestilling || nyBestillingFraMal) && (
 						<StyledAlert variant={'info'} size={'small'}>
@@ -59,28 +60,23 @@ export const PensjonForm = ({ formikBag }) => {
 					)}
 				<Kategori title="Pensjonsgivende inntekt" vis={pensjonPath}>
 					<div className="flexbox--flex-wrap">
-						<FormikSelect
+						<FormSelect
 							name={`${pensjonPath}.fomAar`}
 							label="Fra og med år"
 							options={getYearRangeOptions(syttenFraOgMedAar || 1968, new Date().getFullYear() - 1)}
 							isClearable={false}
 						/>
 
-						<FormikSelect
+						<FormSelect
 							name={`${pensjonPath}.tomAar`}
 							label="Til og med år"
 							options={getYearRangeOptions(1968, new Date().getFullYear() - 1)}
 							isClearable={false}
 						/>
 
-						<FormikTextInput
-							name={`${pensjonPath}.belop`}
-							label="Beløp"
-							type="number"
-							fastfield="false"
-						/>
+						<FormTextInput name={`${pensjonPath}.belop`} label="Beløp" type="number" />
 
-						<FormikCheckbox
+						<FormCheckbox
 							name={`${pensjonPath}.redusertMedGrunnbelop`}
 							label="Nedjuster med grunnbeløp"
 							size="small"

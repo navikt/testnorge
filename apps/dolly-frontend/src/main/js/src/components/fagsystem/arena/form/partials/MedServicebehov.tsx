@@ -1,9 +1,9 @@
 import React, { useContext } from 'react'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
-import * as _ from 'lodash-es'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import _ from 'lodash'
 import { Alert } from '@navikt/ds-react'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 
@@ -18,12 +18,12 @@ const feilmelding67 = 'Person kan ikke ha vedtak etter fylte 67 år. '
 const feilmeldingFiks =
 	'Vennligst endre vedtaksperioden eller sett en spesifikk alder/fødsel på person for å unngå denne feilen.'
 
-const getFeilmelding = (formikBag) => {
+const getFeilmelding = (formMethods) => {
 	let melding = ''
 	let har25Feil = false
 	let har67Feil = false
 	for (let path of errorPaths) {
-		const feil = _.get(formikBag.errors, path)
+		const feil = _.get(formMethods.formState.errors, path)?.message
 		if (feil && !har25Feil && feil.includes('25')) {
 			har25Feil = true
 			melding += feilmelding25
@@ -35,10 +35,10 @@ const getFeilmelding = (formikBag) => {
 	return melding ? melding + feilmeldingFiks : null
 }
 
-export const MedServicebehov = ({ formikBag, path }) => {
+export const MedServicebehov = ({ formMethods, path }) => {
 	const opts = useContext(BestillingsveilederContext)
-	const { arenaforvalter } = formikBag.values
-	const feilmelding = getFeilmelding(formikBag)
+	const { arenaforvalter } = formMethods.getValues()
+	const feilmelding = getFeilmelding(formMethods)
 
 	return (
 		<React.Fragment>
@@ -48,14 +48,14 @@ export const MedServicebehov = ({ formikBag, path }) => {
 				</Alert>
 			)}
 			<div className="flexbox--flex-wrap">
-				<FormikSelect
+				<FormSelect
 					name={`${path}.kvalifiseringsgruppe`}
 					label="Servicebehov"
 					options={Options('kvalifiseringsgruppe')}
 					size="xlarge"
 				/>
 				{!opts.personFoerLeggTil?.arenaforvalteren && (
-					<FormikDatepicker
+					<FormDatepicker
 						name={`${path}.aktiveringDato`}
 						label="Aktiveringsdato"
 						minDate={new Date('2002-12-30')}
@@ -64,15 +64,15 @@ export const MedServicebehov = ({ formikBag, path }) => {
 			</div>
 			{arenaforvalter.aap115 && (
 				<Kategori title="11-5-vedtak">
-					<FormikDatepicker name={`${path}.aap115[0].fraDato`} label="Fra dato" />
+					<FormDatepicker name={`${path}.aap115[0].fraDato`} label="Fra dato" />
 				</Kategori>
 			)}
 
 			{arenaforvalter.aap && (
 				<Kategori title="AAP-vedtak UA - positivt utfall">
 					<div className="flexbox--flex-wrap">
-						<FormikDatepicker name={`${path}.aap[0].fraDato`} label="Fra dato" />
-						<FormikDatepicker name={`${path}.aap[0].tilDato`} label="Til dato" />
+						<FormDatepicker name={`${path}.aap[0].fraDato`} label="Fra dato" />
+						<FormDatepicker name={`${path}.aap[0].tilDato`} label="Til dato" />
 					</div>
 				</Kategori>
 			)}
@@ -83,7 +83,7 @@ export const MedServicebehov = ({ formikBag, path }) => {
 					title="Dagpengevedtak"
 				>
 					<div className="flexbox--flex-wrap">
-						<FormikSelect
+						<FormSelect
 							name={`${path}.dagpenger[0].rettighetKode`}
 							options={Options('rettighetKode')}
 							isDisabled={true}
@@ -91,9 +91,9 @@ export const MedServicebehov = ({ formikBag, path }) => {
 							label="Rettighetskode"
 							size={'xlarge'}
 						/>
-						<FormikDatepicker name={`${path}.dagpenger[0].fraDato`} label="Fra dato" />
-						<FormikDatepicker name={`${path}.dagpenger[0].tilDato`} label="Til dato" />
-						<FormikDatepicker name={`${path}.dagpenger[0].mottattDato`} label="Mottatt dato" />
+						<FormDatepicker name={`${path}.dagpenger[0].fraDato`} label="Fra dato" />
+						<FormDatepicker name={`${path}.dagpenger[0].tilDato`} label="Til dato" />
+						<FormDatepicker name={`${path}.dagpenger[0].mottattDato`} label="Mottatt dato" />
 					</div>
 				</Kategori>
 			)}

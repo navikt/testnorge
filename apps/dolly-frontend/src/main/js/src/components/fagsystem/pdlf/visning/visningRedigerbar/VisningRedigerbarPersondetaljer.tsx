@@ -1,10 +1,9 @@
 import React, { useCallback, useRef, useState } from 'react'
 import * as Yup from 'yup'
-import { Formik } from 'formik'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 import styled from 'styled-components'
 import Button from '@/components/ui/button/Button'
-import * as _ from 'lodash-es'
+import _ from 'lodash'
 import { DollyApi, PdlforvalterApi, SkjermingApi, TpsMessagingApi } from '@/service/Api'
 import Icon from '@/components/ui/icon/Icon'
 import DollyModal from '@/components/ui/modal/DollyModal'
@@ -22,6 +21,8 @@ import {
 	RedigerLoading,
 } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/RedigerLoading'
 import { Alert } from '@navikt/ds-react'
+import { Form, FormProvider, useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -34,8 +35,31 @@ type VisningTypes = {
 	tpsMessagingData?: any
 }
 
+const validationSchema = Yup.object().shape(
+	{
+		folkeregisterpersonstatus: ifPresent(
+			'folkeregisterpersonstatus',
+			Yup.array().of(folkeregisterpersonstatus),
+		),
+		kjoenn: ifPresent('kjoenn', Yup.array().of(kjoenn)),
+		navn: ifPresent('navn', Yup.array().of(navn)),
+	},
+	[
+		['folkeregisterpersonstatus', 'folkeregisterpersonstatus'],
+		['kjoenn', 'kjoenn'],
+		['navn', 'navn'],
+	],
+)
+
 const FieldArrayEdit = styled.div`
 	&&& {
+		.navds-date__field-button {
+			position: absolute;
+			top: 19px;
+			right: 1px;
+			margin-right: 0;
+		}
+
 		button {
 			position: relative;
 			top: 0;
@@ -95,6 +119,11 @@ export const VisningRedigerbarPersondetaljer = ({
 	const [errorMessageSkjerming, setErrorMessageSkjerming] = useState(null)
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 	const [slettAttr, setSlettAttr] = useState(initialSlettAttr)
+	const formMethods = useForm({
+		mode: 'onBlur',
+		defaultValues: redigertAttributt.pdlf ? redigertAttributt.pdlf : initialValues,
+		resolver: yupResolver(validationSchema),
+	})
 
 	const pdlfError = (error: any) => {
 		error &&
@@ -232,29 +261,13 @@ export const VisningRedigerbarPersondetaljer = ({
 		return slett()
 	}, [])
 
-	const validationSchema = Yup.object().shape(
-		{
-			folkeregisterpersonstatus: ifPresent(
-				'folkeregisterpersonstatus',
-				Yup.array().of(folkeregisterpersonstatus),
-			),
-			kjoenn: ifPresent('kjoenn', Yup.array().of(kjoenn)),
-			navn: ifPresent('navn', Yup.array().of(navn)),
-		},
-		[
-			['folkeregisterpersonstatus', 'folkeregisterpersonstatus'],
-			['kjoenn', 'kjoenn'],
-			['navn', 'navn'],
-		],
-	)
-
 	const harNavn = redigertAttributt?.pdlf
 		? redigertAttributt?.pdlf?.navn?.[0]?.fornavn ||
-		  redigertAttributt?.pdlf?.navn?.[0]?.mellomnavn ||
-		  redigertAttributt?.pdlf?.navn?.[0]?.etternavn
+			redigertAttributt?.pdlf?.navn?.[0]?.mellomnavn ||
+			redigertAttributt?.pdlf?.navn?.[0]?.etternavn
 		: initialValues?.navn?.[0]?.fornavn ||
-		  initialValues?.navn?.[0]?.mellomnavn ||
-		  initialValues?.navn?.[0]?.etternavn
+			initialValues?.navn?.[0]?.mellomnavn ||
+			initialValues?.navn?.[0]?.etternavn
 
 	const harKjoenn = redigertAttributt?.pdlf
 		? redigertAttributt?.pdlf?.kjoenn?.[0]?.kjoenn
@@ -395,46 +408,38 @@ export const VisningRedigerbarPersondetaljer = ({
 				</PersondetaljerVisning>
 			)}
 			{visningModus === Modus.Skriv && (
-				<Formik
-					initialValues={redigertAttributt.pdlf ? redigertAttributt.pdlf : initialValues}
-					onSubmit={handleSubmit}
-					enableReinitialize
-					validationSchema={validationSchema}
-				>
-					{(formikBag) => {
-						return (
-							<>
-								<FieldArrayEdit>
-									<div className="flexbox--flex-wrap">
-										<PersondetaljerSamlet
-											formikBag={formikBag}
-											tpsMessaging={tpsMessagingData}
-											harSkjerming={harSkjerming}
-											identtype={identtype}
-										/>
-									</div>
-									<Knappegruppe>
-										<NavButton
-											variant={'secondary'}
-											onClick={() => setVisningModus(Modus.Les)}
-											disabled={formikBag.isSubmitting}
-											style={{ top: '1.75px' }}
-										>
-											Avbryt
-										</NavButton>
-										<NavButton
-											variant={'primary'}
-											onClick={() => formikBag.handleSubmit()}
-											disabled={!formikBag.isValid || formikBag.isSubmitting}
-										>
-											Endre
-										</NavButton>
-									</Knappegruppe>
-								</FieldArrayEdit>
-							</>
-						)
-					}}
-				</Formik>
+				<FormProvider {...formMethods}>
+					<Form onSubmit={formMethods.handleSubmit(handleSubmit)}>
+						<>
+							<FieldArrayEdit>
+								<div className="flexbox--flex-wrap">
+									<PersondetaljerSamlet
+										formMethods={formMethods}
+										tpsMessaging={tpsMessagingData}
+										harSkjerming={harSkjerming}
+										identtype={identtype}
+									/>
+								</div>
+								<Knappegruppe>
+									<NavButton
+										variant={'secondary'}
+										onClick={() => setVisningModus(Modus.Les)}
+										disabled={formMethods.formState.isSubmitting}
+									>
+										Avbryt
+									</NavButton>
+									<NavButton
+										variant={'primary'}
+										onClick={() => formMethods.handleSubmit(handleSubmit)}
+										disabled={!formMethods.formState.isValid || formMethods.formState.isSubmitting}
+									>
+										Endre
+									</NavButton>
+								</Knappegruppe>
+							</FieldArrayEdit>
+						</>
+					</Form>
+				</FormProvider>
 			)}
 		</>
 	)

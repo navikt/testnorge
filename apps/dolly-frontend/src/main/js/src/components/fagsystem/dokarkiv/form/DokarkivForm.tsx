@@ -3,14 +3,15 @@ import * as Yup from 'yup'
 import { ifPresent, requiredString } from '@/utils/YupValidations'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
-import { DollyTextInput, FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
+import { DollyTextInput, FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import Panel from '@/components/ui/panel/Panel'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
-import { FormikProps } from 'formik'
-import * as _ from 'lodash-es'
-import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
+import _ from 'lodash'
+import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
+import { UseFormReturn } from 'react-hook-form/dist/types'
+import { useFormContext } from 'react-hook-form'
 
 const Digitalinnsending = React.lazy(
 	() => import('@/components/fagsystem/dokarkiv/form/partials/Digitalinnsending'),
@@ -23,7 +24,7 @@ const DokumentInfoListe = React.lazy(
 )
 
 interface DokarkivFormProps {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 }
 
 type Skjema = {
@@ -51,15 +52,16 @@ enum Kodeverk {
 
 export const dokarkivAttributt = 'dokarkiv'
 
-export const DokarkivForm = ({ formikBag }: DokarkivFormProps) => {
-	if (!_.has(formikBag.values, dokarkivAttributt)) {
+export const DokarkivForm = () => {
+	const formMethods = useFormContext()
+	const sessionDokumenter = formMethods.watch('dokarkiv.vedlegg')
+	const digitalInnsending = formMethods.watch('dokarkiv.avsenderMottaker')
+	const [files, setFiles] = useState(sessionDokumenter || [])
+	const [skjemaValues, setSkjemaValues] = useState(formMethods.watch('dokarkiv.skjema'))
+
+	if (!_.has(formMethods.getValues(), dokarkivAttributt)) {
 		return null
 	}
-
-	const sessionDokumenter = _.get(formikBag.values, 'dokarkiv.vedlegg')
-	const digitalInnsending = _.get(formikBag.values, 'dokarkiv.avsenderMottaker')
-	const [files, setFiles] = useState(sessionDokumenter || [])
-	const [skjemaValues, setSkjemaValues] = useState(_.get(formikBag.values, 'dokarkiv.skjema'))
 
 	useEffect(() => {
 		handleSkjemaChange(skjemaValues)
@@ -72,8 +74,8 @@ export const DokarkivForm = ({ formikBag }: DokarkivFormProps) => {
 		}
 
 		setSkjemaValues(skjema)
-		formikBag.setFieldValue('dokarkiv.tittel', skjema.data)
-		formikBag.setFieldValue('dokarkiv.skjema', skjema)
+		formMethods.setValue('dokarkiv.tittel', skjema.data)
+		formMethods.setValue('dokarkiv.skjema', skjema)
 
 		const dokumentVarianter = files.map((vedl: Vedlegg, index: number) => ({
 			tittel: vedl.dokNavn ? vedl.dokNavn : vedl.name,
@@ -88,41 +90,44 @@ export const DokarkivForm = ({ formikBag }: DokarkivFormProps) => {
 		}))
 
 		dokumentVarianter.length > 0
-			? formikBag.setFieldValue('dokarkiv.dokumenter', dokumentVarianter)
-			: formikBag.setFieldValue('dokarkiv.dokumenter[0].tittel', skjema.data)
+			? formMethods.setValue('dokarkiv.dokumenter', dokumentVarianter)
+			: formMethods.setValue('dokarkiv.dokumenter[0].tittel', skjema.data)
+		formMethods.trigger('dokarkiv.dokumenter')
 	}
 
 	const handleVedleggChange = (filer: [Vedlegg]) => {
 		setFiles(filer)
-		formikBag.setFieldValue('dokarkiv.vedlegg', filer)
+		formMethods.setValue('dokarkiv.vedlegg', filer)
+		formMethods.trigger('dokarkiv.vedlegg')
 	}
 
 	const handleSakstypeChange = (target) => {
-		formikBag.setFieldValue('dokarkiv.sak.sakstype', target.value)
+		formMethods.setValue('dokarkiv.sak.sakstype', target.value)
 		if (target.value !== 'FAGSAK') {
-			formikBag.setFieldValue('dokarkiv.sak.fagsaksystem', '')
-			formikBag.setFieldValue('dokarkiv.sak.fagsakId', '')
+			formMethods.setValue('dokarkiv.sak.fagsaksystem', '')
+			formMethods.setValue('dokarkiv.sak.fagsakId', '')
 		}
+		formMethods.trigger('dokarkiv.sak')
 	}
 
-	const harFagsak = _.get(formikBag.values, 'dokarkiv.sak.sakstype') === 'FAGSAK'
+	const harFagsak = formMethods.watch('dokarkiv.sak.sakstype') === 'FAGSAK'
 
 	return (
 		// @ts-ignore
 		<Vis attributt={dokarkivAttributt}>
 			<Panel
 				heading="Dokumenter (Joark)"
-				hasErrors={panelError(formikBag, dokarkivAttributt)}
+				hasErrors={panelError(dokarkivAttributt)}
 				iconType="dokarkiv"
 				// @ts-ignore
-				startOpen={erForsteEllerTest(formikBag.values, [dokarkivAttributt])}
+				startOpen={erForsteEllerTest(formMethods.getValues(), [dokarkivAttributt])}
 			>
 				<Kategori
 					title={`Oppretting av ${digitalInnsending ? 'digitalt' : 'skannet '} dokument`}
 					vis={dokarkivAttributt}
 				>
 					<div className="flexbox--full-width">
-						<FormikSelect
+						<FormSelect
 							name="dokarkiv.dokumenter[0].brevkode"
 							label="Skjema"
 							afterChange={handleSkjemaChange}
@@ -133,7 +138,7 @@ export const DokarkivForm = ({ formikBag }: DokarkivFormProps) => {
 						/>
 					</div>
 					<div className="flexbox--flex-wrap">
-						<FormikSelect
+						<FormSelect
 							name="dokarkiv.tema"
 							label="Tema"
 							kodeverk={Kodeverk.TEMA}
@@ -142,21 +147,17 @@ export const DokarkivForm = ({ formikBag }: DokarkivFormProps) => {
 						/>
 						<DollyTextInput
 							onChange={(event: BaseSyntheticEvent) => {
-								formikBag.setFieldValue(
+								formMethods.setValue(
 									'dokarkiv.journalfoerendeEnhet',
 									event.target.value === '' ? undefined : event.target.value,
 								)
+								formMethods.trigger('dokarkiv.journalfoerendeEnhet')
 							}}
-							feil={
-								_.get(formikBag.errors, `dokarkiv.journalfoerendeEnhet`)
-									? { feilmelding: _.get(formikBag.errors, `dokarkiv.journalfoerendeEnhet`) }
-									: null
-							}
 							name="dokarkiv.journalfoerendeEnhet"
 							label="Journalførende enhet"
 							size="large"
 						/>
-						<FormikSelect
+						<FormSelect
 							name="dokarkiv.sak.sakstype"
 							label="Sakstype"
 							options={Options('sakstype')}
@@ -165,20 +166,20 @@ export const DokarkivForm = ({ formikBag }: DokarkivFormProps) => {
 						/>
 						{harFagsak && (
 							<>
-								<FormikSelect
+								<FormSelect
 									name="dokarkiv.sak.fagsaksystem"
 									label="Fagsaksystem"
 									options={Options('fagsaksystem')}
 									size="large"
 								/>
-								<FormikTextInput name="dokarkiv.sak.fagsakId" label="Fagsak-ID" />
+								<FormTextInput name="dokarkiv.sak.fagsakId" label="Fagsak-ID" />
 							</>
 						)}
 					</div>
-					<FormikCheckbox name={`dokarkiv.ferdigstill`} label="Ferdigstill journalpost" />
+					<FormCheckbox name={`dokarkiv.ferdigstill`} label="Ferdigstill journalpost" />
 					{digitalInnsending ? <Digitalinnsending /> : null}
 					<Kategori title={'Vedlegg'}>
-						<FileUploader files={files} setFiles={setFiles} />
+						<FileUploader filer={files} setFiler={setFiles} />
 						{files.length > 0 && (
 							<DokumentInfoListe handleChange={handleVedleggChange} filer={files} />
 						)}
@@ -250,9 +251,10 @@ DokarkivForm.validation = {
 					brevkode: Yup.string().test(
 						'is-valid-brevkode',
 						'Feltet er påkrevd',
-						function validBrevkode() {
-							const values = this.options.context
-							const brevkode = _.get(values, 'dokarkiv.dokumenter[0].brevkode')
+						(_val, testContext) => {
+							const fullForm =
+								testContext.from && testContext.from[testContext.from.length - 1]?.value
+							const brevkode = _.get(fullForm, 'dokarkiv.dokumenter[0].brevkode')
 							return brevkode !== ''
 						},
 					),

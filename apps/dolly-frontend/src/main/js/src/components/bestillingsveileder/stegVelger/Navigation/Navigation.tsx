@@ -5,23 +5,32 @@ import { harAvhukedeAttributter } from '@/components/bestillingsveileder/utils'
 import './Navigation.less'
 import { AvbrytButton } from '@/components/ui/button/AvbrytButton/AvbrytButton'
 import { useNavigate } from 'react-router-dom'
-import { setNestedObjectValues } from 'formik'
 import { CypressSelector } from '../../../../../cypress/mocks/Selectors'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import { useFormContext } from 'react-hook-form'
+import {
+	ShowErrorContext,
+	ShowErrorContextType,
+} from '@/components/bestillingsveileder/ShowErrorContext'
 
-export const Navigation = ({ step, onPrevious, isLastStep, formikBag }) => {
+export const Navigation = ({ step, onPrevious, isLastStep, handleSubmit }) => {
 	const showPrevious = step > 0
-	const opts = useContext(BestillingsveilederContext)
+	const errorContext: ShowErrorContextType = useContext(ShowErrorContext)
+	const opts: any = useContext(BestillingsveilederContext)
 	const importTestnorge = opts?.is?.importTestnorge
 
 	const navigate = useNavigate()
-	const { isSubmitting, handleSubmit, setTouched, errors } = formikBag
+	const formMethods = useFormContext()
+	const {
+		getValues,
+		formState: { isSubmitting },
+	} = useFormContext()
 
 	const onAbort = () => navigate(-1)
 
 	const getLastButtonText = () => {
 		if (importTestnorge) {
-			if (harAvhukedeAttributter(formikBag.values)) {
+			if (harAvhukedeAttributter(getValues())) {
 				return 'Importer og opprett'
 			} else {
 				return 'Importer'
@@ -30,10 +39,7 @@ export const Navigation = ({ step, onPrevious, isLastStep, formikBag }) => {
 		return 'Opprett'
 	}
 
-	const hasInntektstubError = step === 1 && formikBag?.errors?.hasOwnProperty('inntektstub')
-	const hasAaregError = step === 1 && formikBag?.errors?.hasOwnProperty('aareg')
-	const disabledVidere =
-		step === 1 && opts?.is?.leggTil && !harAvhukedeAttributter(formikBag.values)
+	const disabledVidere = step !== 0 && opts?.is?.leggTil && !harAvhukedeAttributter(getValues())
 
 	return (
 		<div className="step-navknapper-wrapper">
@@ -47,7 +53,7 @@ export const Navigation = ({ step, onPrevious, isLastStep, formikBag }) => {
 						<NavButton
 							data-cy={CypressSelector.BUTTON_TILBAKE}
 							variant={'secondary'}
-							onClick={() => onPrevious(formikBag)}
+							onClick={onPrevious}
 						>
 							Tilbake
 						</NavButton>
@@ -57,11 +63,7 @@ export const Navigation = ({ step, onPrevious, isLastStep, formikBag }) => {
 							data-cy={CypressSelector.BUTTON_VIDERE}
 							variant={'primary'}
 							disabled={isSubmitting || disabledVidere}
-							onClick={
-								hasInntektstubError || hasAaregError
-									? () => setTouched(setNestedObjectValues(errors, true))
-									: handleSubmit
-							}
+							onClick={handleSubmit}
 						>
 							Videre
 						</NavButton>
@@ -70,7 +72,17 @@ export const Navigation = ({ step, onPrevious, isLastStep, formikBag }) => {
 						<NavButton
 							data-cy={CypressSelector.BUTTON_FULLFOER_BESTILLING}
 							variant={'primary'}
-							onClick={handleSubmit}
+							onClick={() => {
+								errorContext?.setShowError(true)
+								formMethods.trigger().then((valid) => {
+									if (!valid) {
+										console.warn('Feil i form')
+										console.error(formMethods.formState.errors)
+										return
+									}
+									handleSubmit()
+								})
+							}}
 							disabled={isSubmitting}
 						>
 							{getLastButtonText()}

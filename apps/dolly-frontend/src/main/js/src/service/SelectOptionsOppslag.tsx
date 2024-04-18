@@ -8,6 +8,7 @@ export type Option = {
 	value: any
 	label: string
 	tema?: string
+	landkode?: string
 	alder?: number
 	sivilstand?: string
 	vergemaal?: boolean

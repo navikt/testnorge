@@ -17,10 +17,6 @@ spring:
           issuer-uri: ${AAD_ISSUER_URI}/v2.0
           jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
           accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
-        tokenx:
-          issuer-uri: https://tokenx.dev-gcp.nav.cloud.nais.io 
-          jwk-set-uri: https://tokenx.dev-gcp.nav.cloud.nais.io/jwks
-          accepted-audience: dev-fss:dolly:testnorge-statisk-data-forvalter
 
 springdoc:
   swagger-ui:
@@ -63,11 +59,11 @@ consumers:
     url: https://krr-stub-%s.dev.intern.nav.no/api
   synthdata-aareg:
     url: http://nais-synthdata-aareg.dolly.svc.nais.local
-  kodeverk:
-    cluster: dev-fss
-    name: testnav-kodeverk-proxy
-    namespace: dolly
-    url: https://kodeverk.dev.intern.nav.no
+  kodeverk-api:
+    name: kodeverk-api
+    namespace: team-rocket
+    url: https://kodeverk-api.nav.no
+    cluster: prod-gcp
   testnav-aareg-proxy:
     name: testnav-aareg-proxy
     namespace: dolly
@@ -101,3 +97,5 @@ server:
   servlet:
     encoding:
       charset: UTF-8
+  error:
+    include-message: always

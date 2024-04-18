@@ -1,5 +1,8 @@
 package no.nav.testnav.apps.tpsmessagingservice.service;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -10,14 +13,8 @@ import no.nav.testnav.apps.tpsmessagingservice.dto.TpsServicerutineM201Response;
 import no.nav.testnav.apps.tpsmessagingservice.exception.BadRequestException;
 import no.nav.testnav.apps.tpsmessagingservice.utils.EndringsmeldingUtil;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.TpsIdentStatusDTO;
-import no.nav.tps.ctg.m201.domain.SRnavn;
-import no.nav.tps.ctg.m201.domain.TpsPersonData;
-import no.nav.tps.ctg.m201.domain.TpsServiceRutineType;
 import org.springframework.stereotype.Service;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,28 +34,23 @@ public class IdentService {
     private static final String PROD_LIKE_ENV = "q2";
 
     private final ServicerutineConsumer servicerutineConsumer;
-    private final JAXBContext requestContext;
     private final TestmiljoerServiceConsumer testmiljoerServiceConsumer;
     private final XmlMapper xmlMapper;
 
     public IdentService(ServicerutineConsumer servicerutineConsumer,
-                        TestmiljoerServiceConsumer testmiljoerServiceConsumer,
-                        XmlMapper xmlMapper) throws JAXBException {
+                        TestmiljoerServiceConsumer testmiljoerServiceConsumer) {
+
         this.servicerutineConsumer = servicerutineConsumer;
         this.testmiljoerServiceConsumer = testmiljoerServiceConsumer;
-        this.requestContext = JAXBContext.newInstance(TpsPersonData.class);
-        this.xmlMapper = xmlMapper;
-    }
-
-    @SneakyThrows
-    public static String marshallToXML(JAXBContext requestContext, TpsPersonData endringsmelding) {
-
-        var marshaller = requestContext.createMarshaller();
-
-        var writer = new StringWriter();
-        marshaller.marshal(endringsmelding, writer);
-
-        return writer.toString();
+        this.xmlMapper = XmlMapper
+                .builder()
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                .configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true)
+                .configure(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_AS_NULL, true)
+                .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+                .configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true)
+                .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
+                .build();
     }
 
     public List<TpsIdentStatusDTO> getIdenter(List<String> identer, List<String> miljoer, Boolean includeProd) {
@@ -100,13 +92,13 @@ public class IdentService {
 
     private Map<String, TpsServicerutineM201Response> readFromTps(List<String> identer, List<String> miljoer, boolean isProd) {
 
-        var request = prepareRequest(identer, isProd);
-        var xmlRequest = marshallToXML(requestContext, request);
+        var xmlRequest = prepareRequest(identer, isProd);
+
+        log.info("M201 request: {}", xmlRequest);
 
         var miljoerResponse = servicerutineConsumer.sendMessage(xmlRequest, miljoer);
 
-        miljoerResponse.entrySet().stream()
-                .forEach(entry -> log.info("Miljø: {} XML: {}", entry.getKey(), entry.getValue()));
+        miljoerResponse.forEach((key, value) -> log.info("Miljø: {} XML: {}", key, value));
 
         return miljoerResponse.entrySet().parallelStream()
                 .collect(Collectors.toMap(Map.Entry::getKey,
@@ -129,17 +121,18 @@ public class IdentService {
         }
     }
 
-    private TpsPersonData prepareRequest(List<String> identer, boolean isProd) {
+    private String prepareRequest(List<String> identer, boolean isProd) {
 
-        var request = new TpsPersonData();
-        request.setTpsServiceRutine(new TpsServiceRutineType());
-        request.getTpsServiceRutine().setServiceRutinenavn(SRnavn.FS_03_FDLISTER_DISKNAVN_M);
-        request.getTpsServiceRutine().setAksjonsKode("A");
-        request.getTpsServiceRutine().setAksjonsKode2(isProd ? "2" : "0");
-        request.getTpsServiceRutine().setAntallFnr(Integer.toString(identer.size()));
-        request.getTpsServiceRutine().setNFnr(new TpsServiceRutineType.NFnr());
-        request.getTpsServiceRutine().getNFnr().getFnr().addAll(identer);
-
-        return request;
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" +
+                "<tpsPersonData>" +
+                "<tpsServiceRutine>" +
+                "<serviceRutinenavn>FS03-FDLISTER-DISKNAVN-M</serviceRutinenavn>" +
+                "<aksjonsKode>A</aksjonsKode>" +
+                "<aksjonsKode2>%s</aksjonsKode2><antallFnr>%s</antallFnr><nFnr>%s</nFnr></tpsServiceRutine></tpsPersonData>"
+                        .formatted(isProd ? "2" : "0",
+                                Integer.toString(identer.size()),
+                                identer.stream()
+                                        .map("<fnr>%s</fnr>"::formatted)
+                                        .collect(Collectors.joining()));
     }
 }

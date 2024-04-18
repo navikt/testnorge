@@ -1,25 +1,24 @@
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
-import { DollySelect, FormikSelect } from '@/components/ui/form/inputs/select/Select'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { DollySelect, FormSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { getPlaceholder, setNavn } from '../utils'
-import * as _ from 'lodash-es'
+import _ from 'lodash'
 import {
 	initialNyPerson,
 	initialOrganisasjon,
 	initialPerson,
 } from '@/components/fagsystem/pdlf/form/initialValues'
 import { OrganisasjonSelect } from '@/components/organisasjonSelect'
-import { FormikProps } from 'formik'
 import { PdlNyPerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlNyPerson'
 import { PdlEksisterendePerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlEksisterendePerson'
 import { useEffect } from 'react'
-import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 import { useGenererNavn } from '@/utils/hooks/useGenererNavn'
 import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface KontaktValues {
-	formikBag: FormikProps<any>
+	formMethods: UseFormReturn
 	path: string
 	eksisterendeNyPerson?: any
 }
@@ -34,26 +33,26 @@ type OrgValues = {
 	navn: string
 }
 
-export const Kontakt = ({ formikBag, path, eksisterendeNyPerson = null }: KontaktValues) => {
+export const Kontakt = ({ formMethods, path, eksisterendeNyPerson = null }: KontaktValues) => {
 	const advokatPath = `${path}.advokatSomKontakt`
 	const organisasjonPath = `${path}.organisasjonSomKontakt`
 	const personPath = `${path}.personSomKontakt`
 
 	const getKontakttype = () => {
-		const kontaktType = _.get(formikBag.values, `${path}.kontaktType`)
+		const kontaktType = formMethods.watch(`${path}.kontaktType`)
 		if (kontaktType) {
 			return kontaktType
-		} else if (_.get(formikBag.values, `${path}.advokatSomKontakt`)) {
+		} else if (formMethods.watch(`${path}.advokatSomKontakt`)) {
 			return 'ADVOKAT'
-		} else if (_.get(formikBag.values, `${path}.organisasjonSomKontakt`)) {
+		} else if (formMethods.watch(`${path}.organisasjonSomKontakt`)) {
 			return 'ORGANISASJON'
 		} else if (
 			eksisterendeNyPerson ||
-			_.get(formikBag.values, `${path}.personSomKontakt.identifikasjonsnummer`) ||
-			_.get(formikBag.values, `${path}.personSomKontakt.foedselsdato`)
+			formMethods.watch(`${path}.personSomKontakt.identifikasjonsnummer`) ||
+			formMethods.watch(`${path}.personSomKontakt.foedselsdato`)
 		) {
 			return 'PERSON_FDATO'
-		} else if (_.get(formikBag.values, `${path}.personSomKontakt.nyKontaktperson`)) {
+		} else if (formMethods.watch(`${path}.personSomKontakt.nyKontaktperson`)) {
 			return 'NY_PERSON'
 		} else return null
 	}
@@ -62,14 +61,15 @@ export const Kontakt = ({ formikBag, path, eksisterendeNyPerson = null }: Kontak
 	const navnOptions = SelectOptionsFormat.formatOptions('personnavn', navnInfo)
 
 	useEffect(() => {
-		if (!_.get(formikBag.values, `${path}.kontaktType`)) {
-			formikBag.setFieldValue(`${path}.kontaktType`, getKontakttype())
+		if (!formMethods.watch(`${path}.kontaktType`)) {
+			formMethods.setValue(`${path}.kontaktType`, getKontakttype())
+			formMethods.trigger(`${path}.kontaktType`)
 		}
 	}, [])
 
 	const handleAfterChange = (type: TypeValues) => {
 		const { value } = type
-		const kontaktinfo = _.get(formikBag.values, path)
+		const kontaktinfo = formMethods.watch(path)
 		const kontaktinfoClone = _.cloneDeep(kontaktinfo)
 
 		if (value !== getKontakttype()) {
@@ -92,23 +92,25 @@ export const Kontakt = ({ formikBag, path, eksisterendeNyPerson = null }: Kontak
 				_.set(kontaktinfoClone, 'organisasjonSomKontakt', undefined)
 			}
 		}
-		formikBag.setFieldValue(path, kontaktinfoClone)
+		formMethods.setValue(path, kontaktinfoClone)
+		formMethods.trigger(path)
 	}
 
 	const organisasjonHandleChange = (values: OrgValues, orgPath: string) => {
-		formikBag.setFieldValue(`${orgPath}.organisasjonsnummer`, values.orgnr)
-		formikBag.setFieldValue(`${orgPath}.organisasjonsnavn`, values.navn)
+		formMethods.setValue(`${orgPath}.organisasjonsnummer`, values.orgnr)
+		formMethods.setValue(`${orgPath}.organisasjonsnavn`, values.navn)
+		formMethods.trigger(orgPath)
 	}
 
 	const disableIdent =
-		_.get(formikBag.values, `${personPath}.foedselsdato`) ||
-		_.get(formikBag.values, `${personPath}.navn.fornavn`)
+		formMethods.watch(`${personPath}.foedselsdato`) ||
+		formMethods.watch(`${personPath}.navn.fornavn`)
 
-	const disablePersoninfo = _.get(formikBag.values, `${personPath}.identifikasjonsnummer`)
+	const disablePersoninfo = formMethods.watch(`${personPath}.identifikasjonsnummer`)
 
 	return (
 		<Kategori title="Kontakt">
-			<FormikSelect
+			<FormSelect
 				name={`${path}.kontaktType`}
 				label="Kontakttype"
 				value={getKontakttype()}
@@ -129,12 +131,12 @@ export const Kontakt = ({ formikBag, path, eksisterendeNyPerson = null }: Kontak
 						label="Kontaktperson navn"
 						options={navnOptions}
 						size="large"
-						placeholder={getPlaceholder(formikBag.values, `${advokatPath}.kontaktperson`)}
+						placeholder={getPlaceholder(formMethods.getValues(), `${advokatPath}.kontaktperson`)}
 						isLoading={loading}
 						onChange={(navn: string) =>
-							setNavn(navn, `${advokatPath}.kontaktperson`, formikBag.setFieldValue)
+							setNavn(navn, `${advokatPath}.kontaktperson`, formMethods.setValue)
 						}
-						value={_.get(formikBag.values, `${advokatPath}.kontaktperson.fornavn`)}
+						value={formMethods.watch(`${advokatPath}.kontaktperson.fornavn`)}
 					/>
 				</div>
 			)}
@@ -150,12 +152,15 @@ export const Kontakt = ({ formikBag, path, eksisterendeNyPerson = null }: Kontak
 						label="Kontaktperson navn"
 						options={navnOptions}
 						size="large"
-						placeholder={getPlaceholder(formikBag.values, `${organisasjonPath}.kontaktperson`)}
+						placeholder={getPlaceholder(
+							formMethods.getValues(),
+							`${organisasjonPath}.kontaktperson`,
+						)}
 						isLoading={loading}
 						onChange={(navn: string) =>
-							setNavn(navn, `${organisasjonPath}.kontaktperson`, formikBag.setFieldValue)
+							setNavn(navn, `${organisasjonPath}.kontaktperson`, formMethods.setValue)
 						}
-						value={_.get(formikBag.values, `${organisasjonPath}.kontaktperson.fornavn`)}
+						value={formMethods.watch(`${organisasjonPath}.kontaktperson.fornavn`)}
 					/>
 				</div>
 			)}
@@ -167,35 +172,34 @@ export const Kontakt = ({ formikBag, path, eksisterendeNyPerson = null }: Kontak
 						label="Kontaktperson"
 						disabled={disableIdent}
 						eksisterendeNyPerson={eksisterendeNyPerson}
-						formikBag={formikBag}
+						formMethods={formMethods}
 					/>
-					<DatepickerWrapper>
-						<FormikDatepicker
-							name={`${personPath}.foedselsdato`}
-							label="Fødselsdato"
-							disabled={disablePersoninfo}
-							maxDate={new Date()}
-							fastfield={false}
-						/>
-					</DatepickerWrapper>
+					<FormDatepicker
+						name={`${personPath}.foedselsdato`}
+						label="Fødselsdato"
+						disabled={disablePersoninfo}
+						maxDate={new Date()}
+					/>
 					<DollySelect
 						name={`${personPath}.navn.fornavn`}
 						label="Kontaktperson navn"
 						options={navnOptions}
 						size="xlarge"
-						placeholder={getPlaceholder(formikBag.values, `${personPath}.navn`)}
+						placeholder={getPlaceholder(formMethods.getValues(), `${personPath}.navn`)}
 						isLoading={loading}
-						onChange={(navn: string) =>
-							setNavn(navn, `${personPath}.navn`, formikBag.setFieldValue)
-						}
-						value={_.get(formikBag.values, `${personPath}.navn.fornavn`)}
+						onChange={(navn: string) => {
+							setNavn(navn, `${personPath}.navn`, formMethods.setValue)
+							formMethods.setValue(`${personPath}.identifikasjonsnummer`, undefined)
+							formMethods.trigger(personPath)
+						}}
+						value={formMethods.watch(`${personPath}.navn.fornavn`)}
 						isDisabled={disablePersoninfo}
 					/>
 				</div>
 			)}
 
 			{getKontakttype() === 'NY_PERSON' && (
-				<PdlNyPerson nyPersonPath={`${personPath}.nyKontaktperson`} formikBag={formikBag} />
+				<PdlNyPerson nyPersonPath={`${personPath}.nyKontaktperson`} formMethods={formMethods} />
 			)}
 		</Kategori>
 	)

@@ -8,7 +8,7 @@ import { ImportPerson } from '@/pages/testnorgePage/search/SearchView'
 import { DollyApi } from '@/service/Api'
 import { PdlData } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import { MalValg } from '@/pages/testnorgePage/search/importModal/MalValg'
-import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
+import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import './ImportModal.less'
 import { Gruppe } from '@/utils/hooks/useGruppe'
 import { top } from '@popperjs/core'
@@ -20,7 +20,7 @@ type Props = {
 		valgtePersoner: ImportPerson[],
 		mal: any,
 		navigate: Function,
-		gruppe?: Gruppe
+		gruppe?: Gruppe,
 	) => void
 	gruppe?: Gruppe
 }
@@ -33,7 +33,7 @@ const getPdlPersoner = async (identer: string[]) => {
 					...map,
 					[person.ident]: person.identer,
 				}),
-				{}
+				{},
 			)
 			return response.data?.data?.hentPersonBolk?.map((ident: any) => {
 				return {
@@ -74,12 +74,12 @@ export const ImportModal = ({ valgtePersoner, importerPersoner, gruppe }: Props)
 			.map((person) => person?.hentPerson?.sivilstand)
 			.map((sivilstand) => {
 				return sivilstand.filter(
-					(siv) => !siv?.metadata?.historisk && partnerSivilstander.includes(siv?.type)
+					(siv) => !siv?.metadata?.historisk && partnerSivilstander.includes(siv?.type),
 				)?.[0]?.relatertVedSivilstand
 			})
 			.filter(
 				(partnerIdent) =>
-					partnerIdent && !valgtePersoner.map((person) => person.ident).includes(partnerIdent)
+					partnerIdent && !valgtePersoner.map((person) => person.ident).includes(partnerIdent),
 			)
 	}
 
@@ -106,7 +106,7 @@ export const ImportModal = ({ valgtePersoner, importerPersoner, gruppe }: Props)
 			<div className="flexbox--baseline--justify-end import-knapper">
 				{visPartnereImport && (
 					<span className="flexbox--baseline--justify-end">
-						<FormikCheckbox
+						<FormCheckbox
 							id="import-modal-import-med-partner"
 							checked={importMedPartner}
 							onChange={toggleImportMedPartner}
@@ -119,7 +119,7 @@ export const ImportModal = ({ valgtePersoner, importerPersoner, gruppe }: Props)
 					</span>
 				)}
 				<div>
-					<FormikCheckbox
+					<FormCheckbox
 						id="import-modal-import-med-mal"
 						checked={importMedMal}
 						onChange={toggleImportMedMal}
@@ -128,6 +128,7 @@ export const ImportModal = ({ valgtePersoner, importerPersoner, gruppe }: Props)
 				</div>
 
 				<NavButton
+					type={'button'}
 					variant={'primary'}
 					onClick={() => {
 						if (importMedMal) {
@@ -150,7 +151,11 @@ export const ImportModal = ({ valgtePersoner, importerPersoner, gruppe }: Props)
 					</div>
 					<MalValg valgtMal={(mal: any) => setMalData(mal)} />
 					<div className="importModal-actions">
-						<NavButton onClick={() => importer(valgtePersoner, malData)} variant={'primary'}>
+						<NavButton
+							type={'button'}
+							onClick={() => importer(valgtePersoner, malData)}
+							variant={'primary'}
+						>
 							Importer
 						</NavButton>
 					</div>

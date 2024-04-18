@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
-import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { TimeloennetForm } from './timeloennetForm'
 import { PermisjonForm } from './permisjonForm'
 import { PermitteringForm } from './permitteringForm'
@@ -22,10 +22,10 @@ import { ArbeidsgiverIdent } from '@/components/fagsystem/aareg/form/partials/ar
 import { isDate } from 'date-fns'
 import { EgneOrganisasjoner } from '@/components/fagsystem/brregstub/form/partials/EgneOrganisasjoner'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
-import { FormikErrors, FormikTouched, FormikValues, useFormikContext } from 'formik'
-import * as _ from 'lodash-es'
+import _ from 'lodash'
 import { Monthpicker } from '@/components/ui/form/inputs/monthpicker/Monthpicker'
 import { fixTimezone } from '@/components/ui/form/formUtils'
+import { useFormContext } from 'react-hook-form'
 
 type Arbeidsforhold = {
 	isOppdatering?: boolean
@@ -68,7 +68,7 @@ export const ArbeidsforholdForm = ({
 
 		const aaregBestillinger = bestillinger
 			?.filter((bestilling) => bestilling?.data?.aareg)
-			?.flatMap((bestilling) => bestilling.data.aareg)
+			?.flatMap((bestilling) => bestilling.data?.aareg)
 			?.filter((bestilling) => _.isEmpty(bestilling?.amelding))
 
 		return _.uniqWith(
@@ -78,26 +78,27 @@ export const ArbeidsforholdForm = ({
 		)
 	}
 
-	const harGjortFormEndringer = (formValues) => {
-		if (formValues.length > 1) {
+	const harGjortFormEndringer = () => {
+		if (watch('aareg').length > 1) {
 			return true
 		}
-		return !_.isEqual(values.aareg, [initialArbeidsforholdOrg])
+		return !_.isEqual(
+			_.omit(watch('aareg')?.[0], ['ansettelsesPeriode']),
+			_.omit(initialArbeidsforholdOrg, ['ansettelsesPeriode']),
+		)
 	}
 
-	const {
-		touched,
-		values,
-		errors,
-		setFieldValue,
-	}: {
-		touched: FormikTouched<any>
-		values: FormikValues
-		errors: FormikErrors<any>
-		setFieldValue: any
-	} = useFormikContext()
-	const [navArbeidsforholdPeriode, setNavArbeidsforholdPeriode] = useState(null as unknown as Date)
-	const { tidligereBestillinger } = useContext(BestillingsveilederContext)
+	const { setError, watch, control, getValues, setValue, trigger, resetField } = useFormContext()
+	const eksisterendeArbeidsforholdPeriode = watch(`${path}.navArbeidsforholdPeriode`)
+	const [navArbeidsforholdPeriode, setNavArbeidsforholdPeriode] = useState(
+		eksisterendeArbeidsforholdPeriode
+			? new Date(
+					eksisterendeArbeidsforholdPeriode.year,
+					eksisterendeArbeidsforholdPeriode.monthValue,
+				)
+			: null,
+	)
+	const { tidligereBestillinger }: any = useContext(BestillingsveilederContext)
 	const tidligereAaregBestillinger = hentUnikeAaregBestillinger(tidligereBestillinger)
 	const erLaastArbeidsforhold =
 		(arbeidsgiverType === ArbeidsgiverTyper.felles ||
@@ -105,38 +106,40 @@ export const ArbeidsforholdForm = ({
 		arbeidsforholdIndex < tidligereAaregBestillinger?.length
 
 	useEffect(() => {
-		if (_.isEmpty(tidligereAaregBestillinger) || harGjortFormEndringer(values.aareg)) {
+		if (_.isEmpty(tidligereAaregBestillinger) || harGjortFormEndringer()) {
 			return
 		}
-		setFieldValue(
+		setValue(
 			'aareg',
-			tidligereAaregBestillinger.map((aaregBestilling) => {
+			tidligereAaregBestillinger?.map((aaregBestilling) => {
 				aaregBestilling.isOppdatering = true
 				return aaregBestilling
 			}),
 		)
-	}, [values.aareg])
+		trigger('aareg')
+	}, [watch('aareg')])
 
-	const gjeldendeArbeidsgiver = _.get(values, `${path}.arbeidsgiver`)
+	const gjeldendeArbeidsgiver = watch(`${path}.arbeidsgiver`)
 
 	const arbeidsforholdstype =
 		typeof ameldingIndex !== 'undefined'
-			? _.get(values, 'aareg[0].arbeidsforholdstype')
-			: _.get(values, `${path}.arbeidsforholdstype`)
+			? _.get(getValues(), 'aareg[0].arbeidsforholdstype')
+			: _.get(getValues(), `${path}.arbeidsforholdstype`)
 	const onChangeLenket = (fieldPath: string) => {
 		if (arbeidsgiverType !== ArbeidsgiverTyper.egen) {
 			return (field) => {
 				const value = isDate(field)
 					? fixTimezone(field)
 					: field?.value || field?.target?.value || null
-				setFieldValue(`${path}.${fieldPath}`, value)
+				setValue(`${path}.${fieldPath}`, value)
+				trigger()
 			}
 		} else {
 			return (field) => {
 				const value = isDate(field)
 					? fixTimezone(field)
 					: field?.value || field?.target?.value || null
-				const amelding = _.get(values, 'aareg[0].amelding') || []
+				const amelding = watch('aareg[0].amelding') || []
 				amelding.forEach((_maaned, idx) => {
 					if (!erLenket && idx < ameldingIndex) {
 						return null
@@ -148,7 +151,8 @@ export const ArbeidsforholdForm = ({
 						_.set(amelding[idx], `arbeidsforhold[${arbeidsforholdIndex}]`, arbeidsforholdClone)
 					}
 				})
-				setFieldValue('aareg[0].amelding', amelding)
+				setValue('aareg[0].amelding', amelding)
+				trigger('aareg[0].amelding')
 			}
 		}
 	}
@@ -160,17 +164,19 @@ export const ArbeidsforholdForm = ({
 					arbeidsgiverType === ArbeidsgiverTyper.felles ||
 					arbeidsgiverType === ArbeidsgiverTyper.fritekst
 				) {
-					setFieldValue(path, {
+					setValue(path, {
 						...initialForenkletOppgjoersordningOrg,
 						arbeidsforholdstype: event.value,
 						arbeidsgiver: gjeldendeArbeidsgiver,
 					})
+					trigger()
 				} else if (arbeidsgiverType === ArbeidsgiverTyper.privat) {
-					setFieldValue(path, {
+					setValue(path, {
 						...initialForenkletOppgjoersordningPers,
 						arbeidsforholdstype: event.value,
 						arbeidsgiver: gjeldendeArbeidsgiver,
 					})
+					trigger()
 				}
 			}
 		} else {
@@ -179,53 +185,49 @@ export const ArbeidsforholdForm = ({
 					arbeidsgiverType === ArbeidsgiverTyper.felles ||
 					arbeidsgiverType === ArbeidsgiverTyper.fritekst
 				) {
-					setFieldValue(path, {
+					setValue(path, {
 						...initialArbeidsforholdOrg,
 						arbeidsforholdstype: event.value,
 						arbeidsgiver: gjeldendeArbeidsgiver,
 					})
+					trigger()
 				} else if (arbeidsgiverType === ArbeidsgiverTyper.privat) {
-					setFieldValue(path, {
+					setValue(path, {
 						...initialArbeidsforholdPers,
 						arbeidsforholdstype: event.value,
 						arbeidsgiver: gjeldendeArbeidsgiver,
 					})
+					trigger()
 				}
 			} else {
-				setFieldValue(`${path}.arbeidsforholdstype`, event.value)
+				setValue(`${path}.arbeidsforholdstype`, event.value)
+				trigger()
 			}
 			if (event.value === 'maritimtArbeidsforhold') {
-				setFieldValue(`${path}.fartoy`, initialFartoy)
+				setValue(`${path}.fartoy`, initialFartoy)
+				trigger()
 			} else {
-				setFieldValue(`${path}.fartoy`, undefined)
+				setValue(`${path}.fartoy`, undefined)
+				trigger()
 			}
 		}
 	}
 
 	useEffect(() => {
-		setFieldValue(
+		setValue(
 			`${path}.navArbeidsforholdPeriode`,
 			navArbeidsforholdPeriode
 				? {
 						year: navArbeidsforholdPeriode.getFullYear(),
 						monthValue: navArbeidsforholdPeriode.getMonth(),
-				  }
+					}
 				: undefined,
 		)
+		trigger()
 	}, [navArbeidsforholdPeriode])
 
-	const feilmelding = () => {
-		if (
-			!_.get(values, `${path}.arbeidsforholdstype`) &&
-			_.has(touched, `${path}.arbeidsforholdstype`)
-		) {
-			return {
-				feilmelding: _.get(errors, `${path}.arbeidsforholdstype`),
-			}
-		}
-	}
-
-	const checkAktiveArbeidsforhold = (aaregValues) => {
+	const checkAktiveArbeidsforhold = () => {
+		const aaregValues = getValues('aareg')
 		const aktiveArbeidsforhold = aaregValues.map((arbeidsforhold) => {
 			const orgnummer = arbeidsforhold?.arbeidsgiver?.orgnummer
 			if (!arbeidsforhold?.ansettelsesPeriode?.sluttaarsak) {
@@ -235,11 +237,11 @@ export const ArbeidsforholdForm = ({
 		const dupliserteAktiveArbeidsforhold = aktiveArbeidsforhold
 			.filter((arbeidsforhold, index) => index !== aktiveArbeidsforhold.indexOf(arbeidsforhold))
 			.filter((arbeidsforhold) => !_.isEmpty(arbeidsforhold))
-		return _.isEmpty(dupliserteAktiveArbeidsforhold)
-			? null
-			: {
-					feilmelding: `Identen har allerede pågående arbeidsforhold i org: ${dupliserteAktiveArbeidsforhold.toString()}`,
-			  }
+		if (!_.isEmpty(dupliserteAktiveArbeidsforhold)) {
+			setError(`${path}.arbeidsgiver.orgnummer`, {
+				message: `Identen har allerede pågående arbeidsforhold i org: ${dupliserteAktiveArbeidsforhold.toString()}`,
+			})
+		}
 	}
 
 	return (
@@ -259,29 +261,28 @@ export const ArbeidsforholdForm = ({
 					<OrganisasjonMedArbeidsforholdSelect
 						path={`${path}.arbeidsgiver.orgnummer`}
 						label={'Organisasjonsnummer'}
-						feil={checkAktiveArbeidsforhold(values.aareg)}
+						afterChange={() => checkAktiveArbeidsforhold()}
 						isDisabled={erLaastArbeidsforhold}
 					/>
 				)}
 				{arbeidsgiverType === ArbeidsgiverTyper.fritekst && (
-					<FormikTextInput
+					<FormTextInput
 						name={`${path}.arbeidsgiver.orgnummer`}
 						label={'Organisasjonsnummer'}
 						size="xlarge"
-						feil={checkAktiveArbeidsforhold(values.aareg)}
+						onKeyPress={() => checkAktiveArbeidsforhold()}
 						defaultValue={gjeldendeArbeidsgiver?.orgnummer}
 						isDisabled={erLaastArbeidsforhold}
 					/>
 				)}
 				{arbeidsgiverType !== ArbeidsgiverTyper.egen && (
-					<FormikSelect
+					<FormSelect
 						name={`${path}.arbeidsforholdstype`}
 						label="Type arbeidsforhold"
 						kodeverk={ArbeidKodeverk.Arbeidsforholdstyper}
 						size="xlarge"
 						isClearable={false}
 						onChange={handleArbeidsforholdstypeChange}
-						feil={feilmelding()}
 						isDisabled={erLaastArbeidsforhold}
 					/>
 				)}
@@ -291,35 +292,35 @@ export const ArbeidsforholdForm = ({
 						isDisabled={erLaastArbeidsforhold}
 					/>
 				)}
-				<FormikDatepicker
+				<FormDatepicker
 					name={`${path}.ansettelsesPeriode.fom`}
 					label="Ansatt fra"
 					onChange={onChangeLenket('ansettelsesPeriode.fom')}
-					fastfield={false}
 				/>
-				<FormikDatepicker
+				<FormDatepicker
 					name={`${path}.ansettelsesPeriode.tom`}
 					label="Ansatt til"
 					onChange={onChangeLenket('ansettelsesPeriode.tom')}
-					fastfield={false}
 				/>
-				<FormikSelect
+				<FormSelect
 					name={`${path}.ansettelsesPeriode.sluttaarsak`}
 					label="Sluttårsak"
 					kodeverk={ArbeidKodeverk.SluttaarsakAareg}
 					size="xlarge"
 					onChange={onChangeLenket('ansettelsesPeriode.sluttaarsak')}
-					isDisabled={!_.get(values, `${path}.ansettelsesPeriode.tom`)}
+					isDisabled={!_.get(getValues(), `${path}.ansettelsesPeriode.tom`)}
 				/>
 				<Monthpicker
 					name={`${path}.navArbeidsforholdPeriode`}
 					date={navArbeidsforholdPeriode}
 					label="NAV arbeidsforholdsperiode"
 					onChange={setNavArbeidsforholdPeriode}
+					value={navArbeidsforholdPeriode}
 					isClearable={true}
 				/>
 				{arbeidsforholdstype === 'forenkletOppgjoersordning' && (
-					<FormikSelect
+					<FormSelect
+						value={watch(`${path}.arbeidsavtale.yrke`)}
 						name={`${path}.arbeidsavtale.yrke`}
 						label="Yrke"
 						kodeverk={ArbeidKodeverk.Yrker}

@@ -1,20 +1,20 @@
-import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import {
 	initialSpraak,
 	initialSpraakVerdier,
 } from '@/components/fagsystem/arbeidsplassen/form/initialValues'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import * as React from 'react'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { EraseFillButtons } from '@/components/fagsystem/arbeidsplassen/form/partials/EraseFillButtons'
 
-export const SpraakForm = ({ formikBag }) => {
+export const SpraakForm = ({ formMethods }) => {
 	const spraakListePath = 'arbeidsplassenCV.spraak'
 
 	return (
 		<Vis attributt={spraakListePath}>
-			<FormikDollyFieldArray
+			<FormDollyFieldArray
 				name={spraakListePath}
 				header="Språk"
 				newEntry={initialSpraakVerdier}
@@ -23,21 +23,21 @@ export const SpraakForm = ({ formikBag }) => {
 				{(spraakPath, idx) => (
 					<>
 						<div key={idx} className="flexbox--flex-wrap">
-							<FormikSelect
+							<FormSelect
 								name={`${spraakPath}.language`}
 								label="Språk"
 								options={Options('spraak')}
 								size="large"
 								isClearable={false}
 							/>
-							<FormikSelect
+							<FormSelect
 								name={`${spraakPath}.oralProficiency`}
 								label="Muntlig"
 								options={Options('spraakNivaa')}
 								size="medium"
 								isClearable={false}
 							/>
-							<FormikSelect
+							<FormSelect
 								name={`${spraakPath}.writtenProficiency`}
 								label="Skriftlig"
 								options={Options('spraakNivaa')}
@@ -46,14 +46,14 @@ export const SpraakForm = ({ formikBag }) => {
 							/>
 						</div>
 						<EraseFillButtons
-							formikBag={formikBag}
+							formMethods={formMethods}
 							path={spraakPath}
 							initialErase={initialSpraak}
 							initialFill={initialSpraakVerdier}
 						/>
 					</>
 				)}
-			</FormikDollyFieldArray>
+			</FormDollyFieldArray>
 		</Vis>
 	)
 }

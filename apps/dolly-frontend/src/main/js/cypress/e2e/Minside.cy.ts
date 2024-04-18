@@ -1,7 +1,7 @@
 import { CypressSelector } from '../mocks/Selectors'
 import { brukerMalerEndretMock } from '../mocks/BasicMocks'
 
-const brukerMaler = new RegExp(/dolly-backend\/api\/v1\/bestilling\/malbestilling\?brukerId/)
+const brukerMaler = new RegExp(/dolly-backend\/api\/v1\/malbestilling\?brukerId/)
 
 describe('Minside mal testing', () => {
 	it('passes', () => {
@@ -9,7 +9,7 @@ describe('Minside mal testing', () => {
 		cy.intercept('PUT', '*', cy.spy().as('endre_malnavn'))
 		cy.intercept('POST', '*', cy.spy().as('send_oenske'))
 
-		cy.visit('http://localhost:5678')
+		cy.visit('')
 
 		cy.dollyGet(CypressSelector.BUTTON_PROFIL).click()
 		cy.dollyGet(CypressSelector.BUTTON_PROFIL_MINSIDE).click()
@@ -28,6 +28,9 @@ describe('Minside mal testing', () => {
 
 		cy.dollyGet(CypressSelector.INPUT_MINSIDE_SOEK_MAL).type('mal')
 		cy.dollyGet(CypressSelector.INPUT_MINSIDE_SOEK_MAL).clear()
+
+		cy.dollyGet(CypressSelector.TOGGLE_MIN_SIDE_ORGANISASJON_MALER).click()
+		cy.dollyGet(CypressSelector.TOGGLE_MIN_SIDE_PERSONER_MALER).click()
 		cy.dollyGet(CypressSelector.BUTTON_MALER_SLETT).click()
 		cy.dollyGet(CypressSelector.BUTTON_MALER_SLETT_BEKREFT).click()
 

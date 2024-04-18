@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { StegVelger } from './stegVelger/StegVelger'
 import { AppError } from '@/components/ui/appError/AppError'
 import { BVOptions } from './options/options'
@@ -7,12 +7,24 @@ import './bestillingsveileder.less'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import { ShowErrorContext } from '@/components/bestillingsveileder/ShowErrorContext'
 
 export const Bestillingsveileder = ({ error, sendBestilling }) => {
 	const location = useLocation()
 	const navigate = useNavigate()
+	const [showError, setShowError] = useState(false)
 	const [navigateRoot, setNavigateRoot] = useState(false)
 	const { gruppeId, personId } = useParams()
+	const erOrganisasjon = location?.state?.opprettOrganisasjon
+	const importPersoner = location?.state?.importPersoner
+
+	const contextValue = useMemo(
+		() => ({
+			showError,
+			setShowError,
+		}),
+		[showError, setShowError],
+	)
 
 	useEffect(() => {
 		if (navigateRoot) {
@@ -21,7 +33,15 @@ export const Bestillingsveileder = ({ error, sendBestilling }) => {
 		}
 	}, [navigateRoot])
 
-	if (!location.state && !gruppeId) {
+	if (!location.state) {
+		location.state = {
+			antall: 1,
+			identtype: 'FNR',
+			mal: null,
+		}
+	}
+
+	if (!erOrganisasjon && !gruppeId && !importPersoner) {
 		setNavigateRoot(true)
 		return null
 	}
@@ -34,14 +54,16 @@ export const Bestillingsveileder = ({ error, sendBestilling }) => {
 	if (error) {
 		return <AppError title="Det skjedde en feil ved bestilling" message={error.message} />
 	}
-	return renderBestillingsVeileder(options.initialValues, options, handleSubmit)
+
+	return (
+		<div className="bestillingsveileder">
+			<ErrorBoundary>
+				<ShowErrorContext.Provider value={contextValue}>
+					<BestillingsveilederContext.Provider value={options}>
+						<StegVelger initialValues={options.initialValues} onSubmit={handleSubmit} />
+					</BestillingsveilederContext.Provider>
+				</ShowErrorContext.Provider>
+			</ErrorBoundary>
+		</div>
+	)
 }
-const renderBestillingsVeileder = (initialValues, options, handleSubmit) => (
-	<div className="bestillingsveileder">
-		<ErrorBoundary>
-			<BestillingsveilederContext.Provider value={options}>
-				<StegVelger initialValues={initialValues} onSubmit={handleSubmit} />
-			</BestillingsveilederContext.Provider>
-		</ErrorBoundary>
-	</div>
-)

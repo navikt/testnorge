@@ -20,11 +20,13 @@ spec:
   accessPolicy:
     outbound:
       rules:
-        - application: testnorge-profil-api
+        - application: testnav-miljoer-service
         - application: testnav-organisasjon-faste-data-service
         - application: testnav-organisasjon-service
         - application: testnav-person-faste-data-service
         - application: testnav-person-service
+        - application: testnorge-profil-api
+        - application: testnorge-profil-api-dev
   liveness:
     path: /internal/isAlive
     periodSeconds: 30

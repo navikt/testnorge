@@ -65,4 +65,4 @@ spec:
         name: testnav-orgnummer-pool
         databases:
           - name: testnav-orgnummer-pool
-        autoBackupTime: "02:00"
+        autoBackupHour: 2

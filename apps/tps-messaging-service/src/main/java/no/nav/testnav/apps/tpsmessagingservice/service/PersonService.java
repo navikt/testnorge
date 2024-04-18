@@ -1,6 +1,8 @@
 package no.nav.testnav.apps.tpsmessagingservice.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,7 +14,6 @@ import no.nav.testnav.apps.tpsmessagingservice.consumer.ServicerutineConsumer;
 import no.nav.testnav.apps.tpsmessagingservice.consumer.TestmiljoerServiceConsumer;
 import no.nav.testnav.apps.tpsmessagingservice.consumer.command.TpsMeldingCommand;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsMeldingResponse;
-import no.nav.testnav.apps.tpsmessagingservice.dto.TpsServiceRutine;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsServicerutineRequest;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsServicerutineS610Response;
 import no.nav.testnav.apps.tpsmessagingservice.utils.EndringsmeldingUtil;
@@ -26,8 +27,6 @@ import no.nav.tps.ctg.s610.domain.S610PersonType;
 import org.json.XML;
 import org.springframework.stereotype.Service;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -57,8 +56,11 @@ public class PersonService {
     private final ObjectMapper objectMapper;
     private final MapperFacade mapperFacade;
 
-    public PersonService(ServicerutineConsumer servicerutineConsumer, ObjectMapper objectMapper,
-                         MapperFacade mapperFacade, TestmiljoerServiceConsumer testmiljoerServiceConsumer) throws JAXBException {
+    public PersonService(ServicerutineConsumer servicerutineConsumer,
+                         ObjectMapper objectMapper,
+                         MapperFacade mapperFacade,
+                         TestmiljoerServiceConsumer testmiljoerServiceConsumer) throws JAXBException {
+
         this.servicerutineConsumer = servicerutineConsumer;
         this.objectMapper = objectMapper;
         this.mapperFacade = mapperFacade;
@@ -66,23 +68,69 @@ public class PersonService {
         this.requestContext = JAXBContext.newInstance(TpsServicerutineRequest.class);
     }
 
-    private static String mapRelasjonType(RelasjonType relasjonType) {
+    @SneakyThrows
+    public TpsServicerutineS610Response unmarshallFromXml(String endringsmeldingResponse) {
 
-        switch (relasjonType) {
-            case MORA:
-                return MOR.name();
-            case FARA:
-                return FAR.name();
-            case EKTE, ENKE, SKIL, SEPR, REPA, SEPA, SKPA, GJPA, GLAD:
-                return PARTNER.name();
-            default:
-                return relasjonType.name();
+        if (TpsMeldingCommand.NO_RESPONSE.equals(endringsmeldingResponse)) {
+
+            return TpsServicerutineS610Response.builder()
+                    .tpsPersonData(TpsServicerutineS610Response.TpsPersonData.builder()
+                            .tpsSvar(TpsServicerutineS610Response.TpsSvar.builder()
+                                    .svarStatus(EndringsmeldingUtil.getNoAnswerStatus())
+                                    .build())
+                            .build())
+                    .build();
+        } else {
+
+            var jsonRoot = XML.toJSONObject(endringsmeldingResponse);
+
+            return objectMapper.readValue(jsonRoot.toString(), TpsServicerutineS610Response.class);
         }
     }
 
-    private static boolean isStatusOK(TpsMeldingResponse response) {
+    public List<PersonMiljoeDTO> getPerson(String ident, List<String> miljoer) {
 
-        return STATUS_OK.equals(response.getReturStatus());
+        if (miljoer.isEmpty()) {
+            miljoer = testmiljoerServiceConsumer.getMiljoer();
+        }
+
+        var tpsPersoner = readFromTps(ident, miljoer);
+
+        var relasjoner = getRelasjoner(tpsPersoner.entrySet().stream()
+                .filter(entry -> nonNull(entry.getValue().getTpsPersonData()) &&
+                        nonNull(entry.getValue().getTpsPersonData().getTpsSvar()) &&
+                        isStatusOK(entry.getValue().getTpsPersonData().getTpsSvar().getSvarStatus()))
+                .collect(Collectors.toMap(Entry::getKey, entry -> entry.getValue()
+                        .getTpsPersonData()
+                        .getTpsSvar()
+                        .getPersonDataS610()
+                        .getPerson())));
+
+        var personerMedRelasjoner = buildMiljoePersonWithRelasjon(relasjoner).entrySet().stream()
+                .map(entry -> PersonMiljoeDTO.builder()
+                        .ident(ident)
+                        .miljoe(entry.getKey())
+                        .status("OK")
+                        .person(entry.getValue())
+                        .build())
+                .toList();
+
+        var hentingMedFeil = tpsPersoner.entrySet().stream()
+                .filter(entry -> nonNull(entry.getValue().getTpsPersonData()) &&
+                        nonNull(entry.getValue().getTpsPersonData().getTpsSvar()) &&
+                        !isStatusOK(entry.getValue().getTpsPersonData().getTpsSvar().getSvarStatus()))
+                .map(entry -> PersonMiljoeDTO.builder()
+                        .miljoe(entry.getKey())
+                        .status("FEIL")
+                        .melding(entry.getValue().getTpsPersonData().getTpsSvar().getSvarStatus().getReturMelding())
+                        .utfyllendeMelding(entry.getValue().getTpsPersonData().getTpsSvar().getSvarStatus().getUtfyllendeMelding())
+                        .build())
+                .toList();
+
+        return Stream.of(personerMedRelasjoner, hentingMedFeil)
+                .flatMap(Collection::stream)
+                .filter(entry -> isBlank(entry.getUtfyllendeMelding()) || !NOT_FOUND.equals(entry.getUtfyllendeMelding()))
+                .toList();
     }
 
     private Map<String, PersonDTO> buildMiljoePersonWithRelasjon(Map<String, PersonRelasjon> personRelasjon) {
@@ -146,30 +194,10 @@ public class PersonService {
                 .build();
     }
 
-    @SneakyThrows
-    public TpsServicerutineS610Response unmarshallFromXml(String endringsmeldingResponse) {
-
-        if (TpsMeldingCommand.NO_RESPONSE.equals(endringsmeldingResponse)) {
-
-            return TpsServicerutineS610Response.builder()
-                    .tpsPersonData(TpsServicerutineS610Response.TpsPersonData.builder()
-                            .tpsSvar(TpsServicerutineS610Response.TpsSvar.builder()
-                                    .svarStatus(EndringsmeldingUtil.getNoAnswerStatus())
-                                    .build())
-                            .build())
-                    .build();
-        } else {
-
-            var jsonRoot = XML.toJSONObject(endringsmeldingResponse);
-
-            return objectMapper.readValue(jsonRoot.toString(), TpsServicerutineS610Response.class);
-        }
-    }
-
     private Map<String, TpsServicerutineS610Response> readFromTps(String ident, List<String> miljoer) {
 
         var request = TpsServicerutineRequest.builder()
-                .tpsServiceRutine(TpsServiceRutine.builder()
+                .tpsServiceRutine(TpsServicerutineRequest.TpsServiceRutine.builder()
                         .serviceRutinenavn(PERSON_KERNINFO_SERVICE_ROUTINE)
                         .fnr(ident)
                         .aksjonsKode("D")
@@ -181,56 +209,26 @@ public class PersonService {
 
         var miljoerResponse = servicerutineConsumer.sendMessage(xmlRequest, miljoer);
 
-        miljoerResponse.entrySet().stream()
-                .forEach(entry -> log.info("Miljø: {} XML: {}", entry.getKey(), entry.getValue()));
+        miljoerResponse.forEach((key, value) -> log.info("Miljø: {} XML: {}", key, value));
 
         return miljoerResponse.entrySet().stream()
                 .collect(Collectors.toMap(Entry::getKey,
                         entry -> unmarshallFromXml(entry.getValue())));
     }
 
-    public List<PersonMiljoeDTO> getPerson(String ident, List<String> miljoer) {
+    private static String mapRelasjonType(RelasjonType relasjonType) {
 
-        if (miljoer.isEmpty()) {
-            miljoer = testmiljoerServiceConsumer.getMiljoer();
-        }
+        return switch (relasjonType) {
+            case MORA -> MOR.name();
+            case FARA -> FAR.name();
+            case EKTE, ENKE, SKIL, SEPR, REPA, SEPA, SKPA, GJPA, GLAD -> PARTNER.name();
+            default -> relasjonType.name();
+        };
+    }
 
-        var tpsPersoner = readFromTps(ident, miljoer);
+    private static boolean isStatusOK(TpsMeldingResponse response) {
 
-        var relasjoner = getRelasjoner(tpsPersoner.entrySet().stream()
-                .filter(entry -> nonNull(entry.getValue().getTpsPersonData()) &&
-                        nonNull(entry.getValue().getTpsPersonData().getTpsSvar()) &&
-                        isStatusOK(entry.getValue().getTpsPersonData().getTpsSvar().getSvarStatus()))
-                .collect(Collectors.toMap(Entry::getKey, entry -> entry.getValue()
-                        .getTpsPersonData()
-                        .getTpsSvar()
-                        .getPersonDataS610()
-                        .getPerson())));
-
-        var personerMedRelasjoner = buildMiljoePersonWithRelasjon(relasjoner).entrySet().stream()
-                .map(entry -> PersonMiljoeDTO.builder()
-                        .miljoe(entry.getKey())
-                        .status("OK")
-                        .person(entry.getValue())
-                        .build())
-                .toList();
-
-        var hentingMedFeil = tpsPersoner.entrySet().stream()
-                .filter(entry -> nonNull(entry.getValue().getTpsPersonData()) &&
-                        nonNull(entry.getValue().getTpsPersonData().getTpsSvar()) &&
-                        !isStatusOK(entry.getValue().getTpsPersonData().getTpsSvar().getSvarStatus()))
-                .map(entry -> PersonMiljoeDTO.builder()
-                        .miljoe(entry.getKey())
-                        .status("FEIL")
-                        .melding(entry.getValue().getTpsPersonData().getTpsSvar().getSvarStatus().getReturMelding())
-                        .utfyllendeMelding(entry.getValue().getTpsPersonData().getTpsSvar().getSvarStatus().getUtfyllendeMelding())
-                        .build())
-                .toList();
-
-        return Stream.of(personerMedRelasjoner, hentingMedFeil)
-                .flatMap(Collection::stream)
-                .filter(entry -> isBlank(entry.getUtfyllendeMelding()) || !NOT_FOUND.equals(entry.getUtfyllendeMelding()))
-                .toList();
+        return STATUS_OK.equals(response.getReturStatus());
     }
 
     @Data

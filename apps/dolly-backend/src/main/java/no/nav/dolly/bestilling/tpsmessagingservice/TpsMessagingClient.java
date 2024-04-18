@@ -14,7 +14,6 @@ import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.util.TransactionHelperService;
-import no.nav.testnav.libs.data.pdlforvalter.v1.SikkerhetstiltakDTO;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.SpraakDTO;
 import no.nav.testnav.libs.data.tpsmessagingservice.v1.TpsMeldingResponseDTO;
 import org.apache.commons.lang3.StringUtils;
@@ -26,7 +25,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -51,7 +49,7 @@ public class TpsMessagingClient implements ClientRegister {
     private final MapperFacade mapperFacade;
     private final PersonServiceConsumer personServiceConsumer;
     private final TransactionHelperService transactionHelperService;
-    private final TpsMiljoerConsumer tpsMiljoerConsumer;
+    private final MiljoerConsumer miljoerConsumer;
 
     private static String getResultat(TpsMeldingResponseDTO respons) {
 
@@ -76,7 +74,7 @@ public class TpsMessagingClient implements ClientRegister {
     @SuppressWarnings("S1144")
     public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        return Flux.from(tpsMiljoerConsumer.getTpsMiljoer()
+        return Flux.from(miljoerConsumer.getMiljoer()
                         .flatMap(miljoer -> {
 
                             if (!dollyPerson.isOrdre() && isTpsMessage(bestilling)) {
@@ -98,15 +96,7 @@ public class TpsMessagingClient implements ClientRegister {
                                             sendEgenansattSlett(bestilling, dollyPerson.getIdent())
                                                     .map(respons -> Map.of("Egenansatt_slett", respons)),
                                             sendEgenansatt(bestilling, dollyPerson.getIdent())
-                                                    .map(respons -> Map.of("Egenansatt_opprett", respons)),
-                                            sendSikkerhetstiltakSlett(personer.stream()
-                                                    .filter(personBolk -> personBolk.getIdent().equals(dollyPerson.getIdent()))
-                                                    .findFirst())
-                                                    .map(respons -> Map.of("Sikkerhetstiltak_slett", respons)),
-                                            sendSikkerhetstiltakOpprett(personer.stream()
-                                                    .filter(personBolk -> personBolk.getIdent().equals(dollyPerson.getIdent()))
-                                                    .findFirst())
-                                                    .map(respons -> Map.of("Sikkerhetstiltak_opprett", respons))
+                                                    .map(respons -> Map.of("Egenansatt_opprett", respons))
                                     ))
                                     .map(respons -> respons.entrySet().stream()
                                             .map(entry -> getStatus(entry.getKey(), entry.getValue()))
@@ -127,8 +117,7 @@ public class TpsMessagingClient implements ClientRegister {
                 nonNull(bestilling.getSkjerming()) ||
 
                 (nonNull(bestilling.getPdldata()) &&
-                        nonNull(bestilling.getPdldata().getPerson()) &&
-                        !bestilling.getPdldata().getPerson().getSikkerhetstiltak().isEmpty());
+                        nonNull(bestilling.getPdldata().getPerson()));
     }
 
     private ClientFuture futurePersist(DollyPerson dollyPerson, BestillingProgress progress, String status) {
@@ -176,30 +165,6 @@ public class TpsMessagingClient implements ClientRegister {
                 .map(PdlPersonBolk.Data::getHentPersonBolk)
                 .flatMap(Flux::fromIterable)
                 .filter(personBolk -> nonNull(personBolk.getPerson()));
-    }
-
-    private Mono<List<TpsMeldingResponseDTO>> sendSikkerhetstiltakSlett(Optional<PdlPersonBolk.PersonBolk> personBolk) {
-
-        return personBolk.isPresent() && !personBolk.get().getPerson().getSikkerhetstiltak().isEmpty() ?
-
-                tpsMessagingConsumer.deleteSikkerhetstiltakRequest(
-                                personBolk.get().getIdent(), null)
-                        .collectList() :
-
-                Mono.just(emptyList());
-    }
-
-    private Mono<List<TpsMeldingResponseDTO>> sendSikkerhetstiltakOpprett(Optional<PdlPersonBolk.PersonBolk> personBolk) {
-
-        return personBolk.isPresent() && !personBolk.get().getPerson().getSikkerhetstiltak().isEmpty() ?
-
-                tpsMessagingConsumer.sendSikkerhetstiltakRequest(
-                                personBolk.get().getIdent(), null,
-                                personBolk.get().getPerson().getSikkerhetstiltak()
-                                        .stream().findFirst().orElse(new SikkerhetstiltakDTO()))
-                        .collectList() :
-
-                Mono.just(emptyList());
     }
 
     private Mono<List<TpsMeldingResponseDTO>> sendSpraakkode(RsDollyUtvidetBestilling bestilling, String ident) {

@@ -881,6 +881,8 @@ export const pensjonMock = [
 
 export const pensjonTpMock = [{ ordning: '4095' }, { ordning: '3010' }]
 
+export const tagsMock = [{ tag: 'DUMMY', beskrivelse: 'Dummy' }]
+
 export const kontoregisterMock = {
 	kontohaver: '12345678912',
 	kontonummer: '99999999999',
@@ -1290,6 +1292,7 @@ export const backendBestillingerMock = [
 		bestilling: {
 			krrstub: {
 				reservert: false,
+				landkode: '+47',
 				mobil: '12345678',
 				epost: 'jiodjawsd@jidwa.no',
 				registrert: true,
@@ -1864,7 +1867,7 @@ export const paginerteGrupperMock = {
 	favoritter: [nyGruppeMock],
 }
 
-export const miljoeMock = '["q1","q2","q4","q5","t3"]'
+export const miljoeMock = '["q1","q2","q4"]'
 export const personFragmentNavigerMock = {
 	gruppe: eksisterendeGruppeMock,
 	identHovedperson: '12345678912',
@@ -1879,3 +1882,72 @@ export const bestillingFragmentNavigerMock = {
 	bestillingNavigerTil: 1,
 	sidetall: 0,
 }
+
+export const tenorSoekOversiktMock = {
+	status: 'OK',
+	data: {
+		treff: 2,
+		rader: 2,
+		offset: 0,
+		nesteSide: null,
+		seed: 1111,
+		personer: [
+			{
+				id: '12345678912',
+				fornavn: 'TESTYTEST',
+				etternavn: 'CAFE',
+				tenorRelasjoner: ['Freg'],
+			},
+			{
+				id: '98765432198',
+				fornavn: 'TIGER',
+				etternavn: 'ULV',
+				tenorRelasjoner: ['Freg'],
+			},
+		],
+	},
+	query: 'legitimasjonsdokument:*',
+	error: null,
+}
+
+export const tenorSoekTestdataMock = {
+	status: 'OK',
+	data: {
+		treff: 2,
+		rader: 2,
+		offset: 0,
+		nesteSide: null,
+		seed: 1111,
+		dokumentListe: [
+			{
+				foedselsdato: '1992-06-04',
+				identifikator: ['12345678912'],
+				kjoenn: 'kvinne',
+				personstatus: 'midlertidig',
+				sivilstand: 'gift',
+				tenorMetadata: {
+					kildedata: '{}',
+				},
+				visningnavn: 'TESTYTEST CAFE',
+			},
+			{
+				foedselsdato: '1974-02-02',
+				identifikator: ['98765432198'],
+				kjoenn: 'kvinne',
+				personstatus: 'bosatt',
+				sivilstand: 'ugift',
+				tenorMetadata: {
+					kildedata: '{}',
+				},
+				visningnavn: 'TIGER ULV',
+			},
+		],
+		fasetter: {},
+	},
+	query: '',
+	error: null,
+}
+
+export const responseTrue = { body: true }
+
+export const responseFalse = { body: false }

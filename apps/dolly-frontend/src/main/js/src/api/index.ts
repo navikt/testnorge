@@ -4,23 +4,9 @@ import originalFetch from 'isomorphic-fetch'
 import axios from 'axios'
 import fetch_retry from 'fetch-retry'
 import { runningCypressE2E } from '@/service/services/Request'
-import * as _ from 'lodash-es'
 import { navigateToLogin } from '@/components/utlogging/navigateToLogin'
 
 const fetchRetry = fetch_retry(originalFetch)
-
-export const multiFetcherAny = (urlListe, headers) => {
-	return Promise.any(
-		urlListe.map((url) =>
-			fetcher(url, headers).then((result) => {
-				if (_.isEmpty(result)) {
-					throw new Error('Returnerte ingen verdi, prøver neste promise..')
-				}
-				return [result]
-			}),
-		),
-	)
-}
 
 export const multiFetcherAll = (urlListe, headers = null) => {
 	return Promise.all(
@@ -31,17 +17,6 @@ export const multiFetcherAll = (urlListe, headers = null) => {
 		),
 	)
 }
-
-export const multiFetcherBatchData = (url, dataListe) => {
-	return Promise.all(
-		dataListe.map((data) =>
-			fetchJson(url, { method: 'POST' }, data).then((result) => {
-				return result
-			}),
-		),
-	)
-}
-
 export const multiFetcherInst = (miljoUrlListe, headers = null, path = null) => {
 	return Promise.all(
 		miljoUrlListe.map((obj) =>
@@ -147,7 +122,8 @@ export const fetcher = (url, headers) =>
 		.catch((reason) => {
 			if (
 				(reason?.response?.status === 401 || reason?.response?.status === 403) &&
-				url.includes('dolly-backend')
+				!url.includes('testnav-arbeidsplassencv') &&
+				!url.includes('infostripe')
 			) {
 				console.error('Auth feilet, navigerer til login')
 				navigateToLogin()
@@ -178,7 +154,11 @@ const _fetch = (url: string, config: Config, body?: object): Promise<Response> =
 	fetchRetry(url, {
 		retryOn: (attempt, _error, response) => {
 			if (!response.ok && !runningCypressE2E()) {
-				if (response.status === 401 && url.includes('dolly-backend')) {
+				if (
+					response.status === 401 &&
+					!url.includes('testnav-arbeidsplassencv') &&
+					!url.includes('infostripe')
+				) {
 					console.error('Auth feilet, navigerer til login')
 					navigateToLogin()
 				}
@@ -201,7 +181,11 @@ const _fetch = (url: string, config: Config, body?: object): Promise<Response> =
 			window.location.href = response.url
 		}
 		if (!response.ok && !runningCypressE2E()) {
-			if (response.status === 401 && url.includes('dolly-backend')) {
+			if (
+				response.status === 401 &&
+				!url.includes('testnav-arbeidsplassencv') &&
+				!url.includes('infostripe')
+			) {
 				console.error('Auth feilet, navigerer til login')
 				navigateToLogin()
 			}

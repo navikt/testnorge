@@ -16,36 +16,30 @@ spec:
   accessPolicy:
     inbound:
       rules:
-        - application: testnav-oversikt-frontend
-          cluster: dev-gcp
         - application: dolly-frontend-dev
-          cluster: dev-gcp
-        - application: dolly-idporten
-          cluster: dev-gcp
         - application: dolly-frontend-dev-unstable
-          cluster: dev-gcp
-        - application: testnav-batch-bestilling-service
-          cluster: dev-gcp
+        - application: dolly-idporten
         - application: team-dolly-lokal-app
-          cluster: dev-gcp
-        - application: app-1
-          namespace: plattformsikkerhet
-          cluster: dev-gcp
+        - application: testnav-batch-bestilling-service
+        - application: testnav-dollystatus
+        - application: testnav-oversikt-frontend
     outbound:
       rules:
+        - application: generer-navn-service
         - application: testnav-amelding-service
+        - application: testnav-arbeidsforhold-service
         - application: testnav-arbeidsplassencv-proxy
-        - application: testnorge-profil-api-dev
-        - application: testnav-tps-messaging-service
+        - application: testnav-inntektsmelding-service
+        - application: testnav-kodeverk-service
+        - application: testnav-miljoer-service
+        - application: testnav-organisasjon-forvalter
+        - application: testnav-organisasjon-service
+        - application: testnav-pdl-forvalter-dev
+        - application: testnav-person-service
         - application: testnav-sykemelding-api
         - application: testnav-synt-sykemelding-api
-        - application: testnav-person-service
-        - application: testnav-pdl-forvalter-dev
-        - application: testnav-organisasjon-service
-        - application: testnav-organisasjon-forvalter
-        - application: testnav-miljoer-service
-        - application: testnav-inntektsmelding-service
-        - application: testnav-arbeidsforhold-service
+        - application: testnav-tps-messaging-service
+        - application: testnorge-profil-api-dev
       external:
         - host: testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io
         - host: testnav-brregstub-proxy.dev-fss-pub.nais.io
@@ -54,7 +48,6 @@ spec:
         - host: testnav-inntektstub-proxy.dev-fss-pub.nais.io
         - host: testnav-inst-proxy.dev-fss-pub.nais.io
         - host: testnav-medl-proxy.dev-fss-pub.nais.io
-        - host: testnav-kodeverk-proxy.dev-fss-pub.nais.io
         - host: testnav-kontoregister-person-proxy.dev-fss-pub.nais.io
         - host: testnav-krrstub-proxy.dev-fss-pub.nais.io
         - host: testnav-norg2-proxy.dev-fss-pub.nais.io
@@ -63,7 +56,6 @@ spec:
         - host: testnav-sigrunstub-proxy.dev-fss-pub.nais.io
         - host: testnav-skjermingsregister-proxy.dev-fss-pub.nais.io
         - host: testnav-udistub-proxy.dev-fss-pub.nais.io
-        - host: tps-forvalteren-dev-proxy.dev-fss-pub.nais.io
   webproxy: true
   azure:
     application:
@@ -110,4 +102,4 @@ spec:
         name: testnav-dolly-backend-dev
         databases:
           - name: testnav-dolly-backend-dev
-        autoBackupTime: "01:00"
+        autoBackupHour: 3

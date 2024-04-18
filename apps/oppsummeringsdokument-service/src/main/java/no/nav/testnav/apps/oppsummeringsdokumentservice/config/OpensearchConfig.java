@@ -1,32 +1,39 @@
 package no.nav.testnav.apps.oppsummeringsdokumentservice.config;
 
-import lombok.RequiredArgsConstructor;
-import no.nav.testnav.apps.oppsummeringsdokumentservice.config.credentials.ElasticSearchCredentials;
 import org.opensearch.client.RestHighLevelClient;
 import org.opensearch.data.client.orhlc.AbstractOpenSearchConfiguration;
 import org.opensearch.data.client.orhlc.ClientConfiguration;
 import org.opensearch.data.client.orhlc.RestClients;
-import org.springframework.context.annotation.Bean;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 import java.time.Duration;
 
+@Profile("prod")
 @Configuration
-@RequiredArgsConstructor
 public class OpensearchConfig extends AbstractOpenSearchConfiguration {
-    private final ElasticSearchCredentials elasticSearchCredentials;
+
+    @Value("${open.search.username}")
+    private String username;
+
+    @Value("${open.search.password}")
+    private String password;
+
+    @Value("${open.search.uri}")
+    private String uri;
 
     @Override
-    @Bean
+    @SuppressWarnings("java:S2095")
     public RestHighLevelClient opensearchClient() {
-        ClientConfiguration clientConfiguration = ClientConfiguration.builder()
-                .connectedTo(elasticSearchCredentials.getEndpoints().replace("https://", ""))
-                .usingSsl()
-                .withBasicAuth(elasticSearchCredentials.getUsername(), elasticSearchCredentials.getPassword())
-                .withConnectTimeout(Duration.ofSeconds(10))
-                .withSocketTimeout(Duration.ofSeconds(5))
-                .build();
 
-        return RestClients.create(clientConfiguration).rest();
+        return RestClients.create(ClientConfiguration.builder()
+                        .connectedTo(uri.replace("https://", ""))
+                        .usingSsl()
+                        .withBasicAuth(username, password)
+                        .withConnectTimeout(Duration.ofSeconds(10))
+                        .withSocketTimeout(Duration.ofSeconds(5))
+                        .build())
+                .rest();
     }
 }

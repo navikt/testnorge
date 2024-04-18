@@ -50,17 +50,11 @@ spec:
   accessPolicy:
     inbound:
       rules:
-        - application: testnav-pdl-forvalter
-          cluster: dev-gcp
-        - application: testnav-pdl-forvalter-dev
-          cluster: dev-gcp
         - application: team-dolly-lokal-app
-          cluster: dev-gcp
+        - application: testnav-endringsmelding-service
         - application: testnav-oversikt-frontend
-          cluster: dev-gcp
-        - application: app-1
-          namespace: plattformsikkerhet
-          cluster: dev-gcp
+        - application: testnav-pdl-forvalter
+        - application: testnav-pdl-forvalter-dev
     outbound:
       rules:
         - application: testnav-tps-messaging-service
@@ -72,4 +66,4 @@ spec:
         databases:
           - name: testnav-identpool
         tier: db-custom-1-3840
-        autoBackupTime: "02:00"
+        autoBackupHour: 2

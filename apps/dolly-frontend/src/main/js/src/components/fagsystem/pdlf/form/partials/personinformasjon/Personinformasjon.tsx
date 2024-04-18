@@ -74,25 +74,25 @@ const panelPaths = [
 	norskBankkontoPath,
 ].flat()
 
-export const Personinformasjon = ({ formikBag }) => {
+export const Personinformasjon = ({ formMethods }) => {
 	const { personFoerLeggTil } = useContext(BestillingsveilederContext)
 
 	return (
 		<Vis attributt={panelPaths}>
 			<Panel
 				heading="Personinformasjon"
-				hasErrors={panelError(formikBag, panelPaths)}
+				hasErrors={panelError(panelPaths)}
 				iconType={'personinformasjon'}
-				startOpen={erForsteEllerTest(formikBag.values, panelPaths)}
+				startOpen={erForsteEllerTest(formMethods.getValues(), panelPaths)}
 			>
 				{!personFoerLeggTil && (
 					<Kategori title="Alder (grunnlag for fødselsnummer)" vis={alderPaths}>
-						<Alder formikBag={formikBag} />
+						<Alder formMethods={formMethods} />
 					</Kategori>
 				)}
 
 				<Kategori title="Fødsel" vis={foedselPath}>
-					<Foedsel formikBag={formikBag} />
+					<Foedsel formMethods={formMethods} />
 				</Kategori>
 
 				<Kategori title="Dødsfall" vis={doedsfallPath}>
@@ -118,36 +118,36 @@ export const Personinformasjon = ({ formikBag }) => {
 				</Kategori>
 
 				<Kategori title="Navn" vis={navnPath}>
-					<Navn formikBag={formikBag} />
+					<Navn formMethods={formMethods} />
 				</Kategori>
 
 				<Kategori title="Diverse" vis={diversePaths}>
 					<TpsMessagingDiverse />
-					<SkjermingForm formikBag={formikBag} />
+					<SkjermingForm formMethods={formMethods} />
 				</Kategori>
 
 				<Kategori title="Norsk bankkonto" vis={norskBankkontoPath}>
-					<NorskBankkonto formikBag={formikBag} />
+					<NorskBankkonto formMethods={formMethods} />
 				</Kategori>
 
 				<Kategori title="Utenlandsk bankkonto" vis={utenlandskBankkontoPath}>
-					<UtenlandskBankkonto formikBag={formikBag} />
+					<UtenlandskBankkonto formMethods={formMethods} />
 				</Kategori>
 
 				<Kategori title="Telefonnummer" vis={telefonnummerPath}>
-					<Telefonnummer formikBag={formikBag} />
+					<Telefonnummer formMethods={formMethods} />
 				</Kategori>
 
 				<Kategori title="Vergemål" vis={vergemaalPath}>
-					<Vergemaal formikBag={formikBag} />
+					<Vergemaal formMethods={formMethods} />
 				</Kategori>
 
 				<Kategori title="Fullmakt" vis={fullmaktPath}>
-					<Fullmakt formikBag={formikBag} />
+					<Fullmakt formMethods={formMethods} />
 				</Kategori>
 
 				<Kategori title="Sikkerhetstiltak" vis={sikkerhetstiltakPath}>
-					<Sikkerhetstiltak formikBag={formikBag} />
+					<Sikkerhetstiltak formMethods={formMethods} />
 				</Kategori>
 
 				<Kategori title="Tilrettelagt kommunikasjon" vis={tilrettelagtKommunikasjonPath}>

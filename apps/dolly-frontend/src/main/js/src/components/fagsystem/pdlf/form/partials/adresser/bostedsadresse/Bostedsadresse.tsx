@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
-import { DollySelect, FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { DollySelect, FormSelect } from '@/components/ui/form/inputs/select/Select'
 import {
 	getInitialBostedsadresse,
 	initialMatrikkeladresse,
@@ -9,30 +9,29 @@ import {
 	initialUtenlandskAdresse,
 	initialVegadresse,
 } from '@/components/fagsystem/pdlf/form/initialValues'
-import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
-import * as _ from 'lodash-es'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import _ from 'lodash'
 import {
 	MatrikkeladresseVelger,
 	UkjentBosted,
 	UtenlandskAdresse,
 	VegadresseVelger,
 } from '@/components/fagsystem/pdlf/form/partials/adresser/adressetyper'
-import { FormikProps } from 'formik'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
-import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 import { Adressetype } from '@/components/fagsystem/pdlf/PdlTypes'
 import { getPlaceholder, setNavn } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { useGenererNavn } from '@/utils/hooks/useGenererNavn'
 import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 interface BostedsadresseValues {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 }
 
 type BostedsadresseFormValues = {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 	path: string
 	idx?: number
 	identtype?: string
@@ -44,32 +43,33 @@ type Target = {
 }
 
 export const BostedsadresseForm = ({
-	formikBag,
+	formMethods,
 	path,
 	idx,
 	identtype,
 }: BostedsadresseFormValues) => {
 	useEffect(() => {
-		formikBag.setFieldValue(`${path}.adresseIdentifikatorFraMatrikkelen`, undefined)
-		const boadresse = _.get(formikBag.values, path)
+		formMethods.setValue(`${path}.adresseIdentifikatorFraMatrikkelen`, undefined)
+		const boadresse = formMethods.watch(path)
 		if (_.get(boadresse, 'vegadresse') && _.get(boadresse, 'vegadresse') !== null) {
-			formikBag.setFieldValue(`${path}.adressetype`, Adressetype.Veg)
+			formMethods.setValue(`${path}.adressetype`, Adressetype.Veg)
 		} else if (
 			_.get(boadresse, 'matrikkeladresse') &&
 			_.get(boadresse, 'matrikkeladresse') !== null
 		) {
-			formikBag.setFieldValue(`${path}.adressetype`, Adressetype.Matrikkel)
+			formMethods.setValue(`${path}.adressetype`, Adressetype.Matrikkel)
 		} else if (
 			_.get(boadresse, 'utenlandskAdresse') &&
 			_.get(boadresse, 'utenlandskAdresse') !== null
 		) {
-			formikBag.setFieldValue(`${path}.adressetype`, Adressetype.Utenlandsk)
+			formMethods.setValue(`${path}.adressetype`, Adressetype.Utenlandsk)
 		} else if (_.get(boadresse, 'ukjentBosted') && _.get(boadresse, 'ukjentBosted') !== null) {
-			formikBag.setFieldValue(`${path}.adressetype`, Adressetype.Ukjent)
+			formMethods.setValue(`${path}.adressetype`, Adressetype.Ukjent)
 		}
+		formMethods.trigger()
 	}, [])
 
-	const valgtAdressetype = _.get(formikBag.values, `${path}.adressetype`)
+	const valgtAdressetype = formMethods.watch(`${path}.adressetype`)
 
 	const getAdresseOptions = () => {
 		if (identtype && identtype !== 'FNR') {
@@ -79,7 +79,7 @@ export const BostedsadresseForm = ({
 	}
 
 	const handleChangeAdressetype = (target: Target, path: string) => {
-		const adresse = _.get(formikBag.values, path)
+		const adresse = formMethods.watch(path)
 		const adresseClone = _.cloneDeep(adresse)
 
 		_.set(adresseClone, 'adressetype', target?.value || null)
@@ -119,7 +119,8 @@ export const BostedsadresseForm = ({
 			_.set(adresseClone, 'master', 'FREG')
 		}
 
-		formikBag.setFieldValue(path, adresseClone)
+		formMethods.setValue(path, adresseClone)
+		formMethods.trigger(path)
 	}
 
 	const { navnInfo, loading } = useGenererNavn()
@@ -128,7 +129,7 @@ export const BostedsadresseForm = ({
 	return (
 		<React.Fragment key={idx}>
 			<div className="flexbox--full-width">
-				<FormikSelect
+				<FormSelect
 					name={`${path}.adressetype`}
 					label="Adressetype"
 					options={getAdresseOptions()}
@@ -137,38 +138,38 @@ export const BostedsadresseForm = ({
 				/>
 			</div>
 			{valgtAdressetype === 'VEGADRESSE' && (
-				<VegadresseVelger formikBag={formikBag} path={`${path}.vegadresse`} key={`veg_${idx}`} />
+				<VegadresseVelger
+					formMethods={formMethods}
+					path={`${path}.vegadresse`}
+					key={`veg_${idx}`}
+				/>
 			)}
 			{valgtAdressetype === 'MATRIKKELADRESSE' && (
-				<MatrikkeladresseVelger formikBag={formikBag} path={`${path}.matrikkeladresse`} />
+				<MatrikkeladresseVelger formMethods={formMethods} path={`${path}.matrikkeladresse`} />
 			)}
 			{valgtAdressetype === 'UTENLANDSK_ADRESSE' && (
 				<UtenlandskAdresse
-					formikBag={formikBag}
+					formMethods={formMethods}
 					path={`${path}.utenlandskAdresse`}
-					master={_.get(formikBag.values, `${path}.master`)}
+					master={formMethods.watch(`${path}.master`)}
 				/>
 			)}
-			{valgtAdressetype === 'UKJENT_BOSTED' && (
-				<UkjentBosted formikBag={formikBag} path={`${path}.ukjentBosted`} />
-			)}
+			{valgtAdressetype === 'UKJENT_BOSTED' && <UkjentBosted path={`${path}.ukjentBosted`} />}
 			<div className="flexbox--flex-wrap">
-				<DatepickerWrapper>
-					<FormikDatepicker name={`${path}.angittFlyttedato`} label="Flyttedato" />
-					<FormikDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig f.o.m." addHour />
-					<FormikDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig t.o.m." />
-				</DatepickerWrapper>
+				<FormDatepicker name={`${path}.angittFlyttedato`} label="Flyttedato" />
+				<FormDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig f.o.m." addHour />
+				<FormDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig t.o.m." />
 				<DollySelect
 					name={`${path}.opprettCoAdresseNavn.fornavn`}
 					label="C/O adressenavn"
 					options={navnOptions}
 					size="xlarge"
-					placeholder={getPlaceholder(formikBag.values, `${path}.opprettCoAdresseNavn`)}
+					placeholder={getPlaceholder(formMethods.getValues(), `${path}.opprettCoAdresseNavn`)}
 					isLoading={loading}
 					onChange={(navn: Target) =>
-						setNavn(navn, `${path}.opprettCoAdresseNavn`, formikBag.setFieldValue)
+						setNavn(navn, `${path}.opprettCoAdresseNavn`, formMethods.setValue)
 					}
-					value={_.get(formikBag.values, `${path}.opprettCoAdresseNavn.fornavn`)}
+					value={formMethods.watch(`${path}.opprettCoAdresseNavn.fornavn`)}
 				/>
 			</div>
 			<AvansertForm
@@ -179,12 +180,11 @@ export const BostedsadresseForm = ({
 	)
 }
 
-export const Bostedsadresse = ({ formikBag }: BostedsadresseValues) => {
+export const Bostedsadresse = ({ formMethods }: BostedsadresseValues) => {
 	const opts = useContext(BestillingsveilederContext)
-
 	return (
 		<Kategori title="Bostedsadresse">
-			<FormikDollyFieldArray
+			<FormDollyFieldArray
 				name="pdldata.person.bostedsadresse"
 				header="Bostedsadresse"
 				newEntry={getInitialBostedsadresse(opts?.identtype === 'NPID' ? 'PDL' : 'FREG')}
@@ -192,13 +192,13 @@ export const Bostedsadresse = ({ formikBag }: BostedsadresseValues) => {
 			>
 				{(path: string, idx: number) => (
 					<BostedsadresseForm
-						formikBag={formikBag}
+						formMethods={formMethods}
 						path={path}
 						idx={idx}
 						identtype={opts?.identtype}
 					/>
 				)}
-			</FormikDollyFieldArray>
+			</FormDollyFieldArray>
 		</Kategori>
 	)
 }

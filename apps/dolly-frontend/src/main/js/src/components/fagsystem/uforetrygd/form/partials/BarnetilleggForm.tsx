@@ -1,56 +1,49 @@
 import { DollyCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import React, { useState } from 'react'
-import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
-import * as _ from 'lodash-es'
+import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import {
 	barnetilleggDetaljer,
 	forventedeInntekterSokerOgEP,
 } from '@/components/fagsystem/uforetrygd/initialValues'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
-import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 
 const ForventedeInntekterForm = ({ path, header, initialValues }) => {
 	return (
-		<FormikDollyFieldArray name={path} header={header} newEntry={initialValues} nested>
+		<FormDollyFieldArray name={path} header={header} newEntry={initialValues} nested>
 			{(path: any, idx: React.Key) => (
 				<>
-					<FormikSelect
+					<FormSelect
 						name={`${path}.inntektType`}
 						label="Type inntekt"
 						size="xlarge"
 						options={Options('inntektType')}
 					/>
-					<FormikTextInput
-						name={`${path}.belop`}
-						label="Beløp"
-						type="number"
-						size="medium"
-						fastfield="false"
-					/>
-					<FormikDatepicker name={`${path}.datoFom`} label="Dato f.o.m." />
-					<FormikDatepicker name={`${path}.datoTom`} label="Dato t.o.m." />
+					<FormTextInput name={`${path}.belop`} label="Beløp" type="number" size="medium" />
+					<FormDatepicker name={`${path}.datoFom`} label="Dato f.o.m." />
+					<FormDatepicker name={`${path}.datoTom`} label="Dato t.o.m." />
 				</>
 			)}
-		</FormikDollyFieldArray>
+		</FormDollyFieldArray>
 	)
 }
 
-export const BarnetilleggForm = ({ formikBag }) => {
+export const BarnetilleggForm = ({ formMethods }) => {
 	const barnetilleggPath = 'pensjonforvalter.uforetrygd.barnetilleggDetaljer'
 
 	const [harBarnetillegg, setHarBarnetillegg] = useState(
-		_.get(formikBag.values, barnetilleggPath) !== null,
+		formMethods.watch(barnetilleggPath) !== null,
 	)
 
 	const handleBarnetilleggChange = (value) => {
 		const checked = value?.target?.checked
 		setHarBarnetillegg(checked)
 		if (checked) {
-			formikBag.setFieldValue(barnetilleggPath, barnetilleggDetaljer)
+			formMethods.setValue(barnetilleggPath, barnetilleggDetaljer)
 		} else {
-			formikBag.setFieldValue(barnetilleggPath, null)
+			formMethods.setValue(barnetilleggPath, null)
 		}
 	}
 
@@ -65,7 +58,7 @@ export const BarnetilleggForm = ({ formikBag }) => {
 			/>
 			{harBarnetillegg && (
 				<div className="flexbox--flex-wrap" style={{ marginBottom: '15px' }}>
-					<FormikSelect
+					<FormSelect
 						name={`${barnetilleggPath}.barnetilleggType`}
 						label="Type barnetillegg"
 						options={Options('barnetilleggType')}

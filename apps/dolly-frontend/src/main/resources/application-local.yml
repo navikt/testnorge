@@ -1,5 +1,6 @@
 POST_LOGOUT_REDIRECT_URI: 'http://localhost:3000/login'
 REDIS_HOST: localhost
+TOKEN_X_ISSUER: dummy
 
 server:
   port: 8020
@@ -22,9 +23,6 @@ spring:
             jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
 
 consumers:
-  tps-forvalteren-proxy:
-    name: tps-forvalteren-dev-proxy
-    url: https://tps-forvalteren-dev-proxy.dev-fss-pub.nais.io
   dolly-backend:
     name: dolly-backend-dev
     url: https://dolly-backend-dev.intern.dev.nav.no
@@ -43,7 +41,7 @@ consumers:
     name: testnav-person-organisasjon-tilgang-service-dev
     url: https://testnav-person-organisasjon-tilgang-service.intern.dev.nav.no
   oppsummeringsdokument-service:
-    url: https://oppsummeringsdokument-service.intern.dev.nav.no
+    url: https://testnav-oppsummeringsdokument-service.intern.dev.nav.no
   testnav-bruker-service:
     name: testnav-bruker-service-dev
     url: https://testnav-bruker-service-dev.intern.dev.nav.no
@@ -74,3 +72,7 @@ consumers:
     url: https://generer-navn-service.intern.dev.nav.no
   testnav-person-service:
     url: https://testnav-person-service.intern.dev.nav.no
+  testnav-kodeverk-service:
+    url: https://testnav-kodeverk-service.intern.dev.nav.no/
+  testnav-tenor-search-service:
+    url: https://testnav-tenor-search-service.intern.dev.nav.no

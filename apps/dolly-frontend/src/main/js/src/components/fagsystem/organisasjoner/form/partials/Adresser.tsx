@@ -1,27 +1,25 @@
-import * as _ from 'lodash-es'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
-import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { AdresseKodeverk } from '@/config/kodeverk'
-import { FormikProps } from 'formik'
-import { EnhetBestilling } from '../../types'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 type AdresserProps = {
-	formikBag: FormikProps<{ organisasjon: EnhetBestilling }>
+	formMethods: UseFormReturn
 	path: string
 }
 
 const hjelpetekstAdresser =
 	'For å få generert en gyldig norsk adresse kan du velge å fylle ut postnummer, kommunenummer, eller ingen ting. Det vil opprettes en gyldig adresse på grunnlag av det du har fylt ut, og har du ikke fylt ut noe blir adressen en tilfeldig gyldig adresse.'
 
-export const Adresser = ({ formikBag, path }: AdresserProps) => {
-	const landForretningsadresse = _.get(formikBag, `values.${path}.forretningsadresse.landkode`)
-	const landPostadresse = _.get(formikBag, `values.${path}.postadresse.landkode`)
+export const Adresser = ({ formMethods, path }: AdresserProps) => {
+	const landForretningsadresse = formMethods.watch(`${path}.forretningsadresse.landkode`)
+	const landPostadresse = formMethods.watch(`${path}.postadresse.landkode`)
 
 	const handleLandChange = (adressePath: string) => {
-		formikBag.setFieldValue(`${adressePath}.postnr`, '')
-		formikBag.setFieldValue(`${adressePath}.kommunenr`, '')
-		formikBag.setFieldValue(`${adressePath}.poststed`, '')
+		formMethods.setValue(`${adressePath}.postnr`, '')
+		formMethods.setValue(`${adressePath}.kommunenr`, '')
+		formMethods.setValue(`${adressePath}.poststed`, '')
 	}
 
 	return (
@@ -32,7 +30,7 @@ export const Adresser = ({ formikBag, path }: AdresserProps) => {
 				vis="organisasjon.forretningsadresse"
 				hjelpetekst={hjelpetekstAdresser}
 			>
-				<FormikSelect
+				<FormSelect
 					name={`${path}.forretningsadresse.landkode`}
 					label="Land"
 					kodeverk={AdresseKodeverk.ArbeidOgInntektLand}
@@ -43,35 +41,35 @@ export const Adresser = ({ formikBag, path }: AdresserProps) => {
 
 				{landForretningsadresse === 'NO' ? (
 					<>
-						<FormikSelect
+						<FormSelect
 							name={`${path}.forretningsadresse.postnr`}
 							label={'Postnummer/sted'}
 							kodeverk={AdresseKodeverk.Postnummer}
 							size="large"
 						/>
-						<FormikSelect
+						<FormSelect
 							name={`${path}.forretningsadresse.kommunenr`}
 							label="Kommunenummer"
-							kodeverk={AdresseKodeverk.Kommunenummer}
+							kodeverk={AdresseKodeverk.Kommunenummer2024}
 							size="large"
 						/>
 					</>
 				) : (
 					<>
-						<FormikTextInput name={`${path}.forretningsadresse.postnr`} label="Postnummer" />
-						<FormikTextInput name={`${path}.forretningsadresse.poststed`} label="Poststed" />
+						<FormTextInput name={`${path}.forretningsadresse.postnr`} label="Postnummer" />
+						<FormTextInput name={`${path}.forretningsadresse.poststed`} label="Poststed" />
 					</>
 				)}
 
-				<FormikTextInput
+				<FormTextInput
 					name={`${path}.forretningsadresse.adresselinjer[0]`}
 					label="Adresselinje 1"
 				/>
-				<FormikTextInput
+				<FormTextInput
 					name={`${path}.forretningsadresse.adresselinjer[1]`}
 					label="Adresselinje 2"
 				/>
-				<FormikTextInput
+				<FormTextInput
 					name={`${path}.forretningsadresse.adresselinjer[2]`}
 					label="Adresselinje 3"
 				/>
@@ -83,7 +81,7 @@ export const Adresser = ({ formikBag, path }: AdresserProps) => {
 				hjelpetekst={hjelpetekstAdresser}
 				flexRow={true}
 			>
-				<FormikSelect
+				<FormSelect
 					name={`${path}.postadresse.landkode`}
 					label="Land"
 					kodeverk={AdresseKodeverk.ArbeidOgInntektLand}
@@ -93,28 +91,28 @@ export const Adresser = ({ formikBag, path }: AdresserProps) => {
 				/>
 				{landPostadresse === 'NO' ? (
 					<>
-						<FormikSelect
+						<FormSelect
 							name={`${path}.postadresse.postnr`}
 							label={'Postnummer/sted'}
 							kodeverk={AdresseKodeverk.Postnummer}
 							size="large"
 						/>
-						<FormikSelect
+						<FormSelect
 							name={`${path}.postadresse.kommunenr`}
 							label="Kommunenummer"
-							kodeverk={AdresseKodeverk.Kommunenummer}
+							kodeverk={AdresseKodeverk.Kommunenummer2024}
 							size="large"
 						/>
 					</>
 				) : (
 					<>
-						<FormikTextInput name={`${path}.postadresse.postnr`} label="Postnummer" />
-						<FormikTextInput name={`${path}.postadresse.poststed`} label="Poststed" />
+						<FormTextInput name={`${path}.postadresse.postnr`} label="Postnummer" />
+						<FormTextInput name={`${path}.postadresse.poststed`} label="Poststed" />
 					</>
 				)}
-				<FormikTextInput name={`${path}.postadresse.adresselinjer[0]`} label="Adresselinje 1" />
-				<FormikTextInput name={`${path}.postadresse.adresselinjer[1]`} label="Adresselinje 2" />
-				<FormikTextInput name={`${path}.postadresse.adresselinjer[2]`} label="Adresselinje 3" />
+				<FormTextInput name={`${path}.postadresse.adresselinjer[0]`} label="Adresselinje 1" />
+				<FormTextInput name={`${path}.postadresse.adresselinjer[1]`} label="Adresselinje 2" />
+				<FormTextInput name={`${path}.postadresse.adresselinjer[2]`} label="Adresselinje 3" />
 			</Kategori>
 		</>
 	)

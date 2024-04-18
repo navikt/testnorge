@@ -1,23 +1,24 @@
 import React, { Fragment, useState } from 'react'
 import Title from '@/components/Title'
-import { Formik } from 'formik'
 import SearchContainer from './search/searchContainer/SearchContainer'
 import { SearchOptions } from './search/SearchOptions'
-import PersonSearch from '@/service/services/personsearch'
 import SearchViewConnector from '@/pages/testnorgePage/search/SearchViewConnector'
 import { getSearchValues, initialValues } from '@/pages/testnorgePage/utils'
 import ContentContainer from '@/components/ui/contentContainer/ContentContainer'
-import { Exception } from 'sass'
 import '@/pages/gruppe/PersonVisning/PersonVisning.less'
 import { PdlData } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import './TestnorgePage.less'
-import { ifPresent, validate } from '@/utils/YupValidations'
 import * as Yup from 'yup'
-import DisplayFormikState from '@/utils/DisplayFormikState'
+import DisplayFormState from '@/utils/DisplayFormState'
 import { Gruppe } from '@/utils/hooks/useGruppe'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 import { bottom } from '@popperjs/core'
 import { CypressSelector } from '../../../cypress/mocks/Selectors'
+import { Form, FormProvider, useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
+import DisplayFormErrors from '@/utils/DisplayFormErrors'
+import PersonSearch from '@/service/services/personsearch/PersonSearch'
+import { Exception } from '@opentelemetry/api'
 
 type TestnorgePageProps = {
 	gruppe?: Gruppe
@@ -28,14 +29,20 @@ export default ({ gruppe }: TestnorgePageProps) => {
 	const [loading, setLoading] = useState(false)
 	const [valgtePersoner, setValgtePersoner] = useState([])
 	const [startedSearch, setStartedSearch] = useState(false)
-	const [error, setError] = useState(null)
+	const [error, setError] = useState('')
+	const formMethods = useForm({
+		mode: 'onChange',
+		defaultValues: initialValues,
+		resolver: yupResolver(validation),
+	})
 
 	const search = (seed: string, values: any) => {
-		setError(null)
+		setError('')
 		setStartedSearch(true)
 		setLoading(true)
 		const harFlereBarn = values?.relasjoner?.harBarn === 'M'
-		PersonSearch.searchPdlPerson(getSearchValues(seed, values), harFlereBarn)
+		const searchValues = getSearchValues(seed, values)
+		PersonSearch.searchPdlPerson(searchValues, harFlereBarn)
 			.then((response) => {
 				setItems(response.items)
 				setLoading(false)
@@ -58,7 +65,9 @@ export default ({ gruppe }: TestnorgePageProps) => {
 		</a>
 	)
 
-	const _validate = (values: any) => validate(values, validation)
+	const devEnabled =
+		window.location.hostname.includes('localhost') ||
+		window.location.hostname.includes('dolly-frontend-dev')
 
 	return (
 		<div>
@@ -82,53 +91,54 @@ export default ({ gruppe }: TestnorgePageProps) => {
 				</Hjelpetekst>
 			</div>
 
-			<Formik initialValues={initialValues} validate={_validate} onSubmit={onSubmit}>
-				{(formikBag) => {
-					const devEnabled =
-						window.location.hostname.includes('localhost') ||
-						window.location.hostname.includes('dolly-frontend-dev')
-
-					return (
-						<Fragment>
-							{devEnabled && <DisplayFormikState {...formikBag} />}
-							<SearchContainer
-								left={<SearchOptions formikBag={formikBag} />}
-								right={
-									<>
-										{error && <ContentContainer>{error}</ContentContainer>}
-										{!startedSearch && <ContentContainer>Ingen søk er gjort</ContentContainer>}
-										{startedSearch && !error && (
-											<SearchViewConnector
-												items={items}
-												loading={loading}
-												valgtePersoner={valgtePersoner}
-												setValgtePersoner={setValgtePersoner}
-												gruppe={gruppe}
-											/>
-										)}
-									</>
-								}
-								formikBag={formikBag}
-								onSubmit={formikBag.handleSubmit}
-								onEmpty={formikBag.resetForm}
-							/>
-						</Fragment>
-					)
-				}}
-			</Formik>
+			<FormProvider {...formMethods}>
+				<Form control={formMethods.control} onSubmit={formMethods.handleSubmit(onSubmit)}>
+					<Fragment>
+						{devEnabled && <DisplayFormState {...formMethods} />}
+						{devEnabled && (
+							<DisplayFormErrors errors={formMethods.formState.errors} label={'Vis errors'} />
+						)}
+						<SearchContainer
+							left={
+								<SearchOptions
+									formMethods={formMethods}
+									onSubmit={formMethods.handleSubmit(onSubmit)}
+								/>
+							}
+							right={
+								<>
+									{error && <ContentContainer>{error}</ContentContainer>}
+									{!startedSearch && <ContentContainer>Ingen søk er gjort</ContentContainer>}
+									{startedSearch && !error && (
+										<SearchViewConnector
+											items={items}
+											loading={loading}
+											valgtePersoner={valgtePersoner}
+											setValgtePersoner={setValgtePersoner}
+											gruppe={gruppe}
+										/>
+									)}
+								</>
+							}
+							formMethods={formMethods}
+							onSubmit={formMethods.handleSubmit(onSubmit)}
+							onEmpty={formMethods.reset}
+						/>
+					</Fragment>
+				</Form>
+			</FormProvider>
 		</div>
 	)
 }
 
 const validation = Yup.object({
-	identer: ifPresent(
-		'$identer',
-		Yup.array().of(
-			Yup.string()
+	identer: Yup.array().of(
+		Yup.object({
+			fnr: Yup.string()
 				.nullable()
 				.transform((curr, orig) => (orig === '' ? null : curr))
 				.matches(/^\d*$/, 'Ident må være et tall med 11 siffer')
-				.test('len', 'Ident må være et tall med 11 siffer', (val) => !val || val.length === 11)
-		)
+				.test('len', 'Ident må være et tall med 11 siffer', (val) => !val || val.length === 11),
+		}),
 	),
 })

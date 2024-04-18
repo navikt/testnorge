@@ -8,7 +8,6 @@ import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.pdldata.dto.PdlResponse;
 import no.nav.dolly.bestilling.personservice.PersonServiceClient;
-import no.nav.dolly.bestilling.tpsmessagingservice.service.TpsPersonService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.elastic.BestillingElasticRepository;
@@ -52,7 +51,6 @@ public class GjenopprettBestillingService extends DollyBestillingService {
             PdlDataConsumer pdlDataConsumer,
             TransactionHelperService transactionHelperService,
             PersonServiceClient personServiceClient,
-            TpsPersonService tpsPersonService,
             BestillingElasticRepository bestillingElasticRepository
     ) {
         super(
@@ -65,7 +63,6 @@ public class GjenopprettBestillingService extends DollyBestillingService {
                 pdlDataConsumer,
                 errorStatusDecoder,
                 transactionHelperService,
-                tpsPersonService,
                 bestillingElasticRepository
         );
         this.bestillingProgressService = bestillingProgressService;
@@ -101,8 +98,6 @@ public class GjenopprettBestillingService extends DollyBestillingService {
                                                             .filter(BestillingProgress::isPdlSync)
                                                             .flatMap(pdlSync -> createBestilling(bestilling, gmlProgress.getBestilling()))
                                                             .flatMap(cobestilling -> Flux.concat(
-                                                                    tpsPersonService.syncPerson(dollyPerson, cobestilling, progress)
-                                                                            .map(ClientFuture::get),
                                                                     gjenopprettKlienter(dollyPerson, cobestilling,
                                                                             fase2Klienter(),
                                                                             progress, false),

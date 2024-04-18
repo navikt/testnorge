@@ -1,5 +1,3 @@
-import * as _ from 'lodash-es'
-import { FieldArray, FormikProps } from 'formik'
 import {
 	DollyFaBlokk,
 	DollyFieldArrayWrapper,
@@ -8,10 +6,12 @@ import {
 import { Arbeidsforhold, Forskudd, Fradrag, Inntekt } from './inntektstubTypes'
 import InntektsinformasjonLister from './inntektsinformasjonLister/inntektsinformasjonLister'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import { FormikDateTimepicker } from '@/components/ui/form/inputs/timepicker/Timepicker'
+import { FormDateTimepicker } from '@/components/ui/form/inputs/timepicker/Timepicker'
+import { UseFormReturn } from 'react-hook-form/dist/types'
+import { useFieldArray } from 'react-hook-form'
 
 interface InntektendringForm {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 	path: string
 }
 
@@ -25,8 +25,8 @@ type Inntektslister = {
 
 const hjelpetekst = `Den øverste inntektinformasjonen er den gjeldende inntekten. All inntektsinformasjon merket med "Versjon #" er historiske endringer der økende versjonsnummer er nyere.`
 
-export default ({ formikBag, path }: InntektendringForm) => {
-	const kopiAvGjeldendeInntekt = _.get(formikBag.values, path)
+export default ({ formMethods, path }: InntektendringForm) => {
+	const kopiAvGjeldendeInntekt = formMethods.watch(path)
 	const initialValues: Inntektslister = {
 		arbeidsforholdsliste: kopiAvGjeldendeInntekt.arbeidsforholdsliste,
 		forskuddstrekksliste: kopiAvGjeldendeInntekt.forskuddstrekksliste,
@@ -35,51 +35,46 @@ export default ({ formikBag, path }: InntektendringForm) => {
 		rapporteringsdato: kopiAvGjeldendeInntekt.rapporteringsdato,
 	}
 	const historikkPath = `${path}.historikk`
-	const data = _.get(formikBag.values, historikkPath, [])
+	const data = formMethods.watch(historikkPath, [])
+	const fieldMethods = useFieldArray({ control: formMethods.control, name: historikkPath })
 
 	const handleRapporteringDateChange = (selectedDate: Date, listePath: string) => {
-		formikBag.setFieldValue(
+		formMethods.setValue(
 			`${listePath}.rapporteringsdato`,
 			selectedDate && selectedDate.toISOString().substring(0, 19),
 		)
 	}
 
+	const addNewEntry = () => fieldMethods.append(initialValues)
 	return (
-		<FieldArray name={historikkPath}>
-			{(arrayHelpers) => {
-				const addNewEntry = () => arrayHelpers.push(initialValues)
-				return (
-					<ErrorBoundary>
-						<DollyFieldArrayWrapper>
-							{data.map((_c: Inntektslister, idx: number) => {
-								const listePath = `${historikkPath}[${idx}]`
-								const clickRemove = () => arrayHelpers.remove(idx)
-								return (
-									<DollyFaBlokk
-										key={idx}
-										idx={idx}
-										hjelpetekst={hjelpetekst}
-										header={`Inntektsendring (versjon ${idx + 1})`}
-										handleRemove={clickRemove}
-									>
-										<FormikDateTimepicker
-											formikBag={formikBag}
-											name={`${listePath}.rapporteringsdato`}
-											label="Rapporteringsdato"
-											onChange={(date: Date) => handleRapporteringDateChange(date, listePath)}
-										/>
-										<InntektsinformasjonLister formikBag={formikBag} path={listePath} />
-									</DollyFaBlokk>
-								)
-							})}
-							<FieldArrayAddButton
-								addEntryButtonText="Inntektsendring (historikk)"
-								onClick={addNewEntry}
+		<ErrorBoundary>
+			<DollyFieldArrayWrapper>
+				{data.map((_c: Inntektslister, idx: number) => {
+					const listePath = `${historikkPath}[${idx}]`
+					const clickRemove = () => fieldMethods.remove(idx)
+					return (
+						<DollyFaBlokk
+							key={idx}
+							idx={idx}
+							hjelpetekst={hjelpetekst}
+							header={`Inntektsendring (versjon ${idx + 1})`}
+							handleRemove={clickRemove}
+						>
+							<FormDateTimepicker
+								formMethods={formMethods}
+								name={`${listePath}.rapporteringsdato`}
+								label="Rapporteringsdato"
+								onChange={(date: Date) => handleRapporteringDateChange(date, listePath)}
 							/>
-						</DollyFieldArrayWrapper>
-					</ErrorBoundary>
-				)
-			}}
-		</FieldArray>
+							<InntektsinformasjonLister formMethods={formMethods} path={listePath} />
+						</DollyFaBlokk>
+					)
+				})}
+				<FieldArrayAddButton
+					addEntryButtonText="Inntektsendring (historikk)"
+					onClick={addNewEntry}
+				/>
+			</DollyFieldArrayWrapper>
+		</ErrorBoundary>
 	)
 }

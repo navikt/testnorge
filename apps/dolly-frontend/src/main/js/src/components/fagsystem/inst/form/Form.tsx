@@ -2,14 +2,15 @@ import React, { useContext } from 'react'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
 import Panel from '@/components/ui/panel/Panel'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
-import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { validation } from '@/components/fagsystem/inst/form/validation'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { getExcludedDatesAndMaxDate } from './utils'
 import { addYears } from 'date-fns'
+import { useFormContext } from 'react-hook-form'
 
 export const initialValues = {
 	institusjonstype: '',
@@ -18,9 +19,10 @@ export const initialValues = {
 }
 export const instAttributt = 'instdata'
 
-export const InstForm = ({ formikBag }) => {
+export const InstForm = () => {
+	const formMethods = useFormContext()
 	const opts = useContext(BestillingsveilederContext)
-	const { personFoerLeggTil } = opts
+	const { personFoerLeggTil }: any = opts
 
 	let excludeDates = []
 	let maxDate = addYears(new Date(), 5)
@@ -34,27 +36,27 @@ export const InstForm = ({ formikBag }) => {
 		<Vis attributt={instAttributt}>
 			<Panel
 				heading="Institusjonsopphold"
-				hasErrors={panelError(formikBag, instAttributt)}
+				hasErrors={panelError(instAttributt)}
 				iconType="institusjon"
-				startOpen={erForsteEllerTest(formikBag.values, [instAttributt])}
+				startOpen={erForsteEllerTest(formMethods.getValues(), [instAttributt])}
 			>
 				{/*// @ts-ignore*/}
-				<FormikDollyFieldArray name="instdata" header="Opphold" newEntry={initialValues}>
+				<FormDollyFieldArray name="instdata" header="Opphold" newEntry={initialValues}>
 					{(path, idx) => (
 						<React.Fragment key={idx}>
-							<FormikSelect
+							<FormSelect
 								name={`${path}.institusjonstype`}
 								label="Institusjonstype"
 								options={Options('institusjonstype')}
 								isClearable={false}
 							/>
-							<FormikDatepicker
+							<FormDatepicker
 								name={`${path}.startdato`}
 								label="Startdato"
 								excludeDates={excludeDates}
 								maxDate={maxDate}
 							/>
-							<FormikDatepicker
+							<FormDatepicker
 								name={`${path}.sluttdato`}
 								label="Sluttdato"
 								excludeDates={excludeDates}
@@ -62,7 +64,7 @@ export const InstForm = ({ formikBag }) => {
 							/>
 						</React.Fragment>
 					)}
-				</FormikDollyFieldArray>
+				</FormDollyFieldArray>
 			</Panel>
 		</Vis>
 	)

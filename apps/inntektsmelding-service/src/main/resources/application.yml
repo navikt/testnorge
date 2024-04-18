@@ -10,6 +10,9 @@ spring:
   application:
     name: testnav-inntektsmelding-service
     description: Tjeneste for sende inntektsmelding til dokarkiv.
+  cloud:
+    vault:
+      enabled: false
   security:
     oauth2:
       resourceserver:
@@ -17,10 +20,6 @@ spring:
           issuer-uri: ${AAD_ISSUER_URI}/v2.0
           jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
           accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
-        tokenx:
-          issuer-uri: https://tokenx.dev-gcp.nav.cloud.nais.io 
-          jwk-set-uri: https://tokenx.dev-gcp.nav.cloud.nais.io/jwks
-          accepted-audience: dev-gcp:dolly:testnav-inntektsmelding-service
 
 springdoc:
   swagger-ui:

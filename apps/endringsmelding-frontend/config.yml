@@ -35,11 +35,12 @@ spec:
       rules:
         - application: testnav-endringsmelding-service
         - application: testnorge-profil-api
+        - application: testnorge-profil-api-dev
   resources:
     limits:
       memory: 2048Mi
     requests:
-      cpu: 300m
+      cpu: 200m
       memory: 1024Mi
   image: "{{image}}"
   ingresses:

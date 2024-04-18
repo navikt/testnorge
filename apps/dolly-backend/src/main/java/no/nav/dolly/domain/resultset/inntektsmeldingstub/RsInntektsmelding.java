@@ -1,33 +1,41 @@
 package no.nav.dolly.domain.resultset.inntektsmeldingstub;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.springframework.data.elasticsearch.annotations.DateFormat;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
-@Getter
-@Setter
+import static java.util.Objects.isNull;
+
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class RsInntektsmelding {
 
     private List<Inntektsmelding> inntekter;
     private JoarkMetadata joarkMetadata;
 
-    @Getter
-    @Setter
+    public List<Inntektsmelding> getInntekter() {
+
+        if (isNull(inntekter)) {
+            inntekter = new ArrayList<>();
+        }
+        return inntekter;
+    }
+
+    @Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class JoarkMetadata {
 
         private String avsenderMottakerIdType;
@@ -45,11 +53,10 @@ public class RsInntektsmelding {
         private String variantformatOriginal;
     }
 
-    @Getter
-    @Setter
+    @Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Inntektsmelding {
 
         private AarsakTilInnsendingType aarsakTilInnsending;
@@ -67,38 +74,68 @@ public class RsInntektsmelding {
         private LocalDate startdatoForeldrepengeperiode;
         private RsSykepengerIArbeidsgiverperioden sykepengerIArbeidsgiverperioden;
         private YtelseType ytelse;
+
+        public List<RsPeriode> getPleiepengerPerioder() {
+
+            if (isNull(pleiepengerPerioder)) {
+                pleiepengerPerioder = new ArrayList<>();
+            }
+            return pleiepengerPerioder;
+        }
+
+        public List<RsNaturalYtelseDetaljer> getGjenopptakelseNaturalytelseListe() {
+
+            if (isNull(gjenopptakelseNaturalytelseListe)) {
+                gjenopptakelseNaturalytelseListe = new ArrayList<>();
+            }
+            return gjenopptakelseNaturalytelseListe;
+        }
+
+        public List<RsNaturalYtelseDetaljer> getOpphoerAvNaturalytelseListe() {
+
+            if (isNull(opphoerAvNaturalytelseListe)) {
+                opphoerAvNaturalytelseListe = new ArrayList<>();
+            }
+            return opphoerAvNaturalytelseListe;
+        }
     }
 
-    @Getter
-    @Setter
+    @Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class RsSykepengerIArbeidsgiverperioden {
 
         private List<RsPeriode> arbeidsgiverperiodeListe;
         private BegrunnelseForReduksjonEllerIkkeUtbetaltType begrunnelseForReduksjonEllerIkkeUtbetalt;
         private Double bruttoUtbetalt;
+
     }
 
-    @Getter
-    @Setter
+    @Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class RsRefusjon {
 
         private List<RsEndringIRefusjon> endringIRefusjonListe;
         private Double refusjonsbeloepPrMnd;
         @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
         private LocalDate refusjonsopphoersdato;
+
+        public List<RsEndringIRefusjon> getEndringIRefusjonListe() {
+
+            if (isNull(endringIRefusjonListe)) {
+                endringIRefusjonListe = new ArrayList<>();
+            }
+            return endringIRefusjonListe;
+        }
     }
 
-    @Getter
-    @Setter
+    @Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class RsEndringIRefusjon {
 
         @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
@@ -106,11 +143,10 @@ public class RsInntektsmelding {
         private Double refusjonsbeloepPrMnd;
     }
 
-    @Getter
-    @Setter
+    @Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class RsNaturalYtelseDetaljer {
 
         private Double beloepPrMnd;
@@ -119,23 +155,37 @@ public class RsInntektsmelding {
         private NaturalytelseType naturalytelseType;
     }
 
-    @Getter
-    @Setter
+    @Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class RsOmsorgspenger {
 
         private List<RsDelvisFravaer> delvisFravaersListe;
         private List<RsPeriode> fravaersPerioder;
         private Boolean harUtbetaltPliktigeDager;
+
+        public List<RsDelvisFravaer> getDelvisFravaersListe() {
+
+            if (isNull(delvisFravaersListe)) {
+                delvisFravaersListe = new ArrayList<>();
+            }
+            return delvisFravaersListe;
+        }
+
+        public List<RsPeriode> getFravaersPerioder() {
+
+            if (isNull(fravaersPerioder)) {
+                fravaersPerioder = new ArrayList<>();
+            }
+            return fravaersPerioder;
+        }
     }
 
-    @Getter
-    @Setter
+    @Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class RsDelvisFravaer {
 
         @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")
@@ -143,11 +193,10 @@ public class RsInntektsmelding {
         private Double timer;
     }
 
-    @Getter
-    @Setter
+    @Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class RsAvsendersystem {
 
         @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second, pattern = "uuuu-MM-dd'T'HH:mm:ss")
@@ -156,44 +205,40 @@ public class RsInntektsmelding {
         private String systemversjon;
     }
 
-    @Getter
-    @Setter
+    @Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class RsArbeidsgiver {
 
         private RsKontaktinformasjon kontaktinformasjon;
         private String virksomhetsnummer;
     }
 
-    @Getter
-    @Setter
+    @Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class RsArbeidsgiverPrivat {
 
         private RsKontaktinformasjon kontaktinformasjon;
         private String arbeidsgiverFnr;
     }
 
-    @Getter
-    @Setter
+    @Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class RsKontaktinformasjon {
 
         private String kontaktinformasjonNavn;
         private String telefonnummer;
     }
 
-    @Getter
-    @Setter
+    @Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class RsArbeidsforhold {
 
         private String arbeidsforholdId;
@@ -203,45 +248,65 @@ public class RsInntektsmelding {
         private LocalDate foersteFravaersdag;
         private List<RsGraderingIForeldrepenger> graderingIForeldrepengerListe;
         private List<RsUtsettelseAvForeldrepenger> utsettelseAvForeldrepengerListe;
+
+        public List<RsPeriode> getAvtaltFerieListe() {
+
+            if (isNull(avtaltFerieListe)) {
+                avtaltFerieListe = new ArrayList<>();
+            }
+            return avtaltFerieListe;
+        }
+
+        public List<RsGraderingIForeldrepenger> getGraderingIForeldrepengerListe() {
+
+            if (isNull(graderingIForeldrepengerListe)) {
+                graderingIForeldrepengerListe = new ArrayList<>();
+            }
+            return graderingIForeldrepengerListe;
+        }
+
+        public List<RsUtsettelseAvForeldrepenger> getUtsettelseAvForeldrepengerListe() {
+
+            if (isNull(utsettelseAvForeldrepengerListe)) {
+                utsettelseAvForeldrepengerListe = new ArrayList<>();
+            }
+            return utsettelseAvForeldrepengerListe;
+        }
     }
 
-    @Getter
-    @Setter
+    @Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class RsUtsettelseAvForeldrepenger {
 
         private AarsakTilUtsettelseType aarsakTilUtsettelse;
         private RsPeriode periode;
     }
 
-    @Getter
-    @Setter
+    @Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class RsGraderingIForeldrepenger {
         private Integer arbeidstidprosent;
         private RsPeriode periode;
     }
 
-    @Getter
-    @Setter
+    @Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class RsAltinnInntekt {
 
         private AarsakVedEndringType aarsakVedEndring;
         private Double beloep;
     }
 
-    @Getter
-    @Setter
+    @Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class RsPeriode {
 
         @Field(type = FieldType.Date, format = DateFormat.basic_date, pattern = "uuuu-MM-dd")

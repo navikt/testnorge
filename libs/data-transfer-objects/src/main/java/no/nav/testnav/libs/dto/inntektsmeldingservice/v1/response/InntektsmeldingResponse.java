@@ -1,16 +1,16 @@
 package no.nav.testnav.libs.dto.inntektsmeldingservice.v1.response;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.RequiredArgsConstructor;
-import lombok.Value;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-@Value
-@RequiredArgsConstructor
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class InntektsmeldingResponse {
-    @JsonProperty
-    private final String fnr;
-    @JsonProperty
-    private final List<InntektDokumentResponse> dokumenter;
+
+    private String fnr;
+    private List<InntektDokumentResponse> dokumenter;
 }

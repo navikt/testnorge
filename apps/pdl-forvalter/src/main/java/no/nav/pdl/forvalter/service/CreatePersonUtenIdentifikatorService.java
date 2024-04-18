@@ -3,7 +3,7 @@ package no.nav.pdl.forvalter.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
-import no.nav.pdl.forvalter.consumer.GeografiskeKodeverkConsumer;
+import no.nav.pdl.forvalter.consumer.KodeverkConsumer;
 import no.nav.pdl.forvalter.dto.PersonUtenIdentifikatorRequest;
 import no.nav.testnav.libs.data.pdlforvalter.v1.ForelderBarnRelasjonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.NavnDTO;
@@ -26,7 +26,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @RequiredArgsConstructor
 public class CreatePersonUtenIdentifikatorService {
 
-    private final GeografiskeKodeverkConsumer geografiskeKodeverkConsumer;
+    private final KodeverkConsumer kodeverkConsumer;
     private final MapperFacade mapperFacade;
     private final NavnService navnService;
     private final SecureRandom secureRandom = new SecureRandom();
@@ -52,7 +52,7 @@ public class CreatePersonUtenIdentifikatorService {
 
             relatertPerson.setStatsborgerskap(isNotBlank(request.getRelatertStatsborgerskap()) ?
                     request.getRelatertStatsborgerskap() :
-                    geografiskeKodeverkConsumer.getTilfeldigLand());
+                    kodeverkConsumer.getTilfeldigLand());
         }
 
         if (isNull(request.getKjoenn())) {

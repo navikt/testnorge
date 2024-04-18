@@ -10,19 +10,20 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
+import reactor.netty.http.client.HttpClientRequest;
 import reactor.util.retry.Retry;
 
 import java.net.http.HttpTimeoutException;
 import java.time.Duration;
 import java.util.concurrent.Callable;
 
+import static no.nav.dolly.util.RequestTimeout.REQUEST_DURATION;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
 public class PdlDataOrdreCommand implements Callable<Flux<PdlResponse>> {
 
     private static final String PDL_FORVALTER_ORDRE_URL = "/api/v1/personer/{ident}/ordre";
-    private static final String IS_TPS_MASTER = "isTpsMaster";
     private static final String EXCLUDE_EKSTERNE_PERSONER = "ekskluderEksternePersoner";
 
     private final WebClient webClient;
@@ -35,9 +36,12 @@ public class PdlDataOrdreCommand implements Callable<Flux<PdlResponse>> {
         return webClient
                 .post()
                 .uri(uriBuilder -> uriBuilder.path(PDL_FORVALTER_ORDRE_URL)
-                        .queryParam(IS_TPS_MASTER, false)
                         .queryParam(EXCLUDE_EKSTERNE_PERSONER, ekskluderEksternePersoner)
                         .build(ident))
+                .httpRequest(httpRequest -> {
+                    HttpClientRequest reactorRequest = httpRequest.getNativeRequest();
+                    reactorRequest.responseTimeout(Duration.ofSeconds(REQUEST_DURATION));
+                })
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .contentType(MediaType.APPLICATION_JSON)

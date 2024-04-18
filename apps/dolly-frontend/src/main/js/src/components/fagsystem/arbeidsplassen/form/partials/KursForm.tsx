@@ -1,11 +1,11 @@
-import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import {
 	initialKurs,
 	initialKursVerdier,
 } from '@/components/fagsystem/arbeidsplassen/form/initialValues'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
-import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import * as React from 'react'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import _get from 'lodash/get'
@@ -13,42 +13,37 @@ import { showLabel } from '@/utils/DataFormatter'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { EraseFillButtons } from '@/components/fagsystem/arbeidsplassen/form/partials/EraseFillButtons'
 
-export const KursForm = ({ formikBag }) => {
+export const KursForm = ({ formMethods }) => {
 	const kursListePath = 'arbeidsplassenCV.kurs'
 
 	return (
 		<Vis attributt={kursListePath}>
-			<FormikDollyFieldArray
-				name={kursListePath}
-				header="Kurs"
-				newEntry={initialKursVerdier}
-				nested
-			>
+			<FormDollyFieldArray name={kursListePath} header="Kurs" newEntry={initialKursVerdier} nested>
 				{(kursPath, idx) => {
-					const durationUnit = _get(formikBag.values, `${kursPath}.durationUnit`)
+					const durationUnit = _get(formMethods.getValues(), `${kursPath}.durationUnit`)
 					return (
 						<>
 							<div key={idx} className="flexbox--flex-wrap">
-								<FormikTextInput
+								<FormTextInput
 									name={`${kursPath}.title`}
 									label="Kursnavn"
 									size="xlarge"
-									key={`title_${_get(formikBag.values, `${kursPath}.title`)}`}
+									key={`title_${_get(formMethods.getValues(), `${kursPath}.title`)}`}
 								/>
-								<FormikTextInput
+								<FormTextInput
 									name={`${kursPath}.issuer`}
 									label="Kursholder"
 									size="xlarge"
-									key={`issuer_${_get(formikBag.values, `${kursPath}.issuer`)}`}
+									key={`issuer_${_get(formMethods.getValues(), `${kursPath}.issuer`)}`}
 								/>
-								<FormikDatepicker name={`${kursPath}.date`} label="Fullført" />
-								<FormikSelect
+								<FormDatepicker name={`${kursPath}.date`} label="Fullført" />
+								<FormSelect
 									name={`${kursPath}.durationUnit`}
 									label="Kurslengde"
 									options={Options('kursLengde')}
 									size="small"
 								/>
-								<FormikTextInput
+								<FormTextInput
 									name={`${kursPath}.duration`}
 									label={`Antall ${
 										durationUnit && durationUnit !== 'UKJENT'
@@ -57,11 +52,11 @@ export const KursForm = ({ formikBag }) => {
 									}`}
 									size="small"
 									type="number"
-									key={`duration_${_get(formikBag.values, `${kursPath}.duration`)}`}
+									key={`duration_${_get(formMethods.getValues(), `${kursPath}.duration`)}`}
 								/>
 							</div>
 							<EraseFillButtons
-								formikBag={formikBag}
+								formMethods={formMethods}
 								path={kursPath}
 								initialFill={initialKursVerdier}
 								initialErase={initialKurs}
@@ -69,7 +64,7 @@ export const KursForm = ({ formikBag }) => {
 						</>
 					)
 				}}
-			</FormikDollyFieldArray>
+			</FormDollyFieldArray>
 		</Vis>
 	)
 }

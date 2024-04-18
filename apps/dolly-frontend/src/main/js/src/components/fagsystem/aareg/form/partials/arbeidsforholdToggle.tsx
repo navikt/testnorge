@@ -1,10 +1,9 @@
 import React, { ReactElement, useState } from 'react'
-import * as _ from 'lodash-es'
 import styled from 'styled-components'
 import { Alert, ToggleGroup } from '@navikt/ds-react'
 import { AmeldingForm } from './ameldingForm'
 import { ArbeidsforholdForm } from './arbeidsforholdForm'
-import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import {
 	initialAaregOrg,
 	initialAaregPers,
@@ -13,8 +12,8 @@ import {
 	initialValues,
 } from '../initialValues'
 import { ArbeidsgiverTyper } from '@/components/fagsystem/aareg/AaregTypes'
-import { useFormikContext } from 'formik'
 import { useDollyFasteDataOrganisasjoner } from '@/utils/hooks/useOrganisasjoner'
+import { useFormContext } from 'react-hook-form'
 
 const ToggleArbeidsgiver = styled(ToggleGroup)`
 	display: grid;
@@ -25,17 +24,14 @@ const StyledAlert = styled(Alert)`
 	margin-top: 10px;
 `
 export const ArbeidsforholdToggle = (): ReactElement => {
-	const formikBag = useFormikContext()
+	const formMethods = useFormContext()
 	const { organisasjoner } = useDollyFasteDataOrganisasjoner(true)
 
 	const getArbeidsgiverType = () => {
-		const orgnummer = _.get(formikBag.values, 'aareg[0].arbeidsgiver.orgnummer')
-		if (
-			_.get(formikBag.values, 'aareg[0].amelding[0]') ||
-			_.get(formikBag.values, 'aareg[0].arbeidsforhold')
-		) {
+		const orgnummer = formMethods.watch('aareg[0].arbeidsgiver.orgnummer')
+		if (formMethods.watch('aareg[0].amelding[0]') || formMethods.watch('aareg[0].arbeidsforhold')) {
 			return ArbeidsgiverTyper.egen
-		} else if (_.get(formikBag.values, 'aareg[0].arbeidsgiver.aktoertype') === 'PERS') {
+		} else if (formMethods.watch('aareg[0].arbeidsgiver.aktoertype') === 'PERS') {
 			return ArbeidsgiverTyper.privat
 		} else if (
 			!orgnummer ||
@@ -71,12 +67,13 @@ export const ArbeidsforholdToggle = (): ReactElement => {
 	const handleToggleChange = (value: ArbeidsgiverTyper) => {
 		setTypeArbeidsgiver(value)
 		if (value === ArbeidsgiverTyper.privat) {
-			formikBag.setFieldValue('aareg', [initialAaregPers])
+			formMethods.resetField('aareg', { defaultValue: [initialAaregPers] })
 		} else if (value === ArbeidsgiverTyper.felles || value === ArbeidsgiverTyper.fritekst) {
-			formikBag.setFieldValue('aareg', [initialAaregOrg])
+			formMethods.resetField('aareg', { defaultValue: [initialAaregOrg] })
 		} else if (value === ArbeidsgiverTyper.egen) {
-			formikBag.setFieldValue('aareg', [initialValues])
+			formMethods.resetField('aareg', { defaultValue: [initialValues] })
 		}
+		formMethods.clearErrors('aareg')
 	}
 
 	const warningMessage = (
@@ -110,7 +107,7 @@ export const ArbeidsforholdToggle = (): ReactElement => {
 				</>
 			) : (
 				<>
-					<FormikDollyFieldArray
+					<FormDollyFieldArray
 						name="aareg"
 						header="Arbeidsforhold"
 						newEntry={
@@ -131,7 +128,7 @@ export const ArbeidsforholdToggle = (): ReactElement => {
 								warningMessage={undefined}
 							/>
 						)}
-					</FormikDollyFieldArray>
+					</FormDollyFieldArray>
 				</>
 			)}
 		</div>

@@ -4,7 +4,7 @@ import { initialOpphold } from '@/components/fagsystem/pdlf/form/initialValues'
 import { harValgtAttributt } from '@/components/ui/form/formUtils'
 import { udiAttributt } from '@/components/fagsystem/udistub/form/Form'
 
-export const UdiPanel = ({ stateModifier, testnorgeIdent, formikBag }) => {
+export const UdiPanel = ({ stateModifier, testnorgeIdent, formValues }) => {
 	const sm = stateModifier(UdiPanel.initialValues)
 
 	const infoTekst =
@@ -17,7 +17,7 @@ export const UdiPanel = ({ stateModifier, testnorgeIdent, formikBag }) => {
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType="udi"
-			startOpen={harValgtAttributt(formikBag.values, [udiAttributt])}
+			startOpen={harValgtAttributt(formValues, [udiAttributt])}
 		>
 			<AttributtKategori title="Gjeldende oppholdstatus" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.oppholdStatus} />

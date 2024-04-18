@@ -1,33 +1,33 @@
-import * as _ from 'lodash-es'
+import _ from 'lodash'
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
-import { DollySelect, FormikSelect } from '@/components/ui/form/inputs/select/Select'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { DollySelect, FormSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { getPlaceholder, setNavn } from '../../utils'
-import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { initialFalskIdentitetValues } from '@/components/fagsystem/pdlf/form/initialValues'
 import { PdlEksisterendePerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlEksisterendePerson'
 import { useGenererNavn } from '@/utils/hooks/useGenererNavn'
 import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
 
-export const FalskIdentitet = ({ formikBag }) => {
+export const FalskIdentitet = ({ formMethods }) => {
 	const { navnInfo, loading } = useGenererNavn()
 	const navnOptions = SelectOptionsFormat.formatOptions('personnavn', navnInfo)
 
 	const settIdentitetType = (e, path, advancedValues) => {
 		if (!e) {
-			formikBag.setFieldValue(path, advancedValues)
+			formMethods.setValue(path, advancedValues)
 			return null
 		} else if (e.value === 'UKJENT') {
-			formikBag.setFieldValue(path, { rettIdentitetErUkjent: true, ...advancedValues })
+			formMethods.setValue(path, { rettIdentitetErUkjent: true, ...advancedValues })
 		} else if (e.value === 'ENTYDIG') {
-			formikBag.setFieldValue(path, {
+			formMethods.setValue(path, {
 				rettIdentitetVedIdentifikasjonsnummer: null,
 				...advancedValues,
 			})
 		} else if (e.value === 'OMTRENTLIG') {
-			formikBag.setFieldValue(path, {
+			formMethods.setValue(path, {
 				rettIdentitetVedOpplysninger: {
 					foedselsdato: null,
 					kjoenn: null,
@@ -37,11 +37,12 @@ export const FalskIdentitet = ({ formikBag }) => {
 				...advancedValues,
 			})
 		}
+		formMethods.trigger()
 		return e.value
 	}
 
 	return (
-		<FormikDollyFieldArray
+		<FormDollyFieldArray
 			name="pdldata.person.falskIdentitet"
 			header="Falsk identitet"
 			newEntry={initialFalskIdentitetValues}
@@ -49,26 +50,28 @@ export const FalskIdentitet = ({ formikBag }) => {
 		>
 			{(path, idx) => {
 				const identType = () => {
-					if (_.has(formikBag.values, `${path}.rettIdentitetErUkjent`)) {
+					if (_.has(formMethods.getValues(), `${path}.rettIdentitetErUkjent`)) {
 						return 'UKJENT'
-					} else if (_.has(formikBag.values, `${path}.rettIdentitetVedIdentifikasjonsnummer`)) {
+					} else if (
+						_.has(formMethods.getValues(), `${path}.rettIdentitetVedIdentifikasjonsnummer`)
+					) {
 						return 'ENTYDIG'
 					}
-					return _.has(formikBag.values, `${path}.rettIdentitetVedOpplysninger`)
+					return _.has(formMethods.getValues(), `${path}.rettIdentitetVedOpplysninger`)
 						? 'OMTRENTLIG'
 						: null
 				}
 
 				const advancedValues = {
 					erFalsk: true,
-					kilde: _.get(formikBag.values, `${path}.kilde`),
-					master: _.get(formikBag.values, `${path}.master`),
+					kilde: formMethods.watch(`${path}.kilde`),
+					master: formMethods.watch(`${path}.master`),
 				}
 
 				return (
 					<>
 						<div className="flexbox--flex-wrap" key={idx}>
-							<FormikSelect
+							<FormSelect
 								name={`${path}.identitetType`}
 								label="Opplysninger om rett identitet"
 								options={Options('identitetType')}
@@ -81,7 +84,7 @@ export const FalskIdentitet = ({ formikBag }) => {
 								<PdlEksisterendePerson
 									eksisterendePersonPath={`${path}.rettIdentitetVedIdentifikasjonsnummer`}
 									label="Eksisterende identifikasjonsnummer"
-									formikBag={formikBag}
+									formMethods={formMethods}
 								/>
 							)}
 							{identType() === 'OMTRENTLIG' && (
@@ -92,7 +95,7 @@ export const FalskIdentitet = ({ formikBag }) => {
 										options={navnOptions}
 										size="xlarge"
 										placeholder={getPlaceholder(
-											formikBag.values,
+											formMethods.getValues(),
 											`${path}.rettIdentitetVedOpplysninger.personnavn`,
 										)}
 										isLoading={loading}
@@ -100,31 +103,29 @@ export const FalskIdentitet = ({ formikBag }) => {
 											setNavn(
 												navn,
 												`${path}.rettIdentitetVedOpplysninger.personnavn`,
-												formikBag.setFieldValue,
+												formMethods.setValue,
 											)
 										}
-										value={_.get(
-											formikBag.values,
+										value={formMethods.watch(
 											`${path}.rettIdentitetVedOpplysninger.personnavn.fornavn`,
 										)}
 									/>
-									<FormikDatepicker
+									<FormDatepicker
 										name={`${path}.rettIdentitetVedOpplysninger.foedselsdato`}
 										label="Fødselsdato"
 										maxDate={new Date()}
 									/>
-									<FormikSelect
+									<FormSelect
 										name={`${path}.rettIdentitetVedOpplysninger.kjoenn`}
 										label="Kjønn"
 										options={Options('kjoenn')}
 									/>
-									<FormikSelect
+									<FormSelect
 										name={`${path}.rettIdentitetVedOpplysninger.statsborgerskap`}
 										label="Statsborgerskap"
 										kodeverk={AdresseKodeverk.StatsborgerskapLand}
 										isClearable={false}
 										isMulti={true}
-										fastfield={false}
 										size="large"
 									/>
 								</>
@@ -134,6 +135,6 @@ export const FalskIdentitet = ({ formikBag }) => {
 					</>
 				)
 			}}
-		</FormikDollyFieldArray>
+		</FormDollyFieldArray>
 	)
 }

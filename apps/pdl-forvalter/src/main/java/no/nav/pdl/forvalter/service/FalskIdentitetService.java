@@ -2,7 +2,7 @@ package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
-import no.nav.pdl.forvalter.consumer.GeografiskeKodeverkConsumer;
+import no.nav.pdl.forvalter.consumer.KodeverkConsumer;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
@@ -48,7 +48,7 @@ public class FalskIdentitetService implements Validation<FalskIdentitetDTO> {
     private final CreatePersonService createPersonService;
     private final RelasjonService relasjonService;
     private final GenererNavnServiceConsumer genererNavnServiceConsumer;
-    private final GeografiskeKodeverkConsumer geografiskeKodeverkConsumer;
+    private final KodeverkConsumer kodeverkConsumer;
 
     protected static <T> int count(T artifact) {
         return nonNull(artifact) ? 1 : 0;
@@ -135,7 +135,7 @@ public class FalskIdentitetService implements Validation<FalskIdentitetDTO> {
                 .orElse(new FolkeregisterPersonstatusDTO())
                 .getStatus() != FolkeregisterPersonstatus.OPPHOERT) {
 
-            person.getFolkeregisterPersonstatus().add(0, FolkeregisterPersonstatusDTO.builder()
+            person.getFolkeregisterPersonstatus().addFirst(FolkeregisterPersonstatusDTO.builder()
                     .isNew(true)
                     .id(person.getFolkeregisterPersonstatus().stream()
                             .max(Comparator.comparing(FolkeregisterPersonstatusDTO::getId))
@@ -181,7 +181,7 @@ public class FalskIdentitetService implements Validation<FalskIdentitetDTO> {
         }
         if (identitet.getRettIdentitetVedOpplysninger().getStatsborgerskap().isEmpty()) {
             identitet.getRettIdentitetVedOpplysninger().setStatsborgerskap(
-                    List.of(geografiskeKodeverkConsumer.getTilfeldigLand(), "NOR"));
+                    List.of(kodeverkConsumer.getTilfeldigLand(), "NOR"));
         }
     }
 

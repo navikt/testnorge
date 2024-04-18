@@ -1,23 +1,23 @@
-import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import {
 	initialAnnenErfaring,
 	initialAnnenErfaringVerdier,
 } from '@/components/fagsystem/arbeidsplassen/form/initialValues'
-import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { Fritekstfelt } from '@/components/fagsystem/arbeidsplassen/form/styles'
 import _get from 'lodash/get'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
-import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import * as React from 'react'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { EraseFillButtons } from '@/components/fagsystem/arbeidsplassen/form/partials/EraseFillButtons'
 
-export const AnnenErfaringForm = ({ formikBag }) => {
+export const AnnenErfaringForm = ({ formMethods }) => {
 	const annenErfaringListePath = 'arbeidsplassenCV.annenErfaring'
 
 	return (
 		<Vis attributt={annenErfaringListePath}>
-			<FormikDollyFieldArray
+			<FormDollyFieldArray
 				name={annenErfaringListePath}
 				header="Andre erfaringer"
 				newEntry={initialAnnenErfaringVerdier}
@@ -27,51 +27,53 @@ export const AnnenErfaringForm = ({ formikBag }) => {
 				{(annenErfaringPath, idx) => (
 					<>
 						<div key={idx} className="flexbox--flex-wrap">
-							<FormikTextInput
+							<FormTextInput
 								name={`${annenErfaringPath}.role`}
 								label="Rolle"
 								size="xlarge"
-								key={`role_${_get(formikBag.values, `${annenErfaringPath}.role`)}`}
+								key={`role_${_get(formMethods.getValues(), `${annenErfaringPath}.role`)}`}
 							/>
 							<Fritekstfelt
 								label="Beskrivelse"
 								placeholder="Beskrivelse av annen erfaring"
-								defaultValue={_get(formikBag.values, `${annenErfaringPath}.description`)}
+								defaultValue={_get(formMethods.getValues(), `${annenErfaringPath}.description`)}
 								onBlur={(beskrivelse) =>
-									formikBag.setFieldValue(
+									formMethods.setValue(
 										`${annenErfaringPath}.description`,
-										beskrivelse?.target?.value
+										beskrivelse?.target?.value,
 									)
 								}
 								size="small"
-								key={`description_${_get(formikBag.values, `${annenErfaringPath}.description`)}`}
+								key={`description_${_get(
+									formMethods.getValues(),
+									`${annenErfaringPath}.description`,
+								)}`}
 								resize
 							/>
-							<FormikDatepicker name={`${annenErfaringPath}.fromDate`} label="Startdato" />
-							<FormikDatepicker
+							<FormDatepicker name={`${annenErfaringPath}.fromDate`} label="Startdato" />
+							<FormDatepicker
 								name={`${annenErfaringPath}.toDate`}
 								label="Sluttdato"
-								disabled={_get(formikBag.values, `${annenErfaringPath}.ongoing`)}
-								fastfield={false}
+								disabled={_get(formMethods.getValues(), `${annenErfaringPath}.ongoing`)}
 							/>
-							<FormikCheckbox
+							<FormCheckbox
 								id={`${annenErfaringPath}.ongoing`}
 								name={`${annenErfaringPath}.ongoing`}
 								label="Pågående"
 								wrapperSize="inherit"
-								isDisabled={_get(formikBag.values, `${annenErfaringPath}.toDate`)}
+								isDisabled={_get(formMethods.getValues(), `${annenErfaringPath}.toDate`)}
 								checkboxMargin
 							/>
 						</div>
 						<EraseFillButtons
-							formikBag={formikBag}
+							formMethods={formMethods}
 							path={annenErfaringPath}
 							initialErase={initialAnnenErfaring}
 							initialFill={initialAnnenErfaringVerdier}
 						/>
 					</>
 				)}
-			</FormikDollyFieldArray>
+			</FormDollyFieldArray>
 		</Vis>
 	)
 }

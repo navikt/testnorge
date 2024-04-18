@@ -1,16 +1,20 @@
-import React, { useEffect } from 'react'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
-import { DollyTextInput, FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import { PersoninformasjonKodeverk } from '@/config/kodeverk'
-import { FormikProps } from 'formik'
-import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import React, { useEffect, useState } from 'react'
+import { DollySelect, FormSelect } from '@/components/ui/form/inputs/select/Select'
+import { DollyTextInput, FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { AdresseKodeverk, PersoninformasjonKodeverk } from '@/config/kodeverk'
+import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
-import * as _ from 'lodash-es'
 import {
 	initialTelefonnummer,
 	initialTpsTelefonnummer,
 } from '@/components/fagsystem/pdlf/form/initialValues'
 import styled from 'styled-components'
+import { lookup } from 'country-data-list'
+
+import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
+import { Option } from '@/service/SelectOptionsOppslag'
+import { useKodeverk } from '@/utils/hooks/useKodeverk'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 export interface TelefonnummerArray {
 	person: {
@@ -24,7 +28,7 @@ interface TelefonnummerValues {
 }
 
 interface TelefonnummerProps {
-	formikBag?: FormikProps<{}>
+	formMethods: UseFormReturn
 	path: string
 	idx?: number
 }
@@ -45,15 +49,15 @@ const paths = {
 export const TelefonnummerFormRedigering = ({ path }: TelefonnummerProps) => {
 	return (
 		<>
-			<FormikSelect
+			<FormSelect
 				name={`${path}.landskode`}
 				label="Landkode"
 				kodeverk={PersoninformasjonKodeverk.Retningsnumre}
 				size="large"
 				isClearable={false}
 			/>
-			<FormikTextInput name={`${path}.nummer`} label="Telefonnummer" size="large" />
-			<FormikSelect
+			<FormTextInput name={`${path}.nummer`} label="Telefonnummer" size="large" />
+			<FormSelect
 				name={`${path}.prioritet`}
 				label="Prioritet"
 				options={[
@@ -70,13 +74,25 @@ export const TelefonnummerFormRedigering = ({ path }: TelefonnummerProps) => {
 	)
 }
 
-export const TelefonnummerForm = ({ path, formikBag, idx }: TelefonnummerProps) => {
-	const tlfListe = _.get(formikBag.values, path || 'pdldata.person.telefonnummer')
+export const TelefonnummerForm = ({ path, formMethods, idx }: TelefonnummerProps) => {
+	const { kodeverk: landkoder, loading } = useKodeverk(AdresseKodeverk.ArbeidOgInntektLand)
+	const [land, setLand] = useState(formMethods.watch(`${path}.land`) || 'NO')
+	const tlfListe = formMethods.watch(path || 'pdldata.person.telefonnummer')
+	const mergedeLandkoder = landkoder?.map((landkode: Option) => {
+		const lookupLand = lookup.countries({ alpha2: landkode.value })?.[0]
+		return {
+			countryCallingCodes: lookupLand?.countryCallingCodes[0],
+			emoji: lookupLand?.emoji,
+			...landkode,
+		}
+	})
+	const telefonLandkoder = SelectOptionsFormat.formatOptions('telefonLandkoder', mergedeLandkoder)
 
 	useEffect(() => {
 		if (tlfListe && tlfListe.length === 1) {
-			formikBag.setFieldValue(`${paths.pdlTelefonnummer}[0].prioritet`, 1)
-			formikBag.setFieldValue(`${paths.tpsMTelefonnummer}[0].telefontype`, 'MOBI')
+			formMethods.setValue(`${paths.pdlTelefonnummer}[0].prioritet`, 1)
+			formMethods.setValue(`${paths.tpsMTelefonnummer}[0].telefontype`, 'MOBI')
+			formMethods.trigger()
 		}
 	}, [tlfListe])
 
@@ -95,48 +111,49 @@ export const TelefonnummerForm = ({ path, formikBag, idx }: TelefonnummerProps) 
 		}
 	}
 
-	const handleChangeLandkode = (value: string) => {
-		formikBag.setFieldValue(`${path}.landskode`, value)
-		formikBag.setFieldValue(`${paths.tpsMTelefonnummer}[${idx}].landkode`, value)
+	const handleChangeLandkode = (option) => {
+		setLand(option.value)
+		formMethods.setValue(`${path}.landskode`, option.landkode)
+		formMethods.setValue(`${path}.land`, option.value)
+		formMethods.setValue(`${paths.tpsMTelefonnummer}[${idx}].landkode`, option.landkode)
+		formMethods.trigger()
 	}
 
 	const handleChangeNummer = (target: { value: string }) => {
-		formikBag.setFieldValue(`${path}.nummer`, target.value)
-		formikBag.setFieldValue(`${paths.tpsMTelefonnummer}[${idx}].telefonnummer`, target.value)
+		formMethods.setValue(`${path}.nummer`, target.value)
+		formMethods.setValue(`${paths.tpsMTelefonnummer}[${idx}].telefonnummer`, target.value)
+		formMethods.trigger()
 	}
 
 	const handleChangePrioritet = (value: number) => {
-		formikBag.setFieldValue(`${path}.prioritet`, value)
-		formikBag.setFieldValue(
+		formMethods.setValue(`${path}.prioritet`, value)
+		formMethods.setValue(
 			`${paths.tpsMTelefonnummer}[${idx}].telefontype`,
-			value === 2 ? 'HJET' : 'MOBI'
+			value === 2 ? 'HJET' : 'MOBI',
 		)
+		formMethods.trigger()
 	}
 
 	return (
 		<>
-			<FormikSelect
+			<DollySelect
 				name={`${path}.landskode`}
 				label="Landkode"
-				kodeverk={PersoninformasjonKodeverk.Retningsnumre}
-				onChange={({ value }: { value: string }) => handleChangeLandkode(value)}
-				size="large"
+				isLoading={loading}
+				value={land}
+				options={telefonLandkoder}
+				onChange={(option: Option) => handleChangeLandkode(option)}
+				size="xlarge"
 				isClearable={false}
 			/>
 			<DollyTextInput
 				name={`${path}.nummer`}
 				label="Telefonnummer"
 				onChange={({ target }: { target: { value: string } }) => handleChangeNummer(target)}
-				value={_.get(formikBag.values, `${path}.nummer`)}
-				/*@ts-ignore*/
-				size="large"
-				feil={
-					_.get(formikBag.errors, `${path}.nummer`)
-						? { feilmelding: _.get(formikBag.errors, `${path}.nummer`) }
-						: null
-				}
+				value={formMethods.watch(`${path}.nummer`)}
+				size="medium"
 			/>
-			<FormikSelect
+			<FormSelect
 				name={`${path}.prioritet`}
 				label="Prioritet"
 				options={optionsPrioritet()}
@@ -149,31 +166,33 @@ export const TelefonnummerForm = ({ path, formikBag, idx }: TelefonnummerProps) 
 	)
 }
 
-export const Telefonnummer = ({ formikBag, path }: TelefonnummerProps) => {
-	const tlfListe = _.get(formikBag.values, path || paths.pdlTelefonnummer)
-	const tlfListeTps = _.get(formikBag.values, path || paths.tpsMTelefonnummer)
+export const Telefonnummer = ({ formMethods, path }: TelefonnummerProps) => {
+	const tlfListe = formMethods.watch(path || paths.pdlTelefonnummer)
+	const tlfListeTps = formMethods.watch(path || paths.tpsMTelefonnummer)
 
 	if (!tlfListe) {
 		return null
 	}
 
 	const handleNewEntry = () => {
-		formikBag.setFieldValue(paths.pdlTelefonnummer, [...tlfListe, initialTelefonnummer])
-		formikBag.setFieldValue(paths.tpsMTelefonnummer, [...tlfListeTps, initialTpsTelefonnummer])
+		formMethods.setValue(paths.pdlTelefonnummer, [...tlfListe, initialTelefonnummer])
+		formMethods.setValue(paths.tpsMTelefonnummer, [...tlfListeTps, initialTpsTelefonnummer])
+		formMethods.trigger()
 	}
 
 	const handleRemoveEntry = (idx: number) => {
 		tlfListe.splice(idx, 1)
 		tlfListeTps.splice(idx, 1)
-		formikBag.setFieldValue(paths.pdlTelefonnummer, tlfListe)
-		formikBag.setFieldValue(paths.tpsMTelefonnummer, tlfListeTps)
-		formikBag.setFieldValue(`${paths.pdlTelefonnummer}[0].prioritet`, 1)
-		formikBag.setFieldValue(`${paths.tpsMTelefonnummer}[0].telefontype`, 'MOBI')
+		formMethods.setValue(paths.pdlTelefonnummer, tlfListe)
+		formMethods.setValue(paths.tpsMTelefonnummer, tlfListeTps)
+		formMethods.setValue(`${paths.pdlTelefonnummer}[0].prioritet`, 1)
+		formMethods.setValue(`${paths.tpsMTelefonnummer}[0].telefontype`, 'MOBI')
+		formMethods.trigger()
 	}
 
 	return (
 		<div className="flexbox--flex-wrap">
-			<FormikDollyFieldArray
+			<FormDollyFieldArray
 				name={path || paths.pdlTelefonnummer}
 				header="Telefonnummer"
 				newEntry={initialTelefonnummer}
@@ -184,9 +203,9 @@ export const Telefonnummer = ({ formikBag, path }: TelefonnummerProps) => {
 				maxReachedDescription={'En person kan maksimalt ha to telefonnumre'}
 			>
 				{(tlfPath: string, idx: number) => (
-					<TelefonnummerForm path={tlfPath} formikBag={formikBag} idx={idx} />
+					<TelefonnummerForm path={tlfPath} formMethods={formMethods} idx={idx} />
 				)}
-			</FormikDollyFieldArray>
+			</FormDollyFieldArray>
 		</div>
 	)
 }

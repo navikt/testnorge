@@ -1,13 +1,12 @@
-import * as _ from 'lodash-es'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { AdresseKodeverk, GtKodeverk } from '@/config/kodeverk'
 import { RadioGroupOptions } from '@/pages/testnorgePage/search/radioGroupOptions/RadioGroupOptions'
-import { FormikProps } from 'formik'
 import { yesNoOptions } from '@/pages/testnorgePage/utils'
 import { AdvancedOptions } from '@/pages/testnorgePage/search/advancedOptions/AdvancedOptions'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 type AdresserProps = {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 }
 
 const paths = {
@@ -30,22 +29,22 @@ const adressebeskyttelseOptions = [
 	{ value: 'INGEN', label: 'Ingen' },
 ]
 
-export const Adresser = ({ formikBag }: AdresserProps) => {
+export const Adresser = ({ formMethods }: AdresserProps) => {
 	const bostedOptions = [
 		{ value: 'Y', label: 'Ja' },
 		{
 			value: 'N',
 			label: 'Nei',
 			disabled:
-				_.get(formikBag.values, paths.kommunenummer) ||
-				_.get(formikBag.values, paths.postnummer) ||
-				_.get(formikBag.values, paths.bydelsnummer),
+				formMethods.watch(paths.kommunenummer) ||
+				formMethods.watch(paths.postnummer) ||
+				formMethods.watch(paths.bydelsnummer),
 		},
 	]
 	return (
 		<section>
 			<div className="options-title-bold">Adressebeskyttelse</div>
-			<FormikSelect
+			<FormSelect
 				name={paths.adressebeskyttelse}
 				label="Velg type"
 				options={adressebeskyttelseOptions}
@@ -53,37 +52,37 @@ export const Adresser = ({ formikBag }: AdresserProps) => {
 			/>
 			<div className="options-title-bold">Bostedsadresse</div>
 			<RadioGroupOptions
-				formikBag={formikBag}
+				formMethods={formMethods}
 				name={'Har bostedsadresse i Norge'}
 				path={paths.borINorge}
 				options={bostedOptions}
 			/>
-			<FormikSelect
+			<FormSelect
 				name={paths.postnummer}
 				label="Postnummer"
 				kodeverk={AdresseKodeverk.Postnummer}
-				isDisabled={_.get(formikBag.values, paths.borINorge) === 'N'}
+				isDisabled={formMethods.watch(paths.borINorge) === 'N'}
 				optionHeight={50}
 				size="medium"
 			/>
-			<FormikSelect
+			<FormSelect
 				name={paths.bydelsnummer}
 				label="Bydel"
 				kodeverk={GtKodeverk.BYDEL}
-				isDisabled={_.get(formikBag.values, paths.borINorge) === 'N'}
+				isDisabled={formMethods.watch(paths.borINorge) === 'N'}
 				optionHeight={50}
 				size="medium"
 			/>
-			<FormikSelect
+			<FormSelect
 				name={paths.kommunenummer}
 				label="Kommunenummer"
 				kodeverk={AdresseKodeverk.Kommunenummer}
-				isDisabled={_.get(formikBag.values, paths.borINorge) === 'N'}
+				isDisabled={formMethods.watch(paths.borINorge) === 'N'}
 				optionHeight={50}
 				size="medium"
 			/>
 			<AdvancedOptions>
-				<FormikSelect
+				<FormSelect
 					name={paths.hPostnummer}
 					label="Har tidligere hatt postnummer"
 					kodeverk={AdresseKodeverk.Postnummer}
@@ -91,7 +90,7 @@ export const Adresser = ({ formikBag }: AdresserProps) => {
 					size="medium"
 					info="Velg postnummer tilknyttet tidligere bostedsadresse."
 				/>
-				<FormikSelect
+				<FormSelect
 					name={paths.hBydelsnummer}
 					label="Har tidligere bodd i bydel"
 					kodeverk={GtKodeverk.BYDEL}
@@ -99,7 +98,7 @@ export const Adresser = ({ formikBag }: AdresserProps) => {
 					size="medium"
 					info="Velg bydel tilknyttet tidligere bostedsadresse."
 				/>
-				<FormikSelect
+				<FormSelect
 					name={paths.hKommunenummer}
 					label="Har tidligere bodd i kommune"
 					kodeverk={AdresseKodeverk.Kommunenummer}
@@ -110,19 +109,19 @@ export const Adresser = ({ formikBag }: AdresserProps) => {
 			</AdvancedOptions>
 			<div className="options-title-bold">Annet</div>
 			<RadioGroupOptions
-				formikBag={formikBag}
+				formMethods={formMethods}
 				name={'Har utenlandsk adresse'}
 				path={paths.utenlandsk}
 				options={yesNoOptions}
 			/>
 			<RadioGroupOptions
-				formikBag={formikBag}
+				formMethods={formMethods}
 				name={'Har kontaktadresse'}
 				path={paths.kontakt}
 				options={yesNoOptions}
 			/>
 			<RadioGroupOptions
-				formikBag={formikBag}
+				formMethods={formMethods}
 				name={'Har oppholdsadresse'}
 				path={paths.opphold}
 				options={yesNoOptions}

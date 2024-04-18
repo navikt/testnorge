@@ -3,11 +3,9 @@ import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import Panel from '@/components/ui/panel/Panel'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
-import { FormikProps } from 'formik'
-import * as _ from 'lodash-es'
-import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
+import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import {
 	initialMedlAvgangssystem,
 	initialMedlGosys,
@@ -15,20 +13,16 @@ import {
 	initialMedlMelosys,
 } from '@/components/fagsystem/pdlf/form/initialValues'
 import { MedlSelect } from '@/components/fagsystem/medl/form/MedlSelect'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { MEDL_KILDER, MedlAttributt, MedlKodeverk } from '@/components/fagsystem/medl/MedlConstants'
 import { MedlValidation } from '@/components/fagsystem/medl/form/MedlValidation'
+import { useFormContext } from 'react-hook-form'
 
-interface MedlFormProps {
-	formikBag: FormikProps<{}>
-}
+export const MedlForm = () => {
+	const { trigger, setValue, getValues } = useFormContext()
+	const [aktivKilde, setAktivKilde] = useState(getValues('medl.kilde') || MEDL_KILDER.SRVMELOSYS)
 
-export const MedlForm = ({ formikBag }: MedlFormProps) => {
-	const [aktivKilde, setAktivKilde] = useState(
-		_.get(formikBag.values, 'medl.kilde') || MEDL_KILDER.SRVMELOSYS,
-	)
-
-	if (!_.has(formikBag.values, MedlAttributt)) {
+	if (!getValues(MedlAttributt)) {
 		return null
 	}
 
@@ -50,15 +44,15 @@ export const MedlForm = ({ formikBag }: MedlFormProps) => {
 		<Vis attributt={MedlAttributt}>
 			<Panel
 				heading="Medlemskap (MEDL)"
-				hasErrors={panelError(formikBag, MedlAttributt)}
+				hasErrors={panelError(MedlAttributt)}
 				iconType="calendar"
 				// @ts-ignore
-				startOpen={erForsteEllerTest(formikBag.values, [MedlAttributt])}
+				startOpen={erForsteEllerTest(getValues(), [MedlAttributt])}
 			>
 				<Kategori title={`Oppretting av medlemskapsperiode`} vis={MedlAttributt}>
 					<div className="flexbox--flex-wrap">
 						<div className="form-flex-row">
-							<FormikSelect
+							<FormSelect
 								size={'medium'}
 								name="medl.kilde"
 								label="Kilde"
@@ -66,7 +60,8 @@ export const MedlForm = ({ formikBag }: MedlFormProps) => {
 								isClearable={false}
 								afterChange={(selected) => {
 									setAktivKilde(selected?.value)
-									formikBag.setFieldValue('medl', getInitialValue(selected?.value))
+									setValue('medl', getInitialValue(selected?.value))
+									trigger()
 								}}
 							/>
 							<MedlSelect
@@ -78,8 +73,8 @@ export const MedlForm = ({ formikBag }: MedlFormProps) => {
 							/>
 						</div>
 						<div className="form-flex-row">
-							<FormikDatepicker name="medl.fraOgMed" label="Fra og med" />
-							<FormikDatepicker name="medl.tilOgMed" label="Til og med" />
+							<FormDatepicker name="medl.fraOgMed" label="Fra og med" />
+							<FormDatepicker name="medl.tilOgMed" label="Til og med" />
 						</div>
 						<div className="form-flex-row">
 							<MedlSelect
@@ -131,10 +126,10 @@ export const MedlForm = ({ formikBag }: MedlFormProps) => {
 						</div>
 						<div className={'flexbox--full-width'}>
 							{aktivKilde === MEDL_KILDER.LAANEKASSEN && (
-								<FormikCheckbox name="medl.studieinformasjon.delstudie" label="Er delstudie" />
+								<FormCheckbox name="medl.studieinformasjon.delstudie" label="Er delstudie" />
 							)}
 							{aktivKilde === MEDL_KILDER.LAANEKASSEN && (
-								<FormikCheckbox
+								<FormCheckbox
 									checkboxMargin
 									name="medl.studieinformasjon.soeknadInnvilget"
 									label="Er søknad innvilget"
@@ -142,13 +137,13 @@ export const MedlForm = ({ formikBag }: MedlFormProps) => {
 							)}
 						</div>
 						<div className="form-flex-row">
-							<FormikSelect
+							<FormSelect
 								size={'medium'}
 								name="medl.status"
 								label="Status"
 								kodeverk={MedlKodeverk.PERIODE_STATUS}
 							/>
-							<FormikSelect
+							<FormSelect
 								size={'xlarge'}
 								name="medl.statusaarsak"
 								label="Statusårsak"

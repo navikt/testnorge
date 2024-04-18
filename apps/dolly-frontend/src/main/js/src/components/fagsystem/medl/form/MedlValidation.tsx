@@ -7,6 +7,7 @@ export const MedlValidation = {
 	medl: ifPresent(
 		'$medl',
 		Yup.object({
+			kilde: requiredString,
 			fraOgMed: requiredDate,
 			tilOgMed: testDatoTom(Yup.date().nullable(), 'fraOgMed', 'Sluttdato må være etter startdato'),
 			status: requiredString,

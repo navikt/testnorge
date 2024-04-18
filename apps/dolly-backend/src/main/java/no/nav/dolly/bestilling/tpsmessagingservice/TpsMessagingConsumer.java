@@ -5,8 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.tpsmessagingservice.command.EgenansattDeleteCommand;
 import no.nav.dolly.bestilling.tpsmessagingservice.command.EgenansattPostCommand;
-import no.nav.dolly.bestilling.tpsmessagingservice.command.PersonGetCommand;
-import no.nav.dolly.bestilling.tpsmessagingservice.command.SikkerhetstiltakDeleteCommand;
+import no.nav.dolly.bestilling.tpsmessagingservice.command.PersonHentCommand;
 import no.nav.dolly.bestilling.tpsmessagingservice.command.TpsMessagingPostCommand;
 import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
@@ -33,7 +32,6 @@ public class TpsMessagingConsumer implements ConsumerStatus {
     private static final String BASE_URL = "/api/v1/personer/{ident}";
     private static final String UTENLANDSK_BANKKONTO_URL = BASE_URL + "/bankkonto-utenlandsk";
     private static final String NORSK_BANKKONTO_URL = BASE_URL + "/bankkonto-norsk";
-    private static final String SIKKERHETSTILTAK_URL = BASE_URL + "/sikkerhetstiltak";
     private static final String SPRAAKKODE_URL = BASE_URL + "/spraakkode";
 
     private final WebClient webClient;
@@ -54,7 +52,7 @@ public class TpsMessagingConsumer implements ConsumerStatus {
                 .build();
     }
 
-    @Timed(name = "providers", tags = {"operation", "tps_messaging_createUtenlandskBankkonto"})
+    @Timed(name = "providers", tags = { "operation", "tps_messaging_createUtenlandskBankkonto" })
     public Flux<TpsMeldingResponseDTO> sendUtenlandskBankkontoRequest(String ident, List<String> miljoer,
                                                                       BankkontonrUtlandDTO body) {
 
@@ -63,7 +61,7 @@ public class TpsMessagingConsumer implements ConsumerStatus {
                         new TpsMessagingPostCommand(webClient, ident, miljoer, body, UTENLANDSK_BANKKONTO_URL, token.getTokenValue()).call());
     }
 
-    @Timed(name = "providers", tags = {"operation", "tps_messaging_createNorskBankkonto"})
+    @Timed(name = "providers", tags = { "operation", "tps_messaging_createNorskBankkonto" })
     public Flux<TpsMeldingResponseDTO> sendNorskBankkontoRequest(String ident, List<String> miljoer, BankkontonrNorskDTO body) {
 
         return tokenService.exchange(serverProperties)
@@ -71,22 +69,7 @@ public class TpsMessagingConsumer implements ConsumerStatus {
                         new TpsMessagingPostCommand(webClient, ident, miljoer, body, NORSK_BANKKONTO_URL, token.getTokenValue()).call());
     }
 
-    @Timed(name = "providers", tags = {"operation", "tps_messaging_deleteSikkerhetstiltak"})
-    public Flux<TpsMeldingResponseDTO> deleteSikkerhetstiltakRequest(String ident, List<String> miljoer) {
-
-        return tokenService.exchange(serverProperties)
-                .flatMapMany(token -> new SikkerhetstiltakDeleteCommand(webClient, ident, miljoer, token.getTokenValue()).call());
-    }
-
-    @Timed(name = "providers", tags = {"operation", "tps_messaging_createSikkerhetstiltak"})
-    public Flux<TpsMeldingResponseDTO> sendSikkerhetstiltakRequest(String ident, List<String> miljoer, Object body) {
-
-        return tokenService.exchange(serverProperties)
-                .flatMapMany(token ->
-                        new TpsMessagingPostCommand(webClient, ident, miljoer, body, SIKKERHETSTILTAK_URL, token.getTokenValue()).call());
-    }
-
-    @Timed(name = "providers", tags = {"operation", "tps_messaging_createSkjerming"})
+    @Timed(name = "providers", tags = { "operation", "tps_messaging_createSkjerming" })
     public Flux<TpsMeldingResponseDTO> sendEgenansattRequest(String ident, List<String> miljoer, LocalDate fraOgMed) {
 
         return tokenService.exchange(serverProperties)
@@ -94,14 +77,14 @@ public class TpsMessagingConsumer implements ConsumerStatus {
                         new EgenansattPostCommand(webClient, ident, miljoer, fraOgMed, token.getTokenValue()).call());
     }
 
-    @Timed(name = "providers", tags = {"operation", "tps_messaging_deleteSkjerming"})
+    @Timed(name = "providers", tags = { "operation", "tps_messaging_deleteSkjerming" })
     public Flux<TpsMeldingResponseDTO> deleteEgenansattRequest(String ident, List<String> miljoer) {
 
         return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> new EgenansattDeleteCommand(webClient, ident, miljoer, token.getTokenValue()).call());
     }
 
-    @Timed(name = "providers", tags = {"operation", "tps_messaging_createSpraakkode"})
+    @Timed(name = "providers", tags = { "operation", "tps_messaging_createSpraakkode" })
     public Flux<TpsMeldingResponseDTO> sendSpraakkodeRequest(String ident, List<String> miljoer, SpraakDTO body) {
 
         return tokenService.exchange(serverProperties)
@@ -109,11 +92,11 @@ public class TpsMessagingConsumer implements ConsumerStatus {
                         new TpsMessagingPostCommand(webClient, ident, miljoer, body, SPRAAKKODE_URL, token.getTokenValue()).call());
     }
 
-    @Timed(name = "providers", tags = {"operation", "tps_messaging_getPerson"})
+    @Timed(name = "providers", tags = { "operation", "tps_messaging_getPerson" })
     public Flux<PersonMiljoeDTO> getPerson(String ident, List<String> miljoer) {
 
         return tokenService.exchange(serverProperties)
-                .flatMapMany(token -> new PersonGetCommand(webClient, ident, miljoer, token.getTokenValue()).call());
+                .flatMapMany(token -> new PersonHentCommand(webClient, ident, miljoer, token.getTokenValue()).call());
     }
 
     @Override

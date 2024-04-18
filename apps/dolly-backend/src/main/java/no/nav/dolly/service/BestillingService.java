@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.tpsmessagingservice.MiljoerConsumer;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingKontroll;
 import no.nav.dolly.domain.jpa.BestillingProgress;
@@ -51,7 +52,6 @@ import static java.lang.String.format;
 import static java.lang.String.join;
 import static java.time.LocalDateTime.now;
 import static java.util.Collections.emptySet;
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toSet;
 import static no.nav.dolly.util.CurrentAuthentication.getUserId;
@@ -68,7 +68,7 @@ public class BestillingService {
     private static final String SEARCH_STRING = "info:";
     private static final String DEFAULT_VALUE = null;
     private final BestillingRepository bestillingRepository;
-    private final BestillingMalService bestillingMalService;
+    private final MalBestillingService malBestillingService;
     private final BestillingKontrollRepository bestillingKontrollRepository;
     private final IdentRepository identRepository;
     private final BestillingProgressRepository bestillingProgressRepository;
@@ -77,6 +77,7 @@ public class BestillingService {
     private final BrukerService brukerService;
     private final GetUserInfo getUserInfo;
     private final BestillingElasticRepository elasticRepository;
+    private final MiljoerConsumer miljoerConsumer;
 
     public Bestilling fetchBestillingById(Long bestillingId) {
         return bestillingRepository.findById(bestillingId)
@@ -108,19 +109,6 @@ public class BestillingService {
         }
     }
 
-    public Set<Bestilling> fetchBestillingerByGruppeId(Long gruppeId, Integer page, Integer pageSize) {
-        Optional<Testgruppe> testgruppe = testgruppeRepository.findById(gruppeId);
-        if (page == null || pageSize == null) {
-            return testgruppe
-                    .map(Testgruppe::getBestillinger).orElse(emptySet());
-        }
-        return testgruppe
-                .map(value -> value.getBestillinger().stream()
-                        .skip(page.longValue() * pageSize).limit(pageSize)
-                        .collect(toSet()))
-                .orElse(emptySet());
-    }
-
     public Set<Bestilling> fetchBestillingerByGruppeIdOgIkkeFerdig(Long gruppeId) {
         Optional<Testgruppe> testgruppe = testgruppeRepository.findById(gruppeId);
         return testgruppe
@@ -134,6 +122,7 @@ public class BestillingService {
         Optional<Testgruppe> testgruppe = testgruppeRepository.findById(gruppeId);
         return testgruppe.map(value -> value.getBestillinger().stream()
                 .map(Bestilling::getMiljoer)
+                .filter(StringUtils::isNotBlank)
                 .flatMap(miljoer -> Arrays.stream(miljoer.split(",")))
                 .filter(StringUtils::isNotBlank)
                 .collect(toSet())).orElse(emptySet());
@@ -214,15 +203,28 @@ public class BestillingService {
                 .antallIdenter(1)
                 .navSyntetiskIdent(request.getNavSyntetiskIdent())
                 .sistOppdatert(now())
-                .miljoer(join(",", request.getEnvironments()))
+                .miljoer(filterAvailable(request.getEnvironments()))
                 .bestKriterier(getBestKriterier(request))
                 .bruker(bruker)
                 .build();
 
         if (isNotBlank(request.getMalBestillingNavn())) {
-            bestillingMalService.saveBestillingMal(bestilling, request.getMalBestillingNavn(), bruker);
+            malBestillingService.saveBestillingMal(bestilling, request.getMalBestillingNavn(), bruker);
         }
         return saveBestillingToDB(bestilling);
+    }
+
+    private String filterAvailable(Collection<String> environments) {
+
+        var miljoer = miljoerConsumer.getMiljoer().block();
+        return nonNull(environments) ? environments.stream()
+                .filter(miljoer::contains)
+                .collect(Collectors.joining(",")) : null;
+    }
+
+    private String filterAvailable(String miljoer) {
+
+        return isNotBlank(miljoer) ? filterAvailable(Arrays.asList(miljoer.split(","))) : null;
     }
 
     @Transactional
@@ -235,7 +237,7 @@ public class BestillingService {
                 .antallIdenter(antall)
                 .navSyntetiskIdent(navSyntetiskIdent)
                 .sistOppdatert(now())
-                .miljoer(join(",", request.getEnvironments()))
+                .miljoer(filterAvailable(request.getEnvironments()))
                 .bestKriterier(getBestKriterier(request))
                 .opprettFraIdenter(nonNull(opprettFraIdenter) ? join(",", opprettFraIdenter) : null)
                 .bruker(bruker)
@@ -243,14 +245,14 @@ public class BestillingService {
                 .build();
         fixAaregAbstractClassProblem(request.getAareg());
         if (isNotBlank(request.getMalBestillingNavn())) {
-            bestillingMalService.saveBestillingMal(bestilling, request.getMalBestillingNavn(), bruker);
+            malBestillingService.saveBestillingMal(bestilling, request.getMalBestillingNavn(), bruker);
         }
         return saveBestillingToDB(bestilling);
     }
 
     @Transactional
     // Egen transaksjon på denne da bestillingId hentes opp igjen fra database i samme kallet
-    public Bestilling createBestillingForGjenopprettFraBestilling(Long bestillingId, List<String> miljoer) {
+    public Bestilling createBestillingForGjenopprettFraBestilling(Long bestillingId, String miljoer) {
         Bestilling bestilling = fetchBestillingById(bestillingId);
         if (!bestilling.isFerdig()) {
             throw new DollyFunctionalException(format("Du kan ikke starte gjenopprett før bestilling %d er ferdigstilt.", bestillingId));
@@ -264,7 +266,7 @@ public class BestillingService {
                         .antallIdenter(bestilling.getAntallIdenter())
                         .opprettFraIdenter(bestilling.getOpprettFraIdenter())
                         .sistOppdatert(now())
-                        .miljoer(isNull(miljoer) || miljoer.isEmpty() ? bestilling.getMiljoer() : join(",", miljoer))
+                        .miljoer(filterAvailable(isNotBlank(miljoer) ? miljoer : bestilling.getMiljoer()))
                         .opprettetFraId(bestillingId)
                         .bestKriterier("{}")
                         .bruker(fetchOrCreateBruker())
@@ -283,7 +285,7 @@ public class BestillingService {
                         .antallIdenter(1)
                         .bestKriterier("{}")
                         .sistOppdatert(now())
-                        .miljoer(isNull(miljoer) || miljoer.isEmpty() ? "" : join(",", miljoer))
+                        .miljoer(filterAvailable(miljoer))
                         .gjenopprettetFraIdent(ident)
                         .bruker(fetchOrCreateBruker())
                         .build());
@@ -305,7 +307,7 @@ public class BestillingService {
                         .antallIdenter(testgruppe.get().getTestidenter().size())
                         .bestKriterier("{}")
                         .sistOppdatert(now())
-                        .miljoer(miljoer)
+                        .miljoer(filterAvailable(miljoer))
                         .opprettetFraGruppeId(gruppeId)
                         .bruker(fetchOrCreateBruker())
                         .build());
@@ -319,7 +321,7 @@ public class BestillingService {
         Bestilling bestilling = Bestilling.builder()
                 .gruppe(gruppe)
                 .kildeMiljoe("PDL")
-                .miljoer(join(",", request.getEnvironments()))
+                .miljoer(filterAvailable(request.getEnvironments()))
                 .sistOppdatert(now())
                 .bruker(bruker)
                 .antallIdenter(request.getIdenter().size())
@@ -329,7 +331,7 @@ public class BestillingService {
 
         fixAaregAbstractClassProblem(request.getAareg());
         if (isNotBlank(request.getMalBestillingNavn())) {
-            bestillingMalService.saveBestillingMal(bestilling, request.getMalBestillingNavn(), bruker);
+            malBestillingService.saveBestillingMal(bestilling, request.getMalBestillingNavn(), bruker);
         }
         return saveBestillingToDB(bestilling);
     }
@@ -344,7 +346,7 @@ public class BestillingService {
         return saveBestillingToDB(
                 Bestilling.builder()
                         .gruppe(gruppe)
-                        .miljoer(join(",", request.getEnvironments()))
+                        .miljoer(filterAvailable(request.getEnvironments()))
                         .sistOppdatert(now())
                         .bruker(fetchOrCreateBruker())
                         .antallIdenter(size)

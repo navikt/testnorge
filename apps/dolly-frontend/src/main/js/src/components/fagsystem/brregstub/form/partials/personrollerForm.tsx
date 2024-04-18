@@ -1,7 +1,6 @@
-import * as _ from 'lodash-es'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
-import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
-import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
+import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { DollySelect } from '@/components/ui/form/inputs/select/Select'
 
 const initialValues = {
@@ -9,8 +8,8 @@ const initialValues = {
 	fratraadt: false,
 }
 
-export const PersonrollerForm = ({ formikBag, path }) => {
-	const personroller = _.get(formikBag.values, `${path}.personroller`)
+export const PersonrollerForm = ({ formMethods, path }) => {
+	const personroller = formMethods.watch(`${path}.personroller`)
 
 	const getEgenskapOptions = () => {
 		const valgteOptions = []
@@ -33,7 +32,7 @@ export const PersonrollerForm = ({ formikBag, path }) => {
 	}
 
 	return (
-		<FormikDollyFieldArray
+		<FormDollyFieldArray
 			name={`${path}.personroller`}
 			header="Personrolle"
 			newEntry={initialValues}
@@ -48,23 +47,16 @@ export const PersonrollerForm = ({ formikBag, path }) => {
 							name={egenskap}
 							label="Egenskap"
 							options={egenskapOptions}
-							onChange={(egenskapen) => formikBag.setFieldValue(egenskap, egenskapen.value)}
-							value={_.get(formikBag.values, egenskap)}
-							placeholder={
-								_.get(formikBag.values, egenskap) ? _.get(formikBag.values, egenskap) : 'Velg ...'
-							}
+							onChange={(egenskapen) => formMethods.setValue(egenskap, egenskapen.value)}
+							value={formMethods.watch(egenskap)}
+							placeholder={formMethods.watch(egenskap) ? formMethods.watch(egenskap) : 'Velg ...'}
 							isClearable={false}
-							feil={
-								_.get(formikBag.values, egenskap) === '' && {
-									feilmelding: 'Feltet er påkrevd',
-								}
-							}
-							styles={_.get(formikBag.values, egenskap) ? colorStyles : null}
+							styles={formMethods.watch(egenskap) ? colorStyles : null}
 						/>
-						<FormikCheckbox name={`${path}.fratraadt`} label="Har fratrådt" checkboxMargin />
+						<FormCheckbox name={`${path}.fratraadt`} label="Har fratrådt" checkboxMargin />
 					</>
 				)
 			}}
-		</FormikDollyFieldArray>
+		</FormDollyFieldArray>
 	)
 }

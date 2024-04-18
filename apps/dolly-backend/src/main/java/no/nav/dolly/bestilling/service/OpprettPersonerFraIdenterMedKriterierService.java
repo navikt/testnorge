@@ -7,7 +7,6 @@ import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.personservice.PersonServiceClient;
-import no.nav.dolly.bestilling.tpsmessagingservice.service.TpsPersonService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
@@ -50,7 +49,6 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
             PdlDataConsumer pdlDataConsumer,
             TransactionHelperService transactionHelperService,
             PersonServiceClient personServiceClient,
-            TpsPersonService tpsPersonService,
             BestillingElasticRepository bestillingElasticRepository) {
         super(
                 identService,
@@ -62,7 +60,6 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
                 pdlDataConsumer,
                 errorStatusDecoder,
                 transactionHelperService,
-                tpsPersonService,
                 bestillingElasticRepository
         );
         this.personServiceClient = personServiceClient;
@@ -99,9 +96,6 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
                                                                     .map(ClientFuture::get)
                                                                     .filter(BestillingProgress::isPdlSync)
                                                                     .flatMap(pdlSync -> Flux.concat(
-                                                                            tpsPersonService.syncPerson(dollyPerson, bestKriterier,
-                                                                                            progress)
-                                                                                    .map(ClientFuture::get),
                                                                             gjenopprettKlienter(dollyPerson, bestKriterier,
                                                                                     fase2Klienter(),
                                                                                     progress, true),

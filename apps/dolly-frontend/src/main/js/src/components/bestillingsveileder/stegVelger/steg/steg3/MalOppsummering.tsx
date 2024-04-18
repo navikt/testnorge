@@ -1,5 +1,5 @@
-import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { Mal } from '@/utils/hooks/useMaler'
 import { Switch, ToggleGroup } from '@navikt/ds-react'
 import styled from 'styled-components'
@@ -63,15 +63,14 @@ export const MalOppsummering = ({
 					</div>
 				</div>
 				{typeMal === MalTyper.ENDRE ? (
-					<FormikSelect
+					<FormSelect
 						name={'malBestillingNavn'}
 						size={'xlarge'}
 						label="Malnavn"
 						options={getMalOptions(malbestillinger)}
-						fastfield={false}
 					/>
 				) : (
-					<FormikTextInput
+					<FormTextInput
 						data-cy={CypressSelector.INPUT_BESTILLING_MALNAVN}
 						name="malBestillingNavn"
 						size={'xlarge'}

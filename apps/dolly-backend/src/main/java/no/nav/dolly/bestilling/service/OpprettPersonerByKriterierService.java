@@ -7,7 +7,6 @@ import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.personservice.PersonServiceClient;
-import no.nav.dolly.bestilling.tpsmessagingservice.service.TpsPersonService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.elastic.BestillingElasticRepository;
@@ -49,7 +48,6 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
             PdlDataConsumer pdlDataConsumer,
             TransactionHelperService transactionHelperService,
             PersonServiceClient personServiceClient,
-            TpsPersonService tpsPersonService,
             BestillingElasticRepository bestillingElasticRepository) {
         super(
                 identService,
@@ -61,7 +59,6 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                 pdlDataConsumer,
                 errorStatusDecoder,
                 transactionHelperService,
-                tpsPersonService,
                 bestillingElasticRepository
         );
         this.personServiceClient = personServiceClient;
@@ -70,7 +67,7 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
     @Async
     public void executeAsync(Bestilling bestilling) {
 
-        log.info("Bestilling med id=#{} og type={} er startet ...", bestilling.getId(), getBestillingType(bestilling));
+        log.info("Bestilling med id=#{} og type={} er startet i miljøer {} ...", bestilling.getId(), getBestillingType(bestilling), bestilling.getMiljoer());
         MDC.put(MDC_KEY_BESTILLING, bestilling.getId().toString());
         Hooks.onEachOperator(Operators.lift(new ThreadLocalContextLifter<>()));
 
@@ -96,9 +93,6 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                                                                     .map(ClientFuture::get)
                                                                     .filter(BestillingProgress::isPdlSync)
                                                                     .flatMap(pdlSync -> Flux.concat(
-                                                                            tpsPersonService.syncPerson(dollyPerson, bestKriterier,
-                                                                                            progress)
-                                                                                    .map(ClientFuture::get),
                                                                             gjenopprettKlienter(dollyPerson, bestKriterier,
                                                                                     fase2Klienter(),
                                                                                     progress, true),

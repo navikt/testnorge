@@ -1,36 +1,37 @@
 import { MatrikkelAdresseVelger } from '@/components/adresseVelger'
-import { FormikProps } from 'formik'
 import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import * as _ from 'lodash-es'
+import _ from 'lodash'
 import styled from 'styled-components'
 import { MatrikkelAdresse } from '@/components/adresseVelger/MatrikkelAdresseVelger'
+import { UseFormReturn } from 'react-hook-form/dist/types'
 
 const StyledMatrikkeladresse = styled.div`
 	width: 100%;
 `
 
 type MatrikkeladresseProps = {
-	formikBag: FormikProps<{}>
+	formMethods: UseFormReturn
 	path: string
 }
 
-export const MatrikkeladresseTilfeldig = ({ formikBag, path }: MatrikkeladresseProps) => {
+export const MatrikkeladresseTilfeldig = ({ formMethods, path }: MatrikkeladresseProps) => {
 	const settMatrikkelAdresse = (adresse: MatrikkelAdresse) => {
-		formikBag.setFieldValue(path, {
+		formMethods.setValue(path, {
 			kommunenummer: adresse.kommunenummer,
 			gaardsnummer: adresse.gaardsnummer,
 			bruksnummer: adresse.bruksnummer,
 			postnummer: adresse.postnummer,
 			bruksenhetsnummer: adresse.bruksenhetsnummer,
 			tilleggsnavn: adresse.tilleggsnavn,
-			matrikkeladresseType: _.get(formikBag.values, `${path}.matrikkeladresseType`),
+			matrikkeladresseType: formMethods.watch(`${path}.matrikkeladresseType`),
 		})
+		formMethods.trigger()
 	}
 
 	const renderAdresse = () => {
 		const { kommunenummer, gaardsnummer, bruksnummer, postnummer, tilleggsnavn } = _.get(
-			formikBag.values,
-			path
+			formMethods.getValues(),
+			path,
 		)
 		if (kommunenummer) {
 			return `Gårdsnr: ${gaardsnummer}, Bruksnr: ${bruksnummer}, Kommunenr: ${kommunenummer}, Postnr: ${postnummer} ${

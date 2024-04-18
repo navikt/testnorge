@@ -133,6 +133,10 @@ export default {
 		return Request.post(Endpoints.gjenopprettPerson(ident, miljoer))
 	},
 
+	opprettMalFraPerson(ident, malNavn) {
+		return Request.post(Endpoints.opprettMalFraPerson(ident, malNavn))
+	},
+
 	importerPersonerFraPdl: (gruppeId, request) => {
 		return Request.post(Endpoints.gruppeBestillingImportFraPdl(gruppeId), request)
 	},
@@ -220,31 +224,21 @@ export default {
 	},
 
 	lagreMalFraBestillingId(bestillingId, malNavn) {
-		return Request.post(Endpoints.malBestillingMedBestillingId(bestillingId, malNavn))
-			.then((response) => {
-				if (!response.ok) {
-					throw new Error(response.statusText)
-				}
-				return response
-			})
-			.catch((error) => {
+		return Request.post(Endpoints.malBestillingMedBestillingId(bestillingId, malNavn)).catch(
+			(error) => {
 				console.error(error)
 				throw error
-			})
+			},
+		)
 	},
 
 	lagreOrganisasjonMalFraBestillingId(bestillingId, malNavn) {
-		return Request.post(Endpoints.organisasjonMalBestillingMedBestillingId(bestillingId, malNavn))
-			.then((response) => {
-				if (!response.data) {
-					throw new Error(response.statusText)
-				}
-				return response
-			})
-			.catch((error) => {
-				console.error(error)
-				throw error
-			})
+		return Request.post(
+			Endpoints.organisasjonMalBestillingMedBestillingId(bestillingId, malNavn),
+		).catch((error) => {
+			console.error(error)
+			throw error
+		})
 	},
 
 	slettMalOrganisasjon(malId) {

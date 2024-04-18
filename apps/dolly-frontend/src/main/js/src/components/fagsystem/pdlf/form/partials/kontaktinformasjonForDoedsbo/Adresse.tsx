@@ -1,14 +1,13 @@
 import { AdresseKodeverk } from '@/config/kodeverk'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
-import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import * as _ from 'lodash-es'
+import { FormSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import useBoolean from '@/utils/hooks/useBoolean'
 import Button from '@/components/ui/button/Button'
 
-export const Adresse = ({ formikBag, path }) => {
+export const Adresse = ({ formMethods, path }) => {
 	const [visAdresse, setVisAdresse, setSkjulAdresse] = useBoolean(false)
 	const handleAfterChange = (selected) => {
-		return formikBag.setFieldValue(`${path}.poststedsnavn`, selected?.data || null)
+		return formMethods.setValue(`${path}.poststedsnavn`, selected?.data || null)
 	}
 
 	return (
@@ -24,16 +23,16 @@ export const Adresse = ({ formikBag, path }) => {
 			)}
 			{visAdresse && (
 				<div className={'flexbox--flex-wrap'} style={{ marginTop: '10px' }}>
-					<FormikSelect
+					<FormSelect
 						name={`${path}.landkode`}
 						label="Land"
 						kodeverk={AdresseKodeverk.PostadresseLand}
 						size="large"
 					/>
-					<FormikTextInput name={`${path}.adresselinje1`} label="Adresselinje 1" />
-					<FormikTextInput name={`${path}.adresselinje2`} label="Adresselinje 2" />
-					{_.get(formikBag.values, `${path}.landkode`) === 'NOR' ? (
-						<FormikSelect
+					<FormTextInput name={`${path}.adresselinje1`} label="Adresselinje 1" />
+					<FormTextInput name={`${path}.adresselinje2`} label="Adresselinje 2" />
+					{formMethods.watch(`${path}.landkode`) === 'NOR' ? (
+						<FormSelect
 							name={`${path}.postnummer`}
 							label="Postnummer og -sted"
 							kodeverk={AdresseKodeverk.PostnummerUtenPostboks}
@@ -42,8 +41,8 @@ export const Adresse = ({ formikBag, path }) => {
 						/>
 					) : (
 						<>
-							<FormikTextInput name={`${path}.postnummer`} label="Postnummer" />
-							<FormikTextInput name={`${path}.poststedsnavn`} label="Poststed" />
+							<FormTextInput name={`${path}.postnummer`} label="Postnummer" />
+							<FormTextInput name={`${path}.poststedsnavn`} label="Poststed" />
 						</>
 					)}
 				</div>

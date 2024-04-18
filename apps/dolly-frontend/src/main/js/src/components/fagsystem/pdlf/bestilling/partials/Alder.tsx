@@ -9,7 +9,7 @@ import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { formatDate } from '@/utils/DataFormatter'
 import { OpprettNyPerson } from '@/components/fagsystem/pdlf/PdlTypes'
-import * as _ from 'lodash-es'
+import _ from 'lodash'
 
 type AlderTypes = {
 	opprettNyPerson: OpprettNyPerson
