@@ -51,20 +51,16 @@ public class FoedselsmeldingService {
                 .flatMap(resultater -> {
 
                     if (resultater.stream()
-                            .anyMatch(resultat -> resultat.getMiljoer().contains("p") ||
-                                    !resultat.getMiljoer().containsAll(miljoer))) {
+                            .anyMatch(resultat -> !resultat.getMiljoer().containsAll(miljoer))) {
 
                         return resultater.stream()
-                                .filter(resultat -> resultat.getMiljoer().contains("p") ||
-                                        !resultat.getMiljoer().containsAll(miljoer))
+                                .filter(resultat -> !resultat.getMiljoer().containsAll(miljoer))
                                 .map(resultat ->
                                         Mono.just(FoedselsmeldingResponseDTO.builder()
                                                 .ident(resultat.getIdent())
                                                 .miljoStatus(resultat.getMiljoer().stream()
-                                                        .sorted()
-                                                        .collect(Collectors.toMap(miljoe -> miljoe,
-                                                                miljoe -> "finnes i %smiljø".formatted("p".equals(miljoe) ? "produksjons" : ""))))
-                                                .error("FEIL: ident %s finnes ikke i alle forspurte miljøer/og eller i prod(p) %s".formatted(
+                                                        .collect(Collectors.toMap(miljoe -> miljoe, miljoe -> "Ident finnes, men oppretting ikke utført")))
+                                                .error("FEIL: ident %s finnes ikke i alle forspurte miljøer %s".formatted(
                                                         resultat.getIdent(), miljoer))
                                                 .build()))
                                 .findFirst()

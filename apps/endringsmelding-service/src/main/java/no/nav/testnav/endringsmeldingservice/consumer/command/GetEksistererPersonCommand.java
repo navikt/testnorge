@@ -35,7 +35,7 @@ public class GetEksistererPersonCommand implements Callable<Flux<IdentMiljoeDTO>
                 .uri(builder -> builder.path(PERSON_DATA_URL)
                         .queryParam(IDENTER, identer)
                         .queryParamIfPresent(MILJOER, Optional.ofNullable(miljoer))
-                        .queryParam(INCLUDE_PROD, true)
+                        .queryParam(INCLUDE_PROD, false)
                         .build())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
