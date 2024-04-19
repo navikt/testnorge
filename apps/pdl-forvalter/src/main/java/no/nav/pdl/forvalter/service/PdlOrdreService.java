@@ -34,6 +34,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -44,7 +45,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static java.lang.String.format;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.OPPHOERT;
@@ -67,7 +67,7 @@ import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_NAVN;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_OPPHOLD;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_OPPHOLDSADRESSE;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_OPPRETT_PERSON;
-import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_SIKKERHETSTILTAK_URL;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_SIKKERHETSTILTAK;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_SIVILSTAND;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_SLETTING;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_STATSBORGERSKAP;
@@ -189,7 +189,7 @@ public class PdlOrdreService {
                 .collectList()
                 .block();
 
-        var respons = OrdreResponseDTO.builder()
+        var response = OrdreResponseDTO.builder()
                 .hovedperson(
                         PersonHendelserDTO.builder()
                                 .ident(ident)
@@ -208,7 +208,36 @@ public class PdlOrdreService {
 
         log.info("PDL ordre for ident: {} tid: {} ms", ident, System.currentTimeMillis() - timestamp);
 
-        return respons;
+        oppdaterPerson(response);
+
+        return response;
+    }
+
+    private void oppdaterPerson(OrdreResponseDTO response) {
+
+        Stream.of(List.of(response.getHovedperson()),
+                        response.getRelasjoner())
+                .flatMap(Collection::stream)
+                .forEach(person -> personRepository.findByIdent(person.getIdent())
+                        .ifPresent(dbPerson -> person.getOrdrer().stream()
+                                .filter(OrdreResponseDTO.PdlStatusDTO::isDataElement)
+                                .forEach(ordre -> {
+                                    try {
+                                        var getter = PersonDTO.class.getMethod("get" + ordre.getInfoElement().getDescription());
+                                        var artifact = (List<DbVersjonDTO>) getter.invoke(dbPerson.getPerson());
+                                        ordre.getHendelser()
+                                                .forEach(hendelse -> artifact.stream()
+                                                        .filter(fact -> hendelse.getId().equals(fact.getId()))
+                                                        .findFirst()
+                                                        .ifPresent(fact ->
+                                                                fact.setHendelseId(hendelse.getHendelseId())));
+
+                                    } catch (NoSuchMethodException |
+                                             InvocationTargetException |
+                                             IllegalAccessException e) {
+                                        log.error("Feilet å lagre hendelseId, {}", e.getMessage());
+                                    }
+                                })));
     }
 
     private void checkAlias(String ident) {
@@ -216,7 +245,7 @@ public class PdlOrdreService {
         var alias = aliasRepository.findByTidligereIdent(ident);
         if (alias.isPresent()) {
             throw new InvalidRequestException(
-                    format(VIOLATION_ALIAS_EXISTS, alias.get().getPerson().getIdent()));
+                    VIOLATION_ALIAS_EXISTS.formatted(alias.get().getPerson().getIdent()));
         }
     }
 
@@ -225,16 +254,18 @@ public class PdlOrdreService {
         return deployService.sendOrders(
                 OrdreRequest.builder()
                         .sletting(opprettinger.stream()
+                                .filter(OpprettRequest::isNotTestnorgeIdent)
                                 .map(oppretting -> deployService.createOrdre(PDL_SLETTING, oppretting.getPerson().getIdent(), List.of(new PdlDelete())))
                                 .toList())
                         .oppretting(opprettinger.stream()
                                 .filter(OpprettRequest::noneAlias)
+                                .filter(OpprettRequest::isNotTestnorgeIdent)
                                 .map(oppretting ->
                                         deployService.createOrdre(PDL_OPPRETT_PERSON, oppretting.getPerson().getIdent(),
                                                 List.of(OpprettIdent.builder()
                                                         .historiskeIdenter(oppretting.getPerson().getAlias().stream().map(DbAlias::getTidligereIdent).toList())
                                                         .opphoert(!oppretting.getPerson().getPerson().getFolkeregisterPersonstatus().isEmpty() &&
-                                                                oppretting.getPerson().getPerson().getFolkeregisterPersonstatus().get(0).getStatus().equals(OPPHOERT))
+                                                                oppretting.getPerson().getPerson().getFolkeregisterPersonstatus().getFirst().getStatus().equals(OPPHOERT))
                                                         .build())))
                                 .toList())
                         .opplysninger(opprettinger.stream()
@@ -274,7 +305,7 @@ public class PdlOrdreService {
                         deployService.createOrdre(PDL_FALSK_IDENTITET, oppretting.getPerson().getIdent(), mapperFacade.mapAsList(utenHistorikk(oppretting.getPerson().getPerson().getFalskIdentitet()), PdlFalskIdentitet.class)),
                         deployService.createOrdre(PDL_TILRETTELAGT_KOMMUNIKASJON, oppretting.getPerson().getIdent(), mapperFacade.mapAsList(utenHistorikk(oppretting.getPerson().getPerson().getTilrettelagtKommunikasjon()), PdlTilrettelagtKommunikasjon.class)),
                         deployService.createOrdre(PDL_DOEDFOEDT_BARN, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getDoedfoedtBarn()),
-                        deployService.createOrdre(PDL_SIKKERHETSTILTAK_URL, oppretting.getPerson().getIdent(), utenHistorikk(oppretting.getPerson().getPerson().getSikkerhetstiltak())))
+                        deployService.createOrdre(PDL_SIKKERHETSTILTAK, oppretting.getPerson().getIdent(), utenHistorikk(oppretting.getPerson().getPerson().getSikkerhetstiltak())))
                 .flatMap(Collection::stream)
                 .toList();
     }

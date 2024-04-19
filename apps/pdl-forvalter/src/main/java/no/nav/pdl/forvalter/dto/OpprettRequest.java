@@ -9,6 +9,8 @@ import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.model.DbRelasjon;
 import no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType;
 
+import static no.nav.pdl.forvalter.utils.TestnorgeIdentUtility.isTestnorgeIdent;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -16,6 +18,11 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType;
 public class OpprettRequest {
 
     private DbPerson person;
+
+    public boolean isNotTestnorgeIdent() {
+
+        return !isTestnorgeIdent(person.getIdent());
+    }
 
     @JsonIgnore
     public boolean noneAlias() {

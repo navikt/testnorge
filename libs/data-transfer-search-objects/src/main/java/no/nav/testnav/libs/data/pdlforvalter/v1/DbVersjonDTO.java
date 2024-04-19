@@ -43,6 +43,9 @@ public abstract class DbVersjonDTO implements Serializable {
     @Schema(description = "Denne kan også benyttes ved behov")
     private FolkeregistermetadataDTO folkeregistermetadata;
 
+    @Schema(description = "hendelseId formidler ")
+    private String hendelseId;
+
     @JsonIgnore
     protected static <T> int count(T artifact) {
         return nonNull(artifact) ? 1 : 0;
