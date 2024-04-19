@@ -64,7 +64,7 @@ public class TenorOrganisasjonSearchService {
         }
 
         if (nonNull(searchData.getForretningsadresse())) {
-            builder.append(convertObject("forretningsadresse.kommunenummer", searchData.getForretningsadresse().getKommunenummer()))
+            builder.append(convertObject("forretningsadresse.kommunenummer", searchData.getForretningsadresse().getKommunenummer()));
         }
 
         if (nonNull(searchData.getEnhetStatuser())) {
