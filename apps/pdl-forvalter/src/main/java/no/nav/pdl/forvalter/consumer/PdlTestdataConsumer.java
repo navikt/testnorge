@@ -29,7 +29,9 @@ import java.util.Set;
 import static java.util.Objects.isNull;
 import static no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility.getIdenttype;
 import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.getBestillingUrl;
+import static no.nav.pdl.forvalter.utils.TestnorgeIdentUtility.isTestnorgeIdent;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_SLETTING;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
 @Service
@@ -129,43 +131,39 @@ public class PdlTestdataConsumer {
             );
         }
 
-        switch (value.getArtifact()) {
-            case PDL_SLETTING:
-                return Flux.from(
-                        new PdlDeleteCommandPdl(webClient,
-                                getBestillingUrl().get(value.getArtifact()),
-                                value.getIdent(),
-                                accessToken.getTokenValue()
-                        ).call());
+        return switch (value.getArtifact()) {
+            case PDL_SLETTING -> Flux.from(
+                    new PdlDeleteCommandPdl(webClient,
+                            getBestillingUrl().get(value.getArtifact()),
+                            value.getIdent(),
+                            accessToken.getTokenValue()
+                    ).call());
+            case PDL_OPPRETT_PERSON -> Identtype.NPID == getIdenttype(value.getIdent()) ?
 
-            case PDL_OPPRETT_PERSON:
+                    Flux.from(
+                            new PdlAktoerNpidCommand(webClient,
+                                    value.getIdent(),
+                                    accessToken.getTokenValue()
+                            ).call()) :
 
-                return Identtype.NPID == getIdenttype(value.getIdent()) ?
-
-                        Flux.from(
-                                new PdlAktoerNpidCommand(webClient,
-                                        value.getIdent(),
-                                        accessToken.getTokenValue()
-                                ).call()) :
-
-                        Flux.from(
-                                new PdlOpprettPersonCommandPdl(webClient,
-                                        getBestillingUrl().get(value.getArtifact()),
-                                        value.getIdent(),
-                                        (OpprettIdent) value.getBody(),
-                                        accessToken.getTokenValue()
-                                ).call());
-
-            default:
-                return Flux.from(
-                        new PdlOpprettArtifactCommandPdl(
-                                webClient,
-                                getBestillingUrl().get(value.getArtifact()),
-                                value.getIdent(),
-                                body,
-                                accessToken.getTokenValue(),
-                                value.getBody().getId()
-                        ).call());
-        }
+                    Flux.from(
+                            new PdlOpprettPersonCommandPdl(webClient,
+                                    getBestillingUrl().get(value.getArtifact()),
+                                    value.getIdent(),
+                                    (OpprettIdent) value.getBody(),
+                                    accessToken.getTokenValue()
+                            ).call());
+            default -> !isTestnorgeIdent(value.getIdent()) || isBlank(value.getBody().getHendelseId()) ?
+                    Flux.from(
+                            new PdlOpprettArtifactCommandPdl(
+                                    webClient,
+                                    getBestillingUrl().get(value.getArtifact()),
+                                    value.getIdent(),
+                                    body,
+                                    accessToken.getTokenValue(),
+                                    value.getBody().getId()
+                            ).call()) :
+                    Flux.empty();
+        };
     }
 }

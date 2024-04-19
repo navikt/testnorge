@@ -1,6 +1,5 @@
 package no.nav.pdl.forvalter.utils;
 
-import lombok.Getter;
 import lombok.experimental.UtilityClass;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact;
 
@@ -70,7 +69,6 @@ public class PdlTestDataUrls {
     private static final String PDL_BESTILLING_FOLKEREGISTER_PERSONSTATUS_URL = PDL_BESTILLING_URL + "/folkeregisterpersonstatus";
     private static final String PDL_BESTILLING_SIKKERHETSTILTAK_URL = PDL_BESTILLING_URL + "/sikkerhetstiltak";
 
-    @Getter
     private static final Map<PdlArtifact, String> bestillingUrl = new EnumMap<>(PdlArtifact.class);
 
     static {
@@ -102,6 +100,10 @@ public class PdlTestDataUrls {
         bestillingUrl.put(PDL_OPPRETT_PERSON, PDL_BESTILLING_OPPRETT_PERSON_URL);
         bestillingUrl.put(PDL_DOEDFOEDT_BARN, PDL_BESTILLING_DOEDFOEDT_BARN);
         bestillingUrl.put(PDL_SIKKERHETSTILTAK, PDL_BESTILLING_SIKKERHETSTILTAK_URL);
+    }
+
+    public static Map<PdlArtifact, String> getBestillingUrl() {
+        return bestillingUrl;
     }
 
     public enum TemaGrunnlag {GEN, PEN}
