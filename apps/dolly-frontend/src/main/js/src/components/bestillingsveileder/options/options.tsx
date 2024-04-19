@@ -1,6 +1,5 @@
 import { initialValuesBasedOnMal } from '@/components/bestillingsveileder/options/malOptions'
-import { useArenaData } from '@/utils/hooks/useFagsystemer'
-import { harArenaBestilling } from '@/utils/SjekkBestillingFagsystem'
+import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 
 const TYPE = Object.freeze({
 	NY_BESTILLING: 'NY_BESTILLING',
@@ -29,8 +28,9 @@ export const BVOptions = (
 		gruppe,
 	} = {},
 	gruppeId,
-	personId,
 ) => {
+	const { dollyEnvironments } = useDollyEnvironments()
+
 	let initialValues = {
 		antall: antall || 1,
 		beskrivelse: null,
@@ -101,7 +101,7 @@ export const BVOptions = (
 
 	if (mal) {
 		bestType = TYPE.NY_BESTILLING_FRA_MAL
-		initialValues = Object.assign(initialValues, initialValuesBasedOnMal(mal))
+		initialValues = Object.assign(initialValues, initialValuesBasedOnMal(mal, dollyEnvironments))
 	}
 
 	if (opprettFraIdenter) {
@@ -112,14 +112,6 @@ export const BVOptions = (
 	if (personFoerLeggTil) {
 		bestType = TYPE.LEGG_TIL
 		initialValues = initialValuesLeggTil
-	}
-
-	if (personFoerLeggTil) {
-		const bestillinger = tidligereBestillinger?.map((best) => best?.data)
-		const { arenaData } = useArenaData(personId, harArenaBestilling(bestillinger))
-		if (arenaData && arenaData.length > 0) {
-			personFoerLeggTil.arenaforvalteren = arenaData
-		}
 	}
 
 	if (leggTilPaaGruppe) {
@@ -141,7 +133,10 @@ export const BVOptions = (
 			initialValues = initialValuesStandardOrganisasjon
 		} else if (mal) {
 			bestType = TYPE.NY_ORGANISASJON_FRA_MAL
-			initialValues = Object.assign(initialValuesOrganisasjon, initialValuesBasedOnMal(mal))
+			initialValues = Object.assign(
+				initialValuesOrganisasjon,
+				initialValuesBasedOnMal(mal, dollyEnvironments),
+			)
 		} else {
 			bestType = TYPE.NY_ORGANISASJON
 			initialValues = initialValuesOrganisasjon
