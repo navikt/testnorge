@@ -5,17 +5,14 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.tenorsearchservice.consumers.TenorClient;
 import no.nav.testnav.apps.tenorsearchservice.consumers.dto.InfoType;
 import no.nav.testnav.apps.tenorsearchservice.consumers.dto.Kilde;
+import no.nav.testnav.apps.tenorsearchservice.domain.TenorOrganisasjonRequest;
 import no.nav.testnav.apps.tenorsearchservice.domain.TenorOversiktOrganisasjonResponse;
-import no.nav.testnav.apps.tenorsearchservice.domain.TenorOversiktResponse;
-import no.nav.testnav.apps.tenorsearchservice.domain.TenorRequest;
 import no.nav.testnav.apps.tenorsearchservice.service.mapper.TenorOrganisasjonResultMapperService;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import static java.util.Objects.nonNull;
 import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.convertBooleanWildcard;
-import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.convertDatoer;
-import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.convertEnum;
 import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.convertIntervall;
 import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.convertObject;
 import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.guard;
@@ -28,7 +25,7 @@ public class TenorOrganisasjonSearchService {
     private final TenorClient tenorClient;
     private final TenorOrganisasjonResultMapperService tenorOrganisasjonResultMapperService;
 
-    public Mono<TenorOversiktOrganisasjonResponse> getTestdataOrganisasjon(TenorRequest searchData, Integer antall, Integer side, Integer seed) {
+    public Mono<TenorOversiktOrganisasjonResponse> getTestdataOrganisasjon(TenorOrganisasjonRequest searchData, Integer antall, Integer side, Integer seed) {
 
         var query = getOrganisasjonQuery(searchData);
 
@@ -36,59 +33,91 @@ public class TenorOrganisasjonSearchService {
                 .flatMap(resultat -> Mono.just(tenorOrganisasjonResultMapperService.mapOrganisasjon(resultat, query)));
     }
 
-    private String getOrganisasjonQuery(TenorRequest searchData) {
+    private String getOrganisasjonQuery(TenorOrganisasjonRequest searchData) {
 
         var builder = new StringBuilder()
-                .append(convertObject("identifikator", searchData.getIdentifikator()))
-                .append(convertDatoer("foedselsdato", searchData.getFoedselsdato()))
-                .append(convertDatoer("doedsdato", searchData.getDoedsdato()))
-                .append(convertEnum("identifikatorType", searchData.getIdentifikatorType()))
-                .append(convertEnum("kjoenn", searchData.getKjoenn()))
-                .append(convertEnum("personstatus", searchData.getPersonstatus()))
-                .append(convertEnum("sivilstand", searchData.getSivilstand()))
-                .append(convertEnum("identitetsgrunnlagStatus", searchData.getIdentitetsgrunnlagStatus()))
-                .append(convertEnum("adresseBeskyttelse", searchData.getAdressebeskyttelse()))
-                .append(convertBooleanWildcard("legitimasjonsdokument", searchData.getHarLegitimasjonsdokument()))
-                .append(convertObject("falskIdentitet", searchData.getHarFalskIdentitet()))
-                .append(convertObject("norskStatsborgerskap", searchData.getHarNorskStatsborgerskap()))
-                .append(convertObject("flereStatsborgerskap", searchData.getHarFlereStatsborgerskap()));
+                .append(convertObject("organisasjonsnummer", searchData.getOrganisasjonsnummer()))
+                .append(convertObject("harUtenlandskForretningsadresse", searchData.getHarUtenlandskForretningsadresse()))
+                .append(convertObject("harUtenlandskPostadresse", searchData.getHarUtenlandskPostadresse()))
+                .append(convertObject("naeringBeskrivelse", searchData.getNaeringBeskrivelse()))
+                .append(convertObject("naeringKode", searchData.getNaeringKode()))
+                .append(convertObject("registrertIMvaregisteret", searchData.getRegistrertIMvaregisteret()))
+                .append(convertObject("registrertIForetaksregisteret", searchData.getRegistrertIForetaksregisteret()))
+                .append(convertObject("registrertIFrivillighetsregisteret", searchData.getRegistrertIFrivillighetsregisteret()))
+                .append(convertObject("slettetIEnhetsregisteret", searchData.getSlettetIEnhetsregisteret()))
+                .append(convertIntervall("antallAnsatte", searchData.getAntallAnsatte()))
 
-        if (nonNull(searchData.getNavn())) {
-            builder.append(convertObject("flereFornavn", searchData.getNavn().getHarFlereFornavn()))
-                    .append(convertIntervall("navnLengde", searchData.getNavn().getNavnLengde()))
-                    .append(convertBooleanWildcard("mellomnavn", searchData.getNavn().getHarMellomnavn()))
-                    .append(convertObject("navnSpesialtegn", searchData.getNavn().getHarNavnSpesialtegn()));
+                .append(convertBooleanWildcard("revisorer", searchData.getRevisorer()))
+                .append(convertBooleanWildcard("regnskapsfoerere", searchData.getRegnskapsfoerere()))
+                .append(convertBooleanWildcard("dagligLeder", searchData.getDagligLeder()))
+                .append(convertBooleanWildcard("styremedlemmer", searchData.getStyremedlemmer()))
+                .append(convertBooleanWildcard("forretningsfoerer", searchData.getForretningsfoerer()))
+                .append(convertBooleanWildcard("kontaktpersoner", searchData.getKontaktpersoner()))
+                .append(convertBooleanWildcard("norsk_representant", searchData.getNorsk_representant()))
+
+                .append(convertBooleanWildcard("harUnderenheter", searchData.getHarUnderenheter()))
+                .append(convertObject("antallUnderenheter", searchData.getAntallUnderenheter()));
+
+
+        if (nonNull(searchData.getOrganisasjonsform())) {
+            builder.append(convertObject("organisasjonsform.kode", searchData.getOrganisasjonsform().getKode()));
         }
 
-        if (nonNull(searchData.getAdresser())) {
-            builder.append(convertEnum("adresseGradering", searchData.getAdresser().getAdresseGradering()))
-                    .append(convertObject("kommunenr", searchData.getAdresser().getKommunenummer()))
-                    .append(convertBooleanWildcard("bostedsadresse", searchData.getAdresser().getHarBostedsadresse()))
-                    .append(convertBooleanWildcard("oppholdAnnetSted", searchData.getAdresser().getHarOppholdAnnetSted()))
-                    .append(convertBooleanWildcard("postadresse", searchData.getAdresser().getHarPostadresseNorge()))
-                    .append(convertBooleanWildcard("postadresseUtland", searchData.getAdresser().getHarPostadresseUtland()))
-                    .append(convertBooleanWildcard("kontaktinfoDoedsbo", searchData.getAdresser().getHarKontaktadresseDoedsbo()))
-                    .append(convertObject("adresseSpesialtegn", searchData.getAdresser().getHarAdresseSpesialtegn()));
+        if (nonNull(searchData.getForretningsadresse())) {
+            builder.append(convertObject("forretningsadresse.kommunenummer", searchData.getForretningsadresse().getKommunenummer()))
         }
 
-        if (nonNull(searchData.getRelasjoner())) {
-            builder
-                    .append(convertIntervall("antallBarn", searchData.getRelasjoner().getAntallBarn()))
-                    .append(convertBooleanWildcard("foreldreansvar", searchData.getRelasjoner().getHarForeldreAnsvar()))
-                    .append(convertBooleanWildcard("deltBosted", searchData.getRelasjoner().getHarDeltBosted()))
-                    .append(convertBooleanWildcard("vergemaalType", searchData.getRelasjoner().getHarVergemaalEllerFremtidsfullmakt()))
-                    .append(convertObject("borMedFar", searchData.getRelasjoner().getBorMedFar()))
-                    .append(convertObject("borMedMor", searchData.getRelasjoner().getBorMedMor()))
-                    .append(convertObject("borMedMedmor", searchData.getRelasjoner().getBorMedMedmor()))
-                    .append(convertObject("foreldreHarSammeAdresse", searchData.getRelasjoner().getForeldreHarSammeAdresse()));
+        if (nonNull(searchData.getEnhetStatuser())) {
+            builder.append(convertObject("enhetStatuser.kode", searchData.getEnhetStatuser().getKode()));
         }
 
-        if (nonNull(searchData.getHendelser())) {
-            builder.append(convertEnum("hendelserMedSekvens.hendelse", searchData.getHendelser().getHendelse()))
-                    .append(convertEnum("sisteHendelse", searchData.getHendelser().getSisteHendelse()));
+        if (nonNull(searchData.getErUnderenhet())) {
+            builder.append(convertObject("erUnderenhet.overenhet", searchData.getErUnderenhet().getOverenhet()));
         }
 
-        builder.append(TenorEksterneRelasjonerUtility.getEksterneRelasjoner(searchData));
+        if (nonNull(searchData.getTenorRelasjoner())) {
+            var tenorRelasjoner = searchData.getTenorRelasjoner();
+
+            if (nonNull(tenorRelasjoner.getTestinnsendingSkattEnhet())) {
+                var testinnsendingSkattEnhet = tenorRelasjoner.getTestinnsendingSkattEnhet();
+
+                builder.append(convertObject("tenorRelasjoner.testinnsendingSkattEnhet.inntektsaar", testinnsendingSkattEnhet.getInntektsaar()));
+                builder.append(convertBooleanWildcard("tenorRelasjoner.testinnsendingSkattEnhet.harSkattemeldingUtkast", testinnsendingSkattEnhet.getHarSkattemeldingUtkast()));
+                builder.append(convertBooleanWildcard("tenorRelasjoner.testinnsendingSkattEnhet.harSkattemeldingFastsatt", testinnsendingSkattEnhet.getHarSkattemeldingFastsatt()));
+                builder.append(convertBooleanWildcard("tenorRelasjoner.testinnsendingSkattEnhet.harSelskapsmeldingUtkast", testinnsendingSkattEnhet.getHarSelskapsmeldingUtkast()));
+                builder.append(convertBooleanWildcard("tenorRelasjoner.testinnsendingSkattEnhet.harSelskapsmeldingFastsatt", testinnsendingSkattEnhet.getHarSelskapsmeldingFastsatt()));
+                builder.append(convertBooleanWildcard("tenorRelasjoner.testinnsendingSkattEnhet.manglendeGrunnlagsdata", testinnsendingSkattEnhet.getManglendeGrunnlagsdata()));
+                builder.append(convertObject("tenorRelasjoner.testinnsendingSkattEnhet.manntall", testinnsendingSkattEnhet.getManntall()));
+            }
+
+            if (nonNull(tenorRelasjoner.getArbeidsforhold())) {
+                var arbeidsforhold = tenorRelasjoner.getArbeidsforhold();
+
+                builder.append(convertObject("tenorRelasjoner.arbeidsforhold.startDato", arbeidsforhold.getStartDato()));
+                builder.append(convertObject("tenorRelasjoner.arbeidsforhold.sluttDato", arbeidsforhold.getSluttDato()));
+                builder.append(convertBooleanWildcard("tenorRelasjoner.arbeidsforhold.harPermisjoner", arbeidsforhold.getHarPermisjoner()));
+                builder.append(convertBooleanWildcard("tenorRelasjoner.arbeidsforhold.harPermitteringer", arbeidsforhold.getHarPermitteringer()));
+                builder.append(convertBooleanWildcard("tenorRelasjoner.arbeidsforhold.harTimerMedTimeloenn", arbeidsforhold.getHarTimerMedTimeloenn()));
+                builder.append(convertBooleanWildcard("tenorRelasjoner.arbeidsforhold.harUtenlandsopphold", arbeidsforhold.getHarUtenlandsopphold()));
+                builder.append(convertBooleanWildcard("tenorRelasjoner.arbeidsforhold.harHistorikk", arbeidsforhold.getHarHistorikk()));
+                builder.append(convertObject("tenorRelasjoner.arbeidsforhold.arbeidsforholdtype", arbeidsforhold.getArbeidsforholdtype()));
+            }
+
+            if (nonNull(tenorRelasjoner.getSamletReskontroinnsyn())) {
+                var samletReskontroinnsyn = tenorRelasjoner.getSamletReskontroinnsyn();
+
+                builder.append(convertObject("tenorRelasjoner.samletReskontroinnsyn.harKrav", samletReskontroinnsyn.getHarKrav()));
+                builder.append(convertObject("tenorRelasjoner.samletReskontroinnsyn.harInnbetaling", samletReskontroinnsyn.getHarInnbetaling()));
+            }
+
+            if (nonNull(tenorRelasjoner.getTjenestepensjonsavtaleOpplysningspliktig())) {
+                var tjenestepensjonsavtaleOpplysningspliktig = tenorRelasjoner.getTjenestepensjonsavtaleOpplysningspliktig();
+
+                builder.append(convertObject("tenorRelasjoner.tjenestepensjonsavtaleOpplysningspliktig.tjenestepensjonsinnretningOrgnr", tjenestepensjonsavtaleOpplysningspliktig.getTjenestepensjonsinnretningOrgnr()));
+                builder.append(convertObject("tenorRelasjoner.tjenestepensjonsavtaleOpplysningspliktig.periode", tjenestepensjonsavtaleOpplysningspliktig.getPeriode()));
+            }
+
+        }
 
         return guard(builder);
     }
