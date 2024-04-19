@@ -182,14 +182,15 @@ export const BostedsadresseForm = ({
 
 export const Bostedsadresse = ({ formMethods }: BostedsadresseValues) => {
 	const opts = useContext(BestillingsveilederContext)
-	const initialPDLMaster = opts?.identMaster === 'PDL' || opts?.identtype === 'NPID'
+
+	const initialMaster = opts?.identMaster === 'PDL' || opts?.identtype === 'NPID' ? 'PDL' : 'FREG'
 
 	return (
 		<Kategori title="Bostedsadresse">
 			<FormDollyFieldArray
 				name="pdldata.person.bostedsadresse"
 				header="Bostedsadresse"
-				newEntry={getInitialBostedsadresse(initialPDLMaster ? 'PDL' : 'FREG')}
+				newEntry={getInitialBostedsadresse(initialMaster)}
 				canBeEmpty={false}
 			>
 				{(path: string, idx: number) => (

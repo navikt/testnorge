@@ -154,14 +154,14 @@ export const KontaktadresseForm = ({
 
 export const Kontaktadresse = ({ formMethods }: KontaktadresseValues) => {
 	const opts = useContext(BestillingsveilederContext)
-	const initialPDLMaster = opts?.identMaster === 'PDL' || opts?.identtype === 'NPID'
+	const initialMaster = opts?.identMaster === 'PDL' || opts?.identtype === 'NPID' ? 'PDL' : 'FREG'
 
 	return (
 		<Kategori title="Kontaktadresse">
 			<FormDollyFieldArray
 				name="pdldata.person.kontaktadresse"
 				header="Kontaktadresse"
-				newEntry={getInitialKontaktadresse(initialPDLMaster ? 'PDL' : 'FREG')}
+				newEntry={getInitialKontaktadresse(initialMaster)}
 				canBeEmpty={false}
 			>
 				{(path: string, idx: number) => (

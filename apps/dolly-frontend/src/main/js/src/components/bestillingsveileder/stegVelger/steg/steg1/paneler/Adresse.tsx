@@ -39,8 +39,7 @@ export const AdressePanel = ({ stateModifier, formValues }: any) => {
 AdressePanel.heading = 'Adresser'
 
 AdressePanel.initialValues = ({ set, opts, del, has }: any) => {
-	const { identtype } = opts
-	const { identMaster } = opts
+	const { identtype, identMaster } = opts
 
 	const initialMaster = identMaster === 'PDL' || identtype === 'NPID' ? 'PDL' : 'FREG'
 

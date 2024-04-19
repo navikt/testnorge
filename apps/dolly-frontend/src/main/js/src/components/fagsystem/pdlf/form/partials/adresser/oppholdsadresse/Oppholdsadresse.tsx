@@ -191,14 +191,14 @@ export const OppholdsadresseForm = ({
 
 export const Oppholdsadresse = ({ formMethods }: OppholdsadresseValues) => {
 	const opts = useContext(BestillingsveilederContext)
-	const initialPDLMaster = opts?.identMaster === 'PDL' || opts?.identtype === 'NPID'
+	const initialMaster = opts?.identMaster === 'PDL' || opts?.identtype === 'NPID' ? 'PDL' : 'FREG'
 
 	return (
 		<Kategori title="Oppholdsadresse">
 			<FormDollyFieldArray
 				name="pdldata.person.oppholdsadresse"
 				header="Oppholdsadresse"
-				newEntry={getInitialOppholdsadresse(initialPDLMaster ? 'PDL' : 'FREG')}
+				newEntry={getInitialOppholdsadresse(initialMaster)}
 				canBeEmpty={false}
 			>
 				{(path: string, idx: number) => (
