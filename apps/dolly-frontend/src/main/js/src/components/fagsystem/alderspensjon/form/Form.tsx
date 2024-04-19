@@ -33,7 +33,7 @@ const StyledAlert = styled(Alert)`
 	}
 `
 
-const alderspensjonPath = 'pensjonforvalter.alderspensjon'
+export const alderspensjonPath = 'pensjonforvalter.alderspensjon'
 
 export const AlderspensjonForm = () => {
 	const formMethods = useFormContext()

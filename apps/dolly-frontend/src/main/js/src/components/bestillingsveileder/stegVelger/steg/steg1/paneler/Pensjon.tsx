@@ -13,6 +13,8 @@ import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bes
 import { initialUforetrygd } from '@/components/fagsystem/uforetrygd/initialValues'
 import { runningCypressE2E } from '@/service/services/Request'
 import _ from 'lodash'
+import { alderspensjonPath } from '@/components/fagsystem/alderspensjon/form/Form'
+import { uforetrygdPath } from '@/components/fagsystem/uforetrygd/form/Form'
 
 export const PensjonPanel = ({ stateModifier, formValues }: any) => {
 	const sm = stateModifier(PensjonPanel.initialValues)
@@ -80,7 +82,12 @@ export const PensjonPanel = ({ stateModifier, formValues }: any) => {
 			}}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType="pensjon"
-			startOpen={harValgtAttributt(formValues, [pensjonPath, tpPath])}
+			startOpen={harValgtAttributt(formValues, [
+				pensjonPath,
+				tpPath,
+				alderspensjonPath,
+				uforetrygdPath,
+			])}
 		>
 			<AttributtKategori title="Pensjonsgivende inntekt (POPP)" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.inntekt} id="inntekt_pensjon" />

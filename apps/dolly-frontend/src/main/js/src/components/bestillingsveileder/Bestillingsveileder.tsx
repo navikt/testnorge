@@ -14,7 +14,7 @@ export const Bestillingsveileder = ({ error, sendBestilling }) => {
 	const navigate = useNavigate()
 	const [showError, setShowError] = useState(false)
 	const [navigateRoot, setNavigateRoot] = useState(false)
-	const { gruppeId, personId } = useParams()
+	const { gruppeId } = useParams()
 	const erOrganisasjon = location?.state?.opprettOrganisasjon
 	const importPersoner = location?.state?.importPersoner
 
@@ -46,7 +46,7 @@ export const Bestillingsveileder = ({ error, sendBestilling }) => {
 		return null
 	}
 
-	const options = BVOptions(location.state, gruppeId, personId)
+	const options = BVOptions(location.state, gruppeId)
 	const handleSubmit = (values) => {
 		sendBestilling(values, options, gruppeId, navigate)
 	}

@@ -11,6 +11,9 @@ export const useStateModifierFns = (formMethods: UseFormReturn) => {
 	const has = (path) => {
 		return formMethods.watch(path) !== undefined
 	}
+	const values = (path) => {
+		return formMethods.watch(path)
+	}
 	const del = (path) => {
 		if (isArray(path)) {
 			path.forEach((p) => {
@@ -58,10 +61,11 @@ export const useStateModifierFns = (formMethods: UseFormReturn) => {
 			opts: any
 			del: (path: any) => void
 			has: (path: any) => boolean
+			values: (path: any) => any
 			methods: any
 		}) => {},
 	) => {
-		const attrs = fn({ set, setMulti, opts, del, has, methods: formMethods }) || {}
+		const attrs = fn({ set, setMulti, opts, del, has, values, methods: formMethods }) || {}
 		const checked = allCheckedLabels(attrs)
 		return {
 			attrs,
