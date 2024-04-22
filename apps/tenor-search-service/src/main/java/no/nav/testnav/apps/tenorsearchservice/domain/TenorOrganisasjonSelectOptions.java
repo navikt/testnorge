@@ -7,7 +7,7 @@ public class TenorOrganisasjonSelectOptions {
 
     @Getter
     @AllArgsConstructor
-    public enum OrganisasjonForm {
+    public enum OrganisasjonForm implements LabelEnum {
         AAFY("Underenhet til ikke-næringsdrivende"),
         ADOS("Administrativ enhet - offentlig sektor"),
         ANNA("Annen juridisk person"),
@@ -55,21 +55,39 @@ public class TenorOrganisasjonSelectOptions {
 
         private final String label;
 
+        @Override
+        public String getName() {
+            return name();
+        }
+
+        @Override
+        public String getLabel() {
+            return label;
+        }
     }
 
     @Getter
     @AllArgsConstructor
-    public enum EnhetStatus {
+    public enum EnhetStatus implements LabelEnum {
         OPPL("Oppløst"),
         KONK("Åpnet konkurs");
 
         private final String label;
 
+        @Override
+        public String getName() {
+            return name();
+        }
+
+        @Override
+        public String getLabel() {
+            return label;
+        }
     }
 
     @Getter
     @AllArgsConstructor
-    public enum Grunnlagsdata {
+    public enum Grunnlagsdata implements LabelEnum {
         AKSJESPAREKONTO("Aksjesparekonto"),
         BARNEPASS("Betaling for pass og stell av barn"),
         BETALINGER_NAERINGSDRIVENDE("Betalinger til selvstendig næringsdrivende"),
@@ -107,16 +125,36 @@ public class TenorOrganisasjonSelectOptions {
         VERDIPAPIRFOND("Verdipapirfond");
 
         private final String label;
+
+        @Override
+        public String getName() {
+            return name();
+        }
+
+        @Override
+        public String getLabel() {
+            return label;
+        }
     }
 
     @Getter
     @AllArgsConstructor
-    public enum ArbeidsforholdType {
+    public enum ArbeidsforholdType implements LabelEnum {
         ORDINAERT_ARBEIDSFORHOLD("Ordinært"),
         MARITIMT_ARBEIDSFORHOLD("Maritimt"),
         FRILANSER_OPPDRAGSTAKER_HONORAR_PERSONER_MM("Frilanser med mer");
 
         private final String label;
+
+        @Override
+        public String getName() {
+            return name();
+        }
+
+        @Override
+        public String getLabel() {
+            return label;
+        }
     }
 
 }
