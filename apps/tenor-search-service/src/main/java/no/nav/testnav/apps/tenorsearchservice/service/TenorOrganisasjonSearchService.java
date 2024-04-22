@@ -13,6 +13,7 @@ import reactor.core.publisher.Mono;
 
 import static java.util.Objects.nonNull;
 import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.convertBooleanWildcard;
+import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.convertEnum;
 import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.convertIntervall;
 import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.convertObject;
 import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.guard;
@@ -86,7 +87,7 @@ public class TenorOrganisasjonSearchService {
                 builder.append(convertBooleanWildcard("tenorRelasjoner.testinnsendingSkattEnhet.harSkattemeldingFastsatt", testinnsendingSkattEnhet.getHarSkattemeldingFastsatt()));
                 builder.append(convertBooleanWildcard("tenorRelasjoner.testinnsendingSkattEnhet.harSelskapsmeldingUtkast", testinnsendingSkattEnhet.getHarSelskapsmeldingUtkast()));
                 builder.append(convertBooleanWildcard("tenorRelasjoner.testinnsendingSkattEnhet.harSelskapsmeldingFastsatt", testinnsendingSkattEnhet.getHarSelskapsmeldingFastsatt()));
-                builder.append(convertBooleanWildcard("tenorRelasjoner.testinnsendingSkattEnhet.manglendeGrunnlagsdata", testinnsendingSkattEnhet.getManglendeGrunnlagsdata()));
+                builder.append(convertEnum("tenorRelasjoner.testinnsendingSkattEnhet.manglendeGrunnlagsdata", testinnsendingSkattEnhet.getManglendeGrunnlagsdata()));
                 builder.append(convertObject("tenorRelasjoner.testinnsendingSkattEnhet.manntall", testinnsendingSkattEnhet.getManntall()));
             }
 

@@ -31,7 +31,11 @@ public enum Lookups {
     Stadietype(TenorRequest.Stadietype.class),
     TekniskNavn(no.nav.testnav.apps.tenorsearchservice.domain.TekniskNavn.class),
     TilleggsskattType(TenorRequest.TilleggsskattType.class),
-    UtenlandskPersonIdentifikasjon(TenorRequest.UtenlandskPersonIdentifikasjon.class);
+    UtenlandskPersonIdentifikasjon(TenorRequest.UtenlandskPersonIdentifikasjon.class),
+    Organisasjonsform(TenorOrganisasjonRequest.OrganisasjonsForm.class),
+    ArbeidsforholdType(TenorOrganisasjonSelectOptions.ArbeidsforholdType.class),
+    EnhetStatus(TenorOrganisasjonSelectOptions.EnhetStatus.class),
+    Grunnlagsdata(TenorOrganisasjonSelectOptions.Grunnlagsdata.class);
 
     private final Class<?> value;
 }

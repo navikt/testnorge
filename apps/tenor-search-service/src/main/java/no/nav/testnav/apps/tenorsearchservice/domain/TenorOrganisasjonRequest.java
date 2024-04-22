@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import no.nav.testnav.apps.tenorsearchservice.domain.TenorOrganisasjonSelectOptions.Grunnlagsdata;
 
 import java.math.BigInteger;
 import java.time.LocalDate;
@@ -40,6 +41,14 @@ public class TenorOrganisasjonRequest {
     private Integer antallUnderenheter;
     private TenorRelasjoner tenorRelasjoner;
 
+    public enum OrganisasjonsForm {
+        Alderspensjon, AlderspensjonSkjermingstillegg, AndreBeskrivelser,
+        Arbeidsavklaringspenger, AvtalefestetPensjon, Bil, Bonus, DagpengerVedArbeidsloeshet, Ektefelletillegg,
+        ElektroniskKommunikasjon, Fagforeningskontingent, FastBilgodtgjoerelse, Fastloenn, FastTillegg, Feriepenger,
+        Foreldrepenger, IpaEllerIpsPeriodiskeYtelser, Kvalifiseringsstoenad, NyAvtalefestetPensjonPrivatSektor,
+        PensjonOgLivrenterIArbeidsforhold, ReiseKostMedOvernattingPaaHybelMedKokEllerPrivat,
+        ReiseKostMedOvernattingPaaHybelUtenKokEllerPensjonatEllerBrakke, Sykepenger, Timeloenn, Ufoeretrygd
+    }
 
     @Data
     @Builder
@@ -47,7 +56,7 @@ public class TenorOrganisasjonRequest {
     @AllArgsConstructor
     public static class Organisasjonsform {
 
-        private String kode;
+        private TenorOrganisasjonSelectOptions.OrganisasjonForm kode;
     }
 
     @Data
@@ -64,7 +73,7 @@ public class TenorOrganisasjonRequest {
     @AllArgsConstructor
     public static class EnhetStatus {
 
-        private String kode;
+        private TenorOrganisasjonSelectOptions.EnhetStatus kode;
     }
 
     @Data
@@ -84,8 +93,8 @@ public class TenorOrganisasjonRequest {
         private Boolean harSkattemeldingFastsatt;
         private Boolean harSelskapsmeldingUtkast;
         private Boolean harSelskapsmeldingFastsatt;
-        private Boolean manglendeGrunnlagsdata;
-        private String manntall;
+        private Grunnlagsdata manglendeGrunnlagsdata;
+        private Grunnlagsdata manntall;
     }
 
     @Data
@@ -100,7 +109,7 @@ public class TenorOrganisasjonRequest {
         private Boolean harTimerMedTimeloenn;
         private Boolean harUtenlandsopphold;
         private Boolean harHistorikk;
-        private String arbeidsforholdtype;
+        private TenorOrganisasjonSelectOptions.ArbeidsforholdType arbeidsforholdtype;
     }
 
     @Data
