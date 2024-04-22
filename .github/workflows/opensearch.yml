@@ -21,4 +21,4 @@ jobs:
       - uses: nais/deploy/actions/deploy@v2
         env:
           CLUSTER: dev-gcp
-          RESOURCE: .nais/opensearch.yml
+          RESOURCE: ".nais/opensearch.yml"

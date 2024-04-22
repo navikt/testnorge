@@ -69,6 +69,7 @@ on:
 jobs:
 
   start:
+    if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     steps:
       - name: "Logging"
@@ -160,7 +161,7 @@ jobs:
         uses: nais/deploy/actions/deploy@v2
         env:
           CLUSTER: ${{ inputs.cluster }}
-          RESOURCE: ${{ inputs.working-directory }}/config.yml
+          RESOURCE: "${{ inputs.working-directory }}/config.yml"
           VAR: image=${{ needs.build.outputs.image }}
 
   deploy-test:
@@ -175,7 +176,7 @@ jobs:
         uses: nais/deploy/actions/deploy@v2
         env:
           CLUSTER: ${{ inputs.cluster }}
-          RESOURCE: ${{ inputs.working-directory }}/config.test.yml
+          RESOURCE: "${{ inputs.working-directory }}/config.test.yml"
           VAR: image=${{ needs.build.outputs.image }}
 
   # Only used by dolly-frontend.
@@ -191,7 +192,7 @@ jobs:
         uses: nais/deploy/actions/deploy@v2
         env:
           CLUSTER: ${{ inputs.cluster }}
-          RESOURCE: ${{ inputs.working-directory }}/config.idporten.yml
+          RESOURCE: "${{ inputs.working-directory }}/config.idporten.yml"
           VAR: image=${{ needs.build.outputs.image }}
 
   # Only used by dolly-frontend.
@@ -207,5 +208,5 @@ jobs:
         uses: nais/deploy/actions/deploy@v2
         env:
           CLUSTER: ${{ inputs.cluster }}
-          RESOURCE: ${{ inputs.working-directory }}/config.unstable.yml
+          RESOURCE: "${{ inputs.working-directory }}/config.unstable.yml"
           VAR: image=${{ needs.build.outputs.image }}

@@ -54,6 +54,7 @@ on:
 jobs:
 
   start:
+    if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     steps:
       - name: "Logging"
@@ -126,7 +127,7 @@ jobs:
         uses: nais/deploy/actions/deploy@v2
         env:
           CLUSTER: ${{ inputs.cluster }}
-          RESOURCE: ${{ inputs.working-directory }}/${{ inputs.nais-manifest }}
+          RESOURCE: "${{ inputs.working-directory }}/${{ inputs.nais-manifest }}"
           VAR: image=${{ needs.build.outputs.image }}
 
   deploy-test:
@@ -141,5 +142,5 @@ jobs:
         uses: nais/deploy/actions/deploy@v2
         env:
           CLUSTER: ${{ inputs.cluster }}
-          RESOURCE: ${{ inputs.working-directory }}/config.test.yml
+          RESOURCE: "${{ inputs.working-directory }}/config.test.yml"
           VAR: image=${{ needs.build.outputs.image }}
