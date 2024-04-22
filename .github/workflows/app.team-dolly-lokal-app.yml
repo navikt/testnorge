@@ -9,6 +9,7 @@ on:
 jobs:
   deploy:
     name: Deploy team-dolly-lokal-app
+    if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     permissions:
       contents: read
