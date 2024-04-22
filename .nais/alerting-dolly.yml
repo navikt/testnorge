@@ -14,7 +14,7 @@ spec:
           expr: 'kube_deployment_status_replicas_available{namespace = "dolly"} == 0'
           for: 5m
           annotations:
-            summary: '***DUMMY*** Applikasjonen *{{ $labels.deployment }}* har hatt 0 replicas i >5min og er ikke tilgjengelig.'
+            summary: 'Applikasjonen *{{ $labels.deployment }}* har hatt 0 replicas i >5min og er ikke tilgjengelig.'
             action: |
               Alertmanager: <https://alertmanager.dev-gcp.nav.cloud.nais.io/#/alerts?silenced=false&inhibited=false&active=true&filter=%7Balertname%3D%22dolly-replicas-unavailable%22%2C%20app%3D%22{{ $labels.app }}%22%7D&customGrouping=true|Link>
               Events: `kubectl describe pod -l app={{ $labels.deployment }}`
