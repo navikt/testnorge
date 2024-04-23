@@ -268,10 +268,7 @@ public class PersonService {
     @Transactional
     public void deleteMasterPdlArtifacter(String ident) {
 
-        var hendelser = hendelseIdService.getPdlHendelser(ident);
-        pdlTestdataConsumer.deleteHendelser(ident, hendelser)
-                .block();
-
+        hendelseIdService.deletePdlHendelser(ident);
         personRepository.deleteByIdent(ident);
     }
 }

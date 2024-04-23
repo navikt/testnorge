@@ -2,12 +2,15 @@ package no.nav.pdl.forvalter.utils;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.pdl.forvalter.consumer.PdlTestdataConsumer;
 import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
@@ -17,6 +20,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
+import static no.nav.pdl.forvalter.utils.TestnorgeIdentUtility.isTestnorgeIdent;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -25,6 +29,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 public class HendelseIdService {
 
     private final PersonRepository personRepository;
+    private final PdlTestdataConsumer pdlTestdataConsumer;
 
     public void oppdaterPerson(OrdreResponseDTO response) {
 
@@ -75,5 +80,49 @@ public class HendelseIdService {
                         .filter(dbVersjonDTO -> isNotBlank(dbVersjonDTO.getHendelseId()))
                         .toList())
                 .orElse(Collections.emptyList());
+    }
+
+    public void deletePdlHendelser(String ident) {
+
+        if (isTestnorgeIdent(ident)) {
+
+            Flux.fromIterable(getPdlHendelser(ident))
+                    .map(DbVersjonDTO::getHendelseId)
+                    .flatMap(hendelse -> pdlTestdataConsumer.deleteHendelse(ident, hendelse))
+                    .collectList()
+                    .block();
+        }
+    }
+
+    public void deletePdlHendelse(String ident, String artifact, Integer id) {
+
+        if (isTestnorgeIdent(ident)) {
+
+            var hendelse = personRepository.findByIdent(ident)
+                    .map(DbPerson::getPerson)
+                    .map(person -> {
+                        try {
+                            var method = person.getClass().getMethod("get" + artifact);
+                            return (List<DbVersjonDTO>) method.invoke(person);
+                        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                            log.error("Feilet å hente get{} fra person med ident {}", artifact, ident);
+                            return null;
+                        }
+                    })
+                    .filter(Objects::nonNull)
+                    .flatMap(opplysninger -> opplysninger.stream()
+                            .filter(opplysning -> id.equals(opplysning.getId()))
+                            .filter(DbVersjonDTO::isPdlMaster)
+                            .map(DbVersjonDTO::getHendelseId)
+                            .filter(StringUtils::isNotBlank)
+                            .findFirst())
+                    .orElse(null);
+
+            if (isNotBlank(hendelse)) {
+
+                pdlTestdataConsumer.deleteHendelse(ident, hendelse)
+                        .block();
+            }
+        }
     }
 }

@@ -12,7 +12,6 @@ import no.nav.pdl.forvalter.consumer.command.PdlOpprettPersonCommandPdl;
 import no.nav.pdl.forvalter.dto.ArtifactValue;
 import no.nav.pdl.forvalter.dto.OpprettIdent;
 import no.nav.pdl.forvalter.dto.OrdreRequest;
-import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregistermetadataDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.Identtype;
 import no.nav.testnav.libs.data.pdlforvalter.v1.OrdreResponseDTO;
@@ -111,15 +110,15 @@ public class PdlTestdataConsumer {
                 .collectList();
     }
 
-    public Mono<List<OrdreResponseDTO.HendelseDTO>> deleteHendelser(String ident, List<DbVersjonDTO> hendelser) {
+    public Mono<OrdreResponseDTO.HendelseDTO> deleteHendelse(String ident, String hendelseId) {
 
         return tokenExchange
                 .exchange(serverProperties)
-                .flatMapMany(accessToken -> Flux.fromIterable(hendelser)
-                        .map(DbVersjonDTO::getHendelseId)
-                        .flatMap(hendelseId -> new PdlDeleteHendelseIdCommandPdl(webClient,
-                                getBestillingUrl().get(PDL_SLETTING_HENDELSEID), ident, hendelseId, accessToken.getTokenValue()).call()))
-                .collectList();
+                .flatMapMany(accessToken -> new PdlDeleteHendelseIdCommandPdl(webClient,
+                                getBestillingUrl().get(PDL_SLETTING_HENDELSEID),
+                        ident, hendelseId, accessToken.getTokenValue()).call())
+                .collectList()
+                .map(List::getFirst);
     }
 
     public Flux<OrdreResponseDTO.HendelseDTO> send(ArtifactValue value, AccessToken accessToken) {
