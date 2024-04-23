@@ -63,6 +63,7 @@ public class OrdreResponseDTO {
         public boolean isDataElement(){
 
             return infoElement != PdlArtifact.PDL_SLETTING &&
+                    infoElement != PdlArtifact.PDL_SLETTING_HENDELSEID &&
                     infoElement != PdlArtifact.PDL_OPPRETT_PERSON;
         }
     }

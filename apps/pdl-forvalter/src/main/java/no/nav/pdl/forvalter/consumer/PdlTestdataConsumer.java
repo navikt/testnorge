@@ -6,11 +6,13 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.config.Consumers;
 import no.nav.pdl.forvalter.consumer.command.PdlAktoerNpidCommand;
 import no.nav.pdl.forvalter.consumer.command.PdlDeleteCommandPdl;
+import no.nav.pdl.forvalter.consumer.command.PdlDeleteHendelseIdCommandPdl;
 import no.nav.pdl.forvalter.consumer.command.PdlOpprettArtifactCommandPdl;
 import no.nav.pdl.forvalter.consumer.command.PdlOpprettPersonCommandPdl;
 import no.nav.pdl.forvalter.dto.ArtifactValue;
 import no.nav.pdl.forvalter.dto.OpprettIdent;
 import no.nav.pdl.forvalter.dto.OrdreRequest;
+import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregistermetadataDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.Identtype;
 import no.nav.testnav.libs.data.pdlforvalter.v1.OrdreResponseDTO;
@@ -22,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Set;
@@ -29,9 +32,8 @@ import java.util.Set;
 import static java.util.Objects.isNull;
 import static no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility.getIdenttype;
 import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.getBestillingUrl;
-import static no.nav.pdl.forvalter.utils.TestnorgeIdentUtility.isTestnorgeIdent;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_SLETTING;
-import static org.apache.commons.lang3.StringUtils.isBlank;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_SLETTING_HENDELSEID;
 
 @Slf4j
 @Service
@@ -100,15 +102,24 @@ public class PdlTestdataConsumer {
                         .flatMap(Flux::fromIterable));
     }
 
-    public Flux<List<OrdreResponseDTO.HendelseDTO>> delete(Set<String> identer) {
+    public Mono<List<OrdreResponseDTO.HendelseDTO>> delete(Set<String> identer) {
 
-        return Flux.from(tokenExchange
+        return tokenExchange
                 .exchange(serverProperties)
-                .flatMapMany(accessToken -> identer
-                        .stream()
-                        .map(ident -> Flux.from(new PdlDeleteCommandPdl(webClient, getBestillingUrl().get(PDL_SLETTING), ident, accessToken.getTokenValue()).call()))
-                        .reduce(Flux.empty(), Flux::concat))
-                .collectList());
+                .flatMapMany(accessToken -> Flux.fromIterable(identer)
+                        .flatMap(ident -> new PdlDeleteCommandPdl(webClient, getBestillingUrl().get(PDL_SLETTING), ident, accessToken.getTokenValue()).call()))
+                .collectList();
+    }
+
+    public Mono<List<OrdreResponseDTO.HendelseDTO>> deleteHendelser(String ident, List<DbVersjonDTO> hendelser) {
+
+        return tokenExchange
+                .exchange(serverProperties)
+                .flatMapMany(accessToken -> Flux.fromIterable(hendelser)
+                        .map(DbVersjonDTO::getHendelseId)
+                        .flatMap(hendelseId -> new PdlDeleteHendelseIdCommandPdl(webClient,
+                                getBestillingUrl().get(PDL_SLETTING_HENDELSEID), ident, hendelseId, accessToken.getTokenValue()).call()))
+                .collectList();
     }
 
     public Flux<OrdreResponseDTO.HendelseDTO> send(ArtifactValue value, AccessToken accessToken) {
@@ -132,38 +143,41 @@ public class PdlTestdataConsumer {
         }
 
         return switch (value.getArtifact()) {
-            case PDL_SLETTING -> Flux.from(
-                    new PdlDeleteCommandPdl(webClient,
-                            getBestillingUrl().get(value.getArtifact()),
-                            value.getIdent(),
-                            accessToken.getTokenValue()
-                    ).call());
+            case PDL_SLETTING -> new PdlDeleteCommandPdl(webClient,
+                    getBestillingUrl().get(value.getArtifact()),
+                    value.getIdent(),
+                    accessToken.getTokenValue()
+            ).call();
+
+            case PDL_SLETTING_HENDELSEID -> new PdlDeleteHendelseIdCommandPdl(webClient,
+                    getBestillingUrl().get(value.getArtifact()),
+                    value.getIdent(),
+                    value.getBody().getHendelseId(),
+                    accessToken.getTokenValue()
+            ).call();
+
             case PDL_OPPRETT_PERSON -> Identtype.NPID == getIdenttype(value.getIdent()) ?
 
-                    Flux.from(
-                            new PdlAktoerNpidCommand(webClient,
-                                    value.getIdent(),
-                                    accessToken.getTokenValue()
-                            ).call()) :
+                    new PdlAktoerNpidCommand(webClient,
+                            value.getIdent(),
+                            accessToken.getTokenValue()
+                    ).call() :
 
-                    Flux.from(
-                            new PdlOpprettPersonCommandPdl(webClient,
-                                    getBestillingUrl().get(value.getArtifact()),
-                                    value.getIdent(),
-                                    (OpprettIdent) value.getBody(),
-                                    accessToken.getTokenValue()
-                            ).call());
-            default -> !isTestnorgeIdent(value.getIdent()) || isBlank(value.getBody().getHendelseId()) ?
-                    Flux.from(
-                            new PdlOpprettArtifactCommandPdl(
-                                    webClient,
-                                    getBestillingUrl().get(value.getArtifact()),
-                                    value.getIdent(),
-                                    body,
-                                    accessToken.getTokenValue(),
-                                    value.getBody().getId()
-                            ).call()) :
-                    Flux.empty();
+                    new PdlOpprettPersonCommandPdl(webClient,
+                            getBestillingUrl().get(value.getArtifact()),
+                            value.getIdent(),
+                            (OpprettIdent) value.getBody(),
+                            accessToken.getTokenValue()
+                    ).call();
+
+            default -> new PdlOpprettArtifactCommandPdl(
+                    webClient,
+                    getBestillingUrl().get(value.getArtifact()),
+                    value.getIdent(),
+                    body,
+                    accessToken.getTokenValue(),
+                    value.getBody().getId()
+            ).call();
         };
     }
 }

@@ -59,6 +59,7 @@ import java.util.Set;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static no.nav.pdl.forvalter.utils.TestnorgeIdentUtility.isTestnorgeIdent;
 
 @Slf4j
 @RestController
@@ -140,7 +141,12 @@ public class PersonController {
     public void deletePerson(@Parameter(description = "Slett angitt testperson med relasjoner")
                              @PathVariable String ident) {
 
-        personService.deletePerson(ident);
+        if (!isTestnorgeIdent(ident)) {
+            personService.deletePerson(ident);
+
+        } else {
+            personService.deleteMasterPdlArtifacter(ident);
+        }
     }
 
     @ResponseBody
@@ -606,9 +612,9 @@ public class PersonController {
     @PutMapping(value = "/{ident}/telefonnummer")
     @Operation(description = "Oppdater telefonnumre for person")
     public void updateTelefonnumre(@Parameter(description = "Ident for testperson")
-                                    @PathVariable String ident,
-                                    @Parameter(description = "id som identifiserer telefonnummer")
-                                    @RequestBody List<TelefonnummerDTO> telefonnumre) {
+                                   @PathVariable String ident,
+                                   @Parameter(description = "id som identifiserer telefonnummer")
+                                   @RequestBody List<TelefonnummerDTO> telefonnumre) {
 
         artifactUpdateService.updateTelefonnummer(ident, telefonnumre);
     }

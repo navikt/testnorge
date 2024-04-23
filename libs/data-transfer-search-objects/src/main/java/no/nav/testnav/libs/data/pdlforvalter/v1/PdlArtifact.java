@@ -26,6 +26,7 @@ public enum PdlArtifact {
     PDL_SIKKERHETSTILTAK("Sikkerhetstiltak"),
     PDL_SIVILSTAND("Sivilstand"),
     PDL_SLETTING(""),
+    PDL_SLETTING_HENDELSEID(""),
     PDL_STATSBORGERSKAP("Statsborgerskap"),
     PDL_TELEFONUMMER("Telefonnummer"),
     PDL_TILRETTELAGT_KOMMUNIKASJON("TilrettelagtKommunikasjon"),

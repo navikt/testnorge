@@ -43,7 +43,7 @@ public abstract class DbVersjonDTO implements Serializable {
     @Schema(description = "Denne kan også benyttes ved behov")
     private FolkeregistermetadataDTO folkeregistermetadata;
 
-    @Schema(description = "hendelseId formidler ")
+    @Schema(description = "hendelseId formidler forrige innsendingshendelse (kvittering) fra PDL")
     private String hendelseId;
 
     @JsonIgnore
@@ -61,5 +61,10 @@ public abstract class DbVersjonDTO implements Serializable {
     @JsonIgnore
     public String getIdentForRelasjon() {
         return null;
+    }
+
+    @JsonIgnore
+    public boolean isPdlMaster() {
+        return master == Master.PDL;
     }
 }
