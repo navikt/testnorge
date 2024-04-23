@@ -50,5 +50,4 @@ public class TenorOrganisasjonSearchController {
 
         return lookupService.getLookup(lookup);
     }
-
 }
