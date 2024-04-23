@@ -6,6 +6,8 @@ import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { SivilstandData } from '@/components/fagsystem/pdlf/PdlTypes'
 import { formatDate, oversettBoolean, showLabel } from '@/utils/DataFormatter'
 import { EkspanderbarVisning } from '@/components/bestilling/sammendrag/visning/EkspanderbarVisning'
+import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
+import { RelatertPerson } from '@/components/bestilling/sammendrag/visning/RelatertPerson'
 
 type SivilstandTypes = {
 	sivilstandListe: Array<SivilstandData>
@@ -22,6 +24,9 @@ export const Sivilstand = ({ sivilstandListe }: SivilstandTypes) => {
 				<BestillingTitle>Sivilstand (partner)</BestillingTitle>
 				<DollyFieldArray header="Sivilstand" data={sivilstandListe}>
 					{(sivilstand: SivilstandData, idx: number) => {
+						const dataIsEmpty = (data: any) => {
+							return !data || isEmpty(data, ['syntetisk'])
+						}
 						return (
 							<React.Fragment key={idx}>
 								<TitleValue
@@ -33,15 +38,17 @@ export const Sivilstand = ({ sivilstandListe }: SivilstandTypes) => {
 									title="Bekreftelsesdato"
 									value={formatDate(sivilstand.bekreftelsesdato)}
 								/>
-								<TitleValue
-									title="Bor ikke sammen"
-									value={oversettBoolean(sivilstand.borIkkeSammen)}
-								/>
+								<TitleValue title="Bor ikke sammen" value={sivilstand.borIkkeSammen && 'Ja'} />
 								<TitleValue
 									title="Partner"
 									value={oversettBoolean(sivilstand.relatertVedSivilstand)}
 								/>
-								<EkspanderbarVisning data={sivilstand.nyRelatertPerson} header={'PARTNER'} />
+								<EkspanderbarVisning
+									vis={!dataIsEmpty(sivilstand.nyRelatertPerson)}
+									header={'PARTNER'}
+								>
+									<RelatertPerson personData={sivilstand.nyRelatertPerson} tittel="Partner" />
+								</EkspanderbarVisning>
 							</React.Fragment>
 						)
 					}}

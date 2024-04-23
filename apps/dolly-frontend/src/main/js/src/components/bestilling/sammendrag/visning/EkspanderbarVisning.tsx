@@ -3,7 +3,7 @@ import Button from '@/components/ui/button/Button'
 import React from 'react'
 
 type EkspanderbarVisningTypes = {
-	vis: boolean
+	vis: any
 	header: string
 	children?: any
 }

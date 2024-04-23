@@ -241,7 +241,7 @@ export const forelderBarnRelasjon = Yup.object().shape(
 	{
 		minRolleForPerson: requiredString,
 		relatertPersonsRolle: requiredString,
-		relatertPerson: Yup.string().nullable(),
+		relatertPerson: ifPresent('$relatertPerson', requiredString),
 		borIkkeSammen: Yup.mixed().when('relatertPersonsRolle', {
 			is: 'BARN',
 			then: () => Yup.mixed().notRequired(),
@@ -261,6 +261,7 @@ export const foreldreansvar = Yup.object({
 	ansvar: testForeldreansvar(requiredString),
 	gyldigFraOgMed: testDatoFom(Yup.mixed().nullable(), 'gyldigTilOgMed'),
 	gyldigTilOgMed: testDatoTom(Yup.mixed().nullable(), 'gyldigFraOgMed'),
+	ansvarlig: ifPresent('$ansvarlig', requiredString),
 })
 
 export const foreldreansvarForBarn = Yup.object({

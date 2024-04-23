@@ -7,7 +7,7 @@ import {
 	OppholdsadresseData,
 } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import {
-	Foreldreansvar,
+	ForeldreansvarData,
 	ForeldreBarnRelasjon,
 	FullmaktValues,
 	NyIdent,
@@ -255,7 +255,7 @@ const getUpdatedPdldata = (pdldata: any) => {
 	}
 
 	if (person?.foreldreansvar) {
-		newPdldata.person.foreldreansvar = person.foreldreansvar.map((relasjon: Foreldreansvar) => {
+		newPdldata.person.foreldreansvar = person.foreldreansvar.map((relasjon: ForeldreansvarData) => {
 			if (relasjon.nyAnsvarlig) {
 				relasjon.nyAnsvarlig.syntetisk = true
 			}

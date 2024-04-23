@@ -2,10 +2,16 @@ import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import React from 'react'
 import { formatDate, showLabel } from '@/utils/DataFormatter'
 import { AdresseKodeverk } from '@/config/kodeverk'
+import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
+import { EmptyObject } from '@/components/bestilling/sammendrag/Bestillingsdata'
 
 export const RelatertPerson = ({ personData }: any) => {
 	if (!personData) {
 		return null
+	}
+
+	if (isEmpty(personData, ['syntetisk'])) {
+		return <EmptyObject />
 	}
 
 	return (

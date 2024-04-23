@@ -1,7 +1,7 @@
 import {
 	DoedfoedtBarnData,
 	FoedselData,
-	Foreldreansvar,
+	ForeldreansvarData,
 	ForeldreBarnRelasjon,
 	Metadata,
 	SivilstandData,
@@ -55,7 +55,7 @@ export type HentPerson = {
 	sivilstand: Array<SivilstandData>
 	forelderBarnRelasjon: Array<ForeldreBarnRelasjon>
 	doedfoedtBarn: Array<DoedfoedtBarnData>
-	foreldreansvar: Array<Foreldreansvar>
+	foreldreansvar: Array<ForeldreansvarData>
 	kontaktinformasjonForDoedsbo: Array<any>
 	utenlandskIdentifikasjonsnummer: Array<{}>
 	falskIdentitet: FalskIdentitet

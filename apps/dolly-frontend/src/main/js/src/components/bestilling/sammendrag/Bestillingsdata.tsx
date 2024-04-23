@@ -23,6 +23,7 @@ import { Kontaktadresse } from '@/components/fagsystem/pdlf/bestilling/partials/
 import { Adressebeskyttelse } from '@/components/fagsystem/pdlf/bestilling/partials/Adressebeskyttelse'
 import { Sivilstand } from '@/components/fagsystem/pdlf/bestilling/partials/Sivilstand'
 import { ForelderBarnRelasjon } from '@/components/fagsystem/pdlf/bestilling/partials/ForelderBarnRelasjon'
+import { Foreldreansvar } from '@/components/fagsystem/pdlf/bestilling/partials/Foreldreansvar'
 
 export const BestillingTitle = styled.h4`
 	margin: 5px 0 15px 0;
@@ -86,6 +87,7 @@ export const Bestillingsdata = ({ bestilling }: any) => {
 			/>
 			<Sivilstand sivilstandListe={bestilling.pdldata?.person?.sivilstand} />
 			<ForelderBarnRelasjon forelderBarnListe={bestilling.pdldata?.person?.forelderBarnRelasjon} />
+			<Foreldreansvar foreldreansvarListe={bestilling.pdldata?.person?.foreldreansvar} />
 		</>
 	)
 }

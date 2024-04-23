@@ -9,6 +9,7 @@ import { EkspanderbarVisning } from '@/components/bestilling/sammendrag/visning/
 import { DeltBosted } from '@/components/fagsystem/pdlf/bestilling/partials/DeltBosted'
 import { RelatertPerson } from '@/components/bestilling/sammendrag/visning/RelatertPerson'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
+import _get from 'lodash/get'
 
 type ForelderBarnTypes = {
 	forelderBarnListe: Array<ForeldreBarnRelasjon>
@@ -30,7 +31,7 @@ export const ForelderBarnRelasjon = ({ forelderBarnListe }: ForelderBarnTypes) =
 				<DollyFieldArray header="Relasjon" getHeader={getHeader} data={forelderBarnListe}>
 					{(forelderBarn: ForeldreBarnRelasjon, idx: number) => {
 						if (
-							forelderBarn.relatertPersonsRolle === 'FORELDER' &&
+							['FORELDER', 'MOR', 'MEDMOR', 'FAR'].includes(forelderBarn.relatertPersonsRolle) &&
 							isEmpty(forelderBarn, [
 								'kilde',
 								'master',
@@ -39,9 +40,6 @@ export const ForelderBarnRelasjon = ({ forelderBarnListe }: ForelderBarnTypes) =
 							])
 						) {
 							return <TitleValue title="Relasjon" value="Ingen verdier satt" />
-						}
-						const dataIsEmpty = (data: any) => {
-							return !data || isEmpty(data, ['syntetisk'])
 						}
 
 						return (
@@ -66,20 +64,17 @@ export const ForelderBarnRelasjon = ({ forelderBarnListe }: ForelderBarnTypes) =
 									title={forelderBarn.relatertPersonsRolle}
 									value={forelderBarn.relatertPerson}
 								/>
-								<EkspanderbarVisning
-									vis={!dataIsEmpty(forelderBarn.deltBosted)}
-									header="DELT BOSTED"
-								>
+								<EkspanderbarVisning vis={_get(forelderBarn, 'deltBosted')} header="DELT BOSTED">
 									<DeltBosted deltBosted={forelderBarn.deltBosted} />
 								</EkspanderbarVisning>
 								<EkspanderbarVisning
-									vis={!dataIsEmpty(forelderBarn.nyRelatertPerson)}
+									vis={_get(forelderBarn, 'nyRelatertPerson')}
 									header={forelderBarn.relatertPersonsRolle}
 								>
 									<RelatertPerson personData={forelderBarn.nyRelatertPerson} />
 								</EkspanderbarVisning>
 								<EkspanderbarVisning
-									vis={!dataIsEmpty(forelderBarn.relatertPersonUtenFolkeregisteridentifikator)}
+									vis={_get(forelderBarn, 'relatertPersonUtenFolkeregisteridentifikator')}
 									header={forelderBarn.relatertPersonsRolle}
 								>
 									<RelatertPerson
