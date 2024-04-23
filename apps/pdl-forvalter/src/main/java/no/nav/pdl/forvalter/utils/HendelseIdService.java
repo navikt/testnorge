@@ -68,7 +68,7 @@ public class HendelseIdService {
                             }
                         })
                         .filter(Objects::nonNull)
-                        .filter(value -> value instanceof List)
+                        .filter(List.class::isInstance)
                         .map(value -> (List<DbVersjonDTO>) value)
                         .flatMap(Collection::stream)
                         .filter(DbVersjonDTO::isPdlMaster)

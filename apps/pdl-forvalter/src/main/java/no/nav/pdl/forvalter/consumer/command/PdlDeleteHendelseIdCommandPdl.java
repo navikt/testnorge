@@ -22,7 +22,6 @@ import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.TemaGrunnlag.GEN;
 @RequiredArgsConstructor
 public class PdlDeleteHendelseIdCommandPdl extends PdlTestdataCommand {
 
-    private static final String HENDELSEID = "hendelseId";
     private static final String INFO_STATUS = "Finner ikke forespurt ident i pdl-api";
 
     private final WebClient webClient;
@@ -43,7 +42,7 @@ public class PdlDeleteHendelseIdCommandPdl extends PdlTestdataCommand {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(TEMA, GEN.name())
                 .header(HEADER_NAV_PERSON_IDENT, ident)
-                .header(HENDELSEID, hendelseId)
+                .header("hendelseId", hendelseId)
                 .retrieve()
                 .bodyToFlux(PdlBestillingResponse.class)
                 .flatMap(response -> Mono.just(OrdreResponseDTO.HendelseDTO.builder()
