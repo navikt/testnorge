@@ -4,7 +4,7 @@ describe('Åpne en organisasjon med alle tilvalg', () => {
 	it('passes', () => {
 		cy.visit('')
 
-		cy.dollyGet(CypressSelector.BUTTON_HEADER_ORGANISASJONER).click()
+		cy.dollyGet(CypressSelector.BUTTON_HEADER_OPPRETT_ORGANISASJONER).click()
 
 		cy.get('div').contains('Logaritme').click()
 		cy.get('div').contains('Horisontal').click()
