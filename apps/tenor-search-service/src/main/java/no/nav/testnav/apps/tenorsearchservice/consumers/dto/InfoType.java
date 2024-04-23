@@ -4,6 +4,7 @@ package no.nav.testnav.apps.tenorsearchservice.consumers.dto;
 public enum InfoType {
     IdentOgNavn,
     Organisasjon,
+    OrganisasjonMedKildedata,
     Noekkelinfo,
     Kildedata,
     DataFelter,

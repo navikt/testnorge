@@ -26,11 +26,19 @@ public class TenorOrganisasjonSearchService {
     private final TenorClient tenorClient;
     private final TenorOrganisasjonResultMapperService tenorOrganisasjonResultMapperService;
 
-    public Mono<TenorOversiktOrganisasjonResponse> getTestdataOrganisasjon(TenorOrganisasjonRequest searchData, Integer antall, Integer side, Integer seed) {
+    public Mono<TenorOversiktOrganisasjonResponse> getTestdataOversiktOrganisasjon(TenorOrganisasjonRequest searchData, Integer antall, Integer side, Integer seed) {
 
         var query = getOrganisasjonQuery(searchData);
 
         return tenorClient.getTestdata(query, Kilde.FORETAKSREGISTRET, InfoType.Organisasjon, antall, side, seed)
+                .flatMap(resultat -> Mono.just(tenorOrganisasjonResultMapperService.mapOrganisasjon(resultat, query)));
+    }
+
+    public Mono<TenorOversiktOrganisasjonResponse> getTestdataOrganisasjon(TenorOrganisasjonRequest searchData) {
+
+        var query = getOrganisasjonQuery(searchData);
+
+        return tenorClient.getTestdata(query, Kilde.FORETAKSREGISTRET, InfoType.OrganisasjonMedKildedata, 1, 0, 0)
                 .flatMap(resultat -> Mono.just(tenorOrganisasjonResultMapperService.mapOrganisasjon(resultat, query)));
     }
 

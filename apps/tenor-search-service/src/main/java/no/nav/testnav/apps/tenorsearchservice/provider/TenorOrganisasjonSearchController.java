@@ -27,15 +27,21 @@ public class TenorOrganisasjonSearchController {
     private final OrganisasjonLookupService lookupService;
 
     @PostMapping(path = "/testdata/oversikt/organisasjoner", produces = "application/json", consumes = "application/json")
-    public Mono<TenorOversiktOrganisasjonResponse> getTestdataOrganisasjon(@RequestBody TenorOrganisasjonRequest searchData,
-                                                                           @Schema(description = "Antall resultater per side")
-                                                                           @RequestParam(required = false) Integer antall,
-                                                                           @Schema(description = "Sidenummer")
-                                                                           @RequestParam(required = false) Integer side,
-                                                                           @Schema(description = "Seed for paginering")
-                                                                           @RequestParam(required = false) Integer seed) {
+    public Mono<TenorOversiktOrganisasjonResponse> getTestdataOversiktOrganisasjoner(@RequestBody TenorOrganisasjonRequest searchData,
+                                                                                     @Schema(description = "Antall resultater per side")
+                                                                                     @RequestParam(required = false) Integer antall,
+                                                                                     @Schema(description = "Sidenummer")
+                                                                                     @RequestParam(required = false) Integer side,
+                                                                                     @Schema(description = "Seed for paginering")
+                                                                                     @RequestParam(required = false) Integer seed) {
 
-        return tenorOrganisasjonSearchService.getTestdataOrganisasjon(searchData, antall, side, seed);
+        return tenorOrganisasjonSearchService.getTestdataOversiktOrganisasjon(searchData, antall, side, seed);
+    }
+
+    @PostMapping(path = "/testdata/organisasjoner", produces = "application/json", consumes = "application/json")
+    public Mono<TenorOversiktOrganisasjonResponse> getTestdataOrganisasjoner(@RequestBody TenorOrganisasjonRequest searchData) {
+
+        return tenorOrganisasjonSearchService.getTestdataOrganisasjon(searchData);
     }
 
     @GetMapping("/testdata/domain/organisasjoner")
