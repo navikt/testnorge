@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.tenorsearchservice.consumers.dto.TenorOrganisasjonRawResponse;
 import no.nav.testnav.apps.tenorsearchservice.domain.TenorOversiktOrganisasjonResponse;
@@ -64,13 +65,12 @@ public class TenorOrganisasjonResultMapperService {
         }
     }
 
+    @SneakyThrows
     private TenorOversiktOrganisasjonResponse.Organisasjon mapOrganisasjon(TenorOrganisasjonRawResponse.DokumentOrganisasjon dokument) {
 
-        return TenorOversiktOrganisasjonResponse.Organisasjon.builder()
-                .organisasjonsnummer(dokument.getTenorMetadata().getId())
-                .kilder(dokument.getTenorMetadata().getKilder())
-                .navn(dokument.getNavn())
-                .build();
+        var organisasjonResponse = objectMapper.readValue(dokument.getTenorMetadata().getKildedata(), TenorOversiktOrganisasjonResponse.Organisasjon.class);
+        log.info("Mappet organisasjon: {}", Json.pretty(organisasjonResponse));
+        return organisasjonResponse;
 
     }
 

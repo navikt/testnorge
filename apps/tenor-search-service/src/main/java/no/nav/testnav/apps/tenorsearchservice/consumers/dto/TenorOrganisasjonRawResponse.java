@@ -38,6 +38,7 @@ public class TenorOrganisasjonRawResponse {
     @NoArgsConstructor
     public static class TenorMetadata {
         private List<String> kilder;
+        private String kildedata;
         private String oppdatert;
         private Integer datasettVersjon;
         private String opprettet;
