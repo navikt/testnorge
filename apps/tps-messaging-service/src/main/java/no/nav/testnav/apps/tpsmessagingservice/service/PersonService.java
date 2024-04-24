@@ -206,7 +206,7 @@ public class PersonService {
                 .build();
 
         var xmlRequest = ServiceRutineUtil.marshallToXML(requestContext, request)
-                .replace("standalone=\"yes\"", "standalone=\"yes\" source=\"Dolly\"");
+                .replace("?>", "?><!--  Melding fra Dolly -->");
 
         var miljoerResponse = servicerutineConsumer.sendMessage(xmlRequest, miljoer);
 
