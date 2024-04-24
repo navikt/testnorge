@@ -1,121 +1,111 @@
-import React, { useReducer } from 'react';
+import React, { useState } from 'react';
 
 import { DatePickerFormItem, Line, SelectFormItem } from '@navikt/dolly-komponenter';
-import reducer, { Action, State } from './DodsmeldingReducer';
-import { sendDodsmelding } from '@/service/EndringsmeldingService';
-import { EndringsmeldingForm } from '../endringsmelding-form';
+import { sendDodsmelding, slettDodsmelding } from '@/service/EndringsmeldingService';
 import { format } from 'date-fns';
+import { Alert } from '@navikt/ds-react';
+import { EndringsmeldingForm } from '@/pages/endringsmelding-page/form/endringsmelding-form/EndringsmeldingForm';
 
-export const initState: State = {
-  miljoOptions: [],
-  handling: 'SETTE_DOEDSDATO',
-  ident: '',
-  doedsdato: format(new Date(), 'y-MM-dd'),
-  miljoer: [],
-  validate: false,
-};
+export type Handling = 'SETTE_DOEDSDATO' | 'ENDRET_DOEDSDATO' | 'ANNULLERE_DOEDSDATO';
 
 const notEmptyString = (value: string) => !!value && value !== '';
 const notEmptyList = (value: unknown[]) => !!value && value.length > 0;
 
-export default () => {
-  const [state, dispatch] = useReducer(reducer, initState);
+export const DodsmeldingForm = () => {
+  const [miljoOptions, setMiljoOptions] = useState<string[]>([]);
+  const [ident, setIdent] = useState<string>('');
+  const [doedsdato, setDoedsdato] = useState<string>(format(new Date(), 'y-MM-dd'));
+  const [valgteMiljoer, setValgteMiljoer] = useState<string[]>([]);
+  const [validate, setValidate] = useState<boolean>(false);
+  const [error, setError] = useState<string>('');
 
-  const onValidate = () => {
-    dispatch({ type: Action.SET_VALIDATE_ACTION, value: true });
+  const onValidate = (handling: Handling) => {
+    setValidate(true);
     return (
-      (state.handling === 'ANNULLERE_DOEDSDATO' || notEmptyString(state.doedsdato)) &&
-      notEmptyList(state.miljoer)
+      (handling === 'ANNULLERE_DOEDSDATO' || notEmptyString(doedsdato)) &&
+      notEmptyList(valgteMiljoer)
     );
   };
 
-  const onSend = () =>
-    sendDodsmelding(
+  const onSend = (handling: Handling): Promise<any> => {
+    if (handling === 'ANNULLERE_DOEDSDATO') {
+      return slettDodsmelding(ident.trim(), valgteMiljoer).then((response) => {
+        setError(response?.error);
+        return Promise.resolve(response);
+      });
+    }
+    return sendDodsmelding(
       {
-        doedsdato: state.doedsdato,
-        ident: state.ident.trim(),
-        handling: state.handling,
+        doedsdato: doedsdato,
+        ident: ident.trim(),
+        handling: handling,
       },
-      state.miljoer,
-    );
+      valgteMiljoer,
+    ).then((response) => {
+      setError(response?.error);
+      return Promise.resolve(response);
+    });
+  };
 
-  const getSuccessMessage = () => {
-    const miljoer = state.miljoer;
-    if (state.handling === 'SETTE_DOEDSDATO') {
-      return `Dødsmelding for ident ${state.ident} ble sendt til miljø ${miljoer}.`;
+  const getSuccessMessage = (value: string, handling?: Handling) => {
+    if (handling === 'ANNULLERE_DOEDSDATO') {
+      return `Dødsmelding annulert for ident ${value} i miljø ${valgteMiljoer}.`;
     }
-    if (state.handling === 'ENDRET_DOEDSDATO') {
-      return `Dødsdato endret til ${state.doedsdato} for ident ${state.ident} i miljø ${miljoer}.`;
-    }
-    return `Dødsmelding annulert for ident ${state.ident} i miljø ${miljoer}.`;
+    return `Dødsmelding for ident ${value} ble sendt til miljø ${valgteMiljoer}.`;
   };
   return (
     <EndringsmeldingForm
       labels={{
         submit: 'Opprett dødsmelding',
         search: 'Ident',
+        delete: 'Annuller dødsmelding',
       }}
       onSend={onSend}
       valid={onValidate}
-      setIdent={(ident) => dispatch({ type: Action.SET_IDENT_ACTION, value: ident })}
+      setIdent={(ident) => {
+        setError(null);
+        setMiljoOptions([]);
+        setValgteMiljoer([]);
+        setIdent(ident);
+      }}
       getSuccessMessage={getSuccessMessage}
       setMiljoer={(miljoer) => {
-        dispatch({ type: Action.SET_MILJOER_OPTIONS_ACTION, value: miljoer });
+        setMiljoOptions(miljoer);
         if (miljoer?.length > 0) {
-          dispatch({ type: Action.SET_MILJOER_ACTION, value: [miljoer[0]] });
+          setValgteMiljoer([miljoer[0]]);
         }
       }}
     >
       <Line>
-        <SelectFormItem
-          label="Handling"
-          htmlId="handling-select"
-          onChange={(value) =>
-            // @ts-ignore
-            dispatch({
-              type: Action.SET_HANDLING_ACTION,
-              value: value && value.length > 0 ? value[0] : 'SETTE_DOEDSDATO',
-            })
-          }
-          options={[
-            {
-              value: 'SETTE_DOEDSDATO',
-              label: 'Sette dødsdato',
-            },
-            {
-              value: 'ENDRET_DOEDSDATO',
-              label: 'Endret dødsdato',
-            },
-            {
-              value: 'ANNULLERE_DOEDSDATO',
-              label: 'Annullert dødsdato',
-            },
-          ]}
+        <DatePickerFormItem
+          id="doedsdato-field"
+          label="Dødsdato*"
+          onBlur={(value: string) => setDoedsdato(value)}
+          error={validate && !notEmptyString(doedsdato) ? 'Påkrevd' : null}
         />
-        {state.handling !== 'ANNULLERE_DOEDSDATO' && (
-          <DatePickerFormItem
-            id="doedsdato-field"
-            label="Dødsdato*"
-            onBlur={(value) => dispatch({ type: Action.SET_DOEDSDATO_ACTION, value: value })}
-            error={state.validate && !notEmptyString(state.doedsdato) ? 'Påkrevd' : null}
-          />
-        )}
         <SelectFormItem
-          onChange={(value) => dispatch({ type: Action.SET_MILJOER_ACTION, value: value })}
+          onChange={(value: string[]) => setValgteMiljoer(value)}
           htmlId="miljo-dodsdato-select"
           multi={true}
           label="Send til miljo*"
-          error={state.validate && !notEmptyList(state.miljoer) ? 'Påkrevd' : null}
+          error={validate && !notEmptyList(valgteMiljoer) ? 'Påkrevd' : null}
           options={
-            !state.miljoOptions || state.miljoOptions?.length === 0
+            !miljoOptions || miljoOptions?.length === 0
               ? []
-              : state.miljoOptions?.map((value: string) => ({
+              : miljoOptions?.map((value: string) => ({
                   value: value,
                   label: value.toUpperCase(),
                 }))
           }
         />
       </Line>
+      {notEmptyString(error) && (
+        <div style={{ marginTop: '20px' }}>
+          <Alert variant={'error'} closeButton onClose={() => setError('')}>
+            {error}
+          </Alert>
+        </div>
+      )}
     </EndringsmeldingForm>
   );
 };

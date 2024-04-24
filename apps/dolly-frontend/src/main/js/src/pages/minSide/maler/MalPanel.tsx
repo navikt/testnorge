@@ -1,6 +1,6 @@
 import React from 'react'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import { Button, Panel, Table } from '@navikt/ds-react'
+import { Box, Button, Table } from '@navikt/ds-react'
 import { Mal } from '@/utils/hooks/useMaler'
 import { EndreMalnavn } from './EndreMalnavn'
 import { CypressSelector } from '../../../../cypress/mocks/Selectors'
@@ -9,6 +9,7 @@ import StyledAlert from '@/components/ui/alert/StyledAlert'
 import { PencilWritingIcon } from '@navikt/aksel-icons'
 import { SlettMal } from '@/pages/minSide/maler/SlettMal'
 import { initialValuesBasedOnMal } from '@/components/bestillingsveileder/options/malOptions'
+import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 
 type Props = {
 	antallEgneMaler: any
@@ -29,6 +30,8 @@ export const MalPanel = ({
 	underRedigering,
 	setUnderRedigering,
 }: Props) => {
+	const { dollyEnvironments } = useDollyEnvironments()
+
 	const erUnderRedigering = (id: number) => underRedigering.includes(id)
 
 	const avsluttRedigering = (id: number) => {
@@ -40,7 +43,7 @@ export const MalPanel = ({
 	const maler = malerFiltrert(malListe, searchText)
 	const DataCells = ({ id, malNavn, bestilling }) => (
 		<>
-			<Table.DataCell scope="row">
+			<Table.DataCell scope="row" width={'75%'}>
 				{erUnderRedigering(id) ? (
 					<EndreMalnavn
 						malNavn={malNavn}
@@ -55,7 +58,7 @@ export const MalPanel = ({
 					<span style={{ fontWeight: 'normal' }}>{malNavn}</span>
 				)}
 			</Table.DataCell>
-			<Table.DataCell align={'center'}>
+			<Table.DataCell align={'center'} width={'15%'}>
 				{erUnderRedigering(id) ? (
 					<Button variant={'secondary'} size={'small'} onClick={() => avsluttRedigering(id)}>
 						Avbryt
@@ -72,14 +75,14 @@ export const MalPanel = ({
 					/>
 				)}
 			</Table.DataCell>
-			<Table.DataCell>
+			<Table.DataCell width={'10%'}>
 				<SlettMal id={id} organisasjon={bestilling?.organisasjon} mutate={mutate} />
 			</Table.DataCell>
 		</>
 	)
 
 	return (
-		<Panel>
+		<Box background="surface-default" padding="4">
 			{antallEgneMaler > 0 ? (
 				malerFiltrert(malListe, searchText).length > 0 ? (
 					<ErrorBoundary>
@@ -96,9 +99,12 @@ export const MalPanel = ({
 							</Table.Header>
 							<Table.Body>
 								{maler.map(({ malNavn, id, bestilling }) => {
-									const bestillingBasedOnMal = initialValuesBasedOnMal({
-										bestilling: bestilling,
-									})
+									const bestillingBasedOnMal = initialValuesBasedOnMal(
+										{
+											bestilling: bestilling,
+										},
+										dollyEnvironments,
+									)
 									return (
 										<Table.ExpandableRow
 											key={id}
@@ -122,7 +128,7 @@ export const MalPanel = ({
 						som en mal på siste side av bestillingsveilederen.`}
 				</StyledAlert>
 			)}
-		</Panel>
+		</Box>
 	)
 }
 

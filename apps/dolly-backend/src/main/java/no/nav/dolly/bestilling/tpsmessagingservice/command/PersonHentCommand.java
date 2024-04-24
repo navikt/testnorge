@@ -14,10 +14,10 @@ import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
 @Slf4j
-public class PersonGetCommand implements Callable<Flux<PersonMiljoeDTO>> {
+public class PersonHentCommand implements Callable<Flux<PersonMiljoeDTO>> {
 
     private static final String MILJOER_PARAM = "miljoer";
-    private static final String PERSONER_URL = "/api/v1/personer/{ident}";
+    private static final String PERSONER_URL = "/api/v2/personer/ident";
 
     private final WebClient webClient;
     private final String ident;
@@ -27,11 +27,12 @@ public class PersonGetCommand implements Callable<Flux<PersonMiljoeDTO>> {
     @Override
     public Flux<PersonMiljoeDTO> call() {
 
-        return webClient.get()
+        return webClient.post()
                 .uri(uriBuilder -> uriBuilder
                         .path(PERSONER_URL)
                         .queryParam(MILJOER_PARAM, miljoer)
-                        .build(ident))
+                        .build())
+                .bodyValue(ident)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToFlux(PersonMiljoeDTO.class)

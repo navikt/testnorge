@@ -81,6 +81,7 @@ export const Steg3 = () => {
 		if (harRelatertPersonVedSivilstand || harEksisterendeNyIdent || harRelatertPersonBarn) {
 			formMethods.setValue('malBestillingNavn', undefined)
 		}
+		formMethods.trigger('environments')
 	}, [])
 
 	const visMiljoeVelger = formMethods.watch('environments')

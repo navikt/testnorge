@@ -53,11 +53,10 @@ export const Steg1Person = ({ stateModifier }: any) => {
 	]
 		.map((panel) => ({
 			label: panel.heading,
-			values: stateModifier(panel.initialValues).checked,
-		}))
-		.map((v) => ({
-			...v,
-			values: v?.values.filter((val) => !personFoerLeggTil && !leggTil && val !== 'Alder'),
+			values: stateModifier(panel.initialValues).checked?.filter(
+				(val: string) =>
+					(!personFoerLeggTil && !leggTil) || ((personFoerLeggTil || leggTil) && val !== 'Alder'),
+			),
 		}))
 		.filter((v) => v.values.length)
 

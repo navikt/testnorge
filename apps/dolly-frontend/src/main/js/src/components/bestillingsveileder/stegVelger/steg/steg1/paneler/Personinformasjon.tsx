@@ -180,6 +180,8 @@ PersoninformasjonPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 			skjerming: 'skjerming.egenAnsattDatoTom',
 		},
 		skjermetFra: 'skjermingsregister.skjermetFra',
+		norskBankkonto: 'bankkonto.norskBankkonto',
+		utenlandskBankkonto: 'bankkonto.utenlandskBankkonto',
 		telefonnummer: {
 			pdl: 'pdldata.person.telefonnummer',
 			tpsM: 'tpsMessaging.telefonnummer',
@@ -188,8 +190,6 @@ PersoninformasjonPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 		fullmakt: 'pdldata.person.fullmakt',
 		sikkerhetstiltak: 'pdldata.person.sikkerhetstiltak',
 		tilrettelagtKommunikasjon: 'pdldata.person.tilrettelagtKommunikasjon',
-		utenlandskBankkonto: 'bankkonto.utenlandskBankkonto',
-		norskBankkonto: 'bankkonto.norskBankkonto',
 	}
 
 	return {
@@ -301,6 +301,34 @@ PersoninformasjonPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 				del('skjerming')
 			},
 		},
+		norskBankkonto: {
+			label: 'Norsk bank',
+			checked: has(paths.norskBankkonto),
+			add: () =>
+				set(paths.norskBankkonto, {
+					kontonummer: '',
+					tilfeldigKontonummer: opts.antall && opts.antall > 1,
+				}),
+			remove: () => del(paths.norskBankkonto),
+		},
+		utenlandskBankkonto: {
+			label: 'Utenlandsk bank',
+			checked: has(paths.utenlandskBankkonto),
+			add: () =>
+				set(paths.utenlandskBankkonto, {
+					kontonummer: '',
+					tilfeldigKontonummer: false,
+					swift: 'BANKXX11222',
+					landkode: null,
+					banknavn: '',
+					iban: '',
+					valuta: null,
+					bankAdresse1: '',
+					bankAdresse2: '',
+					bankAdresse3: '',
+				}),
+			remove: () => del(paths.utenlandskBankkonto),
+		},
 		telefonnummer: {
 			label: 'Telefonnummer',
 			checked: has(paths.telefonnummer.pdl),
@@ -368,34 +396,6 @@ PersoninformasjonPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 			remove() {
 				del(paths.tilrettelagtKommunikasjon)
 			},
-		},
-		utenlandskBankkonto: {
-			label: 'Utenlandsk bank',
-			checked: has(paths.utenlandskBankkonto),
-			add: () =>
-				set(paths.utenlandskBankkonto, {
-					kontonummer: '',
-					tilfeldigKontonummer: false,
-					swift: 'BANKXX11222',
-					landkode: null,
-					banknavn: '',
-					iban: '',
-					valuta: null,
-					bankAdresse1: '',
-					bankAdresse2: '',
-					bankAdresse3: '',
-				}),
-			remove: () => del(paths.utenlandskBankkonto),
-		},
-		norskBankkonto: {
-			label: 'Norsk bank',
-			checked: has(paths.norskBankkonto),
-			add: () =>
-				set(paths.norskBankkonto, {
-					kontonummer: '',
-					tilfeldigKontonummer: opts.antall && opts.antall > 1,
-				}),
-			remove: () => del(paths.norskBankkonto),
 		},
 	}
 }

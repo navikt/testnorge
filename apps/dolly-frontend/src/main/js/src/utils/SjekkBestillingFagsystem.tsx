@@ -1,7 +1,7 @@
 export const harAaregBestilling = (bestillingerFagsystemer) => {
 	let aareg = false
 	bestillingerFagsystemer?.forEach((i) => {
-		if (i.aareg) {
+		if (i?.aareg) {
 			aareg = true
 		}
 	})
@@ -11,7 +11,7 @@ export const harAaregBestilling = (bestillingerFagsystemer) => {
 export const harMedlBestilling = (bestillingerFagsystemer) => {
 	let medl = false
 	bestillingerFagsystemer?.forEach((i) => {
-		if (i.medl) {
+		if (i?.medl) {
 			medl = true
 		}
 	})
@@ -21,7 +21,7 @@ export const harMedlBestilling = (bestillingerFagsystemer) => {
 export const harUdistubBestilling = (bestillingerFagsystemer) => {
 	let udistub = false
 	bestillingerFagsystemer?.forEach((i) => {
-		if (i.udistub) {
+		if (i?.udistub) {
 			udistub = true
 		}
 	})
@@ -31,7 +31,7 @@ export const harUdistubBestilling = (bestillingerFagsystemer) => {
 export const harTpBestilling = (bestillingerFagsystemer) => {
 	let tp = false
 	bestillingerFagsystemer?.forEach((i) => {
-		if (i.pensjonforvalter?.tp?.length > 0) {
+		if (i?.pensjonforvalter?.tp?.length > 0) {
 			tp = true
 		}
 	})
@@ -41,7 +41,7 @@ export const harTpBestilling = (bestillingerFagsystemer) => {
 export const harPoppBestilling = (bestillingerFagsystemer) => {
 	let popp = false
 	bestillingerFagsystemer?.forEach((i) => {
-		if (i.pensjonforvalter?.inntekt) {
+		if (i?.pensjonforvalter?.inntekt) {
 			popp = true
 		}
 	})
@@ -51,7 +51,7 @@ export const harPoppBestilling = (bestillingerFagsystemer) => {
 export const harApBestilling = (bestillingerFagsystemer) => {
 	let alderspensjon = false
 	bestillingerFagsystemer?.forEach((i) => {
-		if (i.pensjonforvalter?.alderspensjon) {
+		if (i?.pensjonforvalter?.alderspensjon) {
 			alderspensjon = true
 		}
 	})
@@ -61,7 +61,7 @@ export const harApBestilling = (bestillingerFagsystemer) => {
 export const harUforetrygdBestilling = (bestillingerFagsystemer) => {
 	let uforetrygd = false
 	bestillingerFagsystemer?.forEach((i) => {
-		if (i.pensjonforvalter?.uforetrygd) {
+		if (i?.pensjonforvalter?.uforetrygd) {
 			uforetrygd = true
 		}
 	})
@@ -71,7 +71,7 @@ export const harUforetrygdBestilling = (bestillingerFagsystemer) => {
 export const harInstBestilling = (bestillingerFagsystemer) => {
 	let inst = false
 	bestillingerFagsystemer?.forEach((i) => {
-		if (i.instdata) {
+		if (i?.instdata) {
 			inst = true
 		}
 	})
@@ -81,7 +81,7 @@ export const harInstBestilling = (bestillingerFagsystemer) => {
 export const harDokarkivBestilling = (bestillingerFagsystemer) => {
 	let dokarkiv = false
 	bestillingerFagsystemer?.forEach((i) => {
-		if (i.dokarkiv) {
+		if (i?.dokarkiv) {
 			dokarkiv = true
 		}
 	})
@@ -91,7 +91,7 @@ export const harDokarkivBestilling = (bestillingerFagsystemer) => {
 export const harHistarkBestilling = (bestillingerFagsystemer) => {
 	let histark = false
 	bestillingerFagsystemer?.forEach((i) => {
-		if (i.histark) {
+		if (i?.histark) {
 			histark = true
 		}
 	})
@@ -101,7 +101,7 @@ export const harHistarkBestilling = (bestillingerFagsystemer) => {
 export const harArbeidsplassenBestilling = (bestillingerFagsystemer) => {
 	let arbeidsplassen = false
 	bestillingerFagsystemer?.forEach((i) => {
-		if (i.arbeidsplassenCV) {
+		if (i?.arbeidsplassenCV) {
 			arbeidsplassen = true
 		}
 	})
@@ -111,7 +111,7 @@ export const harArbeidsplassenBestilling = (bestillingerFagsystemer) => {
 export const harArenaBestilling = (bestillingerFagsystemer) => {
 	let arena = false
 	bestillingerFagsystemer?.forEach((i) => {
-		if (i.arenaforvalter) {
+		if (i?.arenaforvalter) {
 			arena = true
 		}
 	})
@@ -121,7 +121,7 @@ export const harArenaBestilling = (bestillingerFagsystemer) => {
 export const harSykemeldingBestilling = (bestillingerFagsystemer) => {
 	let sykemelding = false
 	bestillingerFagsystemer?.forEach((i) => {
-		if (i.sykemelding) {
+		if (i?.sykemelding) {
 			sykemelding = true
 		}
 	})
@@ -131,7 +131,7 @@ export const harSykemeldingBestilling = (bestillingerFagsystemer) => {
 export const harInntektsmeldingBestilling = (bestillingerFagsystemer) => {
 	let inntektsmelding = false
 	bestillingerFagsystemer?.forEach((i) => {
-		if (i.inntektsmelding) {
+		if (i?.inntektsmelding) {
 			inntektsmelding = true
 		}
 	})

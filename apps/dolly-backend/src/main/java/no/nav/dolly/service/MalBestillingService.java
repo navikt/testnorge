@@ -17,6 +17,7 @@ import no.nav.dolly.repository.BestillingRepository;
 import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
 import org.apache.commons.collections4.IterableUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.cache.CacheManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +34,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING_MAL;
 import static no.nav.dolly.util.CurrentAuthentication.getUserId;
 
 @Service
@@ -49,6 +51,7 @@ public class MalBestillingService {
     private final MapperFacade mapperFacade;
     private final GetUserInfo getUserInfo;
     private final ObjectMapper objectMapper;
+    private final CacheManager cacheManager;
 
     @Transactional(readOnly = true)
     public RsMalBestillingWrapper getMalBestillinger() {
@@ -138,6 +141,8 @@ public class MalBestillingService {
             oppdateEksisterende.setBestKriterier(bestilling.getBestKriterier());
             oppdateEksisterende.setMiljoer(bestilling.getMiljoer());
         }
+
+        cacheManager.getCache(CACHE_BESTILLING_MAL).clear();
     }
 
     @Transactional

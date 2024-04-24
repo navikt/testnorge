@@ -1,8 +1,9 @@
 import React from 'react';
 import { Page } from '@navikt/dolly-komponenter';
-import { DodsmeldingForm, FodselsmeldingForm } from './form';
 import { Tabs } from '@navikt/ds-react';
 import styled from 'styled-components';
+import { FodselsmeldingForm } from '@/pages/endringsmelding-page/form/fodselsmelding-from/FodselsmeldingForm';
+import { DodsmeldingForm } from '@/pages/endringsmelding-page/form/dodsmelding-form/DodsmeldingForm';
 
 const StyledPanel = styled(Tabs.Panel)`
   background-color: hsl(0deg 0% 100%);
@@ -10,7 +11,7 @@ const StyledPanel = styled(Tabs.Panel)`
   border-radius: 4px;
 `;
 
-export default () => {
+export const EndringsmeldingPage = () => {
   return (
     <Page>
       <Tabs defaultValue="fødselsmelding" size="medium">

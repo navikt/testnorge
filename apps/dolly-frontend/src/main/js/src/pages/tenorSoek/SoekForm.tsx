@@ -28,7 +28,7 @@ const Soekefelt = styled.div`
 	padding: 20px 15px;
 `
 
-export const SoekForm = ({ setRequest, mutate }: any) => {
+export const SoekForm = ({ setRequest, setMarkertePersoner, mutate }: any) => {
 	const formMethods = useForm({
 		mode: 'onChange',
 		defaultValues: {},
@@ -55,6 +55,7 @@ export const SoekForm = ({ setRequest, mutate }: any) => {
 		setValue(path, value)
 		const request = getUpdatedRequest(watch())
 		setRequest({ ...request })
+		setMarkertePersoner([])
 		mutate()
 	}
 
@@ -63,6 +64,7 @@ export const SoekForm = ({ setRequest, mutate }: any) => {
 		setValue(path, list)
 		const request = getUpdatedRequest(watch())
 		setRequest({ ...request })
+		setMarkertePersoner([])
 		mutate()
 	}
 

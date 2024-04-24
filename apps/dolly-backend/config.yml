@@ -23,8 +23,6 @@ spec:
         - application: testnav-oversikt-frontend
         - application: etterlatte-testdata
           namespace: etterlatte
-        - application: statuspoll
-          namespace: navdig
     outbound:
       rules:
         - application: generer-navn-service

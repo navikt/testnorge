@@ -22,7 +22,14 @@ const TagsWrapper = styled.div`
 	margin: 10px 0;
 `
 
-export const TreffListe = ({ response, personListe, loading, error }: any) => {
+export const TreffListe = ({
+	response,
+	personListe,
+	markertePersoner,
+	setMarkertePersoner,
+	loading,
+	error,
+}: any) => {
 	const [valgtPerson, setValgtPerson] = useState<any>(null)
 
 	const {
@@ -34,8 +41,6 @@ export const TreffListe = ({ response, personListe, loading, error }: any) => {
 	useEffect(() => {
 		setValgtPerson(personListe?.[0] || null)
 	}, [personListe?.[0]])
-
-	const [markertePersoner, setMarkertePersoner] = useState([])
 
 	if ((!personListe || personListe?.length === 0) && loading) {
 		return <Loading label="Laster treff ..." />

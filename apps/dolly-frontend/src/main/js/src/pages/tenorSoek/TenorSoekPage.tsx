@@ -15,6 +15,7 @@ export default () => {
 	const [request, setRequest] = useState({})
 	const [state, setState] = useState<any>(initialState)
 	const { response, loading, error, mutate } = useTenorOversikt(request, 10, state.side, state.seed)
+	const [markertePersoner, setMarkertePersoner] = useState([])
 
 	useEffect(() => {
 		setState(initialState)
@@ -76,10 +77,12 @@ export default () => {
 			<div className="flexbox--align-center--justify-start">
 				<Title title="Søk etter personer i Tenor" />
 			</div>
-			<SoekForm setRequest={setRequest} mutate={mutate} />
+			<SoekForm setRequest={setRequest} setMarkertePersoner={setMarkertePersoner} mutate={mutate} />
 			<TreffListe
 				response={response?.data}
 				personListe={state.personListe}
+				markertePersoner={markertePersoner}
+				setMarkertePersoner={setMarkertePersoner}
 				loading={loading}
 				error={error}
 			/>

@@ -375,6 +375,9 @@ export default ({
 								if (arbeidsplassencvData) {
 									personData.arbeidsplassenCV = { harHjemmel: getArbeidsplassencvHjemmel() }
 								}
+								if (arenaData) {
+									personData.arenaforvalteren = arenaData
+								}
 								leggTilPaaPerson(
 									personData,
 									bestillingListe,
@@ -514,7 +517,7 @@ export default ({
 				<KrrVisning data={krrstub} loading={loading.krrstub} />
 				<MedlVisning data={medl} loading={loadingMedl} />
 				<UdiVisning
-					data={UdiVisning.filterValues(udistub, bestilling?.bestilling.udistub)}
+					data={UdiVisning.filterValues(udistub, bestilling?.bestilling?.udistub)}
 					loading={loadingUdistub}
 				/>
 				<DokarkivVisning

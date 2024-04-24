@@ -96,6 +96,7 @@ export const MiljoVelger = ({
 				isChecked(id) ? values.filter((value) => value !== id) : values.concat(id),
 			)
 		}
+		formMethods.trigger('environments')
 	}
 
 	return (
@@ -110,7 +111,7 @@ export const MiljoVelger = ({
 				</>
 			)}
 			<fieldset name={`Liste over miljøer`}>
-				<StyledH3>Miljøer </StyledH3>
+				<StyledH3>Miljøer</StyledH3>
 				<div className="miljo-velger_checkboxes">
 					{filteredEnvironments.map((env) => (
 						<DollyCheckbox
