@@ -92,7 +92,7 @@ public class GetTenorTestdata implements Callable<Mono<TenorResponse>> {
 
     private String getSkjul(InfoType type) {
 
-        return isNull(type) || (type != InfoType.Kildedata && type != InfoType.AlleFelter && type != InfoType.OrganisasjonMedKildedata) ?
+        return isNull(type) || (type != InfoType.Kildedata && type != InfoType.AlleFelter) ?
                 "*.kildedata" : null;
     }
 
@@ -102,7 +102,6 @@ public class GetTenorTestdata implements Callable<Mono<TenorResponse>> {
             return switch (type) {
                 case IdentOgNavn -> "id,fornavn,etternavn,tenorRelasjoner.*.tenorRelasjonsnavn";
                 case Organisasjon -> "visningnavn,tenorMetadata,navn";
-                case OrganisasjonMedKildedata -> "visningnavn,tenorMetadata,navn,kildedata";
                 case Kildedata -> "*.kildedata";
                 case AlleFelter, DataFelter -> "{alle}";
                 case Spesifikt -> isNotBlank(fields) ? fields : "id";
