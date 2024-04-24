@@ -388,9 +388,19 @@ const getPdlIdentInfo = (ident, bestillingStatuser, pdlData) => {
 		if (navnListe?.length === 1) {
 			return navnListe[0]
 		} else if (navnListe?.length > 1) {
-			return navnListe
+			return [...navnListe]
 				?.filter((navn: any) => navn.metadata.historisk === false)
-				?.sort((a, b) => new Date(b.gyldigFraOgMed) - new Date(a.gyldigFraOgMed))?.[0]
+				?.sort((a, b) => {
+					const sistEndretA = a.metadata.endringer?.reduce((x, y) => {
+						const dato = new Date(y.registrert)
+						return dato > x ? dato : x
+					}, new Date(0))
+					const sistEndretB = b.metadata.endringer?.reduce((x, y) => {
+						const dato = new Date(y.registrert)
+						return dato > x ? dato : x
+					}, new Date(0))
+					return sistEndretB - sistEndretA
+				})?.[0]
 		} else {
 			return null
 		}
