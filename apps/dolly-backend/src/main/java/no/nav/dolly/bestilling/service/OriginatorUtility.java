@@ -66,9 +66,10 @@ public class OriginatorUtility {
 
         } else {
 
-            PdlMasterCleanerUtility.clean(bestillingRequest.getPdldata().getPerson());
+            var persondata = mapperFacade.map(bestillingRequest, PdlPersondata.class);
+            PdlMasterCleanerUtility.clean(persondata.getPerson());
             return Originator.builder()
-                    .pdlBestilling(mapperFacade.map(bestillingRequest.getPdldata(), BestillingRequestDTO.class))
+                    .pdlBestilling(mapperFacade.map(persondata, BestillingRequestDTO.class))
                     .ident(nonNull(testident) ? testident.getIdent() : ident)
                     .master(Master.PDL)
                     .build();

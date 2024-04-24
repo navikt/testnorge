@@ -30,6 +30,7 @@ import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
 import no.nav.dolly.util.TransactionHelperService;
+import no.nav.testnav.libs.data.pdlforvalter.v1.PersonUpdateRequestDTO;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Service;
@@ -145,16 +146,26 @@ public class DollyBestillingService {
                 .map(ClientFuture::get);
     }
 
+    protected void leggIdentTilGruppe(BestillingProgress progress, String beskrivelse) {
+
+        leggIdentTilGruppe(null, progress, beskrivelse);
+    }
+
     protected void leggIdentTilGruppe(String ident, BestillingProgress progress, String beskrivelse) {
 
-        identService.saveIdentTilGruppe(ident, progress.getBestilling().getGruppe(), progress.getMaster(), beskrivelse);
-        log.info("Ident {} lagt til gruppe {}", ident, progress.getBestilling().getGruppe().getId());
+        identService.saveIdentTilGruppe(isNotBlank(ident) ? ident : progress.getIdent(), progress.getBestilling().getGruppe(), progress.getMaster(), beskrivelse);
+        log.info("Ident {} lagt til gruppe {}", progress.getIdent(), progress.getBestilling().getGruppe().getId());
+    }
+
+    protected Flux<DollyPerson> opprettDollyPerson(BestillingProgress progress, Bruker bruker) {
+
+        return opprettDollyPerson(null, progress, bruker);
     }
 
     protected Flux<DollyPerson> opprettDollyPerson(String ident, BestillingProgress progress, Bruker bruker) {
 
         return Flux.just(DollyPerson.builder()
-                .ident(ident)
+                .ident(isNotBlank(ident) ? ident : progress.getIdent())
                 .master(progress.getMaster())
                 .tags(Stream.concat(progress.getBestilling().getGruppe().getTags().stream(),
                                 Stream.of(Tags.DOLLY)
@@ -281,5 +292,24 @@ public class DollyBestillingService {
                                 bestilling.getMiljoer() :
                                 coBestilling.getMiljoer())
                         .build()));
+    }
+
+    protected Flux<PdlResponse> oppdaterPdlPerson(OriginatorUtility.Originator originator, BestillingProgress progress) {
+
+        if (nonNull(originator.getPdlBestilling()) && nonNull(originator.getPdlBestilling().getPerson())) {
+
+            transactionHelperService.persister(progress, BestillingProgress::setPdlForvalterStatus,
+                    "Info: Oppdatering av person startet ...");
+            return pdlDataConsumer.oppdaterPdl(originator.getIdent(),
+                            PersonUpdateRequestDTO.builder()
+                                    .person(originator.getPdlBestilling().getPerson())
+                                    .build())
+                    .doOnNext(response -> log.info("Oppdatert person til PDL-forvalter med response {}", response));
+
+        } else {
+            return Flux.just(PdlResponse.builder()
+                    .ident(originator.getIdent())
+                    .build());
+        }
     }
 }

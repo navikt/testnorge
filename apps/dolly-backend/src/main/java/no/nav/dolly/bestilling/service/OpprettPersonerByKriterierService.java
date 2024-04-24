@@ -82,7 +82,7 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                                     .flatMap(pdlResponse -> sendOrdrePerson(progress, pdlResponse)
                                             .filter(StringUtils::isNotBlank)
                                             .flatMap(ident -> opprettDollyPerson(ident, progress, bestilling.getBruker())
-                                                    .doOnNext(dollyPerson -> leggIdentTilGruppe(ident, progress,
+                                                    .doOnNext(dollyPerson -> leggIdentTilGruppe(progress,
                                                             bestKriterier.getBeskrivelse()))
                                                     .doOnNext(dollyPerson -> counterCustomRegistry.invoke(bestKriterier))
                                                     .flatMap(dollyPerson -> Flux.concat(
