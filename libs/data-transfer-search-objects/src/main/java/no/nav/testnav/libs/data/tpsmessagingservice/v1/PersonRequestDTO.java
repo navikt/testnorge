@@ -1,4 +1,4 @@
-package no.nav.testnav.libs.data.tpsmessagingservice.v2;
+package no.nav.testnav.libs.data.tpsmessagingservice.v1;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
