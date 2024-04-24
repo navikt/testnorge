@@ -6,11 +6,11 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class DollyLogbackLayout extends PatternLayout {
+public class TestnavLogbackLayout extends PatternLayout {
     // matches exactly 11 digits (\\d{11}) that are not immediately preceded ((?<!\\d)) or followed ((?!\\d)) by another digit.
     private final Pattern pattern = Pattern.compile("(?<!\\d)\\d{11}(?!\\d)");
 
-    public DollyLogbackLayout() {
+    public TestnavLogbackLayout() {
         this.setPattern("%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n");
     }
 
