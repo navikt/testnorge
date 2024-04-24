@@ -3,7 +3,7 @@
     <springProfile name="prod">
         <appender name="stdout_json" class="ch.qos.logback.core.ConsoleAppender">
             <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
-                <layout class="no.nav.testnav.libs.servletcore.logging.DollyLogbackLayout"/>
+                <layout class="no.nav.testnav.libs.reactivecore.logging.TestnavLogbackLayout"/>
                 <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
                     <rootCauseFirst>true</rootCauseFirst>
                     <maxDepthPerThrowable>256</maxDepthPerThrowable>
@@ -37,5 +37,5 @@
         </root>
     </springProfile>
 
-    <logger level="TRACE" name="no.nav.testnav.libs.servletcore.logging.LogRequestInterceptor" />
+    <logger level="TRACE" name="no.nav.testnav.libs.servletcore.logging.LogRequestInterceptor"/>
 </configuration>
