@@ -87,11 +87,6 @@ public class OriginatorUtility {
         private Master master;
 
         @JsonIgnore
-        public boolean isPdlf() {
-            return getMaster() == Master.PDLF;
-        }
-
-        @JsonIgnore
         public boolean isPdl() {
             return getMaster() == Master.PDL;
         }
