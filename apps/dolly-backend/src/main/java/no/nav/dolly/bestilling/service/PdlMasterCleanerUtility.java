@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO.Master.FREG;
 
@@ -18,9 +19,11 @@ public class PdlMasterCleanerUtility {
 
     public static PdlPersondata clean(PdlPersondata persondata) {
 
-        if (nonNull(persondata)) {
-            persondata.setOpprettNyPerson(null);
+        if (isNull(persondata)) {
+            return null;
         }
+
+        persondata.setOpprettNyPerson(null);
 
         if (nonNull(persondata.getPerson())) {
             Arrays.stream(persondata.getPerson().getClass().getMethods())
