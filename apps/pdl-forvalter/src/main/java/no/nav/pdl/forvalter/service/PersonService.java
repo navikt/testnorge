@@ -30,7 +30,6 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.PersonUpdateRequestDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.SivilstandDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.StatsborgerskapDTO;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,7 +38,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -141,24 +139,6 @@ public class PersonService {
 
         personRepository.deleteByIdentIn(identer);
         log.info("Sletting av ident {} tok {} ms", ident, currentTimeMillis() - startTime);
-    }
-
-    @Transactional
-    public void deletePersonerUtenom(Set<String> identer) {
-
-        var startTime = currentTimeMillis();
-
-        var dbIdenter = personRepository.findByIdentIn(identer, Pageable.unpaged()).stream()
-                .map(DbPerson::getIdent)
-                .collect(Collectors.toSet());
-
-        pdlTestdataConsumer.delete(identer)
-                .map(response -> identPoolConsumer.releaseIdents(identer, Bruker.TPSF))
-                .block();
-
-                personRepository.deleteByIdentIn(dbIdenter);
-                log.info("Sletting av identer {} tok {} ms",
-                        String.join(",", identer), currentTimeMillis() - startTime);
     }
 
     @Transactional(readOnly = true)

@@ -55,7 +55,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Set;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -147,15 +146,6 @@ public class PersonController {
         } else {
             personService.deleteMasterPdlArtifacter(ident);
         }
-    }
-
-    @ResponseBody
-    @DeleteMapping(value = "/utenom")
-    @Operation(description = "Slette personer som er opprettet utenom PDL-forvalteren")
-    public void deletePersonerUtenom(@Parameter(description = "Slett angitte testpersoner")
-                                     @RequestParam Set<String> identer) {
-
-        personService.deletePersonerUtenom(identer);
     }
 
     @DeleteMapping(value = "/{ident}/foedsel/{id}")

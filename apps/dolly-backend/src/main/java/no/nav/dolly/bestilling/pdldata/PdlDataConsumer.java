@@ -9,7 +9,6 @@ import no.nav.dolly.bestilling.pdldata.command.PdlDataOppdateringCommand;
 import no.nav.dolly.bestilling.pdldata.command.PdlDataOpprettingCommand;
 import no.nav.dolly.bestilling.pdldata.command.PdlDataOrdreCommand;
 import no.nav.dolly.bestilling.pdldata.command.PdlDataSlettCommand;
-import no.nav.dolly.bestilling.pdldata.command.PdlDataSlettUtenomCommand;
 import no.nav.dolly.bestilling.pdldata.command.PdlDataStanaloneCommand;
 import no.nav.dolly.bestilling.pdldata.dto.PdlResponse;
 import no.nav.dolly.config.Consumers;
@@ -68,19 +67,6 @@ public class PdlDataConsumer implements ConsumerStatus {
                 .flatMapMany(token -> Flux.range(0, identer.size())
                         .delayElements(Duration.ofMillis(400))
                         .map(index -> new PdlDataSlettCommand(webClient, identer.get(index), token.getTokenValue()).call())
-                        .flatMap(Flux::from))
-                .collectList();
-    }
-
-    @Timed(name = "providers", tags = {"operation", "pdl_delete_utenom"})
-    public Mono<List<Void>> slettPdlUtenom(List<String> identer) {
-
-        return tokenService.exchange(serverProperties)
-                .flatMapMany(token -> Flux.range(0, (identer.size() / BLOCK_SIZE) + 1)
-                        .delayElements(Duration.ofMillis(1000))
-                        .map(count -> new PdlDataSlettUtenomCommand(webClient,
-                                identer.subList(count * BLOCK_SIZE, Math.min((count + 1) * BLOCK_SIZE, identer.size())),
-                                token.getTokenValue()).call())
                         .flatMap(Flux::from))
                 .collectList();
     }
