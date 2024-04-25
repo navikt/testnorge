@@ -1,22 +1,18 @@
 import Request from '@/service/services/Request'
 
-const TPS_MESSAGING_URL_V1 = `/testnav-tps-messaging-service/api/v1/personer`
-const TPS_MESSAGING_URL_V2 = `/testnav-tps-messaging-service/api/v2/personer`
-
-const getTpsMessagingUrl_V2 = (miljoe) => `${TPS_MESSAGING_URL_V2}/ident?miljoer=${miljoe}`
-const getTpsMessagingUrlAllEnvs_V2 = () => `${TPS_MESSAGING_URL_V2}/ident`
+const TPS_MESSAGING_URL = `/testnav-tps-messaging-service/api/v1/personer`
 
 export default {
 	getTpsPersonInfo(ident, miljoe) {
-		return Request.post(getTpsMessagingUrl_V2(miljoe), ident)
+		return Request.post(`${TPS_MESSAGING_URL}/ident?miljoer=${miljoe}`, { ident: ident })
 	},
 	getTpsPersonInfoAllEnvs(ident) {
-		return Request.post(getTpsMessagingUrlAllEnvs_V2(), ident)
+		return Request.post(`${TPS_MESSAGING_URL}/ident`, { ident: ident })
 	},
 	deleteBankkontoNorsk(ident) {
-		return Request.delete(`${TPS_MESSAGING_URL_V1}/${ident}/bankkonto-norsk`)
+		return Request.delete(`${TPS_MESSAGING_URL}/${ident}/bankkonto-norsk`)
 	},
 	deleteBankkontoUtenlandsk(ident) {
-		return Request.delete(`${TPS_MESSAGING_URL_V1}/${ident}/bankkonto-utenlandsk`)
+		return Request.delete(`${TPS_MESSAGING_URL}/${ident}/bankkonto-utenlandsk`)
 	},
 }
