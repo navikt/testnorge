@@ -50,6 +50,7 @@ export const BostedsadresseForm = ({
 	identtype,
 	identMaster,
 }: BostedsadresseFormValues) => {
+	const erPDL = identtype === 'NPID' || identMaster === 'PDL'
 	useEffect(() => {
 		formMethods.setValue(`${path}.adresseIdentifikatorFraMatrikkelen`, undefined)
 		const boadresse = formMethods.watch(path)
@@ -97,14 +98,14 @@ export const BostedsadresseForm = ({
 			_.set(adresseClone, 'matrikkeladresse', undefined)
 			_.set(adresseClone, 'utenlandskAdresse', undefined)
 			_.set(adresseClone, 'ukjentBosted', undefined)
-			_.set(adresseClone, 'master', 'FREG')
+			!erPDL && _.set(adresseClone, 'master', 'FREG')
 		}
 		if (target?.value === 'MATRIKKELADRESSE') {
 			_.set(adresseClone, 'matrikkeladresse', initialMatrikkeladresse)
 			_.set(adresseClone, 'vegadresse', undefined)
 			_.set(adresseClone, 'utenlandskAdresse', undefined)
 			_.set(adresseClone, 'ukjentBosted', undefined)
-			_.set(adresseClone, 'master', 'FREG')
+			!erPDL && _.set(adresseClone, 'master', 'FREG')
 		}
 		if (target?.value === 'UTENLANDSK_ADRESSE') {
 			_.set(adresseClone, 'utenlandskAdresse', initialUtenlandskAdresse)
@@ -118,7 +119,7 @@ export const BostedsadresseForm = ({
 			_.set(adresseClone, 'vegadresse', undefined)
 			_.set(adresseClone, 'matrikkeladresse', undefined)
 			_.set(adresseClone, 'utenlandskAdresse', undefined)
-			_.set(adresseClone, 'master', 'FREG')
+			!erPDL && _.set(adresseClone, 'master', 'FREG')
 		}
 
 		formMethods.setValue(path, adresseClone)
@@ -175,7 +176,7 @@ export const BostedsadresseForm = ({
 					value={formMethods.watch(`${path}.opprettCoAdresseNavn.fornavn`)}
 				/>
 			</div>
-			<AvansertForm path={path} kanVelgeMaster={valgtAdressetype === null && kanVelgeMaster} />
+			<AvansertForm path={path} kanVelgeMaster={kanVelgeMaster} />
 		</React.Fragment>
 	)
 }
