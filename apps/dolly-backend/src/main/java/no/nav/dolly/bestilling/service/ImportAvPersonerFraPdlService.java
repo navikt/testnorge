@@ -76,7 +76,7 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
             Flux.fromArray(bestilling.getPdlImport().split(","))
                     .flatMap(testnorgeIdent -> Flux.just(OriginatorUtility.prepOriginator(bestKriterier, testnorgeIdent, mapperFacade)))
                     .flatMap(originator -> opprettProgress(bestilling, PDL, originator.getIdent())
-                            .flatMap(progress -> opprettPerson(originator, progress)
+                            .flatMap(progress -> oppdaterPdlPerson(originator, progress)
                                     .flatMap(pdlResponse -> sendOrdrePerson(progress, pdlResponse)
                                             .flatMap(testnorgeIdent -> opprettDollyPerson(progress, bestilling.getBruker())
                                                     .doOnNext(dollyPerson -> leggIdentTilGruppe(progress, bestKriterier.getBeskrivelse()))

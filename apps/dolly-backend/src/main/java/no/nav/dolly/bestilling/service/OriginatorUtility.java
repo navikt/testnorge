@@ -16,8 +16,8 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.BestillingRequestDTO;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.util.TestnorgeIdentUtility.isTestnorgeIdent;
 import static org.apache.commons.lang3.StringUtils.isBlank;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @UtilityClass
 public class OriginatorUtility {
@@ -50,9 +50,17 @@ public class OriginatorUtility {
             bestillingRequest.getPdldata().setOpprettNyPerson(new PdlPersondata.PdlPerson());
         }
 
-        if (nonNull(testident) && testident.isPdlf() ||
-                nonNull((bestillingRequest.getPdldata().getOpprettNyPerson())) ||
-                isNotBlank(ident)) {
+        if (isTestnorgeIdent(ident) || nonNull(testident) && testident.isPdl()) {
+
+            var bestilling = mapperFacade.map(bestillingRequest, RsDollyUtvidetBestilling.class);
+            var pdldata = PdlMasterCleanerUtility.clean(bestilling.getPdldata());
+            return Originator.builder()
+                    .pdlBestilling(mapperFacade.map(pdldata, BestillingRequestDTO.class))
+                    .ident(nonNull(testident) ? testident.getIdent() : ident)
+                    .master(Master.PDL)
+                    .build();
+
+        } else {
 
             var context = MappingContextUtils.getMappingContext();
             context.setProperty("navSyntetiskIdent", bestillingRequest.getNavSyntetiskIdent());
@@ -62,16 +70,6 @@ public class OriginatorUtility {
                     .pdlBestilling(mapperFacade.map(bestillingRequest.getPdldata(), BestillingRequestDTO.class, context))
                     .ident(nonNull(testident) ? testident.getIdent() : ident)
                     .master(Master.PDLF)
-                    .build();
-
-        } else {
-
-            var persondata = mapperFacade.map(bestillingRequest, PdlPersondata.class);
-            PdlMasterCleanerUtility.clean(persondata.getPerson());
-            return Originator.builder()
-                    .pdlBestilling(mapperFacade.map(persondata, BestillingRequestDTO.class))
-                    .ident(nonNull(testident) ? testident.getIdent() : ident)
-                    .master(Master.PDL)
                     .build();
         }
     }

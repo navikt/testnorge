@@ -54,6 +54,8 @@ import static org.apache.logging.log4j.util.Strings.isNotBlank;
 @RequiredArgsConstructor
 public class DollyBestillingService {
 
+    private static final String FINNES_IKKE = "finnes ikke";
+
     protected final IdentService identService;
     protected final BestillingService bestillingService;
     protected final ObjectMapper objectMapper;
@@ -235,6 +237,11 @@ public class DollyBestillingService {
 
     protected Flux<String> sendOrdrePerson(BestillingProgress progress, PdlResponse forvalterStatus) {
 
+        if (progress.getMaster() == PDL) {
+
+            transactionHelperService.persister(progress, BestillingProgress::setPdlImportStatus, "OK");
+        }
+
         if (nonNull(forvalterStatus.getStatus())) {
 
             transactionHelperService.persister(progress, BestillingProgress::setPdlForvalterStatus,
@@ -243,11 +250,6 @@ public class DollyBestillingService {
             );
             transactionHelperService.persister(progress, BestillingProgress::setIdent, forvalterStatus.getStatus().is2xxSuccessful() ?
                     forvalterStatus.getIdent() : "?");
-        }
-
-        if (progress.getMaster() == PDL) {
-
-            transactionHelperService.persister(progress, BestillingProgress::setPdlImportStatus, "OK");
         }
 
         if (isNull(forvalterStatus.getStatus()) || forvalterStatus.getStatus().is2xxSuccessful()) {
@@ -259,7 +261,8 @@ public class DollyBestillingService {
                         var status = resultat.getStatus().is2xxSuccessful() ?
                                 resultat.getJsonNode() :
                                 errorStatusDecoder.getErrorText(resultat.getStatus(), resultat.getFeilmelding());
-                        transactionHelperService.persister(progress, BestillingProgress::setPdlOrdreStatus, status);
+                        transactionHelperService.persister(progress, BestillingProgress::setPdlOrdreStatus,
+                                !status.contains(FINNES_IKKE) ? status : null);
                         log.info("Sendt ordre til PDL for ident {} ", forvalterStatus.getIdent());
                     })
                     .map(resultat -> resultat.getStatus().is2xxSuccessful() ? forvalterStatus.getIdent() : "");
