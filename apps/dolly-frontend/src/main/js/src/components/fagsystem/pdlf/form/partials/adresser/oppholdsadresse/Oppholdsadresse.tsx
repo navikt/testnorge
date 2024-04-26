@@ -12,6 +12,7 @@ import { DollySelect, FormSelect } from '@/components/ui/form/inputs/select/Sele
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import {
 	MatrikkeladresseVelger,
+	OppholdAnnetSted,
 	UtenlandskAdresse,
 	VegadresseVelger,
 } from '@/components/fagsystem/pdlf/form/partials/adresser/adressetyper'
@@ -142,6 +143,7 @@ export const OppholdsadresseForm = ({
 			<div className="flexbox--flex-wrap">
 				<FormDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig f.o.m." />
 				<FormDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig t.o.m." />
+				<OppholdAnnetSted path={`${path}.oppholdAnnetSted`} />
 				<DollySelect
 					name={`${path}.opprettCoAdresseNavn.fornavn`}
 					label="C/O adressenavn"
