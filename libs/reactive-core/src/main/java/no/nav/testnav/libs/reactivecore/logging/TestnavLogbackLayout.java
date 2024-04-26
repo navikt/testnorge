@@ -18,7 +18,7 @@ public class TestnavLogbackLayout extends PatternLayout {
 
     @Override
     public String doLayout(ILoggingEvent event) {
-        String message = event.getFormattedMessage();
+        String message = event.getMessage();
         Matcher matcher = pattern.matcher(message);
 
         StringBuilder result = new StringBuilder();
