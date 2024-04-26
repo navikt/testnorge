@@ -15,7 +15,9 @@ interface VegadresseValues {
 		gyldigTilOgMed?: string
 		startdatoForKontrakt?: string
 		sluttdatoForKontrakt?: string
+		oppholdAnnetSted?: string
 		coAdressenavn?: string
+		metadata: any
 	}
 	idx: number
 }
@@ -37,10 +39,10 @@ export const Vegadresse = ({ adresse, idx }: VegadresseValues) => {
 		gyldigTilOgMed,
 		startdatoForKontrakt,
 		sluttdatoForKontrakt,
+		oppholdAnnetSted,
 		coAdressenavn,
 		metadata,
 	} = adresse
-
 	const master = metadata?.master
 
 	return (
@@ -84,6 +86,7 @@ export const Vegadresse = ({ adresse, idx }: VegadresseValues) => {
 				<TitleValue title="Gyldig til og med" value={formatDate(gyldigTilOgMed)} />
 				<TitleValue title="Startdato for kontrakt" value={formatDate(startdatoForKontrakt)} />
 				<TitleValue title="Sluttdato for kontrakt" value={formatDate(sluttdatoForKontrakt)} />
+				<TitleValue title="Opphold annet sted" value={oppholdAnnetSted?.toUpperCase()} />
 				<TitleValue title="C/O adressenavn" value={coAdressenavn} />
 				<TitleValue title="Master" value={master} />
 			</div>

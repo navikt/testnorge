@@ -73,7 +73,6 @@ const OppholdsadresseVisning = ({
 	if (slettetOppholdsadressePdlf) {
 		return <OpplysningSlettet />
 	}
-
 	const oppholdsadresseValues = redigertOppholdsadressePdlf
 		? redigertOppholdsadressePdlf
 		: oppholdsadresseData

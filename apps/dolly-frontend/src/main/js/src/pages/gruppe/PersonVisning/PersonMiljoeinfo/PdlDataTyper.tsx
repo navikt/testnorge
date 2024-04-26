@@ -97,6 +97,7 @@ export type OppholdsadresseData = {
 	utenlandskAdresse?: UtenlandskAdresse
 	vegadresse?: Vegadresse
 	matrikkeladresse?: Matrikkeladresse
+	oppholdAnnetSted?: string
 	coAdressenavn?: string
 	gyldigFraOgMed?: Date
 	metadata?: Metadata
