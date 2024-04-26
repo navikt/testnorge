@@ -11,8 +11,7 @@ public class TestnavLogbackLayout extends PatternLayout {
     private final Pattern pattern = Pattern.compile("(?<!\\d)\\d{11}(?!\\d)");
 
     public TestnavLogbackLayout() {
-//        this.setPattern("%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n");
-        this.setPattern("%-5relative %-5level %logger{35} - %msg%n");
+        this.setPattern("%-5relative %-5level %logger{35} - %msg%ex%n");
     }
 
 
