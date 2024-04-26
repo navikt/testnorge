@@ -168,7 +168,6 @@ public class DollyRequest2MalBestillingMappingStrategy implements MappingStrateg
                     public void mapAtoB(PersonDTO personDTO, PersonDTO akkumulertDTO, MappingContext context) {
                         akkumulertDTO.getAdressebeskyttelse().addAll(personDTO.getAdressebeskyttelse());
                         akkumulertDTO.getBostedsadresse().addAll(personDTO.getBostedsadresse());
-                        akkumulertDTO.getBostedsadresse().addAll(personDTO.getBostedsadresse());
                         akkumulertDTO.getDeltBosted().addAll(personDTO.getDeltBosted());
                         akkumulertDTO.getDoedfoedtBarn().addAll(personDTO.getDoedfoedtBarn());
                         akkumulertDTO.getDoedsfall().addAll(personDTO.getDoedsfall());
