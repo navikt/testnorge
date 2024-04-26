@@ -75,7 +75,7 @@ export const BostedsadresseForm = ({
 	const valgtAdressetype = formMethods.watch(`${path}.adressetype`)
 
 	const getAdresseOptions = () => {
-		if (identtype && identtype !== 'FNR') {
+		if ((identtype && identtype !== 'FNR') || erPDL) {
 			return Options('adressetypeUtenlandskBostedsadresse')
 		}
 		return Options('adressetypeBostedsadresse')
@@ -98,14 +98,14 @@ export const BostedsadresseForm = ({
 			_.set(adresseClone, 'matrikkeladresse', undefined)
 			_.set(adresseClone, 'utenlandskAdresse', undefined)
 			_.set(adresseClone, 'ukjentBosted', undefined)
-			!erPDL && _.set(adresseClone, 'master', 'FREG')
+			_.set(adresseClone, 'master', 'FREG')
 		}
 		if (target?.value === 'MATRIKKELADRESSE') {
 			_.set(adresseClone, 'matrikkeladresse', initialMatrikkeladresse)
 			_.set(adresseClone, 'vegadresse', undefined)
 			_.set(adresseClone, 'utenlandskAdresse', undefined)
 			_.set(adresseClone, 'ukjentBosted', undefined)
-			!erPDL && _.set(adresseClone, 'master', 'FREG')
+			_.set(adresseClone, 'master', 'FREG')
 		}
 		if (target?.value === 'UTENLANDSK_ADRESSE') {
 			_.set(adresseClone, 'utenlandskAdresse', initialUtenlandskAdresse)
@@ -119,7 +119,7 @@ export const BostedsadresseForm = ({
 			_.set(adresseClone, 'vegadresse', undefined)
 			_.set(adresseClone, 'matrikkeladresse', undefined)
 			_.set(adresseClone, 'utenlandskAdresse', undefined)
-			!erPDL && _.set(adresseClone, 'master', 'FREG')
+			_.set(adresseClone, 'master', 'FREG')
 		}
 
 		formMethods.setValue(path, adresseClone)
@@ -128,7 +128,6 @@ export const BostedsadresseForm = ({
 
 	const { navnInfo, loading } = useGenererNavn()
 	const navnOptions = SelectOptionsFormat.formatOptions('personnavn', navnInfo)
-	const kanVelgeMaster = identMaster !== 'PDL' && identtype != 'NPID'
 
 	return (
 		<React.Fragment key={idx}>
@@ -176,7 +175,7 @@ export const BostedsadresseForm = ({
 					value={formMethods.watch(`${path}.opprettCoAdresseNavn.fornavn`)}
 				/>
 			</div>
-			<AvansertForm path={path} kanVelgeMaster={kanVelgeMaster} />
+			<AvansertForm path={path} kanVelgeMaster={false} />
 		</React.Fragment>
 	)
 }
