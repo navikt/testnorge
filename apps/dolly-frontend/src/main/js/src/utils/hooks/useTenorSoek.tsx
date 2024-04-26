@@ -28,7 +28,7 @@ export const useTenorOrganisasjon = (orgNummer?: string) => {
 	const { data, isLoading, error, mutate } = useSWR(
 		orgNummer
 			? [
-					`${tenorSearchUrl}/oversikt/organisasjoner?type=Organisasjon`,
+					`${tenorSearchUrl}/organisasjoner?type=Organisasjon`,
 					{
 						organisasjonsnummer: orgNummer,
 					},
