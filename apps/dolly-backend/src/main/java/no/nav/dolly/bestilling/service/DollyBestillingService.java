@@ -54,8 +54,6 @@ import static org.apache.logging.log4j.util.Strings.isNotBlank;
 @RequiredArgsConstructor
 public class DollyBestillingService {
 
-    private static final String FINNES_IKKE = "finnes ikke";
-
     protected final IdentService identService;
     protected final BestillingService bestillingService;
     protected final ObjectMapper objectMapper;
@@ -262,10 +260,11 @@ public class DollyBestillingService {
                                 resultat.getJsonNode() :
                                 errorStatusDecoder.getErrorText(resultat.getStatus(), resultat.getFeilmelding());
                         transactionHelperService.persister(progress, BestillingProgress::setPdlOrdreStatus,
-                                !status.contains(FINNES_IKKE) ? status : null);
+                                !resultat.isFinnesIkke() ? status : null);
                         log.info("Sendt ordre til PDL for ident {} ", forvalterStatus.getIdent());
                     })
-                    .map(resultat -> resultat.getStatus().is2xxSuccessful() ? forvalterStatus.getIdent() : "");
+                    .map(resultat -> resultat.getStatus().is2xxSuccessful() || resultat.isFinnesIkke()
+                            ? forvalterStatus.getIdent() : "");
 
         } else {
 
