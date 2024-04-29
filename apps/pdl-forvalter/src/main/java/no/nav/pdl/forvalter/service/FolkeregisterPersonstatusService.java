@@ -19,6 +19,7 @@ import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
 import static no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility.getIdenttype;
+import static no.nav.pdl.forvalter.utils.TestnorgeIdentUtility.isTestnorgeIdent;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.BOSATT;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.DOED;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.FOEDSELSREGISTRERT;
@@ -54,7 +55,8 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
 
         if (person.getFolkeregisterPersonstatus().isEmpty() &&
                 !person.getFalskIdentitet().isEmpty() &&
-                person.getIdenttype() != NPID) {
+                person.getIdenttype() != NPID &&
+                !isTestnorgeIdent(person.getIdent())) {
 
             person.getFolkeregisterPersonstatus().add(handle(FolkeregisterPersonstatusDTO.builder()
                             .id(1)

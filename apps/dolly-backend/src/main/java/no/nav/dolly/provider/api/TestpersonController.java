@@ -124,7 +124,6 @@ public class TestpersonController {
         bestillingService.slettBestillingByTestIdent(ident);
         identService.slettTestident(ident);
 
-        personService.slettTestnorgeRelasjoner(testIdenter);
         personService.recyclePersoner(testIdenter);
     }
 

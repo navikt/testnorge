@@ -10,6 +10,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
@@ -27,7 +28,7 @@ public class PdlAktoerNpidCommand extends PdlTestdataCommand {
     private final String token;
 
     @Override
-    public Mono<OrdreResponseDTO.HendelseDTO> call() {
+    public Flux<OrdreResponseDTO.HendelseDTO> call() {
 
         return webClient
                 .post()
@@ -35,8 +36,8 @@ public class PdlAktoerNpidCommand extends PdlTestdataCommand {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromValue(npid))
-                .exchangeToMono(response ->
-                        Mono.just(OrdreResponseDTO.HendelseDTO.builder()
+                .exchangeToFlux(response ->
+                        Flux.just(OrdreResponseDTO.HendelseDTO.builder()
                                 .status(PdlStatus.OK)
                                 .build()))
                 .doOnError(WebServerException.class, error -> log.error(error.getMessage(), error))

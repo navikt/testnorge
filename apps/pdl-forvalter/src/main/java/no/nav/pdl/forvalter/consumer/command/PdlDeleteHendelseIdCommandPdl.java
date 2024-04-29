@@ -20,13 +20,14 @@ import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.TemaGrunnlag.GEN;
 
 @Slf4j
 @RequiredArgsConstructor
-public class PdlDeleteCommandPdl extends PdlTestdataCommand {
+public class PdlDeleteHendelseIdCommandPdl extends PdlTestdataCommand {
 
     private static final String INFO_STATUS = "Finner ikke forespurt ident i pdl-api";
 
     private final WebClient webClient;
     private final String url;
     private final String ident;
+    private final String hendelseId;
     private final String token;
 
     @Override
@@ -41,6 +42,7 @@ public class PdlDeleteCommandPdl extends PdlTestdataCommand {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(TEMA, GEN.name())
                 .header(HEADER_NAV_PERSON_IDENT, ident)
+                .header("hendelseId", hendelseId)
                 .retrieve()
                 .bodyToFlux(PdlBestillingResponse.class)
                 .flatMap(response -> Mono.just(OrdreResponseDTO.HendelseDTO.builder()
