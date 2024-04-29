@@ -12,6 +12,7 @@ import no.nav.pdl.forvalter.consumer.command.PdlOpprettPersonCommandPdl;
 import no.nav.pdl.forvalter.dto.ArtifactValue;
 import no.nav.pdl.forvalter.dto.OpprettIdent;
 import no.nav.pdl.forvalter.dto.OrdreRequest;
+import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO.Master;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregistermetadataDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.Identtype;
 import no.nav.testnav.libs.data.pdlforvalter.v1.OrdreResponseDTO;
@@ -31,6 +32,7 @@ import java.util.Set;
 import static java.util.Objects.isNull;
 import static no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility.getIdenttype;
 import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.getBestillingUrl;
+import static no.nav.pdl.forvalter.utils.TestnorgeIdentUtility.isTestnorgeIdent;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_SLETTING;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_SLETTING_HENDELSEID;
 
@@ -115,7 +117,7 @@ public class PdlTestdataConsumer {
         return tokenExchange
                 .exchange(serverProperties)
                 .flatMapMany(accessToken -> new PdlDeleteHendelseIdCommandPdl(webClient,
-                                getBestillingUrl().get(PDL_SLETTING_HENDELSEID),
+                        getBestillingUrl().get(PDL_SLETTING_HENDELSEID),
                         ident, hendelseId, accessToken.getTokenValue()).call())
                 .collectList()
                 .map(List::getFirst);
@@ -169,14 +171,16 @@ public class PdlTestdataConsumer {
                             accessToken.getTokenValue()
                     ).call();
 
-            default -> new PdlOpprettArtifactCommandPdl(
-                    webClient,
-                    getBestillingUrl().get(value.getArtifact()),
-                    value.getIdent(),
-                    body,
-                    accessToken.getTokenValue(),
-                    value.getBody().getId()
-            ).call();
+            default -> !isTestnorgeIdent(value.getIdent()) || value.getBody().getMaster() == Master.PDL ?
+                    new PdlOpprettArtifactCommandPdl(
+                            webClient,
+                            getBestillingUrl().get(value.getArtifact()),
+                            value.getIdent(),
+                            body,
+                            accessToken.getTokenValue(),
+                            value.getBody().getId()
+                    ).call() :
+                    Flux.empty();
         };
     }
 }
