@@ -35,6 +35,7 @@ type BostedsadresseFormValues = {
 	path: string
 	idx?: number
 	identtype?: string
+	identMaster?: string
 }
 
 type Target = {
@@ -47,7 +48,9 @@ export const BostedsadresseForm = ({
 	path,
 	idx,
 	identtype,
+	identMaster,
 }: BostedsadresseFormValues) => {
+	const erPDL = identtype === 'NPID' || identMaster === 'PDL'
 	useEffect(() => {
 		formMethods.setValue(`${path}.adresseIdentifikatorFraMatrikkelen`, undefined)
 		const boadresse = formMethods.watch(path)
@@ -72,7 +75,7 @@ export const BostedsadresseForm = ({
 	const valgtAdressetype = formMethods.watch(`${path}.adressetype`)
 
 	const getAdresseOptions = () => {
-		if (identtype && identtype !== 'FNR') {
+		if ((identtype && identtype !== 'FNR') || erPDL) {
 			return Options('adressetypeUtenlandskBostedsadresse')
 		}
 		return Options('adressetypeBostedsadresse')
@@ -172,22 +175,22 @@ export const BostedsadresseForm = ({
 					value={formMethods.watch(`${path}.opprettCoAdresseNavn.fornavn`)}
 				/>
 			</div>
-			<AvansertForm
-				path={path}
-				kanVelgeMaster={valgtAdressetype === null && identtype !== 'NPID'}
-			/>
+			<AvansertForm path={path} kanVelgeMaster={false} />
 		</React.Fragment>
 	)
 }
 
 export const Bostedsadresse = ({ formMethods }: BostedsadresseValues) => {
 	const opts = useContext(BestillingsveilederContext)
+
+	const initialMaster = opts?.identMaster === 'PDL' || opts?.identtype === 'NPID' ? 'PDL' : 'FREG'
+
 	return (
 		<Kategori title="Bostedsadresse">
 			<FormDollyFieldArray
 				name="pdldata.person.bostedsadresse"
 				header="Bostedsadresse"
-				newEntry={getInitialBostedsadresse(opts?.identtype === 'NPID' ? 'PDL' : 'FREG')}
+				newEntry={getInitialBostedsadresse(initialMaster)}
 				canBeEmpty={false}
 			>
 				{(path: string, idx: number) => (
@@ -196,6 +199,7 @@ export const Bostedsadresse = ({ formMethods }: BostedsadresseValues) => {
 						path={path}
 						idx={idx}
 						identtype={opts?.identtype}
+						identMaster={opts?.identMaster}
 					/>
 				)}
 			</FormDollyFieldArray>
