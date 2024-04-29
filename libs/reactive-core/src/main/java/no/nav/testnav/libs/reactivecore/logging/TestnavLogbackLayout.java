@@ -20,7 +20,13 @@ public class TestnavLogbackLayout extends PatternLayout {
         String logEvent = event.toString();
         Matcher matcher = pattern.matcher(logEvent);
 
+        if (!matcher.find()) {
+            return logEvent;
+        }
+
+        matcher.reset(); // reset the matcher to the beginning
         StringBuilder result = new StringBuilder();
+
         while (matcher.find()) {
             String match = matcher.group();
             if (match.charAt(2) == '0' || match.charAt(2) == '1') {
@@ -30,6 +36,6 @@ public class TestnavLogbackLayout extends PatternLayout {
         }
         matcher.appendTail(result);
 
-        return result + "\n";
+        return result.toString();
     }
 }
