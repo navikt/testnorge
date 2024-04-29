@@ -14,7 +14,7 @@ public class TestnavLogbackEncoder extends PatternLayoutEncoderBase<ILoggingEven
     public void start() {
         TestnavPatternLayout patternLayout = new TestnavPatternLayout();
         patternLayout.setContext(context);
-        patternLayout.setPattern(getPattern());
+        patternLayout.setPattern(getPattern() != null ? getPattern() : "%-5relative %-5level %logger{35} - %msg%ex%n");
         patternLayout.start();
         this.layout = patternLayout;
         super.start();
