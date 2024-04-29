@@ -21,7 +21,7 @@ public class TestnavLogbackLayout extends PatternLayout {
         Matcher matcher = pattern.matcher(logEvent);
 
         if (!matcher.find()) {
-            return logEvent;
+            return event.getMessage();
         }
 
         matcher.reset(); // reset the matcher to the beginning
