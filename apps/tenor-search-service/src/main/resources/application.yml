@@ -56,3 +56,8 @@ server:
 consumers:
   tenor-search-service:
     url: https://testdata.api.skatteetaten.no
+  pdl-testdata:
+    url: https://testnav-pdl-proxy.dev-fss-pub.nais.io
+    cluster: dev-fss
+    namespace: dolly
+    name: testnav-pdl-proxy

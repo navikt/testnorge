@@ -3,9 +3,8 @@ package no.nav.testnav.apps.tenorsearchservice.provider;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
-import no.nav.testnav.apps.tenorsearchservice.consumers.MaskinportenClient;
+import no.nav.testnav.apps.tenorsearchservice.consumers.MaskinportenConsumer;
 import no.nav.testnav.apps.tenorsearchservice.consumers.dto.InfoType;
-import no.nav.testnav.apps.tenorsearchservice.consumers.dto.Kilde;
 import no.nav.testnav.apps.tenorsearchservice.domain.AccessToken;
 import no.nav.testnav.apps.tenorsearchservice.domain.Lookups;
 import no.nav.testnav.apps.tenorsearchservice.domain.TenorOversiktResponse;
@@ -29,7 +28,7 @@ import java.util.List;
 public class TenorSearchController {
 
     private final TenorSearchService tenorSearchService;
-    private final MaskinportenClient maskinportenClient;
+    private final MaskinportenConsumer maskinportenConsumer;
     private final LookupService lookupService;
 
     @PostMapping(path = "/testdata/oversikt", produces = "application/json", consumes = "application/json")
@@ -39,31 +38,31 @@ public class TenorSearchController {
                                                    @Schema(description = "Sidenummer")
                                                    @RequestParam(required = false) Integer side,
                                                    @Schema(description = "Seed for paginering")
-                                                   @RequestParam(required = false) Integer seed) {
+                                                   @RequestParam(required = false) Integer seed,
+                                                   @Schema(description = "Ikke filtrer søkeresultat for eksisterende personer (default er filtrering")
+                                                   @RequestParam(required = false) Boolean ikkeFiltrer) {
 
-        return tenorSearchService.getTestdata(searchData, antall, side, seed);
+        return tenorSearchService.getTestdata(searchData, antall, side, seed, ikkeFiltrer);
     }
 
     @GetMapping("/testdata/raw")
     public Mono<TenorResponse> getTestdata(@Schema(description = "Søkekriterier")
                                            @RequestParam(required = false) String searchData,
-                                           @Parameter(description = "Kilde, hvor data skal hentes fra")
-                                           @RequestParam(required = false) Kilde kilde,
                                            @Parameter(description = "InfoType, kategori av felter som skal returneres")
                                            @RequestParam(required = false) InfoType type,
                                            @Schema(description = "Felter (kommaseparert liste) som skal returneres, når InfoType er 'Spesifikt'")
                                            @RequestParam(required = false) String fields,
                                            @Schema(description = "Seed for paginering")
-                                           @RequestParam(required = false) Integer seed) {
+                                           @RequestParam(required = false) Integer seed,
+                                           @Schema(description = "Ikke filtrer søkeresultat for eksisterende personer (default er filtrering")
+                                           @RequestParam(required = false) Boolean ikkeFiltrer) {
 
         return tenorSearchService
-                .getTestdata(searchData, kilde, type, fields, seed);
+                .getTestdata(searchData, type, fields, seed, ikkeFiltrer);
     }
 
-    @PostMapping(path ="/testdata", produces = "application/json", consumes = "application/json")
+    @PostMapping(path = "/testdata", produces = "application/json", consumes = "application/json")
     public Mono<TenorResponse> getTestdata(@RequestBody TenorRequest searchData,
-                                           @Parameter(description = "Kilde, hvor data skal hentes fra")
-                                           @RequestParam(required = false) Kilde kilde,
                                            @Parameter(description = "InfoType, kategori felter som skal returneres")
                                            @RequestParam(required = false) InfoType type,
                                            @Schema(description = "Felter (kommaseparert liste) som skal returneres, når InfoType er 'Spesifikt'")
@@ -73,10 +72,12 @@ public class TenorSearchController {
                                            @Schema(description = "Sidenummer")
                                            @RequestParam(required = false) Integer side,
                                            @Schema(description = "Seed for paginering")
-                                           @RequestParam(required = false) Integer seed) {
+                                           @RequestParam(required = false) Integer seed,
+                                           @Schema(description = "Ikke filtrer søkeresultat for eksisterende personer (default er filtrering")
+                                           @RequestParam(required = false) Boolean ikkeFiltrer) {
 
         return tenorSearchService
-                .getTestdata(searchData, kilde, type, fields, antall, side, seed);
+                .getTestdata(searchData, type, fields, antall, side, seed, ikkeFiltrer);
     }
 
     @GetMapping("/testdata/domain")
@@ -89,7 +90,7 @@ public class TenorSearchController {
     @GetMapping("/testdata/token")
     public Mono<String> getToken() {
 
-        return maskinportenClient.getAccessToken()
+        return maskinportenConsumer.getAccessToken()
                 .map(AccessToken::value);
     }
 }
