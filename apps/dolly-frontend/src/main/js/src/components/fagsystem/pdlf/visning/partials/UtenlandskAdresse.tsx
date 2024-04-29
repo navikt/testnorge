@@ -1,5 +1,5 @@
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import { formatDate } from '@/utils/DataFormatter'
+import { formatDate, showLabel } from '@/utils/DataFormatter'
 import KodeverkConnector from '@/components/kodeverk/KodeverkConnector'
 import {
 	Kodeverk,
@@ -70,7 +70,10 @@ export const UtenlandskAdresse = ({ adresse, idx }: AdresseData) => {
 				<TitleValue title="Angitt flyttedato" value={formatDate(angittFlyttedato)} />
 				<TitleValue title="Gyldig fra og med" value={formatDate(gyldigFraOgMed)} />
 				<TitleValue title="Gyldig til og med" value={formatDate(gyldigTilOgMed)} />
-				<TitleValue title="Opphold annet sted" value={oppholdAnnetSted?.toUpperCase()} />
+				<TitleValue
+					title="Opphold annet sted"
+					value={showLabel('oppholdAnnetSted', oppholdAnnetSted)}
+				/>
 				<TitleValue title="C/O adressenavn" value={coAdressenavn} />
 				<TitleValue title="Master" value={master} />
 			</div>
