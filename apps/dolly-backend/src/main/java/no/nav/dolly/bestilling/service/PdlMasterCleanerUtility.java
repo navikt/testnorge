@@ -36,7 +36,7 @@ public class PdlMasterCleanerUtility {
                         }
                     })
                     .filter(Objects::nonNull)
-                    .filter(data -> data instanceof List)
+                    .filter(List.class::isInstance)
                     .map(data -> (List<? extends DbVersjonDTO>) data)
                     .forEach(PdlMasterCleanerUtility::filterOpplysning);
 

@@ -32,8 +32,6 @@ import java.util.List;
 @Service
 public class PdlDataConsumer implements ConsumerStatus {
 
-    private static final int BLOCK_SIZE = 10;
-
     private final TokenExchange tokenService;
     private final WebClient webClient;
     private final ServerProperties serverProperties;
