@@ -1,14 +1,18 @@
 package no.nav.testnav.libs.servletcore.logging;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.classic.spi.ThrowableProxyUtil;
+import ch.qos.logback.classic.spi.ThrowableProxy;
 import com.fasterxml.jackson.core.JsonFactory;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import net.logstash.logback.encoder.LogstashEncoder;
 
 import java.io.ByteArrayOutputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.regex.Pattern;
+
+import static java.util.Objects.isNull;
 
 @Slf4j
 public class TestnavLogbackEncoder extends LogstashEncoder {
@@ -32,8 +36,17 @@ public class TestnavLogbackEncoder extends LogstashEncoder {
         generator.writeStringField("thread_name", event.getThreadName());
         generator.writeStringField("level", event.getLevel().toString());
 
-        if (event.getThrowableProxy() != null) {
-            generator.writeStringField("stack_trace", ThrowableProxyUtil.asString(event.getThrowableProxy()));
+        if (!isNull(event.getThrowableProxy())) {
+            var exception = (ThrowableProxy) event.getThrowableProxy();
+            if (!isNull(exception.getThrowable())) {
+                StringWriter sw = new StringWriter();
+                PrintWriter pw = new PrintWriter(sw);
+                for (StackTraceElement element : exception.getThrowable().getStackTrace()) {
+                    pw.println("\tat " + element);
+                }
+                String stackTrace = sw.toString().substring(0, 480); //Limit the stack trace to 480 characters
+                generator.writeStringField("stack_trace", stackTrace);
+            }
         }
 
         generator.writeEndObject();
@@ -47,6 +60,11 @@ public class TestnavLogbackEncoder extends LogstashEncoder {
     private String formatMessage(String message) {
         var matcher = pattern.matcher(message);
 
+        if (!matcher.find()) {
+            return message;
+        }
+
+        matcher.reset();
         var result = new StringBuilder();
 
         while (matcher.find()) {
