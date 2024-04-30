@@ -39,9 +39,47 @@ public class DollyFrontendApplicationStarter {
 
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
-        return builder.routes().route(createRoute(consumers.getTestnavKontoregisterPersonProxy())).route(createRoute(consumers.getTestnavOrganisasjonFasteDataService())).route(createRoute(consumers.getTestnavAdresseService())).route(createRoute(consumers.getOppsummeringsdokumentService(), "oppsummeringsdokument-service")).route(createRoute(consumers.getTestnavOrganisasjonForvalter())).route(createRoute(consumers.getTestnavVarslingerService(), "testnav-varslinger-service")).route(createRoute(consumers.getTestnorgeProfilApi())) // Duplicate, see below.
-                .route(createRoute(consumers.getTestnavOrganisasjonTilgangService(), "testnav-organisasjon-tilgang-service")).route(createRoute(consumers.getTestnavTpsMessagingService(), "testnav-tps-messaging-service")).route(createRoute(consumers.getTestnorgeProfilApi(), "testnorge-profil-api")) // Duplicate, see above.
-                .route(createRoute(consumers.getTestnavBrukerService(), "testnav-bruker-service")).route(createRoute(consumers.getTestnavMiljoerService())).route(createRoute(consumers.getDollyBackend(), "dolly-backend")).route(createRoute(consumers.getTestnavJoarkDokumentService())).route(createRoute(consumers.getTestnavPensjonTestdataFacadeProxy())).route(createRoute(consumers.getTestnavInntektstubProxy())).route(createRoute(consumers.getTestnavBrregstubProxy())).route(createRoute(consumers.getTestnavAaregProxy())).route(createRoute(consumers.getTestnavUdistubProxy(), "testnav-udistub-proxy")).route(createRoute(consumers.getTestnavArenaForvalterenProxy())).route(createRoute(consumers.getTestnavKrrstubProxy(), "testnav-krrstub-proxy")).route(createRoute(consumers.getTestnavMedlProxy(), "testnav-medl-proxy")).route(createRoute(consumers.getTestnavNorg2Proxy(), "testnav-norg2-proxy")).route(createRoute(consumers.getTestnavInstProxy(), "testnav-inst-proxy")).route(createRoute(consumers.getTestnavHistarkProxy(), "testnav-histark-proxy")).route(createRoute(consumers.getTestnavOrganisasjonService())).route(createRoute(consumers.getTestnavSigrunstubProxy())).route(createRoute(consumers.getTestnavPdlForvalter(), "testnav-pdl-forvalter")).route(createRoute(consumers.getTestnavPersonSearchService())).route(createRoute(consumers.getTestnavPersonOrganisasjonTilgangService(), "testnav-person-organisasjon-tilgang-service")).route(createRoute(consumers.getTestnavSkjermingsregisterProxy())).route(createRoute(consumers.getTestnavDokarkivProxy())).route(createRoute(consumers.getTestnavArbeidsplassenCVProxy())).route(createRoute(consumers.getTestnavHelsepersonellService())).route(createRoute(consumers.getTestnavPersonService(), "person-service")).route(createRoute(consumers.getGenererNavnService())).route(createRoute(consumers.getTestnavKodeverkService())).route(createRoute(consumers.getTestnavTenorSearchService())).build();
+        return builder
+                .routes()
+                .route(createRoute(consumers.getTestnavKontoregisterPersonProxy()))
+                .route(createRoute(consumers.getTestnavOrganisasjonFasteDataService()))
+                .route(createRoute(consumers.getTestnavAdresseService()))
+                .route(createRoute(consumers.getOppsummeringsdokumentService(), "oppsummeringsdokument-service"))
+                .route(createRoute(consumers.getTestnavOrganisasjonForvalter()))
+                .route(createRoute(consumers.getTestnavVarslingerService(), "testnav-varslinger-service"))
+                .route(createRoute(consumers.getTestnorgeProfilApi())) // Duplicate, see below.
+                .route(createRoute(consumers.getTestnavOrganisasjonTilgangService(), "testnav-organisasjon-tilgang-service"))
+                .route(createRoute(consumers.getTestnavTpsMessagingService(), "testnav-tps-messaging-service"))
+                .route(createRoute(consumers.getTestnorgeProfilApi(), "testnorge-profil-api")) // Duplicate, see above.
+                .route(createRoute(consumers.getTestnavBrukerService(), "testnav-bruker-service"))
+                .route(createRoute(consumers.getTestnavMiljoerService()))
+                .route(createRoute(consumers.getDollyBackend(), "dolly-backend"))
+                .route(createRoute(consumers.getTestnavJoarkDokumentService()))
+                .route(createRoute(consumers.getTestnavPensjonTestdataFacadeProxy()))
+                .route(createRoute(consumers.getTestnavInntektstubProxy()))
+                .route(createRoute(consumers.getTestnavBrregstubProxy()))
+                .route(createRoute(consumers.getTestnavAaregProxy()))
+                .route(createRoute(consumers.getTestnavUdistubProxy(), "testnav-udistub-proxy"))
+                .route(createRoute(consumers.getTestnavArenaForvalterenProxy()))
+                .route(createRoute(consumers.getTestnavKrrstubProxy(), "testnav-krrstub-proxy"))
+                .route(createRoute(consumers.getTestnavMedlProxy(), "testnav-medl-proxy"))
+                .route(createRoute(consumers.getTestnavNorg2Proxy(), "testnav-norg2-proxy"))
+                .route(createRoute(consumers.getTestnavInstProxy(), "testnav-inst-proxy"))
+                .route(createRoute(consumers.getTestnavHistarkProxy(), "testnav-histark-proxy"))
+                .route(createRoute(consumers.getTestnavOrganisasjonService()))
+                .route(createRoute(consumers.getTestnavSigrunstubProxy()))
+                .route(createRoute(consumers.getTestnavPdlForvalter(), "testnav-pdl-forvalter"))
+                .route(createRoute(consumers.getTestnavPersonSearchService()))
+                .route(createRoute(consumers.getTestnavPersonOrganisasjonTilgangService(), "testnav-person-organisasjon-tilgang-service"))
+                .route(createRoute(consumers.getTestnavSkjermingsregisterProxy()))
+                .route(createRoute(consumers.getTestnavDokarkivProxy()))
+                .route(createRoute(consumers.getTestnavArbeidsplassenCVProxy()))
+                .route(createRoute(consumers.getTestnavHelsepersonellService()))
+                .route(createRoute(consumers.getTestnavPersonService(), "person-service"))
+                .route(createRoute(consumers.getGenererNavnService()))
+                .route(createRoute(consumers.getTestnavKodeverkService()))
+                .route(createRoute(consumers.getTestnavTenorSearchService()))
+                .build();
     }
 
     public static void main(String[] args) {
