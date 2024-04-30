@@ -9,24 +9,23 @@ import net.logstash.logback.composite.loggingevent.MessageJsonProvider;
 import net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder;
 
 import java.io.IOException;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class TestnavLogbackEncoder extends LoggingEventCompositeJsonEncoder {
     private final Pattern pattern = Pattern.compile("(?<!\\d)\\d{11}(?!\\d)");
 
     public TestnavLogbackEncoder() {
-        JsonProvider<ILoggingEvent> provider = new CustomMessageJsonProvider();
+        JsonProvider<ILoggingEvent> provider = new LoggingMessageJsonProvider();
         provider.setContext(getContext());
         provider.start();
         getProviders().addProvider(provider);
     }
 
-    private class CustomMessageJsonProvider extends MessageJsonProvider {
+    private class LoggingMessageJsonProvider extends MessageJsonProvider {
         @Override
         public void writeTo(JsonGenerator generator, ILoggingEvent event) throws IOException {
-            String originalMessage = event.getFormattedMessage();
-            Matcher matcher = pattern.matcher(originalMessage);
+            var originalMessage = event.getFormattedMessage();
+            var matcher = pattern.matcher(originalMessage);
 
             if (matcher.find()) {
                 StringBuilder result = new StringBuilder();
@@ -41,7 +40,7 @@ public class TestnavLogbackEncoder extends LoggingEventCompositeJsonEncoder {
                 }
                 matcher.appendTail(result);
 
-                LoggingEvent modifiedEvent = new LoggingEvent();
+                var modifiedEvent = new LoggingEvent();
                 modifiedEvent.setLoggerName(event.getLoggerName());
                 modifiedEvent.setLoggerContextRemoteView(event.getLoggerContextVO());
                 modifiedEvent.setThreadName(event.getThreadName());

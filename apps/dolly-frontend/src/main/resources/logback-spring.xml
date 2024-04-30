@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <springProfile name="prod,dev,idporten">
+    <springProfile name="prod,dev,idporten,local">
         <appender name="stdout_json" class="ch.qos.logback.core.ConsoleAppender">
             <encoder class="no.nav.testnav.libs.reactivecore.logging.TestnavLogbackEncoder">
-                <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n%ex</pattern>
                 <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
                     <rootCauseFirst>true</rootCauseFirst>
                     <maxDepthPerThrowable>256</maxDepthPerThrowable>
@@ -23,7 +22,7 @@
         </root>
     </springProfile>
 
-    <springProfile name="local">
+    <springProfile name="lo">
         <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
             <encoder>
                 <pattern>

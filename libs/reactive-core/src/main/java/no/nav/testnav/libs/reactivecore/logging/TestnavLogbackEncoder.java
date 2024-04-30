@@ -1,17 +1,17 @@
 package no.nav.testnav.libs.reactivecore.logging;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.classic.spi.LoggingEvent;
-import ch.qos.logback.classic.spi.ThrowableProxy;
+import ch.qos.logback.classic.spi.ThrowableProxyUtil;
 import com.fasterxml.jackson.core.JsonGenerator;
+import lombok.extern.slf4j.Slf4j;
 import net.logstash.logback.composite.JsonProvider;
 import net.logstash.logback.composite.loggingevent.MessageJsonProvider;
 import net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder;
 
 import java.io.IOException;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Slf4j
 public class TestnavLogbackEncoder extends LoggingEventCompositeJsonEncoder {
     private final Pattern pattern = Pattern.compile("(?<!\\d)\\d{11}(?!\\d)");
 
@@ -25,8 +25,8 @@ public class TestnavLogbackEncoder extends LoggingEventCompositeJsonEncoder {
     private class LoggingMessageJsonProvider extends MessageJsonProvider {
         @Override
         public void writeTo(JsonGenerator generator, ILoggingEvent event) throws IOException {
-            String originalMessage = event.getFormattedMessage();
-            Matcher matcher = pattern.matcher(originalMessage);
+            var originalMessage = event.getFormattedMessage();
+            var matcher = pattern.matcher(originalMessage);
 
             if (matcher.find()) {
                 StringBuilder result = new StringBuilder();
@@ -41,19 +41,18 @@ public class TestnavLogbackEncoder extends LoggingEventCompositeJsonEncoder {
                 }
                 matcher.appendTail(result);
 
-                LoggingEvent modifiedEvent = new LoggingEvent();
-                modifiedEvent.setLoggerName(event.getLoggerName());
-                modifiedEvent.setLoggerContextRemoteView(event.getLoggerContextVO());
-                modifiedEvent.setThreadName(event.getThreadName());
-                modifiedEvent.setLevel(event.getLevel());
-                modifiedEvent.setMessage(result.toString());
-                modifiedEvent.setArgumentArray(event.getArgumentArray());
+                generator.writeStartObject();
+                generator.writeStringField("@timestamp", new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX").format(new java.util.Date(event.getTimeStamp())));
+                generator.writeStringField("message", result.toString());
+                generator.writeStringField("logger_name", event.getLoggerName());
+                generator.writeStringField("thread_name", event.getThreadName());
+                generator.writeStringField("level", event.getLevel().toString());
+                generator.writeNumberField("level_value", event.getLevel().toInt());
                 if (event.getThrowableProxy() != null) {
-                    modifiedEvent.setThrowableProxy((ThrowableProxy) event.getThrowableProxy());
+                    generator.writeStringField("stack_trace", ThrowableProxyUtil.asString(event.getThrowableProxy()));
                 }
-                modifiedEvent.setTimeStamp(event.getTimeStamp());
+                generator.writeEndObject();
 
-                super.writeTo(generator, modifiedEvent);
             } else {
                 super.writeTo(generator, event);
             }

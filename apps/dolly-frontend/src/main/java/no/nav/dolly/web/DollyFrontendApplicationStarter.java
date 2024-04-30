@@ -63,7 +63,7 @@ public class DollyFrontendApplicationStarter {
                     Exception fakeException = new Exception("This is a fake exception for logging purposes.");
                     log.error("Fake error", fakeException);
                 }
-                case WARN -> log.warn("Hello");
+                case WARN -> log.warn("Hello, this is a warning. 12121212345");
                 case INFO -> log.info("Hello");
                 case DEBUG -> log.debug("Hello");
                 case TRACE -> log.trace("Hello");
