@@ -50,3 +50,4 @@ spec:
   image: "{{image}}"
   ingresses:
     - "https://testnav-organisasjon-tilgang.intern.dev.nav.no"
+    - "https://testnav-organisasjon-tilgang.ansatt.dev.nav.no"
