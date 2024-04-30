@@ -16,13 +16,13 @@ public class TestnavLogbackEncoder extends LoggingEventCompositeJsonEncoder {
     private final Pattern pattern = Pattern.compile("(?<!\\d)\\d{11}(?!\\d)");
 
     public TestnavLogbackEncoder() {
-        JsonProvider<ILoggingEvent> provider = new CustomMessageJsonProvider();
+        JsonProvider<ILoggingEvent> provider = new LoggingMessageJsonProvider();
         provider.setContext(getContext());
         provider.start();
         getProviders().addProvider(provider);
     }
 
-    private class CustomMessageJsonProvider extends MessageJsonProvider {
+    private class LoggingMessageJsonProvider extends MessageJsonProvider {
         @Override
         public void writeTo(JsonGenerator generator, ILoggingEvent event) throws IOException {
             String originalMessage = event.getFormattedMessage();
