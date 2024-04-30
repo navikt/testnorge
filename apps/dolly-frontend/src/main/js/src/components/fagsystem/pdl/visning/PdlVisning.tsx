@@ -45,7 +45,7 @@ export const PdlVisning = ({
 		return null
 	}
 
-	const { hentPerson, hentIdenter, hentGeografiskTilknytning } = pdlData
+	const { hentPerson, hentIdenter, hentGeografiskTilknytning, ident } = pdlData
 	const {
 		foedsel,
 		telefonnummer,
@@ -66,6 +66,8 @@ export const PdlVisning = ({
 	} = hentPerson
 
 	const bankkontoData = getBankkontoData(fagsystemData)
+
+	const pdlfPerson = fagsystemData?.pdlforvalter?.person
 
 	return (
 		<ErrorBoundary>
@@ -93,7 +95,11 @@ export const PdlVisning = ({
 				<PdlDeltBosted data={deltBosted} />
 				<PdlOppholdsadresse data={oppholdsadresse} />
 				<PdlOppholdsstatus data={opphold} />
-				<PdlKontaktadresse data={kontaktadresse} />
+				<PdlKontaktadresse
+					data={kontaktadresse}
+					pdlfData={pdlfPerson?.kontaktadresse}
+					ident={ident}
+				/>
 				<Adressebeskyttelse data={adressebeskyttelse} erPdlVisning />
 				<PdlRelasjoner data={hentPerson} />
 				<FalskIdentitet data={falskIdentitet} />

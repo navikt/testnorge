@@ -55,6 +55,7 @@ export const Adresse = ({ kontaktadresseData, idx }: AdresseTypes) => {
 		return null
 	}
 
+	//TODO: Vis master?
 	return (
 		<>
 			{kontaktadresseData.vegadresse && <Vegadresse adresse={kontaktadresseData} idx={idx} />}
@@ -163,7 +164,7 @@ export const Adresse = ({ kontaktadresseData, idx }: AdresseTypes) => {
 	)
 }
 
-const KontaktadresseVisning = ({
+export const KontaktadresseVisning = ({
 	kontaktadresseData,
 	idx,
 	data,

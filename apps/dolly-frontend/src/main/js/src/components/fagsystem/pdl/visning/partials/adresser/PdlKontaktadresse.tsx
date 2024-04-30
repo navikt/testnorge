@@ -1,10 +1,14 @@
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
-import { Adresse } from '@/components/fagsystem/pdlf/visning/partials/Kontaktadresse'
+import {
+	Adresse,
+	KontaktadresseVisning,
+} from '@/components/fagsystem/pdlf/visning/partials/Kontaktadresse'
 import { KontaktadresseData } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import { ArrayHistorikk } from '@/components/ui/historikk/ArrayHistorikk'
 
 type PdlKontaktadresseProps = {
 	data: Array<KontaktadresseData>
+	ident: string
 }
 
 type AdresseProps = {
@@ -20,7 +24,21 @@ const AdresseVisning = ({ data, idx }: AdresseProps) => {
 	)
 }
 
-export const PdlKontaktadresse = ({ data }: PdlKontaktadresseProps) => {
+const AdresseVisningRedigerbar = ({ data, idx, alleData, ident }: AdresseProps) => {
+	return (
+		<div className="person-visning_content">
+			<KontaktadresseVisning
+				kontaktadresseData={data}
+				idx={idx}
+				data={alleData}
+				ident={ident}
+				erPdlVisning={false}
+			/>
+		</div>
+	)
+}
+
+export const PdlKontaktadresse = ({ data, pdlfData, ident }: PdlKontaktadresseProps) => {
 	if (!data || data.length === 0) {
 		return null
 	}
@@ -35,8 +53,11 @@ export const PdlKontaktadresse = ({ data }: PdlKontaktadresseProps) => {
 			<SubOverskrift label="Kontaktadresse" iconKind="postadresse" />
 			<ArrayHistorikk
 				component={AdresseVisning}
+				componentRedigerbar={AdresseVisningRedigerbar}
 				data={gyldigeAdresser}
+				pdlfData={pdlfData}
 				historiskData={historiskeAdresser}
+				ident={ident}
 				header={''}
 			/>
 		</>

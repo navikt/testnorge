@@ -3,8 +3,17 @@ import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import Panel from '@/components/ui/panel/Panel'
 import './historikk.less'
 
-export const ArrayHistorikk = ({ component, data, historiskData, header }) => {
+export const ArrayHistorikk = ({
+	component,
+	componentRedigerbar,
+	data,
+	pdlfData,
+	historiskData,
+	ident,
+	header,
+}) => {
 	const Main = component
+	const MainRedigerbar = componentRedigerbar
 	const historikkHeader = header !== '' ? header + ' historikk' : 'Historikk'
 
 	return (
@@ -12,10 +21,21 @@ export const ArrayHistorikk = ({ component, data, historiskData, header }) => {
 			{data?.length > 0 && (
 				<ErrorBoundary>
 					<DollyFieldArray data={data} header={header} nested>
-						{(element, idx) => <Main idx={idx} data={element} />}
+						{(element, idx) => {
+							const pdlfElement = pdlfData?.find(
+								(item) => item.hendelseId === element.metadata.opplysningsId,
+							)
+							if (element.metadata.master === 'PDL' && pdlfElement) {
+								return (
+									<MainRedigerbar idx={idx} data={pdlfElement} alleData={pdlfData} ident={ident} />
+								)
+							}
+							return <Main idx={idx} data={element} />
+						}}
 					</DollyFieldArray>
 				</ErrorBoundary>
 			)}
+			{/*TODO: Hva gjør vi med historiske data?*/}
 			{historiskData?.length > 0 && (
 				<Panel heading={historikkHeader}>
 					<ErrorBoundary>
