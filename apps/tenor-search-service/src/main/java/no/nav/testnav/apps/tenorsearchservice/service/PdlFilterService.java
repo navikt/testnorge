@@ -1,6 +1,7 @@
 package no.nav.testnav.apps.tenorsearchservice.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.tenorsearchservice.consumers.PdlDataConsumer;
 import no.nav.testnav.apps.tenorsearchservice.domain.TenorOversiktResponse;
 import org.springframework.http.HttpStatus;
@@ -9,6 +10,7 @@ import reactor.core.publisher.Mono;
 
 import static java.util.Objects.nonNull;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PdlFilterService {
@@ -24,6 +26,7 @@ public class PdlFilterService {
                             .map(TenorOversiktResponse.Person::getId)
                             .toList())
                     .map(dollyTags -> {
+                        log.info("dollyTags: {}", dollyTags);
                         var oversiktDTO = oversikt.copy();
                         var personer = oversiktDTO.getData().getPersoner().stream()
                                 .filter(person -> dollyTags.stream()
