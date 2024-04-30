@@ -9,6 +9,8 @@ export const ArrayHistorikk = ({
 	data,
 	pdlfData,
 	historiskData,
+	tmpData,
+	tmpPersoner,
 	ident,
 	header,
 }) => {
@@ -27,7 +29,14 @@ export const ArrayHistorikk = ({
 							)
 							if (element.metadata.master === 'PDL' && pdlfElement) {
 								return (
-									<MainRedigerbar idx={idx} data={pdlfElement} alleData={pdlfData} ident={ident} />
+									<MainRedigerbar
+										idx={idx}
+										data={pdlfElement}
+										alleData={pdlfData}
+										tmpData={tmpData}
+										tmpPersoner={tmpPersoner}
+										ident={ident}
+									/>
 								)
 							}
 							return <Main idx={idx} data={element} />

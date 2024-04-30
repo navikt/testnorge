@@ -34,6 +34,7 @@ type PdlVisningProps = {
 
 export const PdlVisning = ({
 	pdlData,
+	tmpPersoner,
 	fagsystemData = {},
 	loading = {},
 	miljoeVisning = false,
@@ -69,6 +70,8 @@ export const PdlVisning = ({
 
 	const pdlfPerson = fagsystemData?.pdlforvalter?.person
 
+	const tmpPdlforvalter = tmpPersoner?.pdlforvalter
+
 	return (
 		<ErrorBoundary>
 			<div className={miljoeVisning ? 'boks' : ''}>
@@ -98,6 +101,7 @@ export const PdlVisning = ({
 				<PdlKontaktadresse
 					data={kontaktadresse}
 					pdlfData={pdlfPerson?.kontaktadresse}
+					tmpPersoner={tmpPdlforvalter}
 					ident={ident}
 				/>
 				<Adressebeskyttelse data={adressebeskyttelse} erPdlVisning />

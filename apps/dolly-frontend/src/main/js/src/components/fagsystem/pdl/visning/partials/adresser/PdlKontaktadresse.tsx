@@ -5,6 +5,7 @@ import {
 } from '@/components/fagsystem/pdlf/visning/partials/Kontaktadresse'
 import { KontaktadresseData } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import { ArrayHistorikk } from '@/components/ui/historikk/ArrayHistorikk'
+import _ from 'lodash'
 
 type PdlKontaktadresseProps = {
 	data: Array<KontaktadresseData>
@@ -24,13 +25,22 @@ const AdresseVisning = ({ data, idx }: AdresseProps) => {
 	)
 }
 
-const AdresseVisningRedigerbar = ({ data, idx, alleData, ident }: AdresseProps) => {
+const AdresseVisningRedigerbar = ({
+	data,
+	idx,
+	alleData,
+	tmpData,
+	tmpPersoner,
+	ident,
+}: AdresseProps) => {
 	return (
 		<div className="person-visning_content">
 			<KontaktadresseVisning
 				kontaktadresseData={data}
 				idx={idx}
 				data={alleData}
+				tmpData={tmpData}
+				tmpPersoner={tmpPersoner}
 				ident={ident}
 				erPdlVisning={false}
 			/>
@@ -38,8 +48,18 @@ const AdresseVisningRedigerbar = ({ data, idx, alleData, ident }: AdresseProps) 
 	)
 }
 
-export const PdlKontaktadresse = ({ data, pdlfData, ident }: PdlKontaktadresseProps) => {
-	if (!data || data.length === 0) {
+export const PdlKontaktadresse = ({
+	data,
+	pdlfData,
+	tmpPersoner,
+	ident,
+}: PdlKontaktadresseProps) => {
+	if ((!data || data.length === 0) && (!tmpPersoner || Object.keys(tmpPersoner).length < 1)) {
+		return null
+	}
+
+	const tmpData = _.get(tmpPersoner, `${ident}.person.kontaktadresse`)
+	if ((!data || data.length === 0) && (!tmpData || tmpData.length < 1)) {
 		return null
 	}
 
@@ -57,6 +77,8 @@ export const PdlKontaktadresse = ({ data, pdlfData, ident }: PdlKontaktadressePr
 				data={gyldigeAdresser}
 				pdlfData={pdlfData}
 				historiskData={historiskeAdresser}
+				tmpData={tmpData}
+				tmpPersoner={tmpPersoner}
 				ident={ident}
 				header={''}
 			/>
