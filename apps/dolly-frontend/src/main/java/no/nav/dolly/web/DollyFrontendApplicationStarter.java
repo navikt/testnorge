@@ -24,7 +24,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import reactor.core.publisher.Mono;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Optional;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 @Slf4j
@@ -88,6 +93,36 @@ public class DollyFrontendApplicationStarter {
 
     public static void main(String[] args) {
         SpringApplication.run(DollyFrontendApplicationStarter.class, args);
+
+        //TODO: SLETT DETTE ETTER TESTING, FØR MERGE!
+        ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+        executorService.scheduleAtFixedRate(() -> {
+            System.Logger.Level[] levels = System.Logger.Level.values();
+            System.Logger.Level level = levels[(int) (Math.random() * levels.length)];
+
+            switch (level) {
+                case ERROR:
+                    Exception fakeException = new Exception("This is a fake exception for logging purposes.");
+                    StringWriter sw = new StringWriter();
+                    PrintWriter pw = new PrintWriter(sw);
+                    fakeException.printStackTrace(pw);
+                    String stackTrace = sw.toString();
+                    log.error("Hello\n" + stackTrace);
+                    break;
+                case WARNING:
+                    log.warn("Hello, this is a warning! 12121212345");
+                    break;
+                case INFO:
+                    log.info("Hello info");
+                    break;
+                case DEBUG:
+                    log.debug("Hello debugger");
+                    break;
+                case TRACE:
+                    log.trace("Hello tracer");
+                    break;
+            }
+        }, 0, 15, TimeUnit.SECONDS);
     }
 
     private GatewayFilter addAuthenticationHeaderFilterFrom(ServerProperties serverProperties) {
