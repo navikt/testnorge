@@ -31,6 +31,7 @@ spec:
         - application: testnav-oversikt-frontend
     outbound:
       external:
+        - host: testnav-pdl-proxy.dev-fss-pub.nais.io
         - host: testdata.api.skatteetaten.no
   liveness:
     path: /internal/isAlive
