@@ -130,7 +130,7 @@ public class TenorSearchService {
         return tenorConsumer.getTestdata(query, InfoType.IdentOgNavn, antall, side, seed)
                 .flatMap(resultat -> Mono.just(tenorResultMapperService.map(resultat, query)))
                 .flatMap(response -> isNotTrue(ikkeFiltrer) ?
-                        pdlFilterService.filterPdlPerson(response, antall) :
+                        pdlFilterService.filterPdlPerson(response) :
                         Mono.just(response));
     }
 }

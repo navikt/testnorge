@@ -15,7 +15,7 @@ public class PdlFilterService {
 
     private final PdlDataConsumer pdlDataConsumer;
 
-    public Mono<TenorOversiktResponse> filterPdlPerson(TenorOversiktResponse oversikt, Integer antall) {
+    public Mono<TenorOversiktResponse> filterPdlPerson(TenorOversiktResponse oversikt) {
 
         if (oversikt.getStatus() == HttpStatus.OK && nonNull(oversikt.getData().getPersoner())) {
 
@@ -30,7 +30,7 @@ public class PdlFilterService {
                                 .toList();
                         oversiktDTO.getData().setPersoner(personer);
                         oversiktDTO.getData().setRader(personer.size());
-                        oversiktDTO.getData().setTreff(oversikt.getData().getTreff() - (antall - personer.size()));
+                        oversiktDTO.getData().setTreff(oversikt.getData().getTreff() - (dollyTags.size() - personer.size()));
                         return oversiktDTO;
                     });
         } else {
