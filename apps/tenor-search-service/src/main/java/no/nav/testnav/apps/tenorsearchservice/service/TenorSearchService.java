@@ -2,7 +2,6 @@ package no.nav.testnav.apps.tenorsearchservice.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.apps.tenorsearchservice.consumers.PdlDataConsumer;
 import no.nav.testnav.apps.tenorsearchservice.consumers.TenorConsumer;
 import no.nav.testnav.apps.tenorsearchservice.consumers.dto.InfoType;
 import no.nav.testnav.apps.tenorsearchservice.domain.TenorOversiktResponse;
@@ -23,6 +22,7 @@ import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtili
 import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.convertIntervall;
 import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.convertObject;
 import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.guard;
+import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -32,15 +32,15 @@ public class TenorSearchService {
 
     private final TenorConsumer tenorConsumer;
     private final TenorResultMapperService tenorResultMapperService;
-    private final PdlDataConsumer pdlDataConsumer;
+    private final PdlFilterService pdlFilterService;
 
-    public Mono<TenorResponse> getTestdata(String testDataQuery, InfoType type, String fields, Integer seed, Boolean ikkeFiltrer) {
+    public Mono<TenorResponse> getTestdata(String testDataQuery, InfoType type, String fields, Integer seed) {
 
         return tenorConsumer.getTestdata(isNotBlank(testDataQuery) ? testDataQuery : "", type, fields, seed);
     }
 
     public Mono<TenorResponse> getTestdata(TenorRequest searchData, InfoType type, String fields,
-                                           Integer antall, Integer side, Integer seed, Boolean ikkeFiltrer) {
+                                           Integer antall, Integer side, Integer seed) {
 
         var query = getQuery(searchData);
         return tenorConsumer.getTestdata(query, type, fields, antall, side, seed);
@@ -129,6 +129,8 @@ public class TenorSearchService {
 
         return tenorConsumer.getTestdata(query, InfoType.IdentOgNavn, antall, side, seed)
                 .flatMap(resultat -> Mono.just(tenorResultMapperService.map(resultat, query)))
-                .map(resultat -> pdlDataConsumer.hasPdlDollyTag(resultat.getData().getPersoner().));
+                .flatMap(response -> isNotTrue(ikkeFiltrer) ?
+                        pdlFilterService.filterPdlPerson(response, antall) :
+                        Mono.just(response));
     }
 }

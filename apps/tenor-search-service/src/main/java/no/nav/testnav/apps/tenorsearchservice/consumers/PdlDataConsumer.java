@@ -7,11 +7,10 @@ import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.Arrays;
-
-import static java.util.Objects.nonNull;
+import java.util.List;
 
 @Service
 public class PdlDataConsumer {
@@ -28,12 +27,11 @@ public class PdlDataConsumer {
         this.serverProperties = serverProperties.getPdlTestdata();
     }
 
-    public Mono<DollyTagDTO> hasPdlDollyTag(String ident) {
+    public Mono<List<DollyTagDTO>> hasPdlDollyTag(List<String> identer) {
+
         return tokenExchange.exchange(serverProperties)
-                .flatMap(token -> new TagsGetCommand(webClient, ident, token.getTokenValue()).call())
-                .map(resultat -> DollyTagDTO.builder()
-                        .ident(ident)
-                        .hasDollyTag(nonNull(resultat) && Arrays.asList(resultat).contains("DOLLY"))
-                        .build());
+                .flatMapMany(token -> Flux.fromIterable(identer)
+                        .flatMap(ident -> new TagsGetCommand(webClient, ident, token.getTokenValue()).call()))
+                .collectList();
     }
 }

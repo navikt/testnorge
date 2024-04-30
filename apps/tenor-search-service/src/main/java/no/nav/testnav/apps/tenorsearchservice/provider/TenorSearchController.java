@@ -53,12 +53,10 @@ public class TenorSearchController {
                                            @Schema(description = "Felter (kommaseparert liste) som skal returneres, når InfoType er 'Spesifikt'")
                                            @RequestParam(required = false) String fields,
                                            @Schema(description = "Seed for paginering")
-                                           @RequestParam(required = false) Integer seed,
-                                           @Schema(description = "Ikke filtrer søkeresultat for eksisterende personer (default er filtrering")
-                                           @RequestParam(required = false) Boolean ikkeFiltrer) {
+                                           @RequestParam(required = false) Integer seed) {
 
         return tenorSearchService
-                .getTestdata(searchData, type, fields, seed, ikkeFiltrer);
+                .getTestdata(searchData, type, fields, seed);
     }
 
     @PostMapping(path = "/testdata", produces = "application/json", consumes = "application/json")
@@ -72,12 +70,10 @@ public class TenorSearchController {
                                            @Schema(description = "Sidenummer")
                                            @RequestParam(required = false) Integer side,
                                            @Schema(description = "Seed for paginering")
-                                           @RequestParam(required = false) Integer seed,
-                                           @Schema(description = "Ikke filtrer søkeresultat for eksisterende personer (default er filtrering")
-                                           @RequestParam(required = false) Boolean ikkeFiltrer) {
+                                           @RequestParam(required = false) Integer seed) {
 
         return tenorSearchService
-                .getTestdata(searchData, type, fields, antall, side, seed, ikkeFiltrer);
+                .getTestdata(searchData, type, fields, antall, side, seed);
     }
 
     @GetMapping("/testdata/domain")
