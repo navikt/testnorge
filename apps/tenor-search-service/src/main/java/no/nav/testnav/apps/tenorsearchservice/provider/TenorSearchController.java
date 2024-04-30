@@ -22,6 +22,8 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
+import static java.util.Objects.nonNull;
+
 @RestController
 @RequestMapping("/api/v1/tenor")
 @RequiredArgsConstructor
@@ -42,7 +44,7 @@ public class TenorSearchController {
                                                    @Schema(description = "Ikke filtrer søkeresultat for eksisterende personer (default er filtrering")
                                                    @RequestParam(required = false) Boolean ikkeFiltrer) {
 
-        return tenorSearchService.getTestdata(searchData, antall, side, seed, ikkeFiltrer);
+        return tenorSearchService.getTestdata(searchData, nonNull(antall) ? antall : 10, side, seed, ikkeFiltrer);
     }
 
     @GetMapping("/testdata/raw")
