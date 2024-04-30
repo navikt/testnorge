@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <springProfile name="prod,dev,idporten,local">
+    <springProfile name="prod,dev,idporten">
         <appender name="stdout_json" class="ch.qos.logback.core.ConsoleAppender">
             <encoder class="no.nav.testnav.libs.reactivecore.logging.TestnavLogbackEncoder">
                 <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
@@ -22,7 +22,7 @@
         </root>
     </springProfile>
 
-    <springProfile name="lo">
+    <springProfile name="local">
         <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
             <encoder>
                 <pattern>

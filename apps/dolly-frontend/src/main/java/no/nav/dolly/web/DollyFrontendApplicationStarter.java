@@ -12,7 +12,6 @@ import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2ServerToServerCon
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.user.UserJwtExchange;
 import no.nav.testnav.libs.securitycore.config.UserSessionConstant;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import org.slf4j.event.Level;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
@@ -26,9 +25,6 @@ import org.springframework.context.annotation.Import;
 import reactor.core.publisher.Mono;
 
 import java.util.Optional;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 @Slf4j
@@ -50,25 +46,6 @@ public class DollyFrontendApplicationStarter {
 
     public static void main(String[] args) {
         SpringApplication.run(DollyFrontendApplicationStarter.class, args);
-
-        ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
-        executorService.scheduleAtFixedRate(() -> {
-            Level[] levels = Level.values();
-            Level level = levels[(int) (Math.random() * levels.length)];
-
-            //TODO: SLETT DETTE ETTER TESTING!
-
-            switch (level) {
-                case ERROR -> {
-                    Exception fakeException = new Exception("This is a fake exception for logging purposes.");
-                    log.error("Fake error", fakeException);
-                }
-                case WARN -> log.warn("Hello, this is a warning. 12121212345");
-                case INFO -> log.info("Hello");
-                case DEBUG -> log.debug("Hello");
-                case TRACE -> log.trace("Hello");
-            }
-        }, 0, 15, TimeUnit.SECONDS);
     }
 
     private GatewayFilter addAuthenticationHeaderFilterFrom(ServerProperties serverProperties) {
