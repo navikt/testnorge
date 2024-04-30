@@ -5,6 +5,7 @@ import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.NotFoundException;
 import no.nav.pdl.forvalter.utils.DeleteRelasjonerUtility;
+import no.nav.pdl.forvalter.utils.HendelseIdService;
 import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,32 @@ import java.util.List;
 
 import static java.lang.String.format;
 import static java.util.Objects.nonNull;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_ADRESSEBESKYTTELSE;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_BOSTEDADRESSE;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_DELTBOSTED;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_DOEDFOEDT_BARN;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_DOEDSFALL;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_FALSK_IDENTITET;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_FOEDSEL;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_FOLKEREGISTER_PERSONSTATUS;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_FORELDREANSVAR;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_FORELDRE_BARN_RELASJON;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_FULLMAKT;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_INNFLYTTING;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_KJOENN;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_KONTAKTADRESSE;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_KONTAKTINFORMASJON_FOR_DODESDBO;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_NAVN;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_OPPHOLD;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_OPPHOLDSADRESSE;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_SIKKERHETSTILTAK;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_SIVILSTAND;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_STATSBORGERSKAP;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_TELEFONUMMER;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_TILRETTELAGT_KOMMUNIKASJON;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_UTENLANDS_IDENTIFIKASJON_NUMMER;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_UTFLYTTING;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_VERGEMAAL;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType.EKTEFELLE_PARTNER;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType.FALSK_IDENTITET;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType.FAMILIERELASJON_FORELDER;
@@ -32,6 +59,7 @@ public class ArtifactDeleteService {
     private final PersonRepository personRepository;
     private final PersonService personService;
     private final FolkeregisterPersonstatusService folkeregisterPersonstatusService;
+    private final HendelseIdService hendelseIdService;
 
     private static <T extends DbVersjonDTO> void checkExists(List<T> artifacter, Integer id, String navn) {
 
@@ -44,7 +72,9 @@ public class ArtifactDeleteService {
 
         var dbPerson = getPerson(ident);
 
-        checkExists(dbPerson.getPerson().getFoedsel(), id, "Foedsel");
+        checkExists(dbPerson.getPerson().getFoedsel(), id, PDL_FOEDSEL.getDescription());
+        hendelseIdService.deletePdlHendelse(ident, PDL_FOEDSEL.getDescription(), id);
+
         dbPerson.getPerson().setFoedsel(dbPerson.getPerson().getFoedsel().stream()
                 .filter(type -> !id.equals(type.getId()))
                 .toList());
@@ -54,7 +84,9 @@ public class ArtifactDeleteService {
 
         var dbPerson = getPerson(ident);
 
-        checkExists(dbPerson.getPerson().getNavn(), id, "Navn");
+        checkExists(dbPerson.getPerson().getNavn(), id, PDL_NAVN.getDescription());
+        hendelseIdService.deletePdlHendelse(ident, PDL_NAVN.getDescription(), id);
+
         dbPerson.getPerson().setNavn(dbPerson.getPerson().getNavn().stream()
                 .filter(type -> !id.equals(type.getId()))
                 .toList());
@@ -64,7 +96,9 @@ public class ArtifactDeleteService {
 
         var dbPerson = getPerson(ident);
 
-        checkExists(dbPerson.getPerson().getKjoenn(), id, "Kjoenn");
+        checkExists(dbPerson.getPerson().getKjoenn(), id, PDL_KJOENN.getDescription());
+        hendelseIdService.deletePdlHendelse(ident, PDL_KJOENN.getDescription(), id);
+
         dbPerson.getPerson().setKjoenn(dbPerson.getPerson().getKjoenn().stream()
                 .filter(type -> !id.equals(type.getId()))
                 .toList());
@@ -74,7 +108,9 @@ public class ArtifactDeleteService {
 
         var dbPerson = getPerson(ident);
 
-        checkExists(dbPerson.getPerson().getBostedsadresse(), id, "Bostedsadresse");
+        checkExists(dbPerson.getPerson().getBostedsadresse(), id, PDL_BOSTEDADRESSE.getDescription());
+        hendelseIdService.deletePdlHendelse(ident, PDL_BOSTEDADRESSE.getDescription(), id);
+
         dbPerson.getPerson().setBostedsadresse(dbPerson.getPerson().getBostedsadresse().stream()
                 .filter(type -> !id.equals(type.getId()))
                 .toList());
@@ -86,7 +122,9 @@ public class ArtifactDeleteService {
 
         var dbPerson = getPerson(ident);
 
-        checkExists(dbPerson.getPerson().getKontaktadresse(), id, "Kontaktadresse");
+        checkExists(dbPerson.getPerson().getKontaktadresse(), id, PDL_KONTAKTADRESSE.getDescription());
+        hendelseIdService.deletePdlHendelse(ident, PDL_KONTAKTADRESSE.getDescription(), id);
+
         dbPerson.getPerson().setKontaktadresse(dbPerson.getPerson().getKontaktadresse().stream()
                 .filter(type -> !id.equals(type.getId()))
                 .toList());
@@ -96,7 +134,9 @@ public class ArtifactDeleteService {
 
         var dbPerson = getPerson(ident);
 
-        checkExists(dbPerson.getPerson().getOppholdsadresse(), id, "Oppholdsadresse");
+        checkExists(dbPerson.getPerson().getOppholdsadresse(), id, PDL_OPPHOLDSADRESSE.getDescription());
+        hendelseIdService.deletePdlHendelse(ident, PDL_OPPHOLDSADRESSE.getDescription(), id);
+
         dbPerson.getPerson().setOppholdsadresse(dbPerson.getPerson().getOppholdsadresse().stream()
                 .filter(type -> !id.equals(type.getId()))
                 .toList());
@@ -106,7 +146,9 @@ public class ArtifactDeleteService {
 
         var dbPerson = getPerson(ident);
 
-        checkExists(dbPerson.getPerson().getInnflytting(), id, "Innflytting");
+        checkExists(dbPerson.getPerson().getInnflytting(), id, PDL_INNFLYTTING.getDescription());
+        hendelseIdService.deletePdlHendelse(ident, PDL_INNFLYTTING.getDescription(), id);
+
         dbPerson.getPerson().setInnflytting(dbPerson.getPerson().getInnflytting().stream()
                 .filter(type -> !id.equals(type.getId()))
                 .toList());
@@ -118,7 +160,9 @@ public class ArtifactDeleteService {
 
         var dbPerson = getPerson(ident);
 
-        checkExists(dbPerson.getPerson().getUtflytting(), id, "Utflytting");
+        checkExists(dbPerson.getPerson().getUtflytting(), id, PDL_UTFLYTTING.getDescription());
+        hendelseIdService.deletePdlHendelse(ident, PDL_UTFLYTTING.getDescription(), id);
+
         dbPerson.getPerson().setUtflytting(dbPerson.getPerson().getUtflytting().stream()
                 .filter(type -> !id.equals(type.getId()))
                 .toList());
@@ -130,7 +174,9 @@ public class ArtifactDeleteService {
 
         var dbPerson = getPerson(ident);
 
-        checkExists(dbPerson.getPerson().getDeltBosted(), id, "DeltBosted");
+        checkExists(dbPerson.getPerson().getDeltBosted(), id, PDL_DELTBOSTED.getDescription());
+        hendelseIdService.deletePdlHendelse(ident, PDL_DELTBOSTED.getDescription(), id);
+
         dbPerson.getPerson().setDeltBosted(dbPerson.getPerson().getDeltBosted().stream()
                 .filter(type -> !id.equals(type.getId()))
                 .toList());
@@ -140,7 +186,8 @@ public class ArtifactDeleteService {
 
         var dbPerson = getPerson(ident);
 
-        checkExists(dbPerson.getPerson().getForelderBarnRelasjon(), id, "ForelderBarnRelasjon");
+        checkExists(dbPerson.getPerson().getForelderBarnRelasjon(), id, PDL_FORELDRE_BARN_RELASJON.getDescription());
+        hendelseIdService.deletePdlHendelse(ident, PDL_FORELDRE_BARN_RELASJON.getDescription(), id);
 
         dbPerson.getPerson().getForelderBarnRelasjon().stream()
                 .filter(type -> id.equals(type.getId()) &&
@@ -162,7 +209,9 @@ public class ArtifactDeleteService {
 
         var dbPerson = getPerson(ident);
 
-        checkExists(dbPerson.getPerson().getForeldreansvar(), id, "Foreldreansvar");
+        checkExists(dbPerson.getPerson().getForeldreansvar(), id, PDL_FORELDREANSVAR.getDescription());
+        hendelseIdService.deletePdlHendelse(ident, PDL_FORELDREANSVAR.getDescription(), id);
+
         dbPerson.getPerson().getForeldreansvar().stream()
                 .filter(type -> id.equals(type.getId()) &&
                         isNotBlank(type.getAnsvarlig()))
@@ -183,7 +232,9 @@ public class ArtifactDeleteService {
 
         var hovedPerson = getPerson(ident);
 
-        checkExists(hovedPerson.getPerson().getKontaktinformasjonForDoedsbo(), id, "KontaktinformasjonForDoedsbo");
+        checkExists(hovedPerson.getPerson().getKontaktinformasjonForDoedsbo(), id, PDL_KONTAKTINFORMASJON_FOR_DODESDBO.getDescription());
+        hendelseIdService.deletePdlHendelse(ident, PDL_KONTAKTINFORMASJON_FOR_DODESDBO.getDescription(), id);
+
         hovedPerson.getPerson().getKontaktinformasjonForDoedsbo().stream()
                 .filter(doedsbo -> id.equals(doedsbo.getId()) &&
                         nonNull(doedsbo.getPersonSomKontakt()) &&
@@ -206,7 +257,9 @@ public class ArtifactDeleteService {
 
         var dbPerson = getPerson(ident);
 
-        checkExists(dbPerson.getPerson().getUtenlandskIdentifikasjonsnummer(), id, "UtenlandskIdentifikasjonsnummer");
+        checkExists(dbPerson.getPerson().getUtenlandskIdentifikasjonsnummer(), id, PDL_UTENLANDS_IDENTIFIKASJON_NUMMER.getDescription());
+        hendelseIdService.deletePdlHendelse(ident, PDL_UTENLANDS_IDENTIFIKASJON_NUMMER.getDescription(), id);
+
         dbPerson.getPerson().setUtenlandskIdentifikasjonsnummer(dbPerson.getPerson().getUtenlandskIdentifikasjonsnummer().stream()
                 .filter(type -> !id.equals(type.getId()))
                 .toList());
@@ -216,7 +269,9 @@ public class ArtifactDeleteService {
 
         var person = getPerson(ident);
 
-        checkExists(person.getPerson().getFalskIdentitet(), id, "FalskIdentitet");
+        checkExists(person.getPerson().getFalskIdentitet(), id, PDL_FALSK_IDENTITET.getDescription());
+        hendelseIdService.deletePdlHendelse(ident, PDL_FALSK_IDENTITET.getDescription(), id);
+
         person.getPerson().getFalskIdentitet().stream()
                 .filter(falskId -> id.equals(falskId.getId()) &&
                         isNotBlank(falskId.getRettIdentitetVedIdentifikasjonsnummer()))
@@ -239,7 +294,9 @@ public class ArtifactDeleteService {
 
         var dbPerson = getPerson(ident);
 
-        checkExists(dbPerson.getPerson().getAdressebeskyttelse(), id, "Adressebeskyttelse");
+        checkExists(dbPerson.getPerson().getAdressebeskyttelse(), id, PDL_ADRESSEBESKYTTELSE.getDescription());
+        hendelseIdService.deletePdlHendelse(ident, PDL_ADRESSEBESKYTTELSE.getDescription(), id);
+
         dbPerson.getPerson().setAdressebeskyttelse(dbPerson.getPerson().getAdressebeskyttelse().stream()
                 .filter(type -> !id.equals(type.getId()))
                 .toList());
@@ -249,7 +306,9 @@ public class ArtifactDeleteService {
 
         var dbPerson = getPerson(ident);
 
-        checkExists(dbPerson.getPerson().getDoedsfall(), id, "Doedsfall");
+        checkExists(dbPerson.getPerson().getDoedsfall(), id, PDL_DOEDSFALL.getDescription());
+        hendelseIdService.deletePdlHendelse(ident, PDL_DOEDSFALL.getDescription(), id);
+
         dbPerson.getPerson().setDoedsfall(dbPerson.getPerson().getDoedsfall().stream()
                 .filter(type -> !id.equals(type.getId()))
                 .toList());
@@ -261,7 +320,9 @@ public class ArtifactDeleteService {
 
         var dbPerson = getPerson(ident);
 
-        checkExists(dbPerson.getPerson().getFolkeregisterPersonstatus(), id, "FolkeregisterPersonstatus");
+        checkExists(dbPerson.getPerson().getFolkeregisterPersonstatus(), id, PDL_FOLKEREGISTER_PERSONSTATUS.getDescription());
+        hendelseIdService.deletePdlHendelse(ident, PDL_FOLKEREGISTER_PERSONSTATUS.getDescription(), id);
+
         dbPerson.getPerson().setFolkeregisterPersonstatus(dbPerson.getPerson().getFolkeregisterPersonstatus().stream()
                 .filter(type -> !id.equals(type.getId()))
                 .toList());
@@ -271,7 +332,9 @@ public class ArtifactDeleteService {
 
         var dbPerson = getPerson(ident);
 
-        checkExists(dbPerson.getPerson().getSikkerhetstiltak(), id, "Sikkerhetstiltak");
+        checkExists(dbPerson.getPerson().getSikkerhetstiltak(), id, PDL_SIKKERHETSTILTAK.getDescription());
+        hendelseIdService.deletePdlHendelse(ident, PDL_SIKKERHETSTILTAK.getDescription(), id);
+
         dbPerson.getPerson().setSikkerhetstiltak(dbPerson.getPerson().getSikkerhetstiltak().stream()
                 .filter(type -> !id.equals(type.getId()))
                 .toList());
@@ -281,7 +344,9 @@ public class ArtifactDeleteService {
 
         var dbPerson = getPerson(ident);
 
-        checkExists(dbPerson.getPerson().getTilrettelagtKommunikasjon(), id, "TilrettelagtKommunikasjon");
+        checkExists(dbPerson.getPerson().getTilrettelagtKommunikasjon(), id, PDL_TILRETTELAGT_KOMMUNIKASJON.getDescription());
+        hendelseIdService.deletePdlHendelse(ident, PDL_TILRETTELAGT_KOMMUNIKASJON.getDescription(), id);
+
         dbPerson.getPerson().setTilrettelagtKommunikasjon(dbPerson.getPerson().getTilrettelagtKommunikasjon().stream()
                 .filter(type -> !id.equals(type.getId()))
                 .toList());
@@ -291,7 +356,9 @@ public class ArtifactDeleteService {
 
         var dbPerson = getPerson(ident);
 
-        checkExists(dbPerson.getPerson().getStatsborgerskap(), id, "Statsborgerskap");
+        checkExists(dbPerson.getPerson().getStatsborgerskap(), id, PDL_STATSBORGERSKAP.getDescription());
+        hendelseIdService.deletePdlHendelse(ident, PDL_STATSBORGERSKAP.getDescription(), id);
+
         dbPerson.getPerson().setStatsborgerskap(dbPerson.getPerson().getStatsborgerskap().stream()
                 .filter(type -> !id.equals(type.getId()))
                 .toList());
@@ -301,7 +368,9 @@ public class ArtifactDeleteService {
 
         var dbPerson = getPerson(ident);
 
-        checkExists(dbPerson.getPerson().getOpphold(), id, "Opphold");
+        checkExists(dbPerson.getPerson().getOpphold(), id, PDL_OPPHOLD.getDescription());
+        hendelseIdService.deletePdlHendelse(ident, PDL_OPPHOLD.getDescription(), id);
+
         dbPerson.getPerson().setOpphold(dbPerson.getPerson().getOpphold().stream()
                 .filter(type -> !id.equals(type.getId()))
                 .toList());
@@ -311,7 +380,9 @@ public class ArtifactDeleteService {
 
         var dbPerson = getPerson(ident);
 
-        checkExists(dbPerson.getPerson().getSivilstand(), id, "Sivilstand");
+        checkExists(dbPerson.getPerson().getSivilstand(), id, PDL_SIVILSTAND.getDescription());
+        hendelseIdService.deletePdlHendelse(ident, PDL_SIVILSTAND.getDescription(), id);
+
         dbPerson.getPerson().getSivilstand().stream()
                 .filter(type -> id.equals(type.getId()) &&
                         isNotBlank(type.getRelatertVedSivilstand()))
@@ -332,7 +403,9 @@ public class ArtifactDeleteService {
 
         var dbPerson = getPerson(ident);
 
-        checkExists(dbPerson.getPerson().getTelefonnummer(), id, "Telefonnummer");
+        checkExists(dbPerson.getPerson().getTelefonnummer(), id, PDL_TELEFONUMMER.getDescription());
+        hendelseIdService.deletePdlHendelse(ident, PDL_TELEFONUMMER.getDescription(), id);
+
         dbPerson.getPerson().setTelefonnummer(dbPerson.getPerson().getTelefonnummer().stream()
                 .filter(type -> !id.equals(type.getId()))
                 .toList());
@@ -342,7 +415,9 @@ public class ArtifactDeleteService {
 
         var hovedPerson = getPerson(ident);
 
-        checkExists(hovedPerson.getPerson().getFullmakt(), id, "Fullmakt");
+        checkExists(hovedPerson.getPerson().getFullmakt(), id, PDL_FULLMAKT.getDescription());
+        hendelseIdService.deletePdlHendelse(ident, PDL_FULLMAKT.getDescription(), id);
+
         hovedPerson.getPerson().getFullmakt().stream()
                 .filter(type -> id.equals(type.getId()))
                 .forEach(fullmakt -> {
@@ -362,7 +437,9 @@ public class ArtifactDeleteService {
 
         var hovedPerson = getPerson(ident);
 
-        checkExists(hovedPerson.getPerson().getVergemaal(), id, "Vergemaal");
+        checkExists(hovedPerson.getPerson().getVergemaal(), id, PDL_VERGEMAAL.getDescription());
+        hendelseIdService.deletePdlHendelse(ident, PDL_VERGEMAAL.getDescription(), id);
+
         hovedPerson.getPerson().getVergemaal().stream()
                 .filter(type -> id.equals(type.getId()))
                 .forEach(vergemaal -> {
@@ -382,7 +459,9 @@ public class ArtifactDeleteService {
 
         var dbPerson = getPerson(ident);
 
-        checkExists(dbPerson.getPerson().getDoedfoedtBarn(), id, "DoedfoedtBarn");
+        checkExists(dbPerson.getPerson().getDoedfoedtBarn(), id, PDL_DOEDFOEDT_BARN.getDescription());
+        hendelseIdService.deletePdlHendelse(ident, PDL_DOEDFOEDT_BARN.getDescription(), id);
+
         dbPerson.getPerson().setDoedfoedtBarn(dbPerson.getPerson().getDoedfoedtBarn().stream()
                 .filter(type -> !id.equals(type.getId()))
                 .toList());

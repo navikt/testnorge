@@ -10,6 +10,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
@@ -29,7 +30,7 @@ public class PdlOpprettArtifactCommandPdl extends PdlTestdataCommand {
     private final Integer id;
 
     @Override
-    public Mono<OrdreResponseDTO.HendelseDTO> call() {
+    public Flux<OrdreResponseDTO.HendelseDTO> call() {
 
         return webClient
                 .post()
@@ -40,7 +41,7 @@ public class PdlOpprettArtifactCommandPdl extends PdlTestdataCommand {
                 .header(TEMA, GEN.name())
                 .header(HEADER_NAV_PERSON_IDENT, ident)
                 .retrieve()
-                .bodyToMono(PdlBestillingResponse.class)
+                .bodyToFlux(PdlBestillingResponse.class)
                 .flatMap(response -> Mono.just(OrdreResponseDTO.HendelseDTO.builder()
                         .id(id)
                         .status(PdlStatus.OK)

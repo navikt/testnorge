@@ -5,8 +5,6 @@ import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray
 import { Vegadresse } from '@/components/fagsystem/pdlf/visning/partials/Vegadresse'
 import { Matrikkeladresse } from '@/components/fagsystem/pdlf/visning/partials/Matrikkeladresse'
 import { UtenlandskAdresse } from '@/components/fagsystem/pdlf/visning/partials/UtenlandskAdresse'
-import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import { showLabel } from '@/utils/DataFormatter'
 import _ from 'lodash'
 import { getInitialOppholdsadresse } from '@/components/fagsystem/pdlf/form/initialValues'
 import { OppholdsadresseData } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
@@ -51,14 +49,6 @@ export const Adresse = ({ oppholdsadresseData, idx }: AdresseTypes) => {
 			{oppholdsadresseData.utenlandskAdresse && (
 				<UtenlandskAdresse adresse={oppholdsadresseData} idx={idx} />
 			)}
-			{oppholdsadresseData.oppholdAnnetSted && (
-				<div className="person-visning_content" key={idx}>
-					<TitleValue
-						title="Opphold annet sted"
-						value={showLabel('oppholdAnnetSted', oppholdsadresseData.oppholdAnnetSted)}
-					/>
-				</div>
-			)}
 		</>
 	)
 }
@@ -83,7 +73,6 @@ const OppholdsadresseVisning = ({
 	if (slettetOppholdsadressePdlf) {
 		return <OpplysningSlettet />
 	}
-
 	const oppholdsadresseValues = redigertOppholdsadressePdlf
 		? redigertOppholdsadressePdlf
 		: oppholdsadresseData
