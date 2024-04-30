@@ -12,10 +12,10 @@ import no.nav.pdl.forvalter.database.model.DbRelasjon;
 import no.nav.pdl.forvalter.database.repository.AliasRepository;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.dto.HentIdenterRequest;
-import no.nav.pdl.forvalter.dto.IdentDTO;
 import no.nav.pdl.forvalter.dto.Paginering;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.exception.NotFoundException;
+import no.nav.pdl.forvalter.utils.HendelseIdService;
 import no.nav.testnav.libs.data.pdlforvalter.v1.BestillingRequestDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FoedselDTO;
@@ -30,17 +30,14 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.PersonUpdateRequestDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.SivilstandDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.StatsborgerskapDTO;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import reactor.core.publisher.Flux;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -77,6 +74,7 @@ public class PersonService {
     private final ValidateArtifactsService validateArtifactsService;
     private final UnhookEksternePersonerService unhookEksternePersonerService;
     private final RelasjonerAlderService relasjonerAlderService;
+    private final HendelseIdService hendelseIdService;
 
     @Transactional
     public String updatePerson(String ident, PersonUpdateRequestDTO request, Boolean overwrite, Boolean relaxed) {
@@ -135,35 +133,12 @@ public class PersonService {
                 .flatMap(Collection::stream)
                 .collect(Collectors.toSet());
 
-        Stream.of(
-                        pdlTestdataConsumer.delete(identer),
-                        identPoolConsumer.releaseIdents(identer, Bruker.PDLF),
-                        Flux.just(personRepository.deleteByIdentIn(identer)))
-                .reduce(Flux.empty(), Flux::merge)
-                .collectList()
+        pdlTestdataConsumer.delete(identer)
+                .map(response -> identPoolConsumer.releaseIdents(identer, Bruker.PDLF))
                 .block();
 
+        personRepository.deleteByIdentIn(identer);
         log.info("Sletting av ident {} tok {} ms", ident, currentTimeMillis() - startTime);
-    }
-
-    @Transactional
-    public void deletePersonerUtenom(Set<String> identer) {
-
-        var startTime = currentTimeMillis();
-
-        var dbIdenter = personRepository.findByIdentIn(identer, Pageable.unpaged()).stream()
-                .map(DbPerson::getIdent)
-                .collect(Collectors.toSet());
-
-        Stream.of(
-                        pdlTestdataConsumer.delete(identer),
-                        identPoolConsumer.releaseIdents(identer, Bruker.TPSF),
-                        Flux.just(personRepository.deleteByIdentIn(dbIdenter)))
-                .reduce(Flux.empty(), Flux::merge)
-                .collectList()
-                .block();
-
-        log.info("Sletting av identer {} tok {} ms", identer.stream().collect(Collectors.joining(",")), currentTimeMillis() - startTime);
     }
 
     @Transactional(readOnly = true)
@@ -204,11 +179,12 @@ public class PersonService {
         relasjonerAlderService.fixRelasjonerAlder(request);
 
         if (isBlank(request.getOpprettFraIdent())) {
-            request.getPerson().setIdent(identPoolConsumer.acquireIdents(
-                            mapperFacade.map(request, HentIdenterRequest.class))
-                    .flatMap(Flux::fromIterable)
-                    .map(IdentDTO::getIdent)
-                    .blockFirst());
+            request.getPerson().setIdent(Objects.requireNonNull(identPoolConsumer.acquireIdents(
+                                    mapperFacade.map(request, HentIdenterRequest.class))
+                            .block())
+                    .getFirst()
+                    .getIdent());
+
         } else {
             if (personRepository.existsByIdent(request.getOpprettFraIdent())) {
                 throw new InvalidRequestException(format(IDENT_ALREADY_EXISTS, request.getOpprettFraIdent()));
@@ -233,7 +209,7 @@ public class PersonService {
             request.getPerson().getStatsborgerskap().add(new StatsborgerskapDTO());
         }
         if (request.getPerson().getSivilstand().stream().noneMatch(SivilstandDTO::isUgift)) {
-            request.getPerson().getSivilstand().add(0, new SivilstandDTO());
+            request.getPerson().getSivilstand().addFirst(new SivilstandDTO());
         }
         if (request.getPerson().getFolkeregisterPersonstatus().isEmpty() &&
                 Identtype.NPID != getIdenttype(request.getPerson().getIdent())) {
@@ -267,5 +243,12 @@ public class PersonService {
                                 .build())
                         .sistOppdatert(now())
                         .build()));
+    }
+
+    @Transactional
+    public void deleteMasterPdlArtifacter(String ident) {
+
+        hendelseIdService.deletePdlHendelser(ident);
+        personRepository.deleteByIdent(ident);
     }
 }

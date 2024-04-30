@@ -7,7 +7,6 @@ import no.nav.pdl.forvalter.consumer.IdentPoolConsumer;
 import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.dto.HentIdenterRequest;
-import no.nav.pdl.forvalter.dto.IdentDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.AdressebeskyttelseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FoedselDTO;
@@ -24,6 +23,7 @@ import reactor.core.publisher.Flux;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import static java.lang.System.currentTimeMillis;
@@ -88,11 +88,11 @@ public class CreatePersonService {
         var mergedPerson = mergeService.merge(buildPerson(nonNull(request) ? request : new PersonRequestDTO()),
                 new PersonDTO());
 
-        mergedPerson.setIdent(identPoolConsumer.acquireIdents(
-                        mapperFacade.map(nonNull(request) ? request : new PersonRequestDTO(), HentIdenterRequest.class))
-                .flatMap(Flux::fromIterable)
-                .map(IdentDTO::getIdent)
-                .blockFirst());
+        mergedPerson.setIdent(Objects.requireNonNull(identPoolConsumer.acquireIdents(
+                                mapperFacade.map(nonNull(request) ? request : new PersonRequestDTO(), HentIdenterRequest.class))
+                        .block())
+                        .getFirst()
+                        .getIdent());
 
         Stream.of(
                         Flux.just(foedselService.convert(mergedPerson)),

@@ -8,7 +8,6 @@ import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsStatusRapport;
-import no.nav.dolly.domain.resultset.SystemTyper;
 import no.nav.testnav.libs.data.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PdlStatus;
@@ -40,7 +39,7 @@ public final class BestillingPdlOrdreStatusMapper {
         bestProgress.forEach(progress -> {
             if (isNotBlank(progress.getPdlOrdreStatus()) && isNotBlank(progress.getIdent())) {
 
-                if (progress.getPdlOrdreStatus().contains("PDL_OPPRETT_PERSON")) {
+                if (progress.getPdlOrdreStatus().contains("PDL_")) {
                     extractStatus(meldingIdents, progress, objectMapper);
 
                 } else {
@@ -49,7 +48,7 @@ public final class BestillingPdlOrdreStatusMapper {
             }
         });
 
-        return meldingIdents.isEmpty() ? emptyList() : formatStatus(meldingIdents, PDL_ORDRE);
+        return meldingIdents.isEmpty() ? emptyList() : formatStatus(meldingIdents);
     }
 
     private static void extractStatus(Map<String, List<String>> meldingIdents, BestillingProgress progress, ObjectMapper objectMapper) {
@@ -70,7 +69,7 @@ public final class BestillingPdlOrdreStatusMapper {
 
         } catch (JsonProcessingException e) {
             addElement(meldingIdents, JSON_PARSE_ERROR, progress.getIdent());
-            log.error("Json parsing feilet: {}", e);
+            log.error("Json parsing feilet: {}", e.getMessage(), e);
         }
     }
 
@@ -101,11 +100,11 @@ public final class BestillingPdlOrdreStatusMapper {
                 .toList();
     }
 
-    private static List<RsStatusRapport> formatStatus(Map<String, List<String>> meldingIdents, SystemTyper type) {
+    private static List<RsStatusRapport> formatStatus(Map<String, List<String>> meldingIdents) {
 
         return List.of(RsStatusRapport.builder()
-                .id(type)
-                .navn(type.getBeskrivelse())
+                .id(PDL_ORDRE)
+                .navn(PDL_ORDRE.getBeskrivelse())
                 .statuser(new ArrayList<>(meldingIdents.entrySet().stream()
                         .map(entry -> RsStatusRapport.Status.builder()
                                 .melding(decodeMsg(entry.getKey()))
