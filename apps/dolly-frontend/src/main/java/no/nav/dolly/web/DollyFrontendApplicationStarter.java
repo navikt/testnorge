@@ -28,7 +28,11 @@ import java.util.Optional;
 import java.util.function.Function;
 
 @Slf4j
-@Import({ CoreConfig.class, FrontendConfig.class, SecureOAuth2ServerToServerConfiguration.class })
+@Import({
+        CoreConfig.class,
+        FrontendConfig.class,
+        SecureOAuth2ServerToServerConfiguration.class
+})
 @SpringBootApplication
 @RequiredArgsConstructor
 public class DollyFrontendApplicationStarter {
@@ -87,26 +91,44 @@ public class DollyFrontendApplicationStarter {
     }
 
     private GatewayFilter addAuthenticationHeaderFilterFrom(ServerProperties serverProperties) {
-        return new AddAuthenticationHeaderToRequestGatewayFilterFactory().apply(exchange -> {
-            return accessService.getAccessToken(serverProperties, exchange);
-        });
+        return new AddAuthenticationHeaderToRequestGatewayFilterFactory()
+                .apply(exchange -> {
+                    return accessService.getAccessToken(serverProperties, exchange);
+                });
     }
 
     private GatewayFilter addUserJwtHeaderFilter() {
         return new AddUserJwtHeaderToRequestGatewayFilterFactory().apply(exchange -> {
-            return exchange.getSession().flatMap(session -> Optional.ofNullable(session.getAttribute(UserSessionConstant.SESSION_USER_ID_KEY)).map(value -> Mono.just((String) value)).orElse(Mono.empty())).flatMap(id -> userJwtExchange.generateJwt(id, exchange));
+            return exchange.getSession()
+                    .flatMap(session -> Optional.ofNullable(session.getAttribute(UserSessionConstant.SESSION_USER_ID_KEY))
+                            .map(value -> Mono.just((String) value))
+                            .orElse(Mono.empty())
+                    ).flatMap(id -> userJwtExchange.generateJwt(id, exchange));
         });
     }
 
     private Function<PredicateSpec, Buildable<Route>> createRoute(ServerProperties serverProperties) {
-        return createRoute(serverProperties.getName(), serverProperties.getUrl(), addAuthenticationHeaderFilterFrom(serverProperties));
+        return createRoute(
+                serverProperties.getName(),
+                serverProperties.getUrl(),
+                addAuthenticationHeaderFilterFrom(serverProperties)
+        );
     }
 
     private Function<PredicateSpec, Buildable<Route>> createRoute(ServerProperties serverProperties, String segment) {
-        return createRoute(segment, serverProperties.getUrl(), addAuthenticationHeaderFilterFrom(serverProperties));
+        return createRoute(
+                segment,
+                serverProperties.getUrl(),
+                addAuthenticationHeaderFilterFrom(serverProperties)
+        );
     }
 
     private Function<PredicateSpec, Buildable<Route>> createRoute(String segment, String host, GatewayFilter filter) {
-        return spec -> spec.path("/" + segment + "/**").filters(filterSpec -> filterSpec.rewritePath("/" + segment + "/(?<segment>.*)", "/${segment}").filters(filter, addUserJwtHeaderFilter())).uri(host);
+        return spec -> spec
+                .path("/" + segment + "/**")
+                .filters(filterSpec -> filterSpec
+                        .rewritePath("/" + segment + "/(?<segment>.*)", "/${segment}")
+                        .filters(filter, addUserJwtHeaderFilter())
+                ).uri(host);
     }
 }
