@@ -9,7 +9,7 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
     nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
     nginx.ingress.kubernetes.io/proxy-body-size: "512m"
-   
+
 spec:
   tokenx:
     enabled: true
@@ -89,6 +89,10 @@ spec:
     initialDelay: 20
     periodSeconds: 20
     failureThreshold: 900
+  observability:
+    autoInstrumentation:
+      enabled: true
+      runtime: java
   prometheus:
     enabled: true
     path: /internal/metrics

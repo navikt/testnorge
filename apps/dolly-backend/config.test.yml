@@ -90,7 +90,7 @@ spec:
   observability:
     autoInstrumentation:
       enabled: true
-      runtime: nodejs
+      runtime: java
   prometheus:
     enabled: true
     path: /internal/metrics
