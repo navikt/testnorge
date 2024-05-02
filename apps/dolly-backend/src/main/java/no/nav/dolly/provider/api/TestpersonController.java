@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.GjenopprettIdentService;
 import no.nav.dolly.bestilling.service.OppdaterPersonService;
-import no.nav.dolly.domain.dto.FinnesDTO;
+import no.nav.testnav.libs.dto.dolly.v1.FinnesDTO;
 import no.nav.dolly.domain.dto.TestidentDTO;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
