@@ -3,6 +3,7 @@ package no.nav.testnav.apps.tenorsearchservice.provider;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.tenorsearchservice.consumers.MaskinportenConsumer;
 import no.nav.testnav.apps.tenorsearchservice.consumers.dto.InfoType;
 import no.nav.testnav.apps.tenorsearchservice.domain.AccessToken;
@@ -12,6 +13,7 @@ import no.nav.testnav.apps.tenorsearchservice.domain.TenorRequest;
 import no.nav.testnav.apps.tenorsearchservice.domain.TenorResponse;
 import no.nav.testnav.apps.tenorsearchservice.service.LookupService;
 import no.nav.testnav.apps.tenorsearchservice.service.TenorSearchService;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,6 +24,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/tenor")
 @RequiredArgsConstructor
@@ -42,6 +45,7 @@ public class TenorSearchController {
                                                    @Schema(description = "Ikke filtrer søkeresultat for eksisterende personer (default er filtrering")
                                                    @RequestParam(required = false) Boolean ikkeFiltrer) {
 
+        log.info("Kallende bruker: {}", SecurityContextHolder.getContext().getAuthentication());
         return tenorSearchService.getTestdata(searchData, antall, side, seed, ikkeFiltrer);
     }
 
