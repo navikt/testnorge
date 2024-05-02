@@ -1,4 +1,4 @@
-package no.nav.dolly.domain.dto;
+package no.nav.testnav.libs.dto.dolly.v1;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

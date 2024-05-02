@@ -49,7 +49,7 @@ public class TenorSearchController {
                                                    @RequestParam(required = false) Boolean ikkeFiltrer) {
 
        log.info("Headers {}", headers.entrySet().stream()
-                       .filter(entry -> entry.getKey().equals("authorization"))
+                       .filter(entry -> !entry.getKey().equals("authorization"))
                        .map(entry -> "%s = %s".formatted(entry.getKey(), entry.getValue()))
                .collect(Collectors.joining("\n")));
 
