@@ -2,7 +2,7 @@ package no.nav.testnav.apps.tenorsearchservice.consumers.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.apps.tenorsearchservice.consumers.dto.DollyTagDTO;
+import no.nav.testnav.apps.tenorsearchservice.consumers.dto.DollyTagsDTO;
 import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -10,21 +10,23 @@ import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 @Slf4j
 @RequiredArgsConstructor
-public class TagsGetCommand implements Callable<Mono<DollyTagDTO>> {
+public class TagsGetCommand implements Callable<Mono<DollyTagsDTO>> {
 
-    private static final String PDL_TAGS_URL = "/api/v1/bestilling/tags";
+    private static final String PDL_TAGS_URL = "/api/v1/bestilling/tags/bolk";
     private static final String PDL_TESTDATA = "/pdl-testdata";
-    private static final String PERSONIDENT = "Nav-Personident";
+    private static final String PERSONIDENTER = "Nav-Personidenter";
 
     private final WebClient webClient;
-    private final String ident;
+    private final List<String> identer;
     private final String token;
 
-    public Mono<DollyTagDTO> call() {
+    public Mono<DollyTagsDTO> call() {
 
         return webClient
                 .get()
@@ -33,13 +35,13 @@ public class TagsGetCommand implements Callable<Mono<DollyTagDTO>> {
                         .path(PDL_TAGS_URL)
                         .build())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                .header(PERSONIDENT, ident)
+                .header(PERSONIDENTER, String.join(",", identer))
                 .retrieve()
-                .bodyToMono(String[].class)
-                .map(result -> DollyTagDTO.builder()
-                        .ident(ident)
-                        .tags(result)
-                        .build())
+                .bodyToMono(Map.class)
+                .map(resultat ->
+                        DollyTagsDTO.builder()
+                                .personerTags(resultat)
+                                .build())
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException));
     }

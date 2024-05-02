@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import static java.util.Objects.nonNull;
+import static no.nav.testnav.apps.tenorsearchservice.consumers.dto.DollyTagsDTO.hasDollyTag;
 
 @Service
 @RequiredArgsConstructor
@@ -25,12 +26,13 @@ public class PdlFilterService {
                     .map(dollyTags -> {
                         var oversiktDTO = oversikt.copy();
                         var personer = oversiktDTO.getData().getPersoner().stream()
-                                .filter(person -> dollyTags.stream()
-                                        .noneMatch(tag -> tag.getIdent().equals(person.getId()) && tag.hasDollyTag()))
+                                .filter(person -> dollyTags.getPersonerTags().entrySet().stream()
+                                        .noneMatch(tag -> tag.getKey().equals(person.getId()) && hasDollyTag(tag.getValue())))
                                 .toList();
                         oversiktDTO.getData().setPersoner(personer);
                         oversiktDTO.getData().setRader(personer.size());
-                        oversiktDTO.getData().setTreff(oversikt.getData().getTreff() - (dollyTags.size() - personer.size()));
+                        oversiktDTO.getData().setTreff(oversikt.getData().getTreff() -
+                                (dollyTags.getPersonerTags().size() - personer.size()));
                         return oversiktDTO;
                     });
         } else {

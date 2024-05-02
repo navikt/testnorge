@@ -2,12 +2,11 @@ package no.nav.testnav.apps.tenorsearchservice.consumers;
 
 import no.nav.testnav.apps.tenorsearchservice.config.Consumers;
 import no.nav.testnav.apps.tenorsearchservice.consumers.command.TagsGetCommand;
-import no.nav.testnav.apps.tenorsearchservice.consumers.dto.DollyTagDTO;
+import no.nav.testnav.apps.tenorsearchservice.consumers.dto.DollyTagsDTO;
 import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -27,11 +26,9 @@ public class PdlDataConsumer {
         this.serverProperties = serverProperties.getPdlTestdata();
     }
 
-    public Mono<List<DollyTagDTO>> hasPdlDollyTag(List<String> identer) {
+    public Mono<DollyTagsDTO> hasPdlDollyTag(List<String> identer) {
 
         return tokenExchange.exchange(serverProperties)
-                .flatMapMany(token -> Flux.fromIterable(identer)
-                        .flatMap(ident -> new TagsGetCommand(webClient, ident, token.getTokenValue()).call()))
-                .collectList();
+                .flatMap(token -> new TagsGetCommand(webClient, identer, token.getTokenValue()).call());
     }
 }
