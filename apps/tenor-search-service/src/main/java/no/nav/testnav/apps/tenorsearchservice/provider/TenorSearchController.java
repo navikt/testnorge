@@ -13,16 +13,17 @@ import no.nav.testnav.apps.tenorsearchservice.domain.TenorRequest;
 import no.nav.testnav.apps.tenorsearchservice.domain.TenorResponse;
 import no.nav.testnav.apps.tenorsearchservice.service.LookupService;
 import no.nav.testnav.apps.tenorsearchservice.service.TenorSearchService;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -35,7 +36,8 @@ public class TenorSearchController {
     private final LookupService lookupService;
 
     @PostMapping(path = "/testdata/oversikt", produces = "application/json", consumes = "application/json")
-    public Mono<TenorOversiktResponse> getTestdata(@RequestBody TenorRequest searchData,
+    public Mono<TenorOversiktResponse> getTestdata(@RequestHeader Map<String, String> headers,
+                                                   @RequestBody TenorRequest searchData,
                                                    @Schema(description = "Antall resultater per side")
                                                    @RequestParam(required = false) Integer antall,
                                                    @Schema(description = "Sidenummer")
@@ -45,7 +47,7 @@ public class TenorSearchController {
                                                    @Schema(description = "Ikke filtrer søkeresultat for eksisterende personer (default er filtrering")
                                                    @RequestParam(required = false) Boolean ikkeFiltrer) {
 
-        log.info("Kallende bruker: {}", SecurityContextHolder.getContext().getAuthentication());
+        headers.forEach((key, value) -> log.info(String.format("Header '%s' = %s", key, value)));
         return tenorSearchService.getTestdata(searchData, antall, side, seed, ikkeFiltrer);
     }
 
