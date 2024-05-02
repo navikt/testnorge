@@ -1,6 +1,7 @@
 package no.nav.dolly.service;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.dolly.domain.dto.FinnesDTO;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.jpa.Testident.Master;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 
@@ -129,5 +131,22 @@ public class IdentService {
     public List<Testident> getTestidenterByGruppe(Long id) {
 
         return identRepository.findByTestgruppe(id);
+    }
+
+    public FinnesDTO exists(List<String> identer) {
+
+        var finnes = FinnesDTO.builder()
+                .iBruk(identRepository.findByIdentIn(identer).stream()
+                        .map(Testident::getIdent)
+                        .collect(Collectors.toMap(ident -> ident, ident -> true)))
+                .build();
+
+        identer.forEach(ident -> {
+                    if (!finnes.getIBruk().containsKey(ident)) {
+                        finnes.getIBruk().put(ident, false);
+                    }
+                });
+
+        return finnes;
     }
 }

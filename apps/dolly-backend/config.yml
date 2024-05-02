@@ -21,6 +21,7 @@ spec:
         - application: testnav-dollystatus
         - application: testnav-helsepersonell-service
         - application: testnav-oversikt-frontend
+        - application: testnav-tenor-search-service
         - application: etterlatte-testdata
           namespace: etterlatte
     outbound:
