@@ -2,41 +2,44 @@ package no.nav.testnav.apps.tenorsearchservice.consumers;
 
 import no.nav.testnav.apps.tenorsearchservice.config.Consumers;
 import no.nav.testnav.apps.tenorsearchservice.consumers.command.FinnesIDollyGetCommand;
-import no.nav.testnav.apps.tenorsearchservice.consumers.command.TagsGetCommand;
 import no.nav.testnav.apps.tenorsearchservice.consumers.dto.DollyBackendSelector;
-import no.nav.testnav.apps.tenorsearchservice.consumers.dto.DollyTagsDTO;
 import no.nav.testnav.libs.dto.dolly.v1.FinnesDTO;
 import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import org.apache.hc.core5.reactor.Command;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
 
-import static no.nav.testnav.apps.tenorsearchservice.consumers.dto.DollyBackendSelector.DEV;
+import static no.nav.testnav.apps.tenorsearchservice.consumers.dto.DollyBackendSelector.REGULAR;
 
 @Service
 public class DollyBackendConsumer {
 
     private final WebClient webClient;
+    private final WebClient webClientDev;
     private final TokenExchange tokenExchange;
     private final ServerProperties dollyBackendProperties;
-    private final ServerProperties dollyBackendDevProperties;
+    private final ServerProperties dollyBackendPropertiesDev;
 
     public DollyBackendConsumer(TokenExchange tokenExchange, Consumers serverProperties) {
         this.webClient = WebClient.builder()
+                .baseUrl(serverProperties.getDollyBackend().getUrl())
+                .build();
+        this.webClientDev = WebClient.builder()
+                .baseUrl(serverProperties.getDollyBackendDev().getUrl())
                 .build();
         this.tokenExchange = tokenExchange;
         this.dollyBackendProperties = serverProperties.getDollyBackend();
-        this.dollyBackendDevProperties = serverProperties.getDollyBackendDev();
+        this.dollyBackendPropertiesDev = serverProperties.getDollyBackendDev();
     }
 
     public Mono<FinnesDTO> getFinnesInfo(List<String> identer, DollyBackendSelector selector) {
 
-        var properties = selector == DEV ? dollyBackendProperties : dollyBackendDevProperties;
+        var properties = selector == REGULAR ? dollyBackendProperties : dollyBackendPropertiesDev;
+        var client = selector == REGULAR ? webClient : webClientDev;
         return tokenExchange.exchange(properties)
-                .flatMap(token -> new FinnesIDollyGetCommand(webClient, properties.getUrl(), identer, token.getTokenValue()).call());
+                .flatMap(token -> new FinnesIDollyGetCommand(client, identer, token.getTokenValue()).call());
     }
 }

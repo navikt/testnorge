@@ -21,7 +21,6 @@ public class FinnesIDollyGetCommand implements Callable<Mono<FinnesDTO>> {
     private static final String IDENTER = "identer";
 
     private final WebClient webClient;
-    private final String baseUrl;
     private final List<String> identer;
     private final String token;
 
@@ -30,7 +29,6 @@ public class FinnesIDollyGetCommand implements Callable<Mono<FinnesDTO>> {
         return webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder
-                        .path(baseUrl)
                         .path(FINNES_URL)
                         .queryParam(IDENTER, identer)
                         .build())

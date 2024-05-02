@@ -25,8 +25,8 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 import java.util.Map;
 
+import static no.nav.testnav.apps.tenorsearchservice.consumers.dto.DollyBackendSelector.REGULAR;
 import static no.nav.testnav.apps.tenorsearchservice.consumers.dto.DollyBackendSelector.DEV;
-import static no.nav.testnav.apps.tenorsearchservice.consumers.dto.DollyBackendSelector.TEST;
 
 @Slf4j
 @RestController
@@ -50,9 +50,9 @@ public class TenorSearchController {
                                                    @Schema(description = "Ikke filtrer søkeresultat for eksisterende personer (default er filtrering")
                                                    @RequestParam(required = false) Boolean ikkeFiltrer) {
 
-        log.info("Kallende applikasjon: {}", headers.get("origin"));
+        log.info("Kallende applikasjon: {}", headers.get("Origin"));
 
-        var selector = headers.get("Origin").contains("ekstern") ? DEV : TEST;
+        var selector = headers.get("Origin").contains("ekstern") ? REGULAR : DEV;
         return tenorSearchService.getTestdata(searchData, antall, side, seed, selector, ikkeFiltrer);
     }
 

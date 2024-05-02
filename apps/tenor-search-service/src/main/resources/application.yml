@@ -63,11 +63,11 @@ consumers:
     name: testnav-pdl-proxy
   dolly-backend:
     url: http://dolly-backend.dolly.svc.cluster.local
-    cluster: dev-fss
+    cluster: dev-gcp
     namespace: dolly
     name: dolly-backend
   dolly-backend-dev:
     url: http://dolly-backend-dev.dolly.svc.cluster.local
-    cluster: dev-fss
+    cluster: dev-gcp
     namespace: dolly
     name: dolly-backend-dev
