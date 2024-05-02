@@ -40,6 +40,8 @@ export const Adresse = ({ boadresseData, idx }: AdresseTypes) => {
 	if (!boadresseData) {
 		return null
 	}
+
+	//TODO: Vis master?
 	return (
 		<>
 			{boadresseData.vegadresse && <Vegadresse adresse={boadresseData} idx={idx} />}
@@ -50,7 +52,7 @@ export const Adresse = ({ boadresseData, idx }: AdresseTypes) => {
 	)
 }
 
-const BoadresseVisning = ({
+export const BoadresseVisning = ({
 	boadresseData,
 	idx,
 	data,

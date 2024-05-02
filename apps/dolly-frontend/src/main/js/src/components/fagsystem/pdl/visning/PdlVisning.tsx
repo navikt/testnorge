@@ -72,7 +72,7 @@ export const PdlVisning = ({
 	const pdlfPerson = fagsystemData?.pdlforvalter?.person
 	const identtype = pdlfPerson?.identtype
 	const tmpPdlforvalter = tmpPersoner?.pdlforvalter
-
+	console.log('pdlfPerson: ', pdlfPerson) //TODO - SLETT MEG
 	return (
 		<ErrorBoundary>
 			<div className={miljoeVisning ? 'boks' : ''}>
@@ -95,7 +95,13 @@ export const PdlVisning = ({
 					data={bankkontoData}
 					loading={loading?.tpsMessaging || loading?.kontoregister}
 				/>
-				<PdlBoadresse data={bostedsadresse} />
+				<PdlBoadresse
+					data={bostedsadresse}
+					pdlfData={pdlfPerson?.bostedsadresse}
+					tmpPersoner={tmpPdlforvalter}
+					ident={ident}
+					identtype={identtype}
+				/>
 				<PdlDeltBosted data={deltBosted} />
 				<PdlOppholdsadresse data={oppholdsadresse} />
 				<PdlOppholdsstatus data={opphold} />
