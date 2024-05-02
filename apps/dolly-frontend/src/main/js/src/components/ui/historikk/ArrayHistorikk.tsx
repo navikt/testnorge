@@ -12,6 +12,7 @@ export const ArrayHistorikk = ({
 	tmpData,
 	tmpPersoner,
 	ident,
+	identtype,
 	header,
 }) => {
 	const Main = component
@@ -36,6 +37,7 @@ export const ArrayHistorikk = ({
 										tmpData={tmpData}
 										tmpPersoner={tmpPersoner}
 										ident={ident}
+										identtype={identtype}
 									/>
 								)
 							}

@@ -27,6 +27,7 @@ import { getBankkontoData } from '@/components/fagsystem/pdlf/visning/PdlfVisnin
 
 type PdlVisningProps = {
 	pdlData: PdlData
+	tmpPersoner: any
 	fagsystemData?: any
 	loading?: any
 	miljoeVisning?: boolean
@@ -69,7 +70,7 @@ export const PdlVisning = ({
 	const bankkontoData = getBankkontoData(fagsystemData)
 
 	const pdlfPerson = fagsystemData?.pdlforvalter?.person
-
+	const identtype = pdlfPerson?.identtype
 	const tmpPdlforvalter = tmpPersoner?.pdlforvalter
 
 	return (
@@ -103,6 +104,7 @@ export const PdlVisning = ({
 					pdlfData={pdlfPerson?.kontaktadresse}
 					tmpPersoner={tmpPdlforvalter}
 					ident={ident}
+					identtype={identtype}
 				/>
 				<Adressebeskyttelse data={adressebeskyttelse} erPdlVisning />
 				<PdlRelasjoner data={hentPerson} />

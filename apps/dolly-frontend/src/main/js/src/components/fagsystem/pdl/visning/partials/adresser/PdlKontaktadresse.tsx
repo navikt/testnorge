@@ -9,12 +9,20 @@ import _ from 'lodash'
 
 type PdlKontaktadresseProps = {
 	data: Array<KontaktadresseData>
-	ident: string
+	pdlfData?: Array<KontaktadresseData>
+	tmpPersoner?: any
+	ident?: string
+	identtype?: string
 }
 
 type AdresseProps = {
 	data: KontaktadresseData
-	idx?: number
+	idx: number
+	alleData?: Array<KontaktadresseData>
+	tmpData?: any
+	tmpPersoner?: any
+	ident?: string
+	identtype?: string
 }
 
 const AdresseVisning = ({ data, idx }: AdresseProps) => {
@@ -32,6 +40,7 @@ const AdresseVisningRedigerbar = ({
 	tmpData,
 	tmpPersoner,
 	ident,
+	identtype,
 }: AdresseProps) => {
 	return (
 		<div className="person-visning_content">
@@ -42,6 +51,7 @@ const AdresseVisningRedigerbar = ({
 				tmpData={tmpData}
 				tmpPersoner={tmpPersoner}
 				ident={ident}
+				identtype={identtype}
 				erPdlVisning={false}
 			/>
 		</div>
@@ -53,6 +63,7 @@ export const PdlKontaktadresse = ({
 	pdlfData,
 	tmpPersoner,
 	ident,
+	identtype,
 }: PdlKontaktadresseProps) => {
 	if ((!data || data.length === 0) && (!tmpPersoner || Object.keys(tmpPersoner).length < 1)) {
 		return null
@@ -80,6 +91,7 @@ export const PdlKontaktadresse = ({
 				tmpData={tmpData}
 				tmpPersoner={tmpPersoner}
 				ident={ident}
+				identtype={identtype}
 				header={''}
 			/>
 		</>
