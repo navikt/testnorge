@@ -24,6 +24,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -47,7 +48,11 @@ public class TenorSearchController {
                                                    @Schema(description = "Ikke filtrer søkeresultat for eksisterende personer (default er filtrering")
                                                    @RequestParam(required = false) Boolean ikkeFiltrer) {
 
-        headers.forEach((key, value) -> log.info(String.format("Header '%s' = %s", key, value)));
+       log.info("Headers {}", headers.entrySet().stream()
+                       .filter(entry -> entry.getKey().equals("authorization"))
+                       .map(entry -> "%s = %s".formatted(entry.getKey(), entry.getValue()))
+               .collect(Collectors.joining("\n")));
+
         return tenorSearchService.getTestdata(searchData, antall, side, seed, ikkeFiltrer);
     }
 
