@@ -3,6 +3,7 @@ package no.nav.testnav.apps.tenorsearchservice.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.tenorsearchservice.consumers.TenorConsumer;
+import no.nav.testnav.apps.tenorsearchservice.consumers.dto.DollyBackendSelector;
 import no.nav.testnav.apps.tenorsearchservice.consumers.dto.InfoType;
 import no.nav.testnav.apps.tenorsearchservice.domain.TenorOversiktResponse;
 import no.nav.testnav.apps.tenorsearchservice.domain.TenorRequest;
@@ -123,14 +124,14 @@ public class TenorSearchService {
     }
 
     public Mono<TenorOversiktResponse> getTestdata(TenorRequest searchData, Integer antall,
-                                                   Integer side, Integer seed, Boolean ikkeFiltrer) {
+                                                   Integer side, Integer seed, DollyBackendSelector selector, Boolean ikkeFiltrer) {
 
         var query = getQuery(searchData);
 
         return tenorConsumer.getTestdata(query, InfoType.IdentOgNavn, antall, side, seed)
                 .flatMap(resultat -> Mono.just(tenorResultMapperService.map(resultat, query)))
                 .flatMap(response -> isNotTrue(ikkeFiltrer) ?
-                        pdlFilterService.filterPdlPerson(response) :
+                        pdlFilterService.filterPdlPerson(response, selector) :
                         Mono.just(response));
     }
 }

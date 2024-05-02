@@ -60,6 +60,7 @@ public class TenorOversiktResponse {
         private String fornavn;
         private String etternavn;
         private List<TenorRelasjon> tenorRelasjoner;
+        private Boolean iBruk;
     }
 
     public TenorOversiktResponse copy() {

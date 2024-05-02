@@ -1,7 +1,6 @@
 package no.nav.dolly.service;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.dolly.domain.dto.FinnesDTO;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.jpa.Testident.Master;
@@ -9,6 +8,7 @@ import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.IdentRepository.GruppeBestillingIdent;
 import no.nav.dolly.repository.TransaksjonMappingRepository;
+import no.nav.testnav.libs.dto.dolly.v1.FinnesDTO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
