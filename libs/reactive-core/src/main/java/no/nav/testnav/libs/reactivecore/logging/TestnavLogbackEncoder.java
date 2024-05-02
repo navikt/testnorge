@@ -12,7 +12,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.regex.Pattern;
 
-import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 @Slf4j
 public class TestnavLogbackEncoder extends LogstashEncoder {
@@ -36,15 +36,15 @@ public class TestnavLogbackEncoder extends LogstashEncoder {
         generator.writeStringField("thread_name", event.getThreadName());
         generator.writeStringField("level", event.getLevel().toString());
 
-        if (!isNull(event.getThrowableProxy())) {
+        if (nonNull(event.getThrowableProxy())) {
             var exception = (ThrowableProxy) event.getThrowableProxy();
-            if (!isNull(exception.getThrowable())) {
-                StringWriter sw = new StringWriter();
-                PrintWriter pw = new PrintWriter(sw);
+            if (nonNull(exception.getThrowable())) {
+                var sw = new StringWriter();
+                var pw = new PrintWriter(sw);
                 for (StackTraceElement element : exception.getThrowable().getStackTrace()) {
                     pw.println("\tat " + element);
                 }
-                String stackTrace = sw.toString().substring(0, 480); //Limit the stack trace to 480 characters
+                var stackTrace = sw.toString().substring(0, 480); //Limit the stack trace to 480 characters
                 generator.writeStringField("stack_trace", stackTrace);
             }
         }
