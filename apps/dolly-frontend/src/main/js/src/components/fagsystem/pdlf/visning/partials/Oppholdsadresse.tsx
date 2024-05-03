@@ -40,6 +40,7 @@ export const Adresse = ({ oppholdsadresseData, idx }: AdresseTypes) => {
 		return null
 	}
 
+	// TODO: Vis master?
 	return (
 		<>
 			{oppholdsadresseData.vegadresse && <Vegadresse adresse={oppholdsadresseData} idx={idx} />}
@@ -53,7 +54,7 @@ export const Adresse = ({ oppholdsadresseData, idx }: AdresseTypes) => {
 	)
 }
 
-const OppholdsadresseVisning = ({
+export const OppholdsadresseVisning = ({
 	oppholdsadresseData,
 	idx,
 	data,

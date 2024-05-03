@@ -103,7 +103,13 @@ export const PdlVisning = ({
 					identtype={identtype}
 				/>
 				<PdlDeltBosted data={deltBosted} />
-				<PdlOppholdsadresse data={oppholdsadresse} />
+				<PdlOppholdsadresse
+					data={oppholdsadresse}
+					pdlfData={pdlfPerson?.oppholdsadresse}
+					tmpPersoner={tmpPdlforvalter}
+					ident={ident}
+					identtype={identtype}
+				/>
 				<PdlOppholdsstatus data={opphold} />
 				<PdlKontaktadresse
 					data={kontaktadresse}
