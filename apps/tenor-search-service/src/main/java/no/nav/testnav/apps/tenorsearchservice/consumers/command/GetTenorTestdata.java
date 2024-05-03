@@ -43,7 +43,7 @@ public class GetTenorTestdata implements Callable<Mono<TenorResponse>> {
 
         log.info("Query-parameter: {}", query);
         var requestParams = Map.of(
-                "kilde", getKilde(kilde).getTenorKilde(),
+                "kilde", kilde.getTenorKilde(),
                 "query", query,
                 "alle", "*");
 
@@ -109,11 +109,6 @@ public class GetTenorTestdata implements Callable<Mono<TenorResponse>> {
         } else {
             return "identifikator";
         }
-    }
-
-    private Kilde getKilde(Kilde kilde) {
-
-        return isNull(kilde) ? Kilde.FREG : kilde;
     }
 
     private boolean isNoekkelinfo(InfoType type) {

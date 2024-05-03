@@ -29,13 +29,13 @@ import java.util.function.Function;
 
 @Slf4j
 @Component
-public class MaskinportenClient {
+public class MaskinportenConsumer {
 
     private final WebClient webClient;
     private final MaskinportenConfig maskinportenConfig;
     private final Mono<AccessToken> accessToken;
 
-    public MaskinportenClient(MaskinportenConfig maskinportenConfig) {
+    public MaskinportenConsumer(MaskinportenConfig maskinportenConfig) {
         this.webClient = WebClient.builder().build();
         this.maskinportenConfig = maskinportenConfig;
         var wellKnownMono = cache(
