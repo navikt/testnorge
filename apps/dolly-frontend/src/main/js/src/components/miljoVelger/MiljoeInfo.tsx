@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import { Alert } from '@navikt/ds-react'
 import {
 	useArenaEnvironments,
@@ -18,20 +17,8 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 	} = usePensjonEnvironments()
 	const { instEnvironments, loading: loadingInst, error: errorInst } = useInstEnvironments()
 	const { dokarkivEnvironments, loading: loadingDokarkiv } = useDokarkivEnvironments()
-	const { instdata, pdldata, arenaforvalter, pensjonforvalter, sykemelding, dokarkiv } =
-		bestillingsdata
-	if (
-		!instdata &&
-		!arenaforvalter &&
-		!pensjonforvalter &&
-		!sykemelding &&
-		!dokarkiv &&
-		!_.get(pdldata, 'bostedsadresse') &&
-		!_.get(pdldata, 'fullmakt') &&
-		!_.get(pdldata, 'falskIdentitet') &&
-		!_.get(pdldata, 'utenlandskIdentifikasjonsnummer') &&
-		!_.get(pdldata, 'kontaktinformasjonForDoedsbo')
-	) {
+	const { instdata, arenaforvalter, pensjonforvalter, sykemelding, dokarkiv } = bestillingsdata
+	if (!instdata && !arenaforvalter && !pensjonforvalter && !sykemelding && !dokarkiv) {
 		return null
 	}
 
