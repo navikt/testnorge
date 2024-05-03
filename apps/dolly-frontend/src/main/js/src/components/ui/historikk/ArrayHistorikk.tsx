@@ -31,6 +31,7 @@ export const ArrayHistorikk = ({
 					tmpPersoner={tmpPersoner}
 					ident={ident}
 					identtype={identtype}
+					master="PDL"
 				/>
 			)
 		}

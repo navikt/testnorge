@@ -118,7 +118,14 @@ export const PdlVisning = ({
 					ident={ident}
 					identtype={identtype}
 				/>
-				<Adressebeskyttelse data={adressebeskyttelse} erPdlVisning />
+				<Adressebeskyttelse
+					data={adressebeskyttelse}
+					pdlfData={pdlfPerson?.adressebeskyttelse}
+					tmpPersoner={tmpPdlforvalter}
+					ident={ident}
+					identtype={identtype}
+					erPdlVisning
+				/>
 				<PdlRelasjoner data={hentPerson} />
 				<FalskIdentitet data={falskIdentitet} />
 				<UtenlandsId data={utenlandskIdentifikasjonsnummer} />

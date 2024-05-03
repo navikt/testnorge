@@ -36,6 +36,7 @@ type KontaktadresseVisningTypes = {
 	ident: number
 	erPdlVisning: boolean
 	identtype?: string
+	master?: string
 }
 
 type AdresseTypes = {
@@ -173,6 +174,7 @@ export const KontaktadresseVisning = ({
 	ident,
 	erPdlVisning,
 	identtype,
+	master,
 }: KontaktadresseVisningTypes) => {
 	const initKontaktadresse = Object.assign(
 		_.cloneDeep(getInitialKontaktadresse()),
@@ -210,6 +212,7 @@ export const KontaktadresseVisning = ({
 			path="kontaktadresse"
 			ident={ident}
 			identtype={identtype}
+			master={master}
 		/>
 	)
 }

@@ -21,6 +21,7 @@ type AdresseProps = {
 	tmpPersoner?: any
 	ident?: string
 	identtype?: string
+	master?: string
 }
 
 const AdresseVisning = ({ data, idx }: AdresseProps) => {
@@ -38,6 +39,7 @@ const AdresseVisningRedigerbar = ({
 	tmpPersoner,
 	ident,
 	identtype,
+	master,
 }: AdresseProps) => {
 	return (
 		<div className="person-visning_content">
@@ -49,6 +51,7 @@ const AdresseVisningRedigerbar = ({
 				ident={ident}
 				erPdlVisning={false}
 				identtype={identtype}
+				master={master}
 			/>
 		</div>
 	)

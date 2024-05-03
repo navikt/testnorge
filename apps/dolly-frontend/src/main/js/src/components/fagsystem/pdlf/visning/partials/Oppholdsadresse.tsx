@@ -33,6 +33,7 @@ type OppholdsadresseVisningTypes = {
 	ident: string
 	erPdlVisning: boolean
 	identtype?: string
+	master?: string
 }
 
 export const Adresse = ({ oppholdsadresseData, idx }: AdresseTypes) => {
@@ -62,6 +63,7 @@ export const OppholdsadresseVisning = ({
 	ident,
 	erPdlVisning,
 	identtype,
+	master,
 }: OppholdsadresseVisningTypes) => {
 	const initOppholdsadresse = Object.assign(_.cloneDeep(getInitialOppholdsadresse()), data[idx])
 	const initialValues = { oppholdsadresse: initOppholdsadresse }
@@ -95,6 +97,7 @@ export const OppholdsadresseVisning = ({
 			path="oppholdsadresse"
 			ident={ident}
 			identtype={identtype}
+			master={master}
 		/>
 	)
 }
