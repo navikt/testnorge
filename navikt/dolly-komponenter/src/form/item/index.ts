@@ -3,17 +3,17 @@ import { Select } from '../../select';
 import { DatePicker } from '../../date-picker';
 import { TextField } from '@navikt/ds-react';
 
-const InputFormItem = styled(TextField)`
+const InputFormItem: any = styled(TextField)`
   width: 50%;
   padding-right: 10px;
 `;
 
-const SelectFormItem = styled(Select)`
+const SelectFormItem: any = styled(Select)`
   width: 25%;
   padding-right: 10px;
 `;
 
-const DatePickerFormItem = styled(DatePicker)`
+const DatePickerFormItem: any = styled(DatePicker)`
   width: 50%;
   padding-right: 10px;
 `;
