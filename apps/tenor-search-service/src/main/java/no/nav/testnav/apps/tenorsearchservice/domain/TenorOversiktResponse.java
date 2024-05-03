@@ -60,5 +60,23 @@ public class TenorOversiktResponse {
         private String fornavn;
         private String etternavn;
         private List<TenorRelasjon> tenorRelasjoner;
+        private Boolean iBruk;
+    }
+
+    public TenorOversiktResponse copy() {
+
+        return TenorOversiktResponse.builder()
+                .status(this.getStatus())
+                .query(this.getQuery())
+                .data(Data.builder()
+                        .treff(this.data.getTreff())
+                        .rader(this.data.getRader())
+                        .offset(this.data.getOffset())
+                        .nesteSide(this.data.getNesteSide())
+                        .seed(this.data.getSeed())
+                        .personer(this.data.getPersoner())
+                        .build())
+                .error(this.getError())
+                .build();
     }
 }
