@@ -1,4 +1,4 @@
-package no.nav.testnav.apps.tenorsearchservice.service.mapper;
+package no.nav.testnav.apps.tenorsearchservice.mapper;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

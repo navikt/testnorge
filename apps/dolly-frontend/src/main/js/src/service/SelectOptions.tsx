@@ -168,7 +168,6 @@ const selectOptions = {
 		{ value: 'VEGADRESSE', label: adresser.vegadresse },
 		{ value: 'MATRIKKELADRESSE', label: adresser.matrikkeladresse },
 		{ value: 'UTENLANDSK_ADRESSE', label: adresser.utenlandskAdresse },
-		{ value: 'OPPHOLD_ANNET_STED', label: 'Opphold annet sted' },
 	],
 
 	adressetypeKontaktadresse: [

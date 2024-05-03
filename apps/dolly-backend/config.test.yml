@@ -23,6 +23,7 @@ spec:
         - application: testnav-batch-bestilling-service
         - application: testnav-dollystatus
         - application: testnav-oversikt-frontend
+        - application: testnav-tenor-search-service
     outbound:
       rules:
         - application: generer-navn-service

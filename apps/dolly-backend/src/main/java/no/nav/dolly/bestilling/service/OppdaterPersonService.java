@@ -6,7 +6,6 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
-import no.nav.dolly.bestilling.pdldata.dto.PdlResponse;
 import no.nav.dolly.bestilling.personservice.PersonServiceClient;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
@@ -19,7 +18,6 @@ import no.nav.dolly.service.BestillingProgressService;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
 import no.nav.dolly.util.TransactionHelperService;
-import no.nav.testnav.libs.data.pdlforvalter.v1.PersonUpdateRequestDTO;
 import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.MDC;
@@ -29,7 +27,6 @@ import reactor.core.publisher.Flux;
 
 import java.util.List;
 
-import static java.util.Objects.nonNull;
 import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
 
 @Slf4j
@@ -78,10 +75,9 @@ public class OppdaterPersonService extends DollyBestillingService {
         var testident = identService.getTestIdent(bestilling.getIdent());
         Flux.just(OriginatorUtility.prepOriginator(request, testident, mapperFacade))
                 .flatMap(originator -> opprettProgress(bestilling, originator.getMaster(), testident.getIdent())
-                        .flatMap(progress -> (progress.isPdlf() ?
+                        .flatMap(progress ->
                                 oppdaterPdlPerson(originator, progress)
-                                        .flatMap(pdlResponse -> sendOrdrePerson(progress, pdlResponse)) :
-                                Flux.just(testident.getIdent()))
+                                        .flatMap(pdlResponse -> sendOrdrePerson(progress, pdlResponse))
                                 .filter(StringUtils::isNotBlank)
                                 .flatMap(ident -> opprettDollyPerson(ident, progress, bestilling.getBruker())
                                         .flatMap(dollyPerson -> (!dollyPerson.getIdent().equals(bestilling.getIdent()) ?
@@ -120,24 +116,7 @@ public class OppdaterPersonService extends DollyBestillingService {
                 .subscribe();
     }
 
-    private Flux<PdlResponse> oppdaterPdlPerson(OriginatorUtility.Originator originator, BestillingProgress progress) {
 
-        if (nonNull(originator.getPdlBestilling()) && nonNull(originator.getPdlBestilling().getPerson())) {
-
-            transactionHelperService.persister(progress, BestillingProgress::setPdlForvalterStatus,
-                    "Info: Oppdatering av person startet ...");
-            return pdlDataConsumer.oppdaterPdl(originator.getIdent(),
-                            PersonUpdateRequestDTO.builder()
-                                    .person(originator.getPdlBestilling().getPerson())
-                                    .build())
-                    .doOnNext(response -> log.info("Oppdatert person til PDL-forvalter med response {}", response));
-
-        } else {
-            return Flux.just(PdlResponse.builder()
-                    .ident(originator.getIdent())
-                    .build());
-        }
-    }
 
     private Flux<String> updateIdent(DollyPerson dollyPerson, BestillingProgress progress) {
 

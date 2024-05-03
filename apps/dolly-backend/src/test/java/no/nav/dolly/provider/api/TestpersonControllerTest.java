@@ -45,7 +45,6 @@ class TestpersonControllerTest extends AbstractControllerTest {
                 .isNotNull()
                 .contains(testident1, testident3);
 
-        verify(personService).slettTestnorgeRelasjoner(anyList());
         verify(personService).recyclePersoner(anyList());
 
     }

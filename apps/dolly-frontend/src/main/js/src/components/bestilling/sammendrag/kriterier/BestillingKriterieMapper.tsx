@@ -479,6 +479,7 @@ const mapOppholdsadresse = (oppholdsadresse, data) => {
 						obj('Vegadresse', adresseVerdi(adresseData)),
 						...vegadresse(adresseData),
 						...datoer(item),
+						obj('Opphold annet sted', showLabel('oppholdAnnetSted', item.oppholdAnnetSted)),
 						...coAdresse(item.opprettCoAdresseNavn),
 					]
 				}
@@ -489,6 +490,7 @@ const mapOppholdsadresse = (oppholdsadresse, data) => {
 						obj('Matrikkeladresse', adresseVerdi(adresseData)),
 						...matrikkeladresse(adresseData),
 						...datoer(item),
+						obj('Opphold annet sted', showLabel('oppholdAnnetSted', item.oppholdAnnetSted)),
 						...coAdresse(item.opprettCoAdresseNavn),
 					]
 				}
@@ -499,14 +501,7 @@ const mapOppholdsadresse = (oppholdsadresse, data) => {
 						obj('Utenlandsk adresse', adresseVerdi(adresseData)),
 						...utenlandskAdresse(adresseData),
 						...datoer(item),
-						...coAdresse(item.opprettCoAdresseNavn),
-					]
-				}
-				if (item.oppholdAnnetSted) {
-					return [
-						{ numberHeader: `Oppholdsadresse ${idx + 1}: Opphold annet sted` },
 						obj('Opphold annet sted', showLabel('oppholdAnnetSted', item.oppholdAnnetSted)),
-						...datoer(item),
 						...coAdresse(item.opprettCoAdresseNavn),
 					]
 				}
