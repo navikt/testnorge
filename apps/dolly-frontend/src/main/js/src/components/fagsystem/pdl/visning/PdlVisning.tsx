@@ -72,7 +72,7 @@ export const PdlVisning = ({
 	const pdlfPerson = fagsystemData?.pdlforvalter?.person
 	const identtype = pdlfPerson?.identtype
 	const tmpPdlforvalter = tmpPersoner?.pdlforvalter
-	console.log('pdlfPerson: ', pdlfPerson) //TODO - SLETT MEG
+
 	return (
 		<ErrorBoundary>
 			<div className={miljoeVisning ? 'boks' : ''}>

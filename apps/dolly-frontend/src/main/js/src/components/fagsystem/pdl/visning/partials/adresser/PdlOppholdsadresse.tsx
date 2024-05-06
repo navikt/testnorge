@@ -5,6 +5,7 @@ import {
 } from '@/components/fagsystem/pdlf/visning/partials/Oppholdsadresse'
 import { OppholdsadresseData } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import { ArrayHistorikk } from '@/components/ui/historikk/ArrayHistorikk'
+import _ from 'lodash'
 
 type PdlOppholdsadresseProps = {
 	data: Array<OppholdsadresseData>
@@ -18,6 +19,7 @@ type AdresseProps = {
 	data: OppholdsadresseData
 	idx?: number
 	alleData?: Array<OppholdsadresseData>
+	tmpData?: any
 	tmpPersoner?: any
 	ident?: string
 	identtype?: string
@@ -36,6 +38,7 @@ const AdresseVisningRedigerbar = ({
 	data,
 	idx,
 	alleData,
+	tmpData,
 	tmpPersoner,
 	ident,
 	identtype,
@@ -47,6 +50,7 @@ const AdresseVisningRedigerbar = ({
 				oppholdsadresseData={data}
 				idx={idx}
 				data={alleData}
+				tmpData={tmpData}
 				tmpPersoner={tmpPersoner}
 				ident={ident}
 				erPdlVisning={false}
@@ -68,6 +72,11 @@ export const PdlOppholdsadresse = ({
 		return null
 	}
 
+	const tmpData = _.get(tmpPersoner, `${ident}.person.oppholdsadresse`)
+	if ((!data || data.length === 0) && (!tmpData || tmpData.length < 1)) {
+		return null
+	}
+
 	const gyldigeAdresser = data.filter(
 		(adresse: OppholdsadresseData) => !adresse.metadata?.historisk,
 	)
@@ -84,6 +93,7 @@ export const PdlOppholdsadresse = ({
 				data={gyldigeAdresser}
 				pdlfData={pdlfData}
 				historiskData={historiskeAdresser}
+				tmpData={tmpData}
 				tmpPersoner={tmpPersoner}
 				ident={ident}
 				identtype={identtype}

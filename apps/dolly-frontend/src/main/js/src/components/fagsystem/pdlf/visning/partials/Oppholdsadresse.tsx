@@ -29,6 +29,7 @@ type OppholdsadresseVisningTypes = {
 	oppholdsadresseData: any
 	idx: number
 	data: Array<any>
+	tmpData: any
 	tmpPersoner: Array<OppholdsadresseData>
 	ident: string
 	erPdlVisning: boolean
@@ -58,13 +59,17 @@ export const OppholdsadresseVisning = ({
 	oppholdsadresseData,
 	idx,
 	data,
+	tmpData,
 	tmpPersoner,
 	ident,
 	erPdlVisning,
 	identtype,
 	master,
 }: OppholdsadresseVisningTypes) => {
-	const initOppholdsadresse = Object.assign(_.cloneDeep(getInitialOppholdsadresse()), data[idx])
+	const initOppholdsadresse = Object.assign(
+		_.cloneDeep(getInitialOppholdsadresse()),
+		data[idx] || tmpData?.[idx],
+	)
 	const initialValues = { oppholdsadresse: initOppholdsadresse }
 
 	const redigertOppholdsadressePdlf = _.get(tmpPersoner, `${ident}.person.oppholdsadresse`)?.find(
@@ -109,7 +114,12 @@ export const Oppholdsadresse = ({
 	identtype,
 	erRedigerbar = true,
 }: OppholdsadresseTypes) => {
-	if (!data || data.length === 0) {
+	if ((!data || data.length === 0) && (!tmpPersoner || Object.keys(tmpPersoner).length < 1)) {
+		return null
+	}
+
+	const tmpData = _.get(tmpPersoner, `${ident}.person.oppholdsadresse`)
+	if ((!data || data.length === 0) && (!tmpData || tmpData.length < 1)) {
 		return null
 	}
 
@@ -118,13 +128,14 @@ export const Oppholdsadresse = ({
 			<SubOverskrift label="Oppholdsadresse" iconKind="adresse" />
 			<div className="person-visning_content">
 				<ErrorBoundary>
-					<DollyFieldArray data={data} header="" nested>
+					<DollyFieldArray data={data || tmpData} header="" nested>
 						{(adresse: any, idx: number) =>
 							erRedigerbar ? (
 								<OppholdsadresseVisning
 									oppholdsadresseData={adresse}
 									idx={idx}
 									data={data}
+									tmpData={tmpData}
 									tmpPersoner={tmpPersoner}
 									ident={ident}
 									erPdlVisning={erPdlVisning}
