@@ -2,9 +2,8 @@ package no.nav.testnav.apps.tenorsearchservice.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.apps.tenorsearchservice.consumers.TenorClient;
+import no.nav.testnav.apps.tenorsearchservice.consumers.TenorConsumer;
 import no.nav.testnav.apps.tenorsearchservice.consumers.dto.InfoType;
-import no.nav.testnav.apps.tenorsearchservice.consumers.dto.Kilde;
 import no.nav.testnav.apps.tenorsearchservice.domain.TenorOrganisasjonRequest;
 import no.nav.testnav.apps.tenorsearchservice.domain.TenorOversiktOrganisasjonResponse;
 import no.nav.testnav.apps.tenorsearchservice.service.mapper.TenorOrganisasjonResultMapperService;
@@ -23,14 +22,14 @@ import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtili
 @RequiredArgsConstructor
 public class TenorOrganisasjonSearchService {
 
-    private final TenorClient tenorClient;
+    private final TenorConsumer tenorClient;
     private final TenorOrganisasjonResultMapperService tenorOrganisasjonResultMapperService;
 
     public Mono<TenorOversiktOrganisasjonResponse> getTestdataOversiktOrganisasjon(TenorOrganisasjonRequest searchData, Integer antall, Integer side, Integer seed) {
 
         var query = getOrganisasjonQuery(searchData);
 
-        return tenorClient.getTestdata(query, Kilde.FORETAKSREGISTRET, InfoType.Organisasjon, antall, side, seed)
+        return tenorClient.getTestdata(query, InfoType.Organisasjon, antall, side, seed)
                 .flatMap(resultat -> Mono.just(tenorOrganisasjonResultMapperService.mapOrganisasjon(resultat, query)));
     }
 
@@ -38,7 +37,7 @@ public class TenorOrganisasjonSearchService {
 
         var query = getOrganisasjonQuery(searchData);
 
-        return tenorClient.getTestdata(query, Kilde.FORETAKSREGISTRET, InfoType.AlleFelter, 1, 0, 0)
+        return tenorClient.getTestdata(query, InfoType.AlleFelter, 1, 0, 0)
                 .flatMap(resultat -> Mono.just(tenorOrganisasjonResultMapperService.mapOrganisasjon(resultat, query)));
     }
 
