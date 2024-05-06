@@ -52,8 +52,9 @@ const BarnetilleggInntektVisning = ({ data, tittel }) => {
 
 const DataVisning = ({ data, miljo }) => {
 	const { navEnheter } = useNavEnheter()
-	const navEnhetLabel = navEnheter?.find((enhet) => enhet.value === data?.navEnhetId?.toString())
-		?.label
+	const navEnhetLabel = navEnheter?.find(
+		(enhet) => enhet.value === data?.navEnhetId?.toString(),
+	)?.label
 
 	const { vedtakData } = usePensjonVedtak(data?.fnr, miljo)
 
@@ -111,7 +112,7 @@ export const UforetrygdVisning = ({ data, loading, bestillingIdListe, tilgjengel
 	const forsteMiljo = data.find((miljoData) => miljoData?.data)?.miljo
 
 	const filteredData =
-		tilgjengeligMiljoe && data.filter((item) => item.miljo === tilgjengeligMiljoe)
+		tilgjengeligMiljoe && data.filter((item) => tilgjengeligMiljoe.includes(item.miljo))
 
 	return (
 		<ErrorBoundary>

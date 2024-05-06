@@ -65,7 +65,7 @@ export const PensjonVisning = ({ data, loading, bestillingIdListe, tilgjengeligM
 	const forsteMiljo = data.find((miljoData) => miljoData?.data?.inntekter?.length > 0)?.miljo
 
 	const filteredData =
-		tilgjengeligMiljoe && data.filter((item) => item.miljo === tilgjengeligMiljoe)
+		tilgjengeligMiljoe && data.filter((item) => tilgjengeligMiljoe.includes(item.miljo))
 
 	return (
 		<ErrorBoundary>

@@ -68,7 +68,7 @@ export default ({ data, bestillingIdListe, loading, tilgjengeligMiljoe }: Form) 
 	const mergedData = mergeData()
 
 	const filteredData =
-		tilgjengeligMiljoe && mergedData?.filter((item) => item?.miljo === tilgjengeligMiljoe)
+		tilgjengeligMiljoe && mergedData?.filter((item) => tilgjengeligMiljoe.includes(item?.miljo))
 
 	return (
 		<>

@@ -15,7 +15,7 @@ const getSortedData = (data) => {
 				const datoB = new Date(b.startdato)
 
 				return datoA < datoB ? 1 : datoA > datoB ? -1 : 0
-		  })
+			})
 		: data
 }
 
@@ -47,7 +47,7 @@ export const InstVisning = ({ data, loading, bestillingIdListe, tilgjengeligMilj
 	})
 
 	const filteredData =
-		tilgjengeligMiljoe && sortedData.filter((item) => item.miljo === tilgjengeligMiljoe)
+		tilgjengeligMiljoe && sortedData.filter((item) => tilgjengeligMiljoe.includes(item.miljo))
 
 	return (
 		<ErrorBoundary>

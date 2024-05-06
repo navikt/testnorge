@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import { Alert } from '@navikt/ds-react'
 import {
 	useArenaEnvironments,
@@ -18,20 +17,8 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 	} = usePensjonEnvironments()
 	const { instEnvironments, loading: loadingInst, error: errorInst } = useInstEnvironments()
 	const { dokarkivEnvironments, loading: loadingDokarkiv } = useDokarkivEnvironments()
-	const { instdata, pdldata, arenaforvalter, pensjonforvalter, sykemelding, dokarkiv } =
-		bestillingsdata
-	if (
-		!instdata &&
-		!arenaforvalter &&
-		!pensjonforvalter &&
-		!sykemelding &&
-		!dokarkiv &&
-		!_.get(pdldata, 'bostedsadresse') &&
-		!_.get(pdldata, 'fullmakt') &&
-		!_.get(pdldata, 'falskIdentitet') &&
-		!_.get(pdldata, 'utenlandskIdentifikasjonsnummer') &&
-		!_.get(pdldata, 'kontaktinformasjonForDoedsbo')
-	) {
+	const { instdata, arenaforvalter, pensjonforvalter, sykemelding, dokarkiv } = bestillingsdata
+	if (!instdata && !arenaforvalter && !pensjonforvalter && !sykemelding && !dokarkiv) {
 		return null
 	}
 
@@ -51,16 +38,26 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 				Du har valgt egenskaper som ikke blir distribuert til alle miljøer. For hver av følgende
 				egenskaper må derfor ett eller flere av miljøene under velges:
 				<ul style={{ margin: '7px 0' }}>
-					{instdata && (
-						<li>
-							Institusjonsopphold:&nbsp;
-							<span>{getMiljoer(instEnvironments, loadingInst, errorInst)}</span>
-						</li>
-					)}
 					{arenaforvalter && (
 						<li>
 							Arena:&nbsp;
 							<span>{getMiljoer(arenaEnvironments, loadingArena, errorArena)}</span>
+						</li>
+					)}
+					{dokarkiv && (
+						<li>
+							Dokarkiv:&nbsp;
+							<span>
+								{loadingDokarkiv
+									? 'Laster tilgjengelige miljøer..'
+									: arrayToString(dokarkivEnvironments)}
+							</span>
+						</li>
+					)}
+					{instdata && (
+						<li>
+							Institusjonsopphold:&nbsp;
+							<span>{getMiljoer(instEnvironments, loadingInst, errorInst)}</span>
 						</li>
 					)}
 
@@ -86,18 +83,7 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 						</li>
 					)}
 
-					{sykemelding && <li>Sykemelding: Q1 må velges</li>}
-
-					{dokarkiv && (
-						<li>
-							Dokarkiv:&nbsp;
-							<span>
-								{loadingDokarkiv
-									? 'Laster tilgjengelige miljøer..'
-									: arrayToString(dokarkivEnvironments)}
-							</span>
-						</li>
-					)}
+					{sykemelding && <li>Sykemelding: q1</li>}
 				</ul>
 			</StyledAlert>
 			{pensjonforvalter && bestillingsdata?.environments?.includes('q4') && (

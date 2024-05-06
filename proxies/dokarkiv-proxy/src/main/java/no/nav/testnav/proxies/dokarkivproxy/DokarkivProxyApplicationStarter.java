@@ -73,5 +73,4 @@ public class DokarkivProxyApplicationStarter {
                 original.getUrl().replace("-MILJOE", replacement)
         );
     }
-
 }
