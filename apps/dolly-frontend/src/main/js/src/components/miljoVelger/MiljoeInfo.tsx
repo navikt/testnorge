@@ -38,16 +38,26 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 				Du har valgt egenskaper som ikke blir distribuert til alle miljøer. For hver av følgende
 				egenskaper må derfor ett eller flere av miljøene under velges:
 				<ul style={{ margin: '7px 0' }}>
-					{instdata && (
-						<li>
-							Institusjonsopphold:&nbsp;
-							<span>{getMiljoer(instEnvironments, loadingInst, errorInst)}</span>
-						</li>
-					)}
 					{arenaforvalter && (
 						<li>
 							Arena:&nbsp;
 							<span>{getMiljoer(arenaEnvironments, loadingArena, errorArena)}</span>
+						</li>
+					)}
+					{dokarkiv && (
+						<li>
+							Dokarkiv:&nbsp;
+							<span>
+								{loadingDokarkiv
+									? 'Laster tilgjengelige miljøer..'
+									: arrayToString(dokarkivEnvironments)}
+							</span>
+						</li>
+					)}
+					{instdata && (
+						<li>
+							Institusjonsopphold:&nbsp;
+							<span>{getMiljoer(instEnvironments, loadingInst, errorInst)}</span>
 						</li>
 					)}
 
@@ -73,18 +83,7 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 						</li>
 					)}
 
-					{sykemelding && <li>Sykemelding: Q1 må velges</li>}
-
-					{dokarkiv && (
-						<li>
-							Dokarkiv:&nbsp;
-							<span>
-								{loadingDokarkiv
-									? 'Laster tilgjengelige miljøer..'
-									: arrayToString(dokarkivEnvironments)}
-							</span>
-						</li>
-					)}
+					{sykemelding && <li>Sykemelding: q1</li>}
 				</ul>
 			</StyledAlert>
 			{pensjonforvalter && bestillingsdata?.environments?.includes('q4') && (
