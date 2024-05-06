@@ -71,7 +71,6 @@ export const MiljoVelger = ({ bestillingsdata, heading, bankIdBruker, alleredeVa
 						break
 				}
 			}
-			console.log('bankMiljoer', bankMiljoer)
 
 			return bankMiljoer
 		}
