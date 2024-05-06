@@ -18,6 +18,7 @@ interface MatrikkeladresseValues {
 		oppholdAnnetSted?: string
 		coAdressenavn?: string
 		metadata: any
+		master?: string
 	}
 	idx: number
 }
@@ -36,7 +37,7 @@ export const Matrikkeladresse = ({ adresse, idx }: MatrikkeladresseValues) => {
 		metadata,
 	} = adresse
 
-	const master = metadata?.master
+	const master = adresse.master || metadata?.master
 
 	return (
 		<>

@@ -42,7 +42,6 @@ export const Adresse = ({ boadresseData, idx }: AdresseTypes) => {
 		return null
 	}
 
-	//TODO: Vis master?
 	return (
 		<>
 			{boadresseData.vegadresse && <Vegadresse adresse={boadresseData} idx={idx} />}

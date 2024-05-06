@@ -43,7 +43,10 @@ const AdressebeskyttelseLes = ({ adressebeskyttelse, idx }: AdressebeskyttelseLe
 					title="Gradering"
 					value={showLabel('gradering', adressebeskyttelse.gradering)}
 				/>
-				<TitleValue title="Master" value={adressebeskyttelse.metadata?.master} />
+				<TitleValue
+					title="Master"
+					value={adressebeskyttelse.master || adressebeskyttelse.metadata?.master}
+				/>
 			</div>
 		</>
 	)

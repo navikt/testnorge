@@ -56,7 +56,6 @@ export const Adresse = ({ kontaktadresseData, idx }: AdresseTypes) => {
 		return null
 	}
 
-	//TODO: Vis master?
 	return (
 		<>
 			{kontaktadresseData.vegadresse && <Vegadresse adresse={kontaktadresseData} idx={idx} />}
@@ -88,7 +87,10 @@ export const Adresse = ({ kontaktadresseData, idx }: AdresseTypes) => {
 						</TitleValue>
 						<Adressedatoer kontaktadresseData={kontaktadresseData} />
 						<TitleValue title="C/O adressenavn" value={kontaktadresseData.coAdressenavn} />
-						<TitleValue title="Master" value={kontaktadresseData.metadata?.master} />
+						<TitleValue
+							title="Master"
+							value={kontaktadresseData.master || kontaktadresseData.metadata?.master}
+						/>
 					</div>
 				</>
 			)}
@@ -124,6 +126,10 @@ export const Adresse = ({ kontaktadresseData, idx }: AdresseTypes) => {
 							)}
 						</TitleValue>
 						<Adressedatoer kontaktadresseData={kontaktadresseData} />
+						<TitleValue
+							title="Master"
+							value={kontaktadresseData.master || kontaktadresseData.metadata?.master}
+						/>
 					</div>
 				</>
 			)}
@@ -158,6 +164,10 @@ export const Adresse = ({ kontaktadresseData, idx }: AdresseTypes) => {
 							kodeverk={AdresseKodeverk.StatsborgerskapLand}
 						/>
 						<Adressedatoer kontaktadresseData={kontaktadresseData} />
+						<TitleValue
+							title="Master"
+							value={kontaktadresseData.master || kontaktadresseData.metadata?.master}
+						/>
 					</div>
 				</>
 			)}
