@@ -17,6 +17,8 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import static java.util.Objects.nonNull;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -68,10 +70,16 @@ public class TenorOrganisasjonResultMapperService {
     @SneakyThrows
     private TenorOversiktOrganisasjonResponse.Organisasjon mapOrganisasjon(TenorOrganisasjonRawResponse.DokumentOrganisasjon dokument) {
 
-        var organisasjonResponse = objectMapper.readValue(dokument.getTenorMetadata().getKildedata(), TenorOversiktOrganisasjonResponse.Organisasjon.class);
-        log.info("Mappet organisasjon: {}", Json.pretty(organisasjonResponse));
-        return organisasjonResponse;
-
+        if (nonNull(dokument.getTenorMetadata().getKildedata())) {
+            var organisasjonResponse = objectMapper.readValue(dokument.getTenorMetadata().getKildedata(), TenorOversiktOrganisasjonResponse.Organisasjon.class);
+            log.info("Mappet organisasjon: {}", Json.pretty(organisasjonResponse));
+            return organisasjonResponse;
+        }
+        return TenorOversiktOrganisasjonResponse.Organisasjon.builder()
+                .organisasjonsnummer(dokument.getTenorMetadata().getId())
+                .kilder(dokument.getTenorMetadata().getKilder())
+                .navn(dokument.getNavn())
+                .build();
     }
 
     private List<TenorOversiktOrganisasjonResponse.Organisasjon> mapOrganisasjon(TenorOrganisasjonRawResponse response) {
