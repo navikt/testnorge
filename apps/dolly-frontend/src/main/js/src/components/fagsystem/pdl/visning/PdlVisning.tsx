@@ -124,7 +124,7 @@ export const PdlVisning = ({
 					tmpPersoner={tmpPdlforvalter}
 					ident={ident}
 					identtype={identtype}
-					erPdlVisning
+					erPdlVisning={miljoeVisning}
 				/>
 				<PdlRelasjoner data={hentPerson} />
 				<FalskIdentitet data={falskIdentitet} />

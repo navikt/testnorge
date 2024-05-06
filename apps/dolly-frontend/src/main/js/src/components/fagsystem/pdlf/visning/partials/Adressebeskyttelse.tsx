@@ -134,13 +134,15 @@ export const Adressebeskyttelse = ({
 							if (erRedigerbar) {
 								return (
 									<AdressebeskyttelseVisning
-										adressebeskyttelse={master === 'PDL' ? pdlfElement : adressebeskyttelse}
+										adressebeskyttelse={
+											master === 'PDL' && pdlfElement ? pdlfElement : adressebeskyttelse
+										}
 										idx={idx}
 										tmpPersoner={tmpPersoner}
 										ident={ident}
 										identtype={identtype}
-										data={master === 'PDL' ? pdlfData : data}
-										erPdlVisning={master === 'PDL' ? false : erPdlVisning}
+										data={master === 'PDL' && pdlfData ? pdlfData : data}
+										erPdlVisning={erPdlVisning}
 										master={master}
 									/>
 								)
