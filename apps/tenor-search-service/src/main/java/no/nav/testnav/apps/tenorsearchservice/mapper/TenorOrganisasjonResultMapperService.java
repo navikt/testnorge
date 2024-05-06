@@ -75,11 +75,15 @@ public class TenorOrganisasjonResultMapperService {
             log.info("Mappet organisasjon: {}", Json.pretty(organisasjonResponse));
             return organisasjonResponse;
         }
-        return TenorOversiktOrganisasjonResponse.Organisasjon.builder()
-                .organisasjonsnummer(dokument.getTenorMetadata().getId())
-                .kilder(dokument.getTenorMetadata().getKilder())
-                .navn(dokument.getNavn())
-                .build();
+
+        var organisasjonResponse = objectMapper.readValue(
+                objectMapper.writeValueAsString(dokument),
+                TenorOversiktOrganisasjonResponse.Organisasjon.class);
+
+        organisasjonResponse.setOrganisasjonsnummer(dokument.getTenorMetadata().getId());
+        organisasjonResponse.setKilder(dokument.getTenorMetadata().getKilder());
+
+        return organisasjonResponse;
     }
 
     private List<TenorOversiktOrganisasjonResponse.Organisasjon> mapOrganisasjon(TenorOrganisasjonRawResponse response) {
