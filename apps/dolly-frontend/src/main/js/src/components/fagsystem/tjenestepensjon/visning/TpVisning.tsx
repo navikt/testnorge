@@ -63,7 +63,7 @@ export const TpVisning = ({ data, loading, bestillingIdListe, tilgjengeligMiljoe
 	const forsteMiljo = data.find((miljoData) => miljoData?.data?.length > 0)?.miljo
 
 	const filteredData =
-		tilgjengeligMiljoe && data.filter((item) => item.miljo === tilgjengeligMiljoe)
+		tilgjengeligMiljoe && data.filter((item) => tilgjengeligMiljoe.includes(item.miljo))
 
 	return (
 		<ErrorBoundary>
