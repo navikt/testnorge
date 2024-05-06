@@ -18,7 +18,7 @@ import java.time.Duration;
 
 @Slf4j
 @RequiredArgsConstructor
-public class PdlAktoerNpidCommand extends PdlTestdataCommand {
+public class PdlNpidMergeCommand extends PdlTestdataCommand {
 
     private static final String PDL_AKTOER_ADMIN_PREFIX = "/pdl-testdata";
     private static final String PDL_PERSON_AKTOER_URL = PDL_AKTOER_ADMIN_PREFIX + "/api/v1/npid/create";

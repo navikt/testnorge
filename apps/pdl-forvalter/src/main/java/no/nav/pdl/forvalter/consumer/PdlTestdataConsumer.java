@@ -4,9 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.config.Consumers;
-import no.nav.pdl.forvalter.consumer.command.PdlAktoerNpidCommand;
 import no.nav.pdl.forvalter.consumer.command.PdlDeleteCommandPdl;
 import no.nav.pdl.forvalter.consumer.command.PdlDeleteHendelseIdCommandPdl;
+import no.nav.pdl.forvalter.consumer.command.PdlNpidMergeCommand;
 import no.nav.pdl.forvalter.consumer.command.PdlOpprettArtifactCommandPdl;
 import no.nav.pdl.forvalter.consumer.command.PdlOpprettPersonCommandPdl;
 import no.nav.pdl.forvalter.dto.ArtifactValue;
@@ -159,7 +159,7 @@ public class PdlTestdataConsumer {
 
             case PDL_OPPRETT_PERSON -> Identtype.NPID == getIdenttype(value.getIdent()) ?
 
-                    new PdlAktoerNpidCommand(webClient,
+                    new PdlNpidMergeCommand(webClient,
                             value.getIdent(),
                             accessToken.getTokenValue()
                     ).call() :
