@@ -103,7 +103,7 @@ export const TreffListe = ({
 									))}
 								</TagsWrapper>
 								<ListeValg
-									ident={person?.id}
+									person={person}
 									markertePersoner={markertePersoner}
 									setMarkertePersoner={setMarkertePersoner}
 								/>
@@ -132,6 +132,7 @@ export const TreffListe = ({
 					<PersonVisning
 						person={valgtPersonData?.data}
 						ident={valgtPerson?.id}
+						ibruk={valgtPerson?.ibruk}
 						loading={valgtPersonLoading}
 						error={valgtPersonError}
 					/>

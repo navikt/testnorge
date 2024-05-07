@@ -1,21 +1,18 @@
-import { useFinnesIDolly } from '@/utils/hooks/useIdent'
 import { NavigerTilPerson } from '@/pages/tenorSoek/resultatVisning/NavigerTilPerson'
 import { Checkbox } from '@navikt/ds-react'
-import Loading from '@/components/ui/loading/Loading'
 import React from 'react'
 
 type ListeValgProps = {
-	ident: string
+	person: {
+		id: string
+		ibruk: boolean
+	}
 	markertePersoner: Array<string>
 	setMarkertePersoner: Function
 }
 
-export const ListeValg = ({ ident, markertePersoner, setMarkertePersoner }: ListeValgProps) => {
-	const { finnesIDolly, loading: loadingFinnes } = useFinnesIDolly(ident)
-
-	if (loadingFinnes) {
-		return <Loading onlySpinner />
-	}
+export const ListeValg = ({ person, markertePersoner, setMarkertePersoner }: ListeValgProps) => {
+	const { id, ibruk } = person
 
 	const handleChangeCheckbox = (val: any) => {
 		if (val?.target?.checked) {
@@ -25,12 +22,12 @@ export const ListeValg = ({ ident, markertePersoner, setMarkertePersoner }: List
 		}
 	}
 
-	return finnesIDolly ? (
-		<NavigerTilPerson ident={ident} />
+	return ibruk ? (
+		<NavigerTilPerson ident={id} />
 	) : (
 		<div style={{ margin: '-8px 0' }}>
 			<Checkbox
-				value={ident}
+				value={id}
 				size="small"
 				onChange={(val: any) => handleChangeCheckbox(val)}
 				onClick={(e) => e.stopPropagation()}

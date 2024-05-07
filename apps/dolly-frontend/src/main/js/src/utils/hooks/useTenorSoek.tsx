@@ -28,7 +28,9 @@ export const useTenorOversikt = (request: any, antall = 10, side = 0, seed?: num
 	const { data, isLoading, error, mutate } = useSWR(
 		request
 			? [
+					// TODO: endre tilbake til opprinnelig
 					`${tenorSearchUrl}/oversikt?antall=${antall}&side=${side}${seed ? '&seed=' + seed : ''}`,
+					// `${tenorSearchUrl}/oversikt?antall=${antall}&side=${side}${seed ? '&seed=' + seed : ''}&ikkeFiltrer=true`,
 					request,
 				]
 			: null,
