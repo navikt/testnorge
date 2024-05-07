@@ -16,6 +16,10 @@ public class TenorOrganisasjonEksterneRelasjonerUtility {
 
         var tenorRelasjoner = searchData.getTenorRelasjoner();
 
+        if (isNull(tenorRelasjoner)) {
+            return "";
+        }
+
         return new StringBuilder()
                 .append(getArbeidsforhold(tenorRelasjoner.getArbeidsforhold()))
                 .append(getTestinnsendingSkattEnhet(tenorRelasjoner.getTestinnsendingSkattEnhet()))
@@ -28,16 +32,16 @@ public class TenorOrganisasjonEksterneRelasjonerUtility {
 
         return isNull(reskontroInnsyn) ? "" :
                 " and tenorRelasjoner.samletReskontroinnsyn:{%s}".formatted(guard(new StringBuilder()
-                        .append(convertObject("tenorRelasjoner.samletReskontroinnsyn.harKrav", reskontroInnsyn.getHarKrav()))
-                        .append(convertObject("tenorRelasjoner.samletReskontroinnsyn.harInnbetaling", reskontroInnsyn.getHarInnbetaling()))));
+                        .append(convertObject("harKrav", reskontroInnsyn.getHarKrav()))
+                        .append(convertObject("harInnbetaling", reskontroInnsyn.getHarInnbetaling()))));
     }
 
     private String getTjenestepensjonsavtaleOpplysningspliktig(TenorOrganisasjonRequest.TjenestepensjonsavtaleOpplysningspliktig tpOpplysningspliktig) {
 
         return isNull(tpOpplysningspliktig) ? "" :
                 " and tenorRelasjoner.samletReskontroinnsyn:{%s}".formatted(guard(new StringBuilder()
-                        .append(convertObject("tenorRelasjoner.tjenestepensjonsavtaleOpplysningspliktig.tjenestepensjonsinnretningOrgnr", tpOpplysningspliktig.getTjenestepensjonsinnretningOrgnr()))
-                        .append(convertObject("tenorRelasjoner.tjenestepensjonsavtaleOpplysningspliktig.periode", tpOpplysningspliktig.getPeriode()))));
+                        .append(convertObject("tjenestepensjonsinnretningOrgnr", tpOpplysningspliktig.getTjenestepensjonsinnretningOrgnr()))
+                        .append(convertObject("periode", tpOpplysningspliktig.getPeriode()))));
     }
 
     private String getTestinnsendingSkattEnhet(TenorOrganisasjonRequest.TestinnsendingSkattEnhet skattEnhet) {
