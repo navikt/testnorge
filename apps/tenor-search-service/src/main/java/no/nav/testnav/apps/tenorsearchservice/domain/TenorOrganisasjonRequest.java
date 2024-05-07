@@ -88,7 +88,7 @@ public class TenorOrganisasjonRequest {
     @Data
     @NoArgsConstructor
     public static class TestinnsendingSkattEnhet {
-        private String inntektsaar;
+        private BigInteger inntektsaar;
         private Boolean harSkattemeldingUtkast;
         private Boolean harSkattemeldingFastsatt;
         private Boolean harSelskapsmeldingUtkast;

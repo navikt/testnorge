@@ -12,7 +12,6 @@ import reactor.core.publisher.Mono;
 
 import static java.util.Objects.nonNull;
 import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.convertBooleanWildcard;
-import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.convertEnum;
 import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.convertIntervall;
 import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.convertObject;
 import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.guard;
@@ -83,49 +82,7 @@ public class TenorOrganisasjonSearchService {
             builder.append(convertObject("erUnderenhet.overenhet", searchData.getErUnderenhet().getOverenhet()));
         }
 
-        if (nonNull(searchData.getTenorRelasjoner())) {
-            var tenorRelasjoner = searchData.getTenorRelasjoner();
-
-            if (nonNull(tenorRelasjoner.getTestinnsendingSkattEnhet())) {
-                var testinnsendingSkattEnhet = tenorRelasjoner.getTestinnsendingSkattEnhet();
-
-                builder.append(convertObject("tenorRelasjoner.testinnsendingSkattEnhet.inntektsaar", testinnsendingSkattEnhet.getInntektsaar()));
-                builder.append(convertBooleanWildcard("tenorRelasjoner.testinnsendingSkattEnhet.harSkattemeldingUtkast", testinnsendingSkattEnhet.getHarSkattemeldingUtkast()));
-                builder.append(convertBooleanWildcard("tenorRelasjoner.testinnsendingSkattEnhet.harSkattemeldingFastsatt", testinnsendingSkattEnhet.getHarSkattemeldingFastsatt()));
-                builder.append(convertBooleanWildcard("tenorRelasjoner.testinnsendingSkattEnhet.harSelskapsmeldingUtkast", testinnsendingSkattEnhet.getHarSelskapsmeldingUtkast()));
-                builder.append(convertBooleanWildcard("tenorRelasjoner.testinnsendingSkattEnhet.harSelskapsmeldingFastsatt", testinnsendingSkattEnhet.getHarSelskapsmeldingFastsatt()));
-                builder.append(convertEnum("tenorRelasjoner.testinnsendingSkattEnhet.manglendeGrunnlagsdata", testinnsendingSkattEnhet.getManglendeGrunnlagsdata()));
-                builder.append(convertObject("tenorRelasjoner.testinnsendingSkattEnhet.manntall", testinnsendingSkattEnhet.getManntall()));
-            }
-
-            if (nonNull(tenorRelasjoner.getArbeidsforhold())) {
-                var arbeidsforhold = tenorRelasjoner.getArbeidsforhold();
-
-                builder.append(convertObject("tenorRelasjoner.arbeidsforhold.startDato", arbeidsforhold.getStartDato()));
-                builder.append(convertObject("tenorRelasjoner.arbeidsforhold.sluttDato", arbeidsforhold.getSluttDato()));
-                builder.append(convertBooleanWildcard("tenorRelasjoner.arbeidsforhold.harPermisjoner", arbeidsforhold.getHarPermisjoner()));
-                builder.append(convertBooleanWildcard("tenorRelasjoner.arbeidsforhold.harPermitteringer", arbeidsforhold.getHarPermitteringer()));
-                builder.append(convertBooleanWildcard("tenorRelasjoner.arbeidsforhold.harTimerMedTimeloenn", arbeidsforhold.getHarTimerMedTimeloenn()));
-                builder.append(convertBooleanWildcard("tenorRelasjoner.arbeidsforhold.harUtenlandsopphold", arbeidsforhold.getHarUtenlandsopphold()));
-                builder.append(convertBooleanWildcard("tenorRelasjoner.arbeidsforhold.harHistorikk", arbeidsforhold.getHarHistorikk()));
-                builder.append(convertObject("tenorRelasjoner.arbeidsforhold.arbeidsforholdtype", arbeidsforhold.getArbeidsforholdtype()));
-            }
-
-            if (nonNull(tenorRelasjoner.getSamletReskontroinnsyn())) {
-                var samletReskontroinnsyn = tenorRelasjoner.getSamletReskontroinnsyn();
-
-                builder.append(convertObject("tenorRelasjoner.samletReskontroinnsyn.harKrav", samletReskontroinnsyn.getHarKrav()));
-                builder.append(convertObject("tenorRelasjoner.samletReskontroinnsyn.harInnbetaling", samletReskontroinnsyn.getHarInnbetaling()));
-            }
-
-            if (nonNull(tenorRelasjoner.getTjenestepensjonsavtaleOpplysningspliktig())) {
-                var tjenestepensjonsavtaleOpplysningspliktig = tenorRelasjoner.getTjenestepensjonsavtaleOpplysningspliktig();
-
-                builder.append(convertObject("tenorRelasjoner.tjenestepensjonsavtaleOpplysningspliktig.tjenestepensjonsinnretningOrgnr", tjenestepensjonsavtaleOpplysningspliktig.getTjenestepensjonsinnretningOrgnr()));
-                builder.append(convertObject("tenorRelasjoner.tjenestepensjonsavtaleOpplysningspliktig.periode", tjenestepensjonsavtaleOpplysningspliktig.getPeriode()));
-            }
-
-        }
+        builder.append(TenorOrganisasjonEksterneRelasjonerUtility.getOrganisasjonEksterneRelasjoner(searchData));
 
         return guard(builder);
     }
