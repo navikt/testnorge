@@ -47,7 +47,7 @@ public class TenorOrganisasjonEksterneRelasjonerUtility {
     private String getTestinnsendingSkattEnhet(TenorOrganisasjonRequest.TestinnsendingSkattEnhet skattEnhet) {
 
         return isNull(skattEnhet) ? "" :
-                " and tenorRelasjoner.testInnsendingSkattEnhet:{%s}".formatted(guard(new StringBuilder()
+                " and tenorRelasjoner.testinnsendingSkattEnhet:{%s}".formatted(guard(new StringBuilder()
                         .append(convertObject("inntektsaar", skattEnhet.getInntektsaar()))
                         .append(convertBooleanWildcard("harSkattemeldingUtkast", skattEnhet.getHarSkattemeldingUtkast()))
                         .append(convertBooleanWildcard("harSkattemeldingFastsatt", skattEnhet.getHarSkattemeldingFastsatt()))
