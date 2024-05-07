@@ -1,0 +1,21 @@
+name: team-dolly-lokal-app
+
+on:
+  push:
+    paths:
+      - .nais/team-dolly-lokal-app.yml
+      - .github/workflows/app.team-dolly-lokal-app.yml
+
+jobs:
+  deploy:
+    name: Deploy team-dolly-lokal-app
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: nais/deploy/actions/deploy@v2
+        env:
+          CLUSTER: dev-gcp
+          RESOURCE: .nais/team-dolly-lokal-app.yml

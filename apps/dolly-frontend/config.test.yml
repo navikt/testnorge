@@ -18,6 +18,7 @@ spec:
       autoLoginIgnorePaths:
         - /login
         - /assets/*
+        - /
     application:
       allowAllUsers: true
       enabled: true
@@ -29,28 +30,35 @@ spec:
   accessPolicy:
     outbound:
       rules:
-        - application: testnav-adresse-service
-        - application: testnav-arbeidsplassencv-proxy
-        - application: testnav-miljoer-service
-        - application: testnav-organisasjon-service
-        - application: testnav-organisasjon-forvalter
-        - application: testnorge-profil-api-dev
-        - application: testnav-organisasjon-tilgang-service
-        - application: testnav-oppsummeringsdokument-service
-        - application: testnav-joark-dokument-service
-        - application: testnav-organisasjon-faste-data-service
-        - application: testnav-tps-messaging-service
-        - application: testnav-varslinger-service-dev
-        - application: dolly-dev-redis-session
-        - application: testnav-person-organisasjon-tilgang-service-dev
-        - application: testnav-pdl-forvalter-dev
-        - application: testnav-bruker-service-dev
-        - application: testnav-person-search-service
-        - application: testnav-helsepersonell-service
-        - application: testnorge-tilbakemelding-api
         - application: dolly-backend-dev
-        - application: testnav-person-service
+        - application: dolly-dev-redis-session
         - application: generer-navn-service
+        - application: testnav-adresse-service
+        - application: testnav-amelding-service
+        - application: testnav-arbeidsplassencv-proxy
+        - application: testnav-bruker-service-dev
+        - application: testnav-generer-synt-amelding-service
+        - application: testnav-helsepersonell-service
+        - application: testnav-joark-dokument-service
+        - application: testnav-kodeverk-service
+        - application: testnav-miljoer-service
+        - application: testnav-oppsummeringsdokument-service
+        - application: testnav-organisasjon-faste-data-service
+        - application: testnav-organisasjon-forvalter
+        - application: testnav-organisasjon-service
+        - application: testnav-organisasjon-tilgang-service
+        - application: testnav-pdl-forvalter-dev
+        - application: testnav-person-faste-data-service
+        - application: testnav-person-organisasjon-tilgang-service-dev
+        - application: testnav-person-search-service
+        - application: testnav-person-service
+        - application: testnav-sykemelding-api
+        - application: testnav-tenor-search-service
+        - application: testnav-tps-messaging-service
+        - application: testnav-varslinger-service
+        - application: testnav-varslinger-service-dev
+        - application: testnorge-profil-api-dev
+        - application: testnorge-tilbakemelding-api
       external:
         - host: testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
         - host: testnav-sigrunstub-proxy.dev-fss-pub.nais.io
@@ -61,7 +69,6 @@ spec:
         - host: testnav-aareg-proxy.dev-fss-pub.nais.io
         - host: testnav-medl-proxy.dev-fss-pub.nais.io
         - host: testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io
-        - host: tps-forvalteren-dev-proxy.dev-fss-pub.nais.io
         - host: testnav-inntektstub-proxy.dev-fss-pub.nais.io
         - host: testnav-norg2-proxy.dev-fss-pub.nais.io
         - host: testnav-brregstub-proxy.dev-fss-pub.nais.io

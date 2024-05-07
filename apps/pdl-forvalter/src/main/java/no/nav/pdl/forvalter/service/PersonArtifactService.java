@@ -39,9 +39,9 @@ public class PersonArtifactService {
 
         // Orders below matters to some degree, don´t rearrange without checking consequences
         person.setKjoenn(kjoennService.convert(person));
-        person.setFoedsel(foedselService.convert(person));
-        person.setInnflytting(innflyttingService.convert(person));
         person.setBostedsadresse(bostedAdresseService.convert(person, relaxed));
+        person.setInnflytting(innflyttingService.convert(person));
+        person.setFoedsel(foedselService.convert(person));
         person.setStatsborgerskap(statsborgerskapService.convert(person));
         person.setNavn(navnService.convert(person));
         person.setOppholdsadresse(oppholdsadresseService.convert(person));

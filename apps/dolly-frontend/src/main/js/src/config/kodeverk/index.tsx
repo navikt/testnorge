@@ -22,6 +22,7 @@ export enum AdresseKodeverk {
 	Postnummer = 'Postnummer',
 	PostnummerUtenPostboks = 'Postnummer vegadresser',
 	Kommunenummer = 'Kommuner',
+	Kommunenummer2024 = 'Kommuner2024',
 
 	PostadresseLand = 'LandAdresserFreg',
 	StatsborgerskapLand = 'StatsborgerskapFreg',

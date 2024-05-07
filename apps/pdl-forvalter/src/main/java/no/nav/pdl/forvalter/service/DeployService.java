@@ -12,8 +12,10 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
-import java.util.Comparator;
+import java.time.Instant;
 import java.util.List;
+
+import static java.util.Objects.nonNull;
 
 @Slf4j
 @Service
@@ -24,27 +26,42 @@ public class DeployService {
 
     public List<Ordre> createOrdre(PdlArtifact type, String ident, List<? extends DbVersjonDTO> artifacter) {
 
-                return artifacter.stream()
-                        .sorted(Comparator.comparing(DbVersjonDTO::getId))
-                        .map(element -> ArtifactValue.builder()
-                                .artifact(type)
-                                .ident(ident)
-                                .body(element)
-                                .build())
-                        .map(value -> (Ordre) accessToken ->
-                                pdlTestdataConsumer.send(value, accessToken)
-                                        .collectList()
-                                        .map(hendelser -> OrdreResponseDTO.PdlStatusDTO
-                                                .builder()
-                                                .ident(ident)
-                                                .infoElement(type)
-                                                .hendelser(hendelser)
-                                                .build()))
-                        .toList();
+        return setOpprettet(artifacter).stream()
+                .map(element -> ArtifactValue.builder()
+                        .artifact(type)
+                        .ident(ident)
+                        .body(element)
+                        .build())
+                .map(value -> (Ordre) accessToken ->
+                        pdlTestdataConsumer.send(value, accessToken)
+                                .collectList()
+                                .map(hendelser -> OrdreResponseDTO.PdlStatusDTO
+                                        .builder()
+                                        .ident(ident)
+                                        .infoElement(type)
+                                        .hendelser(hendelser)
+                                        .build()))
+                .toList();
     }
 
     public Flux<OrdreResponseDTO.PdlStatusDTO> sendOrders(OrdreRequest ordres) {
 
         return pdlTestdataConsumer.send(ordres);
+    }
+
+    private List<? extends DbVersjonDTO> setOpprettet(List<? extends DbVersjonDTO> artifacter) {
+
+        var max = artifacter.stream()
+                .filter(artifact -> nonNull(artifact.getId()))
+                .mapToInt(DbVersjonDTO::getId)
+                .max()
+                .orElse(1);
+
+        artifacter.stream()
+                .filter(artifact -> nonNull(artifact.getId()))
+                .forEach(artifact -> artifact.setOpprettet(
+                        Instant.now().minusSeconds((max - artifact.getId()) * 10L)));
+
+        return artifacter;
     }
 }

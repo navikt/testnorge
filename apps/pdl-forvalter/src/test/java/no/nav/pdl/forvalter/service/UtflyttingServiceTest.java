@@ -1,6 +1,6 @@
 package no.nav.pdl.forvalter.service;
 
-import no.nav.pdl.forvalter.consumer.GeografiskeKodeverkConsumer;
+import no.nav.pdl.forvalter.consumer.KodeverkConsumer;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.UtflyttingDTO;
 import org.junit.jupiter.api.Test;
@@ -24,7 +24,7 @@ import static org.mockito.Mockito.when;
 class UtflyttingServiceTest {
 
     @Mock
-    private GeografiskeKodeverkConsumer geografiskeKodeverkConsumer;
+    private KodeverkConsumer kodeverkConsumer;
 
     @Mock
     private KontaktAdresseService kontaktAdresseService;
@@ -49,15 +49,15 @@ class UtflyttingServiceTest {
     @Test
     void whenEmptyLandkode_thenProvideCountryFromGeografiskeKodeverkConsumer() {
 
-        when(geografiskeKodeverkConsumer.getTilfeldigLand()).thenReturn("TGW");
+        when(kodeverkConsumer.getTilfeldigLand()).thenReturn("TGW");
 
         var request = PersonDTO.builder()
                 .utflytting(List.of(UtflyttingDTO.builder().isNew(true).build()))
                 .build();
 
-        var target = utflyttingService.convert(request).get(0);
+        var target = utflyttingService.convert(request).getFirst();
 
-        verify(geografiskeKodeverkConsumer).getTilfeldigLand();
+        verify(kodeverkConsumer).getTilfeldigLand();
         assertThat(target.getTilflyttingsland(), is(equalTo("TGW")));
     }
 }

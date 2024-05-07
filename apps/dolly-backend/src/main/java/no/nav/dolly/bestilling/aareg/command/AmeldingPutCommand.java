@@ -9,10 +9,13 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import reactor.netty.http.client.HttpClientRequest;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
 import java.util.concurrent.Callable;
+
+import static no.nav.dolly.util.RequestTimeout.REQUEST_DURATION;
 
 @RequiredArgsConstructor
 public class AmeldingPutCommand implements Callable<Mono<ResponseEntity<String>>> {
@@ -31,6 +34,10 @@ public class AmeldingPutCommand implements Callable<Mono<ResponseEntity<String>>
         return webClient.put()
                 .uri(uriBuilder -> uriBuilder.path(AMELDING_URL)
                         .build())
+                .httpRequest(httpRequest -> {
+                    HttpClientRequest reactorRequest = httpRequest.getNativeRequest();
+                    reactorRequest.responseTimeout(Duration.ofSeconds(REQUEST_DURATION));
+                })
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(UserConstant.USER_HEADER_JWT, TokenXUtil.getUserJwt())
                 .header(MILJOE, miljo)

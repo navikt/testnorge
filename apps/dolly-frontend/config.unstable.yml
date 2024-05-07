@@ -18,6 +18,7 @@ spec:
       autoLoginIgnorePaths:
         - /login
         - /assets/*
+        - /
     application:
       allowAllUsers: true
       enabled: true
@@ -29,40 +30,40 @@ spec:
   accessPolicy:
     outbound:
       rules:
-        - application: testnav-arbeidsplassencv-proxy
-        - application: generer-navn-service
-        - application: testnav-person-service
         - application: dolly-backend-dev
-        - application: testnav-helsepersonell-service
-        - application: testnav-person-search-service
-        - application: testnav-bruker-service-dev
-        - application: testnav-pdl-forvalter-dev
-        - application: testnav-person-organisasjon-tilgang-service-dev
         - application: dolly-dev-redis-session
-        - application: testnav-varslinger-service-dev
-        - application: testnav-tps-messaging-service
-        - application: testnav-organisasjon-faste-data-service
+        - application: generer-navn-service
+        - application: testnav-adresse-service
+        - application: testnav-arbeidsplassencv-proxy
+        - application: testnav-bruker-service-dev
+        - application: testnav-helsepersonell-service
         - application: testnav-joark-dokument-service
+        - application: testnav-kodeverk-service
+        - application: testnav-miljoer-service
         - application: testnav-oppsummeringsdokument-service
-        - application: testnav-organisasjon-tilgang-service
-        - application: testnorge-profil-api-dev
+        - application: testnav-organisasjon-faste-data-service
         - application: testnav-organisasjon-forvalter
         - application: testnav-organisasjon-service
-        - application: testnav-miljoer-service
-        - application: testnav-adresse-service
+        - application: testnav-organisasjon-tilgang-service
+        - application: testnav-pdl-forvalter-dev
+        - application: testnav-person-organisasjon-tilgang-service-dev
+        - application: testnav-person-search-service
+        - application: testnav-person-service
+        - application: testnav-tenor-search-service
+        - application: testnav-tps-messaging-service
+        - application: testnav-varslinger-service-dev
+        - application: testnorge-profil-api-dev
         - application: testnorge-tilbakemelding-api
       external:
         - host: testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
         - host: testnav-sigrunstub-proxy.dev-fss-pub.nais.io
         - host: testnav-krrstub-proxy.dev-fss-pub.nais.io
         - host: testnav-udistub-proxy.dev-fss-pub.nais.io
-        - host: kodeverk-api.nav.no
         - host: testnav-inst-proxy.dev-fss-pub.nais.io
         - host: testnav-aareg-proxy.dev-fss-pub.nais.io
         - host: testnav-medl-proxy.dev-fss-pub.nais.io
         - host: testnav-histark-proxy.dev-fss-pub.nais.io
         - host: testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io
-        - host: tps-forvalteren-proxy.dev-fss-pub.nais.io
         - host: testnav-inntektstub-proxy.dev-fss-pub.nais.io
         - host: testnav-norg2-proxy.dev-fss-pub.nais.io
         - host: testnav-brregstub-proxy.dev-fss-pub.nais.io

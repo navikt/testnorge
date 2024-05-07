@@ -66,6 +66,7 @@ import ReportProblemCircle from '@/assets/icons/custom/ProblemCircle.svg?raw'
 import CheckCircle from '@/assets/icons/custom/CheckCircle.svg?raw'
 import Dolly from '@/assets/icons/custom/Dolly.svg?raw'
 import DollyPanic from '@/assets/icons/custom/DollyPanic.svg?raw'
+import TenorLogo from '@/assets/icons/custom/TenorLogo.svg?raw'
 import Cypress from '@/assets/img/cypress.png'
 
 import './Icon.less'
@@ -79,6 +80,7 @@ export const icons = {
 	dolly: Dolly,
 	dollyPanic: DollyPanic,
 	cypress: Cypress,
+	tenor: TenorLogo,
 
 	trashcan: TrashIcon,
 	'add-circle': PlusCircleIcon,
@@ -191,6 +193,7 @@ const Icon = ({
 		'dolly',
 		'dollyPanic',
 		'cypress',
+		'tenor',
 	]
 
 	if (halvannenRemIkoner.includes(kind)) {

@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
-import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.aareg.RsAmeldingRequest;
@@ -34,7 +33,7 @@ public class AmeldingService {
     private final OrganisasjonServiceConsumer organisasjonServiceConsumer;
 
     public Mono<String> sendAmelding(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson,
-                                     Set<String> miljoer, BestillingProgress progress) {
+                                     Set<String> miljoer) {
 
         var orgnumre = bestilling.getAareg().getFirst().getAmelding().stream()
                 .map(RsAmeldingRequest::getArbeidsforhold)
@@ -49,14 +48,14 @@ public class AmeldingService {
                         .collect(Collectors.toMap(OrganisasjonDTO::getOrgnummer, OrganisasjonDTO::getJuridiskEnhet))
                         .flatMapMany(organisasjon ->
                                 prepareAmeldinger(bestilling.getAareg().getFirst(), dollyPerson.getIdent(),
-                                        organisasjon, miljoe, progress))
+                                        organisasjon, miljoe))
                         .collect(Collectors.joining(",")))
                 .flatMap(Flux::from)
                 .collect(Collectors.joining(","));
     }
 
     private Flux<String> prepareAmeldinger(RsAareg aareg, String ident, Map<String, String> organisasjon,
-                                           String miljoe, BestillingProgress progress) {
+                                           String miljoe) {
 
         var context = new MappingContext.Factory().getContext();
         context.setProperty("personIdent", ident);
@@ -67,7 +66,7 @@ public class AmeldingService {
                 .map(aamelding -> mapperFacade.map(aamelding, AMeldingDTO.class, context))
                 .sort(Comparator.comparing(AMeldingDTO::getKalendermaaned))
                 .collectList()
-                .flatMapMany(ameldinger -> ameldingConsumer.sendAmeldinger(ameldinger, miljoe, progress)
+                .flatMapMany(ameldinger -> ameldingConsumer.sendAmeldinger(ameldinger, miljoe)
                         .distinct()
                         .map(status -> STATUS_ELEMENT.formatted(miljoe, status)));
     }

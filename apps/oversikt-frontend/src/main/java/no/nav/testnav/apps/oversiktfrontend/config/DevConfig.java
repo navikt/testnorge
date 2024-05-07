@@ -2,6 +2,7 @@ package no.nav.testnav.apps.oversiktfrontend.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.lang.NonNull;
 import org.springframework.vault.annotation.VaultPropertySource;
 import org.springframework.vault.authentication.ClientAuthentication;
 import org.springframework.vault.authentication.TokenAuthentication;
@@ -13,17 +14,18 @@ import static io.micrometer.common.util.StringUtils.isBlank;
 @Configuration
 @Profile("dev")
 @VaultPropertySource(value = "secret/dolly/lokal", ignoreSecretNotFound = false)
-@VaultPropertySource(value = "secret/.common/tokenx/dev/app-1", ignoreSecretNotFound = false)
 public class DevConfig  extends AbstractVaultConfiguration {
 
        private static final String VAULT_TOKEN = "spring.cloud.vault.token";
 
     @Override
+    @NonNull
     public VaultEndpoint vaultEndpoint() {
         return VaultEndpoint.create("vault.adeo.no", 443);
     }
 
     @Override
+    @NonNull
     public ClientAuthentication clientAuthentication() {
         if (System.getenv().containsKey("VAULT_TOKEN")) {
             System.setProperty(VAULT_TOKEN, System.getenv("VAULT_TOKEN"));

@@ -88,7 +88,7 @@ export const validation = {
 		Yup.object({
 			aliaser: ifPresent('$udistub.aliaser', aliaser),
 			arbeidsadgang: ifPresent('$udistub.arbeidsadgang', arbeidsadgang),
-			flyktning: requiredBoolean,
+			flyktning: ifPresent('$udistub.flyktning', requiredBoolean),
 			oppholdStatus: ifPresent('$udistub.oppholdStatus', oppholdStatus),
 			soeknadOmBeskyttelseUnderBehandling: ifPresent(
 				'$udistub.soeknadOmBeskyttelseUnderBehandling',

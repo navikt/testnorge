@@ -1,14 +1,12 @@
 package no.nav.dolly.domain;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import static java.util.Objects.isNull;
 
 @Data
 @Builder
@@ -17,7 +15,7 @@ import static java.util.Objects.isNull;
 public class PdlPersonBolk {
 
     private Data data;
-    private Extensions extensions;
+    private JsonNode extensions;
 
     @lombok.Data
     @Builder
@@ -28,36 +26,6 @@ public class PdlPersonBolk {
         private List<PersonBolk> hentPersonBolk;
         private List<GeografiskTilknytningBolk> hentGeografiskTilknytningBolk;
         private List<IdenterBolk> hentIdenterBolk;
-    }
-
-    @lombok.Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class Extensions {
-
-        private List<Warning> warnings;
-
-        public List<Warning> getWarnings() {
-
-            if (isNull(warnings)) {
-                warnings = new ArrayList<>();
-            }
-            return warnings;
-        }
-    }
-
-    @lombok.Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class Warning {
-
-        private String code;
-        private String details;
-        private String id;
-        private String message;
-        private String query;
     }
 
     @lombok.Data

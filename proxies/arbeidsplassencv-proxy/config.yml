@@ -19,15 +19,14 @@ spec:
   accessPolicy:
     inbound:
       rules:
-        - application: team-dolly-lokal-app
-        - application: dolly-frontend
-        - application: dolly-idporten
-        - application: dolly-frontend-dev
         - application: dolly-backend
         - application: dolly-backend-dev
+        - application: dolly-frontend
+        - application: dolly-frontend-dev
+        - application: dolly-frontend-dev-unstable
+        - application: dolly-idporten
+        - application: team-dolly-lokal-app
         - application: testnav-oversikt-frontend
-        - application: app-1
-          namespace: plattformsikkerhet
     outbound:
       rules:
         - application: pam-cv-api-gcp

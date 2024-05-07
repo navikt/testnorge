@@ -18,6 +18,9 @@ spec:
           cluster: dev-gcp
         - application: organisasjon-bestilling-service
           cluster: dev-gcp
+    outbound:
+      external:
+        - host: testnav-modapp-ereg-proxy.dev-fss-pub.nais.io
   tokenx:
     enabled: true
   azure:
@@ -48,4 +51,4 @@ spec:
     limits:
       memory: 2048Mi
   ingresses:
-    - "https://ereg-batch-status-service.dev-fss-pub.nais.io"
+    - "https://testnav-ereg-batch-status-service.intern.dev.nav.no"

@@ -78,11 +78,6 @@ consumers:
     namespace: dolly
     name: testnav-norg2-proxy
     url: https://testnav-norg2-proxy.dev-fss-pub.nais.io
-  tps-forvalteren-proxy:
-    cluster: dev-fss
-    namespace: dolly
-    name: tps-forvalteren-proxy
-    url: https://tps-forvalteren-proxy.dev-fss-pub.nais.io
   testnav-arena-forvalteren-proxy:
     cluster: dev-fss
     namespace: dolly
@@ -213,6 +208,16 @@ consumers:
     namespace: dolly
     url: https://testnav-histark-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
+  testnav-kodeverk-service:
+    name: testnav-kodeverk-service
+    namespace: dolly
+    url: http://testnav-kodeverk-service.dolly.svc.cluster.local
+    cluster: dev-gcp
+  testnav-tenor-search-service:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-tenor-search-service
+    url: http://testnav-tenor-search-service.dolly.svc.cluster.local
 
 management:
   endpoints:
@@ -233,6 +238,8 @@ server:
   servlet:
     encoding:
       charset: UTF-8
+  error:
+    include-message: always
 
 logging:
   pattern:

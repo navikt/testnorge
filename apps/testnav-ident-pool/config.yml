@@ -50,19 +50,11 @@ spec:
   accessPolicy:
     inbound:
       rules:
-        - application: testnav-pdl-forvalter
-          cluster: dev-gcp
-        - application: testnav-pdl-forvalter-dev
-          cluster: dev-gcp
         - application: team-dolly-lokal-app
-          cluster: dev-gcp
-        - application: testnav-oversikt-frontend
-          cluster: dev-gcp
-        - application: app-1
-          namespace: plattformsikkerhet
-          cluster: dev-gcp
         - application: testnav-endringsmelding-service
-          cluster: dev-gcp
+        - application: testnav-oversikt-frontend
+        - application: testnav-pdl-forvalter
+        - application: testnav-pdl-forvalter-dev
     outbound:
       rules:
         - application: testnav-tps-messaging-service

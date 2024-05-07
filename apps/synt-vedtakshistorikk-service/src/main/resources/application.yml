@@ -16,7 +16,6 @@ spring:
     vault:
       enabled: false
 
-
 springdoc:
   swagger-ui:
     disable-swagger-default-url: true
@@ -83,3 +82,5 @@ server:
   servlet:
     encoding:
       charset: UTF-8
+  error:
+    include-message: always

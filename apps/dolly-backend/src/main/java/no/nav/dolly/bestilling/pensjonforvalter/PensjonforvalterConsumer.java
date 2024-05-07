@@ -59,33 +59,31 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
                 .build();
     }
 
-    @Timed(name = "providers", tags = {"operation", "pen_getMiljoer"})
+    @Timed(name = "providers", tags = { "operation", "pen_getMiljoer" })
     public Mono<Set<String>> getMiljoer() {
 
         return tokenService.exchange(serverProperties)
                 .flatMap(token -> new HentMiljoerCommand(webClient, token.getTokenValue()).call());
     }
 
-    @Timed(name = "providers", tags = {"operation", "popp_lagreInntekt"})
+    @Timed(name = "providers", tags = { "operation", "popp_lagreInntekt" })
     public Flux<PensjonforvalterResponse> lagreInntekter(PensjonPoppInntektRequest pensjonPoppInntektRequest) {
 
-        log.info("Popp lagre inntekt {}", pensjonPoppInntektRequest);
         return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> new LagrePoppInntektCommand(webClient, token.getTokenValue(),
-                                pensjonPoppInntektRequest).call());
+                        pensjonPoppInntektRequest).call());
     }
 
-    @Timed(name = "providers", tags = {"operation", "pen_opprettPerson"})
+    @Timed(name = "providers", tags = { "operation", "pen_opprettPerson" })
     public Flux<PensjonforvalterResponse> opprettPerson(PensjonPersonRequest pensjonPersonRequest,
                                                         Set<String> miljoer) {
 
         pensjonPersonRequest.setMiljoer(miljoer);
-        log.info("Pensjon opprett person {}", pensjonPersonRequest);
         return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> new OpprettPersonCommand(webClient, pensjonPersonRequest, token.getTokenValue()).call());
     }
 
-    @Timed(name = "providers", tags = {"operation", "pen_hentSamboer"})
+    @Timed(name = "providers", tags = { "operation", "pen_hentSamboer" })
     public Flux<PensjonSamboerResponse> hentSamboer(String ident, String miljoe) {
 
         return tokenService.exchange(serverProperties)
@@ -93,49 +91,44 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
                 .doOnNext(response -> log.info("Pensjon samboer for {} i {} hentet {}", ident, miljoe, response));
     }
 
-    @Timed(name = "providers", tags = {"operation", "pen_opprettSamboer"})
+    @Timed(name = "providers", tags = { "operation", "pen_opprettSamboer" })
     public Flux<PensjonforvalterResponse> lagreSamboer(PensjonSamboerRequest pensjonSamboerRequest,
                                                        String miljoe) {
 
-        log.info("Pensjon samboer opprett i {} {}", miljoe, pensjonSamboerRequest);
         return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> new LagreSamboerCommand(webClient, pensjonSamboerRequest, miljoe, token.getTokenValue()).call());
     }
 
-    @Timed(name = "providers", tags = {"operation", "pen_opprettSamboer"})
-    public Flux<PensjonforvalterResponse> annullerSamboer(String ident, String periodeId, String miljoe) {
+    @Timed(name = "providers", tags = { "operation", "pen_opprettSamboer" })
+    public Flux<PensjonforvalterResponse> annullerSamboer(String periodeId, String miljoe) {
 
-        log.info("Pensjon samboer annuller {} periodeId {}", ident, periodeId);
         return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> new AnnullerSamboerCommand(webClient, periodeId, miljoe, token.getTokenValue()).call());
     }
 
-    @Timed(name = "providers", tags = {"operation", "pen_lagreAlderspensjon"})
+    @Timed(name = "providers", tags = { "operation", "pen_lagreAlderspensjon" })
     public Flux<PensjonforvalterResponse> lagreAlderspensjon(AlderspensjonRequest request) {
 
-        log.info("Pensjon lagre alderspensjon {}", request);
         return tokenService.exchange(serverProperties)
                 .flatMapMany(token ->
                         new LagreAlderspensjonCommand(webClient, token.getTokenValue(), request).call());
     }
 
-    @Timed(name = "providers", tags = {"operation", "pen_lagreUforetrygd"})
+    @Timed(name = "providers", tags = { "operation", "pen_lagreUforetrygd" })
     public Flux<PensjonforvalterResponse> lagreUforetrygd(PensjonUforetrygdRequest request) {
 
-        log.info("Pensjon lagre uforetrygd {}", request);
         return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> new LagreUforetrygdCommand(webClient, token.getTokenValue(), request).call());
     }
 
-    @Timed(name = "providers", tags = {"operation", "pen_lagreTpForhold"})
+    @Timed(name = "providers", tags = { "operation", "pen_lagreTpForhold" })
     public Flux<PensjonforvalterResponse> lagreTpForhold(PensjonTpForholdRequest pensjonTpForholdRequest) {
 
-        log.info("Pensjon lagre TP-forhold {}", pensjonTpForholdRequest);
         return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> new LagreTpForholdCommand(webClient, token.getTokenValue(), pensjonTpForholdRequest).call());
     }
 
-    @Timed(name = "providers", tags = {"operation", "pen_sletteTpForhold"})
+    @Timed(name = "providers", tags = { "operation", "pen_sletteTpForhold" })
     public void sletteTpForhold(List<String> identer) {
 
         tokenService.exchange(serverProperties)
@@ -147,10 +140,9 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
                 .subscribe(response -> log.info("Slettet mot PESYS (tp) i alle miljoer"));
     }
 
-    @Timed(name = "providers", tags = {"operation", "pen_lagreTpYtelse"})
+    @Timed(name = "providers", tags = { "operation", "pen_lagreTpYtelse" })
     public Flux<PensjonforvalterResponse> lagreTpYtelse(PensjonTpYtelseRequest pensjonTpYtelseRequest) {
 
-        log.info("Pensjon lagre TP-ytelse {}", pensjonTpYtelseRequest);
         return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> new LagreTpYtelseCommand(webClient, token.getTokenValue(), pensjonTpYtelseRequest).call());
     }

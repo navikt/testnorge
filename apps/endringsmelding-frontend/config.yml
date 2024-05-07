@@ -35,6 +35,7 @@ spec:
       rules:
         - application: testnav-endringsmelding-service
         - application: testnorge-profil-api
+        - application: testnorge-profil-api-dev
   resources:
     limits:
       memory: 2048Mi

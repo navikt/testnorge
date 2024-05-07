@@ -38,7 +38,7 @@ public class EndringsmeldingFrontendApplicationStarter {
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         return builder
                 .routes()
-                .route(createRoute(consumers.getEndringsmeldingService()))
+                .route(createRoute(consumers.getEndringsmeldingService(), "endringsmelding-service"))
                 .route(createRoute(consumers.getTestnorgeProfilApi()))
                 .build();
     }
@@ -68,4 +68,20 @@ public class EndringsmeldingFrontendApplicationStarter {
                 ).uri(host);
     }
 
+    private Function<PredicateSpec, Buildable<Route>> createRoute(ServerProperties serverProperties, String segment) {
+        return createRoute(
+                segment,
+                serverProperties.getUrl(),
+                addAuthenticationHeaderFilterFrom(serverProperties)
+        );
+    }
+
+    private Function<PredicateSpec, Buildable<Route>> createRoute(String segment, String host, GatewayFilter filter) {
+        return spec -> spec
+                .path("/" + segment + "/**")
+                .filters(filterSpec -> filterSpec
+                        .rewritePath("/" + segment + "/(?<segment>.*)", "/${segment}")
+                        .filters(filter)
+                ).uri(host);
+    }
 }

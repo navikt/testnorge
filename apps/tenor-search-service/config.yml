@@ -23,15 +23,18 @@ spec:
   accessPolicy:
     inbound:
       rules:
-        - application: testnav-oversikt-frontend
         - application: dolly-frontend
         - application: dolly-frontend-dev
+        - application: dolly-frontend-dev-unstable
         - application: dolly-idporten
         - application: team-dolly-lokal-app
-        - application: app-1
-          namespace: plattformsikkerhet
+        - application: testnav-oversikt-frontend
     outbound:
+      rules:
+        - application: dolly-backend
+        - application: dolly-backend-dev
       external:
+        - host: testnav-pdl-proxy.dev-fss-pub.nais.io
         - host: testdata.api.skatteetaten.no
   liveness:
     path: /internal/isAlive

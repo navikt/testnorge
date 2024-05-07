@@ -2,7 +2,7 @@ package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
-import no.nav.pdl.forvalter.consumer.GeografiskeKodeverkConsumer;
+import no.nav.pdl.forvalter.consumer.KodeverkConsumer;
 import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.KontaktadresseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.KontaktadresseDTO.PostboksadresseDTO;
@@ -27,7 +27,7 @@ public class EnkelAdresseService {
     private static final String ADRESSE_3_UTLAND = "CAPITAL WEST";
     private static final String ADRESSE_POSTKODE = "3000";
 
-    private final GeografiskeKodeverkConsumer geografiskeKodeverkConsumer;
+    private final KodeverkConsumer kodeverkConsumer;
 
     private final MapperFacade mapperFacade;
 
@@ -76,6 +76,6 @@ public class EnkelAdresseService {
     private String getLandkode(String landkode) {
 
         return isNotBlank(landkode) && !"NOR".equals(landkode) ? landkode :
-                geografiskeKodeverkConsumer.getTilfeldigLand();
+                kodeverkConsumer.getTilfeldigLand();
     }
 }

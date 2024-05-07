@@ -14,7 +14,7 @@ jobs:
   workflow:
     uses: ./.github/workflows/common.workflow.backend.yml
     with:
-      cluster: "dev-fss"
+      cluster: "dev-gcp"
       working-directory: "apps/ereg-batch-status-service"
       deploy-tag: "#deploy-ereg-batch-status-service"
     permissions:

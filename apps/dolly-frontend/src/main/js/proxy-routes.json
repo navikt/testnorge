@@ -84,11 +84,6 @@
     "changeOrigin": true,
     "secure": false
   },
-  "/tps-forvalteren-proxy/api": {
-    "target": "http://localhost:8020",
-    "changeOrigin": true,
-    "secure": false
-  },
   "/testnav-brregstub-proxy/api": {
     "target": "http://localhost:8020",
     "changeOrigin": true,
@@ -220,6 +215,16 @@
     "secure": false
   },
   "/generer-navn-service": {
+    "target": "http://localhost:8020",
+    "changeOrigin": true,
+    "secure": false
+  },
+  "/testnav-kodeverk-service": {
+    "target": "http://localhost:8020",
+    "changeOrigin": true,
+    "secure": false
+  },
+  "/testnav-tenor-search-service/api": {
     "target": "http://localhost:8020",
     "changeOrigin": true,
     "secure": false

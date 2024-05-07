@@ -16,43 +16,32 @@ spec:
     inbound:
       rules:
         - application: dolly-frontend
-          cluster: dev-gcp
         - application: dolly-idporten
-          cluster: dev-gcp
-        - application: testnav-dollystatus
-          cluster: dev-gcp
-        - application: testnav-oversikt-frontend
-          cluster: dev-gcp
         - application: testnav-batch-bestilling-service
-          cluster: dev-gcp
-        - application: etterlatte-testdata
-          cluster: dev-gcp
-          namespace: etterlatte
-        - application: devtools
-          cluster: dev-gcp
-          namespace: aap
-        - application: bot
-          cluster: dev-gcp
-          namespace: aap
+        - application: testnav-dollystatus
         - application: testnav-helsepersonell-service
-          cluster: dev-gcp
-        - application: statuspoll
-          namespace: navdig
+        - application: testnav-oversikt-frontend
+        - application: testnav-tenor-search-service
+        - application: etterlatte-testdata
+          namespace: etterlatte
     outbound:
       rules:
+        - application: generer-navn-service
         - application: testnav-amelding-service
+        - application: testnav-arbeidsforhold-service
         - application: testnav-arbeidsplassencv-proxy
-        - application: testnav-tps-messaging-service
-        - application: testnorge-profil-api
+        - application: testnav-inntektsmelding-service
+        - application: testnav-kodeverk-service
+        - application: testnav-miljoer-service
+        - application: testnav-organisasjon-forvalter
+        - application: testnav-organisasjon-service
+        - application: testnav-pdl-forvalter
+        - application: testnav-person-service
+        - application: testnav-skattekort-service
         - application: testnav-sykemelding-api
         - application: testnav-synt-sykemelding-api
-        - application: testnav-person-service
-        - application: testnav-pdl-forvalter
-        - application: testnav-organisasjon-service
-        - application: testnav-organisasjon-forvalter
-        - application: testnav-miljoer-service
-        - application: testnav-inntektsmelding-service
-        - application: testnav-arbeidsforhold-service
+        - application: testnav-tps-messaging-service
+        - application: testnorge-profil-api
       external:
         - host: testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io
         - host: testnav-brregstub-proxy.dev-fss-pub.nais.io
@@ -63,14 +52,12 @@ spec:
         - host: testnav-inst-proxy.dev-fss-pub.nais.io
         - host: testnav-kontoregister-person-proxy.dev-fss-pub.nais.io
         - host: testnav-krrstub-proxy.dev-fss-pub.nais.io
-        - host: kodeverk-api.nav.no
         - host: testnav-norg2-proxy.dev-fss-pub.nais.io
         - host: testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
         - host: testnav-pdl-proxy.dev-fss-pub.nais.io
         - host: testnav-sigrunstub-proxy.dev-fss-pub.nais.io
         - host: testnav-skjermingsregister-proxy.dev-fss-pub.nais.io
         - host: testnav-udistub-proxy.dev-fss-pub.nais.io
-        - host: tps-forvalteren-proxy.dev-fss-pub.nais.io
   webproxy: true
   azure:
     application:

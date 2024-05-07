@@ -1,11 +1,14 @@
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
 
 spring:
+  cloud:
+    vault:
+      enabled: false
   main:
     banner-mode: off
   application:
     name: ereg-batch-status-service
-    version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
+    version: application.version.todo
     description: Tjeneste for å hente ut batch status fra EREG.
   security:
     oauth2:
@@ -15,7 +18,7 @@ spring:
           jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
           accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
         tokenx:
-          issuer-uri: ${TOKEN_X_ISSUER} 
+          issuer-uri: ${TOKEN_X_ISSUER}
           jwk-set-uri: ${TOKEN_X_JWKS_URI}
           accepted-audience: ${TOKEN_X_CLIENT_ID}
 
@@ -24,13 +27,12 @@ springdoc:
     disable-swagger-default-url: true
     url: /v3/api-docs
 
-ereg:
-  envHostMap:
-    q1: https://ereg-services-q1.dev.intern.nav.no
-    q2: https://ereg-services-q2.dev.intern.nav.no
-    q4: https://ereg-services-q4.dev.intern.nav.no
-    q5: https://ereg-services-q5.dev.intern.nav.no
-    t3: https://ereg-services-t3.dev.intern.nav.no
+consumers:
+  modapp-ereg-proxy:
+    name: testnav-modapp-ereg-proxy
+    namespace: dolly
+    url: https://testnav-modapp-ereg-proxy.dev-fss-pub.nais.io
+    cluster: dev-fss
 
 management:
   endpoints:
@@ -51,3 +53,5 @@ server:
   servlet:
     encoding:
       charset: UTF-8
+  error:
+    include-message: always

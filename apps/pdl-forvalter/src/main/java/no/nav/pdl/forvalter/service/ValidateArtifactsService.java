@@ -17,7 +17,6 @@ public class ValidateArtifactsService {
 
     private final AdressebeskyttelseService adressebeskyttelseService;
     private final BostedAdresseService bostedAdresseService;
-    private final DeltBostedService deltBostedService;
     private final DoedfoedtBarnService doedfoedtBarnService;
     private final DoedsfallService doedsfallService;
     private final FalskIdentitetService falskIdentitetService;
@@ -46,33 +45,33 @@ public class ValidateArtifactsService {
     public void validate(PersonDTO person) {
 
         Stream.of(
-                validate(kjoennService, person.getKjoenn(), person),
-                validate(innflyttingService, person.getInnflytting()),
-                validate(statsborgerskapService, person.getStatsborgerskap()),
-                validate(bostedAdresseService, person.getBostedsadresse(), person),
-                validate(foedselService, person.getFoedsel(), person),
-                validate(navnService, person.getNavn(), person),
-                validate(oppholdsadresseService, person.getOppholdsadresse(), person),
-                validate(adressebeskyttelseService, person.getAdressebeskyttelse(), person),
-                validate(telefonnummerService, person.getTelefonnummer()),
-                validate(utflyttingService, person.getUtflytting()),
-                validate(oppholdService, person.getOpphold()),
-                validate(tilrettelagtKommunikasjonService, person.getTilrettelagtKommunikasjon()),
-                validate(doedsfallService, person.getDoedsfall()),
-                validate(folkeregisterPersonstatusService, person.getFolkeregisterPersonstatus(), person),
-                validate(fullmaktService, person.getFullmakt(), person),
-                validate(kontaktAdresseService, person.getKontaktadresse(), person),
-                validate(utenlandsidentifikasjonsnummerService, person.getUtenlandskIdentifikasjonsnummer()),
-                validate(vergemaalService, person.getVergemaal()),
-                validate(falskIdentitetService, person.getFalskIdentitet()),
-                validate(kontaktinformasjonForDoedsboService, person.getKontaktinformasjonForDoedsbo()),
-                validate(sivilstandService, person.getSivilstand()),
-                validate(forelderBarnRelasjonService, person.getForelderBarnRelasjon()),
-                validate(foreldreansvarService, person.getForeldreansvar(), person),
-                validate(sikkerhetstiltakService, person.getSikkerhetstiltak()),
-                validate(doedfoedtBarnService, person.getDoedfoedtBarn()),
-                validate(identtypeService, person.getNyident())
-        )
+                        validate(kjoennService, person.getKjoenn(), person),
+                        validate(innflyttingService, person.getInnflytting()),
+                        validate(bostedAdresseService, person.getBostedsadresse(), person),
+                        validate(foedselService, person.getFoedsel(), person),
+                        validate(statsborgerskapService, person.getStatsborgerskap()),
+                        validate(navnService, person.getNavn(), person),
+                        validate(oppholdsadresseService, person.getOppholdsadresse(), person),
+                        validate(adressebeskyttelseService, person.getAdressebeskyttelse(), person),
+                        validate(telefonnummerService, person.getTelefonnummer()),
+                        validate(utflyttingService, person.getUtflytting()),
+                        validate(oppholdService, person.getOpphold()),
+                        validate(tilrettelagtKommunikasjonService, person.getTilrettelagtKommunikasjon()),
+                        validate(doedsfallService, person.getDoedsfall()),
+                        validate(folkeregisterPersonstatusService, person.getFolkeregisterPersonstatus(), person),
+                        validate(fullmaktService, person.getFullmakt(), person),
+                        validate(kontaktAdresseService, person.getKontaktadresse(), person),
+                        validate(utenlandsidentifikasjonsnummerService, person.getUtenlandskIdentifikasjonsnummer()),
+                        validate(vergemaalService, person.getVergemaal()),
+                        validate(falskIdentitetService, person.getFalskIdentitet()),
+                        validate(kontaktinformasjonForDoedsboService, person.getKontaktinformasjonForDoedsbo()),
+                        validate(sivilstandService, person.getSivilstand()),
+                        validate(forelderBarnRelasjonService, person.getForelderBarnRelasjon()),
+                        validate(foreldreansvarService, person.getForeldreansvar(), person),
+                        validate(sikkerhetstiltakService, person.getSikkerhetstiltak()),
+                        validate(doedfoedtBarnService, person.getDoedfoedtBarn()),
+                        validate(identtypeService, person.getNyident())
+                )
                 .reduce(Flux.empty(), Flux::concat)
                 .collectList()
                 .block();

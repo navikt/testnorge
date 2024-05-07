@@ -130,8 +130,8 @@ InntektsmeldingVisning.filterValues = (bestillinger: Array<Bestilling>, ident: s
 
 	return bestillinger.filter(
 		(bestilling: any) =>
-			bestilling.data.inntektsmelding &&
-			!tomBestilling(bestilling.data.inntektsmelding.inntekter) &&
+			bestilling.data?.inntektsmelding &&
+			!tomBestilling(bestilling.data?.inntektsmelding.inntekter) &&
 			erGyldig(bestilling.id, 'INNTKMELD', ident),
 	)
 }

@@ -1,26 +1,30 @@
 package no.nav.registre.testnorge.eregbatchstatusservice.config;
 
+import lombok.RequiredArgsConstructor;
+import no.nav.testnav.libs.reactivesecurity.manager.JwtReactiveAuthenticationManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
+import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
+import org.springframework.security.config.web.server.ServerHttpSecurity;
+import org.springframework.security.web.server.SecurityWebFilterChain;
 
-@EnableWebSecurity
 @Configuration
+@EnableWebFluxSecurity
+@EnableReactiveMethodSecurity
+@RequiredArgsConstructor
 @Profile({ "prod", "dev" })
 public class SecurityConfig {
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+    private final JwtReactiveAuthenticationManager jwtReactiveAuthenticationManager;
 
-        httpSecurity.sessionManagement(sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(authorizeConfig -> authorizeConfig.requestMatchers(
+    @Bean
+    public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity httpSecurity) {
+
+        return httpSecurity
+                .csrf(ServerHttpSecurity.CsrfSpec::disable)
+                .authorizeExchange(authorizeConfig -> authorizeConfig.pathMatchers(
                         "/internal/**",
                         "/webjars/**",
                         "/swagger-resources/**",
@@ -29,10 +33,9 @@ public class SecurityConfig {
                         "/swagger",
                         "/error",
                         "/swagger-ui.html"
-                ).permitAll().requestMatchers("/api/**").fullyAuthenticated())
-                .oauth2ResourceServer(oauth2RSConfig -> oauth2RSConfig.jwt(Customizer.withDefaults()));
-
-        return httpSecurity.build();
+                ).permitAll().anyExchange().authenticated())
+                .oauth2ResourceServer(oauth2RSConfig -> oauth2RSConfig.jwt(jwtSpec -> jwtSpec.authenticationManager(jwtReactiveAuthenticationManager)))
+                .build();
     }
 }
 

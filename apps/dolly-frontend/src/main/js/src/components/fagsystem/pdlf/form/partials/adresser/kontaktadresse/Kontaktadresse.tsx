@@ -33,6 +33,7 @@ type KontaktadresseFormValues = {
 	path: string
 	idx?: number
 	identtype?: string
+	identMaster?: string
 }
 
 type Target = {
@@ -45,6 +46,7 @@ export const KontaktadresseForm = ({
 	path,
 	idx,
 	identtype,
+	identMaster,
 }: KontaktadresseFormValues) => {
 	useEffect(() => {
 		formMethods.setValue(`${path}.adresseIdentifikatorFraMatrikkelen`, undefined)
@@ -145,19 +147,21 @@ export const KontaktadresseForm = ({
 					value={formMethods.watch(`${path}.opprettCoAdresseNavn.fornavn`)}
 				/>
 			</div>
-			<AvansertForm path={path} kanVelgeMaster={identtype !== 'NPID'} />
+			<AvansertForm path={path} kanVelgeMaster={identMaster !== 'PDL' && identtype !== 'NPID'} />
 		</React.Fragment>
 	)
 }
 
 export const Kontaktadresse = ({ formMethods }: KontaktadresseValues) => {
 	const opts = useContext(BestillingsveilederContext)
+	const initialMaster = opts?.identMaster === 'PDL' || opts?.identtype === 'NPID' ? 'PDL' : 'FREG'
+
 	return (
 		<Kategori title="Kontaktadresse">
 			<FormDollyFieldArray
 				name="pdldata.person.kontaktadresse"
 				header="Kontaktadresse"
-				newEntry={getInitialKontaktadresse(opts?.identtype === 'NPID' ? 'PDL' : 'FREG')}
+				newEntry={getInitialKontaktadresse(initialMaster)}
 				canBeEmpty={false}
 			>
 				{(path: string, idx: number) => (
@@ -166,6 +170,7 @@ export const Kontaktadresse = ({ formMethods }: KontaktadresseValues) => {
 						path={path}
 						idx={idx}
 						identtype={opts?.identtype}
+						identMaster={opts?.identMaster}
 					/>
 				)}
 			</FormDollyFieldArray>

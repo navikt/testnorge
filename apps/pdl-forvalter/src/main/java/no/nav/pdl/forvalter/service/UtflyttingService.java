@@ -1,7 +1,7 @@
 package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.pdl.forvalter.consumer.GeografiskeKodeverkConsumer;
+import no.nav.pdl.forvalter.consumer.KodeverkConsumer;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.testnav.libs.data.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
@@ -30,7 +30,7 @@ public class UtflyttingService implements Validation<UtflyttingDTO> {
 
     private static final String VALIDATION_LANDKODE_ERROR = "Landkode må oppgis i hht ISO-3 Landkoder for tilflyttingsland";
 
-    private final GeografiskeKodeverkConsumer geografiskeKodeverkConsumer;
+    private final KodeverkConsumer kodeverkConsumer;
     private final KontaktAdresseService kontaktAdresseService;
 
     public List<UtflyttingDTO> convert(PersonDTO person) {
@@ -57,22 +57,19 @@ public class UtflyttingService implements Validation<UtflyttingDTO> {
     protected void handle(UtflyttingDTO utflytting, PersonDTO person) {
 
         if (isBlank(utflytting.getTilflyttingsland())) {
-            utflytting.setTilflyttingsland(geografiskeKodeverkConsumer.getTilfeldigLand());
+            utflytting.setTilflyttingsland(kodeverkConsumer.getTilfeldigLand());
         }
 
         if (isNull(utflytting.getUtflyttingsdato())) {
             utflytting.setUtflyttingsdato(LocalDateTime.now());
         }
 
-        var it = person.getBostedsadresse().iterator();
-        while (it.hasNext()) {
-            var bostedsadresse = it.next();
-            if (bostedsadresse.isAdresseNorge() && bostedsadresse.getGyldigFraOgMed().isAfter(utflytting.getUtflyttingsdato())) {
-                it.remove();
-            }
-        }
-        if (!person.getBostedsadresse().isEmpty() && person.getBostedsadresse().get(0).isAdresseNorge()) {
-            person.getBostedsadresse().get(0).setGyldigTilOgMed(utflytting.getUtflyttingsdato().minusDays(1));
+        person.getBostedsadresse()
+                .removeIf(bostedsadresse -> bostedsadresse.isAdresseNorge() &&
+                        bostedsadresse.getGyldigFraOgMed().isAfter(utflytting.getUtflyttingsdato()));
+
+        if (!person.getBostedsadresse().isEmpty() && person.getBostedsadresse().getFirst().isAdresseNorge()) {
+            person.getBostedsadresse().getFirst().setGyldigTilOgMed(utflytting.getUtflyttingsdato().minusDays(1));
         }
 
         if (utflytting.isVelkjentLand() && person.getBostedsadresse().stream()
@@ -87,7 +84,7 @@ public class UtflyttingService implements Validation<UtflyttingDTO> {
                 .findFirst()
                 .isEmpty()) {
 
-            person.getKontaktadresse().add(0, KontaktadresseDTO.builder()
+            person.getKontaktadresse().addFirst(KontaktadresseDTO.builder()
                     .utenlandskAdresse(UtenlandskAdresseDTO.builder()
                             .landkode(utflytting.getTilflyttingsland())
                             .build())
@@ -110,7 +107,7 @@ public class UtflyttingService implements Validation<UtflyttingDTO> {
                 .findFirst()
                 .isEmpty()) {
 
-            person.getFolkeregisterPersonstatus().add(0, FolkeregisterPersonstatusDTO.builder()
+            person.getFolkeregisterPersonstatus().addFirst(FolkeregisterPersonstatusDTO.builder()
                     .isNew(true)
                     .id(person.getFolkeregisterPersonstatus().stream()
                             .max(Comparator.comparing(FolkeregisterPersonstatusDTO::getId))

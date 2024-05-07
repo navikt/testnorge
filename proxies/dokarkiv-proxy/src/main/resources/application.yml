@@ -22,6 +22,13 @@ spring:
     vault:
       enabled: false
 
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
+  error:
+    include-message: always
+
 consumers:
   dokarkiv:
     url: http://dokarkiv-MILJOE.teamdokumenthandtering.svc.nais.local
@@ -29,4 +36,4 @@ consumers:
     name: dokarkiv-MILJOE
     namespace: teamdokumenthandtering
 
-environments: q1,q2,q4,q5
+environments: q1,q2,q4

@@ -384,7 +384,29 @@ const getPdlIdentInfo = (ident, bestillingStatuser, pdlData) => {
 	}
 	const person = pdlData.person || pdlData.hentPerson
 
-	const navn = person.navn[0]
+	const getNavn = (navnListe: Array<any>) => {
+		if (navnListe?.length === 1) {
+			return navnListe[0]
+		} else if (navnListe?.length > 1) {
+			return [...navnListe]
+				?.filter((navn: any) => navn.metadata.historisk === false)
+				?.sort((a, b) => {
+					const sistEndretA = a.metadata.endringer?.reduce((x, y) => {
+						const dato = new Date(y.registrert)
+						return dato > x ? dato : x
+					}, new Date(0))
+					const sistEndretB = b.metadata.endringer?.reduce((x, y) => {
+						const dato = new Date(y.registrert)
+						return dato > x ? dato : x
+					}, new Date(0))
+					return sistEndretB - sistEndretA
+				})?.[0]
+		} else {
+			return null
+		}
+	}
+
+	const navn = getNavn(person.navn)
 	const mellomnavn = navn?.mellomnavn ? `${navn.mellomnavn.charAt(0)}.` : ''
 	const kjonn = person.kjoenn[0] ? getKjoenn(person.kjoenn[0].kjoenn) : 'U'
 	const alder = getAlder(person.foedsel[0]?.foedselsdato, person.doedsfall[0]?.doedsdato)

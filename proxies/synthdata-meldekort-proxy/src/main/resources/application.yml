@@ -15,6 +15,13 @@ spring:
     vault:
       enabled: false
 
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
+  error:
+    include-message: always
+
 consumers:
   synt-meldekort:
     url: https://synthdata-arena-meldekort.intern.dev.nav.no

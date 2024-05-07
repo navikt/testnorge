@@ -12,34 +12,18 @@ spec:
   accessPolicy:
     inbound:
       rules:
-        - application: team-dolly-lokal-app
-          cluster: dev-gcp
-        - application: testnav-oversikt-frontend
-          cluster: dev-gcp
         - application: dolly-backend
-          cluster: dev-gcp
         - application: dolly-backend-dev
-          cluster: dev-gcp
         - application: dolly-frontend
-          cluster: dev-gcp
-        - application: dolly-idporten
-          cluster: dev-gcp
         - application: dolly-frontend-dev
-          cluster: dev-gcp
-        - application: testnav-orgnummer-service
-          cluster: dev-gcp
-        - application: testnav-organisasjon-forvalter
-          cluster: dev-gcp
+        - application: dolly-frontend-dev-unstable
+        - application: dolly-idporten
+        - application: team-dolly-lokal-app
         - application: testnav-faste-data-frontend
-          cluster: dev-gcp
+        - application: testnav-organisasjon-forvalter
+        - application: testnav-orgnummer-service
+        - application: testnav-oversikt-frontend
         - application: testnav-tps-messaging-service
-          cluster: dev-gcp
-        - application: app-1
-          namespace: plattformsikkerhet
-          cluster: dev-gcp
-    outbound:
-      external:
-        - host: tps-forvalteren-proxy.dev-fss-pub.nais.io
   tokenx:
     enabled: true
   azure:

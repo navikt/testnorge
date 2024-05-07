@@ -49,29 +49,19 @@ spec:
   accessPolicy:
     inbound:
       rules:
-        - application: testnav-oversikt-frontend
-          cluster: dev-gcp
-        - application: team-dolly-lokal-app
-          cluster: dev-gcp
         - application: dolly-backend-dev
-          cluster: dev-gcp
         - application: dolly-frontend-dev
-          cluster: dev-gcp
-        - application: app-1
-          namespace: plattformsikkerhet
-          cluster: dev-gcp
+        - application: dolly-frontend-dev-unstable
+        - application: team-dolly-lokal-app
+        - application: testnav-oversikt-frontend
     outbound:
       rules:
         - application: generer-navn-service
-          cluster: dev-gcp
         - application: testnav-adresse-service
-          cluster: dev-gcp
-        - application: testnav-organisasjon-forvalter
-          cluster: dev-gcp
-        - application: testnav-geografiske-kodeverk-service
-          cluster: dev-gcp
         - application: testnav-ident-pool
-          cluster: dev-gcp
+        - application: testnav-kodeverk-service
+        - application: testnav-organisasjon-forvalter
+        - application: testnav-tps-messaging-service
       external:
         - host: testnav-pdl-proxy.dev-fss-pub.nais.io
   gcp:

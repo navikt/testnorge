@@ -1,5 +1,3 @@
-
-
 package no.nav.dolly.bestilling.pensjonforvalter.command;
 
 import lombok.RequiredArgsConstructor;
@@ -36,6 +34,10 @@ public class SletteTpForholdCommand implements Callable<Flux<PensjonforvalterRes
 
 
     public Flux<PensjonforvalterResponse> call() {
+
+        var callId = generateCallId();
+        log.info("Pensjon slette TP-forhold callId: {}", callId);
+
         return webClient
                 .delete()
                 .uri(uriBuilder -> uriBuilder
@@ -44,7 +46,7 @@ public class SletteTpForholdCommand implements Callable<Flux<PensjonforvalterRes
                         .build())
                 .header(AUTHORIZATION, "Bearer " + token)
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
-                .header(HEADER_NAV_CALL_ID, generateCallId())
+                .header(HEADER_NAV_CALL_ID, callId)
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .header("pid", ident)
                 .retrieve()

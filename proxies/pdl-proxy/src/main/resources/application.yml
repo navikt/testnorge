@@ -25,6 +25,13 @@ sts:
     provider:
       url: https://security-token-service.dev.adeo.no/rest/v1/sts/token
 
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
+  error:
+    include-message: always
+
 consumers:
   pdl-testdata:
     url: http://pdl-testdata.pdl.svc.nais.local

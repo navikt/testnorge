@@ -13,12 +13,14 @@ import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
+import reactor.netty.http.client.HttpClientRequest;
 import reactor.util.retry.Retry;
 
 import java.net.http.HttpTimeoutException;
 import java.time.Duration;
 import java.util.concurrent.Callable;
 
+import static no.nav.dolly.util.RequestTimeout.REQUEST_DURATION;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @Slf4j
@@ -37,6 +39,10 @@ public class PdlDataOppdateringCommand implements Callable<Flux<PdlResponse>> {
         return webClient
                 .put()
                 .uri(PDL_FORVALTER_PERSONER_URL, ident)
+                .httpRequest(httpRequest -> {
+                    HttpClientRequest reactorRequest = httpRequest.getNativeRequest();
+                    reactorRequest.responseTimeout(Duration.ofSeconds(REQUEST_DURATION));
+                })
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .contentType(MediaType.APPLICATION_JSON)

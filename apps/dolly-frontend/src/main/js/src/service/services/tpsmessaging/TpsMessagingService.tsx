@@ -2,15 +2,12 @@ import Request from '@/service/services/Request'
 
 const TPS_MESSAGING_URL = `/testnav-tps-messaging-service/api/v1/personer`
 
-const getTpsMessagingUrl = (ident, miljoe) => `${TPS_MESSAGING_URL}/${ident}?miljoer=${miljoe}`
-const getTpsMessagingUrlAllEnvs = (ident) => `${TPS_MESSAGING_URL}/${ident}`
-
 export default {
 	getTpsPersonInfo(ident, miljoe) {
-		return Request.get(getTpsMessagingUrl(ident, miljoe))
+		return Request.post(`${TPS_MESSAGING_URL}/ident?miljoer=${miljoe}`, { ident: ident })
 	},
 	getTpsPersonInfoAllEnvs(ident) {
-		return Request.get(getTpsMessagingUrlAllEnvs(ident))
+		return Request.post(`${TPS_MESSAGING_URL}/ident`, { ident: ident })
 	},
 	deleteBankkontoNorsk(ident) {
 		return Request.delete(`${TPS_MESSAGING_URL}/${ident}/bankkonto-norsk`)

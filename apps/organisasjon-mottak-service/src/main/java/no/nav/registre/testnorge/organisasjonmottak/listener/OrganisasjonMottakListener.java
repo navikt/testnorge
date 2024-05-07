@@ -29,12 +29,17 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static java.util.Objects.nonNull;
 
 @Slf4j
 @Profile("prod")
@@ -95,11 +100,20 @@ public class OrganisasjonMottakListener {
         Optional.ofNullable(organisasjon.getFormaal()).ifPresent(value -> list.add(new Formaal(value)));
         Optional.ofNullable(parent).ifPresent(value -> list.add(new Knytning(value, organisasjon)));
 
+        var stiftelsesDato = (nonNull(organisasjon.getStiftelsesdato()) && nonNull(organisasjon.getStiftelsesdato().getDato()) ? organisasjon.getStiftelsesdato().getDato() : null);
+        var regDato = (nonNull(organisasjon.getStiftelsesdato())
+                //Registreringsdato settes til dagen etter stiftelsesdato hvis den er satt
+                ? Date.from(LocalDate.of(stiftelsesDato.getAar(), stiftelsesDato.getMaaned(), stiftelsesDato.getDag())
+                .plusDays(1).atStartOfDay()
+                .toInstant(ZoneOffset.UTC))
+                : null);
+
         var record = Record.create(
                 list.stream().map(ToLine::toLine)
                         .toList(),
                 organisasjon.getOrgnummer(),
                 organisasjon.getEnhetstype(),
+                regDato,
                 update
         );
 

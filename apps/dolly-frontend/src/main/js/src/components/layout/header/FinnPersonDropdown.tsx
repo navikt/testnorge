@@ -45,6 +45,14 @@ export const FinnPersonDropdown = () => {
 						<Icon kind="search" fontSize="1.5rem" />
 						Søk i Test-Norge
 					</Dropdown.Menu.List.Item>
+					<Dropdown.Menu.List.Item
+						data-cy={CypressSelector.BUTTON_HEADER_TENOR}
+						onClick={() => navigate('/tenor')}
+						style={{ color: '#212529' }}
+					>
+						<Icon kind="search" fontSize="1.5rem" />
+						Søk i Tenor
+					</Dropdown.Menu.List.Item>
 				</Dropdown.Menu.List>
 			</Dropdown.Menu>
 		</Dropdown>

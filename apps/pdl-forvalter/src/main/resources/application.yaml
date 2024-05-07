@@ -26,11 +26,11 @@ consumers:
     cluster: dev-gcp
     namespace: dolly
     name: testnav-organisasjon-forvalter
-  geografiske-kodeverk-service:
-    url: http://testnav-geografiske-kodeverk-service.dolly.svc.cluster.local
+  kodeverk-service:
+    url: http://testnav-kodeverk-service.dolly.svc.cluster.local
     cluster: dev-gcp
     namespace: dolly
-    name: testnav-geografiske-kodeverk-service
+    name: testnav-kodeverk-service
 
 spring:
   cloud:
@@ -71,3 +71,5 @@ server:
   servlet:
     encoding:
       charset: UTF-8
+  error:
+    include-message: always

@@ -30,13 +30,17 @@ public class AnnullerSamboerCommand implements Callable<Mono<PensjonforvalterRes
     private final String token;
 
     public Mono<PensjonforvalterResponse> call() {
+
+        var callId = generateCallId();
+        log.info("Pensjon samboer annuller periodeId {}, callId: {}", periodeId, callId);
+
         return webClient
                 .put()
                 .uri(uriBuilder -> uriBuilder
                         .path(PEN_SAMBOER_URL)
                         .build(miljoe, periodeId))
                 .header(AUTHORIZATION, "Bearer " + token)
-                .header(HEADER_NAV_CALL_ID, generateCallId())
+                .header(HEADER_NAV_CALL_ID, callId)
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .retrieve()
                 .toBodilessEntity()
@@ -75,7 +79,7 @@ public class AnnullerSamboerCommand implements Callable<Mono<PensjonforvalterRes
                                 .reasonPhrase(WebClientFilter.getStatus(error).getReasonPhrase())
                                 .build())
                         .message(WebClientFilter.getMessage(error))
-                        .path(PEN_SAMBOER_URL.replace("{miljoe}", miljoe).replace("{periodeId}",  periodeId))
+                        .path(PEN_SAMBOER_URL.replace("{miljoe}", miljoe).replace("{periodeId}", periodeId))
                         .build())
                 .build();
 

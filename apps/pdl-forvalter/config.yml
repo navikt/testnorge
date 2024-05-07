@@ -49,25 +49,17 @@ spec:
     inbound:
       rules:
         - application: testnav-oversikt-frontend
-          cluster: dev-gcp
         - application: dolly-backend
-          cluster: dev-gcp
         - application: dolly-frontend
-          cluster: dev-gcp
         - application: dolly-idporten
-          cluster: dev-gcp
     outbound:
       rules:
         - application: generer-navn-service
-          cluster: dev-gcp
         - application: testnav-adresse-service
-          cluster: dev-gcp
-        - application: testnav-organisasjon-forvalter
-          cluster: dev-gcp
-        - application: testnav-geografiske-kodeverk-service
-          cluster: dev-gcp
         - application: testnav-ident-pool
-          cluster: dev-gcp
+        - application: testnav-kodeverk-service
+        - application: testnav-organisasjon-forvalter
+        - application: testnav-tps-messaging-service
       external:
         - host: testnav-pdl-proxy.dev-fss-pub.nais.io
   gcp:

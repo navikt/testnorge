@@ -19,12 +19,7 @@ spec:
     inbound:
       rules:
         - application: team-dolly-lokal-app
-          cluster: dev-gcp
         - application: testnav-oversikt-frontend
-          cluster: dev-gcp
-        - application: app-1
-          cluster: dev-gcp
-          namespace: plattformsikkerhet
     outbound:
       external:
         - host: api.github.com

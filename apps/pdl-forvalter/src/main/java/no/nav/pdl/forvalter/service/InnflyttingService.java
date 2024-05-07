@@ -1,7 +1,7 @@
 package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.pdl.forvalter.consumer.GeografiskeKodeverkConsumer;
+import no.nav.pdl.forvalter.consumer.KodeverkConsumer;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.testnav.libs.data.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
@@ -29,7 +29,7 @@ public class InnflyttingService implements Validation<InnflyttingDTO> {
 
     private static final String VALIDATION_LANDKODE_ERROR = "Landkode må oppgis i hht ISO-3 Landkoder på fraflyttingsland";
 
-    private final GeografiskeKodeverkConsumer geografiskeKodeverkConsumer;
+    private final KodeverkConsumer kodeverkConsumer;
     private final BostedAdresseService bostedAdresseService;
 
     public List<InnflyttingDTO> convert(PersonDTO person) {
@@ -56,7 +56,7 @@ public class InnflyttingService implements Validation<InnflyttingDTO> {
     protected void handle(InnflyttingDTO innflytting, PersonDTO person) {
 
         if (isBlank(innflytting.getFraflyttingsland())) {
-            innflytting.setFraflyttingsland(geografiskeKodeverkConsumer.getTilfeldigLand());
+            innflytting.setFraflyttingsland(kodeverkConsumer.getTilfeldigLand());
         }
 
         if (isNull(innflytting.getInnflyttingsdato())) {
@@ -70,7 +70,7 @@ public class InnflyttingService implements Validation<InnflyttingDTO> {
                 .findFirst()
                 .isEmpty()) {
 
-            person.getBostedsadresse().add(0, BostedadresseDTO.builder()
+            person.getBostedsadresse().addFirst(BostedadresseDTO.builder()
                     .vegadresse(new VegadresseDTO())
                     .gyldigFraOgMed(innflytting.getInnflyttingsdato())
                     .isNew(true)
@@ -91,7 +91,7 @@ public class InnflyttingService implements Validation<InnflyttingDTO> {
                 .findFirst()
                 .isEmpty()) {
 
-            person.getFolkeregisterPersonstatus().add(0, FolkeregisterPersonstatusDTO.builder()
+            person.getFolkeregisterPersonstatus().addFirst(FolkeregisterPersonstatusDTO.builder()
                     .isNew(true)
                     .id(person.getFolkeregisterPersonstatus().stream()
                             .max(Comparator.comparing(FolkeregisterPersonstatusDTO::getId))

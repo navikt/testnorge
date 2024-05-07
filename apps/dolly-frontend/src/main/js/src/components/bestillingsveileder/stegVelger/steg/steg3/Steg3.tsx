@@ -22,18 +22,12 @@ export const Steg3 = () => {
 
 	const [gruppevalg, setGruppevalg] = useState(Gruppevalg.MINE)
 
-	const { organisasjonTilgang } = useOrganisasjonTilgang()
+	const { organisasjonTilgang, loading } = useOrganisasjonTilgang()
 	const tilgjengeligMiljoe = organisasjonTilgang?.miljoe
 
 	const importTestnorge = opts.is.importTestnorge
 
 	const erOrganisasjon = formMethods.getValues('organisasjon')
-	const erQ2MiljoeAvhengig =
-		formMethods.watch('pdldata.person.fullmakt') ||
-		formMethods.watch('pdldata.person.falskIdentitet') ||
-		formMethods.watch('pdldata.person.falskIdentitet') ||
-		formMethods.watch('pdldata.person.utenlandskIdentifikasjonsnummer') ||
-		formMethods.watch('pdldata.person.kontaktinformasjonForDoedsbo')
 
 	const bankIdBruker = currentBruker?.brukertype === 'BANKID'
 
@@ -47,10 +41,12 @@ export const Steg3 = () => {
 	const harRelatertPersonBarn = forelderBarnRelasjon?.some((item) => item.relatertPerson)
 
 	const alleredeValgtMiljoe = () => {
-		if (bankIdBruker) {
-			return tilgjengeligMiljoe ? [tilgjengeligMiljoe] : ['q1']
+		if (loading) {
+			return []
+		} else if (bankIdBruker) {
+			return tilgjengeligMiljoe ? tilgjengeligMiljoe.split(',') : ['q1']
 		}
-		return erQ2MiljoeAvhengig ? ['q2'] : []
+		return []
 	}
 
 	const erQ1EllerQ2MiljoeAvhengig = (values: any) => {
@@ -71,14 +67,13 @@ export const Steg3 = () => {
 			formMethods.setValue('environments', ['q1', 'q2'])
 		} else if (formMethods.getValues()?.sykemelding) {
 			formMethods.setValue('environments', ['q1'])
-		} else if (erQ2MiljoeAvhengig) {
-			formMethods.setValue('environments', alleredeValgtMiljoe())
 		} else if (!formMethods.getValues()?.environments) {
 			formMethods.setValue('environments', [])
 		}
 		if (harRelatertPersonVedSivilstand || harEksisterendeNyIdent || harRelatertPersonBarn) {
 			formMethods.setValue('malBestillingNavn', undefined)
 		}
+		formMethods.trigger('environments')
 	}, [])
 
 	const visMiljoeVelger = formMethods.watch('environments')

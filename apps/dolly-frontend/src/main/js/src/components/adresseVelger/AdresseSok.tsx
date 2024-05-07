@@ -51,7 +51,7 @@ export default ({ onSubmit, loading = false }: Props) => {
 				<DollySelect
 					name="kommunenummer"
 					label="Kommunenummer"
-					kodeverk={AdresseKodeverk.Kommunenummer}
+					kodeverk={AdresseKodeverk.Kommunenummer2024}
 					size="grow"
 					value={kommunenummer}
 					onChange={(e: any) => setKommunenummer(e ? e.value : null)}

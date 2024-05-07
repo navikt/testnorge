@@ -1,5 +1,5 @@
 import { registerLocale } from 'react-datepicker'
-import { addYears, subYears } from 'date-fns'
+import { addYears, isDate, subYears } from 'date-fns'
 import locale_nb from 'date-fns/locale/nb'
 import { Label } from '@/components/ui/form/inputs/label/Label'
 import { InputWrapper } from '@/components/ui/form/inputWrapper/InputWrapper'
@@ -10,11 +10,12 @@ import './Datepicker.less'
 import { useFormContext } from 'react-hook-form'
 import { DatePicker, useDatepicker } from '@navikt/ds-react'
 import _ from 'lodash'
+import { formatDate } from '@/utils/DataFormatter'
 
 registerLocale('nb', locale_nb)
 
 function addHours(date, amount) {
-	date.setHours(amount, 0, 0)
+	date.setHours(amount)
 	return date
 }
 
@@ -30,23 +31,36 @@ export const Datepicker = ({
 	maxDate,
 }) => {
 	const formMethods = useFormContext()
-	const eksisterendeVerdi = formMethods.watch(name)
-	const { datepickerProps, inputProps, selectedDay } = useDatepicker({
+
+	const getSelectedDay = () => {
+		const selected = formMethods.watch(name)
+		if (_.isNil(selected) || (!isDate(selected) && _.isEmpty(selected))) {
+			return undefined
+		} else if (isDate(selected)) {
+			return fixTimezone(selected)
+		} else {
+			return fixTimezone(new Date(selected))
+		}
+	}
+
+	const { datepickerProps, inputProps } = useDatepicker({
 		fromDate: minDate || subYears(new Date(), 125),
 		toDate: maxDate || addYears(new Date(), 5),
 		onDateChange: onChange || onBlur,
-		defaultSelected: !_.isEmpty(eksisterendeVerdi) ? new Date(eksisterendeVerdi) : undefined,
 		disabled: excludeDates,
+		defaultSelected: getSelectedDay(),
 	})
+	const selectedDay = getSelectedDay()
 
 	return (
 		<DatePicker {...datepickerProps} dropdownCaption={true} selected={selectedDay}>
 			<DatePicker.Input
+				{...inputProps}
+				value={selectedDay ? formatDate(selectedDay) : ''}
 				placeholder={placeholder}
 				size={'small'}
 				disabled={disabled}
 				label={null}
-				{...inputProps}
 			/>
 		</DatePicker>
 	)

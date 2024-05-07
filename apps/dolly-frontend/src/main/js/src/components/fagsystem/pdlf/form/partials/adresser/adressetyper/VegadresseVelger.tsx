@@ -75,7 +75,7 @@ export const VegadresseVelger = ({ formMethods, path }: VegadressevelgerValues) 
 				<FormSelect
 					name={`${path}.kommunenummer`}
 					label="Kommunenummer"
-					kodeverk={AdresseKodeverk.Kommunenummer}
+					kodeverk={AdresseKodeverk.Kommunenummer2024}
 					size="large"
 					isClearable={false}
 				/>

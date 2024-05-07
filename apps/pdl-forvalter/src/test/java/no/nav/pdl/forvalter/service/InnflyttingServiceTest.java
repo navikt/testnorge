@@ -1,6 +1,6 @@
 package no.nav.pdl.forvalter.service;
 
-import no.nav.pdl.forvalter.consumer.GeografiskeKodeverkConsumer;
+import no.nav.pdl.forvalter.consumer.KodeverkConsumer;
 import no.nav.testnav.libs.data.pdlforvalter.v1.InnflyttingDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
 import org.junit.jupiter.api.Test;
@@ -24,7 +24,7 @@ import static org.mockito.Mockito.when;
 class InnflyttingServiceTest {
 
     @Mock
-    private GeografiskeKodeverkConsumer geografiskeKodeverkConsumer;
+    private KodeverkConsumer kodeverkConsumer;
 
     @Mock
     private BostedAdresseService bostedAdresseService;
@@ -49,7 +49,7 @@ class InnflyttingServiceTest {
     @Test
     void whenEmptyLandkode_thenProvideRandomCountry() {
 
-        when(geografiskeKodeverkConsumer.getTilfeldigLand()).thenReturn("IND");
+        when(kodeverkConsumer.getTilfeldigLand()).thenReturn("IND");
 
         var request = PersonDTO.builder()
                 .innflytting(List.of(InnflyttingDTO.builder()
@@ -58,9 +58,9 @@ class InnflyttingServiceTest {
                 .build();
 
         var target = innflyttingService.convert(request)
-                .get(0);
+                .getFirst();
 
-        verify(geografiskeKodeverkConsumer).getTilfeldigLand();
+        verify(kodeverkConsumer).getTilfeldigLand();
 
         assertThat(target.getFraflyttingsland(), is(equalTo("IND")));
     }

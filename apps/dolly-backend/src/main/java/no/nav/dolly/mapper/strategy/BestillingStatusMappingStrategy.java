@@ -1,5 +1,6 @@
 package no.nav.dolly.mapper.strategy;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,16 +10,14 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.OrganisasjonBestilling;
-import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUtenFavoritter;
 import no.nav.dolly.mapper.MappingStrategy;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
+import static java.util.Objects.isNull;
 import static no.nav.dolly.bestilling.service.DollyBestillingService.getEnvironments;
 import static no.nav.dolly.mapper.AnnenFeilStatusMapper.buildAnnenFeilStatusMap;
 import static no.nav.dolly.mapper.ArbeidsplassenCVStatusMapper.buildArbeidsplassenCVStatusMap;
@@ -44,14 +43,13 @@ import static no.nav.dolly.mapper.BestillingSykemeldingStatusMapper.buildSykemel
 import static no.nav.dolly.mapper.BestillingTpsMessagingStatusMapper.buildTpsMessagingStatusMap;
 import static no.nav.dolly.mapper.BestillingUdiStubStatusMapper.buildUdiStubStatusMap;
 import static org.apache.commons.lang3.StringUtils.isBlank;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class BestillingStatusMappingStrategy implements MappingStrategy {
 
-    private final JsonBestillingMapper jsonBestillingMapper;
+    private static final String EMPTY_JSON = "{}";
     private final ObjectMapper objectMapper;
 
     @Override
@@ -62,21 +60,30 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                     public void mapAtoB(Bestilling bestilling, RsBestillingStatus bestillingStatus, MappingContext context) {
 
                         var ident = (String) context.getProperty("ident");
+                        try {
+                            bestillingStatus.setBestilling(
+                                    objectMapper.readTree(isNull(bestilling.getBestKriterier()) ||
+                                            EMPTY_JSON.equals(bestilling.getBestKriterier()) ? EMPTY_JSON :
+                                            bestilling.getBestKriterier()));
+                        } catch (JsonProcessingException e) {
+                            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+                        }
+
+                        bestillingStatus.setBruker(mapperFacade.map(bestilling.getBruker(), RsBrukerUtenFavoritter.class));
+
                         var progresser = bestilling.getProgresser().stream()
                                 .filter(progress -> isBlank(ident) || ident.equals(progress.getIdent()))
                                 .toList();
 
-                        RsDollyBestillingRequest bestillingRequest = jsonBestillingMapper
-                                .mapBestillingRequest(bestilling.getId(), bestilling.getBestKriterier());
                         bestillingStatus.setAntallLevert((int) progresser.stream()
                                 .filter(BestillingProgress::isIdentGyldig)
                                 .count());
 
                         bestillingStatus.setEnvironments(getEnvironments(bestilling.getMiljoer()));
                         bestillingStatus.setGruppeId(bestilling.getGruppe().getId());
+                        bestillingStatus.getStatus().addAll(buildImportFraPdlStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildPdlForvalterStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildPdlOrdreStatusMap(progresser, objectMapper));
-                        bestillingStatus.getStatus().addAll(buildImportFraPdlStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildPdlPersonStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildPensjonforvalterStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildInntektstubStatusMap(progresser));
@@ -97,32 +104,6 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                         bestillingStatus.getStatus().addAll(buildKontoregisterStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildArbeidsplassenCVStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildAnnenFeilStatusMap(progresser));
-                        bestillingStatus.setBestilling(RsBestillingStatus.RsBestilling.builder()
-                                .pdldata(bestillingRequest.getPdldata())
-                                .aareg(bestillingRequest.getAareg())
-                                .krrstub(bestillingRequest.getKrrstub())
-                                .medl(bestillingRequest.getMedl())
-                                .arenaforvalter(bestillingRequest.getArenaforvalter())
-                                .instdata(bestillingRequest.getInstdata())
-                                .inntektstub(bestillingRequest.getInntektstub())
-                                .sigrunstub(bestillingRequest.getSigrunstub())
-                                .sigrunstubPensjonsgivende(bestillingRequest.getSigrunstubPensjonsgivende())
-                                .udistub(bestillingRequest.getUdistub())
-                                .pensjonforvalter(bestillingRequest.getPensjonforvalter())
-                                .inntektsmelding(bestillingRequest.getInntektsmelding())
-                                .brregstub(bestillingRequest.getBrregstub())
-                                .dokarkiv(bestillingRequest.getDokarkiv())
-                                .histark(bestillingRequest.getHistark())
-                                .sykemelding(bestillingRequest.getSykemelding())
-                                .skjerming(bestillingRequest.getSkjerming())
-                                .tpsMessaging(bestillingRequest.getTpsMessaging())
-                                .bankkonto(bestillingRequest.getBankkonto())
-                                .arbeidsplassenCV(bestillingRequest.getArbeidsplassenCV())
-                                .importFraPdl(mapIdents(bestilling.getPdlImport()))
-                                .kildeMiljoe(bestilling.getKildeMiljoe())
-                                .navSyntetiskIdent(bestilling.getNavSyntetiskIdent())
-                                .build());
-                        bestillingStatus.setBruker(mapperFacade.map(bestilling.getBruker(), RsBrukerUtenFavoritter.class));
                     }
                 })
                 .exclude("bruker")
@@ -139,9 +120,6 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                 })
                 .byDefault()
                 .register();
-    }
 
-    private static List<String> mapIdents(String idents) {
-        return isNotBlank(idents) ? Arrays.asList(idents.split(",")) : Collections.emptyList();
     }
 }

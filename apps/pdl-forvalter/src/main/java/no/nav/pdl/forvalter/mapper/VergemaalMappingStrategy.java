@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
-import no.nav.pdl.forvalter.consumer.GeografiskeKodeverkConsumer;
+import no.nav.pdl.forvalter.consumer.KodeverkConsumer;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.dto.PdlVergemaal;
 import no.nav.pdl.forvalter.dto.PdlVergemaal.Omfang;
@@ -22,7 +22,7 @@ import static java.util.Objects.isNull;
 @RequiredArgsConstructor
 public class VergemaalMappingStrategy implements MappingStrategy {
 
-    private final GeografiskeKodeverkConsumer geografiskeKodeverkConsumer;
+    private final KodeverkConsumer kodeverkConsumer;
     private final PersonRepository personRepository;
 
     private static Omfang getOmfang(VergemaalMandattype mandatType) {
@@ -31,19 +31,13 @@ public class VergemaalMappingStrategy implements MappingStrategy {
             return null;
         }
 
-        switch (mandatType) {
-            case FOR:
-                return Omfang.UTLENDINGSSAKER_PERSONLIGE_OG_OEKONOMISKE_INTERESSER;
-            case CMB:
-                return Omfang.PERSONLIGE_OG_OEKONOMISKE_INTERESSER;
-            case FIN:
-                return Omfang.OEKONOMISKE_INTERESSER;
-            case PER:
-                return Omfang.PERSONLIGE_INTERESSER;
-            case ADP:
-            default:
-                return null;
-        }
+        return switch (mandatType) {
+            case FOR -> Omfang.UTLENDINGSSAKER_PERSONLIGE_OG_OEKONOMISKE_INTERESSER;
+            case CMB -> Omfang.PERSONLIGE_OG_OEKONOMISKE_INTERESSER;
+            case FIN -> Omfang.OEKONOMISKE_INTERESSER;
+            case PER -> Omfang.PERSONLIGE_INTERESSER;
+            default -> null;
+        };
     }
 
     private static VergemaalType getSakstype(VergemaalSakstype vergemaalType) {
@@ -52,26 +46,16 @@ public class VergemaalMappingStrategy implements MappingStrategy {
             return null;
         }
 
-        switch (vergemaalType) {
-            case MIM:
-                return VergemaalType.MIDLERTIDIG_FOR_MINDREAARIG;
-            case ANN:
-                return VergemaalType.FORVALTNING_UTENFOR_VERGEMAAL;
-            case VOK:
-                return VergemaalType.VOKSEN;
-            case MIN:
-                return VergemaalType.MINDREAARIG;
-            case VOM:
-                return VergemaalType.MIDLERTIDIG_FOR_VOKSEN;
-            case FRE:
-                return VergemaalType.STADFESTET_FREMTIDSFULLMAKT;
-            case EMA:
-                return VergemaalType.ENSLIG_MINDREAARIG_ASYLSOEKER;
-            case EMF:
-                return VergemaalType.ENSLIG_MINDREAARIG_FLYKTNING;
-            default:
-                return null;
-        }
+        return switch (vergemaalType) {
+            case MIM -> VergemaalType.MIDLERTIDIG_FOR_MINDREAARIG;
+            case ANN -> VergemaalType.FORVALTNING_UTENFOR_VERGEMAAL;
+            case VOK -> VergemaalType.VOKSEN;
+            case MIN -> VergemaalType.MINDREAARIG;
+            case VOM -> VergemaalType.MIDLERTIDIG_FOR_VOKSEN;
+            case FRE -> VergemaalType.STADFESTET_FREMTIDSFULLMAKT;
+            case EMA -> VergemaalType.ENSLIG_MINDREAARIG_ASYLSOEKER;
+            case EMF -> VergemaalType.ENSLIG_MINDREAARIG_FLYKTNING;
+        };
     }
 
     @Override
@@ -82,7 +66,7 @@ public class VergemaalMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(VergemaalDTO kilde, PdlVergemaal destinasjon, MappingContext context) {
 
-                        destinasjon.setEmbete(geografiskeKodeverkConsumer.getEmbeteNavn(kilde.getVergemaalEmbete().name()));
+                        destinasjon.setEmbete(kodeverkConsumer.getEmbeteNavn(kilde.getVergemaalEmbete().name()));
                         destinasjon.setType(getSakstype(kilde.getSakType()));
 
                         var person = personRepository.findByIdent(kilde.getVergeIdent());

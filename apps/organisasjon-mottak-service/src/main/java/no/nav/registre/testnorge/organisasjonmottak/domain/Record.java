@@ -4,21 +4,36 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import static java.util.Objects.nonNull;
+
 public class Record {
     private final StringBuilder builder = new StringBuilder();
     private int record = 0;
 
-    public static Record create(List<Line> lines, String orgnummer, String enhetstype, boolean update) {
+    public void append(String value) {
+        record++;
+        builder.append(value);
+    }
+
+    public int getRecord() {
+        return record;
+    }
+
+    public String build() {
+        return builder.toString();
+    }
+
+    public static Record create(List<Line> lines, String orgnummer, String enhetstype, Date regDato, boolean update) {
         Record record = new Record();
-        record.append(createEHN(update, orgnummer, enhetstype));
+        record.append(createEHN(update, orgnummer, enhetstype, regDato));
         lines.forEach(line -> record.append(line.getValue()));
         return record;
     }
 
-    private static String createEHN(boolean update, String orgnummer, String enhetstype) {
+    private static String createEHN(boolean update, String orgnummer, String enhetstype, Date regDato) {
         StringBuilder stringBuilder = createStringBuilderWithReplacement(49, ' ');
 
-        String dateNowFormatted = getDateNowFormatted();
+        String dateNowFormatted = getDateNowFormatted(regDato);
         String undersakstype = update ? "EN" : "NY";
 
         stringBuilder.replace(0, "ENH".length(), "ENH")
@@ -41,21 +56,8 @@ public class Record {
         return stringBuilder;
     }
 
-    private static String getDateNowFormatted() {
+    private static String getDateNowFormatted(Date regDato) {
         SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
-        return format.format(new Date());
-    }
-
-    public void append(String value) {
-        record++;
-        builder.append(value);
-    }
-
-    public int getRecord() {
-        return record;
-    }
-
-    public String build() {
-        return builder.toString();
+        return format.format(nonNull(regDato) ? regDato : new Date());
     }
 }

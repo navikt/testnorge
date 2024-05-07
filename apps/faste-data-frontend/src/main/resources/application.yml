@@ -76,6 +76,8 @@ server:
   servlet:
     encoding:
       charset: UTF-8
+  error:
+    include-message: always
 
 logging:
   level:

@@ -19,23 +19,13 @@ spec:
   accessPolicy:
     inbound:
       rules:
-        - application: dolly-frontend-dev
-          cluster: dev-gcp
-        - application: team-dolly-lokal-app
-          cluster: dev-gcp
-        - application: testnav-oversikt-frontend
-          cluster: dev-gcp
         - application: dolly-frontend
-          cluster: dev-gcp
         - application: dolly-frontend-dev
-          cluster: dev-gcp
+        - application: dolly-frontend-dev-unstable
         - application: dolly-idporten
-          cluster: dev-gcp
+        - application: team-dolly-lokal-app
         - application: testnav-organisasjon-tilgang-frontend
-          cluster: dev-gcp
-        - application: app-1
-          namespace: plattformsikkerhet
-          cluster: dev-gcp
+        - application: testnav-oversikt-frontend
     outbound:
       external:
         - host: altinn.no

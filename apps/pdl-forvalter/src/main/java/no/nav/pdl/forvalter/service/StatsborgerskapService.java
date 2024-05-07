@@ -1,7 +1,7 @@
 package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.pdl.forvalter.consumer.GeografiskeKodeverkConsumer;
+import no.nav.pdl.forvalter.consumer.KodeverkConsumer;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
 import no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility;
@@ -30,7 +30,7 @@ public class StatsborgerskapService implements Validation<StatsborgerskapDTO> {
     private static final String VALIDATION_LANDKODE_ERROR = "Ugyldig landkode, må være i hht ISO-3 Landkoder";
     private static final String VALIDATION_DATOINTERVALL_ERROR = "Ugyldig datointervall: gyldigFom må være før gyldigTom";
 
-    private final GeografiskeKodeverkConsumer geografiskeKodeverkConsumer;
+    private final KodeverkConsumer kodeverkConsumer;
 
     public List<StatsborgerskapDTO> convert(PersonDTO person) {
 
@@ -67,7 +67,7 @@ public class StatsborgerskapService implements Validation<StatsborgerskapDTO> {
             } else if (FNR.equals(IdenttypeFraIdentUtility.getIdenttype(person.getIdent()))) {
                 statsborgerskap.setLandkode(NORGE);
             } else {
-                statsborgerskap.setLandkode(geografiskeKodeverkConsumer.getTilfeldigLand());
+                statsborgerskap.setLandkode(kodeverkConsumer.getTilfeldigLand());
             }
         }
 

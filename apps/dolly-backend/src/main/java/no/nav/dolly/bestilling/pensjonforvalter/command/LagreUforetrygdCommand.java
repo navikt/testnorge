@@ -8,6 +8,7 @@ import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.netty.http.client.HttpClientRequest;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
@@ -17,6 +18,7 @@ import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 import static no.nav.dolly.util.CallIdUtil.generateCallId;
+import static no.nav.dolly.util.RequestTimeout.REQUEST_DURATION;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Slf4j
@@ -32,13 +34,21 @@ public class LagreUforetrygdCommand implements Callable<Flux<PensjonforvalterRes
     private final PensjonUforetrygdRequest uforetrygdRequest;
 
     public Flux<PensjonforvalterResponse> call() {
+
+        var callId = generateCallId();
+        log.info("Pensjon lagre uforetrygd {}, callId: {}", uforetrygdRequest, callId);
+        
         return webClient
                 .post()
                 .uri(uriBuilder -> uriBuilder
                         .path(PENSJON_UT_URL)
                         .build())
+                .httpRequest(httpRequest -> {
+                    HttpClientRequest reactorRequest = httpRequest.getNativeRequest();
+                    reactorRequest.responseTimeout(Duration.ofSeconds(REQUEST_DURATION));
+                })
                 .header(AUTHORIZATION, "Bearer " + token)
-                .header(HEADER_NAV_CALL_ID, generateCallId())
+                .header(HEADER_NAV_CALL_ID, callId)
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .bodyValue(uforetrygdRequest)
                 .retrieve()

@@ -33,7 +33,7 @@ const StyledAlert = styled(Alert)`
 	}
 `
 
-const alderspensjonPath = 'pensjonforvalter.alderspensjon'
+export const alderspensjonPath = 'pensjonforvalter.alderspensjon'
 
 export const AlderspensjonForm = () => {
 	const formMethods = useFormContext()
@@ -98,7 +98,7 @@ export const AlderspensjonForm = () => {
 			const foedselListe = opts?.importPersoner?.flatMap(
 				(person) => person?.data?.hentPerson?.foedsel,
 			)
-			if (foedselListe?.some((f) => f.foedselsaar < 1944 && !f.metadata?.historisk)) {
+			if (foedselListe?.some((f) => f?.foedselsaar < 1944 && !f?.metadata?.historisk)) {
 				ugyldigFoedselsaar = true
 			}
 		}

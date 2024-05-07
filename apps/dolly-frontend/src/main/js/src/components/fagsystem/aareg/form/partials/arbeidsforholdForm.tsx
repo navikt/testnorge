@@ -68,7 +68,7 @@ export const ArbeidsforholdForm = ({
 
 		const aaregBestillinger = bestillinger
 			?.filter((bestilling) => bestilling?.data?.aareg)
-			?.flatMap((bestilling) => bestilling.data.aareg)
+			?.flatMap((bestilling) => bestilling.data?.aareg)
 			?.filter((bestilling) => _.isEmpty(bestilling?.amelding))
 
 		return _.uniqWith(
@@ -89,8 +89,16 @@ export const ArbeidsforholdForm = ({
 	}
 
 	const { setError, watch, control, getValues, setValue, trigger, resetField } = useFormContext()
-	const [navArbeidsforholdPeriode, setNavArbeidsforholdPeriode] = useState(null as unknown as Date)
-	const { tidligereBestillinger } = useContext(BestillingsveilederContext)
+	const eksisterendeArbeidsforholdPeriode = watch(`${path}.navArbeidsforholdPeriode`)
+	const [navArbeidsforholdPeriode, setNavArbeidsforholdPeriode] = useState(
+		eksisterendeArbeidsforholdPeriode
+			? new Date(
+					eksisterendeArbeidsforholdPeriode.year,
+					eksisterendeArbeidsforholdPeriode.monthValue,
+				)
+			: null,
+	)
+	const { tidligereBestillinger }: any = useContext(BestillingsveilederContext)
 	const tidligereAaregBestillinger = hentUnikeAaregBestillinger(tidligereBestillinger)
 	const erLaastArbeidsforhold =
 		(arbeidsgiverType === ArbeidsgiverTyper.felles ||
@@ -101,12 +109,13 @@ export const ArbeidsforholdForm = ({
 		if (_.isEmpty(tidligereAaregBestillinger) || harGjortFormEndringer()) {
 			return
 		}
-		resetField('aareg', {
-			defaultValue: tidligereAaregBestillinger?.map((aaregBestilling) => {
+		setValue(
+			'aareg',
+			tidligereAaregBestillinger?.map((aaregBestilling) => {
 				aaregBestilling.isOppdatering = true
 				return aaregBestilling
 			}),
-		})
+		)
 		trigger('aareg')
 	}, [watch('aareg')])
 
@@ -306,6 +315,7 @@ export const ArbeidsforholdForm = ({
 					date={navArbeidsforholdPeriode}
 					label="NAV arbeidsforholdsperiode"
 					onChange={setNavArbeidsforholdPeriode}
+					value={navArbeidsforholdPeriode}
 					isClearable={true}
 				/>
 				{arbeidsforholdstype === 'forenkletOppgjoersordning' && (

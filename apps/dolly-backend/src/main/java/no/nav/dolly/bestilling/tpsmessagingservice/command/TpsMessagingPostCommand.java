@@ -9,6 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.netty.http.client.HttpClientRequest;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
@@ -17,6 +18,7 @@ import java.util.Optional;
 import java.util.concurrent.Callable;
 
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.util.RequestTimeout.REQUEST_DURATION;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -41,6 +43,10 @@ public class TpsMessagingPostCommand implements Callable<Flux<TpsMeldingResponse
                         .path(urlPath)
                         .queryParamIfPresent(MILJOER_PARAM, nonNull(miljoer) ? Optional.of(miljoer) : Optional.empty())
                         .build(ident))
+                .httpRequest(httpRequest -> {
+                    HttpClientRequest reactorRequest = httpRequest.getNativeRequest();
+                    reactorRequest.responseTimeout(Duration.ofSeconds(REQUEST_DURATION));
+                })
                 .contentType(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .bodyValue(body)

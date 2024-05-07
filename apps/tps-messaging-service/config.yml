@@ -44,37 +44,23 @@ spec:
   accessPolicy:
     inbound:
       rules:
-        - application: testnav-endringsmelding-service
-          cluster: dev-gcp
-        - application: testnav-oversikt-frontend
-          cluster: dev-gcp
+        - application: dolly-backend
+        - application: dolly-backend-dev
+        - application: dolly-frontend
+        - application: dolly-frontend-dev
+        - application: dolly-frontend-dev-unstable
+        - application: dolly-idporten
         - application: team-dolly-lokal-app
-          cluster: dev-gcp
+        - application: testnav-endringsmelding-service
+        - application: testnav-ident-pool
         - application: testnav-organisasjon-forvalter
-          cluster: dev-gcp
+        - application: testnav-oversikt-frontend
         - application: testnav-pdl-forvalter
-          cluster: dev-gcp
         - application: testnav-pdl-forvalter-dev
-          cluster: dev-gcp
-        - application: tps-forvalteren-dev
-          cluster: dev-fss
         - application: tps-forvalteren
           cluster: dev-fss
-        - application: dolly-frontend-dev
-          cluster: dev-gcp
-        - application: dolly-frontend
-          cluster: dev-gcp
-        - application: dolly-idporten
-          cluster: dev-gcp
-        - application: dolly-backend-dev
-          cluster: dev-gcp
-        - application: dolly-backend
-          cluster: dev-gcp
-        - application: testnav-ident-pool
-          cluster: dev-gcp
-        - application: app-1
-          namespace: plattformsikkerhet
-          cluster: dev-gcp
+        - application: tps-forvalteren-dev
+          cluster: dev-fss
     outbound:
       rules:
         - application: testnav-miljoer-service

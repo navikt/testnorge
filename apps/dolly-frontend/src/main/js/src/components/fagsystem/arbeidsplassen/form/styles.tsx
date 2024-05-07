@@ -25,7 +25,6 @@ export const Fritekstfelt = styled(Textarea)`
 			font-size: 0.75em;
 			text-transform: uppercase;
 			font-weight: 400;
-			margin-bottom: -8px;
 		}
 	}
 `

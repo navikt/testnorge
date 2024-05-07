@@ -50,7 +50,24 @@ server:
       force: true
       force-request: true
       force-response: true
+  error:
+    include-message: always
 
 consumers:
   tenor-search-service:
     url: https://testdata.api.skatteetaten.no
+  pdl-testdata:
+    url: https://testnav-pdl-proxy.dev-fss-pub.nais.io
+    cluster: dev-fss
+    namespace: dolly
+    name: testnav-pdl-proxy
+  dolly-backend:
+    url: http://dolly-backend.dolly.svc.cluster.local
+    cluster: dev-gcp
+    namespace: dolly
+    name: dolly-backend
+  dolly-backend-dev:
+    url: http://dolly-backend-dev.dolly.svc.cluster.local
+    cluster: dev-gcp
+    namespace: dolly
+    name: dolly-backend-dev

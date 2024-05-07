@@ -1,0 +1,11 @@
+TOKEN_X_ISSUER: dummy
+consumers:
+  ereg-aura:
+    url: http://ereg-dummy.dummy.no
+    cluster: dev-fss
+    name: ereg-dummy
+    namespace: dummy
+spring:
+  cloud:
+    vault:
+      enabled: false

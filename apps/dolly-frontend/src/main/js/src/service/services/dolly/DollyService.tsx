@@ -133,6 +133,10 @@ export default {
 		return Request.post(Endpoints.gjenopprettPerson(ident, miljoer))
 	},
 
+	opprettMalFraPerson(ident, malNavn) {
+		return Request.post(Endpoints.opprettMalFraPerson(ident, malNavn))
+	},
+
 	importerPersonerFraPdl: (gruppeId, request) => {
 		return Request.post(Endpoints.gruppeBestillingImportFraPdl(gruppeId), request)
 	},
