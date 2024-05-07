@@ -8,6 +8,7 @@ import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.AliasRepository;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.dto.FolkeregisterPersonstatus;
+import no.nav.pdl.forvalter.dto.MergeIdent;
 import no.nav.pdl.forvalter.dto.OpprettIdent;
 import no.nav.pdl.forvalter.dto.OpprettRequest;
 import no.nav.pdl.forvalter.dto.Ordre;
@@ -20,7 +21,9 @@ import no.nav.pdl.forvalter.dto.PdlVergemaal;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.exception.NotFoundException;
 import no.nav.pdl.forvalter.utils.HendelseIdService;
+import no.nav.pdl.forvalter.utils.IdenttypeUtility;
 import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.ForelderBarnRelasjonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.ForeldreansvarDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FullmaktDTO;
@@ -67,6 +70,7 @@ import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_NAVN;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_OPPHOLD;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_OPPHOLDSADRESSE;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_OPPRETT_PERSON;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_PERSON_MERGE;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_SIKKERHETSTILTAK;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_SIVILSTAND;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_SLETTING;
@@ -232,23 +236,55 @@ public class PdlOrdreService {
                                 .map(oppretting -> oppretting.isNotTestnorgeIdent() ?
                                         deployService.createOrdre(PDL_SLETTING, oppretting.getPerson().getIdent(), List.of(new PdlDelete())) :
                                         deployService.createOrdre(PDL_SLETTING_HENDELSEID, oppretting.getPerson().getIdent(),
-                                                        hendelseIdService.getPdlHendelser(oppretting.getPerson().getIdent())))
+                                                hendelseIdService.getPdlHendelser(oppretting.getPerson().getIdent())))
+                                .flatMap(Collection::stream)
                                 .toList())
                         .oppretting(opprettinger.stream()
-                                .filter(OpprettRequest::noneAlias)
+//                                .filter(OpprettRequest::noneAlias)
                                 .filter(OpprettRequest::isNotTestnorgeIdent)
-                                .map(oppretting ->
-                                        deployService.createOrdre(PDL_OPPRETT_PERSON, oppretting.getPerson().getIdent(),
-                                                List.of(OpprettIdent.builder()
-                                                        .historiskeIdenter(oppretting.getPerson().getAlias().stream().map(DbAlias::getTidligereIdent).toList())
-                                                        .opphoert(!oppretting.getPerson().getPerson().getFolkeregisterPersonstatus().isEmpty() &&
-                                                                oppretting.getPerson().getPerson().getFolkeregisterPersonstatus().getFirst().getStatus().equals(OPPHOERT))
-                                                        .build())))
+                                .map(this::opprettPerson)
+                                .flatMap(Collection::stream)
+                                .toList())
+                        .merge(opprettinger.stream()
+                                .filter(OpprettRequest::isNotTestnorgeIdent)
+                                .map(this::npidMerge)
+                                .flatMap(Collection::stream)
                                 .toList())
                         .opplysninger(opprettinger.stream()
                                 .map(this::getOrdrer)
+                                .flatMap(Collection::stream)
                                 .toList())
                         .build());
+    }
+
+    private List<Ordre> opprettPerson(OpprettRequest oppretting) {
+
+        return deployService.createOrdre(PDL_OPPRETT_PERSON, oppretting.getPerson().getIdent(),
+                List.of(OpprettIdent.builder()
+                        .historiskeIdenter(oppretting.getPerson().getAlias().stream()
+                                .map(DbAlias::getTidligereIdent)
+                                .filter(IdenttypeUtility::isNotNpidIdent)
+                                .toList())
+                        .opphoert(OPPHOERT == oppretting.getPerson().getPerson()
+                                .getFolkeregisterPersonstatus().stream()
+                                .map(FolkeregisterPersonstatusDTO::getStatus)
+                                .findFirst().orElse(null))
+                        .build()));
+    }
+
+    private List<Ordre> npidMerge(OpprettRequest oppretting) {
+
+        return oppretting.getPerson().getAlias().stream()
+                .map(DbAlias::getTidligereIdent)
+                .anyMatch(IdenttypeUtility::isNpidIdent) ?
+                deployService.createOrdre(PDL_PERSON_MERGE, oppretting.getPerson().getIdent(),
+                        List.of(MergeIdent.builder()
+                                .npid(oppretting.getPerson().getAlias().stream()
+                                        .map(DbAlias::getTidligereIdent)
+                                        .filter(IdenttypeUtility::isNpidIdent)
+                                        .findFirst().orElse(null))
+                                .build())) :
+                emptyList();
     }
 
     private List<Ordre> getOrdrer(OpprettRequest oppretting) {

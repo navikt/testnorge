@@ -7,7 +7,7 @@ import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.exception.NotFoundException;
 import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
-import no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility;
+import no.nav.pdl.forvalter.utils.IdenttypeUtility;
 import no.nav.pdl.forvalter.utils.KjoennFraIdentUtility;
 import no.nav.pdl.forvalter.utils.SyntetiskFraIdentUtility;
 import no.nav.testnav.libs.data.pdlforvalter.v1.IdentRequestDTO;
@@ -107,7 +107,7 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
 
     private PersonDTO handle(IdentRequestDTO request, PersonDTO person) {
 
-        PersonDTO nyPerson = null;
+        PersonDTO nyPerson;
 
         if (isNotBlank(request.getEksisterendeIdent())) {
 
@@ -145,7 +145,7 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
         if (nonNull(request.getIdenttype())) {
             return request.getIdenttype();
         }
-        return nonNull(ident) ? IdenttypeFraIdentUtility.getIdenttype(ident) : FNR;
+        return nonNull(ident) ? IdenttypeUtility.getIdenttype(ident) : FNR;
     }
 
     private static Kjoenn getTilfeldigKjoenn() {

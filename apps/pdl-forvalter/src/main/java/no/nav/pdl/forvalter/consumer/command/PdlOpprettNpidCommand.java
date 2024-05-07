@@ -8,7 +8,6 @@ import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.boot.web.server.WebServerException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -18,10 +17,11 @@ import java.time.Duration;
 
 @Slf4j
 @RequiredArgsConstructor
-public class PdlAktoerNpidCommand extends PdlTestdataCommand {
+public class PdlOpprettNpidCommand extends PdlTestdataCommand {
 
     private static final String PDL_AKTOER_ADMIN_PREFIX = "/pdl-testdata";
     private static final String PDL_PERSON_AKTOER_URL = PDL_AKTOER_ADMIN_PREFIX + "/api/v1/npid/create";
+    private static final String NPID = "npid";
 
     private final WebClient webClient;
     private final String npid;
@@ -32,10 +32,11 @@ public class PdlAktoerNpidCommand extends PdlTestdataCommand {
 
         return webClient
                 .post()
-                .uri(PDL_PERSON_AKTOER_URL)
+                .uri(builder -> builder.path(PDL_PERSON_AKTOER_URL)
+                        .queryParam(NPID, npid)
+                        .build())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(BodyInserters.fromValue(npid))
                 .exchangeToFlux(response ->
                         Flux.just(OrdreResponseDTO.HendelseDTO.builder()
                                 .status(PdlStatus.OK)

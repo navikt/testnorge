@@ -8,7 +8,6 @@ import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.boot.web.server.WebServerException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -18,13 +17,15 @@ import java.time.Duration;
 
 @Slf4j
 @RequiredArgsConstructor
-public class PdlNpidMergeCommand extends PdlTestdataCommand {
+public class PdlMergeNpidCommand extends PdlTestdataCommand {
 
-    private static final String PDL_AKTOER_ADMIN_PREFIX = "/pdl-testdata";
-    private static final String PDL_PERSON_AKTOER_URL = PDL_AKTOER_ADMIN_PREFIX + "/api/v1/npid/create";
+    private static final String NPID = "npid";
+    private static final String OTHER_IDENT = "otherIdent";
 
     private final WebClient webClient;
+    private final String url;
     private final String npid;
+    private final String otherIdent;
     private final String token;
 
     @Override
@@ -32,10 +33,12 @@ public class PdlNpidMergeCommand extends PdlTestdataCommand {
 
         return webClient
                 .post()
-                .uri(PDL_PERSON_AKTOER_URL)
+                .uri(builder -> builder.path(url)
+                        .queryParam(NPID, npid)
+                        .queryParam(OTHER_IDENT, otherIdent)
+                        .build())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(BodyInserters.fromValue(npid))
                 .exchangeToFlux(response ->
                         Flux.just(OrdreResponseDTO.HendelseDTO.builder()
                                 .status(PdlStatus.OK)
