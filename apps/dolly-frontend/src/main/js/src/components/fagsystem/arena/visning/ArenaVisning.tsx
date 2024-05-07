@@ -126,7 +126,7 @@ export const ArenaVisning = ({ data, ident, bestillingIdListe, loading, tilgjeng
 	})
 
 	const filteredData =
-		tilgjengeligMiljoe && data?.filter((item) => item.miljo === tilgjengeligMiljoe)
+		tilgjengeligMiljoe && data?.filter((item) => tilgjengeligMiljoe.includes(item.miljo))
 
 	const forsteMiljo = data?.find((miljoData) => miljoData?.data)?.miljo
 

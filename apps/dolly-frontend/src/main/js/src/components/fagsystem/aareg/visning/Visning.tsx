@@ -321,7 +321,7 @@ export const AaregVisning = ({
 	})
 
 	const filteredData =
-		tilgjengeligMiljoe && arbeidsforhold?.filter((item) => item.miljo === tilgjengeligMiljoe)
+		tilgjengeligMiljoe && arbeidsforhold?.filter((item) => tilgjengeligMiljoe.includes(item.miljo))
 
 	const manglerArbeidsforholdData = sjekkManglerAaregData(arbeidsforhold)
 	const arbeidsforholdFeil =

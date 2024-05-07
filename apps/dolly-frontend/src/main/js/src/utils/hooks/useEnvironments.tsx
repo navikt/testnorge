@@ -12,7 +12,7 @@ const prefetchedMiljoer = ['t13', 'q1', 'q2', 'q4', 'qx']
 const prefetchedPensjonMiljoer = ['q1', 'q2']
 const prefetchedArenaMiljoer = ['q1', 'q2', 'q4']
 const prefetchedInstMiljoer = { institusjonsoppholdEnvironments: ['q1', 'q2'] }
-const prefetchedDokarkivMiljoer = ['q1', 'q2']
+const prefetchedDokarkivMiljoer = ['q1', 'q2', 'q4']
 
 type InstResponse = {
 	institusjonsoppholdEnvironments: string[]
