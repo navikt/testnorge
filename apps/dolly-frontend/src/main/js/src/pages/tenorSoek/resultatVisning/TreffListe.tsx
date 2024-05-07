@@ -27,6 +27,7 @@ export const TreffListe = ({
 	personListe,
 	markertePersoner,
 	setMarkertePersoner,
+	nesteSide,
 	loading,
 	error,
 }: any) => {
@@ -116,9 +117,10 @@ export const TreffListe = ({
 						<Loading label="Laster treff ..." />
 					</div>
 				)}
-				{personListe?.length === 200 && antallTreff > 200 && (
+				{!nesteSide && antallTreff > 200 && (
 					<Alert variant="info" size="small" inline style={{ marginTop: '20px' }}>
-						Viser kun de 200 første treffene. <br /> Gjør et nytt søk for å se andre treff.
+						Viser kun de {personListe?.length} første treffene. <br /> Gjør et nytt søk for å se
+						andre treff.
 					</Alert>
 				)}
 			</div>
