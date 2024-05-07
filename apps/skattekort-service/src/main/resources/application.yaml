@@ -43,3 +43,9 @@ server:
   error:
     include-message: always
 
+consumers:
+  sokos-skattekort:
+    url: https://sokos-skattekort-dolly-{miljoe}.intern.dev.nav.no
+    cluster: dev-gcp
+    name: sokos-skattekort-dolly
+    namespace: okonomi
