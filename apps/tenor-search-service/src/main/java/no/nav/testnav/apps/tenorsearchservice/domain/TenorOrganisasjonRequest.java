@@ -1,6 +1,5 @@
 package no.nav.testnav.apps.tenorsearchservice.domain;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -8,7 +7,6 @@ import lombok.NoArgsConstructor;
 import no.nav.testnav.apps.tenorsearchservice.domain.TenorOrganisasjonSelectOptions.Grunnlagsdata;
 
 import java.math.BigInteger;
-import java.time.LocalDate;
 
 @Data
 @Builder
@@ -28,7 +26,7 @@ public class TenorOrganisasjonRequest {
     private Boolean registrertIFrivillighetsregisteret;
     private EnhetStatus enhetStatuser;
     private Boolean slettetIEnhetsregisteret;
-    private Intervall antallAnsatte;
+    private TenorRequest.Intervall antallAnsatte;
     private Boolean revisorer;
     private Boolean regnskapsfoerere;
     private Boolean dagligLeder;
@@ -91,32 +89,14 @@ public class TenorOrganisasjonRequest {
     @Data
     @NoArgsConstructor
     public static class Arbeidsforhold {
-        private DatoIntervall startDato;
-        private DatoIntervall sluttDato;
+        private TenorRequest.DatoIntervall startDato;
+        private TenorRequest.DatoIntervall sluttDato;
         private Boolean harPermisjoner;
         private Boolean harPermitteringer;
         private Boolean harTimerMedTimeloenn;
         private Boolean harUtenlandsopphold;
         private Boolean harHistorikk;
         private TenorOrganisasjonSelectOptions.ArbeidsforholdType arbeidsforholdtype;
-    }
-
-    @Data
-    @NoArgsConstructor
-    public static class DatoIntervall {
-
-        @Schema(type = "string", format = "YYYY-MM-DD", example = "2018-07-01")
-        private LocalDate fraOgMed;
-        @Schema(type = "string", format = "YYYY-MM-DD", example = "2020-07-01")
-        private LocalDate tilOgMed;
-    }
-
-    @Data
-    @NoArgsConstructor
-    public static class Intervall {
-
-        private BigInteger fraOgMed;
-        private BigInteger tilOgMed;
     }
 
     @Data
