@@ -33,8 +33,8 @@ public class TenorOrganisasjonEksterneRelasjonerUtility {
 
         return isNull(reskontroInnsyn) ? "" :
                 " and tenorRelasjoner.samletReskontroinnsyn:{%s}".formatted(guard(new StringBuilder()
-                        .append(convertObject("harKrav", reskontroInnsyn.getHarKrav()))
-                        .append(convertObject("harInnbetaling", reskontroInnsyn.getHarInnbetaling()))));
+                        .append(convertBooleanWildcard("harKrav", reskontroInnsyn.getHarKrav()))
+                        .append(convertBooleanWildcard("harInnbetaling", reskontroInnsyn.getHarInnbetaling()))));
     }
 
     private String getTjenestepensjonsavtaleOpplysningspliktig(TenorOrganisasjonRequest.TjenestepensjonsavtaleOpplysningspliktig tpOpplysningspliktig) {
@@ -71,5 +71,4 @@ public class TenorOrganisasjonEksterneRelasjonerUtility {
                         .append(convertBooleanWildcard("harHistorikk", arbeidsforhold.getHarHistorikk()))
                         .append(convertObject("arbeidsforholdtype", arbeidsforhold.getArbeidsforholdtype()))));
     }
-
 }
