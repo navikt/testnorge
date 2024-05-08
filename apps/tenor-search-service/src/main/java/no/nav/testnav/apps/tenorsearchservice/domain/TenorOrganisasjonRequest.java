@@ -41,15 +41,6 @@ public class TenorOrganisasjonRequest {
     private Integer antallUnderenheter;
     private TenorRelasjoner tenorRelasjoner;
 
-    public enum OrganisasjonsForm {
-        Alderspensjon, AlderspensjonSkjermingstillegg, AndreBeskrivelser,
-        Arbeidsavklaringspenger, AvtalefestetPensjon, Bil, Bonus, DagpengerVedArbeidsloeshet, Ektefelletillegg,
-        ElektroniskKommunikasjon, Fagforeningskontingent, FastBilgodtgjoerelse, Fastloenn, FastTillegg, Feriepenger,
-        Foreldrepenger, IpaEllerIpsPeriodiskeYtelser, Kvalifiseringsstoenad, NyAvtalefestetPensjonPrivatSektor,
-        PensjonOgLivrenterIArbeidsforhold, ReiseKostMedOvernattingPaaHybelMedKokEllerPrivat,
-        ReiseKostMedOvernattingPaaHybelUtenKokEllerPensjonatEllerBrakke, Sykepenger, Timeloenn, Ufoeretrygd
-    }
-
     @Data
     @Builder
     @NoArgsConstructor
@@ -100,16 +91,24 @@ public class TenorOrganisasjonRequest {
     @Data
     @NoArgsConstructor
     public static class Arbeidsforhold {
-        @Schema(type = "string", format = "YYYY-MM-DD", example = "2018-07-01")
-        private LocalDate startDato;
-        @Schema(type = "string", format = "YYYY-MM-DD", example = "2018-07-01")
-        private LocalDate sluttDato;
+        private DatoIntervall startDato;
+        private DatoIntervall sluttDato;
         private Boolean harPermisjoner;
         private Boolean harPermitteringer;
         private Boolean harTimerMedTimeloenn;
         private Boolean harUtenlandsopphold;
         private Boolean harHistorikk;
         private TenorOrganisasjonSelectOptions.ArbeidsforholdType arbeidsforholdtype;
+    }
+
+    @Data
+    @NoArgsConstructor
+    public static class DatoIntervall {
+
+        @Schema(type = "string", format = "YYYY-MM-DD", example = "2018-07-01")
+        private LocalDate fraOgMed;
+        @Schema(type = "string", format = "YYYY-MM-DD", example = "2020-07-01")
+        private LocalDate tilOgMed;
     }
 
     @Data
@@ -133,13 +132,5 @@ public class TenorOrganisasjonRequest {
         private Arbeidsforhold arbeidsforhold;
         private SamletReskontroinnsyn samletReskontroinnsyn;
         private TjenestepensjonsavtaleOpplysningspliktig tjenestepensjonsavtaleOpplysningspliktig;
-    }
-
-    @Data
-    @NoArgsConstructor
-    public static class Intervall {
-
-        private BigInteger fraOgMed;
-        private BigInteger tilOgMed;
     }
 }

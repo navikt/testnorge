@@ -5,6 +5,7 @@ import no.nav.testnav.apps.tenorsearchservice.domain.TenorOrganisasjonRequest;
 
 import static java.util.Objects.isNull;
 import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.convertBooleanWildcard;
+import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.convertDatoer;
 import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.convertEnum;
 import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.convertObject;
 import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.guard;
@@ -61,8 +62,8 @@ public class TenorOrganisasjonEksterneRelasjonerUtility {
 
         return isNull(arbeidsforhold) ? "" :
                 " and tenorRelasjoner.arbeidsforhold:{%s}".formatted(guard(new StringBuilder()
-                        .append(convertObject("startDato", arbeidsforhold.getStartDato()))
-                        .append(convertObject("sluttDato", arbeidsforhold.getSluttDato()))
+                        .append(convertDatoer("startDato", arbeidsforhold.getStartDato()))
+                        .append(convertDatoer("sluttDato", arbeidsforhold.getSluttDato()))
                         .append(convertBooleanWildcard("harPermisjoner", arbeidsforhold.getHarPermisjoner()))
                         .append(convertBooleanWildcard("harPermitteringer", arbeidsforhold.getHarPermitteringer()))
                         .append(convertBooleanWildcard("harTimerMedTimeloenn", arbeidsforhold.getHarTimerMedTimeloenn()))
