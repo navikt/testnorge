@@ -38,6 +38,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -191,7 +192,7 @@ public class PdlOrdreService {
                 .distinct()
                 .toList();
 
-        var resultat = sendAlleInformasjonselementer(requesterTilOppretting)
+        var resultat = sendAlleInformasjonselementer(new ArrayList<>(requesterTilOppretting))
                 .collectList()
                 .block();
 
@@ -230,6 +231,8 @@ public class PdlOrdreService {
 
     private Flux<OrdreResponseDTO.PdlStatusDTO> sendAlleInformasjonselementer(List<OpprettRequest> opprettinger) {
 
+        opprettinger.sort(Comparator.comparing(person -> !person.getPerson().getAlias().isEmpty()));
+
         return deployService.sendOrders(
                 OrdreRequest.builder()
                         .sletting(opprettinger.stream()
@@ -240,9 +243,8 @@ public class PdlOrdreService {
                                 .flatMap(Collection::stream)
                                 .toList())
                         .oppretting(opprettinger.stream()
-//                                .filter(OpprettRequest::noneAlias)
                                 .filter(OpprettRequest::isNotTestnorgeIdent)
-                                .map(this::opprettPerson)
+                                .map(this::personOpprett)
                                 .flatMap(Collection::stream)
                                 .toList())
                         .merge(opprettinger.stream()
@@ -257,7 +259,7 @@ public class PdlOrdreService {
                         .build());
     }
 
-    private List<Ordre> opprettPerson(OpprettRequest oppretting) {
+    private List<Ordre> personOpprett(OpprettRequest oppretting) {
 
         return deployService.createOrdre(PDL_OPPRETT_PERSON, oppretting.getPerson().getIdent(),
                 List.of(OpprettIdent.builder()
