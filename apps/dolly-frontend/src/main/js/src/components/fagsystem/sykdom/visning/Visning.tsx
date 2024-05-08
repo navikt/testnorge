@@ -82,7 +82,7 @@ export const SykemeldingVisning = ({
 	const forsteMiljo = data?.find((miljoData) => miljoData?.data)?.miljo
 
 	const filteredData =
-		tilgjengeligMiljoe && data?.filter((item) => item.miljo === tilgjengeligMiljoe)
+		tilgjengeligMiljoe && data?.filter((item) => tilgjengeligMiljoe.includes(item.miljo))
 
 	return (
 		<div>

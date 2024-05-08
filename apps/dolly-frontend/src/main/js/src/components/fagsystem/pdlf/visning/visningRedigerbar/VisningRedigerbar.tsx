@@ -54,6 +54,7 @@ type VisningTypes = {
 	personValues: any
 	relasjoner: any
 	relatertPersonInfo: any
+	master: any
 }
 
 enum Attributt {
@@ -120,6 +121,7 @@ export const VisningRedigerbar = ({
 	personValues = null,
 	relasjoner = null,
 	relatertPersonInfo = null,
+	master = null,
 }: VisningTypes) => {
 	const [visningModus, setVisningModus] = useState(Modus.Les)
 	const [errorMessagePdlf, setErrorMessagePdlf] = useState(null)
@@ -267,17 +269,39 @@ export const VisningRedigerbar = ({
 					/>
 				)
 			case Attributt.Boadresse:
-				return <BostedsadresseForm formMethods={formMethods} path={path} identtype={identtype} />
+				return (
+					<BostedsadresseForm
+						formMethods={formMethods}
+						path={path}
+						identtype={identtype}
+						identMaster={master}
+					/>
+				)
 			case Attributt.Oppholdsadresse:
-				return <OppholdsadresseForm formMethods={formMethods} path={path} identtype={identtype} />
+				return (
+					<OppholdsadresseForm
+						formMethods={formMethods}
+						path={path}
+						identtype={identtype}
+						identMaster={master}
+					/>
+				)
 			case Attributt.Kontaktadresse:
-				return <KontaktadresseForm formMethods={formMethods} path={path} identtype={identtype} />
+				return (
+					<KontaktadresseForm
+						formMethods={formMethods}
+						path={path}
+						identtype={identtype}
+						identMaster={master}
+					/>
+				)
 			case Attributt.Adressebeskyttelse:
 				return (
 					<AdressebeskyttelseForm
 						formMethods={formMethods}
 						path={path}
 						identtype={getIdenttype(formMethods, identtype)}
+						identMaster={master}
 					/>
 				)
 			case Attributt.DeltBosted:
