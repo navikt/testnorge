@@ -90,6 +90,7 @@ import useBoolean from '@/utils/hooks/useBoolean'
 import { MalModal, malTyper } from '@/pages/minSide/maler/MalModal'
 import { useTenorOversikt } from '@/utils/hooks/useTenorSoek'
 import { SkatteetatenVisning } from '@/components/fagsystem/skatteetaten/visning/SkatteetatenVisning'
+import PdlVisningConnector from '@/components/fagsystem/pdl/visning/PdlVisningConnector'
 
 const getIdenttype = (ident) => {
 	if (parseInt(ident.charAt(0)) > 3) {
@@ -432,7 +433,7 @@ export default ({
 				)}
 				{ident.master === 'PDLF' && <PdlfVisningConnector fagsystemData={data} loading={loading} />}
 				{ident.master === 'PDL' && (
-					<PdlVisning pdlData={data.pdl} fagsystemData={data} loading={loading} />
+					<PdlVisningConnector pdlData={data.pdl} fagsystemData={data} loading={loading} />
 				)}
 				{visArbeidsforhold && (
 					<AaregVisning
