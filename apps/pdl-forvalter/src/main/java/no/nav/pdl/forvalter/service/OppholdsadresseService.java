@@ -148,6 +148,7 @@ public class OppholdsadresseService extends AdresseService<OppholdsadresseDTO, P
                         person.getStatsborgerskap().stream()
                                 .map(StatsborgerskapDTO::getLandkode)
                                 .filter(landkode -> !"NOR".equals(landkode))
+                                .filter(StringUtils::isNotBlank)
                                 .findFirst())
                 .filter(Optional::isPresent)
                 .map(Optional::get)

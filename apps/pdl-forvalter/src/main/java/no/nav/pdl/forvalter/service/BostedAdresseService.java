@@ -179,6 +179,7 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
                         person.getStatsborgerskap().stream()
                                 .map(StatsborgerskapDTO::getLandkode)
                                 .filter(landkode -> !"NOR".equals(landkode))
+                                .filter(StringUtils::isNotBlank)
                                 .findFirst())
                 .filter(Optional::isPresent)
                 .map(Optional::get)
