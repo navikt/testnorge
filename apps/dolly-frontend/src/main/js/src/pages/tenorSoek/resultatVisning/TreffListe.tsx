@@ -43,6 +43,12 @@ export const TreffListe = ({
 		setValgtPerson(personListe?.[0] || null)
 	}, [personListe?.[0]])
 
+	useEffect(() => {
+		if (response?.data?.treff || response?.data?.treff === 0) {
+			localStorage['antallTreff'] = response?.data?.treff
+		}
+	}, [response])
+
 	if ((!personListe || personListe?.length === 0) && loading) {
 		return <Loading label="Laster treff ..." />
 	}
@@ -55,7 +61,7 @@ export const TreffListe = ({
 		)
 	}
 
-	const antallTreff = response?.data?.treff
+	const antallTreff = localStorage['antallTreff']
 
 	return (
 		<div className="flexbox--flex-wrap">
@@ -66,7 +72,7 @@ export const TreffListe = ({
 				<Box background="surface-default" padding="3" borderRadius="medium">
 					<div className="flexbox--space">
 						<h2 style={{ margin: '0', alignSelf: 'center' }}>
-							{antallTreff || antallTreff === 0 ? `${antallTreff} treff` : ''}
+							{antallTreff ? `${antallTreff} treff` : ''}
 						</h2>
 						<ImporterValgtePersoner identer={markertePersoner} isMultiple={true} />
 					</div>
