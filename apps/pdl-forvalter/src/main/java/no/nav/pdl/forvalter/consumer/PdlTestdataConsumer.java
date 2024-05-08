@@ -46,19 +46,22 @@ public class PdlTestdataConsumer {
     private final TokenExchange tokenExchange;
     private final ServerProperties serverProperties;
     private final ObjectMapper objectMapper;
+    private final PersonServiceConsumer personServiceConsumer;
 
     public PdlTestdataConsumer(
             TokenExchange tokenExchange,
             Consumers consumers,
-            ObjectMapper objectMapper) {
+            ObjectMapper objectMapper,
+            PersonServiceConsumer personServiceConsumer) {
         this.tokenExchange = tokenExchange;
-        serverProperties = consumers.getPdlService();
+        serverProperties = consumers.getPdlProxy();
         this.webClient = WebClient
                 .builder()
                 .baseUrl(serverProperties.getUrl())
                 .filters(exchangeFilterFunctions -> exchangeFilterFunctions.add(logRequest()))
                 .build();
         this.objectMapper = objectMapper;
+        this.personServiceConsumer = personServiceConsumer;
     }
 
     private ExchangeFilterFunction logRequest() {
@@ -170,7 +173,9 @@ public class PdlTestdataConsumer {
                             accessToken.getTokenValue()
                     ).call();
 
-            case PDL_PERSON_MERGE -> new PdlMergeNpidCommand(webClient,
+            case PDL_PERSON_MERGE ->
+                    personServiceConsumer.existsIdent()
+                    new PdlMergeNpidCommand(webClient,
                     getBestillingUrl().get(value.getArtifact()),
                     ((MergeIdent) value.getBody()).getNpid(),
                     value.getIdent(),
