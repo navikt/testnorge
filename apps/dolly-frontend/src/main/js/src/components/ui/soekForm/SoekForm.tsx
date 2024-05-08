@@ -71,7 +71,7 @@ const KategoriCircle = styled.div`
 
 const KategoriEmptyButton = styled(Button)`
 	position: absolute;
-	right: 15px;
+	right: 10px;
 `
 
 export const Header = ({ title, paths, getValues, emptyCategory }: HeaderProps) => {
