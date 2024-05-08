@@ -73,6 +73,9 @@ public class TenorOrganisasjonResultMapperService {
         if (nonNull(dokument.getTenorMetadata().getKildedata())) {
             var organisasjonResponse = objectMapper.readValue(dokument.getTenorMetadata().getKildedata(), TenorOversiktOrganisasjonResponse.Organisasjon.class);
             log.info("Mappet organisasjon: {}", Json.pretty(organisasjonResponse));
+
+            organisasjonResponse.setKilder(dokument.getTenorMetadata().getKilder());
+
             return organisasjonResponse;
         }
 
