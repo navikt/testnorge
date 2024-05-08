@@ -28,7 +28,7 @@ public class TenorOrganisasjonRequest {
     private Boolean registrertIFrivillighetsregisteret;
     private EnhetStatus enhetStatuser;
     private Boolean slettetIEnhetsregisteret;
-    private TenorRequest.Intervall antallAnsatte;
+    private Intervall antallAnsatte;
     private Boolean revisorer;
     private Boolean regnskapsfoerere;
     private Boolean dagligLeder;
@@ -109,6 +109,14 @@ public class TenorOrganisasjonRequest {
         private LocalDate fraOgMed;
         @Schema(type = "string", format = "YYYY-MM-DD", example = "2020-07-01")
         private LocalDate tilOgMed;
+    }
+
+    @Data
+    @NoArgsConstructor
+    public static class Intervall {
+
+        private BigInteger fraOgMed;
+        private BigInteger tilOgMed;
     }
 
     @Data
