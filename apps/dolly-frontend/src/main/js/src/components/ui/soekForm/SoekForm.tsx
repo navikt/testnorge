@@ -5,7 +5,8 @@ import { TrashIcon } from '@navikt/aksel-icons'
 
 type HeaderProps = {
 	title: string
-	paths: Array<string>
+	antall?: number
+	paths?: Array<string>
 	getValues: Function
 	emptyCategory: Function
 }
@@ -74,26 +75,28 @@ const KategoriEmptyButton = styled(Button)`
 	right: 10px;
 `
 
-export const Header = ({ title, paths, getValues, emptyCategory }: HeaderProps) => {
-	const antall = getAntallRequest(paths, getValues)
+export const Header = ({ title, antall, paths, getValues, emptyCategory }: HeaderProps) => {
+	const antallValgt = antall ? antall : getAntallRequest(paths, getValues)
 	return (
 		<KategoriHeader>
 			<span>{title}</span>
-			{antall > 0 && (
+			{antallValgt > 0 && (
 				<KategoriCircle>
-					<p>{antall}</p>
+					<p>{antallValgt}</p>
 				</KategoriCircle>
 			)}
-			<KategoriEmptyButton
-				onClick={(e) => {
-					e.stopPropagation()
-					emptyCategory(paths)
-				}}
-				variant={'tertiary'}
-				icon={<TrashIcon />}
-				size={'small'}
-				title="Tøm kategori"
-			/>
+			{paths && (
+				<KategoriEmptyButton
+					onClick={(e) => {
+						e.stopPropagation()
+						emptyCategory(paths)
+					}}
+					variant={'tertiary'}
+					icon={<TrashIcon />}
+					size={'small'}
+					title="Tøm kategori"
+				/>
+			)}
 		</KategoriHeader>
 	)
 }
@@ -119,9 +122,9 @@ export const requestIsEmpty = (updatedRequest: any) => {
 	return isEmpty
 }
 
-const getAntallRequest = (liste: Array<string>, getValues) => {
+const getAntallRequest = (liste?: Array<string>, getValues) => {
 	let antall = 0
-	liste.forEach((item) => {
+	liste?.forEach((item) => {
 		const attr = getValues(item)
 		if (Array.isArray(attr)) {
 			antall += attr.length
