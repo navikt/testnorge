@@ -108,10 +108,11 @@ export const FormTextInput = ({
 	size?: string
 	type?: string
 	useOnChange?: boolean
+	onBlur?: (val: any) => void
 	useControlled?: boolean
 	defaultValue?: string
 	isDisabled?: boolean
-	onKeyPress?: Function
+	onKeyPress?: (val: any) => void
 	autoFocus?: boolean
 }) =>
 	visHvisAvhuket ? (

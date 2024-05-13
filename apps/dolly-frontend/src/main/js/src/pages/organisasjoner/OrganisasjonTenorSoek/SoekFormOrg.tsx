@@ -4,12 +4,13 @@ import { Accordion } from '@navikt/ds-react'
 import React from 'react'
 import { Header } from '@/components/ui/soekForm/SoekForm'
 import DisplayFormState from '@/utils/DisplayFormState'
-import { FolkeregisteretNavn } from '@/pages/tenorSoek/soekFormPartials/FolkeregisteretNavn'
-import { FolkeregisteretAdresse } from '@/pages/tenorSoek/soekFormPartials/FolkeregisteretAdresse'
 import { isDate } from 'date-fns'
 import { fixTimezone } from '@/components/ui/form/formUtils'
 import { EnhetsregisteretForetaksregisteret } from '@/pages/organisasjoner/OrganisasjonTenorSoek/soekFormPartials/EnhetsregisteretForetaksregisteret'
-import { TestInnsendingSkattEnhet } from '@/pages/organisasjoner/OrganisasjonTenorSoek/soekFormPartials/TestInnsendingSkattEnhet'
+import { TestinnsendingSkattEnhet } from '@/pages/organisasjoner/OrganisasjonTenorSoek/soekFormPartials/TestinnsendingSkattEnhet'
+import { EnhetsregisteretArbeidsforhold } from '@/pages/organisasjoner/OrganisasjonTenorSoek/soekFormPartials/EnhetsregisteretArbeidsforhold'
+import { SamletReskontroinnsyn } from '@/pages/organisasjoner/OrganisasjonTenorSoek/soekFormPartials/SamletReskontroinnsyn'
+import { Tjenestepensjonsavtale } from '@/pages/organisasjoner/OrganisasjonTenorSoek/soekFormPartials/Tjenestepensjonsavtale'
 
 const SoekefeltWrapper = styled.div`
 	display: flex;
@@ -118,10 +119,7 @@ export const SoekFormOrg = ({ setRequest, mutate }: any) => {
 										/>
 									</Accordion.Header>
 									<Accordion.Content style={{ paddingRight: '0' }}>
-										<EnhetsregisteretForetaksregisteret
-											handleChange={handleChange}
-											handleChangeList={handleChangeList}
-										/>
+										<EnhetsregisteretForetaksregisteret handleChange={handleChange} />
 									</Accordion.Content>
 								</Accordion.Item>
 								<Accordion.Item>
@@ -129,18 +127,18 @@ export const SoekFormOrg = ({ setRequest, mutate }: any) => {
 										<Header
 											title="Opplysninger fra Skatteetatens innsendingsmiljø"
 											antall={getAntallRequest([
-												'relasjoner.testinnsendingSkattEnhet.inntektsaar;',
-												'relasjoner.testinnsendingSkattEnhet.harSkattemeldingUtkast',
-												'relasjoner.testinnsendingSkattEnhet.harSkattemeldingFastsatt',
-												'relasjoner.testinnsendingSkattEnhet.harSelskapsmeldingUtkast',
-												'relasjoner.testinnsendingSkattEnhet.harSelskapsmeldingFastsatt',
-												'relasjoner.testinnsendingSkattEnhet.manglendeGrunnlagsdata',
-												'relasjoner.testinnsendingSkattEnhet.manntall',
+												'tenorRelasjoner.testinnsendingSkattEnhet.inntektsaar;',
+												'tenorRelasjoner.testinnsendingSkattEnhet.harSkattemeldingUtkast',
+												'tenorRelasjoner.testinnsendingSkattEnhet.harSkattemeldingFastsatt',
+												'tenorRelasjoner.testinnsendingSkattEnhet.harSelskapsmeldingUtkast',
+												'tenorRelasjoner.testinnsendingSkattEnhet.harSelskapsmeldingFastsatt',
+												'tenorRelasjoner.testinnsendingSkattEnhet.manglendeGrunnlagsdata',
+												'tenorRelasjoner.testinnsendingSkattEnhet.manntall',
 											])}
 										/>
 									</Accordion.Header>
 									<Accordion.Content style={{ paddingRight: '0' }}>
-										<TestInnsendingSkattEnhet handleChange={handleChange} />
+										<TestinnsendingSkattEnhet handleChange={handleChange} />
 									</Accordion.Content>
 								</Accordion.Item>
 								<Accordion.Item>
@@ -148,19 +146,19 @@ export const SoekFormOrg = ({ setRequest, mutate }: any) => {
 										<Header
 											title="Arbeidsforhold"
 											antall={getAntallRequest([
-												'relasjoner.arbeidsforhold.startDato;',
-												'relasjoner.arbeidsforhold.sluttDato',
-												'relasjoner.arbeidsforhold.harPermisjoner',
-												'relasjoner.arbeidsforhold.harPermitteringer',
-												'relasjoner.arbeidsforhold.harTimerMedTimeloenn',
-												'relasjoner.arbeidsforhold.harUtenlandsopphold',
-												'relasjoner.arbeidsforhold.harHistorikk',
-												'relasjoner.arbeidsforhold.arbeidsforholdtype',
+												'tenorRelasjoner.arbeidsforhold.startDato;',
+												'tenorRelasjoner.arbeidsforhold.sluttDato',
+												'tenorRelasjoner.arbeidsforhold.harPermisjoner',
+												'tenorRelasjoner.arbeidsforhold.harPermitteringer',
+												'tenorRelasjoner.arbeidsforhold.harTimerMedTimeloenn',
+												'tenorRelasjoner.arbeidsforhold.harUtenlandsopphold',
+												'tenorRelasjoner.arbeidsforhold.harHistorikk',
+												'tenorRelasjoner.arbeidsforhold.arbeidsforholdtype',
 											])}
 										/>
 									</Accordion.Header>
 									<Accordion.Content style={{ paddingRight: '0' }}>
-										<FolkeregisteretNavn handleChange={handleChange} />
+										<EnhetsregisteretArbeidsforhold handleChange={handleChange} />
 									</Accordion.Content>
 								</Accordion.Item>
 								<Accordion.Item>
@@ -168,13 +166,13 @@ export const SoekFormOrg = ({ setRequest, mutate }: any) => {
 										<Header
 											title="Samlet reskontroinnsyn"
 											antall={getAntallRequest([
-												'relasjoner.samletReskontroinnsyn.harKrav',
-												'relasjoner.samletReskontroinnsyn.harInnbetaling',
+												'tenorRelasjoner.samletReskontroinnsyn.harKrav',
+												'tenorRelasjoner.samletReskontroinnsyn.harInnbetaling',
 											])}
 										/>
 									</Accordion.Header>
 									<Accordion.Content style={{ paddingRight: '0' }}>
-										<FolkeregisteretAdresse handleChange={handleChange} />
+										<SamletReskontroinnsyn handleChange={handleChange} />
 									</Accordion.Content>
 								</Accordion.Item>
 								<Accordion.Item>
@@ -182,13 +180,13 @@ export const SoekFormOrg = ({ setRequest, mutate }: any) => {
 										<Header
 											title="Tjenestepensjonsavtale"
 											antall={getAntallRequest([
-												'relasjoner.tjenestepensjonsavtaleOpplysningspliktig.tjenestepensjonsinnretningOrgnr',
-												'relasjoner.tjenestepensjonsavtaleOpplysningspliktig.periode',
+												'tenorRelasjoner.tjenestepensjonsavtaleOpplysningspliktig.tjenestepensjonsinnretningOrgnr',
+												'tenorRelasjoner.tjenestepensjonsavtaleOpplysningspliktig.periode',
 											])}
 										/>
 									</Accordion.Header>
 									<Accordion.Content style={{ paddingRight: '0' }}>
-										<EnhetsregisteretForetaksregisteret handleChangeList={handleChangeList} />
+										<Tjenestepensjonsavtale handleChangeList={handleChangeList} />
 									</Accordion.Content>
 								</Accordion.Item>
 							</Accordion>

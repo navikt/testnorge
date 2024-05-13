@@ -11,6 +11,86 @@ type OrganisasjonVisningProps = {
 	error: any
 }
 
+export type TenorOrganisasjon = {
+	navn: string
+	organisasjonsnummer: string
+	organisasjonsform: {
+		kode: string
+		beskrivelse: string
+	}
+	tenorMetadata?: any
+	forretningsadresse: {
+		land: string
+		landkode: string
+		postnummer: string
+		poststed: string
+		adresse: string[]
+		kommune: string
+		kommunenummer: string
+	}
+	postadresse: {
+		land: string
+		landkode: string
+		postnummer: string
+		poststed: string
+		adresse: string[]
+		kommune: string
+		kommunenummer: string
+	}
+	kilder: string[]
+	naeringskoder: {
+		kode: string
+		beskrivelse: string
+		hjelpeenhetskode: boolean
+		rekkefolge: number
+		nivaa: number
+	}[]
+	registreringsdatoEnhetsregisteret: string
+	slettetIEnhetsregisteret: string
+	registrertIForetaksregisteret: string
+	slettetIForetaksregisteret: string
+	registreringspliktigForetaksregisteret: string
+	registrertIFrivillighetsregisteret: string
+	registrertIStiftelsesregisteret: string
+	registrertIMvaregisteret: string
+	konkurs: string
+	underAvvikling: string
+	underTvangsavviklingEllerTvangsopplosning: string
+	maalform: string
+	ansvarsbegrensning: string
+	harAnsatte: string
+	antallAnsatte: number
+	underenhet: {
+		hovedenhet: string
+		oppstartsdato: string
+	}
+	bedriftsforsamling: string
+	representantskap: string
+	enhetstatuser: any[]
+	fullmakter: any[]
+	kapital: {
+		antallAksjer: string
+		fritekst: any[]
+		sakkyndigRedegjorelse: string
+	}
+	kjonnsrepresentasjon: string
+	matrikkelnummer: any[]
+	fravalgAvRevisjon: {
+		fravalg: string
+	}
+	norskregistrertUtenlandskForetak: {
+		helNorskEierskap: string
+		aktivitetINorge: string
+	}
+	lovgivningOgForetaksformIHjemlandet: {
+		foretaksform: string
+	}
+	registerIHjemlandet: {
+		navnRegister: any[]
+		adresse: any[]
+	}
+}
+
 const OrganisasjonVisningWrapper = styled.div`
 	position: sticky;
 	top: 80px;
@@ -42,8 +122,8 @@ export const OrganisasjonTenorVisning = ({
 		return null
 	}
 
-	const OrganisasjonData = organisasjon.data?.organisasjoner?.find((dokument: any) =>
-		dokument.organisasjonsnummer?.includes(orgnummer),
+	const OrganisasjonData: TenorOrganisasjon = organisasjon.data?.organisasjoner?.find(
+		(dokument: any) => dokument.organisasjonsnummer?.includes(orgnummer),
 	)
 
 	return (

@@ -1,10 +1,12 @@
 import { SoekKategori } from '@/components/ui/soekForm/SoekForm'
-import React, { SyntheticEvent } from 'react'
+import React from 'react'
 import { createOptions } from '@/pages/tenorSoek/utils'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { useTenorOrganisasjonDomain } from '@/utils/hooks/useTenorSoek'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
+import { AdresseKodeverk } from '@/config/kodeverk'
+import { Option } from '@/service/SelectOptionsOppslag'
 
 export const EnhetsregisteretForetaksregisteret = ({ handleChange, handleChangeList }: any) => {
 	const { domain: orgformOptions } = useTenorOrganisasjonDomain('Organisasjonsform')
@@ -26,12 +28,13 @@ export const EnhetsregisteretForetaksregisteret = ({ handleChange, handleChangeL
 				onChange={(val: any) => handleChange(val?.value || null, 'organisasjonsform.kode')}
 			/>
 
-			<FormTextInput
+			<FormSelect
 				name="forretningsadresse.kommunenummer"
 				label="Kommunenummer"
+				kodeverk={AdresseKodeverk.Kommunenummer}
 				size={'small'}
-				onChange={(val: SyntheticEvent) =>
-					handleChange(val || null, 'forretningsadresse.kommunenummer')
+				onChange={(val: Option) =>
+					handleChange(val?.value || null, 'forretningsadresse.kommunenummer')
 				}
 				visHvisAvhuket={false}
 			/>

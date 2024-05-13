@@ -28,7 +28,7 @@ const StyledCodeView = styled(SyntaxHighlighter)`
 
 export const TabsVisning = ({ children, kildedata }: any) => {
 	if (!kildedata) {
-		return <div>{children}</div>
+		return <div className="person-visning_content">{children}</div>
 	}
 	const kildedataJson = JSON.parse(kildedata)
 	const kildedataPretty = JSON.stringify(kildedataJson, null, 2)

@@ -1,11 +1,11 @@
 import { SoekKategori } from '@/components/ui/soekForm/SoekForm'
-import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import React from 'react'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { useTenorDomain } from '@/utils/hooks/useTenorSoek'
 import { createOptions } from '@/pages/tenorSoek/utils'
 import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
+import { AdresseKodeverk } from '@/config/kodeverk'
 
 export const FolkeregisteretAdresse = ({ handleChange }: any) => {
 	const { domain: adresseGraderingOptions } = useTenorDomain('AdresseGradering')
@@ -18,12 +18,11 @@ export const FolkeregisteretAdresse = ({ handleChange }: any) => {
 				label="Adressegradering"
 				onChange={(val: any) => handleChange(val?.value || null, 'adresser.adresseGradering')}
 			/>
-			<FormTextInput
+			<FormSelect
 				name="adresser.kommunenummer"
 				label="Kommunenummer"
-				type="number"
-				// @ts-ignore
-				onBlur={(val: any) => handleChange(val?.target?.value || null, 'adresser.kommunenummer')}
+				kodeverk={AdresseKodeverk.Kommunenummer}
+				onChange={(val: any) => handleChange(val?.value || null, 'adresser.kommunenummer')}
 				visHvisAvhuket={false}
 			/>
 			<FormSelect

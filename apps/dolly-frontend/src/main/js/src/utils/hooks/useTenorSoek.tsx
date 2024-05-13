@@ -73,7 +73,7 @@ export const useTenorOversiktOrganisasjoner = (
 	const { data, isLoading, error, mutate } = useSWR(
 		request
 			? [
-					`${tenorSearchUrl}/oversikt/organisasjoner?antall=${antall}&side=${side}${seed ? '&seed=' + seed : ''}`,
+					`${tenorSearchUrl}/organisasjoner/oversikt?antall=${antall}&side=${side}${seed ? '&seed=' + seed : ''}`,
 					request,
 				]
 			: null,
@@ -103,7 +103,7 @@ export const useTenorDomain = (lookup: string) => {
 
 export const useTenorOrganisasjonDomain = (lookup: string) => {
 	const { data, isLoading, error } = useSWR(
-		lookup ? `${tenorSearchUrl}/domain/organisasjoner?lookup=${lookup}` : null,
+		lookup ? `${tenorSearchUrl}/organisasjoner/domain?lookup=${lookup}` : null,
 		(url) => Request.get(url),
 	)
 
