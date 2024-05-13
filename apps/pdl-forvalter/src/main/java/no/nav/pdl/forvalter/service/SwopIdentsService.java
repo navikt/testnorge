@@ -16,12 +16,14 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.SivilstandDTO.Sivilstand;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.time.LocalDateTime.now;
 import static no.nav.pdl.forvalter.service.EnkelAdresseService.getStrengtFortroligKontaktadresse;
+import static no.nav.pdl.forvalter.utils.IdenttypeUtility.isNotNpidIdent;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO.Master.FREG;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO.Master.PDL;
 
 @Service
 @RequiredArgsConstructor
@@ -93,8 +95,9 @@ public class SwopIdentsService {
             person1.getPerson().setSivilstand(new ArrayList<>(List.of(SivilstandDTO.builder()
                     .id(1)
                     .type(Sivilstand.UGIFT)
-                    .master(FREG)
+                    .master(isNotNpidIdent(person1.getIdent()) ? FREG : PDL)
                     .kilde("Dolly")
+                    .bekreftelsesdato(isNotNpidIdent(person1.getIdent()) ? null : now())
                     .build())));
         }
 
@@ -103,7 +106,7 @@ public class SwopIdentsService {
                         .person(person1)
                         .relatertPerson(relasjon.getRelatertPerson())
                         .relasjonType(relasjon.getRelasjonType())
-                        .sistOppdatert(LocalDateTime.now())
+                        .sistOppdatert(now())
                         .build())
                 .toList());
     }
@@ -141,7 +144,7 @@ public class SwopIdentsService {
                 aliasRepository.save(DbAlias.builder()
                         .tidligereIdent(ident1)
                         .person(oppdatertPerson1.get())
-                        .sistOppdatert(LocalDateTime.now())
+                        .sistOppdatert(now())
                         .build());
 
                 relasjonRepository.deleteAll(person2.get().getRelasjoner());
