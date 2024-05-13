@@ -133,7 +133,6 @@ public class PdlTestdataConsumer {
             if (isNull(artifact.getFolkeregistermetadata())) {
                 artifact.setFolkeregistermetadata(new FolkeregistermetadataDTO());
             }
-            artifact.getFolkeregistermetadata().setGjeldende(artifact.getGjeldende());
             body = objectMapper.writeValueAsString(artifact);
         } catch (JsonProcessingException e) {
             return Flux.just(
