@@ -26,11 +26,6 @@ public class TenorOrganisasjonConsumer {
         this.maskinportenConsumer = maskinportenConsumer;
     }
 
-    public Mono<TenorResponse> getOrganisasjonTestdata(String query, InfoType type, String fields, Integer seed) {
-
-        return getOrganisasjonTestdata(query, type, fields, null, null, seed);
-    }
-
     public Mono<TenorResponse> getOrganisasjonTestdata(String query, InfoType type, Integer antall, Integer side, Integer seed) {
 
         return getOrganisasjonTestdata(query, type, null, antall, side, seed);

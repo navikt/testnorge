@@ -6,7 +6,7 @@ import no.nav.testnav.apps.tenorsearchservice.consumers.TenorOrganisasjonConsume
 import no.nav.testnav.apps.tenorsearchservice.consumers.dto.InfoType;
 import no.nav.testnav.apps.tenorsearchservice.domain.TenorOrganisasjonRequest;
 import no.nav.testnav.apps.tenorsearchservice.domain.TenorOversiktOrganisasjonResponse;
-import no.nav.testnav.apps.tenorsearchservice.service.mapper.TenorOrganisasjonResultMapperService;
+import no.nav.testnav.apps.tenorsearchservice.mapper.TenorOrganisasjonResultMapperService;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
