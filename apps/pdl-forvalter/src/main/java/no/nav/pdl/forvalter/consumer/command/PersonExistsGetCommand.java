@@ -3,7 +3,7 @@ package no.nav.pdl.forvalter.consumer.command;
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
+import reactor.core.publisher.Flux;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
@@ -12,7 +12,7 @@ import java.util.concurrent.Callable;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @RequiredArgsConstructor
-public class PersonExistsGetCommand implements Callable<Mono<Boolean>> {
+public class PersonExistsGetCommand implements Callable<Flux<Boolean>> {
 
     private static final String PERSON_URL = "/api/v1/personer/{ident}/exists";
 
@@ -22,7 +22,7 @@ public class PersonExistsGetCommand implements Callable<Mono<Boolean>> {
 
 
     @Override
-    public Mono<Boolean> call() {
+    public Flux<Boolean> call() {
 
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
@@ -30,7 +30,7 @@ public class PersonExistsGetCommand implements Callable<Mono<Boolean>> {
                         .build(ident))
                 .header(AUTHORIZATION, "Bearer " + token)
                 .retrieve()
-                .bodyToMono(Boolean.class)
+                .bodyToFlux(Boolean.class)
                 .doOnError(WebClientFilter::logErrorMessage)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException));

@@ -173,14 +173,14 @@ public class PdlTestdataConsumer {
                             accessToken.getTokenValue()
                     ).call();
 
-            case PDL_PERSON_MERGE ->
-                    personServiceConsumer.existsIdent()
-                    new PdlMergeNpidCommand(webClient,
-                    getBestillingUrl().get(value.getArtifact()),
-                    ((MergeIdent) value.getBody()).getNpid(),
-                    value.getIdent(),
-                    accessToken.getTokenValue()
-            ).call();
+            case PDL_PERSON_MERGE -> personServiceConsumer.syncIdent(value.getIdent())
+                    .flatMap(syncIdent ->
+                            new PdlMergeNpidCommand(webClient,
+                                    getBestillingUrl().get(value.getArtifact()),
+                                    ((MergeIdent) value.getBody()).getNpid(),
+                                    value.getIdent(),
+                                    accessToken.getTokenValue()
+                            ).call());
 
             default -> !isTestnorgeIdent(value.getIdent()) || value.getBody().getMaster() == Master.PDL ?
                     new PdlOpprettArtifactCommandPdl(
