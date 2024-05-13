@@ -68,17 +68,14 @@ export const SoekForm = ({ setRequest, setMarkertePersoner, mutate }: any) => {
 		mutate()
 	}
 
-	const getAntallRequest = (liste: Array<string>) => {
-		let antall = 0
-		liste.forEach((item) => {
-			const attr = getValues(item)
-			if (Array.isArray(attr)) {
-				antall += attr.length
-			} else if (attr || attr === false) {
-				antall++
-			}
+	const emptyCategory = (paths: Array<string>) => {
+		paths.forEach((path) => {
+			setValue(path, undefined)
 		})
-		return antall
+		const request = getUpdatedRequest(watch())
+		setRequest({ ...request })
+		setMarkertePersoner([])
+		mutate()
 	}
 
 	const devEnabled =
@@ -96,7 +93,7 @@ export const SoekForm = ({ setRequest, setMarkertePersoner, mutate }: any) => {
 									<Accordion.Header>
 										<Header
 											title="Folkeregisteret - identifikasjon og status"
-											antall={getAntallRequest([
+											paths={[
 												'identifikator',
 												'identifikatorType',
 												'foedselsdato.fraOgMed',
@@ -111,7 +108,9 @@ export const SoekForm = ({ setRequest, setMarkertePersoner, mutate }: any) => {
 												'harFalskIdentitet',
 												'utenlandskPersonIdentifikasjon',
 												'harLegitimasjonsdokument',
-											])}
+											]}
+											getValues={getValues}
+											emptyCategory={emptyCategory}
 										/>
 									</Accordion.Header>
 									<Accordion.Content style={{ paddingRight: '0' }}>
@@ -125,10 +124,9 @@ export const SoekForm = ({ setRequest, setMarkertePersoner, mutate }: any) => {
 									<Accordion.Header>
 										<Header
 											title="Folkeregisteret - statsborgerskap"
-											antall={getAntallRequest([
-												'harNorskStatsborgerskap',
-												'harFlereStatsborgerskap',
-											])}
+											paths={['harNorskStatsborgerskap', 'harFlereStatsborgerskap']}
+											getValues={getValues}
+											emptyCategory={emptyCategory}
 										/>
 									</Accordion.Header>
 									<Accordion.Content style={{ paddingRight: '0' }}>
@@ -139,13 +137,15 @@ export const SoekForm = ({ setRequest, setMarkertePersoner, mutate }: any) => {
 									<Accordion.Header>
 										<Header
 											title="Folkeregisteret - navn"
-											antall={getAntallRequest([
+											paths={[
 												'navn.navnLengde.fraOgMed',
 												'navn.navnLengde.tilOgMed',
 												'navn.harFlereFornavn',
 												'navn.harNavnSpesialtegn',
 												'navn.harMellomnavn',
-											])}
+											]}
+											getValues={getValues}
+											emptyCategory={emptyCategory}
 										/>
 									</Accordion.Header>
 									<Accordion.Content style={{ paddingRight: '0' }}>
@@ -156,7 +156,7 @@ export const SoekForm = ({ setRequest, setMarkertePersoner, mutate }: any) => {
 									<Accordion.Header>
 										<Header
 											title="Folkeregisteret - adresser"
-											antall={getAntallRequest([
+											paths={[
 												'adresser.adresseGradering',
 												'adresser.kommunenummer',
 												'adresser.harAdresseSpesialtegn',
@@ -165,7 +165,9 @@ export const SoekForm = ({ setRequest, setMarkertePersoner, mutate }: any) => {
 												'adresser.harPostadresseNorge',
 												'adresser.harPostadresseUtland',
 												'adresser.harKontaktadresseDoedsbo',
-											])}
+											]}
+											getValues={getValues}
+											emptyCategory={emptyCategory}
 										/>
 									</Accordion.Header>
 									<Accordion.Content style={{ paddingRight: '0' }}>
@@ -176,7 +178,7 @@ export const SoekForm = ({ setRequest, setMarkertePersoner, mutate }: any) => {
 									<Accordion.Header>
 										<Header
 											title="Folkeregisteret - relasjoner"
-											antall={getAntallRequest([
+											paths={[
 												'relasjoner.relasjon',
 												'relasjoner.antallBarn.fraOgMed',
 												'relasjoner.antallBarn.tilOgMed',
@@ -189,7 +191,9 @@ export const SoekForm = ({ setRequest, setMarkertePersoner, mutate }: any) => {
 												'relasjoner.borMedFar',
 												'relasjoner.borMedMedmor',
 												'relasjoner.foreldreHarSammeAdresse',
-											])}
+											]}
+											getValues={getValues}
+											emptyCategory={emptyCategory}
 										/>
 									</Accordion.Header>
 									<Accordion.Content style={{ paddingRight: '0' }}>
@@ -200,7 +204,9 @@ export const SoekForm = ({ setRequest, setMarkertePersoner, mutate }: any) => {
 									<Accordion.Header>
 										<Header
 											title="Folkeregisteret - hendelser"
-											antall={getAntallRequest(['hendelser.hendelse', 'hendelser.sisteHendelse'])}
+											paths={['hendelser.hendelse', 'hendelser.sisteHendelse']}
+											getValues={getValues}
+											emptyCategory={emptyCategory}
 										/>
 									</Accordion.Header>
 									<Accordion.Content style={{ paddingRight: '0' }}>
@@ -235,7 +241,9 @@ export const SoekForm = ({ setRequest, setMarkertePersoner, mutate }: any) => {
 									<Accordion.Header>
 										<Header
 											title="Enhetsregisteret og Foretaksregisteret"
-											antall={getAntallRequest(['roller'])}
+											paths={['roller']}
+											getValues={getValues}
+											emptyCategory={emptyCategory}
 										/>
 									</Accordion.Header>
 									<Accordion.Content style={{ paddingRight: '0' }}>
