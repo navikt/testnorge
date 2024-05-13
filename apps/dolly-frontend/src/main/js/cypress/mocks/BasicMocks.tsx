@@ -1897,12 +1897,14 @@ export const tenorSoekOversiktMock = {
 				fornavn: 'TESTYTEST',
 				etternavn: 'CAFE',
 				tenorRelasjoner: ['Freg'],
+				ibruk: true,
 			},
 			{
 				id: '98765432198',
 				fornavn: 'TIGER',
 				etternavn: 'ULV',
 				tenorRelasjoner: ['Freg'],
+				ibruk: false,
 			},
 		],
 	},
@@ -1947,7 +1949,3 @@ export const tenorSoekTestdataMock = {
 	query: '',
 	error: null,
 }
-
-export const responseTrue = { body: true }
-
-export const responseFalse = { body: false }

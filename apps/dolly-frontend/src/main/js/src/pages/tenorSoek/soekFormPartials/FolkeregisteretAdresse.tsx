@@ -21,9 +21,9 @@ export const FolkeregisteretAdresse = ({ handleChange }: any) => {
 			<FormSelect
 				name="adresser.kommunenummer"
 				label="Kommunenummer"
-				kodeverk={AdresseKodeverk.Kommunenummer}
-				onChange={(val: any) => handleChange(val?.value || null, 'adresser.kommunenummer')}
-				visHvisAvhuket={false}
+				kodeverk={AdresseKodeverk.Kommunenummer2024}
+				onChange={(val: any) => handleChange(val?.value, 'adresser.kommunenummer')}
+				size="large"
 			/>
 			<FormSelect
 				name="adresser.harAdresseSpesialtegn"

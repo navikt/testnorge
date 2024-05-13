@@ -20,8 +20,10 @@ export const ArrayHistorikk = ({
 	const historikkHeader = header !== '' ? header + ' historikk' : 'Historikk'
 
 	const getComponent = (element, idx) => {
-		const pdlfElement = pdlfData?.find((item) => item.hendelseId === element.metadata.opplysningsId)
-		if (element.metadata.master === 'PDL' && pdlfElement) {
+		const pdlfElement = pdlfData?.find(
+			(item) => item.hendelseId === element?.metadata?.opplysningsId,
+		)
+		if (element?.metadata?.master === 'PDL' && pdlfElement) {
 			return (
 				<MainRedigerbar
 					idx={idx}

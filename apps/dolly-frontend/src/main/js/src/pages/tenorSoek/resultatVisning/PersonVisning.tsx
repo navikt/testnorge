@@ -9,11 +9,11 @@ import Loading from '@/components/ui/loading/Loading'
 import { EnhetsregisteretForetaksregisteretVisning } from '@/pages/tenorSoek/resultatVisning/EnhetsregisteretForetaksregisteretVisning'
 import { NavigerTilPerson } from '@/pages/tenorSoek/resultatVisning/NavigerTilPerson'
 import { ImporterValgtePersoner } from '@/pages/tenorSoek/resultatVisning/ImporterValgtePersoner'
-import { useFinnesIDolly } from '@/utils/hooks/useIdent'
 
 type PersonVisningProps = {
 	person: any
 	ident: string
+	ibruk: boolean
 	loading: boolean
 	error: any
 }
@@ -31,9 +31,8 @@ const NavnHeader = styled.h2`
 	word-break: break-word;
 	hyphens: auto;
 `
-export const PersonVisning = ({ person, ident, loading, error }: PersonVisningProps) => {
-	const { finnesIDolly, loading: loadingFinnes } = useFinnesIDolly(ident)
 
+export const PersonVisning = ({ person, ident, ibruk, loading, error }: PersonVisningProps) => {
 	if (loading) {
 		return <Loading label="Laster person ..." />
 	}
@@ -55,13 +54,11 @@ export const PersonVisning = ({ person, ident, loading, error }: PersonVisningPr
 			<Box background="surface-default" padding="3" borderRadius="medium">
 				<div className="flexbox--space">
 					<NavnHeader>{personData?.visningnavn}</NavnHeader>
-					{loadingFinnes && <Loading onlySpinner />}
-					{!loadingFinnes &&
-						(finnesIDolly ? (
-							<NavigerTilPerson ident={ident} />
-						) : (
-							<ImporterValgtePersoner identer={[ident]} isMultiple={false} />
-						))}
+					{ibruk ? (
+						<NavigerTilPerson ident={ident} />
+					) : (
+						<ImporterValgtePersoner identer={[ident]} isMultiple={false} />
+					)}
 				</div>
 				<FolkeregisteretVisning data={personData} />
 				<EnhetsregisteretForetaksregisteretVisning
