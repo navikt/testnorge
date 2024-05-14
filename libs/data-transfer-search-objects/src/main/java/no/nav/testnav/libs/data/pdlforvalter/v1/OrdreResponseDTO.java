@@ -64,7 +64,8 @@ public class OrdreResponseDTO {
 
             return infoElement != PdlArtifact.PDL_SLETTING &&
                     infoElement != PdlArtifact.PDL_SLETTING_HENDELSEID &&
-                    infoElement != PdlArtifact.PDL_OPPRETT_PERSON;
+                    infoElement != PdlArtifact.PDL_OPPRETT_PERSON &&
+                    infoElement != PdlArtifact.PDL_PERSON_MERGE;
         }
     }
 

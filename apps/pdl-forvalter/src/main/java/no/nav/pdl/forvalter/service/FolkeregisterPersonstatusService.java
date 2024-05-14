@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
-import static no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility.getIdenttype;
+import static no.nav.pdl.forvalter.utils.IdenttypeUtility.getIdenttype;
 import static no.nav.pdl.forvalter.utils.TestnorgeIdentUtility.isTestnorgeIdent;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.BOSATT;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.DOED;

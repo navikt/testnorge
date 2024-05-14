@@ -2,8 +2,6 @@ package no.nav.pdl.forvalter.consumer.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.pdl.forvalter.dto.OpprettIdent;
-import no.nav.pdl.forvalter.dto.PdlBestillingResponse;
 import no.nav.testnav.libs.data.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PdlStatus;
 import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
@@ -16,21 +14,18 @@ import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
-import java.util.Optional;
-
-import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.TemaGrunnlag.GEN;
 
 @Slf4j
 @RequiredArgsConstructor
-public class PdlOpprettPersonCommandPdl extends PdlTestdataCommand {
+public class PdlMergeNpidCommand extends PdlTestdataCommand {
 
-    private static final String IDENTHISTORIKK = "historiskePersonidenter";
-    private static final String OPPHOERT = "opphoert";
+    private static final String NPID = "npid";
+    private static final String OTHER_IDENT = "otherIdent";
 
     private final WebClient webClient;
     private final String url;
-    private final String ident;
-    private final OpprettIdent opprettIdent;
+    private final String npid;
+    private final String otherIdent;
     private final String token;
 
     @Override
@@ -39,22 +34,18 @@ public class PdlOpprettPersonCommandPdl extends PdlTestdataCommand {
         return webClient
                 .post()
                 .uri(builder -> builder.path(url)
-                        .queryParam("kilde", "Dolly")
-                        .queryParamIfPresent(IDENTHISTORIKK, Optional.ofNullable(opprettIdent.getHistoriskeIdenter()))
-                        .queryParam(OPPHOERT, opprettIdent.isOpphoert())
+                        .queryParam(NPID, npid)
+                        .queryParam(OTHER_IDENT, otherIdent)
                         .build())
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                .header(TEMA, GEN.name())
-                .header(HEADER_NAV_PERSON_IDENT, ident)
-                .retrieve()
-                .bodyToFlux(PdlBestillingResponse.class)
-                .flatMap(response -> Mono.just(OrdreResponseDTO.HendelseDTO.builder()
-                        .status(PdlStatus.OK)
-                        .build()))
+                .contentType(MediaType.APPLICATION_JSON)
+                .exchangeToFlux(response ->
+                        Flux.just(OrdreResponseDTO.HendelseDTO.builder()
+                                .status(PdlStatus.OK)
+                                .build()))
+                .doOnError(WebServerException.class, error -> log.error(error.getMessage(), error))
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException))
-                .doOnError(WebServerException.class, error -> log.error(error.getMessage(), error))
                 .onErrorResume(error -> Mono.just(errorHandling(error, null)));
     }
 }

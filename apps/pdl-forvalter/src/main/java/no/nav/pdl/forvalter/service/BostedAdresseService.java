@@ -12,16 +12,18 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.StatsborgerskapDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.UtenlandskAdresseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.UtflyttingDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.VegadresseDTO;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility.getIdenttype;
+import static no.nav.pdl.forvalter.utils.IdenttypeUtility.getIdenttype;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.AdressebeskyttelseDTO.AdresseBeskyttelse.STRENGT_FORTROLIG;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.Identtype.FNR;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
@@ -100,7 +102,7 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
                                     .anyMatch(utflytting -> innflytting.getInnflyttingsdato()
                                             .isAfter(utflytting.getUtflyttingsdato())))) {
 
-                if (person.getUtflytting().get(0).isVelkjentLand()) {
+                if (person.getUtflytting().getFirst().isVelkjentLand()) {
                     if (isNull(bostedadresse.getUtenlandskAdresse())) {
                         bostedadresse.setUtenlandskAdresse(new UtenlandskAdresseDTO());
                     }
@@ -166,17 +168,18 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
     private String getLandkode(PersonDTO person) {
 
         return Stream.of(person.getBostedsadresse().stream()
-                                .filter((adresse -> nonNull(adresse.getUtenlandskAdresse())))
-                                .filter(adresse -> isNotBlank(adresse.getUtenlandskAdresse().getLandkode()))
                                 .map(BostedadresseDTO::getUtenlandskAdresse)
+                                .filter(Objects::nonNull)
                                 .map(UtenlandskAdresseDTO::getLandkode)
+                                .filter(StringUtils::isNotBlank)
                                 .findFirst(),
                         person.getUtflytting().stream()
                                 .map(UtflyttingDTO::getTilflyttingsland)
                                 .findFirst(),
                         person.getStatsborgerskap().stream()
-                                .filter(statsborger -> "NOR".equals(statsborger.getLandkode()))
                                 .map(StatsborgerskapDTO::getLandkode)
+                                .filter(landkode -> !"NOR".equals(landkode))
+                                .filter(StringUtils::isNotBlank)
                                 .findFirst())
                 .filter(Optional::isPresent)
                 .map(Optional::get)
