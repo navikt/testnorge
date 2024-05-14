@@ -1,10 +1,5 @@
 import { CypressSelector } from '../mocks/Selectors'
-import {
-	responseFalse,
-	responseTrue,
-	tenorSoekOversiktMock,
-	tenorSoekTestdataMock,
-} from '../mocks/BasicMocks'
+import { tenorSoekOversiktMock, tenorSoekTestdataMock } from '../mocks/BasicMocks'
 
 describe('Tenor-søk testing', () => {
 	const tenorSoekOversikt = new RegExp(
@@ -13,16 +8,12 @@ describe('Tenor-søk testing', () => {
 	const tenorSoekTestdata = new RegExp(
 		/testnav-tenor-search-service\/api\/v1\/tenor\/testdata\?kilde=FREG&type=AlleFelter/,
 	)
-	const dollyBackendFinnesTrue = new RegExp(/dolly-backend\/api\/v1\/ident\/finnes\/12345678912/)
-	const dollyBackendFinnesFalse = new RegExp(/dolly-backend\/api\/v1\/ident\/finnes\/98765432198/)
 
 	it('passes', () => {
 		cy.visit('')
 
 		cy.intercept({ method: 'POST', url: tenorSoekOversikt }, tenorSoekOversiktMock)
 		cy.intercept({ method: 'POST', url: tenorSoekTestdata }, tenorSoekTestdataMock)
-		cy.intercept({ method: 'GET', url: dollyBackendFinnesTrue }, responseTrue)
-		cy.intercept({ method: 'GET', url: dollyBackendFinnesFalse }, responseFalse)
 
 		// Naviger til Tenor-soek og gjoer et soek
 		cy.dollyGet(CypressSelector.BUTTON_HEADER_FINNPERSON).click()

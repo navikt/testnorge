@@ -3,7 +3,6 @@ import _ from 'lodash'
 import {
 	getInitialOppholdsadresse,
 	initialMatrikkeladresse,
-	initialOppholdAnnetSted,
 	initialUtenlandskAdresse,
 	initialVegadresse,
 } from '@/components/fagsystem/pdlf/form/initialValues'
@@ -35,6 +34,7 @@ type OppholdsadresseFormValues = {
 	path: string
 	idx?: number
 	identtype?: string
+	identMaster?: string
 }
 
 type Target = {
@@ -47,8 +47,9 @@ export const OppholdsadresseForm = ({
 	path,
 	idx,
 	identtype,
+	identMaster,
 }: OppholdsadresseFormValues) => {
-	const erNPID = identtype === 'NPID'
+	const erPDL = identtype === 'NPID' || identMaster === 'PDL'
 	useEffect(() => {
 		formMethods.setValue(`${path}.adresseIdentifikatorFraMatrikkelen`, undefined)
 		const oppholdsadresse = formMethods.watch(path)
@@ -64,11 +65,6 @@ export const OppholdsadresseForm = ({
 			_.get(oppholdsadresse, 'utenlandskAdresse') !== null
 		) {
 			formMethods.setValue(`${path}.adressetype`, Adressetype.Utenlandsk)
-		} else if (
-			_.get(oppholdsadresse, 'oppholdAnnetSted') &&
-			_.get(oppholdsadresse, 'oppholdAnnetSted') !== null
-		) {
-			formMethods.setValue(`${path}.adressetype`, Adressetype.Annet)
 		}
 		formMethods.trigger()
 	}, [])
@@ -85,35 +81,24 @@ export const OppholdsadresseForm = ({
 			_.set(adresseClone, 'vegadresse', undefined)
 			_.set(adresseClone, 'matrikkeladresse', undefined)
 			_.set(adresseClone, 'utenlandskAdresse', undefined)
-			_.set(adresseClone, 'oppholdAnnetSted', undefined)
 		}
 		if (target?.value === 'VEGADRESSE') {
 			_.set(adresseClone, 'vegadresse', initialVegadresse)
 			_.set(adresseClone, 'matrikkeladresse', undefined)
 			_.set(adresseClone, 'utenlandskAdresse', undefined)
-			_.set(adresseClone, 'oppholdAnnetSted', undefined)
-			!erNPID && _.set(adresseClone, 'master', 'FREG')
+			!erPDL && _.set(adresseClone, 'master', 'FREG')
 		}
 		if (target?.value === 'MATRIKKELADRESSE') {
 			_.set(adresseClone, 'matrikkeladresse', initialMatrikkeladresse)
 			_.set(adresseClone, 'vegadresse', undefined)
 			_.set(adresseClone, 'utenlandskAdresse', undefined)
-			_.set(adresseClone, 'oppholdAnnetSted', undefined)
-			!erNPID && _.set(adresseClone, 'master', 'FREG')
+			!erPDL && _.set(adresseClone, 'master', 'FREG')
 		}
 		if (target?.value === 'UTENLANDSK_ADRESSE') {
 			_.set(adresseClone, 'utenlandskAdresse', initialUtenlandskAdresse)
 			_.set(adresseClone, 'vegadresse', undefined)
 			_.set(adresseClone, 'matrikkeladresse', undefined)
-			_.set(adresseClone, 'oppholdAnnetSted', undefined)
-			!erNPID && _.set(adresseClone, 'master', 'PDL')
-		}
-		if (target?.value === 'OPPHOLD_ANNET_STED') {
-			_.set(adresseClone, 'oppholdAnnetSted', initialOppholdAnnetSted)
-			_.set(adresseClone, 'vegadresse', undefined)
-			_.set(adresseClone, 'matrikkeladresse', undefined)
-			_.set(adresseClone, 'utenlandskAdresse', undefined)
-			!erNPID && _.set(adresseClone, 'master', 'PDL')
+			_.set(adresseClone, 'master', 'PDL')
 		}
 
 		formMethods.setValue(path, adresseClone)
@@ -121,7 +106,7 @@ export const OppholdsadresseForm = ({
 	}
 
 	const adressetypeOptions = Options('adressetypeOppholdsadresse')?.filter((option) =>
-		erNPID ? option.value !== 'MATRIKKELADRESSE' : option.value,
+		erPDL ? option.value !== 'MATRIKKELADRESSE' : option.value,
 	)
 
 	const { navnInfo, loading } = useGenererNavn()
@@ -155,12 +140,10 @@ export const OppholdsadresseForm = ({
 					master={formMethods.watch(`${path}.master`)}
 				/>
 			)}
-			{valgtAdressetype === 'OPPHOLD_ANNET_STED' && (
-				<OppholdAnnetSted path={`${path}.oppholdAnnetSted`} />
-			)}
 			<div className="flexbox--flex-wrap">
 				<FormDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig f.o.m." />
 				<FormDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig t.o.m." />
+				<OppholdAnnetSted path={`${path}.oppholdAnnetSted`} />
 				<DollySelect
 					name={`${path}.opprettCoAdresseNavn.fornavn`}
 					label="C/O adressenavn"
@@ -176,11 +159,7 @@ export const OppholdsadresseForm = ({
 			</div>
 			<AvansertForm
 				path={path}
-				kanVelgeMaster={
-					valgtAdressetype !== 'MATRIKKELADRESSE' &&
-					valgtAdressetype !== 'OPPHOLD_ANNET_STED' &&
-					!erNPID
-				}
+				kanVelgeMaster={valgtAdressetype !== 'MATRIKKELADRESSE' && !erPDL}
 			/>
 		</React.Fragment>
 	)
@@ -188,12 +167,14 @@ export const OppholdsadresseForm = ({
 
 export const Oppholdsadresse = ({ formMethods }: OppholdsadresseValues) => {
 	const opts = useContext(BestillingsveilederContext)
+	const initialMaster = opts?.identMaster === 'PDL' || opts?.identtype === 'NPID' ? 'PDL' : 'FREG'
+
 	return (
 		<Kategori title="Oppholdsadresse">
 			<FormDollyFieldArray
 				name="pdldata.person.oppholdsadresse"
 				header="Oppholdsadresse"
-				newEntry={getInitialOppholdsadresse(opts?.identtype === 'NPID' ? 'PDL' : 'FREG')}
+				newEntry={getInitialOppholdsadresse(initialMaster)}
 				canBeEmpty={false}
 			>
 				{(path: string, idx: number) => (
@@ -202,6 +183,7 @@ export const Oppholdsadresse = ({ formMethods }: OppholdsadresseValues) => {
 						path={path}
 						idx={idx}
 						identtype={opts?.identtype}
+						identMaster={opts?.identMaster}
 					/>
 				)}
 			</FormDollyFieldArray>

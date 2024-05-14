@@ -105,7 +105,7 @@ export const PdlfVisning = ({ fagsystemData, loading, tmpPersoner, erRedigerbar 
 				<Nasjonalitet
 					data={data?.person}
 					tmpPersoner={tmpPdlforvalter}
-                    identtype={data?.person?.identtype}
+					identtype={data?.person?.identtype}
 					erRedigerbar={erRedigerbar}
 				/>
 				<Telefonnummer
@@ -170,6 +170,7 @@ export const PdlfVisning = ({ fagsystemData, loading, tmpPersoner, erRedigerbar 
 					tmpPersoner={tmpPdlforvalter}
 					ident={ident}
 					identtype={data?.person?.identtype}
+					erPdlVisning={false}
 					erRedigerbar={erRedigerbar}
 				/>
 				<Sivilstand

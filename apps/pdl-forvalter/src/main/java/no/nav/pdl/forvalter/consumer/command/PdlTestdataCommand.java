@@ -4,12 +4,12 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PdlStatus;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
-import reactor.core.publisher.Mono;
+import reactor.core.publisher.Flux;
 
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.Callable;
 
-public abstract class PdlTestdataCommand implements Callable<Mono<OrdreResponseDTO.HendelseDTO>> {
+public abstract class PdlTestdataCommand implements Callable<Flux<OrdreResponseDTO.HendelseDTO>> {
 
     static final String HEADER_NAV_PERSON_IDENT = "Nav-Personident";
     static final String TEMA = "Tema";
