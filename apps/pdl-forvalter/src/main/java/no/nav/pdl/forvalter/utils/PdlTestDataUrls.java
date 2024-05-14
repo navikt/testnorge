@@ -25,6 +25,7 @@ import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_NAVN;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_OPPHOLD;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_OPPHOLDSADRESSE;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_OPPRETT_PERSON;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_PERSON_MERGE;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_SIKKERHETSTILTAK;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_SIVILSTAND;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_SLETTING;
@@ -43,6 +44,8 @@ public class PdlTestDataUrls {
     private static final String PDL_SLETTING_HENDELSEID_URL = "/pdl-testdata/api/v1/hendelseId";
     private static final String PDL_BESTILLING_URL = "/pdl-testdata/api/v1/bestilling";
     private static final String PDL_BESTILLING_OPPRETT_PERSON_URL = PDL_BESTILLING_URL + "/opprettperson";
+
+    private static final String PDL_MERGE_NPID_URL = "/pdl-testdata/api/v1/npid/merge";
 
     private static final String PDL_BESTILLING_ADRESSEBESKYTTELSE_URL = PDL_BESTILLING_URL + "/adressebeskyttelse";
     private static final String PDL_BESTILLING_BOSTEDADRESSE_URL = PDL_BESTILLING_URL + "/bostedsadresse";
@@ -93,6 +96,7 @@ public class PdlTestDataUrls {
         bestillingUrl.put(PDL_OPPHOLD, PDL_BESTILLING_OPPHOLD_URL);
         bestillingUrl.put(PDL_OPPHOLDSADRESSE, PDL_BESTILLING_OPPHOLDSADRESSE_URL);
         bestillingUrl.put(PDL_OPPRETT_PERSON, PDL_BESTILLING_OPPRETT_PERSON_URL);
+        bestillingUrl.put(PDL_PERSON_MERGE, PDL_MERGE_NPID_URL);
         bestillingUrl.put(PDL_SIKKERHETSTILTAK, PDL_BESTILLING_SIKKERHETSTILTAK_URL);
         bestillingUrl.put(PDL_SIVILSTAND, PDL_BESTILLING_SIVILSTAND_URL);
         bestillingUrl.put(PDL_SLETTING, PDL_SLETTING_URL);

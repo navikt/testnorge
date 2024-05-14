@@ -4,7 +4,7 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.consumer.AdresseServiceConsumer;
 import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
-import no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility;
+import no.nav.pdl.forvalter.utils.IdenttypeUtility;
 import no.nav.testnav.libs.data.pdlforvalter.v1.AdressebeskyttelseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO.Master;
 import no.nav.testnav.libs.data.pdlforvalter.v1.OppholdsadresseDTO;
@@ -13,9 +13,11 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.StatsborgerskapDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.UtenlandskAdresseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.UtflyttingDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.VegadresseDTO;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -70,7 +72,7 @@ public class OppholdsadresseService extends AdresseService<OppholdsadresseDTO, P
             throw new InvalidRequestException(VALIDATION_AMBIGUITY_ERROR);
 
         }
-        if (FNR == IdenttypeFraIdentUtility.getIdenttype(person.getIdent()) &&
+        if (FNR == IdenttypeUtility.getIdenttype(person.getIdent()) &&
                 STRENGT_FORTROLIG == person.getAdressebeskyttelse().stream()
                         .findFirst().orElse(new AdressebeskyttelseDTO()).getGradering() &&
                 adresse.countAdresser() > 0) {
@@ -94,7 +96,7 @@ public class OppholdsadresseService extends AdresseService<OppholdsadresseDTO, P
 
     protected void handle(OppholdsadresseDTO oppholdsadresse, PersonDTO person) {
 
-        if (FNR == IdenttypeFraIdentUtility.getIdenttype(person.getIdent())) {
+        if (FNR == IdenttypeUtility.getIdenttype(person.getIdent())) {
 
             if (STRENGT_FORTROLIG == person.getAdressebeskyttelse().stream()
                     .findFirst().orElse(new AdressebeskyttelseDTO()).getGradering()) {
@@ -135,17 +137,18 @@ public class OppholdsadresseService extends AdresseService<OppholdsadresseDTO, P
     private String getLandkode(PersonDTO person) {
 
         return Stream.of(person.getOppholdsadresse().stream()
-                                .filter(adresse -> nonNull(adresse.getUtenlandskAdresse()))
-                                .filter(adresse -> isNotBlank(adresse.getUtenlandskAdresse().getLandkode()))
                                 .map(OppholdsadresseDTO::getUtenlandskAdresse)
+                                .filter(Objects::nonNull)
                                 .map(UtenlandskAdresseDTO::getLandkode)
+                                .filter(StringUtils::isNotBlank)
                                 .findFirst(),
                         person.getUtflytting().stream()
                                 .map(UtflyttingDTO::getTilflyttingsland)
                                 .findFirst(),
                         person.getStatsborgerskap().stream()
-                                .filter(statsborger -> "NOR".equals(statsborger.getLandkode()))
                                 .map(StatsborgerskapDTO::getLandkode)
+                                .filter(landkode -> !"NOR".equals(landkode))
+                                .filter(StringUtils::isNotBlank)
                                 .findFirst())
                 .filter(Optional::isPresent)
                 .map(Optional::get)

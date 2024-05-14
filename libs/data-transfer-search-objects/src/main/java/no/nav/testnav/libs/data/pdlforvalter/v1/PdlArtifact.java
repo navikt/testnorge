@@ -23,6 +23,7 @@ public enum PdlArtifact {
     PDL_OPPHOLD("Opphold"),
     PDL_OPPHOLDSADRESSE("Oppholdsadresse"),
     PDL_OPPRETT_PERSON(""),
+    PDL_PERSON_MERGE(""),
     PDL_SIKKERHETSTILTAK("Sikkerhetstiltak"),
     PDL_SIVILSTAND("Sivilstand"),
     PDL_SLETTING(""),

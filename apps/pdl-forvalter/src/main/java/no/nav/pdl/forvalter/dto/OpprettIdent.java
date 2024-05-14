@@ -7,10 +7,9 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 @Data
 @SuperBuilder
@@ -23,9 +22,8 @@ public class OpprettIdent extends DbVersjonDTO {
     private boolean opphoert;
 
     public List<String> getHistoriskeIdenter() {
-        if (isNull(historiskeIdenter)) {
-            historiskeIdenter = new ArrayList<>();
-        }
-        return historiskeIdenter;
+
+        return nonNull(historiskeIdenter) && !historiskeIdenter.isEmpty() ?
+                historiskeIdenter : null;
     }
 }
