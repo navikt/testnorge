@@ -31,6 +31,7 @@ const createDefaultDate = () => {
 const miljoeOptions = [
   { value: 'q1', label: 'Q1' },
   { value: 'q2', label: 'Q2' },
+  { value: 'q1,q2', label: 'Q1+Q2' },
 ];
 
 const AccessForm = () => {

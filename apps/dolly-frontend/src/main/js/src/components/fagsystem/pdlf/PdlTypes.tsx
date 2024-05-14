@@ -85,6 +85,8 @@ export type Utflytting = {
 export type AdressebeskyttelseData = {
 	gradering: string
 	id?: number
+	master?: string
+	metadata?: any
 }
 
 export type SivilstandData = {

@@ -27,6 +27,7 @@ export type PdlData = {
 	hentIdenter: { identer: [Ident] }
 	hentPerson: HentPerson
 	hentGeografiskTilknytning: object
+	ident?: string
 }
 
 export type PdlError = {

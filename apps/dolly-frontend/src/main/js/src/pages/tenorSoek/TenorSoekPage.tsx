@@ -83,6 +83,7 @@ export default () => {
 				personListe={state.personListe}
 				markertePersoner={markertePersoner}
 				setMarkertePersoner={setMarkertePersoner}
+				nesteSide={state.nesteSide}
 				loading={loading}
 				error={error}
 			/>

@@ -1,9 +1,14 @@
 import styled from 'styled-components'
 import React from 'react'
+import { Button } from '@navikt/ds-react'
+import { TrashIcon } from '@navikt/aksel-icons'
 
 type HeaderProps = {
 	title: string
-	antall: number
+	antall?: number
+	paths?: Array<string>
+	getValues: Function
+	emptyCategory: Function
 }
 
 export const SoekefeltWrapper = styled.div`
@@ -65,16 +70,36 @@ const KategoriCircle = styled.div`
 	}
 `
 
-export const Header = ({ title, antall }: HeaderProps) => (
-	<KategoriHeader>
-		<span>{title}</span>
-		{antall > 0 && (
-			<KategoriCircle>
-				<p>{antall}</p>
-			</KategoriCircle>
-		)}
-	</KategoriHeader>
-)
+const KategoriEmptyButton = styled(Button)`
+	position: absolute;
+	right: 10px;
+`
+
+export const Header = ({ title, antall, paths, getValues, emptyCategory }: HeaderProps) => {
+	const antallValgt = antall ? antall : getAntallRequest(paths, getValues)
+	return (
+		<KategoriHeader>
+			<span>{title}</span>
+			{antallValgt > 0 && (
+				<KategoriCircle>
+					<p>{antallValgt}</p>
+				</KategoriCircle>
+			)}
+			{paths && (
+				<KategoriEmptyButton
+					onClick={(e) => {
+						e.stopPropagation()
+						emptyCategory(paths)
+					}}
+					variant={'tertiary'}
+					icon={<TrashIcon />}
+					size={'small'}
+					title="Tøm kategori"
+				/>
+			)}
+		</KategoriHeader>
+	)
+}
 
 export const requestIsEmpty = (updatedRequest: any) => {
 	let isEmpty = true
@@ -95,4 +120,17 @@ export const requestIsEmpty = (updatedRequest: any) => {
 	}
 	flatten(updatedRequest)
 	return isEmpty
+}
+
+const getAntallRequest = (liste?: Array<string>, getValues) => {
+	let antall = 0
+	liste?.forEach((item) => {
+		const attr = getValues(item)
+		if (Array.isArray(attr)) {
+			antall += attr.length
+		} else if (attr || attr === false) {
+			antall++
+		}
+	})
+	return antall
 }

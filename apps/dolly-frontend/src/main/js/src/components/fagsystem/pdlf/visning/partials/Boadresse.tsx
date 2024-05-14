@@ -29,6 +29,7 @@ type BoadresseVisningTypes = {
 	ident?: string
 	identtype?: string
 	erPdlVisning?: boolean
+	master?: string
 }
 
 type AdresseTypes = {
@@ -40,6 +41,7 @@ export const Adresse = ({ boadresseData, idx }: AdresseTypes) => {
 	if (!boadresseData) {
 		return null
 	}
+
 	return (
 		<>
 			{boadresseData.vegadresse && <Vegadresse adresse={boadresseData} idx={idx} />}
@@ -50,7 +52,7 @@ export const Adresse = ({ boadresseData, idx }: AdresseTypes) => {
 	)
 }
 
-const BoadresseVisning = ({
+export const BoadresseVisning = ({
 	boadresseData,
 	idx,
 	data,
@@ -58,6 +60,7 @@ const BoadresseVisning = ({
 	ident,
 	identtype,
 	erPdlVisning,
+	master,
 }: BoadresseVisningTypes) => {
 	const initBoadresse = Object.assign(_.cloneDeep(getInitialBostedsadresse()), data[idx])
 	const initialValues = { bostedsadresse: initBoadresse }
@@ -100,6 +103,7 @@ const BoadresseVisning = ({
 			ident={ident}
 			identtype={identtype}
 			personFoerLeggTil={personFoerLeggTil}
+			master={master}
 		/>
 	)
 }
