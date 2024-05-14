@@ -3,8 +3,7 @@ import React from 'react'
 import _ from 'lodash'
 import { FolkeregisteretVisning } from '@/pages/tenorSoek/resultatVisning/FolkeregisteretVisning'
 import styled from 'styled-components'
-// TODO: Importer denne naar det er mulig aa importere og vise inntekt i Dolly
-// import { InntektVisning } from '@/pages/tenorSoek/resultatVisning/InntektVisning'
+import { InntektVisning } from '@/pages/tenorSoek/resultatVisning/InntektVisning'
 import Loading from '@/components/ui/loading/Loading'
 import { EnhetsregisteretForetaksregisteretVisning } from '@/pages/tenorSoek/resultatVisning/EnhetsregisteretForetaksregisteretVisning'
 import { NavigerTilPerson } from '@/pages/tenorSoek/resultatVisning/NavigerTilPerson'
@@ -64,8 +63,7 @@ export const PersonVisning = ({ person, ident, ibruk, loading, error }: PersonVi
 				<EnhetsregisteretForetaksregisteretVisning
 					data={_.get(personData, 'tenorRelasjoner.brreg-er-fr')}
 				/>
-				{/*TODO: Vis denne naar det er mulig aa importere og vise inntekt i Dolly*/}
-				{/*<InntektVisning data={personData?.tenorRelasjoner?.inntekt} />*/}
+				<InntektVisning data={personData?.tenorRelasjoner?.inntekt} />
 			</Box>
 		</PersonVisningWrapper>
 	)

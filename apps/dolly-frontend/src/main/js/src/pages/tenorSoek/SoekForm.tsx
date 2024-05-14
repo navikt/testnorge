@@ -214,29 +214,31 @@ export const SoekForm = ({ setRequest, setMarkertePersoner, mutate }: any) => {
 									</Accordion.Content>
 								</Accordion.Item>
 								{/*TODO: Vis denne naar det er mulig aa importere og vise inntekt i Dolly*/}
-								{/*<Accordion.Item>*/}
-								{/*	<Accordion.Header>*/}
-								{/*		<Header*/}
-								{/*			title="Inntekt A-ordningen"*/}
-								{/*			antall={getAntallRequest([*/}
-								{/*				'inntekt.periode.fraOgMed',*/}
-								{/*				'inntekt.periode.tilOgMed',*/}
-								{/*				'inntekt.opplysningspliktig',*/}
-								{/*				'inntekt.inntektstyper',*/}
-								{/*				'inntekt.forskuddstrekk',*/}
-								{/*				'inntekt.beskrivelse',*/}
-								{/*				'inntekt.harHistorikk',*/}
-								{/*			])}*/}
-								{/*		/>*/}
-								{/*	</Accordion.Header>*/}
-								{/*	<Accordion.Content style={{ paddingRight: '0' }}>*/}
-								{/*		<InntektAordningen*/}
-								{/*			handleChange={handleChange}*/}
-								{/*			handleChangeList={handleChangeList}*/}
-								{/*			getValue={watch}*/}
-								{/*		/>*/}
-								{/*	</Accordion.Content>*/}
-								{/*</Accordion.Item>*/}
+								<Accordion.Item>
+									<Accordion.Header>
+										<Header
+											title="Inntekt A-ordningen"
+											paths={[
+												'inntekt.periode.fraOgMed',
+												'inntekt.periode.tilOgMed',
+												'inntekt.opplysningspliktig',
+												'inntekt.inntektstyper',
+												'inntekt.forskuddstrekk',
+												'inntekt.beskrivelse',
+												'inntekt.harHistorikk',
+											]}
+											getValues={getValues}
+											emptyCategory={emptyCategory}
+										/>
+									</Accordion.Header>
+									<Accordion.Content style={{ paddingRight: '0' }}>
+										<InntektAordningen
+											handleChange={handleChange}
+											handleChangeList={handleChangeList}
+											getValue={watch}
+										/>
+									</Accordion.Content>
+								</Accordion.Item>
 								<Accordion.Item>
 									<Accordion.Header>
 										<Header
