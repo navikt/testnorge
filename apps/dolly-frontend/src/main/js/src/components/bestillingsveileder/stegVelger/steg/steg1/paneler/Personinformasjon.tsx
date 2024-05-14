@@ -72,6 +72,7 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 				iconType={'personinformasjon'}
 			>
 				<AttributtKategori title="Diverse" attr={sm.attrs}>
+					<Attributt attr={sm.attrs.navn} />
 					<Attributt attr={sm.attrs.sprakKode} />
 					<Attributt attr={sm.attrs.egenAnsattDatoFom} />
 					<Attributt
@@ -150,7 +151,7 @@ PersoninformasjonPanel.heading = 'Personinformasjon'
 
 // @ts-ignore
 PersoninformasjonPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
-	const { personFoerLeggTil, identtype } = opts
+	const { personFoerLeggTil, identtype, identMaster } = opts
 
 	const fjernIdFoerLeggTil = (path: string) => {
 		const pdlDataElement = _.get(personFoerLeggTil, `pdlforvalter.person.${path}`)
@@ -274,7 +275,10 @@ PersoninformasjonPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 		navn: {
 			label: 'Navn',
 			checked: has(paths.navn),
-			add: () => set(paths.navn, [getInitialNavn(identtype === 'NPID' ? 'PDL' : 'FREG')]),
+			add: () =>
+				set(paths.navn, [
+					getInitialNavn(identMaster === 'PDL' || identtype === 'NPID' ? 'PDL' : 'FREG'),
+				]),
 			remove: () => del(paths.navn),
 		},
 		sprakKode: {

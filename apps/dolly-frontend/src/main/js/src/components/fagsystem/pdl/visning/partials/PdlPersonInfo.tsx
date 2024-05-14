@@ -20,7 +20,7 @@ const getCurrentPersonstatus = (data) => {
 	return null
 }
 
-const PdlNavnVisning = ({ data }) => {
+const PdlNavnVisning = ({ data, showMaster }) => {
 	if (!data) {
 		return null
 	}
@@ -31,6 +31,7 @@ const PdlNavnVisning = ({ data }) => {
 			<TitleValue title="Mellomnavn" value={data.mellomnavn} />
 			<TitleValue title="Etternavn" value={data.etternavn} />
 			<TitleValue title="Navn gyldig f.o.m." value={formatDate(data.gyldigFraOgMed)} />
+			<TitleValue title="Master" value={data.metadata.master} hidden={!showMaster} />
 		</>
 	)
 }
@@ -71,7 +72,7 @@ export const PdlPersonInfo = ({
 				<div className="person-visning_content">
 					<TitleValue title="Ident" value={data?.ident} />
 					{gyldigeNavn?.length === 1 && (!historiskeNavn || historiskeNavn.length < 1) && (
-						<PdlNavnVisning data={gyldigeNavn[0]} />
+						<PdlNavnVisning data={gyldigeNavn[0]} showMaster={false} />
 					)}
 					<TitleValue title="Kjønn" value={personKjoenn?.kjoenn} />
 					<TitleValue
@@ -84,6 +85,7 @@ export const PdlPersonInfo = ({
 							data={gyldigeNavn}
 							historiskData={historiskeNavn}
 							header="Navn"
+							showMaster={true}
 						/>
 					)}
 					<TpsMPersonInfo data={tpsMessagingData} loading={tpsMessagingLoading} />
