@@ -145,7 +145,7 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
         if (nonNull(request.getIdenttype())) {
             return request.getIdenttype();
         }
-        return nonNull(ident) ? IdenttypeUtility.getIdenttype(ident) : FNR;
+        return isNotBlank(ident) ? IdenttypeUtility.getIdenttype(ident) : FNR;
     }
 
     private static Kjoenn getTilfeldigKjoenn() {
@@ -158,17 +158,18 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
         if (nonNull(request.getKjoenn()) && request.getKjoenn() != UKJENT) {
             return request.getKjoenn();
         }
-        return nonNull(ident) ? KjoennFraIdentUtility.getKjoenn(ident) : getTilfeldigKjoenn();
+        return isNotBlank(ident) ? KjoennFraIdentUtility.getKjoenn(ident) : getTilfeldigKjoenn();
     }
 
     private static LocalDateTime getFoedtFoer(IdentRequestDTO request, String ident) {
 
         if (nonNull(request.getFoedtFoer())) {
             return request.getFoedtFoer();
+
         } else if (nonNull(request.getAlder())) {
             return LocalDateTime.now().minusYears(request.getAlder()).minusMonths(3);
         }
-        return (nonNull(ident)) ? DatoFraIdentUtility.getDato(ident).plusMonths(1).atStartOfDay() :
+        return isNotBlank(ident) ? DatoFraIdentUtility.getDato(ident).plusMonths(1).atStartOfDay() :
                 LocalDateTime.now().minusYears(18);
     }
 
@@ -179,11 +180,12 @@ public class IdenttypeService implements Validation<IdentRequestDTO> {
         } else if (nonNull(request.getAlder())) {
             return LocalDateTime.now().minusYears(request.getAlder()).plusDays(1);
         }
-        return (nonNull(ident)) ? DatoFraIdentUtility.getDato(ident).plusMonths(1).atStartOfDay() :
+        return isNotBlank(ident) ? DatoFraIdentUtility.getDato(ident).plusMonths(1).atStartOfDay() :
                 LocalDateTime.now().minusYears(67);
     }
 
     private static boolean isSyntetisk(IdentRequestDTO request, String ident) {
+
         return nonNull(request.getSyntetisk()) ? request.getSyntetisk() :
                 SyntetiskFraIdentUtility.isSyntetisk(ident);
     }
