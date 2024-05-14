@@ -124,12 +124,11 @@ public class IdentService {
     private String prepareRequest(List<String> identer, boolean isProd) {
 
         return "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" +
-                "<!--  Melding fra Dolly -->" +
                 "<tpsPersonData>" +
                 "<tpsServiceRutine>" +
                 "<serviceRutinenavn>FS03-FDLISTER-DISKNAVN-M</serviceRutinenavn>" +
                 "<aksjonsKode>A</aksjonsKode>" +
-                "<aksjonsKode2>%s</aksjonsKode2><antallFnr>%s</antallFnr><nFnr>%s</nFnr></tpsServiceRutine></tpsPersonData>"
+                "<aksjonsKode2>%s</aksjonsKode2><antallFnr>%s</antallFnr><nFnr>%s</nFnr><systemId>Dolly</systemId></tpsServiceRutine></tpsPersonData>"
                         .formatted(isProd ? "2" : "0",
                                 Integer.toString(identer.size()),
                                 identer.stream()

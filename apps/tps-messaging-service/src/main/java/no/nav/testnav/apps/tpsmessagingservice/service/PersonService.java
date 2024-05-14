@@ -206,7 +206,7 @@ public class PersonService {
                 .build();
 
         var xmlRequest = ServiceRutineUtil.marshallToXML(requestContext, request)
-                .replace("?>", "?><!--  Melding fra Dolly -->");
+                .replace("</aksjonsKode2>", "</aksjonsKode2><systemId>Dolly</systemId>");
 
         var miljoerResponse = servicerutineConsumer.sendMessage(xmlRequest, miljoer);
 
