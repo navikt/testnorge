@@ -7,7 +7,7 @@ import DisplayFormState from '@/utils/DisplayFormState'
 import { isDate } from 'date-fns'
 import { fixTimezone } from '@/components/ui/form/formUtils'
 import { EnhetsregisteretForetaksregisteret } from '@/pages/organisasjoner/OrganisasjonTenorSoek/soekFormPartials/EnhetsregisteretForetaksregisteret'
-import { TestinnsendingSkattEnhet } from '@/pages/organisasjoner/OrganisasjonTenorSoek/soekFormPartials/TestinnsendingSkattEnhet'
+import { TestInnsendingSkattEnhet } from '@/pages/organisasjoner/OrganisasjonTenorSoek/soekFormPartials/TestInnsendingSkattEnhet'
 import { EnhetsregisteretArbeidsforhold } from '@/pages/organisasjoner/OrganisasjonTenorSoek/soekFormPartials/EnhetsregisteretArbeidsforhold'
 import { SamletReskontroinnsyn } from '@/pages/organisasjoner/OrganisasjonTenorSoek/soekFormPartials/SamletReskontroinnsyn'
 import { Tjenestepensjonsavtale } from '@/pages/organisasjoner/OrganisasjonTenorSoek/soekFormPartials/Tjenestepensjonsavtale'
@@ -50,14 +50,6 @@ export const SoekFormOrg = ({ setRequest, mutate }: any) => {
 			value = fixTimezone(value)
 		}
 		setValue(path, value)
-		const request = getUpdatedRequest(watch())
-		setRequest({ ...request })
-		mutate()
-	}
-
-	const handleChangeList = (value: any, path: string) => {
-		const list = value.map((item: any) => item.value)
-		setValue(path, list)
 		const request = getUpdatedRequest(watch())
 		setRequest({ ...request })
 		mutate()
@@ -138,7 +130,7 @@ export const SoekFormOrg = ({ setRequest, mutate }: any) => {
 										/>
 									</Accordion.Header>
 									<Accordion.Content style={{ paddingRight: '0' }}>
-										<TestinnsendingSkattEnhet handleChange={handleChange} />
+										<TestInnsendingSkattEnhet handleChange={handleChange} />
 									</Accordion.Content>
 								</Accordion.Item>
 								<Accordion.Item>
@@ -186,7 +178,7 @@ export const SoekFormOrg = ({ setRequest, mutate }: any) => {
 										/>
 									</Accordion.Header>
 									<Accordion.Content style={{ paddingRight: '0' }}>
-										<Tjenestepensjonsavtale handleChangeList={handleChangeList} />
+										<Tjenestepensjonsavtale handleChange={handleChange} />
 									</Accordion.Content>
 								</Accordion.Item>
 							</Accordion>

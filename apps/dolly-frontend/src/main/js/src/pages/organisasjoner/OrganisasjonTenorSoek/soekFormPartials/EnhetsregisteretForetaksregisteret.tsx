@@ -31,8 +31,8 @@ export const EnhetsregisteretForetaksregisteret = ({ handleChange, handleChangeL
 			<FormSelect
 				name="forretningsadresse.kommunenummer"
 				label="Kommunenummer"
-				kodeverk={AdresseKodeverk.Kommunenummer}
-				size={'small'}
+				kodeverk={AdresseKodeverk.Kommunenummer2024}
+				size={'large'}
 				onChange={(val: Option) =>
 					handleChange(val?.value || null, 'forretningsadresse.kommunenummer')
 				}
@@ -49,20 +49,6 @@ export const EnhetsregisteretForetaksregisteret = ({ handleChange, handleChangeL
 				label="Næring beskrivelse"
 				// @ts-ignore
 				onBlur={(val: any) => handleChange(val?.target?.value || null, 'naeringBeskrivelse')}
-				visHvisAvhuket={false}
-			/>
-			<FormTextInput
-				name="antallAnsatte.fraOgMed"
-				label="Antall ansatte fra og med"
-				// @ts-ignore
-				onBlur={(val: any) => handleChange(val?.target?.value || null, 'antallAnsatte.fraOgMed')}
-				visHvisAvhuket={false}
-			/>
-			<FormTextInput
-				name="antallAnsatte.tilOgMed"
-				label="Antall ansatte til og med"
-				// @ts-ignore
-				onBlur={(val: any) => handleChange(val?.target?.value || null, 'antallAnsatte.tilOgMed')}
 				visHvisAvhuket={false}
 			/>
 			<FormCheckbox

@@ -16,7 +16,7 @@ export const EnhetsregisteretArbeidsforhold = ({ handleChange }: any) => (
 		/>
 		<FormDatepicker
 			name="tenorRelasjoner.arbeidsforhold.startDato.tilOgMed"
-			label="Start Dato t.o.m"
+			label="Start dato t.o.m"
 			onChange={(val: SyntheticEvent) =>
 				handleChange(val || null, 'tenorRelasjoner.arbeidsforhold.startDato.tilOgMed')
 			}
@@ -24,7 +24,7 @@ export const EnhetsregisteretArbeidsforhold = ({ handleChange }: any) => (
 		/>
 		<FormDatepicker
 			name="tenorRelasjoner.arbeidsforhold.slutDato.fraOgMed"
-			label="Slutt Dato f.o.m"
+			label="Slutt dato f.o.m"
 			onChange={(val: SyntheticEvent) =>
 				handleChange(val || null, 'tenorRelasjoner.arbeidsforhold.sluttDato.fraOgMed')
 			}
@@ -40,7 +40,7 @@ export const EnhetsregisteretArbeidsforhold = ({ handleChange }: any) => (
 		/>
 		<FormTextInput
 			name="tenorRelasjoner.arbeidsforhold.arbeidsforholdtype"
-			label="Arbeidsforhold Type"
+			label="Arbeidsforhold type"
 			onBlur={(val: any) =>
 				handleChange(
 					val?.target?.value || null,
@@ -48,55 +48,71 @@ export const EnhetsregisteretArbeidsforhold = ({ handleChange }: any) => (
 				)
 			}
 		/>
-		<FormCheckbox
-			name="tenorRelasjoner.arbeidsforhold.harPermisjoner"
-			label="Har Permisjoner"
-			onChange={(val: any) =>
-				handleChange(
-					val?.target?.checked || undefined,
-					'tenorRelasjoner.arbeidsforhold.harPermisjoner',
-				)
-			}
+		<FormTextInput
+			name="antallAnsatte.fraOgMed"
+			label="Minimum antall ansatte"
+			// @ts-ignore
+			onBlur={(val: any) => handleChange(val?.target?.value || null, 'antallAnsatte.fraOgMed')}
+			visHvisAvhuket={false}
 		/>
-		<FormCheckbox
-			name="tenorRelasjoner.arbeidsforhold.harPermitteringer"
-			label="Har Permitteringer"
-			onChange={(val: any) =>
-				handleChange(
-					val?.target?.checked || undefined,
-					'tenorRelasjoner.arbeidsforhold.harPermitteringer',
-				)
-			}
+		<FormTextInput
+			name="antallAnsatte.tilOgMed"
+			label="Maks antall ansatte"
+			// @ts-ignore
+			onBlur={(val: any) => handleChange(val?.target?.value || null, 'antallAnsatte.tilOgMed')}
+			visHvisAvhuket={false}
 		/>
-		<FormCheckbox
-			name="tenorRelasjoner.arbeidsforhold.harTimerMedTimeloenn"
-			label="Har Timer Med Timeloenn"
-			onChange={(val: any) =>
-				handleChange(
-					val?.target?.checked || undefined,
-					'tenorRelasjoner.arbeidsforhold.harTimerMedTimeloenn',
-				)
-			}
-		/>
-		<FormCheckbox
-			name="tenorRelasjoner.arbeidsforhold.harUtenlandsopphold"
-			label="Har Utenlandsopphold"
-			onChange={(val: any) =>
-				handleChange(
-					val?.target?.checked || undefined,
-					'tenorRelasjoner.arbeidsforhold.harUtenlandsopphold',
-				)
-			}
-		/>
-		<FormCheckbox
-			name="tenorRelasjoner.arbeidsforhold.harHistorikk"
-			label="Har Historikk"
-			onChange={(val: any) =>
-				handleChange(
-					val?.target?.checked || undefined,
-					'tenorRelasjoner.arbeidsforhold.harHistorikk',
-				)
-			}
-		/>
+		<div className={'flexbox'} style={{ flexFlow: 'wrap' }}>
+			<FormCheckbox
+				name="tenorRelasjoner.arbeidsforhold.harPermisjoner"
+				label="Har permisjoner"
+				onChange={(val: any) =>
+					handleChange(
+						val?.target?.checked || undefined,
+						'tenorRelasjoner.arbeidsforhold.harPermisjoner',
+					)
+				}
+			/>
+			<FormCheckbox
+				name="tenorRelasjoner.arbeidsforhold.harPermitteringer"
+				label="Har Permitteringer"
+				onChange={(val: any) =>
+					handleChange(
+						val?.target?.checked || undefined,
+						'tenorRelasjoner.arbeidsforhold.harPermitteringer',
+					)
+				}
+			/>
+			<FormCheckbox
+				name="tenorRelasjoner.arbeidsforhold.harTimerMedTimeloenn"
+				label="Har Timer Med Timeloenn"
+				onChange={(val: any) =>
+					handleChange(
+						val?.target?.checked || undefined,
+						'tenorRelasjoner.arbeidsforhold.harTimerMedTimeloenn',
+					)
+				}
+			/>
+			<FormCheckbox
+				name="tenorRelasjoner.arbeidsforhold.harUtenlandsopphold"
+				label="Har Utenlandsopphold"
+				onChange={(val: any) =>
+					handleChange(
+						val?.target?.checked || undefined,
+						'tenorRelasjoner.arbeidsforhold.harUtenlandsopphold',
+					)
+				}
+			/>
+			<FormCheckbox
+				name="tenorRelasjoner.arbeidsforhold.harHistorikk"
+				label="Har Historikk"
+				onChange={(val: any) =>
+					handleChange(
+						val?.target?.checked || undefined,
+						'tenorRelasjoner.arbeidsforhold.harHistorikk',
+					)
+				}
+			/>
+		</div>
 	</SoekKategori>
 )

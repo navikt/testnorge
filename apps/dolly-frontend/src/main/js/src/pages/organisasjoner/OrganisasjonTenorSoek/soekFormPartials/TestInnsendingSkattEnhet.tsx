@@ -1,11 +1,9 @@
 import { SoekKategori } from '@/components/ui/soekForm/SoekForm'
 import React from 'react'
-import { useTenorOrganisasjonDomain } from '@/utils/hooks/useTenorSoek'
 import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 
 export const TestInnsendingSkattEnhet = ({ handleChange, handleChangeList }: any) => {
-	const { domain: orgformOptions } = useTenorOrganisasjonDomain('Organisasjonsform')
 	return (
 		<SoekKategori>
 			<div className="flexbox--full-width" style={{ fontSize: 'medium' }}>
@@ -20,47 +18,47 @@ export const TestInnsendingSkattEnhet = ({ handleChange, handleChangeList }: any
 					label="Organisasjonsform"
 					onChange={(val: any) => handleChange(val?.value || null, 'inntektsaar')}
 				/>
-				<FormCheckbox
-					name="harSkattemeldingUtkast"
-					label="Har skattemelding utkast"
-					onChange={(val: any) =>
-						handleChange(val?.target?.checked || undefined, 'harSkattemeldingUtkast')
-					}
-				/>
-				<FormCheckbox
-					name="harSkattemeldingFastsatt"
-					label="Har skattemelding fastsatt"
-					onChange={(val: any) =>
-						handleChange(val?.target?.checked || undefined, 'harSkattemeldingFastsatt')
-					}
-				/>
-				<FormCheckbox
-					name="harSelskapsmeldingUtkast"
-					label="Har selskapsmelding utkast"
-					onChange={(val: any) =>
-						handleChange(val?.target?.checked || undefined, 'harSelskapsmeldingUtkast')
-					}
-				/>
-				<FormCheckbox
-					name="harSelskapsmeldingFastsatt"
-					label="Har selskapsmelding fastsatt"
-					onChange={(val: any) =>
-						handleChange(val?.target?.checked || undefined, 'harSelskapsmeldingFastsatt')
-					}
-				/>
-				<FormCheckbox
-					name="manglendeGrunnlagsdata"
-					label="Manglende grunnlagsdata"
-					onChange={(val: any) =>
-						handleChange(val?.target?.checked || undefined, 'manglendeGrunnlagsdata')
-					}
-				/>
-				<FormCheckbox
-					name="manntall"
-					label="Manntall"
-					onChange={(val: any) => handleChange(val?.target?.checked || undefined, 'manntall')}
-				/>
 			</div>
+			<FormCheckbox
+				name="harSkattemeldingUtkast"
+				label="Har skattemelding utkast"
+				onChange={(val: any) =>
+					handleChange(val?.target?.checked || undefined, 'harSkattemeldingUtkast')
+				}
+			/>
+			<FormCheckbox
+				name="harSkattemeldingFastsatt"
+				label="Har skattemelding fastsatt"
+				onChange={(val: any) =>
+					handleChange(val?.target?.checked || undefined, 'harSkattemeldingFastsatt')
+				}
+			/>
+			<FormCheckbox
+				name="harSelskapsmeldingUtkast"
+				label="Har selskapsmelding utkast"
+				onChange={(val: any) =>
+					handleChange(val?.target?.checked || undefined, 'harSelskapsmeldingUtkast')
+				}
+			/>
+			<FormCheckbox
+				name="harSelskapsmeldingFastsatt"
+				label="Har selskapsmelding fastsatt"
+				onChange={(val: any) =>
+					handleChange(val?.target?.checked || undefined, 'harSelskapsmeldingFastsatt')
+				}
+			/>
+			<FormCheckbox
+				name="manglendeGrunnlagsdata"
+				label="Manglende grunnlagsdata"
+				onChange={(val: any) =>
+					handleChange(val?.target?.checked || undefined, 'manglendeGrunnlagsdata')
+				}
+			/>
+			<FormCheckbox
+				name="manntall"
+				label="Manntall"
+				onChange={(val: any) => handleChange(val?.target?.checked || undefined, 'manntall')}
+			/>
 		</SoekKategori>
 	)
 }

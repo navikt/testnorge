@@ -12,7 +12,7 @@ const OrganisasjonNavn = styled.h3`
 	margin: 5px 0;
 `
 
-const Orgnummer = styled.p`
+const OrgInfo = styled.p`
 	margin: 5px 0 0 0;
 `
 
@@ -79,9 +79,9 @@ export const TreffListeOrg = ({ response, organisasjonListe, loading, error }: a
 								style={{ cursor: 'pointer' }}
 							>
 								<OrganisasjonNavn>{organisasjon?.navn}</OrganisasjonNavn>
-								<Orgnummer>{organisasjon?.organisasjonsnummer}</Orgnummer>
+								<OrgInfo>{organisasjon?.organisasjonsnummer}</OrgInfo>
 								<TagsWrapper>
-									{organisasjon?.tenorRelasjoner?.map((relasjon: any, idx: number) => (
+									{organisasjon?.kilder?.map((relasjon: any, idx: number) => (
 										<Tag
 											size="small"
 											variant="neutral"

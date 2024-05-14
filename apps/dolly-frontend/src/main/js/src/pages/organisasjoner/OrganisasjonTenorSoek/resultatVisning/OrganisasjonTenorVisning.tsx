@@ -3,6 +3,7 @@ import React from 'react'
 import styled from 'styled-components'
 import Loading from '@/components/ui/loading/Loading'
 import { EnhetsregisteretVisning } from '@/pages/organisasjoner/OrganisasjonTenorSoek/resultatVisning/EnhetsregisteretVisning'
+import { OrganisasjonArbeidsforholdVisning } from '@/pages/organisasjoner/OrganisasjonTenorSoek/resultatVisning/OrganisasjonArbeidsforholdVisning'
 
 type OrganisasjonVisningProps = {
 	organisasjon: any
@@ -133,6 +134,7 @@ export const OrganisasjonTenorVisning = ({
 					<NavnHeader>{OrganisasjonData?.navn}</NavnHeader>
 				</div>
 				<EnhetsregisteretVisning data={OrganisasjonData} />
+				<OrganisasjonArbeidsforholdVisning data={OrganisasjonData} />
 			</Box>
 		</OrganisasjonVisningWrapper>
 	)

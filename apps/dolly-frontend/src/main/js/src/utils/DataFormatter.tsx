@@ -164,9 +164,9 @@ export const codeToNorskLabel = (value) => {
 export const oversettBoolean = (value) => {
 	if (_.isNil(value)) {
 		return value
-	} else if (value === true || value === 'true') {
+	} else if (value === true || value === 'true' || value === 'J') {
 		return 'Ja'
-	} else if (value === false || value === 'false') {
+	} else if (value === false || value === 'false' || value === 'N') {
 		return 'Nei'
 	} else {
 		return value

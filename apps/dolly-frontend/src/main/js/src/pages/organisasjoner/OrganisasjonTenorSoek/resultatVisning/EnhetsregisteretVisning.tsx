@@ -9,7 +9,6 @@ export const EnhetsregisteretVisning = ({ data }: { data: TenorOrganisasjon }) =
 		return null
 	}
 
-	console.log('data: ', data) //TODO - SLETT MEG
 	const { forretningsadresse, postadresse } = data
 
 	return (
@@ -18,6 +17,13 @@ export const EnhetsregisteretVisning = ({ data }: { data: TenorOrganisasjon }) =
 				<TabsVisning kildedata={data.tenorMetadata?.kildedata}>
 					<TitleValue title="Organisasjonsnummer" value={data.organisasjonsnummer} />
 					<TitleValue title="Navn" value={data.navn} />
+					<TitleValue
+						title="Organisasjonsform"
+						value={
+							data.organisasjonsform?.beskrivelse &&
+							`${data.organisasjonsform.beskrivelse} (${data.organisasjonsform.kode})`
+						}
+					/>
 				</TabsVisning>
 			</SubOverskriftExpandable>
 			{forretningsadresse?.land && (
