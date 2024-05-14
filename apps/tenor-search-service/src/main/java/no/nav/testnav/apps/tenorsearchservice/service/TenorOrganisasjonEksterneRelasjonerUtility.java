@@ -4,7 +4,7 @@ import lombok.experimental.UtilityClass;
 import no.nav.testnav.apps.tenorsearchservice.domain.TenorOrganisasjonRequest;
 
 import static java.util.Objects.isNull;
-import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.convertBooleanWildcard;
+import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.convertBooleanSpecial;
 import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.convertDatoer;
 import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.convertEnum;
 import static no.nav.testnav.apps.tenorsearchservice.service.TenorConverterUtility.convertObject;
@@ -33,8 +33,8 @@ public class TenorOrganisasjonEksterneRelasjonerUtility {
 
         return isNull(reskontroInnsyn) ? "" :
                 " and tenorRelasjoner.samletReskontroinnsyn:{%s}".formatted(guard(new StringBuilder()
-                        .append(convertBooleanWildcard("harKrav", reskontroInnsyn.getHarKrav()))
-                        .append(convertBooleanWildcard("harInnbetaling", reskontroInnsyn.getHarInnbetaling()))));
+                        .append(convertBooleanSpecial("harKrav", reskontroInnsyn.getHarKrav()))
+                        .append(convertBooleanSpecial("harInnbetaling", reskontroInnsyn.getHarInnbetaling()))));
     }
 
     private String getTjenestepensjonsavtaleOpplysningspliktig(TenorOrganisasjonRequest.TjenestepensjonsavtaleOpplysningspliktig tpOpplysningspliktig) {
@@ -50,10 +50,10 @@ public class TenorOrganisasjonEksterneRelasjonerUtility {
         return isNull(skattEnhet) ? "" :
                 " and tenorRelasjoner.testinnsendingSkattEnhet:{%s}".formatted(guard(new StringBuilder()
                         .append(convertObject("inntektsaar", skattEnhet.getInntektsaar()))
-                        .append(convertBooleanWildcard("harSkattemeldingUtkast", skattEnhet.getHarSkattemeldingUtkast()))
-                        .append(convertBooleanWildcard("harSkattemeldingFastsatt", skattEnhet.getHarSkattemeldingFastsatt()))
-                        .append(convertBooleanWildcard("harSelskapsmeldingUtkast", skattEnhet.getHarSelskapsmeldingUtkast()))
-                        .append(convertBooleanWildcard("harSelskapsmeldingFastsatt", skattEnhet.getHarSelskapsmeldingFastsatt()))
+                        .append(convertBooleanSpecial("harSkattemeldingUtkast", skattEnhet.getHarSkattemeldingUtkast()))
+                        .append(convertBooleanSpecial("harSkattemeldingFastsatt", skattEnhet.getHarSkattemeldingFastsatt()))
+                        .append(convertBooleanSpecial("harSelskapsmeldingUtkast", skattEnhet.getHarSelskapsmeldingUtkast()))
+                        .append(convertBooleanSpecial("harSelskapsmeldingFastsatt", skattEnhet.getHarSelskapsmeldingFastsatt()))
                         .append(convertEnum("manglendeGrunnlagsdata", skattEnhet.getManglendeGrunnlagsdata()))
                         .append(convertEnum("manntall", skattEnhet.getManntall()))));
     }
@@ -64,11 +64,11 @@ public class TenorOrganisasjonEksterneRelasjonerUtility {
                 " and tenorRelasjoner.arbeidsforhold:{%s}".formatted(guard(new StringBuilder()
                         .append(convertDatoer("startDato", arbeidsforhold.getStartDato()))
                         .append(convertDatoer("sluttDato", arbeidsforhold.getSluttDato()))
-                        .append(convertBooleanWildcard("harPermisjoner", arbeidsforhold.getHarPermisjoner()))
-                        .append(convertBooleanWildcard("harPermitteringer", arbeidsforhold.getHarPermitteringer()))
-                        .append(convertBooleanWildcard("harTimerMedTimeloenn", arbeidsforhold.getHarTimerMedTimeloenn()))
-                        .append(convertBooleanWildcard("harUtenlandsopphold", arbeidsforhold.getHarUtenlandsopphold()))
-                        .append(convertBooleanWildcard("harHistorikk", arbeidsforhold.getHarHistorikk()))
+                        .append(convertBooleanSpecial("harPermisjoner", arbeidsforhold.getHarPermisjoner()))
+                        .append(convertBooleanSpecial("harPermitteringer", arbeidsforhold.getHarPermitteringer()))
+                        .append(convertBooleanSpecial("harTimerMedTimeloenn", arbeidsforhold.getHarTimerMedTimeloenn()))
+                        .append(convertBooleanSpecial("harUtenlandsopphold", arbeidsforhold.getHarUtenlandsopphold()))
+                        .append(convertBooleanSpecial("harHistorikk", arbeidsforhold.getHarHistorikk()))
                         .append(convertObject("arbeidsforholdtype", arbeidsforhold.getArbeidsforholdtype()))));
     }
 }
