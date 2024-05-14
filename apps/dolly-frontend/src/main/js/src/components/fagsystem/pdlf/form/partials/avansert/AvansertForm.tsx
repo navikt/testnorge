@@ -11,7 +11,7 @@ interface AvansertFormValues {
 
 export const AvansertForm = ({ path, kanVelgeMaster = true }: AvansertFormValues) => {
 	const [visAvansert, setVisAvansert, setSkjulAvansert] = useBoolean(false)
-
+	console.log()
 	return (
 		<div className="flexbox--full-width">
 			{visAvansert ? (

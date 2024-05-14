@@ -58,6 +58,7 @@ const FoedselLes = ({ foedsel, idx }: FoedselLesTypes) => {
 				value={foedsel.foedeland}
 				kodeverk={AdresseKodeverk.StatsborgerskapLand}
 			/>
+			<TitleValue title="Master" value={foedsel.metadata.master} />
 		</div>
 	)
 }

@@ -72,6 +72,7 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 				iconType={'personinformasjon'}
 			>
 				<AttributtKategori title="Diverse" attr={sm.attrs}>
+					<Attributt attr={sm.attrs.foedsel} />
 					<Attributt attr={sm.attrs.navn} />
 					<Attributt attr={sm.attrs.sprakKode} />
 					<Attributt attr={sm.attrs.egenAnsattDatoFom} />
@@ -203,7 +204,10 @@ PersoninformasjonPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 		foedsel: {
 			label: 'Fødsel',
 			checked: has(paths.foedsel),
-			add: () => set(paths.foedsel, [getInitialFoedsel(identtype === 'NPID' ? 'PDL' : 'FREG')]),
+			add: () =>
+				set(paths.foedsel, [
+					getInitialFoedsel(identMaster === 'PDL' || identtype === 'NPID' ? 'PDL' : 'FREG'),
+				]),
 			remove: () => del([paths.foedsel]),
 		},
 		doedsdato: {
