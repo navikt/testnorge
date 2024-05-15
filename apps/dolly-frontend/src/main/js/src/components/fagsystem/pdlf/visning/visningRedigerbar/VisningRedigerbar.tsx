@@ -39,6 +39,7 @@ import { Form, FormProvider, useForm } from 'react-hook-form'
 import { visningRedigerbarValidation } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarValidation'
 import { yupResolver } from '@hookform/resolvers/yup'
 import './VisningRedigerbarForm.less'
+import { boolean } from 'yup'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -116,8 +117,8 @@ export const VisningRedigerbar = ({
 	path,
 	ident,
 	identtype,
+	identMaster = boolean,
 	disableSlett = false,
-	personFoerLeggTil = null,
 	personValues = null,
 	relasjoner = null,
 	relatertPersonInfo = null,
@@ -247,7 +248,12 @@ export const VisningRedigerbar = ({
 			case Attributt.Doedsfall:
 				return <DoedsfallForm path={path} />
 			case Attributt.Statsborgerskap:
-				return <StatsborgerskapForm path={path} identtype={identtype} />
+				return (
+					<StatsborgerskapForm
+						path={path}
+						kanVelgeMaster={identMaster !== 'PDL' && identtype !== 'NPID'}
+					/>
+				)
 			case Attributt.Innvandring:
 				return <InnvandringForm path={path} />
 			case Attributt.Utvandring:

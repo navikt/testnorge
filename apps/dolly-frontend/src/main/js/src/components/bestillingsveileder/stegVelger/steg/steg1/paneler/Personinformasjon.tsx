@@ -76,6 +76,7 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 					<Attributt attr={sm.attrs.navn} />
 					<Attributt attr={sm.attrs.kjonn} />
 					<Attributt attr={sm.attrs.doedsdato} />
+					<Attributt attr={sm.attrs.statsborgerskap} />
 					<Attributt attr={sm.attrs.sprakKode} />
 					<Attributt attr={sm.attrs.egenAnsattDatoFom} />
 					<Attributt
@@ -228,7 +229,9 @@ PersoninformasjonPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 				_.has(personFoerLeggTil, 'pdlforvalter[0].person.statsborgerskap')
 					? set(paths.statsborgerskap, fjernIdFoerLeggTil('statsborgerskap'))
 					: set(paths.statsborgerskap, [
-							getInitialStatsborgerskap(identtype === 'NPID' ? 'PDL' : 'FREG'),
+							getInitialStatsborgerskap(
+								identMaster === 'PDL' || identtype === 'NPID' ? 'PDL' : 'FREG',
+							),
 						])
 			},
 			remove() {

@@ -50,7 +50,7 @@ const getCurrentPersonstatus = (data: any) => {
 	return null
 }
 
-const NavnVisning = ({ navn }) => {
+const NavnVisning = ({ navn, showMaster }) => {
 	if (!navn) {
 		return null
 	}
@@ -61,7 +61,7 @@ const NavnVisning = ({ navn }) => {
 			<TitleValue title="Mellomnavn" value={navn.mellomnavn} />
 			<TitleValue title="Etternavn" value={navn.etternavn} />
 			<TitleValue title="Navn gyldig f.o.m." value={formatDate(navn.gyldigFraOgMed)} />
-			<TitleValue title="Master" value={navn.master} />
+			<TitleValue title="Master" value={navn.master} hidden={!showMaster} />
 		</>
 	)
 }
@@ -209,7 +209,12 @@ export const Persondetaljer = ({
 
 										return (
 											<VisningRedigerbarConnector
-												dataVisning={<NavnVisning navn={redigertNavn ? redigertNavn : navn} />}
+												dataVisning={
+													<NavnVisning
+														navn={redigertNavn ? redigertNavn : navn}
+														showMaster={true}
+													/>
+												}
 												initialValues={{ navn: navn }}
 												redigertAttributt={redigertNavn && { navn: redigertNavn }}
 												path="navn"
