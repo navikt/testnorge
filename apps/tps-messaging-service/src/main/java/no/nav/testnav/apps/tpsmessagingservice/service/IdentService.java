@@ -94,8 +94,6 @@ public class IdentService {
 
         var xmlRequest = prepareRequest(identer, isProd);
 
-        log.info("M201 request: {}", xmlRequest);
-
         var miljoerResponse = servicerutineConsumer.sendMessage(xmlRequest, miljoer);
 
         miljoerResponse.forEach((key, value) -> log.info("Miljø: {} XML: {}", key, value));
