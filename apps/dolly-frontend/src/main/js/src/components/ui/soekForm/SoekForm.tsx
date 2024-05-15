@@ -7,8 +7,8 @@ type HeaderProps = {
 	title: string
 	antall?: number
 	paths?: Array<string>
-	getValues: Function
-	emptyCategory: Function
+	getValues?: Function
+	emptyCategory?: Function
 }
 
 export const SoekefeltWrapper = styled.div`
@@ -29,6 +29,13 @@ export const SoekKategori = styled.div`
 	flex-wrap: wrap;
 	font-size: medium;
 
+	h4 {
+		display: flex;
+		align-items: center;
+		margin: 15px 0 10px;
+		width: 100%;
+	}
+
 	&& {
 		.dolly-form-input {
 			min-width: 0;
@@ -39,6 +46,7 @@ export const SoekKategori = styled.div`
 
 export const Buttons = styled.div`
 	margin: 15px 0 10px 0;
+
 	&& {
 		button {
 			margin-right: 10px;
@@ -58,6 +66,7 @@ const KategoriCircle = styled.div`
 	border-radius: 50%;
 	margin-left: 10px;
 	background-color: #0067c5ff;
+
 	&& {
 		p {
 			margin: auto;

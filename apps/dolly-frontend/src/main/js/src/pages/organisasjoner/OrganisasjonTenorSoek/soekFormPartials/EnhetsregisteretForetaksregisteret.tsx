@@ -8,7 +8,7 @@ import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { Option } from '@/service/SelectOptionsOppslag'
 
-export const EnhetsregisteretForetaksregisteret = ({ handleChange, handleChangeList }: any) => {
+export const EnhetsregisteretForetaksregisteret = ({ handleChange }: any) => {
 	const { domain: orgformOptions } = useTenorOrganisasjonDomain('Organisasjonsform')
 	const { domain: enhetStatusOptions } = useTenorOrganisasjonDomain('EnhetStatus')
 	return (

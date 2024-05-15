@@ -10,8 +10,6 @@ export const OrganisasjonArbeidsforholdVisning = ({ data }: { data: TenorOrganis
 		return null
 	}
 
-	console.log('data: ', data) //TODO - SLETT MEG
-
 	return (
 		<>
 			<SubOverskriftExpandable label="Arbeidsforhold" iconKind="arbeid" isExpanded={true}>

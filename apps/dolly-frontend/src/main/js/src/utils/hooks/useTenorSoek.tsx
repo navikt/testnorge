@@ -14,6 +14,7 @@ export const useTenorIdent = (ident: string) => {
 				]
 			: null,
 		([url, headers]) => Request.post(url, headers),
+		{ dedupingInterval: 60000 },
 	)
 
 	return {
@@ -35,6 +36,7 @@ export const useTenorOrganisasjon = (orgNummer?: string) => {
 				]
 			: null,
 		([url, headers]) => Request.post(url, headers),
+		{ dedupingInterval: 60000 },
 	)
 
 	return {
@@ -54,6 +56,7 @@ export const useTenorOversikt = (request: any, antall = 10, side = 0, seed?: num
 				]
 			: null,
 		([url, headers]) => Request.post(url, headers),
+		{ dedupingInterval: 500 },
 	)
 
 	return {
@@ -78,6 +81,7 @@ export const useTenorOversiktOrganisasjoner = (
 				]
 			: null,
 		([url, headers]) => Request.post(url, headers),
+		{ dedupingInterval: 500 },
 	)
 
 	return {

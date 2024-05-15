@@ -14,6 +14,7 @@ interface MonthpickerProps {
 	isClearable?: boolean
 	minDate?: Date
 	maxDate?: Date
+	placeholder?: string
 }
 
 export const Monthpicker = ({
@@ -25,6 +26,7 @@ export const Monthpicker = ({
 	isClearable = false,
 	minDate = null,
 	maxDate = null,
+	placeholder = null,
 	...props
 }: MonthpickerProps) => {
 	const formMethods = useFormContext()
@@ -64,7 +66,12 @@ export const Monthpicker = ({
 		<InputWrapper size={'small'}>
 			<Label name={name} label={label}>
 				<MonthPicker {...monthpickerProps} dropdownCaption={true} selected={formattedDate}>
-					<MonthPicker.Input label={null} size={'small'} placeholder={'yyyy-mm'} {...inputProps} />
+					<MonthPicker.Input
+						label={null}
+						size={'small'}
+						placeholder={placeholder || 'yyyy-mm'}
+						{...inputProps}
+					/>
 				</MonthPicker>
 			</Label>
 		</InputWrapper>

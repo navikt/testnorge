@@ -1,7 +1,6 @@
 import { Form, FormProvider, useForm } from 'react-hook-form'
 import styled from 'styled-components'
 import { Accordion } from '@navikt/ds-react'
-import { InntektAordningen } from '@/pages/tenorSoek/soekFormPartials/InntektAordningen'
 import React from 'react'
 import { Header } from '@/components/ui/soekForm/SoekForm'
 import DisplayFormState from '@/utils/DisplayFormState'
@@ -41,8 +40,11 @@ export const SoekForm = ({ setRequest, setMarkertePersoner, mutate }: any) => {
 			if (request[key] === '' || request[key] === null || request[key] === undefined) {
 				delete request[key]
 			} else if (typeof request[key] === 'object' && !(request[key] instanceof Date)) {
-				request[key] = getUpdatedRequest(request[key])
-				if (Object.keys(request[key]).length === 0) delete request[key]
+				if (Object.keys(request[key]).length === 0) {
+					delete request[key]
+				} else {
+					request[key] = getUpdatedRequest(request[key])
+				}
 			}
 		}
 		return Array.isArray(request) ? request.filter((val) => val) : request

@@ -29,6 +29,7 @@ export const Datepicker = ({
 	excludeDates,
 	minDate,
 	maxDate,
+	format = null as unknown as string,
 }) => {
 	const formMethods = useFormContext()
 
@@ -50,13 +51,13 @@ export const Datepicker = ({
 		disabled: excludeDates,
 		defaultSelected: getSelectedDay(),
 	})
-	const selectedDay = getSelectedDay()
+	const selectedDay = getSelectedDay() ? formatDate(getSelectedDay(), format) : ''
 
 	return (
 		<DatePicker {...datepickerProps} dropdownCaption={true} selected={selectedDay}>
 			<DatePicker.Input
 				{...inputProps}
-				value={selectedDay ? formatDate(selectedDay) : ''}
+				value={selectedDay}
 				placeholder={placeholder}
 				size={'small'}
 				disabled={disabled}

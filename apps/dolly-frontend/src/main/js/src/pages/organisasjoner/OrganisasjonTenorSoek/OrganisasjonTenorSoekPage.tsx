@@ -22,10 +22,6 @@ export const OrganisasjonTenorSoekPage = () => {
 	)
 
 	useEffect(() => {
-		setState(initialState)
-	}, [request])
-
-	useEffect(() => {
 		if (response) {
 			const organisasjoner = response.data?.data?.organisasjoner || []
 			const nextState = {

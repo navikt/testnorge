@@ -1,40 +1,33 @@
 import { SoekKategori } from '@/components/ui/soekForm/SoekForm'
-import React, { SyntheticEvent } from 'react'
+import React from 'react'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { Monthpicker } from '@/components/ui/form/inputs/monthpicker/Monthpicker'
+import { format } from 'date-fns'
 
 export const Tjenestepensjonsavtale = ({ handleChange }: any) => (
 	<SoekKategori>
+		<h4>Søk etter opplysningspliktige enheter som har avtale med pensjonsinnretning</h4>
 		<FormTextInput
+			visHvisAvhuket={false}
 			name="tenorRelasjoner.tjenestepensjonsavtaleOpplysningspliktig.tjenestepensjonsinnretningOrgnr"
-			label="Manglende grunnlagsdata"
+			label="Pensjonsinnretning orgnr"
+			placeholder={'9 siffer'}
 			onBlur={(val: any) =>
 				handleChange(
-					val?.target?.value || undefined,
+					val?.target?.value || null,
 					'tenorRelasjoner.tjenestepensjonsavtaleOpplysningspliktig.tjenestepensjonsinnretningOrgnr',
 				)
 			}
 		/>
-		<FormDatepicker
-			name="tenorRelasjoner.tjenestepensjonsavtaleOpplysningspliktig.periode.fraOgMed"
-			label="Periode f.o.m."
-			onChange={(val: SyntheticEvent) =>
+		<Monthpicker
+			name="tenorRelasjoner.tjenestepensjonsavtaleOpplysningspliktig.periode"
+			label="Periode"
+			onChange={(val: Date) => {
 				handleChange(
-					val || null,
-					'tenorRelasjoner.tjenestepensjonsavtaleOpplysningspliktig.periode.fraOgMed',
+					val ? format(val, 'yyyy-MM') : undefined,
+					'tenorRelasjoner.tjenestepensjonsavtaleOpplysningspliktig.periode',
 				)
-			}
-			visHvisAvhuket={false}
-		/>
-		<FormDatepicker
-			name="tenorRelasjoner.tjenestepensjonsavtaleOpplysningspliktig.periode.tilOgMed"
-			label="Periode t.o.m."
-			onChange={(val: SyntheticEvent) =>
-				handleChange(
-					val || null,
-					'tenorRelasjoner.tjenestepensjonsavtaleOpplysningspliktig.periode.tilOgMed',
-				)
-			}
+			}}
 			visHvisAvhuket={false}
 		/>
 	</SoekKategori>

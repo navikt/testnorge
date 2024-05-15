@@ -38,8 +38,11 @@ export const SoekFormOrg = ({ setRequest, mutate }: any) => {
 			if (request[key] === '' || request[key] === null || request[key] === undefined) {
 				delete request[key]
 			} else if (typeof request[key] === 'object' && !(request[key] instanceof Date)) {
-				request[key] = getUpdatedRequest(request[key])
-				if (Object.keys(request[key]).length === 0) delete request[key]
+				if (Object.keys(request[key]).length === 0) {
+					delete request[key]
+				} else {
+					request[key] = getUpdatedRequest(request[key])
+				}
 			}
 		}
 		return Array.isArray(request) ? request.filter((val) => val) : request
@@ -138,8 +141,10 @@ export const SoekFormOrg = ({ setRequest, mutate }: any) => {
 										<Header
 											title="Arbeidsforhold"
 											antall={getAntallRequest([
-												'tenorRelasjoner.arbeidsforhold.startDato;',
-												'tenorRelasjoner.arbeidsforhold.sluttDato',
+												'tenorRelasjoner.arbeidsforhold.startDato.fraOgMed',
+												'tenorRelasjoner.arbeidsforhold.startDato.tilOgMed',
+												'tenorRelasjoner.arbeidsforhold.sluttDato.fraOgMed',
+												'tenorRelasjoner.arbeidsforhold.sluttDato.tilOgMed',
 												'tenorRelasjoner.arbeidsforhold.harPermisjoner',
 												'tenorRelasjoner.arbeidsforhold.harPermitteringer',
 												'tenorRelasjoner.arbeidsforhold.harTimerMedTimeloenn',

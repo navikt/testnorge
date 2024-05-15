@@ -25,11 +25,11 @@ export const formatAlderBarn = (alder, doedsdato, doedfoedt) => {
 
 // Format date to readable string format (AAAA-MM-DDTxx:xx:xx to DD.MM.AAAA?)
 // Date ---> String
-export const formatDate = (date) => {
+export const formatDate = (date: any, formatString?: string) => {
 	if (!date) return date
 	// Parse date if not date
 	if (!isDate(date)) date = new Date(date)
-	return format(date, defaultDateFormat)
+	return format(date, formatString || defaultDateFormat)
 }
 
 export const formatDateToYear = (date) => {
