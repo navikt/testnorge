@@ -1,9 +1,8 @@
-import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import { arrayToString, codeToNorskLabel, oversettBoolean } from '@/utils/DataFormatter'
 import React from 'react'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { TabsVisning } from '@/pages/tenorSoek/resultatVisning/TabsVisning'
 import SubOverskriftExpandable from '@/components/ui/subOverskrift/SubOverskriftExpandable'
+import { Inntekt } from '@/components/fagsystem/skatteetaten/visning/InntektVisning'
 
 export const InntektVisning = ({ data }: any) => {
 	if (!data || data.length < 1) {
@@ -17,27 +16,7 @@ export const InntektVisning = ({ data }: any) => {
 					{(inntekt: any) => {
 						return (
 							<TabsVisning kildedata={inntekt.tenorMetadata?.kildedata}>
-								<TitleValue title="Periode" value={inntekt.periode} />
-								<TitleValue title="Opplysningspliktig" value={inntekt.opplysningspliktig} />
-								<TitleValue
-									title="Inntektstype"
-									value={arrayToString(
-										inntekt.inntektstype?.map((type: string) => codeToNorskLabel(type)),
-									)}
-								/>
-								<TitleValue
-									title="Beskrivelse"
-									value={arrayToString(
-										inntekt.beskrivelse?.map((beskr: string) => codeToNorskLabel(beskr)),
-									)}
-								/>
-								<TitleValue
-									title="Forskuddstrekk"
-									value={arrayToString(
-										inntekt.forskuddstrekk?.map((trekk: string) => codeToNorskLabel(trekk)),
-									)}
-								/>
-								<TitleValue title="Har historikk" value={oversettBoolean(inntekt.harHistorikk)} />
+								<Inntekt inntekt={inntekt} />
 							</TabsVisning>
 						)
 					}}

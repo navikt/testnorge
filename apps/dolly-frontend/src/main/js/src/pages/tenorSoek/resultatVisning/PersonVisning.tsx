@@ -8,6 +8,7 @@ import Loading from '@/components/ui/loading/Loading'
 import { EnhetsregisteretForetaksregisteretVisning } from '@/pages/tenorSoek/resultatVisning/EnhetsregisteretForetaksregisteretVisning'
 import { NavigerTilPerson } from '@/pages/tenorSoek/resultatVisning/NavigerTilPerson'
 import { ImporterValgtePersoner } from '@/pages/tenorSoek/resultatVisning/ImporterValgtePersoner'
+import { TjenestepensjonsavtaleVisning } from '@/pages/tenorSoek/resultatVisning/TjenestepensjonsavtaleVisning'
 
 type PersonVisningProps = {
 	person: any
@@ -47,6 +48,7 @@ export const PersonVisning = ({ person, ident, ibruk, loading, error }: PersonVi
 	const personData = person.data?.dokumentListe?.find((dokument: any) =>
 		dokument.identifikator?.includes(ident),
 	)
+	console.log('personData: ', personData) //TODO - SLETT MEG
 
 	return (
 		<PersonVisningWrapper>
@@ -60,6 +62,7 @@ export const PersonVisning = ({ person, ident, ibruk, loading, error }: PersonVi
 					)}
 				</div>
 				<FolkeregisteretVisning data={personData} />
+				<TjenestepensjonsavtaleVisning data={personData?.tenorRelasjoner?.tjenestepensjonavtale} />
 				<EnhetsregisteretForetaksregisteretVisning
 					data={_.get(personData, 'tenorRelasjoner.brreg-er-fr')}
 				/>

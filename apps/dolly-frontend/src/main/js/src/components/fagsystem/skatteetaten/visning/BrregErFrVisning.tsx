@@ -2,7 +2,7 @@ import Panel from '@/components/ui/panel/Panel'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import React from 'react'
 
-export const BrregErFrVisning = (harDagligLederRolle: boolean) => {
+export const BrregErFrVisning = ({ harDagligLederRolle }) => {
 	if (!harDagligLederRolle) {
 		return null
 	}

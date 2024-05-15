@@ -14,6 +14,8 @@ import { FolkeregisteretRelasjoner } from '@/pages/tenorSoek/soekFormPartials/Fo
 import { FolkeregisteretHendelser } from '@/pages/tenorSoek/soekFormPartials/FolkeregisteretHendelser'
 import { isDate } from 'date-fns'
 import { fixTimezone } from '@/components/ui/form/formUtils'
+import { Tjenestepensjonsavtale } from '@/pages/tenorSoek/soekFormPartials/Tjenestepensjonsavtale'
+import { getValue } from 'reselect/src/autotrackMemoize/autotracking'
 
 const SoekefeltWrapper = styled.div`
 	display: flex;
@@ -43,12 +45,19 @@ export const SoekForm = ({ setRequest, setMarkertePersoner, mutate }: any) => {
 			} else if (typeof request[key] === 'object' && !(request[key] instanceof Date)) {
 				request[key] = getUpdatedRequest(request[key])
 				if (Object.keys(request[key]).length === 0) delete request[key]
+				// if (Object.keys(request[key]).length === 0) {
+				// 	delete request[key]
+				// } else {
+				// 	request[key] = getUpdatedRequest(request[key])
+				// }
 			}
 		}
 		return Array.isArray(request) ? request.filter((val) => val) : request
 	}
+	//TODO Sjekk ordentlig om dette funker
 
 	const handleChange = (value: any, path: string) => {
+		console.log('value: ', value) //TODO - SLETT MEG
 		if (isDate(value)) {
 			value = fixTimezone(value)
 		}
@@ -213,7 +222,35 @@ export const SoekForm = ({ setRequest, setMarkertePersoner, mutate }: any) => {
 										<FolkeregisteretHendelser handleChange={handleChange} />
 									</Accordion.Content>
 								</Accordion.Item>
-								{/*TODO: Vis denne naar det er mulig aa importere og vise inntekt i Dolly*/}
+								<Accordion.Item>
+									<Accordion.Header>
+										<Header
+											title="Tjenestepensjonsavtale"
+											paths={[
+												'tjenestepensjonsavtale.pensjonsinnretningOrgnr',
+												'tjenestepensjonsavtale.periode',
+											]}
+											getValues={getValues}
+											emptyCategory={emptyCategory}
+										/>
+									</Accordion.Header>
+									<Accordion.Content style={{ paddingRight: '0' }}>
+										<Tjenestepensjonsavtale handleChange={handleChange} getValue={getValues} />
+									</Accordion.Content>
+								</Accordion.Item>
+								<Accordion.Item>
+									<Accordion.Header>
+										<Header
+											title="Enhetsregisteret og Foretaksregisteret"
+											paths={['roller']}
+											getValues={getValues}
+											emptyCategory={emptyCategory}
+										/>
+									</Accordion.Header>
+									<Accordion.Content style={{ paddingRight: '0' }}>
+										<EnhetsregisteretForetaksregisteret handleChangeList={handleChangeList} />
+									</Accordion.Content>
+								</Accordion.Item>
 								<Accordion.Item>
 									<Accordion.Header>
 										<Header
@@ -237,19 +274,6 @@ export const SoekForm = ({ setRequest, setMarkertePersoner, mutate }: any) => {
 											handleChangeList={handleChangeList}
 											getValue={watch}
 										/>
-									</Accordion.Content>
-								</Accordion.Item>
-								<Accordion.Item>
-									<Accordion.Header>
-										<Header
-											title="Enhetsregisteret og Foretaksregisteret"
-											paths={['roller']}
-											getValues={getValues}
-											emptyCategory={emptyCategory}
-										/>
-									</Accordion.Header>
-									<Accordion.Content style={{ paddingRight: '0' }}>
-										<EnhetsregisteretForetaksregisteret handleChangeList={handleChangeList} />
 									</Accordion.Content>
 								</Accordion.Item>
 							</Accordion>

@@ -4,6 +4,7 @@ import Icon from '@/components/ui/icon/Icon'
 import _get from 'lodash/get'
 import { BrregErFrVisning } from '@/components/fagsystem/skatteetaten/visning/BrregErFrVisning'
 import { InntektVisning } from '@/components/fagsystem/skatteetaten/visning/InntektVisning'
+import { TjenestepensjonsavtaleVisning } from '@/components/fagsystem/skatteetaten/visning/TjenestepensjonsavtaleVisning'
 
 type SkatteetatenVisningProps = {
 	data: {
@@ -23,10 +24,16 @@ export const SkatteetatenVisning = ({ data, loading }: SkatteetatenVisningProps)
 		return null
 	}
 
+	const tjenestepensjonavtaleListe = tenorRelasjoner.tjenestepensjonavtale
 	const inntektListe = tenorRelasjoner.inntekt
 	const harDagligLederRolle = _get(tenorRelasjoner, 'brreg-er-fr')?.length > 0
 
-	if (!data && !harDagligLederRolle) {
+	if (
+		!data &&
+		(!tjenestepensjonavtaleListe || tjenestepensjonavtaleListe.length < 1) &&
+		(!inntektListe || inntektListe.length < 1) &&
+		!harDagligLederRolle
+	) {
 		return null
 	}
 
@@ -36,8 +43,9 @@ export const SkatteetatenVisning = ({ data, loading }: SkatteetatenVisningProps)
 				<Icon fontSize={'1.5rem'} kind="tenor" />
 				<h3>Data fra Tenor</h3>
 			</div>
-			<InntektVisning inntektListe={inntektListe} />
+			<TjenestepensjonsavtaleVisning tpListe={tjenestepensjonavtaleListe} />
 			<BrregErFrVisning harDagligLederRolle={harDagligLederRolle} />
+			<InntektVisning inntektListe={inntektListe} />
 		</div>
 	)
 }
