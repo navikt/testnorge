@@ -64,11 +64,11 @@ public class TenorOrganisasjonEksterneRelasjonerUtility {
                 " and tenorRelasjoner.arbeidsforhold:{%s}".formatted(guard(new StringBuilder()
                         .append(convertDatoer("startDato", arbeidsforhold.getStartDato()))
                         .append(convertDatoer("sluttDato", arbeidsforhold.getSluttDato()))
-                        .append(convertBooleanSpecial("harPermisjoner", arbeidsforhold.getHarPermisjoner()))
-                        .append(convertBooleanSpecial("harPermitteringer", arbeidsforhold.getHarPermitteringer()))
-                        .append(convertBooleanSpecial("harTimerMedTimeloenn", arbeidsforhold.getHarTimerMedTimeloenn()))
-                        .append(convertBooleanSpecial("harUtenlandsopphold", arbeidsforhold.getHarUtenlandsopphold()))
-                        .append(convertBooleanSpecial("harHistorikk", arbeidsforhold.getHarHistorikk()))
+                        .append(convertObject("harPermisjoner", arbeidsforhold.getHarPermisjoner()))
+                        .append(convertObject("harPermitteringer", arbeidsforhold.getHarPermitteringer()))
+                        .append(convertObject("harTimerMedTimeloenn", arbeidsforhold.getHarTimerMedTimeloenn()))
+                        .append(convertObject("harUtenlandsopphold", arbeidsforhold.getHarUtenlandsopphold()))
+                        .append(convertObject("harHistorikk", arbeidsforhold.getHarHistorikk()))
                         .append(convertObject("arbeidsforholdtype", arbeidsforhold.getArbeidsforholdtype()))));
     }
 }
