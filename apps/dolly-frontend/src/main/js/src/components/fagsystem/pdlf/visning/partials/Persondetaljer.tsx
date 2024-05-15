@@ -61,6 +61,7 @@ const NavnVisning = ({ navn }) => {
 			<TitleValue title="Mellomnavn" value={navn.mellomnavn} />
 			<TitleValue title="Etternavn" value={navn.etternavn} />
 			<TitleValue title="Navn gyldig f.o.m." value={formatDate(navn.gyldigFraOgMed)} />
+			<TitleValue title="Master" value={navn.master} />
 		</>
 	)
 }

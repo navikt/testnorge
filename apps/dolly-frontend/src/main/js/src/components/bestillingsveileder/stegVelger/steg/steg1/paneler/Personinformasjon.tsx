@@ -4,11 +4,11 @@ import Panel from '@/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import {
+	getInitialDoedsfall,
 	getInitialFoedsel,
 	getInitialKjoenn,
 	getInitialNavn,
 	getInitialStatsborgerskap,
-	initialDoedsfall,
 	initialFullmakt,
 	initialSikkerhetstiltak,
 	initialTilrettelagtKommunikasjon,
@@ -74,6 +74,7 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 				<AttributtKategori title="Diverse" attr={sm.attrs}>
 					<Attributt attr={sm.attrs.foedsel} />
 					<Attributt attr={sm.attrs.navn} />
+					<Attributt attr={sm.attrs.doedsdato} />
 					<Attributt attr={sm.attrs.sprakKode} />
 					<Attributt attr={sm.attrs.egenAnsattDatoFom} />
 					<Attributt
@@ -213,7 +214,10 @@ PersoninformasjonPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 		doedsdato: {
 			label: 'Dødsdato',
 			checked: has(paths.doedsfall),
-			add: () => set(paths.doedsfall, [initialDoedsfall]),
+			add: () =>
+				set(paths.doedsfall, [
+					getInitialDoedsfall(identMaster === 'PDL' || identtype === 'NPID' ? 'PDL' : 'FREG'),
+				]),
 			remove: () => del([paths.doedsfall]),
 		},
 		statsborgerskap: {
