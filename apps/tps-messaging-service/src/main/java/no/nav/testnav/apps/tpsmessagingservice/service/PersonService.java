@@ -205,7 +205,8 @@ public class PersonService {
                         .build())
                 .build();
 
-        var xmlRequest = ServiceRutineUtil.marshallToXML(requestContext, request);
+        var xmlRequest = ServiceRutineUtil.marshallToXML(requestContext, request)
+                .replace("</aksjonsKode2>", "</aksjonsKode2><systemId>Dolly</systemId>");
 
         var miljoerResponse = servicerutineConsumer.sendMessage(xmlRequest, miljoer);
 
