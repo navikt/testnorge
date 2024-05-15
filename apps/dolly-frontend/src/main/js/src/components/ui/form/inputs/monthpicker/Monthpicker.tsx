@@ -50,7 +50,7 @@ export const Monthpicker = ({
 		fromDate: minDate || subYears(new Date(), 125),
 		toDate: maxDate || addYears(new Date(), 5),
 		onMonthChange: (selectedDate) => {
-			console.log('selectedDate: ', selectedDate) //TODO - SLETT MEG
+			// console.log('selectedDate: ', selectedDate) //TODO - SLETT MEG
 			selectedDate?.setHours(12)
 			onChange ? onChange(selectedDate) : handleDateChange(selectedDate)
 		},
@@ -69,10 +69,10 @@ export const Monthpicker = ({
 	}
 	// TODO sjekk om reset funker med oppdatert getUpdatedRequest
 
-	if (name === 'tjenestepensjonsavtale.periode') {
-		console.log('monthpickerProps: ', monthpickerProps) //TODO - SLETT MEG
-		console.log('inputProps: ', inputProps) //TODO - SLETT MEG
-	}
+	// if (name === 'tjenestepensjonsavtale.periode') {
+	// 	console.log('monthpickerProps: ', monthpickerProps) //TODO - SLETT MEG
+	// 	console.log('inputProps: ', inputProps) //TODO - SLETT MEG
+	// }
 	return (
 		<InputWrapper size={'small'}>
 			<Label name={name} label={label}>

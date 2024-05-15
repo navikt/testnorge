@@ -5,6 +5,7 @@ import _get from 'lodash/get'
 import { BrregErFrVisning } from '@/components/fagsystem/skatteetaten/visning/BrregErFrVisning'
 import { InntektVisning } from '@/components/fagsystem/skatteetaten/visning/InntektVisning'
 import { TjenestepensjonsavtaleVisning } from '@/components/fagsystem/skatteetaten/visning/TjenestepensjonsavtaleVisning'
+import { SkattemeldingVisning } from '@/components/fagsystem/skatteetaten/visning/SkattemeldingVisning'
 
 type SkatteetatenVisningProps = {
 	data: {
@@ -25,14 +26,16 @@ export const SkatteetatenVisning = ({ data, loading }: SkatteetatenVisningProps)
 	}
 
 	const tjenestepensjonavtaleListe = tenorRelasjoner.tjenestepensjonavtale
-	const inntektListe = tenorRelasjoner.inntekt
 	const harDagligLederRolle = _get(tenorRelasjoner, 'brreg-er-fr')?.length > 0
+	const skattemeldingListe = tenorRelasjoner.skattemelding
+	const inntektListe = tenorRelasjoner.inntekt
 
 	if (
 		!data &&
 		(!tjenestepensjonavtaleListe || tjenestepensjonavtaleListe.length < 1) &&
-		(!inntektListe || inntektListe.length < 1) &&
-		!harDagligLederRolle
+		!harDagligLederRolle &&
+		(!skattemeldingListe || skattemeldingListe.length < 1) &&
+		(!inntektListe || inntektListe.length < 1)
 	) {
 		return null
 	}
@@ -45,6 +48,7 @@ export const SkatteetatenVisning = ({ data, loading }: SkatteetatenVisningProps)
 			</div>
 			<TjenestepensjonsavtaleVisning tpListe={tjenestepensjonavtaleListe} />
 			<BrregErFrVisning harDagligLederRolle={harDagligLederRolle} />
+			<SkattemeldingVisning skattemeldingListe={skattemeldingListe} />
 			<InntektVisning inntektListe={inntektListe} />
 		</div>
 	)

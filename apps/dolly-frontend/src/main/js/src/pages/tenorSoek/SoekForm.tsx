@@ -16,6 +16,7 @@ import { isDate } from 'date-fns'
 import { fixTimezone } from '@/components/ui/form/formUtils'
 import { Tjenestepensjonsavtale } from '@/pages/tenorSoek/soekFormPartials/Tjenestepensjonsavtale'
 import { getValue } from 'reselect/src/autotrackMemoize/autotracking'
+import { Skattemelding } from '@/pages/tenorSoek/soekFormPartials/Skattemelding'
 
 const SoekefeltWrapper = styled.div`
 	display: flex;
@@ -57,7 +58,7 @@ export const SoekForm = ({ setRequest, setMarkertePersoner, mutate }: any) => {
 	//TODO Sjekk ordentlig om dette funker
 
 	const handleChange = (value: any, path: string) => {
-		console.log('value: ', value) //TODO - SLETT MEG
+		// console.log('value: ', value) //TODO - SLETT MEG
 		if (isDate(value)) {
 			value = fixTimezone(value)
 		}
@@ -249,6 +250,19 @@ export const SoekForm = ({ setRequest, setMarkertePersoner, mutate }: any) => {
 									</Accordion.Header>
 									<Accordion.Content style={{ paddingRight: '0' }}>
 										<EnhetsregisteretForetaksregisteret handleChangeList={handleChangeList} />
+									</Accordion.Content>
+								</Accordion.Item>
+								<Accordion.Item>
+									<Accordion.Header>
+										<Header
+											title="Skattemelding"
+											paths={['skattemelding.inntektsaar', 'skattemelding.skattemeldingstype']}
+											getValues={getValues}
+											emptyCategory={emptyCategory}
+										/>
+									</Accordion.Header>
+									<Accordion.Content style={{ paddingRight: '0' }}>
+										<Skattemelding handleChange={handleChange} />
 									</Accordion.Content>
 								</Accordion.Item>
 								<Accordion.Item>
