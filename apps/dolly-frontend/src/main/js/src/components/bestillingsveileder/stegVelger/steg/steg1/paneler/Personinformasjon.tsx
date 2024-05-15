@@ -74,6 +74,7 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 				<AttributtKategori title="Diverse" attr={sm.attrs}>
 					<Attributt attr={sm.attrs.foedsel} />
 					<Attributt attr={sm.attrs.navn} />
+					<Attributt attr={sm.attrs.kjonn} />
 					<Attributt attr={sm.attrs.doedsdato} />
 					<Attributt attr={sm.attrs.sprakKode} />
 					<Attributt attr={sm.attrs.egenAnsattDatoFom} />
@@ -112,7 +113,7 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 					disabled={!harFnr}
 					title={
 						!harFnr
-							? 'Personer med identtype DNR eller NPID kan ikke innvandre fordi de ikke har norsk statsborgerskap'
+							? 'Personer med identtype FNR kan ikke innvandre fordi de ikke har norsk statsborgerskap'
 							: ''
 					}
 				/>
@@ -277,7 +278,10 @@ PersoninformasjonPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 		kjonn: {
 			label: 'Kjønn',
 			checked: has(paths.kjoenn),
-			add: () => set(paths.kjoenn, [getInitialKjoenn(identtype === 'NPID' ? 'PDL' : 'FREG')]),
+			add: () =>
+				set(paths.kjoenn, [
+					getInitialKjoenn(identMaster === 'PDL' || identtype === 'NPID' ? 'PDL' : 'FREG'),
+				]),
 			remove: () => del(paths.kjoenn),
 		},
 		navn: {

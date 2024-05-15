@@ -8,10 +8,10 @@ import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bes
 
 type KjoennTypes = {
 	path: string
-	identtype?: string
+	kanVelgeMaster?: boolean
 }
 
-export const KjoennForm = ({ path, identtype }: KjoennTypes) => {
+export const KjoennForm = ({ path, kanVelgeMaster }: KjoennTypes) => {
 	return (
 		<>
 			<FormSelect
@@ -21,7 +21,7 @@ export const KjoennForm = ({ path, identtype }: KjoennTypes) => {
 				size="large"
 				isClearable={false}
 			/>
-			<AvansertForm path={path} kanVelgeMaster={identtype !== 'NPID'} />
+			<AvansertForm path={path} kanVelgeMaster={kanVelgeMaster} />
 		</>
 	)
 }
@@ -34,10 +34,17 @@ export const Kjoenn = () => {
 			<FormDollyFieldArray
 				name={'pdldata.person.kjoenn'}
 				header="Kjønn"
-				newEntry={getInitialKjoenn(opts?.identtype === 'NPID' ? 'PDL' : 'FREG')}
+				newEntry={getInitialKjoenn(
+					opts?.identMaster === 'PDL' || opts?.identtype === 'NPID' ? 'PDL' : 'FREG',
+				)}
 				canBeEmpty={false}
 			>
-				{(path: string) => <KjoennForm path={path} identtype={opts?.identtype} />}
+				{(path: string) => (
+					<KjoennForm
+						path={path}
+						kanVelgeMaster={opts?.identMaster !== 'PDL' && opts?.identtype !== 'NPID'}
+					/>
+				)}
 			</FormDollyFieldArray>
 		</div>
 	)
