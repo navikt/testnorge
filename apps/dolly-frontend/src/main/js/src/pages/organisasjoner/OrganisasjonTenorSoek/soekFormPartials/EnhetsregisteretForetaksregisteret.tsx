@@ -22,7 +22,7 @@ export const EnhetsregisteretForetaksregisteret = ({ handleChange }: any) => {
 			/>
 			<FormSelect
 				name="organisasjonsform.kode"
-				options={createOptions(orgformOptions?.data, true)}
+				options={createOptions(orgformOptions?.data)}
 				label="Organisasjonsform"
 				size={'xlarge'}
 				onChange={(val: any) => handleChange(val?.value || null, 'organisasjonsform.kode')}
@@ -40,7 +40,7 @@ export const EnhetsregisteretForetaksregisteret = ({ handleChange }: any) => {
 			/>
 			<FormSelect
 				name="enhetStatuser.kode"
-				options={createOptions(enhetStatusOptions?.data, true)}
+				options={createOptions(enhetStatusOptions?.data)}
 				label="Enhet status"
 				onChange={(val: any) => handleChange(val?.value || null, 'enhetStatuser.kode')}
 			/>

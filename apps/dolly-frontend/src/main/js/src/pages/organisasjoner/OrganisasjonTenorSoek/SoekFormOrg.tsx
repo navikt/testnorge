@@ -48,12 +48,20 @@ export const SoekFormOrg = ({ setRequest, mutate }: any) => {
 		return Array.isArray(request) ? request.filter((val) => val) : request
 	}
 
+	const formatRequest = (request: any) => {
+		let updatedRequest = { ...request }
+		for (let i = 0; i < 2; i++) {
+			updatedRequest = getUpdatedRequest(request)
+		}
+		return updatedRequest
+	}
+
 	const handleChange = (value: any, path: string) => {
 		if (isDate(value)) {
 			value = fixTimezone(value)
 		}
 		setValue(path, value)
-		const request = getUpdatedRequest(watch())
+		const request = formatRequest(watch())
 		setRequest({ ...request })
 		mutate()
 	}

@@ -28,7 +28,6 @@ export const Tjenestepensjonsavtale = ({ handleChange }: any) => (
 					'tenorRelasjoner.tjenestepensjonsavtaleOpplysningspliktig.periode',
 				)
 			}}
-			visHvisAvhuket={false}
 		/>
 	</SoekKategori>
 )
