@@ -27,19 +27,29 @@ const multiplePdlPersonUrl = (gruppe) => {
 
 export const usePdlOptions = (gruppe) => {
 	const { data, isLoading, error } = useSWR<any, Error>(
-		multiplePdlforvalterUrl(gruppe),
+		gruppe && gruppe[0].master === 'PDLF'
+			? multiplePdlforvalterUrl(gruppe)
+			: multiplePdlPersonUrl(gruppe),
 		multiFetcherAll,
 	)
 
+	let payload
+	if (data?.[0].data?.hentPersonBolk) {
+		payload = data[0].data?.hentPersonBolk
+	} else {
+		payload = data
+	}
+
 	const personData = []
-	data?.flat().forEach((id) => {
+	payload?.flat().forEach((id) => {
 		const navn = id?.person?.navn?.[0]
 		const fornavn = navn?.fornavn || ''
 		const mellomnavn = navn?.mellomnavn ? `${navn?.mellomnavn?.charAt(0)}.` : ''
 		const etternavn = navn?.etternavn || ''
+		const ident = id?.person?.ident || id?.ident
 		personData.push({
-			value: id?.person?.ident,
-			label: `${id?.person?.ident} - ${fornavn} ${mellomnavn} ${etternavn}`,
+			value: ident,
+			label: `${ident} - ${fornavn} ${mellomnavn} ${etternavn}`,
 			relasjoner: id?.relasjoner?.map((r) => r?.relatertPerson?.ident),
 			alder: getAlder(id.person.foedsel?.[0]?.foedselsdato),
 			sivilstand: id.person.sivilstand?.[0]?.type,

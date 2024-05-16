@@ -9,6 +9,8 @@ import { initialFullmakt } from '@/components/fagsystem/pdlf/form/initialValues'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
 import { UseFormReturn } from 'react-hook-form/dist/types'
+import { useContext } from 'react'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 interface FullmaktProps {
 	formMethods: UseFormReturn
@@ -19,6 +21,9 @@ interface FullmaktProps {
 export const FullmaktForm = ({ formMethods, path, eksisterendeNyPerson = null }: FullmaktProps) => {
 	const fullmaktOmraader = SelectOptionsOppslag.hentFullmaktOmraader()
 	const fullmaktOptions = SelectOptionsFormat.formatOptions('fullmaktOmraader', fullmaktOmraader)
+	const opts: any = useContext(BestillingsveilederContext)
+
+	const isTestnorgeIdent = opts?.identMaster === 'PDL'
 
 	return (
 		<div className="flexbox--flex-wrap">
@@ -40,9 +45,11 @@ export const FullmaktForm = ({ formMethods, path, eksisterendeNyPerson = null }:
 				label={'FULLMEKTIG'}
 				formMethods={formMethods}
 				isExpanded={
+					isTestnorgeIdent ||
 					!isEmpty(formMethods.watch(`${path}.nyFullmektig`), ['syntetisk']) ||
 					formMethods.watch(`${path}.motpartsPersonident`) !== null
 				}
+				toggleExpansion={!isTestnorgeIdent}
 				eksisterendeNyPerson={eksisterendeNyPerson}
 			/>
 			<AvansertForm path={path} kanVelgeMaster={false} />

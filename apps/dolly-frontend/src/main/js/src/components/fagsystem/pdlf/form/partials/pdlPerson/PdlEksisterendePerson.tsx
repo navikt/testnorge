@@ -6,7 +6,6 @@ import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bes
 import { Option } from '@/service/SelectOptionsOppslag'
 import { ForeldreBarnRelasjon, NyIdent } from '@/components/fagsystem/pdlf/PdlTypes'
 import { Alert } from '@navikt/ds-react'
-import { useParams } from 'react-router-dom'
 import { useGruppeIdenter } from '@/utils/hooks/useGruppe'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 import { usePdlOptions } from '@/utils/hooks/useSelectOptions'
@@ -34,10 +33,14 @@ export const PdlEksisterendePerson = ({
 }: PdlEksisterendePersonValues) => {
 	const opts: any = useContext(BestillingsveilederContext)
 	const antall = opts?.antall || 1
-	const { gruppeId } = useParams()
+	const gruppeId = opts?.gruppeId || opts?.gruppe?.id
+
+	console.log('opts', opts)
 
 	const { identer, loading: gruppeLoading, error: gruppeError } = useGruppeIdenter(gruppeId)
-	const { data: pdlOptions, loading: pdlLoading, error: pdlError } = usePdlOptions(identer)
+	const filtrerteIdenter = identer?.filter((ident) => ident.master == opts?.identMaster || 'PDLF')
+
+	const { data: pdlOptions, loading: pdlLoading, error: pdlError } = usePdlOptions(filtrerteIdenter)
 
 	const harSivilstand = eksisterendePersonPath?.includes('sivilstand')
 	const harNyIdent = eksisterendePersonPath?.includes('nyident')
@@ -132,7 +135,7 @@ export const PdlEksisterendePerson = ({
 
 	const bestillingFlerePersoner = parseInt(antall) > 1 && (harSivilstand || harNyIdent)
 
-	const filteredOptions = getFilteredOptionList()
+	const filteredOptions = getFilteredOptionList(opts)
 
 	return (
 		<div className={'flexbox--full-width'}>

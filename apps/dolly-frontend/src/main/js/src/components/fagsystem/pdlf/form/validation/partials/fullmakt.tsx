@@ -7,6 +7,10 @@ export const fullmakt = Yup.object({
 	omraader: Yup.array().min(1, 'Velg minst ett område'),
 	gyldigFraOgMed: testDatoFom(requiredDate.nullable(), 'gyldigTilOgMed'),
 	gyldigTilOgMed: testDatoTom(requiredDate.nullable(), 'gyldigFraOgMed'),
-	motpartsPersonident: Yup.string().nullable(),
+	motpartsPersonident: Yup.string()
+		.test('feltet-mangler', 'Fullmektig er påkrevd', (value, testcontext) => {
+			return value || testcontext.options.context.identMaster !== 'PDL'
+		})
+		.nullable(),
 	nyFullmektig: nyPerson,
 })

@@ -77,6 +77,9 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 					<Attributt attr={sm.attrs.kjonn} />
 					<Attributt attr={sm.attrs.doedsdato} />
 					<Attributt attr={sm.attrs.statsborgerskap} />
+					<Attributt attr={sm.attrs.telefonnummer} />
+					<Attributt attr={sm.attrs.fullmakt} />
+					<Attributt attr={sm.attrs.sikkerhetstiltak} />
 					<Attributt attr={sm.attrs.sprakKode} />
 					<Attributt attr={sm.attrs.egenAnsattDatoFom} />
 					<Attributt
@@ -114,7 +117,7 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 					disabled={!harFnr}
 					title={
 						!harFnr
-							? 'Personer med identtype FNR kan ikke innvandre fordi de ikke har norsk statsborgerskap'
+							? 'Personer med identtype DNR eller NPID kan ikke innvandre fordi de ikke har norsk statsborgerskap'
 							: ''
 					}
 				/>
@@ -156,6 +159,8 @@ PersoninformasjonPanel.heading = 'Personinformasjon'
 // @ts-ignore
 PersoninformasjonPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 	const { personFoerLeggTil, identtype, identMaster } = opts
+
+	const initMaster = identMaster === 'PDL' || identtype === 'NPID' ? 'PDL' : 'FREG'
 
 	const fjernIdFoerLeggTil = (path: string) => {
 		const pdlDataElement = _.get(personFoerLeggTil, `pdlforvalter.person.${path}`)
@@ -207,19 +212,13 @@ PersoninformasjonPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 		foedsel: {
 			label: 'Fødsel',
 			checked: has(paths.foedsel),
-			add: () =>
-				set(paths.foedsel, [
-					getInitialFoedsel(identMaster === 'PDL' || identtype === 'NPID' ? 'PDL' : 'FREG'),
-				]),
+			add: () => set(paths.foedsel, [getInitialFoedsel(initMaster)]),
 			remove: () => del([paths.foedsel]),
 		},
 		doedsdato: {
 			label: 'Dødsdato',
 			checked: has(paths.doedsfall),
-			add: () =>
-				set(paths.doedsfall, [
-					getInitialDoedsfall(identMaster === 'PDL' || identtype === 'NPID' ? 'PDL' : 'FREG'),
-				]),
+			add: () => set(paths.doedsfall, [getInitialDoedsfall(initMaster)]),
 			remove: () => del([paths.doedsfall]),
 		},
 		statsborgerskap: {
@@ -228,11 +227,7 @@ PersoninformasjonPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 			add() {
 				_.has(personFoerLeggTil, 'pdlforvalter[0].person.statsborgerskap')
 					? set(paths.statsborgerskap, fjernIdFoerLeggTil('statsborgerskap'))
-					: set(paths.statsborgerskap, [
-							getInitialStatsborgerskap(
-								identMaster === 'PDL' || identtype === 'NPID' ? 'PDL' : 'FREG',
-							),
-						])
+					: set(paths.statsborgerskap, [getInitialStatsborgerskap(initMaster)])
 			},
 			remove() {
 				del([paths.statsborgerskap])
@@ -281,19 +276,13 @@ PersoninformasjonPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 		kjonn: {
 			label: 'Kjønn',
 			checked: has(paths.kjoenn),
-			add: () =>
-				set(paths.kjoenn, [
-					getInitialKjoenn(identMaster === 'PDL' || identtype === 'NPID' ? 'PDL' : 'FREG'),
-				]),
+			add: () => set(paths.kjoenn, [getInitialKjoenn(initMaster)]),
 			remove: () => del(paths.kjoenn),
 		},
 		navn: {
 			label: 'Navn',
 			checked: has(paths.navn),
-			add: () =>
-				set(paths.navn, [
-					getInitialNavn(identMaster === 'PDL' || identtype === 'NPID' ? 'PDL' : 'FREG'),
-				]),
+			add: () => set(paths.navn, [getInitialNavn(initMaster)]),
 			remove: () => del(paths.navn),
 		},
 		sprakKode: {
@@ -353,37 +342,19 @@ PersoninformasjonPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 			checked: has(paths.telefonnummer.pdl),
 			add() {
 				_.has(personFoerLeggTil, 'pdlforvalter.person.telefonnummer')
-					? setMulti(
-							[paths.telefonnummer.pdl, fjernIdFoerLeggTil('telefonnummer')],
-							[paths.telefonnummer.tpsM, _.get(personFoerLeggTil, 'tpsMessaging.telefonnumre')],
-						)
-					: setMulti(
-							[
-								paths.telefonnummer.pdl,
-								[
-									{
-										landskode: '+47',
-										nummer: '',
-										prioritet: 1,
-										kilde: 'Dolly',
-										master: 'PDL',
-									},
-								],
-							],
-							[
-								paths.telefonnummer.tpsM,
-								[
-									{
-										telefonnummer: '',
-										landskode: '+47',
-										telefontype: 'MOBI',
-									},
-								],
-							],
-						)
+					? set(paths.telefonnummer.pdl, fjernIdFoerLeggTil('telefonnummer'))
+					: set(paths.telefonnummer.pdl, [
+							{
+								landskode: '+47',
+								nummer: '',
+								prioritet: 1,
+								kilde: 'Dolly',
+								master: 'PDL',
+							},
+						])
 			},
 			remove() {
-				del([paths.telefonnummer.pdl, paths.telefonnummer.tpsM])
+				del(paths.telefonnummer.pdl)
 			},
 		},
 		vergemaal: {
