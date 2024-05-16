@@ -19,6 +19,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
+import static no.nav.pdl.forvalter.utils.TestnorgeIdentUtility.isTestnorgeIdent;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -51,7 +52,8 @@ public class FullmaktService implements BiValidation<FullmaktDTO, PersonDTO> {
         return person.getFullmakt();
     }
 
-    public void validate(FullmaktDTO fullmakt) {
+    @Override
+    public void validate(FullmaktDTO fullmakt, PersonDTO person) {
 
         if (isNull(fullmakt.getOmraader())) {
             throw new InvalidRequestException(VALIDATION_OMRAADER_ERROR);
@@ -67,7 +69,7 @@ public class FullmaktService implements BiValidation<FullmaktDTO, PersonDTO> {
             throw new InvalidRequestException(VALIDATION_UGYLDIG_INTERVAL_ERROR);
         }
 
-        if (nonNull(fullmakt.getMotpartsPersonident()) &&
+        if (!isTestnorgeIdent(person.getIdent()) && nonNull(fullmakt.getMotpartsPersonident()) &&
                 !personRepository.existsByIdent(fullmakt.getMotpartsPersonident())) {
             throw new InvalidRequestException(format(VALIDATION_FULLMEKTIG_ERROR, fullmakt.getMotpartsPersonident()));
         }
@@ -101,11 +103,5 @@ public class FullmaktService implements BiValidation<FullmaktDTO, PersonDTO> {
                 fullmakt.getMotpartsPersonident(), RelasjonType.FULLMEKTIG);
 
         fullmakt.setMaster(Master.PDL);
-    }
-
-    @Override
-    public void validate(FullmaktDTO artifact, PersonDTO person) {
-
-        // Ingen validering
     }
 }

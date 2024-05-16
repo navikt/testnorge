@@ -542,9 +542,9 @@ public class ArtifactUpdateService {
 
     public void updateFullmakt(String ident, Integer id, FullmaktDTO oppdatertFullmakt) {
 
-        fullmaktService.validate(oppdatertFullmakt);
-
         var person = getPerson(ident);
+        fullmaktService.validate(oppdatertFullmakt, person.getPerson());
+
         var fullmaktRelasjon = person.getPerson().getFullmakt().stream()
                 .filter(fullmakt -> fullmakt.getId().equals(id))
                 .findFirst();
