@@ -71,12 +71,16 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 				uncheckAttributeArray={sm.batchRemove}
 				iconType={'personinformasjon'}
 			>
-				<AttributtKategori title="Diverse" attr={sm.attrs}>
+				<AttributtKategori title="Alder" attr={sm.attrs}>
 					<Attributt attr={sm.attrs.foedsel} />
+					<Attributt attr={sm.attrs.doedsdato} />
+				</AttributtKategori>
+				<AttributtKategori title="Nasjonalitet" attr={sm.attrs}>
+					<Attributt attr={sm.attrs.statsborgerskap} />
+				</AttributtKategori>
+				<AttributtKategori title="Diverse" attr={sm.attrs}>
 					<Attributt attr={sm.attrs.navn} />
 					<Attributt attr={sm.attrs.kjonn} />
-					<Attributt attr={sm.attrs.doedsdato} />
-					<Attributt attr={sm.attrs.statsborgerskap} />
 					<Attributt attr={sm.attrs.telefonnummer} />
 					<Attributt attr={sm.attrs.fullmakt} />
 					<Attributt attr={sm.attrs.sikkerhetstiltak} />
