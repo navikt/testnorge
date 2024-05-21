@@ -75,6 +75,8 @@ public class TenorOrganisasjonRequest {
     }
 
     @Data
+    @Builder
+    @AllArgsConstructor
     @NoArgsConstructor
     public static class TestinnsendingSkattEnhet {
         private BigInteger inntektsaar;
@@ -87,7 +89,9 @@ public class TenorOrganisasjonRequest {
     }
 
     @Data
+    @Builder
     @NoArgsConstructor
+    @AllArgsConstructor
     public static class Arbeidsforhold {
         private TenorRequest.DatoIntervall startDato;
         private TenorRequest.DatoIntervall sluttDato;
@@ -100,6 +104,8 @@ public class TenorOrganisasjonRequest {
     }
 
     @Data
+    @Builder
+    @AllArgsConstructor
     @NoArgsConstructor
     public static class SamletReskontroinnsyn {
         private Boolean harKrav;
@@ -107,6 +113,8 @@ public class TenorOrganisasjonRequest {
     }
 
     @Data
+    @Builder
+    @AllArgsConstructor
     @NoArgsConstructor
     public static class TjenestepensjonsavtaleOpplysningspliktig {
         private String tjenestepensjonsinnretningOrgnr;
@@ -114,6 +122,8 @@ public class TenorOrganisasjonRequest {
     }
 
     @Data
+    @Builder
+    @AllArgsConstructor
     @NoArgsConstructor
     public static class TenorRelasjoner {
         private TestinnsendingSkattEnhet testinnsendingSkattEnhet;

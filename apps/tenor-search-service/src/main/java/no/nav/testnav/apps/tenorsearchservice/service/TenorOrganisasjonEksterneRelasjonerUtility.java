@@ -69,6 +69,6 @@ public class TenorOrganisasjonEksterneRelasjonerUtility {
                         .append(convertObject("harTimerMedTimeloenn", arbeidsforhold.getHarTimerMedTimeloenn()))
                         .append(convertObject("harUtenlandsopphold", arbeidsforhold.getHarUtenlandsopphold()))
                         .append(convertObject("harHistorikk", arbeidsforhold.getHarHistorikk()))
-                        .append(convertObject("arbeidsforholdtype", arbeidsforhold.getArbeidsforholdtype()))));
+                        .append(convertEnum("arbeidsforholdtype", arbeidsforhold.getArbeidsforholdtype()))));
     }
 }
