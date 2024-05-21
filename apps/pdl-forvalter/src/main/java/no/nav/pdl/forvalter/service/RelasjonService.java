@@ -57,7 +57,9 @@ public class RelasjonService {
                         dbPersoner.stream().noneMatch(dbPerson -> dbPerson.getIdent().equals(id)))
                 .forEach(id -> personRepository.save(DbPerson.builder()
                         .ident(id)
-                        .person(new PersonDTO())
+                        .person(PersonDTO.builder()
+                                .ident(id)
+                                .build())
                         .sistOppdatert(now())
                         .build()));
 
