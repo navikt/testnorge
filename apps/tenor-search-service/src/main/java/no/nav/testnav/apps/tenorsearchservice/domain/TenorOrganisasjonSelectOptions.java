@@ -140,9 +140,9 @@ public class TenorOrganisasjonSelectOptions {
     @Getter
     @AllArgsConstructor
     public enum ArbeidsforholdType implements LabelEnum {
-        ORDINAERT_ARBEIDSFORHOLD("Ordinært"),
-        MARITIMT_ARBEIDSFORHOLD("Maritimt"),
-        FRILANSER_OPPDRAGSTAKER_HONORAR_PERSONER_MM("Frilanser med mer");
+        OrdinaertArbeidsforhold("ordinært"),
+        MaritimtArbeidsforhold("maritimt"),
+        FrilanserOppdragstakerHonorarPersonerMm("frilanser med mer");
 
         private final String label;
 

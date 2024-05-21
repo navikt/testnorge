@@ -1,6 +1,7 @@
 package no.nav.testnav.apps.tenorsearchservice.service;
 
 import no.nav.testnav.apps.tenorsearchservice.domain.TenorOrganisasjonRequest;
+import no.nav.testnav.apps.tenorsearchservice.domain.TenorOrganisasjonSelectOptions;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
@@ -27,6 +28,7 @@ class TenorOrganisasjonEksterneRelasjonerUtilityTest {
                                 .harTimerMedTimeloenn(true)
                                 .harUtenlandsopphold(false)
                                 .harHistorikk(true)
+                                .arbeidsforholdtype(TenorOrganisasjonSelectOptions.ArbeidsforholdType.OrdinaertArbeidsforhold)
                                 .build())
                         .samletReskontroinnsyn(TenorOrganisasjonRequest.SamletReskontroinnsyn.builder()
                                 .harKrav(true)
@@ -41,7 +43,7 @@ class TenorOrganisasjonEksterneRelasjonerUtilityTest {
 
         var result = TenorOrganisasjonEksterneRelasjonerUtility.getOrganisasjonEksterneRelasjoner(request);
 
-        var expected = " and tenorRelasjoner.arbeidsforhold:{harPermisjoner:true and harPermitteringer:false and harTimerMedTimeloenn:true and harUtenlandsopphold:false and harHistorikk:true} and tenorRelasjoner.testinnsendingSkattEnhet:{inntektsaar:2022 and harSkattemeldingUtkast:* and  not harSkattemeldingFastsatt:* and harSelskapsmeldingUtkast:* and  not harSelskapsmeldingFastsatt:*} and tenorRelasjoner.samletReskontroinnsyn:{tjenestepensjonsinnretningOrgnr:123456789 and periode:2022} and tenorRelasjoner.samletReskontroinnsyn:{harKrav:* and  not harInnbetaling:*}";
+        var expected = " and tenorRelasjoner.arbeidsforhold:{harPermisjoner:true and harPermitteringer:false and harTimerMedTimeloenn:true and harUtenlandsopphold:false and harHistorikk:true and arbeidsforholdtype:ordinaertArbeidsforhold} and tenorRelasjoner.testinnsendingSkattEnhet:{inntektsaar:2022 and harSkattemeldingUtkast:* and  not harSkattemeldingFastsatt:* and harSelskapsmeldingUtkast:* and  not harSelskapsmeldingFastsatt:*} and tenorRelasjoner.samletReskontroinnsyn:{tjenestepensjonsinnretningOrgnr:123456789 and periode:2022} and tenorRelasjoner.samletReskontroinnsyn:{harKrav:* and  not harInnbetaling:*}";
 
         assertEquals(expected, result);
     }
