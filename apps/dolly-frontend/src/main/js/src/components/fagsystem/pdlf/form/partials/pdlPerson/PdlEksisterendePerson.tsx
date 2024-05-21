@@ -116,7 +116,7 @@ export const PdlEksisterendePerson = ({
 	}
 
 	const getFilteredOptionList = (opts) => {
-		const eksisterendeIdent = opts?.personFoerLeggTil?.pdlforvalter?.person?.ident
+		const eksisterendeIdent = opts?.personFoerLeggTil?.pdl?.ident
 		const tmpOptions = pdlOptions?.filter(
 			(person) => person.value !== eksisterendeIdent && filterOptions(person),
 		)
