@@ -145,7 +145,7 @@ export const PdlEksisterendePerson = ({
 					name={eksisterendePersonPath}
 					onChange={(person) => {
 						formMethods.setValue(eksisterendePersonPath, person?.value || null)
-						formMethods.trigger('pdldata.person.kontaktinformasjonForDoedsbo')
+						formMethods.trigger('pdldata.person')
 					}}
 					label={label}
 					options={filteredOptions}
