@@ -14,6 +14,7 @@ const DropdownToggle = () => {
 		<Dropdown.Toggle
 			className={isOpen ? 'dropdown-toggle active' : 'dropdown-toggle'}
 			style={{ margin: 0, padding: '19px 10px' }}
+			data-cy={CypressSelector.BUTTON_HEADER_ORGANISASJONER}
 		>
 			Organisasjoner
 		</Dropdown.Toggle>

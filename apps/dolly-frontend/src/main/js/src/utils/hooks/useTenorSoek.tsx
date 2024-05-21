@@ -56,7 +56,7 @@ export const useTenorOversikt = (request: any, antall = 10, side = 0, seed?: num
 				]
 			: null,
 		([url, headers]) => Request.post(url, headers),
-		{ dedupingInterval: 500 },
+		{ dedupingInterval: 100 },
 	)
 
 	return {
@@ -81,7 +81,7 @@ export const useTenorOversiktOrganisasjoner = (
 				]
 			: null,
 		([url, headers]) => Request.post(url, headers),
-		{ dedupingInterval: 500 },
+		{ dedupingInterval: 100 },
 	)
 
 	return {

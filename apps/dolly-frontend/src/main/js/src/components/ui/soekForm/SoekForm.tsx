@@ -2,12 +2,13 @@ import styled from 'styled-components'
 import React from 'react'
 import { Button } from '@navikt/ds-react'
 import { TrashIcon } from '@navikt/aksel-icons'
+import { UseFormGetValues } from 'react-hook-form'
 
 type HeaderProps = {
 	title: string
 	antall?: number
-	paths?: Array<string>
-	getValues?: Function
+	paths: string[]
+	getValues?: UseFormGetValues<any>
 	emptyCategory?: Function
 }
 
@@ -98,7 +99,7 @@ export const Header = ({ title, antall, paths, getValues, emptyCategory }: Heade
 				<KategoriEmptyButton
 					onClick={(e) => {
 						e.stopPropagation()
-						emptyCategory(paths)
+						emptyCategory?.(paths)
 					}}
 					variant={'tertiary'}
 					icon={<TrashIcon />}
@@ -131,10 +132,10 @@ export const requestIsEmpty = (updatedRequest: any) => {
 	return isEmpty
 }
 
-const getAntallRequest = (liste?: Array<string>, getValues) => {
+const getAntallRequest = (liste: string[], getValues: UseFormGetValues<any>) => {
 	let antall = 0
 	liste?.forEach((item) => {
-		const attr = getValues(item)
+		const attr = getValues?.(item)
 		if (Array.isArray(attr)) {
 			antall += attr.length
 		} else if (attr || attr === false) {

@@ -50,7 +50,7 @@ export const SoekFormOrg = ({ setRequest, mutate }: any) => {
 
 	const formatRequest = (request: any) => {
 		let updatedRequest = { ...request }
-		for (let i = 0; i < 2; i++) {
+		for (let i = 0; i < 3; i++) {
 			updatedRequest = getUpdatedRequest(request)
 		}
 		return updatedRequest
@@ -66,17 +66,13 @@ export const SoekFormOrg = ({ setRequest, mutate }: any) => {
 		mutate()
 	}
 
-	const getAntallRequest = (liste: Array<string>) => {
-		let antall = 0
-		liste.forEach((item) => {
-			const attr = getValues(item)
-			if (Array.isArray(attr)) {
-				antall += attr.length
-			} else if (attr || attr === false) {
-				antall++
-			}
+	const emptyCategory = (paths: Array<string>) => {
+		paths.forEach((path) => {
+			setValue(path, undefined)
 		})
-		return antall
+		const request = formatRequest(watch())
+		setRequest({ ...request })
+		mutate()
 	}
 
 	const devEnabled =
@@ -94,7 +90,7 @@ export const SoekFormOrg = ({ setRequest, mutate }: any) => {
 									<Accordion.Header>
 										<Header
 											title="Enhetsregisteret og Foretaksregisteret"
-											antall={getAntallRequest([
+											paths={[
 												'organisasjonsnummer',
 												'organisasjonsform.kode',
 												'forretningsadresse.kommunenummer',
@@ -106,8 +102,6 @@ export const SoekFormOrg = ({ setRequest, mutate }: any) => {
 												'registrertIFrivillighetsregisteret',
 												'enhetStatuser.kode',
 												'slettetIEnhetsregisteret',
-												'antallAnsatte.fraOgMed',
-												'antallAnsatte.tilOgMed',
 												'revisorer',
 												'regnskapsfoerere',
 												'dagligLeder',
@@ -118,7 +112,9 @@ export const SoekFormOrg = ({ setRequest, mutate }: any) => {
 												'erUnderenhet.overenhet',
 												'harUnderenheter',
 												'antallUnderenheter',
-											])}
+											]}
+											getValues={getValues}
+											emptyCategory={emptyCategory}
 										/>
 									</Accordion.Header>
 									<Accordion.Content style={{ paddingRight: '0' }}>
@@ -129,7 +125,7 @@ export const SoekFormOrg = ({ setRequest, mutate }: any) => {
 									<Accordion.Header>
 										<Header
 											title="Opplysninger fra Skatteetatens innsendingsmiljø"
-											antall={getAntallRequest([
+											paths={[
 												'tenorRelasjoner.testinnsendingSkattEnhet.inntektsaar;',
 												'tenorRelasjoner.testinnsendingSkattEnhet.harSkattemeldingUtkast',
 												'tenorRelasjoner.testinnsendingSkattEnhet.harSkattemeldingFastsatt',
@@ -137,7 +133,9 @@ export const SoekFormOrg = ({ setRequest, mutate }: any) => {
 												'tenorRelasjoner.testinnsendingSkattEnhet.harSelskapsmeldingFastsatt',
 												'tenorRelasjoner.testinnsendingSkattEnhet.manglendeGrunnlagsdata',
 												'tenorRelasjoner.testinnsendingSkattEnhet.manntall',
-											])}
+											]}
+											getValues={getValues}
+											emptyCategory={emptyCategory}
 										/>
 									</Accordion.Header>
 									<Accordion.Content style={{ paddingRight: '0' }}>
@@ -148,7 +146,7 @@ export const SoekFormOrg = ({ setRequest, mutate }: any) => {
 									<Accordion.Header>
 										<Header
 											title="Arbeidsforhold"
-											antall={getAntallRequest([
+											paths={[
 												'tenorRelasjoner.arbeidsforhold.startDato.fraOgMed',
 												'tenorRelasjoner.arbeidsforhold.startDato.tilOgMed',
 												'tenorRelasjoner.arbeidsforhold.sluttDato.fraOgMed',
@@ -159,7 +157,11 @@ export const SoekFormOrg = ({ setRequest, mutate }: any) => {
 												'tenorRelasjoner.arbeidsforhold.harUtenlandsopphold',
 												'tenorRelasjoner.arbeidsforhold.harHistorikk',
 												'tenorRelasjoner.arbeidsforhold.arbeidsforholdtype',
-											])}
+												'antallAnsatte.fraOgMed',
+												'antallAnsatte.tilOgMed',
+											]}
+											getValues={getValues}
+											emptyCategory={emptyCategory}
 										/>
 									</Accordion.Header>
 									<Accordion.Content style={{ paddingRight: '0' }}>
@@ -170,10 +172,12 @@ export const SoekFormOrg = ({ setRequest, mutate }: any) => {
 									<Accordion.Header>
 										<Header
 											title="Samlet reskontroinnsyn"
-											antall={getAntallRequest([
+											paths={[
 												'tenorRelasjoner.samletReskontroinnsyn.harKrav',
 												'tenorRelasjoner.samletReskontroinnsyn.harInnbetaling',
-											])}
+											]}
+											getValues={getValues}
+											emptyCategory={emptyCategory}
 										/>
 									</Accordion.Header>
 									<Accordion.Content style={{ paddingRight: '0' }}>
@@ -184,10 +188,12 @@ export const SoekFormOrg = ({ setRequest, mutate }: any) => {
 									<Accordion.Header>
 										<Header
 											title="Tjenestepensjonsavtale"
-											antall={getAntallRequest([
+											paths={[
 												'tenorRelasjoner.tjenestepensjonsavtaleOpplysningspliktig.tjenestepensjonsinnretningOrgnr',
 												'tenorRelasjoner.tjenestepensjonsavtaleOpplysningspliktig.periode',
-											])}
+											]}
+											getValues={getValues}
+											emptyCategory={emptyCategory}
 										/>
 									</Accordion.Header>
 									<Accordion.Content style={{ paddingRight: '0' }}>

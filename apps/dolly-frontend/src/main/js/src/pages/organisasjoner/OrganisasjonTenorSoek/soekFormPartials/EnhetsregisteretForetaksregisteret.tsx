@@ -4,9 +4,10 @@ import { createOptions } from '@/pages/tenorSoek/utils'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { useTenorOrganisasjonDomain } from '@/utils/hooks/useTenorSoek'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { Option } from '@/service/SelectOptionsOppslag'
+import { SelectOptionsManager as Options } from '@/service/SelectOptions'
+import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 
 export const EnhetsregisteretForetaksregisteret = ({ handleChange }: any) => {
 	const { domain: orgformOptions } = useTenorOrganisasjonDomain('Organisasjonsform')
@@ -46,53 +47,70 @@ export const EnhetsregisteretForetaksregisteret = ({ handleChange }: any) => {
 			/>
 			<FormTextInput
 				name="naeringBeskrivelse"
-				label="Næring beskrivelse"
+				label="Næringsbeskrivelse"
 				// @ts-ignore
 				onBlur={(val: any) => handleChange(val?.target?.value || null, 'naeringBeskrivelse')}
 				visHvisAvhuket={false}
 			/>
-			<FormCheckbox
+			<FormTextInput
+				name="antallUnderenheter"
+				label="Antall underenheter"
+				// @ts-ignore
+				onBlur={(val: any) => handleChange(val?.target?.value || null, 'antallUnderenheter')}
+				visHvisAvhuket={false}
+			/>
+			<FormSelect
 				name="harUtenlandskForretningsadresse"
-				label="Har utenlandsk forretningsadresse"
-				onChange={(val: any) =>
-					handleChange(val?.target?.checked || undefined, 'harUtenlandskForretningsadresse')
-				}
+				label="Utenlandsk forr. adresse"
+				options={Options('boolean')}
+				onChange={(val: Option) => handleChange(val?.value, 'harUtenlandskForretningsadresse')}
 			/>
-			<FormCheckbox
+			<FormSelect
 				name="harUtenlandskPostadresse"
-				label="Har utenlandsk postadresse"
-				onChange={(val: any) =>
-					handleChange(val?.target?.checked || undefined, 'harUtenlandskPostadresse')
-				}
+				label="Utenlandsk postadresse"
+				options={Options('boolean')}
+				onChange={(val: Option) => handleChange(val?.value, 'harUtenlandskPostadresse')}
 			/>
-			<FormCheckbox
+			<FormSelect
 				name="slettetIEnhetsregisteret"
-				label="Slettet i Enhetsregisteret"
-				onChange={(val: any) =>
-					handleChange(val?.target?.checked || undefined, 'slettetIEnhetsregisteret')
-				}
+				label="Slettet i enhetsregisteret"
+				options={Options('boolean')}
+				onChange={(val: Option) => handleChange(val?.value, 'slettetIEnhetsregisteret')}
 			/>
-			<FormCheckbox
+			<FormSelect
 				name="registrertIMvaregisteret"
 				label="Registrert i MVA registeret"
-				onChange={(val: any) =>
-					handleChange(val?.target?.checked || undefined, 'registrertIMvaregisteret')
-				}
+				options={Options('boolean')}
+				onChange={(val: Option) => handleChange(val?.value, 'registrertIMvaregisteret')}
 			/>
-			<FormCheckbox
+			<FormSelect
 				name="registrertIForetaksregisteret"
-				label="Registrert i Foretaksregisteret"
-				onChange={(val: any) =>
-					handleChange(val?.target?.checked || undefined, 'registrertIForetaksregisteret')
-				}
+				label="Registrert i foretaksregisteret"
+				options={Options('boolean')}
+				onChange={(val: Option) => handleChange(val?.value, 'registrertIForetaksregisteret')}
 			/>
-			<FormCheckbox
+			<FormSelect
 				name="registrertIFrivillighetsregisteret"
-				label="Registrert i Frivillighetsregisteret"
-				onChange={(val: any) =>
-					handleChange(val?.target?.checked || undefined, 'registrertIFrivillighetsregisteret')
-				}
+				label="Reg. i frivillighetsregisteret"
+				options={Options('boolean')}
+				onChange={(val: Option) => handleChange(val?.value, 'registrertIFrivillighetsregisteret')}
 			/>
+			<div className={'flexbox'} style={{ flexFlow: 'wrap' }}>
+				<FormCheckbox
+					name="erUnderenhet.hovedenhet"
+					label="Er underenhet"
+					onChange={(val: any) =>
+						handleChange(val?.target?.checked || undefined, 'erUnderenhet.hovedenhet')
+					}
+				/>
+				<FormCheckbox
+					name="harUnderenheter"
+					label="Har underenheter"
+					onChange={(val: any) =>
+						handleChange(val?.target?.checked || undefined, 'harUnderenheter')
+					}
+				/>
+			</div>
 		</SoekKategori>
 	)
 }
