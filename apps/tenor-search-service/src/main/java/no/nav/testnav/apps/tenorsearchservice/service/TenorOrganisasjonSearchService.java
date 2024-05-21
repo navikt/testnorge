@@ -79,7 +79,7 @@ public class TenorOrganisasjonSearchService {
         }
 
         if (nonNull(searchData.getErUnderenhet())) {
-            builder.append(convertObject("erUnderenhet.overenhet", searchData.getErUnderenhet().getOverenhet()));
+            builder.append(convertBooleanWildcard("erUnderenhet.overenhet", searchData.getErUnderenhet().getOverenhet()));
         }
 
         builder.append(TenorOrganisasjonEksterneRelasjonerUtility.getOrganisasjonEksterneRelasjoner(searchData));
