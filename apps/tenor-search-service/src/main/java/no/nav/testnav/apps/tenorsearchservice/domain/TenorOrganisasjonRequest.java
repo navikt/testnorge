@@ -71,7 +71,7 @@ public class TenorOrganisasjonRequest {
     @AllArgsConstructor
     public static class ErUnderenhet {
 
-        private Boolean overenhet;
+        private Boolean hovedenhet;
     }
 
     @Data
