@@ -15,16 +15,15 @@ const initialState = {
 
 const NavigateButton = styled(Button)`
 	position: sticky;
-	top: 10px;
-	//padding-bottom: 30px;
+	top: ${(props) => (props.className === 'gaa-til-soek' ? '75px' : '10px')};
 	width: 80px;
 	transform: translateX(-120%);
 	display: grid;
 
 	&& {
 		svg {
-			width: 50px;
-			height: 50px;
+			width: 45px;
+			height: 45px;
 			margin: 0 auto 5px auto;
 		}
 	}
@@ -91,8 +90,8 @@ export default () => {
 		})
 	}
 
-	const navigateToTreff = () => {
-		const treff = document.getElementById('treff')?.offsetTop
+	const navigateTo = (element: string) => {
+		const treff = document.getElementById(element)?.offsetTop
 		window.scrollTo({ top: treff, behavior: 'smooth' })
 	}
 
@@ -101,8 +100,12 @@ export default () => {
 			<div className="flexbox--align-center--justify-start">
 				<Title title="Søk etter personer i Tenor" />
 			</div>
-			<div className="flexbox--flex-wrap">
-				<NavigateButton onClick={() => navigateToTreff()} kind="chevron-down-double-circle">
+			<div className="flexbox--flex-wrap" id="soek">
+				<NavigateButton
+					className="gaa-til-treff"
+					onClick={() => navigateTo('treff')}
+					kind="chevron-down-double-circle"
+				>
 					GÅ TIL TREFF
 				</NavigateButton>
 				<SoekForm
@@ -112,6 +115,13 @@ export default () => {
 				/>
 			</div>
 			<div id="treff">
+				<NavigateButton
+					className="gaa-til-soek"
+					onClick={() => navigateTo('soek')}
+					kind="chevron-up-double-circle"
+				>
+					GÅ TIL SØK
+				</NavigateButton>
 				<TreffListe
 					response={response?.data}
 					personListe={state.personListe}

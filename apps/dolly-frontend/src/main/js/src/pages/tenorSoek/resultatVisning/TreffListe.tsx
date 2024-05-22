@@ -64,7 +64,7 @@ export const TreffListe = ({
 	const antallTreff = localStorage['antallTreff']
 
 	return (
-		<div className="flexbox--flex-wrap">
+		<div className="flexbox--flex-wrap" style={{ marginTop: '-70px' }}>
 			<div
 				className="flexbox--full-width"
 				style={{ marginBottom: '20px', position: 'sticky', top: '10px', zIndex: 1 }}
