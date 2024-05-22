@@ -491,9 +491,9 @@ public class ArtifactUpdateService {
 
     public void updateSivilstand(String ident, Integer id, SivilstandDTO oppdatertSivilstand) {
 
-        sivilstandService.validate(oppdatertSivilstand);
-
         var person = getPerson(ident);
+        sivilstandService.validate(oppdatertSivilstand, person.getPerson());
+
         var sivilstandRelasjon = person.getPerson().getSivilstand().stream()
                 .filter(sivilstand -> sivilstand.getId().equals(id))
                 .findFirst();

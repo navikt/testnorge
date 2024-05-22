@@ -65,7 +65,7 @@ public class ValidateArtifactsService {
                         validate(vergemaalService, person.getVergemaal()),
                         validate(falskIdentitetService, person.getFalskIdentitet()),
                         validate(kontaktinformasjonForDoedsboService, person.getKontaktinformasjonForDoedsbo()),
-                        validate(sivilstandService, person.getSivilstand()),
+                        validate(sivilstandService, person.getSivilstand(), person),
                         validate(forelderBarnRelasjonService, person.getForelderBarnRelasjon()),
                         validate(foreldreansvarService, person.getForeldreansvar(), person),
                         validate(sikkerhetstiltakService, person.getSikkerhetstiltak()),

@@ -16,7 +16,6 @@ import java.util.List;
 
 import static java.lang.String.format;
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
 import static no.nav.pdl.forvalter.utils.TestnorgeIdentUtility.isTestnorgeIdent;
@@ -69,7 +68,7 @@ public class FullmaktService implements BiValidation<FullmaktDTO, PersonDTO> {
             throw new InvalidRequestException(VALIDATION_UGYLDIG_INTERVAL_ERROR);
         }
 
-        if (!isTestnorgeIdent(person.getIdent()) && nonNull(fullmakt.getMotpartsPersonident()) &&
+        if (!isTestnorgeIdent(person.getIdent()) && isNotBlank(fullmakt.getMotpartsPersonident()) &&
                 !personRepository.existsByIdent(fullmakt.getMotpartsPersonident())) {
             throw new InvalidRequestException(format(VALIDATION_FULLMEKTIG_ERROR, fullmakt.getMotpartsPersonident()));
         }
