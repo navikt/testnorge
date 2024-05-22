@@ -47,7 +47,7 @@ import static java.lang.System.currentTimeMillis;
 import static java.time.LocalDateTime.now;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility.getIdenttype;
+import static no.nav.pdl.forvalter.utils.IdenttypeUtility.getIdenttype;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType.FAMILIERELASJON_BARN;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;

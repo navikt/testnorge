@@ -61,6 +61,7 @@ spec:
         - application: testnav-ident-pool
         - application: testnav-kodeverk-service
         - application: testnav-organisasjon-forvalter
+        - application: testnav-person-service
         - application: testnav-tps-messaging-service
       external:
         - host: testnav-pdl-proxy.dev-fss-pub.nais.io

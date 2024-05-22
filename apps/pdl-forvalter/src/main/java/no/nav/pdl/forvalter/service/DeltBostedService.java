@@ -5,7 +5,7 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.consumer.AdresseServiceConsumer;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
-import no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility;
+import no.nav.pdl.forvalter.utils.IdenttypeUtility;
 import no.nav.testnav.libs.data.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.DeltBostedDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FoedselDTO;
@@ -114,7 +114,7 @@ public class DeltBostedService {
                 .orElse(0) + 1);
 
         deltBosted.setKilde(getKilde(deltBosted));
-        deltBosted.setMaster(getMaster(deltBosted, IdenttypeFraIdentUtility.getIdenttype(barn.getIdent())));
-        barn.getDeltBosted().add(0, deltBosted);
+        deltBosted.setMaster(getMaster(deltBosted, IdenttypeUtility.getIdenttype(barn.getIdent())));
+        barn.getDeltBosted().addFirst(deltBosted);
     }
 }
