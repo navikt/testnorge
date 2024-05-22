@@ -15,7 +15,6 @@ import { FolkeregisteretHendelser } from '@/pages/tenorSoek/soekFormPartials/Fol
 import { isDate } from 'date-fns'
 import { fixTimezone } from '@/components/ui/form/formUtils'
 import { Tjenestepensjonsavtale } from '@/pages/tenorSoek/soekFormPartials/Tjenestepensjonsavtale'
-import { getValue } from 'reselect/src/autotrackMemoize/autotracking'
 import { Skattemelding } from '@/pages/tenorSoek/soekFormPartials/Skattemelding'
 
 const SoekefeltWrapper = styled.div`
@@ -25,6 +24,8 @@ const SoekefeltWrapper = styled.div`
 	background-color: white;
 	border: 1px @color-bg-grey-border;
 	border-radius: 4px;
+	margin-top: -70px;
+	width: 100%;
 `
 
 const Soekefelt = styled.div`
