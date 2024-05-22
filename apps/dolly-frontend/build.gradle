@@ -65,7 +65,7 @@ dependencies {
     implementation 'no.nav.testnav.libs:data-transfer-objects'
 
     // Session
-    implementation 'redis.clients:jedis:5.2.0-beta2'
+    implementation 'redis.clients:jedis:5.1.2'
     implementation 'org.springframework.session:spring-session-core'
     implementation 'org.springframework.session:spring-session-data-redis'
 
