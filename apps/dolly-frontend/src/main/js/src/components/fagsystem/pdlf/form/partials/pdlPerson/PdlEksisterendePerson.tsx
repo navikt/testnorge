@@ -35,8 +35,6 @@ export const PdlEksisterendePerson = ({
 	const antall = opts?.antall || 1
 	const gruppeId = opts?.gruppeId || opts?.gruppe?.id
 
-	console.log('opts', opts)
-
 	const { identer, loading: gruppeLoading, error: gruppeError } = useGruppeIdenter(gruppeId)
 	const filtrerteIdenter = identer?.filter((ident) => ident.master == opts?.identMaster || 'PDLF')
 

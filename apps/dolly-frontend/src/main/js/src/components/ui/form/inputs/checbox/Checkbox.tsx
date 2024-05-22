@@ -59,6 +59,7 @@ export const FormCheckbox = ({
 	afterChange = null,
 	size = 'small',
 	checkboxMargin = false,
+	vis = true,
 	...props
 }) => {
 	const formMethods = useFormContext()
@@ -70,12 +71,14 @@ export const FormCheckbox = ({
 	}
 
 	return (
-		<DollyCheckbox
-			size={size}
-			checked={value}
-			onChange={handleChange}
-			checkboxMargin={checkboxMargin}
-			{...props}
-		/>
+		vis && (
+			<DollyCheckbox
+				size={size}
+				checked={value}
+				onChange={handleChange}
+				checkboxMargin={checkboxMargin}
+				{...props}
+			/>
+		)
 	)
 }

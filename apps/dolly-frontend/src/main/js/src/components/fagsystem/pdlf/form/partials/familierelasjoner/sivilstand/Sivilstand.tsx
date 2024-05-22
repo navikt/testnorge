@@ -21,7 +21,6 @@ interface SivilstandFormTypes {
 	formMethods: UseFormReturn
 	path?: string
 	eksisterendeNyPerson?: Option | null
-	identtype?: string
 }
 
 const gyldigeSivilstander = [
@@ -36,7 +35,6 @@ export const SivilstandForm = ({
 	path,
 	formMethods,
 	eksisterendeNyPerson = null,
-	identtype,
 }: SivilstandFormTypes) => {
 	const handleTypeChange = (selected: any, path: string) => {
 		formMethods.setValue(`${path}.type`, selected.value)
@@ -50,6 +48,10 @@ export const SivilstandForm = ({
 		}
 		formMethods.trigger()
 	}
+
+	const { identtype, identMaster } = useContext(BestillingsveilederContext)
+	const isTestnorgeIdent = identMaster === 'PDL'
+	const kanVelgeMaster = !isTestnorgeIdent && identtype !== 'NPID'
 
 	const kanHaRelatertPerson = gyldigeSivilstander.includes(formMethods.watch(`${path}.type`))
 
@@ -88,6 +90,7 @@ export const SivilstandForm = ({
 				name={`${path}.borIkkeSammen`}
 				label="Bor ikke sammen"
 				isDisabled={!kanHaRelatertPerson}
+				vis={!isTestnorgeIdent}
 				checkboxMargin
 			/>
 			{kanHaRelatertPerson && (
@@ -98,33 +101,34 @@ export const SivilstandForm = ({
 					label={'PERSON RELATERT TIL'}
 					formMethods={formMethods}
 					isExpanded={
+						isTestnorgeIdent ||
 						!isEmpty(formMethods.watch(`${path}.nyRelatertPerson`), ['syntetisk']) ||
 						formMethods.watch(`${path}.relatertVedSivilstand`) !== null
 					}
+					toggleExpansion={identMaster != 'PDL'}
 				/>
 			)}
 			<AvansertForm
 				path={path}
-				kanVelgeMaster={
-					formMethods.watch(`${path}.bekreftelsesdato`) === null && identtype !== 'NPID'
-				}
+				kanVelgeMaster={formMethods.watch(`${path}.bekreftelsesdato`) === null && kanVelgeMaster}
 			/>
 		</div>
 	)
 }
 
 export const Sivilstand = ({ formMethods }: SivilstandFormTypes) => {
-	const opts = useContext(BestillingsveilederContext)
+	// @ts-ignore
+	const { identtype, identMaster } = useContext(BestillingsveilederContext)
+	const initiellMaster = identMaster === 'PDL' || identtype === 'NPID' ? 'PDL' : 'FREG'
+
 	return (
 		<FormDollyFieldArray
 			name="pdldata.person.sivilstand"
 			header="Sivilstand"
-			newEntry={getInitialSivilstand(opts?.identtype === 'NPID' ? 'PDL' : 'FREG')}
+			newEntry={getInitialSivilstand(initiellMaster)}
 			canBeEmpty={false}
 		>
-			{(path: string) => (
-				<SivilstandForm path={path} formMethods={formMethods} identtype={opts?.identtype} />
-			)}
+			{(path: string) => <SivilstandForm path={path} formMethods={formMethods} />}
 		</FormDollyFieldArray>
 	)
 }

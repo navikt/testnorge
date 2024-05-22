@@ -199,7 +199,19 @@ export const sivilstand = Yup.object({
 		then: () => requiredDate,
 		otherwise: () => testSivilstandsdatoBekreftelsesdato(Yup.mixed().nullable()),
 	}),
-	relatertVedSivilstand: Yup.string().nullable(),
+	relatertVedSivilstand: Yup.string()
+		.test('feltet-mangler', 'Partner er påkrevd', (value, testcontext) => {
+			return (
+				value ||
+				(testcontext.parent.type !== 'GIFT' &&
+					testcontext.parent.type !== 'SEPARERT' &&
+					testcontext.parent.type !== 'REGISTRERT_PARTNER' &&
+					testcontext.parent.type !== 'SEPARERT_PARTNER' &&
+					testcontext.parent.type !== 'SAMBOER') ||
+				testcontext.options.context.identMaster !== 'PDL'
+			)
+		})
+		.nullable(),
 	bekreftelsesdato: Yup.mixed().when('type', {
 		is: (type) => type === 'SAMBOER',
 		then: () => Yup.mixed().notRequired(),

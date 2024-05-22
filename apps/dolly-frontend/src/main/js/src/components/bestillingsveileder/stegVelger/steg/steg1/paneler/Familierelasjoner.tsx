@@ -21,7 +21,7 @@ export const FamilierelasjonPanel = ({ stateModifier, formValues }) => {
 		}
 		return []
 	}
-
+	const visOpplysning = opts?.identMaster !== 'PDL'
 	return (
 		<Panel
 			heading={FamilierelasjonPanel.heading}
@@ -50,6 +50,7 @@ export const FamilierelasjonPanel = ({ stateModifier, formValues }) => {
 					title={
 						opts?.identtype === 'NPID' ? 'Ikke tilgjengelig for personer med identtype NPID' : ''
 					}
+					vis={visOpplysning}
 				/>
 			</AttributtKategori>
 		</Panel>
@@ -59,16 +60,15 @@ export const FamilierelasjonPanel = ({ stateModifier, formValues }) => {
 FamilierelasjonPanel.heading = 'Familierelasjoner'
 
 FamilierelasjonPanel.initialValues = ({ set, opts, del, has }: any) => {
-	const { identtype } = opts
+	const { identtype, identMaster } = opts
+	const initialMaster = identMaster === 'PDL' || identtype === 'NPID' ? 'PDL' : 'FREG'
 
 	return {
 		sivilstand: {
 			label: 'Sivilstand (har partner)',
 			checked: has('pdldata.person.sivilstand'),
 			add() {
-				set('pdldata.person.sivilstand', [
-					getInitialSivilstand(identtype === 'NPID' ? 'PDL' : 'FREG'),
-				])
+				set('pdldata.person.sivilstand', [getInitialSivilstand(initialMaster)])
 			},
 			remove() {
 				del('pdldata.person.sivilstand')
@@ -78,9 +78,7 @@ FamilierelasjonPanel.initialValues = ({ set, opts, del, has }: any) => {
 			label: 'Har barn/foreldre',
 			checked: has('pdldata.person.forelderBarnRelasjon'),
 			add() {
-				set('pdldata.person.forelderBarnRelasjon', [
-					getInitialBarn(identtype === 'NPID' ? 'PDL' : 'FREG'),
-				])
+				set('pdldata.person.forelderBarnRelasjon', [getInitialBarn(initialMaster)])
 			},
 			remove() {
 				del('pdldata.person.forelderBarnRelasjon')

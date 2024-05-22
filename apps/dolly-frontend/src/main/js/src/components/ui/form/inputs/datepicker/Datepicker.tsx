@@ -82,7 +82,7 @@ const P_FormDatepicker = ({ addHour = true, ...props }) => {
 			props.afterChange(date)
 		}
 		let val = fixTimezone(date)?.toISOString().substring(0, 19) || null
-		if (addHour) {
+		if (addHour && value instanceof Date) {
 			val = addHours(new Date(fixTimezone(date)), 3)
 				.toISOString()
 				.substring(0, 19)
