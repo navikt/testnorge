@@ -30,7 +30,7 @@ jobs:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_USERNAME: ${{ secrets.GITHUB_USERNAME }}
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/actions/setup-gradle@v3
         with:
           arguments: assemble --scan
           cache-read-only: false
@@ -43,7 +43,7 @@ jobs:
           echo Wait on service...
           bash -c 'while [[ "$(curl --connect-timeout 2 -s -o /dev/null -w ''%{http_code}'' ${{ inputs.healthcheck }})" != "200" ]]; do echo ...; sleep 5; done; echo Service is up;'
       - name: "Run integration tests"
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/actions/setup-gradle@v3
         with:
           build-root-directory: ${{ inputs.working-directory }}
           arguments: iTest --scan

@@ -83,7 +83,7 @@ jobs:
           java-version: 21
       - name: "Gradle"
         id: gradle
-        uses: gradle/gradle-build-action@v3
+        uses: gradle/actions/setup-gradle@v3
         with:
           build-root-directory: ${{ inputs.working-directory }}
           arguments: build ${{ inputs.sonar-enabled && 'jacocoTestReport sonar -Dsonar.gradle.skipCompile=true' || ''}} --scan
@@ -115,7 +115,7 @@ jobs:
       image: ${{ steps.docker-build-push.outputs.image }}
 
   deploy:
-    needs: [start, build]
+    needs: [ start, build ]
     if: needs.start.outputs.do-deploy == 'true'
     concurrency: ${{ inputs.image-suffix }}
     runs-on: ubuntu-latest
@@ -130,7 +130,7 @@ jobs:
           VAR: image=${{ needs.build.outputs.image }}
 
   deploy-test:
-    needs: [start, build]
+    needs: [ start, build ]
     if: needs.start.outputs.do-deploy-test == 'true'
     concurrency: ${{ inputs.image-suffix }}-test
     runs-on: ubuntu-latest
