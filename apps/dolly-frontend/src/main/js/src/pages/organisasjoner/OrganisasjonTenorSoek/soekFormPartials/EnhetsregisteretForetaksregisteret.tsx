@@ -8,6 +8,7 @@ import { AdresseKodeverk } from '@/config/kodeverk'
 import { Option } from '@/service/SelectOptionsOppslag'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
+import { CypressSelector } from '../../../../../cypress/mocks/Selectors'
 
 export const EnhetsregisteretForetaksregisteret = ({ handleChange }: any) => {
 	const { domain: orgformOptions } = useTenorOrganisasjonDomain('Organisasjonsform')
@@ -53,10 +54,32 @@ export const EnhetsregisteretForetaksregisteret = ({ handleChange }: any) => {
 				visHvisAvhuket={false}
 			/>
 			<FormTextInput
+				name="naeringKode"
+				label="Næringskode"
+				placeholder={'00.000'}
+				// @ts-ignore
+				onBlur={(val: any) => handleChange(val?.target?.value || null, 'naeringKode')}
+				visHvisAvhuket={false}
+			/>
+			<FormTextInput
 				name="antallUnderenheter"
 				label="Antall underenheter"
 				// @ts-ignore
 				onBlur={(val: any) => handleChange(val?.target?.value || null, 'antallUnderenheter')}
+				visHvisAvhuket={false}
+			/>
+			<FormTextInput
+				name="antallAnsatte.fraOgMed"
+				label="Minimum antall ansatte"
+				// @ts-ignore
+				onBlur={(val: any) => handleChange(val?.target?.value || null, 'antallAnsatte.fraOgMed')}
+				visHvisAvhuket={false}
+			/>
+			<FormTextInput
+				name="antallAnsatte.tilOgMed"
+				label="Maks antall ansatte"
+				// @ts-ignore
+				onBlur={(val: any) => handleChange(val?.target?.value || null, 'antallAnsatte.tilOgMed')}
 				visHvisAvhuket={false}
 			/>
 			<FormSelect
@@ -95,7 +118,7 @@ export const EnhetsregisteretForetaksregisteret = ({ handleChange }: any) => {
 				options={Options('boolean')}
 				onChange={(val: Option) => handleChange(val?.value, 'registrertIFrivillighetsregisteret')}
 			/>
-			<div className={'flexbox'} style={{ flexFlow: 'wrap' }}>
+			<div className={'flexbox'} style={{ flexFlow: 'wrap', width: '-webkit-fill-available' }}>
 				<FormCheckbox
 					name="erUnderenhet.hovedenhet"
 					label="Er underenhet"
@@ -106,6 +129,7 @@ export const EnhetsregisteretForetaksregisteret = ({ handleChange }: any) => {
 				<FormCheckbox
 					name="harUnderenheter"
 					label="Har underenheter"
+					data-cy={CypressSelector.CHECKBOX_ORGANISASJONER_TENORSOEK}
 					onChange={(val: any) =>
 						handleChange(val?.target?.checked || undefined, 'harUnderenheter')
 					}

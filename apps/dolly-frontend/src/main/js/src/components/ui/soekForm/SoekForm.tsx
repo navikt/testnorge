@@ -3,6 +3,7 @@ import React from 'react'
 import { Button } from '@navikt/ds-react'
 import { TrashIcon } from '@navikt/aksel-icons'
 import { UseFormGetValues } from 'react-hook-form'
+import { CypressSelector } from '../../../../cypress/mocks/Selectors'
 
 type HeaderProps = {
 	title: string
@@ -10,6 +11,7 @@ type HeaderProps = {
 	paths: string[]
 	getValues?: UseFormGetValues<any>
 	emptyCategory?: Function
+	dataCy?: string
 }
 
 export const SoekefeltWrapper = styled.div`
@@ -85,13 +87,13 @@ const KategoriEmptyButton = styled(Button)`
 	right: 10px;
 `
 
-export const Header = ({ title, antall, paths, getValues, emptyCategory }: HeaderProps) => {
+export const Header = ({ title, antall, paths, getValues, emptyCategory, dataCy }: HeaderProps) => {
 	const antallValgt = antall ? antall : getAntallRequest(paths, getValues)
 	return (
-		<KategoriHeader>
+		<KategoriHeader data-cy={dataCy}>
 			<span>{title}</span>
 			{antallValgt > 0 && (
-				<KategoriCircle>
+				<KategoriCircle data-cy={CypressSelector.TITLE_TENOR_HEADER_COUNTER}>
 					<p>{antallValgt}</p>
 				</KategoriCircle>
 			)}
@@ -101,6 +103,7 @@ export const Header = ({ title, antall, paths, getValues, emptyCategory }: Heade
 						e.stopPropagation()
 						emptyCategory?.(paths)
 					}}
+					data-cy={CypressSelector.BUTTON_TENOR_CLEAR_HEADER}
 					variant={'tertiary'}
 					icon={<TrashIcon />}
 					size={'small'}

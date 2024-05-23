@@ -4,6 +4,7 @@ import { MonthPicker, useMonthpicker } from '@navikt/ds-react'
 import { addYears, isDate, subYears } from 'date-fns'
 import { useFormContext } from 'react-hook-form'
 import _ from 'lodash'
+import { useEffect } from 'react'
 
 interface MonthpickerProps {
 	name: string
@@ -48,7 +49,7 @@ export const Monthpicker = ({
 				? date
 				: new Date(date)
 
-	const { monthpickerProps, inputProps } = useMonthpicker({
+	const { monthpickerProps, inputProps, reset } = useMonthpicker({
 		fromDate: minDate || subYears(new Date(), 125),
 		toDate: maxDate || addYears(new Date(), 5),
 		onMonthChange: (selectedDate) => {
@@ -61,6 +62,13 @@ export const Monthpicker = ({
 				: new Date(formattedDate)
 			: undefined,
 	})
+
+	useEffect(() => {
+		if (!val) {
+			onChange ? onChange(null) : handleDateChange(null)
+			reset()
+		}
+	}, [val])
 
 	return (
 		<InputWrapper size={'small'}>

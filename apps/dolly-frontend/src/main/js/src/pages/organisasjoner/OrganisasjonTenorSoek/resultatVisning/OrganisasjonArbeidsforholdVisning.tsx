@@ -14,7 +14,6 @@ export const OrganisasjonArbeidsforholdVisning = ({ data }: { data: TenorOrganis
 		<>
 			<SubOverskriftExpandable label="Arbeidsforhold" iconKind="arbeid" isExpanded={true}>
 				<TabsVisning kildedata={data.tenorMetadata?.kildedata}>
-					<TitleValue title="Har ansatte" value={oversettBoolean(data.harAnsatte)} />
 					<TitleValue title="Antall ansatte" value={data.antallAnsatte} />
 					<TitleValue title="Konkurs" value={oversettBoolean(data.konkurs)} />
 				</TabsVisning>

@@ -24,6 +24,18 @@ export const EnhetsregisteretVisning = ({ data }: { data: TenorOrganisasjon }) =
 							`${data.organisasjonsform.beskrivelse} (${data.organisasjonsform.kode})`
 						}
 					/>
+					{data?.naeringskoder && data.naeringskoder.length > 0 && (
+						<>
+							<TitleValue
+								title="Næringskode"
+								value={data.naeringskoder[data.naeringskoder.length - 1].kode}
+							/>
+							<TitleValue
+								title="Næringsbeskrivelse"
+								value={data.naeringskoder[data.naeringskoder.length - 1].beskrivelse}
+							/>
+						</>
+					)}
 				</TabsVisning>
 			</SubOverskriftExpandable>
 			{forretningsadresse?.land && (

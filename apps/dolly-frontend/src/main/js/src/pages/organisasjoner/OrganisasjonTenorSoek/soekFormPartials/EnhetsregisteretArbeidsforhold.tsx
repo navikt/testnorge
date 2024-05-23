@@ -1,6 +1,5 @@
 import { SoekKategori } from '@/components/ui/soekForm/SoekForm'
 import React, { SyntheticEvent } from 'react'
-import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
@@ -42,20 +41,6 @@ export const EnhetsregisteretArbeidsforhold = ({ handleChange }: any) => {
 				onChange={(val: SyntheticEvent) =>
 					handleChange(val || null, 'tenorRelasjoner.arbeidsforhold.sluttDato.tilOgMed')
 				}
-				visHvisAvhuket={false}
-			/>
-			<FormTextInput
-				name="antallAnsatte.fraOgMed"
-				label="Minimum antall ansatte"
-				// @ts-ignore
-				onBlur={(val: any) => handleChange(val?.target?.value || null, 'antallAnsatte.fraOgMed')}
-				visHvisAvhuket={false}
-			/>
-			<FormTextInput
-				name="antallAnsatte.tilOgMed"
-				label="Maks antall ansatte"
-				// @ts-ignore
-				onBlur={(val: any) => handleChange(val?.target?.value || null, 'antallAnsatte.tilOgMed')}
 				visHvisAvhuket={false}
 			/>
 			<div className={'flexbox'} style={{ flexFlow: 'wrap' }}>

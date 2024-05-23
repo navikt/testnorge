@@ -56,6 +56,7 @@ export const OrganisasjonDropdown = () => {
 						</Dropdown.Menu.List.Item>
 						<Dropdown.Menu.List.Item
 							onClick={() => navigate('/tenor/organisasjoner')}
+							data-cy={CypressSelector.BUTTON_HEADER_TENOR_ORGANISASJONER}
 							style={{ color: '#212529' }}
 						>
 							<Icon kind="search" fontSize="1.5rem" />
