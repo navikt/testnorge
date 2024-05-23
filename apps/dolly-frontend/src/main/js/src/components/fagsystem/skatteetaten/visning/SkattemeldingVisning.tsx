@@ -16,7 +16,7 @@ export const Skattemelding = ({ skattemelding }: any) => {
 	)
 }
 
-export const SkattemeldingVisning = ({ skattemeldingListe }) => {
+export const SkattemeldingVisning = ({ skattemeldingListe }: any) => {
 	if (!skattemeldingListe || skattemeldingListe.length < 1) {
 		return null
 	}
@@ -24,7 +24,7 @@ export const SkattemeldingVisning = ({ skattemeldingListe }) => {
 	return (
 		<Panel heading="Skattemelding">
 			<div className="person-visning_content">
-				<DollyFieldArray data={skattemeldingListe} header={null} nested>
+				<DollyFieldArray data={skattemeldingListe} nested>
 					{(skattemelding: any) => {
 						return <Skattemelding skattemelding={skattemelding} />
 					}}

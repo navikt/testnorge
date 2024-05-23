@@ -57,7 +57,7 @@ export default () => {
 			if (state.side > 0) {
 				setState({
 					...state,
-					personListe: [...state.personListe, ...response?.data?.data?.personer],
+					personListe: [...state.personListe, ...response.data.data.personer],
 					nesteSide: response?.data?.data?.nesteSide,
 				})
 			} else {

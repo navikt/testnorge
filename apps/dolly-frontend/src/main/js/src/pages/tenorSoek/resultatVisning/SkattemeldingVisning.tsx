@@ -12,7 +12,7 @@ export const SkattemeldingVisning = ({ data }: any) => {
 	return (
 		<SubOverskriftExpandable label={`Skattemelding (${data.length})`} iconKind="bankkonto">
 			<div>
-				<DollyFieldArray data={data} header={null} nested>
+				<DollyFieldArray data={data} nested>
 					{(skattemelding: any) => {
 						return (
 							<TabsVisning kildedata={skattemelding.tenorMetadata?.kildedata}>

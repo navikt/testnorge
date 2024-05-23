@@ -4,6 +4,7 @@ import { MonthPicker, useMonthpicker } from '@navikt/ds-react'
 import { addYears, isDate, subYears } from 'date-fns'
 import { useFormContext } from 'react-hook-form'
 import _ from 'lodash'
+import { useEffect } from 'react'
 
 interface MonthpickerProps {
 	name: string
@@ -11,7 +12,6 @@ interface MonthpickerProps {
 	date?: Date
 	handleDateChange?: (dato: string, type: string) => void
 	onChange?: (date: Date) => void
-	isClearable?: boolean
 	minDate?: Date
 	maxDate?: Date
 }
@@ -22,14 +22,12 @@ export const Monthpicker = ({
 	date = null,
 	handleDateChange,
 	onChange,
-	isClearable = false,
 	minDate = null,
 	maxDate = null,
-	...props
 }: MonthpickerProps) => {
 	const formMethods = useFormContext()
 	const val = formMethods.watch(name)
-	// console.log('val: ', val) //TODO - SLETT MEG
+
 	function getEksisterendeVerdi() {
 		if (name.includes('navArbeidsforholdPeriode')) {
 			return val?.year ? new Date(val?.year, val?.monthValue) : null
@@ -50,7 +48,6 @@ export const Monthpicker = ({
 		fromDate: minDate || subYears(new Date(), 125),
 		toDate: maxDate || addYears(new Date(), 5),
 		onMonthChange: (selectedDate) => {
-			// console.log('selectedDate: ', selectedDate) //TODO - SLETT MEG
 			selectedDate?.setHours(12)
 			onChange ? onChange(selectedDate) : handleDateChange(selectedDate)
 		},
@@ -60,19 +57,13 @@ export const Monthpicker = ({
 				: new Date(formattedDate)
 			: undefined,
 	})
-	// console.log('name: ', name) //TODO - SLETT MEG
-	// console.log('date: ', date) //TODO - SLETT MEG
-	// console.log('formattedDate: ', formattedDate) //TODO - SLETT MEG
 
-	if (!val && inputProps.value) {
-		reset()
-	}
-	// TODO sjekk om reset funker med oppdatert getUpdatedRequest
+	useEffect(() => {
+		if (!val && inputProps.value) {
+			reset()
+		}
+	}, [val])
 
-	// if (name === 'tjenestepensjonsavtale.periode') {
-	// 	console.log('monthpickerProps: ', monthpickerProps) //TODO - SLETT MEG
-	// 	console.log('inputProps: ', inputProps) //TODO - SLETT MEG
-	// }
 	return (
 		<InputWrapper size={'small'}>
 			<Label name={name} label={label}>

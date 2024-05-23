@@ -12,7 +12,7 @@ export const InntektVisning = ({ data }: any) => {
 	return (
 		<SubOverskriftExpandable label={`Inntekt A-ordningen (${data.length})`} iconKind="inntektstub">
 			<div>
-				<DollyFieldArray data={data} header={null} nested>
+				<DollyFieldArray data={data} nested>
 					{(inntekt: any) => {
 						return (
 							<TabsVisning kildedata={inntekt.tenorMetadata?.kildedata}>

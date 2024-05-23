@@ -28,7 +28,7 @@ export const TjenestepensjonsavtaleVisning = ({ tpListe }: any) => {
 	return (
 		<Panel heading="Tjenestepensjonsavtale">
 			<div className="person-visning_content">
-				<DollyFieldArray data={tpListe} header={null} nested>
+				<DollyFieldArray data={tpListe} nested>
 					{(tjenestepensjonsavtale: any) => {
 						return <Tjenestepensjonsavtale tjenestepensjonsavtale={tjenestepensjonsavtale} />
 					}}

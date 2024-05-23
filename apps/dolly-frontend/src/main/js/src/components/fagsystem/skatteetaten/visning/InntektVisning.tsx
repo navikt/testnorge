@@ -28,7 +28,7 @@ export const Inntekt = ({ inntekt }: any) => {
 	)
 }
 
-export const InntektVisning = ({ inntektListe }) => {
+export const InntektVisning = ({ inntektListe }: any) => {
 	if (!inntektListe || inntektListe.length < 1) {
 		return null
 	}
@@ -36,7 +36,7 @@ export const InntektVisning = ({ inntektListe }) => {
 	return (
 		<Panel heading="Inntekt A-ordningen">
 			<div className="person-visning_content">
-				<DollyFieldArray data={inntektListe} header={null} nested>
+				<DollyFieldArray data={inntektListe} nested>
 					{(inntekt: any) => {
 						return <Inntekt inntekt={inntekt} />
 					}}

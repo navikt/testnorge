@@ -46,20 +46,17 @@ export const SoekForm = ({ setRequest, setMarkertePersoner, mutate }: any) => {
 				delete request[key]
 			} else if (typeof request[key] === 'object' && !(request[key] instanceof Date)) {
 				request[key] = getUpdatedRequest(request[key])
-				if (Object.keys(request[key]).length === 0) delete request[key]
-				// if (Object.keys(request[key]).length === 0) {
-				// 	delete request[key]
-				// } else {
-				// 	request[key] = getUpdatedRequest(request[key])
-				// }
+				if (Object.keys(request[key]).length === 0) {
+					delete request[key]
+				} else {
+					request[key] = getUpdatedRequest(request[key])
+				}
 			}
 		}
 		return Array.isArray(request) ? request.filter((val) => val) : request
 	}
-	//TODO Sjekk ordentlig om dette funker
 
 	const handleChange = (value: any, path: string) => {
-		// console.log('value: ', value) //TODO - SLETT MEG
 		if (isDate(value)) {
 			value = fixTimezone(value)
 		}

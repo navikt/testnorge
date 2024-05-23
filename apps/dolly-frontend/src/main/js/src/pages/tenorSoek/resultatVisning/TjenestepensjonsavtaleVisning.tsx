@@ -16,7 +16,7 @@ export const TjenestepensjonsavtaleVisning = ({ data }: any) => {
 			isExpanded={true}
 		>
 			<div>
-				<DollyFieldArray data={data} header={null} nested>
+				<DollyFieldArray data={data} nested>
 					{(tjenestepensjonsavtale: any) => {
 						return (
 							<TabsVisning kildedata={tjenestepensjonsavtale.tenorMetadata?.kildedata}>
