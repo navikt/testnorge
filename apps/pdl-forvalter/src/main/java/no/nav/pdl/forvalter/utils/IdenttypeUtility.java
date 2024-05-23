@@ -9,7 +9,7 @@ import static no.nav.testnav.libs.data.pdlforvalter.v1.Identtype.FNR;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.Identtype.NPID;
 
 @UtilityClass
-public class IdenttypeFraIdentUtility {
+public class IdenttypeUtility {
 
     public static Identtype getIdenttype(String ident) {
 
@@ -20,5 +20,14 @@ public class IdenttypeFraIdentUtility {
         } else {
             return FNR;
         }
+    }
+    public static boolean isNotNpidIdent(String ident) {
+
+        return !isNpidIdent(ident);
+    }
+
+    public static boolean isNpidIdent(String ident) {
+
+        return Character.getNumericValue(ident.charAt(2)) % 4 >= 2;
     }
 }
