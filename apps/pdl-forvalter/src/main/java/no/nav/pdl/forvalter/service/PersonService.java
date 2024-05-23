@@ -253,13 +253,13 @@ public class PersonService {
         personRepository.findByIdent(ident)
                 .ifPresentOrElse(person -> {
                             hendelseIdService.deletePdlHendelser(ident);
+                            unhookEksternePersonerService.unhook(person);
 
                             relasjonRepository.deleteByPersonIdentIn(
                                     person.getRelasjoner().stream()
                                             .map(DbRelasjon::getRelatertPerson)
                                             .filter(Objects::nonNull)
-                                            .map(DbPerson::getPerson)
-                                            .map(PersonDTO::getIdent)
+                                            .map(DbPerson::getIdent)
                                             .toList());
 
                             personRepository.deleteByIdent(ident);
