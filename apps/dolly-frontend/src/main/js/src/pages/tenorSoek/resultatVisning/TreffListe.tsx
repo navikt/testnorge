@@ -50,21 +50,27 @@ export const TreffListe = ({
 	}, [response])
 
 	if ((!personListe || personListe?.length === 0) && loading) {
-		return <Loading label="Laster treff ..." />
+		return (
+			<div style={{ marginTop: '-70px' }}>
+				<Loading label="Laster treff ..." />
+			</div>
+		)
 	}
 
 	if (error || response?.error) {
 		return (
-			<Alert variant="error" size="small">{`Feil ved henting av personer: ${
-				error || response?.error
-			}`}</Alert>
+			<Alert
+				variant="error"
+				size="small"
+				style={{ marginTop: '-70px' }}
+			>{`Feil ved henting av personer: ${error || response?.error}`}</Alert>
 		)
 	}
 
 	const antallTreff = localStorage['antallTreff']
 
 	return (
-		<div className="flexbox--flex-wrap">
+		<div className="flexbox--flex-wrap" style={{ marginTop: '-70px' }}>
 			<div
 				className="flexbox--full-width"
 				style={{ marginBottom: '20px', position: 'sticky', top: '10px', zIndex: 1 }}
