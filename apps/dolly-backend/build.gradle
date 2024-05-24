@@ -1,7 +1,7 @@
 plugins {
     id 'java'
     id "org.sonarqube" version "5.0.0.4638"
-    id 'org.springframework.boot' version "3.2.5"
+    id 'org.springframework.boot' version "3.2.6"
     id 'io.spring.dependency-management' version "1.1.5"
     id "jacoco"
 }
@@ -91,7 +91,9 @@ dependencies {
     implementation 'com.github.ben-manes.caffeine:caffeine'
 
     implementation 'org.ehcache:ehcache:3.10.8'
-    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.14.2'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.17.1'
+
+//    implementation 'com.fasterxml.jackson.datatype:jackson-core:2.17.1'
     implementation 'org.postgresql:postgresql'
     implementation 'org.flywaydb:flyway-core'
     implementation 'io.micrometer:micrometer-registry-prometheus'
