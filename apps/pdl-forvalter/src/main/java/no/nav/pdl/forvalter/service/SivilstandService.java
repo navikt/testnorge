@@ -155,6 +155,7 @@ public class SivilstandService implements BiValidation<SivilstandDTO, PersonDTO>
                                 .person(PersonDTO.builder()
                                         .ident(sivilstand.getRelatertVedSivilstand())
                                         .build())
+                                .sistOppdatert(now())
                                 .build())));
 
         var relatertSivilstand = mapperFacade.map(sivilstand, SivilstandDTO.class);

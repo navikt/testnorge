@@ -184,7 +184,7 @@ public class ForelderBarnRelasjonService implements BiValidation<ForelderBarnRel
     private ForelderBarnRelasjonDTO addForelderBarnRelasjon(ForelderBarnRelasjonDTO relasjon, PersonDTO hovedperson) {
 
         setRolle(relasjon, hovedperson);
-        if (isNull(relasjon.getRelatertPerson())) {
+        if (isBlank(relasjon.getRelatertPerson())) {
             return relasjon;
         }
         createMotsattRelasjon(relasjon, hovedperson.getIdent());
@@ -291,6 +291,7 @@ public class ForelderBarnRelasjonService implements BiValidation<ForelderBarnRel
                                 .person(PersonDTO.builder()
                                         .ident(relasjon.getRelatertPerson())
                                         .build())
+                                .sistOppdatert(LocalDateTime.now())
                                 .build()))
                 );
         var relatertFamilierelasjon = mapperFacade.map(relasjon, ForelderBarnRelasjonDTO.class);
