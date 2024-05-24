@@ -68,7 +68,7 @@ public class TenorOversiktOrganisasjonResponse {
         private List<Object> fullmakter;
         private Kapital kapital;
         private String kjonnsrepresentasjon;
-        private List<String> matrikkelnummer;
+        private List<MatrikkelEnhet> matrikkelnummer;
         private FravalgAvRevisjon fravalgAvRevisjon;
         private NorskregistrertUtenlandskForetak norskregistrertUtenlandskForetak;
         private LovgivningOgForetaksformIHjemlandet lovgivningOgForetaksformIHjemlandet;
@@ -97,6 +97,19 @@ public class TenorOversiktOrganisasjonResponse {
         private List<String> adresse;
         private String kommune;
         private String kommunenummer;
+    }
+
+    @lombok.Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class MatrikkelEnhet {
+        private String matrikkelEnhetId;
+        private String kommunenummer;
+        private Integer gaardsnummer;
+        private Integer bruksnummer;
+        private Integer festenummer;
+        private Integer rekkefolge;
     }
 
     @lombok.Data

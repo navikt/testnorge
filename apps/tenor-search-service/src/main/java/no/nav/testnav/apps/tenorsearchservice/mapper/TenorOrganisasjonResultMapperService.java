@@ -58,9 +58,9 @@ public class TenorOrganisasjonResultMapperService {
                         .build();
 
             } catch (JsonProcessingException e) {
-                log.error("Feil ved konvertering av tenor respons {}", e.getMessage(), e);
+                log.error("Feil ved konvertering av tenor organisasjon respons {}", e.getMessage(), e);
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-                        "Feil ved konvertering av tenor response: %s".formatted(e.getMessage()), e);
+                        "Feil ved konvertering av tenor organisasjon response: %s".formatted(e.getMessage()), e);
             }
         } else {
             return null;
