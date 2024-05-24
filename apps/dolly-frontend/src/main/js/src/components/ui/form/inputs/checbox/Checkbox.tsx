@@ -40,20 +40,22 @@ export const DollyCheckbox = ({
 	checkboxMargin = false,
 	label = '',
 	id = null,
+	vis = true,
 	...props
-}) => (
-	<InputWrapper size={wrapperSize} checkboxMargin={checkboxMargin}>
-		{isSwitch ? (
-			<StyledSwitch disabled={isDisabled} {...props}>
-				{label}
-			</StyledSwitch>
-		) : (
-			<Checkbox id={id || label} disabled={isDisabled} {...props}>
-				{label}
-			</Checkbox>
-		)}
-	</InputWrapper>
-)
+}) =>
+	vis && (
+		<InputWrapper size={wrapperSize} checkboxMargin={checkboxMargin}>
+			{isSwitch ? (
+				<StyledSwitch disabled={isDisabled} {...props}>
+					{label}
+				</StyledSwitch>
+			) : (
+				<Checkbox id={id || label} disabled={isDisabled} {...props}>
+					{label}
+				</Checkbox>
+			)}
+		</InputWrapper>
+	)
 
 export const FormCheckbox = ({
 	afterChange = null,

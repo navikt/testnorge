@@ -47,17 +47,26 @@ export const usePdlOptions = (gruppe) => {
 		const mellomnavn = navn?.mellomnavn ? `${navn?.mellomnavn?.charAt(0)}.` : ''
 		const etternavn = navn?.etternavn || ''
 		const ident = id?.person?.ident || id?.ident
+		const foreldre =
+			gruppe[0].master === 'PDLF'
+				? id.relasjoner
+						?.filter((relasjon) => relasjon.relasjonType === 'FAMILIERELASJON_FORELDER')
+						?.map((relasjon) => relasjon.relatertPerson?.ident)
+				: id.person.foreldreBarnRelasjon
+						?.filter((relasjon) => relasjon.minRolleForPerson === 'BARN')
+						?.map((relasjon) => relasjon.relatertPersonsIdent)
+		const alder = getAlder(id.person.foedsel?.[0]?.foedselsdato)
+		const kjoenn = id?.person?.kjoenn?.[0].kjoenn?.toLowerCase()
 		personData.push({
 			value: ident,
-			label: `${ident} - ${fornavn} ${mellomnavn} ${etternavn}`,
+			label: `${ident} - ${fornavn} ${mellomnavn} ${etternavn} (${kjoenn} ${alder})`,
 			relasjoner: id?.relasjoner?.map((r) => r?.relatertPerson?.ident),
-			alder: getAlder(id.person.foedsel?.[0]?.foedselsdato),
+			alder: alder,
+			kjoenn: kjoenn,
 			sivilstand: id.person.sivilstand?.[0]?.type,
 			vergemaal: id.person.vergemaal?.length > 0,
 			doedsfall: id.person.doedsfall?.length > 0,
-			foreldre: id.relasjoner
-				?.filter((relasjon) => relasjon.relasjonType === 'FAMILIERELASJON_FORELDER')
-				?.map((relasjon) => relasjon.relatertPerson?.ident),
+			foreldre: foreldre,
 			foreldreansvar: id.relasjoner
 				?.filter((relasjon) => relasjon.relasjonType === 'FORELDREANSVAR_BARN')
 				?.map((relasjon) => relasjon.relatertPerson?.ident),

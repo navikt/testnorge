@@ -342,7 +342,6 @@ export const VisningRedigerbar = ({
 						formMethods={formMethods}
 						path={path}
 						eksisterendeNyPerson={eksisterendeNyPerson}
-						identtype={identtype}
 					/>
 				)
 			case Attributt.Foreldreansvar:

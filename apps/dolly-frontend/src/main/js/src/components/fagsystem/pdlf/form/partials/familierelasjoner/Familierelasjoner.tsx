@@ -29,7 +29,7 @@ export const Familierelasjoner = ({ formMethods }: { formMethods: UseFormReturn 
 				<Kategori title="Sivilstand (partner)" vis="pdldata.person.sivilstand">
 					<Sivilstand formMethods={formMethods} />
 				</Kategori>
-				<Kategori title="Barn/foreldre" vis="pdldata.person.forelderBarnRelasjon">
+				<Kategori title="Barn/foreldr" vis="pdldata.person.forelderBarnRelasjon">
 					<ForelderBarnRelasjon formMethods={formMethods} />
 				</Kategori>
 				<Kategori title="Foreldreansvar" vis="pdldata.person.foreldreansvar">

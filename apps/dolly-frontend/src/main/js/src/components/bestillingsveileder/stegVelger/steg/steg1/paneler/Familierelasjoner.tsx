@@ -41,6 +41,7 @@ export const FamilierelasjonPanel = ({ stateModifier, formValues }) => {
 					title={
 						opts?.identtype === 'NPID' ? 'Ikke tilgjengelig for personer med identtype NPID' : ''
 					}
+					vis={visOpplysning}
 				/>
 			</AttributtKategori>
 			<AttributtKategori title="Dødfødt barn" attr={sm.attrs}>

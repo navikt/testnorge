@@ -52,6 +52,9 @@ export const PdlEksisterendePerson = ({
 		'GJENLEVENDE_PARTNER',
 	]
 
+	const eksisterendeIdent = opts?.personFoerLeggTil?.pdl?.ident
+	const eksisterendePerson = pdlOptions.find((x) => x.value === eksisterendeIdent)
+
 	const harForeldreansvarForValgteBarn = (foreldreansvar: Array<string>) => {
 		let harEksisterendeAnsvar = false
 		const valgteBarn = formMethods
@@ -83,38 +86,39 @@ export const PdlEksisterendePerson = ({
 		if (harSivilstand) {
 			return gyldigeSivilstanderForPartner.includes(person.sivilstand)
 		} else if (eksisterendePersonPath?.includes('vergemaal')) {
-			return !person.vergemaal && person.alder > 17
+			return !person.vergemaal && person.alder > 17 && !person.doedsfall
 		} else if (
 			eksisterendePersonPath?.includes('fullmakt') ||
 			eksisterendePersonPath?.includes('kontaktinformasjonForDoedsbo')
 		) {
-			return person.alder > 17
+			return person.alder > 17 && !person.doedsfall
 		} else if (
 			eksisterendePersonPath?.includes('forelderBarnRelasjon') &&
 			formMethods.watch(`pdldata.person.forelderBarnRelasjon[${idx}].relatertPersonsRolle`) ===
 				'BARN'
 		) {
 			return (
-				getAntallForeldre(person.foreldre) < 3 &&
-				formMethods
-					.watch('pdldata.person.forelderBarnRelasjon')
-					.some(
-						(relasjon: ForeldreBarnRelasjon, relasjonId: number) =>
-							relasjon.relatertPerson === person.value && relasjonId !== idx,
-					)
+				(person.foreldre == null || getAntallForeldre(person.foreldre) < 3) &&
+				eksisterendePerson.alder - person.alder > 17 &&
+				!person.doedsfall
 			)
+		} else if (
+			eksisterendePersonPath?.includes('forelderBarnRelasjon') &&
+			formMethods.watch(`pdldata.person.forelderBarnRelasjon[${idx}].minRolleForPerson`) === 'BARN'
+		) {
+			return person.alder - eksisterendePerson.alder > 17 && !person.doedsfall
 		} else if (eksisterendePersonPath?.includes('foreldreansvar')) {
 			return (
 				!harForeldreansvarForValgteBarn(person.foreldreansvar) &&
 				!person.doedsfall &&
-				person.alder > 17
+				person.alder > 17 &&
+				!person.doedsfall
 			)
 		}
 		return true
 	}
 
-	const getFilteredOptionList = (opts) => {
-		const eksisterendeIdent = opts?.personFoerLeggTil?.pdl?.ident
+	const getFilteredOptionList = () => {
 		const tmpOptions = pdlOptions?.filter(
 			(person) => person.value !== eksisterendeIdent && filterOptions(person),
 		)
@@ -133,7 +137,7 @@ export const PdlEksisterendePerson = ({
 
 	const bestillingFlerePersoner = parseInt(antall) > 1 && (harSivilstand || harNyIdent)
 
-	const filteredOptions = getFilteredOptionList(opts)
+	const filteredOptions = getFilteredOptionList()
 
 	return (
 		<div className={'flexbox--full-width'}>

@@ -16,7 +16,6 @@ type RelatertPersonProps = {
 
 type Props = {
 	slettPerson: Function
-	slettPersonOgRelatertePersoner: Function
 	loading: boolean
 	importerteRelatertePersoner: Array<RelatertPersonProps>
 	disabled?: boolean
@@ -24,7 +23,6 @@ type Props = {
 
 export const FrigjoerButton = ({
 	slettPerson,
-	slettPersonOgRelatertePersoner,
 	loading,
 	importerteRelatertePersoner,
 	disabled = false,
@@ -75,13 +73,7 @@ export const FrigjoerButton = ({
 						<NavButton
 							onClick={() => {
 								closeModal()
-								if (importerteRelatertePersoner) {
-									slettPersonOgRelatertePersoner(importerteRelatertePersoner).then(() =>
-										mutate(REGEX_BACKEND_GRUPPER),
-									)
-								} else {
-									slettPerson().then(() => mutate(REGEX_BACKEND_GRUPPER))
-								}
+								slettPerson().then(() => mutate(REGEX_BACKEND_GRUPPER))
 							}}
 							variant={'primary'}
 						>

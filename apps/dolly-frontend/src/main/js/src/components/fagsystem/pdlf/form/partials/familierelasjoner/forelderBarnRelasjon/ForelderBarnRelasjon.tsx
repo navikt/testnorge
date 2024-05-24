@@ -26,7 +26,6 @@ interface ForelderForm {
 	path?: string
 	idx?: number
 	eksisterendeNyPerson?: any
-	identtype?: string
 }
 
 type Target = {
@@ -42,9 +41,10 @@ const forelderTyper = ['FORELDER', 'MOR', 'MEDMOR', 'FAR']
 export const ForelderBarnRelasjonForm = ({
 	formMethods,
 	path,
+	idx,
 	eksisterendeNyPerson = null,
-	identtype,
 }: ForelderForm) => {
+	const { identtype, identMaster } = useContext(BestillingsveilederContext)
 	const [erBarn, setErBarn] = React.useState(
 		formMethods.watch(`${path}.relatertPersonsRolle`) === RELASJON_BARN,
 	)
@@ -108,6 +108,10 @@ export const ForelderBarnRelasjonForm = ({
 		}
 	}, [])
 
+	const testnorgePerson = identMaster === 'PDL'
+	const initiellMaster = testnorgePerson || identtype === 'NPID' ? 'PDL' : 'FREG'
+	const kanVelgeMaster = !testnorgePerson && identtype !== 'NPID'
+
 	return (
 		<div className="flexbox--flex-wrap">
 			<div className="toggle--wrapper">
@@ -116,8 +120,8 @@ export const ForelderBarnRelasjonForm = ({
 						formMethods.setValue(
 							path,
 							value === RELASJON_BARN
-								? { ...getInitialBarn(identtype === 'NPID' ? 'PDL' : 'FREG'), id: id }
-								: { ...getInitialForelder(identtype === 'NPID' ? 'PDL' : 'FREG'), id: id },
+								? { ...getInitialBarn(initiellMaster), id: id }
+								: { ...getInitialForelder(initiellMaster), id: id },
 						)
 						setErBarn(value === RELASJON_BARN)
 						formMethods.trigger(path)
@@ -144,7 +148,9 @@ export const ForelderBarnRelasjonForm = ({
 							options={Options('foreldreTypePDL')}
 							isClearable={false}
 						/>
-						<FormCheckbox name={`${path}.borIkkeSammen`} label="Bor ikke sammen" checkboxMargin />
+						{!testnorgePerson && (
+							<FormCheckbox name={`${path}.borIkkeSammen`} label="Bor ikke sammen" checkboxMargin />
+						)}
 					</>
 				)}
 				<FormSelect
@@ -153,15 +159,17 @@ export const ForelderBarnRelasjonForm = ({
 					options={Options('typeAnsvarlig')}
 					onChange={(target: Target) => handleChangeTypeForelderBarn(target, path)}
 					size="medium"
+					vis={!testnorgePerson}
 				/>
 			</div>
 
-			{getForelderBarnType() === TypeAnsvarlig.EKSISTERENDE && (
+			{(testnorgePerson || getForelderBarnType() === TypeAnsvarlig.EKSISTERENDE) && (
 				<PdlEksisterendePerson
 					eksisterendePersonPath={`${path}.relatertPerson`}
 					label={erBarn ? RELASJON_BARN.toUpperCase() : RELASJON_FORELDER.toUpperCase()}
 					formMethods={formMethods}
 					eksisterendeNyPerson={eksisterendeNyPerson}
+					idx={idx}
 				/>
 			)}
 
@@ -202,28 +210,24 @@ export const ForelderBarnRelasjonForm = ({
 				</div>
 			)}
 
-			<AvansertForm path={path} kanVelgeMaster={identtype !== 'NPID'} />
+			<AvansertForm path={path} kanVelgeMaster={kanVelgeMaster} />
 		</div>
 	)
 }
 
-export const ForelderBarnRelasjon = ({ formMethods }: ForelderForm) => {
-	const opts = useContext(BestillingsveilederContext)
+export const ForelderBarnRelasjon = ({ formMethods, idx }: ForelderForm) => {
+	const { identtype, identMaster } = useContext(BestillingsveilederContext)
+	const initiellMaster = identMaster === 'PDL' || identtype === 'NPID' ? 'PDL' : 'FREG'
+
 	return (
 		<FormDollyFieldArray
 			name="pdldata.person.forelderBarnRelasjon"
 			header={'Relasjon'}
-			newEntry={getInitialBarn(opts?.identtype === 'NPID' ? 'PDL' : 'FREG')}
+			newEntry={getInitialBarn(initiellMaster)}
 			canBeEmpty={false}
 		>
 			{(path: string, idx: number) => {
-				return (
-					<ForelderBarnRelasjonForm
-						formMethods={formMethods}
-						path={path}
-						identtype={opts?.identtype}
-					/>
-				)
+				return <ForelderBarnRelasjonForm formMethods={formMethods} path={path} idx={idx} />
 			}}
 		</FormDollyFieldArray>
 	)

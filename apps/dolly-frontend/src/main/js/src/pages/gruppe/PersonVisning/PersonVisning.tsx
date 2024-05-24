@@ -23,7 +23,6 @@ import { SlettButton } from '@/components/ui/button/SlettButton/SlettButton'
 import { BestillingSammendragModal } from '@/components/bestilling/sammendrag/BestillingSammendragModal'
 import './PersonVisning.less'
 import { PdlPersonMiljoeInfo } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlPersonMiljoeinfo'
-import { PdlVisning } from '@/components/fagsystem/pdl/visning/PdlVisning'
 import PdlfVisningConnector from '@/components/fagsystem/pdlf/visning/PdlfVisningConnector'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { FrigjoerButton } from '@/components/ui/button/FrigjoerButton/FrigjoerButton'
@@ -418,9 +417,6 @@ export default ({
 							slettPerson={slettPerson}
 							slettPersonOgRelatertePersoner={slettPersonOgRelatertePersoner}
 							loading={loading.slettPerson || loading.slettPersonOgRelatertePersoner}
-							importerteRelatertePersoner={
-								importerteRelatertePersoner.length > 0 ? importerteRelatertePersoner : null
-							}
 						/>
 					)}
 				</div>
