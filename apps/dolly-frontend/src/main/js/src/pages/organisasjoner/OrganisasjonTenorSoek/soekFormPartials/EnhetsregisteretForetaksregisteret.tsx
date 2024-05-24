@@ -18,8 +18,7 @@ export const EnhetsregisteretForetaksregisteret = ({ handleChange }: any) => {
 			<FormTextInput
 				name="organisasjonsnummer"
 				label="Organisasjonsnummer"
-				// @ts-ignore
-				onKeyPress={(val: any) => handleChange(val?.target?.value || null, 'organisasjonsnummer')}
+				onBlur={(val: any) => handleChange(val?.target?.value || null, 'organisasjonsnummer')}
 				visHvisAvhuket={false}
 			/>
 			<FormSelect
