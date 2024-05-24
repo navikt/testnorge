@@ -40,7 +40,7 @@ public class TenorOrganisasjonEksterneRelasjonerUtility {
     private String getTjenestepensjonsavtaleOpplysningspliktig(TenorOrganisasjonRequest.TjenestepensjonsavtaleOpplysningspliktig tpOpplysningspliktig) {
 
         return isNull(tpOpplysningspliktig) ? "" :
-                " and tenorRelasjoner.samletReskontroinnsyn:{%s}".formatted(guard(new StringBuilder()
+                " and tenorRelasjoner.tjenestepensjonsavtaleOpplysningspliktig:{%s}".formatted(guard(new StringBuilder()
                         .append(convertObject("tjenestepensjonsinnretningOrgnr", tpOpplysningspliktig.getTjenestepensjonsinnretningOrgnr()))
                         .append(convertObject("periode", tpOpplysningspliktig.getPeriode()))));
     }
