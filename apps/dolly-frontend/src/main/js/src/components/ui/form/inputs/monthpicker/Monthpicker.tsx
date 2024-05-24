@@ -64,8 +64,7 @@ export const Monthpicker = ({
 	})
 
 	useEffect(() => {
-		if (!val) {
-			onChange ? onChange(null) : handleDateChange(null)
+		if (!val && inputProps.value) {
 			reset()
 		}
 	}, [val])
