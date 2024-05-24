@@ -238,9 +238,9 @@ public class ArtifactUpdateService {
 
     public void updateForelderBarnRelasjon(String ident, Integer id, ForelderBarnRelasjonDTO oppdatertRelasjon) {
 
-        forelderBarnRelasjonService.validate(oppdatertRelasjon);
-
         var person = getPerson(ident);
+        forelderBarnRelasjonService.validate(oppdatertRelasjon, person.getPerson());
+
         var foreldrebarnRelasjon = person.getPerson().getForelderBarnRelasjon().stream()
                 .filter(relasjon -> relasjon.getId().equals(id))
                 .findFirst();
