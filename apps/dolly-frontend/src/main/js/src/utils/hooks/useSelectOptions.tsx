@@ -40,8 +40,6 @@ export const usePdlOptions = (gruppe) => {
 		payload = data
 	}
 
-	console.log('persondata', payload)
-
 	const personData = []
 	payload?.flat().forEach((id) => {
 		const navn = id?.person?.navn?.[0]

@@ -4,7 +4,7 @@ import Loading from '@/components/ui/loading/Loading'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { Option } from '@/service/SelectOptionsOppslag'
-import { ForeldreBarnRelasjon, NyIdent } from '@/components/fagsystem/pdlf/PdlTypes'
+import { NyIdent } from '@/components/fagsystem/pdlf/PdlTypes'
 import { Alert } from '@navikt/ds-react'
 import { useGruppeIdenter } from '@/utils/hooks/useGruppe'
 import { UseFormReturn } from 'react-hook-form/dist/types'
@@ -15,7 +15,6 @@ interface PdlEksisterendePersonValues {
 	eksisterendePersonPath: string
 	label: string
 	formMethods: UseFormReturn
-	idx?: number
 	disabled?: boolean
 	nyIdentValg?: NyIdent
 	eksisterendeNyPerson?: Option
@@ -26,7 +25,6 @@ export const PdlEksisterendePerson = ({
 	eksisterendePersonPath,
 	label,
 	formMethods,
-	idx,
 	disabled = false,
 	nyIdentValg = null,
 	eksisterendeNyPerson = null,
@@ -43,84 +41,26 @@ export const PdlEksisterendePerson = ({
 	const harSivilstand = eksisterendePersonPath?.includes('sivilstand')
 	const harNyIdent = eksisterendePersonPath?.includes('nyident')
 
-	const gyldigeSivilstanderForPartner = [
-		'UOPPGITT',
-		'UGIFT',
-		'ENKE_ELLER_ENKEMANN',
-		'SKILT',
-		'SKILT_PARTNER',
-		'GJENLEVENDE_PARTNER',
-	]
-
-	console.log('identer', identer)
-	console.log('filtrerteIdenter', filtrerteIdenter)
-	console.log('opts', opts)
 	const eksisterendeIdent = opts?.personFoerLeggTil?.pdl?.ident
-	console.log('eksisterendeIdent', eksisterendeIdent)
+
 	const eksisterendePerson = pdlOptions.find((x) => x.value === eksisterendeIdent)
-	console.log('pdlOptions', pdlOptions)
-	console.log('ekisterendePerson', eksisterendePerson)
-
-	const harForeldreansvarForValgteBarn = (foreldreansvar: Array<string>) => {
-		let harEksisterendeAnsvar = false
-		const valgteBarn = formMethods
-			.watch('pdldata.person.forelderBarnRelasjon')
-			?.filter((relasjon: ForeldreBarnRelasjon) => relasjon.relatertPersonsRolle === 'BARN')
-			?.map((relasjon: ForeldreBarnRelasjon) => relasjon.relatertPerson)
-
-		valgteBarn?.forEach((barn: string) => {
-			if (foreldreansvar.includes(barn)) {
-				harEksisterendeAnsvar = true
-			}
-		})
-		return harEksisterendeAnsvar
-	}
-
-	const getAntallForeldre = (eksisterendeForeldre: Array<string>) => {
-		const partnerErForelder = () =>
-			formMethods
-				.watch('pdldata.person.sivilstand')
-				?.find(
-					(partner) => partner.type && !gyldigeSivilstanderForPartner.includes(partner.type),
-				) && !formMethods.watch(`pdldata.person.forelderBarnRelasjon[${idx}].partnerErIkkeForelder`)
-		const antallEksisterendeForeldre = eksisterendeForeldre.length
-		console.log('antallEkisterendeForeldre', antallEksisterendeForeldre)
-		const antallNyeForeldre = parseInt(antall) + (partnerErForelder() ? parseInt(antall) : 0)
-		return antallEksisterendeForeldre + antallNyeForeldre
-	}
 
 	const filterOptions = (person: Option) => {
-		if (harSivilstand) {
-			return gyldigeSivilstanderForPartner.includes(person.sivilstand)
-		} else if (eksisterendePersonPath?.includes('vergemaal')) {
-			return !person.vergemaal && person.alder > 17 && !person.doedsfall
-		} else if (
-			eksisterendePersonPath?.includes('fullmakt') ||
-			eksisterendePersonPath?.includes('kontaktinformasjonForDoedsbo')
-		) {
-			return person.alder > 17 && !person.doedsfall
-		} else if (
-			eksisterendePersonPath?.includes('forelderBarnRelasjon') &&
-			formMethods.watch(`pdldata.person.forelderBarnRelasjon[${idx}].minRolleForPerson`) === 'BARN'
-		) {
-			return (
-				eksisterendePerson.foreldre?.length < 2 &&
-				eksisterendePerson?.alder - person.alder > 17 &&
-				!person.doedsfall
-			)
-		} else if (
-			eksisterendePersonPath?.includes('forelderBarnRelasjon') &&
-			formMethods.watch(`pdldata.person.forelderBarnRelasjon[${idx}].relatertPersonsRolle`) ===
-				'BARN'
-		) {
-			return person.alder - eksisterendePerson.alder > 17 && !person.doedsfall
-		} else if (eksisterendePersonPath?.includes('foreldreansvar')) {
-			return (
-				!harForeldreansvarForValgteBarn(person.foreldreansvar) &&
-				!person.doedsfall &&
-				person.alder > 17 &&
-				!person.doedsfall
-			)
+		if (person.doedsfall) {
+			return false
+		}
+
+		if (label === 'PERSON RELATERT TIL' || label === 'FULLMEKTIG') {
+			// Sivilstand gift/samboer osv eller fullmektig
+			return person.alder > 17
+		} else if (label === 'VERGE') {
+			return !person.vergemaal && person.alder > 17
+		} else if (label === 'BARN') {
+			// eksisternde person er forelder
+			return eksisterendePerson?.alder - person.alder > 17
+		} else if (label === 'FORELDER') {
+			// eksisternde person er barn som skal ha foreldre
+			return eksisterendePerson.foreldre?.length < 2 && person.alder - eksisterendePerson.alder > 17
 		}
 		return true
 	}

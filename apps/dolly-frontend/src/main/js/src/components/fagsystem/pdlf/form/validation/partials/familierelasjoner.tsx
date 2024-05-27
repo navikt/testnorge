@@ -253,7 +253,26 @@ export const forelderBarnRelasjon = Yup.object().shape(
 	{
 		minRolleForPerson: requiredString,
 		relatertPersonsRolle: requiredString,
-		relatertPerson: Yup.string().nullable(),
+		relatertPerson: Yup.string()
+			.test('er-testnorge-paakrevd', 'Person fra Testnorge er påkrevd', (value, testcontext) => {
+				return testcontext.options.context.identMaster !== 'PDL' || value
+			})
+			.test(
+				'er-identisk-person',
+				'Person kan kun benyttes en gang i relasjon',
+				(value, testContext) => {
+					const forelderBarnRelasjon = testContext?.from?.find(
+						(element) => element.value?.forelderBarnRelasjon?.length > 0,
+					)
+
+					const relasjoner = forelderBarnRelasjon?.value.forelderBarnRelasjon
+						.filter((element) => element.relatertPerson)
+						.map((element) => element.relatertPerson)
+
+					return relasjoner?.length === new Set(relasjoner).size
+				},
+			)
+			.nullable(),
 		borIkkeSammen: Yup.mixed().when('relatertPersonsRolle', {
 			is: 'BARN',
 			then: () => Yup.mixed().notRequired(),

@@ -41,7 +41,6 @@ const forelderTyper = ['FORELDER', 'MOR', 'MEDMOR', 'FAR']
 export const ForelderBarnRelasjonForm = ({
 	formMethods,
 	path,
-	idx,
 	eksisterendeNyPerson = null,
 }: ForelderForm) => {
 	const { identtype, identMaster } = useContext(BestillingsveilederContext)
@@ -169,7 +168,6 @@ export const ForelderBarnRelasjonForm = ({
 					label={erBarn ? RELASJON_BARN.toUpperCase() : RELASJON_FORELDER.toUpperCase()}
 					formMethods={formMethods}
 					eksisterendeNyPerson={eksisterendeNyPerson}
-					idx={idx}
 				/>
 			)}
 
@@ -215,7 +213,7 @@ export const ForelderBarnRelasjonForm = ({
 	)
 }
 
-export const ForelderBarnRelasjon = ({ formMethods, idx }: ForelderForm) => {
+export const ForelderBarnRelasjon = ({ formMethods }: ForelderForm) => {
 	const { identtype, identMaster } = useContext(BestillingsveilederContext)
 	const initiellMaster = identMaster === 'PDL' || identtype === 'NPID' ? 'PDL' : 'FREG'
 
