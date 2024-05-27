@@ -12,6 +12,7 @@ const RelasjonerTittel = styled.h3`
 	margin-top: 5px;
 	padding-top: 15px;
 `
+
 export const FolkeregisteretVisning = ({ data }: any) => {
 	if (!data) {
 		return null

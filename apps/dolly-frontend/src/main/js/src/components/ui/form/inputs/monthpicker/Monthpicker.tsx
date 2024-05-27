@@ -12,7 +12,6 @@ interface MonthpickerProps {
 	date?: Date
 	handleDateChange?: (dato: string, type: string) => void
 	onChange?: (date: Date) => void
-	isClearable?: boolean
 	minDate?: Date
 	maxDate?: Date
 	placeholder?: string
@@ -24,7 +23,6 @@ export const Monthpicker = ({
 	date = null,
 	handleDateChange,
 	onChange,
-	isClearable = false,
 	minDate = null,
 	maxDate = null,
 	placeholder = null,

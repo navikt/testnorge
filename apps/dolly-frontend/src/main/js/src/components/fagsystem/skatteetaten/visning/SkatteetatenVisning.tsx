@@ -1,37 +1,55 @@
 import React from 'react'
 import Loading from '@/components/ui/loading/Loading'
 import Icon from '@/components/ui/icon/Icon'
-import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import _get from 'lodash/get'
+import { BrregErFrVisning } from '@/components/fagsystem/skatteetaten/visning/BrregErFrVisning'
+import { InntektVisning } from '@/components/fagsystem/skatteetaten/visning/InntektVisning'
+import { TjenestepensjonsavtaleVisning } from '@/components/fagsystem/skatteetaten/visning/TjenestepensjonsavtaleVisning'
+import { SkattemeldingVisning } from '@/components/fagsystem/skatteetaten/visning/SkattemeldingVisning'
 
 type SkatteetatenVisningProps = {
 	data: {
-		tenorRelasjoner: string[]
+		tenorRelasjoner: any
 	}
 	loading: boolean
 }
 
-// Midlertidig visning av daglig leder-rolle fra Tenor. Skrives om naar det er behov for aa vise flere Tenor-data.
+// Midlertidig visning av data fra Tenor. Skrives kanskje om naar det er behov for aa vise flere Tenor-data.
 export const SkatteetatenVisning = ({ data, loading }: SkatteetatenVisningProps) => {
 	if (loading) {
 		return <Loading label="Laster Tenor-data ..." />
 	}
 
-	const harDagligLederRolle = data?.tenorRelasjoner?.includes('BrregErFr')
+	const tenorRelasjoner = data?.tenorRelasjoner
+	if (!data || !tenorRelasjoner) {
+		return null
+	}
 
-	if (!data || !harDagligLederRolle) {
+	const tjenestepensjonavtaleListe = tenorRelasjoner.tjenestepensjonavtale
+	const harDagligLederRolle = _get(tenorRelasjoner, 'brreg-er-fr')?.length > 0
+	const skattemeldingListe = tenorRelasjoner.skattemelding
+	const inntektListe = tenorRelasjoner.inntekt
+
+	if (
+		!data &&
+		(!tjenestepensjonavtaleListe || tjenestepensjonavtaleListe.length < 1) &&
+		!harDagligLederRolle &&
+		(!skattemeldingListe || skattemeldingListe.length < 1) &&
+		(!inntektListe || inntektListe.length < 1)
+	) {
 		return null
 	}
 
 	return (
-		<div style={{ marginTop: '15px' }}>
+		<div style={{ margin: '15px 0 20px 0' }}>
 			<div className="sub-overskrift" style={{ backgroundColor: '#4B797A', color: '#fff' }}>
 				<Icon fontSize={'1.5rem'} kind="tenor" />
 				<h3>Data fra Tenor</h3>
 			</div>
-			<h4 style={{ margin: '10px 0' }}>Enhetsregisteret og Foretaksregisteret</h4>
-			<div className="person-visning_content">
-				<TitleValue title="Roller" value="Daglig leder" />
-			</div>
+			<TjenestepensjonsavtaleVisning tpListe={tjenestepensjonavtaleListe} />
+			<BrregErFrVisning harDagligLederRolle={harDagligLederRolle} />
+			<SkattemeldingVisning skattemeldingListe={skattemeldingListe} />
+			<InntektVisning inntektListe={inntektListe} />
 		</div>
 	)
 }
