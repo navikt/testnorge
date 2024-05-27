@@ -1,6 +1,7 @@
 package no.nav.testnav.apps.tenorsearchservice.consumers.command;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.tenorsearchservice.consumers.dto.InfoType;
@@ -61,11 +62,16 @@ public class GetTenorTestdata implements Callable<Mono<TenorResponse>> {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToMono(JsonNode.class)
-                .map(response -> TenorResponse.builder()
-                        .status(HttpStatus.OK)
-                        .data(response)
-                        .query(query)
-                        .build())
+                .map(response -> {
+                    if (antall == 1) {
+                        log.info("Mottok tenor response JSON: {}", Json.pretty(response));
+                    }
+                    return TenorResponse.builder()
+                            .status(HttpStatus.OK)
+                            .data(response)
+                            .query(query)
+                            .build();
+                })
                 .doOnError(WebClientFilter::logErrorMessage)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException))
