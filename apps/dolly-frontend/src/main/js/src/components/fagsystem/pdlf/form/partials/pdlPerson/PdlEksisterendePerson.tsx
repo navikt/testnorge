@@ -52,8 +52,14 @@ export const PdlEksisterendePerson = ({
 		'GJENLEVENDE_PARTNER',
 	]
 
+	console.log('identer', identer)
+	console.log('filtrerteIdenter', filtrerteIdenter)
+	console.log('opts', opts)
 	const eksisterendeIdent = opts?.personFoerLeggTil?.pdl?.ident
+	console.log('eksisterendeIdent', eksisterendeIdent)
 	const eksisterendePerson = pdlOptions.find((x) => x.value === eksisterendeIdent)
+	console.log('pdlOptions', pdlOptions)
+	console.log('ekisterendePerson', eksisterendePerson)
 
 	const harForeldreansvarForValgteBarn = (foreldreansvar: Array<string>) => {
 		let harEksisterendeAnsvar = false
@@ -78,6 +84,7 @@ export const PdlEksisterendePerson = ({
 					(partner) => partner.type && !gyldigeSivilstanderForPartner.includes(partner.type),
 				) && !formMethods.watch(`pdldata.person.forelderBarnRelasjon[${idx}].partnerErIkkeForelder`)
 		const antallEksisterendeForeldre = eksisterendeForeldre.length
+		console.log('antallEkisterendeForeldre', antallEksisterendeForeldre)
 		const antallNyeForeldre = parseInt(antall) + (partnerErForelder() ? parseInt(antall) : 0)
 		return antallEksisterendeForeldre + antallNyeForeldre
 	}
@@ -94,17 +101,17 @@ export const PdlEksisterendePerson = ({
 			return person.alder > 17 && !person.doedsfall
 		} else if (
 			eksisterendePersonPath?.includes('forelderBarnRelasjon') &&
-			formMethods.watch(`pdldata.person.forelderBarnRelasjon[${idx}].relatertPersonsRolle`) ===
-				'BARN'
+			formMethods.watch(`pdldata.person.forelderBarnRelasjon[${idx}].minRolleForPerson`) === 'BARN'
 		) {
 			return (
-				(person.foreldre == null || getAntallForeldre(person.foreldre) < 3) &&
-				eksisterendePerson.alder - person.alder > 17 &&
+				eksisterendePerson.foreldre?.length < 2 &&
+				eksisterendePerson?.alder - person.alder > 17 &&
 				!person.doedsfall
 			)
 		} else if (
 			eksisterendePersonPath?.includes('forelderBarnRelasjon') &&
-			formMethods.watch(`pdldata.person.forelderBarnRelasjon[${idx}].minRolleForPerson`) === 'BARN'
+			formMethods.watch(`pdldata.person.forelderBarnRelasjon[${idx}].relatertPersonsRolle`) ===
+				'BARN'
 		) {
 			return person.alder - eksisterendePerson.alder > 17 && !person.doedsfall
 		} else if (eksisterendePersonPath?.includes('foreldreansvar')) {

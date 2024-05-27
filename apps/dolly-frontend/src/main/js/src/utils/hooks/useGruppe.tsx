@@ -85,7 +85,7 @@ export const useGruppeIdenter = (gruppeId) => {
 		gruppeId ? getHelGruppeUrl(gruppeId) : null,
 		fetcher,
 	)
-
+	console.log('data', data)
 	return {
 		identer: data?.identer?.map((person) => {
 			return {

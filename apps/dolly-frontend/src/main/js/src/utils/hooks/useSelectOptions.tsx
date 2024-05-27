@@ -40,6 +40,8 @@ export const usePdlOptions = (gruppe) => {
 		payload = data
 	}
 
+	console.log('persondata', payload)
+
 	const personData = []
 	payload?.flat().forEach((id) => {
 		const navn = id?.person?.navn?.[0]
@@ -52,7 +54,7 @@ export const usePdlOptions = (gruppe) => {
 				? id.relasjoner
 						?.filter((relasjon) => relasjon.relasjonType === 'FAMILIERELASJON_FORELDER')
 						?.map((relasjon) => relasjon.relatertPerson?.ident)
-				: id.person.foreldreBarnRelasjon
+				: id.person.forelderBarnRelasjon
 						?.filter((relasjon) => relasjon.minRolleForPerson === 'BARN')
 						?.map((relasjon) => relasjon.relatertPersonsIdent)
 		const alder = getAlder(id.person.foedsel?.[0]?.foedselsdato)
