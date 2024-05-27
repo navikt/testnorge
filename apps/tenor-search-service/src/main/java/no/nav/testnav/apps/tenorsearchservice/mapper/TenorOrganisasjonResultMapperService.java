@@ -71,6 +71,7 @@ public class TenorOrganisasjonResultMapperService {
                 TenorOversiktOrganisasjonResponse.Organisasjon.class);
 
         organisasjonResponse.setOrganisasjonsnummer(dokument.getTenorMetadata().getId());
+        organisasjonResponse.setKilder(dokument.getTenorMetadata().getKilder());
 
         return organisasjonResponse;
     }

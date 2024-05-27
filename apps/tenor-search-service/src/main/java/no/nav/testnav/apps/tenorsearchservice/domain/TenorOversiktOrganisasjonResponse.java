@@ -44,5 +44,6 @@ public class TenorOversiktOrganisasjonResponse {
         private String organisasjonsnummer;
         private JsonNode tenorMetadata;
         private JsonNode tenorRelasjoner;
+        private List<String> kilder;
     }
 }
