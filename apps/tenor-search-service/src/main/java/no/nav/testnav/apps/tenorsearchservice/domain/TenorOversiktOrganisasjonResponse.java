@@ -1,5 +1,6 @@
 package no.nav.testnav.apps.tenorsearchservice.domain;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -73,6 +74,8 @@ public class TenorOversiktOrganisasjonResponse {
         private NorskregistrertUtenlandskForetak norskregistrertUtenlandskForetak;
         private LovgivningOgForetaksformIHjemlandet lovgivningOgForetaksformIHjemlandet;
         private RegisterIHjemlandet registerIHjemlandet;
+        private JsonNode kildedata;
+        private JsonNode tenorRelasjoner;
     }
 
     @lombok.Data

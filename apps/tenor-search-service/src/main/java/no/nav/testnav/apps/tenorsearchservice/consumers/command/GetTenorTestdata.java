@@ -63,7 +63,7 @@ public class GetTenorTestdata implements Callable<Mono<TenorResponse>> {
                 .retrieve()
                 .bodyToMono(JsonNode.class)
                 .map(response -> {
-                    if (antall == 1) {
+                    if (nonNull(antall) && antall == 1) {
                         log.info("Mottok tenor response JSON: {}", Json.pretty(response));
                     }
                     return TenorResponse.builder()

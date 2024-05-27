@@ -2,7 +2,6 @@ package no.nav.testnav.apps.tenorsearchservice.mapper;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -16,8 +15,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.StringTokenizer;
-
-import static java.util.Objects.nonNull;
 
 @Slf4j
 @Service
@@ -39,7 +36,6 @@ public class TenorOrganisasjonResultMapperService {
     private TenorOversiktOrganisasjonResponse.Data convertOrganisasjoner(TenorResponse tenorResponse) {
 
         if (tenorResponse.getStatus().is2xxSuccessful()) {
-            log.info("Mottok tenor respons: {}", Json.pretty(tenorResponse.getData()));
             try {
                 var preamble = new StringBuilder();
                 var noHyphenCharsInValues = new StringTokenizer(tenorResponse.getData().toString(), "-");
@@ -69,15 +65,6 @@ public class TenorOrganisasjonResultMapperService {
 
     @SneakyThrows
     private TenorOversiktOrganisasjonResponse.Organisasjon mapOrganisasjon(TenorOrganisasjonRawResponse.DokumentOrganisasjon dokument) {
-
-        if (nonNull(dokument.getTenorMetadata().getKildedata())) {
-            var organisasjonResponse = objectMapper.readValue(dokument.getTenorMetadata().getKildedata(), TenorOversiktOrganisasjonResponse.Organisasjon.class);
-            log.info("Mappet organisasjon: {}", Json.pretty(organisasjonResponse));
-
-            organisasjonResponse.setKilder(dokument.getTenorMetadata().getKilder());
-
-            return organisasjonResponse;
-        }
 
         var organisasjonResponse = objectMapper.readValue(
                 objectMapper.writeValueAsString(dokument),

@@ -1,5 +1,6 @@
 package no.nav.testnav.apps.tenorsearchservice.consumers.dto;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -32,6 +33,7 @@ public class TenorOrganisasjonRawResponse {
     public static class DokumentOrganisasjon {
         private String navn;
         private TenorMetadata tenorMetadata;
+        private JsonNode tenorRelasjoner;
     }
 
     @Data
