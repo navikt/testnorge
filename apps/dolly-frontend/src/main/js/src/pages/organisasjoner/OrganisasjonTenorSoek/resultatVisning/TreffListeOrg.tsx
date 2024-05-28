@@ -88,7 +88,7 @@ export const TreffListeOrg = ({ response, organisasjonListe, loading, error }: a
 											key={organisasjon?.organisasjonsnummer + idx}
 											style={{ margin: '0 5px 5px 0' }}
 										>
-											{relasjon}
+											{relasjon.includes('tjenestepensjon') ? 'T.P. Opplysningspliktig' : relasjon}
 										</Tag>
 									))}
 								</TagsWrapper>

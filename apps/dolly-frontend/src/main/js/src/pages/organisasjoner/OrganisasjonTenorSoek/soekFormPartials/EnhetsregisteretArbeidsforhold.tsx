@@ -28,7 +28,7 @@ export const EnhetsregisteretArbeidsforhold = ({ handleChange }: any) => {
 				visHvisAvhuket={false}
 			/>
 			<FormDatepicker
-				name="tenorRelasjoner.arbeidsforhold.slutDato.fraOgMed"
+				name="tenorRelasjoner.arbeidsforhold.sluttDato.fraOgMed"
 				label="Ansettelse slutt f.o.m"
 				onChange={(val: SyntheticEvent) =>
 					handleChange(val || null, 'tenorRelasjoner.arbeidsforhold.sluttDato.fraOgMed')

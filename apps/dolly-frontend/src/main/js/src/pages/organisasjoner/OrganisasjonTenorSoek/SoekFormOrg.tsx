@@ -99,7 +99,8 @@ export const SoekFormOrg = ({ setRequest, mutate }: any) => {
 												'harUtenlandskForretningsadresse',
 												'harUtenlandskPostadresse',
 												'naeringBeskrivelse',
-												'registrertIMvaregisteretn',
+												'naeringKode',
+												'registrertIMvaregisteret',
 												'registrertIForetaksregisteret',
 												'registrertIFrivillighetsregisteret',
 												'enhetStatuser.kode',
@@ -111,7 +112,7 @@ export const SoekFormOrg = ({ setRequest, mutate }: any) => {
 												'forretningsfoerer',
 												'kontaktpersoner',
 												'norsk_representant',
-												'erUnderenhet.overenhet',
+												'erUnderenhet.hovedenhet',
 												'harUnderenheter',
 												'antallUnderenheter',
 												'antallAnsatte.fraOgMed',
@@ -130,7 +131,7 @@ export const SoekFormOrg = ({ setRequest, mutate }: any) => {
 										<Header
 											title="Opplysninger fra Skatteetatens innsendingsmiljø"
 											paths={[
-												'tenorRelasjoner.testinnsendingSkattEnhet.inntektsaar;',
+												'tenorRelasjoner.testinnsendingSkattEnhet.inntektsaar',
 												'tenorRelasjoner.testinnsendingSkattEnhet.harSkattemeldingUtkast',
 												'tenorRelasjoner.testinnsendingSkattEnhet.harSkattemeldingFastsatt',
 												'tenorRelasjoner.testinnsendingSkattEnhet.harSelskapsmeldingUtkast',

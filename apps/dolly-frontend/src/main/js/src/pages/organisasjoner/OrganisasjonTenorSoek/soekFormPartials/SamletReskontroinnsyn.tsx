@@ -4,7 +4,6 @@ import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 
 export const SamletReskontroinnsyn = ({ handleChange }: any) => (
 	<SoekKategori>
-		<h4>Reskontrooppslag for krav og betalinger</h4>
 		<FormCheckbox
 			name="tenorRelasjoner.samletReskontroinnsyn.harKrav"
 			label="Har krav"

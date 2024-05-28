@@ -4,6 +4,9 @@ import styled from 'styled-components'
 import Loading from '@/components/ui/loading/Loading'
 import { EnhetsregisteretVisning } from '@/pages/organisasjoner/OrganisasjonTenorSoek/resultatVisning/EnhetsregisteretVisning'
 import { OrganisasjonArbeidsforholdVisning } from '@/pages/organisasjoner/OrganisasjonTenorSoek/resultatVisning/OrganisasjonArbeidsforholdVisning'
+import { OrganisasjonTestinnsendingSkattVisning } from '@/pages/organisasjoner/OrganisasjonTenorSoek/resultatVisning/OrganisasjonTestinnsendingSkattVisning'
+import { OrganisasjonSamletReskontroinnsynVisning } from '@/pages/organisasjoner/OrganisasjonTenorSoek/resultatVisning/OrganisasjonSamletReskontroinnsynVisning'
+import { OrganisasjonTjenestepensjonsavtaleVisning } from '@/pages/organisasjoner/OrganisasjonTenorSoek/resultatVisning/OrganisasjonTjenestepensjonsavtaleVisning'
 
 type OrganisasjonVisningProps = {
 	organisasjon: any
@@ -15,81 +18,10 @@ type OrganisasjonVisningProps = {
 export type TenorOrganisasjon = {
 	navn: string
 	organisasjonsnummer: string
-	organisasjonsform: {
-		kode: string
-		beskrivelse: string
-	}
 	tenorMetadata?: any
-	forretningsadresse: {
-		land: string
-		landkode: string
-		postnummer: string
-		poststed: string
-		adresse: string[]
-		kommune: string
-		kommunenummer: string
-	}
-	postadresse: {
-		land: string
-		landkode: string
-		postnummer: string
-		poststed: string
-		adresse: string[]
-		kommune: string
-		kommunenummer: string
-	}
-	kilder: string[]
-	naeringskoder: {
-		kode: string
-		beskrivelse: string
-		hjelpeenhetskode: boolean
-		rekkefolge: number
-		nivaa: number
-	}[]
-	registreringsdatoEnhetsregisteret: string
-	slettetIEnhetsregisteret: string
-	registrertIForetaksregisteret: string
-	slettetIForetaksregisteret: string
-	registreringspliktigForetaksregisteret: string
-	registrertIFrivillighetsregisteret: string
-	registrertIStiftelsesregisteret: string
-	registrertIMvaregisteret: string
-	konkurs: string
-	underAvvikling: string
-	underTvangsavviklingEllerTvangsopplosning: string
-	maalform: string
-	ansvarsbegrensning: string
-	harAnsatte: string
-	antallAnsatte: number
-	underenhet: {
-		hovedenhet: string
-		oppstartsdato: string
-	}
-	bedriftsforsamling: string
-	representantskap: string
-	enhetstatuser: any[]
-	fullmakter: any[]
-	kapital: {
-		antallAksjer: string
-		fritekst: any[]
-		sakkyndigRedegjorelse: string
-	}
-	kjonnsrepresentasjon: string
-	matrikkelnummer: any[]
-	fravalgAvRevisjon: {
-		fravalg: string
-	}
-	norskregistrertUtenlandskForetak: {
-		helNorskEierskap: string
-		aktivitetINorge: string
-	}
-	lovgivningOgForetaksformIHjemlandet: {
-		foretaksform: string
-	}
-	registerIHjemlandet: {
-		navnRegister: any[]
-		adresse: any[]
-	}
+	brregKildedata?: any
+	kilder?: string[]
+	tenorRelasjoner: any
 }
 
 const OrganisasjonVisningWrapper = styled.div`
@@ -123,18 +55,28 @@ export const OrganisasjonTenorVisning = ({
 		return null
 	}
 
-	const OrganisasjonData: TenorOrganisasjon = organisasjon.data?.organisasjoner?.find(
+	const organisasjonData: TenorOrganisasjon = organisasjon.data?.organisasjoner?.find(
 		(dokument: any) => dokument.organisasjonsnummer?.includes(orgnummer),
 	)
+
+	const brregData = organisasjonData?.brregKildedata
+	const arbeidsforholdData = organisasjonData?.tenorRelasjoner?.arbeidsforhold
+	const testinnsendingSkattEnhetData = organisasjonData?.tenorRelasjoner?.testinnsendingSkattEnhet
+	const samletReskontroinnsynData = organisasjonData?.tenorRelasjoner?.samletReskontroinnsyn
+	const tjenestepensjonData =
+		organisasjonData?.tenorRelasjoner?.tjenestepensjonsavtaleOpplysningspliktig
 
 	return (
 		<OrganisasjonVisningWrapper>
 			<Box background="surface-default" padding="3" borderRadius="medium">
 				<div className="flexbox--space">
-					<NavnHeader>{OrganisasjonData?.navn}</NavnHeader>
+					<NavnHeader>{organisasjonData?.navn}</NavnHeader>
 				</div>
-				<EnhetsregisteretVisning data={OrganisasjonData} />
-				<OrganisasjonArbeidsforholdVisning data={OrganisasjonData} />
+				<EnhetsregisteretVisning data={brregData} />
+				<OrganisasjonArbeidsforholdVisning data={arbeidsforholdData} />
+				<OrganisasjonTestinnsendingSkattVisning data={testinnsendingSkattEnhetData} />
+				<OrganisasjonSamletReskontroinnsynVisning data={samletReskontroinnsynData} />
+				<OrganisasjonTjenestepensjonsavtaleVisning data={tjenestepensjonData} />
 			</Box>
 		</OrganisasjonVisningWrapper>
 	)

@@ -2,45 +2,52 @@ import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import React from 'react'
 import { TabsVisning } from '@/pages/tenorSoek/resultatVisning/TabsVisning'
 import SubOverskriftExpandable from '@/components/ui/subOverskrift/SubOverskriftExpandable'
-import { TenorOrganisasjon } from '@/pages/organisasjoner/OrganisasjonTenorSoek/resultatVisning/OrganisasjonTenorVisning'
+import { formatTenorDate } from '@/utils/DataFormatter'
 
-export const EnhetsregisteretVisning = ({ data }: { data: TenorOrganisasjon }) => {
-	if (!data) {
+export const EnhetsregisteretVisning = ({ data: brregData }: { data: any }) => {
+	if (!brregData) {
 		return null
 	}
 
-	const { forretningsadresse, postadresse } = data
-
+	const { forretningsadresse, postadresse } = brregData
 	return (
 		<>
 			<SubOverskriftExpandable label="Organisasjonsinfo" iconKind="organisasjon" isExpanded={true}>
-				<TabsVisning kildedata={data.tenorMetadata?.kildedata}>
-					<TitleValue title="Organisasjonsnummer" value={data.organisasjonsnummer} />
-					<TitleValue title="Navn" value={data.navn} />
+				<TabsVisning kildedata={brregData.tenorMetadata?.kildedata}>
+					<TitleValue title="Organisasjonsnummer" value={brregData.organisasjonsnummer} />
+					<TitleValue title="Navn" value={brregData.navn} />
+					<TitleValue
+						title="Dato registrert i EREG"
+						value={formatTenorDate(brregData.registreringsdatoEnhetsregisteret)}
+					/>
 					<TitleValue
 						title="Organisasjonsform"
 						value={
-							data.organisasjonsform?.beskrivelse &&
-							`${data.organisasjonsform.beskrivelse} (${data.organisasjonsform.kode})`
+							brregData.organisasjonsform?.beskrivelse &&
+							`${brregData.organisasjonsform.beskrivelse} (${brregData.organisasjonsform.kode})`
 						}
 					/>
-					{data?.naeringskoder && data.naeringskoder.length > 0 && (
+					{brregData?.naeringskoder && brregData.naeringskoder.length > 0 && (
 						<>
 							<TitleValue
 								title="Næringskode"
-								value={data.naeringskoder[data.naeringskoder.length - 1].kode}
+								value={brregData.naeringskoder[brregData.naeringskoder.length - 1].kode}
 							/>
 							<TitleValue
 								title="Næringsbeskrivelse"
-								value={data.naeringskoder[data.naeringskoder.length - 1].beskrivelse}
+								value={brregData.naeringskoder[brregData.naeringskoder.length - 1].beskrivelse}
 							/>
 						</>
 					)}
+					<TitleValue
+						title="Matrikkelenhet ID"
+						value={brregData.matrikkelnummer?.[0]?.matrikkelEnhetId}
+					/>
 				</TabsVisning>
 			</SubOverskriftExpandable>
 			{forretningsadresse?.land && (
-				<SubOverskriftExpandable label="Forretningsadresse" iconKind="adresse" isExpanded={true}>
-					<TabsVisning kildedata={data.tenorMetadata?.kildedata}>
+				<SubOverskriftExpandable label="Forretningsadresse" iconKind="adresse" isExpanded={false}>
+					<TabsVisning kildedata={brregData.tenorMetadata?.kildedata}>
 						<TitleValue title="Land" value={forretningsadresse?.land} />
 						<TitleValue title="Landkode" value={forretningsadresse?.landkode} />
 						<TitleValue title="Postnummer" value={forretningsadresse?.postnummer} />
@@ -52,8 +59,8 @@ export const EnhetsregisteretVisning = ({ data }: { data: TenorOrganisasjon }) =
 				</SubOverskriftExpandable>
 			)}
 			{postadresse?.land && (
-				<SubOverskriftExpandable label="Postadresse" iconKind="postadresse" isExpanded={true}>
-					<TabsVisning kildedata={data.tenorMetadata?.kildedata}>
+				<SubOverskriftExpandable label="Postadresse" iconKind="postadresse" isExpanded={false}>
+					<TabsVisning kildedata={brregData.tenorMetadata?.kildedata}>
 						<TitleValue title="Land" value={postadresse?.land} />
 						<TitleValue title="Landkode" value={postadresse?.landkode} />
 						<TitleValue title="Postnummer" value={postadresse?.postnummer} />

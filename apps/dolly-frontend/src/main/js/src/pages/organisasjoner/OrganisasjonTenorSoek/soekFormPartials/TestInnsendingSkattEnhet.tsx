@@ -20,16 +20,23 @@ const StyledHjelpetekstDiv = styled.div`
 
 export const TestInnsendingSkattEnhet = ({ handleChange }: any) => {
 	const { domain: grunnlagsdataOptions } = useTenorOrganisasjonDomain('Grunnlagsdata')
+
+	const getInntektsaarOptions = () => {
+		const inntektsaarListe = []
+		const currentAar = new Date().getFullYear()
+		for (let aar = currentAar - 5; aar < currentAar; aar++) {
+			inntektsaarListe.push({ value: aar.toString(), label: aar.toString() })
+		}
+		return inntektsaarListe
+	}
+
+	const inntektsaarOptions = getInntektsaarOptions()
+
 	return (
 		<SoekKategori>
 			<FormSelect
 				name="tenorRelasjoner.testinnsendingSkattEnhet.inntektsaar"
-				options={[
-					{ value: '2020', label: '2020' },
-					{ value: '2021', label: '2021' },
-					{ value: '2022', label: '2022' },
-					{ value: '2023', label: '2023' },
-				]}
+				options={inntektsaarOptions}
 				label="Inntektsår"
 				onChange={(val: any) =>
 					handleChange(val?.value || null, 'tenorRelasjoner.testinnsendingSkattEnhet.inntektsaar')

@@ -15,6 +15,7 @@ import { isDate } from 'date-fns'
 import { fixTimezone } from '@/components/ui/form/formUtils'
 import { Tjenestepensjonsavtale } from '@/pages/tenorSoek/soekFormPartials/Tjenestepensjonsavtale'
 import { Skattemelding } from '@/pages/tenorSoek/soekFormPartials/Skattemelding'
+import { InntektAordningen } from '@/pages/tenorSoek/soekFormPartials/InntektAordningen'
 
 const SoekefeltWrapper = styled.div`
 	display: flex;

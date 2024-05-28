@@ -32,6 +32,18 @@ export const formatDate = (date: any, formatString?: string) => {
 	return format(date, formatString || defaultDateFormat)
 }
 
+// Format date to readable string format (AAAAMMDD to DD.MM.AAAA)
+export const formatTenorDate = (dateString: any, formatString?: string) => {
+	if (!dateString) return dateString
+	// Parse date from string
+	const year = dateString.substring(0, 4)
+	const month = dateString.substring(4, 6)
+	const day = dateString.substring(6, 8)
+	const date = new Date(year, month - 1, day)
+
+	return format(date, formatString || defaultDateFormat)
+}
+
 export const formatDateToYear = (date) => {
 	if (!date) return date
 	// Parse date if not date
