@@ -109,7 +109,7 @@ export const FolkeregisteretRelasjoner = ({ handleChange }: any) => {
 				/>
 				<FormCheckbox
 					name="relasjoner.foreldreHarSammeAdresse"
-					label="Foleldre har samme adresse"
+					label="Foreldre har samme adresse"
 					onChange={(val: any) =>
 						handleChange(val?.target?.checked || undefined, 'relasjoner.foreldreHarSammeAdresse')
 					}
