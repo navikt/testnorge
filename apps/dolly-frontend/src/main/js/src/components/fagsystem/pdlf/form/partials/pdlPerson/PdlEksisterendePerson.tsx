@@ -41,6 +41,15 @@ export const PdlEksisterendePerson = ({
 	const harSivilstand = eksisterendePersonPath?.includes('sivilstand')
 	const harNyIdent = eksisterendePersonPath?.includes('nyident')
 
+	const gyldigeSivilstanderForPartner = [
+		'UOPPGITT',
+		'UGIFT',
+		'ENKE_ELLER_ENKEMANN',
+		'SKILT',
+		'SKILT_PARTNER',
+		'GJENLEVENDE_PARTNER',
+	]
+
 	const eksisterendeIdent = opts?.personFoerLeggTil?.pdl?.ident
 
 	const eksisterendePerson = pdlOptions.find((x) => x.value === eksisterendeIdent)
@@ -50,8 +59,10 @@ export const PdlEksisterendePerson = ({
 			return false
 		}
 
-		if (label === 'PERSON RELATERT TIL' || label === 'FULLMEKTIG') {
-			// Sivilstand gift/samboer osv eller fullmektig
+		if (label === 'PERSON RELATERT TIL') {
+			// Sivilstand gift/samboer osv
+			return gyldigeSivilstanderForPartner.includes(person?.sivilstand) && person.alder > 17
+		} else if (label === 'FULLMEKTIG') {
 			return person.alder > 17
 		} else if (label === 'VERGE') {
 			return !person.vergemaal && person.alder > 17
