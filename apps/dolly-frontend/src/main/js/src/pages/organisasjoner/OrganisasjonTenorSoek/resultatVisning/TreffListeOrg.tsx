@@ -39,16 +39,18 @@ export const TreffListeOrg = ({ response, organisasjonListe, loading, error }: a
 
 	if (error || response?.error) {
 		return (
-			<Alert variant="error" size="small">{`Feil ved henting av organisasjoner: ${
-				error || response?.error
-			}`}</Alert>
+			<Alert
+				variant="error"
+				style={{ marginTop: '-70px' }}
+				size="small"
+			>{`Feil ved henting av organisasjoner: ${error || response?.error}`}</Alert>
 		)
 	}
 
 	const antallTreff = response?.data?.treff
 
 	return (
-		<div className="flexbox--flex-wrap">
+		<div className="flexbox--flex-wrap" style={{ marginTop: '-70px' }}>
 			<div
 				className="flexbox--full-width"
 				style={{ marginBottom: '20px', position: 'sticky', top: '10px', zIndex: 1 }}

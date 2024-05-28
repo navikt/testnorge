@@ -13,7 +13,11 @@ export const OrganisasjonTestinnsendingSkattVisning = ({
 	}
 
 	return (
-		<SubOverskriftExpandable label="Testinnsending skatt" iconKind="pengesekk" isExpanded={false}>
+		<SubOverskriftExpandable
+			label={`Testinnsending skatt (${testinnsendingSkattEnhetData.length})`}
+			iconKind="pengesekk"
+			isExpanded={false}
+		>
 			<div>
 				<DollyFieldArray data={testinnsendingSkattEnhetData} header={null} nested>
 					{(testinnsendingSkatt: any) => {

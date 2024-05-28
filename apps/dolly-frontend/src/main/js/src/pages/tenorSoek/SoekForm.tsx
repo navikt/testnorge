@@ -45,6 +45,7 @@ export const SoekForm = ({ setRequest, setMarkertePersoner, mutate }: any) => {
 			if (request[key] === '' || request[key] === null || request[key] === undefined) {
 				delete request[key]
 			} else if (typeof request[key] === 'object' && !(request[key] instanceof Date)) {
+				request[key] = getUpdatedRequest(request[key])
 				if (Object.keys(request[key]).length === 0) {
 					delete request[key]
 				} else {

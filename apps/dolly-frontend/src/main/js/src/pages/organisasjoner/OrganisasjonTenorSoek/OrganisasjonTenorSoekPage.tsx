@@ -1,8 +1,26 @@
 import Title from '@/components/Title'
 import { useTenorOversiktOrganisasjoner } from '@/utils/hooks/useTenorSoek'
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { TreffListeOrg } from '@/pages/organisasjoner/OrganisasjonTenorSoek/resultatVisning/TreffListeOrg'
 import { SoekFormOrg } from '@/pages/organisasjoner/OrganisasjonTenorSoek/SoekFormOrg'
+import styled from 'styled-components'
+import Button from '@/components/ui/button/Button'
+
+const NavigateButton = styled(Button)`
+	position: sticky;
+	top: ${(props) => (props.className === 'gaa-til-soek' ? '75px' : '10px')};
+	width: 80px;
+	transform: translateX(-120%);
+	display: grid;
+
+	&& {
+		svg {
+			width: 45px;
+			height: 45px;
+			margin: 0 auto 5px auto;
+		}
+	}
+`
 
 const initialState = {
 	organisasjonListe: [],
@@ -40,6 +58,11 @@ export const OrganisasjonTenorSoekPage = () => {
 		return () => window.removeEventListener('scroll', handleScroll)
 	}, [])
 
+	const navigateTo = (element: string) => {
+		const treff = document.getElementById(element)?.offsetTop
+		window.scrollTo({ top: treff, behavior: 'smooth' })
+	}
+
 	const handleScroll = () => {
 		if (
 			document.documentElement.scrollHeight - document.documentElement.scrollTop >
@@ -60,13 +83,31 @@ export const OrganisasjonTenorSoekPage = () => {
 			<div className="flexbox--align-center--justify-start">
 				<Title title="Søk etter organisasjoner i Tenor" />
 			</div>
-			<SoekFormOrg setRequest={setRequest} mutate={mutate} />
-			<TreffListeOrg
-				response={response?.data}
-				organisasjonListe={state.organisasjonListe}
-				loading={loading}
-				error={error}
-			/>
+			<div className="flexbox--flex-wrap" id="soek">
+				<NavigateButton
+					className="gaa-til-treff"
+					onClick={() => navigateTo('treff')}
+					kind="chevron-down-double-circle"
+				>
+					GÅ TIL TREFF
+				</NavigateButton>
+				<SoekFormOrg setRequest={setRequest} mutate={mutate} />
+			</div>
+			<div id="treff">
+				<NavigateButton
+					className="gaa-til-soek"
+					onClick={() => navigateTo('soek')}
+					kind="chevron-up-double-circle"
+				>
+					GÅ TIL SØK
+				</NavigateButton>
+				<TreffListeOrg
+					response={response?.data}
+					organisasjonListe={state.organisasjonListe}
+					loading={loading}
+					error={error}
+				/>
+			</div>
 		</div>
 	)
 }

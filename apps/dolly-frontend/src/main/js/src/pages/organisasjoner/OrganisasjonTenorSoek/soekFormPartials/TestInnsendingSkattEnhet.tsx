@@ -24,7 +24,7 @@ export const TestInnsendingSkattEnhet = ({ handleChange }: any) => {
 	const getInntektsaarOptions = () => {
 		const inntektsaarListe = []
 		const currentAar = new Date().getFullYear()
-		for (let aar = currentAar - 5; aar < currentAar; aar++) {
+		for (let aar = currentAar - 4; aar < currentAar; aar++) {
 			inntektsaarListe.push({ value: aar.toString(), label: aar.toString() })
 		}
 		return inntektsaarListe

@@ -20,6 +20,8 @@ const SoekefeltWrapper = styled.div`
 	background-color: white;
 	border: 1px @color-bg-grey-border;
 	border-radius: 4px;
+	margin-top: -70px;
+	width: 100%;
 `
 
 const Soekefelt = styled.div`

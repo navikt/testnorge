@@ -14,7 +14,7 @@ export const OrganisasjonSamletReskontroinnsynVisning = ({
 
 	return (
 		<SubOverskriftExpandable
-			label="Samlet reskontroinnsyn"
+			label={`Samlet reskontroinnsyn (${samletReskontroinnsynData.length})`}
 			iconKind="kvittering"
 			isExpanded={false}
 		>

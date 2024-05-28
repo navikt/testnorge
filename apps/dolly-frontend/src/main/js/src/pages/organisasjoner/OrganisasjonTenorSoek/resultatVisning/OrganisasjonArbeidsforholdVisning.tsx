@@ -11,7 +11,11 @@ export const OrganisasjonArbeidsforholdVisning = ({ data }: any) => {
 	}
 
 	return (
-		<SubOverskriftExpandable label="Arbeidsforhold" iconKind="arbeid" isExpanded={false}>
+		<SubOverskriftExpandable
+			label={`Arbeidsforhold (${data.length})`}
+			iconKind="arbeid"
+			isExpanded={false}
+		>
 			<div>
 				<DollyFieldArray data={data} header={null} nested>
 					{(arbeidsforhold: any) => {

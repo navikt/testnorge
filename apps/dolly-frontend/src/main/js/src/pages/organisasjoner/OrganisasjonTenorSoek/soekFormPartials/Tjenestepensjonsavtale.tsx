@@ -6,7 +6,6 @@ import { format } from 'date-fns'
 
 export const Tjenestepensjonsavtale = ({ handleChange }: any) => (
 	<SoekKategori>
-		<h4>Søk etter opplysningspliktige enheter som har avtale med pensjonsinnretning</h4>
 		<FormTextInput
 			visHvisAvhuket={false}
 			name="tenorRelasjoner.tjenestepensjonsavtaleOpplysningspliktig.tjenestepensjonsinnretningOrgnr"
