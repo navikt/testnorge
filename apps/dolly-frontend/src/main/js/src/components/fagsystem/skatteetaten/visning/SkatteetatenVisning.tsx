@@ -6,6 +6,7 @@ import { BrregErFrVisning } from '@/components/fagsystem/skatteetaten/visning/Br
 import { InntektVisning } from '@/components/fagsystem/skatteetaten/visning/InntektVisning'
 import { TjenestepensjonsavtaleVisning } from '@/components/fagsystem/skatteetaten/visning/TjenestepensjonsavtaleVisning'
 import { SkattemeldingVisning } from '@/components/fagsystem/skatteetaten/visning/SkattemeldingVisning'
+import { Alert, Link } from '@navikt/ds-react'
 
 type SkatteetatenVisningProps = {
 	data: {
@@ -26,18 +27,26 @@ export const SkatteetatenVisning = ({ data, loading }: SkatteetatenVisningProps)
 	}
 
 	const tjenestepensjonavtaleListe = tenorRelasjoner.tjenestepensjonavtale
-	const harDagligLederRolle = _get(tenorRelasjoner, 'brreg-er-fr')?.length > 0
-	const skattemeldingListe = tenorRelasjoner.skattemelding
-	const inntektListe = tenorRelasjoner.inntekt
+	const harTjenestepensjonavtale = tjenestepensjonavtaleListe?.length > 0
 
-	if (
-		!data &&
-		(!tjenestepensjonavtaleListe || tjenestepensjonavtaleListe.length < 1) &&
-		!harDagligLederRolle &&
-		(!skattemeldingListe || skattemeldingListe.length < 1) &&
-		(!inntektListe || inntektListe.length < 1)
-	) {
-		return null
+	const harDagligLederRolle = _get(tenorRelasjoner, 'brreg-er-fr')?.length > 0
+
+	const skattemeldingListe = tenorRelasjoner.skattemelding
+	const harSkattemelding = skattemeldingListe?.length > 0
+
+	const inntektListe = tenorRelasjoner.inntekt
+	const harInntekt = inntektListe?.length > 0
+
+	const getApiLink = () => {
+		if (harTjenestepensjonavtale) {
+			return 'https://skatteetaten.github.io/api-dokumentasjon/api/tjenestepensjonsavtale'
+		} else if (harSkattemelding) {
+			return 'https://skatteetaten.github.io/api-dokumentasjon/api/skattemelding'
+		} else if (harInntekt) {
+			return 'https://skatteetaten.github.io/api-dokumentasjon/api/inntekt'
+		} else {
+			return 'https://skatteetaten.github.io/api-dokumentasjon/api/aksjebeholdning'
+		}
 	}
 
 	return (
@@ -46,6 +55,12 @@ export const SkatteetatenVisning = ({ data, loading }: SkatteetatenVisningProps)
 				<Icon fontSize={'1.5rem'} kind="tenor" />
 				<h3>Data fra Tenor</h3>
 			</div>
+			<Alert inline variant="info" size="small" style={{ marginBottom: '15px' }}>
+				Du kan hente utfyllende persondata for personen via Skatteetatens API-er, se mer informasjon{' '}
+				<Link href={getApiLink()} target="_blank">
+					her
+				</Link>
+			</Alert>
 			<TjenestepensjonsavtaleVisning tpListe={tjenestepensjonavtaleListe} />
 			<BrregErFrVisning harDagligLederRolle={harDagligLederRolle} />
 			<SkattemeldingVisning skattemeldingListe={skattemeldingListe} />

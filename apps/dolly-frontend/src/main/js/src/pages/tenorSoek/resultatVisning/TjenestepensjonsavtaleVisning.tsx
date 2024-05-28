@@ -10,11 +10,7 @@ export const TjenestepensjonsavtaleVisning = ({ data }: any) => {
 	}
 
 	return (
-		<SubOverskriftExpandable
-			label={`Tjenestepensjonsavtale (${data.length})`}
-			iconKind="pensjon"
-			isExpanded={true}
-		>
+		<SubOverskriftExpandable label={`Tjenestepensjonsavtale (${data.length})`} iconKind="pensjon">
 			<div>
 				<DollyFieldArray data={data} nested>
 					{(tjenestepensjonsavtale: any) => {
