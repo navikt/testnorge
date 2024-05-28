@@ -3,12 +3,13 @@ import React from 'react'
 import _ from 'lodash'
 import { FolkeregisteretVisning } from '@/pages/tenorSoek/resultatVisning/FolkeregisteretVisning'
 import styled from 'styled-components'
-// TODO: Importer denne naar det er mulig aa importere og vise inntekt i Dolly
-// import { InntektVisning } from '@/pages/tenorSoek/resultatVisning/InntektVisning'
+import { InntektVisning } from '@/pages/tenorSoek/resultatVisning/InntektVisning'
 import Loading from '@/components/ui/loading/Loading'
 import { EnhetsregisteretForetaksregisteretVisning } from '@/pages/tenorSoek/resultatVisning/EnhetsregisteretForetaksregisteretVisning'
 import { NavigerTilPerson } from '@/pages/tenorSoek/resultatVisning/NavigerTilPerson'
 import { ImporterValgtePersoner } from '@/pages/tenorSoek/resultatVisning/ImporterValgtePersoner'
+import { TjenestepensjonsavtaleVisning } from '@/pages/tenorSoek/resultatVisning/TjenestepensjonsavtaleVisning'
+import { SkattemeldingVisning } from '@/pages/tenorSoek/resultatVisning/SkattemeldingVisning'
 
 type PersonVisningProps = {
 	person: any
@@ -61,11 +62,12 @@ export const PersonVisning = ({ person, ident, ibruk, loading, error }: PersonVi
 					)}
 				</div>
 				<FolkeregisteretVisning data={personData} />
+				<TjenestepensjonsavtaleVisning data={personData?.tenorRelasjoner?.tjenestepensjonavtale} />
 				<EnhetsregisteretForetaksregisteretVisning
 					data={_.get(personData, 'tenorRelasjoner.brreg-er-fr')}
 				/>
-				{/*TODO: Vis denne naar det er mulig aa importere og vise inntekt i Dolly*/}
-				{/*<InntektVisning data={personData?.tenorRelasjoner?.inntekt} />*/}
+				<SkattemeldingVisning data={personData?.tenorRelasjoner?.skattemelding} />
+				<InntektVisning data={personData?.tenorRelasjoner?.inntekt} />
 			</Box>
 		</PersonVisningWrapper>
 	)

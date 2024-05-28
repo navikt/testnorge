@@ -2,13 +2,16 @@ import styled from 'styled-components'
 import React from 'react'
 import { Button } from '@navikt/ds-react'
 import { TrashIcon } from '@navikt/aksel-icons'
+import { UseFormGetValues } from 'react-hook-form'
+import { CypressSelector } from '../../../../cypress/mocks/Selectors'
 
 type HeaderProps = {
 	title: string
 	antall?: number
-	paths?: Array<string>
-	getValues: Function
-	emptyCategory: Function
+	paths: string[]
+	getValues?: UseFormGetValues<any>
+	emptyCategory?: Function
+	dataCy?: string
 }
 
 export const SoekefeltWrapper = styled.div`
@@ -29,6 +32,13 @@ export const SoekKategori = styled.div`
 	flex-wrap: wrap;
 	font-size: medium;
 
+	h4 {
+		display: flex;
+		align-items: center;
+		margin: 15px 0 10px;
+		width: 100%;
+	}
+
 	&& {
 		.dolly-form-input {
 			min-width: 0;
@@ -39,6 +49,7 @@ export const SoekKategori = styled.div`
 
 export const Buttons = styled.div`
 	margin: 15px 0 10px 0;
+
 	&& {
 		button {
 			margin-right: 10px;
@@ -58,6 +69,7 @@ const KategoriCircle = styled.div`
 	border-radius: 50%;
 	margin-left: 10px;
 	background-color: #0067c5ff;
+
 	&& {
 		p {
 			margin: auto;
@@ -75,13 +87,13 @@ const KategoriEmptyButton = styled(Button)`
 	right: 10px;
 `
 
-export const Header = ({ title, antall, paths, getValues, emptyCategory }: HeaderProps) => {
+export const Header = ({ title, antall, paths, getValues, emptyCategory, dataCy }: HeaderProps) => {
 	const antallValgt = antall ? antall : getAntallRequest(paths, getValues)
 	return (
-		<KategoriHeader>
+		<KategoriHeader data-cy={dataCy}>
 			<span>{title}</span>
 			{antallValgt > 0 && (
-				<KategoriCircle>
+				<KategoriCircle data-cy={CypressSelector.TITLE_TENOR_HEADER_COUNTER}>
 					<p>{antallValgt}</p>
 				</KategoriCircle>
 			)}
@@ -89,8 +101,9 @@ export const Header = ({ title, antall, paths, getValues, emptyCategory }: Heade
 				<KategoriEmptyButton
 					onClick={(e) => {
 						e.stopPropagation()
-						emptyCategory(paths)
+						emptyCategory?.(paths)
 					}}
+					data-cy={CypressSelector.BUTTON_TENOR_CLEAR_HEADER}
 					variant={'tertiary'}
 					icon={<TrashIcon />}
 					size={'small'}
@@ -122,10 +135,10 @@ export const requestIsEmpty = (updatedRequest: any) => {
 	return isEmpty
 }
 
-const getAntallRequest = (liste?: Array<string>, getValues) => {
+const getAntallRequest = (liste: string[], getValues: UseFormGetValues<any>) => {
 	let antall = 0
 	liste?.forEach((item) => {
-		const attr = getValues(item)
+		const attr = getValues?.(item)
 		if (Array.isArray(attr)) {
 			antall += attr.length
 		} else if (attr || attr === false) {

@@ -1912,6 +1912,35 @@ export const tenorSoekOversiktMock = {
 	error: null,
 }
 
+export const tenorSoekOrganisasjonOversiktMock = {
+	status: 'OK',
+	data: {
+		treff: 1234,
+		rader: 3,
+		offset: 0,
+		nesteSide: 1,
+		seed: 1234,
+		organisasjoner: [
+			{
+				navn: 'OPTIMISTISK TYPISK KATT HØRSEL',
+				organisasjonsnummer: '312342234',
+				kilder: ['brregErFr'],
+			},
+			{
+				navn: 'OVERFLØDIG FUNKSJONELL TIGER AS',
+				organisasjonsnummer: '312345123',
+				kilder: ['brregErFr', 'arbeidsforhold'],
+			},
+			{
+				navn: 'UFORGJENGELIG PARODISK TIGER AS',
+				organisasjonsnummer: '312345612',
+				kilder: ['brregErFr'],
+			},
+		],
+	},
+	query: '',
+}
+
 export const tenorSoekTestdataMock = {
 	status: 'OK',
 	data: {
@@ -1947,5 +1976,91 @@ export const tenorSoekTestdataMock = {
 		fasetter: {},
 	},
 	query: '',
+	error: null,
+}
+export const tenorSoekOrganisasjonTestdataMock = {
+	status: 'OK',
+	data: {
+		treff: 1,
+		rader: 1,
+		offset: 0,
+		nesteSide: null,
+		seed: 0,
+		organisasjoner: [
+			{
+				navn: 'OVERFLØDIG FUNKSJONELL TIGER AS',
+				organisasjonsnummer: '312345123',
+				organisasjonsform: {
+					kode: 'ENK',
+					beskrivelse: 'Enkeltpersonforetak',
+				},
+				forretningsadresse: {
+					land: 'Norge',
+					landkode: 'NO',
+					postnummer: '2674',
+					poststed: 'MYSUSÆTER',
+					adresse: ['Tjønnbakkvegen 29'],
+					kommune: 'SEL',
+					kommunenummer: '3437',
+				},
+				kilder: ['brregErFr'],
+				naeringskoder: [
+					{
+						kode: '86',
+						beskrivelse: 'Helsetjenester',
+						hjelpeenhetskode: false,
+						rekkefolge: 1,
+						nivaa: 1,
+					},
+					{
+						kode: '86.2',
+						beskrivelse: 'Lege og tannlegetjenester',
+						hjelpeenhetskode: false,
+						rekkefolge: 1,
+						nivaa: 2,
+					},
+					{
+						kode: '86.21',
+						beskrivelse: 'Legetjeneste',
+						hjelpeenhetskode: false,
+						rekkefolge: 1,
+						nivaa: 3,
+					},
+					{
+						kode: '86.211',
+						beskrivelse: 'Allmenn legetjeneste',
+						hjelpeenhetskode: false,
+						rekkefolge: 1,
+						nivaa: 4,
+					},
+				],
+				registreringsdatoEnhetsregisteret: '20121212',
+				slettetIEnhetsregisteret: 'N',
+				registrertIForetaksregisteret: 'N',
+				slettetIForetaksregisteret: 'N',
+				registreringspliktigForetaksregisteret: 'N',
+				registrertIFrivillighetsregisteret: 'N',
+				registrertIStiftelsesregisteret: 'N',
+				registrertIMvaregisteret: 'N',
+				konkurs: 'N',
+				underAvvikling: 'N',
+				underTvangsavviklingEllerTvangsopplosning: 'N',
+				maalform: 'Bokmål',
+				ansvarsbegrensning: 'N',
+				harAnsatte: 'N',
+				antallAnsatte: 0,
+				kapital: {
+					antallAksjer: '0',
+					fritekst: [],
+					sakkyndigRedegjorelse: 'N',
+				},
+				kjonnsrepresentasjon: 'N',
+				fravalgAvRevisjon: {
+					fravalg: 'N',
+				},
+			},
+		],
+	},
+	query: 'organisasjonsnummer:312345678',
 	error: null,
 }

@@ -88,7 +88,7 @@ import { SigrunstubPensjonsgivendeVisning } from '@/components/fagsystem/sigruns
 import { useUdistub } from '@/utils/hooks/useUdistub'
 import useBoolean from '@/utils/hooks/useBoolean'
 import { MalModal, malTyper } from '@/pages/minSide/maler/MalModal'
-import { useTenorOversikt } from '@/utils/hooks/useTenorSoek'
+import { useTenorIdent } from '@/utils/hooks/useTenorSoek'
 import { SkatteetatenVisning } from '@/components/fagsystem/skatteetaten/visning/SkatteetatenVisning'
 import PdlVisningConnector from '@/components/fagsystem/pdl/visning/PdlVisningConnector'
 
@@ -234,9 +234,8 @@ export default ({
 		ident.ident,
 	)
 
-	const { response: tenorData, loading: loadingTenorData } = useTenorOversikt(
-		ident?.master === 'PDL' ? { identifikator: ident.ident } : null,
-		1,
+	const { person: tenorData, loading: loadingTenorData } = useTenorIdent(
+		ident?.master === 'PDL' ? ident.ident : null,
 	)
 
 	const getGruppeIdenter = () => {
@@ -529,7 +528,9 @@ export default ({
 				/>
 				<HistarkVisning data={histarkData} loading={loadingHistarkData} />
 				<SkatteetatenVisning
-					data={tenorData?.data?.data?.personer?.find((person: any) => person?.id === ident.ident)}
+					data={tenorData?.data?.data?.dokumentListe?.find((dokument: any) =>
+						dokument.identifikator?.includes(ident.ident),
+					)}
 					loading={loadingTenorData}
 				/>
 				<PersonMiljoeinfo
