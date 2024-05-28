@@ -31,10 +31,10 @@ export const FamilierelasjonPanel = ({ stateModifier, formValues }) => {
 			startOpen={harValgtAttributt(formValues, relasjonerAttributter)}
 		>
 			<AttributtKategori title="Sivilstand" attr={sm.attrs}>
-				<Attributt attr={sm.attrs.sivilstand} />
+				<Attributt attr={sm.attrs.sivilstand} disabled={opts?.gruppeId == null} />
 			</AttributtKategori>
 			<AttributtKategori title="Barn/foreldre" attr={sm.attrs}>
-				<Attributt attr={sm.attrs.barnForeldre} />
+				<Attributt attr={sm.attrs.barnForeldre} disabled={opts?.gruppeId == null} />
 				<Attributt
 					attr={sm.attrs.foreldreansvar}
 					disabled={opts?.identtype === 'NPID'}
