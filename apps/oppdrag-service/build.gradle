@@ -1,0 +1,106 @@
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "uk.co.boothen.gradle:gradle-wsimport:0.21"
+    }
+}
+
+plugins {
+    id 'java'
+    id "org.sonarqube" version "4.4.1.3373"
+    id 'org.springframework.boot' version "3.2.1"
+    id 'io.spring.dependency-management' version "1.1.4"
+    id "jacoco"
+    id "uk.co.boothen.gradle.wsimport" version "0.21"
+}
+
+apply plugin: "uk.co.boothen.gradle.wsimport"
+
+sonarqube {
+    properties {
+        property "sonar.dynamicAnalysis", "reuseReports"
+        property "sonar.host.url", "https://sonarcloud.io"
+        property "sonar.java.coveragePlugin", "jacoco"
+        property "sonar.language", "java"
+        property "sonar.token", System.getenv("SONAR_TOKEN")
+        property "sonar.organization", "navikt"
+        property "sonar.project.monorepo.enabled", true
+        property "sonar.projectKey", "testnav-oppdrag-service"
+        property "sonar.projectName", "testnav-oppdrag-service"
+        property "sonar.sourceEncoding", "UTF-8"
+    }
+}
+
+bootJar {
+    archiveFileName = "app.jar"
+    mainClass = 'no.nav.testnav.oppdrag.service.OppdragServiceApplicationStarter'
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+wsimport {
+    wsdlSourceRoot = "src/main/resources/schema/eksponering"
+    generatedSourceRoot = "/generated/src/wsdl/main"
+    generatedClassesRoot = "/classes/main"
+    wsdl("oppdragServiceWSBinding.wsdl") {
+        packageName = "no.nav.testnav.oppdrag.service"
+        xjcarg("-XautoNameResolution")
+    }
+    verbose = true
+    debug = true
+    target = "3.0"
+}
+
+dependencyManagement {
+    applyMavenExclusions = false
+    imports {
+        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2023.0.0'
+    }
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        name = "GitHubPackages"
+        url = uri('https://maven.pkg.github.com/navikt/maven-release')
+        credentials(PasswordCredentials) {
+            password System.getenv("NAV_TOKEN")
+            username 'token'
+        }
+    }
+}
+
+dependencies {
+    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.0'
+    implementation 'org.glassfish.jaxb:jaxb-runtime:4.0.0'
+
+    implementation 'no.nav.testnav.libs:security-core'
+    implementation 'no.nav.testnav.libs:reactive-core'
+    implementation 'no.nav.testnav.libs:reactive-security'
+    implementation 'no.nav.testnav.libs:data-transfer-objects'
+
+    implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
+
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
+
+    implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.3.0'
+    implementation 'io.swagger.core.v3:swagger-annotations-jakarta:2.2.20'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    implementation 'ma.glasnost.orika:orika-core:1.5.4'
+    annotationProcessor 'org.projectlombok:lombok'
+    implementation 'org.projectlombok:lombok'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema targetNamespace="http://nav.no/system/os/entiteter/beregningSkjema"
+           version="1.0"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:typer="http://nav.no/system/os/entiteter/typer/simpleTypes"
+           xmlns:beregningSkjema="http://nav.no/system/os/entiteter/beregningSkjema"
+>
+
+    <xs:import namespace="http://nav.no/system/os/entiteter/typer/simpleTypes" schemaLocation="typer/simpleTypes.xsd"/>
+
+    <xs:annotation>
+        <xs:documentation>Beregning entiteter</xs:documentation>
+        <xs:documentation>For hver entitet er det lagt til en referanse ID.</xs:documentation>
+        <xs:documentation>Disse IDene korresponderer med entitetene som er implementert i baksystemet og kan forenkle kommunikasjon.</xs:documentation>
+    </xs:annotation>
+
+    <xs:complexType name="beregning">
+        <xs:annotation>
+            <xs:documentation>Entitet Beregning</xs:documentation>
+            <xs:documentation>Referanse ID 311</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="gjelderId"     type="typer:fnrOrgnr" />
+            <xs:element name="gjelderNavn"   type="typer:navn" />
+            <xs:element name="datoBeregnet"  type="typer:dato">
+                <xs:annotation>
+                    <xs:documentation>Ved simuleringsberegning gjelder dette datoen beregning vil kjøres på</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="kodeFaggruppe" type="typer:kodeFaggruppe" />
+            <xs:element name="belop"         type="typer:belop" />
+
+            <xs:element ref="beregningSkjema:beregningsPeriode" minOccurs="1" maxOccurs="999" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:element name="beregningsPeriode">
+        <xs:annotation>
+            <xs:documentation>Entitet BeregningsPeriode</xs:documentation>
+            <xs:documentation>Referanse ID 312</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="periodeFom"     type="typer:dato" />
+                <xs:element name="periodeTom"     type="typer:dato" />
+
+                <xs:element ref="beregningSkjema:beregningStoppnivaa" minOccurs="1" maxOccurs="999" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+
+    <xs:element name="beregningStoppnivaa">
+        <xs:annotation>
+            <xs:documentation>Entitet BeregningStoppnivaa</xs:documentation>
+            <xs:documentation>Referanse ID 313</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="kodeFagomraade"     type="typer:kodeFagomraade" />
+                <xs:element name="stoppNivaaId"       type="typer:linjeId" />
+                <xs:element name="behandlendeEnhet"   type="typer:enhet" />
+                <xs:element name="oppdragsId"         type="typer:oppdragsId" />
+                <xs:element name="fagsystemId"        type="typer:fagsystemId" />
+                <xs:element name="kid"                type="typer:kid" />
+                <xs:element name="utbetalesTilId"     type="typer:fnrOrgnr" />
+                <xs:element name="utbetalesTilNavn"   type="typer:navn" />
+                <xs:element name="bilagsType"         type="typer:kodeBilagsType" />
+                <xs:element name="forfall"            type="typer:dato" />
+                <xs:element name="feilkonto"          type="xs:boolean" />
+
+                <xs:element ref="beregningSkjema:beregningStoppnivaaDetaljer" minOccurs="1" maxOccurs="999" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="beregningStoppnivaaDetaljer">
+        <xs:annotation>
+            <xs:documentation>Entitet BeregningStoppnivaaDetaljer</xs:documentation>
+            <xs:documentation>Referanse ID 314</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="faktiskFom"      type="typer:dato" />
+                <xs:element name="faktiskTom"      type="typer:dato" />
+                <xs:element name="kontoStreng">
+                    <xs:annotation>
+                        <xs:documentation>Samensatt konkatenert felt: Hovedkontonr||Underkontonr||Formålskode||Aktivitetskode</xs:documentation>
+                    </xs:annotation>
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:minLength value="0" />
+                            <xs:maxLength value="19" />
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element name="behandlingskode"       type="typer:string1" />
+                <xs:element name="belop"                 type="typer:belop" />
+                <xs:element name="trekkVedtakId"         type="typer:trekkVedtakId" />
+                <xs:element name="stonadId"              type="typer:stonadId" />
+                <xs:element name="korrigering"           type="typer:string1" />
+                <xs:element name="tilbakeforing"         type="xs:boolean" />
+                <xs:element name="linjeId"               type="typer:linjeId" />
+                <xs:element name="sats"                  type="typer:sats" />
+                <xs:element name="typeSats"              type="typer:typeSats" />
+                <xs:element name="antallSats"            type="typer:antallSats" />
+                <xs:element name="saksbehId"             type="typer:saksbehId" />
+                <xs:element name="uforeGrad"             type="typer:grad" />
+                <xs:element name="kravhaverId"           type="typer:fnrOrgnr" />
+                <xs:element name="delytelseId"           type="typer:delytelseId" />
+                <xs:element name="bostedsenhet"          type="typer:enhet" />
+                <xs:element name="skykldnerId"           type="typer:fnrOrgnr" />
+                <xs:element name="klassekode"            type="typer:kodeKlasse" />
+                <xs:element name="klasseKodeBeskrivelse" type="typer:kodeKlasseBeskrivelse" />
+                <xs:element name="typeKlasse"            type="typer:typeKlasse" />
+                <xs:element name="typeKlasseBeskrivelse" type="typer:typeKlasseBeskrivelse" />
+                <xs:element name="refunderesOrgNr"       type="typer:fnrOrgnr" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>
