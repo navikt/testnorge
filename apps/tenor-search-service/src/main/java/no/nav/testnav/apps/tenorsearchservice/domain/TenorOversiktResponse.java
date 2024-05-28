@@ -14,6 +14,11 @@ import java.util.List;
 @AllArgsConstructor
 public class TenorOversiktResponse {
 
+    private HttpStatus status;
+    private Data data;
+    private String query;
+    private String error;
+
     @SuppressWarnings("java:S115")
     public enum TenorRelasjon {
         Arbeidsforhold,
@@ -31,10 +36,15 @@ public class TenorOversiktResponse {
         Tjenestepensjonsavtale
     }
 
-    private HttpStatus status;
-    private Data data;
-    private String query;
-    private String error;
+    @lombok.Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Rollegruppe {
+        private Type type;
+        private List<String> fritekst;
+        private List<Rolle> roller;
+    }
 
     @lombok.Data
     @Builder
@@ -78,5 +88,36 @@ public class TenorOversiktResponse {
                         .build())
                 .error(this.getError())
                 .build();
+    }
+
+    @lombok.Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Type {
+        private String kode;
+        private String beskrivelse;
+    }
+
+    @lombok.Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Virksomhet {
+        private String organisasjonsnummer;
+    }
+
+    @lombok.Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Rolle {
+        private Type type;
+        private Person person;
+        private Virksomhet virksomhet;
+        private Object valgtAv;
+        private String fratraadt;
+        private List<String> fritekst;
+        private int rekkefolge;
     }
 }

@@ -1,6 +1,7 @@
 import React, { lazy } from 'react'
 import { Navigate } from 'react-router-dom'
 import GruppeConnector from '@/pages/gruppe/GruppeConnector'
+import { OrganisasjonTenorSoekPage } from '@/pages/organisasjoner/OrganisasjonTenorSoek/OrganisasjonTenorSoekPage'
 
 const GruppeOversikt = lazy(() => import('@/pages/gruppeOversikt/GruppeOversiktConnector'))
 const Organisasjon = lazy(() => import('@/pages/organisasjoner/Organisasjoner'))
@@ -40,6 +41,11 @@ const allRoutes = [
 		element: () => <Organisasjon />,
 	},
 	{
+		path: '/tenor/organisasjoner',
+		breadcrumb: 'Søk i Tenor organisasjoner',
+		element: () => <OrganisasjonTenorSoekPage />,
+	},
+	{
 		path: '/organisasjoner/bestilling',
 		breadcrumb: 'Opprett organisasjon',
 		element: () => <BestillingsveilederConnector />,
@@ -48,7 +54,7 @@ const allRoutes = [
 	{ path: '/ui', breadcrumb: 'UI demo', element: () => <UI /> },
 	{ path: '/dollysoek', breadcrumb: 'Søk i Dolly', element: () => <DollySoekPage /> },
 	{ path: '/testnorge', breadcrumb: 'Søk i Test-Norge', element: () => <TestnorgePage /> },
-	{ path: '/tenor', breadcrumb: 'Søk i Tenor', element: () => <TenorSoekPage /> },
+	{ path: '/tenor/personer', breadcrumb: 'Søk i Tenor personer', element: () => <TenorSoekPage /> },
 	{
 		path: '/importer',
 		breadcrumb: 'Importer',

@@ -10,7 +10,7 @@ export const InntektVisning = ({ data }: any) => {
 	}
 
 	return (
-		<SubOverskriftExpandable label={`Inntekt A-ordningen (${data.length})`} iconKind="inntektstub">
+		<SubOverskriftExpandable label={`Inntekt A-ordningen (${data.length})`} iconKind="pengesekk">
 			<div>
 				<DollyFieldArray data={data} nested>
 					{(inntekt: any) => {
