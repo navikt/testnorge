@@ -5,7 +5,7 @@ spring:
     banner-mode: off
   application:
     name: testnav-oppdrag-service
-    description: App for å sjekke hvilke miljøer i test og preprod som er tilgjengelige nå.
+    description: App for å sende oppdrag til Oppdragssystemet.
   security:
     oauth2:
       resourceserver:

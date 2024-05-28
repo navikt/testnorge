@@ -5,8 +5,8 @@ plugins {
 rootProject.name = 'oppdrag-service'
 
 includeBuild '../../libs/security-core'
-includeBuild '../../libs/reactive-core'
-includeBuild '../../libs/reactive-security'
+includeBuild '../../libs/servlet-core'
+includeBuild '../../libs/servlet-security'
 includeBuild '../../libs/data-transfer-objects'
 
 gradleEnterprise {
