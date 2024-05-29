@@ -1,4 +1,4 @@
-package no.nav.pdl.forvalter.utils;
+package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
