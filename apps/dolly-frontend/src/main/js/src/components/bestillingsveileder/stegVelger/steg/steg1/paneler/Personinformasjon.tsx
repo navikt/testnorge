@@ -82,7 +82,11 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 					<Attributt attr={sm.attrs.navn} />
 					<Attributt attr={sm.attrs.kjonn} />
 					<Attributt attr={sm.attrs.telefonnummer} />
-					<Attributt attr={sm.attrs.fullmakt} disabled={opts?.gruppeId == null} />
+					<Attributt
+						attr={sm.attrs.fullmakt}
+						disabled={!opts?.gruppeId}
+						title={!opts?.gruppeId && 'Funksjonen er deaktivert da personer for relasjon er ukjent'}
+					/>
 					<Attributt attr={sm.attrs.sikkerhetstiltak} />
 					<Attributt attr={sm.attrs.sprakKode} />
 					<Attributt attr={sm.attrs.egenAnsattDatoFom} />

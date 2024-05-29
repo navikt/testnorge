@@ -21,6 +21,8 @@ export const FamilierelasjonPanel = ({ stateModifier, formValues }) => {
 		}
 		return []
 	}
+	const tekstForDeaktivering =
+		!opts?.gruppeId && 'Funksjonen er deaktivert da personer for relasjon er ukjent'
 	const visOpplysning = opts?.identMaster !== 'PDL'
 	return (
 		<Panel
@@ -31,10 +33,18 @@ export const FamilierelasjonPanel = ({ stateModifier, formValues }) => {
 			startOpen={harValgtAttributt(formValues, relasjonerAttributter)}
 		>
 			<AttributtKategori title="Sivilstand" attr={sm.attrs}>
-				<Attributt attr={sm.attrs.sivilstand} disabled={opts?.gruppeId == null} />
+				<Attributt
+					attr={sm.attrs.sivilstand}
+					disabled={!opts?.gruppeId}
+					title={tekstForDeaktivering}
+				/>
 			</AttributtKategori>
 			<AttributtKategori title="Barn/foreldre" attr={sm.attrs}>
-				<Attributt attr={sm.attrs.barnForeldre} disabled={opts?.gruppeId == null} />
+				<Attributt
+					attr={sm.attrs.barnForeldre}
+					disabled={!opts?.gruppeId}
+					title={tekstForDeaktivering}
+				/>
 				<Attributt
 					attr={sm.attrs.foreldreansvar}
 					disabled={opts?.identtype === 'NPID'}
