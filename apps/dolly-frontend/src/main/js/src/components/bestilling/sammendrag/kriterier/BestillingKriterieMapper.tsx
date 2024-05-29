@@ -55,7 +55,20 @@ const expandable = (
 	objects,
 })
 
-const mapBestillingsinformasjon = (bestillingsinformasjon: any, data: any[], identtype: any) => {
+const mapBestillingsinformasjon = (
+	bestillingsinformasjon: any,
+	data: any[],
+	identtype: any,
+	firstIdent: string,
+) => {
+	const getTypePerson = () => {
+		const identifiserendeDigit = firstIdent?.charAt(2)
+		if (identifiserendeDigit == '0' || identifiserendeDigit == '1') {
+			return 'Standard'
+		}
+		return bestillingsinformasjon.navSyntetiskIdent ? 'NAV syntetisk' : 'Test-Norge'
+	}
+
 	if (bestillingsinformasjon) {
 		const bestillingsInfo = {
 			header: 'Bestillingsinformasjon',
@@ -68,7 +81,7 @@ const mapBestillingsinformasjon = (bestillingsinformasjon: any, data: any[], ide
 					'Antall levert',
 					bestillingsinformasjon.antallLevert && bestillingsinformasjon.antallLevert.toString(),
 				),
-				obj('Type person', bestillingsinformasjon.navSyntetiskIdent ? 'NAV syntetisk' : 'Standard'),
+				obj('Type person', getTypePerson()),
 				obj('Identtype', identtype),
 				obj('Sist oppdatert', formatDateTimeWithSeconds(bestillingsinformasjon.sistOppdatert)),
 				obj(
@@ -2169,18 +2182,18 @@ const mapOrganisasjon = (bestillingData, data) => {
 	}
 }
 
-export function mapBestillingData(bestillingData, bestillingsinformasjon) {
+export function mapBestillingData(bestillingData, bestillingsinformasjon, firstIdent) {
 	if (!bestillingData) {
 		return null
 	}
 
-	const data = []
+	const data: any[] = []
 	const identtype = bestillingData.pdldata?.opprettNyPerson?.identtype
 
 	const bestilling = useContext(BestillingsveilederContext)
 	const { navEnheter } = useNavEnheter()
 
-	mapBestillingsinformasjon(bestillingsinformasjon, data, identtype)
+	mapBestillingsinformasjon(bestillingsinformasjon, data, identtype, firstIdent)
 	mapPdlNyPerson(bestillingData, data, bestilling)
 
 	const pdldataKriterier = bestillingData.pdldata?.person

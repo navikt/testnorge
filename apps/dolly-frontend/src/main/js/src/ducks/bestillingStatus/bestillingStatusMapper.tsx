@@ -12,7 +12,6 @@
 
 import { arrayToString, formatDateTimeWithSeconds } from '@/utils/DataFormatter'
 import { Bestilling } from '@/utils/hooks/useBestilling'
-import _ from 'lodash'
 
 export type System = {
 	id: string
@@ -84,9 +83,9 @@ const extractBestillingstatusKode = (
 }
 
 function getBestillingTag(data: Bestilling) {
-	if (!_.isEmpty(data?.bestilling?.pdldata?.opprettNyPerson)) {
+	if (data?.bestilling?.pdldata?.opprettNyPerson) {
 		return 'Ny bestilling'
-	} else if (_.has(data, 'opprettetFraId')) {
+	} else if (data?.opprettetFraId) {
 		return 'Gjenopprett'
 	} else {
 		return 'Legg til/endre'

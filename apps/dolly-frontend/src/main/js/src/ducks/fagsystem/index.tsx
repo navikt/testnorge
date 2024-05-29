@@ -366,7 +366,7 @@ const getPdlfIdentInfo = (ident, bestillingStatuser, pdlIdent) => {
 		identNr: pdlIdent.ident,
 		bestillingId: ident?.bestillingId,
 		identtype: 'FNR',
-		kilde: 'PDL',
+		kilde: 'DOLLY',
 		navn: `${pdlFornavn} ${pdlMellomnavn} ${pdlEtternavn}`,
 		kjonn: pdlIdent.kjoenn?.[0]?.kjoenn,
 		alder: formatAlder(pdlAlder(pdlIdent?.foedsel?.[0]?.foedselsdato), getPdlDoedsdato(pdlIdent)),
