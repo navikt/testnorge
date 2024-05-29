@@ -17,18 +17,10 @@ import {
 
 const ignoreKeysTestnorge = [
 	'alder',
-	'foedsel',
-	'doedsdato',
-	'statsborgerskap',
 	'innvandretFraLand',
 	'utvandretTilLand',
 	'identtype',
-	'kjonn',
-	'navn',
-	'telefonnummer',
 	'vergemaal',
-	'fullmakt',
-	'sikkerhetstiltak',
 	'tilrettelagtKommunikasjon',
 ]
 
@@ -45,7 +37,10 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 	// Noen egenskaper kan ikke endres når personen opprettes fra eksisterende eller videreføres med legg til
 
 	const getIgnoreKeys = () => {
-		const ignoreKeys = testnorgeIdent ? [...ignoreKeysTestnorge] : ['identtype']
+		var ignoreKeys = testnorgeIdent ? [...ignoreKeysTestnorge] : ['identtype']
+		if (testnorgeIdent && !opts?.gruppeId) {
+			ignoreKeys.push('fullmakt')
+		}
 		if (sm.attrs.utenlandskBankkonto.checked) {
 			ignoreKeys.push('norskBankkonto')
 		} else {

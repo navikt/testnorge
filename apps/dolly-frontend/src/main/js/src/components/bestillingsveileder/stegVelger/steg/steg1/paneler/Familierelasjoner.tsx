@@ -15,11 +15,18 @@ export const FamilierelasjonPanel = ({ stateModifier, formValues }) => {
 	const sm = stateModifier(FamilierelasjonPanel.initialValues)
 	const opts = useContext(BestillingsveilederContext)
 
+	const limitAccess = opts?.identMaster === 'PDL' || opts?.identtype === 'NPID'
+
 	const getIgnoreKeys = () => {
-		if (opts?.identtype === 'NPID') {
-			return ['foreldreansvar', 'doedfoedtBarn']
+		var ignoreKeys = []
+		if (limitAccess) {
+			ignoreKeys.push('foreldreansvar', 'doedfoedtBarn')
 		}
-		return []
+		if (!opts?.gruppeId && limitAccess) {
+			ignoreKeys.push('sivilstand', 'barnForeldre')
+		}
+
+		return ignoreKeys
 	}
 	const tekstForDeaktivering =
 		!opts?.gruppeId && 'Funksjonen er deaktivert da personer for relasjon er ukjent'
