@@ -32,8 +32,8 @@ jobs:
           GITHUB_USERNAME: ${{ secrets.GITHUB_USERNAME }}
         uses: gradle/actions/setup-gradle@v3
         with:
-          arguments: assemble --scan
           cache-read-only: false
+      - run: ./gradlew assemble --scan
       - name: "Start docker containers"
         run: |
           JWK=$(cat ./mocks/jwk.json) docker-compose up -d --build
@@ -45,9 +45,10 @@ jobs:
       - name: "Run integration tests"
         uses: gradle/actions/setup-gradle@v3
         with:
-          build-root-directory: ${{ inputs.working-directory }}
-          arguments: iTest --scan
           cache-read-only: false
+      - name: "Build"
+        working-directory: ${{ inputs.working-directory }}
+        run: ./gradlew iTest --scan
       - name: "Stop docker containers"
         run: |
           docker-compose down -v --remove-orphans
