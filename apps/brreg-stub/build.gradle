@@ -61,9 +61,9 @@ repositories {
 
 dependencies {
 
-    rewrite("org.openrewrite.recipe:rewrite-spring:5.2.0")
+    rewrite('org.openrewrite.recipe:rewrite-spring:5.10.0')
 
-    implementation("io.dropwizard:dropwizard-jackson:4.0.2") {
+    implementation('io.dropwizard:dropwizard-jackson:4.0.7') {
         exclude group: "com.google.code.findbugs"
     }
 
@@ -118,7 +118,7 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
 
-    testImplementation "org.junit.jupiter:junit-jupiter:5.10.1"
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
 }
 java {
     toolchain {
