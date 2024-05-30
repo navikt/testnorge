@@ -21,6 +21,8 @@ interface SivilstandFormTypes {
 	formMethods: UseFormReturn
 	path?: string
 	eksisterendeNyPerson?: Option | null
+	identtype?: string
+	ident?: string
 }
 
 const gyldigeSivilstander = [
@@ -35,6 +37,8 @@ export const SivilstandForm = ({
 	path,
 	formMethods,
 	eksisterendeNyPerson = null,
+	identtype,
+	ident,
 }: SivilstandFormTypes) => {
 	const handleTypeChange = (selected: any, path: string) => {
 		formMethods.setValue(`${path}.type`, selected.value)
@@ -49,9 +53,10 @@ export const SivilstandForm = ({
 		formMethods.trigger()
 	}
 
-	const { identtype, identMaster } = useContext(BestillingsveilederContext)
+	const opts = useContext(BestillingsveilederContext)
+	const identMaster = opts?.identMaster || parseInt(ident?.charAt(2)) >= 8 ? 'PDL' : 'PDLF'
 	const isTestnorgeIdent = identMaster === 'PDL'
-	const kanVelgeMaster = !isTestnorgeIdent && identtype !== 'NPID'
+	const kanVelgeMaster = !isTestnorgeIdent && (identtype !== 'NPID' || opts?.identtype !== 'NPID')
 
 	const kanHaRelatertPerson = gyldigeSivilstander.includes(formMethods.watch(`${path}.type`))
 

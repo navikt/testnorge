@@ -326,6 +326,7 @@ export const VisningRedigerbar = ({
 						formMethods={formMethods}
 						eksisterendeNyPerson={eksisterendeNyPerson}
 						identtype={identtype}
+						ident={ident}
 					/>
 				)
 			case Attributt.KontaktinformasjonForDoedsbo:
