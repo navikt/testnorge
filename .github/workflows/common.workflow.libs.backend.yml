@@ -49,12 +49,12 @@ jobs:
         uses: gradle/actions/setup-gradle@v3
         with:
           cache-read-only: false
-        env:
-          NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       - name: "Build"
         working-directory: ${{ inputs.working-directory }}
         run: ./gradlew build ${{ inputs.sonar-enabled && 'jacocoTestReport sonar -Dsonar.gradle.skipCompile=true' || '' }} --scan
+        env:
+          NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       - name: "Reporting"
         if: failure() && steps.gradle.outcome == 'failure'
         uses: actions/upload-artifact@v4

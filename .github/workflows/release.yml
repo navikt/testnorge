@@ -32,6 +32,8 @@ jobs:
           git remote set-url origin https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git
           git config --global user.email "dolly@nav.no"
           git config --global user.name "$GITHUB_ACTOR"
+      - name: "Gradle"
+        uses: gradle/actions/setup-gradle@v3
       - name: "Create version"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -45,38 +47,32 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_ACTOR: ${{ secrets.GITHUB_ACTOR }}
-        uses: gradle/actions/setup-gradle@v3
-      - run: ./gradlew :avro-schema:publish -PreleaseVersion=${{ env.VERSION }}
+        run: ./gradlew :avro-schema:publish -PreleaseVersion=${{ env.VERSION }}
       - name: "Release data-transfer-objects"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_ACTOR: ${{ secrets.GITHUB_ACTOR }}
-        uses: gradle/actions/setup-gradle@v3
-      - run: ./gradlew :data-transfer-objects:publish -PreleaseVersion=${{ env.VERSION }}
+        run: ./gradlew :data-transfer-objects:publish -PreleaseVersion=${{ env.VERSION }}
       - name: "Release reactive-core"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_ACTOR: ${{ secrets.GITHUB_ACTOR }}
-        uses: gradle/actions/setup-gradle@v3
-      - run: ./gradlew :reactive-core:publish -PreleaseVersion=${{ env.VERSION }}
+        run: ./gradlew :reactive-core:publish -PreleaseVersion=${{ env.VERSION }}
       - name: "Release reactive-proxy"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_ACTOR: ${{ secrets.GITHUB_ACTOR }}
-        uses: gradle/actions/setup-gradle@v3
-      - run: ./gradlew :reactive-proxy:publish -PreleaseVersion=${{ env.VERSION }}
+        run: ./gradlew :reactive-proxy:publish -PreleaseVersion=${{ env.VERSION }}
       - name: "Release reactive-security"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_ACTOR: ${{ secrets.GITHUB_ACTOR }}
-        uses: gradle/actions/setup-gradle@v3
-      - run: ./gradlew :reactive-security:publish -PreleaseVersion=${{ env.VERSION }}
+        run: ./gradlew :reactive-security:publish -PreleaseVersion=${{ env.VERSION }}
       - name: "Release reactive-frontend"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_ACTOR: ${{ secrets.GITHUB_ACTOR }}
-        uses: gradle/actions/setup-gradle@v3
-      - run: ./gradlew :reactive-frontend:publish -PreleaseVersion=${{ env.VERSION }}
+        run: ./gradlew :reactive-frontend:publish -PreleaseVersion=${{ env.VERSION }}
       - name: "Git tag og push"
         env:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
