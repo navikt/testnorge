@@ -25,19 +25,19 @@ const multiplePdlPersonUrl = (gruppe) => {
 	return sliceGruppe(gruppe, maxAntall, url)
 }
 
-export const usePdlOptions = (gruppe) => {
+export const usePdlOptions = (gruppe, master = 'PDLF') => {
 	const { data, isLoading, error } = useSWR<any, Error>(
-		gruppe && gruppe[0].master === 'PDLF'
-			? multiplePdlforvalterUrl(gruppe)
-			: multiplePdlPersonUrl(gruppe),
+		master === 'PDLF' ? multiplePdlforvalterUrl(gruppe) : multiplePdlPersonUrl(gruppe),
 		multiFetcherAll,
 	)
 
-	let payload
-	if (data?.[0].data?.hentPersonBolk) {
-		payload = data[0].data?.hentPersonBolk
-	} else {
+	let payload = []
+	if (master === 'PDLF') {
 		payload = data
+	} else {
+		data?.forEach((element) => {
+			payload.push(element?.data?.hentPersonBolk)
+		})
 	}
 
 	const personData = []
@@ -48,14 +48,14 @@ export const usePdlOptions = (gruppe) => {
 		const etternavn = navn?.etternavn || ''
 		const ident = id?.person?.ident || id?.ident
 		const foreldre =
-			gruppe[0].master === 'PDLF'
+			master === 'PDLF'
 				? id.relasjoner
 						?.filter((relasjon) => relasjon.relasjonType === 'FAMILIERELASJON_FORELDER')
 						?.map((relasjon) => relasjon.relatertPerson?.ident)
-				: id.person.forelderBarnRelasjon
+				: id.person?.forelderBarnRelasjon
 						?.filter((relasjon) => relasjon.minRolleForPerson === 'BARN')
 						?.map((relasjon) => relasjon.relatertPersonsIdent)
-		const alder = getAlder(id.person.foedsel?.[0]?.foedselsdato)
+		const alder = getAlder(id.person?.foedsel?.[0]?.foedselsdato)
 		const kjoenn = id?.person?.kjoenn?.[0].kjoenn?.toLowerCase()
 		personData.push({
 			value: ident,
@@ -63,9 +63,9 @@ export const usePdlOptions = (gruppe) => {
 			relasjoner: id?.relasjoner?.map((r) => r?.relatertPerson?.ident),
 			alder: alder,
 			kjoenn: kjoenn,
-			sivilstand: id.person.sivilstand?.[0]?.type,
-			vergemaal: id.person.vergemaal?.length > 0,
-			doedsfall: id.person.doedsfall?.length > 0,
+			sivilstand: id.person?.sivilstand?.[0]?.type,
+			vergemaal: id.person?.vergemaal?.length > 0,
+			doedsfall: id.person?.doedsfall?.length > 0,
 			foreldre: foreldre,
 			foreldreansvar: id.relasjoner
 				?.filter((relasjon) => relasjon.relasjonType === 'FORELDREANSVAR_BARN')
@@ -88,7 +88,7 @@ export const useTestnorgeOptions = (gruppe) => {
 			return null
 		}
 		const relasjoner = [] as Array<string>
-		person.forelderBarnRelasjon?.forEach((relasjon) =>
+		person?.forelderBarnRelasjon?.forEach((relasjon) =>
 			relasjoner.push(relasjon.relatertPersonsIdent),
 		)
 		person.fullmakt?.forEach((relasjon) => relasjoner.push(relasjon.motpartsPersonident))

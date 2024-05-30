@@ -34,9 +34,14 @@ export const PdlEksisterendePerson = ({
 	const gruppeId = opts?.gruppeId || opts?.gruppe?.id
 
 	const { identer, loading: gruppeLoading, error: gruppeError } = useGruppeIdenter(gruppeId)
-	const filtrerteIdenter = identer?.filter((ident) => ident.master == opts?.identMaster || 'PDLF')
+	const identMaster = opts?.identMaster || 'PDLF'
+	const filtrerteIdenter = identer?.filter((ident) => ident.master == identMaster)
 
-	const { data: pdlOptions, loading: pdlLoading, error: pdlError } = usePdlOptions(filtrerteIdenter)
+	const {
+		data: pdlOptions,
+		loading: pdlLoading,
+		error: pdlError,
+	} = usePdlOptions(filtrerteIdenter, identMaster)
 
 	const harSivilstand = eksisterendePersonPath?.includes('sivilstand')
 	const harNyIdent = eksisterendePersonPath?.includes('nyident')
