@@ -31,8 +31,10 @@ export const TelefonnummerLes = ({ telefonnummerData, idx }: TelefonnummerTypes)
 				value={`${telefonnummerData.landskode} ${telefonnummerData.nummer}`}
 			/>
 			<TitleValue title="Prioritet" value={telefonnummerData.prioritet} />
-			<TitleValue title="Master" value={telefonnummerData.metadata?.master} />
-			<TitleValue title="Master" value={telefonnummerData.master} />
+			<TitleValue
+				title="Master"
+				value={telefonnummerData.metadata?.master || telefonnummerData.master}
+			/>
 		</div>
 	)
 }

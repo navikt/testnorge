@@ -39,8 +39,7 @@ const DoedsfallLes = ({ doedsfall, idx }: DoedsfallLesTypes) => {
 	return (
 		<div className="person-visning_content" key={idx}>
 			<TitleValue title="Dødsdato" value={formatDate(doedsfall.doedsdato)} />
-			<TitleValue title="Master" value={doedsfall.metadata?.master} />
-			<TitleValue title="Master" value={doedsfall.master} />
+			<TitleValue title="Master" value={doedsfall.metadata?.master || doedsfall.master} />
 		</div>
 	)
 }

@@ -9,24 +9,13 @@ import './FrigjoerModal.less'
 import { REGEX_BACKEND_GRUPPER, useMatchMutate } from '@/utils/hooks/useMutate'
 import React from 'react'
 
-type RelatertPersonProps = {
-	type: string
-	id: string
-}
-
 type Props = {
 	slettPerson: Function
 	loading: boolean
-	importerteRelatertePersoner: Array<RelatertPersonProps>
 	disabled?: boolean
 }
 
-export const FrigjoerButton = ({
-	slettPerson,
-	loading,
-	importerteRelatertePersoner,
-	disabled = false,
-}: Props) => {
+export const FrigjoerButton = ({ slettPerson, loading, disabled = false }: Props) => {
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 	const mutate = useMatchMutate()
 
@@ -35,18 +24,10 @@ export const FrigjoerButton = ({
 	}
 
 	const infoTekst = () => {
-		if (importerteRelatertePersoner) {
-			return (
-				'Er du sikker på at du vil frigjøre denne personen og dens relaterte personer? All ekstra ' +
-				'informasjon lagt til på personen og relaterte personer via Dolly vil bli slettet og personen og ' +
-				'relaterte personer vil bli frigjort fra gruppen.'
-			)
-		} else {
-			return (
-				'Er du sikker på at du vil frigjøre denne personen? All ekstra informasjon lagt til på ' +
-				'personen via Dolly vil bli slettet og personen vil bli frigjort fra gruppen.'
-			)
-		}
+		return (
+			'Er du sikker på at du vil frigjøre denne personen? All ekstra informasjon lagt til på ' +
+			'personen via Dolly vil bli slettet og personen vil bli frigjort fra gruppen.'
+		)
 	}
 
 	return (

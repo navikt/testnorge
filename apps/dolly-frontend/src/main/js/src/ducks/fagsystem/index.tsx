@@ -90,13 +90,6 @@ export const actions = createActions(
 				ident,
 			}),
 		],
-		slettPersonOgRelatertePersoner: [
-			DollyApi.slettPersonOgRelatertePersoner,
-			(ident, relatertPersonIdenter) => ({
-				ident,
-				relatertPersonIdenter,
-			}),
-		],
 	},
 	{
 		prefix: 'fagsystem', // String used to prefix each type
@@ -190,10 +183,6 @@ export default handleActions(
 		},
 		[onSuccess(actions.slettPerson)](state, action) {
 			deleteIdentState(state, action.meta.ident)
-		},
-		[onSuccess(actions.slettPersonOgRelatertePersoner)](state, action) {
-			deleteIdentState(state, action.meta.ident)
-			deleteIdentState(state, action.meta.partnerident)
 		},
 	},
 	initialState,

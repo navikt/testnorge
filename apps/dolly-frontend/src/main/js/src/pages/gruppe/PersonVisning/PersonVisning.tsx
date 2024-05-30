@@ -109,7 +109,6 @@ export default ({
 	brukertype,
 	loading,
 	slettPerson,
-	slettPersonOgRelatertePersoner,
 	leggTilPaaPerson,
 	iLaastGruppe,
 	tmpPersoner,
@@ -412,11 +411,7 @@ export default ({
 						</SlettButton>
 					)}
 					{!iLaastGruppe && ident.master === 'PDL' && (
-						<FrigjoerButton
-							slettPerson={slettPerson}
-							slettPersonOgRelatertePersoner={slettPersonOgRelatertePersoner}
-							loading={loading.slettPerson || loading.slettPersonOgRelatertePersoner}
-						/>
+						<FrigjoerButton slettPerson={slettPerson} loading={loading.slettPerson} />
 					)}
 				</div>
 				{manglerFagsystemdata() && (
