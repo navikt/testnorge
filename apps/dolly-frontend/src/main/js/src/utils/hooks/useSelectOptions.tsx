@@ -55,6 +55,11 @@ export const usePdlOptions = (gruppe, master = 'PDLF') => {
 				: id.person?.forelderBarnRelasjon
 						?.filter((relasjon) => relasjon.minRolleForPerson === 'BARN')
 						?.map((relasjon) => relasjon.relatertPersonsIdent)
+		const foreldreansvar = (master = 'PDLF'
+			? id.relasjoner
+					?.filter((relasjon) => relasjon.relasjonType === 'FORELDREANSVAR_BARN')
+					?.map((relasjon) => relasjon.relatertPerson?.ident)
+			: null)
 		const alder = getAlder(id.person?.foedsel?.[0]?.foedselsdato)
 		const kjoenn = id?.person?.kjoenn?.[0].kjoenn?.toLowerCase()
 		personData.push({
@@ -67,9 +72,7 @@ export const usePdlOptions = (gruppe, master = 'PDLF') => {
 			vergemaal: id.person?.vergemaal?.length > 0,
 			doedsfall: id.person?.doedsfall?.length > 0,
 			foreldre: foreldre,
-			foreldreansvar: id.relasjoner
-				?.filter((relasjon) => relasjon.relasjonType === 'FORELDREANSVAR_BARN')
-				?.map((relasjon) => relasjon.relatertPerson?.ident),
+			foreldreansvar: foreldreansvar,
 		})
 	})
 

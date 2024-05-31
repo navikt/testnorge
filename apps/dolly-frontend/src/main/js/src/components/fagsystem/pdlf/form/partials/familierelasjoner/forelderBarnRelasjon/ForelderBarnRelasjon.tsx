@@ -26,6 +26,8 @@ interface ForelderForm {
 	path?: string
 	idx?: number
 	eksisterendeNyPerson?: any
+	identtype?: string
+	ident?: string
 }
 
 type Target = {
@@ -41,9 +43,13 @@ const forelderTyper = ['FORELDER', 'MOR', 'MEDMOR', 'FAR']
 export const ForelderBarnRelasjonForm = ({
 	formMethods,
 	path,
+	idx,
 	eksisterendeNyPerson = null,
+	identtype,
+	ident,
 }: ForelderForm) => {
-	const { identtype, identMaster } = useContext(BestillingsveilederContext)
+	const opts = useContext(BestillingsveilederContext)
+	const identMaster = opts?.identMaster || parseInt(ident.charAt(2)) >= 8 ? 'PDL' : 'PDLF'
 	const [erBarn, setErBarn] = React.useState(
 		formMethods.watch(`${path}.relatertPersonsRolle`) === RELASJON_BARN,
 	)
@@ -168,6 +174,7 @@ export const ForelderBarnRelasjonForm = ({
 					label={erBarn ? RELASJON_BARN.toUpperCase() : RELASJON_FORELDER.toUpperCase()}
 					formMethods={formMethods}
 					eksisterendeNyPerson={eksisterendeNyPerson}
+					idx={idx}
 				/>
 			)}
 

@@ -258,6 +258,25 @@ export const forelderBarnRelasjon = Yup.object().shape(
 				return testcontext.options.context.identMaster !== 'PDL' || value
 			})
 			.test(
+				'er-eksisterende-paakrevd',
+				'Relatert person er påkrevd ved "Eksisterende person"',
+				(value, testcontext) => {
+					const forelderBarnRelasjon = testcontext?.from?.find(
+						(element) => element.value?.forelderBarnRelasjon?.length > 0,
+					)
+
+					let isOK = true
+					forelderBarnRelasjon?.value.forelderBarnRelasjon
+						.filter(
+							(relasjon) =>
+								relasjon.typeForelderBarn === 'EKSISTERENDE' && !relasjon.relatertPerson && !value,
+						)
+						.map(() => (isOK = false))
+
+					return isOK
+				},
+			)
+			.test(
 				'er-identisk-person',
 				'Person kan kun benyttes en gang i relasjon',
 				(value, testContext) => {
@@ -280,7 +299,7 @@ export const forelderBarnRelasjon = Yup.object().shape(
 		}),
 		nyRelatertPerson: nyPerson.nullable(),
 		deltBosted: Yup.mixed().when('deltBosted', {
-			is: (deltBosted) => deltBosted != undefined && deltBosted != null,
+			is: (deltBosted) => !!deltBosted,
 			then: () => deltBosted.nullable(),
 			otherwise: () => Yup.mixed().notRequired(),
 		}),

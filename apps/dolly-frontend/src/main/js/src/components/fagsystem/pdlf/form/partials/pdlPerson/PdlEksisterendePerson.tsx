@@ -4,7 +4,7 @@ import Loading from '@/components/ui/loading/Loading'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { Option } from '@/service/SelectOptionsOppslag'
-import { NyIdent } from '@/components/fagsystem/pdlf/PdlTypes'
+import { ForeldreBarnRelasjon, NyIdent } from '@/components/fagsystem/pdlf/PdlTypes'
 import { Alert } from '@navikt/ds-react'
 import { useGruppeIdenter } from '@/utils/hooks/useGruppe'
 import { UseFormReturn } from 'react-hook-form/dist/types'
@@ -15,6 +15,7 @@ interface PdlEksisterendePersonValues {
 	eksisterendePersonPath: string
 	label: string
 	formMethods: UseFormReturn
+	idx: number
 	disabled?: boolean
 	nyIdentValg?: NyIdent
 	eksisterendeNyPerson?: Option
@@ -25,6 +26,7 @@ export const PdlEksisterendePerson = ({
 	eksisterendePersonPath,
 	label,
 	formMethods,
+	idx,
 	disabled = false,
 	nyIdentValg = null,
 	eksisterendeNyPerson = null,
@@ -55,6 +57,51 @@ export const PdlEksisterendePerson = ({
 		'GJENLEVENDE_PARTNER',
 	]
 
+	const harForeldreansvarForValgteBarn = (foreldreansvar: Array<string>) => {
+		let harEksisterendeAnsvar = false
+		const valgteBarn = formMethods
+			.watch('pdldata.person.forelderBarnRelasjon')
+			?.filter((relasjon: ForeldreBarnRelasjon) => relasjon.relatertPersonsRolle === 'BARN')
+			?.map((relasjon: ForeldreBarnRelasjon) => relasjon.relatertPerson)
+
+		valgteBarn?.forEach((barn: string) => {
+			if (foreldreansvar.includes(barn)) {
+				harEksisterendeAnsvar = true
+			}
+		})
+		return harEksisterendeAnsvar
+	}
+
+	const getAntallForeldre = (eksisterendeForeldre: Array<string>) => {
+		const partnerErForelder = () =>
+			formMethods
+				.watch('pdldata.person.sivilstand')
+				?.find(
+					(partner) => partner.type && !gyldigeSivilstanderForPartner.includes(partner.type),
+				) && !formMethods.watch(`pdldata.person.forelderBarnRelasjon[${idx}].partnerErIkkeForelder`)
+		const antallEksisterendeForeldre = eksisterendeForeldre.length
+		const antallNyeForeldre = parseInt(antall) + (partnerErForelder() ? parseInt(antall) : 0)
+		return antallEksisterendeForeldre + antallNyeForeldre
+	}
+
+	const checkForeldre = (ident: string) => {
+		const relasjoner = formMethods.getValues()?.pdldata?.person?.forelderBarnRelasjon
+		if (!!relasjoner.find((relasjon) => relasjon.relatertPerson === ident)) {
+			return false
+		}
+
+		let antallForeldre = eksisterendePerson.foreldre.length
+		for (let i = 0; i < relasjoner.length; i++) {
+			if (relasjoner[i].minRolleForPerson === 'BARN') {
+				antallForeldre++
+			}
+			if (idx === i) {
+				return antallForeldre < 3
+			}
+		}
+		return true
+	}
+
 	const eksisterendeIdent = opts?.personFoerLeggTil?.pdl?.ident
 
 	const eksisterendePerson = pdlOptions.find((x) => x.value === eksisterendeIdent)
@@ -66,17 +113,19 @@ export const PdlEksisterendePerson = ({
 
 		if (label === 'PERSON RELATERT TIL') {
 			// Sivilstand gift/samboer osv
-			return gyldigeSivilstanderForPartner.includes(person?.sivilstand) && person.alder > 17
-		} else if (label === 'FULLMEKTIG') {
+			return person.alder > 17 && gyldigeSivilstanderForPartner.includes(person?.sivilstand)
+		} else if (label === 'FULLMEKTIG' || label === 'Kontaktperson') {
 			return person.alder > 17
 		} else if (label === 'VERGE') {
 			return !person.vergemaal && person.alder > 17
 		} else if (label === 'BARN') {
-			// eksisternde person er forelder
-			return eksisterendePerson?.alder - person.alder > 17
+			// eksisterende person er forelder
+			return eksisterendePerson?.alder - person.alder > 17 && getAntallForeldre(person.foreldre) < 3
 		} else if (label === 'FORELDER') {
-			// eksisternde person er barn som skal ha foreldre
-			return eksisterendePerson.foreldre?.length < 2 && person.alder - eksisterendePerson.alder > 17
+			// eksisterende person er barn
+			return person.alder - eksisterendePerson.alder > 17 && checkForeldre(person)
+		} else if (label === 'Ansvarlig') {
+			return person.alder > 17 && !harForeldreansvarForValgteBarn(person.foreldreansvar)
 		}
 		return true
 	}
@@ -102,6 +151,7 @@ export const PdlEksisterendePerson = ({
 
 	const filteredOptions = getFilteredOptionList()
 
+	console.log('filteredOptions', filteredOptions)
 	return (
 		<div className={'flexbox--full-width'}>
 			{(pdlLoading || gruppeLoading) && <Loading label="Henter valg for eksisterende ident..." />}
