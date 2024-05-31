@@ -3,12 +3,14 @@ on:
   push:
     branches:
       - master
-    paths-ignore:
-      - 'navikt/**'
-      - '.github/**'
-      - '.nais/alerting-dolly.yml'
+    paths:
+      - 'apps/bruker-service/**'
+      - 'apps/person-organisasjon-tilgang-service/**'
   pull_request:
-    types: [ assigned, opened, synchronize, reopened ]
+    paths:
+      - 'apps/bruker-service/**'
+      - 'apps/person-organisasjon-tilgang-service/**'
+    types: [ ready_for_review, review_requested ]
   workflow_dispatch:
 
 jobs:
