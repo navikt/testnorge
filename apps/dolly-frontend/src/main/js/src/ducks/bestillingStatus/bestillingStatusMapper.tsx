@@ -83,13 +83,11 @@ const extractBestillingstatusKode = (
 }
 
 function getBestillingTag(data: Bestilling) {
-	if (data?.bestilling?.pdldata?.opprettNyPerson) {
-		return 'Ny bestilling'
-	} else if (data?.opprettetFraId) {
-		return 'Gjenopprett'
-	} else {
-		return 'Legg til/endre'
-	}
+	if (data?.bestilling?.pdldata?.opprettNyPerson) return 'Ny bestilling'
+	if (data?.opprettetFraId) return 'Gjenopprett bestilling'
+	if (data?.gjenopprettetFraIdent) return 'Gjenopprett person'
+	if (data?.opprettetFraGruppeId) return 'Gjenopprett gruppe'
+	return 'Legg til/endre'
 }
 
 /**

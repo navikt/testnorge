@@ -366,7 +366,7 @@ const getPdlfIdentInfo = (ident, bestillingStatuser, pdlIdent) => {
 		identNr: pdlIdent.ident,
 		bestillingId: ident?.bestillingId,
 		identtype: 'FNR',
-		kilde: 'DOLLY',
+		kilde: 'Dolly',
 		navn: `${pdlFornavn} ${pdlMellomnavn} ${pdlEtternavn}`,
 		kjonn: pdlIdent.kjoenn?.[0]?.kjoenn,
 		alder: formatAlder(pdlAlder(pdlIdent?.foedsel?.[0]?.foedselsdato), getPdlDoedsdato(pdlIdent)),
@@ -380,7 +380,7 @@ const getPdlDoedsdato = (pdlIdent) => {
 
 const getPdlIdentInfo = (ident, bestillingStatuser, pdlData) => {
 	if (!pdlData || (!pdlData.person && !pdlData.hentPerson)) {
-		return getDefaultInfo(ident, bestillingStatuser, 'TEST-NORGE')
+		return getDefaultInfo(ident, bestillingStatuser, 'Test-Norge')
 	}
 	const person = pdlData.person || pdlData.hentPerson
 
@@ -415,7 +415,7 @@ const getPdlIdentInfo = (ident, bestillingStatuser, pdlData) => {
 		ident,
 		identNr: ident?.ident,
 		bestillingId: ident.bestillingId,
-		kilde: 'TEST-NORGE',
+		kilde: 'Test-Norge',
 		importFra: 'Test-Norge',
 		identtype: person?.folkeregisteridentifikator[0]?.type,
 		navn: `${navn.fornavn} ${mellomnavn} ${navn.etternavn}`,

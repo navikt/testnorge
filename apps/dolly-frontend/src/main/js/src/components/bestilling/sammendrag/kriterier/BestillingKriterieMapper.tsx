@@ -62,11 +62,10 @@ const mapBestillingsinformasjon = (
 	firstIdent: string,
 ) => {
 	const getTypePerson = () => {
-		const identifiserendeDigit = firstIdent?.charAt(2)
-		if (identifiserendeDigit == '0' || identifiserendeDigit == '1') {
+		if (parseInt(firstIdent?.charAt(2)) < 4) {
 			return 'Standard'
 		}
-		return bestillingsinformasjon.navSyntetiskIdent ? 'NAV syntetisk' : 'Test-Norge'
+		return bestillingsinformasjon.navSyntetiskIdent ? 'NAV-syntetisk' : 'Test-Norge'
 	}
 
 	if (bestillingsinformasjon) {
