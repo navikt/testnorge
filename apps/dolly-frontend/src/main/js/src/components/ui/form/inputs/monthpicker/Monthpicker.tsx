@@ -4,6 +4,7 @@ import { MonthPicker, useMonthpicker } from '@navikt/ds-react'
 import { addYears, isDate, subYears } from 'date-fns'
 import { useFormContext } from 'react-hook-form'
 import _ from 'lodash'
+import { useEffect } from 'react'
 
 interface MonthpickerProps {
 	name: string
@@ -11,9 +12,9 @@ interface MonthpickerProps {
 	date?: Date
 	handleDateChange?: (dato: string, type: string) => void
 	onChange?: (date: Date) => void
-	isClearable?: boolean
 	minDate?: Date
 	maxDate?: Date
+	placeholder?: string
 }
 
 export const Monthpicker = ({
@@ -22,9 +23,9 @@ export const Monthpicker = ({
 	date = null,
 	handleDateChange,
 	onChange,
-	isClearable = false,
 	minDate = null,
 	maxDate = null,
+	placeholder = null,
 	...props
 }: MonthpickerProps) => {
 	const formMethods = useFormContext()
@@ -46,7 +47,7 @@ export const Monthpicker = ({
 				? date
 				: new Date(date)
 
-	const { monthpickerProps, inputProps } = useMonthpicker({
+	const { monthpickerProps, inputProps, reset } = useMonthpicker({
 		fromDate: minDate || subYears(new Date(), 125),
 		toDate: maxDate || addYears(new Date(), 5),
 		onMonthChange: (selectedDate) => {
@@ -60,11 +61,22 @@ export const Monthpicker = ({
 			: undefined,
 	})
 
+	useEffect(() => {
+		if (!val && inputProps.value) {
+			reset()
+		}
+	}, [val])
+
 	return (
 		<InputWrapper size={'small'}>
 			<Label name={name} label={label}>
 				<MonthPicker {...monthpickerProps} dropdownCaption={true} selected={formattedDate}>
-					<MonthPicker.Input label={null} size={'small'} placeholder={'yyyy-mm'} {...inputProps} />
+					<MonthPicker.Input
+						label={null}
+						size={'small'}
+						placeholder={placeholder || 'yyyy-mm'}
+						{...inputProps}
+					/>
 				</MonthPicker>
 			</Label>
 		</InputWrapper>

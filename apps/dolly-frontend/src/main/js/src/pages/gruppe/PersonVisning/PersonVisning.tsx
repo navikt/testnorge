@@ -86,8 +86,11 @@ import {
 import { usePensjonEnvironments } from '@/utils/hooks/useEnvironments'
 import { SigrunstubPensjonsgivendeVisning } from '@/components/fagsystem/sigrunstubPensjonsgivende/visning/Visning'
 import { useUdistub } from '@/utils/hooks/useUdistub'
-import { useTenorOversikt } from '@/utils/hooks/useTenorSoek'
+import useBoolean from '@/utils/hooks/useBoolean'
+import { MalModal, malTyper } from '@/pages/minSide/maler/MalModal'
+import { useTenorIdent } from '@/utils/hooks/useTenorSoek'
 import { SkatteetatenVisning } from '@/components/fagsystem/skatteetaten/visning/SkatteetatenVisning'
+import PdlVisningConnector from '@/components/fagsystem/pdl/visning/PdlVisningConnector'
 
 const getIdenttype = (ident) => {
 	if (parseInt(ident.charAt(0)) > 3) {
@@ -113,6 +116,8 @@ export default ({
 	tmpPersoner,
 }) => {
 	const { gruppeId } = ident
+
+	const [isMalModalOpen, openMalModal, closeMalModal] = useBoolean(false)
 
 	const { organisasjonTilgang } = useOrganisasjonTilgang()
 	const tilgjengeligMiljoe = organisasjonTilgang?.miljoe
@@ -229,9 +234,8 @@ export default ({
 		ident.ident,
 	)
 
-	const { response: tenorData, loading: loadingTenorData } = useTenorOversikt(
-		ident?.master === 'PDL' ? { identifikator: ident.ident } : null,
-		1,
+	const { person: tenorData, loading: loadingTenorData } = useTenorIdent(
+		ident?.master === 'PDL' ? ident.ident : null,
 	)
 
 	const getGruppeIdenter = () => {
@@ -371,6 +375,9 @@ export default ({
 								if (arbeidsplassencvData) {
 									personData.arbeidsplassenCV = { harHjemmel: getArbeidsplassencvHjemmel() }
 								}
+								if (arenaData) {
+									personData.arenaforvalteren = arenaData
+								}
 								leggTilPaaPerson(
 									personData,
 									bestillingListe,
@@ -393,6 +400,11 @@ export default ({
 							gruppeIdenter={gruppeIdenter}
 							master={ident?.master}
 						/>
+					)}
+					{bestillingIdListe?.length > 0 && (
+						<Button onClick={openMalModal} kind={'maler'} className="svg-icon-blue">
+							OPPRETT MAL
+						</Button>
 					)}
 					<BestillingSammendragModal bestilling={bestilling} />
 					{!iLaastGruppe && ident.master !== 'PDL' && (
@@ -420,7 +432,7 @@ export default ({
 				)}
 				{ident.master === 'PDLF' && <PdlfVisningConnector fagsystemData={data} loading={loading} />}
 				{ident.master === 'PDL' && (
-					<PdlVisning pdlData={data.pdl} fagsystemData={data} loading={loading} />
+					<PdlVisningConnector pdlData={data.pdl} fagsystemData={data} loading={loading} />
 				)}
 				{visArbeidsforhold && (
 					<AaregVisning
@@ -505,7 +517,7 @@ export default ({
 				<KrrVisning data={krrstub} loading={loading.krrstub} />
 				<MedlVisning data={medl} loading={loadingMedl} />
 				<UdiVisning
-					data={UdiVisning.filterValues(udistub, bestilling?.bestilling.udistub)}
+					data={UdiVisning.filterValues(udistub, bestilling?.bestilling?.udistub)}
 					loading={loadingUdistub}
 				/>
 				<DokarkivVisning
@@ -516,7 +528,9 @@ export default ({
 				/>
 				<HistarkVisning data={histarkData} loading={loadingHistarkData} />
 				<SkatteetatenVisning
-					data={tenorData?.data?.data?.personer?.find((person: any) => person?.id === ident.ident)}
+					data={tenorData?.data?.data?.dokumentListe?.find((dokument: any) =>
+						dokument.identifikator?.includes(ident.ident),
+					)}
 					loading={loadingTenorData}
 				/>
 				<PersonMiljoeinfo
@@ -531,6 +545,9 @@ export default ({
 				/>
 				<TidligereBestillinger ids={ident.bestillingId} />
 				<BeskrivelseConnector ident={ident} />
+				{isMalModalOpen && (
+					<MalModal id={ident.ident} malType={malTyper.PERSON} closeModal={closeMalModal} />
+				)}
 			</div>
 		</ErrorBoundary>
 	)

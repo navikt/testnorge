@@ -26,7 +26,7 @@ export default ({ path }: InntektsinformasjonForm) => {
 	)
 
 	const handleDateChange = (selectedDate: Date) => {
-		selectedDate.setHours(6)
+		selectedDate?.setHours(6)
 		setDate(selectedDate)
 		formMethods.setValue(
 			`${path}.sisteAarMaaned`,

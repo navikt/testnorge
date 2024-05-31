@@ -3,9 +3,9 @@ package no.nav.testnav.apps.tenorsearchservice.provider;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
-import no.nav.testnav.apps.tenorsearchservice.consumers.MaskinportenClient;
+import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.apps.tenorsearchservice.consumers.MaskinportenConsumer;
 import no.nav.testnav.apps.tenorsearchservice.consumers.dto.InfoType;
-import no.nav.testnav.apps.tenorsearchservice.consumers.dto.Kilde;
 import no.nav.testnav.apps.tenorsearchservice.domain.AccessToken;
 import no.nav.testnav.apps.tenorsearchservice.domain.Lookups;
 import no.nav.testnav.apps.tenorsearchservice.domain.TenorOversiktResponse;
@@ -16,39 +16,51 @@ import no.nav.testnav.apps.tenorsearchservice.service.TenorSearchService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Map;
 
+import static no.nav.testnav.apps.tenorsearchservice.consumers.dto.DollyBackendSelector.DEV;
+import static no.nav.testnav.apps.tenorsearchservice.consumers.dto.DollyBackendSelector.REGULAR;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/tenor")
 @RequiredArgsConstructor
 public class TenorSearchController {
 
     private final TenorSearchService tenorSearchService;
-    private final MaskinportenClient maskinportenClient;
+    private final MaskinportenConsumer maskinportenConsumer;
     private final LookupService lookupService;
 
     @PostMapping(path = "/testdata/oversikt", produces = "application/json", consumes = "application/json")
-    public Mono<TenorOversiktResponse> getTestdata(@RequestBody TenorRequest searchData,
+    public Mono<TenorOversiktResponse> getTestdata(@RequestHeader Map<String, String> headers,
+                                                   @RequestBody TenorRequest searchData,
                                                    @Schema(description = "Antall resultater per side")
                                                    @RequestParam(required = false) Integer antall,
                                                    @Schema(description = "Sidenummer")
                                                    @RequestParam(required = false) Integer side,
                                                    @Schema(description = "Seed for paginering")
-                                                   @RequestParam(required = false) Integer seed) {
+                                                   @RequestParam(required = false) Integer seed,
+                                                   @Schema(description = "Ikke filtrer søkeresultat for eksisterende personer (default er filtrering")
+                                                   @RequestParam(required = false) Boolean ikkeFiltrer) {
 
-        return tenorSearchService.getTestdata(searchData, antall, side, seed);
+        var kallendeApp = isNotBlank(headers.get("Origin")) ? headers.get("Origin") : headers.get("origin");
+        log.info("Kallende applikasjon: {}", kallendeApp);
+
+        var selector = kallendeApp.contains("ekstern") ? REGULAR : DEV;
+        return tenorSearchService.getTestdata(searchData, antall, side, seed, selector, ikkeFiltrer);
     }
 
     @GetMapping("/testdata/raw")
     public Mono<TenorResponse> getTestdata(@Schema(description = "Søkekriterier")
                                            @RequestParam(required = false) String searchData,
-                                           @Parameter(description = "Kilde, hvor data skal hentes fra")
-                                           @RequestParam(required = false) Kilde kilde,
                                            @Parameter(description = "InfoType, kategori av felter som skal returneres")
                                            @RequestParam(required = false) InfoType type,
                                            @Schema(description = "Felter (kommaseparert liste) som skal returneres, når InfoType er 'Spesifikt'")
@@ -57,13 +69,11 @@ public class TenorSearchController {
                                            @RequestParam(required = false) Integer seed) {
 
         return tenorSearchService
-                .getTestdata(searchData, kilde, type, fields, seed);
+                .getTestdata(searchData, type, fields, seed);
     }
 
-    @PostMapping(path ="/testdata", produces = "application/json", consumes = "application/json")
+    @PostMapping(path = "/testdata", produces = "application/json", consumes = "application/json")
     public Mono<TenorResponse> getTestdata(@RequestBody TenorRequest searchData,
-                                           @Parameter(description = "Kilde, hvor data skal hentes fra")
-                                           @RequestParam(required = false) Kilde kilde,
                                            @Parameter(description = "InfoType, kategori felter som skal returneres")
                                            @RequestParam(required = false) InfoType type,
                                            @Schema(description = "Felter (kommaseparert liste) som skal returneres, når InfoType er 'Spesifikt'")
@@ -76,7 +86,7 @@ public class TenorSearchController {
                                            @RequestParam(required = false) Integer seed) {
 
         return tenorSearchService
-                .getTestdata(searchData, kilde, type, fields, antall, side, seed);
+                .getTestdata(searchData, type, fields, antall, side, seed);
     }
 
     @GetMapping("/testdata/domain")
@@ -89,7 +99,7 @@ public class TenorSearchController {
     @GetMapping("/testdata/token")
     public Mono<String> getToken() {
 
-        return maskinportenClient.getAccessToken()
+        return maskinportenConsumer.getAccessToken()
                 .map(AccessToken::value);
     }
 }

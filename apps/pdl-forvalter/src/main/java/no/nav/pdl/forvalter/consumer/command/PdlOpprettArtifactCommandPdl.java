@@ -3,14 +3,14 @@ package no.nav.pdl.forvalter.consumer.command;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.dto.PdlBestillingResponse;
-import no.nav.pdl.forvalter.utils.WebClientFilter;
 import no.nav.testnav.libs.data.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PdlStatus;
-import org.springframework.boot.web.server.WebServerException;
+import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
@@ -30,7 +30,7 @@ public class PdlOpprettArtifactCommandPdl extends PdlTestdataCommand {
     private final Integer id;
 
     @Override
-    public Mono<OrdreResponseDTO.HendelseDTO> call() {
+    public Flux<OrdreResponseDTO.HendelseDTO> call() {
 
         return webClient
                 .post()
@@ -41,7 +41,7 @@ public class PdlOpprettArtifactCommandPdl extends PdlTestdataCommand {
                 .header(TEMA, GEN.name())
                 .header(HEADER_NAV_PERSON_IDENT, ident)
                 .retrieve()
-                .bodyToMono(PdlBestillingResponse.class)
+                .bodyToFlux(PdlBestillingResponse.class)
                 .flatMap(response -> Mono.just(OrdreResponseDTO.HendelseDTO.builder()
                         .id(id)
                         .status(PdlStatus.OK)
@@ -49,7 +49,7 @@ public class PdlOpprettArtifactCommandPdl extends PdlTestdataCommand {
                         .build()))
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException))
-                .doOnError(WebServerException.class, error -> log.error(error.getMessage(), error))
+                .doOnError(WebClientFilter::logErrorMessage)
                 .onErrorResume(error -> Mono.just(errorHandling(error, id)));
     }
 }

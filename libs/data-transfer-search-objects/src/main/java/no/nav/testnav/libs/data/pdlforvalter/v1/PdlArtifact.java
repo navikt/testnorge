@@ -1,32 +1,43 @@
 package no.nav.testnav.libs.data.pdlforvalter.v1;
 
-    public enum PdlArtifact {
-        PDL_ADRESSEBESKYTTELSE,
-        PDL_BOSTEDADRESSE,
-        PDL_DELTBOSTED,
-        PDL_DOEDFOEDT_BARN,
-        PDL_DOEDSFALL,
-        PDL_FALSK_IDENTITET,
-        PDL_FOLKEREGISTER_PERSONSTATUS,
-        PDL_FOEDSEL,
-        PDL_FORELDRE_BARN_RELASJON,
-        PDL_FORELDREANSVAR,
-        PDL_FULLMAKT,
-        PDL_INNFLYTTING,
-        PDL_KJOENN,
-        PDL_KONTAKTADRESSE,
-        PDL_KONTAKTINFORMASJON_FOR_DODESDBO,
-        PDL_NAVN,
-        PDL_OPPHOLD,
-        PDL_OPPHOLDSADRESSE,
-        PDL_OPPRETT_PERSON,
-        PDL_SLETTING,
-        PDL_STATSBORGERSKAP,
-        PDL_SIVILSTAND,
-        PDL_TELEFONUMMER,
-        PDL_TILRETTELAGT_KOMMUNIKASJON,
-        PDL_UTENLANDS_IDENTIFIKASJON_NUMMER,
-        PDL_UTFLYTTING,
-        PDL_VERGEMAAL,
-        PDL_SIKKERHETSTILTAK_URL
+import lombok.Getter;
+
+@Getter
+public enum PdlArtifact {
+    PDL_ADRESSEBESKYTTELSE("Adressebeskyttelse"),
+    PDL_BOSTEDADRESSE("Bostedsadresse"),
+    PDL_DELTBOSTED("DeltBosted"),
+    PDL_DOEDFOEDT_BARN("DoedfoedtBarn"),
+    PDL_DOEDSFALL("Doedsfall"),
+    PDL_FALSK_IDENTITET("FalskIdentitet"),
+    PDL_FOEDSEL("Foedsel"),
+    PDL_FOLKEREGISTER_PERSONSTATUS("FolkeregisterPersonstatus"),
+    PDL_FORELDREANSVAR("Foreldreansvar"),
+    PDL_FORELDRE_BARN_RELASJON("ForelderBarnRelasjon"),
+    PDL_FULLMAKT("Fullmakt"),
+    PDL_INNFLYTTING("Innflytting"),
+    PDL_KJOENN("Kjoenn"),
+    PDL_KONTAKTADRESSE("Kontaktadresse"),
+    PDL_KONTAKTINFORMASJON_FOR_DODESDBO("KontaktinformasjonForDoedsbo"),
+    PDL_NAVN("Navn"),
+    PDL_OPPHOLD("Opphold"),
+    PDL_OPPHOLDSADRESSE("Oppholdsadresse"),
+    PDL_OPPRETT_PERSON(""),
+    PDL_PERSON_MERGE(""),
+    PDL_SIKKERHETSTILTAK("Sikkerhetstiltak"),
+    PDL_SIVILSTAND("Sivilstand"),
+    PDL_SLETTING(""),
+    PDL_SLETTING_HENDELSEID(""),
+    PDL_STATSBORGERSKAP("Statsborgerskap"),
+    PDL_TELEFONUMMER("Telefonnummer"),
+    PDL_TILRETTELAGT_KOMMUNIKASJON("TilrettelagtKommunikasjon"),
+    PDL_UTENLANDS_IDENTIFIKASJON_NUMMER("UtenlandskIdentifikasjonsnummer"),
+    PDL_UTFLYTTING("Utflytting"),
+    PDL_VERGEMAAL("Vergemaal");
+
+    private final String description;
+
+    PdlArtifact(String description) {
+        this.description = description;
     }
+}

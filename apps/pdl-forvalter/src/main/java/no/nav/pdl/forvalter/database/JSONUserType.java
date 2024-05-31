@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import lombok.extern.slf4j.Slf4j;
@@ -43,6 +44,8 @@ public class JSONUserType implements UserType<PersonDTO> {
 
     public JSONUserType() {
         objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         objectMapper.setFilterProvider(new SimpleFilterProvider().setFailOnUnknownId(false));
 
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -142,7 +145,7 @@ public class JSONUserType implements UserType<PersonDTO> {
 
     @Override
     public Serializable disassemble(PersonDTO value) throws HibernateException {
-        return (Serializable) this.deepCopy(value);
+        return this.deepCopy(value);
     }
 
     @Override

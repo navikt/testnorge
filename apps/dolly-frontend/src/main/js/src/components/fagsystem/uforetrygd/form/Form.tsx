@@ -13,7 +13,7 @@ import { validation } from '@/components/fagsystem/uforetrygd/form/validation'
 import { Monthpicker } from '@/components/ui/form/inputs/monthpicker/Monthpicker'
 import { useFormContext } from 'react-hook-form'
 
-const uforetrygdPath = 'pensjonforvalter.uforetrygd'
+export const uforetrygdPath = 'pensjonforvalter.uforetrygd'
 
 export const UforetrygdForm = () => {
 	const formMethods = useFormContext()

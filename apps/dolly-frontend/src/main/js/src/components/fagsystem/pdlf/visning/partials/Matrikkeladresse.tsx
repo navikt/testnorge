@@ -1,5 +1,5 @@
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import { formatDate } from '@/utils/DataFormatter'
+import { formatDate, showLabel } from '@/utils/DataFormatter'
 import KodeverkConnector from '@/components/kodeverk/KodeverkConnector'
 import {
 	Kodeverk,
@@ -15,7 +15,10 @@ interface MatrikkeladresseValues {
 		gyldigTilOgMed?: string
 		startdatoForKontrakt?: string
 		sluttdatoForKontrakt?: string
+		oppholdAnnetSted?: string
 		coAdressenavn?: string
+		metadata: any
+		master?: string
 	}
 	idx: number
 }
@@ -29,11 +32,12 @@ export const Matrikkeladresse = ({ adresse, idx }: MatrikkeladresseValues) => {
 		gyldigTilOgMed,
 		startdatoForKontrakt,
 		sluttdatoForKontrakt,
+		oppholdAnnetSted,
 		coAdressenavn,
 		metadata,
 	} = adresse
 
-	const master = metadata?.master
+	const master = adresse.master || metadata?.master
 
 	return (
 		<>
@@ -66,6 +70,10 @@ export const Matrikkeladresse = ({ adresse, idx }: MatrikkeladresseValues) => {
 				<TitleValue title="Gyldig til og med" value={formatDate(gyldigTilOgMed)} />
 				<TitleValue title="Startdato for kontrakt" value={formatDate(startdatoForKontrakt)} />
 				<TitleValue title="Sluttdato for kontrakt" value={formatDate(sluttdatoForKontrakt)} />
+				<TitleValue
+					title="Opphold annet sted"
+					value={showLabel('oppholdAnnetSted', oppholdAnnetSted)}
+				/>
 				<TitleValue title="C/O adressenavn" value={coAdressenavn} />
 				<TitleValue title="Master" value={master} />
 			</div>

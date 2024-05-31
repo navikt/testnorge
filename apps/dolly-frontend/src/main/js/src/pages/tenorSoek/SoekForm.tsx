@@ -1,7 +1,6 @@
 import { Form, FormProvider, useForm } from 'react-hook-form'
 import styled from 'styled-components'
 import { Accordion } from '@navikt/ds-react'
-import { InntektAordningen } from '@/pages/tenorSoek/soekFormPartials/InntektAordningen'
 import React from 'react'
 import { Header } from '@/components/ui/soekForm/SoekForm'
 import DisplayFormState from '@/utils/DisplayFormState'
@@ -14,6 +13,9 @@ import { FolkeregisteretRelasjoner } from '@/pages/tenorSoek/soekFormPartials/Fo
 import { FolkeregisteretHendelser } from '@/pages/tenorSoek/soekFormPartials/FolkeregisteretHendelser'
 import { isDate } from 'date-fns'
 import { fixTimezone } from '@/components/ui/form/formUtils'
+import { Tjenestepensjonsavtale } from '@/pages/tenorSoek/soekFormPartials/Tjenestepensjonsavtale'
+import { Skattemelding } from '@/pages/tenorSoek/soekFormPartials/Skattemelding'
+import { InntektAordningen } from '@/pages/tenorSoek/soekFormPartials/InntektAordningen'
 
 const SoekefeltWrapper = styled.div`
 	display: flex;
@@ -22,13 +24,15 @@ const SoekefeltWrapper = styled.div`
 	background-color: white;
 	border: 1px @color-bg-grey-border;
 	border-radius: 4px;
+	margin-top: -70px;
+	width: 100%;
 `
 
 const Soekefelt = styled.div`
 	padding: 20px 15px;
 `
 
-export const SoekForm = ({ setRequest, mutate }: any) => {
+export const SoekForm = ({ setRequest, setMarkertePersoner, mutate }: any) => {
 	const formMethods = useForm({
 		mode: 'onChange',
 		defaultValues: {},
@@ -42,7 +46,11 @@ export const SoekForm = ({ setRequest, mutate }: any) => {
 				delete request[key]
 			} else if (typeof request[key] === 'object' && !(request[key] instanceof Date)) {
 				request[key] = getUpdatedRequest(request[key])
-				if (Object.keys(request[key]).length === 0) delete request[key]
+				if (Object.keys(request[key]).length === 0) {
+					delete request[key]
+				} else {
+					request[key] = getUpdatedRequest(request[key])
+				}
 			}
 		}
 		return Array.isArray(request) ? request.filter((val) => val) : request
@@ -55,6 +63,7 @@ export const SoekForm = ({ setRequest, mutate }: any) => {
 		setValue(path, value)
 		const request = getUpdatedRequest(watch())
 		setRequest({ ...request })
+		setMarkertePersoner([])
 		mutate()
 	}
 
@@ -63,20 +72,18 @@ export const SoekForm = ({ setRequest, mutate }: any) => {
 		setValue(path, list)
 		const request = getUpdatedRequest(watch())
 		setRequest({ ...request })
+		setMarkertePersoner([])
 		mutate()
 	}
 
-	const getAntallRequest = (liste: Array<string>) => {
-		let antall = 0
-		liste.forEach((item) => {
-			const attr = getValues(item)
-			if (Array.isArray(attr)) {
-				antall += attr.length
-			} else if (attr || attr === false) {
-				antall++
-			}
+	const emptyCategory = (paths: Array<string>) => {
+		paths.forEach((path) => {
+			setValue(path, undefined)
 		})
-		return antall
+		const request = getUpdatedRequest(watch())
+		setRequest({ ...request })
+		setMarkertePersoner([])
+		mutate()
 	}
 
 	const devEnabled =
@@ -94,7 +101,7 @@ export const SoekForm = ({ setRequest, mutate }: any) => {
 									<Accordion.Header>
 										<Header
 											title="Folkeregisteret - identifikasjon og status"
-											antall={getAntallRequest([
+											paths={[
 												'identifikator',
 												'identifikatorType',
 												'foedselsdato.fraOgMed',
@@ -109,7 +116,9 @@ export const SoekForm = ({ setRequest, mutate }: any) => {
 												'harFalskIdentitet',
 												'utenlandskPersonIdentifikasjon',
 												'harLegitimasjonsdokument',
-											])}
+											]}
+											getValues={getValues}
+											emptyCategory={emptyCategory}
 										/>
 									</Accordion.Header>
 									<Accordion.Content style={{ paddingRight: '0' }}>
@@ -123,10 +132,9 @@ export const SoekForm = ({ setRequest, mutate }: any) => {
 									<Accordion.Header>
 										<Header
 											title="Folkeregisteret - statsborgerskap"
-											antall={getAntallRequest([
-												'harNorskStatsborgerskap',
-												'harFlereStatsborgerskap',
-											])}
+											paths={['harNorskStatsborgerskap', 'harFlereStatsborgerskap']}
+											getValues={getValues}
+											emptyCategory={emptyCategory}
 										/>
 									</Accordion.Header>
 									<Accordion.Content style={{ paddingRight: '0' }}>
@@ -137,13 +145,15 @@ export const SoekForm = ({ setRequest, mutate }: any) => {
 									<Accordion.Header>
 										<Header
 											title="Folkeregisteret - navn"
-											antall={getAntallRequest([
+											paths={[
 												'navn.navnLengde.fraOgMed',
 												'navn.navnLengde.tilOgMed',
 												'navn.harFlereFornavn',
 												'navn.harNavnSpesialtegn',
 												'navn.harMellomnavn',
-											])}
+											]}
+											getValues={getValues}
+											emptyCategory={emptyCategory}
 										/>
 									</Accordion.Header>
 									<Accordion.Content style={{ paddingRight: '0' }}>
@@ -154,7 +164,7 @@ export const SoekForm = ({ setRequest, mutate }: any) => {
 									<Accordion.Header>
 										<Header
 											title="Folkeregisteret - adresser"
-											antall={getAntallRequest([
+											paths={[
 												'adresser.adresseGradering',
 												'adresser.kommunenummer',
 												'adresser.harAdresseSpesialtegn',
@@ -163,7 +173,9 @@ export const SoekForm = ({ setRequest, mutate }: any) => {
 												'adresser.harPostadresseNorge',
 												'adresser.harPostadresseUtland',
 												'adresser.harKontaktadresseDoedsbo',
-											])}
+											]}
+											getValues={getValues}
+											emptyCategory={emptyCategory}
 										/>
 									</Accordion.Header>
 									<Accordion.Content style={{ paddingRight: '0' }}>
@@ -174,7 +186,7 @@ export const SoekForm = ({ setRequest, mutate }: any) => {
 									<Accordion.Header>
 										<Header
 											title="Folkeregisteret - relasjoner"
-											antall={getAntallRequest([
+											paths={[
 												'relasjoner.relasjon',
 												'relasjoner.antallBarn.fraOgMed',
 												'relasjoner.antallBarn.tilOgMed',
@@ -187,7 +199,9 @@ export const SoekForm = ({ setRequest, mutate }: any) => {
 												'relasjoner.borMedFar',
 												'relasjoner.borMedMedmor',
 												'relasjoner.foreldreHarSammeAdresse',
-											])}
+											]}
+											getValues={getValues}
+											emptyCategory={emptyCategory}
 										/>
 									</Accordion.Header>
 									<Accordion.Content style={{ paddingRight: '0' }}>
@@ -198,46 +212,80 @@ export const SoekForm = ({ setRequest, mutate }: any) => {
 									<Accordion.Header>
 										<Header
 											title="Folkeregisteret - hendelser"
-											antall={getAntallRequest(['hendelser.hendelse', 'hendelser.sisteHendelse'])}
+											paths={['hendelser.hendelse', 'hendelser.sisteHendelse']}
+											getValues={getValues}
+											emptyCategory={emptyCategory}
 										/>
 									</Accordion.Header>
 									<Accordion.Content style={{ paddingRight: '0' }}>
 										<FolkeregisteretHendelser handleChange={handleChange} />
 									</Accordion.Content>
 								</Accordion.Item>
-								{/*TODO: Vis denne naar det er mulig aa importere og vise inntekt i Dolly*/}
-								{/*<Accordion.Item>*/}
-								{/*	<Accordion.Header>*/}
-								{/*		<Header*/}
-								{/*			title="Inntekt A-ordningen"*/}
-								{/*			antall={getAntallRequest([*/}
-								{/*				'inntekt.periode.fraOgMed',*/}
-								{/*				'inntekt.periode.tilOgMed',*/}
-								{/*				'inntekt.opplysningspliktig',*/}
-								{/*				'inntekt.inntektstyper',*/}
-								{/*				'inntekt.forskuddstrekk',*/}
-								{/*				'inntekt.beskrivelse',*/}
-								{/*				'inntekt.harHistorikk',*/}
-								{/*			])}*/}
-								{/*		/>*/}
-								{/*	</Accordion.Header>*/}
-								{/*	<Accordion.Content style={{ paddingRight: '0' }}>*/}
-								{/*		<InntektAordningen*/}
-								{/*			handleChange={handleChange}*/}
-								{/*			handleChangeList={handleChangeList}*/}
-								{/*			getValue={watch}*/}
-								{/*		/>*/}
-								{/*	</Accordion.Content>*/}
-								{/*</Accordion.Item>*/}
+								<Accordion.Item>
+									<Accordion.Header>
+										<Header
+											title="Tjenestepensjonsavtale"
+											paths={[
+												'tjenestepensjonsavtale.pensjonsinnretningOrgnr',
+												'tjenestepensjonsavtale.periode',
+											]}
+											getValues={getValues}
+											emptyCategory={emptyCategory}
+										/>
+									</Accordion.Header>
+									<Accordion.Content style={{ paddingRight: '0' }}>
+										<Tjenestepensjonsavtale handleChange={handleChange} getValue={getValues} />
+									</Accordion.Content>
+								</Accordion.Item>
 								<Accordion.Item>
 									<Accordion.Header>
 										<Header
 											title="Enhetsregisteret og Foretaksregisteret"
-											antall={getAntallRequest(['roller'])}
+											paths={['roller']}
+											getValues={getValues}
+											emptyCategory={emptyCategory}
 										/>
 									</Accordion.Header>
 									<Accordion.Content style={{ paddingRight: '0' }}>
 										<EnhetsregisteretForetaksregisteret handleChangeList={handleChangeList} />
+									</Accordion.Content>
+								</Accordion.Item>
+								<Accordion.Item>
+									<Accordion.Header>
+										<Header
+											title="Skattemelding"
+											paths={['skattemelding.inntektsaar', 'skattemelding.skattemeldingstype']}
+											getValues={getValues}
+											emptyCategory={emptyCategory}
+										/>
+									</Accordion.Header>
+									<Accordion.Content style={{ paddingRight: '0' }}>
+										<Skattemelding handleChange={handleChange} />
+									</Accordion.Content>
+								</Accordion.Item>
+								<Accordion.Item>
+									<Accordion.Header>
+										<Header
+											title="Inntekt A-ordningen"
+											paths={[
+												'inntekt.periode.fraOgMed',
+												'inntekt.periode.tilOgMed',
+												'inntekt.opplysningspliktig',
+												'inntekt.inntektstyper',
+												'inntekt.forskuddstrekk',
+												'inntekt.beskrivelse',
+												'inntekt.harHistorikk',
+											]}
+											getValues={getValues}
+											emptyCategory={emptyCategory}
+										/>
+									</Accordion.Header>
+									<Accordion.Content style={{ paddingRight: '0' }}>
+										<InntektAordningen
+											handleChange={handleChange}
+											handleChangeList={handleChangeList}
+											getValue={watch}
+										/>
 									</Accordion.Content>
 								</Accordion.Item>
 							</Accordion>

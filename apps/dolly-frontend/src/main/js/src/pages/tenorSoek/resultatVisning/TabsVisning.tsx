@@ -6,11 +6,13 @@ import SyntaxHighlighter from 'react-syntax-highlighter'
 
 const TabsVisningFormatter = styled.div`
 	width: 100%;
+
 	&& {
 		.navds-tabs__tablist-wrapper {
 			margin-bottom: 20px;
 		}
 	}
+
 	&&& {
 		button {
 			position: static;
@@ -25,6 +27,9 @@ const StyledCodeView = styled(SyntaxHighlighter)`
 `
 
 export const TabsVisning = ({ children, kildedata }: any) => {
+	if (!kildedata) {
+		return <div className="person-visning_content">{children}</div>
+	}
 	const kildedataJson = JSON.parse(kildedata)
 	const kildedataPretty = JSON.stringify(kildedataJson, null, 2)
 

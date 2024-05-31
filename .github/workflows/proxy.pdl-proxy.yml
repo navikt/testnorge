@@ -16,7 +16,7 @@ jobs:
     with:
       cluster: "dev-fss"
       working-directory: "proxies/pdl-proxy"
-      deploy-tag: "#deploy-proxy"
+      deploy-tag: "#deploy-pdl-proxy"
     permissions:
       contents: read
       id-token: write

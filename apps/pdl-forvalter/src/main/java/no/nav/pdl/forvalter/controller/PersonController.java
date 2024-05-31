@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.dto.Paginering;
 import no.nav.pdl.forvalter.service.ArtifactDeleteService;
-import no.nav.pdl.forvalter.service.ArtifactGjeldendeService;
 import no.nav.pdl.forvalter.service.ArtifactUpdateService;
 import no.nav.pdl.forvalter.service.MetadataTidspunkterService;
 import no.nav.pdl.forvalter.service.PdlOrdreService;
@@ -55,10 +54,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Set;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static no.nav.pdl.forvalter.utils.TestnorgeIdentUtility.isTestnorgeIdent;
 
 @Slf4j
 @RestController
@@ -70,7 +69,6 @@ public class PersonController {
     private final PdlOrdreService pdlOrdreService;
     private final ArtifactDeleteService artifactDeleteService;
     private final ArtifactUpdateService artifactUpdateService;
-    private final ArtifactGjeldendeService artifactGjeldendeService;
     private final MetadataTidspunkterService metadataTidspunkterService;
 
     @ResponseBody
@@ -129,7 +127,6 @@ public class PersonController {
                                              @RequestParam(required = false) Boolean ekskluderEksternePersoner) {
 
         metadataTidspunkterService.updateMetadata(ident);
-        artifactGjeldendeService.setGjeldendeForRelasjon(ident);
 
         return pdlOrdreService.send(ident, ekskluderEksternePersoner);
     }
@@ -140,16 +137,12 @@ public class PersonController {
     public void deletePerson(@Parameter(description = "Slett angitt testperson med relasjoner")
                              @PathVariable String ident) {
 
-        personService.deletePerson(ident);
-    }
+        if (!isTestnorgeIdent(ident)) {
+            personService.deletePerson(ident);
 
-    @ResponseBody
-    @DeleteMapping(value = "/utenom")
-    @Operation(description = "Slette personer som er opprettet utenom PDL-forvalteren")
-    public void deletePersonerUtenom(@Parameter(description = "Slett angitte testpersoner")
-                                     @RequestParam Set<String> identer) {
-
-        personService.deletePersonerUtenom(identer);
+        } else {
+            personService.deleteMasterPdlArtifacter(ident);
+        }
     }
 
     @DeleteMapping(value = "/{ident}/foedsel/{id}")
@@ -606,9 +599,9 @@ public class PersonController {
     @PutMapping(value = "/{ident}/telefonnummer")
     @Operation(description = "Oppdater telefonnumre for person")
     public void updateTelefonnumre(@Parameter(description = "Ident for testperson")
-                                    @PathVariable String ident,
-                                    @Parameter(description = "id som identifiserer telefonnummer")
-                                    @RequestBody List<TelefonnummerDTO> telefonnumre) {
+                                   @PathVariable String ident,
+                                   @Parameter(description = "id som identifiserer telefonnummer")
+                                   @RequestBody List<TelefonnummerDTO> telefonnumre) {
 
         artifactUpdateService.updateTelefonnummer(ident, telefonnumre);
     }

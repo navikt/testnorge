@@ -74,26 +74,28 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
         if (nonNull(bestKriterier)) {
 
             Flux.fromArray(bestilling.getPdlImport().split(","))
-                    .flatMap(testnorgeIdent -> opprettProgress(bestilling, PDL, testnorgeIdent)
-                            .flatMap(progress -> opprettDollyPerson(testnorgeIdent, progress, bestilling.getBruker())
-                                    .doOnNext(dollyPerson -> leggIdentTilGruppe(testnorgeIdent,
-                                            progress, bestKriterier.getBeskrivelse()))
-                                    .doOnNext(dollyPerson -> counterCustomRegistry.invoke(bestKriterier))
-                                    .flatMap(dollyPerson -> Flux.concat(
-                                            gjenopprettKlienter(dollyPerson, bestKriterier,
-                                                    fase1Klienter(),
-                                                    progress, true),
-                                            personServiceClient.syncPerson(dollyPerson, progress)
-                                                    .map(ClientFuture::get)
-                                                    .filter(BestillingProgress::isPdlSync)
-                                                    .flatMap(pdlSync ->
-                                                            Flux.concat(
-                                                                    gjenopprettKlienter(dollyPerson, bestKriterier,
-                                                                            fase2Klienter(),
-                                                                            progress, true),
-                                                                    gjenopprettKlienter(dollyPerson, bestKriterier,
-                                                                            fase3Klienter(),
-                                                                            progress, true)))))
+                    .flatMap(testnorgeIdent -> Flux.just(OriginatorUtility.prepOriginator(bestKriterier, testnorgeIdent, mapperFacade)))
+                    .flatMap(originator -> opprettProgress(bestilling, PDL, originator.getIdent())
+                            .flatMap(progress -> oppdaterPdlPerson(originator, progress)
+                                    .flatMap(pdlResponse -> sendOrdrePerson(progress, pdlResponse)
+                                            .flatMap(testnorgeIdent -> opprettDollyPerson(progress, bestilling.getBruker())
+                                                    .doOnNext(dollyPerson -> leggIdentTilGruppe(progress, bestKriterier.getBeskrivelse()))
+                                                    .doOnNext(dollyPerson -> counterCustomRegistry.invoke(bestKriterier))
+                                                    .flatMap(dollyPerson -> Flux.concat(
+                                                            gjenopprettKlienter(dollyPerson, bestKriterier,
+                                                                    fase1Klienter(),
+                                                                    progress, true),
+                                                            personServiceClient.syncPerson(dollyPerson, progress)
+                                                                    .map(ClientFuture::get)
+                                                                    .filter(BestillingProgress::isPdlSync)
+                                                                    .flatMap(pdlSync ->
+                                                                            Flux.concat(
+                                                                                    gjenopprettKlienter(dollyPerson, bestKriterier,
+                                                                                            fase2Klienter(),
+                                                                                            progress, true),
+                                                                                    gjenopprettKlienter(dollyPerson, bestKriterier,
+                                                                                            fase3Klienter(),
+                                                                                            progress, true)))))))
                                     .doOnError(throwable -> {
                                         var error = errorStatusDecoder.getErrorText(
                                                 WebClientFilter.getStatus(throwable), WebClientFilter.getMessage(throwable));

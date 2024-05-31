@@ -36,6 +36,7 @@ type KontaktadresseVisningTypes = {
 	ident: number
 	erPdlVisning: boolean
 	identtype?: string
+	master?: string
 }
 
 type AdresseTypes = {
@@ -86,7 +87,10 @@ export const Adresse = ({ kontaktadresseData, idx }: AdresseTypes) => {
 						</TitleValue>
 						<Adressedatoer kontaktadresseData={kontaktadresseData} />
 						<TitleValue title="C/O adressenavn" value={kontaktadresseData.coAdressenavn} />
-						<TitleValue title="Master" value={kontaktadresseData.metadata?.master} />
+						<TitleValue
+							title="Master"
+							value={kontaktadresseData.master || kontaktadresseData.metadata?.master}
+						/>
 					</div>
 				</>
 			)}
@@ -122,6 +126,10 @@ export const Adresse = ({ kontaktadresseData, idx }: AdresseTypes) => {
 							)}
 						</TitleValue>
 						<Adressedatoer kontaktadresseData={kontaktadresseData} />
+						<TitleValue
+							title="Master"
+							value={kontaktadresseData.master || kontaktadresseData.metadata?.master}
+						/>
 					</div>
 				</>
 			)}
@@ -156,6 +164,10 @@ export const Adresse = ({ kontaktadresseData, idx }: AdresseTypes) => {
 							kodeverk={AdresseKodeverk.StatsborgerskapLand}
 						/>
 						<Adressedatoer kontaktadresseData={kontaktadresseData} />
+						<TitleValue
+							title="Master"
+							value={kontaktadresseData.master || kontaktadresseData.metadata?.master}
+						/>
 					</div>
 				</>
 			)}
@@ -163,7 +175,7 @@ export const Adresse = ({ kontaktadresseData, idx }: AdresseTypes) => {
 	)
 }
 
-const KontaktadresseVisning = ({
+export const KontaktadresseVisning = ({
 	kontaktadresseData,
 	idx,
 	data,
@@ -172,6 +184,7 @@ const KontaktadresseVisning = ({
 	ident,
 	erPdlVisning,
 	identtype,
+	master,
 }: KontaktadresseVisningTypes) => {
 	const initKontaktadresse = Object.assign(
 		_.cloneDeep(getInitialKontaktadresse()),
@@ -209,6 +222,7 @@ const KontaktadresseVisning = ({
 			path="kontaktadresse"
 			ident={ident}
 			identtype={identtype}
+			master={master}
 		/>
 	)
 }

@@ -1,5 +1,5 @@
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import { formatDate } from '@/utils/DataFormatter'
+import { formatDate, showLabel } from '@/utils/DataFormatter'
 import KodeverkConnector from '@/components/kodeverk/KodeverkConnector'
 import {
 	Kodeverk,
@@ -20,7 +20,10 @@ type AdresseData = {
 			bygningEtasjeLeilighet?: string
 			regionDistriktOmraade?: string
 		}
+		oppholdAnnetSted?: string
 		coAdressenavn?: string
+		metadata: any
+		master?: string
 	}
 	idx: number
 }
@@ -35,9 +38,16 @@ export const UtenlandskAdresse = ({ adresse, idx }: AdresseData) => {
 		bygningEtasjeLeilighet,
 		regionDistriktOmraade,
 	} = adresse.utenlandskAdresse
-	const { angittFlyttedato, gyldigFraOgMed, gyldigTilOgMed, coAdressenavn, metadata } = adresse
+	const {
+		angittFlyttedato,
+		gyldigFraOgMed,
+		gyldigTilOgMed,
+		oppholdAnnetSted,
+		coAdressenavn,
+		metadata,
+	} = adresse
 
-	const master = metadata?.master
+	const master = adresse.master || metadata?.master
 
 	return (
 		<>
@@ -61,6 +71,10 @@ export const UtenlandskAdresse = ({ adresse, idx }: AdresseData) => {
 				<TitleValue title="Angitt flyttedato" value={formatDate(angittFlyttedato)} />
 				<TitleValue title="Gyldig fra og med" value={formatDate(gyldigFraOgMed)} />
 				<TitleValue title="Gyldig til og med" value={formatDate(gyldigTilOgMed)} />
+				<TitleValue
+					title="Opphold annet sted"
+					value={showLabel('oppholdAnnetSted', oppholdAnnetSted)}
+				/>
 				<TitleValue title="C/O adressenavn" value={coAdressenavn} />
 				<TitleValue title="Master" value={master} />
 			</div>

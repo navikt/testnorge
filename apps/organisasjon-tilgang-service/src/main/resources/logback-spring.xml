@@ -2,7 +2,7 @@
 <configuration>
     <springProfile name="prod,dev">
         <appender name="stdout_json" class="ch.qos.logback.core.ConsoleAppender">
-            <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <encoder class="no.nav.testnav.libs.reactivecore.logging.TestnavLogbackEncoder">
                 <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
                     <rootCauseFirst>true</rootCauseFirst>
                     <maxDepthPerThrowable>256</maxDepthPerThrowable>

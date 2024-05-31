@@ -4,6 +4,7 @@ import { Button } from '@navikt/ds-react'
 import { CypressSelector } from '../../../../cypress/mocks/Selectors'
 import { ArrowRightIcon } from '@navikt/aksel-icons'
 import { useEffect, useState } from 'react'
+import { useCurrentBruker } from '@/utils/hooks/useBruker'
 
 type NavigerTilPersonProps = {
 	ident: string
@@ -13,6 +14,9 @@ export const NavigerTilPerson = ({ ident }: NavigerTilPersonProps) => {
 	const navigate = useNavigate()
 	const [navigateIdent, setNavigateIdent] = useState<string | null>(null)
 	const { loading, mutate } = useNaviger(navigateIdent)
+
+	const { currentBruker, loading: loadingCurrentBruker } = useCurrentBruker()
+	const bankidBruker = currentBruker?.brukertype === 'BANKID'
 
 	useEffect(() => {
 		mutate().then((result) => {
@@ -43,6 +47,10 @@ export const NavigerTilPerson = ({ ident }: NavigerTilPersonProps) => {
 			loading={loading}
 			onClick={handleClick}
 			style={{ minWidth: '118px' }}
+			disabled={loadingCurrentBruker || bankidBruker}
+			title={
+				loadingCurrentBruker || bankidBruker ? 'Kan ikke navigere til denne gruppen' : undefined
+			}
 		>
 			Vis i gruppe
 		</Button>

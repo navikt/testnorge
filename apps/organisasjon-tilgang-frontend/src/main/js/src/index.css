@@ -18,3 +18,9 @@ code {
 h1 {
     text-align: center;
 }
+
+th {
+    text-align: center;
+    margin-left: 10px;
+    margin-right: 10px;
+}

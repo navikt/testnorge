@@ -2,7 +2,7 @@
 <configuration>
     <springProfile name="prod,dev">
         <appender name="stdout_json" class="ch.qos.logback.core.ConsoleAppender">
-            <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <encoder class="no.nav.testnav.libs.servletcore.logging.TestnavLogbackEncoder">
                 <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
                     <rootCauseFirst>true</rootCauseFirst>
                     <maxDepthPerThrowable>256</maxDepthPerThrowable>
@@ -37,10 +37,10 @@
         </root>
     </springProfile>
 
-    <logger level="TRACE" name="no.nav.testnav.libs.reactivecore.filter.RequestLogger" />
-    <logger level="TRACE" name="no.nav.testnav.libs.servletcore.logging.LogRequestInterceptor" />
-    <logger level="TRACE" name="org.jetbrains.nativecerts" />
-    <logger level="TRACE" name="com.intellij.util.net.ssl" />
-    <logger level="ERROR" name="reactor.netty.transport.TransportConnector" />
-    <logger level="DEBUG" name="reactor.netty.http.client.HttpClient" />
+    <logger level="TRACE" name="no.nav.testnav.libs.reactivecore.filter.RequestLogger"/>
+    <logger level="TRACE" name="no.nav.testnav.libs.servletcore.logging.LogRequestInterceptor"/>
+    <logger level="TRACE" name="org.jetbrains.nativecerts"/>
+    <logger level="TRACE" name="com.intellij.util.net.ssl"/>
+    <logger level="ERROR" name="reactor.netty.transport.TransportConnector"/>
+    <logger level="DEBUG" name="reactor.netty.http.client.HttpClient"/>
 </configuration>

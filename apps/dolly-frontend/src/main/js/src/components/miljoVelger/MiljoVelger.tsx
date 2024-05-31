@@ -17,19 +17,15 @@ const StyledH3 = styled.h3`
 	align-items: center;
 `
 
-const bankIdQ1 = [
-	{
-		id: 'q1',
-		label: 'Q1',
-	},
-]
+const bankIdQ1 = {
+	id: 'q1',
+	label: 'Q1',
+}
 
-const bankIdQ2 = [
-	{
-		id: 'q2',
-		label: 'Q2',
-	},
-]
+const bankIdQ2 = {
+	id: 'q2',
+	label: 'Q2',
+}
 
 const miljoeavhengig = [
 	'aareg',
@@ -54,13 +50,7 @@ const erMiljouavhengig = (bestilling) => {
 	return miljoeNotRequired
 }
 
-export const MiljoVelger = ({
-	bestillingsdata,
-	heading,
-	bankIdBruker,
-	orgTilgang,
-	alleredeValgtMiljoe,
-}) => {
+export const MiljoVelger = ({ bestillingsdata, heading, bankIdBruker, alleredeValgtMiljoe }) => {
 	const { dollyEnvironments, loading } = useDollyEnvironments()
 	const formMethods = useFormContext()
 
@@ -70,9 +60,19 @@ export const MiljoVelger = ({
 
 	const filterEnvironments = (miljoer, erBankIdBruker) => {
 		if (erBankIdBruker) {
-			const tilgjengeligMiljo = orgTilgang?.miljoe
-			if (tilgjengeligMiljo === 'q1') return bankIdQ1
-			return bankIdQ2
+			var bankMiljoer = []
+			for (var i = 0; i < alleredeValgtMiljoe.length; i++) {
+				switch (alleredeValgtMiljoe[i]) {
+					case 'q1':
+						bankMiljoer.push(bankIdQ1)
+						break
+					case 'q2':
+						bankMiljoer.push(bankIdQ2)
+						break
+				}
+			}
+
+			return bankMiljoer
 		}
 		return miljoer.Q.filter((env: any) => env.id !== 'qx')
 	}
@@ -96,6 +96,7 @@ export const MiljoVelger = ({
 				isChecked(id) ? values.filter((value) => value !== id) : values.concat(id),
 			)
 		}
+		formMethods.trigger('environments')
 	}
 
 	return (
@@ -110,7 +111,7 @@ export const MiljoVelger = ({
 				</>
 			)}
 			<fieldset name={`Liste over miljøer`}>
-				<StyledH3>Miljøer </StyledH3>
+				<StyledH3>Miljøer</StyledH3>
 				<div className="miljo-velger_checkboxes">
 					{filteredEnvironments.map((env) => (
 						<DollyCheckbox

@@ -94,8 +94,6 @@ public class IdentService {
 
         var xmlRequest = prepareRequest(identer, isProd);
 
-        log.info("M201 request: {}", xmlRequest);
-
         var miljoerResponse = servicerutineConsumer.sendMessage(xmlRequest, miljoer);
 
         miljoerResponse.forEach((key, value) -> log.info("Miljø: {} XML: {}", key, value));
@@ -128,7 +126,7 @@ public class IdentService {
                 "<tpsServiceRutine>" +
                 "<serviceRutinenavn>FS03-FDLISTER-DISKNAVN-M</serviceRutinenavn>" +
                 "<aksjonsKode>A</aksjonsKode>" +
-                "<aksjonsKode2>%s</aksjonsKode2><antallFnr>%s</antallFnr><nFnr>%s</nFnr></tpsServiceRutine></tpsPersonData>"
+                "<aksjonsKode2>%s</aksjonsKode2><antallFnr>%s</antallFnr><nFnr>%s</nFnr><systemId>Dolly</systemId></tpsServiceRutine></tpsPersonData>"
                         .formatted(isProd ? "2" : "0",
                                 Integer.toString(identer.size()),
                                 identer.stream()

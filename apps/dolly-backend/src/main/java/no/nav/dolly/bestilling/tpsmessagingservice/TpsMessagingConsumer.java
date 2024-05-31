@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.tpsmessagingservice.command.EgenansattDeleteCommand;
 import no.nav.dolly.bestilling.tpsmessagingservice.command.EgenansattPostCommand;
-import no.nav.dolly.bestilling.tpsmessagingservice.command.PersonGetCommand;
+import no.nav.dolly.bestilling.tpsmessagingservice.command.PersonHentCommand;
 import no.nav.dolly.bestilling.tpsmessagingservice.command.TpsMessagingPostCommand;
 import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
@@ -52,7 +52,7 @@ public class TpsMessagingConsumer implements ConsumerStatus {
                 .build();
     }
 
-    @Timed(name = "providers", tags = {"operation", "tps_messaging_createUtenlandskBankkonto"})
+    @Timed(name = "providers", tags = { "operation", "tps_messaging_createUtenlandskBankkonto" })
     public Flux<TpsMeldingResponseDTO> sendUtenlandskBankkontoRequest(String ident, List<String> miljoer,
                                                                       BankkontonrUtlandDTO body) {
 
@@ -61,7 +61,7 @@ public class TpsMessagingConsumer implements ConsumerStatus {
                         new TpsMessagingPostCommand(webClient, ident, miljoer, body, UTENLANDSK_BANKKONTO_URL, token.getTokenValue()).call());
     }
 
-    @Timed(name = "providers", tags = {"operation", "tps_messaging_createNorskBankkonto"})
+    @Timed(name = "providers", tags = { "operation", "tps_messaging_createNorskBankkonto" })
     public Flux<TpsMeldingResponseDTO> sendNorskBankkontoRequest(String ident, List<String> miljoer, BankkontonrNorskDTO body) {
 
         return tokenService.exchange(serverProperties)
@@ -69,7 +69,7 @@ public class TpsMessagingConsumer implements ConsumerStatus {
                         new TpsMessagingPostCommand(webClient, ident, miljoer, body, NORSK_BANKKONTO_URL, token.getTokenValue()).call());
     }
 
-    @Timed(name = "providers", tags = {"operation", "tps_messaging_createSkjerming"})
+    @Timed(name = "providers", tags = { "operation", "tps_messaging_createSkjerming" })
     public Flux<TpsMeldingResponseDTO> sendEgenansattRequest(String ident, List<String> miljoer, LocalDate fraOgMed) {
 
         return tokenService.exchange(serverProperties)
@@ -77,14 +77,14 @@ public class TpsMessagingConsumer implements ConsumerStatus {
                         new EgenansattPostCommand(webClient, ident, miljoer, fraOgMed, token.getTokenValue()).call());
     }
 
-    @Timed(name = "providers", tags = {"operation", "tps_messaging_deleteSkjerming"})
+    @Timed(name = "providers", tags = { "operation", "tps_messaging_deleteSkjerming" })
     public Flux<TpsMeldingResponseDTO> deleteEgenansattRequest(String ident, List<String> miljoer) {
 
         return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> new EgenansattDeleteCommand(webClient, ident, miljoer, token.getTokenValue()).call());
     }
 
-    @Timed(name = "providers", tags = {"operation", "tps_messaging_createSpraakkode"})
+    @Timed(name = "providers", tags = { "operation", "tps_messaging_createSpraakkode" })
     public Flux<TpsMeldingResponseDTO> sendSpraakkodeRequest(String ident, List<String> miljoer, SpraakDTO body) {
 
         return tokenService.exchange(serverProperties)
@@ -92,11 +92,11 @@ public class TpsMessagingConsumer implements ConsumerStatus {
                         new TpsMessagingPostCommand(webClient, ident, miljoer, body, SPRAAKKODE_URL, token.getTokenValue()).call());
     }
 
-    @Timed(name = "providers", tags = {"operation", "tps_messaging_getPerson"})
+    @Timed(name = "providers", tags = { "operation", "tps_messaging_getPerson" })
     public Flux<PersonMiljoeDTO> getPerson(String ident, List<String> miljoer) {
 
         return tokenService.exchange(serverProperties)
-                .flatMapMany(token -> new PersonGetCommand(webClient, ident, miljoer, token.getTokenValue()).call());
+                .flatMapMany(token -> new PersonHentCommand(webClient, ident, miljoer, token.getTokenValue()).call());
     }
 
     @Override

@@ -17,6 +17,7 @@ import java.util.concurrent.TimeUnit;
 public class CachingConfig {
 
     public static final String CACHE_BESTILLING = "bestilling";
+    public static final String CACHE_BESTILLING_MAL = "bestilling-mal";
     public static final String CACHE_BRUKER = "bruker";
     public static final String CACHE_GRUPPE = "gruppe";
     public static final String CACHE_HELSEPERSONELL = "helsepersonell";
@@ -25,6 +26,7 @@ public class CachingConfig {
     @Profile({ "dev", "prod" })
     public CacheManager cacheManager(Caffeine caffeine) {
         var caffeineCacheManager = new CaffeineCacheManager(CACHE_BESTILLING,
+                CACHE_BESTILLING_MAL,
                 CACHE_BRUKER,
                 CACHE_GRUPPE,
                 CACHE_HELSEPERSONELL

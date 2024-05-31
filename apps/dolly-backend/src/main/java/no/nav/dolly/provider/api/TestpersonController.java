@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.GjenopprettIdentService;
 import no.nav.dolly.bestilling.service.OppdaterPersonService;
+import no.nav.testnav.libs.dto.dolly.v1.FinnesDTO;
 import no.nav.dolly.domain.dto.TestidentDTO;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
@@ -124,7 +125,6 @@ public class TestpersonController {
         bestillingService.slettBestillingByTestIdent(ident);
         identService.slettTestident(ident);
 
-        personService.slettTestnorgeRelasjoner(testIdenter);
         personService.recyclePersoner(testIdenter);
     }
 
@@ -141,6 +141,13 @@ public class TestpersonController {
     public Boolean finnesTestident(@PathVariable String ident) {
 
         return identService.exists(ident);
+    }
+
+    @Operation(description = "Sjekk om testpersoner finnes i Dolly")
+    @GetMapping("/finnes")
+    public FinnesDTO finnesTestident(@RequestParam List<String> identer) {
+
+        return identService.exists(identer);
     }
 
     @Operation(description = "Send ønsket testperson til miljø")
