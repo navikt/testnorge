@@ -28,9 +28,9 @@ export const FamilierelasjonPanel = ({ stateModifier, formValues }) => {
 
 		return ignoreKeys
 	}
-	const tekstForDeaktivering =
-		!opts?.gruppeId && 'Funksjonen er deaktivert da personer for relasjon er ukjent'
+	const tekstForDeaktivering = 'Funksjonen er deaktivert da personer for relasjon er ukjent'
 	const visOpplysning = opts?.identMaster !== 'PDL'
+	const disabled = !opts?.gruppeId && !opts?.gruppe?.id
 	return (
 		<Panel
 			heading={FamilierelasjonPanel.heading}
@@ -42,15 +42,15 @@ export const FamilierelasjonPanel = ({ stateModifier, formValues }) => {
 			<AttributtKategori title="Sivilstand" attr={sm.attrs}>
 				<Attributt
 					attr={sm.attrs.sivilstand}
-					disabled={!opts?.gruppeId}
-					title={tekstForDeaktivering}
+					disabled={disabled}
+					title={disabled && tekstForDeaktivering}
 				/>
 			</AttributtKategori>
 			<AttributtKategori title="Barn/foreldre" attr={sm.attrs}>
 				<Attributt
 					attr={sm.attrs.barnForeldre}
-					disabled={!opts?.gruppeId}
-					title={tekstForDeaktivering}
+					disabled={disabled}
+					title={disabled && tekstForDeaktivering}
 				/>
 				<Attributt
 					attr={sm.attrs.foreldreansvar}

@@ -24,7 +24,7 @@ export const FullmaktForm = ({ formMethods, path, eksisterendeNyPerson = null }:
 	const opts: any = useContext(BestillingsveilederContext)
 
 	const isTestnorgeIdent = opts?.identMaster === 'PDL'
-
+	console.log('opts 4', opts)
 	return (
 		<div className="flexbox--flex-wrap">
 			<div className="flexbox--full-width">

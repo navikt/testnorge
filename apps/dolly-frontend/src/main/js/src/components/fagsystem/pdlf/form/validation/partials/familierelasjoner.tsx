@@ -84,6 +84,18 @@ const testForeldreansvar = (val: Yup.StringSchema<string, Yup.AnyObject>) => {
 				feilmelding = 'Partner er ikke forelder'
 			}
 		}
+		if (selected === 'ANDRE') {
+			let isOK = true
+			testContext?.from
+				?.find((ansvar) => ansvar.value.foreldreansvar?.length > 0)
+				?.value.foreldreansvar.filter(
+					(ansvar) => ansvar.typeAnsvarlig === 'EKSISTERENDE' && !ansvar.ansvarlig,
+				)
+				.map(() => (isOK = false))
+			if (!isOK) {
+				feilmelding = 'Ansvarlig person må velges'
+			}
+		}
 		return feilmelding ? testContext.createError({ message: feilmelding }) : true
 	})
 }

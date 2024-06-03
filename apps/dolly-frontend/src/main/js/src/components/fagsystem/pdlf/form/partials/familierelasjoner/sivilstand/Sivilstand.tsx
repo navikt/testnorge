@@ -54,9 +54,10 @@ export const SivilstandForm = ({
 	}
 
 	const opts = useContext(BestillingsveilederContext)
-	const identMaster = opts?.identMaster || parseInt(ident?.charAt(2)) >= 8 ? 'PDL' : 'PDLF'
+	const identMaster = opts?.identMaster || (parseInt(ident?.charAt(2)) >= 8 ? 'PDL' : 'PDLF')
+
 	const isTestnorgeIdent = identMaster === 'PDL'
-	const kanVelgeMaster = !isTestnorgeIdent && (identtype !== 'NPID' || opts?.identtype !== 'NPID')
+	const kanVelgeMaster = !isTestnorgeIdent && (opts?.identtype !== 'NPID' || identtype !== 'NPID')
 
 	const kanHaRelatertPerson = gyldigeSivilstander.includes(formMethods.watch(`${path}.type`))
 

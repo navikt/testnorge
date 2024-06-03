@@ -49,7 +49,11 @@ export const ForelderBarnRelasjonForm = ({
 	ident,
 }: ForelderForm) => {
 	const opts = useContext(BestillingsveilederContext)
-	const identMaster = opts?.identMaster || parseInt(ident.charAt(2)) >= 8 ? 'PDL' : 'PDLF'
+
+	let identMaster = opts?.identMaster
+	if (!identMaster) {
+		identMaster = parseInt(ident?.charAt(2)) >= 8 ? 'PDL' : 'PDLF'
+	}
 	const [erBarn, setErBarn] = React.useState(
 		formMethods.watch(`${path}.relatertPersonsRolle`) === RELASJON_BARN,
 	)
@@ -175,6 +179,7 @@ export const ForelderBarnRelasjonForm = ({
 					formMethods={formMethods}
 					eksisterendeNyPerson={eksisterendeNyPerson}
 					idx={idx}
+					ident={ident}
 				/>
 			)}
 
