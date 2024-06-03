@@ -7,7 +7,7 @@ import no.nav.pdl.forvalter.consumer.command.VegadresseServiceCommand;
 import no.nav.testnav.libs.data.pdlforvalter.v1.MatrikkeladresseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.VegadresseDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
