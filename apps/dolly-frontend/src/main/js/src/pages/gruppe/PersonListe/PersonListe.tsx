@@ -158,7 +158,7 @@ export default function PersonListe({
 		},
 		{
 			text: 'Kilde',
-			width: '15',
+			width: '20',
 			dataField: 'kilde',
 			sortField: 'master',
 			headerCssClass: 'header-sort-sortable',
