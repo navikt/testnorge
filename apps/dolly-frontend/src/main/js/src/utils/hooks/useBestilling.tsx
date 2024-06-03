@@ -25,6 +25,8 @@ export type Bestilling = {
 	ferdig: boolean
 	sistOppdatert: Date
 	opprettetFraId: string
+	gjenopprettetFraIdent: string
+	opprettetFraGruppeId: string
 	bruker: {
 		brukerId: string
 		brukernavn: string

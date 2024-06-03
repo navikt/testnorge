@@ -33,6 +33,7 @@ export enum CypressSelector {
 	TITLE_SEND_KOMMENTAR = 'title-send-kommentar',
 	TITLE_TENOR_ORGANISASJONER_FORETAKSREGISTERET = 'title-tenor-organisasjoner-foretaksregisteret',
 	TITLE_TENOR_HEADER_COUNTER = 'title-tenor-header-counter',
+	TITLE_BESTILING_KRITERIER = 'title-bestiling-kriterier',
 	BUTTON_NY_GRUPPE = 'button-ny-gruppe',
 	BUTTON_LOGIN_NAV = 'button-login-nav',
 	BUTTON_OPPRETT = 'button-opprett',
