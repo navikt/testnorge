@@ -100,7 +100,7 @@ export const ImporterValgtePersoner = ({ identer, isMultiple }: ImporterValgtePe
 				</Button>
 			) : (
 				<Button
-					data-cy={CypressSelector.BUTTON_IMPORTER_PERSONER}
+					data-testid={CypressSelector.BUTTON_IMPORTER_PERSONER}
 					variant="tertiary"
 					size="xsmall"
 					icon={<EnterIcon />}
@@ -132,7 +132,7 @@ export const ImporterValgtePersoner = ({ identer, isMultiple }: ImporterValgtePe
 					)}
 					<MalValg setValgtMal={setValgtMal} />
 					<div className="dollymodal_buttons dollymodal_buttons--center">
-						<Button data-cy={CypressSelector.BUTTON_IMPORTER} onClick={() => handleClick()}>
+						<Button data-testid={CypressSelector.BUTTON_IMPORTER} onClick={() => handleClick()}>
 							Importer
 						</Button>
 						<Button variant="secondary" onClick={closeModal}>

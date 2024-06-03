@@ -77,7 +77,7 @@ export const MalModal = ({ id, malType, closeModal }) => {
 							/>
 						</Label>
 						<ModalActionKnapper
-							data-cy={CypressSelector.BUTTON_MALMODAL_LAGRE}
+							data-testid={CypressSelector.BUTTON_MALMODAL_LAGRE}
 							submitknapp="Lagre mal"
 							disabled={nyttMalnavn === ''}
 							onSubmit={formMethods.handleSubmit(lagreMal)}

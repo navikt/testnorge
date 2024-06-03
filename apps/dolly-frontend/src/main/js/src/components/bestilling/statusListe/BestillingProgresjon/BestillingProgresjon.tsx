@@ -167,7 +167,7 @@ export const BestillingProgresjon = ({
 						</h5>
 					</div>
 					<NavButton
-						data-cy={CypressSelector.BUTTON_AVBRYT_BESTILLING}
+						data-testid={CypressSelector.BUTTON_AVBRYT_BESTILLING}
 						variant={'danger'}
 						onClick={handleCancelBtn}
 					>

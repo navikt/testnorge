@@ -71,7 +71,7 @@ const GruppeOversikt = ({ searchActive, sideStoerrelse, sidetall }: GruppeOversi
 		<div className="oversikt-container">
 			<div className="toolbar">
 				<div
-					data-cy={CypressSelector.TITLE_VISNING}
+					data-testid={CypressSelector.TITLE_VISNING}
 					className="page-header flexbox--align-center--justify-start"
 				>
 					<h1>Grupper</h1>
@@ -82,7 +82,7 @@ const GruppeOversikt = ({ searchActive, sideStoerrelse, sidetall }: GruppeOversi
 			</div>
 			<div className="toolbar gruppe--full">
 				<StyledNavButton
-					data-cy={CypressSelector.BUTTON_NY_GRUPPE}
+					data-testid={CypressSelector.BUTTON_NY_GRUPPE}
 					variant="primary"
 					onClick={visNyGruppe}
 				>
@@ -101,18 +101,18 @@ const GruppeOversikt = ({ searchActive, sideStoerrelse, sidetall }: GruppeOversi
 						size={'small'}
 						style={{ backgroundColor: '#ffffff' }}
 					>
-						<StyledToggleItem data-cy={CypressSelector.TOGGLE_MINE} value={VisningType.MINE}>
+						<StyledToggleItem data-testid={CypressSelector.TOGGLE_MINE} value={VisningType.MINE}>
 							<Icon kind={'man-silhouette'} />
 							Mine
 						</StyledToggleItem>
 						<StyledToggleItem
-							data-cy={CypressSelector.TOGGLE_FAVORITTER}
+							data-testid={CypressSelector.TOGGLE_FAVORITTER}
 							value={VisningType.FAVORITTER}
 						>
 							<Icon kind={'star-light'} />
 							Favoritter
 						</StyledToggleItem>
-						<StyledToggleItem data-cy={CypressSelector.TOGGLE_ALLE} value={VisningType.ALLE}>
+						<StyledToggleItem data-testid={CypressSelector.TOGGLE_ALLE} value={VisningType.ALLE}>
 							<Icon kind={'group-light'} />
 							Alle
 						</StyledToggleItem>

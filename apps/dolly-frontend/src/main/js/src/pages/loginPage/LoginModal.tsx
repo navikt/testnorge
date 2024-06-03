@@ -84,7 +84,7 @@ export default () => {
 					</Alert>
 				)}
 				<NavButton
-					data-cy={CypressSelector.BUTTON_LOGIN_NAV}
+					data-testid={CypressSelector.BUTTON_LOGIN_NAV}
 					className="login-modal_button-nav"
 					variant={'primary'}
 					onClick={redirectOnClick(

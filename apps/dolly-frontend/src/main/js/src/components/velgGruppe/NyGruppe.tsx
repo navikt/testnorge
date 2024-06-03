@@ -41,20 +41,20 @@ export default () => {
 		<div className={'ny-gruppe'}>
 			<div className="flexbox--flex-wrap">
 				<DollyTextInput
-					data-cy={CypressSelector.INPUT_NY_GRUPPE_NAVN}
+					data-testid={CypressSelector.INPUT_NY_GRUPPE_NAVN}
 					onChange={(event) => setNavn(event.target.value)}
 					label="NAVN"
 					size="large"
 				/>
 				<DollyTextInput
-					data-cy={CypressSelector.INPUT_NY_GRUPPE_HENSIKT}
+					data-testid={CypressSelector.INPUT_NY_GRUPPE_HENSIKT}
 					onChange={(event) => setHensikt(event.target.value)}
 					label="HENSIKT"
 					size="large"
 				/>
 			</div>
 			<NavButton
-				data-cy={CypressSelector.BUTTON_NY_GRUPPE_OPPRETT}
+				data-testid={CypressSelector.BUTTON_NY_GRUPPE_OPPRETT}
 				variant="primary"
 				onClick={(event) => {
 					event.preventDefault()

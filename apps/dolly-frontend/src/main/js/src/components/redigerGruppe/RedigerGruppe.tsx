@@ -93,7 +93,7 @@ const RedigerGruppe = ({
 
 	const buttons = (
 		<>
-			<NavButton data-cy={CypressSelector.BUTTON_OPPRETT} variant={'primary'} type={'submit'}>
+			<NavButton data-testid={CypressSelector.BUTTON_OPPRETT} variant={'primary'} type={'submit'}>
 				{erRedigering ? 'Lagre' : 'Opprett og gå til gruppe'}
 			</NavButton>
 			<NavButton type={'reset'} variant={'danger'} onClick={() => onCancel()}>
@@ -112,7 +112,7 @@ const RedigerGruppe = ({
 			>
 				<div className="fields">
 					<FormTextInput
-						data-cy={CypressSelector.INPUT_NAVN}
+						data-testid={CypressSelector.INPUT_NAVN}
 						name="navn"
 						label="NAVN"
 						size="grow"
@@ -120,7 +120,7 @@ const RedigerGruppe = ({
 						autoFocus
 					/>
 					<FormTextInput
-						data-cy={CypressSelector.INPUT_HENSIKT}
+						data-testid={CypressSelector.INPUT_HENSIKT}
 						name="hensikt"
 						label="HENSIKT"
 						size="grow"

@@ -203,7 +203,7 @@ export const FlyttPersonForm = ({
 							VELG ALLE
 						</Button>
 						<Button
-							data-cy={CypressSelector.BUTTON_FLYTT_PERSONER_NULLSTILL}
+							data-testid={CypressSelector.BUTTON_FLYTT_PERSONER_NULLSTILL}
 							onClick={() => {
 								formMethods.setValue('identer', [])
 								formMethods.trigger()
@@ -222,7 +222,7 @@ export const FlyttPersonForm = ({
 							flyttes.
 						</Alert>
 					)}
-					<ValgtePersonerList data-cy={CypressSelector.CONTAINER_VALGTE_PERSONER}>
+					<ValgtePersonerList data-testid={CypressSelector.CONTAINER_VALGTE_PERSONER}>
 						{fieldMethods.fields.length > 0 ? (
 							<ul>
 								{fieldMethods.fields?.map((field) => (
@@ -243,7 +243,7 @@ export const FlyttPersonForm = ({
 			</div>
 			<div className="flexbox--justify-center" style={{ marginTop: '15px' }}>
 				<NavButton
-					data-cy={CypressSelector.BUTTON_FLYTT_PERSONER_AVBRYT}
+					data-testid={CypressSelector.BUTTON_FLYTT_PERSONER_AVBRYT}
 					onClick={handleClose}
 					variant="secondary"
 				>

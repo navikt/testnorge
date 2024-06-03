@@ -1,4 +1,7 @@
 import { defineConfig } from 'cypress'
+import pkg from '@neuralegion/cypress-har-generator'
+
+const { install } = pkg
 
 export default defineConfig({
 	pageLoadTimeout: 120000,
@@ -13,7 +16,9 @@ export default defineConfig({
 
 	e2e: {
 		baseUrl: 'http://localhost:5678',
-		setupNodeEvents() {},
+		setupNodeEvents(on) {
+			install(on)
+		},
 		experimentalRunAllSpecs: true,
 		specPattern: 'cypress/e2e/**/*.cy.{js,ts,jsx,tsx}',
 		excludeSpecPattern: ['**/__snapshots__/*', '**/__image_snapshots__/*'],

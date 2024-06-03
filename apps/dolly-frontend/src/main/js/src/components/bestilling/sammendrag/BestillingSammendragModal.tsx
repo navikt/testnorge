@@ -14,7 +14,7 @@ export const BestillingSammendragModal = ({ bestilling }) => {
 	return (
 		<div className="flexbox--align-center--justify-end">
 			<Button
-				data-cy={CypressSelector.BUTTON_OPEN_BESTILLINGSDETALJER}
+				data-testid={CypressSelector.BUTTON_OPEN_BESTILLINGSDETALJER}
 				onClick={openModal}
 				kind="details"
 			>

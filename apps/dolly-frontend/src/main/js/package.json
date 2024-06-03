@@ -12,7 +12,8 @@
     "lint": "eslint . --ext .ts,.tsx",
     "prettier": "prettier --write '**/*.{ts,tsx,js,css,html}'",
     "test:cy": "cypress run --browser chrome",
-    "test:run-cypress": "start-server-and-test preview http://localhost:5678 test:cy"
+    "test:run-cypress": "start-server-and-test preview http://localhost:5678 test:cy",
+    "test-ct": "playwright test -c playwright-ct.config.ts"
   },
   "author": "",
   "license": "ISC",
@@ -75,6 +76,9 @@
     "@navikt/ds-css": "^6.1.0",
     "@navikt/ds-icons": "^3.4.3",
     "@navikt/ds-react": "^6.1.0",
+    "@neuralegion/cypress-har-generator": "^5.16.4",
+    "@playwright/experimental-ct-react": "^1.44.1",
+    "@playwright/test": "^1.44.1",
     "@redux-devtools/extension": "^3.3.0",
     "@reduxjs/toolkit": "^2.2.1",
     "@rollup/plugin-terser": "^0.4.4",

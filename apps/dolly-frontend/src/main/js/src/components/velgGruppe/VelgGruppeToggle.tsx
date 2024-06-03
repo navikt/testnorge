@@ -35,7 +35,7 @@ export const VelgGruppeToggle = ({
 		<div className="toggle--wrapper">
 			<StyledToggleGroup size={'small'} value={gruppevalg} onChange={handleToggleChange}>
 				<ToggleGroup.Item
-					data-cy={CypressSelector.TOGGLE_EKSISTERENDE_GRUPPE}
+					data-testid={CypressSelector.TOGGLE_EKSISTERENDE_GRUPPE}
 					key={Gruppevalg.MINE}
 					value={Gruppevalg.MINE}
 					style={{ padding: '0 20px' }}
@@ -43,14 +43,14 @@ export const VelgGruppeToggle = ({
 					Mine grupper
 				</ToggleGroup.Item>
 				<ToggleGroup.Item
-					data-cy={CypressSelector.TOGGLE_ALLE_GRUPPER}
+					data-testid={CypressSelector.TOGGLE_ALLE_GRUPPER}
 					key={Gruppevalg.ALLE}
 					value={Gruppevalg.ALLE}
 				>
 					Alle grupper
 				</ToggleGroup.Item>
 				<ToggleGroup.Item
-					data-cy={CypressSelector.TOGGLE_NY_GRUPPE}
+					data-testid={CypressSelector.TOGGLE_NY_GRUPPE}
 					key={Gruppevalg.NY}
 					value={Gruppevalg.NY}
 				>

@@ -51,7 +51,7 @@ export const Navigation = ({ step, onPrevious, isLastStep, handleSubmit }) => {
 				<div className="step-navknapper--right">
 					{showPrevious && (
 						<NavButton
-							data-cy={CypressSelector.BUTTON_TILBAKE}
+							data-testid={CypressSelector.BUTTON_TILBAKE}
 							variant={'secondary'}
 							onClick={onPrevious}
 						>
@@ -60,7 +60,7 @@ export const Navigation = ({ step, onPrevious, isLastStep, handleSubmit }) => {
 					)}
 					{!isLastStep && (
 						<NavButton
-							data-cy={CypressSelector.BUTTON_VIDERE}
+							data-testid={CypressSelector.BUTTON_VIDERE}
 							variant={'primary'}
 							disabled={isSubmitting || disabledVidere}
 							onClick={handleSubmit}
@@ -70,7 +70,7 @@ export const Navigation = ({ step, onPrevious, isLastStep, handleSubmit }) => {
 					)}
 					{isLastStep && (
 						<NavButton
-							data-cy={CypressSelector.BUTTON_FULLFOER_BESTILLING}
+							data-testid={CypressSelector.BUTTON_FULLFOER_BESTILLING}
 							variant={'primary'}
 							onClick={() => {
 								errorContext?.setShowError(true)

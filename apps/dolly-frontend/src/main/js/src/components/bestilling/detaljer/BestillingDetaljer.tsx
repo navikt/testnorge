@@ -45,7 +45,7 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId,
 				<div className="flexbox--align-center--justify-end info-block">
 					{!iLaastGruppe && (
 						<Button
-							data-cy={CypressSelector.BUTTON_BESTILLINGDETALJER_GJENOPPRETT}
+							data-testid={CypressSelector.BUTTON_BESTILLINGDETALJER_GJENOPPRETT}
 							onClick={openGjenopprettModal}
 							kind="synchronize"
 							disabled={!harLevertPersoner || gjenopprettingsId}
@@ -60,7 +60,7 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId,
 						!harRelatertPersonBarn &&
 						!gjenopprettingsId && (
 							<Button
-								data-cy={CypressSelector.BUTTON_BESTILLINGDETALJER_OPPRETT_MAL}
+								data-testid={CypressSelector.BUTTON_BESTILLINGDETALJER_OPPRETT_MAL}
 								onClick={openMalModal}
 								kind={'maler'}
 								className="svg-icon-blue"

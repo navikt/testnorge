@@ -17,7 +17,7 @@ export const AvbrytButton = ({ action, children }: Props) => {
 
 	return (
 		<React.Fragment>
-			<NavButton data-cy={CypressSelector.BUTTON_AVBRYT} variant={'danger'} onClick={openModal}>
+			<NavButton data-testid={CypressSelector.BUTTON_AVBRYT} variant={'danger'} onClick={openModal}>
 				Avbryt
 			</NavButton>
 			<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="fit-content" overflow="auto">
@@ -32,7 +32,7 @@ export const AvbrytButton = ({ action, children }: Props) => {
 							Nei
 						</NavButton>
 						<NavButton
-							data-cy={CypressSelector.BUTTON_BEKREFT}
+							data-testid={CypressSelector.BUTTON_BEKREFT}
 							onClick={() => {
 								closeModal()
 								return action()

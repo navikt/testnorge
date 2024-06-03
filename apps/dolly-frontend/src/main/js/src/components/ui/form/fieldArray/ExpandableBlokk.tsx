@@ -34,7 +34,7 @@ export default function ExpandableBlokk<T>({
 				<Numbering idx={idx} />
 				<h2>{getHeader(data)} </h2>
 				<ExpandButton
-					data-cy={CypressSelector.BUTTON_OPEN_EXPANDABLE}
+					data-testid={CypressSelector.BUTTON_OPEN_EXPANDABLE}
 					expanded={isExpanded}
 					onClick={() => setIsExpanded(!isExpanded)}
 				/>

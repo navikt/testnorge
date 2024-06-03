@@ -95,7 +95,7 @@ export const EksisterendeIdent = ({
 
 			{finnesGyldige && (
 				<ModalActionKnapper
-					data-cy={CypressSelector.BUTTON_START_BESTILLING}
+					data-testid={CypressSelector.BUTTON_START_BESTILLING}
 					submitknapp="Start bestilling"
 					onSubmit={_onSubmit}
 					onAvbryt={onAvbryt}

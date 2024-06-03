@@ -18,7 +18,7 @@ import {
 
 type SelectProps = {
 	id?: string
-	'data-cy'?: string
+	'data-testid'?: string
 	name: string
 	fieldName?: string
 	value?: any

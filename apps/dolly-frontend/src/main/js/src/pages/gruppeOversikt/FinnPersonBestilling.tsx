@@ -221,7 +221,7 @@ const FinnPersonBestilling = ({
 	const CustomOption = ({ children, ...props }) => (
 		// @ts-ignore
 		<components.Option {...props}>
-			<span data-cy={CypressSelector.BUTTON_NAVIGER_DOLLY}>
+			<span data-testid={CypressSelector.BUTTON_NAVIGER_DOLLY}>
 				<Highlighter
 					textToHighlight={children}
 					searchWords={fragment.split(' ')}
@@ -236,7 +236,7 @@ const FinnPersonBestilling = ({
 		return (
 			// @ts-ignore
 			<components.DropdownIndicator {...props}>
-				<Icon fontSize={'1.5rem'} data-cy={CypressSelector.INPUT_DOLLY_SOEK} kind={'search'} />
+				<Icon fontSize={'1.5rem'} data-testid={CypressSelector.INPUT_DOLLY_SOEK} kind={'search'} />
 			</components.DropdownIndicator>
 		)
 	}
@@ -254,7 +254,7 @@ const FinnPersonBestilling = ({
 					<VelgSoekTypeToggle soekValg={soekType} setValgtSoekType={setSoekType} />
 					{/*@ts-ignore*/}
 					<StyledAsyncSelect
-						data-cy={CypressSelector.SELECT_PERSON_SEARCH}
+						data-testid={CypressSelector.SELECT_PERSON_SEARCH}
 						defaultOptions={false}
 						styles={customAsyncSelectStyles}
 						loadOptions={fetchOptions}
@@ -279,7 +279,7 @@ const FinnPersonBestilling = ({
 				</div>
 				{error && (
 					<div
-						data-cy={CypressSelector.ERROR_MESSAGE_NAVIGERING}
+						data-testid={CypressSelector.ERROR_MESSAGE_NAVIGERING}
 						className="error-message"
 						style={{ marginTop: '10px', maxWidth: '330px' }}
 					>

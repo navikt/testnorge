@@ -96,7 +96,7 @@ export const NyIdent = ({ brukernavn, onAvbryt, onSubmit }: NyBestillingProps) =
 					<div className="ny-bestilling-form_maler">
 						<div>
 							<DollyCheckbox
-								data-cy={CypressSelector.TOGGLE_MAL}
+								data-testid={CypressSelector.TOGGLE_MAL}
 								name="aktiver-maler"
 								onChange={() => handleMalChange(formMethods)}
 								label="Opprett fra mal"
@@ -141,7 +141,7 @@ export const NyIdent = ({ brukernavn, onAvbryt, onSubmit }: NyBestillingProps) =
 						</div>
 					</div>
 					<ModalActionKnapper
-						data-cy={CypressSelector.BUTTON_START_BESTILLING}
+						data-testid={CypressSelector.BUTTON_START_BESTILLING}
 						submitknapp="Start bestilling"
 						disabled={!formMethods.formState.isValid || formMethods.formState.isSubmitting}
 						onSubmit={() => preSubmit(formMethods.getValues())}

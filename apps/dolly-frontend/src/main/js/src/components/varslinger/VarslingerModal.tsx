@@ -64,7 +64,7 @@ export const VarslingerModal = () => {
 			(!varsling.fom && (!varsling.tom || isBefore(currentDate, new Date(varsling.tom)))) ||
 			(!varsling.tom && (!varsling.fom || isAfter(currentDate, new Date(varsling.fom)))) ||
 			(isAfter(currentDate, new Date(varsling.fom)) &&
-				isBefore(currentDate, new Date(varsling.tom)))
+				isBefore(currentDate, new Date(varsling.tom))),
 	)
 
 	const antallVarslinger = gyldigeVarslinger.length
@@ -109,7 +109,7 @@ export const VarslingerModal = () => {
 							</NavButton>
 						) : (
 							<NavButton
-								data-cy={CypressSelector.BUTTON_VARSLING_LUKK}
+								data-testid={CypressSelector.BUTTON_VARSLING_LUKK}
 								variant={'primary'}
 								onClick={() => submitSettVarsling(true)}
 								style={{ float: 'right' }}

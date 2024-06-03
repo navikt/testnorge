@@ -20,7 +20,7 @@ export const TidligereBestillinger = ({ ids }) => {
 				.map((numId) => numId.toString())
 				.map((id) => (
 					<NavigerTilBestillingButton
-						data-cy={CypressSelector.BUTTON_TIDLIGEREBESTILLINGER_NAVIGER}
+						data-testid={CypressSelector.BUTTON_TIDLIGEREBESTILLINGER_NAVIGER}
 						key={id}
 						onClick={() => {
 							dispatch(navigerTilBestilling(id))

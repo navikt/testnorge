@@ -149,7 +149,11 @@ export default function PersonListe({
 			dataField: 'status',
 
 			formatter: (cell) => (
-				<Icon data-cy={CypressSelector.BUTTON_OPEN_IDENT} kind={ikonTypeMap[cell]} title={cell} />
+				<Icon
+					data-testid={CypressSelector.BUTTON_OPEN_IDENT}
+					kind={ikonTypeMap[cell]}
+					title={cell}
+				/>
 			),
 		},
 		{
@@ -169,7 +173,7 @@ export default function PersonListe({
 			formatter: (_cell, row) => (
 				<Suspense fallback={<Loading label={'Laster...'} />}>
 					<PersonIBrukButtonConnector
-						data-cy={CypressSelector.TOGGLE_PERSON_IBRUK}
+						data-testid={CypressSelector.TOGGLE_PERSON_IBRUK}
 						ident={row.ident}
 					/>
 				</Suspense>

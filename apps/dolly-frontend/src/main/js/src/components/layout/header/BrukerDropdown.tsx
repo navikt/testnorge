@@ -33,7 +33,7 @@ const DropdownToggle = () => {
 			<div className="profil-area">
 				<div className="img-logo">
 					<img
-						data-cy={CypressSelector.BUTTON_PROFIL}
+						data-testid={CypressSelector.BUTTON_PROFIL}
 						alt="Profilbilde"
 						src={brukerBilde || getDefaultImage()}
 					/>
@@ -57,7 +57,7 @@ export const BrukerDropdown = () => {
 						<Dropdown.Menu.List.Item
 							onClick={() => navigate('/minside')}
 							style={{ color: '#212529' }}
-							data-cy={CypressSelector.BUTTON_PROFIL_MINSIDE}
+							data-testid={CypressSelector.BUTTON_PROFIL_MINSIDE}
 						>
 							<StyledIcon kind="person" fontSize={'1.5rem'} />
 							Min side

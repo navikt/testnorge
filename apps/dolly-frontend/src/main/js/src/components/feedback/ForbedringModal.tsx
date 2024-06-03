@@ -48,7 +48,7 @@ export const ForbedringModal = ({ closeModal }) => {
 
 					<div className="modal-input">
 						<Textarea
-							data-cy={CypressSelector.INPUT_FORBEDRING_MODAL}
+							data-testid={CypressSelector.INPUT_FORBEDRING_MODAL}
 							value={forbedring}
 							label={'Forbedring/funksjonalitet'}
 							placeholder={'Forsøk å være så spesifikk som mulig'}
@@ -58,7 +58,7 @@ export const ForbedringModal = ({ closeModal }) => {
 						/>
 						<div className="skjemaelement textarea__container">
 							<DollyCheckbox
-								data-cy={CypressSelector.CHECKBOX_FORBEDRING_ANONYM}
+								data-testid={CypressSelector.CHECKBOX_FORBEDRING_ANONYM}
 								label="Jeg ønsker å være anonym"
 								onChange={toggleAnonym}
 							/>
@@ -66,7 +66,7 @@ export const ForbedringModal = ({ closeModal }) => {
 					</div>
 				</div>
 				<ModalActionKnapper
-					data-cy={CypressSelector.BUTTON_SEND_FORBEDRINGSOENSKE}
+					data-testid={CypressSelector.BUTTON_SEND_FORBEDRINGSOENSKE}
 					submitknapp="Send ønske"
 					disabled={forbedring === '' || forbedring.length > MAX_LENGTH}
 					onSubmit={sendForbedring}

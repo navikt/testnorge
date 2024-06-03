@@ -55,7 +55,7 @@ export const GjenopprettModal = ({
 								Avbryt
 							</NavButton>
 							<NavButton
-								data-cy={CypressSelector.BUTTON_BESTILLINGDETALJER_GJENOPPRETT_UTFOER}
+								data-testid={CypressSelector.BUTTON_BESTILLINGDETALJER_GJENOPPRETT_UTFOER}
 								variant={'primary'}
 								onClick={formMethods.handleSubmit(submitForm)}
 							>

@@ -73,7 +73,7 @@ export default function Panel({
 				<span className="dolly-panel-heading_buttons">
 					{checkAttributeArray && (
 						<LinkButton
-							data-cy={
+							data-testid={
 								erAvhengigAvQ1EllerQ2(heading)
 									? CypressSelector.BUTTON_VELG_MILJOE_AVHENGIG
 									: CypressSelector.BUTTON_VELG_ALLE
@@ -84,7 +84,7 @@ export default function Panel({
 					)}
 					{uncheckAttributeArray && (
 						<LinkButton
-							data-cy={
+							data-testid={
 								erAvhengigAvQ1EllerQ2(heading)
 									? CypressSelector.BUTTON_FJERN_MILJOE_AVHENGIG
 									: CypressSelector.BUTTON_FJERN_ALLE

@@ -27,7 +27,7 @@ export const Identer: React.FC<IdentSearchProps> = ({
 						<div className="flexbox--align-start" key={index}>
 							<DollyTextInput
 								name={`${identerPath}.${index}.fnr`}
-								data-cy={CypressSelector.INPUT_TESTNORGE_FNR}
+								data-testid={CypressSelector.INPUT_TESTNORGE_FNR}
 								placeholder={'Ikke spesifisert'}
 								// label={'Fødselsnummer eller D-nummer'}
 								style={{ width: '220px', marginBottom: '-10px' }}

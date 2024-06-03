@@ -69,7 +69,7 @@ export const TreffListeOrg = ({ response, organisasjonListe, loading, error }: a
 						return (
 							<Box
 								key={organisasjon?.organisasjonsnummer}
-								data-cy={CypressSelector.BUTTON_ORGANISASJON_TENORSOEK}
+								data-testid={CypressSelector.BUTTON_ORGANISASJON_TENORSOEK}
 								padding="2"
 								background={
 									organisasjon?.organisasjonsnummer === valgtOrganisasjon?.organisasjonsnummer

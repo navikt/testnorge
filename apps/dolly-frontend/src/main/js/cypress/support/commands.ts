@@ -23,10 +23,10 @@ declare global {
 }
 
 Cypress.Commands.add('dollyGet', (selector: CypressSelector) => {
-	return cy.get(`[data-cy="${selector}"]`)
+	return cy.get(`[data-testid="${selector}"]`)
 })
 Cypress.Commands.add('dollyType', (selector: CypressSelector, textInput: string) => {
-	const selected = cy.get(`[data-cy="${selector}"]`).click({ force: true }).focused()
+	const selected = cy.get(`[data-testid="${selector}"]`).click({ force: true }).focused()
 	cy.get('body').type(textInput)
 	return selected
 })

@@ -12,7 +12,7 @@ const DropdownToggle = () => {
 
 	return (
 		<Dropdown.Toggle
-			data-cy={CypressSelector.BUTTON_HEADER_FINNPERSON}
+			data-testid={CypressSelector.BUTTON_HEADER_FINNPERSON}
 			className={isOpen || isFinnPerson ? 'dropdown-toggle active' : 'dropdown-toggle'}
 		>
 			<a className={isFinnPerson ? 'active' : ''} style={{ margin: 0, padding: '19px 10px' }}>
@@ -30,7 +30,7 @@ export const FinnPersonDropdown = () => {
 			<Dropdown.Menu placement="bottom-start">
 				<Dropdown.Menu.List>
 					<Dropdown.Menu.List.Item
-						data-cy={CypressSelector.BUTTON_HEADER_DOLLYSOEK}
+						data-testid={CypressSelector.BUTTON_HEADER_DOLLYSOEK}
 						onClick={() => navigate('/dollysoek')}
 						style={{ color: '#212529' }}
 					>
@@ -38,7 +38,7 @@ export const FinnPersonDropdown = () => {
 						Søk i Dolly
 					</Dropdown.Menu.List.Item>
 					<Dropdown.Menu.List.Item
-						data-cy={CypressSelector.BUTTON_HEADER_TESTNORGE}
+						data-testid={CypressSelector.BUTTON_HEADER_TESTNORGE}
 						onClick={() => navigate('/testnorge')}
 						style={{ color: '#212529' }}
 					>
@@ -46,7 +46,7 @@ export const FinnPersonDropdown = () => {
 						Søk i Test-Norge
 					</Dropdown.Menu.List.Item>
 					<Dropdown.Menu.List.Item
-						data-cy={CypressSelector.BUTTON_HEADER_TENOR}
+						data-testid={CypressSelector.BUTTON_HEADER_TENOR}
 						onClick={() => navigate('/tenor/personer/')}
 						style={{ color: '#212529' }}
 					>

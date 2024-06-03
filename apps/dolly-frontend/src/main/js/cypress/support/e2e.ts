@@ -41,6 +41,8 @@ import {
 } from '../mocks/BasicMocks'
 import { pdlBulkpersonerMock, pdlForvalterMock, pdlPersonEnkeltMock } from '../mocks/PdlMocks'
 
+import('@neuralegion/cypress-har-generator/commands')
+
 const miljoer = new RegExp(/\/miljoer/)
 const arenaMiljoer = new RegExp(/testnav-arena-forvalteren-proxy\/api\/v1\/miljoe/)
 const current = new RegExp(/current/)
@@ -99,6 +101,9 @@ const organisasjonerForBruker = new RegExp(/dolly-backend\/api\/v1\/organisasjon
 const remainingCallsResponseOk = new RegExp(/api\/v1/)
 
 beforeEach(() => {
+	// start recording
+	cy.recordHar({ includeMimes: ['application/json'] })
+
 	cy.intercept({ method: 'PUT', url: '*' }, []).as('block_put')
 	cy.intercept({ method: 'DELETE', url: '*' }, []).as('block_delete')
 	cy.intercept({ method: 'POST', url: '*' }, []).as('remaining_post')
@@ -149,4 +154,9 @@ beforeEach(() => {
 	cy.intercept({ method: 'GET', url: arenaMiljoer }, ['q1', 'q2', 'q4'])
 	cy.intercept({ method: 'GET', url: organisasjonFraMiljoe }, organisasjonFraMiljoeMock)
 	cy.intercept({ method: 'GET', url: organisasjonerForBruker }, organisasjonerForBrukerMock)
+})
+
+afterEach(() => {
+	// save the HAR file
+	cy.saveHar()
 })

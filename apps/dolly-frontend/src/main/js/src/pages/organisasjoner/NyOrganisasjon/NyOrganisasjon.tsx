@@ -94,7 +94,7 @@ export const NyOrganisasjon = ({ onAvbryt, onSubmit, brukernavn }: NyBestillingP
 						</div>
 					</div>
 					<ModalActionKnapper
-						data-cy={CypressSelector.BUTTON_START_BESTILLING}
+						data-testid={CypressSelector.BUTTON_START_BESTILLING}
 						submitknapp="Start bestilling"
 						disabled={!formMethods.formState.isValid || formMethods.formState.isSubmitting}
 						onSubmit={() => preSubmit(formMethods.getValues())}

@@ -140,7 +140,7 @@ export const SoekForm = () => {
 											</Accordion.Content>
 										</Accordion.Item>
 										<Accordion.Item>
-											<Accordion.Header data-cy={CypressSelector.EXPANDABLE_PERSONINFORMASJON}>
+											<Accordion.Header data-testid={CypressSelector.EXPANDABLE_PERSONINFORMASJON}>
 												<Header
 													title="Personinformasjon"
 													antall={getAntallRequest([
@@ -178,7 +178,7 @@ export const SoekForm = () => {
 														}
 													/>
 													<FormCheckbox
-														data-cy={CypressSelector.TOGGLE_HAR_VERGE}
+														data-testid={CypressSelector.TOGGLE_HAR_VERGE}
 														name={`${personPath}.harVerge`}
 														label="Har verge"
 														onChange={(val: SyntheticEvent) =>
@@ -520,7 +520,7 @@ export const SoekForm = () => {
 										Hent nye treff
 									</Button>
 									<Button
-										data-cy={CypressSelector.BUTTON_NULLSTILL_SOEK}
+										data-testid={CypressSelector.BUTTON_NULLSTILL_SOEK}
 										onClick={() => {
 											setRequest(null)
 											reset(null)

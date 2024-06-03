@@ -128,7 +128,7 @@ export const EnhetsregisteretForetaksregisteret = ({ handleChange }: any) => {
 				<FormCheckbox
 					name="harUnderenheter"
 					label="Har underenheter"
-					data-cy={CypressSelector.CHECKBOX_ORGANISASJONER_TENORSOEK}
+					data-testid={CypressSelector.CHECKBOX_ORGANISASJONER_TENORSOEK}
 					onChange={(val: any) =>
 						handleChange(val?.target?.checked || undefined, 'harUnderenheter')
 					}

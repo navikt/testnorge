@@ -24,7 +24,7 @@ export const FolkeregisteretIdentifikasjonStatus = ({ handleChange, handleChange
 		<SoekKategori>
 			<FormTextInput
 				name="identifikator"
-				data-cy={CypressSelector.INPUT_TENORSOEK_FNR}
+				data-testid={CypressSelector.INPUT_TENORSOEK_FNR}
 				label="Fødselsnummer / D-nummer"
 				// @ts-ignore
 				onBlur={(val: any) => handleChange(val?.target?.value || null, 'identifikator')}
@@ -110,7 +110,7 @@ export const FolkeregisteretIdentifikasjonStatus = ({ handleChange, handleChange
 			</div>
 			<FormCheckbox
 				name="harLegitimasjonsdokument"
-				data-cy={CypressSelector.CHECKBOX_TENORSOEK}
+				data-testid={CypressSelector.CHECKBOX_TENORSOEK}
 				label="Har legitimasjonsdokument"
 				onChange={(val: any) =>
 					handleChange(val?.target?.checked || undefined, 'harLegitimasjonsdokument')

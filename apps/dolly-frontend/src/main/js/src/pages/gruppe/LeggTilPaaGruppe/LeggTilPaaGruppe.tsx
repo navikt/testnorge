@@ -13,7 +13,7 @@ export const LeggTilPaaGruppe = ({ antallPersoner, gruppeId }: LeggTilProps) => 
 
 	return (
 		<Button
-			data-cy={CypressSelector.BUTTON_LEGGTILPAAALLE}
+			data-testid={CypressSelector.BUTTON_LEGGTILPAAALLE}
 			onClick={() =>
 				navigate(`/gruppe/${gruppeId}/bestilling/`, {
 					state: {

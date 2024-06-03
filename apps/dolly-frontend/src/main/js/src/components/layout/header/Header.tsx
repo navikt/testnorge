@@ -30,13 +30,16 @@ export default () => {
 			</NavLink>
 
 			<div className="menu-links">
-				<NavLink data-cy={CypressSelector.BUTTON_HEADER_PERSONER} to="/gruppe">
+				<NavLink data-testid={CypressSelector.BUTTON_HEADER_PERSONER} to="/gruppe">
 					Personer
 				</NavLink>
 				<FinnPersonDropdown />
 				<OrganisasjonDropdown />
 				{!bankidBruker && (
-					<NavLink data-cy={CypressSelector.BUTTON_HEADER_ENDRINGSMELDING} to="/endringsmelding">
+					<NavLink
+						data-testid={CypressSelector.BUTTON_HEADER_ENDRINGSMELDING}
+						to="/endringsmelding"
+					>
 						Endringsmelding
 					</NavLink>
 				)}

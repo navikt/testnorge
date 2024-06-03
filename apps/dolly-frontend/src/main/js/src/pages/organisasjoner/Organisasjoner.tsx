@@ -97,7 +97,7 @@ export default () => {
 
 				<div className="toolbar">
 					<NavButton
-						data-cy={CypressSelector.BUTTON_OPPRETT_ORGANISASJON}
+						data-testid={CypressSelector.BUTTON_OPPRETT_ORGANISASJON}
 						variant={'primary'}
 						// onClick={() => startBestilling(BestillingType.NY)}
 						onClick={visStartBestilling}

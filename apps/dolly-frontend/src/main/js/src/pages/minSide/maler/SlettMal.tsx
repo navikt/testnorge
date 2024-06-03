@@ -20,7 +20,7 @@ export const SlettMal = ({ id, organisasjon, mutate }) => {
 	return (
 		<>
 			<Button
-				data-cy={CypressSelector.BUTTON_MALER_SLETT}
+				data-testid={CypressSelector.BUTTON_MALER_SLETT}
 				onClick={openModal}
 				variant={'tertiary'}
 				icon={<TrashIcon />}
@@ -38,7 +38,7 @@ export const SlettMal = ({ id, organisasjon, mutate }) => {
 							Nei
 						</NavButton>
 						<NavButton
-							data-cy={CypressSelector.BUTTON_MALER_SLETT_BEKREFT}
+							data-testid={CypressSelector.BUTTON_MALER_SLETT_BEKREFT}
 							onClick={() => {
 								closeModal()
 								slettMal(id, organisasjon)

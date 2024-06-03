@@ -216,7 +216,7 @@ const Icon = ({
 			title={kind}
 			fontSize={fontSize}
 			className={className}
-			data-cy={props['data-cy']}
+			data-testid={props['data-testid']}
 			onClick={onClick}
 			style={style}
 		/>

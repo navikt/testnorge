@@ -5,7 +5,7 @@ export const OppsummeringKommentarForm = ({ formMethods }) => {
 	const eksisterendeBeskrivelse = formMethods.watch('beskrivelse')
 	return (
 		<div className="input-oppsummering">
-			<h2 data-cy={CypressSelector.TITLE_SEND_KOMMENTAR}>Send med kommentar</h2>
+			<h2 data-testid={CypressSelector.TITLE_SEND_KOMMENTAR}>Send med kommentar</h2>
 			<TextEditor
 				text={null}
 				handleSubmit={(value) => formMethods.setValue('beskrivelse', value)}

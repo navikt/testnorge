@@ -13,7 +13,7 @@ export const Forbedring = () => {
 	return (
 		<ErrorBoundary>
 			<button
-				data-cy={CypressSelector.BUTTON_OPEN_FORBEDRING_MODAL}
+				data-testid={CypressSelector.BUTTON_OPEN_FORBEDRING_MODAL}
 				className="btn-modal"
 				onClick={openForbedringModal}
 			>

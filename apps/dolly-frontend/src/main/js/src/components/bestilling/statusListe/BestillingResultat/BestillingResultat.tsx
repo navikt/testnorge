@@ -55,7 +55,7 @@ export default function BestillingResultat({
 					<h3>Bestillingsstatus</h3>
 					<div className="status-header_button-wrap">
 						<Button
-							data-cy={CypressSelector.BUTTON_LUKK_BESTILLING_RESULTAT}
+							data-testid={CypressSelector.BUTTON_LUKK_BESTILLING_RESULTAT}
 							kind="remove-circle"
 							onClick={() => {
 								lukkBestilling(bestilling.id)

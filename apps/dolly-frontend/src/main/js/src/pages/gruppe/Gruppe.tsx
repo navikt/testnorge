@@ -119,7 +119,7 @@ export default ({
 				<div className="gruppe--full gruppe--flex-row-center">
 					{!bankIdBruker && (
 						<NavButton
-							data-cy={CypressSelector.BUTTON_OPPRETT_PERSONER}
+							data-testid={CypressSelector.BUTTON_OPPRETT_PERSONER}
 							variant={'primary'}
 							onClick={visStartBestilling}
 							disabled={erLaast}
@@ -132,7 +132,7 @@ export default ({
 						</NavButton>
 					)}
 					<NavButton
-						data-cy={CypressSelector.BUTTON_IMPORTER_PERSONER}
+						data-testid={CypressSelector.BUTTON_IMPORTER_PERSONER}
 						variant={bankIdBruker ? 'primary' : 'secondary'}
 						onClick={() =>
 							navigate(`/tenor/personer`, {
@@ -157,7 +157,7 @@ export default ({
 						style={{ backgroundColor: '#ffffff' }}
 					>
 						<ToggleGroup.Item
-							data-cy={CypressSelector.TOGGLE_VISNING_PERSONER}
+							data-testid={CypressSelector.TOGGLE_VISNING_PERSONER}
 							key={VisningType.VISNING_PERSONER}
 							value={VisningType.VISNING_PERSONER}
 						>
@@ -169,7 +169,7 @@ export default ({
 							{`Personer (${gruppe.antallIdenter || 0})`}
 						</ToggleGroup.Item>
 						<ToggleGroup.Item
-							data-cy={CypressSelector.TOGGLE_VISNING_BESTILLINGER}
+							data-testid={CypressSelector.TOGGLE_VISNING_BESTILLINGER}
 							key={VisningType.VISNING_BESTILLING}
 							value={VisningType.VISNING_BESTILLING}
 						>

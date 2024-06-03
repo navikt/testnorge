@@ -87,7 +87,7 @@ export default function BestillingListe({
 					<Spinner size={24} />
 				) : (
 					<Icon
-						data-cy={CypressSelector.BUTTON_OPEN_BESTILLING}
+						data-testid={CypressSelector.BUTTON_OPEN_BESTILLING}
 						kind={ikonTypeMap[cell]}
 						title={cell}
 					/>

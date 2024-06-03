@@ -72,7 +72,7 @@ export default ({ gruppe }: TestnorgePageProps) => {
 	return (
 		<div>
 			<div className="testnorge-page-header flexbox--align-center--justify-start">
-				<Title data-cy={CypressSelector.TITLE_TESTNORGE} title="Søk og import fra Test-Norge" />
+				<Title data-testid={CypressSelector.TITLE_TESTNORGE} title="Søk og import fra Test-Norge" />
 				<Hjelpetekst placement={bottom}>
 					Test-Norge er en felles offentlig testdatapopulasjon, som ble laget av Skatteetaten i
 					forbindelse med nytt folkeregister. Populasjonen er levende, og endrer seg fortløpende ved

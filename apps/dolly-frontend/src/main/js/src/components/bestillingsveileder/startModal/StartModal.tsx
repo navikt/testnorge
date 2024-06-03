@@ -21,11 +21,11 @@ export const BestillingsveilederModal = ({ onAvbryt, onSubmit, brukernavn }: NyB
 			<div className="start-bestilling-modal">
 				<h1>Opprett personer</h1>
 				<StyledToggleGroup value={type} onChange={(value) => setType(value)}>
-					<ToggleGroup.Item data-cy={CypressSelector.TOGGLE_NY_PERSON} value={'ny'} key={'ny'}>
+					<ToggleGroup.Item data-testid={CypressSelector.TOGGLE_NY_PERSON} value={'ny'} key={'ny'}>
 						Ny person
 					</ToggleGroup.Item>
 					<ToggleGroup.Item
-						data-cy={CypressSelector.TOGGLE_EKSISTERENDE_PERSON}
+						data-testid={CypressSelector.TOGGLE_EKSISTERENDE_PERSON}
 						value={'eksisterende'}
 						key={'eksisterende'}
 					>

@@ -21,13 +21,13 @@ const DollyTooltip = ({
 		return <>{children}</>
 	}
 	return useExternalTooltip ? (
-		<span data-cy={dataCy}>
+		<span data-testid={dataCy}>
 			<RcTooltip.default overlay={content} placement="top" {...rest}>
 				{children}
 			</RcTooltip.default>
 		</span>
 	) : (
-		<span data-cy={dataCy}>
+		<span data-testid={dataCy}>
 			<Tooltip content={content} placement="top" delay={0.1} {...rest}>
 				{children}
 			</Tooltip>

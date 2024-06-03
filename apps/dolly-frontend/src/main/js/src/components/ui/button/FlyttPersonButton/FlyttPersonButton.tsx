@@ -10,7 +10,7 @@ export const FlyttPersonButton = ({ gruppeId, disabled }) => {
 	return (
 		<>
 			<Button
-				data-cy={CypressSelector.BUTTON_FLYTT_PERSONER}
+				data-testid={CypressSelector.BUTTON_FLYTT_PERSONER}
 				onClick={openModal}
 				kind="flytt"
 				disabled={disabled}

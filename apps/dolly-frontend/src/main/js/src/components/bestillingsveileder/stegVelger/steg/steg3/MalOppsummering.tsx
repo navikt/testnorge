@@ -43,7 +43,11 @@ export const MalOppsummering = ({
 	<div className="input-oppsummering">
 		<Tittel>
 			<h2>Legg til mal</h2>
-			<Switch data-cy={CypressSelector.TOGGLE_BESTILLING_MAL} onChange={onChange} children={null} />
+			<Switch
+				data-testid={CypressSelector.TOGGLE_BESTILLING_MAL}
+				onChange={onChange}
+				children={null}
+			/>
 		</Tittel>
 		{opprettMal && (
 			<span>
@@ -71,7 +75,7 @@ export const MalOppsummering = ({
 					/>
 				) : (
 					<FormTextInput
-						data-cy={CypressSelector.INPUT_BESTILLING_MALNAVN}
+						data-testid={CypressSelector.INPUT_BESTILLING_MALNAVN}
 						name="malBestillingNavn"
 						size={'xlarge'}
 						label="Malnavn"

@@ -40,7 +40,7 @@ export const NavigerTilPerson = ({ ident }: NavigerTilPersonProps) => {
 
 	return (
 		<Button
-			data-cy={CypressSelector.BUTTON_VIS_I_GRUPPE}
+			data-testid={CypressSelector.BUTTON_VIS_I_GRUPPE}
 			variant="tertiary"
 			size="xsmall"
 			icon={<ArrowRightIcon />}
