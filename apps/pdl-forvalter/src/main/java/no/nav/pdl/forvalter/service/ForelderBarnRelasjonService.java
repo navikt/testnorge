@@ -124,6 +124,10 @@ public class ForelderBarnRelasjonService implements BiValidation<ForelderBarnRel
         setRelatertPerson(relasjon, hovedperson);
         addForelderBarnRelasjon(relasjon, hovedperson);
 
+        if (isNotBlank(request.getRelatertPerson())) {
+            return emptyList();
+        }
+
         if (request.getRelatertPersonsRolle() == Rolle.BARN &&
                 isNotTrue(request.getPartnerErIkkeForelder()) && hovedperson.getSivilstand().stream()
                 .anyMatch(sivilstand -> nonNull(sivilstand.getRelatertVedSivilstand()))) {
