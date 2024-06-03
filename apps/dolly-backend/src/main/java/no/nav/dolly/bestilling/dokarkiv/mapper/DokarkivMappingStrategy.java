@@ -12,6 +12,7 @@ import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+import java.util.UUID;
 
 import static java.util.Objects.isNull;
 import static no.nav.dolly.bestilling.dokarkiv.domain.DokarkivRequest.IdType.FNR;
@@ -37,6 +38,8 @@ public class DokarkivMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(RsDokarkiv rsDokarkiv, DokarkivRequest dokarkivRequest, MappingContext context) {
 
+
+                        dokarkivRequest.setEksternReferanseId(UUID.randomUUID().toString());
                         dokarkivRequest.setTittel(rsDokarkiv.getTittel());
                         dokarkivRequest.setJournalfoerendeEnhet(isBlank(rsDokarkiv.getJournalfoerendeEnhet()) ? null : rsDokarkiv.getJournalfoerendeEnhet());
                         dokarkivRequest.setTema(rsDokarkiv.getTema());
