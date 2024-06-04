@@ -51,15 +51,22 @@ export const PdlPersonForm = ({
 					/>
 				</>
 			)}
-			<h4>Velg eksisterende person</h4>
-			<PdlEksisterendePerson
-				nyPersonPath={nyPersonPath}
-				eksisterendePersonPath={eksisterendePersonPath}
-				label={label}
-				formMethods={formMethods}
-				nyIdentValg={nyIdentValg}
-				eksisterendeNyPerson={eksisterendeNyPerson}
-			/>
+			<>
+				{
+					<div title={opts?.antall > 1 && 'Valg er kun tilgjengelig for individ, ikke for gruppe'}>
+						<h4>Velg eksisterende person</h4>
+						<PdlEksisterendePerson
+							nyPersonPath={nyPersonPath}
+							eksisterendePersonPath={eksisterendePersonPath}
+							label={label}
+							formMethods={formMethods}
+							nyIdentValg={nyIdentValg}
+							eksisterendeNyPerson={eksisterendeNyPerson}
+							disabled={opts?.antall > 1}
+						/>
+					</div>
+				}
+			</>
 		</>
 	)
 }

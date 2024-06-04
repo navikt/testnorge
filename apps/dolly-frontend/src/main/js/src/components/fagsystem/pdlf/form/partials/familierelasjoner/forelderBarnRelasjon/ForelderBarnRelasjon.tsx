@@ -121,6 +121,10 @@ export const ForelderBarnRelasjonForm = ({
 	const initiellMaster = testnorgePerson || identtype === 'NPID' ? 'PDL' : 'FREG'
 	const kanVelgeMaster = !testnorgePerson && identtype !== 'NPID'
 
+	const typeAnsvarlig = Options('typeAnsvarlig').filter(
+		(value) => value.value !== 'EKSISTERENDE' || opts?.antall === 1,
+	)
+
 	return (
 		<div className="flexbox--flex-wrap">
 			<div className="toggle--wrapper">
@@ -162,14 +166,17 @@ export const ForelderBarnRelasjonForm = ({
 						)}
 					</>
 				)}
-				<FormSelect
-					name={`${path}.typeForelderBarn`}
-					label={erBarn ? 'Type barn' : 'Type forelder'}
-					options={Options('typeAnsvarlig')}
-					onChange={(target: Target) => handleChangeTypeForelderBarn(target, path)}
-					size="medium"
-					vis={!testnorgePerson}
-				/>
+				<div help="Eksisterende person er kun tilgjengelig for individ, ikke gruppe">
+					<FormSelect
+						name={`${path}.typeForelderBarn`}
+						label={erBarn ? 'Type barn' : 'Type forelder'}
+						options={typeAnsvarlig}
+						onChange={(target: Target) => handleChangeTypeForelderBarn(target, path)}
+						size="medium"
+						vis={!testnorgePerson}
+						title={'test'}
+					/>
+				</div>
 			</div>
 
 			{(testnorgePerson || getForelderBarnType() === TypeAnsvarlig.EKSISTERENDE) && (

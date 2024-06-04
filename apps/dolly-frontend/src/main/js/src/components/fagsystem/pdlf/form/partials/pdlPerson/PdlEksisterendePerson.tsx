@@ -19,6 +19,7 @@ interface PdlEksisterendePersonValues {
 	disabled?: boolean
 	nyIdentValg?: NyIdent
 	eksisterendeNyPerson?: Option
+	title?: string
 }
 
 export const PdlEksisterendePerson = ({
@@ -30,6 +31,7 @@ export const PdlEksisterendePerson = ({
 	disabled = false,
 	nyIdentValg = null,
 	eksisterendeNyPerson = null,
+	title,
 }: PdlEksisterendePersonValues) => {
 	const opts = useContext(BestillingsveilederContext)
 

@@ -73,8 +73,8 @@ export const SivilstandForm = ({
 			{formMethods.watch(`${path}.type`) === 'SAMBOER' && (
 				<div style={{ marginLeft: '-20px', marginRight: '20px', paddingTop: '27px' }}>
 					<Hjelpetekst>
-						Samboer eksisterer verken i PDL eller TPS. Personer med denne typen sisvilstand vil
-						derfor vises som ugift i fagsystemene.
+						Samboer eksisterer ikke i PDL. Personer med denne typen sisvilstand vil derfor vises som
+						ugift i fagsystemene.
 					</Hjelpetekst>
 				</div>
 			)}

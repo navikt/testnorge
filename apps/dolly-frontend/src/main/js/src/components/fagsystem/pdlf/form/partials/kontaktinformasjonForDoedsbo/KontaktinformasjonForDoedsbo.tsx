@@ -26,10 +26,7 @@ export const KontaktinformasjonForDoedsboForm = ({
 				options={Options('skifteform')}
 				isClearable={false}
 			/>
-			<FormDatepicker
-				name={`${path}.attestutstedelsesdato`}
-				label="Utstedelsesdato skifteattest"
-			/>
+			<FormDatepicker name={`${path}.attestutstedelsesdato`} label="Utstedelsesdato skifteattest" />
 			<Kontakt formMethods={formMethods} path={path} eksisterendeNyPerson={eksisterendeNyPerson} />
 			<Adresse formMethods={formMethods} path={`${path}.adresse`} />
 			<AvansertForm path={path} kanVelgeMaster={false} />

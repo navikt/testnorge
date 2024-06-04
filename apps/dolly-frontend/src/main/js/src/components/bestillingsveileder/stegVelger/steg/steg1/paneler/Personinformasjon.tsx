@@ -14,6 +14,7 @@ import {
 	initialTilrettelagtKommunikasjon,
 	initialVergemaal,
 } from '@/components/fagsystem/pdlf/form/initialValues'
+import { useGruppeIdenter } from '@/utils/hooks/useGruppe'
 
 const ignoreKeysTestnorge = [
 	'alder',
@@ -30,16 +31,33 @@ const utvandret = 'utvandretTilLand'
 export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 	const sm = stateModifier(PersoninformasjonPanel.initialValues)
 	const opts = useContext(BestillingsveilederContext)
+
+	const gruppeId = opts?.gruppeId || opts?.gruppe?.id
+	const { identer, loading: gruppeLoading, error: gruppeError } = useGruppeIdenter(gruppeId)
+	const harTestnorgeIdenter = identer?.filter((ident) => ident.master === 'PDL').length > 0
+
 	const opprettFraEksisterende = opts.is.opprettFraIdenter
 	const leggTil = opts.is.leggTil || opts.is.leggTilPaaGruppe
+
+	const testNorgePerson = opts?.identMaster === 'PDL'
+	const npidPerson = opts?.identtype === 'NPID'
+	const ukjentGruppe = !gruppeId
+	const tekstUkjentGruppe = 'Funksjonen er deaktivert da personer for relasjon er ukjent'
+	const testNorgeFlere = testNorgePerson && opts?.antall > 1
+	const tekstFlerePersoner = 'Funksjonen er kun tilgjengelig per individ, ikke for gruppe'
+	const leggTilPaaGruppe = !!opts?.leggTilPaaGruppe
+	const tekstLeggTilPaaGruppe =
+		'Legg-til-på-gruppe støttes ikke for gruppe som inneholder personer fra Test-Norge'
 
 	const harFnr = opts.identtype === 'FNR'
 	// Noen egenskaper kan ikke endres når personen opprettes fra eksisterende eller videreføres med legg til
 
-	const ukjentGruppe = !opts?.gruppeId && !opts?.gruppe?.id
 	const getIgnoreKeys = () => {
 		var ignoreKeys = testnorgeIdent ? [...ignoreKeysTestnorge] : ['identtype']
-		if (testnorgeIdent && ukjentGruppe) {
+		if (
+			(testnorgeIdent && (ukjentGruppe || opts?.antall > 1)) ||
+			(harTestnorgeIdenter && leggTilPaaGruppe)
+		) {
 			ignoreKeys.push('fullmakt')
 		}
 		if (sm.attrs.utenlandskBankkonto.checked) {
@@ -80,12 +98,8 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 					<Attributt attr={sm.attrs.telefonnummer} />
 					<Attributt
 						attr={sm.attrs.fullmakt}
-						disabled={!opts?.gruppeId && !opts?.gruppe?.id}
-						title={
-							!opts?.gruppeId &&
-							!opts?.gruppe?.id &&
-							'Funksjonen er deaktivert da personer for relasjon er ukjent'
-						}
+						disabled={ukjentGruppe || testNorgeFlere}
+						title={(ukjentGruppe && tekstUkjentGruppe) || (testNorgeFlere && tekstFlerePersoner)}
 					/>
 					<Attributt attr={sm.attrs.sikkerhetstiltak} />
 					<Attributt attr={sm.attrs.sprakKode} />
@@ -124,18 +138,16 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 					attr={sm.attrs.innvandretFraLand}
 					disabled={!harFnr}
 					title={
-						!harFnr
-							? 'Personer med identtype DNR eller NPID kan ikke innvandre fordi de ikke har norsk statsborgerskap'
-							: ''
+						!harFnr &&
+						'Personer med identtype DNR eller NPID kan ikke innvandre fordi de ikke har norsk statsborgerskap'
 					}
 				/>
 				<Attributt
 					attr={sm.attrs.utvandretTilLand}
 					disabled={!harFnr}
 					title={
-						!harFnr
-							? 'Personer med identtype DNR eller NPID kan ikke utvandre fordi de ikke har norsk statsborgerskap'
-							: ''
+						!harFnr &&
+						'Personer med identtype DNR eller NPID kan ikke utvandre fordi de ikke har norsk statsborgerskap'
 					}
 				/>
 			</AttributtKategori>
@@ -149,12 +161,17 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 				<Attributt attr={sm.attrs.telefonnummer} />
 				<Attributt
 					attr={sm.attrs.vergemaal}
-					disabled={opts?.identtype === 'NPID'}
+					disabled={npidPerson}
+					title={npidPerson && 'Ikke tilgjengelig for personer med identtype NPID'}
+				/>
+				<Attributt
+					attr={sm.attrs.fullmakt}
+					disabled={npidPerson || (harTestnorgeIdenter && leggTilPaaGruppe)}
 					title={
-						opts?.identtype === 'NPID' ? 'Ikke tilgjengelig for personer med identtype NPID' : ''
+						(npidPerson && 'Ikke tilgjengelig for personer med identtype NPID') ||
+						(harTestnorgeIdenter && leggTilPaaGruppe && tekstLeggTilPaaGruppe)
 					}
 				/>
-				<Attributt attr={sm.attrs.fullmakt} />
 				<Attributt attr={sm.attrs.sikkerhetstiltak} />
 				<Attributt attr={sm.attrs.tilrettelagtKommunikasjon} />
 			</AttributtKategori>

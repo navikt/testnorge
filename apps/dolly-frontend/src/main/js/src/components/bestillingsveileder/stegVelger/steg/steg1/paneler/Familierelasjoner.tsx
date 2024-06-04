@@ -10,6 +10,7 @@ import { harValgtAttributt } from '@/components/ui/form/formUtils'
 import { relasjonerAttributter } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/Familierelasjoner'
 import { useContext } from 'react'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import { useGruppeIdenter } from '@/utils/hooks/useGruppe'
 
 export const FamilierelasjonPanel = ({ stateModifier, formValues }) => {
 	const sm = stateModifier(FamilierelasjonPanel.initialValues)
@@ -18,17 +19,27 @@ export const FamilierelasjonPanel = ({ stateModifier, formValues }) => {
 	const testNorgePerson = opts?.identMaster === 'PDL'
 	const npidPerson = opts?.identtype === 'NPID'
 
-	const ukjentGruppe = !opts?.gruppeId && !opts?.gruppe?.id
+	const gruppeId = opts?.gruppeId || opts?.gruppe?.id
+	const { identer, loading: gruppeLoading, error: gruppeError } = useGruppeIdenter(gruppeId)
+	const harTestnorgeIdenter = identer?.filter((ident) => ident.master === 'PDL').length > 0
+
+	const ukjentGruppe = !gruppeId
 	const tekstUkjentGruppe = 'Funksjonen er deaktivert da personer for relasjon er ukjent'
 	const testNorgeFlere = testNorgePerson && opts?.antall > 1
 	const tekstTestNorgeFlere = 'Funksjonen er kun tilgjengelig per individ, ikke for gruppe'
+	const leggTilPaaGruppe = !!opts?.leggTilPaaGruppe
+	const tekstLeggTilPaaGruppe =
+		'Legg-til-på-gruppe støttes ikke for gruppe som inneholder personer fra Test-Norge'
 
 	const getIgnoreKeys = () => {
 		var ignoreKeys = []
 		if (testNorgePerson || npidPerson) {
 			ignoreKeys.push('foreldreansvar', 'doedfoedtBarn')
 		}
-		if (ukjentGruppe && (testNorgePerson || npidPerson)) {
+		if (
+			(ukjentGruppe && (testNorgePerson || npidPerson)) ||
+			(leggTilPaaGruppe && harTestnorgeIdenter)
+		) {
 			ignoreKeys.push('sivilstand', 'barnForeldre')
 		}
 		return ignoreKeys
@@ -45,15 +56,23 @@ export const FamilierelasjonPanel = ({ stateModifier, formValues }) => {
 			<AttributtKategori title="Sivilstand" attr={sm.attrs}>
 				<Attributt
 					attr={sm.attrs.sivilstand}
-					disabled={ukjentGruppe || testNorgeFlere}
-					title={(ukjentGruppe && tekstUkjentGruppe) || (testNorgeFlere && tekstTestNorgeFlere)}
+					disabled={ukjentGruppe || testNorgeFlere || (leggTilPaaGruppe && harTestnorgeIdenter)}
+					title={
+						(ukjentGruppe && tekstUkjentGruppe) ||
+						(testNorgeFlere && tekstTestNorgeFlere) ||
+						(leggTilPaaGruppe && harTestnorgeIdenter && tekstLeggTilPaaGruppe)
+					}
 				/>
 			</AttributtKategori>
 			<AttributtKategori title="Barn/foreldre" attr={sm.attrs}>
 				<Attributt
 					attr={sm.attrs.barnForeldre}
-					disabled={ukjentGruppe || testNorgeFlere}
-					title={(ukjentGruppe && tekstUkjentGruppe) || (testNorgeFlere && tekstTestNorgeFlere)}
+					disabled={ukjentGruppe || testNorgeFlere || (leggTilPaaGruppe && harTestnorgeIdenter)}
+					title={
+						(ukjentGruppe && tekstUkjentGruppe) ||
+						(testNorgeFlere && tekstTestNorgeFlere) ||
+						(leggTilPaaGruppe && harTestnorgeIdenter && tekstLeggTilPaaGruppe)
+					}
 				/>
 				<Attributt
 					attr={sm.attrs.foreldreansvar}
