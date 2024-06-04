@@ -1,5 +1,5 @@
 plugins {
-    id "com.gradle.enterprise" version "3.12.3"
+    id "com.gradle.develocity" version "3.17.4"
 }
 
 rootProject.name = 'testnorge-statisk-data-forvalter'
@@ -17,9 +17,9 @@ includeBuild '../../libs/commands'
 includeBuild '../../libs/csv-converter'
 includeBuild '../../libs/testing'
 
-gradleEnterprise {
+develocity {
     buildScan {
-        termsOfServiceUrl = "https://gradle.com/terms-of-service"
-        termsOfServiceAgree = "yes"
+        termsOfUseUrl = "https://gradle.com/terms-of-service"
+        termsOfUseAgree = "yes"
     }
 }
