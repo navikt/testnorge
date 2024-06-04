@@ -21,6 +21,8 @@ develocity {
     }
 }
 
+includeBuild './plugins/java'
+
 includeBuild './proxies/aareg-proxy'
 includeBuild './proxies/aareg-synt-services-proxy'
 includeBuild './proxies/arbeidsplassencv-proxy'
