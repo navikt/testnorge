@@ -1,10 +1,5 @@
-export const gjeldendeProfilMock = {
-	visningsNavn: 'BeASt, BugTerminator',
-	epost: 'BeASt@bugexterminator.no',
-	avdeling: '1234 Testytest',
-	organisasjon: 'CYPRESS',
-	type: 'Testbruker',
-}
+export const gjeldendeProfilMock =
+	"{visningsNavn: 'BeASt, BugTerminator', epost: 'BeASt@bugexterminator.no', avdeling: '1234 Testytest', organisasjon: 'CYPRESS', type: 'Testbruker'}"
 
 export const gjeldendeBrukerMock = {
 	brukerId: '1234-5678-12',
