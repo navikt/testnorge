@@ -16,9 +16,9 @@ server:
     servlet:
       encoding:
         charset: UTF-8
-    max-http-header-size: 70KB
   error:
     include-message: always
+  max-http-request-header-size: 100KB
 
 spring:
   cloud:
