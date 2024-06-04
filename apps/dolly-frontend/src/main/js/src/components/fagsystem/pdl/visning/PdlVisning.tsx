@@ -87,10 +87,15 @@ export const PdlVisning = ({
 					pdlfData={pdlfPerson?.foedsel}
 					tmpPersoner={tmpPdlforvalter}
 					ident={ident}
-					identtype={identtype}
 					erPdlVisning={miljoeVisning}
 				/>
-				<Doedsfall data={doedsfall} erPdlVisning />
+				<Doedsfall
+					data={doedsfall}
+					pdlfData={pdlfPerson?.doedsfall}
+					tmpPersoner={tmpPdlforvalter}
+					ident={ident}
+					erPdlVisning={miljoeVisning}
+				/>
 				<GeografiskTilknytning data={hentGeografiskTilknytning} />
 				<PdlNasjonalitet data={hentPerson} />
 				<Telefonnummer data={telefonnummer} erPdlVisning />

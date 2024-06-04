@@ -47,6 +47,7 @@ const DoedsfallVisning = ({
 	tmpPersoner,
 	ident,
 	erPdlVisning,
+	master,
 }: DoedsfallVisningTypes) => {
 	const initDoedsfall = Object.assign(_.cloneDeep(initialDoedsfall), data[idx])
 	const initialValues = { doedsfall: initDoedsfall }
@@ -73,12 +74,14 @@ const DoedsfallVisning = ({
 			redigertAttributt={redigertDoedsfallValues}
 			path="doedsfall"
 			ident={ident}
+			master={master}
 		/>
 	)
 }
 
 export const Doedsfall = ({
 	data,
+	pdlfData,
 	tmpPersoner,
 	ident,
 	erPdlVisning = false,
@@ -94,20 +97,26 @@ export const Doedsfall = ({
 			<div className="person-visning_content">
 				<ErrorBoundary>
 					<DollyFieldArray data={data} header="" nested>
-						{(item: DoedsfallData, idx: number) =>
-							erRedigerbar ? (
-								<DoedsfallVisning
-									doedsfall={item}
-									idx={idx}
-									data={data}
-									tmpPersoner={tmpPersoner}
-									ident={ident}
-									erPdlVisning={erPdlVisning}
-								/>
-							) : (
-								<DoedsfallLes doedsfall={item} idx={idx} />
+						{(item: DoedsfallData, idx: number) => {
+							const master = item?.metadata?.master
+							const pdlfElement = pdlfData?.find(
+								(element) => element.hendelseId === item?.metadata?.opplysningsId,
 							)
-						}
+							if (erRedigerbar && master !== 'FREG') {
+								return (
+									<DoedsfallVisning
+										doedsfall={master === 'PDL' && pdlfElement ? pdlfElement : item}
+										idx={idx}
+										data={master === 'PDL' && pdlfData ? pdlfData : data}
+										tmpPersoner={tmpPersoner}
+										ident={ident}
+										erPdlVisning={erPdlVisning}
+										master={master}
+									/>
+								)
+							}
+							return <DoedsfallLes doedsfall={item} idx={idx} />
+						}}
 					</DollyFieldArray>
 				</ErrorBoundary>
 			</div>

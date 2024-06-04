@@ -109,7 +109,6 @@ export const Foedsel = ({
 	pdlfData,
 	tmpPersoner,
 	ident,
-	identtype,
 	erPdlVisning = false,
 	erRedigerbar = true,
 }: FoedselTypes) => {
@@ -135,7 +134,6 @@ export const Foedsel = ({
 										idx={idx}
 										data={master === 'PDL' && pdlfData ? pdlfData : data}
 										ident={ident}
-										identtype={identtype}
 										erPdlVisning={erPdlVisning}
 										tmpPersoner={tmpPersoner}
 										master={master}
