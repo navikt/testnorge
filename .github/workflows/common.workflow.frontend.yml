@@ -115,11 +115,15 @@ jobs:
           java-version: 21
       - name: "Gradle"
         id: gradle
-        uses: gradle/gradle-build-action@v3
+        uses: gradle/actions/setup-gradle@v3
         with:
-          build-root-directory: ${{ inputs.working-directory }}
-          arguments: build ${{ inputs.sonar-enabled && 'jacocoTestReport sonar -Dsonar.gradle.skipCompile=true' || '' }} --scan
           cache-read-only: false
+        env:
+          NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: "Build"
+        working-directory: ${{ inputs.working-directory }}
+        run: ./gradlew build ${{ inputs.sonar-enabled && 'jacocoTestReport sonar -Dsonar.gradle.skipCompile=true' || '' }} --scan
         env:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -149,7 +153,7 @@ jobs:
       image: ${{ steps.docker-build-push.outputs.image }}
 
   deploy:
-    needs: [start, build]
+    needs: [ start, build ]
     if: needs.start.outputs.do-deploy == 'true'
     concurrency: ${{ inputs.image-suffix }}
     runs-on: ubuntu-latest
@@ -164,7 +168,7 @@ jobs:
           VAR: image=${{ needs.build.outputs.image }}
 
   deploy-test:
-    needs: [start, build]
+    needs: [ start, build ]
     if: needs.start.outputs.do-deploy-test == 'true'
     concurrency: ${{ inputs.image-suffix }}-test
     runs-on: ubuntu-latest
@@ -180,7 +184,7 @@ jobs:
 
   # Only used by dolly-frontend.
   deploy-idporten:
-    needs: [start, build]
+    needs: [ start, build ]
     if: needs.start.outputs.do-deploy-idporten == 'true'
     concurrency: ${{ inputs.image-suffix }}-idporten
     runs-on: ubuntu-latest
@@ -196,7 +200,7 @@ jobs:
 
   # Only used by dolly-frontend.
   deploy-unstable:
-    needs: [start, build]
+    needs: [ start, build ]
     if: needs.start.outputs.do-deploy-unstable == 'true'
     concurrency: ${{ inputs.image-suffix }}-unstable
     runs-on: ubuntu-latest
