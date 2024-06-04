@@ -47,7 +47,7 @@ export const DokumentasjonDropdown = () => {
 						<Dropdown.Menu.List.Item
 							onClick={() =>
 								window.open(
-									'https://navikt.github.io/testnorge/applications/dolly/',
+									'https://navikt.github.io/testnorge/docs/applications/dolly/brukerveiledning',
 									'_blank',
 									'noopener',
 								)
@@ -60,7 +60,8 @@ export const DokumentasjonDropdown = () => {
 							<Dropdown.Menu.List.Item
 								onClick={() =>
 									window.open(
-										window.location.hostname.includes('frontend')
+										window.location.hostname.includes('frontend') ||
+											window.location.hostname.includes('localhost')
 											? 'https://dolly-backend-dev.intern.dev.nav.no/swagger'
 											: 'https://dolly-backend.intern.dev.nav.no/swagger',
 										'_blank',
