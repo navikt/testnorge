@@ -1,4 +1,4 @@
-import {PdlforvalterApi, SkjermingApi} from '@/service/Api'
+import { DollyApi, PdlforvalterApi, SkjermingApi } from '@/service/Api'
 // @ts-ignore
 import { createActions } from 'redux-actions'
 import { handleActions } from '@/ducks/utils/immerHandleActions'
@@ -14,6 +14,12 @@ export const actions = createActions({
 			identer,
 		}),
 	],
+	hentPdlPersoner: [
+		DollyApi.getPersonerFraPdl,
+		(identer: Array<string>) => ({
+			identer,
+		}),
+	],
 	getSkjermingsregister: [
 		SkjermingApi.getSkjerming,
 		(ident) => ({
@@ -24,6 +30,7 @@ export const actions = createActions({
 
 const initialState = {
 	pdlforvalter: {},
+	pdl: {},
 	skjermingsregister: {},
 }
 
@@ -37,10 +44,15 @@ export default handleActions(
 				state.pdlforvalter[ident.person.ident] = ident
 			})
 		},
+		[onSuccess(actions.hentPdlPersoner)](state: RootStateOrAny, action: any) {
+			action.payload.data?.data?.hentPersonBolk?.forEach((ident) => {
+				state.pdl[ident.ident] = ident
+			})
+		},
 		[onSuccess(actions.getSkjermingsregister)](state: RootStateOrAny, action: any) {
 			state.skjermingsregister[action.meta.ident] = action.payload?.data
 		},
 		// @ts-ignore
 	},
-	initialState
+	initialState,
 )

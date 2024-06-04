@@ -42,6 +42,7 @@ import './VisningRedigerbarForm.less'
 
 type VisningTypes = {
 	getPdlForvalter: Function
+	getPdl: Function
 	dataVisning: any
 	initialValues: any
 	eksisterendeNyPerson?: Option
@@ -109,6 +110,7 @@ const Knappegruppe = styled.div`
 
 export const VisningRedigerbar = ({
 	getPdlForvalter,
+	getPdl,
 	dataVisning,
 	initialValues,
 	eksisterendeNyPerson = null,
@@ -156,7 +158,9 @@ export const VisningRedigerbar = ({
 					setVisningModus(Modus.LoadingPdl)
 					DollyApi.sendOrdre(ident).then(() => {
 						getPdlForvalter().then(() => {
-							setVisningModus(Modus.Les)
+							getPdl().then(() => {
+								setVisningModus(Modus.Les)
+							})
 						})
 					})
 				}
@@ -177,7 +181,9 @@ export const VisningRedigerbar = ({
 					setVisningModus(Modus.LoadingPdl)
 					DollyApi.sendOrdre(ident).then(() => {
 						getPdlForvalter().then(() => {
-							setVisningModus(Modus.Les)
+							getPdl().then(() => {
+								setVisningModus(Modus.Les)
+							})
 						})
 					})
 				}

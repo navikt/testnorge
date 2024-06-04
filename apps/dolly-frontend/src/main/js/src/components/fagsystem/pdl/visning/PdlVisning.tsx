@@ -82,7 +82,14 @@ export const PdlVisning = ({
 					tpsMessagingLoading={loading?.tpsMessaging}
 				/>
 				<IdentInfo pdlResponse={hentIdenter} />
-				<Foedsel data={foedsel} erPdlVisning />
+				<Foedsel
+					data={foedsel}
+					pdlfData={pdlfPerson?.foedsel}
+					tmpPersoner={tmpPdlforvalter}
+					ident={ident}
+					identtype={identtype}
+					erPdlVisning={miljoeVisning}
+				/>
 				<Doedsfall data={doedsfall} erPdlVisning />
 				<GeografiskTilknytning data={hentGeografiskTilknytning} />
 				<PdlNasjonalitet data={hentPerson} />
