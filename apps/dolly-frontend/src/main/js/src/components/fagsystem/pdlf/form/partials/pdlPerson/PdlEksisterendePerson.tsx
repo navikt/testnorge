@@ -32,17 +32,18 @@ export const PdlEksisterendePerson = ({
 	eksisterendeNyPerson = null,
 }: PdlEksisterendePersonValues) => {
 	const opts = useContext(BestillingsveilederContext)
-	console.log('opts', opts)
+
 	const antall = opts?.antall || 1
 	const gruppeId = opts?.gruppeId || opts?.gruppe?.id
-	// const gruppeId = window.location.pathname.split('/')[2]
-	console.log('gruppeId', gruppeId)
 
 	const { identer, loading: gruppeLoading, error: gruppeError } = useGruppeIdenter(gruppeId)
+	const identNy = opts?.personFoerLeggTil?.pdl?.ident || opts?.importPersoner?.[0].ident
 	const identMaster = opts?.identMaster || 'PDLF'
+
+	identer?.push({ ident: identNy, master: identMaster })
+
 	const filtrerteIdenter = identer?.filter((ident) => ident.master == identMaster)
 
-	console.log('identer', identer)
 	const {
 		data: pdlOptions,
 		loading: pdlLoading,
@@ -60,7 +61,7 @@ export const PdlEksisterendePerson = ({
 		'SKILT_PARTNER',
 		'GJENLEVENDE_PARTNER',
 	]
-	console.log('pdlOptions', pdlOptions)
+
 	const harForeldreansvarForValgteBarn = (foreldreansvar: Array<string>) => {
 		let harEksisterendeAnsvar = false
 		const valgteBarn = formMethods
@@ -88,13 +89,13 @@ export const PdlEksisterendePerson = ({
 		return antallEksisterendeForeldre + antallNyeForeldre
 	}
 
-	const checkForeldre = (ident: string) => {
+	const checkForeldre = (person: object) => {
 		const relasjoner = formMethods.getValues()?.pdldata?.person?.forelderBarnRelasjon
-		if (!!relasjoner.find((relasjon) => relasjon.relatertPerson === ident)) {
+		if (!!relasjoner.find((relasjon) => relasjon.relatertPerson === person.value)) {
 			return false
 		}
 
-		let antallForeldre = eksisterendePerson.foreldre?.length
+		let antallForeldre = eksisterendePerson.foreldre?.length || 0
 		for (let i = 0; i < relasjoner.length; i++) {
 			if (relasjoner[i].minRolleForPerson === 'BARN') {
 				antallForeldre++
@@ -106,9 +107,11 @@ export const PdlEksisterendePerson = ({
 		return true
 	}
 
-	const eksisterendeIdent = opts?.personFoerLeggTil?.pdl?.ident
+	const eksisterendeIdent = opts?.personFoerLeggTil?.pdl?.ident || opts?.importPersoner?.[0]?.ident
 
-	const eksisterendePerson = pdlOptions.find((x) => x.value === eksisterendeIdent)
+	const eksisterendePerson = pdlOptions.find((x) => x.value === eksisterendeIdent) || {
+		alder: parseInt(formMethods.getValues()?.pdldata?.opprettNyPerson?.alder),
+	}
 
 	const filterOptions = (person: Option) => {
 		if (person.doedsfall) {
