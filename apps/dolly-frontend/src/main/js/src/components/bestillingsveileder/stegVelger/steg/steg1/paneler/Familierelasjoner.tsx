@@ -15,22 +15,25 @@ export const FamilierelasjonPanel = ({ stateModifier, formValues }) => {
 	const sm = stateModifier(FamilierelasjonPanel.initialValues)
 	const opts = useContext(BestillingsveilederContext)
 
-	const limitAccess = opts?.identMaster === 'PDL' || opts?.identtype === 'NPID'
+	const testNorgePerson = opts?.identMaster === 'PDL'
+	const npidPerson = opts?.identtype === 'NPID'
+
+	const ukjentGruppe = !opts?.gruppeId && !opts?.gruppe?.id
+	const tekstUkjentGruppe = 'Funksjonen er deaktivert da personer for relasjon er ukjent'
+	const testNorgeFlere = testNorgePerson && opts?.antall > 1
+	const tekstTestNorgeFlere = 'Funksjonen er kun tilgjengelig per individ, ikke for gruppe'
 
 	const getIgnoreKeys = () => {
 		var ignoreKeys = []
-		if (limitAccess) {
+		if (testNorgePerson || npidPerson) {
 			ignoreKeys.push('foreldreansvar', 'doedfoedtBarn')
 		}
-		if (!opts?.gruppeId && limitAccess) {
+		if (ukjentGruppe && (testNorgePerson || npidPerson)) {
 			ignoreKeys.push('sivilstand', 'barnForeldre')
 		}
-
 		return ignoreKeys
 	}
-	const tekstForDeaktivering = 'Funksjonen er deaktivert da personer for relasjon er ukjent'
-	const visOpplysning = opts?.identMaster !== 'PDL'
-	const disabled = !opts?.gruppeId && !opts?.gruppe?.id
+
 	return (
 		<Panel
 			heading={FamilierelasjonPanel.heading}
@@ -42,33 +45,29 @@ export const FamilierelasjonPanel = ({ stateModifier, formValues }) => {
 			<AttributtKategori title="Sivilstand" attr={sm.attrs}>
 				<Attributt
 					attr={sm.attrs.sivilstand}
-					disabled={disabled}
-					title={disabled && tekstForDeaktivering}
+					disabled={ukjentGruppe || testNorgeFlere}
+					title={(ukjentGruppe && tekstUkjentGruppe) || (testNorgeFlere && tekstTestNorgeFlere)}
 				/>
 			</AttributtKategori>
 			<AttributtKategori title="Barn/foreldre" attr={sm.attrs}>
 				<Attributt
 					attr={sm.attrs.barnForeldre}
-					disabled={disabled}
-					title={disabled && tekstForDeaktivering}
+					disabled={ukjentGruppe || testNorgeFlere}
+					title={(ukjentGruppe && tekstUkjentGruppe) || (testNorgeFlere && tekstTestNorgeFlere)}
 				/>
 				<Attributt
 					attr={sm.attrs.foreldreansvar}
-					disabled={opts?.identtype === 'NPID'}
-					title={
-						opts?.identtype === 'NPID' ? 'Ikke tilgjengelig for personer med identtype NPID' : ''
-					}
-					vis={visOpplysning}
+					disabled={npidPerson}
+					title={npidPerson && 'Ikke tilgjengelig for personer med identtype NPID'}
+					vis={!testNorgePerson}
 				/>
 			</AttributtKategori>
 			<AttributtKategori title="Dødfødt barn" attr={sm.attrs}>
 				<Attributt
 					attr={sm.attrs.doedfoedtBarn}
-					disabled={opts?.identtype === 'NPID'}
-					title={
-						opts?.identtype === 'NPID' ? 'Ikke tilgjengelig for personer med identtype NPID' : ''
-					}
-					vis={visOpplysning}
+					disabled={npidPerson}
+					title={npidPerson && 'Ikke tilgjengelig for personer med identtype NPID'}
+					vis={!testNorgePerson}
 				/>
 			</AttributtKategori>
 		</Panel>

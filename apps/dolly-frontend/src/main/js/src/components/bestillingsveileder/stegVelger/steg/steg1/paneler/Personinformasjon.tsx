@@ -36,9 +36,10 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 	const harFnr = opts.identtype === 'FNR'
 	// Noen egenskaper kan ikke endres når personen opprettes fra eksisterende eller videreføres med legg til
 
+	const ukjentGruppe = !opts?.gruppeId && !opts?.gruppe?.id
 	const getIgnoreKeys = () => {
 		var ignoreKeys = testnorgeIdent ? [...ignoreKeysTestnorge] : ['identtype']
-		if (testnorgeIdent && !opts?.gruppeId) {
+		if (testnorgeIdent && ukjentGruppe) {
 			ignoreKeys.push('fullmakt')
 		}
 		if (sm.attrs.utenlandskBankkonto.checked) {
