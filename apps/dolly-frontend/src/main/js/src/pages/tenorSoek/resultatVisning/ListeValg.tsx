@@ -25,13 +25,12 @@ export const ListeValg = ({ person, markertePersoner, setMarkertePersoner }: Lis
 	return ibruk ? (
 		<NavigerTilPerson ident={id} />
 	) : (
-		<div style={{ margin: '-8px 0' }}>
-			<Checkbox
-				value={id}
-				size="small"
-				onChange={(val: any) => handleChangeCheckbox(val)}
-				onClick={(e) => e.stopPropagation()}
-			>
+		<div
+			style={{ margin: '-8px 0' }}
+			onClick={(e) => e.stopPropagation()}
+			onKeyDown={(e) => e.stopPropagation()}
+		>
+			<Checkbox value={id} size="small" onChange={(val: any) => handleChangeCheckbox(val)}>
 				Importer person
 			</Checkbox>
 		</div>

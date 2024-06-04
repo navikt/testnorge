@@ -89,7 +89,7 @@ export default () => {
 					variant={'primary'}
 					onClick={redirectOnClick(
 						runningLocal ? '/oauth2/authorization/aad' : '/oauth2/login',
-						false
+						false,
 					)}
 				>
 					Logg inn med NAV epost

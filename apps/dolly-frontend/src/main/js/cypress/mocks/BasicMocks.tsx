@@ -35,6 +35,272 @@ export const kodeverkMock = {
 	],
 }
 
+export const testnorgeMalBestillinger = [
+	{
+		id: 4,
+		antallIdenter: 10,
+		antallLevert: 10,
+		ferdig: true,
+		sistOppdatert: '2024-05-08T12:55:37.565933',
+		bruker: {
+			brukerId: '1231231231231232131231312312312312',
+			brukernavn: 'TestTestesen',
+			brukertype: 'BANKID',
+		},
+		gruppeId: 1,
+		stoppet: false,
+		environments: ['q1', 'q2'],
+		status: [
+			{
+				id: 'PDLIMPORT',
+				navn: 'Import av personer (TESTNORGE)',
+				statuser: [
+					{
+						melding: 'OK',
+						identer: ['01816311111', '01816311111'],
+					},
+				],
+			},
+			{
+				id: 'PDL_PERSONSTATUS',
+				navn: 'Person finnes i PDL',
+				statuser: [
+					{
+						melding: 'OK',
+						identer: ['01816366666', '01816355555'],
+					},
+				],
+			},
+			{
+				id: 'PEN_FORVALTER',
+				navn: 'Pensjon persondata (PEN)',
+				statuser: [
+					{
+						melding: 'OK',
+						detaljert: [
+							{
+								miljo: 'q1',
+								identer: ['01816355555', '01816355555'],
+							},
+							{
+								miljo: 'q2',
+								identer: ['01816311111', '01816311111'],
+							},
+						],
+					},
+				],
+			},
+			{
+				id: 'PEN_INNTEKT',
+				navn: 'Pensjonsopptjening (POPP)',
+				statuser: [
+					{
+						melding: 'OK',
+						detaljert: [
+							{
+								miljo: 'q1',
+								identer: ['01816322222', '01816322222'],
+							},
+							{
+								miljo: 'q2',
+								identer: ['01816322222', '01816322222'],
+							},
+						],
+					},
+				],
+			},
+			{
+				id: 'TP_FORVALTER',
+				navn: 'Tjenestepensjon (TP)',
+				statuser: [
+					{
+						melding: 'OK',
+						detaljert: [
+							{
+								miljo: 'q1',
+								identer: ['01816333333', '01816333333'],
+							},
+							{
+								miljo: 'q2',
+								identer: ['01816344444', '01816344444'],
+							},
+						],
+					},
+				],
+			},
+		],
+		bestilling: {
+			pensjonforvalter: {
+				inntekt: {
+					fomAar: 2014,
+					tomAar: 2023,
+					belop: 560000,
+					redusertMedGrunnbelop: true,
+				},
+				tp: [
+					{
+						ordning: '3010',
+						ytelser: [
+							{
+								type: 'ALDER',
+								datoInnmeldtYtelseFom: '2024-04-08',
+								datoYtelseIverksattFom: '2024-04-08',
+							},
+						],
+					},
+				],
+			},
+		},
+	},
+	{
+		id: 5,
+		antallIdenter: 5,
+		antallLevert: 5,
+		ferdig: true,
+		sistOppdatert: '2024-06-07T17:02:30.757521',
+		bruker: {
+			brukerId: '12312312312312312321312312312',
+			brukernavn: 'TestTestesen',
+			brukertype: 'BANKID',
+		},
+		gruppeId: 1,
+		stoppet: false,
+		environments: ['q1'],
+		status: [
+			{
+				id: 'PDLIMPORT',
+				navn: 'Import av personer (TESTNORGE)',
+				statuser: [
+					{
+						melding: 'OK',
+						identer: ['31816512345', '06896512345', '08826512345', '06836312345', '04916412345'],
+					},
+				],
+			},
+			{
+				id: 'PDL_PERSONSTATUS',
+				navn: 'Person finnes i PDL',
+				statuser: [
+					{
+						melding: 'OK',
+						identer: ['31816512345', '06896512345', '08826512345', '06836312345', '04916412345'],
+					},
+				],
+			},
+			{
+				id: 'PEN_FORVALTER',
+				navn: 'Pensjon persondata (PEN)',
+				statuser: [
+					{
+						melding: 'OK',
+						detaljert: [
+							{
+								miljo: 'q1',
+								identer: ['04916123452', '31816123457'],
+							},
+							{
+								miljo: 'q2',
+								identer: ['04916412345', '31816512345'],
+							},
+						],
+					},
+				],
+			},
+			{
+				id: 'SIGRUN_LIGNET',
+				navn: 'Lignet skatteinntekt (Sigrunstub)',
+				statuser: [
+					{
+						melding: 'OK',
+						identer: ['31816512345', '06896512345', '08826512345', '06836312345', '04916412345'],
+					},
+				],
+			},
+			{
+				id: 'SIGRUN_PENSJONSGIVENDE',
+				navn: 'Pensjonsgivende inntekt (Sigrunstub)',
+				statuser: [
+					{
+						melding: 'OK',
+						identer: ['31816512345', '06896512345', '08826512345', '06836312345', '04916412345'],
+					},
+				],
+			},
+			{
+				id: 'AAREG',
+				navn: 'Arbeidsregister (AAREG)',
+				statuser: [
+					{
+						melding: 'OK',
+						detaljert: [
+							{
+								miljo: 'q1',
+								identer: ['04916412345', '31816512345', '08826512345'],
+							},
+							{
+								miljo: 'q2',
+								identer: ['04916412345', '31816512345'],
+							},
+						],
+					},
+				],
+			},
+		],
+		bestilling: {
+			aareg: [
+				{
+					arbeidsforholdstype: 'ordinaertArbeidsforhold',
+					ansettelsesPeriode: {
+						fom: '2004-05-07T12:06:12',
+					},
+					antallTimerForTimeloennet: [],
+					arbeidsavtale: {
+						arbeidstidsordning: 'ikkeSkift',
+						avtaltArbeidstimerPerUke: 37.5,
+						stillingsprosent: 100,
+						yrke: '3231109',
+						ansettelsesform: 'fast',
+					},
+					permittering: [],
+					permisjon: [],
+					fartoy: [],
+					utenlandsopphold: [],
+					arbeidsgiver: {
+						aktoertype: 'ORG',
+						orgnummer: '972671234',
+					},
+					amelding: [],
+				},
+			],
+			sigrunstub: [
+				{
+					grunnlag: [
+						{
+							tekniskNavn: 'alminneligInntektFoerSaerfradrag',
+							verdi: '550000',
+						},
+					],
+					inntektsaar: '2024',
+					svalbardGrunnlag: [],
+					tjeneste: 'BEREGNET_SKATT',
+				},
+			],
+			sigrunstubPensjonsgivende: [
+				{
+					inntektsaar: '2024',
+					pensjonsgivendeInntekt: [
+						{
+							skatteordning: 'FASTLAND',
+							datoForFastsetting: '2024-05-07T12:06:30.659Z',
+						},
+					],
+					testdataEier: '',
+				},
+			],
+		},
+	},
+]
+
 const malBestilling = {
 	antallIdenter: 1,
 	pdldata: {
@@ -1912,6 +2178,35 @@ export const tenorSoekOversiktMock = {
 	error: null,
 }
 
+export const tenorSoekOrganisasjonOversiktMock = {
+	status: 'OK',
+	data: {
+		treff: 1234,
+		rader: 3,
+		offset: 0,
+		nesteSide: 1,
+		seed: 1234,
+		organisasjoner: [
+			{
+				navn: 'OPTIMISTISK TYPISK KATT HØRSEL',
+				organisasjonsnummer: '312342234',
+				kilder: ['brregErFr'],
+			},
+			{
+				navn: 'OVERFLØDIG FUNKSJONELL TIGER AS',
+				organisasjonsnummer: '312345123',
+				kilder: ['brregErFr', 'arbeidsforhold'],
+			},
+			{
+				navn: 'UFORGJENGELIG PARODISK TIGER AS',
+				organisasjonsnummer: '312345612',
+				kilder: ['brregErFr'],
+			},
+		],
+	},
+	query: '',
+}
+
 export const tenorSoekTestdataMock = {
 	status: 'OK',
 	data: {
@@ -1947,5 +2242,91 @@ export const tenorSoekTestdataMock = {
 		fasetter: {},
 	},
 	query: '',
+	error: null,
+}
+export const tenorSoekOrganisasjonTestdataMock = {
+	status: 'OK',
+	data: {
+		treff: 1,
+		rader: 1,
+		offset: 0,
+		nesteSide: null,
+		seed: 0,
+		organisasjoner: [
+			{
+				navn: 'OVERFLØDIG FUNKSJONELL TIGER AS',
+				organisasjonsnummer: '312345123',
+				organisasjonsform: {
+					kode: 'ENK',
+					beskrivelse: 'Enkeltpersonforetak',
+				},
+				forretningsadresse: {
+					land: 'Norge',
+					landkode: 'NO',
+					postnummer: '2674',
+					poststed: 'MYSUSÆTER',
+					adresse: ['Tjønnbakkvegen 29'],
+					kommune: 'SEL',
+					kommunenummer: '3437',
+				},
+				kilder: ['brregErFr'],
+				naeringskoder: [
+					{
+						kode: '86',
+						beskrivelse: 'Helsetjenester',
+						hjelpeenhetskode: false,
+						rekkefolge: 1,
+						nivaa: 1,
+					},
+					{
+						kode: '86.2',
+						beskrivelse: 'Lege og tannlegetjenester',
+						hjelpeenhetskode: false,
+						rekkefolge: 1,
+						nivaa: 2,
+					},
+					{
+						kode: '86.21',
+						beskrivelse: 'Legetjeneste',
+						hjelpeenhetskode: false,
+						rekkefolge: 1,
+						nivaa: 3,
+					},
+					{
+						kode: '86.211',
+						beskrivelse: 'Allmenn legetjeneste',
+						hjelpeenhetskode: false,
+						rekkefolge: 1,
+						nivaa: 4,
+					},
+				],
+				registreringsdatoEnhetsregisteret: '20121212',
+				slettetIEnhetsregisteret: 'N',
+				registrertIForetaksregisteret: 'N',
+				slettetIForetaksregisteret: 'N',
+				registreringspliktigForetaksregisteret: 'N',
+				registrertIFrivillighetsregisteret: 'N',
+				registrertIStiftelsesregisteret: 'N',
+				registrertIMvaregisteret: 'N',
+				konkurs: 'N',
+				underAvvikling: 'N',
+				underTvangsavviklingEllerTvangsopplosning: 'N',
+				maalform: 'Bokmål',
+				ansvarsbegrensning: 'N',
+				harAnsatte: 'N',
+				antallAnsatte: 0,
+				kapital: {
+					antallAksjer: '0',
+					fritekst: [],
+					sakkyndigRedegjorelse: 'N',
+				},
+				kjonnsrepresentasjon: 'N',
+				fravalgAvRevisjon: {
+					fravalg: 'N',
+				},
+			},
+		],
+	},
+	query: 'organisasjonsnummer:312345678',
 	error: null,
 }

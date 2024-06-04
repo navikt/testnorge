@@ -13,6 +13,33 @@ import {
 import _ from 'lodash'
 import FormFieldInput from '@/components/ui/form/inputs/textInput/FormFieldInput'
 
+type TextInputProps = {
+	placeholder?: string
+	visHvisAvhuket?: boolean
+	name: string
+	label?: string
+	size?: string
+	type?: string
+	useOnChange?: boolean
+	onBlur?: (val: any) => void
+	useControlled?: boolean
+	defaultValue?: string
+	isDisabled?: boolean
+	onKeyPress?: (val: any) => void
+	autoFocus?: boolean
+	fieldName?: string
+	value?: any
+	style?: any
+	readOnly?: boolean
+	onKeyDown?: any
+	onSubmit?: Function
+	onChange?: Function
+	onPaste?: Function
+	className?: string
+	icon?: string
+	isDatepicker?: boolean
+}
+
 const StyledIcon = styled(Icon)`
 	pointer-events: none;
 	position: absolute;
@@ -31,16 +58,7 @@ export const TextInput = React.forwardRef(
 			icon,
 			isDisabled,
 			...props
-		}: {
-			name: string
-			fieldName: string
-			className?: string
-			icon?: string
-			placeholder?: string
-			isDisabled?: boolean
-			isDatepicker?: boolean
-			onChange?: any
-		},
+		}: TextInputProps,
 		ref,
 	) => {
 		const {
@@ -72,25 +90,7 @@ export const TextInput = React.forwardRef(
 	},
 )
 
-export const DollyTextInput = (props: {
-	fieldName?: string
-	name?: string
-	label?: string
-	value?: any
-	style?: any
-	size?: string
-	type?: string
-	readOnly?: boolean
-	onKeyDown?: any
-	useOnChange?: boolean
-	isDisabled?: boolean
-	onBlur?: Function
-	onSubmit?: Function
-	onChange?: Function
-	onPaste?: Function
-	onKeyPress?: Function
-	placeholder?: string
-}) => (
+export const DollyTextInput = (props: TextInputProps) => (
 	<InputWrapper {...props}>
 		<Label name={props.name} label={props.label}>
 			<TextInput {...props} />
@@ -98,22 +98,7 @@ export const DollyTextInput = (props: {
 	</InputWrapper>
 )
 
-export const FormTextInput = ({
-	visHvisAvhuket = true,
-	...props
-}: {
-	visHvisAvhuket?: boolean
-	name: string
-	label?: string
-	size?: string
-	type?: string
-	useOnChange?: boolean
-	useControlled?: boolean
-	defaultValue?: string
-	isDisabled?: boolean
-	onKeyPress?: Function
-	autoFocus?: boolean
-}) =>
+export const FormTextInput = ({ visHvisAvhuket = true, ...props }: TextInputProps) =>
 	visHvisAvhuket ? (
 		<Vis attributt={props.name}>
 			<FormFieldInput {...props} />
