@@ -1,6 +1,7 @@
 package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.SyntetiskFraIdentUtility;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static java.lang.String.format;
 import static java.util.Objects.isNull;
@@ -97,7 +99,21 @@ public class FullmaktService implements BiValidation<FullmaktDTO, PersonDTO> {
             }
 
             fullmakt.setMotpartsPersonident(createPersonService.execute(fullmakt.getNyFullmektig()).getIdent());
+
+        } else {
+
+            var motpartPerson = new AtomicReference<DbPerson>();
+            personRepository.findByIdent(fullmakt.getMotpartsPersonident())
+                    .ifPresentOrElse(motpartPerson::set,
+                            () -> motpartPerson.set(personRepository.save(DbPerson.builder()
+                                            .ident(fullmakt.getMotpartsPersonident())
+                                            .person(PersonDTO.builder()
+                                                    .ident(fullmakt.getMotpartsPersonident())
+                                                    .build())
+                                            .sistOppdatert(LocalDateTime.now())
+                                    .build())));
         }
+
         relasjonService.setRelasjoner(ident, RelasjonType.FULLMAKTSGIVER,
                 fullmakt.getMotpartsPersonident(), RelasjonType.FULLMEKTIG);
 
