@@ -41,6 +41,7 @@ export const FamilierelasjonPanel = ({ stateModifier, formValues }) => {
 			(leggTilPaaGruppe && harTestnorgeIdenter)
 		) {
 			ignoreKeys.push('sivilstand', 'barnForeldre')
+			ignoreKeys.push('foreldreansvar', 'doedfoedtBarn')
 		}
 		return ignoreKeys
 	}
@@ -76,16 +77,22 @@ export const FamilierelasjonPanel = ({ stateModifier, formValues }) => {
 				/>
 				<Attributt
 					attr={sm.attrs.foreldreansvar}
-					disabled={npidPerson}
-					title={npidPerson && 'Ikke tilgjengelig for personer med identtype NPID'}
+					disabled={npidPerson || (leggTilPaaGruppe && harTestnorgeIdenter)}
+					title={
+						(npidPerson && 'Ikke tilgjengelig for personer med identtype NPID') ||
+						(leggTilPaaGruppe && harTestnorgeIdenter && tekstLeggTilPaaGruppe)
+					}
 					vis={!testNorgePerson}
 				/>
 			</AttributtKategori>
 			<AttributtKategori title="Dødfødt barn" attr={sm.attrs}>
 				<Attributt
 					attr={sm.attrs.doedfoedtBarn}
-					disabled={npidPerson}
-					title={npidPerson && 'Ikke tilgjengelig for personer med identtype NPID'}
+					disabled={npidPerson || (leggTilPaaGruppe && harTestnorgeIdenter)}
+					title={
+						(npidPerson && 'Ikke tilgjengelig for personer med identtype NPID') ||
+						(leggTilPaaGruppe && harTestnorgeIdenter && tekstLeggTilPaaGruppe)
+					}
 					vis={!testNorgePerson}
 				/>
 			</AttributtKategori>

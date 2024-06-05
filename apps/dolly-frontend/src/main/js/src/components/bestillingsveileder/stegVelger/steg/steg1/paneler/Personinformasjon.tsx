@@ -59,6 +59,9 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 			(harTestnorgeIdenter && leggTilPaaGruppe)
 		) {
 			ignoreKeys.push('fullmakt')
+			ignoreKeys.push('vergemaal')
+			ignoreKeys.push('innvandretFraLand')
+			ignoreKeys.push('utvandretTilLand')
 		}
 		if (sm.attrs.utenlandskBankkonto.checked) {
 			ignoreKeys.push('norskBankkonto')
@@ -93,15 +96,8 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 					<Attributt attr={sm.attrs.statsborgerskap} />
 				</AttributtKategori>
 				<AttributtKategori title="Diverse" attr={sm.attrs}>
-					<Attributt attr={sm.attrs.navn} />
 					<Attributt attr={sm.attrs.kjonn} />
-					<Attributt attr={sm.attrs.telefonnummer} />
-					<Attributt
-						attr={sm.attrs.fullmakt}
-						disabled={ukjentGruppe || testNorgeFlere}
-						title={(ukjentGruppe && tekstUkjentGruppe) || (testNorgeFlere && tekstFlerePersoner)}
-					/>
-					<Attributt attr={sm.attrs.sikkerhetstiltak} />
+					<Attributt attr={sm.attrs.navn} />
 					<Attributt attr={sm.attrs.sprakKode} />
 					<Attributt attr={sm.attrs.egenAnsattDatoFom} />
 					<Attributt
@@ -112,6 +108,14 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 						attr={sm.attrs.utenlandskBankkonto}
 						disabled={sm.attrs.norskBankkonto.checked}
 					/>
+					<Attributt attr={sm.attrs.telefonnummer} />
+					<Attributt
+						attr={sm.attrs.fullmakt}
+						disabled={ukjentGruppe || testNorgeFlere}
+						title={(ukjentGruppe && tekstUkjentGruppe) || (testNorgeFlere && tekstFlerePersoner)}
+					/>
+					<Attributt attr={sm.attrs.sikkerhetstiltak} />
+					<Attributt attr={sm.attrs.tilrettelagtKommunikasjon} />
 				</AttributtKategori>
 			</Panel>
 		)
@@ -136,18 +140,20 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 				<Attributt attr={sm.attrs.statsborgerskap} />
 				<Attributt
 					attr={sm.attrs.innvandretFraLand}
-					disabled={!harFnr}
+					disabled={!harFnr || (harTestnorgeIdenter && leggTilPaaGruppe)}
 					title={
-						!harFnr &&
-						'Personer med identtype DNR eller NPID kan ikke innvandre fordi de ikke har norsk statsborgerskap'
+						(!harFnr &&
+							'Personer med identtype DNR eller NPID kan ikke innvandre fordi de ikke har norsk statsborgerskap') ||
+						(harTestnorgeIdenter && leggTilPaaGruppe && tekstLeggTilPaaGruppe)
 					}
 				/>
 				<Attributt
 					attr={sm.attrs.utvandretTilLand}
-					disabled={!harFnr}
+					disabled={!harFnr || (harTestnorgeIdenter && leggTilPaaGruppe)}
 					title={
-						!harFnr &&
-						'Personer med identtype DNR eller NPID kan ikke utvandre fordi de ikke har norsk statsborgerskap'
+						(!harFnr &&
+							'Personer med identtype DNR eller NPID kan ikke utvandre fordi de ikke har norsk statsborgerskap') ||
+						(harTestnorgeIdenter && leggTilPaaGruppe && tekstLeggTilPaaGruppe)
 					}
 				/>
 			</AttributtKategori>
@@ -161,8 +167,11 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 				<Attributt attr={sm.attrs.telefonnummer} />
 				<Attributt
 					attr={sm.attrs.vergemaal}
-					disabled={npidPerson}
-					title={npidPerson && 'Ikke tilgjengelig for personer med identtype NPID'}
+					disabled={npidPerson || (harTestnorgeIdenter && leggTilPaaGruppe)}
+					title={
+						(npidPerson && 'Ikke tilgjengelig for personer med identtype NPID') ||
+						(harTestnorgeIdenter && leggTilPaaGruppe && tekstLeggTilPaaGruppe)
+					}
 				/>
 				<Attributt
 					attr={sm.attrs.fullmakt}

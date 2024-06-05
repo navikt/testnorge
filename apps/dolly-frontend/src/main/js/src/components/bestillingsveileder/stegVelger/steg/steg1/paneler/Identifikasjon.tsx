@@ -8,17 +8,39 @@ import {
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { harValgtAttributt } from '@/components/ui/form/formUtils'
 import { identifikasjonAttributter } from '@/components/fagsystem/pdlf/form/partials/identifikasjon/Identifikasjon'
+import { useGruppeIdenter } from '@/utils/hooks/useGruppe'
 
 export const IdentifikasjonPanel = ({ stateModifier, formValues }) => {
 	const sm = stateModifier(IdentifikasjonPanel.initialValues)
 	const opts = useContext(BestillingsveilederContext)
 
 	const harNpid = opts.identtype === 'NPID'
+	const erTestnorgePerson = opts?.identMaster === 'PDL'
+
+	const gruppeId = opts?.gruppeId || opts?.gruppe?.id
+	const { identer, loading: gruppeLoading, error: gruppeError } = useGruppeIdenter(gruppeId)
+	const harTestnorgeIdenter = identer?.filter((ident) => ident.master === 'PDL').length > 0
+	const leggTilPaaGruppe = !!opts?.leggTilPaaGruppe
+	const tekstLeggTilPaaGruppe =
+		'Støttes ikke for "legg-til-på-alle" i grupper som inneholder personer fra Test-Norge'
+
+	const getIgnoreKeys = () => {
+		var ignoreKeys = []
+		if (harNpid) {
+			ignoreKeys.push('falskIdentitet')
+		}
+		if (harTestnorgeIdenter && leggTilPaaGruppe) {
+			ignoreKeys.push('falskIdentitet')
+			ignoreKeys.push('utenlandskIdentifikasjonsnummer')
+			ignoreKeys.push('nyident')
+		}
+		return ignoreKeys
+	}
 
 	return (
 		<Panel
 			heading={IdentifikasjonPanel.heading}
-			checkAttributeArray={() => sm.batchAdd(harNpid ? ['falskIdentitet'] : [])}
+			checkAttributeArray={() => sm.batchAdd(getIgnoreKeys())}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType="identifikasjon"
 			startOpen={harValgtAttributt(formValues, identifikasjonAttributter)}
@@ -26,11 +48,24 @@ export const IdentifikasjonPanel = ({ stateModifier, formValues }) => {
 			<AttributtKategori attr={sm.attrs}>
 				<Attributt
 					attr={sm.attrs.falskIdentitet}
-					disabled={harNpid}
-					title={harNpid ? 'Personer med identtype NPID kan ikke ha falsk identitet' : ''}
+					disabled={harNpid || (harTestnorgeIdenter && leggTilPaaGruppe)}
+					title={
+						(harNpid && 'Personer med identtype NPID kan ikke ha falsk identitet') ||
+						(harTestnorgeIdenter && leggTilPaaGruppe && tekstLeggTilPaaGruppe)
+					}
+					vis={!erTestnorgePerson}
 				/>
-				<Attributt attr={sm.attrs.utenlandskIdentifikasjonsnummer} />
-				<Attributt attr={sm.attrs.nyident} />
+				<Attributt
+					attr={sm.attrs.utenlandskIdentifikasjonsnummer}
+					disabled={harTestnorgeIdenter && leggTilPaaGruppe}
+					title={harTestnorgeIdenter && leggTilPaaGruppe && tekstLeggTilPaaGruppe}
+				/>
+				<Attributt
+					attr={sm.attrs.nyident}
+					disabled={harTestnorgeIdenter && leggTilPaaGruppe}
+					title={harTestnorgeIdenter && leggTilPaaGruppe && tekstLeggTilPaaGruppe}
+					vis={!erTestnorgePerson}
+				/>
 			</AttributtKategori>
 		</Panel>
 	)
@@ -39,7 +74,7 @@ export const IdentifikasjonPanel = ({ stateModifier, formValues }) => {
 IdentifikasjonPanel.heading = 'Identifikasjon'
 
 IdentifikasjonPanel.initialValues = ({ set, opts, del, has }) => {
-	const { identtype } = opts
+	const { identtype, identMaster } = opts
 	return {
 		falskIdentitet: {
 			label: 'Har falsk identitet',
@@ -62,7 +97,9 @@ IdentifikasjonPanel.initialValues = ({ set, opts, del, has }) => {
 			checked: has('pdldata.person.utenlandskIdentifikasjonsnummer'),
 			add: () =>
 				set('pdldata.person.utenlandskIdentifikasjonsnummer', [
-					getInitialUtenlandskIdentifikasjonsnummer(identtype === 'NPID' ? 'PDL' : 'FREG'),
+					getInitialUtenlandskIdentifikasjonsnummer(
+						identtype === 'NPID' || identMaster === 'PDL' ? 'PDL' : 'FREG',
+					),
 				]),
 			remove: () => del('pdldata.person.utenlandskIdentifikasjonsnummer'),
 		},

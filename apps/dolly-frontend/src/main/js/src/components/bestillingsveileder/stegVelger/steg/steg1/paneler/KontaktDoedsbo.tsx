@@ -5,13 +5,23 @@ import { harValgtAttributt } from '@/components/ui/form/formUtils'
 import { doedsboAttributt } from '@/components/fagsystem/pdlf/form/partials/kontaktinformasjonForDoedsbo/KontaktinformasjonForDoedsbo'
 import { useContext } from 'react'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import { useGruppeIdenter } from '@/utils/hooks/useGruppe'
 
 export const KontaktDoedsboPanel = ({ stateModifier, formValues }) => {
 	const sm = stateModifier(KontaktDoedsboPanel.initialValues)
 	const opts = useContext(BestillingsveilederContext)
 
+	const gruppeId = opts?.gruppeId || opts?.gruppe?.id
+	const { identer, loading: gruppeLoading, error: gruppeError } = useGruppeIdenter(gruppeId)
+	const harTestnorgeIdenter = identer?.filter((ident) => ident.master === 'PDL').length > 0
+
+	const npidPerson = opts?.identtype === 'NPID'
+	const leggTilPaaGruppe = !!opts?.leggTilPaaGruppe
+	const tekstLeggTilPaaGruppe =
+		'Støttes ikke for "legg-til-på-alle" i grupper som inneholder personer fra Test-Norge'
+
 	const getIgnoreKeys = () => {
-		if (opts?.identtype === 'NPID') {
+		if (npidPerson || (harTestnorgeIdenter && leggTilPaaGruppe)) {
 			return ['kontaktinformasjonForDoedsbo']
 		}
 		return []
@@ -28,9 +38,10 @@ export const KontaktDoedsboPanel = ({ stateModifier, formValues }) => {
 			<AttributtKategori attr={sm.attrs}>
 				<Attributt
 					attr={sm.attrs.kontaktinformasjonForDoedsbo}
-					disabled={opts?.identtype === 'NPID'}
+					disabled={npidPerson || (harTestnorgeIdenter && leggTilPaaGruppe)}
 					title={
-						opts?.identtype === 'NPID' ? 'Ikke tilgjengelig for personer med identtype NPID' : ''
+						(npidPerson && 'Ikke tilgjengelig for personer med identtype NPID') ||
+						(harTestnorgeIdenter && leggTilPaaGruppe && tekstLeggTilPaaGruppe)
 					}
 				/>
 			</AttributtKategori>
