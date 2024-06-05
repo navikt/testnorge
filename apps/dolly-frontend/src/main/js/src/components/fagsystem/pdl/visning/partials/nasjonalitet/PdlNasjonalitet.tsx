@@ -9,8 +9,16 @@ type NasjonalitetProps = {
 	visTittel?: boolean
 }
 
-export const PdlNasjonalitet = ({ data, visTittel = true }: NasjonalitetProps) => {
+export const PdlNasjonalitet = ({
+	data,
+	pdlfData,
+	tmpPersoner,
+	ident,
+	identtype,
+	visTittel = true,
+}: NasjonalitetProps) => {
 	const { statsborgerskap, innflyttingTilNorge, utflyttingFraNorge } = data
+	const statsborgerskapPdlf = pdlfData?.statsborgerskap
 	if (
 		statsborgerskap?.length < 1 &&
 		innflyttingTilNorge?.length < 1 &&
@@ -22,7 +30,13 @@ export const PdlNasjonalitet = ({ data, visTittel = true }: NasjonalitetProps) =
 	return (
 		<div>
 			{visTittel && <SubOverskrift label="Nasjonalitet" iconKind="nasjonalitet" />}
-			<PdlStatsborgerskap statsborgerskapListe={statsborgerskap} />
+			<PdlStatsborgerskap
+				statsborgerskapListe={statsborgerskap}
+				pdlfData={statsborgerskapPdlf}
+				tmpPersoner={tmpPersoner}
+				ident={ident}
+				identtype={identtype}
+			/>
 			<PdlInnflytting innflytting={innflyttingTilNorge} />
 			<PdlUtflytting utflytting={utflyttingFraNorge} />
 		</div>

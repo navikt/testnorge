@@ -97,7 +97,13 @@ export const PdlVisning = ({
 					erPdlVisning={miljoeVisning}
 				/>
 				<GeografiskTilknytning data={hentGeografiskTilknytning} />
-				<PdlNasjonalitet data={hentPerson} />
+				<PdlNasjonalitet
+					data={hentPerson}
+					pdlfData={pdlfPerson}
+					tmpPersoner={tmpPdlforvalter}
+					ident={ident}
+					identtype={identtype}
+				/>
 				<Telefonnummer data={telefonnummer} erPdlVisning />
 				<PdlVergemaal data={vergemaalEllerFremtidsfullmakt} />
 				<PdlFullmakt data={fullmakt} />

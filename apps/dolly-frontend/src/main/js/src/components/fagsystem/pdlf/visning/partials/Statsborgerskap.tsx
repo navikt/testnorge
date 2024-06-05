@@ -57,7 +57,7 @@ const StatsborgerskapLes = ({ statsborgerskapData, idx }: StatsborgerskapLesType
 	return null
 }
 
-const StatsborgerskapVisning = ({
+export const StatsborgerskapVisning = ({
 	statsborgerskapData,
 	idx,
 	data,
