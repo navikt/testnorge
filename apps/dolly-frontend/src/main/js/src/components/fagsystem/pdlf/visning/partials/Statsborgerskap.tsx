@@ -89,6 +89,7 @@ export const StatsborgerskapVisning = ({
 				),
 			}
 		: null
+
 	return erPdlVisning ? (
 		<StatsborgerskapLes statsborgerskapData={statsborgerskapData} idx={idx} />
 	) : (

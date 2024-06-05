@@ -80,6 +80,10 @@ export const PdlVisning = ({
 					data={hentPerson}
 					tpsMessagingData={fagsystemData?.tpsMessaging}
 					tpsMessagingLoading={loading?.tpsMessaging}
+					pdlfData={pdlfPerson}
+					tmpPersoner={tmpPdlforvalter}
+					ident={ident}
+					identtype={identtype}
 				/>
 				<IdentInfo pdlResponse={hentIdenter} />
 				<Foedsel
