@@ -26,6 +26,7 @@ public class XmlConverter {
     }
 
     public static <T> String toXml(JAXBElement<T> value, Class<T> clazz) {
+        log.debug("Konverterer Jaxb element til XML: value: {}, clazz: {}", value, clazz.getName());
         try {
             JAXBContext jaxbContext = JAXBContext.newInstance(clazz);
 
@@ -55,21 +56,6 @@ public class XmlConverter {
         }
     }
 
-
-    @SuppressWarnings("unchecked")
-    private static <T> T toObject(String xml, Class<T> clazz) {
-        try {
-            JAXBContext jaxbContext = JAXBContext.newInstance(clazz);
-
-            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-
-            return (T) unmarshaller.unmarshal(new StringReader(xml));
-
-        } catch (JAXBException e) {
-            throw new JaxbToXmlException("klarte ikke å konvertere Jaxb element til Objekt", e);
-        }
-    }
-
     public static BigDecimal toBigDecimal(Double value) {
 
         return nonNull(value) ? BigDecimal.valueOf(value) : null;
@@ -88,5 +74,19 @@ public class XmlConverter {
     public static LocalDate toLocalDate(LocalDateTime localDateTime) {
 
         return nonNull(localDateTime) ? localDateTime.toLocalDate() : null;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <T> T toObject(String xml, Class<T> clazz) {
+        try {
+            JAXBContext jaxbContext = JAXBContext.newInstance(clazz);
+
+            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+
+            return (T) unmarshaller.unmarshal(new StringReader(xml));
+
+        } catch (JAXBException e) {
+            throw new JaxbToXmlException("klarte ikke å konvertere Jaxb element til Objekt", e);
+        }
     }
 }
