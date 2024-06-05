@@ -29,7 +29,7 @@ export const FamilierelasjonPanel = ({ stateModifier, formValues }) => {
 	const tekstTestNorgeFlere = 'Funksjonen er kun tilgjengelig per individ, ikke for gruppe'
 	const leggTilPaaGruppe = !!opts?.leggTilPaaGruppe
 	const tekstLeggTilPaaGruppe =
-		'Legg-til-på-gruppe støttes ikke for gruppe som inneholder personer fra Test-Norge'
+		'Støttes ikke for "legg-til-på-alle" i grupper som inneholder personer fra Test-Norge'
 
 	const getIgnoreKeys = () => {
 		var ignoreKeys = []

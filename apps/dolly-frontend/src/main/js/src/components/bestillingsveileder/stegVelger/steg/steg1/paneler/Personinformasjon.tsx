@@ -47,7 +47,7 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 	const tekstFlerePersoner = 'Funksjonen er kun tilgjengelig per individ, ikke for gruppe'
 	const leggTilPaaGruppe = !!opts?.leggTilPaaGruppe
 	const tekstLeggTilPaaGruppe =
-		'Legg-til-på-gruppe støttes ikke for gruppe som inneholder personer fra Test-Norge'
+		'Støttes ikke for "legg-til-på-alle" i grupper som inneholder personer fra Test-Norge'
 
 	const harFnr = opts.identtype === 'FNR'
 	// Noen egenskaper kan ikke endres når personen opprettes fra eksisterende eller videreføres med legg til

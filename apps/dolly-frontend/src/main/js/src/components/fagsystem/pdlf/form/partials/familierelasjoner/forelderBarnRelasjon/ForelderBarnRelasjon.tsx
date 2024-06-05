@@ -27,7 +27,6 @@ interface ForelderForm {
 	idx?: number
 	eksisterendeNyPerson?: any
 	identtype?: string
-	ident?: string
 }
 
 type Target = {
@@ -46,14 +45,10 @@ export const ForelderBarnRelasjonForm = ({
 	idx,
 	eksisterendeNyPerson = null,
 	identtype,
-	ident,
 }: ForelderForm) => {
 	const opts = useContext(BestillingsveilederContext)
 
-	let identMaster = opts?.identMaster
-	if (!identMaster) {
-		identMaster = parseInt(ident?.charAt(2)) >= 8 ? 'PDL' : 'PDLF'
-	}
+	const identMaster = opts?.identMaster || 'PDLF'
 	const [erBarn, setErBarn] = React.useState(
 		formMethods.watch(`${path}.relatertPersonsRolle`) === RELASJON_BARN,
 	)
@@ -166,17 +161,17 @@ export const ForelderBarnRelasjonForm = ({
 						)}
 					</>
 				)}
-				<div help="Eksisterende person er kun tilgjengelig for individ, ikke gruppe">
-					<FormSelect
-						name={`${path}.typeForelderBarn`}
-						label={erBarn ? 'Type barn' : 'Type forelder'}
-						options={typeAnsvarlig}
-						onChange={(target: Target) => handleChangeTypeForelderBarn(target, path)}
-						size="medium"
-						vis={!testnorgePerson}
-						title={'test'}
-					/>
-				</div>
+				<FormSelect
+					name={`${path}.typeForelderBarn`}
+					label={erBarn ? 'Type barn' : 'Type forelder'}
+					options={typeAnsvarlig}
+					onChange={(target: Target) => handleChangeTypeForelderBarn(target, path)}
+					size="medium"
+					vis={!testnorgePerson}
+					info={
+						opts?.antall > 1 && '"Eksisterende person" er tilgjengelig for individ, ikke for gruppe'
+					}
+				/>
 			</div>
 
 			{(testnorgePerson || getForelderBarnType() === TypeAnsvarlig.EKSISTERENDE) && (
@@ -186,7 +181,6 @@ export const ForelderBarnRelasjonForm = ({
 					formMethods={formMethods}
 					eksisterendeNyPerson={eksisterendeNyPerson}
 					idx={idx}
-					ident={ident}
 				/>
 			)}
 
