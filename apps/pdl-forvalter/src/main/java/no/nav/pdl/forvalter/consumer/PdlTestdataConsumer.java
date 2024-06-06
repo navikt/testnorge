@@ -110,7 +110,8 @@ public class PdlTestdataConsumer {
         return tokenExchange
                 .exchange(serverProperties)
                 .flatMapMany(accessToken -> Flux.fromIterable(identer)
-                        .flatMap(ident -> new PdlDeleteCommandPdl(webClient, getBestillingUrl().get(PDL_SLETTING), ident, accessToken.getTokenValue()).call()))
+                        .flatMap(ident -> new PdlDeleteCommandPdl(webClient,
+                                getBestillingUrl().get(PDL_SLETTING), ident, accessToken.getTokenValue()).call()))
                 .collectList();
     }
 

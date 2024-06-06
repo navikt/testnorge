@@ -133,9 +133,8 @@ public class PersonService {
                 .flatMap(Collection::stream)
                 .collect(Collectors.toSet());
 
-        pdlTestdataConsumer.delete(identer)
-                .map(response -> identPoolConsumer.releaseIdents(identer, Bruker.PDLF))
-                .block();
+        pdlTestdataConsumer.delete(identer).block();
+        identPoolConsumer.releaseIdents(identer, Bruker.PDLF).block();
 
         personRepository.deleteByIdentIn(identer);
         log.info("Sletting av ident {} tok {} ms", ident, currentTimeMillis() - startTime);
