@@ -46,6 +46,6 @@ server:
 consumers:
   sokos-skattekort:
     url: https://sokos-skattekort-dolly.intern.dev.nav.no
-    cluster: dev-gcp
+    cluster: dev-fss
     name: sokos-skattekort-dolly
     namespace: okonomi

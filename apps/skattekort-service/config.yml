@@ -27,6 +27,7 @@ spec:
       rules:
         - application: sokos-skattekort-dolly
           namespace: okonomi
+          cluster: dev-fss
   liveness:
     path: /internal/isAlive
     periodSeconds: 30
