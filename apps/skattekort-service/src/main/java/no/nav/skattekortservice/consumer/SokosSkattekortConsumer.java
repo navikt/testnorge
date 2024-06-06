@@ -2,7 +2,7 @@ package no.nav.skattekortservice.consumer;
 
 import no.nav.skattekortservice.config.Consumers;
 import no.nav.skattekortservice.consumer.command.SokosPostCommand;
-import no.nav.testnav.libs.reactivesecurity.exchange.TokenService;
+import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -12,21 +12,21 @@ import reactor.core.publisher.Mono;
 public class SokosSkattekortConsumer {
 
     private final WebClient webClient;
-    private final TokenService tokenService;
+    private final TokenExchange tokenExchange;
     private final ServerProperties serverProperties;
 
-    public SokosSkattekortConsumer(TokenService tokenService, Consumers consumers) {
+    public SokosSkattekortConsumer(TokenExchange tokenExchange, Consumers consumers) {
 
         this.serverProperties = consumers.getSokosSkattekort();
         this.webClient = WebClient.builder()
                 .baseUrl(serverProperties.getUrl())
                 .build();
-        this.tokenService = tokenService;
+        this.tokenExchange = tokenExchange;
     }
 
     public Mono<String> sendSkattekort(String skattekort) {
 
-        return tokenService.exchange(serverProperties)
+        return tokenExchange.exchange(serverProperties)
                 .flatMap(token -> new SokosPostCommand(webClient, skattekort, token.getTokenValue()).call());
     }
 }
