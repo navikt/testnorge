@@ -1,6 +1,4 @@
 import * as React from 'react'
-// @ts-ignore
-import { v4 as uuid } from 'uuid'
 import { HelpText, HelpTextProps } from '@navikt/ds-react'
 import { bottom } from '@popperjs/core'
 import { ThumbsRating } from '@/components/rating/ThumbsRating'

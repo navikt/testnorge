@@ -1,7 +1,7 @@
 package no.nav.pdl.forvalter.service;
 
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
-import no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility;
+import no.nav.pdl.forvalter.utils.IdenttypeUtility;
 import no.nav.testnav.libs.data.pdlforvalter.v1.AdressebeskyttelseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO.Master;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
@@ -42,7 +42,7 @@ public class AdressebeskyttelseService implements BiValidation<Adressebeskyttels
     @Override
     public void validate(AdressebeskyttelseDTO adressebeskyttelse, PersonDTO person) {
 
-        if (FNR != IdenttypeFraIdentUtility.getIdenttype(person.getIdent()) &&
+        if (FNR != IdenttypeUtility.getIdenttype(person.getIdent()) &&
                 FORTROLIG == adressebeskyttelse.getGradering()) {
             throw new InvalidRequestException(VALIDATION_INVALID_BESKYTTELSE);
         }

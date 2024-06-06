@@ -1,7 +1,7 @@
 plugins {
-    id "org.sonarqube" version "4.4.1.3373"
+    id "org.sonarqube" version "5.0.0.4638"
     id 'java-library'
-    id 'io.spring.dependency-management' version "1.1.4"
+    id 'io.spring.dependency-management' version "1.1.5"
     id "jacoco"
 }
 
@@ -46,7 +46,7 @@ java {
 
 dependencies {
 
-    implementation 'io.swagger.core.v3:swagger-annotations-jakarta:2.2.20'
+    implementation 'io.swagger.core.v3:swagger-annotations-jakarta:2.2.21'
     implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
 
 

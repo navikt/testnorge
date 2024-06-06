@@ -9,6 +9,7 @@ import { BrukerDropdown } from '@/components/layout/header/BrukerDropdown'
 import { DokumentasjonDropdown } from '@/components/layout/header/DokumentasjonDropdown'
 import { CypressSelector } from '../../../../cypress/mocks/Selectors'
 import { FinnPersonDropdown } from '@/components/layout/header/FinnPersonDropdown'
+import { OrganisasjonDropdown } from '@/components/layout/header/OrganisasjonDropdown'
 
 export default () => {
 	const { currentBruker, loading } = useCurrentBruker()
@@ -33,9 +34,7 @@ export default () => {
 					Personer
 				</NavLink>
 				<FinnPersonDropdown />
-				<NavLink data-cy={CypressSelector.BUTTON_HEADER_ORGANISASJONER} to="/organisasjoner">
-					Organisasjoner
-				</NavLink>
+				<OrganisasjonDropdown />
 				{!bankidBruker && (
 					<NavLink data-cy={CypressSelector.BUTTON_HEADER_ENDRINGSMELDING} to="/endringsmelding">
 						Endringsmelding

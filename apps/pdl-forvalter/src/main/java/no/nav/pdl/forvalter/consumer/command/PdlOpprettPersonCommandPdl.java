@@ -16,6 +16,7 @@ import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
+import java.util.Optional;
 
 import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.TemaGrunnlag.GEN;
 
@@ -39,7 +40,7 @@ public class PdlOpprettPersonCommandPdl extends PdlTestdataCommand {
                 .post()
                 .uri(builder -> builder.path(url)
                         .queryParam("kilde", "Dolly")
-                        .queryParam(IDENTHISTORIKK, opprettIdent.getHistoriskeIdenter())
+                        .queryParamIfPresent(IDENTHISTORIKK, Optional.ofNullable(opprettIdent.getHistoriskeIdenter()))
                         .queryParam(OPPHOERT, opprettIdent.isOpphoert())
                         .build())
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)

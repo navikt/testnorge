@@ -16,9 +16,9 @@ server:
     servlet:
       encoding:
         charset: UTF-8
-    max-http-header-size: 70KB
   error:
     include-message: always
+  max-http-request-header-size: 100KB
 
 spring:
   cloud:
@@ -65,8 +65,13 @@ management:
       path-mapping:
         prometheus: metrics
   endpoint:
-    prometheus.enabled: true
-    heapdump.enabled: true
+    health:
+      show-components: always
+      show-details: always
+    heapdump:
+      enabled: true
+    prometheus:
+      enabled: true
   prometheus:
     metrics:
       export:

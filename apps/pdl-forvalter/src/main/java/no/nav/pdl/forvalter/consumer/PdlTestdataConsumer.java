@@ -4,12 +4,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.config.Consumers;
-import no.nav.pdl.forvalter.consumer.command.PdlAktoerNpidCommand;
 import no.nav.pdl.forvalter.consumer.command.PdlDeleteCommandPdl;
 import no.nav.pdl.forvalter.consumer.command.PdlDeleteHendelseIdCommandPdl;
+import no.nav.pdl.forvalter.consumer.command.PdlMergeNpidCommand;
 import no.nav.pdl.forvalter.consumer.command.PdlOpprettArtifactCommandPdl;
+import no.nav.pdl.forvalter.consumer.command.PdlOpprettNpidCommand;
 import no.nav.pdl.forvalter.consumer.command.PdlOpprettPersonCommandPdl;
 import no.nav.pdl.forvalter.dto.ArtifactValue;
+import no.nav.pdl.forvalter.dto.MergeIdent;
 import no.nav.pdl.forvalter.dto.OpprettIdent;
 import no.nav.pdl.forvalter.dto.OrdreRequest;
 import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO.Master;
@@ -30,7 +32,7 @@ import java.util.List;
 import java.util.Set;
 
 import static java.util.Objects.isNull;
-import static no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility.getIdenttype;
+import static no.nav.pdl.forvalter.utils.IdenttypeUtility.getIdenttype;
 import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.getBestillingUrl;
 import static no.nav.pdl.forvalter.utils.TestnorgeIdentUtility.isTestnorgeIdent;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_SLETTING;
@@ -44,19 +46,22 @@ public class PdlTestdataConsumer {
     private final TokenExchange tokenExchange;
     private final ServerProperties serverProperties;
     private final ObjectMapper objectMapper;
+    private final PersonServiceConsumer personServiceConsumer;
 
     public PdlTestdataConsumer(
             TokenExchange tokenExchange,
             Consumers consumers,
-            ObjectMapper objectMapper) {
+            ObjectMapper objectMapper,
+            PersonServiceConsumer personServiceConsumer) {
         this.tokenExchange = tokenExchange;
-        serverProperties = consumers.getPdlService();
+        serverProperties = consumers.getPdlProxy();
         this.webClient = WebClient
                 .builder()
                 .baseUrl(serverProperties.getUrl())
                 .filters(exchangeFilterFunctions -> exchangeFilterFunctions.add(logRequest()))
                 .build();
         this.objectMapper = objectMapper;
+        this.personServiceConsumer = personServiceConsumer;
     }
 
     private ExchangeFilterFunction logRequest() {
@@ -86,21 +91,18 @@ public class PdlTestdataConsumer {
         return tokenExchange
                 .exchange(serverProperties)
                 .flatMapMany(accessToken -> Flux.concat(
-                                Flux.fromIterable(orders.getSletting())
-                                        .parallel()
-                                        .flatMap(order -> Flux.fromIterable(order)
-                                                .flatMap(entry -> entry.apply(accessToken))
-                                                .collectList()),
-                                Flux.fromIterable(orders.getOppretting())
-                                        .flatMap(order -> Flux.fromIterable(order)
-                                                .flatMap(entry -> entry.apply(accessToken))
-                                                .collectList()),
-                                Flux.fromIterable(orders.getOpplysninger())
-                                        .parallel()
-                                        .flatMap(order -> Flux.fromIterable(order)
-                                                .flatMap(entry -> entry.apply(accessToken))
-                                                .collectList()))
-                        .flatMap(Flux::fromIterable));
+                        Flux.fromIterable(orders.getSletting())
+                                .parallel()
+                                .map(order -> order.apply(accessToken)),
+                        Flux.fromIterable(orders.getOppretting())
+                                .map(order -> order.apply(accessToken)),
+                        Flux.fromIterable(orders.getMerge())
+                                .map(order -> order.apply(accessToken)),
+                        Flux.fromIterable(orders.getOpplysninger())
+                                .parallel()
+                                .map(order -> order.apply(accessToken))
+                ))
+                .flatMap(Flux::from);
     }
 
     public Mono<List<OrdreResponseDTO.HendelseDTO>> delete(Set<String> identer) {
@@ -131,7 +133,6 @@ public class PdlTestdataConsumer {
             if (isNull(artifact.getFolkeregistermetadata())) {
                 artifact.setFolkeregistermetadata(new FolkeregistermetadataDTO());
             }
-            artifact.getFolkeregistermetadata().setGjeldende(artifact.getGjeldende());
             body = objectMapper.writeValueAsString(artifact);
         } catch (JsonProcessingException e) {
             return Flux.just(
@@ -159,7 +160,7 @@ public class PdlTestdataConsumer {
 
             case PDL_OPPRETT_PERSON -> Identtype.NPID == getIdenttype(value.getIdent()) ?
 
-                    new PdlAktoerNpidCommand(webClient,
+                    new PdlOpprettNpidCommand(webClient,
                             value.getIdent(),
                             accessToken.getTokenValue()
                     ).call() :
@@ -170,6 +171,15 @@ public class PdlTestdataConsumer {
                             (OpprettIdent) value.getBody(),
                             accessToken.getTokenValue()
                     ).call();
+
+            case PDL_PERSON_MERGE -> personServiceConsumer.syncIdent(value.getIdent())
+                    .flatMap(syncIdent ->
+                            new PdlMergeNpidCommand(webClient,
+                                    getBestillingUrl().get(value.getArtifact()),
+                                    ((MergeIdent) value.getBody()).getNpid(),
+                                    value.getIdent(),
+                                    accessToken.getTokenValue()
+                            ).call());
 
             default -> !isTestnorgeIdent(value.getIdent()) || value.getBody().getMaster() == Master.PDL ?
                     new PdlOpprettArtifactCommandPdl(

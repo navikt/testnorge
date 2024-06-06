@@ -47,8 +47,12 @@ public class PdlFilterService {
                                 .toList();
                         oversiktDTO.getData().setPersoner(personer);
                         oversiktDTO.getData().setRader(personer.size());
-                        oversiktDTO.getData().setTreff(oversikt.getData().getTreff() -
-                                (kilde.getT2().getPersonerTags().size() - personer.size()));
+
+                        if (oversiktDTO.getData().getTreff() <= kilde.getT2().getPersonerTags().size()) {
+                            oversiktDTO.getData().setTreff(oversiktDTO.getData().getTreff() -
+                                    (kilde.getT2().getPersonerTags().size() - personer.size()));
+                        }
+
                         return oversiktDTO;
                     });
         } else {

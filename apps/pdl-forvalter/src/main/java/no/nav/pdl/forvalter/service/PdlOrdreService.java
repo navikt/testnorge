@@ -8,6 +8,8 @@ import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.AliasRepository;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.dto.FolkeregisterPersonstatus;
+import no.nav.pdl.forvalter.dto.MergeElement;
+import no.nav.pdl.forvalter.dto.MergeIdent;
 import no.nav.pdl.forvalter.dto.OpprettIdent;
 import no.nav.pdl.forvalter.dto.OpprettRequest;
 import no.nav.pdl.forvalter.dto.Ordre;
@@ -20,7 +22,9 @@ import no.nav.pdl.forvalter.dto.PdlVergemaal;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.exception.NotFoundException;
 import no.nav.pdl.forvalter.utils.HendelseIdService;
+import no.nav.pdl.forvalter.utils.IdenttypeUtility;
 import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.ForelderBarnRelasjonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.ForeldreansvarDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FullmaktDTO;
@@ -35,12 +39,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.Stack;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -67,6 +73,7 @@ import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_NAVN;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_OPPHOLD;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_OPPHOLDSADRESSE;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_OPPRETT_PERSON;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_PERSON_MERGE;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_SIKKERHETSTILTAK;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_SIVILSTAND;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_SLETTING;
@@ -78,6 +85,7 @@ import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_UTENLANDS
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_UTFLYTTING;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_VERGEMAAL;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
 @Service
@@ -187,7 +195,7 @@ public class PdlOrdreService {
                 .distinct()
                 .toList();
 
-        var resultat = sendAlleInformasjonselementer(requesterTilOppretting)
+        var resultat = sendAlleInformasjonselementer(new ArrayList<>(requesterTilOppretting))
                 .collectList()
                 .block();
 
@@ -226,29 +234,93 @@ public class PdlOrdreService {
 
     private Flux<OrdreResponseDTO.PdlStatusDTO> sendAlleInformasjonselementer(List<OpprettRequest> opprettinger) {
 
+        opprettinger.sort(Comparator.comparing(person -> !person.getPerson().getAlias().isEmpty()));
+
         return deployService.sendOrders(
                 OrdreRequest.builder()
                         .sletting(opprettinger.stream()
                                 .map(oppretting -> oppretting.isNotTestnorgeIdent() ?
                                         deployService.createOrdre(PDL_SLETTING, oppretting.getPerson().getIdent(), List.of(new PdlDelete())) :
                                         deployService.createOrdre(PDL_SLETTING_HENDELSEID, oppretting.getPerson().getIdent(),
-                                                        hendelseIdService.getPdlHendelser(oppretting.getPerson().getIdent())))
+                                                hendelseIdService.getPdlHendelser(oppretting.getPerson().getIdent())))
+                                .flatMap(Collection::stream)
                                 .toList())
                         .oppretting(opprettinger.stream()
-                                .filter(OpprettRequest::noneAlias)
                                 .filter(OpprettRequest::isNotTestnorgeIdent)
-                                .map(oppretting ->
-                                        deployService.createOrdre(PDL_OPPRETT_PERSON, oppretting.getPerson().getIdent(),
-                                                List.of(OpprettIdent.builder()
-                                                        .historiskeIdenter(oppretting.getPerson().getAlias().stream().map(DbAlias::getTidligereIdent).toList())
-                                                        .opphoert(!oppretting.getPerson().getPerson().getFolkeregisterPersonstatus().isEmpty() &&
-                                                                oppretting.getPerson().getPerson().getFolkeregisterPersonstatus().getFirst().getStatus().equals(OPPHOERT))
-                                                        .build())))
+                                .map(this::personOpprett)
+                                .flatMap(Collection::stream)
+                                .toList())
+                        .merge(opprettinger.stream()
+                                .filter(OpprettRequest::isNotTestnorgeIdent)
+                                .map(this::npidMerge)
+                                .flatMap(Collection::stream)
                                 .toList())
                         .opplysninger(opprettinger.stream()
                                 .map(this::getOrdrer)
+                                .flatMap(Collection::stream)
                                 .toList())
                         .build());
+    }
+
+    private List<Ordre> personOpprett(OpprettRequest oppretting) {
+
+        return deployService.createOrdre(PDL_OPPRETT_PERSON, oppretting.getPerson().getIdent(),
+                List.of(OpprettIdent.builder()
+                        .historiskeIdenter(oppretting.getPerson().getAlias().stream()
+                                .map(DbAlias::getTidligereIdent)
+                                .filter(IdenttypeUtility::isNotNpidIdent)
+                                .toList())
+                        .opphoert(OPPHOERT == oppretting.getPerson().getPerson()
+                                .getFolkeregisterPersonstatus().stream()
+                                .map(FolkeregisterPersonstatusDTO::getStatus)
+                                .findFirst().orElse(null))
+                        .build()));
+    }
+
+    private List<Ordre> npidMerge(OpprettRequest oppretting) {
+
+        if (oppretting.getPerson().getAlias().stream()
+                .map(DbAlias::getTidligereIdent)
+                .anyMatch(IdenttypeUtility::isNpidIdent)) {
+
+            var stack = new Stack<MergeElement>();
+            oppretting.getPerson().getAlias().stream()
+                    .sorted(Comparator.comparing(DbAlias::getId))
+                    .forEach(alias -> {
+
+                        checkAndUpdate(stack, alias.getTidligereIdent());
+
+                        if (IdenttypeUtility.isNpidIdent(alias.getTidligereIdent())) {
+                            stack.push(MergeElement.builder()
+                                    .npid(alias.getTidligereIdent())
+                                    .build());
+                        }
+                    });
+
+            checkAndUpdate(stack, oppretting.getPerson().getIdent());
+
+            return stack.stream()
+                    .map(element -> deployService.createOrdre(PDL_PERSON_MERGE, element.getIdent(),
+                            List.of(MergeIdent.builder()
+                                    .npid(element.getNpid())
+                                    .build())))
+                    .flatMap(Collection::stream)
+                    .toList();
+        } else {
+
+            return emptyList();
+        }
+    }
+
+    private static void checkAndUpdate(Stack<MergeElement> stack, String oppretting) {
+
+        if (!stack.isEmpty()) {
+            var eksisterende = stack.pop();
+            if (isBlank(eksisterende.getIdent())) {
+                eksisterende.setIdent(oppretting);
+            }
+            stack.push(eksisterende);
+        }
     }
 
     private List<Ordre> getOrdrer(OpprettRequest oppretting) {

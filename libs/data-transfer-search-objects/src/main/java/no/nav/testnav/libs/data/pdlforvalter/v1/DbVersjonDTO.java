@@ -11,7 +11,6 @@ import java.io.Serializable;
 import java.time.Instant;
 
 import static java.util.Objects.nonNull;
-import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Data
 @SuperBuilder
@@ -30,10 +29,6 @@ public abstract class DbVersjonDTO implements Serializable {
             description = "Hvem er master, FREG eller PDL?")
     private Master master;
 
-    @Schema(defaultValue = "true",
-            description = "true = gjeldende informasjon, false = historisk")
-    private Boolean gjeldende;
-
     @JsonIgnore
     private Boolean isNew;
 
@@ -49,11 +44,6 @@ public abstract class DbVersjonDTO implements Serializable {
     @JsonIgnore
     protected static <T> int count(T artifact) {
         return nonNull(artifact) ? 1 : 0;
-    }
-
-    @JsonIgnore
-    public boolean isGjeldende() {
-        return isTrue(getGjeldende());
     }
 
     public enum Master {FREG, PDL}

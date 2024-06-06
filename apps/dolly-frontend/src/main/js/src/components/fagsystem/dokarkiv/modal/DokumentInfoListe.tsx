@@ -9,7 +9,7 @@ import 'react-pdf/dist/esm/Page/TextLayer.css'
 import styled from 'styled-components'
 import Button from '@/components/ui/button/Button'
 
-pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`
+pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`
 
 type Data = {
 	filer: Vedlegg[]
@@ -40,7 +40,7 @@ export default ({ filer, handleChange, isMultiple = true }: Data) => {
 					? {
 							...fil,
 							dokNavn: filnavn,
-					  }
+						}
 					: fil,
 			),
 		)
@@ -57,7 +57,10 @@ export default ({ filer, handleChange, isMultiple = true }: Data) => {
 				<DollyFieldArray data={filer} header={`Dokumentinfo`}>
 					{(fil: Vedlegg, index: number) => (
 						<div className="flexbox--space" key={fil.id + '-' + fil.dokNavn + '-' + fil.name}>
-							<PdfDocument file={'data:application/pdf;base64,' + fil.content.base64}>
+							<PdfDocument
+								options={{ isEvalSupported: false }}
+								file={'data:application/pdf;base64,' + fil.content.base64}
+							>
 								<Page pageNumber={1} height={80} width={60} />
 							</PdfDocument>
 							<DollyTextInput
@@ -78,7 +81,10 @@ export default ({ filer, handleChange, isMultiple = true }: Data) => {
 					className="flexbox"
 					key={firstFile.id + '-' + firstFile.dokNavn + '-' + firstFile.name}
 				>
-					<PdfDocument file={'data:application/pdf;base64,' + firstFile.content.base64}>
+					<PdfDocument
+						options={{ isEvalSupported: false }}
+						file={'data:application/pdf;base64,' + firstFile.content.base64}
+					>
 						<Page pageNumber={1} height={80} width={60} />
 					</PdfDocument>
 					<DollyTextInput

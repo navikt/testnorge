@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.dto.Paginering;
 import no.nav.pdl.forvalter.service.ArtifactDeleteService;
-import no.nav.pdl.forvalter.service.ArtifactGjeldendeService;
 import no.nav.pdl.forvalter.service.ArtifactUpdateService;
 import no.nav.pdl.forvalter.service.MetadataTidspunkterService;
 import no.nav.pdl.forvalter.service.PdlOrdreService;
@@ -70,7 +69,6 @@ public class PersonController {
     private final PdlOrdreService pdlOrdreService;
     private final ArtifactDeleteService artifactDeleteService;
     private final ArtifactUpdateService artifactUpdateService;
-    private final ArtifactGjeldendeService artifactGjeldendeService;
     private final MetadataTidspunkterService metadataTidspunkterService;
 
     @ResponseBody
@@ -129,7 +127,6 @@ public class PersonController {
                                              @RequestParam(required = false) Boolean ekskluderEksternePersoner) {
 
         metadataTidspunkterService.updateMetadata(ident);
-        artifactGjeldendeService.setGjeldendeForRelasjon(ident);
 
         return pdlOrdreService.send(ident, ekskluderEksternePersoner);
     }

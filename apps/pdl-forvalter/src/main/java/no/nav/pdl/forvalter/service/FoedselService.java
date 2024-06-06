@@ -3,7 +3,7 @@ package no.nav.pdl.forvalter.service;
 import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.consumer.KodeverkConsumer;
 import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
-import no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility;
+import no.nav.pdl.forvalter.utils.IdenttypeUtility;
 import no.nav.testnav.libs.data.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FoedselDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.InnflyttingDTO;
@@ -70,7 +70,7 @@ public class FoedselService implements BiValidation<FoedselDTO, PersonDTO> {
 
     private void setFoedeland(FoedselDTO foedsel, String ident, BostedadresseDTO bostedadresse, InnflyttingDTO innflytting) {
         if (isNull(foedsel.getFoedeland())) {
-            if (FNR.equals(IdenttypeFraIdentUtility.getIdenttype(ident))) {
+            if (FNR.equals(IdenttypeUtility.getIdenttype(ident))) {
                 foedsel.setFoedeland(NORGE);
             } else if (nonNull(innflytting)) {
                 foedsel.setFoedeland(innflytting.getFraflyttingsland());

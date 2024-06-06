@@ -7,7 +7,7 @@ import { CypressSelector } from '../../../cypress/mocks/Selectors'
 
 const brukerveiledning = (
 	<a
-		href="https://navikt.github.io/testnorge/applications/dolly/brukerveiledning.html#feil-ved-innlogging"
+		href="https://navikt.github.io/testnorge/docs/applications/dolly/brukerveiledning.html#feil-ved-innlogging"
 		target="_blank"
 	>
 		brukerveiledningen
@@ -89,7 +89,7 @@ export default () => {
 					variant={'primary'}
 					onClick={redirectOnClick(
 						runningLocal ? '/oauth2/authorization/aad' : '/oauth2/login',
-						false
+						false,
 					)}
 				>
 					Logg inn med NAV epost

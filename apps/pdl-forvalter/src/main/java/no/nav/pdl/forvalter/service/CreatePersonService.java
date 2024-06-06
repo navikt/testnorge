@@ -21,14 +21,17 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.StatsborgerskapDTO;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
 import static java.lang.System.currentTimeMillis;
+import static java.time.LocalDateTime.now;
+import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO.Master.FREG;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO.Master.PDL;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.Identtype.NPID;
 
 @Slf4j
 @Service
@@ -74,10 +77,11 @@ public class CreatePersonService {
                                 .gradering(request.getGradering())
                                 .folkeregistermetadata(new FolkeregistermetadataDTO())
                                 .build()) : null)
-                .folkeregisterPersonstatus(
+                .folkeregisterPersonstatus(request.getIdenttype() != NPID ?
                         List.of(FolkeregisterPersonstatusDTO.builder()
                                 .folkeregistermetadata(new FolkeregistermetadataDTO())
-                                .build()))
+                                .build()) :
+                        emptyList())
                 .build();
     }
 
@@ -91,8 +95,8 @@ public class CreatePersonService {
         mergedPerson.setIdent(Objects.requireNonNull(identPoolConsumer.acquireIdents(
                                 mapperFacade.map(nonNull(request) ? request : new PersonRequestDTO(), HentIdenterRequest.class))
                         .block())
-                        .getFirst()
-                        .getIdent());
+                .getFirst()
+                .getIdent());
 
         Stream.of(
                         Flux.just(foedselService.convert(mergedPerson)),
@@ -109,8 +113,9 @@ public class CreatePersonService {
                 .type(SivilstandDTO.Sivilstand.UGIFT)
                 .isNew(true)
                 .id(1)
-                .master(FREG)
+                .master(request.getIdenttype() != NPID ? FREG : PDL)
                 .kilde("Dolly")
+                .bekreftelsesdato(request.getIdenttype() != NPID ? null : now())
                 .build());
         folkeregisterPersonstatusService.convert(mergedPerson);
 
@@ -122,7 +127,7 @@ public class CreatePersonService {
                         .fornavn(mergedPerson.getNavn().stream().findFirst().orElse(new NavnDTO()).getFornavn())
                         .mellomnavn(mergedPerson.getNavn().stream().findFirst().orElse(new NavnDTO()).getMellomnavn())
                         .etternavn(mergedPerson.getNavn().stream().findFirst().orElse(new NavnDTO()).getEtternavn())
-                        .sistOppdatert(LocalDateTime.now())
+                        .sistOppdatert(now())
                         .build())
                 .getPerson();
     }

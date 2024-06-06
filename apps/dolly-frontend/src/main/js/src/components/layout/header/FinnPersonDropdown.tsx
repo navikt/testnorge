@@ -47,7 +47,7 @@ export const FinnPersonDropdown = () => {
 					</Dropdown.Menu.List.Item>
 					<Dropdown.Menu.List.Item
 						data-cy={CypressSelector.BUTTON_HEADER_TENOR}
-						onClick={() => navigate('/tenor')}
+						onClick={() => navigate('/tenor/personer/')}
 						style={{ color: '#212529' }}
 					>
 						<Icon kind="search" fontSize="1.5rem" />

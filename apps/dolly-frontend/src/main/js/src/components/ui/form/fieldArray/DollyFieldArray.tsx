@@ -151,7 +151,7 @@ export const DollyFaBlokkNested = ({
 
 export const DollyFieldArray = ({
 	ignoreOnSingleElement = false,
-	header = null,
+	header = null as unknown as string,
 	hjelpetekst = null,
 	data,
 	nested = false,
