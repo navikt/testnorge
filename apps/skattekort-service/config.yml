@@ -20,13 +20,13 @@ spec:
     inbound:
       rules:
         - application: dolly-backend
-          cluster: dev-gcp
         - application: dolly-frontend
-          cluster: dev-gcp
         - application: dolly-idporten
-          cluster: dev-gcp
         - application: testnav-oversikt-frontend
-          cluster: dev-gcp
+    outbound:
+      rules:
+        - application: sokos-skattekort-dolly
+          namespace: okonomi
   liveness:
     path: /internal/isAlive
     periodSeconds: 30

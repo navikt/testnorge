@@ -1,36 +1,35 @@
 package no.nav.skattekortservice.consumer.command;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.skattekortservice.dto.SokosRequest;
-import no.nav.skattekortservice.dto.SokosResponse;
-import org.apache.hc.core5.http.HttpHeaders;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.util.Base64;
+import java.util.UUID;
 import java.util.concurrent.Callable;
 
 import static org.apache.hc.core5.http.HttpHeaders.AUTHORIZATION;
 
 @RequiredArgsConstructor
-public class SokoPostCommand implements Callable<Mono<SokosResponse>> {
+public class SokosPostCommand implements Callable<Mono<String>> {
 
-    private static final String SOKOS_URL = "/skattekort/opprettskattekort";
+    private static final String SOKOS_URL = "/api/v1/skattekort/opprett";
 
     private final WebClient webClient;
-    private final SokosRequest request;
+    private final String request;
     private final String token;
 
     @Override
-    public Mono<SokosResponse> call() {
+    public Mono<String> call() {
 
         return webClient
                 .post()
                 .uri(SOKOS_URL)
                 .header(AUTHORIZATION, "Bearer " + token)
-                .body(BodyInserters.fromValue(request))
+                .header("korrelasjonsid", UUID.randomUUID().toString())
+                .body(BodyInserters.fromValue(Base64.getDecoder().decode(request)))
                 .retrieve()
-                .bodyToMono(SokosResponse.class)
-
+                .bodyToMono(String.class);
     }
 }

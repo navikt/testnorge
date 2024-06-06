@@ -5,11 +5,13 @@ import jakarta.xml.bind.JAXBException;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
+import no.nav.skattekortservice.consumer.SokosSkattekortConsumer;
 import no.nav.skattekortservice.dto.SkattekortRequest;
 import no.nav.testnav.libs.dto.skattekortservice.v1.SkattekortTilArbeidsgiverDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import reactor.core.publisher.Mono;
 
 import java.io.StringWriter;
 import java.util.Collection;
@@ -20,14 +22,17 @@ public class SkattekortService {
 
     private final JAXBContext jaxbContext;
     private final MapperFacade mapperFacade;
+    private final SokosSkattekortConsumer skattekortConsumer;
 
-    public SkattekortService(MapperFacade mapperFacade) throws JAXBException {
+    public SkattekortService(MapperFacade mapperFacade,
+                             SokosSkattekortConsumer skattekortConsumer) throws JAXBException {
         this.jaxbContext = JAXBContext.newInstance(SkattekortRequest.class);
         this.mapperFacade = mapperFacade;
+        this.skattekortConsumer = skattekortConsumer;
     }
 
     @SneakyThrows
-    public Object sendSkattekort(SkattekortTilArbeidsgiverDTO skattekort) {
+    public Mono<String> sendSkattekort(SkattekortTilArbeidsgiverDTO skattekort) {
 
         validate(skattekort);
 
@@ -36,8 +41,7 @@ public class SkattekortService {
         var xmlRequest = marshallToXml(request);
         log.info("XML Request: {}", xmlRequest);
 
-        //TBD send melding
-        return "XML har blitt generert og logget, men innsending av skattekort mangler i påvente av nytt API hos team motta-og-beregne.";
+        return skattekortConsumer.sendSkattekort(xmlRequest);
     }
 
     @SneakyThrows

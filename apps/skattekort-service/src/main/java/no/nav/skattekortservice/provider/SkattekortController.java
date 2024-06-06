@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 
 @RestController
 @RequiredArgsConstructor
@@ -16,7 +17,7 @@ public class SkattekortController {
     private final SkattekortService skattekortService;
 
     @PostMapping("/arbeidsgiver")
-    public Object sendSkattekortTilArbeidsgiver(@RequestBody SkattekortTilArbeidsgiverDTO skattekort) {
+    public Mono<String> sendSkattekortTilArbeidsgiver(@RequestBody SkattekortTilArbeidsgiverDTO skattekort) {
 
         return skattekortService.sendSkattekort(skattekort);
     }
