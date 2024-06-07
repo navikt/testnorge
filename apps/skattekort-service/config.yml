@@ -24,10 +24,8 @@ spec:
         - application: dolly-idporten
         - application: testnav-oversikt-frontend
     outbound:
-      rules:
-        - application: sokos-skattekort-dolly
-          namespace: okonomi
-          cluster: dev-fss
+      external:
+        - host: sokos-skattekort-dolly.dev-fss-pub.nais.io
   liveness:
     path: /internal/isAlive
     periodSeconds: 30
