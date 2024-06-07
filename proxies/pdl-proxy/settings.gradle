@@ -1,5 +1,5 @@
 plugins {
-    id "com.gradle.enterprise" version "3.12.3"
+    id "com.gradle.develocity" version "3.17.4"
 }
 
 rootProject.name = 'pdl-proxy'
@@ -10,9 +10,9 @@ includeBuild '../../libs/reactive-core'
 includeBuild '../../libs/reactive-proxy'
 includeBuild '../../libs/reactive-security'
 
-gradleEnterprise {
+develocity {
     buildScan {
-        termsOfServiceUrl = "https://gradle.com/terms-of-service"
-        termsOfServiceAgree = "yes"
+        termsOfUseUrl = "https://gradle.com/terms-of-service"
+        termsOfUseAgree = "yes"
     }
 }
