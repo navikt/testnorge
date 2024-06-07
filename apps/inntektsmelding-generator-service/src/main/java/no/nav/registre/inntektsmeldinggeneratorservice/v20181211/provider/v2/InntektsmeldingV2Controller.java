@@ -36,12 +36,12 @@ public class InntektsmeldingV2Controller {
         log.info("Konverterer inntektsmelding til : {}", melding);
         String xml = XmlConverter.toXml(melding, InntektsmeldingM.class);
 
-        if (!XmlConverter.validate(xml, InntektsmeldingM.class)) {
-            log.warn("Validering av opprett xml feilet");
+//        if (!XmlConverter.validate(xml, InntektsmeldingM.class)) {
+//            log.warn("Validering av opprett xml feilet");
 //            return ResponseEntity
 //                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
 //                    .body("Validering av opprett xml feilet");
-        }
+//        }
         log.info("Genererte  for inntektsmelding: {}", xml);
 
         return ResponseEntity.ok(xml);
