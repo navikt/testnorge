@@ -78,7 +78,7 @@ public class XmlConverter {
     @SuppressWarnings("unchecked")
     private static <T> void toObject(String xml, Class<T> clazz) {
         try {
-            JAXBContext jaxbContext = JAXBContext.newInstance(clazz);
+            JAXBContext jaxbContext = JAXBContext.newInstance("no.nav.registre.inntektsmeldinggeneratorservice.v20181211.adapter");
 
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 

@@ -8,6 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
@@ -38,8 +39,11 @@ class InntektsmeldingV2ControllerTest {
 
         assertDoesNotThrow(() -> {
             mockMvc.perform(MockMvcRequestBuilders.post("/api/v2/inntektsmelding/2018/12/11")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(requestBody));
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(requestBody))
+                    .andExpect(MockMvcResultMatchers.status().isOk());
         }, "Forventer at ingen JAXBException blir kastet under konvertering til xml");
     }
+
+    ;
 }

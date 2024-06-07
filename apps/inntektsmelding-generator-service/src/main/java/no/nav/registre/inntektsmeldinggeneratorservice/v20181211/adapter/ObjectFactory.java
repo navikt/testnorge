@@ -201,7 +201,7 @@ public class ObjectFactory {
             name = "melding"
     )
     public JAXBElement<InntektsmeldingM> createMelding(InntektsmeldingM value) {
-        return new JAXBElement(_Melding_QNAME, InntektsmeldingM.class, (Class) null, value);
+        return new JAXBElement<>(_Melding_QNAME, InntektsmeldingM.class, null, value);
     }
 
     @XmlElementDecl(
@@ -209,8 +209,8 @@ public class ObjectFactory {
             name = "refusjonsbeloepPrMnd",
             scope = EndringIRefusjon.class
     )
-    public JAXBElement<BigDecimal> createEndringIRefusjonRefusjonsbeloepPrMnd(BigDecimal value) {
-        return new JAXBElement(_EndringIRefusjonRefusjonsbeloepPrMnd_QNAME, BigDecimal.class, EndringIRefusjon.class, value);
+    public JAXBElement createEndringIRefusjonRefusjonsbeloepPrMnd(BigDecimal value) {
+        return new JAXBElement<>(_EndringIRefusjonRefusjonsbeloepPrMnd_QNAME, BigDecimal.class, EndringIRefusjon.class, value);
     }
 
     @XmlElementDecl(
@@ -219,8 +219,8 @@ public class ObjectFactory {
             scope = EndringIRefusjon.class
     )
     @XmlJavaTypeAdapter(LocalDateXmlAdapter.class)
-    public JAXBElement<LocalDate> createEndringIRefusjonEndringsdato(LocalDate value) {
-        return new JAXBElement(_EndringIRefusjonEndringsdato_QNAME, LocalDate.class, EndringIRefusjon.class, value);
+    public JAXBElement createEndringIRefusjonEndringsdato(LocalDate value) {
+        return new JAXBElement<>(_EndringIRefusjonEndringsdato_QNAME, LocalDate.class, EndringIRefusjon.class, value);
     }
 
     @XmlElementDecl(
@@ -228,8 +228,8 @@ public class ObjectFactory {
             name = "periode",
             scope = UtsettelseAvForeldrepenger.class
     )
-    public JAXBElement<Periode> createUtsettelseAvForeldrepengerPeriode(Periode value) {
-        return new JAXBElement(_UtsettelseAvForeldrepengerPeriode_QNAME, Periode.class, UtsettelseAvForeldrepenger.class, value);
+    public JAXBElement createUtsettelseAvForeldrepengerPeriode(Periode value) {
+        return new JAXBElement<>(_UtsettelseAvForeldrepengerPeriode_QNAME, Periode.class, UtsettelseAvForeldrepenger.class, value);
     }
 
     @XmlElementDecl(
@@ -237,8 +237,8 @@ public class ObjectFactory {
             name = "aarsakTilUtsettelse",
             scope = UtsettelseAvForeldrepenger.class
     )
-    public JAXBElement<String> createUtsettelseAvForeldrepengerAarsakTilUtsettelse(String value) {
-        return new JAXBElement(_UtsettelseAvForeldrepengerAarsakTilUtsettelse_QNAME, String.class, UtsettelseAvForeldrepenger.class, value);
+    public JAXBElement createUtsettelseAvForeldrepengerAarsakTilUtsettelse(String value) {
+        return new JAXBElement<>(_UtsettelseAvForeldrepengerAarsakTilUtsettelse_QNAME, String.class, UtsettelseAvForeldrepenger.class, value);
     }
 
     @XmlElementDecl(
@@ -247,8 +247,8 @@ public class ObjectFactory {
             scope = Avsendersystem.class
     )
     @XmlJavaTypeAdapter(LocalDateTimeXmlAdapter.class)
-    public JAXBElement<LocalDateTime> createAvsendersystemInnsendingstidspunkt(LocalDateTime value) {
-        return new JAXBElement(_AvsendersystemInnsendingstidspunkt_QNAME, LocalDateTime.class, Avsendersystem.class, value);
+    public JAXBElement createAvsendersystemInnsendingstidspunkt(LocalDateTime value) {
+        return new JAXBElement<>(_AvsendersystemInnsendingstidspunkt_QNAME, LocalDateTime.class, Avsendersystem.class, value);
     }
 
     @XmlElementDecl(
@@ -256,8 +256,8 @@ public class ObjectFactory {
             name = "arbeidsforhold",
             scope = Skjemainnhold.class
     )
-    public JAXBElement<Arbeidsforhold> createSkjemainnholdArbeidsforhold(Arbeidsforhold value) {
-        return new JAXBElement(_SkjemainnholdArbeidsforhold_QNAME, Arbeidsforhold.class, Skjemainnhold.class, value);
+    public JAXBElement createSkjemainnholdArbeidsforhold(Arbeidsforhold value) {
+        return new JAXBElement<>(_SkjemainnholdArbeidsforhold_QNAME, Arbeidsforhold.class, Skjemainnhold.class, value);
     }
 
     @XmlElementDecl(
@@ -265,8 +265,8 @@ public class ObjectFactory {
             name = "refusjon",
             scope = Skjemainnhold.class
     )
-    public JAXBElement<Refusjon> createSkjemainnholdRefusjon(Refusjon value) {
-        return new JAXBElement(_SkjemainnholdRefusjon_QNAME, Refusjon.class, Skjemainnhold.class, value);
+    public JAXBElement createSkjemainnholdRefusjon(Refusjon value) {
+        return new JAXBElement<>(_SkjemainnholdRefusjon_QNAME, Refusjon.class, Skjemainnhold.class, value);
     }
 
     @XmlElementDecl(
@@ -274,8 +274,8 @@ public class ObjectFactory {
             name = "sykepengerIArbeidsgiverperioden",
             scope = Skjemainnhold.class
     )
-    public JAXBElement<SykepengerIArbeidsgiverperioden> createSkjemainnholdSykepengerIArbeidsgiverperioden(SykepengerIArbeidsgiverperioden value) {
-        return new JAXBElement(_SkjemainnholdSykepengerIArbeidsgiverperioden_QNAME, SykepengerIArbeidsgiverperioden.class, Skjemainnhold.class, value);
+    public JAXBElement createSkjemainnholdSykepengerIArbeidsgiverperioden(SykepengerIArbeidsgiverperioden value) {
+        return new JAXBElement<>(_SkjemainnholdSykepengerIArbeidsgiverperioden_QNAME, SykepengerIArbeidsgiverperioden.class, Skjemainnhold.class, value);
     }
 
     @XmlElementDecl(
@@ -283,8 +283,8 @@ public class ObjectFactory {
             name = "gjenopptakelseNaturalytelseListe",
             scope = Skjemainnhold.class
     )
-    public JAXBElement<GjenopptakelseNaturalytelseListe> createSkjemainnholdGjenopptakelseNaturalytelseListe(GjenopptakelseNaturalytelseListe value) {
-        return new JAXBElement(_SkjemainnholdGjenopptakelseNaturalytelseListe_QNAME, GjenopptakelseNaturalytelseListe.class, Skjemainnhold.class, value);
+    public JAXBElement createSkjemainnholdGjenopptakelseNaturalytelseListe(GjenopptakelseNaturalytelseListe value) {
+        return new JAXBElement<>(_SkjemainnholdGjenopptakelseNaturalytelseListe_QNAME, GjenopptakelseNaturalytelseListe.class, Skjemainnhold.class, value);
     }
 
     @XmlElementDecl(
@@ -292,8 +292,8 @@ public class ObjectFactory {
             name = "omsorgspenger",
             scope = Skjemainnhold.class
     )
-    public JAXBElement<Omsorgspenger> createSkjemainnholdOmsorgspenger(Omsorgspenger value) {
-        return new JAXBElement(_SkjemainnholdOmsorgspenger_QNAME, Omsorgspenger.class, Skjemainnhold.class, value);
+    public JAXBElement createSkjemainnholdOmsorgspenger(Omsorgspenger value) {
+        return new JAXBElement<>(_SkjemainnholdOmsorgspenger_QNAME, Omsorgspenger.class, Skjemainnhold.class, value);
     }
 
     @XmlElementDecl(
@@ -301,8 +301,8 @@ public class ObjectFactory {
             name = "arbeidsgiver",
             scope = Skjemainnhold.class
     )
-    public JAXBElement<Arbeidsgiver> createSkjemainnholdArbeidsgiver(Arbeidsgiver value) {
-        return new JAXBElement(_SkjemainnholdArbeidsgiver_QNAME, Arbeidsgiver.class, Skjemainnhold.class, value);
+    public JAXBElement createSkjemainnholdArbeidsgiver(Arbeidsgiver value) {
+        return new JAXBElement<>(_SkjemainnholdArbeidsgiver_QNAME, Arbeidsgiver.class, Skjemainnhold.class, value);
     }
 
     @XmlElementDecl(
@@ -311,8 +311,8 @@ public class ObjectFactory {
             scope = Skjemainnhold.class
     )
     @XmlJavaTypeAdapter(LocalDateXmlAdapter.class)
-    public JAXBElement<LocalDate> createSkjemainnholdStartdatoForeldrepengeperiode(LocalDate value) {
-        return new JAXBElement(_SkjemainnholdStartdatoForeldrepengeperiode_QNAME, LocalDate.class, Skjemainnhold.class, value);
+    public JAXBElement createSkjemainnholdStartdatoForeldrepengeperiode(LocalDate value) {
+        return new JAXBElement<>(_SkjemainnholdStartdatoForeldrepengeperiode_QNAME, LocalDate.class, Skjemainnhold.class, value);
     }
 
     @XmlElementDecl(
@@ -320,8 +320,8 @@ public class ObjectFactory {
             name = "opphoerAvNaturalytelseListe",
             scope = Skjemainnhold.class
     )
-    public JAXBElement<OpphoerAvNaturalytelseListe> createSkjemainnholdOpphoerAvNaturalytelseListe(OpphoerAvNaturalytelseListe value) {
-        return new JAXBElement(_SkjemainnholdOpphoerAvNaturalytelseListe_QNAME, OpphoerAvNaturalytelseListe.class, Skjemainnhold.class, value);
+    public JAXBElement createSkjemainnholdOpphoerAvNaturalytelseListe(OpphoerAvNaturalytelseListe value) {
+        return new JAXBElement<>(_SkjemainnholdOpphoerAvNaturalytelseListe_QNAME, OpphoerAvNaturalytelseListe.class, Skjemainnhold.class, value);
     }
 
     @XmlElementDecl(
@@ -329,8 +329,8 @@ public class ObjectFactory {
             name = "pleiepengerPerioder",
             scope = Skjemainnhold.class
     )
-    public JAXBElement<PleiepengerPeriodeListe> createSkjemainnholdPleiepengerPerioder(PleiepengerPeriodeListe value) {
-        return new JAXBElement(_SkjemainnholdPleiepengerPerioder_QNAME, PleiepengerPeriodeListe.class, Skjemainnhold.class, value);
+    public JAXBElement createSkjemainnholdPleiepengerPerioder(PleiepengerPeriodeListe value) {
+        return new JAXBElement<>(_SkjemainnholdPleiepengerPerioder_QNAME, PleiepengerPeriodeListe.class, Skjemainnhold.class, value);
     }
 
     @XmlElementDecl(
@@ -338,8 +338,8 @@ public class ObjectFactory {
             name = "arbeidsgiverPrivat",
             scope = Skjemainnhold.class
     )
-    public JAXBElement<ArbeidsgiverPrivat> createSkjemainnholdArbeidsgiverPrivat(ArbeidsgiverPrivat value) {
-        return new JAXBElement(_SkjemainnholdArbeidsgiverPrivat_QNAME, ArbeidsgiverPrivat.class, Skjemainnhold.class, value);
+    public JAXBElement createSkjemainnholdArbeidsgiverPrivat(ArbeidsgiverPrivat value) {
+        return new JAXBElement<>(_SkjemainnholdArbeidsgiverPrivat_QNAME, ArbeidsgiverPrivat.class, Skjemainnhold.class, value);
     }
 
     @XmlElementDecl(
@@ -347,8 +347,8 @@ public class ObjectFactory {
             name = "arbeidsgiverperiodeListe",
             scope = SykepengerIArbeidsgiverperioden.class
     )
-    public JAXBElement<ArbeidsgiverperiodeListe> createSykepengerIArbeidsgiverperiodenArbeidsgiverperiodeListe(ArbeidsgiverperiodeListe value) {
-        return new JAXBElement(_SykepengerIArbeidsgiverperiodenArbeidsgiverperiodeListe_QNAME, ArbeidsgiverperiodeListe.class, SykepengerIArbeidsgiverperioden.class, value);
+    public JAXBElement createSykepengerIArbeidsgiverperiodenArbeidsgiverperiodeListe(ArbeidsgiverperiodeListe value) {
+        return new JAXBElement<>(_SykepengerIArbeidsgiverperiodenArbeidsgiverperiodeListe_QNAME, ArbeidsgiverperiodeListe.class, SykepengerIArbeidsgiverperioden.class, value);
     }
 
     @XmlElementDecl(
@@ -356,8 +356,8 @@ public class ObjectFactory {
             name = "bruttoUtbetalt",
             scope = SykepengerIArbeidsgiverperioden.class
     )
-    public JAXBElement<BigDecimal> createSykepengerIArbeidsgiverperiodenBruttoUtbetalt(BigDecimal value) {
-        return new JAXBElement(_SykepengerIArbeidsgiverperiodenBruttoUtbetalt_QNAME, BigDecimal.class, SykepengerIArbeidsgiverperioden.class, value);
+    public JAXBElement createSykepengerIArbeidsgiverperiodenBruttoUtbetalt(BigDecimal value) {
+        return new JAXBElement<>(_SykepengerIArbeidsgiverperiodenBruttoUtbetalt_QNAME, BigDecimal.class, SykepengerIArbeidsgiverperioden.class, value);
     }
 
     @XmlElementDecl(
@@ -365,8 +365,8 @@ public class ObjectFactory {
             name = "begrunnelseForReduksjonEllerIkkeUtbetalt",
             scope = SykepengerIArbeidsgiverperioden.class
     )
-    public JAXBElement<String> createSykepengerIArbeidsgiverperiodenBegrunnelseForReduksjonEllerIkkeUtbetalt(String value) {
-        return new JAXBElement(_SykepengerIArbeidsgiverperiodenBegrunnelseForReduksjonEllerIkkeUtbetalt_QNAME, String.class, SykepengerIArbeidsgiverperioden.class, value);
+    public JAXBElement createSykepengerIArbeidsgiverperiodenBegrunnelseForReduksjonEllerIkkeUtbetalt(String value) {
+        return new JAXBElement<>(_SykepengerIArbeidsgiverperiodenBegrunnelseForReduksjonEllerIkkeUtbetalt_QNAME, String.class, SykepengerIArbeidsgiverperioden.class, value);
     }
 
     @XmlElementDecl(
@@ -374,8 +374,8 @@ public class ObjectFactory {
             name = "fravaersPerioder",
             scope = Omsorgspenger.class
     )
-    public JAXBElement<FravaersPeriodeListe> createOmsorgspengerFravaersPerioder(FravaersPeriodeListe value) {
-        return new JAXBElement(_OmsorgspengerFravaersPerioder_QNAME, FravaersPeriodeListe.class, Omsorgspenger.class, value);
+    public JAXBElement createOmsorgspengerFravaersPerioder(FravaersPeriodeListe value) {
+        return new JAXBElement<>(_OmsorgspengerFravaersPerioder_QNAME, FravaersPeriodeListe.class, Omsorgspenger.class, value);
     }
 
     @XmlElementDecl(
@@ -383,8 +383,8 @@ public class ObjectFactory {
             name = "harUtbetaltPliktigeDager",
             scope = Omsorgspenger.class
     )
-    public JAXBElement<Boolean> createOmsorgspengerHarUtbetaltPliktigeDager(Boolean value) {
-        return new JAXBElement(_OmsorgspengerHarUtbetaltPliktigeDager_QNAME, Boolean.class, Omsorgspenger.class, value);
+    public JAXBElement createOmsorgspengerHarUtbetaltPliktigeDager(Boolean value) {
+        return new JAXBElement<>(_OmsorgspengerHarUtbetaltPliktigeDager_QNAME, Boolean.class, Omsorgspenger.class, value);
     }
 
     @XmlElementDecl(
@@ -392,8 +392,8 @@ public class ObjectFactory {
             name = "delvisFravaersListe",
             scope = Omsorgspenger.class
     )
-    public JAXBElement<DelvisFravaersListe> createOmsorgspengerDelvisFravaersListe(DelvisFravaersListe value) {
-        return new JAXBElement(_OmsorgspengerDelvisFravaersListe_QNAME, DelvisFravaersListe.class, Omsorgspenger.class, value);
+    public JAXBElement createOmsorgspengerDelvisFravaersListe(DelvisFravaersListe value) {
+        return new JAXBElement<>(_OmsorgspengerDelvisFravaersListe_QNAME, DelvisFravaersListe.class, Omsorgspenger.class, value);
     }
 
     @XmlElementDecl(
@@ -401,8 +401,8 @@ public class ObjectFactory {
             name = "periode",
             scope = GraderingIForeldrepenger.class
     )
-    public JAXBElement<Periode> createGraderingIForeldrepengerPeriode(Periode value) {
-        return new JAXBElement(_UtsettelseAvForeldrepengerPeriode_QNAME, Periode.class, GraderingIForeldrepenger.class, value);
+    public JAXBElement createGraderingIForeldrepengerPeriode(Periode value) {
+        return new JAXBElement<>(_UtsettelseAvForeldrepengerPeriode_QNAME, Periode.class, GraderingIForeldrepenger.class, value);
     }
 
     @XmlElementDecl(
@@ -410,8 +410,8 @@ public class ObjectFactory {
             name = "arbeidstidprosent",
             scope = GraderingIForeldrepenger.class
     )
-    public JAXBElement<BigInteger> createGraderingIForeldrepengerArbeidstidprosent(BigInteger value) {
-        return new JAXBElement(_GraderingIForeldrepengerArbeidstidprosent_QNAME, BigInteger.class, GraderingIForeldrepenger.class, value);
+    public JAXBElement createGraderingIForeldrepengerArbeidstidprosent(BigInteger value) {
+        return new JAXBElement<>(_GraderingIForeldrepengerArbeidstidprosent_QNAME, BigInteger.class, GraderingIForeldrepenger.class, value);
     }
 
     @XmlElementDecl(
@@ -420,8 +420,8 @@ public class ObjectFactory {
             scope = DelvisFravaer.class
     )
     @XmlJavaTypeAdapter(LocalDateXmlAdapter.class)
-    public JAXBElement<LocalDate> createDelvisFravaerDato(LocalDate value) {
-        return new JAXBElement(_DelvisFravaerDato_QNAME, LocalDate.class, DelvisFravaer.class, value);
+    public JAXBElement createDelvisFravaerDato(LocalDate value) {
+        return new JAXBElement<>(_DelvisFravaerDato_QNAME, LocalDate.class, DelvisFravaer.class, value);
     }
 
     @XmlElementDecl(
@@ -429,8 +429,8 @@ public class ObjectFactory {
             name = "timer",
             scope = DelvisFravaer.class
     )
-    public JAXBElement<BigDecimal> createDelvisFravaerTimer(BigDecimal value) {
-        return new JAXBElement(_DelvisFravaerTimer_QNAME, BigDecimal.class, DelvisFravaer.class, value);
+    public JAXBElement createDelvisFravaerTimer(BigDecimal value) {
+        return new JAXBElement<>(_DelvisFravaerTimer_QNAME, BigDecimal.class, DelvisFravaer.class, value);
     }
 
     @XmlElementDecl(
@@ -439,8 +439,8 @@ public class ObjectFactory {
             scope = Periode.class
     )
     @XmlJavaTypeAdapter(LocalDateXmlAdapter.class)
-    public JAXBElement<LocalDate> createPeriodeFom(LocalDate value) {
-        return new JAXBElement(_PeriodeFom_QNAME, LocalDate.class, Periode.class, value);
+    public JAXBElement createPeriodeFom(LocalDate value) {
+        return new JAXBElement<>(_PeriodeFom_QNAME, LocalDate.class, Periode.class, value);
     }
 
     @XmlElementDecl(
@@ -449,8 +449,8 @@ public class ObjectFactory {
             scope = Periode.class
     )
     @XmlJavaTypeAdapter(LocalDateXmlAdapter.class)
-    public JAXBElement<LocalDate> createPeriodeTom(LocalDate value) {
-        return new JAXBElement(_PeriodeTom_QNAME, LocalDate.class, Periode.class, value);
+    public JAXBElement createPeriodeTom(LocalDate value) {
+        return new JAXBElement<>(_PeriodeTom_QNAME, LocalDate.class, Periode.class, value);
     }
 
     @XmlElementDecl(
@@ -458,8 +458,8 @@ public class ObjectFactory {
             name = "beloep",
             scope = Inntekt.class
     )
-    public JAXBElement<BigDecimal> createInntektBeloep(BigDecimal value) {
-        return new JAXBElement(_InntektBeloep_QNAME, BigDecimal.class, Inntekt.class, value);
+    public JAXBElement createInntektBeloep(BigDecimal value) {
+        return new JAXBElement<>(_InntektBeloep_QNAME, BigDecimal.class, Inntekt.class, value);
     }
 
     @XmlElementDecl(
@@ -467,8 +467,8 @@ public class ObjectFactory {
             name = "aarsakVedEndring",
             scope = Inntekt.class
     )
-    public JAXBElement<String> createInntektAarsakVedEndring(String value) {
-        return new JAXBElement(_InntektAarsakVedEndring_QNAME, String.class, Inntekt.class, value);
+    public JAXBElement createInntektAarsakVedEndring(String value) {
+        return new JAXBElement<>(_InntektAarsakVedEndring_QNAME, String.class, Inntekt.class, value);
     }
 
     @XmlElementDecl(
@@ -477,8 +477,8 @@ public class ObjectFactory {
             scope = Arbeidsforhold.class
     )
     @XmlJavaTypeAdapter(LocalDateXmlAdapter.class)
-    public JAXBElement<LocalDate> createArbeidsforholdFoersteFravaersdag(LocalDate value) {
-        return new JAXBElement(_ArbeidsforholdFoersteFravaersdag_QNAME, LocalDate.class, Arbeidsforhold.class, value);
+    public JAXBElement createArbeidsforholdFoersteFravaersdag(LocalDate value) {
+        return new JAXBElement<>(_ArbeidsforholdFoersteFravaersdag_QNAME, LocalDate.class, Arbeidsforhold.class, value);
     }
 
     @XmlElementDecl(
@@ -486,8 +486,8 @@ public class ObjectFactory {
             name = "beregnetInntekt",
             scope = Arbeidsforhold.class
     )
-    public JAXBElement<Inntekt> createArbeidsforholdBeregnetInntekt(Inntekt value) {
-        return new JAXBElement(_ArbeidsforholdBeregnetInntekt_QNAME, Inntekt.class, Arbeidsforhold.class, value);
+    public JAXBElement createArbeidsforholdBeregnetInntekt(Inntekt value) {
+        return new JAXBElement<>(_ArbeidsforholdBeregnetInntekt_QNAME, Inntekt.class, Arbeidsforhold.class, value);
     }
 
     @XmlElementDecl(
@@ -495,8 +495,8 @@ public class ObjectFactory {
             name = "arbeidsforholdId",
             scope = Arbeidsforhold.class
     )
-    public JAXBElement<String> createArbeidsforholdArbeidsforholdId(String value) {
-        return new JAXBElement(_ArbeidsforholdArbeidsforholdId_QNAME, String.class, Arbeidsforhold.class, value);
+    public JAXBElement createArbeidsforholdArbeidsforholdId(String value) {
+        return new JAXBElement<>(_ArbeidsforholdArbeidsforholdId_QNAME, String.class, Arbeidsforhold.class, value);
     }
 
     @XmlElementDecl(
@@ -504,8 +504,8 @@ public class ObjectFactory {
             name = "graderingIForeldrepengerListe",
             scope = Arbeidsforhold.class
     )
-    public JAXBElement<GraderingIForeldrepengerListe> createArbeidsforholdGraderingIForeldrepengerListe(GraderingIForeldrepengerListe value) {
-        return new JAXBElement(_ArbeidsforholdGraderingIForeldrepengerListe_QNAME, GraderingIForeldrepengerListe.class, Arbeidsforhold.class, value);
+    public JAXBElement createArbeidsforholdGraderingIForeldrepengerListe(GraderingIForeldrepengerListe value) {
+        return new JAXBElement<>(_ArbeidsforholdGraderingIForeldrepengerListe_QNAME, GraderingIForeldrepengerListe.class, Arbeidsforhold.class, value);
     }
 
     @XmlElementDecl(
@@ -513,8 +513,8 @@ public class ObjectFactory {
             name = "utsettelseAvForeldrepengerListe",
             scope = Arbeidsforhold.class
     )
-    public JAXBElement<UtsettelseAvForeldrepengerListe> createArbeidsforholdUtsettelseAvForeldrepengerListe(UtsettelseAvForeldrepengerListe value) {
-        return new JAXBElement(_ArbeidsforholdUtsettelseAvForeldrepengerListe_QNAME, UtsettelseAvForeldrepengerListe.class, Arbeidsforhold.class, value);
+    public JAXBElement createArbeidsforholdUtsettelseAvForeldrepengerListe(UtsettelseAvForeldrepengerListe value) {
+        return new JAXBElement<>(_ArbeidsforholdUtsettelseAvForeldrepengerListe_QNAME, UtsettelseAvForeldrepengerListe.class, Arbeidsforhold.class, value);
     }
 
     @XmlElementDecl(
@@ -522,8 +522,8 @@ public class ObjectFactory {
             name = "avtaltFerieListe",
             scope = Arbeidsforhold.class
     )
-    public JAXBElement<AvtaltFerieListe> createArbeidsforholdAvtaltFerieListe(AvtaltFerieListe value) {
-        return new JAXBElement(_ArbeidsforholdAvtaltFerieListe_QNAME, AvtaltFerieListe.class, Arbeidsforhold.class, value);
+    public JAXBElement createArbeidsforholdAvtaltFerieListe(AvtaltFerieListe value) {
+        return new JAXBElement<>(_ArbeidsforholdAvtaltFerieListe_QNAME, AvtaltFerieListe.class, Arbeidsforhold.class, value);
     }
 
     @XmlElementDecl(
@@ -531,8 +531,8 @@ public class ObjectFactory {
             name = "beloepPrMnd",
             scope = NaturalytelseDetaljer.class
     )
-    public JAXBElement<BigDecimal> createNaturalytelseDetaljerBeloepPrMnd(BigDecimal value) {
-        return new JAXBElement(_NaturalytelseDetaljerBeloepPrMnd_QNAME, BigDecimal.class, NaturalytelseDetaljer.class, value);
+    public JAXBElement createNaturalytelseDetaljerBeloepPrMnd(BigDecimal value) {
+        return new JAXBElement<>(_NaturalytelseDetaljerBeloepPrMnd_QNAME, BigDecimal.class, NaturalytelseDetaljer.class, value);
     }
 
     @XmlElementDecl(
@@ -541,8 +541,8 @@ public class ObjectFactory {
             scope = NaturalytelseDetaljer.class
     )
     @XmlJavaTypeAdapter(LocalDateXmlAdapter.class)
-    public JAXBElement<LocalDate> createNaturalytelseDetaljerFom(LocalDate value) {
-        return new JAXBElement(_PeriodeFom_QNAME, LocalDate.class, NaturalytelseDetaljer.class, value);
+    public JAXBElement createNaturalytelseDetaljerFom(LocalDate value) {
+        return new JAXBElement<>(_PeriodeFom_QNAME, LocalDate.class, NaturalytelseDetaljer.class, value);
     }
 
     @XmlElementDecl(
@@ -550,8 +550,8 @@ public class ObjectFactory {
             name = "naturalytelseType",
             scope = NaturalytelseDetaljer.class
     )
-    public JAXBElement<String> createNaturalytelseDetaljerNaturalytelseType(String value) {
-        return new JAXBElement(_NaturalytelseDetaljerNaturalytelseType_QNAME, String.class, NaturalytelseDetaljer.class, value);
+    public JAXBElement createNaturalytelseDetaljerNaturalytelseType(String value) {
+        return new JAXBElement<>(_NaturalytelseDetaljerNaturalytelseType_QNAME, String.class, NaturalytelseDetaljer.class, value);
     }
 
     @XmlElementDecl(
@@ -560,8 +560,8 @@ public class ObjectFactory {
             scope = Refusjon.class
     )
     @XmlJavaTypeAdapter(LocalDateXmlAdapter.class)
-    public JAXBElement<LocalDate> createRefusjonRefusjonsopphoersdato(LocalDate value) {
-        return new JAXBElement(_RefusjonRefusjonsopphoersdato_QNAME, LocalDate.class, Refusjon.class, value);
+    public JAXBElement createRefusjonRefusjonsopphoersdato(LocalDate value) {
+        return new JAXBElement<>(_RefusjonRefusjonsopphoersdato_QNAME, LocalDate.class, Refusjon.class, value);
     }
 
     @XmlElementDecl(
@@ -569,8 +569,8 @@ public class ObjectFactory {
             name = "refusjonsbeloepPrMnd",
             scope = Refusjon.class
     )
-    public JAXBElement<BigDecimal> createRefusjonRefusjonsbeloepPrMnd(BigDecimal value) {
-        return new JAXBElement(_EndringIRefusjonRefusjonsbeloepPrMnd_QNAME, BigDecimal.class, Refusjon.class, value);
+    public JAXBElement createRefusjonRefusjonsbeloepPrMnd(BigDecimal value) {
+        return new JAXBElement<>(_EndringIRefusjonRefusjonsbeloepPrMnd_QNAME, BigDecimal.class, Refusjon.class, value);
     }
 
     @XmlElementDecl(
@@ -578,7 +578,7 @@ public class ObjectFactory {
             name = "endringIRefusjonListe",
             scope = Refusjon.class
     )
-    public JAXBElement<EndringIRefusjonsListe> createRefusjonEndringIRefusjonListe(EndringIRefusjonsListe value) {
-        return new JAXBElement(_RefusjonEndringIRefusjonListe_QNAME, EndringIRefusjonsListe.class, Refusjon.class, value);
+    public JAXBElement createRefusjonEndringIRefusjonListe(EndringIRefusjonsListe value) {
+        return new JAXBElement<>(_RefusjonEndringIRefusjonListe_QNAME, EndringIRefusjonsListe.class, Refusjon.class, value);
     }
 }

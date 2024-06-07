@@ -31,7 +31,7 @@ public class InntektsmeldingM {
     )
     protected Skjemainnhold skjemainnhold;
     @XmlAnyAttribute
-    private Map<QName, String> otherAttributes = new HashMap();
+    private Map<QName, String> otherAttributes = new HashMap<>();
 
     public InntektsmeldingM() {
     }
