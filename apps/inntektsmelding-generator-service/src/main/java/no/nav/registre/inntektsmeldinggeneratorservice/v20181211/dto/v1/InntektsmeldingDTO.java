@@ -1,17 +1,17 @@
 package no.nav.registre.inntektsmeldinggeneratorservice.v20181211.dto.v1;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.xml.bind.JAXBElement;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import no.seres.xsd.nav.inntektsmelding_m._20181211.GjenopptakelseNaturalytelseListe;
+import no.seres.xsd.nav.inntektsmelding_m._20181211.InntektsmeldingM;
 import no.seres.xsd.nav.inntektsmelding_m._20181211.ObjectFactory;
-import no.seres.xsd.nav.inntektsmelding_m._20181211.XMLGjenopptakelseNaturalytelseListe;
-import no.seres.xsd.nav.inntektsmelding_m._20181211.XMLInntektsmeldingM;
-import no.seres.xsd.nav.inntektsmelding_m._20181211.XMLOpphoerAvNaturalytelseListe;
-import no.seres.xsd.nav.inntektsmelding_m._20181211.XMLPleiepengerPeriodeListe;
-import no.seres.xsd.nav.inntektsmelding_m._20181211.XMLSkjemainnhold;
+import no.seres.xsd.nav.inntektsmelding_m._20181211.OpphoerAvNaturalytelseListe;
+import no.seres.xsd.nav.inntektsmelding_m._20181211.PleiepengerPeriodeListe;
+import no.seres.xsd.nav.inntektsmelding_m._20181211.Skjemainnhold;
 import org.apache.commons.text.CaseUtils;
 
-import javax.xml.bind.JAXBElement;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -19,7 +19,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Data
 @NoArgsConstructor(force = true)
-public class InntektsmeldingDTO implements ToXmlElement<XMLInntektsmeldingM> {
+public class InntektsmeldingDTO implements ToXmlElement<InntektsmeldingM> {
 
     @JsonProperty(required = true)
     private String ytelse;
@@ -53,30 +53,30 @@ public class InntektsmeldingDTO implements ToXmlElement<XMLInntektsmeldingM> {
     private List<PeriodeDTO> pleiepengerPerioder;
 
     @Override
-    public XMLInntektsmeldingM toXmlElement() {
+    public InntektsmeldingM toXmlElement() {
         ObjectFactory factory = new ObjectFactory();
 
-        XMLSkjemainnhold xmlSkjemainnhold = factory.createXMLSkjemainnhold();
+        Skjemainnhold xmlSkjemainnhold = factory.createSkjemainnhold();
 
         if (pleiepengerPerioder != null) {
-            XMLPleiepengerPeriodeListe xmlPleiepengerPeriodeListe = factory.createXMLPleiepengerPeriodeListe();
+            PleiepengerPeriodeListe xmlPleiepengerPeriodeListe = factory.createPleiepengerPeriodeListe();
             xmlPleiepengerPeriodeListe.withPeriode(PeriodeDTO.convert(pleiepengerPerioder));
-            xmlSkjemainnhold.setPleiepengerPerioder(factory.createXMLSkjemainnholdPleiepengerPerioder(xmlPleiepengerPeriodeListe));
+            xmlSkjemainnhold.setPleiepengerPerioder(factory.createSkjemainnholdPleiepengerPerioder(xmlPleiepengerPeriodeListe));
         }
 
         if (opphoerAvNaturalytelseListe != null) {
-            XMLOpphoerAvNaturalytelseListe xmlOpphoerAvNaturalytelseListe = factory.createXMLOpphoerAvNaturalytelseListe();
+            OpphoerAvNaturalytelseListe xmlOpphoerAvNaturalytelseListe = factory.createOpphoerAvNaturalytelseListe();
             xmlOpphoerAvNaturalytelseListe.withOpphoerAvNaturalytelse(NaturalYtelseDetaljerDTO.covert(opphoerAvNaturalytelseListe));
             xmlSkjemainnhold.setOpphoerAvNaturalytelseListe(
-                    factory.createXMLSkjemainnholdOpphoerAvNaturalytelseListe(xmlOpphoerAvNaturalytelseListe)
+                    factory.createSkjemainnholdOpphoerAvNaturalytelseListe(xmlOpphoerAvNaturalytelseListe)
             );
         }
 
         if (gjenopptakelseNaturalytelseListe != null) {
-            XMLGjenopptakelseNaturalytelseListe xmlGjenopptakelseNaturalytelseListe = factory.createXMLGjenopptakelseNaturalytelseListe();
+            GjenopptakelseNaturalytelseListe xmlGjenopptakelseNaturalytelseListe = factory.createGjenopptakelseNaturalytelseListe();
             xmlGjenopptakelseNaturalytelseListe.withNaturalytelseDetaljer(NaturalYtelseDetaljerDTO.covert(gjenopptakelseNaturalytelseListe));
             xmlSkjemainnhold.setGjenopptakelseNaturalytelseListe(
-                    factory.createXMLSkjemainnholdGjenopptakelseNaturalytelseListe(xmlGjenopptakelseNaturalytelseListe)
+                    factory.createSkjemainnholdGjenopptakelseNaturalytelseListe(xmlGjenopptakelseNaturalytelseListe)
             );
         }
 
@@ -100,44 +100,44 @@ public class InntektsmeldingDTO implements ToXmlElement<XMLInntektsmeldingM> {
         }
 
         if (arbeidsforhold != null) {
-            xmlSkjemainnhold.setArbeidsforhold(factory.createXMLSkjemainnholdArbeidsforhold(
+            xmlSkjemainnhold.setArbeidsforhold(factory.createSkjemainnholdArbeidsforhold(
                     arbeidsforhold.toXmlElement()
             ));
         }
 
         if (refusjon != null) {
-            xmlSkjemainnhold.setRefusjon(factory.createXMLSkjemainnholdRefusjon(refusjon.toXmlElement()));
+            xmlSkjemainnhold.setRefusjon(factory.createSkjemainnholdRefusjon(refusjon.toXmlElement()));
         }
 
         if (arbeidsgiver != null) {
-            xmlSkjemainnhold.setArbeidsgiver(factory.createXMLSkjemainnholdArbeidsgiver(arbeidsgiver.toXmlElement()));
+            xmlSkjemainnhold.setArbeidsgiver(factory.createSkjemainnholdArbeidsgiver(arbeidsgiver.toXmlElement()));
         }
 
         if (arbeidsgiverPrivat != null) {
-            xmlSkjemainnhold.setArbeidsgiverPrivat(factory.createXMLSkjemainnholdArbeidsgiverPrivat(arbeidsgiverPrivat.toXmlElement()));
+            xmlSkjemainnhold.setArbeidsgiverPrivat(factory.createSkjemainnholdArbeidsgiverPrivat(arbeidsgiverPrivat.toXmlElement()));
         }
 
-        xmlSkjemainnhold.setStartdatoForeldrepengeperiode(factory.createXMLSkjemainnholdStartdatoForeldrepengeperiode(
+        xmlSkjemainnhold.setStartdatoForeldrepengeperiode(factory.createSkjemainnholdStartdatoForeldrepengeperiode(
                 startdatoForeldrepengeperiode
         ));
 
         if (omsorgspenger != null) {
-            xmlSkjemainnhold.setOmsorgspenger(factory.createXMLSkjemainnholdOmsorgspenger(omsorgspenger.toXmlElement()));
+            xmlSkjemainnhold.setOmsorgspenger(factory.createSkjemainnholdOmsorgspenger(omsorgspenger.toXmlElement()));
         }
 
         if (sykepengerIArbeidsgiverperioden != null) {
-            xmlSkjemainnhold.setSykepengerIArbeidsgiverperioden(factory.createXMLSkjemainnholdSykepengerIArbeidsgiverperioden(
+            xmlSkjemainnhold.setSykepengerIArbeidsgiverperioden(factory.createSkjemainnholdSykepengerIArbeidsgiverperioden(
                     sykepengerIArbeidsgiverperioden.toXmlElement()
             ));
         }
 
-        XMLInntektsmeldingM xmlInntektsmeldingM = factory.createXMLInntektsmeldingM();
+        InntektsmeldingM xmlInntektsmeldingM = factory.createInntektsmeldingM();
         xmlInntektsmeldingM.setSkjemainnhold(xmlSkjemainnhold);
 
         return xmlInntektsmeldingM;
     }
 
-    public JAXBElement<XMLInntektsmeldingM> toMelding() {
+    public JAXBElement<InntektsmeldingM> toMelding() {
         ObjectFactory factory = new ObjectFactory();
         return factory.createMelding(this.toXmlElement());
     }

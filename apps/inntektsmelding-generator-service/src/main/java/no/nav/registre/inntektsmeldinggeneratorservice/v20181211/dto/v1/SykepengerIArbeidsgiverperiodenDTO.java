@@ -3,9 +3,9 @@ package no.nav.registre.inntektsmeldinggeneratorservice.v20181211.dto.v1;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import no.seres.xsd.nav.inntektsmelding_m._20181211.ArbeidsgiverperiodeListe;
 import no.seres.xsd.nav.inntektsmelding_m._20181211.ObjectFactory;
-import no.seres.xsd.nav.inntektsmelding_m._20181211.XMLArbeidsgiverperiodeListe;
-import no.seres.xsd.nav.inntektsmelding_m._20181211.XMLSykepengerIArbeidsgiverperioden;
+import no.seres.xsd.nav.inntektsmelding_m._20181211.SykepengerIArbeidsgiverperioden;
 import org.apache.commons.text.CaseUtils;
 
 import java.math.BigDecimal;
@@ -15,7 +15,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Data
 @NoArgsConstructor(force = true)
-public class SykepengerIArbeidsgiverperiodenDTO implements ToXmlElement<XMLSykepengerIArbeidsgiverperioden> {
+public class SykepengerIArbeidsgiverperiodenDTO implements ToXmlElement<SykepengerIArbeidsgiverperioden> {
     @JsonProperty
     private List<PeriodeDTO> arbeidsgiverperiodeListe;
     @JsonProperty
@@ -24,31 +24,31 @@ public class SykepengerIArbeidsgiverperiodenDTO implements ToXmlElement<XMLSykep
     private String begrunnelseForReduksjonEllerIkkeUtbetalt;
 
     @Override
-    public XMLSykepengerIArbeidsgiverperioden toXmlElement() {
+    public SykepengerIArbeidsgiverperioden toXmlElement() {
         ObjectFactory factory = new ObjectFactory();
 
-        XMLSykepengerIArbeidsgiverperioden xmlSykepengerIArbeidsgiverperioden = factory.createXMLSykepengerIArbeidsgiverperioden();
+        SykepengerIArbeidsgiverperioden xmlSykepengerIArbeidsgiverperioden = factory.createSykepengerIArbeidsgiverperioden();
 
         if (arbeidsgiverperiodeListe != null) {
-            XMLArbeidsgiverperiodeListe xmlArbeidsgiverperiodeListe = factory.createXMLArbeidsgiverperiodeListe();
+            ArbeidsgiverperiodeListe xmlArbeidsgiverperiodeListe = factory.createArbeidsgiverperiodeListe();
             xmlArbeidsgiverperiodeListe.withArbeidsgiverperiode(PeriodeDTO.convert(arbeidsgiverperiodeListe));
             xmlSykepengerIArbeidsgiverperioden.setArbeidsgiverperiodeListe(
-                    factory.createXMLSykepengerIArbeidsgiverperiodenArbeidsgiverperiodeListe(xmlArbeidsgiverperiodeListe)
+                    factory.createSykepengerIArbeidsgiverperiodenArbeidsgiverperiodeListe(xmlArbeidsgiverperiodeListe)
             );
         }
 
 
-        xmlSykepengerIArbeidsgiverperioden.setBruttoUtbetalt(factory.createXMLSykepengerIArbeidsgiverperiodenBruttoUtbetalt(
+        xmlSykepengerIArbeidsgiverperioden.setBruttoUtbetalt(factory.createSykepengerIArbeidsgiverperiodenBruttoUtbetalt(
                 bruttoUtbetalt != null ? BigDecimal.valueOf(bruttoUtbetalt) : null
         ));
         if (isBlank(begrunnelseForReduksjonEllerIkkeUtbetalt))
             xmlSykepengerIArbeidsgiverperioden.setBegrunnelseForReduksjonEllerIkkeUtbetalt(
-                    factory.createXMLSykepengerIArbeidsgiverperiodenBegrunnelseForReduksjonEllerIkkeUtbetalt(
+                    factory.createSykepengerIArbeidsgiverperiodenBegrunnelseForReduksjonEllerIkkeUtbetalt(
                             null
                     )
             );
         else xmlSykepengerIArbeidsgiverperioden.setBegrunnelseForReduksjonEllerIkkeUtbetalt(
-                factory.createXMLSykepengerIArbeidsgiverperiodenBegrunnelseForReduksjonEllerIkkeUtbetalt(
+                factory.createSykepengerIArbeidsgiverperiodenBegrunnelseForReduksjonEllerIkkeUtbetalt(
                         begrunnelseForReduksjonEllerIkkeUtbetalt.contains("_") ? CaseUtils.toCamelCase(begrunnelseForReduksjonEllerIkkeUtbetalt, true, '_') : begrunnelseForReduksjonEllerIkkeUtbetalt
                 )
         );

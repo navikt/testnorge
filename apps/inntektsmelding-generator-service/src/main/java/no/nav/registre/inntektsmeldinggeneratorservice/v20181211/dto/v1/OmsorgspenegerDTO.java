@@ -3,16 +3,16 @@ package no.nav.registre.inntektsmeldinggeneratorservice.v20181211.dto.v1;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import no.seres.xsd.nav.inntektsmelding_m._20181211.DelvisFravaersListe;
+import no.seres.xsd.nav.inntektsmelding_m._20181211.FravaersPeriodeListe;
 import no.seres.xsd.nav.inntektsmelding_m._20181211.ObjectFactory;
-import no.seres.xsd.nav.inntektsmelding_m._20181211.XMLDelvisFravaersListe;
-import no.seres.xsd.nav.inntektsmelding_m._20181211.XMLFravaersPeriodeListe;
-import no.seres.xsd.nav.inntektsmelding_m._20181211.XMLOmsorgspenger;
+import no.seres.xsd.nav.inntektsmelding_m._20181211.Omsorgspenger;
 
 import java.util.List;
 
 @Data
 @NoArgsConstructor(force = true)
-public class OmsorgspenegerDTO implements ToXmlElement<XMLOmsorgspenger> {
+public class OmsorgspenegerDTO implements ToXmlElement<Omsorgspenger> {
 
     @JsonProperty
     private Boolean harUtbetaltPliktigeDager;
@@ -23,23 +23,23 @@ public class OmsorgspenegerDTO implements ToXmlElement<XMLOmsorgspenger> {
 
 
     @Override
-    public XMLOmsorgspenger toXmlElement() {
+    public Omsorgspenger toXmlElement() {
         ObjectFactory factory = new ObjectFactory();
 
-        XMLOmsorgspenger xmlOmsorgspenger = factory.createXMLOmsorgspenger();
+        Omsorgspenger xmlOmsorgspenger = factory.createOmsorgspenger();
         if (delvisFravaersListe != null) {
-            XMLDelvisFravaersListe xmlDelvisFravaersListe = factory.createXMLDelvisFravaersListe();
+            DelvisFravaersListe xmlDelvisFravaersListe = factory.createDelvisFravaersListe();
             xmlDelvisFravaersListe.withDelvisFravaer(DelvisFravearDTO.convert(delvisFravaersListe));
-            xmlOmsorgspenger.setDelvisFravaersListe(factory.createXMLOmsorgspengerDelvisFravaersListe(xmlDelvisFravaersListe));
+            xmlOmsorgspenger.setDelvisFravaersListe(factory.createOmsorgspengerDelvisFravaersListe(xmlDelvisFravaersListe));
         }
 
         if (fravaersPerioder != null) {
-            XMLFravaersPeriodeListe xmlFravaersPeriodeListe = factory.createXMLFravaersPeriodeListe();
+            FravaersPeriodeListe xmlFravaersPeriodeListe = factory.createFravaersPeriodeListe();
             xmlFravaersPeriodeListe.withFravaerPeriode(PeriodeDTO.convert(fravaersPerioder));
-            xmlOmsorgspenger.setFravaersPerioder(factory.createXMLOmsorgspengerFravaersPerioder(xmlFravaersPeriodeListe));
+            xmlOmsorgspenger.setFravaersPerioder(factory.createOmsorgspengerFravaersPerioder(xmlFravaersPeriodeListe));
         }
 
-        xmlOmsorgspenger.setHarUtbetaltPliktigeDager(factory.createXMLOmsorgspengerHarUtbetaltPliktigeDager(
+        xmlOmsorgspenger.setHarUtbetaltPliktigeDager(factory.createOmsorgspengerHarUtbetaltPliktigeDager(
                 harUtbetaltPliktigeDager
         ));
         return xmlOmsorgspenger;

@@ -1,12 +1,12 @@
 package no.nav.registre.inntektsmeldinggeneratorservice.provider;
 
-import no.seres.xsd.nav.inntektsmelding_m._20181211.XMLInntektsmeldingM;
-import no.seres.xsd.nav.inntektsmelding_m._20181211.XMLSkjemainnhold;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlSeeAlso;
+import no.seres.xsd.nav.inntektsmelding_m._20181211.InntektsmeldingM;
+import no.seres.xsd.nav.inntektsmelding_m._20181211.Skjemainnhold;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.namespace.QName;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -15,13 +15,13 @@ import java.util.Map;
 
 @XmlRootElement(name = "melding")
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlSeeAlso({ XMLInntektsmeldingM.class, LocalDate.class, LocalDateTime.class })
-public class Melding extends XMLInntektsmeldingM {
+@XmlSeeAlso({ InntektsmeldingM.class, LocalDate.class, LocalDateTime.class })
+public class Melding extends InntektsmeldingM {
 
     public Melding() {
     }
 
-    public Melding(XMLSkjemainnhold skjemainnhold, Map<QName, String> otherAttributes) {
+    public Melding(Skjemainnhold skjemainnhold, Map<QName, String> otherAttributes) {
         super(skjemainnhold, otherAttributes);
     }
 }

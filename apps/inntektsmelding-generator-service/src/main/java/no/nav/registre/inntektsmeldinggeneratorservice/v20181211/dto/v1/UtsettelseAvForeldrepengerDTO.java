@@ -5,13 +5,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.seres.xsd.nav.inntektsmelding_m._20181211.ObjectFactory;
-import no.seres.xsd.nav.inntektsmelding_m._20181211.XMLUtsettelseAvForeldrepenger;
+import no.seres.xsd.nav.inntektsmelding_m._20181211.UtsettelseAvForeldrepenger;
 
 import java.util.List;
 
 @Data
 @NoArgsConstructor(force = true)
-public class UtsettelseAvForeldrepengerDTO implements ToXmlElement<XMLUtsettelseAvForeldrepenger> {
+public class UtsettelseAvForeldrepengerDTO implements ToXmlElement<UtsettelseAvForeldrepenger> {
 
     @JsonProperty
     private PeriodeDTO periode;
@@ -19,20 +19,20 @@ public class UtsettelseAvForeldrepengerDTO implements ToXmlElement<XMLUtsettelse
     private String aarsakTilUtsettelse;
 
     @Override
-    public XMLUtsettelseAvForeldrepenger toXmlElement() {
+    public UtsettelseAvForeldrepenger toXmlElement() {
         ObjectFactory factory = new ObjectFactory();
 
-        XMLUtsettelseAvForeldrepenger xmlUtsettelseAvForeldrepenger = factory.createXMLUtsettelseAvForeldrepenger();
-        xmlUtsettelseAvForeldrepenger.setPeriode(factory.createXMLUtsettelseAvForeldrepengerPeriode(
+        UtsettelseAvForeldrepenger xmlUtsettelseAvForeldrepenger = factory.createUtsettelseAvForeldrepenger();
+        xmlUtsettelseAvForeldrepenger.setPeriode(factory.createUtsettelseAvForeldrepengerPeriode(
                 periode != null ? periode.toXmlElement() : null
         ));
-        xmlUtsettelseAvForeldrepenger.setAarsakTilUtsettelse(factory.createXMLUtsettelseAvForeldrepengerAarsakTilUtsettelse(
+        xmlUtsettelseAvForeldrepenger.setAarsakTilUtsettelse(factory.createUtsettelseAvForeldrepengerAarsakTilUtsettelse(
                 aarsakTilUtsettelse
         ));
         return xmlUtsettelseAvForeldrepenger;
     }
 
-    static List<XMLUtsettelseAvForeldrepenger> convert(List<UtsettelseAvForeldrepengerDTO> list){
+    static List<UtsettelseAvForeldrepenger> convert(List<UtsettelseAvForeldrepengerDTO> list) {
         return list.stream().map(UtsettelseAvForeldrepengerDTO::toXmlElement)
                 .toList();
     }

@@ -3,8 +3,8 @@ package no.nav.registre.inntektsmeldinggeneratorservice.v20181211.dto.v1;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import no.seres.xsd.nav.inntektsmelding_m._20181211.NaturalytelseDetaljer;
 import no.seres.xsd.nav.inntektsmelding_m._20181211.ObjectFactory;
-import no.seres.xsd.nav.inntektsmelding_m._20181211.XMLNaturalytelseDetaljer;
 import org.apache.commons.text.CaseUtils;
 
 import java.math.BigDecimal;
@@ -15,7 +15,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Data
 @NoArgsConstructor(force = true)
-public class NaturalYtelseDetaljerDTO implements ToXmlElement<XMLNaturalytelseDetaljer> {
+public class NaturalYtelseDetaljerDTO implements ToXmlElement<NaturalytelseDetaljer> {
 
     @JsonProperty
     private String naturalytelseType;
@@ -25,26 +25,26 @@ public class NaturalYtelseDetaljerDTO implements ToXmlElement<XMLNaturalytelseDe
     private Double beloepPrMnd;
 
     @Override
-    public XMLNaturalytelseDetaljer toXmlElement() {
+    public NaturalytelseDetaljer toXmlElement() {
         ObjectFactory factory = new ObjectFactory();
 
-        XMLNaturalytelseDetaljer xmlNaturalytelseDetaljer = factory.createXMLNaturalytelseDetaljer();
-        xmlNaturalytelseDetaljer.setBeloepPrMnd(factory.createXMLNaturalytelseDetaljerBeloepPrMnd(
+        NaturalytelseDetaljer xmlNaturalytelseDetaljer = factory.createNaturalytelseDetaljer();
+        xmlNaturalytelseDetaljer.setBeloepPrMnd(factory.createNaturalytelseDetaljerBeloepPrMnd(
                 beloepPrMnd != null ? BigDecimal.valueOf(beloepPrMnd) : null
         ));
-        xmlNaturalytelseDetaljer.setFom(factory.createXMLNaturalytelseDetaljerFom(fom));
+        xmlNaturalytelseDetaljer.setFom(factory.createNaturalytelseDetaljerFom(fom));
         if (isBlank(naturalytelseType))
-            xmlNaturalytelseDetaljer.setNaturalytelseType(factory.createXMLNaturalytelseDetaljerNaturalytelseType(
+            xmlNaturalytelseDetaljer.setNaturalytelseType(factory.createNaturalytelseDetaljerNaturalytelseType(
                     null
             ));
-        else xmlNaturalytelseDetaljer.setNaturalytelseType(factory.createXMLNaturalytelseDetaljerNaturalytelseType(
+        else xmlNaturalytelseDetaljer.setNaturalytelseType(factory.createNaturalytelseDetaljerNaturalytelseType(
                 naturalytelseType.contains("_") ? CaseUtils.toCamelCase(naturalytelseType, true, '_') : naturalytelseType
         ));
 
         return xmlNaturalytelseDetaljer;
     }
 
-    static List<XMLNaturalytelseDetaljer> covert(List<NaturalYtelseDetaljerDTO> list) {
+    static List<NaturalytelseDetaljer> covert(List<NaturalYtelseDetaljerDTO> list) {
         return list.stream().map(NaturalYtelseDetaljerDTO::toXmlElement)
                 .toList();
     }

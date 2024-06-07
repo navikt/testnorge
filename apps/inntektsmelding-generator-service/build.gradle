@@ -3,11 +3,13 @@ plugins {
     id "org.sonarqube" version "5.0.0.4638"
     id 'org.springframework.boot' version "3.2.6"
     id 'io.spring.dependency-management' version "1.1.5"
+    id 'org.unbroken-dome.xjc' version '2.0.0'
     id "jacoco"
 }
 
 test {
     useJUnitPlatform()
+    jvmArgs '--add-opens', 'java.base/java.lang=ALL-UNNAMED'
 }
 
 sonarqube {
@@ -26,6 +28,7 @@ sonarqube {
 }
 bootJar {
     archiveFileName = "app.jar"
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 dependencyManagement {
@@ -35,12 +38,27 @@ dependencyManagement {
     }
 }
 
+sourceSets {
+    main {
+        xjcBinding.srcDirs = ['resources/xjb']
+    }
+}
+
+
+xjc {
+    xjcVersion = '3.0'
+    srcDirName = 'resources/schema'
+    enableIntrospection = true
+}
+
+
 repositories {
     mavenCentral()
     mavenLocal()
 }
 
 dependencies {
+
     implementation 'no.nav.testnav.libs:servlet-core'
     implementation 'no.nav.testnav.libs:data-transfer-objects'
     implementation 'no.nav.testnav.libs:servlet-security'
@@ -57,17 +75,17 @@ dependencies {
 
     implementation 'org.aspectj:aspectjweaver:1.9.22'
 
-    implementation 'javax.xml.bind:jaxb-api:2.4.0-b180830.0359'
-    implementation 'javax.json.bind:javax.json.bind-api:1.0'
-    implementation 'javax.activation:activation:1.1.1'
+    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.2'
     implementation 'org.glassfish.jaxb:jaxb-runtime:4.0.5'
+    implementation 'com.sun.xml.bind:jaxb-impl:4.0.5'
+    implementation 'com.sun.xml.bind:jaxb-core:4.0.5'
+
     implementation 'ma.glasnost.orika:orika-core:1.5.4'
 
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml'
     implementation 'org.apache.commons:commons-text:1.11.0'
 
     implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
-    implementation 'no.nav.tjenestespesifikasjoner:nav-altinn-inntektsmelding:1.2019.09.25-00.21-49b69f0625e0'
 
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'

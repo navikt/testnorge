@@ -3,9 +3,9 @@ package no.nav.registre.inntektsmeldinggeneratorservice.v20181211.dto.v1;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import no.seres.xsd.nav.inntektsmelding_m._20181211.EndringIRefusjonsListe;
 import no.seres.xsd.nav.inntektsmelding_m._20181211.ObjectFactory;
-import no.seres.xsd.nav.inntektsmelding_m._20181211.XMLEndringIRefusjonsListe;
-import no.seres.xsd.nav.inntektsmelding_m._20181211.XMLRefusjon;
+import no.seres.xsd.nav.inntektsmelding_m._20181211.Refusjon;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -13,7 +13,7 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor(force = true)
-public class RefusjonDTO implements ToXmlElement<XMLRefusjon> {
+public class RefusjonDTO implements ToXmlElement<Refusjon> {
 
     @JsonProperty
     private Double refusjonsbeloepPrMnd;
@@ -24,22 +24,22 @@ public class RefusjonDTO implements ToXmlElement<XMLRefusjon> {
 
 
     @Override
-    public XMLRefusjon toXmlElement() {
+    public Refusjon toXmlElement() {
         ObjectFactory factory = new ObjectFactory();
-        XMLRefusjon xmlRefusjon = factory.createXMLRefusjon();
+        Refusjon xmlRefusjon = factory.createRefusjon();
 
         if (endringIRefusjonListe != null) {
-            XMLEndringIRefusjonsListe xmlEndringIRefusjonsListe = factory.createXMLEndringIRefusjonsListe();
+            EndringIRefusjonsListe xmlEndringIRefusjonsListe = factory.createEndringIRefusjonsListe();
             xmlEndringIRefusjonsListe.withEndringIRefusjon(EndringIRefusjonDTO.convert(endringIRefusjonListe));
-            xmlRefusjon.withEndringIRefusjonListe(factory.createXMLRefusjonEndringIRefusjonListe(
+            xmlRefusjon.withEndringIRefusjonListe(factory.createRefusjonEndringIRefusjonListe(
                     xmlEndringIRefusjonsListe
             ));
         }
 
-        xmlRefusjon.setRefusjonsbeloepPrMnd(factory.createXMLRefusjonRefusjonsbeloepPrMnd(
+        xmlRefusjon.setRefusjonsbeloepPrMnd(factory.createRefusjonRefusjonsbeloepPrMnd(
                 refusjonsbeloepPrMnd != null ? BigDecimal.valueOf(refusjonsbeloepPrMnd) : null
         ));
-        xmlRefusjon.setRefusjonsopphoersdato(factory.createXMLRefusjonRefusjonsopphoersdato(refusjonsopphoersdato));
+        xmlRefusjon.setRefusjonsopphoersdato(factory.createRefusjonRefusjonsopphoersdato(refusjonsopphoersdato));
 
 
         return xmlRefusjon;

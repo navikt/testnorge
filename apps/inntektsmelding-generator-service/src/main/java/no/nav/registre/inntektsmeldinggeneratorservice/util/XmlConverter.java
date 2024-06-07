@@ -1,14 +1,14 @@
 package no.nav.registre.inntektsmeldinggeneratorservice.util;
 
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
+import jakarta.xml.bind.Unmarshaller;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.inntektsmeldinggeneratorservice.exception.JaxbToXmlException;
 import org.apache.commons.text.CaseUtils;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.math.BigDecimal;
@@ -26,7 +26,6 @@ public class XmlConverter {
     }
 
     public static <T> String toXml(JAXBElement<T> value, Class<T> clazz) {
-        log.debug("Konverterer Jaxb element til XML: value: {}, clazz: {}", value, clazz.getName());
         try {
             JAXBContext jaxbContext = JAXBContext.newInstance(clazz);
 
@@ -42,7 +41,7 @@ public class XmlConverter {
             log.debug("Opprettet xml: {}", xmlContent);
             return xmlContent;
         } catch (JAXBException e) {
-            throw new JaxbToXmlException("klarte ikke å konvertere Jaxb element til XML", e);
+            throw new JaxbToXmlException("klarte ikke å konvertere Jaxb element til ", e);
         }
     }
 

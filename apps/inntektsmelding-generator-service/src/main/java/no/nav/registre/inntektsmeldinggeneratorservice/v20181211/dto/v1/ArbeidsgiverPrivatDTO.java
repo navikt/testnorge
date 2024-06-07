@@ -4,12 +4,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import no.seres.xsd.nav.inntektsmelding_m._20181211.ArbeidsgiverPrivat;
 import no.seres.xsd.nav.inntektsmelding_m._20181211.ObjectFactory;
-import no.seres.xsd.nav.inntektsmelding_m._20181211.XMLArbeidsgiverPrivat;
 
 @Data
 @NoArgsConstructor(force = true)
-public class ArbeidsgiverPrivatDTO implements ToXmlElement<XMLArbeidsgiverPrivat> {
+public class ArbeidsgiverPrivatDTO implements ToXmlElement<ArbeidsgiverPrivat> {
 
     @JsonProperty(required = true)
     @Size(min = 11, max = 11)
@@ -18,10 +18,10 @@ public class ArbeidsgiverPrivatDTO implements ToXmlElement<XMLArbeidsgiverPrivat
     private KontaktinformasjonDTO kontaktinformasjon;
 
     @Override
-    public XMLArbeidsgiverPrivat toXmlElement() {
+    public ArbeidsgiverPrivat toXmlElement() {
         ObjectFactory factory = new ObjectFactory();
 
-        XMLArbeidsgiverPrivat xmlArbeidsgiverPrivat = factory.createXMLArbeidsgiverPrivat();
+        ArbeidsgiverPrivat xmlArbeidsgiverPrivat = factory.createArbeidsgiverPrivat();
         xmlArbeidsgiverPrivat.setArbeidsgiverFnr(arbeidsgiverFnr);
         if (kontaktinformasjon != null) {
             xmlArbeidsgiverPrivat.setKontaktinformasjon(kontaktinformasjon.toXmlElement());

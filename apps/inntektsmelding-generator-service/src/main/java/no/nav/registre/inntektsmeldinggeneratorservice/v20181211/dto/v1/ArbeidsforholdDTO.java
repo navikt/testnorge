@@ -4,11 +4,11 @@ package no.nav.registre.inntektsmeldinggeneratorservice.v20181211.dto.v1;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import no.seres.xsd.nav.inntektsmelding_m._20181211.Arbeidsforhold;
+import no.seres.xsd.nav.inntektsmelding_m._20181211.AvtaltFerieListe;
+import no.seres.xsd.nav.inntektsmelding_m._20181211.GraderingIForeldrepengerListe;
 import no.seres.xsd.nav.inntektsmelding_m._20181211.ObjectFactory;
-import no.seres.xsd.nav.inntektsmelding_m._20181211.XMLArbeidsforhold;
-import no.seres.xsd.nav.inntektsmelding_m._20181211.XMLAvtaltFerieListe;
-import no.seres.xsd.nav.inntektsmelding_m._20181211.XMLGraderingIForeldrepengerListe;
-import no.seres.xsd.nav.inntektsmelding_m._20181211.XMLUtsettelseAvForeldrepengerListe;
+import no.seres.xsd.nav.inntektsmelding_m._20181211.UtsettelseAvForeldrepengerListe;
 import org.apache.logging.log4j.util.Strings;
 
 import java.time.LocalDate;
@@ -16,7 +16,7 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor(force = true)
-public class ArbeidsforholdDTO implements ToXmlElement<XMLArbeidsforhold> {
+public class ArbeidsforholdDTO implements ToXmlElement<Arbeidsforhold> {
     @JsonProperty
     private String arbeidsforholdId;
     @JsonProperty
@@ -31,41 +31,41 @@ public class ArbeidsforholdDTO implements ToXmlElement<XMLArbeidsforhold> {
     private List<GraderingIForeldrepengerDTO> graderingIForeldrepengerListe;
 
     @Override
-    public XMLArbeidsforhold toXmlElement() {
+    public Arbeidsforhold toXmlElement() {
         ObjectFactory factory = new ObjectFactory();
-        XMLArbeidsforhold xmlArbeidsforhold = factory.createXMLArbeidsforhold();
+        Arbeidsforhold xmlArbeidsforhold = factory.createArbeidsforhold();
 
         if (utsettelseAvForeldrepengerListe != null) {
-            XMLUtsettelseAvForeldrepengerListe xmlUtsettelseAvForeldrepengerListe = factory.createXMLUtsettelseAvForeldrepengerListe();
+            UtsettelseAvForeldrepengerListe xmlUtsettelseAvForeldrepengerListe = factory.createUtsettelseAvForeldrepengerListe();
             xmlUtsettelseAvForeldrepengerListe.withUtsettelseAvForeldrepenger(UtsettelseAvForeldrepengerDTO.convert(utsettelseAvForeldrepengerListe));
             xmlArbeidsforhold.setUtsettelseAvForeldrepengerListe(
-                    factory.createXMLArbeidsforholdUtsettelseAvForeldrepengerListe(xmlUtsettelseAvForeldrepengerListe)
+                    factory.createArbeidsforholdUtsettelseAvForeldrepengerListe(xmlUtsettelseAvForeldrepengerListe)
             );
         }
 
         if (graderingIForeldrepengerListe != null) {
-            XMLGraderingIForeldrepengerListe xmlGraderingIForeldrepengerListe = factory.createXMLGraderingIForeldrepengerListe();
+            GraderingIForeldrepengerListe xmlGraderingIForeldrepengerListe = factory.createGraderingIForeldrepengerListe();
             xmlGraderingIForeldrepengerListe.withGraderingIForeldrepenger(GraderingIForeldrepengerDTO.convert(graderingIForeldrepengerListe));
             xmlArbeidsforhold.setGraderingIForeldrepengerListe(
-                    factory.createXMLArbeidsforholdGraderingIForeldrepengerListe(xmlGraderingIForeldrepengerListe)
+                    factory.createArbeidsforholdGraderingIForeldrepengerListe(xmlGraderingIForeldrepengerListe)
             );
         }
 
         if (avtaltFerieListe != null) {
-            XMLAvtaltFerieListe xmlAvtaltFerieListe = factory.createXMLAvtaltFerieListe();
+            AvtaltFerieListe xmlAvtaltFerieListe = factory.createAvtaltFerieListe();
             xmlAvtaltFerieListe.withAvtaltFerie(PeriodeDTO.convert(avtaltFerieListe));
-            xmlArbeidsforhold.setAvtaltFerieListe(factory.createXMLArbeidsforholdAvtaltFerieListe(xmlAvtaltFerieListe));
+            xmlArbeidsforhold.setAvtaltFerieListe(factory.createArbeidsforholdAvtaltFerieListe(xmlAvtaltFerieListe));
         }
 
         if (beregnetInntekt != null) {
-            xmlArbeidsforhold.setBeregnetInntekt(factory.createXMLArbeidsforholdBeregnetInntekt(beregnetInntekt.toXmlElement()));
+            xmlArbeidsforhold.setBeregnetInntekt(factory.createArbeidsforholdBeregnetInntekt(beregnetInntekt.toXmlElement()));
         }
 
         if (Strings.isNotBlank(arbeidsforholdId)) {
-            xmlArbeidsforhold.setArbeidsforholdId(factory.createXMLArbeidsforholdArbeidsforholdId(arbeidsforholdId));
+            xmlArbeidsforhold.setArbeidsforholdId(factory.createArbeidsforholdArbeidsforholdId(arbeidsforholdId));
         }
 
-        xmlArbeidsforhold.setFoersteFravaersdag(factory.createXMLArbeidsforholdFoersteFravaersdag(foersteFravaersdag));
+        xmlArbeidsforhold.setFoersteFravaersdag(factory.createArbeidsforholdFoersteFravaersdag(foersteFravaersdag));
 
         return xmlArbeidsforhold;
     }

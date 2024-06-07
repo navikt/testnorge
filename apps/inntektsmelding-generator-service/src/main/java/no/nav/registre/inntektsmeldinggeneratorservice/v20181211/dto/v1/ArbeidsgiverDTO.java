@@ -4,13 +4,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import no.seres.xsd.nav.inntektsmelding_m._20181211.Arbeidsgiver;
 import no.seres.xsd.nav.inntektsmelding_m._20181211.ObjectFactory;
-import no.seres.xsd.nav.inntektsmelding_m._20181211.XMLArbeidsgiver;
 
 
 @Data
 @NoArgsConstructor(force = true)
-public class ArbeidsgiverDTO implements ToXmlElement<XMLArbeidsgiver> {
+public class ArbeidsgiverDTO implements ToXmlElement<Arbeidsgiver> {
     @JsonProperty(required = true)
     @Size(min = 9, max = 9)
     private String virksomhetsnummer;
@@ -18,10 +18,10 @@ public class ArbeidsgiverDTO implements ToXmlElement<XMLArbeidsgiver> {
     private KontaktinformasjonDTO kontaktinformasjon;
 
     @Override
-    public XMLArbeidsgiver toXmlElement() {
+    public Arbeidsgiver toXmlElement() {
         ObjectFactory factory = new ObjectFactory();
 
-        XMLArbeidsgiver xmlArbeidsgiver = factory.createXMLArbeidsgiver();
+        Arbeidsgiver xmlArbeidsgiver = factory.createArbeidsgiver();
         xmlArbeidsgiver.setVirksomhetsnummer(virksomhetsnummer);
         if (kontaktinformasjon != null) {
             xmlArbeidsgiver.setKontaktinformasjon(kontaktinformasjon.toXmlElement());

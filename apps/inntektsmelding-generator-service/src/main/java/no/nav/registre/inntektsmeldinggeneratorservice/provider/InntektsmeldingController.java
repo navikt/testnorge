@@ -1,6 +1,9 @@
 package no.nav.registre.inntektsmeldinggeneratorservice.provider;
 
 import io.swagger.v3.core.util.Json;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.inntektsmeldinggeneratorservice.exception.JaxbToXmlException;
@@ -11,9 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 import java.io.StringWriter;
 
 @RestController
@@ -27,10 +27,10 @@ public class InntektsmeldingController {
             @RequestBody RsInntektsmelding melding
     ) {
 
-        return jaxbObjectToXML(XmlInntektsmelding201812.createInntektsmelding(melding));
+        return jaxbObjectTo(XmlInntektsmelding201812.createInntektsmelding(melding));
     }
 
-    private static String jaxbObjectToXML(Melding inntektsmelding) {
+    private static String jaxbObjectTo(Melding inntektsmelding) {
         log.info("Konverterter inntektsmelding til xml: {}", Json.pretty(inntektsmelding));
         try {
             //Create JAXB Context
@@ -42,17 +42,17 @@ public class InntektsmeldingController {
             //Required formatting??
             jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 
-            //Print XML String to Console
+            //Print  String to Console
             StringWriter sw = new StringWriter();
 
-            //Write XML to StringWriter
+            //Write  to StringWriter
             jaxbMarshaller.marshal(inntektsmelding, sw);
 
             log.info("Generert xml: {}", sw);
-            //Return XML Content
+            //Return  Content
             return sw.toString();
         } catch (JAXBException e) {
-            throw new JaxbToXmlException("Klarte ikke å konvertere inntektsmelding til XML", e);
+            throw new JaxbToXmlException("Klarte ikke å konvertere inntektsmelding til ", e);
         }
     }
 
