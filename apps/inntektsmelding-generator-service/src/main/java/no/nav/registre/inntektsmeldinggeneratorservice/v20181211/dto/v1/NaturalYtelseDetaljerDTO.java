@@ -3,8 +3,8 @@ package no.nav.registre.inntektsmeldinggeneratorservice.v20181211.dto.v1;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import no.seres.xsd.nav.inntektsmelding_m._20181211.NaturalytelseDetaljer;
-import no.seres.xsd.nav.inntektsmelding_m._20181211.ObjectFactory;
+import no.nav.registre.inntektsmeldinggeneratorservice.v20181211.adapter.ObjectFactory;
+import no.nav.registre.inntektsmeldinggeneratorservice.xml.NaturalytelseDetaljer;
 import org.apache.commons.text.CaseUtils;
 
 import java.math.BigDecimal;

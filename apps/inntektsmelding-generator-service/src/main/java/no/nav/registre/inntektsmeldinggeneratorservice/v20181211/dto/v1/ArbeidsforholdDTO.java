@@ -4,11 +4,11 @@ package no.nav.registre.inntektsmeldinggeneratorservice.v20181211.dto.v1;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import no.seres.xsd.nav.inntektsmelding_m._20181211.Arbeidsforhold;
-import no.seres.xsd.nav.inntektsmelding_m._20181211.AvtaltFerieListe;
-import no.seres.xsd.nav.inntektsmelding_m._20181211.GraderingIForeldrepengerListe;
-import no.seres.xsd.nav.inntektsmelding_m._20181211.ObjectFactory;
-import no.seres.xsd.nav.inntektsmelding_m._20181211.UtsettelseAvForeldrepengerListe;
+import no.nav.registre.inntektsmeldinggeneratorservice.v20181211.adapter.ObjectFactory;
+import no.nav.registre.inntektsmeldinggeneratorservice.xml.Arbeidsforhold;
+import no.nav.registre.inntektsmeldinggeneratorservice.xml.AvtaltFerieListe;
+import no.nav.registre.inntektsmeldinggeneratorservice.xml.GraderingIForeldrepengerListe;
+import no.nav.registre.inntektsmeldinggeneratorservice.xml.UtsettelseAvForeldrepengerListe;
 import org.apache.logging.log4j.util.Strings;
 
 import java.time.LocalDate;

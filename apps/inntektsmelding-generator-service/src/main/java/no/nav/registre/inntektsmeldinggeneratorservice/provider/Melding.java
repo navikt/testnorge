@@ -4,8 +4,8 @@ import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlSeeAlso;
-import no.seres.xsd.nav.inntektsmelding_m._20181211.InntektsmeldingM;
-import no.seres.xsd.nav.inntektsmelding_m._20181211.Skjemainnhold;
+import no.nav.registre.inntektsmeldinggeneratorservice.xml.InntektsmeldingM;
+import no.nav.registre.inntektsmeldinggeneratorservice.xml.Skjemainnhold;
 
 import javax.xml.namespace.QName;
 import java.time.LocalDate;

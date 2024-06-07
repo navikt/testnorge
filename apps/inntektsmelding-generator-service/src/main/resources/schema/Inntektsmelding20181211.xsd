@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsd:schema xmlns="http://seres.no/xsd/NAV/Inntektsmelding_M/20181211"
             xmlns:seres="http://seres.no/xsd/forvaltningsdata"
-            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:xsd="http://www.w3.org/2001/Schema"
             targetNamespace="http://seres.no/xsd/NAV/Inntektsmelding_M/20181211"
             elementFormDefault="qualified"
             attributeFormDefault="unqualified">

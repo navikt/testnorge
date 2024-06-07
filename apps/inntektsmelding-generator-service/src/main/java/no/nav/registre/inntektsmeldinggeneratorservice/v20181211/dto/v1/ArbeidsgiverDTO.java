@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import no.seres.xsd.nav.inntektsmelding_m._20181211.Arbeidsgiver;
-import no.seres.xsd.nav.inntektsmelding_m._20181211.ObjectFactory;
+import no.nav.registre.inntektsmeldinggeneratorservice.v20181211.adapter.ObjectFactory;
+import no.nav.registre.inntektsmeldinggeneratorservice.xml.Arbeidsgiver;
 
 
 @Data

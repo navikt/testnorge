@@ -27,7 +27,7 @@ public class XmlConverter {
 
     public static <T> String toXml(JAXBElement<T> value, Class<T> clazz) {
         try {
-            JAXBContext jaxbContext = JAXBContext.newInstance(clazz);
+            JAXBContext jaxbContext = JAXBContext.newInstance("no.nav.registre.inntektsmeldinggeneratorservice.v20181211.adapter");
 
             Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
 
@@ -76,13 +76,13 @@ public class XmlConverter {
     }
 
     @SuppressWarnings("unchecked")
-    private static <T> T toObject(String xml, Class<T> clazz) {
+    private static <T> void toObject(String xml, Class<T> clazz) {
         try {
             JAXBContext jaxbContext = JAXBContext.newInstance(clazz);
 
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 
-            return (T) unmarshaller.unmarshal(new StringReader(xml));
+            unmarshaller.unmarshal(new StringReader(xml));
 
         } catch (JAXBException e) {
             throw new JaxbToXmlException("klarte ikke å konvertere Jaxb element til Objekt", e);

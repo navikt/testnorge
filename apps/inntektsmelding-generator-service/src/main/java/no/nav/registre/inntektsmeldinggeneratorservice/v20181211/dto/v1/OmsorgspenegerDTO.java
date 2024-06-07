@@ -3,10 +3,10 @@ package no.nav.registre.inntektsmeldinggeneratorservice.v20181211.dto.v1;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import no.seres.xsd.nav.inntektsmelding_m._20181211.DelvisFravaersListe;
-import no.seres.xsd.nav.inntektsmelding_m._20181211.FravaersPeriodeListe;
-import no.seres.xsd.nav.inntektsmelding_m._20181211.ObjectFactory;
-import no.seres.xsd.nav.inntektsmelding_m._20181211.Omsorgspenger;
+import no.nav.registre.inntektsmeldinggeneratorservice.v20181211.adapter.ObjectFactory;
+import no.nav.registre.inntektsmeldinggeneratorservice.xml.DelvisFravaersListe;
+import no.nav.registre.inntektsmeldinggeneratorservice.xml.FravaersPeriodeListe;
+import no.nav.registre.inntektsmeldinggeneratorservice.xml.Omsorgspenger;
 
 import java.util.List;
 

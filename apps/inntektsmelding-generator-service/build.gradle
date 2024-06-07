@@ -3,7 +3,6 @@ plugins {
     id "org.sonarqube" version "5.0.0.4638"
     id 'org.springframework.boot' version "3.2.6"
     id 'io.spring.dependency-management' version "1.1.5"
-    id 'org.unbroken-dome.xjc' version '2.0.0'
     id "jacoco"
 }
 
@@ -38,27 +37,12 @@ dependencyManagement {
     }
 }
 
-sourceSets {
-    main {
-        xjcBinding.srcDirs = ['resources/xjb']
-    }
-}
-
-
-xjc {
-    xjcVersion = '3.0'
-    srcDirName = 'resources/schema'
-    enableIntrospection = true
-}
-
-
 repositories {
     mavenCentral()
     mavenLocal()
 }
 
 dependencies {
-
     implementation 'no.nav.testnav.libs:servlet-core'
     implementation 'no.nav.testnav.libs:data-transfer-objects'
     implementation 'no.nav.testnav.libs:servlet-security'
@@ -75,8 +59,8 @@ dependencies {
 
     implementation 'org.aspectj:aspectjweaver:1.9.22'
 
-    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.2'
-    implementation 'org.glassfish.jaxb:jaxb-runtime:4.0.5'
+    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.0'
+    implementation 'org.glassfish.jaxb:jaxb-runtime:4.0.0'
     implementation 'com.sun.xml.bind:jaxb-impl:4.0.5'
     implementation 'com.sun.xml.bind:jaxb-core:4.0.5'
 
@@ -86,7 +70,6 @@ dependencies {
     implementation 'org.apache.commons:commons-text:1.11.0'
 
     implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
-
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'

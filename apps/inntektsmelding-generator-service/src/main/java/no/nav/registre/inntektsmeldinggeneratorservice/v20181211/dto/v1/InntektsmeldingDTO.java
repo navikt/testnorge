@@ -4,12 +4,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.xml.bind.JAXBElement;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import no.seres.xsd.nav.inntektsmelding_m._20181211.GjenopptakelseNaturalytelseListe;
-import no.seres.xsd.nav.inntektsmelding_m._20181211.InntektsmeldingM;
-import no.seres.xsd.nav.inntektsmelding_m._20181211.ObjectFactory;
-import no.seres.xsd.nav.inntektsmelding_m._20181211.OpphoerAvNaturalytelseListe;
-import no.seres.xsd.nav.inntektsmelding_m._20181211.PleiepengerPeriodeListe;
-import no.seres.xsd.nav.inntektsmelding_m._20181211.Skjemainnhold;
+import no.nav.registre.inntektsmeldinggeneratorservice.v20181211.adapter.ObjectFactory;
+import no.nav.registre.inntektsmeldinggeneratorservice.xml.GjenopptakelseNaturalytelseListe;
+import no.nav.registre.inntektsmeldinggeneratorservice.xml.InntektsmeldingM;
+import no.nav.registre.inntektsmeldinggeneratorservice.xml.OpphoerAvNaturalytelseListe;
+import no.nav.registre.inntektsmeldinggeneratorservice.xml.PleiepengerPeriodeListe;
+import no.nav.registre.inntektsmeldinggeneratorservice.xml.Skjemainnhold;
 import org.apache.commons.text.CaseUtils;
 
 import java.time.LocalDate;

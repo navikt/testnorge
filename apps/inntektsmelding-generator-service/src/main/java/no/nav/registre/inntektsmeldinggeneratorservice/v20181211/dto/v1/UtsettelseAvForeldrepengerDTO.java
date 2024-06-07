@@ -4,8 +4,8 @@ package no.nav.registre.inntektsmeldinggeneratorservice.v20181211.dto.v1;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import no.seres.xsd.nav.inntektsmelding_m._20181211.ObjectFactory;
-import no.seres.xsd.nav.inntektsmelding_m._20181211.UtsettelseAvForeldrepenger;
+import no.nav.registre.inntektsmeldinggeneratorservice.v20181211.adapter.ObjectFactory;
+import no.nav.registre.inntektsmeldinggeneratorservice.xml.UtsettelseAvForeldrepenger;
 
 import java.util.List;
 
@@ -32,7 +32,7 @@ public class UtsettelseAvForeldrepengerDTO implements ToXmlElement<UtsettelseAvF
         return xmlUtsettelseAvForeldrepenger;
     }
 
-    static List<UtsettelseAvForeldrepenger> convert(List<UtsettelseAvForeldrepengerDTO> list) {
+    static List<UtsettelseAvForeldrepenger> convert(List<UtsettelseAvForeldrepengerDTO> list){
         return list.stream().map(UtsettelseAvForeldrepengerDTO::toXmlElement)
                 .toList();
     }
