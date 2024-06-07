@@ -251,7 +251,7 @@ public class PersonService {
 
         personRepository.findByIdent(ident)
                 .ifPresentOrElse(person -> {
-                            hendelseIdService.deletePdlHendelser(ident);
+                            hendelseIdService.deletePdlHendelser(person);
                             unhookEksternePersonerService.unhook(person);
 
                             relasjonRepository.deleteByPersonIdentIn(
