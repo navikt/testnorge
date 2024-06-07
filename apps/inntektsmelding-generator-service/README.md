@@ -1,6 +1,6 @@
 # Inntektsmelding generator
 
-Microservice for å mappe inntektsmeldinger i JSON format til  format basert på [kodeverk](https://github.com/navikt/tjenestespesifikasjoner/blob/master/nav-altinn-inntektsmelding/src/main/xsd/).  
+Microservice for å mappe inntektsmeldinger i JSON format til XML format basert på [kodeverk](https://github.com/navikt/tjenestespesifikasjoner/blob/master/nav-altinn-inntektsmelding/src/main/xsd/).  
 Foreløpig er bare 201812 format støttet.
 
 ## Swagger
