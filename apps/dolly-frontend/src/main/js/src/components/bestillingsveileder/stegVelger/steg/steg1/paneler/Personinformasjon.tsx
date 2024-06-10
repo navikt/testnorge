@@ -107,7 +107,9 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 					<Attributt
 						attr={sm.attrs.fullmakt}
 						disabled={ukjentGruppe || testNorgeFlere}
-						title={(ukjentGruppe && tekstUkjentGruppe) || (testNorgeFlere && tekstFlerePersoner)}
+						title={
+							(ukjentGruppe && tekstUkjentGruppe) || (testNorgeFlere && tekstFlerePersoner) || ''
+						}
 					/>
 					<Attributt attr={sm.attrs.sikkerhetstiltak} />
 					<Attributt attr={sm.attrs.tilrettelagtKommunikasjon} />
@@ -139,7 +141,8 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 					title={
 						(!harFnr &&
 							'Personer med identtype DNR eller NPID kan ikke innvandre fordi de ikke har norsk statsborgerskap') ||
-						(harTestnorgeIdenter && leggTilPaaGruppe && tekstLeggTilPaaGruppe)
+						(harTestnorgeIdenter && leggTilPaaGruppe && tekstLeggTilPaaGruppe) ||
+						''
 					}
 				/>
 				<Attributt
@@ -148,7 +151,8 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 					title={
 						(!harFnr &&
 							'Personer med identtype DNR eller NPID kan ikke utvandre fordi de ikke har norsk statsborgerskap') ||
-						(harTestnorgeIdenter && leggTilPaaGruppe && tekstLeggTilPaaGruppe)
+						(harTestnorgeIdenter && leggTilPaaGruppe && tekstLeggTilPaaGruppe) ||
+						''
 					}
 				/>
 			</AttributtKategori>
@@ -165,7 +169,8 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 					disabled={npidPerson || (harTestnorgeIdenter && leggTilPaaGruppe)}
 					title={
 						(npidPerson && 'Ikke tilgjengelig for personer med identtype NPID') ||
-						(harTestnorgeIdenter && leggTilPaaGruppe && tekstLeggTilPaaGruppe)
+						(harTestnorgeIdenter && leggTilPaaGruppe && tekstLeggTilPaaGruppe) ||
+						''
 					}
 				/>
 				<Attributt
@@ -173,7 +178,8 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 					disabled={npidPerson || (harTestnorgeIdenter && leggTilPaaGruppe)}
 					title={
 						(npidPerson && 'Ikke tilgjengelig for personer med identtype NPID') ||
-						(harTestnorgeIdenter && leggTilPaaGruppe && tekstLeggTilPaaGruppe)
+						(harTestnorgeIdenter && leggTilPaaGruppe && tekstLeggTilPaaGruppe) ||
+						''
 					}
 				/>
 				<Attributt attr={sm.attrs.sikkerhetstiltak} />

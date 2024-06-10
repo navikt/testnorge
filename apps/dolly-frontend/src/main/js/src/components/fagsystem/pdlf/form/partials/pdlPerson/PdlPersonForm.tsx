@@ -53,7 +53,11 @@ export const PdlPersonForm = ({
 			)}
 			<>
 				{
-					<div title={opts?.antall > 1 && 'Valg er kun tilgjengelig for individ, ikke for gruppe'}>
+					<div
+						title={
+							(opts?.antall > 1 && 'Valg er kun tilgjengelig for individ, ikke for gruppe') || ''
+						}
+					>
 						<h4>Velg eksisterende person</h4>
 						<PdlEksisterendePerson
 							nyPersonPath={nyPersonPath}

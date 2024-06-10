@@ -41,7 +41,8 @@ export const KontaktDoedsboPanel = ({ stateModifier, formValues }) => {
 					disabled={npidPerson || (harTestnorgeIdenter && leggTilPaaGruppe)}
 					title={
 						(npidPerson && 'Ikke tilgjengelig for personer med identtype NPID') ||
-						(harTestnorgeIdenter && leggTilPaaGruppe && tekstLeggTilPaaGruppe)
+						(harTestnorgeIdenter && leggTilPaaGruppe && tekstLeggTilPaaGruppe) ||
+						''
 					}
 				/>
 			</AttributtKategori>

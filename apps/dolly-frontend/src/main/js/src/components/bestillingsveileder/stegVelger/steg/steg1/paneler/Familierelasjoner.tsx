@@ -60,7 +60,8 @@ export const FamilierelasjonPanel = ({ stateModifier, formValues }) => {
 					title={
 						(ukjentGruppe && tekstUkjentGruppe) ||
 						(testNorgeFlere && tekstTestNorgeFlere) ||
-						(leggTilPaaGruppe && harTestnorgeIdenter && tekstLeggTilPaaGruppe)
+						(leggTilPaaGruppe && harTestnorgeIdenter && tekstLeggTilPaaGruppe) ||
+						''
 					}
 				/>
 			</AttributtKategori>
@@ -71,7 +72,8 @@ export const FamilierelasjonPanel = ({ stateModifier, formValues }) => {
 					title={
 						(ukjentGruppe && tekstUkjentGruppe) ||
 						(testNorgeFlere && tekstTestNorgeFlere) ||
-						(leggTilPaaGruppe && harTestnorgeIdenter && tekstLeggTilPaaGruppe)
+						(leggTilPaaGruppe && harTestnorgeIdenter && tekstLeggTilPaaGruppe) ||
+						''
 					}
 				/>
 				<Attributt
@@ -79,7 +81,8 @@ export const FamilierelasjonPanel = ({ stateModifier, formValues }) => {
 					disabled={npidPerson || (leggTilPaaGruppe && harTestnorgeIdenter)}
 					title={
 						(npidPerson && 'Ikke tilgjengelig for personer med identtype NPID') ||
-						(leggTilPaaGruppe && harTestnorgeIdenter && tekstLeggTilPaaGruppe)
+						(leggTilPaaGruppe && harTestnorgeIdenter && tekstLeggTilPaaGruppe) ||
+						''
 					}
 					vis={!testNorgePerson}
 				/>
@@ -90,7 +93,8 @@ export const FamilierelasjonPanel = ({ stateModifier, formValues }) => {
 					disabled={npidPerson || (leggTilPaaGruppe && harTestnorgeIdenter)}
 					title={
 						(npidPerson && 'Ikke tilgjengelig for personer med identtype NPID') ||
-						(leggTilPaaGruppe && harTestnorgeIdenter && tekstLeggTilPaaGruppe)
+						(leggTilPaaGruppe && harTestnorgeIdenter && tekstLeggTilPaaGruppe) ||
+						''
 					}
 					vis={!testNorgePerson}
 				/>

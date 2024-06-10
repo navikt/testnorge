@@ -52,19 +52,20 @@ export const IdentifikasjonPanel = ({ stateModifier, formValues }) => {
 					disabled={harNpid || (harTestnorgeIdenter && leggTilPaaGruppe)}
 					title={
 						(harNpid && 'Personer med identtype NPID kan ikke ha falsk identitet') ||
-						(harTestnorgeIdenter && leggTilPaaGruppe && tekstLeggTilPaaGruppe)
+						(harTestnorgeIdenter && leggTilPaaGruppe && tekstLeggTilPaaGruppe) ||
+						''
 					}
 					vis={!erTestnorgePerson}
 				/>
 				<Attributt
 					attr={sm.attrs.utenlandskIdentifikasjonsnummer}
 					disabled={harTestnorgeIdenter && leggTilPaaGruppe}
-					title={harTestnorgeIdenter && leggTilPaaGruppe && tekstLeggTilPaaGruppe}
+					title={(harTestnorgeIdenter && leggTilPaaGruppe && tekstLeggTilPaaGruppe) || ''}
 				/>
 				<Attributt
 					attr={sm.attrs.nyident}
 					disabled={harTestnorgeIdenter && leggTilPaaGruppe}
-					title={harTestnorgeIdenter && leggTilPaaGruppe && tekstLeggTilPaaGruppe}
+					title={(harTestnorgeIdenter && leggTilPaaGruppe && tekstLeggTilPaaGruppe) || ''}
 					vis={!erTestnorgePerson}
 				/>
 			</AttributtKategori>
