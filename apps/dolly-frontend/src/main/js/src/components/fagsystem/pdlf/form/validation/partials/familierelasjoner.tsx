@@ -84,18 +84,6 @@ const testForeldreansvar = (val: Yup.StringSchema<string, Yup.AnyObject>) => {
 				feilmelding = 'Partner er ikke forelder'
 			}
 		}
-		if (selected === 'ANDRE') {
-			let isOK = true
-			testContext?.from
-				?.find((ansvar) => ansvar.value.foreldreansvar?.length > 0)
-				?.value.foreldreansvar.filter(
-					(ansvar) => ansvar.typeAnsvarlig === 'EKSISTERENDE' && !ansvar.ansvarlig,
-				)
-				.map(() => (isOK = false))
-			if (!isOK) {
-				feilmelding = 'Ansvarlig person må velges'
-			}
-		}
 		return feilmelding ? testContext.createError({ message: feilmelding }) : true
 	})
 }
@@ -220,7 +208,7 @@ export const sivilstand = Yup.object({
 					testcontext.parent.type !== 'REGISTRERT_PARTNER' &&
 					testcontext.parent.type !== 'SEPARERT_PARTNER' &&
 					testcontext.parent.type !== 'SAMBOER') ||
-				testcontext.options.context.identMaster !== 'PDL'
+				testcontext.options.context?.identMaster !== 'PDL'
 			)
 		})
 		.nullable(),
@@ -267,7 +255,7 @@ export const forelderBarnRelasjon = Yup.object().shape(
 		relatertPersonsRolle: requiredString,
 		relatertPerson: Yup.string()
 			.test('er-testnorge-paakrevd', 'Person fra Testnorge er påkrevd', (value, testcontext) => {
-				return testcontext.options.context.identMaster !== 'PDL' || value
+				return testcontext.options.context?.identMaster !== 'PDL' || value
 			})
 			.test(
 				'er-eksisterende-paakrevd',
@@ -323,6 +311,16 @@ export const foreldreansvar = Yup.object({
 	ansvar: testForeldreansvar(requiredString),
 	gyldigFraOgMed: testDatoFom(Yup.mixed().nullable(), 'gyldigTilOgMed'),
 	gyldigTilOgMed: testDatoTom(Yup.mixed().nullable(), 'gyldigFraOgMed'),
+	ansvarlig: Yup.string()
+		.test('ansvarlig-andre-paakrevd', 'Ansvarlig person må velges', (value, testcontext) => {
+			return (
+				!!value ||
+				testcontext.parent?.ansvar !== 'ANDRE' ||
+				testcontext.parent?.ansvarligUtenIdentifikator ||
+				testcontext.parent?.nyAnsvarlig
+			)
+		})
+		.nullable(),
 })
 
 export const foreldreansvarForBarn = Yup.object({

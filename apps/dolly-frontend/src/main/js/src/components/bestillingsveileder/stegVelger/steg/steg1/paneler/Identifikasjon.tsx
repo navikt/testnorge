@@ -22,17 +22,18 @@ export const IdentifikasjonPanel = ({ stateModifier, formValues }) => {
 	const harTestnorgeIdenter = identer?.filter((ident) => ident.master === 'PDL').length > 0
 	const leggTilPaaGruppe = !!opts?.leggTilPaaGruppe
 	const tekstLeggTilPaaGruppe =
-		'Støttes ikke for "legg-til-på-alle" i grupper som inneholder personer fra Test-Norge'
+		'Støttes ikke for "legg til på alle" i grupper som inneholder personer fra Test-Norge'
 
 	const getIgnoreKeys = () => {
-		var ignoreKeys = []
+		let ignoreKeys = []
 		if (harNpid) {
 			ignoreKeys.push('falskIdentitet')
 		}
 		if (harTestnorgeIdenter && leggTilPaaGruppe) {
-			ignoreKeys.push('falskIdentitet')
-			ignoreKeys.push('utenlandskIdentifikasjonsnummer')
-			ignoreKeys.push('nyident')
+			ignoreKeys.push('falskIdentitet', 'utenlandskIdentifikasjonsnummer', 'nyident')
+		}
+		if (erTestnorgePerson) {
+			ignoreKeys.push('falskIdentitet', 'nyident')
 		}
 		return ignoreKeys
 	}

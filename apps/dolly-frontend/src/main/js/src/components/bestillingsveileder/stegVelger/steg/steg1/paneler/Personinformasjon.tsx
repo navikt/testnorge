@@ -22,7 +22,6 @@ const ignoreKeysTestnorge = [
 	'utvandretTilLand',
 	'identtype',
 	'vergemaal',
-	'tilrettelagtKommunikasjon',
 ]
 
 const utvandret = 'utvandretTilLand'
@@ -47,21 +46,18 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 	const tekstFlerePersoner = 'Funksjonen er kun tilgjengelig per individ, ikke for gruppe'
 	const leggTilPaaGruppe = !!opts?.leggTilPaaGruppe
 	const tekstLeggTilPaaGruppe =
-		'Støttes ikke for "legg-til-på-alle" i grupper som inneholder personer fra Test-Norge'
+		'Støttes ikke for "legg til på alle" i grupper som inneholder personer fra Test-Norge'
 
 	const harFnr = opts.identtype === 'FNR'
 	// Noen egenskaper kan ikke endres når personen opprettes fra eksisterende eller videreføres med legg til
 
 	const getIgnoreKeys = () => {
-		var ignoreKeys = testnorgeIdent ? [...ignoreKeysTestnorge] : ['identtype']
+		let ignoreKeys = testnorgeIdent ? [...ignoreKeysTestnorge] : ['identtype']
 		if (
 			(testnorgeIdent && (ukjentGruppe || opts?.antall > 1)) ||
 			(harTestnorgeIdenter && leggTilPaaGruppe)
 		) {
-			ignoreKeys.push('fullmakt')
-			ignoreKeys.push('vergemaal')
-			ignoreKeys.push('innvandretFraLand')
-			ignoreKeys.push('utvandretTilLand')
+			ignoreKeys.push('fullmakt', 'vergemaal', 'innvandretFraLand', 'utvandretTilLand')
 		}
 		if (sm.attrs.utenlandskBankkonto.checked) {
 			ignoreKeys.push('norskBankkonto')
@@ -72,8 +68,7 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 			ignoreKeys.push(utvandret)
 		}
 		if (!harFnr) {
-			ignoreKeys.push('innvandretFraLand')
-			ignoreKeys.push('vergemaal')
+			ignoreKeys.push('innvandretFraLand', 'vergemaal')
 		}
 		return ignoreKeys
 	}

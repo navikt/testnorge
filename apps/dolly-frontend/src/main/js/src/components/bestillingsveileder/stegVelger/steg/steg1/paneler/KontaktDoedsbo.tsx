@@ -18,7 +18,7 @@ export const KontaktDoedsboPanel = ({ stateModifier, formValues }) => {
 	const npidPerson = opts?.identtype === 'NPID'
 	const leggTilPaaGruppe = !!opts?.leggTilPaaGruppe
 	const tekstLeggTilPaaGruppe =
-		'Støttes ikke for "legg-til-på-alle" i grupper som inneholder personer fra Test-Norge'
+		'Støttes ikke for "legg til på alle" i grupper som inneholder personer fra Test-Norge'
 
 	const getIgnoreKeys = () => {
 		if (npidPerson || (harTestnorgeIdenter && leggTilPaaGruppe)) {

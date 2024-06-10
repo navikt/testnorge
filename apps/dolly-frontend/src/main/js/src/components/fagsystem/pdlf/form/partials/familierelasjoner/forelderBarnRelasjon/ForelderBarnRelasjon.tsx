@@ -20,6 +20,7 @@ import { PdlNyPerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson
 import { Alert, ToggleGroup } from '@navikt/ds-react'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import StyledAlert from '@/components/ui/alert/StyledAlert'
 
 interface ForelderForm {
 	formMethods: UseFormReturn
@@ -27,6 +28,7 @@ interface ForelderForm {
 	idx?: number
 	eksisterendeNyPerson?: any
 	identtype?: string
+	ident?: string
 }
 
 type Target = {
@@ -45,6 +47,7 @@ export const ForelderBarnRelasjonForm = ({
 	idx,
 	eksisterendeNyPerson = null,
 	identtype,
+	ident,
 }: ForelderForm) => {
 	const opts = useContext(BestillingsveilederContext)
 
@@ -173,7 +176,15 @@ export const ForelderBarnRelasjonForm = ({
 					}
 				/>
 			</div>
-
+			{identMaster === 'PDLF' &&
+				getForelderBarnType() === 'EKSISTERENDE' &&
+				!ident &&
+				!formMethods.getValues().pdldata?.opprettNyPerson?.alder && (
+					<StyledAlert variant={'warning'} size={'small'}>
+						Ved "Eksisterende person" må alder oppgis på hovedpersonen: Gå tilbake til "Velg
+						egenskaper", huk av for alder og sett en verdi så aldersforskjell blir minst 18 år.
+					</StyledAlert>
+				)}
 			{(testnorgePerson || getForelderBarnType() === TypeAnsvarlig.EKSISTERENDE) && (
 				<PdlEksisterendePerson
 					eksisterendePersonPath={`${path}.relatertPerson`}
@@ -227,7 +238,7 @@ export const ForelderBarnRelasjonForm = ({
 }
 
 export const ForelderBarnRelasjon = ({ formMethods }: ForelderForm) => {
-	const { identtype, identMaster } = useContext(BestillingsveilederContext)
+	const { identtype, identMaster, personFoerLeggTil } = useContext(BestillingsveilederContext)
 	const initiellMaster = identMaster === 'PDL' || identtype === 'NPID' ? 'PDL' : 'FREG'
 
 	return (
@@ -238,7 +249,14 @@ export const ForelderBarnRelasjon = ({ formMethods }: ForelderForm) => {
 			canBeEmpty={false}
 		>
 			{(path: string, idx: number) => {
-				return <ForelderBarnRelasjonForm formMethods={formMethods} path={path} idx={idx} />
+				return (
+					<ForelderBarnRelasjonForm
+						formMethods={formMethods}
+						path={path}
+						idx={idx}
+						ident={personFoerLeggTil?.pdl?.ident}
+					/>
+				)
 			}}
 		</FormDollyFieldArray>
 	)

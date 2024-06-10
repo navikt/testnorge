@@ -29,10 +29,10 @@ export const FamilierelasjonPanel = ({ stateModifier, formValues }) => {
 	const tekstTestNorgeFlere = 'Funksjonen er kun tilgjengelig per individ, ikke for gruppe'
 	const leggTilPaaGruppe = !!opts?.leggTilPaaGruppe
 	const tekstLeggTilPaaGruppe =
-		'Støttes ikke for "legg-til-på-alle" i grupper som inneholder personer fra Test-Norge'
+		'Støttes ikke for "legg til på alle" i grupper som inneholder personer fra Test-Norge'
 
 	const getIgnoreKeys = () => {
-		var ignoreKeys = []
+		let ignoreKeys = []
 		if (testNorgePerson || npidPerson) {
 			ignoreKeys.push('foreldreansvar', 'doedfoedtBarn')
 		}
@@ -40,8 +40,7 @@ export const FamilierelasjonPanel = ({ stateModifier, formValues }) => {
 			(ukjentGruppe && (testNorgePerson || npidPerson)) ||
 			(leggTilPaaGruppe && harTestnorgeIdenter)
 		) {
-			ignoreKeys.push('sivilstand', 'barnForeldre')
-			ignoreKeys.push('foreldreansvar', 'doedfoedtBarn')
+			ignoreKeys.push('sivilstand', 'barnForeldre', 'foreldreansvar', 'doedfoedtBarn')
 		}
 		return ignoreKeys
 	}
