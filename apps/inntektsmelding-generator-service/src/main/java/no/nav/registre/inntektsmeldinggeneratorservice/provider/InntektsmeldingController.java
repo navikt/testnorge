@@ -27,10 +27,10 @@ public class InntektsmeldingController {
             @RequestBody RsInntektsmelding melding
     ) {
 
-        return jaxbObjectTo(XmlInntektsmelding201812.createInntektsmelding(melding));
+        return jaxbObjectToXML(XmlInntektsmelding201812.createInntektsmelding(melding));
     }
 
-    private static String jaxbObjectTo(Melding inntektsmelding) {
+    private static String jaxbObjectToXML(Melding inntektsmelding) {
         log.info("Konverterter inntektsmelding til xml: {}", Json.pretty(inntektsmelding));
         try {
             //Create JAXB Context
@@ -42,17 +42,17 @@ public class InntektsmeldingController {
             //Required formatting??
             jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 
-            //Print  String to Console
+            //Print XML String to Console
             StringWriter sw = new StringWriter();
 
-            //Write  to StringWriter
+            //Write XML to StringWriter
             jaxbMarshaller.marshal(inntektsmelding, sw);
 
             log.info("Generert xml: {}", sw);
-            //Return  Content
+            //Return XML Content
             return sw.toString();
         } catch (JAXBException e) {
-            throw new JaxbToXmlException("Klarte ikke å konvertere inntektsmelding til ", e);
+            throw new JaxbToXmlException("Klarte ikke å konvertere inntektsmelding til XML", e);
         }
     }
 
