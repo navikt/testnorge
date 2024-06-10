@@ -1,6 +1,7 @@
 package no.nav.skattekortservice.consumer.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -11,6 +12,7 @@ import java.util.concurrent.Callable;
 
 import static org.apache.hc.core5.http.HttpHeaders.AUTHORIZATION;
 
+@Slf4j
 @RequiredArgsConstructor
 public class SokosPostCommand implements Callable<Mono<String>> {
 
@@ -22,6 +24,8 @@ public class SokosPostCommand implements Callable<Mono<String>> {
 
     @Override
     public Mono<String> call() {
+
+        log.info("Base64 encoded", Base64.getDecoder().decode(request));
 
         return webClient
                 .post()
