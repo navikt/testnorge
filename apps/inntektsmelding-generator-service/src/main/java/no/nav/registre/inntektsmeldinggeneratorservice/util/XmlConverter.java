@@ -27,16 +27,17 @@ public class XmlConverter {
 
     public static <T> String toXml(JAXBElement<T> value, Class<T> clazz) {
         try {
-            JAXBContext jaxbContext = JAXBContext.newInstance("no.nav.registre.inntektsmeldinggeneratorservice.v20181211.adapter");
+            JAXBContext jaxbContext = JAXBContext.newInstance("no.nav.registre.inntektsmeldinggeneratorservice.v20181211.adapter", clazz.getClassLoader());
 
             Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
 
             jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 
+
             StringWriter sw = new StringWriter();
             jaxbMarshaller.marshal(value, sw);
 
-            String xmlContent = sw.toString();
+            String xmlContent = sw.toString().replace("ns2:", "").replace(":ns2", "");
 
             log.debug("Opprettet xml: {}", xmlContent);
             return xmlContent;

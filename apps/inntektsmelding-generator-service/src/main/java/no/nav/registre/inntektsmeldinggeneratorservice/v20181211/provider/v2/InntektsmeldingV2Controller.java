@@ -9,6 +9,7 @@ import no.nav.registre.inntektsmeldinggeneratorservice.util.XmlConverter;
 import no.nav.registre.inntektsmeldinggeneratorservice.v20181211.dto.v1.InntektsmeldingDTO;
 import no.nav.registre.inntektsmeldinggeneratorservice.xml.InntektsmeldingM;
 import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsInntektsmelding;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,13 +37,13 @@ public class InntektsmeldingV2Controller {
         log.info("Konverterer inntektsmelding til : {}", melding);
         String xml = XmlConverter.toXml(melding, InntektsmeldingM.class);
 
-//        if (!XmlConverter.validate(xml, InntektsmeldingM.class)) {
-//            log.warn("Validering av opprett xml feilet");
-//            return ResponseEntity
-//                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-//                    .body("Validering av opprett xml feilet");
-//        }
-        log.info("Genererte  for inntektsmelding: {}", xml);
+        if (!XmlConverter.validate(xml, InntektsmeldingM.class)) {
+            log.warn("Validering av opprett xml feilet");
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Validering av opprett xml feilet");
+        }
+        log.info("Genererte XML for inntektsmelding: {}", xml);
 
         return ResponseEntity.ok(xml);
     }

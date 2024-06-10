@@ -73,9 +73,7 @@ public class XmlInntektsmelding201812 {
         Melding inntektsMelding = new Melding(new Skjemainnhold(
                 melding.getYtelse(),
                 melding.getAarsakTilInnsending(),
-                new JAXBElement<>(new QName(NAMESPACE_URI, "arbeidsgiver"),
-                        Arbeidsgiver.class,
-                        createArbeidsgiver(melding.getArbeidsgiver())),
+                createArbeidsgiver(melding.getArbeidsgiver()),
                 new JAXBElement<>(new QName(NAMESPACE_URI, "arbeidsgiverPrivat"),
                         ArbeidsgiverPrivat.class,
                         createArbeidsgiverPrivat(melding.getArbeidsgiverPrivat())),

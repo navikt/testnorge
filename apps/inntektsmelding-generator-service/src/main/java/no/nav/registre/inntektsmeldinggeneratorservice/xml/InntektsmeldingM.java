@@ -20,14 +20,14 @@ import java.util.Map;
 @Getter
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(
-    name = "Inntektsmelding_M",
-    propOrder = {"skjemainnhold"}
+        name = "Inntektsmelding_M",
+        propOrder = { "skjemainnhold" }
 )
 public class InntektsmeldingM {
     @Setter
     @XmlElement(
-        name = "Skjemainnhold",
-        required = true
+            name = "Skjemainnhold",
+            required = true
     )
     protected Skjemainnhold skjemainnhold;
     @XmlAnyAttribute

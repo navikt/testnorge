@@ -37,7 +37,7 @@ public class Skjemainnhold {
     @XmlElement(
             required = true
     )
-    protected JAXBElement<Arbeidsgiver> arbeidsgiver;
+    protected Arbeidsgiver arbeidsgiver;
     @XmlElement(
             required = true
     )
@@ -115,7 +115,7 @@ public class Skjemainnhold {
     public Skjemainnhold() {
     }
 
-    public Skjemainnhold(String ytelse, String aarsakTilInnsending, JAXBElement<Arbeidsgiver> arbeidsgiver, JAXBElement<ArbeidsgiverPrivat> arbeidsgiverPrivat, String arbeidstakerFnr, boolean naerRelasjon, JAXBElement<Arbeidsforhold> arbeidsforhold, JAXBElement<Refusjon> refusjon, JAXBElement<SykepengerIArbeidsgiverperioden> sykepengerIArbeidsgiverperioden, JAXBElement<LocalDate> startdatoForeldrepengeperiode, JAXBElement<OpphoerAvNaturalytelseListe> opphoerAvNaturalytelseListe, JAXBElement<GjenopptakelseNaturalytelseListe> gjenopptakelseNaturalytelseListe, Avsendersystem avsendersystem, JAXBElement<PleiepengerPeriodeListe> pleiepengerPerioder, JAXBElement<Omsorgspenger> omsorgspenger) {
+    public Skjemainnhold(String ytelse, String aarsakTilInnsending, Arbeidsgiver arbeidsgiver, JAXBElement<ArbeidsgiverPrivat> arbeidsgiverPrivat, String arbeidstakerFnr, boolean naerRelasjon, JAXBElement<Arbeidsforhold> arbeidsforhold, JAXBElement<Refusjon> refusjon, JAXBElement<SykepengerIArbeidsgiverperioden> sykepengerIArbeidsgiverperioden, JAXBElement<LocalDate> startdatoForeldrepengeperiode, JAXBElement<OpphoerAvNaturalytelseListe> opphoerAvNaturalytelseListe, JAXBElement<GjenopptakelseNaturalytelseListe> gjenopptakelseNaturalytelseListe, Avsendersystem avsendersystem, JAXBElement<PleiepengerPeriodeListe> pleiepengerPerioder, JAXBElement<Omsorgspenger> omsorgspenger) {
         this.ytelse = ytelse;
         this.aarsakTilInnsending = aarsakTilInnsending;
         this.arbeidsgiver = arbeidsgiver;
@@ -146,7 +146,7 @@ public class Skjemainnhold {
         return this;
     }
 
-    public Skjemainnhold withArbeidsgiver(JAXBElement<Arbeidsgiver> value) {
+    public Skjemainnhold withArbeidsgiver(Arbeidsgiver value) {
         this.setArbeidsgiver(value);
         return this;
     }

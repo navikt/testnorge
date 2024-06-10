@@ -16,16 +16,17 @@ import lombok.Setter;
 @Getter
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(
-    name = "Arbeidsgiver",
-    propOrder = {"virksomhetsnummer", "kontaktinformasjon"}
+        name = "arbeidsgiver",
+        propOrder = { "virksomhetsnummer", "kontaktinformasjon" }
 )
 public class Arbeidsgiver {
     @XmlElement(
-        required = true
+            required = true
+
     )
     protected String virksomhetsnummer;
     @XmlElement(
-        required = true
+            required = true
     )
     protected Kontaktinformasjon kontaktinformasjon;
 

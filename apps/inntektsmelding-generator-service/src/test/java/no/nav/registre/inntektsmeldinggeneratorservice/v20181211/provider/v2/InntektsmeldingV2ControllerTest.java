@@ -44,6 +44,4 @@ class InntektsmeldingV2ControllerTest {
                     .andExpect(MockMvcResultMatchers.status().isOk());
         }, "Forventer at ingen JAXBException blir kastet under konvertering til xml");
     }
-
-    ;
 }

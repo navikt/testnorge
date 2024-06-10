@@ -45,45 +45,47 @@ import java.time.LocalDateTime;
 
 @XmlRegistry
 public class ObjectFactory {
-    private static final QName _Melding_QNAME = new QName("http://seres.no/xsd/NAV/Inntektsmelding_M/20181211", "melding");
-    private static final QName _EndringIRefusjonRefusjonsbeloepPrMnd_QNAME = new QName("http://seres.no/xsd/NAV/Inntektsmelding_M/20181211", "refusjonsbeloepPrMnd");
-    private static final QName _EndringIRefusjonEndringsdato_QNAME = new QName("http://seres.no/xsd/NAV/Inntektsmelding_M/20181211", "endringsdato");
-    private static final QName _UtsettelseAvForeldrepengerPeriode_QNAME = new QName("http://seres.no/xsd/NAV/Inntektsmelding_M/20181211", "periode");
-    private static final QName _UtsettelseAvForeldrepengerAarsakTilUtsettelse_QNAME = new QName("http://seres.no/xsd/NAV/Inntektsmelding_M/20181211", "aarsakTilUtsettelse");
-    private static final QName _AvsendersystemInnsendingstidspunkt_QNAME = new QName("http://seres.no/xsd/NAV/Inntektsmelding_M/20181211", "innsendingstidspunkt");
-    private static final QName _SkjemainnholdArbeidsforhold_QNAME = new QName("http://seres.no/xsd/NAV/Inntektsmelding_M/20181211", "arbeidsforhold");
-    private static final QName _SkjemainnholdRefusjon_QNAME = new QName("http://seres.no/xsd/NAV/Inntektsmelding_M/20181211", "refusjon");
-    private static final QName _SkjemainnholdSykepengerIArbeidsgiverperioden_QNAME = new QName("http://seres.no/xsd/NAV/Inntektsmelding_M/20181211", "sykepengerIArbeidsgiverperioden");
-    private static final QName _SkjemainnholdGjenopptakelseNaturalytelseListe_QNAME = new QName("http://seres.no/xsd/NAV/Inntektsmelding_M/20181211", "gjenopptakelseNaturalytelseListe");
-    private static final QName _SkjemainnholdOmsorgspenger_QNAME = new QName("http://seres.no/xsd/NAV/Inntektsmelding_M/20181211", "omsorgspenger");
-    private static final QName _SkjemainnholdArbeidsgiver_QNAME = new QName("http://seres.no/xsd/NAV/Inntektsmelding_M/20181211", "arbeidsgiver");
-    private static final QName _SkjemainnholdStartdatoForeldrepengeperiode_QNAME = new QName("http://seres.no/xsd/NAV/Inntektsmelding_M/20181211", "startdatoForeldrepengeperiode");
-    private static final QName _SkjemainnholdOpphoerAvNaturalytelseListe_QNAME = new QName("http://seres.no/xsd/NAV/Inntektsmelding_M/20181211", "opphoerAvNaturalytelseListe");
-    private static final QName _SkjemainnholdPleiepengerPerioder_QNAME = new QName("http://seres.no/xsd/NAV/Inntektsmelding_M/20181211", "pleiepengerPerioder");
-    private static final QName _SkjemainnholdArbeidsgiverPrivat_QNAME = new QName("http://seres.no/xsd/NAV/Inntektsmelding_M/20181211", "arbeidsgiverPrivat");
-    private static final QName _SykepengerIArbeidsgiverperiodenArbeidsgiverperiodeListe_QNAME = new QName("http://seres.no/xsd/NAV/Inntektsmelding_M/20181211", "arbeidsgiverperiodeListe");
-    private static final QName _SykepengerIArbeidsgiverperiodenBruttoUtbetalt_QNAME = new QName("http://seres.no/xsd/NAV/Inntektsmelding_M/20181211", "bruttoUtbetalt");
-    private static final QName _SykepengerIArbeidsgiverperiodenBegrunnelseForReduksjonEllerIkkeUtbetalt_QNAME = new QName("http://seres.no/xsd/NAV/Inntektsmelding_M/20181211", "begrunnelseForReduksjonEllerIkkeUtbetalt");
-    private static final QName _OmsorgspengerFravaersPerioder_QNAME = new QName("http://seres.no/xsd/NAV/Inntektsmelding_M/20181211", "fravaersPerioder");
-    private static final QName _OmsorgspengerHarUtbetaltPliktigeDager_QNAME = new QName("http://seres.no/xsd/NAV/Inntektsmelding_M/20181211", "harUtbetaltPliktigeDager");
-    private static final QName _OmsorgspengerDelvisFravaersListe_QNAME = new QName("http://seres.no/xsd/NAV/Inntektsmelding_M/20181211", "delvisFravaersListe");
-    private static final QName _GraderingIForeldrepengerArbeidstidprosent_QNAME = new QName("http://seres.no/xsd/NAV/Inntektsmelding_M/20181211", "arbeidstidprosent");
-    private static final QName _DelvisFravaerDato_QNAME = new QName("http://seres.no/xsd/NAV/Inntektsmelding_M/20181211", "dato");
-    private static final QName _DelvisFravaerTimer_QNAME = new QName("http://seres.no/xsd/NAV/Inntektsmelding_M/20181211", "timer");
-    private static final QName _PeriodeFom_QNAME = new QName("http://seres.no/xsd/NAV/Inntektsmelding_M/20181211", "fom");
-    private static final QName _PeriodeTom_QNAME = new QName("http://seres.no/xsd/NAV/Inntektsmelding_M/20181211", "tom");
-    private static final QName _InntektBeloep_QNAME = new QName("http://seres.no/xsd/NAV/Inntektsmelding_M/20181211", "beloep");
-    private static final QName _InntektAarsakVedEndring_QNAME = new QName("http://seres.no/xsd/NAV/Inntektsmelding_M/20181211", "aarsakVedEndring");
-    private static final QName _ArbeidsforholdFoersteFravaersdag_QNAME = new QName("http://seres.no/xsd/NAV/Inntektsmelding_M/20181211", "foersteFravaersdag");
-    private static final QName _ArbeidsforholdBeregnetInntekt_QNAME = new QName("http://seres.no/xsd/NAV/Inntektsmelding_M/20181211", "beregnetInntekt");
-    private static final QName _ArbeidsforholdArbeidsforholdId_QNAME = new QName("http://seres.no/xsd/NAV/Inntektsmelding_M/20181211", "arbeidsforholdId");
-    private static final QName _ArbeidsforholdGraderingIForeldrepengerListe_QNAME = new QName("http://seres.no/xsd/NAV/Inntektsmelding_M/20181211", "graderingIForeldrepengerListe");
-    private static final QName _ArbeidsforholdUtsettelseAvForeldrepengerListe_QNAME = new QName("http://seres.no/xsd/NAV/Inntektsmelding_M/20181211", "utsettelseAvForeldrepengerListe");
-    private static final QName _ArbeidsforholdAvtaltFerieListe_QNAME = new QName("http://seres.no/xsd/NAV/Inntektsmelding_M/20181211", "avtaltFerieListe");
-    private static final QName _NaturalytelseDetaljerBeloepPrMnd_QNAME = new QName("http://seres.no/xsd/NAV/Inntektsmelding_M/20181211", "beloepPrMnd");
-    private static final QName _NaturalytelseDetaljerNaturalytelseType_QNAME = new QName("http://seres.no/xsd/NAV/Inntektsmelding_M/20181211", "naturalytelseType");
-    private static final QName _RefusjonRefusjonsopphoersdato_QNAME = new QName("http://seres.no/xsd/NAV/Inntektsmelding_M/20181211", "refusjonsopphoersdato");
-    private static final QName _RefusjonEndringIRefusjonListe_QNAME = new QName("http://seres.no/xsd/NAV/Inntektsmelding_M/20181211", "endringIRefusjonListe");
+    private static final String NAMESPACE_URI = "http://seres.no/xsd/NAV/Inntektsmelding_M/20181211";
+
+    private static final QName _Melding_QNAME = new QName(NAMESPACE_URI, "melding");
+    private static final QName _EndringIRefusjonRefusjonsbeloepPrMnd_QNAME = new QName(NAMESPACE_URI, "refusjonsbeloepPrMnd");
+    private static final QName _EndringIRefusjonEndringsdato_QNAME = new QName(NAMESPACE_URI, "endringsdato");
+    private static final QName _UtsettelseAvForeldrepengerPeriode_QNAME = new QName(NAMESPACE_URI, "periode");
+    private static final QName _UtsettelseAvForeldrepengerAarsakTilUtsettelse_QNAME = new QName(NAMESPACE_URI, "aarsakTilUtsettelse");
+    private static final QName _AvsendersystemInnsendingstidspunkt_QNAME = new QName(NAMESPACE_URI, "innsendingstidspunkt");
+    private static final QName _SkjemainnholdArbeidsforhold_QNAME = new QName(NAMESPACE_URI, "arbeidsforhold");
+    private static final QName _SkjemainnholdRefusjon_QNAME = new QName(NAMESPACE_URI, "refusjon");
+    private static final QName _SkjemainnholdSykepengerIArbeidsgiverperioden_QNAME = new QName(NAMESPACE_URI, "sykepengerIArbeidsgiverperioden");
+    private static final QName _SkjemainnholdGjenopptakelseNaturalytelseListe_QNAME = new QName(NAMESPACE_URI, "gjenopptakelseNaturalytelseListe");
+    private static final QName _SkjemainnholdOmsorgspenger_QNAME = new QName(NAMESPACE_URI, "omsorgspenger");
+    private static final QName _SkjemainnholdArbeidsgiver_QNAME = new QName(NAMESPACE_URI, "arbeidsgiver");
+    private static final QName _SkjemainnholdStartdatoForeldrepengeperiode_QNAME = new QName(NAMESPACE_URI, "startdatoForeldrepengeperiode");
+    private static final QName _SkjemainnholdOpphoerAvNaturalytelseListe_QNAME = new QName(NAMESPACE_URI, "opphoerAvNaturalytelseListe");
+    private static final QName _SkjemainnholdPleiepengerPerioder_QNAME = new QName(NAMESPACE_URI, "pleiepengerPerioder");
+    private static final QName _SkjemainnholdArbeidsgiverPrivat_QNAME = new QName(NAMESPACE_URI, "arbeidsgiverPrivat");
+    private static final QName _SykepengerIArbeidsgiverperiodenArbeidsgiverperiodeListe_QNAME = new QName(NAMESPACE_URI, "arbeidsgiverperiodeListe");
+    private static final QName _SykepengerIArbeidsgiverperiodenBruttoUtbetalt_QNAME = new QName(NAMESPACE_URI, "bruttoUtbetalt");
+    private static final QName _SykepengerIArbeidsgiverperiodenBegrunnelseForReduksjonEllerIkkeUtbetalt_QNAME = new QName(NAMESPACE_URI, "begrunnelseForReduksjonEllerIkkeUtbetalt");
+    private static final QName _OmsorgspengerFravaersPerioder_QNAME = new QName(NAMESPACE_URI, "fravaersPerioder");
+    private static final QName _OmsorgspengerHarUtbetaltPliktigeDager_QNAME = new QName(NAMESPACE_URI, "harUtbetaltPliktigeDager");
+    private static final QName _OmsorgspengerDelvisFravaersListe_QNAME = new QName(NAMESPACE_URI, "delvisFravaersListe");
+    private static final QName _GraderingIForeldrepengerArbeidstidprosent_QNAME = new QName(NAMESPACE_URI, "arbeidstidprosent");
+    private static final QName _DelvisFravaerDato_QNAME = new QName(NAMESPACE_URI, "dato");
+    private static final QName _DelvisFravaerTimer_QNAME = new QName(NAMESPACE_URI, "timer");
+    private static final QName _PeriodeFom_QNAME = new QName(NAMESPACE_URI, "fom");
+    private static final QName _PeriodeTom_QNAME = new QName(NAMESPACE_URI, "tom");
+    private static final QName _InntektBeloep_QNAME = new QName(NAMESPACE_URI, "beloep");
+    private static final QName _InntektAarsakVedEndring_QNAME = new QName(NAMESPACE_URI, "aarsakVedEndring");
+    private static final QName _ArbeidsforholdFoersteFravaersdag_QNAME = new QName(NAMESPACE_URI, "foersteFravaersdag");
+    private static final QName _ArbeidsforholdBeregnetInntekt_QNAME = new QName(NAMESPACE_URI, "beregnetInntekt");
+    private static final QName _ArbeidsforholdArbeidsforholdId_QNAME = new QName(NAMESPACE_URI, "arbeidsforholdId");
+    private static final QName _ArbeidsforholdGraderingIForeldrepengerListe_QNAME = new QName(NAMESPACE_URI, "graderingIForeldrepengerListe");
+    private static final QName _ArbeidsforholdUtsettelseAvForeldrepengerListe_QNAME = new QName(NAMESPACE_URI, "utsettelseAvForeldrepengerListe");
+    private static final QName _ArbeidsforholdAvtaltFerieListe_QNAME = new QName(NAMESPACE_URI, "avtaltFerieListe");
+    private static final QName _NaturalytelseDetaljerBeloepPrMnd_QNAME = new QName(NAMESPACE_URI, "beloepPrMnd");
+    private static final QName _NaturalytelseDetaljerNaturalytelseType_QNAME = new QName(NAMESPACE_URI, "naturalytelseType");
+    private static final QName _RefusjonRefusjonsopphoersdato_QNAME = new QName(NAMESPACE_URI, "refusjonsopphoersdato");
+    private static final QName _RefusjonEndringIRefusjonListe_QNAME = new QName(NAMESPACE_URI, "endringIRefusjonListe");
 
     public ObjectFactory() {
     }
@@ -197,7 +199,7 @@ public class ObjectFactory {
     }
 
     @XmlElementDecl(
-            namespace = "http://seres.no/xsd/NAV/Inntektsmelding_M/20181211",
+            namespace = NAMESPACE_URI,
             name = "melding"
     )
     public JAXBElement<InntektsmeldingM> createMelding(InntektsmeldingM value) {
@@ -205,7 +207,7 @@ public class ObjectFactory {
     }
 
     @XmlElementDecl(
-            namespace = "http://seres.no/xsd/NAV/Inntektsmelding_M/20181211",
+            namespace = NAMESPACE_URI,
             name = "refusjonsbeloepPrMnd",
             scope = EndringIRefusjon.class
     )
@@ -214,7 +216,7 @@ public class ObjectFactory {
     }
 
     @XmlElementDecl(
-            namespace = "http://seres.no/xsd/NAV/Inntektsmelding_M/20181211",
+            namespace = NAMESPACE_URI,
             name = "endringsdato",
             scope = EndringIRefusjon.class
     )
@@ -224,7 +226,7 @@ public class ObjectFactory {
     }
 
     @XmlElementDecl(
-            namespace = "http://seres.no/xsd/NAV/Inntektsmelding_M/20181211",
+            namespace = NAMESPACE_URI,
             name = "periode",
             scope = UtsettelseAvForeldrepenger.class
     )
@@ -233,7 +235,7 @@ public class ObjectFactory {
     }
 
     @XmlElementDecl(
-            namespace = "http://seres.no/xsd/NAV/Inntektsmelding_M/20181211",
+            namespace = NAMESPACE_URI,
             name = "aarsakTilUtsettelse",
             scope = UtsettelseAvForeldrepenger.class
     )
@@ -242,7 +244,7 @@ public class ObjectFactory {
     }
 
     @XmlElementDecl(
-            namespace = "http://seres.no/xsd/NAV/Inntektsmelding_M/20181211",
+            namespace = NAMESPACE_URI,
             name = "innsendingstidspunkt",
             scope = Avsendersystem.class
     )
@@ -252,7 +254,7 @@ public class ObjectFactory {
     }
 
     @XmlElementDecl(
-            namespace = "http://seres.no/xsd/NAV/Inntektsmelding_M/20181211",
+            namespace = NAMESPACE_URI,
             name = "arbeidsforhold",
             scope = Skjemainnhold.class
     )
@@ -261,7 +263,7 @@ public class ObjectFactory {
     }
 
     @XmlElementDecl(
-            namespace = "http://seres.no/xsd/NAV/Inntektsmelding_M/20181211",
+            namespace = NAMESPACE_URI,
             name = "refusjon",
             scope = Skjemainnhold.class
     )
@@ -270,7 +272,7 @@ public class ObjectFactory {
     }
 
     @XmlElementDecl(
-            namespace = "http://seres.no/xsd/NAV/Inntektsmelding_M/20181211",
+            namespace = NAMESPACE_URI,
             name = "sykepengerIArbeidsgiverperioden",
             scope = Skjemainnhold.class
     )
@@ -279,7 +281,7 @@ public class ObjectFactory {
     }
 
     @XmlElementDecl(
-            namespace = "http://seres.no/xsd/NAV/Inntektsmelding_M/20181211",
+            namespace = NAMESPACE_URI,
             name = "gjenopptakelseNaturalytelseListe",
             scope = Skjemainnhold.class
     )
@@ -288,7 +290,7 @@ public class ObjectFactory {
     }
 
     @XmlElementDecl(
-            namespace = "http://seres.no/xsd/NAV/Inntektsmelding_M/20181211",
+            namespace = NAMESPACE_URI,
             name = "omsorgspenger",
             scope = Skjemainnhold.class
     )
@@ -297,16 +299,7 @@ public class ObjectFactory {
     }
 
     @XmlElementDecl(
-            namespace = "http://seres.no/xsd/NAV/Inntektsmelding_M/20181211",
-            name = "arbeidsgiver",
-            scope = Skjemainnhold.class
-    )
-    public JAXBElement createSkjemainnholdArbeidsgiver(Arbeidsgiver value) {
-        return new JAXBElement<>(_SkjemainnholdArbeidsgiver_QNAME, Arbeidsgiver.class, Skjemainnhold.class, value);
-    }
-
-    @XmlElementDecl(
-            namespace = "http://seres.no/xsd/NAV/Inntektsmelding_M/20181211",
+            namespace = NAMESPACE_URI,
             name = "startdatoForeldrepengeperiode",
             scope = Skjemainnhold.class
     )
@@ -316,7 +309,7 @@ public class ObjectFactory {
     }
 
     @XmlElementDecl(
-            namespace = "http://seres.no/xsd/NAV/Inntektsmelding_M/20181211",
+            namespace = NAMESPACE_URI,
             name = "opphoerAvNaturalytelseListe",
             scope = Skjemainnhold.class
     )
@@ -325,7 +318,7 @@ public class ObjectFactory {
     }
 
     @XmlElementDecl(
-            namespace = "http://seres.no/xsd/NAV/Inntektsmelding_M/20181211",
+            namespace = NAMESPACE_URI,
             name = "pleiepengerPerioder",
             scope = Skjemainnhold.class
     )
@@ -334,7 +327,7 @@ public class ObjectFactory {
     }
 
     @XmlElementDecl(
-            namespace = "http://seres.no/xsd/NAV/Inntektsmelding_M/20181211",
+            namespace = NAMESPACE_URI,
             name = "arbeidsgiverPrivat",
             scope = Skjemainnhold.class
     )
@@ -343,7 +336,7 @@ public class ObjectFactory {
     }
 
     @XmlElementDecl(
-            namespace = "http://seres.no/xsd/NAV/Inntektsmelding_M/20181211",
+            namespace = NAMESPACE_URI,
             name = "arbeidsgiverperiodeListe",
             scope = SykepengerIArbeidsgiverperioden.class
     )
@@ -352,7 +345,7 @@ public class ObjectFactory {
     }
 
     @XmlElementDecl(
-            namespace = "http://seres.no/xsd/NAV/Inntektsmelding_M/20181211",
+            namespace = NAMESPACE_URI,
             name = "bruttoUtbetalt",
             scope = SykepengerIArbeidsgiverperioden.class
     )
@@ -361,7 +354,7 @@ public class ObjectFactory {
     }
 
     @XmlElementDecl(
-            namespace = "http://seres.no/xsd/NAV/Inntektsmelding_M/20181211",
+            namespace = NAMESPACE_URI,
             name = "begrunnelseForReduksjonEllerIkkeUtbetalt",
             scope = SykepengerIArbeidsgiverperioden.class
     )
@@ -370,7 +363,7 @@ public class ObjectFactory {
     }
 
     @XmlElementDecl(
-            namespace = "http://seres.no/xsd/NAV/Inntektsmelding_M/20181211",
+            namespace = NAMESPACE_URI,
             name = "fravaersPerioder",
             scope = Omsorgspenger.class
     )
@@ -379,7 +372,7 @@ public class ObjectFactory {
     }
 
     @XmlElementDecl(
-            namespace = "http://seres.no/xsd/NAV/Inntektsmelding_M/20181211",
+            namespace = NAMESPACE_URI,
             name = "harUtbetaltPliktigeDager",
             scope = Omsorgspenger.class
     )
@@ -388,7 +381,7 @@ public class ObjectFactory {
     }
 
     @XmlElementDecl(
-            namespace = "http://seres.no/xsd/NAV/Inntektsmelding_M/20181211",
+            namespace = NAMESPACE_URI,
             name = "delvisFravaersListe",
             scope = Omsorgspenger.class
     )
@@ -397,7 +390,7 @@ public class ObjectFactory {
     }
 
     @XmlElementDecl(
-            namespace = "http://seres.no/xsd/NAV/Inntektsmelding_M/20181211",
+            namespace = NAMESPACE_URI,
             name = "periode",
             scope = GraderingIForeldrepenger.class
     )
@@ -406,7 +399,7 @@ public class ObjectFactory {
     }
 
     @XmlElementDecl(
-            namespace = "http://seres.no/xsd/NAV/Inntektsmelding_M/20181211",
+            namespace = NAMESPACE_URI,
             name = "arbeidstidprosent",
             scope = GraderingIForeldrepenger.class
     )
@@ -415,7 +408,7 @@ public class ObjectFactory {
     }
 
     @XmlElementDecl(
-            namespace = "http://seres.no/xsd/NAV/Inntektsmelding_M/20181211",
+            namespace = NAMESPACE_URI,
             name = "dato",
             scope = DelvisFravaer.class
     )
@@ -425,7 +418,7 @@ public class ObjectFactory {
     }
 
     @XmlElementDecl(
-            namespace = "http://seres.no/xsd/NAV/Inntektsmelding_M/20181211",
+            namespace = NAMESPACE_URI,
             name = "timer",
             scope = DelvisFravaer.class
     )
@@ -434,7 +427,7 @@ public class ObjectFactory {
     }
 
     @XmlElementDecl(
-            namespace = "http://seres.no/xsd/NAV/Inntektsmelding_M/20181211",
+            namespace = NAMESPACE_URI,
             name = "fom",
             scope = Periode.class
     )
@@ -444,7 +437,7 @@ public class ObjectFactory {
     }
 
     @XmlElementDecl(
-            namespace = "http://seres.no/xsd/NAV/Inntektsmelding_M/20181211",
+            namespace = NAMESPACE_URI,
             name = "tom",
             scope = Periode.class
     )
@@ -454,7 +447,7 @@ public class ObjectFactory {
     }
 
     @XmlElementDecl(
-            namespace = "http://seres.no/xsd/NAV/Inntektsmelding_M/20181211",
+            namespace = NAMESPACE_URI,
             name = "beloep",
             scope = Inntekt.class
     )
@@ -463,7 +456,7 @@ public class ObjectFactory {
     }
 
     @XmlElementDecl(
-            namespace = "http://seres.no/xsd/NAV/Inntektsmelding_M/20181211",
+            namespace = NAMESPACE_URI,
             name = "aarsakVedEndring",
             scope = Inntekt.class
     )
@@ -472,7 +465,7 @@ public class ObjectFactory {
     }
 
     @XmlElementDecl(
-            namespace = "http://seres.no/xsd/NAV/Inntektsmelding_M/20181211",
+            namespace = NAMESPACE_URI,
             name = "foersteFravaersdag",
             scope = Arbeidsforhold.class
     )
@@ -482,103 +475,103 @@ public class ObjectFactory {
     }
 
     @XmlElementDecl(
-            namespace = "http://seres.no/xsd/NAV/Inntektsmelding_M/20181211",
+            namespace = NAMESPACE_URI,
             name = "beregnetInntekt",
             scope = Arbeidsforhold.class
     )
-    public JAXBElement createArbeidsforholdBeregnetInntekt(Inntekt value) {
+    public JAXBElement<Inntekt> createArbeidsforholdBeregnetInntekt(Inntekt value) {
         return new JAXBElement<>(_ArbeidsforholdBeregnetInntekt_QNAME, Inntekt.class, Arbeidsforhold.class, value);
     }
 
     @XmlElementDecl(
-            namespace = "http://seres.no/xsd/NAV/Inntektsmelding_M/20181211",
+            namespace = NAMESPACE_URI,
             name = "arbeidsforholdId",
             scope = Arbeidsforhold.class
     )
-    public JAXBElement createArbeidsforholdArbeidsforholdId(String value) {
+    public JAXBElement<String> createArbeidsforholdArbeidsforholdId(String value) {
         return new JAXBElement<>(_ArbeidsforholdArbeidsforholdId_QNAME, String.class, Arbeidsforhold.class, value);
     }
 
     @XmlElementDecl(
-            namespace = "http://seres.no/xsd/NAV/Inntektsmelding_M/20181211",
+            namespace = NAMESPACE_URI,
             name = "graderingIForeldrepengerListe",
             scope = Arbeidsforhold.class
     )
-    public JAXBElement createArbeidsforholdGraderingIForeldrepengerListe(GraderingIForeldrepengerListe value) {
+    public JAXBElement<GraderingIForeldrepengerListe> createArbeidsforholdGraderingIForeldrepengerListe(GraderingIForeldrepengerListe value) {
         return new JAXBElement<>(_ArbeidsforholdGraderingIForeldrepengerListe_QNAME, GraderingIForeldrepengerListe.class, Arbeidsforhold.class, value);
     }
 
     @XmlElementDecl(
-            namespace = "http://seres.no/xsd/NAV/Inntektsmelding_M/20181211",
+            namespace = NAMESPACE_URI,
             name = "utsettelseAvForeldrepengerListe",
             scope = Arbeidsforhold.class
     )
-    public JAXBElement createArbeidsforholdUtsettelseAvForeldrepengerListe(UtsettelseAvForeldrepengerListe value) {
+    public JAXBElement<UtsettelseAvForeldrepengerListe> createArbeidsforholdUtsettelseAvForeldrepengerListe(UtsettelseAvForeldrepengerListe value) {
         return new JAXBElement<>(_ArbeidsforholdUtsettelseAvForeldrepengerListe_QNAME, UtsettelseAvForeldrepengerListe.class, Arbeidsforhold.class, value);
     }
 
     @XmlElementDecl(
-            namespace = "http://seres.no/xsd/NAV/Inntektsmelding_M/20181211",
+            namespace = NAMESPACE_URI,
             name = "avtaltFerieListe",
             scope = Arbeidsforhold.class
     )
-    public JAXBElement createArbeidsforholdAvtaltFerieListe(AvtaltFerieListe value) {
+    public JAXBElement<AvtaltFerieListe> createArbeidsforholdAvtaltFerieListe(AvtaltFerieListe value) {
         return new JAXBElement<>(_ArbeidsforholdAvtaltFerieListe_QNAME, AvtaltFerieListe.class, Arbeidsforhold.class, value);
     }
 
     @XmlElementDecl(
-            namespace = "http://seres.no/xsd/NAV/Inntektsmelding_M/20181211",
+            namespace = NAMESPACE_URI,
             name = "beloepPrMnd",
             scope = NaturalytelseDetaljer.class
     )
-    public JAXBElement createNaturalytelseDetaljerBeloepPrMnd(BigDecimal value) {
+    public JAXBElement<BigDecimal> createNaturalytelseDetaljerBeloepPrMnd(BigDecimal value) {
         return new JAXBElement<>(_NaturalytelseDetaljerBeloepPrMnd_QNAME, BigDecimal.class, NaturalytelseDetaljer.class, value);
     }
 
     @XmlElementDecl(
-            namespace = "http://seres.no/xsd/NAV/Inntektsmelding_M/20181211",
+            namespace = NAMESPACE_URI,
             name = "fom",
             scope = NaturalytelseDetaljer.class
     )
     @XmlJavaTypeAdapter(LocalDateXmlAdapter.class)
-    public JAXBElement createNaturalytelseDetaljerFom(LocalDate value) {
+    public JAXBElement<LocalDate> createNaturalytelseDetaljerFom(LocalDate value) {
         return new JAXBElement<>(_PeriodeFom_QNAME, LocalDate.class, NaturalytelseDetaljer.class, value);
     }
 
     @XmlElementDecl(
-            namespace = "http://seres.no/xsd/NAV/Inntektsmelding_M/20181211",
+            namespace = NAMESPACE_URI,
             name = "naturalytelseType",
             scope = NaturalytelseDetaljer.class
     )
-    public JAXBElement createNaturalytelseDetaljerNaturalytelseType(String value) {
+    public JAXBElement<String> createNaturalytelseDetaljerNaturalytelseType(String value) {
         return new JAXBElement<>(_NaturalytelseDetaljerNaturalytelseType_QNAME, String.class, NaturalytelseDetaljer.class, value);
     }
 
     @XmlElementDecl(
-            namespace = "http://seres.no/xsd/NAV/Inntektsmelding_M/20181211",
+            namespace = NAMESPACE_URI,
             name = "refusjonsopphoersdato",
             scope = Refusjon.class
     )
     @XmlJavaTypeAdapter(LocalDateXmlAdapter.class)
-    public JAXBElement createRefusjonRefusjonsopphoersdato(LocalDate value) {
+    public JAXBElement<LocalDate> createRefusjonRefusjonsopphoersdato(LocalDate value) {
         return new JAXBElement<>(_RefusjonRefusjonsopphoersdato_QNAME, LocalDate.class, Refusjon.class, value);
     }
 
     @XmlElementDecl(
-            namespace = "http://seres.no/xsd/NAV/Inntektsmelding_M/20181211",
+            namespace = NAMESPACE_URI,
             name = "refusjonsbeloepPrMnd",
             scope = Refusjon.class
     )
-    public JAXBElement createRefusjonRefusjonsbeloepPrMnd(BigDecimal value) {
+    public JAXBElement<BigDecimal> createRefusjonRefusjonsbeloepPrMnd(BigDecimal value) {
         return new JAXBElement<>(_EndringIRefusjonRefusjonsbeloepPrMnd_QNAME, BigDecimal.class, Refusjon.class, value);
     }
 
     @XmlElementDecl(
-            namespace = "http://seres.no/xsd/NAV/Inntektsmelding_M/20181211",
+            namespace = NAMESPACE_URI,
             name = "endringIRefusjonListe",
             scope = Refusjon.class
     )
-    public JAXBElement createRefusjonEndringIRefusjonListe(EndringIRefusjonsListe value) {
+    public JAXBElement<EndringIRefusjonsListe> createRefusjonEndringIRefusjonListe(EndringIRefusjonsListe value) {
         return new JAXBElement<>(_RefusjonEndringIRefusjonListe_QNAME, EndringIRefusjonsListe.class, Refusjon.class, value);
     }
 }

@@ -110,7 +110,7 @@ public class InntektsmeldingDTO implements ToXmlElement<InntektsmeldingM> {
         }
 
         if (arbeidsgiver != null) {
-            xmlSkjemainnhold.setArbeidsgiver(factory.createSkjemainnholdArbeidsgiver(arbeidsgiver.toXmlElement()));
+            xmlSkjemainnhold.setArbeidsgiver(arbeidsgiver.toXmlElement());
         }
 
         if (arbeidsgiverPrivat != null) {
