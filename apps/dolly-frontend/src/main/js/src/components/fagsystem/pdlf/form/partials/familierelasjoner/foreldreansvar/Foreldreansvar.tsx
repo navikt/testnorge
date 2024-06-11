@@ -47,6 +47,8 @@ export const ForeldreansvarForm = ({
 	eksisterendeNyPerson = null,
 }: ForeldreansvarForm) => {
 	const opts = useContext(BestillingsveilederContext)
+	const antall = opts?.antall || 1
+
 	const ansvarlig = 'ansvarlig'
 	const ansvarligUtenIdentifikator = 'ansvarligUtenIdentifikator'
 	const nyAnsvarlig = 'nyAnsvarlig'
@@ -123,7 +125,7 @@ export const ForeldreansvarForm = ({
 	}, [])
 
 	const ansvarlige = Options('typeAnsvarlig').filter(
-		(ansvar) => ansvar.value !== 'EKSISTERENDE' || opts?.antall === 1,
+		(ansvar) => ansvar.value !== 'EKSISTERENDE' || antall === 1,
 	)
 
 	return (

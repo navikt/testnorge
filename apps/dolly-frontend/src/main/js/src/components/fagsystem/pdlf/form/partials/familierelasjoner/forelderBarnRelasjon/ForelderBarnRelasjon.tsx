@@ -51,7 +51,9 @@ export const ForelderBarnRelasjonForm = ({
 }: ForelderForm) => {
 	const opts = useContext(BestillingsveilederContext)
 
+	const antall = opts?.antall || 1
 	const identMaster = opts?.identMaster || 'PDLF'
+
 	const [erBarn, setErBarn] = React.useState(
 		formMethods.watch(`${path}.relatertPersonsRolle`) === RELASJON_BARN,
 	)
@@ -120,7 +122,7 @@ export const ForelderBarnRelasjonForm = ({
 	const kanVelgeMaster = !testnorgePerson && identtype !== 'NPID'
 
 	const typeAnsvarlig = Options('typeAnsvarlig').filter(
-		(value) => value.value !== 'EKSISTERENDE' || opts?.antall === 1,
+		(value) => value.value !== 'EKSISTERENDE' || antall === 1,
 	)
 
 	return (
@@ -192,6 +194,7 @@ export const ForelderBarnRelasjonForm = ({
 					formMethods={formMethods}
 					eksisterendeNyPerson={eksisterendeNyPerson}
 					idx={idx}
+					ident={ident}
 				/>
 			)}
 

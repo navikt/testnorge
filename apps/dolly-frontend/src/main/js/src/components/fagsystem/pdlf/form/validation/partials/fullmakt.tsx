@@ -9,7 +9,7 @@ export const fullmakt = Yup.object({
 	gyldigTilOgMed: testDatoTom(requiredDate.nullable(), 'gyldigFraOgMed'),
 	motpartsPersonident: Yup.string()
 		.test('feltet-mangler', 'Fullmektig er påkrevd', (value, testcontext) => {
-			return value || testcontext.options.context.identMaster !== 'PDL'
+			return value || testcontext.options.context?.identMaster !== 'PDL'
 		})
 		.nullable(),
 	nyFullmektig: nyPerson,

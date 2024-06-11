@@ -19,6 +19,7 @@ interface PdlEksisterendePersonValues {
 	disabled?: boolean
 	nyIdentValg?: NyIdent
 	eksisterendeNyPerson?: Option
+	ident?: string
 }
 
 export const PdlEksisterendePerson = ({
@@ -30,14 +31,15 @@ export const PdlEksisterendePerson = ({
 	disabled = false,
 	nyIdentValg = null,
 	eksisterendeNyPerson = null,
+	ident,
 }: PdlEksisterendePersonValues) => {
 	const opts = useContext(BestillingsveilederContext)
 
 	const antall = opts?.antall || 1
-	const gruppeId = opts?.gruppeId || opts?.gruppe?.id
+	const gruppeId = opts?.gruppeId || opts?.gruppe?.id || window.location.pathname.split('/')?.[2]
 
 	const { identer, loading: gruppeLoading, error: gruppeError } = useGruppeIdenter(gruppeId)
-	const identNy = opts?.personFoerLeggTil?.pdl?.ident || opts?.importPersoner?.[0].ident
+	const identNy = opts?.personFoerLeggTil?.pdl?.ident || opts?.importPersoner?.[0].ident || ident
 	const identMaster = opts?.identMaster || 'PDLF'
 
 	identer?.push({ ident: identNy, master: identMaster })
@@ -90,7 +92,9 @@ export const PdlEksisterendePerson = ({
 	}
 
 	const checkForeldre = (person: object) => {
-		const relasjoner = formMethods.getValues()?.pdldata?.person?.forelderBarnRelasjon
+		const relasjoner =
+			formMethods.getValues()?.pdldata?.person?.forelderBarnRelasjon ||
+			Array.from(formMethods.getValues()?.forelderBarnRelasjon)
 		if (!!relasjoner.find((relasjon) => relasjon.relatertPerson === person.value)) {
 			return false
 		}
@@ -107,7 +111,8 @@ export const PdlEksisterendePerson = ({
 		return true
 	}
 
-	const eksisterendeIdent = opts?.personFoerLeggTil?.pdl?.ident || opts?.importPersoner?.[0]?.ident
+	const eksisterendeIdent =
+		opts?.personFoerLeggTil?.pdl?.ident || opts?.importPersoner?.[0]?.ident || ident
 
 	const eksisterendePerson = pdlOptions.find((x) => x.value === eksisterendeIdent) || {
 		alder: parseInt(formMethods.getValues()?.pdldata?.opprettNyPerson?.alder),
@@ -170,7 +175,7 @@ export const PdlEksisterendePerson = ({
 					}}
 					label={label}
 					options={filteredOptions}
-					size={'xlarge'}
+					size={'xxlarge'}
 					isDisabled={hasNyPersonValues || bestillingFlerePersoner || disabled}
 				/>
 			) : pdlError || gruppeError ? (
