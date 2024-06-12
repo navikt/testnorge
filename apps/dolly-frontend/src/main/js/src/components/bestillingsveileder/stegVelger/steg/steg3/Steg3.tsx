@@ -9,6 +9,7 @@ import { MalFormOrganisasjon } from '@/pages/organisasjoner/MalFormOrganisasjon'
 import { useCurrentBruker, useOrganisasjonTilgang } from '@/utils/hooks/useBruker'
 import Loading from '@/components/ui/loading/Loading'
 import { Gruppevalg } from '@/components/velgGruppe/VelgGruppeToggle'
+import { Bestillingsdata } from '@/components/bestilling/sammendrag/Bestillingsdata'
 import { useFormContext } from 'react-hook-form'
 
 const Bestillingskriterier = React.lazy(
@@ -82,6 +83,8 @@ export const Steg3 = () => {
 			{harAvhukedeAttributter(formMethods.getValues()) && (
 				<div className="oppsummering">
 					<Suspense fallback={<Loading label={'Laster bestillingskriterier...'} />}>
+						<Bestillingsdata bestilling={formMethods.getValues()} />
+						{/*//TODO: Fjernes naar bestillingsdata er klar*/}
 						<Bestillingskriterier bestilling={formMethods.getValues()} />
 					</Suspense>
 				</div>

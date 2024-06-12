@@ -1,7 +1,7 @@
 import {
 	DoedfoedtBarnData,
 	FoedselData,
-	Foreldreansvar,
+	ForeldreansvarData,
 	ForeldreBarnRelasjon,
 	Metadata,
 	SivilstandData,
@@ -44,7 +44,7 @@ export type Ident = {
 export type HentPerson = {
 	foedsel: [FoedselData]
 	bostedsadresse: Array<BostedData>
-	deltBosted: Array<DeltBosted>
+	deltBosted: Array<DeltBostedData>
 	oppholdsadresse: Array<OppholdsadresseData>
 	kontaktadresse: Array<KontaktadresseData>
 	adressebeskyttelse: Array<AdressebeskyttelseData>
@@ -56,7 +56,7 @@ export type HentPerson = {
 	sivilstand: Array<SivilstandData>
 	forelderBarnRelasjon: Array<ForeldreBarnRelasjon>
 	doedfoedtBarn: Array<DoedfoedtBarnData>
-	foreldreansvar: Array<Foreldreansvar>
+	foreldreansvar: Array<ForeldreansvarData>
 	kontaktinformasjonForDoedsbo: Array<any>
 	utenlandskIdentifikasjonsnummer: Array<{}>
 	falskIdentitet: FalskIdentitet
@@ -67,37 +67,40 @@ export type HentPerson = {
 	doedsfall: [Doedsfall]
 	folkeregisterpersonstatus?: [Folkeregisterpersonstatus]
 	folkeregisterPersonstatus?: [Folkeregisterpersonstatus]
-	kjoenn: [Kjoenn]
+	kjoenn: [KjoennValues]
 	navn: [Navn]
 }
 
 export type BostedData = {
+	adressetype?: string
 	angittFlyttedato?: Date
 	coAdressenavn?: string
 	gyldigFraOgMed?: Date
 	gyldigTilOgMed?: Date
-	vegadresse?: Vegadresse
-	matrikkeladresse?: Matrikkeladresse
-	ukjentBosted?: UkjentBosted
-	utenlandskAdresse?: UtenlandskAdresse
+	vegadresse?: VegadresseData
+	matrikkeladresse?: MatrikkeladresseData
+	ukjentBosted?: UkjentBostedData
+	utenlandskAdresse?: UtenlandskAdresseData
 	metadata?: Metadata
 	id?: number
 }
 
-export type DeltBosted = {
+export type DeltBostedData = {
 	startdatoForKontrakt?: Date
 	sluttdatoForKontrakt?: Date
 	coAdressenavn?: string
-	vegadresse?: Vegadresse
-	matrikkeladresse?: Matrikkeladresse
-	ukjentBosted?: UkjentBosted
+	vegadresse?: VegadresseData
+	matrikkeladresse?: MatrikkeladresseData
+	ukjentBosted?: UkjentBostedData
 	metadata?: Metadata
+	adressetype?: string
 }
 
 export type OppholdsadresseData = {
-	utenlandskAdresse?: UtenlandskAdresse
-	vegadresse?: Vegadresse
-	matrikkeladresse?: Matrikkeladresse
+	adressetype?: string
+	utenlandskAdresse?: UtenlandskAdresseData
+	vegadresse?: VegadresseData
+	matrikkeladresse?: MatrikkeladresseData
 	oppholdAnnetSted?: string
 	coAdressenavn?: string
 	gyldigFraOgMed?: Date
@@ -106,20 +109,21 @@ export type OppholdsadresseData = {
 }
 
 export type KontaktadresseData = {
+	adressetype?: string
 	gyldigFraOgMed?: Date
 	gyldigTilOgMed?: Date
 	type?: string
 	coAdressenavn?: string
-	postboksadresse?: Postboksadresse
-	vegadresse?: Vegadresse
+	postboksadresse?: PostboksadresseData
+	vegadresse?: VegadresseData
 	postadresseIFrittFormat?: PostadresseIFrittFormat
-	utenlandskAdresse?: UtenlandskAdresse
+	utenlandskAdresse?: UtenlandskAdresseData
 	utenlandskAdresseIFrittFormat?: UtenlandskAdresseIFrittFormat
 	metadata?: Metadata
 	id?: number
 }
 
-type Postboksadresse = {
+export type PostboksadresseData = {
 	postbokseier?: string
 	postboks?: string
 	postnummer?: string
@@ -141,7 +145,7 @@ type UtenlandskAdresseIFrittFormat = {
 	landkode?: string
 }
 
-type Vegadresse = {
+export type VegadresseData = {
 	matrikkelId?: string
 	husbokstav?: string
 	husnummer?: string
@@ -152,15 +156,18 @@ type Vegadresse = {
 	kommunenummer?: string
 	bydelsnummer?: string
 	koordinater?: Koordinater
+	adressekode?: string
 }
 
-type Matrikkeladresse = {
+export type MatrikkeladresseData = {
 	matrikkelId?: string
 	bruksenhetsnummer?: string
 	tilleggsnavn?: string
 	postnummer?: string
 	kommunenummer?: string
 	koordinater?: Koordinater
+	gaardsnummer?: string
+	bruksnummer?: string
 }
 
 type Koordinater = {
@@ -170,11 +177,11 @@ type Koordinater = {
 	kvalitet?: string
 }
 
-type UkjentBosted = {
+export type UkjentBostedData = {
 	bostedskommune?: string
 }
 
-type UtenlandskAdresse = {
+export type UtenlandskAdresseData = {
 	adressenavnNummer?: string
 	postboksNummerNavn?: string
 	postkode?: string
@@ -201,10 +208,6 @@ export type OppholdData = {
 	oppholdTil: Date
 	type: string
 	id: number
-}
-
-export type UtenlandskAdresseData = {
-	utenlandskAdresse?: UtenlandskAdresse
 }
 
 export type TelefonData = {
@@ -252,7 +255,7 @@ export type Relasjon = {
 		}>
 	}
 }
-type AdressebeskyttelseData = {
+export type AdressebeskyttelseData = {
 	gradering: string
 }
 
@@ -327,7 +330,7 @@ export type Folkeregisterpersonstatus = {
 	metadata: Metadata
 }
 
-type Kjoenn = {
+export type KjoennValues = {
 	kjoenn: string
 	metadata: Metadata
 }

@@ -5,6 +5,12 @@ export type Person = {
 	relasjoner?: Array<Relasjon>
 }
 
+export type OpprettNyPerson = {
+	alder: number
+	foedtEtter: string
+	foedtFoer: string
+}
+
 export type Relasjon = {
 	id: number
 	relasjonType: string
@@ -21,7 +27,7 @@ export type PersonData = {
 	adressebeskyttelse?: Array<AdressebeskyttelseData>
 	sivilstand?: Array<SivilstandData>
 	foreldreBarnRelasjon?: Array<ForeldreBarnRelasjon>
-	foreldreansvar?: Array<Foreldreansvar>
+	foreldreansvar?: Array<ForeldreansvarData>
 	innflytting?: Array<Innflytting>
 	utflytting?: Array<Utflytting>
 	vergemaal?: Array<VergemaalValues>
@@ -41,6 +47,14 @@ type Navn = {
 	etternavn: string
 }
 
+export type NavnBestilling = {
+	fornavn: string
+	mellomnavn?: string
+	etternavn: string
+	hasMellomnavn: boolean
+	gyldigFraOgMed?: string
+}
+
 type Kjoenn = {
 	kjoenn: string
 }
@@ -51,13 +65,13 @@ export type FoedselData = {
 	foedested: string
 	foedekommune: string
 	foedeland: string
-	metadata: Metadata
+	metadata?: Metadata
 	id?: number
 }
 
 export type DoedsfallData = {
 	doedsdato: string
-	metadata: Metadata
+	metadata?: Metadata
 	id?: number
 }
 
@@ -65,6 +79,7 @@ export type StatsborgerskapData = {
 	landkode: string
 	gyldigFraOgMed: string
 	gyldigTilOgMed: string
+	bekreftelsesdato?: string
 	id?: number
 }
 
@@ -96,6 +111,7 @@ export type SivilstandData = {
 	bekreftelsesdato?: string
 	id?: number
 	sivilstandsdato?: string
+	borIkkeSammen?: boolean
 	nyRelatertPerson?: NyIdent
 	metadata: Metadata
 }
@@ -128,6 +144,8 @@ export type ForeldreBarnRelasjon = {
 	relatertPersonsRolle: Rolle
 	deltBosted?: any
 	typeForelderBarn?: string
+	borIkkeSammen?: boolean
+	partnerErIkkeForelder?: boolean
 }
 
 export type DoedfoedtBarnData = {
@@ -135,9 +153,11 @@ export type DoedfoedtBarnData = {
 	dato: Date
 }
 
-export type Foreldreansvar = {
+export type ForeldreansvarData = {
 	ansvar: string
 	ansvarlig: string
+	gyldigFraOgMed?: string
+	gyldigTilOgMed?: string
 	ansvarligUtenIdentifikator: ForeldreansvarUtenId
 	nyAnsvarlig?: NyIdent
 	metadata?: Metadata
@@ -162,6 +182,10 @@ export type VergemaalValues = {
 }
 
 export type FullmaktValues = {
+	omraader?: Array<string>
+	gyldigFraOgMed?: string
+	gyldigTilOgMed?: string
+	motpartsPersonident?: string
 	nyFullmektig?: NyIdent
 	id: number
 }
