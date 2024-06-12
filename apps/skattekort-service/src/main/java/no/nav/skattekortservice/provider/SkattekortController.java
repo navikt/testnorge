@@ -3,6 +3,7 @@ package no.nav.skattekortservice.provider;
 import lombok.RequiredArgsConstructor;
 import no.nav.skattekortservice.service.SkattekortService;
 import no.nav.testnav.libs.dto.skattekortservice.v1.SkattekortTilArbeidsgiverDTO;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,7 +17,7 @@ public class SkattekortController {
 
     private final SkattekortService skattekortService;
 
-    @PostMapping("/arbeidsgiver")
+    @PostMapping(value = "/arbeidsgiver", produces = MediaType.ALL_VALUE)
     public Mono<String> sendSkattekortTilArbeidsgiver(@RequestBody SkattekortTilArbeidsgiverDTO skattekort) {
 
         return skattekortService.sendSkattekort(skattekort);
