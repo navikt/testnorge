@@ -1,6 +1,12 @@
 package no.nav.testnav.libs.dto.skattekortservice.v1;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+@Getter
+@RequiredArgsConstructor
 public enum Trekkode {
+
     LOENN_FRA_HOVEDARBEIDSGIVER("loennFraHovedarbeidsgiver"),
     LOENN_FRA_BIARBEIDSGIVER("loennFraBiarbeidsgiver"),
     LOENN_FRA_NAV("loennFraNAV"),
@@ -14,13 +20,5 @@ public enum Trekkode {
     INTRODUKSJONSSTOENAD("introduksjonsstoenad");
 
     private final String value;
-
-    Trekkode(String v) {
-        this.value = v;
-    }
-
-    public String value() {
-        return this.value;
-    }
 }
 
