@@ -3,7 +3,7 @@ import React from 'react'
 import { Button } from '@navikt/ds-react'
 import { TrashIcon } from '@navikt/aksel-icons'
 import { UseFormGetValues } from 'react-hook-form'
-import { CypressSelector } from '../../../../cypress/mocks/Selectors'
+import { TestComponentSelectors } from '#/mocks/Selectors'
 
 type HeaderProps = {
 	title: string
@@ -93,7 +93,7 @@ export const Header = ({ title, antall, paths, getValues, emptyCategory, dataCy 
 		<KategoriHeader data-testid={dataCy}>
 			<span>{title}</span>
 			{antallValgt > 0 && (
-				<KategoriCircle data-testid={CypressSelector.TITLE_TENOR_HEADER_COUNTER}>
+				<KategoriCircle data-testid={TestComponentSelectors.TITLE_TENOR_HEADER_COUNTER}>
 					<p>{antallValgt}</p>
 				</KategoriCircle>
 			)}
@@ -103,7 +103,7 @@ export const Header = ({ title, antall, paths, getValues, emptyCategory, dataCy 
 						e.stopPropagation()
 						emptyCategory?.(paths)
 					}}
-					data-testid={CypressSelector.BUTTON_TENOR_CLEAR_HEADER}
+					data-testid={TestComponentSelectors.BUTTON_TENOR_CLEAR_HEADER}
 					variant={'tertiary'}
 					icon={<TrashIcon />}
 					size={'small'}

@@ -10,7 +10,7 @@ import Loading from '@/components/ui/loading/Loading'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 import Icon from '@/components/ui/icon/Icon'
 import { Alert } from '@navikt/ds-react'
-import { CypressSelector } from '../../../../../cypress/mocks/Selectors'
+import { TestComponentSelectors } from '#/mocks/Selectors'
 import { useFieldArray, useFormContext } from 'react-hook-form'
 import { Gruppevalg } from '@/components/velgGruppe/VelgGruppeToggle'
 
@@ -203,7 +203,7 @@ export const FlyttPersonForm = ({
 							VELG ALLE
 						</Button>
 						<Button
-							data-testid={CypressSelector.BUTTON_FLYTT_PERSONER_NULLSTILL}
+							data-testid={TestComponentSelectors.BUTTON_FLYTT_PERSONER_NULLSTILL}
 							onClick={() => {
 								formMethods.setValue('identer', [])
 								formMethods.trigger()
@@ -222,7 +222,7 @@ export const FlyttPersonForm = ({
 							flyttes.
 						</Alert>
 					)}
-					<ValgtePersonerList data-testid={CypressSelector.CONTAINER_VALGTE_PERSONER}>
+					<ValgtePersonerList data-testid={TestComponentSelectors.CONTAINER_VALGTE_PERSONER}>
 						{fieldMethods.fields.length > 0 ? (
 							<ul>
 								{fieldMethods.fields?.map((field) => (
@@ -243,7 +243,7 @@ export const FlyttPersonForm = ({
 			</div>
 			<div className="flexbox--justify-center" style={{ marginTop: '15px' }}>
 				<NavButton
-					data-testid={CypressSelector.BUTTON_FLYTT_PERSONER_AVBRYT}
+					data-testid={TestComponentSelectors.BUTTON_FLYTT_PERSONER_AVBRYT}
 					onClick={handleClose}
 					variant="secondary"
 				>

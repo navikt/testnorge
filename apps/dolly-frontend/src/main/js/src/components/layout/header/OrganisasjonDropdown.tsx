@@ -4,7 +4,7 @@ import { Dropdown, DropdownContext } from '@navikt/ds-react-internal'
 import Icon from '@/components/ui/icon/Icon'
 import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom'
-import { CypressSelector } from '../../../../cypress/mocks/Selectors'
+import { TestComponentSelectors } from '#/mocks/Selectors'
 
 const DropdownToggle = () => {
 	const context = useContext(DropdownContext)
@@ -14,7 +14,7 @@ const DropdownToggle = () => {
 		<Dropdown.Toggle
 			className={isOpen ? 'dropdown-toggle active' : 'dropdown-toggle'}
 			style={{ margin: 0, padding: '19px 10px' }}
-			data-testid={CypressSelector.BUTTON_HEADER_ORGANISASJONER}
+			data-testid={TestComponentSelectors.BUTTON_HEADER_ORGANISASJONER}
 		>
 			Organisasjoner
 		</Dropdown.Toggle>
@@ -47,7 +47,7 @@ export const OrganisasjonDropdown = () => {
 				<Dropdown.Menu placement="bottom-start">
 					<Dropdown.Menu.List>
 						<Dropdown.Menu.List.Item
-							data-testid={CypressSelector.BUTTON_HEADER_OPPRETT_ORGANISASJONER}
+							data-testid={TestComponentSelectors.BUTTON_HEADER_OPPRETT_ORGANISASJONER}
 							onClick={() => navigate('/organisasjoner')}
 							style={{ color: '#212529' }}
 						>
@@ -56,7 +56,7 @@ export const OrganisasjonDropdown = () => {
 						</Dropdown.Menu.List.Item>
 						<Dropdown.Menu.List.Item
 							onClick={() => navigate('/tenor/organisasjoner')}
-							data-testid={CypressSelector.BUTTON_HEADER_TENOR_ORGANISASJONER}
+							data-testid={TestComponentSelectors.BUTTON_HEADER_TENOR_ORGANISASJONER}
 							style={{ color: '#212529' }}
 						>
 							<Icon kind="search" fontSize="1.5rem" />

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { DollyApi } from '@/service/Api'
-import { CypressSelector } from '../../../../cypress/mocks/Selectors'
+import { TestComponentSelectors } from '#/mocks/Selectors'
 import { Button, TextField } from '@navikt/ds-react'
 
 export const EndreMalnavn = ({ malNavn, id, bestilling, avsluttRedigering }) => {
@@ -19,7 +19,7 @@ export const EndreMalnavn = ({ malNavn, id, bestilling, avsluttRedigering }) => 
 		<ErrorBoundary>
 			<div className="endreMalnavn">
 				<TextField
-					data-testid={CypressSelector.INPUT_MINSIDE_ENDRE_MALNAVN}
+					data-testid={TestComponentSelectors.INPUT_MINSIDE_ENDRE_MALNAVN}
 					size={'small'}
 					label={'Skriv inn nytt malnavn'}
 					hideLabel
@@ -28,7 +28,7 @@ export const EndreMalnavn = ({ malNavn, id, bestilling, avsluttRedigering }) => 
 					className="navnInput"
 				/>
 				<Button
-					data-testid={CypressSelector.BUTTON_MINSIDE_LAGRE_MALNAVN}
+					data-testid={TestComponentSelectors.BUTTON_MINSIDE_LAGRE_MALNAVN}
 					variant={'primary'}
 					size={'small'}
 					onClick={() => lagreEndring(nyttMalnavn, id)}

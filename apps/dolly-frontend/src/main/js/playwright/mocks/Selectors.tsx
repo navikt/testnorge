@@ -1,4 +1,4 @@
-export enum CypressSelector {
+export enum TestComponentSelectors {
 	INPUT_MINSIDE_SOEK_MAL = 'input-minside-mal',
 	INPUT_DOLLY_SOEK = 'input-dolly-soek',
 	INPUT_TESTNORGE_FNR = 'input-testnorge-fnr',
@@ -94,6 +94,7 @@ export enum CypressSelector {
 	BUTTON_PERSON_TENORSOEK = 'button-person-tenorsoek',
 	BUTTON_ORGANISASJON_TENORSOEK = 'button-organisasjon-tenorsoek',
 	BUTTON_TENOR_CLEAR_HEADER = 'button-tenor-clear-options',
+	BUTTON_MODAL_CLOSE = 'button-modal-lukk',
 	SELECT_PERSON_SEARCH = 'select-person-search',
 	SELECT_TAGS = 'select-tags',
 	HOVER_MILJOE = 'hover-miljoe',

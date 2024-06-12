@@ -14,7 +14,7 @@ import {
 	useMatchMutate,
 } from '@/utils/hooks/useMutate'
 import { BestillingStatus } from '@/components/bestilling/statusListe/BestillingProgresjon/BestillingStatus'
-import { CypressSelector } from '../../../../../cypress/mocks/Selectors'
+import { TestComponentSelectors } from '#/mocks/Selectors'
 
 type ProgresjonProps = {
 	bestillingID: string
@@ -167,7 +167,7 @@ export const BestillingProgresjon = ({
 						</h5>
 					</div>
 					<NavButton
-						data-testid={CypressSelector.BUTTON_AVBRYT_BESTILLING}
+						data-testid={TestComponentSelectors.BUTTON_AVBRYT_BESTILLING}
 						variant={'danger'}
 						onClick={handleCancelBtn}
 					>

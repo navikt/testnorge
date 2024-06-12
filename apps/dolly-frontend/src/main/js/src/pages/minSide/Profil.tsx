@@ -2,10 +2,10 @@
 import dolly from '@/favicon.ico'
 import cypress from '@/assets/img/cypress.png'
 import { useBrukerProfil, useBrukerProfilBilde } from '@/utils/hooks/useBruker'
-import { runningCypressE2E } from '@/service/services/Request'
+import { runningE2ETest } from '@/service/services/Request'
 
 export const getDefaultImage = () => {
-	return runningCypressE2E() ? cypress : dolly
+	return runningE2ETest() ? cypress : dolly
 }
 
 export default function Profil() {

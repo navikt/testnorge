@@ -5,7 +5,7 @@ import ExpandButton from '@/components/ui/button/ExpandButton/ExpandButton'
 import LinkButton from '@/components/ui/button/LinkButton/LinkButton'
 
 import './Panel.less'
-import { CypressSelector } from '../../../../cypress/mocks/Selectors'
+import { TestComponentSelectors } from '#/mocks/Selectors'
 import {
 	ShowErrorContext,
 	ShowErrorContextType,
@@ -75,8 +75,8 @@ export default function Panel({
 						<LinkButton
 							data-testid={
 								erAvhengigAvQ1EllerQ2(heading)
-									? CypressSelector.BUTTON_VELG_MILJOE_AVHENGIG
-									: CypressSelector.BUTTON_VELG_ALLE
+									? TestComponentSelectors.BUTTON_VELG_MILJOE_AVHENGIG
+									: TestComponentSelectors.BUTTON_VELG_ALLE
 							}
 							text="Velg alle"
 							onClick={check}
@@ -86,8 +86,8 @@ export default function Panel({
 						<LinkButton
 							data-testid={
 								erAvhengigAvQ1EllerQ2(heading)
-									? CypressSelector.BUTTON_FJERN_MILJOE_AVHENGIG
-									: CypressSelector.BUTTON_FJERN_ALLE
+									? TestComponentSelectors.BUTTON_FJERN_MILJOE_AVHENGIG
+									: TestComponentSelectors.BUTTON_FJERN_ALLE
 							}
 							text="Fjern alle"
 							onClick={uncheck}

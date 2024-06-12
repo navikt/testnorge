@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import cn from 'classnames'
 // @ts-ignore
 import ExpandButton from '@/components/ui/button/ExpandButton/ExpandButton'
-import { CypressSelector } from '../../../../../cypress/mocks/Selectors'
+import { TestComponentSelectors } from '#/mocks/Selectors'
 
 type NumberingProps = {
 	idx: number
@@ -34,7 +34,7 @@ export default function ExpandableBlokk<T>({
 				<Numbering idx={idx} />
 				<h2>{getHeader(data)} </h2>
 				<ExpandButton
-					data-testid={CypressSelector.BUTTON_OPEN_EXPANDABLE}
+					data-testid={TestComponentSelectors.BUTTON_OPEN_EXPANDABLE}
 					expanded={isExpanded}
 					onClick={() => setIsExpanded(!isExpanded)}
 				/>

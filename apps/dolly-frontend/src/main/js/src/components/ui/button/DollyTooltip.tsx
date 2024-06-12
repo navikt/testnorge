@@ -1,6 +1,5 @@
 import * as React from 'react'
 import * as RcTooltip from 'rc-tooltip'
-import { CypressSelector } from '../../../../cypress/mocks/Selectors'
 import { Tooltip, TooltipProps } from '@navikt/ds-react'
 
 type DollyTooltipProps = TooltipProps & {

@@ -9,7 +9,7 @@ import {
 	toggleMalValues,
 } from '@/components/bestillingsveileder/stegVelger/steg/steg3/MalForm'
 import React from 'react'
-import { CypressSelector } from '../../../../../../cypress/mocks/Selectors'
+import { TestComponentSelectors } from '#/mocks/Selectors'
 
 type Props = {
 	onChange: (value: React.BaseSyntheticEvent) => void
@@ -44,7 +44,7 @@ export const MalOppsummering = ({
 		<Tittel>
 			<h2>Legg til mal</h2>
 			<Switch
-				data-testid={CypressSelector.TOGGLE_BESTILLING_MAL}
+				data-testid={TestComponentSelectors.TOGGLE_BESTILLING_MAL}
 				onChange={onChange}
 				children={null}
 			/>
@@ -75,7 +75,7 @@ export const MalOppsummering = ({
 					/>
 				) : (
 					<FormTextInput
-						data-testid={CypressSelector.INPUT_BESTILLING_MALNAVN}
+						data-testid={TestComponentSelectors.INPUT_BESTILLING_MALNAVN}
 						name="malBestillingNavn"
 						size={'xlarge'}
 						label="Malnavn"

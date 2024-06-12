@@ -6,7 +6,7 @@ import { TpsfVisning } from '@/components/fagsystem'
 import DollyTooltip from '@/components/ui/button/DollyTooltip'
 import { ApiFeilmelding } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataVisning'
 import React from 'react'
-import { CypressSelector } from '../../../../../cypress/mocks/Selectors'
+import { TestComponentSelectors } from '#/mocks/Selectors'
 
 type TpsData = {
 	data: Array<Data>
@@ -49,7 +49,7 @@ export const TpsDataVisning = ({ data }: TpsData) => {
 				return (
 					<DollyTooltip
 						useExternalTooltip={true}
-						dataCy={CypressSelector.HOVER_MILJOE}
+						dataCy={TestComponentSelectors.HOVER_MILJOE}
 						content={getPersonInfo(miljoe)}
 						align={{
 							offset: [0, -10],

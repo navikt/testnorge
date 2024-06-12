@@ -12,7 +12,7 @@ import Highlighter from 'react-highlight-words'
 import styled from 'styled-components'
 import PersonSearch from '@/service/services/personsearch/PersonSearch'
 import { Option } from '@/service/SelectOptionsOppslag'
-import { CypressSelector } from '../../../cypress/mocks/Selectors'
+import { TestComponentSelectors } from '#/mocks/Selectors'
 
 type FinnPersonProps = {
 	feilmelding: string
@@ -221,7 +221,7 @@ const FinnPersonBestilling = ({
 	const CustomOption = ({ children, ...props }) => (
 		// @ts-ignore
 		<components.Option {...props}>
-			<span data-testid={CypressSelector.BUTTON_NAVIGER_DOLLY}>
+			<span data-testid={TestComponentSelectors.BUTTON_NAVIGER_DOLLY}>
 				<Highlighter
 					textToHighlight={children}
 					searchWords={fragment.split(' ')}
@@ -232,11 +232,15 @@ const FinnPersonBestilling = ({
 		</components.Option>
 	)
 
+	const CustomInput = (props: JSX.IntrinsicAttributes) => {
+		return <components.Input data-testid={TestComponentSelectors.INPUT_DOLLY_SOEK} {...props} />
+	}
+
 	const DropdownIndicator = (props: JSX.IntrinsicAttributes) => {
 		return (
 			// @ts-ignore
 			<components.DropdownIndicator {...props}>
-				<Icon fontSize={'1.5rem'} data-testid={CypressSelector.INPUT_DOLLY_SOEK} kind={'search'} />
+				<Icon fontSize={'1.5rem'} kind={'search'} />
 			</components.DropdownIndicator>
 		)
 	}
@@ -254,7 +258,7 @@ const FinnPersonBestilling = ({
 					<VelgSoekTypeToggle soekValg={soekType} setValgtSoekType={setSoekType} />
 					{/*@ts-ignore*/}
 					<StyledAsyncSelect
-						data-testid={CypressSelector.SELECT_PERSON_SEARCH}
+						data-testid={TestComponentSelectors.SELECT_PERSON_SEARCH}
 						defaultOptions={false}
 						styles={customAsyncSelectStyles}
 						loadOptions={fetchOptions}
@@ -262,6 +266,7 @@ const FinnPersonBestilling = ({
 						components={{
 							Option: CustomOption,
 							DropdownIndicator,
+							Input: CustomInput,
 						}}
 						isClearable={true}
 						options={options}
@@ -279,7 +284,7 @@ const FinnPersonBestilling = ({
 				</div>
 				{error && (
 					<div
-						data-testid={CypressSelector.ERROR_MESSAGE_NAVIGERING}
+						data-testid={TestComponentSelectors.ERROR_MESSAGE_NAVIGERING}
 						className="error-message"
 						style={{ marginTop: '10px', maxWidth: '330px' }}
 					>

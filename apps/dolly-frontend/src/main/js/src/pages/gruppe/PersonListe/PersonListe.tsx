@@ -14,7 +14,7 @@ import DollyTooltip from '@/components/ui/button/DollyTooltip'
 import { setSorting } from '@/ducks/finnPerson'
 import { useDispatch } from 'react-redux'
 import { useBestillingerGruppe } from '@/utils/hooks/useBestilling'
-import { CypressSelector } from '../../../../cypress/mocks/Selectors'
+import { TestComponentSelectors } from '#/mocks/Selectors'
 import PersonVisningConnector from '@/pages/gruppe/PersonVisning/PersonVisningConnector'
 import { DollyCopyButton } from '@/components/ui/button/CopyButton/DollyCopyButton'
 import { useGruppeById } from '@/utils/hooks/useGruppe'
@@ -150,7 +150,7 @@ export default function PersonListe({
 
 			formatter: (cell) => (
 				<Icon
-					data-testid={CypressSelector.BUTTON_OPEN_IDENT}
+					data-testid={TestComponentSelectors.BUTTON_OPEN_IDENT}
 					kind={ikonTypeMap[cell]}
 					title={cell}
 				/>
@@ -173,7 +173,7 @@ export default function PersonListe({
 			formatter: (_cell, row) => (
 				<Suspense fallback={<Loading label={'Laster...'} />}>
 					<PersonIBrukButtonConnector
-						data-testid={CypressSelector.TOGGLE_PERSON_IBRUK}
+						data-testid={TestComponentSelectors.TOGGLE_PERSON_IBRUK}
 						ident={row.ident}
 					/>
 				</Suspense>

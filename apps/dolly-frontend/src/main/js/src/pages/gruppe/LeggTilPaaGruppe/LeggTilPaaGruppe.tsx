@@ -1,7 +1,7 @@
 import Button from '@/components/ui/button/Button'
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
-import { CypressSelector } from '../../../../cypress/mocks/Selectors'
+import { TestComponentSelectors } from '#/mocks/Selectors'
 
 type LeggTilProps = {
 	antallPersoner: number
@@ -13,7 +13,7 @@ export const LeggTilPaaGruppe = ({ antallPersoner, gruppeId }: LeggTilProps) => 
 
 	return (
 		<Button
-			data-testid={CypressSelector.BUTTON_LEGGTILPAAALLE}
+			data-testid={TestComponentSelectors.BUTTON_LEGGTILPAAALLE}
 			onClick={() =>
 				navigate(`/gruppe/${gruppeId}/bestilling/`, {
 					state: {

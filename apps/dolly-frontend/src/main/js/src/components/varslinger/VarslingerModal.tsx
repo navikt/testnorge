@@ -10,8 +10,8 @@ import { VarslingerApi } from '@/service/Api'
 import { useBoolean } from 'react-use'
 import { Stepper } from '@navikt/ds-react'
 import { useDispatch } from 'react-redux'
-import { CypressSelector } from '../../../cypress/mocks/Selectors'
-import { runningCypressE2E } from '@/service/services/Request'
+import { TestComponentSelectors } from '#/mocks/Selectors'
+import { runningE2ETest } from '@/service/services/Request'
 
 type Varsling = {
 	fom: string
@@ -33,7 +33,7 @@ export const VarslingerModal = () => {
 
 	useEffect(() => {
 		const runningLocal = window.location.hostname.includes('localhost')
-		if (runningLocal && !runningCypressE2E()) {
+		if (runningLocal && !runningE2ETest()) {
 			return
 		}
 		VarslingerApi.getVarslinger().then((response: { data: Varsling }) => {
@@ -109,7 +109,7 @@ export const VarslingerModal = () => {
 							</NavButton>
 						) : (
 							<NavButton
-								data-testid={CypressSelector.BUTTON_VARSLING_LUKK}
+								data-testid={TestComponentSelectors.BUTTON_VARSLING_LUKK}
 								variant={'primary'}
 								onClick={() => submitSettVarsling(true)}
 								style={{ float: 'right' }}

@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { useNaviger } from '@/utils/hooks/useNaviger'
 import { Button } from '@navikt/ds-react'
-import { CypressSelector } from '../../../../cypress/mocks/Selectors'
+import { TestComponentSelectors } from '#/mocks/Selectors'
 import { ArrowRightIcon } from '@navikt/aksel-icons'
 import { useEffect, useState } from 'react'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
@@ -40,7 +40,7 @@ export const NavigerTilPerson = ({ ident }: NavigerTilPersonProps) => {
 
 	return (
 		<Button
-			data-testid={CypressSelector.BUTTON_VIS_I_GRUPPE}
+			data-testid={TestComponentSelectors.BUTTON_VIS_I_GRUPPE}
 			variant="tertiary"
 			size="xsmall"
 			icon={<ArrowRightIcon />}

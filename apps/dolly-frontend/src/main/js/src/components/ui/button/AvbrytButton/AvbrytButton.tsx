@@ -5,7 +5,7 @@ import DollyModal from '@/components/ui/modal/DollyModal'
 import Icon from '@/components/ui/icon/Icon'
 
 import './AvbrytModal.less'
-import { CypressSelector } from '../../../../../cypress/mocks/Selectors'
+import { TestComponentSelectors } from '#/mocks/Selectors'
 
 type Props = {
 	action: Function
@@ -17,7 +17,11 @@ export const AvbrytButton = ({ action, children }: Props) => {
 
 	return (
 		<React.Fragment>
-			<NavButton data-testid={CypressSelector.BUTTON_AVBRYT} variant={'danger'} onClick={openModal}>
+			<NavButton
+				data-testid={TestComponentSelectors.BUTTON_AVBRYT}
+				variant={'danger'}
+				onClick={openModal}
+			>
 				Avbryt
 			</NavButton>
 			<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="fit-content" overflow="auto">
@@ -32,7 +36,7 @@ export const AvbrytButton = ({ action, children }: Props) => {
 							Nei
 						</NavButton>
 						<NavButton
-							data-testid={CypressSelector.BUTTON_BEKREFT}
+							data-testid={TestComponentSelectors.BUTTON_BEKREFT}
 							onClick={() => {
 								closeModal()
 								return action()

@@ -1,6 +1,6 @@
 {
   "name": "dolly",
-  "version": "3.0.14",
+  "version": "3.0.15",
   "type": "module",
   "description": "",
   "main": "index.js",
@@ -13,7 +13,7 @@
     "prettier": "prettier --write '**/*.{ts,tsx,js,css,html}'",
     "test:cy": "cypress run --browser chrome",
     "test:run-cypress": "start-server-and-test preview http://localhost:5678 test:cy",
-    "test-ct": "playwright test -c playwright-ct.config.ts"
+    "playwright": "playwright test --ui"
   },
   "author": "",
   "license": "ISC",

@@ -7,7 +7,7 @@ import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import Loading from '@/components/ui/loading/Loading'
 import { BrukerDropdown } from '@/components/layout/header/BrukerDropdown'
 import { DokumentasjonDropdown } from '@/components/layout/header/DokumentasjonDropdown'
-import { CypressSelector } from '../../../../cypress/mocks/Selectors'
+import { TestComponentSelectors } from '#/mocks/Selectors'
 import { FinnPersonDropdown } from '@/components/layout/header/FinnPersonDropdown'
 import { OrganisasjonDropdown } from '@/components/layout/header/OrganisasjonDropdown'
 
@@ -30,14 +30,14 @@ export default () => {
 			</NavLink>
 
 			<div className="menu-links">
-				<NavLink data-testid={CypressSelector.BUTTON_HEADER_PERSONER} to="/gruppe">
+				<NavLink data-testid={TestComponentSelectors.BUTTON_HEADER_PERSONER} to="/gruppe">
 					Personer
 				</NavLink>
 				<FinnPersonDropdown />
 				<OrganisasjonDropdown />
 				{!bankidBruker && (
 					<NavLink
-						data-testid={CypressSelector.BUTTON_HEADER_ENDRINGSMELDING}
+						data-testid={TestComponentSelectors.BUTTON_HEADER_ENDRINGSMELDING}
 						to="/endringsmelding"
 					>
 						Endringsmelding

@@ -1,7 +1,7 @@
 import useSWR from 'swr'
 import useSWRImmutable from 'swr/immutable'
 import { fetcher, imageFetcher } from '@/api'
-import { runningCypressE2E } from '@/service/services/Request'
+import { runningE2ETest } from '@/service/services/Request'
 import { navigateToLogin } from '@/components/utlogging/navigateToLogin'
 import { ERROR_ACTIVE_USER } from '../../ducks/errors/ErrorMessages'
 
@@ -49,7 +49,7 @@ export const useAlleBrukere = () => {
 export const useCurrentBruker = () => {
 	const { data, isLoading, error } = useSWR<BrukerType, Error>(getCurrentBrukerUrl, fetcher)
 
-	if (error && !runningCypressE2E()) {
+	if (error && !runningE2ETest()) {
 		console.error(ERROR_ACTIVE_USER)
 		navigateToLogin()
 	}

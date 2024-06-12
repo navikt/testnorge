@@ -1,6 +1,6 @@
 import React, { BaseSyntheticEvent } from 'react'
 import Button from '@/components/ui/button/Button'
-import { CypressSelector } from '../../../../../cypress/mocks/Selectors'
+import { TestComponentSelectors } from '#/mocks/Selectors'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 import { useFieldArray } from 'react-hook-form'
 import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
@@ -27,7 +27,7 @@ export const Identer: React.FC<IdentSearchProps> = ({
 						<div className="flexbox--align-start" key={index}>
 							<DollyTextInput
 								name={`${identerPath}.${index}.fnr`}
-								data-testid={CypressSelector.INPUT_TESTNORGE_FNR}
+								data-testid={TestComponentSelectors.INPUT_TESTNORGE_FNR}
 								placeholder={'Ikke spesifisert'}
 								// label={'Fødselsnummer eller D-nummer'}
 								style={{ width: '220px', marginBottom: '-10px' }}

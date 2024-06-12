@@ -3,7 +3,7 @@ import NyGruppe from './NyGruppe'
 import EksisterendeGruppe from '@/components/velgGruppe/EksisterendeGruppe'
 import { ToggleGroup } from '@navikt/ds-react'
 import styled from 'styled-components'
-import { CypressSelector } from '../../../cypress/mocks/Selectors'
+import { TestComponentSelectors } from '#/mocks/Selectors'
 import AlleGrupper from '@/components/velgGruppe/AlleGrupper'
 import { useFormContext } from 'react-hook-form'
 
@@ -35,7 +35,7 @@ export const VelgGruppeToggle = ({
 		<div className="toggle--wrapper">
 			<StyledToggleGroup size={'small'} value={gruppevalg} onChange={handleToggleChange}>
 				<ToggleGroup.Item
-					data-testid={CypressSelector.TOGGLE_EKSISTERENDE_GRUPPE}
+					data-testid={TestComponentSelectors.TOGGLE_EKSISTERENDE_GRUPPE}
 					key={Gruppevalg.MINE}
 					value={Gruppevalg.MINE}
 					style={{ padding: '0 20px' }}
@@ -43,14 +43,14 @@ export const VelgGruppeToggle = ({
 					Mine grupper
 				</ToggleGroup.Item>
 				<ToggleGroup.Item
-					data-testid={CypressSelector.TOGGLE_ALLE_GRUPPER}
+					data-testid={TestComponentSelectors.TOGGLE_ALLE_GRUPPER}
 					key={Gruppevalg.ALLE}
 					value={Gruppevalg.ALLE}
 				>
 					Alle grupper
 				</ToggleGroup.Item>
 				<ToggleGroup.Item
-					data-testid={CypressSelector.TOGGLE_NY_GRUPPE}
+					data-testid={TestComponentSelectors.TOGGLE_NY_GRUPPE}
 					key={Gruppevalg.NY}
 					value={Gruppevalg.NY}
 				>

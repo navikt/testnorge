@@ -20,7 +20,7 @@ import { FlyttPersonButton } from '@/components/ui/button/FlyttPersonButton/Flyt
 import { LeggTilPaaGruppe } from '@/pages/gruppe/LeggTilPaaGruppe/LeggTilPaaGruppe'
 import cn from 'classnames'
 import Icon from '@/components/ui/icon/Icon'
-import { CypressSelector } from '../../../../cypress/mocks/Selectors'
+import { TestComponentSelectors } from '#/mocks/Selectors'
 import Loading from '@/components/ui/loading/Loading'
 
 type GruppeHeaderProps = {
@@ -66,7 +66,7 @@ const GruppeHeader = ({
 	return (
 		<Fragment>
 			<div
-				data-testid={CypressSelector.TITLE_VISNING}
+				data-testid={TestComponentSelectors.TITLE_VISNING}
 				className="page-header flexbox--align-center"
 			>
 				<h1>{gruppeNavn}</h1>
@@ -106,7 +106,7 @@ const GruppeHeader = ({
 						{!erLaast && <FlyttPersonButton gruppeId={gruppe?.id} disabled={antallPersoner < 1} />}
 						{gruppe.erEierAvGruppe && !erLaast && (
 							<Button
-								data-testid={CypressSelector.BUTTON_REDIGER_GRUPPE}
+								data-testid={TestComponentSelectors.BUTTON_REDIGER_GRUPPE}
 								kind="edit"
 								onClick={visRediger}
 							>
@@ -114,7 +114,7 @@ const GruppeHeader = ({
 							</Button>
 						)}
 						<Button
-							data-testid={CypressSelector.BUTTON_GJENOPPRETT_GRUPPE}
+							data-testid={TestComponentSelectors.BUTTON_GJENOPPRETT_GRUPPE}
 							onClick={visGjenopprettModal}
 							kind="synchronize"
 							disabled={antallPersoner < 1}

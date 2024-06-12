@@ -14,7 +14,7 @@ import styled from 'styled-components'
 import _ from 'lodash'
 import { tpsfAttributter } from '@/components/bestillingsveileder/utils'
 import { Mal, useDollyMaler } from '@/utils/hooks/useMaler'
-import { CypressSelector } from '../../../../../cypress/mocks/Selectors'
+import { TestComponentSelectors } from '#/mocks/Selectors'
 import { FormProvider, useForm } from 'react-hook-form'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -96,7 +96,7 @@ export const NyIdent = ({ brukernavn, onAvbryt, onSubmit }: NyBestillingProps) =
 					<div className="ny-bestilling-form_maler">
 						<div>
 							<DollyCheckbox
-								data-testid={CypressSelector.TOGGLE_MAL}
+								data-testid={TestComponentSelectors.TOGGLE_MAL}
 								name="aktiver-maler"
 								onChange={() => handleMalChange(formMethods)}
 								label="Opprett fra mal"
@@ -141,7 +141,7 @@ export const NyIdent = ({ brukernavn, onAvbryt, onSubmit }: NyBestillingProps) =
 						</div>
 					</div>
 					<ModalActionKnapper
-						data-testid={CypressSelector.BUTTON_START_BESTILLING}
+						data-testid={TestComponentSelectors.BUTTON_START_BESTILLING}
 						submitknapp="Start bestilling"
 						disabled={!formMethods.formState.isValid || formMethods.formState.isSubmitting}
 						onSubmit={() => preSubmit(formMethods.getValues())}
