@@ -32,10 +32,6 @@ dependencyManagement {
     }
 }
 
-bootJar {
-    archiveFileName = "app.jar"
-}
-
 repositories {
     mavenCentral()
     mavenLocal()

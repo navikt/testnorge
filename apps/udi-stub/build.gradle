@@ -45,7 +45,6 @@ configurations {
 
 bootJar {
     duplicatesStrategy(DuplicatesStrategy.INCLUDE)
-    archiveFileName = "app.jar"
 }
 
 repositories {

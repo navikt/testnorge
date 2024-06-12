@@ -24,9 +24,6 @@ sonarqube {
         property "sonar.project.monorepo.enabled", true
     }
 }
-bootJar {
-    archiveFileName = "app.jar"
-}
 
 dependencyManagement {
     applyMavenExclusions = false

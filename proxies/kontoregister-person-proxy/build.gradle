@@ -24,10 +24,6 @@ sonarqube {
         property "sonar.sourceEncoding", "UTF-8"
     }
 }
-bootJar {
-    archiveFileName = "app.jar"
-}
-
 dependencyManagement {
     applyMavenExclusions = false
     imports {

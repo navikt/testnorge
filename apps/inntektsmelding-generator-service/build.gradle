@@ -25,8 +25,8 @@ sonarqube {
         property "sonar.sourceEncoding", "UTF-8"
     }
 }
+
 bootJar {
-    archiveFileName = "app.jar"
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 

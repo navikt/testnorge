@@ -26,10 +26,6 @@ sonarqube {
     }
 }
 
-bootJar {
-    archiveFileName = "app.jar"
-}
-
 dependencyManagement {
     applyMavenExclusions = false
     imports {
@@ -39,10 +35,6 @@ dependencyManagement {
 
 properties {
     compileJava.options.encoding = 'UTF-8'
-}
-
-bootJar {
-    archiveFileName = "app.jar"
 }
 
 repositories {

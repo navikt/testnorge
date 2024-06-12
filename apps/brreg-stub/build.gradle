@@ -36,7 +36,6 @@ dependencyManagement {
 
 bootJar {
     duplicatesStrategy(DuplicatesStrategy.INCLUDE)
-    archiveFileName = "app.jar"
 }
 
 wsimport {

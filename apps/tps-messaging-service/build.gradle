@@ -28,7 +28,6 @@ sonarqube {
 
 bootJar {
     duplicatesStrategy(DuplicatesStrategy.INCLUDE)
-    archiveFileName = "app.jar"
 }
 
 dependencyManagement {

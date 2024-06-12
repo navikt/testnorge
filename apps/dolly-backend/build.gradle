@@ -26,11 +26,6 @@ sonarqube {
     }
 }
 
-bootJar {
-    archiveFileName = "app.jar"
-    mainClass = 'no.nav.dolly.DollyBackendApplicationStarter'
-}
-
 dependencyManagement {
     applyMavenExclusions = false
     imports {
