@@ -38,7 +38,9 @@ public class SkattekortService {
 
         var request = mapperFacade.map(skattekort, SkattekortRequest.class);
 
-        var xmlRequest = marshallToXml(request);
+        var xmlRequest = marshallToXml(request)
+                .replace(":ns2","")
+                .replace("ns2:","");
         log.info("XML Request: {}", xmlRequest);
 
         return skattekortConsumer.sendSkattekort(xmlRequest);

@@ -26,12 +26,17 @@ public class SokosPostCommand implements Callable<Mono<String>> {
     @Override
     public Mono<String> call() {
 
+        var encodedRequest = Base64.getEncoder()
+                .encodeToString(request.getBytes(StandardCharsets.UTF_8));
+
+        log.info("Base64 encoded request: {}", encodedRequest);
+
         return webClient
                 .post()
                 .uri(SOKOS_URL)
                 .header(AUTHORIZATION, "Bearer " + token)
                 .header("korrelasjonsid", UUID.randomUUID().toString())
-                .body(BodyInserters.fromValue(Base64.getMimeEncoder().encode(request.getBytes(StandardCharsets.UTF_8))))
+                .body(BodyInserters.fromValue(encodedRequest))
                 .retrieve()
                 .bodyToMono(String.class);
     }
