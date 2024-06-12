@@ -4,6 +4,8 @@ plugins {
 
 rootProject.name = 'generer-organisasjon-populasjon-service'
 
+includeBuild '../../plugins/java'
+
 includeBuild '../../libs/avro-schema'
 includeBuild '../../libs/commands'
 includeBuild '../../libs/data-transfer-objects'

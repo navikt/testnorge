@@ -4,15 +4,17 @@ plugins {
 
 rootProject.name = 'dolly-backend'
 
-includeBuild '../../libs/reactive-core'
-includeBuild '../../libs/servlet-core'
-includeBuild '../../libs/servlet-security'
-includeBuild '../../libs/servlet-insecure-security'
-includeBuild '../../libs/security-core'
-includeBuild '../../libs/database'
+includeBuild '../../plugins/java'
+
+includeBuild '../../.github/workflows'
 includeBuild '../../libs/data-transfer-objects'
 includeBuild '../../libs/data-transfer-search-objects'
-includeBuild '../../.github/workflows'
+includeBuild '../../libs/database'
+includeBuild '../../libs/reactive-core'
+includeBuild '../../libs/security-core'
+includeBuild '../../libs/servlet-core'
+includeBuild '../../libs/servlet-insecure-security'
+includeBuild '../../libs/servlet-security'
 
 develocity {
     buildScan {

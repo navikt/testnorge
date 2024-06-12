@@ -4,10 +4,12 @@ plugins {
 
 rootProject.name = 'faste-data-frontend'
 
+includeBuild '../../plugins/java'
+
 includeBuild '../../libs/reactive-core'
-includeBuild '../../libs/security-core'
-includeBuild '../../libs/reactive-session-security'
 includeBuild '../../libs/reactive-frontend'
+includeBuild '../../libs/reactive-session-security'
+includeBuild '../../libs/security-core'
 
 develocity {
     buildScan {

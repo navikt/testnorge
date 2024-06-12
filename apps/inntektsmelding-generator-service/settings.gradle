@@ -4,8 +4,10 @@ plugins {
 
 rootProject.name = 'inntektsmelding-generator-service'
 
-includeBuild '../../libs/servlet-core'
+includeBuild '../../plugins/java'
+
 includeBuild '../../libs/data-transfer-objects'
+includeBuild '../../libs/servlet-core'
 includeBuild '../../libs/servlet-security'
 
 develocity {

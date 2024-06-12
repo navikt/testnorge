@@ -4,6 +4,7 @@ plugins {
 
 rootProject.name = 'arbeidsforhold-xsd'
 
+includeBuild '../../plugins/java'
 
 develocity {
     buildScan {
