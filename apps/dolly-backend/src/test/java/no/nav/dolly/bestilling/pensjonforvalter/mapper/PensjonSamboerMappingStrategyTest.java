@@ -23,6 +23,7 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasProperty;
 
 @ExtendWith(MockitoExtension.class)
+@SuppressWarnings("unchecked")
 class PensjonSamboerMappingStrategyTest {
 
     private static final String IDENT_1 = "11111111111";
@@ -30,6 +31,16 @@ class PensjonSamboerMappingStrategyTest {
     private static final LocalDateTime SIVILSTAND_DATO = LocalDateTime.now();
 
     private MapperFacade mapperFacade;
+
+    private static SivilstandDTO buildSivilstand() {
+
+        return SivilstandDTO.builder()
+                .id(1)
+                .type(SivilstandDTO.Sivilstand.SAMBOER)
+                .relatertVedSivilstand(IDENT_2)
+                .sivilstandsdato(SIVILSTAND_DATO)
+                .build();
+    }
 
     @BeforeEach
     void setup() {
@@ -130,16 +141,5 @@ class PensjonSamboerMappingStrategyTest {
                         hasProperty("datoFom", is(equalTo(SIVILSTAND_DATO.toLocalDate()))),
                         hasProperty("datoTom", is(equalTo(SIVILSTAND_DATO.toLocalDate().plusYears(1).minusDays(1)))),
                         hasProperty("registrertAv", is(equalTo("Dolly"))))));
-    }
-
-
-    private static SivilstandDTO buildSivilstand() {
-
-        return SivilstandDTO.builder()
-                .id(1)
-                .type(SivilstandDTO.Sivilstand.SAMBOER)
-                .relatertVedSivilstand(IDENT_2)
-                .sivilstandsdato(SIVILSTAND_DATO)
-                .build();
     }
 }
