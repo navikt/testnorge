@@ -6,6 +6,7 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -25,14 +26,12 @@ public class SokosPostCommand implements Callable<Mono<String>> {
     @Override
     public Mono<String> call() {
 
-        log.info("Base64 encoded", Base64.getDecoder().decode(request));
-
         return webClient
                 .post()
                 .uri(SOKOS_URL)
                 .header(AUTHORIZATION, "Bearer " + token)
                 .header("korrelasjonsid", UUID.randomUUID().toString())
-                .body(BodyInserters.fromValue(Base64.getDecoder().decode(request)))
+                .body(BodyInserters.fromValue(Base64.getMimeEncoder().encode(request.getBytes(StandardCharsets.UTF_8))))
                 .retrieve()
                 .bodyToMono(String.class);
     }
