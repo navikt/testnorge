@@ -13,4 +13,6 @@ public interface AliasRepository extends JpaRepository<DbAlias, Long> {
     Optional<DbAlias> findByTidligereIdent(String ident);
 
     List<DbAlias> findByTidligereIdentIn(List<String> ident);
+
+    boolean existsByTidligereIdent(String ident);
 }
