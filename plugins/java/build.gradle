@@ -2,6 +2,10 @@ plugins {
     id "groovy-gradle-plugin"
 }
 
+repositories {
+    gradlePluginPortal()
+}
+
 dependencies {
     implementation "io.spring.gradle:dependency-management-plugin:1.1.4"
     implementation "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:5.0.0.4638"
