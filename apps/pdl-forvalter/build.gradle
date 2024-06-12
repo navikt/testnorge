@@ -6,11 +6,6 @@ plugins {
     id "jacoco"
 }
 
-test {
-    useJUnitPlatform()
-    jvmArgs '--add-opens', 'java.base/java.lang=ALL-UNNAMED'
-}
-
 sonarqube {
     properties {
         property "sonar.dynamicAnalysis", "reuseReports"

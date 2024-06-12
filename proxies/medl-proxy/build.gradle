@@ -6,10 +6,6 @@ plugins {
     id "jacoco"
 }
 
-test {
-    useJUnitPlatform()
-}
-
 sonarqube {
     properties {
         property "sonar.sourceEncoding", "UTF-8"

@@ -7,10 +7,6 @@ plugins {
     id "jacoco"
 }
 
-test {
-    useJUnitPlatform()
-}
-
 sonarqube {
     properties {
         property "sonar.dynamicAnalysis", "reuseReports"

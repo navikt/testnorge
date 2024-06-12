@@ -11,10 +11,6 @@ dependencyManagement {
     }
 }
 
-test {
-    useJUnitPlatform()
-}
-
 repositories {
     mavenCentral()
     mavenLocal()

@@ -6,9 +6,6 @@ plugins {
     id "jacoco"
 }
 
-test {
-    useJUnitPlatform()
-}
 def test = tasks.named("test") {
     useJUnitPlatform {
         excludeTags "integration"
