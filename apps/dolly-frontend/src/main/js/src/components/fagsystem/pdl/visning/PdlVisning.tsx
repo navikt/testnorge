@@ -110,7 +110,14 @@ export const PdlVisning = ({
 				/>
 				<Telefonnummer data={telefonnummer} erPdlVisning />
 				<PdlVergemaal data={vergemaalEllerFremtidsfullmakt} />
-				<PdlFullmakt data={fullmakt} />
+				<PdlFullmakt
+					data={fullmakt}
+					pdlfData={pdlfPerson?.fullmakt}
+					pdlfRelasjoner={fagsystemData?.pdlforvalter?.relasjoner}
+					tmpPersoner={tmpPdlforvalter}
+					ident={ident}
+					erPdlVisning={miljoeVisning}
+				/>
 				<PdlSikkerhetstiltak data={sikkerhetstiltak} />
 				<TilrettelagtKommunikasjon data={tilrettelagtKommunikasjon} />
 				<TpsMBankkonto
