@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.skattekortservice.consumer.SokosSkattekortConsumer;
 import no.nav.skattekortservice.dto.SkattekortRequest;
+import no.nav.skattekortservice.dto.SokosRequest;
 import no.nav.testnav.libs.dto.skattekortservice.v1.SkattekortTilArbeidsgiverDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,8 @@ import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Collection;
 
 @Slf4j
@@ -35,15 +38,20 @@ public class SkattekortService {
     public Mono<String> sendSkattekort(SkattekortTilArbeidsgiverDTO skattekort) {
 
         validate(skattekort);
+        var arbeidstaker = skattekort.getArbeidsgiver().getFirst()
+                .getArbeidstaker().getFirst();
 
-        var request = mapperFacade.map(skattekort, SkattekortRequest.class);
-
-        var xmlRequest = marshallToXml(request)
-                .replace(":ns2","")
-                .replace("ns2:","");
-        log.info("XML Request: {}", xmlRequest);
-
-        return skattekortConsumer.sendSkattekort(xmlRequest);
+        return Mono.just(mapperFacade.map(skattekort, SkattekortRequest.class))
+                .map(this::marshallToXml)
+                .doOnNext(xmlRequest -> log.info("XML Request: {}", xmlRequest))
+                .map(this::encodeRequest)
+                .doOnNext(encodedXml -> log.info("Base64 encoded request: {}", encodedXml))
+                .map(encodedXml -> SokosRequest.builder()
+                        .fnr(arbeidstaker.getArbeidstakeridentifikator())
+                        .inntektsar(arbeidstaker.getInntektsaar())
+                        .skattekort(encodedXml)
+                        .build())
+                .flatMap(skattekortConsumer::sendSkattekort);
     }
 
     @SneakyThrows
@@ -52,7 +60,15 @@ public class SkattekortService {
         var marshaller = jaxbContext.createMarshaller();
         var writer = new StringWriter();
         marshaller.marshal(melding, writer);
-        return writer.toString();
+        return writer.toString()
+                .replace(":ns2", "")
+                .replace("ns2:", "");
+    }
+
+    private String encodeRequest(String request) {
+
+        return Base64.getEncoder()
+                .encodeToString(request.getBytes(StandardCharsets.UTF_8));
     }
 
     private static void validate(SkattekortTilArbeidsgiverDTO skattekort) {

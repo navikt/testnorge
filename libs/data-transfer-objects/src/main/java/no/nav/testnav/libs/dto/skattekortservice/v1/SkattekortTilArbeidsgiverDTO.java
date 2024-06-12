@@ -1,6 +1,5 @@
 package no.nav.testnav.libs.dto.skattekortservice.v1;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -56,7 +55,7 @@ public class SkattekortTilArbeidsgiverDTO {
         private Resultatstatus resultatPaaForespoersel;
         private Skattekort skattekort;
         private List<Tilleggsopplysning> tilleggsopplysning;
-        private Long inntektsaar;
+        private Integer inntektsaar;
 
         public List<Tilleggsopplysning> getTilleggsopplysning() {
 
