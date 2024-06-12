@@ -1,6 +1,6 @@
 plugins {
     id "dolly-java-conventions"
-    id "org.sonarqube" version "5.0.0.4638"
+
     id 'java-library'
     id 'maven-publish'
     id 'com.github.davidmc24.gradle.plugin.avro' version '1.9.1'
