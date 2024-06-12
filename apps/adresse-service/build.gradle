@@ -32,8 +32,4 @@ dependencies {
     implementation 'io.swagger.core.v3:swagger-annotations-jakarta:2.2.20'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-
-    implementation 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-    testAnnotationProcessor 'org.projectlombok:lombok'
 }

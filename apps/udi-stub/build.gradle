@@ -60,8 +60,5 @@ dependencies {
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock' //TODO upgrade to JUnit5
 
     testImplementation 'org.mockito:mockito-junit-jupiter:5.12.0'
-    implementation 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-    testAnnotationProcessor 'org.projectlombok:lombok'
 }
 

@@ -18,8 +18,4 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
     implementation 'com.fasterxml.jackson.core:jackson-core'
     implementation 'com.fasterxml.jackson.core:jackson-databind'
-
-    implementation 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-    testAnnotationProcessor 'org.projectlombok:lombok'
 }

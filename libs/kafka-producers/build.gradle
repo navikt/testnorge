@@ -21,8 +21,4 @@ dependencies {
     implementation 'io.confluent:kafka-avro-serializer:7.5.1'
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
-
-    implementation 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-    testAnnotationProcessor 'org.projectlombok:lombok'
 }

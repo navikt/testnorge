@@ -28,8 +28,4 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
     testImplementation 'org.springframework.security:spring-security-test'
-
-    annotationProcessor 'org.projectlombok:lombok'
-    implementation 'org.projectlombok:lombok'
-    testAnnotationProcessor 'org.projectlombok:lombok'
 }

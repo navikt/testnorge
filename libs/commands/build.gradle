@@ -16,8 +16,4 @@ group = 'no.nav.testnav.libs'
 dependencies {
     implementation "no.nav.testnav.libs:data-transfer-objects"
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
-
-    implementation 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-    testAnnotationProcessor 'org.projectlombok:lombok'
 }

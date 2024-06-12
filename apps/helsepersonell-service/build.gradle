@@ -33,8 +33,4 @@ dependencies {
     implementation 'org.hibernate.validator:hibernate-validator'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-
-    implementation 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-    testAnnotationProcessor 'org.projectlombok:lombok'
 }

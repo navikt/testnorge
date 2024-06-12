@@ -45,11 +45,6 @@ dependencies {
 
     implementation 'com.fasterxml.jackson.core:jackson-core:2.17.1'
 
-
-    implementation 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-    testAnnotationProcessor 'org.projectlombok:lombok'
-
     testImplementation 'no.nav.testnav.libs:testing'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }

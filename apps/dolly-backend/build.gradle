@@ -66,8 +66,4 @@ dependencies {
     testImplementation 'org.bitbucket.b_c:jose4j:0.9.6'
 
     implementation 'net.java.dev.jna:jna:5.14.0'
-
-    annotationProcessor 'org.projectlombok:lombok'
-    implementation 'org.projectlombok:lombok'
-    testAnnotationProcessor 'org.projectlombok:lombok'
 }

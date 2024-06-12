@@ -26,10 +26,6 @@ dependencies {
     implementation 'org.springframework:spring-web'
 
     implementation 'org.springframework.data:spring-data-elasticsearch'
-
-    implementation 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-    testAnnotationProcessor 'org.projectlombok:lombok'
 }
 
 if (project.hasProperty("releaseVersion")) {
