@@ -20,14 +20,6 @@ sonarqube {
     }
 }
 
-dependencyManagement {
-    applyMavenExclusions = false
-    imports {
-        mavenBom 'org.springframework.boot:spring-boot-dependencies:3.2.1'
-    }
-}
-
-
 group = 'no.nav.testnav.libs'
 
 repositories {

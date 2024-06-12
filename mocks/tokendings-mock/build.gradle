@@ -2,13 +2,6 @@ plugins {
     id "dolly-java-conventions"
 }
 
-dependencyManagement {
-    applyMavenExclusions = false
-    imports {
-        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2023.0.1'
-    }
-}
-
 repositories {
     mavenCentral()
     mavenLocal()

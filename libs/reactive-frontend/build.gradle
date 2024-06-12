@@ -28,15 +28,6 @@ repositories {
     mavenLocal()
 }
 
-dependencyManagement {
-    applyMavenExclusions = false
-    imports {
-        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2023.0.1'
-        mavenBom 'org.springframework.boot:spring-boot-dependencies:3.2.1'
-    }
-}
-
-
 if (project.hasProperty("releaseVersion")) {
     version = releaseVersion
 }

@@ -58,13 +58,6 @@ publishing {
     }
 }
 
-dependencyManagement {
-    applyMavenExclusions = false
-    imports {
-        mavenBom 'org.springframework.boot:spring-boot-dependencies:3.2.1'
-    }
-}
-
 dependencies {
 
     implementation 'no.nav.testnav.libs:security-core'
