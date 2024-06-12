@@ -4,6 +4,7 @@ import { AdresseKodeverk } from '@/config/kodeverk'
 import { PersonData } from '@/components/fagsystem/pdlf/PdlTypes'
 import { PdlDataVisning } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataVisning'
 import styled from 'styled-components'
+import React from 'react'
 
 const StyledPdlData = styled.div`
 	margin-bottom: 10px;

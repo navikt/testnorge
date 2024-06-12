@@ -24,17 +24,17 @@ export const TelefonnummerLes = ({ telefonnummerData, idx }: TelefonnummerTypes)
 		return null
 	}
 
-	const telefonnummer = telefonnummerData.nummer || telefonnummerData.telefonnummer
-	const landkode = telefonnummerData.landskode || telefonnummerData.landkode
-	const prioritet =
-		telefonnummerData.prioritet ||
-		(telefonnummerData.telefontype === 'MOBI' && 1) ||
-		(telefonnummerData.telefontype === 'HJET' && 2)
-
 	return (
 		<div className="person-visning_redigerbar" key={idx}>
-			<TitleValue title="Telefonnummer" value={`${landkode} ${telefonnummer}`} />
-			<TitleValue title="Prioritet" value={prioritet} />
+			<TitleValue
+				title="Telefonnummer"
+				value={`${telefonnummerData.landskode} ${telefonnummerData.nummer}`}
+			/>
+			<TitleValue title="Prioritet" value={telefonnummerData.prioritet} />
+			<TitleValue
+				title="Master"
+				value={telefonnummerData.metadata?.master || telefonnummerData.master}
+			/>
 		</div>
 	)
 }

@@ -10,16 +10,39 @@ import { harValgtAttributt } from '@/components/ui/form/formUtils'
 import { relasjonerAttributter } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/Familierelasjoner'
 import { useContext } from 'react'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import { useGruppeIdenter } from '@/utils/hooks/useGruppe'
 
 export const FamilierelasjonPanel = ({ stateModifier, formValues }) => {
 	const sm = stateModifier(FamilierelasjonPanel.initialValues)
 	const opts = useContext(BestillingsveilederContext)
 
+	const testNorgePerson = opts?.identMaster === 'PDL'
+	const npidPerson = opts?.identtype === 'NPID'
+
+	const gruppeId = opts?.gruppeId || opts?.gruppe?.id
+	const { identer, loading: gruppeLoading, error: gruppeError } = useGruppeIdenter(gruppeId)
+	const harTestnorgeIdenter = identer?.filter((ident) => ident.master === 'PDL').length > 0
+
+	const ukjentGruppe = !gruppeId
+	const tekstUkjentGruppe = 'Funksjonen er deaktivert da personer for relasjon er ukjent'
+	const testNorgeFlere = testNorgePerson && opts?.antall > 1
+	const tekstTestNorgeFlere = 'Funksjonen er kun tilgjengelig per individ, ikke for gruppe'
+	const leggTilPaaGruppe = !!opts?.leggTilPaaGruppe
+	const tekstLeggTilPaaGruppe =
+		'Støttes ikke for "legg til på alle" i grupper som inneholder personer fra Test-Norge'
+
 	const getIgnoreKeys = () => {
-		if (opts?.identtype === 'NPID') {
-			return ['foreldreansvar', 'doedfoedtBarn']
+		let ignoreKeys = []
+		if (testNorgePerson || npidPerson) {
+			ignoreKeys.push('foreldreansvar', 'doedfoedtBarn')
 		}
-		return []
+		if (
+			(ukjentGruppe && (testNorgePerson || npidPerson)) ||
+			(leggTilPaaGruppe && harTestnorgeIdenter)
+		) {
+			ignoreKeys.push('sivilstand', 'barnForeldre', 'foreldreansvar', 'doedfoedtBarn')
+		}
+		return ignoreKeys
 	}
 
 	return (
@@ -31,25 +54,49 @@ export const FamilierelasjonPanel = ({ stateModifier, formValues }) => {
 			startOpen={harValgtAttributt(formValues, relasjonerAttributter)}
 		>
 			<AttributtKategori title="Sivilstand" attr={sm.attrs}>
-				<Attributt attr={sm.attrs.sivilstand} />
+				<Attributt
+					attr={sm.attrs.sivilstand}
+					disabled={ukjentGruppe || testNorgeFlere || (leggTilPaaGruppe && harTestnorgeIdenter)}
+					title={
+						(ukjentGruppe && tekstUkjentGruppe) ||
+						(testNorgeFlere && tekstTestNorgeFlere) ||
+						(leggTilPaaGruppe && harTestnorgeIdenter && tekstLeggTilPaaGruppe) ||
+						''
+					}
+				/>
 			</AttributtKategori>
 			<AttributtKategori title="Barn/foreldre" attr={sm.attrs}>
-				<Attributt attr={sm.attrs.barnForeldre} />
+				<Attributt
+					attr={sm.attrs.barnForeldre}
+					disabled={ukjentGruppe || testNorgeFlere || (leggTilPaaGruppe && harTestnorgeIdenter)}
+					title={
+						(ukjentGruppe && tekstUkjentGruppe) ||
+						(testNorgeFlere && tekstTestNorgeFlere) ||
+						(leggTilPaaGruppe && harTestnorgeIdenter && tekstLeggTilPaaGruppe) ||
+						''
+					}
+				/>
 				<Attributt
 					attr={sm.attrs.foreldreansvar}
-					disabled={opts?.identtype === 'NPID'}
+					disabled={npidPerson || (leggTilPaaGruppe && harTestnorgeIdenter)}
 					title={
-						opts?.identtype === 'NPID' ? 'Ikke tilgjengelig for personer med identtype NPID' : ''
+						(npidPerson && 'Ikke tilgjengelig for personer med identtype NPID') ||
+						(leggTilPaaGruppe && harTestnorgeIdenter && tekstLeggTilPaaGruppe) ||
+						''
 					}
+					vis={!testNorgePerson}
 				/>
 			</AttributtKategori>
 			<AttributtKategori title="Dødfødt barn" attr={sm.attrs}>
 				<Attributt
 					attr={sm.attrs.doedfoedtBarn}
-					disabled={opts?.identtype === 'NPID'}
+					disabled={npidPerson || (leggTilPaaGruppe && harTestnorgeIdenter)}
 					title={
-						opts?.identtype === 'NPID' ? 'Ikke tilgjengelig for personer med identtype NPID' : ''
+						(npidPerson && 'Ikke tilgjengelig for personer med identtype NPID') ||
+						(leggTilPaaGruppe && harTestnorgeIdenter && tekstLeggTilPaaGruppe) ||
+						''
 					}
+					vis={!testNorgePerson}
 				/>
 			</AttributtKategori>
 		</Panel>
@@ -59,16 +106,15 @@ export const FamilierelasjonPanel = ({ stateModifier, formValues }) => {
 FamilierelasjonPanel.heading = 'Familierelasjoner'
 
 FamilierelasjonPanel.initialValues = ({ set, opts, del, has }: any) => {
-	const { identtype } = opts
+	const { identtype, identMaster } = opts
+	const initialMaster = identMaster === 'PDL' || identtype === 'NPID' ? 'PDL' : 'FREG'
 
 	return {
 		sivilstand: {
 			label: 'Sivilstand (har partner)',
 			checked: has('pdldata.person.sivilstand'),
 			add() {
-				set('pdldata.person.sivilstand', [
-					getInitialSivilstand(identtype === 'NPID' ? 'PDL' : 'FREG'),
-				])
+				set('pdldata.person.sivilstand', [getInitialSivilstand(initialMaster)])
 			},
 			remove() {
 				del('pdldata.person.sivilstand')
@@ -78,9 +124,7 @@ FamilierelasjonPanel.initialValues = ({ set, opts, del, has }: any) => {
 			label: 'Har barn/foreldre',
 			checked: has('pdldata.person.forelderBarnRelasjon'),
 			add() {
-				set('pdldata.person.forelderBarnRelasjon', [
-					getInitialBarn(identtype === 'NPID' ? 'PDL' : 'FREG'),
-				])
+				set('pdldata.person.forelderBarnRelasjon', [getInitialBarn(initialMaster)])
 			},
 			remove() {
 				del('pdldata.person.forelderBarnRelasjon')
