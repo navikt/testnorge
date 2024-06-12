@@ -74,8 +74,3 @@ dependencies {
 }
 
 description = 'profil-api'
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
-    }
-}

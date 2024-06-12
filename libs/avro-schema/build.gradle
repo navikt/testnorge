@@ -20,12 +20,6 @@ if (project.hasProperty("releaseVersion")) {
     version = releaseVersion
 }
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
-    }
-}
-
 publishing {
     repositories {
         maven {

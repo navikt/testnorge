@@ -85,8 +85,3 @@ dependencies {
 }
 
 description = 'varslinger-service'
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
-    }
-}

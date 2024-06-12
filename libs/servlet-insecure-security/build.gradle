@@ -34,12 +34,6 @@ repositories {
     mavenLocal()
 }
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
-    }
-}
-
 dependencies {
 
     implementation 'no.nav.testnav.libs:security-core'

@@ -69,8 +69,3 @@ dependencies {
 }
 
 description = 'kodeverk-service'
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
-    }
-}

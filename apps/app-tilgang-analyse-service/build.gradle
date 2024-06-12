@@ -72,8 +72,3 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
 }
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
-    }
-}

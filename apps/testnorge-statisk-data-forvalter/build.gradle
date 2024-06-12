@@ -100,8 +100,3 @@ dependencies {
 }
 
 description = 'testnorge-statisk-data-forvalter'
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
-    }
-}

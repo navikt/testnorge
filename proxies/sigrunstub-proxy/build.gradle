@@ -58,8 +58,3 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
 }
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
-    }
-}
