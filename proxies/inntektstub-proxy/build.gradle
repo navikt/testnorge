@@ -4,16 +4,8 @@ plugins {
 
 sonarqube {
     properties {
-        property "sonar.dynamicAnalysis", "reuseReports"
-        property "sonar.host.url", "https://sonarcloud.io"
-        property "sonar.java.coveragePlugin", "jacoco"
-        property "sonar.language", "java"
-        property "sonar.token", System.getenv("SONAR_TOKEN")
-        property "sonar.organization", "navikt"
-        property "sonar.project.monorepo.enabled", true
         property "sonar.projectKey", "testnav-inntektstub-proxy"
         property "sonar.projectName", "testnav-inntektstub-proxy"
-        property "sonar.sourceEncoding", "UTF-8"
     }
 }
 
