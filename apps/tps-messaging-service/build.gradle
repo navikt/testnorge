@@ -4,16 +4,11 @@ plugins {
     id 'org.springframework.boot' version "3.2.6"
     id 'io.spring.dependency-management' version "1.1.5"
     id "jacoco"
-    id("org.openrewrite.rewrite") version("6.6.4")
 }
 
 test {
     useJUnitPlatform()
     jvmArgs '--add-opens', 'java.base/java.lang=ALL-UNNAMED'
-}
-
-rewrite {
-    activeRecipe("org.openrewrite.java.spring.boot3.UpgradeSpringBoot_3_2")
 }
 
 sonarqube {
@@ -68,7 +63,6 @@ configurations.implementation {
 }
 
 dependencies {
-    rewrite('org.openrewrite.recipe:rewrite-spring:5.10.0')
     implementation 'no.nav.testnav.libs:security-core'
     implementation 'no.nav.testnav.libs:servlet-core'
     implementation 'no.nav.testnav.libs:servlet-security'

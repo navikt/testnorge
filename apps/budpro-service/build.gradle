@@ -1,31 +1,25 @@
 plugins {
     id "dolly-java-conventions"
-    id("org.openrewrite.rewrite") version("6.6.4")
-}
-
-rewrite {
-    activeRecipe("org.openrewrite.java.spring.boot3.UpgradeSpringBoot_3_2")
 }
 
 dependencies {
-    rewrite('org.openrewrite.recipe:rewrite-spring:5.10.0')
+    implementation "no.nav.testnav.libs:commands"
+    implementation "no.nav.testnav.libs:data-transfer-objects"
+    implementation "no.nav.testnav.libs:reactive-core"
+    implementation "no.nav.testnav.libs:security-core"
+    implementation "no.nav.testnav.libs:servlet-core"
+    implementation "no.nav.testnav.libs:servlet-insecure-security"
+    implementation "no.nav.testnav.libs:servlet-security"
+    //implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0"
+    implementation spring.openapi
+    implementation "org.springframework.boot:spring-boot-starter-oauth2-client"
+    implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
+    implementation "org.springframework.boot:spring-boot-starter-security"
+    implementation "org.springframework.boot:spring-boot-starter-web"
+    implementation "org.springframework.boot:spring-boot-starter-webflux"
+    implementation "org.springframework.cloud:spring-cloud-starter-vault-config"
 
-    implementation 'no.nav.testnav.libs:commands'
-    implementation 'no.nav.testnav.libs:data-transfer-objects'
-    implementation 'no.nav.testnav.libs:reactive-core'
-    implementation 'no.nav.testnav.libs:security-core'
-    implementation 'no.nav.testnav.libs:servlet-core'
-    implementation 'no.nav.testnav.libs:servlet-insecure-security'
-    implementation 'no.nav.testnav.libs:servlet-security'
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0'
-    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-webflux'
-    implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
-
-    testImplementation 'org.testcontainers:junit-jupiter'
+    testImplementation "org.testcontainers:junit-jupiter"
 }
 
 sonarqube {
