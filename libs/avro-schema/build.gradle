@@ -12,11 +12,6 @@ sonarqube {
     skipProject = true
 }
 
-repositories {
-    mavenCentral()
-    mavenLocal()
-}
-
 if (project.hasProperty("releaseVersion")) {
     version = releaseVersion
 }

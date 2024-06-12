@@ -15,10 +15,6 @@ sonarqube {
 
 group = 'no.nav.testnav.libs'
 
-repositories {
-    mavenCentral()
-    mavenLocal()
-}
 if (project.hasProperty("releaseVersion")) {
     version = releaseVersion
 }

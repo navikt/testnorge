@@ -13,11 +13,6 @@ properties {
     compileJava.options.encoding = 'UTF-8'
 }
 
-repositories {
-    mavenCentral()
-    mavenLocal()
-}
-
 dependencies {
 
     implementation 'no.nav.testnav.libs:database'

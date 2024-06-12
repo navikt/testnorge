@@ -9,14 +9,6 @@ sonarqube {
     }
 }
 
-repositories {
-    mavenCentral()
-    mavenLocal()
-    maven {
-        url = uri('https://packages.confluent.io/maven/')
-    }
-}
-
 dependencies {
 
     implementation 'no.nav.testnav.libs:commands'

@@ -17,14 +17,6 @@ wsimport {
     }
 }
 
-
-repositories {
-    mavenCentral()
-    maven { url "https://github-package-registry-mirror.gc.nav.no/cached/maven-release" }
-    maven { url "https://build.shibboleth.net/maven/releases/" }
-    mavenLocal()
-}
-
 dependencies {
     implementation('io.dropwizard:dropwizard-jackson:4.0.7') {
         exclude group: "com.google.code.findbugs"

@@ -11,11 +11,6 @@ sonarqube {
     }
 }
 
-repositories {
-    mavenCentral()
-    mavenLocal()
-}
-
 dependencies {
     implementation ('no.nav.testnav.libs:security-core') {
         exclude group: 'org.springframework.session', module: 'spring-session-data-redis'

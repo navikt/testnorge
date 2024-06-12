@@ -13,19 +13,6 @@ properties {
     compileJava.options.encoding = 'UTF-8'
 }
 
-repositories {
-    mavenCentral()
-    mavenLocal()
-    maven {
-        name = "GitHubPackages"
-        url = uri('https://maven.pkg.github.com/navikt/maven-release')
-        credentials(PasswordCredentials) {
-            password System.getenv("NAV_TOKEN")
-            username 'token'
-        }
-    }
-}
-
 dependencies {
     implementation 'no.nav.testnav.libs:security-core'
     implementation 'no.nav.testnav.libs:servlet-core'

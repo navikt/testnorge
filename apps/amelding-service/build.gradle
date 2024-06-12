@@ -9,11 +9,6 @@ sonarqube {
     }
 }
 
-repositories {
-    mavenCentral()
-    mavenLocal()
-}
-
 dependencies {
 
     implementation 'no.nav.testnav.libs:security-core'

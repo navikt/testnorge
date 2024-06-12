@@ -9,19 +9,6 @@ sonarqube {
     }
 }
 
-repositories {
-    mavenLocal()
-    mavenCentral()
-    maven {
-        name = "GitHubPackages"
-        url = uri('https://maven.pkg.github.com/navikt/maven-release')
-        credentials(PasswordCredentials) {
-            password System.getenv("NAV_TOKEN")
-            username 'token'
-        }
-    }
-}
-
 configurations.implementation {
     exclude group: 'io.netty', module: 'netty-transport-native-epoll'
     // Avoid native Linux/Mac on non-Linux/Mac systems.

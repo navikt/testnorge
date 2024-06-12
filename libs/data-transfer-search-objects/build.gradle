@@ -14,19 +14,6 @@ sonarqube {
 
 group = 'no.nav.testnav.libs'
 
-repositories {
-    mavenCentral()
-    maven {
-        name = "GitHubPackages"
-        url = uri('https://maven.pkg.github.com/navikt/maven-release')
-        credentials(PasswordCredentials) {
-            password System.getenv("NAV_TOKEN")
-            username 'token'
-        }
-    }
-    mavenLocal()
-}
-
 dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-annotations'
     implementation 'com.fasterxml.jackson.core:jackson-databind'

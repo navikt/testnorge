@@ -13,11 +13,6 @@ sonarqube {
 
 group = 'no.nav.testnav.libs'
 
-repositories {
-    mavenCentral()
-    mavenLocal()
-}
-
 dependencies {
 
     implementation 'io.swagger.core.v3:swagger-annotations-jakarta:2.2.21'

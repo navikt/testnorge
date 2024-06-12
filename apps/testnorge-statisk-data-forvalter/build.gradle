@@ -9,15 +9,6 @@ sonarqube {
     }
 }
 
-repositories {
-    mavenCentral()
-    mavenLocal()
-
-    maven {
-        url = uri('https://packages.confluent.io/maven/')
-    }
-}
-
 dependencies {
     implementation 'com.google.guava:guava:33.2.0-jre'
 

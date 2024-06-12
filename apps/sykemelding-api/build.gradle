@@ -9,22 +9,6 @@ sonarqube {
     }
 }
 
-repositories {
-    mavenCentral()
-    mavenLocal()
-    maven {
-        name = "GitHubPackages"
-        url = uri('https://maven.pkg.github.com/navikt/maven-release')
-        credentials(PasswordCredentials) {
-            password System.getenv("NAV_TOKEN")
-            username 'token'
-        }
-    }
-    maven {
-        url = uri('https://packages.confluent.io/maven/')
-    }
-}
-
 dependencies {
     implementation 'no.nav.testnav.libs:commands'
     implementation 'no.nav.testnav.libs:reactive-core'

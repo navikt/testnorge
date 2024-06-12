@@ -13,11 +13,6 @@ sonarqube {
 
 group = 'no.nav.testnav.libs'
 
-repositories {
-    mavenCentral()
-    mavenLocal()
-}
-
 tasks.named('compileJava') {
     inputs.files(tasks.named('processResources'))
 }

@@ -10,11 +10,6 @@ sonarqube {
     }
 }
 
-repositories {
-    mavenCentral()
-    mavenLocal()
-}
-
 configurations {
     configureEach {
         exclude group: 'org.springframework.boot', module: 'spring-boot-starter-actuator'
