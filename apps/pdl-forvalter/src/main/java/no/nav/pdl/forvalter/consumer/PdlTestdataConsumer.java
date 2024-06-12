@@ -117,7 +117,7 @@ public class PdlTestdataConsumer {
 
     public Flux<OrdreResponseDTO.HendelseDTO> deleteHendelse(HendelseIdRequest hendelse) {
 
-        return  tokenExchange
+        return tokenExchange
                 .exchange(serverProperties)
                 .flatMapMany(accessToken -> new PdlDeleteHendelseIdCommandPdl(webClient,
                         getBestillingUrl().get(PDL_SLETTING_HENDELSEID),

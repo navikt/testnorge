@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.consumer.PdlTestdataConsumer;
 import no.nav.pdl.forvalter.database.model.DbPerson;
+import no.nav.pdl.forvalter.database.model.DbRelasjon;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.dto.HendelseIdRequest;
 import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO;
@@ -93,15 +94,18 @@ public class HendelseIdService {
                                             .ident(person.getIdent())
                                             .hendelseId(hendelse.getHendelseId())
                                             .build()),
-                            Stream.of(person)
+                            person.getRelasjoner().stream()
+                                    .map(DbRelasjon::getRelatertPerson)
                                     .map(DbPerson::getPerson)
                                     .map(relatert -> getHendelser(relatert.getIdent(), relatert.getSivilstand()))
                                     .flatMap(Collection::stream),
-                            Stream.of(person)
+                            person.getRelasjoner().stream()
+                                    .map(DbRelasjon::getRelatertPerson)
                                     .map(DbPerson::getPerson)
                                     .map(relatert -> getHendelser(relatert.getIdent(), relatert.getForelderBarnRelasjon()))
                                     .flatMap(Collection::stream),
-                            Stream.of(person)
+                            person.getRelasjoner().stream()
+                                    .map(DbRelasjon::getRelatertPerson)
                                     .map(DbPerson::getPerson)
                                     .map(relatert -> getHendelser(relatert.getIdent(), relatert.getFullmakt()))
                                     .flatMap(Collection::stream)
@@ -110,7 +114,7 @@ public class HendelseIdService {
                     .toList();
 
             Flux.fromIterable(relevanteHendelser)
-                    .map(pdlTestdataConsumer::deleteHendelse)
+                    .flatMap(pdlTestdataConsumer::deleteHendelse)
                     .collectList()
                     .block();
         }
