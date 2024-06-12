@@ -283,15 +283,14 @@ export const forelderBarnRelasjon = Yup.object().shape(
 					const forelderBarnRelasjon = testContext?.from?.find(
 						(element) => element.value?.forelderBarnRelasjon?.length > 0,
 					)
-					console.log('testContext', testContext)
 
-					console.log('forelderBarnRelasjon', forelderBarnRelasjon)
+					if (!forelderBarnRelasjon) {
+						return true
+					}
 
 					const relasjoner = forelderBarnRelasjon?.value.forelderBarnRelasjon
 						.filter((element) => element.relatertPerson)
 						.map((element) => element.relatertPerson)
-
-					console.log('relasjoner', relasjoner)
 
 					return relasjoner?.length === new Set(relasjoner).size
 				},

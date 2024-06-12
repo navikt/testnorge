@@ -91,13 +91,10 @@ export const PdlEksisterendePerson = ({
 		return antallEksisterendeForeldre + antallNyeForeldre
 	}
 
-	const checkForeldre = (person: object) => {
+	const checkForeldre = () => {
 		const relasjoner =
 			formMethods.getValues()?.pdldata?.person?.forelderBarnRelasjon ||
 			Array.from(formMethods.getValues()?.forelderBarnRelasjon)
-		if (!!relasjoner.find((relasjon) => relasjon.relatertPerson === person.value)) {
-			return false
-		}
 
 		let antallForeldre = eksisterendePerson.foreldre?.length || 0
 		for (let i = 0; i < relasjoner.length; i++) {
@@ -135,7 +132,7 @@ export const PdlEksisterendePerson = ({
 			return eksisterendePerson?.alder - person.alder > 17 && getAntallForeldre(person.foreldre) < 3
 		} else if (label === 'FORELDER') {
 			// eksisterende person er barn
-			return person.alder - eksisterendePerson?.alder > 17 && checkForeldre(person)
+			return person.alder - eksisterendePerson?.alder > 17 && checkForeldre()
 		} else if (label === 'Ansvarlig') {
 			return person.alder > 17 && !harForeldreansvarForValgteBarn(person.foreldreansvar)
 		}
