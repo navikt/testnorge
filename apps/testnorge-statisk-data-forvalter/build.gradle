@@ -24,7 +24,7 @@ dependencies {
     implementation 'no.nav.testnav.libs:csv-converter'
 
     implementation 'org.springframework.kafka:spring-kafka'
-    implementation 'io.confluent:kafka-avro-serializer:7.5.1'
+    implementation 'io.confluent:kafka-avro-serializer:7.6.1'
 
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
