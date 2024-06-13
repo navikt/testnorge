@@ -1,6 +1,6 @@
 import { expect, test } from '#/globalSetup'
 import { TestComponentSelectors } from '#/mocks/Selectors'
-import { brukerMalerEndretMock } from '../../cypress/mocks/BasicMocks'
+import { brukerMalerEndretMock } from '#/mocks/BasicMocks'
 
 const brukerMaler = new RegExp(/dolly-backend\/api\/v1\/malbestilling\?brukerId/)
 

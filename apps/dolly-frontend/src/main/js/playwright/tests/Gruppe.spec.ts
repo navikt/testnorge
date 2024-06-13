@@ -21,8 +21,10 @@ test.describe('Opprett gruppe og start bestilling med alle mulige tilvalg', () =
 		// Opprett ny gruppe
 		await page.getByTestId(TestComponentSelectors.BUTTON_NY_GRUPPE).click()
 		await page.getByTestId(TestComponentSelectors.INPUT_NAVN).click()
-		await page.getByTestId(TestComponentSelectors.INPUT_NAVN).fill('Testing med Cypress')
-		await page.getByTestId(TestComponentSelectors.INPUT_HENSIKT).fill('Masse testing med Cypress')
+		await page.getByTestId(TestComponentSelectors.INPUT_NAVN).fill('Testing med Playwright')
+		await page
+			.getByTestId(TestComponentSelectors.INPUT_HENSIKT)
+			.fill('Masse testing med Playwright')
 		await page.getByTestId(TestComponentSelectors.BUTTON_OPPRETT).click()
 		await page.getByTestId(TestComponentSelectors.BUTTON_OPPRETT_PERSONER).click()
 		await page.getByTestId(TestComponentSelectors.TOGGLE_EKSISTERENDE_PERSON).click()

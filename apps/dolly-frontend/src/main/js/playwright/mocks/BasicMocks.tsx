@@ -2,7 +2,7 @@ export const gjeldendeProfilMock = {
 	visningsNavn: 'BeASt, BugTerminator',
 	epost: 'BeASt@bugexterminator.no',
 	avdeling: '1234 Testytest',
-	organisasjon: 'CYPRESS',
+	organisasjon: 'PLAYWRIGHT',
 	type: 'Testbruker',
 }
 
@@ -52,7 +52,7 @@ export const brukerMalerMock = {
 		testbruker: [
 			{
 				id: 1,
-				malNavn: 'Teste Cypress',
+				malNavn: 'Teste Playwright',
 				bestilling: malBestilling,
 				bruker: gjeldendeBrukerMock,
 			},
@@ -956,7 +956,7 @@ export const joarkDokumentMock =
 
 export const varslingerVelkommenResponseMock = [{ varslingId: 'VELKOMMEN_TIL_DOLLY' }]
 
-export const malerMock = { malbestillinger: ['Cypress, Testytest', []] }
+export const malerMock = { malbestillinger: ['Playwright, Testytest', []] }
 
 export const testnorgeMalBestillinger = [
 	{
@@ -2082,8 +2082,8 @@ export const testidentMock = {
 
 export const nyGruppeMock = {
 	id: 2,
-	navn: 'Cypress testing',
-	hensikt: 'Saftig testing med cypress..',
+	navn: 'Playwright testing',
+	hensikt: 'Saftig testing med Playwright..',
 	opprettetAv: gjeldendeBrukerMock,
 	sistEndretAv: gjeldendeBrukerMock,
 	datoEndret: '1990-01-12',

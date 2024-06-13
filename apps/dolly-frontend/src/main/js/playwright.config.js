@@ -40,7 +40,7 @@ export default defineConfig({
 
 	/* Run your local dev server before starting the tests */
 	webServer: {
-		command: 'npm run start-cypress',
+		command: 'npm run test:start',
 		url: 'http://localhost:5678',
 		reuseExistingServer: !process.env.CI,
 	},

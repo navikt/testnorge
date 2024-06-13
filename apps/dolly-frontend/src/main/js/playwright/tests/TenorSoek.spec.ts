@@ -1,6 +1,6 @@
 import { expect, test } from '#/globalSetup'
 import { TestComponentSelectors } from '#/mocks/Selectors'
-import { tenorSoekOversiktMock, tenorSoekTestdataMock } from '../../cypress/mocks/BasicMocks'
+import { tenorSoekOversiktMock, tenorSoekTestdataMock } from '#/mocks/BasicMocks'
 
 test.describe('Tenor-søk testing', () => {
 	const tenorSoekOversikt = new RegExp(

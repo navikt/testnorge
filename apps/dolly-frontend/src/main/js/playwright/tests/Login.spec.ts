@@ -1,6 +1,6 @@
 import { test } from '#/globalSetup'
 import { TestComponentSelectors } from '#/mocks/Selectors'
-import { varslingerVelkommenResponseMock } from '../../cypress/mocks/BasicMocks'
+import { varslingerVelkommenResponseMock } from '#/mocks/BasicMocks'
 
 test.describe('Login side og aksepter varsling', () => {
 	test('passes', async ({ page }) => {

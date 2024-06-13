@@ -3,7 +3,7 @@ import { TestComponentSelectors } from '#/mocks/Selectors'
 import {
 	tenorSoekOrganisasjonOversiktMock,
 	tenorSoekOrganisasjonTestdataMock,
-} from '../../cypress/mocks/BasicMocks'
+} from '#/mocks/BasicMocks'
 
 test.describe('Tenor-søk testing', () => {
 	const tenorSoekOrganisasjonOversikt = new RegExp(

@@ -2,7 +2,7 @@ import { expect, test } from '#/globalSetup'
 
 import { ERROR_NAVIGATE_IDENT } from '@/ducks/errors/ErrorMessages'
 import { TestComponentSelectors } from '#/mocks/Selectors'
-import { personFragmentNavigerMock } from '../../cypress/mocks/BasicMocks'
+import { personFragmentNavigerMock } from '#/mocks/BasicMocks'
 
 const personFragmentNaviger = new RegExp(/dolly-backend\/api\/v1\/ident\/naviger\/12345678912/)
 
