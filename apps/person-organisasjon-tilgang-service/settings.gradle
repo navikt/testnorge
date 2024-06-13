@@ -4,7 +4,7 @@ plugins {
 
 rootProject.name = 'person-organisasjon-tilgang-service'
 
-includeBuild '../../plugins/java'
+includeBuild "../../plugins/java"
 
 includeBuild '../../libs/integration-test'
 includeBuild '../../libs/reactive-core'

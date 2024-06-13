@@ -4,7 +4,7 @@ plugins {
 
 rootProject.name = 'dolly-backend'
 
-includeBuild '../../plugins/java'
+includeBuild "../../plugins/java"
 
 includeBuild '../../.github/workflows'
 includeBuild '../../libs/data-transfer-objects'

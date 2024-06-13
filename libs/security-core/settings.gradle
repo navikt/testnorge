@@ -4,7 +4,7 @@ plugins {
 
 rootProject.name = 'security-core'
 
-includeBuild '../../plugins/java'
+includeBuild "../../plugins/java"
 
 develocity {
     buildScan {

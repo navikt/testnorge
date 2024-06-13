@@ -4,7 +4,7 @@ plugins {
 
 rootProject.name = 'modapp-ereg-proxy'
 
-includeBuild '../../plugins/java'
+includeBuild "../../plugins/java"
 
 includeBuild '../../libs/reactive-core'
 includeBuild '../../libs/reactive-proxy'

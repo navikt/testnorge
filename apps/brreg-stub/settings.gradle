@@ -4,7 +4,7 @@ plugins {
 
 rootProject.name = 'brreg-stub'
 
-includeBuild '../../plugins/java'
+includeBuild "../../plugins/java"
 
 includeBuild '../../libs/database'
 includeBuild '../../libs/servlet-core'

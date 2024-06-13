@@ -4,7 +4,7 @@ plugins {
 
 rootProject.name = 'dollystatus'
 
-includeBuild '../../plugins/java'
+includeBuild "../../plugins/java"
 
 develocity {
     buildScan {

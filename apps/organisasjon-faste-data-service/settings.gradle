@@ -4,7 +4,7 @@ plugins {
 
 rootProject.name = 'organisasjon-faste-data-service'
 
-includeBuild '../../plugins/java'
+includeBuild "../../plugins/java"
 
 includeBuild '../../libs/avro-schema'
 includeBuild '../../libs/commands'

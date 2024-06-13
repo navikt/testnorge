@@ -4,7 +4,7 @@ plugins {
 
 rootProject.name = 'integration-test'
 
-includeBuild '../../plugins/java'
+includeBuild "../../plugins/java"
 
 includeBuild '../security-core'
 

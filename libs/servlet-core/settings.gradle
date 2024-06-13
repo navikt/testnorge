@@ -4,7 +4,7 @@ plugins {
 
 rootProject.name = 'servlet-core'
 
-includeBuild '../../plugins/java'
+includeBuild "../../plugins/java"
 
 develocity {
     buildScan {

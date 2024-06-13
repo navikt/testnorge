@@ -4,7 +4,7 @@ plugins {
 
 rootProject.name = 'reactive-frontend'
 
-includeBuild '../../plugins/java'
+includeBuild "../../plugins/java"
 
 includeBuild '../security-core'
 

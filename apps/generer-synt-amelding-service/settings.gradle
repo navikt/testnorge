@@ -4,7 +4,7 @@ plugins {
 
 rootProject.name = 'generer-synt-amelding-service'
 
-includeBuild '../../plugins/java'
+includeBuild "../../plugins/java"
 
 includeBuild '../../libs/domain'
 includeBuild '../../libs/reactive-core'

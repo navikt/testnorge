@@ -4,7 +4,7 @@ plugins {
 
 rootProject.name = 'bruker-service'
 
-includeBuild '../../plugins/java'
+includeBuild "../../plugins/java"
 
 includeBuild '../../libs/data-transfer-objects'
 includeBuild '../../libs/integration-test'

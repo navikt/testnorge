@@ -4,7 +4,7 @@ plugins {
 
 rootProject.name = 'synt-sykemelding-api'
 
-includeBuild '../../plugins/java'
+includeBuild "../../plugins/java"
 
 includeBuild '../../libs/commands'
 includeBuild '../../libs/data-transfer-objects'

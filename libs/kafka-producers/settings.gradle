@@ -4,7 +4,7 @@ plugins {
 
 rootProject.name = 'kafka-producers'
 
-includeBuild '../../plugins/java'
+includeBuild "../../plugins/java"
 
 includeBuild '../kafka-config'
 includeBuild '../avro-schema'
