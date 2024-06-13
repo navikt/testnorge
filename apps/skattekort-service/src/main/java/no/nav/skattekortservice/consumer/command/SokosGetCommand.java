@@ -1,9 +1,12 @@
 package no.nav.skattekortservice.consumer.command;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 
@@ -29,6 +32,9 @@ public class SokosGetCommand implements Callable<Mono<String>> {
                 .header(AUTHORIZATION, "Bearer " + token)
                 .header("korrelasjonsid", UUID.randomUUID().toString())
                 .retrieve()
-                .bodyToMono(String.class);
+                .bodyToMono(String.class)
+                .doOnError(WebClientFilter::logErrorMessage)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException));
     }
 }
