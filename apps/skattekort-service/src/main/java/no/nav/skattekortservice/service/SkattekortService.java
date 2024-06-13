@@ -73,6 +73,7 @@ public class SkattekortService {
 
     public Mono<String> hentSkattekort(SokosGetRequest request) {
 
-        return skattekortConsumer.hentSkattekort(request);
+        return skattekortConsumer.hentSkattekort(request)
+                .doOnNext(response -> log.info("Hentet resultat fra Sokos {}", response));
     }
 }

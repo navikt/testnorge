@@ -25,7 +25,7 @@ public class SkattekortController {
         return skattekortService.sendSkattekort(skattekort);
     }
 
-    @GetMapping(produces = MediaType.TEXT_PLAIN_VALUE)
+    @GetMapping
     public Mono<String> hentSkattekort(@RequestBody SokosGetRequest request) {
 
         return skattekortService.hentSkattekort(request);

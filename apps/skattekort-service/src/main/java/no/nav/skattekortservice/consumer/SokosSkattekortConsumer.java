@@ -23,7 +23,6 @@ public class SokosSkattekortConsumer {
         this.serverProperties = consumers.getSokosSkattekort();
         this.webClient = WebClient.builder()
                 .baseUrl(serverProperties.getUrl())
-                .defaultHeader("content-type", "application/json")
                 .build();
         this.tokenExchange = tokenExchange;
     }
