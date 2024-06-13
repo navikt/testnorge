@@ -10,9 +10,14 @@ on:
       READER_TOKEN:
         required: true
 jobs:
-  test:
+  playwright-tests:
     timeout-minutes: 15
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shardIndex: [ 1, 2, 3, 4 ]
+        shardTotal: [ 4 ]
     env:
       NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
     steps:
@@ -30,4 +35,13 @@ jobs:
         run: npx playwright install --with-deps
       - name: Run Playwright tests
         working-directory: ${{ inputs.working-directory }}/src/main/js
-        run: npx playwright test
+        run: npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
+      - name: Merge playwright results blob
+        working-directory: ${{ inputs.working-directory }}/src/main/js
+        run: npx playwright merge-reports --reporter html ./all-blob-reports
+      - name: Upload HTML report
+        uses: actions/upload-artifact@v4
+        with:
+          name: html-report--attempt-${{ github.run_attempt }}
+          path: playwright-report
+          retention-days: 14

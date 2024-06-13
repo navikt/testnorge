@@ -11,9 +11,9 @@ export default defineConfig({
 	forbidOnly: !!process.env.CI,
 	/* Retry on CI only */
 	retries: process.env.CI ? 2 : 0,
-	workers: process.env.CI ? 5 : undefined,
+	workers: process.env.CI ? 2 : undefined,
 
-	reporter: 'html',
+	reporter: process.env.CI ? 'blob' : 'html',
 	/* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
 	use: {
 		baseURL: 'http://localhost:5678/',
@@ -26,7 +26,6 @@ export default defineConfig({
 			name: 'firefox',
 			use: { ...devices['Desktop Firefox'] },
 		},
-
 		{
 			name: 'Google Chrome',
 			use: { ...devices['Desktop Chrome'], channel: 'chrome' },
