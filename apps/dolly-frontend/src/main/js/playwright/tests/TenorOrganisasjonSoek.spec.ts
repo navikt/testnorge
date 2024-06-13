@@ -1,6 +1,9 @@
-import { expect, test } from '@playwright/test'
-
-import { CypressSelector } from '../../cypress/mocks/Selectors'
+import { expect, test } from '#/globalSetup'
+import { TestComponentSelectors } from '#/mocks/Selectors'
+import {
+	tenorSoekOrganisasjonOversiktMock,
+	tenorSoekOrganisasjonTestdataMock,
+} from '../../cypress/mocks/BasicMocks'
 
 test.describe('Tenor-søk testing', () => {
 	const tenorSoekOrganisasjonOversikt = new RegExp(
@@ -11,31 +14,44 @@ test.describe('Tenor-søk testing', () => {
 	)
 
 	test('passes', async ({ page }) => {
-		await page.goto('')
+		await page.goto('gruppe')
+
+		await page.route(tenorSoekOrganisasjonOversikt, (route) => {
+			route.fulfill({ body: JSON.stringify(tenorSoekOrganisasjonOversiktMock) })
+		})
+
+		await page.route(tenorSoekOrganisasjonTestdata, (route) => {
+			route.fulfill({ body: JSON.stringify(tenorSoekOrganisasjonTestdataMock) })
+		})
 
 		// Naviger til Tenor-organisasjon-soek og post et soek
-		page.getByTestId(CypressSelector.BUTTON_HEADER_ORGANISASJONER)
-		await page.click()
-		page.getByTestId(CypressSelector.BUTTON_HEADER_TENOR_ORGANISASJONER)
-		await page.click()
+		await page.getByTestId(TestComponentSelectors.BUTTON_HEADER_ORGANISASJONER).click()
+		await page.getByTestId(TestComponentSelectors.BUTTON_HEADER_TENOR_ORGANISASJONER).click()
 		await expect(
 			page
 				.locator('h1')
 				.getByText(/Søk etter organisasjoner i Tenor/)
 				.first(),
 		).toBeVisible()
-		page.getByTestId(CypressSelector.CHECKBOX_ORGANISASJONER_TENORSOEK)
-		await page.click()
+		await page.getByTestId(TestComponentSelectors.CHECKBOX_ORGANISASJONER_TENORSOEK).click()
 		await page.locator('div').getByText(/TIGER/).first().click()
 		await expect(page.locator('h2').getByText(/TIGER/).first()).toBeVisible()
 
 		// Sjekk at antall valgt er 1, deretter clear soeket og sjekk at antall valgt er 0
-		page.getByTestId(CypressSelector.TITLE_TENOR_ORGANISASJONER_FORETAKSREGISTERET)
-		await page.FIXME_should('contain.text', 'Enhetsregisteret og Foretaksregisteret')
-		await page.FIXME_should('contain.text', '1')
-		page.getByTestId(CypressSelector.BUTTON_TENOR_CLEAR_HEADER)
-		for (const locator of await page.all()) await locator.click()
-		page.getByTestId(CypressSelector.TITLE_TENOR_ORGANISASJONER_FORETAKSREGISTERET)
-		await page.FIXME_should('not.contain.text', '1')
+		const titleTenor = page.getByTestId(
+			TestComponentSelectors.TITLE_TENOR_ORGANISASJONER_FORETAKSREGISTERET,
+		)
+		await expect(titleTenor).toContainText('Enhetsregisteret og Foretaksregisteret')
+		await expect(titleTenor).toContainText('1')
+
+		for (const button_tenor_clear_header of await page
+			.getByTestId(TestComponentSelectors.BUTTON_TENOR_CLEAR_HEADER)
+			.all()) {
+			await button_tenor_clear_header.click()
+		}
+
+		await expect(
+			page.getByTestId(TestComponentSelectors.TITLE_TENOR_ORGANISASJONER_FORETAKSREGISTERET),
+		).not.toContainText('1')
 	})
 })

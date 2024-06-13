@@ -1,7 +1,8 @@
-import { expect, test } from '@playwright/test'
+import { expect, test } from '#/globalSetup'
 
-import { CypressSelector } from '../../cypress/mocks/Selectors'
 import { ERROR_NAVIGATE_IDENT } from '@/ducks/errors/ErrorMessages'
+import { TestComponentSelectors } from '#/mocks/Selectors'
+import { personFragmentNavigerMock } from '../../cypress/mocks/BasicMocks'
 
 const personFragmentNaviger = new RegExp(/dolly-backend\/api\/v1\/ident\/naviger\/12345678912/)
 
@@ -13,24 +14,30 @@ test.describe('Navigering til ident som finnes i bestilling og tilbake igjen til
 			.getByText(/Testytest/)
 			.first()
 			.click()
-		page.getByTestId(CypressSelector.TOGGLE_VISNING_BESTILLINGER)
-		await page.click()
-		page.getByTestId(CypressSelector.BUTTON_OPEN_BESTILLING)
-		page.FIXME_each(async (element) => {
-			page.FIXME_wrap(element)
-			await page.click()
-		})
+		await page.getByTestId(TestComponentSelectors.TOGGLE_VISNING_BESTILLINGER).click()
+
+		await page.waitForTimeout(1000)
+
+		for (const button_open_bestilling of await page
+			.getByTestId(TestComponentSelectors.BUTTON_OPEN_BESTILLING)
+			.all()) {
+			await button_open_bestilling.click()
+		}
+
 		await page
 			.locator('Button')
 			.getByText(/12345678912/)
 			.first()
 			.click()
-		page.getByTestId(CypressSelector.TOGGLE_VISNING_PERSONER)
-		await page.FIXME_should('have.attr', 'aria-checked', 'true')
-		page.getByTestId(CypressSelector.BUTTON_TIDLIGEREBESTILLINGER_NAVIGER)
-		await page.click()
-		page.getByTestId(CypressSelector.TOGGLE_VISNING_BESTILLINGER)
-		await page.FIXME_should('have.attr', 'aria-checked', 'true')
+		await expect(page.getByTestId(TestComponentSelectors.TOGGLE_VISNING_PERSONER)).toHaveAttribute(
+			'aria-checked',
+			'true',
+		)
+
+		await page.getByTestId(TestComponentSelectors.BUTTON_TIDLIGEREBESTILLINGER_NAVIGER).click()
+		await expect(
+			page.getByTestId(TestComponentSelectors.TOGGLE_VISNING_BESTILLINGER),
+		).toHaveAttribute('aria-checked', 'true')
 	})
 })
 
@@ -39,24 +46,36 @@ test.describe('Navigering til ident som finnes i gruppe 1', () => {
 		await page.goto('gruppe')
 
 		//Midlertidig not found på navigering til ident etter søk
-		page.FIXME_dollyType(CypressSelector.INPUT_DOLLY_SOEK, '12345')
-		page.getByTestId(CypressSelector.BUTTON_NAVIGER_DOLLY)
-		await page.click()
+		await page.route(personFragmentNaviger, async (route) => {
+			await route.fulfill({
+				status: 404,
+			})
+		})
+
+		await page.getByTestId(TestComponentSelectors.INPUT_DOLLY_SOEK).fill('12345')
+		await page.getByTestId(TestComponentSelectors.BUTTON_NAVIGER_DOLLY).click()
 		await page.waitForTimeout(400)
-		page.getByTestId(CypressSelector.ERROR_MESSAGE_NAVIGERING)
-		await page.FIXME_should('contains.text', ERROR_NAVIGATE_IDENT)
+
+		await expect(page.getByTestId(TestComponentSelectors.ERROR_MESSAGE_NAVIGERING)).toHaveText(
+			ERROR_NAVIGATE_IDENT,
+		)
 
 		//Korrekt navigering igjen
-		page.getByTestId(CypressSelector.TOGGLE_SEARCH_BESTILLING)
-		await page.click()
-		page.FIXME_dollyType(CypressSelector.INPUT_DOLLY_SOEK, '1')
-		page.getByTestId(CypressSelector.BUTTON_NAVIGER_DOLLY)
-		await page.click()
-		page.getByTestId(CypressSelector.TOGGLE_SEARCH_PERSON)
-		await page.click()
-		page.FIXME_dollyType(CypressSelector.INPUT_DOLLY_SOEK, '12345')
-		page.getByTestId(CypressSelector.BUTTON_NAVIGER_DOLLY)
-		await page.click()
+		await page.route(personFragmentNaviger, async (route) => {
+			await route.fulfill({
+				status: 200,
+				body: JSON.stringify(personFragmentNavigerMock),
+			})
+		})
+
+		await page.getByTestId(TestComponentSelectors.TOGGLE_SEARCH_BESTILLING).click()
+		await page.getByTestId(TestComponentSelectors.INPUT_DOLLY_SOEK).fill('1')
+
+		await page.getByTestId(TestComponentSelectors.BUTTON_NAVIGER_DOLLY).click()
+		await page.getByTestId(TestComponentSelectors.TOGGLE_SEARCH_PERSON).click()
+		await page.getByTestId(TestComponentSelectors.INPUT_DOLLY_SOEK).fill('12345')
+
+		await page.getByTestId(TestComponentSelectors.BUTTON_NAVIGER_DOLLY).click()
 		await page.waitForTimeout(400)
 		await expect(page).toHaveURL(/\/gruppe\/1/)
 	})

@@ -49,7 +49,7 @@ export const TpsDataVisning = ({ data }: TpsData) => {
 				return (
 					<DollyTooltip
 						useExternalTooltip={true}
-						dataCy={TestComponentSelectors.HOVER_MILJOE}
+						testLocator={TestComponentSelectors.HOVER_MILJOE}
 						content={getPersonInfo(miljoe)}
 						align={{
 							offset: [0, -10],

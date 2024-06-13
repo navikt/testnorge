@@ -70,7 +70,7 @@ import CheckCircle from '@/assets/icons/custom/CheckCircle.svg?raw'
 import Dolly from '@/assets/icons/custom/Dolly.svg?raw'
 import DollyPanic from '@/assets/icons/custom/DollyPanic.svg?raw'
 import TenorLogo from '@/assets/icons/custom/TenorLogo.svg?raw'
-import Cypress from '@/assets/img/cypress.png'
+import Playwright from '@/assets/img/playwright.png'
 
 import './Icon.less'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
@@ -82,7 +82,7 @@ export const icons = {
 	'report-problem-triangle': ProblemTriangle,
 	dolly: Dolly,
 	dollyPanic: DollyPanic,
-	cypress: Cypress,
+	playwright: Playwright,
 	tenor: TenorLogo,
 
 	trashcan: TrashIcon,
@@ -198,7 +198,7 @@ const Icon = ({
 		'report-problem-triangle',
 		'dolly',
 		'dollyPanic',
-		'cypress',
+		'playwright',
 		'tenor',
 	]
 

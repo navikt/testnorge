@@ -1,32 +1,31 @@
-import { expect, test } from '@playwright/test'
-
-import { CypressSelector } from '../../cypress/mocks/Selectors'
+import { expect, test } from '#/globalSetup'
+import { TestComponentSelectors } from '#/mocks/Selectors'
 
 test.describe('Oppretter bestilling med alle artifakter som er avhengige av Q1 eller Q2 og sjekker at disse blir huket av', () => {
 	test('passes', async ({ page }) => {
 		await page.goto('gruppe/1')
-		page.getByTestId(CypressSelector.BUTTON_OPPRETT_PERSONER)
-		await page.click()
-		page.getByTestId(CypressSelector.BUTTON_START_BESTILLING)
-		await page.click()
-		page.getByTestId(CypressSelector.BUTTON_FJERN_MILJOE_AVHENGIG)
-		const fjernMiljoeAvhengige = page
-		page.getByTestId(CypressSelector.BUTTON_VELG_MILJOE_AVHENGIG)
-		const velgMiljoeAvhengige = page
-		page.FIXME_each(async (element, index) => {
-			await velgMiljoeAvhengige.nth(index).click()
-			page.getByTestId(CypressSelector.BUTTON_VIDERE)
-			await page.click()
-			page.getByTestId(CypressSelector.BUTTON_VIDERE)
-			await page.click()
+		await page.getByTestId(TestComponentSelectors.BUTTON_OPPRETT_PERSONER).click()
+		await page.getByTestId(TestComponentSelectors.BUTTON_START_BESTILLING).click()
+		const fjernMiljoeAvhengige = await page
+			.getByTestId(TestComponentSelectors.BUTTON_FJERN_MILJOE_AVHENGIG)
+			.all()
+
+		for (const button_velg_miljoeavhengig of await page
+			.getByTestId(TestComponentSelectors.BUTTON_VELG_MILJOE_AVHENGIG)
+			.all()) {
+			await button_velg_miljoeavhengig.click()
+			await page.getByTestId(TestComponentSelectors.BUTTON_VIDERE).click()
+			await page.getByTestId(TestComponentSelectors.BUTTON_VIDERE).click()
+
 			await expect(page.locator('#q1')).toBeChecked()
 			await expect(page.locator('#q2')).toBeChecked()
 			await expect(page.locator('#q4')).not.toBeChecked()
-			page.getByTestId(CypressSelector.BUTTON_TILBAKE)
-			await page.click()
-			page.getByTestId(CypressSelector.BUTTON_TILBAKE)
-			await page.click()
-			await fjernMiljoeAvhengige.nth(index).click()
-		})
+
+			await page.getByTestId(TestComponentSelectors.BUTTON_TILBAKE).click()
+			await page.getByTestId(TestComponentSelectors.BUTTON_TILBAKE).click()
+			for (const button_fjern_miljoeavhengig of fjernMiljoeAvhengige) {
+				await button_fjern_miljoeavhengig.click()
+			}
+		}
 	})
 })

@@ -1,94 +1,88 @@
-import { expect, test } from '@playwright/test'
-
-import { CypressSelector } from '../../cypress/mocks/Selectors'
+import { expect, test } from '#/globalSetup'
+import { TestComponentSelectors } from '#/mocks/Selectors'
+import {
+	avbruttBestillingMock,
+	uferdigBestillingMock,
+	uferdigeBestillingerMock,
+} from '#/mocks/BasicMocks'
 
 const uferdigBestilling = new RegExp(/dolly-backend\/api\/v1\/bestilling\/2$/)
 const uferdigeBestillinger = new RegExp(/dolly-backend\/api\/v1\/bestilling\/gruppe\/2\/ikkeferdig/)
-const personFragmentNaviger = new RegExp(/dolly-backend\/api\/v1\/ident\/naviger\/12345678912/)
 
 test.describe('Opprett gruppe og start bestilling med alle mulige tilvalg', () => {
 	test('passes', async ({ page }) => {
 		await page.goto('gruppe')
 
 		// Naviger mellom tabs
-		page.getByTestId(CypressSelector.TOGGLE_FAVORITTER)
-		await page.click()
-		page.getByTestId(CypressSelector.TOGGLE_ALLE)
-		await page.click()
-		page.getByTestId(CypressSelector.TOGGLE_MINE)
-		await page.click()
+		await page.getByTestId(TestComponentSelectors.TOGGLE_FAVORITTER).click()
+		await page.getByTestId(TestComponentSelectors.TOGGLE_ALLE).click()
+		await page.getByTestId(TestComponentSelectors.TOGGLE_MINE).click()
 
 		// Opprett ny gruppe
-		page.getByTestId(CypressSelector.BUTTON_NY_GRUPPE)
-		await page.click()
-		page.getByTestId(CypressSelector.INPUT_NAVN)
-		await page.fill('Testing med Cypress')
-		page.getByTestId(CypressSelector.INPUT_HENSIKT)
-		await page.fill('Masse testing med Cypress')
-		page.getByTestId(CypressSelector.BUTTON_OPPRETT)
-		await page.click()
-		page.getByTestId(CypressSelector.BUTTON_OPPRETT_PERSONER)
-		await page.click()
-		page.getByTestId(CypressSelector.TOGGLE_EKSISTERENDE_PERSON)
-		await page.click()
-		page.getByTestId(CypressSelector.TOGGLE_NY_PERSON)
-		await page.click()
-		page.getByTestId(CypressSelector.TOGGLE_MAL)
-		await page.click()
+		await page.getByTestId(TestComponentSelectors.BUTTON_NY_GRUPPE).click()
+		await page.getByTestId(TestComponentSelectors.INPUT_NAVN).click()
+		await page.getByTestId(TestComponentSelectors.INPUT_NAVN).fill('Testing med Cypress')
+		await page.getByTestId(TestComponentSelectors.INPUT_HENSIKT).fill('Masse testing med Cypress')
+		await page.getByTestId(TestComponentSelectors.BUTTON_OPPRETT).click()
+		await page.getByTestId(TestComponentSelectors.BUTTON_OPPRETT_PERSONER).click()
+		await page.getByTestId(TestComponentSelectors.TOGGLE_EKSISTERENDE_PERSON).click()
+		await page.getByTestId(TestComponentSelectors.TOGGLE_NY_PERSON).click()
+		await page.getByTestId(TestComponentSelectors.TOGGLE_MAL).click()
 		await expect(page).toHaveURL(/\/gruppe\/2/)
-		page.getByTestId(CypressSelector.BUTTON_START_BESTILLING)
-		await page.click()
-		page.getByTestId(CypressSelector.BUTTON_VELG_ALLE)
-		page.FIXME_each(async (btn) =>
-			(async () => {
-				page.FIXME_wrap(btn)
-				await page.click()
-				return page
-			})(),
-		)
-		page.getByTestId(CypressSelector.BUTTON_VELG_MILJOE_AVHENGIG)
-		page.FIXME_each(async (btn) =>
-			(async () => {
-				page.FIXME_wrap(btn)
-				await page.click()
-				return page
-			})(),
-		)
-		page.getByTestId(CypressSelector.BUTTON_VIDERE)
-		await page.click()
-		await page.waitForTimeout(500)
-		page.getByTestId(CypressSelector.BUTTON_TILBAKE)
-		await page.click()
-		page.getByTestId(CypressSelector.BUTTON_FJERN_ALLE)
-		page.FIXME_each(async (btn) =>
-			(async () => {
-				page.FIXME_wrap(btn)
-				await page.click()
-				return page
-			})(),
-		)
-		page.getByTestId(CypressSelector.BUTTON_VIDERE)
-		await page.click()
-		page.getByTestId(CypressSelector.BUTTON_VIDERE)
-		await page.click()
-		page.getByTestId(CypressSelector.TOGGLE_BESTILLING_MAL)
-		await page.click()
-		page.getByTestId(CypressSelector.TOGGLE_BESTILLING_MAL)
-		await page.FIXME_should('be.enabled')
-		page.FIXME_dollyType(CypressSelector.INPUT_BESTILLING_MALNAVN, 'Fornuftig navn på mal')
+		await page.getByTestId(TestComponentSelectors.BUTTON_START_BESTILLING).click()
+
+		for (const button_velg of await page
+			.getByTestId(TestComponentSelectors.BUTTON_VELG_ALLE)
+			.all()) {
+			await button_velg.click()
+		}
+
+		for (const button_miljoe_avhengig of await page
+			.getByTestId(TestComponentSelectors.BUTTON_VELG_MILJOE_AVHENGIG)
+			.all()) {
+			await button_miljoe_avhengig.click()
+		}
+		await page.getByTestId(TestComponentSelectors.BUTTON_VIDERE).click()
+		await page.waitForTimeout(200)
+		await page.getByTestId(TestComponentSelectors.BUTTON_TILBAKE).click()
+
+		for (const button_avhuk of await page
+			.getByTestId(TestComponentSelectors.BUTTON_FJERN_ALLE)
+			.all()) {
+			await button_avhuk.click()
+		}
+
+		await page.getByTestId(TestComponentSelectors.BUTTON_VIDERE).click()
+		await page.getByTestId(TestComponentSelectors.BUTTON_VIDERE).click()
+		await page.getByTestId(TestComponentSelectors.TOGGLE_BESTILLING_MAL).click()
+		await expect(page.getByTestId(TestComponentSelectors.TOGGLE_BESTILLING_MAL)).toBeChecked()
+
+		await page
+			.getByTestId(TestComponentSelectors.INPUT_BESTILLING_MALNAVN)
+			.fill('Fornuftig navn på mal')
 
 		//Midlertidig aktiv bestilling intercept
-		page.getByTestId(CypressSelector.TITLE_SEND_KOMMENTAR)
-		await page.click()
-		page.getByTestId(CypressSelector.BUTTON_FULLFOER_BESTILLING)
-		await page.click()
-		await page.waitForTimeout(1000)
+		await page.route(uferdigBestilling, async (route) => {
+			await route.fulfill({ body: JSON.stringify(uferdigBestillingMock) })
+		})
+
+		await page.route(uferdigeBestillinger, async (route) => {
+			await route.fulfill({ body: JSON.stringify(uferdigeBestillingerMock) })
+		})
+
+		await page.getByTestId(TestComponentSelectors.TITLE_SEND_KOMMENTAR).click()
+		await page.getByTestId(TestComponentSelectors.BUTTON_FULLFOER_BESTILLING).click()
+
+		await page.waitForTimeout(400)
+
+		await page.getByTestId(TestComponentSelectors.BUTTON_AVBRYT_BESTILLING).click()
 
 		//Avbrutt bestilling intercept
-		page.getByTestId(CypressSelector.BUTTON_AVBRYT_BESTILLING)
-		await page.click()
+		await page.route(uferdigBestilling, async (route) => {
+			await route.fulfill({ body: JSON.stringify(avbruttBestillingMock) })
+		})
+
 		await page.waitForTimeout(500)
-		page.getByTestId(CypressSelector.BUTTON_LUKK_BESTILLING_RESULTAT)
-		await page.click()
+		await page.getByTestId(TestComponentSelectors.BUTTON_LUKK_BESTILLING_RESULTAT).click()
 	})
 })

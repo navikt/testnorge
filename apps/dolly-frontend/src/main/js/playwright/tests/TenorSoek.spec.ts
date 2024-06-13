@@ -1,6 +1,6 @@
-import { expect, test } from '@playwright/test'
-
-import { CypressSelector } from '../../cypress/mocks/Selectors'
+import { expect, test } from '#/globalSetup'
+import { TestComponentSelectors } from '#/mocks/Selectors'
+import { tenorSoekOversiktMock, tenorSoekTestdataMock } from '../../cypress/mocks/BasicMocks'
 
 test.describe('Tenor-søk testing', () => {
 	const tenorSoekOversikt = new RegExp(
@@ -13,19 +13,23 @@ test.describe('Tenor-søk testing', () => {
 	test('passes', async ({ page }) => {
 		await page.goto('')
 
+		await page.route(tenorSoekOversikt, (route) => {
+			route.fulfill({ body: JSON.stringify(tenorSoekOversiktMock) })
+		})
+		await page.route(tenorSoekTestdata, (route) => {
+			route.fulfill({ body: JSON.stringify(tenorSoekTestdataMock) })
+		})
+
 		// Naviger til Tenor-soek og gjoer et soek
-		page.getByTestId(CypressSelector.BUTTON_HEADER_FINNPERSON)
-		await page.click()
-		page.getByTestId(CypressSelector.BUTTON_HEADER_TENOR)
-		await page.click()
+		await page.getByTestId(TestComponentSelectors.BUTTON_HEADER_FINNPERSON).click()
+		await page.getByTestId(TestComponentSelectors.BUTTON_HEADER_TENOR).click()
 		await expect(
 			page
 				.locator('h1')
 				.getByText(/Søk etter personer i Tenor/)
 				.first(),
 		).toBeVisible()
-		page.getByTestId(CypressSelector.CHECKBOX_TENORSOEK)
-		await page.click()
+		await page.getByTestId(TestComponentSelectors.CHECKBOX_TENORSOEK).click()
 		await page.waitForTimeout(1000)
 
 		// Velg person som ikke ligger i Dolly og start import av personen
@@ -40,8 +44,7 @@ test.describe('Tenor-søk testing', () => {
 				.getByText(/TIGER ULV/)
 				.first(),
 		).toBeVisible()
-		page.getByTestId(CypressSelector.BUTTON_IMPORTER_PERSONER)
-		await page.click()
+		await page.getByTestId(TestComponentSelectors.BUTTON_IMPORTER_PERSONER).click()
 		await page.waitForTimeout(500)
 		await expect(
 			page
@@ -49,15 +52,12 @@ test.describe('Tenor-søk testing', () => {
 				.getByText(/Importer person/)
 				.first(),
 		).toBeVisible()
-		page.getByTestId(CypressSelector.BUTTON_IMPORTER)
-		await page.click()
+		await page.getByTestId(TestComponentSelectors.BUTTON_IMPORTER).click()
 		await page.waitForTimeout(500)
 		await expect(page.locator('.bestillingsveileder')).toBeVisible()
-		page.getByTestId(CypressSelector.BUTTON_AVBRYT)
-		await page.click()
+		await page.getByTestId(TestComponentSelectors.BUTTON_AVBRYT).click()
 		await page.waitForTimeout(500)
-		page.getByTestId(CypressSelector.BUTTON_BEKREFT)
-		await page.click()
+		await page.getByTestId(TestComponentSelectors.BUTTON_BEKREFT).click()
 		await page.waitForTimeout(1000)
 		await expect(
 			page
@@ -67,8 +67,7 @@ test.describe('Tenor-søk testing', () => {
 		).toBeVisible()
 
 		// Naviger til foerste person som ligger i Dolly
-		page.getByTestId(CypressSelector.BUTTON_VIS_I_GRUPPE)
-		await page.first().click()
+		await page.getByTestId(TestComponentSelectors.BUTTON_VIS_I_GRUPPE).first().click()
 		await page.waitForTimeout(500)
 		await expect(
 			page
@@ -78,8 +77,7 @@ test.describe('Tenor-søk testing', () => {
 		).toBeVisible()
 
 		// Gaa til soek fra gruppe
-		page.getByTestId(CypressSelector.BUTTON_IMPORTER_PERSONER)
-		await page.click()
+		await page.getByTestId(TestComponentSelectors.BUTTON_IMPORTER_PERSONER).click()
 		await expect(
 			page
 				.locator('h1')

@@ -1,50 +1,45 @@
-import { test } from '@playwright/test'
-
-import { CypressSelector } from '../../cypress/mocks/Selectors'
+import { expect, test } from '#/globalSetup'
+import { TestComponentSelectors } from '#/mocks/Selectors'
+import { brukerMalerEndretMock } from '../../cypress/mocks/BasicMocks'
 
 const brukerMaler = new RegExp(/dolly-backend\/api\/v1\/malbestilling\?brukerId/)
 
 test.describe('Minside mal testing', () => {
 	test('passes', async ({ page }) => {
 		await page.goto('')
-		page.getByTestId(CypressSelector.BUTTON_PROFIL)
-		await page.click()
-		page.getByTestId(CypressSelector.BUTTON_PROFIL_MINSIDE)
-		await page.click()
-		page.getByTestId(CypressSelector.BUTTON_OPEN_FORBEDRING_MODAL)
-		await page.click()
-		page.getByTestId(CypressSelector.BUTTON_SEND_FORBEDRINGSOENSKE)
-		await page.FIXME_should('be.disabled')
-		page.FIXME_dollyType(CypressSelector.INPUT_FORBEDRING_MODAL, 'When you wish upon a star')
-		page.getByTestId(CypressSelector.CHECKBOX_FORBEDRING_ANONYM)
-		await page.click()
-		page.getByTestId(CypressSelector.CHECKBOX_FORBEDRING_ANONYM)
-		await page.FIXME_should('be.enabled')
-		page.getByTestId(CypressSelector.CHECKBOX_FORBEDRING_ANONYM)
-		await page.click()
-		page.getByTestId(CypressSelector.BUTTON_SEND_FORBEDRINGSOENSKE)
-		await page.click()
-		page.getByTestId(CypressSelector.INPUT_MINSIDE_SOEK_MAL)
-		await page.fill('mal')
-		page.getByTestId(CypressSelector.INPUT_MINSIDE_SOEK_MAL)
-		await page.clear()
-		page.getByTestId(CypressSelector.TOGGLE_MIN_SIDE_ORGANISASJON_MALER)
-		await page.click()
-		page.getByTestId(CypressSelector.TOGGLE_MIN_SIDE_PERSONER_MALER)
-		await page.click()
-		page.getByTestId(CypressSelector.BUTTON_MALER_SLETT)
-		await page.click()
-		page.getByTestId(CypressSelector.BUTTON_MALER_SLETT_BEKREFT)
-		await page.click()
-		page.getByTestId(CypressSelector.BUTTON_MINSIDE_ENDRE_MALNAVN)
-		await page.click()
-		page.getByTestId(CypressSelector.INPUT_MINSIDE_ENDRE_MALNAVN)
-		await page.clear()
-		page.FIXME_dollyType(CypressSelector.INPUT_MINSIDE_ENDRE_MALNAVN, 'Nytt navn på mal')
-		page.getByTestId(CypressSelector.BUTTON_MINSIDE_LAGRE_MALNAVN)
-		await page.click()
-		await send_oenske.FIXME_should('have.been.calledOnce')
-		await slett_mal.FIXME_should('have.been.calledOnce')
-		await endre_malnavn.FIXME_should('have.been.calledOnce')
+		await page.getByTestId(TestComponentSelectors.BUTTON_PROFIL).click()
+		await page.getByTestId(TestComponentSelectors.BUTTON_PROFIL_MINSIDE).click()
+		await page.getByTestId(TestComponentSelectors.BUTTON_OPEN_FORBEDRING_MODAL).click()
+		await expect(
+			page.getByTestId(TestComponentSelectors.BUTTON_SEND_FORBEDRINGSOENSKE),
+		).toBeDisabled()
+
+		await page
+			.getByTestId(TestComponentSelectors.INPUT_FORBEDRING_MODAL)
+			.fill('When you wish upon a star')
+
+		await page.getByTestId(TestComponentSelectors.CHECKBOX_FORBEDRING_ANONYM).click()
+		await expect(page.getByTestId(TestComponentSelectors.CHECKBOX_FORBEDRING_ANONYM)).toBeEnabled()
+
+		await page.getByTestId(TestComponentSelectors.CHECKBOX_FORBEDRING_ANONYM).click()
+		await page.getByTestId(TestComponentSelectors.BUTTON_SEND_FORBEDRINGSOENSKE).click()
+		await page.getByTestId(TestComponentSelectors.INPUT_MINSIDE_SOEK_MAL).fill('mal')
+		await page.getByTestId(TestComponentSelectors.INPUT_MINSIDE_SOEK_MAL).clear()
+		await page.getByTestId(TestComponentSelectors.TOGGLE_MIN_SIDE_ORGANISASJON_MALER).click()
+		await page.getByTestId(TestComponentSelectors.TOGGLE_MIN_SIDE_PERSONER_MALER).click()
+		await page.getByTestId(TestComponentSelectors.BUTTON_MALER_SLETT).click()
+		await page.getByTestId(TestComponentSelectors.BUTTON_MALER_SLETT_BEKREFT).click()
+		await page.getByTestId(TestComponentSelectors.BUTTON_MINSIDE_ENDRE_MALNAVN).click()
+		await page.getByTestId(TestComponentSelectors.INPUT_MINSIDE_ENDRE_MALNAVN).clear()
+
+		await page
+			.getByTestId(TestComponentSelectors.INPUT_MINSIDE_ENDRE_MALNAVN)
+			.fill('Nytt navn på mal')
+
+		await page.route(brukerMaler, async (route) => {
+			await route.fulfill({ body: JSON.stringify(brukerMalerEndretMock) })
+		})
+
+		await page.getByTestId(TestComponentSelectors.BUTTON_MINSIDE_LAGRE_MALNAVN).click()
 	})
 })

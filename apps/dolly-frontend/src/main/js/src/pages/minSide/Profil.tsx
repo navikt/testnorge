@@ -1,11 +1,11 @@
 // @ts-ignore
 import dolly from '@/favicon.ico'
-import cypress from '@/assets/img/cypress.png'
+import playwright from '@/assets/img/playwright.png'
 import { useBrukerProfil, useBrukerProfilBilde } from '@/utils/hooks/useBruker'
 import { runningE2ETest } from '@/service/services/Request'
 
 export const getDefaultImage = () => {
-	return runningE2ETest() ? cypress : dolly
+	return runningE2ETest() ? playwright : dolly
 }
 
 export default function Profil() {

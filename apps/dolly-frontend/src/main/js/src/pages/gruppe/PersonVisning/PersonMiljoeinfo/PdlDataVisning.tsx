@@ -44,7 +44,7 @@ export const PdlDataVisning = ({ ident, bankIdBruker, miljoe }: PdlDataVisningPr
 		<div className="flexbox--flex-wrap">
 			<DollyTooltip
 				useExternalTooltip={true}
-				dataCy={TestComponentSelectors.HOVER_MILJOE}
+				testLocator={TestComponentSelectors.HOVER_MILJOE}
 				content={<PdlPersonInfo ident={ident} />}
 				align={{
 					offset: [0, -10],
@@ -56,7 +56,7 @@ export const PdlDataVisning = ({ ident, bankIdBruker, miljoe }: PdlDataVisningPr
 			{(!bankIdBruker || miljoe === 'q1') && (
 				<DollyTooltip
 					useExternalTooltip={true}
-					dataCy={TestComponentSelectors.HOVER_MILJOE}
+					testLocator={TestComponentSelectors.HOVER_MILJOE}
 					content={<PdlPersonInfo ident={ident} hentQ1={true} />}
 					align={{
 						offset: [0, -10],

@@ -1,14 +1,11 @@
-import { test } from '@playwright/test'
-
-import { CypressSelector } from '../../cypress/mocks/Selectors'
+import { test } from '#/globalSetup'
+import { TestComponentSelectors } from '#/mocks/Selectors'
 
 test.describe('Åpne en organisasjon med alle tilvalg', () => {
 	test('passes', async ({ page }) => {
 		await page.goto('')
-		page.getByTestId(CypressSelector.BUTTON_HEADER_ORGANISASJONER)
-		await page.click()
-		page.getByTestId(CypressSelector.BUTTON_HEADER_OPPRETT_ORGANISASJONER)
-		await page.click()
+		await page.getByTestId(TestComponentSelectors.BUTTON_HEADER_ORGANISASJONER).click()
+		await page.getByTestId(TestComponentSelectors.BUTTON_HEADER_OPPRETT_ORGANISASJONER).click()
 		await page
 			.locator('div')
 			.getByText(/Logaritme/)
@@ -26,21 +23,17 @@ test.describe('Åpne en organisasjon med alle tilvalg', () => {
 test.describe('Naviger til organisasjoner og start en bestilling med alle tilvalg', () => {
 	test('passes', async ({ page }) => {
 		await page.goto('http://localhost:5678/organisasjoner')
-		page.getByTestId(CypressSelector.BUTTON_HEADER_ORGANISASJONER)
-		await page.click()
-		page.getByTestId(CypressSelector.BUTTON_OPPRETT_ORGANISASJON)
-		await page.click()
-		page.getByTestId(CypressSelector.BUTTON_START_BESTILLING)
-		await page.click()
-		page.getByTestId(CypressSelector.BUTTON_VELG_ALLE)
-		page.FIXME_each(async (btn) =>
-			(async () => {
-				page.FIXME_wrap(btn)
-				await page.click()
-				return page
-			})(),
-		)
-		page.getByTestId(CypressSelector.BUTTON_VIDERE)
-		await page.click()
+
+		await page.getByTestId(TestComponentSelectors.BUTTON_HEADER_ORGANISASJONER).click()
+		await page.getByTestId(TestComponentSelectors.BUTTON_OPPRETT_ORGANISASJON).click()
+		await page.getByTestId(TestComponentSelectors.BUTTON_START_BESTILLING).click()
+
+		for (const button_velg_alle of await page
+			.getByTestId(TestComponentSelectors.BUTTON_VELG_ALLE)
+			.all()) {
+			await button_velg_alle.click()
+		}
+
+		await page.getByTestId(TestComponentSelectors.BUTTON_VIDERE).click()
 	})
 })

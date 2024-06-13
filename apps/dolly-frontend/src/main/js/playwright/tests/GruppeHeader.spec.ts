@@ -1,6 +1,5 @@
-import { expect, test } from '@playwright/test'
-
-import { CypressSelector } from '../../cypress/mocks/Selectors'
+import { expect, test } from '#/globalSetup'
+import { TestComponentSelectors } from '#/mocks/Selectors'
 
 test.describe('Testing av forskjellige actions på gruppeheaderen', () => {
 	test('Legg til på alle i gruppe', async ({ page }) => {
@@ -10,32 +9,28 @@ test.describe('Testing av forskjellige actions på gruppeheaderen', () => {
 			.getByText(/Testytest/)
 			.first()
 			.click()
-		page.getByTestId(CypressSelector.BUTTON_LEGGTILPAAALLE)
-		await page.click()
-		page.getByTestId(CypressSelector.BUTTON_VIDERE)
-		await page.click()
-		page.getByTestId(CypressSelector.BUTTON_VIDERE)
-		await page.click()
-		page.getByTestId(CypressSelector.BUTTON_FULLFOER_BESTILLING)
-		await page.click()
+		await page.getByTestId(TestComponentSelectors.BUTTON_LEGGTILPAAALLE).click()
+		await page.getByTestId(TestComponentSelectors.BUTTON_VIDERE).click()
+		await page.getByTestId(TestComponentSelectors.BUTTON_VIDERE).click()
+		await page.getByTestId(TestComponentSelectors.BUTTON_FULLFOER_BESTILLING).click()
 	})
 
-	const tagsPost = new RegExp(/dolly-backend\/api\/v1\/tags/)
 	test('Posting av tags', async ({ page }) => {
 		await page.goto('gruppe')
-		const postTags = page.waitForResponse({ statusCode: 201 })
 		await page
 			.locator('div')
 			.getByText(/Testytest/)
 			.first()
 			.click()
-		page.getByTestId(CypressSelector.BUTTON_TILKNYTT_TAGS)
-		await page.click()
-		await page.locator('.select__input-container').fill('DUMMY')
-		await page.locator('.select__input-container').press('Enter')
-		page.getByTestId(CypressSelector.BUTTON_POST_TAGS)
-		await page.click()
-		await expect.poll(async () => (await postTags).status()).toBe(201)
+
+		await page.route('**/tags', async (route) => {
+			await route.fulfill({ status: 201 })
+		})
+
+		await page.getByTestId(TestComponentSelectors.BUTTON_TILKNYTT_TAGS).click()
+		await page.locator('.select__indicator').click()
+		await page.locator('.select__indicator').press('Enter')
+		await page.getByTestId(TestComponentSelectors.BUTTON_POST_TAGS).click()
 		await expect(
 			page
 				.locator('h1')
@@ -51,33 +46,26 @@ test.describe('Testing av forskjellige actions på gruppeheaderen', () => {
 			.getByText(/Testytest/)
 			.first()
 			.click()
-		page.getByTestId(CypressSelector.BUTTON_FLYTT_PERSONER)
-		await page.click()
-		page.getByTestId(CypressSelector.TOGGLE_ALLE_GRUPPER)
-		await page.click()
-		page.getByTestId(CypressSelector.TOGGLE_EKSISTERENDE_GRUPPE)
-		await page.click()
-		page.getByTestId(CypressSelector.TOGGLE_NY_GRUPPE)
-		await page.click()
-		page.getByTestId(CypressSelector.INPUT_NY_GRUPPE_NAVN)
-		await page.fill('TestNavn')
-		page.getByTestId(CypressSelector.INPUT_NY_GRUPPE_HENSIKT)
-		await page.fill('TestHensikt')
-		page.getByTestId(CypressSelector.BUTTON_NY_GRUPPE_OPPRETT)
-		await page.click()
+		await page.getByTestId(TestComponentSelectors.BUTTON_FLYTT_PERSONER).click()
+		await page.getByTestId(TestComponentSelectors.TOGGLE_ALLE_GRUPPER).click()
+		await page.getByTestId(TestComponentSelectors.TOGGLE_EKSISTERENDE_GRUPPE).click()
+		await page.getByTestId(TestComponentSelectors.TOGGLE_NY_GRUPPE).click()
+		await page.getByTestId(TestComponentSelectors.INPUT_NY_GRUPPE_NAVN).fill('TestNavn')
+		await page.getByTestId(TestComponentSelectors.INPUT_NY_GRUPPE_HENSIKT).fill('TestHensikt')
+		await page.getByTestId(TestComponentSelectors.BUTTON_NY_GRUPPE_OPPRETT).click()
 		await page
 			.locator('.navds-checkbox__label')
 			.getByText(/12345678912/)
 			.first()
 			.click()
-		page.getByTestId(CypressSelector.CONTAINER_VALGTE_PERSONER)
-		await page.FIXME_should('contain', '12345678912')
-		page.getByTestId(CypressSelector.BUTTON_FLYTT_PERSONER_NULLSTILL)
-		await page.click()
-		page.getByTestId(CypressSelector.CONTAINER_VALGTE_PERSONER)
-		await page.FIXME_should('not.contain', '12345678912')
-		page.getByTestId(CypressSelector.BUTTON_FLYTT_PERSONER_AVBRYT)
-		await page.click()
+		await expect(page.getByTestId(TestComponentSelectors.CONTAINER_VALGTE_PERSONER)).toContainText(
+			'12345678912',
+		)
+		await page.getByTestId(TestComponentSelectors.BUTTON_FLYTT_PERSONER_NULLSTILL).click()
+		await expect(
+			page.getByTestId(TestComponentSelectors.CONTAINER_VALGTE_PERSONER),
+		).not.toContainText('12345678912')
+		await page.getByTestId(TestComponentSelectors.BUTTON_FLYTT_PERSONER_AVBRYT).click()
 	})
 
 	test('Gjenopprett gruppe funksjonalitet', async ({ page }) => {
@@ -87,11 +75,11 @@ test.describe('Testing av forskjellige actions på gruppeheaderen', () => {
 			.getByText(/Testytest/)
 			.first()
 			.click()
-		page.getByTestId(CypressSelector.BUTTON_GJENOPPRETT_GRUPPE)
-		await page.click()
+		await page.getByTestId(TestComponentSelectors.BUTTON_GJENOPPRETT_GRUPPE).click()
 		await page.locator('#q2').click()
-		page.getByTestId(CypressSelector.BUTTON_BESTILLINGDETALJER_GJENOPPRETT_UTFOER)
-		await page.click()
+		await page
+			.getByTestId(TestComponentSelectors.BUTTON_BESTILLINGDETALJER_GJENOPPRETT_UTFOER)
+			.click()
 	})
 
 	test('Rediger gruppe funksjonalitet', async ({ page }) => {
@@ -101,15 +89,11 @@ test.describe('Testing av forskjellige actions på gruppeheaderen', () => {
 			.getByText(/Testytest/)
 			.first()
 			.click()
-		page.getByTestId(CypressSelector.BUTTON_REDIGER_GRUPPE)
-		await page.click()
-		page.getByTestId(CypressSelector.INPUT_NAVN)
-		await page.clear()
-		await page.fill('Redigert navn')
-		page.getByTestId(CypressSelector.INPUT_HENSIKT)
-		await page.clear()
-		await page.fill('Redigert hensikt')
-		page.getByTestId(CypressSelector.BUTTON_OPPRETT)
-		await page.click()
+		await page.getByTestId(TestComponentSelectors.BUTTON_REDIGER_GRUPPE).click()
+		await page.getByTestId(TestComponentSelectors.INPUT_NAVN).clear()
+		await page.getByTestId(TestComponentSelectors.INPUT_NAVN).fill('Redigert navn')
+		await page.getByTestId(TestComponentSelectors.INPUT_HENSIKT).clear()
+		await page.getByTestId(TestComponentSelectors.INPUT_HENSIKT).fill('Redigert hensikt')
+		await page.getByTestId(TestComponentSelectors.BUTTON_OPPRETT).click()
 	})
 })
