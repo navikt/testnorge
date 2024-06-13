@@ -8,6 +8,7 @@ test.describe('Tester at bruker blir sendt til login side dersom man ikke er aut
 		})
 
 		await page.goto('gruppe')
+		await page.waitForTimeout(3000)
 		await expect(page).toHaveURL(/login/)
 		await expect(page.getByTestId(TestComponentSelectors.BUTTON_LOGIN_NAV)).toBeVisible()
 	})
