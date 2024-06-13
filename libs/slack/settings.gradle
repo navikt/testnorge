@@ -4,6 +4,7 @@ plugins {
 
 rootProject.name = 'slack'
 
+includeBuild '../../plugins/java'
 
 develocity {
     buildScan {

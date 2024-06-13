@@ -4,6 +4,8 @@ plugins {
 
 rootProject.name = 'reactive-security'
 
+includeBuild '../../plugins/java'
+
 includeBuild '../security-core'
 
 develocity {

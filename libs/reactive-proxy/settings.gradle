@@ -4,6 +4,8 @@ plugins {
 
 rootProject.name = 'reactive-proxy'
 
+includeBuild '../../plugins/java'
+
 includeBuild '../reactive-security'
 
 develocity {

@@ -4,6 +4,8 @@ plugins {
 
 rootProject.name = 'commands'
 
+includeBuild '../../plugins/java'
+
 includeBuild '../data-transfer-objects'
 
 develocity {

@@ -4,6 +4,7 @@ plugins {
 
 rootProject.name = 'domain'
 
+includeBuild '../../plugins/java'
 
 develocity {
     buildScan {

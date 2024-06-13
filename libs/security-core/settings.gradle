@@ -4,6 +4,8 @@ plugins {
 
 rootProject.name = 'security-core'
 
+includeBuild '../../plugins/java'
+
 develocity {
     buildScan {
         termsOfUseUrl = "https://gradle.com/terms-of-service"

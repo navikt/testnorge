@@ -4,6 +4,8 @@ plugins {
 
 rootProject.name = 'kafka-config'
 
+includeBuild '../../plugins/java'
+
 develocity {
     buildScan {
         termsOfUseUrl = "https://gradle.com/terms-of-service"
