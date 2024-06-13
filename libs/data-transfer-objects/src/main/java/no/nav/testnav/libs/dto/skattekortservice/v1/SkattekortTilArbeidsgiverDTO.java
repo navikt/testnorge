@@ -12,7 +12,6 @@ import java.util.List;
 
 import static java.util.Objects.isNull;
 import static org.apache.commons.lang3.StringUtils.isBlank;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Data
 @Builder
@@ -78,30 +77,6 @@ public class SkattekortTilArbeidsgiverDTO {
         public boolean isEmptyInntektsaar() {
 
             return isNull(inntektsaar);
-        }
-    }
-
-    @Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class IdentifikatorForEnhetEllerPerson {
-
-        private String organisasjonsnummer;
-        private String personidentifikator;
-
-        @JsonIgnore
-        public boolean isAllEmpty() {
-
-            return isBlank(organisasjonsnummer) &&
-                    isBlank(personidentifikator);
-        }
-
-        @JsonIgnore
-        public boolean isAmbiguous() {
-
-            return isNotBlank(organisasjonsnummer) &&
-                    isNotBlank(personidentifikator);
         }
     }
 

@@ -27,6 +27,7 @@ public class SkattekortService {
 
     public SkattekortService(MapperFacade mapperFacade,
                              SokosSkattekortConsumer skattekortConsumer) throws JAXBException {
+
         this.jaxbContext = JAXBContext.newInstance(SkattekortRequest.class);
         this.mapperFacade = mapperFacade;
         this.skattekortConsumer = skattekortConsumer;
@@ -53,6 +54,13 @@ public class SkattekortService {
                 .flatMap(skattekortConsumer::sendSkattekort);
     }
 
+    public Mono<String> hentSkattekort(String ident, Integer inntektsaar) {
+
+        return skattekortConsumer.hentSkattekort(ident, inntektsaar)
+                .doOnNext(response -> log.info("Hentet resultat fra Sokos {}", response))
+                .map(data -> data.substring(data.indexOf("<?")));
+    }
+
     @SneakyThrows
     private String marshallToXml(SkattekortRequest melding) {
 
@@ -68,11 +76,5 @@ public class SkattekortService {
 
         return Base64.getEncoder()
                 .encodeToString(request.getBytes(StandardCharsets.UTF_8));
-    }
-
-    public Mono<String> hentSkattekort(String ident, Integer inntektsaar) {
-
-        return skattekortConsumer.hentSkattekort(ident, inntektsaar)
-                .doOnNext(response -> log.info("Hentet resultat fra Sokos {}", response));
     }
 }
