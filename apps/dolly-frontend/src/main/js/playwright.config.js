@@ -6,12 +6,16 @@ import { defineConfig, devices } from '@playwright/test'
 export default defineConfig({
 	testDir: './playwright/tests',
 	fullyParallel: true,
+	timeout: process.env.ci ? 50000 : 30000,
+	expect: {
+		timeout: process.env.ci ? 10000 : 5000,
+	},
 
 	/* Fail the build on CI if you accidentally left test.only in the source code. */
 	forbidOnly: !!process.env.CI,
 	/* Retry on CI only */
 	retries: process.env.CI ? 2 : 0,
-	workers: process.env.CI ? 3 : undefined,
+	workers: process.env.CI ? 2 : undefined,
 
 	reporter: 'html',
 	/* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
