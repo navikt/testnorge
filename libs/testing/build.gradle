@@ -14,7 +14,6 @@ sonarqube {
 group = 'no.nav.testnav.libs'
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-test'
     implementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
     implementation 'com.fasterxml.jackson.core:jackson-core'
     implementation 'com.fasterxml.jackson.core:jackson-databind'

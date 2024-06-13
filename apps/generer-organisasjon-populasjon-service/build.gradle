@@ -50,6 +50,5 @@ dependencies {
     implementation 'org.hibernate.validator:hibernate-validator'
     implementation 'org.postgresql:postgresql'
 
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
 }

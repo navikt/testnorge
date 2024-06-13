@@ -33,7 +33,6 @@ dependencies {
     implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
 
     testImplementation 'junit:junit:4.13.2' //TODO upgrade to JUnit5
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
     testImplementation 'no.nav.testnav.libs:testing'
     testImplementation 'org.assertj:assertj-core:3.26.0'

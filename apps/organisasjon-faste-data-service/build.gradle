@@ -47,6 +47,5 @@ dependencies {
     implementation 'org.projectreactor:reactor-spring:1.0.1.RELEASE'
     implementation 'org.hibernate.validator:hibernate-validator'
 
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
 }

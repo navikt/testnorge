@@ -53,7 +53,6 @@ dependencies {
     runtimeOnly 'com.h2database:h2'
 
     testImplementation 'io.projectreactor:reactor-test'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
     testImplementation 'org.assertj:assertj-core:3.26.0'
     testImplementation 'no.nav.testnav.libs:integration-test'

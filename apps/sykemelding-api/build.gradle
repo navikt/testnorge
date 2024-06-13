@@ -41,7 +41,6 @@ dependencies {
     implementation 'io.confluent:kafka-avro-serializer:7.5.1'
 
     testImplementation 'no.nav.testnav.libs:testing'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
 }

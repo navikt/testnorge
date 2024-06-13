@@ -18,31 +18,31 @@ configurations {
 }
 
 dependencies {
-    annotationProcessor 'org.projectlombok:lombok'
-    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    annotationProcessor "org.projectlombok:lombok"
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
-    compileOnly 'org.projectlombok:lombok'
+    compileOnly "org.projectlombok:lombok"
 
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    developmentOnly "org.springframework.boot:spring-boot-devtools"
 
-    implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
-    implementation 'org.projectlombok:lombok'
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation "net.logstash.logback:logstash-logback-encoder:7.4"
+    implementation "org.projectlombok:lombok"
+    implementation "org.springframework.boot:spring-boot-starter-actuator"
 
-    runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
+    runtimeOnly "io.micrometer:micrometer-registry-prometheus"
 
-    testAnnotationProcessor 'org.projectlombok:lombok'
+    testAnnotationProcessor "org.projectlombok:lombok"
 
     testImplementation "org.junit.jupiter:junit-jupiter:5.10.1"
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation "org.springframework.boot:spring-boot-starter-test"
 }
 
 dependencyManagement {
     applyMavenExclusions = false
     imports {
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:2023.0.1"
-        mavenBom 'org.springframework.boot:spring-boot-dependencies:3.2.1'
-        mavenBom 'org.springframework.session:spring-session-bom:2021.2.3'
+        mavenBom "org.springframework.boot:spring-boot-dependencies:3.2.1"
+        mavenBom "org.springframework.session:spring-session-bom:2021.2.3"
     }
 }
 
@@ -51,9 +51,9 @@ repositories {
     mavenCentral()
     maven {
         name = "GitHubPackages"
-        url = uri('https://maven.pkg.github.com/navikt/maven-release')
+        url = uri("https://maven.pkg.github.com/navikt/maven-release")
         credentials(PasswordCredentials) {
-            username 'token'
+            username "token"
             password System.getenv("NAV_TOKEN")
         }
     }
@@ -80,5 +80,5 @@ sonarqube {
 
 tasks.test {
     useJUnitPlatform()
-    jvmArgs '--add-opens', 'java.base/java.lang=ALL-UNNAMED'
+    jvmArgs "--add-opens", "java.base/java.lang=ALL-UNNAMED"
 }

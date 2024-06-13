@@ -54,7 +54,6 @@ dependencies {
     implementation 'org.apache.poi:poi:5.2.5'
     implementation 'org.apache.poi:poi-ooxml:5.2.5'
 
-    testImplementation "org.springframework.boot:spring-boot-starter-test"
     testImplementation 'org.opensearch:opensearch-testcontainers:2.0.1'
 
     testImplementation 'org.springframework.security:spring-security-test'
