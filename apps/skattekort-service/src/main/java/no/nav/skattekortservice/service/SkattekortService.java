@@ -8,16 +8,14 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.skattekortservice.consumer.SokosSkattekortConsumer;
 import no.nav.skattekortservice.dto.SkattekortRequest;
 import no.nav.skattekortservice.dto.SokosRequest;
+import no.nav.skattekortservice.utility.SkattekortValidator;
 import no.nav.testnav.libs.dto.skattekortservice.v1.SkattekortTilArbeidsgiverDTO;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
-import java.util.Collection;
 
 @Slf4j
 @Service
@@ -37,7 +35,8 @@ public class SkattekortService {
     @SneakyThrows
     public Mono<String> sendSkattekort(SkattekortTilArbeidsgiverDTO skattekort) {
 
-        validate(skattekort);
+        SkattekortValidator.validate(skattekort);
+
         var arbeidstaker = skattekort.getArbeidsgiver().getFirst()
                 .getArbeidstaker().getFirst();
 
@@ -48,7 +47,7 @@ public class SkattekortService {
                 .doOnNext(encodedXml -> log.info("Base64 encoded request: {}", encodedXml))
                 .map(encodedXml -> SokosRequest.builder()
                         .fnr(arbeidstaker.getArbeidstakeridentifikator())
-                        .inntektsar(arbeidstaker.getInntektsaar())
+                        .inntektsar(arbeidstaker.getInntektsaar().toString())
                         .skattekort(encodedXml)
                         .build())
                 .flatMap(skattekortConsumer::sendSkattekort);
@@ -69,24 +68,5 @@ public class SkattekortService {
 
         return Base64.getEncoder()
                 .encodeToString(request.getBytes(StandardCharsets.UTF_8));
-    }
-
-    private static void validate(SkattekortTilArbeidsgiverDTO skattekort) {
-
-        skattekort.getArbeidsgiver().stream()
-                .map(SkattekortTilArbeidsgiverDTO.Arbeidsgiver::getArbeidstaker)
-                .flatMap(Collection::stream)
-                .map(SkattekortTilArbeidsgiverDTO.Skattekortmelding::getSkattekort)
-                .map(SkattekortTilArbeidsgiverDTO.Skattekort::getTrekktype)
-                .flatMap(Collection::stream)
-                .forEach(trekktype -> {
-                    if (trekktype.isAllEmpty()) {
-                        throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                                "En av Forskuddstrekk, Frikort, Trekkprosent og Trekktabell må angis per trekktype");
-                    } else if (trekktype.isAmbiguous()) {
-                        throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                                "Kun én av Forskuddstrekk, Frikort, Trekkprosent og Trekktabell kan angis per trekktype");
-                    }
-                });
     }
 }

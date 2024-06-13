@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.val;
 
 @Data
 @Builder
@@ -13,6 +12,6 @@ import lombok.val;
 public class SokosRequest {
 
     private String fnr;
-    private Integer inntektsar;
+    private String inntektsar;
     private String skattekort;
 }
