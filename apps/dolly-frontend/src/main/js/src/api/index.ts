@@ -155,7 +155,7 @@ const _fetch = (url: string, config: Config, body?: object): Promise<Response> =
 		retryOn: (attempt, _error, response) => {
 			if (!response.ok && !runningE2ETest()) {
 				if (
-					response.status === 401 &&
+					response?.status === 401 &&
 					!url.includes('testnav-arbeidsplassencv') &&
 					!url.includes('infostripe')
 				) {
@@ -182,7 +182,7 @@ const _fetch = (url: string, config: Config, body?: object): Promise<Response> =
 		}
 		if (!response.ok && !runningE2ETest()) {
 			if (
-				response.status === 401 &&
+				response?.status === 401 &&
 				!url.includes('testnav-arbeidsplassencv') &&
 				!url.includes('infostripe')
 			) {

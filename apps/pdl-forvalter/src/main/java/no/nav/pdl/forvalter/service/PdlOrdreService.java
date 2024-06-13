@@ -21,7 +21,6 @@ import no.nav.pdl.forvalter.dto.PdlTilrettelagtKommunikasjon;
 import no.nav.pdl.forvalter.dto.PdlVergemaal;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.exception.NotFoundException;
-import no.nav.pdl.forvalter.utils.HendelseIdService;
 import no.nav.pdl.forvalter.utils.IdenttypeUtility;
 import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregisterPersonstatusDTO;

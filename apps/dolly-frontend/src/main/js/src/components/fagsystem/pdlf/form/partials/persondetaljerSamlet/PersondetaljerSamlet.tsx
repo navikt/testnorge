@@ -14,12 +14,14 @@ type PersondetaljerSamletTypes = {
 	}
 	identtype?: string
 	harSkjerming?: boolean
+	identMaster?: string
 }
 
 export const PersondetaljerSamlet = ({
 	formMethods,
 	tpsMessaging,
 	identtype,
+	identMaster,
 }: PersondetaljerSamletTypes) => {
 	const sprak = tpsMessaging?.tpsMessagingData?.sprakKode
 
@@ -49,7 +51,10 @@ export const PersondetaljerSamlet = ({
 				)}
 
 				<h3>Kjønn</h3>
-				<KjoennForm path="kjoenn[0]" identtype={identtype} />
+				<KjoennForm
+					path="kjoenn[0]"
+					kanVelgeMaster={identMaster === 'PDL' || identtype === 'NPID'}
+				/>
 
 				{identtype !== 'NPID' && (
 					<>

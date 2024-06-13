@@ -186,11 +186,11 @@ export const initialTilrettelagtKommunikasjon = {
 	master: 'PDL',
 }
 
-export const initialDoedsfall = {
+export const getInitialDoedsfall = (master = 'FREG') => ({
 	doedsdato: new Date(),
 	kilde: 'Dolly',
-	master: 'PDL',
-}
+	master: master,
+})
 
 export const getInitialFoedsel = (master = 'FREG') => ({
 	foedekommune: null as unknown as string,

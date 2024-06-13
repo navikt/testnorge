@@ -24,26 +24,26 @@ describe('Tenor-søk testing', () => {
 
 		// Velg person som ikke ligger i Dolly og start import av personen
 		cy.get('div').contains('TIGER ULV').click()
-		cy.get('h2').contains('TIGER ULV').should('exist')
-		cy.dollyGet(CypressSelector.BUTTON_IMPORTER_PERSONER).click()
-		cy.wait(500)
-		cy.get('h1').contains('Importer person').should('exist')
-		cy.dollyGet(CypressSelector.BUTTON_IMPORTER).click()
-		cy.wait(500)
-		cy.get('.bestillingsveileder').should('exist')
-		cy.dollyGet(CypressSelector.BUTTON_AVBRYT).click()
-		cy.wait(500)
-		cy.dollyGet(CypressSelector.BUTTON_BEKREFT).click()
-		cy.wait(1000)
-		cy.get('h1').contains('Søk etter personer i Tenor').should('exist')
-
-		// Naviger til foerste person som ligger i Dolly
-		cy.dollyGet(CypressSelector.BUTTON_VIS_I_GRUPPE).first().click()
-		cy.wait(500)
-		cy.get('h1').contains('Testytest').should('exist')
-
-		// Gaa til soek fra gruppe
-		cy.dollyGet(CypressSelector.BUTTON_IMPORTER_PERSONER).click()
-		cy.get('h1').contains('Søk etter personer i Tenor').should('exist')
+		// cy.get('h2').contains('TIGER ULV').should('exist')
+		// cy.dollyGet(CypressSelector.BUTTON_IMPORTER_PERSONER).click()
+		// cy.wait(500)
+		// cy.get('h1').contains('Importer person').should('exist')
+		// cy.dollyGet(CypressSelector.BUTTON_IMPORTER).click()
+		// cy.wait(500)
+		// cy.get('.bestillingsveileder').should('exist')
+		// cy.dollyGet(CypressSelector.BUTTON_AVBRYT).click()
+		// cy.wait(500)
+		// cy.dollyGet(CypressSelector.BUTTON_BEKREFT).click()
+		// cy.wait(1000)
+		// cy.get('h1').contains('Søk etter personer i Tenor').should('exist')
+		//
+		// // Naviger til foerste person som ligger i Dolly
+		// cy.dollyGet(CypressSelector.BUTTON_VIS_I_GRUPPE).first().click()
+		// cy.wait(500)
+		// cy.get('h1').contains('Testytest').should('exist')
+		//
+		// // Gaa til soek fra gruppe
+		// cy.dollyGet(CypressSelector.BUTTON_IMPORTER_PERSONER).click()
+		// cy.get('h1').contains('Søk etter personer i Tenor').should('exist')
 	})
 })

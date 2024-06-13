@@ -25,32 +25,54 @@ const multiplePdlPersonUrl = (gruppe) => {
 	return sliceGruppe(gruppe, maxAntall, url)
 }
 
-export const usePdlOptions = (gruppe) => {
+export const usePdlOptions = (gruppe, master = 'PDLF') => {
 	const { data, isLoading, error } = useSWR<any, Error>(
-		multiplePdlforvalterUrl(gruppe),
+		master === 'PDLF' ? multiplePdlforvalterUrl(gruppe) : multiplePdlPersonUrl(gruppe),
 		multiFetcherAll,
 	)
 
+	let payload = []
+	if (master === 'PDLF') {
+		payload = data
+	} else {
+		data?.forEach((element) => {
+			payload.push(element?.data?.hentPersonBolk)
+		})
+	}
+
 	const personData = []
-	data?.flat().forEach((id) => {
+	payload?.flat().forEach((id) => {
 		const navn = id?.person?.navn?.[0]
 		const fornavn = navn?.fornavn || ''
 		const mellomnavn = navn?.mellomnavn ? `${navn?.mellomnavn?.charAt(0)}.` : ''
 		const etternavn = navn?.etternavn || ''
+		const ident = id?.person?.ident || id?.ident
+		const foreldre =
+			master === 'PDLF'
+				? id.relasjoner
+						?.filter((relasjon) => relasjon.relasjonType === 'FAMILIERELASJON_FORELDER')
+						?.map((relasjon) => relasjon.relatertPerson?.ident)
+				: id.person?.forelderBarnRelasjon
+						?.filter((relasjon) => relasjon.minRolleForPerson === 'BARN')
+						?.map((relasjon) => relasjon.relatertPersonsIdent)
+		const foreldreansvar = (master = 'PDLF'
+			? id.relasjoner
+					?.filter((relasjon) => relasjon.relasjonType === 'FORELDREANSVAR_BARN')
+					?.map((relasjon) => relasjon.relatertPerson?.ident)
+			: null)
+		const alder = getAlder(id.person?.foedsel?.[0]?.foedselsdato)
+		const kjoenn = id?.person?.kjoenn?.[0].kjoenn?.toLowerCase()
 		personData.push({
-			value: id?.person?.ident,
-			label: `${id?.person?.ident} - ${fornavn} ${mellomnavn} ${etternavn}`,
+			value: ident,
+			label: `${ident} - ${fornavn} ${mellomnavn} ${etternavn} (${kjoenn} ${alder})`,
 			relasjoner: id?.relasjoner?.map((r) => r?.relatertPerson?.ident),
-			alder: getAlder(id.person.foedsel?.[0]?.foedselsdato),
-			sivilstand: id.person.sivilstand?.[0]?.type,
-			vergemaal: id.person.vergemaal?.length > 0,
-			doedsfall: id.person.doedsfall?.length > 0,
-			foreldre: id.relasjoner
-				?.filter((relasjon) => relasjon.relasjonType === 'FAMILIERELASJON_FORELDER')
-				?.map((relasjon) => relasjon.relatertPerson?.ident),
-			foreldreansvar: id.relasjoner
-				?.filter((relasjon) => relasjon.relasjonType === 'FORELDREANSVAR_BARN')
-				?.map((relasjon) => relasjon.relatertPerson?.ident),
+			alder: alder,
+			kjoenn: kjoenn,
+			sivilstand: id.person?.sivilstand?.[0]?.type,
+			vergemaal: id.person?.vergemaal?.length > 0,
+			doedsfall: id.person?.doedsfall?.length > 0,
+			foreldre: foreldre,
+			foreldreansvar: foreldreansvar,
 		})
 	})
 
@@ -69,7 +91,7 @@ export const useTestnorgeOptions = (gruppe) => {
 			return null
 		}
 		const relasjoner = [] as Array<string>
-		person.forelderBarnRelasjon?.forEach((relasjon) =>
+		person?.forelderBarnRelasjon?.forEach((relasjon) =>
 			relasjoner.push(relasjon.relatertPersonsIdent),
 		)
 		person.fullmakt?.forEach((relasjon) => relasjoner.push(relasjon.motpartsPersonident))

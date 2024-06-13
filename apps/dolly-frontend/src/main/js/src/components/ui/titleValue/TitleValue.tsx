@@ -42,6 +42,7 @@ const P_TitleValue = ({
 export const TitleValue = ({
 	kodeverk = null as unknown as any,
 	visKopier = false,
+	hidden = false,
 	...restProps
 }) => {
 	if (!restProps.value && !restProps.children) {
@@ -63,6 +64,9 @@ export const TitleValue = ({
 				</KodeverkConnector>
 			</P_TitleValue>
 		)
+	}
+	if (hidden) {
+		return
 	}
 	return <P_TitleValue visKopier={visKopier} {...restProps} />
 }

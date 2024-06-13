@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static java.time.LocalDateTime.now;
 import static java.util.Objects.isNull;
@@ -29,6 +30,7 @@ import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.renumberId;
 import static no.nav.pdl.forvalter.utils.SyntetiskFraIdentUtility.isSyntetisk;
+import static no.nav.pdl.forvalter.utils.TestnorgeIdentUtility.isTestnorgeIdent;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.SivilstandDTO.Sivilstand.SAMBOER;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.SivilstandDTO.Sivilstand.UGIFT;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
@@ -38,7 +40,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
 @RequiredArgsConstructor
-public class SivilstandService implements Validation<SivilstandDTO> {
+public class SivilstandService implements BiValidation<SivilstandDTO, PersonDTO> {
 
     private static final String INVALID_RELATERT_VED_SIVILSTAND = "Sivilstand: Relatert person finnes ikke";
 
@@ -67,9 +69,9 @@ public class SivilstandService implements Validation<SivilstandDTO> {
     }
 
     @Override
-    public void validate(SivilstandDTO sivilstand) {
+    public void validate(SivilstandDTO sivilstand, PersonDTO person) {
 
-        if ((sivilstand.isGift() ||
+        if (!isTestnorgeIdent(person.getIdent()) && (sivilstand.isGift() ||
                 sivilstand.isSeparert() ||
                 sivilstand.getType() == SAMBOER) &&
                 isNotBlank(sivilstand.getRelatertVedSivilstand()) &&
@@ -145,17 +147,26 @@ public class SivilstandService implements Validation<SivilstandDTO> {
 
     private void createRelatertSivilstand(SivilstandDTO sivilstand, String hovedperson) {
 
-        DbPerson relatertPerson = personRepository.findByIdent(sivilstand.getRelatertVedSivilstand()).get();
-        SivilstandDTO relatertSivilstand = mapperFacade.map(sivilstand, SivilstandDTO.class);
+        var relatertPerson = new AtomicReference<>(new DbPerson());
+        personRepository.findByIdent(sivilstand.getRelatertVedSivilstand())
+                .ifPresentOrElse(relatertPerson::set,
+                        () -> relatertPerson.set(personRepository.save(DbPerson.builder()
+                                .ident(sivilstand.getRelatertVedSivilstand())
+                                .person(PersonDTO.builder()
+                                        .ident(sivilstand.getRelatertVedSivilstand())
+                                        .build())
+                                .sistOppdatert(now())
+                                .build())));
+
+        var relatertSivilstand = mapperFacade.map(sivilstand, SivilstandDTO.class);
         relatertSivilstand.setRelatertVedSivilstand(hovedperson);
-        relatertSivilstand.setId(relatertPerson.getPerson().getSivilstand().stream()
+        relatertSivilstand.setId(relatertPerson.get().getPerson().getSivilstand().stream()
                 .max(Comparator.comparing(SivilstandDTO::getId))
                 .map(SivilstandDTO::getId)
                 .orElse(0) + 1);
-        relatertPerson.getPerson().getSivilstand().addFirst(relatertSivilstand);
+        relatertPerson.get().getPerson().getSivilstand().addFirst(relatertSivilstand);
 
-        relatertPerson.getPerson().setSivilstand(enforceIntegrity(relatertPerson.getPerson()));
-        personRepository.save(relatertPerson);
+        relatertPerson.get().getPerson().setSivilstand(enforceIntegrity(relatertPerson.get().getPerson()));
     }
 
     protected List<SivilstandDTO> enforceIntegrity(PersonDTO person) {
