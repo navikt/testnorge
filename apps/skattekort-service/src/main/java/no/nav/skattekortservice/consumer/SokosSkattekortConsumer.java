@@ -1,8 +1,10 @@
 package no.nav.skattekortservice.consumer;
 
 import no.nav.skattekortservice.config.Consumers;
+import no.nav.skattekortservice.consumer.command.SokosGetCommand;
 import no.nav.skattekortservice.consumer.command.SokosPostCommand;
 import no.nav.skattekortservice.dto.SokosRequest;
+import no.nav.testnav.libs.dto.skattekortservice.v1.SokosGetRequest;
 import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.stereotype.Service;
@@ -29,5 +31,12 @@ public class SokosSkattekortConsumer {
 
         return tokenExchange.exchange(serverProperties)
                 .flatMap(token -> new SokosPostCommand(webClient, request, token.getTokenValue()).call());
+    }
+
+    public Mono<String> hentSkattekort(SokosGetRequest request) {
+
+        return tokenExchange.exchange(serverProperties)
+                .flatMap(token -> new SokosGetCommand(webClient, request.getIdent(),
+                        request.getInntektsar(), token.getTokenValue()).call());
     }
 }

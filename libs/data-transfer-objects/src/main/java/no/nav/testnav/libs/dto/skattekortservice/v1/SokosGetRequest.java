@@ -1,4 +1,4 @@
-package no.nav.skattekortservice.dto;
+package no.nav.testnav.libs.dto.skattekortservice.v1;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,9 +9,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SokosResponse {
+public class SokosGetRequest {
 
-    private String fnr;
-    private Integer inntektsar;
-    private String status;
+    private String ident;
+    private String inntektsar;
 }
