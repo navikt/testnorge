@@ -27,6 +27,5 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
       - name: Run Playwright tests
-        with:
-          working-directory: ${{ inputs.working-directory }}/src/main/js
+        working-directory: ${{ inputs.working-directory }}/src/main/js
         run: npx playwright test
