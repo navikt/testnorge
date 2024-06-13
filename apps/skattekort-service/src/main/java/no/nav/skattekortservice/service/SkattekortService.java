@@ -10,7 +10,6 @@ import no.nav.skattekortservice.dto.SkattekortRequest;
 import no.nav.skattekortservice.dto.SokosRequest;
 import no.nav.skattekortservice.utility.SkattekortValidator;
 import no.nav.testnav.libs.dto.skattekortservice.v1.SkattekortTilArbeidsgiverDTO;
-import no.nav.testnav.libs.dto.skattekortservice.v1.SokosGetRequest;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
@@ -71,9 +70,9 @@ public class SkattekortService {
                 .encodeToString(request.getBytes(StandardCharsets.UTF_8));
     }
 
-    public Mono<String> hentSkattekort(SokosGetRequest request) {
+    public Mono<String> hentSkattekort(String ident, Integer inntektsaar) {
 
-        return skattekortConsumer.hentSkattekort(request)
+        return skattekortConsumer.hentSkattekort(ident, inntektsaar)
                 .doOnNext(response -> log.info("Hentet resultat fra Sokos {}", response));
     }
 }

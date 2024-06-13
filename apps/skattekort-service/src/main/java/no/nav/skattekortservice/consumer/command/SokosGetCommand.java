@@ -19,7 +19,7 @@ public class SokosGetCommand implements Callable<Mono<String>> {
 
     private final WebClient webClient;
     private final String ident;
-    private final String inntektsaar;
+    private final Integer inntektsaar;
     private final String token;
 
     @Override
