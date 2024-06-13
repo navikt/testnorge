@@ -16,7 +16,6 @@ on:
       - .github/workflows/common.playwright.yml
 
 jobs:
-
   playwright:
     uses: ./.github/workflows/common.playwright.yml
     with:
