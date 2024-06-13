@@ -11,9 +11,9 @@ export default defineConfig({
 	forbidOnly: !!process.env.CI,
 	/* Retry on CI only */
 	retries: process.env.CI ? 2 : 0,
-	workers: process.env.CI ? 2 : undefined,
+	workers: process.env.CI ? 3 : undefined,
 
-	reporter: process.env.CI ? 'blob' : 'html',
+	reporter: 'html',
 	/* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
 	use: {
 		baseURL: 'http://localhost:5678/',
