@@ -23,8 +23,6 @@ test.describe('Dolly-søk testing', () => {
 			.first()
 			.click()
 
-		await page.waitForTimeout(500)
-
 		await page.getByTestId(TestComponentSelectors.BUTTON_NULLSTILL_SOEK).click()
 
 		await expect(
@@ -33,7 +31,6 @@ test.describe('Dolly-søk testing', () => {
 				.getByText(/Ingen søk er gjort/)
 				.first(),
 		).toBeVisible()
-		await page.waitForTimeout(1000)
 
 		await page.locator('.select-kjoenn__control').click()
 		await page.locator('.select-kjoenn__menu').click()

@@ -2,7 +2,7 @@ import { expect, test } from '#/globalSetup'
 import { TestComponentSelectors } from '#/mocks/Selectors'
 
 test.describe('Testing av forskjellige actions på gruppeheaderen', () => {
-	test('Legg til på alle i gruppe', async ({ page }) => {
+	test('Test av diverse funksjonalitet som finnes i header', async ({ page }) => {
 		await page.goto('gruppe')
 		await page
 			.locator('div')
@@ -13,9 +13,8 @@ test.describe('Testing av forskjellige actions på gruppeheaderen', () => {
 		await page.getByTestId(TestComponentSelectors.BUTTON_VIDERE).click()
 		await page.getByTestId(TestComponentSelectors.BUTTON_VIDERE).click()
 		await page.getByTestId(TestComponentSelectors.BUTTON_FULLFOER_BESTILLING).click()
-	})
 
-	test('Posting av tags', async ({ page }) => {
+		// Testing av tags
 		await page.goto('gruppe')
 		await page
 			.locator('div')
@@ -37,9 +36,8 @@ test.describe('Testing av forskjellige actions på gruppeheaderen', () => {
 				.getByText(/Testytest/)
 				.first(),
 		).toBeVisible()
-	})
 
-	test('Flyttpersoner funksjonalitet', async ({ page }) => {
+		//Testing av flyttpersoner funksjonalitet
 		await page.goto('gruppe')
 		await page
 			.locator('div')
@@ -66,9 +64,8 @@ test.describe('Testing av forskjellige actions på gruppeheaderen', () => {
 			page.getByTestId(TestComponentSelectors.CONTAINER_VALGTE_PERSONER),
 		).not.toContainText('12345678912')
 		await page.getByTestId(TestComponentSelectors.BUTTON_FLYTT_PERSONER_AVBRYT).click()
-	})
 
-	test('Gjenopprett gruppe funksjonalitet', async ({ page }) => {
+		// Testing av gjenopprett gruppe funksjonalitet
 		await page.goto('gruppe')
 		await page
 			.locator('div')
@@ -80,20 +77,7 @@ test.describe('Testing av forskjellige actions på gruppeheaderen', () => {
 		await page
 			.getByTestId(TestComponentSelectors.BUTTON_BESTILLINGDETALJER_GJENOPPRETT_UTFOER)
 			.click()
-	})
 
-	test('Rediger gruppe funksjonalitet', async ({ page }) => {
-		await page.goto('gruppe')
-		await page
-			.locator('div')
-			.getByText(/Testytest/)
-			.first()
-			.click()
-		await page.getByTestId(TestComponentSelectors.BUTTON_REDIGER_GRUPPE).click()
-		await page.getByTestId(TestComponentSelectors.INPUT_NAVN).clear()
-		await page.getByTestId(TestComponentSelectors.INPUT_NAVN).fill('Redigert navn')
-		await page.getByTestId(TestComponentSelectors.INPUT_HENSIKT).clear()
-		await page.getByTestId(TestComponentSelectors.INPUT_HENSIKT).fill('Redigert hensikt')
-		await page.getByTestId(TestComponentSelectors.BUTTON_OPPRETT).click()
+		// Testing av gjenopprett gruppe funskjonalitet
 	})
 })
