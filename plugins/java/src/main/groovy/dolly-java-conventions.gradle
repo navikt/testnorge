@@ -50,12 +50,16 @@ repositories {
     mavenLocal()
     mavenCentral()
     maven {
-        name = "GitHubPackages"
+        name = "GitHub Packages"
         url = uri("https://maven.pkg.github.com/navikt/maven-release")
         credentials(PasswordCredentials) {
             username "token"
             password System.getenv("NAV_TOKEN")
         }
+    }
+    maven {
+        name = "Confluent"
+        url = uri("https://packages.confluent.io/maven/")
     }
 }
 
