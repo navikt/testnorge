@@ -5,6 +5,8 @@ export type Journalpost = {
 	tittel: string
 	avsenderMottaker: AvsenderMottaker
 	tema: string
+	behandlingstema: string
+	behandlingstemanavn: string
 	kanal: string
 	journalfoerendeEnhet: string
 	sak: Sak

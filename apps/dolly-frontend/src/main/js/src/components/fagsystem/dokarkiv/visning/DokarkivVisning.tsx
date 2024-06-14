@@ -22,12 +22,12 @@ export default ({ journalpost, miljoe }: Props) => (
 		<TitleValue title="Tittel" value={journalpost.tittel} />
 		<TitleValue title="Kanal" value={journalpost.kanal} />
 		<TitleValue title="Tema" value={journalpost.tema} />
+		<TitleValue
+			title="Behandlingstema"
+			value={`${journalpost.behandlingstemanavn} (${journalpost.behandlingstema})`}
+		/>
 		<TitleValue title="Journalførende enhet" value={journalpost.journalfoerendeEnhet} />
 		<TitleValue title="Sakstype" value={showLabel('sakstype', journalpost.sak?.sakstype)} />
-		<TitleValue
-			title="Fagsaksystem"
-			value={showLabel('fagsaksystem', journalpost.sak?.fagsaksystem)}
-		/>
 		<TitleValue title="Fagsak-ID" value={journalpost.sak?.fagsakId} />
 		<TitleValue title="Journalpost-ID" value={journalpost.journalpostId} />
 
