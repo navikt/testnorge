@@ -11,7 +11,8 @@
     "lint": "eslint . --ext .ts,.tsx",
     "prettier": "prettier --write '**/*.{ts,tsx,js,css,html}'",
     "test:start": "vite --port 5678",
-    "test:playwright": "playwright test --ui"
+    "test:playwright-dev": "playwright test --ui",
+    "test:playwright-run": "playwright test"
   },
   "author": "",
   "license": "ISC",
@@ -40,7 +41,7 @@
     "rc-tooltip": "^6.0.1",
     "react": "^18.2.0",
     "react-confetti-explosion": "^2.1.2",
-    "react-datepicker": "^6.1.0",
+    "react-datepicker": "^7.0.0",
     "react-day-picker": "^8.1.0",
     "react-dom": "^18.2.0",
     "react-highlight-words": "^0.20.0",

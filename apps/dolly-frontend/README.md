@@ -97,3 +97,26 @@ Deretter må du fjerne "local" fra profiles i LocalConfig og legge til "local" i
 dette tilbake
 før noe pushes til master). Etter dette kan du kjøre applikasjonen som beskrevet i JavaScript.
 
+### Playwright - E2E testing
+
+Playwright brukes til å teste mesteparten av funksjonaliteten i Dolly ved kodeendringer.
+
+Dersom en eller flere de tre nettleserne som Playwright utfører tester på mangler (Chrome, Firefox og Edge), kjør:
+
+```
+sudo npx playwright install msedge
+sudo npx playwright install firefox
+sudo npx playwright install chrome
+```
+
+Deretter kan testene kjøres med kommandoen:
+
+```
+npm run test:playwright-run
+```
+
+For debugging av testene og utvikling av nye tester brukes:
+
+```
+npm run test:playwright-dev
+```

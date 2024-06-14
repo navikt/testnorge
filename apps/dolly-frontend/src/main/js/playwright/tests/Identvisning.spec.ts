@@ -10,7 +10,7 @@ test.describe('Åpne bestilt ident med knytning mot alle fagsystem', () => {
 			.first()
 			.click()
 		await page.getByTestId(TestComponentSelectors.TOGGLE_VISNING_BESTILLINGER).click()
-		await page.waitForTimeout(200)
+		await page.waitForTimeout(1000)
 		await page
 			.getByTestId(TestComponentSelectors.BUTTON_OPEN_BESTILLING)
 			.all()
@@ -25,7 +25,7 @@ test.describe('Åpne bestilt ident med knytning mot alle fagsystem', () => {
 		await page.getByTestId(TestComponentSelectors.TOGGLE_PERSON_IBRUK).click()
 		await page.getByTestId(TestComponentSelectors.BUTTON_OPEN_IDENT).click()
 		await page.getByTestId(TestComponentSelectors.BUTTON_OPEN_BESTILLINGSDETALJER).click()
-		await page.waitForTimeout(200)
+		await page.waitForTimeout(300)
 		await page.getByTestId(TestComponentSelectors.TITLE_VISNING).hover({ force: true })
 
 		await page.getByTestId(TestComponentSelectors.BUTTON_MODAL_CLOSE).click()

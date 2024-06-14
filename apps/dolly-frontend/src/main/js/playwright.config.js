@@ -6,6 +6,7 @@ import { defineConfig, devices } from '@playwright/test'
 export default defineConfig({
 	testDir: './playwright/tests',
 	fullyParallel: true,
+	// Increase timeout for CI to minimize test flakiness
 	timeout: process.env.ci ? 50000 : 30000,
 	expect: {
 		timeout: process.env.ci ? 10000 : 5000,
@@ -15,6 +16,7 @@ export default defineConfig({
 	forbidOnly: !!process.env.CI,
 	/* Retry on CI only */
 	retries: process.env.CI ? 2 : 0,
+	// Fewer workers on CI to make tests more stable
 	workers: process.env.CI ? 2 : undefined,
 
 	reporter: 'html',
@@ -40,7 +42,7 @@ export default defineConfig({
 		},
 	],
 
-	/* Run your local dev server before starting the tests */
+	/* Run the local dev server before starting the tests */
 	webServer: {
 		command: 'npm run test:start',
 		url: 'http://localhost:5678',
