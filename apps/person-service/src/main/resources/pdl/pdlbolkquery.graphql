@@ -366,6 +366,27 @@ query($identer: [ID!]!) {
                     ...metadataDetails
                 }
             },
+            foedselsdato {
+                foedselsaar,
+                foedselsdato,
+                folkeregistermetadata {
+                    ...folkeregistermetadataDetails
+                }
+                metadata {
+                    ...metadataDetails
+                }
+            },
+            foedested {
+                foedested,
+                foedekommune,
+                foedeland,
+                folkeregistermetadata {
+                    ...folkeregistermetadataDetails
+                }
+                metadata {
+                    ...metadataDetails
+                }
+            },
             doedfoedtBarn{
                 dato,
                 folkeregistermetadata {
