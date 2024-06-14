@@ -4,6 +4,7 @@ import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.testnav.libs.data.pdlforvalter.v1.DeltBostedDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.ForelderBarnRelasjonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.MatrikkeladresseDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.RelatertBiPersonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.VegadresseDTO;
 import org.junit.jupiter.api.Test;
@@ -47,7 +48,9 @@ class ForelderBarnRelasjonServiceTest {
                 .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                forelderBarnRelasjonService.validate(request));
+                forelderBarnRelasjonService.validate(request, PersonDTO.builder()
+                        .ident(IDENT)
+                        .build()));
 
         assertThat(exception.getMessage(), containsString("ForelderBarnRelasjon: min rolle for person må oppgis"));
     }
@@ -61,7 +64,9 @@ class ForelderBarnRelasjonServiceTest {
                 .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                forelderBarnRelasjonService.validate(request));
+                forelderBarnRelasjonService.validate(request, PersonDTO.builder()
+                        .ident(IDENT)
+                        .build()));
 
         assertThat(exception.getMessage(), containsString("ForelderBarnRelasjon: relatert persons rolle må oppgis"));
     }
@@ -76,7 +81,9 @@ class ForelderBarnRelasjonServiceTest {
                 .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                forelderBarnRelasjonService.validate(request));
+                forelderBarnRelasjonService.validate(request, PersonDTO.builder()
+                        .ident(IDENT)
+                        .build()));
 
         assertThat(exception.getMessage(), containsString("ForelderBarnRelasjon: min rolle og relatert persons rolle " +
                 "må være av type barn -- forelder, eller forelder -- barn"));
@@ -92,7 +99,9 @@ class ForelderBarnRelasjonServiceTest {
                 .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                forelderBarnRelasjonService.validate(request));
+                forelderBarnRelasjonService.validate(request, PersonDTO.builder()
+                        .ident(IDENT)
+                        .build()));
 
         assertThat(exception.getMessage(), containsString("ForelderBarnRelasjon: min rolle og relatert persons rolle " +
                 "må være av type barn -- forelder, eller forelder -- barn"));
@@ -111,7 +120,9 @@ class ForelderBarnRelasjonServiceTest {
         when(personRepository.existsByIdent(IDENT)).thenReturn(false);
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                forelderBarnRelasjonService.validate(request));
+                forelderBarnRelasjonService.validate(request, PersonDTO.builder()
+                        .ident(IDENT)
+                        .build()));
 
         assertThat(exception.getMessage(),
                 containsString(String.format("ForelderBarnRelasjon: Relatert person %s finnes ikke", IDENT)));
@@ -132,7 +143,9 @@ class ForelderBarnRelasjonServiceTest {
                 .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                forelderBarnRelasjonService.validate(request));
+                forelderBarnRelasjonService.validate(request, PersonDTO.builder()
+                        .ident(IDENT)
+                        .build()));
 
         assertThat(exception.getMessage(), containsString("Delt bosted: kun én adresse skal være satt (vegadresse, ukjentBosted, matrikkeladresse)"));
     }
@@ -148,7 +161,9 @@ class ForelderBarnRelasjonServiceTest {
                 .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                forelderBarnRelasjonService.validate(request));
+                forelderBarnRelasjonService.validate(request, PersonDTO.builder()
+                        .ident(IDENT)
+                        .build()));
 
         assertThat(exception.getMessage(), containsString("ForelderBarnRelasjon: Relatert person skal finnes med eller uten ident, " +
                 "ikke begge deler"));

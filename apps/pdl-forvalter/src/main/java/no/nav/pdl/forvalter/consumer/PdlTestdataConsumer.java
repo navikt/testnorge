@@ -11,6 +11,7 @@ import no.nav.pdl.forvalter.consumer.command.PdlOpprettArtifactCommandPdl;
 import no.nav.pdl.forvalter.consumer.command.PdlOpprettNpidCommand;
 import no.nav.pdl.forvalter.consumer.command.PdlOpprettPersonCommandPdl;
 import no.nav.pdl.forvalter.dto.ArtifactValue;
+import no.nav.pdl.forvalter.dto.HendelseIdRequest;
 import no.nav.pdl.forvalter.dto.MergeIdent;
 import no.nav.pdl.forvalter.dto.OpprettIdent;
 import no.nav.pdl.forvalter.dto.OrdreRequest;
@@ -113,6 +114,15 @@ public class PdlTestdataConsumer {
                         .flatMap(ident -> new PdlDeleteCommandPdl(webClient,
                                 getBestillingUrl().get(PDL_SLETTING), ident, accessToken.getTokenValue()).call()))
                 .collectList();
+    }
+
+    public Flux<OrdreResponseDTO.HendelseDTO> deleteHendelse(HendelseIdRequest hendelse) {
+
+        return tokenExchange
+                .exchange(serverProperties)
+                .flatMapMany(accessToken -> new PdlDeleteHendelseIdCommandPdl(webClient,
+                        getBestillingUrl().get(PDL_SLETTING_HENDELSEID),
+                        hendelse.getIdent(), hendelse.getHendelseId(), accessToken.getTokenValue()).call());
     }
 
     public Mono<OrdreResponseDTO.HendelseDTO> deleteHendelse(String ident, String hendelseId) {

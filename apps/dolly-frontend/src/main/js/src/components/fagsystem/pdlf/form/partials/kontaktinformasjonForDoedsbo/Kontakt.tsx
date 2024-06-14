@@ -12,10 +12,11 @@ import {
 import { OrganisasjonSelect } from '@/components/organisasjonSelect'
 import { PdlNyPerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlNyPerson'
 import { PdlEksisterendePerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlEksisterendePerson'
-import { useEffect } from 'react'
+import { useContext, useEffect } from 'react'
 import { useGenererNavn } from '@/utils/hooks/useGenererNavn'
 import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
 import { UseFormReturn } from 'react-hook-form/dist/types'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 interface KontaktValues {
 	formMethods: UseFormReturn
@@ -34,6 +35,8 @@ type OrgValues = {
 }
 
 export const Kontakt = ({ formMethods, path, eksisterendeNyPerson = null }: KontaktValues) => {
+	const opts = useContext(BestillingsveilederContext)
+
 	const advokatPath = `${path}.advokatSomKontakt`
 	const organisasjonPath = `${path}.organisasjonSomKontakt`
 	const personPath = `${path}.personSomKontakt`
@@ -108,16 +111,23 @@ export const Kontakt = ({ formMethods, path, eksisterendeNyPerson = null }: Kont
 
 	const disablePersoninfo = formMethods.watch(`${personPath}.identifikasjonsnummer`)
 
+	const kontakter = Options('kontaktType').filter(
+		(type) => type.value !== 'PERSON_FDATO' || opts?.antall === 1,
+	)
 	return (
 		<Kategori title="Kontakt">
 			<FormSelect
 				name={`${path}.kontaktType`}
 				label="Kontakttype"
 				value={getKontakttype()}
-				options={Options('kontaktType')}
+				options={kontakter}
 				onChange={handleAfterChange}
 				isClearable={false}
 				size="large"
+				info={
+					opts?.antall > 1 &&
+					'"Person med identifikasjon" er tilgjengelig for individ, ikke for gruppe'
+				}
 			/>
 			{getKontakttype() === 'ADVOKAT' && (
 				<div className="flexbox--flex-wrap">

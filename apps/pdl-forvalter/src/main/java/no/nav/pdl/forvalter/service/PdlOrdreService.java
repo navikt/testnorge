@@ -21,7 +21,6 @@ import no.nav.pdl.forvalter.dto.PdlTilrettelagtKommunikasjon;
 import no.nav.pdl.forvalter.dto.PdlVergemaal;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.exception.NotFoundException;
-import no.nav.pdl.forvalter.utils.HendelseIdService;
 import no.nav.pdl.forvalter.utils.IdenttypeUtility;
 import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
@@ -246,6 +245,7 @@ public class PdlOrdreService {
                                 .flatMap(Collection::stream)
                                 .toList())
                         .oppretting(opprettinger.stream()
+                                .filter(oppretting -> !aliasRepository.existsByTidligereIdent(oppretting.getPerson().getIdent()))
                                 .filter(OpprettRequest::isNotTestnorgeIdent)
                                 .map(this::personOpprett)
                                 .flatMap(Collection::stream)
@@ -256,6 +256,7 @@ public class PdlOrdreService {
                                 .flatMap(Collection::stream)
                                 .toList())
                         .opplysninger(opprettinger.stream()
+                                .filter(oppretting -> !aliasRepository.existsByTidligereIdent(oppretting.getPerson().getIdent()))
                                 .map(this::getOrdrer)
                                 .flatMap(Collection::stream)
                                 .toList())

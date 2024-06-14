@@ -14,6 +14,7 @@ export const ArrayHistorikk = ({
 	ident,
 	identtype,
 	header,
+	showMaster,
 }) => {
 	const Main = component
 	const MainRedigerbar = componentRedigerbar
@@ -37,7 +38,7 @@ export const ArrayHistorikk = ({
 				/>
 			)
 		}
-		return <Main idx={idx} data={element} />
+		return <Main idx={idx} data={element} showMaster={showMaster} />
 	}
 
 	return (
