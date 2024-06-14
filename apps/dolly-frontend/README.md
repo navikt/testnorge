@@ -101,7 +101,7 @@ før noe pushes til master). Etter dette kan du kjøre applikasjonen som beskrev
 
 Playwright brukes til å teste mesteparten av funksjonaliteten i Dolly ved kodeendringer.
 
-Dersom en eller flere de tre nettleserne som Playwright utfører tester på mangler (Chrome, Firefox og Edge), kjør:
+Dersom en eller flere av de tre nettleserne som Playwright utfører tester på mangler (Chrome, Firefox og Edge), kjør:
 
 ```
 sudo npx playwright install msedge
