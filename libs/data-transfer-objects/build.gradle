@@ -1,7 +1,6 @@
 plugins {
-    id "dolly-java-conventions"
+    id "dolly-libs"
 
-    id 'java-library'
     id 'maven-publish'
 }
 
@@ -11,8 +10,6 @@ sonarqube {
         property "sonar.projectName", "testnav-data-transfer-objects"
     }
 }
-
-group = 'no.nav.testnav.libs'
 
 dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-annotations'

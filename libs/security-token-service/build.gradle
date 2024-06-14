@@ -1,7 +1,5 @@
 plugins {
-    id "dolly-java-conventions"
-
-    id 'java-library'
+    id "dolly-libs"
 }
 
 sonarqube {
@@ -14,4 +12,3 @@ sonarqube {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
 }
-group = 'no.nav.testnav.libs'

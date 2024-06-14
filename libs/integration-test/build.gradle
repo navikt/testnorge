@@ -1,7 +1,5 @@
 plugins {
-    id "dolly-java-conventions"
-
-    id 'java-library'
+    id "dolly-libs"
 }
 
 sonarqube {
@@ -11,10 +9,8 @@ sonarqube {
     }
 }
 
-group = 'no.nav.testnav.libs'
-
 if (project.hasProperty("releaseVersion")) {
-    version = releaseVersion
+    version = project.getProperties().get("releaseVersion")
 }
 
 dependencies {

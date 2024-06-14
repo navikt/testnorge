@@ -1,12 +1,9 @@
 plugins {
-    id "dolly-java-conventions"
+    id "dolly-libs"
 
-    id 'java-library'
-    id 'maven-publish'
     id 'com.github.davidmc24.gradle.plugin.avro' version '1.9.1'
+    id 'maven-publish'
 }
-
-group = 'no.nav.testnav.libs'
 
 sonarqube {
     skipProject = true

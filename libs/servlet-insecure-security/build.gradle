@@ -1,7 +1,5 @@
 plugins {
-    id "dolly-java-conventions"
-
-    id 'java-library'
+    id "dolly-libs"
 }
 
 sonarqube {
@@ -10,8 +8,6 @@ sonarqube {
         property "sonar.projectName", "testnav-servlet-insecure-security"
     }
 }
-
-group = 'no.nav.testnav.libs'
 
 dependencies {
 

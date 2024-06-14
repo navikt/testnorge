@@ -1,7 +1,5 @@
 plugins {
-    id "dolly-java-conventions"
-
-    id 'java-library'
+    id "dolly-libs"
 }
 
 sonarqube {
@@ -11,7 +9,6 @@ sonarqube {
     }
 }
 
-group = 'no.nav.testnav.libs'
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'

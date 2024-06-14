@@ -1,7 +1,6 @@
 plugins {
-    id "dolly-java-conventions"
+    id "dolly-libs"
 
-    id 'java-library'
     id 'maven-publish'
 }
 
@@ -11,9 +10,6 @@ sonarqube {
         property "sonar.projectName", "testnav-reactive-frontend"
     }
 }
-
-
-group = 'no.nav.testnav.libs'
 
 if (project.hasProperty("releaseVersion")) {
     version = releaseVersion
