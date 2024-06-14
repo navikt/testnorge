@@ -128,7 +128,12 @@ export const PdlfVisning = ({ fagsystemData, loading, tmpPersoner, erRedigerbar 
 					relasjoner={data?.relasjoner}
 					erRedigerbar={erRedigerbar}
 				/>
-				<PdlSikkerhetstiltak data={data?.person?.sikkerhetstiltak} />
+				<PdlSikkerhetstiltak
+					data={data?.person?.sikkerhetstiltak}
+					tmpPersoner={tmpPdlforvalter}
+					ident={ident}
+					erRedigerbar={erRedigerbar}
+				/>
 				<TilrettelagtKommunikasjon data={data?.person?.tilrettelagtKommunikasjon} />
 				<TpsMBankkonto
 					data={bankkontoData}

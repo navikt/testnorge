@@ -46,9 +46,10 @@ export const PdlFullmakt = ({
 	pdlfRelasjoner,
 	tmpPersoner,
 	ident,
-	erPdlVisning,
+	erPdlVisning = false,
+	erRedigerbar = true,
 }: DataListe) => {
-	if (!data || (data.length === 0 && (!tmpPersoner || Object.keys(tmpPersoner).length < 1))) {
+	if (!data || data.length === 0) {
 		return null
 	}
 
@@ -66,7 +67,7 @@ export const PdlFullmakt = ({
 					const pdlfElement = pdlfData?.find(
 						(element) => element.hendelseId === fullmakt?.metadata?.opplysningsId,
 					)
-					if (!erPdlVisning && master !== 'FREG') {
+					if (erRedigerbar && master !== 'FREG') {
 						return (
 							<FullmaktVisning
 								fullmaktData={pdlfElement || fullmakt}

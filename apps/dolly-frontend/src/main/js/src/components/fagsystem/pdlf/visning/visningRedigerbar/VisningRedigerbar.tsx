@@ -39,6 +39,7 @@ import { Form, FormProvider, useForm } from 'react-hook-form'
 import { visningRedigerbarValidation } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarValidation'
 import { yupResolver } from '@hookform/resolvers/yup'
 import './VisningRedigerbarForm.less'
+import { SikkerhetstiltakForm } from '@/components/fagsystem/pdlf/form/partials/sikkerhetstiltak/Sikkerhetstiltak'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -67,6 +68,7 @@ enum Attributt {
 	Utvandring = 'utflytting',
 	Vergemaal = 'vergemaal',
 	Fullmakt = 'fullmakt',
+	Sikkerhetstiltak = 'sikkerhetstiltak',
 	Boadresse = 'bostedsadresse',
 	Oppholdsadresse = 'oppholdsadresse',
 	Kontaktadresse = 'kontaktadresse',
@@ -198,6 +200,8 @@ export const VisningRedigerbar = ({
 	const handleSubmit = useCallback((data: any) => {
 		const submit = async () => {
 			setVisningModus(Modus.LoadingPdlf)
+			setErrorMessagePdlf(null)
+			setErrorMessagePdl(null)
 			await sendData(data)
 		}
 		mountedRef.current = false
@@ -274,6 +278,8 @@ export const VisningRedigerbar = ({
 						eksisterendeNyPerson={eksisterendeNyPerson}
 					/>
 				)
+			case Attributt.Sikkerhetstiltak:
+				return <SikkerhetstiltakForm formMethods={formMethods} path={path} />
 			case Attributt.Boadresse:
 				return (
 					<BostedsadresseForm

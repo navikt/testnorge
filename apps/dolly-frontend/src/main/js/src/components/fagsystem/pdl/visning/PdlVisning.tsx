@@ -118,7 +118,13 @@ export const PdlVisning = ({
 					ident={ident}
 					erPdlVisning={miljoeVisning}
 				/>
-				<PdlSikkerhetstiltak data={sikkerhetstiltak} />
+				<PdlSikkerhetstiltak
+					data={sikkerhetstiltak}
+					pdlfData={pdlfPerson?.sikkerhetstiltak}
+					tmpPersoner={tmpPdlforvalter}
+					ident={ident}
+					erPdlVisning={miljoeVisning}
+				/>
 				<TilrettelagtKommunikasjon data={tilrettelagtKommunikasjon} />
 				<TpsMBankkonto
 					data={bankkontoData}
