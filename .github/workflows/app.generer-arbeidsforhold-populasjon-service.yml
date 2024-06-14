@@ -3,6 +3,7 @@ name: generer-arbeidsforhold-populasjon-service
 on:
   push:
     paths:
+      - "plugins/**"
       - libs/commands
       - libs/data-transfer-objects
       - libs/security-core

@@ -3,6 +3,7 @@ name: kontoregister-person-proxy
 on:
   push:
     paths:
+      - "plugins/**"
       - libs/reactive-core
       - libs/reactive-proxy
       - libs/reactive-security

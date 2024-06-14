@@ -3,6 +3,7 @@ name: person-faste-data-service
 on:
   push:
     paths:
+      - "plugins/**"
       - libs/data-transfer-objects
       - libs/reactive-core
       - libs/reactive-security

@@ -3,6 +3,7 @@ name: commands
 on:
   push:
     paths:
+      - "plugins/**"
       - libs/commands/**
       - .github/workflows/lib.commands.yml
 

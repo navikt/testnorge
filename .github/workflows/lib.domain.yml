@@ -3,6 +3,7 @@ name: domain
 on:
   push:
     paths:
+      - "plugins/**"
       - libs/domain/**
       - .github/workflows/lib.domain.yml
 

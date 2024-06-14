@@ -3,6 +3,7 @@ name: kodeverk-service
 on:
   push:
     paths:
+      - "plugins/**"
       - libs/security-core
       - libs/reactive-core
       - libs/reactive-security

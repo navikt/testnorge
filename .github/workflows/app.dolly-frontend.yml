@@ -3,6 +3,7 @@ name: dolly-frontend
 on:
   push:
     paths:
+      - "plugins/**"
       - libs/data-transfer-objects
       - libs/reactive-core
       - libs/reactive-frontend

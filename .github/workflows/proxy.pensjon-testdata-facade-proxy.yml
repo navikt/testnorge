@@ -3,6 +3,7 @@ name: pensjon-testdata-facade-proxy
 on:
   push:
     paths:
+      - "plugins/**"
       - libs/reactive-core
       - libs/reactive-proxy
       - libs/reactive-security
