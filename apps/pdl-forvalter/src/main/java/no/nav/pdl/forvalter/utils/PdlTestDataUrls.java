@@ -12,7 +12,8 @@ import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_DELTBOSTE
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_DOEDFOEDT_BARN;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_DOEDSFALL;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_FALSK_IDENTITET;
-import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_FOEDSEL;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_FOEDESTED;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_FOEDSELSDATO;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_FOLKEREGISTER_PERSONSTATUS;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_FORELDREANSVAR;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_FORELDRE_BARN_RELASJON;
@@ -53,7 +54,8 @@ public class PdlTestDataUrls {
     private static final String PDL_BESTILLING_DOEDFOEDT_BARN_URL = PDL_BESTILLING_URL + "/doedfoedtbarn";
     private static final String PDL_BESTILLING_DOEDSFALL_URL = PDL_BESTILLING_URL + "/doedsfall";
     private static final String PDL_BESTILLING_FALSK_IDENTITET_URL = PDL_BESTILLING_URL + "/falskidentitet";
-    private static final String PDL_BESTILLING_FOEDSEL_URL = PDL_BESTILLING_URL + "/foedsel";
+    private static final String PDL_BESTILLING_FOEDESTED_URL = PDL_BESTILLING_URL + "/foedested";
+    private static final String PDL_BESTILLING_FOEDSELSDATO_URL = PDL_BESTILLING_URL + "/foedselsdato";
     private static final String PDL_BESTILLING_FOLKEREGISTER_PERSONSTATUS_URL = PDL_BESTILLING_URL + "/folkeregisterpersonstatus";
     private static final String PDL_BESTILLING_FORELDREANSVAR_URL = PDL_BESTILLING_URL + "/foreldreansvar";
     private static final String PDL_BESTILLING_FORELDRE_BARN_RELASJON_URL = PDL_BESTILLING_URL + "/forelderbarnrelasjon";
@@ -83,7 +85,8 @@ public class PdlTestDataUrls {
         bestillingUrl.put(PDL_DOEDFOEDT_BARN, PDL_BESTILLING_DOEDFOEDT_BARN_URL);
         bestillingUrl.put(PDL_DOEDSFALL, PDL_BESTILLING_DOEDSFALL_URL);
         bestillingUrl.put(PDL_FALSK_IDENTITET, PDL_BESTILLING_FALSK_IDENTITET_URL);
-        bestillingUrl.put(PDL_FOEDSEL, PDL_BESTILLING_FOEDSEL_URL);
+        bestillingUrl.put(PDL_FOEDESTED, PDL_BESTILLING_FOEDESTED_URL);
+        bestillingUrl.put(PDL_FOEDSELSDATO, PDL_BESTILLING_FOEDSELSDATO_URL);
         bestillingUrl.put(PDL_FOLKEREGISTER_PERSONSTATUS, PDL_BESTILLING_FOLKEREGISTER_PERSONSTATUS_URL);
         bestillingUrl.put(PDL_FORELDREANSVAR, PDL_BESTILLING_FORELDREANSVAR_URL);
         bestillingUrl.put(PDL_FORELDRE_BARN_RELASJON, PDL_BESTILLING_FORELDRE_BARN_RELASJON_URL);
