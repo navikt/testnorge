@@ -34,6 +34,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -47,7 +48,11 @@ import static java.time.LocalDateTime.now;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.IdenttypeUtility.getIdenttype;
+import static no.nav.pdl.forvalter.utils.IdenttypeUtility.isNotNpidIdent;
+import static no.nav.pdl.forvalter.utils.IdenttypeUtility.isNpidIdent;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType.FAMILIERELASJON_BARN;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType.GAMMEL_IDENTITET;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType.NY_IDENTITET;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -112,6 +117,19 @@ public class PersonService {
         var dbPerson = personRepository.findByIdent(ident).orElseThrow(() ->
                 new NotFoundException(format("Ident %s ble ikke funnet", ident)));
 
+        // Identer som har blitt merget DNR/FNR <-> NPID kan ikke gjenbrukes da disse har blitt koblet permanent i PDL-aktoer
+        var identerSomIkkeSkalSlettesFraIdentpool = new ArrayList<>(dbPerson.getRelasjoner().stream()
+                .filter(relasjon -> (relasjon.getRelasjonType() == NY_IDENTITET || relasjon.getRelasjonType() == GAMMEL_IDENTITET))
+                .map(DbRelasjon::getRelatertPerson)
+                .map(DbPerson::getIdent)
+                .filter(id -> isNpidIdent(id) && isNotNpidIdent(dbPerson.getIdent()) ||
+                        isNotNpidIdent(id) && isNpidIdent(dbPerson.getIdent()))
+                .toList());
+
+        if (!identerSomIkkeSkalSlettesFraIdentpool.isEmpty()) {
+            identerSomIkkeSkalSlettesFraIdentpool.add(dbPerson.getIdent());
+        }
+
         unhookEksternePersonerService.unhook(dbPerson);
 
         var identer = Stream.of(List.of(dbPerson.getIdent()),
@@ -135,7 +153,9 @@ public class PersonService {
                 .collect(Collectors.toSet());
 
         pdlTestdataConsumer.delete(identer).block();
-        identPoolConsumer.releaseIdents(identer, Bruker.PDLF).block();
+        identPoolConsumer.releaseIdents( identer.stream()
+                .filter(id -> !identerSomIkkeSkalSlettesFraIdentpool.contains(id))
+                .collect(Collectors.toSet()), Bruker.PDLF).block();
 
         personRepository.deleteByIdentIn(identer);
         log.info("Sletting av ident {} tok {} ms", ident, currentTimeMillis() - startTime);
