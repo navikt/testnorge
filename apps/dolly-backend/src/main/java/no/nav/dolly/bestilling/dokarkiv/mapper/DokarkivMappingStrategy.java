@@ -28,7 +28,6 @@ public class DokarkivMappingStrategy implements MappingStrategy {
     private static final String KANAL = "SKAN_IM";
     private static final String PDFA = "PDFA";
     private static final String ARKIV = "ARKIV";
-    private static final String BEHANDLINGSTEMA = "ab0001";
 
     @Override
     public void register(MapperFactory factory) {
@@ -46,7 +45,7 @@ public class DokarkivMappingStrategy implements MappingStrategy {
 
                         dokarkivRequest.setKanal(isBlank(rsDokarkiv.getKanal()) ? KANAL : rsDokarkiv.getKanal());
                         dokarkivRequest.setJournalpostType(isNull(rsDokarkiv.getJournalpostType()) ? INNGAAENDE : rsDokarkiv.getJournalpostType());
-                        dokarkivRequest.setBehandlingstema(isNull(rsDokarkiv.getBehandlingstema()) ? BEHANDLINGSTEMA : rsDokarkiv.getBehandlingstema());
+                        dokarkivRequest.setBehandlingstema(rsDokarkiv.getBehandlingstema());
 
                         dokarkivRequest.setAvsenderMottaker(mapperFacade.map(rsDokarkiv.getAvsenderMottaker(),
                                 DokarkivRequest.AvsenderMottaker.class));
@@ -92,17 +91,17 @@ public class DokarkivMappingStrategy implements MappingStrategy {
         if (dokarkivRequest.getDokumenter().isEmpty()) {
             dokarkivRequest.getDokumenter().add(new DokarkivRequest.Dokument());
         }
-        if (dokarkivRequest.getDokumenter().get(0).getDokumentvarianter().isEmpty()) {
-            dokarkivRequest.getDokumenter().get(0).getDokumentvarianter().add(new DokarkivRequest.DokumentVariant());
+        if (dokarkivRequest.getDokumenter().getFirst().getDokumentvarianter().isEmpty()) {
+            dokarkivRequest.getDokumenter().getFirst().getDokumentvarianter().add(new DokarkivRequest.DokumentVariant());
         }
-        if (isBlank(dokarkivRequest.getDokumenter().get(0).getDokumentvarianter().get(0).getFiltype())) {
-            dokarkivRequest.getDokumenter().get(0).getDokumentvarianter().get(0).setFiltype(PDFA);
+        if (isBlank(dokarkivRequest.getDokumenter().getFirst().getDokumentvarianter().getFirst().getFiltype())) {
+            dokarkivRequest.getDokumenter().getFirst().getDokumentvarianter().getFirst().setFiltype(PDFA);
         }
-        if (isBlank(dokarkivRequest.getDokumenter().get(0).getDokumentvarianter().get(0).getVariantformat())) {
-            dokarkivRequest.getDokumenter().get(0).getDokumentvarianter().get(0).setVariantformat(ARKIV);
+        if (isBlank(dokarkivRequest.getDokumenter().getFirst().getDokumentvarianter().getFirst().getVariantformat())) {
+            dokarkivRequest.getDokumenter().getFirst().getDokumentvarianter().getFirst().setVariantformat(ARKIV);
         }
-        if (isBlank(dokarkivRequest.getDokumenter().get(0).getDokumentvarianter().get(0).getFysiskDokument())) {
-            dokarkivRequest.getDokumenter().get(0).getDokumentvarianter().get(0).setFysiskDokument(PDF_VEDLEGG);
+        if (isBlank(dokarkivRequest.getDokumenter().getFirst().getDokumentvarianter().getFirst().getFysiskDokument())) {
+            dokarkivRequest.getDokumenter().getFirst().getDokumentvarianter().getFirst().setFysiskDokument(PDF_VEDLEGG);
         }
     }
 }
