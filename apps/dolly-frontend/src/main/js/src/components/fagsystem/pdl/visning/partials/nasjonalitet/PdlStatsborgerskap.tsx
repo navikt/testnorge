@@ -24,6 +24,7 @@ const StatsborgerskapVisning = ({ data, idx }: StatsborgerskapProps) => {
 				/>
 				<TitleValue title="Statsborgerskap registrert" value={formatDate(data.gyldigFraOgMed)} />
 				<TitleValue title="Statsborgerskap til" value={formatDate(data.gyldigTilOgMed)} />
+				<TitleValue title="Master" value={data.metadata?.master} />
 			</div>
 		)
 	}
@@ -36,10 +37,10 @@ export const PdlStatsborgerskap = ({ statsborgerskapListe }: VisningProps) => {
 	}
 
 	const gyldigeStatsborgerskap = statsborgerskapListe.filter(
-		(borgerskap: Statsborgerskap) => !borgerskap.metadata?.historisk
+		(borgerskap: Statsborgerskap) => !borgerskap.metadata?.historisk,
 	)
 	const historiskeStatsborgerskap = statsborgerskapListe.filter(
-		(borgerskap: Statsborgerskap) => borgerskap.metadata?.historisk
+		(borgerskap: Statsborgerskap) => borgerskap.metadata?.historisk,
 	)
 
 	return (

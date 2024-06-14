@@ -22,6 +22,7 @@ interface SivilstandFormTypes {
 	path?: string
 	eksisterendeNyPerson?: Option | null
 	identtype?: string
+	ident?: string
 }
 
 const gyldigeSivilstander = [
@@ -37,6 +38,7 @@ export const SivilstandForm = ({
 	formMethods,
 	eksisterendeNyPerson = null,
 	identtype,
+	ident,
 }: SivilstandFormTypes) => {
 	const handleTypeChange = (selected: any, path: string) => {
 		formMethods.setValue(`${path}.type`, selected.value)
@@ -50,6 +52,12 @@ export const SivilstandForm = ({
 		}
 		formMethods.trigger()
 	}
+
+	const opts = useContext(BestillingsveilederContext)
+	const identMaster = opts?.identMaster || (parseInt(ident?.charAt(2)) >= 8 ? 'PDL' : 'PDLF')
+
+	const isTestnorgeIdent = identMaster === 'PDL'
+	const kanVelgeMaster = !isTestnorgeIdent && (opts?.identtype !== 'NPID' || identtype !== 'NPID')
 
 	const kanHaRelatertPerson = gyldigeSivilstander.includes(formMethods.watch(`${path}.type`))
 
@@ -65,8 +73,8 @@ export const SivilstandForm = ({
 			{formMethods.watch(`${path}.type`) === 'SAMBOER' && (
 				<div style={{ marginLeft: '-20px', marginRight: '20px', paddingTop: '27px' }}>
 					<Hjelpetekst>
-						Samboer eksisterer verken i PDL eller TPS. Personer med denne typen sisvilstand vil
-						derfor vises som ugift i fagsystemene.
+						Samboer eksisterer ikke i PDL. Personer med denne typen sisvilstand vil derfor vises som
+						ugift i fagsystemene.
 					</Hjelpetekst>
 				</div>
 			)}
@@ -88,6 +96,7 @@ export const SivilstandForm = ({
 				name={`${path}.borIkkeSammen`}
 				label="Bor ikke sammen"
 				isDisabled={!kanHaRelatertPerson}
+				vis={!isTestnorgeIdent}
 				checkboxMargin
 			/>
 			{kanHaRelatertPerson && (
@@ -98,33 +107,34 @@ export const SivilstandForm = ({
 					label={'PERSON RELATERT TIL'}
 					formMethods={formMethods}
 					isExpanded={
+						isTestnorgeIdent ||
 						!isEmpty(formMethods.watch(`${path}.nyRelatertPerson`), ['syntetisk']) ||
 						formMethods.watch(`${path}.relatertVedSivilstand`) !== null
 					}
+					toggleExpansion={identMaster != 'PDL'}
 				/>
 			)}
 			<AvansertForm
 				path={path}
-				kanVelgeMaster={
-					formMethods.watch(`${path}.bekreftelsesdato`) === null && identtype !== 'NPID'
-				}
+				kanVelgeMaster={formMethods.watch(`${path}.bekreftelsesdato`) === null && kanVelgeMaster}
 			/>
 		</div>
 	)
 }
 
 export const Sivilstand = ({ formMethods }: SivilstandFormTypes) => {
-	const opts = useContext(BestillingsveilederContext)
+	// @ts-ignore
+	const { identtype, identMaster } = useContext(BestillingsveilederContext)
+	const initiellMaster = identMaster === 'PDL' || identtype === 'NPID' ? 'PDL' : 'FREG'
+
 	return (
 		<FormDollyFieldArray
 			name="pdldata.person.sivilstand"
 			header="Sivilstand"
-			newEntry={getInitialSivilstand(opts?.identtype === 'NPID' ? 'PDL' : 'FREG')}
+			newEntry={getInitialSivilstand(initiellMaster)}
 			canBeEmpty={false}
 		>
-			{(path: string) => (
-				<SivilstandForm path={path} formMethods={formMethods} identtype={opts?.identtype} />
-			)}
+			{(path: string) => <SivilstandForm path={path} formMethods={formMethods} />}
 		</FormDollyFieldArray>
 	)
 }

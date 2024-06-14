@@ -1,10 +1,12 @@
-package no.nav.pdl.forvalter.utils;
+package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.consumer.PdlTestdataConsumer;
 import no.nav.pdl.forvalter.database.model.DbPerson;
+import no.nav.pdl.forvalter.database.model.DbRelasjon;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
+import no.nav.pdl.forvalter.dto.HendelseIdRequest;
 import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
@@ -18,6 +20,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static no.nav.pdl.forvalter.utils.TestnorgeIdentUtility.isTestnorgeIdent;
@@ -82,16 +85,50 @@ public class HendelseIdService {
                 .orElse(Collections.emptyList());
     }
 
-    public void deletePdlHendelser(String ident) {
+    public void deletePdlHendelser(DbPerson person) {
 
-        if (isTestnorgeIdent(ident)) {
+        if (isTestnorgeIdent(person.getIdent())) {
+            var relevanteHendelser = Stream.of(
+                            getPdlHendelser(person.getIdent()).stream()
+                                    .map(hendelse -> HendelseIdRequest.builder()
+                                            .ident(person.getIdent())
+                                            .hendelseId(hendelse.getHendelseId())
+                                            .build()),
+                            person.getRelasjoner().stream()
+                                    .map(DbRelasjon::getRelatertPerson)
+                                    .map(DbPerson::getPerson)
+                                    .map(relatert -> getHendelser(relatert.getIdent(), relatert.getSivilstand()))
+                                    .flatMap(Collection::stream),
+                            person.getRelasjoner().stream()
+                                    .map(DbRelasjon::getRelatertPerson)
+                                    .map(DbPerson::getPerson)
+                                    .map(relatert -> getHendelser(relatert.getIdent(), relatert.getForelderBarnRelasjon()))
+                                    .flatMap(Collection::stream),
+                            person.getRelasjoner().stream()
+                                    .map(DbRelasjon::getRelatertPerson)
+                                    .map(DbPerson::getPerson)
+                                    .map(relatert -> getHendelser(relatert.getIdent(), relatert.getFullmakt()))
+                                    .flatMap(Collection::stream)
+                    )
+                    .flatMap(Function.identity())
+                    .toList();
 
-            Flux.fromIterable(getPdlHendelser(ident))
-                    .map(DbVersjonDTO::getHendelseId)
-                    .flatMap(hendelse -> pdlTestdataConsumer.deleteHendelse(ident, hendelse))
+            Flux.fromIterable(relevanteHendelser)
+                    .flatMap(pdlTestdataConsumer::deleteHendelse)
                     .collectList()
                     .block();
         }
+    }
+
+    private List<HendelseIdRequest> getHendelser(String ident, List<? extends DbVersjonDTO> opplysninger) {
+
+        return opplysninger.stream()
+                .filter(DbVersjonDTO::isPdlMaster)
+                .map(opplysning -> HendelseIdRequest.builder()
+                        .ident(ident)
+                        .hendelseId(opplysning.getHendelseId())
+                        .build())
+                .toList();
     }
 
     public void deletePdlHendelse(String ident, String artifact, Integer id) {

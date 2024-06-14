@@ -238,9 +238,9 @@ public class ArtifactUpdateService {
 
     public void updateForelderBarnRelasjon(String ident, Integer id, ForelderBarnRelasjonDTO oppdatertRelasjon) {
 
-        forelderBarnRelasjonService.validate(oppdatertRelasjon);
-
         var person = getPerson(ident);
+        forelderBarnRelasjonService.validate(oppdatertRelasjon, person.getPerson());
+
         var foreldrebarnRelasjon = person.getPerson().getForelderBarnRelasjon().stream()
                 .filter(relasjon -> relasjon.getId().equals(id))
                 .findFirst();
@@ -491,9 +491,9 @@ public class ArtifactUpdateService {
 
     public void updateSivilstand(String ident, Integer id, SivilstandDTO oppdatertSivilstand) {
 
-        sivilstandService.validate(oppdatertSivilstand);
-
         var person = getPerson(ident);
+        sivilstandService.validate(oppdatertSivilstand, person.getPerson());
+
         var sivilstandRelasjon = person.getPerson().getSivilstand().stream()
                 .filter(sivilstand -> sivilstand.getId().equals(id))
                 .findFirst();
@@ -542,9 +542,9 @@ public class ArtifactUpdateService {
 
     public void updateFullmakt(String ident, Integer id, FullmaktDTO oppdatertFullmakt) {
 
-        fullmaktService.validate(oppdatertFullmakt);
-
         var person = getPerson(ident);
+        fullmaktService.validate(oppdatertFullmakt, person.getPerson());
+
         var fullmaktRelasjon = person.getPerson().getFullmakt().stream()
                 .filter(fullmakt -> fullmakt.getId().equals(id))
                 .findFirst();

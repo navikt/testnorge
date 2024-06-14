@@ -153,9 +153,9 @@ type Config = {
 const _fetch = (url: string, config: Config, body?: object): Promise<Response> =>
 	fetchRetry(url, {
 		retryOn: (attempt, _error, response) => {
-			if (!response.ok && !runningCypressE2E()) {
+			if (!response?.ok && !runningCypressE2E()) {
 				if (
-					response.status === 401 &&
+					response?.status === 401 &&
 					!url.includes('testnav-arbeidsplassencv') &&
 					!url.includes('infostripe')
 				) {
@@ -180,9 +180,9 @@ const _fetch = (url: string, config: Config, body?: object): Promise<Response> =
 		if (response.redirected) {
 			window.location.href = response.url
 		}
-		if (!response.ok && !runningCypressE2E()) {
+		if (!response?.ok && !runningCypressE2E()) {
 			if (
-				response.status === 401 &&
+				response?.status === 401 &&
 				!url.includes('testnav-arbeidsplassencv') &&
 				!url.includes('infostripe')
 			) {

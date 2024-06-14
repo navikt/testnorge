@@ -46,6 +46,9 @@ export const ForeldreansvarForm = ({
 	path,
 	eksisterendeNyPerson = null,
 }: ForeldreansvarForm) => {
+	const opts = useContext(BestillingsveilederContext)
+	const antall = opts?.antall || 1
+
 	const ansvarlig = 'ansvarlig'
 	const ansvarligUtenIdentifikator = 'ansvarligUtenIdentifikator'
 	const nyAnsvarlig = 'nyAnsvarlig'
@@ -121,6 +124,10 @@ export const ForeldreansvarForm = ({
 		}
 	}, [])
 
+	const ansvarlige = Options('typeAnsvarlig').filter(
+		(ansvar) => ansvar.value !== 'EKSISTERENDE' || antall === 1,
+	)
+
 	return (
 		<div className="flexbox--flex-wrap foreldre-form">
 			<FormSelect
@@ -136,9 +143,13 @@ export const ForeldreansvarForm = ({
 				<FormSelect
 					name={`${path}.typeAnsvarlig`}
 					label="Type ansvarlig"
-					options={Options('typeAnsvarlig')}
+					options={ansvarlige}
 					onChange={(target: Target) => handleChangeTypeAnsvarlig(target, path)}
 					size="medium"
+					info={
+						opts?.antall > 1 &&
+						'"Eksisterende person" er kun tilgjengelig for individ, ikke for gruppe'
+					}
 				/>
 			)}
 

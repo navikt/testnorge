@@ -82,19 +82,25 @@ export const FoedselForm = ({ formMethods, path }: FoedselTypes) => {
 				kodeverk={AdresseKodeverk.InnvandretUtvandretLand}
 				size="large"
 			/>
-			<AvansertForm path={path} kanVelgeMaster={false} />
+			<AvansertForm
+				path={path}
+				kanVelgeMaster={opts?.identMaster !== 'PDL' && opts?.identtype !== 'NPID'}
+			/>
 		</>
 	)
 }
 
 export const Foedsel = ({ formMethods }: FoedselTypes) => {
 	const opts = useContext(BestillingsveilederContext)
+
 	return (
 		<div className="flexbox--flex-wrap">
 			<FormDollyFieldArray
 				name={'pdldata.person.foedsel'}
 				header="Fødsel"
-				newEntry={getInitialFoedsel(opts?.identtype === 'NPID' ? 'PDL' : 'FREG')}
+				newEntry={getInitialFoedsel(
+					opts?.identMaster === 'PDL' || opts?.identtype === 'NPID' ? 'PDL' : 'FREG',
+				)}
 				canBeEmpty={false}
 			>
 				{(path: string, _idx: number) => {

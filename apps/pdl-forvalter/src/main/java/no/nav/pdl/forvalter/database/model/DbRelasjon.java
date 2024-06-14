@@ -17,6 +17,7 @@ import lombok.Setter;
 import no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -39,6 +40,7 @@ public class DbRelasjon {
     })
     private Long id;
 
+    @UpdateTimestamp
     @Column(name = "sist_oppdatert")
     private LocalDateTime sistOppdatert;
 
