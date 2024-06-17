@@ -18,7 +18,8 @@ import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.exception.NotFoundException;
 import no.nav.testnav.libs.data.pdlforvalter.v1.BestillingRequestDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.BostedadresseDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.FoedselDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.FoedestedDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.FoedselsdatoDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.ForeldreansvarDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FullPersonDTO;
@@ -197,8 +198,11 @@ public class PersonService {
         if (request.getPerson().getKjoenn().isEmpty()) {
             request.getPerson().getKjoenn().add(new KjoennDTO());
         }
-        if (request.getPerson().getFoedsel().isEmpty()) {
-            request.getPerson().getFoedsel().add(new FoedselDTO());
+        if (request.getPerson().getFoedselsdato().isEmpty()) {
+            request.getPerson().getFoedselsdato().add(new FoedselsdatoDTO());
+        }
+        if (request.getPerson().getFoedested().isEmpty()) {
+            request.getPerson().getFoedested().add(new FoedestedDTO());
         }
         if (request.getPerson().getNavn().isEmpty()) {
             request.getPerson().getNavn().add(new NavnDTO());

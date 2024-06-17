@@ -96,11 +96,14 @@ export const ResultatVisning = ({ resultat, soekError }) => {
 			text: 'Alder',
 			width: '10',
 			formatter: (_cell: any, row: any) => {
-				if (!row.person?.foedsel?.[0]?.foedselsdato) {
+				if (
+					!row.person?.foedsel?.[0]?.foedselsdato &&
+					!row.person?.foedselsdato?.[0]?.foedselsdato
+				) {
 					return <>Ukjent</>
 				}
 				const alder = getAlder(
-					row.person?.foedsel?.[0]?.foedselsdato,
+					row.person?.foedsel?.[0]?.foedselsdato || row.person?.foedselsdato?.[0]?.foedselsdato,
 					row.person?.doedsfall?.[0]?.doedsdato,
 				)
 				return <>{formatAlder(alder, row.person?.doedsfall?.[0]?.doedsdato)}</>
