@@ -62,6 +62,4 @@ dependencies {
     testImplementation 'org.testcontainers:postgresql'
     implementation 'jakarta.jws:jakarta.jws-api:3.0.0' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
-
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
 }

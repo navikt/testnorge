@@ -52,7 +52,6 @@ dependencies {
     implementation 'org.hibernate.validator:hibernate-validator'
 
     testImplementation 'com.h2database:h2'
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
     testImplementation 'org.testcontainers:junit-jupiter'
     testImplementation 'org.testcontainers:postgresql'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock' //TODO upgrade to JUnit5
