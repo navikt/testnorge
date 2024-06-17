@@ -1,34 +1,12 @@
 plugins {
     id "dolly-libs"
+    id "dolly-libs-publish"
 
     id 'com.github.davidmc24.gradle.plugin.avro' version '1.9.1'
-    id 'maven-publish'
 }
 
 sonarqube {
     skipProject = true
-}
-
-if (project.hasProperty("releaseVersion")) {
-    version = releaseVersion
-}
-
-publishing {
-    repositories {
-        maven {
-            name = "github"
-            url = uri('https://maven.pkg.github.com/navikt/testnorge')
-            credentials(PasswordCredentials) {
-                username = System.getenv("GITHUB_ACTOR")
-                password = System.getenv("GITHUB_TOKEN")
-            }
-        }
-    }
-    publications {
-        gpr(MavenPublication) {
-            from(components.java)
-        }
-    }
 }
 
 dependencies {

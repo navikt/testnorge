@@ -1,7 +1,6 @@
 plugins {
     id "dolly-libs"
-
-    id 'maven-publish'
+    id "dolly-libs-publish"
 }
 
 sonarqube {
@@ -23,28 +22,6 @@ dependencies {
     implementation 'org.springframework:spring-web'
 
     implementation 'no.nav.tjenestespesifikasjoner:nav-altinn-inntektsmelding:1.2019.08.16-13.46-35cbdfd492d4'
-}
-
-if (project.hasProperty("releaseVersion")) {
-    version = releaseVersion
-}
-
-publishing {
-    repositories {
-        maven {
-            name = "github"
-            url = uri('https://maven.pkg.github.com/navikt/testnorge')
-            credentials(PasswordCredentials) {
-                username = System.getenv("GITHUB_ACTOR")
-                password = System.getenv("GITHUB_TOKEN")
-            }
-        }
-    }
-    publications {
-        gpr(MavenPublication) {
-            from(components.java)
-        }
-    }
 }
 
 tasks.withType(JavaCompile) {
