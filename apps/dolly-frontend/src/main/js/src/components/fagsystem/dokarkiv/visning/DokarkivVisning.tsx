@@ -26,6 +26,10 @@ export default ({ journalpost, miljoe }: Props) => (
 			title="Behandlingstema"
 			value={`${journalpost.behandlingstemanavn} (${journalpost.behandlingstema})`}
 		/>
+		<TitleValue
+			title="Fagsaksystem"
+			value={showLabel('fagsaksystem', journalpost.sak?.fagsaksystem)}
+		/>
 		<TitleValue title="Journalførende enhet" value={journalpost.journalfoerendeEnhet} />
 		<TitleValue title="Sakstype" value={showLabel('sakstype', journalpost.sak?.sakstype)} />
 		<TitleValue title="Fagsak-ID" value={journalpost.sak?.fagsakId} />
