@@ -16,18 +16,30 @@ const datoIkkeMellom = (nyDatoFra, gjeldendeDatoFra, gjeldendeDatoTil) => {
 export const getFoedselsdatoer = (values) => {
 	const personFoerLeggTil = values?.personFoerLeggTil
 	const importPersoner = values?.importPersoner
+
 	if (values?.pdldata?.person?.foedsel?.[0]?.foedselsdato) {
 		return [values.pdldata.person.foedsel[0].foedselsdato]
+	} else if (values?.pdldata?.person?.foedselsdato?.[0]?.foedselsdato) {
+		return [values.pdldata.person.foedselsdato[0].foedselsdato]
 	} else if (personFoerLeggTil?.pdlforvalter?.person?.foedsel) {
 		const foedselsdatoer = personFoerLeggTil.pdlforvalter.person.foedsel
 			.map((foedsel) => foedsel.foedselsdato)
 			.sort((a, b) => new Date(b) - new Date(a))
 		return [foedselsdatoer?.[0]]
+	} else if (personFoerLeggTil?.pdlforvalter?.person?.foedselsdato) {
+		const foedselsdatoer = personFoerLeggTil.pdlforvalter.person.foedselsdato
+			.map((foedsel) => foedsel.foedselsdato)
+			.sort((a, b) => new Date(b) - new Date(a))
+		return [foedselsdatoer?.[0]]
 	} else if (personFoerLeggTil?.pdl) {
 		const pdlPerson = personFoerLeggTil.pdl.hentPerson || personFoerLeggTil.pdl.person
-		return [pdlPerson?.foedsel?.[0]?.foedselsdato]
+		return [pdlPerson?.foedsel?.[0]?.foedselsdato || pdlPerson?.foedselsdato?.[0]?.foedselsdato]
 	} else if (importPersoner) {
-		return importPersoner.map((person) => person?.data?.hentPerson?.foedsel?.[0]?.foedselsdato)
+		return importPersoner.map(
+			(person) =>
+				person?.data?.hentPerson?.foedsel?.[0]?.foedselsdato ||
+				person?.data?.hentPerson?.foedselsdato?.[0]?.foedselsdato,
+		)
 	}
 	return []
 }
