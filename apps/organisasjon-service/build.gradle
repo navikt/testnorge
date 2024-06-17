@@ -30,7 +30,6 @@ dependencies {
 
     implementation 'org.hibernate.validator:hibernate-validator'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0'
-    implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
 
     testImplementation 'junit:junit:4.13.2' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'

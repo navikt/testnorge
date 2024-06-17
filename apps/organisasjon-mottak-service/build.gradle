@@ -39,7 +39,6 @@ dependencies {
     implementation 'io.confluent:kafka-avro-serializer:7.6.1'
 
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0'
-    implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
 
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
 }

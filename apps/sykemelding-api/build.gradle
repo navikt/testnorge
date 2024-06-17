@@ -28,7 +28,6 @@ dependencies {
     implementation 'io.micrometer:micrometer-registry-prometheus'
     implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.5.0'
     implementation 'io.swagger.core.v3:swagger-annotations-jakarta:2.2.21'
-    implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
 
     implementation 'com.ibm.mq:mq-jms-spring-boot-starter:3.2.3'
     implementation 'org.springframework.kafka:spring-kafka'

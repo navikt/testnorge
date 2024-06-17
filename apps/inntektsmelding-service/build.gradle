@@ -30,7 +30,6 @@ dependencies {
     implementation 'org.hibernate.validator:hibernate-validator'
     implementation 'io.micrometer:micrometer-registry-prometheus'
 
-    implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
     implementation 'no.nav.tjenestespesifikasjoner:nav-altinn-inntektsmelding:1.2019.08.16-13.46-35cbdfd492d4'
 
     implementation 'org.apache.commons:commons-io:1.3.2'
