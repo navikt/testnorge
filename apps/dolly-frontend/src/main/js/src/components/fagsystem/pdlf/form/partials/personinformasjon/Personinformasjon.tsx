@@ -21,6 +21,7 @@ import { Vergemaal } from '@/components/fagsystem/pdlf/form/partials/vergemaal/V
 import { NorskBankkonto, UtenlandskBankkonto } from '@/components/fagsystem/bankkonto/form'
 import { SkjermingForm } from '@/components/fagsystem/skjermingsregister/form/SkjermingForm'
 import { Foedested } from '@/components/fagsystem/pdlf/form/partials/foedsel/Foedested'
+import { Foedselsdato } from '@/components/fagsystem/pdlf/form/partials/foedsel/Foedselsdato'
 
 const foedselPaths = ['pdldata.person.foedested', 'pdldata.person.foedselsdato']
 
@@ -104,6 +105,9 @@ export const Personinformasjon = ({ formMethods }) => {
 				<Kategori title="Fødsel" vis={foedselPaths}>
 					<Vis attributt={foedestedPath}>
 						<Foedested formMethods={formMethods} />
+					</Vis>
+					<Vis attributt={foedselsdatoPath}>
+						<Foedselsdato formMethods={formMethods} />
 					</Vis>
 				</Kategori>
 

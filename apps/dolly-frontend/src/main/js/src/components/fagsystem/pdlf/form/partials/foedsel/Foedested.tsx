@@ -57,7 +57,7 @@ export const Foedested = ({ formMethods }: FoedestedTypes) => {
 	const opts = useContext(BestillingsveilederContext)
 
 	return (
-		<div className="flexbox--flex-wrap">
+		<div className="flexbox--flex-wrap" style={{ marginBottom: '10px' }}>
 			<FormDollyFieldArray
 				name={'pdldata.person.foedested'}
 				header="Fødested"
