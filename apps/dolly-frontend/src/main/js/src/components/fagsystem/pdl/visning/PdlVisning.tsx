@@ -161,7 +161,13 @@ export const PdlVisning = ({
 					identtype={identtype}
 					erPdlVisning={miljoeVisning}
 				/>
-				<PdlRelasjoner data={hentPerson} />
+				<PdlRelasjoner
+					data={hentPerson}
+					pdlfData={pdlfPerson}
+					tmpPersoner={tmpPdlforvalter}
+					ident={ident}
+					identtype={identtype}
+				/>
 				<FalskIdentitet data={falskIdentitet} />
 				<UtenlandsId data={utenlandskIdentifikasjonsnummer} />
 				<KontaktinformasjonForDoedsbo

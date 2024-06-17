@@ -33,7 +33,7 @@ const Visning = ({ data, idx }: VisningProps) => {
 	)
 }
 
-export const PdlPartner = ({ data }: PdlPartnerProps) => {
+export const PdlPartner = ({ data, pdlfData, tmpPersoner, ident, identtype }: PdlPartnerProps) => {
 	const partnere = getSortedSivilstand(data)
 	if (!partnere || partnere.length === 0) {
 		return null
