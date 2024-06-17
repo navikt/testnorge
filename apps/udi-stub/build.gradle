@@ -28,7 +28,6 @@ dependencies {
     implementation 'no.nav.testnav.libs:servlet-security'
     implementation 'no.nav.testnav.libs:database'
 
-    implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
