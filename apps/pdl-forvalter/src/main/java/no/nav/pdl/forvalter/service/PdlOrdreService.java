@@ -23,6 +23,8 @@ import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.exception.NotFoundException;
 import no.nav.pdl.forvalter.utils.IdenttypeUtility;
 import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.FoedestedDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.FoedselDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.ForelderBarnRelasjonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.ForeldreansvarDTO;
@@ -59,7 +61,8 @@ import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_DELTBOSTE
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_DOEDFOEDT_BARN;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_DOEDSFALL;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_FALSK_IDENTITET;
-import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_FOEDSEL;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_FOEDESTED;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_FOEDSELSDATO;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_FOLKEREGISTER_PERSONSTATUS;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_FORELDREANSVAR;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_FORELDRE_BARN_RELASJON;
@@ -333,7 +336,8 @@ public class PdlOrdreService {
                                 .map(this::toUpperCase)
                                 .toList()),
                         deployService.createOrdre(PDL_KJOENN, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getKjoenn()),
-                        deployService.createOrdre(PDL_FOEDSEL, oppretting.getPerson().getIdent(), utenHistorikk(oppretting.getPerson().getPerson().getFoedsel())),
+                        deployService.createOrdre(PDL_FOEDESTED, oppretting.getPerson().getIdent(), getFoedested(oppretting.getPerson().getPerson())),
+                        deployService.createOrdre(PDL_FOEDSELSDATO, oppretting.getPerson().getIdent(), getFoedselsdato(oppretting.getPerson().getPerson())),
                         deployService.createOrdre(PDL_STATSBORGERSKAP, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getStatsborgerskap()),
                         deployService.createOrdre(PDL_KONTAKTADRESSE, oppretting.getPerson().getIdent(), mapperFacade.mapAsList(oppretting.getPerson().getPerson().getKontaktadresse(), PdlKontaktadresse.class)),
                         deployService.createOrdre(PDL_BOSTEDADRESSE, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getBostedsadresse()),
@@ -376,4 +380,19 @@ public class PdlOrdreService {
                 .max(Comparator.comparing(DbVersjonDTO::getId))
                 .stream().toList();
     }
+
+    private List<? extends DbVersjonDTO> getFoedested(PersonDTO person) {
+
+        return utenHistorikk(!person.getFoedested().isEmpty() ?
+                person.getFoedested() :
+                mapperFacade.mapAsList(person.getFoedsel(), FoedestedDTO.class));
+    }
+
+    private List<? extends DbVersjonDTO> getFoedselsdato(PersonDTO person) {
+
+        return utenHistorikk(!person.getFoedselsdato().isEmpty() ?
+                person.getFoedselsdato() :
+                mapperFacade.mapAsList(person.getFoedsel(), FoedselDTO.class));
+    }
+
 }

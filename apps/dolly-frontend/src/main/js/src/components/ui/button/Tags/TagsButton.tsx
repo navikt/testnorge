@@ -11,7 +11,7 @@ import { SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
 import { REGEX_BACKEND_GRUPPER, useMatchMutate } from '@/utils/hooks/useMutate'
 import { Alert } from '@navikt/ds-react'
 import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
-import { CypressSelector } from '../../../../../cypress/mocks/Selectors'
+import { TestComponentSelectors } from '../../../../../playwright/mocks/Selectors'
 
 type Props = {
 	action: Function
@@ -35,7 +35,7 @@ export const TagsButton = ({ action, loading, gruppeId, eksisterendeTags }: Prop
 	return (
 		<React.Fragment>
 			<Button
-				data-cy={CypressSelector.BUTTON_TILKNYTT_TAGS}
+				data-testid={TestComponentSelectors.BUTTON_TILKNYTT_TAGS}
 				onClick={openModal}
 				kind="link"
 				className="svg-icon-blue"
@@ -53,7 +53,6 @@ export const TagsButton = ({ action, loading, gruppeId, eksisterendeTags }: Prop
 						</Alert>
 						<h4>Velg hvilke tags du ønsker å legge til på denne gruppen</h4>
 						<DollySelect
-							data-cy={CypressSelector.SELECT_TAGS}
 							options={tagOptions}
 							isLoading={tagsFraDolly.loading}
 							size="large"
@@ -68,7 +67,7 @@ export const TagsButton = ({ action, loading, gruppeId, eksisterendeTags }: Prop
 							Avbryt
 						</NavButton>
 						<NavButton
-							data-cy={CypressSelector.BUTTON_POST_TAGS}
+							data-testid={TestComponentSelectors.BUTTON_POST_TAGS}
 							onClick={() => {
 								action(gruppeId, tags).then(() => {
 									closeModal()

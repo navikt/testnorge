@@ -143,5 +143,12 @@ export const SortKodeverkArray = (data) => {
 		return kodeverk.filter((kode) => kode.value !== 'permittering')
 	}
 
+	if (data.name === 'Behandlingstema') {
+		return kodeverk.map((kode) => ({
+			label: `${kode.label} (${kode.value})`,
+			value: kode.value,
+		}))
+	}
+
 	return kodeverk
 }

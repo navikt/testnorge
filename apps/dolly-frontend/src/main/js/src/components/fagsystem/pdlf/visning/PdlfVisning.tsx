@@ -90,8 +90,8 @@ export const PdlfVisning = ({ fagsystemData, loading, tmpPersoner, erRedigerbar 
 					skjermingData={skjermingData}
 					erRedigerbar={erRedigerbar}
 				/>
-				<Foedsel
-					data={data?.person?.foedsel}
+				<Foedsel //TBD foedsel deles opp i foedselsdato og foedested
+					data={data?.person?.foedsel || data?.person?.foedselsdato}
 					tmpPersoner={tmpPdlforvalter}
 					ident={ident}
 					erRedigerbar={erRedigerbar}

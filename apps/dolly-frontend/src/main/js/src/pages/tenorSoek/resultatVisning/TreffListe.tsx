@@ -1,4 +1,4 @@
-import { Box, VStack, Tag, Alert } from '@navikt/ds-react'
+import { Alert, Box, Tag, VStack } from '@navikt/ds-react'
 import React, { useEffect, useState } from 'react'
 import { useTenorIdent } from '@/utils/hooks/useTenorSoek'
 import { PersonVisning } from '@/pages/tenorSoek/resultatVisning/PersonVisning'
@@ -6,7 +6,7 @@ import Loading from '@/components/ui/loading/Loading'
 import styled from 'styled-components'
 import { ListeValg } from '@/pages/tenorSoek/resultatVisning/ListeValg'
 import { ImporterValgtePersoner } from '@/pages/tenorSoek/resultatVisning/ImporterValgtePersoner'
-import { CypressSelector } from '../../../../cypress/mocks/Selectors'
+import { TestComponentSelectors } from '#/mocks/Selectors'
 
 const PersonNavn = styled.h3`
 	word-break: break-word;
@@ -90,7 +90,7 @@ export const TreffListe = ({
 						return (
 							<Box
 								key={person?.id}
-								data-cy={CypressSelector.BUTTON_PERSON_TENORSOEK}
+								data-testid={TestComponentSelectors.BUTTON_PERSON_TENORSOEK}
 								padding="2"
 								background={
 									person?.id === valgtPerson?.id ? 'surface-alt-3-moderate' : 'surface-alt-3-subtle'

@@ -13,7 +13,7 @@ import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 import { bottom } from '@popperjs/core'
 import { ToggleGroup } from '@navikt/ds-react'
 import styled from 'styled-components'
-import { CypressSelector } from '../../../cypress/mocks/Selectors'
+import { TestComponentSelectors } from '#/mocks/Selectors'
 
 type GruppeOversiktProps = {
 	importerteZIdenter: any
@@ -71,7 +71,7 @@ const GruppeOversikt = ({ searchActive, sideStoerrelse, sidetall }: GruppeOversi
 		<div className="oversikt-container">
 			<div className="toolbar">
 				<div
-					data-cy={CypressSelector.TITLE_VISNING}
+					data-testid={TestComponentSelectors.TITLE_VISNING}
 					className="page-header flexbox--align-center--justify-start"
 				>
 					<h1>Grupper</h1>
@@ -82,7 +82,7 @@ const GruppeOversikt = ({ searchActive, sideStoerrelse, sidetall }: GruppeOversi
 			</div>
 			<div className="toolbar gruppe--full">
 				<StyledNavButton
-					data-cy={CypressSelector.BUTTON_NY_GRUPPE}
+					data-testid={TestComponentSelectors.BUTTON_NY_GRUPPE}
 					variant="primary"
 					onClick={visNyGruppe}
 				>
@@ -101,18 +101,24 @@ const GruppeOversikt = ({ searchActive, sideStoerrelse, sidetall }: GruppeOversi
 						size={'small'}
 						style={{ backgroundColor: '#ffffff' }}
 					>
-						<StyledToggleItem data-cy={CypressSelector.TOGGLE_MINE} value={VisningType.MINE}>
+						<StyledToggleItem
+							data-testid={TestComponentSelectors.TOGGLE_MINE}
+							value={VisningType.MINE}
+						>
 							<Icon kind={'man-silhouette'} />
 							Mine
 						</StyledToggleItem>
 						<StyledToggleItem
-							data-cy={CypressSelector.TOGGLE_FAVORITTER}
+							data-testid={TestComponentSelectors.TOGGLE_FAVORITTER}
 							value={VisningType.FAVORITTER}
 						>
 							<Icon kind={'star-light'} />
 							Favoritter
 						</StyledToggleItem>
-						<StyledToggleItem data-cy={CypressSelector.TOGGLE_ALLE} value={VisningType.ALLE}>
+						<StyledToggleItem
+							data-testid={TestComponentSelectors.TOGGLE_ALLE}
+							value={VisningType.ALLE}
+						>
 							<Icon kind={'group-light'} />
 							Alle
 						</StyledToggleItem>

@@ -1,5 +1,4 @@
-import 'cypress-react-selector'
-import './commands'
+import { test as base } from '@playwright/test'
 import {
 	aaregMock,
 	ameldingMock,
@@ -38,9 +37,17 @@ import {
 	tagsMock,
 	tpsMessagingMock,
 	udistubMock,
-} from '../mocks/BasicMocks'
-import { pdlBulkpersonerMock, pdlForvalterMock, pdlPersonEnkeltMock } from '../mocks/PdlMocks'
+} from './mocks/BasicMocks'
+import { pdlBulkpersonerMock, pdlForvalterMock, pdlPersonEnkeltMock } from './mocks/PdlMocks'
 
+type RouteInfo = {
+	url: RegExp | string
+	response: any
+	status?: number
+}
+
+const api = new RegExp(/\/api\/v/)
+const weatherApi = new RegExp(/\/weatherapi\//)
 const miljoer = new RegExp(/\/miljoer/)
 const arenaMiljoer = new RegExp(/testnav-arena-forvalteren-proxy\/api\/v1\/miljoe/)
 const current = new RegExp(/current/)
@@ -53,7 +60,6 @@ const bestillingFragmentSearch = new RegExp(
 	/\/dolly-backend\/api\/v1\/bestilling\/soekBestilling\?fragment/,
 )
 const personFragmentNaviger = new RegExp(/dolly-backend\/api\/v1\/ident\/naviger\/12345678912/)
-const dollySoekIdenter = new RegExp(/dolly-backend\/api\/v1\/elastic\/identer/)
 const bestillingFragmentNaviger = new RegExp(/dolly-backend\/api\/v1\/bestilling\/naviger\/1/)
 const hentGruppeEn = new RegExp(/\/api\/v1\/gruppe\/1/)
 const hentGruppeTo = new RegExp(/\/api\/v1\/gruppe\/2/)
@@ -96,57 +102,75 @@ const organisasjonFraMiljoe = new RegExp(
 )
 const organisasjonerForBruker = new RegExp(/dolly-backend\/api\/v1\/organisasjon\?brukerId/)
 
-const remainingCallsResponseOk = new RegExp(/api\/v1/)
+const mockRoutes: RouteInfo[] = [
+	{ url: api, response: [] },
+	{ url: weatherApi, status: 404, response: {} },
+	{ url: current, response: gjeldendeBrukerMock },
+	{ url: profil, response: gjeldendeProfilMock },
+	{ url: miljoer, response: miljoeMock },
+	{ url: pensjonMiljoer, response: miljoeMock },
+	{ url: personFragmentSearch, response: personFragmentSearchMock },
+	{ url: bestillingFragmentSearch, response: bestillingFragmentSearchMock },
+	{ url: personFragmentNaviger, response: personFragmentNavigerMock },
+	{ url: bestillingFragmentNaviger, response: bestillingFragmentNavigerMock },
+	{ url: hentGrupper, response: paginerteGrupperMock },
+	{ url: histark, response: histarkMock },
+	{ url: hentGruppeEn, response: eksisterendeGruppeMock },
+	{ url: hentGruppeTo, response: nyGruppeMock },
+	{ url: hentGruppeBestilling, response: backendBestillingerMock },
+	{ url: lagNyGruppe, response: nyGruppeMock },
+	{ url: pdlPersonBolk, response: pdlBulkpersonerMock },
+	{ url: pdlPersonEnkelt, response: pdlPersonEnkeltMock },
+	{ url: pdlForvalter, response: pdlForvalterMock },
+	{ url: kontoregister, response: kontoregisterMock },
+	{ url: backendTransaksjon, response: backendTransaksjonMock },
+	{ url: tags, response: tagsMock },
+	{ url: alleMaler, response: malerMock },
+	{ url: brukerMaler, response: brukerMalerMock },
+	{ url: oppsummeringsdokService, response: oppsummeringsdokumentServiceMock },
+	{ url: brukerOrganisasjonMaler, response: brukerOrganisasjonMalerMock },
+	{ url: brregstub, response: brregstubMock },
+	{ url: medl, response: medlMock },
+	{ url: joarkDokJournalpost, response: joarkJournalpostMock },
+	{ url: joarkDokDokument, response: joarkDokumentMock },
+	{ url: krrstub, response: krrstubMock },
+	{ url: aareg, response: aaregMock },
+	{ url: amelding, response: ameldingMock },
+	{ url: arena, response: arenaMock },
+	{ url: tpsMessaging, response: tpsMessagingMock },
+	{ url: skjerming, response: skjermingMock },
+	{ url: inst, response: instMock },
+	{ url: pensjon, response: pensjonMock },
+	{ url: pensjonTp, response: pensjonTpMock },
+	{ url: sigrunstub, response: sigrunstubMock },
+	{ url: udistub, response: udistubMock },
+	{ url: kodeverk, response: kodeverkMock },
+	{ url: organisasjonFraMiljoe, response: organisasjonFraMiljoeMock },
+	{ url: organisasjonerForBruker, response: organisasjonerForBrukerMock },
+	{ url: bilde, response: {}, status: 404 },
+	{ url: dokarkivMiljoer, response: ['q1', 'q2'] },
+	{ url: arenaMiljoer, response: ['q1', 'q2', 'q4'] },
+	{ url: '**/dolly-logg', response: [] },
+]
 
-beforeEach(() => {
-	cy.intercept({ method: 'PUT', url: '*' }, []).as('block_put')
-	cy.intercept({ method: 'DELETE', url: '*' }, []).as('block_delete')
-	cy.intercept({ method: 'POST', url: '*' }, []).as('remaining_post')
-	cy.intercept({ method: 'GET', url: remainingCallsResponseOk }, []).as('remaining_get')
-	cy.intercept({ method: 'GET', url: current }, gjeldendeBrukerMock).as('GjeldendeBruker')
-	cy.intercept({ method: 'GET', url: profil }, gjeldendeProfilMock).as('gjeldendeProfil')
-	cy.intercept({ method: 'GET', url: miljoer }, miljoeMock).as('miljoer')
-	cy.intercept({ method: 'GET', url: bilde }, { statusCode: 404 }).as('bilde')
-	cy.intercept({ method: 'GET', url: personFragmentSearch }, personFragmentSearchMock)
-	cy.intercept({ method: 'GET', url: bestillingFragmentSearch }, bestillingFragmentSearchMock)
-	cy.intercept({ method: 'GET', url: personFragmentNaviger }, personFragmentNavigerMock)
-	cy.intercept({ method: 'GET', url: bestillingFragmentNaviger }, bestillingFragmentNavigerMock)
-	cy.intercept({ method: 'GET', url: hentGrupper }, paginerteGrupperMock)
-	cy.intercept({ method: 'GET', url: histark }, histarkMock)
-	cy.intercept({ method: 'GET', url: hentGruppeEn }, eksisterendeGruppeMock)
-	cy.intercept({ method: 'GET', url: hentGruppeTo }, nyGruppeMock)
-	cy.intercept({ method: 'GET', url: hentGruppeBestilling }, backendBestillingerMock)
-	cy.intercept({ method: 'POST', url: lagNyGruppe }, { statusCode: 201, body: nyGruppeMock })
-	cy.intercept({ method: 'GET', url: pdlPersonBolk }, pdlBulkpersonerMock)
-	cy.intercept({ method: 'GET', url: pdlPersonEnkelt }, pdlPersonEnkeltMock)
-	cy.intercept({ method: 'GET', url: pdlForvalter }, pdlForvalterMock)
-	cy.intercept({ method: 'POST', url: kontoregister }, kontoregisterMock)
-	cy.intercept({ method: 'GET', url: tags }, tagsMock)
-	cy.intercept({ method: 'GET', url: backendTransaksjon }, backendTransaksjonMock)
-	cy.intercept({ method: 'GET', url: brukerMaler }, brukerMalerMock)
-	cy.intercept({ method: 'GET', url: oppsummeringsdokService }, oppsummeringsdokumentServiceMock)
-	cy.intercept({ method: 'GET', url: alleMaler }, malerMock)
-	cy.intercept({ method: 'GET', url: brukerOrganisasjonMaler }, brukerOrganisasjonMalerMock)
-	cy.intercept({ method: 'GET', url: brregstub }, brregstubMock)
-	cy.intercept({ method: 'GET', url: medl }, medlMock)
-	cy.intercept({ method: 'GET', url: joarkDokJournalpost }, joarkJournalpostMock)
-	cy.intercept({ method: 'GET', url: joarkDokDokument }, joarkDokumentMock)
-	cy.intercept({ method: 'GET', url: krrstub }, krrstubMock)
-	cy.intercept({ method: 'GET', url: aareg }, aaregMock)
-	cy.intercept({ method: 'GET', url: amelding }, ameldingMock)
-	cy.intercept({ method: 'GET', url: arena }, arenaMock)
-	cy.intercept({ method: 'GET', url: tpsMessaging }, tpsMessagingMock)
-	cy.intercept({ method: 'GET', url: skjerming }, skjermingMock)
-	cy.intercept({ method: 'GET', url: inst }, instMock)
-	cy.intercept({ method: 'GET', url: pensjon }, pensjonMock)
-	cy.intercept({ method: 'GET', url: pensjonMiljoer }, miljoeMock)
-	cy.intercept({ method: 'GET', url: pensjonTp }, pensjonTpMock)
-	cy.intercept({ method: 'GET', url: sigrunstub }, sigrunstubMock)
-	cy.intercept({ method: 'GET', url: udistub }, udistubMock)
-	cy.intercept({ method: 'GET', url: kodeverk }, kodeverkMock)
-	cy.intercept({ method: 'GET', url: dokarkivMiljoer }, ['q1', 'q2'])
-	cy.intercept({ method: 'POST', url: dollySoekIdenter }, ['12345678912'])
-	cy.intercept({ method: 'GET', url: arenaMiljoer }, ['q1', 'q2', 'q4'])
-	cy.intercept({ method: 'GET', url: organisasjonFraMiljoe }, organisasjonFraMiljoeMock)
-	cy.intercept({ method: 'GET', url: organisasjonerForBruker }, organisasjonerForBrukerMock)
+export const test = base.extend({
+	page: async ({ baseURL, page, context }, use) => {
+		for (const routeInfo of mockRoutes) {
+			await context.addInitScript(() => {
+				// @ts-ignore
+				return (window.isRunningTest = true)
+			})
+
+			await page.route(routeInfo.url, async (route) => {
+				await route.fulfill({
+					status: routeInfo.status || 200,
+					body: JSON.stringify(routeInfo.response),
+					headers: { 'content-type': 'application/json' },
+				})
+			})
+		}
+
+		await use(page)
+	},
 })
+export { expect } from '@playwright/test'
