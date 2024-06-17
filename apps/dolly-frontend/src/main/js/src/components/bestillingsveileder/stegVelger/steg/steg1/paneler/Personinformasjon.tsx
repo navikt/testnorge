@@ -5,7 +5,9 @@ import { Attributt, AttributtKategori } from '../Attributt'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import {
 	getInitialDoedsfall,
+	getInitialFoedested,
 	getInitialFoedsel,
+	getInitialFoedselsdato,
 	getInitialKjoenn,
 	getInitialNavn,
 	getInitialStatsborgerskap,
@@ -84,7 +86,9 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 				iconType={'personinformasjon'}
 			>
 				<AttributtKategori title="Alder" attr={sm.attrs}>
-					<Attributt attr={sm.attrs.foedsel} />
+					{/*<Attributt attr={sm.attrs.foedsel} />*/}
+					<Attributt attr={sm.attrs.foedested} />
+					<Attributt attr={sm.attrs.foedselsdato} />
 					<Attributt attr={sm.attrs.doedsdato} />
 				</AttributtKategori>
 				<AttributtKategori title="Nasjonalitet" attr={sm.attrs}>
@@ -129,7 +133,9 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 		>
 			<AttributtKategori title="Alder" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.alder} vis={!opprettFraEksisterende && !leggTil} />
-				<Attributt attr={sm.attrs.foedsel} />
+				{/*<Attributt attr={sm.attrs.foedsel} />*/}
+				<Attributt attr={sm.attrs.foedested} />
+				<Attributt attr={sm.attrs.foedselsdato} />
 				<Attributt attr={sm.attrs.doedsdato} />
 			</AttributtKategori>
 
@@ -206,7 +212,9 @@ PersoninformasjonPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 		alder: 'pdldata.opprettNyPerson.alder',
 		foedtEtter: 'pdldata.opprettNyPerson.foedtEtter',
 		foedtFoer: 'pdldata.opprettNyPerson.foedtFoer',
-		foedsel: 'pdldata.person.foedsel',
+		// foedsel: 'pdldata.person.foedsel',
+		foedested: 'pdldata.person.foedested',
+		foedselsdato: 'pdldata.person.foedselsdato',
 		doedsfall: 'pdldata.person.doedsfall',
 		statsborgerskap: 'pdldata.person.statsborgerskap',
 		innflytting: 'pdldata.person.innflytting',
@@ -244,11 +252,23 @@ PersoninformasjonPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 			add: () => setMulti([paths.alder, null], [paths.foedtEtter, null], [paths.foedtFoer, null]),
 			remove: () => del([paths.alder, paths.foedtEtter, paths.foedtFoer]),
 		},
-		foedsel: {
-			label: 'Fødsel',
-			checked: has(paths.foedsel),
-			add: () => set(paths.foedsel, [getInitialFoedsel(initMaster)]),
-			remove: () => del([paths.foedsel]),
+		// foedsel: {
+		// 	label: 'Fødsel',
+		// 	checked: has(paths.foedsel),
+		// 	add: () => set(paths.foedsel, [getInitialFoedsel(initMaster)]),
+		// 	remove: () => del([paths.foedsel]),
+		// },
+		foedested: {
+			label: 'Fødested',
+			checked: has(paths.foedested),
+			add: () => set(paths.foedested, [getInitialFoedested(initMaster)]),
+			remove: () => del([paths.foedested]),
+		},
+		foedselsdato: {
+			label: 'Fødselsdato',
+			checked: has(paths.foedselsdato),
+			add: () => set(paths.foedselsdato, [getInitialFoedselsdato(initMaster)]),
+			remove: () => del([paths.foedselsdato]),
 		},
 		doedsdato: {
 			label: 'Dødsdato',
