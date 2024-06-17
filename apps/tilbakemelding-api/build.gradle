@@ -27,8 +27,6 @@ dependencies {
 
     implementation 'org.hibernate.validator:hibernate-validator'
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
-    
-    implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
 
     implementation 'org.reactivestreams:reactive-streams:1.0.4'
 

@@ -39,7 +39,6 @@ dependencies {
     implementation 'wsdl4j:wsdl4j'
 
     implementation 'org.springframework.cloud:spring-cloud-vault-config-databases'
-    implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
 
     implementation 'org.postgresql:postgresql'
     implementation 'org.flywaydb:flyway-core'

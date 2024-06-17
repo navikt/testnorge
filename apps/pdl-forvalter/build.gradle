@@ -23,7 +23,6 @@ dependencies {
     implementation 'no.nav.testnav.libs:security-core'
     implementation 'no.nav.testnav.libs:servlet-insecure-security'
 
-    implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
     implementation 'org.springframework.cloud:spring-cloud-vault-config-databases'
 
     implementation 'org.springframework.boot:spring-boot-starter-web'

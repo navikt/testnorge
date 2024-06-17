@@ -19,7 +19,6 @@ dependencies {
     implementation 'no.nav.testnav.libs:servlet-security'
 
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
-    implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
 
     implementation 'org.springframework.cloud:spring-cloud-vault-config-databases'
 
