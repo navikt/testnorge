@@ -2073,6 +2073,7 @@ const mapDokarkiv = (bestillingData, data) => {
 				obj('Avsender ID', dokarkivKriterier.avsenderMottaker?.id),
 				obj('Avsender navn', dokarkivKriterier.avsenderMottaker?.navn),
 				obj('Tema', dokarkivKriterier.tema),
+				obj('Behandlingstema', dokarkivKriterier.behandlingstema),
 				obj('Journalførende enhet', dokarkivKriterier.journalfoerendeEnhet),
 				obj('Ferdigstill journalpost', oversettBoolean(dokarkivKriterier.ferdigstill)),
 				obj('Sakstype', showLabel('sakstype', dokarkivKriterier.sak?.sakstype)),
