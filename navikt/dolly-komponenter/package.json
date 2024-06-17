@@ -74,7 +74,7 @@
     "rollup-plugin-svg": "^2.0.0",
     "storybook": "^8.0.5",
     "typescript": "^5.1.5",
-    "vite": "^5.0.12"
+    "vite": "^5.3.1"
   },
   "repository": "https://github.com/navikt/testnorge.git",
   "prettier": {
