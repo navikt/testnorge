@@ -14,14 +14,14 @@ import {
 	useDollyMalerBrukerOgMalnavn,
 	useDollyOrganisasjonMalerBrukerOgMalnavn,
 } from '@/utils/hooks/useMaler'
-import { runningCypressE2E } from '@/service/services/Request'
+import { runningE2ETest } from '@/service/services/Request'
 import { navigateToLogin } from '@/components/utlogging/navigateToLogin'
 import { FaroErrorBoundary } from '@grafana/faro-react'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { InfoStripe } from '@/components/infostripe/InfoStripe'
 
 const logout = (feilmelding: string) => {
-	if (!runningCypressE2E()) {
+	if (!runningE2ETest()) {
 		navigateToLogin(feilmelding)
 	}
 }
@@ -44,7 +44,7 @@ export const App = () => {
 	}, [userError])
 
 	useEffect(() => {
-		if (criticalError && !runningCypressE2E()) {
+		if (criticalError && !runningE2ETest()) {
 			console.error(criticalError)
 			logout(criticalError.stack)
 		}

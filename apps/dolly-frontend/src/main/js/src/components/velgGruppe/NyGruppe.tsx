@@ -3,8 +3,8 @@ import { DollyApi } from '@/service/Api'
 import styled from 'styled-components'
 import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
-import { CypressSelector } from '../../../cypress/mocks/Selectors'
 import { useFormContext } from 'react-hook-form'
+import { TestComponentSelectors } from '#/mocks/Selectors'
 
 const FeedbackText = styled.div`
 	margin-top: 10px;
@@ -55,20 +55,20 @@ export default () => {
 		<div className={'ny-gruppe'}>
 			<div className="flexbox--flex-wrap">
 				<DollyTextInput
-					data-cy={CypressSelector.INPUT_NY_GRUPPE_NAVN}
+					data-testid={TestComponentSelectors.INPUT_NY_GRUPPE_NAVN}
 					onChange={(event) => setNavn(event.target.value)}
 					label="NAVN"
 					size="large"
 				/>
 				<DollyTextInput
-					data-cy={CypressSelector.INPUT_NY_GRUPPE_HENSIKT}
+					data-testid={TestComponentSelectors.INPUT_NY_GRUPPE_HENSIKT}
 					onChange={(event) => setHensikt(event.target.value)}
 					label="HENSIKT"
 					size="large"
 				/>
 			</div>
 			<NavButton
-				data-cy={CypressSelector.BUTTON_NY_GRUPPE_OPPRETT}
+				data-testid={TestComponentSelectors.BUTTON_NY_GRUPPE_OPPRETT}
 				variant="primary"
 				onClick={(event) => {
 					event.preventDefault()

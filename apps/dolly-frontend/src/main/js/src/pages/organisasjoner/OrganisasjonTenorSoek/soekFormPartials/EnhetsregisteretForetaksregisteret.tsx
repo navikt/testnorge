@@ -8,7 +8,7 @@ import { AdresseKodeverk } from '@/config/kodeverk'
 import { Option } from '@/service/SelectOptionsOppslag'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
-import { CypressSelector } from '../../../../../cypress/mocks/Selectors'
+import { TestComponentSelectors } from '#/mocks/Selectors'
 
 export const EnhetsregisteretForetaksregisteret = ({ handleChange }: any) => {
 	const { domain: orgformOptions } = useTenorOrganisasjonDomain('Organisasjonsform')
@@ -128,7 +128,7 @@ export const EnhetsregisteretForetaksregisteret = ({ handleChange }: any) => {
 				<FormCheckbox
 					name="harUnderenheter"
 					label="Har underenheter"
-					data-cy={CypressSelector.CHECKBOX_ORGANISASJONER_TENORSOEK}
+					data-testid={TestComponentSelectors.CHECKBOX_ORGANISASJONER_TENORSOEK}
 					onChange={(val: any) =>
 						handleChange(val?.target?.checked || undefined, 'harUnderenheter')
 					}

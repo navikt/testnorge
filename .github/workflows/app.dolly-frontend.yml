@@ -14,12 +14,11 @@ on:
       - libs/security-core
       - apps/dolly-frontend/**
       - .github/workflows/app.dolly-frontend.yml
-      - .github/workflows/common.cypress.yml
+      - .github/workflows/common.playwright.yml
 
 jobs:
-
-  cypress:
-    uses: ./.github/workflows/common.cypress.yml
+  playwright:
+    uses: ./.github/workflows/common.playwright.yml
     with:
       working-directory: "apps/dolly-frontend"
     secrets:

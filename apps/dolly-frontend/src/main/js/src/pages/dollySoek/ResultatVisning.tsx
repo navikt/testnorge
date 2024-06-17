@@ -11,7 +11,7 @@ import { formatAlder } from '@/utils/DataFormatter'
 import { NavigerTilPerson } from '@/pages/dollySoek/NavigerTilPerson'
 import { PersonVisning } from '@/pages/dollySoek/PersonVisning'
 import { usePdlPersonbolk } from '@/utils/hooks/usePdlPerson'
-import { runningCypressE2E } from '@/service/services/Request'
+import { runningE2ETest } from '@/service/services/Request'
 import _ from 'lodash'
 
 export const ResultatVisning = ({ resultat, soekError }) => {
@@ -96,11 +96,14 @@ export const ResultatVisning = ({ resultat, soekError }) => {
 			text: 'Alder',
 			width: '10',
 			formatter: (_cell: any, row: any) => {
-				if (!row.person?.foedsel?.[0]?.foedselsdato) {
+				if (
+					!row.person?.foedsel?.[0]?.foedselsdato &&
+					!row.person?.foedselsdato?.[0]?.foedselsdato
+				) {
 					return <>Ukjent</>
 				}
 				const alder = getAlder(
-					row.person?.foedsel?.[0]?.foedselsdato,
+					row.person?.foedsel?.[0]?.foedselsdato || row.person?.foedselsdato?.[0]?.foedselsdato,
 					row.person?.doedsfall?.[0]?.doedsdato,
 				)
 				return <>{formatAlder(alder, row.person?.doedsfall?.[0]?.doedsdato)}</>
@@ -121,7 +124,7 @@ export const ResultatVisning = ({ resultat, soekError }) => {
 
 	return (
 		<DollyTable
-			data={runningCypressE2E() ? pdlfPersoner : personer}
+			data={runningE2ETest() ? pdlfPersoner : personer}
 			columns={columns}
 			iconItem={(person) => {
 				const kjoenn = person.person?.kjoenn?.[0]?.kjoenn

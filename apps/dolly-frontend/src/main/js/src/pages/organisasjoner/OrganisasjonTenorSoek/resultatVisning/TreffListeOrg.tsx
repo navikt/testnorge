@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useTenorOrganisasjon } from '@/utils/hooks/useTenorSoek'
 import Loading from '@/components/ui/loading/Loading'
 import styled from 'styled-components'
-import { CypressSelector } from '../../../../../cypress/mocks/Selectors'
+import { TestComponentSelectors } from '#/mocks/Selectors'
 import { OrganisasjonTenorVisning } from '@/pages/organisasjoner/OrganisasjonTenorSoek/resultatVisning/OrganisasjonTenorVisning'
 
 const OrganisasjonNavn = styled.h3`
@@ -69,7 +69,7 @@ export const TreffListeOrg = ({ response, organisasjonListe, loading, error }: a
 						return (
 							<Box
 								key={organisasjon?.organisasjonsnummer}
-								data-cy={CypressSelector.BUTTON_ORGANISASJON_TENORSOEK}
+								data-testid={TestComponentSelectors.BUTTON_ORGANISASJON_TENORSOEK}
 								padding="2"
 								background={
 									organisasjon?.organisasjonsnummer === valgtOrganisasjon?.organisasjonsnummer
