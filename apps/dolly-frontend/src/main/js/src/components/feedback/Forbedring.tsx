@@ -5,7 +5,7 @@ import { ForbedringModal } from '@/components/feedback/ForbedringModal'
 import useBoolean from '@/utils/hooks/useBoolean'
 import Icon from '@/components/ui/icon/Icon'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import { CypressSelector } from '../../../cypress/mocks/Selectors'
+import { TestComponentSelectors } from '#/mocks/Selectors'
 
 export const Forbedring = () => {
 	const [isForbedringModalOpen, openForbedringModal, closeForbedringModal] = useBoolean(false)
@@ -13,7 +13,7 @@ export const Forbedring = () => {
 	return (
 		<ErrorBoundary>
 			<button
-				data-cy={CypressSelector.BUTTON_OPEN_FORBEDRING_MODAL}
+				data-testid={TestComponentSelectors.BUTTON_OPEN_FORBEDRING_MODAL}
 				className="btn-modal"
 				onClick={openForbedringModal}
 			>

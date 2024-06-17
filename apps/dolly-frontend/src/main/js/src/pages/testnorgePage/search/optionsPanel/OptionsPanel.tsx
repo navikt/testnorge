@@ -2,7 +2,7 @@ import { useToggle } from 'react-use'
 import ExpandButton from '@/components/ui/button/ExpandButton/ExpandButton'
 import './OptionsPanel.less'
 import React from 'react'
-import { runningCypressE2E } from '@/service/services/Request'
+import { runningE2ETest } from '@/service/services/Request'
 
 type OptionsPanelProps = {
 	startOpen?: boolean
@@ -14,7 +14,7 @@ type OptionsPanelProps = {
 }
 
 export const OptionsPanel: React.FC<OptionsPanelProps> = ({
-	startOpen = runningCypressE2E(),
+	startOpen = runningE2ETest(),
 	heading,
 	content,
 	children,

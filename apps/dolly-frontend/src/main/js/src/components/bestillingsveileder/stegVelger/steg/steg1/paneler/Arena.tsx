@@ -2,7 +2,7 @@ import Panel from '@/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
 import { harValgtAttributt } from '@/components/ui/form/formUtils'
 import { arenaPath } from '@/components/fagsystem/arena/form/Form'
-import { runningCypressE2E } from '@/service/services/Request'
+import { runningE2ETest } from '@/service/services/Request'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { useContext } from 'react'
 
@@ -101,7 +101,7 @@ ArenaPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 		)?.data?.arenaforvalter?.kvalifiseringsgruppe
 	}
 
-	const sisteBestillingServicebehov = runningCypressE2E() ? 'IKVAL' : getServiceBehov()
+	const sisteBestillingServicebehov = runningE2ETest() ? 'IKVAL' : getServiceBehov()
 
 	const MED_SERVICEBEHOV = ['arenaforvalter.arenaBrukertype', 'MED_SERVICEBEHOV']
 	const AUTOMATISK_INNSENDING_MELDEKORT = ['arenaforvalter.automatiskInnsendingAvMeldekort', true]
@@ -120,8 +120,8 @@ ArenaPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 					[
 						'arenaforvalter.aap115[0]',
 						{
-							fraDato: runningCypressE2E() ? new Date(2020, 1) : null,
-							tilDato: runningCypressE2E() ? new Date(2020, 2) : null,
+							fraDato: runningE2ETest() ? new Date(2020, 1) : null,
+							tilDato: runningE2ETest() ? new Date(2020, 2) : null,
 						},
 					],
 					MED_SERVICEBEHOV,
@@ -144,8 +144,8 @@ ArenaPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 					[
 						'arenaforvalter.aap[0]',
 						{
-							fraDato: runningCypressE2E() ? new Date(2021, 1) : null,
-							tilDato: runningCypressE2E() ? new Date(2022, 1) : null,
+							fraDato: runningE2ETest() ? new Date(2021, 1) : null,
+							tilDato: runningE2ETest() ? new Date(2022, 1) : null,
 						},
 					],
 					MED_SERVICEBEHOV,
@@ -170,8 +170,8 @@ ArenaPanel.initialValues = ({ set, opts, setMulti, del, has }) => {
 						{
 							vedtakstype: 'O',
 							rettighetKode: 'DAGO',
-							fraDato: runningCypressE2E() ? new Date(2023, 1) : null,
-							tilDato: runningCypressE2E() ? new Date(2023, 2) : null,
+							fraDato: runningE2ETest() ? new Date(2023, 1) : null,
+							tilDato: runningE2ETest() ? new Date(2023, 2) : null,
 							mottattDato: null,
 						},
 					],

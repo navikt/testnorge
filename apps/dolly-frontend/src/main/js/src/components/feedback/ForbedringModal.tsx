@@ -10,7 +10,7 @@ import Icon from '@/components/ui/icon/Icon'
 import { useBrukerProfilBilde, useCurrentBruker } from '@/utils/hooks/useBruker'
 import { Textarea } from '@navikt/ds-react'
 import { Logger } from '@/logger/Logger'
-import { CypressSelector } from '../../../cypress/mocks/Selectors'
+import { TestComponentSelectors } from '#/mocks/Selectors'
 
 export const ForbedringModal = ({ closeModal }) => {
 	const { brukerBilde } = useBrukerProfilBilde()
@@ -48,7 +48,7 @@ export const ForbedringModal = ({ closeModal }) => {
 
 					<div className="modal-input">
 						<Textarea
-							data-cy={CypressSelector.INPUT_FORBEDRING_MODAL}
+							data-testid={TestComponentSelectors.INPUT_FORBEDRING_MODAL}
 							value={forbedring}
 							label={'Forbedring/funksjonalitet'}
 							placeholder={'Forsøk å være så spesifikk som mulig'}
@@ -58,7 +58,7 @@ export const ForbedringModal = ({ closeModal }) => {
 						/>
 						<div className="skjemaelement textarea__container">
 							<DollyCheckbox
-								data-cy={CypressSelector.CHECKBOX_FORBEDRING_ANONYM}
+								data-testid={TestComponentSelectors.CHECKBOX_FORBEDRING_ANONYM}
 								label="Jeg ønsker å være anonym"
 								onChange={toggleAnonym}
 							/>
@@ -66,7 +66,7 @@ export const ForbedringModal = ({ closeModal }) => {
 					</div>
 				</div>
 				<ModalActionKnapper
-					data-cy={CypressSelector.BUTTON_SEND_FORBEDRINGSOENSKE}
+					data-testid={TestComponentSelectors.BUTTON_SEND_FORBEDRINGSOENSKE}
 					submitknapp="Send ønske"
 					disabled={forbedring === '' || forbedring.length > MAX_LENGTH}
 					onSubmit={sendForbedring}
