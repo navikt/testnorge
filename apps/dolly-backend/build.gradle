@@ -47,7 +47,6 @@ dependencies {
 
     implementation 'org.postgresql:postgresql'
     implementation 'org.flywaydb:flyway-core'
-    implementation 'io.micrometer:micrometer-registry-prometheus'
     implementation 'ma.glasnost.orika:orika-core:1.5.4'
     implementation 'org.codehaus.jettison:jettison:1.5.4'
     implementation 'org.apache.poi:poi:5.2.5'

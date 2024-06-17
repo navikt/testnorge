@@ -34,9 +34,6 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-vault-config-databases'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
-    implementation 'io.micrometer:micrometer-registry-prometheus'
-
-
     implementation 'org.apache.cxf:cxf-rt-bindings-soap'
     implementation 'org.apache.cxf:cxf-rt-ws-policy'
     implementation 'org.apache.cxf:cxf-core'

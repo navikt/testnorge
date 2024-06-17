@@ -33,7 +33,6 @@ dependencies {
     
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
 
-    implementation 'io.micrometer:micrometer-registry-prometheus'
     implementation 'org.springframework.kafka:spring-kafka'
 
     implementation 'io.confluent:kafka-avro-serializer:7.6.1'

@@ -20,8 +20,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
 
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
-    
-    implementation 'io.micrometer:micrometer-registry-prometheus'
+
     runtimeOnly 'com.h2database:h2'
     runtimeOnly 'org.postgresql:postgresql'
     implementation 'io.r2dbc:r2dbc-h2'

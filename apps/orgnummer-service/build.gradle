@@ -26,8 +26,6 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
     implementation 'org.springframework.cloud:spring-cloud-vault-config-databases'
 
-    implementation 'io.micrometer:micrometer-registry-prometheus'
-
     implementation 'jakarta.validation:jakarta.validation-api:3.1.0'
     implementation 'org.flywaydb:flyway-core'
     implementation 'com.h2database:h2'

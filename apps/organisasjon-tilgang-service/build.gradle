@@ -25,7 +25,6 @@ dependencies {
     implementation 'org.flywaydb:flyway-core'
 
     implementation 'ma.glasnost.orika:orika-core:1.5.4'
-    implementation 'io.micrometer:micrometer-registry-prometheus'
 
     implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.5.0'
     implementation 'io.swagger.core.v3:swagger-annotations-jakarta:2.2.21'

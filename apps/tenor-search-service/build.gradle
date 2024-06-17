@@ -20,8 +20,6 @@ dependencies {
 
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
 
-    implementation 'io.micrometer:micrometer-registry-prometheus'
-
     implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.5.0'
 
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'

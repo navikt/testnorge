@@ -27,7 +27,6 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
 
-    implementation 'io.micrometer:micrometer-registry-prometheus'
     implementation 'com.h2database:h2'
     implementation 'com.zaxxer:HikariCP'
     implementation 'org.flywaydb:flyway-core'

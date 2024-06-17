@@ -23,8 +23,6 @@ dependencies {
 
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
 
-    implementation 'io.micrometer:micrometer-registry-prometheus'
-
     implementation 'org.flywaydb:flyway-core'
     implementation 'com.h2database:h2'
     implementation 'com.zaxxer:HikariCP'

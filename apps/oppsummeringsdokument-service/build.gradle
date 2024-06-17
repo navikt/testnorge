@@ -32,8 +32,6 @@ dependencies {
 
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
 
-    implementation 'io.micrometer:micrometer-registry-prometheus'
-
     implementation 'org.springframework.kafka:spring-kafka'
     implementation 'org.apache.kafka:kafka-clients:3.7.0'
 

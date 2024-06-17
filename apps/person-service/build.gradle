@@ -26,8 +26,6 @@ dependencies {
 
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
 
-    implementation 'io.micrometer:micrometer-registry-prometheus'
-
     implementation 'ma.glasnost.orika:orika-core:1.5.4'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0'
 
