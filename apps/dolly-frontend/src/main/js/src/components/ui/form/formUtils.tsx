@@ -29,7 +29,9 @@ export const fixTimezone = (date: Date) => {
 const getValgteAttributter = (values) => {
 	const rootPaths = [
 		'pdldata.opprettNyPerson.alder',
-		'pdldata.person.foedsel',
+		// 'pdldata.person.foedsel',
+		'pdldata.person.foedested',
+		'pdldata.person.foedselsdato',
 		'pdldata.person.doedsfall',
 		'pdldata.person.statsborgerskap',
 		'pdldata.person.innflytting',
