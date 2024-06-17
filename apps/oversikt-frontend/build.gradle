@@ -27,7 +27,6 @@ dependencies {
     implementation 'org.springframework.session:spring-session-core'
 
     implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.5.0'
-    implementation 'org.hibernate.validator:hibernate-validator'
 
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
 }

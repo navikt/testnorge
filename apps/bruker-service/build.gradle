@@ -37,7 +37,6 @@ dependencies {
 
     implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.5.0'
     implementation 'io.swagger.core.v3:swagger-annotations-jakarta:2.2.21'
-    implementation 'org.hibernate.validator:hibernate-validator'
 
     implementation 'io.r2dbc:r2dbc-h2'
     implementation 'org.postgresql:r2dbc-postgresql'

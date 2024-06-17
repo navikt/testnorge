@@ -41,7 +41,6 @@ dependencies {
     implementation 'no.nav.repository.fellesreg.tpsws:nav-repository-fellesregister-castor-tps-s018-domain:2020.08.27-09.53-183ead3d81eb'
 
     implementation 'ma.glasnost.orika:orika-core:1.5.4'
-    implementation 'org.hibernate.validator:hibernate-validator'
     implementation 'org.aspectj:aspectjweaver:1.9.22'
 
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0'
