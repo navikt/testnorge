@@ -82,11 +82,7 @@ export const KrrstubForm = () => {
 					/>
 					{registrert && (
 						<>
-							<FormSelect
-								name="krrstub.reservert"
-								label="Reservert"
-								options={Options('boolean')}
-							/>
+							<FormSelect name="krrstub.reservert" label="Reservert" options={Options('boolean')} />
 							<FormTextInput name="krrstub.epost" label="E-post" />
 							<div
 								style={{
