@@ -14,12 +14,9 @@ import static java.util.Objects.isNull;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SkattekortResponseDTO {
+public class SkattekortRequestDTO {
 
-    private String ident;
-    private String inntektsaar;
     private List<Arbeidsgiver> arbeidsgiver;
-    private String skattekortXml;
 
     public List<Arbeidsgiver> getArbeidsgiver() {
 

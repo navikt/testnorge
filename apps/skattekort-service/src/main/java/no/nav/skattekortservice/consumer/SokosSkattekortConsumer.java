@@ -4,10 +4,12 @@ import no.nav.skattekortservice.config.Consumers;
 import no.nav.skattekortservice.consumer.command.SokosGetCommand;
 import no.nav.skattekortservice.consumer.command.SokosPostCommand;
 import no.nav.skattekortservice.dto.SokosRequest;
+import no.nav.skattekortservice.dto.SokosResponse;
 import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
@@ -32,10 +34,10 @@ public class SokosSkattekortConsumer {
                 .flatMap(token -> new SokosPostCommand(webClient, request, token.getTokenValue()).call());
     }
 
-    public Mono<String> hentSkattekort(String ident, Integer inntektsaar) {
+    public Flux<SokosResponse> hentSkattekort(String ident) {
 
         return tokenExchange.exchange(serverProperties)
-                .flatMap(token -> new SokosGetCommand(webClient, ident,
-                        inntektsaar, token.getTokenValue()).call());
+                .flatMapMany(token -> new SokosGetCommand(webClient, ident,
+                        token.getTokenValue()).call());
     }
 }

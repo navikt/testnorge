@@ -1,7 +1,10 @@
 package no.nav.skattekortservice.utility;
 
 import lombok.experimental.UtilityClass;
-import no.nav.testnav.libs.dto.skattekortservice.v1.SkattekortTilArbeidsgiverDTO;
+import no.nav.testnav.libs.dto.skattekortservice.v1.Arbeidsgiver;
+import no.nav.testnav.libs.dto.skattekortservice.v1.Skattekort;
+import no.nav.testnav.libs.dto.skattekortservice.v1.SkattekortRequestDTO;
+import no.nav.testnav.libs.dto.skattekortservice.v1.Skattekortmelding;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -10,7 +13,7 @@ import java.util.Collection;
 @UtilityClass
 public class SkattekortValidator {
 
-    public static void validate(SkattekortTilArbeidsgiverDTO skattekort) {
+    public static void validate(SkattekortRequestDTO skattekort) {
 
         validateArbeidsgiver(skattekort);
 
@@ -19,13 +22,13 @@ public class SkattekortValidator {
         validateSkattekort(skattekort);
     }
 
-    private static void validateSkattekort(SkattekortTilArbeidsgiverDTO skattekort) {
+    private static void validateSkattekort(SkattekortRequestDTO skattekort) {
 
         skattekort.getArbeidsgiver().stream()
-                .map(SkattekortTilArbeidsgiverDTO.Arbeidsgiver::getArbeidstaker)
+                .map(Arbeidsgiver::getArbeidstaker)
                 .flatMap(Collection::stream)
-                .map(SkattekortTilArbeidsgiverDTO.Skattekortmelding::getSkattekort)
-                .map(SkattekortTilArbeidsgiverDTO.Skattekort::getTrekktype)
+                .map(Skattekortmelding::getSkattekort)
+                .map(Skattekort::getTrekktype)
                 .flatMap(Collection::stream)
                 .forEach(trekktype -> {
                     if (trekktype.isAllEmpty()) {
@@ -38,10 +41,10 @@ public class SkattekortValidator {
                 });
     }
 
-    private static void validateArbeidstager(SkattekortTilArbeidsgiverDTO skattekort) {
+    private static void validateArbeidstager(SkattekortRequestDTO skattekort) {
 
         skattekort.getArbeidsgiver().stream()
-                .map(SkattekortTilArbeidsgiverDTO.Arbeidsgiver::getArbeidstaker)
+                .map(Arbeidsgiver::getArbeidstaker)
                 .flatMap(Collection::stream)
                 .forEach(arbeidstaker -> {
                     if (arbeidstaker.isEmptyArbeidstakeridentifikator()) {
@@ -54,10 +57,10 @@ public class SkattekortValidator {
                 });
     }
 
-    private static void validateArbeidsgiver(SkattekortTilArbeidsgiverDTO skattekort) {
+    private static void validateArbeidsgiver(SkattekortRequestDTO skattekort) {
 
         skattekort.getArbeidsgiver().stream()
-                .map(SkattekortTilArbeidsgiverDTO.Arbeidsgiver::getArbeidsgiveridentifikator)
+                .map(Arbeidsgiver::getArbeidsgiveridentifikator)
                 .forEach(arbeidsgiver -> {
                     if (arbeidsgiver.isAllEmpty()) {
                         throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
