@@ -36,8 +36,10 @@ public class OriginatorMappingStrategy implements MappingStrategy {
                         if (StringUtils.isBlank(destinasjon.getOpprettFraIdent()) && isNull(destinasjon.getIdenttype())) {
                             destinasjon.setIdenttype(Identtype.FNR);
                         }
-                        destinasjon.getPerson().setFoedselsdato(mapperFacade.mapAsList(kilde.getPerson().getFoedselsdato(), FoedselsdatoDTO.class));
-                        destinasjon.getPerson().setFoedested(mapperFacade.mapAsList(kilde.getPerson().getFoedested(), FoedestedDTO.class));
+                        if (nonNull(destinasjon.getPerson())) {
+                            destinasjon.getPerson().setFoedselsdato(mapperFacade.mapAsList(kilde.getPerson().getFoedselsdato(), FoedselsdatoDTO.class));
+                            destinasjon.getPerson().setFoedested(mapperFacade.mapAsList(kilde.getPerson().getFoedested(), FoedestedDTO.class));
+                        }
                     }
                 })
                 .byDefault()
