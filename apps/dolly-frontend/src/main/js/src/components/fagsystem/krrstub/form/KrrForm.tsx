@@ -85,6 +85,13 @@ export const KrrstubForm = () => {
 							<FormSelect
 								name="krrstub.reservert"
 								label="Reservert"
+								onChange={(option: Option) => {
+									formMethods.setValue('krrstub.reservert', option?.value)
+									if (option?.value === 'true') {
+										formMethods.setValue('krrstub.epost', 'noreply@nav.no')
+									}
+									formMethods.trigger('krrstub')
+								}}
 								options={Options('boolean')}
 							/>
 							<FormTextInput name="krrstub.epost" label="E-post" />
