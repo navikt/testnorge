@@ -401,7 +401,10 @@ const getPdlIdentInfo = (ident, bestillingStatuser, pdlData) => {
 	const navn = getNavn(person.navn)
 	const mellomnavn = navn?.mellomnavn ? `${navn.mellomnavn.charAt(0)}.` : ''
 	const kjonn = person.kjoenn[0] ? getKjoenn(person.kjoenn[0].kjoenn) : 'U'
-	const alder = getAlder(person.foedsel[0]?.foedselsdato, person.doedsfall[0]?.doedsdato)
+	const alder = getAlder(
+		person.foedsel[0]?.foedselsdato || person.foedselsdato[0]?.foedselsdato,
+		person.doedsfall[0]?.doedsdato,
+	)
 
 	return {
 		ident,

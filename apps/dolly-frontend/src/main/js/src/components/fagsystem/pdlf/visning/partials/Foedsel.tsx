@@ -12,7 +12,11 @@ import {
 } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { FoedselData, Person } from '@/components/fagsystem/pdlf/PdlTypes'
-import { getInitialFoedsel } from '@/components/fagsystem/pdlf/form/initialValues'
+import {
+	getInitialFoedested,
+	getInitialFoedsel,
+	getInitialFoedselsdato,
+} from '@/components/fagsystem/pdlf/form/initialValues'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
 import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
 
@@ -63,39 +67,6 @@ const FoedselLes = ({ foedsel, idx }: FoedselLesTypes) => {
 	)
 }
 
-// const FoedestedLes = ({ foedested, idx }) => {
-// 	return (
-// 		<div className="person-visning_redigerbar" key={idx}>
-// 			<TitleValue title="Fødested" value={foedested.foedested} />
-// 			<TitleValue title="Fødekommune">
-// 				{foedested.foedekommune && (
-// 					<KodeverkConnector navn="Kommuner" value={foedested.foedekommune}>
-// 						{(_v: Kodeverk, verdi: KodeverkValues) => (
-// 							<span>{verdi ? verdi.label : foedested.foedekommune}</span>
-// 						)}
-// 					</KodeverkConnector>
-// 				)}
-// 			</TitleValue>
-// 			<TitleValue
-// 				title="Fødeland"
-// 				value={foedested.foedeland}
-// 				kodeverk={AdresseKodeverk.StatsborgerskapLand}
-// 			/>
-// 			<TitleValue title="Master" value={foedested.metadata?.master || foedested.master} />
-// 		</div>
-// 	)
-// }
-//
-// const FoedselsdatoLes = ({ foedselsdato, idx }) => {
-// 	return (
-// 		<div className="person-visning_redigerbar" key={idx}>
-// 			<TitleValue title="Fødselsdato" value={formatDate(foedselsdato.foedselsdato)} />
-// 			<TitleValue title="Fødselsår" value={foedselsdato.foedselsaar} />
-// 			<TitleValue title="Master" value={foedselsdato.metadata?.master || foedselsdato.master} />
-// 		</div>
-// 	)
-// }
-
 const FoedselVisning = ({
 	foedsel,
 	idx,
@@ -103,11 +74,13 @@ const FoedselVisning = ({
 	data,
 	erPdlVisning,
 	ident,
+	getInitialFoedsel,
+	name,
 }: FoedselVisningTypes) => {
 	const initFoedsel = Object.assign(_.cloneDeep(getInitialFoedsel()), data[idx])
-	const initialValues = { foedsel: initFoedsel }
+	const initialValues = { [name]: initFoedsel }
 
-	const redigertFoedselPdlf = _.get(tmpPersoner, `${ident}.person.foedsel`)?.find(
+	const redigertFoedselPdlf = _.get(tmpPersoner, `${ident}.person.${name}`)?.find(
 		(a: Person) => a.id === foedsel.id,
 	)
 	const slettetFoedselPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertFoedselPdlf
@@ -117,7 +90,7 @@ const FoedselVisning = ({
 
 	const foedselValues = redigertFoedselPdlf ? redigertFoedselPdlf : foedsel
 	const redigertFoedselValues = redigertFoedselPdlf
-		? { foedsel: Object.assign(_.cloneDeep(getInitialFoedsel()), redigertFoedselPdlf) }
+		? { [name]: Object.assign(_.cloneDeep(getInitialFoedsel()), redigertFoedselPdlf) }
 		: null
 
 	return erPdlVisning ? (
@@ -127,7 +100,7 @@ const FoedselVisning = ({
 			dataVisning={<FoedselLes foedsel={foedselValues} idx={idx} />}
 			initialValues={initialValues}
 			redigertAttributt={redigertFoedselValues}
-			path="foedsel"
+			path={name}
 			ident={ident}
 		/>
 	)
@@ -161,10 +134,12 @@ export const Foedsel = ({
 									<FoedselVisning
 										foedsel={item}
 										idx={idx}
-										data={data}
+										data={foedsel}
 										ident={ident}
 										erPdlVisning={erPdlVisning}
 										tmpPersoner={tmpPersoner}
+										getInitialFoedsel={getInitialFoedsel}
+										name="foedsel"
 									/>
 								) : (
 									<FoedselLes foedsel={item} idx={idx} />
@@ -176,14 +151,44 @@ export const Foedsel = ({
 							{foedested && foedested.length > 0 && (
 								<div className="person-visning_content" style={{ margin: '-15px 0 0 0' }}>
 									<DollyFieldArray data={foedested} header="Fødested" nested>
-										{(item, idx) => <FoedselLes foedsel={item} idx={idx} />}
+										{(item, idx) =>
+											erRedigerbar ? (
+												<FoedselVisning
+													foedsel={item}
+													idx={idx}
+													data={foedested}
+													ident={ident}
+													erPdlVisning={erPdlVisning}
+													tmpPersoner={tmpPersoner}
+													getInitialFoedsel={getInitialFoedested}
+													name="foedested"
+												/>
+											) : (
+												<FoedselLes foedsel={item} idx={idx} />
+											)
+										}
 									</DollyFieldArray>
 								</div>
 							)}
 							{foedselsdato && foedselsdato.length > 0 && (
 								<div className="person-visning_content" style={{ margin: '-15px 0 0 0' }}>
 									<DollyFieldArray data={foedselsdato} header="Fødselsdato" nested>
-										{(item, idx) => <FoedselLes foedsel={item} idx={idx} />}
+										{(item, idx) =>
+											erRedigerbar ? (
+												<FoedselVisning
+													foedsel={item}
+													idx={idx}
+													data={foedselsdato}
+													ident={ident}
+													erPdlVisning={erPdlVisning}
+													tmpPersoner={tmpPersoner}
+													getInitialFoedsel={getInitialFoedselsdato}
+													name="foedselsdato"
+												/>
+											) : (
+												<FoedselLes foedsel={item} idx={idx} />
+											)
+										}
 									</DollyFieldArray>
 								</div>
 							)}
