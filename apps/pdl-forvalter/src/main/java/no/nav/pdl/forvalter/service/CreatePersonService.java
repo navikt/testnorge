@@ -9,7 +9,8 @@ import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.dto.HentIdenterRequest;
 import no.nav.testnav.libs.data.pdlforvalter.v1.AdressebeskyttelseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.BostedadresseDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.FoedselDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.FoedestedDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.FoedselsdatoDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregistermetadataDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.KjoennDTO;
@@ -56,7 +57,10 @@ public class CreatePersonService {
                 .kjoenn(List.of(KjoennDTO.builder().kjoenn(request.getKjoenn())
                         .folkeregistermetadata(new FolkeregistermetadataDTO())
                         .build()))
-                .foedsel(List.of(FoedselDTO.builder()
+                .foedselsdato(List.of(FoedselsdatoDTO.builder()
+                        .folkeregistermetadata(new FolkeregistermetadataDTO())
+                        .build()))
+                .foedested(List.of(FoedestedDTO.builder()
                         .folkeregistermetadata(new FolkeregistermetadataDTO())
                         .build()))
                 .navn(List.of(nonNull(request.getNyttNavn()) ?

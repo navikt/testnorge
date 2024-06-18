@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class FoedselDTO extends DbVersjonDTO {
+public class FoedselDTO extends FoedselsdatoDTO {
 
     private String foedekommune;
     private String foedeland;

@@ -4,11 +4,10 @@ import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.consumer.AdresseServiceConsumer;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
-import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
+import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
 import no.nav.pdl.forvalter.utils.IdenttypeUtility;
 import no.nav.testnav.libs.data.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.DeltBostedDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.FoedselDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.UkjentBostedDTO;
 import org.springframework.stereotype.Service;
@@ -73,10 +72,8 @@ public class DeltBostedService {
             personRepository.findByIdent(barnIdent)
                     .ifPresent(dbPerson -> {
                         if (isNull(deltBosted.getStartdatoForKontrakt())) {
-                            deltBosted.setStartdatoForKontrakt(dbPerson.getPerson().getFoedsel().stream()
-                                    .map(FoedselDTO::getFoedselsdato)
-                                    .findFirst()
-                                    .orElse(DatoFraIdentUtility.getDato(barnIdent).atStartOfDay()));
+                            deltBosted.setStartdatoForKontrakt(
+                                    FoedselsdatoUtility.getFoedselsdato(dbPerson.getPerson()));
                         }
                         setDeltBosted(dbPerson.getPerson(), deltBosted);
                     });

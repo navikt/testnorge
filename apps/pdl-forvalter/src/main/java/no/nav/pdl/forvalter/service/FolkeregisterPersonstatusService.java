@@ -1,18 +1,19 @@
 package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
+import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
 import no.nav.testnav.libs.data.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO.Master;
 import no.nav.testnav.libs.data.pdlforvalter.v1.DoedsfallDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FalskIdentitetDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.FoedselDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.UtflyttingDTO;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static java.util.Objects.nonNull;
@@ -98,26 +99,30 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
         } else if (!person.getDoedsfall().isEmpty()) {
 
             personstatus.setStatus(DOED);
-            personstatus.setGyldigFraOgMed(person.getDoedsfall().stream().findFirst().orElse(new DoedsfallDTO())
-                    .getDoedsdato());
+            personstatus.setGyldigFraOgMed(person.getDoedsfall().stream()
+                    .map(DoedsfallDTO::getDoedsdato)
+                    .findFirst()
+                    .orElse(LocalDateTime.now()));
 
         } else if (person.getFalskIdentitet().stream().anyMatch(FalskIdentitetDTO::isFalskIdentitet)) {
 
             personstatus.setStatus(OPPHOERT);
             personstatus.setGyldigFraOgMed(person.getFalskIdentitet().stream()
                     .filter(FalskIdentitetDTO::isFalskIdentitet)
-                    .findFirst().orElse(new FalskIdentitetDTO())
-                    .getGyldigFraOgMed());
+                    .map(FalskIdentitetDTO::getGyldigFraOgMed)
+                    .findFirst()
+                    .orElse(LocalDateTime.now()));
 
         } else if (!person.getUtflytting().isEmpty() && person.getUtflytting().stream()
-                    .noneMatch(utflytting -> person.getInnflytting().stream()
-                            .anyMatch(innflytting ->
-                                    innflytting.getInnflyttingsdato().isAfter(utflytting.getUtflyttingsdato())))) {
+                .noneMatch(utflytting -> person.getInnflytting().stream()
+                        .anyMatch(innflytting ->
+                                innflytting.getInnflyttingsdato().isAfter(utflytting.getUtflyttingsdato())))) {
 
             personstatus.setStatus(UTFLYTTET);
             personstatus.setGyldigFraOgMed(person.getUtflytting().stream()
-                    .findFirst().orElse(new UtflyttingDTO())
-                    .getUtflyttingsdato());
+                    .map(UtflyttingDTO::getUtflyttingsdato)
+                    .findFirst()
+                    .orElse(LocalDateTime.now()));
 
         } else if (!person.getOpphold().isEmpty() || DNR == getIdenttype(person.getIdent())) {
 
@@ -135,9 +140,11 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
                 personstatus.setStatus(BOSATT);
             }
 
-            personstatus.setGyldigFraOgMed(nonNull(person.getBostedsadresse().getFirst().getGyldigFraOgMed()) ?
-                    person.getBostedsadresse().getFirst().getGyldigFraOgMed() :
-                    DatoFraIdentUtility.getDato(person.getIdent()).atStartOfDay());
+            personstatus.setGyldigFraOgMed(person.getBostedsadresse().stream()
+                    .map(BostedadresseDTO::getGyldigFraOgMed)
+                    .filter(Objects::nonNull)
+                    .findFirst()
+                    .orElse(FoedselsdatoUtility.getFoedselsdato(person)));
 
         } else if (FNR != getIdenttype(person.getIdent()) &&
                 person.getBostedsadresse().stream().findFirst().orElse(new BostedadresseDTO()).countAdresser() == 0 ||
@@ -145,15 +152,15 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
 
             personstatus.setStatus(INAKTIV);
             personstatus.setGyldigFraOgMed(person.getBostedsadresse().stream()
-                    .findFirst().orElse(new BostedadresseDTO())
-                    .getGyldigFraOgMed());
+                    .map(BostedadresseDTO::getGyldigFraOgMed)
+                    .filter(Objects::nonNull)
+                    .findFirst()
+                    .orElse(FoedselsdatoUtility.getFoedselsdato(person)));
 
         } else {
 
             personstatus.setStatus(FOEDSELSREGISTRERT);
-            personstatus.setGyldigFraOgMed(person.getFoedsel().stream()
-                    .findFirst().orElse(new FoedselDTO())
-                    .getFoedselsdato());
+            personstatus.setGyldigFraOgMed(FoedselsdatoUtility.getFoedselsdato(person));
         }
 
         return personstatus;
