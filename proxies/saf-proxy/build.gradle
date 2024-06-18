@@ -1,5 +1,4 @@
 plugins {
-    id "dolly-apps"
     id "dolly-proxies"
 }
 
