@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import { runningCypressE2E } from '@/service/services/Request'
+import { runningE2ETest } from '@/service/services/Request'
 import { isDate } from 'date-fns'
 import { useFormContext } from 'react-hook-form'
 
@@ -108,7 +108,7 @@ const getValgteAttributter = (values) => {
 
 export const erForsteEllerTest = (values, attributter) => {
 	const valgteAttributter = getValgteAttributter(values)
-	return runningCypressE2E() || attributter.includes(valgteAttributter[0])
+	return runningE2ETest() || attributter.includes(valgteAttributter[0])
 }
 
 export const harValgtAttributt = (values, attributter) => {

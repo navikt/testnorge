@@ -5,7 +5,7 @@ import { harAvhukedeAttributter } from '@/components/bestillingsveileder/utils'
 import './Navigation.less'
 import { AvbrytButton } from '@/components/ui/button/AvbrytButton/AvbrytButton'
 import { useNavigate } from 'react-router-dom'
-import { CypressSelector } from '../../../../../cypress/mocks/Selectors'
+import { TestComponentSelectors } from '#/mocks/Selectors'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { useFormContext } from 'react-hook-form'
 import {
@@ -51,7 +51,7 @@ export const Navigation = ({ step, onPrevious, isLastStep, handleSubmit }) => {
 				<div className="step-navknapper--right">
 					{showPrevious && (
 						<NavButton
-							data-cy={CypressSelector.BUTTON_TILBAKE}
+							data-testid={TestComponentSelectors.BUTTON_TILBAKE}
 							variant={'secondary'}
 							onClick={onPrevious}
 						>
@@ -60,7 +60,7 @@ export const Navigation = ({ step, onPrevious, isLastStep, handleSubmit }) => {
 					)}
 					{!isLastStep && (
 						<NavButton
-							data-cy={CypressSelector.BUTTON_VIDERE}
+							data-testid={TestComponentSelectors.BUTTON_VIDERE}
 							variant={'primary'}
 							disabled={isSubmitting || disabledVidere}
 							onClick={handleSubmit}
@@ -70,7 +70,7 @@ export const Navigation = ({ step, onPrevious, isLastStep, handleSubmit }) => {
 					)}
 					{isLastStep && (
 						<NavButton
-							data-cy={CypressSelector.BUTTON_FULLFOER_BESTILLING}
+							data-testid={TestComponentSelectors.BUTTON_FULLFOER_BESTILLING}
 							variant={'primary'}
 							onClick={() => {
 								errorContext?.setShowError(true)

@@ -13,7 +13,7 @@ import {
 	getMalOptions,
 	NyBestillingProps,
 } from '@/components/bestillingsveileder/startModal/NyIdent/NyIdent'
-import { CypressSelector } from '../../../../cypress/mocks/Selectors'
+import { TestComponentSelectors } from '#/mocks/Selectors'
 import { Form, FormProvider, useForm } from 'react-hook-form'
 
 const initialValues = {
@@ -94,7 +94,7 @@ export const NyOrganisasjon = ({ onAvbryt, onSubmit, brukernavn }: NyBestillingP
 						</div>
 					</div>
 					<ModalActionKnapper
-						data-cy={CypressSelector.BUTTON_START_BESTILLING}
+						data-testid={TestComponentSelectors.BUTTON_START_BESTILLING}
 						submitknapp="Start bestilling"
 						disabled={!formMethods.formState.isValid || formMethods.formState.isSubmitting}
 						onSubmit={() => preSubmit(formMethods.getValues())}

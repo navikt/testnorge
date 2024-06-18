@@ -12,7 +12,7 @@ import Highlighter from 'react-highlight-words'
 import styled from 'styled-components'
 import PersonSearch from '@/service/services/personsearch/PersonSearch'
 import { Option } from '@/service/SelectOptionsOppslag'
-import { CypressSelector } from '../../../cypress/mocks/Selectors'
+import { TestComponentSelectors } from '#/mocks/Selectors'
 
 type FinnPersonProps = {
 	feilmelding: string
@@ -221,7 +221,7 @@ const FinnPersonBestilling = ({
 	const CustomOption = ({ children, ...props }) => (
 		// @ts-ignore
 		<components.Option {...props}>
-			<span data-cy={CypressSelector.BUTTON_NAVIGER_DOLLY}>
+			<span data-testid={TestComponentSelectors.BUTTON_NAVIGER_DOLLY}>
 				<Highlighter
 					textToHighlight={children}
 					searchWords={fragment.split(' ')}
@@ -236,7 +236,7 @@ const FinnPersonBestilling = ({
 		return (
 			// @ts-ignore
 			<components.DropdownIndicator {...props}>
-				<Icon fontSize={'1.5rem'} data-cy={CypressSelector.INPUT_DOLLY_SOEK} kind={'search'} />
+				<Icon fontSize={'1.5rem'} kind={'search'} />
 			</components.DropdownIndicator>
 		)
 	}
@@ -250,11 +250,14 @@ const FinnPersonBestilling = ({
 	return (
 		<ErrorBoundary>
 			<div>
-				<div className="finnperson-container skjemaelement">
+				<div
+					data-testId={TestComponentSelectors.CONTAINER_FINN_PERSON_BESTILLING}
+					className="finnperson-container skjemaelement"
+				>
 					<VelgSoekTypeToggle soekValg={soekType} setValgtSoekType={setSoekType} />
 					{/*@ts-ignore*/}
 					<StyledAsyncSelect
-						data-cy={CypressSelector.SELECT_PERSON_SEARCH}
+						data-testid={TestComponentSelectors.SELECT_PERSON_SEARCH}
 						defaultOptions={false}
 						styles={customAsyncSelectStyles}
 						loadOptions={fetchOptions}
@@ -279,7 +282,7 @@ const FinnPersonBestilling = ({
 				</div>
 				{error && (
 					<div
-						data-cy={CypressSelector.ERROR_MESSAGE_NAVIGERING}
+						data-testid={TestComponentSelectors.ERROR_MESSAGE_NAVIGERING}
 						className="error-message"
 						style={{ marginTop: '10px', maxWidth: '330px' }}
 					>

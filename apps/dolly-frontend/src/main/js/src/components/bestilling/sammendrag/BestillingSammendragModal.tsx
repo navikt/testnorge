@@ -2,7 +2,7 @@ import useBoolean from '@/utils/hooks/useBoolean'
 import DollyModal from '@/components/ui/modal/DollyModal'
 import Button from '@/components/ui/button/Button'
 import BestillingSammendrag from '@/components/bestilling/sammendrag/BestillingSammendrag'
-import { CypressSelector } from '../../../../cypress/mocks/Selectors'
+import { TestComponentSelectors } from '#/mocks/Selectors'
 
 export const BestillingSammendragModal = ({ bestilling }) => {
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
@@ -14,7 +14,7 @@ export const BestillingSammendragModal = ({ bestilling }) => {
 	return (
 		<div className="flexbox--align-center--justify-end">
 			<Button
-				data-cy={CypressSelector.BUTTON_OPEN_BESTILLINGSDETALJER}
+				data-testid={TestComponentSelectors.BUTTON_OPEN_BESTILLINGSDETALJER}
 				onClick={openModal}
 				kind="details"
 			>
