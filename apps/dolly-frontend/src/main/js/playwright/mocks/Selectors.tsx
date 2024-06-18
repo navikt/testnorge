@@ -1,6 +1,5 @@
 export enum TestComponentSelectors {
 	INPUT_MINSIDE_SOEK_MAL = 'input-minside-mal',
-	INPUT_DOLLY_SOEK = 'input-dolly-soek',
 	INPUT_TESTNORGE_FNR = 'input-testnorge-fnr',
 	INPUT_TENORSOEK_FNR = 'input-tenorsoek-fnr',
 	INPUT_NAVN = 'input-navn',
@@ -96,7 +95,6 @@ export enum TestComponentSelectors {
 	BUTTON_TENOR_CLEAR_HEADER = 'button-tenor-clear-options',
 	BUTTON_MODAL_CLOSE = 'button-modal-lukk',
 	SELECT_PERSON_SEARCH = 'select-person-search',
-	SELECT_TAGS = 'select-tags',
 	HOVER_MILJOE = 'hover-miljoe',
 	CHECKBOX_FORBEDRING_ANONYM = 'checkbox-forbedring-anonym',
 	CHECKBOX_TENORSOEK = 'checkbox-tenorsoek',
@@ -104,4 +102,5 @@ export enum TestComponentSelectors {
 	ERROR_MESSAGE_NAVIGERING = 'error-message-navigering',
 	EXPANDABLE_PERSONINFORMASJON = 'expandable-personinformasjon',
 	CONTAINER_VALGTE_PERSONER = 'container-valgte-personer',
+	CONTAINER_FINN_PERSON_BESTILLING = 'container-finn-person-bestilling',
 }
