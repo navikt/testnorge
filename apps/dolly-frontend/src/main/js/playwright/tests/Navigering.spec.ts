@@ -52,7 +52,9 @@ test.describe('Navigering til ident som finnes i gruppe 1', () => {
 			})
 		})
 
-		await page.getByTestId(TestComponentSelectors.INPUT_DOLLY_SOEK).fill('12345')
+		const searchInput = page.getByTestId('container-finn-person-bestilling').locator('input')
+
+		await searchInput.fill('12345')
 		await page.getByTestId(TestComponentSelectors.BUTTON_NAVIGER_DOLLY).click()
 		await page.waitForTimeout(400)
 
@@ -69,11 +71,11 @@ test.describe('Navigering til ident som finnes i gruppe 1', () => {
 		})
 
 		await page.getByTestId(TestComponentSelectors.TOGGLE_SEARCH_BESTILLING).click()
-		await page.getByTestId(TestComponentSelectors.INPUT_DOLLY_SOEK).fill('1')
+		await searchInput.fill('1')
 
 		await page.getByTestId(TestComponentSelectors.BUTTON_NAVIGER_DOLLY).click()
 		await page.getByTestId(TestComponentSelectors.TOGGLE_SEARCH_PERSON).click()
-		await page.getByTestId(TestComponentSelectors.INPUT_DOLLY_SOEK).fill('12345')
+		await searchInput.fill('12345')
 
 		await page.getByTestId(TestComponentSelectors.BUTTON_NAVIGER_DOLLY).click()
 		await page.waitForTimeout(400)

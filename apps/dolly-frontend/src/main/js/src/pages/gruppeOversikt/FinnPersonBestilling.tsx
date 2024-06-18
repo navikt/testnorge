@@ -232,10 +232,6 @@ const FinnPersonBestilling = ({
 		</components.Option>
 	)
 
-	const CustomInput = (props: JSX.IntrinsicAttributes) => {
-		return <components.Input data-testid={TestComponentSelectors.INPUT_DOLLY_SOEK} {...props} />
-	}
-
 	const DropdownIndicator = (props: JSX.IntrinsicAttributes) => {
 		return (
 			// @ts-ignore
@@ -254,7 +250,10 @@ const FinnPersonBestilling = ({
 	return (
 		<ErrorBoundary>
 			<div>
-				<div className="finnperson-container skjemaelement">
+				<div
+					data-testId={TestComponentSelectors.CONTAINER_FINN_PERSON_BESTILLING}
+					className="finnperson-container skjemaelement"
+				>
 					<VelgSoekTypeToggle soekValg={soekType} setValgtSoekType={setSoekType} />
 					{/*@ts-ignore*/}
 					<StyledAsyncSelect
@@ -266,7 +265,6 @@ const FinnPersonBestilling = ({
 						components={{
 							Option: CustomOption,
 							DropdownIndicator,
-							Input: CustomInput,
 						}}
 						isClearable={true}
 						options={options}
