@@ -103,7 +103,7 @@ public class SykemeldingMappingStrategy implements MappingStrategy {
                                 .findFirst().orElse(new PdlPerson.Navn()), pasient);
                         pasient.setAdresse(mapperFacade.map(person.getPerson().getBostedsadresse().stream()
                                 .findFirst().orElse(new BostedadresseDTO()), Adresse.class, context));
-                        pasient.setFoedselsdato(person.getPerson().getFoedsel().getFirst().getFoedselsdato());
+                        pasient.setFoedselsdato(person.getPerson().getFoedselsdato().getFirst().getFoedselsdato());
 
                         pasient.setTelefon(person.getPerson().getTelefonnummer().stream()
                                 .filter(telefonnummer -> telefonnummer.getPrioritet() == 1)

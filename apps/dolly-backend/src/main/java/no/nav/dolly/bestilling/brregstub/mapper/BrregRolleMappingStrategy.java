@@ -38,9 +38,9 @@ public class BrregRolleMappingStrategy implements MappingStrategy {
                         rolleoversiktTo.setAdresse(mapperFacade.map(personBolk.getPerson(), AdresseTo.class));
                         rolleoversiktTo.setEnheter(mapperFacade.mapAsList(bregdata.getEnheter(), RolleTo.class));
                         rolleoversiktTo.setFnr(personBolk.getIdent());
-                        rolleoversiktTo.setFodselsdato(personBolk.getPerson().getFoedsel().stream().findFirst()
-                                .orElse(new PdlPerson.Foedsel())
-                                .getFoedselsdato());
+                        rolleoversiktTo.setFodselsdato(personBolk.getPerson().getFoedselsdato().stream()
+                                .map(PdlPerson.Foedselsdato::getFoedselsdato)
+                                .findFirst().orElse(null));
                         rolleoversiktTo.setHovedstatus(0);
                         rolleoversiktTo.setNavn(mapperFacade.map(personBolk.getPerson().getNavn().stream().findFirst()
                                 .orElse(new PdlPerson.Navn()), NavnTo.class));
@@ -66,7 +66,7 @@ public class BrregRolleMappingStrategy implements MappingStrategy {
                     public void mapAtoB(PdlPerson.Person person, AdresseTo adresseTo, MappingContext context) {
 
                         if (!person.getBostedsadresse().isEmpty()) {
-                            var adresse = person.getBostedsadresse().get(0);
+                            var adresse = person.getBostedsadresse().getFirst();
                             if (nonNull(adresse.getVegadresse())) {
                                 adresseTo.setAdresse1(format("%s %s", adresse.getVegadresse().getAdressenavn(),
                                         adresse.getVegadresse().getHusnummer()));
