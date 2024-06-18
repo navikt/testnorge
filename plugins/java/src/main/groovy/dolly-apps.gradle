@@ -1,14 +1,9 @@
 plugins {
-    id "io.spring.dependency-management" // See ../../../build.gradle for version.
-    id "jacoco"
-    id "java"
-    id "org.sonarqube" // See ../../../build.gradle for version.
-    id "org.springframework.boot" // See ../../../build.gradle for version.
-}
+    id "dolly-sonar"
 
-tasks.bootJar {
-    archiveFileName = "app.jar"
-    duplicatesStrategy = DuplicatesStrategy.WARN
+    id "io.spring.dependency-management" // See ../../../build.gradle for version.
+    id "java"
+    id "org.springframework.boot" // See ../../../build.gradle for version.
 }
 
 configurations {
@@ -42,9 +37,15 @@ dependencies {
 dependencyManagement {
     applyMavenExclusions = false
     imports {
-        mavenBom "org.springframework.cloud:spring-cloud-dependencies:2023.0.1"
         mavenBom "org.springframework.boot:spring-boot-dependencies:3.2.1"
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:2023.0.1"
         mavenBom "org.springframework.session:spring-session-bom:2021.2.3"
+    }
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
     }
 }
 
@@ -69,23 +70,9 @@ repositories {
     mavenLocal()
 }
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
-    }
-}
-
-sonarqube {
-    properties {
-        property "sonar.dynamicAnalysis", "reuseReports"
-        property "sonar.host.url", "https://sonarcloud.io"
-        property "sonar.java.coveragePlugin", "jacoco"
-        property "sonar.language", "java"
-        property "sonar.organization", "navikt"
-        property "sonar.project.monorepo.enabled", true
-        property "sonar.sourceEncoding", "UTF-8"
-        property "sonar.token", System.getenv("SONAR_TOKEN")
-    }
+tasks.bootJar {
+    archiveFileName = "app.jar"
+    duplicatesStrategy = DuplicatesStrategy.WARN
 }
 
 tasks.test {

@@ -1,8 +1,8 @@
 plugins {
+    id "dolly-sonar"
+
     id "io.spring.dependency-management" // See ../../../build.gradle for version.
-    id "jacoco"
     id "java-library"
-    id "org.sonarqube" // See ../../../build.gradle for version.
 }
 
 group = "no.nav.testnav.libs"
@@ -33,6 +33,12 @@ dependencies {
     testImplementation "org.springframework.boot:spring-boot-starter-test"
 }
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
 repositories {
     mavenCentral()
     maven {
@@ -40,25 +46,6 @@ repositories {
         url = uri("https://packages.confluent.io/maven/")
     }
     mavenLocal()
-}
-
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
-    }
-}
-
-sonarqube {
-    properties {
-        property "sonar.dynamicAnalysis", "reuseReports"
-        property "sonar.host.url", "https://sonarcloud.io"
-        property "sonar.java.coveragePlugin", "jacoco"
-        property "sonar.language", "java"
-        property "sonar.organization", "navikt"
-        property "sonar.project.monorepo.enabled", true
-        property "sonar.sourceEncoding", "UTF-8"
-        property "sonar.token", System.getenv("SONAR_TOKEN")
-    }
 }
 
 tasks.test {
