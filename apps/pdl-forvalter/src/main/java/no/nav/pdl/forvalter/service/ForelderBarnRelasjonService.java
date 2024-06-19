@@ -242,11 +242,11 @@ public class ForelderBarnRelasjonService implements BiValidation<ForelderBarnRel
             PersonDTO relatertPerson = createPersonService.execute(relasjon.getNyRelatertPerson());
 
             if (isNotTrue(relasjon.getBorIkkeSammen()) && !hovedperson.getBostedsadresse().isEmpty()) {
-                BostedadresseDTO fellesAdresse = hovedperson.getBostedsadresse().stream()
+                var fellesAdresse = mapperFacade.map(hovedperson.getBostedsadresse().stream()
                         .findFirst()
                         .orElse(BostedadresseDTO.builder()
                                 .vegadresse(mapperFacade.map(defaultAdresse(), VegadresseDTO.class))
-                                .build());
+                                .build()), BostedadresseDTO.class);
                 fellesAdresse.setGyldigFraOgMed(getMaxDato(getLastFlyttedato(hovedperson), getLastFlyttedato(relatertPerson)));
                 if (!relatertPerson.getBostedsadresse().isEmpty()) {
                     relatertPerson.getBostedsadresse().set(0, fellesAdresse);

@@ -6,6 +6,8 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.domain.resultset.pdldata.PdlPersondata;
 import no.nav.dolly.mapper.MappingStrategy;
 import no.nav.testnav.libs.data.pdlforvalter.v1.BestillingRequestDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.FoedestedDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.FoedselsdatoDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.Identtype;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
@@ -33,6 +35,10 @@ public class OriginatorMappingStrategy implements MappingStrategy {
                         destinasjon.setOpprettFraIdent((String) context.getProperty("opprettFraIdent"));
                         if (StringUtils.isBlank(destinasjon.getOpprettFraIdent()) && isNull(destinasjon.getIdenttype())) {
                             destinasjon.setIdenttype(Identtype.FNR);
+                        }
+                        if (nonNull(destinasjon.getPerson())) {
+                            destinasjon.getPerson().setFoedselsdato(mapperFacade.mapAsList(kilde.getPerson().getFoedselsdato(), FoedselsdatoDTO.class));
+                            destinasjon.getPerson().setFoedested(mapperFacade.mapAsList(kilde.getPerson().getFoedested(), FoedestedDTO.class));
                         }
                     }
                 })

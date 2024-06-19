@@ -5,6 +5,7 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.consumer.AdresseServiceConsumer;
 import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
 import no.nav.pdl.forvalter.consumer.OrganisasjonForvalterConsumer;
+import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.testnav.libs.data.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -184,8 +186,12 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
 
         if (isNull(kontaktinfo.getAdresse()) || isBlank(kontaktinfo.getAdresse().getPostnummer())) {
             kontaktinfo.setAdresse(mapperFacade.map(
-                    personRepository.findByIdent(kontaktinfo.getPersonSomKontakt().getIdentifikasjonsnummer()).get()
-                            .getPerson().getBostedsadresse().stream().findFirst().get(),
+                    personRepository.findByIdent(kontaktinfo.getPersonSomKontakt().getIdentifikasjonsnummer())
+                            .map(DbPerson::getPerson)
+                            .map(PersonDTO::getBostedsadresse)
+                            .stream()
+                            .flatMap(Collection::stream)
+                            .findFirst().orElse(null),
                     KontaktinformasjonForDoedsboAdresse.class));
         }
     }
@@ -215,13 +221,14 @@ public class KontaktinformasjonForDoedsboService implements Validation<Kontaktin
                 .entrySet().stream()
                 .filter(entry -> "q1".equals(entry.getKey()) || "q2".equals(entry.getKey()))
                 .map(Map.Entry::getValue)
-                .findFirst().get();
+                .findFirst()
+                .orElse(null);
 
         organisasjonDto.setOrganisasjonsnavn((String) organisasjon.get("organisasjonsnavn"));
 
         if (isNull(kontaktinfo.getAdresse()) || isBlank(kontaktinfo.getAdresse().getPostnummer())) {
             kontaktinfo.setAdresse(!((List<Map>) organisasjon.get("adresser")).isEmpty() ?
-                    mapperFacade.map(((List<Map>) organisasjon.get("adresser")).get(0), KontaktinformasjonForDoedsboAdresse.class) :
+                    mapperFacade.map(((List<Map>) organisasjon.get("adresser")).getFirst(), KontaktinformasjonForDoedsboAdresse.class) :
                     null);
         }
         return Flux.empty();

@@ -18,6 +18,7 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.DeltBostedDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.DoedfoedtBarnDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FalskIdentitetDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.FoedestedDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.ForeldreansvarDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FullmaktDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.InnflyttingDTO;
@@ -103,7 +104,8 @@ public class PdlPerson {
     public static class Person {
 
         private List<PdlPerson.Navn> navn;
-        private List<PdlPerson.Foedsel> foedsel;
+        private List<PdlPerson.Foedselsdato> foedselsdato;
+        private List<FoedestedDTO> foedested;
         private List<PdlPerson.ForelderBarnRelasjon> forelderBarnRelasjon;
         private List<PdlPerson.Sivilstand> sivilstand;
         private List<PdlPerson.Doedsfall> doedsfall;
@@ -135,13 +137,6 @@ public class PdlPerson {
                 navn = new ArrayList<>();
             }
             return navn;
-        }
-
-        public List<PdlPerson.Foedsel> getFoedsel() {
-            if (isNull(foedsel)) {
-                foedsel = new ArrayList<>();
-            }
-            return foedsel;
         }
 
         public List<PdlPerson.ForelderBarnRelasjon> getForelderBarnRelasjon() {
@@ -311,6 +306,20 @@ public class PdlPerson {
             }
             return innflyttingTilNorge;
         }
+
+        public List<Foedselsdato> getFoedselsdato() {
+            if (isNull(foedselsdato)) {
+                foedselsdato = new ArrayList<>();
+            }
+            return foedselsdato;
+        }
+
+        public List<FoedestedDTO> getFoedested() {
+            if (isNull(foedested)) {
+                return foedested;
+            }
+            return foedested;
+        }
     }
 
     @lombok.Data
@@ -359,6 +368,17 @@ public class PdlPerson {
         private String foedekommune;
         private String foedeland;
         private String foedested;
+        private Integer foedselsaar;
+        private LocalDate foedselsdato;
+    }
+
+    @lombok.Data
+    @SuperBuilder
+    @EqualsAndHashCode(callSuper = true)
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Foedselsdato extends DbVersjonDTO {
+
         private Integer foedselsaar;
         private LocalDate foedselsdato;
     }
@@ -514,7 +534,7 @@ public class PdlPerson {
             MIDLERTIDIG("midlertidig"),
             INAKTIV("inaktiv");
 
-            private String beskrivelse;
+            private final String beskrivelse;
 
             Personstatus(String camelCaseValue) {
                 this.beskrivelse = camelCaseValue;

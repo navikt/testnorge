@@ -183,7 +183,7 @@ class ForelderBarnRelasjonServiceTest {
         for (int i = 0; i < request.size(); i++) {
             request.get(i).setId(request.size() - i);
         }
-        assertThat(request.get(0).getId(), is(equalTo(2)));
+        assertThat(request.getFirst().getId(), is(equalTo(2)));
         assertThat(request.get(1).getId(), is(equalTo(1)));
     }
 }
