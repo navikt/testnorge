@@ -61,7 +61,7 @@ export const usePdlOptions = (gruppe, master = 'PDLF') => {
 					?.map((relasjon) => relasjon.relatertPerson?.ident)
 			: null)
 		const alder = getAlder(
-			id.person?.foedsel?.[0]?.foedselsdato || id.person?.foedselsdato?.[0]?.foedselsdato,
+			id.person?.foedselsdato?.[0]?.foedselsdato || id.person?.foedsel?.[0]?.foedselsdato,
 		)
 		const kjoenn = id?.person?.kjoenn?.[0].kjoenn?.toLowerCase()
 		personData.push({

@@ -114,11 +114,12 @@ export const Foedsel = ({
 	erRedigerbar = true,
 }: FoedselTypes) => {
 	const { foedsel, foedested, foedselsdato } = data
-	if (
-		(!foedsel || foedsel.length === 0) &&
-		(!foedested || foedested.length === 0) &&
-		(!foedselsdato || foedselsdato.length === 0)
-	) {
+
+	const harFoedsel = foedsel && foedsel.length > 0
+	const harFoedested = foedested && foedested.length > 0
+	const harFoedselsdato = foedselsdato && foedselsdato.length > 0
+
+	if (!harFoedsel && !harFoedested && !harFoedselsdato) {
 		return null
 	}
 
@@ -127,28 +128,9 @@ export const Foedsel = ({
 			<SubOverskrift label="Fødsel" iconKind="foedsel" />
 			<div className="person-visning_content">
 				<ErrorBoundary>
-					{foedsel && foedsel.length > 0 ? (
-						<DollyFieldArray data={foedsel} header="" nested>
-							{(item: FoedselData, idx: number) =>
-								erRedigerbar ? (
-									<FoedselVisning
-										foedsel={item}
-										idx={idx}
-										data={foedsel}
-										ident={ident}
-										erPdlVisning={erPdlVisning}
-										tmpPersoner={tmpPersoner}
-										getInitialFoedsel={getInitialFoedsel}
-										name="foedsel"
-									/>
-								) : (
-									<FoedselLes foedsel={item} idx={idx} />
-								)
-							}
-						</DollyFieldArray>
-					) : (
+					{harFoedested || foedselsdato ? (
 						<>
-							{foedested && foedested.length > 0 && (
+							{harFoedested && (
 								<div className="person-visning_content" style={{ margin: '-15px 0 0 0' }}>
 									<DollyFieldArray data={foedested} header="Fødested" nested>
 										{(item, idx) =>
@@ -170,7 +152,7 @@ export const Foedsel = ({
 									</DollyFieldArray>
 								</div>
 							)}
-							{foedselsdato && foedselsdato.length > 0 && (
+							{harFoedselsdato && (
 								<div className="person-visning_content" style={{ margin: '-15px 0 0 0' }}>
 									<DollyFieldArray data={foedselsdato} header="Fødselsdato" nested>
 										{(item, idx) =>
@@ -193,6 +175,25 @@ export const Foedsel = ({
 								</div>
 							)}
 						</>
+					) : (
+						<DollyFieldArray data={foedsel} header="" nested>
+							{(item: FoedselData, idx: number) =>
+								erRedigerbar ? (
+									<FoedselVisning
+										foedsel={item}
+										idx={idx}
+										data={foedsel}
+										ident={ident}
+										erPdlVisning={erPdlVisning}
+										tmpPersoner={tmpPersoner}
+										getInitialFoedsel={getInitialFoedsel}
+										name="foedsel"
+									/>
+								) : (
+									<FoedselLes foedsel={item} idx={idx} />
+								)
+							}
+						</DollyFieldArray>
 					)}
 				</ErrorBoundary>
 			</div>

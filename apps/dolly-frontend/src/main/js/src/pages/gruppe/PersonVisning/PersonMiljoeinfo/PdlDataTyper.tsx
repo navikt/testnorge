@@ -1,6 +1,8 @@
 import {
 	DoedfoedtBarnData,
+	FoedestedData,
 	FoedselData,
+	FoedselsdatoData,
 	Foreldreansvar,
 	ForeldreBarnRelasjon,
 	Metadata,
@@ -42,7 +44,9 @@ export type Ident = {
 }
 
 export type HentPerson = {
-	foedsel: [FoedselData]
+	foedsel?: [FoedselData]
+	foedselsdato?: [FoedselsdatoData]
+	foedested?: [FoedestedData]
 	bostedsadresse: Array<BostedData>
 	deltBosted: Array<DeltBosted>
 	oppholdsadresse: Array<OppholdsadresseData>

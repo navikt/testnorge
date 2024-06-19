@@ -55,6 +55,21 @@ export type FoedselData = {
 	id?: number
 }
 
+export type FoedselsdatoData = {
+	foedselsdato: string
+	foedselsaar: number
+	metadata: Metadata
+	id?: number
+}
+
+export type FoedestedData = {
+	foedested: string
+	foedekommune: string
+	foedeland: string
+	metadata: Metadata
+	id?: number
+}
+
 export type DoedsfallData = {
 	doedsdato: string
 	metadata: Metadata

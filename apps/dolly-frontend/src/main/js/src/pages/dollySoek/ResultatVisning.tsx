@@ -103,7 +103,7 @@ export const ResultatVisning = ({ resultat, soekError }) => {
 					return <>Ukjent</>
 				}
 				const alder = getAlder(
-					row.person?.foedsel?.[0]?.foedselsdato || row.person?.foedselsdato?.[0]?.foedselsdato,
+					row.person?.foedselsdato?.[0]?.foedselsdato || row.person?.foedsel?.[0]?.foedselsdato,
 					row.person?.doedsfall?.[0]?.doedsdato,
 				)
 				return <>{formatAlder(alder, row.person?.doedsfall?.[0]?.doedsdato)}</>
