@@ -44,7 +44,8 @@ public class CreatePersonService {
     private final MergeService mergeService;
     private final PersonRepository personRepository;
     private final KjoennService kjoennService;
-    private final FoedselService foedselService;
+    private final FoedselsdatoService foedselsdatoService;
+    private final FoedestedService foedestedService;
     private final StatsborgerskapService statsborgerskapService;
     private final BostedAdresseService bostedAdresseService;
     private final NavnService navnService;
@@ -103,9 +104,10 @@ public class CreatePersonService {
                 .getIdent());
 
         Stream.of(
-                        Flux.just(foedselService.convert(mergedPerson)),
+                        Flux.just(foedselsdatoService.convert(mergedPerson)),
                         Flux.just(navnService.convert(mergedPerson)),
                         Flux.just(bostedAdresseService.convert(mergedPerson, null)),
+                        Flux.just(foedestedService.convert(mergedPerson)),
                         Flux.just(kjoennService.convert(mergedPerson)),
                         Flux.just(statsborgerskapService.convert(mergedPerson)),
                         Flux.just(adressebeskyttelseService.convert(mergedPerson)))

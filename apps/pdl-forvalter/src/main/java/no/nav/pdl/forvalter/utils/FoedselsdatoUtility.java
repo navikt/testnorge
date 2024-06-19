@@ -17,9 +17,11 @@ public class FoedselsdatoUtility {
     public LocalDateTime getFoedselsdato(PersonDTO person) {
 
         return person.getFoedselsdato().stream()
+                .filter(foedsel -> nonNull(foedsel.getFoedselsdato()) || nonNull(foedsel.getFoedselsaar()))
                 .map(foedsel-> getFoedselsdato(foedsel, person.getIdent()))
                 .findFirst()
                 .orElse(person.getFoedsel().stream()
+                        .filter(foedsel -> nonNull(foedsel.getFoedselsdato()) || nonNull(foedsel.getFoedselsaar()))
                         .map(foedsel-> getFoedselsdato(foedsel, person.getIdent()))
                         .findFirst()
                         .orElse(DatoFraIdentUtility.getDato(person.getIdent()).atStartOfDay()));
