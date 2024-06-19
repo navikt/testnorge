@@ -121,6 +121,7 @@ public class FolkeregisterPersonstatusService implements BiValidation<Folkeregis
             personstatus.setStatus(UTFLYTTET);
             personstatus.setGyldigFraOgMed(person.getUtflytting().stream()
                     .map(UtflyttingDTO::getUtflyttingsdato)
+                    .filter(Objects::nonNull)
                     .findFirst()
                     .orElse(LocalDateTime.now()));
 

@@ -31,7 +31,7 @@ class KjoennServiceTest {
                 PersonDTO.builder()
                         .kjoenn(List.of(KjoennDTO.builder().isNew(true).build()))
                         .ident(IDENT_KVINNE)
-                        .build()).get(0);
+                        .build()).getFirst();
 
         assertThat(target.getKjoenn(), is(equalTo(KVINNE)));
     }
@@ -43,7 +43,7 @@ class KjoennServiceTest {
                 PersonDTO.builder()
                         .kjoenn(List.of(KjoennDTO.builder().isNew(true).build()))
                         .ident(IDENT_MANN)
-                        .build()).get(0);
+                        .build()).getFirst();
 
         assertThat(target.getKjoenn(), is(equalTo(MANN)));
     }
@@ -58,7 +58,7 @@ class KjoennServiceTest {
                                 .isNew(true)
                                 .build()))
                         .ident(IDENT_KVINNE)
-                        .build()).get(0);
+                        .build()).getFirst();
 
         assertThat(target.getKjoenn(), is(equalTo(MANN)));
     }
@@ -73,7 +73,7 @@ class KjoennServiceTest {
                                 .isNew(true)
                                 .build()))
                         .ident(IDENT_MANN)
-                        .build()).get(0);
+                        .build()).getFirst();
 
         assertThat(target.getKjoenn(), is(equalTo(KVINNE)));
     }

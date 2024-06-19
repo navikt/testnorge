@@ -178,7 +178,7 @@ class BostedAdresseServiceTest {
                         .build())))
                 .build();
 
-        var target = bostedAdresseService.convert(request, null).get(0);
+        var target = bostedAdresseService.convert(request, null).getFirst();
 
         assertThat(target.getGyldigFraOgMed(), is(equalTo(LocalDate.of(2020, 1, 1).atStartOfDay())));
     }
@@ -190,7 +190,7 @@ class BostedAdresseServiceTest {
 
         var request = PersonDTO.builder()
                 .ident(FNR_IDENT)
-                .bostedsadresse(new ArrayList(List.of(BostedadresseDTO.builder()
+                .bostedsadresse(new ArrayList<>(List.of(BostedadresseDTO.builder()
                                 .gyldigFraOgMed(LocalDate.of(2020, 2, 4).atStartOfDay())
                                 .vegadresse(new VegadresseDTO())
                                 .isNew(true)
@@ -238,7 +238,7 @@ class BostedAdresseServiceTest {
         when(adresseServiceConsumer.getVegadresse(any(VegadresseDTO.class), any()))
                 .thenReturn(new no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO());
 
-        var target = bostedAdresseService.convert(request, null).get(0);
+        var target = bostedAdresseService.convert(request, null).getFirst();
 
         assertThat(target.countAdresser(), is(1));
         assertThat(target.getVegadresse(), is(notNullValue()));
@@ -256,7 +256,7 @@ class BostedAdresseServiceTest {
 
         when(enkelAdresseService.getUtenlandskAdresse(any(), any(), any())).thenReturn(new UtenlandskAdresseDTO());
 
-        var target = bostedAdresseService.convert(request, null).get(0);
+        var target = bostedAdresseService.convert(request, null).getFirst();
 
         assertThat(target.countAdresser(), is(1));
         assertThat(target.getUtenlandskAdresse(), is(notNullValue()));

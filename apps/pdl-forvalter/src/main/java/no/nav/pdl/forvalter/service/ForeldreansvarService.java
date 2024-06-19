@@ -416,7 +416,7 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
         var foreldre = barn.getForelderBarnRelasjon().stream()
                 .filter(ForelderBarnRelasjonDTO::isBarn)
                 .toList();
-        foreldreansvar.setAnsvarlig(foreldre.get(0).getRelatertPerson());
+        foreldreansvar.setAnsvarlig(foreldre.getFirst().getRelatertPerson());
         relasjonService.setRelasjon(barn.getIdent(), foreldreansvar.getAnsvarlig(), FORELDREANSVAR_FORELDER);
         relasjonService.setRelasjon(foreldreansvar.getAnsvarlig(), barn.getIdent(), FORELDREANSVAR_BARN);
 
