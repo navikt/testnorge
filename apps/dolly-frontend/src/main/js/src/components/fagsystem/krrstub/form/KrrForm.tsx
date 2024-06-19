@@ -14,6 +14,8 @@ import { useKodeverk } from '@/utils/hooks/useKodeverk'
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { useFormContext } from 'react-hook-form'
 import { KrrValidation } from '@/components/fagsystem/krrstub/form/KrrValidation'
+import { useBoolean } from 'react-use'
+import StyledAlert from '@/components/ui/alert/StyledAlert'
 
 type Change = {
 	value: boolean
@@ -26,6 +28,7 @@ export const KrrstubForm = () => {
 	const { kodeverk: landkoder, loading } = useKodeverk(AdresseKodeverk.ArbeidOgInntektLand)
 	const [land, setLand] = useState(formMethods.watch('krrstub.land'))
 	const [mobilnummer, setMobilnummer] = useState(formMethods.watch('values.krrstub.mobil') || '')
+	const [showInfoStripe, setShowInfoStripe] = useBoolean(false)
 	const leverandoerer = SelectOptionsOppslag.hentKrrLeverandoerer()
 
 	const mergedeLandkoder = landkoder?.map((landkode: Option) => {
@@ -62,6 +65,16 @@ export const KrrstubForm = () => {
 		}
 		formMethods.trigger('krrstub')
 	}
+
+	const handleReservertChange = (option: Option) => {
+		setShowInfoStripe(option?.value === true)
+		formMethods.setValue('krrstub.reservert', option?.value)
+		if (option?.value === true && !formMethods.watch('krrstub.epost')) {
+			formMethods.setValue('krrstub.epost', 'noreply@nav.no')
+		}
+		formMethods.trigger('krrstub')
+	}
+
 	return (
 		//@ts-ignore
 		<Vis attributt={krrAttributt}>
@@ -71,6 +84,12 @@ export const KrrstubForm = () => {
 				iconType="krr"
 				startOpen={erForsteEllerTest(formMethods.getValues(), [krrAttributt])}
 			>
+				{showInfoStripe && (
+					<StyledAlert variant={'info'} size={'small'}>
+						E-post blir automatisk lagt til dersom identen er reservert slik at den får digital
+						kontaktinformasjon i KRR.
+					</StyledAlert>
+				)}
 				<div className="flexbox--flex-wrap">
 					<DollySelect
 						name="krrstub.registrert"
@@ -82,7 +101,12 @@ export const KrrstubForm = () => {
 					/>
 					{registrert && (
 						<>
-							<FormSelect name="krrstub.reservert" label="Reservert" options={Options('boolean')} />
+							<FormSelect
+								name="krrstub.reservert"
+								label="Reservert"
+								onChange={handleReservertChange}
+								options={Options('boolean')}
+							/>
 							<FormTextInput name="krrstub.epost" label="E-post" />
 							<div
 								style={{

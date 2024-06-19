@@ -1,5 +1,5 @@
 import { shallow } from 'enzyme'
-import Toast from '../Toast'
+import Toast from '../ErrorToast'
 import { ToastContainer } from 'react-toastify'
 
 describe('Toast.tsx', () => {
