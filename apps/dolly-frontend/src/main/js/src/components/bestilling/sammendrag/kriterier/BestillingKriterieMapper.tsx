@@ -180,6 +180,43 @@ const mapFoedsel = (foedsel, data) => {
 	}
 }
 
+const mapFoedested = (foedested, data) => {
+	if (foedested) {
+		const foedestedData = {
+			header: 'Fødested',
+			itemRows: foedested.map((item, idx) => {
+				return isEmpty(item, ['kilde', 'master'])
+					? [obj('Fødested', ingenVerdierSatt)]
+					: [
+							{ numberHeader: `Fødested ${idx + 1}` },
+							obj('Fødested', item.foedested),
+							obj('Fødekommune', item.foedekommune, AdresseKodeverk.Kommunenummer),
+							obj('Fødeland', item.foedeland, AdresseKodeverk.InnvandretUtvandretLand),
+						]
+			}),
+		}
+		data.push(foedestedData)
+	}
+}
+
+const mapFoedselsdato = (foedselsdato, data) => {
+	if (foedselsdato) {
+		const foedselsdatoData = {
+			header: 'Fødselsdato',
+			itemRows: foedselsdato.map((item, idx) => {
+				return isEmpty(item, ['kilde', 'master'])
+					? [obj('Fødselsdato', ingenVerdierSatt)]
+					: [
+							{ numberHeader: `Fødselsdato ${idx + 1}` },
+							obj('Fødselsdato', formatDate(item.foedselsdato)),
+							obj('Fødselsår', item.foedselsaar),
+						]
+			}),
+		}
+		data.push(foedselsdatoData)
+	}
+}
+
 const mapInnflytting = (innflytting, data) => {
 	if (innflytting) {
 		const innflyttingData = {
@@ -2200,6 +2237,8 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon, firstI
 	if (pdldataKriterier) {
 		const {
 			foedsel,
+			foedested,
+			foedselsdato,
 			kjoenn,
 			navn,
 			telefonnummer,
@@ -2226,6 +2265,8 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon, firstI
 		} = pdldataKriterier
 
 		mapFoedsel(foedsel, data)
+		mapFoedested(foedested, data)
+		mapFoedselsdato(foedselsdato, data)
 		mapInnflytting(innflytting, data)
 		mapUtflytting(utflytting, data)
 		mapKjoenn(kjoenn, data)

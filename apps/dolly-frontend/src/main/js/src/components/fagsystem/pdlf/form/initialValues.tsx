@@ -202,6 +202,21 @@ export const getInitialFoedsel = (master = 'FREG') => ({
 	master: master,
 })
 
+export const getInitialFoedested = (master = 'FREG') => ({
+	foedekommune: null as unknown as string,
+	foedeland: null as unknown as string,
+	foedested: null as unknown as string,
+	kilde: 'Dolly',
+	master: master,
+})
+
+export const getInitialFoedselsdato = (master = 'FREG') => ({
+	foedselsaar: null as unknown as number,
+	foedselsdato: null as unknown as string,
+	kilde: 'Dolly',
+	master: master,
+})
+
 export const initialOrganisasjon = {
 	organisasjonsnummer: null as unknown as string,
 	organisasjonsnavn: null as unknown as string,
