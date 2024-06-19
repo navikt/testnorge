@@ -20,6 +20,7 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -44,6 +45,7 @@ public class DbPerson {
     })
     private Long id;
 
+    @UpdateTimestamp
     @Column(name = "sist_oppdatert")
     private LocalDateTime sistOppdatert;
     private String ident;

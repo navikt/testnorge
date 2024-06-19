@@ -11,6 +11,7 @@ import no.nav.pdl.forvalter.consumer.command.PdlOpprettArtifactCommandPdl;
 import no.nav.pdl.forvalter.consumer.command.PdlOpprettNpidCommand;
 import no.nav.pdl.forvalter.consumer.command.PdlOpprettPersonCommandPdl;
 import no.nav.pdl.forvalter.dto.ArtifactValue;
+import no.nav.pdl.forvalter.dto.HendelseIdRequest;
 import no.nav.pdl.forvalter.dto.MergeIdent;
 import no.nav.pdl.forvalter.dto.OpprettIdent;
 import no.nav.pdl.forvalter.dto.OrdreRequest;
@@ -21,7 +22,7 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PdlStatus;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -112,6 +113,15 @@ public class PdlTestdataConsumer {
                 .flatMapMany(accessToken -> Flux.fromIterable(identer)
                         .flatMap(ident -> new PdlDeleteCommandPdl(webClient, getBestillingUrl().get(PDL_SLETTING), ident, accessToken.getTokenValue()).call()))
                 .collectList();
+    }
+
+    public Flux<OrdreResponseDTO.HendelseDTO> deleteHendelse(HendelseIdRequest hendelse) {
+
+        return tokenExchange
+                .exchange(serverProperties)
+                .flatMapMany(accessToken -> new PdlDeleteHendelseIdCommandPdl(webClient,
+                        getBestillingUrl().get(PDL_SLETTING_HENDELSEID),
+                        hendelse.getIdent(), hendelse.getHendelseId(), accessToken.getTokenValue()).call());
     }
 
     public Mono<OrdreResponseDTO.HendelseDTO> deleteHendelse(String ident, String hendelseId) {

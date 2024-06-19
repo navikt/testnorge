@@ -9,6 +9,7 @@ import no.nav.dolly.domain.resultset.inntektsmeldingstub.NaturalytelseType;
 import no.nav.dolly.domain.resultset.inntektsmeldingstub.RsInntektsmelding;
 import no.nav.dolly.domain.resultset.inntektsmeldingstub.YtelseType;
 import no.nav.dolly.mapper.MappingContextUtils;
+import no.nav.dolly.mapper.strategy.LocalDateCustomMapping;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
 import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.enums.AarsakBeregnetInntektEndringKodeListe;
 import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.enums.AarsakInnsendingKodeListe;
@@ -147,7 +148,7 @@ class InntektsmeldingMappingStrategyTest {
 
     @BeforeEach
     void setup() {
-        mapperFacade = MapperTestUtils.createMapperFacadeForMappingStrategy(new InntektsmeldingMappingStrategy());
+        mapperFacade = MapperTestUtils.createMapperFacadeForMappingStrategy(new LocalDateCustomMapping(), new InntektsmeldingMappingStrategy());
     }
 
     @Test

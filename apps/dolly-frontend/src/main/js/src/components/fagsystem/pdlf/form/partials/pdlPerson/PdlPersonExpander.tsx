@@ -14,6 +14,7 @@ interface PdlPersonValues {
 	formMethods: UseFormReturn
 	nyIdentValg?: NyIdent
 	isExpanded?: boolean
+	toggleExpansion?: boolean
 }
 
 export const PdlPersonExpander = ({
@@ -24,6 +25,7 @@ export const PdlPersonExpander = ({
 	formMethods,
 	nyIdentValg = null,
 	isExpanded = false,
+	toggleExpansion = true,
 }: PdlPersonValues) => {
 	const [visPersonValg, setVisPersonValg, setSkjulPersonValg] = useBoolean(isExpanded)
 	useEffect(() => {
@@ -36,15 +38,16 @@ export const PdlPersonExpander = ({
 
 	return (
 		<div className="flexbox--full-width">
-			{visPersonValg ? (
-				<Button onClick={setSkjulPersonValg} kind={'chevron-up'}>
-					SKJUL VALG FOR {label}
-				</Button>
-			) : (
-				<Button onClick={setVisPersonValg} kind={'chevron-down'}>
-					VIS VALG FOR {label}
-				</Button>
-			)}
+			{toggleExpansion &&
+				(visPersonValg ? (
+					<Button onClick={setSkjulPersonValg} kind={'chevron-up'}>
+						SKJUL VALG FOR {label}
+					</Button>
+				) : (
+					<Button onClick={setVisPersonValg} kind={'chevron-down'}>
+						VIS VALG FOR {label}
+					</Button>
+				))}
 			{visPersonValg && (
 				<PdlPersonForm
 					nyPersonPath={nyPersonPath}

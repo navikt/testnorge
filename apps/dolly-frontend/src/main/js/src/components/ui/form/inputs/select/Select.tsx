@@ -18,7 +18,7 @@ import {
 
 type SelectProps = {
 	id?: string
-	'data-cy'?: string
+	'data-testid'?: string
 	name: string
 	fieldName?: string
 	value?: any
@@ -196,7 +196,7 @@ const P_FormSelect = ({ feil, ...props }: SelectProps) => {
 	)
 }
 
-export const FormSelect = ({ visHvisAvhuket = false, ...props }: SelectProps) => {
+export const FormSelect = ({ visHvisAvhuket = false, vis = true, ...props }: SelectProps) => {
 	const component = <P_FormSelect {...props} />
-	return visHvisAvhuket ? <Vis attributt={props.name}>{component}</Vis> : component
+	return vis && (visHvisAvhuket ? <Vis attributt={props.name}>{component}</Vis> : component)
 }

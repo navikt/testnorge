@@ -40,6 +40,9 @@ import { visningRedigerbarValidation } from '@/components/fagsystem/pdlf/visning
 import { yupResolver } from '@hookform/resolvers/yup'
 import './VisningRedigerbarForm.less'
 import { SikkerhetstiltakForm } from '@/components/fagsystem/pdlf/form/partials/sikkerhetstiltak/Sikkerhetstiltak'
+import { boolean } from 'yup'
+import { FoedestedForm } from '@/components/fagsystem/pdlf/form/partials/foedsel/Foedested'
+import { FoedselsdatoForm } from '@/components/fagsystem/pdlf/form/partials/foedsel/Foedselsdato'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -62,6 +65,8 @@ type VisningTypes = {
 enum Attributt {
 	Navn = 'navn',
 	Foedsel = 'foedsel',
+	Foedested = 'foedested',
+	Foedselsdato = 'foedselsdato',
 	Doedsfall = 'doedsfall',
 	Statsborgerskap = 'statsborgerskap',
 	Innvandring = 'innflytting',
@@ -120,8 +125,8 @@ export const VisningRedigerbar = ({
 	path,
 	ident,
 	identtype,
+	identMaster = boolean,
 	disableSlett = false,
-	personFoerLeggTil = null,
 	personValues = null,
 	relasjoner = null,
 	relatertPersonInfo = null,
@@ -254,10 +259,19 @@ export const VisningRedigerbar = ({
 				return <NavnForm formMethods={formMethods} path={path} />
 			case Attributt.Foedsel:
 				return <FoedselForm formMethods={formMethods} path={path} />
+			case Attributt.Foedested:
+				return <FoedestedForm formMethods={formMethods} path={path} />
+			case Attributt.Foedselsdato:
+				return <FoedselsdatoForm formMethods={formMethods} path={path} />
 			case Attributt.Doedsfall:
 				return <DoedsfallForm path={path} />
 			case Attributt.Statsborgerskap:
-				return <StatsborgerskapForm path={path} identtype={identtype} />
+				return (
+					<StatsborgerskapForm
+						path={path}
+						kanVelgeMaster={identMaster !== 'PDL' && identtype !== 'NPID'}
+					/>
+				)
 			case Attributt.Innvandring:
 				return <InnvandringForm path={path} />
 			case Attributt.Utvandring:
@@ -332,6 +346,7 @@ export const VisningRedigerbar = ({
 						formMethods={formMethods}
 						eksisterendeNyPerson={eksisterendeNyPerson}
 						identtype={identtype}
+						ident={ident}
 					/>
 				)
 			case Attributt.KontaktinformasjonForDoedsbo:
@@ -349,6 +364,7 @@ export const VisningRedigerbar = ({
 						path={path}
 						eksisterendeNyPerson={eksisterendeNyPerson}
 						identtype={identtype}
+						ident={ident}
 					/>
 				)
 			case Attributt.Foreldreansvar:

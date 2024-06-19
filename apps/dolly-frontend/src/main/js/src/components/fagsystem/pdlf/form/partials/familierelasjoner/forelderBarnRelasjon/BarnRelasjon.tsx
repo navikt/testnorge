@@ -28,6 +28,7 @@ export const BarnRelasjon = ({ formMethods, path }: BarnRelasjonValues) => {
 		formMethods.trigger()
 	}, [deltBosted])
 
+	const testnorgePerson = opts?.identMaster === 'PDL'
 	return (
 		<>
 			<div className="flexbox--flex-wrap">
@@ -41,6 +42,7 @@ export const BarnRelasjon = ({ formMethods, path }: BarnRelasjonValues) => {
 					name={`${path}.partnerErIkkeForelder`}
 					label="Partner ikke forelder"
 					id={`${path}.partnerErIkkeForelder`}
+					vis={!testnorgePerson}
 					checkboxMargin
 				/>
 				{!erRedigering && (
@@ -52,6 +54,7 @@ export const BarnRelasjon = ({ formMethods, path }: BarnRelasjonValues) => {
 						onChange={() => setDeltBosted(!deltBosted)}
 						size="small"
 						isDisabled={opts?.identtype === 'NPID'}
+						vis={!testnorgePerson}
 						title={
 							opts?.identtype === 'NPID' ? 'Ikke tilgjengelig for personer med identtype NPID' : ''
 						}

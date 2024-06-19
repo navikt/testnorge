@@ -12,9 +12,7 @@ const loadingSelectorSigrunPensjonsgivende = createLoadingSelector([
 const loadingSelectorInntektstub = createLoadingSelector(actions.getInntektstub)
 const loadingSelectorPdlForvalter = createLoadingSelector(actions.getPdlForvalter)
 const loadingSelectorSlettPerson = createLoadingSelector(actions.slettPerson)
-const loadingSelectorSlettPersonOgRelatertePersoner = createLoadingSelector(
-	actions.slettPersonOgRelatertePersoner,
-)
+
 const loadingSelectorBrregstub = createLoadingSelector(actions.getBrreg)
 const loadingSelectorTpsMessaging = createLoadingSelector(actions.getTpsMessaging)
 const loadingSelectorKontoregister = createLoadingSelector(actions.getKontoregister)
@@ -29,7 +27,6 @@ const loadingSelector = createSelector(
 			inntektstub: loadingSelectorInntektstub({ loading }),
 			pdlforvalter: loadingSelectorPdlForvalter({ loading }),
 			slettPerson: loadingSelectorSlettPerson({ loading }),
-			slettPersonOgRelatertePersoner: loadingSelectorSlettPersonOgRelatertePersoner({ loading }),
 			brregstub: loadingSelectorBrregstub({ loading }),
 			tpsMessaging: loadingSelectorTpsMessaging({ loading }),
 			kontoregister: loadingSelectorKontoregister({ loading }),
@@ -49,11 +46,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 			dispatch(fetchDataFraFagsystemer(ownProps.ident, bestillinger)),
 		slettPerson: () => {
 			return dispatch(actions.slettPerson(ownProps.personId))
-		},
-		slettPersonOgRelatertePersoner: (relatertPersonIdenter) => {
-			return dispatch(
-				actions.slettPersonOgRelatertePersoner(ownProps.personId, relatertPersonIdenter),
-			)
 		},
 		leggTilPaaPerson: (data, bestillinger, master, type, gruppeId, navigate) =>
 			navigate(`/gruppe/${gruppeId}/bestilling/${ownProps.personId}`, {

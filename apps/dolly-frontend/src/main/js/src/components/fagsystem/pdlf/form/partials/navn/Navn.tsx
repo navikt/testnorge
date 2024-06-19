@@ -18,6 +18,7 @@ type NavnTypes = {
 	formMethods: any
 	path?: string
 	identtype?: string
+	identMaster?: string
 }
 
 const RefreshButton = styled(Button)`
@@ -40,7 +41,7 @@ const concatNavnMedTidligereValgt = (type, navnInfo, selectedNavn) => {
 	return _.uniqBy(navnOptions, 'label')
 }
 
-export const NavnForm = ({ formMethods, path, identtype }: NavnTypes) => {
+export const NavnForm = ({ formMethods, path, identtype, identMaster }: NavnTypes) => {
 	const [selectedFornavn, setSelectedFornavn] = useState(
 		formMethods.watch(`${path}.alleFornavn`) || [],
 	)
@@ -155,7 +156,7 @@ export const NavnForm = ({ formMethods, path, identtype }: NavnTypes) => {
 				/>
 				<FormDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig f.o.m. dato" />
 			</div>
-			<AvansertForm path={path} kanVelgeMaster={identtype !== 'NPID'} />
+			<AvansertForm path={path} kanVelgeMaster={identMaster !== 'PDL' && identtype !== 'NPID'} />
 		</>
 	)
 }
@@ -167,11 +168,18 @@ export const Navn = ({ formMethods }: NavnTypes) => {
 			<FormDollyFieldArray
 				name={'pdldata.person.navn'}
 				header="Navn"
-				newEntry={getInitialNavn(opts?.identtype === 'NPID' ? 'PDL' : 'FREG')}
+				newEntry={getInitialNavn(
+					opts?.identMaster === 'PDL' || opts?.identtype === 'NPID' ? 'PDL' : 'FREG',
+				)}
 				canBeEmpty={false}
 			>
 				{(path: string) => (
-					<NavnForm formMethods={formMethods} path={path} identtype={opts?.identtype} />
+					<NavnForm
+						formMethods={formMethods}
+						path={path}
+						identtype={opts?.identtype}
+						identMaster={opts?.identMaster}
+					/>
 				)}
 			</FormDollyFieldArray>
 		</div>

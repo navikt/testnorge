@@ -2,7 +2,7 @@ import Icon from '@/components/ui/icon/Icon'
 import { ToggleGroup } from '@navikt/ds-react'
 import React from 'react'
 import styled from 'styled-components'
-import { CypressSelector } from '../../../cypress/mocks/Selectors'
+import { TestComponentSelectors } from '#/mocks/Selectors'
 
 type Props = {
 	soekValg: SoekTypeValg
@@ -32,14 +32,14 @@ export const VelgSoekTypeToggle = ({ soekValg, setValgtSoekType }: Props) => {
 			>
 				<StyledItem
 					key={SoekTypeValg.PERSON}
-					data-cy={CypressSelector.TOGGLE_SEARCH_PERSON}
+					data-testid={TestComponentSelectors.TOGGLE_SEARCH_PERSON}
 					value={SoekTypeValg.PERSON}
 				>
 					<Icon kind={soekValg === SoekTypeValg.PERSON ? 'man-light' : 'man'} />
 				</StyledItem>
 				<StyledItem
 					key={SoekTypeValg.BESTILLING}
-					data-cy={CypressSelector.TOGGLE_SEARCH_BESTILLING}
+					data-testid={TestComponentSelectors.TOGGLE_SEARCH_BESTILLING}
 					value={SoekTypeValg.BESTILLING}
 				>
 					<Icon kind={soekValg === SoekTypeValg.BESTILLING ? 'bestilling-light' : 'bestilling'} />

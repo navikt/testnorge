@@ -25,6 +25,8 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class NavnServiceTest {
 
+    private static final String IDENT = "12305678901";
+
     @Mock
     private GenererNavnServiceConsumer genererNavnServiceConsumer;
 
@@ -54,6 +56,7 @@ class NavnServiceTest {
     void whenNameVerifies_acceptProposal() {
 
         var request = PersonDTO.builder()
+                .ident(IDENT)
                 .navn(List.of(NavnDTO.builder()
                         .fornavn("Gyldig")
                         .mellomnavn("Sjanglende")
@@ -62,7 +65,7 @@ class NavnServiceTest {
                         .build()))
                 .build();
 
-        var target = navnService.convert(request).get(0);
+        var target = navnService.convert(request).getFirst();
 
         assertThat(target.getFornavn(), is(equalTo("Gyldig")));
         assertThat(target.getMellomnavn(), is(equalTo("Sjanglende")));
@@ -73,6 +76,7 @@ class NavnServiceTest {
     void whenNamesNotProvidedWithoutMellomnavn_provideNames() {
 
         var request = PersonDTO.builder()
+                .ident(IDENT)
                 .navn(List.of(NavnDTO.builder()
                         .isNew(true)
                         .build()))
@@ -84,7 +88,7 @@ class NavnServiceTest {
                 .substantiv("Sjømann")
                 .build()));
 
-        var target = navnService.convert(request).get(0);
+        var target = navnService.convert(request).getFirst();
 
         assertThat(target.getFornavn(), is(equalTo("Full")));
         assertThat(target.getMellomnavn(), nullValue());
@@ -95,6 +99,7 @@ class NavnServiceTest {
     void whenNamesNotProvidedWithMellomnavn_provideNames() {
 
         var request = PersonDTO.builder()
+                .ident(IDENT)
                 .navn(List.of(NavnDTO.builder()
                         .hasMellomnavn(true)
                         .isNew(true)
@@ -107,7 +112,7 @@ class NavnServiceTest {
                 .substantiv("Sjømann")
                 .build()));
 
-        var target = navnService.convert(request).get(0);
+        var target = navnService.convert(request).getFirst();
 
         assertThat(target.getFornavn(), is(equalTo("Full")));
         assertThat(target.getMellomnavn(), is(equalTo("Sjanglende")));

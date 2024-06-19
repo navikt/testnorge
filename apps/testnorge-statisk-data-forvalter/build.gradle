@@ -1,8 +1,8 @@
 plugins {
     id 'java'
-    id "org.sonarqube" version "4.4.1.3373"
-    id 'org.springframework.boot' version "3.2.1"
-    id 'io.spring.dependency-management' version "1.1.4"
+    id "org.sonarqube" version "5.0.0.4638"
+    id 'org.springframework.boot' version "3.2.6"
+    id 'io.spring.dependency-management' version "1.1.5"
     id "jacoco"
 }
 
@@ -28,7 +28,7 @@ sonarqube {
 dependencyManagement {
     applyMavenExclusions = false
     imports {
-        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2023.0.0'
+        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2023.0.1'
     }
 }
 
@@ -46,7 +46,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.google.guava:guava:31.1-jre'
+    implementation 'com.google.guava:guava:33.2.0-jre'
 
     implementation 'no.nav.testnav.libs:security-core'
     implementation 'no.nav.testnav.libs:servlet-security'
@@ -73,7 +73,7 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
-    implementation 'org.aspectj:aspectjweaver:1.9.19'
+    implementation 'org.aspectj:aspectjweaver:1.9.22'
     implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
     implementation 'org.postgresql:postgresql'
     implementation 'com.zaxxer:HikariCP'
@@ -83,9 +83,9 @@ dependencies {
     implementation 'com.h2database:h2'
     implementation 'org.hibernate.validator:hibernate-validator'
    
-    implementation 'org.apache.httpcomponents.client5:httpclient5:5.2.1'
+    implementation 'org.apache.httpcomponents.client5:httpclient5:5.3.1'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0'
-    implementation 'io.swagger.core.v3:swagger-annotations-jakarta:2.2.20'
+    implementation 'io.swagger.core.v3:swagger-annotations-jakarta:2.2.21'
     implementation 'com.squareup.okhttp3:okhttp:4.9.3'
 
     implementation 'org.projectlombok:lombok'

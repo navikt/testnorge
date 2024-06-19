@@ -3,7 +3,7 @@ import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { Box, Button, Table } from '@navikt/ds-react'
 import { Mal } from '@/utils/hooks/useMaler'
 import { EndreMalnavn } from './EndreMalnavn'
-import { CypressSelector } from '../../../../cypress/mocks/Selectors'
+import { TestComponentSelectors } from '#/mocks/Selectors'
 import Bestillingskriterier from '@/components/bestilling/sammendrag/kriterier/Bestillingskriterier'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
 import { PencilWritingIcon } from '@navikt/aksel-icons'
@@ -65,7 +65,7 @@ export const MalPanel = ({
 					</Button>
 				) : (
 					<Button
-						data-cy={CypressSelector.BUTTON_MINSIDE_ENDRE_MALNAVN}
+						data-testid={TestComponentSelectors.BUTTON_MINSIDE_ENDRE_MALNAVN}
 						onClick={() => {
 							setUnderRedigering(underRedigering.concat([id]))
 						}}

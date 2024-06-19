@@ -11,14 +11,15 @@ import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.model.DbRelasjon;
 import no.nav.pdl.forvalter.database.repository.AliasRepository;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
+import no.nav.pdl.forvalter.database.repository.RelasjonRepository;
 import no.nav.pdl.forvalter.dto.HentIdenterRequest;
 import no.nav.pdl.forvalter.dto.Paginering;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.exception.NotFoundException;
-import no.nav.pdl.forvalter.utils.HendelseIdService;
 import no.nav.testnav.libs.data.pdlforvalter.v1.BestillingRequestDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.BostedadresseDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.FoedselDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.FoedestedDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.FoedselsdatoDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.ForeldreansvarDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FullPersonDTO;
@@ -65,6 +66,7 @@ public class PersonService {
     private static final String SORT_BY_FIELD = "sistOppdatert";
 
     private final PersonRepository personRepository;
+    private final RelasjonRepository relasjonRepository;
     private final MergeService mergeService;
     private final PersonArtifactService personArtifactService;
     private final MapperFacade mapperFacade;
@@ -196,8 +198,11 @@ public class PersonService {
         if (request.getPerson().getKjoenn().isEmpty()) {
             request.getPerson().getKjoenn().add(new KjoennDTO());
         }
-        if (request.getPerson().getFoedsel().isEmpty()) {
-            request.getPerson().getFoedsel().add(new FoedselDTO());
+        if (request.getPerson().getFoedselsdato().isEmpty()) {
+            request.getPerson().getFoedselsdato().add(new FoedselsdatoDTO());
+        }
+        if (request.getPerson().getFoedested().isEmpty()) {
+            request.getPerson().getFoedested().add(new FoedestedDTO());
         }
         if (request.getPerson().getNavn().isEmpty()) {
             request.getPerson().getNavn().add(new NavnDTO());
@@ -248,7 +253,22 @@ public class PersonService {
     @Transactional
     public void deleteMasterPdlArtifacter(String ident) {
 
-        hendelseIdService.deletePdlHendelser(ident);
-        personRepository.deleteByIdent(ident);
+        personRepository.findByIdent(ident)
+                .ifPresentOrElse(person -> {
+                            hendelseIdService.deletePdlHendelser(person);
+                            unhookEksternePersonerService.unhook(person);
+
+                            relasjonRepository.deleteByPersonIdentIn(
+                                    person.getRelasjoner().stream()
+                                            .map(DbRelasjon::getRelatertPerson)
+                                            .filter(Objects::nonNull)
+                                            .map(DbPerson::getIdent)
+                                            .toList());
+
+                            personRepository.deleteByIdent(ident);
+                        },
+                        () -> {
+                            throw new NotFoundException(format("Ident %s ble ikke funnet", ident));
+                        });
     }
 }

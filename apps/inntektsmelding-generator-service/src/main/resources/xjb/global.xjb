@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<jaxb:bindings xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+               xmlns:xs="http://www.w3.org/2001/Schema"
+               xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+               version="1.0"
+               jaxb:extensionBindingPrefixes="xjc">
+
+    <jaxb:globalBindings>
+        <xjc:javaType name="java.time.LocalDate" xmlType="xs:date"
+                      adapter="no.seres.xsd.nav.inntektsmelding_m.DateAdapter"/>
+        <xjc:javaType name="java.time.LocalDateTime" xmlType="xs:dateTime"
+                      adapter="no.seres.xsd.nav.inntektsmelding_m.DateTimeAdapter"/>
+    </jaxb:globalBindings>
+</jaxb:bindings>

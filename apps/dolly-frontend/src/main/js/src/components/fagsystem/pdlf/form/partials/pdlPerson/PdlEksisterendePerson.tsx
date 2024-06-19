@@ -6,7 +6,6 @@ import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bes
 import { Option } from '@/service/SelectOptionsOppslag'
 import { ForeldreBarnRelasjon, NyIdent } from '@/components/fagsystem/pdlf/PdlTypes'
 import { Alert } from '@navikt/ds-react'
-import { useParams } from 'react-router-dom'
 import { useGruppeIdenter } from '@/utils/hooks/useGruppe'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 import { usePdlOptions } from '@/utils/hooks/useSelectOptions'
@@ -16,10 +15,11 @@ interface PdlEksisterendePersonValues {
 	eksisterendePersonPath: string
 	label: string
 	formMethods: UseFormReturn
-	idx?: number
+	idx: number
 	disabled?: boolean
 	nyIdentValg?: NyIdent
 	eksisterendeNyPerson?: Option
+	ident?: string
 }
 
 export const PdlEksisterendePerson = ({
@@ -31,13 +31,26 @@ export const PdlEksisterendePerson = ({
 	disabled = false,
 	nyIdentValg = null,
 	eksisterendeNyPerson = null,
+	ident,
 }: PdlEksisterendePersonValues) => {
-	const opts: any = useContext(BestillingsveilederContext)
+	const opts = useContext(BestillingsveilederContext)
+
 	const antall = opts?.antall || 1
-	const { gruppeId } = useParams()
+	const gruppeId = opts?.gruppeId || opts?.gruppe?.id || window.location.pathname.split('/')?.[2]
 
 	const { identer, loading: gruppeLoading, error: gruppeError } = useGruppeIdenter(gruppeId)
-	const { data: pdlOptions, loading: pdlLoading, error: pdlError } = usePdlOptions(identer)
+	const identNy = opts?.personFoerLeggTil?.pdl?.ident || opts?.importPersoner?.[0].ident || ident
+	const identMaster = opts?.identMaster || 'PDLF'
+
+	identer?.push({ ident: identNy, master: identMaster })
+
+	const filtrerteIdenter = identer?.filter((ident) => ident.master == identMaster)
+
+	const {
+		data: pdlOptions,
+		loading: pdlLoading,
+		error: pdlError,
+	} = usePdlOptions(filtrerteIdenter, identMaster)
 
 	const harSivilstand = eksisterendePersonPath?.includes('sivilstand')
 	const harNyIdent = eksisterendePersonPath?.includes('nyident')
@@ -73,47 +86,60 @@ export const PdlEksisterendePerson = ({
 				?.find(
 					(partner) => partner.type && !gyldigeSivilstanderForPartner.includes(partner.type),
 				) && !formMethods.watch(`pdldata.person.forelderBarnRelasjon[${idx}].partnerErIkkeForelder`)
-		const antallEksisterendeForeldre = eksisterendeForeldre.length
+		const antallEksisterendeForeldre = eksisterendeForeldre?.length
 		const antallNyeForeldre = parseInt(antall) + (partnerErForelder() ? parseInt(antall) : 0)
 		return antallEksisterendeForeldre + antallNyeForeldre
 	}
 
-	const filterOptions = (person: Option) => {
-		if (harSivilstand) {
-			return gyldigeSivilstanderForPartner.includes(person.sivilstand)
-		} else if (eksisterendePersonPath?.includes('vergemaal')) {
-			return !person.vergemaal && person.alder > 17
-		} else if (
-			eksisterendePersonPath?.includes('fullmakt') ||
-			eksisterendePersonPath?.includes('kontaktinformasjonForDoedsbo')
-		) {
-			return person.alder > 17
-		} else if (
-			eksisterendePersonPath?.includes('forelderBarnRelasjon') &&
-			formMethods.watch(`pdldata.person.forelderBarnRelasjon[${idx}].relatertPersonsRolle`) ===
-				'BARN'
-		) {
-			return (
-				getAntallForeldre(person.foreldre) < 3 &&
-				formMethods
-					.watch('pdldata.person.forelderBarnRelasjon')
-					.some(
-						(relasjon: ForeldreBarnRelasjon, relasjonId: number) =>
-							relasjon.relatertPerson === person.value && relasjonId !== idx,
-					)
-			)
-		} else if (eksisterendePersonPath?.includes('foreldreansvar')) {
-			return (
-				!harForeldreansvarForValgteBarn(person.foreldreansvar) &&
-				!person.doedsfall &&
-				person.alder > 17
-			)
+	const checkForeldre = () => {
+		const relasjoner =
+			formMethods.getValues()?.pdldata?.person?.forelderBarnRelasjon ||
+			Array.from(formMethods.getValues()?.forelderBarnRelasjon)
+
+		let antallForeldre = eksisterendePerson.foreldre?.length || 0
+		for (let i = 0; i < relasjoner.length; i++) {
+			if (relasjoner[i].minRolleForPerson === 'BARN') {
+				antallForeldre++
+			}
+			if (idx === i) {
+				return antallForeldre < 3
+			}
 		}
 		return true
 	}
 
-	const getFilteredOptionList = (opts) => {
-		const eksisterendeIdent = opts?.personFoerLeggTil?.pdlforvalter?.person?.ident
+	const eksisterendeIdent =
+		opts?.personFoerLeggTil?.pdl?.ident || opts?.importPersoner?.[0]?.ident || ident
+
+	const eksisterendePerson = pdlOptions.find((x) => x.value === eksisterendeIdent) || {
+		alder: parseInt(formMethods.getValues()?.pdldata?.opprettNyPerson?.alder),
+	}
+
+	const filterOptions = (person: Option) => {
+		if (person.doedsfall) {
+			return false
+		}
+
+		if (label === 'PERSON RELATERT TIL') {
+			// Sivilstand gift/samboer osv
+			return person.alder > 17 && gyldigeSivilstanderForPartner.includes(person?.sivilstand)
+		} else if (label === 'FULLMEKTIG' || label === 'Kontaktperson') {
+			return person.alder > 17
+		} else if (label === 'VERGE') {
+			return !person.vergemaal && person.alder > 17
+		} else if (label === 'BARN') {
+			// eksisterende person er forelder
+			return eksisterendePerson?.alder - person.alder > 17 && getAntallForeldre(person.foreldre) < 3
+		} else if (label === 'FORELDER') {
+			// eksisterende person er barn
+			return person.alder - eksisterendePerson?.alder > 17 && checkForeldre()
+		} else if (label === 'Ansvarlig') {
+			return person.alder > 17 && !harForeldreansvarForValgteBarn(person.foreldreansvar)
+		}
+		return true
+	}
+
+	const getFilteredOptionList = () => {
 		const tmpOptions = pdlOptions?.filter(
 			(person) => person.value !== eksisterendeIdent && filterOptions(person),
 		)
@@ -142,11 +168,11 @@ export const PdlEksisterendePerson = ({
 					name={eksisterendePersonPath}
 					onChange={(person) => {
 						formMethods.setValue(eksisterendePersonPath, person?.value || null)
-						formMethods.trigger('pdldata.person.kontaktinformasjonForDoedsbo')
+						formMethods.trigger('pdldata.person')
 					}}
 					label={label}
 					options={filteredOptions}
-					size={'xlarge'}
+					size={'xxlarge'}
 					isDisabled={hasNyPersonValues || bestillingFlerePersoner || disabled}
 				/>
 			) : pdlError || gruppeError ? (

@@ -11,7 +11,7 @@ import { TestInnsendingSkattEnhet } from '@/pages/organisasjoner/OrganisasjonTen
 import { EnhetsregisteretArbeidsforhold } from '@/pages/organisasjoner/OrganisasjonTenorSoek/soekFormPartials/EnhetsregisteretArbeidsforhold'
 import { SamletReskontroinnsyn } from '@/pages/organisasjoner/OrganisasjonTenorSoek/soekFormPartials/SamletReskontroinnsyn'
 import { Tjenestepensjonsavtale } from '@/pages/organisasjoner/OrganisasjonTenorSoek/soekFormPartials/Tjenestepensjonsavtale'
-import { CypressSelector } from '../../../../cypress/mocks/Selectors'
+import { TestComponentSelectors } from '#/mocks/Selectors'
 
 const SoekefeltWrapper = styled.div`
 	display: flex;
@@ -93,7 +93,7 @@ export const SoekFormOrg = ({ setRequest, mutate }: any) => {
 									<Accordion.Header>
 										<Header
 											title="Enhetsregisteret og Foretaksregisteret"
-											dataCy={CypressSelector.TITLE_TENOR_ORGANISASJONER_FORETAKSREGISTERET}
+											dataCy={TestComponentSelectors.TITLE_TENOR_ORGANISASJONER_FORETAKSREGISTERET}
 											paths={[
 												'organisasjonsnummer',
 												'organisasjonsform.kode',

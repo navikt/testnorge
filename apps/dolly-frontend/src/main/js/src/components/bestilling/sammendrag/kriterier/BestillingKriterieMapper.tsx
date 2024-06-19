@@ -55,7 +55,19 @@ const expandable = (
 	objects,
 })
 
-const mapBestillingsinformasjon = (bestillingsinformasjon: any, data: any[], identtype: any) => {
+const mapBestillingsinformasjon = (
+	bestillingsinformasjon: any,
+	data: any[],
+	identtype: any,
+	firstIdent: string,
+) => {
+	const getTypePerson = () => {
+		if (parseInt(firstIdent?.charAt(2)) < 4) {
+			return 'Standard'
+		}
+		return bestillingsinformasjon.navSyntetiskIdent ? 'NAV-syntetisk' : 'Test-Norge'
+	}
+
 	if (bestillingsinformasjon) {
 		const bestillingsInfo = {
 			header: 'Bestillingsinformasjon',
@@ -68,7 +80,7 @@ const mapBestillingsinformasjon = (bestillingsinformasjon: any, data: any[], ide
 					'Antall levert',
 					bestillingsinformasjon.antallLevert && bestillingsinformasjon.antallLevert.toString(),
 				),
-				obj('Type person', bestillingsinformasjon.navSyntetiskIdent ? 'NAV syntetisk' : 'Standard'),
+				obj('Type person', getTypePerson()),
 				obj('Identtype', identtype),
 				obj('Sist oppdatert', formatDateTimeWithSeconds(bestillingsinformasjon.sistOppdatert)),
 				obj(
@@ -165,6 +177,43 @@ const mapFoedsel = (foedsel, data) => {
 			}),
 		}
 		data.push(foedselData)
+	}
+}
+
+const mapFoedested = (foedested, data) => {
+	if (foedested) {
+		const foedestedData = {
+			header: 'Fødested',
+			itemRows: foedested.map((item, idx) => {
+				return isEmpty(item, ['kilde', 'master'])
+					? [obj('Fødested', ingenVerdierSatt)]
+					: [
+							{ numberHeader: `Fødested ${idx + 1}` },
+							obj('Fødested', item.foedested),
+							obj('Fødekommune', item.foedekommune, AdresseKodeverk.Kommunenummer),
+							obj('Fødeland', item.foedeland, AdresseKodeverk.InnvandretUtvandretLand),
+						]
+			}),
+		}
+		data.push(foedestedData)
+	}
+}
+
+const mapFoedselsdato = (foedselsdato, data) => {
+	if (foedselsdato) {
+		const foedselsdatoData = {
+			header: 'Fødselsdato',
+			itemRows: foedselsdato.map((item, idx) => {
+				return isEmpty(item, ['kilde', 'master'])
+					? [obj('Fødselsdato', ingenVerdierSatt)]
+					: [
+							{ numberHeader: `Fødselsdato ${idx + 1}` },
+							obj('Fødselsdato', formatDate(item.foedselsdato)),
+							obj('Fødselsår', item.foedselsaar),
+						]
+			}),
+		}
+		data.push(foedselsdatoData)
 	}
 }
 
@@ -2061,6 +2110,7 @@ const mapDokarkiv = (bestillingData, data) => {
 				obj('Avsender ID', dokarkivKriterier.avsenderMottaker?.id),
 				obj('Avsender navn', dokarkivKriterier.avsenderMottaker?.navn),
 				obj('Tema', dokarkivKriterier.tema),
+				obj('Behandlingstema', dokarkivKriterier.behandlingstema),
 				obj('Journalførende enhet', dokarkivKriterier.journalfoerendeEnhet),
 				obj('Ferdigstill journalpost', oversettBoolean(dokarkivKriterier.ferdigstill)),
 				obj('Sakstype', showLabel('sakstype', dokarkivKriterier.sak?.sakstype)),
@@ -2169,24 +2219,26 @@ const mapOrganisasjon = (bestillingData, data) => {
 	}
 }
 
-export function mapBestillingData(bestillingData, bestillingsinformasjon) {
+export function mapBestillingData(bestillingData, bestillingsinformasjon, firstIdent) {
 	if (!bestillingData) {
 		return null
 	}
 
-	const data = []
+	const data: any[] = []
 	const identtype = bestillingData.pdldata?.opprettNyPerson?.identtype
 
 	const bestilling = useContext(BestillingsveilederContext)
 	const { navEnheter } = useNavEnheter()
 
-	mapBestillingsinformasjon(bestillingsinformasjon, data, identtype)
+	mapBestillingsinformasjon(bestillingsinformasjon, data, identtype, firstIdent)
 	mapPdlNyPerson(bestillingData, data, bestilling)
 
 	const pdldataKriterier = bestillingData.pdldata?.person
 	if (pdldataKriterier) {
 		const {
 			foedsel,
+			foedested,
+			foedselsdato,
 			kjoenn,
 			navn,
 			telefonnummer,
@@ -2213,6 +2265,8 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 		} = pdldataKriterier
 
 		mapFoedsel(foedsel, data)
+		mapFoedested(foedested, data)
+		mapFoedselsdato(foedselsdato, data)
 		mapInnflytting(innflytting, data)
 		mapUtflytting(utflytting, data)
 		mapKjoenn(kjoenn, data)

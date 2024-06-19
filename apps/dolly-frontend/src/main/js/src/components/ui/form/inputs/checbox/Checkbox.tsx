@@ -40,25 +40,28 @@ export const DollyCheckbox = ({
 	checkboxMargin = false,
 	label = '',
 	id = null,
+	vis = true,
 	...props
-}) => (
-	<InputWrapper size={wrapperSize} checkboxMargin={checkboxMargin}>
-		{isSwitch ? (
-			<StyledSwitch disabled={isDisabled} {...props}>
-				{label}
-			</StyledSwitch>
-		) : (
-			<Checkbox id={id || label} disabled={isDisabled} {...props}>
-				{label}
-			</Checkbox>
-		)}
-	</InputWrapper>
-)
+}) =>
+	vis && (
+		<InputWrapper size={wrapperSize} checkboxMargin={checkboxMargin}>
+			{isSwitch ? (
+				<StyledSwitch disabled={isDisabled} {...props}>
+					{label}
+				</StyledSwitch>
+			) : (
+				<Checkbox id={id || label} disabled={isDisabled} {...props}>
+					{label}
+				</Checkbox>
+			)}
+		</InputWrapper>
+	)
 
 export const FormCheckbox = ({
 	afterChange = null,
 	size = 'small',
 	checkboxMargin = false,
+	vis = true,
 	...props
 }) => {
 	const formMethods = useFormContext()
@@ -70,12 +73,14 @@ export const FormCheckbox = ({
 	}
 
 	return (
-		<DollyCheckbox
-			size={size}
-			checked={value}
-			onChange={handleChange}
-			checkboxMargin={checkboxMargin}
-			{...props}
-		/>
+		vis && (
+			<DollyCheckbox
+				size={size}
+				checked={value}
+				onChange={handleChange}
+				checkboxMargin={checkboxMargin}
+				{...props}
+			/>
+		)
 	)
 }

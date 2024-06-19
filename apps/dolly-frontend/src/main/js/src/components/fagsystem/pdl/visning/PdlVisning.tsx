@@ -49,7 +49,6 @@ export const PdlVisning = ({
 
 	const { hentPerson, hentIdenter, hentGeografiskTilknytning, ident } = pdlData
 	const {
-		foedsel,
 		telefonnummer,
 		vergemaalEllerFremtidsfullmakt,
 		tilrettelagtKommunikasjon,
@@ -87,7 +86,7 @@ export const PdlVisning = ({
 				/>
 				<IdentInfo pdlResponse={hentIdenter} />
 				<Foedsel
-					data={foedsel}
+					data={hentPerson}
 					pdlfData={pdlfPerson?.foedsel}
 					tmpPersoner={tmpPdlforvalter}
 					ident={ident}

@@ -16,8 +16,15 @@ const getAlder = (values, personFoerLeggTil, importPersoner) => {
 	let alder = _.get(values, 'pdldata.opprettNyPerson.alder')
 	if (_.isNil(alder)) {
 		let foedselsdato = null
-		if (values?.pdldata?.person?.foedsel?.[0]?.foedselsdato) {
+		if (values?.pdldata?.person?.foedselsdato?.[0]?.foedselsdato) {
+			foedselsdato = values.pdldata.person.foedselsdato[0].foedselsdato
+		} else if (values?.pdldata?.person?.foedsel?.[0]?.foedselsdato) {
 			foedselsdato = values.pdldata.person.foedsel[0].foedselsdato
+		} else if (personFoerLeggTil?.pdlforvalter?.person?.foedselsdato) {
+			const foedselsdatoer = personFoerLeggTil.pdlforvalter.person.foedselsdato
+				.map((foedsel) => foedsel.foedselsdato)
+				.sort((a, b) => new Date(b) - new Date(a))
+			foedselsdato = foedselsdatoer?.[0]
 		} else if (personFoerLeggTil?.pdlforvalter?.person?.foedsel) {
 			const foedselsdatoer = personFoerLeggTil.pdlforvalter.person.foedsel
 				.map((foedsel) => foedsel.foedselsdato)
@@ -25,10 +32,15 @@ const getAlder = (values, personFoerLeggTil, importPersoner) => {
 			foedselsdato = foedselsdatoer?.[0]
 		} else if (personFoerLeggTil?.pdl) {
 			const pdlPerson = personFoerLeggTil.pdl.hentPerson || personFoerLeggTil.pdl.person
-			foedselsdato = pdlPerson?.foedsel?.[0]?.foedselsdato
+			foedselsdato =
+				pdlPerson?.foedselsdato?.[0]?.foedselsdato || pdlPerson?.foedsel?.[0]?.foedselsdato
 		} else if (importPersoner) {
 			const foedselsdatoer = importPersoner
-				.map((person) => person?.data?.hentPerson?.foedsel?.[0]?.foedselsdato)
+				.map(
+					(person) =>
+						person?.data?.hentPerson?.foedselsdato?.[0]?.foedselsdato ||
+						person?.data?.hentPerson?.foedsel?.[0]?.foedselsdato,
+				)
 				.sort((a, b) => new Date(b) - new Date(a))
 			foedselsdato = foedselsdatoer?.[0]
 		}

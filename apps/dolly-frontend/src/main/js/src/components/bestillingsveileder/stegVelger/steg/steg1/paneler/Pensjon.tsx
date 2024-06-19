@@ -11,7 +11,7 @@ import { pensjonPath } from '@/components/fagsystem/pensjon/form/Form'
 import { genInitialAlderspensjonVedtak } from '@/components/fagsystem/alderspensjon/form/initialValues'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { initialUforetrygd } from '@/components/fagsystem/uforetrygd/initialValues'
-import { runningCypressE2E } from '@/service/services/Request'
+import { runningE2ETest } from '@/service/services/Request'
 import _ from 'lodash'
 import { alderspensjonPath } from '@/components/fagsystem/alderspensjon/form/Form'
 import { uforetrygdPath } from '@/components/fagsystem/uforetrygd/form/Form'
@@ -129,8 +129,8 @@ PensjonPanel.initialValues = ({ set, del, has }: any) => {
 			add: () =>
 				set(paths.inntekt, {
 					fomAar: new Date().getFullYear() - 10,
-					tomAar: runningCypressE2E() ? new Date().getFullYear() : null,
-					belop: runningCypressE2E() ? '12345' : '',
+					tomAar: runningE2ETest() ? new Date().getFullYear() : null,
+					belop: runningE2ETest() ? '12345' : '',
 					redusertMedGrunnbelop: true,
 				}),
 			remove: () => del(paths.inntekt),

@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -36,6 +37,7 @@ public class DbAlias {
     })
     private Long id;
 
+    @UpdateTimestamp
     @Column(name = "sist_oppdatert")
     private LocalDateTime sistOppdatert;
 

@@ -29,6 +29,8 @@ const Visning = ({ data, idx }: VisningProps) => {
 				<TitleValue title="Partnerident" value={data.relatertVedSivilstand} visKopier />
 			)}
 			<TitleValue title="Sivilstand fra dato" value={formatDate(data.gyldigFraOgMed)} />
+			<TitleValue title="Bekreftelsesdato" value={formatDate(data.bekreftelsesdato)} />
+			<TitleValue title="Master" value={data.metadata?.master} />
 		</div>
 	)
 }

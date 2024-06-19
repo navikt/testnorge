@@ -9,7 +9,8 @@ import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.dto.HentIdenterRequest;
 import no.nav.testnav.libs.data.pdlforvalter.v1.AdressebeskyttelseDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.BostedadresseDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.FoedselDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.FoedestedDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.FoedselsdatoDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregistermetadataDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.KjoennDTO;
@@ -43,7 +44,8 @@ public class CreatePersonService {
     private final MergeService mergeService;
     private final PersonRepository personRepository;
     private final KjoennService kjoennService;
-    private final FoedselService foedselService;
+    private final FoedselsdatoService foedselsdatoService;
+    private final FoedestedService foedestedService;
     private final StatsborgerskapService statsborgerskapService;
     private final BostedAdresseService bostedAdresseService;
     private final NavnService navnService;
@@ -56,7 +58,10 @@ public class CreatePersonService {
                 .kjoenn(List.of(KjoennDTO.builder().kjoenn(request.getKjoenn())
                         .folkeregistermetadata(new FolkeregistermetadataDTO())
                         .build()))
-                .foedsel(List.of(FoedselDTO.builder()
+                .foedselsdato(List.of(FoedselsdatoDTO.builder()
+                        .folkeregistermetadata(new FolkeregistermetadataDTO())
+                        .build()))
+                .foedested(List.of(FoedestedDTO.builder()
                         .folkeregistermetadata(new FolkeregistermetadataDTO())
                         .build()))
                 .navn(List.of(nonNull(request.getNyttNavn()) ?
@@ -99,9 +104,10 @@ public class CreatePersonService {
                 .getIdent());
 
         Stream.of(
-                        Flux.just(foedselService.convert(mergedPerson)),
+                        Flux.just(foedselsdatoService.convert(mergedPerson)),
                         Flux.just(navnService.convert(mergedPerson)),
                         Flux.just(bostedAdresseService.convert(mergedPerson, null)),
+                        Flux.just(foedestedService.convert(mergedPerson)),
                         Flux.just(kjoennService.convert(mergedPerson)),
                         Flux.just(statsborgerskapService.convert(mergedPerson)),
                         Flux.just(adressebeskyttelseService.convert(mergedPerson)))

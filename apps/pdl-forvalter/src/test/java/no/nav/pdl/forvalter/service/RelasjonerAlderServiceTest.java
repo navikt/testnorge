@@ -70,7 +70,7 @@ class RelasjonerAlderServiceTest {
         var oppdatertBestilling = relasjonerAlderService.fixRelasjonerAlder(bestilling);
         assertThat(oppdatertBestilling.getFoedtFoer().toLocalDate(),
                 is(equalTo(LocalDate.now(clock).minusYears(18 + 23))));
-        assertThat(oppdatertBestilling.getPerson().getSivilstand().get(0).getNyRelatertPerson().getFoedtFoer().toLocalDate(),
+        assertThat(oppdatertBestilling.getPerson().getSivilstand().getFirst().getNyRelatertPerson().getFoedtFoer().toLocalDate(),
                 is(equalTo(LocalDate.now(clock).minusYears(18 + 23))));
     }
 

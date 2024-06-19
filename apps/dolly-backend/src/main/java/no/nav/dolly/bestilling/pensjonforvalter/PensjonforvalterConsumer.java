@@ -80,7 +80,8 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
 
         pensjonPersonRequest.setMiljoer(miljoer);
         return tokenService.exchange(serverProperties)
-                .flatMapMany(token -> new OpprettPersonCommand(webClient, pensjonPersonRequest, token.getTokenValue()).call());
+                .flatMapMany(token -> new OpprettPersonCommand(webClient, pensjonPersonRequest, token.getTokenValue()).call())
+                .doOnNext(response -> log.info("Opprettet person for {}: {}", pensjonPersonRequest.getFnr(), response));
     }
 
     @Timed(name = "providers", tags = { "operation", "pen_hentSamboer" })

@@ -4,6 +4,7 @@ import { AdresseKodeverk } from '@/config/kodeverk'
 import { PersonData } from '@/components/fagsystem/pdlf/PdlTypes'
 import { PdlDataVisning } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataVisning'
 import styled from 'styled-components'
+import React from 'react'
 
 const StyledPdlData = styled.div`
 	margin-bottom: 10px;
@@ -44,7 +45,10 @@ export const RelatertPerson = ({ data, tittel, marginTop = '0' }: RelatertPerson
 				<TitleValue title="Mellomnavn" value={data.navn?.[0].mellomnavn} />
 				<TitleValue title="Etternavn" value={data.navn?.[0].etternavn} />
 				<TitleValue title="Kjønn" value={data.kjoenn?.[0].kjoenn} />
-				<TitleValue title="Fødselsdato" value={formatDate(data.foedsel?.[0].foedselsdato)} />
+				<TitleValue
+					title="Fødselsdato"
+					value={formatDate(data.foedselsdato?.[0].foedselsdato || data.foedsel?.[0].foedselsdato)}
+				/>
 				<TitleValue
 					title="Statsborgerskap"
 					value={data.statsborgerskap?.[0].landkode}

@@ -10,8 +10,12 @@ import { initialFalskIdentitetValues } from '@/components/fagsystem/pdlf/form/in
 import { PdlEksisterendePerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlEksisterendePerson'
 import { useGenererNavn } from '@/utils/hooks/useGenererNavn'
 import { SelectOptionsFormat } from '@/service/SelectOptionsFormat'
+import { useContext } from 'react'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 export const FalskIdentitet = ({ formMethods }) => {
+	const opts = useContext(BestillingsveilederContext)
+
 	const { navnInfo, loading } = useGenererNavn()
 	const navnOptions = SelectOptionsFormat.formatOptions('personnavn', navnInfo)
 
@@ -68,16 +72,24 @@ export const FalskIdentitet = ({ formMethods }) => {
 					master: formMethods.watch(`${path}.master`),
 				}
 
+				const identTyper = Options('identitetType').filter(
+					(type) => type.value !== 'ENTYDIG' || opts?.antall == 1,
+				)
+
 				return (
 					<>
 						<div className="flexbox--flex-wrap" key={idx}>
 							<FormSelect
 								name={`${path}.identitetType`}
 								label="Opplysninger om rett identitet"
-								options={Options('identitetType')}
+								options={identTyper}
 								value={identType()}
 								onChange={(e) => settIdentitetType(e, path, advancedValues)}
 								size="large"
+								info={
+									opts?.antall > 1 &&
+									'"Ved identifikasjonsnummer" er tilgjengelig for individ, ikke for gruppe'
+								}
 							/>
 
 							{identType() === 'ENTYDIG' && (

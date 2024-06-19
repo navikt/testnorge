@@ -26,6 +26,7 @@ const StatsborgerskapPdlVisning = ({ data, idx }: StatsborgerskapProps) => {
 				/>
 				<TitleValue title="Statsborgerskap registrert" value={formatDate(data.gyldigFraOgMed)} />
 				<TitleValue title="Statsborgerskap til" value={formatDate(data.gyldigTilOgMed)} />
+				<TitleValue title="Master" value={data.metadata?.master} />
 			</div>
 		)
 	}

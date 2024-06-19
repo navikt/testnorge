@@ -1,5 +1,5 @@
 plugins {
-    id "com.gradle.enterprise" version "3.12.3"
+    id "com.gradle.develocity" version "3.17.4"
 }
 
 rootProject.name = 'pdl-forvalter'
@@ -10,13 +10,12 @@ includeBuild '../../libs/data-transfer-objects'
 includeBuild '../../libs/data-transfer-search-objects'
 includeBuild '../../libs/servlet-core'
 includeBuild '../../libs/reactive-core'
-includeBuild '../../libs/servlet-security'
 includeBuild '../../libs/servlet-insecure-security'
 includeBuild '../../libs/testing'
 
-gradleEnterprise {
+develocity {
     buildScan {
-        termsOfServiceUrl = "https://gradle.com/terms-of-service"
-        termsOfServiceAgree = "yes"
+        termsOfUseUrl = "https://gradle.com/terms-of-service"
+        termsOfUseAgree = "yes"
     }
 }

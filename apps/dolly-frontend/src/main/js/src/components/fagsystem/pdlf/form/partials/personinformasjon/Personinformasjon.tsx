@@ -16,10 +16,13 @@ import { TilrettelagtKommunikasjon } from '@/components/fagsystem/pdlf/form/part
 import { Alder } from '@/components/fagsystem/pdlf/form/partials/alder/Alder'
 import { Kjoenn } from '@/components/fagsystem/pdlf/form/partials/kjoenn/Kjoenn'
 import { Navn } from '@/components/fagsystem/pdlf/form/partials/navn/Navn'
-import { Foedsel } from '@/components/fagsystem/pdlf/form/partials/foedsel/Foedsel'
 import { Vergemaal } from '@/components/fagsystem/pdlf/form/partials/vergemaal/Vergemaal'
 import { NorskBankkonto, UtenlandskBankkonto } from '@/components/fagsystem/bankkonto/form'
 import { SkjermingForm } from '@/components/fagsystem/skjermingsregister/form/SkjermingForm'
+import { Foedested } from '@/components/fagsystem/pdlf/form/partials/foedsel/Foedested'
+import { Foedselsdato } from '@/components/fagsystem/pdlf/form/partials/foedsel/Foedselsdato'
+
+const foedselPaths = ['pdldata.person.foedested', 'pdldata.person.foedselsdato']
 
 const nasjonalitetPaths = [
 	'pdldata.person.statsborgerskap',
@@ -48,7 +51,8 @@ const tilrettelagtKommunikasjonPath = ['pdldata.person.tilrettelagtKommunikasjon
 const innvandringPath = ['pdldata.person.innflytting']
 const utvandringPath = ['pdldata.person.utflytting']
 const statsborgerskapPath = ['pdldata.person.statsborgerskap']
-const foedselPath = ['pdldata.person.foedsel']
+const foedestedPath = ['pdldata.person.foedested']
+const foedselsdatoPath = ['pdldata.person.foedselsdato']
 const doedsfallPath = ['pdldata.person.doedsfall']
 const vergemaalPath = ['pdldata.person.vergemaal']
 const fullmaktPath = ['pdldata.person.fullmakt']
@@ -64,7 +68,7 @@ const panelPaths = [
 	navnPath,
 	telefonnummerPath,
 	tilrettelagtKommunikasjonPath,
-	foedselPath,
+	foedselPaths,
 	doedsfallPath,
 	vergemaalPath,
 	fullmaktPath,
@@ -91,8 +95,13 @@ export const Personinformasjon = ({ formMethods }) => {
 					</Kategori>
 				)}
 
-				<Kategori title="Fødsel" vis={foedselPath}>
-					<Foedsel formMethods={formMethods} />
+				<Kategori title="Fødsel" vis={foedselPaths}>
+					<Vis attributt={foedestedPath}>
+						<Foedested formMethods={formMethods} />
+					</Vis>
+					<Vis attributt={foedselsdatoPath}>
+						<Foedselsdato formMethods={formMethods} />
+					</Vis>
 				</Kategori>
 
 				<Kategori title="Dødsfall" vis={doedsfallPath}>
