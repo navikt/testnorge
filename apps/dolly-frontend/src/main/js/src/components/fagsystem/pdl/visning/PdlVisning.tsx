@@ -49,7 +49,6 @@ export const PdlVisning = ({
 
 	const { hentPerson, hentIdenter, hentGeografiskTilknytning, ident } = pdlData
 	const {
-		foedsel,
 		telefonnummer,
 		vergemaalEllerFremtidsfullmakt,
 		tilrettelagtKommunikasjon,

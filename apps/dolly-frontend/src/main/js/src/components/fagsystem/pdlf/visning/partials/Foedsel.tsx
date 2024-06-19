@@ -11,7 +11,13 @@ import {
 	KodeverkValues,
 } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import { AdresseKodeverk } from '@/config/kodeverk'
-import { FoedselData, Person } from '@/components/fagsystem/pdlf/PdlTypes'
+import {
+	FoedestedData,
+	FoedselData,
+	FoedselsdatoData,
+	Person,
+	PersonData,
+} from '@/components/fagsystem/pdlf/PdlTypes'
 import {
 	getInitialFoedested,
 	getInitialFoedsel,
@@ -21,7 +27,7 @@ import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visn
 import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
 
 type FoedselTypes = {
-	data: Array<FoedselData>
+	data: PersonData
 	tmpPersoner?: Array<FoedselData>
 	ident?: string
 	erPdlVisning?: boolean
@@ -34,12 +40,14 @@ type FoedselLesTypes = {
 }
 
 type FoedselVisningTypes = {
-	foedsel: FoedselData
+	foedsel: FoedselData | FoedselsdatoData | FoedestedData
 	idx: number
-	data: Array<FoedselData>
-	tmpPersoner: Array<FoedselData>
-	ident: string
-	erPdlVisning: boolean
+	data: Array<FoedselData> | Array<FoedselsdatoData> | Array<FoedestedData>
+	tmpPersoner?: Array<FoedselData>
+	ident?: string
+	erPdlVisning?: boolean
+	getInitialFoedsel: Function
+	name: string
 }
 
 const FoedselLes = ({ foedsel, idx }: FoedselLesTypes) => {
@@ -133,7 +141,7 @@ export const Foedsel = ({
 							{harFoedested && (
 								<div className="person-visning_content" style={{ margin: '-15px 0 0 0' }}>
 									<DollyFieldArray data={foedested} header="Fødested" nested>
-										{(item, idx) =>
+										{(item: FoedestedData, idx: number) =>
 											erRedigerbar ? (
 												<FoedselVisning
 													foedsel={item}
@@ -155,7 +163,7 @@ export const Foedsel = ({
 							{harFoedselsdato && (
 								<div className="person-visning_content" style={{ margin: '-15px 0 0 0' }}>
 									<DollyFieldArray data={foedselsdato} header="Fødselsdato" nested>
-										{(item, idx) =>
+										{(item: FoedselsdatoData, idx: number) =>
 											erRedigerbar ? (
 												<FoedselVisning
 													foedsel={item}
@@ -182,6 +190,7 @@ export const Foedsel = ({
 									<FoedselVisning
 										foedsel={item}
 										idx={idx}
+										//@ts-ignore
 										data={foedsel}
 										ident={ident}
 										erPdlVisning={erPdlVisning}

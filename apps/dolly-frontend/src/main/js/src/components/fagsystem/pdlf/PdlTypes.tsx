@@ -119,6 +119,7 @@ export type SivilstandData = {
 
 export type Metadata = {
 	historisk: boolean
+	master?: string
 }
 
 export enum Rolle {

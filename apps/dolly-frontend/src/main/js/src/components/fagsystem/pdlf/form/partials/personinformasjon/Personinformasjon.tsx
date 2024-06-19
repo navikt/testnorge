@@ -16,7 +16,6 @@ import { TilrettelagtKommunikasjon } from '@/components/fagsystem/pdlf/form/part
 import { Alder } from '@/components/fagsystem/pdlf/form/partials/alder/Alder'
 import { Kjoenn } from '@/components/fagsystem/pdlf/form/partials/kjoenn/Kjoenn'
 import { Navn } from '@/components/fagsystem/pdlf/form/partials/navn/Navn'
-import { Foedsel } from '@/components/fagsystem/pdlf/form/partials/foedsel/Foedsel'
 import { Vergemaal } from '@/components/fagsystem/pdlf/form/partials/vergemaal/Vergemaal'
 import { NorskBankkonto, UtenlandskBankkonto } from '@/components/fagsystem/bankkonto/form'
 import { SkjermingForm } from '@/components/fagsystem/skjermingsregister/form/SkjermingForm'
@@ -52,7 +51,6 @@ const tilrettelagtKommunikasjonPath = ['pdldata.person.tilrettelagtKommunikasjon
 const innvandringPath = ['pdldata.person.innflytting']
 const utvandringPath = ['pdldata.person.utflytting']
 const statsborgerskapPath = ['pdldata.person.statsborgerskap']
-// const foedselPath = ['pdldata.person.foedsel']
 const foedestedPath = ['pdldata.person.foedested']
 const foedselsdatoPath = ['pdldata.person.foedselsdato']
 const doedsfallPath = ['pdldata.person.doedsfall']
@@ -70,7 +68,6 @@ const panelPaths = [
 	navnPath,
 	telefonnummerPath,
 	tilrettelagtKommunikasjonPath,
-	// foedselPath,
 	foedselPaths,
 	doedsfallPath,
 	vergemaalPath,
@@ -97,10 +94,6 @@ export const Personinformasjon = ({ formMethods }) => {
 						<Alder formMethods={formMethods} />
 					</Kategori>
 				)}
-
-				{/*<Kategori title="Fødsel" vis={foedselPath}>*/}
-				{/*	<Foedsel formMethods={formMethods} />*/}
-				{/*</Kategori>*/}
 
 				<Kategori title="Fødsel" vis={foedselPaths}>
 					<Vis attributt={foedestedPath}>
