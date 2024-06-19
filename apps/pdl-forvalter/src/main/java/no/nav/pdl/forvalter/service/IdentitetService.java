@@ -55,12 +55,12 @@ public class IdentitetService {
                 .filter(StringUtils::isNumeric)
                 .findFirst();
 
-        List<String> navn = List.of(query.split(" ")).stream()
+        List<String> navn = Stream.of(query.split(" "))
                 .filter(fragment -> isNotBlank(fragment) && !StringUtils.isNumeric(fragment))
                 .toList();
 
         return personRepository.findByWildcardIdent(ident.orElse(null),
-                !navn.isEmpty() ? navn.get(0).toUpperCase() : null,
+                !navn.isEmpty() ? navn.getFirst().toUpperCase() : null,
                 navn.size() > 1 ? navn.get(1).toUpperCase() : null,
                 PageRequest.of(paginering.getSidenummer(),
                         paginering.getSidestoerrelse(),
