@@ -87,8 +87,10 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
 
                 type.setKilde(getKilde(type));
                 type.setMaster(getMaster(type, person));
-                if (person.getFoedsel().stream()
-                        .anyMatch(alder -> alder.getFoedselsdato().isBefore(LocalDateTime.now().minusYears(MYNDIG_ALDER)))) {
+                if (person.getFoedselsdato().stream()
+                        .anyMatch(alder -> alder.getFoedselsdato().isBefore(LocalDateTime.now().minusYears(MYNDIG_ALDER))) ||
+                        person.getFoedsel().stream()
+                                .anyMatch(alder -> alder.getFoedselsdato().isBefore(LocalDateTime.now().minusYears(MYNDIG_ALDER)))) {
                     // hovedperson er voksen
                     handle(type, person);
                 } else {
@@ -197,11 +199,11 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
                 .anyMatch(relasjon -> List.of(roller).contains(relasjon.getRelatertPersonsRolle()));
     }
 
-    private boolean isRelasjonForeldre(PersonDTO hovedperson) {
+    private boolean isRelasjonForeldre(PersonDTO person) {
 
-        return hovedperson.getForelderBarnRelasjon().stream()
+        return person.getForelderBarnRelasjon().stream()
                 .anyMatch(relasjon -> relasjon.isForeldre() && isNotTrue(relasjon.getPartnerErIkkeForelder())) &&
-                hovedperson.getSivilstand().stream()
+                person.getSivilstand().stream()
                         .anyMatch(sivilstand -> (sivilstand.isGift() || sivilstand.isSeparert()));
     }
 
