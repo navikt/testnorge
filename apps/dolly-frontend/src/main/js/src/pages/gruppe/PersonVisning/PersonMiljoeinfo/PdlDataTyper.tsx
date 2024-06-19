@@ -297,15 +297,6 @@ export type UtflyttingFraNorge = {
 	metadata: Metadata
 }
 
-export type Foedsel = {
-	foedselsaar: string
-	foedselsdato: string
-	foedeland: string
-	foedested: string
-	foedekommune: string
-	metadata: Metadata
-}
-
 type Doedsfall = {
 	doedsdato: string
 	metadata: Metadata
