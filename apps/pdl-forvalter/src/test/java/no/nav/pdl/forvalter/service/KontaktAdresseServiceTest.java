@@ -130,7 +130,7 @@ class KontaktAdresseServiceTest {
                 .build();
 
         var kontaktadresse =
-                kontaktAdresseService.convert(request, null).get(0);
+                kontaktAdresseService.convert(request, null).getFirst();
 
         verify(adresseServiceConsumer).getVegadresse(any(VegadresseDTO.class), nullable(String.class));
         verify(mapperFacade).map(eq(vegadresse), any(VegadresseDTO.class));

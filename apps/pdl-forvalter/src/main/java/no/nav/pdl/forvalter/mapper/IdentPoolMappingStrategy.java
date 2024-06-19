@@ -77,8 +77,11 @@ public class IdentPoolMappingStrategy implements MappingStrategy {
                     public void mapAtoB(BestillingRequestDTO kilde, HentIdenterRequest destinasjon, MappingContext context) {
 
                         destinasjon.setIdenttype(mapIdenttype(kilde.getIdenttype()));
-                        var foedsel = kilde.getPerson().getFoedsel().stream()
-                                .findFirst().orElse(new FoedselDTO());
+                        var foedsel = kilde.getPerson().getFoedselsdato().stream()
+                                .findFirst()
+                                .orElse(kilde.getPerson().getFoedsel().stream()
+                                        .findFirst()
+                                        .orElse(new FoedselDTO()));
 
                         if (nonNull(foedsel.getFoedselsaar())) {
                             destinasjon.setFoedtEtter(LocalDate.of(foedsel.getFoedselsaar() - 1, 12, 31));

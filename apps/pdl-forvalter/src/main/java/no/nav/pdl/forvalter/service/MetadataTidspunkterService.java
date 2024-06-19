@@ -10,7 +10,7 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.DeltBostedDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.DoedsfallDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FalskIdentitetDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.FoedselDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.FoedselsdatoDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregistermetadataDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.ForeldreansvarDTO;
@@ -68,6 +68,10 @@ public class MetadataTidspunkterService {
                             .forEach(this::fixDoedsfall);
                     person.getFoedsel()
                             .forEach(foedsel -> fixFoedsel(foedsel, person));
+                    person.getFoedselsdato()
+                            .forEach(foedselsdato -> fixFoedsel(foedselsdato, person));
+                    person.getFoedested()
+                            .forEach(this::fixVersioning);
                     person.getFalskIdentitet()
                             .forEach(this::fixFalskIdentitet);
                     person.getFolkeregisterPersonstatus()
@@ -264,7 +268,7 @@ public class MetadataTidspunkterService {
                 });
     }
 
-    private static LocalDateTime getFoedselsdato(PersonDTO personDTO, FoedselDTO foedsel) {
+    private static LocalDateTime getFoedselsdato(PersonDTO personDTO, FoedselsdatoDTO foedsel) {
 
         return nonNull(foedsel.getFoedselsdato()) ? foedsel.getFoedselsdato() :
                 LocalDate.of(foedsel.getFoedselsaar(),
@@ -280,7 +284,7 @@ public class MetadataTidspunkterService {
         doedsfallDTO.getFolkeregistermetadata().setGyldighetstidspunkt(doedsfallDTO.getDoedsdato());
     }
 
-    private void fixFoedsel(FoedselDTO foedselDTO, PersonDTO personDTO) {
+    private void fixFoedsel(FoedselsdatoDTO foedselDTO, PersonDTO personDTO) {
 
         fixFolkeregisterMetadata(foedselDTO);
 

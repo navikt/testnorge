@@ -78,7 +78,7 @@ class OppholdsadresseServiceTest {
                                 .build()))
                         .build()));
 
-        assertThat(exception.getMessage(), containsString("" +
+        assertThat(exception.getMessage(), containsString(
                 "Oppholdsadresse: Personer med adressebeskyttelse == STRENGT_FORTROLIG skal ikke ha oppholdsadresse"));
     }
 
@@ -149,7 +149,7 @@ class OppholdsadresseServiceTest {
                         .build()))
                 .build();
 
-        var target = oppholdsadresseService.convert(request).get(0);
+        var target = oppholdsadresseService.convert(request).getFirst();
 
         assertThat(target.countAdresser(), is(0));
     }
@@ -167,7 +167,7 @@ class OppholdsadresseServiceTest {
         when(adresseServiceConsumer.getVegadresse(any(VegadresseDTO.class), any()))
                 .thenReturn(new no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO());
 
-        var target = oppholdsadresseService.convert(request).get(0);
+        var target = oppholdsadresseService.convert(request).getFirst();
 
         assertThat(target.countAdresser(), is(1));
         assertThat(target.getVegadresse(), is(notNullValue()));
@@ -186,7 +186,7 @@ class OppholdsadresseServiceTest {
 
         when(enkelAdresseService.getUtenlandskAdresse(any(), any(), any())).thenReturn(new UtenlandskAdresseDTO());
 
-        var target = oppholdsadresseService.convert(request).get(0);
+        var target = oppholdsadresseService.convert(request).getFirst();
 
         assertThat(target.countAdresser(), is(1));
         assertThat(target.getUtenlandskAdresse(), is(notNullValue()));
