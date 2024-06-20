@@ -65,7 +65,7 @@ const mapBestillingsinformasjon = (
 		if (parseInt(firstIdent?.charAt(2)) < 4) {
 			return 'Standard'
 		}
-		return parseInt(firstIdent?.charAt(2)) > 5 ? 'NAV-syntetisk' : 'Test-Norge'
+		return parseInt(firstIdent?.charAt(2)) > 5 ? 'Test-Norge' : 'NAV-syntetisk'
 	}
 
 	if (bestillingsinformasjon) {
