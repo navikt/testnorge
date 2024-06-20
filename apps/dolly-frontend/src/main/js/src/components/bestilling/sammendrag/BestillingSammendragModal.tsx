@@ -31,9 +31,9 @@ export const BestillingSammendragModal = ({ bestillinger }) => {
 
 	const handleChangeBestilling = (index: number) => {
 		if (index < 0) {
-			setAktivIndex(bestillinger.length - 1)
-		} else if (index >= bestillinger.length) {
 			setAktivIndex(0)
+		} else if (index >= bestillinger.length) {
+			setAktivIndex(bestillinger.length - 1)
 		} else {
 			setAktivIndex(index)
 		}
@@ -60,6 +60,7 @@ export const BestillingSammendragModal = ({ bestillinger }) => {
 								variant={'tertiary'}
 								title="Forrige bestilling"
 								icon={<ArrowLeftIcon aria-hidden />}
+								disabled={aktivIndex === 0}
 								onClick={() => handleChangeBestilling(aktivIndex - 1)}
 							/>
 							<h1 style={{ marginTop: '10px', borderBottom: 'unset' }}>
@@ -69,6 +70,7 @@ export const BestillingSammendragModal = ({ bestillinger }) => {
 								variant={'tertiary'}
 								title="Neste bestilling"
 								icon={<ArrowRightIcon aria-hidden />}
+								disabled={aktivIndex === bestillinger.length - 1}
 								onClick={() => handleChangeBestilling(aktivIndex + 1)}
 							/>
 						</div>
