@@ -10,9 +10,6 @@ const getCurrentBrukerUrl = `/dolly-backend/api/v1/bruker/current`
 const getProfilUrl = '/testnorge-profil-api/api/v1/profil'
 const getProfilBildeUrl = `${getProfilUrl}/bilde`
 
-const getOrganisasjonTilgangUrl = (orgnummer: string) =>
-	`/testnav-organisasjon-tilgang-service/api/v1/miljoer/organisasjon/orgnummer?orgnummer=${orgnummer}`
-
 type BrukerProfil = {
 	visningsNavn: string
 	epost: string
@@ -28,12 +25,6 @@ type BrukerType = {
 	brukertype: string
 	epost: string
 	favoritter: []
-}
-
-type OrganisasjonMiljoe = {
-	id: number
-	organisasjonNummer: string
-	miljoe: string
 }
 
 export const useAlleBrukere = () => {
@@ -76,28 +67,6 @@ export const useBrukerProfilBilde = () => {
 
 	return {
 		brukerBilde: data,
-		loading: isLoading,
-		error: error,
-	}
-}
-
-export const useOrganisasjonTilgang = () => {
-	const { brukerProfil } = useBrukerProfil()
-	const orgnummer = brukerProfil?.orgnummer
-
-	if (!orgnummer) {
-		return {
-			loading: false,
-		}
-	}
-
-	const { data, isLoading, error } = useSWR<OrganisasjonMiljoe, Error>(
-		getOrganisasjonTilgangUrl(orgnummer),
-		fetcher,
-	)
-
-	return {
-		organisasjonTilgang: data,
 		loading: isLoading,
 		error: error,
 	}

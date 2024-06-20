@@ -7,7 +7,7 @@ import { Detaljer } from '@/components/fagsystem/organisasjoner/visning/Detaljer
 import { Enhetstre, OrgTree } from '@/components/enhetstre'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import DollyTooltip from '@/components/ui/button/DollyTooltip'
-import { useOrganisasjonTilgang } from '@/utils/hooks/useBruker'
+import { useOrganisasjonMiljoe } from '@/utils/hooks/useOrganisasjonTilgang'
 
 // @ts-ignore
 const getOrganisasjonInfo = (organisasjon, selectedId, setSelectedId) => {
@@ -25,8 +25,8 @@ const getOrganisasjonInfo = (organisasjon, selectedId, setSelectedId) => {
 export const OrganisasjonDataVisning = ({ data }) => {
 	const [selectedId, setSelectedId] = useState('0')
 
-	const { organisasjonTilgang } = useOrganisasjonTilgang()
-	const tilgjengeligMiljoe = organisasjonTilgang?.miljoe
+	const { organisasjonMiljoe } = useOrganisasjonMiljoe()
+	const tilgjengeligMiljoe = organisasjonMiljoe?.miljoe
 
 	if (!data) {
 		return null

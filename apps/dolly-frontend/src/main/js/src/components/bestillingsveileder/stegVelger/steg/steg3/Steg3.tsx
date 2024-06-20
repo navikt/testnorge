@@ -6,10 +6,11 @@ import { VelgGruppe } from '@/components/bestillingsveileder/stegVelger/steg/ste
 import { OppsummeringKommentarForm } from '@/components/bestillingsveileder/stegVelger/steg/steg3/OppsummeringKommentarForm'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { MalFormOrganisasjon } from '@/pages/organisasjoner/MalFormOrganisasjon'
-import { useCurrentBruker, useOrganisasjonTilgang } from '@/utils/hooks/useBruker'
+import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import Loading from '@/components/ui/loading/Loading'
 import { Gruppevalg } from '@/components/velgGruppe/VelgGruppeToggle'
 import { useFormContext } from 'react-hook-form'
+import { useOrganisasjonMiljoe } from '@/utils/hooks/useOrganisasjonTilgang'
 
 const Bestillingskriterier = React.lazy(
 	() => import('@/components/bestilling/sammendrag/kriterier/Bestillingskriterier'),
@@ -22,8 +23,8 @@ export const Steg3 = () => {
 
 	const [gruppevalg, setGruppevalg] = useState(Gruppevalg.MINE)
 
-	const { organisasjonTilgang, loading } = useOrganisasjonTilgang()
-	const tilgjengeligMiljoe = organisasjonTilgang?.miljoe
+	const { organisasjonMiljoe, loading } = useOrganisasjonMiljoe()
+	const tilgjengeligMiljoe = organisasjonMiljoe?.miljoe
 
 	const importTestnorge = opts.is.importTestnorge
 
@@ -91,7 +92,7 @@ export const Steg3 = () => {
 					bestillingsdata={formMethods.getValues()}
 					heading="Hvilke miljøer vil du opprette i?"
 					bankIdBruker={bankIdBruker}
-					orgTilgang={organisasjonTilgang}
+					orgTilgang={organisasjonMiljoe}
 					alleredeValgtMiljoe={alleredeValgtMiljoe()}
 				/>
 			)}
