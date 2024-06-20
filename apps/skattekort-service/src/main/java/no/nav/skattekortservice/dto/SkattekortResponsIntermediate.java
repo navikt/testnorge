@@ -18,6 +18,7 @@ import static java.util.Objects.isNull;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@SuppressWarnings("java:S115")
 public class SkattekortResponsIntermediate {
 
     private SkattekortTilArbeidsgiver skattekortTilArbeidsgiver;

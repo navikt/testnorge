@@ -8,7 +8,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @ActiveProfiles("test")
 @SpringBootTest
-public class ApplicationContextTest {
+class ApplicationContextTest {
 
     @Test
     @SuppressWarnings("java:S2699")

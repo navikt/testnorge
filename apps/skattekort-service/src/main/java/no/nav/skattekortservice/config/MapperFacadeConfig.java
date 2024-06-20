@@ -12,6 +12,7 @@ import java.util.List;
 import static java.util.Objects.nonNull;
 
 @Configuration
+@SuppressWarnings("java:S3740")
 public class MapperFacadeConfig {
 
     @Bean
