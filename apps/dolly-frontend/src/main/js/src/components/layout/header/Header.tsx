@@ -10,6 +10,7 @@ import { DokumentasjonDropdown } from '@/components/layout/header/DokumentasjonD
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import { FinnPersonDropdown } from '@/components/layout/header/FinnPersonDropdown'
 import { OrganisasjonDropdown } from '@/components/layout/header/OrganisasjonDropdown'
+import { AdminDropdown } from '@/components/layout/header/AdminDropdown'
 
 export default () => {
 	const { currentBruker, loading } = useCurrentBruker()
@@ -19,6 +20,8 @@ export default () => {
 	}
 
 	const bankidBruker = currentBruker?.brukertype === 'BANKID'
+	const erAdmin = true //TODO: Implementer sjekk for admin
+
 	return (
 		<header className="app-header">
 			<NavLink to="/" end className="home-nav">
@@ -44,6 +47,7 @@ export default () => {
 					</NavLink>
 				)}
 				<DokumentasjonDropdown />
+				{erAdmin && <AdminDropdown />}
 			</div>
 			<BrukerDropdown />
 		</header>
