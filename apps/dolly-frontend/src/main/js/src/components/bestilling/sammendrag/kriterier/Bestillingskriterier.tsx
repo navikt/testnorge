@@ -154,7 +154,7 @@ export default ({
 	if (bestilling?.organisasjon || bestilling?.enhetstype) {
 		return (
 			<div className={cn}>
-				{header && <SubOverskrift label={header} {...props} />}
+				{header && <SubOverskrift label={header} />}
 				<OrganisasjonKriterier
 					data={bestilling.organisasjon || bestilling}
 					render={_renderBestillingsDetaljer}

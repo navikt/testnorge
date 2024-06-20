@@ -8,6 +8,9 @@ const Bestillingskriterier = React.lazy(
 
 export default function BestillingSammendrag({ bestilling }) {
 	const findFirstIdent = (bestilling: any) => {
+		if (bestilling?.organisasjonNummer) {
+			return null
+		}
 		for (const status of bestilling.status) {
 			for (const statusDetail of status.statuser) {
 				if (statusDetail.identer && statusDetail.identer.length > 0) {

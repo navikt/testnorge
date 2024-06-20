@@ -3,11 +3,43 @@ import DollyModal from '@/components/ui/modal/DollyModal'
 import Button from '@/components/ui/button/Button'
 import BestillingSammendrag from '@/components/bestilling/sammendrag/BestillingSammendrag'
 import { TestComponentSelectors } from '#/mocks/Selectors'
+import React, { useEffect, useState } from 'react'
+import styled from 'styled-components'
+import { Button as dsButton } from '@navikt/ds-react'
+import { ArrowLeftIcon, ArrowRightIcon } from '@navikt/aksel-icons'
 
-export const BestillingSammendragModal = ({ bestilling }) => {
+const StyledButton = styled(dsButton)`
+	align-content: center;
+	margin: 0 10px;
+	height: 55px;
+
+	svg {
+		font-size: 30px;
+	}
+`
+
+export const BestillingSammendragModal = ({ bestillinger }) => {
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
+	const [aktivBestilling, setAktivBestilling] = useState(bestillinger[0])
+	const [aktivIndex, setAktivIndex] = useState(0)
 
-	if (!bestilling) {
+	useEffect(() => {
+		setAktivBestilling(bestillinger[aktivIndex])
+	}, [aktivIndex])
+
+	const harFlereBestillinger = bestillinger.length > 1
+
+	const handleChangeBestilling = (index: number) => {
+		if (index < 0) {
+			setAktivIndex(bestillinger.length - 1)
+		} else if (index >= bestillinger.length) {
+			setAktivIndex(0)
+		} else {
+			setAktivIndex(index)
+		}
+	}
+
+	if (!bestillinger || bestillinger.length === 0) {
 		return null
 	}
 
@@ -20,9 +52,29 @@ export const BestillingSammendragModal = ({ bestilling }) => {
 			>
 				BESTILLINGSDETALJER
 			</Button>
-			<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="60%" overflow="auto">
-				<h1>Bestilling #{bestilling.id}</h1>
-				<BestillingSammendrag bestilling={bestilling} modal />
+			<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="65%" overflow="auto">
+				<div style={{ textAlign: 'center' }}>
+					{(harFlereBestillinger && (
+						<div style={{ display: 'inline-flex' }}>
+							<StyledButton
+								variant={'tertiary'}
+								title="Forrige bestilling"
+								icon={<ArrowLeftIcon aria-hidden />}
+								onClick={() => handleChangeBestilling(aktivIndex - 1)}
+							/>
+							<h1 style={{ marginTop: '10px', borderBottom: 'unset' }}>
+								Bestilling #{aktivBestilling?.id}
+							</h1>
+							<StyledButton
+								variant={'tertiary'}
+								title="Neste bestilling"
+								icon={<ArrowRightIcon aria-hidden />}
+								onClick={() => handleChangeBestilling(aktivIndex + 1)}
+							/>
+						</div>
+					)) || <h1>Bestilling #{aktivBestilling?.id}</h1>}
+				</div>
+				<BestillingSammendrag bestilling={aktivBestilling} modal />
 			</DollyModal>
 		</div>
 	)
