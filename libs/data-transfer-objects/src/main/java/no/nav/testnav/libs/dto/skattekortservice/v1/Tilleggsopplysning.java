@@ -13,4 +13,9 @@ public enum Tilleggsopplysning {
     KILDESKATT_PAA_LOENN("kildeskattPaaLoenn");
 
     private final String value;
+
+    @Override
+    public String toString() {
+        return this.name() + "," + value;
+    }
 }

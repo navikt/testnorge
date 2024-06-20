@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum Oppslagstyper {
+public enum KodeverkTyper {
 
     RESULTATSTATUS(Resultatstatus.class),
     TABELLTYPE(Tabelltype.class),

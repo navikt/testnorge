@@ -16,4 +16,9 @@ public enum Resultatstatus {
     UTGAATT_DNUMMER_SKATTEKORT_FOR_FOEDSELSNUMMER_ER_LEVERT("utgaattDnummerSkattekortForFoedselsnummerErLevert");
 
     private final String value;
+
+    @Override
+    public String toString() {
+        return this.name() + "," + value;
+    }
 }

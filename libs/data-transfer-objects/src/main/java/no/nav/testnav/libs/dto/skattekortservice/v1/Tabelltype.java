@@ -11,4 +11,9 @@ public enum Tabelltype {
     TREKKTABELL_FOR_LOENN("trekktabellForLoenn");
 
     private final String value;
+
+    @Override
+    public String toString() {
+        return this.name() + "," + value;
+    }
 }
