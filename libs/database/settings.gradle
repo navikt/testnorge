@@ -4,6 +4,7 @@ plugins {
 
 rootProject.name = 'database'
 
+includeBuild "../../plugins/java"
 
 develocity {
     buildScan {

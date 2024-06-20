@@ -3,6 +3,7 @@ name: tenor-search-service
 on:
   push:
     paths:
+      - "plugins/**"
       - libs/integration-test
       - libs/reactive-core
       - libs/reactive-security

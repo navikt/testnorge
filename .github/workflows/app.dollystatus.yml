@@ -3,6 +3,7 @@ name: dollystatus
 on:
   push:
     paths:
+      - "plugins/**"
       - apps/dollystatus/**
       - .github/workflows/app.dollystatus.yml
 

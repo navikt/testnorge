@@ -4,6 +4,8 @@ plugins {
 
 rootProject.name = 'arbeidsforhold-service'
 
+includeBuild "../../plugins/java"
+
 includeBuild '../../libs/commands'
 includeBuild '../../libs/data-transfer-objects'
 includeBuild '../../libs/reactive-core'

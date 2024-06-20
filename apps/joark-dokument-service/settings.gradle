@@ -4,6 +4,8 @@ plugins {
 
 rootProject.name = 'joark-dokument-service'
 
+includeBuild "../../plugins/java"
+
 includeBuild '../../libs/data-transfer-objects'
 includeBuild '../../libs/domain'
 includeBuild '../../libs/reactive-core'

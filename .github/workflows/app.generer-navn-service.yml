@@ -3,6 +3,7 @@ name: generer-navn-service
 on:
   push:
     paths:
+      - "plugins/**"
       - libs/commands
       - libs/data-transfer-objects
       - libs/security-core

@@ -3,6 +3,7 @@ name: organisasjon-tilgang-frontend
 on:
   push:
     paths:
+      - "plugins/**"
       - libs/reactive-core
       - libs/reactive-frontend
       - libs/reactive-session-security

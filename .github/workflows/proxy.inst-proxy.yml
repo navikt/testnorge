@@ -3,6 +3,7 @@ name: inst-proxy
 on:
   push:
     paths:
+      - "plugins/**"
       - libs/reactive-core
       - libs/reactive-proxy
       - proxies/inst-proxy/**

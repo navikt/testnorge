@@ -3,6 +3,7 @@ name: medl-proxy
 on:
   push:
     paths:
+      - "plugins/**"
       - proxies/medl-proxy/**
       - libs/servlet-core
       - libs/servlet-security

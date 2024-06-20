@@ -4,6 +4,8 @@ plugins {
 
 rootProject.name = 'dollystatus'
 
+includeBuild "../../plugins/java"
+
 develocity {
     buildScan {
         termsOfUseUrl = "https://gradle.com/terms-of-service"

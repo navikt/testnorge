@@ -3,6 +3,7 @@ name: oppsummeringsdokument-service
 on:
   push:
     paths:
+      - "plugins/**"
       - libs/data-transfer-objects
       - libs/security-core
       - libs/servlet-core

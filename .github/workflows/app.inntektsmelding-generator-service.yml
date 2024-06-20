@@ -3,6 +3,7 @@ name: inntektsmelding-generator-service
 on:
   push:
     paths:
+      - "plugins/**"
       - libs/data-transfer-objects
       - libs/servlet-core
       - libs/servlet-security

@@ -3,6 +3,7 @@ name: synt-vedtakshistorikk-service
 on:
   push:
     paths:
+      - "plugins/**"
       - libs/data-transfer-objects
       - libs/domain
       - libs/security-core

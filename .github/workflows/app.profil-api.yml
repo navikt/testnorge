@@ -3,6 +3,7 @@ name: profil-api
 on:
   push:
     paths:
+      - "plugins/**"
       - libs/data-transfer-objects
       - libs/reactive-core
       - libs/security-core

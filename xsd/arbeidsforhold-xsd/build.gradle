@@ -1,6 +1,6 @@
 plugins {
-    id "org.sonarqube" version "5.0.0.4638"
-    id 'java-library'
+    id "dolly-libs"
+
     id 'com.github.edeandrea.xjc-generation' version '1.6'
 }
 
@@ -9,17 +9,6 @@ sonarqube {
 }
 
 group = 'no.nav.testnav.xsd'
-
-repositories {
-    mavenCentral()
-    mavenLocal()
-}
-
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
-    }
-}
 
 dependencies {
     implementation 'jakarta.activation:jakarta.activation-api:2.1.3'

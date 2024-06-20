@@ -3,6 +3,7 @@ name: dolly-backend
 on:
   push:
     paths:
+      - "plugins/**"
       - libs/data-transfer-objects
       - libs/database
       - libs/reactive-core

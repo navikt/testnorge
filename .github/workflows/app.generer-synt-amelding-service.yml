@@ -3,6 +3,7 @@ name: generer-synt-amelding-service
 on:
   push:
     paths:
+      - "plugins/**"
       - libs/domain
       - libs/reactive-core
       - libs/security-core

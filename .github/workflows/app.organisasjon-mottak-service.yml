@@ -3,6 +3,7 @@ name: organisasjon-mottak-service
 on:
   push:
     paths:
+      - "plugins/**"
       - libs/avro-schema
       - libs/commands
       - libs/data-transfer-objects

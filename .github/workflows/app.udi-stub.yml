@@ -3,6 +3,7 @@ name: testnav-udi-stub
 on:
   push:
     paths:
+      - "plugins/**"
       - libs/data-transfer-objects
       - libs/database
       - libs/servlet-core

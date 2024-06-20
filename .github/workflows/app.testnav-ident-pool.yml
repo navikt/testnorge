@@ -3,6 +3,7 @@ name: testnav-ident-pool
 on:
   push:
     paths:
+      - "plugins/**"
       - libs/database
       - libs/security-core
       - libs/servlet-core

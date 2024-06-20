@@ -4,6 +4,7 @@ plugins {
 
 rootProject.name = 'security-token-service'
 
+includeBuild "../../plugins/java"
 
 develocity {
     buildScan {
