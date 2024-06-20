@@ -1,4 +1,5 @@
 import { AdminAccessDenied } from '@/pages/adminPages/AdminAccessDenied'
+import { OrgOversikt } from '@/pages/adminPages/Orgtilgang/OrgOversikt'
 
 export default () => {
 	const erAdmin = true //TODO: Implementer sjekk for admin
@@ -8,5 +9,10 @@ export default () => {
 		return <AdminAccessDenied />
 	}
 
-	return <h1>Organisasjon-tilgang</h1>
+	return (
+		<>
+			<h1>Organisasjon-tilgang</h1>
+			<OrgOversikt />
+		</>
+	)
 }

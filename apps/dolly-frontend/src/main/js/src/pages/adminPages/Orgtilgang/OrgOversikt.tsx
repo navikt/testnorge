@@ -1,0 +1,55 @@
+import { Alert, Box, Table } from '@navikt/ds-react'
+import { useOrganisasjonTilgang } from '@/utils/hooks/useOrganisasjonTilgang'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import { formatDate } from '@/utils/DataFormatter'
+import Loading from '@/components/ui/loading/Loading'
+import React from 'react'
+
+export const OrgOversikt = () => {
+	const { organisasjonTilgang, loading, error } = useOrganisasjonTilgang()
+
+	return (
+		<Box background="surface-default" padding="4">
+			<h2 style={{ marginTop: '5px' }}>Organisasjoner som har tilgang til Dolly</h2>
+			{error && (
+				<Alert variant={'error'} size={'small'}>
+					Feil: {error.message}
+				</Alert>
+			)}
+			{loading && (!organisasjonTilgang || organisasjonTilgang?.length === 0) && (
+				<Loading label="Laster organisasjoner ..." />
+			)}
+			{organisasjonTilgang?.length > 0 && (
+				<ErrorBoundary>
+					<Table>
+						<Table.Header>
+							<Table.HeaderCell scope="col">Org.nr.</Table.HeaderCell>
+							<Table.HeaderCell scope="col">Navn</Table.HeaderCell>
+							<Table.HeaderCell scope="col">Form</Table.HeaderCell>
+							<Table.HeaderCell scope="col">Miljø</Table.HeaderCell>
+							<Table.HeaderCell scope="col">Gyldig til</Table.HeaderCell>
+							<Table.HeaderCell scope="col">Fjern tilgang</Table.HeaderCell>
+						</Table.Header>
+						<Table.Body>
+							{organisasjonTilgang?.map(
+								({ organisasjonsnummer, navn, organisasjonsform, miljoe, gyldigTil }, idx) => {
+									return (
+										<Table.Row key={organisasjonsnummer + idx}>
+											<Table.HeaderCell scope="row">{organisasjonsnummer}</Table.HeaderCell>
+											<Table.DataCell>{navn}</Table.DataCell>
+											<Table.DataCell>{organisasjonsform}</Table.DataCell>
+											<Table.DataCell>{miljoe}</Table.DataCell>
+											<Table.DataCell>{formatDate(gyldigTil)}</Table.DataCell>
+											<Table.DataCell>Button</Table.DataCell>
+											{/*//TODO Add button*/}
+										</Table.Row>
+									)
+								},
+							)}
+						</Table.Body>
+					</Table>
+				</ErrorBoundary>
+			)}
+		</Box>
+	)
+}
