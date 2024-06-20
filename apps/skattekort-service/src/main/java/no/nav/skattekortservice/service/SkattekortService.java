@@ -102,7 +102,8 @@ public class SkattekortService {
 
     private String decodeRequest(String request) {
 
-        return new String(Base64.getDecoder().decode(request), StandardCharsets.UTF_8);
+        return new String(Base64.getDecoder().decode(request), StandardCharsets.UTF_8)
+                .replaceAll("\n *", "");
     }
 
     @SneakyThrows
