@@ -1,0 +1,19 @@
+plugins {
+    id "com.gradle.develocity" version "3.17.4"
+}
+
+rootProject.name = 'levende-arbeidsforhold-service'
+
+includeBuild '../../libs/security-core'
+includeBuild '../../libs/servlet-core'
+includeBuild '../../libs/commands'
+includeBuild '../../libs/data-transfer-objects'
+includeBuild '../../libs/servlet-security'
+includeBuild '../../libs/testing'
+
+develocity {
+    buildScan {
+        termsOfUseUrl = "https://gradle.com/terms-of-service"
+        termsOfUseAgree = "yes"
+    }
+}
