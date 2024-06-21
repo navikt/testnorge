@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.generernavn.config;
+package no.nav.registre.testnorge.generernavnservice.config;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;

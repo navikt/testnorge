@@ -1,9 +1,8 @@
-package no.nav.registre.testnorge.levendearbeidsforhold.service;
+package no.nav.registre.testnorge.generernavnservice.service;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
-import no.nav.registre.testnorge.generernavn.service.FileReader;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;

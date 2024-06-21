@@ -1,9 +1,9 @@
-package no.nav.registre.testnorge.generernavn.provider;
+package no.nav.registre.testnorge.generernavnservice.provider;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
-import no.nav.registre.testnorge.generernavn.service.GenerateNavnService;
-import no.nav.registre.testnorge.generernavn.service.VerifyNavnService;
+import no.nav.registre.testnorge.generernavnservice.service.GenerateNavnService;
+import no.nav.registre.testnorge.generernavnservice.service.VerifyNavnService;
 import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;

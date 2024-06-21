@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.generernavn.service;
+package no.nav.registre.testnorge.generernavnservice.service;
 
 import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
 import org.springframework.stereotype.Service;

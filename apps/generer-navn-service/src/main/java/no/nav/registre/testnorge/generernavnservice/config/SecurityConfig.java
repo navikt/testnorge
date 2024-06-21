@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.generernavn.config;
+package no.nav.registre.testnorge.generernavnservice.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

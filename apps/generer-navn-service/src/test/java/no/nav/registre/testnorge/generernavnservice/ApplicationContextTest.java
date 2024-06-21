@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.levendearbeidsforhold;
+package no.nav.registre.testnorge.generernavnservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
