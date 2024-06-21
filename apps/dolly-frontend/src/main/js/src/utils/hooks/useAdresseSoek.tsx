@@ -28,7 +28,7 @@ type MatrikkelAdresseRequest = {
 
 const getQueryParms = (request: any) => {
 	const keys = Object.keys(request).filter(
-		(key: keyof Request) => request[key] && request[key] !== ''
+		(key: keyof Request) => request[key] && request[key] !== '',
 	)
 	if (keys.length === 0) {
 		return ''
@@ -45,7 +45,7 @@ const getMatrikkeladresserUrl = (request: any) =>
 export const useAdresser = (request: AdresseRequest, antall: number = 10) => {
 	const { data, isLoading, error } = useSWR<string[], Error>(
 		request ? [getAdresserUrl(request), { antall: antall.toString() }] : null,
-		([url, headers]) => fetcher(url, headers)
+		([url, headers]) => fetcher(url, headers),
 	)
 
 	const ingenAdresseFunnet = error?.message?.includes('Ingen adresse funnet')
@@ -61,7 +61,7 @@ export const useAdresser = (request: AdresseRequest, antall: number = 10) => {
 export const useMatrikkelAdresser = (request: MatrikkelAdresseRequest, antall: number = 10) => {
 	const { data, isLoading, error } = useSWR<string[], Error>(
 		request ? [getMatrikkeladresserUrl(request), { antall: antall.toString() }] : null,
-		([url, headers]) => fetcher(url, headers)
+		([url, headers]) => fetcher(url, headers),
 	)
 
 	const ingenAdresseFunnet = error?.message?.includes('Ingen adresse funnet')
