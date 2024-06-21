@@ -1,4 +1,4 @@
-name: miljoer-service
+name: levende-arbeidsforhold-service
 
 on:
   push:
