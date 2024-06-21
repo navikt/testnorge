@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.levendearbeidsforhold.config;
+package no.nav.registre.testnorge.generernavn.config;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;

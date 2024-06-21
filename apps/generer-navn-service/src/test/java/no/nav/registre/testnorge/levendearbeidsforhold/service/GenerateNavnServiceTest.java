@@ -1,5 +1,6 @@
 package no.nav.registre.testnorge.levendearbeidsforhold.service;
 
+import no.nav.registre.testnorge.generernavn.service.GenerateNavnService;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;

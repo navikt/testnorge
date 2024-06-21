@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.levendearbeidsforhold.service;
+package no.nav.registre.testnorge.generernavn.service;
 
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;

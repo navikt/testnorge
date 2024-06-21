@@ -1,5 +1,6 @@
 package no.nav.registre.testnorge.levendearbeidsforhold.service;
 
+import no.nav.registre.testnorge.generernavn.service.VerifyNavnService;
 import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
 import org.junit.jupiter.api.Test;
 

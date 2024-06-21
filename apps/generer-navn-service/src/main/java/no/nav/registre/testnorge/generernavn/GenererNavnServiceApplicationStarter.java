@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.levendearbeidsforhold;
+package no.nav.registre.testnorge.generernavn;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
