@@ -55,4 +55,4 @@ spec:
     limits:
       memory: 2048Mi
   ingresses:
-    - "https://generer-navn-service.intern.dev.nav.no"
+    - "https://levende-arbeidsforhold-service.intern.dev.nav.no"

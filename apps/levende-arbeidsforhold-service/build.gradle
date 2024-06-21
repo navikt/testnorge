@@ -19,8 +19,8 @@ sonarqube {
         property "sonar.token", System.getenv("SONAR_TOKEN")
         property "sonar.organization", "navikt"
         property "sonar.project.monorepo.enabled", true
-        property "sonar.projectKey", "testnav-generer-navn-service"
-        property "sonar.projectName", "testnav-generer-navn-service"
+        property "sonar.projectKey", "testnav-levende-arbeidsforhold-service"
+        property "sonar.projectName", "testnav-levende-arbeidsforhold-service"
         property "sonar.sourceEncoding", "UTF-8"
     }
 }
