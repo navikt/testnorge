@@ -1,5 +1,6 @@
 import { AdminAccessDenied } from '@/pages/adminPages/AdminAccessDenied'
 import { OrgOversikt } from '@/pages/adminPages/Orgtilgang/OrgOversikt'
+import { OrgtilgangForm } from '@/pages/adminPages/Orgtilgang/OrgtilgangForm'
 
 export default () => {
 	const erAdmin = true //TODO: Implementer sjekk for admin
@@ -12,6 +13,7 @@ export default () => {
 	return (
 		<>
 			<h1>Organisasjon-tilgang</h1>
+			<OrgtilgangForm />
 			<OrgOversikt />
 		</>
 	)

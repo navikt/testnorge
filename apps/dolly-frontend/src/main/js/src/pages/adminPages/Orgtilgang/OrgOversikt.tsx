@@ -4,6 +4,7 @@ import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { formatDate } from '@/utils/DataFormatter'
 import Loading from '@/components/ui/loading/Loading'
 import React from 'react'
+import { DeleteOrganisasjon } from '@/pages/adminPages/Orgtilgang/DeleteOrganisasjon'
 
 export const OrgOversikt = () => {
 	const { organisasjonTilgang, loading, error } = useOrganisasjonTilgang()
@@ -40,8 +41,9 @@ export const OrgOversikt = () => {
 											<Table.DataCell>{organisasjonsform}</Table.DataCell>
 											<Table.DataCell>{miljoe}</Table.DataCell>
 											<Table.DataCell>{formatDate(gyldigTil)}</Table.DataCell>
-											<Table.DataCell>Button</Table.DataCell>
-											{/*//TODO Add button*/}
+											<Table.DataCell>
+												<DeleteOrganisasjon orgNr={organisasjonsnummer} />
+											</Table.DataCell>
 										</Table.Row>
 									)
 								},
