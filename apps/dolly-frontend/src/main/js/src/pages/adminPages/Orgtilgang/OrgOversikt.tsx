@@ -39,7 +39,11 @@ export const OrgOversikt = ({ organisasjonTilgang, loading, error, mutate }) => 
 											<Table.DataCell>{miljoe}</Table.DataCell>
 											<Table.DataCell>{formatDate(gyldigTil)}</Table.DataCell>
 											<Table.DataCell>
-												<DeleteOrganisasjon orgNr={organisasjonsnummer} mutate={mutate} />
+												<DeleteOrganisasjon
+													orgNr={organisasjonsnummer}
+													navn={navn}
+													mutate={mutate}
+												/>
 											</Table.DataCell>
 										</Table.Row>
 									)
