@@ -1,6 +1,6 @@
 # Levende arbeidsforhold-service
 
-Fyll inn
+Fyll inn:
 
 ## Swagger
 
