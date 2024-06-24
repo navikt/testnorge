@@ -46,26 +46,13 @@ export const useOrganisasjonMiljoe = () => {
 }
 
 export const useOrganisasjonTilgang = () => {
-	const { data, isLoading, error } = useSWR<OrganisasjonTilgang, Error>(
+	const { data, isLoading, error, mutate } = useSWR<OrganisasjonTilgang, Error>(
 		organisasjonTilgangUrl,
 		fetcher,
 	)
 
 	return {
 		organisasjonTilgang: data,
-		loading: isLoading,
-		error: error,
-	}
-}
-
-export const useSetOrganisasjonTilgang = (request) => {
-	const { data, isLoading, error, mutate } = useSWR<ResponseIdenter, Error>(
-		request ? [organisasjonTilgangUrl, request] : null,
-		([url, headers]) => Request.post(url, headers),
-	)
-
-	return {
-		result: data?.data,
 		loading: isLoading,
 		error: error,
 		mutate: mutate,

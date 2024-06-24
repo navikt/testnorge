@@ -1,14 +1,11 @@
 import { Alert, Box, Table } from '@navikt/ds-react'
-import { useOrganisasjonTilgang } from '@/utils/hooks/useOrganisasjonTilgang'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { formatDate } from '@/utils/DataFormatter'
 import Loading from '@/components/ui/loading/Loading'
 import React from 'react'
 import { DeleteOrganisasjon } from '@/pages/adminPages/Orgtilgang/DeleteOrganisasjon'
 
-export const OrgOversikt = () => {
-	const { organisasjonTilgang, loading, error } = useOrganisasjonTilgang()
-
+export const OrgOversikt = ({ organisasjonTilgang, loading, error, mutate }) => {
 	return (
 		<Box background="surface-default" padding="4">
 			<h2 style={{ marginTop: '5px' }}>Organisasjoner som har tilgang til Dolly</h2>
@@ -42,7 +39,7 @@ export const OrgOversikt = () => {
 											<Table.DataCell>{miljoe}</Table.DataCell>
 											<Table.DataCell>{formatDate(gyldigTil)}</Table.DataCell>
 											<Table.DataCell>
-												<DeleteOrganisasjon orgNr={organisasjonsnummer} />
+												<DeleteOrganisasjon orgNr={organisasjonsnummer} mutate={mutate} />
 											</Table.DataCell>
 										</Table.Row>
 									)
