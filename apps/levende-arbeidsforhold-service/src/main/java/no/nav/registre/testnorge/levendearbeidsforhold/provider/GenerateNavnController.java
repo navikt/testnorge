@@ -26,7 +26,6 @@ public class GenerateNavnController {
     public List<NavnDTO> generateName(
             @RequestParam(required = false, defaultValue = "10") Integer antall,
             @RequestParam(required = false) Long seed) {
-
         return generateNavnService.getRandomNavn(seed, antall);
     }
 
