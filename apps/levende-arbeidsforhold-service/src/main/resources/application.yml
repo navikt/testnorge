@@ -4,7 +4,7 @@ spring:
   main:
     banner-mode: off
   application:
-    name: levende-arbeidsforhold-service
+    name: testnav-levende-arbeidsforhold-service
     version: application.version.todo #TODO Finn ut hvordan denne kan settes fra Gradle
     description: App for å hente PDL personer.
   security:
