@@ -1,8 +1,6 @@
 package no.nav.dolly.mapper.strategy;
 
-import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
@@ -19,7 +17,6 @@ import static no.nav.dolly.util.CurrentAuthentication.getAuthUser;
 
 @Component
 @RequiredArgsConstructor
-@Slf4j
 public class BrukerMappingStrategy implements MappingStrategy {
 
     private final GetUserInfo getUserInfo;
@@ -64,7 +61,6 @@ public class BrukerMappingStrategy implements MappingStrategy {
                     public void mapAtoB(Bruker bruker, RsBruker rsBruker, MappingContext context) {
 
                         var brukerInfo = getAuthUser(getUserInfo);
-                        log.info("Bruker: {}", Json.pretty(brukerInfo));
                         rsBruker.setGrupper(brukerInfo.getGrupper());
                     }
                 })
