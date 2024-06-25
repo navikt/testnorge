@@ -20,6 +20,8 @@ export default () => {
 	}
 
 	const bankidBruker = currentBruker?.brukertype === 'BANKID'
+
+	// const grupper = currentBruker?.grupper
 	const erAdmin = true //TODO: Implementer sjekk for admin
 
 	return (
