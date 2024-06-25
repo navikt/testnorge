@@ -1,18 +1,28 @@
 package no.nav.dolly.mapper.strategy;
 
+import io.swagger.v3.core.util.Json;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.resultset.entity.bruker.RsBruker;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerAndGruppeId;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUtenFavoritter;
 import no.nav.dolly.mapper.MappingStrategy;
+import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
 import org.springframework.stereotype.Component;
 
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.util.CurrentAuthentication.getAuthUser;
 
 @Component
+@RequiredArgsConstructor
+@Slf4j
 public class BrukerMappingStrategy implements MappingStrategy {
+
+    private final GetUserInfo getUserInfo;
 
     @Override
     public void register(MapperFactory factory) {
@@ -47,5 +57,19 @@ public class BrukerMappingStrategy implements MappingStrategy {
                 })
                 .byDefault()
                 .register();
+
+        factory.classMap(Bruker.class, RsBruker.class)
+                .customize(new CustomMapper<>() {
+                    @Override
+                    public void mapAtoB(Bruker bruker, RsBruker rsBruker, MappingContext context) {
+
+                        var brukerInfo = getAuthUser(getUserInfo);
+                        log.info("Bruker: {}", Json.pretty(brukerInfo));
+                        rsBruker.setGrupper(brukerInfo.getGrupper());
+                    }
+                })
+                .byDefault()
+                .register();
     }
+
 }
