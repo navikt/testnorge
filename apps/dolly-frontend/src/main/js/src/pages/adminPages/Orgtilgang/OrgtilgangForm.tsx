@@ -8,9 +8,6 @@ import { arrayToString } from '@/utils/DataFormatter'
 import { useState } from 'react'
 import { useBoolean } from 'react-use'
 import Loading from '@/components/ui/loading/Loading'
-import * as Yup from 'yup'
-import { requiredString } from '@/utils/YupValidations'
-import { yupResolver } from '@hookform/resolvers/yup'
 
 type Inputs = {
 	organisasjonsnummer: string
@@ -18,12 +15,15 @@ type Inputs = {
 	miljoe: string
 }
 
-//TODO: Er det mulig å få denne til å funke?
-const validation = Yup.object({
-	organisasjonsnummer: Yup.string().required('Organisasjonsnummer er påkrevd'),
-	gyldigTil: Yup.string().required('Dato er påkrevd'),
-	miljoe: Yup.array().min(1, 'Velg minst ett miljø').required(),
-})
+type Response = {
+	data: {
+		organisasjonsnummer: string
+		gyldigTil: string
+		miljoe: string
+		navn: string
+		organisasjonsform: string
+	}
+}
 
 const initialValues = {
 	organisasjonsnummer: '',
@@ -36,37 +36,35 @@ const miljoer = [
 	{ label: 'Q2', value: 'q2' },
 ]
 
-export const OrgtilgangForm = ({ mutate }) => {
+export const OrgtilgangForm = ({ mutate }: any) => {
 	const formMethods = useForm({
 		mode: 'onChange',
 		defaultValues: initialValues,
-		resolver: yupResolver(validation),
 	})
-	const { trigger, watch, handleSubmit, reset, control, setValue } = formMethods
+	const { handleSubmit, reset, control } = formMethods
 
 	const [isLoading, setIsLoading] = useBoolean(false)
 	const [okStatus, setOkStatus] = useState('')
 	const [error, setError] = useState('')
 
-	const onSubmit = async (values) => {
-		trigger()
+	const onSubmit = async (values: Inputs) => {
 		setIsLoading(true)
 		setOkStatus('')
 		setError('')
 		reset()
 		const formattedValues = { ...values, miljoe: arrayToString(values.miljoe).replaceAll(' ', '') }
 		await OrganisasjonTilgangService.postOrganisasjon(formattedValues)
-			.then((response) => {
+			.then((response: Response) => {
 				setIsLoading(false)
 				setOkStatus(`Tilgang opprettet for ${response?.data?.navn}`)
 				mutate()
 			})
-			.catch((error) => {
+			.catch((error: any) => {
 				setIsLoading(false)
 				setError(`Feil: ${error?.message}`)
 			})
 	}
-	console.log('watch(): ', watch()) //TODO - SLETT MEG
+
 	return (
 		<Box background="surface-default" padding="4" style={{ marginBottom: '15px' }}>
 			<h2 style={{ marginTop: '5px' }}>Opprett tilgang</h2>
@@ -88,12 +86,7 @@ export const OrgtilgangForm = ({ mutate }) => {
 						<FormDatepicker name={'gyldigTil'} label={'Gyldig til'} />
 					</div>
 					<div className="flexbox--align-center">
-						<Button
-							type="submit"
-							variant="primary"
-							style={{ marginRight: '15px' }}
-							onClick={() => trigger()}
-						>
+						<Button type="submit" variant="primary" style={{ marginRight: '15px' }}>
 							Opprett
 						</Button>
 						{isLoading && <Loading label="Oppretter tilgang ..." />}
