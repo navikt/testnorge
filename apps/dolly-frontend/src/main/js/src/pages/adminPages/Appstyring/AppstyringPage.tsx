@@ -26,7 +26,7 @@ export default () => {
 	return (
 		<>
 			<h1>App-styring</h1>
-			<Alert variant={'info'} style={{ marginBottom: '10px' }}>
+			<Alert variant={'info'} style={{ marginBottom: '15px' }}>
 				Denne siden er under utvikling.
 			</Alert>
 			<AppstyringTable data={dataMock} />
