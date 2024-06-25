@@ -130,15 +130,16 @@ export const ForeldreansvarForm = ({
 
 	return (
 		<div className="flexbox--flex-wrap foreldre-form">
-			<FormSelect
-				name={`${path}.ansvar`}
-				label="Hvem har ansvaret"
-				options={Options('foreldreansvar')}
-				onChange={(target: Target) => handleChangeAnsvar(target, path)}
-			/>
+			{!opts?.personFoerLeggTil && (
+				<FormSelect
+					name={`${path}.ansvar`}
+					label="Hvem har ansvaret"
+					options={Options('foreldreansvar')}
+					onChange={(target: Target) => handleChangeAnsvar(target, path)}
+				/>
+			)}
 			<FormDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig fra og med" />
 			<FormDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig til og med" />
-
 			{ansvar === 'ANDRE' && (
 				<FormSelect
 					name={`${path}.typeAnsvarlig`}
@@ -161,18 +162,23 @@ export const ForeldreansvarForm = ({
 					eksisterendeNyPerson={eksisterendeNyPerson}
 				/>
 			)}
-
+			{opts?.personFoerLeggTil && (
+				<PdlEksisterendePerson
+					eksisterendePersonPath={`${path}.ansvarssubjekt`}
+					label="Ansvarssubjekt (barn)"
+					formMethods={formMethods}
+					eksisterendeNyPerson={eksisterendeNyPerson}
+				/>
+			)}
 			{getTypeAnsvarlig() === TypeAnsvarlig.UTEN_ID && (
 				<PdlPersonUtenIdentifikator
 					formMethods={formMethods}
 					path={`${path}.ansvarligUtenIdentifikator`}
 				/>
 			)}
-
 			{getTypeAnsvarlig() === TypeAnsvarlig.NY && (
 				<PdlNyPerson nyPersonPath={`${path}.nyAnsvarlig`} formMethods={formMethods} />
 			)}
-
 			<AvansertForm path={path} kanVelgeMaster={false} />
 		</div>
 	)
@@ -212,7 +218,7 @@ export const Foreldreansvar = ({ formMethods }: ForeldreansvarForm) => {
 
 	return (
 		<>
-			{!leggTilPaaGruppe && !harBarn() && (
+			{!leggTilPaaGruppe && !harBarn() && !personFoerLeggTil && (
 				<StyledAlert variant={'warning'} size={'small'}>
 					For å sette foreldreansvar må personen også ha et barn. Det kan du legge til ved å huke av
 					for Har barn/foreldre under Familierelasjoner på forrige side, og sette en relasjon av
