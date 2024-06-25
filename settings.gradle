@@ -125,7 +125,7 @@ includeBuild './apps/udi-stub'
 includeBuild './apps/varslinger-service'
 includeBuild './apps/dollystatus'
 includeBuild './apps/skattekort-service'
-includeBuild "./apps/levende-arbeidsforhold-service"
+includeBuild './apps/levende-arbeidsforhold-service'
 
 includeBuild './xsd/arbeidsforhold-xsd'
 

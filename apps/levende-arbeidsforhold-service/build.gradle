@@ -38,6 +38,10 @@ dependencyManagement {
 repositories {
     mavenCentral()
     mavenLocal()
+    maven {
+        url = uri('https://packages.confluent.io/maven/')
+    }
+
 }
 dependencies {
     implementation "no.nav.testnav.libs:kafka-config"
@@ -71,7 +75,7 @@ dependencies {
 
     implementation 'no.nav.testnav.libs:kafka-config'
     implementation 'org.apache.kafka:kafka-clients:3.7.0'
-//    implementation 'io.confluent:kafka-avro-serializer:7.5.1'
+    implementation 'io.confluent:kafka-avro-serializer:7.6.0'
     implementation 'org.springframework.kafka:spring-kafka'
 
     implementation 'no.nav.testnav.libs:avro-schema'
