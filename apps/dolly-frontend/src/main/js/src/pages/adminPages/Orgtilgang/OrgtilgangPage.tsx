@@ -12,8 +12,6 @@ export default () => {
 
 	const { organisasjonTilgang, loading, error, mutate } = useOrganisasjonTilgang()
 
-	//TODO: Slett organisasjon-tilgang-frontend?
-
 	return (
 		<>
 			<h1>Organisasjon-tilgang</h1>

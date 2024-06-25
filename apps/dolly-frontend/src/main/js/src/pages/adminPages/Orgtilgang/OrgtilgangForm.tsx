@@ -16,13 +16,15 @@ type Inputs = {
 }
 
 type Response = {
-	data: {
-		organisasjonsnummer: string
-		gyldigTil: string
-		miljoe: string
-		navn: string
-		organisasjonsform: string
-	}
+	data: OrgtilgangTypes
+}
+
+export type OrgtilgangTypes = {
+	organisasjonsnummer: string
+	gyldigTil: string
+	miljoe: string
+	navn: string
+	organisasjonsform: string
 }
 
 const initialValues = {

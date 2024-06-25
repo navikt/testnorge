@@ -4,8 +4,16 @@ import { formatDate } from '@/utils/DataFormatter'
 import Loading from '@/components/ui/loading/Loading'
 import React from 'react'
 import { DeleteOrganisasjon } from '@/pages/adminPages/Orgtilgang/DeleteOrganisasjon'
+import { OrgtilgangTypes } from '@/pages/adminPages/Orgtilgang/OrgtilgangForm'
 
-export const OrgOversikt = ({ organisasjonTilgang, loading, error, mutate }) => {
+type OversiktTypes = {
+	organisasjonTilgang: Array<OrgtilgangTypes>
+	loading: boolean
+	error: any
+	mutate: Function
+}
+
+export const OrgOversikt = ({ organisasjonTilgang, loading, error, mutate }: OversiktTypes) => {
 	return (
 		<Box background="surface-default" padding="4">
 			<h2 style={{ marginTop: '5px' }}>Organisasjoner som har tilgang til Dolly</h2>

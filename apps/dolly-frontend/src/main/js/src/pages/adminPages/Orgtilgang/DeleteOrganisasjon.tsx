@@ -7,7 +7,13 @@ import DollyModal from '@/components/ui/modal/DollyModal'
 import Icon from '@/components/ui/icon/Icon'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 
-export const DeleteOrganisasjon = ({ orgNr, navn, mutate }) => {
+type DeleteTypes = {
+	orgNr: string
+	navn: string
+	mutate: Function
+}
+
+export const DeleteOrganisasjon = ({ orgNr, navn, mutate }: DeleteTypes) => {
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 
 	const slettOrg = () => {
