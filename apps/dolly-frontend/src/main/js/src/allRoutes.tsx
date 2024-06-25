@@ -15,6 +15,7 @@ const Endringsmelding = lazy(() => import('@/pages/endringsmelding/Endringsmeldi
 const DollySoekPage = lazy(() => import('@/pages/dollySoek/DollySoekPage'))
 const TenorSoekPage = lazy(() => import('@/pages/tenorSoek/TenorSoekPage'))
 const OrgtilgangPage = lazy(() => import('@/pages/adminPages/Orgtilgang/OrgtilgangPage'))
+const AppstyringPage = lazy(() => import('@/pages/adminPages/Appstyring/AppstyringPage'))
 
 const GruppeBreadcrumb = (props) => <span>Gruppe #{props.match?.params?.gruppeId}</span>
 
@@ -74,7 +75,7 @@ const allRoutes = [
 	{
 		path: '/admin/appstyring',
 		breadcrumb: 'App-styring',
-		// element
+		element: () => <AppstyringPage />,
 	},
 ]
 
