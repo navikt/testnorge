@@ -8,6 +8,9 @@ import { arrayToString } from '@/utils/DataFormatter'
 import { useState } from 'react'
 import { useBoolean } from 'react-use'
 import Loading from '@/components/ui/loading/Loading'
+import * as Yup from 'yup'
+import { requiredString } from '@/utils/YupValidations'
+import { yupResolver } from '@hookform/resolvers/yup'
 
 type Inputs = {
 	organisasjonsnummer: string
@@ -15,9 +18,16 @@ type Inputs = {
 	miljoe: string
 }
 
+//TODO: Er det mulig å få denne til å funke?
+const validation = Yup.object({
+	organisasjonsnummer: Yup.string().required('Organisasjonsnummer er påkrevd'),
+	gyldigTil: Yup.string().required('Dato er påkrevd'),
+	miljoe: Yup.array().min(1, 'Velg minst ett miljø').required(),
+})
+
 const initialValues = {
-	organisasjonsnummer: null,
-	gyldigTil: null,
+	organisasjonsnummer: '',
+	gyldigTil: '',
 	miljoe: [],
 }
 
@@ -30,7 +40,7 @@ export const OrgtilgangForm = ({ mutate }) => {
 	const formMethods = useForm({
 		mode: 'onChange',
 		defaultValues: initialValues,
-		// resolver: yupResolver(validation()),
+		resolver: yupResolver(validation),
 	})
 	const { trigger, watch, handleSubmit, reset, control, setValue } = formMethods
 
@@ -39,6 +49,7 @@ export const OrgtilgangForm = ({ mutate }) => {
 	const [error, setError] = useState('')
 
 	const onSubmit = async (values) => {
+		trigger()
 		setIsLoading(true)
 		setOkStatus('')
 		setError('')
@@ -55,7 +66,7 @@ export const OrgtilgangForm = ({ mutate }) => {
 				setError(`Feil: ${error?.message}`)
 			})
 	}
-
+	console.log('watch(): ', watch()) //TODO - SLETT MEG
 	return (
 		<Box background="surface-default" padding="4" style={{ marginBottom: '15px' }}>
 			<h2 style={{ marginTop: '5px' }}>Opprett tilgang</h2>
@@ -77,7 +88,12 @@ export const OrgtilgangForm = ({ mutate }) => {
 						<FormDatepicker name={'gyldigTil'} label={'Gyldig til'} />
 					</div>
 					<div className="flexbox--align-center">
-						<Button type="submit" variant="primary" style={{ marginRight: '15px' }}>
+						<Button
+							type="submit"
+							variant="primary"
+							style={{ marginRight: '15px' }}
+							onClick={() => trigger()}
+						>
 							Opprett
 						</Button>
 						{isLoading && <Loading label="Oppretter tilgang ..." />}
