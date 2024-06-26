@@ -41,8 +41,8 @@ repositories {
     maven {
         url = uri('https://packages.confluent.io/maven/')
     }
-
 }
+
 dependencies {
     implementation "no.nav.testnav.libs:kafka-config"
     implementation 'no.nav.testnav.libs:security-core'

@@ -13,20 +13,8 @@ spec:
       rules:
         - application: team-dolly-lokal-app
           cluster: dev-gcp
-        - application: testnav-organisasjon-forvalter
-          cluster: dev-gcp
-        - application: testnav-pdl-forvalter
-          cluster: dev-gcp
-        - application: testnav-pdl-forvalter-dev
-          cluster: dev-gcp
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
-        - application: dolly-backend
-          cluster: dev-gcp
-        - application: dolly-frontend
-          cluster: dev-gcp
-  tokenx:
-    enabled: true
   azure:
     application:
       allowAllUsers: true
@@ -54,5 +42,7 @@ spec:
       memory: 1024Mi
     limits:
       memory: 2048Mi
+  kafka:
+    pool: nav-dev
   ingresses:
     - "https://levende-arbeidsforhold-service.intern.dev.nav.no"
