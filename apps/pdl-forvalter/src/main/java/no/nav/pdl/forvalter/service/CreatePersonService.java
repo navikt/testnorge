@@ -14,7 +14,7 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.FoedselsdatoDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregistermetadataDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.KjoennDTO;
-import no.nav.testnav.libs.data.pdlforvalter.v1.NAVsPersonIdentifikatorDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.NavPersonIdentifikatorDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.NavnDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonRequestDTO;
@@ -52,7 +52,7 @@ public class CreatePersonService {
     private final NavnService navnService;
     private final FolkeregisterPersonstatusService folkeregisterPersonstatusService;
     private final AdressebeskyttelseService adressebeskyttelseService;
-    private final NAVsPersonIdentifikatorService navsPersonIdentifikatorService;
+    private final NavPersonIdentifikatorService navsPersonIdentifikatorService;
 
     private static PersonDTO buildPerson(PersonRequestDTO request) {
 
@@ -89,8 +89,8 @@ public class CreatePersonService {
                                 .folkeregistermetadata(new FolkeregistermetadataDTO())
                                 .build()) :
                         emptyList())
-                .navsPersonIdentifikator(request.getIdenttype() == NPID ?
-                        List.of(new NAVsPersonIdentifikatorDTO()) : null)
+                .navPersonIdentifikator(request.getIdenttype() == NPID ?
+                        List.of(new NavPersonIdentifikatorDTO()) : null)
                 .build();
     }
 

@@ -11,7 +11,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class NAVsPersonIdentifikatorDTO extends DbVersjonDTO {
+public class NavPersonIdentifikatorDTO extends DbVersjonDTO {
 
     private String identifikator;
 }

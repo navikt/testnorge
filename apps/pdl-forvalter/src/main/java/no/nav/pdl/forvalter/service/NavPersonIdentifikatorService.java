@@ -1,6 +1,6 @@
 package no.nav.pdl.forvalter.service;
 
-import no.nav.testnav.libs.data.pdlforvalter.v1.NAVsPersonIdentifikatorDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.NavPersonIdentifikatorDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
 import org.springframework.stereotype.Service;
 
@@ -11,11 +11,11 @@ import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Service
-public class NAVsPersonIdentifikatorService implements Validation<NAVsPersonIdentifikatorDTO> {
+public class NavPersonIdentifikatorService implements Validation<NavPersonIdentifikatorDTO> {
 
-    public List<NAVsPersonIdentifikatorDTO> convert(PersonDTO person) {
+    public List<NavPersonIdentifikatorDTO> convert(PersonDTO person) {
 
-        for (var type : person.getNAVsPersonIdentifikator()) {
+        for (var type : person.getNavPersonIdentifikator()) {
             if (isTrue(type.getIsNew())) {
 
                 type.setIdentifikator(person.getIdent());
@@ -24,11 +24,11 @@ public class NAVsPersonIdentifikatorService implements Validation<NAVsPersonIden
             }
         }
 
-        return person.getNAVsPersonIdentifikator();
+        return person.getNavPersonIdentifikator();
     }
 
     @Override
-    public void validate(NAVsPersonIdentifikatorDTO artifact) {
+    public void validate(NavPersonIdentifikatorDTO artifact) {
 
         // No validation
     }
