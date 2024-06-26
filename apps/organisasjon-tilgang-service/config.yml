@@ -16,6 +16,9 @@ spec:
       allowAllUsers: true
       enabled: true
       tenant: nav.no
+      claims:
+        groups:
+          - id: 9c7efec1-1599-4216-a67e-6fd53a6a951c
   accessPolicy:
     inbound:
       rules:
