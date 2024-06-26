@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - libs/data-transfer-objects
+      - libs/data-transfer-search-objects
       - libs/database
       - libs/reactive-core
       - libs/security-core
