@@ -352,7 +352,15 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
 
     public void handleBarn(ForeldreansvarDTO foreldreansvar, PersonDTO barn) {
 
-        if (foreldreansvar.getAnsvar() == Ansvar.MOR || foreldreansvar.getAnsvar() == Ansvar.MEDMOR) {
+        if (isNotBlank(foreldreansvar.getAnsvarlig())) {
+
+            foreldreansvar.setEksisterendePerson(isTrue(foreldreansvar.getEksisterendePerson()) ||
+                    foreldreansvar.getAnsvar() == Ansvar.ANDRE ||
+                    foreldreansvar.getAnsvar() == Ansvar.UKJENT);
+            relasjonService.setRelasjon(barn.getIdent(), foreldreansvar.getAnsvarlig(), FORELDREANSVAR_FORELDER);
+            relasjonService.setRelasjon(foreldreansvar.getAnsvarlig(), barn.getIdent(), FORELDREANSVAR_BARN);
+
+        } else if (foreldreansvar.getAnsvar() == Ansvar.MOR || foreldreansvar.getAnsvar() == Ansvar.MEDMOR) {
 
             setRelasjoner(foreldreansvar, barn, MOR, MEDMOR);
 

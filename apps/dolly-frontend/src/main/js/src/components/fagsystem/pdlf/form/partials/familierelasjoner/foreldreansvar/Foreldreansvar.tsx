@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { useContext, useEffect } from 'react'
 import {
-	initialForeldreansvar,
+	getInitialForeldreansvar,
 	initialPdlBiPerson,
 	initialPdlPerson,
 } from '@/components/fagsystem/pdlf/form/initialValues'
@@ -53,6 +53,13 @@ export const ForeldreansvarForm = ({
 	const ansvarligUtenIdentifikator = 'ansvarligUtenIdentifikator'
 	const nyAnsvarlig = 'nyAnsvarlig'
 	const typeAnsvarlig = 'typeAnsvarlig'
+
+	const foedselsaar =
+		opts?.personFoerLeggTil?.pdl?.hentPerson?.foedselsdato?.[0].foedselsaar ||
+		opts?.personFoerLeggTil?.pdl?.hentPerson?.foedsel?.[0].foedselsaar
+
+	const kanHaForeldreansvar = !foedselsaar || new Date().getFullYear() - foedselsaar > 17
+
 	const handleChangeTypeAnsvarlig = (target: Target, path: string) => {
 		const foreldreansvar = formMethods.watch(path)
 		const foreldreansvarClone = _.cloneDeep(foreldreansvar)
@@ -130,17 +137,15 @@ export const ForeldreansvarForm = ({
 
 	return (
 		<div className="flexbox--flex-wrap foreldre-form">
-			{!opts?.personFoerLeggTil && (
-				<FormSelect
-					name={`${path}.ansvar`}
-					label="Hvem har ansvaret"
-					options={Options('foreldreansvar')}
-					onChange={(target: Target) => handleChangeAnsvar(target, path)}
-				/>
-			)}
+			<FormSelect
+				name={`${path}.ansvar`}
+				label="Hvem har ansvaret"
+				options={Options('foreldreansvar')}
+				onChange={(target: Target) => handleChangeAnsvar(target, path)}
+			/>
 			<FormDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig fra og med" />
 			<FormDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig til og med" />
-			{ansvar === 'ANDRE' && (
+			{ansvar === 'ANDRE' && !opts?.personFoerLeggTil && (
 				<FormSelect
 					name={`${path}.typeAnsvarlig`}
 					label="Type ansvarlig"
@@ -154,7 +159,7 @@ export const ForeldreansvarForm = ({
 				/>
 			)}
 
-			{getTypeAnsvarlig() === TypeAnsvarlig.EKSISTERENDE && (
+			{(getTypeAnsvarlig() === TypeAnsvarlig.EKSISTERENDE || !kanHaForeldreansvar) && (
 				<PdlEksisterendePerson
 					eksisterendePersonPath={`${path}.ansvarlig`}
 					label="Ansvarlig"
@@ -162,7 +167,7 @@ export const ForeldreansvarForm = ({
 					eksisterendeNyPerson={eksisterendeNyPerson}
 				/>
 			)}
-			{opts?.personFoerLeggTil && (
+			{kanHaForeldreansvar && opts?.personFoerLeggTil && (
 				<PdlEksisterendePerson
 					eksisterendePersonPath={`${path}.ansvarssubjekt`}
 					label="Ansvarssubjekt (barn)"
@@ -235,7 +240,7 @@ export const Foreldreansvar = ({ formMethods }: ForeldreansvarForm) => {
 			<FormDollyFieldArray
 				name="pdldata.person.foreldreansvar"
 				header={'Foreldreansvar'}
-				newEntry={initialForeldreansvar}
+				newEntry={getInitialForeldreansvar}
 				canBeEmpty={false}
 			>
 				{(path: string, _idx: number) => {

@@ -31,6 +31,8 @@ public class ForeldreansvarDTO extends DbVersjonDTO {
     private LocalDateTime gyldigFraOgMed;
     @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second, pattern = "uuuu-MM-dd'T'HH:mm:ss")
     private LocalDateTime gyldigTilOgMed;
+    private Boolean harForeldreansvar;
+    private Boolean erAnsvarssubjekt;
 
     private Boolean eksisterendePerson;
 

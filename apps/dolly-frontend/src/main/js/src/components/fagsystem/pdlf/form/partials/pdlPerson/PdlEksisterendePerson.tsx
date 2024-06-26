@@ -115,7 +115,6 @@ export const PdlEksisterendePerson = ({
 		alder: parseInt(formMethods.getValues()?.pdldata?.opprettNyPerson?.alder),
 	}
 
-	console.log('label', label)
 	const filterOptions = (person: Option) => {
 		if (person.doedsfall) {
 			return false

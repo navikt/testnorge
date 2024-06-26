@@ -2,9 +2,9 @@ import Panel from '@/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
 import {
 	getInitialBarn,
+	getInitialForeldreansvar,
 	getInitialSivilstand,
 	initialDoedfoedtBarn,
-	initialForeldreansvar,
 } from '@/components/fagsystem/pdlf/form/initialValues'
 import { harValgtAttributt } from '@/components/ui/form/formUtils'
 import { relasjonerAttributter } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/Familierelasjoner'
@@ -31,8 +31,15 @@ export const FamilierelasjonPanel = ({ stateModifier, formValues }) => {
 	const tekstLeggTilPaaGruppe =
 		'Støttes ikke for "legg til på alle" i grupper som inneholder personer fra Test-Norge'
 
+	const foedselsaar =
+		opts?.personFoerLeggTil?.pdl?.hentPerson?.foedselsdato?.[0].foedselsaar ||
+		opts?.personFoerLeggTil?.pdl?.hentPerson?.foedsel?.[0].foedselsaar
+
+	const kanHaForeldreansvar = !foedselsaar || new Date().getFullYear() - foedselsaar > 17
 	const getIgnoreKeys = () => {
 		let ignoreKeys = []
+
+		ignoreKeys.push(!kanHaForeldreansvar ? 'foreldreansvar' : 'ansvarssubjekt')
 		if (testNorgePerson || npidPerson) {
 			ignoreKeys.push('foreldreansvar', 'doedfoedtBarn')
 		}
@@ -40,7 +47,13 @@ export const FamilierelasjonPanel = ({ stateModifier, formValues }) => {
 			(ukjentGruppe && (testNorgePerson || npidPerson)) ||
 			(leggTilPaaGruppe && harTestnorgeIdenter)
 		) {
-			ignoreKeys.push('sivilstand', 'barnForeldre', 'foreldreansvar', 'doedfoedtBarn')
+			ignoreKeys.push(
+				'sivilstand',
+				'barnForeldre',
+				'foreldreansvar',
+				'ansvarssubjekt',
+				'doedfoedtBarn',
+			)
 		}
 		return ignoreKeys
 	}
@@ -76,16 +89,30 @@ export const FamilierelasjonPanel = ({ stateModifier, formValues }) => {
 						''
 					}
 				/>
-				<Attributt
-					attr={sm.attrs.foreldreansvar}
-					disabled={npidPerson || (leggTilPaaGruppe && harTestnorgeIdenter)}
-					title={
-						(npidPerson && 'Ikke tilgjengelig for personer med identtype NPID') ||
-						(leggTilPaaGruppe && harTestnorgeIdenter && tekstLeggTilPaaGruppe) ||
-						''
-					}
-					vis={!testNorgePerson}
-				/>
+				{kanHaForeldreansvar && (
+					<Attributt
+						attr={sm.attrs.foreldreansvar}
+						disabled={npidPerson || (leggTilPaaGruppe && harTestnorgeIdenter)}
+						title={
+							(npidPerson && 'Ikke tilgjengelig for personer med identtype NPID') ||
+							(leggTilPaaGruppe && harTestnorgeIdenter && tekstLeggTilPaaGruppe) ||
+							''
+						}
+						vis={!testNorgePerson}
+					/>
+				)}
+				{!kanHaForeldreansvar && (
+					<Attributt
+						attr={sm.attrs.ansvarssubjekt}
+						disabled={npidPerson || (leggTilPaaGruppe && harTestnorgeIdenter)}
+						title={
+							(npidPerson && 'Ikke tilgjengelig for personer med identtype NPID') ||
+							(leggTilPaaGruppe && harTestnorgeIdenter && tekstLeggTilPaaGruppe) ||
+							''
+						}
+						vis={!testNorgePerson}
+					/>
+				)}
 			</AttributtKategori>
 			<AttributtKategori title="Dødfødt barn" attr={sm.attrs}>
 				<Attributt
@@ -106,8 +133,14 @@ export const FamilierelasjonPanel = ({ stateModifier, formValues }) => {
 FamilierelasjonPanel.heading = 'Familierelasjoner'
 
 FamilierelasjonPanel.initialValues = ({ set, opts, del, has }: any) => {
-	const { identtype, identMaster } = opts
+	const { identtype, identMaster, personFoerLeggTil } = opts
 	const initialMaster = identMaster === 'PDL' || identtype === 'NPID' ? 'PDL' : 'FREG'
+
+	const foedselsaar =
+		personFoerLeggTil?.pdl?.hentPerson?.foedselsdato?.[0].foedselsaar ||
+		personFoerLeggTil?.pdl?.hentPerson?.foedsel?.[0].foedselsaar
+
+	const kanHaForeldreansvar = !foedselsaar || new Date().getFullYear() - foedselsaar > 17
 
 	return {
 		sivilstand: {
@@ -132,9 +165,19 @@ FamilierelasjonPanel.initialValues = ({ set, opts, del, has }: any) => {
 		},
 		foreldreansvar: {
 			label: 'Har foreldreansvar',
-			checked: has('pdldata.person.foreldreansvar'),
+			checked: has('pdldata.person.foreldreansvar[0].harForeldreansvar'),
 			add() {
-				set('pdldata.person.foreldreansvar', [initialForeldreansvar])
+				set('pdldata.person.foreldreansvar', [getInitialForeldreansvar(kanHaForeldreansvar)])
+			},
+			remove() {
+				del('pdldata.person.foreldreansvar')
+			},
+		},
+		ansvarssubjekt: {
+			label: 'Er ansvarssubjekt (foreldreansvar)',
+			checked: has('pdldata.person.foreldreansvar[0].erAnsvarssubjekt'),
+			add() {
+				set('pdldata.person.foreldreansvar', [getInitialForeldreansvar(kanHaForeldreansvar)])
 			},
 			remove() {
 				del('pdldata.person.foreldreansvar')
