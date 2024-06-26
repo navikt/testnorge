@@ -89,30 +89,16 @@ export const FamilierelasjonPanel = ({ stateModifier, formValues }) => {
 						''
 					}
 				/>
-				{kanHaForeldreansvar && (
-					<Attributt
-						attr={sm.attrs.foreldreansvar}
-						disabled={npidPerson || (leggTilPaaGruppe && harTestnorgeIdenter)}
-						title={
-							(npidPerson && 'Ikke tilgjengelig for personer med identtype NPID') ||
-							(leggTilPaaGruppe && harTestnorgeIdenter && tekstLeggTilPaaGruppe) ||
-							''
-						}
-						vis={!testNorgePerson}
-					/>
-				)}
-				{!kanHaForeldreansvar && (
-					<Attributt
-						attr={sm.attrs.ansvarssubjekt}
-						disabled={npidPerson || (leggTilPaaGruppe && harTestnorgeIdenter)}
-						title={
-							(npidPerson && 'Ikke tilgjengelig for personer med identtype NPID') ||
-							(leggTilPaaGruppe && harTestnorgeIdenter && tekstLeggTilPaaGruppe) ||
-							''
-						}
-						vis={!testNorgePerson}
-					/>
-				)}
+				<Attributt
+					attr={kanHaForeldreansvar ? sm.attrs.foreldreansvar : sm.attrs.ansvarssubjekt}
+					disabled={npidPerson || (leggTilPaaGruppe && harTestnorgeIdenter)}
+					title={
+						(npidPerson && 'Ikke tilgjengelig for personer med identtype NPID') ||
+						(leggTilPaaGruppe && harTestnorgeIdenter && tekstLeggTilPaaGruppe) ||
+						''
+					}
+					vis={!testNorgePerson}
+				/>
 			</AttributtKategori>
 			<AttributtKategori title="Dødfødt barn" attr={sm.attrs}>
 				<Attributt
