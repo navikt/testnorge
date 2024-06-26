@@ -135,6 +135,8 @@ export const PdlEksisterendePerson = ({
 			return person.alder - eksisterendePerson?.alder > 17 && checkForeldre()
 		} else if (label === 'Ansvarlig') {
 			return person.alder > 17 && !harForeldreansvarForValgteBarn(person.foreldreansvar)
+		} else if (label.toUpperCase().includes('ANSVARSSUBJEKT')) {
+			return person.alder < 18
 		}
 		return true
 	}
