@@ -23,6 +23,10 @@ spec:
       allowAllUsers: true
       enabled: true
       tenant: nav.no
+      claims:
+        groups:
+          - id: '2d7f1c0d-5784-4f81-8bb2-8f3a79f8f949' #everyone else
+          - id: '9c7efec1-1599-4216-a67e-6fd53a6a951c' #admins
       replyURLs:
         - https://dolly-frontend-dev.intern.dev.nav.no/login/oauth2/code/aad
         - http://localhost:8020/login/oauth2/code/aad
