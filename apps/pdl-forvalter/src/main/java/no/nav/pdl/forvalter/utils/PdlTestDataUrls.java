@@ -23,6 +23,7 @@ import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_KJOENN;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_KONTAKTADRESSE;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_KONTAKTINFORMASJON_FOR_DODESDBO;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_NAVN;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_NAVSPERSONIDENTIFIKATOR;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_OPPHOLD;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_OPPHOLDSADRESSE;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_OPPRETT_PERSON;
@@ -65,6 +66,7 @@ public class PdlTestDataUrls {
     private static final String PDL_BESTILLING_KONTAKTADRESSE_URL = PDL_BESTILLING_URL + "/kontaktadresse";
     private static final String PDL_BESTILLING_KONTAKTINFORMASJON_FOR_DODESDBO_URL = PDL_BESTILLING_URL + "/kontaktinformasjonfordoedsbo";
     private static final String PDL_BESTILLING_NAVN_URL = PDL_BESTILLING_URL + "/navn";
+    private static final String PDL_NAVSPERSONIDENTIFIKATOR_URL = PDL_BESTILLING_URL + "/navspersonidentifikator";
     private static final String PDL_BESTILLING_OPPHOLDSADRESSE_URL = PDL_BESTILLING_URL + "/oppholdsadresse";
     private static final String PDL_BESTILLING_OPPHOLD_URL = PDL_BESTILLING_URL + "/opphold";
     private static final String PDL_BESTILLING_SIKKERHETSTILTAK_URL = PDL_BESTILLING_URL + "/sikkerhetstiltak";
@@ -96,6 +98,7 @@ public class PdlTestDataUrls {
         bestillingUrl.put(PDL_KONTAKTADRESSE, PDL_BESTILLING_KONTAKTADRESSE_URL);
         bestillingUrl.put(PDL_KONTAKTINFORMASJON_FOR_DODESDBO, PDL_BESTILLING_KONTAKTINFORMASJON_FOR_DODESDBO_URL);
         bestillingUrl.put(PDL_NAVN, PDL_BESTILLING_NAVN_URL);
+        bestillingUrl.put(PDL_NAVSPERSONIDENTIFIKATOR, PDL_NAVSPERSONIDENTIFIKATOR_URL);
         bestillingUrl.put(PDL_OPPHOLD, PDL_BESTILLING_OPPHOLD_URL);
         bestillingUrl.put(PDL_OPPHOLDSADRESSE, PDL_BESTILLING_OPPHOLDSADRESSE_URL);
         bestillingUrl.put(PDL_OPPRETT_PERSON, PDL_BESTILLING_OPPRETT_PERSON_URL);
