@@ -21,20 +21,16 @@ import java.util.stream.Collectors;
 
 
 @Slf4j
-@Profile("dev")
 @Component
 @RequiredArgsConstructor
 public class DoedsfallListener {
     private static final String doedsfallTopic = "pdl.leesah-v1";
 
-    public static void helloworld(){
-        System.out.println("Hello wooorld");
-    }
-
     @EventListener(ContextRefreshedEvent.class)
     public void onApplicationEvent() {
         log.info("Hello World");
     }
+
     @KafkaListener(topics = doedsfallTopic)
     public void getHendelser(List<ConsumerRecord<String, Object>> records) {
         log.info(records.stream().toList().toString());
