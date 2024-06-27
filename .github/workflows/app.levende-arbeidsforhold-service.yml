@@ -3,11 +3,11 @@ name: levende-arbeidsforhold-service
 on:
   push:
     paths:
-      - libs/commands
-      - libs/data-transfer-objects
-      - libs/security-core
-      - libs/servlet-core
-      - libs/servlet-security
+      - libs/commands/**
+      - libs/data-transfer-objects/**
+      - libs/security-core/**
+      - libs/servlet-core/**
+      - libs/servlet-security/**
       - apps/levende-arbeidsforhold-service/**
       - .github/workflows/app.levende-arbeidsforhold-service.yml
 
