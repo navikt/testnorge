@@ -122,6 +122,8 @@ includeBuild './apps/tilbakemelding-api'
 includeBuild './apps/tps-messaging-service'
 includeBuild './apps/udi-stub'
 includeBuild './apps/varslinger-service'
+includeBuild './apps/dollystatus'
+includeBuild './apps/skattekort-service'
 
 includeBuild './xsd/arbeidsforhold-xsd'
 

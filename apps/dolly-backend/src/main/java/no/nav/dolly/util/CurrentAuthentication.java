@@ -8,6 +8,8 @@ import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static java.util.Objects.nonNull;
@@ -22,6 +24,14 @@ public final class CurrentAuthentication {
     public static Bruker getAuthUser(GetUserInfo userInfo) {
         JwtAuthenticationToken token = getToken();
         UserInfo bankidUser = getBankidUser(userInfo);
+        List<String> grupper = new ArrayList<>();
+
+        try {
+            grupper = (List<String>) token.getToken().getClaims().get("groups");
+        } catch (ClassCastException e) {
+            log.warn("Fant ikke grupper i token", e);
+        }
+
         return Bruker.builder()
                 .brukerId(nonNull(bankidUser) ? bankidUser.id() : azureUserId())
                 .brukernavn(nonNull(bankidUser)
@@ -29,6 +39,7 @@ public final class CurrentAuthentication {
                         : Optional.ofNullable((String) token.getToken().getClaims().get("name")).orElse("Systembruker"))
                 .epost((String) token.getToken().getClaims().get("preferred_username"))
                 .brukertype(nonNull(bankidUser) ? BANKID : AZURE)
+                .grupper(Optional.ofNullable(grupper).orElse(new ArrayList<>()))
                 .build();
     }
 

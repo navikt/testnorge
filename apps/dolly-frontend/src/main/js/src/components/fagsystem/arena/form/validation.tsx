@@ -13,9 +13,9 @@ const datoIkkeMellom = (nyDatoFra, gjeldendeDatoFra, gjeldendeDatoTil) => {
 	)
 }
 
-export const getFoedselsdatoer = (values) => {
-	const personFoerLeggTil = values?.personFoerLeggTil
-	const importPersoner = values?.importPersoner
+export const getFoedselsdatoer = (values, context) => {
+	const personFoerLeggTil = context?.personFoerLeggTil || values?.personFoerLeggTil
+	const importPersoner = context?.importPersoner || values?.importPersoner
 
 	if (values?.pdldata?.person?.foedselsdato?.[0]?.foedselsdato) {
 		return [values.pdldata.person.foedselsdato[0].foedselsdato]
@@ -58,7 +58,7 @@ const getFoedtEtter = (alder) => {
 }
 
 // Vedtak/støtte må deles opp i vedtak til fylte 25 år og vedtak etter fylte 25 år.
-const overlapp25aarsdag = (fradato, tildato, values) => {
+const overlapp25aarsdag = (fradato, tildato, values, context) => {
 	let foedtFoer = _.get(values, 'pdldata.opprettNyPerson.foedtFoer')
 	foedtFoer = foedtFoer ? new Date(foedtFoer) : null
 	let foedtEtter = _.get(values, 'pdldata.opprettNyPerson.foedtEtter')
@@ -71,7 +71,7 @@ const overlapp25aarsdag = (fradato, tildato, values) => {
 	}
 
 	if (_.isNil(foedtFoer) && _.isNil(foedtEtter)) {
-		const foedselsdatoer = getFoedselsdatoer(values)
+		const foedselsdatoer = getFoedselsdatoer(values, context)
 		const foedselsaar = _.get(values, 'pdldata.person.foedsel[0].foedselsaar')
 		if (foedselsdatoer?.length > 0) {
 			for (let fdato of foedselsdatoer) {
@@ -114,7 +114,7 @@ const overlapp25aarsdag = (fradato, tildato, values) => {
 }
 
 // Vedtak/støtte må opphøre ved fylt 67.
-const erEtter67aarsdag = (fradato, tildato, values) => {
+const erEtter67aarsdag = (fradato, tildato, values, context) => {
 	let foedtFoer = _.get(values, 'pdldata.opprettNyPerson.foedtFoer')
 	foedtFoer = foedtFoer ? new Date(foedtFoer) : null
 	let foedtEtter = _.get(values, 'pdldata.opprettNyPerson.foedtEtter')
@@ -127,7 +127,7 @@ const erEtter67aarsdag = (fradato, tildato, values) => {
 	}
 
 	if (_.isNil(foedtFoer) && _.isNil(foedtEtter)) {
-		const foedselsdatoer = getFoedselsdatoer(values)
+		const foedselsdatoer = getFoedselsdatoer(values, context)
 		const foedselsaar = _.get(values, 'pdldata.person.foedsel[0].foedselsaar')
 		if (foedselsdatoer?.length > 0) {
 			for (let fdato of foedselsdatoer) {
@@ -186,9 +186,9 @@ const ingenOverlappFraTildato = (tildato, values) => {
 	return true
 }
 
-const invalidDoedsdato = (arenaFom, values) => {
-	const personFoerLeggTil = values.personFoerLeggTil
-	const importPersoner = values.importPersoner
+const invalidDoedsdato = (arenaFom, values, context) => {
+	const personFoerLeggTil = context?.personFoerLeggTil || values?.personFoerLeggTil
+	const importPersoner = context?.importPersoner || values?.importPersoner
 
 	let doedsdato = values?.pdldata?.person?.doedsfall?.[0]?.doedsdato
 	if (_.isNil(doedsdato)) {
@@ -243,7 +243,8 @@ const validFradato = (vedtakType) => {
 			'Ident kan ikke ha tiltak etter dødsfall',
 			(value, testContext) => {
 				const fullForm = testContext.from && testContext.from[testContext.from.length - 1]?.value
-				return !invalidDoedsdato(value, fullForm)
+				const context = testContext.options?.context
+				return !invalidDoedsdato(value, fullForm, context)
 			},
 		)
 		.nullable()
@@ -284,7 +285,8 @@ export const validation = Yup.object({
 						const fullForm =
 							testContext.from && testContext.from[testContext.from.length - 1]?.value
 						const fradato = fullForm.arenaforvalter.aap[0]?.fraDato
-						return !overlapp25aarsdag(new Date(fradato), new Date(tildato), fullForm)
+						const context = testContext.options?.context
+						return !overlapp25aarsdag(new Date(fradato), new Date(tildato), fullForm, context)
 					},
 				)
 				.test(
@@ -294,7 +296,8 @@ export const validation = Yup.object({
 						const fullForm =
 							testContext.from && testContext.from[testContext.from.length - 1]?.value
 						const fradato = fullForm.arenaforvalter.aap[0]?.fraDato
-						return !erEtter67aarsdag(new Date(fradato), new Date(tildato), fullForm)
+						const context = testContext.options?.context
+						return !erEtter67aarsdag(new Date(fradato), new Date(tildato), fullForm, context)
 					},
 				)
 				.test(
@@ -303,7 +306,8 @@ export const validation = Yup.object({
 					(value, testContext) => {
 						const fullForm =
 							testContext.from && testContext.from[testContext.from.length - 1]?.value
-						return !invalidDoedsdato(value, fullForm)
+						const context = testContext.options?.context
+						return !invalidDoedsdato(value, fullForm, context)
 					},
 				)
 				.nullable()
@@ -319,7 +323,8 @@ export const validation = Yup.object({
 					(fradato, testContext) => {
 						const fullForm =
 							testContext.from && testContext.from[testContext.from.length - 1]?.value
-						return !erEtter67aarsdag(new Date(fradato), null, fullForm)
+						const context = testContext.options?.context
+						return !erEtter67aarsdag(new Date(fradato), null, fullForm, context)
 					},
 				)
 				.test(
@@ -328,7 +333,8 @@ export const validation = Yup.object({
 					(value, testContext) => {
 						const fullForm =
 							testContext.from && testContext.from[testContext.from.length - 1]?.value
-						return !invalidDoedsdato(value, fullForm)
+						const context = testContext.options?.context
+						return !invalidDoedsdato(value, fullForm, context)
 					},
 				)
 				.nullable()
@@ -339,7 +345,12 @@ export const validation = Yup.object({
 	aktiveringDato: Yup.mixed()
 		.test('er-paakrevd', 'Feltet er påkrevd', (dato, testContext) => {
 			const fullForm = testContext.from && testContext.from[testContext.from.length - 1]?.value
-			if (fullForm.personFoerLeggTil && fullForm.personFoerLeggTil.arenaforvalteren) return true
+			const context = testContext.options?.context
+			if (
+				context?.personFoerLeggTil?.arenaforvalteren ||
+				fullForm?.personFoerLeggTil?.arenaforvalteren
+			)
+				return true
 			const { arenaforvalter } = fullForm
 			const ingenYtelser =
 				arenaforvalter?.arenaBrukertype === 'MED_SERVICEBEHOV' &&
@@ -353,7 +364,8 @@ export const validation = Yup.object({
 			'Ident kan ikke aktiveres etter dødsfall',
 			(value, testContext) => {
 				const fullForm = testContext.from && testContext.from[testContext.from.length - 1]?.value
-				return !invalidDoedsdato(value, fullForm)
+				const context = testContext.options?.context
+				return !invalidDoedsdato(value, fullForm, context)
 			},
 		)
 		.nullable(),
@@ -380,8 +392,13 @@ export const validation = Yup.object({
 	kvalifiseringsgruppe: Yup.string()
 		.test('har-verdi', messages.required, (gruppe, testContext) => {
 			const fullForm = testContext.from && testContext.from[testContext.from.length - 1]?.value
+			const context = testContext.options?.context
 			if (fullForm.arenaforvalter.arenaBrukertype === 'UTEN_SERVICEBEHOV') return true
-			if (fullForm.personFoerLeggTil && fullForm.personFoerLeggTil.arenaforvalteren) return true
+			if (
+				context?.personFoerLeggTil?.arenaforvalteren ||
+				fullForm?.personFoerLeggTil?.arenaforvalteren
+			)
+				return true
 
 			return !_.isEmpty(gruppe)
 		})
@@ -421,7 +438,8 @@ export const validation = Yup.object({
 							return true
 						}
 						const fradato = fullForm.arenaforvalter.dagpenger[0]?.fraDato
-						return !overlapp25aarsdag(new Date(fradato), new Date(tildato), fullForm)
+						const context = testContext.options?.context
+						return !overlapp25aarsdag(new Date(fradato), new Date(tildato), fullForm, context)
 					},
 				)
 				.test(
@@ -434,7 +452,8 @@ export const validation = Yup.object({
 							return true
 						}
 						const fradato = fullForm.arenaforvalter.dagpenger[0]?.fraDato
-						return !erEtter67aarsdag(new Date(fradato), new Date(tildato), fullForm)
+						const context = testContext.options?.context
+						return !erEtter67aarsdag(new Date(fradato), new Date(tildato), fullForm, context)
 					},
 				)
 				.test(
@@ -443,7 +462,8 @@ export const validation = Yup.object({
 					(value, testContext) => {
 						const fullForm =
 							testContext.from && testContext.from[testContext.from.length - 1]?.value
-						return !invalidDoedsdato(value, fullForm)
+						const context = testContext.options?.context
+						return !invalidDoedsdato(value, fullForm, context)
 					},
 				)
 				.nullable(),

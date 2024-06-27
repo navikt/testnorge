@@ -78,7 +78,7 @@ export default function BestillingResultat({
 					</div>
 				)}
 				<div className="flexbox--all-center">
-					<BestillingSammendragModal bestilling={bestilling} />
+					<BestillingSammendragModal bestillinger={[bestilling]} />
 					{harIdenterOpprettet && (
 						<Button
 							disabled={bestilling?.opprettetFraId || bestilling?.opprettetFraGruppeId}

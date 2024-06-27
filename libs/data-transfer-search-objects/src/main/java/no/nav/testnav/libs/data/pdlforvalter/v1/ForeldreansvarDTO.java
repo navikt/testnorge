@@ -24,12 +24,15 @@ public class ForeldreansvarDTO extends DbVersjonDTO {
 
     private Ansvar ansvar;
     private String ansvarlig;
+    private String ansvarssubjekt;
     private PersonRequestDTO nyAnsvarlig;
     private RelatertBiPersonDTO ansvarligUtenIdentifikator;
     @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second, pattern = "uuuu-MM-dd'T'HH:mm:ss")
     private LocalDateTime gyldigFraOgMed;
     @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second, pattern = "uuuu-MM-dd'T'HH:mm:ss")
     private LocalDateTime gyldigTilOgMed;
+    private Boolean harForeldreansvar;
+    private Boolean erAnsvarssubjekt;
 
     private Boolean eksisterendePerson;
 

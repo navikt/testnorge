@@ -400,11 +400,13 @@ export default ({
 						/>
 					)}
 					{bestillingIdListe?.length > 0 && (
-						<Button onClick={openMalModal} kind={'maler'} className="svg-icon-blue">
-							OPPRETT MAL
-						</Button>
+						<>
+							<Button onClick={openMalModal} kind={'maler'} className="svg-icon-blue">
+								OPPRETT MAL
+							</Button>
+							<BestillingSammendragModal bestillinger={ident?.bestillinger} />
+						</>
 					)}
-					<BestillingSammendragModal bestilling={bestilling} />
 					{!iLaastGruppe && ident.master !== 'PDL' && (
 						<SlettButton action={slettPerson} loading={loading.slettPerson}>
 							Er du sikker på at du vil slette denne personen?

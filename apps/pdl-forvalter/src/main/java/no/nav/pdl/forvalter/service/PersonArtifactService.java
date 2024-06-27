@@ -26,6 +26,7 @@ public class PersonArtifactService {
     private final KontaktAdresseService kontaktAdresseService;
     private final KontaktinformasjonForDoedsboService kontaktinformasjonForDoedsboService;
     private final NavnService navnService;
+    private final NavPersonIdentifikatorService navPersonIdentifikatorService;
     private final OppholdService oppholdService;
     private final OppholdsadresseService oppholdsadresseService;
     private final SikkerhetstiltakService sikkerhetstiltakService;
@@ -67,6 +68,7 @@ public class PersonArtifactService {
         person.setDoedfoedtBarn(doedfoedtBarnService.convert(person.getDoedfoedtBarn()));
         person.setSikkerhetstiltak(sikkerhetstiltakService.convert(person));
         person.setFolkeregisterPersonstatus(folkeregisterPersonstatusService.convert(person));
+        person.setNavPersonIdentifikator(navPersonIdentifikatorService.convert(person));
 
         person = identtypeService.convert(person);
 

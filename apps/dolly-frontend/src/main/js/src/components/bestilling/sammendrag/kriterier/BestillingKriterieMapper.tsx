@@ -65,7 +65,7 @@ const mapBestillingsinformasjon = (
 		if (parseInt(firstIdent?.charAt(2)) < 4) {
 			return 'Standard'
 		}
-		return bestillingsinformasjon.navSyntetiskIdent ? 'NAV-syntetisk' : 'Test-Norge'
+		return parseInt(firstIdent?.charAt(2)) > 5 ? 'Test-Norge' : 'NAV-syntetisk'
 	}
 
 	if (bestillingsinformasjon) {
@@ -755,6 +755,7 @@ const mapForeldreansvar = (foreldreansvar, data) => {
 							(item.ansvarligUtenIdentifikator && 'Person uten identifikator'),
 					),
 					obj('Ansvarlig', showLabel('foreldreansvar', item.ansvarlig)),
+					obj('Ansvarssubjekt', showLabel('foreldreansvar', item.ansvarssubjekt)),
 					obj('Identtype', item.nyAnsvarlig?.identtype),
 					obj('Kjønn', item.nyAnsvarlig?.kjoenn),
 					obj('Født etter', formatDate(item.nyAnsvarlig?.foedtEtter)),
