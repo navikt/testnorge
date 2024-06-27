@@ -33,7 +33,7 @@ public class KafkaConfig {
     private final String groupId;
     //private final ShutdownService shutdownService;
 
-    public KafkaConfig(@Value("${kafka.groupid}") String groupId) {//, ShutdownService shutdownService
+    public KafkaConfig(@Value("${spring.kafka.consumer.group-id}") String groupId) {//, ShutdownService shutdownService
         this.groupId = groupId;
         //this.shutdownService = shutdownService;
     }

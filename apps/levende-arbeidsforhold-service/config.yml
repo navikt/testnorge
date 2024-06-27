@@ -45,4 +45,4 @@ spec:
   kafka:
     pool: nav-dev
   ingresses:
-    - "https://levende-arbeidsforhold-service.intern.dev.nav.no"
+    - "https://testnav-levende-arbeidsforhold-service.intern.dev.nav.no"
