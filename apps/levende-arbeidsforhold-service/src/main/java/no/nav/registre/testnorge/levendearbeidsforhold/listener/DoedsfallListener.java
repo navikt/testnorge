@@ -35,16 +35,9 @@ public class DoedsfallListener {
     public void onApplicationEvent() {
         log.info("Hello World");
     }
-    // @KafkaListener(topics = doedsfallTopic)
-    // public void getHendelser(List<ConsumerRecord<String, Object>> records) {
-    //     log.info(records.stream().toList().toString());
+    @KafkaListener(topics = doedsfallTopic)
+    public void getHendelser(List<ConsumerRecord<String, Object>> records) {
+        log.info(records.stream().toList().toString());
 
-    //     /*
-    //             records.stream().collect(Collectors.groupingBy(value -> value.value().getMetadata().getMiljo())).forEach((miljo, list) -> {
-    //         var organisasjoner = list.stream().map(value -> value.value().getOrganisasjon()).collect(Collectors.toList());
-    //         var ids = list.stream().map(ConsumerRecord::key).collect(Collectors.toSet());
-    //         save(organisasjoner, miljo, false, ids);
-    //     });
-    //      */
-    // }
+    }
 }

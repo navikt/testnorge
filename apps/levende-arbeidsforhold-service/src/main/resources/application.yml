@@ -17,7 +17,9 @@ spring:
   cloud:
     vault:
       enabled: false
-
+  kafka:
+    consumer:
+      group-id: testnav-levende-arbeidsforhold-service
 springdoc:
   swagger-ui:
     disable-swagger-default-url: true
