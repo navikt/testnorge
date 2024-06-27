@@ -10,16 +10,16 @@ export default () => {
 
 	//TODO: Implementer henting av data fra backend
 	const dataMock = [
-		{ parameter: 'parameter1', verdi: 'verdi1' },
-		{ parameter: 'parameter2', verdi: 'verdi2' },
-		{ parameter: 'parameter3', verdi: 'verdi3' },
-		{ parameter: 'parameter4', verdi: 'verdi4' },
-		{ parameter: 'parameter5', verdi: 'verdi5' },
-		{ parameter: 'parameter6', verdi: 'verdi6' },
-		{ parameter: 'parameter7', verdi: 'verdi7' },
-		{ parameter: 'parameter8', verdi: 'verdi8' },
-		{ parameter: 'parameter9', verdi: 'verdi9' },
-		{ parameter: 'parameter10', verdi: 'verdi10' },
+		{ parameter: 'Parameter 1', verdi: 'verdi1' },
+		{ parameter: 'Parameter 2', verdi: 'verdi2' },
+		{ parameter: 'Parameter 3', verdi: 'verdi3' },
+		{ parameter: 'Parameter 4', verdi: 'verdi4' },
+		{ parameter: 'Parameter 5', verdi: 'verdi5' },
+		{ parameter: 'Parameter 6', verdi: 'verdi6' },
+		{ parameter: 'Parameter 7', verdi: 'verdi7' },
+		{ parameter: 'Parameter 8', verdi: 'verdi8' },
+		{ parameter: 'Parameter 9', verdi: 'verdi9' },
+		{ parameter: 'Parameter 10', verdi: 'verdi10' },
 	]
 
 	return (
