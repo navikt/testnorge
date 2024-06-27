@@ -1,11 +1,10 @@
 import { AdminAccessDenied } from '@/pages/adminPages/AdminAccessDenied'
 import { Alert } from '@navikt/ds-react'
 import { AppstyringTable } from '@/pages/adminPages/Appstyring/AppstyringTable'
+import { erDollyAdmin } from '@/utils/DollyAdmin'
 
 export default () => {
-	const erAdmin = true //TODO: Implementer sjekk for admin
-
-	if (!erAdmin) {
+	if (!erDollyAdmin()) {
 		return <AdminAccessDenied />
 	}
 

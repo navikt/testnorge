@@ -2,11 +2,10 @@ import { AdminAccessDenied } from '@/pages/adminPages/AdminAccessDenied'
 import { OrgOversikt } from '@/pages/adminPages/Orgtilgang/OrgOversikt'
 import { OrgtilgangForm } from '@/pages/adminPages/Orgtilgang/OrgtilgangForm'
 import { useOrganisasjonTilgang } from '@/utils/hooks/useOrganisasjonTilgang'
+import { erDollyAdmin } from '@/utils/DollyAdmin'
 
 export default () => {
-	const erAdmin = true //TODO: Implementer sjekk for admin
-
-	if (!erAdmin) {
+	if (!erDollyAdmin()) {
 		return <AdminAccessDenied />
 	}
 

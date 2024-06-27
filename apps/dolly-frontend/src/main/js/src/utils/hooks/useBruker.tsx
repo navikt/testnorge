@@ -19,12 +19,13 @@ type BrukerProfil = {
 	type: string
 }
 
-type BrukerType = {
+export type BrukerType = {
 	brukerId: string
 	brukernavn: string
 	brukertype: string
 	epost: string
 	favoritter: []
+	grupper: []
 }
 
 export const useAlleBrukere = () => {

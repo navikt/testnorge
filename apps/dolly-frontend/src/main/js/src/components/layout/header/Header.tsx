@@ -11,6 +11,7 @@ import { TestComponentSelectors } from '#/mocks/Selectors'
 import { FinnPersonDropdown } from '@/components/layout/header/FinnPersonDropdown'
 import { OrganisasjonDropdown } from '@/components/layout/header/OrganisasjonDropdown'
 import { AdminDropdown } from '@/components/layout/header/AdminDropdown'
+import { erDollyAdmin } from '@/utils/DollyAdmin'
 
 export default () => {
 	const { currentBruker, loading } = useCurrentBruker()
@@ -20,9 +21,6 @@ export default () => {
 	}
 
 	const bankidBruker = currentBruker?.brukertype === 'BANKID'
-
-	// const grupper = currentBruker?.grupper
-	const erAdmin = true //TODO: Implementer sjekk for admin
 
 	return (
 		<header className="app-header">
@@ -49,7 +47,7 @@ export default () => {
 					</NavLink>
 				)}
 				<DokumentasjonDropdown />
-				{erAdmin && <AdminDropdown />}
+				{erDollyAdmin() && <AdminDropdown />}
 			</div>
 			<BrukerDropdown />
 		</header>
