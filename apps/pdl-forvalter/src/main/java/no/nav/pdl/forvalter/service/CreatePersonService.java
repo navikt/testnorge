@@ -14,6 +14,7 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.FoedselsdatoDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregistermetadataDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.KjoennDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.NavPersonIdentifikatorDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.NavnDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonRequestDTO;
@@ -51,6 +52,7 @@ public class CreatePersonService {
     private final NavnService navnService;
     private final FolkeregisterPersonstatusService folkeregisterPersonstatusService;
     private final AdressebeskyttelseService adressebeskyttelseService;
+    private final NavPersonIdentifikatorService navsPersonIdentifikatorService;
 
     private static PersonDTO buildPerson(PersonRequestDTO request) {
 
@@ -87,6 +89,8 @@ public class CreatePersonService {
                                 .folkeregistermetadata(new FolkeregistermetadataDTO())
                                 .build()) :
                         emptyList())
+                .navPersonIdentifikator(request.getIdenttype() == NPID ?
+                        List.of(new NavPersonIdentifikatorDTO()) : null)
                 .build();
     }
 
@@ -110,7 +114,9 @@ public class CreatePersonService {
                         Flux.just(foedestedService.convert(mergedPerson)),
                         Flux.just(kjoennService.convert(mergedPerson)),
                         Flux.just(statsborgerskapService.convert(mergedPerson)),
-                        Flux.just(adressebeskyttelseService.convert(mergedPerson)))
+                        Flux.just(adressebeskyttelseService.convert(mergedPerson)),
+                        Flux.just(navsPersonIdentifikatorService.convert(mergedPerson))
+                )
                 .reduce(Flux.empty(), Flux::merge)
                 .collectList()
                 .block();

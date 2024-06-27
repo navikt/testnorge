@@ -22,6 +22,7 @@ public enum PdlArtifact {
     PDL_KONTAKTADRESSE("Kontaktadresse"),
     PDL_KONTAKTINFORMASJON_FOR_DODESDBO("KontaktinformasjonForDoedsbo"),
     PDL_NAVN("Navn"),
+    PDL_NAVPERSONIDENTIFIKATOR("NavPersonIdentifikator"),
     PDL_OPPHOLD("Opphold"),
     PDL_OPPHOLDSADRESSE("Oppholdsadresse"),
     PDL_OPPRETT_PERSON(""),

@@ -25,6 +25,7 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.ForeldreansvarDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FullPersonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.Identtype;
 import no.nav.testnav.libs.data.pdlforvalter.v1.KjoennDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.NavPersonIdentifikatorDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.NavnDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonUpdateRequestDTO;
@@ -219,6 +220,9 @@ public class PersonService {
         if (request.getPerson().getFolkeregisterPersonstatus().isEmpty() &&
                 Identtype.NPID != getIdenttype(request.getPerson().getIdent())) {
             request.getPerson().getFolkeregisterPersonstatus().add(new FolkeregisterPersonstatusDTO());
+        }
+        if (Identtype.NPID == getIdenttype(request.getPerson().getIdent())) {
+            request.getPerson().getNavPersonIdentifikator().add(new NavPersonIdentifikatorDTO());
         }
 
         return updatePerson(request.getPerson().getIdent(), PersonUpdateRequestDTO.builder()
