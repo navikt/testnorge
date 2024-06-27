@@ -63,7 +63,7 @@ export default function Table({
 		<div className="dot">
 			{header && (
 				<div className={headerClass}>
-					{columns.map((cell, idx) => (
+					{columns?.map((cell, idx) => (
 						<Column
 							key={idx}
 							width={cell.width}
@@ -76,7 +76,7 @@ export default function Table({
 					{onExpand && <Column />}
 				</div>
 			)}
-			{data.map((row, rowIdx) => {
+			{data?.map((row, rowIdx) => {
 				if (!row) {
 					return null
 				}
@@ -103,7 +103,7 @@ export default function Table({
 						expandPerson={expandPerson}
 						expandBestilling={expandBestilling}
 					>
-						{columns.map((columnCell, idx) => (
+						{columns?.map((columnCell, idx) => (
 							<Column
 								key={idx}
 								width={columnCell.width}

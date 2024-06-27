@@ -40,6 +40,8 @@ import { visningRedigerbarValidation } from '@/components/fagsystem/pdlf/visning
 import { yupResolver } from '@hookform/resolvers/yup'
 import './VisningRedigerbarForm.less'
 import { boolean } from 'yup'
+import { FoedestedForm } from '@/components/fagsystem/pdlf/form/partials/foedsel/Foedested'
+import { FoedselsdatoForm } from '@/components/fagsystem/pdlf/form/partials/foedsel/Foedselsdato'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -61,6 +63,8 @@ type VisningTypes = {
 enum Attributt {
 	Navn = 'navn',
 	Foedsel = 'foedsel',
+	Foedested = 'foedested',
+	Foedselsdato = 'foedselsdato',
 	Doedsfall = 'doedsfall',
 	Statsborgerskap = 'statsborgerskap',
 	Innvandring = 'innflytting',
@@ -245,6 +249,10 @@ export const VisningRedigerbar = ({
 				return <NavnForm formMethods={formMethods} path={path} />
 			case Attributt.Foedsel:
 				return <FoedselForm formMethods={formMethods} path={path} />
+			case Attributt.Foedested:
+				return <FoedestedForm formMethods={formMethods} path={path} />
+			case Attributt.Foedselsdato:
+				return <FoedselsdatoForm formMethods={formMethods} path={path} />
 			case Attributt.Doedsfall:
 				return <DoedsfallForm path={path} />
 			case Attributt.Statsborgerskap:

@@ -119,7 +119,7 @@ export default ({
 			width: '15',
 			formatter: (_cell: any, row: PdlData) => {
 				const alder = getAlder(
-					row.hentPerson?.foedsel[0]?.foedselsdato,
+					row.hentPerson?.foedselsdato[0]?.foedselsdato || row.hentPerson?.foedsel[0]?.foedselsdato,
 					row.hentPerson?.doedsfall[0]?.doedsdato,
 				)
 				return <>{formatAlder(alder, row.hentPerson?.doedsfall[0]?.doedsdato)}</>

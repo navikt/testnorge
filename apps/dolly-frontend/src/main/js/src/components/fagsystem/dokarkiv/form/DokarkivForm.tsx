@@ -12,6 +12,8 @@ import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { UseFormReturn } from 'react-hook-form/dist/types'
 import { useFormContext } from 'react-hook-form'
+import { Option } from '@/service/SelectOptionsOppslag'
+import { useKodeverk } from '@/utils/hooks/useKodeverk'
 
 const Digitalinnsending = React.lazy(
 	() => import('@/components/fagsystem/dokarkiv/form/partials/Digitalinnsending'),
@@ -48,6 +50,7 @@ export type Vedlegg = {
 enum Kodeverk {
 	TEMA = 'Tema',
 	NAVSKJEMA = 'NAVSkjema',
+	BEHANDLINGSTEMA = 'Behandlingstema',
 }
 
 export const dokarkivAttributt = 'dokarkiv'
@@ -58,6 +61,7 @@ export const DokarkivForm = () => {
 	const digitalInnsending = formMethods.watch('dokarkiv.avsenderMottaker')
 	const [files, setFiles] = useState(sessionDokumenter || [])
 	const [skjemaValues, setSkjemaValues] = useState(formMethods.watch('dokarkiv.skjema'))
+	const { kodeverk: behandlingstemaKodeverk, loading } = useKodeverk('Behandlingstema')
 
 	if (!_.has(formMethods.getValues(), dokarkivAttributt)) {
 		return null
@@ -101,7 +105,7 @@ export const DokarkivForm = () => {
 		formMethods.trigger('dokarkiv.vedlegg')
 	}
 
-	const handleSakstypeChange = (target) => {
+	const handleSakstypeChange = (target: Option) => {
 		formMethods.setValue('dokarkiv.sak.sakstype', target.value)
 		if (target.value !== 'FAGSAK') {
 			formMethods.setValue('dokarkiv.sak.fagsaksystem', '')
@@ -144,6 +148,13 @@ export const DokarkivForm = () => {
 							kodeverk={Kodeverk.TEMA}
 							size="xlarge"
 							isClearable={false}
+						/>
+						<FormSelect
+							name="dokarkiv.behandlingstema"
+							label="Behandlingstema"
+							size={'xxlarge'}
+							options={!loading && behandlingstemaKodeverk}
+							isClearable={true}
 						/>
 						<DollyTextInput
 							onChange={(event: BaseSyntheticEvent) => {

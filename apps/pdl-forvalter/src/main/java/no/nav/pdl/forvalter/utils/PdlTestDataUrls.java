@@ -12,7 +12,8 @@ import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_DELTBOSTE
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_DOEDFOEDT_BARN;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_DOEDSFALL;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_FALSK_IDENTITET;
-import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_FOEDSEL;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_FOEDESTED;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_FOEDSELSDATO;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_FOLKEREGISTER_PERSONSTATUS;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_FORELDREANSVAR;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_FORELDRE_BARN_RELASJON;
@@ -22,6 +23,7 @@ import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_KJOENN;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_KONTAKTADRESSE;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_KONTAKTINFORMASJON_FOR_DODESDBO;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_NAVN;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_NAVPERSONIDENTIFIKATOR;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_OPPHOLD;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_OPPHOLDSADRESSE;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_OPPRETT_PERSON;
@@ -53,7 +55,8 @@ public class PdlTestDataUrls {
     private static final String PDL_BESTILLING_DOEDFOEDT_BARN_URL = PDL_BESTILLING_URL + "/doedfoedtbarn";
     private static final String PDL_BESTILLING_DOEDSFALL_URL = PDL_BESTILLING_URL + "/doedsfall";
     private static final String PDL_BESTILLING_FALSK_IDENTITET_URL = PDL_BESTILLING_URL + "/falskidentitet";
-    private static final String PDL_BESTILLING_FOEDSEL_URL = PDL_BESTILLING_URL + "/foedsel";
+    private static final String PDL_BESTILLING_FOEDESTED_URL = PDL_BESTILLING_URL + "/foedested";
+    private static final String PDL_BESTILLING_FOEDSELSDATO_URL = PDL_BESTILLING_URL + "/foedselsdato";
     private static final String PDL_BESTILLING_FOLKEREGISTER_PERSONSTATUS_URL = PDL_BESTILLING_URL + "/folkeregisterpersonstatus";
     private static final String PDL_BESTILLING_FORELDREANSVAR_URL = PDL_BESTILLING_URL + "/foreldreansvar";
     private static final String PDL_BESTILLING_FORELDRE_BARN_RELASJON_URL = PDL_BESTILLING_URL + "/forelderbarnrelasjon";
@@ -63,6 +66,7 @@ public class PdlTestDataUrls {
     private static final String PDL_BESTILLING_KONTAKTADRESSE_URL = PDL_BESTILLING_URL + "/kontaktadresse";
     private static final String PDL_BESTILLING_KONTAKTINFORMASJON_FOR_DODESDBO_URL = PDL_BESTILLING_URL + "/kontaktinformasjonfordoedsbo";
     private static final String PDL_BESTILLING_NAVN_URL = PDL_BESTILLING_URL + "/navn";
+    private static final String PDL_NAVPERSONIDENTIFIKATOR_URL = PDL_BESTILLING_URL + "/navspersonidentifikator";
     private static final String PDL_BESTILLING_OPPHOLDSADRESSE_URL = PDL_BESTILLING_URL + "/oppholdsadresse";
     private static final String PDL_BESTILLING_OPPHOLD_URL = PDL_BESTILLING_URL + "/opphold";
     private static final String PDL_BESTILLING_SIKKERHETSTILTAK_URL = PDL_BESTILLING_URL + "/sikkerhetstiltak";
@@ -83,7 +87,8 @@ public class PdlTestDataUrls {
         bestillingUrl.put(PDL_DOEDFOEDT_BARN, PDL_BESTILLING_DOEDFOEDT_BARN_URL);
         bestillingUrl.put(PDL_DOEDSFALL, PDL_BESTILLING_DOEDSFALL_URL);
         bestillingUrl.put(PDL_FALSK_IDENTITET, PDL_BESTILLING_FALSK_IDENTITET_URL);
-        bestillingUrl.put(PDL_FOEDSEL, PDL_BESTILLING_FOEDSEL_URL);
+        bestillingUrl.put(PDL_FOEDESTED, PDL_BESTILLING_FOEDESTED_URL);
+        bestillingUrl.put(PDL_FOEDSELSDATO, PDL_BESTILLING_FOEDSELSDATO_URL);
         bestillingUrl.put(PDL_FOLKEREGISTER_PERSONSTATUS, PDL_BESTILLING_FOLKEREGISTER_PERSONSTATUS_URL);
         bestillingUrl.put(PDL_FORELDREANSVAR, PDL_BESTILLING_FORELDREANSVAR_URL);
         bestillingUrl.put(PDL_FORELDRE_BARN_RELASJON, PDL_BESTILLING_FORELDRE_BARN_RELASJON_URL);
@@ -93,6 +98,7 @@ public class PdlTestDataUrls {
         bestillingUrl.put(PDL_KONTAKTADRESSE, PDL_BESTILLING_KONTAKTADRESSE_URL);
         bestillingUrl.put(PDL_KONTAKTINFORMASJON_FOR_DODESDBO, PDL_BESTILLING_KONTAKTINFORMASJON_FOR_DODESDBO_URL);
         bestillingUrl.put(PDL_NAVN, PDL_BESTILLING_NAVN_URL);
+        bestillingUrl.put(PDL_NAVPERSONIDENTIFIKATOR, PDL_NAVPERSONIDENTIFIKATOR_URL);
         bestillingUrl.put(PDL_OPPHOLD, PDL_BESTILLING_OPPHOLD_URL);
         bestillingUrl.put(PDL_OPPHOLDSADRESSE, PDL_BESTILLING_OPPHOLDSADRESSE_URL);
         bestillingUrl.put(PDL_OPPRETT_PERSON, PDL_BESTILLING_OPPRETT_PERSON_URL);

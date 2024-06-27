@@ -92,7 +92,7 @@ public class KontaktInformasjonForDoedsboMappingStrategy implements MappingStrat
                     public void mapAtoB(Map kilde, KontaktinformasjonForDoedsboAdresse destinasjon, MappingContext context) {
 
                         var adresselinjer = (List<String>) kilde.get("adresselinjer");
-                        destinasjon.setAdresselinje1(!adresselinjer.isEmpty() ? adresselinjer.get(0) : "Ingen adresselinje funnet");
+                        destinasjon.setAdresselinje1(!adresselinjer.isEmpty() ? adresselinjer.getFirst() : "Ingen adresselinje funnet");
                         destinasjon.setAdresselinje2(adresselinjer.size() > 1 ? adresselinjer.get(1) : null);
 
                         destinasjon.setPostnummer((String) kilde.get("postnr"));

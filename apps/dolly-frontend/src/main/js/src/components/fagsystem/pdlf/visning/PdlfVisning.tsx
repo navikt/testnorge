@@ -91,7 +91,7 @@ export const PdlfVisning = ({ fagsystemData, loading, tmpPersoner, erRedigerbar 
 					erRedigerbar={erRedigerbar}
 				/>
 				<Foedsel
-					data={data?.person?.foedsel}
+					data={data?.person}
 					tmpPersoner={tmpPdlforvalter}
 					ident={ident}
 					erRedigerbar={erRedigerbar}

@@ -8,7 +8,7 @@ import { AdresseKodeverk, GtKodeverk } from '@/config/kodeverk'
 import { useSoekIdenter } from '@/utils/hooks/usePersonSoek'
 import { ResultatVisning } from '@/pages/dollySoek/ResultatVisning'
 import _ from 'lodash'
-import { CypressSelector } from '../../../cypress/mocks/Selectors'
+import { TestComponentSelectors } from '#/mocks/Selectors'
 import { Form, FormProvider, useForm } from 'react-hook-form'
 import {
 	Buttons,
@@ -140,7 +140,9 @@ export const SoekForm = () => {
 											</Accordion.Content>
 										</Accordion.Item>
 										<Accordion.Item>
-											<Accordion.Header data-cy={CypressSelector.EXPANDABLE_PERSONINFORMASJON}>
+											<Accordion.Header
+												data-testid={TestComponentSelectors.EXPANDABLE_PERSONINFORMASJON}
+											>
 												<Header
 													title="Personinformasjon"
 													antall={getAntallRequest([
@@ -178,7 +180,7 @@ export const SoekForm = () => {
 														}
 													/>
 													<FormCheckbox
-														data-cy={CypressSelector.TOGGLE_HAR_VERGE}
+														data-testid={TestComponentSelectors.TOGGLE_HAR_VERGE}
 														name={`${personPath}.harVerge`}
 														label="Har verge"
 														onChange={(val: SyntheticEvent) =>
@@ -520,7 +522,7 @@ export const SoekForm = () => {
 										Hent nye treff
 									</Button>
 									<Button
-										data-cy={CypressSelector.BUTTON_NULLSTILL_SOEK}
+										data-testid={TestComponentSelectors.BUTTON_NULLSTILL_SOEK}
 										onClick={() => {
 											setRequest(null)
 											reset(null)

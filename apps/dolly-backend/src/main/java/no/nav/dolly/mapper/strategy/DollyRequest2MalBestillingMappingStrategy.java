@@ -172,7 +172,9 @@ public class DollyRequest2MalBestillingMappingStrategy implements MappingStrateg
                         akkumulertDTO.getDoedfoedtBarn().addAll(personDTO.getDoedfoedtBarn());
                         akkumulertDTO.getDoedsfall().addAll(personDTO.getDoedsfall());
                         akkumulertDTO.getFalskIdentitet().addAll(personDTO.getFalskIdentitet());
+                        akkumulertDTO.getFoedested().addAll(personDTO.getFoedested());
                         akkumulertDTO.getFoedsel().addAll(personDTO.getFoedsel());
+                        akkumulertDTO.getFoedselsdato().addAll(personDTO.getFoedselsdato());
                         akkumulertDTO.getFolkeregisterPersonstatus().addAll(personDTO.getFolkeregisterPersonstatus());
                         akkumulertDTO.getForelderBarnRelasjon().addAll(personDTO.getForelderBarnRelasjon());
                         akkumulertDTO.getForeldreansvar().addAll(personDTO.getForeldreansvar());

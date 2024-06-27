@@ -10,38 +10,43 @@ public class PersonArtifactService {
 
     private final AdressebeskyttelseService adressebeskyttelseService;
     private final BostedAdresseService bostedAdresseService;
+    private final DoedfoedtBarnService doedfoedtBarnService;
     private final DoedsfallService doedsfallService;
+    private final FalskIdentitetService falskIdentitetService;
+    private final FoedestedService foedestedService;
     private final FoedselService foedselService;
+    private final FoedselsdatoService foedselsdatoService;
     private final FolkeregisterPersonstatusService folkeregisterPersonstatusService;
+    private final ForelderBarnRelasjonService forelderBarnRelasjonService;
+    private final ForeldreansvarService foreldreansvarService;
+    private final FullmaktService fullmaktService;
+    private final IdenttypeService identtypeService;
+    private final InnflyttingService innflyttingService;
     private final KjoennService kjoennService;
     private final KontaktAdresseService kontaktAdresseService;
-    private final InnflyttingService innflyttingService;
+    private final KontaktinformasjonForDoedsboService kontaktinformasjonForDoedsboService;
     private final NavnService navnService;
-    private final OppholdsadresseService oppholdsadresseService;
+    private final NavPersonIdentifikatorService navPersonIdentifikatorService;
     private final OppholdService oppholdService;
+    private final OppholdsadresseService oppholdsadresseService;
+    private final SikkerhetstiltakService sikkerhetstiltakService;
+    private final SivilstandService sivilstandService;
     private final StatsborgerskapService statsborgerskapService;
     private final TelefonnummerService telefonnummerService;
     private final TilrettelagtKommunikasjonService tilrettelagtKommunikasjonService;
-    private final UtflyttingService utflyttingService;
-    private final FullmaktService fullmaktService;
     private final UtenlandsidentifikasjonsnummerService utenlandsidentifikasjonsnummerService;
+    private final UtflyttingService utflyttingService;
     private final VergemaalService vergemaalService;
-    private final FalskIdentitetService falskIdentitetService;
-    private final KontaktinformasjonForDoedsboService kontaktinformasjonForDoedsboService;
-    private final IdenttypeService identtypeService;
-    private final SivilstandService sivilstandService;
-    private final ForelderBarnRelasjonService forelderBarnRelasjonService;
-    private final ForeldreansvarService foreldreansvarService;
-    private final DoedfoedtBarnService doedfoedtBarnService;
-    private final SikkerhetstiltakService sikkerhetstiltakService;
 
     public PersonDTO buildPerson(PersonDTO person, Boolean relaxed) {
 
         // Orders below matters to some degree, don´t rearrange without checking consequences
+        person.setFoedsel(foedselService.convert(person));
+        person.setFoedselsdato(foedselsdatoService.convert(person));
         person.setKjoenn(kjoennService.convert(person));
         person.setBostedsadresse(bostedAdresseService.convert(person, relaxed));
         person.setInnflytting(innflyttingService.convert(person));
-        person.setFoedsel(foedselService.convert(person));
+        person.setFoedested(foedestedService.convert(person));
         person.setStatsborgerskap(statsborgerskapService.convert(person));
         person.setNavn(navnService.convert(person));
         person.setOppholdsadresse(oppholdsadresseService.convert(person));
@@ -63,6 +68,7 @@ public class PersonArtifactService {
         person.setDoedfoedtBarn(doedfoedtBarnService.convert(person.getDoedfoedtBarn()));
         person.setSikkerhetstiltak(sikkerhetstiltakService.convert(person));
         person.setFolkeregisterPersonstatus(folkeregisterPersonstatusService.convert(person));
+        person.setNavPersonIdentifikator(navPersonIdentifikatorService.convert(person));
 
         person = identtypeService.convert(person);
 

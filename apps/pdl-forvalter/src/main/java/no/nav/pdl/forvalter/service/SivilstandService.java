@@ -25,6 +25,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import static java.time.LocalDateTime.now;
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.consumer.command.VegadresseServiceCommand.defaultAdresse;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getKilde;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.getMaster;
@@ -116,15 +117,18 @@ public class SivilstandService implements BiValidation<SivilstandDTO, PersonDTO>
                 PersonDTO relatertPerson = createPersonService.execute(sivilstand.getNyRelatertPerson());
 
                 if (isNotTrue(sivilstand.getBorIkkeSammen()) && !hovedperson.getBostedsadresse().isEmpty()) {
-                    BostedadresseDTO fellesAdresse = hovedperson.getBostedsadresse().stream()
+                    var fellesAdresse = mapperFacade.map(hovedperson.getBostedsadresse().stream()
                             .map(adresse -> mapperFacade.map(adresse, BostedadresseDTO.class))
                             .findFirst()
                             .orElse(BostedadresseDTO.builder()
                                     .vegadresse(mapperFacade.map(defaultAdresse(), VegadresseDTO.class))
-                                    .build());
-
-                    fellesAdresse.setGyldigFraOgMed(sivilstand.getSivilstandsdato());
-                    fellesAdresse.setAngittFlyttedato(sivilstand.getSivilstandsdato());
+                                    .build()), BostedadresseDTO.class);
+                    var adressedato = nonNull(sivilstand.getSivilstandsdato()) ?
+                            sivilstand.getSivilstandsdato() :
+                            sivilstand.getBekreftelsesdato();
+                    adressedato = nonNull(adressedato) ? adressedato : LocalDateTime.now().minusYears(3);
+                    fellesAdresse.setGyldigFraOgMed(adressedato);
+                    fellesAdresse.setAngittFlyttedato(adressedato);
                     fellesAdresse.setId(relatertPerson.getBostedsadresse().stream()
                             .map(BostedadresseDTO::getId).findFirst()
                             .orElse(0) + 1);

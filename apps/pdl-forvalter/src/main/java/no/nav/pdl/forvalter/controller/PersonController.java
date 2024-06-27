@@ -17,7 +17,9 @@ import no.nav.testnav.libs.data.pdlforvalter.v1.DeltBostedDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.DoedfoedtBarnDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.DoedsfallDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FalskIdentitetDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.FoedestedDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FoedselDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.FoedselsdatoDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.ForelderBarnRelasjonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.ForeldreansvarDTO;
@@ -155,6 +157,26 @@ public class PersonController {
         artifactDeleteService.deleteFoedsel(ident, id);
     }
 
+    @DeleteMapping(value = "/{ident}/foedested/{id}")
+    @Operation(description = "Slett angitt foedested for person")
+    public void deleteFoedested(@Parameter(description = "Ident for testperson")
+                              @PathVariable String ident,
+                              @Parameter(description = "id som identifiserer foedested")
+                              @PathVariable Integer id) {
+
+        artifactDeleteService.deleteFoedested(ident, id);
+    }
+
+    @DeleteMapping(value = "/{ident}/foedselsdato/{id}")
+    @Operation(description = "Slett angitt foedselsdato for person")
+    public void deleteFoedselsdato(@Parameter(description = "Ident for testperson")
+                              @PathVariable String ident,
+                              @Parameter(description = "id som identifiserer foedselsdato")
+                              @PathVariable Integer id) {
+
+        artifactDeleteService.deleteFoedselsdato(ident, id);
+    }
+
     @PutMapping(value = "/{ident}/foedsel/{id}")
     @Operation(description = "Oppdatere angitt foedsel for person")
     public void updateFoedsel(@Parameter(description = "Ident for testperson")
@@ -164,6 +186,28 @@ public class PersonController {
                               @RequestBody FoedselDTO foedsel) {
 
         artifactUpdateService.updateFoedsel(ident, id, foedsel);
+    }
+
+    @PutMapping(value = "/{ident}/foedested/{id}")
+    @Operation(description = "Oppdatere angitt foedested for person")
+    public void updateFoedested(@Parameter(description = "Ident for testperson")
+                                @PathVariable String ident,
+                                @Parameter(description = "id som identifiserer foedested")
+                                @PathVariable Integer id,
+                                @RequestBody FoedestedDTO foedested) {
+
+        artifactUpdateService.updateFoedested(ident, id, foedested);
+    }
+
+    @PutMapping(value = "/{ident}/foedselsdato/{id}")
+    @Operation(description = "Oppdatere angitt foedseldato for person")
+    public void updateFoedselsdato(@Parameter(description = "Ident for testperson")
+                                   @PathVariable String ident,
+                                   @Parameter(description = "id som identifiserer foedselsdato")
+                                   @PathVariable Integer id,
+                                   @RequestBody FoedselsdatoDTO foedselsdato) {
+
+        artifactUpdateService.updateFoedselsdato(ident, id, foedselsdato);
     }
 
     @DeleteMapping(value = "/{ident}/navn/{id}")

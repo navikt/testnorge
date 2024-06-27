@@ -358,7 +358,10 @@ const getPdlfIdentInfo = (ident, bestillingStatuser, pdlIdent) => {
 		kilde: 'Dolly',
 		navn: `${pdlFornavn} ${pdlMellomnavn} ${pdlEtternavn}`,
 		kjonn: pdlIdent.kjoenn?.[0]?.kjoenn,
-		alder: formatAlder(pdlAlder(pdlIdent?.foedsel?.[0]?.foedselsdato), getPdlDoedsdato(pdlIdent)),
+		alder: formatAlder(
+			pdlAlder(pdlIdent?.foedsel?.[0]?.foedselsdato || pdlIdent?.foedselsdato?.[0].foedselsdato),
+			getPdlDoedsdato(pdlIdent),
+		),
 		status: hentPersonStatus(ident?.ident, bestillingStatuser?.[ident?.bestillingId?.[0]]),
 	}
 }
@@ -398,7 +401,10 @@ const getPdlIdentInfo = (ident, bestillingStatuser, pdlData) => {
 	const navn = getNavn(person.navn)
 	const mellomnavn = navn?.mellomnavn ? `${navn.mellomnavn.charAt(0)}.` : ''
 	const kjonn = person.kjoenn[0] ? getKjoenn(person.kjoenn[0].kjoenn) : 'U'
-	const alder = getAlder(person.foedsel[0]?.foedselsdato, person.doedsfall[0]?.doedsdato)
+	const alder = getAlder(
+		person.foedselsdato[0]?.foedselsdato || person.foedsel[0]?.foedselsdato,
+		person.doedsfall[0]?.doedsdato,
+	)
 
 	return {
 		ident,
