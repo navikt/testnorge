@@ -27,6 +27,7 @@ import java.util.Map;
 @Slf4j
 @EnableKafka
 @Configuration
+@Profile({"dev", "prod"})
 public class KafkaConfig {
 
     private final String groupId;
