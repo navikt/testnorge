@@ -24,7 +24,7 @@ public class DoedsfallListener {
 
     @KafkaListener(topics = doedsfallTopic)
     public void getHendelser(List<ConsumerRecord<String, Object>> records) {
-        log.info(records.stream().toList().toString());
+//        log.info(records.stream().toList().toString());
 
     }
 }
