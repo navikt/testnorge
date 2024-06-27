@@ -26,8 +26,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
-@EnableKafka
-@Component
+//@EnableKafka
+//@Configuration
 @Profile("dev")
 public class KafkaConfig {
 
