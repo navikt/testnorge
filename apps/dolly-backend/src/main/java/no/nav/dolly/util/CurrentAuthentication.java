@@ -32,8 +32,6 @@ public final class CurrentAuthentication {
             log.warn("Fant ikke grupper i token", e);
         }
 
-        log.info("Grupper: {}", grupper); //TODO: SLETT
-
         return Bruker.builder()
                 .brukerId(nonNull(bankidUser) ? bankidUser.id() : azureUserId())
                 .brukernavn(nonNull(bankidUser)
