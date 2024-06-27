@@ -7,6 +7,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactoryFriend;
 import org.springframework.context.annotation.Profile;
+import org.springframework.context.event.EventListener;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 import no.nav.registre.testnorge.levendearbeidsforhold.config.KafkaConfig;
@@ -23,15 +24,15 @@ import java.util.stream.Collectors;
 @Profile("dev")
 @Component
 @RequiredArgsConstructor
-public class DoedsfallListener implements ApplicationListener<ContextRefreshedEvent> {
+public class DoedsfallListener {
     private static final String doedsfallTopic = "pdl.leesah-v1";
 
     public static void helloworld(){
         System.out.println("Hello wooorld");
     }
 
-    @Override
-    public void onApplicationEvent(ContextRefreshedEvent event) {
+    @EventListener(ContextRefreshedEvent.class)
+    public void onApplicationEvent() {
         log.info("Hello World");
     }
     // @KafkaListener(topics = doedsfallTopic)
