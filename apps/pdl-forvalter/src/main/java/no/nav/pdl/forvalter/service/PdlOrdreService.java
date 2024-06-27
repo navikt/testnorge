@@ -72,6 +72,7 @@ import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_KJOENN;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_KONTAKTADRESSE;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_KONTAKTINFORMASJON_FOR_DODESDBO;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_NAVN;
+import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_NAVPERSONIDENTIFIKATOR;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_OPPHOLD;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_OPPHOLDSADRESSE;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.PdlArtifact.PDL_OPPRETT_PERSON;
@@ -359,7 +360,9 @@ public class PdlOrdreService {
                         deployService.createOrdre(PDL_FALSK_IDENTITET, oppretting.getPerson().getIdent(), mapperFacade.mapAsList(utenHistorikk(oppretting.getPerson().getPerson().getFalskIdentitet()), PdlFalskIdentitet.class)),
                         deployService.createOrdre(PDL_TILRETTELAGT_KOMMUNIKASJON, oppretting.getPerson().getIdent(), mapperFacade.mapAsList(utenHistorikk(oppretting.getPerson().getPerson().getTilrettelagtKommunikasjon()), PdlTilrettelagtKommunikasjon.class)),
                         deployService.createOrdre(PDL_DOEDFOEDT_BARN, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getDoedfoedtBarn()),
-                        deployService.createOrdre(PDL_SIKKERHETSTILTAK, oppretting.getPerson().getIdent(), utenHistorikk(oppretting.getPerson().getPerson().getSikkerhetstiltak())))
+                        deployService.createOrdre(PDL_SIKKERHETSTILTAK, oppretting.getPerson().getIdent(), utenHistorikk(oppretting.getPerson().getPerson().getSikkerhetstiltak())),
+                        deployService.createOrdre(PDL_NAVPERSONIDENTIFIKATOR, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getNavPersonIdentifikator())
+                )
                 .flatMap(Collection::stream)
                 .toList();
     }

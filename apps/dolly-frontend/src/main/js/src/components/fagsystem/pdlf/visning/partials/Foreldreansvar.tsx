@@ -1,5 +1,5 @@
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
-import { initialForeldreansvar } from '@/components/fagsystem/pdlf/form/initialValues'
+import { getInitialForeldreansvar } from '@/components/fagsystem/pdlf/form/initialValues'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import * as React from 'react'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
@@ -103,7 +103,7 @@ export const ForeldreansvarEnkeltvisning = ({
 	const { gruppeId } = useParams()
 	const { identer: gruppeIdenter } = useGruppeIdenter(gruppeId)
 
-	const initForeldreansvar = Object.assign(_.cloneDeep(initialForeldreansvar), data[idx])
+	const initForeldreansvar = Object.assign(_.cloneDeep(getInitialForeldreansvar), data[idx])
 	let initialValues = { foreldreansvar: initForeldreansvar }
 
 	const redigertForeldreansvarPdlf = _.get(tmpPersoner, `${ident}.person.foreldreansvar`)?.find(
@@ -131,7 +131,7 @@ export const ForeldreansvarEnkeltvisning = ({
 	let redigertForeldreansvarValues = redigertForeldreansvarPdlf
 		? {
 				foreldreansvar: Object.assign(
-					_.cloneDeep(initialForeldreansvar),
+					_.cloneDeep(getInitialForeldreansvar),
 					redigertForeldreansvarPdlf,
 				),
 			}

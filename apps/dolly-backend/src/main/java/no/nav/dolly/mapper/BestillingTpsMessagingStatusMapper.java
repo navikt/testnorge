@@ -28,6 +28,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BestillingTpsMessagingStatusMapper {
 
+    private static final List<String> HIDE_MILJOER = List.of("t13", "q5", "qa", "qx");
     private static final String OKEY = "OK";
     private static final String ADVARSEL = "Advarsel: ";
     private static final String FEIL = "Feil: ";
@@ -50,6 +51,7 @@ public final class BestillingTpsMessagingStatusMapper {
                                     .map(melding ->
                                             Stream.of(melding.split("#")[1].split(","))
                                                     .filter(status -> status.contains(":"))
+                                                    .filter(BestillingTpsMessagingStatusMapper::containsValidMiljoe)
                                                     .map(status -> StatusTemp.builder()
                                                             .ident(progress.getIdent())
                                                             .melding(getStatus(String.format("%s %s", melding.split("#")[0],
@@ -114,7 +116,7 @@ public final class BestillingTpsMessagingStatusMapper {
                     .replace("_", " "));
         }
         if (StringUtils.containsIgnoreCase(message, "Startet ")) {
-            return decodeMsg(message.replace("Startet ",""));
+            return decodeMsg(message.replace("Startet ", ""));
         }
         return message;
     }
@@ -128,13 +130,16 @@ public final class BestillingTpsMessagingStatusMapper {
             return status.contains(OKEY) ||
                     status.toLowerCase().contains("person ikke funnet i tps") ||
                     status.toLowerCase().contains("dette er data som allerede er registrert i tps") ||
-                    status.toLowerCase().contains("det finnes allerede en lik putl-adresse") ||
                     status.toLowerCase().contains("utgått fødselsnr") ||
                     status.toLowerCase().contains("mottaker svarer ikke") ||
                     status.toLowerCase().contains("forbindelsen er ustabil")
                     ? OKEY
                     : status;
         }
+    }
+
+    private static boolean containsValidMiljoe(String status) {
+        return !HIDE_MILJOER.contains(status.split(":")[0]);
     }
 
     @Data

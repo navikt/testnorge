@@ -27,6 +27,7 @@ public class RsBruker {
     private Brukertype brukertype;
     private String epost;
     private String navIdent;
+    private List<String> grupper;
     private List<RsTestgruppe> favoritter;
 
     public List<RsTestgruppe> getFavoritter() {

@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - libs/data-transfer-objects
+      - libs/data-transfer-search-objects
       - libs/security-core
       - libs/servlet-core
       - libs/servlet-security
