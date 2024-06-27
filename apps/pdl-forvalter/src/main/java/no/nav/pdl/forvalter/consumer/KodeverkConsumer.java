@@ -50,7 +50,9 @@ public class KodeverkConsumer {
     public String getTilfeldigLand() {
 
         return hentKodeverk(LANDKODER)
-                .map(verdier -> verdier.keySet().stream().toList())
+                .map(landkoder -> landkoder.keySet().stream()
+                        .filter(landkode -> !landkode.equals("9999") && !landkode.equals("???"))
+                        .toList())
                 .map(list -> list.get(random.nextInt(list.size())))
                 .block();
     }

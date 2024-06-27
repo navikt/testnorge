@@ -755,6 +755,7 @@ const mapForeldreansvar = (foreldreansvar, data) => {
 							(item.ansvarligUtenIdentifikator && 'Person uten identifikator'),
 					),
 					obj('Ansvarlig', showLabel('foreldreansvar', item.ansvarlig)),
+					obj('Ansvarssubjekt', showLabel('foreldreansvar', item.ansvarssubjekt)),
 					obj('Identtype', item.nyAnsvarlig?.identtype),
 					obj('Kjønn', item.nyAnsvarlig?.kjoenn),
 					obj('Født etter', formatDate(item.nyAnsvarlig?.foedtEtter)),

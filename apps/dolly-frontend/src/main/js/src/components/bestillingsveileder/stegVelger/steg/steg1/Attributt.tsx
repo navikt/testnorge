@@ -15,11 +15,11 @@ export const Attributt = ({
 	return (
 		<div title={title}>
 			<DollyCheckbox
-				label={attr.label}
+				label={attr?.label}
 				attributtCheckbox={true}
 				size={'small'}
-				onChange={attr.checked ? attr.remove : attr.add}
-				value={attr.label}
+				onChange={attr?.checked ? attr?.remove : attr?.add}
+				value={attr?.label}
 				isDisabled={disabled}
 				id={id}
 				{...props}
