@@ -12,8 +12,10 @@ type GjennomsnittG = {
 	grunnbelop: number
 }
 type PensjonResponse = {
-	arInntektGList: GjennomsnittG[]
-	averageG: number
+	data: {
+		arInntektGList: GjennomsnittG[]
+		averageG: number
+	}
 }
 
 const validateBody = (body) => {
@@ -45,7 +47,7 @@ export const usePensjonFacadeGjennomsnitt = (body) => {
 	)
 
 	return {
-		medl: data,
+		pensjon: data?.data,
 		loading: isLoading,
 		error: error,
 		mutate: mutate,

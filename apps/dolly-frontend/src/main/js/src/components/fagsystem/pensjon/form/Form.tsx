@@ -7,12 +7,17 @@ import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { getYearRangeOptions } from '@/utils/DataFormatter'
 import { DollyTextInput, FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { FormCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
-import React, { useContext } from 'react'
+import React, { BaseSyntheticEvent, useContext, useEffect, useState } from 'react'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
 import _ from 'lodash'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { useFormContext } from 'react-hook-form'
 import { usePensjonFacadeGjennomsnitt } from '@/utils/hooks/usePensjonFacade'
+import DollyKjede from '@/components/dollyKjede/DollyKjede'
+import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
+import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { initialPensjonInntekt } from '@/components/fagsystem/aareg/form/initialValues'
+import { KjedeContainer } from '@/components/fagsystem/aareg/form/partials/ameldingForm'
 
 export const pensjonPath = 'pensjonforvalter.inntekt'
 
@@ -24,9 +29,10 @@ export const PensjonForm = () => {
 	const formMethods = useFormContext()
 	const opts = useContext(BestillingsveilederContext)
 	const { nyBestilling, nyBestillingFraMal } = opts?.is
-	const pensjonSkjemaInntekt = usePensjonFacadeGjennomsnitt(
+	const { pensjon, mutate } = usePensjonFacadeGjennomsnitt(
 		formMethods.watch(`${pensjonPath}.generer`),
 	)
+	const [selectedIndex, setSelectedIndex] = useState(0)
 
 	function kalkulerIdentFyltSyttenAar() {
 		const curDate = new Date()
@@ -40,9 +46,22 @@ export const PensjonForm = () => {
 		return alder && curDate.getFullYear() - alder + 17
 	}
 
+	const handleGenererChange = () => {
+		formMethods.trigger(pensjonPath)
+		mutate()
+	}
+
+	useEffect(() => {
+		if (pensjon) {
+			formMethods.setValue(`${pensjonPath}.inntekter`, pensjon.arInntektGList)
+		}
+	}, [pensjon])
+
 	const syttenFraOgMedAar = kalkulerIdentFyltSyttenAar()
 	const minAar = new Date().getFullYear() - 17
 	const valgtAar = formMethods.watch(`${pensjonPath}.fomAar`)
+
+	console.log('pensjon: ', pensjon) //TODO - SLETT MEG
 
 	return (
 		<Vis attributt={pensjonPath}>
@@ -67,6 +86,7 @@ export const PensjonForm = () => {
 						<FormSelect
 							name={`${pensjonPath}.generer.fomAar`}
 							label="Fra og med år"
+							afterChange={handleGenererChange}
 							options={getYearRangeOptions(syttenFraOgMedAar || 1968, new Date().getFullYear() - 1)}
 							isClearable={false}
 						/>
@@ -74,12 +94,18 @@ export const PensjonForm = () => {
 						<FormSelect
 							name={`${pensjonPath}.generer.tomAar`}
 							label="Til og med år"
+							afterChange={handleGenererChange}
 							options={getYearRangeOptions(1968, new Date().getFullYear() - 1)}
 							isClearable={false}
 						/>
 
-						<DollyTextInput
+						<FormTextInput
 							name={`${pensjonPath}.generer.averageG`}
+							useOnChange={true}
+							onChange={(event: BaseSyntheticEvent) => {
+								formMethods.setValue(`${pensjonPath}.generer.averageG`, event?.target?.value)
+								handleGenererChange()
+							}}
 							label="Gjenomsnitt G"
 							type="number"
 						/>
@@ -90,6 +116,47 @@ export const PensjonForm = () => {
 							size="small"
 							checkboxMargin
 						/>
+
+						{pensjon?.arInntektGList?.length > 0 && (
+							<>
+								<KjedeContainer>
+									<DollyKjede
+										objectList={pensjon?.arInntektGList}
+										itemLimit={10}
+										selectedIndex={selectedIndex}
+										setSelectedIndex={setSelectedIndex}
+									/>
+									<Hjelpetekst>Kapplah!</Hjelpetekst>
+								</KjedeContainer>
+								<FormDollyFieldArray
+									name={`pensjonforvalter.inntekt.inntekter`}
+									header="Inntekt"
+									newEntry={initialPensjonInntekt}
+									canBeEmpty={false}
+								>
+									{(path: string, idx: number) => {
+										console.log('path: ', path) //TODO - SLETT MEG
+										return (
+											<div className="flexbox--flex-wrap sigrun-form" key={idx}>
+												<DollyTextInput
+													name={`${path}.inntekt`}
+													label="Inntekt"
+													type="number"
+													size="large"
+												/>
+												<DollyTextInput
+													isDisabled={true}
+													name={`${path}.ar`}
+													label="År"
+													type="number"
+													size="large"
+												/>
+											</div>
+										)
+									}}
+								</FormDollyFieldArray>
+							</>
+						)}
 					</div>
 				</Kategori>
 				<Kategori title="Pensjonsgivende inntekt" vis={pensjonPath}>

@@ -88,6 +88,11 @@ export const initialPeriode = {
 	periode: [],
 }
 
+export const initialPensjonInntekt = {
+	aar: null,
+	inntekt: null,
+}
+
 export const initialAmelding = [
 	{
 		maaned: null,

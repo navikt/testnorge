@@ -5,7 +5,7 @@ import './DollyKjede.less'
 
 export interface Props {
 	selectedIndex: number
-	objectList: string[]
+	objectList: string[] | any
 	centerIndices: number[]
 	disabled: boolean
 	handlePagination: (page: number) => void
@@ -51,7 +51,7 @@ export default ({
 						index={0}
 						selected={selectedIndex === 0}
 						disabled={disabled}
-						text={objectList[0]}
+						text={objectList[0]?.ar || objectList[0]}
 						onClick={handleClick}
 					/>
 				)}
@@ -65,7 +65,7 @@ export default ({
 							index={item}
 							selected={selectedIndex === item}
 							disabled={disabled}
-							text={objectList[item]}
+							text={objectList[item]?.ar || objectList[item]}
 							onClick={handleClick}
 						/>
 					)
@@ -79,7 +79,7 @@ export default ({
 						index={objectList.length - 1}
 						selected={selectedIndex === objectList.length - 1}
 						disabled={disabled}
-						text={objectList[objectList.length - 1]}
+						text={objectList[objectList.length - 1]?.ar || objectList[objectList.length - 1]}
 						onClick={handleClick}
 					/>
 				)}
