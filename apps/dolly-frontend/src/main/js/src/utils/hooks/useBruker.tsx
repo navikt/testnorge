@@ -19,7 +19,7 @@ type BrukerProfil = {
 	type: string
 }
 
-export type BrukerType = {
+type BrukerType = {
 	brukerId: string
 	brukernavn: string
 	brukertype: string
