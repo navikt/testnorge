@@ -42,7 +42,6 @@ class BrukerMappingStrategyTest {
 
         try (MockedStatic<CurrentAuthentication> mocked = Mockito.mockStatic(CurrentAuthentication.class)) {
             Bruker mockBruker = new Bruker();
-            // Set up your mockBruker as needed
 
             mocked.when(() -> CurrentAuthentication.getAuthUser(any(GetUserInfo.class))).thenReturn(mockBruker);
 
