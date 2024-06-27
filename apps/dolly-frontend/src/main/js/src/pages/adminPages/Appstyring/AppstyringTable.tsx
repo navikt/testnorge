@@ -1,9 +1,9 @@
-import { Box, Button, Table } from '@navikt/ds-react'
+import { Box, Table } from '@navikt/ds-react'
 import React from 'react'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { EditParameter } from '@/pages/adminPages/Appstyring/EditParameter'
 
-export const AppstyringTable = ({ data }) => {
+export const AppstyringTable = ({ data }: any) => {
 	//TODO: Implementer henting av options pr parameter fra backend
 	const getOptions = (parameter: string) => {
 		return [
@@ -30,7 +30,7 @@ export const AppstyringTable = ({ data }) => {
 						<Table.HeaderCell>Rediger</Table.HeaderCell>
 					</Table.Header>
 					<Table.Body>
-						{data.map((row, idx) => {
+						{data.map((row: any, idx: number) => {
 							return (
 								<Table.Row key={row.parameter + idx}>
 									<Table.DataCell width={'50%'}>{row.parameter}</Table.DataCell>

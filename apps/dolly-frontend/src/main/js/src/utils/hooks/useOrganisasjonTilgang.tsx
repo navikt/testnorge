@@ -1,8 +1,6 @@
 import useSWR from 'swr'
 import { fetcher } from '@/api'
 import { useBrukerProfil } from '@/utils/hooks/useBruker'
-import { ResponseIdenter } from '@/pages/dollySoek/DollySoekTypes'
-import Request from '@/service/services/Request'
 
 const getOrganisasjonMiljoeUrl = (orgnummer: string) =>
 	`/testnav-organisasjon-tilgang-service/api/v1/miljoer/organisasjon/orgnummer?orgnummer=${orgnummer}`

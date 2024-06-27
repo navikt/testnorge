@@ -43,6 +43,7 @@ export const OrgtilgangForm = ({ mutate }: any) => {
 		mode: 'onChange',
 		defaultValues: initialValues,
 	})
+
 	const { handleSubmit, reset, control } = formMethods
 
 	const [isLoading, setIsLoading] = useBoolean(false)
