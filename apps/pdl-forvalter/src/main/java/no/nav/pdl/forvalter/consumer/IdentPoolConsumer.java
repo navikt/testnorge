@@ -52,8 +52,8 @@ public class IdentPoolConsumer {
 
     public Mono<List<IdentDTO>> releaseIdents(Set<String> identer, Bruker bruker) {
 
-        return tokenExchange.exchange(serverProperties).flatMap(
-                token -> new IdentpoolPostCommand(webClient, RELEASE_IDENTS_URL, REKVIRERT_AV + bruker, identer,
+        return tokenExchange.exchange(serverProperties)
+                .flatMap(token -> new IdentpoolPostCommand(webClient, RELEASE_IDENTS_URL, REKVIRERT_AV + bruker, identer,
                         token.getTokenValue()).call());
     }
 

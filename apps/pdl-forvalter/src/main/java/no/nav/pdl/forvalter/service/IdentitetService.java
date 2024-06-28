@@ -7,18 +7,26 @@ import no.nav.pdl.forvalter.database.model.DbRelasjon;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.dto.Paginering;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
+import no.nav.pdl.forvalter.exception.NotFoundException;
+import no.nav.testnav.libs.data.pdlforvalter.v1.DbVersjonDTO;
+import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonIDDTO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -70,61 +78,71 @@ public class IdentitetService {
     @Transactional
     public void updateStandalone(String ident, Boolean standalone) {
 
-        personRepository.findByIdent(ident)
-                .ifPresent(dbPerson -> dbPerson.getRelasjoner().stream()
-                        .map(DbRelasjon::getRelatertPerson)
-                        .map(DbPerson::getPerson)
-                        .distinct()
-                        .forEach(person -> {
-                            person.getSivilstand()
-                                    .forEach(sivilstand -> {
-                                        if (ident.equals(sivilstand.getRelatertVedSivilstand())) {
-                                            sivilstand.setEksisterendePerson(standalone);
-                                        }
-                                    });
+        var dbPerson = personRepository.findByIdent(ident)
+                .orElseThrow(() -> new NotFoundException("Ident " + ident + " ikke funnet"));
 
-                            person.getForelderBarnRelasjon()
-                                    .forEach(relasjon -> {
-                                        if (ident.equals(relasjon.getRelatertPerson())) {
-                                            relasjon.setEksisterendePerson(standalone);
-                                        }
-                                    });
+        var identerRelasjon = dbPerson.getRelasjoner().stream()
+                .map(DbRelasjon::getRelatertPerson)
+                .map(DbPerson::getPerson)
+                .flatMap(person -> Arrays.stream(PersonDTO.class.getMethods())
+                        .filter(method -> method.getName().contains("get"))
+                        .map(method -> {
+                            try {
+                                return method.invoke(person);
+                            } catch (IllegalAccessException | InvocationTargetException e) {
+                                log.error("Feilet å utføre metodekall for {} ", method);
+                                return null;
+                            }
+                        })
+                        .filter(Objects::nonNull)
+                        .filter(List.class::isInstance)
+                        .map(opplysninger -> ((List<? extends DbVersjonDTO>) opplysninger))
+                        .flatMap(Collection::stream)
+                        .map(DbVersjonDTO::getIdentForRelasjon)
+                        .filter(Objects::nonNull)
+                        .filter(ident1 -> ident1.equals(ident))
+                        .map(ident1 -> person.getIdent())
+                        .distinct())
+                .toList();
 
-                            person.getForeldreansvar()
-                                    .forEach(ansvar -> {
-                                        if (ident.equals(ansvar.getAnsvarlig())) {
-                                            ansvar.setEksisterendePerson(standalone);
-                                        }
-                                    });
+        identerRelasjon
+                .forEach(relasjonsident -> setStandalonePerson(dbPerson, relasjonsident, standalone));
 
-                            person.getKontaktinformasjonForDoedsbo()
-                                    .forEach(doedsbo -> {
-                                        if (nonNull(doedsbo.getPersonSomKontakt()) &&
-                                                ident.equals(doedsbo.getPersonSomKontakt().getIdentifikasjonsnummer())) {
-                                            doedsbo.getPersonSomKontakt().setEksisterendePerson(standalone);
-                                        }
-                                    });
+        personRepository.findByIdentIn(identerRelasjon, Pageable.ofSize(100))
+                .forEach(relasjonPerson -> setStandalonePerson(relasjonPerson, ident, standalone));
+    }
 
-                            person.getVergemaal()
-                                    .forEach(vergemaal -> {
-                                        if (ident.equals(vergemaal.getVergeIdent())) {
-                                            vergemaal.setEksisterendePerson(standalone);
-                                        }
-                                    });
+    private void setStandalonePerson(DbPerson person, String motpartsIdent, Boolean standalone) {
 
-                            person.getFullmakt()
-                                    .forEach(fullmakt -> {
-                                        if (ident.equals(fullmakt.getMotpartsPersonident())) {
-                                            fullmakt.setEksisterendePerson(standalone);
-                                        }
-                                    });
+        Stream.of(person)
+                .map(DbPerson::getPerson)
+                .flatMap(person1 ->
+                        Arrays.stream(PersonDTO.class.getMethods())
+                                .filter(method -> method.getName().contains("get"))
+                                .map(method -> {
+                                    try {
+                                        return method.invoke(person1);
+                                    } catch (IllegalAccessException | InvocationTargetException e) {
+                                        log.error("Feilet å utføre metodekall for {} ", method);
+                                        return null;
+                                    }
+                                })
+                                .filter(Objects::nonNull)
+                                .filter(List.class::isInstance)
+                                .map(opplysninger -> ((List<? extends DbVersjonDTO>) opplysninger))
+                                .flatMap(Collection::stream)
+                )
+                .forEach(opplysning -> {
+                    if (motpartsIdent.equals(opplysning.getIdentForRelasjon())) {
+                        try {
+                            var method = opplysning.getClass().getMethod("setEksisterendePerson", Boolean.class);
+                            method.invoke(opplysning, isTrue(standalone));
 
-                            person.getFalskIdentitet()
-                                    .forEach(falskId -> {
-                                        if (ident.equals(falskId.getRettIdentitetVedIdentifikasjonsnummer())) {
-                                            falskId.setEksisterendePerson(standalone);
-                                        }
-                                    });
-                        }));
+                        } catch (NoSuchMethodException | InvocationTargetException |
+                                 IllegalAccessException e) {
+                            log.error("Method setEksisterendePerson not found in {}", opplysning);
+                        }
+                    }
+                });
     }
 }
