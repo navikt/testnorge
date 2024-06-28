@@ -2,11 +2,13 @@ package no.nav.registre.testnorge.levendearbeidsforhold.listener;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
+import no.nav.testnav.libs.avro.hendelse.Hendelse;
 
 import java.util.List;
 
@@ -24,7 +26,11 @@ public class DoedsfallListener {
 
     @KafkaListener(topics = doedsfallTopic)
     public void getHendelser(List<ConsumerRecord<String, Object>> records) {
-//        log.info(records.stream().toList().toString());
-
+        /*
+        for (ConsumerRecord<String, Hendelse> record: records){
+            log.info(record.value().toString());
+        }
+        */
+        log.info(records.getFirst().value().toString());
     }
 }
