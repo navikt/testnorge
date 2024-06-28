@@ -68,7 +68,6 @@ import {
 	AlderspensjonVisning,
 	sjekkManglerApData,
 } from '@/components/fagsystem/alderspensjon/visning/AlderspensjonVisning'
-import { useOrganisasjonTilgang } from '@/utils/hooks/useBruker'
 import { ArbeidsplassenVisning } from '@/components/fagsystem/arbeidsplassen/visning/Visning'
 import _has from 'lodash/has'
 import { MedlVisning } from '@/components/fagsystem/medl/visning'
@@ -90,6 +89,7 @@ import { MalModal, malTyper } from '@/pages/minSide/maler/MalModal'
 import { useTenorIdent } from '@/utils/hooks/useTenorSoek'
 import { SkatteetatenVisning } from '@/components/fagsystem/skatteetaten/visning/SkatteetatenVisning'
 import PdlVisningConnector from '@/components/fagsystem/pdl/visning/PdlVisningConnector'
+import { useOrganisasjonMiljoe } from '@/utils/hooks/useOrganisasjonTilgang'
 
 const getIdenttype = (ident) => {
 	if (parseInt(ident.charAt(0)) > 3) {
@@ -117,8 +117,8 @@ export default ({
 
 	const [isMalModalOpen, openMalModal, closeMalModal] = useBoolean(false)
 
-	const { organisasjonTilgang } = useOrganisasjonTilgang()
-	const tilgjengeligMiljoe = organisasjonTilgang?.miljoe
+	const { organisasjonMiljoe } = useOrganisasjonMiljoe()
+	const tilgjengeligMiljoe = organisasjonMiljoe?.miljoe
 
 	const bestillinger = []
 
