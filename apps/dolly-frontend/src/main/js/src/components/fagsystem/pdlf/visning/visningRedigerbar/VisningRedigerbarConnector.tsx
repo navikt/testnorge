@@ -6,6 +6,7 @@ import { actions } from '@/ducks/redigertePersoner'
 const mapDispatchToProps = (dispatch: Dispatch, ownProps: any) => {
 	return {
 		getPdlForvalter: () => dispatch(actions.hentPdlforvalterPersoner(ownProps.ident)),
+		getPdl: () => dispatch(actions.hentPdlPersoner(ownProps.ident)),
 	}
 }
 
