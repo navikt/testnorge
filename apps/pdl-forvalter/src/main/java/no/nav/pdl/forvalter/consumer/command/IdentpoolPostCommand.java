@@ -35,6 +35,7 @@ public class IdentpoolPostCommand implements Callable<Mono<List<IdentDTO>>> {
 
     @Override
     public Mono<List<IdentDTO>> call() {
+
         return webClient
                 .post()
                 .uri(builder -> builder.path(url).query(query).build())
@@ -44,27 +45,27 @@ public class IdentpoolPostCommand implements Callable<Mono<List<IdentDTO>>> {
                 .retrieve()
                 .bodyToMono(String[].class)
                 .flatMap(identer -> Mono.just(Arrays.stream(identer)
-                                .map(ident -> IdentDTO.builder()
-                                        .ident(ident)
-                                        .build())
-                                .map(IdentDTO.class::cast)
-                                .toList())
-                        .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                                .filter(WebClientFilter::is5xxException)
-                                .onRetryExhaustedThrow((retryBackoffSpec, retrySignal) ->
-                                        new InternalError(IDENTPOOL + "antall repeterende forsøk nådd")))
-                        .onErrorResume(throwable -> {
-                            log.error(getMessage(throwable));
-                            if (throwable instanceof WebClientResponseException exception) {
-                                if (exception.getStatusCode() == HttpStatus.NOT_FOUND) {
-                                    return Mono.error(new NotFoundException(IDENTPOOL + getMessage(throwable)));
-                                } else {
-                                    return Mono.error(new InvalidRequestException(IDENTPOOL + getMessage(throwable)));
-                                }
-                            } else {
-                                return Mono.error(new InternalError(IDENTPOOL + getMessage(throwable)));
-                            }
-                        }));
+                        .map(ident -> IdentDTO.builder()
+                                .ident(ident)
+                                .build())
+                        .map(IdentDTO.class::cast)
+                        .toList()))
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException)
+                        .onRetryExhaustedThrow((retryBackoffSpec, retrySignal) ->
+                                new InternalError(IDENTPOOL + "antall repeterende forsøk nådd")))
+                .onErrorResume(throwable -> {
+                    log.error(getMessage(throwable));
+                    if (throwable instanceof WebClientResponseException exception) {
+                        if (exception.getStatusCode() == HttpStatus.NOT_FOUND) {
+                            return Mono.error(new NotFoundException(IDENTPOOL + getMessage(throwable)));
+                        } else {
+                            return Mono.error(new InvalidRequestException(IDENTPOOL + getMessage(throwable)));
+                        }
+                    } else {
+                        return Mono.error(new InternalError(IDENTPOOL + getMessage(throwable)));
+                    }
+                });
     }
 
     protected static String getMessage(Throwable error) {
