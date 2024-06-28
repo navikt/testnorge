@@ -8,6 +8,10 @@ import { PdlDoedfoedtBarn } from '@/components/fagsystem/pdl/visning/partials/re
 type PdlRelasjonerProps = {
 	data: HentPerson
 	visTittel?: boolean
+	pdlfData?: HentPerson
+	tmpPersoner?: any
+	ident?: string
+	identtype?: string
 }
 
 export const PdlRelasjoner = ({

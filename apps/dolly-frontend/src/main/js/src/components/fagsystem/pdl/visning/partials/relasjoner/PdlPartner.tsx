@@ -3,19 +3,31 @@ import { formatDate } from '@/utils/DataFormatter'
 import { getSortedSivilstand } from '@/components/fagsystem/pdl/visning/partials/utils'
 import { PersoninformasjonKodeverk } from '@/config/kodeverk'
 import { ArrayHistorikk } from '@/components/ui/historikk/ArrayHistorikk'
-import { Sivilstand } from '@/components/fagsystem/pdlf/PdlTypes'
+import { SivilstandData } from '@/components/fagsystem/pdlf/PdlTypes'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
+import React from 'react'
+import { SivilstandVisning } from '@/components/fagsystem/pdlf/visning/partials/Sivilstand'
 
 type VisningProps = {
-	data: Sivilstand
+	data: SivilstandData
 	idx?: number
+	alleData?: Array<SivilstandData>
+	tmpPersoner?: any
+	ident?: string
+	identtype?: string
+	master?: string
 }
 
 type PdlPartnerProps = {
-	data: Sivilstand[]
+	data: SivilstandData[]
+	pdlfData?: SivilstandData[]
+	tmpPersoner?: any
+	ident?: string
+	identtype?: string
 }
 
-const Visning = ({ data, idx }: VisningProps) => {
+const PartnerVisning = ({ data, idx }: VisningProps) => {
+	console.log('data: ', data) //TODO - SLETT MEG
 	const harPartner = data.type !== 'UGIFT'
 	return (
 		<div key={idx} className="person-visning_content">
@@ -35,22 +47,57 @@ const Visning = ({ data, idx }: VisningProps) => {
 	)
 }
 
+const PartnerVisningRedigerbar = ({
+	data,
+	idx,
+	alleData,
+	tmpPersoner,
+	ident,
+	identtype,
+}: VisningProps) => {
+	return (
+		<div className="person-visning_content">
+			<SivilstandVisning
+				sivilstandData={data}
+				idx={idx}
+				data={alleData}
+				relasjoner={null} //TODO - Send med relasjoner
+				tmpPersoner={tmpPersoner}
+				ident={ident}
+				identtype={identtype}
+			/>
+		</div>
+	)
+}
+
 export const PdlPartner = ({ data, pdlfData, tmpPersoner, ident, identtype }: PdlPartnerProps) => {
 	const partnere = getSortedSivilstand(data)
-	if (!partnere || partnere.length === 0) {
+	if (
+		(!partnere || partnere.length) === 0 &&
+		(!tmpPersoner || Object.keys(tmpPersoner).length < 1)
+	) {
 		return null
 	}
 
-	const gjeldendePartnere = partnere.filter((partner: Sivilstand) => !partner.metadata?.historisk)
-	const historiskePartnere = partnere.filter((partner: Sivilstand) => partner.metadata?.historisk)
+	const gjeldendePartnere = partnere.filter(
+		(partner: SivilstandData) => !partner.metadata?.historisk,
+	)
+	const historiskePartnere = partnere.filter(
+		(partner: SivilstandData) => partner.metadata?.historisk,
+	)
 
 	return (
 		<div>
 			<SubOverskrift label="Sivilstand (partner)" iconKind="partner" />
 			<ArrayHistorikk
-				component={Visning}
+				component={PartnerVisning}
+				componentRedigerbar={PartnerVisningRedigerbar}
 				data={gjeldendePartnere}
+				pdlfData={pdlfData}
 				historiskData={historiskePartnere}
+				tmpPersoner={tmpPersoner}
+				ident={ident}
+				identtype={identtype}
 				header={''}
 			/>
 		</div>
