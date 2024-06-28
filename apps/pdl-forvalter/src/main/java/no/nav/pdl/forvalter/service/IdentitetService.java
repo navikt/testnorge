@@ -90,9 +90,11 @@ public class IdentitetService {
                             try {
                                 return method.invoke(person);
                             } catch (IllegalAccessException | InvocationTargetException e) {
-                                throw new RuntimeException(e);
+                                log.error("Feilet å utføre metodekall for {} ", method);
+                                return null;
                             }
                         })
+                        .filter(Objects::nonNull)
                         .filter(List.class::isInstance)
                         .map(opplysninger -> ((List<? extends DbVersjonDTO>) opplysninger))
                         .flatMap(Collection::stream)
@@ -121,9 +123,11 @@ public class IdentitetService {
                                     try {
                                         return method.invoke(person1);
                                     } catch (IllegalAccessException | InvocationTargetException e) {
-                                        throw new RuntimeException(e);
+                                        log.error("Feilet å utføre metodekall for {} ", method);
+                                        return null;
                                     }
                                 })
+                                .filter(Objects::nonNull)
                                 .filter(List.class::isInstance)
                                 .map(opplysninger -> ((List<? extends DbVersjonDTO>) opplysninger))
                                 .flatMap(Collection::stream)
