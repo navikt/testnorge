@@ -7,17 +7,25 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.levendearbeidsforhold.config.Consumers;
 import no.nav.registre.testnorge.levendearbeidsforhold.consumers.HentArbeidsforholdConsumer;
 import no.nav.testnav.libs.dto.ameldingservice.v1.ArbeidsforholdDTO;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ResourceServerType;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.securitycore.domain.Token;
 import no.nav.testnav.libs.servletsecurity.action.GetAuthenticatedResourceServerType;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenService;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenXService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static no.nav.testnav.libs.securitycore.domain.ResourceServerType.TOKEN_X;
 
 /**
  * Service for å sjekke arbeidsforhold.
@@ -31,6 +39,8 @@ public class ArbeidsforholdService {
     private final HentArbeidsforholdConsumer hentArbeidsforholdConsumer;
     private final GetAuthenticatedResourceServerType getAuthenticatedResourceServerType;
     private final Consumers consumers;
+    @Autowired
+    Environment env;
     private String issuerUri;
     private String jwkSetUri;
     private String id;
@@ -40,10 +50,9 @@ public class ArbeidsforholdService {
     @EventListener(ApplicationReadyEvent.class)
     public void sjekkArbeidsforhold() {
         WebClient webClient = WebClient.create();
-        ServerProperties serverProperties = ServerProperties.of("dev-gcp", "dolly", "aareg", "https://aareg-services-q2.intern.dev.nav.no");
+        ServerProperties serverProperties = consumers.getTestnavLevendeArbeidsforholdService();
 
-        TokenExchange tokenExchange = new TokenExchange(getAuthenticatedResourceServerType, new ArrayList<>(), new ObjectMapper());
-        Token token = Token.builder().accessTokenValue(env.getProperty("VAULT_TOKEN")).build();
+        Token token = Token.builder().accessTokenValue(env.getProperty("MAGIC_TOKEN")).build();
         log.info("Token: {}", token.getAccessTokenValue());
         List<TokenService> tokenServices = new ArrayList<>();
         HentArbeidsforholdConsumer arbeid = new HentArbeidsforholdConsumer(
