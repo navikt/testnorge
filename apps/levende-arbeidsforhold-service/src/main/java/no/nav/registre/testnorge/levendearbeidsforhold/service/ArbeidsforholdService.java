@@ -10,14 +10,10 @@ import no.nav.testnav.libs.dto.ameldingservice.v1.ArbeidsforholdDTO;
 import no.nav.testnav.libs.securitycore.domain.ResourceServerType;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.action.GetAuthenticatedResourceServerType;
-import no.nav.testnav.libs.servletsecurity.exchange.ExchangeToken;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
-import no.nav.testnav.libs.servletsecurity.properties.ResourceServerProperties;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.vault.authentication.JwtAuthentication;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.ArrayList;
@@ -42,7 +38,6 @@ public class ArbeidsforholdService {
     @EventListener(ApplicationReadyEvent.class)
     public void sjekkArbeidsforhold() {
         WebClient webClient = WebClient.create();
-        ResourceServerType resourceServerType = getAuthenticatedResourceServerType.call();
         ServerProperties serverProperties = ServerProperties.of("dev-gcp", "dolly", "aareg", "https://aareg-services-q2.intern.dev.nav.no");
 
         TokenExchange tokenExchange = new TokenExchange(getAuthenticatedResourceServerType, new ArrayList<>(), new ObjectMapper());
