@@ -31,6 +31,6 @@ public class DoedsfallListener {
             log.info("Record key:" + record.key());
             log.info("Record value:" + record.value().toString());
         }
-        log.info(records.getFirst().value().toString());
+
     }
 }
