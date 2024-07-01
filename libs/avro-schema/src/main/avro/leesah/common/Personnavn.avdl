@@ -1,9 +1,0 @@
-@namespace("no.nav.person.pdl.leesah.common")
-protocol PersonnavnV1 {
-
-  record Personnavn {
-    string fornavn;
-    union { null, string } mellomnavn = null;
-    string etternavn;
-  }
-}

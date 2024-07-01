@@ -1,9 +1,0 @@
-@namespace("no.nav.person.pdl.leesah.common.adresse")
-protocol KoordinaterV1 {
-
-    record Koordinater {
-        union { null, float } x = null;
-        union { null, float } y = null;
-        union { null, float } z = null;
-    }
-}

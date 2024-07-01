@@ -1,9 +1,0 @@
-@namespace("no.nav.person.pdl.leesah.folkeregisteridentifikator")
-protocol FolkeregisteridentifikatorV1 {
-
-  record Folkeregisteridentifikator {
-    string identifikasjonsnummer;
-    string type;
-    string status;
-  }
-}

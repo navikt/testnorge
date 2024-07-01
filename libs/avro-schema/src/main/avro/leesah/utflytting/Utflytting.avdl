@@ -1,9 +1,0 @@
-@namespace("no.nav.person.pdl.leesah.utflytting")
-protocol UtflyttingV1 {
-
-  record UtflyttingFraNorge {
-    union { null, string } tilflyttingsland = null;
-    union { null, string } tilflyttingsstedIUtlandet = null;
-    union { null, date } utflyttingsdato = null;
-  }
-}
