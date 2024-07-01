@@ -1,0 +1,10 @@
+@namespace("no.nav.person.pdl.leesah.sivilstand")
+protocol SivilstandV1 {
+
+  record Sivilstand {
+    string type;
+    union { null, date } gyldigFraOgMed = null;
+    union { null, string } relatertVedSivilstand = null;
+    union { null, date } bekreftelsesdato = null;
+  }
+}

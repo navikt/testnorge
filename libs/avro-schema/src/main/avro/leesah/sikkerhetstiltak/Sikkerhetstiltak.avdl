@@ -1,0 +1,16 @@
+@namespace("no.nav.person.pdl.leesah.sikkerhetstiltak")
+protocol SikkerhetstiltakV1 {
+
+  record Kontaktperson {
+    union { null, string } personident = null;
+    union { null, string } norgEnhet = null;
+  }
+
+  record Sikkerhetstiltak {
+    union { null, Kontaktperson } kontaktperson = null;
+    string type;
+    string beskrivelse;
+    date gyldigFom;
+    date gyldigTom;
+  }
+}

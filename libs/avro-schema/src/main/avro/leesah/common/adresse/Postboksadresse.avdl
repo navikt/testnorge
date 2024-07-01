@@ -1,0 +1,9 @@
+@namespace("no.nav.person.pdl.leesah.common.adresse")
+protocol PostboksadresseV1 {
+
+  record Postboksadresse {
+    union { null, string } postbokseier = null;
+    string postboks;
+    union { null, string } postnummer = null;
+  }
+}

@@ -1,0 +1,13 @@
+@namespace("no.nav.person.pdl.leesah.common.adresse")
+protocol UtenlandskAdresseV1 {
+
+  record UtenlandskAdresse {
+    union { null, string } adressenavnNummer = null;
+    union { null, string } bygningEtasjeLeilighet = null;
+    union { null, string } postboksNummerNavn = null;
+    union { null, string } postkode = null;
+    union { null, string } bySted = null;
+    union { null, string } regionDistriktOmraade = null;
+    string landkode;
+  }
+}

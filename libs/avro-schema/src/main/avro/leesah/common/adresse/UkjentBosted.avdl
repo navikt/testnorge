@@ -1,0 +1,7 @@
+@namespace("no.nav.person.pdl.leesah.common.adresse")
+protocol UkjentBostedV1 {
+
+  record UkjentBosted {
+    union { null, string } bostedskommune = null;
+  }
+}

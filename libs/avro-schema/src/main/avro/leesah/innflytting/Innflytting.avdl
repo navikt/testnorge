@@ -1,0 +1,8 @@
+@namespace("no.nav.person.pdl.leesah.innflytting")
+protocol InnflyttingV1 {
+
+  record InnflyttingTilNorge {
+    union { null, string } fraflyttingsland = null;
+    union { null, string } fraflyttingsstedIUtlandet = null;
+  }
+}

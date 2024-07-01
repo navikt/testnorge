@@ -1,0 +1,10 @@
+@namespace("no.nav.person.pdl.leesah.common.adresse")
+protocol PostadresseIFrittFormatV1 {
+
+  record PostadresseIFrittFormat {
+    union { null, string } adresselinje1 = null;
+    union { null, string } adresselinje2 = null;
+    union { null, string } adresselinje3 = null;
+    union { null, string } postnummer = null;
+  }
+}

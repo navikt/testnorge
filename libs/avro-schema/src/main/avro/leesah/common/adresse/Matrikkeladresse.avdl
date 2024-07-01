@@ -1,0 +1,13 @@
+@namespace("no.nav.person.pdl.leesah.common.adresse")
+protocol MatrikkeladresseV1 {
+  import idl "Koordinater.avdl";
+
+  record Matrikkeladresse {
+    union { null, string } matrikkelId = null;
+    union { null, string } bruksenhetsnummer = null;
+    union { null, string } tilleggsnavn = null;
+    union { null, string } postnummer = null;
+    union { null, string } kommunenummer = null;
+    union { null, no.nav.person.pdl.leesah.common.adresse.Koordinater } koordinater = null;
+  }
+}

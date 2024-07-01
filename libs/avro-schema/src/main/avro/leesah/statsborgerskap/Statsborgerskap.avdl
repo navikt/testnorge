@@ -1,0 +1,13 @@
+@namespace("no.nav.person.pdl.leesah.statsborgerskap")
+protocol StatsborgerskapV1 {
+  record Statsborgerskap {
+
+  // FELLES
+    string land;
+    union { null, date } gyldigFom = null;
+
+  // PDL
+    union { null, date } gyldigTom = null;
+    union { null, date } bekreftelsesdato = null;
+  }
+}

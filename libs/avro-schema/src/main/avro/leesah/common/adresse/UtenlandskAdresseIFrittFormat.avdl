@@ -1,0 +1,12 @@
+@namespace("no.nav.person.pdl.leesah.common.adresse")
+protocol UtenlandskAdresseIFrittFormatV1 {
+
+  record UtenlandskAdresseIFrittFormat {
+    union { null, string } adresselinje1 = null;
+    union { null, string } adresselinje2 = null;
+    union { null, string } adresselinje3 = null;
+    union { null, string } postkode = null;
+    union { null, string } byEllerStedsnavn = null;
+    string landkode;
+  }
+}

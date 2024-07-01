@@ -1,0 +1,20 @@
+@namespace("no.nav.person.pdl.leesah.kontaktadresse")
+protocol KontaktadresseV1 {
+  import idl "../common/adresse/Postboksadresse.avdl";
+  import idl "../common/adresse/Vegadresse.avdl";
+  import idl "../common/adresse/PostadresseIFrittFormat.avdl";
+  import idl "../common/adresse/UtenlandskAdresse.avdl";
+  import idl "../common/adresse/UtenlandskAdresseIFrittFormat.avdl";
+
+  record Kontaktadresse {
+    union { null, date } gyldigFraOgMed = null;
+    union { null, date } gyldigTilOgMed = null;
+    string type;
+    union { null, string } coAdressenavn = null;
+    union { null, no.nav.person.pdl.leesah.common.adresse.Postboksadresse } postboksadresse = null;
+    union { null, no.nav.person.pdl.leesah.common.adresse.Vegadresse } vegadresse = null;
+    union { null, no.nav.person.pdl.leesah.common.adresse.PostadresseIFrittFormat } postadresseIFrittFormat = null;
+    union { null, no.nav.person.pdl.leesah.common.adresse.UtenlandskAdresse } utenlandskAdresse = null;
+    union { null, no.nav.person.pdl.leesah.common.adresse.UtenlandskAdresseIFrittFormat } utenlandskAdresseIFrittFormat = null;
+  }
+}

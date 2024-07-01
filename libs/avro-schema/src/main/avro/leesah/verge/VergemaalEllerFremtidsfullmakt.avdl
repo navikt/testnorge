@@ -1,0 +1,17 @@
+@namespace("no.nav.person.pdl.leesah.verge")
+protocol VergeV1 {
+  import idl "../common/Personnavn.avdl";
+
+  record VergeEllerFullmektig {
+    union { null, no.nav.person.pdl.leesah.common.Personnavn } navn = null;
+    union { null, string } motpartsPersonident = null;
+    union { null, string } omfang = null;
+    union{null, boolean} omfangetErInnenPersonligOmraade = null;
+  }
+
+  record VergemaalEllerFremtidsfullmakt {
+    union { null, string } type = null;
+    union { null, string } embete = null;
+    VergeEllerFullmektig vergeEllerFullmektig;
+  }
+}

@@ -1,0 +1,9 @@
+@namespace("no.nav.person.pdl.leesah.telefonnummer")
+protocol TelefonnummerV1 {
+
+  record Telefonnummer {
+    union { null, string } landskode = null;
+    union { null, string } nummer = null;
+    union { null, int } prioritet = null;
+  }
+}

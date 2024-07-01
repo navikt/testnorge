@@ -1,0 +1,19 @@
+@namespace("no.nav.person.pdl.leesah.navn")
+protocol NavnV1 {
+
+// Kan ikke bruke den samme som felles fordi den har påkrevd fornavn og etternavn.
+  record OriginaltNavn {
+    union { null, string } fornavn = null;
+    union { null, string } mellomnavn = null;
+    union { null, string } etternavn = null;
+  }
+
+  record Navn {
+    string fornavn;
+    union { null, string } mellomnavn = null;
+    string etternavn;
+    union { null, string } forkortetNavn = null;
+    union { null, OriginaltNavn } originaltNavn = null;
+    union { null, date } gyldigFraOgMed = null;
+  }
+}

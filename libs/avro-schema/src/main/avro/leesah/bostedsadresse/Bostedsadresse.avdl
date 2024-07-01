@@ -1,0 +1,19 @@
+@namespace("no.nav.person.pdl.leesah.bostedsadresse")
+protocol BostedsadresseV1 {
+  import idl "../common/adresse/Vegadresse.avdl";
+  import idl "../common/adresse/Matrikkeladresse.avdl";
+  import idl "../common/adresse/UtenlandskAdresse.avdl";
+  import idl "../common/adresse/UkjentBosted.avdl";
+
+  record Bostedsadresse {
+    union { null, date } angittFlyttedato = null;
+    union { null, date } gyldigFraOgMed = null;
+    union { null, date } gyldigTilOgMed = null;
+
+    union { null, string } coAdressenavn = null;
+    union { null, no.nav.person.pdl.leesah.common.adresse.Vegadresse } vegadresse = null;
+    union { null, no.nav.person.pdl.leesah.common.adresse.Matrikkeladresse } matrikkeladresse = null;
+    union { null, no.nav.person.pdl.leesah.common.adresse.UtenlandskAdresse } utenlandskAdresse = null;
+    union { null, no.nav.person.pdl.leesah.common.adresse.UkjentBosted } ukjentBosted = null;
+  }
+}
