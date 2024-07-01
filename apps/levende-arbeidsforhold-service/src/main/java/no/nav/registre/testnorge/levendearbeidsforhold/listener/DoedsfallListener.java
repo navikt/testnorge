@@ -30,7 +30,7 @@ public class DoedsfallListener {
     public static void helloworld(){
         System.out.println("Hello wooorld");
     }
-
+/*
     @EventListener(ContextRefreshedEvent.class)
     public void onApplicationEvent() {
         log.info("Hello World");
@@ -40,4 +40,6 @@ public class DoedsfallListener {
         log.info(records.stream().toList().toString());
 
     }
+
+ */
 }
