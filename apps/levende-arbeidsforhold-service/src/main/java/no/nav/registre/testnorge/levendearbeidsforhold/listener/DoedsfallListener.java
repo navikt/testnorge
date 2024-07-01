@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.person.pdl.leesah.Personhendelse;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.common.protocol.types.Field;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -28,9 +29,26 @@ public class DoedsfallListener {
     @KafkaListener(topics = doedsfallTopic)
     public void getHendelser(List<ConsumerRecord<String, Personhendelse>> records) {
         for (ConsumerRecord<String, Personhendelse> record: records){
-            log.info("Record key:" + record.key());
-            log.info("Record value:" + record.value().toString());
+
+            String aktorID = record.key();
+
+            //Validerer om vi skal fortsette eller ignorere hendelsen
+            Boolean riktigHendelse = validerHendelse(record.value().get(4).toString());
+
+            if (riktigHendelse){
+                log.info("DØDSFALL! Aktør-ID: {}", aktorID);
+            }
+
         }
 
+    }
+
+    /**
+     * Validerer om hendelsen er dødsfall
+     * @param personhendelse - Hendelse/opplysningstype, f.eks: FOLKEREGISTERIDENTIFIKATOR_V1, NAVN_V1, SIVILSTAND_V1, etc.
+     * @return true dersom det er dødsfall, false hvis ikke
+     */
+    private Boolean validerHendelse(String personhendelse) {
+        return personhendelse.equals("DOEDSFALL_V1");
     }
 }
