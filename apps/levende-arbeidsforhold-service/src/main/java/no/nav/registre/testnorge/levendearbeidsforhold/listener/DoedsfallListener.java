@@ -3,14 +3,11 @@ package no.nav.registre.testnorge.levendearbeidsforhold.listener;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.person.pdl.leesah.Personhendelse;
-import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.common.protocol.types.Field;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
-import no.nav.testnav.libs.avro.hendelse.Hendelse;
 
 import java.util.List;
 
@@ -35,8 +32,9 @@ public class DoedsfallListener {
             //Validerer om vi skal fortsette eller ignorere hendelsen
             Boolean riktigHendelse = validerHendelse(record.value().get(4).toString());
 
+            //Flyt for doedsfall-hendelser
             if (riktigHendelse){
-                log.info("DØDSFALL! Aktør-ID: {}", aktorID);
+                log.info("DØDSFALL. Aktør-ID: {} ", aktorID);
             }
 
         }
