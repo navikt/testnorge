@@ -41,7 +41,7 @@ public class HentArbeidsforholdConsumer {
             TokenExchange tokenExchange,
             ObjectMapper objectMapper) {
         // Henter serverProperties fra consumers
-        serverProperties = consumers.getLevendeArbeidsforholdService();
+        serverProperties = consumers.getTestnavAaregProxy();
         this.tokenExchange = tokenExchange;
         //Bygger en ExchangeStratefies for å mappe json til objekter
         ExchangeStrategies exchangeStrategies = ExchangeStrategies
