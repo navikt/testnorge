@@ -53,7 +53,7 @@ public class ArbeidsforholdService {
         log.info("Token: {}", token.getAccessTokenValue());
 
         id = "30447515845";
-        List<ArbeidsforholdDTO> arbeidsforhold = hentArbeidsforholdConsumer.getArbeidsforhold(id, token);
+        List<ArbeidsforholdDTO> arbeidsforhold = hentArbeidsforholdConsumer.getArbeidsforhold(id);
         if (arbeidsforhold != null) {
             log.info("Arbeidsforhold funnet: {}", arbeidsforhold);
         } else {

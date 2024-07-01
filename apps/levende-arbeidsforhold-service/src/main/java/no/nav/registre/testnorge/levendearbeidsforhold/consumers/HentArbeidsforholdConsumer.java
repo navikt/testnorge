@@ -76,10 +76,10 @@ public class HentArbeidsforholdConsumer {
      * @param ident FNR/DNR/aktør id til arbeidstakeren
      * @return Hvis arbeidsforhold finnes for identen vil en liste med ArbeidsforholdDTO bli returnert, ellers en tom liste
      */
-    public List<ArbeidsforholdDTO> getArbeidsforhold(String ident, Token token) {
-        //var tokenX = tokenExchange.exchange(serverProperties).block();
+    public List<ArbeidsforholdDTO> getArbeidsforhold(String ident) {
+        var token = tokenExchange.exchange(serverProperties).block();
         if(nonNull(token)) {
-            return new HentArbeidsforholdCommand(webClient, token.getAccessTokenValue(), ident).call();
+            return new HentArbeidsforholdCommand(webClient, token.getTokenValue(), ident).call();
         }
         return new ArrayList<>();
     }
