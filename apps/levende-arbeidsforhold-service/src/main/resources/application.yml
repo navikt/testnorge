@@ -8,12 +8,17 @@ spring:
     version: application.version.todo #TODO Finn ut hvordan denne kan settes fra Gradle
     description: App for å hente PDL personer.
   security:
-    oauth2:
+      oauth2:
+        client:
       resourceserver:
         aad:
           issuer-uri: ${AAD_ISSUER_URI}/v2.0
           jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
           accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+        tokenx:
+          issuer-uri: ${TOKEN_X_ISSUER}
+          jwk-set-uri: ${TOKEN_X_JWKS_URI}
+          accepted-audience: ${TOKEN_X_CLIENT_ID}
 
   cloud:
     vault:
@@ -21,6 +26,9 @@ spring:
   kafka:
     consumer:
       group-id: testnav-levende-arbeidsforhold-service
+  jms:
+    cache:
+      consumers:
 springdoc:
   swagger-ui:
     disable-swagger-default-url: true
@@ -47,3 +55,9 @@ server:
       charset: UTF-8
   error:
     include-message: always
+consumers:
+  testnav-levende-arbeidsforhold-service:
+    name: testnav-levende-arbeidsforhold-service
+    namespace: dolly
+    url: https://testnav-levende-arbeidsforhold-service.dev-fss-pub.nais.io
+    cluster: dev-gcp

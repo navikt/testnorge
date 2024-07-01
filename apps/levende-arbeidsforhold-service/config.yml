@@ -15,6 +15,10 @@ spec:
           cluster: dev-gcp
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
+    outbound:
+      rules:
+        - application: testnav-levende-arbeidsforhold-service
+          cluster: dev-gcp
   azure:
     application:
       allowAllUsers: true

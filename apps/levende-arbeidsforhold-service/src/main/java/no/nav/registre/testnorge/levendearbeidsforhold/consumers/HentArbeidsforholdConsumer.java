@@ -1,10 +1,13 @@
 package no.nav.registre.testnorge.levendearbeidsforhold.consumers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.levendearbeidsforhold.consumers.command.HentArbeidsforholdCommand;
 import no.nav.testnav.libs.dto.ameldingservice.v1.ArbeidsforholdDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.securitycore.domain.Token;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
@@ -24,11 +27,13 @@ import static java.util.Objects.nonNull;
  * TokenExchange for å hente token fra STS
  * ObjectMapper for å mappe json til objekter
  */
+@Slf4j
 @Component
 public class HentArbeidsforholdConsumer {
     private final WebClient webClient;
     private final ServerProperties serverProperties;
     private final TokenExchange tokenExchange;
+
 
     /**
      * Konstruktør
@@ -37,12 +42,15 @@ public class HentArbeidsforholdConsumer {
      * @param objectMapper er ett objekt som mapper json til objekter
      */
     public HentArbeidsforholdConsumer(
-            Consumers consumers,
+            Consumers consumers, //TokenExchange tokenExchange
             TokenExchange tokenExchange,
             ObjectMapper objectMapper) {
-        // Henter serverProperties fra consumers
-        serverProperties = consumers.getTestnavAaregProxy();
         this.tokenExchange = tokenExchange;
+        // Henter serverProperties fra consumers
+
+        serverProperties = consumers.getTestnavLevendeArbeidsforholdService();
+        log.info("ServerProperties: {}", serverProperties.toString());
+        //this.tokenExchange = tokenExchange;
         //Bygger en ExchangeStratefies for å mappe json til objekter
         ExchangeStrategies exchangeStrategies = ExchangeStrategies
                 .builder()
@@ -58,8 +66,9 @@ public class HentArbeidsforholdConsumer {
         this.webClient = WebClient
                 .builder()
                 .exchangeStrategies(exchangeStrategies)
-                .baseUrl("serverProperties.getUrl()") //For lokal kjøring bytt ut med https://aareg-services-q2.intern.nav.no
+                .baseUrl("https://aareg-services-q2.intern.dev.nav.no") //For lokal kjøring bytt ut med https://aareg-services-q2.intern.nav.no
                 .build();
+        log.info("WebClient: {}", webClient.toString());
     }
 
     /**
@@ -67,10 +76,10 @@ public class HentArbeidsforholdConsumer {
      * @param ident FNR/DNR/aktør id til arbeidstakeren
      * @return Hvis arbeidsforhold finnes for identen vil en liste med ArbeidsforholdDTO bli returnert, ellers en tom liste
      */
-    public List<ArbeidsforholdDTO> getArbeidsforhold(String ident) {
-        var token = tokenExchange.exchange(serverProperties).block();
+    public List<ArbeidsforholdDTO> getArbeidsforhold(String ident, Token token) {
+        var tokenX = tokenExchange.exchange(serverProperties).block();
         if(nonNull(token)) {
-            return new HentArbeidsforholdCommand(webClient, token.getTokenValue(), ident).call();
+            return new HentArbeidsforholdCommand(webClient, tokenX.getTokenValue(), ident).call();
         }
         return new ArrayList<>();
     }

@@ -24,7 +24,7 @@ public class DoedsfallListener {
     public void onApplicationEvent() {
         log.info("Hello World");
     }
-
+/*
     @KafkaListener(topics = doedsfallTopic)
     public void getHendelser(List<ConsumerRecord<String, Personhendelse>> records) {
         for (ConsumerRecord<String, Personhendelse> record: records){
@@ -33,4 +33,6 @@ public class DoedsfallListener {
         }
 
     }
+
+ */
 }
