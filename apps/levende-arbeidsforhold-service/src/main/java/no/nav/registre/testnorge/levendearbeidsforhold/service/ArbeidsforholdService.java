@@ -23,7 +23,6 @@ public class ArbeidsforholdService {
     private final HentArbeidsforholdConsumer aaregArbeidsforholdConsumer;
     @EventListener(ApplicationReadyEvent.class)
     public void sjekkArbeidsforhold(String id) {
-        id = "30447515845";
         List<ArbeidsforholdDTO> arbeidsforhold = aaregArbeidsforholdConsumer.getArbeidsforhold(id);
         if (arbeidsforhold != null) {
             log.info("Arbeidsforhold funnet: {}", arbeidsforhold);
