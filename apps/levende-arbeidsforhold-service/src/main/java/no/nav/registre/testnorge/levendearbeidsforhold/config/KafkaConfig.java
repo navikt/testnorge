@@ -39,6 +39,9 @@ public class KafkaConfig {
     }
 
     public ConsumerFactory<String, String> consumerFactory() {
+
+        String randomSuffixGroupID = String.valueOf((int)(Math.random() * 1000));
+
         InetSocketAddress inetSocketAddress = new InetSocketAddress(0);
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, System.getenv("KAFKA_BROKERS"));
