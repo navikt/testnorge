@@ -27,7 +27,7 @@ public class DoedsfallListener {
         String id = "30447515845";
         arbeidsforholdsService.getArbeidsforhold(id);
     }
-
+/*
     @KafkaListener(topics = doedsfallTopic)
     public void getHendelser(List<ConsumerRecord<String, Personhendelse>> records) {
         for (ConsumerRecord<String, Personhendelse> record: records){
@@ -36,4 +36,6 @@ public class DoedsfallListener {
         }
 
     }
+
+ */
 }
