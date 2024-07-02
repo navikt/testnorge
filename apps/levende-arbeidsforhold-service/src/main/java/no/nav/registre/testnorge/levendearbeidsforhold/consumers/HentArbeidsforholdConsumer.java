@@ -21,12 +21,6 @@ import java.util.List;
 
 import static java.util.Objects.nonNull;
 
-/**
- * Consumer for å hente arbeidsforhold fra AAREG
- * WebClient for å hente data fra AAREG
- * TokenExchange for å hente token fra STS
- * ObjectMapper for å mappe json til objekter
- */
 @Slf4j
 @Component
 public class HentArbeidsforholdConsumer {
@@ -34,13 +28,6 @@ public class HentArbeidsforholdConsumer {
     private final ServerProperties serverProperties;
     private final TokenExchange tokenExchange;
 
-
-    /**
-     * Konstruktør
-     * @param consumers er ett objekt som inneholder serverProperties som finnes i application.yml
-     * @param tokenExchange er ett objekt som henter token fra STS
-     * @param objectMapper er ett objekt som mapper json til objekter
-     */
     public HentArbeidsforholdConsumer(
             Consumers consumers, //TokenExchange tokenExchange
             TokenExchange tokenExchange,
@@ -66,7 +53,7 @@ public class HentArbeidsforholdConsumer {
         this.webClient = WebClient
                 .builder()
                 .exchangeStrategies(exchangeStrategies)
-                .baseUrl("https://aareg-services-q2.intern.dev.nav.no") //For lokal kjøring bytt ut med https://aareg-services-q2.intern.nav.no
+                .baseUrl(serverProperties.getUrl()) //For lokal kjøring bytt ut med https://aareg-services-q2.intern.nav.no
                 .build();
         log.info("WebClient: {}", webClient.toString());
     }

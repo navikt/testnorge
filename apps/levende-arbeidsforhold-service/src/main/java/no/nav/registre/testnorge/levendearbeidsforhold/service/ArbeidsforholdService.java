@@ -37,19 +37,13 @@ import static no.nav.testnav.libs.securitycore.domain.ResourceServerType.TOKEN_X
 @RequiredArgsConstructor
 public class ArbeidsforholdService {
     private final HentArbeidsforholdConsumer hentArbeidsforholdConsumer;
-    private final GetAuthenticatedResourceServerType getAuthenticatedResourceServerType;
     private final Consumers consumers;
     @Autowired
     Environment env;
     private String id;
 
-
-    @EventListener(ApplicationReadyEvent.class)
     public void sjekkArbeidsforhold() {
 
-        WebClient webClient = WebClient.create();
-        ServerProperties serverProperties = consumers.getTestnavLevendeArbeidsforholdService();
-        log.info("ServerProperties: {}", serverProperties.toString());
         id = "30447515845";
         List<ArbeidsforholdDTO> arbeidsforhold = hentArbeidsforholdConsumer.getArbeidsforhold(id);
         if (arbeidsforhold != null) {
