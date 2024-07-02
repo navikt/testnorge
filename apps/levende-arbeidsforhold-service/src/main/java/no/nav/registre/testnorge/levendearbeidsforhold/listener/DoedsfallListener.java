@@ -23,12 +23,13 @@ public class DoedsfallListener {
     private static final String doedsfallTopic = "pdl.leesah-v1";
     @Autowired
     private final ArbeidsforholdService arbeidsforholdsService;
-    @EventListener(ContextRefreshedEvent.class)
+    //@EventListener(ContextRefreshedEvent.class)
     public void onApplicationEvent() {
         log.info("Hello World");
-        arbeidsforholdsService.sjekkArbeidsforhold();
+        String id = "30447515845";
+        arbeidsforholdsService.getArbeidsforhold(id, "Q2");
     }
-/*
+
     @KafkaListener(topics = doedsfallTopic)
     public void getHendelser(List<ConsumerRecord<String, Personhendelse>> records) {
         for (ConsumerRecord<String, Personhendelse> record: records){
@@ -38,5 +39,5 @@ public class DoedsfallListener {
 
     }
 
- */
+
 }

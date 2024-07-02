@@ -18,58 +18,50 @@ import no.nav.registre.testnorge.levendearbeidsforhold.config.Consumers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 import static java.util.Objects.nonNull;
 
 @Slf4j
 @Component
 public class HentArbeidsforholdConsumer {
+
     private final WebClient webClient;
     private final ServerProperties serverProperties;
     private final TokenExchange tokenExchange;
 
     public HentArbeidsforholdConsumer(
-            Consumers consumers, //TokenExchange tokenExchange
+            Consumers consumers,
             TokenExchange tokenExchange,
             ObjectMapper objectMapper) {
-        this.tokenExchange = tokenExchange;
-        // Henter serverProperties fra consumers
-
         serverProperties = consumers.getTestnavLevendeArbeidsforholdService();
-        log.info("ServerProperties: {}", serverProperties.toString());
-        //this.tokenExchange = tokenExchange;
-        //Bygger en ExchangeStratefies for å mappe json til objekter
-        ExchangeStrategies exchangeStrategies = ExchangeStrategies
+        this.tokenExchange = tokenExchange;
+        ExchangeStrategies jacksonStrategy = ExchangeStrategies
                 .builder()
-                .codecs(configurer -> {
-                    configurer.defaultCodecs()
-                            .jackson2JsonDecoder(new Jackson2JsonDecoder(objectMapper, MediaType.APPLICATION_JSON));
-                    configurer.defaultCodecs()
-                            .jackson2JsonEncoder(new Jackson2JsonEncoder(objectMapper, MediaType.APPLICATION_JSON));
-                })
+                .codecs(
+                        config -> {
+                            config
+                                    .defaultCodecs()
+                                    .jackson2JsonEncoder(new Jackson2JsonEncoder(objectMapper, MediaType.APPLICATION_JSON));
+                            config
+                                    .defaultCodecs()
+                                    .jackson2JsonDecoder(new Jackson2JsonDecoder(objectMapper, MediaType.APPLICATION_JSON));
+                        })
                 .build();
-        //Bygger en WebClient for å hente data fra AAREG
-        //Legger inn echangestrategies og baseurl
         this.webClient = WebClient
                 .builder()
-                .exchangeStrategies(exchangeStrategies)
-                .baseUrl(serverProperties.getUrl()) //For lokal kjøring bytt ut med https://aareg-services-q2.intern.nav.no
+                .exchangeStrategies(jacksonStrategy)
+                .baseUrl(serverProperties.getUrl())
                 .build();
-        log.info("WebClient: {}", webClient.toString());
     }
 
-    /**
-     * Henter arbeidsforhold for en arbeidstaker
-     * @param ident FNR/DNR/aktør id til arbeidstakeren
-     * @return Hvis arbeidsforhold finnes for identen vil en liste med ArbeidsforholdDTO bli returnert, ellers en tom liste
-     */
-    public List<ArbeidsforholdDTO> getArbeidsforhold(String ident) {
+    public List<ArbeidsforholdDTO> getArbeidsforholds(String ident, String miljo) {
         var token = tokenExchange.exchange(serverProperties).block();
-        if(nonNull(token)) {
+        if (nonNull(token)) {
             return new HentArbeidsforholdCommand(webClient, token.getTokenValue(), ident).call();
         }
         return new ArrayList<>();
     }
 
 }
-
