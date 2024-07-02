@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.person.pdl.leesah.Personhendelse;
 import no.nav.registre.testnorge.levendearbeidsforhold.service.ArbeidsforholdService;
+import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -25,7 +26,6 @@ public class DoedsfallListener {
     public void onApplicationEvent() {
         log.info("Hello World");
         String id = "30447515845";
-        arbeidsforholdsService.getArbeidsforhold(id);
     }
 /*
     @KafkaListener(topics = doedsfallTopic)
