@@ -41,10 +41,7 @@ public class ArbeidsforholdService {
     private final Consumers consumers;
     @Autowired
     Environment env;
-    private String issuerUri;
-    private String jwkSetUri;
     private String id;
-    private List<String> acceptedAudience;
 
 
     @EventListener(ApplicationReadyEvent.class)
@@ -54,14 +51,7 @@ public class ArbeidsforholdService {
 
         Token token = Token.builder().accessTokenValue(env.getProperty("MAGIC_TOKEN")).build();
         log.info("Token: {}", token.getAccessTokenValue());
-        List<TokenService> tokenServices = new ArrayList<>();
-        HentArbeidsforholdConsumer arbeid = new HentArbeidsforholdConsumer(
-                consumers,
-                new TokenExchange(
-                        getAuthenticatedResourceServerType,
-                        tokenServices,
-                        new ObjectMapper()) ,
-                new ObjectMapper());//tokenExchange
+
         id = "30447515845";
         List<ArbeidsforholdDTO> arbeidsforhold = hentArbeidsforholdConsumer.getArbeidsforhold(id);
         if (arbeidsforhold != null) {
