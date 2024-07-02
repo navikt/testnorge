@@ -8,7 +8,8 @@ spring:
     version: application.version.todo #TODO Finn ut hvordan denne kan settes fra Gradle
     description: App for å hente PDL personer.
   security:
-    oauth2:
+      oauth2:
+        client:
       resourceserver:
         aad:
           issuer-uri: ${AAD_ISSUER_URI}/v2.0
