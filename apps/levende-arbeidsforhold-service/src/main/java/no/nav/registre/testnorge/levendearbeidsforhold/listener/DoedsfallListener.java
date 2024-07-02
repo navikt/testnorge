@@ -21,7 +21,7 @@ public class DoedsfallListener {
     private static final String doedsfallTopic = "pdl.leesah-v1";
     @Autowired
     private final ArbeidsforholdService arbeidsforholdsService;
-    //@EventListener(ApplicationReadyEvent.class)
+    @EventListener(ApplicationReadyEvent.class)
     public void onApplicationEvent() {
         log.info("Hello World");
         String id = "30447515845";
