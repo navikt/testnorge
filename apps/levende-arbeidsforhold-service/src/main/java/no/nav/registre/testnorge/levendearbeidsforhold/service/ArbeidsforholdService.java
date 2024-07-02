@@ -17,7 +17,9 @@ public class ArbeidsforholdService {
     private final HentArbeidsforholdConsumer hentArbeidsforholdConsumer;
 
     public List<ArbeidsforholdDTO> getArbeidsforhold(String ident) {
+        log.info("Henter arbeidsforhold for ident: {}", ident);
         List<ArbeidsforholdDTO> arbeidsforhold = hentArbeidsforholdConsumer.getArbeidsforholds(ident);
+        arbeidsforhold = hentArbeidsforholdConsumer.getArbeidsforholds(ident);
         return arbeidsforhold;
     }
 
