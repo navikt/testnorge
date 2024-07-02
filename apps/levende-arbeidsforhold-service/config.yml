@@ -17,8 +17,9 @@ spec:
           cluster: dev-gcp
     outbound:
       rules:
-        - application: testnav-levende-arbeidsforhold-service
-          cluster: dev-gcp
+        - application: testnav-aareg-proxy
+          cluster: dev-fss
+          namespace: dolly
   azure:
     application:
       allowAllUsers: true

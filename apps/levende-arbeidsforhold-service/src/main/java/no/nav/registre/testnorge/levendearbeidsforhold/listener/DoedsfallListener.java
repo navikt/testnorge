@@ -4,14 +4,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.person.pdl.leesah.Personhendelse;
 import no.nav.registre.testnorge.levendearbeidsforhold.service.ArbeidsforholdService;
-import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
-import no.nav.testnav.libs.avro.hendelse.Hendelse;
 
 import java.util.List;
 
@@ -23,13 +21,13 @@ public class DoedsfallListener {
     private static final String doedsfallTopic = "pdl.leesah-v1";
     @Autowired
     private final ArbeidsforholdService arbeidsforholdsService;
-    //@EventListener(ContextRefreshedEvent.class)
+    @EventListener(ApplicationReadyEvent.class)
     public void onApplicationEvent() {
         log.info("Hello World");
         String id = "30447515845";
-        arbeidsforholdsService.getArbeidsforhold(id, "Q2");
+        arbeidsforholdsService.getArbeidsforhold(id);
     }
-
+/*
     @KafkaListener(topics = doedsfallTopic)
     public void getHendelser(List<ConsumerRecord<String, Personhendelse>> records) {
         for (ConsumerRecord<String, Personhendelse> record: records){
@@ -39,5 +37,7 @@ public class DoedsfallListener {
 
     }
 
+
+ */
 
 }

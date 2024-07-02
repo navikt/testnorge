@@ -5,9 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.levendearbeidsforhold.consumers.command.HentArbeidsforholdCommand;
 import no.nav.testnav.libs.dto.ameldingservice.v1.ArbeidsforholdDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.securitycore.domain.Token;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
@@ -18,8 +16,6 @@ import no.nav.registre.testnorge.levendearbeidsforhold.config.Consumers;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 import static java.util.Objects.nonNull;
 
@@ -35,7 +31,7 @@ public class HentArbeidsforholdConsumer {
             Consumers consumers,
             TokenExchange tokenExchange,
             ObjectMapper objectMapper) {
-        serverProperties = consumers.getTestnavLevendeArbeidsforholdService();
+        serverProperties = consumers.getTestnavAaregProxy();
         this.tokenExchange = tokenExchange;
         ExchangeStrategies jacksonStrategy = ExchangeStrategies
                 .builder()
@@ -56,7 +52,7 @@ public class HentArbeidsforholdConsumer {
                 .build();
     }
 
-    public List<ArbeidsforholdDTO> getArbeidsforholds(String ident, String miljo) {
+    public List<ArbeidsforholdDTO> getArbeidsforholds(String ident) {
         var token = tokenExchange.exchange(serverProperties).block();
         if (nonNull(token)) {
             return new HentArbeidsforholdCommand(webClient, token.getTokenValue(), ident).call();

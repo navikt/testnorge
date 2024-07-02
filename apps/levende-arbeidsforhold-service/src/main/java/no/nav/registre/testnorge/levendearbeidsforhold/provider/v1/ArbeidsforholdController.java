@@ -3,8 +3,6 @@ package no.nav.registre.testnorge.levendearbeidsforhold.provider.v1;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.levendearbeidsforhold.service.ArbeidsforholdService;
-import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v1.ArbeidsforholdDTO;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -19,7 +17,7 @@ public class ArbeidsforholdController {
             @PathVariable("ident") String ident
 
     ) {
-        var arbeidsforhold = arbeidsforholdService.getArbeidsforhold(ident, "Q2");
+        var arbeidsforhold = arbeidsforholdService.getArbeidsforhold(ident);
         log.info("Arbeidsforhold: " + arbeidsforhold.toString());
 
     }
