@@ -24,11 +24,13 @@ import static java.util.Objects.nonNull;
  * TokenExchange for å hente token fra STS
  * ObjectMapper for å mappe json til objekter
  */
+@Slf4j
 @Component
 public class HentArbeidsforholdConsumer {
     private final WebClient webClient;
     private final ServerProperties serverProperties;
     private final TokenExchange tokenExchange;
+
 
     /**
      * Konstruktør
@@ -40,6 +42,7 @@ public class HentArbeidsforholdConsumer {
             Consumers consumers,
             TokenExchange tokenExchange,
             ObjectMapper objectMapper) {
+        this.tokenExchange = tokenExchange;
         // Henter serverProperties fra consumers
         serverProperties = consumers.getTestnavAaregProxy();
         this.tokenExchange = tokenExchange;
