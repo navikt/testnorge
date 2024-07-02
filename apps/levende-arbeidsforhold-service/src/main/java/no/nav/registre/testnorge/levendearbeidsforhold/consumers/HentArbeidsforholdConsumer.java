@@ -3,7 +3,7 @@ package no.nav.registre.testnorge.levendearbeidsforhold.consumers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.levendearbeidsforhold.consumers.command.HentArbeidsforholdCommand;
-import no.nav.testnav.libs.dto.ameldingservice.v1.ArbeidsforholdDTO;
+import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.MediaType;
@@ -53,7 +53,7 @@ public class HentArbeidsforholdConsumer {
                 .build();
     }
 
-    public List<ArbeidsforholdDTO> getArbeidsforholds(String ident) {
+    public List<Arbeidsforhold> getArbeidsforholds(String ident) {
         var token = tokenExchange.exchange(serverProperties).block();
         log.info("Token: {}", token);
         if (nonNull(token)) {

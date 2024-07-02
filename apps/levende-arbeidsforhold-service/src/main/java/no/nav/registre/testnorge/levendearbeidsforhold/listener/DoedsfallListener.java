@@ -24,7 +24,7 @@ public class DoedsfallListener {
     @EventListener(ApplicationReadyEvent.class)
     public void onApplicationEvent() {
         log.info("Hello World");
-        String id = "30447515845";
+        String id = "18426839454";
         arbeidsforholdsService.getArbeidsforhold(id);
     }
 /*
