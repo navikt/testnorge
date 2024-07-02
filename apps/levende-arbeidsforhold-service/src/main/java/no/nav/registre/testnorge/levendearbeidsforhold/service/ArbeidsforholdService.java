@@ -46,12 +46,10 @@ public class ArbeidsforholdService {
 
     @EventListener(ApplicationReadyEvent.class)
     public void sjekkArbeidsforhold() {
+
         WebClient webClient = WebClient.create();
         ServerProperties serverProperties = consumers.getTestnavLevendeArbeidsforholdService();
-
-        Token token = Token.builder().accessTokenValue(env.getProperty("MAGIC_TOKEN")).build();
-        log.info("Token: {}", token.getAccessTokenValue());
-
+        log.info("ServerProperties: {}", serverProperties.toString());
         id = "30447515845";
         List<ArbeidsforholdDTO> arbeidsforhold = hentArbeidsforholdConsumer.getArbeidsforhold(id);
         if (arbeidsforhold != null) {
