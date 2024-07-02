@@ -51,7 +51,7 @@ export default ({
 						index={0}
 						selected={selectedIndex === 0}
 						disabled={disabled}
-						text={objectList[0]?.ar || objectList[0]}
+						text={objectList[0]}
 						onClick={handleClick}
 					/>
 				)}
@@ -65,7 +65,7 @@ export default ({
 							index={item}
 							selected={selectedIndex === item}
 							disabled={disabled}
-							text={objectList[item]?.ar || objectList[item]}
+							text={objectList[item]}
 							onClick={handleClick}
 						/>
 					)

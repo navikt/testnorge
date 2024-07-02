@@ -132,7 +132,10 @@ PensjonPanel.initialValues = ({ set, del, has }: any) => {
 					tomAar: runningE2ETest() ? new Date().getFullYear() : null,
 					belop: runningE2ETest() ? '12345' : '',
 					redusertMedGrunnbelop: true,
-					generer: { averageG: 1 },
+					generer: {
+						fomAar: new Date().getFullYear() - 10,
+						averageG: 1.5,
+					},
 				}),
 			remove: () => del(paths.inntekt),
 		},

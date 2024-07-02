@@ -18,16 +18,17 @@ type PensjonResponse = {
 	}
 }
 
-const validateBody = (body) => {
-	if (!body) return false
+const validateBody = (body, shouldFetch) => {
+	if (!body || !shouldFetch) return false
 	const { fomAar, tomAar, averageG } = body
 	return fomAar && tomAar && averageG
 }
 
-export const usePensjonFacadeGjennomsnitt = (body) => {
+export const usePensjonFacadeGjennomsnitt = (body: any, shouldFetch: boolean) => {
 	const { data, isLoading, error, mutate } = useSWR<PensjonResponse, Error>(
-		validateBody(body) ? [pensjonFacadeGenererUrl] : null,
-		([url]) => {
+		validateBody(body, shouldFetch) && pensjonFacadeGenererUrl,
+		(url) => {
+			console.log('url: ', url) //TODO - SLETT MEG
 			return api
 				.fetchJson(
 					url,
@@ -43,7 +44,7 @@ export const usePensjonFacadeGjennomsnitt = (body) => {
 				)
 				.then((response: PensjonResponse) => ({ data: response }))
 		},
-		{},
+		{ dedupingInterval: 1000 },
 	)
 
 	return {
