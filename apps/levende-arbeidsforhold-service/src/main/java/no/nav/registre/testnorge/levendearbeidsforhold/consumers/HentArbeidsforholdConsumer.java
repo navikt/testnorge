@@ -32,6 +32,7 @@ public class HentArbeidsforholdConsumer {
             TokenExchange tokenExchange,
             ObjectMapper objectMapper) {
         serverProperties = consumers.getTestnavAaregProxy();
+        log.info("ServerProperties: {}", serverProperties);
         this.tokenExchange = tokenExchange;
         ExchangeStrategies jacksonStrategy = ExchangeStrategies
                 .builder()
@@ -54,6 +55,7 @@ public class HentArbeidsforholdConsumer {
 
     public List<ArbeidsforholdDTO> getArbeidsforholds(String ident) {
         var token = tokenExchange.exchange(serverProperties).block();
+        log.info("Token: {}", token);
         if (nonNull(token)) {
             return new HentArbeidsforholdCommand(webClient, token.getTokenValue(), ident).call();
         }
