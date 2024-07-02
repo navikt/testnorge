@@ -19,18 +19,7 @@ import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 
-/**
- * Command for å hente arbeidsforhold fra Aareg.
- * Brukt for å hente arbeidsforhold for en arbeidstaker.
- * WebClient er konfigurert med en base url som er satt i konfigurasjonen.
- * Token er en jwt token som brukes for å autentisere mot Aareg.
- * Id er identen til arbeidstakeren som skal hentes arbeidsforhold for.
- * Hvis det ikke finnes arbeidsforhold for identen vil en WebClientResponseException.NotFound bli kastet.
- * Hvis det er en annen feil vil en WebClientResponseException bli kastet.
- * Hvis det er en 5xx feil vil den prøve å hente på nytt 3 ganger med 5 sekunders intervall.
- * Hvis det fortsatt feiler vil en WebClientResponseException bli kastet.
- * Hvis alt går bra vil en liste med ArbeidsforholdDTO bli returnert.
- */
+
 @Slf4j
 @RequiredArgsConstructor
 public class HentArbeidsforholdCommand implements Callable<List<ArbeidsforholdDTO>> {
@@ -55,7 +44,7 @@ public class HentArbeidsforholdCommand implements Callable<List<ArbeidsforholdDT
             var arbeidsforhold = webClient
                     .get()
                     .uri(builder -> builder
-                            .path("/q2/api/v1/arbeidstaker/arbeidsforhold")
+                            .path("/api/v1/arbeidstaker/arbeidsforhold")
                             .queryParam("arbeidsforholdtype", "forenkletOppgjoersordning", "frilanserOppdragstakerHonorarPersonerMm", "maritimtArbeidsforhold", "ordinaertArbeidsforhold")
                             .build())
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
@@ -71,13 +60,11 @@ public class HentArbeidsforholdCommand implements Callable<List<ArbeidsforholdDT
             //Returnerer en liste med ArbeidsforholdDTO
             return Arrays.stream(arbeidsforhold).collect(Collectors.toList());
         } catch (WebClientResponseException.NotFound e) {
-            //Hvis det ikke finnes arbeidsforhold for identen vil en WebClientResponseException.NotFound bli kastet.
             log.warn("Fant ikke arbeidsforhold for ident {}. Feilmelding {}",
                     id,
                     e.getResponseBodyAsString());
             return List.of();
         } catch (WebClientResponseException e) {
-            //Hvis det er en annen feil vil en WebClientResponseException bli kastet.
             log.error(
                     "Klarer ikke å hente arbeidsforhold for ident: {}. Feilmelding: {}.",
                     id,
