@@ -56,7 +56,7 @@ public class HentArbeidsforholdCommand implements Callable<List<ArbeidsforholdDT
                     .bodyToMono(ArbeidsforholdDTO[].class)
                     .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                             .filter(WebClientFilter::is5xxException))
-                        .block();
+                    .block();
 
             log.info("Hentet arbeidsforhold fra Aareg: " + Arrays.toString(arbeidsforhold));
             return Arrays.stream(arbeidsforhold).collect(Collectors.toList());
