@@ -28,7 +28,7 @@ public class HentArbeidsforholdCommand implements Callable<List<ArbeidsforholdDT
     private final WebClient webClient;
     private final String token;
     private final String ident;
-    private final String miljo = "Q2";
+    private final String miljo = "q2";
     private static final String NAV_PERSON_IDENT = "Nav-Personident";
     private static final String CONSUMER = "Dolly";
 
@@ -62,6 +62,7 @@ public class HentArbeidsforholdCommand implements Callable<List<ArbeidsforholdDT
             return Arrays.stream(arbeidsforhold).collect(Collectors.toList());
         } catch (WebClientResponseException.NotFound e) {
             log.warn("Fant ikke arbeidsforhold for ident {} i miljø {}", ident, miljo);
+            log.info("Feilmelding: {}", e.getResponseBodyAsString());
             return Collections.emptyList();
         } catch (WebClientResponseException e) {
             log.error(
