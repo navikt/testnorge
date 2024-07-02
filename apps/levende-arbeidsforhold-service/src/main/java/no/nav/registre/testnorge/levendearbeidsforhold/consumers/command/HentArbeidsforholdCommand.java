@@ -55,9 +55,9 @@ public class HentArbeidsforholdCommand implements Callable<List<ArbeidsforholdDT
             var arbeidsforhold = webClient
                     .get()
                     .uri(builder -> builder
-                            .path("/api/v1/arbeidstaker/arbeidsforhold")
-                            .build(id)
-                    )
+                            .path("/q2/api/v1/arbeidstaker/arbeidsforhold")
+                            .queryParam("arbeidsforholdtype", "forenkletOppgjoersordning", "frilanserOppdragstakerHonorarPersonerMm", "maritimtArbeidsforhold", "ordinaertArbeidsforhold")
+                            .build())
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                     .header(NAV_PERSON_IDENT, id)
                     .header("Nav-Call-Id", getNavCallId())

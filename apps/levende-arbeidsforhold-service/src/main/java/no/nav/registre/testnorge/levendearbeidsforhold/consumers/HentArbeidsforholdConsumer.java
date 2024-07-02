@@ -60,6 +60,7 @@ public class HentArbeidsforholdConsumer {
                 .exchangeStrategies(exchangeStrategies)
                 .baseUrl("serverProperties.getUrl()") //For lokal kjøring bytt ut med https://aareg-services-q2.intern.nav.no
                 .build();
+        log.info("WebClient: {}", webClient.toString());
     }
 
     /**

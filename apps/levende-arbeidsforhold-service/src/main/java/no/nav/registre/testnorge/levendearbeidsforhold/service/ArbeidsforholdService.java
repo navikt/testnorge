@@ -35,16 +35,26 @@ public class ArbeidsforholdService {
     private String jwkSetUri;
     private String id;
     private List<String> acceptedAudience;
+
+
     @EventListener(ApplicationReadyEvent.class)
     public void sjekkArbeidsforhold() {
         WebClient webClient = WebClient.create();
         ServerProperties serverProperties = ServerProperties.of("dev-gcp", "dolly", "aareg", "https://aareg-services-q2.intern.dev.nav.no");
 
         TokenExchange tokenExchange = new TokenExchange(getAuthenticatedResourceServerType, new ArrayList<>(), new ObjectMapper());
-
-        HentArbeidsforholdConsumer arbeid = new HentArbeidsforholdConsumer(consumers, tokenExchange, new ObjectMapper());
+        Token token = Token.builder().accessTokenValue(env.getProperty("VAULT_TOKEN")).build();
+        log.info("Token: {}", token.getAccessTokenValue());
+        List<TokenService> tokenServices = new ArrayList<>();
+        HentArbeidsforholdConsumer arbeid = new HentArbeidsforholdConsumer(
+                consumers,
+                new TokenExchange(
+                        getAuthenticatedResourceServerType,
+                        tokenServices,
+                        new ObjectMapper()) ,
+                new ObjectMapper());//tokenExchange
         id = "30447515845";
-        List<ArbeidsforholdDTO> arbeidsforhold = hentArbeidsforholdConsumer.getArbeidsforhold(id);
+        List<ArbeidsforholdDTO> arbeidsforhold = hentArbeidsforholdConsumer.getArbeidsforhold(id, token);
         if (arbeidsforhold != null) {
             log.info("Arbeidsforhold funnet: {}", arbeidsforhold);
         } else {

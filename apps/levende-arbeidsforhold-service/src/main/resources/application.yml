@@ -47,3 +47,9 @@ server:
       charset: UTF-8
   error:
     include-message: always
+consumers:
+  testnav-levende-arbeidsforhold-service:
+    name: testnav-levende-arbeidsforhold-service
+    namespace: dolly
+    url: https://testnav-levende-arbeidsforhold-service.dev-fss-pub.nais.io
+    cluster: dev-gcp
