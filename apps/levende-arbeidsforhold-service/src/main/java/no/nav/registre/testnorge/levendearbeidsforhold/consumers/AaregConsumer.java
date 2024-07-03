@@ -2,8 +2,10 @@ package no.nav.registre.testnorge.levendearbeidsforhold.consumers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnorge.levendearbeidsforhold.consumers.command.EndreArbeidsforholdCommand;
 import no.nav.registre.testnorge.levendearbeidsforhold.consumers.command.HentArbeidsforholdCommand;
 import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
+import no.nav.testnav.libs.dto.ameldingservice.v1.ArbeidsforholdDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.MediaType;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import no.nav.registre.testnorge.levendearbeidsforhold.config.Consumers;
+import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,13 +24,13 @@ import static java.util.Objects.nonNull;
 
 @Slf4j
 @Component
-public class HentArbeidsforholdConsumer {
+public class AaregConsumer {
 
     private final WebClient webClient;
     private final ServerProperties serverProperties;
     private final TokenExchange tokenExchange;
 
-    public HentArbeidsforholdConsumer(
+    public AaregConsumer(
             Consumers consumers,
             TokenExchange tokenExchange,
             ObjectMapper objectMapper) {
@@ -53,13 +56,20 @@ public class HentArbeidsforholdConsumer {
                 .build();
     }
 
-    public List<Arbeidsforhold> getArbeidsforholds(String ident) {
+    public List<ArbeidsforholdDTO> getArbeidsforholds(String ident) {
         var token = tokenExchange.exchange(serverProperties).block();
-        log.info("Token: {}", token);
         if (nonNull(token)) {
             return new HentArbeidsforholdCommand(webClient, token.getTokenValue(), ident).call();
         }
         return new ArrayList<>();
     }
 
+    public Mono<Arbeidsforhold> endreArbeidsforhold(Arbeidsforhold requests) {
+        var token = tokenExchange.exchange(serverProperties).block();
+        if (nonNull(token)) {
+            return new EndreArbeidsforholdCommand(webClient, requests, token.getTokenValue(), new ObjectMapper()).call();
+        }
+        return null;
+    }
 }
+

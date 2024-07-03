@@ -3,9 +3,11 @@ package no.nav.registre.testnorge.levendearbeidsforhold.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.levendearbeidsforhold.consumers.HentArbeidsforholdConsumer;
+import no.nav.registre.testnorge.levendearbeidsforhold.consumers.AaregConsumer;
 import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
+import no.nav.testnav.libs.dto.ameldingservice.v1.ArbeidsforholdDTO;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -14,14 +16,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ArbeidsforholdService {
 
-    private final HentArbeidsforholdConsumer hentArbeidsforholdConsumer;
+    private final AaregConsumer aaregConsumer;
 
-    public List<Arbeidsforhold> getArbeidsforhold(String ident) {
-        log.info("Henter arbeidsforhold for ident: {}", ident);
-        List<Arbeidsforhold> arbeidsforhold = hentArbeidsforholdConsumer.getArbeidsforholds(ident);
-        arbeidsforhold = hentArbeidsforholdConsumer.getArbeidsforholds(ident);
-        return arbeidsforhold;
+    public List<ArbeidsforholdDTO> getArbeidsforhold(String ident) {
+        return aaregConsumer.getArbeidsforholds(ident);
     }
-
+    public Mono<Arbeidsforhold> endreArbeidsforhold(Arbeidsforhold requests) {
+        return aaregConsumer.endreArbeidsforhold(requests);
+    }
 }
 //Les i appen ArbeidsforholdService
