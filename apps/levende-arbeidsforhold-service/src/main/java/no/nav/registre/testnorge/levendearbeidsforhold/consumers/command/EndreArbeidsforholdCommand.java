@@ -35,13 +35,12 @@ public class EndreArbeidsforholdCommand implements Callable<Mono<Arbeidsforhold>
         return webClient
                 .put()
                 .uri("/api/v1/arbeidsforhold/{navArbeidsforholdId}",
-                        requests.getArbeidsforholdId())
+                        requests.getNavArbeidsforholdId())
                 .body(requests, Arbeidsforhold.class)
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header("Nav-Arbeidsforhold-Kildereferanse", navArbeidsforholdKilde)
                 .header("Nav-Arbeidsforhold-Periode", String.valueOf(LocalDate.now()))
-                .header("navArbeidsforholdId", String.valueOf(requests.getNavArbeidsforholdId()))
                 .retrieve()
                 .bodyToMono(Arbeidsforhold.class)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
