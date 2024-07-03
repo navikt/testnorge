@@ -5,6 +5,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.commands.utils.WebClientFilter;
 import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
+import no.nav.testnav.libs.dto.ameldingservice.v1.ArbeidsforholdDTO;
 import no.nav.testnav.libs.servletcore.headers.NavHeaders;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -24,7 +25,7 @@ import static java.lang.String.format;
 
 @Slf4j
 @RequiredArgsConstructor
-public class HentArbeidsforholdCommand implements Callable<List<Arbeidsforhold>> {
+public class HentArbeidsforholdCommand implements Callable<List<ArbeidsforholdDTO>> {
     private final WebClient webClient;
     private final String token;
     private final String ident;
@@ -39,7 +40,7 @@ public class HentArbeidsforholdCommand implements Callable<List<Arbeidsforhold>>
 
     @SneakyThrows
     @Override
-    public List<Arbeidsforhold> call(){
+    public List<ArbeidsforholdDTO> call(){
         //Dette er metoden som er krevet når man implementerer Callable
         try {
             var arbeidsforhold = webClient
@@ -53,7 +54,7 @@ public class HentArbeidsforholdCommand implements Callable<List<Arbeidsforhold>>
                     .header(NavHeaders.NAV_CONSUMER_ID, CONSUMER)
                     .header(NavHeaders.NAV_CALL_ID, getNavCallId())
                     .retrieve()
-                    .bodyToMono(Arbeidsforhold[].class)
+                    .bodyToMono(ArbeidsforholdDTO[].class)
                     .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                             .filter(WebClientFilter::is5xxException))
                         .block();

@@ -64,7 +64,7 @@ public class AaregConsumer {
         return new ArrayList<>();
     }
 
-    public Mono<Arbeidsforhold> endreArbeidsforhold(Arbeidsforhold requests) {
+    public Mono<ArbeidsforholdDTO> endreArbeidsforhold(ArbeidsforholdDTO requests) {
         var token = tokenExchange.exchange(serverProperties).block();
         if (nonNull(token)) {
             return new EndreArbeidsforholdCommand(webClient, requests, token.getTokenValue(), new ObjectMapper()).call();
