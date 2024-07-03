@@ -4,12 +4,10 @@ package no.nav.registre.testnorge.levendearbeidsforhold.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.levendearbeidsforhold.consumers.AaregConsumer;
-import no.nav.registre.testnorge.levendearbeidsforhold.consumers.HentArbeidsforholdConsumer;
 import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
-import no.nav.testnav.libs.dto.ameldingservice.v1.ArbeidsforholdDTO;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Mono;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Slf4j
@@ -19,15 +17,26 @@ public class ArbeidsforholdService {
 
     private final AaregConsumer aaregConsumer;
 
-    public List<Arbeidsforhold> getArbeidsforhold(String ident) {
+    public List<Arbeidsforhold> hentArbeidsforhold(String ident) {
         log.info("Henter arbeidsforhold for ident: {}", ident);
         return aaregConsumer.hentArbeidsforhold(ident);
     }
 
     public void endreArbeidsforhold(Arbeidsforhold request){
         log.info("Endrer arbeidsforhold for ident: {}", request.getArbeidsforholdId());
+        request.getAnsettelsesperiode().getPeriode().setTom(LocalDate.now());
+        request.getAnsettelsesperiode().setSluttaarsak("Dødsfall");
         aaregConsumer.endreArbeidsforhold(request);
 
+    }
+
+    public void arbeidsforholdService(String aktoerId) {
+        List<Arbeidsforhold> arbeidsforholdListe = hentArbeidsforhold(aktoerId);
+        if (!arbeidsforholdListe.isEmpty()) {
+            arbeidsforholdListe.forEach(
+                    this::endreArbeidsforhold
+            );
+        }
     }
 
 }

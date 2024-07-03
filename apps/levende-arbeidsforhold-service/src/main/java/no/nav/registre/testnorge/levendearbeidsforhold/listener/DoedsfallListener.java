@@ -19,15 +19,11 @@ public class DoedsfallListener {
     @Autowired
     private final ArbeidsforholdService arbeidsforholdsService;
 
-    public void getArbeidsforhold(String aktorID) {
-        arbeidsforholdsService.getArbeidsforhold(aktorID);
-    }
-
     @KafkaListener(topics = doedsfallTopic)
     public void getHendelser(List<ConsumerRecord<String, Personhendelse>> records) {
         for (ConsumerRecord<String, Personhendelse> record: records){
 
-            String aktorID = record.key().split("\u001A")[1];
+            String aktoerId = record.key().split("\u001A")[1];
 
             //Validerer om vi skal fortsette eller ignorere hendelsen
             Boolean riktigHendelse = validerHendelse(record.value().get(4).toString());
@@ -35,8 +31,7 @@ public class DoedsfallListener {
             //Flyt for doedsfall-hendelser
             if (riktigHendelse){
                 log.info("DØDSFALL. Hendelse: {} {}", record.key(), record.value().toString());
-                getArbeidsforhold(aktorID); //List<Arbeidsforhold> arbeidsforhold = arbeidsforholdsService.getArbeidsforhold(aktorID);
-                //siOppArbeidsforhold(arbeidsforhold);
+                arbeidsforholdsService.arbeidsforholdService(aktoerId);
             }
         }
     }
