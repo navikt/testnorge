@@ -23,9 +23,11 @@ public class ArbeidsforholdService {
     }
 
     public void endreArbeidsforhold(Arbeidsforhold request){
-        log.info("Endrer arbeidsforhold for ident: {}", request.getArbeidsforholdId());
+        log.info("Endrer arbeidsforhold for ident: {}", request.getNavArbeidsforholdId());
+        log.info(String.valueOf(request));
         request.getAnsettelsesperiode().getPeriode().setTom(LocalDate.now());
         request.getAnsettelsesperiode().setSluttaarsak("Dødsfall");
+        log.info(String.valueOf(request));
         aaregConsumer.endreArbeidsforhold(request);
 
     }
@@ -35,6 +37,7 @@ public class ArbeidsforholdService {
         if (!arbeidsforholdListe.isEmpty()) {
             arbeidsforholdListe.forEach(
                     this::endreArbeidsforhold
+                    //arbeidsforhold -> log.info(String.valueOf(arbeidsforhold))
             );
         }
     }

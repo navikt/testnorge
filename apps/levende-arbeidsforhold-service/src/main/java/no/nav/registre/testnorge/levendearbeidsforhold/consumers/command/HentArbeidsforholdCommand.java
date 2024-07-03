@@ -28,7 +28,7 @@ public class HentArbeidsforholdCommand implements Callable<List<Arbeidsforhold>>
     private final WebClient webClient;
     private final String token;
     private final String ident;
-    private final String miljoe = "Q2";
+    private final String miljoe = "q2";
     private static final String NAV_PERSON_IDENT = "Nav-Personident";
     private static final String CONSUMER = "Dolly";
 

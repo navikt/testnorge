@@ -64,12 +64,11 @@ public class AaregConsumer {
         return new ArrayList<>();
     }
 
-    public Mono<Arbeidsforhold> endreArbeidsforhold(Arbeidsforhold requests) {
+    public void endreArbeidsforhold(Arbeidsforhold requests) {
         var token = tokenExchange.exchange(serverProperties).block();
         if (nonNull(token)) {
-            return new EndreArbeidsforholdCommand(webClient, requests, token.getTokenValue(), new ObjectMapper()).call();
+            new EndreArbeidsforholdCommand(webClient, requests, token.getTokenValue(), new ObjectMapper()).call();
         }
-        return null;
     }
 }
 
