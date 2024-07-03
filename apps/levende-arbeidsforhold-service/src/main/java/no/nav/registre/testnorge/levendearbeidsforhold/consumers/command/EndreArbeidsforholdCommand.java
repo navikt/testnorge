@@ -42,7 +42,8 @@ public class EndreArbeidsforholdCommand implements Callable<Mono<Arbeidsforhold>
                     .put()
                     .uri("/api/v1/arbeidsforhold/{navArbeidsforholdId}",
                             requests.getNavArbeidsforholdId())
-                    .body(requests, Arbeidsforhold.class)
+                    .body(Mono.just(requests), Arbeidsforhold.class)
+                    //.body(requests, Arbeidsforhold.class)
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                     .header("Nav-Arbeidsforhold-Kildereferanse", navArbeidsforholdKilde)
