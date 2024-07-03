@@ -14,6 +14,7 @@ import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.concurrent.Callable;
@@ -27,11 +28,6 @@ public class EndreArbeidsforholdCommand implements Callable<Mono<Arbeidsforhold>
     private final ObjectMapper objectMapper;
     private final String navArbeidsforholdKilde = "Dolly-doedsfall-hendelse" ;
 
-    private static String getNavArbeidsfoholdPeriode() {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM");
-        LocalDateTime now = LocalDateTime.now();
-        return dtf.format(now);
-    }
     @SneakyThrows
     @Override
     public Mono<Arbeidsforhold> call() {
@@ -44,7 +40,7 @@ public class EndreArbeidsforholdCommand implements Callable<Mono<Arbeidsforhold>
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header("Nav-Arbeidsforhold-Kildereferanse", navArbeidsforholdKilde)
-                .header("Nav-Arbeidsforhold-Periode", getNavArbeidsfoholdPeriode())
+                .header("Nav-Arbeidsforhold-Periode", String.valueOf(LocalDate.now()))
                 .header("navArbeidsforholdId", String.valueOf(requests.getNavArbeidsforholdId()))
                 .retrieve()
                 .bodyToMono(Arbeidsforhold.class)
