@@ -34,7 +34,7 @@ public class AaregConsumer {
             Consumers consumers,
             TokenExchange tokenExchange,
             ObjectMapper objectMapper) {
-        serverProperties = consumers.getTestnavAaregProxy();
+        this.serverProperties = consumers.getTestnavAaregProxy();
         log.info("ServerProperties: {}", serverProperties);
         this.tokenExchange = tokenExchange;
         ExchangeStrategies jacksonStrategy = ExchangeStrategies
