@@ -10,13 +10,14 @@ import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.concurrent.Callable;
 
 @Slf4j
@@ -28,30 +29,43 @@ public class EndreArbeidsforholdCommand implements Callable<Mono<Arbeidsforhold>
     private final ObjectMapper objectMapper;
     private final String navArbeidsforholdKilde = "Dolly-doedsfall-hendelse" ;
 
+    private static String getNavArbeidsfoholdPeriode() {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM");
+        LocalDateTime now = LocalDateTime.now();
+        return dtf.format(now);
+    }
     @SneakyThrows
     @Override
     public Mono<Arbeidsforhold> call() {
+        try{
+            Mono<Arbeidsforhold> requets = webClient
+                    .put()
+                    .uri("/api/v1/arbeidsforhold/{navArbeidsforholdId}",
+                            requests.getNavArbeidsforholdId())
+                    .body(requests, Arbeidsforhold.class)
+                    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                    .header("Nav-Arbeidsforhold-Kildereferanse", navArbeidsforholdKilde)
+                    .header("Nav-Arbeidsforhold-Periode", getNavArbeidsfoholdPeriode())
+                    .header("navArbeidsforholdId", String.valueOf(requests.getNavArbeidsforholdId()))
+                    .retrieve()
+                    .bodyToMono(Arbeidsforhold.class)
+                    .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                            .filter(WebClientFilter::is5xxException));
 
-        return webClient
-                .put()
-                .uri("/api/v1/arbeidsforhold/{navArbeidsforholdId}",
-                        requests.getNavArbeidsforholdId())
-                .body(requests, Arbeidsforhold.class)
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                .header("Nav-Arbeidsforhold-Kildereferanse", navArbeidsforholdKilde)
-                .header("Nav-Arbeidsforhold-Periode", String.valueOf(LocalDate.now()))
-                .retrieve()
-                .bodyToMono(Arbeidsforhold.class)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
-                .doOnError(error -> {
-                    try {
-                        log.error("Feil ved oppdatering av arbeidsforhold med body: {}.", objectMapper.writeValueAsString(requests), error);
-                    } catch (JsonProcessingException e) {
-                        log.error("Feil ved convertering av body til string.", e);
-                    }
-                });
+            return requets;
+        }
+
+        catch (
+                WebClientResponseException.NotFound e) {
+            log.warn("Får ikke endret {} i miljø {}", requests.getNavArbeidsforholdId());
+        } catch (WebClientResponseException e) {
+            log.error(
+                    "Klarer ikke å hente arbeidsforhold for navArbeidsforhold: {}. Feilmelding: {}.", requests.getNavArbeidsforholdId());
+            e.getResponseBodyAsString();
+            throw e;
+        };
+        return null;
     }
 }
 
