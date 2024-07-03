@@ -19,13 +19,12 @@ public class ArbeidsforholdService {
 
     private final AaregConsumer aaregConsumer;
 
-    public List<ArbeidsforholdDTO> getArbeidsforhold(String ident) {
+    public List<Arbeidsforhold> getArbeidsforhold(String ident) {
         log.info("Henter arbeidsforhold for ident: {}", ident);
-        List<ArbeidsforholdDTO> arbeidsforhold = aaregConsumer.getArbeidsforholds(ident);
-        return arbeidsforhold;
+        return aaregConsumer.hentArbeidsforhold(ident);
     }
 
-    public void endreArbeidsforhold(ArbeidsforholdDTO request){
+    public void endreArbeidsforhold(Arbeidsforhold request){
         log.info("Endrer arbeidsforhold for ident: {}", request.getArbeidsforholdId());
         aaregConsumer.endreArbeidsforhold(request);
 

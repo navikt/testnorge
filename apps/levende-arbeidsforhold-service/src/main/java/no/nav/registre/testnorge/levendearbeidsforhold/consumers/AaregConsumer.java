@@ -56,7 +56,7 @@ public class AaregConsumer {
                 .build();
     }
 
-    public List<ArbeidsforholdDTO> getArbeidsforholds(String ident) {
+    public List<Arbeidsforhold> hentArbeidsforhold(String ident) {
         var token = tokenExchange.exchange(serverProperties).block();
         if (nonNull(token)) {
             return new HentArbeidsforholdCommand(webClient, token.getTokenValue(), ident).call();
@@ -64,7 +64,7 @@ public class AaregConsumer {
         return new ArrayList<>();
     }
 
-    public Mono<ArbeidsforholdDTO> endreArbeidsforhold(ArbeidsforholdDTO requests) {
+    public Mono<Arbeidsforhold> endreArbeidsforhold(Arbeidsforhold requests) {
         var token = tokenExchange.exchange(serverProperties).block();
         if (nonNull(token)) {
             return new EndreArbeidsforholdCommand(webClient, requests, token.getTokenValue(), new ObjectMapper()).call();

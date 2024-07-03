@@ -7,7 +7,6 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.commands.utils.WebClientFilter;
 import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
-import no.nav.testnav.libs.dto.ameldingservice.v1.ArbeidsforholdDTO;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -15,37 +14,40 @@ import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
-import java.util.UUID;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.concurrent.Callable;
 
-import static java.lang.String.format;
 @Slf4j
 @RequiredArgsConstructor
-public class EndreArbeidsforholdCommand implements Callable<Mono<ArbeidsforholdDTO>> {
+public class EndreArbeidsforholdCommand implements Callable<Mono<Arbeidsforhold>> {
     private final WebClient webClient;
-    private final ArbeidsforholdDTO requests;
+    private final Arbeidsforhold requests;
     private final String token;
     private final ObjectMapper objectMapper;
     private final String navArbeidsforholdKilde = "Dolly-doedsfall-hendelse" ;
 
     private static String getNavArbeidsfoholdPeriode() {
-        return format("");
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM");
+        LocalDateTime now = LocalDateTime.now();
+        return dtf.format(now);
     }
     @SneakyThrows
     @Override
-    public Mono<ArbeidsforholdDTO> call() {
+    public Mono<Arbeidsforhold> call() {
 
         return webClient
                 .put()
                 .uri("/api/v1/arbeidsforhold/{navArbeidsforholdId}",
                         requests.getArbeidsforholdId())
-                .body(requests, ArbeidsforholdDTO.class)
+                .body(requests, Arbeidsforhold.class)
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                .header("Nav-Arbeidsforhold-Id", navArbeidsforholdKilde)
-                .header("Nav-Arbeidsforhold-Periode", requests.)
+                .header("Nav-Arbeidsforhold-Kildereferanse", navArbeidsforholdKilde)
+                .header("Nav-Arbeidsforhold-Periode", getNavArbeidsfoholdPeriode())
+                .header("navArbeidsforholdId", String.valueOf(requests.getNavArbeidsforholdId()))
                 .retrieve()
-                .bodyToMono(ArbeidsforholdDTO.class)
+                .bodyToMono(Arbeidsforhold.class)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException))
                 .doOnError(error -> {

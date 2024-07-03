@@ -5,7 +5,6 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.commands.utils.WebClientFilter;
 import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
-import no.nav.testnav.libs.dto.ameldingservice.v1.ArbeidsforholdDTO;
 import no.nav.testnav.libs.servletcore.headers.NavHeaders;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -25,11 +24,11 @@ import static java.lang.String.format;
 
 @Slf4j
 @RequiredArgsConstructor
-public class HentArbeidsforholdCommand implements Callable<List<ArbeidsforholdDTO>> {
+public class HentArbeidsforholdCommand implements Callable<List<Arbeidsforhold>> {
     private final WebClient webClient;
     private final String token;
     private final String ident;
-    private final String miljo = "Q2";
+    private final String miljoe = "Q2";
     private static final String NAV_PERSON_IDENT = "Nav-Personident";
     private static final String CONSUMER = "Dolly";
 
@@ -40,7 +39,7 @@ public class HentArbeidsforholdCommand implements Callable<List<ArbeidsforholdDT
 
     @SneakyThrows
     @Override
-    public List<ArbeidsforholdDTO> call(){
+    public List<Arbeidsforhold> call(){
         //Dette er metoden som er krevet når man implementerer Callable
         try {
             var arbeidsforhold = webClient
@@ -48,21 +47,22 @@ public class HentArbeidsforholdCommand implements Callable<List<ArbeidsforholdDT
                     .uri(builder -> builder
                             .path("/{miljoe}/api/v1/arbeidstaker/arbeidsforhold")
                             .queryParam("arbeidsforholdtype", "forenkletOppgjoersordning", "frilanserOppdragstakerHonorarPersonerMm", "maritimtArbeidsforhold", "ordinaertArbeidsforhold")
-                            .build(miljo))
+                            .build(miljoe))
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                     .header(NAV_PERSON_IDENT, ident)
                     .header(NavHeaders.NAV_CONSUMER_ID, CONSUMER)
                     .header(NavHeaders.NAV_CALL_ID, getNavCallId())
                     .retrieve()
-                    .bodyToMono(ArbeidsforholdDTO[].class)
+                    .bodyToMono(Arbeidsforhold[].class)
                     .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                             .filter(WebClientFilter::is5xxException))
                         .block();
 
             log.info("Hentet arbeidsforhold fra Aareg: " + Arrays.toString(arbeidsforhold));
+            assert arbeidsforhold != null;
             return Arrays.stream(arbeidsforhold).collect(Collectors.toList());
         } catch (WebClientResponseException.NotFound e) {
-            log.warn("Fant ikke arbeidsforhold for ident {} i miljø {}", ident, miljo);
+            log.warn("Fant ikke arbeidsforhold for ident {} i miljø {}", ident, miljoe);
             return Collections.emptyList();
         } catch (WebClientResponseException e) {
             log.error(
