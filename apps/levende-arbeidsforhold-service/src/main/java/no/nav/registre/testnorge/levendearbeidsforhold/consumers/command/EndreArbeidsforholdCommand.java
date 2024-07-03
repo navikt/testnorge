@@ -9,8 +9,10 @@ import no.nav.testnav.libs.commands.utils.WebClientFilter;
 import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
@@ -37,24 +39,24 @@ public class EndreArbeidsforholdCommand implements Callable<Mono<Arbeidsforhold>
     @SneakyThrows
     @Override
     public Mono<Arbeidsforhold> call() {
+
         try{
-            Mono<Arbeidsforhold> requets = webClient
+            Disposable requets = webClient
                     .put()
-                    .uri("/api/v1/arbeidsforhold/{navArbeidsforholdId}",
-                            requests.getNavArbeidsforholdId())
-                    .body(Mono.just(requests), Arbeidsforhold.class)
-                    //.body(requests, Arbeidsforhold.class)
+                    .uri(builder -> builder.path("/api/v1/arbeidsforhold/{navArbeidsforholdId}")
+                            .queryParam("Nav-Arbeidsforhold-Kildereferande", navArbeidsforholdKilde)
+                            .queryParam("Nav-Arbeidsforhold-Periode", getNavArbeidsfoholdPeriode())
+                            .queryParam("navArbeidsforholdId", requests.getNavArbeidsforholdId())
+                            .build(requests.getNavArbeidsforholdId()))
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                    .header("Nav-Arbeidsforhold-Kildereferanse", navArbeidsforholdKilde)
-                    .header("Nav-Arbeidsforhold-Periode", getNavArbeidsfoholdPeriode())
-                    .header("navArbeidsforholdId", String.valueOf(requests.getNavArbeidsforholdId()))
+                    .body(BodyInserters.fromValue(requests))
                     .retrieve()
-                    .bodyToMono(Arbeidsforhold.class)
+                    .toBodilessEntity()
                     .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                            .filter(WebClientFilter::is5xxException));
-
-            return requets;
+                            .filter(WebClientFilter::is5xxException)).subscribe();
+            log.info("Arbeidsforhold ");
+                return Mono.just((Arbeidsforhold) requets);
         }
 
         catch (
