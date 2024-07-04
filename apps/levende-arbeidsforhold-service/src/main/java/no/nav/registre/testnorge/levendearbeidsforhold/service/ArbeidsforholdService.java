@@ -24,15 +24,15 @@ public class ArbeidsforholdService {
 
     public void endreArbeidsforhold(Arbeidsforhold request){
         log.info("Endrer arbeidsforhold for ident: {}", request.getNavArbeidsforholdId());
-        log.info(String.valueOf(request));
+        log.info(request.toString());
         request.getAnsettelsesperiode().getPeriode().setTom(LocalDate.now());
         request.getAnsettelsesperiode().setSluttaarsak("arbeidstakerHarSagtOppSelv");
         request.getAnsettelsesperiode().setVarslingskode("NAVEND");
         request.getArbeidsavtaler().forEach(
                 arbeidsavtale -> {
-                    arbeidsavtale.setStillingsprosent(0.0);
+                    arbeidsavtale.setStillingsprosent(null);
                 });
-        log.info(String.valueOf((request)));
+        log.info(request.toString());
         aaregConsumer.endreArbeidsforhold(request);
 
     }

@@ -117,4 +117,9 @@ public class Arbeidsforhold {
     public void setSistBekreftetAsString(String sistBekreftet) {
         this.sistBekreftet = JavaTimeUtil.toLocalDateTime(sistBekreftet);
     }
+
+    @Override
+    public String toString() {
+        return ("Arbeidsforhold: [" + navArbeidsforholdId + ", " + arbeidsforholdId + ", " + ansettelsesperiode + ", " + arbeidsavtaler);
+    }
 }
