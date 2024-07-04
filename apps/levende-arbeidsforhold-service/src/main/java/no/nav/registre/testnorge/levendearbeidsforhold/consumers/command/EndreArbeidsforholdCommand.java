@@ -41,38 +41,30 @@ public class EndreArbeidsforholdCommand implements Callable<Mono<Arbeidsforhold>
     @Override
     public Mono<Arbeidsforhold> call() {
 
-        try{
-            Mono<Arbeidsforhold> requets = webClient
-                    .put()
-                    .uri(builder -> builder.path("/q2/api/v1/arbeidsforhold/{navArbeidsforholdId}")
-                            .build(requests.getNavArbeidsforholdId()))
-                    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                    .header("Nav-Arbeidsforhold-Kildereferanse", navArbeidsforholdKilde)
-                    .header("Nav-Arbeidsforhold-Periode", getNavArbeidsfoholdPeriode())
-                    .body(BodyInserters.fromValue(requests))
-                    .retrieve()
-                    .bodyToMono(Arbeidsforhold.class)
-                    .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                            .filter(WebClientFilter::is5xxException))
-                    .map(arbeidsforhold1 -> {
-                        return Arbeidsforhold.builder().build();
-                    });
-            log.info(requests.toString());
+        Mono<Arbeidsforhold> requets = webClient
+                .put()
+                .uri(builder -> builder.path("/q2/api/v1/arbeidsforhold/{navArbeidsforholdId}")
+                        .build(requests.getNavArbeidsforholdId()))
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .header("Nav-Arbeidsforhold-Kildereferanse", navArbeidsforholdKilde)
+                .header("Nav-Arbeidsforhold-Periode", getNavArbeidsfoholdPeriode())
+                .body(BodyInserters.fromValue(requests))
+                .retrieve()
+                .bodyToMono(Arbeidsforhold.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
+                .map(arbeidsforhold1 -> Arbeidsforhold.builder().build());
 
-            return requets;
-        }
+        requets.subscribe(response -> {
+            log.info("Fikk respons. nav-ID: {}", response.getArbeidsforholdId());
+        }, error -> {
+            log.error("Feil ved endring av arbeidsforhold", error);
+        });
 
-        catch (
-                WebClientResponseException.NotFound e) {
-            log.warn("Får ikke endret {} i miljø {}", requests.getNavArbeidsforholdId());
-        } catch (WebClientResponseException e) {
-            log.error(
-                    "Klarer ikke å hente arbeidsforhold for navArbeidsforhold: {}. Feilmelding: {}.", requests.getNavArbeidsforholdId());
-            e.getResponseBodyAsString();
-            throw e;
-        };
-        return null;
+
+        return requets;
+
     }
 }
 
