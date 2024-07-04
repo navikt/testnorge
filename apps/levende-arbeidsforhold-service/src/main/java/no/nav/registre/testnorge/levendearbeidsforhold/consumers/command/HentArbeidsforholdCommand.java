@@ -42,34 +42,31 @@ public class HentArbeidsforholdCommand implements Callable<List<Arbeidsforhold>>
     @SneakyThrows
     @Override
     public List<Arbeidsforhold> call(){
-        //Dette er metoden som er krevet når man implementerer Callable
+
         try {
             var arbeidsforhold = webClient
-                    .get()
-                    .uri(builder -> builder
-                            .path("/{miljoe}/api/v1/arbeidstaker/arbeidsforhold")
-                            .queryParam("arbeidsforholdtype", "forenkletOppgjoersordning", "frilanserOppdragstakerHonorarPersonerMm", "maritimtArbeidsforhold", "ordinaertArbeidsforhold")
-                            .build(miljoe))
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                    .header(NAV_PERSON_IDENT, ident)
-                    .header(NavHeaders.NAV_CONSUMER_ID, CONSUMER)
-                    .header(NavHeaders.NAV_CALL_ID, getNavCallId())
-                    .retrieve()
-                    .bodyToMono(Arbeidsforhold[].class)
-                    .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                            .filter(WebClientFilter::is5xxException))
-                        .block();
+                .get()
+                .uri(builder -> builder
+                        .path("/{miljoe}/api/v1/arbeidstaker/arbeidsforhold")
+                        .queryParam("arbeidsforholdtype", "forenkletOppgjoersordning", "frilanserOppdragstakerHonorarPersonerMm", "maritimtArbeidsforhold", "ordinaertArbeidsforhold")
+                        .build(miljoe))
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .header(NAV_PERSON_IDENT, ident)
+                .header(NavHeaders.NAV_CONSUMER_ID, CONSUMER)
+                .header(NavHeaders.NAV_CALL_ID, getNavCallId())
+                .retrieve()
+                .bodyToMono(Arbeidsforhold[].class)
+                .retryWhen(Retry
+                        .backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
+                    .block();
 
-            log.info("Hentet arbeidsforhold fra Aareg: " + Arrays.toString(arbeidsforhold));
-            assert arbeidsforhold != null;
             return Arrays.stream(arbeidsforhold).collect(Collectors.toList());
         } catch (WebClientResponseException.NotFound e) {
-            log.warn("Fant ikke arbeidsforhold for ident {} i miljø {}", ident, miljoe);
             return Collections.emptyList();
         } catch (WebClientResponseException e) {
             log.error(
-                    "Klarer ikke å hente arbeidsforhold for ident: {}. Feilmelding: {}.",
-                    ident,
+                    "Klarer ikke å hente arbeidsforhold. Feilmelding: {}.",
                     e.getResponseBodyAsString()
             );
             throw e;

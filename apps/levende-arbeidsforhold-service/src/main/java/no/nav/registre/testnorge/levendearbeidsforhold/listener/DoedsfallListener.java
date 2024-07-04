@@ -31,7 +31,6 @@ public class DoedsfallListener {
             String hendelsestype = hendelse.value().get(4).toString();
 
             if (validerHendelse(hendelsestype)){
-                log.info("DØDSFALL. Hendelse: {} {}", hendelse.key(), hendelse.value().toString());
                 arbeidsforholdService.arbeidsforholdService(aktoerId);
             }
         }
