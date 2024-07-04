@@ -12,15 +12,13 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
-import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Collections;
 import java.util.concurrent.Callable;
 
 @Slf4j
@@ -29,42 +27,35 @@ public class EndreArbeidsforholdCommand implements Callable<Mono<Arbeidsforhold>
     private final WebClient webClient;
     private final Arbeidsforhold requests;
     private final String token;
-    private final ObjectMapper objectMapper;
+    private final String miljoe = "q2";
     private final String navArbeidsforholdKilde = "Dolly-doedsfall-hendelse" ;
 
-    private static String getNavArbeidsfoholdPeriode() {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM");
-        LocalDateTime now = LocalDateTime.now();
-        return dtf.format(now);
-    }
     @SneakyThrows
     @Override
     public Mono<Arbeidsforhold> call() {
 
-        Mono<Arbeidsforhold> requets = webClient
-                .put()
-                .uri(builder -> builder.path("/q2/api/v1/arbeidsforhold/{navArbeidsforholdId}")
-                        .build(requests.getNavArbeidsforholdId()))
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                .header("Nav-Arbeidsforhold-Kildereferanse", navArbeidsforholdKilde)
-                .header("Nav-Arbeidsforhold-Periode", getNavArbeidsfoholdPeriode())
-                .body(BodyInserters.fromValue(requests))
-                .retrieve()
-                .bodyToMono(Arbeidsforhold.class)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
-                .map(arbeidsforhold1 -> Arbeidsforhold.builder().build());
+        Mono<Arbeidsforhold> request = webClient
+            .put()
+            .uri(builder -> builder.path("/{miljoe}/api/v1/arbeidsforhold/{navArbeidsforholdId}")
+                    .build(miljoe, requests.getNavArbeidsforholdId()))
+            .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+            .header("Nav-Arbeidsforhold-Kildereferanse", navArbeidsforholdKilde)
+            .header("Nav-Arbeidsforhold-Periode", LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM")))
+            .body(BodyInserters.fromValue(requests))
+            .retrieve()
+            .bodyToMono(Arbeidsforhold.class)
+            .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                    .filter(WebClientFilter::is5xxException))
+            .map(arbeidsforhold1 -> Arbeidsforhold.builder().build());
 
-        requets.subscribe(response -> {
+        request.subscribe(response -> {
             log.info("Fikk respons. nav-ID: {}", response.getArbeidsforholdId());
         }, error -> {
             log.error("Feil ved endring av arbeidsforhold", error);
         });
 
-
-        return requets;
-
+        return request;
     }
 }
 
