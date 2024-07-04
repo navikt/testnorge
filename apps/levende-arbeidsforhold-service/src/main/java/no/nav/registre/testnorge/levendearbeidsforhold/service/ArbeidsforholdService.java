@@ -31,23 +31,17 @@ public class ArbeidsforholdService {
     }
 
     public List<Arbeidsforhold> hentArbeidsforhold(String ident) {
-        log.info("Henter arbeidsforhold for ident: {}", ident);
         return aaregConsumer.hentArbeidsforhold(ident);
     }
 
     public void endreArbeidsforhold(Arbeidsforhold arbeidsforhold){
-        log.info("Endrer arbeidsforhold for ident: {}", arbeidsforhold.getNavArbeidsforholdId());
-        log.info(arbeidsforhold.toString());
 
         arbeidsforhold.getAnsettelsesperiode().getPeriode().setTom(LocalDate.now());
         arbeidsforhold.getAnsettelsesperiode().setSluttaarsak(sluttAarsaksKode);
         arbeidsforhold.getAnsettelsesperiode().setVarslingskode(varslingsKode);
         arbeidsforhold.getArbeidsavtaler().forEach(
-                arbeidsavtale -> {
-                    arbeidsavtale.setStillingsprosent(null);
-                });
+                arbeidsavtale -> arbeidsavtale.setStillingsprosent(null));
 
-        log.info(arbeidsforhold.toString());
         aaregConsumer.endreArbeidsforhold(arbeidsforhold);
     }
 }

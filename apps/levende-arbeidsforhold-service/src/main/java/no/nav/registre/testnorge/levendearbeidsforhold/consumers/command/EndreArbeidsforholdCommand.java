@@ -1,8 +1,5 @@
 package no.nav.registre.testnorge.levendearbeidsforhold.consumers.command;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.base.Function;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +14,6 @@ import reactor.util.retry.Retry;
 
 import java.time.Duration;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.concurrent.Callable;
 
@@ -49,11 +45,7 @@ public class EndreArbeidsforholdCommand implements Callable<Mono<Arbeidsforhold>
                     .filter(WebClientFilter::is5xxException))
             .map(arbeidsforhold1 -> Arbeidsforhold.builder().build());
 
-        request.subscribe(response -> {
-            log.info("Fikk respons. nav-ID: {}", response.getArbeidsforholdId());
-        }, error -> {
-            log.error("Feil ved endring av arbeidsforhold", error);
-        });
+        request.subscribe(response -> {}, error -> log.error("Feil ved endring av arbeidsforhold: {}", error.getMessage()));
 
         return request;
     }

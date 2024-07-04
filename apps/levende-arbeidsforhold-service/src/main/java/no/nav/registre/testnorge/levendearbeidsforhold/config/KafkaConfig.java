@@ -31,11 +31,9 @@ import java.util.Map;
 public class KafkaConfig {
 
     private final String groupId;
-    //private final ShutdownService shutdownService;
 
-    public KafkaConfig(@Value("${spring.kafka.consumer.group-id}") String groupId) {//, ShutdownService shutdownService
+    public KafkaConfig(@Value("${spring.kafka.consumer.group-id}") String groupId) {
         this.groupId = groupId;
-        //this.shutdownService = shutdownService;
     }
 
     public ConsumerFactory<String, String> consumerFactory() {
@@ -84,7 +82,6 @@ public class KafkaConfig {
             @Override
             public void consumerRemoved(String id, Consumer<String, String> consumer) {
                 log.warn("Fjerner consumer med id: {}. Restarter app...", id);
-                //shutdownService.initiateShutdown(0);
             }
         });
         factory.setBatchListener(true);
