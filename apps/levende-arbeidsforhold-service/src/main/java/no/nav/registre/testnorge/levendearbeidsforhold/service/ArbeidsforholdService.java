@@ -4,7 +4,7 @@ package no.nav.registre.testnorge.levendearbeidsforhold.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.levendearbeidsforhold.consumers.AaregConsumer;
-import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
+import no.nav.registre.testnorge.levendearbeidsforhold.domain.v1.Arbeidsforhold;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;

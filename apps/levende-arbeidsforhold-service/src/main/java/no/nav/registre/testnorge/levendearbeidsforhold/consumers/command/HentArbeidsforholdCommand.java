@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.commands.utils.WebClientFilter;
-import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
+import no.nav.registre.testnorge.levendearbeidsforhold.domain.v1.Arbeidsforhold;
 import no.nav.testnav.libs.servletcore.headers.NavHeaders;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
