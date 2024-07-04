@@ -118,7 +118,7 @@ PensjonPanel.heading = 'Pensjon'
 PensjonPanel.initialValues = ({ set, del, has }: any) => {
 	const paths = {
 		inntekt: 'pensjonforvalter.inntekt',
-		genererInntekt: 'pensjonforvalter.genererInntekt',
+		generertInntekt: 'pensjonforvalter.generertInntekt',
 		tp: 'pensjonforvalter.tp',
 		alderspensjon: 'pensjonforvalter.alderspensjon',
 		uforetrygd: 'pensjonforvalter.uforetrygd',
@@ -126,9 +126,9 @@ PensjonPanel.initialValues = ({ set, del, has }: any) => {
 	return {
 		inntekt: {
 			label: 'Har inntekt',
-			checked: has(paths.inntekt) || has(paths.genererInntekt),
+			checked: has(paths.inntekt) || has(paths.generertInntekt),
 			add: () => set(paths.inntekt, initialPensjonInntekt),
-			remove: () => del([paths.inntekt, paths.genererInntekt]),
+			remove: () => del([paths.inntekt, paths.generertInntekt]),
 		},
 		tp: {
 			label: 'Har tjenestepensjonsforhold',

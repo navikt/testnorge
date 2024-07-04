@@ -195,8 +195,8 @@ export const validation = {
 					redusertMedGrunnbelop: Yup.boolean(),
 				}),
 			),
-			genererInntekt: ifPresent(
-				'$pensjonforvalter.genererInntekt',
+			generertInntekt: ifPresent(
+				'$pensjonforvalter.generertInntekt',
 				Yup.object({
 					inntekter: Yup.array()
 						.of(

@@ -8,26 +8,28 @@ import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bes
 import { useFormContext } from 'react-hook-form'
 import { ToggleGroup } from '@navikt/ds-react'
 import {
-	initialPensjonGenererInntekt,
+	initialPensjonGenerertInntekt,
 	initialPensjonInntekt,
 } from '@/components/fagsystem/aareg/form/initialValues'
-import { GenererInntektForm } from '@/components/fagsystem/pensjon/form/GenererInntektForm'
 import { FyllInnInntektForm } from '@/components/fagsystem/pensjon/form/FyllInnInntektForm'
+import { GenerertInntektForm } from '@/components/fagsystem/pensjon/form/GenerertInntektForm'
 
 export const pensjonPath = 'pensjonforvalter.inntekt'
-export const pensjonGenererPath = 'pensjonforvalter.genererInntekt'
+export const pensjonGenererPath = 'pensjonforvalter.generertInntekt'
 
 const hjelpetekst =
 	'Hvis nedjuster med grunnbeløp er valgt skal beløp angis som årsbeløp i dagens kroneverdi, ' +
 	'og vil nedjusteres basert på snitt grunnbeløp i inntektsåret.'
 
-const inputValg = { genererInntekt: 'generer', fyllInnInntekt: 'fyllInn' }
+const inputValg = { generertInntekt: 'generer', fyllInnInntekt: 'fyllInn' }
 
 export const PensjonForm = () => {
 	const formMethods = useFormContext()
 	const opts = useContext(BestillingsveilederContext)
 	const [inputType, setInputType] = useState(
-		formMethods.getValues(pensjonGenererPath) ? inputValg.genererInntekt : inputValg.fyllInnInntekt,
+		formMethods.getValues(pensjonGenererPath)
+			? inputValg.generertInntekt
+			: inputValg.fyllInnInntekt,
 	)
 	const { nyBestilling, nyBestillingFraMal } = opts?.is
 
@@ -69,11 +71,11 @@ export const PensjonForm = () => {
 				<ToggleGroup
 					size={'small'}
 					onChange={(value) => {
-						const isGenererInntekt = value === inputValg.genererInntekt
-						const activePath = isGenererInntekt ? pensjonGenererPath : pensjonPath
-						const inactivePath = isGenererInntekt ? pensjonPath : pensjonGenererPath
-						const currentInitialValues = isGenererInntekt
-							? initialPensjonGenererInntekt
+						const isGenerertInntekt = value === inputValg.generertInntekt
+						const activePath = isGenerertInntekt ? pensjonGenererPath : pensjonPath
+						const inactivePath = isGenerertInntekt ? pensjonPath : pensjonGenererPath
+						const currentInitialValues = isGenerertInntekt
+							? initialPensjonGenerertInntekt
 							: initialPensjonInntekt
 
 						formMethods.setValue(activePath, currentInitialValues)
@@ -82,7 +84,7 @@ export const PensjonForm = () => {
 					}}
 					defaultValue={
 						formMethods.getValues(pensjonGenererPath)
-							? inputValg.genererInntekt
+							? inputValg.generertInntekt
 							: inputValg.fyllInnInntekt
 					}
 					style={{ margin: '5px 0 5px', backgroundColor: '#ffffff' }}
@@ -90,12 +92,12 @@ export const PensjonForm = () => {
 					<ToggleGroup.Item key={inputValg.fyllInnInntekt} value={inputValg.fyllInnInntekt}>
 						Fyll inn inntekt
 					</ToggleGroup.Item>
-					<ToggleGroup.Item key={inputValg.genererInntekt} value={inputValg.genererInntekt}>
+					<ToggleGroup.Item key={inputValg.generertInntekt} value={inputValg.generertInntekt}>
 						Generer inntekt
 					</ToggleGroup.Item>
 				</ToggleGroup>
-				{inputType === inputValg.genererInntekt && (
-					<GenererInntektForm syttenFraOgMedAar={syttenFraOgMedAar} formMethods={formMethods} />
+				{inputType === inputValg.generertInntekt && (
+					<GenerertInntektForm syttenFraOgMedAar={syttenFraOgMedAar} formMethods={formMethods} />
 				)}
 				{inputType === inputValg.fyllInnInntekt && (
 					<FyllInnInntektForm syttenFraOgMedAar={syttenFraOgMedAar} />

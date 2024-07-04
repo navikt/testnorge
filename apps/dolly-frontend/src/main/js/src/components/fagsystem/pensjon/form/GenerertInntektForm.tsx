@@ -27,7 +27,7 @@ const StyledPanel = styled.div`
 	width: 790px;
 `
 
-export const GenererInntektForm = ({ syttenFraOgMedAar, formMethods }) => {
+export const GenerertInntektForm = ({ syttenFraOgMedAar, formMethods }) => {
 	const { pensjon, mutate } = usePensjonFacadeGjennomsnitt(
 		formMethods.watch(`${pensjonGenererPath}.generer`),
 	)

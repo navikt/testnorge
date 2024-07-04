@@ -96,7 +96,7 @@ export const initialPensjonInntekt = {
 	redusertMedGrunnbelop: true,
 }
 
-export const initialPensjonGenererInntekt = {
+export const initialPensjonGenerertInntekt = {
 	generer: {
 		fomAar: new Date().getFullYear() - 10,
 		averageG: 1.5,
