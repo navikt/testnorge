@@ -13,6 +13,7 @@ import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonSoknadRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonVedtakRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPersonRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPoppGenerertInntektRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPoppInntektRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonSamboerRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonSamboerResponse;
@@ -150,6 +151,10 @@ public class PensjonforvalterClient implements ClientRegister {
                                                     .flatMap(pensjon -> Flux.merge(
 
                                                                     lagreInntekt(pensjon,
+                                                                            dollyPerson.getIdent(), bestilteMiljoer.get())
+                                                                            .map(response -> POPP_INNTEKTSREGISTER + decodeStatus(response, dollyPerson.getIdent())),
+
+                                                                    lagreGenerertInntekt(pensjon,
                                                                             dollyPerson.getIdent(), bestilteMiljoer.get())
                                                                             .map(response -> POPP_INNTEKTSREGISTER + decodeStatus(response, dollyPerson.getIdent())),
 
@@ -455,6 +460,22 @@ public class PensjonforvalterClient implements ClientRegister {
                             request.setFnr(ident);
                             request.setMiljoer(List.of(miljoe));
                             return pensjonforvalterConsumer.lagreInntekter(request);
+                        }));
+    }
+
+    private Flux<PensjonforvalterResponse> lagreGenerertInntekt(PensjonData pensjonData, String ident,
+                                                                Set<String> miljoer) {
+
+        return Flux.just(pensjonData)
+                .filter(PensjonData::hasGenerertInntekt)
+                .map(PensjonData::getGenerertInntekt)
+                .flatMap(generertInntekt -> Flux.fromIterable(miljoer)
+                        .flatMap(miljoe -> {
+
+                            var request = mapperFacade.map(generertInntekt, PensjonPoppGenerertInntektRequest.class);
+                            request.setFnr(ident);
+                            request.setMiljoer(List.of(miljoe));
+                            return pensjonforvalterConsumer.lagreGenererteInntekter(request);
                         }));
     }
 

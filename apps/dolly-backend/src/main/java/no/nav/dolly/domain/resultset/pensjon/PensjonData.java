@@ -27,6 +27,9 @@ public class PensjonData {
     @Schema(description = "Inntekt i pensjonsopptjeningsregister (POPP)")
     private PoppInntekt inntekt;
 
+    @Schema(description = "Generert inntekt i pensjonsopptjeningsregister (POPP)")
+    private PoppGenerertInntektWrapper generertInntekt;
+
     @Schema(description = "Data for tjenestepensjon (TP)")
     private List<TpOrdning> tp;
 
@@ -38,6 +41,10 @@ public class PensjonData {
 
     public boolean hasInntekt() {
         return nonNull(inntekt);
+    }
+
+    public boolean hasGenerertInntekt() {
+        return nonNull(generertInntekt);
     }
 
     public boolean hasTp() {
@@ -69,6 +76,12 @@ public class PensjonData {
         UKJENT
     }
 
+    public enum UforeType {UNGUFOR, GIFT, ENSLIG}
+
+    public enum BarnetilleggType {FELLESBARN, SAERKULLSBARN}
+
+    public enum InntektType {ARBEIDSINNTEKT, NAERINGSINNTEKT, PENSJON_FRA_UTLANDET, UTENLANDS_INNTEKT, ANDRE_PENSJONER_OG_YTELSER}
+
     @Data
     @Builder
     @NoArgsConstructor
@@ -86,6 +99,67 @@ public class PensjonData {
 
         @Schema(description = "Når true reduseres tidligere års pensjon i forhold til dagens kroneverdi")
         private Boolean redusertMedGrunnbelop;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class PoppGenerertInntektWrapper {
+
+        @Schema(description = "Verdier brukt til generering av inntekt")
+        private PoppGenerer generer;
+
+        @Schema(description = "Genererte verdier for POPP inntekt")
+        private List<PoppGenerertInntekt> inntekter;
+
+        public List<PoppGenerertInntekt> getInntekter() {
+            if (inntekter == null) {
+                inntekter = new ArrayList<>();
+            }
+            return inntekter;
+        }
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class PoppGenerer {
+
+        @Schema(description = "Fra og med år YYYY")
+        private Integer fomAar;
+
+        @Schema(description = "Til og med år YYYY")
+        private Integer tomAar;
+
+        @Schema(description = "Gjennomsnittlig grunnbeløp (G) per år")
+        private Integer averageG;
+
+        @Schema(description = "Gjennomsnittlig grunnbeløp (G) kan genereres til verdi under 1G")
+        private Boolean tillatInntektUnder1G;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class PoppGenerertInntekt {
+
+        @Schema(description = "Gjeldende år")
+        private Integer ar;
+
+        @Schema(description = "Inntekt i hele kroner for året")
+        private Integer inntekt;
+
+        @Schema(description = "Generert G-verdi for året")
+        private Integer generatedG;
+
+        @Schema(description = "Grunnbeløp for året")
+        private Boolean grunnbelop;
     }
 
     @Data
@@ -231,10 +305,4 @@ public class PensjonData {
         private InntektType inntektType;
         private Integer belop;
     }
-
-    public enum UforeType {UNGUFOR, GIFT, ENSLIG}
-
-    public enum BarnetilleggType {FELLESBARN, SAERKULLSBARN}
-
-    public enum InntektType {ARBEIDSINNTEKT, NAERINGSINNTEKT, PENSJON_FRA_UTLANDET, UTENLANDS_INNTEKT, ANDRE_PENSJONER_OG_YTELSER}
 }
