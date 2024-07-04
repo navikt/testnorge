@@ -232,9 +232,6 @@ export const FormDollyFieldArray = ({
 	})
 	const values = formMethods.watch(name)
 
-	console.log('values: ', values) //TODO - SLETT MEG
-	console.log('fields: ', fields) //TODO - SLETT MEG
-
 	useEffect(() => {
 		const differentLength = values?.length !== fields?.length
 
