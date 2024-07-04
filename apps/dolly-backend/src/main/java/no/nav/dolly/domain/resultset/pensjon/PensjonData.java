@@ -136,7 +136,7 @@ public class PensjonData {
         private Integer tomAar;
 
         @Schema(description = "Gjennomsnittlig grunnbeløp (G) per år")
-        private Integer averageG;
+        private Float averageG;
 
         @Schema(description = "Gjennomsnittlig grunnbeløp (G) kan genereres til verdi under 1G")
         private Boolean tillatInntektUnder1G;
@@ -156,7 +156,7 @@ public class PensjonData {
         private Integer inntekt;
 
         @Schema(description = "Generert G-verdi for året")
-        private Integer generatedG;
+        private Float generatedG;
 
         @Schema(description = "Grunnbeløp for året")
         private Boolean grunnbelop;
