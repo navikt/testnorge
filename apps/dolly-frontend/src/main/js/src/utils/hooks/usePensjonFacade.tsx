@@ -1,6 +1,6 @@
-import useSWR from 'swr'
 import api from '@/api'
 import { v4 as _uuid } from 'uuid'
+import useSWRImmutable from 'swr/immutable'
 
 const pensjonFacadeGenererUrl =
 	'/testnav-pensjon-testdata-facade-proxy/api/v1/generate-inntekt-med-gjennomsnitt-g'
@@ -18,17 +18,16 @@ type PensjonResponse = {
 	}
 }
 
-const validateBody = (body, shouldFetch) => {
-	if (!body || !shouldFetch) return false
+const validateBody = (body) => {
+	if (!body) return false
 	const { fomAar, tomAar, averageG } = body
 	return fomAar && tomAar && averageG
 }
 
-export const usePensjonFacadeGjennomsnitt = (body: any, shouldFetch: boolean) => {
-	const { data, isLoading, error, mutate } = useSWR<PensjonResponse, Error>(
-		validateBody(body, shouldFetch) && pensjonFacadeGenererUrl,
+export const usePensjonFacadeGjennomsnitt = (body: any) => {
+	const { data, isLoading, error, mutate } = useSWRImmutable<PensjonResponse, Error>(
+		validateBody(body) && pensjonFacadeGenererUrl,
 		(url) => {
-			console.log('url: ', url) //TODO - SLETT MEG
 			return api
 				.fetchJson(
 					url,

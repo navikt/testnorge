@@ -1,4 +1,5 @@
 import subYears from 'date-fns/subYears'
+import { runningE2ETest } from '@/service/services/Request'
 
 export const initialForenkletOppgjoersordningOrg = {
 	arbeidsgiver: {
@@ -89,8 +90,18 @@ export const initialPeriode = {
 }
 
 export const initialPensjonInntekt = {
-	aar: null,
-	inntekt: null,
+	fomAar: new Date().getFullYear() - 10,
+	tomAar: runningE2ETest() ? new Date().getFullYear() : null,
+	belop: runningE2ETest() ? '12345' : '',
+	redusertMedGrunnbelop: true,
+}
+
+export const initialPensjonGenererInntekt = {
+	generer: {
+		fomAar: new Date().getFullYear() - 10,
+		averageG: 1.5,
+		tillatInntektUnder1G: false,
+	},
 }
 
 export const initialAmelding = [
