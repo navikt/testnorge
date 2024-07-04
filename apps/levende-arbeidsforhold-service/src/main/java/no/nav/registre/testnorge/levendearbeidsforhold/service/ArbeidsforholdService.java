@@ -26,8 +26,13 @@ public class ArbeidsforholdService {
         log.info("Endrer arbeidsforhold for ident: {}", request.getNavArbeidsforholdId());
         log.info(String.valueOf(request));
         request.getAnsettelsesperiode().getPeriode().setTom(LocalDate.now());
-        request.getAnsettelsesperiode().setSluttaarsak("Dødsfall");
-        log.info(String.valueOf(request));
+        request.getAnsettelsesperiode().setSluttaarsak("arbeidstakerHarSagtOppSelv");
+        request.getAnsettelsesperiode().setVarslingskode("NAVEND");
+        request.getArbeidsavtaler().forEach(
+                arbeidsavtale -> {
+                    arbeidsavtale.setStillingsprosent(0.0);
+                });
+        log.info(String.valueOf((request)));
         aaregConsumer.endreArbeidsforhold(request);
 
     }
