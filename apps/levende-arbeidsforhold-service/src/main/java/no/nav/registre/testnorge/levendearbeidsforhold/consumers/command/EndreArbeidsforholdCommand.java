@@ -58,7 +58,6 @@ public class EndreArbeidsforholdCommand implements Callable<Mono<Arbeidsforhold>
                     .map(arbeidsforhold1 -> {
                         return Arbeidsforhold.builder().build();
                     });
-            //Function<WebClient.ResponseSpec, String> toString = WebClient.ResponseSpec::toString;
             log.info(requests.toString());
 
             return requets;
