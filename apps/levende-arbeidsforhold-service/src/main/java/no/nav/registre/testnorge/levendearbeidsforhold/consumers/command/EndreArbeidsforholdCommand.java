@@ -5,8 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnorge.levendearbeidsforhold.domain.v1.Arbeidsforhold;
 import no.nav.testnav.libs.commands.utils.WebClientFilter;
-import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -43,7 +43,7 @@ public class EndreArbeidsforholdCommand implements Callable<Mono<Arbeidsforhold>
         try{
             Disposable requets = webClient
                     .put()
-                    .uri(builder -> builder.path("/api/v1/arbeidsforhold/{navArbeidsforholdId}")
+                    .uri(builder -> builder.path("/q2/api/v1/arbeidsforhold/{navArbeidsforholdId}")
                             .queryParam("Nav-Arbeidsforhold-Kildereferande", navArbeidsforholdKilde)
                             .queryParam("Nav-Arbeidsforhold-Periode", getNavArbeidsfoholdPeriode())
                             .queryParam("navArbeidsforholdId", requests.getNavArbeidsforholdId())
