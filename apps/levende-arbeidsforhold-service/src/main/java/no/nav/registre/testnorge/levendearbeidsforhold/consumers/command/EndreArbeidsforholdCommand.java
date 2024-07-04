@@ -2,6 +2,7 @@ package no.nav.registre.testnorge.levendearbeidsforhold.consumers.command;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Function;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -41,7 +42,7 @@ public class EndreArbeidsforholdCommand implements Callable<Mono<Arbeidsforhold>
     public Mono<Arbeidsforhold> call() {
 
         try{
-            Disposable requets = webClient
+            Mono<Arbeidsforhold> requets = webClient
                     .put()
                     .uri(builder -> builder.path("/q2/api/v1/arbeidsforhold/{navArbeidsforholdId}")
                             .build(requests.getNavArbeidsforholdId()))
@@ -51,11 +52,16 @@ public class EndreArbeidsforholdCommand implements Callable<Mono<Arbeidsforhold>
                     .header("Nav-Arbeidsforhold-Periode", getNavArbeidsfoholdPeriode())
                     .body(BodyInserters.fromValue(requests))
                     .retrieve()
-                    .toBodilessEntity()
+                    .bodyToMono(Arbeidsforhold.class)
                     .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                            .filter(WebClientFilter::is5xxException)).subscribe();
-            log.info("Arbeidsforhold ");
-                return Mono.just((Arbeidsforhold) requets);
+                            .filter(WebClientFilter::is5xxException))
+                    .map(arbeidsforhold1 -> {
+                        return Arbeidsforhold.builder().build();
+                    });
+            //Function<WebClient.ResponseSpec, String> toString = WebClient.ResponseSpec::toString;
+            log.info(requests.toString());
+
+            return requets;
         }
 
         catch (
