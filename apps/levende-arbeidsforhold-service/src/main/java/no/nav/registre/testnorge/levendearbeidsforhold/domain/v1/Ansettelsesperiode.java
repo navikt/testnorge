@@ -38,4 +38,9 @@ public class Ansettelsesperiode {
     private Bruksperiode bruksperiode;
 
     private Sporingsinformasjon sporingsinformasjon;
+
+    @Override
+    public String toString() {
+        return ("Ansettelsesforhold: [" + periode.toString() + ", " + sluttaarsak + ", " + varslingskode);
+    }
 }
