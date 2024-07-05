@@ -1,8 +1,5 @@
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
 
-kafka:
-  groupid: testnav-levende-arbeidsforhold-service
-
 spring:
   main:
     banner-mode: off
@@ -22,7 +19,7 @@ spring:
       enabled: false
   kafka:
     consumer:
-      group-id: ${kafka.groupid}
+      group-id: testnav-levende-arbeidsforhold-service
 springdoc:
   swagger-ui:
     disable-swagger-default-url: true

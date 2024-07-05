@@ -26,14 +26,18 @@ public class DoedsfallListener {
      */
     @KafkaListener(topics = doedsfallTopic)
     public void getHendelser(List<ConsumerRecord<String, Personhendelse>> hendelser) {
-        for (ConsumerRecord<String, Personhendelse> hendelse : hendelser) {
+        try {
+            for (ConsumerRecord<String, Personhendelse> hendelse : hendelser) {
 
-            String aktoerId = hendelse.key().split("\u001A")[1];
-            String hendelsestype = hendelse.value().get(4).toString();
+                String aktoerId = hendelse.key().split("\u001A")[1];
+                String hendelsestype = hendelse.value().get(4).toString();
 
-            if (validerHendelse(hendelsestype)) {
-                arbeidsforholdService.arbeidsforholdService(aktoerId);
+                if (validerHendelse(hendelsestype)) {
+                    arbeidsforholdService.arbeidsforholdService(aktoerId);
+                }
             }
+        } catch (Exception e) {
+            log.error("Feil ved konsumering av hendelser fra Kafka", e);
         }
     }
 
