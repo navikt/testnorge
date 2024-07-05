@@ -3,10 +3,8 @@ package no.nav.registre.testnorge.levendearbeidsforhold.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import no.nav.registre.testnorge.levendearbeidsforhold.consumers.AaregConsumer;
 import no.nav.registre.testnorge.levendearbeidsforhold.domain.v1.Arbeidsforhold;
-
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -23,10 +21,11 @@ public class ArbeidsforholdService {
 
     public void arbeidsforholdService(String aktoerId) {
         List<Arbeidsforhold> arbeidsforholdListe = hentArbeidsforhold(aktoerId);
+        log.info("Hentet {} arbeidsforhold for aktørId: {}", arbeidsforholdListe.size(), aktoerId);
         if (!arbeidsforholdListe.isEmpty()) {
             arbeidsforholdListe.forEach(
                     arbeidsforhold -> {
-                        if (arbeidsforhold.getAnsettelsesperiode().getPeriode().getTom() == null){
+                        if (arbeidsforhold.getAnsettelsesperiode().getPeriode().getTom() == null) {
                             endreArbeidsforhold(arbeidsforhold);
                         }
                     }
@@ -38,7 +37,7 @@ public class ArbeidsforholdService {
         return aaregConsumer.hentArbeidsforhold(ident);
     }
 
-    public void endreArbeidsforhold(Arbeidsforhold arbeidsforhold){
+    public void endreArbeidsforhold(Arbeidsforhold arbeidsforhold) {
 
         arbeidsforhold.getAnsettelsesperiode().getPeriode().setTom(LocalDate.now());
         arbeidsforhold.getAnsettelsesperiode().setSluttaarsak(sluttAarsaksKode);
@@ -46,6 +45,7 @@ public class ArbeidsforholdService {
         arbeidsforhold.getArbeidsavtaler().forEach(
                 arbeidsavtale -> arbeidsavtale.setStillingsprosent(null));
 
+        log.info("Sender inn arbeidsforhold med id: {}", arbeidsforhold.getNavArbeidsforholdId());
         aaregConsumer.endreArbeidsforhold(arbeidsforhold);
     }
 }
