@@ -41,7 +41,7 @@ export const harTpBestilling = (bestillingerFagsystemer) => {
 export const harPoppBestilling = (bestillingerFagsystemer) => {
 	let popp = false
 	bestillingerFagsystemer?.forEach((i) => {
-		if (i?.pensjonforvalter?.inntekt) {
+		if (i?.pensjonforvalter?.inntekt || i?.pensjonforvalter?.generertInntekt) {
 			popp = true
 		}
 	})

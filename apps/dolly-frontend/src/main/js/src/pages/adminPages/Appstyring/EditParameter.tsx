@@ -14,7 +14,6 @@ export const EditParameter = ({ name, initialValue, getOptions }: any) => {
 
 	//TODO: Implementer lagring av verdi paa parameter
 	const onSubmit = (data: any) => {
-		console.log('Lagrer... ', data) //TODO - SLETT MEG
 		closeModal()
 	}
 

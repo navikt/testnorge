@@ -9,8 +9,8 @@ import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldA
 import { pensjonGenererPath } from '@/components/fagsystem/pensjon/form/Form'
 import styled from 'styled-components'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
-import { usePensjonFacadeGjennomsnitt } from '@/utils/hooks/usePensjonFacade'
 import { ErrorMessage } from '@hookform/error-message'
+import { usePensjonFacadeGenerer } from '@/utils/hooks/usePensjon'
 
 const getTittel = (data) => {
 	const inntektsaar = data?.map((inntekt) => inntekt.ar)
@@ -28,7 +28,7 @@ const StyledPanel = styled.div`
 `
 
 export const GenerertInntektForm = ({ syttenFraOgMedAar, formMethods }) => {
-	const { pensjon, mutate } = usePensjonFacadeGjennomsnitt(
+	const { pensjon, mutate } = usePensjonFacadeGenerer(
 		formMethods.watch(`${pensjonGenererPath}.generer`),
 	)
 
