@@ -24,30 +24,26 @@ public class EndreArbeidsforholdCommand implements Callable<Mono<Arbeidsforhold>
     private final Arbeidsforhold requests;
     private final String token;
     private final String miljoe = "q2";
-    private final String navArbeidsforholdKilde = "Dolly-doedsfall-hendelse" ;
+    private final String navArbeidsforholdKilde = "Dolly-doedsfall-hendelse";
 
     @SneakyThrows
     @Override
     public Mono<Arbeidsforhold> call() {
 
-        Mono<Arbeidsforhold> request = webClient
-            .put()
-            .uri(builder -> builder.path("/{miljoe}/api/v1/arbeidsforhold/{navArbeidsforholdId}")
-                    .build(miljoe, requests.getNavArbeidsforholdId()))
-            .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-            .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-            .header("Nav-Arbeidsforhold-Kildereferanse", navArbeidsforholdKilde)
-            .header("Nav-Arbeidsforhold-Periode", LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM")))
-            .body(BodyInserters.fromValue(requests))
-            .retrieve()
-            .bodyToMono(Arbeidsforhold.class)
-            .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                    .filter(WebClientFilter::is5xxException))
-            .map(arbeidsforhold1 -> Arbeidsforhold.builder().build());
-
-        request.subscribe(response -> {}, error -> log.error("Feil ved endring av arbeidsforhold: {}", error.getMessage()));
-
-        return request;
+        return webClient
+                .put()
+                .uri(builder -> builder.path("/{miljoe}/api/v1/arbeidsforhold/{navArbeidsforholdId}")
+                        .build(miljoe, requests.getNavArbeidsforholdId()))
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .header("Nav-Arbeidsforhold-Kildereferanse", navArbeidsforholdKilde)
+                .header("Nav-Arbeidsforhold-Periode", LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM")))
+                .body(BodyInserters.fromValue(requests))
+                .retrieve()
+                .bodyToMono(Arbeidsforhold.class)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
+                .map(arbeidsforhold1 -> Arbeidsforhold.builder().build());
     }
 }
 

@@ -31,9 +31,9 @@ public class DoedsfallListener {
 
                 String aktoerId = hendelse.key().split("\u001A")[1];
                 String hendelsestype = hendelse.value().get(4).toString();
-                log.info("Prosesserer hendelse {} for aktørId {}", hendelsestype, aktoerId);
 
                 if (validerHendelse(hendelsestype)) {
+                    log.info("Sender hendelsestype: {} for aktørId: {} til arbeidsforhold-service", hendelsestype, aktoerId);
                     arbeidsforholdService.arbeidsforholdService(aktoerId);
                 }
             }
