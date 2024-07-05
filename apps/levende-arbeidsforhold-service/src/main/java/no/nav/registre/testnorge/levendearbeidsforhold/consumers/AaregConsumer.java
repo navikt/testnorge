@@ -57,7 +57,9 @@ public class AaregConsumer {
     }
 
     public List<Arbeidsforhold> hentArbeidsforhold(String ident) {
+        log.info("Henter token for å hente arbeidsforhold");
         var token = tokenExchange.exchange(serverProperties).block();
+        log.info("Token hentet");
         if (nonNull(token)) {
             return new HentArbeidsforholdCommand(webClient, token.getTokenValue(), ident).call();
         }
