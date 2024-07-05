@@ -27,12 +27,12 @@ import java.util.Map;
 @Slf4j
 @EnableKafka
 @Configuration
-@Profile({ "dev" })
-public class LocalKafkaConfig {
+@Profile({ "dev", "prod" })
+public class KafkaConfig {
 
     private final String groupId;
 
-    public LocalKafkaConfig(@Value("${spring.kafka.consumer.group-id}") String groupId) {
+    public KafkaConfig(@Value("${spring.kafka.consumer.group-id}") String groupId) {
         this.groupId = groupId;
     }
 
