@@ -20,8 +20,6 @@ spring:
       enabled: false
   kafka:
     consumer:
-      stream: true
-      pool: nav-dev
       group-id: testnav-levende-arbeidsforhold-service
 springdoc:
   swagger-ui:
