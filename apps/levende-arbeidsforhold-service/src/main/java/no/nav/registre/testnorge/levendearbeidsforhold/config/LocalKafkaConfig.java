@@ -27,18 +27,18 @@ import java.util.Map;
 @Slf4j
 @EnableKafka
 @Configuration
-@Profile({"dev", "prod"})
-public class KafkaConfig {
+@Profile({ "dev" })
+public class LocalKafkaConfig {
 
     private final String groupId;
 
-    public KafkaConfig(@Value("${spring.kafka.consumer.group-id}") String groupId) {
+    public LocalKafkaConfig(@Value("${spring.kafka.consumer.group-id}") String groupId) {
         this.groupId = groupId;
     }
 
     public ConsumerFactory<String, String> consumerFactory() {
 
-        String randomSuffixGroupID = String.valueOf((int)(Math.random() * 1000));
+        String randomSuffixGroupID = String.valueOf((int) (Math.random() * 1000));
 
         InetSocketAddress inetSocketAddress = new InetSocketAddress(0);
         Map<String, Object> props = new HashMap<>();
