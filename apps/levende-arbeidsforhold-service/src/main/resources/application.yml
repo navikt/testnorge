@@ -1,5 +1,8 @@
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
 
+kafka:
+  groupid: testnav-levende-arbeidsforhold-service
+
 spring:
   main:
     banner-mode: off
@@ -8,19 +11,19 @@ spring:
     version: application.version.todo #TODO Finn ut hvordan denne kan settes fra Gradle
     description: App for å hente PDL personer.
   security:
-      oauth2:
-        client:
-      resourceserver:
-        aad:
-          issuer-uri: ${AAD_ISSUER_URI}/v2.0
-          jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
-          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+    oauth2:
+      client:
+    resourceserver:
+      aad:
+        issuer-uri: ${AAD_ISSUER_URI}/v2.0
+        jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
+        accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
   cloud:
     vault:
       enabled: false
   kafka:
     consumer:
-      group-id: testnav-levende-arbeidsforhold-service
+      group-id: ${kafka.groupid}
 springdoc:
   swagger-ui:
     disable-swagger-default-url: true
