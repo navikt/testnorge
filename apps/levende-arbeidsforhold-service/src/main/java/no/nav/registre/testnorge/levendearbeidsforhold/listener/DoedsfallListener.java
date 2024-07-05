@@ -13,6 +13,10 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+/**
+ * Klasse som lytter til og konsumerer hendelser fra Kafka-hendelsesstrømmen på et gitt topic.
+ */
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -23,9 +27,8 @@ public class DoedsfallListener {
     private final String oensketHendelsestype = "DOEDSFALL_V1";
 
     /**
-     * Lytter til og konsumerer hendelser fra Kafka hendelsesstrømmen på et gitt topic.
-     * Behandler også alle hendelser av en gitt hendelsestype.
-     * @param hendelser - Alle konsumerte hendelser fra hendelsesstrømmen
+     * Henter ut ønskede hendelser, og benytter arbeidsforholdService-objektet til å håndtere hendelsene.
+     * @param hendelser Alle konsumerte hendelser fra hendelsesstrømmen
      */
     @KafkaListener(topics = doedsfallTopic)
     public void getHendelser(List<ConsumerRecord<String, Personhendelse>> hendelser) {
@@ -42,7 +45,7 @@ public class DoedsfallListener {
 
     /**
      * Validerer om hendelsen er av ønsket hendelsestype
-     * @param personhendelse - Hendelse/opplysningstype, f.eks: FOLKEREGISTERIDENTIFIKATOR_V1, NAVN_V1, SIVILSTAND_V1, etc.
+     * @param personhendelse Hendelse/opplysningstype, f.eks: FOLKEREGISTERIDENTIFIKATOR_V1, NAVN_V1, SIVILSTAND_V1, etc.
      * @return true dersom det er av ønsket hendelsestype, false hvis ikke
      */
     private Boolean validerHendelse(String personhendelse) {
