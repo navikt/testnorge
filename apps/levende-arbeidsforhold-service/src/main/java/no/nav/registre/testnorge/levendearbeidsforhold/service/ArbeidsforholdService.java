@@ -15,7 +15,6 @@ import java.util.List;
 /**
  * Klasse som håndterer endring av aktive arbeidsforhold for en gitt aktør, ved hjelp av et aaregConsumer-objekt.
  */
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
