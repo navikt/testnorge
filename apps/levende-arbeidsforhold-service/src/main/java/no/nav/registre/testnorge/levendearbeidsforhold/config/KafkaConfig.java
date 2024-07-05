@@ -32,7 +32,7 @@ public class KafkaConfig {
 
     private final String groupId;
 
-    public KafkaConfig(@Value("${spring.kafka.consumer.group-id}") String groupId) {
+    public KafkaConfig(@Value("${kafka.groupid}") String groupId) {
         this.groupId = groupId;
     }
 
