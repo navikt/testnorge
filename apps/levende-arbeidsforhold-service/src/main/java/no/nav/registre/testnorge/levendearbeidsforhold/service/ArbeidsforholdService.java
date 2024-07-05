@@ -25,7 +25,11 @@ public class ArbeidsforholdService {
         List<Arbeidsforhold> arbeidsforholdListe = hentArbeidsforhold(aktoerId);
         if (!arbeidsforholdListe.isEmpty()) {
             arbeidsforholdListe.forEach(
-                    this::endreArbeidsforhold
+                    arbeidsforhold -> {
+                        if (arbeidsforhold.getAnsettelsesperiode().getPeriode().getTom() == null){
+                            endreArbeidsforhold(arbeidsforhold);
+                        }
+                    }
             );
         }
     }
