@@ -330,7 +330,9 @@ export const foreldreansvar = Yup.object({
 		.nullable(),
 	ansvarssubjekt: Yup.string()
 		.test('ansvarssubjekt-er-paakrevd', 'Ansvarssubjekt er påkrevd', (value, testcontext) => {
-			return !!value || testcontext.parent?.ansvarlig
+			return (
+				!!value || testcontext.parent?.ansvarlig || !testcontext.options?.context?.personFoerLeggTil
+			)
 		})
 		.nullable(),
 })
