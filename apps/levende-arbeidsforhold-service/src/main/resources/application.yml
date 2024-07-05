@@ -12,17 +12,15 @@ spring:
     description: App for å hente PDL personer.
   security:
     oauth2:
-      client:
-    resourceserver:
-      aad:
-        issuer-uri: ${AAD_ISSUER_URI}/v2.0
-        jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
-        accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+      resourceserver:
+        aad:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
   cloud:
     vault:
       enabled: false
   kafka:
-    bootstrap-servers: ${KAFKA_BROKERS}
     consumer:
       group-id: ${kafka.groupid}
 springdoc:
