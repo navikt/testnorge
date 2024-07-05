@@ -40,12 +40,12 @@ public class AzureAdTokenService implements ExchangeToken {
             log.info("Setter opp proxy host {} for Client Credentials", proxyHost);
             var uri = URI.create(proxyHost);
             builder.clientConnector(new ReactorClientHttpConnector(
-                HttpClient
-                    .create()
-                    .proxy(proxy -> proxy
-                        .type(ProxyProvider.Proxy.HTTP)
-                        .host(uri.getHost())
-                        .port(uri.getPort()))
+                    HttpClient
+                            .create()
+                            .proxy(proxy -> proxy
+                                    .type(ProxyProvider.Proxy.HTTP)
+                                    .host(uri.getHost())
+                                    .port(uri.getPort()))
             ));
         }
         this.webClient = builder.build();

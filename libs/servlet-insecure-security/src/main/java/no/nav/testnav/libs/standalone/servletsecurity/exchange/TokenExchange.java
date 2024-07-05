@@ -3,6 +3,7 @@ package no.nav.testnav.libs.standalone.servletsecurity.exchange;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class TokenExchange {
 
     private final AzureAdTokenService azureAdTokenService;
@@ -32,8 +34,10 @@ public class TokenExchange {
                 if (!tokenCache.containsKey(key) ||
                         expires(tokenCache.get(key))) {
                     return azureAdTokenService.exchange(serverProperties)
-                            .doOnNext(token ->
-                                    tokenCache.put(key, token));
+                            .doOnNext(token -> {
+                                log.info("Hentet token fra azureAd exchange..");
+                                tokenCache.put(key, token);
+                            });
                 } else {
 
                     return Mono.just(tokenCache.get(key));

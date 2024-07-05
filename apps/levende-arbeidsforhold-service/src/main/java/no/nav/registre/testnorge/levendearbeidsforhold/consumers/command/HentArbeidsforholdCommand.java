@@ -1,6 +1,6 @@
 package no.nav.registre.testnorge.levendearbeidsforhold.consumers.command;
 
-import io.swagger.v3.core.util.Json;
+
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -22,47 +22,47 @@ import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 
-
 @Slf4j
 @RequiredArgsConstructor
 public class HentArbeidsforholdCommand implements Callable<List<Arbeidsforhold>> {
+
     private static final String NAV_PERSON_IDENT = "Nav-Personident";
     private static final String CONSUMER = "Dolly";
+    private static final String MILJO = "q2";
+    
     private final WebClient webClient;
     private final String token;
     private final String ident;
-    private final String miljoe = "q2";
 
     @SneakyThrows
     @Override
     public List<Arbeidsforhold> call() {
-
         try {
             var arbeidsforhold = webClient
                     .get()
                     .uri(builder -> builder
                             .path("/{miljoe}/api/v1/arbeidstaker/arbeidsforhold")
                             .queryParam("arbeidsforholdtype", "forenkletOppgjoersordning", "frilanserOppdragstakerHonorarPersonerMm", "maritimtArbeidsforhold", "ordinaertArbeidsforhold")
-                            .build(miljoe))
+                            .build(MILJO))
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                     .header(NAV_PERSON_IDENT, ident)
                     .header(NavHeaders.NAV_CONSUMER_ID, CONSUMER)
                     .header(NavHeaders.NAV_CALL_ID, getNavCallId())
                     .retrieve()
                     .bodyToMono(Arbeidsforhold[].class)
-                    .retryWhen(Retry
-                            .backoff(3, Duration.ofSeconds(5))
+                    .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                             .filter(WebClientFilter::is5xxException))
                     .block();
 
-            log.info("Hentet arbeidsforhold: {}", Json.pretty(arbeidsforhold));
+            log.info("Hentet arbeidsforhold fra Aareg: " + Arrays.toString(arbeidsforhold));
             return Arrays.stream(arbeidsforhold).collect(Collectors.toList());
         } catch (WebClientResponseException.NotFound e) {
-            log.warn("Fant ingen arbeidsforhold for ident: {}", ident);
+            log.warn("Fant ikke arbeidsforhold for ident {} i miljø {}", ident, MILJO);
             return Collections.emptyList();
         } catch (WebClientResponseException e) {
             log.error(
-                    "Klarer ikke å hente arbeidsforhold. Feilmelding: {}.",
+                    "Klarer ikke å hente arbeidsforhold for ident: {}. Feilmelding: {}.",
+                    ident,
                     e.getResponseBodyAsString()
             );
             throw e;
