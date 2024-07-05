@@ -22,6 +22,7 @@ spring:
     vault:
       enabled: false
   kafka:
+    bootstrap-servers: ${KAFKA_BROKERS}
     consumer:
       group-id: ${kafka.groupid}
 springdoc:
