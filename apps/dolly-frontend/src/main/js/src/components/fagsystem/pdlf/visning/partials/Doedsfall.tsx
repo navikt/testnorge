@@ -6,10 +6,7 @@ import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray
 import { formatDate } from '@/utils/DataFormatter'
 import _ from 'lodash'
 import { DoedsfallData, Person } from '@/components/fagsystem/pdlf/PdlTypes'
-import {
-	getInitialFoedsel,
-	getInitialDoedsfall,
-} from '@/components/fagsystem/pdlf/form/initialValues'
+import { getInitialDoedsfall } from '@/components/fagsystem/pdlf/form/initialValues'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
 import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
 
@@ -65,7 +62,7 @@ const DoedsfallVisning = ({
 
 	const doedsfallValues = redigertDoedsfallPdlf ? redigertDoedsfallPdlf : doedsfall
 	const redigertDoedsfallValues = redigertDoedsfallPdlf
-		? { doedsfall: Object.assign(_.cloneDeep(getInitialFoedsel()), redigertDoedsfallPdlf) }
+		? { doedsfall: Object.assign(_.cloneDeep(getInitialDoedsfall()), redigertDoedsfallPdlf) }
 		: null
 
 	return erPdlVisning ? (

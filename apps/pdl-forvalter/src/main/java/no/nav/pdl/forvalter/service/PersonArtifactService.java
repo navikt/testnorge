@@ -26,6 +26,7 @@ public class PersonArtifactService {
     private final KontaktAdresseService kontaktAdresseService;
     private final KontaktinformasjonForDoedsboService kontaktinformasjonForDoedsboService;
     private final NavnService navnService;
+    private final NavPersonIdentifikatorService navPersonIdentifikatorService;
     private final OppholdService oppholdService;
     private final OppholdsadresseService oppholdsadresseService;
     private final SikkerhetstiltakService sikkerhetstiltakService;
@@ -40,12 +41,12 @@ public class PersonArtifactService {
     public PersonDTO buildPerson(PersonDTO person, Boolean relaxed) {
 
         // Orders below matters to some degree, don´t rearrange without checking consequences
+        person.setFoedsel(foedselService.convert(person));
+        person.setFoedselsdato(foedselsdatoService.convert(person));
         person.setKjoenn(kjoennService.convert(person));
         person.setBostedsadresse(bostedAdresseService.convert(person, relaxed));
         person.setInnflytting(innflyttingService.convert(person));
         person.setFoedested(foedestedService.convert(person));
-        person.setFoedsel(foedselService.convert(person));
-        person.setFoedselsdato(foedselsdatoService.convert(person));
         person.setStatsborgerskap(statsborgerskapService.convert(person));
         person.setNavn(navnService.convert(person));
         person.setOppholdsadresse(oppholdsadresseService.convert(person));
@@ -67,6 +68,7 @@ public class PersonArtifactService {
         person.setDoedfoedtBarn(doedfoedtBarnService.convert(person.getDoedfoedtBarn()));
         person.setSikkerhetstiltak(sikkerhetstiltakService.convert(person));
         person.setFolkeregisterPersonstatus(folkeregisterPersonstatusService.convert(person));
+        person.setNavPersonIdentifikator(navPersonIdentifikatorService.convert(person));
 
         person = identtypeService.convert(person);
 

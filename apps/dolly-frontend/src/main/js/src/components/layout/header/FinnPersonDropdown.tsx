@@ -21,6 +21,7 @@ const DropdownToggle = () => {
 		</Dropdown.Toggle>
 	)
 }
+
 export const FinnPersonDropdown = () => {
 	const navigate = useNavigate()
 

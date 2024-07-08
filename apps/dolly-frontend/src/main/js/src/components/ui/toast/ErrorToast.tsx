@@ -5,7 +5,7 @@ type Props = {
 	applicationError: string
 }
 
-export const Toast = ({ applicationError }: Props) => {
+export const ErrorToast = ({ applicationError }: Props) => {
 	const feilmelding = applicationError?.replace?.(/\?\S*/, '')
 
 	toast.error(feilmelding, {

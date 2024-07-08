@@ -26,6 +26,7 @@ import static no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType.FORELDREANSV
 import static no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType.FORELDREANSVAR_FORELDER;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType.FULLMAKTSGIVER;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType.VERGE_MOTTAKER;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Service
 @RequiredArgsConstructor
@@ -131,8 +132,8 @@ public class UnhookEksternePersonerService {
         partnere.stream()
                 .map(DbPerson::getPerson)
                 .forEach(person -> person.setSivilstand(person.getSivilstand().stream()
-                        .filter(sivilstand -> nonNull(sivilstand.getRelatertVedSivilstand()))
-                        .filter(sivilstand -> !sivilstand.getRelatertVedSivilstand().equals(hovedperson.getIdent()))
+                        .filter(sivilstand -> isBlank(sivilstand.getRelatertVedSivilstand()) ||
+                                !sivilstand.getRelatertVedSivilstand().equals(hovedperson.getIdent()))
                         .toList()));
 
         deleteRelasjoner(hovedperson, partnere);
@@ -279,8 +280,7 @@ public class UnhookEksternePersonerService {
 
     private void deleteRelasjoner(DbPerson hovedPerson, List<DbPerson> relasjoner) {
 
-        relasjoner.stream()
-                .forEach(person -> {
+        relasjoner.forEach(person -> {
                     deleteRelasjon(person, hovedPerson.getIdent());
                     deleteRelasjon(hovedPerson, person.getIdent());
                 });
@@ -288,13 +288,7 @@ public class UnhookEksternePersonerService {
 
     private void deleteRelasjon(DbPerson person, String relasjonIdent) {
 
-        var relasjonIterator = person.getRelasjoner().iterator();
-        while (relasjonIterator.hasNext()) {
-
-            var thisRelasjon = relasjonIterator.next();
-            if (thisRelasjon.getRelatertPerson().getIdent().equals(relasjonIdent)) {
-                relasjonIterator.remove();
-            }
-        }
+        person.getRelasjoner()
+                .removeIf(thisRelasjon -> thisRelasjon.getRelatertPerson().getIdent().equals(relasjonIdent));
     }
 }

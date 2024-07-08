@@ -49,7 +49,6 @@ export const PdlVisning = ({
 
 	const { hentPerson, hentIdenter, hentGeografiskTilknytning, ident } = pdlData
 	const {
-		foedsel,
 		telefonnummer,
 		vergemaalEllerFremtidsfullmakt,
 		tilrettelagtKommunikasjon,
@@ -82,7 +81,7 @@ export const PdlVisning = ({
 					tpsMessagingLoading={loading?.tpsMessaging}
 				/>
 				<IdentInfo pdlResponse={hentIdenter} />
-				<Foedsel data={foedsel} erPdlVisning />
+				<Foedsel data={hentPerson} erPdlVisning />
 				<Doedsfall data={doedsfall} erPdlVisning />
 				<GeografiskTilknytning data={hentGeografiskTilknytning} />
 				<PdlNasjonalitet data={hentPerson} />

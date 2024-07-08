@@ -87,8 +87,10 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
 
                 type.setKilde(getKilde(type));
                 type.setMaster(getMaster(type, person));
-                if (person.getFoedsel().stream()
-                        .anyMatch(alder -> alder.getFoedselsdato().isBefore(LocalDateTime.now().minusYears(MYNDIG_ALDER)))) {
+                if (person.getFoedselsdato().stream()
+                        .anyMatch(alder -> alder.getFoedselsdato().isBefore(LocalDateTime.now().minusYears(MYNDIG_ALDER))) ||
+                        person.getFoedsel().stream()
+                                .anyMatch(alder -> alder.getFoedselsdato().isBefore(LocalDateTime.now().minusYears(MYNDIG_ALDER)))) {
                     // hovedperson er voksen
                     handle(type, person);
                 } else {
@@ -197,11 +199,11 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
                 .anyMatch(relasjon -> List.of(roller).contains(relasjon.getRelatertPersonsRolle()));
     }
 
-    private boolean isRelasjonForeldre(PersonDTO hovedperson) {
+    private boolean isRelasjonForeldre(PersonDTO person) {
 
-        return hovedperson.getForelderBarnRelasjon().stream()
+        return person.getForelderBarnRelasjon().stream()
                 .anyMatch(relasjon -> relasjon.isForeldre() && isNotTrue(relasjon.getPartnerErIkkeForelder())) &&
-                hovedperson.getSivilstand().stream()
+                person.getSivilstand().stream()
                         .anyMatch(sivilstand -> (sivilstand.isGift() || sivilstand.isSeparert()));
     }
 
@@ -272,6 +274,29 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
 
     private void handle(ForeldreansvarDTO foreldreansvar, PersonDTO hovedperson) {
 
+        if (isNotBlank(foreldreansvar.getAnsvarssubjekt())) {
+
+            personRepository.findByIdent(foreldreansvar.getAnsvarssubjekt())
+                    .ifPresent(barn -> {
+                        barn.getPerson().getForeldreansvar()
+                                .addFirst(ForeldreansvarDTO.builder()
+                                        .eksisterendePerson(true)
+                                        .ansvar(foreldreansvar.getAnsvar())
+                                        .ansvarlig(hovedperson.getIdent())
+                                        .gyldigFraOgMed(foreldreansvar.getGyldigFraOgMed())
+                                        .gyldigFraOgMed(foreldreansvar.getGyldigTilOgMed())
+                                        .kilde(foreldreansvar.getKilde())
+                                        .master(foreldreansvar.getMaster())
+                                        .id(barn.getPerson().getForeldreansvar().stream()
+                                                .map(ForeldreansvarDTO::getId)
+                                                .findFirst().orElse(0) + 1)
+                                        .build());
+
+                        relasjonService.setRelasjon(barn.getIdent(), hovedperson.getIdent(), FORELDREANSVAR_FORELDER);
+                        relasjonService.setRelasjon(hovedperson.getIdent(), barn.getIdent(), FORELDREANSVAR_BARN);
+                    });
+        }
+
         if (foreldreansvar.getAnsvar() == Ansvar.MOR || foreldreansvar.getAnsvar() == Ansvar.MEDMOR) {
             var barnMorRelasjoner = getBarnMorRelasjoner(hovedperson);
             setRelasjoner(barnMorRelasjoner, foreldreansvar);
@@ -327,7 +352,15 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
 
     public void handleBarn(ForeldreansvarDTO foreldreansvar, PersonDTO barn) {
 
-        if (foreldreansvar.getAnsvar() == Ansvar.MOR || foreldreansvar.getAnsvar() == Ansvar.MEDMOR) {
+        if (isNotBlank(foreldreansvar.getAnsvarlig())) {
+
+            foreldreansvar.setEksisterendePerson(isTrue(foreldreansvar.getEksisterendePerson()) ||
+                    foreldreansvar.getAnsvar() == Ansvar.ANDRE ||
+                    foreldreansvar.getAnsvar() == Ansvar.UKJENT);
+            relasjonService.setRelasjon(barn.getIdent(), foreldreansvar.getAnsvarlig(), FORELDREANSVAR_FORELDER);
+            relasjonService.setRelasjon(foreldreansvar.getAnsvarlig(), barn.getIdent(), FORELDREANSVAR_BARN);
+
+        } else if (foreldreansvar.getAnsvar() == Ansvar.MOR || foreldreansvar.getAnsvar() == Ansvar.MEDMOR) {
 
             setRelasjoner(foreldreansvar, barn, MOR, MEDMOR);
 
@@ -416,7 +449,7 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
         var foreldre = barn.getForelderBarnRelasjon().stream()
                 .filter(ForelderBarnRelasjonDTO::isBarn)
                 .toList();
-        foreldreansvar.setAnsvarlig(foreldre.get(0).getRelatertPerson());
+        foreldreansvar.setAnsvarlig(foreldre.getFirst().getRelatertPerson());
         relasjonService.setRelasjon(barn.getIdent(), foreldreansvar.getAnsvarlig(), FORELDREANSVAR_FORELDER);
         relasjonService.setRelasjon(foreldreansvar.getAnsvarlig(), barn.getIdent(), FORELDREANSVAR_BARN);
 
@@ -425,7 +458,7 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
         relasjonService.setRelasjon(barn.getIdent(), nyttForeldreansvar.getAnsvarlig(), FORELDREANSVAR_FORELDER);
         relasjonService.setRelasjon(nyttForeldreansvar.getAnsvarlig(), barn.getIdent(), FORELDREANSVAR_BARN);
         nyttForeldreansvar.setId(barn.getForeldreansvar().size() + 1);
-        barn.getForeldreansvar().add(0, nyttForeldreansvar);
+        barn.getForeldreansvar().addFirst(nyttForeldreansvar);
     }
 
     private void makeAnsvarligUtenIdentifikator(ForeldreansvarDTO foreldreansvar, PersonDTO person) {
@@ -472,7 +505,7 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
         barnRelasjoner.forEach(relasjon -> {
 
             relasjon.getBarn().getPerson().getForeldreansvar()
-                    .add(0, ForeldreansvarDTO.builder()
+                    .addFirst(ForeldreansvarDTO.builder()
                             .ansvar(foreldreansvar.getAnsvar())
                             .ansvarlig(relasjon.getAnsvarlig())
                             .eksisterendePerson(foreldreansvar.getEksisterendePerson())

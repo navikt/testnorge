@@ -45,6 +45,7 @@ public class PersonDTO implements Serializable {
     private List<KontaktadresseDTO> kontaktadresse;
     private List<KontaktinformasjonForDoedsboDTO> kontaktinformasjonForDoedsbo;
     private List<NavnDTO> navn;
+    private List<NavPersonIdentifikatorDTO> navPersonIdentifikator;
     private List<OppholdDTO> opphold;
     private List<OppholdsadresseDTO> oppholdsadresse;
     private List<SikkerhetstiltakDTO> sikkerhetstiltak;
@@ -259,6 +260,13 @@ public class PersonDTO implements Serializable {
             foedselsdato = new ArrayList<>();
         }
         return foedselsdato;
+    }
+
+    public List<NavPersonIdentifikatorDTO> getNavPersonIdentifikator() {
+        if(isNull(navPersonIdentifikator)) {
+            navPersonIdentifikator = new ArrayList<>();
+        }
+        return navPersonIdentifikator;
     }
 
     public Identtype getIdenttype() {

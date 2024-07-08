@@ -4,13 +4,14 @@ on:
   push:
     paths:
       - "plugins/**"
-      - libs/data-transfer-objects
-      - libs/database
-      - libs/reactive-core
-      - libs/security-core
-      - libs/servlet-core
-      - libs/servlet-insecure-security
-      - libs/servlet-security
+      - libs/data-transfer-objects/**
+      - libs/data-transfer-search-objects/**
+      - libs/database/**
+      - libs/reactive-core/**
+      - libs/security-core/**
+      - libs/servlet-core/**
+      - libs/servlet-insecure-security/**
+      - libs/servlet-security/**
       - apps/dolly-backend/**
       - .github/workflows/app.dolly-backend.yml
 
