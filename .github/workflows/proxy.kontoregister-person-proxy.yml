@@ -4,12 +4,12 @@ on:
   push:
     paths:
       - "plugins/**"
-      - libs/reactive-core
-      - libs/reactive-proxy
-      - libs/reactive-security
-      - libs/security-core
-      - proxies/kontoregister-person-proxy/**
-      - .github/workflows/proxy.kontoregister-person-proxy.yml
+      - "libs/reactive-core/**"
+      - "libs/reactive-proxy/**"
+      - "libs/reactive-security/**"
+      - "libs/security-core/**"
+      - "proxies/kontoregister-person-proxy/**"
+      - ".github/workflows/proxy.kontoregister-person-proxy.yml"
 
 jobs:
   workflow:

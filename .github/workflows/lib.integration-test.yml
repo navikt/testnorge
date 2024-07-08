@@ -4,8 +4,8 @@ on:
   push:
     paths:
       - "plugins/**"
-      - libs/integration-test/**
-      - .github/workflows/lib.reactive-core.yml
+      - "libs/integration-test/**"
+      - ".github/workflows/lib.reactive-core.yml"
 
 jobs:
   workflow:

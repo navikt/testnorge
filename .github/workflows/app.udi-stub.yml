@@ -4,12 +4,12 @@ on:
   push:
     paths:
       - "plugins/**"
-      - libs/data-transfer-objects
-      - libs/database
-      - libs/servlet-core
-      - libs/servlet-security
-      - apps/udi-stub/**
-      - .github/workflows/app.udi-stub.yml
+      - "libs/data-transfer-objects/**"
+      - "libs/database/**"
+      - "libs/servlet-core/**"
+      - "libs/servlet-security/**"
+      - "apps/udi-stub/**"
+      - ".github/workflows/app.udi-stub.yml"
 
 jobs:
   workflow:

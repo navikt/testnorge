@@ -4,18 +4,18 @@ on:
   push:
     paths:
       - "plugins/**"
-      - libs/avro-schema
-      - libs/commands
-      - libs/data-transfer-objects
-      - libs/database
-      - libs/kafka-config
-      - libs/kafka-producers
-      - libs/security-core
-      - libs/servlet-core
-      - libs/servlet-security
-      - libs/testing
-      - apps/organisasjon-forvalter/**
-      - .github/workflows/app.organisasjon-forvalter.yml
+      - "libs/avro-schema/**"
+      - "libs/commands/**"
+      - "libs/data-transfer-objects/**"
+      - "libs/database/**"
+      - "libs/kafka-config/**"
+      - "libs/kafka-producers/**"
+      - "libs/security-core/**"
+      - "libs/servlet-core/**"
+      - "libs/servlet-security/**"
+      - "libs/testing/**"
+      - "apps/organisasjon-forvalter/**"
+      - ".github/workflows/app.organisasjon-forvalter.yml"
 
 jobs:
   workflow:

@@ -4,15 +4,15 @@ on:
   push:
     paths:
       - "plugins/**"
-      - libs/commands
-      - libs/data-transfer-objects
-      - libs/reactive-core
-      - libs/security-core
-      - libs/servlet-core
-      - libs/servlet-security
-      - libs/testing
-      - apps/organisasjon-service/**
-      - .github/workflows/app.organisasjon-service.yml
+      - "libs/commands/**"
+      - "libs/data-transfer-objects/**"
+      - "libs/reactive-core/**"
+      - "libs/security-core/**"
+      - "libs/servlet-core/**"
+      - "libs/servlet-security/**"
+      - "libs/testing/**"
+      - "apps/organisasjon-service/**"
+      - ".github/workflows/app.organisasjon-service.yml"
 
 jobs:
   workflow:

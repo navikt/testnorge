@@ -4,13 +4,13 @@ on:
   push:
     paths:
       - "plugins/**"
-      - libs/commands
-      - libs/data-transfer-objects
-      - libs/security-core
-      - libs/servlet-core
-      - libs/servlet-security
-      - apps/miljoer-service/**
-      - .github/workflows/app.miljoer-service.yml
+      - "libs/commands/**"
+      - "libs/data-transfer-objects/**"
+      - "libs/security-core/**"
+      - "libs/servlet-core/**"
+      - "libs/servlet-security/**"
+      - "apps/miljoer-service/**"
+      - ".github/workflows/app.miljoer-service.yml"
 
 jobs:
   workflow:

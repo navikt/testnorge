@@ -4,8 +4,8 @@ on:
   push:
     paths:
       - "plugins/**"
-      - apps/dollystatus/**
-      - .github/workflows/app.dollystatus.yml
+      - "apps/dollystatus/**"
+      - ".github/workflows/app.dollystatus.yml"
 
 jobs:
   workflow:

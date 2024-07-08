@@ -4,12 +4,12 @@ on:
   push:
     paths:
       - "plugins/**"
-      - libs/data-transfer-objects
-      - libs/reactive-core
-      - libs/servlet-core
-      - libs/servlet-security
-      - apps/ereg-batch-status-service/**
-      - .github/workflows/app.ereg-batch-status-service.yml
+      - "libs/data-transfer-objects/**"
+      - "libs/reactive-core/**"
+      - "libs/servlet-core/**"
+      - "libs/servlet-security/**"
+      - "apps/ereg-batch-status-service/**"
+      - ".github/workflows/app.ereg-batch-status-service.yml"
 
 jobs:
   workflow:

@@ -4,11 +4,11 @@ on:
   push:
     paths:
       - "plugins/**"
-      - libs/data-transfer-objects
-      - libs/reactive-core
-      - libs/reactive-security
-      - apps/app-tilgang-analyse-service/**
-      - .github/workflows/app.app-tilgang-analyse-service.yml
+      - "libs/data-transfer-objects/**"
+      - "libs/reactive-core/**"
+      - "libs/reactive-security/**"
+      - "apps/app-tilgang-analyse-service/**"
+      - ".github/workflows/app.app-tilgang-analyse-service.yml"
 
 jobs:
   workflow:
