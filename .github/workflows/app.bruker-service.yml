@@ -3,6 +3,7 @@ name: bruker-service
 on:
   push:
     paths:
+      - "plugins/**"
       - libs/data-transfer-objects
       - libs/integration-test
       - libs/reactive-core

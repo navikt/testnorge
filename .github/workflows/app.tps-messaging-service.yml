@@ -3,6 +3,7 @@ name: tps-messaging-service
 on:
   push:
     paths:
+      - "plugins/**"
       - libs/data-transfer-objects
       - libs/data-transfer-search-objects
       - libs/security-core

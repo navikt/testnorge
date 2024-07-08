@@ -3,6 +3,7 @@ name: endringsmelding-service
 on:
   push:
     paths:
+      - "plugins/**"
       - libs/data-transfer-objects
       - libs/data-transfer-search-objects
       - libs/reactive-core

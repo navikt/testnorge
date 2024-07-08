@@ -3,6 +3,7 @@ name: jenkins-batch-status-service
 on:
   push:
     paths:
+      - "plugins/**"
       - libs/commands
       - libs/data-transfer-objects
       - libs/reactive-core

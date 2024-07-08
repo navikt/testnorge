@@ -4,6 +4,7 @@ plugins {
 
 rootProject.name = 'avro-schema'
 
+includeBuild "../../plugins/java"
 
 develocity {
     buildScan {

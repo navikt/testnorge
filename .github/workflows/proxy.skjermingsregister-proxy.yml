@@ -3,6 +3,7 @@ name: skjermingsregister-proxy
 on:
   push:
     paths:
+      - "plugins/**"
       - libs/reactive-core
       - libs/reactive-proxy
       - libs/security-token-service

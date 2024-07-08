@@ -3,6 +3,7 @@ name: pdl-forvalter
 on:
   push:
     paths:
+      - "plugins/**"
       - libs/data-transfer-objects
       - libs/data-transfer-search-objects
       - libs/database

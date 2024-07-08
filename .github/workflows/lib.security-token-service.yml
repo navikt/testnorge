@@ -3,6 +3,7 @@ name: security-token-service
 on:
   push:
     paths:
+      - "plugins/**"
       - libs/security-token-service/**
       - .github/workflows/lib.security-token-service.yml
 

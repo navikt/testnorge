@@ -3,6 +3,7 @@ name: aareg-synt-services-proxy
 on:
   push:
     paths:
+      - "plugins/**"
       - libs/reactive-core
       - libs/reactive-proxy
       - proxies/aareg-synt-services-proxy/**
