@@ -29,7 +29,7 @@ dependencies {
 
     implementation 'org.reactivestreams:reactive-streams:1.0.4'
 
-    implementation 'org.projectreactor:reactor-spring:1.0.1.RELEASE'
+    implementation 'org.projectreactor:reactor-spring:$versions.reactor'
 
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
 }

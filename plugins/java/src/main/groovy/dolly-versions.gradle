@@ -19,6 +19,7 @@ class DollyVersionCatalog {
     String okhttp = "4.10.0"
     String opensearch = "1.4.0"
     String orika = "1.5.4"
+    String reactor = "1.0.1.RELEASE"
     String springdoc = "2.5.0"
     String swagger = "2.2.21"
 }
