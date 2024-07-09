@@ -1,5 +1,6 @@
 plugins {
     id "dolly-apps"
+    id "dolly-versions"
 }
 
 sonarqube {
@@ -31,7 +32,7 @@ dependencies {
     implementation 'org.apache.kafka:kafka-clients:3.7.0'
     implementation 'io.confluent:kafka-avro-serializer:7.6.1'
 
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc'
 
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
 }

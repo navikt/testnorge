@@ -1,5 +1,6 @@
 plugins {
     id "dolly-apps"
+    id "dolly-versions"
 }
 
 dependencies {
@@ -10,7 +11,7 @@ dependencies {
     implementation "no.nav.testnav.libs:servlet-core"
     implementation "no.nav.testnav.libs:servlet-insecure-security"
     implementation "no.nav.testnav.libs:servlet-security"
-    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0"
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc"
     implementation "org.springframework.boot:spring-boot-starter-oauth2-client"
     implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server"
     implementation "org.springframework.boot:spring-boot-starter-security"
