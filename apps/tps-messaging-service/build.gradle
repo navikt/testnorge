@@ -32,7 +32,7 @@ dependencies {
     implementation 'com.ibm.mq:mq-jms-spring-boot-starter:3.2.3'
     implementation 'com.ibm.icu:icu4j:74.2'
 
-    implementation 'jakarta.xml.bind:jakarta.xml.bind-api'
+    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:$versions.jakartaXmlBindApi'
     implementation 'com.sun.xml.bind:jaxb-core'
     implementation 'org.glassfish.jaxb:jaxb-runtime'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml'

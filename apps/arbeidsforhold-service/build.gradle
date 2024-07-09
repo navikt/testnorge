@@ -13,7 +13,7 @@ sonarqube {
 dependencies {
 
     implementation 'com.google.guava:guava:$versions.guava'
-    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.2'
+    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:$versions.jakartaXmlBindApi'
     implementation 'javax.activation:activation:1.1.1'
     implementation 'org.glassfish.jaxb:jaxb-runtime'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml'

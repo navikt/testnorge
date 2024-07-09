@@ -67,7 +67,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.0'
+    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:$versions.jakartaXmlBindApi'
     implementation 'org.glassfish.jaxb:jaxb-runtime:4.0.0'
     implementation 'org.json:json:20231013'
 

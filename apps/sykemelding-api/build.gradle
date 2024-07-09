@@ -27,7 +27,7 @@ dependencies {
 
     implementation 'com.ibm.mq:mq-jms-spring-boot-starter:3.2.3'
     implementation 'org.springframework.kafka:spring-kafka'
-    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.2'
+    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:$versions.jakartaXmlBindApi'
     implementation 'jakarta.activation:jakarta.activation-api:2.1.3'
     implementation 'org.glassfish.jaxb:jaxb-runtime'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml'

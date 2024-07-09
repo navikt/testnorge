@@ -6,6 +6,7 @@ extensions.create("versions", DollyVersionCatalog)
 
 class DollyVersionCatalog {
     String guava = "33.2.0-jre"
+    String jakartaXmlBindApi = "4.0.2"
     String jweaver = "1.9.22"
     String orika = "1.5.4"
     String springdoc = "2.5.0"

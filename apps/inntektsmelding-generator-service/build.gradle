@@ -24,7 +24,7 @@ dependencies {
 
     implementation 'org.aspectj:aspectjweaver:$versions.jweaver'
 
-    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.2'
+    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:$versions.jakartaXmlBindApi'
     implementation 'org.glassfish.jaxb:jaxb-runtime:4.0.5'
     implementation 'com.sun.xml.bind:jaxb-impl:4.0.5'
     implementation 'com.sun.xml.bind:jaxb-core:4.0.5'
