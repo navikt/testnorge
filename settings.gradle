@@ -126,6 +126,7 @@ includeBuild './apps/varslinger-service'
 includeBuild './apps/dollystatus'
 includeBuild './apps/skattekort-service'
 includeBuild './apps/levende-arbeidsforhold-service'
+includeBuild'./apps/levende-arbeidsforhold-ansettelse-v2'
 
 includeBuild './xsd/arbeidsforhold-xsd'
 

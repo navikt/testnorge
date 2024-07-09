@@ -4,23 +4,23 @@ spring:
   main:
     banner-mode: off
   application:
-    name: testnav-levende-arbeidsforhold-ansettelse
+    name: testnav-levende-arbeidsforhold-ansettelse-v2
     version: application.version.todo #TODO Finn ut hvordan denne kan settes fra Gradle
     description: App for å hente PDL personer.
   security:
-    oauth2:
-      client:
-    resourceserver:
-      aad:
-        issuer-uri: ${AAD_ISSUER_URI}/v2.0
-        jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
-        accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+      oauth2:
+        client:
+      resourceserver:
+        aad:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
   cloud:
     vault:
       enabled: false
   kafka:
     consumer:
-      group-id: testnav-levende-arbeidsforhold-ansettelse
+      group-id: testnav-levende-arbeidsforhold-ansettelse-v2
 springdoc:
   swagger-ui:
     disable-swagger-default-url: true
@@ -53,5 +53,3 @@ consumers:
     namespace: dolly
     url: https://testnav-aareg-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
-  tenor-search-service:
-    url: https://testdata.api.skatteetaten.no
