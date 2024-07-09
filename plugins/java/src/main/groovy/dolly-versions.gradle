@@ -5,6 +5,8 @@ plugins {
 extensions.create("versions", DollyVersionCatalog)
 
 class DollyVersionCatalog {
+    String navAltinnInntektsmelding = "1.2019.08.16-13.46-35cbdfd492d4"
+
     String apachePoi = "5.2.5"
     String assertj = "3.26.0"
     String avro = "7.6.1"
