@@ -4,7 +4,7 @@ spring:
   main:
     banner-mode: off
   application:
-    name: testnav-levende-arbeidsforhold-service
+    name: testnav-levende-arbeidsforhold-ansettelse
     version: application.version.todo #TODO Finn ut hvordan denne kan settes fra Gradle
     description: App for å hente PDL personer.
   security:
@@ -20,7 +20,7 @@ spring:
       enabled: false
   kafka:
     consumer:
-      group-id: testnav-levende-arbeidsforhold-service
+      group-id: testnav-levende-arbeidsforhold-ansettelse
 springdoc:
   swagger-ui:
     disable-swagger-default-url: true
