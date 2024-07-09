@@ -37,9 +37,9 @@ dependencies {
     implementation 'org.glassfish.jaxb:jaxb-runtime:$versions.jaxb'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml'
 
-    implementation 'no.nav.repository.fellesreg.tpsws:nav-repository-fellesregister-jaxb-tps-s610-domain:2020.08.27-09.53-183ead3d81eb'
-    implementation 'no.nav.repository.fellesreg.tpsws:nav-repository-fellesregister-jaxb-tps-m201-domain:2020.08.27-09.53-183ead3d81eb'
-    implementation 'no.nav.repository.fellesreg.tpsws:nav-repository-fellesregister-castor-tps-s018-domain:2020.08.27-09.53-183ead3d81eb'
+    implementation 'no.nav.repository.fellesreg.tpsws:nav-repository-fellesregister-jaxb-tps-s610-domain:$versions.navFellesregister'
+    implementation 'no.nav.repository.fellesreg.tpsws:nav-repository-fellesregister-jaxb-tps-m201-domain:$versions.navFellesregister'
+    implementation 'no.nav.repository.fellesreg.tpsws:nav-repository-fellesregister-castor-tps-s018-domain:$versions.navFellesregister'
 
     implementation 'ma.glasnost.orika:orika-core:$versions.orika'
     implementation 'org.aspectj:aspectjweaver:$versions.jweaver'
