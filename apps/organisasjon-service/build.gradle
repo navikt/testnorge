@@ -28,5 +28,5 @@ dependencies {
     testImplementation 'junit:junit:4.13.2' //TODO upgrade to JUnit5
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
     testImplementation 'no.nav.testnav.libs:testing'
-    testImplementation 'org.assertj:assertj-core:3.26.0'
+    testImplementation 'org.assertj:assertj-core:$versions.assertj'
 }
