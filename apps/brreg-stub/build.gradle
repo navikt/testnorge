@@ -56,7 +56,7 @@ dependencies {
     implementation 'no.nav.common:cxf:3.2023.10.17_06.55-4e30d96bba05'
 
     implementation 'com.h2database:h2'
-    implementation "com.sun.xml.ws:jaxws-rt:4.0.2"
+    implementation "com.sun.xml.ws:jaxws-rt:$versions.jaxws"
     testImplementation 'org.testcontainers:junit-jupiter'
     testImplementation 'org.testcontainers:postgresql'
     implementation 'jakarta.jws:jakarta.jws-api:3.0.0' //TODO upgrade to JUnit5
