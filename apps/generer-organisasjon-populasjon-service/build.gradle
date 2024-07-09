@@ -42,7 +42,7 @@ dependencies {
 
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc'
     implementation 'io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger'
-    implementation 'org.projectreactor:reactor-spring:$versions.reactor'
+    implementation 'org.projectreactor:reactor-spring:$versions.reactorSpring'
     implementation 'org.postgresql:postgresql'
 
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'

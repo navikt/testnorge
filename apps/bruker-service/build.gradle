@@ -46,7 +46,7 @@ dependencies {
     runtimeOnly 'org.postgresql:postgresql'
     runtimeOnly 'com.h2database:h2'
 
-    testImplementation 'io.projectreactor:reactor-test'
+    testImplementation 'io.projectreactor:reactor-test:$versions.reactorTest'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
     testImplementation 'org.assertj:assertj-core:$versions.assertj'
     testImplementation 'no.nav.testnav.libs:integration-test'
