@@ -46,7 +46,7 @@ dependencies {
 
     implementation 'org.postgresql:postgresql'
     implementation 'org.flywaydb:flyway-core'
-    implementation 'ma.glasnost.orika:orika-core:1.5.4'
+    implementation 'ma.glasnost.orika:orika-core:$versions.orika'
     implementation 'org.codehaus.jettison:jettison:1.5.4'
     implementation 'org.apache.poi:poi:5.2.5'
     implementation 'org.apache.poi:poi-ooxml:5.2.5'

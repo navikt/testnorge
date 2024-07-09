@@ -29,7 +29,7 @@ dependencies {
     implementation 'com.sun.xml.bind:jaxb-impl:4.0.5'
     implementation 'com.sun.xml.bind:jaxb-core:4.0.5'
 
-    implementation 'ma.glasnost.orika:orika-core:1.5.4'
+    implementation 'ma.glasnost.orika:orika-core:$versions.orika'
 
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.17.0'

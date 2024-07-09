@@ -44,7 +44,7 @@ dependencies {
     implementation 'org.flywaydb:flyway-core'
     implementation 'com.zaxxer:HikariCP'
 
-    implementation 'ma.glasnost.orika:orika-core:1.5.4'
+    implementation 'ma.glasnost.orika:orika-core:$versions.orika'
 
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc'
 

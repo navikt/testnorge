@@ -41,7 +41,7 @@ dependencies {
 
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc'
 
-    implementation 'ma.glasnost.orika:orika-core:1.5.4'
+    implementation 'ma.glasnost.orika:orika-core:$versions.orika'
 
     testImplementation 'com.h2database:h2'
     testImplementation 'no.nav.testnav.libs:testing'

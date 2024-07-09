@@ -93,7 +93,7 @@ dependencies {
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-    implementation 'ma.glasnost.orika:orika-core:1.5.4'
+    implementation 'ma.glasnost.orika:orika-core:$versions.orika'
     annotationProcessor 'org.projectlombok:lombok'
     implementation 'org.projectlombok:lombok'
 

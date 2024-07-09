@@ -24,7 +24,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-cache'
 
-    implementation 'ma.glasnost.orika:orika-core:1.5.4'
+    implementation 'ma.glasnost.orika:orika-core:$versions.orika'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc'
 
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
