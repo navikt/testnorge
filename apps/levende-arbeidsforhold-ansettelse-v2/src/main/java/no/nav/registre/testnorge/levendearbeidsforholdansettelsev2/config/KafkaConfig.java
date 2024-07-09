@@ -29,7 +29,7 @@ import java.util.Map;
 @Configuration
 @Profile({"dev", "prod"})
 public class KafkaConfig {
-
+/*
     private final String groupId;
 
     public KafkaConfig(@Value("${spring.kafka.consumer.group-id}") String groupId) {
@@ -89,4 +89,6 @@ public class KafkaConfig {
         factory.setCommonErrorHandler(new CommonLoggingErrorHandler());
         return factory;
     }
+
+ */
 }
