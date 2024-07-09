@@ -12,7 +12,7 @@ sonarqube {
 
 dependencies {
 
-    implementation 'com.google.guava:guava:33.2.0-jre'
+    implementation 'com.google.guava:guava:$versions.guava'
     implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.2'
     implementation 'javax.activation:activation:1.1.1'
     implementation 'org.glassfish.jaxb:jaxb-runtime'

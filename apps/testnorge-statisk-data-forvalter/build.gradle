@@ -11,7 +11,7 @@ sonarqube {
 }
 
 dependencies {
-    implementation 'com.google.guava:guava:33.2.0-jre'
+    implementation 'com.google.guava:guava:$versions.guava'
 
     implementation 'no.nav.testnav.libs:security-core'
     implementation 'no.nav.testnav.libs:servlet-security'
