@@ -21,6 +21,7 @@ class DollyVersionCatalog {
     String jaxb = "4.0.5"
     String jweaver = "1.9.22"
     String jwt = "4.4.0"
+    String logback = "7.4"
     String okhttp = "4.10.0"
     String opensearch = "1.4.0"
     String orika = "1.5.4"
