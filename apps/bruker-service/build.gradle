@@ -50,6 +50,6 @@ dependencies {
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
     testImplementation 'org.assertj:assertj-core:3.26.0'
     testImplementation 'no.nav.testnav.libs:integration-test'
-    testImplementation 'com.squareup.okhttp3:okhttp:4.10.0'
-    testImplementation 'com.squareup.okhttp3:mockwebserver:4.10.0'
+    testImplementation 'com.squareup.okhttp3:okhttp:$versions.okhttp'
+    testImplementation 'com.squareup.okhttp3:mockwebserver:$versions.okhttp'
 }
