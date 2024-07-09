@@ -12,7 +12,7 @@ sonarqube {
 group = 'no.nav.testnav.xsd'
 
 dependencies {
-    implementation 'jakarta.activation:jakarta.activation-api:2.1.3'
+    implementation 'jakarta.activation:jakarta.activation-api:$versions.jakartaActivation'
     implementation 'jakarta.xml.bind:jakarta.xml.bind-api:$versions.jakartaXmlBindApi'
 
     xjc 'jakarta.xml.bind:jakarta.xml.bind-api:$versions.jakartaXmlBindApi'
