@@ -14,5 +14,5 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:$versions.springdoc'
 
-    compileOnly 'jakarta.servlet:jakarta.servlet-api:6.0.0'
+    compileOnly 'jakarta.servlet:jakarta.servlet-api'
 }
