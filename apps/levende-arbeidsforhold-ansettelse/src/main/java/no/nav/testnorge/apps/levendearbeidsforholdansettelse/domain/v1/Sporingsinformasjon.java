@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
-import no.nav.registre.testnorge.levendearbeidsforhold.domain.v1.util.JavaTimeUtil;
+import no.nav.testnorge.apps.levendearbeidsforholdansettelse.domain.v1.util.JavaTimeUtil;
 
 import java.time.LocalDateTime;
 
