@@ -1,5 +1,6 @@
 plugins {
     id "dolly-libs"
+    id "dolly-versions"
 }
 
 sonarqube {
@@ -14,7 +15,7 @@ dependencies {
     implementation 'no.nav.testnav.libs:avro-schema'
 
     implementation 'org.springframework.kafka:spring-kafka'
-    implementation 'io.confluent:kafka-avro-serializer:7.6.1'
+    implementation 'io.confluent:kafka-avro-serializer:$versions.avro'
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
 }
