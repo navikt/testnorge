@@ -1,5 +1,6 @@
 plugins {
     id "dolly-apps"
+    id "dolly-versions"
 }
 
 sonarqube {
@@ -28,7 +29,7 @@ dependencies {
     runtimeOnly 'org.postgresql:postgresql'
     runtimeOnly 'com.h2database:h2'
 
-    implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.5.0'
+    implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:$versions.springdoc'
     implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
     implementation 'org.hibernate.validator:hibernate-validator'
 }
