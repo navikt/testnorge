@@ -1,5 +1,6 @@
 plugins {
     id "dolly-apps"
+    id "dolly-versions"
 }
 
 sonarqube {
@@ -24,7 +25,7 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-gateway'
 
     implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.5.0'
-    implementation 'io.swagger.core.v3:swagger-annotations-jakarta:2.2.21'
+    implementation 'io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger'
 
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
 }

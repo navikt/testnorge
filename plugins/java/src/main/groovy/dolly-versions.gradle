@@ -6,4 +6,5 @@ extensions.create("versions", DollyVersionCatalog)
 
 class DollyVersionCatalog {
     String springdoc = "2.5.0"
+    String swagger = "2.2.21"
 }

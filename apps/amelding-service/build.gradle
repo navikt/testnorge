@@ -1,5 +1,6 @@
 plugins {
     id "dolly-apps"
+    id "dolly-versions"
 }
 
 sonarqube {
@@ -25,7 +26,7 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
 
     implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.3.0'
-    implementation 'io.swagger.core.v3:swagger-annotations-jakarta:2.2.20'
+    implementation 'io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger'
 
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
 }

@@ -1,4 +1,6 @@
 plugins {
+    id "dolly-versions"
+
     id 'java'
     id "org.sonarqube" version "4.4.1.3373"
     id 'org.springframework.boot' version "3.2.1"
@@ -86,7 +88,7 @@ dependencies {
     implementation 'org.hibernate.validator:hibernate-validator'
 
     implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.3.0'
-    implementation 'io.swagger.core.v3:swagger-annotations-jakarta:2.2.20'
+    implementation 'io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger'
     implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
