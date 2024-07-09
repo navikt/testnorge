@@ -1,6 +1,5 @@
 plugins {
     id "dolly-libs"
-    id "dolly-versions"
 
     id 'maven-publish'
 }

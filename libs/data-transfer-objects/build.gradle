@@ -1,7 +1,6 @@
 plugins {
     id "dolly-libs"
     id "dolly-libs-publish"
-    id "dolly-versions"
 }
 
 sonarqube {

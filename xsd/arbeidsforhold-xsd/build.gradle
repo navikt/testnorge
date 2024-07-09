@@ -1,6 +1,5 @@
 plugins {
     id "dolly-libs"
-    id "dolly-versions"
 
     id 'com.github.edeandrea.xjc-generation' version '1.6'
 }

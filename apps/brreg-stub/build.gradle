@@ -1,6 +1,5 @@
 plugins {
     id "dolly-apps"
-    id "dolly-versions"
 
     id "uk.co.boothen.gradle.wsimport" version "0.21"
 }

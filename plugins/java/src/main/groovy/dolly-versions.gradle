@@ -4,6 +4,10 @@ class DollyVersionCatalog {
     String navAltinnInntektsmelding = "1.2019.08.16-13.46-35cbdfd492d4"
     String navFellesregister = "2020.08.27-09.53-183ead3d81eb"
 
+    String springBoot = "3.2.1"
+    String springCloud = "2023.0.1"
+    String springSession = "2021.2.3"
+
     String apacheAvro = "1.11.3"
     String apacheKafka = "3.7.0"
     String apachePoi = "5.2.5"

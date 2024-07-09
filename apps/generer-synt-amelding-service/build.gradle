@@ -1,6 +1,5 @@
 plugins {
     id "dolly-apps"
-    id "dolly-versions"
 }
 
 sonarqube {

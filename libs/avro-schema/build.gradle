@@ -1,7 +1,6 @@
 plugins {
     id "dolly-libs"
     id "dolly-libs-publish"
-    id "dolly-versions"
 
     id 'com.github.davidmc24.gradle.plugin.avro' version '1.9.1'
 }
