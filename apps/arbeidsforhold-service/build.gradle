@@ -12,10 +12,10 @@ sonarqube {
 
 dependencies {
 
-    implementation 'com.google.guava:guava:$versions.guava'
-    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:$versions.jakartaXmlBindApi'
-    implementation 'javax.activation:activation:$versions.javaxActivation'
-    implementation 'org.glassfish.jaxb:jaxb-runtime:$versions.jaxb'
+    implementation "com.google.guava:guava:$versions.guava"
+    implementation "jakarta.xml.bind:jakarta.xml.bind-api:$versions.jakartaXmlBindApi"
+    implementation "javax.activation:activation:$versions.javaxActivation"
+    implementation "org.glassfish.jaxb:jaxb-runtime:$versions.jaxb"
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml'
 
     implementation 'no.nav.testnav.libs:commands'
@@ -30,9 +30,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
 
-    implementation 'javax.annotation:javax.annotation-api:$versions.javaxAnnotation'
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc'
-    implementation 'io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger'
+    implementation "javax.annotation:javax.annotation-api:$versions.javaxAnnotation"
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc"
+    implementation "io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger"
 
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
 }

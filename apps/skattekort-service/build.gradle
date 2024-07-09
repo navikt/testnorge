@@ -67,8 +67,8 @@ repositories {
 }
 
 dependencies {
-    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:$versions.jakartaXmlBindApi'
-    implementation 'org.glassfish.jaxb:jaxb-runtime:$versions.jaxb'
+    implementation "jakarta.xml.bind:jakarta.xml.bind-api:$versions.jakartaXmlBindApi"
+    implementation "org.glassfish.jaxb:jaxb-runtime:$versions.jaxb"
     implementation 'org.json:json:20231013'
 
     implementation 'no.nav.testnav.libs:security-core'
@@ -87,13 +87,13 @@ dependencies {
     implementation 'io.micrometer:micrometer-registry-prometheus'
     implementation 'org.hibernate.validator:hibernate-validator'
 
-    implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:$versions.springdoc'
-    implementation 'io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger'
-    implementation 'net.logstash.logback:logstash-logback-encoder:$versions.logback'
+    implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:$versions.springdoc"
+    implementation "io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger"
+    implementation "net.logstash.logback:logstash-logback-encoder:$versions.logback"
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-    implementation 'ma.glasnost.orika:orika-core:$versions.orika'
+    implementation "ma.glasnost.orika:orika-core:$versions.orika"
     annotationProcessor 'org.projectlombok:lombok'
     implementation 'org.projectlombok:lombok'
 

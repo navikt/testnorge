@@ -29,10 +29,10 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
 
     implementation 'org.springframework.kafka:spring-kafka'
-    implementation 'org.apache.kafka:kafka-clients:$versions.apacheKafka'
-    implementation 'io.confluent:kafka-avro-serializer:$versions.avro'
+    implementation "org.apache.kafka:kafka-clients:$versions.apacheKafka"
+    implementation "io.confluent:kafka-avro-serializer:$versions.avro"
 
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc'
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc"
 
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
 }

@@ -48,8 +48,8 @@ dependencies {
     implementation 'com.h2database:h2'
 
     implementation 'wsdl4j:wsdl4j'
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc'
-    implementation 'io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger'
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc"
+    implementation "io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger"
 
     implementation 'no.nav.common:auth'
     implementation 'no.nav.common:util'

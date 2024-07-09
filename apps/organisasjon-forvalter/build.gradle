@@ -34,14 +34,14 @@ dependencies {
 
     implementation 'org.springframework.cloud:spring-cloud-vault-config-databases'
 
-    implementation 'org.apache.avro:avro:$versions.apacheAvro'
+    implementation "org.apache.avro:avro:$versions.apacheAvro"
 
     implementation 'org.flywaydb:flyway-core'
     implementation 'org.postgresql:postgresql'
 
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc'
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc"
 
-    implementation 'ma.glasnost.orika:orika-core:$versions.orika'
+    implementation "ma.glasnost.orika:orika-core:$versions.orika"
 
     testImplementation 'com.h2database:h2'
     testImplementation 'no.nav.testnav.libs:testing'

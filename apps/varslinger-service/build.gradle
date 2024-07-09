@@ -12,7 +12,7 @@ sonarqube {
 
 dependencies {
 
-    implementation 'com.google.guava:guava:$versions.guava'
+    implementation "com.google.guava:guava:$versions.guava"
     implementation 'no.nav.testnav.libs:security-core'
     implementation 'no.nav.testnav.libs:servlet-core'
     implementation 'no.nav.testnav.libs:database'
@@ -28,7 +28,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc'
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc"
 
     implementation 'com.h2database:h2'
     implementation 'com.zaxxer:HikariCP'

@@ -22,18 +22,18 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-security'
 
-    implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:$versions.springdoc'
-    implementation 'io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger'
+    implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:$versions.springdoc"
+    implementation "io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger"
 
-    implementation 'com.ibm.mq:mq-jms-spring-boot-starter:$versions.mq'
+    implementation "com.ibm.mq:mq-jms-spring-boot-starter:$versions.mq"
     implementation 'org.springframework.kafka:spring-kafka'
-    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:$versions.jakartaXmlBindApi'
-    implementation 'jakarta.activation:jakarta.activation-api:$versions.jakartaActivation'
-    implementation 'org.glassfish.jaxb:jaxb-runtime:$versions.jaxb'
+    implementation "jakarta.xml.bind:jakarta.xml.bind-api:$versions.jakartaXmlBindApi"
+    implementation "jakarta.activation:jakarta.activation-api:$versions.jakartaActivation"
+    implementation "org.glassfish.jaxb:jaxb-runtime:$versions.jaxb"
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml'
 
-    implementation 'org.apache.kafka:kafka-clients:$versions.apacheKafka'
-    implementation 'io.confluent:kafka-avro-serializer:$versions.avro'
+    implementation "org.apache.kafka:kafka-clients:$versions.apacheKafka"
+    implementation "io.confluent:kafka-avro-serializer:$versions.avro"
 
     testImplementation 'no.nav.testnav.libs:testing'
     testImplementation 'org.springframework.security:spring-security-test'

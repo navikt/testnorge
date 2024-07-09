@@ -23,13 +23,13 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc'
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc"
 
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
 
     implementation 'org.reactivestreams:reactive-streams:1.0.4'
 
-    implementation 'org.projectreactor:reactor-spring:$versions.reactorSpring'
+    implementation "org.projectreactor:reactor-spring:$versions.reactorSpring"
 
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
 }

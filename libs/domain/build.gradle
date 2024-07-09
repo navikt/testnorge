@@ -13,8 +13,8 @@ sonarqube {
 dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-annotations'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml'
-    implementation 'com.fasterxml.jackson.core:jackson-core:$versions.jackson'
+    implementation "com.fasterxml.jackson.core:jackson-core:$versions.jackson"
 
-    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:$versions.jakartaXmlBindApi'
+    implementation "jakarta.xml.bind:jakarta.xml.bind-api:$versions.jakartaXmlBindApi"
     implementation 'io.springfox:springfox-swagger2:3.0.0'
 }

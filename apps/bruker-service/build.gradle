@@ -24,7 +24,7 @@ sonarqube {
 }
 
 dependencies {
-    implementation 'com.auth0:java-jwt:$versions.jwt'
+    implementation "com.auth0:java-jwt:$versions.jwt"
 
     implementation 'no.nav.testnav.libs:security-core'
     implementation 'no.nav.testnav.libs:reactive-core'
@@ -36,8 +36,8 @@ dependencies {
 
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
 
-    implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:$versions.springdoc'
-    implementation 'io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger'
+    implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:$versions.springdoc"
+    implementation "io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger"
 
     implementation 'io.r2dbc:r2dbc-h2'
     implementation 'org.postgresql:r2dbc-postgresql'
@@ -46,10 +46,10 @@ dependencies {
     runtimeOnly 'org.postgresql:postgresql'
     runtimeOnly 'com.h2database:h2'
 
-    testImplementation 'io.projectreactor:reactor-test:$versions.reactorTest'
+    testImplementation "io.projectreactor:reactor-test:$versions.reactorTest"
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
-    testImplementation 'org.assertj:assertj-core:$versions.assertj'
+    testImplementation "org.assertj:assertj-core:$versions.assertj"
     testImplementation 'no.nav.testnav.libs:integration-test'
-    testImplementation 'com.squareup.okhttp3:okhttp:$versions.okhttp'
-    testImplementation 'com.squareup.okhttp3:mockwebserver:$versions.okhttp'
+    testImplementation "com.squareup.okhttp3:okhttp:$versions.okhttp"
+    testImplementation "com.squareup.okhttp3:mockwebserver:$versions.okhttp"
 }

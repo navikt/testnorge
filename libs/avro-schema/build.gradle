@@ -11,6 +11,6 @@ sonarqube {
 }
 
 dependencies {
-    implementation 'org.apache.avro:avro-compiler:$versions.apacheAvro'
-    implementation 'org.apache.avro:avro-maven-plugin:$versions.apacheAvro'
+    implementation "org.apache.avro:avro-compiler:$versions.apacheAvro"
+    implementation "org.apache.avro:avro-maven-plugin:$versions.apacheAvro"
 }

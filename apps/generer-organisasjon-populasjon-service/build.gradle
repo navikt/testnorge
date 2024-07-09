@@ -34,15 +34,15 @@ dependencies {
 
     implementation 'org.springframework.kafka:spring-kafka'
 
-    implementation 'io.confluent:kafka-avro-serializer:$versions.avro'
-    implementation 'jakarta.validation:jakarta.validation-api:$versions.jakartaValidation'
+    implementation "io.confluent:kafka-avro-serializer:$versions.avro"
+    implementation "jakarta.validation:jakarta.validation-api:$versions.jakartaValidation"
     implementation 'org.flywaydb:flyway-core'
     implementation 'com.h2database:h2'
     implementation 'com.zaxxer:HikariCP'
 
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc'
-    implementation 'io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger'
-    implementation 'org.projectreactor:reactor-spring:$versions.reactorSpring'
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc"
+    implementation "io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger"
+    implementation "org.projectreactor:reactor-spring:$versions.reactorSpring"
     implementation 'org.postgresql:postgresql'
 
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'

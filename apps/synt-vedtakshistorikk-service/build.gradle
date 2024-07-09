@@ -22,9 +22,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     implementation 'org.springframework.boot:spring-boot-starter-security'
 
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc'
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc"
 
-    implementation 'com.google.guava:guava:$versions.guava'
+    implementation "com.google.guava:guava:$versions.guava"
 
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
     testImplementation 'junit:junit:4.13.2' //TODO upgrade to JUnit5

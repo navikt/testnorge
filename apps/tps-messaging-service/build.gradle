@@ -29,20 +29,20 @@ dependencies {
 
     implementation 'com.fasterxml.jackson.core:jackson-annotations'
     implementation 'com.fasterxml.jackson.core:jackson-databind'
-    implementation 'com.ibm.mq:mq-jms-spring-boot-starter:$versions.mq'
+    implementation "com.ibm.mq:mq-jms-spring-boot-starter:$versions.mq"
     implementation 'com.ibm.icu:icu4j:74.2'
 
-    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:$versions.jakartaXmlBindApi'
-    implementation 'com.sun.xml.bind:jaxb-core:$versions.jaxb'
-    implementation 'org.glassfish.jaxb:jaxb-runtime:$versions.jaxb'
+    implementation "jakarta.xml.bind:jakarta.xml.bind-api:$versions.jakartaXmlBindApi"
+    implementation "com.sun.xml.bind:jaxb-core:$versions.jaxb"
+    implementation "org.glassfish.jaxb:jaxb-runtime:$versions.jaxb"
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml'
 
-    implementation 'no.nav.repository.fellesreg.tpsws:nav-repository-fellesregister-jaxb-tps-s610-domain:$versions.navFellesregister'
-    implementation 'no.nav.repository.fellesreg.tpsws:nav-repository-fellesregister-jaxb-tps-m201-domain:$versions.navFellesregister'
-    implementation 'no.nav.repository.fellesreg.tpsws:nav-repository-fellesregister-castor-tps-s018-domain:$versions.navFellesregister'
+    implementation "no.nav.repository.fellesreg.tpsws:nav-repository-fellesregister-jaxb-tps-s610-domain:$versions.navFellesregister"
+    implementation "no.nav.repository.fellesreg.tpsws:nav-repository-fellesregister-jaxb-tps-m201-domain:$versions.navFellesregister"
+    implementation "no.nav.repository.fellesreg.tpsws:nav-repository-fellesregister-castor-tps-s018-domain:$versions.navFellesregister"
 
-    implementation 'ma.glasnost.orika:orika-core:$versions.orika'
-    implementation 'org.aspectj:aspectjweaver:$versions.jweaver'
+    implementation "ma.glasnost.orika:orika-core:$versions.orika"
+    implementation "org.aspectj:aspectjweaver:$versions.jweaver"
 
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc'
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc"
 }

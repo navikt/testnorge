@@ -19,17 +19,17 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     implementation 'org.springframework.boot:spring-boot-starter-security'
 
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc'
-    implementation 'io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger'
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc"
+    implementation "io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger"
 
-    implementation 'org.aspectj:aspectjweaver:$versions.jweaver'
+    implementation "org.aspectj:aspectjweaver:$versions.jweaver"
 
-    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:$versions.jakartaXmlBindApi'
-    implementation 'org.glassfish.jaxb:jaxb-runtime:$versions.jaxb'
-    implementation 'com.sun.xml.bind:jaxb-impl:$versions.jaxb'
-    implementation 'com.sun.xml.bind:jaxb-core:$versions.jaxb'
+    implementation "jakarta.xml.bind:jakarta.xml.bind-api:$versions.jakartaXmlBindApi"
+    implementation "org.glassfish.jaxb:jaxb-runtime:$versions.jaxb"
+    implementation "com.sun.xml.bind:jaxb-impl:$versions.jaxb"
+    implementation "com.sun.xml.bind:jaxb-core:$versions.jaxb"
 
-    implementation 'ma.glasnost.orika:orika-core:$versions.orika'
+    implementation "ma.glasnost.orika:orika-core:$versions.orika"
 
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.17.0'
