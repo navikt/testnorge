@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.levendearbeidsforholdansettelsev2.config;
+package no.nav.testnorge.apps.levendearbeidsforholdansettelse.config;
 
 
 import io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig;
@@ -29,7 +29,6 @@ import java.util.Map;
 @Configuration
 @Profile({"dev", "prod"})
 public class KafkaConfig {
-/*
 
     private final String groupId;
 
@@ -90,7 +89,4 @@ public class KafkaConfig {
         factory.setCommonErrorHandler(new CommonLoggingErrorHandler());
         return factory;
     }
-
- */
-
 }
