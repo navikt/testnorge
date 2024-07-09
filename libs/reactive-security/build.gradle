@@ -1,5 +1,6 @@
 plugins {
     id "dolly-libs"
+    id "dolly-versions"
 
     id 'maven-publish'
 }
@@ -45,7 +46,7 @@ publishing {
 dependencies {
 
     implementation 'no.nav.testnav.libs:security-core'
-    implementation 'com.auth0:java-jwt:4.4.0'
+    implementation 'com.auth0:java-jwt:$versions.jwt'
 
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
