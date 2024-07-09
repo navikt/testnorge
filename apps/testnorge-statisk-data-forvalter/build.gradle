@@ -35,7 +35,7 @@ dependencies {
 
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
-    implementation 'org.aspectj:aspectjweaver:1.9.22'
+    implementation 'org.aspectj:aspectjweaver:$versions.jweaver'
     implementation 'org.postgresql:postgresql'
     implementation 'com.zaxxer:HikariCP'
 

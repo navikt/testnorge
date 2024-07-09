@@ -22,7 +22,7 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc'
     implementation 'io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger'
 
-    implementation 'org.aspectj:aspectjweaver:1.9.22'
+    implementation 'org.aspectj:aspectjweaver:$versions.jweaver'
 
     implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.2'
     implementation 'org.glassfish.jaxb:jaxb-runtime:4.0.5'
