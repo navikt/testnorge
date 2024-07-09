@@ -45,7 +45,7 @@ repositories {
 }
 
 dependencies {
-    implementation "no.nav.testnav.libs:kafka-config"
+    implementation 'no.nav.testnav.libs:kafka-config'
     implementation 'no.nav.testnav.libs:security-core'
     implementation 'no.nav.testnav.libs:reactive-core'
     implementation 'no.nav.testnav.libs:servlet-core'
@@ -87,6 +87,7 @@ dependencies {
     implementation 'no.nav.testnav.libs:security-core'
     implementation 'no.nav.testnav.libs:servlet-insecure-security'
     implementation 'no.nav.testnav.libs:servlet-core'
+
 }
 java {
     toolchain {
