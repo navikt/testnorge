@@ -25,7 +25,7 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:$versions.springdoc'
     implementation 'io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger'
 
-    implementation 'com.ibm.mq:mq-jms-spring-boot-starter:3.2.3'
+    implementation 'com.ibm.mq:mq-jms-spring-boot-starter:$versions.mq'
     implementation 'org.springframework.kafka:spring-kafka'
     implementation 'jakarta.xml.bind:jakarta.xml.bind-api:$versions.jakartaXmlBindApi'
     implementation 'jakarta.activation:jakarta.activation-api:2.1.3'

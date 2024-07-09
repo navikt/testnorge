@@ -13,6 +13,7 @@ class DollyVersionCatalog {
     String assertj = "3.26.0"
     String avro = "7.6.1"
     String guava = "33.2.0-jre"
+    String mq = "3.2.3"
     String jackson = "2.17.1"
     String jakartaValidation = "3.1.0"
     String jakartaXmlBindApi = "4.0.2"

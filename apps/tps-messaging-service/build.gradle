@@ -29,7 +29,7 @@ dependencies {
 
     implementation 'com.fasterxml.jackson.core:jackson-annotations'
     implementation 'com.fasterxml.jackson.core:jackson-databind'
-    implementation 'com.ibm.mq:mq-jms-spring-boot-starter:3.2.3'
+    implementation 'com.ibm.mq:mq-jms-spring-boot-starter:$versions.mq'
     implementation 'com.ibm.icu:icu4j:74.2'
 
     implementation 'jakarta.xml.bind:jakarta.xml.bind-api:$versions.jakartaXmlBindApi'
