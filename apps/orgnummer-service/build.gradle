@@ -25,7 +25,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.cloud:spring-cloud-vault-config-databases'
 
-    implementation 'jakarta.validation:jakarta.validation-api:3.1.0'
+    implementation 'jakarta.validation:jakarta.validation-api:$versions.jakartaValidation'
     implementation 'org.flywaydb:flyway-core'
     implementation 'com.h2database:h2'
     implementation 'com.zaxxer:HikariCP'
