@@ -2,10 +2,10 @@ package no.nav.testnorge.apps.levendearbeidsforholdansettelse.consumers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.levendearbeidsforhold.config.Consumers;
-import no.nav.registre.testnorge.levendearbeidsforhold.consumers.command.EndreArbeidsforholdCommand;
-import no.nav.registre.testnorge.levendearbeidsforhold.consumers.command.HentArbeidsforholdCommand;
-import no.nav.registre.testnorge.levendearbeidsforhold.domain.v1.Arbeidsforhold;
+import no.nav.testnorge.apps.levendearbeidsforholdansettelse.config.Consumers;
+import no.nav.testnorge.apps.levendearbeidsforholdansettelse.consumers.command.EndreArbeidsforholdCommand;
+import no.nav.testnorge.apps.levendearbeidsforholdansettelse.consumers.command.HentArbeidsforholdCommand;
+import no.nav.testnorge.apps.levendearbeidsforholdansettelse.domain.v1.Arbeidsforhold;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.MediaType;

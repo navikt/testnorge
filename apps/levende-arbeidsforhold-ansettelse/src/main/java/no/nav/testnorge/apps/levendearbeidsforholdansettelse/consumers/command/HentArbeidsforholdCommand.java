@@ -3,7 +3,7 @@ package no.nav.testnorge.apps.levendearbeidsforholdansettelse.consumers.command;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.levendearbeidsforhold.domain.v1.Arbeidsforhold;
+import no.nav.testnorge.apps.levendearbeidsforholdansettelse.domain.v1.Arbeidsforhold;
 import no.nav.testnav.libs.commands.utils.WebClientFilter;
 import no.nav.testnav.libs.servletcore.headers.NavHeaders;
 import org.springframework.http.HttpHeaders;
