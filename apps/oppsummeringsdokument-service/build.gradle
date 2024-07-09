@@ -21,7 +21,7 @@ dependencies {
     implementation 'no.nav.testnav.libs:servlet-security'
     implementation 'no.nav.testnav.xsd:arbeidsforhold-xsd'
 
-    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.17.1'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml'
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
