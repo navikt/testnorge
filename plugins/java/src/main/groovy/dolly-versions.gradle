@@ -1,0 +1,9 @@
+plugins {
+    id "groovy-gradle-plugin"
+}
+
+extensions.create("versions", DollyVersionCatalog)
+
+class DollyVersionCatalog {
+    String springdoc = "2.5.0"
+}
