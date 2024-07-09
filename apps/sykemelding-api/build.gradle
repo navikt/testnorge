@@ -29,7 +29,7 @@ dependencies {
     implementation 'org.springframework.kafka:spring-kafka'
     implementation 'jakarta.xml.bind:jakarta.xml.bind-api:$versions.jakartaXmlBindApi'
     implementation 'jakarta.activation:jakarta.activation-api:2.1.3'
-    implementation 'org.glassfish.jaxb:jaxb-runtime'
+    implementation 'org.glassfish.jaxb:jaxb-runtime:$versions.jaxb'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml'
 
     implementation 'org.apache.kafka:kafka-clients:3.7.0'

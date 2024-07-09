@@ -15,7 +15,7 @@ dependencies {
     implementation 'com.google.guava:guava:$versions.guava'
     implementation 'jakarta.xml.bind:jakarta.xml.bind-api:$versions.jakartaXmlBindApi'
     implementation 'javax.activation:activation:$versions.javaxActivation'
-    implementation 'org.glassfish.jaxb:jaxb-runtime'
+    implementation 'org.glassfish.jaxb:jaxb-runtime:$versions.jaxb'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml'
 
     implementation 'no.nav.testnav.libs:commands'

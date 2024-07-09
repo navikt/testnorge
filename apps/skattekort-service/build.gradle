@@ -68,7 +68,7 @@ repositories {
 
 dependencies {
     implementation 'jakarta.xml.bind:jakarta.xml.bind-api:$versions.jakartaXmlBindApi'
-    implementation 'org.glassfish.jaxb:jaxb-runtime:4.0.0'
+    implementation 'org.glassfish.jaxb:jaxb-runtime:$versions.jaxb'
     implementation 'org.json:json:20231013'
 
     implementation 'no.nav.testnav.libs:security-core'
