@@ -31,7 +31,7 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-core:$versions.jackson'
 
     implementation 'org.springframework.kafka:spring-kafka'
-    implementation 'org.apache.kafka:kafka-clients:3.7.0'
+    implementation 'org.apache.kafka:kafka-clients:$versions.apacheKafka'
 
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc'
     implementation 'io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger'
