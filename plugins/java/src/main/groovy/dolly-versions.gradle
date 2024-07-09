@@ -5,6 +5,7 @@ plugins {
 extensions.create("versions", DollyVersionCatalog)
 
 class DollyVersionCatalog {
+    String activation = "1.1.1"
     String guava = "33.2.0-jre"
     String jakartaXmlBindApi = "4.0.2"
     String jweaver = "1.9.22"

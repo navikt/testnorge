@@ -12,7 +12,7 @@ sonarqube {
 
 dependencies {
     implementation 'jakarta.xml.bind:jakarta.xml.bind-api:$versions.jakartaXmlBindApi'
-    implementation 'javax.activation:activation:1.1.1'
+    implementation 'javax.activation:activation:$versions.activation'
     implementation 'org.glassfish.jaxb:jaxb-runtime'
 
     implementation 'no.nav.testnav.libs:servlet-core'
