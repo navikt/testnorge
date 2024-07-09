@@ -7,7 +7,7 @@ import no.nav.registre.testnorge.levendearbeidsforholdansettelsev2.consumers.com
 import no.nav.registre.testnorge.levendearbeidsforholdansettelsev2.consumers.command.EndreArbeidsforholdCommand;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelsev2.domain.v1.Arbeidsforhold;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
