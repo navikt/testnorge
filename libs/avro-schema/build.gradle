@@ -1,6 +1,7 @@
 plugins {
     id "dolly-libs"
     id "dolly-libs-publish"
+    id "dolly-versions"
 
     id 'com.github.davidmc24.gradle.plugin.avro' version '1.9.1'
 }
@@ -10,6 +11,6 @@ sonarqube {
 }
 
 dependencies {
-    implementation 'org.apache.avro:avro-compiler:1.11.3'
-    implementation 'org.apache.avro:avro-maven-plugin:1.11.3'
+    implementation 'org.apache.avro:avro-compiler:$versions.apacheAvro'
+    implementation 'org.apache.avro:avro-maven-plugin:$versions.apacheAvro'
 }
