@@ -67,7 +67,7 @@ consumers:
     name: testnav-tenor-search-service
     url: https://testdata.api.skatteetaten.no
   testnav-organisasjon-faste-data-service:
+    url: https://testnav-organisasjon-faste-data-service.intern.dev.nav.no
     name: testnav-organisasjon-faste-data-service
-    url: https://testnav-organisasjon-faste-data-service.dev-fss-pub.nais.io
-    cluster: dev-fss
+    cluster: dev-gcp
     namespace: dolly

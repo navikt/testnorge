@@ -5,10 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.config.Consumers;
-import no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.pdl.commad.PdlBolkPersonCommand;
-import no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.pdl.commad.PdlPersonGetCommand;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.pdl.command.PdlBolkPersonCommand;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.pdl.command.PdlPersonGetCommand;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.provider.v2.PdlMiljoer;
-import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.core.io.ClassPathResource;
@@ -27,7 +26,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.pdl.JacksonExchangeStrategyUtil.getJacksonStrategy;
 import static no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.pdl.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
 @Slf4j
