@@ -12,10 +12,11 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class HentOrganisasjonService {
     private final EregConsumer eregConsumer;
-    @EventListener(ApplicationReadyEvent.class)
+    //@EventListener(ApplicationReadyEvent.class)
     public void hentOrganisasjoner() {
         System.out.println("Henter organisasjoner");
         log.info("eregConsumer.getOrganisasjon(\"955937864\", \"q2\")");
         eregConsumer.getOrganisasjon("955937864", "q2");
     }
 }
+

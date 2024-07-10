@@ -16,7 +16,7 @@ public class TenorPersonService {
 
     private final TenorConsumer tenorConsumer;
 
-    @EventListener(ApplicationReadyEvent.class)
+    //@EventListener(ApplicationReadyEvent.class)
     public void tenorPersonService() throws JsonProcessingException {
         log.info("Henter tenor person");
         tenorConsumer.consume();
