@@ -66,9 +66,9 @@ public class TenorConsumer {
         if (nonNull(accessToken)) {
             var token = accessToken.getTokenValue();
             HentPersonerCommand commander = new HentPersonerCommand(token, webClient);
-            JsonNode data = commander.hentPersonData();
+            JsonNode data = commander.hentPersonData("1520");
             var rawResponse = objectMapper.readValue(data.toString(), TenorRawResponse.class);
-            log.info(rawResponse.getDokumentListe().getFirst().getBostedsadresse().toString());
+            log.info(rawResponse.getDokumentListe().getFirst().getKommunenr());
         }
     }
 }
