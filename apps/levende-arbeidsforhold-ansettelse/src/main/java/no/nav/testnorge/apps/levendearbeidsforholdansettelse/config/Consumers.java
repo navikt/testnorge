@@ -25,6 +25,6 @@ import static lombok.AccessLevel.PACKAGE;
 public class Consumers {
 
     private ServerProperties testnavAaregProxy;
-    private ServerProperties tenorSearchService;
+    private ServerProperties testnavTenorSearchService;
 
 }
