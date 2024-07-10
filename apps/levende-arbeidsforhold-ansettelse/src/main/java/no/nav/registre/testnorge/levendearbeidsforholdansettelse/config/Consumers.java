@@ -26,4 +26,6 @@ public class Consumers {
 
     private ServerProperties testnavAaregProxy;
     private ServerProperties testnavTenorSearchService;
+    private ServerProperties testnavEregProxy;
+    private ServerProperties pdlProxy;
 }
