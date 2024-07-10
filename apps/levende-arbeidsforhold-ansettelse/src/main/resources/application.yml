@@ -53,5 +53,6 @@ consumers:
     namespace: dolly
     url: https://testnav-aareg-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
-  tenor-search-service:
+  testnav-tenor-search-service:
+    name: testnav-tenor-search-service
     url: https://testdata.api.skatteetaten.no
