@@ -68,6 +68,7 @@ public class TenorConsumer {
             JsonNode data = commander.hentPersonData();
             var rawResponse = objectMapper.readValue(data.toString(), TenorRawResponse.class);
             log.info(rawResponse.getDokumentListe().getFirst().getBostedsadresse().toString());
+
         }
     }
 }
