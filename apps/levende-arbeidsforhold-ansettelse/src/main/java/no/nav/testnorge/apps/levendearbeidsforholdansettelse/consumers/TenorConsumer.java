@@ -58,16 +58,16 @@ public class TenorConsumer {
     }
 
     public void consume() throws JsonProcessingException {
-        System.out.println("Kjører consume");
+        log.info("Kjører consume");
         var accessToken = tokenExchange.exchange(serverProperties).block();
-        System.out.println("Har hentet ut token");
+        log.info("Har hentet ut token");
 
         if (nonNull(accessToken)) {
             var token = accessToken.getTokenValue();
             HentPersonerCommand commander = new HentPersonerCommand(token, webClient);
             JsonNode data = commander.hentPersonData();
             var rawResponse = objectMapper.readValue(data.toString(), TenorRawResponse.class);
-            System.out.println(rawResponse.getDokumentListe().getFirst().getBostedsadresse().toString());
+            log.info(rawResponse.getDokumentListe().getFirst().getBostedsadresse().toString());
         }
     }
 }
