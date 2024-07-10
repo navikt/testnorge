@@ -14,14 +14,15 @@ public class HentPersonerCommand {
     private final String token;
     private final WebClient webClient;
 
-    public JsonNode hentPersonData(){
+    public JsonNode hentPersonData(String kommunenr){
         System.out.println("Henter personer");
         var request = webClient
                 .get()
                 .uri(builder -> builder
                         .path(PATH)
                         .queryParam("type", "Spesifikt")
-                        .queryParam("fields", "id", "bostedsadresse", "arbeidsforhold")
+                        .queryParam("fields", "id", "kommunenr", "arbeidsforhold")
+                        .queryParam("searchData", "kommunenr:" + kommunenr)
                         .build()
                 )
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
