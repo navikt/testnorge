@@ -33,7 +33,7 @@ public class TenorConsumer {
             Consumers consumers,
             ObjectMapper objectMapper) {
 
-        this.serverProperties = consumers.getTenorSearchService();
+        this.serverProperties = consumers.getTestnavTenorSearchService();
         this.tokenExchange = tokenExchange;
         this.objectMapper = objectMapper;
 
