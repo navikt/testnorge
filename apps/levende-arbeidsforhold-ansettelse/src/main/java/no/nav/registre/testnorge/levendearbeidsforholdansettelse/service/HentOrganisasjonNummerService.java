@@ -3,6 +3,7 @@ package no.nav.registre.testnorge.levendearbeidsforholdansettelse.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.OrganisasjonFasteDataConsumer;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.organisasjon.Organisasjon2;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,7 @@ public class HentOrganisasjonNummerService {
 
     @EventListener(ApplicationReadyEvent.class)
     public void hentOrganisasjoner() {
-        List<String> orgNummer =  organisasjonFasteDataConsumer.hentOrganisasjoner();
+        List<Organisasjon2> orgNummer =  organisasjonFasteDataConsumer.hentOrganisasjoner();
         log.info("Hentet {} organisasjoner", orgNummer.size());
         log.info("Første org nr: {}", orgNummer.get(0));
     }

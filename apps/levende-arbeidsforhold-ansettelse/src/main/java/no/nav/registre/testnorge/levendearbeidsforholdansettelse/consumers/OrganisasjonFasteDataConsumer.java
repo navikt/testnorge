@@ -3,6 +3,7 @@ package no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.config.Consumers;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.command.GetOrganisasjonerCommand;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.organisasjon.Organisasjon2;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.organisasjon.dto.OrganisasjonDTO;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.v1.Organisasjon;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
@@ -30,9 +31,9 @@ public class OrganisasjonFasteDataConsumer {
         this.tokenExchange = tokenExchange;
     }
 
-    public List<String> hentOrganisasjoner() {
+    public List<Organisasjon2> hentOrganisasjoner() {
         var accessToken = tokenExchange.exchange(serverProperties).block();
-        List<OrganisasjonDTO> dto = new GetOrganisasjonerCommand(webClient, accessToken.getTokenValue()).call();
-        return dto.stream().map(OrganisasjonDTO::getOrganisasjonsnummer).toList(); //org -> new Organisasjon(org.getOrganisasjonsnummer())
+        List<Organisasjon2> dto = new GetOrganisasjonerCommand(webClient, accessToken.getTokenValue()).call();
+        return dto; //org -> new Organisasjon(org.getOrganisasjonsnummer())
     }
 }
