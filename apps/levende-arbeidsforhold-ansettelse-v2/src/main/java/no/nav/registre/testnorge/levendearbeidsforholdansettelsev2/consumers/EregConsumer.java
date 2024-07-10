@@ -2,8 +2,8 @@ package no.nav.registre.testnorge.levendearbeidsforholdansettelsev2.consumers;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelsev2.consumers.command.HentOrganisasjonerCommand;
-import no.nav.testnav.libs.avro.organisasjon.v1.Organisasjon;
-import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelsev2.domain.dto.OrganisasjonDTO;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelsev2.domain.organisasjon.Organisasjon;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
@@ -31,8 +31,8 @@ public class EregConsumer {
 
     public Organisasjon getOrganisasjon(String orgnummer, String miljo) {
         var accessToken = tokenExchange.exchange(serverProperties).block();
-        return new HentOrganisasjonerCommand(webClient, accessToken.getTokenValue(), miljo, orgnummer).call();
-        //return dto != null ? new Organisasjon(dto) : null;
+        OrganisasjonDTO dto = new HentOrganisasjonerCommand(webClient, accessToken.getTokenValue(), miljo, orgnummer).call();
+        return dto != null ? new Organisasjon(dto) : null;
     }
 
 }
