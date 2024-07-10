@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelsev2.config.Consumers;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelsev2.consumers.command.HentPersonerCommand;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelsev2.domain.TenorRawResponse;

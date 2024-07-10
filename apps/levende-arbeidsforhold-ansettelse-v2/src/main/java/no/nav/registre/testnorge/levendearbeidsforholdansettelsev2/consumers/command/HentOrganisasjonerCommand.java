@@ -27,9 +27,8 @@ public class HentOrganisasjonerCommand implements Callable<Organisasjon> {
         log.info("Henter organisasjon med orgnummer {}.", orgnummer);
         try {
             return webClient
-                    .get()
-                    .uri(builder -> builder
-                            .path("/api/{miljo}/v2/organisasjon/alle")
+                    .get()                    .uri(builder -> builder
+                            .path("/api/{miljo}/v2/organisasjon/{orgnummer}")
                             .queryParam("inkluderHierarki", true)
                             .queryParam("inkluderHistorikk", false)
                             .build(miljo, orgnummer)
