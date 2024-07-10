@@ -30,7 +30,7 @@ public class TenorRawResponse {
     @Data
     @NoArgsConstructor
     public static class Dokument {
-        private String bostedsadresse;
+        private String kommunenr;
         private String id;
         private String arbeidsforhold;
     }
