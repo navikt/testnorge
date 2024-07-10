@@ -1,10 +1,9 @@
-package no.nav.registre.testnorge.levendearbeidsforholdansettelsev2.consumers.command;
+package no.nav.testnorge.apps.levendearbeidsforholdansettelse.consumers.command;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.levendearbeidsforholdansettelsev2.domain.tenor.TenorRawResponse;
-import no.nav.registre.testnorge.levendearbeidsforholdansettelsev2.domain.tenor.TenorResponse;
+import no.nav.testnorge.apps.levendearbeidsforholdansettelse.domain.tenor.TenorResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 

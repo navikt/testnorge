@@ -1,5 +1,5 @@
 package no.nav.testnorge.apps.levendearbeidsforholdansettelse.config;
-
+/*
 
 import io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig;
 import io.confluent.kafka.serializers.KafkaAvroDeserializer;
@@ -90,3 +90,4 @@ public class KafkaConfig {
         return factory;
     }
 }
+*/
