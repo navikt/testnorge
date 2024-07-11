@@ -104,15 +104,32 @@ public class InntektsmeldingMappingStrategy implements MappingStrategy {
                         inntektsmelding.setStartdatoForeldrepengeperiode(toLocalDateTime(rsInntektsmelding.getStartdatoForeldrepengeperiode()));
 
                         inntektsmelding.setArbeidsforhold(mapperFacade.map(rsInntektsmelding.getArbeidsforhold(), RsArbeidsforhold.class));
-                        inntektsmelding.setGjenopptakelseNaturalytelseListe(rsInntektsmelding.getGjenopptakelseNaturalytelseListe().stream()
-                                .map(ytelse -> mapperFacade.map(ytelse, RsNaturalytelseDetaljer.class))
-                                .toList());
 
                         inntektsmelding.setNaerRelasjon(isTrue(rsInntektsmelding.getNaerRelasjon()));
                         inntektsmelding.setOmsorgspenger(mapperFacade.map(rsInntektsmelding.getOmsorgspenger(), RsOmsorgspenger.class));
-                        inntektsmelding.setOpphoerAvNaturalytelseListe(rsInntektsmelding.getOpphoerAvNaturalytelseListe().stream()
-                                .map(ytelse -> mapperFacade.map(ytelse, RsNaturalytelseDetaljer.class))
-                                .toList());
+
+                        inntektsmelding.setOpphoerAvNaturalytelseListe(
+                                rsInntektsmelding
+                                        .getOpphoerAvNaturalytelseListe()
+                                        .stream()
+                                        .map(ytelse -> {
+                                            var mapped = mapperFacade.map(ytelse, RsNaturalytelseDetaljer.class);
+                                            mapped.setNaturalytelseType(ytelse.getNaturalytelseType().getJsonValue()); // Don't use the string representation of the enum; use the JSON value corresponding to the enum.
+                                            return mapped;
+                                        })
+                                        .toList()
+                        );
+                        inntektsmelding.setGjenopptakelseNaturalytelseListe(
+                                rsInntektsmelding
+                                        .getGjenopptakelseNaturalytelseListe()
+                                        .stream()
+                                        .map(ytelse -> {
+                                            var mapped = mapperFacade.map(ytelse, RsNaturalytelseDetaljer.class);
+                                            mapped.setNaturalytelseType(ytelse.getNaturalytelseType().getJsonValue()); // Don't use the string representation of the enum; use the JSON value corresponding to the enum.
+                                            return mapped;
+                                        })
+                                .toList()
+                        );
 
                         inntektsmelding.setPleiepengerPerioder(rsInntektsmelding.getPleiepengerPerioder().stream()
                                 .map(periode -> mapperFacade.map(periode, RsPeriode.class))
