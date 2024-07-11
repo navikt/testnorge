@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 public class PdlService {
     private final PdlConsumer pdlConsumer;
 
-    @EventListener(ApplicationReadyEvent.class)
+    //@EventListener(ApplicationReadyEvent.class)
     public void getPerson(){
         String ident = "12345678901";
         PdlMiljoer miljoer = PdlMiljoer.Q2;
