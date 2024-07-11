@@ -26,6 +26,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -114,7 +115,9 @@ public class InntektsmeldingMappingStrategy implements MappingStrategy {
                                         .stream()
                                         .map(ytelse -> {
                                             var mapped = mapperFacade.map(ytelse, RsNaturalytelseDetaljer.class);
-                                            mapped.setNaturalytelseType(ytelse.getNaturalytelseType().getJsonValue()); // Don't use the string representation of the enum; use the JSON value corresponding to the enum.
+                                            Optional
+                                                    .ofNullable(ytelse.getNaturalytelseType())
+                                                    .ifPresent(type -> mapped.setNaturalytelseType(type.getJsonValue()));
                                             return mapped;
                                         })
                                         .toList()
@@ -125,7 +128,9 @@ public class InntektsmeldingMappingStrategy implements MappingStrategy {
                                         .stream()
                                         .map(ytelse -> {
                                             var mapped = mapperFacade.map(ytelse, RsNaturalytelseDetaljer.class);
-                                            mapped.setNaturalytelseType(ytelse.getNaturalytelseType().getJsonValue()); // Don't use the string representation of the enum; use the JSON value corresponding to the enum.
+                                            Optional
+                                                    .ofNullable(ytelse.getNaturalytelseType())
+                                                    .ifPresent(type -> mapped.setNaturalytelseType(type.getJsonValue()));
                                             return mapped;
                                         })
                                 .toList()
