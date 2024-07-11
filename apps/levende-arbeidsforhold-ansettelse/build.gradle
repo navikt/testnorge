@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id "org.sonarqube" version "5.0.0.4638"
     id 'org.springframework.boot' version "3.2.6"
     id 'io.spring.dependency-management' version "1.1.5"
     id "jacoco"
@@ -9,6 +10,20 @@ test {
     useJUnitPlatform()
 }
 
+sonarqube {
+    properties {
+        property "sonar.dynamicAnalysis", "reuseReports"
+        property "sonar.host.url", "https://sonarcloud.io"
+        property "sonar.java.coveragePlugin", "jacoco"
+        property "sonar.language", "java"
+        property "sonar.token", System.getenv("SONAR_TOKEN")
+        property "sonar.organization", "navikt"
+        property "sonar.project.monorepo.enabled", true
+        property "sonar.projectKey", "levende-arbeidsforhold-ansettelse"
+        property "sonar.projectName", "levende-arbeidsforhold-ansettelse"
+        property "sonar.sourceEncoding", "UTF-8"
+    }
+}
 bootJar {
     archiveFileName = "app.jar"
 }
