@@ -2,7 +2,7 @@ plugins {
     id "com.gradle.develocity" version "3.17.4"
 }
 
-rootProject.name = 'testnav-levende-arbeidsforhold-ansettelse-v2'
+rootProject.name = 'testnav-levende-arbeidsforhold-ansettelse'
 
 includeBuild "../../libs/kafka-config"
 includeBuild "../../libs/avro-schema"
