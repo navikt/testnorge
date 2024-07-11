@@ -2,8 +2,9 @@ package no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.comm
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.organisasjon.Organisasjon2;
-import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.organisasjon.dto.OrganisasjonDTO;
+//import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.organisasjon.Organisasjon2;
+//import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.organisasjon.dto.OrganisasjonDTO;
+import no.nav.testnav.libs.dto.organisasjonfastedataservice.v1.OrganisasjonDTO;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
@@ -11,13 +12,13 @@ import java.util.concurrent.Callable;
 
 @Slf4j
 @RequiredArgsConstructor
-public class GetOrganisasjonerCommand implements Callable<List<Organisasjon2>> {
+public class GetOrganisasjonerCommand implements Callable<List<OrganisasjonDTO>> {
     private final WebClient webClient;
     private final String token;
 
 
     @Override
-    public List<Organisasjon2> call()  {
+    public List<OrganisasjonDTO> call()  {
         return webClient
                 .get()
                 .uri(builder -> builder
@@ -28,7 +29,7 @@ public class GetOrganisasjonerCommand implements Callable<List<Organisasjon2>> {
                 )
                 .header("Authorization", "Bearer " + token)
                 .retrieve()
-                .bodyToFlux(Organisasjon2.class)
+                .bodyToFlux(OrganisasjonDTO.class)
                 .collectList()
                 .block();
     }
