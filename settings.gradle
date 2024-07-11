@@ -125,12 +125,17 @@ includeBuild './apps/varslinger-service'
 includeBuild './apps/dollystatus'
 includeBuild './apps/skattekort-service'
 
+includeBuild './apps/levende-arbeidsforhold-service'
+includeBuild './apps/levende-arbeidsforhold-ansettelse'
+
 includeBuild './xsd/arbeidsforhold-xsd'
 
 includeBuild './examples/reactive-rest-example'
 
 includeBuild './mocks/tokendings-mock'
 includeBuild './mocks/maskinporten-mock'
+
+
 
 include(':proxies')
 include(':navikt')

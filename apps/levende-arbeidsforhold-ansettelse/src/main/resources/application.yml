@@ -4,7 +4,7 @@ spring:
   main:
     banner-mode: off
   application:
-    name: testnav-levende-arbeidsforhold-ansettelse-v2
+    name: testnav-levende-arbeidsforhold-ansettelse
     version: application.version.todo #TODO Finn ut hvordan denne kan settes fra Gradle
     description: App for å hente PDL personer.
   security:
@@ -20,7 +20,7 @@ spring:
       enabled: false
   kafka:
     consumer:
-      group-id: testnav-levende-arbeidsforhold-ansettelse-v2
+      group-id: testnav-levende-arbeidsforhold-ansettelse
 springdoc:
   swagger-ui:
     disable-swagger-default-url: true
@@ -60,3 +60,8 @@ consumers:
     name: testnav-ereg-proxy
     cluster: dev-fss
     namespace: dolly
+  pdl-proxy:
+    url: https://testnav-pdl-proxy.dev-gcp-pub.nais.io
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-pdl-proxy

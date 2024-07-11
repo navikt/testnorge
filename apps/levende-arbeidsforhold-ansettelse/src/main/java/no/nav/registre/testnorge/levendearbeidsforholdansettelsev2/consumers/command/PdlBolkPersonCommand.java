@@ -17,8 +17,8 @@ import java.util.UUID;
 import java.util.concurrent.Callable;
 
 import static no.nav.registre.testnorge.levendearbeidsforholdansettelsev2.consumers.PdlConsumer.hentQueryResource;
-import static no.nav.registre.testnorge.levendearbeidsforholdansettelsev2.consumers.PdlConsumer.GEN;
-import static no.nav.testnav.apps.personservice.consumer.v2.domain.CommonKeysAndUtils.*;
+import static no.nav.registre.testnorge.levendearbeidsforholdansettelsev2.consumers.TemaGrunnlag.GEN;
+import static no.nav.registre.testnorge.levendearbeidsforholdansettelsev2.consumers.domain.CommonKeysAndUtils.*;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @RequiredArgsConstructor

@@ -3,6 +3,7 @@ package no.nav.registre.testnorge.levendearbeidsforholdansettelsev2.domain;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelsev2.domain.tenor.Hendelse;
 
 import java.math.BigInteger;
 import java.time.LocalDate;
