@@ -18,4 +18,5 @@ public class HentOrganisasjonerService {
         log.info("eregConsumer.getOrganisasjon(\"955937864\", \"q2\")");
         eregConsumer.getOrganisasjon("955937864", "q2");
     }
+
 }
