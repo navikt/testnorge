@@ -10,6 +10,8 @@ import { DokumentasjonDropdown } from '@/components/layout/header/DokumentasjonD
 import { TestComponentSelectors } from '#/mocks/Selectors'
 import { FinnPersonDropdown } from '@/components/layout/header/FinnPersonDropdown'
 import { OrganisasjonDropdown } from '@/components/layout/header/OrganisasjonDropdown'
+import { AdminDropdown } from '@/components/layout/header/AdminDropdown'
+import { erDollyAdmin } from '@/utils/DollyAdmin'
 
 export default () => {
 	const { currentBruker, loading } = useCurrentBruker()
@@ -19,6 +21,7 @@ export default () => {
 	}
 
 	const bankidBruker = currentBruker?.brukertype === 'BANKID'
+
 	return (
 		<header className="app-header">
 			<NavLink to="/" end className="home-nav">
@@ -44,6 +47,7 @@ export default () => {
 					</NavLink>
 				)}
 				<DokumentasjonDropdown />
+				{erDollyAdmin() && <AdminDropdown />}
 			</div>
 			<BrukerDropdown />
 		</header>

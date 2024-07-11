@@ -1,0 +1,53 @@
+plugins {
+    id "dolly-sonar"
+
+    id "io.spring.dependency-management" // See ../../../build.gradle for version.
+    id "java-library"
+}
+
+group = "no.nav.testnav.libs"
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+dependencyManagement {
+    applyMavenExclusions = false
+    imports {
+        mavenBom "org.springframework.boot:spring-boot-dependencies:3.2.1"
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:2023.0.1"
+    }
+}
+
+dependencies {
+    annotationProcessor "org.projectlombok:lombok"
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+
+    implementation "org.projectlombok:lombok"
+
+    testAnnotationProcessor "org.projectlombok:lombok"
+
+    testImplementation "org.springframework.boot:spring-boot-starter-test"
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        name = "Confluent"
+        url = uri("https://packages.confluent.io/maven/")
+    }
+    mavenLocal()
+}
+
+tasks.test {
+    useJUnitPlatform()
+    jvmArgs "--add-opens", "java.base/java.lang=ALL-UNNAMED"
+}

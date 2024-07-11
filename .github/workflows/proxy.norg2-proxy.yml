@@ -3,6 +3,7 @@ name: norg2-proxy
 on:
   push:
     paths:
+      - "plugins/**"
       - libs/reactive-core
       - libs/reactive-proxy
       - proxies/norg2-proxy/**

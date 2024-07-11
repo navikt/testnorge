@@ -4,10 +4,11 @@ plugins {
 
 rootProject.name = 'norg2-proxy'
 
+includeBuild "../../plugins/java"
 
+includeBuild '../../libs/data-transfer-objects'
 includeBuild '../../libs/reactive-core'
 includeBuild '../../libs/reactive-proxy'
-includeBuild '../../libs/data-transfer-objects'
 
 develocity {
     buildScan {

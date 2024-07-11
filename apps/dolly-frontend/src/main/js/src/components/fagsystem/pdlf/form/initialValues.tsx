@@ -319,14 +319,16 @@ export const initialDoedfoedtBarn = {
 	master: 'FREG',
 }
 
-export const initialForeldreansvar = {
+export const getInitialForeldreansvar = (kanHaForeldreansvar = true) => ({
+	harForeldreansvar: kanHaForeldreansvar ? true : undefined,
+	erAnsvarssubjekt: kanHaForeldreansvar ? undefined : true,
 	typeAnsvarlig: null as unknown as string,
 	ansvar: null as unknown as string,
 	gyldigFraOgMed: null as unknown as string,
 	gyldigTilOgMed: null as unknown as string,
 	kilde: 'Dolly',
 	master: 'FREG',
-}
+})
 
 export const getInitialUtenlandskIdentifikasjonsnummer = (master = 'FREG') => ({
 	identifikasjonsnummer: '',

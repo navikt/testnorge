@@ -3,6 +3,7 @@ name: app-tilgang-analyse-service
 on:
   push:
     paths:
+      - "plugins/**"
       - libs/data-transfer-objects
       - libs/reactive-core
       - libs/reactive-security

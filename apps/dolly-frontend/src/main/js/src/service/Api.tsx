@@ -15,6 +15,7 @@ import SessionService from '@/service/services/session/SessionService'
 import KontoregisterService from '@/service/services/kontoregister/KontoregisterService'
 import SkjermingService from '@/service/services/skjerming/SkjermingService'
 import KodeverkService from '@/service/services/kodeverk/KodeverkService'
+import OrganisasjonTilgangService from '@/service/services/organisasjonTilgang/OrganisasjonTilgangService'
 
 export const DollyApi = DollyService
 export const TpsMessagingApi = TpsMessagingService
@@ -26,6 +27,7 @@ export const BrregstubApi = BrregstubService
 export const VarslingerApi = VarslingerService
 export const OrgforvalterApi = OrganisasjonForvalterService
 export const OrgserviceApi = OrganisasjonService
+export const OrgTilgangApi = OrganisasjonTilgangService
 export const PersonOrgTilgangApi = PersonOrganisasjonTilgangService
 export const BrukerApi = BrukerService
 export const PdlforvalterApi = PdlForvalterService
@@ -44,6 +46,7 @@ export default {
 	VarslingerApi: VarslingerService,
 	OrgforvalterApi: OrganisasjonForvalterService,
 	OrgserviceApi: OrganisasjonService,
+	OrgTilgangApi: OrganisasjonTilgangService,
 	PersonOrgTilgangApi: PersonOrganisasjonTilgangService,
 	BrukerApi: BrukerService,
 	PdlforvalterApi: PdlForvalterService,

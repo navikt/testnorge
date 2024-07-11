@@ -3,6 +3,7 @@ name: ereg-batch-status-service
 on:
   push:
     paths:
+      - "plugins/**"
       - libs/data-transfer-objects
       - libs/reactive-core
       - libs/servlet-core

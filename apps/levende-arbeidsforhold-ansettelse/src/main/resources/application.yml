@@ -58,6 +58,16 @@ consumers:
     namespace: dolly
     url: https://testnav-ereg-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
+  testnav-pdl-proxy:
+    name: testnav-pdl-proxy
+    namespace: dolly
+    url: https://testnav-pdl-proxy.dev-fss-pub.nais.io
+    cluster: dev-fss
   testnav-tenor-search-service:
     name: testnav-tenor-search-service
     url: https://testdata.api.skatteetaten.no
+  testnav-organisasjon-faste-data-service:
+    url: https://testnav-organisasjon-faste-data-service.intern.dev.nav.no
+    name: testnav-organisasjon-faste-data-service
+    cluster: dev-gcp
+    namespace: dolly

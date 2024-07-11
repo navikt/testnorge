@@ -3,6 +3,7 @@ name: person-search-service
 on:
   push:
     paths:
+      - "plugins/**"
       - libs/data-transfer-objects
       - libs/reactive-core
       - libs/security-core
