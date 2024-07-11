@@ -1,7 +1,7 @@
 ﻿apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: testnav-levende-arbeidsforhold-ansettelse-v2
+  name: testnav-levende-arbeidsforhold-ansettelse
   namespace: dolly
   labels:
     team: dolly
@@ -19,7 +19,7 @@ spec:
       external:
         - host: testnav-aareg-proxy.dev-fss-pub.nais.io
       rules:
-        - application: testnav-levende-arbeidsforhold-ansettelse-v2
+        - application: testnav-levende-arbeidsforhold-ansettelse
           cluster: dev-gcp
   azure:
     application:
@@ -51,4 +51,14 @@ spec:
   kafka:
     pool: nav-dev
   ingresses:
-    - "https://testnav-levende-arbeidsforhold-ansettelse-v2.intern.dev.nav.no"
+    - "https://testnav-levende-arbeidsforhold-ansettelse.intern.dev.nav.no"
+  gcp:
+    sqlInstances:
+      - type: POSTGRES_14
+        name: testnav-levende-arbeidsforhold-ansettelse
+        databases:
+          - name: ansettelse-jobber
+        autoBackupHour: 3 #Lager backup av hele SQL instancen hver dag kl 03:00
+        tier: db-f1-micro
+        diskAutoresize: true #Kanskje ikke nødvendig?
+        #collation: DESC
