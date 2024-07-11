@@ -1,0 +1,23 @@
+name: levende-arbeidsforhold-ansettelse
+
+on:
+  push:
+    paths:
+      - libs/commands/**
+      - libs/data-transfer-objects/**
+      - libs/security-core/**
+      - libs/servlet-core/**
+      - libs/servlet-security/**
+      - apps/levende-arbeidsforhold-ansettelse/**
+      - .github/workflows/app.levende-arbeidsforhold-ansettelse.yml
+
+jobs:
+  workflow:
+    uses: ./.github/workflows/common.workflow.backend.yml
+    with:
+      working-directory: "apps/levende-arbeidsforhold-ansettelse"
+      deploy-tag: "#deploy-levende-arbeidsforhold-ansettelse"
+    permissions:
+      contents: read
+      id-token: write
+    secrets: inherit
