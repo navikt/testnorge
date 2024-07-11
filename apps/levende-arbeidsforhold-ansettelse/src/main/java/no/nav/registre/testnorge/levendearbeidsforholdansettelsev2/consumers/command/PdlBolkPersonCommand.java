@@ -2,7 +2,7 @@ package no.nav.registre.testnorge.levendearbeidsforholdansettelsev2.consumers.co
 
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
-import no.nav.testnav.apps.personservice.consumer.v2.GraphQLRequest;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelsev2.consumers.GraphQLRequest;
 import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -16,8 +16,8 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 
-import static no.nav.testnav.apps.personservice.consumer.v2.PdlPersonConsumer.hentQueryResource;
-import static no.nav.testnav.apps.personservice.consumer.v2.TemaGrunnlag.GEN;
+import static no.nav.registre.testnorge.levendearbeidsforholdansettelsev2.consumers.PdlConsumer.hentQueryResource;
+import static no.nav.registre.testnorge.levendearbeidsforholdansettelsev2.consumers.PdlConsumer.GEN;
 import static no.nav.testnav.apps.personservice.consumer.v2.domain.CommonKeysAndUtils.*;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
