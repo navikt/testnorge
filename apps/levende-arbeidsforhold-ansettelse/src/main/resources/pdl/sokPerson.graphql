@@ -1,0 +1,29 @@
+query ($paging:Paging, $criteria:[Criterion]) {
+    sokPerson (paging: $paging,  criteria: $criteria){
+        pageNumber,
+        totalHits,
+        totalPages,
+        hits {
+            score,
+            highlights {
+                opplysning,
+                opplysningsId
+                historisk
+                matches {
+                    field
+                    fragments
+                }
+            }
+            person {
+                navn(historikk: false) {
+                    fornavn
+                    etternavn
+                    mellomnavn
+                    metadata{historisk}
+                }
+            }
+        }
+    }
+}
+
+C
