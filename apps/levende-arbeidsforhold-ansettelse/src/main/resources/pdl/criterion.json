@@ -1,0 +1,25 @@
+{
+  "paging": {
+    "pageNumber": 1,
+    "resultsPerPage": 100
+  },
+  "criteria": [
+    { "and": [
+      { "or": [
+          {
+            "fieldName": "person.bostedsadresse.vegadresse.postnummer",
+            "searchRule": { "wildcard": "1???"}
+          },
+          {
+            "fieldName": "person.oppholdsadresse.vegadresse.postnummer",
+            "searchRule": { "wildcard": "1???" }
+          }
+        ]},
+      {
+        "fieldName": "person.foedselsdato.foedselsaar",
+        "searchRule": { "from": "1955", "to" : "2006" }
+      }
+  		]
+    }
+  ]
+}

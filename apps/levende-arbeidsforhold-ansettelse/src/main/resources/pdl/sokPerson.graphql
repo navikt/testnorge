@@ -1,29 +1,38 @@
-query ($paging:Paging, $criteria:[Criterion]) {
-    sokPerson (paging: $paging,  criteria: $criteria){
-        pageNumber,
-        totalHits,
-        totalPages,
+query($paging: Paging, $criteria: [Criterion]) {
+    sokPerson(paging: $paging, criteria: $criteria) {
         hits {
-            score,
-            highlights {
-                opplysning,
-                opplysningsId
-                historisk
-                matches {
-                    field
-                    fragments
-                }
+            identer {
+                ident
+                gruppe
             }
             person {
                 navn(historikk: false) {
                     fornavn
                     etternavn
                     mellomnavn
-                    metadata{historisk}
+                }
+                foedselsdato {
+                    foedselsaar
+                }
+                bostedsadresse {
+                    vegadresse{
+                        matrikkelId
+                        adressenavn
+                        husnummer
+                        husbokstav
+                        postnummer
+                    }
+                }
+                oppholdsadresse{
+                    vegadresse{
+                        matrikkelId
+                        adressenavn
+                        husnummer
+                        husbokstav
+                        postnummer
+                    }
                 }
             }
         }
     }
 }
-
-C
