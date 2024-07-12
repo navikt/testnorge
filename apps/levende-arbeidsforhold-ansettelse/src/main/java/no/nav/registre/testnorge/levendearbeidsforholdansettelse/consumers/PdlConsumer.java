@@ -6,6 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.command.PdlBolkPersonCommand;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.command.PdlPersonGetCommand;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.command.SokPersonCommand;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.pdl.GraphqlVariables;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.provider.PdlMiljoer;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
@@ -73,12 +75,13 @@ public class PdlConsumer {
                 .flatMap((AccessToken token) -> new PdlPersonGetCommand(webClient, ident, token.getTokenValue(), pdlMiljoe)
                         .call());
     }
-
-    public Mono<JsonNode> getPdlPersoner(List<String> identer) {
+    public Mono<JsonNode> getSokPerson(GraphqlVariables.Paging paging, GraphqlVariables.Criteria criteria, PdlMiljoer pdlMiljoe) {
 
         return tokenService.exchange(serverProperties)
-                .flatMap(token -> new PdlBolkPersonCommand(webClient, identer, token.getTokenValue()).call());
+                .flatMap((AccessToken token) -> new SokPersonCommand(webClient, paging, criteria, token.getTokenValue(), pdlMiljoe)
+                        .call());
     }
+
     public static String hentQueryResource(String pathResource) {
         val resource = new ClassPathResource(pathResource);
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream(), UTF_8))) {
