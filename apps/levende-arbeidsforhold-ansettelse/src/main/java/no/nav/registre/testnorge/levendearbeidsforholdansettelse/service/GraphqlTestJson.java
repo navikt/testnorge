@@ -7,10 +7,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.PdlConsumer;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.pdl.GraphqlVariables;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.pdl.SokPersonVariables;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.provider.PdlMiljoer;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.pdl.graphql.Filter;
 
 import java.util.List;
 import java.util.Map;
@@ -25,6 +27,22 @@ public class GraphqlTestJson {
     @EventListener(ApplicationReadyEvent.class)
     public void test() throws JsonProcessingException {
         log.info("Er i test");
+
+        SokPersonVariables sokPerson = SokPersonVariables
+                .builder()
+                .pageNumber(1)
+                .resultsPerPage(5)
+                .from("1955")
+                .to("2006")
+                .postNr("1???")
+                .build();
+
+        JsonNode node = pdlConsumer.getSokPerson(sokPerson.lagSokPersonPaging(),
+                sokPerson.lagSokPersonCriteria(),
+                PdlMiljoer.Q2)
+                .block();
+
+/*
 
         Map<String, String> searchRuleVerdier = new java.util.HashMap<>();
         searchRuleVerdier.put("from", "1955");
@@ -66,6 +84,8 @@ public class GraphqlTestJson {
 
         JsonNode node = pdlConsumer.getSokPerson(paging, criteria, PdlMiljoer.Q2).block();
 
+
+ */
         log.info("{}", node);
     }
 
