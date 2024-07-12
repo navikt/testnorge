@@ -9,7 +9,6 @@ spring:
     description: App for å hente PDL personer.
   security:
       oauth2:
-        client:
       resourceserver:
         aad:
           issuer-uri: ${AAD_ISSUER_URI}/v2.0
@@ -65,6 +64,11 @@ consumers:
     cluster: dev-fss
     namespace: dolly
     name: testnav-pdl-proxy
+  testnav-organisasjon-faste-data-service:
+    url: https://testnav-organisasjon-faste-data-service.intern.dev.nav.no
+    name: testnav-organisasjon-faste-data-service
+    cluster: dev-gcp
+    namespace: dolly
   gcp:
     sqlInstances:
       - type: POSTGRES_14
