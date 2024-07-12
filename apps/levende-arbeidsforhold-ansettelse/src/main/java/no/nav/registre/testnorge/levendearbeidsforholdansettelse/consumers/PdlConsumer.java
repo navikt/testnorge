@@ -47,6 +47,7 @@ public class PdlConsumer {
     ) {
 
         serverProperties = consumers.getPdlProxy();
+
         this.tokenService = tokenService;
         webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
