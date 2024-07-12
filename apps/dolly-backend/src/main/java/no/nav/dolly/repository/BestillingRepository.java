@@ -89,7 +89,8 @@ public interface BestillingRepository extends CrudRepository<Bestilling, Long> {
             value = """
                 update bestilling b
                 set ferdig = true, stoppet = true
-                where b.sist_oppdatert < now() - interval '2 minutes'
+                where b.ferdig = false
+                  and b.sist_oppdatert < now() - interval '2 minutes'
 """
     )
     int stopOrphanedRunning();
