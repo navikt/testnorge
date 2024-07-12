@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class HentOrganisasjonerService {
     private final EregConsumer eregConsumer;
+
     //@EventListener(ApplicationReadyEvent.class)
     public void hentOrganisasjoner() {
         System.out.println("Henter organisasjoner");
