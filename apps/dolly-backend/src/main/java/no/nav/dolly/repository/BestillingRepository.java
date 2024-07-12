@@ -82,4 +82,16 @@ public interface BestillingRepository extends CrudRepository<Bestilling, Long> {
 
     @Query(value = "select * from bestilling where id = :id for update", nativeQuery = true)
     Optional<Bestilling> findByIdAndLock(@Param("id") Long id);
+
+    @Modifying
+    @Query(
+            nativeQuery = true,
+            value = """
+                update bestilling b
+                set ferdig = true, stoppet = true
+                where b.sist_oppdatert < now() - interval '2 minutes'
+"""
+    )
+    int stopOrphanedRunning();
+
 }
