@@ -28,7 +28,7 @@ public class GraphqlTestJson {
                 .resultsPerPage(5)
                 .from("1955")
                 .to("2006")
-                .postNr("1???")
+                .postnr("1???")
                 .build();
 
         JsonNode node = pdlConsumer.getSokPerson(sokPerson.lagSokPersonPaging(),

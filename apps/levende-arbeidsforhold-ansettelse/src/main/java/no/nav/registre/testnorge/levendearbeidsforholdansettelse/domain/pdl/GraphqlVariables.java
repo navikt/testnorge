@@ -22,7 +22,6 @@ public class GraphqlVariables {
 
     }
 
-
     @Builder
     @Getter
     @Setter
@@ -41,7 +40,6 @@ public class GraphqlVariables {
     public static class Criteria{
         private List<Object> and;
     }
-
 
     @Builder
     @Getter
