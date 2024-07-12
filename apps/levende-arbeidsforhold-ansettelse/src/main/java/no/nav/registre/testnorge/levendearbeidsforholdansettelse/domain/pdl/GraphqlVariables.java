@@ -22,6 +22,7 @@ public class GraphqlVariables {
 
     }
 
+
     @Builder
     @Getter
     @Setter
