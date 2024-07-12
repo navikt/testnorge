@@ -12,39 +12,37 @@ import java.util.Map;
 @AllArgsConstructor
 public class SokPersonVariables {
 
-    //private GraphqlVariables variables
     private int pageNumber;
     private int resultsPerPage;
     private String from;
     private String to;
-    private String postNr;
+    private String postnr;
 
     public GraphqlVariables.Criteria lagSokPersonCriteria() {
-        Map<String, String> searchRuleVerdier = new java.util.HashMap<>();
-        searchRuleVerdier.put("from", from);
-        searchRuleVerdier.put("to", to );
 
-        GraphqlVariables.Filter filter1 = GraphqlVariables.Filter.builder()
+        Map<String, String> searchRuleFoedselsaar = new java.util.HashMap<>();
+        searchRuleFoedselsaar.put("from", from);
+        searchRuleFoedselsaar.put("to", to );
+
+        GraphqlVariables.Filter filterBostedPostnr = GraphqlVariables.Filter.builder()
                 .fieldName("person.bostedsadresse.vegadresse.postnummer")
-                .searchRule(Map.of("wildcard", postNr))
+                .searchRule(Map.of("wildcard", postnr))
                 .build();
 
-        GraphqlVariables.Filter filter2 = GraphqlVariables.Filter.builder()
+        GraphqlVariables.Filter filterOppholdPostnr = GraphqlVariables.Filter.builder()
                 .fieldName("person.oppholdsadresse.vegadresse.postnummer")
-                .searchRule(Map.of("wildcard", postNr))
+                .searchRule(Map.of("wildcard", postnr))
                 .build();
 
-        GraphqlVariables.Filter filter3 = GraphqlVariables.Filter.builder()
+        GraphqlVariables.Filter filterFoedselsaar = GraphqlVariables.Filter.builder()
                 .fieldName("person.foedselsdato.foedselsaar")
-                .searchRule(searchRuleVerdier)
+                .searchRule(searchRuleFoedselsaar)
                 .build();
 
-        Map<String, List<GraphqlVariables.Filter>> or = Map.of("or", List.of(filter1, filter2));
-        List<Object> and = List.of(or, filter3);
+        Map<String, List<GraphqlVariables.Filter>> or = Map.of("or", List.of(filterBostedPostnr, filterOppholdPostnr));
+        List<Object> and = List.of(or, filterFoedselsaar);
 
         return GraphqlVariables.Criteria.builder().and(and).build();
-
-
     }
 
     public GraphqlVariables.Paging lagSokPersonPaging() {
@@ -53,5 +51,4 @@ public class SokPersonVariables {
                 .resultsPerPage(resultsPerPage)
                 .build();
     }
-
 }
