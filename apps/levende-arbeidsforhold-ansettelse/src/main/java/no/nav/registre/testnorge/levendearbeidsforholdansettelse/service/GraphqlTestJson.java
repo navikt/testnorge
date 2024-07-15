@@ -18,7 +18,7 @@ public class GraphqlTestJson {
 
     private final PdlConsumer pdlConsumer;
 
-    @EventListener(ApplicationReadyEvent.class)
+    //@EventListener(ApplicationReadyEvent.class)
     public void test() throws JsonProcessingException {
         log.info("Er i test");
 
