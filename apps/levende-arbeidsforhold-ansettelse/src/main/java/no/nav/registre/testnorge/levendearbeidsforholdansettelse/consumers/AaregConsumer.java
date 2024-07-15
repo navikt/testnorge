@@ -3,11 +3,13 @@ package no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.config.Consumers;
-import no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.command.HentArbeidsforholdCommand;
-import no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.command.EndreArbeidsforholdCommand;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.command.aareg.HentArbeidsforholdCommand;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.command.aareg.EndreArbeidsforholdCommand;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.command.aareg.OpprettArbeidsforholdCommand;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.v1.Arbeidsforhold;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
@@ -69,6 +71,18 @@ public class AaregConsumer {
         if (nonNull(token)) {
             new EndreArbeidsforholdCommand(webClient, requests, token.getTokenValue()).call();
         }
+    }
+
+    public HttpStatusCode opprettArbeidsforhold(Arbeidsforhold requests) {
+        //var token = tokenExchange.exchange(serverProperties).block();
+
+        return new OpprettArbeidsforholdCommand(webClient,
+                requests,
+                tokenExchange
+                        .exchange(serverProperties)
+                        .block()
+                        .getTokenValue())
+                .call().getStatusCode();
     }
 }
 
