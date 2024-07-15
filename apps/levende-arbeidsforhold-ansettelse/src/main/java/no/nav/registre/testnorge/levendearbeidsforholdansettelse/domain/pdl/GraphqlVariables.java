@@ -19,7 +19,6 @@ public class GraphqlVariables {
     public static class Filter {
         private String fieldName;
         private Map<String, String> searchRule;
-
     }
 
     @Builder
