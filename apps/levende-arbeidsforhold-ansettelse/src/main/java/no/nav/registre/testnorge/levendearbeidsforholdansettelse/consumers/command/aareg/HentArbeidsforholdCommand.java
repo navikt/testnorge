@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.command;
+package no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.command.aareg;
 
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;

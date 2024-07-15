@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.command;
+package no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.command.ereg;
 
 import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
