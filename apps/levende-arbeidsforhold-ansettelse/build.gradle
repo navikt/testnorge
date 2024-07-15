@@ -91,6 +91,8 @@ dependencies {
     implementation 'no.nav.testnav.libs:servlet-insecure-security'
     implementation 'no.nav.testnav.libs:servlet-core'
 
+    runtimeOnly 'com.h2database:h2'
+
 
 }
 java {
