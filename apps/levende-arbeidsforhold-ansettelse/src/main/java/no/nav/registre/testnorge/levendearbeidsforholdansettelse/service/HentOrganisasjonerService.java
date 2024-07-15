@@ -15,9 +15,9 @@ public class HentOrganisasjonerService {
 
     //@EventListener(ApplicationReadyEvent.class)
     public void hentOrganisasjoner() {
-        System.out.println("Henter organisasjoner");
-        log.info("eregConsumer.getOrganisasjon(\"955937864\", \"q2\")");
-        eregConsumer.getOrganisasjon("955937864", "q2");
+        //System.out.println("Henter organisasjoner");
+        //log.info("eregConsumer.getOrganisasjon(\"955937864\", \"q2\")");
+        //eregConsumer.getOrganisasjon("955937864", "q2");
     }
 
 }
