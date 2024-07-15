@@ -8,7 +8,9 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -17,9 +19,27 @@ public class HentOrganisasjonNummerService {
     private final OrganisasjonFasteDataConsumer organisasjonFasteDataConsumer;
 
     //@EventListener(ApplicationReadyEvent.class)
-    public void hentOrganisasjoner() {
-        List<OrganisasjonDTO> orgNummer =  organisasjonFasteDataConsumer.hentOrganisasjoner();
-        log.info("Hentet {} organisasjoner", orgNummer.size());
-        log.info("Første org nr: {}", orgNummer.getFirst());
+    public List<OrganisasjonDTO> hentAlleOrganisasjoner() {
+        return organisasjonFasteDataConsumer.hentOrganisasjoner();
+    }
+
+    public List<OrganisasjonDTO> hentAntallOrganisasjoner(int antall) {
+        List<OrganisasjonDTO> alleOrganisasjoner = hentAlleOrganisasjoner();
+        List<OrganisasjonDTO> tilfeldigeOrganisasjoner = new ArrayList<>();
+
+        int antallOrganisasjoner = alleOrganisasjoner.size();
+        
+        for (int i = 0; i < antall; i++) {
+            int tilfeldigTall = hentTilfeldigTall(antallOrganisasjoner);
+            tilfeldigeOrganisasjoner.add(alleOrganisasjoner.get(tilfeldigTall));
+            alleOrganisasjoner.remove(tilfeldigTall);
+            antallOrganisasjoner--;
+        }
+        return tilfeldigeOrganisasjoner;
+    }
+
+    private int hentTilfeldigTall(int max) {
+        Random random = new Random();
+        return random.nextInt(max);
     }
 }
