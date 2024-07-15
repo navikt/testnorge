@@ -1,7 +1,7 @@
 package no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.command.HentOrganisasjonerCommand;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.command.ereg.HentOrganisasjonerCommand;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.dto.OrganisasjonDTO;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.organisasjon.Organisasjon;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;

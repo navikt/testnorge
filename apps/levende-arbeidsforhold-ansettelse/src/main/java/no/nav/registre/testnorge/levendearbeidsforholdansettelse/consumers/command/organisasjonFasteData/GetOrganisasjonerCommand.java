@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.command;
+package no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.command.organisasjonFasteData;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

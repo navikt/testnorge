@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.command;
+package no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.command.tenor;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
