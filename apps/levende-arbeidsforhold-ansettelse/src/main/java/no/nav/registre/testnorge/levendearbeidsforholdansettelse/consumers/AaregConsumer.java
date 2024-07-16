@@ -36,6 +36,7 @@ public class AaregConsumer {
             ObjectMapper objectMapper) {
 
         this.serverProperties = consumers.getTestnavAaregProxy();
+        log.info("serverProperties: {}", serverProperties)  ;
         this.tokenExchange = tokenExchange;
 
         ExchangeStrategies jacksonStrategy = ExchangeStrategies
@@ -59,7 +60,9 @@ public class AaregConsumer {
     }
 
     public List<Arbeidsforhold> hentArbeidsforhold(String ident) {
+        log.info("Er før tokenexchange");
         var token = tokenExchange.exchange(serverProperties).block();
+        log.info("I aaregconsumer");
         if (nonNull(token)) {
             return new HentArbeidsforholdCommand(webClient, token.getTokenValue(), ident).call();
         }

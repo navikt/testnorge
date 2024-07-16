@@ -19,7 +19,7 @@ public class PdlService {
     public void getPerson(){
         String ident = "12345678901";
         PdlMiljoer miljoer = PdlMiljoer.Q2;
-        JsonNode pdl = pdlConsumer.getPdlPerson(ident, miljoer).block();
-        log.info(pdl.toString());
+        //JsonNode pdl = pdlConsumer.getSokPerson(ident, miljoer).block();
+        //log.info(pdl.toString());
     }
 }

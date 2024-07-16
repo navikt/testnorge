@@ -1,1 +1,23 @@
-
+consumers:
+  testnav-aareg-proxy:
+    name: testnav-aareg-proxy
+    namespace: dolly
+    url: https://testnav-aareg-proxy.dev-fss-pub.nais.io
+    cluster: dev-fss
+  tenor-search-service:
+    url: https://testdata.api.skatteetaten.no
+  testnav-ereg-proxy:
+    url: https://testnav-ereg-proxy.dev-fss-pub.nais.io
+    name: testnav-ereg-proxy
+    cluster: dev-fss
+    namespace: dolly
+  pdl-proxy:
+    url: https://testnav-pdl-proxy.dev-fss-pub.nais.io
+    cluster: dev-fss
+    namespace: dolly
+    name: testnav-pdl-proxy
+  testnav-organisasjon-faste-data-service:
+    url: https://testnav-organisasjon-faste-data-service.intern.dev.nav.no
+    name: testnav-organisasjon-faste-data-service
+    cluster: dev-gcp
+    namespace: dolly

@@ -1,0 +1,77 @@
+"navArbeidsforholdId" : 3112052,
+"arbeidsforholdId" : "1",
+"arbeidstaker" : {
+"type" : "Person",
+"offentligIdent" : "11478910837",
+"aktoerId" : "2418674333757"
+},
+"arbeidsgiver" : {
+"type" : "Organisasjon",
+"organisasjonsnummer" : "839942907"
+},
+"opplysningspliktig" : {
+"type" : "Organisasjon",
+"organisasjonsnummer" : "963743254"
+},
+"type" : "ordinaertArbeidsforhold",
+"ansettelsesperiode" : {
+"periode" : {
+"fom" : "2004-07-03"
+},
+"bruksperiode" : {
+"fom" : "2024-07-15T11:54:01.316"
+},
+"sporingsinformasjon" : {
+"opprettetTidspunkt" : "2024-07-15T11:54:01.316",
+"opprettetAv" : "testnav-aareg-proxy-trygdeetaten",
+"opprettetKilde" : "AAREG",
+"opprettetKildereferanse" : "Dolly-3eb9ae9f-ba73-42e5-8fcb-16cf3c4e50a3",
+"endretTidspunkt" : "2024-07-15T11:54:01.316",
+"endretAv" : "testnav-aareg-proxy-trygdeetaten",
+"endretKilde" : "AAREG",
+"endretKildereferanse" : "Dolly-3eb9ae9f-ba73-42e5-8fcb-16cf3c4e50a3"
+}
+},
+"arbeidsavtaler" : [ {
+"type" : "Ordinaer",
+"arbeidstidsordning" : "ikkeSkift",
+"ansettelsesform" : "fast",
+"yrke" : "7125102",
+"stillingsprosent" : 100.0,
+"antallTimerPrUke" : 37.5,
+"beregnetAntallTimerPrUke" : 37.5,
+"bruksperiode" : {
+"fom" : "2024-07-15T11:54:01.316"
+},
+"gyldighetsperiode" : {
+"fom" : "2004-07-01"
+},
+"sporingsinformasjon" : {
+"opprettetTidspunkt" : "2024-07-15T11:54:01.316",
+"opprettetAv" : "testnav-aareg-proxy-trygdeetaten",
+"opprettetKilde" : "AAREG",
+"opprettetKildereferanse" : "Dolly-3eb9ae9f-ba73-42e5-8fcb-16cf3c4e50a3",
+"endretTidspunkt" : "2024-07-15T11:54:01.316",
+"endretAv" : "testnav-aareg-proxy-trygdeetaten",
+"endretKilde" : "AAREG",
+"endretKildereferanse" : "Dolly-3eb9ae9f-ba73-42e5-8fcb-16cf3c4e50a3"
+}
+} ],
+"varsler" : [ {
+"entitet" : "ARBEIDSFORHOLD",
+"varslingskode" : "NAVEND"
+} ],
+"innrapportertEtterAOrdningen" : true,
+"registrert" : "2024-07-15T11:54:01.289",
+"sistBekreftet" : "2024-07-15T11:54:01",
+"sporingsinformasjon" : {
+"opprettetTidspunkt" : "2024-07-15T11:54:01.316",
+"opprettetAv" : "testnav-aareg-proxy-trygdeetaten",
+"opprettetKilde" : "AAREG",
+"opprettetKildereferanse" : "Dolly-3eb9ae9f-ba73-42e5-8fcb-16cf3c4e50a3",
+"endretTidspunkt" : "2024-07-15T11:54:01.316",
+"endretAv" : "testnav-aareg-proxy-trygdeetaten",
+"endretKilde" : "AAREG",
+"endretKildereferanse" : "Dolly-3eb9ae9f-ba73-42e5-8fcb-16cf3c4e50a3"
+}
+} ]
