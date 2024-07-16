@@ -1,2 +1,1 @@
-INSERT INTO jobber (id, aktiv, intervall, antpersoner, antbedrifter)
-    VALUES ('123', true, 'A', 10, 2), ('345', false, 'B', 15, 3), ('123', false, 'C', 20, 4);
+INSERT INTO jobb_parameter (param_navn, param_tekst, param_verdi) VALUES ('stillingsprosent', 'Stillingsprosent', '75'), ('yrke', 'Yrke', '2130123'), ('type', 'Type', 'ordinaertArbeidsforhold');

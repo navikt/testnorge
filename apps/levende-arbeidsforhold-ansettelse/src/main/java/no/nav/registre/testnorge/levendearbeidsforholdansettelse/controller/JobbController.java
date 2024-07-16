@@ -2,7 +2,7 @@ package no.nav.registre.testnorge.levendearbeidsforholdansettelse.controller;
 
 
 import lombok.RequiredArgsConstructor;
-import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.Jobber;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.JobbParameter;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.service.JobbService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,8 +21,8 @@ public class JobbController {
     private final JobbService jobbService;
 
     @GetMapping("/{id}")
-    public List<Jobber> hentAlleJobber(@PathVariable String id) {
-        return jobbService.hentJobber(id);
+    public List<JobbParameter> hentAlleJobber(@PathVariable String id) {
+        return jobbService.hentParametere();
     }
 
     @GetMapping("/")

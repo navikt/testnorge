@@ -1,7 +1,5 @@
-CREATE TABLE jobber (
-    id VARCHAR(50) NOT NULL,
-    aktiv BOOLEAN NOT NULL DEFAULT true,
-    intervall CHAR(1) NOT NULL,
-    antpersoner INTEGER NOT NULL,
-    antbedrifter INTEGER NOT NULL
+CREATE TABLE jobb_parameter (
+    param_navn VARCHAR(50) NOT NULL UNIQUE,
+    param_tekst VARCHAR(50) NOT NULL,
+    param_verdi VARCHAR(255)
 );
