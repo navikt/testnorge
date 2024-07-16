@@ -15,12 +15,11 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class KodeverkService {
     private final KodeverkServiceConsumer kodeverkServiceConsumer;
-    @EventListener(ApplicationReadyEvent.class)
+    //@EventListener(ApplicationReadyEvent.class)
     public void hentKodever(){
         KodeverkNavn kode = KodeverkNavn.YRKER;
         log.info("Test kodeverknavn {}", KodeverkNavn.YRKER.value);
-        //KodeverkNavn kodeverkNavn = KodeverkNavn.YRKER;
         //Map<String, String> kode = kodeverkServiceConsumer.hentKodeverk();
-        //log.info("Kodeverk: {}", kode);
+
     }
 }
