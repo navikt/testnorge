@@ -18,54 +18,63 @@ import java.util.concurrent.atomic.AtomicInteger;
 @RequiredArgsConstructor
 public class ArbeidsforholdService {
     private final AaregConsumer aaregConsumer;
+    private final String arbeidstakerType = "Person";
+    private final String arbeidsgiverType = "Organisasjon";
+    private final String arbeidsforholdType = "ordinaertArbeidsforhold";
+    private final double antallTimerPrUke = 37.5;
+    private final String arbeidstidsordning = "ikkeSkift";
+    private final double stillingsprosent = 100.0;
+    private final String ansettelsesform = "fast";
 
     public List<Arbeidsforhold> hentArbeidsforhold(String ident) {
         return aaregConsumer.hentArbeidsforhold(ident);
     }
 
-    public void opprettArbeidsforhold(String ident, String orgnummer) {
-        aaregConsumer.opprettArbeidsforhold(lagArbeidsforhold(ident, orgnummer));
+    public void opprettArbeidsforhold(String ident, String orgnummer, String yrke) {
+        aaregConsumer.opprettArbeidsforhold(lagArbeidsforhold(ident, orgnummer, yrke));
     }
 
-    private Arbeidsforhold lagArbeidsforhold(String ident, String orgnummer) {
+    private Arbeidsforhold lagArbeidsforhold(String ident, String orgnummer, String yrke) {
         List<Arbeidsforhold> arbeidsforholdList = hentArbeidsforhold(ident);
 
         log.info(String.valueOf(arbeidsforholdList.size()));
 
         var arbeidsforholdId = new AtomicInteger(arbeidsforholdList.size());
 
-        Arbeidsforhold arbeidsforhold = Arbeidsforhold.builder()
+        return Arbeidsforhold.builder()
                 .arbeidsforholdId(Integer.toString(arbeidsforholdId.incrementAndGet()))
                 .arbeidstaker(Person.builder()
                         .offentligIdent(ident)
-                        .type("Person")
+                        .type(arbeidstakerType)
                         .build())
                 .arbeidsgiver(Organisasjon.builder()
                         .organisasjonsnummer(orgnummer)
-                        .type("Organisasjon")
+                        .type(arbeidsgiverType)
                         .build())
-                .type("ordinaertArbeidsforhold")
+                .type(arbeidsforholdType)
                 .ansettelsesperiode(Ansettelsesperiode.builder()
                         .periode(Periode.builder()
                                 .fom(LocalDate.now())
                                 .build())
                         .build())
                 .arbeidsavtaler(List.of(OrdinaerArbeidsavtale.builder()
-                                .antallTimerPrUke(37.5)
-                                .arbeidstidsordning("ikkeSkift")
-                                .stillingsprosent(100.00)
-                                .yrke("2130123")
-                                .ansettelsesform("fast")
+                                .antallTimerPrUke(antallTimerPrUke)
+                                .arbeidstidsordning(arbeidstidsordning)
+                                .stillingsprosent(stillingsprosent)
+                                .yrke(yrke)
+                                .ansettelsesform(ansettelsesform)
                                 .sistStillingsendring(LocalDate.now())
                         .build()))
                 .build();
-        return arbeidsforhold;
     }
 
+    /*
     @EventListener(ApplicationReadyEvent.class)
     public void testOpprettArbeidsforhold() {
         opprettArbeidsforhold("23456833225", "896929119");
         log.info(String.valueOf(hentArbeidsforhold("23456833225")));
     }
+
+     */
 }
 
