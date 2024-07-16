@@ -16,7 +16,7 @@ import java.util.List;
 @RequestMapping("/api/jobber")
 @RequiredArgsConstructor
 public class JobbController {
-
+/*
     @Autowired
     private final JobbService jobbService;
 
@@ -29,4 +29,6 @@ public class JobbController {
     public String helloworld(){
         return "Hello world";
     }
+
+ */
 }

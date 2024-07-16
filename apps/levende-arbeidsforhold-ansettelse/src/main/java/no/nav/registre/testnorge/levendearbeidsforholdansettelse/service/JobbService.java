@@ -14,7 +14,7 @@ import java.util.List;
 @Slf4j
 @Service
 public class JobbService {
-
+/*
     @Autowired
     private JobberRepository jobberRepository;
 
@@ -27,4 +27,6 @@ public class JobbService {
     public List<JobbParameter> hentParametere(){
         return jobberRepository.findAll();
     }
+
+ */
 }
