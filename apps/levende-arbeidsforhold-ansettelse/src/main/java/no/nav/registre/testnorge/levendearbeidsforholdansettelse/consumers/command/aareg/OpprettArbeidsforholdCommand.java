@@ -20,7 +20,7 @@ public class OpprettArbeidsforholdCommand implements Callable<ResponseEntity<Arb
     private final Arbeidsforhold requests;
     private final String token;
     private final String miljoe = "q2";
-    private final String navArbeidsforholdKilde = "Dolly-doedsfall-hendelse" ;
+    private final String navArbeidsforholdKilde = "Dolly-automatisk-ansettelse" ;
 
     @Override
     public ResponseEntity<Arbeidsforhold> call() {

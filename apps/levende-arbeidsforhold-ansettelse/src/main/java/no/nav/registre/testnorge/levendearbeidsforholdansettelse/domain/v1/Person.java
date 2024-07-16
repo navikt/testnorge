@@ -27,6 +27,8 @@ public class Person extends OpplysningspliktigArbeidsgiver implements Persontype
     @Schema(description = "Akt&oslash;r-id", example = "1234567890")
     private String aktoerId;
 
+    private String type;
+
     @Override
     @JsonIgnore
     public String getType() {

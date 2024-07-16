@@ -64,7 +64,10 @@ public class AaregConsumer {
         var token = tokenExchange.exchange(serverProperties).block();
         log.info("I aaregconsumer");
         if (nonNull(token)) {
-            return new HentArbeidsforholdCommand(webClient, token.getTokenValue(), ident).call();
+            List<Arbeidsforhold> arbeidsforholdList = new HentArbeidsforholdCommand(webClient, token.getTokenValue(), ident).call();
+            log.info(arbeidsforholdList.toString());
+            return arbeidsforholdList;
+            //return new HentArbeidsforholdCommand(webClient, token.getTokenValue(), ident).call();
         }
         return new ArrayList<>();
     }

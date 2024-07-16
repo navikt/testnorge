@@ -56,13 +56,13 @@ public class HentArbeidsforholdCommand implements Callable<List<Arbeidsforhold>>
                 .header(NavHeaders.NAV_CONSUMER_ID, CONSUMER)
                 .header(NavHeaders.NAV_CALL_ID, getNavCallId())
                 .retrieve()
-                .bodyToMono(JsonNode.class)
+                .bodyToMono(Arbeidsforhold[].class)
                 .retryWhen(Retry
                         .backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException))
                     .block();
             log.info("Json object i command {}", Json.pretty(arbeidsforhold));
-            return null;//Arrays.stream(arbeidsforhold).collect(Collectors.toList());
+            return Arrays.stream(arbeidsforhold).collect(Collectors.toList());
         } catch (WebClientResponseException.NotFound e) {
             return Collections.emptyList();
         } catch (WebClientResponseException e) {

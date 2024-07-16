@@ -23,6 +23,8 @@ public class Organisasjon extends OpplysningspliktigArbeidsgiver implements Oppl
     @Schema(description = "Organisasjonsnummer fra Enhetsregisteret", example = "987654321")
     private String organisasjonsnummer;
 
+    private String type;
+
     @Override
     @JsonIgnore
     public String getType() {
