@@ -1,7 +1,7 @@
 package no.nav.registre.testnorge.levendearbeidsforholdansettelse.service;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.Jobber;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.JobbParameter;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.repository.JobberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -19,19 +19,12 @@ public class JobbService {
     private JobberRepository jobberRepository;
 
     @EventListener(ApplicationReadyEvent.class)
-    public void skrivUtJobber(){
+    public void skrivUtParametere(){
         log.info("Jobber:");
-        Jobber jobb1 = hentJobber("123").getFirst();
-        var ant = "" + jobb1.hentAntbedrifter();
-        log.info(ant);
+        hentParametere().forEach(param -> log.info(param.hentParamNavn()));
     }
 
-    public List<Jobber> hentJobber(String id){
-        var jobber = jobberRepository.findAllById(id);
-        if(jobber.isPresent()){
-            return jobber.orElse(new ArrayList<>());
-        } else {
-            return new ArrayList<>();
-        }
+    public List<JobbParameter> hentParametere(){
+        return jobberRepository.findAll();
     }
 }
