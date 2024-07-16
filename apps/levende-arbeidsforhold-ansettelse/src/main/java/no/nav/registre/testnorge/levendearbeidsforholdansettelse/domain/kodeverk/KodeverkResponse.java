@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain;
+package no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.kodeverk;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

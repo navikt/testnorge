@@ -5,13 +5,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.KodeverkBetydningerResponse;
-import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.KodeverkResponse;
-import no.nav.testnav.libs.dto.kodeverkservice.v1.KodeverkDTO;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
