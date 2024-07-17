@@ -6,17 +6,26 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class test {
 
     private final JobbService jobbService;
-
-    @EventListener(ApplicationReadyEvent.class)
+    private final KodeverkService kodeverkService;
+    //@EventListener(ApplicationReadyEvent.class)
     public void testDb() {
         jobbService.initDb();
         log.info("test");
         jobbService.hentAlle();
     }
+    /*
+    @EventListener(ApplicationReadyEvent.class)
+    public void koverkTest(){
+        Map<String, String> list = kodeverkService.hentKodeverk("yrker");
+    }
+
+     */
 }
