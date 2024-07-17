@@ -1,19 +1,27 @@
 package no.nav.registre.testnorge.levendearbeidsforholdansettelse.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.JobbParameter;
+
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.JobbParameterEntity;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.repository.JobberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class JobbService {
+
+    private final JobberRepository jobberRepository;
+
+    public List<JobbParameterEntity> hentAlle(){
+        return jobberRepository.findAll();
+
+    }
+
 /*
     @Autowired
     private JobberRepository jobberRepository;
