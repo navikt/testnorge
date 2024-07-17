@@ -22,7 +22,7 @@ import java.util.Random;
 @RequiredArgsConstructor
 public class PdlService {
     private final PdlConsumer pdlConsumer;
-    private int resultsPerPage;
+    private int resultsPerPage = 100;
     private String from;
     private String to;
     private String postnr;
