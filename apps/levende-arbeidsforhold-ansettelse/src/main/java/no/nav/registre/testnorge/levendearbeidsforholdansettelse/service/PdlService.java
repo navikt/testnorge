@@ -54,16 +54,15 @@ public class PdlService {
 
         List<Ident> identer = new ArrayList<>();
 
+        assert node != null;
         node.get("data").get("sokPerson").findValues("identer").forEach(
-                hit -> {
-                    hit.forEach(
-                            ident -> {
-                                if(ident.get("gruppe").asText().equals("FOLKEREGISTERIDENT")) {
-                                    identer.add(new Ident(ident.get("ident").asText(), ident.get("gruppe").asText()));
-                                }
+                hit -> hit.forEach(
+                        ident -> {
+                            if(ident.get("gruppe").asText().equals("FOLKEREGISTERIDENT")) {
+                                identer.add(new Ident(ident.get("ident").asText(), ident.get("gruppe").asText()));
                             }
-                    );
-                }
+                        }
+                )
         );
         return identer;
     }
