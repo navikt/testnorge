@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.command.SokPersonCommand;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.command.SokPersonPagesCommand;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.pdl.GraphqlVariables;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.provider.PdlMiljoer;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
@@ -67,6 +68,15 @@ public class PdlConsumer {
             PdlMiljoer pdlMiljoe) {
         return tokenService.exchange(serverProperties)
                 .flatMap((AccessToken token) -> new SokPersonCommand(webClient, paging, criteria, token.getTokenValue(), pdlMiljoe)
+                        .call());
+    }
+
+    public Mono<JsonNode> getSokPersonPages(
+            GraphqlVariables.Paging paging,
+            GraphqlVariables.Criteria criteria,
+            PdlMiljoer pdlMiljoe) {
+        return tokenService.exchange(serverProperties)
+                .flatMap((AccessToken token) -> new SokPersonPagesCommand(webClient, paging, criteria, token.getTokenValue(), pdlMiljoe)
                         .call());
     }
 
