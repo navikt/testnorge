@@ -1,0 +1,1 @@
+INSERT INTO jobb_parameter (param_navn, param_tekst, param_verdi) VALUES ('stillingsprosent', 'Stillingsprosent', '75'), ('yrke', 'Yrke', '2130123'), ('type', 'Type', 'ordinaertArbeidsforhold');

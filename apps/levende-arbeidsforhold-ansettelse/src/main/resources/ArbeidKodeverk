@@ -1,0 +1,13 @@
+export enum ArbeidKodeverk {
+	Yrker = 'Yrker',
+	Arbeidstidsordninger = 'Arbeidstidsordninger',
+	Arbeidsforholdstyper = 'Arbeidsforholdstyper',
+	Avloenningstyper = 'Avlønningstyper',
+	PermisjonsOgPermitteringsBeskrivelse = 'PermisjonsOgPermitteringsBeskrivelse',
+	SluttaarsakAareg = 'SluttårsakAareg',
+	AnsettelsesformAareg = 'AnsettelsesformAareg',
+	Skipsregistre = 'Skipsregistre',
+	Skipstyper = 'Skipstyper',
+	Fartsomraader = 'Fartsområder',
+	Valutaer = 'Valutaer',
+}

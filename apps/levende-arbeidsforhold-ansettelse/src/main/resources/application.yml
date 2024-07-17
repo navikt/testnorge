@@ -69,6 +69,11 @@ consumers:
     name: testnav-organisasjon-faste-data-service
     cluster: dev-gcp
     namespace: dolly
+  testnav-kodeverk-service:
+    url: https://testnav-kodeverk-service.intern.dev.nav.no
+    name: testnav-kodeverk-service
+    cluster: dev-gcp
+    namespace: dolly
   gcp:
     sqlInstances:
       - type: POSTGRES_14
