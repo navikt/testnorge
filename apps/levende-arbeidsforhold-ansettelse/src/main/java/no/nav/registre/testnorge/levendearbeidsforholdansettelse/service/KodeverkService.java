@@ -17,9 +17,10 @@ public class KodeverkService {
     private final KodeverkServiceConsumer kodeverkServiceConsumer;
     //@EventListener(ApplicationReadyEvent.class)
     public void hentKodever(){
-        KodeverkNavn kode = KodeverkNavn.YRKER;
-        log.info("Test kodeverknavn {}", KodeverkNavn.YRKER.value);
-        //Map<String, String> kode = kodeverkServiceConsumer.hentKodeverk();
+        //KodeverkNavn kode = KodeverkNavn.YRKER;
+        //log.info("Test kodeverknavn {}", );
+        Map<String, String> kode = kodeverkServiceConsumer.hentKodeverk(KodeverkNavn.YRKER.value);
+        log.info("Kodeverk {}", kode);
 
     }
 }
