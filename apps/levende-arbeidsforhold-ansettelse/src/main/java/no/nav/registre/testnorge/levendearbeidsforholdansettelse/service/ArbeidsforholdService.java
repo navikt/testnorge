@@ -4,9 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.AaregConsumer;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.v1.*;
-import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.v1.util.JavaTimeUtil;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
