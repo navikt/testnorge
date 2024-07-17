@@ -15,11 +15,19 @@ import java.util.List;
 @RequiredArgsConstructor
 public class JobbService {
 
+
     private final JobberRepository jobberRepository;
 
     public List<JobbParameterEntity> hentAlle(){
-        return jobberRepository.findAll();
+        List<JobbParameterEntity> test = jobberRepository.findAll();
+        log.info("Hentet fra h2 db: {}", test.toString());
+        return test;
+    }
 
+    public void initDb(){
+        JobbParameterEntity jobbParameterEntity = JobbParameterEntity.builder().param_tekst("Antall Organisasjoner").param_navn("antallOrganisasjoner").param_verdi("100.0").build();
+
+        jobberRepository.save(jobbParameterEntity);
     }
 
 /*

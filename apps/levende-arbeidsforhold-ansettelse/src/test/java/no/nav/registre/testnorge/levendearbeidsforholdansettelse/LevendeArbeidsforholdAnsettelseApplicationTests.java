@@ -2,12 +2,18 @@ package no.nav.registre.testnorge.levendearbeidsforholdansettelse;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder;
 
 @SpringBootTest
 class LevendeArbeidsforholdAnsettelseApplicationTests {
 
+    @MockBean
+    public ReactiveJwtDecoder jwtDecoder;
+
     @Test
-    void contextLoads() {
+    @SuppressWarnings("java:S2699")
+    void load_app_context() {
     }
 
 }
