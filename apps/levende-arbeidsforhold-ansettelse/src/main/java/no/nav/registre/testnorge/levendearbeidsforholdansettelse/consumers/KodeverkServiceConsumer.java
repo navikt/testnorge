@@ -45,7 +45,7 @@ public class KodeverkServiceConsumer {
     public List<String> hentKodeverkListe(String kodeverk){
         var accessToken = tokenExchange.exchange(serverProperties).block();
         Map<String, String> koder = new KodeverkServiceCommand(webClient, accessToken.getTokenValue(), kodeverk).call();
-        return new ArrayList<>(koder.values());
+        return new ArrayList<>(koder.keySet());
     }
 
 

@@ -2,6 +2,7 @@ package no.nav.registre.testnorge.levendearbeidsforholdansettelse.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.kodeverk.KodeverkNavn;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.pdl.Ident;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.v1.Arbeidsforhold;
 import no.nav.testnav.libs.dto.organisasjonfastedataservice.v1.OrganisasjonDTO;
@@ -24,6 +25,7 @@ public class AnsettelseService {
     private final HentOrganisasjonNummerService hentOrganisasjonNummerService;
     private final ArbeidsforholdService arbeidsforholdService;
     private final JobbService jobbService;
+    private final KodeverkService kodeverkService;
     private final String from = "1955";
     private final String to = "2006";
     private final String yrke = "7125102";
@@ -31,12 +33,14 @@ public class AnsettelseService {
 
     @EventListener(ApplicationReadyEvent.class)
     public CompletableFuture<Void> runAnsettelseService() {
-         return CompletableFuture.runAsync(this::ansettelseService).orTimeout(1, TimeUnit.MILLISECONDS);
+         return CompletableFuture.runAsync(this::ansettelseService).orTimeout(30, TimeUnit.SECONDS); //timer ikke ut
     }
 
     public void ansettelseService() {
         //TODO: håndtere når personer ikke går opp i antall org
         //TODO: legge til timeout og håndtere at den ikke finner nok matches
+
+        List<String> yrkeskoder = hentKodeverk();
 
         //Map<String, String> parametere = hentParametere();
         //List<OrganisasjonDTO> organisasjoner = hentOrganisasjoner(Integer.parseInt(parametere.get("antallOrganisasjoner")));
@@ -66,7 +70,9 @@ public class AnsettelseService {
 
                             if(kanAnsettes(tilfeldigPerson)) {
                                 log.info(arbeidsforholdService.hentArbeidsforhold(tilfeldigPerson.getIdent()).toString());
-                                ansettPerson(tilfeldigPerson.getIdent(), organisasjon.getOrgnummer(), yrke);
+                                String tilfeldigYrke = hentTilfeldigYrkeskode(yrkeskoder);
+                                log.info(tilfeldigYrke);
+                                ansettPerson(tilfeldigPerson.getIdent(), organisasjon.getOrgnummer(), tilfeldigYrke);
                                 ansattePersoner.add(tilfeldigPerson);
                                 antallPersAnsatt++;
                             }
@@ -79,7 +85,7 @@ public class AnsettelseService {
                         }
                     }
 
-                    log.info("Personer ansatt i org {}, {}: {}", organisasjon.getNavn(), organisasjon.getOrgnummer() , ansattePersoner);
+                    log.info("Personer ansatt i org {}, {}: {}", organisasjon.getNavn(), organisasjon.getOrgnummer(), ansattePersoner);
                     for (Ident person : ansattePersoner) {
                         log.info(arbeidsforholdService.hentArbeidsforhold(person.getIdent()).toString());
                     }
@@ -129,4 +135,11 @@ public class AnsettelseService {
         return random.nextInt(max);
     }
 
+    private List<String> hentKodeverk() {
+        return kodeverkService.hentKodeverkValues(KodeverkNavn.YRKER.value);
+    }
+
+    private String hentTilfeldigYrkeskode(List<String> yrkeskoder) {
+        return yrkeskoder.get(tilfeldigTall(yrkeskoder.size()));
+    }
 }
