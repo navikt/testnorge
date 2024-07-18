@@ -17,17 +17,17 @@ public class JobbParameterEntity {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private int ID;
 
-    @Column(name = "PARAM_NAVN")
-    private String param_navn;
+    @Column(name = "NAVN")
+    private String navn;
 
-    @Column(name = "PARAM_TEKST")
-    private String param_tekst;
+    @Column(name = "TEKST")
+    private String tekst;
 
-    @Column(name = "PARAM_VERDI")
-    private String param_verdi;
+    @Column(name = "VERDI")
+    private String verdi;
 
     // Getters and Setters
     public String hentParamNavn(){
-        return param_navn;
+        return navn;
     }
 }

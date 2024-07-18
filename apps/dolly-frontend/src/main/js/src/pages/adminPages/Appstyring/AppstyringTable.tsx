@@ -2,9 +2,23 @@ import { Box, Table } from '@navikt/ds-react'
 import React from 'react'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { EditParameter } from '@/pages/adminPages/Appstyring/EditParameter'
+import {multiFetcherPensjon} from "@/api";
+import {ifPresent} from "@/utils/YupValidations";
 
 export const AppstyringTable = ({ data }: any) => {
 	//TODO: Implementer henting av options pr parameter fra backend
+	if (data.contains("Organisasjon")) {
+		//useEffect(() => {
+		//	fetch(url)
+		//}, []);
+	}
+	if (data.contains("Person")){
+
+	}
+	if (data.contains("Arbeidsforhold")){
+
+	}
+
 	const getOptions = (parameter: string) => {
 		return [
 			{ value: 'verdi1', label: 'Verdi 1' },

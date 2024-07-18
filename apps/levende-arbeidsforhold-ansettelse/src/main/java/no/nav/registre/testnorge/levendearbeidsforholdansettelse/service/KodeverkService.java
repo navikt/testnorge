@@ -8,6 +8,7 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -16,11 +17,11 @@ import java.util.Map;
 public class KodeverkService {
     private final KodeverkServiceConsumer kodeverkServiceConsumer;
     //@EventListener(ApplicationReadyEvent.class)
-    public void hentKodever(){
-        //KodeverkNavn kode = KodeverkNavn.YRKER;
-        //log.info("Test kodeverknavn {}", );
-        Map<String, String> kode = kodeverkServiceConsumer.hentKodeverk(KodeverkNavn.YRKER.value);
-        log.info("Kodeverk {}", kode);
+    public Map<String, String> hentKodever(String kodeverk){
+        return kodeverkServiceConsumer.hentKodeverk(kodeverk);
+    }
 
+    public List<String> hentKodeverkValues(String kodeverk){
+        return kodeverkServiceConsumer.hentKodeverkListe(kodeverk);
     }
 }

@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -39,4 +41,12 @@ public class KodeverkServiceConsumer {
         return new KodeverkServiceCommand(webClient, accessToken.getTokenValue(), kodeverk).call();
 
     }
+
+    public List<String> hentKodeverkListe(String kodeverk){
+        var accessToken = tokenExchange.exchange(serverProperties).block();
+        Map<String, String> koder = new KodeverkServiceCommand(webClient, accessToken.getTokenValue(), kodeverk).call();
+        return new ArrayList<>(koder.values());
+    }
+
+
 }
