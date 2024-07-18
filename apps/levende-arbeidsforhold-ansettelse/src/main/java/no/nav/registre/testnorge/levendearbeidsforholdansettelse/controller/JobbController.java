@@ -1,6 +1,7 @@
 package no.nav.registre.testnorge.levendearbeidsforholdansettelse.controller;
 
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.kodeverk.KodeverkNavn;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.JobbParameterEntity;
@@ -8,17 +9,14 @@ import no.nav.registre.testnorge.levendearbeidsforholdansettelse.service.JobbSer
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.service.KodeverkService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/jobber")
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class JobbController {
 
@@ -36,7 +34,7 @@ public class JobbController {
     @GetMapping("/verdiOrganisasjoner")
     public ResponseEntity<List<Integer>> hentVerdierOrganisasjoner(){
         List<Integer> antallOrganisasjoner = new ArrayList<>();
-        for(int i =100; i<=1000; i+=100){
+        for(int i =20; i<=500; i+=20){
             antallOrganisasjoner.add(i);
         }
         return ResponseEntity.ok(antallOrganisasjoner);
@@ -45,7 +43,7 @@ public class JobbController {
     @GetMapping("/verdiPersoner")
     public ResponseEntity<List<Integer>> hentVerdierPersoner(){
         List<Integer> antallPersoner = new ArrayList<>();
-        for(int i =20; i<=500; i+=20){
+        for(int i =100; i<=1000; i+=100){
             antallPersoner.add(i);
         }
         return ResponseEntity.ok(antallPersoner);
@@ -64,5 +62,14 @@ public class JobbController {
         }
         return ResponseEntity.ok(stillingsprosent);
     }
+
+    @PutMapping("/oppdatereVerdier/{parameterNavn}")
+    @Operation(description = "Legg inn nye verdier for en parameter")
+    public ResponseEntity<JobbParameterEntity> oppdatereVerdier(JobbParameterEntity jobbParameterEntity){
+        JobbParameterEntity jobb = jobbService.updateVerdi(jobbParameterEntity);
+        return ResponseEntity.ok(jobb);
+    }
+
+
 
 }

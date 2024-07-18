@@ -9,5 +9,7 @@ import java.util.List;
 
 public interface JobberRepository extends JpaRepository<JobbParameterEntity, String> {
     //@Query("select * from JOBB_PARAM")
-    //List<JobbParameterEntity> findAll();
+    List<JobbParameterEntity> findAll();
+
+    JobbParameterEntity findByNavn(String navn);
 }

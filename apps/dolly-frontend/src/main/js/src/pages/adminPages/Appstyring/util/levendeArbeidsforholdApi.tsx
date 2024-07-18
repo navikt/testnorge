@@ -1,0 +1,2 @@
+
+import { JobbParametere } from './appstyringParametere';
