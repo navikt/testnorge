@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.pdl.Ident;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.v1.Arbeidsforhold;
 import no.nav.testnav.libs.dto.organisasjonfastedataservice.v1.OrganisasjonDTO;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -27,6 +29,7 @@ public class AnsettelseService {
 
     //TODO: Hente params fra JobbService etc.
 
+    @EventListener(ApplicationReadyEvent.class)
     public void ansettelsesService() {
         List<OrganisasjonDTO> organisasjoner = hentOrganisasjoner();
 
@@ -37,13 +40,19 @@ public class AnsettelseService {
         organisasjoner.forEach(
              organisasjon -> {
                  int antallPersAnsatt = 0;
+
                  List<Ident> muligePersoner = hentPersoner(from, to, organisasjon.getPostadresse().getPostnr());
+                 List<Ident> ansattePersoner = new ArrayList<>(); //liste/oversikt for logging
+
                  while (antallPersAnsatt < antallPersPerOrg) {
                      try {
                          int tilfeldigIndex = tilfeldigTall(muligePersoner.size());
                          Ident tilfeldigPerson = muligePersoner.get(tilfeldigIndex);
+
                          if(kanAnsettes(tilfeldigPerson)) {
+                             log.info(arbeidsforholdService.hentArbeidsforhold(tilfeldigPerson.getIdent()).toString());
                              ansettPerson(tilfeldigPerson.getIdent(), organisasjon.getOrgnummer(), yrke);
+                             ansattePersoner.add(tilfeldigPerson);
                              antallPersAnsatt++;
                          }
                          muligePersoner.remove(tilfeldigIndex);
@@ -52,6 +61,12 @@ public class AnsettelseService {
                          break;
                      }
                  }
+
+                 log.info("Personer ansatt i org {}, {}: {}", organisasjon.getNavn(), organisasjon.getOrgnummer() , ansattePersoner);
+                 for (Ident person : ansattePersoner) {
+                     log.info(arbeidsforholdService.hentArbeidsforhold(person.getIdent()).toString());
+                 }
+
              }
         );
     }
