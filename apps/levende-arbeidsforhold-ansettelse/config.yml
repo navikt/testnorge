@@ -55,7 +55,6 @@ spec:
   gcp:
     sqlInstances:
       - type: POSTGRES_14
-        name: testnav-levende-arbeidsforhold-ansettelse
         databases:
           - name: ansettelse-jobber
         autoBackupHour: 3 #Lager backup av hele SQL instancen hver dag kl 03:00

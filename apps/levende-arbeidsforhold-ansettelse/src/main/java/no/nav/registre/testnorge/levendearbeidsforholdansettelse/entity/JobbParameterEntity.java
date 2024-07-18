@@ -2,10 +2,7 @@ package no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity;
 
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
@@ -17,12 +14,15 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @Table(name = "JOBB_PARAMETER")
 public class JobbParameterEntity {
     @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    private int ID;
+
     @Column(name = "PARAM_NAVN")
     private String param_navn;
-    @Id
+
     @Column(name = "PARAM_TEKST")
     private String param_tekst;
-    @Id
+
     @Column(name = "PARAM_VERDI")
     private String param_verdi;
 

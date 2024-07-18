@@ -61,8 +61,6 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
-    implementation 'org.springframework.data:spring-data-jpa'
-
     implementation 'org.postgresql:postgresql:42.3.1'
 
     implementation 'io.micrometer:micrometer-registry-prometheus'
@@ -91,8 +89,10 @@ dependencies {
     implementation 'no.nav.testnav.libs:servlet-insecure-security'
     implementation 'no.nav.testnav.libs:servlet-core'
 
-    runtimeOnly 'com.h2database:h2'
-
+    implementation 'org.flywaydb:flyway-core'
+    implementation 'com.h2database:h2'
+    implementation 'com.zaxxer:HikariCP'
+    implementation 'org.postgresql:postgresql'
 
 }
 java {
