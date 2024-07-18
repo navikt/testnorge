@@ -9,10 +9,10 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 @Slf4j
 @Service
@@ -23,59 +23,79 @@ public class AnsettelseService {
     private final PdlService pdlService;
     private final HentOrganisasjonNummerService hentOrganisasjonNummerService;
     private final ArbeidsforholdService arbeidsforholdService;
+    private final JobbService jobbService;
     private final String from = "1955";
     private final String to = "2006";
     private final String yrke = "7125102";
 
-    //TODO: Hente params fra JobbService etc.
 
     @EventListener(ApplicationReadyEvent.class)
-    public void ansettelsesService() {
-        List<OrganisasjonDTO> organisasjoner = hentOrganisasjoner();
+    public CompletableFuture<Void> runAnsettelseService() {
+         return CompletableFuture.runAsync(this::ansettelseService).orTimeout(1, TimeUnit.MILLISECONDS);
+    }
 
-        int antallPersPerOrg = getAntallAnsettelsesHverOrg(dbParametere.get("antallPers"), dbParametere.get("antallOrg"));
+    public void ansettelseService() {
         //TODO: håndtere når personer ikke går opp i antall org
         //TODO: legge til timeout og håndtere at den ikke finner nok matches
 
+        //Map<String, String> parametere = hentParametere();
+        //List<OrganisasjonDTO> organisasjoner = hentOrganisasjoner(Integer.parseInt(parametere.get("antallOrganisasjoner")));
+        List<OrganisasjonDTO> organisasjoner = hentOrganisasjoner(dbParametere.get("antallOrg"));
+        int antallPersPerOrg = 0;
+
+        try {
+            //antallPersPerOrg = getAntallAnsettelserHverOrg(Integer.parseInt(parametere.get("antallPersoner")), Integer.parseInt(parametere.get("antallOrganisasjoner")));
+            antallPersPerOrg = getAntallAnsettelserHverOrg(dbParametere.get("antallPers"), dbParametere.get("antallOrg"));
+        } catch (NumberFormatException e) {
+            log.error("Feil format på verdi");
+        }
+
+        int finalAntallPersPerOrg = antallPersPerOrg;
+
         organisasjoner.forEach(
-             organisasjon -> {
-                 int antallPersAnsatt = 0;
+                organisasjon -> {
+                    int antallPersAnsatt = 0;
 
-                 List<Ident> muligePersoner = hentPersoner(from, to, organisasjon.getPostadresse().getPostnr());
-                 List<Ident> ansattePersoner = new ArrayList<>(); //liste/oversikt for logging
+                    List<Ident> muligePersoner = hentPersoner(from, to, organisasjon.getPostadresse().getPostnr());
+                    List<Ident> ansattePersoner = new ArrayList<>(); //liste/oversikt for logging
 
-                 while (antallPersAnsatt < antallPersPerOrg) {
-                     try {
-                         int tilfeldigIndex = tilfeldigTall(muligePersoner.size());
-                         Ident tilfeldigPerson = muligePersoner.get(tilfeldigIndex);
+                    while (antallPersAnsatt < finalAntallPersPerOrg) {
+                        try {
+                            int tilfeldigIndex = tilfeldigTall(muligePersoner.size());
+                            Ident tilfeldigPerson = muligePersoner.get(tilfeldigIndex);
 
-                         if(kanAnsettes(tilfeldigPerson)) {
-                             log.info(arbeidsforholdService.hentArbeidsforhold(tilfeldigPerson.getIdent()).toString());
-                             ansettPerson(tilfeldigPerson.getIdent(), organisasjon.getOrgnummer(), yrke);
-                             ansattePersoner.add(tilfeldigPerson);
-                             antallPersAnsatt++;
-                         }
-                         muligePersoner.remove(tilfeldigIndex);
-                     } catch (Exception e) {
-                         log.error(e.toString());
-                         break;
-                     }
-                 }
+                            if(kanAnsettes(tilfeldigPerson)) {
+                                log.info(arbeidsforholdService.hentArbeidsforhold(tilfeldigPerson.getIdent()).toString());
+                                ansettPerson(tilfeldigPerson.getIdent(), organisasjon.getOrgnummer(), yrke);
+                                ansattePersoner.add(tilfeldigPerson);
+                                antallPersAnsatt++;
+                            }
+                            muligePersoner.remove(tilfeldigIndex);
+                        } catch (NullPointerException e) {
+                            muligePersoner = hentPersoner(from, to, organisasjon.getPostadresse().getPostnr());
+                        } catch (Exception e) {
+                            log.error(e.toString());
+                            break;
+                        }
+                    }
 
-                 log.info("Personer ansatt i org {}, {}: {}", organisasjon.getNavn(), organisasjon.getOrgnummer() , ansattePersoner);
-                 for (Ident person : ansattePersoner) {
-                     log.info(arbeidsforholdService.hentArbeidsforhold(person.getIdent()).toString());
-                 }
-
-             }
+                    log.info("Personer ansatt i org {}, {}: {}", organisasjon.getNavn(), organisasjon.getOrgnummer() , ansattePersoner);
+                    for (Ident person : ansattePersoner) {
+                        log.info(arbeidsforholdService.hentArbeidsforhold(person.getIdent()).toString());
+                    }
+                }
         );
     }
 
-    public List<OrganisasjonDTO> hentOrganisasjoner() {
-        return hentOrganisasjonNummerService.hentAntallOrganisasjoner(dbParametere.get("antallOrg"));
+    private Map<String, String> hentParametere() {
+        return jobbService.hentParameterMap();
     }
 
-    public List<Ident> hentPersoner(String tidligsteFoedselsaar, String senesteFoedselsaar, String postnr) {
+    private List<OrganisasjonDTO> hentOrganisasjoner(int antall) {
+        return hentOrganisasjonNummerService.hentAntallOrganisasjoner(antall);
+    }
+
+    private List<Ident> hentPersoner(String tidligsteFoedselsaar, String senesteFoedselsaar, String postnr) {
         pdlService.setFrom(tidligsteFoedselsaar);
         pdlService.setTo(senesteFoedselsaar);
         pdlService.setPostnr(postnr);
@@ -100,8 +120,8 @@ public class AnsettelseService {
         arbeidsforholdService.opprettArbeidsforhold(ident, orgnummer, yrke);
     }
 
-    private int getAntallAnsettelsesHverOrg(int antallPers, int antallOrg) {
-        return Math.floorDiv(antallPers, antallOrg);
+    private int getAntallAnsettelserHverOrg(int antallPers, int antallOrg) {
+        return antallPers/antallOrg;
     }
 
     private int tilfeldigTall(int max) {

@@ -7,8 +7,6 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -16,14 +14,14 @@ public class test {
 
     private final JobbService jobbService;
     private final KodeverkService kodeverkService;
-    @EventListener(ApplicationReadyEvent.class)
+    //@EventListener(ApplicationReadyEvent.class)
     public void testDb() {
         jobbService.initDb();
         log.info("test");
-        jobbService.hentAlle();
+        jobbService.hentAlleParametere();
 
         jobbService.updateVerdi(JobbParameterEntity.builder().navn("antallOrganisasjoner").verdi("50").build());
-        jobbService.hentAlle();
+        jobbService.hentAlleParametere();
     }
     /*
     @EventListener(ApplicationReadyEvent.class)

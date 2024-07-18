@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -27,7 +26,7 @@ public class JobbController {
 
     @GetMapping
     public ResponseEntity<List<JobbParameterEntity>> hentAlleJobber() {
-        var jobber = jobbService.hentAlle();
+        var jobber = jobbService.hentAlleParametere();
         return ResponseEntity.ok(jobber);
     }
 
