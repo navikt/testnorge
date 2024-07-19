@@ -18,7 +18,7 @@ import java.util.concurrent.TimeoutException;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class AnsettelseService {
+public class AnsettelseService  {
 
     private final Map<String, Integer> dbParametere = Map.of("antallPers", 10, "antallOrg", 5);
     private final PdlService pdlService;
@@ -32,13 +32,24 @@ public class AnsettelseService {
 
 
     @EventListener(ApplicationReadyEvent.class)
-    public CompletableFuture<Void> runAnsettelseService() {
-         return CompletableFuture.runAsync(this::ansettelseService).orTimeout(30, TimeUnit.SECONDS); //timer ikke ut
+    public void runAnsettelseService() {
+        Thread thread = new Thread(this::ansettelseService);
+        thread.start();
+        try {
+            thread.join(30000); // Timeout after 3 seconds
+            if (thread.isAlive()) {
+                thread.interrupt();
+                System.out.println("Timeout occurred");
+            }
+        } catch (InterruptedException e) {
+            log.info("Timet ut");
+        }
     }
 
     public void ansettelseService() {
         //TODO: håndtere når personer ikke går opp i antall org
-        //TODO: legge til timeout og håndtere at den ikke finner nok matches
+        //TODO: fikse at den prøver på nytt om det går galt med ansettelse
+        //TODO: error handling
 
         List<String> yrkeskoder = hentKodeverk();
 
