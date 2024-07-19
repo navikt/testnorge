@@ -19,6 +19,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class JobbService {
 
+
     private final JobberRepository jobberRepository;
     private final VerdiRepository verdiRepository;
     public List<JobbParameterEntity> hentAlleParametere(){
