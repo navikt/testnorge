@@ -20,10 +20,10 @@ public class test {
     public void testDb() {
         jobbService.initDb();
         log.info("test");
-        jobbService.hentAlle();
+        jobbService.hentAlleParametere();
 
         jobbService.updateVerdi(JobbParameterEntity.builder().navn("antallOrganisasjoner").verdi("50").build());
-        jobbService.hentAlle();
+        jobbService.hentAlleParametere();
 
         jobbService.hentAlleMedNavn("antallOrganisasjoner");
     }
