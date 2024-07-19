@@ -74,7 +74,7 @@ consumers:
     name: testnav-kodeverk-service
     cluster: dev-gcp
     namespace: dolly
-  gcp:
+gcp:
     sqlInstances:
       - type: POSTGRES_14
         name: testnav-levende-arbeidsforhold-ansettelse
