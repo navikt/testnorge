@@ -57,7 +57,11 @@ spec:
       - autoBackupHour: 3 #Lager backup av hele SQL instancen hver dag kl 03:00
         type: POSTGRES_14
         databases:
-          name: levende-arbeidsforhold-ansettelse-db-v2
+          - name: levende-arbeidsforhold-ansettelse-db-v2
+        insights:
+          enabled: true
+          recordApplicationTags: true
+          recordClientAddress: true
         cascadingDelete: true
         tier: db-f1-micro
         diskAutoresize: true #Kanskje ikke nødvendig?
