@@ -95,6 +95,8 @@ public class AnsettelseService  {
                                 if(ansettPerson(tilfeldigPerson.getIdent(),
                                         organisasjon.getOrgnummer(),
                                         tilfeldigYrke).is2xxSuccessful()){
+                                    log.info("Arebidsforhold til person {} etter ansettelse: {} \n", tilfeldigPerson.getIdent(),
+                                            arbeidsforholdService.hentArbeidsforhold(tilfeldigPerson.getIdent()).toString());
                                     ansattePersoner.add(tilfeldigPerson);
                                     antallPersAnsatt++;
                                 }
@@ -108,11 +110,8 @@ public class AnsettelseService  {
                         }
                     }
 
-                    log.info("Personer ansatt i org {}, {}: {}", organisasjon.getNavn(),
+                    log.info("Personer ansatt i org {}, {}: {} \n", organisasjon.getNavn(),
                             organisasjon.getOrgnummer(), ansattePersoner);
-                    for (Ident person : ansattePersoner) {
-                        log.info(arbeidsforholdService.hentArbeidsforhold(person.getIdent()).toString());
-                    }
                 }
         );
     }
@@ -136,7 +135,7 @@ public class AnsettelseService  {
         List<Arbeidsforhold> arbeidsforholdList = arbeidsforholdService.hentArbeidsforhold(person.getIdent());
         if (!arbeidsforholdList.isEmpty()) {
             for (Arbeidsforhold arbeidsforhold : arbeidsforholdList) {
-                if (arbeidsforhold.getAnsettelsesperiode().getPeriode().getTom() != null) {
+                if (arbeidsforhold.getAnsettelsesperiode().getPeriode().getTom() == null) {
                     return false;
                 }
             }

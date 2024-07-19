@@ -35,8 +35,6 @@ public class ArbeidsforholdService {
     private Arbeidsforhold lagArbeidsforhold(String ident, String orgnummer, String yrke) {
         List<Arbeidsforhold> arbeidsforholdList = hentArbeidsforhold(ident);
 
-        log.info(String.valueOf(arbeidsforholdList.size()));
-
         var arbeidsforholdId = new AtomicInteger(arbeidsforholdList.size());
 
         return Arbeidsforhold.builder()

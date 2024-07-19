@@ -61,7 +61,8 @@ public class HentArbeidsforholdCommand implements Callable<List<Arbeidsforhold>>
                         .backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException))
                     .block();
-            log.info("Json object i command {}", Json.pretty(arbeidsforhold));
+            //log.info("Json object i command {}", Json.pretty(arbeidsforhold));
+            assert arbeidsforhold != null;
             return Arrays.stream(arbeidsforhold).collect(Collectors.toList());
         } catch (WebClientResponseException.NotFound e) {
             return Collections.emptyList();
