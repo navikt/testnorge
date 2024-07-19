@@ -51,7 +51,7 @@ spec:
   envFrom:
     - secret: google-sql-testnav-levende-arbeidsforhold-ansettelse-v2
   ingresses:
-    - "https://testnav-levende-arbeidsforhold-ansettelse.intern.dev.nav.no"
+    - "https://testnav-levende-arbeidsforhold-ansettelse-v2.intern.dev.nav.no"
   gcp:
     sqlInstances:
       - autoBackupHour: 3 #Lager backup av hele SQL instancen hver dag kl 03:00
