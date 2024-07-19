@@ -51,15 +51,13 @@ spec:
       memory: 1024Mi
     limits:
       memory: 2048Mi
-  kafka:
-    pool: nav-dev
   ingresses:
     - "https://testnav-levende-arbeidsforhold-ansettelse.intern.dev.nav.no"
   gcp:
     sqlInstances:
       - type: POSTGRES_14
         databases:
-          - name: ansettelse-jobber
+          - name: levende-arbeidsforhold-ansettelse-db
         autoBackupHour: 3 #Lager backup av hele SQL instancen hver dag kl 03:00
         tier: db-f1-micro
         diskAutoresize: true #Kanskje ikke nødvendig?

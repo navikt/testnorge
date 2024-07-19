@@ -22,7 +22,6 @@ public class OrganisasjonFasteDataConsumer {
             Consumers consumers,
             TokenExchange tokenExchange) {
         serverProperties = consumers.getTestnavOrganisasjonFasteDataService();
-        log.info("ServerProperties: {}", serverProperties);
         this.webClient = WebClient
                 .builder()
                 .baseUrl(serverProperties.getUrl())

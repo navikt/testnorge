@@ -12,8 +12,9 @@ CREATE TABLE jobb_parameter (
 );
 
 create table verdier (
-    verdi_navn varchar(255) PRIMARY KEY ,
-    verdi_verdi varchar(255) PRIMARY KEY ,
+    ID INT AUTO_INCREMENT PRIMARY KEY ,
+    verdi_navn varchar(255)  ,
+    verdi_verdi varchar(255)  ,
     foreign key (verdi_navn) references jobb_parameter(NAVN)
 )
 /*

@@ -24,7 +24,6 @@ public class KodeverkServiceConsumer {
             Consumers consumers,
             TokenExchange tokenExchange) {
         serverProperties = consumers.getTestnavKodeverkService();
-        log.info("ServerProperties: {}", serverProperties);
         ExchangeStrategies exchangeStrategies = ExchangeStrategies.builder()
                 .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(16 * 1024 * 1024))
                 .build();
