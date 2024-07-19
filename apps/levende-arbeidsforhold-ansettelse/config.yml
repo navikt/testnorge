@@ -53,12 +53,12 @@ spec:
   ingresses:
     - "https://testnav-levende-arbeidsforhold-ansettelse.intern.dev.nav.no"
   gcp:
-    - autoBackupHour: 3 #Lager backup av hele SQL instancen hver dag kl 03:00
-      sqlInstances:
-      type: POSTGRES_14
-      databases:
-        name: levende-arbeidsforhold-ansettelse-db-v2
-      cascadingDelete: true
-      tier: db-f1-micro
-      diskAutoresize: true #Kanskje ikke nødvendig?
+    sqlInstances:
+      - autoBackupHour: 3 #Lager backup av hele SQL instancen hver dag kl 03:00
+        type: POSTGRES_14
+        databases:
+          name: levende-arbeidsforhold-ansettelse-db-v2
+        cascadingDelete: true
+        tier: db-f1-micro
+        diskAutoresize: true #Kanskje ikke nødvendig?
         #collation: DESC
