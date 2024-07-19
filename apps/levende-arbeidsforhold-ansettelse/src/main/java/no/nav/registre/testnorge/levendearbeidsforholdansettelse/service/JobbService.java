@@ -4,12 +4,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.JobbParameterEntity;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.VerdierEntity;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.repository.JobberRepository;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.repository.VerdiRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -18,43 +19,32 @@ public class JobbService {
 
 
     private final JobberRepository jobberRepository;
-
-    public List<JobbParameterEntity> hentAlleParametere(){
-        List<JobbParameterEntity> jobbParametere = jobberRepository.findAll();
-        log.info("Hentet fra h2 db: {}", jobbParametere.toString());
-        return jobbParametere;
+    private final VerdiRepository verdiRepository;
+    public List<JobbParameterEntity> hentAlle(){
+        return jobberRepository.findAll();
     }
-
-    public Map<String, String> hentParameterMap() {
-        List<JobbParameterEntity> jobbParametere = hentAlleParametere();
-        Map<String, String> parameterMap = new HashMap<>();
-        for (JobbParameterEntity jobbParameterEntity : jobbParametere) {
-            parameterMap.put(jobbParameterEntity.getNavn(), jobbParameterEntity.getVerdi());
-        }
-        return parameterMap;
+    public List<VerdierEntity> hentAlleMedNavn(String navn){
+        //JobbParameterEntity org = jobberRepository.findByNavn("antallOrganisasjoner");
+        //org.getVerdier();
+        List<VerdierEntity> test = verdiRepository.findByNavn(navn);
+        log.info("Henter fra verdier table {}", test.toString());
+        return null;
     }
 
     public void initDb(){
-        JobbParameterEntity antallOrganisasjoner = JobbParameterEntity.builder().tekst("Antall Organisasjoner").navn("antallOrganisasjoner").verdi("100.0").build();
-
-        jobberRepository.save(antallOrganisasjoner);
-
-        JobbParameterEntity antallPersoner = JobbParameterEntity.builder().navn("antallPersoner").tekst("Antall personer").verdi("20").build();
-        jobberRepository.save(antallPersoner);
-        JobbParameterEntity arbeidsforholdType = JobbParameterEntity.builder().navn("typeArbeidsforhold").tekst("Type Arbeidsforhold").verdi("ordinaertArbeidsforhold").build();
-        jobberRepository.save(arbeidsforholdType);
-        JobbParameterEntity arbeidstidsordning = JobbParameterEntity.builder().navn("arbeidstidsordning").tekst("Arbeidstids Ordning").verdi("ikkeSkift").build();
-        jobberRepository.save(arbeidstidsordning);
-        JobbParameterEntity stillingsprosent = JobbParameterEntity.builder().navn("stillingsprosent").tekst("Stillingsprosent").verdi("100.0").build();
-        jobberRepository.save(stillingsprosent);
+        JobbParameterEntity jobbParameterEntity = JobbParameterEntity.builder().tekst("Antall Organisasjoner").navn("antallOrganisasjoner").verdi("100.0").build();
+        jobberRepository.save(jobbParameterEntity);
+        JobbParameterEntity jobb2 = JobbParameterEntity.builder().navn("antallPersoner").tekst("Antall personer").verdi("20").build();
+        jobberRepository.save(jobb2);
     }
 
     public JobbParameterEntity updateVerdi(JobbParameterEntity jobbParameterEntity) {
-        JobbParameterEntity parameter = jobberRepository.findByNavn(jobbParameterEntity.getNavn());
-        parameter.setVerdi(jobbParameterEntity.getVerdi());
-        jobberRepository.save(parameter);
-        return parameter;
+        JobbParameterEntity jobb = jobberRepository.findByNavn(jobbParameterEntity.getNavn());
 
+        jobb.setVerdi(jobbParameterEntity.getVerdi());
+
+        jobberRepository.save(jobb);
+        return jobb;
 
     }
 /*

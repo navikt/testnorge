@@ -5,18 +5,27 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+
 @Entity
-@Data
 @Builder
-@EntityListeners(AuditingEntityListener.class)
+//@EntityListeners(AuditingEntityListener.class)
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 @Table(name = "JOBB_PARAMETER")
-public class JobbParameterEntity {
+public class JobbParameterEntity implements Serializable {
+    /*
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private int ID;
 
+
+     */
+    @Id
     @Column(name = "NAVN")
     private String navn;
 
@@ -26,8 +35,10 @@ public class JobbParameterEntity {
     @Column(name = "VERDI")
     private String verdi;
 
+    @OneToMany(mappedBy = "jobbParameterEntity")
+    private Collection<VerdierEntity> verdier = new ArrayList<>();
     // Getters and Setters
-    public String hentParamNavn(){
-        return navn;
+    public String toString(){
+        return "navn: " + navn + " tekst: " + tekst + " verdi: " +verdi;
     }
 }
