@@ -28,9 +28,14 @@ public class KodeverkServiceCommand implements Callable<Map<String, String>>{
                 .retrieve()
                 .bodyToMono(JsonNode.class)
                 .block();
-        ObjectMapper mapper = new ObjectMapper();
-        Map<String, String> map = mapper.convertValue(node.get("kodeverk"), new TypeReference<Map<String, String>>() {
-        });
-        return map;
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            Map<String, String> map = mapper.convertValue(node.get("kodeverk"), new TypeReference<Map<String, String>>() {
+            });
+            return map;
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return null;
+        }
     }
 }

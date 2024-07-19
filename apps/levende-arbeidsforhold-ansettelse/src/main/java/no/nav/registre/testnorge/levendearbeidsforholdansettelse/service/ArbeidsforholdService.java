@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.AaregConsumer;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.v1.*;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -27,8 +28,8 @@ public class ArbeidsforholdService {
         return aaregConsumer.hentArbeidsforhold(ident);
     }
 
-    public void opprettArbeidsforhold(String ident, String orgnummer, String yrke) {
-        aaregConsumer.opprettArbeidsforhold(lagArbeidsforhold(ident, orgnummer, yrke));
+    public HttpStatusCode opprettArbeidsforhold(String ident, String orgnummer, String yrke) {
+        return aaregConsumer.opprettArbeidsforhold(lagArbeidsforhold(ident, orgnummer, yrke));
     }
 
     private Arbeidsforhold lagArbeidsforhold(String ident, String orgnummer, String yrke) {

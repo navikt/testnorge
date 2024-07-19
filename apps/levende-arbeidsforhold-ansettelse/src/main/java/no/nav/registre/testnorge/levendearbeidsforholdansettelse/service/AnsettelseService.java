@@ -8,6 +8,7 @@ import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.v1.Arbei
 import no.nav.testnav.libs.dto.organisasjonfastedataservice.v1.OrganisasjonDTO;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -48,14 +49,20 @@ public class AnsettelseService  {
 
     public void ansettelseService() {
         //TODO: håndtere når personer ikke går opp i antall org
-        //TODO: fikse at den prøver på nytt om det går galt med ansettelse
         //TODO: error handling
 
         List<String> yrkeskoder = hentKodeverk();
+        if (yrkeskoder.isEmpty()) {
+            return;
+        }
 
         //Map<String, String> parametere = hentParametere();
         //List<OrganisasjonDTO> organisasjoner = hentOrganisasjoner(Integer.parseInt(parametere.get("antallOrganisasjoner")));
+
         List<OrganisasjonDTO> organisasjoner = hentOrganisasjoner(dbParametere.get("antallOrg"));
+        if (organisasjoner.isEmpty()) {
+            return;
+        }
         int antallPersPerOrg = 0;
 
         try {
@@ -80,12 +87,17 @@ public class AnsettelseService  {
                             Ident tilfeldigPerson = muligePersoner.get(tilfeldigIndex);
 
                             if(kanAnsettes(tilfeldigPerson)) {
-                                log.info(arbeidsforholdService.hentArbeidsforhold(tilfeldigPerson.getIdent()).toString());
+                                log.info("Arebidsforhold til person {} før ansettelse: {}", tilfeldigPerson.getIdent(),
+                                        arbeidsforholdService.hentArbeidsforhold(tilfeldigPerson.getIdent()).toString());
+
                                 String tilfeldigYrke = hentTilfeldigYrkeskode(yrkeskoder);
-                                log.info(tilfeldigYrke);
-                                ansettPerson(tilfeldigPerson.getIdent(), organisasjon.getOrgnummer(), tilfeldigYrke);
-                                ansattePersoner.add(tilfeldigPerson);
-                                antallPersAnsatt++;
+
+                                if(ansettPerson(tilfeldigPerson.getIdent(),
+                                        organisasjon.getOrgnummer(),
+                                        tilfeldigYrke).is2xxSuccessful()){
+                                    ansattePersoner.add(tilfeldigPerson);
+                                    antallPersAnsatt++;
+                                }
                             }
                             muligePersoner.remove(tilfeldigIndex);
                         } catch (NullPointerException e) {
@@ -96,7 +108,8 @@ public class AnsettelseService  {
                         }
                     }
 
-                    log.info("Personer ansatt i org {}, {}: {}", organisasjon.getNavn(), organisasjon.getOrgnummer(), ansattePersoner);
+                    log.info("Personer ansatt i org {}, {}: {}", organisasjon.getNavn(),
+                            organisasjon.getOrgnummer(), ansattePersoner);
                     for (Ident person : ansattePersoner) {
                         log.info(arbeidsforholdService.hentArbeidsforhold(person.getIdent()).toString());
                     }
@@ -121,20 +134,18 @@ public class AnsettelseService  {
 
     private boolean kanAnsettes(Ident person) {
         List<Arbeidsforhold> arbeidsforholdList = arbeidsforholdService.hentArbeidsforhold(person.getIdent());
-        if (arbeidsforholdList.isEmpty()) {
-            return true;
-        } else {
+        if (!arbeidsforholdList.isEmpty()) {
             for (Arbeidsforhold arbeidsforhold : arbeidsforholdList) {
                 if (arbeidsforhold.getAnsettelsesperiode().getPeriode().getTom() != null) {
                     return false;
                 }
             }
-            return true;
         }
+        return true;
     }
 
-    private void ansettPerson(String ident, String orgnummer, String yrke) {
-        arbeidsforholdService.opprettArbeidsforhold(ident, orgnummer, yrke);
+    private HttpStatusCode ansettPerson(String ident, String orgnummer, String yrke) {
+        return arbeidsforholdService.opprettArbeidsforhold(ident, orgnummer, yrke);
     }
 
     private int getAntallAnsettelserHverOrg(int antallPers, int antallOrg) {
