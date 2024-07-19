@@ -24,6 +24,8 @@ public class test {
 
         jobbService.updateVerdi(JobbParameterEntity.builder().navn("antallOrganisasjoner").verdi("50").build());
         jobbService.hentAlle();
+
+        jobbService.hentAlleMedNavn("antallOrganisasjoner");
     }
     /*
     @EventListener(ApplicationReadyEvent.class)
