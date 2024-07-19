@@ -35,7 +35,7 @@ public class OpprettArbeidsforholdCommand implements Callable<ResponseEntity<Arb
                 .toEntity(Arbeidsforhold.class)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException))
-                .doOnError(error -> log.error("Feil ved opprettelse av arbeidsforhold: {}", error.getMessage()))
+                //.doOnError(error -> log.error("Feil ved opprettelse av arbeidsforhold: {}", error.getMessage()))
                 .block();
     }
 }

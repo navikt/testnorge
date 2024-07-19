@@ -23,6 +23,7 @@ public class GetOrganisasjonerCommand implements Callable<List<OrganisasjonDTO>>
                         .path("/api/v1/organisasjoner")
                         .queryParam("inkluderHierarki", true)
                         .queryParam("kanHaArbeidsforhold", true)
+                        .queryParam("DOLLY")
                         .build()
                 )
                 .header("Authorization", "Bearer " + token)

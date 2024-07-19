@@ -87,18 +87,23 @@ public class AnsettelseService  {
                             Ident tilfeldigPerson = muligePersoner.get(tilfeldigIndex);
 
                             if(kanAnsettes(tilfeldigPerson)) {
-                                log.info("Arebidsforhold til person {} før ansettelse: {}", tilfeldigPerson.getIdent(),
+                                log.info("Arbeidsforhold til person {} før ansettelse: {}", tilfeldigPerson.getIdent(),
                                         arbeidsforholdService.hentArbeidsforhold(tilfeldigPerson.getIdent()).toString());
 
                                 String tilfeldigYrke = hentTilfeldigYrkeskode(yrkeskoder);
-
-                                if(ansettPerson(tilfeldigPerson.getIdent(),
-                                        organisasjon.getOrgnummer(),
-                                        tilfeldigYrke).is2xxSuccessful()){
-                                    log.info("Arebidsforhold til person {} etter ansettelse: {} \n", tilfeldigPerson.getIdent(),
-                                            arbeidsforholdService.hentArbeidsforhold(tilfeldigPerson.getIdent()).toString());
-                                    ansattePersoner.add(tilfeldigPerson);
-                                    antallPersAnsatt++;
+                                try {
+                                    if (ansettPerson(tilfeldigPerson.getIdent(),
+                                            organisasjon.getOrgnummer(),
+                                            tilfeldigYrke).is2xxSuccessful()) {
+                                        log.info("Arbeidsforhold til person {} etter ansettelse: {} \n", tilfeldigPerson.getIdent(),
+                                                arbeidsforholdService.hentArbeidsforhold(tilfeldigPerson.getIdent()).toString());
+                                        ansattePersoner.add(tilfeldigPerson);
+                                        antallPersAnsatt++;
+                                    }
+                                }catch (WebClientResponseException e){
+                                    log.info("organisasjon: {} {}, person {}", organisasjon.getNavn(), organisasjon.getOrgnummer(), tilfeldigPerson.getIdent());
+                                    organisasjon = hentOrganisasjoner(1).getFirst();
+                                    continue;
                                 }
                             }
                             muligePersoner.remove(tilfeldigIndex);
