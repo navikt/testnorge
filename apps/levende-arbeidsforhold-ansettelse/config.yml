@@ -1,7 +1,7 @@
-﻿apiVersion: "nais.io/v1alpha1"
-kind: "Application"
+﻿apiVersion: nais.io/v1alpha1
+kind: Application
 metadata:
-  name: testnav-levende-arbeidsforhold-ansettelse
+  name: testnav-levende-arbeidsforhold-ansettelse-v2
   namespace: dolly
   labels:
     team: dolly
@@ -21,9 +21,6 @@ spec:
         - host: testnav-pdl-proxy.dev-fss-pub.nais.io
         - host: testnav-organisasjon-faste-data-service.intern.dev.nav.no
         - host: testnav-kodeverk-service.intern.dev.nav.no
-      rules:
-        - application: testnav-levende-arbeidsforhold-ansettelse
-          cluster: dev-gcp
   azure:
     application:
       allowAllUsers: true
@@ -51,14 +48,17 @@ spec:
       memory: 1024Mi
     limits:
       memory: 2048Mi
+  envFrom:
+    - secret: google-sql-testnav-levende-arbeidsforhold-ansettelse-v2
   ingresses:
     - "https://testnav-levende-arbeidsforhold-ansettelse.intern.dev.nav.no"
   gcp:
+  - autoBackupHour: 3 #Lager backup av hele SQL instancen hver dag kl 03:00
     sqlInstances:
-      - type: POSTGRES_14
-        databases:
-          - name: levende-arbeidsforhold-ansettelse-db
-        autoBackupHour: 3 #Lager backup av hele SQL instancen hver dag kl 03:00
-        tier: db-f1-micro
-        diskAutoresize: true #Kanskje ikke nødvendig?
+      type: POSTGRES_14
+      databases:
+        name: levende-arbeidsforhold-ansettelse-db-v2
+      cascadingDelete: true
+      tier: db-f1-micro
+      diskAutoresize: true #Kanskje ikke nødvendig?
         #collation: DESC
