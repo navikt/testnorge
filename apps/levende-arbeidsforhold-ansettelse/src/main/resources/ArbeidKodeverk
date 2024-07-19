@@ -11,3 +11,14 @@ export enum ArbeidKodeverk {
 	Fartsomraader = 'Fartsområder',
 	Valutaer = 'Valutaer',
 }
+
+gcp:
+    sqlInstances:
+      - type: POSTGRES_14
+        name: testnav-levende-arbeidsforhold-ansettelse
+        databases:
+          - name: ansettelse-jobber
+        autoBackupHour: 3 #Lager backup av hele SQL instancen hver dag kl 03:00
+        tier: db-f1-micro
+        diskAutoresize: true #Kanskje ikke nødvendig?
+        #collation: DESC
