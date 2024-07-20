@@ -24,20 +24,19 @@ public class JobbController {
     @Autowired
     private final JobbService jobbService;
 
-    private final KodeverkService kodeverkService;
     private final AnsettelseService ansettelseService;
 
     @GetMapping
     public ResponseEntity<List<JobbParameterEntity>> hentAlleJobber() {
         return ResponseEntity.ok(jobbService.hentAlleParametere());
     }
-
+/*
     @PostMapping("/parameter/ny")
     public ResponseEntity<JobbParameterEntity> lagParameter(@RequestParam JobbParameterEntity jobbParameterEntity) {
         jobbService.lagreParameter(jobbParameterEntity);
         return ResponseEntity.ok(jobbParameterEntity);
     }
-
+*/
     @GetMapping("/verdi/{parameterNavn}")
     public List<VerdierEntity> hentVerdier(@PathVariable("parameterNavn") String parameternavn) {
         return jobbService.hentAlleMedNavn(parameternavn);
