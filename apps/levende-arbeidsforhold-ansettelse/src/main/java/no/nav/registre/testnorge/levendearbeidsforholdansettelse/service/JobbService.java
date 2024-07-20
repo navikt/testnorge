@@ -50,6 +50,10 @@ public class JobbService {
         jobberRepository.save(jobb2);
     }
 
+    public void lagreParameter(JobbParameterEntity jobbParameterEntity){
+        jobberRepository.save(jobbParameterEntity);
+    }
+
     public JobbParameterEntity updateVerdi(JobbParameterEntity jobbParameterEntity) {
         JobbParameterEntity jobb = jobberRepository.findByNavn(jobbParameterEntity.getNavn());
 

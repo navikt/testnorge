@@ -1,7 +1,7 @@
-﻿apiVersion: "nais.io/v1alpha1"
-kind: "Application"
+﻿apiVersion: nais.io/v1alpha1
+kind: Application
 metadata:
-  name: testnav-levende-arbeidsforhold-ansettelse
+  name: testnav-levende-arbeidsforhold-ansettelse-v2
   namespace: dolly
   labels:
     team: dolly
@@ -18,9 +18,9 @@ spec:
     outbound:
       external:
         - host: testnav-aareg-proxy.dev-fss-pub.nais.io
-      rules:
-        - application: testnav-levende-arbeidsforhold-ansettelse
-          cluster: dev-gcp
+        - host: testnav-pdl-proxy.dev-fss-pub.nais.io
+        - host: testnav-organisasjon-faste-data-service.intern.dev.nav.no
+        - host: testnav-kodeverk-service.intern.dev.nav.no
   azure:
     application:
       allowAllUsers: true
@@ -48,16 +48,21 @@ spec:
       memory: 1024Mi
     limits:
       memory: 2048Mi
-  kafka:
-    pool: nav-dev
+  envFrom:
+    - secret: google-sql-testnav-levende-arbeidsforhold-ansettelse-v2
   ingresses:
-    - "https://testnav-levende-arbeidsforhold-ansettelse.intern.dev.nav.no"
+    - "https://testnav-levende-arbeidsforhold-ansettelse-v2.intern.dev.nav.no"
   gcp:
     sqlInstances:
-      - type: POSTGRES_14
+      - autoBackupHour: 3 #Lager backup av hele SQL instancen hver dag kl 03:00
+        type: POSTGRES_14
         databases:
-          - name: ansettelse-jobber
-        autoBackupHour: 3 #Lager backup av hele SQL instancen hver dag kl 03:00
+          - name: levende-arbeidsforhold-ansettelse-db-v2
+        insights:
+          enabled: true
+          recordApplicationTags: true
+          recordClientAddress: true
+        cascadingDelete: true
         tier: db-f1-micro
         diskAutoresize: true #Kanskje ikke nødvendig?
         #collation: DESC

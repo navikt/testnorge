@@ -15,15 +15,18 @@ import java.io.Serializable;
 @Getter
 @Setter
 @Table(name = "verdier")
-@IdClass(VerdiId.class)
 public class VerdierEntity implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     private JobbParameterEntity jobbParameterEntity;
 
     @Id
+    @GeneratedValue
+    @Column(name = "ID")
+    private int id;
+
     @JoinColumn(name = "NAVN")
     private String navn;
-    @Id
+
     @Column(name = "verdi_verdi")
     private String verdi;
     @Override

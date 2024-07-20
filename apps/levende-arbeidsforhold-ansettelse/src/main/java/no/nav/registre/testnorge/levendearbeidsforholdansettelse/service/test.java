@@ -22,6 +22,7 @@ public class test {
         log.info("test");
         jobbService.hentAlleParametere();
 
+
         jobbService.updateVerdi(JobbParameterEntity.builder().navn("antallOrganisasjoner").verdi("50").build());
         jobbService.hentAlleParametere();
 

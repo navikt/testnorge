@@ -5,6 +5,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.kodeverk.KodeverkNavn;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.JobbParameterEntity;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.VerdierEntity;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.service.AnsettelseService;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.service.JobbService;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.service.KodeverkService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,43 +25,22 @@ public class JobbController {
     private final JobbService jobbService;
 
     private final KodeverkService kodeverkService;
+    private final AnsettelseService ansettelseService;
 
     @GetMapping
     public ResponseEntity<List<JobbParameterEntity>> hentAlleJobber() {
-        var jobber = jobbService.hentAlleParametere();
-        return ResponseEntity.ok(jobber);
+        return ResponseEntity.ok(jobbService.hentAlleParametere());
     }
 
-    @GetMapping("/verdiOrganisasjoner")
-    public ResponseEntity<List<Integer>> hentVerdierOrganisasjoner(){
-        List<Integer> antallOrganisasjoner = new ArrayList<>();
-        for(int i =20; i<=500; i+=20){
-            antallOrganisasjoner.add(i);
-        }
-        return ResponseEntity.ok(antallOrganisasjoner);
+    @PostMapping("/parameter/ny")
+    public ResponseEntity<JobbParameterEntity> lagParameter(@RequestParam JobbParameterEntity jobbParameterEntity) {
+        jobbService.lagreParameter(jobbParameterEntity);
+        return ResponseEntity.ok(jobbParameterEntity);
     }
 
-    @GetMapping("/verdiPersoner")
-    public ResponseEntity<List<Integer>> hentVerdierPersoner(){
-        List<Integer> antallPersoner = new ArrayList<>();
-        for(int i =100; i<=1000; i+=100){
-            antallPersoner.add(i);
-        }
-        return ResponseEntity.ok(antallPersoner);
-    }
-
-    @GetMapping("/verdiArbeidstidsOrdning")
-    public ResponseEntity<List<String>> hentVerdierArbeidstidsOrdning(){
-        List<String> arbeidstidsOrdning = kodeverkService.hentKodeverkValues(KodeverkNavn.ARBEIDSTIDSORDNINGER.value);
-        return ResponseEntity.ok(arbeidstidsOrdning);
-    }
-    @GetMapping("/verdiStillingsprosent")
-    public ResponseEntity<List<Integer>> hentVerdierStillingsprosent(){
-        List<Integer> stillingsprosent = new ArrayList<>();
-        for(int i =20; i<=100; i+=10){
-            stillingsprosent.add(i);
-        }
-        return ResponseEntity.ok(stillingsprosent);
+    @GetMapping("/verdi/{parameterNavn}")
+    public List<VerdierEntity> hentVerdier(@PathVariable("parameterNavn") String parameternavn) {
+        return jobbService.hentAlleMedNavn(parameternavn);
     }
 
     @PutMapping("/oppdatereVerdier/{parameterNavn}")
@@ -69,6 +50,10 @@ public class JobbController {
         return ResponseEntity.ok(jobb);
     }
 
+    @GetMapping("/kjor")
+    public void kjor(){
+        ansettelseService.runAnsettelseService();
+    }
 
 
 }

@@ -36,7 +36,7 @@ public class JobbParameterEntity implements Serializable {
     private String verdi;
 
     @OneToMany(mappedBy = "jobbParameterEntity")
-    private Collection<VerdierEntity> verdier = new ArrayList<>();
+    private final Collection<VerdierEntity> verdier = new ArrayList<>();
     // Getters and Setters
     public String toString(){
         return "navn: " + navn + " tekst: " + tekst + " verdi: " +verdi;
