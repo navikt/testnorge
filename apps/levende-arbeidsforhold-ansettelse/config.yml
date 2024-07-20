@@ -49,7 +49,7 @@ spec:
     limits:
       memory: 2048Mi
   envFrom:
-    - secret: google-sql-testnav-levende-arbeidsforhold-ansettelse-v2
+    - secret: google-sql-testnav-levende-arbeidsforhold-ansettelse
   ingresses:
     - "https://testnav-levende-arbeidsforhold-ansettelse-v2.intern.dev.nav.no"
   gcp:
@@ -57,7 +57,7 @@ spec:
       - autoBackupHour: 3 #Lager backup av hele SQL instancen hver dag kl 03:00
         type: POSTGRES_14
         databases:
-          - name: levende-arbeidsforhold-ansettelse-db-v2
+          - name: levende-arbeidsforhold-ansettelse-db
         insights:
           enabled: true
           recordApplicationTags: true
