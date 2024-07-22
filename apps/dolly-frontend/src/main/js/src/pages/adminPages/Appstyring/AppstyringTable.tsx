@@ -7,17 +7,8 @@ import {ifPresent} from "@/utils/YupValidations";
 
 export const AppstyringTable = ({ data }: any) => {
 	//TODO: Implementer henting av options pr parameter fra backend
-	if (data.contains("Organisasjon")) {
-		//useEffect(() => {
-		//	fetch(url)
-		//}, []);
-	}
-	if (data.contains("Person")){
 
-	}
-	if (data.contains("Arbeidsforhold")){
 
-	}
 
 	const getOptions = (parameter: string) => {
 		return [
@@ -53,7 +44,7 @@ export const AppstyringTable = ({ data }: any) => {
 										<EditParameter
 											name={row.parameter}
 											initialValue={row.verdi}
-											getOptions={getOptions}
+											getOptions={row.verdier}
 										/>
 									</Table.DataCell>
 								</Table.Row>
