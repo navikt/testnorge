@@ -16,7 +16,7 @@ import java.util.Collection;
 @NoArgsConstructor
 @Getter
 @Setter
-@Table(name = "JOBB_PARAMETER")
+@Table(name = "jobb_parameter")
 public class JobbParameterEntity implements Serializable {
     /*
     @Id
