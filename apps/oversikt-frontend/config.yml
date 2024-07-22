@@ -83,6 +83,7 @@ spec:
         - application: testnorge-profil-api
         - application: testnorge-profil-api-dev
         - application: testnorge-tilbakemelding-api
+        - application: testnav-levende-arbeidsforhold-ansettelse
   liveness:
     path: /internal/isAlive
     initialDelay: 4
