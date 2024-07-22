@@ -3,6 +3,7 @@ import { Alert } from '@navikt/ds-react'
 import { AppstyringTable } from '@/pages/adminPages/Appstyring/AppstyringTable'
 import { erDollyAdmin } from '@/utils/DollyAdmin'
 import data from "@navikt/ds-icons/src/Data";
+import React, { useState, useEffect } from "react";
 
 export default () => {
 	if (!erDollyAdmin()) {
@@ -10,8 +11,26 @@ export default () => {
 	}
 
 	let data: {parameter: string, verdi: string, verdier: {verdi: string, navn: string}[] }[] = [];
+	useEffect(() => {
+		fetch("/testnav-levende-arbeidsforhold-ansettelse/api", {
+			method: "GET"})
+			.then((response) => response.json())
+			.then(data => {
+			for (const parameter of data) {
+				let verdier: {verdi: string, navn: string}[] = [];
+				for (const verdi of data.verdier) {
+					verdier.push({verdi: verdi.verdi, navn: verdi.navn });
+				}
+				data.push({parameter: parameter.navn, verdi: parameter.verdi, verdier: verdier});
+			}
+		})
+	.then(json=>console.log(json));
+	});
+
 	//const headers = { 'Authorization': 'Bearer ' };
+	/*
 	fetch('/testnav-levende-arbeidsforhold-ansettelse/api')
+
 		.then(res=>res.json())
 		.then((data) => {
 			for (const parameter of data) {
@@ -23,6 +42,8 @@ export default () => {
 			}
 		})
 		.then(json=>console.log(json));
+
+	 */
 
 	//TODO: Implementer henting av data fra backend
 	const dataMock = [
