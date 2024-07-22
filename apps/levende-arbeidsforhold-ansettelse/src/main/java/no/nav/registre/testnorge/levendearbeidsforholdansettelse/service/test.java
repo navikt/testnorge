@@ -3,6 +3,7 @@ package no.nav.registre.testnorge.levendearbeidsforholdansettelse.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.JobbParameterEntity;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.VerdierEntity;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
@@ -23,9 +24,10 @@ public class test {
         jobbService.hentAlleParametere();
 
         //jobbService.updateVerdi(JobbParameterEntity.builder().navn("antallOrganisasjoner").verdi("50").build());
+
         jobbService.hentAlleParametere();
 
-        //jobbService.hentAlleMedNavn("antallOrganisasjoner");
+        jobbService.hentAlleMedNavn("antallOrganisasjoner");
     }
     /*
     @EventListener(ApplicationReadyEvent.class)

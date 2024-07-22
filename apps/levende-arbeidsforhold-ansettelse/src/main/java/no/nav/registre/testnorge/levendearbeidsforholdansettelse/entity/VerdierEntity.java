@@ -16,15 +16,18 @@ import java.io.Serializable;
 @Setter
 @Table(name = "verdier")
 public class VerdierEntity implements Serializable {
+    /*
     @ManyToOne(fetch = FetchType.LAZY)
     private JobbParameterEntity jobbParameterEntity;
 
+
+     */
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     private int id;
 
-    @JoinColumn(name = "NAVN")
+    @JoinColumn(name = "verdi_navn")
     private String navn;
 
     @Column(name = "verdi_verdi")
