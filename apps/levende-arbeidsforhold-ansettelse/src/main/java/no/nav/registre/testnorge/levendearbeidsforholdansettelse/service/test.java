@@ -16,17 +16,17 @@ public class test {
 
     private final JobbService jobbService;
     private final KodeverkService kodeverkService;
-    //@EventListener(ApplicationReadyEvent.class)
+    @EventListener(ApplicationReadyEvent.class)
     public void testDb() {
         jobbService.initDb();
         log.info("test");
         jobbService.hentAlleParametere();
 
 
-        jobbService.updateVerdi(JobbParameterEntity.builder().navn("antallOrganisasjoner").verdi("50").build());
+        //jobbService.updateVerdi(JobbParameterEntity.builder().navn("antallOrganisasjoner").verdi("50").build());
         jobbService.hentAlleParametere();
 
-        jobbService.hentAlleMedNavn("antallOrganisasjoner");
+        //jobbService.hentAlleMedNavn("antallOrganisasjoner");
     }
     /*
     @EventListener(ApplicationReadyEvent.class)
