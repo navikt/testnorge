@@ -9,10 +9,7 @@ import no.nav.registre.testnorge.levendearbeidsforholdansettelse.repository.Jobb
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.repository.VerdiRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -24,15 +21,17 @@ public class JobbService {
     private final VerdiRepository verdiRepository;
     public List<JobbParameterEntity> hentAlleParametere(){
         List<JobbParameterEntity> test = jobberRepository.findAll();
-        log.info("Hentet fra h2: {}", test.toString());
         return test;
     }
 
     public List<VerdierEntity> hentAlleMedNavn(String navn){
-        //JobbParameterEntity org = jobberRepository.findByNavn("antallOrganisasjoner");
-        //org.getVerdier();
-        //List<VerdierEntity> test = verdiRepository.findByNavn(navn);
-        //log.info("Henter fra verdier table {}", test.toString());
+        JobbParameterEntity org = jobberRepository.findByNavn("antallOrganisasjoner");
+        org.getVerdier();
+        List<VerdierEntity> test = verdiRepository.findAll();
+        //List<VerdierEntity> test2 = verdiRepository.hentVerdier(navn);
+
+        log.info("Henter fra verdier table {}", test.toString());
+        //log.info("Henter navn fra table {}", test2.toString());
         return null;
     }
 
@@ -50,6 +49,15 @@ public class JobbService {
         jobberRepository.save(jobbParameterEntity);
         JobbParameterEntity jobb2 = JobbParameterEntity.builder().navn("antallPersoner").tekst("Antall personer").verdi("20").build();
         jobberRepository.save(jobb2);
+        List<VerdierEntity> verdierEntities = new ArrayList<>();
+        for(int i = 20; i<=100; i+=20){
+            VerdierEntity verdier = VerdierEntity.builder().navn(jobbParameterEntity.getNavn()).verdi(String.valueOf(i)).build();
+            verdierEntities.add(verdier);
+            verdiRepository.save(verdier);
+        }
+        jobbParameterEntity.setVerdier(verdierEntities);
+        jobberRepository.save(jobbParameterEntity);
+
     }
 
     public void lagreParameter(JobbParameterEntity jobbParameterEntity){

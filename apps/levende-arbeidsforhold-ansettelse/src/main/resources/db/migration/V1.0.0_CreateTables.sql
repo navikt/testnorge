@@ -6,7 +6,7 @@ CREATE SCHEMA IF NOT EXISTS schema;
 SET SCHEMA schema;
 CREATE TABLE jobb_parameter (
                                 //ID INT AUTO_INCREMENT PRIMARY KEY,
-                                NAVN VARCHAR(255) NOT NULL,
+                                NAVN VARCHAR(255) NOT NULL PRIMARY KEY ,
                                 TEKST VARCHAR(255) NOT NULL,
                                 VERDI VARCHAR(255)
 );
