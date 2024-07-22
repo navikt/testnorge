@@ -11,7 +11,7 @@ import java.util.Collection;
 
 @Entity
 @Builder
-//@EntityListeners(AuditingEntityListener.class)
+@EntityListeners(AuditingEntityListener.class)
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
