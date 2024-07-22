@@ -10,7 +10,6 @@ export default () => {
 	}
 
 	let data: {parameter: string, verdi: string, verdier: {verdi: string, navn: string}[] }[] = [];
-
 	//const headers = { 'Authorization': 'Bearer ' };
 	fetch('/testnav-levende-arbeidsforhold-ansettelse/api')
 		.then(res=>res.json())
