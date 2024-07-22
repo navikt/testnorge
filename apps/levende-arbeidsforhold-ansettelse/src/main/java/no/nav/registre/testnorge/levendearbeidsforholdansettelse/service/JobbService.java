@@ -32,7 +32,7 @@ public class JobbService {
 
         log.info("Henter fra verdier table {}", test.toString());
         //log.info("Henter navn fra table {}", test2.toString());
-        return null;
+        return test;
     }
 
     public Map<String, String> hentParameterMap() {
