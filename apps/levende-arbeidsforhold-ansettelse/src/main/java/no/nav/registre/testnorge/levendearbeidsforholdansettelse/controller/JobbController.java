@@ -10,6 +10,7 @@ import no.nav.registre.testnorge.levendearbeidsforholdansettelse.service.Ansette
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.service.JobbService;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.service.KodeverkService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,7 +29,11 @@ public class JobbController {
 
     @GetMapping
     public ResponseEntity<List<JobbParameterEntity>> hentAlleJobber() {
-        return ResponseEntity.ok(jobbService.hentAlleParametere());
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.set("Access-Control-Allow-Origin", "http://localhost:3000");
+        responseHeaders.set("Access-Control-Allow-Methods", "GET, POST, PUT");
+        responseHeaders.set("Access-Control-Allow-Headers", "Authorization, Content-Type");
+        return ResponseEntity.ok().headers(responseHeaders).body(jobbService.hentAlleParametere());
     }
 /*
     @PostMapping("/parameter/ny")

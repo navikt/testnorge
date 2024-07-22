@@ -11,8 +11,8 @@ export default () => {
 
 	let data: {parameter: string, verdi: string, verdier: {verdi: string, navn: string}[] }[] = [];
 
-	const headers = { 'Authorization': 'Bearer ' };
-	fetch('http://localhost:8080/api/', {headers})
+	//const headers = { 'Authorization': 'Bearer ' };
+	fetch('/testnav-levende-arbeidsforhold-ansettelse/api')
 		.then(res=>res.json())
 		.then((data) => {
 			for (const parameter of data) {
