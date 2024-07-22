@@ -218,6 +218,11 @@ consumers:
     namespace: dolly
     name: testnav-tenor-search-service
     url: http://testnav-tenor-search-service.dolly.svc.cluster.local
+  testnav-levende-arbeidsforhold-ansettelse:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-levende-arbeidsforhold-ansettelse
+    url: https://testnav-levende-arbeidsforhold-ansettelse.intern.dev.nav.no
 
 management:
   endpoints:
