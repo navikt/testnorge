@@ -49,8 +49,6 @@ spec:
       memory: 1024Mi
     limits:
       memory: 2048Mi
-  envFrom:
-    - secret: google-sql-testnav-levende-arbeidsforhold-ansettelsev2
   ingresses:
     - "https://testnav-levende-arbeidsforhold-ansettelse-v2.intern.dev.nav.no"
   gcp:
