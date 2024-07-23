@@ -4,6 +4,8 @@ import { AppstyringTable } from '@/pages/adminPages/Appstyring/AppstyringTable'
 import { erDollyAdmin } from '@/utils/DollyAdmin'
 import data from "@navikt/ds-icons/src/Data";
 import React, { useState, useEffect } from "react";
+import Request from '@/service/services/Request'
+import {JobbParametere} from "@/pages/adminPages/Appstyring/util/AppstyringParametere";
 
 export default () => {
 	if (!erDollyAdmin()) {
@@ -11,6 +13,12 @@ export default () => {
 	}
 
 	let data: {parameter: string, verdi: string, verdier: {verdi: string, navn: string}[] }[] = [];
+	Request.get('testnav-levende-arbeidsforhold-ansettelse/api').then(
+		(response: JobbParametere) => {
+			console.log(response);
+		}
+	)
+	/*
 	useEffect(() => {
 		fetch("/testnav-levende-arbeidsforhold-ansettelse/api", {
 			method: "GET"})
@@ -26,6 +34,8 @@ export default () => {
 		})
 	.then(json=>console.log(json));
 	});
+
+	 */
 
 	//const headers = { 'Authorization': 'Bearer ' };
 	/*
