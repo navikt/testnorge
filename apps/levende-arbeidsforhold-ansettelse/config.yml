@@ -1,7 +1,7 @@
 ﻿apiVersion: nais.io/v1alpha1
 kind: Application
 metadata:
-  name: testnav-levende-arbeidsforhold-ansettelse
+  name: testnav-levende-arbeidsforhold-ansettelse-v2
   namespace: dolly
   labels:
     team: dolly
@@ -50,9 +50,9 @@ spec:
     limits:
       memory: 2048Mi
   envFrom:
-    - secret: google-sql-testnav-levende-arbeidsforhold-ansettelse
+    - secret: google-sql-testnav-levende-arbeidsforhold-ansettelse-v2
   ingresses:
-    - "https://testnav-levende-arbeidsforhold-ansettelse.intern.dev.nav.no"
+    - "https://testnav-levende-arbeidsforhold-ansettelse-v2.intern.dev.nav.no"
   gcp:
     sqlInstances:
       - cascadingDelete: True
