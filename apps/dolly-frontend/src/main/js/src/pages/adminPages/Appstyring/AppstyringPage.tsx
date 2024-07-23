@@ -17,7 +17,8 @@ export default () => {
 		(response: JobbParametere) => {
 			console.log(response);
 		}
-	)
+	);
+
 	/*
 	useEffect(() => {
 		fetch("/testnav-levende-arbeidsforhold-ansettelse/api", {
