@@ -33,14 +33,7 @@ public class JobbController {
 
         jobbService.initDb();
 
-        HttpHeaders responseHeaders = new HttpHeaders();
-        responseHeaders.set("Access-Control-Allow-Origin", "*");
-        responseHeaders.set("Access-Control-Allow-Methods", "GET, POST, PUT");
-        responseHeaders.set("Access-Control-Allow-Headers", "Authorization, Content-Type, Method");
-        responseHeaders.set("Access-Control-Allow-Credentials", "true");
-
-
-        return ResponseEntity.ok().headers(responseHeaders).body(jobbService.hentAlleParametere());
+        return ResponseEntity.ok().body(jobbService.hentAlleParametere());
         //return ResponseEntity.ok(jobbService.hentAlleParametere());
     }
 /*
