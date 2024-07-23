@@ -1,3 +1,4 @@
+/*
 CREATE TABLE jobb_parameter (
                                 NAVN VARCHAR(255) NOT NULL PRIMARY KEY ,
                                 TEKST VARCHAR(255) NOT NULL,
@@ -9,3 +10,5 @@ create table verdier (
                          verdi_verdi varchar(255)  ,
                          foreign key (verdi_navn) references jobb_parameter(NAVN)
 )
+
+ */
