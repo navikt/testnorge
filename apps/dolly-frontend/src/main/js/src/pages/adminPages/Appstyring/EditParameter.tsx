@@ -8,7 +8,7 @@ import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { FormProvider, useForm } from 'react-hook-form'
 
-export const EditParameter = ({ name, initialValue, getOptions }: any) => {
+export const EditParameter = ({ name, initialValue, options }: any) => {
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 	const formMethods = useForm({ defaultValues: { [name]: initialValue } })
 
@@ -17,8 +17,6 @@ export const EditParameter = ({ name, initialValue, getOptions }: any) => {
 		console.log('Lagrer... ', data) //TODO - SLETT MEG
 		closeModal()
 	}
-
-	const options = getOptions(name)
 
 	return (
 		<>
