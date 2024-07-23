@@ -5,8 +5,6 @@ spring:
     hikari:
       maximum-pool-size: 3
       minimum-idle: 0
-    username: ${NAIS_DATABASE_TESTNAV_LEVENDE_ARBEIDSFORHOLD_ANSETTELSE_LEVENDE_ARBEIDSFORHOLD_DB_USERNAME}
-    password: ${NAIS_DATABASE_TESTNAV_LEVENDE_ARBEIDSFORHOLD_ANSETTELSE_LEVENDE_ARBEIDSFORHOLD_DB_PASSWORD}
   jpa:
     database: POSTGRESQL
     properties:

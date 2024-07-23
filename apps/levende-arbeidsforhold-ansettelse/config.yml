@@ -55,14 +55,14 @@ spec:
   gcp:
     sqlInstances:
       - autoBackupHour: 3 #Lager backup av hele SQL instancen hver dag kl 03:00
+        name: testnav-levende-arbeidsforhold-ansettelse
         type: POSTGRES_14
         databases:
-          - name: levende-arbeidsforhold-ansettelse-db
+          - name: levende-arbeidsforhold-db
         insights:
           enabled: true
           recordApplicationTags: true
           recordClientAddress: true
-        cascadingDelete: true
         tier: db-f1-micro
         diskAutoresize: true #Kanskje ikke nødvendig?
         #collation: DESC
