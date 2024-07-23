@@ -16,7 +16,7 @@ import java.util.Collection;
 @NoArgsConstructor
 @Getter
 @Setter
-@Table(name = "JOBB_PARAMETER")
+@Table(name = "jobb_parameter")
 public class JobbParameterEntity implements Serializable {
     /*
     @Id
@@ -26,13 +26,13 @@ public class JobbParameterEntity implements Serializable {
 
      */
     @Id
-    @Column(name = "NAVN")
+    @Column(name = "navn")
     private String navn;
 
-    @Column(name = "TEKST")
+    @Column(name = "tekst")
     private String tekst;
 
-    @Column(name = "VERDI")
+    @Column(name = "verdi")
     private String verdi;
 
     @OneToMany//mappedBy = "jobbParameterEntity"

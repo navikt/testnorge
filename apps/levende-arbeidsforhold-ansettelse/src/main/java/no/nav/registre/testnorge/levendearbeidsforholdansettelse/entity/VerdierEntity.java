@@ -24,7 +24,7 @@ public class VerdierEntity implements Serializable {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID")
+    @Column(name = "id")
     private int id;
 
     @JoinColumn(name = "verdi_navn")

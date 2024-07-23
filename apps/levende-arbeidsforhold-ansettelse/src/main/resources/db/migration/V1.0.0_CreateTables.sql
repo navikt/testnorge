@@ -6,13 +6,13 @@ CREATE SCHEMA IF NOT EXISTS schema;
 SET SCHEMA schema;
 CREATE TABLE jobb_parameter (
                                 //ID INT AUTO_INCREMENT PRIMARY KEY,
-                                NAVN VARCHAR(255) NOT NULL PRIMARY KEY ,
-                                TEKST VARCHAR(255) NOT NULL,
-                                VERDI VARCHAR(255)
+                                navn VARCHAR(255) NOT NULL PRIMARY KEY ,
+                                tekst VARCHAR(255) NOT NULL,
+                                verdi VARCHAR(255)
 );
 
 create table verdier (
-    ID INT SERIAL PRIMARY KEY ,
+    id INT SERIAL PRIMARY KEY ,
     verdi_navn varchar(255)  ,
     verdi_verdi varchar(255)  ,
     foreign key (verdi_navn) references jobb_parameter(NAVN)
