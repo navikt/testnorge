@@ -13,7 +13,7 @@ export default () => {
 	}
 
 	let data: {parameter: string, verdi: string, verdier: {verdi: string, navn: string}[] }[] = [];
-	Request.get('testnav-levende-arbeidsforhold-ansettelse/api').then(
+	Request.get('https://testnav-levende-arbeidsforhold-ansettelse.intern.dev.nav.no/api').then(
 		(response: JobbParametere) => {
 			console.log(response);
 		}
