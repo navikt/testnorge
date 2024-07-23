@@ -55,6 +55,7 @@ spec:
     - "https://testnav-levende-arbeidsforhold-ansettelse.intern.dev.nav.no"
   gcp:
     sqlInstances:
+      - cascadingDelete: True
       - autoBackupHour: 3 #Lager backup av hele SQL instancen hver dag kl 03:00
         name: testnav-levende-arbeidsforhold-ansettelse
         type: POSTGRES_14
