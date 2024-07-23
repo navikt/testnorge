@@ -67,15 +67,23 @@ public class JobScheduler {
         log.info("Schedulet en task med intervall: {}", cronExpression);
     }
 
-    /**
-     * Jobb som kan kjøres når den blir kalt på av en scheduler
-     */
+
     private static class Job implements Runnable {
 
+        /**
+         * Funksjon som automatisk blir kalt på av en task-scheduler og kjører ansettelsesservice utenom lørdag fra
+         * klokken 12:00 til mandag klokken 06:00
+         */
         @Override
         public void run() {
-            //Kall på AnsettelseService her
-            log.info("Jobb kjørte! Holder på å ansette folk nå!");
+
+            /*
+            if (!((dag == mandag && clock <= 6AM) || (dag == lørdag && clock >= 12PM)) ){
+                //Kall på AnsettelseService her
+                log.info("Jobb kjørte! Holder på å ansette folk nå!");
+            }
+            */
+
         }
     }
 
@@ -85,6 +93,6 @@ public class JobScheduler {
      * @return Ferdig formattert og gyldig cron-expression
      */
     private String lagCronExpression(String intervallet) {
-        return "0 */" + intervallet + " * ? * MON-FRI";
+        return "0 0 */" + intervallet + " ? * MON-SAT";
     }
 }
