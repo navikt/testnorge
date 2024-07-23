@@ -4,25 +4,20 @@ import {AppstyringTable} from '@/pages/adminPages/Appstyring/AppstyringTable'
 import {erDollyAdmin} from '@/utils/DollyAdmin'
 import React, {useEffect, useState} from "react";
 
-export default async () => {
-	if (!erDollyAdmin()) {
-		return <AdminAccessDenied/>
-	}
+export default () => {
+	//if (!erDollyAdmin()) {
+	//	return <AdminAccessDenied/>
+	//}
 
-	const [apiData, setApiData] = useState([]);
+	const [apiData , setApiData] = useState([]);
 	const headers = {
 		Authorization: 'Bearer '
 	}
-	let data: { parameter: string, verdi: string, verdier: { verdi: string, navn: string }[] }[] = [];
+	let data: { navn: string, verdi: string, verdier: { verdi: string, navn: string }[] }[] = [];
+
 	//let response = await fetch('http://localhost:8080/api', {headers});
 
-	async function fetchData() {
-		const req = await fetch('http://localhost:8080/api', {headers});
-		const res = await req.json();
-		console.log(res);
 
-		return res;
-	}
 
 	/*
 	useEffect(() => {
@@ -75,15 +70,27 @@ export default async () => {
 		{parameter: 'Parameter 10', verdi: 'verdi10'},
 	]
 	useEffect(() => {
+
+		async function fetchData() {
+			const req = await fetch('http://localhost:8080/api', {headers});
+			const res = await req.json();
+			console.log(res);
+
+			if (res && req.ok){
+				setApiData(res);
+			}
+		}
+
 		fetchData();
 	}, []);
+
 	return (
 		<>
 			<h1>App-styring</h1>
 			<Alert variant={'info'} style={{marginBottom: '15px'}}>
 				Denne siden er under utvikling.
 			</Alert>
-			<AppstyringTable data={data}/>
+			<AppstyringTable data={apiData}/>
 		</>
 	)
 }
