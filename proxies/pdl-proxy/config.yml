@@ -58,7 +58,7 @@ spec:
           cluster: dev-gcp
         - application: testnav-tenor-search-service
           cluster: dev-gcp
-        - application: testnav-levende-arbeidsforhold-ansettelse
+        - application: testnav-levende-arbeidsforhold-ansettelsev2
           cluster: dev-gcp
     outbound:
       rules:

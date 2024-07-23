@@ -83,7 +83,7 @@ spec:
         - application: testnorge-profil-api
         - application: testnorge-profil-api-dev
         - application: testnorge-tilbakemelding-api
-        - application: testnav-levende-arbeidsforhold-ansettelse
+        - application: testnav-levende-arbeidsforhold-ansettelsev2
         - application: testnav-levende-arbeidsforhold-service
   liveness:
     path: /internal/isAlive
