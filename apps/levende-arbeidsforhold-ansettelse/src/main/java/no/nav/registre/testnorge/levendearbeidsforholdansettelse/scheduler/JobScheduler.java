@@ -28,11 +28,9 @@ public class JobScheduler {
 
     private ScheduledFuture<?> scheduledFuture;
 
-    private String intervall = "1";
-
     /**
-     * Funksjon som henter ut en intervallet (Som skal være en verdi med gyldig cron-expression) fra databasen.
-     * Funksjonen kalles når appen kjøres opp.
+     * Funksjon som henter ut en intervallet fra databasen.
+     * Funksjonen kalles når appen kjøres opp og vil kun ha en effekt dersom intervallet eksisterer i databasen.
      */
     @EventListener(ApplicationReadyEvent.class)
     public void scheduleTask(){
@@ -40,9 +38,12 @@ public class JobScheduler {
         log.info("Alle parametere: {}", jobbService.hentAlleParametere().toString());
 
         List<JobbParameterEntity> parametere = jobbService.hentAlleParametere();
+
+
         parametere.forEach(param -> {
             if(param.getNavn().equals("intervall")){
-                log.info("Parameter-verdi for intervall: {}", param.getVerdi());
+                String intervall = param.getVerdi();
+                log.info("Parameter-verdi for intervall: {}", intervall);
                 rescheduleTask(intervall);
             }
         });
@@ -51,16 +52,19 @@ public class JobScheduler {
     /**
      * Avslutter nåværende schedule og starter en ny med det nye intervallet.
      * Forutsetning at parameter allerede er på riktig cron-expression format.
-     * @param intervallet Heltall som representerer antall timer forsinkelse
+     * @param intervall Heltall som representerer antall timer forsinkelse
      */
-    public void rescheduleTask(String intervallet){
-        if (scheduledFuture != null && !intervallet.equals(intervall)) {
+    public void rescheduleTask(String intervall){
+
+        if (scheduledFuture != null) {
             scheduledFuture.cancel(true);
-            this.intervall = intervallet;
         }
+
+        //TODO: Sjekk om intervallet er positivt heltall før vi lager cron-expression osv
         String cronExpression = lagCronExpression(intervall);
         scheduledFuture = taskScheduler.schedule(new Job(), new CronTrigger(cronExpression));
         log.info("Schedulet en task med intervall: {}", cronExpression);
+
     }
 
 
@@ -76,10 +80,10 @@ public class JobScheduler {
             /*
             if (!((dag == mandag && clock <= 6AM) || (dag == lørdag && clock >= 12PM)) ){
                 //Kall på AnsettelseService her
-                log.info("Jobb kjørte! Holder på å ansette folk nå!");
+
             }
             */
-
+            log.info("Jobb kjørte!");
         }
     }
 
