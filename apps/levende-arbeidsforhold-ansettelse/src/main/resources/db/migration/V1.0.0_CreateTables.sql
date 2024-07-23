@@ -2,8 +2,7 @@
 -- C R E A T E   T A B L E S --
 -------------------------------
 
-CREATE SCHEMA IF NOT EXISTS schema;
-SET SCHEMA schema;
+
 CREATE TABLE jobb_parameter (
                                 //ID INT AUTO_INCREMENT PRIMARY KEY,
                                 navn VARCHAR(255) NOT NULL PRIMARY KEY ,
