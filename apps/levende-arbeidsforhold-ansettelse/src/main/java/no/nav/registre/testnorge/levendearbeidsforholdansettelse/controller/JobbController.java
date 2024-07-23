@@ -37,7 +37,7 @@ public class JobbController {
 
          */
         //return ResponseEntity.ok().headers(responseHeaders).body(jobbService.hentAlleParametere());
-        jobbService.initDb();
+        //jobbService.initDb();
         return ResponseEntity.ok(jobbService.hentAlleParametere());
     }
 /*
