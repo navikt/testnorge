@@ -37,14 +37,14 @@ export const AppstyringTable = ({ data }: any) => {
 					<Table.Body>
 						{data.map((row: any, idx: number) => {
 							return (
-								<Table.Row key={row.parameter + idx}>
-									<Table.DataCell width={'50%'}>{row.parameter}</Table.DataCell>
+								<Table.Row key={row.navn + idx}>
+									<Table.DataCell width={'50%'}>{row.tekst}</Table.DataCell>
 									<Table.DataCell width={'40%'}>{row.verdi}</Table.DataCell>
 									<Table.DataCell width={'10%'}>
 										<EditParameter
-											name={row.parameter}
+											name={row.tekst}
 											initialValue={row.verdi}
-											getOptions={row.verdier}
+											options={row.verdier}
 										/>
 									</Table.DataCell>
 								</Table.Row>
