@@ -20,6 +20,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:3000")
 public class JobbController {
 
     @Autowired
@@ -29,16 +30,18 @@ public class JobbController {
 
     @GetMapping
     public ResponseEntity<List<JobbParameterEntity>> hentAlleJobber() {
-        /*
-        HttpHeaders responseHeaders = new HttpHeaders();
-        responseHeaders.set("Access-Control-Allow-Origin", "http://localhost:3000");
-        responseHeaders.set("Access-Control-Allow-Methods", "GET, POST, PUT");
-        responseHeaders.set("Access-Control-Allow-Headers", "Authorization, Content-Type");
 
-         */
-        //return ResponseEntity.ok().headers(responseHeaders).body(jobbService.hentAlleParametere());
         jobbService.initDb();
-        return ResponseEntity.ok(jobbService.hentAlleParametere());
+
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.set("Access-Control-Allow-Origin", "*");
+        responseHeaders.set("Access-Control-Allow-Methods", "GET, POST, PUT");
+        responseHeaders.set("Access-Control-Allow-Headers", "Authorization, Content-Type, Method");
+        responseHeaders.set("Access-Control-Allow-Credentials", "true");
+
+
+        return ResponseEntity.ok().headers(responseHeaders).body(jobbService.hentAlleParametere());
+        //return ResponseEntity.ok(jobbService.hentAlleParametere());
     }
 /*
     @PostMapping("/parameter/ny")
