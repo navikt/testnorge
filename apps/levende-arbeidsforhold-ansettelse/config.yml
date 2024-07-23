@@ -57,7 +57,7 @@ spec:
     sqlInstances:
       - cascadingDelete: True
       - autoBackupHour: 3 #Lager backup av hele SQL instancen hver dag kl 03:00
-        name: testnav-levende-arbeidsforhold-ansettelse
+        name: testnav-levende-arbeidsforhold-ansettelse-v2
         type: POSTGRES_14
         databases:
           - name: testnav-levende-arbeidsforhold-db
