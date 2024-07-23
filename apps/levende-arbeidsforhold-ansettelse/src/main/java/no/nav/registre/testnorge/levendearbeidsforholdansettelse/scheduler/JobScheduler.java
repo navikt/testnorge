@@ -43,11 +43,6 @@ public class JobScheduler {
         parametere.forEach(param -> {
             if(param.getNavn().equals("intervall")){
                 log.info("Parameter-verdi for intervall: {}", param.getVerdi());
-                String nyttIntervall = param.getVerdi();
-                if (!intervall.equals(nyttIntervall)) {
-                    this.intervall = nyttIntervall;
-                }
-
                 rescheduleTask(intervall);
             }
         });
@@ -59,10 +54,11 @@ public class JobScheduler {
      * @param intervallet Heltall som representerer antall timer forsinkelse
      */
     public void rescheduleTask(String intervallet){
-        if (scheduledFuture != null) {
+        if (scheduledFuture != null && !intervallet.equals(intervall)) {
             scheduledFuture.cancel(true);
+            this.intervall = intervallet;
         }
-        String cronExpression = lagCronExpression(intervallet);
+        String cronExpression = lagCronExpression(intervall);
         scheduledFuture = taskScheduler.schedule(new Job(), new CronTrigger(cronExpression));
         log.info("Schedulet en task med intervall: {}", cronExpression);
     }
