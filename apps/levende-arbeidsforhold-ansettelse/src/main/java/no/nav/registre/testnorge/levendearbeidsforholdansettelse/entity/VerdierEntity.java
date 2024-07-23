@@ -14,7 +14,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Getter
 @Setter
-@Table(name = "verdier")
+@Table(name = "VERDIER")
 public class VerdierEntity implements Serializable {
     /*
     @ManyToOne(fetch = FetchType.LAZY)
@@ -27,10 +27,10 @@ public class VerdierEntity implements Serializable {
     @Column(name = "ID")
     private int id;
 
-    @JoinColumn(name = "verdi_navn")
+    @JoinColumn(name = "VERDI_NAVN")
     private String navn;
 
-    @Column(name = "verdi_verdi")
+    @Column(name = "VERDI_VERDI")
     private String verdi;
     @Override
     public String toString(){
