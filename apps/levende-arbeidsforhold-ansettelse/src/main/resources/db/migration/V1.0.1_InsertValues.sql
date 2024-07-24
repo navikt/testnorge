@@ -1,11 +1,3 @@
-
-INSERT INTO jobb_parameter (NAVN, TEKST, VERDI) VALUES ('antallOrganisasjoner', 'Organisasjoner', '100'),
-                                                                         ('antallPersoner', 'Personer', '20'),
-                                                                         ('typeArbeidsforhold', 'Type Arbeidsforhold', 'ordinaertArbeidsforhold'),
-                                                                         ('arbeidstidsOrdning', 'Arbeidstids Ordning', 'ikkeSkift'),
-                                                                         ('intervall', 'Intervall', '2'),
-                                                                         ('stillingsprosent', 'Stillingsprosent', '100.0');
-/*
 insert into jobb_parameter (navn, tekst, verdi) values ("antallOrganisasjoner", "Antall Organisasjoner", "20");
 insert into jobb_parameter (navn, tekst, verdi) values ("antallPersoner", "Antall Personer", "40");
 insert into verdier (verdi_navn, verdi_verdi) values ("antallOrganisasjoner", 20);
@@ -18,5 +10,3 @@ insert into verdier (verdi_navn, verdi_verdi) values ("antallPersone", 80);
 insert into verdier (verdi_navn, verdi_verdi) values ("antallPersone", 120);
 insert into verdier (verdi_navn, verdi_verdi) values ("antallPersone", 160);
 insert into verdier (verdi_navn, verdi_verdi) values ("antallPersone", 180);
-
- */

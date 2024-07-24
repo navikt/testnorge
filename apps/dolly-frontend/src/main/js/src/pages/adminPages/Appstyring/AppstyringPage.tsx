@@ -2,11 +2,59 @@ import { AdminAccessDenied } from '@/pages/adminPages/AdminAccessDenied'
 import { Alert } from '@navikt/ds-react'
 import { AppstyringTable } from '@/pages/adminPages/Appstyring/AppstyringTable'
 import { erDollyAdmin } from '@/utils/DollyAdmin'
+import data from "@navikt/ds-icons/src/Data";
+import React, { useState, useEffect } from "react";
+import Request from '@/service/services/Request'
+import {JobbParametere} from "@/pages/adminPages/Appstyring/util/AppstyringParametere";
 
 export default () => {
 	if (!erDollyAdmin()) {
 		return <AdminAccessDenied />
 	}
+
+	let data: {parameter: string, verdi: string, verdier: {verdi: string, navn: string}[] }[] = [];
+	Request.get('https://testnav-levende-arbeidsforhold-ansettelse.intern.dev.nav.no/api').then(
+		(response: JobbParametere) => {
+			console.log(response);
+		}
+	);
+
+	/*
+	useEffect(() => {
+		fetch("/testnav-levende-arbeidsforhold-ansettelse/api", {
+			method: "GET"})
+			.then((response) => response.json())
+			.then(data => {
+			for (const parameter of data) {
+				let verdier: {verdi: string, navn: string}[] = [];
+				for (const verdi of data.verdier) {
+					verdier.push({verdi: verdi.verdi, navn: verdi.navn });
+				}
+				data.push({parameter: parameter.navn, verdi: parameter.verdi, verdier: verdier});
+			}
+		})
+	.then(json=>console.log(json));
+	});
+
+	 */
+
+	//const headers = { 'Authorization': 'Bearer ' };
+	/*
+	fetch('/testnav-levende-arbeidsforhold-ansettelse/api')
+
+		.then(res=>res.json())
+		.then((data) => {
+			for (const parameter of data) {
+				let verdier: {verdi: string, navn: string}[] = [];
+				for (const verdi of data.verdier) {
+					verdier.push({verdi: verdi.verdi, navn: verdi.navn });
+				}
+				data.push({parameter: parameter.navn, verdi: parameter.verdi, verdier: verdier});
+			}
+		})
+		.then(json=>console.log(json));
+
+	 */
 
 	//TODO: Implementer henting av data fra backend
 	const dataMock = [
@@ -28,7 +76,7 @@ export default () => {
 			<Alert variant={'info'} style={{ marginBottom: '15px' }}>
 				Denne siden er under utvikling.
 			</Alert>
-			<AppstyringTable data={dataMock} />
+			<AppstyringTable data={data} />
 		</>
 	)
 }

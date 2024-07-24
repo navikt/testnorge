@@ -1,7 +1,7 @@
 ﻿apiVersion: nais.io/v1alpha1
 kind: Application
 metadata:
-  name: testnav-levende-arbeidsforhold-ansettelse
+  name: testnav-levende-arbeidsforhold-ansettelsev2
   namespace: dolly
   labels:
     team: dolly
@@ -12,9 +12,9 @@ spec:
     inbound:
       rules:
         - application: team-dolly-lokal-app
-          cluster: dev-gcp
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
+        - application: dolly-frontend
     outbound:
       external:
         - host: testnav-aareg-proxy.dev-fss-pub.nais.io
@@ -48,21 +48,18 @@ spec:
       memory: 1024Mi
     limits:
       memory: 2048Mi
-  envFrom:
-    - secret: google-sql-testnav-levende-arbeidsforhold-ansettelse
   ingresses:
-    - "https://testnav-levende-arbeidsforhold-ansettelse.intern.dev.nav.no"
+    - "https://testnav-levende-arbeidsforhold-ansettelse-v2.intern.dev.nav.no"
   gcp:
     sqlInstances:
       - autoBackupHour: 3 #Lager backup av hele SQL instancen hver dag kl 03:00
         type: POSTGRES_14
         databases:
-          - name: levende-arbeidsforhold-ansettelse-db
+          - name: testnav-levende-arbeidsforhold-db
         insights:
           enabled: true
           recordApplicationTags: true
           recordClientAddress: true
-        cascadingDelete: true
         tier: db-f1-micro
         diskAutoresize: true #Kanskje ikke nødvendig?
         #collation: DESC

@@ -4,7 +4,7 @@ spring:
   main:
     banner-mode: off
   application:
-    name: testnav-levende-arbeidsforhold-ansettelse
+    name: testnav-levende-arbeidsforhold-ansettelsev2
     version: application.version.todo #TODO Finn ut hvordan denne kan settes fra Gradle
     description: App for å ansette personer i en organisasjon
   security:
@@ -71,4 +71,5 @@ consumers:
     name: testnav-kodeverk-service
     cluster: dev-gcp
     namespace: dolly
+
 
