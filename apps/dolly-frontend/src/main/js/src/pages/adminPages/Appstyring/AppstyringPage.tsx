@@ -3,12 +3,14 @@ import {Alert} from '@navikt/ds-react'
 import {AppstyringTable} from '@/pages/adminPages/Appstyring/AppstyringTable'
 import {erDollyAdmin} from '@/utils/DollyAdmin'
 import React, {useEffect, useState} from "react";
+import Request from "@/service/services/Request";
+import {OrgInfoResponse} from "@/service/services/organisasjonservice/types";
 
 export default () => {
 	//if (!erDollyAdmin()) {
 	//	return <AdminAccessDenied/>
 	//}
-
+/*
 	const [apiData , setApiData] = useState([]);
 	const headers = {
 		Authorization: 'Bearer '
@@ -19,7 +21,16 @@ export default () => {
 
 
 
-	/*
+	*/
+	Request.get('testnav-levende-arbeidsforhold-ansettelsev2/api').then(
+		(response: OrgInfoResponse) => {
+			if (response != null) {
+				return response
+			}
+		}
+	);
+
+ /*
 	useEffect(() => {
 		fetch("/testnav-levende-arbeidsforhold-ansettelse/api", {
 			method: "GET"})
