@@ -5,8 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.JobbParameterEntity;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.service.JobbService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.support.CronTrigger;
@@ -19,7 +17,7 @@ import java.util.concurrent.ScheduledFuture;
 @Component
 @EnableScheduling
 @RequiredArgsConstructor
-public class JobScheduler {
+public class JobbScheduler {
 
     private final JobbService jobbService;
 
@@ -32,11 +30,10 @@ public class JobScheduler {
     private static final String INTERVALL_PARAM_NAVN = "intervall";
 
     /**
-     * Funksjon som henter ut en intervallet fra databasen.
-     * Funksjonen kalles når appen kjøres opp og vil kun ha en effekt dersom intervallet eksisterer i databasen.
+     * Funksjon som henter ut en intervallet fra databasen
      */
     //@EventListener(ApplicationReadyEvent.class)
-    public void scheduleTask(){
+    public void scheduleMedIntervallFraDb(){
         //Hent ut intervall fra databasen, eller sett default-verdi
         log.info("Alle parametere: {}", jobbService.hentAlleParametere().toString());
 
@@ -46,16 +43,16 @@ public class JobScheduler {
             if(param.getNavn().equals(INTERVALL_PARAM_NAVN)){
                 String intervall = param.getVerdi();
                 log.info("Parameter-verdi for intervall: {}", intervall);
-                rescheduleTask(intervall);
+                startScheduler(intervall);
             }
         });
     }
 
     /**
-     * Avslutter nåværende schedule og starter en ny med det nye intervallet.
+     * Avslutter eventuelt nåværende schedule og starter en ny med det nye intervallet.
      * @param intervall Heltall som representerer antall timer forsinkelse for job-scheduleren
      */
-    public void rescheduleTask(String intervall){
+    public void startScheduler(String intervall){
 
         if (scheduledFuture != null) {
             scheduledFuture.cancel(true);
@@ -112,9 +109,10 @@ public class JobScheduler {
             /*
             if (!((dag == mandag && clock <= 6AM) || (dag == søndag) || (dag == lørdag && clock >= 12PM)) ){
                 //Kall på AnsettelseService her
+
             }
             */
-            log.info("Jobb kjørte!");
+            log.info("Jobb kjørte fra scheduler!");
         }
     }
 

@@ -3,18 +3,15 @@ package no.nav.registre.testnorge.levendearbeidsforholdansettelse.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
-import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.kodeverk.KodeverkNavn;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.JobbParameterEntity;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.scheduler.JobbScheduler;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.VerdierEntity;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.service.AnsettelseService;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.service.JobbService;
-import no.nav.registre.testnorge.levendearbeidsforholdansettelse.service.KodeverkService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -24,6 +21,9 @@ public class JobbController {
 
     @Autowired
     private final JobbService jobbService;
+
+    @Autowired
+    private final JobbScheduler jobbScheduler;
 
     private final AnsettelseService ansettelseService;
 
@@ -62,7 +62,7 @@ public class JobbController {
     @GetMapping("/kjor")
     public void kjor(){
         ansettelseService.runAnsettelseService();
+        jobbScheduler.scheduleMedIntervallFraDb();
     }
-
 
 }
