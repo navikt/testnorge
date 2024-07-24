@@ -28,6 +28,9 @@ public class JobScheduler {
 
     private ScheduledFuture<?> scheduledFuture;
 
+    private static final String DEFAULT_INTERVALL = "24";
+    private static final String INTERVALL_PARAM_NAVN = "intervall";
+
     /**
      * Funksjon som henter ut en intervallet fra databasen.
      * Funksjonen kalles når appen kjøres opp og vil kun ha en effekt dersom intervallet eksisterer i databasen.
@@ -39,9 +42,8 @@ public class JobScheduler {
 
         List<JobbParameterEntity> parametere = jobbService.hentAlleParametere();
 
-
         parametere.forEach(param -> {
-            if(param.getNavn().equals("intervall")){
+            if(param.getNavn().equals(INTERVALL_PARAM_NAVN)){
                 String intervall = param.getVerdi();
                 log.info("Parameter-verdi for intervall: {}", intervall);
                 rescheduleTask(intervall);
@@ -51,8 +53,7 @@ public class JobScheduler {
 
     /**
      * Avslutter nåværende schedule og starter en ny med det nye intervallet.
-     * Forutsetning at parameter allerede er på riktig cron-expression format.
-     * @param intervall Heltall som representerer antall timer forsinkelse
+     * @param intervall Heltall som representerer antall timer forsinkelse for job-scheduleren
      */
     public void rescheduleTask(String intervall){
 
@@ -60,31 +61,16 @@ public class JobScheduler {
             scheduledFuture.cancel(true);
         }
 
-        //TODO: Sjekk om intervallet er positivt heltall før vi lager cron-expression osv
-        String cronExpression = lagCronExpression(intervall);
-        scheduledFuture = taskScheduler.schedule(new Job(), new CronTrigger(cronExpression));
+        String cronExpression;
+        if (intervallErHeltall(intervall)){
+            cronExpression = lagCronExpression(intervall);
+        } else {
+            cronExpression = lagCronExpression(DEFAULT_INTERVALL);
+        }
+
+        scheduledFuture = taskScheduler.schedule(new AnsettelseJobb(), new CronTrigger(cronExpression));
         log.info("Schedulet en task med intervall: {}", cronExpression);
 
-    }
-
-
-    private static class Job implements Runnable {
-
-        /**
-         * Funksjon som automatisk blir kalt på av en task-scheduler og kjører ansettelsesservice utenom lørdag fra
-         * klokken 12:00 til mandag klokken 06:00
-         */
-        @Override
-        public void run() {
-
-            /*
-            if (!((dag == mandag && clock <= 6AM) || (dag == lørdag && clock >= 12PM)) ){
-                //Kall på AnsettelseService her
-
-            }
-            */
-            log.info("Jobb kjørte!");
-        }
     }
 
     /**
@@ -95,4 +81,41 @@ public class JobScheduler {
     private String lagCronExpression(String intervallet) {
         return "0 0 */" + intervallet + " ? * MON-SAT";
     }
+
+    /**
+     * Funksjon som validerer om intervall er et positivt heltall. Brukes kun i this.rescheduleTask() metoden.
+     * @param intervall Heltall som representerer antall timer forsinkelse for job-scheduleren
+     * @return true hvis intervallet er et positivt heltall og false hvis ikke
+     */
+    private static boolean intervallErHeltall(String intervall) {
+        try {
+            Integer.parseInt(intervall);
+        } catch (NumberFormatException e) {
+            return false;
+        }
+        return true;
+    }
+
+
+    /**
+     * Klasse for jobben som skal kjøres av scheduler
+     */
+    private static class AnsettelseJobb implements Runnable {
+
+        /**
+         * Funksjon som automatisk blir kalt på av en task-scheduler og kjører ansettelsesservice utenom lørdag fra
+         * klokken 12:00 til mandag klokken 06:00
+         */
+        @Override
+        public void run() {
+
+            /*
+            if (!((dag == mandag && clock <= 6AM) || (dag == søndag) || (dag == lørdag && clock >= 12PM)) ){
+                //Kall på AnsettelseService her
+            }
+            */
+            log.info("Jobb kjørte!");
+        }
+    }
+
 }
