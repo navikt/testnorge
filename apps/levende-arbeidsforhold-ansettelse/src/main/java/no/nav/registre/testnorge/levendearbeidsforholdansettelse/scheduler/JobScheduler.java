@@ -35,7 +35,7 @@ public class JobScheduler {
      * Funksjon som henter ut en intervallet fra databasen.
      * Funksjonen kalles når appen kjøres opp og vil kun ha en effekt dersom intervallet eksisterer i databasen.
      */
-    @EventListener(ApplicationReadyEvent.class)
+    //@EventListener(ApplicationReadyEvent.class)
     public void scheduleTask(){
         //Hent ut intervall fra databasen, eller sett default-verdi
         log.info("Alle parametere: {}", jobbService.hentAlleParametere().toString());
