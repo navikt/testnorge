@@ -47,8 +47,8 @@ public class JobbService {
     public void initDb(){
         JobbParameterEntity jobbParameterEntity = JobbParameterEntity.builder().tekst("Antall Organisasjoner").navn("antallOrganisasjoner").verdi("100.0").build();
         jobberRepository.save(jobbParameterEntity);
-        JobbParameterEntity jobb2 = JobbParameterEntity.builder().navn("antallPersoner").tekst("Antall personer").verdi("20").build();
-        jobberRepository.save(jobb2);
+        //JobbParameterEntity jobb2 = JobbParameterEntity.builder().navn("antallPersoner").tekst("Antall personer").verdi("20").build();
+        //jobberRepository.save(jobb2);
         List<VerdierEntity> verdierEntities = new ArrayList<>();
         for(int i = 20; i<=100; i+=20){
             VerdierEntity verdier = VerdierEntity.builder().navn(jobbParameterEntity.getNavn()).verdi(String.valueOf(i)).build();
