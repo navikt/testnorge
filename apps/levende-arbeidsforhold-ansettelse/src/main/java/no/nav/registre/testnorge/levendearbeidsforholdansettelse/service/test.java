@@ -31,5 +31,6 @@ public class test {
     public void koverkTest(){
         Map<String, String> list = kodeverkService.hentKodeverk("yrker");
     }
+
      */
 }
