@@ -76,3 +76,5 @@ consumers:
     url: https://testnav-kodeverk-service.intern.dev.nav.no/
   testnav-tenor-search-service:
     url: https://testnav-tenor-search-service.intern.dev.nav.no
+  testnav-levende-arbeidsforhold-ansettelsev2:
+    url: https://testnav-levende-arbeidsforhold-ansettelsev2.intern.dev.nav.no

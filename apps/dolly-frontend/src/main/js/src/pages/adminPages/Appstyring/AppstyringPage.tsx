@@ -10,8 +10,9 @@ export default () => {
 	//if (!erDollyAdmin()) {
 	//	return <AdminAccessDenied/>
 	//}
-/*
+
 	const [apiData , setApiData] = useState([]);
+	/*
 	const headers = {
 		Authorization: 'Bearer '
 	}
@@ -23,9 +24,9 @@ export default () => {
 
 	*/
 	Request.get('testnav-levende-arbeidsforhold-ansettelsev2/api').then(
-		(response: OrgInfoResponse) => {
+		(response: any) => {
 			if (response != null) {
-				return response
+				console.log(response);
 			}
 		}
 	);
@@ -83,7 +84,7 @@ export default () => {
 	useEffect(() => {
 
 		async function fetchData() {
-			const req = await fetch('http://localhost:8080/api', {headers});
+			const req = await fetch('/testnav-levende-arbeidsforhold-ansettelsev2/api');
 			const res = await req.json();
 			console.log(res);
 
@@ -101,7 +102,7 @@ export default () => {
 			<Alert variant={'info'} style={{marginBottom: '15px'}}>
 				Denne siden er under utvikling.
 			</Alert>
-			<AppstyringTable data={apiData}/>
+			<AppstyringTable data={dataMock}/>
 		</>
 	)
 }
