@@ -16,12 +16,7 @@ import java.io.Serializable;
 @Setter
 @Table(name = "VERDIER")
 public class VerdierEntity implements Serializable {
-    /*
-    @ManyToOne(fetch = FetchType.LAZY)
-    private JobbParameterEntity jobbParameterEntity;
 
-
-     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")

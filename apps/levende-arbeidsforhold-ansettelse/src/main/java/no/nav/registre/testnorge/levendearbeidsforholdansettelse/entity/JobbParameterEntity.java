@@ -16,15 +16,9 @@ import java.util.Collection;
 @NoArgsConstructor
 @Getter
 @Setter
-@Table(name = "jobb_parameter")
+@Table(name = "JOBB_PARAMETER")
 public class JobbParameterEntity implements Serializable {
-    /*
-    @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private int ID;
 
-
-     */
     @Id
     @Column(name = "NAVN")
     private String navn;
