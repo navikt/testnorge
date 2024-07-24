@@ -8,6 +8,7 @@ import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.JobbPara
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.VerdierEntity;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.service.AnsettelseService;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.service.JobbService;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.scheduler.JobbScheduler;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.service.KodeverkService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -43,11 +44,6 @@ public class JobbController {
         //return ResponseEntity.ok().headers(responseHeaders).body(jobbService.hentAlleParametere());
         jobbService.initDb();
         return ResponseEntity.ok(jobbService.hentAlleParametere());
-
-        jobbService.initDb();
-
-        return ResponseEntity.ok().body(jobbService.hentAlleParametere());
-        //return ResponseEntity.ok(jobbService.hentAlleParametere());
     }
 /*
     @PostMapping("/parameter/ny")

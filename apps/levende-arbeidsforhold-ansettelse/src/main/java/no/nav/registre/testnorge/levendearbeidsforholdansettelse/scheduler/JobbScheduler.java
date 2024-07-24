@@ -5,13 +5,26 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.JobbParameterEntity;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.service.JobbService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.stereotype.Component;
 
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.concurrent.ScheduledFuture;
+
+import java.time.LocalDate;
+import java.time.DayOfWeek;
+import java.time.Clock;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+
 
 @Slf4j
 @Component
@@ -28,6 +41,8 @@ public class JobbScheduler {
 
     private static final String DEFAULT_INTERVALL = "24";
     private static final String INTERVALL_PARAM_NAVN = "intervall";
+    @Autowired
+    private no.nav.registre.testnorge.levendearbeidsforholdansettelse.service.test test;
 
     /**
      * Funksjon som henter ut en intervallet fra databasen
@@ -93,6 +108,45 @@ public class JobbScheduler {
         return true;
     }
 
+    private static boolean gyldigTidsrom(int startKlokka, int startDag, int sluttKlokka, int sluttDag, int klokkeslett, int idag){
+        LocalDate naa = LocalDate.now();
+//        DayOfWeek dagAvUken = naa.getDayOfWeek();
+//        int idag = dagAvUken.getValue();
+
+        //idag = 7
+        //startDag = 6
+        //sluttDag = 2
+        //true
+        return (idag > startDag && idag > sluttDag) || (idag > startDag && idag < sluttDag)
+                || ((idag == startDag && klokkeslett >= startKlokka)
+                || (idag == sluttDag && klokkeslett < sluttKlokka));
+
+    }
+
+    @EventListener(ApplicationReadyEvent.class)
+    private void testGyldigTidsrom(){
+        String funksjonsnavn = "testGyldigTidsrom";
+
+        log.info("Kjører tester!");
+
+        Date datoen = new Date();
+        Calendar kalender = GregorianCalendar.getInstance();
+        kalender.setTime(datoen);
+        int klokkeslett = kalender.get(Calendar.HOUR_OF_DAY);
+        log.info("Klokka: {}", klokkeslett);
+
+
+        //Skal bli true
+        if (!gyldigTidsrom(12, 6, 16, 2, 13, 7)){
+            log.warn("Test 1 for {} feilet!", funksjonsnavn);
+        }
+
+        //Skal bli false
+        if (gyldigTidsrom(12, 6, 16, 2, 13, 3)){
+            log.warn("Test 2 for {} feilet!", funksjonsnavn);
+        }
+    }
+
 
     /**
      * Klasse for jobben som skal kjøres av scheduler
@@ -105,6 +159,7 @@ public class JobbScheduler {
          */
         @Override
         public void run() {
+
 
             /*
             if (!((dag == mandag && clock <= 6AM) || (dag == søndag) || (dag == lørdag && clock >= 12PM)) ){
