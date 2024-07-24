@@ -12,4 +12,5 @@ create table verdier (
                          foreign key (verdi_navn) references jobb_parameter(navn)
 );
 
+
  */
