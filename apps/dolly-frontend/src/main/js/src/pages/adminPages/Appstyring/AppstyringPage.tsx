@@ -23,7 +23,7 @@ export default () => {
 
 
 	*/
-	Request.get('testnav-levende-arbeidsforhold-ansettelsev2/api').then(
+	Request.get('/testnav-levende-arbeidsforhold-ansettelsev2/api').then(
 		(response: any) => {
 			if (response != null) {
 				console.log(response);
