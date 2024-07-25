@@ -39,5 +39,11 @@ class JobbSchedulerTest {
 
         //Test for dag - Skal bli false
         assert !gyldigTidsrom(12, 5, 16, 7, 13, 4);
+
+        //Test for dag - Skal bli false
+        assert !gyldigTidsrom(12, 4, 16, 4, 13, 5);
+
+        //Test for dag - Skal bli true
+        assert gyldigTidsrom(12, 5, 16, 5, 13, 5);
     }
 }
