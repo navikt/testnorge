@@ -18,7 +18,6 @@ import java.util.Random;
 public class HentOrganisasjonNummerService {
     private final OrganisasjonFasteDataConsumer organisasjonFasteDataConsumer;
 
-    //@EventListener(ApplicationReadyEvent.class)
     public List<OrganisasjonDTO> hentAlleOrganisasjoner() {
         return organisasjonFasteDataConsumer.hentOrganisasjoner();
     }

@@ -26,36 +26,7 @@ public class test {
 
         List<JobbParameter> jobb2 = jobbService.hentAlleParametere();
         log.info("jobb2: {}", jobb2.toString() );
-        //List<JobbParameterVerdier> jobb = jobbService.hentAlleParametereMedVerdier();
-        //log.info("JobbParameteVerdier: {}", jobb.toString());
 
-
-
-
-        /*
-        List<JobbParameter> jobb = jobbService.hentAlleParametere();
-        List<String> test = jobbService.finnAlleVerdier(jobb.getFirst());
-        log.info("test å hente verdier: {}", test.toString());
-
-         */
-        /*
-        jobbService.initDb();
-        log.info("test");
-        jobbService.hentAlleParametere();
-
-        //jobbService.updateVerdi(JobbParameterEntity.builder().navn("antallOrganisasjoner").verdi("50").build());
-
-        jobbService.hentAlleParametere();
-
-        jobbService.hentAlleMedNavn("antallOrganisasjoner");
-
-         */
-    }
-    /*
-    @EventListener(ApplicationReadyEvent.class)
-    public void koverkTest(){
-        Map<String, String> list = kodeverkService.hentKodeverk("yrker");
     }
 
-     */
 }

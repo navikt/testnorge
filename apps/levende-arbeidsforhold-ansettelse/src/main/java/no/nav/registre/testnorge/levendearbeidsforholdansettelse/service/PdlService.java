@@ -27,17 +27,7 @@ public class PdlService {
     private String to;
     private String postnr;
 
-    /*
-    SokPersonVariables sokPerson = SokPersonVariables
-                .builder()
-                .pageNumber(1)
-                .resultsPerPage(5)
-                .from("1955")
-                .to("2006")
-                .postnr("1???")
-                .build();
-     */
-    //@EventListener(ApplicationReadyEvent.class)
+
     public List<Ident> getPersoner(){
 
         SokPersonVariables sokPersonVariables = lagSokPersonVariables(

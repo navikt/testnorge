@@ -64,13 +64,5 @@ public class ArbeidsforholdService {
                 .build();
     }
 
-    /*
-    @EventListener(ApplicationReadyEvent.class)
-    public void testOpprettArbeidsforhold() {
-        opprettArbeidsforhold("23456833225", "896929119");
-        log.info(String.valueOf(hentArbeidsforhold("23456833225")));
-    }
-
-     */
 }
 

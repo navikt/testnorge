@@ -17,7 +17,7 @@ public class KodeverkService {
 
     @Getter
     private List<String> koder;
-    //@EventListener(ApplicationReadyEvent.class)
+
     public Map<String, String> hentKodeverk(String kodeverk){
         return kodeverkServiceConsumer.hentKodeverk(kodeverk);
     }
