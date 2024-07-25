@@ -23,7 +23,11 @@ public class JobbService {
         List<JobbParameter> test = jobberRepository.findAll();
         return test;
     }
-
+    public Map<JobbParameter, List<String>> hentAlleParametereMedVerdier(){
+        Map<JobbParameter, List<String>> jobbParameterMap = new HashMap<>();
+        hentAlleParametere().forEach(jobbParameter -> jobbParameterMap.put(jobbParameter, finnAlleVerdier(jobbParameter)));
+        return jobbParameterMap;
+    }
     public JobbParameter hentJobbParameter(String navn){
         return jobberRepository.findByNavn(navn);
     }

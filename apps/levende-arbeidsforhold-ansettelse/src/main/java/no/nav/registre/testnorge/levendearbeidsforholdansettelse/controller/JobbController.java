@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -24,8 +25,8 @@ public class JobbController {
     private final AnsettelseService ansettelseService;
 
     @GetMapping
-    public ResponseEntity<List<JobbParameter>> hentAlleJobber() {
-        return ResponseEntity.ok(jobbService.hentAlleParametere());
+    public ResponseEntity<Map<JobbParameter, List<String>>> hentAlleJobber() {
+        return ResponseEntity.ok(jobbService.hentAlleParametereMedVerdier());
     }
 
     @GetMapping("/verdi/{parameterNavn}")
