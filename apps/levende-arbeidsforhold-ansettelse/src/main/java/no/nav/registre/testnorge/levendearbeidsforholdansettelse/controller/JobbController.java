@@ -26,13 +26,16 @@ public class JobbController {
     private final AnsettelseService ansettelseService;
 
     @GetMapping
-    public ResponseEntity<List<JobbParameterVerdier>> hentAlleJobber() {
-        return ResponseEntity.ok(jobbService.hentAlleParametereMedVerdier());
+    public ResponseEntity<List<JobbParameter>> hentAlleJobber() {
+        return ResponseEntity.ok(jobbService.hentAlleParametere());
     }
+    /*
     @GetMapping("/parameter2")
     public ResponseEntity<List<JobbParameterVerdier>> hentAlleJobber2(){
         return ResponseEntity.ok(jobbService.hentAlleParametereMedVerdier());
     }
+
+     */
 
     @GetMapping("/verdi/{parameterNavn}")
     public ResponseEntity<List<String>> hentVerdier(@PathVariable("parameterNavn") String parameternavn) {

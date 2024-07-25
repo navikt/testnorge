@@ -21,15 +21,15 @@ public class test {
 
     private final JobbService jobbService;
     private final KodeverkService kodeverkService;
-    //@EventListener(ApplicationReadyEvent.class)
+    @EventListener(ApplicationReadyEvent.class)
     public void testDb() {
-        /*
+
         List<JobbParameter> jobb2 = jobbService.hentAlleParametere();
         log.info("jobb2: {}", jobb2.toString() );
         List<JobbParameterVerdier> jobb = jobbService.hentAlleParametereMedVerdier();
         log.info("JobbParameteVerdier: {}", jobb.toString());
 
-         */
+
         /*
         List<JobbParameter> jobb = jobbService.hentAlleParametere();
         List<String> test = jobbService.finnAlleVerdier(jobb.getFirst());
