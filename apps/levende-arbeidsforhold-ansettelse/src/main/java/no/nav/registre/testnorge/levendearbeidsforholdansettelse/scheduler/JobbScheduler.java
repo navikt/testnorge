@@ -116,7 +116,7 @@ public class JobbScheduler {
      * @param sluttDag Tall som representerer dag i uken fra 1-7 (man-søn) for start på gyldig tidsrom
      * @param klokkeslett Tall som representerer timen i en 24-timers klokke for nåværende tidspunkt
      * @param idag Tall som representerer dagen i uken i en 24-timers klokke
-     * @return true hvis idag og klokkeslett er innenfor det gitte tidsrommet i en vilkårlig uke
+     * @return true hvis angitt dag og klokkeslett er innenfor det gitte tidsrommet i en vilkårlig uke
      */
     public static boolean gyldigTidsrom(int startKlokka, int startDag, int sluttKlokka, int sluttDag, int klokkeslett, int idag){
         return (startDag > sluttDag && (idag > startDag || idag < sluttDag)) //Ved ukes-skifte
@@ -126,6 +126,14 @@ public class JobbScheduler {
     }
 
 
+    /**
+     * Funksjon som sjekker om nåværende tidspunkt med klokke-time og dag er innenfor gyldig tidsrom
+     * @param startKlokka Tall som representerer timen i en 24-timers klokke for klokkeslett på start for gyldig tidsrom
+     * @param startDag Tall som representerer dag i uken fra 1-7 (man-søn) for start på gyldig tidsrom
+     * @param sluttKlokka Tall som representerer timen i en 24-timers klokke for klokkeslett på start for gyldig tidsrom
+     * @param sluttDag Tall som representerer dag i uken fra 1-7 (man-søn) for start på gyldig tidsrom
+     * @return true hvis nåværende dag og klokkeslett er innenfor det gitte tidsrommet i en vilkårlig uke
+     */
     public boolean sjekkOmGyldigTidsrom(int startKlokka, int startDag, int sluttKlokka, int sluttDag){
 
         Date dato = new Date();
