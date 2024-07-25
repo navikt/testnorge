@@ -108,44 +108,23 @@ public class JobbScheduler {
         return true;
     }
 
-    private static boolean gyldigTidsrom(int startKlokka, int startDag, int sluttKlokka, int sluttDag, int klokkeslett, int idag){
-        LocalDate naa = LocalDate.now();
-//        DayOfWeek dagAvUken = naa.getDayOfWeek();
-//        int idag = dagAvUken.getValue();
-
-        //idag = 7
-        //startDag = 6
-        //sluttDag = 2
-        //true
+    /**
+     * Funksjon som validerer om angitt tidspunkt er innenfor et gitt tidsrom for en vilkårlig uke.
+     * Brukes i forbindelse med å ikke kjøre AnsettelseJobb-klassen på gitte-tidspunkter i helgen for eksempel.
+     * @param startKlokka Tall som representerer timen i en 24-timers klokke for klokkeslett på start for gyldig tidsrom
+     * @param startDag Tall som representerer dag i uken fra 1-7 (man-søn) for start på gyldig tidsrom
+     * @param sluttKlokka Tall som representerer timen i en 24-timers klokke for klokkeslett på start for gyldig tidsrom
+     * @param sluttDag Tall som representerer dag i uken fra 1-7 (man-søn) for start på gyldig tidsrom
+     * @param klokkeslett Tall som representerer timen i en 24-timers klokke for nåværende tidspunkt
+     * @param idag Tall som representerer dagen i uken i en 24-timers klokke
+     * @return true hvis idag og klokkeslett er innenfor det gitte tidsrommet i en vilkårlig uke
+     */
+    public static boolean gyldigTidsrom(int startKlokka, int startDag, int sluttKlokka, int sluttDag, int klokkeslett, int idag){
         return (idag > startDag && idag > sluttDag) || (idag > startDag && idag < sluttDag)
                 || ((idag == startDag && klokkeslett >= startKlokka)
                 || (idag == sluttDag && klokkeslett < sluttKlokka));
-
     }
 
-    @EventListener(ApplicationReadyEvent.class)
-    private void testGyldigTidsrom(){
-        String funksjonsnavn = "testGyldigTidsrom";
-
-        log.info("Kjører tester!");
-
-        Date datoen = new Date();
-        Calendar kalender = GregorianCalendar.getInstance();
-        kalender.setTime(datoen);
-        int klokkeslett = kalender.get(Calendar.HOUR_OF_DAY);
-        log.info("Klokka: {}", klokkeslett);
-
-
-        //Skal bli true
-        if (!gyldigTidsrom(12, 6, 16, 2, 13, 7)){
-            log.warn("Test 1 for {} feilet!", funksjonsnavn);
-        }
-
-        //Skal bli false
-        if (gyldigTidsrom(12, 6, 16, 2, 13, 3)){
-            log.warn("Test 2 for {} feilet!", funksjonsnavn);
-        }
-    }
 
 
     /**
