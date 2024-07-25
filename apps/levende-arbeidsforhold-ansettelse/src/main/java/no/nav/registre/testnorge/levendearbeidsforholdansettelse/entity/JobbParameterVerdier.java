@@ -11,12 +11,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class JobbParameterVerdier {
-
-    private JobbParameter jobbParameter;
+    private String navn;
+    private String tekst;
+    private String verdi;
     private List<String> verdier;
-
-    @Override
-    public String toString(){
-        return "JobbParameter: " +jobbParameter.toString()+ " verdier: " +verdier.toString();
-    }
 }

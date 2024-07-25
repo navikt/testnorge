@@ -21,9 +21,10 @@ public class JobbService {
     private final JobberRepository jobberRepository;
     private final VerdiRepository verdiRepository;
     public List<JobbParameter> hentAlleParametere(){
-        List<JobbParameter> test = jobberRepository.findAll();
-        return test;
+        return jobberRepository.findAll();
+
     }
+    /*
     public List<JobbParameterVerdier> hentAlleParametereMedVerdier(){
         //Map<JobbParameter, List<String>> jobbParameterMap = new HashMap<>();
         List<JobbParameterVerdier> jobb = new ArrayList<>();

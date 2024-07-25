@@ -30,12 +30,14 @@ public class JobbController {
         return ResponseEntity.ok(jobbService.hentAlleParametere());
     }
     /*
-    @GetMapping("/parameter2")
+    @GetMapping("/hentParameterVerdier")
     public ResponseEntity<List<JobbParameterVerdier>> hentAlleJobber2(){
         return ResponseEntity.ok(jobbService.hentAlleParametereMedVerdier());
     }
 
      */
+
+
 
     @GetMapping("/verdi/{parameterNavn}")
     public ResponseEntity<List<String>> hentVerdier(@PathVariable("parameterNavn") String parameternavn) {

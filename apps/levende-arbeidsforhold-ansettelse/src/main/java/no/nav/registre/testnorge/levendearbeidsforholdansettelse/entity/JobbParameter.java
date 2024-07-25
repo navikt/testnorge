@@ -1,5 +1,8 @@
 package no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -28,12 +31,37 @@ public class JobbParameter {
     @Column(name = "verdi")
     private String verdi;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "verdiNavn", cascade = CascadeType.ALL)
-    private List<Verdier> verdierList;
+    @Column(name = "verdier")
+    private String verdierList;
+    //@Override
+    //public void setVerdierList(String verdier){
+    //    verdier.split(",");
 
+    //}
+    //public void setverd
     @Override
     public String toString(){
-        return "Navn: " + navn + ", tekst: " + tekst + " verdi: " +verdi;
+        return "Navn: " + navn + ", tekst: " + tekst + " verdi: " +verdi + " verdierListe: " +verdierList;
     }
+/*
+    private static String stringArrayTOString(String[] input){
+        StringBuffer sb = new StringBuffer("");
+        int i = 0;
+        for(String value:input){
+            if(i!=0){
+                sb.append(",");
+            }
+            sb.append(value);
+            i++;
+        }
+        return sb.toString();
+
+        private static String[] stringToStringArray(String input) {
+            String[] output = input.split(",");
+            return output;
+        }
+    }
+
+ */
 
 }
