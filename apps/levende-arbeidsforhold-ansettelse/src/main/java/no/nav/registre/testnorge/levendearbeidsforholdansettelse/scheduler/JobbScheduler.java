@@ -44,19 +44,15 @@ public class JobbScheduler {
     private AnsettelseService ansettelseService;
 
     /**
-     * Funksjon som henter ut en intervallet fra databasen
+     * Funksjon som henter ut en intervallet fra databasen og starter scheduleren dersom det eksisterer
      */
     //@EventListener(ApplicationReadyEvent.class)
     public void scheduleMedIntervallFraDb(){
-        //Hent ut intervall fra databasen, eller sett default-verdi
-        log.info("Alle parametere: {}", jobbService.hentAlleParametere().toString());
-
         List<JobbParameterEntity> parametere = jobbService.hentAlleParametere();
 
         parametere.forEach(param -> {
             if(param.getNavn().equals(INTERVALL_PARAM_NAVN)){
                 String intervall = param.getVerdi();
-                log.info("Parameter-verdi for intervall: {}", intervall);
                 startScheduler(intervall);
             }
         });
@@ -80,8 +76,6 @@ public class JobbScheduler {
         }
 
         scheduledFuture = taskScheduler.schedule(new AnsettelseJobb(), new CronTrigger(cronExpression));
-        log.info("Schedulet en task med intervall: {}", cronExpression);
-
     }
 
     /**
