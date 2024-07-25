@@ -12,10 +12,10 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
-import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 @Slf4j
 @Service
@@ -37,7 +37,7 @@ public class AnsettelseService  {
         Thread thread = new Thread(this::ansettelseService);
         thread.start();
         try {
-            thread.join(30000); // Timeout after 3 seconds
+            thread.join(30000); // Timeout after 30 seconds
             if (thread.isAlive()) {
                 thread.interrupt();
                 System.out.println("Timeout occurred");
