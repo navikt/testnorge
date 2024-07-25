@@ -3,27 +3,19 @@ package no.nav.registre.testnorge.levendearbeidsforholdansettelse.scheduler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.JobbParameterEntity;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.service.AnsettelseService;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.service.JobbService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.stereotype.Component;
-
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.concurrent.ScheduledFuture;
-
-import java.time.LocalDate;
-import java.time.DayOfWeek;
-import java.time.Clock;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 
 
 @Slf4j
@@ -41,8 +33,15 @@ public class JobbScheduler {
 
     private static final String DEFAULT_INTERVALL = "24";
     private static final String INTERVALL_PARAM_NAVN = "intervall";
+
+    private static final int START_KLOKKESLETT = 6;
+    private static final int START_DAG = 1;
+
+    private static final int SLUTT_KLOKKESLETT = 12;
+    private static final int SLUTT_DAG = 6;
+    
     @Autowired
-    private no.nav.registre.testnorge.levendearbeidsforholdansettelse.service.test test;
+    private AnsettelseService ansettelseService;
 
     /**
      * Funksjon som henter ut en intervallet fra databasen
@@ -141,23 +140,17 @@ public class JobbScheduler {
     /**
      * Klasse for jobben som skal kjøres av scheduler
      */
-    private static class AnsettelseJobb implements Runnable {
+    private class AnsettelseJobb implements Runnable {
 
         /**
-         * Funksjon som automatisk blir kalt på av en task-scheduler og kjører ansettelsesservice utenom lørdag fra
-         * klokken 12:00 til mandag klokken 06:00
+         * Funksjon som automatisk blir kalt på av en task-scheduler og kjører ansettelsesservice innenfor gyldig
+         * tidsrom
          */
         @Override
         public void run() {
-
-
-            /*
-            if (!((dag == mandag && clock <= 6AM) || (dag == søndag) || (dag == lørdag && clock >= 12PM)) ){
-                //Kall på AnsettelseService her
-
+            if(sjekkOmGyldigTidsrom(START_KLOKKESLETT, START_DAG, SLUTT_KLOKKESLETT, SLUTT_DAG)){
+                ansettelseService.runAnsettelseService();
             }
-            */
-            log.info("Jobb kjørte fra scheduler!");
         }
     }
 
