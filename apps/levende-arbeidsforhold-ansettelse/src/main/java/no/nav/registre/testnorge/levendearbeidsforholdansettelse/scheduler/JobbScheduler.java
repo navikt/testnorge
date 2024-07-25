@@ -120,12 +120,23 @@ public class JobbScheduler {
      * @return true hvis idag og klokkeslett er innenfor det gitte tidsrommet i en vilkårlig uke
      */
     public static boolean gyldigTidsrom(int startKlokka, int startDag, int sluttKlokka, int sluttDag, int klokkeslett, int idag){
-        return (idag > startDag && idag > sluttDag) || (idag > startDag && idag < sluttDag)
-                || ((idag == startDag && klokkeslett >= startKlokka)
-                || (idag == sluttDag && klokkeslett < sluttKlokka));
+        return (startDag > sluttDag && (idag > startDag || idag < sluttDag)) //Ved ukes-skifte
+                || (idag > startDag && idag < sluttDag) //Innad i samme uke
+                || ((idag == startDag && klokkeslett >= startKlokka) //Samme dag, startdag
+                || (idag == sluttDag && klokkeslett < sluttKlokka)); //Samme dag, sluttdag
     }
 
 
+    public boolean sjekkOmGyldigTidsrom(int startKlokka, int startDag, int sluttKlokka, int sluttDag){
+
+        Date dato = new Date();
+        Calendar kalender = GregorianCalendar.getInstance();
+        kalender.setTime(dato);
+        int klokkeslett = kalender.get(Calendar.HOUR_OF_DAY); //06:00 = 6, 13:00 = 13, 23:00 = 23
+        int dag = ((kalender.get(Calendar.DAY_OF_WEEK) + 6) % 7); //Mandag = 1, Tirsag = 2 ... Søndag = 7
+
+        return gyldigTidsrom(startKlokka, startDag, sluttKlokka, sluttDag, klokkeslett, dag);
+    }
 
     /**
      * Klasse for jobben som skal kjøres av scheduler
