@@ -6,6 +6,8 @@ import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.dto.Orga
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.organisasjon.Organisasjon;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+//import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
+
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.config.Consumers;

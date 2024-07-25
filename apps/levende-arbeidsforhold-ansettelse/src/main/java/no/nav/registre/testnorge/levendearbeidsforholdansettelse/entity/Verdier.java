@@ -25,4 +25,10 @@ public class Verdier {
     @Column(name = "verdi_verdi")
     private String verdiVerdi;
 
+    @Override
+    public String toString(){
+        //String re = "verdiNavn: {}, verdiVerdi: {}", verdiNavn.verdiNavn, verdiVerdi
+        return "verdiNavn: "+ verdiNavn.getNavn()+ "verdiVerdi: " +  verdiVerdi;
+    }
+
 }

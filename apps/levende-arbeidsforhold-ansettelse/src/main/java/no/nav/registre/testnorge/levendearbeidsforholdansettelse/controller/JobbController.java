@@ -25,23 +25,13 @@ public class JobbController {
 
     @GetMapping
     public ResponseEntity<List<JobbParameter>> hentAlleJobber() {
-
-
-        //return ResponseEntity.ok().headers(responseHeaders).body(jobbService.hentAlleParametere());
-        jobbService.initDb();
         return ResponseEntity.ok(jobbService.hentAlleParametere());
     }
-/*
-    @PostMapping("/parameter/ny")
-    public ResponseEntity<JobbParameterEntity> lagParameter(@RequestParam JobbParameterEntity jobbParameterEntity) {
-        jobbService.lagreParameter(jobbParameterEntity);
-        return ResponseEntity.ok(jobbParameterEntity);
-    }
-*/
+
     @GetMapping("/verdi/{parameterNavn}")
-    public List<Verdier> hentVerdier(@PathVariable("parameterNavn") String parameternavn) {
+    public ResponseEntity<List<String>> hentVerdier(@PathVariable("parameterNavn") String parameternavn) {
         JobbParameter jobbParameter = jobbService.hentJobbParameter(parameternavn);
-        return jobbService.hentAlleMedNavn(jobbParameter);
+        return ResponseEntity.ok(jobbService.finnAlleVerdier(jobbParameter));
     }
 
     @PutMapping("/oppdatereVerdier/{parameterNavn}")
@@ -51,10 +41,6 @@ public class JobbController {
         return ResponseEntity.ok(jobbService.updateVerdi(jobbParameter));
     }
 
-    @GetMapping("/kjor")
-    public void kjor(){
-        ansettelseService.runAnsettelseService();
-    }
 
 
 }

@@ -27,17 +27,14 @@ public class JobbService {
     public JobbParameter hentJobbParameter(String navn){
         return jobberRepository.findByNavn(navn);
     }
-    public List<Verdier> hentAlleMedNavn(JobbParameter jobbParameter){
-        //JobbParameter org = jobberRepository.findByNavn(navn);
-        //org.getVerdier();
-        List<Verdier> test = verdiRepository.findByVerdiNavn(jobbParameter);
-        //List<VerdierEntity> test2 = verdiRepository.hentVerdier(navn);
 
-        log.info("Henter fra verdier table {}", test.toString());
-        //log.info("Henter navn fra table {}", test2.toString());
-        return test;
+
+    public List<String> finnAlleVerdier(JobbParameter jobbParameter){
+        List<String> verdierListe = new ArrayList<>();
+        verdiRepository.findVerdierByVerdiNavn(jobbParameter).forEach(verdier -> verdierListe.add(verdier.getVerdiVerdi()));
+        return  verdierListe;
+
     }
-
     public Map<String, String> hentParameterMap() {
         List<JobbParameter> jobbParametere = hentAlleParametere();
         Map<String, String> parameterMap = new HashMap<>();
@@ -47,24 +44,6 @@ public class JobbService {
         return parameterMap;
     }
 
-    public void initDb(){
-        /*
-        JobbParameterEntity jobbParameterEntity = JobbParameterEntity.builder().tekst("Antall Organisasjoner").navn("antallOrganisasjoner").verdi("100.0").build();
-        jobberRepository.save(jobbParameterEntity);
-        //JobbParameterEntity jobb2 = JobbParameterEntity.builder().navn("antallPersoner").tekst("Antall personer").verdi("20").build();
-        //jobberRepository.save(jobb2);
-        List<VerdierEntity> verdierEntities = new ArrayList<>();
-        for(int i = 20; i<=100; i+=20){
-            VerdierEntity verdier = VerdierEntity.builder().navn(jobbParameterEntity.getNavn()).verdi(String.valueOf(i)).build();
-            verdierEntities.add(verdier);
-            verdiRepository.save(verdier);
-        }
-        jobbParameterEntity.setVerdier(verdierEntities);
-        jobberRepository.save(jobbParameterEntity);
-
-         */
-
-    }
 
     public void lagreParameter(JobbParameter jobbParameterEntity){
         jobberRepository.save(jobbParameterEntity);
@@ -79,19 +58,4 @@ public class JobbService {
         return jobb;
 
     }
-/*
-    @Autowired
-    private JobberRepository jobberRepository;
-
-    @EventListener(ApplicationReadyEvent.class)
-    public void skrivUtParametere(){
-        log.info("Jobber:");
-        hentParametere().forEach(param -> log.info(param.hentParamNavn()));
-    }
-
-    public List<JobbParameter> hentParametere(){
-        return jobberRepository.findAll();
-    }
-
- */
 }
