@@ -12,10 +12,11 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
-import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.time.Year;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 @Slf4j
 @Service
@@ -28,8 +29,8 @@ public class AnsettelseService  {
     private final ArbeidsforholdService arbeidsforholdService;
     private final JobbService jobbService;
     private final KodeverkService kodeverkService;
-    private final String from = "1955";
-    private final String to = "2006";
+    private static final int MIN_ALDER = 18;
+    private static final int MAKS_ALDER = 70;
     private final String yrke = "7125102";
 
     //@EventListener(ApplicationReadyEvent.class)
@@ -37,7 +38,7 @@ public class AnsettelseService  {
         Thread thread = new Thread(this::ansettelseService);
         thread.start();
         try {
-            thread.join(30000); // Timeout after 3 seconds
+            thread.join(30000); // Timeout after 30 seconds
             if (thread.isAlive()) {
                 thread.interrupt();
                 System.out.println("Timeout occurred");
@@ -73,6 +74,14 @@ public class AnsettelseService  {
         }
 
         int finalAntallPersPerOrg = antallPersPerOrg;
+
+        int currentYear = Year.now().getValue();
+
+        int from_age = currentYear - MAKS_ALDER;
+        int to_age = currentYear - MIN_ALDER;
+
+        String from = "" + from_age;
+        String to = "" + to_age;
 
         organisasjoner.forEach(
                 organisasjon -> {
