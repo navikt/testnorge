@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 //import no.nav.testnav.examples.reactiverestexample.JobbParameter;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.JobbParameter;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.JobbParameterVerdier;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.Verdier;
 import org.quartz.Job;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -20,10 +21,15 @@ public class test {
 
     private final JobbService jobbService;
     private final KodeverkService kodeverkService;
-    //&@EventListener(ApplicationReadyEvent.class)
+    //@EventListener(ApplicationReadyEvent.class)
     public void testDb() {
-        //Map<JobbParameter, List<String>> map = jobbService.hentAlleParametereMedVerdier();
-        //log.info("Map: {}", map.toString());
+        /*
+        List<JobbParameter> jobb2 = jobbService.hentAlleParametere();
+        log.info("jobb2: {}", jobb2.toString() );
+        List<JobbParameterVerdier> jobb = jobbService.hentAlleParametereMedVerdier();
+        log.info("JobbParameteVerdier: {}", jobb.toString());
+
+         */
         /*
         List<JobbParameter> jobb = jobbService.hentAlleParametere();
         List<String> test = jobbService.finnAlleVerdier(jobb.getFirst());

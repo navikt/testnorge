@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.JobbParameter;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.JobbParameterVerdier;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.Verdier;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.repository.JobberRepository;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.repository.VerdiRepository;
@@ -23,11 +24,18 @@ public class JobbService {
         List<JobbParameter> test = jobberRepository.findAll();
         return test;
     }
-    public Map<JobbParameter, List<String>> hentAlleParametereMedVerdier(){
-        Map<JobbParameter, List<String>> jobbParameterMap = new HashMap<>();
-        hentAlleParametere().forEach(jobbParameter -> jobbParameterMap.put(jobbParameter, finnAlleVerdier(jobbParameter)));
-        return jobbParameterMap;
+    public List<JobbParameterVerdier> hentAlleParametereMedVerdier(){
+        //Map<JobbParameter, List<String>> jobbParameterMap = new HashMap<>();
+        List<JobbParameterVerdier> jobb = new ArrayList<>();
+        hentAlleParametere().forEach(jobbParameter -> jobb.add(JobbParameterVerdier.builder().jobbParameter(jobbParameter).verdier(finnAlleVerdier(jobbParameter)).build()));
+        return jobb;
     }
+    /*
+    public Map<JobbParameter, List<Verdier>> hentAlleParameterSomMap(){
+        Map<JobbParameter>
+    }
+
+     */
     public JobbParameter hentJobbParameter(String navn){
         return jobberRepository.findByNavn(navn);
     }

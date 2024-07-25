@@ -4,6 +4,7 @@ package no.nav.registre.testnorge.levendearbeidsforholdansettelse.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.JobbParameter;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.JobbParameterVerdier;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.Verdier;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.service.AnsettelseService;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.service.JobbService;
@@ -25,7 +26,11 @@ public class JobbController {
     private final AnsettelseService ansettelseService;
 
     @GetMapping
-    public ResponseEntity<Map<JobbParameter, List<String>>> hentAlleJobber() {
+    public ResponseEntity<List<JobbParameterVerdier>> hentAlleJobber() {
+        return ResponseEntity.ok(jobbService.hentAlleParametereMedVerdier());
+    }
+    @GetMapping("/parameter2")
+    public ResponseEntity<List<JobbParameterVerdier>> hentAlleJobber2(){
         return ResponseEntity.ok(jobbService.hentAlleParametereMedVerdier());
     }
 
