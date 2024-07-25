@@ -18,11 +18,14 @@ public class test {
 
     private final JobbService jobbService;
     private final KodeverkService kodeverkService;
-    @EventListener(ApplicationReadyEvent.class)
+    //@EventListener(ApplicationReadyEvent.class)
     public void testDb() {
+        /*
         List<JobbParameter> jobb = jobbService.hentAlleParametere();
         List<String> test = jobbService.finnAlleVerdier(jobb.getFirst());
         log.info("test å hente verdier: {}", test.toString());
+
+         */
         /*
         jobbService.initDb();
         log.info("test");
