@@ -47,8 +47,9 @@ public class JobbController {
 
     @PutMapping("/oppdatereVerdier/{parameterNavn}")
     @Operation(description = "Legg inn nye verdier for en parameter")
-    public ResponseEntity<JobbParameter> oppdatereVerdier(@PathVariable("parameterNavn") String parameterNavn ){
+    public ResponseEntity<JobbParameter> oppdatereVerdier(@PathVariable("parameterNavn") String parameterNavn, @RequestBody String verdi){
         JobbParameter jobbParameter = jobbService.hentJobbParameter(parameterNavn);
+        jobbParameter.setVerdi(verdi);
         return ResponseEntity.ok(jobbService.updateVerdi(jobbParameter));
     }
 
