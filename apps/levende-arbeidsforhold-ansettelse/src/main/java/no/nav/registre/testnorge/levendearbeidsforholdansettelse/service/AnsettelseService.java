@@ -58,17 +58,17 @@ public class AnsettelseService  {
         }
 
         Map<String, String> parametere = hentParametere();
-        //List<OrganisasjonDTO> organisasjoner = hentOrganisasjoner(Integer.parseInt(parametere.get("antallOrganisasjoner")));
+        List<OrganisasjonDTO> organisasjoner = hentOrganisasjoner(Integer.parseInt(parametere.get("antallOrganisasjoner")));
 
-        List<OrganisasjonDTO> organisasjoner = hentOrganisasjoner(dbParametere.get("antallOrg"));
+        //List<OrganisasjonDTO> organisasjoner = hentOrganisasjoner(dbParametere.get("antallOrg"));
         if (organisasjoner.isEmpty()) {
             return;
         }
         int antallPersPerOrg = 0;
 
         try {
-            //antallPersPerOrg = getAntallAnsettelserHverOrg(Integer.parseInt(parametere.get("antallPersoner")), Integer.parseInt(parametere.get("antallOrganisasjoner")));
-            antallPersPerOrg = getAntallAnsettelserHverOrg(dbParametere.get("antallPers"), dbParametere.get("antallOrg"));
+            antallPersPerOrg = getAntallAnsettelserHverOrg(Integer.parseInt(parametere.get("antallPersoner")), Integer.parseInt(parametere.get("antallOrganisasjoner")));
+            //antallPersPerOrg = getAntallAnsettelserHverOrg(dbParametere.get("antallPers"), dbParametere.get("antallOrg"));
         } catch (NumberFormatException e) {
             log.error("Feil format på verdi");
         }
