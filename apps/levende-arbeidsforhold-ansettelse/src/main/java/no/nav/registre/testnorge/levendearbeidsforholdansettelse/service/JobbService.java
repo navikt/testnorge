@@ -4,8 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.JobbParameter;
-import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.JobbParameterVerdier;
-import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.Verdier;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.repository.JobberRepository;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.repository.VerdiRepository;
 import org.springframework.stereotype.Service;

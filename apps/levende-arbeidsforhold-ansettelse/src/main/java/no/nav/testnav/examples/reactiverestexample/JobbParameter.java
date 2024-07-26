@@ -1,4 +1,4 @@
-package no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity;
+package no.nav.testnav.examples.reactiverestexample;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -32,6 +32,5 @@ public class JobbParameter {
 
     @Column(name = "verdier")
     private List<String> verdier;
-
 
 }

@@ -5,16 +5,14 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.JobbParameter;
-import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.JobbParameterVerdier;
-import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.Verdier;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.service.AnsettelseService;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.service.JobbService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @RestController
@@ -51,9 +49,10 @@ public class JobbController {
     @Operation(description = "Legg inn nye verdier for en parameter")
     public ResponseEntity<JobbParameter> oppdatereVerdier(@PathVariable("parameterNavn") String parameterNavn, @RequestBody String verdi){
         log.info("Fått PUT-request parameternavn: {}, verdi: {}", parameterNavn, verdi);
+        String[] nyVerdi = verdi.split(":");
         JobbParameter jobbParameter = jobbService.hentJobbParameter(parameterNavn);
         log.info("Jobbparameter: {}", jobbParameter.toString() );
-        jobbParameter.setVerdi(verdi);
+        jobbParameter.setVerdi(nyVerdi[nyVerdi.length-1]);
         log.info("verdi satt {}", jobbParameter.toString());
         return ResponseEntity.ok(jobbService.updateVerdi(jobbParameter));
     }
