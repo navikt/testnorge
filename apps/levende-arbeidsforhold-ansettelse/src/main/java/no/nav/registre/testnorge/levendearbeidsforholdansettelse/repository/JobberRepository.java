@@ -1,14 +1,14 @@
 package no.nav.registre.testnorge.levendearbeidsforholdansettelse.repository;
 
 
-import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.JobbParameterEntity;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.JobbParameter;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface JobberRepository extends JpaRepository<JobbParameterEntity, String> {
+public interface JobberRepository extends JpaRepository<JobbParameter, String> {
     //@Query("select * from JOBB_PARAM")
-    List<JobbParameterEntity> findAll();
+    List<JobbParameter> findAll();
 
-    JobbParameterEntity findByNavn(String navn);
+    JobbParameter findByNavn(String navn);
 }

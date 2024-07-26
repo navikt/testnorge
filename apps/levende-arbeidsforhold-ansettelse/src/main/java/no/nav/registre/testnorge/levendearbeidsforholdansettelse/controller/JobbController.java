@@ -3,67 +3,61 @@ package no.nav.registre.testnorge.levendearbeidsforholdansettelse.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
-import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.kodeverk.KodeverkNavn;
-import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.JobbParameterEntity;
-import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.VerdierEntity;
+import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.JobbParameter;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.service.AnsettelseService;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.service.JobbService;
-import no.nav.registre.testnorge.levendearbeidsforholdansettelse.scheduler.JobbScheduler;
-import no.nav.registre.testnorge.levendearbeidsforholdansettelse.service.KodeverkService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:3000")
 public class JobbController {
 
     @Autowired
     private final JobbService jobbService;
 
-    @Autowired
-    private final JobbScheduler jobbScheduler;
-
     private final AnsettelseService ansettelseService;
 
     @GetMapping
-    public ResponseEntity<List<JobbParameterEntity>> hentAlleJobber() {
-
-
-        //return ResponseEntity.ok().headers(responseHeaders).body(jobbService.hentAlleParametere());
-        jobbService.initDb();
+    public ResponseEntity<List<JobbParameter>> hentAlleJobber() {
         return ResponseEntity.ok(jobbService.hentAlleParametere());
     }
-/*
-    @PostMapping("/parameter/ny")
-    public ResponseEntity<JobbParameterEntity> lagParameter(@RequestParam JobbParameterEntity jobbParameterEntity) {
-        jobbService.lagreParameter(jobbParameterEntity);
-        return ResponseEntity.ok(jobbParameterEntity);
+    /*
+    @GetMapping("/hentParameterVerdier")
+    public ResponseEntity<List<JobbParameterVerdier>> hentAlleJobber2(){
+        return ResponseEntity.ok(jobbService.hentAlleParametereMedVerdier());
     }
-*/
+
+     */
+
+
+
     @GetMapping("/verdi/{parameterNavn}")
-    public List<VerdierEntity> hentVerdier(@PathVariable("parameterNavn") String parameternavn) {
-        return jobbService.hentAlleMedNavn(parameternavn);
+    public ResponseEntity<List<String>> hentVerdier(@PathVariable("parameterNavn") String parameternavn) {
+        JobbParameter jobbParameter = jobbService.hentJobbParameter(parameternavn);
+        return ResponseEntity.ok(jobbService.finnAlleVerdier(jobbParameter));
     }
 
     @PutMapping("/oppdatereVerdier/{parameterNavn}")
     @Operation(description = "Legg inn nye verdier for en parameter")
-    public ResponseEntity<JobbParameterEntity> oppdatereVerdier(JobbParameterEntity jobbParameterEntity){
-        JobbParameterEntity jobb = jobbService.updateVerdi(jobbParameterEntity);
-        return ResponseEntity.ok(jobb);
+    public ResponseEntity<JobbParameter> oppdatereVerdier(@PathVariable("parameterNavn") String parameterNavn, @RequestBody String verdi){
+        log.info("Fått PUT-request parameternavn: {}, verdi: {}", parameterNavn, verdi);
+
+        JobbParameter jobbParameter = jobbService.hentJobbParameter(parameterNavn);
+        verdi = verdi.replace("\"","");
+        log.info("Jobbparameter: {}", jobbParameter.getVerdi() );
+        jobbParameter.setVerdi(verdi);
+        log.info("verdi satt {}", jobbParameter.getVerdi());
+        return ResponseEntity.ok(jobbService.updateVerdi(jobbParameter));
     }
 
-    @GetMapping("/kjor")
-    public void kjor(){
-        ansettelseService.runAnsettelseService();
-        jobbScheduler.scheduleMedIntervallFraDb();
-    }
 
 
 }

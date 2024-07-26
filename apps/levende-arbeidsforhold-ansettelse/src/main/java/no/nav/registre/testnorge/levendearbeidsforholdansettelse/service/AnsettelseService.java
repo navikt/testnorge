@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
+import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -28,11 +29,11 @@ public class AnsettelseService  {
     private final ArbeidsforholdService arbeidsforholdService;
     private final JobbService jobbService;
     private final KodeverkService kodeverkService;
-    private final String from = "1955";
-    private final String to = "2006";
+    private static final int MIN_ALDER = 18;
+    private static final int MAKS_ALDER = 70;
     private final String yrke = "7125102";
 
-    @EventListener(ApplicationReadyEvent.class)
+    //@EventListener(ApplicationReadyEvent.class)
     public void runAnsettelseService() {
         Thread thread = new Thread(this::ansettelseService);
         thread.start();
@@ -57,22 +58,30 @@ public class AnsettelseService  {
         }
 
         Map<String, String> parametere = hentParametere();
-        //List<OrganisasjonDTO> organisasjoner = hentOrganisasjoner(Integer.parseInt(parametere.get("antallOrganisasjoner")));
+        List<OrganisasjonDTO> organisasjoner = hentOrganisasjoner(Integer.parseInt(parametere.get("antallOrganisasjoner")));
 
-        List<OrganisasjonDTO> organisasjoner = hentOrganisasjoner(dbParametere.get("antallOrg"));
+        //List<OrganisasjonDTO> organisasjoner = hentOrganisasjoner(dbParametere.get("antallOrg"));
         if (organisasjoner.isEmpty()) {
             return;
         }
         int antallPersPerOrg = 0;
 
         try {
-            //antallPersPerOrg = getAntallAnsettelserHverOrg(Integer.parseInt(parametere.get("antallPersoner")), Integer.parseInt(parametere.get("antallOrganisasjoner")));
-            antallPersPerOrg = getAntallAnsettelserHverOrg(dbParametere.get("antallPers"), dbParametere.get("antallOrg"));
+            antallPersPerOrg = getAntallAnsettelserHverOrg(Integer.parseInt(parametere.get("antallPersoner")), Integer.parseInt(parametere.get("antallOrganisasjoner")));
+            //antallPersPerOrg = getAntallAnsettelserHverOrg(dbParametere.get("antallPers"), dbParametere.get("antallOrg"));
         } catch (NumberFormatException e) {
             log.error("Feil format på verdi");
         }
 
         int finalAntallPersPerOrg = antallPersPerOrg;
+
+        int currentYear = Year.now().getValue();
+
+        int from_age = currentYear - MAKS_ALDER;
+        int to_age = currentYear - MIN_ALDER;
+
+        String from = "" + from_age;
+        String to = "" + to_age;
 
         organisasjoner.forEach(
                 organisasjon -> {

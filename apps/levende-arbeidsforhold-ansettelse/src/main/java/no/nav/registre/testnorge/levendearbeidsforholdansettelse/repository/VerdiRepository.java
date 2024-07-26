@@ -1,16 +1,17 @@
 package no.nav.registre.testnorge.levendearbeidsforholdansettelse.repository;
 
-import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.VerdierEntity;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.JobbParameter;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.Verdier;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
-import java.util.Optional;
 
-public interface VerdiRepository extends JpaRepository<VerdierEntity, String> {
-    List<VerdierEntity> findAll();
+public interface VerdiRepository extends JpaRepository<Verdier, Integer> {
+    List<Verdier> findAll();
 
-    List<VerdierEntity> findByNavn(String navn);
+    List<Verdier> findByVerdiNavn(JobbParameter jobbParameter);
+
+    List<Verdier> findVerdierByVerdiNavn(JobbParameter jobbParameter);
 
     //@Query(value ="select verdier.verdi_verdi from verdier, jobb_parameter where jobb_parameter.NAVN=verdier.verdi_navn and verdier.navn=:navn")
     //List<VerdierEntity> hentVerdier(String navn);

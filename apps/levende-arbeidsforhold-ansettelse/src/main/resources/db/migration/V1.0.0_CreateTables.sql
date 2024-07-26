@@ -17,7 +17,8 @@ $$;
 CREATE TABLE IF NOT EXISTS jobb_parameter (
                                 navn VARCHAR(255) NOT NULL PRIMARY KEY ,
                                 tekst VARCHAR(255) NOT NULL,
-                                verdi VARCHAR(255)
+                                verdi VARCHAR(255),
+                                verdier text[]
 );
 
 create table IF NOT EXISTS verdier (

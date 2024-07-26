@@ -2,7 +2,7 @@ package no.nav.registre.testnorge.levendearbeidsforholdansettelse.scheduler;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.JobbParameterEntity;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.JobbParameter;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.service.AnsettelseService;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.service.JobbService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +48,7 @@ public class JobbScheduler {
      */
     //@EventListener(ApplicationReadyEvent.class)
     public void scheduleMedIntervallFraDb(){
-        List<JobbParameterEntity> parametere = jobbService.hentAlleParametere();
+        List<JobbParameter> parametere = jobbService.hentAlleParametere();
 
         parametere.forEach(param -> {
             if(param.getNavn().equals(INTERVALL_PARAM_NAVN)){
