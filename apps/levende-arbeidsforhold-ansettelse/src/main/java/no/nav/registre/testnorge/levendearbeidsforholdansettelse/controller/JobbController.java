@@ -3,6 +3,7 @@ package no.nav.registre.testnorge.levendearbeidsforholdansettelse.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.JobbParameter;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.JobbParameterVerdier;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.Verdier;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
@@ -48,8 +50,11 @@ public class JobbController {
     @PutMapping("/oppdatereVerdier/{parameterNavn}")
     @Operation(description = "Legg inn nye verdier for en parameter")
     public ResponseEntity<JobbParameter> oppdatereVerdier(@PathVariable("parameterNavn") String parameterNavn, @RequestBody String verdi){
+        log.info("Fått PUT-request parameternavn: {}, verdi: {}", parameterNavn, verdi);
         JobbParameter jobbParameter = jobbService.hentJobbParameter(parameterNavn);
+        log.info("Jobbparameter: {}", jobbParameter.toString() );
         jobbParameter.setVerdi(verdi);
+        log.info("verdi satt {}", jobbParameter.toString());
         return ResponseEntity.ok(jobbService.updateVerdi(jobbParameter));
     }
 

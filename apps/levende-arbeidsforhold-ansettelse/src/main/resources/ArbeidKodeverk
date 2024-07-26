@@ -10,7 +10,7 @@ export enum ArbeidKodeverk {
 	Skipstyper = 'Skipstyper',
 	Fartsomraader = 'Fartsområder',
 	Valutaer = 'Valutaer',
-}
+}nais login
 
 gcp:
     sqlInstances:
@@ -24,3 +24,5 @@ gcp:
         #collation: DESC
 
     url: jdbc:postgresql://${NAIS_DATABASE_TESTNAV_LEVENDE_ARBEIDSFORHOLD_ANSETTELSE_LEVENDE_ARBEIDSFORHOLD_DB_HOST}:${NAIS_DATABASE_TESTNAV_LEVENDE_ARBEIDSFORHOLD_ANSETTELSE_LEVENDE_ARBEIDSFORHOLD_DB_PORT}/${NAIS_DATABASE_TESTNAV_LEVENDE_ARBEIDSFORHOLD_ANSETTELSE_LEVENDE_ARBEIDSFORHOLD_DB_DATABASE}?user=${NAIS_DATABASE_TESTNAV_LEVENDE_ARBEIDSFORHOLD_ANSETTELSE_LEVENDE_ARBEIDSFORHOLD_DB_USERNAME}&password=${NAIS_DATABASE_TESTNAV_LEVENDE_ARBEIDSFORHOLD_ANSETTELSE_LEVENDE_ARBEIDSFORHOLD_DB_PASSWORD}&sslcert=${NAIS_DATABASE_TESTNAV_LEVENDE_ARBEIDSFORHOLD_ANSETTELSE_LEVENDE_ARBEIDSFORHOLD_DB_SSLCERT}
+
+{andreSkift=Andre skift, skift365=Skiftarbeid (36,5 t/u), ikkeSkift=Ikke skift, offshore336=Arbeid offshore (33,6 t/u), doegnkontinuerligSkiftOgTurnus355=Døgnkontinuerlig skiftarbeid og turnusarbeid (35,5 t/u), helkontinuerligSkiftOgAndreOrdninger336=Helkontinuerlig skiftarbeid og andre ordninger med 33,6 t/u}

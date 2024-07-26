@@ -63,12 +63,12 @@ public class JobbService {
     }
 
     public JobbParameter updateVerdi(JobbParameter jobbParameterEntity) {
-        JobbParameter jobb = jobberRepository.findByNavn(jobbParameterEntity.getNavn());
+        //JobbParameter jobb = jobberRepository.findByNavn(jobbParameterEntity.getNavn());
 
-        jobb.setVerdi(jobbParameterEntity.getVerdi());
-
-        jobberRepository.save(jobb);
-        return jobb;
+        //jobb.setVerdi(jobbParameterEntity.getVerdi());
+        log.info("Lagrer: {}", jobbParameterEntity.toString() );
+        jobberRepository.save(jobbParameterEntity);
+        return jobbParameterEntity;
 
     }
 }
