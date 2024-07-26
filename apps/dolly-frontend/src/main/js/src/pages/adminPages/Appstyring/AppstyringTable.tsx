@@ -1,14 +1,11 @@
 import { Box, Table } from '@navikt/ds-react'
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { EditParameter } from '@/pages/adminPages/Appstyring/EditParameter'
 import {multiFetcherPensjon} from "@/api";
 import {ifPresent} from "@/utils/YupValidations";
 
-export const AppstyringTable = ({ data }: any) => {
-	//TODO: Implementer henting av options pr parameter fra backend
-
-
+export const AppstyringTable = ({data}: any) => {
 
 	const getOptions = (parameter: string) => {
 		return [
@@ -36,13 +33,14 @@ export const AppstyringTable = ({ data }: any) => {
 					</Table.Header>
 					<Table.Body>
 						{data.map((row: any, idx: number) => {
+							console.log(row)
 							return (
 								<Table.Row key={row.navn + idx}>
 									<Table.DataCell width={'50%'}>{row.tekst}</Table.DataCell>
 									<Table.DataCell width={'40%'}>{row.verdi}</Table.DataCell>
 									<Table.DataCell width={'10%'}>
 										<EditParameter
-											name={row.tekst}
+											name={row.navn}
 											initialValue={row.verdi}
 											options={row.verdier}
 										/>

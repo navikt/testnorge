@@ -9,8 +9,6 @@ export default () => {
 		return <AdminAccessDenied/>
 	}
 
-	const [apiData , setApiData] = useState([]);
-
 	/*
 	const dataMock = [
 		{parameter: 'Parameter 1', verdi: 'verdi1'},
@@ -24,22 +22,32 @@ export default () => {
 		{parameter: 'Parameter 9', verdi: 'verdi9'},
 		{parameter: 'Parameter 10', verdi: 'verdi10'},
 	]
+
 	 */
+
+	interface FetchData{
+		navn: string
+		tekst: string
+		verdi: string
+		verdier: Array<string>
+	}
+
+	const [apiData , setApiData] = useState<Array<FetchData>>([]);
+	let optionsData: FetchData[] = [];
 
 	useEffect(() => {
 		async function fetchData() {
-			const req = await fetch('/testnav-levende-arbeidsforhold-ansettelsev2/api');
-			const res = await req.json();
-			console.log(res);
+			const data = await fetch('/testnav-levende-arbeidsforhold-ansettelsev2/api')
+				.then(res => res.json())
+				.then(res => {
+					res.map((r: FetchData) => optionsData.push(r))
 
-			if (res && req.ok){
-				setApiData(res);
-			}
+				}).catch(err => console.error(err));
+			console.log(optionsData)
+			setApiData(optionsData);
 		}
-
 		fetchData();
 	}, []);
-
 	return (
 		<>
 			<h1>App-styring</h1>
