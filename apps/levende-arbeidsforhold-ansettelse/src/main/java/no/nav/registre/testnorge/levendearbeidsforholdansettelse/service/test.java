@@ -17,7 +17,7 @@ public class test {
 
     private final JobbService jobbService;
     private final KodeverkService kodeverkService;
-    @EventListener(ApplicationReadyEvent.class)
+    //@EventListener(ApplicationReadyEvent.class)
     public void testDb() {
 
         List<JobbParameter> jobb2 = jobbService.hentAlleParametere();

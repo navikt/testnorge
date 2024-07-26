@@ -51,9 +51,10 @@ public class JobbController {
         log.info("Fått PUT-request parameternavn: {}, verdi: {}", parameterNavn, verdi);
 
         JobbParameter jobbParameter = jobbService.hentJobbParameter(parameterNavn);
-        log.info("Jobbparameter: {}", jobbParameter.toString() );
+        verdi = verdi.replace("\"","");
+        log.info("Jobbparameter: {}", jobbParameter.getVerdi() );
         jobbParameter.setVerdi(verdi);
-        log.info("verdi satt {}", jobbParameter.toString());
+        log.info("verdi satt {}", jobbParameter.getVerdi());
         return ResponseEntity.ok(jobbService.updateVerdi(jobbParameter));
     }
 
