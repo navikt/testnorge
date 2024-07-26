@@ -1,35 +1,39 @@
-import { PencilWritingIcon } from '@navikt/aksel-icons'
-import {Button, TextField} from '@navikt/ds-react'
-import React, {useState} from 'react'
+import {PencilWritingIcon} from '@navikt/aksel-icons'
+import {Button, Select} from '@navikt/ds-react'
+import React from 'react'
 import useBoolean from '@/utils/hooks/useBoolean'
 import DollyModal from '@/components/ui/modal/DollyModal'
-import ModalActionKnapper from '@/components/ui/modal/ModalActionKnapper'
-import { FormSelect } from '@/components/ui/form/inputs/select/Select'
-import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import { FormProvider, useForm } from 'react-hook-form'
-import { Select} from "@navikt/ds-react"
+import {ErrorBoundary} from '@/components/ui/appError/ErrorBoundary'
+import {useForm} from 'react-hook-form'
+import {FetchData} from "@/pages/adminPages/Appstyring/util/Typer";
 
-interface APIKallBody{
-	navn: string
-	verdi: string
+interface Props {
+	name: string,
+	label: string
+	initialValue: string,
+	options: Array<string>
+	data: Array<FetchData>
+	setData: (data: Array<FetchData>) => void
 }
 
-export const EditParameter = ({ options }: { options: Array<string>}) => {
+export const EditParameter = ({name, label, initialValue, options, data, setData }: Props) => {
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 	//const formMethods = useForm({ defaultValues: { [name]: initialValue } })
 
-	const { register, handleSubmit, formState: { errors} } = useForm<{antallOrganisasjoner: string}>()
+	const { register, handleSubmit, formState: { errors} } = useForm<{value: string}>(
+		{ defaultValues: {value: initialValue}})
 
 
-	async function oppdaterParameterverdi(parameternavn: string, parameterverdi: string) {
-		const req = await fetch(`/testnav-levende-arbeidsforhold-ansettelsev2/api/oppdatereVerdier/${parameternavn}`,
-			{method: "PUT", body: JSON.stringify(parameterverdi)});
+	async function oppdaterParameterverdi(value: string) {
+		await fetch(`/testnav-levende-arbeidsforhold-ansettelsev2/api/oppdatereVerdier/${name}`,
+			{method: "PUT", body: JSON.stringify(value)}).then(res => res.status === 200 ? onSubmit(value) : console.error('Feil feil feil'));
 	}
 
-	//TODO: Implementer lagring av verdi paa parameter
-
-	const onSubmit = (data: any) => {
-		//oppdaterParameterverdi(param[0], param[1]);
+	const onSubmit = (value: string) => {
+		const kopi = [...data]
+		const nyttObjektIndex = kopi.findIndex(obj => obj.navn === name)
+		kopi[nyttObjektIndex] = {...kopi[nyttObjektIndex], verdi: value}
+		setData(kopi)
 		closeModal()
 	}
 
@@ -43,17 +47,17 @@ export const EditParameter = ({ options }: { options: Array<string>}) => {
 			/>
 			<ErrorBoundary>
 					<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width={'40%'} overflow={'auto'}>
-					<form onSubmit={handleSubmit(data => {
-						console.log(data)
-						oppdaterParameterverdi("antallOrganisasjoner", data.antallOrganisasjoner)
+					<form onSubmit={handleSubmit(({ value}) => {
+						console.log(value)
+						oppdaterParameterverdi(value)
 					})}>
 						<div className="modal">
 							<h1>Rediger parameter</h1>
 							<br />
-							<Select {...register('antallOrganisasjoner', { required: {
+							<Select {...register("value", { required: {
 								value: true,
-									message: 'Du må sette antall organisasjoner'
-								}})} label="Antall organisasjoner" error={errors.antallOrganisasjoner?.message}>
+									message: 'Du må velge en verdi'
+								}})} label={label} error={errors.value?.message}>
 								<option value="">Velg antall</option>
 								{options.map((option, index) => (
 									<option key={index} value={option}>{option}</option>

@@ -1,26 +1,10 @@
-import { Box, Table } from '@navikt/ds-react'
-import React, {useEffect, useState} from 'react'
-import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import { EditParameter } from '@/pages/adminPages/Appstyring/EditParameter'
-import {multiFetcherPensjon} from "@/api";
-import {ifPresent} from "@/utils/YupValidations";
+import {Box, Table} from '@navikt/ds-react'
+import React from 'react'
+import {ErrorBoundary} from '@/components/ui/appError/ErrorBoundary'
+import {EditParameter} from '@/pages/adminPages/Appstyring/EditParameter'
+import {FetchData} from "@/pages/adminPages/Appstyring/util/Typer";
 
-export const AppstyringTable = ({data}: any) => {
-
-	const getOptions = (parameter: string) => {
-		return [
-			{ value: 'verdi1', label: 'Verdi 1' },
-			{ value: 'verdi2', label: 'Verdi 2' },
-			{ value: 'verdi3', label: 'Verdi 3' },
-			{ value: 'verdi4', label: 'Verdi 4' },
-			{ value: 'verdi5', label: 'Verdi 5' },
-			{ value: 'verdi6', label: 'Verdi 6' },
-			{ value: 'verdi7', label: 'Verdi 7' },
-			{ value: 'verdi8', label: 'Verdi 8' },
-			{ value: 'verdi9', label: 'Verdi 9' },
-			{ value: 'verdi10', label: 'Verdi 10' },
-		]
-	}
+export const AppstyringTable = ({data, setData}: { data: Array<FetchData>, setData: (data: Array<FetchData>) => void }) => {
 
 	return (
 		<Box background="surface-default" padding="4">
@@ -32,7 +16,7 @@ export const AppstyringTable = ({data}: any) => {
 						<Table.HeaderCell>Rediger</Table.HeaderCell>
 					</Table.Header>
 					<Table.Body>
-						{data.map((row: any, idx: number) => {
+						{data.map((row: FetchData, idx: number) => {
 							console.log(row)
 							return (
 								<Table.Row key={row.navn + idx}>
@@ -41,8 +25,11 @@ export const AppstyringTable = ({data}: any) => {
 									<Table.DataCell width={'10%'}>
 										<EditParameter
 											name={row.navn}
+											label={row.tekst}
 											initialValue={row.verdi}
 											options={row.verdier}
+											data={data}
+											setData={setData}
 										/>
 									</Table.DataCell>
 								</Table.Row>
