@@ -6,7 +6,7 @@ import no.nav.testnav.libs.commands.utils.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.v1.Arbeidsforhold;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.arbeidsforhold.Arbeidsforhold;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.util.retry.Retry;
@@ -35,7 +35,6 @@ public class OpprettArbeidsforholdCommand implements Callable<ResponseEntity<Arb
                 .toEntity(Arbeidsforhold.class)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException))
-                //.doOnError(error -> log.error("Feil ved opprettelse av arbeidsforhold: {}", error.getMessage()))
                 .block();
     }
 }

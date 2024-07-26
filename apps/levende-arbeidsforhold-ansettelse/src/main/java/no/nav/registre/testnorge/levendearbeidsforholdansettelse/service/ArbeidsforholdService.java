@@ -3,7 +3,7 @@ package no.nav.registre.testnorge.levendearbeidsforholdansettelse.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.AaregConsumer;
-import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.v1.*;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.arbeidsforhold.*;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 

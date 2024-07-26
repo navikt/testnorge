@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.JobbParameter;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.repository.JobberRepository;
-import no.nav.registre.testnorge.levendearbeidsforholdansettelse.repository.VerdiRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -15,37 +14,16 @@ import java.util.*;
 @RequiredArgsConstructor
 public class JobbService {
 
-
     private final JobberRepository jobberRepository;
-    private final VerdiRepository verdiRepository;
     public List<JobbParameter> hentAlleParametere(){
         return jobberRepository.findAll();
 
     }
-    /*
-    public List<JobbParameterVerdier> hentAlleParametereMedVerdier(){
-        //Map<JobbParameter, List<String>> jobbParameterMap = new HashMap<>();
-        List<JobbParameterVerdier> jobb = new ArrayList<>();
-        hentAlleParametere().forEach(jobbParameter -> jobb.add(JobbParameterVerdier.builder().jobbParameter(jobbParameter).verdier(finnAlleVerdier(jobbParameter)).build()));
-        return jobb;
-    }
-    /*
-    public Map<JobbParameter, List<Verdier>> hentAlleParameterSomMap(){
-        Map<JobbParameter>
-    }
 
-     */
     public JobbParameter hentJobbParameter(String navn){
         return jobberRepository.findByNavn(navn);
     }
 
-
-    public List<String> finnAlleVerdier(JobbParameter jobbParameter){
-        List<String> verdierListe = new ArrayList<>();
-        verdiRepository.findVerdierByVerdiNavn(jobbParameter).forEach(verdier -> verdierListe.add(verdier.getVerdiVerdi()));
-        return  verdierListe;
-
-    }
     public Map<String, String> hentParameterMap() {
         List<JobbParameter> jobbParametere = hentAlleParametere();
         Map<String, String> parameterMap = new HashMap<>();
@@ -55,18 +33,8 @@ public class JobbService {
         return parameterMap;
     }
 
-
-    public void lagreParameter(JobbParameter jobbParameterEntity){
-        jobberRepository.save(jobbParameterEntity);
-    }
-
     public JobbParameter updateVerdi(JobbParameter jobbParameterEntity) {
-        //JobbParameter jobb = jobberRepository.findByNavn(jobbParameterEntity.getNavn());
-
-        //jobb.setVerdi(jobbParameterEntity.getVerdi());
-        log.info("Lagrer: {}", jobbParameterEntity.toString() );
-        jobberRepository.save(jobbParameterEntity);
-        return jobbParameterEntity;
+        return jobberRepository.save(jobbParameterEntity);
 
     }
 }

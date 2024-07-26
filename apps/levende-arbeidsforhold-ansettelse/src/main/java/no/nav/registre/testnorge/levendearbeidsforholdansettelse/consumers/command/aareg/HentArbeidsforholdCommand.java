@@ -1,14 +1,11 @@
 package no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.command.aareg;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.v1.Arbeidsforhold;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.arbeidsforhold.Arbeidsforhold;
 import no.nav.testnav.libs.commands.utils.WebClientFilter;
 import no.nav.testnav.libs.servletcore.headers.NavHeaders;
-import no.nav.testnav.libs.servletcore.provider.InternalController;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -61,7 +58,6 @@ public class HentArbeidsforholdCommand implements Callable<List<Arbeidsforhold>>
                         .backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException))
                     .block();
-            //log.info("Json object i command {}", Json.pretty(arbeidsforhold));
             assert arbeidsforhold != null;
             return Arrays.stream(arbeidsforhold).collect(Collectors.toList());
         } catch (WebClientResponseException.NotFound e) {
@@ -71,7 +67,7 @@ public class HentArbeidsforholdCommand implements Callable<List<Arbeidsforhold>>
                     "Klarer ikke å hente arbeidsforhold. Feilmelding: {}.",
                     e.getResponseBodyAsString()
             );
-            throw e;
+            return Collections.emptyList();
         }
     }
 }

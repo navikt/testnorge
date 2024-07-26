@@ -15,19 +15,8 @@ import java.util.Map;
 public class KodeverkService {
     private final KodeverkServiceConsumer kodeverkServiceConsumer;
 
-    @Getter
-    private List<String> koder;
-
-    public Map<String, String> hentKodeverk(String kodeverk){
-        return kodeverkServiceConsumer.hentKodeverk(kodeverk);
-    }
-
     public List<String> hentKodeverkValues(String kodeverk){
         return kodeverkServiceConsumer.hentKodeverkListe(kodeverk);
-    }
-
-    public void lagKodeverkListe(String kodeverk) {
-        this.koder = kodeverkServiceConsumer.hentKodeverkListe(kodeverk);
     }
 
 }

@@ -23,10 +23,9 @@ public class HentOrganisasjonerCommand implements Callable<OrganisasjonDTO> {
 
     @Override
     public OrganisasjonDTO call() {
-        log.info("Henter organisasjon med orgnummer {}.", orgnummer);
         try {
-            return webClient
-                    .get()                    .uri(builder -> builder
+            return webClient.get()
+                    .uri(builder -> builder
                             .path("/api/{miljo}/v2/organisasjon/{orgnummer}")
                             .queryParam("inkluderHierarki", true)
                             .queryParam("inkluderHistorikk", false)

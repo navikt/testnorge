@@ -2,9 +2,12 @@ package no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.comm
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.libs.commands.utils.WebClientFilter;
 import no.nav.testnav.libs.dto.organisasjonfastedataservice.v1.OrganisasjonDTO;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -13,7 +16,6 @@ import java.util.concurrent.Callable;
 public class GetOrganisasjonerCommand implements Callable<List<OrganisasjonDTO>> {
     private final WebClient webClient;
     private final String token;
-
 
     @Override
     public List<OrganisasjonDTO> call()  {
@@ -30,6 +32,8 @@ public class GetOrganisasjonerCommand implements Callable<List<OrganisasjonDTO>>
                 .retrieve()
                 .bodyToFlux(OrganisasjonDTO.class)
                 .collectList()
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
                 .block();
     }
 }

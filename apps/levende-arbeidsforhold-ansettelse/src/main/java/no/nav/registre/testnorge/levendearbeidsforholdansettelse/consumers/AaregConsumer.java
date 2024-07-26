@@ -4,9 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.config.Consumers;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.command.aareg.HentArbeidsforholdCommand;
-import no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.command.aareg.EndreArbeidsforholdCommand;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.command.aareg.OpprettArbeidsforholdCommand;
-import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.v1.Arbeidsforhold;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.arbeidsforhold.Arbeidsforhold;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 //import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
@@ -66,13 +65,6 @@ public class AaregConsumer {
             //return new HentArbeidsforholdCommand(webClient, token.getTokenValue(), ident).call();
         }
         return new ArrayList<>();
-    }
-
-    public void endreArbeidsforhold(Arbeidsforhold requests) {
-        var token = tokenExchange.exchange(serverProperties).block();
-        if (nonNull(token)) {
-            new EndreArbeidsforholdCommand(webClient, requests, token.getTokenValue()).call();
-        }
     }
 
     public HttpStatusCode opprettArbeidsforhold(Arbeidsforhold requests) {
