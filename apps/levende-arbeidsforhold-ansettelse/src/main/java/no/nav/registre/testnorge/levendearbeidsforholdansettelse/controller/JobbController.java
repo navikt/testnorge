@@ -49,10 +49,10 @@ public class JobbController {
     @Operation(description = "Legg inn nye verdier for en parameter")
     public ResponseEntity<JobbParameter> oppdatereVerdier(@PathVariable("parameterNavn") String parameterNavn, @RequestBody String verdi){
         log.info("Fått PUT-request parameternavn: {}, verdi: {}", parameterNavn, verdi);
-        String[] nyVerdi = verdi.split(":");
+
         JobbParameter jobbParameter = jobbService.hentJobbParameter(parameterNavn);
         log.info("Jobbparameter: {}", jobbParameter.toString() );
-        jobbParameter.setVerdi(nyVerdi[nyVerdi.length-1]);
+        jobbParameter.setVerdi(verdi);
         log.info("verdi satt {}", jobbParameter.toString());
         return ResponseEntity.ok(jobbService.updateVerdi(jobbParameter));
     }
