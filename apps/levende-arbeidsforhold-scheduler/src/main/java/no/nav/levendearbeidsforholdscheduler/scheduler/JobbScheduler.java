@@ -2,6 +2,7 @@ package no.nav.levendearbeidsforholdscheduler.scheduler;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.levendearbeidsforholdscheduler.consumer.command.AnsettelseCommand;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -19,6 +20,8 @@ import java.util.concurrent.ScheduledFuture;
 @EnableScheduling
 @RequiredArgsConstructor
 public class JobbScheduler {
+
+    private final AnsettelseCommand ansettelseCommand;
 
     @Autowired
     private final TaskScheduler taskScheduler;
@@ -94,7 +97,8 @@ public class JobbScheduler {
         @Override
         public void run() {
             if(sjekkOmGyldigTidsrom(START_KLOKKESLETT, START_DAG, SLUTT_KLOKKESLETT, SLUTT_DAG)){
-                //Kall på consumer som sender request til levende-arbeidsforhold-ansettelse app
+                //TODO: Kall på consumer som sender request til levende-arbeidsforhold-ansettelse app
+                //ansettelseCommand.aktiverAnsettelseService();
             }
             log.info("Kjørte jobb!");
         }
