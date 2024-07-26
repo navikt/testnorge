@@ -17,7 +17,6 @@ export const AppstyringTable = ({data, setData}: { data: Array<FetchData>, setDa
 					</Table.Header>
 					<Table.Body>
 						{data.map((row: FetchData, idx: number) => {
-							console.log(row)
 							return (
 								<Table.Row key={row.navn + idx}>
 									<Table.DataCell width={'50%'}>{row.tekst}</Table.DataCell>

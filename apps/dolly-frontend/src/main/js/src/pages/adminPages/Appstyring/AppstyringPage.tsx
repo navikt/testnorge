@@ -21,7 +21,6 @@ export default () => {
 					res.map((r: FetchData) => optionsData.push(r))
 
 				}).catch(err => console.error(err));
-			console.log(optionsData)
 			setApiData(optionsData);
 		}
 		fetchData();

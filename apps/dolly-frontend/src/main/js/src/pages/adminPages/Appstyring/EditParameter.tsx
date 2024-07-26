@@ -48,7 +48,6 @@ export const EditParameter = ({name, label, initialValue, options, data, setData
 			<ErrorBoundary>
 					<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width={'40%'} overflow={'auto'}>
 					<form onSubmit={handleSubmit(({ value}) => {
-						console.log(value)
 						oppdaterParameterverdi(value)
 					})}>
 						<div className="modal">
