@@ -67,11 +67,9 @@ export const EditParameter = ({name, label, initialValue, options, data, setData
 						<div className="modal">
 							<h1>Rediger parameter</h1>
 							<br />
-							<Select {...register("value", { required: {
-								value: true,
-									message: 'Du må velge en verdi'
-								}})} label={label} error={errors.value?.message}>
-								<option value="">Velg antall</option>
+							<Select {...register("value", {
+								validate: validerParameter
+							})} label={label} error={errors.value?.message}>
 								{options.map((option, index) => (
 									<option key={index} value={option}>{option}</option>
 								))}
