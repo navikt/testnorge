@@ -12,7 +12,11 @@ import org.springframework.stereotype.Component;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Optional;
 import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+
+import static no.nav.levendearbeidsforholdscheduler.utils.Utils.hentKalender;
 
 
 @Slf4j
@@ -35,6 +39,27 @@ public class JobbScheduler {
     private static final int SLUTT_DAG = 6;
 
     /**
+     * Funksjon som brukes for å sjekke om scheduleren kjører for øyeblikket
+     * @return true hvis scheduler kjører for øyeblikket
+     */
+    public boolean hentStatusKjorer(){
+        return scheduledFuture != null;
+    }
+
+    public Optional<String> hentTidspunktNesteKjoring(){
+
+        if (scheduledFuture != null) {
+            long delayIMillisekunder = scheduledFuture.getDelay(TimeUnit.MILLISECONDS);
+            long scheduledTid = System.currentTimeMillis() + delayIMillisekunder;
+            Date datoForNesteKjoring = new Date(scheduledTid);
+            return Optional.of(datoForNesteKjoring.toString());
+        } else {
+            return Optional.empty();
+        }
+
+    }
+
+    /**
      * Avslutter eventuelt nåværende schedule og starter en ny med det nye intervallet.
      * @param cronExpression Gyldig cron-expression (forutsetter at expression er allerede formattert)
      */
@@ -45,6 +70,7 @@ public class JobbScheduler {
         }
 
         scheduledFuture = taskScheduler.schedule(new AnsettelseJobb(), new CronTrigger(cronExpression));
+
     }
 
     /**
@@ -76,9 +102,7 @@ public class JobbScheduler {
      */
     public boolean sjekkOmGyldigTidsrom(int startKlokka, int startDag, int sluttKlokka, int sluttDag){
 
-        Date dato = new Date();
-        Calendar kalender = GregorianCalendar.getInstance();
-        kalender.setTime(dato);
+        Calendar kalender = hentKalender();
         int klokkeslett = kalender.get(Calendar.HOUR_OF_DAY); //06:00 = 6, 13:00 = 13, 23:00 = 23
         int dag = ((kalender.get(Calendar.DAY_OF_WEEK) + 6) % 7); //Mandag = 1, Tirsag = 2 ... Søndag = 7
 
@@ -100,6 +124,7 @@ public class JobbScheduler {
                 //TODO: Kall på consumer som sender request til levende-arbeidsforhold-ansettelse app
                 //ansettelseCommand.aktiverAnsettelseService();
             }
+
             log.info("Kjørte jobb!");
         }
     }
