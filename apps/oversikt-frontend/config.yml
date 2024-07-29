@@ -85,6 +85,7 @@ spec:
         - application: testnorge-tilbakemelding-api
         - application: testnav-levende-arbeidsforhold-ansettelsev2
         - application: testnav-levende-arbeidsforhold-service
+        - application: testnav-levende-arbeidsforhold-scheduler
   liveness:
     path: /internal/isAlive
     initialDelay: 4
