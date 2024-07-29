@@ -17,6 +17,7 @@ public class SokPersonVariables {
     private String from;
     private String to;
     private String postnr;
+    private final String identRegex = "\\w+[0-9]{2}[8-9]{1}[0-9]{5}\\w+";
 
     public GraphqlVariables.Criteria lagSokPersonCriteria() {
 
@@ -39,8 +40,13 @@ public class SokPersonVariables {
                 .searchRule(searchRuleFoedselsaar)
                 .build();
 
+        GraphqlVariables.Filter filterIdent = GraphqlVariables.Filter.builder()
+                .fieldName("identer.ident")
+                .searchRule(Map.of("wildcard", identRegex))
+                .build();
+
         Map<String, List<GraphqlVariables.Filter>> or = Map.of("or", List.of(filterBostedPostnr, filterOppholdPostnr));
-        List<Object> and = List.of(or, filterFoedselsaar);
+        List<Object> and = List.of(or, filterFoedselsaar, filterIdent);
 
         return GraphqlVariables.Criteria.builder().and(and).build();
     }
