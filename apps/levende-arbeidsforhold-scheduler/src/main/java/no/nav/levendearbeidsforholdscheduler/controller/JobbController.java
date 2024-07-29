@@ -45,4 +45,5 @@ public class JobbController {
     }
 
     //TODO: Lage et endepunkt som svarer på om scheduler kjører for øyeblikket
+
 }
