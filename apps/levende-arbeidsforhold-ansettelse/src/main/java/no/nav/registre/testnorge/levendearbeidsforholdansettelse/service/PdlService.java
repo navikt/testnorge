@@ -1,6 +1,7 @@
 package no.nav.registre.testnorge.levendearbeidsforholdansettelse.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import io.swagger.v3.core.util.Json;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -33,7 +34,7 @@ public class PdlService {
     public List<Ident> getPersoner(){
 
         SokPersonVariables sokPersonVariables = lagSokPersonVariables(
-                //tilfeldigPageNumber(getSokPersonPages()),
+                tilfeldigPageNumber(getSokPersonPages()),
                 resultsPerPage,
                 from,
                 to,
@@ -83,10 +84,10 @@ public class PdlService {
         return random.nextInt(totalPages);
     }
 
-    private SokPersonVariables lagSokPersonVariables( int resultsPerPage, String from, String to, String postnr) {//int pageNumber,
+    private SokPersonVariables lagSokPersonVariables( int pageNumber, int resultsPerPage, String from, String to, String postnr) {//int pageNumber,
          return SokPersonVariables
                  .builder()
-                 //.pageNumber(pageNumber)
+                 .pageNumber(pageNumber)
                  .resultsPerPage(resultsPerPage)
                  .from(from)
                  .to(to)
@@ -94,7 +95,9 @@ public class PdlService {
                  .build();
     }
 
-    public void HentTags(String[] identer) throws Exception {
+    public void HentTags(String identer) {
         hentTagsConsumer.hentTags(identer);
     }
+
+
 }

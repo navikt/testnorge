@@ -1,5 +1,6 @@
 package no.nav.registre.testnorge.levendearbeidsforholdansettelse.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.pdl.Ident;
@@ -28,9 +29,11 @@ public class Test {
         log.info("Personer {}", personer.toString());
         List<String> identer = new ArrayList<>();
         personer.forEach(pers -> identer.add(pers.getIdent()));
-        String[] ident = identer.stream().map(i -> i).toArray(String[]::new);
+        String[] ident = identer.toArray(String[]::new);
         log.info("ident: {}", Arrays.toString(ident));
-        personer.forEach(pers -> identer.add(pers.getIdent()));
-        pdlService.HentTags(ident);
+        List<String> tags = new ArrayList<>();
+        personer.forEach(pers -> pdlService.HentTags(pers.getIdent()));
+
+        //pdlService.HentTags(ident);
     }
 }

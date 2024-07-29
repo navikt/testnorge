@@ -16,6 +16,7 @@ import reactor.netty.http.client.HttpClient;
 import reactor.netty.resources.ConnectionProvider;
 
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.List;
 
 import static no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.JacksonExchangeStrategyUtil.getJacksonStrategy;
@@ -52,9 +53,9 @@ public class HentTagsConsumer {
                 .build();
     }
 
-    public void hentTags(String[] identer) throws Exception {
+    public void hentTags(String identer)  {
         var token = tokenService.exchange(serverProperties).block();
         JsonNode tags = new HentTagsCommand(webClient, token.getTokenValue(), identer).call();
-        log.info("Hentet tags {}", Json.pretty(tags));
+        log.info("Hentet tags {}", tags.toString());
     }
 }

@@ -93,9 +93,11 @@ public class PdlConsumer {
             return null;
         }
     }
-
+/*
     public void hentTags(String[] identer) throws Exception {
         var token = tokenService.exchange(serverProperties).block();
         JsonNode tags = new HentTagsCommand(webClient, token.getTokenValue() ,identer).call();
     }
+
+ */
 }
