@@ -1,6 +1,5 @@
 package no.nav.registre.testnorge.levendearbeidsforholdansettelse.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +26,6 @@ public class PdlService {
     private String from;
     private String to;
     private String postnr;
-
 
     public List<Ident> getPersoner(){
 

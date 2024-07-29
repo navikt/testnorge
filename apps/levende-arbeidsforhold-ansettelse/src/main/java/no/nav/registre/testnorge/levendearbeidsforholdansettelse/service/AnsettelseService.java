@@ -85,7 +85,9 @@ public class AnsettelseService  {
                 organisasjon -> {
                     int antallPersAnsatt = 0;
 
-                    List<Ident> muligePersoner = hentPersoner(from, to, organisasjon.getPostadresse().getPostnr());
+                    String postnr = konverterPostnr(organisasjon.getPostadresse().getPostnr());
+
+                    List<Ident> muligePersoner = hentPersoner(from, to, postnr);
                     List<Ident> ansattePersoner = new ArrayList<>(); //liste/oversikt for logging
 
                     while (antallPersAnsatt < finalAntallPersPerOrg) {
@@ -115,7 +117,7 @@ public class AnsettelseService  {
                             }
                             muligePersoner.remove(tilfeldigIndex);
                         } catch (NullPointerException e) {
-                            muligePersoner = hentPersoner(from, to, organisasjon.getPostadresse().getPostnr());
+                            muligePersoner = hentPersoner(from, to, postnr);
                         } catch (Exception e) {
                             log.error(e.toString());
                             break;
@@ -174,5 +176,9 @@ public class AnsettelseService  {
 
     private String hentTilfeldigYrkeskode(List<String> yrkeskoder) {
         return yrkeskoder.get(tilfeldigTall(yrkeskoder.size()));
+    }
+
+    private String konverterPostnr(String postnr) {
+        return postnr.charAt(0) + "???";
     }
 }
