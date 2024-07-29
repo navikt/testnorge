@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.HentTagsConsumer;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.PdlConsumer;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.pdl.Ident;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.pdl.SokPersonVariables;
