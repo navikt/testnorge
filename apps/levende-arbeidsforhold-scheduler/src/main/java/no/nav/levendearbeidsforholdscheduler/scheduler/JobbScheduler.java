@@ -46,6 +46,10 @@ public class JobbScheduler {
         return scheduledFuture != null;
     }
 
+    /**
+     * Henter ut dato og tid for neste gang scheduleren skal kjøre en jobb
+     * @return tidspunktet, då lenge det er en scheduler som er aktiv for øyeblikket
+     */
     public Optional<String> hentTidspunktNesteKjoring(){
 
         if (scheduledFuture != null) {
