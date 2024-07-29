@@ -29,6 +29,20 @@ export const EditParameter = ({name, label, initialValue, options, data, setData
 			{method: "PUT", body: JSON.stringify(value)}).then(res => res.status === 200 ? onSubmit(value) : console.error('Feil feil feil'));
 	}
 
+	const validerParameter = (value: string | undefined): string | undefined => {
+		if (name === "antallOrganisasjoner") {
+		const antallPersoner = data.find(obj => obj.navn === "antallPersoner")?.verdi
+		if (!value) return 'Må settes'
+		else if (Number.parseInt(value!) > Number.parseInt(antallPersoner!)) return `Kan ikke være flere organisasjoner enn antall personer`
+		}
+		else if (name === "antallPersoner") {
+			const antallOrganisasjoner = data.find(obj => obj.navn === "antallOrganisasjoner")?.verdi
+			if (!value) return 'Må settes'
+			else if (Number.parseInt(value!) < Number.parseInt(antallOrganisasjoner!)) return `Kan ikke være færre personer enn antall organisasjoner`
+		}
+		return undefined
+	}
+
 	const onSubmit = (value: string) => {
 		const kopi = [...data]
 		const nyttObjektIndex = kopi.findIndex(obj => obj.navn === name)
@@ -53,11 +67,9 @@ export const EditParameter = ({name, label, initialValue, options, data, setData
 						<div className="modal">
 							<h1>Rediger parameter</h1>
 							<br />
-							<Select {...register("value", { required: {
-								value: true,
-									message: 'Du må velge en verdi'
-								}})} label={label} error={errors.value?.message}>
-								<option value="">Velg antall</option>
+							<Select {...register("value", {
+								validate: validerParameter
+							})} label={label} error={errors.value?.message}>
 								{options.map((option, index) => (
 									<option key={index} value={option}>{option}</option>
 								))}
