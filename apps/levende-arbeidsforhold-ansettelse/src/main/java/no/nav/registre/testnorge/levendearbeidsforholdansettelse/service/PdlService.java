@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.HentTagsConsumer;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.PdlConsumer;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.pdl.Ident;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.pdl.SokPersonVariables;
@@ -26,12 +27,13 @@ public class PdlService {
     private String from;
     private String to;
     private String postnr;
+    private final HentTagsConsumer hentTagsConsumer;
 
 
     public List<Ident> getPersoner(){
 
         SokPersonVariables sokPersonVariables = lagSokPersonVariables(
-                tilfeldigPageNumber(getSokPersonPages()),
+                //tilfeldigPageNumber(getSokPersonPages()),
                 resultsPerPage,
                 from,
                 to,
@@ -81,14 +83,18 @@ public class PdlService {
         return random.nextInt(totalPages);
     }
 
-    private SokPersonVariables lagSokPersonVariables(int pageNumber, int resultsPerPage, String from, String to, String postnr) {
+    private SokPersonVariables lagSokPersonVariables( int resultsPerPage, String from, String to, String postnr) {//int pageNumber,
          return SokPersonVariables
                  .builder()
-                 .pageNumber(pageNumber)
+                 //.pageNumber(pageNumber)
                  .resultsPerPage(resultsPerPage)
                  .from(from)
                  .to(to)
                  .postnr(postnr)
                  .build();
+    }
+
+    public void HentTags(String[] identer) throws Exception {
+        hentTagsConsumer.hentTags(identer);
     }
 }
