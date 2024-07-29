@@ -42,7 +42,7 @@ public class SokPersonVariables {
 
         GraphqlVariables.Filter filterIdent = GraphqlVariables.Filter.builder()
                 .fieldName("identer.ident")
-                .searchRule(Map.of("wildcard", identRegex))
+                .searchRule(Map.of("regex", identRegex))
                 .build();
 
         Map<String, List<GraphqlVariables.Filter>> or = Map.of("or", List.of(filterBostedPostnr, filterOppholdPostnr));

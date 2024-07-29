@@ -1,5 +1,6 @@
 package no.nav.registre.testnorge.levendearbeidsforholdansettelse.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -73,7 +74,8 @@ public class PdlService {
                 .block();
 
         assert node != null;
-        return node.get("data").get("sokPerson").findValues("totalPages").getFirst().asInt()/resultsPerPage;
+        int pages = node.get("data").get("sokPerson").findValues("totalPages").getFirst().asInt()/resultsPerPage;
+        return (pages == 0) ? 1 : pages;
     }
 
     private int tilfeldigPageNumber(int totalPages) {
