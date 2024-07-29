@@ -26,6 +26,7 @@ public class PdlService {
     private String from;
     private String to;
     private String postnr;
+    private final HentTagsConsumer hentTagsConsumer;
 
     public List<Ident> getPersoner(){
 
@@ -91,4 +92,10 @@ public class PdlService {
                  .postnr(postnr)
                  .build();
     }
+
+    public void HentTags(String identer) {
+        hentTagsConsumer.hentTags(identer);
+    }
+
+
 }
