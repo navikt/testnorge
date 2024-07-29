@@ -1,5 +1,9 @@
 package no.nav.levendearbeidsforholdscheduler.utils;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+
 public class Utils {
 
     /**
@@ -24,5 +28,12 @@ public class Utils {
             return false;
         }
         return true;
+    }
+
+    public static Calendar hentKalender(){
+        Date dato = new Date();
+        Calendar kalender = GregorianCalendar.getInstance();
+        kalender.setTime(dato);
+        return kalender;
     }
 }
