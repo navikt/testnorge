@@ -29,10 +29,14 @@ public class AnsettelseConsumer {
         log.info("Webclient {}", serverProperties.getUrl());
     }
     public void hentFraAnsettelse(){
-        var token = tokenExchange.exchange(serverProperties).block();
-        log.info("Hentet token: {}", token.getTokenValue());
-        String response = new AnsettelsesCommand2(webClient, token.getTokenValue()).call();
-        log.info("Response {}", response);
+        try {
+            var token = tokenExchange.exchange(serverProperties).block();
+            log.info("Hentet token: {}", token.getTokenValue());
+            String response = new AnsettelsesCommand2(webClient, token.getTokenValue()).call();
+            log.info("Response {}", response);
+        } catch (Exception e) {
+            log.error("Feil ved hentet token: {}", e.getMessage());
+        }
     }
 
 }
