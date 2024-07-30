@@ -13,10 +13,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Optional;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import static no.nav.levendearbeidsforholdscheduler.utils.Utils.hentKalender;
+import static no.nav.levendearbeidsforholdscheduler.utils.Utils.sifferTilHeltall;
 
 
 @Slf4j
@@ -28,7 +30,7 @@ public class JobbScheduler {
     private final AnsettelseCommand ansettelseCommand;
 
     @Autowired
-    private final TaskScheduler taskScheduler;
+    private final ScheduledExecutorService taskScheduler;
 
     private ScheduledFuture<?> scheduledFuture;
 
@@ -37,6 +39,8 @@ public class JobbScheduler {
 
     private static final int SLUTT_KLOKKESLETT = 12;
     private static final int SLUTT_DAG = 6;
+
+    private static final long INITIELL_FORSINKELSE = 0;
 
     /**
      * Funksjon som brukes for å sjekke om scheduleren kjører for øyeblikket
@@ -65,15 +69,15 @@ public class JobbScheduler {
 
     /**
      * Avslutter eventuelt nåværende schedule og starter en ny med det nye intervallet.
-     * @param cronExpression Gyldig cron-expression (forutsetter at expression er allerede formattert)
+     * @param intervall Positivt heltall som representerer times-intervall for scheduler
      */
-    public void startScheduler(String cronExpression){
+    public void startScheduler(long intervall){
 
         if (scheduledFuture != null) {
             scheduledFuture.cancel(true);
         }
 
-        scheduledFuture = taskScheduler.schedule(new AnsettelseJobb(), new CronTrigger(cronExpression));
+        scheduledFuture = taskScheduler.scheduleAtFixedRate(new AnsettelseJobb(), INITIELL_FORSINKELSE, intervall, TimeUnit.HOURS);
 
     }
 
