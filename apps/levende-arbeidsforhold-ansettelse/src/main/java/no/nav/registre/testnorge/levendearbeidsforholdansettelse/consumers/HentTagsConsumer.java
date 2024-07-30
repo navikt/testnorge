@@ -8,7 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.config.Consumers;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.command.pdl.HentTagsCommand;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
+//import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -53,9 +54,8 @@ public class HentTagsConsumer {
                 .build();
     }
 
-    public void hentTags(String identer)  {
+    public String[] hentTags(String identer)  {
         var token = tokenService.exchange(serverProperties).block();
-        JsonNode tags = new HentTagsCommand(webClient, token.getTokenValue(), identer).call();
-        log.info("Hentet tags {}", tags.toString());
+        return new HentTagsCommand(webClient, token.getTokenValue(), identer).call();
     }
 }

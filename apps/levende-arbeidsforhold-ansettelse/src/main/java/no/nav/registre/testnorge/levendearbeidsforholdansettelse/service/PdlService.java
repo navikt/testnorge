@@ -13,6 +13,7 @@ import no.nav.registre.testnorge.levendearbeidsforholdansettelse.provider.PdlMil
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -94,8 +95,8 @@ public class PdlService {
                  .build();
     }
 
-    public void HentTags(String identer) {
-        hentTagsConsumer.hentTags(identer);
+    public List<String> HentTags(String identer) {
+         return Arrays.stream(hentTagsConsumer.hentTags(identer)).toList();
     }
 
 
