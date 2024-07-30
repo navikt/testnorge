@@ -8,6 +8,8 @@ import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.pdl.Iden
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.arbeidsforhold.Arbeidsforhold;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.JobbParameterNavn;
 import no.nav.testnav.libs.dto.organisasjonfastedataservice.v1.OrganisasjonDTO;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -33,7 +35,7 @@ public class AnsettelseService  {
     private static final int MIN_ALDER = 18;
     private static final int MAKS_ALDER = 70;
     private final String yrke = "7125102";
-    private List<DatoIntervall> alderList;
+    private List<DatoIntervall> aldersspennList;
 
     //@EventListener(ApplicationReadyEvent.class)
     public void runAnsettelseService() {
@@ -59,16 +61,17 @@ public class AnsettelseService  {
             return;
         }
 
-        Map<String, String> parametere = hentParametere();
-        List<OrganisasjonDTO> organisasjoner = hentOrganisasjoner(Integer.parseInt(parametere.get(ANTALL_ORGANISASJONER.value)));
+        initialiserDatoListe();
 
+        Map<String, String> parametere = hentParametere();
+
+        List<OrganisasjonDTO> organisasjoner = hentOrganisasjoner(Integer.parseInt(parametere.get(ANTALL_ORGANISASJONER.value)));
         //List<OrganisasjonDTO> organisasjoner = hentOrganisasjoner(dbParametere.get("antallOrg"));
         if (organisasjoner.isEmpty()) {
             return;
         }
+
         int antallPersPerOrg = 0;
-        List<Double> sannsynlighetFordeling =  List.of(434106.0, 1022448.0, 976833.0, 563804.0, 563804.0, 72363.0);
-        AliasMethod alias = new AliasMethod(sannsynlighetFordeling);
         try {
             antallPersPerOrg = getAntallAnsettelserHverOrg(Integer.parseInt(parametere.get(ANTALL_PERSONER.value)), Integer.parseInt(parametere.get(ANTALL_ORGANISASJONER.value)));
             //antallPersPerOrg = getAntallAnsettelserHverOrg(dbParametere.get("antallPers"), dbParametere.get("antallOrg"));
@@ -76,33 +79,42 @@ public class AnsettelseService  {
             log.error("Feil format på verdi");
         }
 
+        List<Double> sannsynlighetFordeling =  List.of(434106.0, 1022448.0, 976833.0, 563804.0, 72363.0);
+        AliasMethod alias = new AliasMethod(sannsynlighetFordeling);
+
         int finalAntallPersPerOrg = antallPersPerOrg;
-
-        //int currentYear = Year.now().getValue();
-
-        String from = LocalDate.now().minusYears(MAKS_ALDER).toString();
-        String to = LocalDate.now().minusYears(MIN_ALDER).toString();
-
-        /*
-        int from_age = currentYear - MAKS_ALDER;
-        int to_age = currentYear - MIN_ALDER;
-
-        String from = "" + from_age;
-        String to = "" + to_age;
-
-         */
 
         organisasjoner.forEach(
                 organisasjon -> {
-                    int antallPersAnsatt = 0;
-
                     String postnr = konverterPostnr(organisasjon.getPostadresse().getPostnr());
 
-                    List<Ident> muligePersoner = hentPersoner(from, to, postnr);
+                    List<Integer> aldersspennIndekser = new ArrayList<>();
+                    for (int i = 0; i < finalAntallPersPerOrg; i++) {
+                        aldersspennIndekser.add(alias.aliasDraw());
+                        Collections.sort(aldersspennIndekser);
+                    }
+
+                    Iterator<Integer> aldersspennIterator = aldersspennIndekser.iterator();
+                    int iteratorElement = aldersspennIterator.next();
+
+                    Map<Integer, List<Ident>> muligePersonerMap = new HashMap<>();
+                    aldersspennIndekser.forEach(
+                            indeks -> {
+                                if (!muligePersonerMap.containsKey(indeks)) {
+                                    muligePersonerMap.put(indeks, hentPersoner(aldersspennList.get(indeks).getFrom().toString(), aldersspennList.get(indeks).getTom().toString(), postnr));
+                                }
+                            }
+                    );
+
+                    int antallPersAnsatt = 0;
+
                     List<Ident> ansattePersoner = new ArrayList<>(); //liste/oversikt for logging
 
                     while (antallPersAnsatt < finalAntallPersPerOrg) {
                         try {
+
+                            List<Ident> muligePersoner = muligePersonerMap.get(iteratorElement);
+
                             int tilfeldigIndex = tilfeldigTall(muligePersoner.size());
                             Ident tilfeldigPerson = muligePersoner.get(tilfeldigIndex);
 
@@ -119,6 +131,9 @@ public class AnsettelseService  {
                                                 arbeidsforholdService.hentArbeidsforhold(tilfeldigPerson.getIdent()).toString());
                                         ansattePersoner.add(tilfeldigPerson);
                                         antallPersAnsatt++;
+                                        if (aldersspennIterator.hasNext()) {
+                                            iteratorElement = aldersspennIterator.next();
+                                        }
                                     }
                                 }catch (WebClientResponseException e){
                                     log.info("organisasjon: {} {}, person {}", organisasjon.getNavn(), organisasjon.getOrgnummer(), tilfeldigPerson.getIdent());
@@ -128,7 +143,8 @@ public class AnsettelseService  {
                             }
                             muligePersoner.remove(tilfeldigIndex);
                         } catch (NullPointerException e) {
-                            muligePersoner = hentPersoner(from, to, postnr);
+                            muligePersonerMap.replace(iteratorElement, hentPersoner(aldersspennList.get(iteratorElement).getFrom().toString(),
+                                    aldersspennList.get(iteratorElement).getTom().toString(), postnr));
                         } catch (Exception e) {
                             log.error(e.toString());
                             break;
@@ -201,10 +217,10 @@ public class AnsettelseService  {
     }
 
     private void initialiserDatoListe(){
-        alderList.add(DatoIntervall.builder().tom(LocalDate.now().minusYears(24)).from(LocalDate.now().minusYears(18)).build());
-        alderList.add(DatoIntervall.builder().tom(LocalDate.now().minusYears(39)).from(LocalDate.now().minusYears(25)).build());
-        alderList.add(DatoIntervall.builder().tom(LocalDate.now().minusYears(54)).from(LocalDate.now().minusYears(40)).build());
-        alderList.add(DatoIntervall.builder().tom(LocalDate.now().minusYears(66)).from(LocalDate.now().minusYears(55)).build());
-        alderList.add(DatoIntervall.builder().tom(LocalDate.now().minusYears(72)).from(LocalDate.now().minusYears(67)).build());
+        aldersspennList.add(DatoIntervall.builder().tom(LocalDate.now().minusYears(24)).from(LocalDate.now().minusYears(18)).build());
+        aldersspennList.add(DatoIntervall.builder().tom(LocalDate.now().minusYears(39)).from(LocalDate.now().minusYears(25)).build());
+        aldersspennList.add(DatoIntervall.builder().tom(LocalDate.now().minusYears(54)).from(LocalDate.now().minusYears(40)).build());
+        aldersspennList.add(DatoIntervall.builder().tom(LocalDate.now().minusYears(66)).from(LocalDate.now().minusYears(55)).build());
+        aldersspennList.add(DatoIntervall.builder().tom(LocalDate.now().minusYears(72)).from(LocalDate.now().minusYears(67)).build());
     }
 }
