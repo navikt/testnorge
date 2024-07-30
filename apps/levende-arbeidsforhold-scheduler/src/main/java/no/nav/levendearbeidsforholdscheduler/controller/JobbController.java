@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.levendearbeidsforholdscheduler.domain.StatusRespons;
 import no.nav.levendearbeidsforholdscheduler.scheduler.JobbScheduler;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,8 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Optional;
 
-import static no.nav.levendearbeidsforholdscheduler.utils.Utils.intervallErHeltall;
-import static no.nav.levendearbeidsforholdscheduler.utils.Utils.lagCronExpression;
+import static no.nav.levendearbeidsforholdscheduler.utils.Utils.sifferTilHeltall;
 
 @Slf4j
 @RestController
@@ -39,17 +37,14 @@ public class JobbController {
             return ResponseEntity.badRequest().body("intervall er ikke spesifisert");
         }
 
-        String cronExpression;
-        boolean erGyldigHeltall = intervallErHeltall(intervall);
-
-        if (erGyldigHeltall){
-            cronExpression = lagCronExpression(intervall);
+        var resultat = sifferTilHeltall(intervall);
+        if (resultat.isPresent()){
+            jobbScheduler.startScheduler(resultat.get());
+            return ResponseEntity.ok("Scheduler har begynt med intervall " + intervall);
         } else {
             return ResponseEntity.badRequest().body("intervall er ikke gyldig heltall");
         }
 
-        jobbScheduler.startScheduler(cronExpression);
-        return ResponseEntity.ok("Scheduler har begynt med intervall " + intervall);
     }
 
     //TODO: Gjøre om endepunkt til å returnere med klokkeslettet neste jobb skal kjøre

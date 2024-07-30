@@ -3,6 +3,7 @@ package no.nav.levendearbeidsforholdscheduler.utils;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Optional;
 
 public class Utils {
 
@@ -15,19 +16,19 @@ public class Utils {
         return "0 0 */" + intervallet + " ? * MON-SAT";
     }
 
-
     /**
-     * Funksjon som validerer om intervall er et positivt heltall. Brukes kun i this.rescheduleTask() metoden.
-     * @param intervall Heltall som representerer antall timer forsinkelse for job-scheduleren
-     * @return true hvis intervallet er et positivt heltall og false hvis ikke
+     * Funksjon som validerer om intervall er et positivt heltall
+     * @param intervall Tekst med siffer som representerer antall timer forsinkelse for job-scheduleren
+     * @return intervallet som heltall dersom det er et gyldig heltall
      */
-    public static boolean intervallErHeltall(String intervall) {
+    public static Optional<Long> sifferTilHeltall(String intervall) {
+
         try {
-            Integer.parseInt(intervall);
+            long tall = Integer.parseInt(intervall);
+            return Optional.of(tall);
         } catch (NumberFormatException e) {
-            return false;
+            return Optional.empty();
         }
-        return true;
     }
 
     public static Calendar hentKalender(){
