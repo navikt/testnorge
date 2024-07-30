@@ -135,7 +135,6 @@ public class JobbScheduler {
                 ansettelseCommand.aktiverAnsettelseService();
 
             }
-
             log.info("Kjørte jobb!");
         }
     }
