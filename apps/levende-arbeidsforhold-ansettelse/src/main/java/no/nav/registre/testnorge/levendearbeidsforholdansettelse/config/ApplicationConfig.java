@@ -15,3 +15,4 @@ import org.springframework.context.annotation.Import;
 public class ApplicationConfig {
 
 }
+
