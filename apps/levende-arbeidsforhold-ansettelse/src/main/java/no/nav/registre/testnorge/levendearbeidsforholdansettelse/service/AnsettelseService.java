@@ -5,16 +5,17 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.kodeverk.KodeverkNavn;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.pdl.Ident;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.arbeidsforhold.Arbeidsforhold;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.JobbParameterNavn;
 import no.nav.testnav.libs.dto.organisasjonfastedataservice.v1.OrganisasjonDTO;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.time.Year;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
+
+import static no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.JobbParameterNavn.ANTALL_ORGANISASJONER;
+import static no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.JobbParameterNavn.ANTALL_PERSONER;
 
 @Slf4j
 @Service
@@ -56,7 +57,7 @@ public class AnsettelseService  {
         }
 
         Map<String, String> parametere = hentParametere();
-        List<OrganisasjonDTO> organisasjoner = hentOrganisasjoner(Integer.parseInt(parametere.get("antallOrganisasjoner")));
+        List<OrganisasjonDTO> organisasjoner = hentOrganisasjoner(Integer.parseInt(parametere.get(ANTALL_ORGANISASJONER.value)));
 
         //List<OrganisasjonDTO> organisasjoner = hentOrganisasjoner(dbParametere.get("antallOrg"));
         if (organisasjoner.isEmpty()) {
@@ -65,7 +66,7 @@ public class AnsettelseService  {
         int antallPersPerOrg = 0;
 
         try {
-            antallPersPerOrg = getAntallAnsettelserHverOrg(Integer.parseInt(parametere.get("antallPersoner")), Integer.parseInt(parametere.get("antallOrganisasjoner")));
+            antallPersPerOrg = getAntallAnsettelserHverOrg(Integer.parseInt(parametere.get(ANTALL_PERSONER.value)), Integer.parseInt(parametere.get(ANTALL_ORGANISASJONER.value)));
             //antallPersPerOrg = getAntallAnsettelserHverOrg(dbParametere.get("antallPers"), dbParametere.get("antallOrg"));
         } catch (NumberFormatException e) {
             log.error("Feil format på verdi");
@@ -95,7 +96,7 @@ public class AnsettelseService  {
                             int tilfeldigIndex = tilfeldigTall(muligePersoner.size());
                             Ident tilfeldigPerson = muligePersoner.get(tilfeldigIndex);
 
-                            if(kanAnsettes(tilfeldigPerson)) {
+                            if(kanAnsettes(tilfeldigPerson) && harBareTestnorgeTags(tilfeldigPerson)) {
                                 log.info("Arbeidsforhold til person {} før ansettelse: {}", tilfeldigPerson.getIdent(),
                                         arbeidsforholdService.hentArbeidsforhold(tilfeldigPerson.getIdent()).toString());
 
@@ -155,6 +156,13 @@ public class AnsettelseService  {
             }
         }
         return true;
+    }
+
+    private boolean harBareTestnorgeTags(Ident person){
+
+        List<String> tags = pdlService.HentTags(person.getIdent());
+        return tags.size() == 1 && tags.getFirst().equals("TESTNORGE");
+
     }
 
     private HttpStatusCode ansettPerson(String ident, String orgnummer, String yrke) {

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.pdl.Ident;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.JobbParameterNavn;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.JobbParameterNavn.ANTALL_ORGANISASJONER;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -19,21 +22,9 @@ public class Test {
 
     private final PdlService pdlService;
 
-    @EventListener(ApplicationReadyEvent.class)
+    //@EventListener(ApplicationReadyEvent.class)
     public void test() throws Exception {
 
-        pdlService.setFrom("1988");
-        pdlService.setTo("2011");
-        pdlService.setPostnr("2100");
-        List<Ident> personer =  pdlService.getPersoner();
-        log.info("Personer {}", personer.toString());
-        List<String> identer = new ArrayList<>();
-        personer.forEach(pers -> identer.add(pers.getIdent()));
-        String[] ident = identer.toArray(String[]::new);
-        log.info("ident: {}", Arrays.toString(ident));
-        List<String> tags = new ArrayList<>();
-        personer.forEach(pers -> pdlService.HentTags(pers.getIdent()));
 
-        //pdlService.HentTags(ident);
     }
 }
