@@ -124,8 +124,7 @@ public class JobbScheduler {
         @Override
         public void run() {
             if(sjekkOmGyldigTidsrom(START_KLOKKESLETT, START_DAG, SLUTT_KLOKKESLETT, SLUTT_DAG)){
-                //TODO: Kall på consumer som sender request til levende-arbeidsforhold-ansettelse app
-                //ansettelseCommand.aktiverAnsettelseService();
+                ansettelseCommand.aktiverAnsettelseService();
             }
 
             log.info("Kjørte jobb!");
