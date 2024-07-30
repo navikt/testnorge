@@ -65,7 +65,8 @@ public class AnsettelseService  {
             return;
         }
         int antallPersPerOrg = 0;
-
+        List<Integer> sannsynlighetFordeling =  List.of(434106.0, 1022448.0, 976833, 563804.0, 563804.0, 72363.0)
+        AliasMethod alias = new AliasMethod()
         try {
             antallPersPerOrg = getAntallAnsettelserHverOrg(Integer.parseInt(parametere.get(ANTALL_PERSONER.value)), Integer.parseInt(parametere.get(ANTALL_ORGANISASJONER.value)));
             //antallPersPerOrg = getAntallAnsettelserHverOrg(dbParametere.get("antallPers"), dbParametere.get("antallOrg"));
