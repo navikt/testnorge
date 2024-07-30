@@ -3,31 +3,23 @@ package no.nav.levendearbeidsforholdscheduler.utils;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Optional;
 
 public class Utils {
 
     /**
-     * Formatterer en cron-expression for å kjøre en jobb hver x. time
-     * @param intervallet Heltall som representerer antall timer forsinkelse
-     * @return Ferdig formattert og gyldig cron-expression
+     * Funksjon som validerer om intervall er et positivt heltall
+     * @param intervall Tekst med siffer som representerer antall timer forsinkelse for job-scheduleren
+     * @return intervallet som heltall dersom det er et gyldig heltall
      */
-    public static String lagCronExpression(String intervallet) {
-        return "0 0 */" + intervallet + " ? * MON-SAT";
-    }
+    public static Optional<Long> sifferTilHeltall(String intervall) {
 
-
-    /**
-     * Funksjon som validerer om intervall er et positivt heltall. Brukes kun i this.rescheduleTask() metoden.
-     * @param intervall Heltall som representerer antall timer forsinkelse for job-scheduleren
-     * @return true hvis intervallet er et positivt heltall og false hvis ikke
-     */
-    public static boolean intervallErHeltall(String intervall) {
         try {
-            Integer.parseInt(intervall);
+            long tall = Integer.parseInt(intervall);
+            return Optional.of(tall);
         } catch (NumberFormatException e) {
-            return false;
+            return Optional.empty();
         }
-        return true;
     }
 
     public static Calendar hentKalender(){
