@@ -2,7 +2,6 @@ package no.nav.levendearbeidsforholdscheduler.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.levendearbeidsforholdscheduler.domain.StatusRespons;
@@ -27,7 +26,7 @@ public class JobbController {
 
     /**
      * Request handler funksjon for å restarte scheduler
-     * @param request Spørrings-objekt fra klient
+     * @param  Spørrings-objekt fra klient
      * @return respons til klienten for den tilsvarende spørringen
      */
     @GetMapping
