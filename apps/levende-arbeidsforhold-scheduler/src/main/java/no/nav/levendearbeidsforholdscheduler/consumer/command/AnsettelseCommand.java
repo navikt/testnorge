@@ -23,7 +23,7 @@ public class AnsettelseCommand {
         try {
             var accessToken = hentToken();
 
-            WebClient webClient = WebClient.builder().baseUrl("https://testnav-levende-arbeidsforhold-ansettelse-v2.intern.dev.nav.no/api/ansettelse-jobb").build();
+            WebClient webClient = WebClient.builder().baseUrl("https://testnav-levende-arbeidsforhold-ansettelsev2.intern.dev.nav.no/api/ansettelse-jobb").build();
             String response = webClient.get()
                     .header("Authorization", "Bearer " + accessToken)
                     .retrieve().bodyToMono(String.class).block();
