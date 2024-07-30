@@ -132,7 +132,7 @@ public class JobbScheduler {
                 ansettelsesService.hent();
                 log.info("har kjørt hent kjører aktiver ansettelsecommand");
 
-                ansettelseCommand.aktiverAnsettelseService();
+                //ansettelseCommand.aktiverAnsettelseService();
 
             }
             log.info("Kjørte jobb!");
