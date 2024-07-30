@@ -28,11 +28,10 @@ public class AnsettelseConsumer {
     }
     public void hentFraAnsettelse(){
         try {
-            var token = tokenExchange.exchange(serverProperties).block();
-            if (token != null){
-                var response = new AnsettelsesCommand2(webClient, token.getTokenValue()).call();
-                log.info("Response {}", response);
-            }
+            tokenExchange.exchange(serverProperties)
+                    .flatMap(token -> new AnsettelsesCommand2(webClient, token.getTokenValue()).call())
+                    .block();
+
         } catch (Exception e) {
             log.error("Feil ved hentet token: {}", e.getMessage());
         }
