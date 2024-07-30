@@ -73,7 +73,7 @@ public class AliasMethod {
 
     /**
      * Metode for å gjøre selve trekkingen fra alias tabellen.
-     * @return Returnerer indeksen fra sannsynlighetsfordelingen som har blitt trekkt.
+     * @return Returnerer indeksen fra sannsynlighetsfordelingen som har blitt trukket.
      */
     public int aliasDraw() {
         int k = J.size();

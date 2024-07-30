@@ -65,8 +65,8 @@ public class AnsettelseService  {
             return;
         }
         int antallPersPerOrg = 0;
-        List<Integer> sannsynlighetFordeling =  List.of(434106.0, 1022448.0, 976833, 563804.0, 563804.0, 72363.0)
-        AliasMethod alias = new AliasMethod()
+        List<Double> sannsynlighetFordeling =  List.of(434106.0, 1022448.0, 976833.0, 563804.0, 563804.0, 72363.0);
+        AliasMethod alias = new AliasMethod(sannsynlighetFordeling);
         try {
             antallPersPerOrg = getAntallAnsettelserHverOrg(Integer.parseInt(parametere.get(ANTALL_PERSONER.value)), Integer.parseInt(parametere.get(ANTALL_ORGANISASJONER.value)));
             //antallPersPerOrg = getAntallAnsettelserHverOrg(dbParametere.get("antallPers"), dbParametere.get("antallOrg"));
@@ -147,9 +147,9 @@ public class AnsettelseService  {
         return hentOrganisasjonNummerService.hentAntallOrganisasjoner(antall);
     }
 
-    private List<Ident> hentPersoner(String tidligsteFoedselsaar, String senesteFoedselsaar, String postnr) {
-        pdlService.setFrom(tidligsteFoedselsaar);
-        pdlService.setTo(senesteFoedselsaar);
+    private List<Ident> hentPersoner(String tidligsteFoedselsdato, String senesteFoedselsdato, String postnr) {
+        pdlService.setFrom(tidligsteFoedselsdato);
+        pdlService.setTo(senesteFoedselsdato);
         pdlService.setPostnr(postnr);
         return pdlService.getPersoner();
     }
