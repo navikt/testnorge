@@ -32,6 +32,7 @@ public class JobbController {
     @GetMapping("/ansettelse-jobb")
     public ResponseEntity<String> ansettelseJobb(){
         //TODO: Kall ansettelseSerivce.ruNnAnsettelseService her
+
         log.info("FIkk spørring for å kjøre ansettelse-service fra scheduler");
         return ResponseEntity.ok("Kjørte ansettelse-service");
     }
