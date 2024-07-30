@@ -75,6 +75,8 @@ public class PdlService {
                 .block();
 
         assert node != null;
+        String stringNode = node.toPrettyString();
+        //log.info("StringNode: {}", stringNode);
         int pages = node.get("data").get("sokPerson").findValues("totalPages").getFirst().asInt()/resultsPerPage;
         return (pages == 0) ? 1 : pages;
     }

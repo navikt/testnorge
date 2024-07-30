@@ -66,8 +66,7 @@ public class AliasMethod {
                 mindre.add(stor);
             else
                 storre.add(stor);
-            log.info("q: {}", q);
-            log.info("J: {}", J);
+
         }
     }
 

@@ -35,14 +35,14 @@ public class AnsettelseService  {
     private static final int MIN_ALDER = 18;
     private static final int MAKS_ALDER = 70;
     private final String yrke = "7125102";
-    private List<DatoIntervall> aldersspennList;
+    private List<DatoIntervall> aldersspennList = new ArrayList<>();
 
     @EventListener(ApplicationReadyEvent.class)
     public void runAnsettelseService() {
         Thread thread = new Thread(this::ansettelseService);
         thread.start();
         try {
-            thread.join(30000); // Timeout after 30 seconds
+            thread.join(3000000); // Timeout after 30 seconds
             if (thread.isAlive()) {
                 thread.interrupt();
                 System.out.println("Timeout occurred");
@@ -65,16 +65,16 @@ public class AnsettelseService  {
 
         Map<String, String> parametere = hentParametere();
 
-        List<OrganisasjonDTO> organisasjoner = hentOrganisasjoner(Integer.parseInt(parametere.get(ANTALL_ORGANISASJONER.value)));
-        //List<OrganisasjonDTO> organisasjoner = hentOrganisasjoner(dbParametere.get("antallOrg"));
+        //List<OrganisasjonDTO> organisasjoner = hentOrganisasjoner(Integer.parseInt(parametere.get(ANTALL_ORGANISASJONER.value)));
+        List<OrganisasjonDTO> organisasjoner = hentOrganisasjoner(dbParametere.get("antallOrg"));
         if (organisasjoner.isEmpty()) {
             return;
         }
 
         int antallPersPerOrg = 0;
         try {
-            antallPersPerOrg = getAntallAnsettelserHverOrg(Integer.parseInt(parametere.get(ANTALL_PERSONER.value)), Integer.parseInt(parametere.get(ANTALL_ORGANISASJONER.value)));
-            //antallPersPerOrg = getAntallAnsettelserHverOrg(dbParametere.get("antallPers"), dbParametere.get("antallOrg"));
+            //antallPersPerOrg = getAntallAnsettelserHverOrg(Integer.parseInt(parametere.get(ANTALL_PERSONER.value)), Integer.parseInt(parametere.get(ANTALL_ORGANISASJONER.value)));
+            antallPersPerOrg = getAntallAnsettelserHverOrg(dbParametere.get("antallPers"), dbParametere.get("antallOrg"));
         } catch (NumberFormatException e) {
             log.error("Feil format på verdi");
         }
@@ -83,7 +83,7 @@ public class AnsettelseService  {
         AliasMethod alias = new AliasMethod(sannsynlighetFordeling);
 
         int finalAntallPersPerOrg = antallPersPerOrg;
-
+        Long start = System.currentTimeMillis();
         organisasjoner.forEach(
                 organisasjon -> {
                     String postnr = konverterPostnr(organisasjon.getPostadresse().getPostnr());
@@ -101,7 +101,8 @@ public class AnsettelseService  {
                     aldersspennIndekser.forEach(
                             indeks -> {
                                 if (!muligePersonerMap.containsKey(indeks)) {
-                                    muligePersonerMap.put(indeks, hentPersoner(aldersspennList.get(indeks).getFrom().toString(), aldersspennList.get(indeks).getTom().toString(), postnr));
+                                    log.info("i hent personer: {}, {}, {}", aldersspennList.get(indeks).getTom(), aldersspennList.get(indeks).getFrom().toString(), postnr);
+                                    muligePersonerMap.put(indeks, hentPersoner( aldersspennList.get(indeks).getTom().toString(), aldersspennList.get(indeks).getFrom().toString(), postnr));
                                 }
                             }
                     );
@@ -131,6 +132,8 @@ public class AnsettelseService  {
                                                 arbeidsforholdService.hentArbeidsforhold(tilfeldigPerson.getIdent()).toString());
                                         ansattePersoner.add(tilfeldigPerson);
                                         antallPersAnsatt++;
+                                        Long dyration = System.currentTimeMillis();
+                                        log.info("tid brukt {}", (dyration - start));
                                         if (aldersspennIterator.hasNext()) {
                                             iteratorElement = aldersspennIterator.next();
                                         }
@@ -153,8 +156,13 @@ public class AnsettelseService  {
 
                     log.info("Personer ansatt i org {}, {}: {} \n", organisasjon.getNavn(),
                             organisasjon.getOrgnummer(), ansattePersoner);
+                    long duration = System.currentTimeMillis();
+                    log.info("Tid brukt {}", (duration-start));
                 }
+
         );
+        long end = System.currentTimeMillis();
+        log.info("Slutt {}", (end-start));
     }
 
     private Map<String, String> hentParametere() {

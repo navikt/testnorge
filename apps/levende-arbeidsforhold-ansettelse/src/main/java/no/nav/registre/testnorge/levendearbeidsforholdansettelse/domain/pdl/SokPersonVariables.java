@@ -21,9 +21,9 @@ public class SokPersonVariables {
 
     public GraphqlVariables.Criteria lagSokPersonCriteria() {
 
-        Map<String, String> searchRuleFoedselsaar = new java.util.HashMap<>();
-        searchRuleFoedselsaar.put("from", from);
-        searchRuleFoedselsaar.put("to", to );
+        Map<String, String> searchRuleFoedselsdato = new java.util.HashMap<>();
+        searchRuleFoedselsdato.put("from", from);
+        searchRuleFoedselsdato.put("to", to );
 
         GraphqlVariables.Filter filterBostedPostnr = GraphqlVariables.Filter.builder()
                 .fieldName("person.bostedsadresse.vegadresse.postnummer")
@@ -35,9 +35,9 @@ public class SokPersonVariables {
                 .searchRule(Map.of("wildcard", postnr))
                 .build();
 
-        GraphqlVariables.Filter filterFoedselsaar = GraphqlVariables.Filter.builder()
-                .fieldName("person.foedselsdato.foedselsaar")
-                .searchRule(searchRuleFoedselsaar)
+        GraphqlVariables.Filter filterFoedselsdato = GraphqlVariables.Filter.builder()
+                .fieldName("person.foedselsdato.foedselsdato")
+                .searchRule(searchRuleFoedselsdato)
                 .build();
 
         GraphqlVariables.Filter filterIdent = GraphqlVariables.Filter.builder()
@@ -46,7 +46,7 @@ public class SokPersonVariables {
                 .build();
 
         Map<String, List<GraphqlVariables.Filter>> or = Map.of("or", List.of(filterBostedPostnr, filterOppholdPostnr));
-        List<Object> and = List.of(or, filterFoedselsaar, filterIdent);
+        List<Object> and = List.of(or, filterFoedselsdato, filterIdent);
 
         return GraphqlVariables.Criteria.builder().and(and).build();
     }
