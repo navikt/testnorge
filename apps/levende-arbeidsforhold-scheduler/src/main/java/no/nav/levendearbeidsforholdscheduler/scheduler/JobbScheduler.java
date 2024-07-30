@@ -73,7 +73,7 @@ public class JobbScheduler {
         if (scheduledFuture != null) {
             scheduledFuture.cancel(true);
         }
-
+        log.info("Er i startScheduler");
         scheduledFuture = taskScheduler.scheduleAtFixedRate(new AnsettelseJobb(), INITIELL_FORSINKELSE, intervall, TimeUnit.HOURS);
 
     }
