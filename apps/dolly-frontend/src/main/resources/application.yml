@@ -223,6 +223,11 @@ consumers:
     namespace: dolly
     name: testnav-levende-arbeidsforhold-ansettelsev2
     url: http://testnav-levende-arbeidsforhold-ansettelsev2.dolly.svc.cluster.local
+  testnav-levende-arbeidsforhold-scheduler:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-levende-arbeidsforhold-scheduler
+    url: http://testnav-levende-arbeidsforhold-scheduler.dolly.svc.cluster.local
 
 management:
   endpoints:

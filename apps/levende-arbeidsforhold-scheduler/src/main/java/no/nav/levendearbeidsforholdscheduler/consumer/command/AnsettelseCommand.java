@@ -31,7 +31,7 @@ public class AnsettelseCommand {
                 log.info("Response: {}", response);
             }
         } catch (Exception e) {
-            log.warn("Kunne ikke aktivere ansettelse service pga spørring feilet");
+            log.warn("Kunne ikke aktivere ansettelse service pga spørring feilet {}", e.getMessage());
         }
     }
 
