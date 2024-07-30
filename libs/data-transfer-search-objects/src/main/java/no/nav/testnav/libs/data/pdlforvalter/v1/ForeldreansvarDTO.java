@@ -13,6 +13,7 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 import java.time.LocalDateTime;
 
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Data
@@ -47,6 +48,12 @@ public class ForeldreansvarDTO extends DbVersjonDTO {
     public boolean isAnsvarligMedIdentifikator() {
 
         return isNotBlank(ansvarlig);
+    }
+
+    @JsonIgnore
+    public boolean isNotAnsvarssubjekt() {
+
+        return isBlank(ansvarssubjekt);
     }
 
     @JsonIgnore

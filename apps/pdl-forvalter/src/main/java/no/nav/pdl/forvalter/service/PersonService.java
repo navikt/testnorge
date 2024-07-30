@@ -152,6 +152,7 @@ public class PersonService {
                                 .map(ForeldreansvarDTO::getAnsvarlig)
                                 .toList())
                 .flatMap(Collection::stream)
+                .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
 
         pdlTestdataConsumer.delete(identer).block();
