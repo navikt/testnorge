@@ -4,20 +4,17 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.levendearbeidsforholdscheduler.consumer.command.AnsettelseCommand;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.stereotype.Component;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.Optional;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import static no.nav.levendearbeidsforholdscheduler.utils.Utils.hentKalender;
-
 
 @Slf4j
 @Component
@@ -28,7 +25,7 @@ public class JobbScheduler {
     private final AnsettelseCommand ansettelseCommand;
 
     @Autowired
-    private final TaskScheduler taskScheduler;
+    private final ScheduledExecutorService taskScheduler;
 
     private ScheduledFuture<?> scheduledFuture;
 
@@ -37,6 +34,8 @@ public class JobbScheduler {
 
     private static final int SLUTT_KLOKKESLETT = 12;
     private static final int SLUTT_DAG = 6;
+
+    private static final long INITIELL_FORSINKELSE = 0;
 
     /**
      * Funksjon som brukes for å sjekke om scheduleren kjører for øyeblikket
@@ -65,15 +64,15 @@ public class JobbScheduler {
 
     /**
      * Avslutter eventuelt nåværende schedule og starter en ny med det nye intervallet.
-     * @param cronExpression Gyldig cron-expression (forutsetter at expression er allerede formattert)
+     * @param intervall Positivt heltall som representerer times-intervall for scheduler
      */
-    public void startScheduler(String cronExpression){
+    public void startScheduler(long intervall){
 
         if (scheduledFuture != null) {
             scheduledFuture.cancel(true);
         }
 
-        scheduledFuture = taskScheduler.schedule(new AnsettelseJobb(), new CronTrigger(cronExpression));
+        scheduledFuture = taskScheduler.scheduleAtFixedRate(new AnsettelseJobb(), INITIELL_FORSINKELSE, intervall, TimeUnit.HOURS);
 
     }
 
@@ -125,8 +124,7 @@ public class JobbScheduler {
         @Override
         public void run() {
             if(sjekkOmGyldigTidsrom(START_KLOKKESLETT, START_DAG, SLUTT_KLOKKESLETT, SLUTT_DAG)){
-                //TODO: Kall på consumer som sender request til levende-arbeidsforhold-ansettelse app
-                //ansettelseCommand.aktiverAnsettelseService();
+                ansettelseCommand.aktiverAnsettelseService();
             }
 
             log.info("Kjørte jobb!");
