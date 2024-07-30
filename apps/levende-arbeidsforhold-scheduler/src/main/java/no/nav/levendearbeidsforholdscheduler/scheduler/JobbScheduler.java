@@ -4,22 +4,17 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.levendearbeidsforholdscheduler.consumer.command.AnsettelseCommand;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.stereotype.Component;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.Optional;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import static no.nav.levendearbeidsforholdscheduler.utils.Utils.hentKalender;
-import static no.nav.levendearbeidsforholdscheduler.utils.Utils.sifferTilHeltall;
-
 
 @Slf4j
 @Component
