@@ -65,6 +65,8 @@ spec:
         - application: testnorge-profil-api
         - application: testnorge-tilbakemelding-api
         - application: testnav-levende-arbeidsforhold-ansettelsev2
+        - application: testnav-levende-arbeidsforhold-scheduler
+
       external:
         - host: testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
         - host: testnav-sigrunstub-proxy.dev-fss-pub.nais.io
