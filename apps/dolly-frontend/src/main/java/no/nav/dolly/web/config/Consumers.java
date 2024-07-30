@@ -63,5 +63,6 @@ public class Consumers {
     private ServerProperties testnorgeTilbakemeldingApi;
     private ServerProperties testnavTenorSearchService;
     private ServerProperties testnavLevendeArbeidsforholdAnsettelsev2;
+    private ServerProperties testnavLevendeArbeidsforholdScheduler;
 
 }
