@@ -48,5 +48,5 @@ consumers:
   testnav-levende-arbeidsforhold-ansettelsev2:
     name: testnav-levende-arbeidsforhold-ansettelsev2
     namespace: dolly
-    url: http://testnav-levende-arbeidsforhold-ansettelse-v2.dolly.svc.cluster.local
+    url: http://testnav-levende-arbeidsforhold-ansettelsev2.dolly.svc.cluster.local
     cluster: dev-gcp
