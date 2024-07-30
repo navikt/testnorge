@@ -9,8 +9,8 @@ import org.springframework.context.annotation.Import;
 @Configuration
 @Import({
         ApplicationCoreConfig.class,
-        //InsecureJwtServerToServerConfiguration.class
-        SecureOAuth2ServerToServerConfiguration.class
+        InsecureJwtServerToServerConfiguration.class
+        //SecureOAuth2ServerToServerConfiguration.class
 })
 public class ApplicationConfig {
 
