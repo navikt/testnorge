@@ -2,6 +2,7 @@ package no.nav.registre.testnorge.levendearbeidsforholdansettelse.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.DatoIntervall;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.kodeverk.KodeverkNavn;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.pdl.Ident;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.arbeidsforhold.Arbeidsforhold;
@@ -32,6 +33,7 @@ public class AnsettelseService  {
     private static final int MIN_ALDER = 18;
     private static final int MAKS_ALDER = 70;
     private final String yrke = "7125102";
+    private List<DatoIntervall> alderList;
 
     //@EventListener(ApplicationReadyEvent.class)
     public void runAnsettelseService() {
@@ -195,5 +197,13 @@ public class AnsettelseService  {
 
     private String konverterPostnr(String postnr) {
         return postnr.charAt(0) + "???";
+    }
+
+    private void initialiserDatoListe(){
+        alderList.add(DatoIntervall.builder().tom(LocalDate.now().minusYears(24)).from(LocalDate.now().minusYears(18)).build());
+        alderList.add(DatoIntervall.builder().tom(LocalDate.now().minusYears(39)).from(LocalDate.now().minusYears(25)).build());
+        alderList.add(DatoIntervall.builder().tom(LocalDate.now().minusYears(54)).from(LocalDate.now().minusYears(40)).build());
+        alderList.add(DatoIntervall.builder().tom(LocalDate.now().minusYears(66)).from(LocalDate.now().minusYears(55)).build());
+        alderList.add(DatoIntervall.builder().tom(LocalDate.now().minusYears(72)).from(LocalDate.now().minusYears(67)).build());
     }
 }
