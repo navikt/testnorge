@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
+import java.time.LocalDate;
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
@@ -73,13 +74,19 @@ public class AnsettelseService  {
 
         int finalAntallPersPerOrg = antallPersPerOrg;
 
-        int currentYear = Year.now().getValue();
+        //int currentYear = Year.now().getValue();
 
+        String from = LocalDate.now().minusYears(MAKS_ALDER).toString();
+        String to = LocalDate.now().minusYears(MIN_ALDER).toString();
+
+        /*
         int from_age = currentYear - MAKS_ALDER;
         int to_age = currentYear - MIN_ALDER;
 
         String from = "" + from_age;
         String to = "" + to_age;
+
+         */
 
         organisasjoner.forEach(
                 organisasjon -> {
