@@ -4,13 +4,13 @@ on:
   push:
     paths:
       - "plugins/**"
-      - libs/domain
-      - libs/reactive-core
-      - libs/security-core
-      - libs/servlet-core
-      - libs/servlet-security
-      - apps/generer-synt-amelding-service/**
-      - .github/workflows/app.generer-synt-amelding-service.yml
+      - "libs/domain/**"
+      - "libs/reactive-core/**"
+      - "libs/security-core/**"
+      - "libs/servlet-core/**"
+      - "libs/servlet-security/**"
+      - "apps/generer-synt-amelding-service/**"
+      - ".github/workflows/app.generer-synt-amelding-service.yml"
 
 jobs:
   workflow:

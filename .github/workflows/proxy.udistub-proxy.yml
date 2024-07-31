@@ -4,12 +4,12 @@ on:
   push:
     paths:
       - "plugins/**"
-      - libs/reactive-core
-      - libs/reactive-proxy
-      - libs/reactive-security
-      - libs/security-core
-      - proxies/udistub-proxy/**
-      - .github/workflows/proxy.udistub-proxy.yml
+      - "libs/reactive-core/**"
+      - "libs/reactive-proxy/**"
+      - "libs/reactive-security/**"
+      - "libs/security-core/**"
+      - "proxies/udistub-proxy/**"
+      - ".github/workflows/proxy.udistub-proxy.yml"
 
 jobs:
   workflow:

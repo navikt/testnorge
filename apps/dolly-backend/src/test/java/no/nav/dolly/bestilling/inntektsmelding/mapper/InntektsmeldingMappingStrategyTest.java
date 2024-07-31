@@ -187,14 +187,35 @@ class InntektsmeldingMappingStrategyTest {
     @Test
     void mapInntektsmeldingSjekkeEnumFelter() {
 
-        var target = mapperFacade.map(populateRsInntektsmelding(), InntektsmeldingRequest.class).getInntekter().getFirst();
-        assertThat(target.getAarsakTilInnsending(), is(equalTo(AarsakInnsendingKodeListe.NY)));
-        assertThat(target.getArbeidsforhold().getBeregnetInntekt().getAarsakVedEndring(), is(equalTo("TARIFFENDRING")));
-        assertThat(target.getArbeidsforhold().getUtsettelseAvForeldrepengerListe().getFirst().getAarsakTilUtsettelse(), is(equalTo("LOVBESTEMT_FERIE")));
-        assertThat(target.getSykepengerIArbeidsgiverperioden().getBegrunnelseForReduksjonEllerIkkeUtbetalt(), is(equalTo("BETVILER_ARBEIDSUFOERHET")));
-        assertThat(target.getYtelse(), is(equalTo(YtelseKodeListe.OPPLAERINGSPENGER)));
-        assertThat(target.getOpphoerAvNaturalytelseListe().getFirst().getNaturalytelseType(), is(equalTo("BEDRIFTSBARNEHAGEPLASS")));
-        assertThat(target.getGjenopptakelseNaturalytelseListe().getFirst().getNaturalytelseType(), is(equalTo("BEDRIFTSBARNEHAGEPLASS")));
+        var original = populateRsInntektsmelding();
+        var mapped = mapperFacade.map(original, InntektsmeldingRequest.class).getInntekter().getFirst();
+        assertThat(mapped.getAarsakTilInnsending(), is(equalTo(AarsakInnsendingKodeListe.NY)));
+        assertThat(mapped.getArbeidsforhold().getBeregnetInntekt().getAarsakVedEndring(), is(equalTo("TARIFFENDRING")));
+        assertThat(mapped.getArbeidsforhold().getUtsettelseAvForeldrepengerListe().getFirst().getAarsakTilUtsettelse(), is(equalTo("LOVBESTEMT_FERIE")));
+        assertThat(mapped.getSykepengerIArbeidsgiverperioden().getBegrunnelseForReduksjonEllerIkkeUtbetalt(), is(equalTo("BETVILER_ARBEIDSUFOERHET")));
+        assertThat(mapped.getYtelse(), is(equalTo(YtelseKodeListe.OPPLAERINGSPENGER)));
+
+        for (NaturalytelseType originalNaturalytelseType : NaturalytelseType.values()) {
+            original.getInntekter().getFirst().getGjenopptakelseNaturalytelseListe().getFirst().setNaturalytelseType(originalNaturalytelseType);
+            original.getInntekter().getFirst().getOpphoerAvNaturalytelseListe().getFirst().setNaturalytelseType(originalNaturalytelseType);
+            mapped = mapperFacade.map(original, InntektsmeldingRequest.class).getInntekter().getFirst();
+            var mappedNaturalytelseType = mapped
+                    .getOpphoerAvNaturalytelseListe()
+                    .getFirst()
+                    .getNaturalytelseType();
+            assertThat(mappedNaturalytelseType, is(equalTo(originalNaturalytelseType.getJsonValue())));
+            originalNaturalytelseType = original
+                    .getInntekter()
+                    .getFirst()
+                    .getGjenopptakelseNaturalytelseListe()
+                    .getFirst()
+                    .getNaturalytelseType();
+            mappedNaturalytelseType = mapped
+                    .getGjenopptakelseNaturalytelseListe()
+                    .getFirst()
+                    .getNaturalytelseType();
+            assertThat(mappedNaturalytelseType, is(equalTo(originalNaturalytelseType.getJsonValue())));
+        }
     }
 
     @Test
@@ -254,4 +275,5 @@ class InntektsmeldingMappingStrategyTest {
         assertThat(target.getUtsettelseAvForeldrepengerListe().getFirst().getPeriode().getFom(), is(equalTo(START_DATO.atStartOfDay())));
         assertThat(target.getUtsettelseAvForeldrepengerListe().getFirst().getPeriode().getTom(), is(equalTo(SLUTT_DATO.atStartOfDay())));
     }
+
 }

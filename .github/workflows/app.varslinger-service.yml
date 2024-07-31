@@ -4,13 +4,13 @@ on:
   push:
     paths:
       - "plugins/**"
-      - libs/data-transfer-objects
-      - libs/database
-      - libs/security-core
-      - libs/servlet-core
-      - libs/servlet-security
-      - apps/varslinger-service/**
-      - .github/workflows/app.varslinger-service.yml
+      - "libs/data-transfer-objects/**"
+      - "libs/database/**"
+      - "libs/security-core/**"
+      - "libs/servlet-core/**"
+      - "libs/servlet-security/**"
+      - "apps/varslinger-service/**"
+      - ".github/workflows/app.varslinger-service.yml"
 
 jobs:
   workflow:
