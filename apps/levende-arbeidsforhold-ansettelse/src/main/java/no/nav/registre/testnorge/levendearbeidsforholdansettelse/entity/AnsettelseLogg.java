@@ -1,9 +1,6 @@
 package no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -22,7 +19,7 @@ import java.time.OffsetDateTime;
 @Table(name = "ansettelse_logg")
 public class AnsettelseLogg {
     @Id
-    @ColumnDefault("nextval('ansettelse_logg_id_seq'::regclass)")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
@@ -36,9 +33,6 @@ public class AnsettelseLogg {
     @Column(name = "folkeregisterident", nullable = false)
     private String folkeregisterident;
 
-    @NotNull
-    @Column(name = "nav_arbeidsforhold_id", nullable = false)
-    private Long navArbeidsforholdId;
 
     @NotNull
     @Column(name = "\"timestamp\"", nullable = false)
