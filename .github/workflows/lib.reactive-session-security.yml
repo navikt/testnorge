@@ -4,8 +4,8 @@ on:
   push:
     paths:
       - "plugins/**"
-      - libs/reactive-session-security/**
-      - .github/workflows/lib.reactive-session-security.yml
+      - "libs/reactive-session-security/**"
+      - ".github/workflows/lib.reactive-session-security.yml"
 
 jobs:
   workflow:

@@ -4,8 +4,8 @@ on:
   push:
     paths:
       - "plugins/**"
-      - libs/security-core/**
-      - .github/workflows/lib.security-core.yml
+      - "libs/security-core/**"
+      - ".github/workflows/lib.security-core.yml"
 
 jobs:
   workflow:

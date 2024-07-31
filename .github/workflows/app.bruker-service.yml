@@ -4,13 +4,13 @@ on:
   push:
     paths:
       - "plugins/**"
-      - libs/data-transfer-objects
-      - libs/integration-test
-      - libs/reactive-core
-      - libs/reactive-security
-      - libs/security-core
-      - apps/bruker-service/**
-      - .github/workflows/app.bruker-service.yml
+      - "libs/data-transfer-objects/**"
+      - "libs/integration-test/**"
+      - "libs/reactive-core/**"
+      - "libs/reactive-security/**"
+      - "libs/security-core/**"
+      - "apps/bruker-service/**"
+      - ".github/workflows/app.bruker-service.yml"
 
 jobs:
   workflow:

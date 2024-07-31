@@ -4,8 +4,8 @@ on:
   push:
     paths:
       - "plugins/**"
-      - libs/reactive-proxy/**
-      - .github/workflows/lib.reactive-proxy.yml
+      - "libs/reactive-proxy/**"
+      - ".github/workflows/lib.reactive-proxy.yml"
 
 jobs:
   workflow:

@@ -4,10 +4,10 @@ on:
   push:
     paths:
       - "plugins/**"
-      - libs/reactive-core
-      - libs/reactive-proxy
-      - proxies/ereg-proxy/**
-      - .github/workflows/proxy.ereg-proxy.yml
+      - "libs/reactive-core/**"
+      - "libs/reactive-proxy/**"
+      - "proxies/ereg-proxy/**"
+      - ".github/workflows/proxy.ereg-proxy.yml"
 
 jobs:
   workflow:

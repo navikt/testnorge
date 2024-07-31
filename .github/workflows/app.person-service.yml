@@ -4,14 +4,14 @@ on:
   push:
     paths:
       - "plugins/**"
-      - libs/commands
-      - libs/data-transfer-objects
-      - libs/reactive-core
-      - libs/security-core
-      - libs/servlet-core
-      - libs/servlet-security
-      - apps/person-service/**
-      - .github/workflows/app.person-service.yml
+      - "libs/commands/**"
+      - "libs/data-transfer-objects/**"
+      - "libs/reactive-core/**"
+      - "libs/security-core/**"
+      - "libs/servlet-core/**"
+      - "libs/servlet-security/**"
+      - "apps/person-service/**"
+      - ".github/workflows/app.person-service.yml"
 
 jobs:
   workflow:

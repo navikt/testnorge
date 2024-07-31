@@ -4,15 +4,15 @@ on:
   push:
     paths:
       - "plugins/**"
-      - libs/commands
-      - libs/data-transfer-objects
-      - libs/reactive-core
-      - libs/security-core
-      - libs/servlet-core
-      - libs/servlet-insecure-security
-      - libs/servlet-security
-      - apps/batch-bestilling-service/**
-      - .github/workflows/app.batch-bestilling-service.yml
+      - "libs/commands/**"
+      - "libs/data-transfer-objects/**"
+      - "libs/reactive-core/**"
+      - "libs/security-core/**"
+      - "libs/servlet-core/**"
+      - "libs/servlet-insecure-security/**"
+      - "libs/servlet-security/**"
+      - "apps/batch-bestilling-service/**"
+      - ".github/workflows/app.batch-bestilling-service.yml"
 
 jobs:
   workflow:
