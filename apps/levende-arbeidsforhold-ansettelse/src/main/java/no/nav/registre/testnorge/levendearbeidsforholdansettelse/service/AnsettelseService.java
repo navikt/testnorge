@@ -200,10 +200,10 @@ public class AnsettelseService  {
     }
 
     private void initialiserDatoListe(){
-        alderList.add(DatoIntervall.builder().from(LocalDate.now().minusYears(24)).tom(LocalDate.now().minusYears(18)).build());
-        alderList.add(DatoIntervall.builder().from(LocalDate.now().minusYears(39)).tom(LocalDate.now().minusYears(25)).build());
-        alderList.add(DatoIntervall.builder().from(LocalDate.now().minusYears(54)).tom(LocalDate.now().minusYears(40)).build());
-        alderList.add(DatoIntervall.builder().from(LocalDate.now().minusYears(66)).tom(LocalDate.now().minusYears(55)).build());
-        alderList.add(DatoIntervall.builder().from(LocalDate.now().minusYears(72)).tom(LocalDate.now().minusYears(67)).build());
+        alderList.add(DatoIntervall.builder().tom(LocalDate.now().minusYears(24)).from(LocalDate.now().minusYears(18)).build());
+        alderList.add(DatoIntervall.builder().tom(LocalDate.now().minusYears(39)).from(LocalDate.now().minusYears(25)).build());
+        alderList.add(DatoIntervall.builder().tom(LocalDate.now().minusYears(54)).from(LocalDate.now().minusYears(40)).build());
+        alderList.add(DatoIntervall.builder().tom(LocalDate.now().minusYears(66)).from(LocalDate.now().minusYears(55)).build());
+        alderList.add(DatoIntervall.builder().tom(LocalDate.now().minusYears(72)).from(LocalDate.now().minusYears(67)).build());
     }
 }
