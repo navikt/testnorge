@@ -36,7 +36,7 @@ public class AnsettelseService  {
     private static final int MIN_ALDER = 18;
     private static final int MAKS_ALDER = 70;
     private final String yrke = "7125102";
-    private List<DatoIntervall> alderList;
+    private List<DatoIntervall> aldersspennList = new ArrayList<>();
 
     @EventListener(ApplicationReadyEvent.class)
     public void runAnsettelseService() {
@@ -62,53 +62,65 @@ public class AnsettelseService  {
             return;
         }
 
-        Map<String, String> parametere = hentParametere();
-        List<OrganisasjonDTO> organisasjoner = hentOrganisasjoner(Integer.parseInt(parametere.get(ANTALL_ORGANISASJONER.value)));
+        initialiserDatoListe();
 
-        //List<OrganisasjonDTO> organisasjoner = hentOrganisasjoner(dbParametere.get("antallOrg"));
+        Map<String, String> parametere = hentParametere();
+
+        //List<OrganisasjonDTO> organisasjoner = hentOrganisasjoner(Integer.parseInt(parametere.get(ANTALL_ORGANISASJONER.value)));
+        List<OrganisasjonDTO> organisasjoner = hentOrganisasjoner(dbParametere.get("antallOrg"));
         if (organisasjoner.isEmpty()) {
             return;
         }
-        int antallPersPerOrg = 0;
 
+        int antallPersPerOrg = 0;
         try {
-            antallPersPerOrg = getAntallAnsettelserHverOrg(Integer.parseInt(parametere.get(ANTALL_PERSONER.value)), Integer.parseInt(parametere.get(ANTALL_ORGANISASJONER.value)));
-            //antallPersPerOrg = getAntallAnsettelserHverOrg(dbParametere.get("antallPers"), dbParametere.get("antallOrg"));
+            //antallPersPerOrg = getAntallAnsettelserHverOrg(Integer.parseInt(parametere.get(ANTALL_PERSONER.value)), Integer.parseInt(parametere.get(ANTALL_ORGANISASJONER.value)));
+            antallPersPerOrg = getAntallAnsettelserHverOrg(dbParametere.get("antallPers"), dbParametere.get("antallOrg"));
         } catch (NumberFormatException e) {
             log.error("Feil format på verdi");
         }
 
+        List<Double> sannsynlighetFordeling =  List.of(434106.0, 1022448.0, 976833.0, 563804.0, 72363.0);
+        AliasMethod alias = new AliasMethod(sannsynlighetFordeling);
+
         int finalAntallPersPerOrg = antallPersPerOrg;
-
-        //int currentYear = Year.now().getValue();
-
-        String from = LocalDate.now().minusYears(MAKS_ALDER).toString();
-        String to = LocalDate.now().minusYears(MIN_ALDER).toString();
-
-        /*
-        int from_age = currentYear - MAKS_ALDER;
-        int to_age = currentYear - MIN_ALDER;
-
-        String from = "" + from_age;
-        String to = "" + to_age;
-
-         */
-
+        Long start = System.currentTimeMillis();
         organisasjoner.forEach(
                 organisasjon -> {
-                    int antallPersAnsatt = 0;
-
                     String postnr = konverterPostnr(organisasjon.getPostadresse().getPostnr());
 
-                    List<Ident> muligePersoner = hentPersoner(from, to, postnr);
+                    List<Integer> aldersspennIndekser = new ArrayList<>();
+                    for (int i = 0; i < finalAntallPersPerOrg; i++) {
+                        aldersspennIndekser.add(alias.aliasDraw());
+                        Collections.sort(aldersspennIndekser);
+                    }
+
+                    Iterator<Integer> aldersspennIterator = aldersspennIndekser.iterator();
+                    int iteratorElement = aldersspennIterator.next();
+
+                    Map<Integer, List<Ident>> muligePersonerMap = new HashMap<>();
+                    aldersspennIndekser.forEach(
+                            indeks -> {
+                                if (!muligePersonerMap.containsKey(indeks)) {
+                                    log.info("i hent personer: {}, {}, {}", aldersspennList.get(indeks).getTom(), aldersspennList.get(indeks).getFrom().toString(), postnr);
+                                    muligePersonerMap.put(indeks, hentPersoner( aldersspennList.get(indeks).getTom().toString(), aldersspennList.get(indeks).getFrom().toString(), postnr));
+                                }
+                            }
+                    );
+
+                    int antallPersAnsatt = 0;
+
                     List<Ident> ansattePersoner = new ArrayList<>(); //liste/oversikt for logging
 
                     while (antallPersAnsatt < finalAntallPersPerOrg) {
                         try {
+
+                            List<Ident> muligePersoner = muligePersonerMap.get(iteratorElement);
+
                             int tilfeldigIndex = tilfeldigTall(muligePersoner.size());
                             Ident tilfeldigPerson = muligePersoner.get(tilfeldigIndex);
                             if (harBareTestnorgeTags(tilfeldigPerson)){
-                            if(kanAnsettes(tilfeldigPerson) && harBareTestnorgeTags(tilfeldigPerson)) {
+                            if(kanAnsettes(tilfeldigPerson) ) {
                                 log.info("Arbeidsforhold til person {} før ansettelse: {}", tilfeldigPerson.getIdent(),
                                         arbeidsforholdService.hentArbeidsforhold(tilfeldigPerson.getIdent()).toString());
 
@@ -121,6 +133,11 @@ public class AnsettelseService  {
                                                 arbeidsforholdService.hentArbeidsforhold(tilfeldigPerson.getIdent()).toString());
                                         ansattePersoner.add(tilfeldigPerson);
                                         antallPersAnsatt++;
+                                        Long dyration = System.currentTimeMillis();
+                                        log.info("tid brukt {}", (dyration - start));
+                                        if (aldersspennIterator.hasNext()) {
+                                            iteratorElement = aldersspennIterator.next();
+                                        }
                                     }
                                 }catch (WebClientResponseException e){
                                     log.info("organisasjon: {} {}, person {}", organisasjon.getNavn(), organisasjon.getOrgnummer(), tilfeldigPerson.getIdent());
@@ -130,7 +147,8 @@ public class AnsettelseService  {
                             }}
                             muligePersoner.remove(tilfeldigIndex);
                         } catch (NullPointerException e) {
-                            muligePersoner = hentPersoner(from, to, postnr);
+                            muligePersonerMap.replace(iteratorElement, hentPersoner(aldersspennList.get(iteratorElement).getFrom().toString(),
+                                    aldersspennList.get(iteratorElement).getTom().toString(), postnr));
                         } catch (Exception e) {
                             log.error(e.toString());
                             break;
@@ -141,8 +159,13 @@ public class AnsettelseService  {
                     }
                     log.info("Personer ansatt i org {}, {}: {} \n", organisasjon.getNavn(),
                             organisasjon.getOrgnummer(), ansattePersoner);
+                    long duration = System.currentTimeMillis();
+                    log.info("Tid brukt {}", (duration-start));
                 }
+
         );
+        long end = System.currentTimeMillis();
+        log.info("Slutt {}", (end-start));
     }
 
     private Map<String, String> hentParametere() {
@@ -153,9 +176,9 @@ public class AnsettelseService  {
         return hentOrganisasjonNummerService.hentAntallOrganisasjoner(antall);
     }
 
-    private List<Ident> hentPersoner(String tidligsteFoedselsaar, String senesteFoedselsaar, String postnr) {
-        pdlService.setFrom(tidligsteFoedselsaar);
-        pdlService.setTo(senesteFoedselsaar);
+    private List<Ident> hentPersoner(String tidligsteFoedselsdato, String senesteFoedselsdato, String postnr) {
+        pdlService.setFrom(tidligsteFoedselsdato);
+        pdlService.setTo(senesteFoedselsdato);
         pdlService.setPostnr(postnr);
         return pdlService.getPersoner();
     }
@@ -205,10 +228,10 @@ public class AnsettelseService  {
     }
 
     private void initialiserDatoListe(){
-        alderList.add(DatoIntervall.builder().from(LocalDate.now().minusYears(24)).tom(LocalDate.now().minusYears(18)).build());
-        alderList.add(DatoIntervall.builder().from(LocalDate.now().minusYears(39)).tom(LocalDate.now().minusYears(25)).build());
-        alderList.add(DatoIntervall.builder().from(LocalDate.now().minusYears(54)).tom(LocalDate.now().minusYears(40)).build());
-        alderList.add(DatoIntervall.builder().from(LocalDate.now().minusYears(66)).tom(LocalDate.now().minusYears(55)).build());
-        alderList.add(DatoIntervall.builder().from(LocalDate.now().minusYears(72)).tom(LocalDate.now().minusYears(67)).build());
+        aldersspennList.add(DatoIntervall.builder().tom(LocalDate.now().minusYears(24)).from(LocalDate.now().minusYears(18)).build());
+        aldersspennList.add(DatoIntervall.builder().tom(LocalDate.now().minusYears(39)).from(LocalDate.now().minusYears(25)).build());
+        aldersspennList.add(DatoIntervall.builder().tom(LocalDate.now().minusYears(54)).from(LocalDate.now().minusYears(40)).build());
+        aldersspennList.add(DatoIntervall.builder().tom(LocalDate.now().minusYears(66)).from(LocalDate.now().minusYears(55)).build());
+        aldersspennList.add(DatoIntervall.builder().tom(LocalDate.now().minusYears(72)).from(LocalDate.now().minusYears(67)).build());
     }
 }

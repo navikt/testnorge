@@ -66,14 +66,13 @@ public class AliasMethod {
                 mindre.add(stor);
             else
                 storre.add(stor);
-            log.info("q: {}", q);
-            log.info("J: {}", J);
+
         }
     }
 
     /**
      * Metode for å gjøre selve trekkingen fra alias tabellen.
-     * @return Returnerer indeksen fra sannsynlighetsfordelingen som har blitt trekkt.
+     * @return Returnerer indeksen fra sannsynlighetsfordelingen som har blitt trukket.
      */
     public int aliasDraw() {
         int k = J.size();
