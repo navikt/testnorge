@@ -59,6 +59,7 @@ public class ForeldreansvarDTO extends DbVersjonDTO {
     @JsonIgnore
     @Override
     public String getIdentForRelasjon() {
-        return ansvarlig;
+
+        return isNotBlank(ansvarlig) ? ansvarlig : ansvarssubjekt;
     }
 }
