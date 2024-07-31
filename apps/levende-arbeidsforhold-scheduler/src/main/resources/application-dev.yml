@@ -1,3 +1,3 @@
 consumers:
-  testnav-levende-arbeidsforhold-ansettelsev2:
-    url: https://testnav-levende-arbeidsforhold-ansettelsev2.intern.dev.nav.no
+  testnav-levende-arbeidsforhold-ansettelse:
+    url: https://testnav-levende-arbeidsforhold-ansettelse.intern.dev.nav.no

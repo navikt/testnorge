@@ -45,8 +45,8 @@ server:
   error:
     include-message: always
 consumers:
-  testnav-levende-arbeidsforhold-ansettelsev2:
-    name: testnav-levende-arbeidsforhold-ansettelsev2
+  testnav-levende-arbeidsforhold-ansettelse:
+    name: testnav-levende-arbeidsforhold-ansettelse
     namespace: dolly
-    url: http://testnav-levende-arbeidsforhold-ansettelsev2.dolly.svc.cluster.local
+    url: http://testnav-levende-arbeidsforhold-ansettelse.dolly.svc.cluster.local
     cluster: dev-gcp

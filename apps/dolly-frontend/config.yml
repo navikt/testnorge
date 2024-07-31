@@ -64,7 +64,7 @@ spec:
         - application: testnav-varslinger-service
         - application: testnorge-profil-api
         - application: testnorge-tilbakemelding-api
-        - application: testnav-levende-arbeidsforhold-ansettelsev2
+        - application: testnav-levende-arbeidsforhold-ansettelse
         - application: testnav-levende-arbeidsforhold-scheduler
 
       external:

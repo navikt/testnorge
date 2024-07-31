@@ -6,8 +6,8 @@ $$
 BEGIN
     grant all privileges on table jobb_parameter to cloudsqliamuser;
     grant all privileges on table verdier to cloudsqliamuser;
-    grant all privileges on table jobb_parameter to "testnav-levende-arbeidsforhold-ansettelsev2";
-    grant all privileges on table verdier to "testnav-levende-arbeidsforhold-ansettelsev2";
+    grant all privileges on table jobb_parameter to "testnav-levende-arbeidsforhold-ansettelse";
+    grant all privileges on table verdier to "testnav-levende-arbeidsforhold-ansettelse";
 END
 $$;
 

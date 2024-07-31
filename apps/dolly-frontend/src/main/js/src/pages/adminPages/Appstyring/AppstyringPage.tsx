@@ -18,7 +18,7 @@ export default () => {
 
 	useEffect(() => {
 		async function fetchData() {
-			await fetch('/testnav-levende-arbeidsforhold-ansettelsev2/api')
+			await fetch('/testnav-levende-arbeidsforhold-ansettelse/api')
 				.then(res => res.json())
 				.then(res => {
 					res.map((r: FetchData) => optionsData.push(r))

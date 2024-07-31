@@ -229,7 +229,7 @@
     "changeOrigin": true,
     "secure": false
   },
-  "/testnav-levende-arbeidsforhold-ansettelsev2/api": {
+  "/testnav-levende-arbeidsforhold-ansettelse/api": {
     "target": "http://localhost:8020",
     "changeOrigin": true,
     "secure": false

@@ -3,7 +3,7 @@ spring:
   flyway:
     enabled: true
   datasource:
-    url: ${NAIS_DATABASE_TESTNAV_LEVENDE_ARBEIDSFORHOLD_ANSETTELSEV2_TESTNAV_LEVENDE_ARBEIDSFORHOLD_DB_JDBC_URL}
+    url: ${NAIS_DATABASE_TESTNAV_LEVENDE_ARBEIDSFORHOLD_ANSETTELSE_TESTNAV_LEVENDE_ARBEIDSFORHOLD_DB_JDBC_URL}
     driverClassName: org.postgresql.Driver
     hikari:
       maximum-pool-size: 3
