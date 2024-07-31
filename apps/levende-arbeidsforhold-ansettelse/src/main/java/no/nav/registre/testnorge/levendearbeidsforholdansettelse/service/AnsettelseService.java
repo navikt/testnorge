@@ -8,6 +8,8 @@ import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.pdl.Iden
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.arbeidsforhold.Arbeidsforhold;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.JobbParameterNavn;
 import no.nav.testnav.libs.dto.organisasjonfastedataservice.v1.OrganisasjonDTO;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -30,17 +32,18 @@ public class AnsettelseService  {
     private final ArbeidsforholdService arbeidsforholdService;
     private final JobbService jobbService;
     private final KodeverkService kodeverkService;
+    private final AnsettelseLoggService ansettelseLoggService;
     private static final int MIN_ALDER = 18;
     private static final int MAKS_ALDER = 70;
     private final String yrke = "7125102";
     private List<DatoIntervall> alderList;
 
-    //@EventListener(ApplicationReadyEvent.class)
+    @EventListener(ApplicationReadyEvent.class)
     public void runAnsettelseService() {
         Thread thread = new Thread(this::ansettelseService);
         thread.start();
         try {
-            thread.join(30000); // Timeout after 30 seconds
+            thread.join(3000000); // Timeout after 30 seconds
             if (thread.isAlive()) {
                 thread.interrupt();
                 System.out.println("Timeout occurred");
@@ -104,7 +107,7 @@ public class AnsettelseService  {
                         try {
                             int tilfeldigIndex = tilfeldigTall(muligePersoner.size());
                             Ident tilfeldigPerson = muligePersoner.get(tilfeldigIndex);
-
+                            if (harBareTestnorgeTags(tilfeldigPerson)){
                             if(kanAnsettes(tilfeldigPerson) && harBareTestnorgeTags(tilfeldigPerson)) {
                                 log.info("Arbeidsforhold til person {} før ansettelse: {}", tilfeldigPerson.getIdent(),
                                         arbeidsforholdService.hentArbeidsforhold(tilfeldigPerson.getIdent()).toString());
@@ -124,7 +127,7 @@ public class AnsettelseService  {
                                     organisasjon = hentOrganisasjoner(1).getFirst();
                                     continue;
                                 }
-                            }
+                            }}
                             muligePersoner.remove(tilfeldigIndex);
                         } catch (NullPointerException e) {
                             muligePersoner = hentPersoner(from, to, postnr);
@@ -133,7 +136,9 @@ public class AnsettelseService  {
                             break;
                         }
                     }
-
+                    for (Ident person: ansattePersoner){
+                        ansettelseLoggService.lagreAnsettelse(person, organisasjon);
+                    }
                     log.info("Personer ansatt i org {}, {}: {} \n", organisasjon.getNavn(),
                             organisasjon.getOrgnummer(), ansattePersoner);
                 }
@@ -200,10 +205,10 @@ public class AnsettelseService  {
     }
 
     private void initialiserDatoListe(){
-        alderList.add(DatoIntervall.builder().tom(LocalDate.now().minusYears(24)).from(LocalDate.now().minusYears(18)).build());
-        alderList.add(DatoIntervall.builder().tom(LocalDate.now().minusYears(39)).from(LocalDate.now().minusYears(25)).build());
-        alderList.add(DatoIntervall.builder().tom(LocalDate.now().minusYears(54)).from(LocalDate.now().minusYears(40)).build());
-        alderList.add(DatoIntervall.builder().tom(LocalDate.now().minusYears(66)).from(LocalDate.now().minusYears(55)).build());
-        alderList.add(DatoIntervall.builder().tom(LocalDate.now().minusYears(72)).from(LocalDate.now().minusYears(67)).build());
+        alderList.add(DatoIntervall.builder().from(LocalDate.now().minusYears(24)).tom(LocalDate.now().minusYears(18)).build());
+        alderList.add(DatoIntervall.builder().from(LocalDate.now().minusYears(39)).tom(LocalDate.now().minusYears(25)).build());
+        alderList.add(DatoIntervall.builder().from(LocalDate.now().minusYears(54)).tom(LocalDate.now().minusYears(40)).build());
+        alderList.add(DatoIntervall.builder().from(LocalDate.now().minusYears(66)).tom(LocalDate.now().minusYears(55)).build());
+        alderList.add(DatoIntervall.builder().from(LocalDate.now().minusYears(72)).tom(LocalDate.now().minusYears(67)).build());
     }
 }
