@@ -221,6 +221,12 @@ public class ArtifactDeleteService {
                     var slettePerson = getPerson(type.getRelatertPerson());
 
                     DeleteRelasjonerUtility.deleteRelasjoner(slettePerson, FAMILIERELASJON_FORELDER);
+                    if (type.isEksisterendePerson()) {
+                        slettePerson.getPerson().setForelderBarnRelasjon(
+                                slettePerson.getPerson().getForelderBarnRelasjon().stream()
+                                        .filter(ansvar -> !ident.equals(ansvar.getRelatertPerson()))
+                                        .toList());
+                    }
 
                     deletePerson(slettePerson, type.isEksisterendePerson());
                 });
@@ -244,7 +250,12 @@ public class ArtifactDeleteService {
                     var slettePerson = getPerson(type.getAnsvarlig());
 
                     DeleteRelasjonerUtility.deleteRelasjoner(slettePerson, FORELDREANSVAR_FORELDER);
-
+                    if (type.isEksisterendePerson()) {
+                        slettePerson.getPerson().setForeldreansvar(
+                                slettePerson.getPerson().getForeldreansvar().stream()
+                                .filter(ansvar -> !ident.equals(ansvar.getAnsvarssubjekt()))
+                                .toList());
+                    }
                     deletePerson(slettePerson, type.isEksisterendePerson());
                 });
 

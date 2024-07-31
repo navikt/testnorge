@@ -136,7 +136,7 @@ class ForeldreansvarServiceTest {
     }
 
     @Test
-    void whenAnsvarIsMorANdForeldreBarnRelationExcludesMor_thenThrowExecption() {
+    void whenAnsvarIsMorAndForeldreBarnRelationExcludesMor_thenThrowExecption() {
 
         var request = ForeldreansvarDTO.builder()
                 .ansvar(Ansvar.MOR)
