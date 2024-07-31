@@ -17,7 +17,7 @@ public class AnsettelseConsumer {
 
     public  AnsettelseConsumer(Consumers consumers,
                                TokenExchange tokenExchange){
-        this.serverProperties = consumers.getTestnavLevendeArbeidsforholdAnsettelsev2();
+        this.serverProperties = consumers.getTestnavLevendeArbeidsforholdAnsettelse();
         this.tokenExchange = tokenExchange;
 
         this.webClient = WebClient
