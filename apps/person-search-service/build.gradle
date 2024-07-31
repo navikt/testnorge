@@ -18,18 +18,18 @@ dependencies {
     implementation 'no.nav.testnav.libs:servlet-security'
 
     implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
-    implementation 'org.opensearch.client:spring-data-opensearch:1.4.0'
+    implementation "org.opensearch.client:spring-data-opensearch:$versions.opensearch"
 
-    implementation 'com.fasterxml.jackson.core:jackson-core:2.17.1'
+    implementation "com.fasterxml.jackson.core:jackson-core:$versions.jackson"
 
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-cache'
 
-    implementation 'ma.glasnost.orika:orika-core:1.5.4'
+    implementation "ma.glasnost.orika:orika-core:$versions.orika"
 
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0'
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc"
 
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
 }
