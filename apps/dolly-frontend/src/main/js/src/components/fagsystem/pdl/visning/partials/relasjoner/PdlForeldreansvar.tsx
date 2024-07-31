@@ -19,6 +19,7 @@ const PdlForeldreansvarVisning = ({ data, idx }: VisningProps) => {
 	return (
 		<div className="person-visning_content" key={idx}>
 			<TitleValue title="Hvem har ansvaret" value={_.capitalize(data.ansvar)} />
+			<TitleValue title="Ansvarssubjekt" value={data.ansvarssubjekt} />
 			<TitleValue title="Ansvarlig" value={data.ansvarlig} />
 			{data.ansvarligUtenIdentifikator && (
 				<div className="flexbox--full-width">
