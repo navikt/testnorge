@@ -5,4 +5,4 @@ ENV JAVA_OPTS="-Dspring.profiles.active=prod"
 
 ADD /build/libs/app.jar /app/app.jar
 
-EXPOSE 8081
+EXPOSE 8080

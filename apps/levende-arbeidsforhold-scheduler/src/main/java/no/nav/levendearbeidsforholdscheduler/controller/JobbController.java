@@ -2,7 +2,6 @@ package no.nav.levendearbeidsforholdscheduler.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.levendearbeidsforholdscheduler.domain.StatusRespons;
@@ -10,6 +9,7 @@ import no.nav.levendearbeidsforholdscheduler.scheduler.JobbScheduler;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Optional;
@@ -26,12 +26,13 @@ public class JobbController {
 
     /**
      * Request handler funksjon for å restarte scheduler
-     * @param request Spørrings-objekt fra klient
+     * @param  Spørrings-objekt fra klient
      * @return respons til klienten for den tilsvarende spørringen
      */
     @GetMapping
-    public ResponseEntity<String> reschedule(HttpServletRequest request) {
-        String intervall = request.getHeader("intervall");
+    public ResponseEntity<String> reschedule(@RequestParam String intervall) {
+        //String intervall = request.getHeader("intervall");
+
 
         if (intervall == null) {
             return ResponseEntity.badRequest().body("intervall er ikke spesifisert");

@@ -3,7 +3,7 @@ package no.nav.levendearbeidsforholdscheduler.consumer.command;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.levendearbeidsforholdscheduler.config.Consumers;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -23,8 +23,9 @@ public class AnsettelseCommand {
         try {
             var accessToken = hentToken();
 
-            WebClient webClient = WebClient.builder().baseUrl("https://testnav-levende-arbeidsforhold-ansettelse-v2.intern.dev.nav.no/api/ansettelse-jobb").build();
+            WebClient webClient = WebClient.builder().baseUrl("https://testnav-levende-arbeidsforhold-ansettelsev2.intern.dev.nav.no/api/ansettelse-jobb").build();
             String response = webClient.get()
+                    //.uri(builder -> builder.path("/api/ansettelse-jobb").build())
                     .header("Authorization", "Bearer " + accessToken)
                     .retrieve().bodyToMono(String.class).block();
             if(response != null){

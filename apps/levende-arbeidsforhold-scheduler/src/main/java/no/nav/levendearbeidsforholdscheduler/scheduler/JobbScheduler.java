@@ -2,7 +2,9 @@ package no.nav.levendearbeidsforholdscheduler.scheduler;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.levendearbeidsforholdscheduler.consumer.AnsettelseConsumer;
 import no.nav.levendearbeidsforholdscheduler.consumer.command.AnsettelseCommand;
+import no.nav.levendearbeidsforholdscheduler.consumer.command.AnsettelsesCommand2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Component;
@@ -23,7 +25,7 @@ import static no.nav.levendearbeidsforholdscheduler.utils.Utils.hentKalender;
 public class JobbScheduler {
 
     private final AnsettelseCommand ansettelseCommand;
-
+    private final AnsettelsesService ansettelsesService;
     @Autowired
     private final ScheduledExecutorService taskScheduler;
 
@@ -71,7 +73,7 @@ public class JobbScheduler {
         if (scheduledFuture != null) {
             scheduledFuture.cancel(true);
         }
-
+        log.info("Er i startScheduler");
         scheduledFuture = taskScheduler.scheduleAtFixedRate(new AnsettelseJobb(), INITIELL_FORSINKELSE, intervall, TimeUnit.HOURS);
 
     }
@@ -123,10 +125,16 @@ public class JobbScheduler {
          */
         @Override
         public void run() {
+            log.info("Er i run");
             if(sjekkOmGyldigTidsrom(START_KLOKKESLETT, START_DAG, SLUTT_KLOKKESLETT, SLUTT_DAG)){
-                ansettelseCommand.aktiverAnsettelseService();
-            }
+                log.info("Gyldig tidsrom kjører hent");
 
+                ansettelsesService.hent();
+                log.info("har kjørt hent kjører aktiver ansettelsecommand");
+
+                //ansettelseCommand.aktiverAnsettelseService();
+
+            }
             log.info("Kjørte jobb!");
         }
     }

@@ -38,7 +38,7 @@ management:
       export:
         enabled: true
 server:
-  port: 8081
+  port: 8080
   servlet:
     encoding:
       charset: UTF-8
@@ -48,7 +48,5 @@ consumers:
   testnav-levende-arbeidsforhold-ansettelsev2:
     name: testnav-levende-arbeidsforhold-ansettelsev2
     namespace: dolly
-    url: https://testnav-levende-arbeidsforhold-ansettelse-v2.intern.dev.nav.no
+    url: http://testnav-levende-arbeidsforhold-ansettelsev2.dolly.svc.cluster.local
     cluster: dev-gcp
-
-

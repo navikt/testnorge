@@ -45,12 +45,9 @@ repositories {
 
 dependencies {
     implementation 'no.nav.testnav.libs:security-core'
-    implementation 'no.nav.testnav.libs:reactive-core'
     implementation 'no.nav.testnav.libs:servlet-core'
-    implementation 'no.nav.testnav.libs:commands'
     implementation 'no.nav.testnav.libs:data-transfer-objects'
     implementation 'no.nav.testnav.libs:servlet-security'
-    implementation 'no.nav.testnav.libs:avro-schema'
     implementation 'no.nav.testnav.libs:servlet-insecure-security'
 
 
@@ -59,12 +56,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-quartz'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
-
-    implementation 'org.postgresql:postgresql:42.7.2'
 
     implementation 'io.micrometer:micrometer-registry-prometheus'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0'
@@ -79,10 +73,6 @@ dependencies {
     implementation 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
-
-    implementation 'com.zaxxer:HikariCP'
-    implementation 'com.h2database:h2'
-    implementation 'org.postgresql:postgresql'
 
 }
 java {
