@@ -4,8 +4,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.command.pdl.HentTagsCommand;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.command.pdl.SokPersonCommand;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.command.pdl.SokPersonPagesCommand;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.TagsDTO;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.pdl.GraphqlVariables;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.provider.PdlMiljoer;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
@@ -26,6 +28,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.time.Duration;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -91,11 +94,10 @@ public class PdlConsumer {
             return null;
         }
     }
-/*
-    public void hentTags(String[] identer) throws Exception {
+
+    public void hentTags(List<String> identer) throws Exception {
         var token = tokenService.exchange(serverProperties).block();
-        JsonNode tags = new HentTagsCommand(webClient, token.getTokenValue() ,identer).call();
+         new HentTagsCommand(webClient, token.getTokenValue() ,identer).call();
     }
 
- */
 }
