@@ -19,8 +19,13 @@ export default () => {
 
 	async function aktiverScheduler(){
 		setHenterStatus(true);
-		//Send request /scheduler
-		await fetch(`/testnav-levende-arbeidsforhold-scheduler/scheduler?intervall=${apiData.find(d => d.navn == "intervall")?.verdi}`).then(res => {
+
+		let intervall = apiData.find(d => d.navn == "intervall")?.verdi;
+		if(intervall == undefined){
+			alert("Finner ikke intervall");
+			return;
+		}
+		await fetch(`/testnav-levende-arbeidsforhold-scheduler/scheduler?intervall=${intervall}`).then(res => {
 			if (res.ok) {
 				setTimeout(()=>{
 					fetchStatusScheduler();

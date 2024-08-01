@@ -140,17 +140,10 @@ public class JobbScheduler {
          */
         @Override
         public void run() {
-            log.info("Er i run");
             if(sjekkOmGyldigTidsrom(START_KLOKKESLETT, START_DAG, SLUTT_KLOKKESLETT, SLUTT_DAG)){
-                log.info("Gyldig tidsrom kjører hent");
-
                 ansettelsesService.hent();
-                log.info("har kjørt hent kjører aktiver ansettelsecommand");
-
-                //ansettelseCommand.aktiverAnsettelseService();
-
             }
-            log.info("Kjørte jobb!");
+
         }
     }
 
