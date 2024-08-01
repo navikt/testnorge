@@ -46,7 +46,8 @@ public class PdlService {
                 .block();
 
         List<Ident> identer = new ArrayList<>();
-
+        //log.info("data {}", Json.pretty(node.get("data")));
+        //log.info("sokPerson {}", Json.pretty(node.get("data").get("sokPerson")));
         assert node != null;
         node.get("data").get("sokPerson").findValues("identer").forEach(
                 hit -> hit.forEach(

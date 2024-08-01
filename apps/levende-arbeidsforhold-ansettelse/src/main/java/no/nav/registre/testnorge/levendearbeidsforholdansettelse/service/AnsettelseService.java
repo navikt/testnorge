@@ -3,6 +3,7 @@ package no.nav.registre.testnorge.levendearbeidsforholdansettelse.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.DatoIntervall;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.arbeidsforhold.Arbeidsavtale;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.kodeverk.KodeverkNavn;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.pdl.Ident;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.arbeidsforhold.Arbeidsforhold;
@@ -184,16 +185,71 @@ public class AnsettelseService  {
     }
 
     private boolean kanAnsettes(Ident person) {
+        Double stillingsprosent = Double.parseDouble(jobbService.hentJobbParameter("stillingsprosent").getVerdi());
         List<Arbeidsforhold> arbeidsforholdList = arbeidsforholdService.hentArbeidsforhold(person.getIdent());
-        if (!arbeidsforholdList.isEmpty()) {
-            for (Arbeidsforhold arbeidsforhold : arbeidsforholdList) {
-                if (arbeidsforhold.getAnsettelsesperiode().getPeriode().getTom() == null) {
-                    return false;
+        if (arbeidsforholdList.isEmpty()) {
+            return true;
+        } else {
+            if (stillingsprosent >= 100) {
+                for (Arbeidsforhold arbeidsforhold : arbeidsforholdList) {
+                    for (Arbeidsavtale arbeidsavtale : arbeidsforhold.getArbeidsavtaler()) {
+                        if (arbeidsavtale.getBruksperiode().getTom() == null) {
+                            log.info("stillingsprosent: 100 og tom: null: {}", arbeidsavtale.getStillingsprosent());
+                            return true;
+                        }
+                        return false;
+                    }
                 }
+            } else {
+                for (Arbeidsforhold arbeidsforhold : arbeidsforholdList) {
+                    for (Arbeidsavtale arbeidsavtale : arbeidsforhold.getArbeidsavtaler()) {
+                        if (arbeidsavtale.getBruksperiode().getTom() == null) {
+                            stillingsprosent += arbeidsavtale.getStillingsprosent();
+                            log.info("stillingsprosent: 100 og tom: null: {}, stillingsprosent: {}", arbeidsavtale.getStillingsprosent(), stillingsprosent);
+                            if (stillingsprosent > 100) return false;
+                        }
+                    }
+                }
+                return true;
             }
         }
-        return true;
+        return false;
     }
+
+        /*
+        if(stillingsprosent>=100) {
+            if (!arbeidsforholdList.isEmpty()) {
+                for (Arbeidsforhold arbeidsforhold : arbeidsforholdList) {
+                    // #TODO spør om denne if-testen
+                    if (arbeidsforhold.getAnsettelsesperiode().getPeriode().getTom() == null) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+       // }
+
+        */
+        /* IKKE HELT RIKTIG SPØR IMORGEN
+        else {
+            Double stillingsprosentCounter = stillingsprosent;
+            for (Arbeidsforhold arbeidsforhold : arbeidsforholdList){
+                for (Arbeidsavtale arbeidsavtale : arbeidsforhold.getArbeidsavtaler()){
+                    if (arbeidsavtale.getBruksperiode().getTom() == null ) {
+                        stillingsprosentCounter += arbeidsavtale.getStillingsprosent();
+                        if (stillingsprosentCounter>=100){
+                            return false;
+                        }
+                    }
+                }
+            }
+
+
+        */
+
+
+
+
 
     private boolean harBareTestnorgeTags(Ident person){
 
