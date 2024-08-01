@@ -26,13 +26,11 @@ public class JobbController {
 
     /**
      * Request handler funksjon for å restarte scheduler
-     * @param  Spørrings-objekt fra klient
+     * @param  intervall positivt heltall for å representere times-intervall
      * @return respons til klienten for den tilsvarende spørringen
      */
     @GetMapping
     public ResponseEntity<String> reschedule(@RequestParam String intervall) {
-        //String intervall = request.getHeader("intervall");
-
 
         if (intervall == null) {
             return ResponseEntity.badRequest().body("intervall er ikke spesifisert");
@@ -48,7 +46,6 @@ public class JobbController {
 
     }
 
-    //TODO: Gjøre om endepunkt til å returnere med klokkeslettet neste jobb skal kjøre
     /**
      * Request handler funksjon som returnerer status på om scheduler kjører for øyeblikket og eventuelt tidspunktet
      * for neste gang scheduleren skal kjøre
@@ -81,5 +78,14 @@ public class JobbController {
         } catch (JsonProcessingException e) {
             return ResponseEntity.internalServerError().body("Noe skjedde galt med formattering til JSON");
         }
+    }
+
+    /**
+     * Request handler funksjon for å stoppe scheduleren
+     * @return true hvis kanselleringen var vellykket
+     */
+    @GetMapping("/stopp")
+    public ResponseEntity<Boolean> stopp() {
+        return ResponseEntity.ok(jobbScheduler.stoppScheduler());
     }
 }
