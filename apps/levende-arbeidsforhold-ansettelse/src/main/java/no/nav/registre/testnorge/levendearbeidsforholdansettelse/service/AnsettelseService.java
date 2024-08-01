@@ -4,11 +4,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.DatoIntervall;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.arbeidsforhold.Arbeidsavtale;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.dto.OrganisasjonDTO;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.kodeverk.KodeverkNavn;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.pdl.Ident;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.arbeidsforhold.Arbeidsforhold;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.JobbParameterNavn;
-import no.nav.testnav.libs.dto.organisasjonfastedataservice.v1.OrganisasjonDTO;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpStatusCode;
@@ -29,7 +29,7 @@ public class AnsettelseService  {
 
     private final Map<String, Integer> dbParametere = Map.of("antallPers", 10, "antallOrg", 5);
     private final PdlService pdlService;
-    private final HentOrganisasjonNummerService hentOrganisasjonNummerService;
+    private final TenorService tenorService;
     private final ArbeidsforholdService arbeidsforholdService;
     private final JobbService jobbService;
     private final KodeverkService kodeverkService;
@@ -88,7 +88,7 @@ public class AnsettelseService  {
         Long start = System.currentTimeMillis();
         organisasjoner.forEach(
                 organisasjon -> {
-                    String postnr = konverterPostnr(organisasjon.getPostadresse().getPostnr());
+                    String postnr = konverterPostnr(tenorService.hentOrgPostnummer(organisasjon.getOrganisasjonsnummer()));
 
                     List<Integer> aldersspennIndekser = new ArrayList<>();
                     for (int i = 0; i < finalAntallPersPerOrg; i++) {
@@ -128,7 +128,7 @@ public class AnsettelseService  {
                                 String tilfeldigYrke = hentTilfeldigYrkeskode(yrkeskoder);
                                 try {
                                     if (ansettPerson(tilfeldigPerson.getIdent(),
-                                            organisasjon.getOrgnummer(),
+                                            organisasjon.getOrganisasjonsnummer(),
                                             tilfeldigYrke).is2xxSuccessful()) {
                                         log.info("Arbeidsforhold til person {} etter ansettelse: {} \n", tilfeldigPerson.getIdent(),
                                                 arbeidsforholdService.hentArbeidsforhold(tilfeldigPerson.getIdent()).toString());
@@ -141,7 +141,7 @@ public class AnsettelseService  {
                                         }
                                     }
                                 }catch (WebClientResponseException e){
-                                    log.info("organisasjon: {} {}, person {}", organisasjon.getNavn(), organisasjon.getOrgnummer(), tilfeldigPerson.getIdent());
+                                    log.info("organisasjon: {} {}, person {}", organisasjon.getNavn(), organisasjon.getOrganisasjonsnummer(), tilfeldigPerson.getIdent());
                                     organisasjon = hentOrganisasjoner(1).getFirst();
                                     continue;
                                 }
@@ -159,7 +159,7 @@ public class AnsettelseService  {
                         ansettelseLoggService.lagreAnsettelse(person, organisasjon, Double.parseDouble(parametere.get("stillingsprosent")));
                     }
                     log.info("Personer ansatt i org {}, {}: {} \n", organisasjon.getNavn(),
-                            organisasjon.getOrgnummer(), ansattePersoner);
+                            organisasjon.getOrganisasjonsnummer(), ansattePersoner);
                     long duration = System.currentTimeMillis();
                     log.info("Tid brukt {}", (duration-start));
                 }
@@ -174,7 +174,7 @@ public class AnsettelseService  {
     }
 
     private List<OrganisasjonDTO> hentOrganisasjoner(int antall) {
-        return hentOrganisasjonNummerService.hentAntallOrganisasjoner(antall);
+        return tenorService.hentOrganisasjoner(antall);
     }
 
     private List<Ident> hentPersoner(String tidligsteFoedselsdato, String senesteFoedselsdato, String postnr) {
