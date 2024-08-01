@@ -39,7 +39,6 @@ export default () => {
 		fetchStatus();
 	}, []);
 
-
 	return (
 		<>
 			<h1>App-styring</h1>
