@@ -1,13 +1,12 @@
 package no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.config.Consumers;
-import no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.command.tenor.HentOrganisasjonerCommand;
-import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.dto.OrganisasjonDTO;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.command.tenor.HentOrganisasjonCommand;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.command.tenor.HentOrganisasjonerOversiktCommand;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.tenor.TenorOrganisasjonRequest;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.tenor.TenorOversiktOrganisasjonResponse;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 //import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
@@ -17,9 +16,6 @@ import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static java.util.Objects.nonNull;
 
@@ -61,15 +57,23 @@ public class TenorConsumer {
                 .build();
     }
 
-    public List<OrganisasjonDTO> hentOrganisasjoner(TenorOrganisasjonRequest tenorOrgRequest, String antallOrganisasjoner) throws JsonProcessingException {
-        System.out.println("I hentOrganisasjoner");
+    public TenorOversiktOrganisasjonResponse hentOrganisasjonerOversikt(TenorOrganisasjonRequest tenorOrgRequest, String antallOrganisasjoner) {
         var accessToken = tokenExchange.exchange(serverProperties).block();
-        System.out.println("Har hentet ut token");
 
         if (nonNull(accessToken)) {
             var token = accessToken.getTokenValue();
-            return new HentOrganisasjonerCommand(webClient, token, tenorOrgRequest, antallOrganisasjoner).call();
+            return new HentOrganisasjonerOversiktCommand(webClient, token, tenorOrgRequest, antallOrganisasjoner).call();
         }
-        return new ArrayList<>();
+        return new TenorOversiktOrganisasjonResponse();
+    }
+
+    public TenorOversiktOrganisasjonResponse hentOrganisasjon(TenorOrganisasjonRequest tenorOrgRequest) {
+        var accessToken = tokenExchange.exchange(serverProperties).block();
+
+        if (nonNull(accessToken)) {
+            var token = accessToken.getTokenValue();
+            return new HentOrganisasjonCommand(webClient, token, tenorOrgRequest).call();
+        }
+        return new TenorOversiktOrganisasjonResponse();
     }
 }

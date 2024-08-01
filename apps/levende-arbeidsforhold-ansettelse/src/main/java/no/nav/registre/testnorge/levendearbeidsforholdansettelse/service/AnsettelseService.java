@@ -39,7 +39,7 @@ public class AnsettelseService  {
     private final String yrke = "7125102";
     private List<DatoIntervall> aldersspennList = new ArrayList<>();
 
-    @EventListener(ApplicationReadyEvent.class)
+    //@EventListener(ApplicationReadyEvent.class)
     public void runAnsettelseService() {
         Thread thread = new Thread(this::ansettelseService);
         thread.start();
