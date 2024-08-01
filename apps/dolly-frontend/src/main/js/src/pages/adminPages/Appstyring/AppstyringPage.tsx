@@ -12,22 +12,35 @@ export default () => {
 	}
 
 	const [apiData , setApiData] = useState<Array<FetchData>>([]);
-	const [statusData , setStatusData] = useState<Jobbstatus>([]);
+	const [statusData , setStatusData] = useState<Jobbstatus>({nesteKjoring: "", status: false});
+	const [henterStatus, setHenterStatus] = useState(false);
 
 	let optionsData: FetchData[] = [];
 
 	async function aktiverScheduler(){
+		setHenterStatus(true);
 		//Send request /scheduler
-		await fetch('/testnav-levende-arbeidsforhold-scheduler/scheduler').then(res => {
+		await fetch(`/testnav-levende-arbeidsforhold-scheduler/scheduler?intervall=${apiData.find(d => d.navn == "intervall")?.verdi}`).then(res => {
 			if (res.ok) {
-				fetchStatusScheduler();
+				setTimeout(()=>{
+					fetchStatusScheduler();
+					setHenterStatus(false);
+				}, 200)
 			}
 		});
 	}
 
 	async function deaktiverScheduler(){
-		//Send request /scheduler/stopp
-		//Fetch status på nytt
+		setHenterStatus(true);
+		await fetch('/testnav-levende-arbeidsforhold-scheduler/scheduler/stopp').then(res => {
+			if (res.ok) {
+				//Sjekk om body er true?
+				setTimeout(()=>{
+					fetchStatusScheduler();
+					setHenterStatus(false);
+				}, 200)
+			}
+		});
 
 	}
 
@@ -63,7 +76,7 @@ export default () => {
 				Denne siden er under utvikling.
 			</Alert>
 			<StatusBox nesteKjoring={statusData.nesteKjoring} status={statusData.status}/>
-			{!statusData.status ? <Button onClick={aktiverScheduler}>Aktiver</Button> : <Button onClick={deaktiverScheduler}>Deaktiver</Button> }
+			{!statusData.status ? <Button loading={henterStatus} onClick={aktiverScheduler}>Aktiver</Button> : <Button loading={henterStatus} onClick={deaktiverScheduler}>Deaktiver</Button> }
 			<AppstyringTable data={apiData} setData={setApiData}/>
 		</>
 	)
