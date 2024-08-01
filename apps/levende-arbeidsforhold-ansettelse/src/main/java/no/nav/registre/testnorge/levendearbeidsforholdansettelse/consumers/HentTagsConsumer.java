@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.config.Consumers;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.command.pdl.HentTagsCommand;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.TagsDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 //import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
@@ -54,7 +55,7 @@ public class HentTagsConsumer {
                 .build();
     }
 
-    public String[] hentTags(String identer)  {
+    public TagsDTO hentTags(List<String> identer)  {
         var token = tokenService.exchange(serverProperties).block();
         return new HentTagsCommand(webClient, token.getTokenValue(), identer).call();
     }

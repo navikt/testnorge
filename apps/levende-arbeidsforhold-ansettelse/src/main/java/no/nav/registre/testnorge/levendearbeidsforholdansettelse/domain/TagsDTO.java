@@ -19,11 +19,15 @@ public class TagsDTO {
     private Map<String, List<String>> personerTags;
     private String message;
     private String details;
+    /*
     @JsonIgnore
     public static boolean hasOnlyTestnorgeTags(List<String> tags){
         return nonNull(tags) &&
-                tags.contains("DOLLY") ||
-                tags.contains("ARENASYNT");
+                (tags.size() > 1);
     }
+
+     */
+
+
 
 }

@@ -26,7 +26,7 @@ public class HentTagsCommand implements Callable<TagsDTO> {
 
     private final WebClient webClient;
     private final String token;
-    private static final String PDL_TAGS_URL = "/api/v1/bestilling/tags";
+    private static final String PDL_TAGS_URL = "/api/v1/bestilling/tags/bolk";
     private static final String PDL_TESTDATA = "/pdl-testdata";
     private static final String PERSONIDENTER = "Nav-Personidenter";
 

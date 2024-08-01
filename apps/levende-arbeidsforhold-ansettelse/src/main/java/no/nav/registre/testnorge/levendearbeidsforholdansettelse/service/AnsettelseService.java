@@ -3,6 +3,7 @@ package no.nav.registre.testnorge.levendearbeidsforholdansettelse.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.DatoIntervall;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.TagsDTO;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.arbeidsforhold.Arbeidsavtale;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.kodeverk.KodeverkNavn;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.pdl.Ident;
@@ -104,6 +105,10 @@ public class AnsettelseService  {
                             indeks -> {
                                 if (!muligePersonerMap.containsKey(indeks)) {
                                     log.info("i hent personer: {}, {}, {}", aldersspennList.get(indeks).getTom(), aldersspennList.get(indeks).getFrom().toString(), postnr);
+                                    List<Ident> personer = hentPersoner(aldersspennList.get(indeks).getTom().toString(), aldersspennList.get(indeks).getFrom().toString(), postnr);
+                                    List<String> sjekkTags = new ArrayList<>();
+
+                                    personer.forEach(pers -> sjekkTags.add(pers.getIdent()));
                                     muligePersonerMap.put(indeks, hentPersoner( aldersspennList.get(indeks).getTom().toString(), aldersspennList.get(indeks).getFrom().toString(), postnr));
                                 }
                             }
@@ -120,7 +125,7 @@ public class AnsettelseService  {
 
                             int tilfeldigIndex = tilfeldigTall(muligePersoner.size());
                             Ident tilfeldigPerson = muligePersoner.get(tilfeldigIndex);
-                            if (harBareTestnorgeTags(tilfeldigPerson)){
+                            //if (harBareTestnorgeTags(tilfeldigPerson)){
                             if(kanAnsettes(tilfeldigPerson) ) {
                                 log.info("Arbeidsforhold til person {} før ansettelse: {}", tilfeldigPerson.getIdent(),
                                         arbeidsforholdService.hentArbeidsforhold(tilfeldigPerson.getIdent()).toString());
@@ -145,7 +150,7 @@ public class AnsettelseService  {
                                     organisasjon = hentOrganisasjoner(1).getFirst();
                                     continue;
                                 }
-                            }}
+                            }//}
                             muligePersoner.remove(tilfeldigIndex);
                         } catch (NullPointerException e) {
                             muligePersonerMap.replace(iteratorElement, hentPersoner(aldersspennList.get(iteratorElement).getFrom().toString(),
@@ -236,11 +241,19 @@ public class AnsettelseService  {
 
 
 
-    private boolean harBareTestnorgeTags(Ident person){
+    private List<Ident> harBareTestnorgeTags(List<Ident> person){
+        List<String> ident = new ArrayList<>();
+        person.forEach(pers -> ident.add(pers.getIdent()));
+        TagsDTO dto = pdlService.HentTags(ident);
 
-        List<String> tags = pdlService.HentTags(person.getIdent());
-        return tags.size() == 1 && tags.getFirst().equals("TESTNORGE");
-
+        for(var id : dto.getPersonerTags().entrySet()){
+            List<String> value = id.getValue();
+            log.info("Tags: {}, bool: {}", value.toString(), (value.size() == 1 && value.getFirst().contains("TESTNORGE")));
+            if(!(value.size() == 1 && value.getFirst().contains("TESTNORGE"))){
+                dto.getPersonerTags().remove(id.getKey());
+            }
+        }
+        return
     }
 
     private HttpStatusCode ansettPerson(String ident, String orgnummer, String yrke) {

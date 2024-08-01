@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.TagsDTO;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.arbeidsforhold.Arbeidsforhold;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.pdl.Ident;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.JobbParameterNavn;
@@ -30,8 +31,12 @@ public class Test {
         pdlService.setFrom("1960");
         pdlService.setTo("2011");
         pdlService.setPostnr("2100");
-        List<Ident> idents = pdlService.getPersoner();
-
+        List<Ident> personer = pdlService.getPersoner();
+        List<String> ident =new ArrayList<>();
+        personer.forEach(pers -> ident.add(pers.getIdent()));
+        TagsDTO dto = pdlService.HentTags(ident);
+        log.info("TagsDTO: {}", dto.toString());
+        /*
         for (Ident ident: idents){
             List<Arbeidsforhold> arbeidsforhold = arbeidsforholdService.hentArbeidsforhold(ident.getIdent());
             log.info("arbeidsforhold: {}", arbeidsforhold.toString());
@@ -40,6 +45,8 @@ public class Test {
 
             }
         }
+
+         */
 
     }
 }

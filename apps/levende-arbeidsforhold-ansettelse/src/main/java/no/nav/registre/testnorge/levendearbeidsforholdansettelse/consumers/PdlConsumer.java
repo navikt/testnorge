@@ -95,9 +95,9 @@ public class PdlConsumer {
         }
     }
 
-    public void hentTags(List<String> identer) throws Exception {
+    public TagsDTO hentTags(List<String> identer) throws Exception {
         var token = tokenService.exchange(serverProperties).block();
-         new HentTagsCommand(webClient, token.getTokenValue() ,identer).call();
+         return new HentTagsCommand(webClient, token.getTokenValue() ,identer).call();
     }
 
 }
