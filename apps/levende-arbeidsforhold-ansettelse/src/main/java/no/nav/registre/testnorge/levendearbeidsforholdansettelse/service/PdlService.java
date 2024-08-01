@@ -1,6 +1,7 @@
 package no.nav.registre.testnorge.levendearbeidsforholdansettelse.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import io.swagger.v3.core.util.Json;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -45,7 +46,8 @@ public class PdlService {
                 .block();
 
         List<Ident> identer = new ArrayList<>();
-
+        //log.info("data {}", Json.pretty(node.get("data")));
+        //log.info("sokPerson {}", Json.pretty(node.get("data").get("sokPerson")));
         assert node != null;
         node.get("data").get("sokPerson").findValues("identer").forEach(
                 hit -> hit.forEach(
@@ -68,13 +70,13 @@ public class PdlService {
                 .to(to)
                 .postnr(postnr)
                 .build();
-
         JsonNode node = pdlConsumer.getSokPersonPages(sokPersonVariablesEnPage.lagSokPersonPaging(),
                         sokPersonVariablesEnPage.lagSokPersonCriteria(),
                         PdlMiljoer.Q2)
                 .block();
 
         assert node != null;
+        //log.info("Node: {}", Json.pretty(node));
         int pages = node.get("data").get("sokPerson").findValues("totalPages").getFirst().asInt()/resultsPerPage;
         return (pages == 0) ? 1 : pages;
     }
