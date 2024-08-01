@@ -12,7 +12,7 @@ export default () => {
 	}
 
 	const [apiData , setApiData] = useState<Array<FetchData>>([]);
-	const [statusData , setStatusData] = useState<Jobbstatus>([]);
+	const [statusData , setStatusData] = useState<Jobbstatus>({ nesteKjoring: '', status: false});
 
 	let optionsData: FetchData[] = [];
 
