@@ -156,7 +156,7 @@ public class AnsettelseService  {
                         }
                     }
                     for (Ident person: ansattePersoner){
-                        ansettelseLoggService.lagreAnsettelse(person, organisasjon);
+                        ansettelseLoggService.lagreAnsettelse(person, organisasjon, Double.parseDouble(parametere.get("stillingsprosent")));
                     }
                     log.info("Personer ansatt i org {}, {}: {} \n", organisasjon.getNavn(),
                             organisasjon.getOrgnummer(), ansattePersoner);

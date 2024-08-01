@@ -14,10 +14,10 @@ import java.time.OffsetDateTime;
 @Service
 @RequiredArgsConstructor
 public class AnsettelseLoggService {
-    private final double stillingsprosent = 100.0;
+    //private final double stillingsprosent = 100.0;
     private final String arbeidsforholdType = "ordineartArbeidsfohold";
     private final AnsettelseLoggRepository ansettelseLoggRepository;
-    public void lagreAnsettelse(Ident person, OrganisasjonDTO org){
+    public void lagreAnsettelse(Ident person, OrganisasjonDTO org, Double stillingsprosent){
         AnsettelseLogg ansettelseLogg = AnsettelseLogg.builder()
                 .folkeregisterident(person.getIdent())
                 .organisasjonsnummer(org.getOrgnummer())
