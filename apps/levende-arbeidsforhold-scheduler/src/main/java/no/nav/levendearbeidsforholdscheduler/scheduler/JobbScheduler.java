@@ -2,9 +2,6 @@ package no.nav.levendearbeidsforholdscheduler.scheduler;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.levendearbeidsforholdscheduler.consumer.AnsettelseConsumer;
-import no.nav.levendearbeidsforholdscheduler.consumer.command.AnsettelseCommand;
-import no.nav.levendearbeidsforholdscheduler.consumer.command.AnsettelsesCommand2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Component;
@@ -12,6 +9,7 @@ import org.springframework.stereotype.Component;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Optional;
+import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -24,7 +22,6 @@ import static no.nav.levendearbeidsforholdscheduler.utils.Utils.hentKalender;
 @RequiredArgsConstructor
 public class JobbScheduler {
 
-    private final AnsettelseCommand ansettelseCommand;
     private final AnsettelsesService ansettelsesService;
     @Autowired
     private final ScheduledExecutorService taskScheduler;
@@ -44,7 +41,12 @@ public class JobbScheduler {
      * @return true hvis scheduler kjører for øyeblikket
      */
     public boolean hentStatusKjorer(){
-        return scheduledFuture != null;
+        if (scheduledFuture != null) {
+
+            return !(scheduledFuture.state() == Future.State.CANCELLED);
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -73,9 +75,21 @@ public class JobbScheduler {
         if (scheduledFuture != null) {
             scheduledFuture.cancel(true);
         }
-        log.info("Er i startScheduler");
-        scheduledFuture = taskScheduler.scheduleAtFixedRate(new AnsettelseJobb(), INITIELL_FORSINKELSE, intervall, TimeUnit.HOURS);
 
+        scheduledFuture = taskScheduler.scheduleAtFixedRate(new AnsettelseJobb(), INITIELL_FORSINKELSE, intervall, TimeUnit.HOURS);
+    }
+
+    /**
+     * Funksjon som stopper den nåværende/kjørende jobben
+     * @return true hvis jobben ble stoppet vellykket
+     */
+    public boolean stoppScheduler(){
+        if (scheduledFuture != null) {
+            scheduledFuture.cancel(true);
+
+            return scheduledFuture.isCancelled();
+        }
+        return true;
     }
 
     /**
