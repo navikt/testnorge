@@ -156,7 +156,7 @@ public class PersonService {
                 .collect(Collectors.toSet());
 
         pdlTestdataConsumer.delete(identer).block();
-        identPoolConsumer.releaseIdents( identer.stream()
+        identPoolConsumer.releaseIdents(identer.stream()
                 .filter(id -> !identerSomIkkeSkalSlettesFraIdentpool.contains(id))
                 .collect(Collectors.toSet()), Bruker.PDLF).block();
 

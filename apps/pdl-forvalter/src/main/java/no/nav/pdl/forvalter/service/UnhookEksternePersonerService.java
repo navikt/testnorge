@@ -21,9 +21,6 @@ import java.util.Objects;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType.AVDOEDD_FOR_KONTAKT;
-import static no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType.FAMILIERELASJON_BARN;
-import static no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType.FORELDREANSVAR_BARN;
-import static no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType.FORELDREANSVAR_FORELDER;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType.FULLMAKTSGIVER;
 import static no.nav.testnav.libs.data.pdlforvalter.v1.RelasjonType.VERGE_MOTTAKER;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -41,26 +38,9 @@ public class UnhookEksternePersonerService {
             deleteSivilstandArtifact(hovedperson);
         }
 
-        if (hovedperson.getRelasjoner().stream()
-                .filter(relasjon -> FAMILIERELASJON_BARN == relasjon.getRelasjonType())
-                .map(DbRelasjon::getRelatertPerson)
-                .map(DbPerson::getPerson)
-                .map(PersonDTO::getForeldreansvar)
-                .flatMap(Collection::stream)
-                .anyMatch(ForeldreansvarDTO::isEksisterendePerson)) {
+        if (hovedperson.getPerson().getForeldreansvar().stream().anyMatch(ForeldreansvarDTO::isEksisterendePerson)) {
 
             deleteForeldreansvarRelasjoner(hovedperson);
-        }
-
-        if (hovedperson.getRelasjoner().stream()
-                .filter(relasjon -> FORELDREANSVAR_BARN == relasjon.getRelasjonType())
-                .map(DbRelasjon::getRelatertPerson)
-                .map(DbPerson::getPerson)
-                .map(PersonDTO::getForeldreansvar)
-                .flatMap(Collection::stream)
-                .anyMatch(ForeldreansvarDTO::isEksisterendePerson)) {
-
-            deleteForeldreansvarAndreRelasjoner(hovedperson);
         }
 
         if (hovedperson.getPerson().getForelderBarnRelasjon().stream().anyMatch(ForelderBarnRelasjonDTO::isEksisterendePerson)) {
@@ -155,41 +135,21 @@ public class UnhookEksternePersonerService {
 
         deleteRelasjoner(hovedperson, relasjoner);
     }
-
     private void deleteForeldreansvarRelasjoner(DbPerson hovedperson) {
 
-        var barna = hovedperson.getRelasjoner().stream()
-                .filter(relasjon -> FAMILIERELASJON_BARN == relasjon.getRelasjonType())
-                .map(DbRelasjon::getRelatertPerson)
-                .filter(relasjon -> relasjon.getPerson().getForeldreansvar().stream()
-                        .anyMatch(ForeldreansvarDTO::isEksisterendePerson))
-                .toList();
+        var relasjoner = personRepository.findByIdentIn(hovedperson.getPerson().getForeldreansvar().stream()
+                .filter(ForeldreansvarDTO::isEksisterendePerson)
+                .map(ForeldreansvarDTO::getIdentForRelasjon)
+                .toList(), Pageable.unpaged());
 
-        barna.forEach(barn ->
-                deleteRelasjoner(barn, barn.getRelasjoner().stream()
-                        .filter(relasjon -> FORELDREANSVAR_FORELDER == relasjon.getRelasjonType())
-                        .map(DbRelasjon::getRelatertPerson)
-                        .toList())
-        );
-    }
-
-    private void deleteForeldreansvarAndreRelasjoner(DbPerson hovedperson) {
-
-        var barna = hovedperson.getRelasjoner().stream()
-                .filter(relasjon -> FORELDREANSVAR_BARN == relasjon.getRelasjonType())
-                .map(DbRelasjon::getRelatertPerson)
-                .filter(relasjon -> relasjon.getPerson().getForeldreansvar().stream()
-                        .anyMatch(ForeldreansvarDTO::isEksisterendePerson))
-                .toList();
-
-        barna.stream()
+        relasjoner.stream()
                 .map(DbPerson::getPerson)
                 .forEach(person -> person.setForeldreansvar(
                         person.getForeldreansvar().stream()
-                                .filter(relasjon -> !relasjon.getAnsvarlig().equals(hovedperson.getIdent()))
+                                .filter(relasjon -> !Objects.equals(hovedperson.getIdent(), relasjon.getIdentForRelasjon()))
                                 .toList()));
 
-        deleteRelasjoner(hovedperson, barna);
+        deleteRelasjoner(hovedperson, relasjoner);
     }
 
     private void deleteFullmaktRelasjoner(DbPerson hovedperson) {
