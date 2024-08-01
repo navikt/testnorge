@@ -30,6 +30,7 @@ export default () => {
 		});
 	}
 
+
 	async function deaktiverScheduler(){
 		setHenterStatus(true);
 		await fetch('/testnav-levende-arbeidsforhold-scheduler/scheduler/stopp').then(res => {
