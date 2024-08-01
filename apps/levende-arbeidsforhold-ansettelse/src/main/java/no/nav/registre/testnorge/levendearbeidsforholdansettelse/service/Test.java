@@ -25,7 +25,7 @@ public class Test {
     private final PdlService pdlService;
     private final ArbeidsforholdService arbeidsforholdService;
 
-    @EventListener(ApplicationReadyEvent.class)
+    //@EventListener(ApplicationReadyEvent.class)
     public void test() {
         pdlService.setFrom("1960");
         pdlService.setTo("2011");
