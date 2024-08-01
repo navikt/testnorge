@@ -61,7 +61,7 @@ spec:
     - "https://testnav-orgnummer-service.intern.dev.nav.no"
   gcp:
     sqlInstances:
-      - type: POSTGRES_14
+      - type: POSTGRES_15
         name: testnav-orgnummer-pool
         databases:
           - name: testnav-orgnummer-pool

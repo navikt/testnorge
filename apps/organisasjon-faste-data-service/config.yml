@@ -38,7 +38,7 @@ spec:
           cluster: dev-gcp
   gcp:
     sqlInstances:
-      - type: POSTGRES_12
+      - type: POSTGRES_15
         databases:
           - name: testnav-organisasjon-faste-data-db
   liveness:

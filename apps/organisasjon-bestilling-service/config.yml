@@ -40,7 +40,7 @@ spec:
         - host: testnorge-batch-adeo-proxy.dev-fss-pub.nais.io
   gcp:
     sqlInstances:
-      - type: POSTGRES_12
+      - type: POSTGRES_15
         databases:
           - name: organisasjon-bestilling-db
   liveness:

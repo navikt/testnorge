@@ -48,7 +48,7 @@ spec:
     max: 1
   gcp:
     sqlInstances:
-      - type: POSTGRES_12
+      - type: POSTGRES_15
         databases:
           - name: testnav-bruker-service-dev-db
   resources:
