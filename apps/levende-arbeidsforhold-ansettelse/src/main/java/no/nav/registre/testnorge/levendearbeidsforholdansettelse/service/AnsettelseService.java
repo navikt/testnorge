@@ -21,8 +21,7 @@ import java.time.LocalDate;
 import java.time.Year;
 import java.util.*;
 
-import static no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.JobbParameterNavn.ANTALL_ORGANISASJONER;
-import static no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.JobbParameterNavn.ANTALL_PERSONER;
+import static no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.JobbParameterNavn.*;
 
 @Slf4j
 @Service
@@ -137,7 +136,7 @@ public class AnsettelseService  {
                                         }
                                     }
                                 }catch (WebClientResponseException e){
-                                    log.info("organisasjon: {} {}, person {}", organisasjon.getNavn(), organisasjon., tilfeldigPerson.getIdent());
+                                    log.info("organisasjon: {} {}, person {}", organisasjon.getNavn(), organisasjon.getOrganisasjonsnummer() , tilfeldigPerson.getIdent());
                                     organisasjon = hentOrganisasjoner(1).getFirst();
                                     continue;
                                 }
@@ -152,7 +151,7 @@ public class AnsettelseService  {
                         }
                     }
                     for (Ident person: ansattePersoner){
-                        ansettelseLoggService.lagreAnsettelse(person, organisasjon, Double.parseDouble(parametere.get(JobbParameterNavn.STILLINGSPROSENT.value)));
+                        ansettelseLoggService.lagreAnsettelse(person, organisasjon, Double.parseDouble(parametere.get(STILLINGSPROSENT.value)), parametere.get(ARBEIDSFORHOLD_TYPE.value));
                     }
                     log.info("Personer ansatt i org {}, {}: {} \n", organisasjon.getNavn(),
                             organisasjon.getOrganisasjonsnummer(), ansattePersoner);
