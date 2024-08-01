@@ -79,6 +79,7 @@ public class JobbScheduler {
         scheduledFuture = taskScheduler.scheduleAtFixedRate(new AnsettelseJobb(), INITIELL_FORSINKELSE, intervall, TimeUnit.HOURS);
     }
 
+
     /**
      * Funksjon som stopper den nåværende/kjørende jobben
      * @return true hvis jobben ble stoppet vellykket
