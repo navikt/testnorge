@@ -63,8 +63,7 @@ export default () => {
 				Denne siden er under utvikling.
 			</Alert>
 			<StatusBox nesteKjoring={statusData.nesteKjoring} status={statusData.status}/>
-			<Button disabled={statusData.status} onClick={aktiverScheduler}>Aktiver</Button>
-			<Button disabled={!statusData.status} onClick={deaktiverScheduler}>Deaktiver</Button>
+			{!statusData.status ? <Button onClick={aktiverScheduler}>Aktiver</Button> : <Button onClick={deaktiverScheduler}>Deaktiver</Button> }
 			<AppstyringTable data={apiData} setData={setApiData}/>
 		</>
 	)
