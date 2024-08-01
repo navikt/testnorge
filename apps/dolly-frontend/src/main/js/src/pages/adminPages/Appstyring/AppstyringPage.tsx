@@ -1,5 +1,5 @@
 import {AdminAccessDenied} from '@/pages/adminPages/AdminAccessDenied'
-import {Alert} from '@navikt/ds-react'
+import {Alert, Button} from '@navikt/ds-react'
 import {AppstyringTable} from '@/pages/adminPages/Appstyring/AppstyringTable'
 import {erDollyAdmin} from '@/utils/DollyAdmin'
 import React, {useEffect, useState} from "react";
@@ -16,6 +16,28 @@ export default () => {
 
 	let optionsData: FetchData[] = [];
 
+	async function aktiverScheduler(){
+		//Send request /scheduler
+		await fetch('/testnav-levende-arbeidsforhold-scheduler/scheduler').then(res => {
+			if (res.ok) {
+				fetchStatusScheduler();
+			}
+		});
+	}
+
+	async function deaktiverScheduler(){
+		//Send request /scheduler/stopp
+		//Fetch status på nytt
+
+	}
+
+	async function fetchStatusScheduler() {
+		const data = await fetch('/testnav-levende-arbeidsforhold-scheduler/scheduler/status')
+			.then(res => res.json())
+			.catch(err => console.error(err));
+		setStatusData(data);
+	}
+
 	useEffect(() => {
 		async function fetchData() {
 			await fetch('/testnav-levende-arbeidsforhold-ansettelse/api')
@@ -30,13 +52,7 @@ export default () => {
 	}, []);
 
 	useEffect(() => {
-		async function fetchStatus() {
-			const data = await fetch('/testnav-levende-arbeidsforhold-scheduler/scheduler/status')
-				.then(res => res.json())
-				.catch(err => console.error(err));
-			setStatusData(data);
-		}
-		fetchStatus();
+		fetchStatusScheduler();
 	}, []);
 
 
@@ -47,6 +63,8 @@ export default () => {
 				Denne siden er under utvikling.
 			</Alert>
 			<StatusBox nesteKjoring={statusData.nesteKjoring} status={statusData.status}/>
+			<Button disabled={statusData.status} onClick={aktiverScheduler}>Aktiver</Button>
+			<Button disabled={!statusData.status} onClick={deaktiverScheduler}>Deaktiver</Button>
 			<AppstyringTable data={apiData} setData={setApiData}/>
 		</>
 	)
