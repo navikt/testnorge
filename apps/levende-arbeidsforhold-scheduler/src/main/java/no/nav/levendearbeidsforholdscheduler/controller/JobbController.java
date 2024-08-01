@@ -84,7 +84,7 @@ public class JobbController {
      * Request handler funksjon for å stoppe scheduleren
      * @return true hvis kanselleringen var vellykket
      */
-    @GetMapping("/stopp")
+    @GetMapping(value = "/stopp", produces = "application/json")
     public ResponseEntity<String> stopp() {
 
         ObjectMapper mapper = new ObjectMapper();
