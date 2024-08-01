@@ -7,6 +7,8 @@ import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.arbeidsf
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -19,22 +21,23 @@ public class ArbeidsforholdService {
     private final String arbeidstakerType = "Person";
     private final String arbeidsgiverType = "Organisasjon";
     private final String arbeidsforholdType = "ordinaertArbeidsforhold";
-    private final double antallTimerPrUke = 37.5;
+    //private final double antallTimerPrUke = 37.5;
     private final String arbeidstidsordning = "ikkeSkift";
-    private final double stillingsprosent = 100.0;
+    //private final double stillingsprosent = 100.0;
     private final String ansettelsesform = "fast";
 
     public List<Arbeidsforhold> hentArbeidsforhold(String ident) {
         return aaregConsumer.hentArbeidsforhold(ident);
     }
 
-    public HttpStatusCode opprettArbeidsforhold(String ident, String orgnummer, String yrke) {
-        return aaregConsumer.opprettArbeidsforhold(lagArbeidsforhold(ident, orgnummer, yrke));
+    public HttpStatusCode opprettArbeidsforhold(String ident, String orgnummer, String yrke, String stillingsprosent) {
+        return aaregConsumer.opprettArbeidsforhold(lagArbeidsforhold(ident, orgnummer, yrke, stillingsprosent));
     }
 
-    private Arbeidsforhold lagArbeidsforhold(String ident, String orgnummer, String yrke) {
+    private Arbeidsforhold lagArbeidsforhold(String ident, String orgnummer, String yrke, String prosent) {
         List<Arbeidsforhold> arbeidsforholdList = hentArbeidsforhold(ident);
-
+        Double stillingsprosent = Double.valueOf(prosent);
+        Double antallTimerPrUke = BigDecimal.valueOf(37.5*stillingsprosent/100).setScale(1, RoundingMode.HALF_UP).doubleValue();
         var arbeidsforholdId = new AtomicInteger(arbeidsforholdList.size());
 
         return Arbeidsforhold.builder()
