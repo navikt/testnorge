@@ -30,5 +30,4 @@ public class Consumers {
     private ServerProperties pdlProxy;
     private ServerProperties testnavOrganisasjonFasteDataService;
     private ServerProperties testnavKodeverkService;
-
 }

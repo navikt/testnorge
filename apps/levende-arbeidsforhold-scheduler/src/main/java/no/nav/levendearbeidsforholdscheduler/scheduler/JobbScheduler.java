@@ -79,6 +79,7 @@ public class JobbScheduler {
         scheduledFuture = taskScheduler.scheduleAtFixedRate(new AnsettelseJobb(), INITIELL_FORSINKELSE, intervall, TimeUnit.HOURS);
     }
 
+
     /**
      * Funksjon som stopper den nåværende/kjørende jobben
      * @return true hvis jobben ble stoppet vellykket
@@ -139,17 +140,10 @@ public class JobbScheduler {
          */
         @Override
         public void run() {
-            log.info("Er i run");
             if(sjekkOmGyldigTidsrom(START_KLOKKESLETT, START_DAG, SLUTT_KLOKKESLETT, SLUTT_DAG)){
-                log.info("Gyldig tidsrom kjører hent");
-
                 ansettelsesService.hent();
-                log.info("har kjørt hent kjører aktiver ansettelsecommand");
-
-                //ansettelseCommand.aktiverAnsettelseService();
-
             }
-            log.info("Kjørte jobb!");
+
         }
     }
 

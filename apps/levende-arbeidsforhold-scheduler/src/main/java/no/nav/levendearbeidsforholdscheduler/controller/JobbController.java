@@ -85,7 +85,18 @@ public class JobbController {
      * @return true hvis kanselleringen var vellykket
      */
     @GetMapping("/stopp")
-    public ResponseEntity<Boolean> stopp() {
-        return ResponseEntity.ok(jobbScheduler.stoppScheduler());
+    public ResponseEntity<String> stopp() {
+
+        ObjectMapper mapper = new ObjectMapper();
+        StatusRespons statusRespons = new StatusRespons();
+
+        statusRespons.setStatus(jobbScheduler.stoppScheduler());
+        try {
+            String jsonRespons = mapper.writeValueAsString(statusRespons);
+            return ResponseEntity.ok(jsonRespons);
+        } catch (JsonProcessingException e) {
+            return ResponseEntity.internalServerError().body("Noe skjedde galt med formattering til JSON");
+        }
     }
 }
+

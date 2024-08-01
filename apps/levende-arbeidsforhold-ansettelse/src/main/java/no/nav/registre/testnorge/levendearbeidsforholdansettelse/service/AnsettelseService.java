@@ -5,19 +5,20 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.DatoIntervall;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.TagsDTO;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.arbeidsforhold.Arbeidsavtale;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.dto.OrganisasjonDTO;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.kodeverk.KodeverkNavn;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.pdl.Ident;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.arbeidsforhold.Arbeidsforhold;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.JobbParameterNavn;
-import no.nav.registre.testnorge.levendearbeidsforholdansettelse.service.util.AlderspennList;
-import no.nav.testnav.libs.dto.organisasjonfastedataservice.v1.OrganisasjonDTO;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.service.util.AlderspennList;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
-
+import java.time.LocalDate;
+import java.time.Year;
 import java.util.*;
 
 import static no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.JobbParameterNavn.ANTALL_ORGANISASJONER;
@@ -29,12 +30,13 @@ import static no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.J
 public class AnsettelseService  {
 
     private final PdlService pdlService;
-    private final HentOrganisasjonNummerService hentOrganisasjonNummerService;
+    private final TenorService tenorService;
     private final ArbeidsforholdService arbeidsforholdService;
     private final JobbService jobbService;
     private final KodeverkService kodeverkService;
     private final AnsettelseLoggService ansettelseLoggService;
 
+    //@EventListener(ApplicationReadyEvent.class)
     public void runAnsettelseService() {
         Thread thread = new Thread(this::ansettelseService);
         thread.start();
@@ -83,7 +85,7 @@ public class AnsettelseService  {
         Long start = System.currentTimeMillis();
         organisasjoner.forEach(
                 organisasjon -> {
-                    String postnr = konverterPostnr(organisasjon.getPostadresse().getPostnr());
+                    String postnr = konverterPostnr(tenorService.hentOrgPostnummer(organisasjon.getOrganisasjonsnummer()));
 
                     List<Integer> aldersspennIndekser = new ArrayList<>();
                     for (int i = 0; i < finalAntallPersPerOrg; i++) {
@@ -121,7 +123,7 @@ public class AnsettelseService  {
                                 String tilfeldigYrke = hentTilfeldigYrkeskode(yrkeskoder);
                                 try {
                                     if (ansettPerson(tilfeldigPerson.getIdent(),
-                                            organisasjon.getOrgnummer(),
+                                            organisasjon.getOrganisasjonsnummer(),
                                             tilfeldigYrke,
                                             parametere.get(JobbParameterNavn.STILLINGSPROSENT.value)).is2xxSuccessful()) {
                                         log.info("Arbeidsforhold til person {} etter ansettelse: {} \n", tilfeldigPerson.getIdent(),
@@ -135,7 +137,7 @@ public class AnsettelseService  {
                                         }
                                     }
                                 }catch (WebClientResponseException e){
-                                    log.info("organisasjon: {} {}, person {}", organisasjon.getNavn(), organisasjon.getOrgnummer(), tilfeldigPerson.getIdent());
+                                    log.info("organisasjon: {} {}, person {}", organisasjon.getNavn(), organisasjon., tilfeldigPerson.getIdent());
                                     organisasjon = hentOrganisasjoner(1).getFirst();
                                     continue;
                                 }
@@ -153,11 +155,9 @@ public class AnsettelseService  {
                         ansettelseLoggService.lagreAnsettelse(person, organisasjon, Double.parseDouble(parametere.get(JobbParameterNavn.STILLINGSPROSENT.value)));
                     }
                     log.info("Personer ansatt i org {}, {}: {} \n", organisasjon.getNavn(),
-                            organisasjon.getOrgnummer(), ansattePersoner);
+                            organisasjon.getOrganisasjonsnummer(), ansattePersoner);
                     long duration = System.currentTimeMillis();
                     log.info("Tid brukt {}", (duration-start));
-
-
                 }
 
         );
@@ -170,7 +170,7 @@ public class AnsettelseService  {
     }
 
     private List<OrganisasjonDTO> hentOrganisasjoner(int antall) {
-        return hentOrganisasjonNummerService.hentAntallOrganisasjoner(antall);
+        return tenorService.hentOrganisasjoner(antall);
     }
 
     private List<Ident> hentPersoner(String tidligsteFoedselsdato, String senesteFoedselsdato, String postnr) {
@@ -188,6 +188,7 @@ public class AnsettelseService  {
                 for (Arbeidsavtale arbeidsavtale : arbeidsforhold.getArbeidsavtaler()) {
                     if (arbeidsavtale.getBruksperiode().getTom() == null) {
                         stillingsprosent += arbeidsavtale.getStillingsprosent();
+                        log.info("stillingsprosent: x og tom: null: {}, stillingsprosent: {}", arbeidsavtale.getStillingsprosent(), stillingsprosent);
                         if (stillingsprosent > 100) return false;
                     }
                 }

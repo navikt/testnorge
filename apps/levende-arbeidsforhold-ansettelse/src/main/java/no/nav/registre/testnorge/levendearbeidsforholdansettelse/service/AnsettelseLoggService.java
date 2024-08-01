@@ -1,7 +1,7 @@
 package no.nav.registre.testnorge.levendearbeidsforholdansettelse.service;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.testnav.libs.dto.organisasjonfastedataservice.v1.OrganisasjonDTO;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.dto.OrganisasjonDTO;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.pdl.Ident;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.AnsettelseLogg;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.repository.AnsettelseLoggRepository;
@@ -20,7 +20,7 @@ public class AnsettelseLoggService {
     public void lagreAnsettelse(Ident person, OrganisasjonDTO org, Double stillingsprosent){
         AnsettelseLogg ansettelseLogg = AnsettelseLogg.builder()
                 .folkeregisterident(person.getIdent())
-                .organisasjonsnummer(org.getOrgnummer())
+                .organisasjonsnummer(org.getOrganisasjonsnummer())
                 .timestamp(OffsetDateTime.now())
                 .arbeidsforholdType(arbeidsforholdType)
                 .stillingsprosent(BigDecimal.valueOf(stillingsprosent))

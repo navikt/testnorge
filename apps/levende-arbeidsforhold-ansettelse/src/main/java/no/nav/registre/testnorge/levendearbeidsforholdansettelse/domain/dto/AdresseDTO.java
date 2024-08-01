@@ -2,9 +2,11 @@ package no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.Value;
 
+@Builder
 @Value
 @NoArgsConstructor(force = true)
 @AllArgsConstructor
