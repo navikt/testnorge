@@ -8,9 +8,14 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Classe for å initialere alderspennlisten for sannsynlighetsfordelingen
+ */
 @Getter
 @Setter
 public class AlderspennList {
+    //Dette er tallene jeg fant fra: https://www.ssb.no/arbeid-og-lonn/sysselsetting/statistikk/antall-arbeidsforhold-og-lonn
+    // i tabell 1
     public final List<Double> sannsynlighetFordeling = List.of(434106.0, 1022448.0, 976833.0, 563804.0, 72363.0);
     private final static DatoIntervall FOERSTE_INTERVALL= DatoIntervall.builder()
             .from(LocalDate.now().minusYears(24))

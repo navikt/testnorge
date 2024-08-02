@@ -91,7 +91,6 @@ public class PdlService {
                 .block();
 
         assert node != null;
-        //log.info("Node: {}", Json.pretty(node));
         int pages = node.get("data").get("sokPerson").findValues("totalPages").getFirst().asInt()/resultsPerPage;
         return (pages == 0) ? 1 : pages;
     }

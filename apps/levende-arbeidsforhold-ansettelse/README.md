@@ -7,8 +7,11 @@ Fyll inn:
 Swagger finnes under [/swagger](https://levende-arbeidsforhold-service.intern.dev.nav.no/swagger) -endepunktet til
 applikasjonen.
 
-## Apper vi har gitt oss inbound rule 
-*
+### Apper testnav-levende-arbeidsforhold-ansettelse prater med 
+* pdl-proxy
+* aareg-proxy
+* tenor-search-service
+* kodeverk-service
 ## Lokal kjøring
 
 Ha naisdevice kjørende og kjør GenererNavnServiceApplicationStarter med følgende argumenter:

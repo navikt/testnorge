@@ -1,7 +1,5 @@
-package no.nav.registre.testnorge.levendearbeidsforholdansettelse.service;
+package no.nav.registre.testnorge.levendearbeidsforholdansettelse.service.util;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.validation.constraints.Null;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
