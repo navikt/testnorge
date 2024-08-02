@@ -5,7 +5,7 @@ spring:
       database:
         backend: postgresql/preprod-fss
         enabled: true
-        role: ident-pool-test-admin
+        role: ident-pool-fss18-admin
       fail-fast: true
       host: vault.adeo.no
       port: 443
@@ -14,7 +14,7 @@ spring:
     hikari:
       maximum-pool-size: 3
       minimum-idle: 1
-    url: jdbc:postgresql://b27dbvl023.preprod.local/ident-pool-test
+    url: jdbc:postgresql://b27dbvl023.preprod.local/ident-pool-fss18
   flyway:
     baseline-on-migrate: true
     enabled: true # Disabled by default as you should probably think twice before running Flyway-migrations
