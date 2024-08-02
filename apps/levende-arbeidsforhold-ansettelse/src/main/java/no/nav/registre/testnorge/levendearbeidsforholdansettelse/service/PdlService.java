@@ -32,6 +32,12 @@ public class PdlService {
     private String postnr;
     private final HentTagsConsumer hentTagsConsumer;
 
+    /**
+     * Lager SokPersonVariabler som matcher filterene man vil basere søket på, og henter personer fra PDL som
+     * oppfyller kravene. I tillegg filtreres vekk personer som er i bruk andre steder enn Testnorge
+     *
+     * @return En liste med identer for personene som matcher søk-variablene
+     */
     public List<Ident> getPersoner(){
 
         SokPersonVariables sokPersonVariables = lagSokPersonVariables(
@@ -61,6 +67,12 @@ public class PdlService {
         return harBareTestnorgeTags(identer);
     }
 
+    /**
+     * Sjekker om personene kun brukes i Testnorge
+     *
+     * @param personer Ident-liste med personer man vil sjekke
+     * @return En liste med Ident-objekter som oppfyller kravet
+     */
     private List<Ident> harBareTestnorgeTags(List<Ident> personer){
         List<String> identer = new ArrayList<>();
         personer.forEach(person -> identer.add(person.getIdent()));
@@ -76,6 +88,12 @@ public class PdlService {
         return personer;
     }
 
+    /**
+     * Henter ut antall sider med ett treff per side fra PDL slik at man
+     * kan hente et tilfeldig sidetall å hente personer fra
+     *
+     * @return Antallet sider med kun ett treff per side fra PDL
+     */
     private int getSokPersonPages() {
         SokPersonVariables sokPersonVariablesEnPage = SokPersonVariables
                 .builder()
@@ -91,16 +109,29 @@ public class PdlService {
                 .block();
 
         assert node != null;
-        //log.info("Node: {}", Json.pretty(node));
         int pages = node.get("data").get("sokPerson").findValues("totalPages").getFirst().asInt()/resultsPerPage;
         return (pages == 0) ? 1 : pages;
     }
 
+    /**
+     * @param totalPages Maks-antall
+     * @return Et tilfeldig tall mellom 1 og opgitt maks-antall
+     */
     private int tilfeldigPageNumber(int totalPages) {
         Random random = new Random();
         return random.nextInt(totalPages);
     }
 
+    /**
+     * Bygger et SokPersonVariables-objekt med de oppgitte parameterene som brukes til å filtrere spørringen mot PDl
+     *
+     * @param pageNumber
+     * @param resultsPerPage
+     * @param from
+     * @param to
+     * @param postnr
+     * @return
+     */
     private SokPersonVariables lagSokPersonVariables(int pageNumber, int resultsPerPage, String from, String to, String postnr) {
          return SokPersonVariables
                  .builder()
@@ -115,6 +146,4 @@ public class PdlService {
     private TagsDTO hentTags(List<String> identer) {
          return hentTagsConsumer.hentTags(identer);
     }
-
-
 }
