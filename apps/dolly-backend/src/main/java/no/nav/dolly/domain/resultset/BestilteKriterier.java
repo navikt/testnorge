@@ -26,6 +26,7 @@ import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding;
 import no.nav.dolly.domain.resultset.tpsmessagingservice.RsTpsMessaging;
 import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
 import no.nav.testnav.libs.data.arbeidsplassencv.v1.ArbeidsplassenCVDTO;
+import no.nav.testnav.libs.dto.skattekortservice.v1.SkattekortRequestDTO;
 
 import java.util.List;
 
@@ -59,4 +60,5 @@ public class BestilteKriterier {
     private RsSkjerming skjerming;
     private RsSykemelding sykemelding;
     private ArbeidsplassenCVDTO arbeidsplassenCV;
+    private SkattekortRequestDTO skattekort;
 }

@@ -27,6 +27,7 @@ import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding;
 import no.nav.dolly.domain.resultset.tpsmessagingservice.RsTpsMessaging;
 import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
 import no.nav.testnav.libs.data.arbeidsplassencv.v1.ArbeidsplassenCVDTO;
+import no.nav.testnav.libs.dto.skattekortservice.v1.SkattekortRequestDTO;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -75,6 +76,7 @@ public class RsDollyBestilling {
     private BankkontoData bankkonto;
     private RsSkjerming skjerming;
     private ArbeidsplassenCVDTO arbeidsplassenCV;
+    private SkattekortRequestDTO skattekort;
 
     public List<RsAareg> getAareg() {
         if (isNull(aareg)) {
