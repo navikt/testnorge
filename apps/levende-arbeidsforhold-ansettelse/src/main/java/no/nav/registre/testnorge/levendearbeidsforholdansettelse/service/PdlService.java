@@ -68,7 +68,6 @@ public class PdlService {
 
         for(var id : tagsDTO.getPersonerTags().entrySet()){
             List<String> value = id.getValue();
-            log.info("Tags: {}, bool: {}", value.toString(), (value.size() == 1 && value.getFirst().contains("TESTNORGE")));
             if(!(value.size() == 1 && value.getFirst().contains("TESTNORGE"))){
                 String iden = id.getKey();
                 personer.removeIf(ide -> ide.getIdent().equals(iden));

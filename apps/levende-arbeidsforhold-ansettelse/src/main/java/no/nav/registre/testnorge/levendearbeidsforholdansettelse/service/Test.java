@@ -28,6 +28,7 @@ public class Test {
 
     //@EventListener(ApplicationReadyEvent.class)
     public void test() {
+        /*
         pdlService.setFrom("1960");
         pdlService.setTo("2011");
         pdlService.setPostnr("2100");
@@ -36,6 +37,8 @@ public class Test {
         personer.forEach(pers -> ident.add(pers.getIdent()));
         TagsDTO dto = pdlService.HentTags(ident);
         log.info("TagsDTO: {}", dto.toString());
+
+         */
         /*
         for (Ident ident: idents){
             List<Arbeidsforhold> arbeidsforhold = arbeidsforholdService.hentArbeidsforhold(ident.getIdent());
