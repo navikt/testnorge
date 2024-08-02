@@ -4,13 +4,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.DatoIntervall;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.arbeidsforhold.Arbeidsavtale;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.arbeidsforhold.Arbeidsforhold;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.dto.OrganisasjonDTO;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.kodeverk.KodeverkNavn;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.pdl.Ident;
-import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.arbeidsforhold.Arbeidsforhold;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.JobbParameterNavn;
-import no.nav.registre.testnorge.levendearbeidsforholdansettelse.service.util.AliasMethod;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.service.util.AlderspennList;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.service.util.AliasMethod;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -83,6 +83,9 @@ public class AnsettelseService  {
         //Kjører ansettelse per org
         organisasjoner.forEach(
             organisasjon -> {
+                if (tenorService.hentOrgPostnummer(organisasjon.getOrganisasjonsnummer()) == null) {
+                    organisasjon = hentOrganisasjoner(1).getFirst();
+                }
                 String postnr = konverterPostnr(tenorService.hentOrgPostnummer(organisasjon.getOrganisasjonsnummer()));
 
                 //Trekker alderspenn fra alias for hver pers som skal ansettes

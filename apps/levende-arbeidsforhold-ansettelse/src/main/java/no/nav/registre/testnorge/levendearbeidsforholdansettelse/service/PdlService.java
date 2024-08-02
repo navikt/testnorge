@@ -1,7 +1,6 @@
 package no.nav.registre.testnorge.levendearbeidsforholdansettelse.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import io.swagger.v3.core.util.Json;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -15,7 +14,6 @@ import no.nav.registre.testnorge.levendearbeidsforholdansettelse.provider.PdlMil
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -32,6 +30,12 @@ public class PdlService {
     private String postnr;
     private final HentTagsConsumer hentTagsConsumer;
 
+    /**
+     * Lager SokPersonVariabler som matcher filterene man vil basere søket på, og henter personer fra PDL som
+     * oppfyller kravene. I tillegg filtreres vekk personer som er i bruk andre steder enn Testnorge
+     *
+     * @return En liste med identer for personene som matcher søk-variablene
+     */
     public List<Ident> getPersoner(){
 
         SokPersonVariables sokPersonVariables = lagSokPersonVariables(
@@ -61,6 +65,12 @@ public class PdlService {
         return harBareTestnorgeTags(identer);
     }
 
+    /**
+     * Sjekker om personene kun brukes i Testnorge
+     *
+     * @param personer Ident-liste med personer man vil sjekke
+     * @return En liste med Ident-objekter som oppfyller kravet
+     */
     private List<Ident> harBareTestnorgeTags(List<Ident> personer){
         List<String> identer = new ArrayList<>();
         personer.forEach(person -> identer.add(person.getIdent()));
@@ -76,6 +86,12 @@ public class PdlService {
         return personer;
     }
 
+    /**
+     * Henter ut antall sider med ett treff per side fra PDL slik at man
+     * kan hente et tilfeldig sidetall å hente personer fra
+     *
+     * @return Antallet sider med kun ett treff per side fra PDL
+     */
     private int getSokPersonPages() {
         SokPersonVariables sokPersonVariablesEnPage = SokPersonVariables
                 .builder()
@@ -95,11 +111,25 @@ public class PdlService {
         return (pages == 0) ? 1 : pages;
     }
 
+    /**
+     * @param totalPages Maks-antall
+     * @return Et tilfeldig tall mellom 1 og opgitt maks-antall
+     */
     private int tilfeldigPageNumber(int totalPages) {
         Random random = new Random();
         return random.nextInt(totalPages);
     }
 
+    /**
+     * Bygger et SokPersonVariables-objekt med de oppgitte parameterene som brukes til å filtrere spørringen mot PDl
+     *
+     * @param pageNumber Sidetallet resultatene skal hentes fra
+     * @param resultsPerPage Antall treff per side
+     * @param from Tidligste dato for alders-intervallet det skal søkes på
+     * @param to Seneste dato for alders-intervallet det skal søkes på
+     * @param postnr Postnummer det skal søkes på
+     * @return SokPersonVariables-objekt basert på parameterene
+     */
     private SokPersonVariables lagSokPersonVariables(int pageNumber, int resultsPerPage, String from, String to, String postnr) {
          return SokPersonVariables
                  .builder()
@@ -111,9 +141,12 @@ public class PdlService {
                  .build();
     }
 
+    /**
+     *
+     * @param identer Liste med identnummere
+     * @return TagsDTO for hver ident i identer-listen
+     */
     private TagsDTO hentTags(List<String> identer) {
          return hentTagsConsumer.hentTags(identer);
     }
-
-
 }
