@@ -105,7 +105,7 @@ export default () => {
 				Denne siden er under utvikling.
 			</Alert>
 			<StatusBox nesteKjoring={statusData.nesteKjoring} status={statusData.status}/>
-			{!statusData.status ? <Button loading={henterStatus} onClick={aktiverScheduler}>Aktiver</Button> : <Button loading={henterStatus} onClick={deaktiverScheduler} variant={"danger"}>Deaktiver</Button> }
+			{!statusData.status ? <Button loading={henterStatus} onClick={aktiverScheduler} style={{marginBottom: '8px'}}>Aktiver</Button> : <Button loading={henterStatus} onClick={deaktiverScheduler} variant={"danger"}>Deaktiver</Button> }
 			<AppstyringTable data={apiData} setData={setApiData}/>
 		</>
 	)
