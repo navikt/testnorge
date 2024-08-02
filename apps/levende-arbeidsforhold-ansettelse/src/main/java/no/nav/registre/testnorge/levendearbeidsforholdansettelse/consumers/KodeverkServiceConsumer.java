@@ -48,6 +48,4 @@ public class KodeverkServiceConsumer {
         Map<String, String> koder = new KodeverkServiceCommand(webClient, accessToken.getTokenValue(), kodeverk).call();
         return new ArrayList<>(koder.keySet());
     }
-
-
 }
