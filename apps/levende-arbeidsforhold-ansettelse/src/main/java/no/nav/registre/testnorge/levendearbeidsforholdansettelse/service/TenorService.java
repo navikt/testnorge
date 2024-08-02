@@ -1,6 +1,7 @@
 package no.nav.registre.testnorge.levendearbeidsforholdansettelse.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.TenorConsumer;
@@ -117,6 +118,9 @@ public class TenorService {
     public String hentOrgPostnummer(String organisasjonsnummer) {
         TenorOversiktOrganisasjonResponse orgResponse = hentOrganisasjon(organisasjonsnummer);
         JsonNode brregKildedata = orgResponse.getData().getOrganisasjoner().getFirst().getBrregKildedata();
-        return brregKildedata.get("forretningsadresse").get("postnummer").toString().replace("\"", "");
+        if (!brregKildedata.isNull()) {
+            return brregKildedata.get("forretningsadresse").get("postnummer").toString().replace("\"", "");
+        }
+        return "";
     }
 }
