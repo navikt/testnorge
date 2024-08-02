@@ -33,16 +33,14 @@ public class TenorService {
         List<String> orgNummere = hentOrgNummere(antall);
         List<OrganisasjonDTO> organisasjoner = new ArrayList<>();
         orgNummere.forEach(
-                orgNummer -> {
-                    organisasjoner.add(OrganisasjonDTO.builder()
-                            .organisasjonsnummer(orgNummer)
-                            .organisasjonDetaljer(OrganisasjonDetaljerDTO.builder()
-                                    .forretningsadresser(List.of(AdresseDTO.builder()
-                                            .postnummer(hentOrgPostnummer(orgNummer))
-                                            .build()))
-                                    .build())
-                            .build());
-                }
+                orgNummer -> organisasjoner.add(OrganisasjonDTO.builder()
+                        .organisasjonsnummer(orgNummer)
+                        .organisasjonDetaljer(OrganisasjonDetaljerDTO.builder()
+                                .forretningsadresser(List.of(AdresseDTO.builder()
+                                        .postnummer(hentOrgPostnummer(orgNummer))
+                                        .build()))
+                                .build())
+                        .build())
         );
         return organisasjoner;
     }
@@ -76,7 +74,7 @@ public class TenorService {
      * Henter tilfeldige organisasjoner fra Tenor
      *
      * @param antall Antall organisasjoner som skal hentes
-     * @return
+     * @return TenorOversiktOrganisasjonResponse-objekt med tilfeldige organisasjoner fra Tenor
      */
     private TenorOversiktOrganisasjonResponse hentOrganisasjonerOversikt(int antall) {
         return tenorConsumer.hentOrganisasjonerOversikt(lagOrganisasjonOversiktRequest(), String.valueOf(antall));
@@ -92,9 +90,7 @@ public class TenorService {
         List<TenorOversiktOrganisasjonResponse.Organisasjon> organisasjoner = hentOrganisasjonerOversikt(antall).getData().getOrganisasjoner();
         List<String> orgNummere = new ArrayList<>();
         organisasjoner.forEach(
-                org -> {
-                    orgNummere.add(org.getOrganisasjonsnummer());
-                }
+                org -> orgNummere.add(org.getOrganisasjonsnummer())
         );
         return orgNummere;
     }
