@@ -29,7 +29,7 @@ public class JobbController {
      * @param  intervall positivt heltall for å representere times-intervall
      * @return respons til klienten for den tilsvarende spørringen
      */
-    @GetMapping
+    @GetMapping(value = {"", "/start"})
     public ResponseEntity<String> reschedule(@RequestParam String intervall) {
 
         if (intervall == null) {
