@@ -1,10 +1,6 @@
 package no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.organisasjon;
 
-
-
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.dto.AdresseDTO;
-
-import java.util.Arrays;
 
 public class Adresse {
     private final String kommunenummer;

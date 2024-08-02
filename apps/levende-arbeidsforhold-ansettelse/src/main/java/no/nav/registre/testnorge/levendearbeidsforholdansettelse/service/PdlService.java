@@ -1,7 +1,6 @@
 package no.nav.registre.testnorge.levendearbeidsforholdansettelse.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import io.swagger.v3.core.util.Json;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -15,7 +14,6 @@ import no.nav.registre.testnorge.levendearbeidsforholdansettelse.provider.PdlMil
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 

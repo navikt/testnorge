@@ -1,7 +1,6 @@
 package no.nav.registre.testnorge.levendearbeidsforholdansettelse.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.TenorConsumer;
