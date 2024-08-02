@@ -47,8 +47,7 @@ public class PdlService {
                 .block();
 
         List<Ident> identer = new ArrayList<>();
-        //log.info("data {}", Json.pretty(node.get("data")));
-        //log.info("sokPerson {}", Json.pretty(node.get("data").get("sokPerson")));
+
         assert node != null;
         node.get("data").get("sokPerson").findValues("identer").forEach(
                 hit -> hit.forEach(
@@ -59,7 +58,23 @@ public class PdlService {
                         }
                 )
         );
-        return identer;
+        return harBareTestnorgeTags(identer);
+    }
+
+    private List<Ident> harBareTestnorgeTags(List<Ident> person){
+        List<String> ident = new ArrayList<>();
+        person.forEach(pers -> ident.add(pers.getIdent()));
+        TagsDTO dto = hentTags(ident);
+
+        for(var id : dto.getPersonerTags().entrySet()){
+            List<String> value = id.getValue();
+            log.info("Tags: {}, bool: {}", value.toString(), (value.size() == 1 && value.getFirst().contains("TESTNORGE")));
+            if(!(value.size() == 1 && value.getFirst().contains("TESTNORGE"))){
+                String iden = id.getKey();
+                person.removeIf(ide -> ide.getIdent().equals(iden));
+            }
+        }
+        return person;
     }
 
     private int getSokPersonPages() {
@@ -98,7 +113,7 @@ public class PdlService {
                  .build();
     }
 
-    public TagsDTO HentTags(List<String> identer) {
+    private TagsDTO hentTags(List<String> identer) {
          return hentTagsConsumer.hentTags(identer);
     }
 

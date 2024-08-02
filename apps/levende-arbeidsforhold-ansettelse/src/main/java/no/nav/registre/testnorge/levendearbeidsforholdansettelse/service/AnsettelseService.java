@@ -99,8 +99,7 @@ public class AnsettelseService  {
                     aldersspennIndekser.forEach(
                             indeks -> {
                                 if (!muligePersonerMap.containsKey(indeks)) {
-                                    List<Ident> personer = harBareTestnorgeTags(hentPersoner(datoIntervalls.get(indeks).getTom().toString(), datoIntervalls.get(indeks).getFrom().toString(), postnr));
-                                    muligePersonerMap.put(indeks, personer);
+                                    muligePersonerMap.put(indeks, hentPersoner(datoIntervalls.get(indeks).getTom().toString(), datoIntervalls.get(indeks).getFrom().toString(), postnr));
                                 }
                             });
 
@@ -195,7 +194,7 @@ public class AnsettelseService  {
         }
         return true;
     }
-
+/*
     private List<Ident> harBareTestnorgeTags(List<Ident> person){
         List<String> ident = new ArrayList<>();
         person.forEach(pers -> ident.add(pers.getIdent()));
@@ -211,6 +210,8 @@ public class AnsettelseService  {
         }
         return person;
     }
+
+ */
 
     private HttpStatusCode ansettPerson(String ident, String orgnummer, String yrke, String stillingsprosent) {
         return arbeidsforholdService.opprettArbeidsforhold(ident, orgnummer, yrke, stillingsprosent);

@@ -20,10 +20,8 @@ public class ArbeidsforholdService {
     private final AaregConsumer aaregConsumer;
     private final String arbeidstakerType = "Person";
     private final String arbeidsgiverType = "Organisasjon";
-    private final String arbeidsforholdType = "ordinaertArbeidsforhold";
-    //private final double antallTimerPrUke = 37.5;
+    private final String arbeidsforholdType = "ordinaertArbeidsforhold"; //#TODO KAN BLI HENTET FRA DB
     private final String arbeidstidsordning = "ikkeSkift";
-    //private final double stillingsprosent = 100.0;
     private final String ansettelsesform = "fast";
 
     public List<Arbeidsforhold> hentArbeidsforhold(String ident) {
