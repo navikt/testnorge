@@ -57,3 +57,4 @@ spec:
       memory: 2048Mi
   ingresses:
     - "https://testnav-kodeverk-service.intern.dev.nav.no"
+

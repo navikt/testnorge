@@ -7,6 +7,8 @@ Fyll inn:
 Swagger finnes under [/swagger](https://levende-arbeidsforhold-service.intern.dev.nav.no/swagger) -endepunktet til
 applikasjonen.
 
+## Apper vi har gitt oss inbound rule 
+*
 ## Lokal kjøring
 
 Ha naisdevice kjørende og kjør GenererNavnServiceApplicationStarter med følgende argumenter:
