@@ -125,12 +125,12 @@ public class PdlService {
     /**
      * Bygger et SokPersonVariables-objekt med de oppgitte parameterene som brukes til å filtrere spørringen mot PDl
      *
-     * @param pageNumber
-     * @param resultsPerPage
-     * @param from
-     * @param to
-     * @param postnr
-     * @return
+     * @param pageNumber Sidetallet resultatene skal hentes fra
+     * @param resultsPerPage Antall treff per side
+     * @param from Tidligste dato for alders-intervallet det skal søkes på
+     * @param to Seneste dato for alders-intervallet det skal søkes på
+     * @param postnr Postnummer det skal søkes på
+     * @return SokPersonVariables-objekt basert på parameterene
      */
     private SokPersonVariables lagSokPersonVariables(int pageNumber, int resultsPerPage, String from, String to, String postnr) {
          return SokPersonVariables
@@ -143,6 +143,11 @@ public class PdlService {
                  .build();
     }
 
+    /**
+     *
+     * @param identer Liste med identnummere
+     * @return TagsDTO for hver ident i identer-listen
+     */
     private TagsDTO hentTags(List<String> identer) {
          return hentTagsConsumer.hentTags(identer);
     }
