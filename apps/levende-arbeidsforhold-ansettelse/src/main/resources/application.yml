@@ -60,17 +60,17 @@ consumers:
     namespace: dolly
     name: testnav-pdl-proxy
   testnav-organisasjon-faste-data-service:
-    url: https://testnav-organisasjon-faste-data-service.intern.dev.nav.no
+    url: https://testnav-organisasjon-faste-data-service.dolly.svc.cluster.local
     name: testnav-organisasjon-faste-data-service
     cluster: dev-gcp
     namespace: dolly
   testnav-kodeverk-service:
-    url: https://testnav-kodeverk-service.intern.dev.nav.no
+    url: https://testnav-kodeverk-service.dolly.svc.cluster.local
     name: testnav-kodeverk-service
     cluster: dev-gcp
     namespace: dolly
   testnav-tenor-search-service:
-    url: https://testnav-tenor-search-service.intern.dev.nav.no
+    url: https://testnav-tenor-search-service.dolly.svc.cluster.local
     name: testnav-tenor-search-service
     cluster: dev-gcp
     namespace: dolly

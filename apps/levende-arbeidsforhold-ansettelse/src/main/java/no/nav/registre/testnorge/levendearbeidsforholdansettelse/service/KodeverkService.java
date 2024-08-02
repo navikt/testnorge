@@ -22,7 +22,9 @@ public class KodeverkService {
      * @return En liste av String som er kodene.
      */
     public List<String> hentKodeverkValues(String kodeverk){
-        return kodeverkServiceConsumer.hentKodeverkListe(kodeverk);
+        log.info("Kodever: {}", kodeverk);
+        //return kodeverkServiceConsumer.hentKodeverkListe(kodeverk);
+        return List.of("6411126");
     }
 
 }
