@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.levendearbeidsforholdscheduler.domain.StatusRespons;
 import no.nav.levendearbeidsforholdscheduler.scheduler.JobbScheduler;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,11 +38,15 @@ public class JobbController {
         }
 
         var resultat = sifferTilHeltall(intervall);
+
         if (resultat.isPresent()){
-            jobbScheduler.startScheduler(resultat.get());
-            return ResponseEntity.ok("Scheduler har begynt med intervall " + intervall);
+            if (jobbScheduler.startScheduler(resultat.get())){
+                return ResponseEntity.ok("Aktivering av scheduler var vellykket med intervall: " + intervall);
+            } else {
+                return ResponseEntity.internalServerError().body(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
+            }
         } else {
-            return ResponseEntity.badRequest().body("intervall er ikke gyldig heltall");
+            return ResponseEntity.badRequest().body("Intervall er ikke gyldig heltall");
         }
 
     }
@@ -66,7 +71,7 @@ public class JobbController {
         if (status){
             tidspunkt = jobbScheduler.hentTidspunktNesteKjoring();
             if (tidspunkt.isEmpty()) {
-                return ResponseEntity.internalServerError().body("Noe skjedde galt med å hente ut tidspunkt for neste kjøring");
+                return ResponseEntity.internalServerError().body(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
             }
         }
 
@@ -76,7 +81,7 @@ public class JobbController {
             String jsonRespons = mapper.writeValueAsString(statusRespons);
             return ResponseEntity.ok(jsonRespons);
         } catch (JsonProcessingException e) {
-            return ResponseEntity.internalServerError().body("Noe skjedde galt med formattering til JSON");
+            return ResponseEntity.internalServerError().body(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
         }
     }
 
@@ -84,18 +89,13 @@ public class JobbController {
      * Request handler funksjon for å stoppe scheduleren
      * @return true hvis kanselleringen var vellykket
      */
-    @GetMapping(value = "/stopp", produces = "application/json")
+    @GetMapping(value = "/stopp")
     public ResponseEntity<String> stopp() {
 
-        ObjectMapper mapper = new ObjectMapper();
-        StatusRespons statusRespons = new StatusRespons();
-
-        statusRespons.setStatus(jobbScheduler.stoppScheduler());
-        try {
-            String jsonRespons = mapper.writeValueAsString(statusRespons);
-            return ResponseEntity.ok(jsonRespons);
-        } catch (JsonProcessingException e) {
-            return ResponseEntity.internalServerError().body("Noe skjedde galt med formattering til JSON");
+        if (!jobbScheduler.stoppScheduler()){
+            return ResponseEntity.internalServerError().body(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
+        } else {
+            return ResponseEntity.ok("Deaktivering av scheduler var vellykket");
         }
     }
 }

@@ -71,14 +71,17 @@ public class JobbScheduler {
     /**
      * Avslutter eventuelt nåværende schedule og starter en ny med det nye intervallet.
      * @param intervall Positivt heltall som representerer times-intervall for scheduler
+     * @return true hvis aktivering av scheduler med ansettelse-jobb var vellykket
      */
-    public void startScheduler(long intervall){
+    public boolean startScheduler(long intervall){
 
         if (scheduledFuture != null) {
             scheduledFuture.cancel(true);
         }
 
         scheduledFuture = taskScheduler.scheduleAtFixedRate(new AnsettelseJobb(), INITIELL_FORSINKELSE, intervall, TimeUnit.HOURS);
+
+        return scheduledFuture.state() == Future.State.RUNNING;
     }
 
 

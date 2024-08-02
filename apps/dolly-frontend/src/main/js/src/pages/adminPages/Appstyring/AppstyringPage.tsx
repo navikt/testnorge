@@ -21,52 +21,55 @@ export default () => {
 	const ANSETTELSE_DOMENE : string = "/testnav-levende-arbeidsforhold-ansettelse";
 
 	/**
-	 * Funksjon som sender spørring til scheduler appen sitt API for å aktivere jobb-scheduler
+	 * Callback-funksjon som behandler feil ved API-spørringer. Dersom en feilmelding ikke er spesifisert, så betyr det
+	 * at feilen ved spørringen skjedde på klienten sin side og kjører med default parameter verdi
 	 */
-	async function aktiverScheduler(){
-		setHenterStatus(true);
-
-		let intervall = apiData.find(d => d.navn == "intervall");
-		if(intervall == undefined){
-			alert("Finner ikke intervall");
-			setHenterStatus(false);
-			return;
-		}
-		await fetch(`${SCHEDULER_DOMENE}/scheduler?intervall=${intervall.verdi}`).then(res => {
-			if (res.ok) {
-				setTimeout(()=>{
-					fetchStatusScheduler();
-					setHenterStatus(false);
-				}, 200)
-			}
-		});
+	function feilHandtering(feilMelding : string = "Spørring feilet, sjekk internettforbindelsen og prøv igjen!"){
+		alert(feilMelding);
 	}
 
 	/**
-	 * Funksjon som sender spørring til scheduler appen sitt API for å deaktivere jobb-scheduler
+	 * Funksjon som aktiverer jobb-scheduler
 	 */
-	async function deaktiverScheduler(){
+	async function aktiverScheduler(){
 
-		if (window.confirm("Vil du deaktivere jobben? Du kan aktivere ny jobb igjen når som helst.")){
-			setHenterStatus(true);
-			await fetch(`${SCHEDULER_DOMENE}/scheduler/stopp`).then(async res => {
-				if (res.ok) {
-					let data = await res.json();
-					if (data && !data.status){
-						alert("Deaktivering av scheduler feilet, prøv igjen.");
-						setHenterStatus(false);
-						return;
-					}
+		let intervall = apiData.find(d => d.navn == "intervall");
 
-					setTimeout(()=>{
-						fetchStatusScheduler();
-						setHenterStatus(false);
-					}, 200)
-				}
-			});
+		if (intervall){
+			await sendSporringScheduler(`${SCHEDULER_DOMENE}/scheduler?intervall=${intervall.verdi}`);
+		} else {
+			feilHandtering("Intervall er ikke spesifisert")
 		}
 
+	}
 
+	/**
+	 * Funksjon som deaktiverer jobb-scheduler
+	 */
+	async function deaktiverScheduler(){
+		if (window.confirm("Vil du deaktivere jobben? Du kan aktivere ny jobb igjen når som helst.")){
+			await sendSporringScheduler(`${SCHEDULER_DOMENE}/scheduler/stopp`);
+		}
+	}
+
+	/**
+	 * Funksjon som kan brukes til å sende spørring til scheduler appen sitt API for å enten aktiver eller deaktivere
+	 * scheduler basert på url parameteren
+	 * @param url URL til endepunktet i scheduler APIet som spørring skal sendes til
+	 */
+	async function sendSporringScheduler(url : string){
+		setHenterStatus(true);
+		await fetch(url).then(async res => {
+
+			setTimeout(()=>{
+				if (!res.ok) {
+					feilHandtering(`${res.body}`);
+				}
+
+				fetchStatusScheduler();
+				setHenterStatus(false);
+			}, 200)
+		}).catch(feilHandtering);
 	}
 
 	/**
@@ -76,24 +79,26 @@ export default () => {
 	async function fetchStatusScheduler() {
 		const data = await fetch(`${SCHEDULER_DOMENE}/scheduler/status`)
 			.then(res => res.json())
-			.catch(err => console.error(err));
+			.catch(feilHandtering);
 		setStatusData(data);
 	}
 
-	useEffect(() => {
-		async function fetchData() {
-			await fetch(`${ANSETTELSE_DOMENE}/api`)
-				.then(res => res.json())
-				.then(res => {
-					res.map((r: FetchData) => optionsData.push(r))
+	/**
+	 * Funksjon som henter ut dataen for parameterne som brukes i jobben (aka ansettelses-jobben) som kjøres av
+	 * scheduleren for det gitte intervallet
+	 */
+	async function hentParametere() {
+		await fetch(`${ANSETTELSE_DOMENE}/api`)
+			.then(res => res.json())
+			.then(res => {
+				res.map((r: FetchData) => optionsData.push(r))
 
-				}).catch(err => console.error(err));
-			setApiData(optionsData);
-		}
-		fetchData();
-	}, []);
+			}).catch(err => console.error(err));
+		setApiData(optionsData);
+	}
 
 	useEffect(() => {
+		hentParametere();
 		fetchStatusScheduler();
 	}, []);
 
