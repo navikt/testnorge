@@ -113,7 +113,7 @@ public class TenorService {
 
     /**
      * @param organisasjonsnummer Organisasjonsnummeret til organisasjonen man vil hente postnummer for
-     * @return Postnummeret til organisasjonen i String-format
+     * @return Postnummeret til organisasjonen i String-format eller null dersom brregKildedata er null
      */
     public String hentOrgPostnummer(String organisasjonsnummer) {
         TenorOversiktOrganisasjonResponse orgResponse = hentOrganisasjon(organisasjonsnummer);
@@ -121,6 +121,6 @@ public class TenorService {
         if (!brregKildedata.isNull()) {
             return brregKildedata.get("forretningsadresse").get("postnummer").toString().replace("\"", "");
         }
-        return "";
+        return null;
     }
 }

@@ -87,6 +87,9 @@ public class AnsettelseService  {
         //Kjører ansettelse per org
         organisasjoner.forEach(
             organisasjon -> {
+                if (tenorService.hentOrgPostnummer(organisasjon.getOrganisasjonsnummer()) == null) {
+                    organisasjon = hentOrganisasjoner(1).getFirst();
+                }
                 String postnr = konverterPostnr(tenorService.hentOrgPostnummer(organisasjon.getOrganisasjonsnummer()));
 
                 //Trekker alderspenn fra alias for hver pers som skal ansettes
