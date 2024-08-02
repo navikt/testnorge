@@ -83,6 +83,7 @@ public class DollyFrontendApplicationStarter {
                 .route(createRoute(consumers.getGenererNavnService()))
                 .route(createRoute(consumers.getTestnavKodeverkService()))
                 .route(createRoute(consumers.getTestnavTenorSearchService()))
+                .route(createRoute(consumers.getTestnavSkattekortService()))
                 .build();
     }
 
