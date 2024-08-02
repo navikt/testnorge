@@ -14,6 +14,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+import static no.nav.levendearbeidsforholdscheduler.utils.Utils.beregnEkstraDelayNaa;
 import static no.nav.levendearbeidsforholdscheduler.utils.Utils.hentKalender;
 
 @Slf4j
@@ -57,8 +58,9 @@ public class JobbScheduler {
 
         if (scheduledFuture != null) {
             long delayIMillisekunder = scheduledFuture.getDelay(TimeUnit.MILLISECONDS);
-            long scheduledTid = System.currentTimeMillis() + delayIMillisekunder;
-            Date datoForNesteKjoring = new Date(scheduledTid);
+            long nesteKjoringMillisekunder = beregnNesteKjoring(delayIMillisekunder);
+
+            Date datoForNesteKjoring = new Date(nesteKjoringMillisekunder);
             return Optional.of(datoForNesteKjoring.toString());
         } else {
             return Optional.empty();
@@ -69,14 +71,17 @@ public class JobbScheduler {
     /**
      * Avslutter eventuelt nåværende schedule og starter en ny med det nye intervallet.
      * @param intervall Positivt heltall som representerer times-intervall for scheduler
+     * @return true hvis aktivering av scheduler med ansettelse-jobb var vellykket
      */
-    public void startScheduler(long intervall){
+    public boolean startScheduler(long intervall){
 
         if (scheduledFuture != null) {
             scheduledFuture.cancel(true);
         }
 
         scheduledFuture = taskScheduler.scheduleAtFixedRate(new AnsettelseJobb(), INITIELL_FORSINKELSE, intervall, TimeUnit.HOURS);
+
+        return scheduledFuture.state() == Future.State.RUNNING;
     }
 
 
@@ -104,7 +109,7 @@ public class JobbScheduler {
      * @param idag Tall som representerer dagen i uken i en 24-timers klokke
      * @return true hvis angitt dag og klokkeslett er innenfor det gitte tidsrommet i en vilkårlig uke
      */
-    public static boolean gyldigTidsrom(int startKlokka, int startDag, int sluttKlokka, int sluttDag, int klokkeslett, int idag){
+    public static boolean sjekkGyldigTidsrom(int startKlokka, int startDag, int sluttKlokka, int sluttDag, int klokkeslett, int idag){
         return (startDag > sluttDag && (idag > startDag || idag < sluttDag)) //Ved ukes-skifte
                 || (idag > startDag && idag < sluttDag) //Innad i samme uke
                 || ((idag == startDag && klokkeslett >= startKlokka) //Samme dag, startdag
@@ -120,13 +125,28 @@ public class JobbScheduler {
      * @param sluttDag Tall som representerer dag i uken fra 1-7 (man-søn) for start på gyldig tidsrom
      * @return true hvis nåværende dag og klokkeslett er innenfor det gitte tidsrommet i en vilkårlig uke
      */
-    public boolean sjekkOmGyldigTidsrom(int startKlokka, int startDag, int sluttKlokka, int sluttDag){
+    public boolean sjekkOmGyldigTidsromNaa(int startKlokka, int startDag, int sluttKlokka, int sluttDag){
 
         Calendar kalender = hentKalender();
         int klokkeslett = kalender.get(Calendar.HOUR_OF_DAY); //06:00 = 6, 13:00 = 13, 23:00 = 23
         int dag = ((kalender.get(Calendar.DAY_OF_WEEK) + 6) % 7); //Mandag = 1, Tirsag = 2 ... Søndag = 7
 
-        return gyldigTidsrom(startKlokka, startDag, sluttKlokka, sluttDag, klokkeslett, dag);
+        return sjekkGyldigTidsrom(startKlokka, startDag, sluttKlokka, sluttDag, klokkeslett, dag);
+    }
+
+    /**
+     * Funksjon som beregner timestamp/tidspunkt (med millisekunder som tidsenhet) for neste kjøring av nåværende
+     * jobb
+     * @param schedulerDelay Delay/forsinkelse scheduler har for kjøring av jobb
+     * @return positivt heltall som representerer tidspunktet for neste kjøring i millisekunder
+     */
+    public long beregnNesteKjoring(long schedulerDelay){
+        long nesteKjoringMillisekunder = System.currentTimeMillis() + schedulerDelay;
+
+        if (!sjekkOmGyldigTidsromNaa(START_KLOKKESLETT, START_DAG, SLUTT_KLOKKESLETT, SLUTT_DAG)){
+            nesteKjoringMillisekunder = System.currentTimeMillis() + beregnEkstraDelayNaa(START_DAG, START_KLOKKESLETT);
+        }
+        return nesteKjoringMillisekunder;
     }
 
     /**
@@ -140,7 +160,7 @@ public class JobbScheduler {
          */
         @Override
         public void run() {
-            if(sjekkOmGyldigTidsrom(START_KLOKKESLETT, START_DAG, SLUTT_KLOKKESLETT, SLUTT_DAG)){
+            if(sjekkOmGyldigTidsromNaa(START_KLOKKESLETT, START_DAG, SLUTT_KLOKKESLETT, SLUTT_DAG)){
                 ansettelsesService.hent();
             }
 
