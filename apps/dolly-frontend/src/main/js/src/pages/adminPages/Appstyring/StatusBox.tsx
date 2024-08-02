@@ -1,4 +1,4 @@
-import {Box, VStack} from "@navikt/ds-react";
+import {Alert, VStack} from "@navikt/ds-react";
 import React from "react";
 import {Jobbstatus} from "@/pages/adminPages/Appstyring/util/Typer";
 
@@ -7,13 +7,13 @@ export const StatusBox = (data: Jobbstatus) => {
 
     const renderedBox = (status: boolean) => {
         if (!status) {
-            return <Box padding="4" background="surface-alt-3-subtle">
+            return <Alert variant="info" style={{marginBottom: '10px'}}>
                 Ingen aktiv jobb
-            </Box>
+            </Alert>
         }
-        return <Box padding="4" background="surface-success-subtle">
+        return <Alert variant="success" style={{marginBottom: '10px'}}>
             Aktiv jobb: Neste kjøring vil starte {data.nesteKjoring}
-        </Box>
+        </Alert>
     }
 
     return (

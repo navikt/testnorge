@@ -69,7 +69,7 @@ export const EditParameter = ({name, label, initialValue, options, data, setData
 							<br />
 							<Select {...register("value", {
 								validate: validerParameter
-							})} label={label} error={errors.value?.message}>
+							})} label={label} error={errors.value?.message} style={{marginBottom: '10px'}}>
 								{options.map((option, index) => (
 									<option key={index} value={option}>{option}</option>
 								))}
