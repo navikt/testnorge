@@ -17,6 +17,7 @@ export const ArbeidInntektPanel = ({ stateModifier, formValues }) => {
 	const infoTekst =
 		'Arbeidsforhold: \nDataene her blir lagt til AAREG. \n\nInntekt: \nSkatte- og inntektsgrunnlag. Inntektene blir lagt i Sigrun-stub.' +
 		'\n\nPensjonsgivende inntekt: \nInntektene blir lagt til i POPP-register. \n\nInntektstub: \nInformasjonen blir lagt i Inntekt-stub.'
+	//TODO: Info om skattekort?
 
 	return (
 		<Panel
@@ -31,6 +32,7 @@ export const ArbeidInntektPanel = ({ stateModifier, formValues }) => {
 				inntektstubAttributt,
 				inntektsmeldingAttributt,
 				sigrunstubPensjonsgivendeAttributt,
+				// skattekortAttributt,
 			])}
 		>
 			<AttributtKategori title="Arbeidsforhold (Aareg)" attr={sm.attrs}>
@@ -45,6 +47,9 @@ export const ArbeidInntektPanel = ({ stateModifier, formValues }) => {
 			</AttributtKategori>
 			<AttributtKategori title="Inntektsmelding (fra Altinn)" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.inntektsmelding} id="inntekt_inntektstub" />
+			</AttributtKategori>
+			<AttributtKategori title="Skattekort" attr={sm.attrs}>
+				<Attributt attr={sm.attrs.skattekort} />
 			</AttributtKategori>
 		</Panel>
 	)
@@ -149,5 +154,56 @@ ArbeidInntektPanel.initialValues = ({ set, del, has }) => ({
 		remove() {
 			del('inntektstub')
 		},
+	},
+	skattekort: {
+		label: 'Har skattekort',
+		checked: has('skattekort'),
+		add: () =>
+			set('skattekort', {
+				arbeidsgiver: [
+					{
+						arbeidsgiveridentifikator: {
+							organisasjonsnummer: '',
+							personidentifikator: '',
+						},
+						arbeidstaker: [
+							{
+								arbeidstakeridentifikator: '',
+								resultatPaaForespoersel: '',
+								skattekort: {
+									utstedtDato: '',
+									skattekortidentifikator: null,
+									trekktype: [
+										{
+											forskuddstrekk: {
+												trekkode: '',
+											},
+											frikort: {
+												trekkode: '',
+												frikortbeloep: null,
+											},
+											trekktabell: {
+												trekkode: '',
+												tabelltype: '',
+												tabellnummer: '',
+												prosentsats: null,
+												antallMaanederForTrekk: null,
+											},
+											trekkprosent: {
+												trekkode: '',
+												prosentsats: null,
+												antallMaanederForTrekk: null,
+											},
+										},
+									],
+								},
+								tilleggsopplysning: '',
+								inntektsaar: null,
+							},
+						],
+					},
+				],
+			}),
+		remove: () => del('skattekort'),
 	},
 })

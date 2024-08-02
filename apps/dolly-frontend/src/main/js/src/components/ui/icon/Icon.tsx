@@ -145,6 +145,7 @@ export const icons = {
 	sigrun: BankNoteIcon,
 	bankkonto: BankNoteIcon,
 	pengesekk: SackKronerIcon,
+	inntektstub: BankNoteIcon,
 	inntektsmelding: BankNoteIcon,
 	udi: EarthIcon,
 	kommentar: ChatElipsisIcon,
