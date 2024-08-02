@@ -75,6 +75,6 @@ public class TenorService {
     public String hentOrgPostnummer(String organisasjonsnummer) {
         TenorOversiktOrganisasjonResponse orgResponse = hentOrganisasjon(organisasjonsnummer);
         JsonNode brregKildedata = orgResponse.getData().getOrganisasjoner().getFirst().getBrregKildedata();
-        return brregKildedata.get("forretningsadresse").get("postnummer").toString();
+        return brregKildedata.get("forretningsadresse").get("postnummer").toString().replace("\"", "");
     }
 }

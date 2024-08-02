@@ -103,7 +103,7 @@ public class AnsettelseService  {
                 aldersspennIndekser.forEach(
                         indeks -> {
                             if (!muligePersonerMap.containsKey(indeks)) {
-                                muligePersonerMap.put(indeks, hentPersoner(datoIntervaller.get(indeks).getTom().toString(), datoIntervaller.get(indeks).getFrom().toString(), postnr));
+                                muligePersonerMap.put(indeks, hentPersoner(datoIntervaller.get(indeks).getFrom().toString(), datoIntervaller.get(indeks).getTom().toString(), postnr));
                             }
                         });
 

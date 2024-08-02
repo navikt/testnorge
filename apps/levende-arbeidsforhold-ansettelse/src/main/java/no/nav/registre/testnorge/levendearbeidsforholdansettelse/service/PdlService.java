@@ -50,31 +50,31 @@ public class PdlService {
 
         assert node != null;
         node.get("data").get("sokPerson").findValues("identer").forEach(
-                hit -> hit.forEach(
-                        ident -> {
-                            if(ident.get("gruppe").asText().equals("FOLKEREGISTERIDENT")) {
-                                identer.add(new Ident(ident.get("ident").asText(), ident.get("gruppe").asText()));
-                            }
-                        }
-                )
+            hit -> hit.forEach(
+                ident -> {
+                    if(ident.get("gruppe").asText().equals("FOLKEREGISTERIDENT")) {
+                        identer.add(new Ident(ident.get("ident").asText(), ident.get("gruppe").asText()));
+                    }
+                }
+            )
         );
         return harBareTestnorgeTags(identer);
     }
 
-    private List<Ident> harBareTestnorgeTags(List<Ident> person){
-        List<String> ident = new ArrayList<>();
-        person.forEach(pers -> ident.add(pers.getIdent()));
-        TagsDTO dto = hentTags(ident);
+    private List<Ident> harBareTestnorgeTags(List<Ident> personer){
+        List<String> identer = new ArrayList<>();
+        personer.forEach(person -> identer.add(person.getIdent()));
+        TagsDTO tagsDTO = hentTags(identer);
 
-        for(var id : dto.getPersonerTags().entrySet()){
+        for(var id : tagsDTO.getPersonerTags().entrySet()){
             List<String> value = id.getValue();
             log.info("Tags: {}, bool: {}", value.toString(), (value.size() == 1 && value.getFirst().contains("TESTNORGE")));
             if(!(value.size() == 1 && value.getFirst().contains("TESTNORGE"))){
                 String iden = id.getKey();
-                person.removeIf(ide -> ide.getIdent().equals(iden));
+                personer.removeIf(ide -> ide.getIdent().equals(iden));
             }
         }
-        return person;
+        return personer;
     }
 
     private int getSokPersonPages() {
