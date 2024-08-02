@@ -12,8 +12,8 @@ import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.pdl.Grap
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.provider.PdlMiljoer;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-//import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
-import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+//import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.config.Consumers;
 import org.springframework.core.io.ClassPathResource;
