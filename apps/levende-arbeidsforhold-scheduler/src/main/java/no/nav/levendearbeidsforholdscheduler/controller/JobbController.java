@@ -48,7 +48,6 @@ public class JobbController {
         } else {
             return ResponseEntity.badRequest().body("Intervall er ikke gyldig heltall");
         }
-
     }
 
     /**

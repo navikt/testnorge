@@ -40,7 +40,6 @@ export default () => {
 		} else {
 			feilHandtering("Intervall er ikke spesifisert")
 		}
-
 	}
 
 	/**
