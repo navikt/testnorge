@@ -11,6 +11,8 @@ import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.pdl.Iden
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.JobbParameterNavn;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.service.util.AlderspennList;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.service.util.AliasMethod;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -31,7 +33,7 @@ public class AnsettelseService  {
     private final KodeverkService kodeverkService;
     private final AnsettelseLoggService ansettelseLoggService;
 
-    //@EventListener(ApplicationReadyEvent.class)
+    @EventListener(ApplicationReadyEvent.class)
     public void runAnsettelseService() {
         Thread thread = new Thread(this::ansettelseService);
         thread.start();
@@ -142,6 +144,7 @@ public class AnsettelseService  {
                                 continue;
                             }
                         }
+                        ansattePersoner.add(muligePersoner.get(tilfeldigIndex));
                         muligePersoner.remove(tilfeldigIndex);
 
                     } catch (NullPointerException e) {
