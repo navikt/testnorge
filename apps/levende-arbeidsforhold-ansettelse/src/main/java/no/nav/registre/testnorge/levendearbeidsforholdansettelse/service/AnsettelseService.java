@@ -144,7 +144,6 @@ public class AnsettelseService  {
                                 continue;
                             }
                         }
-                        ansattePersoner.add(muligePersoner.get(tilfeldigIndex));
                         muligePersoner.remove(tilfeldigIndex);
 
                     } catch (NullPointerException e) {
