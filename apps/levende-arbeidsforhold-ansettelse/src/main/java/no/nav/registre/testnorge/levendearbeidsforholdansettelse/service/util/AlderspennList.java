@@ -17,38 +17,22 @@ public class AlderspennList {
     //Dette er tallene jeg fant fra: https://www.ssb.no/arbeid-og-lonn/sysselsetting/statistikk/antall-arbeidsforhold-og-lonn
     // i tabell 1
     public final List<Double> sannsynlighetFordeling = List.of(434106.0, 1022448.0, 976833.0, 563804.0, 72363.0);
-    private final static DatoIntervall FOERSTE_INTERVALL= DatoIntervall.builder()
-            .from(LocalDate.now().minusYears(24))
-            .tom(LocalDate.now().minusYears(18))
-            .build();
-    private final static DatoIntervall ANDRE_INTERVALL = DatoIntervall.builder()
-            .from(LocalDate.now().minusYears(39))
-            .tom(LocalDate.now().minusYears(25))
-            .build();
-    private final static DatoIntervall TREDJE_INTERVALL = DatoIntervall.builder()
-            .from(LocalDate.now().minusYears(54))
-            .tom(LocalDate.now().minusYears(40))
-            .build();
-    private final static DatoIntervall FJERDE_INTERVALL = DatoIntervall.builder()
-            .from(LocalDate.now().minusYears(66))
-            .tom(LocalDate.now().minusYears(55))
-            .build();
-    private final static DatoIntervall FEMTE_INTERVALL = DatoIntervall.builder()
-            .from(LocalDate.now().minusYears(72))
-            .tom(LocalDate.now().minusYears(67))
-            .build();
+    private static final List<List<Integer>> alderListe = List.of(
+            List.of(18, 24),
+            List.of(25,39),
+            List.of(40, 54),
+            List.of(55, 66),
+            List.of(67, 72)
+    );
+
 
     public List<DatoIntervall> getDatoListe(){
         List<DatoIntervall> alderspennList = new ArrayList<>();
-        initialiserDatoListe(alderspennList);
+        for(List<Integer> alderSpenn :alderListe){
+            alderspennList.add(DatoIntervall.builder()
+                    .tom(LocalDate.now().minusYears(alderSpenn.getFirst()))
+                    .from(LocalDate.now().minusYears(alderSpenn.getLast())).build());
+        }
         return alderspennList;
-    }
-
-    public static void initialiserDatoListe(List<DatoIntervall> alderspennList) {
-        alderspennList.add(FOERSTE_INTERVALL);
-        alderspennList.add(ANDRE_INTERVALL);
-        alderspennList.add(TREDJE_INTERVALL);
-        alderspennList.add(FJERDE_INTERVALL);
-        alderspennList.add(FEMTE_INTERVALL);
     }
 }
