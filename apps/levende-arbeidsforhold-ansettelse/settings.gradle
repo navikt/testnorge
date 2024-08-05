@@ -12,6 +12,7 @@ includeBuild '../../libs/commands'
 includeBuild '../../libs/data-transfer-objects'
 includeBuild '../../libs/testing'
 includeBuild '../../libs/servlet-security'
+includeBuild '../../libs/servlet-insecure-security'
 includeBuild '../../.github/workflows'
 
 develocity {

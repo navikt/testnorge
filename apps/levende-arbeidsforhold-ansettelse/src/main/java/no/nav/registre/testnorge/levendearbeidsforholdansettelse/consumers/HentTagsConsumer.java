@@ -6,7 +6,7 @@ import no.nav.registre.testnorge.levendearbeidsforholdansettelse.config.Consumer
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.command.pdl.HentTagsCommand;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.TagsDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;

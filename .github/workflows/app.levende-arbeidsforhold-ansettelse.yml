@@ -8,6 +8,7 @@ on:
       - libs/security-core/**
       - libs/servlet-core/**
       - libs/servlet-security/**
+      - libs/servlet-insecure-security/**
       - apps/levende-arbeidsforhold-ansettelse/**
       - .github/workflows/app.levende-arbeidsforhold-ansettelse.yml
 
