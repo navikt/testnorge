@@ -1,9 +1,5 @@
 plugins {
-    id 'java'
-    id "org.sonarqube" version "5.0.0.4638"
-    id 'org.springframework.boot' version "3.2.6"
-    id 'io.spring.dependency-management' version "1.1.5"
-    id "jacoco"
+    id "dolly-apps"
 }
 
 test {
@@ -24,24 +20,7 @@ sonarqube {
         property "sonar.sourceEncoding", "UTF-8"
     }
 }
-bootJar {
-    archiveFileName = "app.jar"
-}
 
-dependencyManagement {
-    applyMavenExclusions = false
-    imports {
-        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2023.0.1'
-    }
-}
-
-repositories {
-    mavenCentral()
-    mavenLocal()
-    maven {
-        url = uri('https://packages.confluent.io/maven/')
-    }
-}
 
 dependencies {
     implementation 'no.nav.testnav.libs:security-core'
@@ -58,7 +37,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-quartz'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-server'
+
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
@@ -85,8 +65,4 @@ dependencies {
     implementation 'org.postgresql:postgresql'
 
 }
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
-    }
-}
+
