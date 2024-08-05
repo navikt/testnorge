@@ -147,6 +147,7 @@ export const icons = {
 	pengesekk: SackKronerIcon,
 	inntektstub: BankNoteIcon,
 	inntektsmelding: BankNoteIcon,
+	skattekort: BankNoteIcon,
 	udi: EarthIcon,
 	kommentar: ChatElipsisIcon,
 	partner: HeartIcon,

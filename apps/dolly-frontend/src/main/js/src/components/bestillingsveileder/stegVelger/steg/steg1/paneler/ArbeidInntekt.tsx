@@ -10,6 +10,10 @@ import {
 	getInitialSigrunstubPensjonsgivende,
 	sigrunstubPensjonsgivendeAttributt,
 } from '@/components/fagsystem/sigrunstubPensjonsgivende/form/Form'
+import {
+	initialArbeidsgiverSkatt,
+	skattekortAttributt,
+} from '@/components/fagsystem/skattekort/form/Form'
 
 export const ArbeidInntektPanel = ({ stateModifier, formValues }) => {
 	const sm = stateModifier(ArbeidInntektPanel.initialValues)
@@ -32,7 +36,7 @@ export const ArbeidInntektPanel = ({ stateModifier, formValues }) => {
 				inntektstubAttributt,
 				inntektsmeldingAttributt,
 				sigrunstubPensjonsgivendeAttributt,
-				// skattekortAttributt,
+				skattekortAttributt,
 			])}
 		>
 			<AttributtKategori title="Arbeidsforhold (Aareg)" attr={sm.attrs}>
@@ -160,49 +164,7 @@ ArbeidInntektPanel.initialValues = ({ set, del, has }) => ({
 		checked: has('skattekort'),
 		add: () =>
 			set('skattekort', {
-				arbeidsgiver: [
-					{
-						arbeidsgiveridentifikator: {
-							organisasjonsnummer: '',
-							personidentifikator: '',
-						},
-						arbeidstaker: [
-							{
-								arbeidstakeridentifikator: '',
-								resultatPaaForespoersel: '',
-								skattekort: {
-									utstedtDato: '',
-									skattekortidentifikator: null,
-									trekktype: [
-										{
-											forskuddstrekk: {
-												trekkode: '',
-											},
-											frikort: {
-												trekkode: '',
-												frikortbeloep: null,
-											},
-											trekktabell: {
-												trekkode: '',
-												tabelltype: '',
-												tabellnummer: '',
-												prosentsats: null,
-												antallMaanederForTrekk: null,
-											},
-											trekkprosent: {
-												trekkode: '',
-												prosentsats: null,
-												antallMaanederForTrekk: null,
-											},
-										},
-									],
-								},
-								tilleggsopplysning: '',
-								inntektsaar: null,
-							},
-						],
-					},
-				],
+				arbeidsgiverSkatt: [initialArbeidsgiverSkatt],
 			}),
 		remove: () => del('skattekort'),
 	},
