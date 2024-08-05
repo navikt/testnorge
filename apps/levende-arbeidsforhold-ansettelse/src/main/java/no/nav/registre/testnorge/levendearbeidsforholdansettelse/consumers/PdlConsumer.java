@@ -4,18 +4,14 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
-import no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.command.pdl.HentTagsCommand;
+import no.nav.registre.testnorge.levendearbeidsforholdansettelse.config.Consumers;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.command.pdl.SokPersonCommand;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.command.pdl.SokPersonPagesCommand;
-import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.TagsDTO;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.pdl.GraphqlVariables;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.provider.PdlMiljoer;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-//import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
-
-import no.nav.registre.testnorge.levendearbeidsforholdansettelse.config.Consumers;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
@@ -28,7 +24,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.time.Duration;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -95,13 +90,5 @@ public class PdlConsumer {
         }
     }
 
-    public TagsDTO hentTags(List<String> identer) throws Exception {
-        var accessToken = tokenService.exchange(serverProperties).block();
-        if (accessToken != null){
-            return new HentTagsCommand(webClient, accessToken.getTokenValue() ,identer).call();
-        } else {
-            return new TagsDTO();
-        }
-    }
 
 }

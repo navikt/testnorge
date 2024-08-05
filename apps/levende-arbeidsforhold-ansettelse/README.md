@@ -12,7 +12,7 @@ applikasjonen.
 * Vi har ikke lagt til forskjellige arbeidsforhold typer noe som kan gjøre dette mer realistisk.
 * Vi gjør nå to oppslag i search-tenor-service noe som vi tenker kan reduseres til en ved å gjøre endringer i tenor-searc-service eller forandre hvordan denne appen finner organisasjoner.
 * Å gjøre mengden mennesker som blir hentet i PdlService mer dynamisk.
-* Skrive om ti lå bruke asynchronous (flux) overalt.
+* Skrive om til å bruke asynchronous (flux) overalt.
 
 ## Flyt
 For å starte en jobb så bruker man endepunktet "/api/ansettelse-jobb", som vil kalle på runAnsettelsesService i AnsettelseService.java.

@@ -31,7 +31,6 @@ public class AnsettelseService  {
     private final KodeverkService kodeverkService;
     private final AnsettelseLoggService ansettelseLoggService;
 
-    //@EventListener(ApplicationReadyEvent.class)
     public void runAnsettelseService() {
         Thread thread = new Thread(this::ansettelseService);
         thread.start();
