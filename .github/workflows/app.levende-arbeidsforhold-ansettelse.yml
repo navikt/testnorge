@@ -7,6 +7,7 @@ on:
       - libs/data-transfer-objects/**
       - libs/security-core/**
       - libs/servlet-core/**
+      - libs/servlet-security/**
       - apps/levende-arbeidsforhold-ansettelse/**
       - .github/workflows/app.levende-arbeidsforhold-ansettelse.yml
 
