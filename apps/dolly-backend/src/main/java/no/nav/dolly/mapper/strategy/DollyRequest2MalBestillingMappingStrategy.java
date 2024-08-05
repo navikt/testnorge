@@ -14,7 +14,10 @@ import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding;
 import no.nav.dolly.mapper.MappingStrategy;
 import no.nav.testnav.libs.data.arbeidsplassencv.v1.ArbeidsplassenCVDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
+import no.nav.testnav.libs.dto.skattekortservice.v1.SkattekortRequestDTO;
 import org.springframework.stereotype.Component;
+
+import static java.util.Objects.isNull;
 
 @Component
 public class DollyRequest2MalBestillingMappingStrategy implements MappingStrategy {
@@ -53,6 +56,22 @@ public class DollyRequest2MalBestillingMappingStrategy implements MappingStrateg
                         akkumulert.getInstdata().addAll(request.getInstdata());
                         akkumulert.getSigrunstub().addAll(request.getSigrunstub());
                         akkumulert.getSigrunstubPensjonsgivende().addAll(request.getSigrunstubPensjonsgivende());
+                        if (isNull(akkumulert.getSkattekort())) {
+                            akkumulert.setSkattekort(request.getSkattekort());
+                        } else {
+                            akkumulert.getSkattekort().getArbeidsgiverSkatt()
+                                    .addAll(request.getSkattekort().getArbeidsgiverSkatt());
+                        }
+                    }
+                })
+                .register();
+
+        factory.classMap(SkattekortRequestDTO.class, SkattekortRequestDTO.class)
+                .mapNulls(false)
+                .customize(new CustomMapper<>() {
+                    @Override
+                    public void mapAtoB(SkattekortRequestDTO skattekort, SkattekortRequestDTO akkumulert, MappingContext context) {
+                        akkumulert.getArbeidsgiver().addAll(skattekort.getArbeidsgiver());
                     }
                 })
                 .register();
