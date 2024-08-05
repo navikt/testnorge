@@ -81,6 +81,8 @@ public class IdentitetService {
         var dbPerson = personRepository.findByIdent(ident)
                 .orElseThrow(() -> new NotFoundException("Ident " + ident + " ikke funnet"));
 
+        dbPerson.getPerson().setStandalone(standalone);
+
         var identerRelasjon = dbPerson.getRelasjoner().stream()
                 .map(DbRelasjon::getRelatertPerson)
                 .map(DbPerson::getPerson)

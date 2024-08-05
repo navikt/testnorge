@@ -575,6 +575,7 @@ query($ident: ID!, $historikk: Boolean!) {
         foreldreansvar(historikk: $historikk) {
             ansvar,
             ansvarlig,
+            ansvarssubjekt,
             ansvarligUtenIdentifikator {
                 navn {
                     fornavn,

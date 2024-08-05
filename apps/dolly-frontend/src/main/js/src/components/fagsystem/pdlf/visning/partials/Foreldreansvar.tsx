@@ -35,6 +35,7 @@ const ForeldreansvarLes = ({ foreldreansvarData, redigertRelatertePersoner, rela
 			<div className="person-visning_content" key={idx}>
 				<>
 					<TitleValue title="Hvem har ansvaret" value={_.capitalize(foreldreansvarData.ansvar)} />
+					<TitleValue title="Ansvarssubjekt (barnet)" value={foreldreansvarData.ansvarssubjekt} />
 					<TitleValue
 						title="Gyldig fra og med"
 						value={formatDate(foreldreansvarData.gyldigFraOgMed)}
