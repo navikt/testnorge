@@ -58,6 +58,8 @@ spec:
           cluster: dev-gcp
         - application: testnav-tenor-search-service
           cluster: dev-gcp
+        - application: testnav-levende-arbeidsforhold-ansettelse
+          cluster: dev-gcp
     outbound:
       rules:
         - application: pdl-testdata
