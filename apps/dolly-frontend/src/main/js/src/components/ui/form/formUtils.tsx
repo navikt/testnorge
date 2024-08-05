@@ -68,6 +68,7 @@ const getValgteAttributter = (values) => {
 		'sigrunstubPensjonsgivende',
 		'inntektstub',
 		'inntektsmelding',
+		'skattekort',
 		'arbeidsplassenCV',
 		'pensjonforvalter.inntekt',
 		'pensjonforvalter.pensjonsavtale',
