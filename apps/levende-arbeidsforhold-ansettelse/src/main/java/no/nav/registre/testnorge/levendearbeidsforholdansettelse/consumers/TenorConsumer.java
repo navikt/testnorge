@@ -16,13 +16,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import static java.util.Objects.nonNull;
-
 @Slf4j
 @Component
 public class TenorConsumer {
 
-    private static final String TENOR_DOMAIN = "https://testnav-tenor-search-service.intern.dev.nav.no";
     private final WebClient webClient;
     private final TokenExchange tokenExchange;
     private final ServerProperties serverProperties;

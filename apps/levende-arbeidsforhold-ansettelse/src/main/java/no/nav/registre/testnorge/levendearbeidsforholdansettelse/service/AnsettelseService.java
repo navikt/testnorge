@@ -11,8 +11,6 @@ import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.pdl.Iden
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.JobbParameterNavn;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.service.util.AlderspennList;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.service.util.AliasMethod;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -73,7 +71,7 @@ public class AnsettelseService  {
         }
 
         //Regner ut hvor mange som skal ansettes per org
-        int antallPersPerOrg = 0;
+        int antallPersPerOrg;
         try {
             antallPersPerOrg = getAntallAnsettelserHverOrg(Integer.parseInt(parametere.get(ANTALL_PERSONER.value)), Integer.parseInt(parametere.get(ANTALL_ORGANISASJONER.value)));
         } catch (NumberFormatException e) {

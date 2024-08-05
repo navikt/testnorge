@@ -32,7 +32,8 @@ public class KodeverkServiceCommand implements Callable<Map<String, String>>{
         try {
             ObjectMapper mapper = new ObjectMapper();
             if (node != null){
-                return mapper.convertValue(node.get("kodeverk"), new TypeReference<Map<String, String>>(){});
+                return mapper.convertValue(node.get("kodeverk"), new TypeReference<>() {
+                });
             } else {
                 return Collections.emptyMap();
             }

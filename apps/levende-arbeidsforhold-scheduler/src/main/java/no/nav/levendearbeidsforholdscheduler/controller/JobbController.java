@@ -43,7 +43,7 @@ public class JobbController {
             if (jobbScheduler.startScheduler(resultat.get())){
                 return ResponseEntity.ok("Aktivering av scheduler var vellykket med intervall: " + intervall);
             } else {
-                return ResponseEntity.internalServerError().body(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
             }
         } else {
             return ResponseEntity.badRequest().body("Intervall er ikke gyldig heltall");
@@ -70,7 +70,7 @@ public class JobbController {
         if (status){
             tidspunkt = jobbScheduler.hentTidspunktNesteKjoring();
             if (tidspunkt.isEmpty()) {
-                return ResponseEntity.internalServerError().body(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
             }
         }
 
@@ -80,7 +80,7 @@ public class JobbController {
             String jsonRespons = mapper.writeValueAsString(statusRespons);
             return ResponseEntity.ok(jsonRespons);
         } catch (JsonProcessingException e) {
-            return ResponseEntity.internalServerError().body(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
@@ -92,7 +92,7 @@ public class JobbController {
     public ResponseEntity<String> stopp() {
 
         if (!jobbScheduler.stoppScheduler()){
-            return ResponseEntity.internalServerError().body(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         } else {
             return ResponseEntity.ok("Deaktivering av scheduler var vellykket");
         }

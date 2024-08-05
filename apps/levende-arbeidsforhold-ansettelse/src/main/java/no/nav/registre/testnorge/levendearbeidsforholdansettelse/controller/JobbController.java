@@ -8,8 +8,10 @@ import no.nav.registre.testnorge.levendearbeidsforholdansettelse.entity.JobbPara
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.service.AnsettelseService;
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.service.JobbService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,14 +37,14 @@ public class JobbController {
             return ResponseEntity.ok(jobbService.hentAlleParametere());
         }
         catch (Exception e){
-            return ResponseEntity.status(HttpStatusCode.valueOf(Integer.parseInt(String.valueOf(e)))).body(null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
     /**
      * Endepunktet som testnav-levende-arbeidsforhold-scheduler sender spørring til for å
      * starte jobb.
-     * @return
+     * @return 200 OK hvis ansettelses jobben var vellykket
      */
     @GetMapping("/ansettelse-jobb")
     public ResponseEntity<String> ansettelseJobb(){
@@ -50,7 +52,7 @@ public class JobbController {
             ansettelseService.runAnsettelseService();
             return ResponseEntity.ok("Kjørte ansettelse-service");
         } catch (Exception e){
-            return ResponseEntity.status(HttpStatusCode.valueOf(Integer.parseInt(String.valueOf(e)))).body(null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
@@ -69,7 +71,7 @@ public class JobbController {
             jobbParameter.setVerdi(verdi);
             return ResponseEntity.ok(jobbService.updateVerdi(jobbParameter));
         } catch (Exception e){
-            return ResponseEntity.status(HttpStatusCode.valueOf(Integer.parseInt(String.valueOf(e)))).body(null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 }
