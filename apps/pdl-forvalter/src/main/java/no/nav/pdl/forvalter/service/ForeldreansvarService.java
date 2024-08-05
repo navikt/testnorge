@@ -184,7 +184,7 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
         }
     }
 
-    public void validateBarn(ForeldreansvarDTO foreldreansvar, PersonDTO barn) {
+    private void validateBarn(ForeldreansvarDTO foreldreansvar, PersonDTO barn) {
 
         if ((foreldreansvar.getAnsvar() == Ansvar.MOR || foreldreansvar.getAnsvar() == Ansvar.MEDMOR) &&
                 isNull(foreldreansvar.getAnsvarlig()) && isNull(foreldreansvar.getAnsvarligUtenIdentifikator()) &&
