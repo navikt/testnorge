@@ -15,6 +15,8 @@ import reactor.core.publisher.Flux;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.util.Objects.nonNull;
+
 @Service
 @RequiredArgsConstructor
 public class SkattekortClient implements ClientRegister {
@@ -28,6 +30,7 @@ public class SkattekortClient implements ClientRegister {
                                           BestillingProgress progress, boolean isOpprettEndre) {
 
         return Flux.just(bestilling)
+                .filter(bestilling1 -> nonNull(bestilling1.getSkattekort()))
                 .map(bestilling1 -> mapperFacade.map(bestilling1.getSkattekort(), SkattekortRequestDTO.class))
                 .doOnNext(skattekort ->
                         skattekort.getArbeidsgiver()
