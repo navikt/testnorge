@@ -14,9 +14,10 @@ import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding;
 import no.nav.dolly.mapper.MappingStrategy;
 import no.nav.testnav.libs.data.arbeidsplassencv.v1.ArbeidsplassenCVDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
-import no.nav.testnav.libs.dto.skattekortservice.v1.Arbeidsgiver;
 import no.nav.testnav.libs.dto.skattekortservice.v1.SkattekortRequestDTO;
 import org.springframework.stereotype.Component;
+
+import static java.util.Objects.isNull;
 
 @Component
 public class DollyRequest2MalBestillingMappingStrategy implements MappingStrategy {
@@ -41,7 +42,6 @@ public class DollyRequest2MalBestillingMappingStrategy implements MappingStrateg
                 .field("pensjonforvalter", "pensjonforvalter")
                 .field("sigrunstub", "sigrunstub")
                 .field("sigrunstubPensjonsgivende", "sigrunstubPensjonsgivende")
-                .field("skattekort", "skattekort")
                 .field("skjerming", "skjerming")
                 .field("sykemelding", "sykemelding")
                 .field("tpsMessaging", "tpsMessaging")
@@ -56,17 +56,12 @@ public class DollyRequest2MalBestillingMappingStrategy implements MappingStrateg
                         akkumulert.getInstdata().addAll(request.getInstdata());
                         akkumulert.getSigrunstub().addAll(request.getSigrunstub());
                         akkumulert.getSigrunstubPensjonsgivende().addAll(request.getSigrunstubPensjonsgivende());
-                    }
-                })
-                .register();
-
-        factory.classMap(Arbeidsgiver.class, Arbeidsgiver.class)
-                .mapNulls(false)
-                .field("arbeidsgiveridentifikator", "arbeidsgiveridentifikator")
-                .customize(new CustomMapper<>() {
-                    @Override
-                    public void mapAtoB(Arbeidsgiver arbeidsgiver, Arbeidsgiver akkumulert, MappingContext context) {
-                        akkumulert.getArbeidstaker().addAll(arbeidsgiver.getArbeidstaker());
+                        if (isNull(akkumulert.getSkattekort())) {
+                            akkumulert.setSkattekort(request.getSkattekort());
+                        } else {
+                            akkumulert.getSkattekort().getArbeidsgiverSkatt()
+                                    .addAll(request.getSkattekort().getArbeidsgiverSkatt());
+                        }
                     }
                 })
                 .register();
