@@ -55,12 +55,12 @@ consumers:
     namespace: dolly
     name: testnav-pdl-proxy
   testnav-kodeverk-service:
-    url: http://testnav-kodeverk-service.intern.dev.nav.no
+    url: http://testnav-kodeverk-service.dolly.svc.cluster.local
     name: testnav-kodeverk-service
     cluster: dev-gcp
     namespace: dolly
   testnav-tenor-search-service:
-    url: http://testnav-tenor-search-service.intern.dev.nav.no
+    url: http://testnav-tenor-search-service.dolly.svc.cluster.local
     name: testnav-tenor-search-service
     cluster: dev-gcp
     namespace: dolly
