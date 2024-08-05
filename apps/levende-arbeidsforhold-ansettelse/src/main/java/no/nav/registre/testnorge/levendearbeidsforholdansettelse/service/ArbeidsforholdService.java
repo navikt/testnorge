@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
@@ -44,7 +45,7 @@ public class ArbeidsforholdService {
      * @param stillingsprosent Stillinsprosenten arbeidsforholdet skal ha
      * @return HttpStatusCode basert på resultatet av spørringen
      */
-    public HttpStatusCode opprettArbeidsforhold(String ident, String orgnummer, String yrke, String stillingsprosent) {
+    public Optional<HttpStatusCode> opprettArbeidsforhold(String ident, String orgnummer, String yrke, String stillingsprosent) {
         return aaregConsumer.opprettArbeidsforhold(lagArbeidsforhold(ident, orgnummer, yrke, stillingsprosent));
     }
 

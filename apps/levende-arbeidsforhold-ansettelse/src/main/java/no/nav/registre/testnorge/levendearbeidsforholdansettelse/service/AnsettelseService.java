@@ -126,10 +126,11 @@ public class AnsettelseService  {
 
                             //Try-catch fordi vi møtte på problemer der noen org ikke fikk suksessfulle ansettelser
                             try {
-                                if (ansettPerson(tilfeldigPerson.getIdent(),
+                                var ansettSporring = ansettPerson(tilfeldigPerson.getIdent(),
                                         organisasjon.getOrganisasjonsnummer(),
                                         tilfeldigYrke,
-                                        parametere.get(JobbParameterNavn.STILLINGSPROSENT.value)).is2xxSuccessful()) {
+                                        parametere.get(JobbParameterNavn.STILLINGSPROSENT.value));
+                                if (ansettSporring.isPresent() && ansettSporring.get().is2xxSuccessful()) {
                                     ansattePersoner.add(tilfeldigPerson);
 
                                     if (aldersspennIterator.hasNext()) {
@@ -193,7 +194,7 @@ public class AnsettelseService  {
         return true;
     }
 
-    private HttpStatusCode ansettPerson(String ident, String orgnummer, String yrke, String stillingsprosent) {
+    private Optional<HttpStatusCode> ansettPerson(String ident, String orgnummer, String yrke, String stillingsprosent) {
         return arbeidsforholdService.opprettArbeidsforhold(ident, orgnummer, yrke, stillingsprosent);
     }
 

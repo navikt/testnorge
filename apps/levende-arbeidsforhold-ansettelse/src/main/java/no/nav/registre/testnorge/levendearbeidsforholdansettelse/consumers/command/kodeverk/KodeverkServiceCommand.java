@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
@@ -30,9 +31,11 @@ public class KodeverkServiceCommand implements Callable<Map<String, String>>{
                 .block();
         try {
             ObjectMapper mapper = new ObjectMapper();
-            Map<String, String> map = mapper.convertValue(node.get("kodeverk"), new TypeReference<Map<String, String>>() {
-            });
-            return map;
+            if (node != null){
+                return mapper.convertValue(node.get("kodeverk"), new TypeReference<Map<String, String>>(){});
+            } else {
+                return Collections.emptyMap();
+            }
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             return null;

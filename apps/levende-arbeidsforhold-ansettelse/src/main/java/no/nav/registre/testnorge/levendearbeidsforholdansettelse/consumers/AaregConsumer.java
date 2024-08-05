@@ -8,6 +8,7 @@ import no.nav.registre.testnorge.levendearbeidsforholdansettelse.consumers.comma
 import no.nav.registre.testnorge.levendearbeidsforholdansettelse.domain.arbeidsforhold.Arbeidsforhold;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
@@ -18,6 +19,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.Objects.nonNull;
 
@@ -58,24 +60,22 @@ public class AaregConsumer {
     }
 
     public List<Arbeidsforhold> hentArbeidsforhold(String ident) {
-        var token = tokenExchange.exchange(serverProperties).block();
-        if (nonNull(token)) {
-            return new HentArbeidsforholdCommand(webClient, token.getTokenValue(), ident).call();
-            //return new HentArbeidsforholdCommand(webClient, token.getTokenValue(), ident).call();
+        var accessToken = tokenExchange.exchange(serverProperties).block();
+        if (accessToken != null) {
+            return new HentArbeidsforholdCommand(webClient, accessToken.getTokenValue(), ident).call();
+        } else {
+            return new ArrayList<>();
         }
-        return new ArrayList<>();
     }
 
-    public HttpStatusCode opprettArbeidsforhold(Arbeidsforhold requests) {
-        //var token = tokenExchange.exchange(serverProperties).block();
-
-        return new OpprettArbeidsforholdCommand(webClient,
-                requests,
-                tokenExchange
-                        .exchange(serverProperties)
-                        .block()
-                        .getTokenValue())
-                .call().getStatusCode();
+    public Optional<HttpStatusCode> opprettArbeidsforhold(Arbeidsforhold requests) {
+        var accessToken = tokenExchange.exchange(serverProperties).block();
+        if (accessToken != null){
+            return Optional.of(new OpprettArbeidsforholdCommand(webClient, requests, accessToken.getTokenValue())
+                    .call().getStatusCode());
+        } else {
+            return Optional.empty();
+        }
     }
 }
 

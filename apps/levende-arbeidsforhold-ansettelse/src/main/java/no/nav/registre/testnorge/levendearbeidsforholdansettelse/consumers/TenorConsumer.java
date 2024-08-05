@@ -59,20 +59,20 @@ public class TenorConsumer {
     public TenorOversiktOrganisasjonResponse hentOrganisasjonerOversikt(TenorOrganisasjonRequest tenorOrgRequest, String antallOrganisasjoner) {
         var accessToken = tokenExchange.exchange(serverProperties).block();
 
-        if (nonNull(accessToken)) {
-            var token = accessToken.getTokenValue();
-            return new HentOrganisasjonerOversiktCommand(webClient, token, tenorOrgRequest, antallOrganisasjoner).call();
+        if (accessToken != null) {
+            return new HentOrganisasjonerOversiktCommand(webClient, accessToken.getTokenValue(), tenorOrgRequest, antallOrganisasjoner).call();
+        } else {
+            return new TenorOversiktOrganisasjonResponse();
         }
-        return new TenorOversiktOrganisasjonResponse();
     }
 
     public TenorOversiktOrganisasjonResponse hentOrganisasjon(TenorOrganisasjonRequest tenorOrgRequest) {
         var accessToken = tokenExchange.exchange(serverProperties).block();
 
-        if (nonNull(accessToken)) {
-            var token = accessToken.getTokenValue();
-            return new HentOrganisasjonCommand(webClient, token, tenorOrgRequest).call();
+        if (accessToken != null) {
+            return new HentOrganisasjonCommand(webClient, accessToken.getTokenValue(), tenorOrgRequest).call();
+        } else {
+            return new TenorOversiktOrganisasjonResponse();
         }
-        return new TenorOversiktOrganisasjonResponse();
     }
 }

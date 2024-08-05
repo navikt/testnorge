@@ -10,6 +10,7 @@ import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -36,14 +37,23 @@ public class KodeverkServiceConsumer {
     }
 
     public Map<String, String> hentKodeverk(String kodeverk) {
+
         var accessToken = tokenExchange.exchange(serverProperties).block();
-        return new KodeverkServiceCommand(webClient, accessToken.getTokenValue(), kodeverk).call();
+        if (accessToken != null){
+            return new KodeverkServiceCommand(webClient, accessToken.getTokenValue(), kodeverk).call();
+        } else {
+            return Collections.emptyMap();
+        }
 
     }
 
     public List<String> hentKodeverkListe(String kodeverk){
         var accessToken = tokenExchange.exchange(serverProperties).block();
-        Map<String, String> koder = new KodeverkServiceCommand(webClient, accessToken.getTokenValue(), kodeverk).call();
-        return new ArrayList<>(koder.keySet());
+        if (accessToken != null){
+            Map<String, String> koder = new KodeverkServiceCommand(webClient, accessToken.getTokenValue(), kodeverk).call();
+            return new ArrayList<>(koder.keySet());
+        } else {
+            return Collections.emptyList();
+        }
     }
 }

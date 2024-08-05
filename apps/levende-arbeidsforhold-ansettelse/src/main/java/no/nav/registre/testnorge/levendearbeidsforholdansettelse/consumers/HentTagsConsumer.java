@@ -51,7 +51,11 @@ public class HentTagsConsumer {
     }
 
     public TagsDTO hentTags(List<String> identer)  {
-        var token = tokenService.exchange(serverProperties).block();
-        return new HentTagsCommand(webClient, token.getTokenValue(), identer).call();
+        var accessToken = tokenService.exchange(serverProperties).block();
+        if (accessToken != null){
+            return new HentTagsCommand(webClient, accessToken.getTokenValue(), identer).call();
+        } else {
+            return new TagsDTO();
+        }
     }
 }
