@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import no.nav.testnav.libs.dto.skattekortservice.v1.Arbeidsgiver;
+import no.nav.testnav.libs.dto.skattekortservice.v1.ArbeidsgiverSkatt;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,9 +17,9 @@ import static java.util.Objects.isNull;
 @AllArgsConstructor
 public class SkattekortRequestDTO {
 
-    private List<Arbeidsgiver> arbeidsgiverSkatt;
+    private List<ArbeidsgiverSkatt> arbeidsgiverSkatt;
 
-    public List<Arbeidsgiver> getArbeidsgiverSkatt() {
+    public List<ArbeidsgiverSkatt> getArbeidsgiverSkatt() {
 
         if (isNull(arbeidsgiverSkatt)) {
 

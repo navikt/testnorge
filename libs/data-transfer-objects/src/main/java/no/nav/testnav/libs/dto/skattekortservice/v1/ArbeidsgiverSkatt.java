@@ -14,7 +14,7 @@ import static java.util.Objects.isNull;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Arbeidsgiver {
+public class ArbeidsgiverSkatt {
 
     private IdentifikatorForEnhetEllerPerson arbeidsgiveridentifikator;
     private List<Skattekortmelding> arbeidstaker;
