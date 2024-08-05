@@ -10,6 +10,8 @@ includeBuild '../../libs/servlet-core'
 includeBuild '../../libs/reactive-core'
 includeBuild '../../libs/commands'
 includeBuild '../../libs/data-transfer-objects'
+includeBuild '../../libs/servlet-security'
+includeBuild '../../libs/servlet-insecure-security'
 includeBuild '../../libs/testing'
 includeBuild '../../.github/workflows'
 
