@@ -45,7 +45,7 @@ public class JobbController {
      * @return 200 OK hvis ansettelses jobben var vellykket
      */
     @GetMapping("/ansettelse-jobb")
-    @Operation(description = "Endepunktet for å starte en jobb")
+    @Operation(description = "Starter en ansettelse jobb hvor x antall personer blir ansatt i x antall bedrifter")
     public ResponseEntity<String> ansettelseJobb(){
         try {
             ansettelseService.runAnsettelseService();
