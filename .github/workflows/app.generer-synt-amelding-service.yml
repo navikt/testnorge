@@ -3,13 +3,14 @@ name: generer-synt-amelding-service
 on:
   push:
     paths:
-      - libs/domain
-      - libs/reactive-core
-      - libs/security-core
-      - libs/servlet-core
-      - libs/servlet-security
-      - apps/generer-synt-amelding-service/**
-      - .github/workflows/app.generer-synt-amelding-service.yml
+      - "plugins/**"
+      - "libs/domain/**"
+      - "libs/reactive-core/**"
+      - "libs/security-core/**"
+      - "libs/servlet-core/**"
+      - "libs/servlet-security/**"
+      - "apps/generer-synt-amelding-service/**"
+      - ".github/workflows/app.generer-synt-amelding-service.yml"
 
 jobs:
   workflow:

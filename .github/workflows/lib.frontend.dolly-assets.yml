@@ -3,8 +3,9 @@ name: dolly-assets
 on:
   push:
     paths:
-      - navikt/dolly-assets/**
-      - .github/workflows/lib.frontend.dolly-assets.yml
+      - "plugins/**"
+      - "navikt/dolly-assets/**"
+      - ".github/workflows/lib.frontend.dolly-assets.yml"
 
 jobs:
   workflow:

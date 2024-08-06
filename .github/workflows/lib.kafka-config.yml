@@ -3,8 +3,9 @@ name: kafka-config
 on:
   push:
     paths:
-      - libs/kafka-config/**
-      - .github/workflows/lib.kafka-config.yml
+      - "plugins/**"
+      - "libs/kafka-config/**"
+      - ".github/workflows/lib.kafka-config.yml"
 
 jobs:
   workflow:

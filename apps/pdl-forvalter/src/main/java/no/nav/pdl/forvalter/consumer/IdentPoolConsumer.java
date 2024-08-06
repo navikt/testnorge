@@ -54,7 +54,8 @@ public class IdentPoolConsumer {
 
         return tokenExchange.exchange(serverProperties)
                 .flatMap(token -> new IdentpoolPostCommand(webClient, RELEASE_IDENTS_URL, REKVIRERT_AV + bruker, identer,
-                        token.getTokenValue()).call());
+                        token.getTokenValue()).call())
+                .doOnNext(resultat -> log.info("Slettet identer mot identpool: {}", String.join(",", identer)));
     }
 
     public Flux<IdentpoolLedigDTO> getErLedig(Set<String> identer) {

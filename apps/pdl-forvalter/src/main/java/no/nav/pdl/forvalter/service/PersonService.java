@@ -152,10 +152,11 @@ public class PersonService {
                                 .map(ForeldreansvarDTO::getAnsvarlig)
                                 .toList())
                 .flatMap(Collection::stream)
+                .filter(Objects::nonNull)
                 .collect(Collectors.toSet());
 
         pdlTestdataConsumer.delete(identer).block();
-        identPoolConsumer.releaseIdents( identer.stream()
+        identPoolConsumer.releaseIdents(identer.stream()
                 .filter(id -> !identerSomIkkeSkalSlettesFraIdentpool.contains(id))
                 .collect(Collectors.toSet()), Bruker.PDLF).block();
 

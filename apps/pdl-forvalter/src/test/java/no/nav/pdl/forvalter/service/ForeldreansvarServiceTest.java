@@ -2,12 +2,12 @@ package no.nav.pdl.forvalter.service;
 
 import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
-import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.ForeldreansvarDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.ForeldreansvarDTO.Ansvar;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.PersonnavnDTO;
 import no.nav.testnav.libs.data.pdlforvalter.v1.RelatertBiPersonDTO;
+import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,7 +23,8 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class ForeldreansvarServiceTest {
 
-    private static final String IDENT_ANDRE = "12345678901";
+    private static final String IDENT_HOVEDPERSON = "23510001234";
+    private static final String IDENT_ANDRE = "12435678901";
     private static final String ETTERNAVN = "TUBA";
 
     @Mock
@@ -105,7 +106,7 @@ class ForeldreansvarServiceTest {
                 foreldreansvarService.validate(request, new PersonDTO()));
 
         assertThat(exception.getMessage(),
-                containsString(String.format("Foreldreansvar: Navn er ikke i liste over gyldige verdier", IDENT_ANDRE)));
+                containsString("Foreldreansvar: Navn er ikke i liste over gyldige verdier"));
     }
 
     @Test
@@ -131,11 +132,11 @@ class ForeldreansvarServiceTest {
                 foreldreansvarService.validate(request, new PersonDTO()));
 
         assertThat(exception.getMessage(),
-                containsString(String.format("Foreldreansvar: Navn er ikke i liste over gyldige verdier", IDENT_ANDRE)));
+                containsString("Foreldreansvar: Navn er ikke i liste over gyldige verdier"));
     }
 
     @Test
-    void whenAnsvarIsMorANdForeldreBarnRelationExcludesMor_thenThrowExecption() {
+    void whenAnsvarIsMorAndForeldreBarnRelationExcludesMor_thenThrowExecption() {
 
         var request = ForeldreansvarDTO.builder()
                 .ansvar(Ansvar.MOR)
@@ -143,7 +144,10 @@ class ForeldreansvarServiceTest {
                 .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                foreldreansvarService.validate(request, new PersonDTO()));
+                foreldreansvarService.validate(request, PersonDTO.builder()
+                        .ident(IDENT_HOVEDPERSON)
+                        .build()
+                ));
 
         assertThat(exception.getMessage(),
                 containsString("Foreldreansvar: barn mangler / barnets foreldrerelasjon til mor ikke funnet"));
@@ -158,7 +162,10 @@ class ForeldreansvarServiceTest {
                 .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                foreldreansvarService.validate(request, new PersonDTO()));
+                foreldreansvarService.validate(request, PersonDTO.builder()
+                                .ident(IDENT_HOVEDPERSON)
+                                .build()
+                ));
 
         assertThat(exception.getMessage(),
                 containsString("Foreldreansvar: barn mangler / barnets foreldrerelasjon til far ikke funnet"));
@@ -173,7 +180,10 @@ class ForeldreansvarServiceTest {
                 .build();
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                foreldreansvarService.validate(request, new PersonDTO()));
+                foreldreansvarService.validate(request, PersonDTO.builder()
+                                .ident(IDENT_HOVEDPERSON)
+                                .build()
+                ));
 
         assertThat(exception.getMessage(),
                 containsString("Foreldreansvar: barn mangler / barnets foreldrerelasjon til mor og/eller far ikke funnet"));

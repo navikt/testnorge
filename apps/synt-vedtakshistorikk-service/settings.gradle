@@ -4,13 +4,14 @@ plugins {
 
 rootProject.name = 'synt-vedtakshistorikk-service'
 
+includeBuild "../../plugins/java"
 
-includeBuild '../../libs/servlet-core'
-includeBuild '../../libs/servlet-security'
-includeBuild '../../libs/servlet-insecure-security'
+includeBuild '../../libs/data-transfer-objects'
 includeBuild '../../libs/domain'
 includeBuild '../../libs/security-core'
-includeBuild '../../libs/data-transfer-objects'
+includeBuild '../../libs/servlet-core'
+includeBuild '../../libs/servlet-insecure-security'
+includeBuild '../../libs/servlet-security'
 
 develocity {
     buildScan {

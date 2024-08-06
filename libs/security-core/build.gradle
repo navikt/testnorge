@@ -1,42 +1,11 @@
 plugins {
-    id "org.sonarqube" version "5.0.0.4638"
-    id 'java-library'
-    id 'io.spring.dependency-management' version "1.1.5"
-    id "jacoco"
+    id "dolly-libs"
 }
 
 sonarqube {
     properties {
-        property "sonar.dynamicAnalysis", "reuseReports"
-        property "sonar.host.url", "https://sonarcloud.io"
-        property "sonar.java.coveragePlugin", "jacoco"
-        property "sonar.language", "java"
-        property "sonar.token", System.getenv("SONAR_TOKEN")
-        property "sonar.organization", "navikt"
-        property "sonar.project.monorepo.enabled", true
         property "sonar.projectKey", "testnav-security-core"
         property "sonar.projectName", "testnav-security-core"
-        property "sonar.sourceEncoding", "UTF-8"
-    }
-}
-
-dependencyManagement {
-    applyMavenExclusions = false
-    imports {
-        mavenBom 'org.springframework.boot:spring-boot-dependencies:3.2.1'
-    }
-}
-
-group = 'no.nav.testnav.libs'
-
-repositories {
-    mavenCentral()
-    mavenLocal()
-}
-
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
     }
 }
 
@@ -45,15 +14,9 @@ tasks.named('compileJava') {
 }
 
 dependencies {
-    implementation 'com.auth0:java-jwt:4.4.0'
+    implementation "com.auth0:java-jwt:$versions.jwt"
 
-    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-
-    annotationProcessor 'org.projectlombok:lombok'
-    implementation 'org.projectlombok:lombok'
-    testAnnotationProcessor 'org.projectlombok:lombok'
 }

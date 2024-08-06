@@ -3,8 +3,9 @@ name: security-core
 on:
   push:
     paths:
-      - libs/security-core/**
-      - .github/workflows/lib.security-core.yml
+      - "plugins/**"
+      - "libs/security-core/**"
+      - ".github/workflows/lib.security-core.yml"
 
 jobs:
   workflow:

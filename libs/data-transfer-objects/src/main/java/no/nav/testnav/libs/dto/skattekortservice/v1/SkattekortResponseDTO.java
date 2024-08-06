@@ -18,10 +18,10 @@ public class SkattekortResponseDTO {
 
     private String ident;
     private String inntektsaar;
-    private List<Arbeidsgiver> arbeidsgiver;
+    private List<ArbeidsgiverSkatt> arbeidsgiver;
     private String skattekortXml;
 
-    public List<Arbeidsgiver> getArbeidsgiver() {
+    public List<ArbeidsgiverSkatt> getArbeidsgiver() {
 
         if (isNull(arbeidsgiver)) {
             arbeidsgiver = new ArrayList<>();

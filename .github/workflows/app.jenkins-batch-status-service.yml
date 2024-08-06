@@ -3,14 +3,15 @@ name: jenkins-batch-status-service
 on:
   push:
     paths:
-      - libs/commands
-      - libs/data-transfer-objects
-      - libs/reactive-core
-      - libs/security-core
-      - libs/servlet-core
-      - libs/servlet-security
-      - apps/jenkins-batch-status-service/**
-      - .github/workflows/app.jenkins-batch-status-service.yml
+      - "plugins/**"
+      - "libs/commands/**"
+      - "libs/data-transfer-objects/**"
+      - "libs/reactive-core/**"
+      - "libs/security-core/**"
+      - "libs/servlet-core/**"
+      - "libs/servlet-security/**"
+      - "apps/jenkins-batch-status-service/**"
+      - ".github/workflows/app.jenkins-batch-status-service.yml"
 
 jobs:
   workflow:
