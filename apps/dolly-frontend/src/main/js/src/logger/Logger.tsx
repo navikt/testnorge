@@ -6,7 +6,7 @@ const log = (event: object | undefined) => {
 	Api.fetch(
 		`/api/dolly-logg`,
 		{ method: 'POST', headers: { 'Content-Type': 'application/json' } },
-		event
+		event,
 	)
 }
 
@@ -17,7 +17,7 @@ const logger = (
 	uuid: any,
 	rating?: undefined,
 	isAnonym?: undefined,
-	brukerType?: undefined
+	brukerType?: undefined,
 ) => {
 	log({
 		event: event,
@@ -37,6 +37,6 @@ export const Logger = {
 		logger('INFO', event, message, uuid, rating, isAnonym, brukerType),
 	warn: ({ event, message, uuid, rating }) =>
 		logger('WARNING', event, message, uuid, rating, undefined, undefined),
-	error: ({ event, message, uuid, rating }) =>
+	error: ({ event, message, uuid, rating = undefined }) =>
 		logger('ERROR', event, message, uuid, rating, undefined, undefined),
 }
