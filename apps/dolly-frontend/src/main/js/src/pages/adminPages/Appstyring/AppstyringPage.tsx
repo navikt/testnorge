@@ -70,7 +70,6 @@ export default () => {
 			}, 200)
 		}).catch(feilHandtering);
 	}
-
 	/**
 	 * Funksjon som sender spørring til scheduler appen sitt API for å hente ut status på om scheduleren er aktiv
 	 * eller ikke
