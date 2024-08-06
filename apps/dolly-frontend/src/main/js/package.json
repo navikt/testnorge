@@ -65,7 +65,6 @@
     "@playwright/test": "^1.44.1",
     "@redux-devtools/extension": "^3.3.0",
     "@reduxjs/toolkit": "^2.2.1",
-    "@rollup/rollup-darwin-arm64": "^4.20.0",
     "@types/lodash": "^4.14.182",
     "@types/node": "^22.1.0",
     "@types/react": "^18.2.22",
