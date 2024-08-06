@@ -1,7 +1,7 @@
 package no.nav.levendearbeidsforholdscheduler.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.levendearbeidsforholdscheduler.domain.StatusRespons;
@@ -31,7 +31,8 @@ public class JobbController {
      * @return respons til klienten for den tilsvarende spørringen
      */
     @GetMapping(value = {"", "/start"})
-    public ResponseEntity<String> reschedule(@RequestParam String intervall) {
+    @Operation(description = "Starter scheduleren med en forsinkelse av et gitt intervall på x antall timer")
+    public ResponseEntity<String> reschedule(@Schema(description = "Positivt heltall for å representere times-intervall") @RequestParam String intervall) {
 
         if (intervall == null) {
             return ResponseEntity.badRequest().body("intervall er ikke spesifisert");
@@ -52,17 +53,17 @@ public class JobbController {
 
     /**
      * Request handler funksjon som returnerer status på om scheduler kjører for øyeblikket og eventuelt tidspunktet
-     * for neste gang scheduleren skal kjøre
+     * for neste gang scheduleren skal kjøre ansettelses-jobben
      * @return 200 OK, med status- og tidspunkt data på JSON format i response body
      */
     @GetMapping(value = "/status", produces = "application/json")
-    public ResponseEntity<String> status() {
+    @Operation(description = "Henter statusen på om scheduleren er aktiv eller ikke. Dersom den er aktiv, vil den også returnere tidspunktet for neste gang scheduleren skal kjøre ansettelse jobben")
+    public ResponseEntity<StatusRespons> status() {
 
         var tidspunkt = Optional.of("");
 
         boolean status = jobbScheduler.hentStatusKjorer();
 
-        ObjectMapper mapper = new ObjectMapper();
         StatusRespons statusRespons = new StatusRespons();
 
         statusRespons.setStatus(status);
@@ -76,12 +77,7 @@ public class JobbController {
 
         statusRespons.setNesteKjoring(tidspunkt.get());
 
-        try {
-            String jsonRespons = mapper.writeValueAsString(statusRespons);
-            return ResponseEntity.ok(jsonRespons);
-        } catch (JsonProcessingException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
+        return ResponseEntity.ok(statusRespons);
     }
 
     /**
@@ -89,6 +85,7 @@ public class JobbController {
      * @return true hvis kanselleringen var vellykket
      */
     @GetMapping(value = "/stopp")
+    @Operation(description = "Stopper scheduleren dersom den er aktiv")
     public ResponseEntity<String> stopp() {
 
         if (!jobbScheduler.stoppScheduler()){
