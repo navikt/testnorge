@@ -21,11 +21,19 @@ const DataVisning = ({ data, miljo }) => {
 	)?.label
 
 	const { vedtakData } = usePensjonVedtak(data?.fnr, miljo)
+	console.log('vedtakData', vedtakData)
 
 	return (
 		<>
 			<div className="person-visning_content">
-				<TitleValue title="Vedtaksstatus" value={vedtakData?.[0]?.vedtakStatus} />
+				<TitleValue
+					title="Vedtaksstatus"
+					value={
+						vedtakData?.[0]?.vedtakStatus !== 'FEILET'
+							? vedtakData?.[0]?.vedtakStatus
+							: vedtakData?.[0]?.sisteOppdatering
+					}
+				/>
 				<TitleValue title="Krav fremsatt dato" value={formatDate(data?.kravFremsattDato)} />
 				<TitleValue title="Iverksettelsesdato" value={formatDate(data?.iverksettelsesdato)} />
 				<TitleValue title="Saksbehandler" value={data?.saksbehandler} />
