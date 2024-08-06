@@ -11,6 +11,6 @@ public class SchedulerConfig {
 
     @Bean
     public ScheduledExecutorService taskScheduler() {
-        return Executors.newScheduledThreadPool(4);
+        return Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
     }
 }
