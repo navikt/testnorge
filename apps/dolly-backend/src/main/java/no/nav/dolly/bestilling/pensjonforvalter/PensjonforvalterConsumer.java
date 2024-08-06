@@ -7,6 +7,7 @@ import no.nav.dolly.bestilling.pensjonforvalter.command.AnnullerSamboerCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.HentMiljoerCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.HentSamboerCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.LagreAlderspensjonCommand;
+import no.nav.dolly.bestilling.pensjonforvalter.command.LagrePensjonsavtaleCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.LagrePoppInntektCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.LagreSamboerCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.LagreTpForholdCommand;
@@ -23,6 +24,7 @@ import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpForholdRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpYtelseRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonUforetrygdRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonsavtaleRequest;
 import no.nav.dolly.config.Consumers;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
@@ -146,6 +148,13 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
 
         return tokenService.exchange(serverProperties)
                 .flatMapMany(token -> new LagreTpYtelseCommand(webClient, token.getTokenValue(), pensjonTpYtelseRequest).call());
+    }
+
+    @Timed(name = "providers", tags = { "operation", "pen_lagreTpYtelse" })
+    public Flux<PensjonforvalterResponse> lagrePensjonsavtale(PensjonsavtaleRequest pensjonsavtaleRequest) {
+
+        return tokenService.exchange(serverProperties)
+                .flatMapMany(token -> new LagrePensjonsavtaleCommand(webClient, pensjonsavtaleRequest, token.getTokenValue()).call());
     }
 
     @Override

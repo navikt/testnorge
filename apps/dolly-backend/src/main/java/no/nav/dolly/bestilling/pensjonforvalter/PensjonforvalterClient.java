@@ -21,6 +21,7 @@ import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpForholdRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpYtelseRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonUforetrygdRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonsavtaleRequest;
 import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.consumer.norg2.Norg2Consumer;
 import no.nav.dolly.consumer.norg2.dto.Norg2EnhetResponse;
@@ -83,6 +84,7 @@ public class PensjonforvalterClient implements ClientRegister {
     private static final String TP_FORHOLD = "TpForhold#";
     private static final String PEN_ALDERSPENSJON = "AP#";
     private static final String PEN_UFORETRYGD = "Ufoer#";
+    private static final String PEN_PENSJONSAVTALE = "Pensjonsavtale#";
     private static final String PERIODE = "/periode/";
 
     private final PensjonforvalterConsumer pensjonforvalterConsumer;
@@ -154,7 +156,10 @@ public class PensjonforvalterClient implements ClientRegister {
                                                                             .map(response -> POPP_INNTEKTSREGISTER + decodeStatus(response, dollyPerson.getIdent())),
 
                                                                     lagreTpForhold(pensjon, dollyPerson.getIdent(), bestilteMiljoer.get())
-                                                                            .map(response -> TP_FORHOLD + decodeStatus(response, dollyPerson.getIdent()))
+                                                                            .map(response -> TP_FORHOLD + decodeStatus(response, dollyPerson.getIdent())),
+
+                                                                    lagrePensjonsavtale(pensjon, dollyPerson.getIdent(), bestilteMiljoer.get())
+                                                                    .map(response -> PEN_PENSJONSAVTALE + decodeStatus(response, dollyPerson.getIdent()))
                                                             )
                                                             .collectList()
                                                             .doOnNext(statusResultat::addAll)
@@ -488,6 +493,22 @@ public class PensjonforvalterClient implements ClientRegister {
                 .collectList()
                 .filter(resultat -> !resultat.isEmpty())
                 .map(PensjonforvalterClient::mergePensjonforvalterResponses);
+    }
+
+    private Flux<PensjonforvalterResponse>lagrePensjonsavtale(PensjonData pensjon, String ident, Set<String> miljoer) {
+
+        return Flux.just(pensjon)
+                .filter(PensjonData::hasPensjonsavtale)
+                .map(PensjonData::getPensjonsavtale)
+                .flatMap(pensjonsavtale -> {
+
+                    var context = MappingContextUtils.getMappingContext();
+                    context.setProperty(IDENT, ident);
+                    context.setProperty(MILJOER, miljoer);
+
+                    var pensjonsavtaleRequest = mapperFacade.map(pensjonsavtale, PensjonsavtaleRequest.class, context);
+                    return pensjonforvalterConsumer.lagrePensjonsavtale(pensjonsavtaleRequest);
+                });
     }
 
     private String decodeStatus(PensjonforvalterResponse response, String ident) {
