@@ -7,6 +7,11 @@ import Panel from '@/components/ui/panel/Panel'
 import { FormDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { FormSelect } from '@/components/ui/form/inputs/select/Select'
 import { useSkattekortKodeverk } from '@/utils/hooks/useSkattekort'
+import { getYearRangeOptions } from '@/utils/DataFormatter'
+import { subYears } from 'date-fns'
+import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { initialTrekktabell, TrekktypeForm } from '@/components/fagsystem/skattekort/form/Trekktype'
 
 export const initialArbeidsgiverSkatt = {
 	arbeidsgiveridentifikator: {
@@ -15,37 +20,15 @@ export const initialArbeidsgiverSkatt = {
 	},
 	arbeidstaker: [
 		{
-			arbeidstakeridentifikator: '',
-			resultatPaaForespoersel: '',
+			// arbeidstakeridentifikator: '',
+			resultatPaaForespoersel: 'SKATTEKORTOPPLYSNINGER_OK',
 			skattekort: {
 				utstedtDato: '',
-				skattekortidentifikator: null,
-				trekktype: [
-					{
-						forskuddstrekk: {
-							trekkode: '',
-						},
-						frikort: {
-							trekkode: '',
-							frikortbeloep: null,
-						},
-						trekktabell: {
-							trekkode: '',
-							tabelltype: '',
-							tabellnummer: '',
-							prosentsats: null,
-							antallMaanederForTrekk: null,
-						},
-						trekkprosent: {
-							trekkode: '',
-							prosentsats: null,
-							antallMaanederForTrekk: null,
-						},
-					},
-				],
+				skattekortidentifikator: Math.floor(100000 + Math.random() * 900000),
+				trekktype: [initialTrekktabell],
 			},
-			tilleggsopplysning: '',
-			inntektsaar: null,
+			tilleggsopplysning: [''],
+			inntektsaar: new Date().getFullYear(),
 		},
 	],
 }
@@ -56,6 +39,7 @@ export const SkattekortForm = () => {
 	const formMethods = useFormContext()
 
 	const { kodeverk: resultatstatus } = useSkattekortKodeverk('RESULTATSTATUS')
+	const { kodeverk: tilleggsopplysning } = useSkattekortKodeverk('TILLEGGSOPPLYSNING')
 
 	return (
 		<Vis attributt={skattekortAttributt}>
@@ -73,15 +57,42 @@ export const SkattekortForm = () => {
 						canBeEmpty={false}
 					>
 						{(path: string) => (
-							<div className="flexbox--flex-wrap">
-								<FormSelect
-									name={`${path}.arbeidstaker[0].resultatPaaForespoersel`}
-									label="Resultat på forespørsel"
-									options={resultatstatus}
-									size="large"
-									isClearable={false}
+							<>
+								<div className="flexbox--flex-wrap">
+									{/*Arbeidsgiveridentifikator (toggles)*/}
+									<FormSelect
+										name={`${path}.arbeidstaker[0].resultatPaaForespoersel`}
+										label="Resultat på forespørsel"
+										options={resultatstatus}
+										size="large"
+										isClearable={false}
+									/>
+									<FormDatepicker
+										name={`${path}.arbeidstaker[0].skattekort.utstedtDato`}
+										label="Utstedt dato"
+									/>
+									<FormTextInput
+										name={`${path}.arbeidstaker[0].skattekort.skattekortidentifikator`}
+										label="Skattekortidentifikator"
+									/>
+									<FormSelect
+										name={`${path}.arbeidstaker[0].tilleggsopplysning`}
+										label="Tilleggsopplysning"
+										options={tilleggsopplysning}
+										size="large"
+									/>
+									<FormSelect
+										name={`${path}.arbeidstaker[0].inntektsaar`}
+										label="Inntektsår"
+										options={getYearRangeOptions(1968, subYears(new Date(), -5).getFullYear())}
+										isClearable={false}
+									/>
+								</div>
+								<TrekktypeForm
+									formMethods={formMethods}
+									path={`${path}.arbeidstaker[0].skattekort`}
 								/>
-							</div>
+							</>
 						)}
 					</FormDollyFieldArray>
 				</ErrorBoundary>
