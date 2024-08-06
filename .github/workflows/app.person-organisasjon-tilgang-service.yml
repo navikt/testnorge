@@ -4,12 +4,12 @@ on:
   push:
     paths:
       - "plugins/**"
-      - libs/integration-test
-      - libs/reactive-core
-      - libs/reactive-security
-      - libs/security-core
-      - apps/person-organisasjon-tilgang-service/**
-      - .github/workflows/app.person-organisasjon-tilgang-service.yml
+      - "libs/integration-test/**"
+      - "libs/reactive-core/**"
+      - "libs/reactive-security/**"
+      - "libs/security-core/**"
+      - "apps/person-organisasjon-tilgang-service/**"
+      - ".github/workflows/app.person-organisasjon-tilgang-service.yml"
 
 jobs:
   workflow:

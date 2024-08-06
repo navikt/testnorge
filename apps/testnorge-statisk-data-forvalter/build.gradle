@@ -10,7 +10,7 @@ sonarqube {
 }
 
 dependencies {
-    implementation 'com.google.guava:guava:33.2.0-jre'
+    implementation "com.google.guava:guava:$versions.guava"
 
     implementation 'no.nav.testnav.libs:security-core'
     implementation 'no.nav.testnav.libs:servlet-security'
@@ -24,7 +24,7 @@ dependencies {
     implementation 'no.nav.testnav.libs:csv-converter'
 
     implementation 'org.springframework.kafka:spring-kafka'
-    implementation 'io.confluent:kafka-avro-serializer:7.6.1'
+    implementation "io.confluent:kafka-avro-serializer:$versions.avro"
 
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -34,7 +34,7 @@ dependencies {
 
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
-    implementation 'org.aspectj:aspectjweaver:1.9.22'
+    implementation "org.aspectj:aspectjweaver:$versions.jweaver"
     implementation 'org.postgresql:postgresql'
     implementation 'com.zaxxer:HikariCP'
 
@@ -43,14 +43,14 @@ dependencies {
     implementation 'com.h2database:h2'
    
     implementation 'org.apache.httpcomponents.client5:httpclient5:5.3.1'
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0'
-    implementation 'io.swagger.core.v3:swagger-annotations-jakarta:2.2.21'
-    implementation 'com.squareup.okhttp3:okhttp:4.9.3'
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc"
+    implementation "io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger"
+    implementation "com.squareup.okhttp3:okhttp:$versions.okhttp"
 
     testImplementation 'no.nav.testnav.libs:testing'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
     testImplementation 'org.springframework.security:spring-security-test'
-    testImplementation 'com.squareup.okhttp3:mockwebserver:4.9.3'
+    testImplementation "com.squareup.okhttp3:mockwebserver:$versions.okhttp"
 }
 
 description = 'testnorge-statisk-data-forvalter'

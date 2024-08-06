@@ -27,7 +27,7 @@ publishing {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
-    implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
+    implementation "net.logstash.logback:logstash-logback-encoder:$versions.logback"
 
-    testImplementation 'io.projectreactor:reactor-test:3.6.5'
+    testImplementation "io.projectreactor:reactor-test:$versions.reactorTest"
 }

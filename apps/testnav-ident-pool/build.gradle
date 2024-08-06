@@ -30,15 +30,15 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
     implementation 'org.springframework.retry:spring-retry'
 
-    implementation 'org.aspectj:aspectjweaver'
+    implementation "org.aspectj:aspectjweaver:$versions.jweaver"
 
     implementation 'com.h2database:h2'
 
     implementation 'org.flywaydb:flyway-core'
     implementation 'org.postgresql:postgresql'
-    implementation 'ma.glasnost.orika:orika-core:1.5.4'
+    implementation "ma.glasnost.orika:orika-core:$versions.orika"
 
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0'
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:$versions.springdoc"
 
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
     testImplementation 'org.springframework.security:spring-security-test'

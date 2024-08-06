@@ -4,12 +4,12 @@ on:
   push:
     paths:
       - "plugins/**"
-      - libs/reactive-core
-      - libs/reactive-frontend
-      - libs/reactive-security
-      - libs/security-core
-      - apps/oversikt-frontend/**
-      - .github/workflows/app.oversikt-frontend.yml
+      - "libs/reactive-core/**"
+      - "libs/reactive-frontend/**"
+      - "libs/reactive-security/**"
+      - "libs/security-core/**"
+      - "apps/oversikt-frontend/**"
+      - ".github/workflows/app.oversikt-frontend.yml"
 
 jobs:
   workflow:

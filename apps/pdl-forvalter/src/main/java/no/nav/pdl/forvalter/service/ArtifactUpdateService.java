@@ -308,7 +308,7 @@ public class ArtifactUpdateService {
     public void updateForeldreansvar(String ident, Integer id, ForeldreansvarDTO oppdatertAnsvar) {
 
         var person = getPerson(ident);
-        foreldreansvarService.validateBarn(oppdatertAnsvar, person.getPerson());
+        foreldreansvarService.validate(oppdatertAnsvar, person.getPerson());
 
         var foreldreansvar = person.getPerson().getForeldreansvar().stream()
                 .filter(relasjon -> relasjon.getId().equals(id))
@@ -346,7 +346,7 @@ public class ArtifactUpdateService {
 
         if (id == 0 || foreldreansvar.isPresent()) {
 
-            foreldreansvarService.handleBarn(oppdatertAnsvar, person.getPerson());
+            foreldreansvarService.handle(oppdatertAnsvar, person.getPerson());
         }
 
         person.getPerson().getForeldreansvar().stream()

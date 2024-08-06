@@ -4,14 +4,14 @@ on:
   push:
     paths:
       - "plugins/**"
-      - libs/data-transfer-objects
-      - libs/reactive-core
-      - libs/security-core
-      - libs/servlet-core
-      - libs/servlet-security
-      - libs/slack
-      - apps/tilbakemelding-api/**
-      - .github/workflows/app.tilbakemelding-api.yml
+      - "libs/data-transfer-objects/**"
+      - "libs/reactive-core/**"
+      - "libs/security-core/**"
+      - "libs/servlet-core/**"
+      - "libs/servlet-security/**"
+      - "libs/slack/**"
+      - "apps/tilbakemelding-api/**"
+      - ".github/workflows/app.tilbakemelding-api.yml"
 
 jobs:
   workflow:

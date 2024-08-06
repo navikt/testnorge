@@ -11,12 +11,12 @@ sonarqube {
 group = 'no.nav.testnav.xsd'
 
 dependencies {
-    implementation 'jakarta.activation:jakarta.activation-api:2.1.3'
-    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.2'
+    implementation "jakarta.activation:jakarta.activation-api:$versions.jakartaActivation"
+    implementation "jakarta.xml.bind:jakarta.xml.bind-api:$versions.jakartaXmlBindApi"
 
-    xjc 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.2'
+    xjc "jakarta.xml.bind:jakarta.xml.bind-api:$versions.jakartaXmlBindApi"
     xjc 'org.glassfish.jaxb:jaxb-xjc:4.0.5'
-    xjc 'com.sun.xml.bind:jaxb-impl:4.0.5'
+    xjc "com.sun.xml.bind:jaxb-impl:$versions.jaxb"
     xjc 'com.sun.istack:istack-commons-runtime:4.2.0'
 }
 

@@ -4,14 +4,14 @@ on:
   push:
     paths:
       - "plugins/**"
-      - libs/database
-      - libs/security-core
-      - libs/servlet-core
-      - libs/servlet-insecure-security
-      - libs/servlet-security
-      - libs/testing
-      - apps/testnav-ident-pool/**
-      - .github/workflows/app.testnav-ident-pool.yml
+      - "libs/database/**"
+      - "libs/security-core/**"
+      - "libs/servlet-core/**"
+      - "libs/servlet-insecure-security/**"
+      - "libs/servlet-security/**"
+      - "libs/testing/**"
+      - "apps/testnav-ident-pool/**"
+      - ".github/workflows/app.testnav-ident-pool.yml"
 
 jobs:
   workflow:

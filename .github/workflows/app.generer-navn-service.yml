@@ -4,14 +4,14 @@ on:
   push:
     paths:
       - "plugins/**"
-      - libs/commands
-      - libs/data-transfer-objects
-      - libs/security-core
-      - libs/servlet-core
-      - libs/servlet-security
-      - libs/testing
-      - apps/generer-navn-service/**
-      - .github/workflows/app.generer-navn-service.yml
+      - "libs/commands/**"
+      - "libs/data-transfer-objects/**"
+      - "libs/security-core/**"
+      - "libs/servlet-core/**"
+      - "libs/servlet-security/**"
+      - "libs/testing/**"
+      - "apps/generer-navn-service/**"
+      - ".github/workflows/app.generer-navn-service.yml"
 
 jobs:
   workflow:

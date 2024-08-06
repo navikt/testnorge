@@ -4,8 +4,8 @@ on:
   push:
     paths:
       - "plugins/**"
-      - libs/servlet-core/**
-      - .github/workflows/lib.servlet-core.yml
+      - "libs/servlet-core/**"
+      - ".github/workflows/lib.servlet-core.yml"
 
 jobs:
   workflow:

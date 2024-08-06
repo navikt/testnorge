@@ -4,8 +4,8 @@ on:
   push:
     paths:
       - "plugins/**"
-      - libs/csv-converter/**
-      - .github/workflows/lib.csv-converter.yml
+      - "libs/csv-converter/**"
+      - ".github/workflows/lib.csv-converter.yml"
 
 jobs:
   workflow:

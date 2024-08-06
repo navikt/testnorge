@@ -4,10 +4,10 @@ on:
   push:
     paths:
       - "plugins/**"
-      - libs/reactive-core
-      - libs/reactive-proxy
-      - proxies/inntektstub-proxy/**
-      - .github/workflows/proxy.inntektstub-proxy.yml
+      - "libs/reactive-core/**"
+      - "libs/reactive-proxy/**"
+      - "proxies/inntektstub-proxy/**"
+      - ".github/workflows/proxy.inntektstub-proxy.yml"
 
 jobs:
   workflow:

@@ -4,6 +4,8 @@ plugins {
 
 rootProject.name = 'skattekort-service'
 
+includeBuild "../../plugins/java"
+
 includeBuild '../../libs/security-core'
 includeBuild '../../libs/reactive-core'
 includeBuild '../../libs/reactive-security'

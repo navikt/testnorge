@@ -22,7 +22,6 @@ spec:
         - application: testnav-pdl-forvalter
         - application: testnav-pdl-forvalter-dev
         - application: testnav-levende-arbeidsforhold-ansettelse
-          cluster: dev-gcp
     outbound:
       external:
         - host: kodeverk-api.nav.no
@@ -57,4 +56,3 @@ spec:
       memory: 2048Mi
   ingresses:
     - "https://testnav-kodeverk-service.intern.dev.nav.no"
-

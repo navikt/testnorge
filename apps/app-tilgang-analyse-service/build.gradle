@@ -25,8 +25,8 @@ dependencies {
     implementation 'org.flywaydb:flyway-core'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml'
 
-    implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.3.0'
-    implementation 'io.swagger.core.v3:swagger-annotations-jakarta:2.2.20'
+    implementation "org.springdoc:springdoc-openapi-starter-webflux-ui:$versions.springdoc"
+    implementation "io.swagger.core.v3:swagger-annotations-jakarta:$versions.swagger"
 
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
 }
