@@ -551,6 +551,17 @@ const selectOptions = {
 		{ value: 'ANDRE_PENSJONER_OG_YTELSER', label: 'Forventet andre pensjoner og ytelser' },
 	],
 
+	// Pensjonsavtale:
+	avtaleKategori: [
+		{ value: 'NONE', label: 'Ingenting' },
+		{ value: 'UNKNOWN', label: 'Ukjent' },
+		{ value: 'INDIVIDUELL_ORDNING', label: 'Individuell ordning' },
+		{ value: 'PRIVAT_AFP', label: 'Privat AFP' },
+		{ value: 'PRIVAT_TJENESTEPENSJON', label: 'Privat tjenestepensjon' },
+		{ value: 'OFFENTLIG_TJENESTEPENSJON', label: 'Offentlig tjenestepensjon' },
+		{ value: 'FOLKETRYGD', label: 'Folketrygden' },
+	],
+
 	// Arbeidsplassen:
 	nusKoder: [
 		{ value: '2', label: 'Grunnskole' },
