@@ -1,10 +1,9 @@
-# Levende arbeidsforhold-service
+# Levende arbeidsforhold-ansettelse
 
-Fyll inn:
 
 ## Swagger
 
-Swagger finnes under [/swagger](https://levende-arbeidsforhold-service.intern.dev.nav.no/swagger) -endepunktet til
+Swagger finnes under [/swagger](https://testnav-levende-arbeidsforhold-ansettelse.intern.dev.nav.no/swagger-ui/index.html#/jobb-controller/ansettelseJobb) -endepunktet til
 applikasjonen.
 
 ## Forbedringspotensial
@@ -84,9 +83,9 @@ https://www.ssb.no/arbeid-og-lonn/sysselsetting/statistikk/antall-arbeidsforhold
 * kodeverk-service
 
 ### Persistent lagring
-* jobb_parameter db:
-  * Database for å lagre de forskjellige parameterene som kan stilles på, og verdien som er aktiv pluss en text array med mulige verdier.
-  * Database for å logge hvem som har blitt ansatt i hvem organisasjon.
+* testnav-levende-arbeidsforhold-ansettelse:
+  * jobb_parameter: Database for å lagre de forskjellige parameterene som kan stilles på, og verdien som er aktiv pluss en text array med mulige verdier.
+  * ansettelse_logg: Database for å logge hvem som har blitt ansatt i hvem organisasjon.
 
 
 ## Lokal kjøring
