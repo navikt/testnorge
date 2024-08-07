@@ -17,7 +17,7 @@ import { ArbeidsgiverToggle } from '@/components/fagsystem/skattekort/form/Arbei
 export const initialArbeidsgiverSkatt = {
 	arbeidsgiveridentifikator: {
 		organisasjonsnummer: '',
-		personidentifikator: '',
+		// personidentifikator: '',
 	},
 	arbeidstaker: [
 		{
@@ -28,7 +28,7 @@ export const initialArbeidsgiverSkatt = {
 				skattekortidentifikator: Math.floor(100000 + Math.random() * 900000),
 				trekktype: [initialTrekktabell],
 			},
-			tilleggsopplysning: [''],
+			tilleggsopplysning: [],
 			inntektsaar: new Date().getFullYear(),
 		},
 	],
@@ -60,7 +60,6 @@ export const SkattekortForm = () => {
 						{(path: string) => (
 							<>
 								<div className="flexbox--flex-wrap">
-									{/*Arbeidsgiveridentifikator (toggles)*/}
 									<FormSelect
 										name={`${path}.arbeidstaker[0].resultatPaaForespoersel`}
 										label="Resultat på forespørsel"
