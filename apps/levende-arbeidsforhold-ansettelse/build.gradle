@@ -66,6 +66,5 @@ dependencies {
     implementation 'io.netty:netty-codec-http:4.1.108.Final'
     implementation 'com.h2database:h2:2.3.230'
     implementation 'org.bouncycastle:bcprov-jdk18on:1.78'
-
 }
 
