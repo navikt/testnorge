@@ -8,6 +8,16 @@ export const harAaregBestilling = (bestillingerFagsystemer) => {
 	return aareg
 }
 
+export const harSkattekortBestilling = (bestillingerFagsystemer) => {
+	let skattekort = false
+	bestillingerFagsystemer?.forEach((i) => {
+		if (i?.skattekort) {
+			skattekort = true
+		}
+	})
+	return skattekort
+}
+
 export const harMedlBestilling = (bestillingerFagsystemer) => {
 	let medl = false
 	bestillingerFagsystemer?.forEach((i) => {
