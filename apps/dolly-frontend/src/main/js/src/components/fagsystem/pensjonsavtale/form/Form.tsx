@@ -11,7 +11,8 @@ import { UtbetalingsperioderForm } from '@/components/fagsystem/pensjonsavtale/f
 // import './TPForm.less'
 
 export const avtalePath = 'pensjonforvalter.pensjonsavtale'
-const hjelpetekst = 'Pensjonsavtale for personen'
+const hjelpetekst =
+	'Pensjonsavtale inneholder beskrivelse av opptjeningsår, samt plangte perioder og grad for uttak.'
 
 export const PensjonsavtaleForm = () => {
 	const formMethods = useFormContext()
