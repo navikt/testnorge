@@ -159,7 +159,7 @@ public class PensjonforvalterClient implements ClientRegister {
                                                                             .map(response -> TP_FORHOLD + decodeStatus(response, dollyPerson.getIdent())),
 
                                                                     lagrePensjonsavtale(pensjon, dollyPerson.getIdent(), bestilteMiljoer.get())
-                                                                    .map(response -> PEN_PENSJONSAVTALE + decodeStatus(response, dollyPerson.getIdent()))
+                                                                            .map(response -> PEN_PENSJONSAVTALE + decodeStatus(response, dollyPerson.getIdent()))
                                                             )
                                                             .collectList()
                                                             .doOnNext(statusResultat::addAll)
@@ -495,20 +495,21 @@ public class PensjonforvalterClient implements ClientRegister {
                 .map(PensjonforvalterClient::mergePensjonforvalterResponses);
     }
 
-    private Flux<PensjonforvalterResponse>lagrePensjonsavtale(PensjonData pensjon, String ident, Set<String> miljoer) {
+    private Flux<PensjonforvalterResponse> lagrePensjonsavtale(PensjonData pensjon, String ident, Set<String> miljoer) {
 
         return Flux.just(pensjon)
                 .filter(PensjonData::hasPensjonsavtale)
                 .map(PensjonData::getPensjonsavtale)
-                .flatMap(pensjonsavtale -> {
+                .flatMap(pensjonsavtaler -> Flux.fromIterable(pensjonsavtaler)
+                        .flatMap(pensjonsavtale -> {
 
-                    var context = MappingContextUtils.getMappingContext();
-                    context.setProperty(IDENT, ident);
-                    context.setProperty(MILJOER, miljoer);
+                            var context = MappingContextUtils.getMappingContext();
+                            context.setProperty(IDENT, ident);
+                            context.setProperty(MILJOER, miljoer);
 
-                    var pensjonsavtaleRequest = mapperFacade.map(pensjonsavtale, PensjonsavtaleRequest.class, context);
-                    return pensjonforvalterConsumer.lagrePensjonsavtale(pensjonsavtaleRequest);
-                });
+                            var pensjonsavtaleRequest = mapperFacade.map(pensjonsavtale, PensjonsavtaleRequest.class, context);
+                            return pensjonforvalterConsumer.lagrePensjonsavtale(pensjonsavtaleRequest);
+                        }));
     }
 
     private String decodeStatus(PensjonforvalterResponse response, String ident) {

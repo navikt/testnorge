@@ -32,7 +32,7 @@ public class PensjonData {
     private List<TpOrdning> tp;
 
     @Schema(description = "Data for pensjonsavtale")
-    private Pensjonsavtale pensjonsavtale;
+    private List<Pensjonsavtale> pensjonsavtale;
 
     @Schema(description = "Data for alderspensjon (AP)")
     private Alderspensjon alderspensjon;
@@ -62,7 +62,16 @@ public class PensjonData {
 
     @JsonIgnore
     public boolean hasPensjonsavtale() {
-        return nonNull(pensjonsavtale);
+
+        return !getPensjonsavtale().isEmpty();
+    }
+
+    public List<Pensjonsavtale> getPensjonsavtale() {
+
+        if (isNull(pensjonsavtale)) {
+            pensjonsavtale = new ArrayList<>();
+        }
+        return pensjonsavtale;
     }
 
     public List<TpOrdning> getTp() {
