@@ -11,18 +11,11 @@ spec:
   accessPolicy:
     inbound:
       rules:
-        - application: team-dolly-lokal-app
-        - application: testnav-oversikt-frontend
         - application: dolly-frontend
         - application: testnav-levende-arbeidsforhold-ansettelse
     outbound:
       rules:
-        - application: testnav-organisasjon-faste-data-service
-        - application: testnav-kodeverk-service
         - application: testnav-levende-arbeidsforhold-ansettelse
-      external:
-        - host: testnav-aareg-proxy.dev-fss-pub.nais.io
-        - host: testnav-pdl-proxy.dev-fss-pub.nais.io
   azure:
     application:
       allowAllUsers: true
