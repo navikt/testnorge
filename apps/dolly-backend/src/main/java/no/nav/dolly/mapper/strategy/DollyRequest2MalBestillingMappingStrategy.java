@@ -145,8 +145,9 @@ public class DollyRequest2MalBestillingMappingStrategy implements MappingStrateg
 
         factory.classMap(PensjonData.class, PensjonData.class)
                 .mapNulls(false)
-                .field("inntekt", "inntekt")
                 .field("alderspensjon", "alderspensjon")
+                .field("inntekt", "inntekt")
+                .field("pensjonsavtale","pensjonsavtale")
                 .field("uforetrygd", "uforetrygd")
                 .customize(new CustomMapper<>() {
                     @Override
