@@ -87,7 +87,7 @@ const TrekktabellForm = ({ path, trekkode }) => {
 				options={tabelltype}
 				size="large"
 			/>
-			<FormTextInput name={`${path}.trekktabell.tabellnummer`} label="Tabelnummer" type="number" />
+			<FormTextInput name={`${path}.trekktabell.tabellnummer`} label="Tabellnummer" type="number" />
 			<FormTextInput name={`${path}.trekktabell.prosentsats`} label="Prosentsats" type="number" />
 			<FormTextInput
 				name={`${path}.trekktabell.antallMaanederForTrekk`}

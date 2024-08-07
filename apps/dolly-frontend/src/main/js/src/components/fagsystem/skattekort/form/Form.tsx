@@ -12,6 +12,7 @@ import { subYears } from 'date-fns'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { initialTrekktabell, TrekktypeForm } from '@/components/fagsystem/skattekort/form/Trekktype'
+import { ArbeidsgiverToggle } from '@/components/fagsystem/skattekort/form/ArbeidsgiverToggle'
 
 export const initialArbeidsgiverSkatt = {
 	arbeidsgiveridentifikator: {
@@ -80,6 +81,7 @@ export const SkattekortForm = () => {
 										label="Tilleggsopplysning"
 										options={tilleggsopplysning}
 										size="large"
+										isMulti={true}
 									/>
 									<FormSelect
 										name={`${path}.arbeidstaker[0].inntektsaar`}
@@ -88,6 +90,10 @@ export const SkattekortForm = () => {
 										isClearable={false}
 									/>
 								</div>
+								<ArbeidsgiverToggle
+									formMethods={formMethods}
+									path={`${path}.arbeidsgiveridentifikator`}
+								/>
 								<TrekktypeForm
 									formMethods={formMethods}
 									path={`${path}.arbeidstaker[0].skattekort`}
