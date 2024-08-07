@@ -23,8 +23,13 @@ export const ArbeidsgiverToggle = ({ formMethods, path }) => {
 
 	const handleToggleChange = (value: ToggleValg) => {
 		setInputType(value)
-		formMethods.setValue(organisasjonPath, '')
-		formMethods.setValue(personPath, '')
+		if (value === ToggleValg.ORGANISASJON) {
+			formMethods.setValue(organisasjonPath, '')
+			formMethods.setValue(personPath, undefined)
+		} else if (value === ToggleValg.PRIVAT) {
+			formMethods.setValue(personPath, '')
+			formMethods.setValue(organisasjonPath, undefined)
+		}
 	}
 
 	return (
