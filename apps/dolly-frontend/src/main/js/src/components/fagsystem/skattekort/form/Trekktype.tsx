@@ -12,12 +12,6 @@ import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { useFieldArray } from 'react-hook-form'
 
-const initialForskuddstrekk = {
-	forskuddstrekk: {
-		trekkode: '',
-	},
-}
-
 const initialFrikort = {
 	frikort: {
 		trekkode: '',
@@ -41,19 +35,6 @@ const initialTrekkprosent = {
 		prosentsats: null,
 		antallMaanederForTrekk: null,
 	},
-}
-
-const ForskuddstrekkForm = ({ path, trekkode }) => {
-	return (
-		<>
-			<FormSelect
-				name={`${path}.forskuddstrekk.trekkode`}
-				label="Trekkode"
-				options={trekkode}
-				size="large"
-			/>
-		</>
-	)
 }
 
 const FrikortForm = ({ path, trekkode }) => {
@@ -122,7 +103,6 @@ export const TrekktypeForm = ({ formMethods, path }) => {
 	const trekktype = formMethods.watch(trekktypePath)
 	const fieldMethods = useFieldArray({ control: formMethods.control, name: trekktypePath })
 
-	const addNewForskuddstrekk = () => fieldMethods.append(initialForskuddstrekk)
 	const addNewFrikort = () => fieldMethods.append(initialFrikort)
 	const addNewTrekktabell = () => fieldMethods.append(initialTrekktabell)
 	const addNewTrekkprosent = () => fieldMethods.append(initialTrekkprosent)
@@ -131,7 +111,7 @@ export const TrekktypeForm = ({ formMethods, path }) => {
 
 	return (
 		<ErrorBoundary>
-			<Kategori title="Trekk">
+			<Kategori title="Forskuddstrekk">
 				<DollyFieldArrayWrapper>
 					{trekktype.map((trekk, idx) => {
 						const header = Object.keys(trekk)?.[0]
@@ -144,11 +124,8 @@ export const TrekktypeForm = ({ formMethods, path }) => {
 								header={toTitleCase(header)}
 								handleRemove={clickRemove}
 								whiteBackground
-								showDeleteButton={trekktype.length > 1}
+								showDeleteButton
 							>
-								{header === 'forskuddstrekk' && (
-									<ForskuddstrekkForm path={`${path}.trekktype[${idx}]`} trekkode={trekkode} />
-								)}
 								{header === 'frikort' && (
 									<FrikortForm path={`${path}.trekktype[${idx}]`} trekkode={trekkode} />
 								)}
@@ -165,10 +142,6 @@ export const TrekktypeForm = ({ formMethods, path }) => {
 						<FieldArrayAddButton addEntryButtonText="Trekktabell" onClick={addNewTrekktabell} />
 						<FieldArrayAddButton addEntryButtonText="Trekkprosent" onClick={addNewTrekkprosent} />
 						<FieldArrayAddButton addEntryButtonText="Frikort" onClick={addNewFrikort} />
-						<FieldArrayAddButton
-							addEntryButtonText="Forskuddstrekk"
-							onClick={addNewForskuddstrekk}
-						/>
 					</div>
 				</DollyFieldArrayWrapper>
 			</Kategori>
