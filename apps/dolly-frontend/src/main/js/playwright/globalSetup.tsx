@@ -29,6 +29,7 @@ import {
 	organisasjonFraMiljoeMock,
 	paginerteGrupperMock,
 	pensjonMock,
+	pensjonPensjonsavtaleMock,
 	pensjonTpMock,
 	personFragmentNavigerMock,
 	personFragmentSearchMock,
@@ -82,6 +83,9 @@ const skjerming = new RegExp(/dolly-backend\/api\/v1\/skjerming/)
 const pensjon = new RegExp(/testnav-pensjon-testdata-facade-proxy\/api\/v1\/inntekt/)
 const pensjonMiljoer = new RegExp(/testnav-pensjon-testdata-facade-proxy\/api\/v1\/miljo/)
 const pensjonTp = new RegExp(/testnav-pensjon-testdata-facade-proxy\/api\/v1\/tp(.*?)q1/)
+const pensjonPensjonsavtale = new RegExp(
+	/testnav-pensjon-testdata-facade-proxy\/api\/v1\/pensjonsavtale\/hent/,
+)
 const krrstub = new RegExp(/testnav-krrstub-proxy\/api\/v2/)
 const udistub = new RegExp(/testnav-udistub-proxy\/api\/v1/)
 const brregstub = new RegExp(/testnav-brregstub/)
@@ -142,6 +146,7 @@ const mockRoutes: RouteInfo[] = [
 	{ url: inst, response: instMock },
 	{ url: pensjon, response: pensjonMock },
 	{ url: pensjonTp, response: pensjonTpMock },
+	{ url: pensjonPensjonsavtale, response: pensjonPensjonsavtaleMock },
 	{ url: sigrunstub, response: sigrunstubMock },
 	{ url: udistub, response: udistubMock },
 	{ url: kodeverk, response: kodeverkMock },

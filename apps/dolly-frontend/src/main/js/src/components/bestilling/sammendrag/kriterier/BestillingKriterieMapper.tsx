@@ -1903,29 +1903,32 @@ const mapPensjon = (bestillingData, data, navEnheter) => {
 			data.push(pensjonforvalterPopp)
 		}
 
-		if (pensjonKriterier.pensjonsavtale) {
-			const avtale = pensjonKriterier.pensjonsavtale
-
+		if (pensjonKriterier.pensjonsavtale && pensjonKriterier.pensjonsavtale.length > 0) {
 			const penPensjonsavtale = {
 				header: 'Pensjonsavtale (PEN)',
-				items: [
-					obj('Produktbetegnelse', avtale.produktBetegnelse),
-					obj('Avtalekategori', avtale.avtaleKategori),
-					obj('Startalder År', avtale.startAlderAar),
-					obj('Sluttalder År', avtale.sluttAlderAar),
-				],
 				itemRows: [],
 			}
-			avtale.utbetalingsperioder.forEach((periode, i) => {
+
+			pensjonKriterier.pensjonsavtale.forEach((pensjonsavtale, i) => {
 				penPensjonsavtale.itemRows.push([
-					{ numberHeader: `Utbetalingsperiode ${i + 1}` },
-					obj('Startalder År', periode.startAlderAar),
-					obj('StartAlderMaaneder', periode.startAlderMaaneder),
-					obj('Sluttalder År', periode.sluttAlderAar),
-					obj('Sluttalder Måneder', periode.sluttAlderMaaneder),
-					obj('Årlig Utbetaling', periode.aarligUtbetaling),
-					obj('Grad', periode.grad),
+					{ numberHeader: `Pensjonsavtale ${i + 1}` },
+					obj('Produktbetegnelse', pensjonsavtale.produktBetegnelse),
+					obj('Avtalekategori', pensjonsavtale.avtaleKategori),
+					obj('Startalder År', pensjonsavtale.startAlderAar),
+					obj('Sluttalder År', pensjonsavtale.sluttAlderAar),
 				])
+
+				pensjonsavtale.utbetalingsPerioder.forEach((periode, j) => {
+					penPensjonsavtale.itemRows.push([
+						{ numberHeader: `Utbetalingsperiode ${j + 1}` },
+						obj('Startalder År', periode.startAlderAar),
+						obj('Startalder Måned', periode.startAlderMaaneder),
+						obj('Sluttalder År', periode.sluttAlderAar),
+						obj('Sluttalder Måned', periode.sluttAlderMaaneder),
+						obj('Årlig Utbetaling', periode.aarligUtbetaling),
+						obj('Grad', periode.grad),
+					])
+				})
 			})
 
 			data.push(penPensjonsavtale)

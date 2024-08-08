@@ -22,6 +22,12 @@ const poppUrl = (ident, miljoer) =>
 		miljo: miljo,
 	}))
 
+const pensjonsavtaleUrl = (miljoer) =>
+	miljoer?.map((miljo) => ({
+		url: `/testnav-pensjon-testdata-facade-proxy/api/v1/pensjonsavtale/hent?miljo=${miljo}`,
+		miljo: miljo,
+	}))
+
 const tpUrl = (ident, miljoer) =>
 	miljoer?.map((miljo) => ({
 		url: `/testnav-pensjon-testdata-facade-proxy/api/v1/tp/forhold?fnr=${ident}&miljo=${miljo}`,
@@ -82,6 +88,24 @@ export const usePoppData = (ident, harPoppBestilling) => {
 
 	return {
 		poppData: data?.sort((a, b) => a.miljo.localeCompare(b.miljo)),
+		loading: isLoading,
+		error: error,
+	}
+}
+
+export const usePensjonsavtaleData = (ident, harPensjonsavtaleBestilling) => {
+	const { pensjonEnvironments } = usePensjonEnvironments()
+
+	const { data, isLoading, error } = useSWR<any, Error>(
+		[
+			harPensjonsavtaleBestilling ? pensjonsavtaleUrl(pensjonEnvironments) : null,
+			{ 'Nav-Call-Id': 'dolly', 'Nav-Consumer-Id': 'dolly', Authorization: 'dolly', ident: ident },
+		],
+		([url, headers]) => multiFetcherPensjon(url, headers),
+	)
+
+	return {
+		pensjonsavtaleData: data?.sort((a, b) => a.miljo.localeCompare(b.miljo)),
 		loading: isLoading,
 		error: error,
 	}
