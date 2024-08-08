@@ -28,7 +28,7 @@ export const useSkattekort = (ident: string, harSkattekortBestilling: boolean) =
 	const { data, isLoading, error } = useSWR<any, Error>(getSkattekortUrl(ident), fetcher)
 
 	return {
-		skattekort: data,
+		skattekortData: data,
 		loading: isLoading,
 		error: error,
 	}

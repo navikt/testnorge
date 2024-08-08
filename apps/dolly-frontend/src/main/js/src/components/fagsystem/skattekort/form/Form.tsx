@@ -67,6 +67,12 @@ export const SkattekortForm = () => {
 										size="large"
 										isClearable={false}
 									/>
+									<FormSelect
+										name={`${path}.arbeidstaker[0].inntektsaar`}
+										label="Inntektsår"
+										options={getYearRangeOptions(1968, subYears(new Date(), -5).getFullYear())}
+										isClearable={false}
+									/>
 									<FormDatepicker
 										name={`${path}.arbeidstaker[0].skattekort.utstedtDato`}
 										label="Utstedt dato"
@@ -81,12 +87,6 @@ export const SkattekortForm = () => {
 										options={tilleggsopplysning}
 										size="large"
 										isMulti={true}
-									/>
-									<FormSelect
-										name={`${path}.arbeidstaker[0].inntektsaar`}
-										label="Inntektsår"
-										options={getYearRangeOptions(1968, subYears(new Date(), -5).getFullYear())}
-										isClearable={false}
 									/>
 								</div>
 								<ArbeidsgiverToggle

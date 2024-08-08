@@ -94,6 +94,7 @@ import { SkatteetatenVisning } from '@/components/fagsystem/skatteetaten/visning
 import PdlVisningConnector from '@/components/fagsystem/pdl/visning/PdlVisningConnector'
 import { useOrganisasjonMiljoe } from '@/utils/hooks/useOrganisasjonTilgang'
 import { useSkattekort } from '@/utils/hooks/useSkattekort'
+import { SkattekortVisning } from '@/components/fagsystem/skattekort/visning/Visning'
 import { PensjonsavtaleVisning } from '@/components/fagsystem/pensjonsavtale/visning/PensjonsavtaleVisning'
 
 const getIdenttype = (ident) => {
@@ -154,7 +155,7 @@ export default ({
 		harAaregBestilling(bestillingerFagsystemer) || ident?.master === 'PDL',
 	)
 
-	const { loading: loadingSkattekort, skattekort } = useSkattekort(
+	const { loading: loadingSkattekort, skattekortData } = useSkattekort(
 		ident.ident,
 		harSkattekortBestilling(bestillingerFagsystemer),
 	)
@@ -469,6 +470,7 @@ export default ({
 						harInntektsmeldingBestilling(bestillingerFagsystemer) ? inntektsmeldingBestilling : null
 					}
 				/>
+				<SkattekortVisning liste={skattekortData} loading={loadingSkattekort} />
 				<ArbeidsplassenVisning
 					data={arbeidsplassencvData}
 					loading={loadingArbeidsplassencvData}
