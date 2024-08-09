@@ -20,8 +20,8 @@ export const ArbeidInntektPanel = ({ stateModifier, formValues }) => {
 
 	const infoTekst =
 		'Arbeidsforhold: \nDataene her blir lagt til AAREG. \n\nInntekt: \nSkatte- og inntektsgrunnlag. Inntektene blir lagt i Sigrun-stub.' +
-		'\n\nPensjonsgivende inntekt: \nInntektene blir lagt til i POPP-register. \n\nInntektstub: \nInformasjonen blir lagt i Inntekt-stub.'
-	//TODO: Info om skattekort?
+		'\n\nPensjonsgivende inntekt: \nInntektene blir lagt til i POPP-register. \n\nInntektstub: \nInformasjonen blir lagt i Inntekt-stub.' +
+		'\n\nSkattekort: Dataene blir lagt til i SOKOS.'
 
 	return (
 		<Panel
@@ -52,7 +52,7 @@ export const ArbeidInntektPanel = ({ stateModifier, formValues }) => {
 			<AttributtKategori title="Inntektsmelding (fra Altinn)" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.inntektsmelding} id="inntekt_inntektstub" />
 			</AttributtKategori>
-			<AttributtKategori title="Skattekort" attr={sm.attrs}>
+			<AttributtKategori title="Skattekort (SOKOS)" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.skattekort} />
 			</AttributtKategori>
 		</Panel>

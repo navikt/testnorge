@@ -98,10 +98,10 @@ const TrekkprosentForm = ({ path, trekkode }) => {
 	)
 }
 
-export const TrekktypeForm = ({ formMethods, path }) => {
-	const trekktypePath = `${path}.trekktype`
-	const trekktype = formMethods.watch(trekktypePath)
-	const fieldMethods = useFieldArray({ control: formMethods.control, name: trekktypePath })
+export const ForskuddstrekkForm = ({ formMethods, path }) => {
+	const forskuddstrekkPath = `${path}.forskuddstrekk`
+	const forskuddstrekk = formMethods.watch(forskuddstrekkPath)
+	const fieldMethods = useFieldArray({ control: formMethods.control, name: forskuddstrekkPath })
 
 	const addNewFrikort = () => fieldMethods.append(initialFrikort)
 	const addNewTrekktabell = () => fieldMethods.append(initialTrekktabell)
@@ -113,7 +113,7 @@ export const TrekktypeForm = ({ formMethods, path }) => {
 		<ErrorBoundary>
 			<Kategori title="Forskuddstrekk">
 				<DollyFieldArrayWrapper>
-					{trekktype.map((trekk, idx) => {
+					{forskuddstrekk.map((trekk, idx) => {
 						const header = Object.keys(trekk)?.[0]
 						const clickRemove = () => fieldMethods.remove(idx)
 
@@ -127,13 +127,13 @@ export const TrekktypeForm = ({ formMethods, path }) => {
 								showDeleteButton
 							>
 								{header === 'frikort' && (
-									<FrikortForm path={`${path}.trekktype[${idx}]`} trekkode={trekkode} />
+									<FrikortForm path={`${path}.forskuddstrekk[${idx}]`} trekkode={trekkode} />
 								)}
 								{header === 'trekktabell' && (
-									<TrekktabellForm path={`${path}.trekktype[${idx}]`} trekkode={trekkode} />
+									<TrekktabellForm path={`${path}.forskuddstrekk[${idx}]`} trekkode={trekkode} />
 								)}
 								{header === 'trekkprosent' && (
-									<TrekkprosentForm path={`${path}.trekktype[${idx}]`} trekkode={trekkode} />
+									<TrekkprosentForm path={`${path}.forskuddstrekk[${idx}]`} trekkode={trekkode} />
 								)}
 							</DollyFaBlokk>
 						)

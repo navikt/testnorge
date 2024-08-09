@@ -11,22 +11,23 @@ import { getYearRangeOptions } from '@/utils/DataFormatter'
 import { subYears } from 'date-fns'
 import { FormDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { FormTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import { initialTrekktabell, TrekktypeForm } from '@/components/fagsystem/skattekort/form/Trekktype'
+import {
+	ForskuddstrekkForm,
+	initialTrekktabell,
+} from '@/components/fagsystem/skattekort/form/Forskuddstrekk'
 import { ArbeidsgiverToggle } from '@/components/fagsystem/skattekort/form/ArbeidsgiverToggle'
 
 export const initialArbeidsgiverSkatt = {
 	arbeidsgiveridentifikator: {
 		organisasjonsnummer: '',
-		// personidentifikator: '',
 	},
 	arbeidstaker: [
 		{
-			// arbeidstakeridentifikator: '',
 			resultatPaaForespoersel: 'SKATTEKORTOPPLYSNINGER_OK',
 			skattekort: {
 				utstedtDato: '',
 				skattekortidentifikator: Math.floor(100000 + Math.random() * 900000),
-				trekktype: [initialTrekktabell],
+				forskuddstrekk: [initialTrekktabell],
 			},
 			tilleggsopplysning: [],
 			inntektsaar: new Date().getFullYear(),
@@ -45,7 +46,7 @@ export const SkattekortForm = () => {
 	return (
 		<Vis attributt={skattekortAttributt}>
 			<Panel
-				heading="Skattekort"
+				heading="Skattekort (SOKOS)"
 				hasErrors={panelError(skattekortAttributt)}
 				iconType="skattekort"
 				startOpen={erForsteEllerTest(formMethods.getValues(), [skattekortAttributt])}
@@ -77,6 +78,7 @@ export const SkattekortForm = () => {
 										name={`${path}.arbeidstaker[0].skattekort.utstedtDato`}
 										label="Utstedt dato"
 									/>
+									{/*//TODO: Boer vaere random for hvert skattekort vi legger til*/}
 									<FormTextInput
 										name={`${path}.arbeidstaker[0].skattekort.skattekortidentifikator`}
 										label="Skattekortidentifikator"
@@ -93,7 +95,7 @@ export const SkattekortForm = () => {
 									formMethods={formMethods}
 									path={`${path}.arbeidsgiveridentifikator`}
 								/>
-								<TrekktypeForm
+								<ForskuddstrekkForm
 									formMethods={formMethods}
 									path={`${path}.arbeidstaker[0].skattekort`}
 								/>

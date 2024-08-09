@@ -9,6 +9,7 @@ import {
 	omraaderArrayToString,
 	oversettBoolean,
 	showLabel,
+	toTitleCase,
 	uppercaseAndUnderscoreToCapitalized,
 } from '@/utils/DataFormatter'
 import {
@@ -27,6 +28,7 @@ import { useNavEnheter } from '@/utils/hooks/useNorg2'
 import { kodeverkKeyToLabel } from '@/components/fagsystem/sigrunstubPensjonsgivende/utils'
 import { useContext } from 'react'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
+import { showKodeverkLabel } from '@/components/fagsystem/skattekort/visning/Visning'
 
 // TODO: Flytte til selector?
 // - Denne kan forminskes ved bruk av hjelpefunksjoner
@@ -2126,6 +2128,55 @@ const mapInntektsmelding = (bestillingData, data) => {
 	}
 }
 
+const mapSkattekort = (bestillingData, data) => {
+	const skattekortKriterier = bestillingData.skattekort
+
+	const arbeidsgiver = skattekortKriterier?.arbeidsgiverSkatt?.[0]
+	const arbeidstaker = arbeidsgiver?.arbeidstaker?.[0]
+	const trekkListe = arbeidstaker?.skattekort?.forskuddstrekk
+
+	const tilleggsopplysningFormatted = arbeidstaker?.tilleggsopplysning?.map(
+		(tilleggsopplysning) => {
+			return showKodeverkLabel('TILLEGGSOPPLYSNING', tilleggsopplysning)
+		},
+	)
+
+	if (skattekortKriterier) {
+		const skattekort = {
+			header: 'Skattekort (SOKOS)',
+			items: [
+				obj(
+					'Resultat på forespørsel',
+					showKodeverkLabel('RESULTATSTATUS', arbeidstaker?.resultatPaaForespoersel),
+				),
+				obj('Inntektsår', arbeidstaker?.inntektsaar),
+				obj('Utstedt dato', formatDate(arbeidstaker?.skattekort?.utstedtDato)),
+				obj('Skattekortidentifikator', arbeidstaker?.skattekort?.skattekortidentifikator),
+				obj('Tilleggsopplysning', arrayToString(tilleggsopplysningFormatted)),
+				obj('Arbeidsgiver (org.nr.)', arbeidsgiver?.arbeidsgiveridentifikator?.organisasjonsnummer),
+				obj('Arbeidsgiver (ident)', arbeidsgiver?.arbeidsgiveridentifikator?.personidentifikator),
+			],
+			itemRows: [],
+		}
+
+		trekkListe?.forEach((item, idx) => {
+			const forskuddstrekkType = Object.keys(item)?.filter((key) => item[key])?.[0]
+			const forskuddstrekk = item[forskuddstrekkType]
+			skattekort.itemRows.push([
+				{ numberHeader: `Forskuddstrekk ${idx + 1}: ${toTitleCase(forskuddstrekkType)}` },
+				obj('Trekkode', showKodeverkLabel('TREKKODE', forskuddstrekk?.trekkode)),
+				obj('Frikortbeløp', forskuddstrekk?.frikortbeloep),
+				obj('Tabelltype', showKodeverkLabel('TABELLTYPE', forskuddstrekk?.tabelltype)),
+				obj('Tabellnummer', forskuddstrekk?.tabellnummer),
+				obj('Prosentsats', forskuddstrekk?.prosentsats),
+				obj('Antall måneder for trekk', forskuddstrekk?.antallMaanederForTrekk),
+			])
+		})
+
+		data.push(skattekort)
+	}
+}
+
 const mapDokarkiv = (bestillingData, data) => {
 	const dokarkivKriterier = bestillingData.dokarkiv
 
@@ -2326,16 +2377,17 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon, firstI
 	mapSigrunStub(bestillingData, data)
 	mapSigrunstubPensjonsgivende(bestillingData, data)
 	mapInntektStub(bestillingData, data)
+	mapInntektsmelding(bestillingData, data)
+	mapSkattekort(bestillingData, data)
 	mapArbeidsplassenCV(bestillingData, data)
+	mapPensjon(bestillingData, data, navEnheter)
+	mapArena(bestillingData, data)
 	mapSykemelding(bestillingData, data)
 	mapBrregstub(bestillingData, data)
+	mapInst(bestillingData, data)
 	mapKrr(bestillingData, data)
 	mapMedlemskapsperiode(bestillingData, data)
-	mapArena(bestillingData, data)
-	mapInst(bestillingData, data)
 	mapUdiStub(bestillingData, data)
-	mapPensjon(bestillingData, data, navEnheter)
-	mapInntektsmelding(bestillingData, data)
 	mapDokarkiv(bestillingData, data)
 	mapHistark(bestillingData, data)
 	mapOrganisasjon(bestillingData, data)

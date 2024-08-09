@@ -7,7 +7,7 @@ import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { arrayToString, formatDate } from '@/utils/DataFormatter'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { useSkattekortKodeverk } from '@/utils/hooks/useSkattekort'
-import { TrekktypeVisning } from '@/components/fagsystem/skattekort/visning/TrekktypeVisning'
+import { ForskuddstrekkVisning } from '@/components/fagsystem/skattekort/visning/ForskuddstrekkVisning'
 
 type SkattekortVisning = {
 	liste?: Array<SkattekortData>
@@ -36,7 +36,11 @@ export const SkattekortVisning = ({ liste, loading }: SkattekortVisning) => {
 
 	return (
 		<>
-			<SubOverskrift label="Skattekort" iconKind="skattekort" isWarning={manglerFagsystemdata} />
+			<SubOverskrift
+				label="Skattekort (SOKOS)"
+				iconKind="skattekort"
+				isWarning={manglerFagsystemdata}
+			/>
 			{manglerFagsystemdata ? (
 				<Alert variant={'warning'} size={'small'} inline style={{ marginBottom: '20px' }}>
 					Fant ikke skattekort-data på person
@@ -47,7 +51,7 @@ export const SkattekortVisning = ({ liste, loading }: SkattekortVisning) => {
 						{(skattekort: SkattekortData) => {
 							const arbeidsgiver = skattekort?.arbeidsgiver?.[0]
 							const arbeidstaker = arbeidsgiver?.arbeidstaker?.[0]
-							const trekkListe = arbeidstaker?.skattekort?.trekktype
+							const trekkListe = arbeidstaker?.skattekort?.forskuddstrekk
 
 							const tilleggsopplysningFormatted = arbeidstaker?.tilleggsopplysning?.map(
 								(tilleggsopplysning) => {
@@ -85,7 +89,7 @@ export const SkattekortVisning = ({ liste, loading }: SkattekortVisning) => {
 										title="Arbeidsgiver (ident)"
 										value={arbeidsgiver?.arbeidsgiveridentifikator?.personidentifikator}
 									/>
-									<TrekktypeVisning trekkliste={trekkListe} />
+									<ForskuddstrekkVisning trekkliste={trekkListe} />
 								</div>
 							)
 						}}
