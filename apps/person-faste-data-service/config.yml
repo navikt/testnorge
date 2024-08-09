@@ -28,7 +28,7 @@ spec:
           cluster: dev-fss
   gcp:
     sqlInstances:
-      - type: POSTGRES_12
+      - type: POSTGRES_15
         databases:
           - name: testnav-person-faste-data-db
   liveness:

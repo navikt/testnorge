@@ -13,9 +13,9 @@ spring:
       database:
         backend: postgresql/preprod-fss
         enabled: true
-        role: dolly-test-admin
+        role: dolly-backend-fss18-admin
   datasource:
-    url: jdbc:postgresql://dev-pg.intern.nav.no:5432/dolly-test
+    url: jdbc:postgresql://dev-pg.intern.nav.no:5432/dolly-backend-fss18
     hikari:
       maximum-pool-size: 3
       minimum-idle: 1
