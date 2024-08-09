@@ -9,7 +9,6 @@ import no.nav.testnav.libs.dto.skattekortservice.v1.Frikort;
 import no.nav.testnav.libs.dto.skattekortservice.v1.Skattekort;
 import no.nav.testnav.libs.dto.skattekortservice.v1.Trekkprosent;
 import no.nav.testnav.libs.dto.skattekortservice.v1.Trekktabell;
-import no.nav.testnav.libs.dto.skattekortservice.v1.Trekktype;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
@@ -26,7 +25,7 @@ public class TrekktypeMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(Skattekort skattekort, no.skatteetaten.fastsetting.formueinntekt.forskudd.skattekorttilarbeidsgiver.v3.Skattekort skattekort2, MappingContext context) {
 
-                        skattekort2.getForskuddstrekk().addAll(skattekort.getTrekktype().stream()
+                        skattekort2.getForskuddstrekk().addAll(skattekort.getForskuddstrekk().stream()
                                 .map(trekktype -> {
                                     if (nonNull(trekktype.getFrikort())) {
                                         return mapperFacade.map(trekktype.getFrikort(),
@@ -37,9 +36,6 @@ public class TrekktypeMappingStrategy implements MappingStrategy {
                                     } else if (nonNull(trekktype.getTrekkprosent())) {
                                         return mapperFacade.map(trekktype.getTrekkprosent(),
                                                 no.skatteetaten.fastsetting.formueinntekt.forskudd.skattekorttilarbeidsgiver.v3.Trekkprosent.class);
-                                    } else if (nonNull(trekktype.getForskuddstrekk())) {
-                                        return mapperFacade.map(trekktype.getForskuddstrekk(),
-                                                no.skatteetaten.fastsetting.formueinntekt.forskudd.skattekorttilarbeidsgiver.v3.Forskuddstrekk.class);
                                     } else {
                                         return null;
                                     }
@@ -48,7 +44,7 @@ public class TrekktypeMappingStrategy implements MappingStrategy {
                                 .toList());
                     }
                 })
-                .exclude("trekktype")
+                .exclude("forskuddstrekk")
                 .byDefault()
                 .register();
 
@@ -57,29 +53,21 @@ public class TrekktypeMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(SkattekortResponsIntermediate.Skattekort skattekort, Skattekort skattekort2, MappingContext context) {
 
-                        skattekort2.getTrekktype().addAll(skattekort.getFrikort().stream()
-                                .map(frikort -> Trekktype.builder()
-                                        .frikort(mapperFacade.map(frikort, Frikort.class))
-                                        .build())
-                                .toList());
-                        skattekort2.getTrekktype().addAll(skattekort.getForskuddstrekk().stream()
-                                .map(forskuddstrekk -> Trekktype.builder()
-                                        .forskuddstrekk(mapperFacade.map(forskuddstrekk, Forskuddstrekk.class))
-                                        .build())
-                                .toList());
-                        skattekort2.getTrekktype().addAll(skattekort.getTrekkprosent().stream()
-                                .map(trekkprosent -> Trekktype.builder()
-                                        .trekkprosent(mapperFacade.map(trekkprosent, Trekkprosent.class))
-                                        .build())
-                                .toList());
-                        skattekort2.getTrekktype().addAll(skattekort.getTrekktabell().stream()
-                                .map(trekktabell -> Trekktype.builder()
-                                        .trekktabell(mapperFacade.map(trekktabell, Trekktabell.class))
-                                        .build())
-                                .toList());
+                        skattekort2.setSkattekortidentifikator(skattekort.getSkattekortidentifikator());
+                        skattekort2.setUtstedtDato(skattekort.getUtstedtDato());
+                        skattekort.getForskuddstrekk()
+                                .forEach(forskuddstrekk -> skattekort2.getForskuddstrekk().add(
+                                        Forskuddstrekk.builder()
+                                                .frikort(forskuddstrekk instanceof SkattekortResponsIntermediate.Frikort ?
+                                                        mapperFacade.map(forskuddstrekk, Frikort.class) : null)
+                                                .trekktabell(forskuddstrekk instanceof SkattekortResponsIntermediate.Trekktabell ?
+                                                        mapperFacade.map(forskuddstrekk, Trekktabell.class) : null)
+                                                .trekkprosent(forskuddstrekk instanceof SkattekortResponsIntermediate.Trekkprosent ?
+                                                        mapperFacade.map(forskuddstrekk, Trekkprosent.class) : null)
+                                                .build()
+                                ));
                     }
                 })
-                .byDefault()
                 .register();
     }
 }
