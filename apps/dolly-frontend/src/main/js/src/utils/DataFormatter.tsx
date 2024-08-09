@@ -117,10 +117,12 @@ export const adressetypeToString = (adressetype) => {
 }
 
 export const arrayToString = (array, separator = ',') => {
-	if (!array) {
+	if (!array || array.length < 1) {
 		return null
 	}
-
+	if (typeof array === 'string') {
+		return array
+	}
 	return array.reduce((accumulator, nextString, idx) => {
 		return `${accumulator}${accumulator ? separator : ''}${idx === 0 ? '' : ' '}${nextString}`
 	}, '')

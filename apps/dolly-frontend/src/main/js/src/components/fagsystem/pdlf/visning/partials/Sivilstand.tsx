@@ -85,7 +85,7 @@ const SivilstandLes = ({
 	)
 }
 
-const SivilstandVisning = ({
+export const SivilstandVisning = ({
 	sivilstandData,
 	idx,
 	data,

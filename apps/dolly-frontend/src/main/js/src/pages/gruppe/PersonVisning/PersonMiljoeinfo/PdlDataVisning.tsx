@@ -50,6 +50,7 @@ export const PdlDataVisning = ({ ident, bankIdBruker, miljoe }: PdlDataVisningPr
 					offset: [0, -10],
 				}}
 				overlayStyle={{ opacity: 1 }}
+				destroyTooltipOnHide={{ keepParent: false }}
 			>
 				<div className="miljoe-knapp">PDL</div>
 			</DollyTooltip>
@@ -62,6 +63,7 @@ export const PdlDataVisning = ({ ident, bankIdBruker, miljoe }: PdlDataVisningPr
 						offset: [0, -10],
 					}}
 					overlayStyle={{ opacity: 1 }}
+					destroyTooltipOnHide={{ keepParent: false }}
 				>
 					<div className="miljoe-knapp">Q1</div>
 				</DollyTooltip>

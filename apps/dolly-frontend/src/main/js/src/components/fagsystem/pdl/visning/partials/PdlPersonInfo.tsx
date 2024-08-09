@@ -6,6 +6,9 @@ import { TpsMPersonInfo } from '@/components/fagsystem/pdl/visning/partials/tpsM
 import _ from 'lodash'
 import React from 'react'
 import { ArrayHistorikk } from '@/components/ui/historikk/ArrayHistorikk'
+import { getInitialNavn } from '@/components/fagsystem/pdlf/form/initialValues'
+import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
+import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
 
 const getCurrentPersonstatus = (data) => {
 	if (data?.folkeregisterpersonstatus && data?.folkeregisterpersonstatus?.[0] !== null) {
@@ -36,12 +39,45 @@ const PdlNavnVisning = ({ data, showMaster }) => {
 	)
 }
 
+const NavnVisningRedigerbar = ({ data, idx, alleData, tmpPersoner, ident, identtype, master }) => {
+	const initNavn = Object.assign(_.cloneDeep(getInitialNavn()), alleData[idx])
+	const initialValues = { navn: initNavn }
+
+	const redigertNavnPdlf = _.get(tmpPersoner, `${ident}.person.navn`)?.find((a) => a.id === data.id)
+	const slettetNavnPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertNavnPdlf
+	if (slettetNavnPdlf) {
+		return <OpplysningSlettet />
+	}
+
+	const navnValues = redigertNavnPdlf ? redigertNavnPdlf : data
+	const redigertNavnValues = redigertNavnPdlf
+		? {
+				navn: Object.assign(_.cloneDeep(getInitialNavn()), redigertNavnPdlf),
+			}
+		: null
+	return (
+		<div className="person-visning_content">
+			<VisningRedigerbarConnector
+				dataVisning={<PdlNavnVisning data={navnValues} />}
+				initialValues={initialValues}
+				redigertAttributt={redigertNavnValues}
+				path="navn"
+				ident={ident}
+				identtype={identtype}
+			/>
+		</div>
+	)
+}
+
 export const PdlPersonInfo = ({
 	data,
 	tpsMessagingData,
 	tpsMessagingLoading = false,
-	visTittel = true,
+	pdlfData,
 	tmpPersoner = null,
+	ident,
+	identtype,
+	visTittel = true,
 }) => {
 	if (!data) {
 		return null
@@ -82,8 +118,13 @@ export const PdlPersonInfo = ({
 					{(gyldigeNavn?.length > 1 || historiskeNavn?.length > 0) && (
 						<ArrayHistorikk
 							component={PdlNavnVisning}
+							componentRedigerbar={NavnVisningRedigerbar}
 							data={gyldigeNavn}
+							pdlfData={pdlfData?.navn}
 							historiskData={historiskeNavn}
+							tmpPersoner={tmpPersoner}
+							ident={ident}
+							identtype={identtype}
 							header="Navn"
 							showMaster={true}
 						/>
