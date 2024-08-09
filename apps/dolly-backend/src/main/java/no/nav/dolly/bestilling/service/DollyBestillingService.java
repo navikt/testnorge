@@ -154,7 +154,7 @@ public class DollyBestillingService {
     protected void leggIdentTilGruppe(String ident, BestillingProgress progress, String beskrivelse) {
 
         identService.saveIdentTilGruppe(isNotBlank(ident) ? ident : progress.getIdent(), progress.getBestilling().getGruppe(), progress.getMaster(), beskrivelse);
-        log.info("Ident {} lagt til gruppe {}", progress.getIdent(), progress.getBestilling().getGruppe().getId());
+        log.info("Ident {} lagt til gruppe {}", isNotBlank(ident) ? ident : progress.getIdent(), progress.getBestilling().getGruppe().getId());
     }
 
     protected Flux<DollyPerson> opprettDollyPerson(BestillingProgress progress, Bruker bruker) {

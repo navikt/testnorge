@@ -24,6 +24,7 @@ import { UforetrygdForm } from '@/components/fagsystem/uforetrygd/form/Form'
 import { SigrunstubPensjonsgivendeForm } from '@/components/fagsystem/sigrunstubPensjonsgivende/form/Form'
 import { KrrstubForm } from '@/components/fagsystem/krrstub/form/KrrForm'
 import { useFormContext } from 'react-hook-form'
+import { PensjonsavtaleForm } from '@/components/fagsystem/pensjonsavtale/form/Form'
 
 const gruppeNavn = (gruppe) => <span style={{ fontWeight: 'bold' }}>{gruppe.navn}</span>
 
@@ -70,6 +71,7 @@ export const Steg2 = () => {
 			<InntektstubForm />
 			<InntektsmeldingForm />
 			<PensjonForm />
+			<PensjonsavtaleForm />
 			<TjenestepensjonForm />
 			<AlderspensjonForm />
 			<UforetrygdForm />

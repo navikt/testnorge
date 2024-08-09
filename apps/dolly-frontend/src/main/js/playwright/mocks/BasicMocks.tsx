@@ -881,6 +881,8 @@ export const pensjonMock = [
 
 export const pensjonTpMock = [{ ordning: '4095' }, { ordning: '3010' }]
 
+export const pensjonPensjonsavtaleMock = [{}, {}]
+
 export const tagsMock = [{ tag: 'DUMMY', beskrivelse: 'Dummy' }]
 
 export const kontoregisterMock = {
