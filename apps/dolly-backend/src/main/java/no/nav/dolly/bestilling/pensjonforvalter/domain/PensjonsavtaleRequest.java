@@ -24,8 +24,6 @@ public class PensjonsavtaleRequest {
     private String ident;
     private String produktBetegnelse;
     private AvtaleKategori avtaleKategori;
-    private Integer startAlderAar;
-    private Integer sluttAlderAar;
     private List<OpprettUtbetalingsperiodeDTO>  utbetalingsperioder;
     private List<String> miljoer;
 
@@ -51,10 +49,9 @@ public class PensjonsavtaleRequest {
     @AllArgsConstructor
     public static class OpprettUtbetalingsperiodeDTO {
         private Integer startAlderAar;
-        private Integer startAlderMaaneder;
+        private Integer startAlderMaaned;
         private Integer sluttAlderAar;
-        private Integer sluttAlderMaaneder;
+        private Integer sluttAlderMaaned;
         private Integer aarligUtbetaling;
-        private Integer grad;
     }
 }

@@ -165,8 +165,6 @@ public class PensjonData {
 
         private String produktBetegnelse;
         private AvtaleKategori avtaleKategori;
-        private Integer startAlderAar;
-        private Integer sluttAlderAar;
         private List<OpprettUtbetalingsperiodeDTO> utbetalingsperioder;
 
         public List<OpprettUtbetalingsperiodeDTO> getUtbetalingsperioder() {
@@ -183,11 +181,10 @@ public class PensjonData {
         @AllArgsConstructor
         public static class OpprettUtbetalingsperiodeDTO {
             private Integer startAlderAar;
-            private Integer startAlderMaaneder;
+            private Integer startAlderMaaned;
             private Integer sluttAlderAar;
-            private Integer sluttAlderMaaneder;
+            private Integer sluttAlderMaaned;
             private Integer aarligUtbetaling;
-            private Integer grad;
         }
     }
 
